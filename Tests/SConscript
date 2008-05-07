@@ -1,0 +1,21 @@
+# SConscript
+# (c) 2008 Tod D. Romo
+#
+# Grossfield Lab
+# Department fo Biochemistry & Biophysics
+# University of Rochester Medical School
+#
+#
+
+
+Import('env')
+cpppath = ['.', '..']
+
+libs = ['loos']
+libpath = ['..']
+
+
+
+
+atomic_grp_tst = env.Program('atomic-group-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+pdb_tst = env.Program('pdb-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)

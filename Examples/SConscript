@@ -1,0 +1,23 @@
+# SConscript
+# (c) 2008 Tod D. Romo
+#
+# Grossfield Lab
+# Department fo Biochemistry & Biophysics
+# University of Rochester Medical School
+#
+#
+
+
+Import('env')
+cpppath = ['.', '..']
+
+libs = ['loos']
+libpath = ['..']
+
+
+
+
+coord_example = env.Program('coord-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+dcd_example = env.Program('dcd-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+pdb_example = env.Program('pdb-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+dcd_example2 = env.Program('dcd-example2.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
