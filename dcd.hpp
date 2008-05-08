@@ -85,7 +85,7 @@ public:
   void readHeader(ifstream& ifs);
 
   bool readFrame(void);
-  bool readFrame(const int i);
+  bool readFrame(const unsigned int i);
 
   // Accessor methods...
 
@@ -108,7 +108,7 @@ public:
   bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
 
   // The following track CHARMm names (more or less...)
-  int nsteps(void) const { return(_icntrl[3]); }
+  unsigned int nsteps(void) const { return((unsigned int)_icntrl[3]); }
   int nsavc(void) const { return(_icntrl[2]); }
   int nfile(void) const { return(_icntrl[0]); }
   int nfixed(void) const { return(_icntrl[8]); }
@@ -144,8 +144,8 @@ private:
   vector<double> qcrys;     // Crystal params
   float _delta;             // Timestep (extracted from _icntrl)
 
-  long frame_size;          // *Internal* size (in bytes) of each frame
-  long first_frame_pos;     // *Internal* location in file of start of data frames
+  unsigned long frame_size;          // *Internal* size (in bytes) of each frame
+  unsigned long first_frame_pos;     // *Internal* location in file of start of data frames
   
   vector<dcd_real> xcrds, ycrds, zcrds;
   

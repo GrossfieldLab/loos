@@ -237,12 +237,12 @@ bool DCD::readFrame(void) {
 
 // Read in a specified DCD frame...
 
-bool DCD::readFrame(const int i) {
+bool DCD::readFrame(const unsigned int i) {
 
   if (first_frame_pos == 0)
     throw(GeneralError("Trying to read a DCD frame without having first read the header"));
 
-  if (i < 0 || i >= nsteps())
+  if (i >= nsteps())
     throw(GeneralError("Requested DCD frame is out of range"));
 
   _ifs->seekg(first_frame_pos + i * frame_size);
