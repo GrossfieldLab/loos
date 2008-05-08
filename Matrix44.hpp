@@ -27,6 +27,7 @@
 using namespace std;
 
 
+// Forward declaration for matrix-vector multiply
 template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
 
 template<class T>
@@ -35,7 +36,6 @@ class Matrix44 {
   T matrix[16];
 
 public:
-  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
 
   Matrix44() { identity(); }
@@ -172,9 +172,10 @@ public:
   }
 
 
-  
-  
+  // Friend declaration for matrix-vector multiply...
+  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
+  
   friend ostream& operator<<(ostream&os, const Matrix44& m) {
     int i, j, k;
 
@@ -194,6 +195,8 @@ public:
 
 };
 
+
+// This has to be outside the class def for GCC to be happy...
 
 template<class T> Coord<T> operator*(const Matrix44<T>& M, const Coord<T>& v) {
     Coord<T> result;

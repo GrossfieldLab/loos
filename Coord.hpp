@@ -57,6 +57,8 @@
 
 using namespace std;
 
+// Forward declarations for matrix-vector multiply...
+
 template<class T> class Coord;
 template<class T> class Matrix44;
 template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
@@ -66,11 +68,12 @@ class Coord {
   enum { X=0, Y=1, Z=2, MAXCOORD } CoordIndex;
 public:
 
-  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+
 
   // Constructors
 
   Coord() { zero(); }
+
 
   Coord(const T ax, const T ay, const T az) { set(ax, ay, az); }
 
@@ -131,6 +134,8 @@ public:
 
   // ---------------------------------------
   // Operators
+
+
 
 
   const Coord<T>& operator=(const Coord<T>& c) { copy(c); return(*this); }
@@ -197,6 +202,11 @@ public:
     return(res);
   }
 
+
+  // For matrix-vector multiply
+  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+
+
   // Multiplication by a constant
   Coord<T>& operator*=(const T rhs) {
     int i;
@@ -219,6 +229,7 @@ public:
     res *= lhs;
     return(res);
   }
+
 
 
   // Division by a constant
