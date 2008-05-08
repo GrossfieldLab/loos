@@ -112,6 +112,14 @@ public:
   }
 
   // Multiplication
+
+
+  // Friend declaration for matrix-vector multiply...
+  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+
+
+
+
   // (should probably call BLAS instead...)
   
   Matrix44<T>& operator*=(const Matrix44<T>& rhs) {
@@ -170,10 +178,6 @@ public:
     res *= x;
     return(res);
   }
-
-
-  // Friend declaration for matrix-vector multiply...
-  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
   
   friend ostream& operator<<(ostream&os, const Matrix44& m) {
