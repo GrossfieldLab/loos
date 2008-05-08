@@ -19,15 +19,25 @@
 
 #include <iostream>
 #include <stdexcept>
-
 #include <string.h>
+
+#include <Coord.hpp>
+
 
 using namespace std;
 
 
+template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
+
 template<class T>
 class Matrix44 {
+
+  T matrix[16];
+
 public:
+  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+
+
   Matrix44() { identity(); }
   Matrix44(const T v) { for (int i = 0; i < 16; i++) matrix[i] = v; }
 
@@ -153,6 +163,7 @@ public:
     return(res);
   }
 
+
   friend Matrix44<T> operator*(const T x, const Matrix44<T>& rhs) {
     Matrix44<T> res(rhs);
     
@@ -160,8 +171,9 @@ public:
     return(res);
   }
 
-  
 
+  
+  
 
   friend ostream& operator<<(ostream&os, const Matrix44& m) {
     int i, j, k;
@@ -180,13 +192,19 @@ public:
 
 
 
-
-private:
-  
-
-  T matrix[16];
-
 };
+
+
+template<class T> Coord<T> operator*(const Matrix44<T>& M, const Coord<T>& v) {
+    Coord<T> result;
+
+    result.v[0] = v.v[0]*M.matrix[0] + v.v[1]*M.matrix[1] + v.v[2]*M.matrix[2] + v.v[3]*M.matrix[3];
+    result.v[1] = v.v[0]*M.matrix[4] + v.v[1]*M.matrix[5] + v.v[2]*M.matrix[6] + v.v[3]*M.matrix[7];
+    result.v[2] = v.v[0]*M.matrix[8] + v.v[1]*M.matrix[9] + v.v[2]*M.matrix[10] + v.v[3]*M.matrix[11];
+    result.v[3] = v.v[0]*M.matrix[12] + v.v[1]*M.matrix[13] + v.v[2]*M.matrix[14] + v.v[3]*M.matrix[15];
+
+    return(result);
+  }
 
 
 #endif

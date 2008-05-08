@@ -57,10 +57,16 @@
 
 using namespace std;
 
+template<class T> class Coord;
+template<class T> class Matrix44;
+template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
+
 template <class T>
 class Coord {
   enum { X=0, Y=1, Z=2, MAXCOORD } CoordIndex;
 public:
+
+  friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
   // Constructors
 
@@ -91,14 +97,14 @@ public:
   void z(const T az) { v[Z] = az; }
 
 
-  T& operator[](const int i) {
-    if (i<0 || i>=MAXCOORD)
+  T& operator[](const unsigned int i) {
+    if (i>=MAXCOORD)
       throw out_of_range("Index into Coord<T> is out of range.");
     return(v[i]);
   }
 
-  const T& operator[](const int i) const {
-    if (i<0 || i>=MAXCOORD)
+  const T& operator[](const unsigned int i) const {
+    if (i>=MAXCOORD)
       throw out_of_range("Index into Coord<T> is out of range.");
     return(v[i]);
   }
