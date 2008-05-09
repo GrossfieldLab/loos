@@ -7,7 +7,35 @@
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
 
-  Matrix class for handling coordinate transforms...
+  Matrix class for handling coordinate transforms...  This is based on
+  the OpenGL/RenderMan model of handling geometric transforms.  Coords
+  are expected to be homegenous and the transformation matrix is 4x4.
+  Rotations are all left-handed.
+
+  The transform mantains a stack of transformation matrices that you
+  can push and pop as necessary.  You can also load the current
+  transformation with an arbitrary matrix.
+
+  Transformations are concatenated by post-multiplication.  This means
+  the last declared transformation is the first one applied to an
+  atom's coordinates...  Imagine you've defined a set of
+  transformations in your code: 
+
+    rotate       ->  M_r
+    translate    ->  M_t
+    scale        ->  M_s
+
+  These are post-multiplied together to create the composite
+  transformation matrix:
+    M = M_r * M_t * M_s
+
+  Now, when you transform your coordinate vector, it's just the
+  matrix-vector multiplication:
+    v' = Mv = M_r * M_t * M_s * v
+
+  So from the perspective of the atom's coordinate frame, we're
+  scaled, then translated, then rotated into the global
+  coordinates... 
 */
 
 
@@ -69,6 +97,9 @@ public:
   void scale(const GCoord& g) {
     scale(g[0], g[1], g[2]);
   }
+
+
+  // Angles are in degrees.
 
   void rotate(const GCoord& v, const greal angle) {
     greal theta = PI * angle / 180.0;
