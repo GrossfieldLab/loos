@@ -91,18 +91,20 @@ public:
   void recordName(const string s) { _record = s; }
 
   void clearBonds(void) { bonds.clear(); }
-  void addBond(pAtom& p) { bonds.push_back(p); }
+  void addBond(const pAtom& p) { bonds.push_back(p->id()); }
+  void addBond(const int i) { bonds.push_back(i); }
 
-  void deleteBond(pAtom& p) {
-    vector<pAtom>::iterator i;
-    i = find(bonds.begin(), bonds.end(), p);
+  void deleteBond(const int b) {
+    vector<int>::iterator i = find(bonds.begin(), bonds.end(), b);
     if (i == bonds.end())
       throw(runtime_error("Attempting to delete a non-existent bond"));
-
     bonds.erase(i);
   }
 
-  vector<pAtom> getBonds(void) const { return(bonds); }
+  void deleteBond(const pAtom& p) { deleteBond(p->id()); }
+
+
+  vector<int> getBonds(void) const { return(bonds); }
 
   bool hasBonds(void) const { return(bonds.size() != 0); }
 
@@ -114,10 +116,10 @@ public:
     os << "ALTLOC='" << a._altloc << "' CHAINID='" << a._chainid << "' ICODE='" << a._icode << "' SEGID='" << a._segid << "' ";
     os << "B='" << a._b << "' Q='" << a._q << "' CHARGE='" << a._charge << "' MASS='" << a._mass << "'";
     if (a.hasBonds() > 0) {
-      vector<pAtom>::const_iterator i;
+      vector<int>::const_iterator i;
       os << ">\n";
       for (i=a.bonds.begin(); i != a.bonds.end(); i++)
-	os << "  <BOND>" << (*i)->id() << "</BOND>\n";
+	os << "  <BOND>" << *i << "</BOND>\n";
       os << "</ATOM>";
     } else
       os << "/>";
@@ -151,7 +153,7 @@ private:
   string _segid, _pdbelement;
   GCoord _coords;
 
-  vector<pAtom> bonds;
+  vector<int> bonds;
 };
 
 

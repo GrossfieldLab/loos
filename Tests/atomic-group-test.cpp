@@ -117,18 +117,6 @@ int main() {
   g5[0]->resid(111);
   cout << g4 << endl;
 
-  cout << "---\n";
-  cout << "Cloned bonds check:\n";
-  pa = g4[0];
-  vector<pAtom> bonds = pa->getBonds();
-  pAtom pb = bonds[0];
-  cout << "First bond is to: " << pb->id() << endl;
-  pb->resid(-314);
-  cout << "Changing resid to -314...\n";
-  cout << g4 << endl;
-  cout << "-" << endl;
-  cout << g1 << endl;
-
   cout << "-------------------\n";
   cout << "subset(1,2):\n";
   AtomicGroup g3 = g1.subset(1,2);

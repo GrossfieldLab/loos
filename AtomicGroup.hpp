@@ -11,19 +11,6 @@
 
   Notes:
 
-    o Cloning is a deep copy operation that creates entirely new
-      Atoms that the clone manages.  Since atoms can have bonds and
-      these bonds are stored as pointers to other atoms, it can be
-      difficult to map the bond list from the old group onto the
-      clone.  By default, the clone() method will try to do this by
-      assuming that atomid's are unique and that each bound atom in
-      the cloning group is also present in the cloned group.  This
-      means that if you have a group that has bond information and you
-      subset this group, then you clone the subset, it is likely
-      you'll get an exception because the subset will reference atoms
-      that are outside of itself.  In this case, you can call
-      cloneWithoutBonds().
-
     o Applying a transform to the coordinates of the group's atoms
       does NOT reset the transformation back to identity.  That is up
       to you to do if you want to do that...
@@ -75,7 +62,6 @@ public:
   virtual ~AtomicGroup() { }
 
   // clone() creates a deep copy of this group...
-  virtual AtomicGroup* cloneWithoutBonds(void) const;
   virtual AtomicGroup* clone(void) const;
 
 
@@ -215,7 +201,6 @@ private:
   boost::tuple<AtomIterator, AtomIterator> calcSubsetIterators(const int offset, const int len = 0);
 
   void copyCoordinatesById(AtomicGroup& g);
-  void mapBonds(const AtomicGroup& g);
 
   // Some helper classes for using the STL
   struct CmpById {
