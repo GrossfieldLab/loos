@@ -80,6 +80,18 @@ namespace loos {
 
 	if (!(c == '&' || c == '|' || c == '!' || c == '=' || c == '<' || c == '>')) {
 	  state = 0;
+	  
+	  // Validate operator...
+	  if (!(t == "==" ||
+		t == "&&" ||
+		t == "||" ||
+		t == "!" ||
+		t == "<" ||
+		t == ">" ||
+		t == ">=" ||
+		t == "<="))
+	    throw(runtime_error("Unidentifed operator: " + t));
+
 	  token.setOperator(t);
 	  _tokens.push_back(token);
 	  --i;

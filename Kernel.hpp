@@ -37,10 +37,12 @@ namespace loos {
 	delete (*i);
     }
 
-    void add(Action *act) {
+    void push(Action *act) {
       act->setStack(&val_stack);
       actions.push_back(act); 
     }
+
+    void pop(void) { actions.pop_back(); }
 
     void execute(void) {
       vector<Action*>::iterator i;

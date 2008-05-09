@@ -76,6 +76,18 @@ namespace loos {
 
     Tokens& tokens(void) { return(_tokens); }
 
+
+    // Note: we're popping/pushing to the front in this case...
+    Token pop(void) {
+      Token t = _tokens.front();
+      _tokens.pop_front();
+      return(t);
+    }
+
+    void push(const Token& t) {
+      _tokens.push_front(t);
+    }
+
     friend ostream& operator<<(ostream& os, const Tokenizer& t) {
       Tokens::const_iterator i;
 
