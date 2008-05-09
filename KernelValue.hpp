@@ -59,7 +59,7 @@ namespace loos {
 
 
     Value() : type(NONE) { }
-    ~Value() { if (type == STRING) delete str; }
+    ~Value() { if (type == STRING) free(str); }
 
     Value(const Value& v) { copy(v); }
 
