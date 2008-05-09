@@ -37,7 +37,7 @@ AtomicGroup* AtomicGroup::clone(void) const {
 int AtomicGroup::rangeCheck(int i) const {
   if (i < 0)
     i = atoms.size() + i;
-  if (i < 0 || i >= atoms.size())
+  if ((unsigned int)i >= atoms.size())
     throw(out_of_range("Bad index for an atom"));
 
   return(i);

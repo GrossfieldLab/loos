@@ -31,7 +31,7 @@ using namespace boost;
   have a SEGID, or CHARGE, etc.
 */
 
-greal PDB::parseFloat(const string s, const int offset, const int len) {
+greal PDB::parseFloat(const string s, const unsigned int offset, const unsigned int len) {
   greal result;
 
   if (offset+len > s.size())
@@ -45,7 +45,7 @@ greal PDB::parseFloat(const string s, const int offset, const int len) {
 }
 
 
-gint PDB::parseInt(const string s, const int offset, const int len) {
+gint PDB::parseInt(const string s, const int unsigned offset, const unsigned int len) {
   gint result;
 
 
@@ -61,7 +61,7 @@ gint PDB::parseInt(const string s, const int offset, const int len) {
 
 
 
-string PDB::parseString(const string s, const int offset, const int len) {
+string PDB::parseString(const string s, const unsigned int offset, const unsigned int len) {
 
   if (offset+len > s.size())
     return(string(""));
