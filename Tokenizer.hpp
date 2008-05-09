@@ -72,7 +72,7 @@ namespace loos {
     Tokenizer() { }
 
     void tokenize(void);
-    void tokenize(const string s) { text = s; tokenize(); }
+    void tokenize(const string s) { _tokens.clear(); text = s; tokenize(); }
 
     Tokens& tokens(void) { return(_tokens); }
 

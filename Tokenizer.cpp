@@ -106,10 +106,10 @@ namespace loos {
 
     switch(state) {
     case 0: break;
-    case 1: token.setId(t); break;
-    case 2: token.setNumeric(t); break;
-    case 3: token.setString(t); break;
-    case 4: token.setOperator(t); break;
+    case 1: token.setId(t); _tokens.push_back(token); break;
+    case 2: token.setNumeric(t); _tokens.push_back(token); break;
+    case 3: token.setString(t); _tokens.push_back(token); break;
+    case 4: token.setOperator(t); _tokens.push_back(token); break;
     default:
       throw(logic_error("Invalid state in tokenization"));
     }

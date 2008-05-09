@@ -14,25 +14,25 @@
 
   <numeric> ::= [+-]\d+
   <alphabetic> ::= '[^']+'
-  <id> ::= \w+
   <operator> ::= [&|!<>=]+
 
-  <stringkey> ::= name | resname | segid
-  <numkey> ::= id | resid
+  <stringid> ::= name | resname | segid
+  <numid> ::= id | resid
 
-  <string> ::= <stringkey>|<alphabetic>
+  <slit> ::= <stringkey>|<alphabetic>
   <number> ::= <numkey>|<numeric>
 
-  <stringop> ::= <|>|<=|>=|==
-  <numberop> ::= <|>|<=|>=|==
+  <relop> ::= <|>|<=|>=
+  <stringop> ::= <relop>|==  {regexp matching}
+  <numberop> ::= <relop>|==
 
-  <stringexpr> ::= <string> <stringop> <string>
+  <stringexpr> ::= <slit> <stringop> <slit>
   <numexpr> ::= <number> <numberop> <number>
 
   <binop> ::= && | ||
   <unop> ::= !
 
-  <literal> ::= <number> | <string>
+  <literal> ::= <number> | <slit>
 
   <subexpr> ::= <numexpr> | <stringexpr> | <literal>
   <expr> ::= <expr> <binop> <expr> | <unop> <expr> | <subexpr>
@@ -60,29 +60,20 @@ namespace loos {
     Kernel* kernel;
     Tokenizer lex;
     
+    typedef deque<Action *> Alist;
+
   private:
-    bool parsePrimNumeric(void);
-    bool parsePrimId(void);
-    bool parsePrimOperator(void);
-    bool parsePrimString(void);
-
-    bool parseStringKey(void);
-    bool parseNumKey(void);
-
-    bool parseString(void);
-    bool parseNumber(void);
-
-    bool parseStringExpr(void);
-    bool parseNumExpr(void);
-
-    bool parseBinop(void);
-    bool parseUnop(void);
-
-    bool parseLiteral(void);
-
-    bool parseSubExpr(void);
-    bool parseExpr(void);
-
+    Action* numeric(void);
+    Action* alphabetic(void);
+    Action* stringId(void);
+    Action* numId(void);
+    Action* slit(void);
+    Action* number(void);
+    Action* relop(void);
+    Action* stringop(void);
+    Action* numop(void);
+    Action* binop(void);
+    Action* unop(void);
   public:
     Parser(Kernel* k) : kernel(k) { }
 
@@ -91,3 +82,6 @@ namespace loos {
   };
 
 };
+
+
+#endif

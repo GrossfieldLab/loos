@@ -17,6 +17,8 @@
 
 #include <vector>
 
+#include "Atom.hpp"
+
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 #include "KernelActions.hpp"
@@ -44,10 +46,13 @@ namespace loos {
 
     void pop(void) { actions.pop_back(); }
 
-    void execute(void) {
+    void execute(pAtom pa = pAtom()) {
+
       vector<Action*>::iterator i;
-      for (i=actions.begin(); i != actions.end(); i++)
+      for (i=actions.begin(); i != actions.end(); i++) {
+	(*i)->setAtom(pa);
 	(*i)->execute();
+      }
     }
 
     

@@ -23,6 +23,8 @@
 
 #include <boost/regex.hpp>
 
+#include "Atom.hpp"
+
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 
@@ -33,6 +35,7 @@ namespace loos {
   class Action {
   protected:
     ValueStack *stack;
+    pAtom atom;
 
     int binComp(void) {
       Value v1 = stack->pop();
@@ -40,11 +43,17 @@ namespace loos {
       return(compare(v1, v2));
     }
 
+    void hasAtom(void) {
+      if (atom == 0)
+	throw(runtime_error("No atom set"));
+    }
+
   public:
     Action() : stack(0) { }
     Action(ValueStack *stk) : stack(stk) { }
 
     void setStack(ValueStack* ptr) { stack=ptr; }
+    void setAtom(pAtom pa) { atom = pa; }
     
 
     virtual void execute(void) = 0;
@@ -151,6 +160,97 @@ namespace loos {
       stack->push(r);
     }
   };
+
+
+  class pushAtomName : public Action {
+  public:
+    void execute() {
+      hasAtom();
+      Value v(atom->name());
+      stack->push(v);
+    }
+  };
+
+
+  class pushAtomId : public Action {
+  public:
+    void execute() {
+      hasAtom();
+      Value v(atom->id());
+      stack->push(v);
+    }
+  };
+
+  class pushAtomResname : public Action {
+  public:
+    void execute() {
+      hasAtom();
+      Value v(atom->resname());
+      stack->push(v);
+    }
+  };
+
+  class pushAtomResid : public Action {
+  public:
+    void execute() {
+      hasAtom();
+      Value v(atom->resid());
+      stack->push(v);
+    }
+  };
+
+  class pushAtomSegid : public Action {
+  public:
+    void execute() {
+      hasAtom();
+      Value v(atom->segid());
+      stack->push(v);
+    }
+  };
+
+  class logicalAnd : public Action {
+  public:
+    void execute() {
+      Value v1 = stack->pop();
+      Value v2 = stack->pop();
+
+      if (!(v1.type == Value::INT && v2.type == Value::INT))
+	throw(runtime_error("Invalid operands to logicalAnd"));
+
+      Value u(v1.itg && v2.itg);
+      stack->push(u);
+    }
+  };
+
+
+  class logicalOr : public Action {
+  public:
+    void execute() {
+      Value v1 = stack->pop();
+      Value v2 = stack->pop();
+
+      if (!(v1.type == Value::INT && v2.type == Value::INT))
+	throw(runtime_error("Invalid operands to logicalOr"));
+
+      Value u(v1.itg || v2.itg);
+      stack->push(u);
+    }
+  };
+
+
+  class logicalNot : public Action {
+  public:
+    void execute() {
+      Value v1 = stack->pop();
+
+      if (v1.type != Value::INT)
+	throw(runtime_error("Invalid operand to logicalNot"));
+
+      Value u(!v1.itg);
+      stack->push(u);
+    }
+  };
+
 
 
 };
