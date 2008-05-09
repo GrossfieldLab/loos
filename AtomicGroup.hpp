@@ -160,11 +160,24 @@ public:
 
   // Geometric transformations...
   
-  // Non-mutating...
+  // *** Non-mutating...
   vector<GCoord> transformedCoords(void) const;
   
-  // Mutating
+  // *** Mutating
+  
+  // Note: applying the current transformation to the group
+  // does NOT reset the current transformation.  That's up to
+  // you to handle...
   void applyTransformation(void);
+
+
+  // Copy coordinates from one group into another...
+  // If the groups match in size, then a straight copy ensues.
+  // Otherwise, an attempt will be made to pick the correct
+  // coordinates...this could be a pretty costly operation...  Also
+  // note that this may change (sort) the group 'g'...
+  
+  void copyCoordinates(AtomicGroup& g);
 
 private:
 
@@ -179,6 +192,8 @@ private:
   AtomIterator findIteratorById(const int id);
 
   boost::tuple<AtomIterator, AtomIterator> calcSubsetIterators(const int offset, const int len = 0);
+
+  void copyCoordinatesById(AtomicGroup& g);
 
   // Some helper classes for using the STL
   struct CmpById {

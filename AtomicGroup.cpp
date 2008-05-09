@@ -516,3 +516,30 @@ void AtomicGroup::applyTransformation(void) {
     (*i)->coords(res);
   }
 }
+
+
+void AtomicGroup::copyCoordinatesById(AtomicGroup& g) {
+  pAtom atom;
+  AtomIterator i;
+
+  for (i=atoms.begin(); i != atoms.end(); i++) {
+    atom = g.findById( (*i)->id() );
+    if (atom) {
+      (*i)->coords(atom->coords());
+    }
+  }
+}
+
+
+
+void AtomicGroup::copyCoordinates(AtomicGroup& g) {
+  
+  if (g.size() != size())
+    copyCoordinatesById(g);
+  else {
+    AtomIterator i, j;
+
+    for (i = atoms.begin(), j = g.atoms.begin(); i != atoms.end(); i++, j++)
+      (*i)->coords((*j)->coords());
+  }
+}
