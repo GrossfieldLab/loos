@@ -20,15 +20,31 @@
 // Deep copy...  Creates new shared atoms and stuffs 'em
 // into a new group...
 
+AtomicGroup* AtomicGroup::cloneWithoutBonds(void) const {
+  ConstAtomIterator i;
+  AtomicGroup* res(new AtomicGroup);
+
+  for (i = atoms.begin(); i != atoms.end(); i++) {
+    pAtom pa(new Atom(**i));
+    pa->clearBonds();
+    res->append(pa);
+  }
+
+  return(res);
+}
+
+
 AtomicGroup* AtomicGroup::clone(void) const {
   ConstAtomIterator i;
   AtomicGroup* res(new AtomicGroup);
 
   for (i = atoms.begin(); i != atoms.end(); i++) {
     pAtom pa(new Atom(**i));
+    pa->clearBonds();
     res->append(pa);
   }
-  
+
+  res->mapBonds(*this);
   return(res);
 }
 
@@ -531,6 +547,15 @@ void AtomicGroup::copyCoordinatesById(AtomicGroup& g) {
 }
 
 
+// This method will copy the coordinates from one group into the
+// current group's.  If the sizes don't match, then we search for
+// matching atoms based on atomids, which are assumed to be unique.
+// This means that you could potentially be updating only a subset of
+// your group's coordinates...
+//
+// If the size of the two groups is the same, then it is assumed that
+// there is a one-to-one mapping between them and the coordinates are
+// copied straight across.
 
 void AtomicGroup::copyCoordinates(AtomicGroup& g) {
   
@@ -543,3 +568,29 @@ void AtomicGroup::copyCoordinates(AtomicGroup& g) {
       (*i)->coords((*j)->coords());
   }
 }
+
+
+
+void AtomicGroup::mapBonds(const AtomicGroup& g) {
+  AtomIterator i = atoms.begin();
+  ConstAtomIterator j = g.atoms.begin();
+
+  if (g.size() != size())
+    throw(logic_error("Mismatch in group size for AtomicGroup::mapBonds()"));
+
+  for (; i != atoms.end(); i++, j++) {
+    if (!(*j)->hasBonds())
+      continue;
+    
+    vector<pAtom> bonds = (*j)->getBonds();
+    AtomIterator k;
+    for (k = bonds.begin(); k != bonds.end(); k++) {
+      int id = (*k)->id();
+      pAtom mate = findById(id);
+      if (!mate)
+	throw(logic_error("Unable to find matching atom in AtomicGroup::mapBonds()"));
+      (*i)->addBond(mate);
+    }
+  }
+}
+
