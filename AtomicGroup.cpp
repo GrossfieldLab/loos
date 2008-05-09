@@ -491,3 +491,28 @@ ostream& operator<<(ostream& os, const AtomicGroup& grp) {
 
   return(os);
 }
+
+
+
+vector<GCoord> AtomicGroup::transformedCoords(void) const {
+  vector<GCoord> crds(atoms.size());
+  ConstAtomIterator i;
+  int j = 0;
+
+  for (i = atoms.begin(); i != atoms.end(); i++) {
+    GCoord res = _xform.current() * (*i)->coords();
+    crds[j++] = res;
+  }
+
+  return(crds);
+}
+
+
+void AtomicGroup::applyTransformation(void) {
+  AtomIterator i;
+
+  for (i = atoms.begin(); i != atoms.end(); i++) {
+    GCoord res = _xform.current() * (*i)->coords();
+    (*i)->coords(res);
+  }
+}

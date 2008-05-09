@@ -53,6 +53,10 @@ public:
     concat(M);
   }
 
+  void translate(const GCoord& g) {
+    translate(g[0], g[1], g[2]);
+  }
+
   void scale(const greal x, const greal y, const greal z) {
     GMatrix M;
 
@@ -60,6 +64,10 @@ public:
     M(1,1) = y;
     M(2,2) = z;
     concat(M);
+  }
+
+  void scale(const GCoord& g) {
+    scale(g[0], g[1], g[2]);
   }
 
   void rotate(const GCoord& v, const greal angle) {

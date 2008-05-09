@@ -32,6 +32,7 @@ using namespace tr1;
 
 #include <loos.hpp>
 #include <Atom.hpp>
+#include <XForm.hpp>
 
 
 
@@ -64,6 +65,8 @@ public:
 
   pAtom& operator[](const int i);
   const pAtom& operator[](const int i) const;
+
+  XForm& xform(void) { return(_xform); };
 
   void append(pAtom pa) { atoms.push_back(pa); }   // Add an atom...
   void append(vector<pAtom> pas);
@@ -155,6 +158,14 @@ public:
   greal totalMass(void) const;
   greal radiusOfGyration(void) const;
 
+  // Geometric transformations...
+  
+  // Non-mutating...
+  vector<GCoord> transformedCoords(void) const;
+  
+  // Mutating
+  void applyTransformation(void);
+
 private:
 
   // *** Internal routines ***  See the .cpp file for details...
@@ -187,6 +198,7 @@ private:
 
 protected:
   vector<pAtom> atoms;
+  XForm _xform;
 
 };
 

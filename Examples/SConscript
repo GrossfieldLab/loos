@@ -21,3 +21,4 @@ coord_example = env.Program('coord-example.cpp', LIBS=libs, LIBPATH=libpath, CPP
 dcd_example = env.Program('dcd-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 pdb_example = env.Program('pdb-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 dcd_example2 = env.Program('dcd-example2.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+center_pdb = env.Program('center-pdb.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
