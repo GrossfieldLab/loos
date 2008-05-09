@@ -15,7 +15,7 @@
 #if !defined(KERNEL_HPP)
 #define KERNEL_HPP
 
-#include <deque>
+#include <vector>
 
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
@@ -26,13 +26,13 @@ using namespace std;
 namespace loos {
 
   class Kernel {
-    deque<Action*> actions;
+    vector<Action*> actions;
     ValueStack val_stack;
 
   public:
     
     ~Kernel() {
-      deque<Action*>::iterator i;
+      vector<Action*>::iterator i;
       for (i = actions.begin(); i != actions.end(); i++)
 	delete (*i);
     }
@@ -43,15 +43,16 @@ namespace loos {
     }
 
     void execute(void) {
-      while (actions.size() > 0) {
-	//	cout << val_stack << "-------\n";
-	Action* act = actions.front();
-	actions.pop_front();
-	act->execute();
-      }
+      vector<Action*>::iterator i;
+      for (i=actions.begin(); i != actions.end(); i++)
+	(*i)->execute();
     }
 
+    
+    void clearActions(void) { actions.clear(); }
+
     ValueStack& stack(void) { return(val_stack); }
+    
 
   };
 
