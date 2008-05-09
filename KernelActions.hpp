@@ -21,6 +21,8 @@
 
 #include <string.h>
 
+#include <boost/regex.hpp>
+
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 
@@ -73,19 +75,16 @@ namespace loos {
 
   class drop : public Action {
   public:
-    drop() { }
     void execute(void) { stack->drop(); }
   };
 
   class dup : public Action {
   public:
-    dup() { }
     void execute(void) { stack->dup(); }
   };
 
   class equals : public Action {
   public:
-    equals() { }
     void execute(void) {
       Value v(binComp() == 0);
       stack->push(v);
@@ -94,7 +93,6 @@ namespace loos {
 
   class lessThan : public Action {
   public:
-    lessThan() { }
     void execute(void) {
       Value v(binComp() < 0);
       stack->push(v);
@@ -103,7 +101,6 @@ namespace loos {
 
   class lessThanEquals : public Action {
   public:
-    lessThanEquals() { }
     void execute(void) {
       Value v(binComp() <= 0);
       stack->push(v);
@@ -112,7 +109,6 @@ namespace loos {
 
   class greaterThan : public Action {
   public:
-    greaterThan() { }
     void execute(void) {
       Value v(binComp() > 0);
       stack->push(v);
@@ -121,10 +117,38 @@ namespace loos {
 
   class greaterThanEquals : public Action {
   public:
-    greaterThanEquals() { }
     void execute(void) {
       Value v(binComp() >= 0);
       stack->push(v);
+    }
+  };
+
+  class matchRegex : public Action {
+    boost::regex regexp;
+  public:
+    matchRegex(const string s) : regexp(s, boost::regex::perl|boost::regex::icase) { }
+    void execute(void) { 
+      Value v = stack->pop();
+      Value r(0);
+      if (boost::regex_search(v.getString(), regexp))
+	r.setInt(1);
+
+      stack->push(r);
+    }
+  };
+
+  class matchStringAsRegex : public Action {
+  public:
+    void execute() {
+      Value v = stack->pop();
+      boost::regex re(v.getString(), boost::regex::perl|boost::regex::icase);
+      Value u = stack->pop();
+      Value r(0);
+      
+      if (boost::regex_search(u.getString(), re))
+	r.setInt(1);
+
+      stack->push(r);
     }
   };
 
