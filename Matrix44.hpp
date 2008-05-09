@@ -14,7 +14,7 @@
 
 
 #if !defined(MATRIX44_HPP)
-#define MATRIX4_HPP
+#define MATRIX44_HPP
 
 
 #include <iostream>
@@ -44,6 +44,10 @@ public:
   void zero(void) { memset(matrix, 0, 16 * sizeof(T)); }
   void identity(void) { zero(); matrix[0] = 1; matrix[5] = 1; matrix[10] = 1; matrix[15] = 1; }
 
+
+  // Indexing the matrix as a multi-dimensional array...
+  // M(row,col)
+
   T& operator()(const int j, const int i) {
     if (j < 0 || i < 0 || i > 3 || j > 3)
       throw(range_error("Indices into matrix are out of range"));
@@ -56,6 +60,8 @@ public:
     return(matrix[j*4+i]);
   }
 
+
+  // Allow access to the linear array...
   T& operator[](const int i) {
     if (i < 0 || i > 15)
       throw(range_error("Index into matrix is out of range"));
@@ -84,6 +90,13 @@ public:
     res += rhs;
     return(res);
   }
+
+
+  // handle a constant + matrix.  Each element in the matrix is added
+  // with the constant...
+  //
+  // Rely on the constructor from a constant to handle the case where
+  // you have a matrix + a constant...
 
   friend Matrix44<T> operator+(const T lhs, const Matrix44<T>& rhs) {
     Matrix44<T> res(rhs);
@@ -117,9 +130,7 @@ public:
   // Friend declaration for matrix-vector multiply...
   friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
-
-
-
+  // Matrix-matrix multiply...
   // (should probably call BLAS instead...)
   
   Matrix44<T>& operator*=(const Matrix44<T>& rhs) {
@@ -157,6 +168,10 @@ public:
   }
 
   // Multiplying by a constant...
+  // (each element is multiplied by the same constant)
+  // This operator [hopefully] prevents auto-casting
+  // of the constant to a matrix and then a matrix-matrix
+  // multiply, but beware...
 
   Matrix44<T>& operator*=(const T x) {
     for (int i = 0; i < 16; i++)
@@ -171,7 +186,7 @@ public:
     return(res);
   }
 
-
+  // Handle k * M case
   friend Matrix44<T> operator*(const T x, const Matrix44<T>& rhs) {
     Matrix44<T> res(rhs);
     
