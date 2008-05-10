@@ -35,7 +35,7 @@
   <literal> ::= <number> | <slit>
 
   <subexpr> ::= <numexpr> | <stringexpr> | <literal>
-  <expr> ::= <expr> <binop> <expr> | <unop> <expr> | <subexpr>
+  <expr> ::= <subexpr> <binop> <expr> | <unop> <expr> | (<expr>) | <subexpr>
 
 */
 
@@ -60,8 +60,6 @@ namespace loos {
     Kernel* kernel;
     Tokenizer lex;
     
-    typedef deque<Action *> Alist;
-
   private:
     Action* numeric(void);
     Action* alphabetic(void);
@@ -74,6 +72,13 @@ namespace loos {
     Action* numop(void);
     Action* binop(void);
     Action* unop(void);
+    Action* literal(void);
+
+    deque<Action*> stringexpr(void);
+    deque<Action*> numexpr(void);
+    deque<Action*> subexpr(void);
+    deque<Action*> expr(void);
+
   public:
     Parser(Kernel* k) : kernel(k) { }
 

@@ -59,7 +59,16 @@ namespace loos {
     void clearActions(void) { actions.clear(); }
 
     ValueStack& stack(void) { return(val_stack); }
-    
+
+    friend ostream& operator<<(ostream& os, const Kernel& k) {
+      vector<Action*>::const_iterator i;
+
+      os << "Commands:\n";
+      for (i=k.actions.begin(); i != k.actions.end(); i++)
+	os << (*i)->name() << endl;
+      os << endl;
+      return(os);
+    }
 
   };
 

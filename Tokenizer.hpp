@@ -30,16 +30,19 @@ namespace loos {
 
 
   struct Token {
-    enum TokenType { ID, NUMERIC, STRING, OPERATOR };
+    enum TokenType { NONE, ID, NUMERIC, STRING, OPERATOR, PARENS };
 
     TokenType type;
     string datum;
+
+    Token() : type(NONE), datum("NONE") { }
 
 
     void setId(const string s) { datum = s; type = ID; }
     void setNumeric(const string s) { datum = s; type = NUMERIC; }
     void setString(const string s) { datum = s; type = STRING; }
     void setOperator(const string s) { datum = s; type = OPERATOR; }
+    void setParens(const string s) { datum = s; type = PARENS; }
 
     friend ostream& operator<<(ostream& os, const Token& t) {
       os << "<TOKEN TYPE='";
@@ -48,6 +51,7 @@ namespace loos {
       case NUMERIC: os << "NUMERIC" ; break;
       case STRING: os << "STRING" ; break;
       case OPERATOR: os << "OPERATOR" ; break;
+      case PARENS: os << "PARENS"; break;
       default: throw(logic_error("Should never be here"));
       }
 
@@ -79,6 +83,11 @@ namespace loos {
 
     // Note: we're popping/pushing to the front in this case...
     Token pop(void) {
+      if (_tokens.empty()) {
+	Token t;
+	return(t);
+      }
+
       Token t = _tokens.front();
       _tokens.pop_front();
       return(t);

@@ -36,12 +36,15 @@ namespace loos {
 	} else if (c == '-' || c == '+' || isdigit(c)) {
 	  state = 2;
 	  t = c;
-	} else if (c == '\'') {
+	} else if (c == '\'' || c == '\"') {
 	  state = 3;
 	  t = string("");
 	} else if (c == '&' || c == '|' || c == '!' || c == '=' || c == '<' || c == '>') {
 	  state = 4;
 	  t = c;
+	} else if (c == '(' || c == ')') {
+	  token.setParens(string(c));
+	  _tokens.push_back(token);
 	}
 
       } else if (state == 1) {
@@ -69,7 +72,7 @@ namespace loos {
 	if (c == '\\') {
 	  c = text[++i];
 	  t += c;
-	} else if (c == '\'') {
+	} else if (c == '\'' || c == '\"') {
 	  state = 0;
 	  token.setString(t);
 	  _tokens.push_back(token);

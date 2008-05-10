@@ -14,6 +14,7 @@
 #if !defined(KERNELACTIONS_HPP)
 #define KERNELACTIONS_HPP
 
+#include <sstream>
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -36,6 +37,7 @@ namespace loos {
   protected:
     ValueStack *stack;
     pAtom atom;
+    string my_name;
 
     int binComp(void) {
       Value v1 = stack->pop();
@@ -49,51 +51,71 @@ namespace loos {
     }
 
   public:
-    Action() : stack(0) { }
-    Action(ValueStack *stk) : stack(stk) { }
+    Action(const string s) : stack(0), atom(pAtom()), my_name(s) { }
 
     void setStack(ValueStack* ptr) { stack=ptr; }
     void setAtom(pAtom pa) { atom = pa; }
-    
+
+    virtual string name(void) const { return(my_name); }
 
     virtual void execute(void) = 0;
     virtual ~Action() { }
+
   };
 
 
   class pushString : public Action {
     Value val;
   public:
-    pushString(const string str) : val(str) { }
+    pushString(const string str) : Action("pushString"), val(str) { }
     void execute(void) { stack->push(val); }
+    string name(void) const {
+      stringstream s;
+      s << my_name << "(" << val << ")";
+      return(s.str());
+    }
+
   };
 
   class pushInt : public Action {
     Value val;
   public:
-    pushInt(const int i) : val(i) { }
+    pushInt(const int i) : Action("pushInt"), val(i) { }
     void execute(void) { stack->push(val); }
+    string name(void) const {
+      stringstream s;
+      s << my_name << "(" << val << ")";
+      return(s.str());
+    }
   };
 
   class pushFloat : public Action {
     Value val;
   public:
-    pushFloat(const float f) : val(f) { }
+    pushFloat(const float f) : Action("pushFloat"), val(f) { }
     void execute(void) { stack->push(val); }
+    string name(void) const {
+      stringstream s;
+      s << my_name << "(" << val << ")";
+      return(s.str());
+    }
   };
 
   class drop : public Action {
   public:
+    drop() : Action("drop") { }
     void execute(void) { stack->drop(); }
   };
 
   class dup : public Action {
   public:
+    dup() : Action("dup") { }
     void execute(void) { stack->dup(); }
   };
 
   class equals : public Action {
   public:
+    equals() : Action("==") { }
     void execute(void) {
       Value v(binComp() == 0);
       stack->push(v);
@@ -102,6 +124,7 @@ namespace loos {
 
   class lessThan : public Action {
   public:
+    lessThan() : Action("<") { }
     void execute(void) {
       Value v(binComp() < 0);
       stack->push(v);
@@ -110,6 +133,7 @@ namespace loos {
 
   class lessThanEquals : public Action {
   public:
+    lessThanEquals() : Action("<=") { }
     void execute(void) {
       Value v(binComp() <= 0);
       stack->push(v);
@@ -118,6 +142,7 @@ namespace loos {
 
   class greaterThan : public Action {
   public:
+    greaterThan() : Action(">") { }
     void execute(void) {
       Value v(binComp() > 0);
       stack->push(v);
@@ -126,6 +151,7 @@ namespace loos {
 
   class greaterThanEquals : public Action {
   public:
+    greaterThanEquals() : Action(">=") { }
     void execute(void) {
       Value v(binComp() >= 0);
       stack->push(v);
@@ -135,7 +161,7 @@ namespace loos {
   class matchRegex : public Action {
     boost::regex regexp;
   public:
-    matchRegex(const string s) : regexp(s, boost::regex::perl|boost::regex::icase) { }
+    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase) { }
     void execute(void) { 
       Value v = stack->pop();
       Value r(0);
@@ -148,6 +174,7 @@ namespace loos {
 
   class matchStringAsRegex : public Action {
   public:
+    matchStringAsRegex() : Action("matchStringAsRegex") { }
     void execute() {
       Value v = stack->pop();
       boost::regex re(v.getString(), boost::regex::perl|boost::regex::icase);
@@ -164,6 +191,7 @@ namespace loos {
 
   class pushAtomName : public Action {
   public:
+    pushAtomName() : Action("pushAtomName") { }
     void execute() {
       hasAtom();
       Value v(atom->name());
@@ -174,6 +202,7 @@ namespace loos {
 
   class pushAtomId : public Action {
   public:
+    pushAtomId() : Action("pushAtomId") { }
     void execute() {
       hasAtom();
       Value v(atom->id());
@@ -183,6 +212,7 @@ namespace loos {
 
   class pushAtomResname : public Action {
   public:
+    pushAtomResname() : Action("pushAtomResname") { }
     void execute() {
       hasAtom();
       Value v(atom->resname());
@@ -192,6 +222,7 @@ namespace loos {
 
   class pushAtomResid : public Action {
   public:
+    pushAtomResid() : Action("pushAtomResid") { }
     void execute() {
       hasAtom();
       Value v(atom->resid());
@@ -201,6 +232,7 @@ namespace loos {
 
   class pushAtomSegid : public Action {
   public:
+    pushAtomSegid() : Action("pushAtomSegid") { }
     void execute() {
       hasAtom();
       Value v(atom->segid());
@@ -210,6 +242,7 @@ namespace loos {
 
   class logicalAnd : public Action {
   public:
+    logicalAnd() : Action("&&") { }
     void execute() {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
@@ -225,6 +258,7 @@ namespace loos {
 
   class logicalOr : public Action {
   public:
+    logicalOr() : Action("||") { }
     void execute() {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
@@ -240,6 +274,7 @@ namespace loos {
 
   class logicalNot : public Action {
   public:
+    logicalNot() : Action("!") { }
     void execute() {
       Value v1 = stack->pop();
 
