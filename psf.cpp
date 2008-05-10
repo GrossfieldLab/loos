@@ -70,8 +70,38 @@ void PSF::read(istream& is) {
         throw(runtime_error("PSF failed reading blank after atom lines"));
 
     // next block of lines is the list of bonds
+    // Bond title line
+    if (!getline(is, input))
+        throw(runtime_error("PSF failed reading nbond line"));
+    int num_bonds;
+    if (!(stringstream(input) >> num_bonds))
+        throw(runtime_error("PSF has malformed nbond line"));
+
+    int bonds_found = 0;
+    getline(is, input);
+    while (input.size() > 0) { // end of the block is marked by a blank line
+        int ind1, ind2;
+        stringstream s(input);
+        while (s.good()) {
+            s >> ind1;
+            s >> ind2;
+            ind1--;  // our indices are 1 off from the numbering in the pdb/psf file
+            ind2--;
+            pAtom pa1 = getAtom(ind1);                
+            pAtom pa2 = getAtom(ind2);                
+            pa1->addBond(pa2);
+            pa2->addBond(pa1);
+            bonds_found++; 
+        }
+    getline(is, input);
+    }
+    // sanity check
+    if (bonds_found != num_bonds) 
+        throw(runtime_error("PSF number of bonds disagrees with number found"));
 
 }
+
+
 
 void PSF::parseAtomRecord(const string s) {
     gint index;
@@ -125,8 +155,6 @@ void PSF::parseAtomRecord(const string s) {
     pa->recordName(string(""));
     GCoord c= GCoord(); // check this syntax
     pa->coords(c);
-
-    cout << *pa << endl;
 
     append(pa);
 }
