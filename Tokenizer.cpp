@@ -43,7 +43,8 @@ namespace loos {
 	  state = 4;
 	  t = c;
 	} else if (c == '(' || c == ')') {
-	  token.setParens(string(c));
+	  t = c;
+	  token.setParens(t);
 	  _tokens.push_back(token);
 	}
 

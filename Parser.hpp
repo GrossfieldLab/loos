@@ -12,30 +12,18 @@
   Current grammar is (roughly):
 
 
-  <numeric> ::= [+-]\d+
-  <alphabetic> ::= '[^']+'
-  <operator> ::= [&|!<>=]+
+       <exp> ::= <sexp> | <unop> <sexp> | <sexp> <binop> <sexp>
+      <sexp> ::= <lexp> | '(' <lexp> ')'
+      <lexp> ::= <rexp> | <unop> <rexp> | <rexp> <binop> <rexp>
+      <rexp> ::= <lit> <relop> <lit> | <regexpr>
+   <regexpr> ::= <alphid> '=~' <alpha>
 
-  <stringid> ::= name | resname | segid
-  <numid> ::= id | resid
-
-  <slit> ::= <stringkey>|<alphabetic>
-  <number> ::= <numkey>|<numeric>
-
-  <relop> ::= <|>|<=|>=
-  <stringop> ::= <relop>|==  {regexp matching}
-  <numberop> ::= <relop>|==
-
-  <stringexpr> ::= <slit> <stringop> <slit>
-  <numexpr> ::= <number> <numberop> <number>
-
-  <binop> ::= && | ||
-  <unop> ::= !
-
-  <literal> ::= <number> | <slit>
-
-  <subexpr> ::= <numexpr> | <stringexpr> | <literal>
-  <expr> ::= <subexpr> <binop> <expr> | <unop> <expr> | (<expr>) | <subexpr>
+     <relop> ::= '<' | '>' | '<=' | '>=' | '=='
+     <binop> ::= '&&' | '||'
+      <unop> ::= '!'
+       <lit> ::= <numeric>|<alphabetic>
+   <numeric> ::= <number>|<numid>
+<alphabetic> ::= <alpha>|<alphid>
 
 */
 
@@ -48,6 +36,7 @@
 #include <vector>
 #include <deque>
 
+#include <boost/tuple/tuple.hpp>
 
 using namespace std;
 
@@ -57,27 +46,24 @@ using namespace std;
 namespace loos {
 
   class Parser {
+
+    typedef deque<Action*> Actions;
+    typedef boost::tuple<Actions, Tokenizer> Parsed;
+
     Kernel* kernel;
-    Tokenizer lex;
     
   private:
-    Action* numeric(void);
-    Action* alphabetic(void);
-    Action* stringId(void);
-    Action* numId(void);
-    Action* slit(void);
-    Action* number(void);
-    Action* relop(void);
-    Action* stringop(void);
-    Action* numop(void);
-    Action* binop(void);
-    Action* unop(void);
-    Action* literal(void);
+    int depth(const Parsed& p);
 
-    deque<Action*> stringexpr(void);
-    deque<Action*> numexpr(void);
-    deque<Action*> subexpr(void);
-    deque<Action*> expr(void);
+    Parsed alpha(Parsed);
+    Parsed alphid(Parsed);
+    Parsed number(Parsed);
+    Parsed numid(Parsed);
+    Parsed numeric(Parsed);
+    Parsed alphabetic(Parsed);
+    Parsed lit(Parsed);
+    Parsed regexpr(Parsed);
+
 
   public:
     Parser(Kernel* k) : kernel(k) { }

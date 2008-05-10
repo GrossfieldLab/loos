@@ -69,6 +69,8 @@ namespace loos {
 
   class Tokenizer {
     Tokens _tokens;
+    Tokens _undo;
+
     string text;
 
   public:
@@ -90,11 +92,23 @@ namespace loos {
 
       Token t = _tokens.front();
       _tokens.pop_front();
+      _undo.push_back(t);
       return(t);
     }
 
     void push(const Token& t) {
       _tokens.push_front(t);
+    }
+
+    void restore(void) {
+      Tokens::iterator i;
+      for (i = _undo.end(); i >= _undo.begin(); i--)
+	_tokens.push_front(*i);
+      _undo.clear();
+    }
+
+    void clearUndo(void) {
+      _undo.clear();
     }
 
     friend ostream& operator<<(ostream& os, const Tokenizer& t) {
