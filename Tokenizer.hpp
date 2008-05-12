@@ -30,7 +30,7 @@ namespace loos {
 
 
   struct Token {
-    enum TokenType { NONE, ID, NUMERIC, STRING, OPERATOR, PARENS };
+    enum TokenType { NONE, ID, NUMERIC, STRING, OPERATOR, LPAR, RPAR };
 
     TokenType type;
     string datum;
@@ -42,20 +42,23 @@ namespace loos {
     void setNumeric(const string s) { datum = s; type = NUMERIC; }
     void setString(const string s) { datum = s; type = STRING; }
     void setOperator(const string s) { datum = s; type = OPERATOR; }
-    void setParens(const string s) { datum = s; type = PARENS; }
+    void setLpar(const string s) { datum = s; type = LPAR; }
+    void setRpar(const string s) { datum = s; type = RPAR; }
 
     friend ostream& operator<<(ostream& os, const Token& t) {
       os << "<TOKEN TYPE='";
       switch(t.type) {
+      case NONE: os << "NONE"; break;
       case ID: os << "ID"; break;
       case NUMERIC: os << "NUMERIC" ; break;
       case STRING: os << "STRING" ; break;
       case OPERATOR: os << "OPERATOR" ; break;
-      case PARENS: os << "PARENS"; break;
+      case LPAR: os << "LPAR"; break;
+      case RPAR: os << "RPAR"; break;
       default: throw(logic_error("Should never be here"));
       }
 
-      os << "'>" << t.datum << "</TOKEN>";
+      os << "' DATA='" << t.datum << "' \\>";
 
       return(os);
     }
@@ -63,67 +66,33 @@ namespace loos {
 
   };
 
-
-  typedef deque<Token> Tokens;
-
-
-  class Tokenizer {
-    Tokens _tokens;
-    Tokens _undo;
-
-    string text;
-
-  public:
-    Tokenizer(const string s) : text(s) { tokenize(); }
-    Tokenizer() { }
-
-    void tokenize(void);
-    void tokenize(const string s) { _tokens.clear(); text = s; tokenize(); }
-
-    Tokens& tokens(void) { return(_tokens); }
-
-
-    // Note: we're popping/pushing to the front in this case...
+  struct Tokens {
+    Tokens() { }
+    Tokens(const Tokens& t) : list(t.list) { }
+    const Tokens& operator=(const Tokens& t) { list = t.list; return(*this); }
+    
+    deque<Token>& tokens(void) { return(list); }
     Token pop(void) {
-      if (_tokens.empty()) {
-	Token t;
-	return(t);
-      }
-
-      Token t = _tokens.front();
-      _tokens.pop_front();
-      _undo.push_back(t);
+      Token t = list.front();
+      list.pop_front();
       return(t);
     }
 
-    void push(const Token& t) {
-      _tokens.push_front(t);
-    }
+    void push(const Token& t) { list.push_back(t); }
 
-    void restore(void) {
-      Tokens::iterator i;
-      for (i = _undo.end(); i >= _undo.begin(); i--)
-	_tokens.push_front(*i);
-      _undo.clear();
-    }
-
-    void clearUndo(void) {
-      _undo.clear();
-    }
-
-    friend ostream& operator<<(ostream& os, const Tokenizer& t) {
-      Tokens::const_iterator i;
-
-      for (i=t._tokens.begin(); i != t._tokens.end(); i++) 
+    friend ostream& operator<<(ostream& os, const Tokens& t) {
+      deque<Token>::const_iterator i;
+      for (i = t.list.begin(); i != t.list.end(); i++)
 	os << *i << endl;
-
       return(os);
     }
+
+    deque<Token> list;
   };
 
+  Tokens tokenize(const string s);
 
 };
-
 
 
 #endif

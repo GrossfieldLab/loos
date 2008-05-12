@@ -18,12 +18,14 @@
 
 namespace loos {
 
-  void Tokenizer::tokenize(void) {
+
+  Tokens tokenize(const string text) {
     int i = 0;
     int state = 0;
     char c;
     string t;
     Token token;
+    Tokens toks;
 
     while (i < text.size()) {
       c = text[i];
@@ -39,13 +41,17 @@ namespace loos {
 	} else if (c == '\'' || c == '\"') {
 	  state = 3;
 	  t = string("");
-	} else if (c == '&' || c == '|' || c == '!' || c == '=' || c == '<' || c == '>') {
+	} else if (c == '&' || c == '|' || c == '!' || c == '=' || c == '<' || c == '>' || c == '~') {
 	  state = 4;
 	  t = c;
-	} else if (c == '(' || c == ')') {
+	} else if (c == '(') {
 	  t = c;
-	  token.setParens(t);
-	  _tokens.push_back(token);
+	  token.setLpar(t);
+	  toks.push(token);
+	} else if (c == ')') {
+	  t = c;
+	  token.setRpar(t);
+	  toks.push(token);
 	}
 
       } else if (state == 1) {
@@ -53,7 +59,7 @@ namespace loos {
 	if (!isalpha(c)) {
 	  state = 0;
 	  token.setId(t);
-	  _tokens.push_back(token);
+	  toks.push(token);
 	  --i;
 	} else 
 	  t += c;
@@ -63,7 +69,7 @@ namespace loos {
 	if (!isdigit(c)) {
 	  state = 0;
 	  token.setNumeric(t);
-	  _tokens.push_back(token);
+	  toks.push(token);
 	  --i;
 	} else 
 	  t += c;
@@ -76,13 +82,13 @@ namespace loos {
 	} else if (c == '\'' || c == '\"') {
 	  state = 0;
 	  token.setString(t);
-	  _tokens.push_back(token);
+	  toks.push(token);
 	} else
 	  t += c;
 
       } else if (state == 4) {
 
-	if (!(c == '&' || c == '|' || c == '!' || c == '=' || c == '<' || c == '>')) {
+	if (!(c == '&' || c == '|' || c == '!' || c == '=' || c == '<' || c == '>' || c == '~')) {
 	  state = 0;
 	  
 	  // Validate operator...
@@ -93,11 +99,13 @@ namespace loos {
 		t == "<" ||
 		t == ">" ||
 		t == ">=" ||
-		t == "<="))
+		t == "<=" ||
+		t == "!=" || 
+		t == "=~"))
 	    throw(runtime_error("Unidentifed operator: " + t));
 
 	  token.setOperator(t);
-	  _tokens.push_back(token);
+	  toks.push(token);
 	  --i;
 	} else
 	  t += c;
@@ -110,13 +118,15 @@ namespace loos {
 
     switch(state) {
     case 0: break;
-    case 1: token.setId(t); _tokens.push_back(token); break;
-    case 2: token.setNumeric(t); _tokens.push_back(token); break;
-    case 3: token.setString(t); _tokens.push_back(token); break;
-    case 4: token.setOperator(t); _tokens.push_back(token); break;
+    case 1: token.setId(t); toks.push(token); break;
+    case 2: token.setNumeric(t); toks.push(token); break;
+    case 3: token.setString(t); toks.push(token); break;
+    case 4: token.setOperator(t); toks.push(token); break;
     default:
       throw(logic_error("Invalid state in tokenization"));
     }
+
+    return(toks);
 
   }
 
