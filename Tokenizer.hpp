@@ -69,9 +69,14 @@ namespace loos {
   struct Tokens {
     Tokens() { }
     Tokens(const Tokens& t) : list(t.list) { }
+    Tokens(const Token& t)  { list.push_back(t); }
     const Tokens& operator=(const Tokens& t) { list = t.list; return(*this); }
     
     deque<Token>& tokens(void) { return(list); }
+
+    bool empty(void) const { return(list.empty()); }
+    int size(void) const { return(list.size()); }
+
     Token pop(void) {
       Token t = list.front();
       list.pop_front();
