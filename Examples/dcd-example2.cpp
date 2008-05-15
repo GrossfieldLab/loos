@@ -1,6 +1,6 @@
 /*
-  dcd-example3.cpp
-  (c) 2008 Tod D. Romo and Alan Grossfield
+  dcd-example2.cpp
+  (c) 2008 Tod D. Romo
 
   Grossfield Lab
   Department of Biochemistry and Biophysics
@@ -9,9 +9,6 @@
   An example of how to use the C++ DCD reader...  Doesn't really do anything
   useful...
 
-  Same as dcd-example2, except this time we read a psf to define the system
-  instead of a pdb
-
 */
 
 #include <ios>
@@ -19,7 +16,7 @@
 #include <iomanip>
 
 #include <loos.hpp>
-#include <psf.hpp>
+#include <pdb.hpp>
 #include <dcd.hpp>
 
 
@@ -34,12 +31,12 @@ struct NotSolvSelector : public AtomSelector {
 
 int main(int argc, char *argv[]) {
 
-  // First, read in the PSF...
-  PSF psf(argv[1]);
+  // First, read in the PDB...
+  PDB pdb(argv[1]);
 
   // Extract the non-solvent atoms...
   NotSolvSelector ns;
-  AtomicGroup nonsolv = psf.select(ns);
+  AtomicGroup nonsolv = pdb.select(ns);
   cout << "Found " << nonsolv.size() << " non-solvent atoms.\n";
 
   DCD dcd(argv[2]);

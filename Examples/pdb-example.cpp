@@ -1,6 +1,6 @@
 /*
-  psf-example.cpp
-  (c) 2008 Alan Grossfield
+  pdb-example.cpp
+  (c) 2008 Tod D. Romo
 
   Grossfield Lab
   Department of Biochemistry and Biophysics
@@ -12,11 +12,11 @@
 
 
 
-#include <psf.hpp>
+#include <pdb.hpp>
 
 
 struct CASelector : public AtomSelector {
-  bool operator()(const pAtom& atom) {
+  bool operator()(const pAtom& atom)  {
     return(atom->name() == "CA");
   }
 };
@@ -32,7 +32,7 @@ struct SolvSelector : public AtomSelector {
 
 int main(int argc, char *argv[]) {
   
-  PSF p(argv[1]);
+  PDB p(argv[1]);
 
   cout << "Read in " << p.size() << " atoms from " << argv[1] << endl;
 
@@ -63,6 +63,17 @@ int main(int argc, char *argv[]) {
   cout << "The first 5 CAs are...\n";
   for (i=0; i<5; i++)
     cout << *(iter()) << endl;
+
+  // Note the implicit conversion back to a PDB...
+  PDB terminus = cas.subset(-1, 5);
+  terminus.autoTerminate(false);
+  cout << "\nThe last 5 CA's are...\n";
+  cout << terminus << endl;
+
+
+  PDB split_ends = cas.subset(0, 5) + cas.subset(-1, 5);
+  cout << "\nThe ends combined now...\n";
+  cout << split_ends << endl;
 
   AtomicGroup residue = p.getResidue(cas[0]);
   residue.sort();

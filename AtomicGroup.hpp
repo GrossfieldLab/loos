@@ -45,7 +45,7 @@ using namespace tr1;
 // Subclass this for programmatic selection of atoms...
 
 struct AtomSelector {
-  virtual bool operator()(const pAtom& atom) const = 0;
+  virtual bool operator()(const pAtom& atom) =0;
   virtual ~AtomSelector() { }
 };
 
@@ -101,7 +101,7 @@ public:
   AtomicGroup intersect(const AtomicGroup& grp);
 
   // Return a group consisting of atoms for which sel() returns true...
-  AtomicGroup select(const AtomSelector& sel);
+  AtomicGroup select(AtomSelector& sel);
 
   // Find a contained atom by its atomid
   pAtom findById(const int id);
