@@ -42,7 +42,7 @@ namespace loos {
     int binComp(void) {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
-      return(compare(v1, v2));
+      return(compare(v2, v1));
     }
 
     void hasAtom(void) {
@@ -250,8 +250,8 @@ namespace loos {
   public:
     logicalAnd() : Action("&&") { }
     void execute() {
-      Value v1 = stack->pop();
       Value v2 = stack->pop();
+      Value v1 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
 	throw(runtime_error("Invalid operands to logicalAnd"));

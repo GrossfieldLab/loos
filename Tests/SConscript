@@ -11,7 +11,7 @@
 Import('env')
 cpppath = ['.', '..']
 
-libs = ['loos']
+libs = ['loos', 'boost_regex']
 libpath = ['..']
 
 
@@ -19,3 +19,4 @@ libpath = ['..']
 
 atomic_grp_tst = env.Program('atomic-group-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 pdb_tst = env.Program('pdb-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+parser_tst = env.Program('parser-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)

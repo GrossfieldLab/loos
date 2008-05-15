@@ -12,7 +12,7 @@
 Import('env')
 cpppath = ['.']
 
-library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp')
+library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp Parser.cpp Tokenizer.cpp')
 loos = env.Library('loos', library_files, CPPPATH=cpppath)
 
 

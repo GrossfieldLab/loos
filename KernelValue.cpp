@@ -23,7 +23,14 @@ namespace loos {
 
     switch(x.type) {
     case Value::STRING:
-      return(*(x.str) == *(y.str));
+      e = (*(x.str) == *(y.str));
+      if (!e) {
+	if (*(x.str) < *(y.str))
+	  return(-1);
+	else
+	  return(1);
+      }
+      return(0);
 
     case Value::FLOAT:
       d = x.flt - y.flt;
@@ -36,6 +43,11 @@ namespace loos {
     case Value::INT:
       e = x.itg - y.itg;
       return(e);
+
+    case Value::NONE:
+    default:
+      throw(runtime_error("Invalid comparison"));
+
     }
 
   }
