@@ -88,6 +88,9 @@ namespace loos {
     pares lexp(const pares);
     pares sexp(const pares);
     pares expr(const pares);
+
+    bool translate(const ptoks, Kernel&);
+    bool parse(const string, Kernel&);
   };
 
 

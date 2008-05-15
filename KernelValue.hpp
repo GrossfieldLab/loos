@@ -95,7 +95,7 @@ namespace loos {
     friend ostream& operator<<(ostream& os, const Value& v) {
       switch(v.type) {
       case STRING:
-	os << "<VALUE TYPE='STRING'>" << v.str << "</VALUE>";
+	os << "<VALUE TYPE='STRING'>" << *(v.str) << "</VALUE>";
 	break;
       case FLOAT:
 	os << "<VALUE TYPE='FLOAT'>" << v.flt << "</VALUE>";

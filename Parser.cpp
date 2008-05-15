@@ -8,6 +8,11 @@
   University of Rochester Medical School
 
   Parser for atom selections...
+
+  This code is very ugly (major uglage, as they say).  Don't stare at
+  it for too long.  It's not really worth trying to understand as it
+  will likely be superceded soon by something more manageable (and
+  correct) a la bison/flex...
 */
 
 #include <sstream>
@@ -19,6 +24,8 @@ using namespace std;
 
 #define GPTOKS(x)    (boost::get<0>((x)))
 #define GLTOKS(x)    (boost::get<1>((x)))
+
+
 
 namespace loos {
 
@@ -483,10 +490,68 @@ namespace loos {
     }
 
 
+    // Translate parse results into kernel actions...
+    bool translate(const ptoks parsed, Kernel& kern) {
+      ptoks::const_iterator i;
 
-    
+      for (i = parsed.begin(); i != parsed.end(); i++) {
+	istringstream is(i->val);
+
+	switch(i->type) {
+	case ptok::none: return(false);
+
+	case ptok::num:
+	  int d;
+	  if (!(is >> d)) {
+	    cerr << "Parse errror: cannot convert " << i->val << " to an integer.\n";
+	    return(false);
+	  }
+	  kern.push(new pushInt(d));
+	  break;
+
+	case ptok::alpha:   kern.push(new pushString(i->val)); break;
+	case ptok::name:    kern.push(new pushAtomName); break;
+	case ptok::id:      kern.push(new pushAtomId); break;
+	case ptok::resid:   kern.push(new pushAtomResid); break;
+	case ptok::resname: kern.push(new pushAtomResname); break;
+	case ptok::segid:   kern.push(new pushAtomSegid); break;
+	case ptok::lt:      kern.push(new lessThan); break;
+	case ptok::lte:     kern.push(new lessThanEquals); break;
+	case ptok::gte:     kern.push(new greaterThanEquals); break;
+	case ptok::gt:      kern.push(new greaterThan); break;
+	case ptok::eq:      kern.push(new equals); break;
+	case ptok::neq:     kern.push(new equals); kern.push(new logicalNot); break;
+	case ptok::lnot:    kern.push(new logicalNot); break;
+	case ptok::land:    kern.push(new logicalAnd); break;
+	case ptok::lor:     kern.push(new logicalOr); break;
+	case ptok::regex:   kern.push(new matchRegex(i->val)); break;
+	default:
+	  cerr << "Unidentified parse token type...";
+	  return(false);
+	}
+      }
+      return(true);
+    }
+
+
+    bool parse(const string s, Kernel& kern) {
+      Tokens toks = tokenize(s);
+      ptoks p;
+      pares input(p, toks);
+      pares results = expr(input);
+
+      ptoks q = boost::get<0>(results);
+      Tokens r = boost::get<1>(results);
+
+      if (! r.empty() || q.empty()) {
+	cerr << "Parse error.\n";
+	return(false);
+      }
+      
+      return(translate(q, kern));
+    }
+
   };
-
 };
 
 

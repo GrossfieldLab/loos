@@ -161,7 +161,7 @@ namespace loos {
   class matchRegex : public Action {
     boost::regex regexp;
   public:
-    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase) { }
+    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), what(s) { }
     void execute(void) { 
       Value v = stack->pop();
       Value r(0);
@@ -170,6 +170,12 @@ namespace loos {
 
       stack->push(r);
     }
+    string name(void) const {
+      return(my_name + "(" + what + ")");
+    }
+
+  private:
+    string what;
   };
 
   class matchStringAsRegex : public Action {
