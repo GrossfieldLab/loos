@@ -37,7 +37,7 @@ namespace loos {
     
     ValueType type;
     union {
-      char *str;
+      string *str;
       float flt;
       int itg;
     };
@@ -45,7 +45,7 @@ namespace loos {
     void copy(const Value& v) {
       switch(v.type) {
       case STRING:
-	str = strdup(v.str); break;
+	str = new string(*(v.str)); break;
       case INT:
 	itg = v.itg; break;
       case FLOAT:
@@ -59,7 +59,7 @@ namespace loos {
 
 
     Value() : type(NONE) { }
-    ~Value() { if (type == STRING) free(str); }
+    ~Value() { if (type == STRING) delete str; }
 
     Value(const Value& v) { copy(v); }
 
@@ -70,14 +70,14 @@ namespace loos {
     Value(const int i) { setInt(i); }
 	
 
-    void setString(const string s) { str = strdup(s.c_str()); type = STRING; }
+    void setString(const string s) { str = new string(s); type = STRING; }
     void setFloat(const float f) { flt = f; type = FLOAT; }
     void setInt(const int i) { itg = i; type = INT; }
 
     string getString(void) const {
       if (type != STRING)
 	throw(runtime_error("Expected a string value..."));
-      return(string(str));
+      return(*str);
     }
 
     float getFloat(void) const {

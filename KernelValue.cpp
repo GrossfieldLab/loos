@@ -23,7 +23,7 @@ namespace loos {
 
     switch(x.type) {
     case Value::STRING:
-      return(strcmp(x.str, y.str));
+      return(*(x.str) == *(y.str));
 
     case Value::FLOAT:
       d = x.flt - y.flt;

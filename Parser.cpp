@@ -353,8 +353,15 @@ namespace loos {
 	ptoks notoks;
 	pares p2 = alpha(pares(notoks, ltoks));
 	if (ptokn(p2) > 0) {
-	  pares q = mkpares(mktok(ptok::regex), ltoks);
-	  return(threeway(p1, q, p2));
+	  ptoks pts = GPTOKS(p2);
+	  Tokens lts = GLTOKS(p2);
+	  ptok rt;
+	  rt.type = ptok::regex;
+	  rt.val = pts[0].val;
+	  ptoks pt1s = GPTOKS(p1);
+	  pt1s.push_back(rt);
+	  pares result(pt1s, lts);
+	  return(result);
 	}
       }
       return(null);
