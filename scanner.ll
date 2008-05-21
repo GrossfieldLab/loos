@@ -3,12 +3,11 @@
 
 #define yyterminate()     return token::END
 
-#include "grammar.tab.hh"
+#include "grammar.hh"
 #include "LoosLexer.hpp"
 
 typedef loos::parser::token token;
 typedef loos::parser::token_type token_type;
-
 
 #define YY_NO_UNISTD_H
 
@@ -67,3 +66,5 @@ int yyFlexLexer::yylex() {
     std::cerr << "Should never be here!\n";
     exit(-1);
 }
+
+int LoosFlexLexer::yywrap() { return(1); }

@@ -8,7 +8,7 @@
 
 #include "Kernel.hpp"
 
-#include "grammar.tab.hh"
+#include "grammar.hh"
 #include "LoosLexer.hpp"
 
 using namespace std;

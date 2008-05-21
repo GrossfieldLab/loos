@@ -11,7 +11,7 @@
 
 
 
-#include "grammar.tab.hh"
+#include "grammar.hh"
 
 using namespace std;
 
