@@ -67,4 +67,6 @@ int yyFlexLexer::yylex() {
     exit(-1);
 }
 
+#if !defined(yywrap)
 int LoosFlexLexer::yywrap() { return(1); }
+#endif
