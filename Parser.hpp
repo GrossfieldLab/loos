@@ -33,70 +33,37 @@
 #define PARSER_HPP
 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <deque>
-
-#include <boost/tuple/tuple.hpp>
+#include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
-#include "Tokenizer.hpp"
-#include "Kernel.hpp"
-
-namespace loos {
-
-  static const char* ptok_type_bindings[18] = {"none", "num", "alpha", "name", "id", "resid", "resname", "segid", "lt", "lte", "gte", "gt", "eq", "neq", "lnot", "land", "lor", "regex"};
-
-  struct ptok {
-    enum ptok_type { none = 0, num, alpha, name, id, resid, resname, segid, lt, lte, gte, gt, eq, neq, lnot, land, lor, regex };
-
-    ptok() : type(none), val("") { }
-    ptok(const ptok& p) : type(p.type), val(p.val) { }
-    const ptok& operator=(const ptok& p) { type=p.type; val=p.val; return(*this); }
-
-    friend ostream& operator<<(ostream& os, const ptok& p) {
-      os << "ptok(" << p.type << ":" << ptok_type_bindings[p.type] << ") = '" << p.val << "'";
-      return(os);
-    }
-
-    ptok_type type;
-    string val;
-  };
-
-  typedef vector<ptok> ptoks;
-  typedef boost::tuple<ptoks, Tokens> pares;
-
-  namespace parser {
-    void prptoks(const ptoks&);
-
-    pares alpha(const pares);
-    pares number(const pares);
-    pares numid(const pares);
-    pares alphid(const pares);
-
-    pares numeric(const pares);
-    pares alphabetic(const pares);
-    pares literal(const pares);
-
-    pares unop(const pares);
-    pares binop(const pares);
-    pares relop(const pares);
-    pares regexp(const pares);
-
-    pares rexp(const pares);
-    pares lexp(const pares);
-    pares sexp(const pares);
-    pares expr(const pares);
-
-    bool translate(const ptoks, Kernel&);
-    bool parse(const string, Kernel&);
-  };
+#include <Kernel.hpp>
+#include <ParserDriver.hpp>
 
 
+
+class Parser {
+  loos::Kernel krnel;
+  ParserDriver driver;
+
+public:
+  Parser(const string& s) : driver(s, krnel) { driver.parse(); }
+
+  bool operator()(const pAtom& pa) {
+    krnel.execute(pa);
+    if (krnel.stack().size() != 1)
+      throw(runtime_error("Execution error - unexpected values on stack"));
+
+    loos::Value results = krnel.stack().pop();
+    if (results.type != loos::Value::INT)
+      throw(runtime_error("Execution error - unexpected value on top of stack"));
+
+    return(results.itg);
+  }
+
+  Kernel& kernel(void) { return(krnel); }
 };
-  
-  
 
 
 
