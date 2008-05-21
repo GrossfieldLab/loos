@@ -24,17 +24,19 @@ struct ParserDriver {
   vector<string> cmds;
 
 
-  ParserDriver(Kernel& k) : pparser(0), lexer(new LoosLexer), kern(k), isp(0) { }
+  ParserDriver(Kernel& k) : pparser(0), lexer(new LoosLexer), kern(k), isp(0) { parse(); }
 
   ParserDriver(const string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
     isp = new istringstream(s);
     lexer = new LoosLexer(isp);
+    parse();
   }
 
   ~ParserDriver() { delete pparser; delete lexer; delete isp; }
 
   void parse(void) {
-    pparser = new loos::parser(*this);
+    if (!pparser)
+      pparser = new loos::parser(*this);
     if (pparser->parse())
       throw(runtime_error("Parse error"));
   }

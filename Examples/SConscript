@@ -24,3 +24,4 @@ dcd_example2 = env.Program('dcd-example2.cpp', LIBS=libs, LIBPATH=libpath, CPPPA
 dcd_example3 = env.Program('dcd-example3.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 center_pdb = env.Program('center-pdb.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 psf_example = env.Program('psf-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+pdb_parsed = env.Program('pdb-parsed.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)

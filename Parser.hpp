@@ -38,32 +38,37 @@
 
 using namespace std;
 
+#include <AtomicGroup.hpp>
 #include <Kernel.hpp>
 #include <ParserDriver.hpp>
 
 
 
-class Parser {
-  loos::Kernel krnel;
+class Parser : public AtomSelector {
+  loos::Kernel krnl;
   ParserDriver driver;
 
 public:
-  Parser(const string& s) : driver(s, krnel) { driver.parse(); }
+  Parser(const string& s) : driver(s, krnl) { }
+
 
   bool operator()(const pAtom& pa) {
-    krnel.execute(pa);
-    if (krnel.stack().size() != 1)
+    krnl.execute(pa);
+    if (krnl.stack().size() != 1) {
       throw(runtime_error("Execution error - unexpected values on stack"));
+    }
 
-    loos::Value results = krnel.stack().pop();
+    loos::Value results = krnl.stack().pop();
     if (results.type != loos::Value::INT)
       throw(runtime_error("Execution error - unexpected value on top of stack"));
 
     return(results.itg);
   }
 
-  Kernel& kernel(void) { return(krnel); }
+
+  Kernel& kernel(void) { return(krnl); }
 };
+
 
 
 
