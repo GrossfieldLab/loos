@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = LOOS
-PROJECT_NUMBER         = 
+PROJECT_NUMBER         = v0.1
 OUTPUT_DIRECTORY       = 
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -24,8 +24,8 @@ ABBREVIATE_BRIEF       = "The $name class" \
                          the
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
-FULL_PATH_NAMES        = NO
-STRIP_FROM_PATH        = /home/tromo/Work/software/LOOS/trunk/
+FULL_PATH_NAMES        = YES
+STRIP_FROM_PATH        = 
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
@@ -49,18 +49,18 @@ TYPEDEF_HIDES_STRUCT   = NO
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = YES
 EXTRACT_LOCAL_METHODS  = NO
 EXTRACT_ANON_NSPACES   = NO
-HIDE_UNDOC_MEMBERS     = NO
-HIDE_UNDOC_CLASSES     = NO
+HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_CLASSES     = YES
 HIDE_FRIEND_COMPOUNDS  = NO
 HIDE_IN_BODY_DOCS      = NO
 INTERNAL_DOCS          = NO
-CASE_SENSE_NAMES       = YES
+CASE_SENSE_NAMES       = NO
 HIDE_SCOPE_NAMES       = NO
 SHOW_INCLUDE_FILES     = YES
 INLINE_INFO            = YES
@@ -90,7 +90,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/tromo/Work/software/LOOS/trunk
+INPUT                  = 
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.cc \
@@ -122,35 +122,15 @@ FILE_PATTERNS          = *.c \
                          *.f90 \
                          *.f \
                          *.vhd \
-                         *.vhdl \
-                         *.C \
-                         *.CC \
-                         *.C++ \
-                         *.II \
-                         *.I++ \
-                         *.H \
-                         *.HH \
-                         *.H++ \
-                         *.CS \
-                         *.PHP \
-                         *.PHP3 \
-                         *.M \
-                         *.MM \
-                         *.PY \
-                         *.F90 \
-                         *.F \
-                         *.VHD \
-                         *.VHDL
+                         *.vhdl
 RECURSIVE              = NO
-EXCLUDE                = lex.yy.cc \
-                         location.hh \
-                         grammar.cc \
-                         grammar.hh \
-                         stack.hh \
-                         position.hh \
-                         scanner.cc
+EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
-EXCLUDE_PATTERNS       = foo*
+EXCLUDE_PATTERNS       = *.cc \
+                         *.hh \
+                         foo* \
+                         Tests* \
+                         Examples*
 EXCLUDE_SYMBOLS        = *_HPP
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
@@ -173,7 +153,7 @@ VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
-ALPHABETICAL_INDEX     = YES
+ALPHABETICAL_INDEX     = NO
 COLS_IN_ALPHA_INDEX    = 5
 IGNORE_PREFIX          = 
 #---------------------------------------------------------------------------
@@ -198,7 +178,7 @@ BINARY_TOC             = NO
 TOC_EXPAND             = YES
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
-GENERATE_TREEVIEW      = YES
+GENERATE_TREEVIEW      = ALL
 TREEVIEW_WIDTH         = 250
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
@@ -273,7 +253,7 @@ PERL_PATH              = /usr/bin/perl
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool   
 #---------------------------------------------------------------------------
-CLASS_DIAGRAMS         = YES
+CLASS_DIAGRAMS         = NO
 MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = YES
