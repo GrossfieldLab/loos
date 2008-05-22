@@ -7,13 +7,18 @@
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
 
+
+  Value class for the LOOS Kernel (virtual machine) for handling
+  atom-selections...  These are the "values" that are on the data
+  stack for the Kernel...
+
 */
 
 
 #include "KernelValue.hpp"
 
 namespace loos {
-
+  
   int compare(const Value& x, const Value& y) {
     float d;
     int e;

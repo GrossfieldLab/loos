@@ -7,6 +7,9 @@
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
 
+  Class for handling a stack of Kernel Values for the Kernel VM...
+  Think FORTH...
+
 */
 
 
@@ -47,17 +50,20 @@ namespace loos {
       return(val); 
     }
 
+    // Duplicate the top entry...
     void dup(void) {
       notEmpty();
       Value val = values.back();
       push(val);
     }
 
+    // Just drop the top entry, i.e. (void)pop()
     void drop(void) {
       notEmpty();
       values.pop_back();
     }
 
+    // Peek at the top value without popping it...
     Value peek(int i) {
       if (i < 0)
 	i += values.size();

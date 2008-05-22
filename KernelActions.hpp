@@ -7,6 +7,9 @@
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
 
+  Classes for storing/compiling commands for the Kernel VM...
+  This is an example of the Command design pattern...
+
 */
 
 
@@ -33,18 +36,33 @@
 using namespace std;
 
 namespace loos {
+
+
+  // Base class for all commands...
+  // All subclasses must implement the execute() method, which will
+  // operate on the data stack pointer.
+  //
+  // Subclasses may also override the name() method if they want to
+  // augment the command-name string (i.e. to show additional internal
+  // data)
+
+  
   class Action {
   protected:
-    ValueStack *stack;
-    pAtom atom;
-    string my_name;
+    ValueStack *stack;    // Pointer to the data stack
+    pAtom atom;           // Pointer to the atom we'll be working on...
+    string my_name;       // Record of command-name (for printing)
 
+    // Some utility functions...
+
+    // Compare the top two items on the stack...
     int binComp(void) {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
       return(compare(v2, v1));
     }
 
+    // Check to make sure an atom has been set...
     void hasAtom(void) {
       if (atom == 0)
 	throw(runtime_error("No atom set"));
@@ -58,12 +76,14 @@ namespace loos {
 
     virtual string name(void) const { return(my_name); }
 
-    virtual void execute(void) = 0;
+    virtual void execute(void) =0;
     virtual ~Action() { }
 
   };
 
 
+
+  // Push a string onto the data stack
   class pushString : public Action {
     Value val;
   public:
@@ -77,6 +97,7 @@ namespace loos {
 
   };
 
+  // Push an integer onto the data stack
   class pushInt : public Action {
     Value val;
   public:
@@ -89,6 +110,7 @@ namespace loos {
     }
   };
 
+  // Push a float onto the data stack
   class pushFloat : public Action {
     Value val;
   public:
@@ -101,6 +123,8 @@ namespace loos {
     }
   };
 
+
+  // Basic data stack manipulation...
   class drop : public Action {
   public:
     drop() : Action("drop") { }
@@ -113,6 +137,8 @@ namespace loos {
     void execute(void) { stack->dup(); }
   };
 
+
+  // Test for equality: ARG1 ARG ==
   class equals : public Action {
   public:
     equals() : Action("==") { }
@@ -122,6 +148,7 @@ namespace loos {
     }
   };
 
+  // Relation operators...:  ARG1 ARG2 <
   class lessThan : public Action {
   public:
     lessThan() : Action("<") { }
@@ -131,6 +158,7 @@ namespace loos {
     }
   };
 
+  // ARG1 ARG2 <=
   class lessThanEquals : public Action {
   public:
     lessThanEquals() : Action("<=") { }
@@ -140,6 +168,7 @@ namespace loos {
     }
   };
 
+  // ARG1 ARG2 >
   class greaterThan : public Action {
   public:
     greaterThan() : Action(">") { }
@@ -149,6 +178,7 @@ namespace loos {
     }
   };
 
+  // ARG1 ARG2 >=
   class greaterThanEquals : public Action {
   public:
     greaterThanEquals() : Action(">=") { }
@@ -157,6 +187,11 @@ namespace loos {
       stack->push(v);
     }
   };
+
+  // Compiles the passed string into a regex pattern at instantiation,
+  // then at execution matches the top stack entry against the
+  // pattern...
+  // ARG1 regexp(S)
 
   class matchRegex : public Action {
     boost::regex regexp;
@@ -178,6 +213,9 @@ namespace loos {
     string what;
   };
 
+
+  // Similar to above, but takes the regex from the data stack...
+  // ARG1 ARG2 -> ARG1 regexp[ARG2]
   class matchStringAsRegex : public Action {
   public:
     matchStringAsRegex() : Action("matchStringAsRegex") { }
@@ -195,6 +233,7 @@ namespace loos {
   };
 
 
+  // Push atom properties onto the data stack...
   class pushAtomName : public Action {
   public:
     pushAtomName() : Action("pushAtomName") { }
@@ -246,6 +285,9 @@ namespace loos {
     }
   };
 
+
+  // Logical operations...  Assumes stack args are ints...
+  // ARG1 ARG2 &&
   class logicalAnd : public Action {
   public:
     logicalAnd() : Action("&&") { }
@@ -261,7 +303,7 @@ namespace loos {
     }
   };
 
-
+  // ARG1 ARG2 ||
   class logicalOr : public Action {
   public:
     logicalOr() : Action("||") { }
@@ -278,6 +320,7 @@ namespace loos {
   };
 
 
+  // ARG1 !
   class logicalNot : public Action {
   public:
     logicalNot() : Action("!") { }
