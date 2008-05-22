@@ -31,7 +31,7 @@ using namespace std;
 
 
 
-
+//! Extension of the Flex yyFlexLexer class.
 class LoosLexer : public LoosFlexLexer {
 public:
   LoosLexer() { }

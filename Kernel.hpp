@@ -28,20 +28,22 @@ using namespace std;
 
 namespace loos {
 
+  //!The Kernel (virtual machine) for compiling and executing user-defined atom selections
+
   class Kernel {
-    vector<Action*> actions;    // Commands
-    ValueStack val_stack;       // The data stack...
+    vector<Action*> actions;    //! Commands
+    ValueStack val_stack;       //! The data stack...
 
   public:
     
-    // Destroy all of the stored commands...
+    //! Destroy all of the stored commands...
     ~Kernel() {
       vector<Action*>::iterator i;
       for (i = actions.begin(); i != actions.end(); i++)
 	delete (*i);
     }
 
-    // Add a command, setting the data-stack pointer...
+    //! Add a command, setting the data-stack pointer...
     void push(Action *act) {
       act->setStack(&val_stack);
       actions.push_back(act); 
@@ -49,8 +51,8 @@ namespace loos {
 
     void pop(void) { actions.pop_back(); }
 
-    // Execute the stored commands for a specific atom.
-    // This does not clear the command stack/list
+    //! Execute the stored commands for a specific atom.
+    //! This does not clear the command stack/list
     void execute(pAtom pa = pAtom()) {
 
       vector<Action*>::iterator i;

@@ -24,7 +24,24 @@
 #include <utils.hpp>
 #include <dcd_utils.hpp>
 
+//! Map DCD coordinates onto a grid given a window and a range.
+/*!
+  Returns a raw double array representing a 3D grid of densities
+  averaging over the specified window.  Each coordinate in a DCD frame
+  is considered a point of unit mass, for purposes of computing
+  densities...
 
+  \param dcd The DCD object to use for reading frames
+  \param avg_box Stores the average box size (extracted from crystal params)
+  \param avg_unitvol Stores the average box-volume
+  \param gridsizes Array giving the i, j, k dimensions of the grid.
+  \param indices Indices into the DCD frame to operate over
+  (i.e. which atoms)
+  \param frameno Which frame to start on
+  \param window How many frames to operate over
+  \param scale Scales up the density
+
+ */
 double *gridify(DCD& dcd, double *avg_box, double *avg_unitvol, int gridsizes[], const vector<int> indices, int frameno = 0, int window = 1, double scale = 1.0) {
   int grid_dim = gridsizes[0] * gridsizes[1] * gridsizes[2];
   int* grid = new int[grid_dim];

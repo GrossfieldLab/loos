@@ -145,6 +145,8 @@ void PDB::parseAtomRecord(const string s) {
   append(pa);
 }
 
+
+
 // Convert an Atom to a string with a PDB format...
 
 string PDB::atomAsString(const pAtom p) const {
@@ -225,7 +227,8 @@ void PDB::parseConectRecord(const string s) {
   }
 }
 
-// Top level parser...
+//! Top level parser...
+//! Reads a PDB from an input stream
 void PDB::read(istream& is) {
   string input;
 
@@ -246,7 +249,7 @@ void PDB::read(istream& is) {
 }
 
 
-// Output the group as a PDB...
+//! Output the group as a PDB...
 ostream& operator<<(ostream& os, const PDB& p) {
   AtomicGroup::ConstAtomIterator i;
 

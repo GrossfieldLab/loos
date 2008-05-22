@@ -6,17 +6,6 @@
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
 
-  Notes:
-
-    o Does NOT support fixed atoms
-
-    o Does NOT support velocity format
-
-    o Reorders the crystal parameters (if present) so they are in
-      a more sensible order (i.e. a, b, c, alpha, beta, gamma)
-      
-    o Everything returned is a copy (except for the FILE pointer)
-
 */
 
 
@@ -38,7 +27,22 @@
 
 using namespace std;
 
+//! Class for reading DCD files
+/*!
 
+  Notes:
+
+    - Does NOT handle ENDIAN issues (i.e. auto-swab)
+
+    - Does NOT support fixed atoms
+
+    - Does NOT support velocity format
+
+    - Reorders the crystal parameters (if present) so they are in
+      a more sensible order (i.e. a, b, c, alpha, beta, gamma)
+      
+    - [Almost] everything returned is a copy
+*/
 class DCD : public boost::noncopyable {
 
   // Use a union to convert data to appropriate type...
@@ -47,10 +51,16 @@ class DCD : public boost::noncopyable {
 public:
 
   // Error classes that we may or may not return...
+
+  //! Error while reading the F77 guard data
   struct RecordError : public exception { virtual const char *what() const throw() { return("Error while reading F77 record"); }; } record_error;
+  //! General error while parsing the DCD header
   struct HeaderError : public exception { virtual const char *what() const throw() { return("Error while reading DCD header"); }; } header_error;
+  //! General error while reading an F77 data record
   struct LineError : public exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
+  //! Unexpected EOF
   struct EndOfFile : public exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
+  //! General error...
   struct GeneralError : public exception {
     GeneralError(const char *s) : msg(s) { };
     virtual const char *what() const throw() { return(msg); };
@@ -59,6 +69,8 @@ public:
 
 
   DCD() : del_stream(false), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { };
+
+  //! Begin reading from the file named s
   DCD(const string s) :  del_stream(true), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) {
     _ifs = new ifstream(s.c_str());
     if (!_ifs)
@@ -66,6 +78,7 @@ public:
     readHeader();
   }
 
+  //! Begin reading from the file named s
   DCD(const char* s) :  del_stream(true), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) {
     _ifs = new ifstream(s);
     if (!_ifs)
@@ -73,6 +86,7 @@ public:
     readHeader();
   }
 
+  //! Begin reading from the stream ifs
   DCD(ifstream& ifs) : del_stream(false), _ifs(&ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
 
   ~DCD() {
@@ -81,10 +95,14 @@ public:
   }
 
 
+  //! Read in the header from the stored stream
   void readHeader(void);
+  //! Read in the header from the specified stream
   void readHeader(ifstream& ifs);
 
+  //! Read the next frame.  Returns false if at EOF
   bool readFrame(void);
+  //! Read the ith frame.  Returns false if there is a problem.
   bool readFrame(const unsigned int i);
 
   // Accessor methods...
@@ -100,9 +118,11 @@ public:
 
   float delta(void) const { return(_delta); }
 
-  // Return the raw coords...
+  //! Return the raw coords...
   vector<dcd_real> xcoords(void) const { return(xcrds); }
+  //! Return the raw coords...
   vector<dcd_real> ycoords(void) const { return(ycrds); }
+  //! Return the raw coords...
   vector<dcd_real> zcoords(void) const { return(zcrds); }
 
   bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
@@ -113,15 +133,18 @@ public:
   int nfile(void) const { return(_icntrl[0]); }
   int nfixed(void) const { return(_icntrl[8]); }
 
-  // Some nice support routines...
+  //! Auto-interleave the coords into a vector of GCoord()'s.
+  /*!  This can be a pretty slow operation, so be careful. */
   vector<GCoord> coords(void);
+
+  //! Interlieve coords, selecting entries indexed by map
   vector<GCoord> mappedCoords(const vector<int>& map);
 
-  // Update the passed AtomicGroup's coords with coords from the
-  // currently read frame...  This assumes that that atomid's of the
-  // AtomicGroup are indices into the DCD frame and are indexed +1,
-  // i.e. atomid 7 refers to DCD coords at index 6...
 
+  //! Update an AtomicGroup coordinates with the currently-read frame.
+  /*! This assumes that that atomid's of the
+    AtomicGroup are indices into the DCD frame and are indexed +1,
+    i.e. atomid 7 refers to DCD coords at index 6... */
   void updateGroupCoords(AtomicGroup& g);
 
 private:

@@ -30,6 +30,8 @@ using namespace std;
 // Forward declaration for matrix-vector multiply
 template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
 
+
+//! Specialized 4x4 Matrix class for handling coordinate transforms.
 template<class T>
 class Matrix44 {
 
@@ -37,23 +39,26 @@ class Matrix44 {
 
 public:
 
-
+  //! Create a new identity matrix
   Matrix44() { identity(); }
+
+  //! Create a new matrix with all elements set to v
   Matrix44(const T v) { for (int i = 0; i < 16; i++) matrix[i] = v; }
 
+  //! Zero all elements
   void zero(void) { memset(matrix, 0, 16 * sizeof(T)); }
+
+  //! Identity matrix
   void identity(void) { zero(); matrix[0] = 1; matrix[5] = 1; matrix[10] = 1; matrix[15] = 1; }
 
-
-  // Indexing the matrix as a multi-dimensional array...
-  // M(row,col)
-
+  //! Index the matrix element at row j and col i
   T& operator()(const int j, const int i) {
     if (j < 0 || i < 0 || i > 3 || j > 3)
       throw(range_error("Indices into matrix are out of range"));
     return(matrix[j*4+i]);
   }
 
+  //! Index the matrix element at row j and col i
   const T& operator()(const int j, const int i) const {
     if (j < 0 || i < 0 || i > 3 || j > 3)
       throw(range_error("Indices into matrix are out of range"));
@@ -61,23 +66,25 @@ public:
   }
 
 
-  // Allow access to the linear array...
+  //! Allow access to the linear array of matrix elements
   T& operator[](const int i) {
     if (i < 0 || i > 15)
       throw(range_error("Index into matrix is out of range"));
     return(matrix[i]);
   }
 
+  //! Allow access to the linear array of matrix elements
   const T& operator[](const int i) const {
     if (i < 0 || i > 15)
       throw(range_error("Index into matrix is out of range"));
     return(matrix[i]);
   }
 
+  //! Returns the array pointer
   T* data(void) { return(matrix); }
 
 
-  // Addition
+  //! Addition of two matrices
   Matrix44<T>& operator+=(const Matrix44<T>& rhs) {
     int i;
     for (i=0; i<16; i++)
@@ -85,6 +92,7 @@ public:
     return(*this);
   }
 
+  //! Addition of two matrices
   Matrix44<T> operator+(const Matrix44<T>& rhs) {
     Matrix44<T> res(*this);
     res += rhs;
@@ -92,11 +100,10 @@ public:
   }
 
 
-  // handle a constant + matrix.  Each element in the matrix is added
-  // with the constant...
-  //
-  // Rely on the constructor from a constant to handle the case where
-  // you have a matrix + a constant...
+  //! Addition of a matrix and a constant.
+  //! Each element in the matrix is added with the constant...
+  //! Relies on the constructor from a constant to handle the case where
+  //! you have a matrix + a constant...
 
   friend Matrix44<T> operator+(const T lhs, const Matrix44<T>& rhs) {
     Matrix44<T> res(rhs);
@@ -104,7 +111,7 @@ public:
     return(res);
   }
 
-  // Subtraction
+  //! Subtracting matrices
   Matrix44<T>& operator-=(const Matrix44<T>& rhs) {
     int i;
     for (i=0; i<16; i++)
@@ -112,27 +119,28 @@ public:
     return(*this);
   }
 
+  //! Subtracting matrices
   Matrix44<T> operator-(const Matrix44<T>& rhs) {
     Matrix44<T> res(*this);
     res -= rhs;
     return(res);
   }
 
+  //! Subtraction of a constant from a matrix
   friend Matrix44<T> operator-(const T lhs, const Matrix44<T>& rhs) {
     Matrix44<T> res(rhs);
     res -= lhs;
     return(res);
   }
 
-  // Multiplication
 
 
-  // Friend declaration for matrix-vector multiply...
+  //! Friend declaration for matrix-vector multiply...
   friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
-  // Matrix-matrix multiply...
-  // (should probably call BLAS instead...)
-  
+  //! Matrix-matrix multiply...
+  //! Uses temporary storage for the product, then copies back into
+  //! the current matrix.
   Matrix44<T>& operator*=(const Matrix44<T>& rhs) {
     T tmp[16];
 
@@ -160,6 +168,7 @@ public:
     return(*this);
   }
 
+  //! Matrix-matrix multiply
   Matrix44<T> operator*(const Matrix44<T>& rhs) {
     Matrix44<T> res(*this);
     res *= rhs;
@@ -167,11 +176,11 @@ public:
     return(res);
   }
 
-  // Multiplying by a constant...
-  // (each element is multiplied by the same constant)
-  // This operator [hopefully] prevents auto-casting
-  // of the constant to a matrix and then a matrix-matrix
-  // multiply, but beware...
+  //! Multiplication by a constant.
+  //! Each element is multiplied by the same constant
+  //! This operator [hopefully] prevents auto-casting
+  //! of the constant to a matrix and then a matrix-matrix
+  //! multiply, but beware...
 
   Matrix44<T>& operator*=(const T x) {
     for (int i = 0; i < 16; i++)
@@ -179,6 +188,7 @@ public:
     return(*this);
   }
 
+  //! Multiplication by a constant
   Matrix44<T> operator*(const T x) {
     Matrix44<T> res(*this);
     
@@ -186,7 +196,7 @@ public:
     return(res);
   }
 
-  // Handle k * M case
+  //! Handle the constant * matrix case
   friend Matrix44<T> operator*(const T x, const Matrix44<T>& rhs) {
     Matrix44<T> res(rhs);
     
@@ -195,6 +205,7 @@ public:
   }
 
   
+  //! Output the matrix in pseudo-XML
   friend ostream& operator<<(ostream&os, const Matrix44& m) {
     int i, j, k;
 
@@ -215,8 +226,8 @@ public:
 };
 
 
-// This has to be outside the class def for GCC to be happy...
-
+//! Matrix-vector multiply
+//! This has to be a friend outside the class for GCC to be happy...
 template<class T> Coord<T> operator*(const Matrix44<T>& M, const Coord<T>& v) {
     Coord<T> result;
 

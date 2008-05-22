@@ -27,7 +27,9 @@
 using namespace std;
 using namespace loos;
 
-
+//! Driver for the Bison parser (to encapsulate data)
+//! Can parse from either stdin or a string.  Requires a Kernel for
+//! storing the compiled Actions
 struct ParserDriver {
   loos::parser *pparser;
   LoosLexer *lexer;
@@ -37,10 +39,10 @@ struct ParserDriver {
   vector<string> cmds;
 
 
-  // For parsing from stdin
+  //! For parsing from stdin
   ParserDriver(Kernel& k) : pparser(0), lexer(new LoosLexer), kern(k), isp(0) { parse(); }
 
-  // For parsing a string...
+  //! For parsing a string...
   ParserDriver(const string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
     isp = new istringstream(s);
     lexer = new LoosLexer(isp);
@@ -49,7 +51,7 @@ struct ParserDriver {
 
   ~ParserDriver() { delete pparser; delete lexer; delete isp; }
 
-  
+  //! Calls the Bison parser
   void parse(void) {
     if (!pparser)
       pparser = new loos::parser(*this);

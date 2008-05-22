@@ -36,20 +36,14 @@ using namespace tr1;
 #include <AtomicGroup.hpp>
 #include <pdb_remarks.hpp>
 
-/*
-  Constructors:
 
-  o Empty
-  o Reading from a filename
-  o Reading from a stream
-  o Created (light copy) from an AtomicGroup
-*/
-
+//! PDB reading/writing class
 class PDB : public AtomicGroup {
 public:
   PDB() : _show_charge(false), _auto_ter(true) { }
   virtual ~PDB() {}
 
+  //! Read in PDB from a filename
   PDB(const string fname) : _show_charge(false), _auto_ter(true) {
     ifstream ifs(fname.c_str());
     if (!ifs)
@@ -57,6 +51,7 @@ public:
     read(ifs);
   }
 
+  //! Read in a PDB from a filename
   PDB(const char* fname) : _show_charge(false), _auto_ter(true) {
     ifstream ifs(fname);
     if (!ifs)
@@ -64,31 +59,38 @@ public:
     read(ifs);
   }
 
+  //! Read in a PDB from an ifstream
   PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true) { read(ifs); }
 
+  //! Create a PDB from an AtomicGroup (i.e. upcast)
   PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true) { }
 
-  // Creates a deep copy...
+  //! Creates a deep copy.
   virtual PDB* clone(void) const {
     return(new PDB(*(this->AtomicGroup::clone())));
   }
 
-  // Since charge is handled oddly for PDBs, we don't necessarily
-  // write it to output by default...
   bool showCharge(void) const { return(_show_charge); }
+  //! Special handling for charges since the PDB form is daft
   void showCharge(bool b = true) { _show_charge = b; }
 
-  // Controls whether or not a "TER" record is automatically added
-  // when printing out the group/PDB
   bool autoTerminate(void) const { return(_auto_ter); }
+
+  //! Automatically insert TER record at end of output.
+  /*! Controls whether or not a "TER" record is automatically added
+      when printing out the group/PDB
+  */
   void autoTerminate(bool b = true) { _auto_ter = b; }
 
-  // Accessor for the remarks object...
+  //! Accessor for the remarks object...
   Remarks& remarks(void) { return(_remarks); }
+  //! Accessor for the remarks object...
   void remarks(const Remarks& r) { _remarks = r; }
 
+  //! Output as a PDB
   friend ostream& operator<<(ostream& os, const PDB& p);
 
+  //! Read in PDB from an ifstream
   void read(istream& is);
 
 private:

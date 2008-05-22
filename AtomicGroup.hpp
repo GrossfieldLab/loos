@@ -42,14 +42,31 @@ using namespace tr1;
 
 
 
-// Subclass this for programmatic selection of atoms...
+//! Virtual base-class for selecting atoms from a group
 
 struct AtomSelector {
+  //! Functor function for selecting atoms.  If true, then the passed
+  //! Atom is selected for an operation (or addition to a new group).
+  //! If false, then the passed Atom is skipped.
   virtual bool operator()(const pAtom& atom) const =0;
   virtual ~AtomSelector() { }
 };
 
 
+//! Class for handling groups of Atoms (pAtoms, actually)
+//! This class contains a collection of shared pointers to Atoms
+//! (i.e. pAtoms).  Copying an AtomicGroup is a light-copy.  You can,
+//! however, perform a deep copy by using the AtomicGroup::clone()
+//! method.  Note that atomid's are assumed to be unique for any given
+//! AtomicGroup.
+//!
+//! The AtomicGroup also contains a XForm object for specifying
+//! geometric transforms for the contained Atoms.  You can apply this
+//! transform to the Atoms themselves, but be aware that doing so does
+//! not reset the transform back to identity.
+//!
+//! Valid operators are '+' and '+=' and can combine either
+//! AtomicGroup objects or pAtom objects.
 
 
 class AtomicGroup {
@@ -61,26 +78,34 @@ public:
   AtomicGroup() : _sorted(false) { }
   virtual ~AtomicGroup() { }
 
-  // clone() creates a deep copy of this group...
+  //! Creates a deep copy of this group...
   virtual AtomicGroup* clone(void) const;
 
 
   int length(void) const { return(atoms.size()); }
   int size(void) const { return(atoms.size()); }
 
+  //! Get the ith atom from this group.
   pAtom getAtom(const int i) const;
 
+  //! Same as getAtom(i)
   pAtom& operator[](const int i);
   const pAtom& operator[](const int i) const;
 
   XForm& xform(void) { return(_xform); };
 
-  void append(pAtom pa) { atoms.push_back(pa); }   // Add an atom...
+  //! Append the atom onto the group
+  void append(pAtom pa) { atoms.push_back(pa); }
+  //! Append a vector of atoms
   void append(vector<pAtom> pas);
+  //! Append an entire AtomicGroup onto this one (concatenation)
   void append(const AtomicGroup& grp);
 
-  void remove(pAtom pa) { deleteAtom(pa); }        // Delete an atom...
+  //! Delete a single atom
+  void remove(pAtom pa) { deleteAtom(pa); }
+  //! Deletes a set of atoms
   void remove(vector<pAtom> pas);
+  //! Deletes all atoms in the passed grp that are also in the current group.
   void remove(const AtomicGroup& grp);
 
   // Concatenation of groups and/or atoms
@@ -89,50 +114,52 @@ public:
   AtomicGroup operator+(const AtomicGroup& rhs);
   AtomicGroup operator+(const pAtom& rhs);
 
-  // subset() and excise() args are patterned after perl's substr...
-  // If offset is negative, then it's relative to the end of the
-  // group.  If length is 0, then everything from offset to the
-  // appropriate end is used...
+  //! subset() and excise() args are patterned after perl's substr...
+  //! If offset is negative, then it's relative to the end of the
+  //! group.  If length is 0, then everything from offset to the
+  //! appropriate end is used...
   AtomicGroup subset(const int offset, const int len = 0);
 
-  // excise returns the excised atoms as a group...
+  //! excise returns the excised atoms as a group...
   AtomicGroup excise(const int offset, const int len = 0);
 
+  //! Intersection of two groups
   AtomicGroup intersect(const AtomicGroup& grp);
 
-  // Return a group consisting of atoms for which sel() returns true...
+  //! Return a group consisting of atoms for which sel functor returns true...
   AtomicGroup select(AtomSelector& sel);
 
-  // Find a contained atom by its atomid
+  //! Find a contained atom by its atomid
   pAtom findById(const int id);
 
-  // Given an Atom, return a group of all the atoms contained by its
-  // containing residue 
+  //! Given an Atom, return a group of all the atoms contained by its
+  //! containing residue 
   AtomicGroup getResidue(pAtom res);
 
-  // Output...  This is in an XML'ish format...
+  //! Output the group in pseudo-XML format...
   friend ostream& operator<<(ostream& os, const AtomicGroup& grp);
   
   // Some misc support routines...
 
+  //! Renumber the atomid's of the contained atoms...
   void renumber(const int start = 0, const int stride = 1);
   int minId(void) const;
   int maxId(void) const;
   int numberOfResidues(void) const;
   int numberOfChains(void) const;
 
-  // Is the array of atoms already sorted???
+  //! Is the array of atoms already sorted???
   bool sorted(void) const { return(_sorted); }
 
-  // Sort based on atomid
+  //! Sort based on atomid
   void sort(void);
 
 
   // *** Helper classes...
 
-  // Iterator lets you iterate over all contained atoms...
-  // AtomicGroup::Iterator(grp)  -- constructs an iterator for the
-  // group "grp" 
+  //! Iterator lets you iterate over all contained atoms...
+  //! AtomicGroup::Iterator(grp)  -- constructs an iterator for the
+  //! group "grp" 
   class Iterator {
   public:
     Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
@@ -146,18 +173,19 @@ public:
   };
 
 
-  // Return value for boundingBox()
+  //! Return value for boundingBox()
   struct BoundingBox {
     greal min[3], max[3];
   };
 
   // Statistical routines...
+  //! Bounding box for the group...
   BoundingBox boundingBox(void) const;
 
-  // Centroid of atoms (ignores mass)
+  //! Centroid of atoms (ignores mass)
   GCoord centroid(void) const;
 
-  // Maximum radius from centroid of all atoms (not gyration)
+  //! Maximum radius from centroid of all atoms (not gyration)
   greal radius(void) const;
 
   GCoord centerOfMass(void) const;
@@ -167,22 +195,22 @@ public:
 
   // Geometric transformations...
   
-  // *** Non-mutating...
+  //! Returns a vector of coordinates transformed by the current
+  //! groups XForm
   vector<GCoord> transformedCoords(void) const;
   
-  // *** Mutating
   
-  // Note: applying the current transformation to the group
-  // does NOT reset the current transformation.  That's up to
-  // you to handle...
+  //! Applies the current XForm transformation to the contained Atom
+  //! GCoord() coordinates.  This does NOT reset the XForm to the
+  //! identity...
   void applyTransformation(void);
 
 
-  // Copy coordinates from one group into another...
-  // If the groups match in size, then a straight copy ensues.
-  // Otherwise, an attempt will be made to pick the correct
-  // coordinates...this could be a pretty costly operation...  Also
-  // note that this may change (sort) the group 'g'...
+  //! Copy coordinates from one group into another...
+  //! If the groups match in size, then a straight copy ensues.
+  //! Otherwise, an attempt will be made to pick the correct
+  //! coordinates...this could be a pretty costly operation...  Also
+  //! note that this may change (sort) the group 'g'...
   
   void copyCoordinates(AtomicGroup& g);
 

@@ -286,7 +286,6 @@ vector<GCoord> DCD::mappedCoords(const vector<int>& indices) {
 }
 
 
-
 void DCD::updateGroupCoords(AtomicGroup& g) {
   AtomicGroup::Iterator iter(g);
   pAtom pa;
