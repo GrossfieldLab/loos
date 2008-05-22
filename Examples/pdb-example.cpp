@@ -13,21 +13,7 @@
 
 
 #include <pdb.hpp>
-
-
-struct CASelector : public AtomSelector {
-  bool operator()(const pAtom& atom)  {
-    return(atom->name() == "CA");
-  }
-};
-
-
-
-struct SolvSelector : public AtomSelector {
-  bool operator()(const pAtom& atom)  {
-    return(atom->segid() == "SOLV" || atom->segid() == "BULK");
-  }
-};
+#include <Selectors.hpp>
 
 
 int main(int argc, char *argv[]) {
@@ -36,13 +22,13 @@ int main(int argc, char *argv[]) {
 
   cout << "Read in " << p.size() << " atoms from " << argv[1] << endl;
 
-  CASelector casel;
+  CAlphaSelector casel;
   AtomicGroup cas = p.select(casel);
   
   cout << "There are " << cas.size() << " CAs.\n";
   cout << "The max radius for CAs is " << cas.radius() << endl;
 
-  SolvSelector wasel;
+  SolventSelector wasel;
   AtomicGroup water = p.select(wasel);
 
   int nwater = water.numberOfResidues();
@@ -54,6 +40,10 @@ int main(int argc, char *argv[]) {
     cout << "\t" << bdd.min[1] << " <= y <= " << bdd.max[1] << endl;
     cout << "\t" << bdd.min[2] << " <= z <= " << bdd.max[2] << endl;
   }
+
+  NotSelector notwatsel(wasel);
+  AtomicGroup notwatgrp = p.select(notwatsel);
+  cout << "There are " << notwatgrp.numberOfResidues() << " residues that are non-solvent.\n";
 
   GCoord c = p.centroid();
   cout << "The centroid for the PDB is at " << c << endl;

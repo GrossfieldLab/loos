@@ -1,10 +1,24 @@
-#if !defined(MYLEX_HPP)
-#define MYLEX_HPP
+/*
+  LoosLexer.hpp
+  (c) 2008 Tod D. Romo
+
+
+  Grossfield Lab
+  Department of Biochemistry and Biophysics
+  University of Rochester Medical School
+
+  Extension of yyFlexLexer for parsing atom selections...
+*/
+
+
+
+#if !defined(LOOSLEXER_HPP)
+#define LOOSLEXER_HPP
 
 #include <string>
 
 
-
+// Flex's c++ support is daft...
 #undef yyFlexLexer
 #define yyFlexLexer LoosFlexLexer
 #include <FlexLexer.h>

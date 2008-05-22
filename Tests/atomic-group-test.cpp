@@ -13,7 +13,7 @@ using namespace tr1;
 
 
 struct CASelector : public AtomSelector {
-  bool operator()(const pAtom& atom) {
+  bool operator()(const pAtom& atom) const {
     return(atom->name() == "CA");
   }
 };

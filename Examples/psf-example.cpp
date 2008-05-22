@@ -16,7 +16,7 @@
 
 
 struct CASelector : public AtomSelector {
-  bool operator()(const pAtom& atom) {
+  bool operator()(const pAtom& atom) const {
     return(atom->name() == "CA");
   }
 };
@@ -24,7 +24,7 @@ struct CASelector : public AtomSelector {
 
 
 struct SolvSelector : public AtomSelector {
-  bool operator()(const pAtom& atom)  {
+  bool operator()(const pAtom& atom) const  {
     return(atom->segid() == "SOLV" || atom->segid() == "BULK");
   }
 };

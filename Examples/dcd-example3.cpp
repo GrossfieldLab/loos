@@ -25,7 +25,7 @@
 
 // Select for non-solvent atoms...
 struct NotSolvSelector : public AtomSelector {
-  bool operator()(const pAtom& atom)  {
+  bool operator()(const pAtom& atom) const {
     return(!(atom->segid() == "SOLV" || atom->segid() == "BULK"));
   }
 };

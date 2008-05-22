@@ -42,11 +42,13 @@ class ParserDriver;
 #undef yylex
 #define yylex driver.lexer->looslex
 
+
 namespace loos {
   void parse_error(const string&);
 };
 
 %}
+
 
 %token		END	0
 %token <ival>	NUMBER
@@ -98,17 +100,19 @@ value : numeric | alpha ;
 
 numeric : number | numid ;
 
-number  : NUMBER        { driver.kern.push(new pushInt($1)); }
-        ;
+number  : NUMBER        { driver.kern.push(new pushInt($1)); }  ;
 
 alpha   : string | alphid
         ;
 
-string  : STRING        { $$ = $1; driver.kern.push(new pushString(*($1))); }
-        ;
+string  : STRING        { $$ = $1; driver.kern.push(new pushString(*($1))); } ;
 
-strval    : STRING ;
+strval  : STRING ;      /* Non-pushing string so we can compiled it */
+                        /* into the regular expression operator */
 
+
+/* Since we only have a few keywords, we just manually extract them
+rather than use a table... */
 
 alphid  : SKEY          {
 $$ = $1;

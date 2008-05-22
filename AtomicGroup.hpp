@@ -45,7 +45,7 @@ using namespace tr1;
 // Subclass this for programmatic selection of atoms...
 
 struct AtomSelector {
-  virtual bool operator()(const pAtom& atom) =0;
+  virtual bool operator()(const pAtom& atom) const =0;
   virtual ~AtomSelector() { }
 };
 

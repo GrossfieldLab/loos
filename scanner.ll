@@ -37,7 +37,8 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 
 name|resname|segid   { yylval->sval = new string(yytext, yyleng); return(token::SKEY); }
 id|resid             { yylval->sval = new string(yytext, yyleng); return(token::NKEY); }
-\"|\'                {
+
+\"|\'                {                /* Special handling for strings... */
  string delim(yytext, yyleng);
  int c;
  string text;
@@ -56,7 +57,7 @@ id|resid             { yylval->sval = new string(yytext, yyleng); return(token::
 
                        
 
-{ws}
+{ws}                 /* Swallow up remaining white-space */
 
 .                    { return(static_cast<token_type>(*yytext)); }
 
@@ -66,6 +67,9 @@ int yyFlexLexer::yylex() {
     std::cerr << "Should never be here!\n";
     exit(-1);
 }
+
+
+/* OS X Flex install requires this (2.5.35) to co-exist with Linux 2.5.33 install */
 
 #if !defined(yywrap)
 int LoosFlexLexer::yywrap() { return(1); }

@@ -15,6 +15,7 @@
 
 #include <pdb.hpp>
 #include <Parser.hpp>
+#include <Selectors.hpp>
 
 
 int main(int argc, char *argv[]) {
@@ -24,8 +25,10 @@ int main(int argc, char *argv[]) {
   cout << "Read in " << p.size() << " atoms from " << argv[1] << endl;
 
   Parser parsed(argv[2]);
+  CompiledSelector parsed_sel(parsed.kernel());
+
   cout << "*** Virtual Machine Command STACK ***\n" << parsed.kernel() << endl;
-  AtomicGroup  usel = p.select(parsed);
+  AtomicGroup  usel = p.select(parsed_sel);
   
   cout << "There are " << usel.size() << " atoms in the selection.\n";
   cout << "The max radius is " << usel.radius() << endl;
