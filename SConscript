@@ -16,4 +16,5 @@ library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remar
 loos = env.Library('loos', library_files, CPPPATH=cpppath)
 
 
+dox_target = env.Alias("dox", env.Doxygen("Doxyfile"))
 SConscript(['Examples/SConscript', 'Tests/SConscript'])
