@@ -1,8 +1,23 @@
+# Top-level SConstruct
+# (c) 2008 Tod D. Romo
+#
+# Grossfield Lab
+# Department fo Biochemistry & Biophysics
+# University of Rochester Medical School
+#
+#
+
+
+
+### Compile-flags
+
 debug_opts='-g -Wall'
 release_opts='-O3'
 
+env = Environment(tools = ["default", "doxygen"], toolpath = '.')
 
-env = Environment()
+
+# Determine what kind of build...
 release=ARGUMENTS.get('release', 0)
 if int(release):
     env.Append(CCFLAGS=release_opts)
@@ -11,5 +26,14 @@ else:
 
 Export('env')
 
-SConscript('SConscript')
 
+# Add dirs to build in here...
+SConscript('./SConscript')
+
+
+# If all=1 is on the command-line, build everything,
+# otherwise, default to just building code in the software dir...
+
+all_flag = ARGUMENTS.get('all', 0)
+if int(all_flag) == 0:
+    Default('software')
