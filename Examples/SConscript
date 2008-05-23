@@ -25,3 +25,4 @@ dcd_example3 = env.Program('dcd-example3.cpp', LIBS=libs, LIBPATH=libpath, CPPPA
 center_pdb = env.Program('center-pdb.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 psf_example = env.Program('psf-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 pdb_parsed = env.Program('pdb-parsed.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+#charge_density = env.Program('charge-density.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
