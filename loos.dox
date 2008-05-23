@@ -21,7 +21,7 @@ you may be affecting multiple groups in potentially unknown ways.
 \section Features
 One of the features of LOOS is the multiple ways it supports atom
 selection.  AtomicGroup objects can create subsets of themselves by
-using an AtomSelector (a functor).  There are several useful ones
+using an AtomSelector (a predicate).  There are several useful ones
 already pre-defined, such as CAlphaSelector and SolventSelector.
 These can even be combined with logical operations.  The
 SolventSelector is actually written this way.

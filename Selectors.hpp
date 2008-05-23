@@ -21,14 +21,14 @@
 #include <Kernel.hpp>
 
 
-//! Functor for selecting CA atoms
+//! Predicate for selecting CA atoms
 struct CAlphaSelector : public AtomSelector {
   bool operator()(const pAtom& pa) const {
     return(pa->name() == "CA");
   }
 };
 
-//! Functor for selecting main chain atoms
+//! Predicate for selecting main chain atoms
 struct MainChainSelector : public AtomSelector {
   bool operator()(const pAtom& pa) const {
     string s = pa->name();
@@ -37,7 +37,7 @@ struct MainChainSelector : public AtomSelector {
 };
 
 
-//! Functor for selecting atoms based on the passed segid string
+//! Predicate for selecting atoms based on the passed segid string
 struct SegidSelector : public AtomSelector {
   SegidSelector(const string s) : str(s) { }
   bool operator()(const pAtom& pa) const {
@@ -47,7 +47,7 @@ struct SegidSelector : public AtomSelector {
   string str;
 };
 
-//! Negates a selection functor
+//! Negates a selection predicate
 /*!
   Example:
 
@@ -119,7 +119,7 @@ struct OrSelector : public AtomSelector {
 
 
 
-//! Functor for selecting solvent based on common solvent SEGIDs
+//! Predicate for selecting solvent based on common solvent SEGIDs
 struct SolventSelector : public AtomSelector {
   SolventSelector() : s1("SOLV"), s2("BULK"), osel(s1, s2) {}
   bool operator()(const pAtom& pa) const {
@@ -133,9 +133,9 @@ struct SolventSelector : public AtomSelector {
 
 
 
-//! Selection functor that executes a compiled Kernel
+//! Selection predicate that executes a compiled Kernel
 /*!
-  This functor takes a compiled Kernel and executes it once for each
+  This predicate takes a compiled Kernel and executes it once for each
   Atom.  This is primarily for use in conjunction with the Parser for
   handling selections based on user input.
 

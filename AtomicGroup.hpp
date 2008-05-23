@@ -45,7 +45,7 @@ using namespace tr1;
 //! Virtual base-class for selecting atoms from a group
 
 struct AtomSelector {
-  //! Functor function for selecting atoms.  If true, then the passed
+  //! Predicate function for selecting atoms.  If true, then the passed
   //! Atom is selected for an operation (or addition to a new group).
   //! If false, then the passed Atom is skipped.
   virtual bool operator()(const pAtom& atom) const =0;
@@ -126,7 +126,7 @@ public:
   //! Intersection of two groups
   AtomicGroup intersect(const AtomicGroup& grp);
 
-  //! Return a group consisting of atoms for which sel functor returns true...
+  //! Return a group consisting of atoms for which sel predicate returns true...
   AtomicGroup select(AtomSelector& sel);
 
   //! Find a contained atom by its atomid
