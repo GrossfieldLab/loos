@@ -12,7 +12,7 @@ using namespace tr1;
 #include <AtomicGroup.hpp>
 
 
-struct CASelector : public AtomSelector {
+struct SelectorCA : public AtomSelector {
   bool operator()(const pAtom& atom) const {
     return(atom->name() == "CA");
   }
@@ -73,7 +73,7 @@ int main() {
 
   cout << "-------------------\n";
   cout << "CA selection:\n";
-  CASelector sel;
+  SelectorCA sel;
 
   AtomicGroup s = g1.select(sel);
   cout << s << endl;

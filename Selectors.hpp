@@ -28,13 +28,6 @@ struct CAlphaSelector : public AtomSelector {
   }
 };
 
-//! Functor for selecting solvent based on common solvent SEGIDs
-struct SolventSelector : public AtomSelector {
-  bool operator()(const pAtom& pa) const {
-    return(pa->segid() == "SOLV" || pa->segid() == "BULK");
-  }
-};
-
 //! Functor for selecting main chain atoms
 struct MainChainSelector : public AtomSelector {
   bool operator()(const pAtom& pa) const {
@@ -59,7 +52,7 @@ struct SegidSelector : public AtomSelector {
   Example:
 
   \verbatim
-  SolventSelector solvsel;
+  SegidSelector solvsel("SOLV");
   NotSelector notsolvsel(solvsel);
   \endverbatim
 
@@ -76,9 +69,71 @@ struct NotSelector : public AtomSelector {
 };
 
 
+//! Combines two selectors with a logical "and"
+/*! Example:
+    \verbatim
+    SegidSelector prot("PROT");
+    MainChainSelector main_chain;
+    AndSelector main_chain_protein(main_chain, prot);
+    \endverbatim
 
-//! Selection functor that executes a compiled Kernel to select
-//! atoms.
+    The main_chain_protein selector will select for all atoms that are
+    both main chain and have a segid of "PROT".
+*/
+
+struct AndSelector : public AtomSelector {
+  AndSelector(const AtomSelector& x, const AtomSelector& y) : lhs(x), rhs(y) { }
+  bool operator()(const pAtom& pa) const {
+    return(lhs(pa) && rhs(pa));
+  }
+
+  const AtomSelector &lhs, &rhs;
+};
+
+
+
+//! Combines two selectors with a logical "or"
+/*! Example:
+    \verbatim
+    SegidSelector prot("PROT");
+    SegidSelector heme("HEME");
+    OrSelector prot_with_heme(prot, heme);
+    \endverbatim
+
+    This selector will pick any atom that has a segid of either "PROT"
+    or "HEME".
+*/
+
+struct OrSelector : public AtomSelector {
+  OrSelector(const AtomSelector& x, const AtomSelector& y) : lhs(x), rhs(y) { }
+  bool operator()(const pAtom& pa) const {
+    return(lhs(pa) || rhs(pa));
+  }
+
+  const AtomSelector &lhs, &rhs;
+};
+
+
+
+
+
+
+
+//! Functor for selecting solvent based on common solvent SEGIDs
+struct SolventSelector : public AtomSelector {
+  SolventSelector() : s1("SOLV"), s2("BULK"), osel(s1, s2) {}
+  bool operator()(const pAtom& pa) const {
+    return(osel(pa));
+  }
+
+  SegidSelector s1, s2;
+  OrSelector osel;
+};
+
+
+
+
+//! Selection functor that executes a compiled Kernel
 /*!
   This functor takes a compiled Kernel and executes it once for each
   Atom.  This is primarily for use in conjunction with the Parser for
@@ -87,13 +142,13 @@ struct NotSelector : public AtomSelector {
   Example:
   \verbatim
   Parser parsed(selection_string);
-  CompiledSelector sel(parsed.kernel());
+  KernelSelector sel(parsed.kernel());
   \endverbatim
 
  */
-class CompiledSelector : public AtomSelector {
+class KernelSelector : public AtomSelector {
 public:
-  CompiledSelector(loos::Kernel& k) : krnl(k) { }
+  KernelSelector(loos::Kernel& k) : krnl(k) { }
 
   bool operator()(const pAtom& pa) const {
     krnl.execute(pa);

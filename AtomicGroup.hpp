@@ -157,9 +157,23 @@ public:
 
   // *** Helper classes...
 
-  //! Iterator lets you iterate over all contained atoms...
-  //! AtomicGroup::Iterator(grp)  -- constructs an iterator for the
-  //! group "grp" 
+  //! Our own simple iterator for stepping over all managed atoms.
+  /*! Example:
+      \verbatim
+      AtomicGroup::Iterator iter(an_atomic_group);
+      pAtom p;
+
+      while (p = iter())
+        do_something(p);
+      \endverbatim
+
+      Note that the shared atom returned is a copy of the shared-atom
+      pointer stored, rather than a ref to the shared atom pointer...
+      You should exercise GREAT care in modifying the atom while
+      iterating, or performing any operations that modify the group
+      you're iterating over.  In fact, don't do it, unless you are
+      sure you know what you're doing.
+   */
   class Iterator {
   public:
     Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
   cout << "Read in " << p.size() << " atoms from " << argv[1] << endl;
 
   Parser parsed(argv[2]);
-  CompiledSelector parsed_sel(parsed.kernel());
+  KernelSelector parsed_sel(parsed.kernel());
 
   cout << "*** Virtual Machine Command STACK ***\n" << parsed.kernel() << endl;
   AtomicGroup  usel = p.select(parsed_sel);

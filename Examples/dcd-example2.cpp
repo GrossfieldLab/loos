@@ -18,15 +18,7 @@
 #include <loos.hpp>
 #include <pdb.hpp>
 #include <dcd.hpp>
-
-
-// Select for non-solvent atoms...
-struct NotSolvSelector : public AtomSelector {
-  bool operator()(const pAtom& atom) const {
-    return(!(atom->segid() == "SOLV" || atom->segid() == "BULK"));
-  }
-};
-
+#include <Selectors.hpp>
 
 
 int main(int argc, char *argv[]) {
@@ -35,8 +27,10 @@ int main(int argc, char *argv[]) {
   PDB pdb(argv[1]);
 
   // Extract the non-solvent atoms...
-  NotSolvSelector ns;
-  AtomicGroup nonsolv = pdb.select(ns);
+  
+  SolventSelector solvsel;
+  NotSelector notsolvsel(solvsel);
+  AtomicGroup nonsolv = pdb.select(notsolvsel);
   cout << "Found " << nonsolv.size() << " non-solvent atoms.\n";
 
   DCD dcd(argv[2]);
