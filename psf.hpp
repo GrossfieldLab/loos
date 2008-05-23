@@ -22,6 +22,7 @@
 
 using namespace std;
 
+//! Class for reading a subset of the PSF format
 class PSF : public AtomicGroup {
 public:
     PSF() { }
