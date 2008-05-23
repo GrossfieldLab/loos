@@ -1,0 +1,44 @@
+/*!
+
+\mainpage Lightweight Object-Oriented Structure library (LOOS)
+\section Introduction
+
+Welcome to the LOOS library.  The first product of the Grossfield Lab
+at the University of Rochester Medical School and the Department of
+Biochemistry.  The idea behind LOOS is to provide a lightweight C++
+library for analysis of molecular dynamics simulations.  This includes
+parsing a number of PDB variants, PSF's, and DCD's.  LOOS is not
+intended to be an all-encompassing library and it is primarily geared
+towards reading data in and processing rather than manipulating the
+files and structures and writing them out.
+
+LOOS operates mainly on groups of atoms, called an AtomicGroup.  The
+atoms are stored as boost shared pointers, so multiple groups can
+contain the same atom without having to actually copy it.  This does
+mean that you should be careful though when modifying an atom since
+you may be affecting multiple groups in potentially unknown ways.
+
+\section Features
+One of the features of LOOS is the multiple ways it supports atom
+selection.  AtomicGroup objects can create subsets of themselves by
+using an AtomSelector (a functor).  There are several useful ones
+already pre-defined, such as CAlphaSelector and SolventSelector.
+These can even be combined with logical operations.  The
+SolventSelector is actually written this way.
+
+Alternatively, LOOS supports selections created from user-input.  LOOS
+can parse a selection string (in a format based on C expression
+syntax) and use this for picking atoms.  For example, it's trivial to
+write you tool so that a user can pick which atoms to consider at
+run-time with a string like:
+\verbatim
+(resid >= 10 && resid <= 100) && (segid == "PROT" || segid == "HEME") && !(name =~ "H")
+\endverbatim
+which picks atoms with resid's between 10 and 100, a segid of either
+"HEME" or "PROT", and all non-hydrogen atoms.
+
+\section Bugs
+There are none...only features.  So don't worry about them!
+(email me directly for now)
+
+*/
