@@ -30,10 +30,3 @@ Export('env')
 # Add dirs to build in here...
 SConscript('./SConscript')
 
-
-# If all=1 is on the command-line, build everything,
-# otherwise, default to just building code in the software dir...
-
-all_flag = ARGUMENTS.get('all', 0)
-if int(all_flag) == 0:
-    Default('software')
