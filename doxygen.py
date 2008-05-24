@@ -177,7 +177,7 @@ def DoxySourceScanCheck(node, env):
    return os.path.isfile(node.path)
 
 # TDR (080522) - Swapped target/source based on scons.org docs...
-def DoxyEmitter(target, source, env):
+def DoxyEmitter(source, target, env):
    """Doxygen Doxyfile emitter"""
    # possible output formats and their default values and output locations
    output_formats = {
@@ -195,6 +195,8 @@ def DoxyEmitter(target, source, env):
    if not os.path.isabs(out_dir):
       conf_dir = os.path.dirname(str(source[0]))
       out_dir = os.path.join(conf_dir, out_dir)
+
+   targets.append(env.File( os.path.join(out_dir, 'foobar')))
 
    # add our output locations
    for (k, v) in output_formats.items():
@@ -232,7 +234,7 @@ def generate(env):
 
    import SCons.Builder
    doxyfile_builder = SCons.Builder.Builder(
-      action = "cd ${SOURCE.dir}  &&  ${DOXYGEN} ${SOURCE.file}",
+      action = "cd ${SOURCE.dir}  &&  ${DOXYGEN} ${SOURCE.file} && touch ${TARGET}",
       emitter = DoxyEmitter,
       target_factory = env.fs.Entry,
       single_source = True,
