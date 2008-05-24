@@ -26,7 +26,7 @@ using namespace std;
 #include <ParserDriver.hpp>
 
 
-//! Front-end to the Bison/Flex parser TEST
+//! Front-end to the Bison/Flex parser
 /*! Creates a compiled Kernel that can then be executed to select
     atoms.  The grammar accepted is relatively simple and patterned
     after C/PERL expressions.  Relational operators are allowed, as
