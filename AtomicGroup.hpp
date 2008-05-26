@@ -46,9 +46,13 @@ extern "C" {
 }
 
 
+typedef f77int int;
+
 #elif defined(__APPLE__)
 
 #include <vecLib/vecLib.h>
+
+typedef __CLPK_integer f77int;
 
 #else
 

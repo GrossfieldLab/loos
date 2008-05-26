@@ -2,31 +2,27 @@
 # (c) 2008 Tod D. Romo
 #
 # Grossfield Lab
-# Department fo Biochemistry & Biophysics
+# Department of Biochemistry & Biophysics
 # University of Rochester Medical School
 #
 #
 
+import sys
 
 Import('env')
-cpppath = ['.', '..']
-
-libs = ['loos', 'boost_regex', 'lapack', 'atlas']
-libpath = ['..', '/usr/lib64/atlas']
-
 
 example_apps = 'coord_example dcd_example pdb_example dcd_example2 dcd_example3 center_pdb psf_example pdb_parsed'
 
 
-coord_example = env.Program('coord-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-dcd_example = env.Program('dcd-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-pdb_example = env.Program('pdb-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-dcd_example2 = env.Program('dcd-example2.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-dcd_example3 = env.Program('dcd-example3.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-center_pdb = env.Program('center-pdb.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-psf_example = env.Program('psf-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-pdb_parsed = env.Program('pdb-parsed.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-#charge_density = env.Program('charge-density.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+coord_example = env.Program('coord-example.cpp')
+dcd_example = env.Program('dcd-example.cpp')
+pdb_example = env.Program('pdb-example.cpp')
+dcd_example2 = env.Program('dcd-example2.cpp')
+dcd_example3 = env.Program('dcd-example3.cpp')
+center_pdb = env.Program('center-pdb.cpp')
+psf_example = env.Program('psf-example.cpp')
+pdb_parsed = env.Program('pdb-parsed.cpp')
+#charge_density = env.Program('charge-density.cpp')
 
 
 Return(example_apps)

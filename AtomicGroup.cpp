@@ -578,6 +578,8 @@ void AtomicGroup::copyCoordinates(AtomicGroup& g) {
  * 
  */
 
+#if defined(__linux__) || defined(__APPLE__)
+
 vector<GCoord> AtomicGroup::principalAxes(void) const {
   double *A, C[9];
 
@@ -617,14 +619,15 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
 
   // Now compute the eigen-decomp...
   char jobz = 'V', uplo = 'U';
-  int lda = 3;
+  f77int nn;
+  f77int lda = 3;
   double W[3], work[128];
-  int lwork = 128;   // ???  Just a guess for sufficient storage to be
+  f77int lwork = 128;   // ???  Just a guess for sufficient storage to be
 		     // efficient... 
-  int info;
-  n = 3;
+  f77int info;
+  nn = 3;
 
-  dsyev_(&jobz, &uplo, &n, C, &lda, W, work, &lwork, &info);
+  dsyev_(&jobz, &uplo, &nn, C, &lda, W, work, &lwork, &info);
   if (info < 0)
     throw(runtime_error("dsyev_ reported an argument error..."));
 
@@ -652,6 +655,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   return(results);
 }
 
+#endif   /* defined(__linux__) || defined(__APPLE__) */
 
 
 void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {

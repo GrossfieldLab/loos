@@ -9,19 +9,16 @@
 
 
 Import('env')
-cpppath = ['.', '#']
 
 
-libs = ['loos', 'boost_regex', 'lapack', 'atlas']
-libpath = ['#', '/usr/lib64/atlas']
 
 test_apps = 'atomic_grp_tst pdb_tst parser_tst princ_axes_tst timeseries_tst'
 
 
-atomic_grp_tst = env.Program('atomic-group-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-pdb_tst = env.Program('pdb-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-parser_tst = env.Program('parser-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-princ_axes_tst = env.Program('princ_axes_tst.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
-timeseries_tst = env.Program('timeseries-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+atomic_grp_tst = env.Program('atomic-group-test.cpp')
+pdb_tst = env.Program('pdb-test.cpp')
+parser_tst = env.Program('parser-test.cpp')
+princ_axes_tst = env.Program('princ_axes_tst.cpp')
+timeseries_tst = env.Program('timeseries-test.cpp')
 
 Return(test_apps)
