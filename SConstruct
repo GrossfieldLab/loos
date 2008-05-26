@@ -1,4 +1,3 @@
-# Top-level SConstruct
 # (c) 2008 Tod D. Romo
 #
 # Grossfield Lab
@@ -21,8 +20,10 @@ env.Append(LIBS = ['loos', 'boost_regex'])
 
 if sys.platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
-elif sys.platform == 'linux':
+elif sys.platform == 'linux2':
    env.Append(LIBS = ['lapack', 'atlas'])
+   env.Replace(LIBPATH = ['#', '/usr/lib64/atlas'])    # Not sure why I have to replace
+                                                       # rather than append...
 
 
 # Determine what kind of build...

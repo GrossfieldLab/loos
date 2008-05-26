@@ -46,7 +46,8 @@ extern "C" {
 }
 
 
-typedef f77int int;
+// May need to fix this???
+typedef int f77int;
 
 #elif defined(__APPLE__)
 
