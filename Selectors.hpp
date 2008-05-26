@@ -40,7 +40,6 @@ struct MainChainSelector : public AtomSelector {
 //! Predicate for selecting atoms based on the passed segid string
 struct SegidSelector : public AtomSelector {
   SegidSelector(const string s) : str(s) { }
-  ~SegidSelector() { }
   bool operator()(const pAtom& pa) const {
     return(pa->segid() == str);
   }
@@ -56,7 +55,7 @@ struct ResidRangeSelector : public AtomSelector {
   }
 
   int _low, _high;
-}
+};
 
 
 //! Negates a selection predicate
