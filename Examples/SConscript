@@ -11,10 +11,11 @@
 Import('env')
 cpppath = ['.', '..']
 
-libs = ['loos', 'boost_regex']
-libpath = ['..']
+libs = ['loos', 'boost_regex', 'lapack', 'atlas']
+libpath = ['..', '/usr/lib64/atlas']
 
 
+example_apps = 'coord_example dcd_example pdb_example dcd_example2 dcd_example3 center_pdb psf_example pdb_parsed'
 
 
 coord_example = env.Program('coord-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
@@ -26,3 +27,6 @@ center_pdb = env.Program('center-pdb.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=c
 psf_example = env.Program('psf-example.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 pdb_parsed = env.Program('pdb-parsed.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 #charge_density = env.Program('charge-density.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+
+
+Return(example_apps)

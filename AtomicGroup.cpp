@@ -11,6 +11,10 @@
 */
 
 
+#include <ios>
+#include <sstream>
+#include <iomanip>
+
 #include <assert.h>
 #include <algorithm>
 
@@ -550,4 +554,116 @@ void AtomicGroup::copyCoordinates(AtomicGroup& g) {
     for (i = atoms.begin(), j = g.atoms.begin(); i != atoms.end(); i++, j++)
       (*i)->coords((*j)->coords());
   }
+}
+
+
+/** Calculates the eigendecomposition of AA' where A is column-wise
+ * concatenation of coordinates from all atoms in the group.  The mean
+ * coordinate is automatically subtracted from A...  Returns a vector
+ * of GCoord's in order of decreasing magnitude of the corresponding
+ * eigenvalue.  The eigenvalues are returned as a GCoord after the
+ * eigenvectors.
+ *
+ * Example
+ * \code
+ *     vector<GCoord> V = group_of_atoms.principalAxes();
+ *     GCoord eigenvalues = V[3];
+ *     GCoord first_eigenvector = V[0];   // Most significant
+ *     GCoord second_eigenvector = V[1];
+ *     GCoord third_eigenvector = V[2];   // Least significant
+ * \endcode
+ *
+ * Note that any errors encountered in the BLAS/LAPACK routines cause
+ * a runtime exception to be thrown...
+ * 
+ */
+
+vector<GCoord> AtomicGroup::principalAxes(void) const {
+  double *A, C[9];
+
+  // Extract out the group's coordinates...
+  int i;
+  int n = size();
+  A = new double[n*3];
+  double M[3] = {0.0, 0.0, 0.0};
+  int k = 0;
+  for (i=0; i<n; i++) {
+    A[k] = atoms[i]->coords().x();
+    M[0] += A[k++];
+
+    A[k] = atoms[i]->coords().y();
+    M[1] += A[k++];
+
+    A[k] = atoms[i]->coords().z();
+    M[2] += A[k++];
+  }
+
+  M[0] /= n;
+  M[1] /= n;
+  M[2] /= n;
+
+  // Subtract off the mean...
+  for (i=k=0; i<n; i++) {
+    A[k++] -= M[0];
+    A[k++] -= M[1];
+    A[k++] -= M[2];
+  }
+
+  // Multiply A*A'...
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
+	      3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
+
+  delete A;
+
+  // Now compute the eigen-decomp...
+  char jobz = 'V', uplo = 'U';
+  int lda = 3;
+  double W[3], work[128];
+  int lwork = 128;   // ???  Just a guess for sufficient storage to be
+		     // efficient... 
+  int info;
+  n = 3;
+
+  dsyev_(&jobz, &uplo, &n, C, &lda, W, work, &lwork, &info);
+  if (info < 0)
+    throw(runtime_error("dsyev_ reported an argument error..."));
+
+  if (info > 0)
+    throw(runtime_error("dsyev_ failed to converge..."));
+
+  vector<GCoord> results(4);
+  GCoord c;
+
+  k = 0;
+  for (i=0; i<3; i++) {
+    c[0] = C[k++];
+    c[1] = C[k++];
+    c[2] = C[k++];
+    results[2-i] = c;
+  }
+
+  // Now push the eigenvalues on as a GCoord...
+  c[0] = W[0];
+  c[1] = W[1];
+  c[2] = W[2];
+
+  results[3] = c;
+
+  return(results);
+}
+
+
+
+void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
+  cout << s << endl;
+  int i, j;
+
+  cout << "[" << endl;
+  for (j=0; j<m; j++) {
+    for (i=0; i<n; i++)
+      cout << setw(10) << A[i*m+j] << " ";
+    cout << ";\n";
+  }
+  cout << "];\n";
+
 }

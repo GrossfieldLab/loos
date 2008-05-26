@@ -32,6 +32,32 @@
 
 #include <boost/tuple/tuple.hpp>
 
+
+
+#if defined(__linux__)
+
+extern "C" {
+
+#include <atlas/cblas.h>
+#include <atlas/clapack.h>
+
+  void dsyev_(char*, char*, int*, double*, int*, double*, double*, int*, int*);
+
+}
+
+
+#elif defined(__APPLE__)
+
+#include <vecLib/vecLib.h>
+
+#else
+
+#warning Principal axes support will not be built in to the AtomicGroup class
+
+#endif
+
+
+
 using namespace std;
 using namespace tr1;
 
@@ -228,6 +254,9 @@ public:
   
   void copyCoordinates(AtomicGroup& g);
 
+  //! Compute the principal axes of a group
+  vector<GCoord> principalAxes(void) const;
+
 private:
 
   // *** Internal routines ***  See the .cpp file for details...
@@ -257,6 +286,8 @@ private:
     int id;
   };
 
+
+  void dumpMatrix(const string, double*, int, int) const;
 
   bool _sorted;
 

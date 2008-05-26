@@ -16,5 +16,13 @@ library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remar
 loos = env.Library('loos', library_files, CPPPATH=cpppath)
 
 
-doxy = env.Doxygen('Doxyfile')
-SConscript(['Examples/SConscript', 'Tests/SConscript'])
+docs = env.Doxygen('Doxyfile')
+examples = SConscript('Examples/SConscript')
+tests = SConscript('Tests/SConscript')
+
+env.Alias('docs', docs)
+env.Alias('examples', examples)
+env.Alias('tests', tests)
+env.Alias('all', loos + examples + tests + docs)
+
+env.Default(loos)
