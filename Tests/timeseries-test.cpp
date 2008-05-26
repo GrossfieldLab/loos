@@ -39,4 +39,10 @@ int main(int argc, char *argv[]) {
          << foo5.sterr() << "  "
          << endl;
 
+    cout << "Test Block averaging" << endl;
+    cout << 1 << "  " << foo5.block_var(1) << endl;
+    cout << 2 << "  " << foo5.block_var(2) << endl;
+    cout << 3 << "  " << foo5.block_var(3) << endl;
+    cout << 4 << "  " << foo5.block_var(4) << endl;
+    cout << 5 << "  " << foo5.block_var(5) << endl;
 }

@@ -286,6 +286,31 @@ public:
             result[i] = sum / window;
         }
     }
+
+    //! Return the variance of the block average for the time series.
+    //! Divides the timeseries into num_blocks equally sized blocks
+    //! (discarding the remaining blocks at the end), computes the average
+    //! for each block, and returns the variance of the averages.
+    //! This is useful for doing Flyvjberg and Jensen-style block averaging.
+    //! This should probably move to a TimeSeries.cpp
+    T block_var(const int num_blocks) const {
+        int points_per_block = size() / num_blocks;
+        T block_ave = 0.0;
+        T block_ave2 = 0.0;
+        for (int i=0; i<num_blocks; i++) {
+            T block_sum = 0.0;
+            int offset = i*points_per_block;
+            for (int j=0; j< points_per_block; j++) {
+                block_sum += _data[offset + j];
+            }
+            T ave = block_sum / points_per_block;
+            block_ave += ave;
+            block_ave2 += ave*ave;
+        }
+        block_ave /= num_blocks;
+        block_ave2 /= num_blocks;
+        return (block_ave2 - block_ave*block_ave);
+    }
     
 private:
     vector<T> _data;
