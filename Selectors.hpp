@@ -40,12 +40,24 @@ struct MainChainSelector : public AtomSelector {
 //! Predicate for selecting atoms based on the passed segid string
 struct SegidSelector : public AtomSelector {
   SegidSelector(const string s) : str(s) { }
+  ~SegidSelector() { }
   bool operator()(const pAtom& pa) const {
     return(pa->segid() == str);
   }
 
   string str;
 };
+
+//! Predicate for selecting atoms from a range of resid's
+struct ResidRangeSelector : public AtomSelector {
+  ResidRangeSelector(const int low, const int high) : _low(low), _high(high) { }
+  bool operator()(const pAtom& pa) const {
+    return(pa->resid() >= _low && pa->resid() <= _high);
+  }
+
+  int _low, _high;
+}
+
 
 //! Negates a selection predicate
 /*!
@@ -87,7 +99,8 @@ struct AndSelector : public AtomSelector {
     return(lhs(pa) && rhs(pa));
   }
 
-  const AtomSelector &lhs, &rhs;
+  const AtomSelector& lhs;
+  const AtomSelector& rhs;
 };
 
 
@@ -107,10 +120,12 @@ struct AndSelector : public AtomSelector {
 struct OrSelector : public AtomSelector {
   OrSelector(const AtomSelector& x, const AtomSelector& y) : lhs(x), rhs(y) { }
   bool operator()(const pAtom& pa) const {
+    cerr << "In OrSelector\n";
     return(lhs(pa) || rhs(pa));
   }
 
-  const AtomSelector &lhs, &rhs;
+  const AtomSelector& lhs;
+  const AtomSelector& rhs;
 };
 
 
