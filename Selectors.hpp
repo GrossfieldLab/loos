@@ -81,15 +81,15 @@ struct NotSelector : public AtomSelector {
 
 
 //! Combines two selectors with a logical "and"
-/*! Example:
-    \verbatim
-    SegidSelector prot("PROT");
-    MainChainSelector main_chain;
-    AndSelector main_chain_protein(main_chain, prot);
-    \endverbatim
-
-    The main_chain_protein selector will select for all atoms that are
-    both main chain and have a segid of "PROT".
+/** Example:
+ *  \verbatim
+ *  SegidSelector prot("PROT");
+ *  MainChainSelector main_chain;
+ *  AndSelector main_chain_protein(main_chain, prot);
+ *  \endverbatim
+ *
+ *  The main_chain_protein selector will select for all atoms that are
+ *  both main chain and have a segid of "PROT".
 */
 
 struct AndSelector : public AtomSelector {
@@ -105,15 +105,15 @@ struct AndSelector : public AtomSelector {
 
 
 //! Combines two selectors with a logical "or"
-/*! Example:
-    \verbatim
-    SegidSelector prot("PROT");
-    SegidSelector heme("HEME");
-    OrSelector prot_with_heme(prot, heme);
-    \endverbatim
-
-    This selector will pick any atom that has a segid of either "PROT"
-    or "HEME".
+/** Example:
+ *  \verbatim
+ *  SegidSelector prot("PROT");
+ *  SegidSelector heme("HEME");
+ *  OrSelector prot_with_heme(prot, heme);
+ *  \endverbatim
+ *
+ *  This selector will pick any atom that has a segid of either "PROT"
+ *  or "HEME".
 */
 
 struct OrSelector : public AtomSelector {
@@ -148,17 +148,17 @@ struct SolventSelector : public AtomSelector {
 
 
 //! Selection predicate that executes a compiled Kernel
-/*!
-  This predicate takes a compiled Kernel and executes it once for each
-  Atom.  This is primarily for use in conjunction with the Parser for
-  handling selections based on user input.
-
-  Example:
-  \verbatim
-  Parser parsed(selection_string);
-  KernelSelector sel(parsed.kernel());
-  \endverbatim
-
+/**
+ * This predicate takes a compiled Kernel and executes it once for each
+ * Atom.  This is primarily for use in conjunction with the Parser for
+ * handling selections based on user input.
+ *
+ * Example:
+ * \verbatim
+ * Parser parsed(selection_string);
+ * KernelSelector sel(parsed.kernel());
+ * \endverbatim
+ *
  */
 class KernelSelector : public AtomSelector {
 public:

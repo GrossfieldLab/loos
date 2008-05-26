@@ -27,27 +27,27 @@
 using namespace std;
 
 //! Class for reading DCD files
-/*!
-
-  Instantiating a DCD object with either a filename or an ifstream
-  only reads the header from the file, not any frames.  When a frame
-  is read, the x,y,z coordinates are stored internally in a vector.
-  This must be copied out to the caller or used to update the
-  coordinates for an AtomicGroup.
-
-  Notes:
-
-    - Does NOT handle ENDIAN issues (i.e. auto-swab)
-
-    - Does NOT support fixed atoms
-
-    - Does NOT support velocity format
-
-    - Reorders the crystal parameters (if present) so they are in
-      a more sensible order (i.e. a, b, c, alpha, beta, gamma)
-      
-    - [Almost] everything returned is a copy
-*/
+/**
+ *
+ *Instantiating a DCD object with either a filename or an ifstream
+ *only reads the header from the file, not any frames.  When a frame
+ *is read, the x,y,z coordinates are stored internally in a vector.
+ *This must be copied out to the caller or used to update the
+ *coordinates for an AtomicGroup.
+ *
+ *Notes:
+ *
+ *  - Does NOT handle ENDIAN issues (i.e. auto-swab)
+ *
+ *  - Does NOT support fixed atoms
+ *
+ *  - Does NOT support velocity format
+ *
+ *  - Reorders the crystal parameters (if present) so they are in
+ *    a more sensible order (i.e. a, b, c, alpha, beta, gamma)
+ *    
+ *  - [Almost] everything returned is a copy
+ */
 class DCD : public boost::noncopyable {
 
   // Use a union to convert data to appropriate type...

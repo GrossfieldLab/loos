@@ -13,11 +13,13 @@ import sys
 debug_opts='-g -Wall'
 release_opts='-O3'
 
+# Setup the environment...
 env = Environment(tools = ["default", "doxygen"], toolpath = '.')
 env.Append(CPPPATH = '#')
 env.Append(LIBPATH = '#')
 env.Append(LIBS = ['loos', 'boost_regex'])
 
+# Platform specific build options...
 if sys.platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
 elif sys.platform == 'linux2':
@@ -33,9 +35,10 @@ if int(release):
 else:
     env.Append(CCFLAGS=debug_opts)
 
+# Export for subsidiary SConscripts
 Export('env')
 
-
+# Build the LOOS library...
 library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp grammar.yy scanner.ll')
 loos = env.Library('loos', library_files)
 
@@ -45,6 +48,9 @@ env.Default(loos)
 docs = env.Doxygen('Doxyfile')
 examples = SConscript('Examples/SConscript')
 tests = SConscript('Tests/SConscript')
+
+
+# build targets...
 
 env.Alias('docs', docs)
 env.Alias('examples', examples)

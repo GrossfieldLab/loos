@@ -26,10 +26,10 @@ using namespace std;
 #include <loos.hpp>
 
 //! Class for handling PDB Remarks
-/*!
-  This class just manages a vector of strings, but it will
-  truncate/pad the input strings to the appropriate length for a PDB
-  file and then output them with record numbers.
+/**
+ *This class just manages a vector of strings, but it will
+ *truncate/pad the input strings to the appropriate length for a PDB
+ *file and then output them with record numbers.
  */
 class Remarks {
 public:

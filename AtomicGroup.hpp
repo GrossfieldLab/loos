@@ -85,19 +85,20 @@ struct AtomSelector {
 
 
 //! Class for handling groups of Atoms (pAtoms, actually)
-//! This class contains a collection of shared pointers to Atoms
-//! (i.e. pAtoms).  Copying an AtomicGroup is a light-copy.  You can,
-//! however, perform a deep copy by using the AtomicGroup::clone()
-//! method.  Note that atomid's are assumed to be unique for any given
-//! AtomicGroup.
-//!
-//! The AtomicGroup also contains a XForm object for specifying
-//! geometric transforms for the contained Atoms.  You can apply this
-//! transform to the Atoms themselves, but be aware that doing so does
-//! not reset the transform back to identity.
-//!
-//! Valid operators are '+' and '+=' and can combine either
-//! AtomicGroup objects or pAtom objects.
+/** This class contains a collection of shared pointers to Atoms
+ * (i.e. pAtoms).  Copying an AtomicGroup is a light-copy.  You can,
+ * however, perform a deep copy by using the AtomicGroup::clone()
+ * method.  Note that atomid's are assumed to be unique for any given
+ * AtomicGroup.
+ *
+ * The AtomicGroup also contains a XForm object for specifying
+ * geometric transforms for the contained Atoms.  You can apply this
+ * transform to the Atoms themselves, but be aware that doing so does
+ * not reset the transform back to identity.
+ * 
+ * Valid operators are '+' and '+=' and can combine either
+ * AtomicGroup objects or pAtom objects.
+*/
 
 
 class AtomicGroup {
@@ -146,9 +147,10 @@ public:
   AtomicGroup operator+(const pAtom& rhs);
 
   //! subset() and excise() args are patterned after perl's substr...
-  //! If offset is negative, then it's relative to the end of the
-  //! group.  If length is 0, then everything from offset to the
-  //! appropriate end is used...
+  /** If offset is negative, then it's relative to the end of the
+   * group.  If length is 0, then everything from offset to the
+   * appropriate end is used...
+   */
   AtomicGroup subset(const int offset, const int len = 0);
 
   //! excise returns the excised atoms as a group...
@@ -189,21 +191,21 @@ public:
   // *** Helper classes...
 
   //! Our own simple iterator for stepping over all managed atoms.
-  /*! Example:
-      \verbatim
-      AtomicGroup::Iterator iter(an_atomic_group);
-      pAtom p;
-
-      while (p = iter())
-        do_something(p);
-      \endverbatim
-
-      Note that the shared atom returned is a copy of the shared-atom
-      pointer stored, rather than a ref to the shared atom pointer...
-      You should exercise GREAT care in modifying the atom while
-      iterating, or performing any operations that modify the group
-      you're iterating over.  In fact, don't do it, unless you are
-      sure you know what you're doing.
+  /** Example:
+   *  \verbatim
+   *  AtomicGroup::Iterator iter(an_atomic_group);
+   *  pAtom p;
+   *
+   *   while (p = iter())
+   *    do_something(p);
+   *  \endverbatim
+   *
+   *  Note that the shared atom returned is a copy of the shared-atom
+   *  pointer stored, rather than a ref to the shared atom pointer...
+   *  You should exercise GREAT care in modifying the atom while
+   *  iterating, or performing any operations that modify the group
+   *  you're iterating over.  In fact, don't do it, unless you are
+   *  sure you know what you're doing.
    */
   class Iterator {
   public:
@@ -252,14 +254,41 @@ public:
 
 
   //! Copy coordinates from one group into another...
-  //! If the groups match in size, then a straight copy ensues.
-  //! Otherwise, an attempt will be made to pick the correct
-  //! coordinates...this could be a pretty costly operation...  Also
-  //! note that this may change (sort) the group 'g'...
+  /** If the groups match in size, then a straight copy ensues.
+   * Otherwise, an attempt will be made to pick the correct
+   * coordinates...this could be a pretty costly operation...  Also
+   * note that this may change (sort) the group 'g'...
+   */
   
   void copyCoordinates(AtomicGroup& g);
 
   //! Compute the principal axes of a group
+  /** Calculates the eigendecomposition of AA' where A is column-wise
+   * concatenation of coordinates from all atoms in the group.  The mean
+   * coordinate is automatically subtracted from A...  Returns a vector
+   * of GCoord's in order of decreasing magnitude of the corresponding
+   * eigenvalue.  The eigenvalues are returned as a GCoord after the
+   * eigenvectors.
+   *
+   * Example
+   * \code
+   *     vector<GCoord> V = group_of_atoms.principalAxes();
+   *     GCoord eigenvalues = V[3];
+   *     GCoord first_eigenvector = V[0];   // Most significant
+   *     GCoord second_eigenvector = V[1];
+   *     GCoord third_eigenvector = V[2];   // Least significant
+   * \endcode
+   *
+   * Notes
+   *  - Any errors encountered in the BLAS/LAPACK routines cause
+   *    a runtime exception to be thrown...
+   * 
+   *  - Coord type of contained atoms will always be upcast to double.
+   *
+   *  - Potential issue with f77int under linux when not on a 64-bit
+   *    architecture. 
+   * 
+   */
   vector<GCoord> principalAxes(void) const;
 
 private:

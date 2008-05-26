@@ -177,10 +177,11 @@ public:
   }
 
   //! Multiplication by a constant.
-  //! Each element is multiplied by the same constant
-  //! This operator [hopefully] prevents auto-casting
-  //! of the constant to a matrix and then a matrix-matrix
-  //! multiply, but beware...
+  /** Each element is multiplied by the same constant
+   * This operator [hopefully] prevents auto-casting
+   * of the constant to a matrix and then a matrix-matrix
+   * multiply, but beware...
+   */
 
   Matrix44<T>& operator*=(const T x) {
     for (int i = 0; i < 16; i++)

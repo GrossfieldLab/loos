@@ -12,13 +12,12 @@ Import('env')
 
 
 
-test_apps = 'atomic_grp_tst pdb_tst parser_tst princ_axes_tst timeseries_tst'
+test_apps = 'atomic-group-test pdb-test parser-test princ_axes_tst timeseries-test'
+list = []
 
+for name in Split(test_apps):
+    fname = name + '.cpp'
+    prog = env.Program(fname)
+    list.append(prog)
 
-atomic_grp_tst = env.Program('atomic-group-test.cpp')
-pdb_tst = env.Program('pdb-test.cpp')
-parser_tst = env.Program('parser-test.cpp')
-princ_axes_tst = env.Program('princ_axes_tst.cpp')
-timeseries_tst = env.Program('timeseries-test.cpp')
-
-Return(test_apps)
+Return('list')

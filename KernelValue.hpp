@@ -33,9 +33,9 @@ namespace loos {
   const float FLT_THRESHOLD = 1e-10;     // Threshold for floating equality
 
   //! Value class for the LOOS Kernel (virtual machine)
-  /*!
-    These are the "values" that are on the data
-    stack for the Kernel...
+  /**
+   * These are the "values" that are on the data
+   * stack for the Kernel...
   */
 
   struct Value {
@@ -129,18 +129,17 @@ namespace loos {
 
 
   //! Compare two Value objects, depending on their types.
-  /*!
-    Returns -1 if x < y
-             0 if x = y
-             1 if x > y
-  
-    For strings, this is based on the lexical value...
-    For floats, the equality is determined by the FLT_THRESHOLD
-    constant...
-   
-    Comparison of non-like types is an error...
-
-  */
+  /**
+   * Returns -1 if x < y
+   *          0 if x = y
+   *         1 if x > y
+   *
+   * For strings, this is based on the lexical value...
+   * For floats, the equality is determined by the FLT_THRESHOLD
+   * constant...
+   *
+   * Comparison of non-like types is an error...
+   */
   int compare(const Value&, const Value&);
 
 

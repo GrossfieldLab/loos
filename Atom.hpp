@@ -34,14 +34,14 @@ class Atom;
 typedef shared_ptr<Atom> pAtom;
 
 //! Basic Atom class for handling atom properties.
-/*!
-  This class handles atoms and atom properties.  It stores a GCoord
-  coordinate internally.  Bonds are included, but are represented as a
-  vector of atom-id's, which are assumed to be unique per atom...
-
-  Most properties are derived from the PDB file specification.
-  Exceptions are noted below.  Accessors for each property are
-  provided and should be self-explanatory...
+/**
+ * This class handles atoms and atom properties.  It stores a GCoord
+ * coordinate internally.  Bonds are included, but are represented as a
+ * vector of atom-id's, which are assumed to be unique per atom...
+ *
+ * Most properties are derived from the PDB file specification.
+ * Exceptions are noted below.  Accessors for each property are
+ * provided and should be self-explanatory...
 */
 
   
@@ -50,11 +50,11 @@ public:
   Atom() { init(); }
 
   //! Constructs an atom with the atomid i, atomname s, and coordinates c.
-  /*!
-    Constructs a new atom.
-    \param i atom-id
-    \param s atom-name
-    \param c Coordinates
+  /**
+   * Constructs a new atom.
+   * \param i atom-id
+   * \param s atom-name
+   * \param c Coordinates
   */
 
   Atom(const int i, const string s, const GCoord& c) {

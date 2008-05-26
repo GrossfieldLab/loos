@@ -557,27 +557,6 @@ void AtomicGroup::copyCoordinates(AtomicGroup& g) {
 }
 
 
-/** Calculates the eigendecomposition of AA' where A is column-wise
- * concatenation of coordinates from all atoms in the group.  The mean
- * coordinate is automatically subtracted from A...  Returns a vector
- * of GCoord's in order of decreasing magnitude of the corresponding
- * eigenvalue.  The eigenvalues are returned as a GCoord after the
- * eigenvectors.
- *
- * Example
- * \code
- *     vector<GCoord> V = group_of_atoms.principalAxes();
- *     GCoord eigenvalues = V[3];
- *     GCoord first_eigenvector = V[0];   // Most significant
- *     GCoord second_eigenvector = V[1];
- *     GCoord third_eigenvector = V[2];   // Least significant
- * \endcode
- *
- * Note that any errors encountered in the BLAS/LAPACK routines cause
- * a runtime exception to be thrown...
- * 
- */
-
 #if defined(__linux__) || defined(__APPLE__)
 
 vector<GCoord> AtomicGroup::principalAxes(void) const {

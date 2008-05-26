@@ -39,13 +39,13 @@ namespace loos {
 
 
   //! Base class for all commands...
-  /*! All subclasses must implement the execute() method, which will
-      operate on the data stack pointer.
-
-      Subclasses may also override the name() method if they want to
-      augment the command-name string (i.e. to show additional internal
-      data)
-  */
+  /** All subclasses must implement the execute() method, which will
+   *  operate on the data stack pointer.
+   *
+   *  Subclasses may also override the name() method if they want to
+   *  augment the command-name string (i.e. to show additional internal
+   *  data)
+   */
 
   
   class Action {
@@ -194,9 +194,10 @@ namespace loos {
   };
 
   //! Regular expression matching: ARG1 regexp(S)
-  //! Compiles the passed string into a regex pattern at instantiation,
-  //! then at execution matches the top stack entry against the
-  //! pattern...
+  /** Compiles the passed string into a regex pattern at instantiation,
+   * then at execution matches the top stack entry against the
+   * pattern...
+   */
 
   class matchRegex : public Action {
     boost::regex regexp;
@@ -220,10 +221,11 @@ namespace loos {
 
 
   //! Regular expression matching: ARG1 regexp(ARG2)
-  //! Takes the top item on the stack and compiles this into a regular
-  //! expression, then matches it against the next item on the stack.
-  //! This is likely to be pretty inefficient, so it's better to use
-  //! matchRegex instead if you can.
+  /** Takes the top item on the stack and compiles this into a regular
+   * expression, then matches it against the next item on the stack.
+   * This is likely to be pretty inefficient, so it's better to use
+   * matchRegex instead if you can.
+   */
   class matchStringAsRegex : public Action {
   public:
     matchStringAsRegex() : Action("matchStringAsRegex") { }

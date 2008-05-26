@@ -11,18 +11,14 @@ import sys
 
 Import('env')
 
-example_apps = 'coord_example dcd_example pdb_example dcd_example2 dcd_example3 center_pdb psf_example pdb_parsed'
+example_apps = 'coord-example dcd-example pdb-example dcd-example2 dcd-example3 center-pdb psf-example pdb-parsed'
+#example_apps += ' charge-density.cpp'
 
+list = []
 
-coord_example = env.Program('coord-example.cpp')
-dcd_example = env.Program('dcd-example.cpp')
-pdb_example = env.Program('pdb-example.cpp')
-dcd_example2 = env.Program('dcd-example2.cpp')
-dcd_example3 = env.Program('dcd-example3.cpp')
-center_pdb = env.Program('center-pdb.cpp')
-psf_example = env.Program('psf-example.cpp')
-pdb_parsed = env.Program('pdb-parsed.cpp')
-#charge_density = env.Program('charge-density.cpp')
+for name in Split(example_apps):
+    fname = name + '.cpp'
+    prog = env.Program(fname)
+    list.append(prog)
 
-
-Return(example_apps)
+Return('list')

@@ -29,44 +29,44 @@ template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
 
 
 //! Basic 3-D coordinates class.
-/*!
-  Coordinates are stored internally as homogenous coordinates in an
-  array of T.  There is some awkward support for making coordinates in
-  higher-dimensions, but caveat programmer...
-  
-
-  Warnings:
-
-    - The modulus operator assumes that T can be converted to double
-      and back since it does this internally to use fmod().
-
-    - The distance() and length() methods assume that T can be
-      converted into a double (and return a double as the result).
-
-
-
-  Notes:
-
-    - The size of the stored coords is determined by the CoordIndex
-      enum.  Places where The size is effectively hard-coded are in
-      the constructor, the individual accessors, and in the
-      cross-product.  Internally, the coords are homogenous, being of
-      size n+1 where the n+1th element is always 1...
-
-    - Performance will probably suffer until you set the optimization
-      level high enough to do some loop-unrolling.
-
-    - The +, -, and * operation are symmetric with respect to T,
-      i.e. 1 + v and v + 1 are the same
-
-    - The precedence for the cross-product operator ^ is low, so be
-      careful
-
-    - The * operator has dual use...  If either side is a T, then that
-      value will be multiplied across all elements of the coord.  If
-      it is a Coord<T>, then the dot- product will be computed.
-      What's a little confusion amongst friends???
-*/
+/**
+ * Coordinates are stored internally as homogenous coordinates in an
+ * array of T.  There is some awkward support for making coordinates in
+ * higher-dimensions, but caveat programmer...
+ *
+ *
+ * Warnings:
+ *
+ *  - The modulus operator assumes that T can be converted to double
+ *    and back since it does this internally to use fmod().
+ *
+ *  - The distance() and length() methods assume that T can be
+ *    converted into a double (and return a double as the result).
+ *
+ *
+ *
+ *Notes:
+ *
+ *  - The size of the stored coords is determined by the CoordIndex
+ *    enum.  Places where The size is effectively hard-coded are in
+ *    the constructor, the individual accessors, and in the
+ *    cross-product.  Internally, the coords are homogenous, being of
+ *    size n+1 where the n+1th element is always 1...
+ *
+ *  - Performance will probably suffer until you set the optimization
+ *    level high enough to do some loop-unrolling.
+ *
+ *  - The +, -, and * operation are symmetric with respect to T,
+ *    i.e. 1 + v and v + 1 are the same
+ *
+ *  - The precedence for the cross-product operator ^ is low, so be
+ *    careful
+ *
+ *  - The * operator has dual use...  If either side is a T, then that
+ *    value will be multiplied across all elements of the coord.  If
+ *    it is a Coord<T>, then the dot- product will be computed.
+ *    What's a little confusion amongst friends???
+ */
 
 template <class T>
 class Coord {

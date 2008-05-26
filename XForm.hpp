@@ -33,42 +33,41 @@ const double PI = 4.0*atan(1.0);
 
 
 //! Matrix class for handling coordinate transforms...
-/*!
-  This is based on the OpenGL/RenderMan model of handling geometric
-  transforms.  Coords are expected to be homegenous and the
-  transformation matrix is 4x4.  Rotations are all left-handed.
-
-  The transform mantains a stack of transformation matrices that you
-  can push and pop as necessary.  You can also load the current
-  transformation with an arbitrary matrix.
-
-  Transformations are concatenated by post-multiplication.  This means
-  the last declared transformation is the first one applied to an
-  atom's coordinates...  Imagine you've defined a set of
-  transformations in your code: 
-  \verbatim
-
-    rotate       ->  M_r
-    translate    ->  M_t
-    scale        ->  M_s
-  \endverbatim
-
-  These are post-multiplied together to create the composite
-  transformation matrix:
-  \verbatim
-    M = M_r * M_t * M_s
-  \endverbatim
-
-  Now, when you transform your coordinate vector, it's just the
-  matrix-vector multiplication:
-  \verbatim
-    v' = Mv = M_r * M_t * M_s * v
-  \endverbatim
-
-  So from the perspective of the atom's coordinate frame, we're
-  scaled, then translated, then rotated into the global
-  coordinates... 
-*/
+/** This is based on the OpenGL/RenderMan model of handling geometric
+ * transforms.  Coords are expected to be homegenous and the
+ * transformation matrix is 4x4.  Rotations are all left-handed.
+ *
+ * The transform mantains a stack of transformation matrices that you
+ * can push and pop as necessary.  You can also load the current
+ * transformation with an arbitrary matrix.
+ *
+ * Transformations are concatenated by post-multiplication.  This means
+ * the last declared transformation is the first one applied to an
+ * atom's coordinates...  Imagine you've defined a set of
+ * transformations in your code: 
+ * \verbatim
+ *
+ *  rotate       ->  M_r
+ *  translate    ->  M_t
+ *  scale        ->  M_s
+ * \endverbatim
+ *
+ * These are post-multiplied together to create the composite
+ * transformation matrix:
+ * \verbatim
+ *  M = M_r * M_t * M_s
+ * \endverbatim
+ *
+ *  Now, when you transform your coordinate vector, it's just the
+ *  matrix-vector multiplication:
+ *  \verbatim
+ *   v' = Mv = M_r * M_t * M_s * v
+ *  \endverbatim
+ *
+ * So from the perspective of the atom's coordinate frame, we're
+ * scaled, then translated, then rotated into the global
+ * coordinates... 
+ */
 
 class XForm {
   vector<GMatrix> stack;
