@@ -20,3 +20,4 @@ libpath = ['..']
 atomic_grp_tst = env.Program('atomic-group-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 pdb_tst = env.Program('pdb-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
 parser_tst = env.Program('parser-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
+timeseries_tst = env.Program('timeseries-test.cpp', LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath)
