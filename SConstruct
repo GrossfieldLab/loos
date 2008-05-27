@@ -37,7 +37,7 @@ if not env.GetOption('clean'):
 	  if checks:
 	     break
       if not checks:
-          print "***ERROR*** Missing libraries: ", map(STR, missing)
+          print "***ERROR*** Missing libraries: ", missing
 	  Exit(1)
 
       if prior != None:
