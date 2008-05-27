@@ -40,12 +40,12 @@ public:
         read(ifs);
     }
 
+  PSF(const AtomicGroup& grp) : AtomicGroup(grp) { }
+
     // till I figure out what's wrong with this
-#if 0
     virtual PSF *clone(void) const {
         return(new PSF(*(this->AtomicGroup::clone())));
     }
-#endif
 
    void read(istream& is);  
 
