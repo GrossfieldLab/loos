@@ -28,6 +28,7 @@ elif sys.platform == 'linux2':
                                                        # rather than append...
 
 
+
 # Determine what kind of build...
 release=ARGUMENTS.get('release', 0)
 if int(release):
@@ -38,7 +39,8 @@ else:
 debug=ARGUMENTS.get('debug', 0)
 if int(debug):
    if int(release):
-      raise EnvironmentError, "You cannot have a release with debugging code included."
+      print "***ERROR*** You cannot have a release with debugging code included."
+      Exit(1)
    env.Append(CCFLAGS=" -DDEBUG")
 
 
