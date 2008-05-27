@@ -8,25 +8,46 @@
 
 import sys
 
+env = Environment(tools = ["default", "doxygen"], toolpath = '.')
+
+# Some rudimentary autoconfish stuff...
+if not env.GetOption('clean'):
+   conf = Configure(env)
+   if not conf.CheckLib('boost_regex'):
+      print "***ERROR*** You must have the Boost regular expression libraries installed"
+      Exit(1)
+
+   if sys.platform == 'linux2':
+      if not conf.CheckLib('lapack'):
+         print "***ERROR*** You must have lapack installed"
+         Exit(1)
+      if not conf.CheckLib('atlas'):
+         env.Append(LIBPATH = ['/usr/lib64/atlas'])
+         if not conf.CheckLib('atlas'):
+            env.Append(LIBPATH = ['/usr/lib/atlas'])
+            if not conf.CheckLib('atlas'):
+               print "***ERROR*** Could not find ATLAS library."
+               Exit(1)
+
+   env = conf.Finish()
+
 ### Compile-flags
 
 debug_opts='-g -Wall'
 release_opts='-O3'
 
-# Setup the environment...
-env = Environment(tools = ["default", "doxygen"], toolpath = '.')
-env.Append(CPPPATH = '#')
-env.Append(LIBPATH = '#')
+# Setup the general environment...
+env.Append(CPPPATH = ['#'])
+env.Append(LIBPATH = ['#'])
 env.Append(LIBS = ['loos', 'boost_regex'])
+
 
 # Platform specific build options...
 if sys.platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
+
 elif sys.platform == 'linux2':
    env.Append(LIBS = ['lapack', 'atlas'])
-   env.Replace(LIBPATH = ['#', '/usr/lib64/atlas'])    # Not sure why I have to replace
-                                                       # rather than append...
-
 
 
 # Determine what kind of build...
