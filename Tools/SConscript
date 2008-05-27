@@ -11,11 +11,11 @@ import sys
 
 Import('env')
 
-example_apps = 'coord-example dcd-example pdb-example dcd-example2 dcd-example3 psf-example pdb-parsed'
+apps = 'charge-density center-pdb'
 
 list = []
 
-for name in Split(example_apps):
+for name in Split(apps):
     fname = name + '.cpp'
     prog = env.Program(fname)
     list.append(prog)
