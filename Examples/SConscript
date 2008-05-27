@@ -11,7 +11,7 @@ import sys
 
 Import('env')
 
-example_apps = 'coord-example dcd-example pdb-example dcd-example2 dcd-example3 psf-example pdb-parsed'
+example_apps = 'coord-example dcd-example pdb-example dcd-example2 dcd-example3 psf-example pdb-parsed pdb-splitter'
 
 list = []
 

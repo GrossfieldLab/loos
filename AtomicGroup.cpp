@@ -229,6 +229,28 @@ AtomicGroup AtomicGroup::select(AtomSelector& sel) {
 }
 
 
+// Split up a group into a vector of groups based on unique segids...
+vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
+  ConstAtomIterator i;
+  UniqueStrings unique;
+
+  for (i = atoms.begin(); i != atoms.end(); i++)
+    unique.add((*i)->segid());
+
+  int n = unique.size();
+  int j;
+  vector<AtomicGroup> results(n);
+  for (i = atoms.begin(); i != atoms.end(); i++) {
+    j = unique.find((*i)->segid());
+    if (j < 0)
+      throw runtime_error("Could not find an atom we already found...");
+	
+    results[j].append(*i);
+  }
+
+  return(results);
+}
+
 
 
 // Need to check how find_if() actually searches since we have

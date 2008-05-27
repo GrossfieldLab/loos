@@ -70,7 +70,7 @@ using namespace tr1;
 #include <loos.hpp>
 #include <Atom.hpp>
 #include <XForm.hpp>
-
+#include <UniqueStrings.hpp>
 
 
 //! Virtual base-class for selecting atoms from a group
@@ -163,6 +163,9 @@ public:
 
   //! Return a group consisting of atoms for which sel predicate returns true...
   AtomicGroup select(AtomSelector& sel);
+
+  //! Returns a vector of AtomicGroups split from the current group based on segid
+  vector<AtomicGroup> splitByUniqueSegid(void) const;
 
   //! Find a contained atom by its atomid
   pAtom findById(const int id);

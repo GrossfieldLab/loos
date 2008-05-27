@@ -109,7 +109,7 @@ void PDB::parseAtomRecord(const string s) {
   t = parseString(s, 16, 1);
   pa->altLoc(t);
 
-  t = parseString(s, 17, 3);
+  t = parseString(s, 17, 4);
   pa->resname(t);
 
   t = parseString(s, 21, 1);

@@ -198,7 +198,7 @@ you must anchor it:
 \verbatim
 name =~ "^(C|CA|CB|O|N)$"
 \endverbatim
-
+<hr>
 \section kahuna Putting It All Together...
 When you perform a selection on an AtomicGroup using the selection
 language, the expression is evaluated once for each atom in the
