@@ -28,8 +28,8 @@ struct CAlphaSelector : public AtomSelector {
   }
 };
 
-//! Predicate for selecting main chain atoms
-struct MainChainSelector : public AtomSelector {
+//! Predicate for selecting backbone
+struct BackboneSelector : public AtomSelector {
   bool operator()(const pAtom& pa) const {
     string s = pa->name();
     return(s == "C" || s == "CA" || s == "O" || s == "N");

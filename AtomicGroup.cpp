@@ -521,41 +521,6 @@ void AtomicGroup::applyTransformation(void) {
 }
 
 
-void AtomicGroup::copyCoordinatesById(AtomicGroup& g) {
-  pAtom atom;
-  AtomIterator i;
-
-  for (i=atoms.begin(); i != atoms.end(); i++) {
-    atom = g.findById( (*i)->id() );
-    if (atom) {
-      (*i)->coords(atom->coords());
-    }
-  }
-}
-
-
-// This method will copy the coordinates from one group into the
-// current group's.  If the sizes don't match, then we search for
-// matching atoms based on atomids, which are assumed to be unique.
-// This means that you could potentially be updating only a subset of
-// your group's coordinates...
-//
-// If the size of the two groups is the same, then it is assumed that
-// there is a one-to-one mapping between them and the coordinates are
-// copied straight across.
-
-void AtomicGroup::copyCoordinates(AtomicGroup& g) {
-  
-  if (g.size() != size())
-    copyCoordinatesById(g);
-  else {
-    AtomIterator i, j;
-
-    for (i = atoms.begin(), j = g.atoms.begin(); i != atoms.end(); i++, j++)
-      (*i)->coords((*j)->coords());
-  }
-}
-
 
 #if defined(__linux__) || defined(__APPLE__)
 
@@ -649,4 +614,42 @@ void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
   }
   cout << "];\n";
 
+}
+
+// Returns a newly allocated array of double coords in row-major
+// order...
+double* AtomicGroup::coordsAsArray(void) const {
+  double *A;
+  int n = size();
+
+  A = new double[n*3];
+  int k = 0;
+  int i;
+  for (i=0; i<n; i++) {
+    A[k++] = atoms[i]->coords().x();
+    A[k++] = atoms[i]->coords().y();
+    A[k++] = atoms[i]->coords().z();
+  }
+
+  return(A);
+}
+
+// Returns a newly allocated array of double coords in row-major order
+// transformed by the current transformation.
+double* AtomicGroup::transformedCoordsAsArray(void) const {
+  double *A;
+  GCoord x;
+  int n = size();
+  
+  A = new double[n*3];
+  int k = 0;
+  int i;
+  for (i=0; i<n; i++) {
+    x = _xform.current() * atoms[i]->coords();
+    A[k++] = x.x();
+    A[k++] = x.y();
+    A[k++] = x.z();
+  }
+
+  return(A);
 }

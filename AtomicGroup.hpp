@@ -94,7 +94,9 @@ struct AtomSelector {
  * The AtomicGroup also contains a XForm object for specifying
  * geometric transforms for the contained Atoms.  You can apply this
  * transform to the Atoms themselves, but be aware that doing so does
- * not reset the transform back to identity.
+ * not reset the transform back to identity.  Also, some geometric
+ * operations work in group coordinate space (i.e. untransformed)
+ * whereas some will operate in world coordinates (i.e. transformed).
  * 
  * Valid operators are '+' and '+=' and can combine either
  * AtomicGroup objects or pAtom objects.
@@ -229,12 +231,13 @@ public:
   //! Bounding box for the group...
   BoundingBox boundingBox(void) const;
 
-  //! Centroid of atoms (ignores mass)
+  //! Centroid of atoms (ignores mass, operates in group coordinates)
   GCoord centroid(void) const;
 
   //! Maximum radius from centroid of all atoms (not gyration)
   greal radius(void) const;
 
+  //! Center of mass of the group (in group coordinates)
   GCoord centerOfMass(void) const;
   greal totalCharge(void) const;
   greal totalMass(void) const;
@@ -254,13 +257,17 @@ public:
 
 
   //! Copy coordinates from one group into another...
-  /** If the groups match in size, then a straight copy ensues.
-   * Otherwise, an attempt will be made to pick the correct
-   * coordinates...this could be a pretty costly operation...  Also
-   * note that this may change (sort) the group 'g'...
+  /** Requires that the groups be the same size and that the ith atom
+   * in group g matches the ith atom in the current group.
    */
   
-  void copyCoordinates(AtomicGroup& g);
+  void copyCoordinates(AtomicGroup& g) {
+    AtomIterator i, j;
+
+    for (i = atoms.begin(), j = g.atoms.begin(); i != atoms.end(); i++, j++)
+      (*i)->coords((*j)->coords());
+  }
+
 
 #if defined(__linux__) || defined(__APPLE__)
   //! Compute the principal axes of a group
@@ -288,6 +295,8 @@ public:
    *
    *  - Potential issue with f77int under linux when not on a 64-bit
    *    architecture. 
+   *
+   *  - Operates in group coordinates.
    * 
    */
   vector<GCoord> principalAxes(void) const;
@@ -324,6 +333,8 @@ private:
 
 
   void dumpMatrix(const string, double*, int, int) const;
+  double *coordsAsArray(void) const;
+  double *transformedCoordsAsArray(void) const;
 
   bool _sorted;
 

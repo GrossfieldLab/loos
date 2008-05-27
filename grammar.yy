@@ -120,7 +120,7 @@ if (*($1) == "name")
    driver.kern.push(new pushAtomName);
 else if (*($1) == "resname")
    driver.kern.push(new pushAtomResname);
-else if (*($1) == "segid")
+else if (*($1) == "segid" || *($1) == "segname")
    driver.kern.push(new pushAtomSegid);
 else
    loos::parse_error("Unknown string keyword " + *($1));

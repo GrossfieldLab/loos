@@ -1,6 +1,7 @@
 /*!
 
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
+
 \section Introduction
 
 Welcome to the LOOS library.  The first product of the Grossfield Lab
@@ -35,10 +36,185 @@ run-time with a string like:
 (resid >= 10 && resid <= 100) && (segid == "PROT" || segid == "HEME") && !(name =~ "H")
 \endverbatim
 which picks atoms with resid's between 10 and 100, a segid of either
-"HEME" or "PROT", and all non-hydrogen atoms.
+"HEME" or "PROT", and all non-hydrogen atoms.  PERL-style regular
+expressions are also supported using the "=~" operator.
+
+More information is available here:
+     \subpage selections "Selection Language"
+
 
 \section Bugs
 There are none...only features.  So don't worry about them!
 (email me directly for now)
+
+*/
+
+
+/*! \page selections Selection Language
+
+\section Language Description
+
+The selection string parser is a relatively simpled parser patterned
+after C/PERL expressions and includes support for PERL-style regular
+expressions via Boost.  There are two kinds of literals supported:
+strings and numbers.  Numbers are any valid integer.  Strings are
+delimited by either single quotes or double quotes, so both of the
+following are valid strings: 
+\verbatim
+"a string"
+'another string'
+\endverbatim
+
+You can also embed a quote in a string, not that you should ever
+really need to, by escaping it with a back-slash, i.e.
+\verbatim
+'here\'s another string'
+\endverbatim
+
+The parser also recognizes a small set of keywords that evaluate to
+Atom properties.  These keywords fall into two types as well: those
+that evaluate to a number (id, resid) and those that evaluate to a
+string (name, resname, segname or segid).  Keep in mind that keywords
+are not substitutions, but are more like a pre-defined function that
+returns that atom property.  So you cannot put a keyword in a string
+and expect it to be substituted with the appropriate value, for example.
+
+\subsection relops Relational Operators
+<table align="center">
+<tr align="center"><th>Operator</th><th>Operation</th> <th>Strings</th><th>Numbers</th><th>Example</th></tr>
+<tr align="center"><td>&gt;</td><td>Greater than</td><td>yes</td><td>yes</td><td>resid &gt; 10</td></td>
+<tr align="center"><td>&gt;=</td><td>Greater than or equals</td><td>yes</td><td>yes</td><td>resid &gt;= 10</td></td>
+<tr align="center"><td>&lt;=</td><td>Less than or equals</td><td>yes</td><td>yes</td><td>resid &lt;= 50</td></td>
+<tr align="center"><td>&lt;</td><td>Less than</td><td>yes</td><td>yes</td><td>resid &lt; 50</td></td>
+<tr align="center"><td>==</td><td>Exactly equals</td><td>yes</td><td>yes</td><td>name == "CA"</td></td>
+<tr align="center"><td>!=</td><td>Doesn't equals exactly</td><td>yes</td><td>yes</td><td>segname != "SOLV"</td></td>
+<tr align="center"><td>=~</td><td>Regular expression match</td><td>yes</td><td>no</td><td>name =~ "^(C[A]?|N|O)$"</td></td>
+</table>
+
+\subsection logops Logical Operators
+<table align="center">
+<tr align="center"><th>Operator</th><th>Operation</th><th>Example</th></tr>
+<tr align="center"><td>&&</td><td>Logical And</td><td>name == "CA" && segid == "PROT"</td></tr>
+<tr align="center"><td>||</td><td>Logical Or</td><td>segid == "SOLV" || segid == "BULK"</td></tr>
+<tr align="center"><td>!</td><td>Not (Negate)</td><td>!(segid == "SOLV")</td></tr>
+</table>
+
+\subsection keywords Keywords
+<table align="center">
+<tr align="center"><th>Keyword</th><th>Atom Property</th><th>Evaluates to...</th><th>Operators</th></tr>
+<tr align="center"><td>name</td><td>Atom name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center"><td>id</td><td>Atom ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="center"><td>resname</td><td>Residue name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center"><td>resid</td><td>Residue ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="center"><td>segid</td><td>Atom segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center"><td>segname</td><td>Synonym for segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+</table>
+
+\subsection regexps Regular Expression Matching
+The regular expression matching operator "=~" deserves special
+attention.  It's use is more restrictive than the other operators in
+that it can only take a keyword that evaluates to a string on the
+left-hand side and a string on the right-hand side.  So, the following
+expressions are valid:
+\verbatim
+name =~ "CA"
+name =~ "^(C|O|N)$"
+segid =~ "PROT|HEME"
+\endverbatim
+While the following are not valid:
+\verbatim
+resid =~ "10[0-9][0-9]"
+segid =~ 0010
+name =~ resname
+\endverbatim
+
+The regular expression syntax supported is the PERL syntax as
+implemented by the Boost libraries.  While you can write regular
+expressions that look a lot like globbing (a la VMD selections), keep
+in mind that it isn't globbing.  It's a regular expression, which is
+more powerful anyway...
+
+The string equality operators ("==" and "!=") both consider the
+<I>entire</I> string.
+\verbatim
+"CA" == "C"  --> false
+ "C" == "C"  --> true
+\endverbatim
+You can use the "=~" operator to perform a substring match.
+\verbatim
+"CA" == "C"  --> false
+ "C" == "C"  --> true
+"CA" =~ "C"  --> true
+\endverbatim
+This brings up an important point about using regular expressions: be
+careful of unexpected substring matches.  For examples, let's say you
+are wanting to pick out all backbone atoms and you write this
+selection string:
+\verbatim
+name =~ "C|CA|O|N"
+\endverbatim
+Now look what happens when the following atom names are matched:
+\verbatim
+ "CG" --> true
+"CD1" --> true
+ "NE" --> true
+"OH2" --> true
+\endverbatim
+The problem is that the regular expression is not constrained, so even
+though you explicitly put "CA" and "CB" in there, you also have a "C"
+which says <I>any</I> atom name with a "C" in it is a match.  If
+you want to match a string <I>exactly</I> with a regular expression,
+you must anchor it:
+\verbatim
+name =~ "^(C|CA|CB|O|N)$"
+\endverbatim
+
+\section kahuna Putting It All Together...
+When you perform a selection on an AtomicGroup using the selection
+language, the expression is evaluated once for each atom in the
+group.  If it evaluates to "true" (integer 1), then the atom is added
+to the new selection.  Only one atom is considered at a time.
+
+Here are some example selections:
+\verbatim
+Extract C-alphas:
+  name == "CA"
+
+Solvent:
+  segid == "SOLV" || segid == "BULK"
+
+Solvent heavy atoms (oxygens only)
+  name =~ "O" && (segid == "SOLV" || segid == "BULK")
+
+C-alphas from a range of residues:
+  name == "CA" && resid >= 10 && resid <= 50
+\endverbatim
+
+\subsection Usage
+Most tools based on LOOS will accept selection strings from the
+command-line.  They must be enclosed in quotes though so they are all
+one argument to the tool.  If you're using regular expressions, it's a
+good idea to use single quotes to prevent your shell from
+misinterpreting the regular expression operators.
+
+You can store your selection in a file if you want.  To use it then,
+use the back-quote feature of your shell to "cat" your selection
+file.  Since your selection must be one argument, you must enclose the
+back-quote within double-quotes, i.e.
+\verbatim
+  a_tool_name "`cat myselection.txt`" arg arg arg
+\endverbatim
+
+If you store your selection in a file, then you can also use
+comments.  A comment is anything after a "#" on a line.  Here's an
+example of a selection in a file:
+\verbatim
+### Select water oxygens only...
+# Pick out any atom that contains an oxygen
+name =~ "O" &&
+(segid == "SOLV" || # any segment named SOLV
+segid == "BULK")    # or named BULK
+\endverbatim
+
 
 */
