@@ -18,16 +18,30 @@ if not env.GetOption('clean'):
       Exit(1)
 
    if sys.platform == 'linux2':
-      if not conf.CheckLib('lapack'):
-         print "***ERROR*** You must have lapack installed"
-         Exit(1)
-      if not conf.CheckLib('atlas'):
-         env.Append(LIBPATH = ['/usr/lib64/atlas'])
-         if not conf.CheckLib('atlas'):
-            env.Append(LIBPATH = ['/usr/lib/atlas'])
-            if not conf.CheckLib('atlas'):
-               print "***ERROR*** Could not find ATLAS library."
-               Exit(1)
+      prior = env.get('LIBPATH')
+      for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
+      	  checks = 1
+	  missing = []
+	  if dir != "":
+	     env.Replace(LIBPATH = [dir])
+	     print "Checking for libraries in %s..." % dir
+          else:
+	     print "Checking for libraries..."
+
+	  if not conf.CheckLib('lapack'):
+	     checks = 0
+	     missing += ['lapack']
+	  if not conf.CheckLib('atlas'):
+	     checks = 0
+	     missing += ['atlas']
+	  if checks:
+	     break
+      if not checks:
+          print "***ERROR*** Missing libraries: ", map(STR, missing)
+	  Exit(1)
+
+      if prior != None:
+          env['LIBPATH'] = prior + env['LIBPATH']
 
    env = conf.Finish()
 
