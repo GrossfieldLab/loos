@@ -48,6 +48,7 @@ env.Default(loos)
 docs = env.Doxygen('Doxyfile')
 examples = SConscript('Examples/SConscript')
 tests = SConscript('Tests/SConscript')
+tools = SConscript('Tools/SConscript')
 
 
 # build targets...
@@ -55,6 +56,7 @@ tests = SConscript('Tests/SConscript')
 env.Alias('docs', docs)
 env.Alias('examples', examples)
 env.Alias('tests', tests)
+env.Alias('tools', tools)
 
-env.Alias('all', loos + examples + tests + docs)
+env.Alias('all', loos + examples + tests + docs + tools)
 

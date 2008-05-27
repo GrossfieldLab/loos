@@ -19,10 +19,12 @@ loos = env.Library('loos', library_files)
 docs = env.Doxygen('Doxyfile')
 examples = SConscript('Examples/SConscript')
 tests = SConscript('Tests/SConscript')
+tools = SConscript('Tools/SConscript')
 
 env.Alias('docs', docs)
 env.Alias('examples', examples)
 env.Alias('tests', tests)
-env.Alias('all', loos + examples + tests + docs)
+env.Alias('tools', tools)
+env.Alias('all', loos + examples + tests + docs + tools)
 
 env.Default(loos)

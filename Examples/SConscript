@@ -12,7 +12,6 @@ import sys
 Import('env')
 
 example_apps = 'coord-example dcd-example pdb-example dcd-example2 dcd-example3 center-pdb psf-example pdb-parsed'
-#example_apps += ' charge-density.cpp'
 
 list = []
 
