@@ -331,6 +331,36 @@ int AtomicGroup::maxId(void) const {
   return(max);
 }
 
+
+int AtomicGroup::minResid(void) const {
+  ConstAtomIterator i;
+
+  if (atoms.size() == 0)
+    return(-1);
+
+  int min = atoms[0]->resid();
+  for (i = atoms.begin()+1; i != atoms.end(); i++)
+    if ((*i)->resid() < min)
+      min = (*i)->resid();
+
+  return(min);
+}
+
+int AtomicGroup::maxResid(void) const {
+  ConstAtomIterator i;
+
+  if (atoms.size() == 0)
+    return(-1);
+
+  int max = atoms[0]->resid();
+  for (i = atoms.begin()+1; i != atoms.end(); i++)
+    if ((*i)->resid() < max)
+      max = (*i)->resid();
+
+  return(max);
+}
+
+
 // Count the number of higher structural elements...
 int AtomicGroup::numberOfResidues(void) const {
 
@@ -525,22 +555,16 @@ void AtomicGroup::applyTransformation(void) {
 #if defined(__linux__) || defined(__APPLE__)
 
 vector<GCoord> AtomicGroup::principalAxes(void) const {
-  double *A, C[9];
-
   // Extract out the group's coordinates...
   int i;
   int n = size();
-  A = new double[n*3];
   double M[3] = {0.0, 0.0, 0.0};
   int k = 0;
+
+  double *A = transformedCoordsAsArray();
   for (i=0; i<n; i++) {
-    A[k] = atoms[i]->coords().x();
     M[0] += A[k++];
-
-    A[k] = atoms[i]->coords().y();
     M[1] += A[k++];
-
-    A[k] = atoms[i]->coords().z();
     M[2] += A[k++];
   }
 
@@ -556,6 +580,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   }
 
   // Multiply A*A'...
+  double C[9];
   cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
 	      3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
 
@@ -652,4 +677,11 @@ double* AtomicGroup::transformedCoordsAsArray(void) const {
   }
 
   return(A);
+}
+
+
+
+void AtomicGroup::centerAtOrigin(void) {
+  GCoord c = centroid();
+  _xform.translate(-c);
 }

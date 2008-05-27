@@ -180,6 +180,8 @@ public:
   void renumber(const int start = 0, const int stride = 1);
   int minId(void) const;
   int maxId(void) const;
+  int minResid(void) const;
+  int maxResid(void) const;
   int numberOfResidues(void) const;
   int numberOfChains(void) const;
 
@@ -230,6 +232,9 @@ public:
   // Statistical routines...
   //! Bounding box for the group...
   BoundingBox boundingBox(void) const;
+
+  //! Translates (via XForm) the group so that the centroid is at the origin.
+  void centerAtOrigin(void);
 
   //! Centroid of atoms (ignores mass, operates in group coordinates)
   GCoord centroid(void) const;
@@ -296,7 +301,7 @@ public:
    *  - Potential issue with f77int under linux when not on a 64-bit
    *    architecture. 
    *
-   *  - Operates in group coordinates.
+   *  - Operates in world coordinates (i.e. transformed group coordinates)
    * 
    */
   vector<GCoord> principalAxes(void) const;
