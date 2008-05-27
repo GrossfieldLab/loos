@@ -35,6 +35,13 @@ if int(release):
 else:
     env.Append(CCFLAGS=debug_opts)
 
+debug=ARGUMENTS.get('debug', 0)
+if int(debug):
+   if int(release):
+      raise EnvironmentError, "You cannot have a release with debugging code included."
+   env.Append(CCFLAGS=" -DDEBUG")
+
+
 # Export for subsidiary SConscripts
 Export('env')
 
