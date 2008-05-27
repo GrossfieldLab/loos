@@ -262,6 +262,7 @@ public:
   
   void copyCoordinates(AtomicGroup& g);
 
+#if defined(__linux__) || defined(__APPLE__)
   //! Compute the principal axes of a group
   /** Calculates the eigendecomposition of AA' where A is column-wise
    * concatenation of coordinates from all atoms in the group.  The mean
@@ -290,6 +291,7 @@ public:
    * 
    */
   vector<GCoord> principalAxes(void) const;
+#endif
 
 private:
 
