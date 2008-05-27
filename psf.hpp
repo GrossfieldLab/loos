@@ -23,6 +23,14 @@
 using namespace std;
 
 //! Class for reading a subset of the PSF format
+/**
+ * Notes:
+ *
+ *  - Coords are initialized to (99999.99, 99999.99, 99999.99) by
+      default since the PSF does not contain coordinate information.
+      This will hopefully make it obvious when a PSF is used without a
+      matching PDB or DCD...
+ */
 class PSF : public AtomicGroup {
 public:
     PSF() { }

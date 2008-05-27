@@ -52,7 +52,9 @@ LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> to build.
 requires the vecLib framework and Developer's Tools for OS X or <A
 href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> for Linux.  It also
 requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for both
-(including the regular expression library).
+(including the regular expression library).  LOOS also requires the
+GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
+<A href="http://www.gnu.org/software/bison/">bison</A>.
 
 To build just the library, cd to the top-level directory and run
 SCons:

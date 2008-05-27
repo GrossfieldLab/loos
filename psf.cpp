@@ -153,7 +153,9 @@ void PSF::parseAtomRecord(const string s) {
 
     // now intialize the rest of the stuff
     pa->recordName(string(""));
-    GCoord c= GCoord(); // check this syntax
+    GCoord c= GCoord(99999.99, 99999.99, 99999.99); // Marks
+						    // uninitialized
+						    // coords 
     pa->coords(c);
 
     append(pa);
