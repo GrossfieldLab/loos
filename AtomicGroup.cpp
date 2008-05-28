@@ -217,7 +217,7 @@ AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
 // Select atoms from the current group, adding them to a new group
 // based on the sel functor/predicate...
 
-AtomicGroup AtomicGroup::select(AtomSelector& sel) {
+AtomicGroup AtomicGroup::select(const AtomSelector& sel) {
   AtomicGroup res;
 
   vector<pAtom>::const_iterator i;
