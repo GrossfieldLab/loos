@@ -168,12 +168,12 @@ string PDB::atomAsString(const pAtom p) const {
 
   s << setw(6) << left << p->recordName();
   s << setw(5) << right << p->id();
-  s << " " << setw(4) << p->name();
+  s << " " << setw(4) << left << p->name();
 
   s << setw(1) << p->altLoc();
-  s << setw(3) << p->resname();
+  s << setw(4) << left << p->resname();
 
-  s << setw(2) << p->chainId();
+  s << setw(1) << right << p->chainId();
   s << setw(4) << p->resid();
   s << setw(2) << p->iCode();
   s << "  ";
@@ -183,8 +183,8 @@ string PDB::atomAsString(const pAtom p) const {
   s << bqfmt(p->occupancy());
   s << bqfmt(p->bfactor());
   s << "      ";
-  s << setw(4) << p->segid();
-  s << setw(2) << p->PDBelement();
+  s << setw(4) << left << p->segid();
+  s << setw(2) << right << p->PDBelement();
   if (_show_charge)
     s << setw(2) << p->charge();
   else
