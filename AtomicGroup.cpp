@@ -585,7 +585,7 @@ GCoord AtomicGroup::getAtomsTransformedCoord(int i) const {
 }
 
 
-void AtomicGroup::applyTransformation(void) {
+void AtomicGroup::applyTransform(void) {
   AtomIterator i;
 
   for (i = atoms.begin(); i != atoms.end(); i++) {

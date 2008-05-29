@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
   PDB pdb(argv[1]);
   GCoord c = -pdb.centroid();
   pdb.xform().translate(c);
-  pdb.applyTransformation();
+  pdb.applyTransform();
 
   cout << pdb << endl;
 }

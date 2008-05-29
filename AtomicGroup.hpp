@@ -271,7 +271,7 @@ public:
   //! Applies the current XForm transformation to the contained Atom
   //! GCoord() coordinates.  This does NOT reset the XForm to the
   //! identity...
-  void applyTransformation(void);
+  void applyTransform(void);
 
 
   //! Copy coordinates from one group into another...
