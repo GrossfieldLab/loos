@@ -11,7 +11,7 @@ import sys
 
 Import('env')
 
-apps = 'charge-density center-pdb'
+apps = 'charge-density center-pdb pdb2matlab'
 
 list = []
 
