@@ -13,6 +13,7 @@
 #if !defined(CRYST_HPP)
 #define CRYST_HPP
 
+//! This class encapsulates crystallographic unit cell data
 class UnitCell {
 public:
   UnitCell() : _a(1.0), _b(1.0), _c(1.0), _alpha(90.0), _beta(90.0), _gamma(90.0), sgroup("P1"), zval(1) { }
