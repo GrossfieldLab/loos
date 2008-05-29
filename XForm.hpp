@@ -71,20 +71,23 @@ const double PI = 4.0*atan(1.0);
 
 class XForm {
   vector<GMatrix> stack;
+  bool _unset;
 
 public:
-  XForm() { GMatrix m; stack.push_back(m); }
+  XForm() : _unset(true) { GMatrix m; stack.push_back(m); }
 
   //! Push the current matrix onto the stack
-  void push(void) { GMatrix M = stack.back(); stack.push_back(M); }
+  void push(void) { GMatrix M = stack.back(); stack.push_back(M); _unset = false; }
   //! Pop the top matrix off the stack
-  void pop(void) {  stack.pop_back(); }
+  void pop(void) {  stack.pop_back(); _unset = false; }
   //! Load a matrix onto the current transform
-  void load(const GMatrix& m) { stack.back() = m; }
+  void load(const GMatrix& m) { stack.back() = m; _unset = false; }
   //! Concatenate (multiply) a matrix with the current transform
-  void concat(const GMatrix& m) { stack.back() *= m; }
+  void concat(const GMatrix& m) { stack.back() *= m; _unset = false; }
   //! Set the current transform to the identity
-  void identity(void) { GMatrix m;  stack.back() = m; }
+  void identity(void) { GMatrix m;  stack.back() = m;  _unset = true; }
+
+  bool unset(void) const { return(_unset); }
   
   //! Translation matrix
   void translate(const greal x, const greal y, const greal z) {

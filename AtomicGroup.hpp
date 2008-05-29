@@ -97,6 +97,13 @@ struct AtomSelector {
  * not reset the transform back to identity.  Also, some geometric
  * operations work in group coordinate space (i.e. untransformed)
  * whereas some will operate in world coordinates (i.e. transformed).
+ *
+ * If you need to fetch the coordinates for an atom in a group, it is
+ * <I>strongly</I> recommended that you use the
+ * getAtomsTransformedCoord() method.  This will return a GCoord that
+ * has been transformed by the current transformation matrix.  If you
+ * access the atom directly, it does not know about the transformation
+ * and you will get incorrect coordinates.
  * 
  * Valid operators are '+' and '+=' and can combine either
  * AtomicGroup objects or pAtom objects.
@@ -256,6 +263,9 @@ public:
   //! Returns a vector of coordinates transformed by the current
   //! groups XForm
   vector<GCoord> transformedCoords(void) const;
+
+  //! Return the ith atom's coordinates transformed by the current XForm
+  GCoord getAtomsTransformedCoord(int) const;
   
   
   //! Applies the current XForm transformation to the contained Atom

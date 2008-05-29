@@ -227,6 +227,42 @@ void PDB::parseConectRecord(const string s) {
   }
 }
 
+
+void PDB::parseCryst1Record(const string s) {
+  greal r;
+  gint i;
+  string t;
+
+  r = parseFloat(s, 6, 9);
+  cell.a(r);
+  r = parseFloat(s, 15, 9);
+  cell.b(r);
+  r = parseFloat(s, 24, 9);
+  cell.c(r);
+
+  r = parseFloat(s, 33, 7);
+  cell.alpha(r);
+  r = parseFloat(s, 40, 7);
+  cell.beta(r);
+  r = parseFloat(s, 47, 7);
+  cell.gamma(r);
+
+  // Special handling in case of mangled CRYST1 record...
+  if (s.length() < 66) {
+    t = s.substr(55);
+    cell.spaceGroup(t);
+    cell.z(-1);   // ??? 
+  } else {
+    t = parseString(s, 55, 11);
+    cell.spaceGroup(t);
+    i = parseInt(s, 66, 4);
+    cell.z(i);
+  }
+
+  _has_cryst = true;
+}
+
+
 //! Top level parser...
 //! Reads a PDB from an input stream
 void PDB::read(istream& is) {
@@ -239,6 +275,8 @@ void PDB::read(istream& is) {
       parseRemark(input);
     else if (input.substr(0,6) == "CONECT")
       parseConectRecord(input);
+    else if (input.substr(0, 6) == "CRYST1")
+      parseCryst1Record(input);
     else if (input.substr(0,3) == "TER" || input.substr(0,3) == "END")
       ;
     else {
@@ -249,11 +287,28 @@ void PDB::read(istream& is) {
 }
 
 
+static ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
+  os << "CRYST1";
+  Fmt dists(3);
+  dists.width(9).right().trailingZeros(true).fixed();
+  Fmt angles(2);
+  angles.width(7).right().trailingZeros(true).fixed();
+
+  os << dists(u.a()) << dists(u.b()) << dists(u.c());
+  os << angles(u.alpha()) << angles(u.beta()) << angles(u.gamma());
+  os << " " << setw(10) << left << u.spaceGroup() << setw(4) << u.z();
+
+  return(os);
+}
+
+
 //! Output the group as a PDB...
 ostream& operator<<(ostream& os, const PDB& p) {
   AtomicGroup::ConstAtomIterator i;
 
   os << p._remarks;
+  if (p._has_cryst) 
+    FormattedUnitCell(os, p.cell) << endl;
   for (i = p.atoms.begin(); i != p.atoms.end(); i++)
     os << p.atomAsString(*i) << endl;
   

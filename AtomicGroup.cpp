@@ -243,7 +243,7 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
   for (i = atoms.begin(); i != atoms.end(); i++) {
     j = unique.find((*i)->segid());
     if (j < 0)
-      throw runtime_error("Could not find an atom we already found...");
+      throw(runtime_error("Could not find an atom we already found..."));
 	
     results[j].append(*i);
   }
@@ -554,12 +554,34 @@ vector<GCoord> AtomicGroup::transformedCoords(void) const {
   ConstAtomIterator i;
   int j = 0;
 
-  for (i = atoms.begin(); i != atoms.end(); i++) {
-    GCoord res = _xform.current() * (*i)->coords();
-    crds[j++] = res;
+  if (_xform.unset()) {
+    for (i = atoms.begin(); i != atoms.end(); i++)
+      crds[j++] = (*i)->coords();
+  } else {
+
+    for (i = atoms.begin(); i != atoms.end(); i++) {
+      GCoord res = _xform.current() * (*i)->coords();
+      crds[j++] = res;
+    }
+
   }
 
   return(crds);
+}
+
+
+GCoord AtomicGroup::getAtomsTransformedCoord(int i) const {
+
+  if (i < 0)
+    i += size();
+  if (i >= size())
+    throw(out_of_range("Index into AtomicGroup is out of bounds"));
+
+  GCoord c = atoms[i]->coords();
+  if (! _xform.unset())
+    c = _xform.current() * c;
+
+  return(c);
 }
 
 
@@ -687,7 +709,10 @@ double* AtomicGroup::transformedCoordsAsArray(void) const {
   double *A;
   GCoord x;
   int n = size();
-  
+
+  if (_xform.unset())
+    return(coordsAsArray());
+
   A = new double[n*3];
   int k = 0;
   int i;

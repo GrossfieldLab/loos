@@ -35,16 +35,17 @@ using namespace tr1;
 #include <Atom.hpp>
 #include <AtomicGroup.hpp>
 #include <pdb_remarks.hpp>
+#include <cryst.hpp>
 
 
 //! PDB reading/writing class
 class PDB : public AtomicGroup {
 public:
-  PDB() : _show_charge(false), _auto_ter(true) { }
+  PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false) { }
   virtual ~PDB() {}
 
   //! Read in PDB from a filename
-  PDB(const string fname) : _show_charge(false), _auto_ter(true) {
+  PDB(const string fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
     ifstream ifs(fname.c_str());
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + fname));
@@ -52,7 +53,7 @@ public:
   }
 
   //! Read in a PDB from a filename
-  PDB(const char* fname) : _show_charge(false), _auto_ter(true) {
+  PDB(const char* fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
     ifstream ifs(fname);
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + string(fname)));
@@ -60,10 +61,10 @@ public:
   }
 
   //! Read in a PDB from an ifstream
-  PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true) { read(ifs); }
+  PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true), _has_cryst(false) { read(ifs); }
 
   //! Create a PDB from an AtomicGroup (i.e. upcast)
-  PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true) { }
+  PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
 
   //! Creates a deep copy.
   virtual PDB* clone(void) const {
@@ -87,6 +88,9 @@ public:
   //! Accessor for the remarks object...
   void remarks(const Remarks& r) { _remarks = r; }
 
+  UnitCell& unitCell(void) { return(cell); }
+  void unitCell(const UnitCell& c) { cell = c; }
+
   //! Output as a PDB
   friend ostream& operator<<(ostream& os, const PDB& p);
 
@@ -106,6 +110,7 @@ private:
   void parseRemark(const string s);
   void parseAtomRecord(const string s);
   void parseConectRecord(const string s);
+  void parseCryst1Record(const string s);
 
   // Convert an Atom to a string representation in PDB format...
   string atomAsString(const pAtom p) const;
@@ -113,7 +118,9 @@ private:
 private:
   bool _show_charge;
   bool _auto_ter;
+  bool _has_cryst;
   Remarks _remarks;
+  UnitCell cell;
 
 };
 
