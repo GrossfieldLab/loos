@@ -16,8 +16,8 @@
 #include <iostream>
 #include <vector>
 
-
-#include "Coord.hpp"
+#include <loos.hpp>
+#include <Coord.hpp>
 #include <pdb_remarks.hpp>
 
 using namespace std;

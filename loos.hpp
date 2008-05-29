@@ -17,7 +17,7 @@
 #if !defined(LOOS_HPP)
 #define LOOS_HPP
 
-#include "Coord.hpp"
+#include <Coord.hpp>
 
 
 
@@ -30,4 +30,8 @@ typedef double dcd_double;
 typedef Coord<double> GCoord;
 
 
+#include <utils.hpp>
+
 #endif
+
+

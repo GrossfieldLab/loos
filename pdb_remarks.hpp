@@ -23,8 +23,6 @@
 using namespace std;
 
 
-#include <loos.hpp>
-
 //! Class for handling PDB Remarks
 /**
  *This class just manages a vector of strings, but it will

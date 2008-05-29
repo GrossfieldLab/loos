@@ -42,6 +42,7 @@ extern "C" {
 #include <atlas/clapack.h>
 
   void dsyev_(char*, char*, int*, double*, int*, double*, double*, int*, int*);
+  void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);
 
 }
 
@@ -318,6 +319,14 @@ public:
    * 
    */
   vector<GCoord> principalAxes(void) const;
+
+  //! Superimposes the current group atop another group.
+  /**Computes the Kabsch superposition using an SVD of the current
+   *group with the passed group.  The current XForm is altered to affect
+   *the superposition.  The transformation matrix (not including
+   *centering the current group) is returned as a GMatrix.
+   */
+  GMatrix alignOnto(AtomicGroup&);
 #endif
 
 private:
