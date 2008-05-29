@@ -596,7 +596,71 @@ void AtomicGroup::applyTransform(void) {
 
 
 
+void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
+  cout << s << endl;
+  int i, j;
+
+  cout << "[" << endl;
+  for (j=0; j<m; j++) {
+    for (i=0; i<n; i++)
+      cout << setw(10) << A[i*m+j] << " ";
+    cout << ";\n";
+  }
+  cout << "];\n";
+
+}
+
+// Returns a newly allocated array of double coords in row-major
+// order...
+double* AtomicGroup::coordsAsArray(void) const {
+  double *A;
+  int n = size();
+
+  A = new double[n*3];
+  int k = 0;
+  int i;
+  for (i=0; i<n; i++) {
+    A[k++] = atoms[i]->coords().x();
+    A[k++] = atoms[i]->coords().y();
+    A[k++] = atoms[i]->coords().z();
+  }
+
+  return(A);
+}
+
+// Returns a newly allocated array of double coords in row-major order
+// transformed by the current transformation.
+double* AtomicGroup::transformedCoordsAsArray(void) const {
+  double *A;
+  GCoord x;
+  int n = size();
+
+  if (_xform.unset())
+    return(coordsAsArray());
+
+  A = new double[n*3];
+  int k = 0;
+  int i;
+  for (i=0; i<n; i++) {
+    x = _xform.current() * atoms[i]->coords();
+    A[k++] = x.x();
+    A[k++] = x.y();
+    A[k++] = x.z();
+  }
+
+  return(A);
+}
+
+
+
+void AtomicGroup::centerAtOrigin(void) {
+  GCoord c = centroid();
+  _xform.translate(-c);
+}
+
+
 #if defined(__linux__) || defined(__APPLE__)
+
 
 vector<GCoord> AtomicGroup::principalAxes(void) const {
   // Extract out the group's coordinates...
@@ -668,73 +732,9 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   return(results);
 }
 
-#endif   /* defined(__linux__) || defined(__APPLE__) */
-
-
-void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
-  cout << s << endl;
-  int i, j;
-
-  cout << "[" << endl;
-  for (j=0; j<m; j++) {
-    for (i=0; i<n; i++)
-      cout << setw(10) << A[i*m+j] << " ";
-    cout << ";\n";
-  }
-  cout << "];\n";
-
-}
-
-// Returns a newly allocated array of double coords in row-major
-// order...
-double* AtomicGroup::coordsAsArray(void) const {
-  double *A;
-  int n = size();
-
-  A = new double[n*3];
-  int k = 0;
-  int i;
-  for (i=0; i<n; i++) {
-    A[k++] = atoms[i]->coords().x();
-    A[k++] = atoms[i]->coords().y();
-    A[k++] = atoms[i]->coords().z();
-  }
-
-  return(A);
-}
-
-// Returns a newly allocated array of double coords in row-major order
-// transformed by the current transformation.
-double* AtomicGroup::transformedCoordsAsArray(void) const {
-  double *A;
-  GCoord x;
-  int n = size();
-
-  if (_xform.unset())
-    return(coordsAsArray());
-
-  A = new double[n*3];
-  int k = 0;
-  int i;
-  for (i=0; i<n; i++) {
-    x = _xform.current() * atoms[i]->coords();
-    A[k++] = x.x();
-    A[k++] = x.y();
-    A[k++] = x.z();
-  }
-
-  return(A);
-}
 
 
 
-void AtomicGroup::centerAtOrigin(void) {
-  GCoord c = centroid();
-  _xform.translate(-c);
-}
-
-
-#if defined(__linux__) || defined(__APPLE__)
 GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
   int i, j;
 
@@ -762,12 +762,12 @@ GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
 
   // Now compute the SVD of R...
   char jobu = 'A', jobvt = 'A';
-  int m = 3, lda = 3, ldu = 3, ldvt = 3, lwork=100, info;
+  f77int m = 3, lda = 3, ldu = 3, ldvt = 3, lwork=100, info;
   double work[lwork];
-  n = 3;
+  f77int nn = 3;
   double S[3], U[9], Vt[9];
   
-  dgesvd_(&jobu, &jobvt, &m, &n, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
+  dgesvd_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
 
   // Adjust U (if necessary)
   if (det < 0.0) {
@@ -802,4 +802,4 @@ GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
   return(W);
 }
 
-#endif
+#endif   /* defined(__linux__) || defined(__APPLE__) */
