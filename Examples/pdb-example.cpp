@@ -11,7 +11,7 @@
 */
 
 
-
+#include <utils.hpp>
 #include <pdb.hpp>
 #include <Selectors.hpp>
 
@@ -21,6 +21,11 @@ int main(int argc, char *argv[]) {
   PDB p(argv[1]);
 
   cout << "Read in " << p.size() << " atoms from " << argv[1] << endl;
+  if (remarksHasBox(p.remarks())) {
+    GCoord box = boxFromRemarks(p.remarks());
+    cout << "Alan-box detected: " << box << endl;
+  } else
+    cout << "No Alan-box detected!\n";
 
   CAlphaSelector casel;
   AtomicGroup cas = p.select(casel);

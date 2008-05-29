@@ -119,7 +119,6 @@ struct AndSelector : public AtomSelector {
 struct OrSelector : public AtomSelector {
   OrSelector(const AtomSelector& x, const AtomSelector& y) : lhs(x), rhs(y) { }
   bool operator()(const pAtom& pa) const {
-    cerr << "In OrSelector\n";
     return(lhs(pa) || rhs(pa));
   }
 

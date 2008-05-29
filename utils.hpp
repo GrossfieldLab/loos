@@ -18,6 +18,7 @@
 
 
 #include "Coord.hpp"
+#include <pdb_remarks.hpp>
 
 using namespace std;
 using namespace __gnu_cxx;
@@ -34,5 +35,14 @@ vector<int> readIndexMap(istream&);
   invoking user, command-line, and a timestamp.
 */
 string invocationHeader(int, char *[]);
+
+//! Extract the Alan-style box-size from a PDB Remarks block.
+/** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
+ *  info found in the remarks block.
+ */
+GCoord boxFromRemarks(const Remarks&);
+
+//! Checks to see if a Remarks block has an Alan-style box size in it.
+bool remarksHasBox(const Remarks&);
 
 #endif

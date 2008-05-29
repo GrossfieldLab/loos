@@ -95,13 +95,16 @@ public:
   // ---------------------------------------
   // Accessors
 
-  T x(void) const { return(v[X]); }
+  T& x(void) { return(v[X]); }
+  const T& x(void) const { return(v[X]); }
   void x(const T ax) { v[X] = ax; }
 
-  T y(void) const { return(v[Y]); }
+  T& y(void) { return(v[Y]); }
+  const T& y(void) const { return(v[Y]); }
   void y(const T ay) { v[Y] = ay; }
 
-  T z(void) const { return(v[Z]); }
+  T& z(void) { return(v[Z]); }
+  const T& z(void) const { return(v[Z]); }
   void z(const T az) { v[Z] = az; }
 
   //! Retrieve an element from the Coord with range-checking
