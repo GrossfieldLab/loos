@@ -102,5 +102,6 @@ env.Alias('examples', examples)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
 
-env.Alias('all', loos + examples + tests + docs + tools)
+env.Alias('all', loos + examples + tools)
+env.Alias('caboodle', loos + examples + tests + tools + docs)
 
