@@ -542,6 +542,26 @@ greal AtomicGroup::radiusOfGyration(void) const {
 }
 
 
+greal AtomicGroup::rmsd(AtomicGroup& v) {
+  
+  if (size() != v.size())
+    throw(runtime_error("Cannot compute RMSD between groups with different sizes"));
+
+  sort();
+  v.sort();
+
+  int n = size();
+  double d = 0.0;
+  for (int i = 0; i < n; i++)
+    d += atoms[i]->coords().distance2(v.atoms[i]->coords());
+
+  
+  d = sqrt(d/n);
+
+  return(d);
+}
+
+
 
 AtomicGroup operator+(const pAtom& lhs, const pAtom& rhs) {
   AtomicGroup res;

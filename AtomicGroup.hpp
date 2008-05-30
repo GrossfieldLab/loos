@@ -288,6 +288,12 @@ public:
   greal totalMass(void) const;
   greal radiusOfGyration(void) const;
 
+  //! Compute the RMSD between two groups
+  /**Sorts both groups (if necessary), then assumes a 1:1
+   *correspondence between ith atoms.
+   */
+  greal rmsd(AtomicGroup&);
+
   // Geometric transformations...
   
   //! Returns a vector of coordinates transformed by the current

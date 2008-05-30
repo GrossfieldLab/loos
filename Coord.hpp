@@ -369,27 +369,27 @@ public:
   
 
   //! Distance squared between two coordinates
-  double distance2(const Coord<T>& o) {
+  double distance2(const Coord<T>& o) const {
     Coord<T> d = o - *this;
     return(d.length2());
   }
 
   //! Distance squared between two coordinates considering periodic
   //! boundary conditions
-  double distance2(const Coord<T>& o, const Coord<T>& box) {
+  double distance2(const Coord<T>& o, const Coord<T>& box) const {
     Coord<T> d = o - *this;
     d.reimage(box);
     return(d.length2());
   }
 
   //! Distance between two coordinates.
-  double distance(const Coord<T>& o) {
+  double distance(const Coord<T>& o) const {
     return(sqrt(distance2(o)));
   }
 
   //! Distance between two coordinates considering periodic boundary
   //! conditions
-  double distance(const Coord<T>& o, const Coord<T>& box) {
+  double distance(const Coord<T>& o, const Coord<T>& box) const {
     return(sqrt(distance2(o, box)));
   }
 
