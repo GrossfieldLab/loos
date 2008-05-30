@@ -18,6 +18,9 @@
 #include <assert.h>
 #include <algorithm>
 
+#include <boost/random.hpp>
+#include <ctime>
+
 #include <AtomicGroup.hpp>
 
 // Deep copy...  Creates new shared atoms and stuffs 'em
@@ -556,9 +559,11 @@ greal AtomicGroup::rmsd(AtomicGroup& v) {
 
   int n = size();
   double d = 0.0;
-  for (int i = 0; i < n; i++)
-    d += atoms[i]->coords().distance2(v.atoms[i]->coords());
-
+  for (int i = 0; i < n; i++) {
+    GCoord x = getAtomsTransformedCoord(i);
+    GCoord y = v.getAtomsTransformedCoord(i);
+    d += x.distance2(y);
+  }
   
   d = sqrt(d/n);
 
@@ -759,6 +764,29 @@ double* AtomicGroup::transformedCoordsAsArray(void) const {
 void AtomicGroup::centerAtOrigin(void) {
   GCoord c = centroid();
   _xform.translate(-c);
+}
+
+
+
+void AtomicGroup::perturbCoords(const greal rms) {
+  int i, n = size();
+  GCoord r;
+
+  boost::mt19937 rng;
+  boost::uniform_real<> uni;
+  boost::variate_generator<boost::mt19937&, boost::uniform_real<> > func(rng, uni);
+  rng.seed(static_cast<unsigned int>(std::time(0)));
+
+  for (i=0; i<n; i++) {
+    r.x(func());
+    r.y(func());
+    r.z(func());
+
+    r /= r.length();
+    r *= rms;
+
+    atoms[i]->coords() += r;
+  }
 }
 
 

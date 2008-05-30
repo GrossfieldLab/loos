@@ -10,12 +10,16 @@
   Unit testing for PDB/AtomicGroup methods...
 */
 
+#include <boost/random.hpp>
+#include <ctime>
+
 
 #include <loos.hpp>
 #include <pdb.hpp>
 #include <Kernel.hpp>
 #include <Parser.hpp>
 #include <Selectors.hpp>
+#include <ensembles.hpp>
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -50,16 +54,25 @@ int main(int argc, char *argv[]) {
   AtomicGroup cas = pdb.select(casel);
   cout << "Found " << cas.size() << " CAs\n";
   AtomicGroup casb = *(cas.clone());
-  casb.xform().rotate('Y', 1.0);
-  casb.applyTransform();
+  casb.perturbCoords(1.0);
   greal rmsd = cas.rmsd(casb);
   cout << "RMSD test = " << rmsd << endl;
+  casb.xform().rotate('Y', 1.0);
+  casb.applyTransform();
+  rmsd = cas.rmsd(casb);
+  cout << "Rotated rmsd = " << rmsd << endl;
+
+  casb.alignOnto(cas);
+  //casb.applyTransform();
+  cout << "Aligned rmsd = " << cas.rmsd(casb) << endl;
 
   vector<AtomicGroup> chains = pdb.splitByUniqueSegid();
   cout << "Found " << chains.size() << " unique segids.\n";
   unsigned int i;
-  for (i = 0; i < chains.size(); i++)
+  for (i = 0; i < chains.size() && i < 10; i++)
     cout << "\t" << i << "\t" << chains[i].size() << "\t" << chains[i].centroid() << endl;
+  if (i < chains.size())
+    cout << "...truncated...\n";
 
   AtomicGroup grp = cas.subset(0, 3);
   cout << "* First 3 cas *\n" << grp << endl;
@@ -78,7 +91,36 @@ int main(int argc, char *argv[]) {
 
   cout << "Residue for third CA:\n";
   grp = pdb.getResidue(cas[2]);
-  cout << grp;
+  cout << grp << endl;
+
+  // Now run iteratative superpositon tests...
+
+  boost::mt19937 rng;
+  boost::uniform_real<> uni(-90.0, 90.0);
+  boost::variate_generator<boost::mt19937&, boost::uniform_real<> > func(rng, uni);
+  rng.seed(static_cast<unsigned int>(std::time(0)));
+
+  vector<AtomicGroup> mols;
+  for (i=0; i<5; i++) {
+    AtomicGroup subgroup = *(cas.clone());
+    subgroup.perturbCoords(2.0);
+    subgroup.xform().rotate('y', func());
+    subgroup.applyTransform();
+    subgroup.xform().identity();
+    mols.push_back(subgroup);
+  }
+  AtomicGroup avg = averageStructure(mols);
+  cout << "Pre-aligned rmsds:\n";
+  for (i=0; i<5; i++)
+    cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
+
+
+  greal final_rmsd = loos::iterativeAlignment(mols, 0.5);
+  cout << "Final alignment rmsd to avg struct = " << final_rmsd << endl;
+
+  avg = averageStructure(mols);
+  for (i=0; i<5; i++)
+    cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
 
 }
 

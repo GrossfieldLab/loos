@@ -30,7 +30,7 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
   vector<AtomicGroup>::const_iterator j;
   for (j = ensemble.begin(); j != ensemble.end(); j++) {
     for (i = 0; i<n; i++)
-      avg[i]->coords() += (*j)[i]->coords();
+      avg[i]->coords() += j->getAtomsTransformedCoord(i);
   }
 
   for (i=0; i<n; i++)

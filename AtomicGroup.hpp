@@ -325,6 +325,9 @@ public:
       (*i)->coords((*j)->coords());
   }
 
+  //! Each atom is moved in a random direction by a vector of the passed size
+  void perturbCoords(const greal);
+
 
 #if defined(__linux__) || defined(__APPLE__)
   //! Compute the principal axes of a group
@@ -365,6 +368,7 @@ public:
    *centering the current group) is returned as a GMatrix.
    */
   GMatrix alignOnto(AtomicGroup&);
+
 #endif
 
 private:
