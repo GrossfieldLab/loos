@@ -167,6 +167,12 @@ public:
    */
   bool operator==(AtomicGroup& rhs);
 
+  //! Equality test for const groups
+  /**Similar to the non-const version, but it will sort <I>copies</I>
+   *of the atom lists if they are not already sorted...
+   */
+  bool operator==(const AtomicGroup& rhs) const;
+
   //! subset() and excise() args are patterned after perl's substr...
   /** If offset is negative, then it's relative to the end of the
    * group.  If length is 0, then everything from offset to the

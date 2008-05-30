@@ -564,12 +564,48 @@ bool AtomicGroup::operator==(AtomicGroup& rhs) {
   if (size() != rhs.size())
     return(false);
 
+  if (this == &rhs)
+    return(true);
+
   sort();
   rhs.sort();
 
   int n = size();
   for (int i = 0; i < n; i++)
     if (atoms[i] != rhs.atoms[i])
+      return(false);
+
+  return(true);
+}
+
+
+bool AtomicGroup::operator==(const AtomicGroup& rhs) const {
+  if (size() != rhs.size())
+    return(false);
+
+  if (this == &rhs)
+    return(true);
+
+  const vector<pAtom> *lp;
+  const vector<pAtom> *rp;
+  vector<pAtom> lhs_atoms, rhs_atoms;
+  CmpById comp;
+  if (!sorted()) {
+    lhs_atoms = atoms;
+    std::sort(lhs_atoms.begin(), lhs_atoms.end(), comp);
+  } else
+    lp = &atoms;
+
+  if (!rhs.sorted()) {
+    rhs_atoms = rhs.atoms;
+    std::sort(rhs_atoms.begin(), rhs_atoms.end(), comp);
+    rp = &rhs_atoms;
+  } else
+    rp = &rhs.atoms;
+
+  int n = size();
+  for (int i = 0; i<n; i++)
+    if ((*lp)[i] != (*rp)[i])
       return(false);
 
   return(true);
