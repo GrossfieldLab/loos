@@ -440,10 +440,10 @@ AtomicGroup::BoundingBox AtomicGroup::boundingBox(void) const {
 
   for (i=atoms.begin()+1; i != atoms.end(); i++)
     for (j=0; j<3; j++) {
-      if (bdd.min[j] < ((*i)->coords())[j])
-	bdd.min[j] = ((*i)->coords())[j];
-      if (bdd.max[j] > ((*i)->coords())[j])
+      if (bdd.max[j] < ((*i)->coords())[j])
 	bdd.max[j] = ((*i)->coords())[j];
+      if (bdd.min[j] > ((*i)->coords())[j])
+	bdd.min[j] = ((*i)->coords())[j];
     }
 
   return(bdd);
