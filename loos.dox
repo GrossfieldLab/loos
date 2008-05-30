@@ -129,6 +129,14 @@ and expect it to be substituted with the appropriate value, for example.
 <tr align="center"><td>!</td><td>Not (Negate)</td><td>!(segid == "SOLV")</td></tr>
 </table>
 
+
+\subsection magops Magical Operators
+<table align="center">
+<tr align="center"><th>Operator</th><th>Operation</th><th>Example</th></tr>
+<tr align="center"><td>-></td><td>Extracts a number from a string</td><td>segid -> "L(\d+)"</td></tr>
+</table>
+
+
 \subsection keywords Keywords
 <table align="center">
 <tr align="center"><th>Keyword</th><th>Atom Property</th><th>Evaluates to...</th><th>Operators</th></tr>
@@ -162,7 +170,12 @@ The regular expression syntax supported is the PERL syntax as
 implemented by the Boost libraries.  While you can write regular
 expressions that look a lot like globbing (a la VMD selections), keep
 in mind that it isn't globbing.  It's a regular expression, which is
-more powerful anyway...
+more powerful anyway...  You do need to be careful though that your
+shell does not munge any of the regex operators.  It's a good idea to
+use single quotes when you're writing regex's in a shell.  Most shells
+will also process out back-slashes ("\"), so if you want to use PERL
+escapes, you may need to double-back-slash them, i.e. use "\\d+"
+instead of "\d".
 
 The string equality operators ("==" and "!=") both consider the
 <I>entire</I> string.
@@ -198,6 +211,27 @@ you must anchor it:
 \verbatim
 name =~ "^(C|CA|CB|O|N)$"
 \endverbatim
+
+\subsection magops_explained Magical Operations
+There is currently only one "magical operator" defined: "->".  This
+operator takes a string keyword on the left-hand side (i.e. name,
+resname, or segid/segname) and a string on the right-hand side
+representing a regular expression pattern.  It will then try to
+extract a numeric value (integer) from the subexpression matches.  For
+example, suppose you have a range of segments that all follow a
+pattern such as "PG1", "PG2", "PG3", ..., "PG120".  The regular
+expression "PG(\d+)" matches these and the pattern within the
+parenthesis is a subexpression.  So,
+\verbatim
+(segid->"L(\d+)") >= 10 && (segid->"L(\d+)") <= 50
+\endverbatim
+will match segid's "L10" through "L50".  Since each matched
+subexpression will be examined for a valid integer conversion, the
+following will work as expected:
+\verbatim
+segid->"(L|PG)(\d+)"
+\endverbatim
+
 <hr>
 \section kahuna Putting It All Together...
 When you perform a selection on an AtomicGroup using the selection
@@ -225,7 +259,8 @@ Most tools based on LOOS will accept selection strings from the
 command-line.  They must be enclosed in quotes though so they are all
 one argument to the tool.  If you're using regular expressions, it's a
 good idea to use single quotes to prevent your shell from
-misinterpreting the regular expression operators.
+misinterpreting the regular expression operators and as mentioned
+before, back-slash escapes may need doubling.
 
 You can store your selection in a file if you want.  To use it then,
 use the back-quote feature of your shell to "cat" your selection
