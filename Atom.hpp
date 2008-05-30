@@ -97,6 +97,7 @@ public:
   //! This returns a const ref mainly for efficiency, rather than
   //! copying the coords...
   const GCoord& coords(void) const { return(_coords); }
+  GCoord& coords(void) { return(_coords); }
   void coords(const GCoord& c) { _coords = c; }
 
   double bfactor(void) const { return(_b); }
