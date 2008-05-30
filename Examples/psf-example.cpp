@@ -69,6 +69,14 @@ int main(int argc, char *argv[]) {
   cout << "\nThe first residue is:\n";
   cout << residue << endl;
 
+  cout << "Test groupFromID";
+  pAtom pa = residue.getAtom(0);
+  cout << "Atom: " << *pa << endl;
+  vector<int> bondIDs = pa->getBonds();
+  for (unsigned int i=0; i<bondIDs.size(); i++) { cout << bondIDs[i] << "  ";}
+  cout << endl;
+  AtomicGroup bonded = p.groupFromID(bondIDs);
+  cout << bonded << endl;
 
 }
 

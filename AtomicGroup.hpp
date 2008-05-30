@@ -195,6 +195,9 @@ public:
   //! Find a contained atom by its atomid
   pAtom findById(const int id);
 
+  //! Create a new group from a vector of atomids
+  AtomicGroup groupFromID(const vector<int> &id_list);
+
   //! Given an Atom, return a group of all the atoms contained by its
   //! containing residue 
   AtomicGroup getResidue(pAtom res);

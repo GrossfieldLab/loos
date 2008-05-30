@@ -272,6 +272,17 @@ pAtom AtomicGroup::findById(const int id) {
   return(pAtom());
 }
 
+AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
+    AtomicGroup result;
+    pAtom pa;
+    for (unsigned int i=0; i<id_list.size(); i++) {
+        pa = findById(id_list[i]);
+        if (!pa) throw(out_of_range("Atom id doesn't exist"));
+        result.addAtom(pa);
+    }
+    return(result);
+}
+
 // Get all atoms associated with the residue that contains the
 // passed atom...  The returned atoms will not be in order.  If
 // you want that, then explicitly sort the group.
