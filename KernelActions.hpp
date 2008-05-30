@@ -202,7 +202,7 @@ namespace loos {
   class matchRegex : public Action {
     boost::regex regexp;
   public:
-    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), what(s) { }
+    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
     void execute(void) { 
       Value v = stack->pop();
       Value r(0);
@@ -212,13 +212,13 @@ namespace loos {
       stack->push(r);
     }
     string name(void) const {
-      return(my_name + "(" + what + ")");
+      return(my_name + "(" + pattern + ")");
     }
-
+    
   private:
-    string what;
+    string pattern;
   };
-
+  
 
   //! Regular expression matching: ARG1 regexp(ARG2)
   /** Takes the top item on the stack and compiles this into a regular
@@ -237,10 +237,54 @@ namespace loos {
       
       if (boost::regex_search(u.getString(), re))
 	r.setInt(1);
-
+      
       stack->push(r);
     }
   };
+  
+  
+  //! Extracts a number for a string on the stack using a regular expression: ARG1 regexp(S)
+  /** Compiles the passed string into a regex pattern at
+   * instantiation.  At execution, examines each matched capture for
+   * the first one that converts to an integer and pushes that value
+   * onto the data stack.  If no match is found (or no numeric
+   * conversion works), then "-1" is pushed onto the stack.
+   */
+  class extractNumber : public Action {
+  public:
+    extractNumber(const string s) : Action("extractNumber"),
+				    regexp(s, boost::regex::perl|boost::regex::icase),
+				    pattern(s) { }
+
+    void execute(void) {
+      Value v = stack->pop();
+      Value r(-1);
+      boost::smatch what;
+
+      if (boost::regex_search(v.getString(), what, regexp)) {
+	unsigned i;
+	int val;
+	for (i=0; i<what.size(); i++) {
+	  if ((stringstream(what[i]) >> val)) {
+	    r.setInt(val);
+	    break;
+	  }
+	}
+      }
+
+      stack->push(r);
+    }
+
+    string name(void) const {
+      return(my_name + "(" + pattern + ")");
+    }
+
+  private:
+    boost::regex regexp;
+    string pattern;
+  };
+
+
 
 
   //! Push atom name onto the stack

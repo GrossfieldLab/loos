@@ -66,6 +66,7 @@ namespace loos {
 %token EQ  "=="
 %token NE  "!="
 %token REGEX "=~"
+%token NEKEY "->"
 
 %left "&&" "||"
 %left "<" "<=" ">=" ">" "==" "!=" "=~"
@@ -95,10 +96,11 @@ rexpr : '(' expr ')'
       ;
 
 
-value : numeric | alpha ;
+value : '(' value ')' | numeric | alpha | numex;
 
+numeric : number | numid;
 
-numeric : number | numid ;
+numex : alphid "->" strval { driver.kern.push(new extractNumber(*($3))); } ;
 
 number  : NUMBER        { driver.kern.push(new pushInt($1)); }  ;
 

@@ -86,7 +86,7 @@ string invocationHeader(int argc, char *argv[]) {
   if (pwd == 0)
     user = "UNKNOWN USER";
   else
-    user = pwd->pw_name;  // ???
+    user = pwd->pw_name;
 
   invoke = string(argv[0]) + " ";
   string sep(" ");
