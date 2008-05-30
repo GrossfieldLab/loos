@@ -267,6 +267,7 @@ void PDB::parseCryst1Record(const string s) {
 //! Reads a PDB from an input stream
 void PDB::read(istream& is) {
   string input;
+  bool has_cryst = false;
 
   while (getline(is, input)) {
     if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
@@ -275,14 +276,24 @@ void PDB::read(istream& is) {
       parseRemark(input);
     else if (input.substr(0,6) == "CONECT")
       parseConectRecord(input);
-    else if (input.substr(0, 6) == "CRYST1")
+    else if (input.substr(0, 6) == "CRYST1") {
       parseCryst1Record(input);
-    else if (input.substr(0,3) == "TER" || input.substr(0,3) == "END")
+      has_cryst = true;
+    } else if (input.substr(0,3) == "TER" || input.substr(0,3) == "END")
       ;
     else {
       int space = input.find_first_of(' ');
       cerr << "Warning- Unknown PDB record " << input.substr(0, space) << endl;
     }
+  }
+
+  // Do some post-extraction...
+  if (remarksHasBox(_remarks)) {
+    GCoord c = boxFromRemarks(_remarks);
+    periodicBox(c);
+  } else if (has_cryst) {
+    GCoord c(cell.a(), cell.b(), cell.c());
+    periodicBox(c);
   }
 }
 

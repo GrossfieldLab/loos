@@ -39,6 +39,13 @@ using namespace tr1;
 
 
 //! PDB reading/writing class
+/**This class models a basic PDB file format.  Special handling is
+ *included for dealing with periodic boundary conditions.  If there is
+ *a special REMARK header, then the box size is extracted from this
+ *and stored in the parent AtomicGroup.  If not, but a CRYST1 record
+ *is present, then the a, b, c parameters are used to set the periodic
+ *box.
+ */
 class PDB : public AtomicGroup {
 public:
   PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false) { }

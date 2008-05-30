@@ -138,4 +138,9 @@ int main() {
   g3 = g1.excise(1,2);
   cout << g3 << endl << g1 << endl;
 
+  cout << "-------------------\n";
+  cout << "Box test:\n";
+  g1.periodicBox(GCoord(13, 26, 39));
+  cout << g1 << endl;
+
 }

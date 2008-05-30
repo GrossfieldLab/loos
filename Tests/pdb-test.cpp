@@ -7,6 +7,8 @@ int main(int argc, char *argv[]) {
   PDB p(argv[1]);
 
   cerr << "*** Read in " << p.size() << " atoms...\n";
+  if (p.isPeriodic())
+    cout << "Periodic box: " << p.periodicBox() << endl;
   cout << p;
 
   AtomicGroup g = p;

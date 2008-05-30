@@ -108,6 +108,10 @@ struct AtomSelector {
  * 
  * Valid operators are '+' and '+=' and can combine either
  * AtomicGroup objects or pAtom objects.
+ *
+ * AtomicGroups also support periodic boundary conditions via the
+ * periodicBox() method.  If a box has been set, then isPeriodic()
+ * will return true.
 */
 
 
@@ -117,7 +121,7 @@ protected:
   typedef vector<pAtom>::const_iterator ConstAtomIterator;
 
 public:
-  AtomicGroup() : _sorted(false) { }
+  AtomicGroup() : _sorted(false), _periodic(false) { }
   virtual ~AtomicGroup() { }
 
   //! Creates a deep copy of this group...
@@ -208,6 +212,16 @@ public:
 
   //! Sort based on atomid
   void sort(void);
+
+  //! Test whether or not periodic boundary conditions are set
+  bool isPeriodic(void) const { return(_periodic); }
+  
+  //! Fetch the periodic boundary conditions
+  GCoord periodicBox(void) const { return(box); }
+  
+  //! Set the periodic boundary conditions
+  void periodicBox(const GCoord& c) { _periodic = true; box = c; }
+  
 
 
   // *** Helper classes...
@@ -371,10 +385,12 @@ private:
   double *transformedCoordsAsArray(void) const;
 
   bool _sorted;
+  bool _periodic;
 
 protected:
   vector<pAtom> atoms;
   XForm _xform;
+  GCoord box;
 
 };
 

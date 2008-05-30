@@ -147,9 +147,14 @@ public:
 
 
   //! Update an AtomicGroup coordinates with the currently-read frame.
-  /*! This assumes that that atomid's of the
-    AtomicGroup are indices into the DCD frame and are indexed +1,
-    i.e. atomid 7 refers to DCD coords at index 6... */
+  /** This assumes that that atomid's of the
+   *AtomicGroup are indices into the DCD frame and are indexed +1,
+   *i.e. atomid 7 refers to DCD coords at index 6...
+   *
+   *There is support for pediodic boundary conditions.  If the DCD has
+   *xtal data, then the a, b, and c values are used to update the
+   *AtomicGroup::periodicBox().
+   */
   void updateGroupCoords(AtomicGroup& g);
 
 private:

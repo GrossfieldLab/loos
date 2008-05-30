@@ -461,10 +461,13 @@ GCoord AtomicGroup::centroid(void) const {
 GCoord AtomicGroup::centerOfMass(void) const {
   GCoord c(0,0,0);
   ConstAtomIterator i;
+  double sum = 0.0;
 
-  for (i=atoms.begin(); i != atoms.end(); i++)
+  for (i=atoms.begin(); i != atoms.end(); i++) {
+    sum += (*i)->mass();
     c += (*i)->mass() * (*i)->coords();
-  c /= atoms.size();
+  }
+  c /= (atoms.size() * sum);
   return(c);
 }
 
@@ -557,7 +560,10 @@ bool AtomicGroup::operator==(AtomicGroup& rhs) {
 // XMLish output...
 ostream& operator<<(ostream& os, const AtomicGroup& grp) {
   AtomicGroup::ConstAtomIterator i;
-  os << "<GROUP>\n";
+  if (grp._periodic)
+    os << "<GROUP PERIODIC='" << grp.box << "'>\n";
+  else
+    os << "<GROUP>\n";
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
     os << "   " << **i << endl;
   os << "</GROUP>";
