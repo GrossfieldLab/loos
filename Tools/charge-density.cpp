@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
     // TODO: add an arbitrary number of selections, and track the charge 
     // density from each selection
     vector<AtomicGroup> subsets;
+    subsets.push_back(psf);
     for (int i=7; i<argc; i++) {
         Parser parser(argv[i]);
         KernelSelector parsed_sel(parser.kernel());
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
   
     // Create and zero out the total charge_distribution
     vector< vector<double> > charge_dists;
-    charge_dists.reserve(subsets.size()+1);
+    charge_dists.reserve(subsets.size());
     for (unsigned int i=0; i<=subsets.size(); i++) {
         vector<double> *v = new vector<double>;
         v->insert(v->begin(), num_bins, 0.0);
@@ -60,24 +61,13 @@ int main(int argc, char *argv[]) {
     // loop over the remaining frames
     int frame = 0;
     while (dcd.readFrame()) {
+        // update coordinates
         dcd.updateGroupCoords(psf);
-        AtomicGroup::Iterator iter(psf);
-        pAtom pa;
-        while ( pa = iter() ) {
-            double c = pa->charge();
-            double z = pa->coords().z();
 
-            if ( (z > min_z) && (z < max_z) ) {
-                int bin = (int)( (z - min_z) / bin_width );
-                charge_dists[0][bin] += c;
-            }
-        }
-
-        // Now, do the equivalent loop over the subsets
-        // Could also do this without repeating code by making the above
-        // loop a double loop, and useing findById to check if the atom is 
-        // in each subset (it returns NULL if it isn't)
+        // Loop over the subsets and compute charge distribution.
+        // (first set is all atoms)
         for (unsigned int i=0; i<subsets.size(); i++) {
+            pAtom pa;
             AtomicGroup::Iterator iter(subsets[i]);
             while ( pa = iter() ) {
                 double c = pa->charge();
@@ -85,7 +75,7 @@ int main(int argc, char *argv[]) {
 
                 if ( (z > min_z) && (z < max_z) ) {
                     int bin = (int)( (z - min_z) / bin_width );
-                    charge_dists[i+1][bin] += c;
+                    charge_dists[i][bin] += c;
                 }
             }
         }
@@ -93,16 +83,16 @@ int main(int argc, char *argv[]) {
     }
 
     // Normalize by the number of frames and output the average charge density
-    cout << "# Z\tCharge(elec)";
-    for (unsigned int i=0; i<subsets.size(); i++) {
-        cout << " Subset " << i; 
+    cout << "# Z\tAllAtoms";
+    for (unsigned int i=1; i<subsets.size(); i++) {
+        cout << " Set(" << i <<") "; 
     }
     cout << endl;
 
     for (int i=0; i<num_bins; i++) {
         double z = (i+0.5)*bin_width + min_z;
         cout << z << "\t"; 
-        for (unsigned int j=0; j<subsets.size()+1; j++) {
+        for (unsigned int j=0; j<subsets.size(); j++) {
             double c = charge_dists[j][i] / frame;
             cout << c << "\t";
         }
