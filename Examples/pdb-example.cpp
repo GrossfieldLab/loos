@@ -75,6 +75,15 @@ int main(int argc, char *argv[]) {
   cout << "\nThe first residue is:\n";
   cout << residue << endl;
 
+  HeavyAtomSelector heav_sel;
+  HydrogenSelector hyd_sel;
+  AtomicGroup hydrogens = residue.select(hyd_sel);
+  AtomicGroup heavy_atoms = residue.select(heav_sel);
+
+  cout << "Hydrogens   " << hydrogens.size() << endl;
+  cout << hydrogens << endl;
+  cout << "Heavy   " << heavy_atoms.size() << endl;
+  cout << heavy_atoms << endl;
 
 }
 

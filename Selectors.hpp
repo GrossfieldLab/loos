@@ -80,6 +80,26 @@ struct NotSelector : public AtomSelector {
 };
 
 
+//! Select hydrogen atoms
+struct HydrogenSelector  : public AtomSelector {
+  bool operator()(const pAtom& pa) const {
+    string n = pa->name();
+    char c = n[0];
+    return( (c == 'H') && (pa->mass() < 1.1) );
+  }
+};
+
+//! Select non-hydrogen atoms
+struct HeavyAtomSelector : public AtomSelector {
+    HydrogenSelector hsel;
+    NotSelector not_heavy;
+    HeavyAtomSelector() : not_heavy(hsel) { }
+    bool operator()(const pAtom& pa) const {
+        return (not_heavy(pa));
+    }
+};
+
+
 //! Combines two selectors with a logical "and"
 /** Example:
  *  \verbatim
