@@ -50,6 +50,11 @@ int main() {
 
   cout << g1 << endl;
   cout << "-------------------\n";
+  cout << "Operator= test:\n";
+  g1 = g1;
+  cout << "operator== test:\n";
+  AtomicGroup ggg = g1;
+  cout << (ggg == g1) << endl;
   cout << "Operator[] test:\n";
   pAtom tmpatm = g1[3];
   g1[3] = f;

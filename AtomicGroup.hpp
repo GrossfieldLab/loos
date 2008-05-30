@@ -156,6 +156,13 @@ public:
   AtomicGroup operator+(const AtomicGroup& rhs);
   AtomicGroup operator+(const pAtom& rhs);
 
+  //! Equality test for two groups
+  /**The test for equality is based on whether or not the contained
+   *atom pointers are the same.  This operator will also force both
+   *sides of the equation to be sorted.
+   */
+  bool operator==(AtomicGroup& rhs);
+
   //! subset() and excise() args are patterned after perl's substr...
   /** If offset is negative, then it's relative to the end of the
    * group.  If length is 0, then everything from offset to the

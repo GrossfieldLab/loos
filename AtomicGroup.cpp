@@ -536,6 +536,24 @@ AtomicGroup operator+(const pAtom& lhs, const AtomicGroup& rhs) {
 }
 
 
+
+bool AtomicGroup::operator==(AtomicGroup& rhs) {
+
+  if (size() != rhs.size())
+    return(false);
+
+  sort();
+  rhs.sort();
+
+  int n = size();
+  for (int i = 0; i < n; i++)
+    if (atoms[i] != rhs.atoms[i])
+      return(false);
+
+  return(true);
+}
+
+
 // XMLish output...
 ostream& operator<<(ostream& os, const AtomicGroup& grp) {
   AtomicGroup::ConstAtomIterator i;
