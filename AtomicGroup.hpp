@@ -276,6 +276,8 @@ public:
 
   //! Center of mass of the group (in group coordinates)
   GCoord centerOfMass(void) const;
+  GCoord centerOfCharge(void) const;
+  GCoord dipoleMoment(void) const;
   greal totalCharge(void) const;
   greal totalMass(void) const;
   greal radiusOfGyration(void) const;

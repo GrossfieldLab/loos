@@ -470,6 +470,27 @@ GCoord AtomicGroup::centerOfMass(void) const {
 }
 
 
+GCoord AtomicGroup::centerOfCharge(void) const {
+  GCoord c(0,0,0);
+  ConstAtomIterator i;
+
+  for (i=atoms.begin(); i != atoms.end(); i++) {
+    c += (*i)->charge() * (*i)->coords();
+  }
+  c /= totalCharge();
+  return(c);
+}
+
+GCoord AtomicGroup::dipoleMoment(void) const {
+    GCoord center = centerOfCharge();
+    GCoord moment(0,0,0);
+    ConstAtomIterator i;
+    for (i=atoms.begin(); i != atoms.end(); i++) {
+        moment += (*i)->charge() * ((*i)->coords() - center);
+    }
+    return(moment);
+}
+
 greal AtomicGroup::totalCharge(void) const {
   ConstAtomIterator i;
   greal charge = 0.0;
