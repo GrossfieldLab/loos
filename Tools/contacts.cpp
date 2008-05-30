@@ -4,13 +4,17 @@
 using namespace std;
 
 #include <iostream>
-#include "PDB.hpp"
 #include <math.h>
+
+#include <loos.hpp>
+#include <psf.hpp>
+#include <dcd.hpp>
+#include <Parser.hpp>
+#include <Selectors.hpp>
 
 void Usage()
     {
-    cerr << "Usage: contacts pdb_filelist selection_file1 selection_file2 "
-         << "max" 
+    cerr << "Usage: contacts psf dcd selection1 selection_2 max" 
          << endl;
     }
 
@@ -18,91 +22,72 @@ int main (int argc, char *argv[])
 {
 if ( (argc <= 1) || 
      ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 5)
+     (argc < 6)
    )
     {
     Usage();
     exit(-1);
     }
 
-// Echo the command line to stdout
-cout << "# ";
-for (int i =0; i<argc; i++)
-    {
-    cout << argv[i] << " ";
-    }
-cout << endl;
+cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
-char *pdb_filelist = argv[1];
-char *selection_file1 = argv[2];
-char *selection_file2 = argv[3];
-float max= atof(argv[4]);
-float max2 = max*max;
+char *psf_filename = argv[1];
+char *dcd_filename = argv[2];
+char *selection1 = argv[3];
+char *selection2 = argv[4];
+double max= atof(argv[5]);
+double max2 = max*max;
+
+PSF psf(psf_filename);
+DCD dcd(dcd_filename);
+
+// The assumption here is that selection1 will specify a bunch of molecules,
+// eg, all lipid headgroups of type foo.  g1 will be the group containing all
+// of those atoms.  However, what we'll actually want to do is work with the 
+// individual molecules' centers of mass, so we'll split g1 into a vector of
+// individual segids (corresponding to individual lipids) called group1
+Parser p1(selection1);
+KernelSelector parsed1(p1.kernel());
+AtomicGroup g1 = psf.select(parsed1);
+vector<AtomicGroup> group1 = g1.splitByUniqueSegid();
+
+// g2 / group2 works the same way
+Parser p2(selection2);
+KernelSelector parsed2(p2.kernel());
+AtomicGroup g2 = psf.select(parsed2);
+vector<AtomicGroup> group2 = g2.splitByUniqueSegid();
 
 
-Selection s1 = Selection(selection_file1);
-Selection s2 = Selection(selection_file2);
-
-// Read the list of pdb files
-vector<string> file_list;
-ifstream pdb_files(pdb_filelist);
-if (pdb_files.bad())
-    {
-    cerr << "couldn't read " << pdb_filelist << ": exiting..." << endl;
-    exit(-1);
-    }
-string name;
-while ( getline(pdb_files, name) )
-    {
-    file_list.push_back(name);
-    }
-
-int num_pdbfiles = file_list.size();
-
-
-// read the first file
-PDBFile file(file_list[0].c_str());
-
-// make the selections
-Group group1, group2;
-file.select(s1, group1);
-file.select(s2, group2);
-
-if (group1.num_atoms == 0)
-    {
-    cerr << "No atoms in group1" << endl;
-    exit(0);
-    }
-
-if (group2.num_atoms == 0)
-    {
-    cerr << "No atoms in group2" << endl;
-    exit(0);
-    }
 
 cout << "#Frame\tPairs\tPerGroup1\tPerGroup2" << endl;
 
-// loop over the pdb files
-for (int i = 0; i < num_pdbfiles; i++)
+// loop over the frames of the dcd file
+int frame = 0;
+while (dcd.readFrame())
     {
     // get the new coordinates
-    file.update_coor(file_list[i].c_str());
+    dcd.updateGroupCoords(psf);
     int count = 0;
 
-    // compute the number of contacts between group1 atoms and group2 atoms
-    for (int j = 0; j < group1.num_atoms; j++)
+    // compute the number of contacts between group1 center of mass 
+    // and group2 center of mass
+    vector<AtomicGroup>::iterator first;
+    for (first=group1.begin(); first!=group1.end(); first++)
         {
-        Atom *a1 = group1.atoms[j];
-        for (int k = 0; k < group2.num_atoms; k++)
+        GCoord com1 = first->centerOfMass();
+
+        vector<AtomicGroup>::iterator second;
+        for (second=group2.begin(); second!=group2.end(); second++)
             {
-            Atom *a2 = group2.atoms[k];
-            if (a1 == a2)
-                {
+            // exclude self pairs 
+            if (*first == *second)
                 continue;
-                }
-            float d2 = a1->dist_squ(*a2, file.box);
-            if (d2 <= max2)
+
+            GCoord com2 = second->centerOfMass();
+
+            double d2 = com1.distance2(com2, psf.periodicBox());
+            if ( (d2 <= max2) )
                 {
                 count++;
                 }
@@ -110,12 +95,14 @@ for (int i = 0; i < num_pdbfiles; i++)
         }
     
     // Output the results
-    float per_g1_atom = (float)count / group1.num_atoms;
-    float per_g2_atom = (float)count / group2.num_atoms;
-    cout << i << "\t" 
+    double per_g1_atom = (double)count / group1.size();
+    double per_g2_atom = (double)count / group2.size();
+    cout << frame << "\t" 
          << count << "\t"
          << per_g1_atom << "\t"
          << per_g2_atom << endl;
+
+    frame++;
     }
 }
 
