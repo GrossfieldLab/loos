@@ -20,7 +20,6 @@
 
 #include <AtomicGroup.hpp>
 
-
 // Deep copy...  Creates new shared atoms and stuffs 'em
 // into a new group...
 AtomicGroup* AtomicGroup::clone(void) const {
@@ -253,30 +252,24 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
 
 
 
-// Need to check how find_if() actually searches since we have
-// an ordered list...
-
-AtomicGroup::AtomIterator AtomicGroup::findIteratorById(const int id) {
-  AtomIterator i;
-
-  if (!sorted())
-    sort();
-
-  BindId finder(id);
-  i = find_if(atoms.begin(), atoms.end(), finder);
-  return(i);
-}
-
-
 // Find an atom based on atomid
 // Returns 0 (null shared_ptr) if not found...
 pAtom AtomicGroup::findById(const int id) {
-  AtomIterator i = findIteratorById(id);
+  sort();
+  int bottom = 0, top = size()-1, middle;
 
-  if (i == atoms.end())
-    return(pAtom());
+  while (top > bottom) {
+    middle = bottom + (top - bottom) / 2;
+    if (atoms[middle]->id() < id)
+      bottom = middle + 1;
+    else
+      top = middle;
+  }
 
-  return(*i);
+  if (atoms[bottom]->id() == id)
+    return(atoms[middle]);
+
+  return(pAtom());
 }
 
 // Get all atoms associated with the residue that contains the

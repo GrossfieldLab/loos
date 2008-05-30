@@ -374,8 +374,6 @@ private:
   void addAtom(pAtom pa) { atoms.push_back(pa); }
   void deleteAtom(pAtom pa);
 
-  AtomIterator findIteratorById(const int id);
-
   boost::tuple<AtomIterator, AtomIterator> calcSubsetIterators(const int offset, const int len = 0);
 
   void copyCoordinatesById(AtomicGroup& g);
