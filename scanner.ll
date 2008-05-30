@@ -45,7 +45,7 @@ id|resid             { yylval->sval = new string(yytext, yyleng); return(token::
  int c;
  string text;
 
- while ((c = yyinput())) {
+ while ((c = yyinput()) > 0) {
    if (c == '\\')
      c = yyinput();
    else
@@ -53,6 +53,9 @@ id|resid             { yylval->sval = new string(yytext, yyleng); return(token::
        break;
    text += c;
  }
+
+ if (c < 0)
+   return(token::END);
  yylval->sval = new string(text);
  return(token::STRING);
 }
