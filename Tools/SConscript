@@ -11,7 +11,7 @@ import sys
 
 Import('env')
 
-apps = 'charge-density center-pdb pdb2matlab dcdframe2pdb contacts'
+apps = 'charge-density center-pdb pdb2matlab dcdframe2pdb contacts order_params'
 
 list = []
 
