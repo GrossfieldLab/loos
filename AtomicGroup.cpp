@@ -461,13 +461,11 @@ GCoord AtomicGroup::centroid(void) const {
 GCoord AtomicGroup::centerOfMass(void) const {
   GCoord c(0,0,0);
   ConstAtomIterator i;
-  double sum = 0.0;
 
   for (i=atoms.begin(); i != atoms.end(); i++) {
-    sum += (*i)->mass();
     c += (*i)->mass() * (*i)->coords();
   }
-  c /= (atoms.size() * sum);
+  c /= totalMass();
   return(c);
 }
 
