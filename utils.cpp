@@ -146,3 +146,10 @@ loos::base_generator_type& loos::rng_singleton(void) {
 
   return(rng);
 }
+
+
+void loos::randomSeedRNG(void) {
+  base_generator_type& rng = rng_singleton();
+
+  rng.seed(static_cast<unsigned int>(time(0)));
+}

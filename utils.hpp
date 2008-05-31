@@ -61,6 +61,11 @@ namespace loos {
   //! Suite-wide random number generator singleton
   base_generator_type& rng_singleton(void);
 
+  //! Randomly seeds the RNG
+  /**Currently uses time(3) to seed the RNG obtained from the singleton...
+   */
+  void randomSeedRNG(void);
+
 };
 
 #endif

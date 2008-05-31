@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
   loos::base_generator_type& rng = loos::rng_singleton();
 
   // Uncommont the follong to seed the suite-wide RNG
-  //  rng.seed(static_cast<unsigned int>(std::time(0)));
+  //loos::randomSeedRNG();
 
 
   PDB pdb(argv[1]);
