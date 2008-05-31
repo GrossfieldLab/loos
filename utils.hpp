@@ -35,10 +35,10 @@ string getNextLine(istream&, int*);
 vector<int> readIndexMap(istream&);
 
 //! Create an invocation header
-/*!
-  This is a string that can be embedded in output that records the
-  invoking user, command-line, and a timestamp.
-*/
+/**
+ *This is a string that can be embedded in output that records the
+ *invoking user, command-line, and a timestamp.
+ */
 string invocationHeader(int, char *[]);
 
 //! Extract the Alan-style box-size from a PDB Remarks block.
@@ -53,6 +53,7 @@ bool remarksHasBox(const Remarks&);
 // The following are in LOOS namespace because they are either
 // collisions waiting to or are too esoteric to warrant going into std
 
+//! Namespace for segregating esoteric functions or functions with common names
 namespace loos {
 
 
