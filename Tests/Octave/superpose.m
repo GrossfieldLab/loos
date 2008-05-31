@@ -30,7 +30,7 @@ M = eye(4);
 M(1:3, 1:3) = MM';
 
 % Add translation in...
-M(4,1:3) = bc(1:3);
+M(1:3, 4) = bc(1:3);
 
 
 
