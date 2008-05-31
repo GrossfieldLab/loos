@@ -16,6 +16,11 @@
 #include <iostream>
 #include <vector>
 
+
+#include <boost/random.hpp>
+#include <ctime>
+
+
 #include <loos.hpp>
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
@@ -44,5 +49,18 @@ GCoord boxFromRemarks(const Remarks&);
 
 //! Checks to see if a Remarks block has an Alan-style box size in it.
 bool remarksHasBox(const Remarks&);
+
+// The following are in LOOS namespace because they are either
+// collisions waiting to or are too esoteric to warrant going into std
+
+namespace loos {
+
+
+  typedef boost::mt19937 base_generator_type;
+
+  //! Suite-wide random number generator singleton
+  base_generator_type& rng_singleton(void);
+
+};
 
 #endif

@@ -19,7 +19,6 @@
 #include <algorithm>
 
 #include <boost/random.hpp>
-#include <ctime>
 
 #include <AtomicGroup.hpp>
 
@@ -772,10 +771,9 @@ void AtomicGroup::perturbCoords(const greal rms) {
   int i, n = size();
   GCoord r;
 
-  boost::mt19937 rng;
+  loos::base_generator_type& rng = loos::rng_singleton();
   boost::uniform_real<> uni;
-  boost::variate_generator<boost::mt19937&, boost::uniform_real<> > func(rng, uni);
-  rng.seed(static_cast<unsigned int>(std::time(0)));
+  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > func(rng, uni);
 
   for (i=0; i<n; i++) {
     r.x(func());

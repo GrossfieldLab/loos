@@ -29,6 +29,12 @@ int main(int argc, char *argv[]) {
 
   cout << invocationHeader(argc, argv) << endl;
 
+  loos::base_generator_type& rng = loos::rng_singleton();
+
+  // Uncommont the follong to seed the suite-wide RNG
+  //  rng.seed(static_cast<unsigned int>(std::time(0)));
+
+
   PDB pdb(argv[1]);
   
   cout << "Read in " << pdb.size() << " atoms.\n";
@@ -95,10 +101,8 @@ int main(int argc, char *argv[]) {
 
   // Now run iteratative superpositon tests...
 
-  boost::mt19937 rng;
   boost::uniform_real<> uni(-90.0, 90.0);
-  boost::variate_generator<boost::mt19937&, boost::uniform_real<> > func(rng, uni);
-  rng.seed(static_cast<unsigned int>(std::time(0)));
+  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > func(rng, uni);
 
   vector<AtomicGroup> mols;
   for (i=0; i<5; i++) {

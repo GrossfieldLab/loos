@@ -138,3 +138,11 @@ bool remarksHasBox(const Remarks& r) {
   }
   return(false);
 }
+
+
+
+loos::base_generator_type& loos::rng_singleton(void) {
+  static base_generator_type rng;
+
+  return(rng);
+}
