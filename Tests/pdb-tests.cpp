@@ -75,17 +75,9 @@ int main(int argc, char *argv[]) {
   // -------------------------------------------------------------------------------
 
   AtomicGroup casb = *(cas.clone());
-  casb.perturbCoords(1.0);
+  casb.perturbCoords(5.0);
   greal rmsd = cas.rmsd(casb);
   cout << "RMSD test = " << rmsd << endl;
-  casb.xform().rotate('Y', 1.0);
-  casb.applyTransform();
-  rmsd = cas.rmsd(casb);
-  cout << "Rotated rmsd = " << rmsd << endl;
-
-  casb.alignOnto(cas);
-  //casb.applyTransform();
-  cout << "Aligned rmsd = " << cas.rmsd(casb) << endl;
 
   // -------------------------------------------------------------------------------
 
@@ -119,31 +111,19 @@ int main(int argc, char *argv[]) {
   cout << grp << endl;
 
   // -------------------------------------------------------------------------------
-  // Now run iteratative superpositon tests...
 
-  boost::uniform_real<> uni(-45.0, 45.0);
-  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > func(rng, uni);
+  cas.xform().rotate('y', 45);
+  cas.xform().rotate('x', 20);
+  GCoord ac1 = cas[0]->coords();
+  GCoord ac2 = cas.getAtomsTransformedCoord(0);
 
-  vector<AtomicGroup> mols;
-  for (i=0; i<maxgrpcnt; i++) {
-    AtomicGroup subgroup = *(cas.clone());
-    subgroup.perturbCoords(2.0);
-    subgroup.xform().rotate('y', func());
-    subgroup.applyTransform();
-    mols.push_back(subgroup);
-  }
-  AtomicGroup avg = averageStructure(mols);
-  cout << "Pre-aligned rmsds:\n";
-  for (i=0; i<maxgrpcnt; i++)
-    cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
+  cout << "* Transformation test:\n";
+  cout << "Pre: " << ac1 << endl;
+  cout << "Post: " << ac2 << endl;
+  cas.applyTransform();
+  GCoord ac3 = cas[0]->coords();
+  cout << "Applied: " << ac3 << endl;
 
-
-  greal final_rmsd = loos::iterativeAlignment(mols, 2.0);
-  cout << "Final alignment rmsd to avg struct = " << final_rmsd << endl;
-
-  avg = averageStructure(mols);
-  for (i=0; i<maxgrpcnt; i++)
-    cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
 
 }
 
