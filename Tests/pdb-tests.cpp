@@ -21,6 +21,16 @@
 #include <Selectors.hpp>
 #include <ensembles.hpp>
 
+
+#if !defined(MAXGRPCNT)
+#define MAXGRPCNT 10
+#endif
+
+
+const unsigned int maxgrpcnt = MAXGRPCNT;
+
+
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     cerr << "Usage- " << argv[0] << " pdbfile\n";
@@ -56,9 +66,14 @@ int main(int argc, char *argv[]) {
   cout << "Centroid = " << pdb.centroid() << endl;
   cout << "Radius = " << pdb.radius() << endl;
 
+  // -------------------------------------------------------------------------------
+
   CAlphaSelector casel;
   AtomicGroup cas = pdb.select(casel);
   cout << "Found " << cas.size() << " CAs\n";
+
+  // -------------------------------------------------------------------------------
+
   AtomicGroup casb = *(cas.clone());
   casb.perturbCoords(1.0);
   greal rmsd = cas.rmsd(casb);
@@ -71,6 +86,8 @@ int main(int argc, char *argv[]) {
   casb.alignOnto(cas);
   //casb.applyTransform();
   cout << "Aligned rmsd = " << cas.rmsd(casb) << endl;
+
+  // -------------------------------------------------------------------------------
 
   vector<AtomicGroup> chains = pdb.splitByUniqueSegid();
   cout << "Found " << chains.size() << " unique segids.\n";
@@ -86,6 +103,8 @@ int main(int argc, char *argv[]) {
   grp = cas.subset(-3, 3);
   cout << "* Last 3 cas *\n" << grp << endl;
 
+  // -------------------------------------------------------------------------------
+
   Parser parsed1("!(name =~ '^H')");
   KernelSelector parsed_sel1(parsed1.kernel());
   grp = pdb.select(parsed_sel1);
@@ -99,13 +118,14 @@ int main(int argc, char *argv[]) {
   grp = pdb.getResidue(cas[2]);
   cout << grp << endl;
 
+  // -------------------------------------------------------------------------------
   // Now run iteratative superpositon tests...
 
-  boost::uniform_real<> uni(-90.0, 90.0);
+  boost::uniform_real<> uni(-45.0, 45.0);
   boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > func(rng, uni);
 
   vector<AtomicGroup> mols;
-  for (i=0; i<5; i++) {
+  for (i=0; i<maxgrpcnt; i++) {
     AtomicGroup subgroup = *(cas.clone());
     subgroup.perturbCoords(2.0);
     subgroup.xform().rotate('y', func());
@@ -114,15 +134,15 @@ int main(int argc, char *argv[]) {
   }
   AtomicGroup avg = averageStructure(mols);
   cout << "Pre-aligned rmsds:\n";
-  for (i=0; i<5; i++)
+  for (i=0; i<maxgrpcnt; i++)
     cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
 
 
-  greal final_rmsd = loos::iterativeAlignment(mols, 0.5);
+  greal final_rmsd = loos::iterativeAlignment(mols, 2.0);
   cout << "Final alignment rmsd to avg struct = " << final_rmsd << endl;
 
   avg = averageStructure(mols);
-  for (i=0; i<5; i++)
+  for (i=0; i<maxgrpcnt; i++)
     cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
 
 }

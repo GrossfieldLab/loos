@@ -42,18 +42,23 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
 
 
 greal loos::iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter) {
-  AtomicGroup avg = ensemble[0];
-  AtomicGroup target;
-  
   int iter = 0;
   int n = ensemble.size();
   greal rms;
+  AtomicGroup avg;
+  AtomicGroup target = averageStructure(ensemble);
+
   do {
-    target = avg;
     for (int i = 0; i<n; i++)
       ensemble[i].alignOnto(target);
     avg = averageStructure(ensemble);
     rms = avg.rmsd(target);
+    target = avg;
+
+#if defined(DEBUG)
+    cerr << "loos::iterativeAlignment - iter = " << iter << ", rms = " << rms << endl;
+#endif
+
   } while (rms > threshold && ++iter <= maxiter);
   
   return(rms);
