@@ -699,6 +699,7 @@ void AtomicGroup::applyTransform(void) {
     GCoord res = _xform.current() * (*i)->coords();
     (*i)->coords(res);
   }
+  _xform.identity();
 }
 
 

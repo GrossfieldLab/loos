@@ -110,7 +110,6 @@ int main(int argc, char *argv[]) {
     subgroup.perturbCoords(2.0);
     subgroup.xform().rotate('y', func());
     subgroup.applyTransform();
-    subgroup.xform().identity();
     mols.push_back(subgroup);
   }
   AtomicGroup avg = averageStructure(mols);

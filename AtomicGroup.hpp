@@ -307,9 +307,9 @@ public:
   GCoord getAtomsTransformedCoord(int) const;
   
   
-  //! Applies the current XForm transformation to the contained Atom
-  //! GCoord() coordinates.  This does NOT reset the XForm to the
-  //! identity...
+  //! Applies the current XForm transformation to the contained Atom coordinates. 
+  /** This <I>will</I> reset the current XForm to the identity...
+   */
   void applyTransform(void);
 
 
