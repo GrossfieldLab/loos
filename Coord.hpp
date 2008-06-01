@@ -71,6 +71,10 @@ template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
 template <class T>
 class Coord {
   enum { X=0, Y=1, Z=2, MAXCOORD } CoordIndex;
+
+  //! The threshold for vector equality
+  static const double epsilon = 1e-16;
+
 public:
 
 
@@ -401,6 +405,16 @@ public:
       v[i] = 0;
     v[i] = 1.0;
   }
+
+  //! Compute equality based on norm(u-v) < epsilon
+  bool operator==(const Coord<T>& rhs) const {
+    double d = distance2(rhs);
+    if (d < epsilon * epsilon)
+      return(true);
+    return(false);
+  }
+
+
 
 
 private:
