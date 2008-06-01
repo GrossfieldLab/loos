@@ -92,20 +92,6 @@ struct AtomSelector {
  * method.  Note that atomid's are assumed to be unique for any given
  * AtomicGroup.
  *
- * The AtomicGroup also contains a XForm object for specifying
- * geometric transforms for the contained Atoms.  You can apply this
- * transform to the Atoms themselves, but be aware that doing so does
- * not reset the transform back to identity.  Also, some geometric
- * operations work in group coordinate space (i.e. untransformed)
- * whereas some will operate in world coordinates (i.e. transformed).
- *
- * If you need to fetch the coordinates for an atom in a group, it is
- * <I>strongly</I> recommended that you use the
- * getAtomsTransformedCoord() method.  This will return a GCoord that
- * has been transformed by the current transformation matrix.  If you
- * access the atom directly, it does not know about the transformation
- * and you will get incorrect coordinates.
- * 
  * Valid operators are '+' and '+=' and can combine either
  * AtomicGroup objects or pAtom objects.
  *
@@ -137,8 +123,6 @@ public:
   //! Same as getAtom(i)
   pAtom& operator[](const int i);
   const pAtom& operator[](const int i) const;
-
-  XForm& xform(void) { return(_xform); };
 
   //! Append the atom onto the group
   void append(pAtom pa) { atoms.push_back(pa); }
@@ -274,8 +258,11 @@ public:
   //! Bounding box for the group...
   BoundingBox boundingBox(void) const;
 
-  //! Translates (via XForm) the group so that the centroid is at the origin.
-  void centerAtOrigin(void);
+  //! Translates the group so that the centroid is at the origin.
+  /**
+   * Returns the old centroid of the group
+   */
+  GCoord centerAtOrigin(void);
 
   //! Centroid of atoms (ignores mass, operates in group coordinates)
   GCoord centroid(void) const;
@@ -299,18 +286,15 @@ public:
 
   // Geometric transformations...
   
-  //! Returns a vector of coordinates transformed by the current
-  //! groups XForm
-  vector<GCoord> transformedCoords(void) const;
-
-  //! Return the ith atom's coordinates transformed by the current XForm
-  GCoord getAtomsTransformedCoord(int) const;
-  
-  
-  //! Applies the current XForm transformation to the contained Atom coordinates. 
-  /** This <I>will</I> reset the current XForm to the identity...
+  //! Returns a vector of coordinates transformed by the passed XForm
+  /**
+   * Does not alter the group's coordinates...
    */
-  void applyTransform(void);
+  vector<GCoord> getTransformedCoords(const XForm&) const;
+  
+
+  //! Apply the given transform to the group's coordinates...
+  void applyTransform(const XForm&);
 
 
   //! Copy coordinates from one group into another...
@@ -355,17 +339,22 @@ public:
    *
    *  - Potential issue with f77int under linux when not on a 64-bit
    *    architecture. 
-   *
-   *  - Operates in world coordinates (i.e. transformed group coordinates)
-   * 
    */
   vector<GCoord> principalAxes(void) const;
 
-  //! Superimposes the current group atop another group.
-  /**Computes the Kabsch superposition using an SVD of the current
-   *group with the passed group.  The current XForm is altered to affect
-   *the superposition.  The transformation matrix (not including
-   *centering the current group) is returned as a GMatrix.
+  //! Calculates the transformation matrix for superposition of groups.
+  /**
+   * Uses the Kabsch alignment method (via SVD) to calculate the
+   * transformation matrix that superimposes the current group onto
+   * the passed group.  Returns the matrix.
+   */
+  GMatrix superposition(AtomicGroup&);
+
+  //! Superimposes the current group onto the passed group.
+  /**
+   * Calls superposition to calculate the transformation matrix to
+   * superimpose the current group onto the passed one, then applies the
+   * transformation to the current group's coordinates.
    */
   GMatrix alignOnto(AtomicGroup&);
 
@@ -401,14 +390,13 @@ private:
 
   void dumpMatrix(const string, double*, int, int) const;
   double *coordsAsArray(void) const;
-  double *transformedCoordsAsArray(void) const;
+  double *transformedCoordsAsArray(const XForm&) const;
 
   bool _sorted;
   bool _periodic;
 
 protected:
   vector<pAtom> atoms;
-  XForm _xform;
   GCoord box;
 
 };

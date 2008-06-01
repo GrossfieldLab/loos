@@ -454,10 +454,10 @@ AtomicGroup::BoundingBox AtomicGroup::boundingBox(void) const {
 // Geometric center of the group
 GCoord AtomicGroup::centroid(void) const {
   GCoord c(0,0,0);
-  int i;
+  ConstAtomIterator i;
 
-  for (i=0; i<size(); i++)
-    c += getAtomsTransformedCoord(i);
+  for (i = atoms.begin(); i != atoms.end(); i++)
+    c += (*i)->coords();
 
   c /= atoms.size();
   return(c);
@@ -559,8 +559,8 @@ greal AtomicGroup::rmsd(AtomicGroup& v) {
   int n = size();
   double d = 0.0;
   for (int i = 0; i < n; i++) {
-    GCoord x = getAtomsTransformedCoord(i);
-    GCoord y = v.getAtomsTransformedCoord(i);
+    GCoord x = atoms[i]->coords();
+    GCoord y = v.atoms[i]->coords();
     d += x.distance2(y);
   }
   
@@ -656,50 +656,29 @@ ostream& operator<<(ostream& os, const AtomicGroup& grp) {
 
 
 
-vector<GCoord> AtomicGroup::transformedCoords(void) const {
+vector<GCoord> AtomicGroup::getTransformedCoords(const XForm& M) const {
   vector<GCoord> crds(atoms.size());
   ConstAtomIterator i;
+  GMatrix W = M.current();
   int j = 0;
 
-  if (_xform.unset()) {
-    for (i = atoms.begin(); i != atoms.end(); i++)
-      crds[j++] = (*i)->coords();
-  } else {
-
-    for (i = atoms.begin(); i != atoms.end(); i++) {
-      GCoord res = _xform.current() * (*i)->coords();
-      crds[j++] = res;
-    }
-
+  for (i = atoms.begin(); i != atoms.end(); i++) {
+    GCoord res = W * (*i)->coords();
+    crds[j++] = res;
   }
 
   return(crds);
 }
 
 
-GCoord AtomicGroup::getAtomsTransformedCoord(int i) const {
 
-  if (i < 0)
-    i += size();
-  if (i >= size())
-    throw(out_of_range("Index into AtomicGroup is out of bounds"));
-
-  GCoord c = atoms[i]->coords();
-  if (! _xform.unset())
-    c = _xform.current() * c;
-
-  return(c);
-}
-
-
-void AtomicGroup::applyTransform(void) {
+void AtomicGroup::applyTransform(const XForm& M) {
   AtomIterator i;
+  GMatrix W = M.current();
 
-  for (i = atoms.begin(); i != atoms.end(); i++) {
-    GCoord res = _xform.current() * (*i)->coords();
-    (*i)->coords(res);
-  }
-  _xform.identity();
+  for (i = atoms.begin(); i != atoms.end(); i++)
+    (*i)->coords() = W * (*i)->coords();
+
 }
 
 
@@ -738,19 +717,17 @@ double* AtomicGroup::coordsAsArray(void) const {
 
 // Returns a newly allocated array of double coords in row-major order
 // transformed by the current transformation.
-double* AtomicGroup::transformedCoordsAsArray(void) const {
+double* AtomicGroup::transformedCoordsAsArray(const XForm& M) const {
   double *A;
   GCoord x;
   int n = size();
-
-  if (_xform.unset())
-    return(coordsAsArray());
+  GMatrix W = M.current();
 
   A = new double[n*3];
   int k = 0;
   int i;
   for (i=0; i<n; i++) {
-    x = _xform.current() * atoms[i]->coords();
+    x = W * atoms[i]->coords();
     A[k++] = x.x();
     A[k++] = x.y();
     A[k++] = x.z();
@@ -761,9 +738,14 @@ double* AtomicGroup::transformedCoordsAsArray(void) const {
 
 
 
-void AtomicGroup::centerAtOrigin(void) {
+GCoord AtomicGroup::centerAtOrigin(void) {
   GCoord c = centroid();
-  _xform.translate(-c);
+  AtomIterator i;
+
+  for (i = atoms.begin(); i != atoms.end(); i++)
+    (*i)->coords() -= c;
+
+  return(c);
 }
 
 
@@ -799,7 +781,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   double M[3] = {0.0, 0.0, 0.0};
   int k = 0;
 
-  double *A = transformedCoordsAsArray();
+  double *A = coordsAsArray();
   for (i=0; i<n; i++) {
     M[0] += A[k++];
     M[1] += A[k++];
@@ -865,23 +847,22 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
 
 
 
-GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
+GMatrix AtomicGroup::superposition(AtomicGroup& grp) {
   int i, j;
+  XForm W;
 
   int n = size();
   // Center both groups at the origin...
-  _xform.push();
+
   GCoord xc = centroid();
-  _xform.translate(-xc);
-  double *X = transformedCoordsAsArray();
-  _xform.pop();
+  W.translate(-xc);
+  double *X = transformedCoordsAsArray(W);
   
 
   GCoord yc = grp.centroid();
-  grp.xform().push();
-  grp.xform().translate(-yc);
-  double *Y = grp.transformedCoordsAsArray();
-  grp.xform().pop();
+  W.identity();
+  W.translate(-yc);
+  double *Y = grp.transformedCoordsAsArray(W);
 
   // Compute correlation matrix...
   double R[9];
@@ -911,29 +892,39 @@ GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
   cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, U, 3, Vt, 3, 0.0, M, 3);
 
   // Construct the new transformation matrix...  (W = M')
-  GMatrix W;
+  GMatrix Z;
   for (i=0; i<3; i++)
     for (j=0; j<3; j++)
-      W(i,j) = M[i*3+j];
+      Z(i,j) = M[i*3+j];
 
   //W(0,3) = yc.x();
-  //  W(1,3) = yc.y();
+  //W(1,3) = yc.y();
   //W(2,3) = yc.z();
 
-  // Now composite the transformation in the proper order...
-  // Yeah, this is a tad ugly...
-  GMatrix T = _xform.current();
-  _xform.identity();
-  _xform.translate(yc);
-  _xform.concat(W);
-  _xform.translate(-xc);
-  _xform.concat(T);
+
+  W.identity();
+  W.translate(yc);
+  W.concat(Z);
+  W.translate(-xc);
 
   delete[] X;
   delete[] Y;
 
 
-  return(W);
+  return(W.current());
 }
+
+
+GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
+  XForm W;
+  GMatrix M = superposition(grp);
+
+  W.load(M);
+  applyTransform(W);
+
+  return(M);
+}
+
+
 
 #endif   /* defined(__linux__) || defined(__APPLE__) */

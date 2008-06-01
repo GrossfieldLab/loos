@@ -39,8 +39,6 @@ int main(int argc, char *argv[]) {
 
   cout << invocationHeader(argc, argv) << endl;
 
-  loos::base_generator_type& rng = loos::rng_singleton();
-
   // Uncommont the follong to seed the suite-wide RNG
   //loos::randomSeedRNG();
 
@@ -112,17 +110,15 @@ int main(int argc, char *argv[]) {
 
   // -------------------------------------------------------------------------------
 
-  cas.xform().rotate('y', 45);
-  cas.xform().rotate('x', 20);
+  XForm W;
+  W.rotate('y', 45);
+  W.rotate('x', 20);
   GCoord ac1 = cas[0]->coords();
-  GCoord ac2 = cas.getAtomsTransformedCoord(0);
+  GCoord ac2 = W.transform(ac1);
 
   cout << "* Transformation test:\n";
   cout << "Pre: " << ac1 << endl;
   cout << "Post: " << ac2 << endl;
-  cas.applyTransform();
-  GCoord ac3 = cas[0]->coords();
-  cout << "Applied: " << ac3 << endl;
 
 
 }

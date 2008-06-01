@@ -39,12 +39,12 @@ int main(int argc, char *argv[]) {
     atoms = pdb.select(parsed_selector);
   }
 
-  vector<GCoord> coords = atoms.transformedCoords();
-  vector<GCoord>::iterator i;
+  AtomicGroup::Iterator i(atoms);
+  pAtom pa;
 
   cout << "A = [\n";
-  for (i = coords.begin();i != coords.end(); i++)
-    cout << i->x() << " " << i->y() << " " << i->z() << ";\n";
+  while (pa = i())
+    cout << pa->coords().x() << " " << pa->coords().y() << " " << pa->coords().z() << ";\n";
   cout << "];\n";
 
 }

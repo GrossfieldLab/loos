@@ -174,6 +174,7 @@ public:
   }
 
   //! Get the current trasnformation
+  // Should we copy or return a ref?
   GMatrix current(void) const {
     GMatrix M = stack.back();
     return(M);
