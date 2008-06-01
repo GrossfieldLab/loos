@@ -454,10 +454,10 @@ AtomicGroup::BoundingBox AtomicGroup::boundingBox(void) const {
 // Geometric center of the group
 GCoord AtomicGroup::centroid(void) const {
   GCoord c(0,0,0);
-  ConstAtomIterator i;
+  int i;
 
-  for (i=atoms.begin(); i != atoms.end(); i++)
-    c += (*i)->coords();
+  for (i=0; i<size(); i++)
+    c += getAtomsTransformedCoord(i);
 
   c /= atoms.size();
   return(c);
@@ -916,14 +916,18 @@ GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
     for (j=0; j<3; j++)
       W(i,j) = M[i*3+j];
 
-  W(0,3) = yc.x();
-  W(1,3) = yc.y();
-  W(2,3) = yc.z();
+  //W(0,3) = yc.x();
+  //  W(1,3) = yc.y();
+  //W(2,3) = yc.z();
 
   // Now composite the transformation in the proper order...
+  // Yeah, this is a tad ugly...
+  GMatrix T = _xform.current();
+  _xform.identity();
+  _xform.translate(yc);
   _xform.concat(W);
   _xform.translate(-xc);
-
+  _xform.concat(T);
 
   delete[] X;
   delete[] Y;

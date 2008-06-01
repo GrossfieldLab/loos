@@ -82,8 +82,12 @@ public:
   void pop(void) {  stack.pop_back(); _unset = false; }
   //! Load a matrix onto the current transform
   void load(const GMatrix& m) { stack.back() = m; _unset = false; }
-  //! Concatenate (multiply) a matrix with the current transform
+  //! Concatenate (post-multiply) a matrix with the current transform
   void concat(const GMatrix& m) { stack.back() *= m; _unset = false; }
+
+  //! Premultiply the current transform
+  void premult(const GMatrix& m) { GMatrix t = stack.back(); stack.back() = m * t; _unset = false; }
+
   //! Set the current transform to the identity
   void identity(void) { GMatrix m;  stack.back() = m;  _unset = true; }
 
