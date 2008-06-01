@@ -13,6 +13,7 @@ using namespace loos;
 void test(const string s, bool expected = false) {
   Parser p;
   try {
+    cout << "\n--------------------------------------\n";
     cout << "Parsing '" << s << "'\n";
     p.parse(s);
   }
@@ -20,11 +21,11 @@ void test(const string s, bool expected = false) {
     if (expected)
       cout << "Expected exception caught.\n";
     else
-      cout << "=====> UNEXPECTED EXCEPTION <=====\n";
+      cout << "===============================> UNEXPECTED EXCEPTION\n";
     return;
   }
   if (expected)
-    cout << "=====> EXPECTED EXCEPTION NOT FOUND <=====\n";
+    cout << "===============================> EXPECTED EXCEPTION NOT FOUND\n";
   cout << p.kernel() << endl;
 }
 
@@ -33,6 +34,12 @@ int main(int argc, char *argv[]) {
 
   test("name == 'CA'");
   test("resid =~ '1\\d+'", true);
+  test("!(name == 'CA')");
+  test("!(name == 'CA'", true);
+  test("segid -> 'L(\\d+)' < 3");
+  test("(segid -> '(L|P)(\\d+)') <= 3");
+  test("(segid -> '(L|P)(\\d+)') <= 10 && name == 'CA'");
+  test("name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV'");
 }
 
 
