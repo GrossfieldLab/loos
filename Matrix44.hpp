@@ -169,7 +169,7 @@ public:
   }
 
   //! Matrix-matrix multiply
-  Matrix44<T> operator*(const Matrix44<T>& rhs) {
+  Matrix44<T> operator*(const Matrix44<T>& rhs) const {
     Matrix44<T> res(*this);
     res *= rhs;
 
