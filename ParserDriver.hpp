@@ -36,11 +36,9 @@ struct ParserDriver {
   Kernel& kern;
   istringstream *isp;
   
-  vector<string> cmds;
 
-
-  //! For parsing from stdin
-  ParserDriver(Kernel& k) : pparser(0), lexer(new LoosLexer), kern(k), isp(0) { parse(); }
+  //! For future parsing...
+  ParserDriver(Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
 
   //! For parsing a string...
   ParserDriver(const string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
@@ -51,8 +49,22 @@ struct ParserDriver {
 
   ~ParserDriver() { delete pparser; delete lexer; delete isp; }
 
+  //! Parse the passed string...
+  /**
+   *Note that it is up to the caller to reset the kernel if you don't
+   *want to concatenate the commands...
+   */
+  void parse(const string& s) {
+    isp = new istringstream(s);
+    lexer = new LoosLexer(isp);
+    parse();
+  }
+
   //! Calls the Bison parser
   void parse(void) {
+    if (!lexer)
+      throw(runtime_error("Attempting to parse sans lexer"));
+
     if (!pparser)
       pparser = new loos::parser(*this);
     if (pparser->parse())

@@ -80,7 +80,11 @@ class Parser {
   ParserDriver driver;
 
 public:
-  Parser(const string& s) : driver(s, krnl) { }
+  Parser(const string& s) : driver(s, krnl) { }    // This auto-parses the string...
+  Parser() : driver(krnl) { }
+
+  //! Parse the given command string after clearing the action stack
+  void parse(const string& s) {krnl.clearActions();  driver.parse(s); }
 
   //! Return a ref to the compiled (hopefully) Kernel.
   Kernel& kernel(void) { return(krnl); }
