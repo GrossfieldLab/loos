@@ -37,7 +37,8 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  cout << invocationHeader(argc, argv) << endl;
+  // Suppress for easy diffs...
+  //cout << invocationHeader(argc, argv) << endl;
 
   // Uncommont the follong to seed the suite-wide RNG
   //loos::randomSeedRNG();
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]) {
 
   // -------------------------------------------------------------------------------
 
-  AtomicGroup casb = *(cas.clone());
+  AtomicGroup casb = cas.copy();
   casb.perturbCoords(5.0);
   greal rmsd = cas.rmsd(casb);
   cout << "RMSD test = " << rmsd << endl;

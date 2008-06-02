@@ -23,12 +23,10 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-#include <tr1/memory>
-
+#include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
 using namespace std;
-using namespace tr1;
 
 
 #include <loos.hpp>
@@ -70,12 +68,35 @@ public:
   //! Read in a PDB from an ifstream
   PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true), _has_cryst(false) { read(ifs); }
 
-  //! Create a PDB from an AtomicGroup (i.e. upcast)
-  PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
 
-  //! Creates a deep copy.
+  //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
   virtual PDB* clone(void) const {
-    return(new PDB(*(this->AtomicGroup::clone())));
+    return(new PDB(*this));
+  }
+
+  //! Creates a deep copy (see AtomicGroup::copy() for more info)
+  PDB copy(void) const {
+    AtomicGroup grp = this->AtomicGroup::copy();
+    PDB p(grp);
+
+    p._show_charge = _show_charge;
+    p._auto_ter = _auto_ter;
+    p._has_cryst = _has_cryst;
+    p._remarks = _remarks;
+    p.cell = cell;
+
+    return(p);
+  }
+
+  //! Class method for creating a PDB from an AtomicGroup
+  /** There should probably be some internal checks to make sure we
+   *  have enough info to actually write out a PDB, but currently
+   *  there are no such checks...
+   */
+  static PDB fromAtomicGroup(const AtomicGroup& g) {
+    PDB p(g);
+    
+    return(p);
   }
 
   bool showCharge(void) const { return(_show_charge); }
@@ -105,6 +126,9 @@ public:
   void read(istream& is);
 
 private:
+
+  //! Create a PDB from an AtomicGroup (i.e. upcast)
+  PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
 
   // Internal routines for parsing...
   greal parseFloat(const string s, const unsigned int offset, const unsigned int len);

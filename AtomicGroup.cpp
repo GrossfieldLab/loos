@@ -22,16 +22,23 @@
 
 #include <AtomicGroup.hpp>
 
-// Deep copy...  Creates new shared atoms and stuffs 'em
-// into a new group...
+
+
 AtomicGroup* AtomicGroup::clone(void) const {
+  return(new AtomicGroup(*this));
+}
+
+
+AtomicGroup AtomicGroup::copy(void) const {
   ConstAtomIterator i;
-  AtomicGroup* res(new AtomicGroup);
+  AtomicGroup res;
 
   for (i = atoms.begin(); i != atoms.end(); i++) {
     pAtom pa(new Atom(**i));
-    res->append(pa);
+    res.append(pa);
   }
+  res._sorted = _sorted;
+  res.box = box;
 
   return(res);
 }

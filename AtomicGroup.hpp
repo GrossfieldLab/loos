@@ -28,7 +28,7 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-#include <tr1/memory>
+#include <boost/shared_ptr.hpp>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -65,7 +65,6 @@ typedef __CLPK_integer f77int;
 
 
 using namespace std;
-using namespace tr1;
 
 
 #include <loos.hpp>
@@ -85,10 +84,14 @@ struct AtomSelector {
 };
 
 
+class AtomicGroup;
+typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
+
+
 //! Class for handling groups of Atoms (pAtoms, actually)
 /** This class contains a collection of shared pointers to Atoms
  * (i.e. pAtoms).  Copying an AtomicGroup is a light-copy.  You can,
- * however, perform a deep copy by using the AtomicGroup::clone()
+ * however, perform a deep copy by using the AtomicGroup::copy()
  * method.  Note that atomid's are assumed to be unique for any given
  * AtomicGroup.
  *
@@ -110,9 +113,22 @@ public:
   AtomicGroup() : _sorted(false), _periodic(false) { }
   virtual ~AtomicGroup() { }
 
-  //! Creates a deep copy of this group...
-  virtual AtomicGroup* clone(void) const;
+  //! Creates a deep copy of this group
+  /** This creates a non-polymorphic deep copy of an AtomicGroup.  The
+   * additional catch is that it may end up involving extra
+   * data-movement as the copy is constructed and then copied back out
+   * to wherever you're putting it.
+   */
 
+  AtomicGroup copy(void) const;
+
+  //! Creates a lightweight clone of this group (for polymorphism)
+  /** Despite the name, this is meant for polymorphic use.  It is
+   *  <I>not</I> a deep copy.  If you don't understand what any of
+   *  this means, then you almost certainly want to be using the
+   *  copy() method instead.
+   */
+  virtual AtomicGroup* clone(void) const;
 
   int length(void) const { return(atoms.size()); }
   int size(void) const { return(atoms.size()); }

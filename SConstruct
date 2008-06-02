@@ -83,7 +83,17 @@ if int(debug):
 Export('env')
 
 # Build the LOOS library...
-library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp grammar.yy scanner.ll ensembles.cpp')
+#library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp grammar.yy scanner.ll ensembles.cpp')
+library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp')
+
+
+rebuild = ARGUMENTS.get('rebuild', 0)
+if int(rebuild):
+   library_files += ['scanner.ll', 'grammar.yy']
+else:
+   library_files += ['scanner.cc', 'grammar.cc']
+
+
 loos = env.Library('loos', library_files)
 
 env.Default(loos)
@@ -102,6 +112,8 @@ env.Alias('examples', examples)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
 
-env.Alias('all', loos + examples + tools)
-env.Alias('caboodle', loos + examples + tests + tools + docs)
+env.Alias('all', loos + examples + tools + tests)
 
+if int(rebuild):
+   env.Default('all')
+   env.Default(docs)

@@ -41,8 +41,9 @@ int main(int argc, char *argv[]) {
     cerr << "Usage- " << argv[0] << " pdbfile\n";
     exit(-1);
   }
-
-  cout << invocationHeader(argc, argv) << endl;
+  
+  // Suppress for easy diffs...
+  //cout << invocationHeader(argc, argv) << endl;
 
   loos::base_generator_type& rng = loos::rng_singleton();
 
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup cas = pdb.select(casel);
   cout << "Found " << cas.size() << " CAlphas.\n";
 
-  AtomicGroup casb = *(cas.clone());
+  AtomicGroup casb = cas.copy();
   casb.perturbCoords(1.0);
   greal rmsd = cas.rmsd(casb);
   cout << "RMSD test = " << rmsd << endl;
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
   for (z = -90.0; z <= 90.0; z += 30.0) {
     for (y = -90.0; y <= 90.0; y += 30.0) {
       for (x = -90.0; x <= 90.0; x += 30.0) {
-	AtomicGroup casr = *(cas.clone());
+	AtomicGroup casr = cas.copy();
 	W.identity();
 	W.rotate('x', x);
 	W.rotate('y', y);
@@ -104,7 +105,7 @@ int main(int argc, char *argv[]) {
 
   vector<AtomicGroup> mols;
   for (i=0; i<maxgrpcnt; i++) {
-    AtomicGroup subgroup = *(cas.clone());
+    AtomicGroup subgroup = cas.copy();
     GCoord t(translations(), translations(), translations());
     
     subgroup.perturbCoords(2.0);
