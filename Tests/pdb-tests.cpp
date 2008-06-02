@@ -40,6 +40,8 @@ int main(int argc, char *argv[]) {
   // Suppress for easy diffs...
   //cout << invocationHeader(argc, argv) << endl;
 
+  loos::base_generator_type& rng = loos::rng_singleton();
+
   // Uncommont the follong to seed the suite-wide RNG
   //loos::randomSeedRNG();
 
@@ -93,6 +95,32 @@ int main(int argc, char *argv[]) {
 
   grp = cas.subset(-3, 3);
   cout << "* Last 3 cas *\n" << grp << endl;
+
+  // -------------------------------------------------------------------------------
+
+  cout << "Testing findById()...";
+  int maxid = pdb.maxId();
+  int minid = pdb.minId();
+  boost::uniform_int<> atomid_map(-maxid, maxid);
+  boost::variate_generator<loos::base_generator_type&, boost::uniform_int<> > random_ids(rng, atomid_map);
+  for (i = 0; i < 25000; i++) {
+    int id = random_ids();
+    pAtom pa = pdb.findById(id);
+    if (pa == 0) {
+      if (id >= minid && id <= maxid) {
+	cout << "***ERROR***  Couldn't find an atomid that we expected to find.\n";
+	exit(-10);
+      }
+    }
+    else
+      if (pa->id() != id) {
+	cout << "***ERROR*** Atom found was not the atom expected...\n";
+	exit(-10);
+      }
+    
+  }
+
+  cout << "passed\n";
 
   // -------------------------------------------------------------------------------
 

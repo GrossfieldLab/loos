@@ -26,7 +26,7 @@
 
 
 #if !defined(MAXGRPCNT)
-#define MAXGRPCNT 10
+#define MAXGRPCNT 50
 #endif
 
 
