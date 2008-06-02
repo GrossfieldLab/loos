@@ -14,9 +14,10 @@ import os
 # Principal options...
 clos = Options()
 clos.AddOptions(
-	('regenerate', 'Set to 1 to regenerate parser files and unit test outputs', 0),
+	('regenerate', 'Set to 1 to regenerate test outputs', 0),
 	('debug', 'Set to 1 to add -DDEBUG to build', 0),
-	('release', 'Set to 1 to configure for release.', 0)
+	('release', 'Set to 1 to configure for release.', 0),
+	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
 )
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
@@ -24,6 +25,8 @@ Help(clos.GenerateHelpText(env))
 
 regenerate = str(ARGUMENTS.get('regenerate', 0))
 env['REGENERATE'] = regenerate
+
+reparse = str(ARGUMENTS.get('reparse', 0))
 
 # Some rudimentary autoconfish stuff...
 if not env.GetOption('clean'):
@@ -107,7 +110,7 @@ Export('env')
 library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp')
 
 
-if int(regenerate):
+if int(reparse):
    library_files += ['scanner.ll', 'grammar.yy']
 else:
    library_files += ['scanner.cc', 'grammar.cc']
@@ -136,4 +139,3 @@ env.Alias('caboodle', loos + examples + tools + tests + docs)
 
 if int(regenerate):
    env.Default('caboodle')
-
