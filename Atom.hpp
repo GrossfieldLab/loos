@@ -20,18 +20,17 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-#include <tr1/memory>
+#include <boost/shared_ptr.hpp>
 
 
 using namespace std;
-using namespace tr1;
 
 #include <loos.hpp>
 
 class Atom;
 
 //! Shared pointer to an Atom
-typedef shared_ptr<Atom> pAtom;
+typedef boost::shared_ptr<Atom> pAtom;
 
 //! Basic Atom class for handling atom properties.
 /**

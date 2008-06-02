@@ -59,14 +59,13 @@ int main(int argc, char *argv[]) {
   for (i=0; i<5; i++)
     cout << *(iter()) << endl;
 
-  // Note the implicit conversion back to a PDB...
-  PDB terminus = cas.subset(-1, 5);
+  PDB terminus = PDB::fromAtomicGroup(cas.subset(-1, 5));
   terminus.autoTerminate(false);
   cout << "\nThe last 5 CA's are...\n";
   cout << terminus << endl;
 
 
-  PDB split_ends = cas.subset(0, 5) + cas.subset(-1, 5);
+  PDB split_ends = PDB::fromAtomicGroup(cas.subset(0, 5) + cas.subset(-1, 5));
   cout << "\nThe ends combined now...\n";
   cout << split_ends << endl;
 

@@ -12,7 +12,7 @@ Import('env')
 
 
 
-test_apps = 'atomic-group-test parser-test timeseries-test find_perf_test pdb-tests alignment-tests'
+test_apps = 'atomic-group-test parser-tests timeseries-test find_perf_test pdb-tests alignment-tests'
 list = []
 
 for name in Split(test_apps):

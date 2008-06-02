@@ -18,7 +18,7 @@
 // Assume all groups are already sorted or matched...
 
 AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
-  AtomicGroup avg = *(ensemble[0].clone());
+  AtomicGroup avg = ensemble[0].copy();
 
   // First, zap our coords...
   int n = avg.size();
@@ -30,7 +30,7 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
   vector<AtomicGroup>::const_iterator j;
   for (j = ensemble.begin(); j != ensemble.end(); j++) {
     for (i = 0; i<n; i++)
-      avg[i]->coords() += j->getAtomsTransformedCoord(i);
+      avg[i]->coords() += (*j)[i]->coords();
   }
 
   for (i=0; i<n; i++)

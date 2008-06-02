@@ -48,17 +48,28 @@ public:
         read(ifs);
     }
 
-  PSF(const AtomicGroup& grp) : AtomicGroup(grp) { }
+  //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
+  virtual PSF* clone(void) const {
+    return(new PSF(*this));
+  }
 
-    // till I figure out what's wrong with this
-    virtual PSF *clone(void) const {
-        return(new PSF(*(this->AtomicGroup::clone())));
-    }
+  //! Creates a deep copy (see AtomicGroup::copy() for more info)
+  PSF copy(void) const {
+    AtomicGroup grp = this->AtomicGroup::copy();
+    PSF p(grp);
+
+    // Add PSF specific member data copies here...
+    return(p);
+  }
 
    void read(istream& is);  
 
 
 private:
+
+  PSF(const AtomicGroup& grp) : AtomicGroup(grp) { }
+
+
   void parseAtomRecord(const string s);  
 
 };

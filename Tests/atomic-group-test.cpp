@@ -110,7 +110,7 @@ int main() {
   cout << g2 << endl;
 
   cout << "-------------------\n";
-  AtomicGroup g4 = *(g1.clone());
+  AtomicGroup g4 = g1.copy();
   cout << "Clone & sharing test:\n";
   g4[0]->resid(999);
   cout << g4 << endl;
