@@ -281,6 +281,11 @@ pAtom AtomicGroup::findById(const int id) {
   return(pAtom());
 }
 
+//! Note: when calling this, you'll want to make sure you use the 
+//! outermost group (eg the psf or pdb you used to create things, rather than
+//! using a subselection, unless you're sure the subsection contains these
+//! atoms as well.  The main use of this routine is to create a group of atoms
+//! bound to another atom.
 AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
     AtomicGroup result;
     for (unsigned int i=0; i<id_list.size(); i++) {
