@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+#
 # (c) 2008 Tod D. Romo
 #
 # Grossfield Lab
@@ -7,8 +9,21 @@
 #
 
 import sys
+import os
 
-env = Environment(tools = ["default", "doxygen"], toolpath = '.')
+# Principal options...
+clos = Options()
+clos.AddOptions(
+	('regenerate', 'Set to 1 to regenerate parser files and unit test outputs', 0),
+	('debug', 'Set to 1 to add -DDEBUG to build', 0),
+	('release', 'Set to 1 to configure for release.', 0)
+)
+
+env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
+Help(clos.GenerateHelpText(env))
+
+regenerate = str(ARGUMENTS.get('regenerate', 0))
+env['REGENERATE'] = regenerate
 
 # Some rudimentary autoconfish stuff...
 if not env.GetOption('clean'):
@@ -65,13 +80,15 @@ elif sys.platform == 'linux2':
 
 
 # Determine what kind of build...
-release=ARGUMENTS.get('release', 0)
+release=str(ARGUMENTS.get('release', 0))
+env['RELEASE'] = release
 if int(release):
     env.Append(CCFLAGS=release_opts)
 else:
     env.Append(CCFLAGS=debug_opts)
 
-debug=ARGUMENTS.get('debug', 0)
+debug=str(ARGUMENTS.get('debug', 0))
+env['DEBUG'] = debug
 if int(debug):
    if int(release):
       print "***ERROR*** You cannot have a release with debugging code included."
@@ -79,16 +96,18 @@ if int(debug):
    env.Append(CCFLAGS=" -DDEBUG")
 
 
+
 # Export for subsidiary SConscripts
 Export('env')
+
+###################################
 
 # Build the LOOS library...
 #library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp grammar.yy scanner.ll ensembles.cpp')
 library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp')
 
 
-rebuild = ARGUMENTS.get('rebuild', 0)
-if int(rebuild):
+if int(regenerate):
    library_files += ['scanner.ll', 'grammar.yy']
 else:
    library_files += ['scanner.cc', 'grammar.cc']
@@ -112,8 +131,9 @@ env.Alias('examples', examples)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
 
-env.Alias('all', loos + examples + tools + tests)
+env.Alias('all', loos + examples + tools)
+env.Alias('caboodle', loos + examples + tools + tests + docs)
 
-if int(rebuild):
-   env.Default('all')
-   env.Default(docs)
+if int(regenerate):
+   env.Default('caboodle')
+
