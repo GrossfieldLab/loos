@@ -11,13 +11,88 @@
 Import('env')
 
 
+import os
+def run(cmd, env):
+    """Run a Unix command and return the exit code."""
+    res = os.system(cmd)
+    if (os.WIFEXITED(res)):
+        code = os.WEXITSTATUS(res)
+        return code
+    # Assumes that if a process doesn't call exit, it was successful
+    return 0
 
-test_apps = 'atomic-group-test parser-tests timeseries-test find_perf_test pdb-tests alignment-tests'
+def unit_test_emitter(target, source, env):
+    if env['REGENERATE'] != '1':
+        base, ext = os.path.splitext(source[0].abspath)
+        source.append(base + '.expected')
+
+    return (target, source)
+
+def UnitTest(target, source, env):
+    '''Run some app with an inputfile and compare the output with a .expected file
+    containing the expected results.'''
+    app = str(source[0].abspath)
+    
+    outputfile = str(target[0].abspath)
+
+    if len(source) == 1:
+        inputfile = ''
+    else:
+        inputfile = str(source[1].abspath)
+
+    expected = app + ".expected"
+
+    # Output can come on both stdout and stderr
+    cmd = app + ' ' + inputfile + ' 2>&1 | diff ' + expected + ' -' + " >" + outputfile
+    if env['REGENERATE'] == '1':
+        print "Regenerating expected results file: " + expected
+        cmd = app + ' ' + inputfile + ' &> ' + expected
+    res = run(cmd, env)
+    # If the test passed, create the target file so the test won't be run again
+    if res != 0:
+        print "*** WARNING - Differences in test output from " + str(source[0])
+
+    return 0
+
+# Create a builder for running unit tests
+bld = Builder(action = Action(UnitTest, varlist = ['REGENERATE']), emitter = unit_test_emitter)
+env.Append(BUILDERS = {'UnitTest' :  bld})
+
+
+
+non_testable_tests = 'timeseries-test find_perf_test'
+pdb_based_tests = 'pdb-tests alignment-tests'
+solo_tests = 'parser-tests atomic-group-test'
+
+
+
+# This is the master list of dependencies to pass to our caller...
 list = []
 
-for name in Split(test_apps):
+# First, process non-testable tests...
+for name in Split(non_testable_tests):
     fname = name + '.cpp'
     prog = env.Program(fname)
     list.append(prog)
+
+# Now run the tests that take no inputs...
+for name in Split(solo_tests):
+    fname = name + '.cpp'
+    dname = name + '.diff'
+    prog = env.Program(fname)
+    test = env.UnitTest(dname, [prog])
+    list.append(test)
+
+
+# Now run the tests that take a PDB input...
+for name in Split(pdb_based_tests):
+    fname = name + '.cpp'
+    dname = name + '.diff'
+    prog = env.Program(fname)
+    test = env.UnitTest(dname, [prog, 'test.pdb'])
+    list.append(test)
+
+
+
 
 Return('list')
