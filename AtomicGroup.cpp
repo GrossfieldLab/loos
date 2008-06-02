@@ -283,9 +283,8 @@ pAtom AtomicGroup::findById(const int id) {
 
 AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
     AtomicGroup result;
-    pAtom pa;
     for (unsigned int i=0; i<id_list.size(); i++) {
-        pa = findById(id_list[i]);
+        pAtom pa = findById(id_list[i]);
         if (!pa) throw(out_of_range("Atom id doesn't exist"));
         result.addAtom(pa);
     }
