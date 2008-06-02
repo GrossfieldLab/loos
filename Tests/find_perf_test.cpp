@@ -2,6 +2,9 @@
 #include <pdb.hpp>
 
 
+#define ERROR_CHECK
+
+
 int main(int argc, char *argv[]) {
   long n = atol(argv[1]);
   PDB pdb(argv[2]);
@@ -23,8 +26,13 @@ int main(int argc, char *argv[]) {
 
   for (i=0; i<n; i++) {
     pa = pdb.findById(indices[i]);
-    if (pa == 0)
+#if defined(ERROR_CHECK)
+    if (pa->id() != indices[i]) {
+      cerr << "***ERROR*** at index " << i << "(" << indices[i] << ")\n";
+      exit(-20);
+    } else if (pa == 0)
       exit(-10);
+#endif
   }
 
   cerr << "done\n";
