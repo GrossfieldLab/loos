@@ -48,7 +48,7 @@ DCD dcd(dcd_filename);
 // NOTE: We assume each selection is a list of carbon atoms, and we'll figure
 //       out the identities of the bound hydrogens ourselves
 vector<AtomicGroup> selections;
-for (int i =3; i<argc; i++)
+for (int i =4; i<argc; i++)
     {
     Parser p(argv[i]);
     KernelSelector parsed(p.kernel());
@@ -74,6 +74,23 @@ for (unsigned int i=0; i<selections.size(); i++)
         hydrogen_list[i].push_back(bonded_hydrogens);
         }
     }
+
+#ifdef DEBUG
+// Check to see if the correct hydrogens were found
+for (unsigned int i=0; i<selections.size(); i++)
+    {
+    AtomicGroup *g = &(selections[i]);
+    cerr << "total atoms in sel " << i << "= " << g->size() << endl;
+    for (int j=0; j<g->size(); j++)
+        {
+        pAtom carbon = g->getAtom(j);
+        // get the relevant hydrogens
+        AtomicGroup *hyds = &(hydrogen_list[i][j]);
+        cerr << *carbon << endl;
+        cerr << *hyds << endl;
+        }
+    }
+#endif
 
 
 // skip the equilibration frames
@@ -105,9 +122,9 @@ while (dcd.readFrame())
             // get the carbon
             pAtom carbon = g->getAtom(j);
             // get the relevant hydrogens
-            AtomicGroup hyds = hydrogen_list[i][j];
+            AtomicGroup *hyds = &(hydrogen_list[i][j]);
             
-            AtomicGroup::Iterator iter(hyds);
+            AtomicGroup::Iterator iter(*hyds);
             pAtom h;
             while (h = iter() )
                 {
