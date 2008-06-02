@@ -269,7 +269,7 @@ pAtom AtomicGroup::findById(const int id) {
   }
 
   if (atoms[bottom]->id() == id)
-    return(atoms[middle]);
+    return(atoms[bottom]);
 
   return(pAtom());
 }
