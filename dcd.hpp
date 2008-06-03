@@ -17,12 +17,11 @@
 #include <stdexcept>
 #include <exception>
 #include <vector>
-#include <tr1/memory>
 #include <boost/utility.hpp>
-#include <assert.h>
 
 #include <loos.hpp>
 #include <AtomicGroup.hpp>
+#include <StreamWrapper.hpp>
 
 using namespace std;
 
@@ -53,6 +52,7 @@ class DCD : public boost::noncopyable {
   // Use a union to convert data to appropriate type...
   typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay; 
 
+
 public:
 
   // Error classes that we may or may not return...
@@ -73,37 +73,21 @@ public:
   };
 
 
-  DCD() : del_stream(false), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { };
+  DCD() : _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
 
   //! Begin reading from the file named s
-  DCD(const string s) :  del_stream(true), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) {
-    _ifs = new ifstream(s.c_str());
-    if (!_ifs)
-      throw(runtime_error("Cannot open DCD file " + s));
-    readHeader();
-  }
+  DCD(const string s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the file named s
-  DCD(const char* s) :  del_stream(true), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) {
-    _ifs = new ifstream(s);
-    if (!_ifs)
-      throw(runtime_error("Cannot open DCD file " + string(s)));
-    readHeader();
-  }
+  DCD(const char* s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the stream ifs
-  DCD(ifstream& ifs) : del_stream(false), _ifs(&ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
-
-  ~DCD() {
-    if (del_stream)
-      delete _ifs;
-  }
-
+  DCD(fstream& ifs) : _ifs(ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
 
   //! Read in the header from the stored stream
   void readHeader(void);
   //! Read in the header from the specified stream
-  void readHeader(ifstream& ifs);
+  void readHeader(fstream& ifs);
 
   //! Read the next frame.  Returns false if at EOF
   bool readFrame(void);
@@ -163,14 +147,13 @@ private:
   void readCoordLine(vector<float>& v);
 
   // For reading F77 I/O
-  unsigned int readRecordLen(ifstream* ifs);
-  DataOverlay* readF77Line(ifstream* ifs, unsigned int *len);
+  unsigned int readRecordLen(StreamWrapper& ifs);
+  DataOverlay* readF77Line(StreamWrapper& ifs, unsigned int *len);
 
 
 
 private:
-  bool del_stream;          // Must delete the stream pointer...
-  ifstream* _ifs;           // Cached file pointer
+  StreamWrapper _ifs;       // Cached stream pointer...
   int _icntrl[20];          // DCD header data
   int _natoms;              // # of atoms
   vector<string> _titles;   // Vector of title lines from DCD
