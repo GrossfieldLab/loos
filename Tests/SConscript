@@ -28,6 +28,9 @@ def unit_test_emitter(target, source, env):
         newsrc = os.path.join(head, str(sys.platform), tail)
         base, ext = os.path.splitext(newsrc)
         source.append(base + '.expected')
+	target = [base + '.passed']
+	target.append(base + '.output')
+	target.append(base + '.error')
 
     return (target, source)
 
@@ -69,6 +72,9 @@ def UnitTest(target, source, env):
     # If the test passed, create the target file so the test won't be run again
     if res != 0:
         print "*** WARNING - Differences in test output from " + str(source[0])
+    else:
+	cmd = 'touch ' + str(target[0].abspath)
+	run(cmd, env)
 
     return 0
 
@@ -96,18 +102,18 @@ for name in Split(non_testable_tests):
 # Now run the tests that take no inputs...
 for name in Split(solo_tests):
     fname = name + '.cpp'
-    dname = name + '.diff'
+    tname = name
     prog = env.Program(fname)
-    test = env.UnitTest(dname, [prog])
+    test = env.UnitTest(tname, [prog])
     list.append(test)
 
 
 # Now run the tests that take a PDB input...
 for name in Split(pdb_based_tests):
     fname = name + '.cpp'
-    dname = name + '.diff'
+    tname = name
     prog = env.Program(fname)
-    test = env.UnitTest(dname, [prog, 'test.pdb'])
+    test = env.UnitTest(tname, [prog, 'test.pdb'])
     list.append(test)
 
 

@@ -9,11 +9,6 @@
 
   Basic class for groups of atoms...
 
-  Notes:
-
-    o Applying a transform to the coordinates of the group's atoms
-      does NOT reset the transformation back to identity.  That is up
-      to you to do if you want to do that...
 */
 
 

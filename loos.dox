@@ -334,4 +334,18 @@ file.  If you see odd compiler errors, try removing that file and
 rebuilding.  Alternatively, forcibly remove all generated files by
 doing "rm *.cc *.hh" (assuming you've added no files with those
 suffixes), then rebuild.
+
+\subsection Distro Building a distribution
+To build a distribution that doesn't require anything other than SCons
+and Boost, the following sequence is recommended:
+\verbatim
+scons regenerate=1 tests
+scons docs
+scons -c tests
+\endverbatim
+
+As a side-note, regenerating the verification data is potentially
+hazardous if you have not been making sure your builds already pass,
+so caveat bugger...
+
 */
