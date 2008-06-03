@@ -705,10 +705,9 @@ void AtomicGroup::applyTransform(const XForm& M) {
 
 
 void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
-  cout << s << endl;
+  cout << s << " = [\n" << endl;
   int i, j;
 
-  cout << "[" << endl;
   for (j=0; j<m; j++) {
     for (i=0; i<n; i++)
       cout << setw(10) << A[i*m+j] << " ";
@@ -856,9 +855,9 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   }
 
   // Now push the eigenvalues on as a GCoord...
-  c[0] = W[0];
+  c[0] = W[2];
   c[1] = W[1];
-  c[2] = W[2];
+  c[2] = W[0];
 
   results[3] = c;
 
@@ -868,7 +867,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
 
 
 
-GMatrix AtomicGroup::superposition(AtomicGroup& grp) {
+GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
   int i, j;
   XForm W;
 
@@ -936,7 +935,7 @@ GMatrix AtomicGroup::superposition(AtomicGroup& grp) {
 }
 
 
-GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
+GMatrix AtomicGroup::alignOnto(const AtomicGroup& grp) {
   XForm W;
   GMatrix M = superposition(grp);
 

@@ -359,7 +359,7 @@ public:
    * transformation matrix that superimposes the current group onto
    * the passed group.  Returns the matrix.
    */
-  GMatrix superposition(AtomicGroup&);
+  GMatrix superposition(const AtomicGroup&);
 
   //! Superimposes the current group onto the passed group.
   /**
@@ -367,7 +367,7 @@ public:
    * superimpose the current group onto the passed one, then applies the
    * transformation to the current group's coordinates.
    */
-  GMatrix alignOnto(AtomicGroup&);
+  GMatrix alignOnto(const AtomicGroup&);
 
 #endif
 

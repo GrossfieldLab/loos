@@ -28,7 +28,7 @@ using namespace std;
 //! Class for reading DCD files
 /**
  *
- *Instantiating a DCD object with either a filename or an ifstream
+ *Instantiating a DCD object with either a filename or an fstream
  *only reads the header from the file, not any frames.  When a frame
  *is read, the x,y,z coordinates are stored internally in a vector.
  *This must be copied out to the caller or used to update the

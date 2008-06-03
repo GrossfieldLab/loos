@@ -62,7 +62,7 @@ env.Append(BUILDERS = {'UnitTest' :  bld})
 
 non_testable_tests = 'timeseries-test find_perf_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests'
-solo_tests = 'atomic-group-test'
+solo_tests = 'atomic-group-test principal-axes-tests'
 
 
 
