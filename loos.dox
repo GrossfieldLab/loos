@@ -95,12 +95,6 @@ following are valid strings:
 'another string'
 \endverbatim
 
-You can also embed a quote in a string, not that you should ever
-really need to, by escaping it with a back-slash, i.e.
-\verbatim
-'here\'s another string'
-\endverbatim
-
 The parser also recognizes a small set of keywords that evaluate to
 Atom properties.  These keywords fall into two types as well: those
 that evaluate to a number (id, resid) and those that evaluate to a
@@ -172,10 +166,7 @@ expressions that look a lot like globbing (a la VMD selections), keep
 in mind that it isn't globbing.  It's a regular expression, which is
 more powerful anyway...  You do need to be careful though that your
 shell does not munge any of the regex operators.  It's a good idea to
-use single quotes when you're writing regex's in a shell.  Most shells
-will also process out back-slashes ("\"), so if you want to use PERL
-escapes, you may need to double-back-slash them, i.e. use "\\d+"
-instead of "\d".
+use single quotes when you're writing regex's in a shell.
 
 The string equality operators ("==" and "!=") both consider the
 <I>entire</I> string.

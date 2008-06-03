@@ -46,11 +46,8 @@ id|resid             { yylval->sval = new string(yytext, yyleng); return(token::
  string text;
 
  while ((c = yyinput()) > 0) {
-   if (c == '\\')
-     c = yyinput();
-   else
-     if (c == '\n' || c == delim[0])
-       break;
+  if (c == '\n' || c == delim[0])
+     break;
    text += c;
  }
 
