@@ -47,13 +47,25 @@ def UnitTest(target, source, env):
     newsrc = os.path.join(head, str(sys.platform), tail)
     base, ext = os.path.splitext(newsrc)
     expected = base + ".expected"
+    output = base + ".output"
+    outerr = base + ".error"
 
     # Output can come on both stdout and stderr
-    cmd = app + ' ' + inputfile + ' 2>&1 | diff ' + expected + ' -' + " >" + outputfile
+
+
+    cmd = app + ' ' + inputfile + ' >' + output + ' 2>' + outerr
+    res = run(cmd, env)
+
+
     if env['REGENERATE'] == '1':
         print "Regenerating expected results file: " + expected
-        cmd = app + ' ' + inputfile + ' &> ' + expected
-    res = run(cmd, env)
+        cmd = 'cat ' + output + ' ' + outerr + ' >' + expected
+        run(cmd, env)
+        res = 0
+    else:
+        cmd = 'cat ' + output + ' ' + outerr + ' | diff - ' + expected
+        res = run(cmd, env)
+
     # If the test passed, create the target file so the test won't be run again
     if res != 0:
         print "*** WARNING - Differences in test output from " + str(source[0])
