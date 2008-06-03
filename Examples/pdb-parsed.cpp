@@ -33,11 +33,9 @@ int main(int argc, char *argv[]) {
   cout << "There are " << usel.size() << " atoms in the selection.\n";
   cout << "The max radius is " << usel.radius() << endl;
 
-  AtomicGroup::BoundingBox bdd = usel.boundingBox();
-  cout << "Bounding box is:\n";
-  cout << "\t" << bdd.min[0] << " <= x <= " << bdd.max[0] << endl;
-  cout << "\t" << bdd.min[1] << " <= y <= " << bdd.max[1] << endl;
-  cout << "\t" << bdd.min[2] << " <= z <= " << bdd.max[2] << endl;
+  vector<GCoord> bdd = usel.boundingBox();
+  cout << "Bounding box is: ";
+  cout << bdd[0] << " x " << bdd[1] << endl;
 
   GCoord c = p.centroid();
   cout << "The centroid for the PDB is at " << c << endl;

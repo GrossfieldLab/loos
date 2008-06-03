@@ -265,14 +265,9 @@ public:
   };
 
 
-  //! Return value for boundingBox()
-  struct BoundingBox {
-    greal min[3], max[3];
-  };
-
   // Statistical routines...
   //! Bounding box for the group...
-  BoundingBox boundingBox(void) const;
+  vector<GCoord> boundingBox(void) const;
 
   //! Translates the group so that the centroid is at the origin.
   /**

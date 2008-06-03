@@ -94,10 +94,8 @@ int main() {
 
   cout << "-------------------\n";
   cout << "Bounds test...\n";
-  AtomicGroup::BoundingBox bb = g1.boundingBox();
-  int k;
-  for (k=0; k<3; k++)
-    cout << "min[" << k << "] = " << bb.min[k] << ", max[" << k << "] = " << bb.max[k] << endl;
+  vector<GCoord> bb = g1.boundingBox();
+  cout << bb[0] << " x " << bb[1] << endl;
 
   cout << "-------------------\n";
   cout << "Radius = " << g1.radius() << endl;

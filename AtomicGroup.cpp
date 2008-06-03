@@ -440,26 +440,36 @@ int AtomicGroup::numberOfChains(void) const {
 
 
 // Bounding box for all atoms in this group
-AtomicGroup::BoundingBox AtomicGroup::boundingBox(void) const {
-  BoundingBox bdd;
+vector<GCoord> AtomicGroup::boundingBox(void) const {
+  greal min[3] = {0,0,0}, max[3] = {0,0,0};
   ConstAtomIterator i;
   int j;
+  vector<GCoord> res(2);
+  GCoord c;
 
-  if (atoms.size() == 0)
-    return(bdd);
+  if (atoms.size() == 0) {
+    res[0] = c;
+    res[1] = c;
+    return(res);
+  }
 
   for (j=0; j<3; j++)
-    bdd.min[j] = bdd.max[j] = (atoms[0]->coords())[j];
+    min[j] = max[j] = (atoms[0]->coords())[j];
 
   for (i=atoms.begin()+1; i != atoms.end(); i++)
     for (j=0; j<3; j++) {
-      if (bdd.max[j] < ((*i)->coords())[j])
-	bdd.max[j] = ((*i)->coords())[j];
-      if (bdd.min[j] > ((*i)->coords())[j])
-	bdd.min[j] = ((*i)->coords())[j];
+      if (max[j] < ((*i)->coords())[j])
+	max[j] = ((*i)->coords())[j];
+      if (min[j] > ((*i)->coords())[j])
+	min[j] = ((*i)->coords())[j];
     }
 
-  return(bdd);
+  c.set(min[0], min[1], min[2]);
+  res[0] = c;
+  c.set(max[0], max[1], max[2]);
+  res[1] = c;
+
+  return(res);
 }
 
 // Geometric center of the group
