@@ -712,11 +712,8 @@ YY_RULE_SETUP
  string text;
 
  while ((c = yyinput()) > 0) {
-   if (c == '\\')
-     c = yyinput();
-   else
-     if (c == '\n' || c == delim[0])
-       break;
+  if (c == '\n' || c == delim[0])
+     break;
    text += c;
  }
 
@@ -728,20 +725,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 65 "scanner.ll"
+#line 62 "scanner.ll"
 /* Swallow up remaining white-space */
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 67 "scanner.ll"
+#line 64 "scanner.ll"
 { return(static_cast<token_type>(*yytext)); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 69 "scanner.ll"
+#line 66 "scanner.ll"
 ECHO;
 	YY_BREAK
-#line 745 "<stdout>"
+#line 742 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1623,7 +1620,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 69 "scanner.ll"
+#line 66 "scanner.ll"
 
 
 
