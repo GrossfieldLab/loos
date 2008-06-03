@@ -1,0 +1,113 @@
+
+--------------------------------------
+Parsing 'name == 'CA''
+Commands:
+pushAtomName
+pushString(<VALUE TYPE='STRING'>CA</VALUE>)
+==
+
+
+Selected 80 @ (-1.35495,4.47205,-0.286438) & (-34.867,-36.938,-31.996) x (23.998,38.446,32.538)
+
+--------------------------------------
+Parsing 'resid =~ '1\d+''
+***ERROR***  Bad selection syntax - syntax error
+Expected exception caught.
+
+--------------------------------------
+Parsing '!(name == 'CA')'
+Commands:
+pushAtomName
+pushString(<VALUE TYPE='STRING'>CA</VALUE>)
+==
+!
+
+
+Selected 48890 @ (0.097013,0.355107,-0.0305215) & (-44.642,-47.604,-44.924) x (49.651,45.105,44.935)
+
+--------------------------------------
+Parsing '!(name == 'CA''
+***ERROR***  Bad selection syntax - syntax error
+Expected exception caught.
+
+--------------------------------------
+Parsing 'segid -> 'L(\d+)' < 3'
+Commands:
+pushAtomSegid
+extractNumber(L(\d+))
+pushInt(<VALUE TYPE='INT'>3</VALUE>)
+<
+
+
+Selected 26600 @ (0.121558,0.155878,-0.113101) & (-38.971,-40.547,-44.924) x (37.127,43.293,44.935)
+
+--------------------------------------
+Parsing '(segid -> '(L|P)(\d+)') <= 3'
+Commands:
+pushAtomSegid
+extractNumber((L|P)(\d+))
+pushInt(<VALUE TYPE='INT'>3</VALUE>)
+<=
+
+
+Selected 26725 @ (0.0706773,0.0140437,-0.15559) & (-38.971,-40.547,-44.924) x (37.127,43.293,44.935)
+
+--------------------------------------
+Parsing '(segid -> '(L|P)(\d+)') <= 10 && name == 'CA''
+Commands:
+pushAtomSegid
+extractNumber((L|P)(\d+))
+pushInt(<VALUE TYPE='INT'>10</VALUE>)
+<=
+pushAtomName
+pushString(<VALUE TYPE='STRING'>CA</VALUE>)
+==
+&&
+
+
+Selected 80 @ (-1.35495,4.47205,-0.286438) & (-34.867,-36.938,-31.996) x (23.998,38.446,32.538)
+
+--------------------------------------
+Parsing 'name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV''
+Commands:
+pushAtomName
+matchRegex(C)
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>10</VALUE>)
+>=
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>63</VALUE>)
+<=
+&&
+&&
+pushAtomSegid
+pushString(<VALUE TYPE='STRING'>SOLV</VALUE>)
+==
+!
+&&
+
+
+Selected 6 @ (0.726167,-14.1893,-1.72333) & (-24.315,-36.102,-38.565) x (35.928,0.722,39.235)
+
+--------------------------------------
+Parsing '!(name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV')'
+Commands:
+pushAtomName
+matchRegex(C)
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>10</VALUE>)
+>=
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>63</VALUE>)
+<=
+&&
+&&
+pushAtomSegid
+pushString(<VALUE TYPE='STRING'>SOLV</VALUE>)
+==
+!
+&&
+!
+
+
+Selected 48964 @ (0.0945636,0.363616,-0.0307322) & (-44.642,-47.604,-44.924) x (49.651,45.105,44.935)

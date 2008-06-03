@@ -12,6 +12,7 @@ Import('env')
 
 
 import os
+import sys
 def run(cmd, env):
     """Run a Unix command and return the exit code."""
     res = os.system(cmd)
@@ -23,7 +24,9 @@ def run(cmd, env):
 
 def unit_test_emitter(target, source, env):
     if env['REGENERATE'] != '1':
-        base, ext = os.path.splitext(source[0].abspath)
+        head,tail = os.path.split(source[0].abspath)
+        newsrc = os.path.join(head, str(sys.platform), tail)
+        base, ext = os.path.splitext(newsrc)
         source.append(base + '.expected')
 
     return (target, source)
@@ -40,7 +43,10 @@ def UnitTest(target, source, env):
     else:
         inputfile = str(source[1].abspath)
 
-    expected = app + ".expected"
+    head,tail = os.path.split(source[0].abspath)
+    newsrc = os.path.join(head, str(sys.platform), tail)
+    base, ext = os.path.splitext(newsrc)
+    expected = base + ".expected"
 
     # Output can come on both stdout and stderr
     cmd = app + ' ' + inputfile + ' 2>&1 | diff ' + expected + ' -' + " >" + outputfile
