@@ -180,6 +180,7 @@ void PSF::parseAtomRecord(const string s) {
  */
 int PSF::deduceAtomicNumber(pAtom pa) {
     double mass = pa->mass();
+    cerr << *pa << endl;
     int an=-1;
     if (mass < 1.0)
         throw(out_of_range("Atomic mass less than 1.0 in psf"));
@@ -201,6 +202,8 @@ int PSF::deduceAtomicNumber(pAtom pa) {
         an=11;
     else if ( (mass >= 24.3) && (mass <= 24.4) ) // Magnesium = 24.305000
         an=12;
+    else if ( (mass >= 30.0) && (mass <= 31.0) )  // Phosphorus = 30.974000
+        an=15;
     else if ( (mass >= 32.0) && (mass <= 32.1) )  // Sulfur = 32.0600
         an=16;
     else if ( (mass >= 35.0) && (mass <= 36.0) )  // Chlorine = 35.45300
