@@ -24,7 +24,7 @@
 
 void Usage()
     {
-    cerr << "Usage: charge-density "
+    cerr << "Usage: density-dist "
          << " PSF DCD E|C|M num_frames_to_skip min_z max_z num_bins"
          << " [extra_selection_1 ...]"
          << endl;
