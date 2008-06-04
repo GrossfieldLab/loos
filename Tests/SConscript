@@ -23,15 +23,16 @@ def run(cmd, env):
     return 0
 
 def unit_test_emitter(target, source, env):
-    if env['REGENERATE'] != '1':
-        head,tail = os.path.split(source[0].abspath)
-        newsrc = os.path.join(head, str(sys.platform), tail)
-        base, ext = os.path.splitext(newsrc)
-        source.append(base + '.expected')
-	target = [base + '.passed']
-	target.append(base + '.output')
-	target.append(base + '.error')
+    head,tail = os.path.split(source[0].abspath)
+    newsrc = os.path.join(head, str(sys.platform), tail)
+    base, ext = os.path.splitext(newsrc)
 
+    if env['REGENERATE'] != '1':
+        source.append(base + '.expected')
+
+    target = [base + '.passed']
+    target.append(base + '.output')
+    target.append(base + '.error')
     return (target, source)
 
 def UnitTest(target, source, env):
@@ -64,7 +65,7 @@ def UnitTest(target, source, env):
         print "Regenerating expected results file: " + expected
         cmd = 'cat ' + output + ' ' + outerr + ' >' + expected
         run(cmd, env)
-        res = 0
+        return 0
     else:
         cmd = 'cat ' + output + ' ' + outerr + ' | diff - ' + expected
         res = run(cmd, env)
@@ -86,7 +87,7 @@ env.Append(BUILDERS = {'UnitTest' :  bld})
 
 non_testable_tests = 'timeseries-test find_perf_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests'
-solo_tests = 'atomic-group-test principal-axes-tests'
+solo_tests = 'principal-axes-tests atomic-group-test'
 
 
 
