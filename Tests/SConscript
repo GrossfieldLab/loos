@@ -11,6 +11,9 @@
 Import('env')
 
 
+
+### Major uglage ensues...  Close your eyes if you're squeamish...
+
 import os
 import sys
 def run(cmd, env):
@@ -83,11 +86,12 @@ def UnitTest(target, source, env):
 bld = Builder(action = Action(UnitTest, varlist = ['REGENERATE']), emitter = unit_test_emitter)
 env.Append(BUILDERS = {'UnitTest' :  bld})
 
+### Ok, you can open 'em now...
 
 
 non_testable_tests = 'timeseries-test find_perf_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests'
-solo_tests = 'principal-axes-tests atomic-group-test'
+solo_tests = 'principal-axes-tests atomic-group-test timeseries-test'
 
 
 
