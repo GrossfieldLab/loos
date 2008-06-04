@@ -10,15 +10,15 @@
 */
 
 
-#if !defined(FMT_HPP)
-#define FMT_HPP
+#if !defined(LOOSFMT_HPP)
+#define LOOSFMT_HPP
+
 
 #include <ios>
 #include <sstream>
 #include <iostream>
 
 using namespace std;
-
 
 class BoundFmt;
 
@@ -84,40 +84,6 @@ struct BoundFmt {
   double val;
 };
 
-//! Return the bound formatter
-BoundFmt Fmt::operator()(double d) const { return(BoundFmt(*this, d)); }
-
-//! Create the output with the specified formatter
-ostream& operator<<(ostream& os, const BoundFmt& bf) {
-  ostringstream s;
-
-  s.precision(bf.f.prc);
-  s.setf(bf.f.fmt, ios_base::floatfield);
-  s.width(bf.f.wdth);
-  s.fill(bf.f.fil);
-
-  switch(bf.f.ali) {
-  case Fmt::LEFT:
-    s.setf(ios_base::left, ios_base::adjustfield); break;
-  case Fmt::RIGHT:
-    s.setf(ios_base::right, ios_base::adjustfield); break;
-  default:
-    s.setf(ios_base::internal, ios_base::adjustfield); break;
-  }
-
-  if (bf.f.trl)
-    s.setf(ios_base::showpoint);
-  else
-    s.unsetf(ios_base::showpoint);
-
-  if (bf.f.pos)
-    s.setf(ios_base::showpos);
-  else
-    s.unsetf(ios_base::showpos);
-
-  s << bf.val;
-  return(os << s.str());
-}
-
+ostream& operator<<(ostream&, const BoundFmt&);
 
 #endif

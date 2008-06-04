@@ -66,7 +66,7 @@ if not env.GetOption('clean'):
 ### Compile-flags
 
 debug_opts='-g -Wall -fno-inline'
-release_opts='-O3'
+release_opts='-O3 -DNDEBUG'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#'])
@@ -107,7 +107,7 @@ Export('env')
 
 # Build the LOOS library...
 #library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp grammar.yy scanner.ll ensembles.cpp')
-library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp')
+library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp')
 
 
 if int(reparse):
