@@ -180,7 +180,6 @@ void PSF::parseAtomRecord(const string s) {
  */
 int PSF::deduceAtomicNumber(pAtom pa) {
     double mass = pa->mass();
-    cerr << *pa << endl;
     int an=-1;
     if (mass < 1.0)
         throw(out_of_range("Atomic mass less than 1.0 in psf"));
