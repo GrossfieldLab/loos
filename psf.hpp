@@ -71,6 +71,9 @@ private:
 
 
   void parseAtomRecord(const string s);  
+  
+  //! Use the mass to deduce the atomic number of the atom
+  int deduceAtomicNumber(pAtom pa);
 
 };
 

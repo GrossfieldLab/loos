@@ -54,7 +54,8 @@ public:
     coordsbit = 1,
     bondsbit = coordsbit << 1,
     massbit = bondsbit << 1,
-    chargebit = massbit << 1
+    chargebit = massbit << 1,
+    anumbit = chargebit << 1
   };
 
 	 
@@ -83,6 +84,12 @@ public:
   
   int resid(void) const { return(_resid); }
   void resid(const int i) { _resid = i; }
+
+  int atomic_number(void) const { return(_atomic_number); }
+  void atomic_number(const int i) { 
+      _atomic_number = i;  
+      setPropertyBit(anumbit);
+  }
 
   string name(void) const { return(_name); }
   void name(const string s) { _name = s; }
@@ -190,6 +197,7 @@ checkProperty(Atom::massbit | Atom::chargebit)
     os << "COORDS='" << a._coords << "' ";
     os << "ALTLOC='" << a._altloc << "' CHAINID='" << a._chainid << "' ICODE='" << a._icode << "' SEGID='" << a._segid << "' ";
     os << "B='" << a._b << "' Q='" << a._q << "' CHARGE='" << a._charge << "' MASS='" << a._mass << "'";
+    os << " ATOMICNUMBER='" << a._atomic_number <<"'";
     if (a.hasBonds() > 0) {
       vector<int>::const_iterator i;
       os << ">\n";
@@ -206,6 +214,7 @@ private:
   void init() {
     _id = -1;
     _resid = -1;
+    _atomic_number = -1;
     _b = _q = 0.0;
     _charge = 0.0;
     _mass = 1.0;
@@ -228,6 +237,7 @@ private:
   int _id;
   string _record, _name, _altloc, _resname, _chainid;
   int _resid;
+  int _atomic_number;
   string _icode;
   double _b, _q, _charge, _mass;
   string _segid, _pdbelement;
