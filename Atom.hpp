@@ -46,6 +46,19 @@ typedef boost::shared_ptr<Atom> pAtom;
   
 class Atom {
 public:
+
+  // Be careful that we don't overflow an unsigned long!
+  //! Bits in the bitmask that flag what properties have actually been set.
+  enum bits {
+    nullbit = 0,
+    coordsbit = 1,
+    bondsbit = coordsbit << 1,
+    massbit = bondsbit << 1,
+    chargebit = massbit << 1
+  };
+
+	 
+
   Atom() { init(); }
 
   //! Constructs an atom with the atomid i, atomname s, and coordinates c.
@@ -96,8 +109,17 @@ public:
   //! This returns a const ref mainly for efficiency, rather than
   //! copying the coords...
   const GCoord& coords(void) const { return(_coords); }
-  GCoord& coords(void) { return(_coords); }
-  void coords(const GCoord& c) { _coords = c; }
+
+  //! Returns a writable ref to the internally stored coords.
+  /** This can cause problems since we track whether the coords are
+   * set or not via the bitmask.  We assume that if you're accessing
+   * this as non-const, your intention is to set the coords, so the
+   * bit flagging coords is set automatically.
+   */
+  GCoord& coords(void) { return(_coords); setPropertyBit(coordsbit); }
+
+  //! Sets the coords to \a c
+  void coords(const GCoord& c) { _coords = c; setPropertyBit(coordsbit); }
 
   double bfactor(void) const { return(_b); }
   void bfactor(const double d) { _b = d; }
@@ -109,10 +131,10 @@ public:
 
   //! Sets the charge of the atom as a double.  This is NOT the PDB spec...
 
-  void charge(const double d) { _charge = d ; }
+  void charge(const double d) { _charge = d ; setPropertyBit(chargebit); }
 
   double mass(void) const { return(_mass); }
-  void mass(const double d) { _mass = d ; }
+  void mass(const double d) { _mass = d ; setPropertyBit(massbit); }
 
   //! Recordname imported from the PDB for this Atom
   //! This is mainly for atoms that come from a PDB, i.e. whether or
@@ -121,11 +143,11 @@ public:
   void recordName(const string s) { _record = s; }
 
   //! Clear all stored bonds
-  void clearBonds(void) { bonds.clear(); }
+  void clearBonds(void) { bonds.clear(); clearPropertyBit(bondsbit); }
   //! Add a bond given a pAtom (extracting the atomid of the bond)
-  void addBond(const pAtom& p) { bonds.push_back(p->id()); }
+  void addBond(const pAtom& p) { bonds.push_back(p->id()); setPropertyBit(bondsbit); }
   //! Add a bond to an atom-id
-  void addBond(const int i) { bonds.push_back(i); }
+  void addBond(const int i) { bonds.push_back(i); setPropertyBit(bondsbit); }
 
   //! Deletes the specified bond.
   void deleteBond(const int b) {
@@ -133,6 +155,8 @@ public:
     if (i == bonds.end())
       throw(runtime_error("Attempting to delete a non-existent bond"));
     bonds.erase(i);
+    if (bonds.size() == 0)
+      clearPropertyBit(bondsbit);
   }
 
   //! Deletes a bond by extracting the atom-id from the passed pAtom
@@ -142,6 +166,21 @@ public:
   vector<int> getBonds(void) const { return(bonds); }
 
   bool hasBonds(void) const { return(bonds.size() != 0); }
+
+  //! Given a bit-mask, checks to see if those bits are set.
+  /** For example, to check whether or not the coords have been set,
+   *  do,
+\verbatim
+checkProperty(Atom::coordsbit)
+\endverbatim
+   *  You can combine checks by or'ing the bit flags, such as the
+   *  following which checks whether both mass and charge have been
+   *  set,
+\verbatim
+checkProperty(Atom::massbit | Atom::chargebit)
+\endverbatim
+  */
+  bool checkProperty(const bits bitmask) { return(mask & bitmask != 0); }
 
 
   //! Outputs an atom in pseudo-XML
@@ -162,6 +201,7 @@ public:
     return(os);
   }
 
+
 private:
   void init() {
     _id = -1;
@@ -176,9 +216,13 @@ private:
     _segid = "    ";
     _pdbelement = "";
     _record = "ATOM";
+    mask = nullbit;   // Nullbit means nothing was set...
   }
 
-
+  //! Internal function for setting a bitflag
+  void setPropertyBit(const bits bitmask) { mask |= bitmask; }
+  //! Internal function for clearing a bitflag
+  void clearPropertyBit(const bits bitmask) { mask ^= bitmask; }
 
 private:
   int _id;
@@ -188,6 +232,7 @@ private:
   double _b, _q, _charge, _mass;
   string _segid, _pdbelement;
   GCoord _coords;
+  unsigned long mask;
 
   vector<int> bonds;
 };
