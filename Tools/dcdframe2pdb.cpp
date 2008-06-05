@@ -26,11 +26,13 @@ int main(int argc, char *argv[]) {
   DCD dcd(argv[2]);
   int frame = atoi(argv[3]);
 
+
   bool b = dcd.readFrame(frame);
   if (!b) {
     cerr << "Could not read frame " << frame << " from DCD " << argv[2] << endl;
     exit(-2);
   }
+
 
   dcd.updateGroupCoords(pdb);
 

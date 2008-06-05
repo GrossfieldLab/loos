@@ -281,6 +281,11 @@ pAtom AtomicGroup::findById(const int id) {
   return(pAtom());
 }
 
+//! Note: when calling this, you'll want to make sure you use the 
+//! outermost group (eg the psf or pdb you used to create things, rather than
+//! using a subselection, unless you're sure the subsection contains these
+//! atoms as well.  The main use of this routine is to create a group of atoms
+//! bound to another atom.
 AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
     AtomicGroup result;
     for (unsigned int i=0; i<id_list.size(); i++) {
@@ -435,26 +440,36 @@ int AtomicGroup::numberOfChains(void) const {
 
 
 // Bounding box for all atoms in this group
-AtomicGroup::BoundingBox AtomicGroup::boundingBox(void) const {
-  BoundingBox bdd;
+vector<GCoord> AtomicGroup::boundingBox(void) const {
+  greal min[3] = {0,0,0}, max[3] = {0,0,0};
   ConstAtomIterator i;
   int j;
+  vector<GCoord> res(2);
+  GCoord c;
 
-  if (atoms.size() == 0)
-    return(bdd);
+  if (atoms.size() == 0) {
+    res[0] = c;
+    res[1] = c;
+    return(res);
+  }
 
   for (j=0; j<3; j++)
-    bdd.min[j] = bdd.max[j] = (atoms[0]->coords())[j];
+    min[j] = max[j] = (atoms[0]->coords())[j];
 
   for (i=atoms.begin()+1; i != atoms.end(); i++)
     for (j=0; j<3; j++) {
-      if (bdd.max[j] < ((*i)->coords())[j])
-	bdd.max[j] = ((*i)->coords())[j];
-      if (bdd.min[j] > ((*i)->coords())[j])
-	bdd.min[j] = ((*i)->coords())[j];
+      if (max[j] < ((*i)->coords())[j])
+	max[j] = ((*i)->coords())[j];
+      if (min[j] > ((*i)->coords())[j])
+	min[j] = ((*i)->coords())[j];
     }
 
-  return(bdd);
+  c.set(min[0], min[1], min[2]);
+  res[0] = c;
+  c.set(max[0], max[1], max[2]);
+  res[1] = c;
+
+  return(res);
 }
 
 // Geometric center of the group
@@ -690,10 +705,9 @@ void AtomicGroup::applyTransform(const XForm& M) {
 
 
 void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
-  cout << s << endl;
+  cout << s << " = [\n" << endl;
   int i, j;
 
-  cout << "[" << endl;
   for (j=0; j<m; j++) {
     for (i=0; i<n; i++)
       cout << setw(10) << A[i*m+j] << " ";
@@ -841,9 +855,9 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   }
 
   // Now push the eigenvalues on as a GCoord...
-  c[0] = W[0];
+  c[0] = W[2];
   c[1] = W[1];
-  c[2] = W[2];
+  c[2] = W[0];
 
   results[3] = c;
 
@@ -853,7 +867,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
 
 
 
-GMatrix AtomicGroup::superposition(AtomicGroup& grp) {
+GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
   int i, j;
   XForm W;
 
@@ -921,7 +935,7 @@ GMatrix AtomicGroup::superposition(AtomicGroup& grp) {
 }
 
 
-GMatrix AtomicGroup::alignOnto(AtomicGroup& grp) {
+GMatrix AtomicGroup::alignOnto(const AtomicGroup& grp) {
   XForm W;
   GMatrix M = superposition(grp);
 

@@ -146,6 +146,7 @@ void PSF::parseAtomRecord(const string s) {
 
     ss >> mass;
     pa->mass(mass);
+    pa->atomic_number(deduceAtomicNumber(pa));
 
     // Is the atom fixed or mobile?
     // for now, we're going to silently drop this
@@ -153,10 +154,72 @@ void PSF::parseAtomRecord(const string s) {
 
     // now intialize the rest of the stuff
     pa->recordName(string(""));
+
+#if 0
+    // Removed -- this is no longer necessary because we have the 
+    // bitmask which lets us mark the coordinates as unset.  In fact
+    // this way would be broken, because it would cause the coordinates 
+    // bit to be set to true
     GCoord c= GCoord(99999.99, 99999.99, 99999.99); // Marks
 						    // uninitialized
 						    // coords 
     pa->coords(c);
+#endif 
 
     append(pa);
+}
+
+
+/** This is a bit ad-hoc, and doesn't include all possible nuclei, but it
+ *  covers everything that's likely to show up in a biomolecular simulation.
+ *  However, at the moment it doesn't handle isotopes (eg deuterium).
+ *  I got this list from the standard CHARMM topology files -- obviously, more
+ *  atom types (eg other cations) could be added as needed.  The ranges I used
+ *  are kind of large, since I recall the different force fields used to disagree
+ *  about some of the masses.
+ */
+int PSF::deduceAtomicNumber(pAtom pa) {
+    double mass = pa->mass();
+    int an=-1;
+    if (mass < 1.0)
+        throw(out_of_range("Atomic mass less than 1.0 in psf"));
+    else if (mass < 1.1) // Hydrogen = 1.0080
+        an=1;
+    else if ( (mass >= 4.0) && (mass <= 4.1) )  // Helium = 4.0026
+        an=6;
+    else if ( (mass >= 12.0) && (mass <= 12.1) )  // Carbon = 12.0110
+        an=6;
+    else if ( (mass >= 14.0) && (mass <= 14.1) )  // Nitrogen = 14.007
+        an=7;
+    else if ( (mass >= 15.9) && (mass <= 16.1) )  // Oxygen = 15.9990
+        an=8;
+    else if ( (mass >= 18.9) && (mass <= 19.0) )  // Fluorine = 18.99800
+        an=9;
+    else if ( (mass >= 20.0) && (mass <= 20.2) ) // Neon = 20.1797
+        an=10;
+    else if ( (mass >= 22.9) && (mass <= 23.0) ) // Sodium = 22.989770
+        an=11;
+    else if ( (mass >= 24.3) && (mass <= 24.4) ) // Magnesium = 24.305000
+        an=12;
+    else if ( (mass >= 30.0) && (mass <= 31.0) )  // Phosphorus = 30.974000
+        an=15;
+    else if ( (mass >= 32.0) && (mass <= 32.1) )  // Sulfur = 32.0600
+        an=16;
+    else if ( (mass >= 35.0) && (mass <= 36.0) )  // Chlorine = 35.45300
+        an=17;
+    else if ( (mass >= 39.0) && (mass <= 39.2) )  // Potassium = 39.102000
+        an=19;
+    else if ( (mass >= 40.0) && (mass <= 40.1) )  // Calcium = 40.0800
+        an=20;
+    else if ( (mass >= 55.0) && (mass <= 56.1) )  // Iron = 55.84700 
+        an=26;
+    else if ( (mass >= 65.3) && (mass <= 65.4) )  // Zinc = 65.37
+        an=30;
+    else if ( (mass >= 132.0) && (mass <= 133.0) )  // Cesium = 132.900000
+        an=55;
+    
+    if (an > 0)
+        return(an);
+    else
+        throw(out_of_range("Couldn't identify an atomic number in psf"));
 }

@@ -1,0 +1,9 @@
+Found 80 CAlphas.
+RMSD test = 1
+Rotated rmsd = 18.3536
+Aligned rmsd = 0.425848
+[0.818739 -0.000257576 -0.574166 -0.545344;9.80061e-05 1 -0.000308856 -0.501764;0.574166 0.000196601 0.818739 -0.517209;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-10)
+All tests passed (threshold = 0.001 : 2)
+All composite iterative tests passed (threshold = 1e-10)

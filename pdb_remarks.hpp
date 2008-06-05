@@ -45,6 +45,9 @@ public:
   //! Access the ith remark
   const string& operator[](const int i) const;
 
+  //! Returns a copy of the remarks vector
+  vector<string> allRemarks(void) const { return(remarks); }
+
   //! Output the Remark(s) in PDB format
   friend ostream& operator<<(ostream& os, const Remarks& r);
 

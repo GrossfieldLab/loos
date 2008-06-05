@@ -39,11 +39,9 @@ int main(int argc, char *argv[]) {
   int nwater = water.numberOfResidues();
   cout << "There are " << nwater << " waters.\n";
   if (nwater > 0) {
-    AtomicGroup::BoundingBox bdd = water.boundingBox();
-    cout << "Bounding box for the water is:\n";
-    cout << "\t" << bdd.min[0] << " <= x <= " << bdd.max[0] << endl;
-    cout << "\t" << bdd.min[1] << " <= y <= " << bdd.max[1] << endl;
-    cout << "\t" << bdd.min[2] << " <= z <= " << bdd.max[2] << endl;
+    vector<GCoord> bdd = water.boundingBox();
+    cout << "Bounding box for the water is: ";
+    cout << bdd[0] << " x " << bdd[1] << endl;
   }
 
   NotSelector notwatsel(wasel);

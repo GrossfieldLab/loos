@@ -52,7 +52,7 @@ LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> to build.
 requires the vecLib framework and Developer's Tools for OS X or <A
 href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> for Linux.  It also
 requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for both
-(including the regular expression library).  LOOS also requires the
+(including the regular expression library).  To build from scratch, you will also need the
 GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
 <A href="http://www.gnu.org/software/bison/">bison</A>.
 
@@ -62,9 +62,15 @@ SCons:
 cd /Users/myself/LOOS
 scons
 \endverbatim
-You can also use the "examples" or "docs" targets to build those
-components in addition to the library, or you can use "scons all" to
-build everything.
+
+To build the examples and tools as well, use:
+
+\verbatim
+scons all
+\endverbatim
+
+For more detailed information about the build process, see
+\subpage building "Building LOOS"
 
 To use LOOS, you will want to include the top-level LOOS directory in
 both your include path and your library paths, so something like the
@@ -93,12 +99,6 @@ following are valid strings:
 \verbatim
 "a string"
 'another string'
-\endverbatim
-
-You can also embed a quote in a string, not that you should ever
-really need to, by escaping it with a back-slash, i.e.
-\verbatim
-'here\'s another string'
 \endverbatim
 
 The parser also recognizes a small set of keywords that evaluate to
@@ -172,10 +172,7 @@ expressions that look a lot like globbing (a la VMD selections), keep
 in mind that it isn't globbing.  It's a regular expression, which is
 more powerful anyway...  You do need to be careful though that your
 shell does not munge any of the regex operators.  It's a good idea to
-use single quotes when you're writing regex's in a shell.  Most shells
-will also process out back-slashes ("\"), so if you want to use PERL
-escapes, you may need to double-back-slash them, i.e. use "\\d+"
-instead of "\d".
+use single quotes when you're writing regex's in a shell.
 
 The string equality operators ("==" and "!=") both consider the
 <I>entire</I> string.
@@ -281,5 +278,74 @@ name =~ "O" &&
 segid == "BULK")    # or named BULK
 \endverbatim
 
+
+*/
+
+
+
+/*! \page building Building LOOS
+
+\section Build Configuration
+
+There are several build targets available:
+
+<table align="center">
+<tr align="left"><th>Target</th><th>Description</th></tr>
+<tr align="left"><td>(default)</td><td>Just build the library</td></tr>
+<tr align="left"><td>all</td><td>Builds the library plus examples and tools</td></tr>
+<tr align="left"><td>tests</td><td>Builds and runs the verification tests</td></tr>
+<tr align="left"><td>docs</td><td>Uses Doxygen to generate new docs.</td></tr>
+<tr align="left"><td>caboodle</td><td>Builds everything, including docs and tests</td></tr>
+</table>
+
+There are several different build options that are available for
+LOOS.  These are handled on the command-line by SCons as "foo=1" to
+turn the option on or "foo=0" to turn it off.  Most options default to
+off.  Finally, you can query the available options by passing the "-h"
+flag to SCons.  The following table lists the principal build options:
+
+<table align="center">
+<tr align="left"><th>Option</th><th>Default</th><th>Description</th></tr>
+<tr align="left"><td>debug</td><td>0</td><td>Adds "-DDEBUG" to build</td></tr>
+<tr align="left"><td>release</td><td>0</td><td>Turns on aggressive optimization (-O3)</td></tr>
+<tr align="left"><td>regenerate</td><td>0</td><td>Regenerates the test verification data</td></tr>
+<tr align="left"><td>reparse</td><td>0</td><td>Runs bison/flex to create the C++ files for parsing selections</td></tr>
+</table>
+
+\subsection Regeneration
+The verification tests include sample output that is compared against
+the current build.  If differences are found, they are flagged as
+potential problems with the library.  If you update a test, change
+systems (such as running on OS X as opposed to Linux), or perhaps
+didn't get the test data from the SVN, then you will need to 
+generate new test data and verify it manually.  To do so, use the
+SCons command:
+\verbatim
+scons regenerate=1 tests
+\endverbatim
+
+\subsection Reparsing
+To remove the dependency on Bison/Flex, the output from these tools
+for the grammar and scanner are included.  If you want to rebuild
+them, you will need to use the 'reparse=1' option.  The catch is that
+if you have a different version of flex installed, there is a good
+chance there will be a conflict with the bundled FlexLexer.h include
+file.  If you see odd compiler errors, try removing that file and
+rebuilding.  Alternatively, forcibly remove all generated files by
+doing "rm *.cc *.hh" (assuming you've added no files with those
+suffixes), then rebuild.
+
+\subsection Distro Building a distribution
+To build a distribution that doesn't require anything other than SCons
+and Boost, the following sequence is recommended:
+\verbatim
+scons regenerate=1 tests
+scons docs
+scons -c tests
+\endverbatim
+
+As a side-note, regenerating the verification data is potentially
+hazardous if you have not been making sure your builds already pass,
+so caveat bugger...
 
 */

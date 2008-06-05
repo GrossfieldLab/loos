@@ -9,11 +9,6 @@
 
   Basic class for groups of atoms...
 
-  Notes:
-
-    o Applying a transform to the coordinates of the group's atoms
-      does NOT reset the transformation back to identity.  That is up
-      to you to do if you want to do that...
 */
 
 
@@ -110,8 +105,17 @@ protected:
   typedef vector<pAtom>::const_iterator ConstAtomIterator;
 
 public:
-  AtomicGroup() : _sorted(false), _periodic(false) { }
-  virtual ~AtomicGroup() { }
+  AtomicGroup() : _sorted(false), _periodic(false) {
+#if DEBUG >= 4
+    cout << "AtomicGroup()\n";
+#endif
+ }
+  virtual ~AtomicGroup() {
+#if DEBUG > 4
+    cout << "~AtomicGroup()\n";
+#endif
+
+ }
 
   //! Creates a deep copy of this group
   /** This creates a non-polymorphic deep copy of an AtomicGroup.  The
@@ -265,14 +269,9 @@ public:
   };
 
 
-  //! Return value for boundingBox()
-  struct BoundingBox {
-    greal min[3], max[3];
-  };
-
   // Statistical routines...
   //! Bounding box for the group...
-  BoundingBox boundingBox(void) const;
+  vector<GCoord> boundingBox(void) const;
 
   //! Translates the group so that the centroid is at the origin.
   /**
@@ -364,7 +363,7 @@ public:
    * transformation matrix that superimposes the current group onto
    * the passed group.  Returns the matrix.
    */
-  GMatrix superposition(AtomicGroup&);
+  GMatrix superposition(const AtomicGroup&);
 
   //! Superimposes the current group onto the passed group.
   /**
@@ -372,7 +371,7 @@ public:
    * superimpose the current group onto the passed one, then applies the
    * transformation to the current group's coordinates.
    */
-  GMatrix alignOnto(AtomicGroup&);
+  GMatrix alignOnto(const AtomicGroup&);
 
 #endif
 

@@ -7,10 +7,13 @@
 #include "Kernel.hpp"
 #include "Parser.hpp"
 
+#include "Selectors.hpp"
+#include "pdb.hpp"
+
 using namespace std;
 using namespace loos;
 
-void test(const string s, bool expected = false) {
+void test(PDB& pdb, const string s, bool expected = false) {
   Parser p;
   try {
     cout << "\n--------------------------------------\n";
@@ -24,22 +27,33 @@ void test(const string s, bool expected = false) {
       cout << "===============================> UNEXPECTED EXCEPTION\n";
     return;
   }
-  if (expected)
+  if (expected) {
     cout << "===============================> EXPECTED EXCEPTION NOT FOUND\n";
+    return;
+  }
   cout << p.kernel() << endl;
+  KernelSelector ksel(p.kernel());
+  AtomicGroup grp = pdb.select(ksel);
+  cout << "Selected " << grp.size() << " @ " << grp.centroid();
+  vector<GCoord> box = grp.boundingBox();
+  cout << " & " << box[0] << " x " << box[1] << endl;
 }
 
 
 int main(int argc, char *argv[]) {
 
-  test("name == 'CA'");
-  test("resid =~ '1\\d+'", true);
-  test("!(name == 'CA')");
-  test("!(name == 'CA'", true);
-  test("segid -> 'L(\\d+)' < 3");
-  test("(segid -> '(L|P)(\\d+)') <= 3");
-  test("(segid -> '(L|P)(\\d+)') <= 10 && name == 'CA'");
-  test("name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV'");
+  PDB pdb(argv[1]);
+
+
+  test(pdb, "name == 'CA'");
+  test(pdb, "resid =~ '1\\d+'", true);
+  test(pdb, "!(name == 'CA')");
+  test(pdb, "!(name == 'CA'", true);
+  test(pdb, "segid -> 'L(\\d+)' < 3");
+  test(pdb, "(segid -> '(L|P)(\\d+)') <= 3");
+  test(pdb, "(segid -> '(L|P)(\\d+)') <= 10 && name == 'CA'");
+  test(pdb, "name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV'");
+  test(pdb, "!(name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV')");
 }
 
 
