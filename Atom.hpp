@@ -60,7 +60,12 @@ public:
 
 	 
 
-  Atom() { init(); }
+  Atom() {
+#if DEBUG >= 5
+    cout << "Atom()\n";
+#endif
+    init();
+  }
 
   //! Constructs an atom with the atomid i, atomname s, and coordinates c.
   /**
@@ -75,8 +80,17 @@ public:
     _id = i;
     _name = s;
     _coords = c;
+#if DEBUG >= 5
+    cout << "Atom(...)\n";
+#endif
   }
 
+
+  ~Atom() {
+#if DEBUG >= 5
+    cout << "~Atom()\n";
+#endif
+  }
 
   // Accessors...
   int id(void) const { return(_id); }

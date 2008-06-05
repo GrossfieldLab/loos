@@ -98,7 +98,7 @@ if int(debug):
    if int(release):
       print "***ERROR*** You cannot have a release with debugging code included."
       Exit(1)
-   env.Append(CCFLAGS=" -DDEBUG")
+   env.Append(CCFLAGS=" -DDEBUG=$debug")
 
 
 
@@ -113,7 +113,7 @@ library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remar
 
 
 if int(reparse):
-   library_files += ['scanner.ll', 'grammar.yy']
+   library_files += ['grammar.yy', 'scanner.ll']
 else:
    library_files += ['scanner.cc', 'grammar.cc']
 

@@ -229,7 +229,7 @@ namespace loos {
   class matchStringAsRegex : public Action {
   public:
     matchStringAsRegex() : Action("matchStringAsRegex") { }
-    void execute() {
+    void execute(void) {
       Value v = stack->pop();
       boost::regex re(v.getString(), boost::regex::perl|boost::regex::icase);
       Value u = stack->pop();
@@ -291,7 +291,7 @@ namespace loos {
   class pushAtomName : public Action {
   public:
     pushAtomName() : Action("pushAtomName") { }
-    void execute() {
+    void execute(void) {
       hasAtom();
       Value v(atom->name());
       stack->push(v);
@@ -302,7 +302,7 @@ namespace loos {
   class pushAtomId : public Action {
   public:
     pushAtomId() : Action("pushAtomId") { }
-    void execute() {
+    void execute(void) {
       hasAtom();
       Value v(atom->id());
       stack->push(v);
@@ -313,7 +313,7 @@ namespace loos {
   class pushAtomResname : public Action {
   public:
     pushAtomResname() : Action("pushAtomResname") { }
-    void execute() {
+    void execute(void) {
       hasAtom();
       Value v(atom->resname());
       stack->push(v);
@@ -324,7 +324,7 @@ namespace loos {
   class pushAtomResid : public Action {
   public:
     pushAtomResid() : Action("pushAtomResid") { }
-    void execute() {
+    void execute(void) {
       hasAtom();
       Value v(atom->resid());
       stack->push(v);
@@ -335,7 +335,7 @@ namespace loos {
   class pushAtomSegid : public Action {
   public:
     pushAtomSegid() : Action("pushAtomSegid") { }
-    void execute() {
+    void execute(void) {
       hasAtom();
       Value v(atom->segid());
       stack->push(v);
@@ -349,7 +349,7 @@ namespace loos {
   class logicalAnd : public Action {
   public:
     logicalAnd() : Action("&&") { }
-    void execute() {
+    void execute(void) {
       Value v2 = stack->pop();
       Value v1 = stack->pop();
 
@@ -365,7 +365,7 @@ namespace loos {
   class logicalOr : public Action {
   public:
     logicalOr() : Action("||") { }
-    void execute() {
+    void execute(void) {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
 
@@ -382,7 +382,7 @@ namespace loos {
   class logicalNot : public Action {
   public:
     logicalNot() : Action("!") { }
-    void execute() {
+    void execute(void) {
       Value v1 = stack->pop();
 
       if (v1.type != Value::INT)
@@ -393,7 +393,15 @@ namespace loos {
     }
   };
 
-
+  // Always returns true...
+  class logicalTrue : public Action {
+  public:
+    logicalTrue() : Action("TRUE") { }
+    void execute(void) {
+      Value v((int)1);
+      stack->push(v);
+    }
+  };
 
 };
 

@@ -27,24 +27,27 @@
 // Default values...
 
 string alignment_string("name == 'CA'");
-string transform_string("!(segid == 'BULK' || segid == 'SOLV')");
+string transform_string("all");
 
 greal alignment_tol = 0.5;
-int maxiter = 1000;
+int maxiter = 5000;
 int show_rmsd = 0;
+int no_rmsd = 0;
 
 
 static struct option long_options[] = {
   {"align", required_argument, 0, 'a'},
   {"transform", required_argument, 0, 't'},
   {"tolerance", required_argument, 0, 'T'},
+  {"max", required_argument, 0, 'm'},
   {"show", no_argument, &show_rmsd, 1},
+  {"normsd", no_argument, &no_rmsd, 1},
   {"help", no_argument, 0, 'H'},
   {0,0,0,0}
 };
 
 
-static const char* short_options = "a:t:T:r";
+static const char* short_options = "a:t:T:rn";
 
 
 void show_help(void) {
@@ -52,7 +55,9 @@ void show_help(void) {
   cout << "   --align=string     [" << alignment_string << "]\n";
   cout << "   --transform=string [" << transform_string << "]\n";
   cout << "   --tolerance=float  [" << alignment_tol << "]\n";
+  cout << "   --max=int          [" << maxiter << "]\n";
   cout << "   --show=bool  (rmsd)[" << show_rmsd << "]\n";
+  cout << "   --normsd=boold     [" << no_rmsd << "]\n";
   cout << "   --help\n";
 }
 
@@ -60,25 +65,66 @@ void show_help(void) {
 void parseOptions(int argc, char *argv[]) {
   int opt, idx;
   string al, tr;
+  greal at = alignment_tol;
+  int mi = maxiter;
+  int sr = show_rmsd;
+  int nr = no_rmsd;
 
   while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1) {
     switch(opt) {
     case 'a': al = string(optarg); break;
     case 't': tr = string(optarg); break;
-    case 'T': alignment_tol = strtod(optarg, 0); break;
-    case 'r': show_rmsd = 1; break;
+    case 'T': at = strtod(optarg, 0); break;
+    case 'm': mi = atoi(optarg); break;
+    case 'r': sr = 1; break;
+    case 'n': nr = 1; break;
     case 'H': show_help(); exit(-1);
     case 0: break;
     default: cerr << "Unknown option '" << opt << "'\n";
     }
   }
 
+
+  // Major uglage here!  Yuck!
   if (al.size() != 0)
     alignment_string = al;
   if (tr.size() != 0)
     transform_string = tr;
 
+  alignment_tol = at;
+  maxiter = mi;
+  if (!show_rmsd)
+    show_rmsd = sr;
+  if (!no_rmsd)
+    no_rmsd = nr;
+
 }
+
+
+double calcRMSD(const string& octave_tag, vector<AtomicGroup>& grps) {
+
+  unsigned int nframes = grps.size();
+  double avg_rmsd = 0.0;
+  if (show_rmsd)
+    cout << "<OCTAVE>\n";
+  AtomicGroup avg = averageStructure(grps);
+  if (show_rmsd)
+    cout << octave_tag << " = [\n";
+  for (unsigned int i = 0; i<nframes; i++) {
+    greal irmsd = avg.rmsd(grps[i]);
+    if (show_rmsd)
+      cout << irmsd << " ;\n";
+    avg_rmsd += irmsd;
+  }
+  
+  if (show_rmsd) {
+    cout << "];\n";
+    cout << "</OCTAVE>\n";
+  }
+
+  return(avg_rmsd / nframes);
+}
+
 
 
 int main(int argc, char *argv[]) {
@@ -131,21 +177,16 @@ int main(int argc, char *argv[]) {
     frames.push_back(subcopy);
   }
 
-  boost::tuple<vector<XForm>,greal> res = iterativeAlignment(frames, alignment_tol, maxiter);
+  boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, alignment_tol, maxiter);
   greal final_rmsd = boost::get<1>(res);
-  cout << "Final RMSD is " << final_rmsd << endl;
+  cout << "Final RMSD between average structres is " << final_rmsd << endl;
+  cout << "Total iters = " << boost::get<2>(res) << endl;
+
   vector<XForm> xforms = boost::get<0>(res);
-  
-  // Show output (in Octave format with tags) if requested...
-  if (show_rmsd) {
-    cout << "*** RMSD Between Aligned Subset and Average Subset ***\n";
-    cout << "<OCTAVE>\n";
-    AtomicGroup avg = averageStructure(frames);
-    cout << "r = [\n";
-    for (unsigned int i = 0; i<nframes; i++)
-      cout << frames[i].rmsd(avg) << " ;\n";
-    cout << "];\n";
-    cout << "</OCTAVE>\n";
+
+  if (!no_rmsd) {
+    double avg_rmsd = calcRMSD("r", frames);
+    cout << "Average RMSD vs average for aligned subset = " << avg_rmsd << endl;
   }
 
   // Zzzzap our stored groups...
@@ -178,7 +219,13 @@ int main(int argc, char *argv[]) {
     frames.push_back(apcopy);
   }
 
-  DCDWriter dcdout(prefix + ".dcd", frames, outpdb.remarks().allRemarks());    // Et voila!
+  DCDWriter dcdout(prefix + ".dcd", frames, outpdb.remarks().allRemarks());
+
+  if (!no_rmsd) {
+    double avg_rmsd = calcRMSD("rall", frames);
+    cout << "Average RMSD vs average for transformed subset = " << avg_rmsd << endl;
+  }
+
 }
 
 

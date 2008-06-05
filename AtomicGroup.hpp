@@ -105,8 +105,17 @@ protected:
   typedef vector<pAtom>::const_iterator ConstAtomIterator;
 
 public:
-  AtomicGroup() : _sorted(false), _periodic(false) { }
-  virtual ~AtomicGroup() { }
+  AtomicGroup() : _sorted(false), _periodic(false) {
+#if DEBUG >= 4
+    cout << "AtomicGroup()\n";
+#endif
+ }
+  virtual ~AtomicGroup() {
+#if DEBUG > 4
+    cout << "~AtomicGroup()\n";
+#endif
+
+ }
 
   //! Creates a deep copy of this group
   /** This creates a non-polymorphic deep copy of an AtomicGroup.  The

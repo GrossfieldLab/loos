@@ -35,8 +35,9 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 "&&"                    { return(token::AND); }
 "||"                    { return(token::OR); }
 
-"->"                { return(token::NEKEY); }
+"->"                 { return(token::NEKEY); }
 
+all                  { return(token::ALL); }
 name|resname|segid   { yylval->sval = new string(yytext, yyleng); return(token::SKEY); }
 id|resid             { yylval->sval = new string(yytext, yyleng); return(token::NKEY); }
 

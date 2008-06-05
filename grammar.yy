@@ -55,6 +55,7 @@ namespace loos {
 %token <sval>	STRING
 %token <sval>   SKEY
 %token <sval>   NKEY
+%token <sval>   ALL
 
 
 %token AND "&&"
@@ -73,7 +74,7 @@ namespace loos {
 
 %type <sval> string alphid strval
 
-%destructor { delete $$; } STRING string strval
+%destructor { delete $$; } STRING string strval SKEY NKEY ALL
 
 %%
 
@@ -93,6 +94,7 @@ rexpr : '(' expr ')'
       | value "==" value { driver.kern.push(new equals); }
       | value "!=" value { driver.kern.push(new equals); driver.kern.push(new logicalNot); }
       | alphid "=~" strval { driver.kern.push(new matchRegex(*($3))); }
+      | ALL { driver.kern.push(new logicalTrue); }
       ;
 
 

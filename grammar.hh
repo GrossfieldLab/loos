@@ -145,16 +145,17 @@ namespace loos
      STRING = 259,
      SKEY = 260,
      NKEY = 261,
-     AND = 262,
-     OR = 263,
-     LT = 264,
-     LTE = 265,
-     GTE = 266,
-     GT = 267,
-     EQ = 268,
-     NE = 269,
-     REGEX = 270,
-     NEKEY = 271
+     ALL = 262,
+     AND = 263,
+     OR = 264,
+     LT = 265,
+     LTE = 266,
+     GTE = 267,
+     GT = 268,
+     EQ = 269,
+     NE = 270,
+     REGEX = 271,
+     NEKEY = 272
    };
 
     };

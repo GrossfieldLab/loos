@@ -24,7 +24,7 @@ namespace loos {
 
   //! Compute an iterative superposition (a la Alan)
   /**Is xform-aware */
-  boost::tuple<vector<XForm>, greal> iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter=1000);
+  boost::tuple<vector<XForm>, greal, int> iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter=1000);
 };
 
 
