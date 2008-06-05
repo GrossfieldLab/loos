@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
     frames.push_back(apcopy);
   }
 
-  DCDWriter dcdout(prefix + ".dcd", frames);    // Et voila!
+  DCDWriter dcdout(prefix + ".dcd", frames, outpdb.remarks().allRemarks());    // Et voila!
 }
 
 

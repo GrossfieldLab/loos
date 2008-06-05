@@ -28,7 +28,7 @@ string DCDWriter::fixStringSize(const string& s, const unsigned int n) {
 
   if (s.size() < n) {
     int i = n - s.size();
-    result += string(" ", i);
+    result += string (i, ' ');
   } else if (s.size() > n)
     result = s.substr(0, n);
 
@@ -62,7 +62,7 @@ void DCDWriter::writeHeader(void) {
   *iptr = _titles.size();
   for (i=0; i<_titles.size(); i++) {
     string s = fixStringSize(_titles[i], 80);
-    memcpy(ptr + 4 + 80*i, s.c_str(), 80);
+    memcpy(ptr + sizeof(unsigned int) + 80*i, s.c_str(), 80);
   }
   writeF77Line(_ofs, ptr, size);
   delete[] ptr;
