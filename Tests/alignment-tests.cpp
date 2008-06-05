@@ -114,6 +114,7 @@ int main(int argc, char *argv[]) {
   // Now run iteratative superpositon tests...
 
   vector<AtomicGroup> mols;
+  vector<AtomicGroup> premols;
   for (i=0; i<iter_tests; i++) {
     AtomicGroup subgroup = cas.copy();
     GCoord t(translations(), translations(), translations());
@@ -128,6 +129,7 @@ int main(int argc, char *argv[]) {
 	     
     subgroup.applyTransform(W);
     mols.push_back(subgroup);
+    premols.push_back(subgroup);
   }
 
   AtomicGroup avg = averageStructure(mols);
@@ -138,7 +140,8 @@ int main(int argc, char *argv[]) {
   }
 
 
-  greal final_rmsd = loos::iterativeAlignment(mols, 2.0);
+  boost::tuple<vector<XForm>, greal> res = loos::iterativeAlignment(mols, 2.0);
+  greal final_rmsd = boost::get<1>(res);
   if (show_results)
     cout << "Final alignment rmsd to avg struct = " << final_rmsd << endl;
 
@@ -161,4 +164,21 @@ int main(int argc, char *argv[]) {
     cout << "*** There were " << warnings << " possible errors detected.\n";
   else
     cout << "All tests passed (threshold = " << iter_final_rmsd_thresh << " : " << iter_rmsd_thresh << ")\n";
+
+  // Now check that the composite transforms are correct...
+  vector<XForm> xforms = boost::get<0>(res);
+  warnings = 0;
+  for (i=0; i<iter_tests; i++) {
+    premols[i].applyTransform(xforms[i]);
+    double irmsd = premols[i].rmsd(mols[i]);
+    if (irmsd > single_rmsd_thresh) {
+      ++warnings;
+      cout << "WARNING - possible iterative (composite) failure at " << i << " with rmsd of " << irmsd << endl;
+    }
+  }
+  if (warnings > 0)
+    cout << "*** There were " << warnings << " possible errors detected.\n";
+  else
+    cout << "All composite iterative tests passed (threshold = " << single_rmsd_thresh << ")\n";
+
 }

@@ -33,8 +33,14 @@ string Remarks::get(const int i) const {
 
 
 void Remarks::add(const string s) {
-  string t = sanitize(s);
-  remarks.push_back(t);
+  string t(s);
+  while (t.size() > 58) {
+    remarks.push_back(t.substr(0, 58));
+    t = t.substr(58);
+  }
+
+  string u = sanitize(t);
+  remarks.push_back(sanitize(t));
 }
 
 
@@ -58,7 +64,7 @@ const string& Remarks::operator[](const int i) const {
 
 
 string Remarks::sanitize(const string s) const {
-  string t;
+  string t(s);
   int n = s.size();
 
   if (n > 58)

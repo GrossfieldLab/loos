@@ -94,6 +94,9 @@ public:
   //! Read the ith frame.  Returns false if there is a problem.
   bool readFrame(const unsigned int i);
 
+  //! Rewind the file to the first DCD frame.
+  void rewind(void);
+
   // Accessor methods...
 
   int natoms(void) const { return(_natoms); }

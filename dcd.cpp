@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <exception>
 #include <stdexcept>
 #include <vector>
@@ -21,6 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+
 
 using namespace std;
 
@@ -134,6 +136,7 @@ void DCD::readHeader(void) {
 
   // Finally, set internal variables and allocate space for a frame...
   first_frame_pos = _ifs()->tellg();
+
   frame_size = 12 * (2 + _natoms);
   if (hasCrystalParams())
     frame_size += 56;
@@ -229,6 +232,14 @@ bool DCD::readFrame(void) {
 }
 
 
+void DCD::rewind(void) {
+  _ifs()->clear();
+  _ifs()->seekg(first_frame_pos);
+  if (_ifs()->fail() || _ifs()->bad())
+    throw(GeneralError("Error rewinding file"));
+}
+
+
 // Read in a specified DCD frame...
 
 bool DCD::readFrame(const unsigned int i) {
@@ -239,9 +250,13 @@ bool DCD::readFrame(const unsigned int i) {
   if (i >= nsteps())
     throw(GeneralError("Requested DCD frame is out of range"));
 
+  _ifs()->clear();
   _ifs()->seekg(first_frame_pos + i * frame_size);
-  if (_ifs()->fail() || _ifs()->bad())
-    throw(GeneralError("Cannot seek to frame"));
+  if (_ifs()->fail() || _ifs()->bad()) {
+    ostringstream s;
+    s << "Cannot seek to frame " << i;
+    throw(GeneralError(s.str().c_str()));
+  }
   
   return(readFrame());
 }

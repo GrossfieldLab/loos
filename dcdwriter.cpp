@@ -37,23 +37,24 @@ string DCDWriter::fixStringSize(const string& s, const unsigned int n) {
 
 
 void DCDWriter::writeHeader(void) {
-  unsigned int icntrl[20];
+  unsigned int icntrl[21];
   DataOverlay *dop = (DataOverlay *)(&icntrl[0]);
   unsigned int i;
-  for (i=0; i<20; i++)
+  for (i=0; i<21; i++)
     icntrl[i] = 0;
 
-  icntrl[0] = _nsteps;
-  icntrl[1] = 1;
+  icntrl[1] = _nsteps;
   icntrl[2] = 1;
-  icntrl[3] = _nsteps;
-  icntrl[7] = _natoms * 3 - 6;
-  icntrl[8] = 0;
-  dop[9].f = _timestep;
-  icntrl[10] = _has_box;
-  icntrl[19] = 27;
+  icntrl[3] = 1;
+  icntrl[4] = _nsteps;
+  icntrl[8] = _natoms * 3 - 6;
+  icntrl[9] = 0;
+  dop[10].f = _timestep;
+  icntrl[11] = _has_box;
+  icntrl[20] = 27;
+  dop[0].c[0] = 'C'; dop[0].c[1] = 'O'; dop[0].c[2] = 'R'; dop[0].c[3] = 'D';
 
-  writeF77Line(_ofs, (char *)dop, 20 * sizeof(unsigned int));
+  writeF77Line(_ofs, (char *)dop, 21 * sizeof(unsigned int));
 
   unsigned int size = 4 + 80 * _titles.size();
   char *ptr = new char[size];
@@ -83,7 +84,7 @@ void DCDWriter::writeBox(const GCoord& box) {
 
 void DCDWriter::writeFrame(const AtomicGroup& grp) {
 
-  if (_current >= _nsteps)
+  if (_current > _nsteps)
     throw(runtime_error("Attempting to write more frames than requested."));
 
   if (grp.size() != _natoms)

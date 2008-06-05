@@ -41,16 +41,20 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
 
 
 
-greal loos::iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter) {
+boost::tuple<vector<XForm>,greal> loos::iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter) {
   int iter = 0;
   int n = ensemble.size();
   greal rms;
+  vector<XForm> xforms(n);
   AtomicGroup avg;
   AtomicGroup target = averageStructure(ensemble);
 
   do {
-    for (int i = 0; i<n; i++)
-      ensemble[i].alignOnto(target);
+    for (int i = 0; i<n; i++) {
+      GMatrix M = ensemble[i].alignOnto(target);
+      xforms[i].concat(M);
+    }
+
     avg = averageStructure(ensemble);
     rms = avg.rmsd(target);
     target = avg;
@@ -61,5 +65,6 @@ greal loos::iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, i
 
   } while (rms > threshold && ++iter <= maxiter);
   
-  return(rms);
+  boost::tuple<vector<XForm>, greal> res(xforms, rms);
+  return(res);
 }
