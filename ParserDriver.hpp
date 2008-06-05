@@ -42,7 +42,13 @@ struct ParserDriver {
 
   //! For parsing a string...
   ParserDriver(const string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
+    if (isp)
+      delete isp;
     isp = new istringstream(s);
+
+    if (lexer)
+      delete lexer;
+
     lexer = new LoosLexer(isp);
     parse();
   }
@@ -55,8 +61,14 @@ struct ParserDriver {
    *want to concatenate the commands...
    */
   void parse(const string& s) {
+    if (isp)
+      delete isp;
     isp = new istringstream(s);
+
+    if (lexer)
+      delete lexer;
     lexer = new LoosLexer(isp);
+
     parse();
   }
 

@@ -110,6 +110,8 @@ void DCDWriter::writeFrame(const AtomicGroup& grp) {
     data[i] = grp[i]->coords().z();
   writeF77Line(_ofs, (char *)data, _natoms * sizeof(float));
 
+  delete[] data;
+
   ++_current;
 }
 

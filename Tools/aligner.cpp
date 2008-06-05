@@ -91,12 +91,14 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
+  // Read the inputs...
   PDB pdb(argv[optind]);
   cout << "Read in " << pdb.size() << " atoms from " << argv[optind++] << endl;
   DCD dcd(argv[optind]);
   cout << "Reading from DCD " << argv[optind++] << " with " << dcd.nsteps() << " frames.\n";
   string prefix(argv[optind]);
 
+  // Get the selections (subsets) to operate over
   Parser alignment_parsed(alignment_string);
   KernelSelector align_sel(alignment_parsed.kernel());
   
@@ -120,6 +122,8 @@ int main(int argc, char *argv[]) {
   // Now do the alignin'...
   unsigned int nframes = dcd.nsteps();
 
+  // Read in the DCD frames and extract the coordinates for the
+  // aligning subset...
   vector<AtomicGroup> frames;
   while (dcd.readFrame()) {
     dcd.updateGroupCoords(align_sub);
@@ -132,6 +136,7 @@ int main(int argc, char *argv[]) {
   cout << "Final RMSD is " << final_rmsd << endl;
   vector<XForm> xforms = boost::get<0>(res);
   
+  // Show output (in Octave format with tags) if requested...
   if (show_rmsd) {
     cout << "*** RMSD Between Aligned Subset and Average Subset ***\n";
     cout << "<OCTAVE>\n";
@@ -143,9 +148,11 @@ int main(int argc, char *argv[]) {
     cout << "</OCTAVE>\n";
   }
 
+  // Zzzzap our stored groups...
   frames.clear();
 
-  // Go ahead and make first transformation (to make VMD happy)
+  // Go ahead and make first transformation (to make VMD happy so that
+  // the PDB is just a copy of the first DCD frame...
   dcd.readFrame(0);
   dcd.updateGroupCoords(applyto_sub);
 
@@ -160,15 +167,18 @@ int main(int argc, char *argv[]) {
   // Make the first frame...
   frames.push_back(applyto_sub.copy());
 
+  // Now apply the alignment transformations to the requested subsets
   for (unsigned int i = 1; i<nframes; i++) {
     dcd.readFrame(i);
     dcd.updateGroupCoords(applyto_sub);
     applyto_sub.applyTransform(xforms[i]);
-    AtomicGroup apcopy = applyto_sub.copy();
+    AtomicGroup apcopy = applyto_sub.copy();    // We cache frames to
+						// write everything at
+						// once... 
     frames.push_back(apcopy);
   }
 
-  DCDWriter dcdout(prefix + ".dcd", frames);
+  DCDWriter dcdout(prefix + ".dcd", frames);    // Et voila!
 }
 
 
