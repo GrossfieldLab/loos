@@ -27,7 +27,7 @@ def run(cmd, env):
 
 def unit_test_emitter(target, source, env):
     head,tail = os.path.split(source[0].abspath)
-    newsrc = os.path.join(head, str(sys.platform), tail)
+    newsrc = os.path.join(head, str(env['platform']), tail)
     base, ext = os.path.splitext(newsrc)
 
     if env['REGENERATE'] != '1':
@@ -51,7 +51,7 @@ def UnitTest(target, source, env):
         inputfile = str(source[1].abspath)
 
     head,tail = os.path.split(source[0].abspath)
-    newsrc = os.path.join(head, str(sys.platform), tail)
+    newsrc = os.path.join(head, str(env['platform']), tail)
     base, ext = os.path.splitext(newsrc)
     expected = base + ".expected"
     output = base + ".output"

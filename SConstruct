@@ -12,7 +12,7 @@ import sys
 import os
 
 # Principal options...
-clos = Options()
+clos = Options('custom.py')
 clos.AddOptions(
 	('regenerate', 'Set to 1 to regenerate test outputs', 0),
 	('debug', 'Set to 1 to add -DDEBUG to build', 0),
@@ -23,10 +23,14 @@ clos.AddOptions(
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
 
-regenerate = str(ARGUMENTS.get('regenerate', 0))
+# vestigial...
+regenerate = env['regenerate']
 env['REGENERATE'] = regenerate
 
-reparse = str(ARGUMENTS.get('reparse', 0))
+reparse = env['reparse']
+
+platform = sys.platform
+env['platform'] = platform
 
 # Some rudimentary autoconfish stuff...
 if not env.GetOption('clean'):
@@ -35,7 +39,7 @@ if not env.GetOption('clean'):
       print "***ERROR*** You must have the Boost regular expression libraries installed"
       Exit(1)
 
-   if sys.platform == 'linux2':
+   if platform == 'linux2':
       prior = env.get('LIBPATH')
       for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
       	  checks = 1
@@ -75,23 +79,21 @@ env.Append(LIBS = ['loos', 'boost_regex'])
 
 
 # Platform specific build options...
-if sys.platform == 'darwin':
+if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
 
-elif sys.platform == 'linux2':
+elif platform == 'linux2':
    env.Append(LIBS = ['lapack', 'atlas'])
 
 
 # Determine what kind of build...
-release=str(ARGUMENTS.get('release', 0))
-env['RELEASE'] = release
+release = env['release']
 if int(release):
     env.Append(CCFLAGS=release_opts)
 else:
     env.Append(CCFLAGS=debug_opts)
 
-debug=str(ARGUMENTS.get('debug', 0))
-env['DEBUG'] = debug
+debug = env['debug']
 if int(debug):
    if int(release):
       print "***ERROR*** You cannot have a release with debugging code included."
