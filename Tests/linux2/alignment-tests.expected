@@ -6,3 +6,4 @@ Aligned rmsd = 0.425848
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-10)
 All tests passed (threshold = 0.001 : 2)
+All composite iterative tests passed (threshold = 1e-10)
