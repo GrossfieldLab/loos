@@ -2,6 +2,33 @@
 
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
+\image html grossfield_logo.jpg
+
+\image html gplv3.png
+
+<hr>
+\section copyright Copyright and License
+
+<I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
+Copyright &copy; 2008, Tod D. Romo, Alan Grossfield\n
+Department of Biochemistry and Biophysics\n
+School of Medicine & Dentistry, University of Rochester\n
+
+This package (LOOS) is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This package is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+<hr>
+
 \section Introduction
 
 Welcome to the LOOS library.  The first product of the Grossfield Lab
@@ -82,6 +109,7 @@ or the following for OS X
 \verbatim
 g++ -framework vecLib -o mytool mytool.cpp -I/Users/myself/LOOS -L/Users/myself/LOOS -lloos -lboost_regex
 \endverbatim
+
 
 */
 

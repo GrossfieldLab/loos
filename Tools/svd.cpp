@@ -23,6 +23,8 @@
 #include <cstdlib>
 #include <iomanip>
 
+#include <assert.h>
+
 
 typedef unsigned int uint;   // Ah, old-style unix C!
 
@@ -197,7 +199,7 @@ double* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DC
 
 
 void writeMatrix(const string& tag, const double *p, uint m, uint n, bool transpose = false) {
-  uint i, j;
+  uint i, j, k, s = m*n;
 
   cout << tag << " = [\n";
   for (j=0; j<m; j++) {
@@ -205,9 +207,11 @@ void writeMatrix(const string& tag, const double *p, uint m, uint n, bool transp
       double d;
 
       if (transpose)
-	d = p[j*n+i];
+	k = j*n+i;
       else
-	d = p[i*m+j];
+	k = i*m+j;
+      assert(k < s);
+      d = p[k];
 
       cout << d << " ";
     }
@@ -216,6 +220,16 @@ void writeMatrix(const string& tag, const double *p, uint m, uint n, bool transp
   cout << "];\n\n";
 }
 
+
+
+void writeVector(const string& tag, const double *p, uint n) {
+  uint i;
+
+  cout << tag << " = [\n";
+  for (i=0; i<n; i++)
+    cout << p[i] << " ;\n";
+  cout << "];\n";
+}
 
 
 int main(int argc, char *argv[]) {
@@ -249,19 +263,20 @@ int main(int argc, char *argv[]) {
   double *A = extractCoords(svdsub, xforms, dcd);
   f77int m = svdsub.size() * 3;
   f77int n = dcd.nsteps();
+  f77int sn = m<n ? m : n;
 
 
   if (globals.include_source)
     writeMatrix("A", A, m, n);
 
-  double estimate = (double)m*m*sizeof(double) + n*n*sizeof(double) + m*n*sizeof(double) + ((m<n)?m:n)*sizeof(double);
+  double estimate = (double)m*m*sizeof(double) + n*n*sizeof(double) + m*n*sizeof(double) + sn*sizeof(double);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
   char jobu = 'A', jobvt = 'A';
   f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
   double prework[10], *work;
 
   double *U = new double[m*m];
-  double *S = new double[(m<n)?m:n];
+  double *S = new double[sn];
   double *Vt = new double[n*n];
 
   // First, request the optimal size of the work array...
@@ -289,7 +304,7 @@ int main(int argc, char *argv[]) {
   cerr << argv[0] << ": Done!\n";
 
   writeMatrix("U", U, m, m);
-  writeMatrix("S", S, m, 1);
+  writeMatrix("S", S, sn, 1);
   writeMatrix("Vt", Vt, n, n, true);
 
   delete[] work;
