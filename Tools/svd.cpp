@@ -43,7 +43,16 @@
 #include <assert.h>
 
 
+#if defined(__linux__)
+extern "C" {
+  void   void sgesvd_(char*, char*, int*, int*, float*, int*, float*, float*, int*, float*, int*, float*, int*, int*);
+}
+#endif
+
 typedef unsigned int uint;   // Ah, old-style unix C!
+typedef float svdreal;
+
+#define SVDFUNC  sgesvd_
 
 const uint kilobytes = 1024;
 const uint megabytes = kilobytes * kilobytes;
@@ -53,12 +62,14 @@ struct Globals {
   Globals()  : alignment_string("name == 'CA'"),
 	       svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
 	       alignment_tol(0.5),
-	       include_source(1) { }
+	       include_source(0),
+	       significant(0) { }
 
 
   string alignment_string, svd_string;
   greal alignment_tol;
   int include_source;
+  int significant;
 };
 
 
@@ -71,6 +82,8 @@ static struct option long_options[] = {
   {"svd", required_argument, 0, 's'},
   {"tolerance", required_argument, 0, 't'},
   {"source", no_argument, 0, 'i'},
+  {"significant", required_argument, 0, 'S'},
+  {"help", no_argument, 0, 'H'},
   {0,0,0,0}
 };
 
@@ -81,10 +94,12 @@ void show_help(void) {
   Globals defaults;
 
   cout << "Usage- svd [opts] pdb dcd >output\n";
-  cout << "       --align=string    [" << defaults.alignment_string << "]\n";
-  cout << "       --svd=string      [" << defaults.svd_string << "]\n";
-  cout << "       --tolerance=float [" << defaults.alignment_tol << "]\n";
-  cout << "       --source=bool     [" << defaults.include_source << "]\n";
+  cout << "       --align=string       [" << defaults.alignment_string << "]\n";
+  cout << "       --svd=string         [" << defaults.svd_string << "]\n";
+  cout << "       --tolerance=float    [" << defaults.alignment_tol << "]\n";
+  cout << "       --source=bool        [" << defaults.include_source << "]\n";
+  cout << "       --significant=int    [" << defaults.significant << "]\n";
+  cout << "       --help\n";
 }
 
 
@@ -97,6 +112,8 @@ void parseOptions(int argc, char *argv[]) {
     case 's': globals.svd_string = string(optarg); break;
     case 't': globals.alignment_tol = strtod(optarg, 0); break;
     case 'i': globals.include_source = 1; break;
+    case 'S': globals.significant = atoi(optarg); break;
+    case 'H': show_help(); exit(0); break;
     case 0: break;
     default: cerr << "Unknown option '" << opt << "' - ignored.\n";
     }
@@ -186,13 +203,13 @@ vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
 // Calculates the transformed avg structure, then extracts the
 // transformed coords from the DCD with the avg subtraced out...
 
-double* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
+float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
   AtomicGroup avg = calculateAverage(subset, xforms, dcd);
   uint n = dcd.nsteps();
   uint natoms = subset.size();
   AtomicGroup frame = subset.copy();
 
-  double *block = new double[n * natoms * 3];
+  float *block = new float[n * natoms * 3];
   uint cox = 0;
   for (uint i=0; i<n; i++) {
     dcd.readFrame(i);
@@ -207,21 +224,24 @@ double* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DC
     }
   }
 
-  if (cox != n*3*natoms)
-    cerr << "Ruh-Roh!\n";
-  
   return(block);
 }
 
 
 
-void writeMatrix(const string& tag, const double *p, uint m, uint n, bool transpose = false) {
+void writeMatrix(const string& tag, const svdreal *p, uint m, uint n, bool transpose = false, uint range = 0) {
   uint i, j, k, s = m*n;
+  uint nn = (range == 0) ? n : range;
+  
+  if (nn > n) {
+    cerr << "Warning - significant terms is too large. Resetting to max.\n";
+    nn = n;
+  }
 
   cout << tag << " = [\n";
   for (j=0; j<m; j++) {
-    for (i=0; i<n; i++) {
-      double d;
+    for (i=0; i<nn; i++) {
+      svdreal d;
 
       if (transpose)
 	k = j*n+i;
@@ -239,11 +259,17 @@ void writeMatrix(const string& tag, const double *p, uint m, uint n, bool transp
 
 
 
-void writeVector(const string& tag, const double *p, uint n) {
+void writeVector(const string& tag, const svdreal *p, uint n, uint range = 0) {
   uint i;
+  uint nn = (range == 0) ? n : range;
+
+  if (nn > n) {
+    cerr << "Warning - significant terms is too large. Resetting to max.\n";
+    nn = n;
+  }
 
   cout << tag << " = [\n";
-  for (i=0; i<n; i++)
+  for (i=0; i<nn; i++)
     cout << p[i] << " ;\n";
   cout << "];\n";
 }
@@ -252,6 +278,12 @@ void writeVector(const string& tag, const double *p, uint n) {
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
+
+  if (argc - optind != 2) {
+    cerr << "Invalid arguments.\n";
+    show_help();
+    exit(-1);
+  }
   
   cout << "# " << header << endl;
   PDB pdb(argv[optind++]);
@@ -277,7 +309,7 @@ int main(int argc, char *argv[]) {
   cerr << argv[0] << ": Aligning...\n";
   vector<XForm> xforms = align(alignsub, dcd);
   cerr << argv[0] << ": Extracting aligned coordinates...\n";
-  double *A = extractCoords(svdsub, xforms, dcd);
+  svdreal *A = extractCoords(svdsub, xforms, dcd);
   f77int m = svdsub.size() * 3;
   f77int n = dcd.nsteps();
   f77int sn = m<n ? m : n;
@@ -286,30 +318,30 @@ int main(int argc, char *argv[]) {
   if (globals.include_source)
     writeMatrix("A", A, m, n);
 
-  double estimate = (double)m*m*sizeof(double) + n*n*sizeof(double) + m*n*sizeof(double) + sn*sizeof(double);
+  double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
   char jobu = 'A', jobvt = 'A';
   f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
-  double prework[10], *work;
+  svdreal prework[10], *work;
 
-  double *U = new double[m*m];
-  double *S = new double[sn];
-  double *Vt = new double[n*n];
+  svdreal *U = new svdreal[m*m];
+  svdreal *S = new svdreal[sn];
+  svdreal *Vt = new svdreal[n*n];
 
   // First, request the optimal size of the work array...
-  dgesvd_(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, prework, &lwork, &info);
+  SVDFUNC(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, prework, &lwork, &info);
   if (info != 0) {
     cerr << "Error code from size request to dgesvd was " << info << endl;
     exit(-2);
   }
 
   lwork = (f77int)prework[0];
-  estimate += lwork * sizeof(double);
+  estimate += lwork * sizeof(svdreal);
   cerr << argv[0] << ": SVD requests " << lwork << " extra space for a grand total of " << estimate / megabytes << "Mb\n";
-  work = new double[lwork];
+  work = new svdreal[lwork];
 
   cerr << argv[0] << ": Calculating SVD...\n";
-  dgesvd_(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
+  SVDFUNC(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
 
   if (info > 0) {
     cerr << "Convergence error in dgesvd\n";
@@ -320,9 +352,9 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  writeMatrix("U", U, m, m);
-  writeMatrix("S", S, sn, 1);
-  writeMatrix("Vt", Vt, n, n, true);
+  writeMatrix("U", U, m, m, false, globals.significant);
+  writeVector("s", S, sn, globals.significant);
+  writeMatrix("V", Vt, n, n, true, globals.significant);
 
   delete[] work;
   delete[] A;
