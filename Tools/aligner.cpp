@@ -9,6 +9,22 @@
 
   Aligns structures in a trajectory with a reference...
 
+  Usage:
+
+    aligner [options] pdb-file dcd-file output-prefix
+
+  Notes:
+
+  Takes two selections.  The first is the subset of atoms that will
+  be used for the alignment.  The second is the subset of atoms that
+  will then be transformed by the alignment and written out.
+
+  Writes out output-prefix.pdb which is the transformed subset and
+  output-prefix.dcd, which is the trajectory...
+
+  Aligner will cache the entire alignment selection in memory, so
+  beware potential memory issues...
+
 */
 
 
@@ -127,8 +143,37 @@ double calcRMSD(const string& octave_tag, vector<AtomicGroup>& grps) {
 
 
 
+// Group coord manipulation for calculating average structure...
+
+void zeroCoords(AtomicGroup& g) {
+  unsigned int i, n = g.size();
+  
+  for (i=0; i<n; i++)
+    g[i]->coords() = GCoord(0,0,0);
+}
+
+
+void addCoords(AtomicGroup& g, const AtomicGroup& h) {
+  unsigned int i, n = g.size();
+  
+  for (i=0; i<n; i++)
+    g[i]->coords() += h[i]->coords();
+}
+
+
+void divCoords(AtomicGroup& g, const double d) {
+  unsigned int i, n = g.size();
+  
+  for (i=0; i<n; i++)
+    g[i]->coords() /= d;
+}
+
+
+
+
 int main(int argc, char *argv[]) {
 
+  // Parse command-line options, cache invocation header for later use...
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
   if (argc - optind != 3) {
@@ -192,6 +237,7 @@ int main(int argc, char *argv[]) {
   // Zzzzap our stored groups...
   frames.clear();
 
+  cout << "Aligning transformation subset...\n";
   // Go ahead and make first transformation (to make VMD happy so that
   // the PDB is just a copy of the first DCD frame...
   dcd.readFrame(0);
@@ -206,23 +252,53 @@ int main(int argc, char *argv[]) {
   ofs.close();
 
   // Make the first frame...
-  frames.push_back(applyto_sub.copy());
+  AtomicGroup avg = applyto_sub.copy();
+
+  // Setup for writing DCD...
+  DCDWriter dcdout(prefix + ".dcd");
+  dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, applyto_sub.isPeriodic());
+  dcdout.setTitles(outpdb.remarks().allRemarks());
+  dcdout.writeHeader();
+  dcdout.writeFrame(applyto_sub);
 
   // Now apply the alignment transformations to the requested subsets
   for (unsigned int i = 1; i<nframes; i++) {
     dcd.readFrame(i);
     dcd.updateGroupCoords(applyto_sub);
     applyto_sub.applyTransform(xforms[i]);
-    AtomicGroup apcopy = applyto_sub.copy();    // We cache frames to
-						// write everything at
-						// once... 
-    frames.push_back(apcopy);
+    dcdout.writeFrame(applyto_sub);
+
+    // Track average frame...
+    if (!no_rmsd)
+      addCoords(avg, applyto_sub);
   }
 
-  DCDWriter dcdout(prefix + ".dcd", frames, outpdb.remarks().allRemarks());
 
   if (!no_rmsd) {
-    double avg_rmsd = calcRMSD("rall", frames);
+    // Second pass to calc rmsds...
+
+    cout << "Calculating rmsds...\n";
+    divCoords(avg, nframes);
+    
+  
+    double avg_rmsd = 0.0;
+    if (show_rmsd)
+      cout << "<OCTAVE>\nrall = [\n";
+    
+    for (unsigned int i=0; i<nframes; i++) {
+      dcd.readFrame(i);
+      dcd.updateGroupCoords(applyto_sub);
+      applyto_sub.applyTransform(xforms[i]);
+      double rms = applyto_sub.rmsd(avg);
+      if (show_rmsd)
+	cout << rms << " ;\n";
+      avg_rmsd += rms;
+    }
+    
+    if (show_rmsd)
+      cout << "];\n</OCTAVE>\n";
+
+    avg_rmsd /= nframes;
     cout << "Average RMSD vs average for transformed subset = " << avg_rmsd << endl;
   }
 
