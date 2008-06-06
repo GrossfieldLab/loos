@@ -292,7 +292,7 @@ public:
   }
 
   //! Cross-product.  Returns a new Coord<T>
-  Coord<T> cross(const Coord<T>& rhs) {
+  Coord<T> cross(const Coord<T>& rhs) const {
     Coord<T> res;
     res.v[X] = v[Y] * rhs.v[Z] - v[Z] * rhs.v[Y];
     res.v[Y] = v[Z] * rhs.v[X] - v[X] * rhs.v[Z];
