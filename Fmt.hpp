@@ -1,13 +1,11 @@
 /*
   Fmt.hpp
-  (c) 2008 Tod D. Romo
+  Tod D. Romo
 
-  Grossfield Lab
-  Department of Biochemistry and Biophysics
-  University of Rochester Medical School
-
-  Formatter routines, adapted from Stroustrup's book...
+  Formatter based heavily on example from Stroustrup's C++ book...
 */
+
+
 
 
 #if !defined(LOOSFMT_HPP)

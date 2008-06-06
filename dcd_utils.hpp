@@ -2,7 +2,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008, Tod D. Romo
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -20,34 +20,21 @@
 */
 
 
-#include <ios>
+
+
+#if !defined(DCD_UTILS_HPP)
+#define DCD_UTILS_HPP
+
 #include <iostream>
-#include <iomanip>
+#include <vector>
 
 #include <loos.hpp>
-#include <pdb.hpp>
 #include <dcd.hpp>
-#include <Selectors.hpp>
+
+using namespace std;
+using namespace __gnu_cxx;
+
+double *gridify(DCD&, double*, double*, int[], const vector<int>, int, int, double);
 
 
-int main(int argc, char *argv[]) {
-
-  // First, read in the PDB...
-  PDB pdb(argv[1]);
-
-  // Extract the non-solvent atoms...
-  
-  SolventSelector solvsel;
-  NotSelector notsolvsel(solvsel);
-  AtomicGroup nonsolv = pdb.select(notsolvsel);
-  cout << "Found " << nonsolv.size() << " non-solvent atoms.\n";
-
-  DCD dcd(argv[2]);
-
-  int frameno = 0;
-  while (dcd.readFrame()) {
-    dcd.updateGroupCoords(nonsolv);
-    cout << setw(6) << frameno++ << " = " << nonsolv.centroid() << endl;
-  }
-
-}
+#endif

@@ -16,8 +16,7 @@ School of Medicine & Dentistry, University of Rochester\n
 
 This package (LOOS) is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+the Free Software Foundation under version 3 of the License.
 
 This package is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -364,8 +363,8 @@ doing "rm *.cc *.hh" (assuming you've added no files with those
 suffixes), then rebuild.
 
 \subsection Distro Building a distribution
-To build a distribution that doesn't require anything other than SCons
-and Boost, the following sequence is recommended:
+To build a distribution that doesn't require Doxygen and Bison/Flex,
+the following is recommended:
 \verbatim
 scons regenerate=1 tests
 scons docs
