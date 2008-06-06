@@ -291,25 +291,26 @@ public:
     return(dot(rhs));
   }
 
-  //! Cross-product
-  void cross(const Coord<T>& rhs) {
-    Coord<T> lhs(*this);
-    v[X] = lhs.v[Y] * rhs.v[Z] - lhs.v[Z] * rhs.v[Y];
-    v[Y] = lhs.v[Z] * rhs.v[X] - lhs.v[X] * rhs.v[Z];
-    v[Z] = lhs.v[X] * rhs.v[Y] - lhs.v[Y] * rhs.v[X];
+  //! Cross-product.  Returns a new Coord<T>
+  Coord<T> cross(const Coord<T>& rhs) {
+    Coord<T> res;
+    res.v[X] = v[Y] * rhs.v[Z] - v[Z] * rhs.v[Y];
+    res.v[Y] = v[Z] * rhs.v[X] - v[X] * rhs.v[Z];
+    res.v[Z] = v[X] * rhs.v[Y] - v[Y] * rhs.v[X];
+
+    return(res);
   }
 
-  //! Cross-product (note precedence issues)
+  //! Mutating cross-product (note precedence issues)
   Coord<T>& operator^=(const Coord<T>& rhs) {
-    cross(rhs);
+    Coord<T> tmp = cross(rhs);
+    *this = tmp;
     return(*this);
   }
 
   //! Cross-product (note precedence issues)
   Coord<T> operator^(const Coord<T>& rhs) const {
-    Coord<T> res(*this);
-    res ^= rhs;
-    return(res);
+    return(cross(rhs));
   }
 
 
