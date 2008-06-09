@@ -27,8 +27,8 @@
 
 
 
-#if !defined(MATRIXIO_HPP)
-#define MATRIXIO_HPP
+#if !defined(MATRIXWRITER_HPP)
+#define MATRIXWRITER_HPP
 
 #include <iostream>
 #include <fstream>
