@@ -67,7 +67,8 @@ struct Globals {
 	       terms(0),
 	       writer(0),
 	       output_type("ascii"),
-	       output_prefix("") { }
+	       output_prefix(""),
+	       dcdmin(0), dcdmax(0) { }
 
 
   string alignment_string, svd_string;
@@ -77,6 +78,7 @@ struct Globals {
   MatrixWriter* writer;
   string output_type;
   string output_prefix;
+  uint dcdmin, dcdmax;
 };
 
 
@@ -92,11 +94,12 @@ static struct option long_options[] = {
   {"terms", required_argument, 0, 'S'},
   {"format", required_argument, 0, 'f'},
   {"prefix", required_argument, 0, 'p'},
+  {"range", required_argument, 0, 'r'},
   {"help", no_argument, 0, 'H'},
   {0,0,0,0}
 };
 
-static const char* short_options = "a:s:ti";
+static const char* short_options = "a:s:tiS:f:p:r:";
 
 
 void show_help(void) {
@@ -111,6 +114,7 @@ void show_help(void) {
   cout << "       --prefix=string      [" << defaults.output_prefix << "]\n";
   cout << "       --format=string      [" << defaults.output_type << "]\n";
   cout << "                ascii|octaves\n";
+  cout << "       --range=min:max      [" << defaults.dcdmin << ":" << defaults.dcdmax << "]\n";
   cout << "       --help\n";
 }
 
@@ -128,8 +132,13 @@ void parseOptions(int argc, char *argv[]) {
     case 'H': show_help(); exit(0); break;
     case 'p': globals.output_prefix = string(optarg); break;
     case 'f': globals.output_type = string(optarg); break;
+    case 'r': if (sscanf(optarg, "%u:%u", &globals.dcdmin, &globals.dcdmax) != 2) {
+	cerr << "Unable to parse range.\n";
+	exit(-1);
+      }
+      break;
     case 0: break;
-    default: cerr << "Unknown option '" << opt << "' - ignored.\n";
+    default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
     }
 
   if (globals.output_type == "ascii") {
@@ -185,28 +194,26 @@ void divCoords(AtomicGroup& g, const double d) {
 
 
 AtomicGroup calculateAverage(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
-  uint n = dcd.nsteps();
   AtomicGroup avg = subset.copy();
   AtomicGroup frame = subset.copy();
   
   zeroCoords(avg);
-  for (uint i = 0; i<n; i++) {
+  for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
     dcd.readFrame(i);
     dcd.updateGroupCoords(frame);
-    frame.applyTransform(xforms[i]);
+    frame.applyTransform(xforms[i - globals.dcdmin]);
     addCoords(avg, frame);
   }
 
-  divCoords(avg, n);
+  divCoords(avg, globals.dcdmax - globals.dcdmin);
   return(avg);
 }
 
 
 vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
-  uint n = dcd.nsteps();
   vector<AtomicGroup> frames;
 
-  for (uint i = 0; i<n; i++) {
+  for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
     AtomicGroup frame = subset.copy();
     dcd.readFrame(i);
     dcd.updateGroupCoords(frame);
@@ -231,16 +238,16 @@ vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
 
 float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
   AtomicGroup avg = calculateAverage(subset, xforms, dcd);
-  uint n = dcd.nsteps();
   uint natoms = subset.size();
   AtomicGroup frame = subset.copy();
+  uint n = globals.dcdmax - globals.dcdmin;
 
   float *block = new float[n * natoms * 3];
   uint cox = 0;
-  for (uint i=0; i<n; i++) {
+  for (uint i=globals.dcdmin; i<globals.dcdmax; i++) {
     dcd.readFrame(i);
     dcd.updateGroupCoords(frame);
-    frame.applyTransform(xforms[i]);
+    frame.applyTransform(xforms[i - globals.dcdmin]);
 
     for (uint j=0; j<natoms; j++) {
       GCoord c = frame[j]->coords() - avg[j]->coords();
@@ -271,6 +278,14 @@ int main(int argc, char *argv[]) {
   // Need to address this...
   PDB pdb(argv[optind++]);
   DCD dcd(argv[optind]);
+  
+  // Fix max-range for DCD
+  if (globals.dcdmax == 0)
+    globals.dcdmax = dcd.nsteps();
+  if (globals.dcdmin > dcd.nsteps() || globals.dcdmax > dcd.nsteps()) {
+    cerr << "Invalid DCD range requested.\n";
+    exit(-1);
+  }
 
   Parser alignment_parsed(globals.alignment_string);
   KernelSelector align_sel(alignment_parsed.kernel());
@@ -294,7 +309,7 @@ int main(int argc, char *argv[]) {
   cerr << argv[0] << ": Extracting aligned coordinates...\n";
   svdreal *A = extractCoords(svdsub, xforms, dcd);
   f77int m = svdsub.size() * 3;
-  f77int n = dcd.nsteps();
+  f77int n = globals.dcdmax - globals.dcdmin;
   f77int sn = m<n ? m : n;
 
 
