@@ -75,7 +75,7 @@ struct Globals {
   greal alignment_tol;
   int include_source;
   int terms;
-  MatrixWriter* writer;
+  MatrixWriter<svdreal>* writer;
   string output_type;
   string output_prefix;
   uint dcdmin, dcdmax;
@@ -143,10 +143,10 @@ void parseOptions(int argc, char *argv[]) {
 
   if (globals.output_type == "ascii") {
     delete globals.writer;
-    globals.writer = new RawAsciiWriter(globals.output_prefix);;
+    globals.writer = new RawAsciiWriter<svdreal>(globals.output_prefix);;
   } else if (globals.output_type == "octaves") {
     delete globals.writer;
-    globals.writer = new OctaveAsciiWriter(globals.output_prefix);
+    globals.writer = new OctaveAsciiWriter<svdreal>(globals.output_prefix);
   } else {
     cerr << "Unknown format type: " << globals.output_type << endl;
     exit(-1);
@@ -225,7 +225,7 @@ vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
 
-  cerr << "# Subset alignment with " << subset.size()
+  cerr << "Subset alignment with " << subset.size()
        << " atoms converged to " << rmsd << " rmsd after "
        << iters << " iterations.\n";
 

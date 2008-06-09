@@ -109,8 +109,8 @@ void show_help(void) {
   cout << "   --transform=string [" << defaults.transform_string << "]\n";
   cout << "   --tolerance=float  [" << defaults.alignment_tol << "]\n";
   cout << "   --max=int          [" << defaults.maxiter << "]\n";
-  cout << "   --show=bool  (rmsd)[" << defaults.show_rmsd << "]\n";
-  cout << "   --normsd=boold     [" << defaults.no_rmsd << "]\n";
+  cout << "   --show       (rmsd)[" << defaults.show_rmsd << "]\n";
+  cout << "   --normsd           [" << defaults.no_rmsd << "]\n";
   cout << "   --help\n";
 }
 
@@ -128,7 +128,7 @@ void parseOptions(int argc, char *argv[]) {
     case 'n': globals.no_rmsd = true; break;
     case 'H': show_help(); exit(-1);
     case 0: break;
-    default: cerr << "Unknown option '" << opt << "' - ignored.\n";
+    default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
     }
   }
 

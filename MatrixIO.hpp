@@ -40,37 +40,10 @@ using namespace std;
 
 
 //! Class for handling writing of matrices in different formats.
+template<class T>
 class MatrixWriter {
-
-protected:
-  typedef unsigned int uint;
-
-  //! Helper class that encapsulates the data (i.e. double or float)
-  class Wrapper {
-  public:
-    virtual double operator()(const uint i) const =0;
-    virtual ~Wrapper() { }
-  };
-
-  class FloatWrapper : public Wrapper {
-  public:
-    FloatWrapper(const float *p) : data(p) { }
-    double operator()(const uint i) const { return(data[i]); }
-  private:
-    const float *data;
-  };
-
-  class DoubleWrapper : public Wrapper {
-  public:
-    DoubleWrapper(const double *p) : data(p) { }
-    double operator()(const uint i) const { return(data[i]); }
-  private:
-    const double *data;
-  };
-
-
-
 public:
+  typedef unsigned int uint;
 
   //! Default constructor sends output to cout
   MatrixWriter() : prefixname(""), ofs(&cout) { }
@@ -101,16 +74,8 @@ public:
    *  \arg \c maxcol The maximum column to write
    *  \arg \c maxrow The maxmimum row to write
    */
-  void basic_write(const Wrapper& data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow);
+  void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0);
 
-  //! Simply wrap the data in a Wrapper and set the maxcol, row, and transpose defaults...
-  void write(const float* p, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol=0, const uint maxrow=0) {
-    basic_write(FloatWrapper(p), tag, m, n, trans, maxcol, maxrow);
-  }
-  //! Simply wrap the data in a Wrapper and set the maxcol, row, and transpose defaults...
-  void write(const double* p, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol=0, const uint maxrow=0) {
-    basic_write(DoubleWrapper(p), tag, m, n, trans, maxcol, maxrow);
-  }
 
   // These are overriden by subclasses to control the output format...
 
@@ -118,7 +83,7 @@ public:
   virtual void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) =0;
 
   //! Writes out a single element of the matrix
-  virtual void OutputDatum(ostream *po, const double d) =0;
+  virtual void OutputDatum(ostream *po, const T d) =0;
 
   //! Ends a row (line) of data
   virtual void OutputEOL(ostream *po) =0;
@@ -140,19 +105,20 @@ protected:
 /** Matrix properties (such as size and transpose flags) are written
  *  in the preamble
  */
-Class RawAsciiWriter : public MatrixWriter {
+template<class T>
+class RawAsciiWriter : public MatrixWriter<T> {
 public:
-  RawAsciiWriter() : MatrixWriter() { }
-  RawAsciiWriter(const string& s) : MatrixWriter(s) { }
-  RawAsciiWriter(ostream* o) : MatrixWriter(o) { }
+  RawAsciiWriter() : MatrixWriter<T>() { }
+  RawAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
+  RawAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
 
   void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
-    if (meta_data != "")
-      *po << "# " << meta_data << endl;
+    if (RawAsciiWriter<T>::meta_data != "")
+      *po << "# " << RawAsciiWriter<T>::meta_data << endl;
     *po << "# " << m << " " << n << " " << trans << " \"" << tag << "\"" << endl;
   }
 
-  void OutputDatum(ostream *po, const double d) {
+  void OutputDatum(ostream *po, const T d) {
     *po << d << " ";
   }
 
@@ -162,24 +128,25 @@ public:
   
   void OutputCoda(ostream *po) { }
 
-  string constructFilename(const string& tag) { return(string(prefixname + tag + ".asc")); }
+  string constructFilename(const string& tag) { return(string(RawAsciiWriter<T>::prefixname + tag + ".asc")); }
 };
 
 
 //! Class for writing ASCII Octave format (as in a .m script)
-class OctaveAsciiWriter : public MatrixWriter {
+template<class T>
+class OctaveAsciiWriter : public MatrixWriter<T> {
 public:
-  OctaveAsciiWriter() : MatrixWriter() { }
-  OctaveAsciiWriter(const string& s) : MatrixWriter(s) { }
-  OctaveAsciiWriter(ostream* o) : MatrixWriter(o) { }
+  OctaveAsciiWriter() : MatrixWriter<T>() { }
+  OctaveAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
+  OctaveAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
 
   void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
-    if (meta_data != "")
-      *po << "% " << meta_data << endl;
+    if (OctaveAsciiWriter<T>::meta_data != "")
+      *po << "% " << OctaveAsciiWriter<T>::meta_data << endl;
     *po << tag << " = [\n";
   }
 
-  void OutputDatum(ostream *po, const double d) {
+  void OutputDatum(ostream *po, const T d) {
     *po << d << " ";
   }
 
@@ -191,9 +158,50 @@ public:
     *po << "];\n";
   } 
 
-  string constructFilename(const string& tag) { return(string(prefixname + tag + ".m")); }
+  string constructFilename(const string& tag) { return(string(OctaveAsciiWriter<T>::prefixname + tag + ".m")); }
 
 };
+
+
+
+
+
+template<class T>
+void MatrixWriter<T>::write(const T* data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) {
+  uint i, j, k, s = m*n;
+  uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
+  uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
+  ofstream *ofsp = 0;
+  
+  // Determine if we need to open a file or not...
+  ostream *po = ofs;
+  if (!po) {
+    string fname = constructFilename(tag);
+    ofsp = new ofstream(fname.c_str());
+    if (!ofsp)
+      throw(runtime_error("Unable to open file " + fname));
+    po = ofsp;
+  }
+
+  OutputPreamble(po, tag, m, n, trans);
+  for (j=0; j<mm; j++) {
+    for (i=0; i<nn; i++) {
+      double d;
+
+      if (trans)
+	k = j*n+i;
+      else
+	k = i*m+j;
+      assert(k < s);
+      d = data[k];
+      OutputDatum(po, d);
+    }
+    OutputEOL(po);
+  }
+  OutputCoda(po);
+  
+  delete ofsp;
+}
 
 
 
