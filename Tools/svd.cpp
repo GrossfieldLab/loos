@@ -35,6 +35,7 @@
 #include <Selectors.hpp>
 #include <dcd.hpp>
 #include <ensembles.hpp>
+#include <MatrixIO.hpp>
 
 #include <getopt.h>
 #include <cstdlib>
@@ -229,52 +230,6 @@ float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD
 
 
 
-void writeMatrix(const string& tag, const svdreal *p, uint m, uint n, bool transpose = false, uint range = 0) {
-  uint i, j, k, s = m*n;
-  uint nn = (range == 0) ? n : range;
-  
-  if (nn > n) {
-    cerr << "Warning - significant terms is too large. Resetting to max.\n";
-    nn = n;
-  }
-
-  cout << tag << " = [\n";
-  for (j=0; j<m; j++) {
-    for (i=0; i<nn; i++) {
-      svdreal d;
-
-      if (transpose)
-	k = j*n+i;
-      else
-	k = i*m+j;
-      assert(k < s);
-      d = p[k];
-
-      cout << d << " ";
-    }
-    cout << ";\n";
-  }
-  cout << "];\n\n";
-}
-
-
-
-void writeVector(const string& tag, const svdreal *p, uint n, uint range = 0) {
-  uint i;
-  uint nn = (range == 0) ? n : range;
-
-  if (nn > n) {
-    cerr << "Warning - significant terms is too large. Resetting to max.\n";
-    nn = n;
-  }
-
-  cout << tag << " = [\n";
-  for (i=0; i<nn; i++)
-    cout << p[i] << " ;\n";
-  cout << "];\n";
-}
-
-
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
@@ -285,6 +240,9 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
   
+  OctaveAsciiWriter wout;
+
+  // Need to address this...
   cout << "# " << header << endl;
   PDB pdb(argv[optind++]);
   DCD dcd(argv[optind]);
@@ -316,7 +274,7 @@ int main(int argc, char *argv[]) {
 
 
   if (globals.include_source)
-    writeMatrix("A", A, m, n);
+    wout.write(A, "A", m, n);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -352,9 +310,9 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  writeMatrix("U", U, m, m, false, globals.significant);
-  writeVector("s", S, sn, globals.significant);
-  writeMatrix("V", Vt, n, n, true, globals.significant);
+  wout.write(U, "U", m, m, false, globals.significant);
+  wout.write(S, "s", sn, 1, false, globals.significant);
+  wout.write(Vt, "V",  n, n, true, globals.significant);
 
   delete[] work;
   delete[] A;
