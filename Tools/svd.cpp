@@ -64,13 +64,19 @@ struct Globals {
 	       svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
 	       alignment_tol(0.5),
 	       include_source(0),
-	       significant(0) { }
+	       terms(0),
+	       writer(0),
+	       output_type("ascii"),
+	       output_prefix("") { }
 
 
   string alignment_string, svd_string;
   greal alignment_tol;
   int include_source;
-  int significant;
+  int terms;
+  MatrixWriter* writer;
+  string output_type;
+  string output_prefix;
 };
 
 
@@ -83,7 +89,9 @@ static struct option long_options[] = {
   {"svd", required_argument, 0, 's'},
   {"tolerance", required_argument, 0, 't'},
   {"source", no_argument, 0, 'i'},
-  {"significant", required_argument, 0, 'S'},
+  {"terms", required_argument, 0, 'S'},
+  {"format", required_argument, 0, 'f'},
+  {"prefix", required_argument, 0, 'p'},
   {"help", no_argument, 0, 'H'},
   {0,0,0,0}
 };
@@ -99,7 +107,10 @@ void show_help(void) {
   cout << "       --svd=string         [" << defaults.svd_string << "]\n";
   cout << "       --tolerance=float    [" << defaults.alignment_tol << "]\n";
   cout << "       --source=bool        [" << defaults.include_source << "]\n";
-  cout << "       --significant=int    [" << defaults.significant << "]\n";
+  cout << "       --terms=int          [" << defaults.terms << "]\n";
+  cout << "       --prefix=string      [" << defaults.output_prefix << "]\n";
+  cout << "       --format=string      [" << defaults.output_type << "]\n";
+  cout << "                ascii|octaves\n";
   cout << "       --help\n";
 }
 
@@ -113,11 +124,25 @@ void parseOptions(int argc, char *argv[]) {
     case 's': globals.svd_string = string(optarg); break;
     case 't': globals.alignment_tol = strtod(optarg, 0); break;
     case 'i': globals.include_source = 1; break;
-    case 'S': globals.significant = atoi(optarg); break;
+    case 'S': globals.terms = atoi(optarg); break;
     case 'H': show_help(); exit(0); break;
+    case 'p': globals.output_prefix = string(optarg); break;
+    case 'f': globals.output_type = string(optarg); break;
     case 0: break;
     default: cerr << "Unknown option '" << opt << "' - ignored.\n";
     }
+
+  if (globals.output_type == "ascii") {
+    delete globals.writer;
+    globals.writer = new RawAsciiWriter(globals.output_prefix);;
+  } else if (globals.output_type == "octaves") {
+    delete globals.writer;
+    globals.writer = new OctaveAsciiWriter(globals.output_prefix);
+  } else {
+    cerr << "Unknown format type: " << globals.output_type << endl;
+    exit(-1);
+  }
+
 }
 
 
@@ -193,7 +218,7 @@ vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
 
-  cout << "# Subset alignment with " << subset.size()
+  cerr << "# Subset alignment with " << subset.size()
        << " atoms converged to " << rmsd << " rmsd after "
        << iters << " iterations.\n";
 
@@ -240,10 +265,10 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
   
-  OctaveAsciiWriter wout;
+
+  globals.writer->metadata(header);
 
   // Need to address this...
-  cout << "# " << header << endl;
   PDB pdb(argv[optind++]);
   DCD dcd(argv[optind]);
 
@@ -274,7 +299,7 @@ int main(int argc, char *argv[]) {
 
 
   if (globals.include_source)
-    wout.write(A, "A", m, n);
+    globals.writer->write(A, "A", m, n);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -310,13 +335,14 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  wout.write(U, "U", m, m, false, globals.significant);
-  wout.write(S, "s", sn, 1, false, globals.significant);
-  wout.write(Vt, "V",  n, n, true, globals.significant);
+  globals.writer->write(U, "U", m, m, false, globals.terms);
+  globals.writer->write(S, "s", sn, 1, false, globals.terms);
+  globals.writer->write(Vt, "V",  n, n, true, globals.terms);
 
   delete[] work;
   delete[] A;
   delete[] U;
   delete[] S;
   delete[] Vt;
+  delete globals.writer;
 }

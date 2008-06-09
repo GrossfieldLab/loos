@@ -65,19 +65,25 @@ protected:
     const double *data;
   };
 
+
+
 public:
 
   MatrixWriter() : prefixname(""), ofs(&cout) { }
   MatrixWriter(const string& prefix) : prefixname(prefix), ofs(0) { }
   MatrixWriter(ostream* ofsp) : prefixname(""), ofs(ofsp) { }
+  virtual ~MatrixWriter() { }
+  
 
   string prefix(void) const { return(prefixname); }
   void prefix(const string& s) { prefixname = s; }
   ostream* outputStream(void) const { return(ofs); }
   void outputStream(ostream* ofsp) { ofs = ofsp; }
+  string metadata(void) const { return(meta_data); }
+  void metadata(const string& s) { meta_data = s; }
   
 
-  virtual void basic_write(const Wrapper& data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) =0;
+  void basic_write(const Wrapper& data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow);
 
   void write(const float* p, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol=0, const uint maxrow=0) {
     basic_write(FloatWrapper(p), tag, m, n, trans, maxcol, maxrow);
@@ -87,8 +93,15 @@ public:
     basic_write(DoubleWrapper(p), tag, m, n, trans, maxcol, maxrow);
   }
 
+  virtual void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) =0;
+  virtual void OutputDatum(ostream *po, const double d) =0;
+  virtual void OutputEOL(ostream *po) =0;
+  virtual void OutputCoda(ostream *po) =0;
+  virtual string constructFilename(const string& tag) =0;
+
 protected:
   string prefixname;
+  string meta_data;
   ostream *ofs;
 };
 
@@ -100,8 +113,26 @@ public:
   RawAsciiWriter(const string& s) : MatrixWriter(s) { }
   RawAsciiWriter(ostream* o) : MatrixWriter(o) { }
 
-  void basic_write(const Wrapper& data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow);
+  void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
+    if (meta_data != "")
+      *po << "# " << meta_data << endl;
+    *po << "# " << m << " " << n << " " << trans << " \"" << tag << "\"" << endl;
+  }
+
+  void OutputDatum(ostream *po, const double d) {
+    *po << d << " ";
+  }
+
+  void OutputEOL(ostream *po) {
+    *po << endl;
+  }
+  
+  void OutputCoda(ostream *po) { }
+
+  string constructFilename(const string& tag) { return(string(prefixname + tag + ".asc")); }
 };
+
+
 
 class OctaveAsciiWriter : public MatrixWriter {
 public:
@@ -109,7 +140,26 @@ public:
   OctaveAsciiWriter(const string& s) : MatrixWriter(s) { }
   OctaveAsciiWriter(ostream* o) : MatrixWriter(o) { }
 
-  void basic_write(const Wrapper& data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow);
+  void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
+    if (meta_data != "")
+      *po << "% " << meta_data << endl;
+    *po << tag << " = [\n";
+  }
+
+  void OutputDatum(ostream *po, const double d) {
+    *po << d << " ";
+  }
+
+  void OutputEOL(ostream *po) {
+    *po << " ;\n";
+  }
+
+  void OutputCoda(ostream *po) {
+    *po << "];\n";
+  } 
+
+  string constructFilename(const string& tag) { return(string(prefixname + tag + ".m")); }
+
 };
 
 

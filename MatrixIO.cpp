@@ -33,7 +33,8 @@
 
 
 
-void RawAsciiWriter::basic_write(const Wrapper& w, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) {
+
+void MatrixWriter::basic_write(const Wrapper& w, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) {
   uint i, j, k, s = m*n;
   uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
   uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
@@ -41,14 +42,14 @@ void RawAsciiWriter::basic_write(const Wrapper& w, const string& tag, const uint
   
   ostream *po = ofs;
   if (!po) {
-    string fname(prefixname + tag + ".asc");
+    string fname = constructFilename(tag);
     ofsp = new ofstream(fname.c_str());
     if (!ofsp)
       throw(runtime_error("Unable to open file " + fname));
     po = ofsp;
   }
 
-  *po << "# " << tag << endl;
+  OutputPreamble(po, tag, m, n, trans);
   for (j=0; j<mm; j++) {
     for (i=0; i<nn; i++) {
       double d;
@@ -59,50 +60,11 @@ void RawAsciiWriter::basic_write(const Wrapper& w, const string& tag, const uint
 	k = i*m+j;
       assert(k < s);
       d = w(k);
-
-      *po << d << " ";
+      OutputDatum(po, d);
     }
-    *po << endl;
+    OutputEOL(po);
   }
-
+  OutputCoda(po);
+  
   delete ofsp;
 }
-
-
-void OctaveAsciiWriter::basic_write(const Wrapper& w, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) {
-  uint i, j, k, s = m*n;
-  uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
-  uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
-  
-  ofstream *ofsp = 0;
-  
-  ostream *po = ofs;
-  if (!po) {
-    string fname(prefixname + tag + ".asc");
-    ofsp = new ofstream(fname.c_str());
-    if (!ofsp)
-      throw(runtime_error("Unable to open file " + fname));
-    po = ofsp;
-  }
-
-  *po << tag << " = [\n";
-  for (j=0; j<mm; j++) {
-    for (i=0; i<nn; i++) {
-      double d;
-
-      if (trans)
-	k = j*n+i;
-      else
-	k = i*m+j;
-      assert(k < s);
-      d = w(k);
-
-      *po << d << " ";
-    }
-    *po << " ;\n";
-  }
-  *po << "];\n";
-
-  delete ofsp;
-}
-
