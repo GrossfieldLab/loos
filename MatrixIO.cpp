@@ -40,6 +40,7 @@ void MatrixWriter::basic_write(const Wrapper& w, const string& tag, const uint m
   uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
   ofstream *ofsp = 0;
   
+  // Determine if we need to open a file or not...
   ostream *po = ofs;
   if (!po) {
     string fname = constructFilename(tag);

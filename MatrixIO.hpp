@@ -38,11 +38,14 @@
 
 using namespace std;
 
+
+//! Class for handling writing of matrices in different formats.
 class MatrixWriter {
 
 protected:
   typedef unsigned int uint;
 
+  //! Helper class that encapsulates the data (i.e. double or float)
   class Wrapper {
   public:
     virtual double operator()(const uint i) const =0;
@@ -69,8 +72,13 @@ protected:
 
 public:
 
+  //! Default constructor sends output to cout
   MatrixWriter() : prefixname(""), ofs(&cout) { }
+
+  //! If passed a string, this forces output to open files named prefix + tag
   MatrixWriter(const string& prefix) : prefixname(prefix), ofs(0) { }
+  
+  //! If passed a pointer to an ostream, then that is used instead...
   MatrixWriter(ostream* ofsp) : prefixname(""), ofs(ofsp) { }
   virtual ~MatrixWriter() { }
   
@@ -79,24 +87,46 @@ public:
   void prefix(const string& s) { prefixname = s; }
   ostream* outputStream(void) const { return(ofs); }
   void outputStream(ostream* ofsp) { ofs = ofsp; }
+
   string metadata(void) const { return(meta_data); }
+  //! Metadata is written out (optionally) depending on format.
   void metadata(const string& s) { meta_data = s; }
   
 
+  //! This handles writing the matrix out.
+  /** It is assumed that matrices are stored col-major (i.e. Fortran-style)
+   *  Notable parameters:
+   *  \arg \c tag String used to tag the matrix (i.e. name it)
+   *  \arg \c trans The matrix is transposed on output
+   *  \arg \c maxcol The maximum column to write
+   *  \arg \c maxrow The maxmimum row to write
+   */
   void basic_write(const Wrapper& data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow);
 
+  //! Simply wrap the data in a Wrapper and set the maxcol, row, and transpose defaults...
   void write(const float* p, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol=0, const uint maxrow=0) {
     basic_write(FloatWrapper(p), tag, m, n, trans, maxcol, maxrow);
   }
-
+  //! Simply wrap the data in a Wrapper and set the maxcol, row, and transpose defaults...
   void write(const double* p, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol=0, const uint maxrow=0) {
     basic_write(DoubleWrapper(p), tag, m, n, trans, maxcol, maxrow);
   }
 
+  // These are overriden by subclasses to control the output format...
+
+  //! Writes out any pre-matrix text as required by the format.
   virtual void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) =0;
+
+  //! Writes out a single element of the matrix
   virtual void OutputDatum(ostream *po, const double d) =0;
+
+  //! Ends a row (line) of data
   virtual void OutputEOL(ostream *po) =0;
+
+  //! Anything that needs to come after the matrix data has been written...
   virtual void OutputCoda(ostream *po) =0;
+
+  //! Constructs format-dependent output filename...
   virtual string constructFilename(const string& tag) =0;
 
 protected:
@@ -106,8 +136,11 @@ protected:
 };
 
 
-
-class RawAsciiWriter : public MatrixWriter {
+//! Class for writing raw ascii matrices
+/** Matrix properties (such as size and transpose flags) are written
+ *  in the preamble
+ */
+Class RawAsciiWriter : public MatrixWriter {
 public:
   RawAsciiWriter() : MatrixWriter() { }
   RawAsciiWriter(const string& s) : MatrixWriter(s) { }
@@ -133,7 +166,7 @@ public:
 };
 
 
-
+//! Class for writing ASCII Octave format (as in a .m script)
 class OctaveAsciiWriter : public MatrixWriter {
 public:
   OctaveAsciiWriter() : MatrixWriter() { }
