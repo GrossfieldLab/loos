@@ -35,7 +35,7 @@
 #include <Selectors.hpp>
 #include <dcd.hpp>
 #include <ensembles.hpp>
-#include <MatrixIO.hpp>
+#include <MatrixWriter.hpp>
 
 #include <getopt.h>
 #include <cstdlib>
