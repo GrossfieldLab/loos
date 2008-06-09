@@ -45,7 +45,7 @@
 
 #if defined(__linux__)
 extern "C" {
-  void   void sgesvd_(char*, char*, int*, int*, float*, int*, float*, float*, int*, float*, int*, float*, int*, int*);
+  void sgesvd_(char*, char*, int*, int*, float*, int*, float*, float*, int*, float*, int*, float*, int*, int*);
 }
 #endif
 
