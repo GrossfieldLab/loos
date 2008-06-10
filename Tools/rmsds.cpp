@@ -1,7 +1,7 @@
 /*
-  carmsds.cpp
+  rmsds.cpp
 
-  Computes inter-frame CA-rmsd
+  Computes inter-frame rmsds
 */
 
 
@@ -70,7 +70,7 @@ static const char* short_options = "a:i";
 void show_help(void) {
   Globals defaults;
 
-  cout << "Usage- carmsds [opts] pdb dcd >output\n";
+  cout << "Usage- rmsds [opts] pdb dcd >output\n";
   cout << "       --align=selection    [" << defaults.alignment << "]\n";
   cout << "       --iterate            [" << (defaults.iterate ? string("on") : string("off")) << "]\n";
 }
