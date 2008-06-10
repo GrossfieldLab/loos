@@ -72,19 +72,18 @@ void show_help(void) {
 
   cout << "Usage- carmsds [opts] pdb dcd >output\n";
   cout << "       --align=selection    [" << defaults.alignment << "]\n";
-  cout << "       --iterate=1|0        [" << defaults.iterate << "]\n";
+  cout << "       --iterate            [" << (defaults.iterate ? string("on") : string("off")) << "]\n";
 }
 
 
 void parseOptions(int argc, char *argv[]) {
   int opt, idx;
-  int i;
 
   
   while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1)
     switch(opt) {
     case 'a': globals.alignment = string(optarg); break;
-    case 'i': i=atoi(optarg); globals.iterate = (i != 0); break;
+    case 'i': globals.iterate = true; break;
     case 0: break;
     default:
       cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
