@@ -51,31 +51,37 @@ if not env.GetOption('clean'):
 
    if platform == 'linux2':
       prior = env.get('LIBPATH')
-      for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
-      	  checks = 1
-	  missing = []
-	  if dir != "":
-	     env.Replace(LIBPATH = [dir])
-	     print "Checking for libraries in %s..." % dir
-          else:
-	     print "Checking for libraries..."
+      has_lapack = 0
+      has_atlas = 0
 
-	  if not conf.CheckLib('lapack'):
-	     checks = 0
-	     missing += ['lapack']
-	  if not conf.CheckLib('atlas'):
-	     checks = 0
-	     missing += ['atlas']
-	  if checks:
-	     break
-      if not checks:
-          print "***ERROR*** Missing libraries: ", missing
-	  Exit(1)
+      for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
+         if dir != "":
+            env.Replace(LIBPATH = [dir])
+            print "Checking for libraries in %s..." % dir
+         else:
+            print "Checking for libraries..."
+            
+         if not has_lapack and conf.CheckLib('lapack'):
+            has_lapack = 1
+         if not has_atlas and conf.CheckLib('atlas'):
+            has_atlas = 1;
+         if has_lapack and has_atlas:
+            break
+      if not (has_lapack and has_atlas):
+         print "***ERROR*** Missing libraries:"
+         if (not has_lapack):
+            print "lapack"
+         if (not has_atlas):
+            print "atlas"
+   
+         Exit(1)
 
       if prior != None:
-          env['LIBPATH'] = prior + env['LIBPATH']
+         env['LIBPATH'] = prior + env['LIBPATH']
 
    env = conf.Finish()
+
+
 
 ### Compile-flags
 
@@ -85,15 +91,12 @@ release_opts='-O3 -DNDEBUG'
 # Setup the general environment...
 env.Append(CPPPATH = ['#'])
 env.Append(LIBPATH = ['#'])
-env.Append(LIBS = ['loos', 'boost_regex'])
+env.Append(LIBS = ['loos'])
 
 
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
-
-elif platform == 'linux2':
-   env.Append(LIBS = ['lapack', 'atlas'])
 
 
 # Determine what kind of build...

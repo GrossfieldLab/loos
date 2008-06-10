@@ -40,6 +40,12 @@ typedef double dcd_double;
 typedef Coord<double> GCoord;
 
 
+const uint kilobytes = 1024;
+const uint megabytes = kilobytes * kilobytes;
+const uint gigabytes = megabytes * megabytes;
+
+
+
 #include <utils.hpp>
 
 #endif

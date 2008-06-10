@@ -55,10 +55,6 @@ typedef float svdreal;
 
 #define SVDFUNC  sgesvd_
 
-const uint kilobytes = 1024;
-const uint megabytes = kilobytes * kilobytes;
-
-
 struct Globals {
   Globals()  : alignment_string("name == 'CA'"),
 	       svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
