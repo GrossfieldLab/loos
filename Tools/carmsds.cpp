@@ -199,7 +199,8 @@ int main(int argc, char *argv[]) {
 
 
   RawAsciiWriter<float> writer;
-  writer.write(M, "M", frames.size(), frames.size());
+  writer.metadata(header);
+  writer.write(M, "R", frames.size(), frames.size());
   delete M;
 }
 
