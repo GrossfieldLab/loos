@@ -118,7 +118,7 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
   for (i=0; i<n*n; i++)
     M[i] = 0.0;
 
-  uint total = n*n;
+  uint total = n*(n+1)/2;
   uint delta = total / 4;
   uint k = 0;
   uint j;
@@ -126,11 +126,11 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
     for (i=0; i<=j; i++, k++) {
       double rmsd = frames[j].rmsd(frames[i]);
       M[j*n+i] = rmsd;
-      M[i*n+i] = rmsd;
+      M[i*n+j] = rmsd;
       
       if (k % delta == 0) {
-	float percent = k / delta * 100.0;
-	cerr << percent << " % complete\n";
+	float percent = k * 100.0 / total;
+	cerr << setprecision(3) << percent << "% complete\n";
       }
 
     
