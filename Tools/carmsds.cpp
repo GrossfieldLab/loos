@@ -47,9 +47,10 @@
 typedef unsigned int uint;
 
 struct Globals {
-  Globals() : alignment("name == 'CA'") { }
+  Globals() : alignment("name == 'CA'"), iterate(false) { }
   
   string alignment;
+  bool iterate;
 };
 
 
@@ -58,11 +59,12 @@ Globals globals;
 
 static struct option long_options[] = {
   {"align", required_argument, 0, 'a'},
+  {"iterate", no_argument, 0, 'i'},
   {0,0,0,0}
 };
 
 
-static const char* short_options = "a:";
+static const char* short_options = "a:i";
 
 
 void show_help(void) {
@@ -70,16 +72,19 @@ void show_help(void) {
 
   cout << "Usage- carmsds [opts] pdb dcd >output\n";
   cout << "       --align=selection    [" << defaults.alignment << "]\n";
+  cout << "       --iterate=1|0        [" << defaults.iterate << "]\n";
 }
 
 
 void parseOptions(int argc, char *argv[]) {
   int opt, idx;
+  int i;
 
   
   while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1)
     switch(opt) {
     case 'a': globals.alignment = string(optarg); break;
+    case 'i': i=atoi(optarg); globals.iterate = (i != 0); break;
     case 0: break;
     default:
       cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
@@ -108,7 +113,19 @@ vector<XForm> align(vector<AtomicGroup>& frames, const AtomicGroup& subset, DCD&
 
   return(xforms);
 }
-  
+
+
+void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, DCD& dcd) {
+  uint n = dcd.nsteps();
+
+  for (uint i=0; i<n; i++) {
+    AtomicGroup frame = subset.copy();
+    dcd.readFrame(i);
+    dcd.updateGroupCoords(frame);
+    frames.push_back(frame);
+  }
+}
+
 
 float *interFrameRMSD(vector<AtomicGroup>& frames) {
   uint n = frames.size();
@@ -122,9 +139,19 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
   uint delta = total / 4;
   uint k = 0;
   uint j;
-  for (j=0; j<n; j++)
+  for (j=0; j<n; j++) {
+    AtomicGroup jframe = frames[j].copy();
     for (i=0; i<=j; i++, k++) {
-      double rmsd = frames[j].rmsd(frames[i]);
+      double rmsd;
+
+      if (globals.iterate)
+	rmsd = jframe.rmsd(frames[i]);
+      else {
+	(void)jframe.alignOnto(frames[i]);
+	rmsd = jframe.rmsd(frames[i]);
+      }
+
+
       M[j*n+i] = rmsd;
       M[i*n+j] = rmsd;
       
@@ -135,6 +162,7 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
 
     
     }
+  }
 
   return(M);
 }
@@ -161,9 +189,13 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  cerr << "Aligning...\n";
   vector<AtomicGroup> frames;
-  vector<XForm> xforms = align(frames, subset, dcd);
+  if (globals.iterate) {
+    cerr << "Aligning...\n";
+    vector<XForm> xforms = align(frames, subset, dcd);
+  } else
+    readFrames(frames, subset, dcd);
+
   float *M = interFrameRMSD(frames);
 
 
