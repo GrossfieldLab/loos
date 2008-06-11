@@ -81,7 +81,8 @@ namespace loos {
    */
   void randomSeedRNG(void);
 
-  vector<int> parseRangeSpec(const string& text);
+  //! Parses a list of Octave-style range specifiers
+  vector<int> parseRangeList(const string& text);
 
 };
 

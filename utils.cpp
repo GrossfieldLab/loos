@@ -169,8 +169,19 @@ void loos::randomSeedRNG(void) {
   rng.seed(static_cast<unsigned int>(time(0)));
 }
 
-
-vector<int> loos::parseRangeSpec(const string& text) {
+/** This routine breaks the input string into chunks delimited by
+ * commas.  Each chunk is a range specified in Octave format, i.e.
+ * - start:stop
+ * - start:step:stop
+ *
+ * The range is inclusive of both ends.  Additionally, a single index
+ * can be specified.
+ *
+ * Internally, this routine creates a vector of ints that represent
+ * the specified indices.  There is no bounds checking...  Duplicate
+ * indices are filtered and the returned vector is sorted.
+ */ 
+vector<int> loos::parseRangeList(const string& text) {
   vector<string> terms;
   vector<int> indices;
 
