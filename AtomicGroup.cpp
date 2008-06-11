@@ -272,9 +272,9 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
 /** The idea is that we iterate over the list of contained atoms.  For
  * each atom, we recurse through the list of bonded atoms.  Each time
  * we visit an atom, we mark it as having been seen via the hash_set.
- * In the recursive function, everytime we find a new unseen atom, we
+ * In the recursive function, every time we find a new unseen atom, we
  * append it to the current group and mark it as seen, then recurse
- * through all of its nonded atoms.
+ * through all of its bonded atoms.
  *
  * If we find a bond that goes to an atom that does not exist in the
  * current group, a runtime_error is thrown.
