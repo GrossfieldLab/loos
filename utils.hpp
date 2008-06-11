@@ -26,10 +26,12 @@
 #define UTILS_HPP
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 
 #include <boost/random.hpp>
+#include <boost/algorithm/string.hpp>
 #include <ctime>
 
 
@@ -78,6 +80,8 @@ namespace loos {
   /**Currently uses time(3) to seed the RNG obtained from the singleton...
    */
   void randomSeedRNG(void);
+
+  vector<int> parseRangeSpec(const string& text);
 
 };
 

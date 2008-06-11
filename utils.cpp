@@ -28,6 +28,9 @@
 #include <time.h>
 #include <pwd.h>
 
+#include <stdexcept>
+
+#include <algorithm>
 #include <string>
 #include <sstream>
 
@@ -164,4 +167,52 @@ void loos::randomSeedRNG(void) {
   base_generator_type& rng = rng_singleton();
 
   rng.seed(static_cast<unsigned int>(time(0)));
+}
+
+
+vector<int> loos::parseRangeSpec(const string& text) {
+  vector<string> terms;
+  vector<int> indices;
+
+  boost::split(terms, text, boost::is_any_of(","), boost::token_compress_on);
+  vector<string>::const_iterator ci;
+  for (ci = terms.begin(); ci != terms.end(); ci++) {
+    int a, b, c;
+    int i;
+    i = sscanf(ci->c_str(), "%d:%d:%d", &a, &b, &c);
+    if (i == 2) {
+      c = b;
+      b = 1;
+    } else if (i == 1) {
+      c = a;
+      b = 1;
+    } else if (i != 3)
+      throw(runtime_error("Cannot parse range list item " + *ci));
+
+    if (c < a) {
+      if (b > 0)
+	throw(runtime_error("Invalid range spec " + *ci));
+      int x = c;
+      c = a;
+      a = x;
+      b = -b;
+    } else if (b <= 0)
+      throw(runtime_error("Invalid range spec " + *ci));
+
+    for (int i=a; i<=c; i += b)
+      indices.push_back(i);
+  }
+  sort(indices.begin(), indices.end());
+  vector<int> results;
+  vector<int>::const_iterator cvi;
+  int last = indices[0];
+  results.push_back(last);
+
+  for (cvi = indices.begin()+1; cvi != indices.end(); cvi++)
+    if (*cvi != last) {
+      last = *cvi;
+      results.push_back(last);
+    }
+
+  return(results);
 }
