@@ -292,19 +292,14 @@ vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
     HashInt::iterator it = seen.find(atoms[i]->id());
     if (it != seen.end())
       continue;
-    
-    if (current.size() != 0) {
-      molecules.push_back(current);
-      AtomicGroup empty;
-      current = empty;  // Maybe I should have a reset method??  This
-			// be ugly...
-    }
-    walkBonds(current, seen, atoms[i]);
-  }
 
-  // Catch the last group
-  if (current.size() != 0)
-    molecules.push_back(current);
+    walkBonds(current, seen, atoms[i]);
+    if (current.size() != 0) {       // Just in case...
+      molecules.push_back(current);
+      current = AtomicGroup();
+    }
+    
+  }
 
   return(molecules);
 }
