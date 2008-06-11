@@ -4,7 +4,7 @@ maxId = 48970
 minResid = 1
 maxResid = 1
 nresids = 8690
-nchains = 203
+nsegids = 203
 Bounding box: min = (-44.642,-47.604,-44.924), max = (49.651,45.105,44.935)
 Centroid = (0.094641,0.361833,-0.0309396)
 Radius = 67.394

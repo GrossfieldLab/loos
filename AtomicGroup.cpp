@@ -269,6 +269,77 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
   return(results);
 }
 
+/** The idea is that we iterate over the list of contained atoms.  For
+ * each atom, we recurse through the list of bonded atoms.  Each time
+ * we visit an atom, we mark it as having been seen via the hash_set.
+ * In the recursive function, everytime we find a new unseen atom, we
+ * append it to the current group and mark it as seen, then recurse
+ * through all of its nonded atoms.
+ *
+ * If we find a bond that goes to an atom that does not exist in the
+ * current group, a runtime_error is thrown.
+ */
+
+vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
+  HashInt seen;                      // Track what atoms we've already
+				     // processed... 
+  vector<AtomicGroup> molecules;
+  AtomicGroup current;               // The molecule we're currently building...
+  
+
+  int n = size();
+  for (int i=0; i<n; i++) {
+    HashInt::iterator it = seen.find(atoms[i]->id());
+    if (it != seen.end())
+      continue;
+    
+    if (current.size() != 0) {
+      molecules.push_back(current);
+      AtomicGroup empty;
+      current = empty;  // Maybe I should have a reset method??  This
+			// be ugly...
+    }
+    walkBonds(current, seen, atoms[i]);
+  }
+
+  // Catch the last group
+  if (current.size() != 0)
+    molecules.push_back(current);
+
+  return(molecules);
+}
+
+
+void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, pAtom moi) {
+  int myid = moi->id();
+  HashInt::iterator it = seen.find(myid);
+
+  // If we've touched this atom before, stop recursing and return.
+  if (it != seen.end())
+    return;
+
+  // This is a novel atom, so append it into the group we're currently building.
+  seen.insert(myid);
+  current.addAtom(moi);
+
+  // Just in case it's a solo-atom...  This probably should indicate
+  // some kind of error...?
+  if (!(moi->hasBonds()))
+    return;
+
+  // Now find atoms that are bound to the current atom and recurse
+  // through them...
+
+  vector<int> bonds = moi->getBonds();
+  vector<int>::const_iterator citer;
+  for (citer = bonds.begin(); citer != bonds.end(); citer++) {
+    pAtom toi = findById(*citer);
+    if (toi == 0)
+      throw(runtime_error("Missing bonds while trying to walk the connectivity tree."));
+    walkBonds(current, seen, toi);
+  }
+}
+
 
 
 // Find an atom based on atomid
@@ -430,7 +501,7 @@ int AtomicGroup::numberOfResidues(void) const {
 }
 
 
-int AtomicGroup::numberOfChains(void) const {
+int AtomicGroup::numberOfSegids(void) const {
 
   if (atoms.size() == 0)
     return(0);

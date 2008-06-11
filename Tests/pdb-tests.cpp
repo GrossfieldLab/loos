@@ -133,7 +133,7 @@ int main(int argc, char *argv[]) {
   cout << "minResid = " << pdb.minResid() << endl;
   cout << "maxResid = " << pdb.maxResid() << endl;
   cout << "nresids = " << pdb.numberOfResidues() << endl;
-  cout << "nchains = " << pdb.numberOfChains() << endl;
+  cout << "nsegids = " << pdb.numberOfSegids() << endl;
 
   vector<GCoord> bbox = pdb.boundingBox();
   cout << "Bounding box: min = " << bbox[0] << ", max = " << bbox[1] << endl;

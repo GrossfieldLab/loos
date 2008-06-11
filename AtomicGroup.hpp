@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include <ext/hash_set>
 #include <boost/shared_ptr.hpp>
 
 #include <boost/tuple/tuple.hpp>
@@ -69,6 +70,7 @@ typedef __CLPK_integer f77int;
 
 
 using namespace std;
+using namespace __gnu_cxx;
 
 
 #include <loos.hpp>
@@ -205,6 +207,9 @@ public:
   //! Returns a vector of AtomicGroups split from the current group based on segid
   vector<AtomicGroup> splitByUniqueSegid(void) const;
 
+  //! Returns a vector of AtomicGroups split based on bond connectivity
+  vector<AtomicGroup> splitByMolecule(void);
+
   //! Find a contained atom by its atomid
   pAtom findById(const int id);
 
@@ -227,7 +232,7 @@ public:
   int minResid(void) const;
   int maxResid(void) const;
   int numberOfResidues(void) const;
-  int numberOfChains(void) const;
+  int numberOfSegids(void) const;
 
   //! Is the array of atoms already sorted???
   bool sorted(void) const { return(_sorted); }
@@ -410,6 +415,16 @@ private:
     bool operator()(const pAtom& a) { return(a->id() == id); }
     int id;
   };
+  
+  struct EqInt {
+    bool operator()(const int i, const int j) const {
+      return(i==j);
+    }
+  };
+    
+  typedef hash_set<int, hash<int>, EqInt> HashInt;
+
+  void walkBonds(AtomicGroup& mygroup, HashInt& seen, pAtom moi);
 
 
   void dumpMatrix(const string, double*, int, int) const;
