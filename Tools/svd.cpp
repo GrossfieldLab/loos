@@ -64,7 +64,8 @@ struct Globals {
 	       writer(0),
 	       output_type("ascii"),
 	       output_prefix(""),
-	       dcdmin(0), dcdmax(0) { }
+	       avg_name(""),
+	       dcdmin(0), dcdmax(0), header("<NULL HEADER>") { }
 
 
   string alignment_string, svd_string;
@@ -74,7 +75,9 @@ struct Globals {
   MatrixWriter<svdreal>* writer;
   string output_type;
   string output_prefix;
+  string avg_name;
   uint dcdmin, dcdmax;
+  string header;
 };
 
 
@@ -91,19 +94,21 @@ static struct option long_options[] = {
   {"format", required_argument, 0, 'f'},
   {"prefix", required_argument, 0, 'p'},
   {"range", required_argument, 0, 'r'},
+  {"avg", required_argument, 0, 'A'},
   {"help", no_argument, 0, 'H'},
   {0,0,0,0}
 };
 
-static const char* short_options = "a:s:tiS:f:p:r:";
+static const char* short_options = "a:s:tiS:f:p:r:A:";
 
 
 void show_help(void) {
   Globals defaults;
 
-  cout << "Usage- svd [opts] pdb dcd >output\n";
+  cout << "Usage- svd [opts] pdb dcd\n";
   cout << "       --align=string       [" << defaults.alignment_string << "]\n";
   cout << "       --svd=string         [" << defaults.svd_string << "]\n";
+  cout << "       --avg=fname          [" << defaults.avg_name << "]\n";
   cout << "       --tolerance=float    [" << defaults.alignment_tol << "]\n";
   cout << "       --source=bool        [" << defaults.include_source << "]\n";
   cout << "       --terms=int          [" << defaults.terms << "]\n";
@@ -120,6 +125,7 @@ void parseOptions(int argc, char *argv[]) {
 
   while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1)
     switch(opt) {
+    case 'A': globals.avg_name = string(optarg); break;
     case 'a': globals.alignment_string = string(optarg); break;
     case 's': globals.svd_string = string(optarg); break;
     case 't': globals.alignment_tol = strtod(optarg, 0); break;
@@ -229,11 +235,26 @@ vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
 }
 
 
+void writeAverage(const AtomicGroup& avg) {
+  PDB avgpdb = PDB::fromAtomicGroup(avg);
+  avgpdb.remarks().add(globals.header);
+  ofstream ofs(globals.avg_name.c_str());
+  if (!ofs)
+    throw(runtime_error("Cannot open " + globals.avg_name));
+  ofs << avgpdb;
+}
+
+
 // Calculates the transformed avg structure, then extracts the
 // transformed coords from the DCD with the avg subtraced out...
 
 float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
   AtomicGroup avg = calculateAverage(subset, xforms, dcd);
+
+  // Hook to get the avg structure if requested...
+  if (globals.avg_name != "")
+    writeAverage(avg);
+
   uint natoms = subset.size();
   AtomicGroup frame = subset.copy();
   uint n = globals.dcdmax - globals.dcdmin;
@@ -260,6 +281,7 @@ float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
+  globals.header = header;
   parseOptions(argc, argv);
 
   if (argc - optind != 2) {
