@@ -114,6 +114,16 @@ if int(debug):
    env.Append(CCFLAGS=" -DDEBUG=$debug")
 
 
+# Allow overrides from environment...
+if os.environ.has_key('CXX'):
+   CXX = os.environ['CXX']
+   print "Changing default compiler to ", CXX
+   env['CXX'] = CXX
+
+if os.environ.has_key('CCFLAGS'):
+   CCFLAGS = os.environ['CCFLAGS']
+   print "Changing CCFLAGS to ", CCFLAGS
+   env['CCFLAGS'] = CCFLAGS
 
 # Export for subsidiary SConscripts
 Export('env')
