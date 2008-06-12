@@ -114,6 +114,10 @@ int main(int argc, char *argv[]) {
         // update coordinates
         dcd.updateGroupCoords(psf);
 
+        // Compute the bin volume for normalization purposes
+        GCoord box = psf.periodicBox();
+        double bin_volume = bin_width * box.x() * box.y();
+
         // Loop over the subsets and compute charge distribution.
         // (first set is all atoms)
         for (unsigned int i=0; i<subsets.size(); i++) {
@@ -131,7 +135,7 @@ int main(int argc, char *argv[]) {
 
                 if ( (z > min_z) && (z < max_z) ) {
                     int bin = (int)( (z - min_z) / bin_width );
-                    dists[i][bin] += weight;
+                    dists[i][bin] += weight/bin_volume;
                 }
             }
         }
