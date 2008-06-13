@@ -107,6 +107,25 @@ void test_selections(PDB& pdb) {
 }
 
 
+void test_within(PDB& pdb) {
+  SolventSelector solsel;
+  HeavyAtomSelector hsel;
+  AndSelector heavywatersel(solsel, hsel);
+
+  SegidSelector targsel("PE10");
+
+  AtomicGroup solvent = pdb.select(heavywatersel);
+  AtomicGroup target = pdb.select(targsel);
+
+  cout << "*** within() test\n";
+  cout << "Waters = " << solvent.size() << endl;
+  cout << "Target = " << target.size() << endl;
+
+  AtomicGroup nearby = solvent.within(4.0, target);
+  cout << "Found " << nearby.size() << " waters within 4.0 Angstroms of the target.\n";
+}
+
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     cerr << "Usage- " << argv[0] << " pdbfile\n";
@@ -200,7 +219,7 @@ int main(int argc, char *argv[]) {
   // -------------------------------------------------------------------------------
   test_findById(pdb);
   test_selections(pdb);
-
+  test_within(pdb);
 
 }
 

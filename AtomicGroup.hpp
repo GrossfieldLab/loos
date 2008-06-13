@@ -249,7 +249,9 @@ public:
   //! Set the periodic boundary conditions
   void periodicBox(const GCoord& c) { _periodic = true; box = c; }
   
-
+  //! Find atoms in \a grp that are within \a dist angstroms of atoms
+  //! in the current group.
+  AtomicGroup within(const double dist, AtomicGroup& grp);
 
   // *** Helper classes...
 
