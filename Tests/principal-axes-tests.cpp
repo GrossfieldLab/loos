@@ -92,7 +92,7 @@ AtomicGroup createGroup(const int natoms, const float a, const float b, const fl
   boost::uniform_real<> map(0.0, 1.0);
   boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > randy(rng, map);
   
-    int i;
+  int i;
   for (i=0; i<natoms; i++) {
     greal theta = 2*pi*randy();
     greal phi = pi*randy();
