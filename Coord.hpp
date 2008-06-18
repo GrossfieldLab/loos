@@ -415,7 +415,7 @@ public:
     int i;
     for (i=0; i<MAXCOORD; i++)
       v[i] = 0;
-    v[i] = 1.0;
+    v[i] = 1;
   }
 
   //! Compute equality based on norm(u-v) < epsilon
@@ -443,7 +443,7 @@ private:
     for (i=0; i<MAXCOORD; i++)
       v[i] = c.v[i];
 
-    v[i] = 1.0;
+    v[i] = 1;
   };
   
 
