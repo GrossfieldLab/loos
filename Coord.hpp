@@ -426,6 +426,11 @@ public:
     return(false);
   }
 
+  //! Compute inequality based on ! ==
+  bool operator!=(const Coord<T>& rhs) const {
+    return(!(operator==(rhs)));
+  }
+
 
 
 
