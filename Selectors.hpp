@@ -27,7 +27,7 @@
 #if !defined(SELECTORS_HPP)
 #define SELECTORS_HPP
 
-
+#include <loos.hpp>
 #include <AtomicGroup.hpp>
 #include <Kernel.hpp>
 
@@ -66,6 +66,17 @@ struct ResidRangeSelector : public AtomSelector {
   }
 
   int _low, _high;
+};
+
+//! Predicate for selecting atoms in a specific range of z values
+struct ZSliceSelector : public AtomSelector {
+    ZSliceSelector(const greal min, const greal max) : _min(min), _max(max) { }
+    bool operator()(const pAtom& pa) const {
+        greal z = (pa->coords()).z();
+        return ( (z>=_min) && (z<_max) );
+    }
+
+    greal _min, _max;
 };
 
 
