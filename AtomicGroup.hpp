@@ -77,6 +77,7 @@ using namespace __gnu_cxx;
 #include <Atom.hpp>
 #include <XForm.hpp>
 #include <UniqueStrings.hpp>
+#include <PeriodicBox.hpp>
 
 
 //! Virtual base-class for selecting atoms from a group
@@ -106,7 +107,9 @@ typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
  *
  * AtomicGroups also support periodic boundary conditions via the
  * periodicBox() method.  If a box has been set, then isPeriodic()
- * will return true.
+ * will return true.  The periodic box is shared between the parent
+ * group and all derived groups.  AtomicGroup copies have non-shared
+ * periodic boxes...
 */
 
 
@@ -116,17 +119,9 @@ protected:
   typedef vector<pAtom>::const_iterator ConstAtomIterator;
 
 public:
-  AtomicGroup() : _sorted(false), _periodic(false) {
-#if DEBUG >= 4
-    cout << "AtomicGroup()\n";
-#endif
- }
-  virtual ~AtomicGroup() {
-#if DEBUG > 4
-    cout << "~AtomicGroup()\n";
-#endif
+  AtomicGroup() : _sorted(false) { }
 
- }
+  virtual ~AtomicGroup() { }
 
   //! Creates a deep copy of this group
   /** This creates a non-polymorphic deep copy of an AtomicGroup.  The
@@ -241,13 +236,18 @@ public:
   void sort(void);
 
   //! Test whether or not periodic boundary conditions are set
-  bool isPeriodic(void) const { return(_periodic); }
+  bool isPeriodic(void) const { return(box.isPeriodic()); }
   
-  //! Fetch the periodic boundary conditions
-  GCoord periodicBox(void) const { return(box); }
-  
+  //! Fetch the periodic boundary conditions.
+  GCoord periodicBox(void) const { return(box.box()); }
+
+  //! Set the periodic boundary conditions.  
+  void periodicBox(const GCoord& c) { box.box(c); }
+
   //! Set the periodic boundary conditions
-  void periodicBox(const GCoord& c) { _periodic = true; box = c; }
+  void periodicBox(const greal x, const greal y, const greal z) { 
+      box.box(GCoord(x,y,z));
+  }
   
   //! Find atoms in \a grp that are within \a dist angstroms of atoms
   //! in the current group.
@@ -434,11 +434,10 @@ private:
   double *transformedCoordsAsArray(const XForm&) const;
 
   bool _sorted;
-  bool _periodic;
 
 protected:
   vector<pAtom> atoms;
-  GCoord box;
+  SharedPeriodicBox box;
 
 };
 

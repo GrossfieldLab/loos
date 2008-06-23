@@ -195,3 +195,16 @@ Box test:
    <ATOM ID='4' NAME='CA' RESID='2' RESNAME='   ' COORDS='(7,3,4)' ALTLOC=' ' CHAINID=' ' ICODE='' SEGID='    ' B='0' Q='0' CHARGE='0' MASS='1' ATOMICNUMBER='-1'/>
    <ATOM ID='5' NAME='CG' RESID='2' RESNAME='   ' COORDS='(1,7,2)' ALTLOC=' ' CHAINID=' ' ICODE='' SEGID='    ' B='0' Q='0' CHARGE='0' MASS='1' ATOMICNUMBER='-1'/>
 </GROUP>
+-------------------
+Box inheritance test:
+<GROUP PERIODIC='(13,26,39)'>
+   <ATOM ID='2' NAME='CB' RESID='1' RESNAME='   ' COORDS='(4,5,6)' ALTLOC=' ' CHAINID=' ' ICODE='' SEGID='    ' B='0' Q='0' CHARGE='0' MASS='1' ATOMICNUMBER='-1'/>
+   <ATOM ID='3' NAME='CG' RESID='1' RESNAME='   ' COORDS='(-1,-2,-3)' ALTLOC=' ' CHAINID=' ' ICODE='' SEGID='    ' B='0' Q='0' CHARGE='0' MASS='1' ATOMICNUMBER='-1'/>
+</GROUP>
+Test updating of box to (25,26,29):
+(25,26,29)
+(25,26,29)
+Test updating derived box (pre-box) to (7,8,9):
+(7,8,9)
+Testing copy (should be (7,8,9):
+(7,8,9)

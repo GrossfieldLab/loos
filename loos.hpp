@@ -28,6 +28,7 @@
 #define LOOS_HPP
 
 #include <Coord.hpp>
+#include <boost/shared_ptr.hpp>
 
 
 
@@ -38,6 +39,7 @@ typedef float dcd_real;
 typedef double dcd_double;
 
 typedef Coord<double> GCoord;
+typedef boost::shared_ptr<GCoord> pGCoord;
 
 
 const uint kilobytes = 1024;

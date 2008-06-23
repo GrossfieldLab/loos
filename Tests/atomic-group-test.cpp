@@ -160,7 +160,23 @@ int main() {
 
   cout << "-------------------\n";
   cout << "Box test:\n";
+  AtomicGroup g7 = g1;
   g1.periodicBox(GCoord(13, 26, 39));
   cout << g1 << endl;
+
+  cout << "-------------------\n";
+  cout << "Box inheritance test:\n";
+  cout << g3 << endl;
+  cout << "Test updating of box to (25,26,29):\n";
+  g1.periodicBox(25,26,29);
+  cout << g1.periodicBox() << endl;
+  cout << g3.periodicBox() << endl;
+  cout << "Test updating derived box (pre-box) to (7,8,9):\n";
+  g7.periodicBox(7,8,9);
+  cout << g1.periodicBox() << endl;
+  cout << "Testing copy (should be (7,8,9):\n";
+  AtomicGroup g6 = g1.copy();
+  g1.periodicBox(1,2,3);
+  cout << g6.periodicBox() << endl;
 
 }

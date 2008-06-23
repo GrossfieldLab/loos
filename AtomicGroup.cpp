@@ -48,7 +48,7 @@ AtomicGroup AtomicGroup::copy(void) const {
     res.append(pa);
   }
   res._sorted = _sorted;
-  res.box = box;
+  res.box = box.copy();
 
   return(res);
 }
@@ -196,7 +196,8 @@ AtomicGroup AtomicGroup::subset(const int offset, const int len) {
 
   boost::tuple<AtomIterator, AtomIterator> iters = calcSubsetIterators(offset, len);
   res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
-  
+
+  res.box = box;
   return(res);
 }
 
@@ -209,6 +210,7 @@ AtomicGroup AtomicGroup::excise(const int offset, const int len) {
   res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
   atoms.erase(boost::get<0>(iters), boost::get<1>(iters));
 
+  res.box = box;
   return(res);
 }
 
@@ -228,6 +230,7 @@ AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
 	break;
       }
     
+  res.box = box;
   return(res);
 }
 
@@ -243,6 +246,7 @@ AtomicGroup AtomicGroup::select(const AtomSelector& sel) {
     if (sel(*i))
       res.addAtom(*i);
 
+  res.box = box;
   return(res);
 }
 
@@ -266,6 +270,11 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
     results[j].append(*i);
   }
 
+  vector<AtomicGroup>::iterator g;
+  for (g=results.begin(); g!=results.end(); g++) {
+    g->box = box;
+  }
+
   return(results);
 }
 
@@ -285,7 +294,7 @@ vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
 				     // processed... 
   vector<AtomicGroup> molecules;
   AtomicGroup current;               // The molecule we're currently building...
-  
+  current.box = box;
 
   int n = size();
   for (int i=0; i<n; i++) {
@@ -364,6 +373,9 @@ pAtom AtomicGroup::findById(const int id) {
 //! bound to another atom.
 AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
     AtomicGroup result;
+
+    result.box = box;
+
     for (unsigned int i=0; i<id_list.size(); i++) {
         pAtom pa = findById(id_list[i]);
         if (!pa) throw(out_of_range("Atom id doesn't exist"));
@@ -379,6 +391,7 @@ AtomicGroup AtomicGroup::getResidue(pAtom res) {
   AtomIterator i;
   AtomicGroup result;
 
+  result.box = box;
   i = find(atoms.begin(), atoms.end(), res);
   if (i == atoms.end())
     return(result);
@@ -593,6 +606,8 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
   int na = size();
   int nb = grp.size();
   AtomicGroup res;
+
+  res.box = box;
   double dist2 = dist * dist;
   vector<int> ids;
 
@@ -633,8 +648,8 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
 // XMLish output...
 ostream& operator<<(ostream& os, const AtomicGroup& grp) {
   AtomicGroup::ConstAtomIterator i;
-  if (grp._periodic)
-    os << "<GROUP PERIODIC='" << grp.box << "'>\n";
+  if (grp.isPeriodic())
+    os << "<GROUP PERIODIC='" << grp.box.box() << "'>\n";
   else
     os << "<GROUP>\n";
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)

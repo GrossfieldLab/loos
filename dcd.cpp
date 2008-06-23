@@ -320,7 +320,6 @@ void DCD::updateGroupCoords(AtomicGroup& g) {
 
   // Handle periodic boundary conditions (if present)
   if (hasCrystalParams()) {
-    GCoord c(qcrys[0], qcrys[1], qcrys[2]);
-    g.periodicBox(c);
+    g.periodicBox(qcrys[0], qcrys[1], qcrys[2]);
   }
 }
