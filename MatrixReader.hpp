@@ -55,7 +55,7 @@ public:
   typedef boost::tuple<T*, unsigned int, unsigned int> Result;
 
   MatrixReader() : ins(&cin) { }
-  MatrixReader(istream* i) : ins(i) { }
+  explicit MatrixReader(istream* i) : ins(i) { }
   virtual ~MatrixReader() { }
 
 

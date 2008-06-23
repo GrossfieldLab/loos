@@ -43,7 +43,7 @@
 class PeriodicBox {
 public:
   PeriodicBox() : thebox(99999,99999,99999), box_set(false) { }
-  PeriodicBox(const GCoord& c) : thebox(c), box_set(true) { }
+  explicit PeriodicBox(const GCoord& c) : thebox(c), box_set(true) { }
 
   GCoord box(void) const { return(thebox); }
   void box(const GCoord& c) { thebox = c; box_set = true; }

@@ -100,7 +100,7 @@ namespace loos {
   class pushString : public Action {
     Value val;
   public:
-    pushString(const string str) : Action("pushString"), val(str) { }
+    explicit pushString(const string str) : Action("pushString"), val(str) { }
     void execute(void) { stack->push(val); }
     string name(void) const {
       stringstream s;
@@ -114,7 +114,7 @@ namespace loos {
   class pushInt : public Action {
     Value val;
   public:
-    pushInt(const int i) : Action("pushInt"), val(i) { }
+    explicit pushInt(const int i) : Action("pushInt"), val(i) { }
     void execute(void) { stack->push(val); }
     string name(void) const {
       stringstream s;
@@ -127,7 +127,7 @@ namespace loos {
   class pushFloat : public Action {
     Value val;
   public:
-    pushFloat(const float f) : Action("pushFloat"), val(f) { }
+    explicit pushFloat(const float f) : Action("pushFloat"), val(f) { }
     void execute(void) { stack->push(val); }
     string name(void) const {
       stringstream s;
@@ -211,7 +211,7 @@ namespace loos {
   class matchRegex : public Action {
     boost::regex regexp;
   public:
-    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
+    explicit matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
     void execute(void) { 
       Value v = stack->pop();
       Value r(0);
@@ -261,9 +261,9 @@ namespace loos {
    */
   class extractNumber : public Action {
   public:
-    extractNumber(const string s) : Action("extractNumber"),
-				    regexp(s, boost::regex::perl|boost::regex::icase),
-				    pattern(s) { }
+    explicit extractNumber(const string s) : Action("extractNumber"),
+					     regexp(s, boost::regex::perl|boost::regex::icase),
+					     pattern(s) { }
 
     void execute(void) {
       Value v = stack->pop();

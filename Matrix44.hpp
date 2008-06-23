@@ -54,7 +54,7 @@ public:
   Matrix44() { identity(); }
 
   //! Create a new matrix with all elements set to v
-  Matrix44(const T v) { for (int i = 0; i < 16; i++) matrix[i] = v; }
+  explicit Matrix44(const T v) { for (int i = 0; i < 16; i++) matrix[i] = v; }
 
   //! Zero all elements
   void zero(void) { memset(matrix, 0, 16 * sizeof(T)); }

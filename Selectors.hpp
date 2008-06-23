@@ -50,7 +50,7 @@ struct BackboneSelector : public AtomSelector {
 
 //! Predicate for selecting atoms based on the passed segid string
 struct SegidSelector : public AtomSelector {
-  SegidSelector(const string s) : str(s) { }
+  explicit SegidSelector(const string s) : str(s) { }
   bool operator()(const pAtom& pa) const {
     return(pa->segid() == str);
   }
@@ -93,7 +93,7 @@ struct ZSliceSelector : public AtomSelector {
 */
 
 struct NotSelector : public AtomSelector {
-  NotSelector(const AtomSelector& s) : sel(s) { }
+  explicit NotSelector(const AtomSelector& s) : sel(s) { }
   bool operator()(const pAtom& pa) const {
     return(!(sel(pa)));
   }
@@ -203,7 +203,7 @@ struct SolventSelector : public AtomSelector {
  */
 class KernelSelector : public AtomSelector {
 public:
-  KernelSelector(loos::Kernel& k) : krnl(k) { }
+  explicit KernelSelector(loos::Kernel& k) : krnl(k) { }
 
   bool operator()(const pAtom& pa) const {
     krnl.execute(pa);

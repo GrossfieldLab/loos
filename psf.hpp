@@ -49,7 +49,7 @@ public:
     PSF() { }
     virtual ~PSF() {}
 
-    PSF(const string fname) {
+    explicit PSF(const string fname) {
         ifstream ifs(fname.c_str());
         if (!ifs) {
             throw(runtime_error("Cannot open PSF file " + string(fname)));
@@ -57,7 +57,7 @@ public:
         read(ifs);
     }
 
-    PSF(ifstream &ifs) {
+    explicit PSF(ifstream &ifs) {
         read(ifs);
     }
 

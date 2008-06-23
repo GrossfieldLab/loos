@@ -53,7 +53,7 @@ public:
   StreamWrapper() : new_stream(false), stream(0) { }
 
   //! Sets the internal stream pointer to fs
-  StreamWrapper(fstream& fs) : new_stream(false), stream(&fs) { }
+  explicit StreamWrapper(fstream& fs) : new_stream(false), stream(&fs) { }
 
   //! Opens a new stream with file named 's'
   StreamWrapper(const string& s, const ios_base::openmode mode = ios_base::in | ios_base::binary) : new_stream(true) {

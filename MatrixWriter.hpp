@@ -49,10 +49,10 @@ public:
   MatrixWriter() : prefixname(""), ofs(&cout) { }
 
   //! If passed a string, this forces output to open files named prefix + tag
-  MatrixWriter(const string& prefix) : prefixname(prefix), ofs(0) { }
+  explicit MatrixWriter(const string& prefix) : prefixname(prefix), ofs(0) { }
   
   //! If passed a pointer to an ostream, then that is used instead...
-  MatrixWriter(ostream* ofsp) : prefixname(""), ofs(ofsp) { }
+  explicit MatrixWriter(ostream* ofsp) : prefixname(""), ofs(ofsp) { }
   virtual ~MatrixWriter() { }
   
 
@@ -109,8 +109,8 @@ template<class T>
 class RawAsciiWriter : public MatrixWriter<T> {
 public:
   RawAsciiWriter() : MatrixWriter<T>() { }
-  RawAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
-  RawAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
+  explicit RawAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
+  explicit RawAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
 
   void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
     if (RawAsciiWriter<T>::meta_data != "")
@@ -137,8 +137,8 @@ template<class T>
 class OctaveAsciiWriter : public MatrixWriter<T> {
 public:
   OctaveAsciiWriter() : MatrixWriter<T>() { }
-  OctaveAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
-  OctaveAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
+  explicit OctaveAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
+  explicit ctaveAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
 
   void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
     if (OctaveAsciiWriter<T>::meta_data != "")

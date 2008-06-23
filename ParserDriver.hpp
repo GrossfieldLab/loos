@@ -49,7 +49,7 @@ struct ParserDriver {
   
 
   //! For future parsing...
-  ParserDriver(Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
+  explicit ParserDriver(Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
 
   //! For parsing a string...
   ParserDriver(const string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {

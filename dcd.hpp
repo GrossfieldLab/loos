@@ -89,13 +89,13 @@ public:
   DCD() : _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
 
   //! Begin reading from the file named s
-  DCD(const string s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+  explicit DCD(const string s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the file named s
-  DCD(const char* s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+  explicit DCD(const char* s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the stream ifs
-  DCD(fstream& ifs) : _ifs(ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
+  explicit DCD(fstream& ifs) : _ifs(ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
 
   //! Read in the header from the stored stream
   void readHeader(void);
