@@ -138,7 +138,7 @@ class OctaveAsciiWriter : public MatrixWriter<T> {
 public:
   OctaveAsciiWriter() : MatrixWriter<T>() { }
   explicit OctaveAsciiWriter(const string& s) : MatrixWriter<T>(s) { }
-  explicit ctaveAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
+  explicit OctaveAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
 
   void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
     if (OctaveAsciiWriter<T>::meta_data != "")
