@@ -37,6 +37,8 @@
 #include <ensembles.hpp>
 #include <MatrixWriter.hpp>
 
+#include <iostream>
+#include <fstream>
 #include <getopt.h>
 #include <cstdlib>
 #include <iomanip>
@@ -65,7 +67,7 @@ struct Globals {
 	       output_type("ascii"),
 	       output_prefix(""),
 	       avg_name(""),
-	       dcdmin(0), dcdmax(0), header("<NULL HEADER>") { }
+	       dcdmin(0), dcdmax(0), header("<NULL HEADER>"), mapname("") { }
 
 
   string alignment_string, svd_string;
@@ -78,6 +80,7 @@ struct Globals {
   string avg_name;
   uint dcdmin, dcdmax;
   string header;
+  string mapname;
 };
 
 
@@ -95,6 +98,7 @@ static struct option long_options[] = {
   {"prefix", required_argument, 0, 'p'},
   {"range", required_argument, 0, 'r'},
   {"avg", required_argument, 0, 'A'},
+  {"map", required_argument, 0, 'm'},
   {"help", no_argument, 0, 'H'},
   {0,0,0,0}
 };
@@ -116,6 +120,7 @@ void show_help(void) {
   cout << "       --format=string      [" << defaults.output_type << "]\n";
   cout << "                ascii|octaves\n";
   cout << "       --range=min:max      [" << defaults.dcdmin << ":" << defaults.dcdmax << "]\n";
+  cout << "       --map=fname          [" << defaults.mapname << "]\n";
   cout << "       --help\n";
 }
 
@@ -139,6 +144,7 @@ void parseOptions(int argc, char *argv[]) {
 	exit(-1);
       }
       break;
+    case 'm': globals.mapname = string(optarg); break;
     case 0: break;
     default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
     }
@@ -279,6 +285,24 @@ float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD
 
 
 
+void write_map(const string& fname, const AtomicGroup& grp) {
+  ofstream fout(fname.c_str());
+
+  if (!fout) {
+    cerr << "Unable to open " << fname << " for output.\n";
+    exit(-10);
+  }
+
+  pAtom pa;
+  AtomicGroup::Iterator iter(grp);
+  int i = 0;
+  while (pa = iter())
+    fout << i++ << "\t" << pa->id() << "\t" << pa->resid() << endl;
+
+}
+
+
+
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   globals.header = header;
@@ -321,6 +345,9 @@ int main(int argc, char *argv[]) {
     cerr << "Error- no atoms selected to calculate the SVD of.\n";
     exit(-1);
   }
+
+  if (globals.mapname != "")
+    write_map(globals.mapname, svdsub);
 
   cerr << argv[0] << ": Aligning...\n";
   vector<XForm> xforms = align(alignsub, dcd);
