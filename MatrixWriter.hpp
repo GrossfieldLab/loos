@@ -32,18 +32,19 @@
 
 #include <iostream>
 #include <fstream>
-#include <Fmt.hpp>
 #include <string>
-
+#include <stdexcept>
+#include <cassert>
 
 using namespace std;
+
+typedef unsigned int uint;
 
 
 //! Class for handling writing of matrices in different formats.
 template<class T>
 class MatrixWriter {
 public:
-  typedef unsigned int uint;
 
   //! Default constructor sends output to cout
   MatrixWriter() : prefixname(""), ofs(&cout) { }

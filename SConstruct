@@ -92,6 +92,7 @@ release_opts='-O3 -DNDEBUG'
 env.Append(CPPPATH = ['#'])
 env.Append(LIBPATH = ['#'])
 env.Append(LIBS = ['loos'])
+env.Append(LEXFLAGS=['-s'])
 
 
 # Platform specific build options...

@@ -34,6 +34,8 @@
 #include <string>
 #include <sstream>
 
+#include <boost/algorithm/string.hpp>
+
 
 #include "utils.hpp"
 
@@ -112,6 +114,10 @@ string invocationHeader(int argc, char *argv[]) {
   }
 
   invoke += " - " + user + " (" + timestamp + ")";
+
+  // Since some args my be brought in from a file via the shell
+  // back-tick operator, we process embedded returns...
+  boost::replace_all(invoke, "\n", "\\n");
 
   return(invoke);
 }

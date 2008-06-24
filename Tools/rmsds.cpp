@@ -170,7 +170,7 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
-  
+
   if (argc - optind != 2) {
     cerr << "Invalid arguments.\n";
     show_help();
@@ -187,6 +187,7 @@ int main(int argc, char *argv[]) {
     cerr << "Error- no atoms selected.\n";
     exit(-1);
   }
+  cerr << "Selected " << subset.size() << " atoms.\n";
 
   vector<AtomicGroup> frames;
   if (globals.iterate) {
