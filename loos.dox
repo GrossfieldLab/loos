@@ -128,6 +128,15 @@ following are valid strings:
 'another string'
 \endverbatim
 
+An important caveat to integer numbers is that LOOS assumes that none
+will be negative.  In other words, no atomid nor resid nor number
+extracted from a segid (see \ref magops_explained magical ops
+below) will evaluate to a 
+negative number.  The relational operators &lt; and &lt;= will behave
+differently if either operand is a negative number.  In this case,
+they will evaluate to false, for reasons that will become obvious when
+you read about the magical operators below...
+
 The parser also recognizes a small set of keywords that evaluate to
 Atom properties.  These keywords fall into two types as well: those
 that evaluate to a number (id, resid) and those that evaluate to a
@@ -269,6 +278,18 @@ following will work as expected:
 \verbatim
 segid->"(L|PG)(\d+)"
 \endverbatim
+
+There is a small hitch with the magical operator.  If there is no
+match, it evaluates to -1.  But this is a valid int, so you cannot do
+the following:
+\verbatim
+segid->"L(\d+)" <= 100
+\endverbatim
+since it will match all segids.  You can't, unless the &lt;= operator
+is also a little bit special.  Fortunately, it is.  If either operand
+is a negative number, both the &lt; and &lt;= operands assume that
+this is a flag for a null-match, and will result in a false value
+being returned.  It's a bit of a kludge, but it works...
 
 <hr>
 \section kahuna Putting It All Together...

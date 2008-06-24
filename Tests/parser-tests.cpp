@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
   test(pdb, "!(name == 'CA'", true);
   test(pdb, "segid -> 'L(\\d+)' < 3");
   test(pdb, "(segid -> '(L|P)(\\d+)') <= 3");
-  test(pdb, "(segid -> '(L|P)(\\d+)') <= 10 && name == 'CA'");
+  test(pdb, "(segid -> '(L|P)(\\d+)') <= 10 && name =~ 'C'");
   test(pdb, "name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV'");
   test(pdb, "!(name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV')");
 }

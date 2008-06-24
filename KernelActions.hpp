@@ -75,6 +75,26 @@ namespace loos {
       return(compare(v2, v1));
     }
 
+    bool negativeOperand(void) {
+      Value v1 = stack->peek(-1);
+      Value v2 = stack->peek(-2);
+
+      if ( (v1.type == Value::INT && v1.itg < 0) ||
+	   (v2.type == Value::INT && v2.itg < 0) )
+	return(true);
+      
+      return(false);
+    }
+
+    void binaryFalseResult(void) {
+      Value v(0);
+
+      stack->drop();
+      stack->drop();
+      stack->push(v);
+    }
+
+
     //! Check to make sure an atom has been set...
     void hasAtom(void) {
       if (atom == 0)
@@ -167,8 +187,14 @@ namespace loos {
   public:
     lessThan() : Action("<") { }
     void execute(void) {
-      Value v(binComp() < 0);
-      stack->push(v);
+
+      if (negativeOperand())
+	binaryFalseResult();
+      else {
+	Value v(binComp() < 0);
+	stack->push(v);
+      }
+
     }
   };
 
@@ -177,8 +203,14 @@ namespace loos {
   public:
     lessThanEquals() : Action("<=") { }
     void execute(void) {
-      Value v(binComp() <= 0);
-      stack->push(v);
+
+      if (negativeOperand())
+	binaryFalseResult();
+      else {
+	Value v(binComp() <= 0);
+	stack->push(v);
+      }
+
     }
   };
 
