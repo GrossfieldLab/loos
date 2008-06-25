@@ -183,6 +183,16 @@ public:
    */
   bool operator==(const AtomicGroup& rhs) const;
 
+  //! Inequality test for two groups
+  bool operator!=(AtomicGroup& rhs) {
+      return(!(operator==(rhs)));
+  }
+
+  //! Inequality test for two groups
+  bool operator!=(const AtomicGroup& rhs) {
+      return(!(operator==(rhs)));
+  }
+
   //! subset() and excise() args are patterned after perl's substr...
   /** If offset is negative, then it's relative to the end of the
    * group.  If length is 0, then everything from offset to the
