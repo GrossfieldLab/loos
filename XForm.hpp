@@ -89,6 +89,9 @@ class XForm {
 public:
   XForm() : _unset(true) { GMatrix m; stack.push_back(m); }
 
+  //! Initialize an XForm with an existing matrix.
+  explicit XForm(const GMatrix& m) { stack.push_back(m); }
+
   //! Push the current matrix onto the stack
   void push(void) { GMatrix M = stack.back(); stack.push_back(M); _unset = false; }
   //! Pop the top matrix off the stack
