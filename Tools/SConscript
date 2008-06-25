@@ -24,7 +24,7 @@ import sys
 
 Import('env')
 
-apps = 'density-dist density-dist-windowed center-pdb pdb2matlab dcdframe2pdb contacts order_params bounding aligner svd rmsds xy_rdf xy_rdf_timeseries pdbselect rdf'
+apps = 'density-dist density-dist-windowed center-pdb pdb2matlab dcdframe2pdb contacts order_params bounding aligner svd rmsds xy_rdf xy_rdf_timeseries pdbselect rdf atomic-rdf'
 
 list = []
 
