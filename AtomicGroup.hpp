@@ -258,6 +258,13 @@ public:
   void periodicBox(const greal x, const greal y, const greal z) { 
       box.box(GCoord(x,y,z));
   }
+
+  //! Translate the entire group so that the centroid is in the 
+  //! primary cell
+  void reimage();
+  
+  //! Reimage atoms individually into the primary cell
+  void reimageByAtom();
   
   //! Find atoms in \a grp that are within \a dist angstroms of atoms
   //! in the current group.

@@ -598,6 +598,30 @@ bool AtomicGroup::operator==(const AtomicGroup& rhs) const {
 }
 
 
+void AtomicGroup::reimage() {
+    if (!(isPeriodic()))
+        throw(runtime_error("trying to reimage a non-periodic group"));
+    GCoord com = centroid();
+    GCoord reimaged = com;
+    reimaged.reimage(periodicBox());
+    GCoord trans = reimaged - com;
+    ConstAtomIterator a;
+    for (a=atoms.begin(); a!=atoms.end(); a++) {
+        (*a)->coords() += trans;
+    }
+}
+
+void AtomicGroup::reimageByAtom () {
+    if (!(isPeriodic()))
+        throw(runtime_error("trying to reimage a non-periodic group"));
+    ConstAtomIterator a;
+    GCoord box = periodicBox();
+    for (a=atoms.begin(); a!=atoms.end(); a++) {
+        (*a)->coords().reimage(box);
+    }
+}
+    
+
 /** Uses a not-very-bright algorithm that compares all atoms against
  * all atoms... 
  */
