@@ -21,31 +21,41 @@
 
 
 
+#include <Geometry.hpp>
 
-#if !defined(GEOM_HPP)
-#define GEOM_HPP
 
-#include "loos_defs.hpp"
 
-#include <cmath>
-#include "Atom.hpp"
+//const double DEGREES = 180 / M_PI ;
 
-using namespace std;
+greal angle(const GCoord &a, const GCoord &b, const GCoord &c) {
+    // TODO: check to make sure the sign is right
+    GCoord ba = b - a;
+    GCoord bc = b - c;
+    greal cosine = (ba * bc) / (ba.length() * bc.length());
+    return (acos(cosine) * DEGREES);
+}
 
-const double DEGREES = 180 / M_PI ;
+greal angle(const pAtom a, const pAtom b, const pAtom c) {
+    return(angle(a->coords(), b->coords(), c->coords()));
+}
 
-//! Compute the angle in degrees assuming the middle is the vertex
-greal angle(const GCoord &a, const GCoord &b, const GCoord &c);
-
-//! Compute the angle in degrees assuming the middle is the vertex
-greal angle(const pAtom a, const pAtom b, const pAtom c);
-
-//! Compute the torsion in degrees 
 greal torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
-	      const GCoord &d);
+          const GCoord &d) {
+    // TODO: check to make sure the sign is right
+    GCoord ba = b - a;
+    GCoord cb = c - b;
+    GCoord dc = d - c;
+
+    GCoord norm1 = ba.cross(cb);
+    GCoord norm2 = cb.cross(dc);
+    greal cosine = norm1*norm2 / (norm1.length() * norm2.length());
+    greal angle = acos(cosine) * DEGREES;
+    greal sign = ba * norm2;
+    if (sign < 0) angle = -angle;
+    return(angle);
+}
 
 greal torsion(const pAtom a, const pAtom b, const pAtom c, 
-	      const pAtom d);
-
-
-#endif
+               const pAtom d) {
+    return(torsion(a->coords(), b->coords(), c->coords(), d->coords()));
+}
