@@ -359,14 +359,6 @@ public:
   }
 
 
-  //! Translate coordinates to the unit cell
-  void canonical(const Coord<T>& box) {
-    int i;
-    for (i=0; i<MAXCOORD; i++)
-      v[i] = fmod(v[i] + 1.5 * box.v[i], box.v[i]) - (box.v[i] / 2.0);
-  }
-
-
   //! Length of the Coord (as a vector) squared
   double length2(void) const {
     double d = 0.0;

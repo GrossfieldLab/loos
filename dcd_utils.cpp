@@ -99,7 +99,7 @@ double *gridify(DCD& dcd, double *avg_box, double *avg_unitvol, int gridsizes[],
     int n = crds.size();
     for (i=0; i<n; i++) {
       GCoord cc = crds[i];
-      cc.canonical(box);
+      cc.reimage(box);
       double x;
       int u[3];
       int j;
