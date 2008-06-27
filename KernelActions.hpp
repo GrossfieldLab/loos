@@ -23,8 +23,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include <string.h>
-
 #include <boost/regex.hpp>
 
 #include "Atom.hpp"
