@@ -32,9 +32,11 @@
 #include <string>
 #include <vector>
 
+#include <cmath>
+
 #include <Matrix44.hpp>
 #include <Coord.hpp>
-#include <loos.hpp>
+#include <loos_defs.hpp>
 
 using namespace std;
 

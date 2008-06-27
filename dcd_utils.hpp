@@ -28,7 +28,7 @@
 #include <iostream>
 #include <vector>
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <dcd.hpp>
 
 using namespace std;

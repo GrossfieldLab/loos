@@ -27,12 +27,11 @@
 #if !defined(MATRIX44_HPP)
 #define MATRIX44_HPP
 
-
 #include <iostream>
 #include <stdexcept>
-#include <string.h>
+#include <string>
 
-#include <Coord.hpp>
+#include <loos_defs.hpp>
 
 
 using namespace std;

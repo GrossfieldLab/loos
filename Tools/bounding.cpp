@@ -34,9 +34,7 @@
 
 
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <Selectors.hpp>
-#include <Parser.hpp>
+
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {

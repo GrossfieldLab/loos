@@ -29,14 +29,8 @@
 
 using namespace std;
 
-#include <iostream>
-#include <math.h>
-
 #include <loos.hpp>
-#include <psf.hpp>
-#include <dcd.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
+
 
 void Usage()
     {

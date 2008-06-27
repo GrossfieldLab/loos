@@ -20,18 +20,9 @@
 */
 
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <tr1/memory>
-
-
 using namespace std;
-using namespace tr1;
 
 #include <loos.hpp>
-#include <Atom.hpp>
-#include <AtomicGroup.hpp>
 
 
 struct SelectorCA : public AtomSelector {

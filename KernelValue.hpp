@@ -25,17 +25,14 @@
 #if !defined(KERNELVALUE_HPP)
 #define KERNELVALUE_HPP
 
-
-
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <vector>
-
 #include <cmath>
 
-#include <string.h>
 
+#include <loos_defs.hpp>
 
 
 using namespace std;

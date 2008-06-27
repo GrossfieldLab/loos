@@ -27,28 +27,53 @@
 #if !defined(LOOS_HPP)
 #define LOOS_HPP
 
-#include <Coord.hpp>
-#include <boost/shared_ptr.hpp>
+// These are common system includes that nearly anybody who uses LOOS
+// will probably be including anyway...
 
+#include <iostream>
+#include <iomanip>
+#include <ios>
+#include <sstream>
+#include <fstream>
 
+#include <ctime>
+#include <cmath>
 
-typedef double greal;
-typedef long gint;
+#include <string>
+#include <vector>
+#include <algorithm>
 
-typedef float dcd_real;
-typedef double dcd_double;
+#include <stdexcept>
 
-typedef Coord<double> GCoord;
-typedef boost::shared_ptr<GCoord> pGCoord;
+#include <cassert>
 
+// These are the LOOS-specific includes...
 
-const uint kilobytes = 1024;
-const uint megabytes = kilobytes * kilobytes;
-const uint gigabytes = megabytes * megabytes;
-
-
-
+#include <loos_defs.hpp>
 #include <utils.hpp>
+
+#include <Kernel.hpp>
+#include <Parser.hpp>
+#include <Selectors.hpp>
+
+
+#include <Matrix44.hpp>
+#include <XForm.hpp>
+#include <MatrixReader.hpp>
+#include <MatrixWriter.hpp>
+
+#include <pdb.hpp>
+#include <psf.hpp>
+
+#include <dcd.hpp>
+#include <dcd_utils.hpp>
+#include <dcdwriter.hpp>
+
+#include <Geometry.hpp>
+#include <ensembles.hpp>
+#include <TimeSeries.hpp>
+
+#include <Fmt.hpp>
 
 #endif
 

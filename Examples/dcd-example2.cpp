@@ -20,14 +20,7 @@
 */
 
 
-#include <ios>
-#include <iostream>
-#include <iomanip>
-
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <dcd.hpp>
-#include <Selectors.hpp>
 
 
 int main(int argc, char *argv[]) {

@@ -35,7 +35,7 @@
 #include <ctime>
 
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
 

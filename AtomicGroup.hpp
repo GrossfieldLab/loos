@@ -26,16 +26,28 @@
 #if !defined(ATOMICGROUP_HPP)
 #define ATOMICGROUP_HPP
 
-
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-#include <ext/hash_set>
-#include <boost/shared_ptr.hpp>
 
-#include <boost/tuple/tuple.hpp>
+#include <ext/hash_set>
+
+
+#include <loos_defs.hpp>
+
+
+using namespace std;
+using namespace __gnu_cxx;
+
+
+
+#include <Atom.hpp>
+#include <XForm.hpp>
+#include <UniqueStrings.hpp>
+#include <PeriodicBox.hpp>
+#include <utils.hpp>
 
 
 
@@ -67,17 +79,6 @@ typedef __CLPK_integer f77int;
 
 #endif
 
-
-
-using namespace std;
-using namespace __gnu_cxx;
-
-
-#include <loos.hpp>
-#include <Atom.hpp>
-#include <XForm.hpp>
-#include <UniqueStrings.hpp>
-#include <PeriodicBox.hpp>
 
 
 //! Virtual base-class for selecting atoms from a group

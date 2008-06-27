@@ -22,17 +22,8 @@
 
 
 
-#include <iostream>
-#include <vector>
-#include <stdexcept>
 
-#include "Atom.hpp"
-
-#include "Kernel.hpp"
-#include "Parser.hpp"
-
-#include "Selectors.hpp"
-#include "pdb.hpp"
+#include <loos.hpp>
 
 using namespace std;
 using namespace loos;

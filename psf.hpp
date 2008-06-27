@@ -29,7 +29,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "loos.hpp"
+#include "loos_defs.hpp"
 #include "Atom.hpp"
 #include "AtomicGroup.hpp"
 

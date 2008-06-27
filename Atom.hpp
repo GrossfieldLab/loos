@@ -23,18 +23,16 @@
 #if !defined(ATOM_HPP)
 #define ATOM_HPP
 
-
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-#include <boost/shared_ptr.hpp>
 
+
+#include <loos_defs.hpp>
 
 using namespace std;
-
-#include <loos.hpp>
 
 class Atom;
 

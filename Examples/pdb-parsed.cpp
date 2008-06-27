@@ -19,13 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
-#include <pdb.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
-
+#include <loos.hpp>
 
 int main(int argc, char *argv[]) {
   

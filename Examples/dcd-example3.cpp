@@ -19,14 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <ios>
-#include <iostream>
-#include <iomanip>
-
 #include <loos.hpp>
-#include <psf.hpp>
-#include <dcd.hpp>
 
 
 // Select for non-solvent atoms...

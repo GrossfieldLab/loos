@@ -24,6 +24,7 @@
 #if !defined(DCD_HPP)
 #define DCD_HPP
 
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -32,7 +33,8 @@
 #include <vector>
 #include <boost/utility.hpp>
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
+
 #include <AtomicGroup.hpp>
 #include <StreamWrapper.hpp>
 

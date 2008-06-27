@@ -32,8 +32,6 @@
 
 
 #include <loos.hpp>
-#include <dcd.hpp>
-#include <pdb.hpp>
 
 
 int main(int argc, char *argv[]) {

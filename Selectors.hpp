@@ -27,7 +27,7 @@
 #if !defined(SELECTORS_HPP)
 #define SELECTORS_HPP
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
 #include <Kernel.hpp>
 

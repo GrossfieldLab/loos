@@ -26,13 +26,16 @@
 #if !defined(KERNELSTACK_HPP)
 #define KERNELSTACK_HPP
 
+
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <vector>
 
-#include <string.h>
+#include <string>
 
+
+#include <loos_defs.hpp>
 #include "KernelValue.hpp"
 
 

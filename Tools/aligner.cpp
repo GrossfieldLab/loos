@@ -49,16 +49,9 @@
 
 
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
-#include <dcd.hpp>
-#include <dcdwriter.hpp>
-#include <ensembles.hpp>
 
 #include <getopt.h>
 #include <cstdlib>
-#include <iomanip>
 
 // Default values...
 

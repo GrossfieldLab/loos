@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 
 //! Class for managing periodic box information.
 /** This is the fundamental object that gets shared amongst related

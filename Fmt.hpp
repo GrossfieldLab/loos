@@ -11,7 +11,6 @@
 #if !defined(LOOSFMT_HPP)
 #define LOOSFMT_HPP
 
-
 #include <ios>
 #include <sstream>
 #include <iostream>

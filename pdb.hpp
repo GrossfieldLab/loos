@@ -40,11 +40,12 @@
 using namespace std;
 
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <Atom.hpp>
 #include <AtomicGroup.hpp>
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
+#include <utils.hpp>
 
 
 //! PDB reading/writing class

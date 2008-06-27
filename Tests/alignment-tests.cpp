@@ -20,18 +20,8 @@
 */
 
 
-#include <iostream>
-#include <iomanip>
-#include <boost/random.hpp>
-#include <ctime>
-
-
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <Kernel.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
-#include <ensembles.hpp>
+
 
 // Configuration options...
 const unsigned int iter_tests = 1000;

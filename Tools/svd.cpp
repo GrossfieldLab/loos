@@ -30,20 +30,9 @@
 
 
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
-#include <dcd.hpp>
-#include <ensembles.hpp>
-#include <MatrixWriter.hpp>
 
-#include <iostream>
-#include <fstream>
 #include <getopt.h>
 #include <cstdlib>
-#include <iomanip>
-
-#include <assert.h>
 
 
 #if defined(__linux__)

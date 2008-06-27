@@ -28,8 +28,6 @@
 #include <string>
 #include <stdexcept>
 
-#include <math.h>
-
 using namespace std;
 
 // Forward declarations for matrix-vector multiply...

@@ -24,11 +24,9 @@
 #if !defined(ENSEMBLES_HPP)
 #define ENSEMBLES_HPP
 
-
-#include <loos.hpp>
 #include <vector>
 
-#include <boost/tuple/tuple.hpp>
+#include <loos_defs.hpp>
 
 namespace loos {
   //! Compute the average structure of a set of AtomicGroup objects

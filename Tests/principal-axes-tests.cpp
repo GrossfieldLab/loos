@@ -20,19 +20,7 @@
 */
 
 
-#include <iostream>
-#include <iomanip>
-#include <boost/random.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <ctime>
-#include <cmath>
-
-
 #include <loos.hpp>
-#include <AtomicGroup.hpp>
-#include <Kernel.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
 
 
 // # of iterations

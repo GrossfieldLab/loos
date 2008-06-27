@@ -29,17 +29,9 @@
 */
 
 
-#include <ios>
-#include <iostream>
-#include <iomanip>
 #include <ctype.h>
 
 #include <loos.hpp>
-#include <psf.hpp>
-#include <dcd.hpp>
-#include <utils.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
 
 void Usage()
     {

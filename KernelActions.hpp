@@ -26,6 +26,7 @@
 #if !defined(KERNELACTIONS_HPP)
 #define KERNELACTIONS_HPP
 
+
 #include <sstream>
 #include <iostream>
 #include <string>
@@ -36,8 +37,10 @@
 
 #include <boost/regex.hpp>
 
-#include "Atom.hpp"
 
+#include <loos_defs.hpp>
+
+#include "Atom.hpp"
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 
