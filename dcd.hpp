@@ -1,15 +1,29 @@
 /*
-  dcd.h
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 #if !defined(DCD_HPP)
 #define DCD_HPP
+
 
 #include <iostream>
 #include <fstream>
@@ -19,7 +33,8 @@
 #include <vector>
 #include <boost/utility.hpp>
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
+
 #include <AtomicGroup.hpp>
 #include <StreamWrapper.hpp>
 
@@ -76,13 +91,13 @@ public:
   DCD() : _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
 
   //! Begin reading from the file named s
-  DCD(const string s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+  explicit DCD(const string s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the file named s
-  DCD(const char* s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+  explicit DCD(const char* s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the stream ifs
-  DCD(fstream& ifs) : _ifs(ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
+  explicit DCD(fstream& ifs) : _ifs(ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
 
   //! Read in the header from the stored stream
   void readHeader(void);

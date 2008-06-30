@@ -1,13 +1,25 @@
 /*
-  utils.cpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Suite-wide utilities...
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -16,8 +28,13 @@
 #include <time.h>
 #include <pwd.h>
 
+#include <stdexcept>
+
+#include <algorithm>
 #include <string>
 #include <sstream>
+
+#include <boost/algorithm/string.hpp>
 
 
 #include "utils.hpp"
@@ -98,6 +115,10 @@ string invocationHeader(int argc, char *argv[]) {
 
   invoke += " - " + user + " (" + timestamp + ")";
 
+  // Since some args my be brought in from a file via the shell
+  // back-tick operator, we process embedded returns...
+  boost::replace_all(invoke, "\n", "\\n");
+
   return(invoke);
 }
 
@@ -152,4 +173,63 @@ void loos::randomSeedRNG(void) {
   base_generator_type& rng = rng_singleton();
 
   rng.seed(static_cast<unsigned int>(time(0)));
+}
+
+/** This routine breaks the input string into chunks delimited by
+ * commas.  Each chunk is a range specified in Octave format, i.e.
+ * - start:stop
+ * - start:step:stop
+ *
+ * The range is inclusive of both ends.  Additionally, a single index
+ * can be specified.
+ *
+ * Internally, this routine creates a vector of ints that represent
+ * the specified indices.  There is no bounds checking...  Duplicate
+ * indices are filtered and the returned vector is sorted.
+ */ 
+vector<int> loos::parseRangeList(const string& text) {
+  vector<string> terms;
+  vector<int> indices;
+
+  boost::split(terms, text, boost::is_any_of(","), boost::token_compress_on);
+  vector<string>::const_iterator ci;
+  for (ci = terms.begin(); ci != terms.end(); ci++) {
+    int a, b, c;
+    int i;
+    i = sscanf(ci->c_str(), "%d:%d:%d", &a, &b, &c);
+    if (i == 2) {
+      c = b;
+      b = 1;
+    } else if (i == 1) {
+      c = a;
+      b = 1;
+    } else if (i != 3)
+      throw(runtime_error("Cannot parse range list item " + *ci));
+
+    if (c < a) {
+      if (b > 0)
+	throw(runtime_error("Invalid range spec " + *ci));
+      int x = c;
+      c = a;
+      a = x;
+      b = -b;
+    } else if (b <= 0)
+      throw(runtime_error("Invalid range spec " + *ci));
+
+    for (int i=a; i<=c; i += b)
+      indices.push_back(i);
+  }
+  sort(indices.begin(), indices.end());
+  vector<int> results;
+  vector<int>::const_iterator cvi;
+  int last = indices[0];
+  results.push_back(last);
+
+  for (cvi = indices.begin()+1; cvi != indices.end(); cvi++)
+    if (*cvi != last) {
+      last = *cvi;
+      results.push_back(last);
+    }
+
+  return(results);
 }

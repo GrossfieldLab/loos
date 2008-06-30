@@ -1,25 +1,26 @@
 /*
-  pdb-tests.cpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Unit testing for PDB/AtomicGroup methods...
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#include <boost/random.hpp>
-#include <ctime>
 
 
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <Kernel.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
-#include <ensembles.hpp>
 
 
 #if !defined(MAXGRPCNT)
@@ -97,6 +98,25 @@ void test_selections(PDB& pdb) {
 }
 
 
+void test_within(PDB& pdb) {
+  SolventSelector solsel;
+  HeavyAtomSelector hsel;
+  AndSelector heavywatersel(solsel, hsel);
+
+  SegidSelector targsel("PE10");
+
+  AtomicGroup solvent = pdb.select(heavywatersel);
+  AtomicGroup target = pdb.select(targsel);
+
+  cout << "*** within() test\n";
+  cout << "Waters = " << solvent.size() << endl;
+  cout << "Target = " << target.size() << endl;
+
+  AtomicGroup nearby = solvent.within(4.0, target);
+  cout << "Found " << nearby.size() << " waters within 4.0 Angstroms of the target.\n";
+}
+
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     cerr << "Usage- " << argv[0] << " pdbfile\n";
@@ -123,7 +143,7 @@ int main(int argc, char *argv[]) {
   cout << "minResid = " << pdb.minResid() << endl;
   cout << "maxResid = " << pdb.maxResid() << endl;
   cout << "nresids = " << pdb.numberOfResidues() << endl;
-  cout << "nchains = " << pdb.numberOfChains() << endl;
+  cout << "nsegids = " << pdb.numberOfSegids() << endl;
 
   vector<GCoord> bbox = pdb.boundingBox();
   cout << "Bounding box: min = " << bbox[0] << ", max = " << bbox[1] << endl;
@@ -190,7 +210,7 @@ int main(int argc, char *argv[]) {
   // -------------------------------------------------------------------------------
   test_findById(pdb);
   test_selections(pdb);
-
+  test_within(pdb);
 
 }
 

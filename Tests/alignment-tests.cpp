@@ -1,28 +1,27 @@
 /*
-  alignment-tests.cpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Unit testing for alignment routines...
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#include <iostream>
-#include <iomanip>
-#include <boost/random.hpp>
-#include <ctime>
 
 
 #include <loos.hpp>
-#include <pdb.hpp>
-#include <Kernel.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
-#include <ensembles.hpp>
+
 
 // Configuration options...
 const unsigned int iter_tests = 1000;

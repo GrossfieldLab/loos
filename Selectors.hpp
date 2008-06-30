@@ -1,14 +1,25 @@
 /*
-  Selectors.hpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  A selector library (of sorts...)
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 
 
@@ -16,7 +27,7 @@
 #if !defined(SELECTORS_HPP)
 #define SELECTORS_HPP
 
-
+#include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
 #include <Kernel.hpp>
 
@@ -39,7 +50,7 @@ struct BackboneSelector : public AtomSelector {
 
 //! Predicate for selecting atoms based on the passed segid string
 struct SegidSelector : public AtomSelector {
-  SegidSelector(const string s) : str(s) { }
+  explicit SegidSelector(const string s) : str(s) { }
   bool operator()(const pAtom& pa) const {
     return(pa->segid() == str);
   }
@@ -57,6 +68,17 @@ struct ResidRangeSelector : public AtomSelector {
   int _low, _high;
 };
 
+//! Predicate for selecting atoms in a specific range of z values
+struct ZSliceSelector : public AtomSelector {
+    ZSliceSelector(const greal min, const greal max) : _min(min), _max(max) { }
+    bool operator()(const pAtom& pa) const {
+        greal z = (pa->coords()).z();
+        return ( (z>=_min) && (z<_max) );
+    }
+
+    greal _min, _max;
+};
+
 
 //! Negates a selection predicate
 /*!
@@ -71,7 +93,7 @@ struct ResidRangeSelector : public AtomSelector {
 */
 
 struct NotSelector : public AtomSelector {
-  NotSelector(const AtomSelector& s) : sel(s) { }
+  explicit NotSelector(const AtomSelector& s) : sel(s) { }
   bool operator()(const pAtom& pa) const {
     return(!(sel(pa)));
   }
@@ -181,7 +203,7 @@ struct SolventSelector : public AtomSelector {
  */
 class KernelSelector : public AtomSelector {
 public:
-  KernelSelector(loos::Kernel& k) : krnl(k) { }
+  explicit KernelSelector(loos::Kernel& k) : krnl(k) { }
 
   bool operator()(const pAtom& pa) const {
     krnl.execute(pa);

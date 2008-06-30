@@ -1,28 +1,26 @@
 /*
-  principal-axes-tests.cpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-#include <iostream>
-#include <iomanip>
-#include <boost/random.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <ctime>
-#include <cmath>
 
 
 #include <loos.hpp>
-#include <AtomicGroup.hpp>
-#include <Kernel.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
 
 
 // # of iterations
@@ -82,7 +80,7 @@ AtomicGroup createGroup(const int natoms, const float a, const float b, const fl
   boost::uniform_real<> map(0.0, 1.0);
   boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > randy(rng, map);
   
-    int i;
+  int i;
   for (i=0; i<natoms; i++) {
     greal theta = 2*pi*randy();
     greal phi = pi*randy();

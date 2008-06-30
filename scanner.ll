@@ -21,6 +21,7 @@ number   [0-9]+
 ID       [a-zA-Z][a-zA-Z0-9]+
 
 %%
+[\n+]    /* Swallow newlines? */
 
 #.+
 {number}                { yylval->ival = atoi(yytext); return(token::NUMBER); }

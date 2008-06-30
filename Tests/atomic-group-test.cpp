@@ -1,15 +1,28 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <tr1/memory>
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 
 using namespace std;
-using namespace tr1;
 
 #include <loos.hpp>
-#include <Atom.hpp>
-#include <AtomicGroup.hpp>
 
 
 struct SelectorCA : public AtomSelector {
@@ -138,7 +151,23 @@ int main() {
 
   cout << "-------------------\n";
   cout << "Box test:\n";
+  AtomicGroup g7 = g1;
   g1.periodicBox(GCoord(13, 26, 39));
   cout << g1 << endl;
+
+  cout << "-------------------\n";
+  cout << "Box inheritance test:\n";
+  cout << g3 << endl;
+  cout << "Test updating of box to (25,26,29):\n";
+  g1.periodicBox(25,26,29);
+  cout << g1.periodicBox() << endl;
+  cout << g3.periodicBox() << endl;
+  cout << "Test updating derived box (pre-box) to (7,8,9):\n";
+  g7.periodicBox(7,8,9);
+  cout << g1.periodicBox() << endl;
+  cout << "Testing copy (should be (7,8,9):\n";
+  AtomicGroup g6 = g1.copy();
+  g1.periodicBox(1,2,3);
+  cout << g6.periodicBox() << endl;
 
 }

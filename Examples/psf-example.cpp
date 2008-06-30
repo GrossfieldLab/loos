@@ -1,34 +1,26 @@
 /*
-  psf-example.cpp
-  (c) 2008 Alan Grossfield
+  This file is part of LOOS.
 
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
-  Some examples of using the PDB/AtomicGroup classes...
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-
-#include <psf.hpp>
-
-
-struct CASelector : public AtomSelector {
-  bool operator()(const pAtom& atom) const {
-    return(atom->name() == "CA");
-  }
-};
-
-
-
-struct SolvSelector : public AtomSelector {
-  bool operator()(const pAtom& atom) const  {
-    return(atom->segid() == "SOLV" || atom->segid() == "BULK");
-  }
-};
-
+#include <loos.hpp>
 
 int main(int argc, char *argv[]) {
   
@@ -36,13 +28,13 @@ int main(int argc, char *argv[]) {
 
   cout << "Read in " << p.size() << " atoms from " << argv[1] << endl;
 
-  CASelector casel;
+  CAlphaSelector casel;
   AtomicGroup cas = p.select(casel);
   
   cout << "There are " << cas.size() << " CAs.\n";
   cout << "The max radius for CAs is " << cas.radius() << endl;
 
-  SolvSelector wasel;
+  SolventSelector wasel;
   AtomicGroup water = p.select(wasel);
 
   int nwater = water.numberOfResidues();
@@ -75,6 +67,20 @@ int main(int argc, char *argv[]) {
   cout << endl;
   AtomicGroup bonded = p.groupFromID(bondIDs);
   cout << bonded << endl;
+
+  cout << "************\n";
+  NotSelector notwater(wasel);
+  AtomicGroup subset = p.select(notwater);
+  cout << "Selected " << subset.size() << " non-solvent atoms.\n";
+  vector<AtomicGroup> molecules = subset.splitByMolecule();
+  cout << "Found " << molecules.size() << " molecules.\n";
+  for (unsigned int j=0; j<molecules.size(); j++) {
+    unsigned int n = molecules[j].size();
+    molecules[j].sort();
+    cout << "Molecule " << j << " has " << n << " atoms.\n";
+    cout << *(molecules[j][0]) << endl;
+    cout << *(molecules[j][n-1]) << endl;
+  }
 
 }
 

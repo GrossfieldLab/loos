@@ -1,14 +1,25 @@
 /*
-  pdb.h
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
-  Simple PDB reader/writer
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 
 #if !defined(PDB_HPP)
@@ -29,11 +40,12 @@
 using namespace std;
 
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <Atom.hpp>
 #include <AtomicGroup.hpp>
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
+#include <utils.hpp>
 
 
 //! PDB reading/writing class
@@ -50,7 +62,7 @@ public:
   virtual ~PDB() {}
 
   //! Read in PDB from a filename
-  PDB(const string fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
+  explicit PDB(const string fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
     ifstream ifs(fname.c_str());
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + fname));
@@ -58,7 +70,7 @@ public:
   }
 
   //! Read in a PDB from a filename
-  PDB(const char* fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
+  explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
     ifstream ifs(fname);
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + string(fname)));
@@ -66,7 +78,7 @@ public:
   }
 
   //! Read in a PDB from an ifstream
-  PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true), _has_cryst(false) { read(ifs); }
+  explicit PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true), _has_cryst(false) { read(ifs); }
 
 
   //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)

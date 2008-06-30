@@ -1,15 +1,25 @@
 /*
-  LOOS.hpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Suite-wide header file for the Lightweight Object Oriented Structure
-  library
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 
 
@@ -17,20 +27,53 @@
 #if !defined(LOOS_HPP)
 #define LOOS_HPP
 
-#include <Coord.hpp>
+// These are common system includes that nearly anybody who uses LOOS
+// will probably be including anyway...
 
+#include <iostream>
+#include <iomanip>
+#include <ios>
+#include <sstream>
+#include <fstream>
 
+#include <ctime>
+#include <cmath>
 
-typedef double greal;
-typedef long gint;
+#include <string>
+#include <vector>
+#include <algorithm>
 
-typedef float dcd_real;
-typedef double dcd_double;
+#include <stdexcept>
 
-typedef Coord<double> GCoord;
+#include <cassert>
 
+// These are the LOOS-specific includes...
 
+#include <loos_defs.hpp>
 #include <utils.hpp>
+
+#include <Kernel.hpp>
+#include <Parser.hpp>
+#include <Selectors.hpp>
+
+
+#include <Matrix44.hpp>
+#include <XForm.hpp>
+#include <MatrixReader.hpp>
+#include <MatrixWriter.hpp>
+
+#include <pdb.hpp>
+#include <psf.hpp>
+
+#include <dcd.hpp>
+#include <dcd_utils.hpp>
+#include <dcdwriter.hpp>
+
+#include <Geometry.hpp>
+#include <ensembles.hpp>
+#include <TimeSeries.hpp>
+
+#include <Fmt.hpp>
 
 #endif
 

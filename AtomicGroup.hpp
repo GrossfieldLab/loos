@@ -1,15 +1,24 @@
 /*
-  AtomicGroup.hpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Basic class for groups of atoms...
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 
 
 
@@ -17,15 +26,28 @@
 #if !defined(ATOMICGROUP_HPP)
 #define ATOMICGROUP_HPP
 
-
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
-#include <boost/shared_ptr.hpp>
 
-#include <boost/tuple/tuple.hpp>
+#include <ext/hash_set>
+
+
+#include <loos_defs.hpp>
+
+
+using namespace std;
+using namespace __gnu_cxx;
+
+
+
+#include <Atom.hpp>
+#include <XForm.hpp>
+#include <UniqueStrings.hpp>
+#include <PeriodicBox.hpp>
+#include <utils.hpp>
 
 
 
@@ -59,15 +81,6 @@ typedef __CLPK_integer f77int;
 
 
 
-using namespace std;
-
-
-#include <loos.hpp>
-#include <Atom.hpp>
-#include <XForm.hpp>
-#include <UniqueStrings.hpp>
-
-
 //! Virtual base-class for selecting atoms from a group
 
 struct AtomSelector {
@@ -95,7 +108,9 @@ typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
  *
  * AtomicGroups also support periodic boundary conditions via the
  * periodicBox() method.  If a box has been set, then isPeriodic()
- * will return true.
+ * will return true.  The periodic box is shared between the parent
+ * group and all derived groups.  AtomicGroup copies have non-shared
+ * periodic boxes...
 */
 
 
@@ -105,17 +120,9 @@ protected:
   typedef vector<pAtom>::const_iterator ConstAtomIterator;
 
 public:
-  AtomicGroup() : _sorted(false), _periodic(false) {
-#if DEBUG >= 4
-    cout << "AtomicGroup()\n";
-#endif
- }
-  virtual ~AtomicGroup() {
-#if DEBUG > 4
-    cout << "~AtomicGroup()\n";
-#endif
+  AtomicGroup() : _sorted(false) { }
 
- }
+  virtual ~AtomicGroup() { }
 
   //! Creates a deep copy of this group
   /** This creates a non-polymorphic deep copy of an AtomicGroup.  The
@@ -177,6 +184,16 @@ public:
    */
   bool operator==(const AtomicGroup& rhs) const;
 
+  //! Inequality test for two groups
+  bool operator!=(AtomicGroup& rhs) {
+      return(!(operator==(rhs)));
+  }
+
+  //! Inequality test for two groups
+  bool operator!=(const AtomicGroup& rhs) {
+      return(!(operator==(rhs)));
+  }
+
   //! subset() and excise() args are patterned after perl's substr...
   /** If offset is negative, then it's relative to the end of the
    * group.  If length is 0, then everything from offset to the
@@ -195,6 +212,9 @@ public:
 
   //! Returns a vector of AtomicGroups split from the current group based on segid
   vector<AtomicGroup> splitByUniqueSegid(void) const;
+
+  //! Returns a vector of AtomicGroups split based on bond connectivity
+  vector<AtomicGroup> splitByMolecule(void);
 
   //! Find a contained atom by its atomid
   pAtom findById(const int id);
@@ -218,7 +238,7 @@ public:
   int minResid(void) const;
   int maxResid(void) const;
   int numberOfResidues(void) const;
-  int numberOfChains(void) const;
+  int numberOfSegids(void) const;
 
   //! Is the array of atoms already sorted???
   bool sorted(void) const { return(_sorted); }
@@ -227,15 +247,29 @@ public:
   void sort(void);
 
   //! Test whether or not periodic boundary conditions are set
-  bool isPeriodic(void) const { return(_periodic); }
+  bool isPeriodic(void) const { return(box.isPeriodic()); }
   
-  //! Fetch the periodic boundary conditions
-  GCoord periodicBox(void) const { return(box); }
-  
-  //! Set the periodic boundary conditions
-  void periodicBox(const GCoord& c) { _periodic = true; box = c; }
-  
+  //! Fetch the periodic boundary conditions.
+  GCoord periodicBox(void) const { return(box.box()); }
 
+  //! Set the periodic boundary conditions.  
+  void periodicBox(const GCoord& c) { box.box(c); }
+
+  //! Set the periodic boundary conditions
+  void periodicBox(const greal x, const greal y, const greal z) { 
+      box.box(GCoord(x,y,z));
+  }
+
+  //! Translate the entire group so that the centroid is in the 
+  //! primary cell
+  void reimage();
+  
+  //! Reimage atoms individually into the primary cell
+  void reimageByAtom();
+  
+  //! Find atoms in \a grp that are within \a dist angstroms of atoms
+  //! in the current group.
+  AtomicGroup within(const double dist, AtomicGroup& grp);
 
   // *** Helper classes...
 
@@ -258,7 +292,7 @@ public:
    */
   class Iterator {
   public:
-    Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
+    explicit Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
     pAtom operator()(void) {
       if (iter >= final)
 	return(pAtom());
@@ -401,6 +435,16 @@ private:
     bool operator()(const pAtom& a) { return(a->id() == id); }
     int id;
   };
+  
+  struct EqInt {
+    bool operator()(const int i, const int j) const {
+      return(i==j);
+    }
+  };
+    
+  typedef hash_set<int, hash<int>, EqInt> HashInt;
+
+  void walkBonds(AtomicGroup& mygroup, HashInt& seen, pAtom moi);
 
 
   void dumpMatrix(const string, double*, int, int) const;
@@ -408,11 +452,10 @@ private:
   double *transformedCoordsAsArray(const XForm&) const;
 
   bool _sorted;
-  bool _periodic;
 
 protected:
   vector<pAtom> atoms;
-  GCoord box;
+  SharedPeriodicBox box;
 
 };
 

@@ -1,14 +1,29 @@
-#include <iostream>
-#include <vector>
-#include <stdexcept>
+/*
+  This file is part of LOOS.
 
-#include "Atom.hpp"
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
 
-#include "Kernel.hpp"
-#include "Parser.hpp"
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
-#include "Selectors.hpp"
-#include "pdb.hpp"
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+
+
+
+#include <loos.hpp>
 
 using namespace std;
 using namespace loos;
@@ -51,7 +66,7 @@ int main(int argc, char *argv[]) {
   test(pdb, "!(name == 'CA'", true);
   test(pdb, "segid -> 'L(\\d+)' < 3");
   test(pdb, "(segid -> '(L|P)(\\d+)') <= 3");
-  test(pdb, "(segid -> '(L|P)(\\d+)') <= 10 && name == 'CA'");
+  test(pdb, "(segid -> '(L|P)(\\d+)') <= 10 && name =~ 'C'");
   test(pdb, "name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV'");
   test(pdb, "!(name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV')");
 }

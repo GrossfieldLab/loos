@@ -1,13 +1,24 @@
 /*
-  Coords.h
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 
 
 #if !defined(COORDS_HPP)
@@ -16,8 +27,6 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-
-#include <math.h>
 
 using namespace std;
 
@@ -291,25 +300,26 @@ public:
     return(dot(rhs));
   }
 
-  //! Cross-product
-  void cross(const Coord<T>& rhs) {
-    Coord<T> lhs(*this);
-    v[X] = lhs.v[Y] * rhs.v[Z] - lhs.v[Z] * rhs.v[Y];
-    v[Y] = lhs.v[Z] * rhs.v[X] - lhs.v[X] * rhs.v[Z];
-    v[Z] = lhs.v[X] * rhs.v[Y] - lhs.v[Y] * rhs.v[X];
+  //! Cross-product.  Returns a new Coord<T>
+  Coord<T> cross(const Coord<T>& rhs) const {
+    Coord<T> res;
+    res.v[X] = v[Y] * rhs.v[Z] - v[Z] * rhs.v[Y];
+    res.v[Y] = v[Z] * rhs.v[X] - v[X] * rhs.v[Z];
+    res.v[Z] = v[X] * rhs.v[Y] - v[Y] * rhs.v[X];
+
+    return(res);
   }
 
-  //! Cross-product (note precedence issues)
+  //! Mutating cross-product (note precedence issues)
   Coord<T>& operator^=(const Coord<T>& rhs) {
-    cross(rhs);
+    Coord<T> tmp = cross(rhs);
+    *this = tmp;
     return(*this);
   }
 
   //! Cross-product (note precedence issues)
   Coord<T> operator^(const Coord<T>& rhs) const {
-    Coord<T> res(*this);
-    res ^= rhs;
-    return(res);
+    return(cross(rhs));
   }
 
 
@@ -344,14 +354,6 @@ public:
       n = (int)(fabs(v[i]) / box.v[i] + 0.5);
       v[i] = (v[i] >= 0) ? v[i] - n*(box.v[i]) : v[i] + n*(box.v[i]);
     }
-  }
-
-
-  //! Translate coordinates to the unit cell
-  void canonical(const Coord<T>& box) {
-    int i;
-    for (i=0; i<MAXCOORD; i++)
-      v[i] = fmod(v[i] + 1.5 * box.v[i], box.v[i]) - (box.v[i] / 2.0);
   }
 
 
@@ -403,7 +405,7 @@ public:
     int i;
     for (i=0; i<MAXCOORD; i++)
       v[i] = 0;
-    v[i] = 1.0;
+    v[i] = 1;
   }
 
   //! Compute equality based on norm(u-v) < epsilon
@@ -412,6 +414,11 @@ public:
     if (d < epsilon * epsilon)
       return(true);
     return(false);
+  }
+
+  //! Compute inequality based on ! ==
+  bool operator!=(const Coord<T>& rhs) const {
+    return(!(operator==(rhs)));
   }
 
 
@@ -426,7 +433,7 @@ private:
     for (i=0; i<MAXCOORD; i++)
       v[i] = c.v[i];
 
-    v[i] = 1.0;
+    v[i] = 1;
   };
   
 

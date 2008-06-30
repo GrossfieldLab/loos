@@ -1,21 +1,31 @@
 /*
-  KernelActions.hpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Classes for storing/compiling commands for the Kernel VM...
-  This is an example of the Command design pattern...
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
 
 
 
 #if !defined(KERNELACTIONS_HPP)
 #define KERNELACTIONS_HPP
+
 
 #include <sstream>
 #include <iostream>
@@ -25,8 +35,10 @@
 
 #include <boost/regex.hpp>
 
-#include "Atom.hpp"
 
+#include <loos_defs.hpp>
+
+#include "Atom.hpp"
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 
@@ -64,6 +76,26 @@ namespace loos {
       return(compare(v2, v1));
     }
 
+    bool negativeOperand(void) {
+      Value v1 = stack->peek(-1);
+      Value v2 = stack->peek(-2);
+
+      if ( (v1.type == Value::INT && v1.itg < 0) ||
+	   (v2.type == Value::INT && v2.itg < 0) )
+	return(true);
+      
+      return(false);
+    }
+
+    void binaryFalseResult(void) {
+      Value v(0);
+
+      stack->drop();
+      stack->drop();
+      stack->push(v);
+    }
+
+
     //! Check to make sure an atom has been set...
     void hasAtom(void) {
       if (atom == 0)
@@ -89,7 +121,7 @@ namespace loos {
   class pushString : public Action {
     Value val;
   public:
-    pushString(const string str) : Action("pushString"), val(str) { }
+    explicit pushString(const string str) : Action("pushString"), val(str) { }
     void execute(void) { stack->push(val); }
     string name(void) const {
       stringstream s;
@@ -103,7 +135,7 @@ namespace loos {
   class pushInt : public Action {
     Value val;
   public:
-    pushInt(const int i) : Action("pushInt"), val(i) { }
+    explicit pushInt(const int i) : Action("pushInt"), val(i) { }
     void execute(void) { stack->push(val); }
     string name(void) const {
       stringstream s;
@@ -116,7 +148,7 @@ namespace loos {
   class pushFloat : public Action {
     Value val;
   public:
-    pushFloat(const float f) : Action("pushFloat"), val(f) { }
+    explicit pushFloat(const float f) : Action("pushFloat"), val(f) { }
     void execute(void) { stack->push(val); }
     string name(void) const {
       stringstream s;
@@ -156,8 +188,14 @@ namespace loos {
   public:
     lessThan() : Action("<") { }
     void execute(void) {
-      Value v(binComp() < 0);
-      stack->push(v);
+
+      if (negativeOperand())
+	binaryFalseResult();
+      else {
+	Value v(binComp() < 0);
+	stack->push(v);
+      }
+
     }
   };
 
@@ -166,8 +204,14 @@ namespace loos {
   public:
     lessThanEquals() : Action("<=") { }
     void execute(void) {
-      Value v(binComp() <= 0);
-      stack->push(v);
+
+      if (negativeOperand())
+	binaryFalseResult();
+      else {
+	Value v(binComp() <= 0);
+	stack->push(v);
+      }
+
     }
   };
 
@@ -200,7 +244,7 @@ namespace loos {
   class matchRegex : public Action {
     boost::regex regexp;
   public:
-    matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
+    explicit matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
     void execute(void) { 
       Value v = stack->pop();
       Value r(0);
@@ -250,9 +294,9 @@ namespace loos {
    */
   class extractNumber : public Action {
   public:
-    extractNumber(const string s) : Action("extractNumber"),
-				    regexp(s, boost::regex::perl|boost::regex::icase),
-				    pattern(s) { }
+    explicit extractNumber(const string s) : Action("extractNumber"),
+					     regexp(s, boost::regex::perl|boost::regex::icase),
+					     pattern(s) { }
 
     void execute(void) {
       Value v = stack->pop();

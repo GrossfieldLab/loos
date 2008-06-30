@@ -1,26 +1,37 @@
 /*
-  charge_density.cpp
-  (c) 2008 Tod D. Romo and Alan Grossfield
-
-  Grossfield Lab
-  Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  density-dist.cpp
 
   Compute the charge/mass/electron density along the z dimension of a system
 
 */
 
-#include <ios>
-#include <iostream>
-#include <iomanip>
+
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include <ctype.h>
 
 #include <loos.hpp>
-#include <psf.hpp>
-#include <dcd.hpp>
-#include <utils.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
 
 void Usage()
     {
@@ -95,6 +106,10 @@ int main(int argc, char *argv[]) {
         // update coordinates
         dcd.updateGroupCoords(psf);
 
+        // Compute the bin volume for normalization purposes
+        GCoord box = psf.periodicBox();
+        double bin_volume = bin_width * box.x() * box.y();
+
         // Loop over the subsets and compute charge distribution.
         // (first set is all atoms)
         for (unsigned int i=0; i<subsets.size(); i++) {
@@ -112,7 +127,7 @@ int main(int argc, char *argv[]) {
 
                 if ( (z > min_z) && (z < max_z) ) {
                     int bin = (int)( (z - min_z) / bin_width );
-                    dists[i][bin] += weight;
+                    dists[i][bin] += weight/bin_volume;
                 }
             }
         }

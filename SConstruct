@@ -1,12 +1,22 @@
 #!/usr/bin/env python
+#  This file is part of LOOS.
 #
-# (c) 2008 Tod D. Romo
+#  LOOS (Lightweight Object-Oriented Structure library)
+#  Copyright (c) 2008, Tod D. Romo
+#  Department of Biochemistry and Biophysics
+#  School of Medicine & Dentistry, University of Rochester
 #
-# Grossfield Lab
-# Department fo Biochemistry & Biophysics
-# University of Rochester Medical School
+#  This package (LOOS) is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation under version 3 of the License.
 #
+#  This package is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
 #
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 import os
@@ -41,31 +51,37 @@ if not env.GetOption('clean'):
 
    if platform == 'linux2':
       prior = env.get('LIBPATH')
-      for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
-      	  checks = 1
-	  missing = []
-	  if dir != "":
-	     env.Replace(LIBPATH = [dir])
-	     print "Checking for libraries in %s..." % dir
-          else:
-	     print "Checking for libraries..."
+      has_lapack = 0
+      has_atlas = 0
 
-	  if not conf.CheckLib('lapack'):
-	     checks = 0
-	     missing += ['lapack']
-	  if not conf.CheckLib('atlas'):
-	     checks = 0
-	     missing += ['atlas']
-	  if checks:
-	     break
-      if not checks:
-          print "***ERROR*** Missing libraries: ", missing
-	  Exit(1)
+      for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
+         if dir != "":
+            env.Replace(LIBPATH = [dir])
+            print "Checking for libraries in %s..." % dir
+         else:
+            print "Checking for libraries..."
+            
+         if not has_lapack and conf.CheckLib('lapack'):
+            has_lapack = 1
+         if not has_atlas and conf.CheckLib('atlas'):
+            has_atlas = 1;
+         if has_lapack and has_atlas:
+            break
+      if not (has_lapack and has_atlas):
+         print "***ERROR*** Missing libraries:"
+         if (not has_lapack):
+            print "lapack"
+         if (not has_atlas):
+            print "atlas"
+   
+         Exit(1)
 
       if prior != None:
-          env['LIBPATH'] = prior + env['LIBPATH']
+         env['LIBPATH'] = prior + env['LIBPATH']
 
    env = conf.Finish()
+
+
 
 ### Compile-flags
 
@@ -75,15 +91,13 @@ release_opts='-O3 -DNDEBUG'
 # Setup the general environment...
 env.Append(CPPPATH = ['#'])
 env.Append(LIBPATH = ['#'])
-env.Append(LIBS = ['loos', 'boost_regex'])
+env.Append(LIBS = ['loos'])
+env.Append(LEXFLAGS=['-s'])
 
 
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
-
-elif platform == 'linux2':
-   env.Append(LIBS = ['lapack', 'atlas'])
 
 
 # Determine what kind of build...
@@ -101,6 +115,16 @@ if int(debug):
    env.Append(CCFLAGS=" -DDEBUG=$debug")
 
 
+# Allow overrides from environment...
+if os.environ.has_key('CXX'):
+   CXX = os.environ['CXX']
+   print "Changing default compiler to ", CXX
+   env['CXX'] = CXX
+
+if os.environ.has_key('CCFLAGS'):
+   CCFLAGS = os.environ['CCFLAGS']
+   print "Changing CCFLAGS to ", CCFLAGS
+   env['CCFLAGS'] = CCFLAGS
 
 # Export for subsidiary SConscripts
 Export('env')
@@ -108,8 +132,8 @@ Export('env')
 ###################################
 
 # Build the LOOS library...
-#library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp grammar.yy scanner.ll ensembles.cpp')
-library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp AtomicGroup.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp')
+library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp')
+library_files += Split('AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp')
 
 
 if int(reparse):

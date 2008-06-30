@@ -4,7 +4,7 @@ maxId = 48970
 minResid = 1
 maxResid = 1
 nresids = 8690
-nchains = 203
+nsegids = 203
 Bounding box: min = (-44.642,-47.604,-44.924), max = (49.651,45.105,44.935)
 Centroid = (0.094641,0.361833,-0.0309396)
 Radius = 67.394
@@ -63,3 +63,7 @@ HyrdogenSelector = 31060 @ (0.119252,0.314149,-0.0202868)
 HeavyAtomSelector = 17910 @ (0.0519606,0.444526,-0.0494141)
 SolventSelector = 24000 @ (0.225263,-0.533846,0.0697156)
 NotSelector(SolventSelector) = 24970 @ (-0.0309071,1.22272,-0.127685)
+*** within() test
+Waters = 8000
+Target = 115
+Found 51 waters within 4.0 Angstroms of the target.

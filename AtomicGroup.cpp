@@ -1,14 +1,24 @@
 /*
-  AtomicGroup.cpp
-  (c) 2008 Tod D. Romo
+  This file is part of LOOS.
 
-
-  Grossfield Lab
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
-  University of Rochester Medical School
+  School of Medicine & Dentistry, University of Rochester
 
-  Basic class for groups of atoms...
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 
 
 #include <ios>
@@ -38,7 +48,7 @@ AtomicGroup AtomicGroup::copy(void) const {
     res.append(pa);
   }
   res._sorted = _sorted;
-  res.box = box;
+  res.box = box.copy();
 
   return(res);
 }
@@ -186,7 +196,8 @@ AtomicGroup AtomicGroup::subset(const int offset, const int len) {
 
   boost::tuple<AtomIterator, AtomIterator> iters = calcSubsetIterators(offset, len);
   res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
-  
+
+  res.box = box;
   return(res);
 }
 
@@ -199,6 +210,7 @@ AtomicGroup AtomicGroup::excise(const int offset, const int len) {
   res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
   atoms.erase(boost::get<0>(iters), boost::get<1>(iters));
 
+  res.box = box;
   return(res);
 }
 
@@ -218,6 +230,7 @@ AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
 	break;
       }
     
+  res.box = box;
   return(res);
 }
 
@@ -233,6 +246,7 @@ AtomicGroup AtomicGroup::select(const AtomSelector& sel) {
     if (sel(*i))
       res.addAtom(*i);
 
+  res.box = box;
   return(res);
 }
 
@@ -256,7 +270,78 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
     results[j].append(*i);
   }
 
+  vector<AtomicGroup>::iterator g;
+  for (g=results.begin(); g!=results.end(); g++) {
+    g->box = box;
+  }
+
   return(results);
+}
+
+/** The idea is that we iterate over the list of contained atoms.  For
+ * each atom, we recurse through the list of bonded atoms.  Each time
+ * we visit an atom, we mark it as having been seen via the hash_set.
+ * In the recursive function, every time we find a new unseen atom, we
+ * append it to the current group and mark it as seen, then recurse
+ * through all of its bonded atoms.
+ *
+ * If we find a bond that goes to an atom that does not exist in the
+ * current group, a runtime_error is thrown.
+ */
+
+vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
+  HashInt seen;                      // Track what atoms we've already
+				     // processed... 
+  vector<AtomicGroup> molecules;
+  AtomicGroup current;               // The molecule we're currently building...
+  current.box = box;
+
+  int n = size();
+  for (int i=0; i<n; i++) {
+    HashInt::iterator it = seen.find(atoms[i]->id());
+    if (it != seen.end())
+      continue;
+
+    walkBonds(current, seen, atoms[i]);
+    if (current.size() != 0) {       // Just in case...
+      molecules.push_back(current);
+      current = AtomicGroup();
+    }
+    
+  }
+
+  return(molecules);
+}
+
+
+void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, pAtom moi) {
+  int myid = moi->id();
+  HashInt::iterator it = seen.find(myid);
+
+  // If we've touched this atom before, stop recursing and return.
+  if (it != seen.end())
+    return;
+
+  // This is a novel atom, so append it into the group we're currently building.
+  seen.insert(myid);
+  current.addAtom(moi);
+
+  // Just in case it's a solo-atom...  This probably should indicate
+  // some kind of error...?
+  if (!(moi->hasBonds()))
+    return;
+
+  // Now find atoms that are bound to the current atom and recurse
+  // through them...
+
+  vector<int> bonds = moi->getBonds();
+  vector<int>::const_iterator citer;
+  for (citer = bonds.begin(); citer != bonds.end(); citer++) {
+    pAtom toi = findById(*citer);
+    if (toi == 0)
+      throw(runtime_error("Missing bonds while trying to walk the connectivity tree."));
+    walkBonds(current, seen, toi);
+  }
 }
 
 
@@ -288,6 +373,9 @@ pAtom AtomicGroup::findById(const int id) {
 //! bound to another atom.
 AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
     AtomicGroup result;
+
+    result.box = box;
+
     for (unsigned int i=0; i<id_list.size(); i++) {
         pAtom pa = findById(id_list[i]);
         if (!pa) throw(out_of_range("Atom id doesn't exist"));
@@ -303,6 +391,7 @@ AtomicGroup AtomicGroup::getResidue(pAtom res) {
   AtomIterator i;
   AtomicGroup result;
 
+  result.box = box;
   i = find(atoms.begin(), atoms.end(), res);
   if (i == atoms.end())
     return(result);
@@ -420,7 +509,7 @@ int AtomicGroup::numberOfResidues(void) const {
 }
 
 
-int AtomicGroup::numberOfChains(void) const {
+int AtomicGroup::numberOfSegids(void) const {
 
   if (atoms.size() == 0)
     return(0);
@@ -436,158 +525,6 @@ int AtomicGroup::numberOfChains(void) const {
     }
 
   return(n);
-}
-
-
-// Bounding box for all atoms in this group
-vector<GCoord> AtomicGroup::boundingBox(void) const {
-  greal min[3] = {0,0,0}, max[3] = {0,0,0};
-  ConstAtomIterator i;
-  int j;
-  vector<GCoord> res(2);
-  GCoord c;
-
-  if (atoms.size() == 0) {
-    res[0] = c;
-    res[1] = c;
-    return(res);
-  }
-
-  for (j=0; j<3; j++)
-    min[j] = max[j] = (atoms[0]->coords())[j];
-
-  for (i=atoms.begin()+1; i != atoms.end(); i++)
-    for (j=0; j<3; j++) {
-      if (max[j] < ((*i)->coords())[j])
-	max[j] = ((*i)->coords())[j];
-      if (min[j] > ((*i)->coords())[j])
-	min[j] = ((*i)->coords())[j];
-    }
-
-  c.set(min[0], min[1], min[2]);
-  res[0] = c;
-  c.set(max[0], max[1], max[2]);
-  res[1] = c;
-
-  return(res);
-}
-
-// Geometric center of the group
-GCoord AtomicGroup::centroid(void) const {
-  GCoord c(0,0,0);
-  ConstAtomIterator i;
-
-  for (i = atoms.begin(); i != atoms.end(); i++)
-    c += (*i)->coords();
-
-  c /= atoms.size();
-  return(c);
-}
-
-
-GCoord AtomicGroup::centerOfMass(void) const {
-  GCoord c(0,0,0);
-  ConstAtomIterator i;
-
-  for (i=atoms.begin(); i != atoms.end(); i++) {
-    c += (*i)->mass() * (*i)->coords();
-  }
-  c /= totalMass();
-  return(c);
-}
-
-
-GCoord AtomicGroup::centerOfCharge(void) const {
-  GCoord c(0,0,0);
-  ConstAtomIterator i;
-
-  for (i=atoms.begin(); i != atoms.end(); i++) {
-    c += (*i)->charge() * (*i)->coords();
-  }
-  c /= totalCharge();
-  return(c);
-}
-
-GCoord AtomicGroup::dipoleMoment(void) const {
-    GCoord center = centerOfCharge();
-    GCoord moment(0,0,0);
-    ConstAtomIterator i;
-    for (i=atoms.begin(); i != atoms.end(); i++) {
-        moment += (*i)->charge() * ((*i)->coords() - center);
-    }
-    return(moment);
-}
-
-greal AtomicGroup::totalCharge(void) const {
-  ConstAtomIterator i;
-  greal charge = 0.0;
-
-  for (i = atoms.begin(); i != atoms.end(); i++)
-    charge += (*i)->charge();
-
-  return(charge);
-}
-
-greal AtomicGroup::totalMass(void) const {
-  ConstAtomIterator i;
-  greal mass = 0.0;
-
-  for (i = atoms.begin(); i != atoms.end(); i++)
-    mass += (*i)->mass();
-
-  return(mass);
-}
-
-// Geometric max radius of the group (relative to the centroid)
-greal AtomicGroup::radius(void) const {
-  GCoord c = centroid();
-  greal radius = 0.0;
-  ConstAtomIterator i;
-
-  for (i=atoms.begin(); i != atoms.end(); i++) {
-    greal d = c.distance2((*i)->coords());
-    if (d > radius)
-      radius = d;
-  }
-
-  radius = sqrt(radius);
-  return(radius);
-}
-
-
-
-greal AtomicGroup::radiusOfGyration(void) const {
-  GCoord c = centerOfMass();
-  greal radius = 0;
-  ConstAtomIterator i;
-
-  for (i = atoms.begin(); i != atoms.end(); i++)
-    radius += c.distance2((*i)->coords());
-
-  radius = sqrt(radius / atoms.size());
-  return(radius);
-}
-
-
-greal AtomicGroup::rmsd(AtomicGroup& v) {
-  
-  if (size() != v.size())
-    throw(runtime_error("Cannot compute RMSD between groups with different sizes"));
-
-  sort();
-  v.sort();
-
-  int n = size();
-  double d = 0.0;
-  for (int i = 0; i < n; i++) {
-    GCoord x = atoms[i]->coords();
-    GCoord y = v.atoms[i]->coords();
-    d += x.distance2(y);
-  }
-  
-  d = sqrt(d/n);
-
-  return(d);
 }
 
 
@@ -661,11 +598,82 @@ bool AtomicGroup::operator==(const AtomicGroup& rhs) const {
 }
 
 
+void AtomicGroup::reimage() {
+    if (!(isPeriodic()))
+        throw(runtime_error("trying to reimage a non-periodic group"));
+    GCoord com = centroid();
+    GCoord reimaged = com;
+    reimaged.reimage(periodicBox());
+    GCoord trans = reimaged - com;
+    ConstAtomIterator a;
+    for (a=atoms.begin(); a!=atoms.end(); a++) {
+        (*a)->coords() += trans;
+    }
+}
+
+void AtomicGroup::reimageByAtom () {
+    if (!(isPeriodic()))
+        throw(runtime_error("trying to reimage a non-periodic group"));
+    ConstAtomIterator a;
+    GCoord box = periodicBox();
+    for (a=atoms.begin(); a!=atoms.end(); a++) {
+        (*a)->coords().reimage(box);
+    }
+}
+    
+
+/** Uses a not-very-bright algorithm that compares all atoms against
+ * all atoms... 
+ */
+
+AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
+  int na = size();
+  int nb = grp.size();
+  AtomicGroup res;
+
+  res.box = box;
+  double dist2 = dist * dist;
+  vector<int> ids;
+
+  for (int j=0; j<nb; j++) {
+    for (int i=0; i<na; i++) {
+      if (atoms[i]->coords().distance2(grp.atoms[j]->coords()) <= dist2)
+	ids.push_back(atoms[i]->id());
+    }
+  }
+
+  // Abort the rest if nothing was found...
+  if (ids.size() == 0)
+    return(res);
+
+  vector<int> unique_ids;
+  std::sort(ids.begin(), ids.end());
+  vector<int>::const_iterator ci;
+  int last_id = ids[0];
+  unique_ids.push_back(last_id);
+  for (ci = ids.begin()+1; ci != ids.end(); ci++)
+    if (*ci != last_id) {
+      last_id = *ci;
+      unique_ids.push_back(last_id);
+    }
+
+  for (ci = unique_ids.begin(); ci != unique_ids.end(); ci++) {
+    pAtom pa = findById(*ci);
+    if (pa == 0)
+      throw(logic_error("Cannot find a found atom in AtomicGroup::atomsWithin()"));
+
+    res.addAtom(pa);
+  }
+
+  return(res);
+}
+
+
 // XMLish output...
 ostream& operator<<(ostream& os, const AtomicGroup& grp) {
   AtomicGroup::ConstAtomIterator i;
-  if (grp._periodic)
-    os << "<GROUP PERIODIC='" << grp.box << "'>\n";
+  if (grp.isPeriodic())
+    os << "<GROUP PERIODIC='" << grp.box.box() << "'>\n";
   else
     os << "<GROUP>\n";
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
@@ -676,275 +684,3 @@ ostream& operator<<(ostream& os, const AtomicGroup& grp) {
 }
 
 
-
-vector<GCoord> AtomicGroup::getTransformedCoords(const XForm& M) const {
-  vector<GCoord> crds(atoms.size());
-  ConstAtomIterator i;
-  GMatrix W = M.current();
-  int j = 0;
-
-  for (i = atoms.begin(); i != atoms.end(); i++) {
-    GCoord res = W * (*i)->coords();
-    crds[j++] = res;
-  }
-
-  return(crds);
-}
-
-
-
-void AtomicGroup::applyTransform(const XForm& M) {
-  AtomIterator i;
-  GMatrix W = M.current();
-
-  for (i = atoms.begin(); i != atoms.end(); i++)
-    (*i)->coords() = W * (*i)->coords();
-
-}
-
-
-
-void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
-  cout << s << " = [\n" << endl;
-  int i, j;
-
-  for (j=0; j<m; j++) {
-    for (i=0; i<n; i++)
-      cout << setw(10) << A[i*m+j] << " ";
-    cout << ";\n";
-  }
-  cout << "];\n";
-
-}
-
-// Returns a newly allocated array of double coords in row-major
-// order...
-double* AtomicGroup::coordsAsArray(void) const {
-  double *A;
-  int n = size();
-
-  A = new double[n*3];
-  int k = 0;
-  int i;
-  for (i=0; i<n; i++) {
-    A[k++] = atoms[i]->coords().x();
-    A[k++] = atoms[i]->coords().y();
-    A[k++] = atoms[i]->coords().z();
-  }
-
-  return(A);
-}
-
-// Returns a newly allocated array of double coords in row-major order
-// transformed by the current transformation.
-double* AtomicGroup::transformedCoordsAsArray(const XForm& M) const {
-  double *A;
-  GCoord x;
-  int n = size();
-  GMatrix W = M.current();
-
-  A = new double[n*3];
-  int k = 0;
-  int i;
-  for (i=0; i<n; i++) {
-    x = W * atoms[i]->coords();
-    A[k++] = x.x();
-    A[k++] = x.y();
-    A[k++] = x.z();
-  }
-
-  return(A);
-}
-
-
-
-GCoord AtomicGroup::centerAtOrigin(void) {
-  GCoord c = centroid();
-  AtomIterator i;
-
-  for (i = atoms.begin(); i != atoms.end(); i++)
-    (*i)->coords() -= c;
-
-  return(c);
-}
-
-
-
-void AtomicGroup::perturbCoords(const greal rms) {
-  int i, n = size();
-  GCoord r;
-
-  loos::base_generator_type& rng = loos::rng_singleton();
-  boost::uniform_real<> uni;
-  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > func(rng, uni);
-
-  for (i=0; i<n; i++) {
-    r.x(func());
-    r.y(func());
-    r.z(func());
-
-    r /= r.length();
-    r *= rms;
-
-    atoms[i]->coords() += r;
-  }
-}
-
-
-#if defined(__linux__) || defined(__APPLE__)
-
-
-vector<GCoord> AtomicGroup::principalAxes(void) const {
-  // Extract out the group's coordinates...
-  int i;
-  int n = size();
-  double M[3] = {0.0, 0.0, 0.0};
-  int k = 0;
-
-  double *A = coordsAsArray();
-  for (i=0; i<n; i++) {
-    M[0] += A[k++];
-    M[1] += A[k++];
-    M[2] += A[k++];
-  }
-
-  M[0] /= n;
-  M[1] /= n;
-  M[2] /= n;
-
-  // Subtract off the mean...
-  for (i=k=0; i<n; i++) {
-    A[k++] -= M[0];
-    A[k++] -= M[1];
-    A[k++] -= M[2];
-  }
-
-  // Multiply A*A'...
-  double C[9];
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
-	      3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
-
-  delete A;
-
-  // Now compute the eigen-decomp...
-  char jobz = 'V', uplo = 'U';
-  f77int nn;
-  f77int lda = 3;
-  double W[3], work[128];
-  f77int lwork = 128;   // ???  Just a guess for sufficient storage to be
-		     // efficient... 
-  f77int info;
-  nn = 3;
-
-  dsyev_(&jobz, &uplo, &nn, C, &lda, W, work, &lwork, &info);
-  if (info < 0)
-    throw(runtime_error("dsyev_ reported an argument error..."));
-
-  if (info > 0)
-    throw(runtime_error("dsyev_ failed to converge..."));
-
-  vector<GCoord> results(4);
-  GCoord c;
-
-  k = 0;
-  for (i=0; i<3; i++) {
-    c[0] = C[k++];
-    c[1] = C[k++];
-    c[2] = C[k++];
-    results[2-i] = c;
-  }
-
-  // Now push the eigenvalues on as a GCoord...
-  c[0] = W[2];
-  c[1] = W[1];
-  c[2] = W[0];
-
-  results[3] = c;
-
-  return(results);
-}
-
-
-
-
-GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
-  int i, j;
-  XForm W;
-
-  int n = size();
-  // Center both groups at the origin...
-
-  GCoord xc = centroid();
-  W.translate(-xc);
-  double *X = transformedCoordsAsArray(W);
-  
-
-  GCoord yc = grp.centroid();
-  W.identity();
-  W.translate(-yc);
-  double *Y = grp.transformedCoordsAsArray(W);
-
-  // Compute correlation matrix...
-  double R[9];
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, X, 3, Y, 3, 0.0, R, 3);
-
-  double det = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
-    R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
-
-  // Now compute the SVD of R...
-  char jobu = 'A', jobvt = 'A';
-  f77int m = 3, lda = 3, ldu = 3, ldvt = 3, lwork=100, info;
-  double work[lwork];
-  f77int nn = 3;
-  double S[3], U[9], Vt[9];
-  
-  dgesvd_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
-
-  // Adjust U (if necessary)
-  if (det < 0.0) {
-    U[6] = -U[6];
-    U[7] = -U[7];
-    U[8] = -U[8];
-  }
-
-  // Compute the rotation matrix...
-  double M[9];
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, U, 3, Vt, 3, 0.0, M, 3);
-
-  // Construct the new transformation matrix...  (W = M')
-  GMatrix Z;
-  for (i=0; i<3; i++)
-    for (j=0; j<3; j++)
-      Z(i,j) = M[i*3+j];
-
-  //W(0,3) = yc.x();
-  //W(1,3) = yc.y();
-  //W(2,3) = yc.z();
-
-
-  W.identity();
-  W.translate(yc);
-  W.concat(Z);
-  W.translate(-xc);
-
-  delete[] X;
-  delete[] Y;
-
-
-  return(W.current());
-}
-
-
-GMatrix AtomicGroup::alignOnto(const AtomicGroup& grp) {
-  XForm W;
-  GMatrix M = superposition(grp);
-
-  W.load(M);
-  applyTransform(W);
-
-  return(M);
-}
-
-
-
-#endif   /* defined(__linux__) || defined(__APPLE__) */

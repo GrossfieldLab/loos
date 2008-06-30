@@ -1,12 +1,25 @@
 /*
- *   psf.hpp
- *   (c) 2008 Alan Grossfield and Tod D. Romo
- *   Department of Biochemistry and Biophysics
- *   University of Rochester Medical School
- *
- *   Simple CHARMM/NAMD PSF file reader
- *
- */
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 
 #if !(defined PSF_HPP)
 #define PSF_HPP
@@ -16,7 +29,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "loos.hpp"
+#include "loos_defs.hpp"
 #include "Atom.hpp"
 #include "AtomicGroup.hpp"
 
@@ -36,7 +49,7 @@ public:
     PSF() { }
     virtual ~PSF() {}
 
-    PSF(const string fname) {
+    explicit PSF(const string fname) {
         ifstream ifs(fname.c_str());
         if (!ifs) {
             throw(runtime_error("Cannot open PSF file " + string(fname)));
@@ -44,7 +57,7 @@ public:
         read(ifs);
     }
 
-    PSF(ifstream &ifs) {
+    explicit PSF(ifstream &ifs) {
         read(ifs);
     }
 
