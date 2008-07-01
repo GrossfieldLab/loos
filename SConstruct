@@ -134,7 +134,6 @@ env.Default(loos)
 
 
 docs = env.Doxygen('Doxyfile')
-examples = SConscript('Examples/SConscript')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 
@@ -142,12 +141,11 @@ tools = SConscript('Tools/SConscript')
 # build targets...
 
 env.Alias('docs', docs)
-env.Alias('examples', examples)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
 
-env.Alias('all', loos + examples + tools)
-env.Alias('caboodle', loos + examples + tools + tests + docs)
+env.Alias('all', loos + tools)
+env.Alias('caboodle', loos + tools + tests + docs)
 
 if int(regenerate):
    env.Default('caboodle')

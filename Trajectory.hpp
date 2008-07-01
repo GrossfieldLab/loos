@@ -33,30 +33,84 @@
 #include <AtomicGroup.hpp>
 #include <StreamWrapper.hpp>
 
+//! Base-class for polymorphic trajectories.
+/** This is the interface for trajectories in LOOS.  It is expected
+ *  that at least one frame of coordinates will be buffered internally
+ *  at any given time.  It is also not guaranteed that any frames will
+ *  be read upon opening/instantiation.  For example, with a DCD
+ *  class, the header might be read at instantiation, but no frames
+ *  would necessarily be read at that point.
+ *
+ *  Additionally, this class is not designed to provide output, only
+ *  input...
+ */
 
 class Trajectory : public boost::noncopyable {
 public:
   Trajectory() { }
+
+  //! Automatically open the file named \a s
   Trajectory(const string& s) : ifs(s) { }
+
+  //! Automatically open the file named \a s
   Trajectory(const char* s) : ifs(s) { }
+
+  //! Open using the given stream...
   Trajectory(fstream& fs) : ifs(fs) { }
   virtual ~Trajectory() { }
 
+  //! # of atoms per frame
   virtual int natoms(void) const =0;
+  //! Timestep per frame
   virtual float timestep(void) const =0;
+  //! Number of frames in the trajectory
   virtual int nframes(void) const =0;
 
+  //! Reading iterator
+  /** This member function behaves like an iteratory.  For each call,
+   * it reads the next frame into memory and returns true or, if at
+   * the end of the file, returns a false.
+   */
   virtual bool readFrame(void) =0;
+
+  //! Reads a specific frame
   virtual bool readFrame(const unsigned int i) =0;
+
+  //! Rewinds the readFrame() iterator
   virtual void rewind(void) =0;
 
-  virtual bool hasBox(void) const =0;
+  //! Tests whether or not the given frame/trajectory has periodic
+  //! boundary information.
+  /** The presence of periodic box information does not necessarily
+   * indicate that said information has been read in yet.  For
+   * example, the presence of crystal data is in the header so this
+   * can be detected before any frame is read, but the crystal data
+   * itself is only read when a frame is read in.
+   */
+  virtual bool hasPeriodicBox(void) const =0;
+  //! Returns the periodic box for the current frame/trajectory
   virtual GCoord periodicBox(void) const =0;
 
-  // This may require interleaving of coords and hence be particularly
-  // slow...
+  //! Returns the current frames coordinates as a vector of GCoords
+  /** Some formats, notably DCDs, do not interleave their
+   * coordinates.  This means that this could be a potentially
+   * expensive operation.
+   */
   virtual vector<GCoord> coords(void) =0;
   
+  //! Update the coordinates in an AtomicGroup with the current frame.
+  /** As with the coords() member function, some formats may have
+   * non-interleaved coordinate data making the copying of coordinates
+   * that much more expensive.
+   *
+   * In the case that the group is smaller than the trajectory frame,
+   * it is assumed that the atomic-id's of the group are indices into
+   * the frame's coordinates...  Since atom-id's usually begin with 1
+   * and not 0, the indices are necessarily shifted by -1.
+   *
+   * If the trajectory has periodic boundary information, then the
+   * group's periodicBox will also be updated.
+   */
   virtual void updateGroupCoords(AtomicGroup& g) =0;
 
 protected:

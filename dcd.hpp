@@ -116,7 +116,7 @@ public:
   // Accessor methods...
 
   virtual int natoms(void) const { return(_natoms); }
-  virtual bool hasBox(void) const { return(_icntrl[10] == 1); }
+  virtual bool hasPeriodicBox(void) const { return(_icntrl[10] == 1); }
   virtual GCoord periodicBox(void) const { return(GCoord(qcrys[0], qcrys[1], qcrys[2])); }
 
   vector<string> titles(void) const { return(_titles); }
