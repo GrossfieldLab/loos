@@ -86,7 +86,7 @@ if not env.GetOption('clean'):
 ### Compile-flags
 
 debug_opts='-g -Wall -fno-inline'
-release_opts='-O3 -DNDEBUG'
+release_opts='-O3 -DNDEBUG -Wall'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#'])
