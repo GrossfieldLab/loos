@@ -69,6 +69,24 @@ unsigned int DCD::readRecordLen(StreamWrapper& fsw) {
 }
 
 
+// Check for endian-ness
+bool DCD::endianMatch(StreamWrapper& fsw) {
+  unsigned long curpos = fsw()->tellg();
+  unsigned int datum;
+  ifs()->read((char *)(&datum), sizeof(datum));
+  fsw()->seekg(curpos);
+
+  if (ifs()->eof() || ifs()->fail())
+    throw(GeneralError("Unable to read first datum from DCD file"));
+
+  if (datum == 0x54000000)
+    throw(endian_mismatch);
+  else if (datum != 0x54)
+    throw(GeneralError("Unable to determine endian-ness of DCD file"));
+
+  return(true);
+}
+
 // Read a full line of F77-formatted data.
 // Returns a pointer to the read data and puts the # of bytes read into *len
 
@@ -102,6 +120,7 @@ void DCD::readHeader(void) {
   char *cp;
   int i;
 
+  endianMatch(ifs);
   ptr = readF77Line(ifs, &len);
   if (len != 84)
     throw(header_error);

@@ -81,6 +81,8 @@ public:
   struct LineError : public exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
   //! Unexpected EOF
   struct EndOfFile : public exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
+  //! Endianness of file doesn't match local architecture...
+  struct EndianMismatch : public exception { virtual const char *what() const throw() { return("Endianness of file does not match local architecture"); }; } endian_mismatch;
   //! General error...
   struct GeneralError : public exception {
     GeneralError(const char *s) : msg(s) { };
@@ -89,7 +91,7 @@ public:
   };
 
 
-  DCD() : Trajectory(), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
+  explicit DCD() : Trajectory(), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
 
   //! Begin reading from the file named s
   explicit DCD(const string s) :  Trajectory(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
@@ -149,7 +151,7 @@ public:
   /*!  This can be a pretty slow operation, so be careful. */
   virtual vector<GCoord> coords(void);
 
-  //! Interlieve coords, selecting entries indexed by map
+  //! Interleave coords, selecting entries indexed by map
   // This is slated to go away...
   vector<GCoord> mappedCoords(const vector<int>& map);
 
@@ -169,6 +171,8 @@ private:
   void allocateSpace(const int n);
   void readCrystalParams(void);
   void readCoordLine(vector<float>& v);
+
+  bool endianMatch(StreamWrapper& fsw);
 
   // For reading F77 I/O
   unsigned int readRecordLen(StreamWrapper& fsw);
