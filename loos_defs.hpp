@@ -44,7 +44,7 @@ typedef boost::shared_ptr<GCoord> pGCoord;
 
 const uint kilobytes = 1024;
 const uint megabytes = kilobytes * kilobytes;
-const uint gigabytes = megabytes * megabytes;
+const uint gigabytes = megabytes * kilobytes;
 
 
 #endif
