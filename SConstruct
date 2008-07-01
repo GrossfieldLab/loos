@@ -30,6 +30,12 @@ clos.AddOptions(
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
 )
 
+clos.Add(PathOption('LAPACK', 'Path to LAPACK', '/usr/lib64'))
+clos.Add(PathOption('ATLAS', 'Path to ATLAS', '/usr/lib64/atlas'))
+clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '/usr/lib64'))
+clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include'))
+clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex')
+
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
 
@@ -42,44 +48,11 @@ reparse = env['reparse']
 platform = sys.platform
 env['platform'] = platform
 
-# Some rudimentary autoconfish stuff...
-if not env.GetOption('clean'):
-   conf = Configure(env)
-   if not conf.CheckLib('boost_regex'):
-      print "***ERROR*** You must have the Boost regular expression libraries installed"
-      Exit(1)
-
-   if platform == 'linux2':
-      prior = env.get('LIBPATH')
-      has_lapack = 0
-      has_atlas = 0
-
-      for dir in ['', '/usr/lib64/atlas', '/usr/lib/atlas', '/usr/local/atlas']:
-         if dir != "":
-            env.Replace(LIBPATH = [dir])
-            print "Checking for libraries in %s..." % dir
-         else:
-            print "Checking for libraries..."
-            
-         if not has_lapack and conf.CheckLib('lapack'):
-            has_lapack = 1
-         if not has_atlas and conf.CheckLib('atlas'):
-            has_atlas = 1;
-         if has_lapack and has_atlas:
-            break
-      if not (has_lapack and has_atlas):
-         print "***ERROR*** Missing libraries:"
-         if (not has_lapack):
-            print "lapack"
-         if (not has_atlas):
-            print "atlas"
-   
-         Exit(1)
-
-      if prior != None:
-         env['LIBPATH'] = prior + env['LIBPATH']
-
-   env = conf.Finish()
+LAPACK = env['LAPACK']
+ATLAS = env['ATLAS']
+BOOSTLIB = env['BOOSTLIB']
+BOOSTINC = env['BOOSTINC']
+BOOSTREGEX = env['BOOSTREGEX']
 
 
 
@@ -89,15 +62,28 @@ debug_opts='-g -Wall -fno-inline'
 release_opts='-O3 -DNDEBUG -Wall'
 
 # Setup the general environment...
-env.Append(CPPPATH = ['#'])
+env.Append(CPPPATH = ['#', BOOSTINC])
 env.Append(LIBPATH = ['#'])
-env.Append(LIBS = ['loos'])
+env.Append(LIBS = ['loos', BOOSTREGEX])
 env.Append(LEXFLAGS=['-s'])
+
+# Special handling of lib-paths to get only unique paths...
+libpaths = { }
+libpaths[BOOSTLIB] = 1
 
 
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
+else:
+   if platform == 'linux2':
+      libpaths[ATLAS] = 1
+      libpaths[LAPACK] = 1
+      env.Append(LIBS = ['lapack', 'atlas'])
+
+# Now pull out unique lib paths...
+uniquelibs = libpaths.keys()
+env.Append(LIBPATH =[uniquelibs])
 
 
 # Determine what kind of build...
