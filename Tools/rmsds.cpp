@@ -81,8 +81,8 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-vector<XForm> align(vector<AtomicGroup>& frames, const AtomicGroup& subset, DCD& dcd) {
-  uint n = dcd.nsteps();
+vector<XForm> align(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& dcd) {
+  uint n = dcd.nframes();
 
   for (uint i = 0; i<n; i++) {
     AtomicGroup frame = subset.copy();
@@ -104,8 +104,8 @@ vector<XForm> align(vector<AtomicGroup>& frames, const AtomicGroup& subset, DCD&
 }
 
 
-void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, DCD& dcd) {
-  uint n = dcd.nsteps();
+void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& dcd) {
+  uint n = dcd.nframes();
 
   for (uint i=0; i<n; i++) {
     AtomicGroup frame = subset.copy();
