@@ -91,7 +91,7 @@ dcd.updateGroupCoords(psf);
 vector<AtomicGroup> g1_upper, g1_lower;
 vector<AtomicGroup> g2_upper, g2_lower;
 
-for (int i = 0; i < g1_mols.size(); i++)
+for (unsigned int i = 0; i < g1_mols.size(); i++)
     {
     GCoord c = g1_mols[i].centerOfMass();
     if (c.z() >=0.0)
@@ -104,7 +104,7 @@ for (int i = 0; i < g1_mols.size(); i++)
         }
     }
 
-for (int i = 0; i < g2_mols.size(); i++)
+for (unsigned int i = 0; i < g2_mols.size(); i++)
     {
     GCoord c = g2_mols[i].centerOfMass();
     if (c.z() >=0.0)
@@ -146,10 +146,10 @@ while (dcd.readFrame())
 #endif
 
     // compute the distribution of g2 around g1 for the lower leaflet
-    for (int j = 0; j < g1_lower.size(); j++)
+    for (unsigned int j = 0; j < g1_lower.size(); j++)
         {
         GCoord p1 = g1_lower[j].centerOfMass();
-        for (int k = 0; k < g2_lower.size(); k++)
+        for (unsigned int k = 0; k < g2_lower.size(); k++)
             {
             // skip "self" pairs
             if (g1_lower[j] == g2_lower[k])
@@ -170,10 +170,10 @@ while (dcd.readFrame())
         }
 
     // compute the distribution of g2 around g1 for the upper leaflet
-    for (int j = 0; j < g1_upper.size(); j++)
+    for (unsigned int j = 0; j < g1_upper.size(); j++)
         {
         GCoord p1 = g1_upper[j].centerOfMass();
-        for (int k = 0; k < g2_upper.size(); k++)
+        for (unsigned int k = 0; k < g2_upper.size(); k++)
             {
             // skip "self" pairs
             if (g1_upper[j] == g2_upper[k])

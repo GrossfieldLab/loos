@@ -143,10 +143,10 @@ while (dcd.readFrame())
     unique_pairs = 0;
 
     // compute the distribution of g2 around g1 
-    for (int j = 0; j < g1_mols.size(); j++)
+    for (unsigned int j = 0; j < g1_mols.size(); j++)
         {
         GCoord p1 = g1_mols[j].centerOfMass();
-        for (int k = 0; k < g2_mols.size(); k++)
+        for (unsigned int k = 0; k < g2_mols.size(); k++)
             {
             // skip "self" pairs -- in case selection1 and selection2 overlap
             if (g1_mols[j] == g2_mols[k])
