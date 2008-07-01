@@ -54,7 +54,7 @@ void DCD::allocateSpace(const int n) {
 
 // Read the F77 record length from the file stream
 
-unsigned int DCD::readRecordLen(StreamWrapper& ifs) {
+unsigned int DCD::readRecordLen(StreamWrapper& fsw) {
   DataOverlay o;
   
   ifs()->read(o.c, 4);
@@ -72,7 +72,7 @@ unsigned int DCD::readRecordLen(StreamWrapper& ifs) {
 // Read a full line of F77-formatted data.
 // Returns a pointer to the read data and puts the # of bytes read into *len
 
-DCD::DataOverlay* DCD::readF77Line(StreamWrapper& ifs, unsigned int *len) {
+DCD::DataOverlay* DCD::readF77Line(StreamWrapper& fsw, unsigned int *len) {
   DataOverlay* ptr;
   unsigned int n, n2;
 
@@ -102,7 +102,7 @@ void DCD::readHeader(void) {
   char *cp;
   int i;
 
-  ptr = readF77Line(_ifs, &len);
+  ptr = readF77Line(ifs, &len);
   if (len != 84)
     throw(header_error);
 
@@ -124,7 +124,7 @@ void DCD::readHeader(void) {
 
   // Now read in the TITLE info...
 
-  ptr = readF77Line(_ifs, &len);
+  ptr = readF77Line(ifs, &len);
   char sbuff[81];
   int ntitle = ptr[0].i;
   cp = (char *)(ptr + 1);
@@ -138,7 +138,7 @@ void DCD::readHeader(void) {
   delete[] ptr;
 
   // get the NATOMS...
-  ptr = readF77Line(_ifs, &len);
+  ptr = readF77Line(ifs, &len);
   if (len != 4)
     throw(header_error);
   _natoms = ptr->i;
@@ -146,7 +146,7 @@ void DCD::readHeader(void) {
 
 
   // Finally, set internal variables and allocate space for a frame...
-  first_frame_pos = _ifs()->tellg();
+  first_frame_pos = ifs()->tellg();
 
   frame_size = 12 * (2 + _natoms);
   if (hasCrystalParams())
@@ -157,8 +157,8 @@ void DCD::readHeader(void) {
 
 
 
-void DCD::readHeader(fstream& ifs) {
-  _ifs.setStream(ifs);
+void DCD::readHeader(fstream& fs) {
+  ifs.setStream(fs);
   readHeader();
 }
 
@@ -172,7 +172,7 @@ void DCD::readCrystalParams(void) {
   unsigned int len;
   DataOverlay* o;
 
-  o = readF77Line(_ifs, &len);
+  o = readF77Line(ifs, &len);
 
   if (len != 48)
     throw(GeneralError("Error while reading crystal parameters"));
@@ -199,7 +199,7 @@ void DCD::readCoordLine(vector<dcd_real>& v) {
   unsigned int len;
 
 
-  op = readF77Line(_ifs, &len);
+  op = readF77Line(ifs, &len);
 
   if (len != (unsigned int)n)
     throw(GeneralError("Error while reading coordinates"));
@@ -220,7 +220,7 @@ void DCD::readCoordLine(vector<dcd_real>& v) {
 // instead?) 
 
 bool DCD::readFrame(void) {
-  if (_ifs()->eof())
+  if (ifs()->eof())
     return(false);
 
   try {
@@ -244,9 +244,9 @@ bool DCD::readFrame(void) {
 
 
 void DCD::rewind(void) {
-  _ifs()->clear();
-  _ifs()->seekg(first_frame_pos);
-  if (_ifs()->fail() || _ifs()->bad())
+  ifs()->clear();
+  ifs()->seekg(first_frame_pos);
+  if (ifs()->fail() || ifs()->bad())
     throw(GeneralError("Error rewinding file"));
 }
 
@@ -261,9 +261,9 @@ bool DCD::readFrame(const unsigned int i) {
   if (i >= nsteps())
     throw(GeneralError("Requested DCD frame is out of range"));
 
-  _ifs()->clear();
-  _ifs()->seekg(first_frame_pos + i * frame_size);
-  if (_ifs()->fail() || _ifs()->bad()) {
+  ifs()->clear();
+  ifs()->seekg(first_frame_pos + i * frame_size);
+  if (ifs()->fail() || ifs()->bad()) {
     ostringstream s;
     s << "Cannot seek to frame " << i;
     throw(GeneralError(s.str().c_str()));
