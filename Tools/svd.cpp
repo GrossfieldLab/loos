@@ -190,7 +190,7 @@ void divCoords(AtomicGroup& g, const double d) {
 
 
 
-AtomicGroup calculateAverage(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
+AtomicGroup calculateAverage(const AtomicGroup& subset, const vector<XForm>& xforms, Trajectory& dcd) {
   AtomicGroup avg = subset.copy();
   AtomicGroup frame = subset.copy();
   
@@ -207,7 +207,7 @@ AtomicGroup calculateAverage(const AtomicGroup& subset, const vector<XForm>& xfo
 }
 
 
-vector<XForm> align(const AtomicGroup& subset, DCD& dcd) {
+vector<XForm> align(const AtomicGroup& subset, Trajectory& dcd) {
   vector<AtomicGroup> frames;
 
   for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
@@ -243,7 +243,7 @@ void writeAverage(const AtomicGroup& avg) {
 // Calculates the transformed avg structure, then extracts the
 // transformed coords from the DCD with the avg subtraced out...
 
-float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, DCD& dcd) {
+float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, Trajectory& dcd) {
   AtomicGroup avg = calculateAverage(subset, xforms, dcd);
 
   // Hook to get the avg structure if requested...

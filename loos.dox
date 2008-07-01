@@ -82,14 +82,25 @@ requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for 
 GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
 <A href="http://www.gnu.org/software/bison/">bison</A>.
 
+If your libraries are installed in non-standard locations (i.e. other
+than Fedora Core 9 default locations), you will need to tell LOOS
+where its required components are.  To do this, do the following:
+\verbatim
+cp custom.py-proto custom.py
+\endverbatim
+Then edit your \c custom.py file to tell SCons and LOOS where your
+libraries are.  You can temporarily override the defaults (and what's
+set in your \c custom.py file by specifying the appropriate variables
+on the command-line (run \c scons \c -h for more information)
+
 To build just the library, cd to the top-level directory and run
 SCons:
 \verbatim
-cd /Users/myself/LOOS
+cd /path/to/LOOS
 scons
 \endverbatim
 
-To build the examples and tools as well, use:
+To build the library and tools as well, use:
 
 \verbatim
 scons all
@@ -237,7 +248,7 @@ You can use the "=~" operator to perform a substring match.
 "CA" =~ "C"  --> true
 \endverbatim
 This brings up an important point about using regular expressions: be
-careful of unexpected substring matches.  For examples, let's say you
+careful of unexpected substring matches.  For example, let's say you
 are wanting to pick out all backbone atoms and you write this
 selection string:
 \verbatim
@@ -354,7 +365,7 @@ There are several build targets available:
 <table align="center">
 <tr align="left"><th>Target</th><th>Description</th></tr>
 <tr align="left"><td>(default)</td><td>Just build the library</td></tr>
-<tr align="left"><td>all</td><td>Builds the library plus examples and tools</td></tr>
+<tr align="left"><td>all</td><td>Builds the library plus tools</td></tr>
 <tr align="left"><td>tests</td><td>Builds and runs the verification tests</td></tr>
 <tr align="left"><td>docs</td><td>Uses Doxygen to generate new docs.</td></tr>
 <tr align="left"><td>caboodle</td><td>Builds everything, including docs and tests</td></tr>

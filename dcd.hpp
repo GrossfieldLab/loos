@@ -37,6 +37,7 @@
 
 #include <AtomicGroup.hpp>
 #include <StreamWrapper.hpp>
+#include <Trajectory.hpp>
 
 using namespace std;
 
@@ -62,7 +63,7 @@ using namespace std;
  *    
  *  - [Almost] everything returned is a copy
  */
-class DCD : public boost::noncopyable {
+class DCD : public Trajectory {
 
   // Use a union to convert data to appropriate type...
   typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay; 
@@ -80,6 +81,8 @@ public:
   struct LineError : public exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
   //! Unexpected EOF
   struct EndOfFile : public exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
+  //! Endianness of file doesn't match local architecture...
+  struct EndianMismatch : public exception { virtual const char *what() const throw() { return("Endianness of file does not match local architecture"); }; } endian_mismatch;
   //! General error...
   struct GeneralError : public exception {
     GeneralError(const char *s) : msg(s) { };
@@ -88,16 +91,16 @@ public:
   };
 
 
-  DCD() : _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
+  explicit DCD() : Trajectory(), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { }
 
   //! Begin reading from the file named s
-  explicit DCD(const string s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+  explicit DCD(const string s) :  Trajectory(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the file named s
-  explicit DCD(const char* s) :  _ifs(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+  explicit DCD(const char* s) :  Trajectory(s), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
 
   //! Begin reading from the stream ifs
-  explicit DCD(fstream& ifs) : _ifs(ifs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
+  explicit DCD(fstream& fs) : Trajectory(fs), _natoms(0), qcrys(vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
 
   //! Read in the header from the stored stream
   void readHeader(void);
@@ -105,25 +108,30 @@ public:
   void readHeader(fstream& ifs);
 
   //! Read the next frame.  Returns false if at EOF
-  bool readFrame(void);
+  virtual bool readFrame(void);
   //! Read the ith frame.  Returns false if there is a problem.
-  bool readFrame(const unsigned int i);
+  virtual bool readFrame(const unsigned int i);
 
   //! Rewind the file to the first DCD frame.
-  void rewind(void);
+  virtual void rewind(void);
 
   // Accessor methods...
 
-  int natoms(void) const { return(_natoms); }
+  virtual int natoms(void) const { return(_natoms); }
+  virtual bool hasPeriodicBox(void) const { return(_icntrl[10] == 1); }
+  virtual GCoord periodicBox(void) const { return(GCoord(qcrys[0], qcrys[1], qcrys[2])); }
 
   vector<string> titles(void) const { return(_titles); }
 
   int icntrl(const int i) const { assert(i>=0 && i<20); return(_icntrl[i]); }
   void icntrl(const int i, const int val) { assert(i>=0 && i<20); _icntrl[i] = val; }
 
+  // * legacy *
   vector<double> crystalParams(void) const { return(qcrys); }
+  bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
 
-  float delta(void) const { return(_delta); }
+  virtual float timestep(void) const { return(_delta); }
+  virtual int nframes(void) const { return(_icntrl[3]); }
 
   //! Return the raw coords...
   vector<dcd_real> xcoords(void) const { return(xcrds); }
@@ -132,19 +140,19 @@ public:
   //! Return the raw coords...
   vector<dcd_real> zcoords(void) const { return(zcrds); }
 
-  bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
-
   // The following track CHARMm names (more or less...)
-  unsigned int nsteps(void) const { return((unsigned int)_icntrl[3]); }
+  unsigned int nsteps(void) const { return(_icntrl[3]); }
+  float delta(void) const { return(_delta); }
   int nsavc(void) const { return(_icntrl[2]); }
   int nfile(void) const { return(_icntrl[0]); }
   int nfixed(void) const { return(_icntrl[8]); }
 
   //! Auto-interleave the coords into a vector of GCoord()'s.
   /*!  This can be a pretty slow operation, so be careful. */
-  vector<GCoord> coords(void);
+  virtual vector<GCoord> coords(void);
 
-  //! Interlieve coords, selecting entries indexed by map
+  //! Interleave coords, selecting entries indexed by map
+  // This is slated to go away...
   vector<GCoord> mappedCoords(const vector<int>& map);
 
 
@@ -157,21 +165,22 @@ public:
    *xtal data, then the a, b, and c values are used to update the
    *AtomicGroup::periodicBox().
    */
-  void updateGroupCoords(AtomicGroup& g);
+  virtual void updateGroupCoords(AtomicGroup& g);
 
 private:
   void allocateSpace(const int n);
   void readCrystalParams(void);
   void readCoordLine(vector<float>& v);
 
+  bool endianMatch(StreamWrapper& fsw);
+
   // For reading F77 I/O
-  unsigned int readRecordLen(StreamWrapper& ifs);
-  DataOverlay* readF77Line(StreamWrapper& ifs, unsigned int *len);
+  unsigned int readRecordLen(StreamWrapper& fsw);
+  DataOverlay* readF77Line(StreamWrapper& fsw, unsigned int *len);
 
 
 
 private:
-  StreamWrapper _ifs;       // Cached stream pointer...
   int _icntrl[20];          // DCD header data
   int _natoms;              // # of atoms
   vector<string> _titles;   // Vector of title lines from DCD
