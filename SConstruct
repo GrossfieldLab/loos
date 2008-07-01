@@ -21,6 +21,9 @@
 import sys
 import os
 
+# This can be reset in custom.py
+default_lib_path = '/usr/lib64'
+
 # Principal options...
 clos = Options('custom.py')
 clos.AddOptions(
@@ -30,11 +33,11 @@ clos.AddOptions(
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
 )
 
-clos.Add(PathOption('LAPACK', 'Path to LAPACK', '/usr/lib64'))
-clos.Add(PathOption('ATLAS', 'Path to ATLAS', '/usr/lib64/atlas'))
-clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '/usr/lib64'))
-clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include'))
-clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex')
+clos.Add(PathOption('LAPACK', 'Path to LAPACK', default_lib_path, PathOption.PathAccept))
+clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
+clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathOption.PathAccept))
+clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
+clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
