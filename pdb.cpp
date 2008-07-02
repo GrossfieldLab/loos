@@ -309,7 +309,7 @@ void PDB::read(istream& is) {
 }
 
 
-static ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
+ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
   os << "CRYST1";
   Fmt dists(3);
   dists.width(9).right().trailingZeros(true).fixed();
@@ -323,7 +323,7 @@ static ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
   return(os);
 }
 
-static ostream& XTALLine(ostream& os, const GCoord& box) {
+ostream& XTALLine(ostream& os, const GCoord& box) {
     os << "REMARK  XTAL "
        << box.x() << " "
        << box.y() << " "
@@ -336,10 +336,10 @@ ostream& operator<<(ostream& os, const PDB& p) {
   AtomicGroup::ConstAtomIterator i;
 
   os << p._remarks;
-  if (p._has_cryst) 
-    FormattedUnitCell(os, p.cell) << endl;
   if (p.isPeriodic())
     XTALLine(os, p.periodicBox()) << endl;
+  if (p._has_cryst) 
+    FormattedUnitCell(os, p.cell) << endl;
   for (i = p.atoms.begin(); i != p.atoms.end(); i++)
     os << p.atomAsString(*i) << endl;
   

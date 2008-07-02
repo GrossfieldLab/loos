@@ -158,6 +158,10 @@ private:
   // Convert an Atom to a string representation in PDB format...
   string atomAsString(const pAtom p) const;
 
+  // Write periodic box information
+  ostream& FormattedUnitCell(ostream& os, const UnitCell& u);
+  ostream& XTALLine(ostream& os, const GCoord& box);
+
 private:
   bool _show_charge;
   bool _auto_ter;
