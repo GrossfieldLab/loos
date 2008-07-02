@@ -323,6 +323,13 @@ static ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
   return(os);
 }
 
+static ostream& XTALLine(ostream& os, const GCoord& box) {
+    os << "REMARK  XTAL "
+       << box.x() << " "
+       << box.y() << " "
+       << box.z();
+    return(os);
+}
 
 //! Output the group as a PDB...
 ostream& operator<<(ostream& os, const PDB& p) {
@@ -331,6 +338,8 @@ ostream& operator<<(ostream& os, const PDB& p) {
   os << p._remarks;
   if (p._has_cryst) 
     FormattedUnitCell(os, p.cell) << endl;
+  if (p.isPeriodic())
+    XTALLine(os, p.periodicBox()) << endl;
   for (i = p.atoms.begin(); i != p.atoms.end(); i++)
     os << p.atomAsString(*i) << endl;
   
