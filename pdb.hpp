@@ -55,14 +55,27 @@ using namespace std;
  *and stored in the parent AtomicGroup.  If not, but a CRYST1 record
  *is present, then the a, b, c parameters are used to set the periodic
  *box.
+ *
+ * This class can handle some minor variations in the PDB format
+ * (since there are so many different standards out there).  This is
+ * determined by the strictness_policy setting.  Be default, a weak
+ * strictness is used.  This will allow variations like frame-shifts
+ * in the resid field to be accepted.  If you would rather have the
+ * strict formatting honored, you'll need to set each PDB object to
+ * strict:
+\verbatim
+PDB pdb;
+pdb.strict(true);
+\endverbatim
  */
 class PDB : public AtomicGroup {
 public:
-  PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false) { }
+  PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
   virtual ~PDB() {}
 
   //! Read in PDB from a filename
-  explicit PDB(const string fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
+  explicit PDB(const string fname) : _show_charge(false), _auto_ter(true),
+				     _has_cryst(false), strictness_policy(false) {
     ifstream ifs(fname.c_str());
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + fname));
@@ -70,7 +83,8 @@ public:
   }
 
   //! Read in a PDB from a filename
-  explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true), _has_cryst(false) {
+  explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true),
+				    _has_cryst(false), strictness_policy(false) {
     ifstream ifs(fname);
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + string(fname)));
@@ -78,7 +92,8 @@ public:
   }
 
   //! Read in a PDB from an ifstream
-  explicit PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true), _has_cryst(false) { read(ifs); }
+  explicit PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true),
+				_has_cryst(false), strictness_policy(false) { read(ifs); }
 
 
   //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
@@ -114,6 +129,10 @@ public:
   bool showCharge(void) const { return(_show_charge); }
   //! Special handling for charges since the PDB form is daft
   void showCharge(bool b = true) { _show_charge = b; }
+
+  bool strict(void) const { return(strictness_policy); }
+  //! Determins how strict the input parser is to the '96 PDB standard.
+  void strict(const bool b) { strictness_policy = b; }
 
   bool autoTerminate(void) const { return(_auto_ter); }
 
@@ -166,6 +185,7 @@ private:
   bool _show_charge;
   bool _auto_ter;
   bool _has_cryst;
+  bool strictness_policy;
   Remarks _remarks;
   UnitCell cell;
 

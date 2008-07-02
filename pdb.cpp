@@ -130,6 +130,25 @@ void PDB::parseAtomRecord(const string s) {
   pa->resid(i);
   
   t = parseString(s, 26, 1);
+
+  // Special handling of resid field since it may be frame-shifted by
+  // 1 col in some cases...
+  if (strictness_policy) {
+    char c = t[0];
+    
+    if (c != ' ' && !isalpha(c))
+      throw(runtime_error("Non-alpha character in iCode column of PDB"));
+	
+  } else {
+    char c = t[0];
+
+    if (c != ' ' && isdigit(c)) {
+      i = parseInt(s, 22, 5);
+      pa->resid(i);
+      t = " ";
+    }
+
+  }
   pa->iCode(t);
 
   c[0] = parseFloat(s, 30, 8);
