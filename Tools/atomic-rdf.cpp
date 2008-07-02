@@ -94,7 +94,7 @@ double max2 = hist_max*hist_max;
 // loop over the frames of the dcd file
 int frame = 0;
 double volume = 0.0;
-int unique_pairs;
+int unique_pairs=0;
 while (dcd.readFrame())
     {
     // update coordinates and periodic box
