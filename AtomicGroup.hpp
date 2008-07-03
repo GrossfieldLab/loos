@@ -152,7 +152,7 @@ public:
   const pAtom& operator[](const int i) const;
 
   //! Append the atom onto the group
-  void append(pAtom pa) { atoms.push_back(pa); }
+  void append(pAtom pa) { atoms.push_back(pa); _sorted = false; }
   //! Append a vector of atoms
   void append(vector<pAtom> pas);
   //! Append an entire AtomicGroup onto this one (concatenation)
@@ -190,7 +190,7 @@ public:
   }
 
   //! Inequality test for two groups
-  bool operator!=(const AtomicGroup& rhs) {
+  bool operator!=(const AtomicGroup& rhs) const {
       return(!(operator==(rhs)));
   }
 
@@ -416,7 +416,7 @@ private:
 
   int rangeCheck(int) const;
 
-  void addAtom(pAtom pa) { atoms.push_back(pa); }
+  void addAtom(pAtom pa) { atoms.push_back(pa); _sorted = false; }
   void deleteAtom(pAtom pa);
 
   boost::tuple<AtomIterator, AtomIterator> calcSubsetIterators(const int offset, const int len = 0);

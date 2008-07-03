@@ -72,6 +72,7 @@ pAtom AtomicGroup::getAtom(const int i) const {
   return(atoms[j]);
 }
 
+// Should these invalidate sort status?
 pAtom& AtomicGroup::operator[](const int i) {
   int j = rangeCheck(i);
   return(atoms[j]);
@@ -92,6 +93,7 @@ void AtomicGroup::deleteAtom(pAtom pa) {
     throw(runtime_error("Attempting to delete a non-existent atom"));
 
   atoms.erase(iter);
+  _sorted = false;
 }
 
 
@@ -101,6 +103,8 @@ void AtomicGroup::append(vector<pAtom> pas) {
 
   for (i=pas.begin(); i != pas.end(); i++)
     atoms.push_back(*i);
+
+  _sorted = false;
 }
 
 
@@ -110,6 +114,8 @@ void AtomicGroup::append(const AtomicGroup& grp) {
 
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
     addAtom(*i);
+
+  _sorted = false;
 }
 
 
@@ -119,6 +125,8 @@ void AtomicGroup::remove(vector<pAtom> pas) {
 
   for (i=pas.begin(); i != pas.end(); i++)
     deleteAtom(*i);
+
+  _sorted = false;
 }
 
 
@@ -128,6 +136,8 @@ void AtomicGroup::remove(const AtomicGroup& grp) {
 
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
     deleteAtom(*i);
+
+  _sorted = false;
 }
 
 
@@ -139,6 +149,7 @@ AtomicGroup& AtomicGroup::operator+=(const AtomicGroup& rhs) {
 
 AtomicGroup& AtomicGroup::operator+=(const pAtom& rhs) {
   atoms.push_back(rhs);
+  _sorted = false;
   return(*this);
 }
 
@@ -209,6 +220,8 @@ AtomicGroup AtomicGroup::excise(const int offset, const int len) {
 
   res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
   atoms.erase(boost::get<0>(iters), boost::get<1>(iters));
+
+  _sorted = false;
 
   res.box = box;
   return(res);
