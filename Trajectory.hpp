@@ -74,6 +74,9 @@ public:
   virtual bool readFrame(void) =0;
 
   //! Reads a specific frame
+  /** Important note: \c readFrame(i) is expected to prime the
+   *iterator-like readFrame() above.
+   */
   virtual bool readFrame(const unsigned int i) =0;
 
   //! Rewinds the readFrame() iterator
