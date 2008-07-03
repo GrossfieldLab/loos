@@ -99,7 +99,7 @@ protected:
 template<class T>
 class RawAsciiReader : public MatrixReader<T> {
 public:
-  static const uint inbufsiz = 65536;
+  static const uint inbufsiz = 256536;
 
   typename MatrixReader<T>::Result basic_read(istream* input);
 
@@ -132,9 +132,13 @@ template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* i
     throw(runtime_error("Could not find any columns in the matrix!"));
   // Now count the rows...
   m=1;
+  int i;
   while (input->getline(inbuf, inbufsiz)) {
-    if (!isdigit(inbuf[0]))
+    stringstream sin(inbuf);
+    if (!(sin >> i)) {
+      cerr << "Error while reading ASCII matrix at " << inbuf[0] << inbuf[1] << inbuf[2] << endl;
       break;
+    }
     ++m;
   }
 
@@ -142,6 +146,7 @@ template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* i
   input->clear();
   input->seekg(curpos);
   boost::tuple<uint, int> result(m, n);
+
   return(result);
 }
 
