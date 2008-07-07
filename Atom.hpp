@@ -65,14 +65,16 @@ public:
     anumbit = chargebit << 1
   };
 
+  // Exception classes
+  struct UnsetProperty : public exception {
+    virtual const char *what() const throw() {
+      return("Attempting to access an unset atom property.");
+    }
+  };
+
 	 
 
-  Atom() {
-#if DEBUG >= 5
-    cout << "Atom()\n";
-#endif
-    init();
-  }
+  Atom() { init(); }
 
   //! Constructs an atom with the atomid i, atomname s, and coordinates c.
   /**
@@ -87,17 +89,10 @@ public:
     _id = i;
     _name = s;
     _coords = c;
-#if DEBUG >= 5
-    cout << "Atom(...)\n";
-#endif
   }
 
 
-  ~Atom() {
-#if DEBUG >= 5
-    cout << "~Atom()\n";
-#endif
-  }
+  ~Atom() { }
 
   // Accessors...
   int id(void) const { return(_id); }
@@ -136,7 +131,11 @@ public:
   //! Returns a const ref to internally stored coordinates.
   //! This returns a const ref mainly for efficiency, rather than
   //! copying the coords...
-  const GCoord& coords(void) const { return(_coords); }
+  const GCoord& coords(void) const {
+    if (!(mask & coordsbit))
+      throw(UnsetProperty());
+    return(_coords);
+  }
 
   //! Returns a writable ref to the internally stored coords.
   /** This can cause problems since we track whether the coords are
@@ -155,7 +154,11 @@ public:
   double occupancy(void) const { return(_q); }
   void occupancy(const double d) { _q = d ; }
 
-  double charge(void) const { return(_charge); }
+  double charge(void) const {
+    if (!(mask & chargebit))
+      throw(UnsetProperty());
+    return(_charge);
+  }
 
   //! Sets the charge of the atom as a double.  This is NOT the PDB spec...
 
@@ -191,7 +194,11 @@ public:
   void deleteBond(const pAtom& p) { deleteBond(p->id()); }
 
   //! Returns a copy of the bond list.
-  vector<int> getBonds(void) const { return(bonds); }
+  vector<int> getBonds(void) const {
+    if (!(mask & bondsbit))
+      throw(UnsetProperty());
+    return(bonds);
+  }
 
   bool hasBonds(void) const { return(bonds.size() != 0); }
 
