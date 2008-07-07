@@ -215,34 +215,29 @@ namespace loos
     switch (yytype)
       {
         case 4: /* "STRING" */
-#line 77 "grammar.yy"
+#line 78 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 221 "grammar.cc"
 	break;
       case 5: /* "SKEY" */
-#line 77 "grammar.yy"
+#line 78 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 226 "grammar.cc"
 	break;
       case 6: /* "NKEY" */
-#line 77 "grammar.yy"
+#line 78 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 231 "grammar.cc"
 	break;
-      case 7: /* "ALL" */
-#line 77 "grammar.yy"
+      case 30: /* "string" */
+#line 78 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 236 "grammar.cc"
 	break;
-      case 29: /* "string" */
-#line 77 "grammar.yy"
+      case 31: /* "strval" */
+#line 78 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 241 "grammar.cc"
-	break;
-      case 30: /* "strval" */
-#line 77 "grammar.yy"
-	{ delete (yyvaluep->sval); };
-#line 246 "grammar.cc"
 	break;
 
 	default:
@@ -432,77 +427,82 @@ namespace loos
     switch (yyn)
       {
 	  case 3:
-#line 83 "grammar.yy"
+#line 84 "grammar.yy"
     { driver.kern.push(new logicalAnd); ;}
     break;
 
   case 4:
-#line 84 "grammar.yy"
+#line 85 "grammar.yy"
     { driver.kern.push(new logicalOr); ;}
     break;
 
   case 6:
-#line 89 "grammar.yy"
+#line 90 "grammar.yy"
     { driver.kern.push(new logicalNot); ;}
     break;
 
   case 7:
-#line 90 "grammar.yy"
+#line 91 "grammar.yy"
     { driver.kern.push(new lessThan); ;}
     break;
 
   case 8:
-#line 91 "grammar.yy"
+#line 92 "grammar.yy"
     { driver.kern.push(new lessThanEquals); ;}
     break;
 
   case 9:
-#line 92 "grammar.yy"
+#line 93 "grammar.yy"
     { driver.kern.push(new greaterThanEquals); ;}
     break;
 
   case 10:
-#line 93 "grammar.yy"
+#line 94 "grammar.yy"
     { driver.kern.push(new greaterThan); ;}
     break;
 
   case 11:
-#line 94 "grammar.yy"
+#line 95 "grammar.yy"
     { driver.kern.push(new equals); ;}
     break;
 
   case 12:
-#line 95 "grammar.yy"
+#line 96 "grammar.yy"
     { driver.kern.push(new equals); driver.kern.push(new logicalNot); ;}
     break;
 
   case 13:
-#line 96 "grammar.yy"
+#line 97 "grammar.yy"
     { driver.kern.push(new matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
     break;
 
   case 14:
-#line 97 "grammar.yy"
+#line 98 "grammar.yy"
     { driver.kern.push(new logicalTrue); ;}
     break;
 
-  case 21:
-#line 105 "grammar.yy"
-    { driver.kern.push(new extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+  case 15:
+#line 99 "grammar.yy"
+    { driver.kern.push(new Hydrogen); ;}
     break;
 
   case 22:
 #line 107 "grammar.yy"
+    { driver.kern.push(new extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+    break;
+
+  case 23:
+#line 109 "grammar.yy"
     { driver.kern.push(new pushInt((yysemantic_stack_[(1) - (1)].ival))); ;}
     break;
 
-  case 25:
-#line 112 "grammar.yy"
+  case 26:
+#line 114 "grammar.yy"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new pushString(*((yysemantic_stack_[(1) - (1)].sval)))); ;}
     break;
 
-  case 27:
-#line 121 "grammar.yy"
+  case 28:
+#line 123 "grammar.yy"
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "name")
@@ -516,8 +516,8 @@ else
 ;}
     break;
 
-  case 28:
-#line 136 "grammar.yy"
+  case 29:
+#line 138 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
    driver.kern.push(new pushAtomId);
@@ -737,15 +737,15 @@ else
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const signed char parser::yypact_ninf_ = -14;
+  const signed char parser::yypact_ninf_ = -16;
   const signed char
   parser::yypact_[] =
   {
-         8,   -14,   -14,   -14,   -14,   -14,     8,     8,    43,   -14,
-      44,   -14,   -14,   -14,   -14,   -14,   -13,   -14,    -2,    27,
-     -14,   -14,     8,     8,    30,    30,    30,    30,    30,    30,
-      -3,    -3,   -14,   -14,   -14,   -14,    30,   -14,   -12,   -14,
-     -14,   -14,   -14,   -14,   -14,   -14,   -14,    -9
+         7,   -16,   -16,   -16,   -16,   -16,   -16,     7,     7,    29,
+     -16,    47,   -16,   -16,   -16,   -16,   -16,   -15,   -16,    -4,
+      37,   -16,   -16,     7,     7,    28,    28,    28,    28,    28,
+      28,     0,     0,   -16,   -16,   -16,   -16,    28,   -16,   -11,
+     -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,    -3
   };
 
   /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -754,27 +754,27 @@ else
   const unsigned char
   parser::yydefact_[] =
   {
-         0,    22,    25,    27,    28,    14,     0,     0,     0,     2,
-       0,    16,    18,    19,    17,    23,    24,    20,     0,     0,
-       6,     1,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     5,    15,     3,     4,     0,     7,    24,     8,
-       9,    10,    11,    12,    26,    13,    21,     0
+         0,    23,    26,    28,    29,    14,    15,     0,     0,     0,
+       2,     0,    17,    19,    20,    18,    24,    25,    21,     0,
+       0,     6,     1,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     5,    16,     3,     4,     0,     7,    25,
+       8,     9,    10,    11,    12,    27,    13,    22,     0
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   parser::yypgoto_[] =
   {
-       -14,    21,     9,    -6,   -14,   -14,   -14,   -14,   -14,    13,
-       2,   -14
+       -16,    30,    19,    -7,   -16,   -16,   -16,   -16,   -16,     3,
+       1,   -16
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   parser::yydefgoto_[] =
   {
-        -1,     8,     9,    10,    11,    12,    13,    14,    15,    45,
-      38,    17
+        -1,     9,    10,    11,    12,    13,    14,    15,    16,    46,
+      39,    18
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -784,24 +784,26 @@ else
   const unsigned char
   parser::yytable_[] =
   {
-        19,    44,    16,    30,    31,    31,    22,    23,    16,    16,
-      33,     1,     2,     3,     4,     5,    20,    32,    37,    39,
-      40,    41,    42,    43,    16,    16,     6,    18,     7,     0,
-      47,    34,    35,     1,     2,     3,     4,    24,    25,    26,
-      27,    28,    29,    21,    46,     0,    33,     0,    36,     0,
-       0,    22,    23,     0,    24,    25,    26,    27,    28,    29
+        20,    17,    31,    32,    45,    23,    24,    32,    17,    17,
+       1,     2,     3,     4,     5,     6,    33,    34,    38,    40,
+      41,    42,    43,    44,    17,    17,     7,    21,     8,    22,
+      48,     1,     2,     3,     4,    47,     0,    19,    23,    24,
+       0,     0,    35,    36,     0,     0,     0,    37,    25,    26,
+      27,    28,    29,    30,     0,     0,     0,    34,    25,    26,
+      27,    28,    29,    30
   };
 
   /* YYCHECK.  */
   const signed char
   parser::yycheck_[] =
   {
-         6,     4,     0,    16,    17,    17,     8,     9,     6,     7,
-      19,     3,     4,     5,     6,     7,     7,    19,    24,    25,
-      26,    27,    28,    29,    22,    23,    18,     6,    20,    -1,
-      36,    22,    23,     3,     4,     5,     6,    10,    11,    12,
-      13,    14,    15,     0,    31,    -1,    19,    -1,    18,    -1,
-      -1,     8,     9,    -1,    10,    11,    12,    13,    14,    15
+         7,     0,    17,    18,     4,     9,    10,    18,     7,     8,
+       3,     4,     5,     6,     7,     8,    20,    20,    25,    26,
+      27,    28,    29,    30,    23,    24,    19,     8,    21,     0,
+      37,     3,     4,     5,     6,    32,    -1,     7,     9,    10,
+      -1,    -1,    23,    24,    -1,    -1,    -1,    19,    11,    12,
+      13,    14,    15,    16,    -1,    -1,    -1,    20,    11,    12,
+      13,    14,    15,    16
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -809,11 +811,11 @@ else
   const unsigned char
   parser::yystos_[] =
   {
-         0,     3,     4,     5,     6,     7,    18,    20,    22,    23,
-      24,    25,    26,    27,    28,    29,    31,    32,    22,    24,
-      23,     0,     8,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    19,    19,    23,    23,    18,    24,    31,    24,
-      24,    24,    24,    24,     4,    30,    30,    24
+         0,     3,     4,     5,     6,     7,     8,    19,    21,    23,
+      24,    25,    26,    27,    28,    29,    30,    32,    33,    23,
+      25,    24,     0,     9,    10,    11,    12,    13,    14,    15,
+      16,    17,    18,    20,    20,    24,    24,    19,    25,    32,
+      25,    25,    25,    25,    25,     4,    31,    31,    25
   };
 
 #if YYDEBUG
@@ -823,8 +825,8 @@ else
   parser::yytoken_number_[] =
   {
          0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,    40,    41,
-      33
+     265,   266,   267,   268,   269,   270,   271,   272,   273,    40,
+      41,    33
   };
 #endif
 
@@ -832,9 +834,9 @@ else
   const unsigned char
   parser::yyr1_[] =
   {
-         0,    21,    22,    22,    22,    23,    23,    23,    23,    23,
-      23,    23,    23,    23,    23,    24,    24,    24,    24,    25,
-      25,    26,    27,    28,    28,    29,    30,    31,    32
+         0,    22,    23,    23,    23,    24,    24,    24,    24,    24,
+      24,    24,    24,    24,    24,    24,    25,    25,    25,    25,
+      26,    26,    27,    28,    29,    29,    30,    31,    32,    33
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -842,8 +844,8 @@ else
   parser::yyr2_[] =
   {
          0,     2,     1,     3,     3,     3,     2,     3,     3,     3,
-       3,     3,     3,     3,     1,     3,     1,     1,     1,     1,
-       1,     3,     1,     1,     1,     1,     1,     1,     1
+       3,     3,     3,     3,     1,     1,     3,     1,     1,     1,
+       1,     1,     3,     1,     1,     1,     1,     1,     1,     1
   };
 
 #if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
@@ -853,10 +855,10 @@ else
   const parser::yytname_[] =
   {
     "END", "error", "$undefined", "NUMBER", "STRING", "SKEY", "NKEY", "ALL",
-  "\"&&\"", "\"||\"", "\"<\"", "\"<=\"", "\">=\"", "\">\"", "\"==\"",
-  "\"!=\"", "\"=~\"", "\"->\"", "'('", "')'", "'!'", "$accept", "expr",
-  "rexpr", "value", "numeric", "numex", "number", "alpha", "string",
-  "strval", "alphid", "numid", 0
+  "HYDROGEN", "\"&&\"", "\"||\"", "\"<\"", "\"<=\"", "\">=\"", "\">\"",
+  "\"==\"", "\"!=\"", "\"=~\"", "\"->\"", "'('", "')'", "'!'", "$accept",
+  "expr", "rexpr", "value", "numeric", "numex", "number", "alpha",
+  "string", "strval", "alphid", "numid", 0
   };
 #endif
 
@@ -865,15 +867,15 @@ else
   const parser::rhs_number_type
   parser::yyrhs_[] =
   {
-        22,     0,    -1,    23,    -1,    22,     8,    23,    -1,    22,
-       9,    23,    -1,    18,    22,    19,    -1,    20,    23,    -1,
-      24,    10,    24,    -1,    24,    11,    24,    -1,    24,    12,
-      24,    -1,    24,    13,    24,    -1,    24,    14,    24,    -1,
-      24,    15,    24,    -1,    31,    16,    30,    -1,     7,    -1,
-      18,    24,    19,    -1,    25,    -1,    28,    -1,    26,    -1,
-      27,    -1,    32,    -1,    31,    17,    30,    -1,     3,    -1,
-      29,    -1,    31,    -1,     4,    -1,     4,    -1,     5,    -1,
-       6,    -1
+        23,     0,    -1,    24,    -1,    23,     9,    24,    -1,    23,
+      10,    24,    -1,    19,    23,    20,    -1,    21,    24,    -1,
+      25,    11,    25,    -1,    25,    12,    25,    -1,    25,    13,
+      25,    -1,    25,    14,    25,    -1,    25,    15,    25,    -1,
+      25,    16,    25,    -1,    32,    17,    31,    -1,     7,    -1,
+       8,    -1,    19,    25,    20,    -1,    26,    -1,    29,    -1,
+      27,    -1,    28,    -1,    33,    -1,    32,    18,    31,    -1,
+       3,    -1,    30,    -1,    32,    -1,     4,    -1,     4,    -1,
+       5,    -1,     6,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -882,17 +884,17 @@ else
   parser::yyprhs_[] =
   {
          0,     0,     3,     5,     9,    13,    17,    20,    24,    28,
-      32,    36,    40,    44,    48,    50,    54,    56,    58,    60,
-      62,    64,    68,    70,    72,    74,    76,    78,    80
+      32,    36,    40,    44,    48,    50,    52,    56,    58,    60,
+      62,    64,    66,    70,    72,    74,    76,    78,    80,    82
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   parser::yyrline_[] =
   {
-         0,    82,    82,    83,    84,    88,    89,    90,    91,    92,
-      93,    94,    95,    96,    97,   101,   101,   101,   101,   103,
-     103,   105,   107,   109,   109,   112,   114,   121,   136
+         0,    83,    83,    84,    85,    89,    90,    91,    92,    93,
+      94,    95,    96,    97,    98,    99,   103,   103,   103,   103,
+     105,   105,   107,   109,   111,   111,   114,   116,   123,   138
   };
 
   // Print the state stack on the debug stream.
@@ -935,8 +937,8 @@ else
            0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    20,     2,     2,     2,     2,     2,     2,
-      18,    19,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    21,     2,     2,     2,     2,     2,     2,
+      19,    20,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -959,7 +961,7 @@ else
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17
+      15,    16,    17,    18
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -968,20 +970,20 @@ else
   }
 
   const int parser::yyeof_ = 0;
-  const int parser::yylast_ = 59;
+  const int parser::yylast_ = 63;
   const int parser::yynnts_ = 12;
   const int parser::yyempty_ = -2;
-  const int parser::yyfinal_ = 21;
+  const int parser::yyfinal_ = 22;
   const int parser::yyterror_ = 1;
   const int parser::yyerrcode_ = 256;
-  const int parser::yyntokens_ = 21;
+  const int parser::yyntokens_ = 22;
 
-  const unsigned int parser::yyuser_token_number_max_ = 272;
+  const unsigned int parser::yyuser_token_number_max_ = 273;
   const parser::token_number_type parser::yyundef_token_ = 2;
 
 } // namespace loos
 
-#line 147 "grammar.yy"
+#line 149 "grammar.yy"
 
 
 

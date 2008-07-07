@@ -64,6 +64,10 @@ int main(int argc, char *argv[]) {
   test(pdb, "resid =~ '1\\d+'", true);
   test(pdb, "!(name == 'CA')");
   test(pdb, "!(name == 'CA'", true);
+  test(pdb, "hydrogen");
+  test(pdb, "!hydrogen");
+  test(pdb, "resname == 'TIP3' && !hydrogen");
+  test(pdb, "segid == 'BULK' && !(name =~ '^H')");
   test(pdb, "segid -> 'L(\\d+)' < 3");
   test(pdb, "(segid -> '(L|P)(\\d+)') <= 3");
   test(pdb, "(segid -> '(L|P)(\\d+)') <= 10 && name =~ 'C'");

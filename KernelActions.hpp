@@ -437,7 +437,7 @@ namespace loos {
     }
   };
 
-  // Always returns true...
+  //! Always returns true...
   class logicalTrue : public Action {
   public:
     logicalTrue() : Action("TRUE") { }
@@ -446,6 +446,26 @@ namespace loos {
       stack->push(v);
     }
   };
+
+
+  //! Shortcut for checking for hydrogens...
+  class Hydrogen : public Action {
+  public:
+    Hydrogen() : Action("Hydrogen") { }
+    void execute(void) {
+      hasAtom();
+      
+      bool masscheck = true;
+      if (atom->checkProperty(Atom::massbit))
+	masscheck = (atom->mass() < 1.1);
+
+      string n = atom->name();
+      Value v;
+      v.setInt( (n[0] == 'H' && masscheck) );
+      stack->push(v);
+    }
+  };
+  
 
 };
 

@@ -29,6 +29,50 @@ Parsing '!(name == 'CA''
 Expected exception caught.
 
 --------------------------------------
+Parsing 'hydrogen'
+Commands:
+Hydrogen
+
+
+Selected 31060 @ (0.119252,0.314149,-0.0202868) & (-44.642,-47.604,-44.924) x (49.651,45.105,44.935)
+
+--------------------------------------
+Parsing '!hydrogen'
+Commands:
+Hydrogen
+!
+
+
+Selected 17910 @ (0.0519606,0.444526,-0.0494141) & (-43.791,-46.981,-44.585) x (48.886,44.498,44.562)
+
+--------------------------------------
+Parsing 'resname == 'TIP3' && !hydrogen'
+Commands:
+pushAtomResname
+pushString(<VALUE TYPE='STRING'>TIP3</VALUE>)
+==
+Hydrogen
+!
+&&
+
+
+Selected 8000 @ (0.225413,-0.529615,0.0740516) & (-36.785,-36.736,-44.585) x (36.809,36.826,44.562)
+
+--------------------------------------
+Parsing 'segid == 'BULK' && !(name =~ '^H')'
+Commands:
+pushAtomSegid
+pushString(<VALUE TYPE='STRING'>BULK</VALUE>)
+==
+pushAtomName
+matchRegex(^H)
+!
+&&
+
+
+Selected 8000 @ (0.225413,-0.529615,0.0740516) & (-36.785,-36.736,-44.585) x (36.809,36.826,44.562)
+
+--------------------------------------
 Parsing 'segid -> 'L(\d+)' < 3'
 Commands:
 pushAtomSegid

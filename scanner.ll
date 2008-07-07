@@ -39,6 +39,7 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 "->"                 { return(token::NEKEY); }
 
 all                  { return(token::ALL); }
+hydrogen             { return(token::HYDROGEN); }
 name|resname|segid   { yylval->sval = new string(yytext, yyleng); return(token::SKEY); }
 id|resid             { yylval->sval = new string(yytext, yyleng); return(token::NKEY); }
 
