@@ -123,6 +123,9 @@ int main(int argc, char *argv[]) {
                     weight = pa->mass();
                 else if (do_elec)
                     weight = pa->atomic_number() - pa->charge();
+                else
+                    throw(runtime_error(
+                                    "must choose either charge, mass or elec"));
                 double z = pa->coords().z();
 
                 if ( (z > min_z) && (z < max_z) ) {
