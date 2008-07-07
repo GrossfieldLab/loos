@@ -105,9 +105,15 @@ struct NotSelector : public AtomSelector {
 //! Select hydrogen atoms
 struct HydrogenSelector  : public AtomSelector {
   bool operator()(const pAtom& pa) const {
+
+    bool masscheck = true;
+
+    if (pa->checkProperty(Atom::massbit))
+      masscheck = (pa->mass() < 1.1);
+
     string n = pa->name();
-    char c = n[0];
-    return( (c == 'H') && (pa->mass() < 1.1) );
+    return( (n[0] == 'H') && masscheck );
+
   }
 };
 
