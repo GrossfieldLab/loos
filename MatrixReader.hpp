@@ -116,8 +116,10 @@ template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* i
 
   // Record the start of the raw matrix data...
   streampos curpos = input->tellg();
+  int i;
   while (input->getline(inbuf, inbufsiz)) {
-    if (isdigit(inbuf[0]))
+    stringstream sin(inbuf);
+    if (sin >> i)
       break;
     curpos = input->tellg();
   }
@@ -132,7 +134,6 @@ template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* i
     throw(runtime_error("Could not find any columns in the matrix!"));
   // Now count the rows...
   m=1;
-  int i;
   while (input->getline(inbuf, inbufsiz)) {
     stringstream sin(inbuf);
     if (!(sin >> i)) {

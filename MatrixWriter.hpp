@@ -169,7 +169,7 @@ public:
 
 template<class T>
 void MatrixWriter<T>::write(const T* data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) {
-  uint i, j, k, s = m*n;
+  uint i, j, k;
   uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
   uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
   ofstream *ofsp = 0;
@@ -193,7 +193,7 @@ void MatrixWriter<T>::write(const T* data, const string& tag, const uint m, cons
 	k = j*n+i;
       else
 	k = i*m+j;
-      assert(k < s);
+      assert(k < m*n && "Matrix index exceeds dimensions");
       d = data[k];
       OutputDatum(po, d);
     }
