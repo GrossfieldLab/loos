@@ -105,7 +105,7 @@ while (dcd.readFrame())
 #if 0
     if (frame % 10 == 0)
         {
-        cout << "#Processing file " << file_list[i] << endl;
+        cerr << "#Processing frame " << frame << endl;
         }
 #endif
 
