@@ -221,6 +221,7 @@ while (dcd.readFrame())
     }
 
 vector<InternalWater>::iterator wat;
+cout << "# Total frames = " << frame << endl;
 cout << "#AtomID\tLifetime\tEntered\tExited" << endl;
 for (wat = exited_waters.begin(); wat != exited_waters.end(); wat++)
     {
