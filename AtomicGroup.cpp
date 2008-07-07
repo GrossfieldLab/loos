@@ -592,6 +592,7 @@ bool AtomicGroup::operator==(const AtomicGroup& rhs) const {
   if (!sorted()) {
     lhs_atoms = atoms;
     std::sort(lhs_atoms.begin(), lhs_atoms.end(), comp);
+    lp = &lhs_atoms;
   } else
     lp = &atoms;
 
