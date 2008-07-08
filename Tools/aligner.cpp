@@ -258,9 +258,11 @@ int main(int argc, char *argv[]) {
   // the PDB is just a copy of the first DCD frame...
   dcd.readFrame(0);
   dcd.updateGroupCoords(applyto_sub);
+  AtomicGroup frame = applyto_sub.copy();
+  frame.renumber();
 
   // Write out the PDB...
-  PDB outpdb = PDB::fromAtomicGroup(applyto_sub);
+  PDB outpdb = PDB::fromAtomicGroup(frame);
   outpdb.remarks().add(header);
   string pdb_name = prefix + ".pdb";
   ofstream ofs(pdb_name.c_str());
@@ -272,17 +274,19 @@ int main(int argc, char *argv[]) {
 
   // Setup for writing DCD...
   DCDWriter dcdout(prefix + ".dcd");
-  dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, applyto_sub.isPeriodic());
+  dcdout.setHeader(frame.size(), nframes, 1e-3, frame.isPeriodic());
   dcdout.setTitles(outpdb.remarks().allRemarks());
   dcdout.writeHeader();
-  dcdout.writeFrame(applyto_sub);
+  dcdout.writeFrame(frame);
 
   // Now apply the alignment transformations to the requested subsets
   for (unsigned int i = 1; i<nframes; i++) {
     dcd.readFrame(i);
     dcd.updateGroupCoords(applyto_sub);
     applyto_sub.applyTransform(xforms[i]);
-    dcdout.writeFrame(applyto_sub);
+    frame = applyto_sub.copy();
+    frame.renumber();
+    dcdout.writeFrame(frame);
 
     // Track average frame...
     if (!globals.no_rmsd)

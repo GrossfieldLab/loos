@@ -232,7 +232,7 @@ public:
   // Some misc support routines...
 
   //! Renumber the atomid's of the contained atoms...
-  void renumber(const int start = 0, const int stride = 1);
+  void renumber(const int start = 1, const int stride = 1);
   int minId(void) const;
   int maxId(void) const;
   int minResid(void) const;

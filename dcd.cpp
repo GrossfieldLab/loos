@@ -332,7 +332,7 @@ void DCD::updateGroupCoords(AtomicGroup& g) {
   while(pa = iter()) {
     int i = pa->id() - 1;
     if (i < 0 || i >= _natoms)
-      throw(runtime_error("Attempting to index a nonexistent atom in DCD::updateStructure()"));
+      throw(runtime_error("Attempting to index a nonexistent atom in DCD::updateGroupCoords()"));
     GCoord c(xcrds[i], ycrds[i], zcrds[i]);
     pa->coords(c);
   }
