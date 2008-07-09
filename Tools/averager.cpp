@@ -172,6 +172,7 @@ vector<XForm> align(const AtomicGroup& subset, Trajectory& dcd) {
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
+  parseOptions(argc, argv);
   if (argc-optind != 2) {
     show_help();
     exit(-1);
