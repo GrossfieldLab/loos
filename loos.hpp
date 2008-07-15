@@ -64,6 +64,7 @@
 
 #include <pdb.hpp>
 #include <psf.hpp>
+#include <amber.hpp>
 
 #include <dcd.hpp>
 #include <dcd_utils.hpp>
