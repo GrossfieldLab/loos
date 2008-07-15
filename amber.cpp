@@ -272,3 +272,25 @@ void Amber::read(istream& is) {
 
   assignResidues();
 }
+
+
+
+
+void Amber::readCoords(istream& is) {
+  char buf[1024];
+  uint n;
+
+  // Skip the "title" line.
+  is.getline(buf, 1024);
+  is >> n;
+  if (n != atoms.size())
+    throw(runtime_error("Error- attempting to read mismatched coords into an Amber object."));
+
+  for (uint i=0; i<n; i++) {
+    greal x, y, z;
+
+    is >> setw(12) >> x >> setw(12) >> y >> setw(12) >> z;
+    atoms[i]->coords(GCoord(x,y,z));
+  }
+
+}

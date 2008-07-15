@@ -68,12 +68,29 @@ public:
     read(ifs);
   }
 
+  explicit Amber(const string parm, const string crds) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    ifstream ifs(parm.c_str());
+    if (!ifs)
+      throw(runtime_error("Cannot open Amber parmtop file " + parm));
+    read(ifs);
+    readCoords(crds);
+  }
+
   explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
     ifstream ifs(fname);
     if (!ifs)
       throw(runtime_error("Cannot open Amber parmtop file " + string(fname)));
     read(ifs);
   }
+
+  explicit Amber(const char* parm, const char* crds) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    ifstream ifs(parm);
+    if (!ifs)
+      throw(runtime_error("Cannot open Amber parmtop file " + string(parm)));
+    read(ifs);
+    readCoords(crds);
+  }
+
 
   explicit Amber(ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0) {
     read(ifs);
@@ -87,6 +104,22 @@ public:
   }
 
   void read(istream& is);
+
+  void readCoords(const char* fname) {
+    ifstream ifs(fname);
+    if (!ifs)
+      throw(runtime_error("Cannot open Amber crdinp file " + string(fname)));
+    readCoords(ifs);
+  }
+
+  void readCoords(const string fname) {
+    ifstream ifs(fname.c_str());
+    if (!ifs)
+      throw(runtime_error("Cannot open Amber crdinp file " + fname));
+    readCoords(ifs);
+  }
+
+  void readCoords(istream& is);
 
 
 
