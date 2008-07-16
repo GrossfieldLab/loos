@@ -102,6 +102,11 @@ public:
     read(ifs);
   }
 
+  //! Clones an object for polymorphism...
+  virtual Amber* clone(void) const {
+    return(new Amber(*this));
+  }
+
   //! Deep copy
   Amber copy(void) const {
     AtomicGroup grp = this->AtomicGroup::copy();
