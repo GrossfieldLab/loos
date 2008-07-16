@@ -70,6 +70,8 @@
 #include <dcd_utils.hpp>
 #include <dcdwriter.hpp>
 
+#include <amber_traj.hpp>
+
 #include <Geometry.hpp>
 #include <ensembles.hpp>
 #include <TimeSeries.hpp>
