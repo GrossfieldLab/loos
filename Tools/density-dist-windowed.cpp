@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
         for (unsigned int i=0; i<subsets.size(); i++) {
             pAtom pa;
             AtomicGroup::Iterator iter(subsets[i]);
-            double weight;
+            double weight=0.0;
             while ( pa = iter() ) {
                 if (do_charge)
                     weight = pa->charge();
