@@ -20,43 +20,36 @@
 */
 
 
+#include <sfactories.hpp>
+
+AtomicGroup loos::createSystem(const string& s) {
+
+  if (iends_with(s, ".pdb")) {
+    PDB pdb(s);
+    return(pdb);
+  } else if (iends_with(s, ".psf")) {
+    PSF psf(s);
+    return(psf);
+  } else if (iends_with(s, ".prmtop")) {
+    Amber amber(s);
+    return(amber);
+  } else
+    throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
+}
 
 
 
+pTraj loos::createTrajectory(const string& s, const AtomicGroup& g) {
 
-#if !defined(LOOSDEFS_HPP)
-#define LOOSDEFS_HPP
-
-
-#include <Coord.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
-
-typedef double greal;
-typedef long gint;
-
-typedef float dcd_real;
-typedef double dcd_double;
-
-typedef Coord<double> GCoord;
-typedef boost::shared_ptr<GCoord> pGCoord;
-
-class Trajectory;
-class DCD;
-class AmberTraj;
-
-typedef boost::shared_ptr<Trajectory> pTraj;
-typedef boost::shared_ptr<DCD> pDCD;
-typedef boost::shared_ptr<AmberTraj> pAmberTraj;
-
-class AtomicGroup;
-typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
-
-const uint kilobytes = 1024;
-const uint megabytes = kilobytes * kilobytes;
-const uint gigabytes = megabytes * kilobytes;
-
-
-#endif
-
+  if (iends_with(s, ".dcd")) {
+    pDCD pd(new DCD(s));
+    pTraj pt(pd);
+    return(pt);
+  } else if (iends_with(s, ".mdcrd")) {
+    pAmberTraj pat(new AmberTraj(s, g.size()));
+    pTraj pt(pat);
+    return(pt);
+  } else
+    throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
+}
 

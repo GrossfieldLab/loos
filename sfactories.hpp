@@ -24,39 +24,39 @@
 
 
 
-#if !defined(LOOSDEFS_HPP)
-#define LOOSDEFS_HPP
+#if !defined(SFACTORIES_HPP)
+#define SFACTORIES_HPP
 
 
-#include <Coord.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
 
-typedef double greal;
-typedef long gint;
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <stdexcept>
 
-typedef float dcd_real;
-typedef double dcd_double;
+#include <boost/algorithm/string.hpp>
 
-typedef Coord<double> GCoord;
-typedef boost::shared_ptr<GCoord> pGCoord;
+#include <loos_defs.hpp>
 
-class Trajectory;
-class DCD;
-class AmberTraj;
+#include <AtomicGroup.hpp>
+#include <pdb.hpp>
+#include <psf.hpp>
+#include <amber.hpp>
 
-typedef boost::shared_ptr<Trajectory> pTraj;
-typedef boost::shared_ptr<DCD> pDCD;
-typedef boost::shared_ptr<AmberTraj> pAmberTraj;
+#include <Trajectory.hpp>
+#include <dcd.hpp>
+#include <amber_traj.hpp>
 
-class AtomicGroup;
-typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
+using namespace std;
+using namespace boost;
 
-const uint kilobytes = 1024;
-const uint megabytes = kilobytes * kilobytes;
-const uint gigabytes = megabytes * kilobytes;
+
+namespace loos {
+  AtomicGroup createSystem(const string&);
+  pTraj createTrajectory(const string&, const AtomicGroup&);
+};
 
 
 #endif
-
-

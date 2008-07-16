@@ -122,7 +122,7 @@ Export('env')
 
 # Build the LOOS library...
 library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp')
-library_files += Split('AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp')
+library_files += Split('AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp sfactories.cpp')
 
 
 if int(reparse):
