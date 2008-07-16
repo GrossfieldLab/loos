@@ -143,7 +143,7 @@ void Amber::assignResidues(void) {
   // Fix the end...
   ++curresid;
   curresname = residue_labels[i];
-  for (uint j = residue_pointers[i]; j<natoms; j++) {
+  for (uint j = residue_pointers[i]-1; j<natoms; j++) {
     atoms[j]->resid(curresid);
     atoms[j]->resname(curresname);
   }
@@ -279,10 +279,16 @@ void Amber::read(istream& is) {
 void Amber::readCoords(istream& is) {
   char buf[1024];
   uint n;
+  double timestep;
+  int d;
 
   // Skip the "title" line.
   is.getline(buf, 1024);
-  is >> n;
+  is.getline(buf, 1024);
+  d = sscanf(buf, "%u,%lf", &n, &timestep);
+  if (d < 1 || d > 2)
+    throw(runtime_error("Invalid conversion of number of atoms in coord/restart file"));
+
   if (n != atoms.size())
     throw(runtime_error("Error- attempting to read mismatched coords into an Amber object."));
 
@@ -292,5 +298,31 @@ void Amber::readCoords(istream& is) {
     is >> setw(12) >> x >> setw(12) >> y >> setw(12) >> z;
     atoms[i]->coords(GCoord(x,y,z));
   }
+
+  greal a=0, b=0, c=0, alpha=0, beta=0, gamma=0;
+
+  // First, try to read in a box...
+  if (is >> setw(12) >> a >> setw(12) >> b >> setw(12) >> c >> setw(12) >> alpha >> setw(12) >> beta >> setw(12) >> gamma) {
+  
+    double dummy;
+    if (is >> dummy) {
+      // If we can read in another number, then assume that what was
+      // just read was actually the start of a veolcity block, so skip
+      // it and try to read in another box...
+      
+      is >> setw(12) >> dummy >> setw(12) >> dummy;
+
+      for (uint i=3; i<n; i++)
+	is >> setw(12) >> dummy >> setw(12) >> dummy >> setw(12) >> dummy;
+      
+      if (is >> setw(12) >> a >> setw(12) >> b >> setw(12) >> c >> setw(12) >> alpha >> setw(12) >> beta >> setw(12) >> gamma) {
+	periodicBox(a, b, c);
+      }
+
+    } else    // Nothing else read, so we did read a periodic box...
+      periodicBox(a, b, c);
+
+  }
+
 
 }
