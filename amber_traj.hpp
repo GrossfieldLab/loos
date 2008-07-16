@@ -35,6 +35,20 @@
 #include <StreamWrapper.hpp>
 #include <Trajectory.hpp>
 
+
+//! Class for reading amber coordinate trajectories
+/*!
+ * This class will read in the first frame of the trajectory upon
+ * instantiation.  It will also scan the file to determine how many
+ * frames there are.
+ *
+ * Since the Amber trajectory format does not store the # of atoms
+ * present, this must be passed to the AmberTraj constructor.
+ *
+ * Note that the Amber timestep is (presumably) defined in the parmtop
+ * file, not in the trajectory file.  So we return a null-value here...
+ */
+
 class AmberTraj : public Trajectory {
 public:
   explicit AmberTraj(const string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
@@ -47,11 +61,21 @@ public:
   virtual void updateGroupCoords(AtomicGroup&);
 
   virtual bool readFrame(const uint);
+  //! Trajectory frame iterator
+  /*!
+   * After an EOF has been reached and readFrame() returns a false,
+   * the cached frame is likely invalid.
+   */
   virtual bool readFrame(void);
 
   virtual bool hasPeriodicBox(void) const { return(periodic); }
   virtual GCoord periodicBox(void) const { return(box); }
 
+  /*!
+   * As stated above, Amber does not store the timestep in the
+   * trajectory, but in the parmtop instead.  So we return a
+   * null-value here...
+   */
   virtual float timestep(void) const { return(0.0); }  // Dummy routine...
 
 private:

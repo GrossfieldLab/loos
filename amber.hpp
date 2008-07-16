@@ -47,8 +47,10 @@ using namespace std;
 #include <utils.hpp>
 
 //! Class for reading in AMBER parmtop/coord files...
-/** Notes:
- *o No check is made to make sure pointers have been read prior to other flags...
+/*!
+ * This class is largely geared towards reading parmtop files.  It
+ * only parses a subset of the spec and follows more the format as
+ * defined from example files and VMD than from the Amber website.
  */
 
 class Amber : public AtomicGroup {
@@ -61,6 +63,7 @@ public:
   Amber() : natoms(0), nres(0), nbonh(0), mbona(0) { }
   virtual ~Amber() { }
 
+  //! Read in a parmtop file
   explicit Amber(const string fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
     ifstream ifs(fname.c_str());
     if (!ifs)
@@ -68,6 +71,7 @@ public:
     read(ifs);
   }
 
+  //! Read in a parmtop file and assign coordinates from the \a crds file.
   explicit Amber(const string parm, const string crds) : natoms(0), nres(0), nbonh(0), mbona(0) {
     ifstream ifs(parm.c_str());
     if (!ifs)
@@ -76,6 +80,7 @@ public:
     readCoords(crds);
   }
 
+  //! Read in a parmtop file
   explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
     ifstream ifs(fname);
     if (!ifs)
@@ -83,6 +88,7 @@ public:
     read(ifs);
   }
 
+  //! Read in a parmtop file and assign coordinates from the \a crds file.
   explicit Amber(const char* parm, const char* crds) : natoms(0), nres(0), nbonh(0), mbona(0) {
     ifstream ifs(parm);
     if (!ifs)
@@ -96,6 +102,7 @@ public:
     read(ifs);
   }
 
+  //! Deep copy
   Amber copy(void) const {
     AtomicGroup grp = this->AtomicGroup::copy();
     Amber p(grp);
@@ -103,8 +110,10 @@ public:
     return(p);
   }
 
+  //! Parse the parmtop file
   void read(istream& is);
 
+  //! Read in a coord (or restart file)
   void readCoords(const char* fname) {
     ifstream ifs(fname);
     if (!ifs)
@@ -112,6 +121,7 @@ public:
     readCoords(ifs);
   }
 
+  //! Read in a coord (or restart) file.
   void readCoords(const string fname) {
     ifstream ifs(fname.c_str());
     if (!ifs)
@@ -119,6 +129,14 @@ public:
     readCoords(ifs);
   }
 
+
+  //! Parses a coord/restart file from the given stream...
+  /*!
+   * This member function will auto-detect whether or not the file is
+   * a coordinates file or a restart file and will handle either
+   * appropriately.  Will also auto-detect box parameters and update
+   * them, if present.
+   */
   void readCoords(istream& is);
 
 

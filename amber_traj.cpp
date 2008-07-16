@@ -97,10 +97,6 @@ void AmberTraj::init(void) {
 }
 
 
-/** Note that reading past the end of the file invalidates the cached
- *  frame...
- */
-
 bool AmberTraj::readFrame(void) {
   greal x, y, z;
 
