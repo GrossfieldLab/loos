@@ -38,6 +38,26 @@ AtomicGroup loos::createSystem(const string& s) {
 }
 
 
+pAtomicGroup loos::createSystemPtr(const string& s) {
+
+  pAtomicGroup pag;
+
+  if (iends_with(s, ".pdb")) {
+    pPDB p(new PDB(s));
+    pag = p;
+  } else if (iends_with(s, ".psf")) {
+    pPSF p(new PSF(s));
+    pag = p;
+  } else if (iends_with(s, ".prmtop")) {
+    pAmber p(new Amber(s));
+    pag = p;
+  } else
+    throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
+
+  return(pag);
+}
+
+
 
 pTraj loos::createTrajectory(const string& s, const AtomicGroup& g) {
 

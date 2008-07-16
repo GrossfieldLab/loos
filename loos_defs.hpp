@@ -50,7 +50,14 @@ typedef boost::shared_ptr<DCD> pDCD;
 typedef boost::shared_ptr<AmberTraj> pAmberTraj;
 
 class AtomicGroup;
+class PDB;
+class PSF;
+class Amber;
+
 typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
+typedef boost::shared_ptr<PDB> pPDB;
+typedef boost::shared_ptr<PSF> pPSF;
+typedef boost::shared_ptr<Amber> pAmber;
 
 const uint kilobytes = 1024;
 const uint megabytes = kilobytes * kilobytes;

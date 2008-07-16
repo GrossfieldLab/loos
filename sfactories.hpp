@@ -62,6 +62,8 @@ namespace loos {
    */
   AtomicGroup createSystem(const string&);
 
+  pAtomicGroup createSystemPtr(const string&);
+
   //! Factory function for reading in a trajectory file.
   /*!
    * This function will try to determine the filetype for a trajectory
