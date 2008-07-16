@@ -54,7 +54,25 @@ using namespace boost;
 
 
 namespace loos {
+  //! Factory function for reading in structure files.
+  /*!
+   * This function will try to determine the filetype for a structure
+   * file by examining the suffix of the file.  It will return an
+   * AtomicGroup copy of the input structure.
+   */
   AtomicGroup createSystem(const string&);
+
+  //! Factory function for reading in a trajectory file.
+  /*!
+   * This function will try to determine the filetype for a trajectory
+   * by examining the suffix of the file.  It will return a boost
+   * shared pointer to a new Trajectory object.
+   *
+   * It is \e very \e important to understand that the object returned
+   * by this function must behave polymorphically.  That's why it is
+   * wrapped in a boost shared pointer to the base class.  Do not
+   * try to deference it and assign it to a Trajectory object...
+   */
   pTraj createTrajectory(const string&, const AtomicGroup&);
 };
 
