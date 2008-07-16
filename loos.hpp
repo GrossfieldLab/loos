@@ -78,6 +78,8 @@
 
 #include <Fmt.hpp>
 
+#include <sfactories.hpp>
+
 #endif
 
 
