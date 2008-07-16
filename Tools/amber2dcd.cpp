@@ -10,7 +10,10 @@ int main(int argc, char *argv[]) {
   dcd.setHeader(file.size(), at.nframes(), 1e-3, at.hasPeriodicBox());
   dcd.writeHeader();
 
+  uint i=0;
+  cout << "There are " << file.size() << " atoms and " << at.nframes() << " frames.\n";
   while (at.readFrame()) {
+    cerr << "Processing frame " << i++ << endl;
     at.updateGroupCoords(file);
     dcd.writeFrame(file);
   }

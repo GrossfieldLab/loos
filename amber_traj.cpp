@@ -55,10 +55,15 @@ void AmberTraj::init(void) {
 
   unsigned long fpos = ifs()->tellg();
 
+
   // This is probably not a good way of doing this???
   ifs()->getline(buf, 1024);
+  ifs()->getline(buf, 1024);
+  if (ifs()->fail())
+    throw(runtime_error("Error- cannot scan the amber trajectory"));
+
   stringstream ss(buf);
-  double a, b, c;
+  double a= -1, b= -1, c= -1;
   ss >> setw(8) >> a >> setw(8) >> b >> setw(8) >> c;
   if (ss.eof()) {
     fpos = ifs()->tellg();
@@ -70,14 +75,17 @@ void AmberTraj::init(void) {
 
   // Now try to count the number of frames...
   _nframes = 0;
+  double dummy;
   while (!ifs()->fail()) {
     ++_nframes;
     fpos = _nframes * frame_size + frame_offset;
     ifs()->seekg(fpos);
+    *(ifs()) >> dummy;
   }
 
+
   ifs()->clear();
-  ifs()->seekg(frame_offset);
+  ifs()->seekg(frame_offset + frame_size);
 
   // Punt our failure check to the end...for now...
   if (ifs()->fail())
@@ -88,6 +96,10 @@ void AmberTraj::init(void) {
   unread = true;
 }
 
+
+/** Note that reading past the end of the file invalidates the cached
+ *  frame...
+ */
 
 bool AmberTraj::readFrame(void) {
   greal x, y, z;
@@ -100,16 +112,29 @@ bool AmberTraj::readFrame(void) {
   if (ifs()->eof())
     return(false);
 
-  for (uint i=0; i<_natoms; i++) {
+  // It seems that it's possible that, at the end of the trajectory,
+  // we may have read the last datum from the last frame but will not
+  // be physically at the EOF.  So, we also check inside the coord
+  // read loop to see if there is an EOF.  Rather than flag this as an
+  // error condition, just return a false indicating we've read past
+  // the end...
+
+  for (uint i=0; i<_natoms && !(ifs()->eof()); i++) {
     *(ifs()) >> setw(8) >> x >> setw(8) >> y >> setw(8) >> z;
     frame[i] = GCoord(x, y, z);
   }
+
+  if (ifs()->eof())
+    return(false);
 
   if (periodic) {
     greal a, b, c;
     *(ifs()) >> setw(8) >> a >> setw(8) >> b >> setw(8) >> c;
     box = GCoord(a, b, c);
   }
+
+  if (ifs()->fail())
+    throw(runtime_error("Error- IO error while reading Amber trajectory frame"));
 
   return(true);
 }
