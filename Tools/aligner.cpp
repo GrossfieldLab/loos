@@ -6,16 +6,13 @@
 
   Usage:
 
-    aligner [options] pdb-file dcd-file output-prefix
+    aligner [options] structure-file trajectory-file output-prefix
 
   Notes:
 
   Takes two selections.  The first is the subset of atoms that will
   be used for the alignment.  The second is the subset of atoms that
   will then be transformed by the alignment and written out.
-
-  Writes out output-prefix.pdb which is the transformed subset and
-  output-prefix.dcd, which is the trajectory...
 
   Aligner will cache the entire alignment selection in memory, so
   beware potential memory issues...
@@ -97,7 +94,7 @@ static const char* short_options = "a:t:T:m:snH";
 
 void show_help(void) {
   Globals defaults;
-  cout << "Usage- aligner [opts] pdb dcd output-filename-prefix\n";
+  cout << "Usage- aligner [opts] structure-file trajectory output-filename-prefix\n";
   cout << "   --align=string     [" << defaults.alignment_string << "]\n";
   cout << "   --transform=string [" << defaults.transform_string << "]\n";
   cout << "   --tolerance=float  [" << defaults.alignment_tol << "]\n";
@@ -199,10 +196,12 @@ int main(int argc, char *argv[]) {
   }
 
   // Read the inputs...
-  PDB pdb(argv[optind]);
+  AtomicGroup pdb = loos::createSystem(argv[optind]);
   cout << "Read in " << pdb.size() << " atoms from " << argv[optind++] << endl;
-  DCD dcd(argv[optind]);
-  cout << "Reading from DCD " << argv[optind++] << " with " << dcd.nsteps() << " frames.\n";
+
+  pTraj traj = loos::createTrajectory(argv[optind], pdb);
+
+  cout << "Reading from DCD " << argv[optind++] << " with " << traj->nframes() << " frames.\n";
   string prefix(argv[optind]);
 
   // Get the selections (subsets) to operate over
@@ -227,13 +226,13 @@ int main(int argc, char *argv[]) {
   cout << "Subset to apply alignment transformation to has " << applyto_sub.size() << " atoms.\n";
 
   // Now do the alignin'...
-  unsigned int nframes = dcd.nsteps();
+  unsigned int nframes = traj->nframes();
 
   // Read in the DCD frames and extract the coordinates for the
   // aligning subset...
   vector<AtomicGroup> frames;
-  while (dcd.readFrame()) {
-    dcd.updateGroupCoords(align_sub);
+  while (traj->readFrame()) {
+    traj->updateGroupCoords(align_sub);
     AtomicGroup subcopy = align_sub.copy();
     frames.push_back(subcopy);
   }
@@ -256,8 +255,8 @@ int main(int argc, char *argv[]) {
   cout << "Aligning transformation subset...\n";
   // Go ahead and make first transformation (to make VMD happy so that
   // the PDB is just a copy of the first DCD frame...
-  dcd.readFrame(0);
-  dcd.updateGroupCoords(applyto_sub);
+  traj->readFrame(0);
+  traj->updateGroupCoords(applyto_sub);
   AtomicGroup frame = applyto_sub.copy();
   frame.renumber();
 
@@ -281,8 +280,8 @@ int main(int argc, char *argv[]) {
 
   // Now apply the alignment transformations to the requested subsets
   for (unsigned int i = 1; i<nframes; i++) {
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(applyto_sub);
+    traj->readFrame(i);
+    traj->updateGroupCoords(applyto_sub);
     applyto_sub.applyTransform(xforms[i]);
     frame = applyto_sub.copy();
     frame.renumber();
@@ -306,8 +305,8 @@ int main(int argc, char *argv[]) {
       cout << "<OCTAVE>\nrall = [\n";
     
     for (unsigned int i=0; i<nframes; i++) {
-      dcd.readFrame(i);
-      dcd.updateGroupCoords(applyto_sub);
+      traj->readFrame(i);
+      traj->updateGroupCoords(applyto_sub);
       applyto_sub.applyTransform(xforms[i]);
       double rms = applyto_sub.rmsd(avg);
       if (globals.show_rmsd)
