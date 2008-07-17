@@ -33,7 +33,7 @@ using namespace std;
 
 void Usage()
     {
-    cerr << "Usage: atomic-rdf PSF DCD selection1 selection2 "
+    cerr << "Usage: atomic-rdf system trajectory selection1 selection2 "
          << "min max num_bins skip" 
          << endl;
     }
@@ -53,10 +53,10 @@ if ( (argc <= 1) ||
 cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
-// Create the system
-PSF psf(argv[1]);
-// Read the dcd file
-DCD dcd(argv[2]);
+// Create the system and read the trajectory file
+AtomicGroup system = loos::createSystem(argv[1]);
+pTraj traj = loos::createTrajectory(argv[2], system);
+
 char *selection1 = argv[3];  // String describing the first selection
 char *selection2 = argv[4];  // String describing the second selection
 double hist_min = atof(argv[5]); // Lower edge of the histogram
@@ -70,18 +70,18 @@ double bin_width = (hist_max - hist_min)/num_bins;
 // Set up the selector to define group1 atoms
 Parser parser1(selection1);
 KernelSelector parsed_sel1(parser1.kernel());
-AtomicGroup group1 = psf.select(parsed_sel1);
+AtomicGroup group1 = system.select(parsed_sel1);
 
 // Set up the selector to define group2 atoms
 Parser parser2(selection2);
 KernelSelector parsed_sel2(parser2.kernel());
-AtomicGroup group2 = psf.select(parsed_sel2);
+AtomicGroup group2 = system.select(parsed_sel2);
 
 // Skip the initial frames as equilibration
-dcd.readFrame(skip); 
+traj->readFrame(skip); 
 
-// read the initial coordinates into the psf
-dcd.updateGroupCoords(psf);
+// read the initial coordinates into the system
+traj->updateGroupCoords(system);
 
 // Create the histogram and zero it out
 vector<double> hist;
@@ -91,26 +91,18 @@ hist.insert(hist.begin(), num_bins, 0.0);
 double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
-// loop over the frames of the dcd file
+// loop over the frames of the trajectory
 int frame = 0;
 double volume = 0.0;
 int unique_pairs=0;
-while (dcd.readFrame())
+while (traj->readFrame())
     {
     // update coordinates and periodic box
-    dcd.updateGroupCoords(psf);
-    GCoord box = psf.periodicBox(); 
+    traj->updateGroupCoords(system);
+    GCoord box = system.periodicBox(); 
     volume += box.x() * box.y() * box.z();
 
-#if 0
-    if (frame % 10 == 0)
-        {
-        cerr << "#Processing frame " << frame << endl;
-        }
-#endif
-
     unique_pairs = 0;
-
     // compute the distribution of g2 around g1 
     for (int j = 0; j < group1.size(); j++)
         {

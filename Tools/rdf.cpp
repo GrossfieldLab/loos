@@ -36,8 +36,15 @@ using namespace std;
 
 void Usage()
     {
-    cerr << "Usage: rdf PSF DCD selection1 selection2 "
+    cerr << "Usage: rdf SystemFile Trajectory selection1 selection2 "
          << "min max num_bins skip" 
+         << endl;
+    cerr << endl;
+    cerr << "SystemFile can be a CHARMM/XPLOR PSF, an AMBER parmtop, a PDB"
+         << " file, or any other format supported by LOOS"
+         << endl;
+    cerr << "Trajectory can be a CHARMM/NAMD DCD or AMBER trajectory," 
+         << " or any other format supported by LOOS"
          << endl;
     }
 
@@ -55,17 +62,23 @@ if ( (argc <= 1) ||
 // Print the command line arguments
 cout << "# " << invocationHeader(argc, argv) << endl;
 
-// copy the command line variables to real variable names
-// Create the system
-PSF psf(argv[1]);
-// Read the dcd file
-DCD dcd(argv[2]);
+// Create the system and the trajectory file
+// Note: The pTraj type is a Boost shared pointer, so we'll need
+//       to use pointer semantics to access it
+AtomicGroup system = loos::createSystem(argv[1]);
+pTraj traj = loos::createTrajectory(argv[2], system);
+
+// Get the selection patterns to identify the atoms to be used
 char *selection1 = argv[3];  // String describing the first selection
 char *selection2 = argv[4];  // String describing the second selection
+
+// Get the histogram parameters
 double hist_min = atof(argv[5]); // Lower edge of the histogram
 double hist_max = atof(argv[6]); // Upper edge of the histogram
 int num_bins = atoi(argv[7]); // Number of bins in the histogram
-int skip = atoi(argv[8]);  // Number of frames to skip as equilibration
+
+// Get the number of frames to discard as equilibration
+int skip = atoi(argv[8]);  
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -78,7 +91,7 @@ double bin_width = (hist_max - hist_min)/num_bins;
 // are present (so you can walk the connectivity tree correctly), what we'll
 // do is first split the atoms by molecules, then rejoin the ones which match
 // each of the patterns.
-vector<AtomicGroup> molecules = psf.splitByMolecule();
+vector<AtomicGroup> molecules = system.splitByMolecule();
 
 
 // Set up the selector to define group1 atoms
@@ -109,10 +122,10 @@ for (m=molecules.begin(); m!=molecules.end(); m++)
 
 
 // Skip the initial frames as equilibration
-dcd.readFrame(skip); 
+traj->readFrame(skip); 
 
-// read the initial coordinates into the psf
-dcd.updateGroupCoords(psf);
+// read the initial coordinates into the system
+traj->updateGroupCoords(system);
 
 // Create the histogram and zero it out
 vector<double> hist;
@@ -122,23 +135,17 @@ hist.insert(hist.begin(), num_bins, 0.0);
 double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
-// loop over the frames of the dcd file
+// loop over the frames of the trajectory
 int frame = 0;
 double volume = 0.0;
 int unique_pairs=0;
-while (dcd.readFrame())
+while (traj->readFrame())
     {
+    cerr << "Processing frame " << frame << endl;
     // update coordinates and periodic box
-    dcd.updateGroupCoords(psf);
-    GCoord box = psf.periodicBox(); 
+    traj->updateGroupCoords(system);
+    GCoord box = system.periodicBox(); 
     volume += box.x() * box.y() * box.z();
-
-#if 0
-    if (frame % 10 == 0)
-        {
-        cout << "#Processing file " << file_list[i] << endl;
-        }
-#endif
 
     unique_pairs = 0;
 
@@ -155,8 +162,7 @@ while (dcd.readFrame())
                 }
             unique_pairs++;
             GCoord p2 = g2_mols[k].centerOfMass();
-            //cerr << p1 << "\t" << p2 << endl;
-            //cerr << g2_mols[k] << endl;
+            
             // Compute the distance squared, taking periodicity into account
             double d2 = p1.distance2(p2, box);
             if ( (d2 <= max2) && (d2 >= min2) )
