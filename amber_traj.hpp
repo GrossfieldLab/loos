@@ -55,8 +55,8 @@ public:
   explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
 
   virtual void rewind(void) { ifs()->seekg(frame_offset); }
-  virtual int nframes(void) const { return(_nframes); }
-  virtual int natoms(void) const { return(_natoms); }
+  virtual uint nframes(void) const { return(_nframes); }
+  virtual uint natoms(void) const { return(_natoms); }
   virtual vector<GCoord> coords(void) { return(frame); }
   virtual void updateGroupCoords(AtomicGroup&);
 

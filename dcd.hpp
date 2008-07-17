@@ -117,7 +117,7 @@ public:
 
   // Accessor methods...
 
-  virtual int natoms(void) const { return(_natoms); }
+  virtual uint natoms(void) const { return(_natoms); }
   virtual bool hasPeriodicBox(void) const { return(_icntrl[10] == 1); }
   virtual GCoord periodicBox(void) const { return(GCoord(qcrys[0], qcrys[1], qcrys[2])); }
 
@@ -131,7 +131,7 @@ public:
   bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
 
   virtual float timestep(void) const { return(_delta); }
-  virtual int nframes(void) const { return(_icntrl[3]); }
+  virtual uint nframes(void) const { return(_icntrl[3]); }
 
   //! Return the raw coords...
   vector<dcd_real> xcoords(void) const { return(xcrds); }

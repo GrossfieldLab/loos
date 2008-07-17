@@ -60,11 +60,11 @@ public:
   virtual ~Trajectory() { }
 
   //! # of atoms per frame
-  virtual int natoms(void) const =0;
+  virtual uint natoms(void) const =0;
   //! Timestep per frame
   virtual float timestep(void) const =0;
   //! Number of frames in the trajectory
-  virtual int nframes(void) const =0;
+  virtual uint nframes(void) const =0;
 
   //! Reading iterator
   /** This member function behaves like an iteratory.  For each call,
