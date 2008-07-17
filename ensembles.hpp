@@ -25,6 +25,7 @@
 #define ENSEMBLES_HPP
 
 #include <vector>
+#include <XForm.hpp>
 
 #include <loos_defs.hpp>
 
@@ -33,7 +34,7 @@ namespace loos {
   AtomicGroup averageStructure(const vector<AtomicGroup>& ensemble);
 
   //! Compute the average structure by reading through a trajectory
-  AtomicGroup averageStructure(const AtomicGroup&, Trajectory&);
+  AtomicGroup averageStructure(const AtomicGroup&, const vector<XForm>&, Trajectory&);
 
   //! Compute an iterative superposition (a la Alan)
   boost::tuple<vector<XForm>, greal, int> iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter=1000);

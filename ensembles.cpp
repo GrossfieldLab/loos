@@ -54,7 +54,7 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
 
 
 
-AtomicGroup loos::averageStructure(const AtomicGroup& g, Trajectory& traj) {
+AtomicGroup loos::averageStructure(const AtomicGroup& g, const vector<XForm>& xforms, Trajectory& traj) {
   AtomicGroup avg = g.copy();
   AtomicGroup frame = g.copy();
   int n = avg.size();
@@ -66,6 +66,7 @@ AtomicGroup loos::averageStructure(const AtomicGroup& g, Trajectory& traj) {
   for (uint j=0; j<tn; j++) {
     traj.readFrame(j);
     traj.updateGroupCoords(frame);
+    frame.applyTransform(xforms[j]);
     for (int i=0; i<n; i++)
       avg[i]->coords() += frame[i]->coords();
   }

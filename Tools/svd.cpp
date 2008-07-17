@@ -153,71 +153,9 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-
-// Group coord manipulation for calculating average structure...
-
-void zeroCoords(AtomicGroup& g) {
-  uint i, n = g.size();
-  
-  for (i=0; i<n; i++)
-    g[i]->coords() = GCoord(0,0,0);
-}
-
-
-void addCoords(AtomicGroup& g, const AtomicGroup& h) {
-  uint i, n = g.size();
-  
-  for (i=0; i<n; i++)
-    g[i]->coords() += h[i]->coords();
-}
-
-void subCoords(AtomicGroup& lhs, const AtomicGroup& rhs) {
-  uint i, n = lhs.size();
-
-  for (i=0; i<n; i++)
-    lhs[i]->coords() -= rhs[i]->coords();
-}
-
-
-void divCoords(AtomicGroup& g, const double d) {
-  uint i, n = g.size();
-  
-  for (i=0; i<n; i++)
-    g[i]->coords() /= d;
-}
-
-
-
-
-
-AtomicGroup calculateAverage(const AtomicGroup& subset, const vector<XForm>& xforms, Trajectory& dcd) {
-  AtomicGroup avg = subset.copy();
-  AtomicGroup frame = subset.copy();
-  
-  zeroCoords(avg);
-  for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
-    frame.applyTransform(xforms[i - globals.dcdmin]);
-    addCoords(avg, frame);
-  }
-
-  divCoords(avg, globals.dcdmax - globals.dcdmin);
-  return(avg);
-}
-
-
 vector<XForm> align(const AtomicGroup& subset, Trajectory& dcd) {
-  vector<AtomicGroup> frames;
 
-  for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
-    AtomicGroup frame = subset.copy();
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
-    frames.push_back(frame);
-  }
-
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, dcd, globals.alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -244,7 +182,7 @@ void writeAverage(const AtomicGroup& avg) {
 // transformed coords from the DCD with the avg subtraced out...
 
 float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, Trajectory& dcd) {
-  AtomicGroup avg = calculateAverage(subset, xforms, dcd);
+  AtomicGroup avg = averageStructure(subset, xforms, dcd);
 
   // Hook to get the avg structure if requested...
   if (globals.avg_name != "")
@@ -307,14 +245,14 @@ int main(int argc, char *argv[]) {
   globals.writer->metadata(header);
 
   // Need to address this...
-  PDB pdb(argv[optind++]);
-  DCD dcd(argv[optind]);
+  AtomicGroup pdb = loos::createSystem(argv[optind++]);
+  pTraj ptraj = loos::createTrajectory(argv[optind], pdb);
   
   // Fix max-range for DCD
   if (globals.dcdmax == 0)
-    globals.dcdmax = dcd.nsteps();
-  if (globals.dcdmin > dcd.nsteps() || globals.dcdmax > dcd.nsteps()) {
-    cerr << "Invalid DCD range requested.\n";
+    globals.dcdmax = ptraj->nframes();
+  if (globals.dcdmin > ptraj->nframes() || globals.dcdmax > ptraj->nframes()) {
+    cerr << "Invalid Trajectory range requested.\n";
     exit(-1);
   }
 
@@ -339,9 +277,9 @@ int main(int argc, char *argv[]) {
     write_map(globals.mapname, svdsub);
 
   cerr << argv[0] << ": Aligning...\n";
-  vector<XForm> xforms = align(alignsub, dcd);
+  vector<XForm> xforms = align(alignsub, *ptraj);
   cerr << argv[0] << ": Extracting aligned coordinates...\n";
-  svdreal *A = extractCoords(svdsub, xforms, dcd);
+  svdreal *A = extractCoords(svdsub, xforms, *ptraj);
   f77int m = svdsub.size() * 3;
   f77int n = globals.dcdmax - globals.dcdmin;
   f77int sn = m<n ? m : n;

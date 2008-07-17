@@ -63,7 +63,7 @@ static const char* short_options = "a:A:r:";
 void show_help(void) {
   Globals defaults;
 
-  cout << "Usage- averager [options] <pdb> <dcd>\n";
+  cout << "Usage- averager [options] <system file (pdb, psf, ...)> <trajectory (dcd, amber, ...)>\n";
   cout << "\t--align=string       [" << defaults.align_string << "]\n";
   cout << "\t--avg=string         [" << defaults.avg_string << "]\n";
   cout << "\t--range=min:max      [";
@@ -93,70 +93,9 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-// Group coord manipulation for calculating average structure...
-
-void zeroCoords(AtomicGroup& g) {
-  uint i, n = g.size();
-  
-  for (i=0; i<n; i++)
-    g[i]->coords() = GCoord(0,0,0);
-}
-
-
-void addCoords(AtomicGroup& g, const AtomicGroup& h) {
-  uint i, n = g.size();
-  
-  for (i=0; i<n; i++)
-    g[i]->coords() += h[i]->coords();
-}
-
-void subCoords(AtomicGroup& lhs, const AtomicGroup& rhs) {
-  uint i, n = lhs.size();
-
-  for (i=0; i<n; i++)
-    lhs[i]->coords() -= rhs[i]->coords();
-}
-
-
-void divCoords(AtomicGroup& g, const double d) {
-  uint i, n = g.size();
-  
-  for (i=0; i<n; i++)
-    g[i]->coords() /= d;
-}
-
-
-
-
-
-AtomicGroup calculateAverage(const AtomicGroup& subset, const vector<XForm>& xforms, Trajectory& dcd) {
-  AtomicGroup avg = subset.copy();
-  AtomicGroup frame = subset.copy();
-  
-  zeroCoords(avg);
-  for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
-    frame.applyTransform(xforms[i - globals.dcdmin]);
-    addCoords(avg, frame);
-  }
-
-  divCoords(avg, globals.dcdmax - globals.dcdmin);
-  return(avg);
-}
-
-
 vector<XForm> align(const AtomicGroup& subset, Trajectory& dcd) {
-  vector<AtomicGroup> frames;
 
-  for (uint i = globals.dcdmin; i<globals.dcdmax; i++) {
-    AtomicGroup frame = subset.copy();
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
-    frames.push_back(frame);
-  }
-
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, dcd, globals.alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -184,7 +123,7 @@ int main(int argc, char *argv[]) {
   Parser average_parsed(globals.avg_string);
   KernelSelector avg_sel(average_parsed.kernel());
 
-  PDB pdb(argv[optind++]);
+  AtomicGroup pdb = createSystem(argv[optind++]);
 
   AtomicGroup align_subset = pdb.select(align_sel);
   if (align_subset.size() == 0) {
@@ -200,15 +139,15 @@ int main(int argc, char *argv[]) {
   }
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
-  DCD dcd(argv[optind]);
+  pTraj traj = createTrajectory(argv[optind], pdb);
 
-  globals.dcdmax = (globals.dcdmax == 0) ? dcd.nframes() : globals.dcdmax+1;
+  globals.dcdmax = (globals.dcdmax == 0) ? traj->nframes() : globals.dcdmax+1;
 
   cerr << "Aligning...\n";
-  vector<XForm> xforms = align(align_subset, dcd);
+  vector<XForm> xforms = align(align_subset, *traj);
   cerr << "Averaging...\n";
 
-  AtomicGroup avg = calculateAverage(avg_subset, xforms, dcd);
+  AtomicGroup avg = averageStructure(avg_subset, xforms, *traj);
   
   PDB avgpdb = PDB::fromAtomicGroup(avg);
   avgpdb.remarks().add(header);
