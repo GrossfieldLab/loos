@@ -127,7 +127,7 @@ public:
   }
 
   //! Read in a coord (or restart) file.
-  void readCoords(const string fname) {
+  void readCoords(const string& fname) {
     ifstream ifs(fname.c_str());
     if (!ifs)
       throw(runtime_error("Cannot open Amber crdinp file " + fname));
