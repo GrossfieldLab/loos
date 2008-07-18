@@ -55,8 +55,8 @@ using namespace __gnu_cxx;
 
 extern "C" {
 
-#include <atlas/cblas.h>
-#include <atlas/clapack.h>
+#include <cblas.h>
+#include <clapack.h>
 
   void dsyev_(char*, char*, int*, double*, int*, double*, double*, int*, int*);
   void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);

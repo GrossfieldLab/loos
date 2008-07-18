@@ -34,6 +34,10 @@
 # ATLAS='/usr/lib64/atlas'
 # ATLAS='/usr/local/lib/atlas'
 
+### This is where the ATLAS include files are installed
+# ATLASINC='/usr/include/atlas'
+# ATLASINC='/usr/include'
+
 ### This is where the parent directory of where BOOST include files
 ### are installed... 
 # BOOSTINC='/usr/include'

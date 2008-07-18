@@ -35,6 +35,7 @@ clos.AddOptions(
 
 clos.Add(PathOption('LAPACK', 'Path to LAPACK', default_lib_path, PathOption.PathAccept))
 clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
+clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
 clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathOption.PathAccept))
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
@@ -53,9 +54,11 @@ env['platform'] = platform
 
 LAPACK = env['LAPACK']
 ATLAS = env['ATLAS']
+ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
 BOOSTREGEX = env['BOOSTREGEX']
+
 
 
 
@@ -70,24 +73,14 @@ env.Append(LIBPATH = ['#'])
 env.Append(LIBS = ['loos', BOOSTREGEX])
 env.Append(LEXFLAGS=['-s'])
 
-# Special handling of lib-paths to get only unique paths...
-libpaths = { }
-libpaths[BOOSTLIB] = 1
-
-
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
 else:
    if platform == 'linux2':
-      libpaths[ATLAS] = 1
-      libpaths[LAPACK] = 1
       env.Append(LIBS = ['lapack', 'atlas'])
-
-# Now pull out unique lib paths...
-uniquelibs = libpaths.keys()
-env.Append(LIBPATH =[uniquelibs])
-
+      env.Append(LIBPATH = [LAPACK, ATLAS])
+      env.Append(CPPPATH = [ATLASINC]) 
 
 # Determine what kind of build...
 release = env['release']
