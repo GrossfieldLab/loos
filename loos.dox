@@ -34,7 +34,8 @@ Welcome to the LOOS library,  a product of the Grossfield Lab at the University
 of Rochester Medical School and the Department of Biochemistry and Biophysics.
 The idea behind LOOS is to provide a lightweight C++ library for analysis of
 molecular dynamics simulations.  This includes parsing a number of PDB
-variants, PSF's, and DCD's.  LOOS is not intended to be an all-encompassing
+variants, as well as the native system description and trajectory formats for
+CHARMM, NAMD, and Amber.  LOOS is not intended to be an all-encompassing
 library and it is primarily geared towards reading data in and processing
 rather than manipulating the files and structures and writing them out.
 
@@ -134,6 +135,13 @@ or the following for OS X
 g++ -framework vecLib -o mytool mytool.cpp -I/Users/myself/LOOS -L/Users/myself/LOOS -lloos -lboost_regex
 \endverbatim
 
+\section future Future Plans
+
+<ul>
+    <li> Support for other simulation packages (Tinker, Gromacs, etc)
+
+    <li> Python bindings for easier scripting support
+</ul>
 
 */
 
