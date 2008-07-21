@@ -68,6 +68,18 @@ expressions are also supported using the "=~" operator.
 More information is available here:
      \subpage selections "Selection Language"
 
+\section Applications
+
+Although LOOS is primarily intended as a platform for developing analysis
+tools,it is distributed with a number of prebuilt applications, located in
+the Tools/ directory.  These tools were developed for use in our research,
+but they should be of general utility.  Moreover, they provide examples of
+the intended use of the LOOS library, and will probably make helpful
+templates for people looking to develop new tools.  
+
+For more information, see the 
+    \subpage tools "Tools page"
+
 
 \section Bugs
 There are none...only features.  So don't worry about them!
@@ -423,3 +435,137 @@ hazardous if you have not been making sure your builds already pass,
 so caveat bugger...
 
 */
+
+/*! \page tools Summary of Tools
+
+Below is a summary of the tools currently distributed with LOOS.  To get a
+detailed summary of the command line arguments, run the program without
+arguments or using "-h".  Many of the programs are simulation package
+agnostic (meaning they'll work equally well with CHARMM/NAMD or Amber file
+formats), but some still specifically assume CHARMM formats.  These are
+mostly membrane-specific programs, which we felt are less likely to be used
+with Amber formats. 
+
+NOTE: At present, LOOS assumes that all periodic boxes are rectagular, and
+will produce incorrect answers if trajectories using different box shapes
+(eg truncated octahedron) are used in programs which make use of
+periodicity (eg rdf).
+
+\section aligner aligner
+
+Align structures in a trajectory to a reference structure.
+
+\section amber2dcd amber2dcd
+
+Transform an Amber trajectory file into a CHARMM/NAMD dcd file.
+
+\section amber2pdb amber2pdb
+
+Tranform an Amber parmtop file into a pdb file.
+
+\section atomic-rdf atomic-rdf
+
+Compute the radial distribution function for 2 selections of atoms taken
+from a trajectory, treating each selection as a set of individual atoms.
+For contrast, see rdf.
+
+\section averager averager
+
+Compute the average structure for a set of molecules from a trajectory,
+using an iterative scheme.
+
+\section bounding bounding
+
+Write out the bounding box for a selection of atoms from a pdb file.
+
+\section center-pdb center-pdb
+
+Read in a pdb file, shift its centroid to the origin, and write a new
+pdb file to stdout.  Currently assumes PSF and DCD formats.
+
+\section contacts contacts
+
+Loop over a trajectory and count the number of contacts between two
+sets of atoms.  Currently assumes PSF and DCD formats.
+
+\section crossing-waters crossing-waters
+
+Loop over a trajectory and compute the number waters crossing a membrane.
+Currently assumes PSF and DCD formats.
+
+\section dcdframe2pdb dcdframe2pdb
+
+Extract a frame from a CHARMM/NAMD dcd trajectory file and write it as a pdb 
+file.
+
+\section density-dist density-dist
+
+Compute the charge/electron/mass density distribution for the system along
+the z-axis. Produces the distribution for the whole system and an arbitrary
+number of selections.  Currently assumes PSF and DCD formats.
+
+\section density-dist-windowed density-dist-windowed
+
+Compute the charge/electron/mass density distribution for the system along
+the z-axis for blocks of time within a trajectory, producing a density
+distribution time series.  Currently assumes PSF and DCD formats.
+
+\section octavex octavex
+
+Extract embedded OCTAVE data from a LOOS output/log.
+
+\section order_params order_params
+
+Compute the deuterium quadrupolar splitting order parameters for lipid
+molecules.  Currently assumes PSF and DCD formats.
+
+\section pdb2matlab pdb2matlab
+
+Takes a PDB and a selection and an optional selection and writes out the
+coordinates to stdout in matlab format.
+
+\section pdbselect pdbselect
+
+Given a selection string and a pdb file, print out the selected atoms.
+Very useful for testing and debugging complex selection strings.
+
+\section rdf rdf
+
+Loop over a trajectory file and compute the radial distribution function
+for two selections.  The selections are split up by molecule and the center
+of mass is used.  For example, selecting all water molecules will cause it
+to compute the radial distribution of the centers of mass of individual
+water molecules.  For contrast, see atomic-rdf.
+
+\section rmsds rmsds
+
+Loops over a trajectory and computes the pairwise RMSDs for a selection of
+atoms.
+
+\section svd svd
+
+Performs principal component analysis for a trajectory using singular value
+decomposition, writing out the eigenvalues, left singular vectors
+(eigenvectors) and the right singular vectors (projection timeseries) as
+OCTAVE-formatted text files. 
+
+\section svdcolmap svdcolmap
+
+Map the magnitude of a left singular vector onto a PDB file's B-value
+column.  Useful for visualizing which portions of a molecule are mobile for
+a given SVD mode.
+
+\section xy_rdf xy_rdf
+
+Compute a two dimension radial distribution function in the xy plane,
+splitting the system into upper and lower leaflets.  Primarily intended for
+analyzing lateral organizing of lipid-water interfaces.  Currently assumes
+PSF and DCD formats.
+
+\section xy_rdf_timeseries xy_rdf_timeseries
+
+Same as xy_rdf, except producing a series of block averages rather than
+averaging over the whole trajectory.  
+
+*/
+
