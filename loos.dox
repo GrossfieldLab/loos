@@ -30,20 +30,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 \section Introduction
 
-Welcome to the LOOS library.  The first product of the Grossfield Lab
-at the University of Rochester Medical School and the Department of
-Biochemistry.  The idea behind LOOS is to provide a lightweight C++
-library for analysis of molecular dynamics simulations.  This includes
-parsing a number of PDB variants, PSF's, and DCD's.  LOOS is not
-intended to be an all-encompassing library and it is primarily geared
-towards reading data in and processing rather than manipulating the
-files and structures and writing them out.
+Welcome to the LOOS library,  a product of the Grossfield Lab at the University
+of Rochester Medical School and the Department of Biochemistry and Biophysics.
+The idea behind LOOS is to provide a lightweight C++ library for analysis of
+molecular dynamics simulations.  This includes parsing a number of PDB
+variants, PSF's, and DCD's.  LOOS is not intended to be an all-encompassing
+library and it is primarily geared towards reading data in and processing
+rather than manipulating the files and structures and writing them out.
 
 LOOS operates mainly on groups of atoms, called an AtomicGroup.  The
-atoms are stored as boost shared pointers, so multiple groups can
+atoms are stored as Boost shared pointers, so multiple groups can
 contain the same atom without having to actually copy it.  This does
 mean that you should be careful though when modifying an atom since
 you may be affecting multiple groups in potentially unknown ways.
+
+For assistance using LOOS, to suggest a patch, to request a feature, or simply
+to offer positive feedback, email Tod Romo (tod_romo [AT] urmc.rochester.edu)
+or Alan Grossfield (alan_grossfield [AT] urmc.rochester.edu).  
 
 \section Features
 One of the features of LOOS is the multiple ways it supports atom
@@ -83,7 +86,7 @@ For more information, see the
 
 \section Bugs
 There are none...only features.  So don't worry about them!
-(email me directly for now)
+(email us directly if you find a bug^H^H^H unintended feature)
 
 \section build Building and Installing
 LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> to build.  It also
@@ -94,9 +97,8 @@ requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for 
 GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
 <A href="http://www.gnu.org/software/bison/">bison</A>.
 
-If your libraries are installed in non-standard locations (i.e. other
-than Fedora Core 9 default locations), you will need to tell LOOS
-where its required components are.  To do this, do the following:
+If your libraries are installed in non-standard locations, you may need to 
+tell LOOS where its required components are.  To do this, do the following:
 \verbatim
 cp custom.py-proto custom.py
 \endverbatim
