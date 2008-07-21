@@ -463,7 +463,9 @@ periodicity (eg rdf).
 
 \section aligner aligner
 
-Align structures in a trajectory to a reference structure.
+Align structures in a trajectory against the average using an
+iterative refinement scheme.  Can read any LOOS trajectory format, but
+will write the aligned trajectory as a DCD.
 
 \section amber2dcd amber2dcd
 
