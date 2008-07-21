@@ -559,7 +559,7 @@ a given SVD mode.
 
 Compute a two dimension radial distribution function in the xy plane,
 splitting the system into upper and lower leaflets.  Primarily intended for
-analyzing lateral organizing of lipid-water interfaces.  Currently assumes
+analyzing lateral organization of lipid-water interfaces.  Currently assumes
 PSF and DCD formats.
 
 \section xy_rdf_timeseries xy_rdf_timeseries
