@@ -36,14 +36,14 @@
 struct Globals {
   Globals() : align_string("name == 'CA'"),
 	      avg_string("(segid != 'SOLV' && segid != 'BULK') && !hydrogen"),
-	      dcdmin(0), dcdmax(0),
+	      trajmin(0), trajmax(0),
 	      alignment_tol(1e-3)
   { }
 
 
   string align_string;
   string avg_string;
-  uint dcdmin, dcdmax;
+  uint trajmin, trajmax;
   double alignment_tol;
 };
 
@@ -67,10 +67,10 @@ void show_help(void) {
   cout << "\t--align=string       [" << defaults.align_string << "]\n";
   cout << "\t--avg=string         [" << defaults.avg_string << "]\n";
   cout << "\t--range=min:max      [";
-  if (defaults.dcdmin == 0 && defaults.dcdmax == 0)
+  if (defaults.trajmin == 0 && defaults.trajmax == 0)
     cout << "auto]\n";
   else
-    cout << defaults.dcdmin << ":" << defaults.dcdmax << "]\n";
+    cout << defaults.trajmin << ":" << defaults.trajmax << "]\n";
 };
 
 
@@ -81,7 +81,7 @@ void parseOptions(int argc, char *argv[]) {
     switch(opt) {
     case 'A': globals.avg_string = string(optarg); break;
     case 'a': globals.align_string = string(optarg); break;
-    case 'r': if (sscanf(optarg, "%u:%u", &globals.dcdmin, &globals.dcdmax) != 2) {
+    case 'r': if (sscanf(optarg, "%u:%u", &globals.trajmin, &globals.trajmax) != 2) {
 	cerr << "Unable to parse range.\n";
 	exit(-1);
       }
@@ -93,9 +93,9 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-vector<XForm> align(const AtomicGroup& subset, Trajectory& dcd) {
+vector<XForm> align(const AtomicGroup& subset, Trajectory& traj) {
 
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, dcd, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, globals.alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
 
   pTraj traj = createTrajectory(argv[optind], pdb);
 
-  globals.dcdmax = (globals.dcdmax == 0) ? traj->nframes() : globals.dcdmax+1;
+  globals.trajmax = (globals.trajmax == 0) ? traj->nframes() : globals.trajmax+1;
 
   cerr << "Aligning...\n";
   vector<XForm> xforms = align(align_subset, *traj);

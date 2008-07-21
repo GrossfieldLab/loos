@@ -1,7 +1,13 @@
 /*
   rmsds.cpp
 
-  Computes inter-frame rmsds
+  Computes inter-frame rmsds.  Can run in two modes:
+    o iterative
+    o pair-wise
+
+  Iterative computes an optimal global alignment through an interative
+  scheme (see aligner.cpp for more details).  Pair-wise will compute
+  the best pair-wise superposition prior to computing the RMSD.
 */
 
 
@@ -60,7 +66,7 @@ static const char* short_options = "a:i";
 void show_help(void) {
   Globals defaults;
 
-  cout << "Usage- rmsds [opts] pdb dcd >output\n";
+  cout << "Usage- rmsds [opts] system-file (pdb, psf, ...) trajectory-file (dcd, amber, ...)  >output\n";
   cout << "       --align=selection    [" << defaults.alignment << "]\n";
   cout << "       --iterate            [" << (defaults.iterate ? string("on") : string("off")) << "]\n";
 }
@@ -81,13 +87,13 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-vector<XForm> align(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& dcd) {
-  uint n = dcd.nframes();
+void align(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& traj) {
+  uint n = traj.nframes();
 
   for (uint i = 0; i<n; i++) {
     AtomicGroup frame = subset.copy();
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
+    traj.readFrame(i);
+    traj.updateGroupCoords(frame);
     frames.push_back(frame);
   }
 
@@ -99,18 +105,16 @@ vector<XForm> align(vector<AtomicGroup>& frames, const AtomicGroup& subset, Traj
   cerr << "Subset alignment with " << subset.size()
        << " atoms converged to " << rmsd << " rmsd after "
        << iters << " iterations.\n";
-
-  return(xforms);
 }
 
 
-void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& dcd) {
-  uint n = dcd.nframes();
+void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& traj) {
+  uint n = traj.nframes();
 
   for (uint i=0; i<n; i++) {
     AtomicGroup frame = subset.copy();
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
+    traj.readFrame(i);
+    traj.updateGroupCoords(frame);
     frames.push_back(frame);
   }
 }
@@ -167,12 +171,12 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  PDB pdb(argv[optind++]);
-  DCD dcd(argv[optind]);
+  AtomicGroup molecule = loos::createSystem(argv[optind++]);
+  pTraj ptraj = loos::createTrajectory(argv[optind], molecule);
 
   Parser parsed(globals.alignment);
   KernelSelector selector(parsed.kernel());
-  AtomicGroup subset = pdb.select(selector);
+  AtomicGroup subset = molecule.select(selector);
   if (subset.size() == 0) {
     cerr << "Error- no atoms selected.\n";
     exit(-1);
@@ -182,9 +186,9 @@ int main(int argc, char *argv[]) {
   vector<AtomicGroup> frames;
   if (globals.iterate) {
     cerr << "Aligning...\n";
-    vector<XForm> xforms = align(frames, subset, dcd);
+    align(frames, subset, *ptraj);
   } else
-    readFrames(frames, subset, dcd);
+    readFrames(frames, subset, *ptraj);
 
   float *M = interFrameRMSD(frames);
 

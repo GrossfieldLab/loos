@@ -2,7 +2,7 @@
   aligner.cpp
 
 
-  Aligns structures in a trajectory with a reference...
+  Aligns structures in a trajectory...
 
   Usage:
 
@@ -12,7 +12,13 @@
 
   Takes two selections.  The first is the subset of atoms that will
   be used for the alignment.  The second is the subset of atoms that
-  will then be transformed by the alignment and written out.
+  will then be transformed by the alignment and written out.  The
+  alignment scheme is to calculate an average structure, align all
+  frames against this average, then compute a new average.  This is
+  iterated until the difference in average structures is below the
+  specified tolerance.
+
+  The output will ALWAYS be a DCD!
 
   Aligner will cache the entire alignment selection in memory, so
   beware potential memory issues...
@@ -201,7 +207,7 @@ int main(int argc, char *argv[]) {
 
   pTraj traj = loos::createTrajectory(argv[optind], pdb);
 
-  cout << "Reading from DCD " << argv[optind++] << " with " << traj->nframes() << " frames.\n";
+  cout << "Reading from trajectory " << argv[optind++] << " with " << traj->nframes() << " frames.\n";
   string prefix(argv[optind]);
 
   // Get the selections (subsets) to operate over
@@ -228,7 +234,7 @@ int main(int argc, char *argv[]) {
   // Now do the alignin'...
   unsigned int nframes = traj->nframes();
 
-  // Read in the DCD frames and extract the coordinates for the
+  // Read in the trajectory frames and extract the coordinates for the
   // aligning subset...
   vector<AtomicGroup> frames;
   while (traj->readFrame()) {
@@ -254,7 +260,7 @@ int main(int argc, char *argv[]) {
 
   cout << "Aligning transformation subset...\n";
   // Go ahead and make first transformation (to make VMD happy so that
-  // the PDB is just a copy of the first DCD frame...
+  // the PDB is just a copy of the first trajectory frame...
   traj->readFrame(0);
   traj->updateGroupCoords(applyto_sub);
   AtomicGroup frame = applyto_sub.copy();
