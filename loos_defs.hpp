@@ -32,6 +32,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
+typedef unsigned int uint;
+
 typedef double greal;
 typedef long gint;
 

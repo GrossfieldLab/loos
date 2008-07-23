@@ -143,7 +143,7 @@ public:
    * this as non-const, your intention is to set the coords, so the
    * bit flagging coords is set automatically.
    */
-  GCoord& coords(void) { return(_coords); setPropertyBit(coordsbit); }
+  GCoord& coords(void) {setPropertyBit(coordsbit);  return(_coords); }
 
   //! Sets the coords to \a c
   void coords(const GCoord& c) { _coords = c; setPropertyBit(coordsbit); }
