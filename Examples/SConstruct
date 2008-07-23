@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+#
+# (c) 2008 Tod D. Romo
+#
+# Grossfield Lab
+# Department of Biochemistry & Biophysics
+# University of Rochester Medical School
+#
+#
+
+
+import sys
+import os
+
+# This can be reset in custom.py or here...
+
+default_lib_path = '/usr/lib64'
+default_path_to_loose = os.environ.get('HOME') + '/Packages/LOOS-1.0'
+
+# Principal options...
+clos = Options('custom.py')
+clos.AddOptions(
+	('debug', 'Set to 1 to add -DDEBUG to build', 0),
+	('release', 'Set to 1 to configure for release.', 0),
+)
+
+clos.Add(PathOption('LOOS', 'Path to LOOS', default_path_to_loose, PathOption.PathAccept))
+clos.Add(PathOption('LAPACK', 'Path to LAPACK', default_lib_path, PathOption.PathAccept))
+clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
+clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
+clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathOption.PathAccept))
+clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
+clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
+
+env = Environment(options = clos)
+Help(clos.GenerateHelpText(env))
+
+platform = sys.platform
+env['platform'] = platform
+
+LAPACK = env['LAPACK']
+ATLAS = env['ATLAS']
+ATLASINC = env['ATLASINC']
+BOOSTLIB = env['BOOSTLIB']
+BOOSTINC = env['BOOSTINC']
+BOOSTREGEX = env['BOOSTREGEX']
+LOOS = env['LOOS']
+
+
+
+
+### Compile-flags
+
+debug_opts='-g -Wall -fno-inline'
+release_opts='-O3 -DNDEBUG -Wall'
+
+# Setup the general environment...
+env.Append(CPPPATH = ['#', LOOS, BOOSTINC])
+env.Append(LIBPATH = ['#', LOOS])
+env.Append(LIBS = ['loos', BOOSTREGEX])
+env.Append(LEXFLAGS=['-s'])
+
+# Platform specific build options...
+if platform == 'darwin':
+   env.Append(LINKFLAGS = ' -framework vecLib')
+else:
+   if platform == 'linux2':
+      env.Append(LIBS = ['lapack', 'atlas'])
+      env.Append(LIBPATH = [LAPACK, ATLAS])
+      env.Append(CPPPATH = [ATLASINC]) 
+
+# Determine what kind of build...
+release = env['release']
+if int(release):
+    env.Append(CCFLAGS=release_opts)
+else:
+    env.Append(CCFLAGS=debug_opts)
+
+debug = env['debug']
+if int(debug):
+   if int(release):
+      print "***ERROR*** You cannot have a release with debugging code included."
+      Exit(1)
+   env.Append(CCFLAGS=" -DDEBUG=$debug")
+
+
+# Allow overrides from environment...
+if os.environ.has_key('CXX'):
+   CXX = os.environ['CXX']
+   print "Changing default compiler to ", CXX
+   env['CXX'] = CXX
+
+if os.environ.has_key('CCFLAGS'):
+   CCFLAGS = os.environ['CCFLAGS']
+   print "Changing CCFLAGS to ", CCFLAGS
+   env['CCFLAGS'] = CCFLAGS
+
+# Export for subsidiary SConscripts
+Export('env')
+
+SConscript('SConscript')
