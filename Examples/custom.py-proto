@@ -22,6 +22,8 @@
 ### Edit the lines below for your installation...
 ###
 
+#LOOS='/usr/local/LOOS-1.0'
+
 ### Edit the following to determine the default build-type
 # debug=1
 # release=1

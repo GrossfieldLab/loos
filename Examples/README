@@ -1,0 +1,32 @@
+		  *** USING LOOS WITH YOUR CODE ***
+
+This directory is intended to be a template for getting you started
+with using LOOS with either SCons or Make.  The bundled program,
+'center-pdb' is the LOOS way of saying "hello world!"  
+
+* Using SCons
+
+To use SCons, you need to tell SCons where to find LOOS.  One way to
+do this is to copy the 'custom-proto.py' to 'custom.py' and set the
+LOOS variable.  You can also specify the location the command line,
+i.e.
+	scons LOOS=/the/path/to/LOOS
+
+If you built LOOS using SCons and had to edit LOOS' custom.py, then
+you will need to make similar edits here as well (telling SCons where
+things like ATLAS and BOOST are installed).
+
+With that out of the way, to add new programs to build, simply edit
+the SConscript file and run "scons".
+
+* Using Make
+
+To use make with LOOS, you will need to edit the Makefile.  First off,
+tell the compiler where LOOS is by changing the LOOS variable.  You
+will need to edit the next couple of lines to specify the compiler and
+what release or debugging options to use.  If you're building under
+Linux, use the next block of lines.  If you're using MacOS X, then
+comment out the Linux lines and uncomment the OS X lines.  In either
+case, you may need to adjust the locations those variables point to...
+
+
