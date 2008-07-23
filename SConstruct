@@ -64,8 +64,8 @@ BOOSTREGEX = env['BOOSTREGEX']
 
 ### Compile-flags
 
-debug_opts='-g -Wall -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall'
+debug_opts='-g -Wall -Wextra -fno-inline'
+release_opts='-O3 -DNDEBUG -Wall -Wextra'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#', BOOSTINC])
