@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(mols, 2.0);
+  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(mols, 0.1);
   greal final_rmsd = boost::get<1>(res);
   if (show_results)
     cout << "Final alignment rmsd to avg struct = " << final_rmsd << endl;

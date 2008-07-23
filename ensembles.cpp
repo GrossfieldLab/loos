@@ -86,7 +86,10 @@ boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGrou
   greal rms;
   vector<XForm> xforms(n);
   AtomicGroup avg;
-  AtomicGroup target = averageStructure(ensemble);
+
+  // Start by aligning against the first structure in the ensemble
+  AtomicGroup target = ensemble[2].copy();
+  target.centerAtOrigin();
 
   do {
     for (int i = 0; i<n; i++) {
@@ -101,8 +104,8 @@ boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGrou
 #if defined(DEBUG)
     cerr << "loos::iterativeAlignment - iter = " << iter << ", rms = " << rms << endl;
 #endif
-
-  } while (rms > threshold && ++iter <= maxiter);
+    iter++;
+  } while (rms > threshold && iter <= maxiter );
   
   boost::tuple<vector<XForm>, greal, int> res(xforms, rms, iter);
   return(res);
