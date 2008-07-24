@@ -54,7 +54,7 @@ void DCD::allocateSpace(const int n) {
 
 // Read the F77 record length from the file stream
 
-unsigned int DCD::readRecordLen(StreamWrapper& fsw) {
+unsigned int DCD::readRecordLen(void) {
   DataOverlay o;
   
   ifs()->read(o.c, 4);
@@ -90,11 +90,11 @@ bool DCD::endianMatch(StreamWrapper& fsw) {
 // Read a full line of F77-formatted data.
 // Returns a pointer to the read data and puts the # of bytes read into *len
 
-DCD::DataOverlay* DCD::readF77Line(StreamWrapper& fsw, unsigned int *len) {
+DCD::DataOverlay* DCD::readF77Line(unsigned int *len) {
   DataOverlay* ptr;
   unsigned int n, n2;
 
-  n = readRecordLen(ifs);
+  n = readRecordLen();
 
   ptr = new DataOverlay[n];
 
@@ -102,7 +102,7 @@ DCD::DataOverlay* DCD::readF77Line(StreamWrapper& fsw, unsigned int *len) {
   if (ifs()->fail())
     throw(line_error);
 
-  n2 = readRecordLen(ifs);
+  n2 = readRecordLen();
   if (n != n2)
     throw(line_error);
 
@@ -121,7 +121,7 @@ void DCD::readHeader(void) {
   int i;
 
   endianMatch(ifs);
-  ptr = readF77Line(ifs, &len);
+  ptr = readF77Line(&len);
   if (len != 84)
     throw(header_error);
 
@@ -143,7 +143,7 @@ void DCD::readHeader(void) {
 
   // Now read in the TITLE info...
 
-  ptr = readF77Line(ifs, &len);
+  ptr = readF77Line(&len);
   char sbuff[81];
   int ntitle = ptr[0].i;
   cp = (char *)(ptr + 1);
@@ -157,7 +157,7 @@ void DCD::readHeader(void) {
   delete[] ptr;
 
   // get the NATOMS...
-  ptr = readF77Line(ifs, &len);
+  ptr = readF77Line(&len);
   if (len != 4)
     throw(header_error);
   _natoms = ptr->i;
@@ -191,7 +191,7 @@ void DCD::readCrystalParams(void) {
   unsigned int len;
   DataOverlay* o;
 
-  o = readF77Line(ifs, &len);
+  o = readF77Line(&len);
 
   if (len != 48)
     throw(GeneralError("Error while reading crystal parameters"));
@@ -218,7 +218,7 @@ void DCD::readCoordLine(vector<dcd_real>& v) {
   unsigned int len;
 
 
-  op = readF77Line(ifs, &len);
+  op = readF77Line(&len);
 
   if (len != (unsigned int)n)
     throw(GeneralError("Error while reading coordinates"));

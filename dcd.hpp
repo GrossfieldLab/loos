@@ -175,8 +175,8 @@ private:
   bool endianMatch(StreamWrapper& fsw);
 
   // For reading F77 I/O
-  unsigned int readRecordLen(StreamWrapper& fsw);
-  DataOverlay* readF77Line(StreamWrapper& fsw, unsigned int *len);
+  unsigned int readRecordLen(void);
+  DataOverlay* readF77Line(unsigned int *len);
 
 
 

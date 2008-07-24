@@ -144,7 +144,7 @@ bool AmberTraj::readFrame(const uint i) {
   unread = false;
 
   unsigned long fpos = i * frame_size + frame_offset;
-  if (fpos < 0 || fpos >= _nframes)
+  if (fpos >= _nframes)
     throw(runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
 
 
