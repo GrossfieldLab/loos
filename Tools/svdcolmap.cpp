@@ -31,21 +31,24 @@
 
 #include <loos.hpp>
 #include <getopt.h>
+#include <cmath>
 
 string mapname;
 double scale=1.0;
+bool logscale = false;
 
 
 static struct option long_options[] = {
   {"scale", required_argument, 0, 's'},
+  {"log", no_argument, 0, 'l'},
   {"map", required_argument, 0, 'm'},
   {0,0,0,0}
 };
 
-static const char* short_options = "s:m:";
+static const char* short_options = "s:m:l";
 
 void show_help(void) {
-  cout << "Usage- svdcolmap [--map=fname] [--scale=float] index pdb svd_prefix >output.pdb\n";
+  cout << "Usage- svdcolmap [--map=fname] [--scale=float] [--log] index pdb svd_prefix >output.pdb\n";
 }
 
 
@@ -56,6 +59,7 @@ void parseOptions(int argc, char *argv[]) {
     switch(opt) {
     case 'm': mapname = string(optarg); break;
     case 's': scale = strtod(optarg, 0); break;
+    case 'l': logscale = true; break;
     case 0: break;
     default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
     }
@@ -129,7 +133,10 @@ int main(int argc, char *argv[]) {
   for (i=j=0; j<m; j += 3) {
     GCoord c(lsv[j], lsv[j+1], lsv[j+2]);
     c *= sval;
-    pdb[indices[i++]-1]->bfactor(scale * c.length());
+    double b = scale * c.length();
+    if (logscale)
+      b = log(b);
+    pdb[indices[i++]-1]->bfactor(b);
   }
 
   cout << pdb;
