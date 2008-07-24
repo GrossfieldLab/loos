@@ -307,7 +307,6 @@ vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
 				     // processed... 
   vector<AtomicGroup> molecules;
   AtomicGroup current;               // The molecule we're currently building...
-  current.box = box;
 
   int n = size();
   for (int i=0; i<n; i++) {
@@ -323,6 +322,11 @@ vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
     
   }
 
+  // copy the box over
+  vector<AtomicGroup>::iterator m;
+  for (m=molecules.begin(); m!=molecules.end(); m++) {
+    m->box = box;
+  }
   return(molecules);
 }
 
