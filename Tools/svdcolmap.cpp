@@ -83,6 +83,22 @@ vector<int> readMap(const string& fname) {
 }
 
 
+vector<pAtom> getAtoms(AtomicGroup& grp, const vector<int>& ids) {
+  vector<pAtom> atoms;
+  vector<int>::const_iterator i;
+
+  for (i = ids.begin(); i != ids.end(); ++i) {
+    pAtom pa(grp.findById(*i));
+    if (!pa) {
+      cerr << "Error- unable to find atom-id " << *i << endl;
+      exit(-20);
+    }
+    atoms.push_back(pa);
+  }
+
+  return(atoms);
+}
+
 
 
 int main(int argc, char *argv[]) {
@@ -98,12 +114,14 @@ int main(int argc, char *argv[]) {
   string prefix(argv[optind++]);
   RawAsciiReader<double> reader;
 
-  vector<int> indices;
+  vector<pAtom> atoms;
   if (mapname == "") {
     for (int i=0; i<pdb.size(); i++)
-      indices.push_back(i);
-  } else
-    indices = readMap(mapname);
+      atoms.push_back(pdb[i]);
+  } else {
+    vector<int> indices = readMap(mapname);
+    atoms = getAtoms(pdb, indices);
+  }
 
   MatrixReader<double>::Result lsvs = reader.read(prefix + "U.asc");
   double *U = boost::get<0>(lsvs);
@@ -136,7 +154,7 @@ int main(int argc, char *argv[]) {
     double b = scale * c.length();
     if (logscale)
       b = log(b);
-    pdb[indices[i++]-1]->bfactor(b);
+    atoms[i++]->bfactor(b);
   }
 
   cout << pdb;
