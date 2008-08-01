@@ -24,13 +24,15 @@
 
 
 // Configuration options...
-const int iter_tests = 5000;
+const int macrocycles = 5;
+
+const int iter_tests = 1000;
 const double iter_perturbation = 2.0;
 const double iter_rmsd_thresh = 2.0;
 const double iter_final_rmsd_thresh = 1e-2;
 
-const int single_tests = 5000;
-const double single_rmsd_thresh = 1e-10;
+const int single_tests = 1000;
+const double single_rmsd_thresh = 1e-6;
 const static bool show_results = false;
 
 
@@ -124,7 +126,8 @@ bool run_tests(AtomicGroup& mol, const string& selstr) {
 	     
     subgroup.applyTransform(W);
     mols.push_back(subgroup);
-    premols.push_back(subgroup);
+    AtomicGroup pre = subgroup.copy();
+    premols.push_back(pre);
   }
 
   AtomicGroup avg = averageStructure(mols);
@@ -134,7 +137,9 @@ bool run_tests(AtomicGroup& mol, const string& selstr) {
       cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
   }
 
-  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(mols, 0.1);
+  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(mols, 1e-6);
+  int iters = boost::get<2>(res);
+  cout << "Total iterations = " << iters << endl;
   greal final_rmsd = boost::get<1>(res);
   if (show_results)
     cout << "Final alignment rmsd to avg struct = " << final_rmsd << endl;
@@ -183,6 +188,12 @@ bool run_tests(AtomicGroup& mol, const string& selstr) {
   return(true);
 }
 
+void die(void) {
+  cerr << "***TESTS ABORTED DUE TO FAILURE******TESTS ABORTED DUE TO FAILURE******TESTS ABORTED DUE TO FAILURE***\n";
+  exit(-99);
+}
+
+
 
 int main(int argc, char *argv[]) {
 
@@ -199,7 +210,13 @@ int main(int argc, char *argv[]) {
 
   PDB pdb(argv[1]);
 
-  run_tests(pdb, "name == 'CA'");
-  run_tests(pdb, "resid == 5 && segid == 'PE1'");
-  run_tests(pdb, "segid == 'PE3'");
+  for (int i=0; i<macrocycles; i++) {
+    cout << "\n\n-=-=-=-=-=-=-=- MACROCYCLE #" << i << " -=-=-=-=-=-=-=-\n";
+    if (!run_tests(pdb, "name == 'CA'"))
+      die();
+    if (!run_tests(pdb, "resid == 5 && segid == 'PE1'"))
+      die();
+    if (!run_tests(pdb, "segid == 'PE3'"))
+      die();
+  }
 }
