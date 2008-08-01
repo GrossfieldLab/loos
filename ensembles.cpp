@@ -95,7 +95,7 @@ boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGrou
   do {
     for (int i = j; i<n; i++) {
       GMatrix M = ensemble[i].alignOnto(target);
-      xforms[i].concat(M);
+      xforms[i].premult(M);
     }
     j = 0;
 
