@@ -24,39 +24,26 @@
 
 
 // Configuration options...
-const unsigned int iter_tests = 1000;
+const int iter_tests = 5000;
 const double iter_perturbation = 2.0;
 const double iter_rmsd_thresh = 2.0;
-const double iter_final_rmsd_thresh = 1e-3;
+const double iter_final_rmsd_thresh = 1e-2;
 
-const unsigned int single_tests = 1000;
+const int single_tests = 5000;
 const double single_rmsd_thresh = 1e-10;
 const static bool show_results = false;
 
 
 
-int main(int argc, char *argv[]) {
-  unsigned int i;
+bool run_tests(AtomicGroup& mol, const string& selstr) {
+  Parser p(selstr);
+  KernelSelector sel(p.kernel());
 
-  if (argc != 2) {
-    cerr << "Usage- " << argv[0] << " pdbfile\n";
-    exit(-1);
-  }
-  
-  // Suppress for easy diffs...
-  //cout << invocationHeader(argc, argv) << endl;
+  AtomicGroup cas = mol.select(sel);
+  cout << "**************************************************\n";
+  cout << "Selected " << cas.size() << " atoms with selector '" << selstr << "'.\n";
 
   loos::base_generator_type& rng = loos::rng_singleton();
-
-  // Uncommont the follong to seed the suite-wide RNG
-  //loos::randomSeedRNG();
-
-
-  PDB pdb(argv[1]);
-
-  CAlphaSelector casel;
-  AtomicGroup cas = pdb.select(casel);
-  cout << "Found " << cas.size() << " CAlphas.\n";
 
   AtomicGroup casb = cas.copy();
   casb.perturbCoords(1.0);
@@ -85,7 +72,7 @@ int main(int argc, char *argv[]) {
   cout << "*** Single Alignment Tests ***\n";
 
   int warnings = 0;
-  for (i=0; i<single_tests; i++) {
+  for (int i=0; i<single_tests; i++) {
     AtomicGroup casr = cas.copy();
     W.identity();
     W.translate(translations(), translations(), translations());
@@ -94,10 +81,19 @@ int main(int argc, char *argv[]) {
     W.rotate('z', angles());
     casr.applyTransform(W);
     greal pre_rmsd = cas.rmsd(casr);
-    casr.alignOnto(cas);
+    AtomicGroup casr2 = casr.copy();
+    GMatrix M = casr.alignOnto(cas);
     double rmsd = cas.rmsd(casr);
     if (rmsd >= single_rmsd_thresh) {
       cout << "WARNING - Possible mis-alignment - pre = " << pre_rmsd << ", post = " << rmsd << endl;
+      ++warnings;
+    }
+
+    XForm W(M);
+    casr2.applyTransform(W);
+    rmsd = cas.rmsd(casr2);
+    if (rmsd >= single_rmsd_thresh) {
+      cout << "WARNING - Failure in GMatrix from alignOnto() - pre = " << pre_rmsd << ", post = " << rmsd << endl;
       ++warnings;
     }
   }
@@ -114,7 +110,7 @@ int main(int argc, char *argv[]) {
 
   vector<AtomicGroup> mols;
   vector<AtomicGroup> premols;
-  for (i=0; i<iter_tests; i++) {
+  for (int i=0; i<iter_tests; i++) {
     AtomicGroup subgroup = cas.copy();
     GCoord t(translations(), translations(), translations());
     
@@ -134,10 +130,9 @@ int main(int argc, char *argv[]) {
   AtomicGroup avg = averageStructure(mols);
   if (show_results) {
     cout << "Pre-aligned rmsds:\n";
-    for (i=0; i<iter_tests; i++)
+    for (int i=0; i<iter_tests; i++)
       cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
   }
-
 
   boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(mols, 0.1);
   greal final_rmsd = boost::get<1>(res);
@@ -149,7 +144,7 @@ int main(int argc, char *argv[]) {
 
   warnings = 0;
   avg = averageStructure(mols);
-  for (i=0; i<iter_tests; i++) {
+  for (int i=0; i<iter_tests; i++) {
     if (show_results)
       cout << "\t" << i << "\t" << avg.rmsd(mols[i]) << endl;
     double irmsd = avg.rmsd(mols[i]);
@@ -167,7 +162,7 @@ int main(int argc, char *argv[]) {
   // Now check that the composite transforms are correct...
   vector<XForm> xforms = boost::get<0>(res);
   warnings = 0;
-  for (i=0; i<iter_tests; i++) {
+  for (int i=0; i<iter_tests; i++) {
     premols[i].applyTransform(xforms[i]);
     double irmsd = premols[i].rmsd(mols[i]);
     if (irmsd > single_rmsd_thresh) {
@@ -180,4 +175,31 @@ int main(int argc, char *argv[]) {
   else
     cout << "All composite iterative tests passed (threshold = " << single_rmsd_thresh << ")\n";
 
+  cout << "**************************************************\n";
+
+  if (warnings > 0)
+    return(false);
+
+  return(true);
+}
+
+
+int main(int argc, char *argv[]) {
+
+  if (argc != 2) {
+    cerr << "Usage- " << argv[0] << " pdbfile\n";
+    exit(-1);
+  }
+  
+  // Suppress for easy diffs...
+  //cout << invocationHeader(argc, argv) << endl;
+
+  // Uncommont the follong to seed the suite-wide RNG
+  //loos::randomSeedRNG();
+
+  PDB pdb(argv[1]);
+
+  run_tests(pdb, "name == 'CA'");
+  run_tests(pdb, "resid == 5 && segid == 'PE1'");
+  run_tests(pdb, "segid == 'PE3'");
 }
