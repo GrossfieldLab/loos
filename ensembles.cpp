@@ -88,14 +88,16 @@ boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGrou
   AtomicGroup avg;
 
   // Start by aligning against the first structure in the ensemble
-  AtomicGroup target = ensemble[2].copy();
+  AtomicGroup target = ensemble[0].copy();
   target.centerAtOrigin();
+  int j = 1;  // Skip the first one on the first pass...
 
   do {
-    for (int i = 0; i<n; i++) {
+    for (int i = j; i<n; i++) {
       GMatrix M = ensemble[i].alignOnto(target);
       xforms[i].concat(M);
     }
+    j = 0;
 
     avg = averageStructure(ensemble);
     rms = avg.rmsd(target);
