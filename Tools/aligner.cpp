@@ -245,7 +245,7 @@ int main(int argc, char *argv[]) {
 
   boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, globals.alignment_tol, globals.maxiter);
   greal final_rmsd = boost::get<1>(res);
-  cout << "Final RMSD between average structres is " << final_rmsd << endl;
+  cout << "Final RMSD between average structures is " << final_rmsd << endl;
   cout << "Total iters = " << boost::get<2>(res) << endl;
 
   vector<XForm> xforms = boost::get<0>(res);
@@ -264,6 +264,7 @@ int main(int argc, char *argv[]) {
   traj->readFrame(0);
   traj->updateGroupCoords(applyto_sub);
   AtomicGroup frame = applyto_sub.copy();
+  frame.applyTransform(xforms[0]);
   frame.renumber();
 
   // Write out the PDB...
