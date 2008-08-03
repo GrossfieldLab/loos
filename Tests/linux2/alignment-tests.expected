@@ -1,9 +1,195 @@
-Found 80 CAlphas.
+
+
+-=-=-=-=-=-=-=- MACROCYCLE #0 -=-=-=-=-=-=-=-
+**************************************************
+Selected 80 atoms with selector 'name == 'CA''.
 RMSD test = 1
 Rotated rmsd = 18.3536
 Aligned rmsd = 0.425848
 [0.818739 -0.000257576 -0.574166 -0.545344;9.80061e-05 1 -0.000308856 -0.501764;0.574166 0.000196601 0.818739 -0.517209;0 0 0 1;];
 *** Single Alignment Tests ***
-All tests passed (threshold = 1e-10)
-All tests passed (threshold = 0.001 : 2)
-All composite iterative tests passed (threshold = 1e-10)
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 25 atoms with selector 'resid == 5 && segid == 'PE1''.
+RMSD test = 1
+Rotated rmsd = 21.2603
+Aligned rmsd = 0.451402
+[0.800766 0.00460026 -0.598959 -1.40587;-0.00239273 0.999987 0.00448141 -0.256049;0.598972 -0.00215541 0.800767 -1.32533;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 4
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 115 atoms with selector 'segid == 'PE3''.
+RMSD test = 1
+Rotated rmsd = 11.6758
+Aligned rmsd = 0.440482
+[0.819534 0.0106481 -0.572932 -0.298971;-0.00608611 0.999933 0.00987838 -0.576235;0.572998 -0.00460874 0.819544 -0.609509;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+
+
+-=-=-=-=-=-=-=- MACROCYCLE #1 -=-=-=-=-=-=-=-
+**************************************************
+Selected 80 atoms with selector 'name == 'CA''.
+RMSD test = 1
+Rotated rmsd = 18.3385
+Aligned rmsd = 0.421785
+[0.819356 0.000394045 -0.573284 -0.550867;-0.000358977 1 0.000174285 -0.498373;0.573284 6.2994e-05 0.819356 -0.522695;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 25 atoms with selector 'resid == 5 && segid == 'PE1''.
+RMSD test = 1
+Rotated rmsd = 21.1898
+Aligned rmsd = 0.453269
+[0.82764 0.064615 -0.557527 -0.443952;-0.0693005 0.997515 0.0127322 0.562315;0.556964 0.0280992 0.830061 -0.343001;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 4
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 115 atoms with selector 'segid == 'PE3''.
+RMSD test = 1
+Rotated rmsd = 11.6929
+Aligned rmsd = 0.44248
+[0.819284 -0.00911765 -0.573316 -0.695764;0.0092132 0.999954 -0.00273672 -0.398971;0.573314 -0.00303992 0.81933 -0.570821;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+
+
+-=-=-=-=-=-=-=- MACROCYCLE #2 -=-=-=-=-=-=-=-
+**************************************************
+Selected 80 atoms with selector 'name == 'CA''.
+RMSD test = 1
+Rotated rmsd = 18.3695
+Aligned rmsd = 0.465107
+[0.818721 0.000859096 -0.57419 -0.485249;-0.000384274 0.999999 0.00094826 -0.523112;0.574191 -0.000555714 0.818721 -0.523769;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 25 atoms with selector 'resid == 5 && segid == 'PE1''.
+RMSD test = 1
+Rotated rmsd = 21.3125
+Aligned rmsd = 0.405884
+[0.829573 0.0522028 -0.555953 -0.370167;-0.0529224 0.998489 0.0147872 0.331633;0.555885 0.0171553 0.831082 -0.0554166;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 4
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 115 atoms with selector 'segid == 'PE3''.
+RMSD test = 1
+Rotated rmsd = 11.6936
+Aligned rmsd = 0.454339
+[0.819469 -0.000576412 -0.573123 -0.512438;-0.00125093 0.999995 -0.00279435 -0.545724;0.573121 0.00300682 0.819465 -0.464762;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+
+
+-=-=-=-=-=-=-=- MACROCYCLE #3 -=-=-=-=-=-=-=-
+**************************************************
+Selected 80 atoms with selector 'name == 'CA''.
+RMSD test = 1
+Rotated rmsd = 18.3157
+Aligned rmsd = 0.465055
+[0.819758 0.000737326 -0.57271 -0.471092;-0.00113471 0.999999 -0.000336758 -0.577463;0.57271 0.000925922 0.819758 -0.485441;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 25 atoms with selector 'resid == 5 && segid == 'PE1''.
+RMSD test = 1
+Rotated rmsd = 21.3038
+Aligned rmsd = 0.355811
+[0.825759 0.00176699 -0.56402 -0.245629;-0.00717522 0.999947 -0.00737227 -0.811566;0.563977 0.0101347 0.825728 -0.264859;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 4
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 115 atoms with selector 'segid == 'PE3''.
+RMSD test = 1
+Rotated rmsd = 11.6633
+Aligned rmsd = 0.445672
+[0.820598 0.00273023 -0.5715 -0.44216;-0.0012502 0.999995 0.00298216 -0.516913;0.571505 -0.00173267 0.820597 -0.572907;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+
+
+-=-=-=-=-=-=-=- MACROCYCLE #4 -=-=-=-=-=-=-=-
+**************************************************
+Selected 80 atoms with selector 'name == 'CA''.
+RMSD test = 1
+Rotated rmsd = 18.3423
+Aligned rmsd = 0.453605
+[0.819507 -0.000973397 -0.573068 -0.505824;0.000316458 0.999999 -0.00124602 -0.508464;0.573069 0.000839775 0.819507 -0.526306;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 25 atoms with selector 'resid == 5 && segid == 'PE1''.
+RMSD test = 1
+Rotated rmsd = 21.2927
+Aligned rmsd = 0.44554
+[0.826763 0.027116 -0.561896 -0.371365;-0.0297823 0.999547 0.00441512 -0.156051;0.561761 0.0130843 0.827196 -0.229474;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 4
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
+**************************************************
+Selected 115 atoms with selector 'segid == 'PE3''.
+RMSD test = 1
+Rotated rmsd = 11.6743
+Aligned rmsd = 0.431331
+[0.821321 -0.00444833 -0.57045 -0.558427;0.00175972 0.999985 -0.0052642 -0.537987;0.570464 0.00331976 0.821316 -0.473762;0 0 0 1;];
+*** Single Alignment Tests ***
+All tests passed (threshold = 1e-06)
+Total iterations = 3
+All tests passed (threshold = 0.01 : 2)
+All composite iterative tests passed (threshold = 1e-06)
+**************************************************
