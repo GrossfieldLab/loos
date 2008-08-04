@@ -117,6 +117,30 @@ void test_within(PDB& pdb) {
 }
 
 
+struct Functor {
+  Functor() : C(GCoord(0.0,0.0,0.0)), n(0) { }
+  void operator()(pAtom& p) { C += p->coords(); ++n; }
+  GCoord center(void) { return(C/n); }
+
+  GCoord C;
+  uint n;
+};
+
+void test_apply(PDB& pdb) {
+  GCoord c1 = pdb.centroid();
+
+  Functor f = pdb.apply(Functor());
+  GCoord c2 = f.center();
+  cout << "=========================================\n";
+  cout << "Testing apply()...\n";
+  cout << "pdb.centroid() = " << c1 << endl;
+  cout << "apply(Functor()) = " << c2 << endl;
+  if (c1.distance(c2) > 1e-6)
+    cout << "***WARNING*** Failure in apply test!\n";
+
+}
+
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     cerr << "Usage- " << argv[0] << " pdbfile\n";
@@ -211,6 +235,7 @@ int main(int argc, char *argv[]) {
   test_findById(pdb);
   test_selections(pdb);
   test_within(pdb);
+  test_apply(pdb);
 
 }
 

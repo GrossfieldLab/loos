@@ -284,6 +284,34 @@ public:
   //! in the current group.
   AtomicGroup within(const double dist, AtomicGroup& grp);
 
+  //! Apply a functor or a function to each atom in the group.
+  /** apply() let's you apply a functor or a function pointer to each
+   * atom in the group.  The functor is passed a pAtom.  The functor
+   * object is also returned (in case it retained state).  For
+   * example, the following code snippet shows how to calculate the
+   * centroid of a group using apply and a functor...
+\verbatim
+struct Functor {
+   Functor() : C(GCoord(0,0,0)), n(0) { }
+   void operator()(pAtom& p) { C += p->coords(); ++n; }
+   GCoord center(void) const { return(C/n); }
+
+   GCoord C;
+   int n;
+};
+
+Functor f = group.apply(Functor());
+GCoord centroid = f.center();
+\endverbatim
+  */
+
+
+  template<class T> T apply(T func) {
+    for (AtomIterator i = atoms.begin(); i != atoms.end(); ++i)
+      func(*i);
+    return(func);
+  }
+
   // *** Helper classes...
 
   //! Our own simple iterator for stepping over all managed atoms.

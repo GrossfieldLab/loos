@@ -67,3 +67,7 @@ NotSelector(SolventSelector) = 24970 @ (-0.0309071,1.22272,-0.127685)
 Waters = 8000
 Target = 115
 Found 51 waters within 4.0 Angstroms of the target.
+=========================================
+Testing apply()...
+pdb.centroid() = (0.094641,0.361833,-0.0309396)
+apply(Functor()) = (0.094641,0.361833,-0.0309396)
