@@ -1,0 +1,37 @@
+
+==============================================================================
+			     VERSION 1.1
+==============================================================================
+
+* BUG FIXES
+  ---------
+
+o [build] Fixed problem with LOOS-wide typedefs affecting MacOS 10.5
+
+o [minor] Fixed bug in Atom class where setting coordinates using a GCoord ref
+  wont correctly set the coords-bit, i.e.  "foo.coords() = c;" will
+  not register that the coords have been set.
+
+o [moderate] Fixed a bug in AtomicGroup::splitByMolecule() where the PeriodicBox
+  was not propagated beyond the first group split.
+
+o [moderate] Fixed a bug in Tools/svdcolmap in how the atom maps are
+  handled.
+
+o [minor] Fixed a bug in aligner where the first frame of the output
+  DCD was not transformed.
+
+o [severe] Fixed a bug affecting the vector<XForms> returned by
+  loos::iterativeAlignment().  The passed ensemble is correctly
+  aligned and transformed, but the returned XForms were incorrect.
+  This could affect anything using them to varying degrees.
+
+* NEW & IMPROVED
+  --------------
+
+o Improved self-tests for Matrix44 class and alignment routines.
+
+o Added support for log-scaling magnitudes mapped onto B-values by
+  svdcolmap.
+
+o Added a new tool to reimage a DCD by molecule.
