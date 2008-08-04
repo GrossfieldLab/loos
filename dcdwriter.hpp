@@ -149,6 +149,8 @@ dcd.writeFrame(frame);
 
   void writeHeader(void);
 
+  int framesWritten(void) const { return(_current); }
+
 private:
   void writeF77Line(StreamWrapper& ofs, const char* const data, const unsigned int len); 
   string fixStringSize(const string& s, const unsigned int size);
