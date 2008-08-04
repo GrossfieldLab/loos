@@ -1,37 +1,40 @@
+2008-08-04    <tromo@spade.biophysics.rochester.edu>
 
-==============================================================================
-			     VERSION 1.1
-==============================================================================
+	= BUGS =
+	
+	* Fixed problem with LOOS-wide typedefs affecting MacOS 10.5
 
-* BUG FIXES
-  ---------
+	* Fixed minor bugin Atom class where setting coordinates using a
+	GCoord ref doesn't correctly set the coords-bit,
+	i.e. "foo.coords() = c;" will not register that the coords have
+	been set.
 
-o [build] Fixed problem with LOOS-wide typedefs affecting MacOS 10.5
+	* Fixed minor bug in Tools/aligner where the first frame of the
+	output DCD was not transformed.
 
-o [minor] Fixed bug in Atom class where setting coordinates using a GCoord ref
-  wont correctly set the coords-bit, i.e.  "foo.coords() = c;" will
-  not register that the coords have been set.
+	* Fixed moderate bug in AtomicGroup::splitByMolecule() where the
+	PeriodicBox was not propagated beyond the first group split.
 
-o [moderate] Fixed a bug in AtomicGroup::splitByMolecule() where the PeriodicBox
-  was not propagated beyond the first group split.
+	* Fixed moderate bug in Tools/svdcolmap that affected certain
+	instances of using atomid maps.
 
-o [moderate] Fixed a bug in Tools/svdcolmap in how the atom maps are
-  handled.
+	* Fixed severe bug in loos::iterativeAlignment() where the
+	returned vector<XForms> were incorrect.  The passed ensemble of
+	AtomicGroups were correctly transformed, but anything that used
+	the XForms would be affected to varying degrees.
 
-o [minor] Fixed a bug in aligner where the first frame of the output
-  DCD was not transformed.
+	= NEW & IMPROVED =
+	
+	* Added improved self-tests for alignment routines.
 
-o [severe] Fixed a bug affecting the vector<XForms> returned by
-  loos::iterativeAlignment().  The passed ensemble is correctly
-  aligned and transformed, but the returned XForms were incorrect.
-  This could affect anything using them to varying degrees.
+	* Added support for log-scaling magnitudes in Tools/svdcolmap.
 
-* NEW & IMPROVED
-  --------------
+	* Added a new tool to reimage a DCD by molecule.
 
-o Improved self-tests for Matrix44 class and alignment routines.
+	* Added AtomicGroup::apply() to call a functor or function pointer
+	on each Atom in an AtomicGroup.
 
-o Added support for log-scaling magnitudes mapped onto B-values by
-  svdcolmap.
-
-o Added a new tool to reimage a DCD by molecule.
+	* Changed dcdwriter so that it no longer requires you to specify
+	the number of frames that will be written.  Instead, it will
+	automatically update the header with the current number of frames
+	and then append the frame to the end of the trajectory.

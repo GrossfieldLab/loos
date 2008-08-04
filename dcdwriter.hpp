@@ -49,7 +49,7 @@ class DCDWriter : public boost::noncopyable {
 public:
 
   //! Setup for writing to a file named by \a s
-  /** This requires you to setup the header appropriately and then write it...
+  /** You can opt to write the header explicitly, i.e.
    * \verbatim
 DCDWriter dcd("output.dcd");
 dcd.setHeader(500, 10, 1e-3, no);
@@ -57,6 +57,7 @@ dcd.setTitles("MY TITLE HERE");
 dcd.writeHeader();
 dcd.writeFrame(frame);
 \endverbatim
+   * Or you can let dcdwriter create the header from the first frame written...
    */
   explicit DCDWriter(const string& s) : _natoms(0), _nsteps(0), _timestep(0.001), _current(0),
 			       _has_box(false), _ofs(s, ios_base::out | ios_base::binary) {
@@ -135,6 +136,14 @@ dcd.writeFrame(frame);
   void setTitle(const string& s) { _titles.clear(); addTitle(s); }
   void addTitle(const string& s) { _titles.push_back(s); }
 
+  //! Writes a frame or a group of frames to a growing DCD
+  /** writeFrame() will automatically extend the DCD for you if you
+   *  write past the initially specified number of frames.
+   *  Alternatively, you can just begin writing frames without
+   *  explicitly writing a header and let writeFrame() handle it for
+   *  you.  As the DCD grows, writeFrame() will automatically update
+   *  the header information for you.
+   */
   void writeFrame(const AtomicGroup& grp);
   void writeFrame(const vector<AtomicGroup>& grps);
 

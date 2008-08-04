@@ -97,14 +97,28 @@ void DCDWriter::writeBox(const GCoord& box) {
 
 void DCDWriter::writeFrame(const AtomicGroup& grp) {
 
-  if (_current > _nsteps)
-    throw(runtime_error("Attempting to write more frames than requested."));
+  if (_natoms == 0) {   // Assume this is the first frame being written...
+    _natoms = grp.size();
+    _has_box = grp.isPeriodic();
 
-  if (grp.size() != _natoms)
-    throw(runtime_error("Frame group atom count mismatch"));
+  } else {
 
-  if (!_has_box && grp.isPeriodic())
-    throw(runtime_error("Frame has periodic info but none was requested to be written to the DCD."));
+    if (grp.size() != _natoms)
+      throw(runtime_error("Frame group atom count mismatch"));
+
+    if (!_has_box && grp.isPeriodic())
+      throw(runtime_error("Frame has periodic info but none was requested to be written to the DCD."));
+
+  }
+
+  if (_current > _nsteps) {
+    _ofs()->seekp(0);
+    ++_nsteps;
+    writeHeader();
+    _ofs()->seekp(0, ios_base::end);
+    if (_ofs()->fail())
+      throw(runtime_error("Error while re-writing DCD header"));
+  }
 
   if (_has_box)
     writeBox(grp.periodicBox());
