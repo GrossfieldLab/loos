@@ -111,7 +111,7 @@ void DCDWriter::writeFrame(const AtomicGroup& grp) {
 
   }
 
-  if (_current > _nsteps) {
+  if (_current >= _nsteps) {
     _ofs()->seekp(0);
     ++_nsteps;
     writeHeader();
