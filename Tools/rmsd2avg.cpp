@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
   std_rmsd /= (rmsds.size() - 1);
   std_rmsd = sqrt(std_rmsd);
 
-  cerr << boost::format("Avergage RMSD was %.3lf, std RMSD was %.3lf\n") % avg_rmsd % std_rmsd;
+  cerr << boost::format("Average RMSD was %.3lf, std RMSD was %.3lf\n") % avg_rmsd % std_rmsd;
   for (uint i=0; i<rmsds.size(); i++)
     cout << rmsds[i] << endl;
 
