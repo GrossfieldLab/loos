@@ -1,3 +1,8 @@
+2008-08-05    <tromo@spade.biophysics.rochester.edu>
+
+	* Added tool to compute the RMSD between a selection and its
+	average structure over the course of a trajectory.
+
 2008-08-04    <tromo@spade.biophysics.rochester.edu>
 
 	= BUGS =
