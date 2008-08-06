@@ -48,6 +48,7 @@
 #include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <amber_traj.hpp>
+#include <ccpdb.hpp>
 
 using namespace std;
 using namespace boost;

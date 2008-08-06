@@ -67,11 +67,14 @@
 #include <amber.hpp>
 #include <tinkerxyz.hpp>
 
+#include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <dcd_utils.hpp>
 #include <dcdwriter.hpp>
 
 #include <amber_traj.hpp>
+
+#include <ccpdb.hpp>
 
 #include <Geometry.hpp>
 #include <ensembles.hpp>

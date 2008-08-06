@@ -69,6 +69,10 @@ pTraj loos::createTrajectory(const string& s, const AtomicGroup& g) {
     pAmberTraj pat(new AmberTraj(s, g.size()));
     pTraj pt(pat);
     return(pt);
+  } else if (iends_with(s, ".pdb")) {
+    pCCPDB ppdb(new CCPDB(s));
+    pTraj pt(ppdb);
+    return(pt);
   } else
     throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
 }

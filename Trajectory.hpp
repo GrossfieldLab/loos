@@ -50,13 +50,13 @@ public:
   Trajectory() { }
 
   //! Automatically open the file named \a s
-  Trajectory(const string& s) : ifs(s) { }
+  Trajectory(const string& s) : ifs(s), cached_first(false) { }
 
   //! Automatically open the file named \a s
-  Trajectory(const char* s) : ifs(s) {  }
+  Trajectory(const char* s) : ifs(s), cached_first(false) {  }
 
   //! Open using the given stream...
-  Trajectory(fstream& fs) : ifs(fs) { }
+  Trajectory(fstream& fs) : ifs(fs), cached_first(false) { }
   virtual ~Trajectory() { }
 
   //! # of atoms per frame
@@ -109,18 +109,31 @@ public:
   virtual bool parseFrame(void) =0;
 
   bool readFrame(void) {
-    seekNextFrame();
-    return(parseFrame());
-  }
+    bool b = true;
 
+    if (!cached_first) {
+      seekNextFrame();
+      b = parseFrame();
+    } else
+      cached_first = false;
+
+    return(b);
+  }
+      
   bool readFrame(const int i) {
-    seekFrame(i);
-    return(parseFrame());
-  }
+    bool b = true;
 
+    if (!(i == 0 && cached_first)) {
+      cached_first = false;
+      seekFrame(i);
+      b = parseFrame();
+    } 
+    return(b);
+  }
 
 protected:
   StreamWrapper ifs;
+  bool cached_first;
 
 
 private:

@@ -46,10 +46,13 @@ typedef boost::shared_ptr<GCoord> pGCoord;
 class Trajectory;
 class DCD;
 class AmberTraj;
+class CCPDB;
+
 
 typedef boost::shared_ptr<Trajectory> pTraj;
 typedef boost::shared_ptr<DCD> pDCD;
 typedef boost::shared_ptr<AmberTraj> pAmberTraj;
+typedef boost::shared_ptr<CCPDB> pCCPDB;
 
 class AtomicGroup;
 class PDB;
@@ -60,6 +63,7 @@ typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
 typedef boost::shared_ptr<PDB> pPDB;
 typedef boost::shared_ptr<PSF> pPSF;
 typedef boost::shared_ptr<Amber> pAmber;
+
 
 const uint kilobytes = 1024;
 const uint megabytes = kilobytes * kilobytes;
