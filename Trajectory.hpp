@@ -47,7 +47,7 @@
 
 class Trajectory : public boost::noncopyable {
 public:
-  Trajectory() { }
+  Trajectory() : cached_first(false) { }
 
   //! Automatically open the file named \a s
   Trajectory(const string& s) : ifs(s), cached_first(false) { }

@@ -69,6 +69,17 @@ public:
       throw(runtime_error("Cannot open file " + string(s)));
   }
 
+  //! Sets the internal stream to point to a newly opened filed...
+  void setStream(const string& s, const ios_base::openmode mode = ios_base::in | ios_base::binary) {
+    if (new_stream)
+      delete stream;
+
+    new_stream = true;
+    stream = new fstream(s.c_str(), mode);
+    if (!stream)
+      throw(runtime_error("Cannot open file " + string(s)));
+  }
+
   //! Sets the internal stream to the passed fstream.
   void setStream(fstream& fs) {
     if (new_stream)
