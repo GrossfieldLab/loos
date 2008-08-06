@@ -233,12 +233,34 @@ void DCD::readCoordLine(vector<dcd_real>& v) {
 }
 
 
+void DCD::seekFrame(const uint i) {
+  
+  if (first_frame_pos == 0)
+    throw(GeneralError("Trying to seek to a DCD frame without having first read the header"));
+
+  if (i >= nsteps())
+    throw(GeneralError("Requested DCD frame is out of range"));
+
+  ifs()->clear();
+  ifs()->seekg(first_frame_pos + i * frame_size);
+  if (ifs()->fail() || ifs()->bad()) {
+    ostringstream s;
+    s << "Cannot seek to frame " << i;
+    throw(GeneralError(s.str().c_str()));
+  }
+}
+
+
 // Read in a frame of data.
 // Returns TRUE if success or FALSE if at EOF.
 // Throws an exception if there was an error...  (Should we throw EOF
 // instead?) 
 
-bool DCD::readFrame(void) {
+bool DCD::parseFrame(void) {
+
+  if (first_frame_pos == 0)
+    throw(GeneralError("Trying to read a DCD frame without first having read the header."));
+
   if (ifs()->eof())
     return(false);
 
@@ -268,29 +290,6 @@ void DCD::rewind(void) {
   if (ifs()->fail() || ifs()->bad())
     throw(GeneralError("Error rewinding file"));
 }
-
-
-// Read in a specified DCD frame...
-
-bool DCD::readFrame(const unsigned int i) {
-
-  if (first_frame_pos == 0)
-    throw(GeneralError("Trying to read a DCD frame without having first read the header"));
-
-  if (i >= nsteps())
-    throw(GeneralError("Requested DCD frame is out of range"));
-
-  ifs()->clear();
-  ifs()->seekg(first_frame_pos + i * frame_size);
-  if (ifs()->fail() || ifs()->bad()) {
-    ostringstream s;
-    s << "Cannot seek to frame " << i;
-    throw(GeneralError(s.str().c_str()));
-  }
-  
-  return(readFrame());
-}
-
 
 
 // ----------------------------------------------------------

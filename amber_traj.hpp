@@ -60,13 +60,9 @@ public:
   virtual vector<GCoord> coords(void) { return(frame); }
   virtual void updateGroupCoords(AtomicGroup&);
 
-  virtual bool readFrame(const uint);
-  //! Trajectory frame iterator
-  /*!
-   * After an EOF has been reached and readFrame() returns a false,
-   * the cached frame is likely invalid.
-   */
-  virtual bool readFrame(void);
+  virtual void seekNextFrame(void) { }
+  virtual void seekFrame(const uint);
+  virtual bool parseFrame(void);
 
   virtual bool hasPeriodicBox(void) const { return(periodic); }
   virtual GCoord periodicBox(void) const { return(box); }

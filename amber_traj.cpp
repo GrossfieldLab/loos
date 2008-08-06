@@ -97,7 +97,7 @@ void AmberTraj::init(void) {
 }
 
 
-bool AmberTraj::readFrame(void) {
+bool AmberTraj::parseFrame(void) {
   greal x, y, z;
 
   if (unread) {
@@ -136,10 +136,10 @@ bool AmberTraj::readFrame(void) {
 }
 
 
-bool AmberTraj::readFrame(const uint i) {
+void AmberTraj::seekFrame(const uint i) {
 
   if (i == 0 && unread) {
-    return(true);
+    return;
   }
   unread = false;
 
@@ -151,11 +151,7 @@ bool AmberTraj::readFrame(const uint i) {
   ifs()->seekg(fpos);
   if (ifs()->fail())
     throw(runtime_error("Error- cannot seek to the requested frame in an Amber trajectory"));
-
-  return(readFrame());
 }
-
-
 
 
 void AmberTraj::updateGroupCoords(AtomicGroup& g) {

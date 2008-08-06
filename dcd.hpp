@@ -107,10 +107,9 @@ public:
   //! Read in the header from the specified stream
   void readHeader(fstream& ifs);
 
-  //! Read the next frame.  Returns false if at EOF
-  virtual bool readFrame(void);
-  //! Read the ith frame.  Returns false if there is a problem.
-  virtual bool readFrame(const unsigned int i);
+  virtual void seekNextFrame(void) { }
+  virtual void seekFrame(const uint);
+  virtual bool parseFrame(void);
 
   //! Rewind the file to the first DCD frame.
   virtual void rewind(void);

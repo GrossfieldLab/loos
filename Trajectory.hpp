@@ -53,7 +53,7 @@ public:
   Trajectory(const string& s) : ifs(s) { }
 
   //! Automatically open the file named \a s
-  Trajectory(const char* s) : ifs(s) { }
+  Trajectory(const char* s) : ifs(s) {  }
 
   //! Open using the given stream...
   Trajectory(fstream& fs) : ifs(fs) { }
@@ -65,19 +65,6 @@ public:
   virtual float timestep(void) const =0;
   //! Number of frames in the trajectory
   virtual uint nframes(void) const =0;
-
-  //! Reading iterator
-  /** This member function behaves like an iteratory.  For each call,
-   * it reads the next frame into memory and returns true or, if at
-   * the end of the file, returns a false.
-   */
-  virtual bool readFrame(void) =0;
-
-  //! Reads a specific frame
-  /** Important note: \c readFrame(i) is expected to prime the
-   *iterator-like readFrame() above.
-   */
-  virtual bool readFrame(const unsigned int i) =0;
 
   //! Rewinds the readFrame() iterator
   virtual void rewind(void) =0;
@@ -115,6 +102,22 @@ public:
    * group's periodicBox will also be updated.
    */
   virtual void updateGroupCoords(AtomicGroup& g) =0;
+
+
+  virtual void seekNextFrame(void) =0;
+  virtual void seekFrame(const uint) =0;
+  virtual bool parseFrame(void) =0;
+
+  bool readFrame(void) {
+    seekNextFrame();
+    return(parseFrame());
+  }
+
+  bool readFrame(const int i) {
+    seekFrame(i);
+    return(parseFrame());
+  }
+
 
 protected:
   StreamWrapper ifs;
