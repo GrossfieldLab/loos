@@ -100,8 +100,9 @@ env.Append(BUILDERS = {'UnitTest' :  bld})
 ### Ok, you can open 'em now...
 
 
-non_testable_tests = 'timeseries-test find_perf_test matests'
+non_testable_tests = 'timeseries-test find_perf_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
+tinker_tests = 'tinkerxyz-tests'
 solo_tests = 'principal-axes-tests atomic-group-test timeseries-test'
 
 
@@ -130,6 +131,14 @@ for name in Split(pdb_based_tests):
     tname = name
     prog = env.Program(fname)
     test = env.UnitTest(tname, [prog, 'test.pdb'])
+    list.append(test)
+
+# Now run the tests that take a Tinker input...
+for name in Split(tinker_tests):
+    fname = name + '.cpp'
+    tname = name
+    prog = env.Program(fname)
+    test = env.UnitTest(tname, [prog, 'test.xyz'])
     list.append(test)
 
 
