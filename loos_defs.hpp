@@ -57,7 +57,7 @@ typedef boost::shared_ptr<DCD> pDCD;
 typedef boost::shared_ptr<AmberTraj> pAmberTraj;
 typedef boost::shared_ptr<CCPDB> pCCPDB;
 typedef boost::shared_ptr<TinkerArc> pTinkerArc;
-typedef boost::shared_ptr<pPDBTraj> pPDBTraj;
+typedef boost::shared_ptr<PDBTraj> pPDBTraj;
 
 // AtomicGroup and subclasses (i.e. systems formats)
 class AtomicGroup;
