@@ -40,16 +40,16 @@
 
 class TinkerArc : public Trajectory {
 public:
-  explicit TinkerArc(const string& s) : Trajectory(s), _natoms(0), _nframes(0) { init(); }
-  explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
+  explicit TinkerArc(const string& s) : Trajectory(s), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+  explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
-  virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); }
+  virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
   virtual uint nframes(void) const { return(_nframes); }
   virtual uint natoms(void) const { return(_natoms); }
   virtual vector<GCoord> coords(void);
   virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
 
-  virtual void seekNextFrame(void) { }
+  virtual void seekNextFrame(void);
   virtual void seekFrame(const uint);
   virtual bool parseFrame(void);
 
@@ -65,6 +65,8 @@ private:
 
 private:
   uint _natoms, _nframes;
+  uint current_index;
+  bool at_end;
   TinkerXYZ frame;
   vector<long> indices;
 };

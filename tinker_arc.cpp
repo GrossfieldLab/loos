@@ -31,20 +31,24 @@ void TinkerArc::init(void) {
   cached_first = true;
 
   // Now determine the # of frames...
-  _nframes = 1;
   while (!ifs()->eof()) {
     indices.push_back(ifs()->tellg());
     ifs()->getline(buf, sizeof(buf));
     for (uint i=0; i<_natoms; ++i)
       ifs()->getline(buf, sizeof(buf));
-
-    ++_nframes;
   }
+
+  _nframes = indices.size() - 1;
 
   ifs()->clear();
   ifs()->seekg(indices[1]);
 }
 
+
+void TinkerArc::seekNextFrame(void) {
+  if (++current_index >= _nframes)
+    at_end = true;
+}
 
 
 void TinkerArc::seekFrame(const uint i) {
@@ -54,18 +58,23 @@ void TinkerArc::seekFrame(const uint i) {
   ifs()->seekg(indices[i]);
   if (ifs()->fail())
     throw(runtime_error("Error- cannot seek to the requested frame in trajectory."));
+
+  current_index = i;
+  at_end = false;
 }
 
 
 bool TinkerArc::parseFrame(void) {
-  if (ifs()->eof())
+  if (ifs()->eof() || at_end)
     return(false);
 
   TinkerXYZ newframe;
   newframe.read(*(ifs()));
   frame = newframe;
-  if (frame.size() == 0)
+  if (frame.size() == 0) {
+    at_end = true;
     return(false);
+  }
 
   return(true);
 }
