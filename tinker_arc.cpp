@@ -55,6 +55,7 @@ void TinkerArc::seekFrame(const uint i) {
   if (i >= _nframes)
     throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
 
+  ifs()->clear();
   ifs()->seekg(indices[i]);
   if (ifs()->fail())
     throw(runtime_error("Error- cannot seek to the requested frame in trajectory."));

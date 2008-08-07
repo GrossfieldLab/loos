@@ -16,4 +16,19 @@ int main(int argc, char *argv[]) {
   }
 
   cout << format("Read in a total of %d frames.\n") % i;
+  cout << "--------------------------------------\n";
+
+  uint f = ccpdb.nframes() - 6;
+  cout << "Reading frame " << f << endl;
+  ccpdb.readFrame(f);
+  i=0;
+  while (ccpdb.readFrame()) {
+    cout << format("Reading frame %d...\n") % i++;
+    PDB pdb = ccpdb.currentFrame();
+    vector<GCoord> bdd = pdb.boundingBox();
+    cout << "\tCenter @ " << pdb.centroid() << " with bdd " << bdd[0] << " x " << bdd[1] << endl;
+  }
+
+  cout << format("Read in a total of %d frames.\n") % i;
+
 }
