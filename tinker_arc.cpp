@@ -25,7 +25,7 @@ void TinkerArc::init(void) {
   char buf[512];
 
   // Read the first frame to get the # of atoms...
-  frame.read(ifs());
+  frame.read(*(ifs()));
   _natoms = frame.size();
   indices.push_back(0l);
   cached_first = true;
@@ -71,7 +71,7 @@ bool TinkerArc::parseFrame(void) {
 }
 
 
-vector<GCoord> TinkerXYZ::coords(void) {
+vector<GCoord> TinkerArc::coords(void) {
   vector<GCoord> result(_natoms);
 
   for (uint i=0; i<_natoms; i++)
