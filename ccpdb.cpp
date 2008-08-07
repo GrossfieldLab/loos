@@ -29,6 +29,7 @@ void CCPDB::init(void) {
      frame.read(*(ifs()));
      _natoms = frame.size();
      cached_first = true;
+     indices.push_back(0l);
      indices.push_back(ifs()->tellg());
 
      // Now count the # of END statements...
@@ -36,9 +37,9 @@ void CCPDB::init(void) {
        if (strncmp("END", buf, 3) == 0)
 	 indices.push_back(ifs()->tellg());
 
-     _nframes = indices.size();
+     _nframes = indices.size() - 1;
      ifs()->clear();
-     ifs()->seekg(indices[0]);
+     ifs()->seekg(indices[1]);
 }
 
 
