@@ -24,13 +24,13 @@
 
 AtomicGroup loos::createSystem(const string& s) {
 
-  if (iends_with(s, ".pdb")) {
+  if (boost::iends_with(s, ".pdb")) {
     PDB pdb(s);
     return(pdb);
-  } else if (iends_with(s, ".psf")) {
+  } else if (boost::iends_with(s, ".psf")) {
     PSF psf(s);
     return(psf);
-  } else if (iends_with(s, ".prmtop")) {
+  } else if (boost::iends_with(s, ".prmtop")) {
     Amber amber(s);
     return(amber);
   } else
@@ -42,13 +42,13 @@ pAtomicGroup loos::createSystemPtr(const string& s) {
 
   pAtomicGroup pag;
 
-  if (iends_with(s, ".pdb")) {
+  if (boost::iends_with(s, ".pdb")) {
     pPDB p(new PDB(s));
     pag = p;
-  } else if (iends_with(s, ".psf")) {
+  } else if (boost::iends_with(s, ".psf")) {
     pPSF p(new PSF(s));
     pag = p;
-  } else if (iends_with(s, ".prmtop")) {
+  } else if (boost::iends_with(s, ".prmtop")) {
     pAmber p(new Amber(s));
     pag = p;
   } else
@@ -61,15 +61,15 @@ pAtomicGroup loos::createSystemPtr(const string& s) {
 
 pTraj loos::createTrajectory(const string& s, const AtomicGroup& g) {
 
-  if (iends_with(s, ".dcd")) {
+  if (boost::iends_with(s, ".dcd")) {
     pDCD pd(new DCD(s));
     pTraj pt(pd);
     return(pt);
-  } else if (iends_with(s, ".mdcrd")) {
+  } else if (boost::iends_with(s, ".mdcrd")) {
     pAmberTraj pat(new AmberTraj(s, g.size()));
     pTraj pt(pat);
     return(pt);
-  } else if (iends_with(s, ".pdb")) {
+  } else if (boost::iends_with(s, ".pdb")) {
     pCCPDB ppdb(new CCPDB(s));
     pTraj pt(ppdb);
     return(pt);

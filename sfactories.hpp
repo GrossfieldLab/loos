@@ -51,7 +51,6 @@
 #include <ccpdb.hpp>
 
 using namespace std;
-using namespace boost;
 
 
 namespace loos {

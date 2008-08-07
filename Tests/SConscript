@@ -100,7 +100,7 @@ env.Append(BUILDERS = {'UnitTest' :  bld})
 ### Ok, you can open 'em now...
 
 
-non_testable_tests = 'timeseries-test find_perf_test ccpdb_test'
+non_testable_tests = 'timeseries-test find_perf_test ccpdb_test pdbtraj_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
 tinker_tests = 'tinkerxyz-tests'
 solo_tests = 'principal-axes-tests atomic-group-test timeseries-test'
