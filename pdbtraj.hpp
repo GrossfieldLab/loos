@@ -63,6 +63,8 @@ public:
 
   string currentName(void) const { return(current_name); }
 
+  PDB currentFrame(void) const { return(frame); }
+
 private:
   void init(void);
 

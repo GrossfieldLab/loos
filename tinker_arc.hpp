@@ -58,6 +58,8 @@ public:
 
   virtual float timestep(void) const { return(0.001); }
 
+  TinkerXYZ currentFrame(void) const { return(frame); }
+
 private:
   void init(void);
 
