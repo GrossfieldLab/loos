@@ -51,8 +51,10 @@ void PDBTraj::seekNextFrame(void) {
 
   if (current_index >= _nframes)
     at_end = true;
-  else
-    seekFrame(current_index++);
+  else {
+    seekFrame(current_index);
+    ++current_index;
+  }
 }
 
 

@@ -61,6 +61,8 @@ public:
 
   virtual float timestep(void) const { return(0.001); }
 
+  string currentName(void) const { return(current_name); }
+
 private:
   void init(void);
 
