@@ -42,8 +42,8 @@
 
 class PDBTraj : public Trajectory {
 public:
-  explicit PDBTraj(const string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(-1), at_end(false) { init(); }
-  explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(-1), at_end(false) { init(); }
+  explicit PDBTraj(const string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+  explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
 
   virtual void rewind(void) { seekFrame(0); }
@@ -66,9 +66,9 @@ private:
 
 private:
   string pattern;
-  int start, end, stride;
+  uint start, end, stride;
   uint _natoms, _nframes;
-  int current_index;
+  uint current_index;
   bool at_end;
   string current_name;
   PDB frame;

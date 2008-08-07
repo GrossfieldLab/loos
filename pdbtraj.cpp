@@ -32,9 +32,6 @@ void PDBTraj::init(void) {
 
 void PDBTraj::seekFrame(const uint i) {
 
-  if (i == current_index)
-    return;
-
   uint idx = i * stride + start;
   if (i < start || i > end)
     throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
@@ -52,12 +49,10 @@ void PDBTraj::seekNextFrame(void) {
   if (at_end)
     return;
 
-  ++current_index;
-
   if (current_index >= _nframes)
     at_end = true;
   else
-    seekFrame(current_index);
+    seekFrame(current_index++);
 }
 
 
