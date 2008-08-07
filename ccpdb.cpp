@@ -22,6 +22,9 @@
 
 #include <ccpdb.hpp>
 
+
+// Do some initial parsing to setup the Trajectory object...
+
 void CCPDB::init(void) {
      char buf[512];
 
@@ -60,6 +63,7 @@ bool CCPDB::parseFrame(void) {
 
   // We cheat here...  Maybe it would be better to have a PDB::clear()
   // or AtomicGroup::clear() member function???
+  // Note:  For some reason, PDB newframe(*(ifs())) doesn't parse correctly...
   PDB newframe;
   newframe.read(*(ifs()));
   frame = newframe;

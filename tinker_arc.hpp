@@ -37,6 +37,24 @@
 
 #include <tinkerxyz.hpp>
 
+//! Class for handling Tinker ARC files (concatenation of .xyz files)
+/** This class reads a concatenated .xyz tinker trajectory (i.e. an
+ *  ARC file).  In order to determine the number of frames present,
+ *  the trajectory is scanned from beginning to end upon
+ *  instantiation.  A list of seek indices for each frame is also
+ *  built.
+ *
+ *  There seems to be an issue with some .ARC files where reading the
+ *  end of the contained TinkerXYZ object does not put the input
+ *  stream into an EOF state.  So, we can't depend on checking eof()
+ *  in parseFrame() to flag when we've iterated off the end.
+ *  TinkerArc therefore keeps track of what index into the Trajectory
+ *  it's at and uses that to check to see if it's at the end or not.
+ * 
+ *  It is possible to get the contained TinkerXYZ object out of a
+ *  TinkerArc, but with certain caveats.  See CCPDB::currentFrame()
+ *  for more details.
+ */
 
 class TinkerArc : public Trajectory {
 public:
@@ -58,6 +76,10 @@ public:
 
   virtual float timestep(void) const { return(0.001); }
 
+  //! Returns the contained TinkerXYZ object.
+  /** See CCPDB::currentFrame() for some important notes about using
+   *  this function.
+   */
   TinkerXYZ currentFrame(void) const { return(frame); }
 
 private:
