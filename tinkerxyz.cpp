@@ -87,16 +87,17 @@ void TinkerXYZ::parseAtomRecord(const string s) {
     while (ss >> bonded_atom)
         {
         // Probably should verify this value is sane
-        pa->addBond(bonded_atom-1); // our indices are off by 1 relative to file
+        pa->addBond(bonded_atom); 
         }
 
-    // Fill in the rest of the stuff: these properties must be set somehow,
-    // because they don't have mask bits which let us check their status
-    pa->segid(segname);  
-    pa->resid(resid);
-    pa->resname(resname);
+    // Tinker XYZ files don't have segments or residues, so these
+    // properties get set to the class defaults by the constructor
+    //pa->segid(segname);  
+    //pa->resid(resid);
+    //pa->resname(resname);
 
-    // These properties have bits to mark them as unset
+    // TODO: once we support reading Tinker param files, we should set these
+    // to their correct values
     //pa->charge(charge);
     //pa->mass(mass);
     //pa->atomic_number(atomic_number);
