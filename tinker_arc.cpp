@@ -1,0 +1,82 @@
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include <tinker_arc.hpp>
+
+void TinkerArc::init(void) {
+  char buf[512];
+
+  // Read the first frame to get the # of atoms...
+  frame.read(ifs());
+  _natoms = frame.size();
+  indices.push_back(0l);
+  cached_first = true;
+
+  // Now determine the # of frames...
+  _nframes = 1;
+  while (!ifs()->eof()) {
+    indices.push_back(ifs()->tellg());
+    ifs()->getline(buf, sizeof(buf));
+    for (uint i=0; i<_natoms; ++i)
+      ifs()->getline(buf, sizeof(buf));
+
+    ++_nframes;
+  }
+
+  ifs()->clear();
+  ifs()->seekg(indices[1]);
+}
+
+
+
+void TinkerArc::seekFrame(const uint i) {
+  if (i >= _nframes)
+    throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+
+  ifs()->seekg(indices[i]);
+  if (ifs()->fail())
+    throw(runtime_error("Error- cannot seek to the requested frame in trajectory."));
+}
+
+
+bool TinkerArc::parseFrame(void) {
+  if (ifs()->eof())
+    return(false);
+
+  TinkerXYZ newframe;
+  newframe.read(*(ifs()));
+  frame = newframe;
+  if (frame.size() == 0)
+    return(false);
+
+  return(true);
+}
+
+
+vector<GCoord> TinkerXYZ::coords(void) {
+  vector<GCoord> result(_natoms);
+
+  for (uint i=0; i<_natoms; i++)
+    result[i] = frame[i]->coords();
+
+  return(result);
+}
+

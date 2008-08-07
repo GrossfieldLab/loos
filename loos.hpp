@@ -73,9 +73,9 @@
 #include <dcdwriter.hpp>
 
 #include <amber_traj.hpp>
-
 #include <ccpdb.hpp>
 #include <pdbtraj.hpp>
+#include <tinker_arc.hpp>
 
 #include <Geometry.hpp>
 #include <ensembles.hpp>
