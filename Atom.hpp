@@ -240,8 +240,8 @@ checkProperty(Atom::massbit | Atom::chargebit)
 
 private:
   void init() {
-    _id = -1;
-    _resid = -1;
+    _id = 1;
+    _resid = 1;
     _atomic_number = -1;
     _b = _q = 0.0;
     _charge = 0.0;
