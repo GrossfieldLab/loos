@@ -107,10 +107,12 @@ public:
   //! Read in the header from the specified stream
   void readHeader(fstream& ifs);
 
-  //! Read the next frame.  Returns false if at EOF
-  virtual bool readFrame(void);
-  //! Read the ith frame.  Returns false if there is a problem.
-  virtual bool readFrame(const unsigned int i);
+  // Trajectory member functions we must provide...
+  virtual void seekNextFrame(void) { }    // DCD frames are always contiguous, so do nothing...
+  //! Calculate offset into DCD file for frame and seek to it.
+  virtual void seekFrame(const uint);
+  //! Parse a frame of the DCD
+  virtual bool parseFrame(void);
 
   //! Rewind the file to the first DCD frame.
   virtual void rewind(void);

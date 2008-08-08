@@ -43,7 +43,6 @@
 
 
 using namespace std;
-using namespace boost;
 
 
 
@@ -127,8 +126,8 @@ template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* i
   // Got the first line, count the number of columns...
   vector<string> strings;
   string line(inbuf);
-  trim(line);
-  split(strings, line, is_any_of(" \t"), token_compress_on);
+  boost::trim(line);
+  boost::split(strings, line, boost::is_any_of(" \t"), boost::token_compress_on);
   n = strings.size();
   if (n == 0)
     throw(runtime_error("Could not find any columns in the matrix!"));

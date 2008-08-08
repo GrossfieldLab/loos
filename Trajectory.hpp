@@ -41,22 +41,30 @@
  *  class, the header might be read at instantiation, but no frames
  *  would necessarily be read at that point.
  *
+ *  Some formats (subclasses), must read the first frame as part of
+ *  their initialization.  Examples include CCPDB and TinkerArc.  As
+ *  such, there's no point in re-reading the first frame again if
+ *  that's what's requested by the client.  So the cached_first
+ *  variable is used to indicate that the first frame has been
+ *  cached.  If true, then the readFrame() method will not actually do
+ *  anything for its first invocation.
+ *
  *  Additionally, this class is not designed to provide output, only
  *  input...
  */
 
 class Trajectory : public boost::noncopyable {
 public:
-  Trajectory() { }
+  Trajectory() : cached_first(false) { }
 
   //! Automatically open the file named \a s
-  Trajectory(const string& s) : ifs(s) { }
+  Trajectory(const string& s) : ifs(s), cached_first(false) { }
 
   //! Automatically open the file named \a s
-  Trajectory(const char* s) : ifs(s) { }
+  Trajectory(const char* s) : ifs(s), cached_first(false) {  }
 
   //! Open using the given stream...
-  Trajectory(fstream& fs) : ifs(fs) { }
+  Trajectory(fstream& fs) : ifs(fs), cached_first(false) { }
   virtual ~Trajectory() { }
 
   //! # of atoms per frame
@@ -65,19 +73,6 @@ public:
   virtual float timestep(void) const =0;
   //! Number of frames in the trajectory
   virtual uint nframes(void) const =0;
-
-  //! Reading iterator
-  /** This member function behaves like an iteratory.  For each call,
-   * it reads the next frame into memory and returns true or, if at
-   * the end of the file, returns a false.
-   */
-  virtual bool readFrame(void) =0;
-
-  //! Reads a specific frame
-  /** Important note: \c readFrame(i) is expected to prime the
-   *iterator-like readFrame() above.
-   */
-  virtual bool readFrame(const unsigned int i) =0;
 
   //! Rewinds the readFrame() iterator
   virtual void rewind(void) =0;
@@ -116,8 +111,54 @@ public:
    */
   virtual void updateGroupCoords(AtomicGroup& g) =0;
 
+  //! Seek to the next frame in the sequence (used by readFrame() when
+  //! operating as an iterator).
+  virtual void seekNextFrame(void) =0;
+
+  //! Seek to a specific frame, be it in the same contiguous file or
+  //! in separate files.
+  virtual void seekFrame(const uint) =0;
+
+  //! Parse an actual frame.
+  /** parseFrame() is expected to read in a frame through the
+   * Trajectory's StreamWrapper.  It returns a bool indicating whether
+   * or not it was able to actually read a frame (i.e. false indicates
+   * EOF).
+   */
+  virtual bool parseFrame(void) =0;
+
+  //! Reads the next frame in a trajectory, returning false if at the end.
+  bool readFrame(void) {
+    bool b = true;
+
+    if (!cached_first) {
+      seekNextFrame();
+      b = parseFrame();
+    } else
+      cached_first = false;
+
+    return(b);
+  }
+      
+  //! Reads a specific frame in a trajectory.
+  /** Reading a specific frame also resets the readFrame() iterator
+   * version so it will continue where readFrame(i) left off...
+   */
+  bool readFrame(const int i) {
+    bool b = true;
+
+    if (!(i == 0 && cached_first)) {
+      cached_first = false;
+      seekFrame(i);
+      b = parseFrame();
+    } 
+    return(b);
+  }
+
 protected:
   StreamWrapper ifs;
+  bool cached_first;    // Indicates that the first frame is cached by
+			// the subclass...
 
 
 private:

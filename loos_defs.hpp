@@ -43,23 +43,35 @@ typedef double dcd_double;
 typedef Coord<double> GCoord;
 typedef boost::shared_ptr<GCoord> pGCoord;
 
+// Trajectory and subclasses...
 class Trajectory;
 class DCD;
 class AmberTraj;
+class CCPDB;
+class TinkerArc;
+class PDBTraj;
+
 
 typedef boost::shared_ptr<Trajectory> pTraj;
 typedef boost::shared_ptr<DCD> pDCD;
 typedef boost::shared_ptr<AmberTraj> pAmberTraj;
+typedef boost::shared_ptr<CCPDB> pCCPDB;
+typedef boost::shared_ptr<TinkerArc> pTinkerArc;
+typedef boost::shared_ptr<PDBTraj> pPDBTraj;
 
+// AtomicGroup and subclasses (i.e. systems formats)
 class AtomicGroup;
 class PDB;
 class PSF;
 class Amber;
+class TinkerXYZ;
 
 typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
 typedef boost::shared_ptr<PDB> pPDB;
 typedef boost::shared_ptr<PSF> pPSF;
 typedef boost::shared_ptr<Amber> pAmber;
+typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
+
 
 const uint kilobytes = 1024;
 const uint megabytes = kilobytes * kilobytes;

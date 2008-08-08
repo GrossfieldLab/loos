@@ -55,9 +55,9 @@ void TinkerXYZ::parseAtomRecord(const string s) {
 
 
     gint index;
-    string segname("");       // Tinker doesn't have segments
-    gint resid=1;             // Tinker doesn't have residues
-    string resname("");       // Tinker doesn't have residues
+    //string segname("");       // Tinker doesn't have segments
+    //gint resid=1;             // Tinker doesn't have residues
+    //string resname("");       // Tinker doesn't have residues
     string atomname;  
     string atomtype;          // Tinker atom types are numbers -- crap!
     //greal charge=0.0;

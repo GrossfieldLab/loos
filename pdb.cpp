@@ -309,8 +309,10 @@ void PDB::read(istream& is) {
     else if (input.substr(0, 6) == "CRYST1") {
       parseCryst1Record(input);
       has_cryst = true;
-    } else if (input.substr(0,3) == "TER" || input.substr(0,3) == "END")
+    } else if (input.substr(0,3) == "TER")
       ;
+    else if (input.substr(0,3) == "END")
+      break;
     else {
       int space = input.find_first_of(' ');
       cerr << "Warning- Unknown PDB record " << input.substr(0, space) << endl;
