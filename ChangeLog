@@ -1,3 +1,27 @@
+2008-08-11    <tromo@spade.biophysics.rochester.edu>
+
+	* Major reorganization of Trajectory class.  The class now uses a
+	template pattern for reading frames in addition to being an
+	interface.  This makes it even easier to extend.  See the Docs for
+	more details.
+
+	* Added CCPDB class for ConCatenated PDBs.  You can now treat
+	these as a Trajectory.
+
+	* Added PDBTraj class for handling non-contiguous PDBs as a
+	trajectory.  Provide it with a printf-style format for generating
+	frame names and a range of frame numbers to use, and it will allow
+	you to access them as a Trajectory.
+
+	* Added TinkerArc class for treating TinkerArc files (concatenated
+	XYZ files) as a Trajectory.
+
+	* Fixed problem with namespace collision with Boost in
+	Tools/svd.cpp
+
+	* Changed Atom defaults to initialize atomid and resid to 1,
+	rather than -1.
+
 2008-08-05    <tromo@spade.biophysics.rochester.edu>
 
 	* Added tool to compute the RMSD between a selection and its
