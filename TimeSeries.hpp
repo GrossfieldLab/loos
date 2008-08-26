@@ -64,13 +64,16 @@ public:
         _data = inp._data;
     }
 
+    tTimeSeries(const int n, const T val) {
+        _data.assign(n, (T) val);
+    }
 
     void init(void) {
         _data.clear();
     }
 
     void zero(void) {
-        _data.assign(_data.size, (T)0.0);
+        _data.assign(_data.size(), (T)0.0);
     }
 
     T& operator[](const unsigned int i) {
@@ -225,6 +228,58 @@ public:
     return(res);
     }
 
+
+    tTimeSeries<T> operator/=(const T val) {
+        for (unsigned int i=0; i<_data.size(); i++) {
+            _data[i] /= val;
+        }
+    return(*this);
+    }
+
+    tTimeSeries<T> operator/(const T val) const {
+        tTimeSeries<T> res(*this);
+        for (unsigned int i=0; i<_data.size(); i++) {
+            res[i] /= val;
+        }
+    return(res);
+    }
+
+    tTimeSeries<T> operator/=(const tTimeSeries<T> &rhs) {
+        if ( _data.size() != rhs.size() ) 
+            throw(runtime_error("mismatched timeseries sizes in *="));
+        for (unsigned int i=0; i<_data.size(); i++) {
+            _data[i] /= rhs[i];
+        }
+    return(*this);
+    }
+
+    tTimeSeries<T> operator/(const tTimeSeries<T> &rhs) const {
+        if ( _data.size() != rhs.size() ) 
+            throw(runtime_error("mismatched timeseries sizes in *="));
+
+        tTimeSeries<T> res(*this);
+        for (unsigned int i=0; i<_data.size(); i++) {
+            res[i] /= rhs[i];
+        }
+    return(res);
+    }
+
+    friend tTimeSeries<T> operator/(const T lhs, const tTimeSeries<T> &rhs) {
+        tTimeSeries<T> res( rhs.size() );
+        for (unsigned int i=0; i<rhs.size(); i++) {
+            res[i] = lhs / rhs[i];
+        }
+    return(res);
+    }
+
+    tTimeSeries<T> copy(void) const {
+        tTimeSeries<T> result(_data.size(), 0.0);
+        for (unsigned int i = 0; i < _data.size(); i++) {
+            result[i] = _data[i];
+        }
+        return(result);
+    }
+
     //! Return average of time series
     T average(void) const {
         T ave = 0.0;
@@ -265,7 +320,7 @@ public:
     //! Return a new timeseries of the same size as the current one,
     //! containing the running average of the time series
     tTimeSeries<T> running_average(void) const {
-        tTimeSeries result(_data.size() );
+        tTimeSeries<T> result(_data.size() );
         T sum = 0.0;
         for (unsigned int i=0; i<_data.size(); i++) {
             sum += _data[i];
@@ -322,10 +377,47 @@ public:
         return (block_ave2 - block_ave*block_ave);
     }
 
-    // private constructor which just sizes the data array
-    // useful for running_average and windowed_average
-    tTimeSeries(const int n) : _data(n) {}
-    
+    tTimeSeries<T> correl(const int num_vals, T tol=1.0e-8) const {
+        tTimeSeries<T> data = copy();
+        const unsigned int n = abs(num_vals);
+        if (n > data.size()) {
+            throw(runtime_error("Can't take correlation time longer than time series"));
+        }
+
+        tTimeSeries<T> c(num_vals, 0.0);
+
+        // normalize the data
+        data -= data.average();
+        T dev = data.stdev();
+        
+        // drop through if this is a constant array
+        if (dev < tol) {
+            c._data.assign(num_vals, 1.0);
+            return(c);
+        }
+        
+        data /= dev;
+
+        vector<int> num_pairs(num_vals);
+        num_pairs.assign(num_vals, 0);
+        // TODO: This is the O(N^2) way -- there are much faster
+        // algorithms for long time series
+        for (int i = 0; i < num_vals; i++) {
+            for (unsigned int j = 0; j < data.size() - i; j++) {
+                c[i] += data[j] * data[j+i];
+                num_pairs[i]++;
+            }
+
+        }
+
+    // Normalize the correlation function
+    for (int i = 0; i < num_vals; i++) {
+        c[i] /= num_pairs[i];
+    }
+
+    return(c);
+    }
+
 private:
     vector<T> _data;
 };
