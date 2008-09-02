@@ -114,7 +114,7 @@ public:
 
 
     friend tTimeSeries<T> operator+(const T lhs, const tTimeSeries<T> &rhs) {
-        tTimeSeries<T> res( rhs.size() );
+        tTimeSeries<T> res( rhs.size(), (T) 0.0 );
         for (unsigned int i=0; i<rhs.size(); i++) {
             res[i] = lhs + rhs[i];
         }
@@ -221,7 +221,7 @@ public:
     }
 
     friend tTimeSeries<T> operator*(const T lhs, const tTimeSeries<T> &rhs) {
-        tTimeSeries<T> res( rhs.size() );
+        tTimeSeries<T> res( rhs.size(), (T) 0.0 );
         for (unsigned int i=0; i<rhs.size(); i++) {
             res[i] = lhs * rhs[i];
         }
