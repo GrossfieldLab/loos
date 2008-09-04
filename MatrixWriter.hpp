@@ -187,15 +187,13 @@ void MatrixWriter<T>::write(const T* data, const string& tag, const uint m, cons
   OutputPreamble(po, tag, m, n, trans);
   for (j=0; j<mm; j++) {
     for (i=0; i<nn; i++) {
-      double d;
 
       if (trans)
 	k = j*n+i;
       else
 	k = i*m+j;
       assert(k < m*n && "Matrix index exceeds dimensions");
-      d = data[k];
-      OutputDatum(po, d);
+      OutputDatum(po, data[k]);
     }
     OutputEOL(po);
   }
