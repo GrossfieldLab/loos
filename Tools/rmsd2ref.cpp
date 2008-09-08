@@ -47,15 +47,22 @@ const double tolerance = 1e-6;
 static struct option long_options[] = {
   {"align", required_argument, 0, 'a'},
   {"target", required_argument, 0, 't'},
+  {"help", no_argument, 0, 'h'},
   {0,0,0,0}
 };
 
 
-static const char* short_options = "a:t:";
+static const char* short_options = "a:t:h";
 
 
 void show_help(void) {
 
+  cout << "Computes the RMSD between each frame in a trajectory and a reference structure.\n";
+  cout << "  The reference structure can either be an external target or the average conformation.\n";
+  cout << "  In each case, you may specify that each frame of the trajectory is aligned against\n";
+  cout << "  the target using a different selection.  If no target is specified and aligning is\n";
+  cout << "  requested, then an iterative alignment scheme is used to compute a more optimal average\n";
+  cout << "  structure.\n\n";
   cout << "Usage- rmsd2ref [options] selection model trajectory\n";
   cout << "       --align=selection_string\n";
   cout << "       --target=model\n";
@@ -70,6 +77,7 @@ void parseOptions(int argc, char *argv[]) {
     switch(opt) {
     case 'a': align_string = string(optarg); break;
     case 't': target_name = string(optarg); break;
+    case 'h': show_help(); exit(0);
     case 0: break;
     default:
       cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
@@ -88,25 +96,36 @@ void parseOptions(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  cout << "# " << hdr << endl;
 
   parseOptions(argc, argv);
+
+  cout << "# " << hdr << endl;
+
   AtomicGroup molecule = createSystem(model_name);
   pTraj ptraj = createTrajectory(traj_name, molecule);
 
-  cerr << boost::format("Using trajectory \"%s\" with %lu frames.\n") % dcd_name % ptraj->nframes();
+  cerr << boost::format("Using trajectory \"%s\" with %lu frames.\n") % traj_name % ptraj->nframes();
 
   Parser parsed(selection_string);
   KernelSelector selector(parsed.kernel());
   AtomicGroup subset = molecule.select(selector);
 
+  AtomicGroup target;
+  AtomicGroup target_subset;
+
   if (target_name.empty())
     cerr << boost::format("Computing RMSD vs avg conformation using %d atoms from \"%s\".\n") % subset.size() % selection_string;
-  else
+  else {
+    target = createSystem(target_name);
+    target_subset = target.select(selector);
+    if (target_subset.size() != subset.size()) {
+      cerr << boost::format("Error- target selection has %u atoms while trajectory selection has %u.\n") % target_subset.size() % subset.size();
+      exit(-1);
+    }
     cerr << boost::format("Computing RMSD vs target %s using %d atoms from \"%s\".\n") % target_name % subset.size() % selection_string;
+  }
 
   vector<AtomicGroup> frames;
-  AtomicGroup target;
 
   // handle aligning, if requested...
   if (! align_string.empty()) {
@@ -135,16 +154,17 @@ int main(int argc, char *argv[]) {
 
     } else {   // A target was provided and aligning was requested...
       
-      target = createSystem(target_name);
-      target_subset = target.select(align_selector);
+      AtomicGroup target_align = target.select(align_selector);
+      cerr << boost::format("Aligning using %d atoms from \"%s\".\n") % target_align.size() % align_string;
 
       uint n = ptraj->nframes();
       for (uint i=0; i<n; i++) {
 	ptraj->readFrame(i);
 	ptraj->updateGroupCoords(molecule);
-	GMatrix M = align_subset.alignOnto(target_subset);
+	GMatrix M = align_subset.superposition(target_align);
 	XForm W(M);
 	subset.applyTransform(W);
+	AtomicGroup frame = subset.copy();
 	frames.push_back(frame);
       }
 
@@ -165,11 +185,16 @@ int main(int argc, char *argv[]) {
 
   // If no external reference structure was specified, set the target
   // to the average of the trajectory...
-  if (target_name.empty())
+  if (target_name.empty()) {
+    cerr << "Computing using average structure...\n";
     target = loos::averageStructure(frames);
+  } else
+    target = target_subset;  // Hack!
 
   vector<double> rmsds;
   double avg_rmsd = 0.0;
+
+  assert(frames[0].size() == target.size() && "Error- trajectory selection and target selection have differing number of atoms.");
 
   for (uint i=0; i<frames.size(); i++) {
     double d = target.rmsd(frames[i]);
