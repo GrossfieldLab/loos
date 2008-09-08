@@ -1,3 +1,15 @@
+2008-09-08    <tromo@spade.biophysics.rochester.edu>
+
+	* Added autocorrelation function to time-series class (Alan)
+
+	* Added tool to compute probability dbn of radius of gyration (Alan)
+
+	* Changed rmsd2avg tool to rmsd2ref tool since it now supports
+	using an external reference structure.
+
+	* Fixed another small bug in iterative alignment that affects
+	groups that were not already close to their centroid.
+
 2008-08-11    <tromo@spade.biophysics.rochester.edu>
 
 	* Major reorganization of Trajectory class.  The class now uses a
