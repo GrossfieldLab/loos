@@ -37,7 +37,7 @@ struct Globals {
   Globals() : align_string("name == 'CA'"),
 	      avg_string("(segid != 'SOLV' && segid != 'BULK') && !hydrogen"),
 	      trajmin(0), trajmax(0),
-	      alignment_tol(1e-3)
+	      alignment_tol(1e-6)
   { }
 
 

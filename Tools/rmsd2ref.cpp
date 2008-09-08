@@ -42,17 +42,18 @@ string selection_string;
 string model_name, traj_name;
 string target_name;
 
-const double tolerance = 1e-6;
+double tolerance = 1e-6;
 
 static struct option long_options[] = {
   {"align", required_argument, 0, 'a'},
   {"target", required_argument, 0, 't'},
+  {"tolerance", required_argument, 0, 'T'},
   {"help", no_argument, 0, 'h'},
   {0,0,0,0}
 };
 
 
-static const char* short_options = "a:t:h";
+static const char* short_options = "a:t:hT:";
 
 
 void show_help(void) {
@@ -66,6 +67,7 @@ void show_help(void) {
   cout << "Usage- rmsd2ref [options] selection model trajectory\n";
   cout << "       --align=selection_string\n";
   cout << "       --target=model\n";
+  cout << "       --tolerance=double\n";
 }
 
 
@@ -78,6 +80,7 @@ void parseOptions(int argc, char *argv[]) {
     case 'a': align_string = string(optarg); break;
     case 't': target_name = string(optarg); break;
     case 'h': show_help(); exit(0);
+    case 'T': tolerance = strtod(optarg, 0); break;
     case 0: break;
     default:
       cerr << "Unknown option '" << (char)opt << "' - ignored.\n";

@@ -62,7 +62,7 @@
 struct Globals {
   Globals() : alignment_string("name == 'CA'"),
 	      transform_string("name == 'CA'"),
-	      alignment_tol(0.5),
+	      alignment_tol(1e-6),
 	      maxiter(5000),
 	      show_rmsd(false),
 	      no_rmsd(false) { }

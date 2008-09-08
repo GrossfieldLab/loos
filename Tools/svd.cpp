@@ -49,7 +49,7 @@ typedef float svdreal;
 struct Globals {
   Globals()  : alignment_string("name == 'CA'"),
 	       svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
-	       alignment_tol(0.5),
+	       alignment_tol(1e-6),
 	       include_source(0),
 	       terms(0),
 	       writer(0),
