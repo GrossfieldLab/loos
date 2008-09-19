@@ -355,7 +355,6 @@ ostream& XTALLine(ostream& os, const GCoord& box) {
 
 
 ostream& FormatConectRecords(ostream& os, const PDB& p) {
-  int i = 0;
   AtomicGroup::ConstAtomIterator ci;
 
   for (ci = p.atoms.begin(); ci != p.atoms.end(); ++ci) {
@@ -363,6 +362,7 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
       int donor = (*ci)->id();
 
       os << format("CONECT%4d") % donor;
+      int i = 0;
 
       vector<int> bonds = (*ci)->getBonds();
       vector<int>::const_iterator cj;
