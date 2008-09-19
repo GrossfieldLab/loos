@@ -30,6 +30,7 @@
 #include <ctype.h>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
 
 #include <pdb.hpp>
 #include <Fmt.hpp>
@@ -352,6 +353,34 @@ ostream& XTALLine(ostream& os, const GCoord& box) {
     return(os);
 }
 
+
+ostream& FormatConectRecords(ostream& os, const PDB& p) {
+  int i = 0;
+  AtomicGroup::ConstAtomIterator ci;
+
+  for (ci = p.atoms.begin(); ci != p.atoms.end(); ++ci) {
+    if ((*ci)->checkProperty(Atom::bondsbit)) {
+      int donor = (*ci)->id();
+
+      os << format("CONECT%4d") % donor;
+
+      vector<int> bonds = (*ci)->getBonds();
+      vector<int>::const_iterator cj;
+      for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
+	if (++i > 4) {
+	  i = 1;
+	  os << format("\nCONECT%4d") % donor;
+	}
+	os << format("%4d") % (*cj);
+      }
+      os << endl;
+    }
+  }
+
+  return(os);
+}
+
+
 //! Output the group as a PDB...
 ostream& operator<<(ostream& os, const PDB& p) {
   AtomicGroup::ConstAtomIterator i;
@@ -361,8 +390,11 @@ ostream& operator<<(ostream& os, const PDB& p) {
     XTALLine(os, p.periodicBox()) << endl;
   if (p._has_cryst) 
     FormattedUnitCell(os, p.cell) << endl;
-  for (i = p.atoms.begin(); i != p.atoms.end(); i++)
+  for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
     os << p.atomAsString(*i) << endl;
+
+  if (p.hasBonds())
+    FormatConectRecords(os, p);
   
   if (p._auto_ter)
     os << "TER     \n";
