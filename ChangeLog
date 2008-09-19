@@ -1,3 +1,8 @@
+2008-09-19    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for writing out CONECT records for PDBs
+	* Fixed bug in Atom::checkProperty() that caused erroneous results
+
 2008-09-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Added autocorrelation function to time-series class (Alan)
