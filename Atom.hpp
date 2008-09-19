@@ -215,7 +215,7 @@ checkProperty(Atom::coordsbit)
 checkProperty(Atom::massbit | Atom::chargebit)
 \endverbatim
   */
-  bool checkProperty(const bits bitmask) { return(mask & bitmask != 0); }
+  bool checkProperty(const bits bitmask) { return((mask & bitmask) != 0); }
 
 
   //! Outputs an atom in pseudo-XML
