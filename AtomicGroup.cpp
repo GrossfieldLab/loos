@@ -166,6 +166,17 @@ AtomicGroup AtomicGroup::operator+(const pAtom& rhs) {
 }
 
 
+bool AtomicGroup::hasBonds(void) const {
+  ConstAtomIterator ci;
+
+  for (ci = atoms.begin(); ci != atoms.end(); ++ci)
+    if ((*ci)->checkProperty(Atom::bondsbit))
+      return(true);
+
+  return(false);
+}
+
+
 // Internal: sort the atom array by atomid
 void AtomicGroup::sort(void) {
   CmpById comp;

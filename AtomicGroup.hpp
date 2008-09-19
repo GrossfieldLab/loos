@@ -253,6 +253,9 @@ public:
   int numberOfResidues(void) const;
   int numberOfSegids(void) const;
 
+  //! Does any atom in the group have bond information???
+  bool hasBonds(void) const;
+
   //! Is the array of atoms already sorted???
   bool sorted(void) const { return(_sorted); }
 
