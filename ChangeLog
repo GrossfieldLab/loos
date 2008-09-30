@@ -1,3 +1,9 @@
+2008-09-30    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed AtomicGroup::select() to be a const function
+	* Added loos::selectAtoms() to parse a selection string and apply
+	it to an AtomicGroup.
+
 2008-09-19    <tromo@spade.biophysics.rochester.edu>
 
 	* Added support for writing out CONECT records for PDBs
