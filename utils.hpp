@@ -28,6 +28,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 
 #include <boost/random.hpp>
@@ -38,6 +39,7 @@
 #include <loos_defs.hpp>
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
+
 
 using namespace std;
 using namespace __gnu_cxx;
@@ -83,6 +85,9 @@ namespace loos {
 
   //! Parses a list of Octave-style range specifiers
   vector<int> parseRangeList(const string& text);
+
+  //! Applies a string-based selection to an atomic group...
+  AtomicGroup selectAtoms(const AtomicGroup&, const string);
 
 };
 

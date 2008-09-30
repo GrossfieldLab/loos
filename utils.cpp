@@ -28,16 +28,15 @@
 #include <time.h>
 #include <pwd.h>
 
-#include <stdexcept>
-
 #include <algorithm>
 #include <string>
 #include <sstream>
 
 #include <boost/algorithm/string.hpp>
 
-
-#include "utils.hpp"
+#include <Selectors.hpp>
+#include <Parser.hpp>
+#include <utils.hpp>
 
 
 string getNextLine(istream& is, int *lineno = 0) {
@@ -232,4 +231,23 @@ vector<int> loos::parseRangeList(const string& text) {
     }
 
   return(results);
+}
+
+
+
+AtomicGroup loos::selectAtoms(const AtomicGroup& source, const string selection) {
+  
+  Parser parser;
+
+  try {
+    parser.parse(selection);
+  }
+  catch(runtime_error e) {
+    throw(runtime_error("Error in parsing '" + selection + "' ... " + e.what()));
+  }
+
+  KernelSelector selector(parser.kernel());
+  AtomicGroup subset = source.select(selector);
+
+  return(subset);
 }
