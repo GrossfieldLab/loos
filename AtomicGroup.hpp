@@ -221,7 +221,7 @@ public:
   AtomicGroup intersect(const AtomicGroup& grp);
 
   //! Return a group consisting of atoms for which sel predicate returns true...
-  AtomicGroup select(const AtomSelector& sel);
+  AtomicGroup select(const AtomSelector& sel) const;
 
   //! Returns a vector of AtomicGroups split from the current group based on segid
   vector<AtomicGroup> splitByUniqueSegid(void) const;
