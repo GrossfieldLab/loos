@@ -234,7 +234,18 @@ vector<int> loos::parseRangeList(const string& text) {
 }
 
 
-
+/** This routine parses the passed string, turning it into a selector
+ *  and applies it to \a source.  If there is an exception in the
+ *  parsing, this is repackaged into a more sensible error message
+ *  (including the string that generated the error).  No other
+ *  exceptions are caught.
+ *
+ *  We're also assuming that you're <EM>always</EM> wanting to select
+ *  some atoms, so lack of selection constitutes an error and an
+ *  exception is thrown.  Note that in both the case of a parse error
+ *  and null-selection, a runtime_error exception is thrown so the
+ *  catcher cannot disambiguate between the two.
+*/
 AtomicGroup loos::selectAtoms(const AtomicGroup& source, const string selection) {
   
   Parser parser;
@@ -248,6 +259,9 @@ AtomicGroup loos::selectAtoms(const AtomicGroup& source, const string selection)
 
   KernelSelector selector(parser.kernel());
   AtomicGroup subset = source.select(selector);
+
+  if (subset.size() == 0)
+    throw(runtime_error("No atoms were selected using '" + selection + "'"));
 
   return(subset);
 }
