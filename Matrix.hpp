@@ -64,6 +64,18 @@ namespace loos {
       
       return( (b * (b + 1)) / 2 + a );
     }
+
+    struct iterator {
+      iterator(const int y, const int x) : n((y*(y+1))/2), i(0) { }
+      long next(void) {
+	if (i >= n)
+	  return(-1);
+	return(i++);
+      }
+
+      long n, i;
+    };
+
     
   private:
     int m, n;
@@ -78,6 +90,27 @@ namespace loos {
     long size(void) const { return(s); }
 
     long operator()(const int y, const int x) const { return(x*m + y); }
+
+
+    struct iterator {
+      iterator(const int y, const int x) : m(y), n(x), a(0), b(0), eod(false) { }
+      long next(void) {
+	if (eod)
+	  return(-1);
+
+	long i = a*m + b;
+	if (++a >= n) {
+	  a = 0;
+	  if (++b >= m)
+	    eod = true;
+	}
+	return(i);
+      }
+
+      int m, n, a, b;
+      bool eod;
+    };
+	  
 
   private:
     int m, n;
@@ -94,6 +127,27 @@ namespace loos {
 
     long operator()(const int y, const int x) const { return(y*n + x); }
 
+
+    struct iterator {
+      iterator(const int y, const int x) : m(y), n(x), a(0), b(0), eod(false) { }
+      long next(void) {
+	if (eod)
+	  return(-1);
+
+	long i = b*n + a;
+	if (++a >= n) {
+	  a = 0;
+	  if (++b >= m)
+	    eod = true;
+	}
+	return(i);
+      }
+
+      int m, n, a, b;
+      bool eod;
+    };
+
+
   private:
     int m, n;
     long s;
@@ -101,8 +155,8 @@ namespace loos {
 
   // Reinterpretation functions...
   template<typename T, class C> class Matrix;
-  template<typename T> Matrix<T, RowMajor> convertOrder(const Matrix<T, ColMajor>&);
-  template<typename T> Matrix<T, ColMajor> convertOrder(const Matrix<T, RowMajor>&);
+  template<typename T> Matrix<T, RowMajor> reinterpretOrder(const Matrix<T, ColMajor>&);
+  template<typename T> Matrix<T, ColMajor> reinterpretOrder(const Matrix<T, RowMajor>&);
 
   // Default order is column major...
 
@@ -183,10 +237,17 @@ namespace loos {
     void free(void) { m = n = 0; dptr.reset(); }
 
     //! Convert a Col-major to Row-major format
-    friend Matrix<T, RowMajor> convertOrder<>(const Matrix<T,ColMajor>&);
+    friend Matrix<T, RowMajor> reinterpretOrder<>(const Matrix<T,ColMajor>&);
 
     //! Convert a Row-major to Col-major format
-    friend Matrix<T, ColMajor> convertOrder<>(const Matrix<T,RowMajor>&);
+    friend Matrix<T, ColMajor> reinterpretOrder<>(const Matrix<T,RowMajor>&);
+
+    struct iterator {
+      iterator(const Matrix<T, Policy>& M) : miter(M.m, M.n) { }
+      long next(void) { return(miter.next()); }
+
+      typename Policy::iterator miter;
+    };
 
 
   private:
@@ -208,7 +269,7 @@ namespace loos {
   };
 
   template<typename T>
-  Matrix<T, RowMajor> convertOrder(const Matrix<T, ColMajor>& A) {
+  Matrix<T, RowMajor> reinterpretOrder(const Matrix<T, ColMajor>& A) {
     Matrix<T, RowMajor> result(A.m, A.n);
     result.dptr = A.dptr;
   
@@ -216,7 +277,7 @@ namespace loos {
   };
 
   template<typename T>
-  Matrix<T, ColMajor> convertOrder(const Matrix<T, RowMajor>& A) {
+  Matrix<T, ColMajor> reinterpretOrder(const Matrix<T, RowMajor>& A) {
     Matrix<T, ColMajor> result(A.m, A.n);
     result.dptr = A.dptr;
   
