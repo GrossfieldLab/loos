@@ -30,13 +30,20 @@
 #if !defined(LOOS_MATRIX_HPP)
 #define LOOS_MATRIX_HPP
 
-#include <boost/shared_ptr.hpp>
+#include <boost/shared_array.hpp>
 
 namespace loos {
 
   // These are the policy classes for the Matrix class.  They define
   // how the data is actually stored internally, i.e. lower
   // triangular, column major, or row major order...
+
+  struct Duple {
+    Duple(const int a, const int b) : i(a), j(b) { }
+
+    int i, j;
+  };
+
 
   //! Class for storing a symmetric triangular matrix
   class Triangular {
@@ -65,8 +72,9 @@ namespace loos {
       return( (b * (b + 1)) / 2 + a );
     }
 
+    // size, starting (ignored), ending (ignored)
     struct iterator {
-      iterator(const int y, const int x) : n((y*(y+1))/2), i(0) { }
+      iterator(const int y, const int x, const int b, const int a, const int v, const int u) : n((y*(y+1))/2), i(0) { }
       long next(void) {
 	if (i >= n)
 	  return(-1);
@@ -93,21 +101,21 @@ namespace loos {
 
 
     struct iterator {
-      iterator(const int y, const int x) : m(y), n(x), a(0), b(0), eod(false) { }
+      iterator(const int y, const int x, const int b, const int a, const int v, const int u) : size(x,y), start(a, b), end(u, v), cur(a, b) { }
       long next(void) {
 	if (eod)
 	  return(-1);
 
-	long i = a*m + b;
-	if (++a >= n) {
-	  a = 0;
-	  if (++b >= m)
+	long ii = cur.i * m + cur.j;
+	if (++cur.i >= end.i) {
+	  cur.i = start.i;
+	  if (++cur.j >= end.j)
 	    eod = true;
 	}
 	return(i);
       }
 
-      int m, n, a, b;
+      Duple size, start, end, cur;
       bool eod;
     };
 	  
@@ -129,24 +137,23 @@ namespace loos {
 
 
     struct iterator {
-      iterator(const int y, const int x) : m(y), n(x), a(0), b(0), eod(false) { }
+      iterator(const int y, const int x, const int b, const int a, const int v, const int u) : size(x,y), start(a, b), end(u, v), cur(a, b) { }
       long next(void) {
 	if (eod)
 	  return(-1);
 
-	long i = b*n + a;
-	if (++a >= n) {
-	  a = 0;
-	  if (++b >= m)
+	long ii = cur.j * n + cur.i;
+	if (++cur.i >= end.i) {
+	  cur.i = start.i;
+	  if (++cur.j >= end.j)
 	    eod = true;
 	}
 	return(i);
       }
 
-      int m, n, a, b;
+      Duple size, start, end, cur;
       bool eod;
     };
-
 
   private:
     int m, n;
@@ -171,7 +178,7 @@ namespace loos {
    * provided...
    *
    * Internally, the data is managed by a boost shared pointer
-   * (boost::shared_ptr).  Range checking is provided to all
+   * (boost::shared_array).  Range checking is provided to all
    * accesses.
    *
    * Newly allocate matrices have each element initialized to 0.
@@ -182,14 +189,19 @@ namespace loos {
   public:
 
     //! Wrap an existing block of data with a Matrix.
-    Matrix(T* p, const int b, const int a) : m(b), n(a), mi(a*b), index(b, a) { dptr = boost::shared_ptr<T>(p); }
+    Matrix(T* p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a) { dptr = boost::shared_array<T>(p); }
+
+    //! Wrap an already shared block of data...
+    Matrix(boost::shared_array<T>& p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a), dptr(p) { }
+
+
     //! Create a new block of data for the requested Matrix
-    Matrix(const int b, const int a) : m(b), n(a), mi(a*b), index(b, a) { allocate(); }
+    Matrix(const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a) { allocate(); }
     
     //! Deep copy of a matrix...
     Matrix<T> copy(void) const {
       Matrix<T> result(m, n);
-      long size = index.size();
+      long size = pol.size();
       T* p = result.dptr.get();
       T* q = dptr.get();
 
@@ -207,30 +219,26 @@ namespace loos {
 
     //! Treat the matrix as a 1D array
     T& operator[](const long i) {
-      T* p = dptr.get();
       assert(i < mi && "Index out of range in Matrix::operator[]");
-      return(p[i]);
+      return(dptr[i]);
     }
 
     //! Return the appropriate element (y-rows, x-cols)
     T& operator()(const int y, const int x) {
-      T* p = dptr.get();
-      long i = index(y,x);
+      long i = pol(y,x);
       assert(i < mi && "Index out of range in Matrix::operator()");
-      return(p[i]);
+      return(dptr[i]);
     }
 
     const T& operator[](const long i) const {
-      T* p = dptr.get();
       assert(i < mi && "Index out of range in Matrix::operator[]");
-      return(p[i]);
+      return(dptr[i]);
     }
 
     const T& operator()(const int y, const int x) const {
-      T* p = dptr.get();
-      long i = index(y,x);
+      long i = pol(y,x);
       assert(i < mi && "Index out of range in Matrix::operator()");
-      return(p[i]);
+      return(dptr[i]);
     }
 
     //! Deallocate data...
@@ -253,18 +261,17 @@ namespace loos {
   private:
 
     void allocate(void) {
-      long size = index.size();
+      long size = pol.size();
       dptr.reset();
-      dptr = boost::shared_ptr<T>(new T[size]);
-      T* p = dptr.get();
+      dptr = boost::shared_array<T>(new T[size]);
       for (long i=0; i<size; i++)
-	p[i] = 0;
+	dptr[i] = 0;
     }
 
   private:
     int m, n, mi;
-    Policy index;
-    boost::shared_ptr<T> dptr;
+    Policy pol;
+    boost::shared_array<T> dptr;
   
   };
 

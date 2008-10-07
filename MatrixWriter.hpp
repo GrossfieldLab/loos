@@ -75,8 +75,39 @@ public:
    *  \arg \c maxcol The maximum column to write
    *  \arg \c maxrow The maxmimum row to write
    */
-  void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0);
+  void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
+    uint i, j, k;
+    uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
+    uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
+    ofstream *ofsp = 0;
+  
+    // Determine if we need to open a file or not...
+    ostream *po = ofs;
+    if (!po) {
+      string fname = constructFilename(tag);
+      ofsp = new ofstream(fname.c_str());
+      if (!ofsp)
+	throw(runtime_error("Unable to open file " + fname));
+      po = ofsp;
+    }
 
+    OutputPreamble(po, tag, m, n, trans);
+    for (j=0; j<mm; j++) {
+      for (i=0; i<nn; i++) {
+
+	if (trans)
+	  k = j*n+i;
+	else
+	  k = i*m+j;
+	assert(k < m*n && "Matrix index exceeds dimensions");
+	OutputDatum(po, data[k]);
+      }
+      OutputEOL(po);
+    }
+    OutputCoda(po);
+  
+    delete ofsp;
+  }
 
   // These are overriden by subclasses to control the output format...
 
@@ -163,44 +194,6 @@ public:
 
 };
 
-
-
-
-
-template<class T>
-void MatrixWriter<T>::write(const T* data, const string& tag, const uint m, const uint n, const bool trans, const uint maxcol, const uint maxrow) {
-  uint i, j, k;
-  uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
-  uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
-  ofstream *ofsp = 0;
-  
-  // Determine if we need to open a file or not...
-  ostream *po = ofs;
-  if (!po) {
-    string fname = constructFilename(tag);
-    ofsp = new ofstream(fname.c_str());
-    if (!ofsp)
-      throw(runtime_error("Unable to open file " + fname));
-    po = ofsp;
-  }
-
-  OutputPreamble(po, tag, m, n, trans);
-  for (j=0; j<mm; j++) {
-    for (i=0; i<nn; i++) {
-
-      if (trans)
-	k = j*n+i;
-      else
-	k = i*m+j;
-      assert(k < m*n && "Matrix index exceeds dimensions");
-      OutputDatum(po, data[k]);
-    }
-    OutputEOL(po);
-  }
-  OutputCoda(po);
-  
-  delete ofsp;
-}
 
 
 
