@@ -40,6 +40,12 @@ namespace loos {
 
   struct Duple {
     Duple(const int a, const int b) : i(a), j(b) { }
+    Duple() : i(0), j(0) { }
+
+    friend ostream& operator<<(ostream& os, const Duple& d) {
+      os << "Duple(" << i << "," << j << ")";
+      return(os);
+    }
 
     int i, j;
   };
@@ -74,15 +80,19 @@ namespace loos {
 
     // size, starting (ignored), ending (ignored)
     struct iterator {
-      iterator(const int y, const int x, const int b, const int a, const int v, const int u) : n((y*(y+1))/2), i(0) { }
-      long next(void) {
-	if (i >= n)
-	  return(-1);
-	return(i++);
+      iterator(const Duple& si, const Duple& st, const Duple& en) : size(si), start(st), end(en), curr(st) {
+	in = (size.i * (size.i + 1) ) / 2;
+	ii = 0;
       }
 
-      long n, i;
-    };
+      long next(void) {
+	if (ii > in)
+	  return(-1);
+	return(ii++);
+      }
+
+      long in, ii;
+    }
 
     
   private:
@@ -98,27 +108,27 @@ namespace loos {
     long size(void) const { return(s); }
 
     long operator()(const int y, const int x) const { return(x*m + y); }
-
-
+    
     struct iterator {
-      iterator(const int y, const int x, const int b, const int a, const int v, const int u) : size(x,y), start(a, b), end(u, v), cur(a, b) { }
-      long next(void) {
+      iterator(const Duple& si, const Duple& st, const Duple& en) : size(si), start(st), end(en), curr(st), eod(false) { }
+      long advance(void) {
 	if (eod)
 	  return(-1);
 
-	long ii = cur.i * m + cur.j;
-	if (++cur.i >= end.i) {
-	  cur.i = start.i;
-	  if (++cur.j >= end.j)
+	long i = curr.i * size.j + curr.j;
+
+	if (++curr.i >= end.i) {
+	  curr.i = start.i;
+	  if (++curr.j >= size.j)
 	    eod = true;
 	}
+
 	return(i);
       }
 
-      Duple size, start, end, cur;
+      Duple size, start, end, curr;
       bool eod;
     };
-	  
 
   private:
     int m, n;
@@ -135,25 +145,27 @@ namespace loos {
 
     long operator()(const int y, const int x) const { return(y*n + x); }
 
-
     struct iterator {
-      iterator(const int y, const int x, const int b, const int a, const int v, const int u) : size(x,y), start(a, b), end(u, v), cur(a, b) { }
-      long next(void) {
+      iterator(const Duple& si, const Duple& st, const Duple& en) : size(si), start(st), end(en), curr(st), eod(false) { }
+      long advance(void) {
 	if (eod)
 	  return(-1);
 
-	long ii = cur.j * n + cur.i;
-	if (++cur.i >= end.i) {
-	  cur.i = start.i;
-	  if (++cur.j >= end.j)
+	long i = curr.j * size.i + curr.i;
+
+	if (++curr.i >= end.i) {
+	  curr.i = start.i;
+	  if (++curr.j >= size.j)
 	    eod = true;
 	}
+
 	return(i);
       }
 
-      Duple size, start, end, cur;
+      Duple size, start, end, curr;
       bool eod;
     };
+
 
   private:
     int m, n;
@@ -251,7 +263,8 @@ namespace loos {
     friend Matrix<T, ColMajor> reinterpretOrder<>(const Matrix<T,RowMajor>&);
 
     struct iterator {
-      iterator(const Matrix<T, Policy>& M) : miter(M.m, M.n) { }
+      iterator(const Matrix<T, Policy>& M) : miter(Duple(M.m, M.n), Duple(0, 0), Duple(M.m, M.n)) { }
+      iterator(const Matrix<T, Policy>& M, const Duple& start, const Duple& end) : miter(Duple(M.m, M.n), start, end) { }
       long next(void) { return(miter.next()); }
 
       typename Policy::iterator miter;
