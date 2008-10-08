@@ -92,27 +92,6 @@ namespace loos {
     long size(void) const { return(s); }
 
     long operator()(const int y, const int x) const { return(x*m + y); }
-    
-    struct iterator {
-      iterator(const Duple& si, const Duple& st, const Duple& en) : size(si), start(st), end(en), curr(st), eod(false) { }
-      long advance(void) {
-	if (eod)
-	  return(-1);
-
-	long i = curr.i * size.j + curr.j;
-
-	if (++curr.i >= end.i) {
-	  curr.i = start.i;
-	  if (++curr.j >= size.j)
-	    eod = true;
-	}
-
-	return(i);
-      }
-
-      Duple size, start, end, curr;
-      bool eod;
-    };
 
   private:
     int m, n;
@@ -128,28 +107,6 @@ namespace loos {
     long size(void) const { return(s); }
 
     long operator()(const int y, const int x) const { return(y*n + x); }
-
-    struct iterator {
-      iterator(const Duple& si, const Duple& st, const Duple& en) : size(si), start(st), end(en), curr(st), eod(false) { }
-      long advance(void) {
-	if (eod)
-	  return(-1);
-
-	long i = curr.j * size.i + curr.i;
-
-	if (++curr.i >= end.i) {
-	  curr.i = start.i;
-	  if (++curr.j >= size.j)
-	    eod = true;
-	}
-
-	return(i);
-      }
-
-      Duple size, start, end, curr;
-      bool eod;
-    };
-
 
   private:
     int m, n;
@@ -245,15 +202,6 @@ namespace loos {
 
     //! Convert a Row-major to Col-major format
     friend Matrix<T, ColMajor> reinterpretOrder<>(const Matrix<T,RowMajor>&);
-
-    struct iterator {
-      iterator(const Matrix<T, Policy>& M) : miter(Duple(M.m, M.n), Duple(0, 0), Duple(M.m, M.n)) { }
-      iterator(const Matrix<T, Policy>& M, const Duple& start, const Duple& end) : miter(Duple(M.m, M.n), start, end) { }
-      long next(void) { return(miter.next()); }
-
-      typename Policy::iterator miter;
-    };
-
 
   private:
 
