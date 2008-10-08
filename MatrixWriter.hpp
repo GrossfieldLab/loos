@@ -133,7 +133,8 @@ public:
    */
   template<class Policy>
   void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
-    boost::shared_array<T> temp(data, null_deleter());
+    T* p = const_cast<T*>(data);
+    boost::shared_array<T> temp(p, null_deleter());
     loos::Matrix<T, Policy> M(temp, m, n);
     write(M, tag, m, n, trans, maxcol, maxrow);
   }
