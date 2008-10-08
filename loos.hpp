@@ -59,6 +59,7 @@
 
 #include <Matrix44.hpp>
 #include <XForm.hpp>
+#include <Matrix.hpp>
 #include <MatrixReader.hpp>
 #include <MatrixWriter.hpp>
 

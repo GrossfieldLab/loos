@@ -37,6 +37,8 @@
 #include <string>
 #include <cctype>
 
+#include <Matrix.hpp>
+
 #include <boost/tuple/tuple.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -47,36 +49,35 @@ using namespace std;
 
 
 //! Base class for reading matrices
-template<class T>
+template<class T, class Policy>
 class MatrixReader {
 public:
   typedef unsigned int uint;
-  typedef boost::tuple<T*, unsigned int, unsigned int> Result;
 
   MatrixReader() : ins(&cin) { }
   explicit MatrixReader(istream* i) : ins(i) { }
   virtual ~MatrixReader() { }
 
 
-  virtual Result basic_read(istream* input) =0;
+  virtual loos::Matrix<T, Policy> basic_read(istream* input) =0;
 
-  virtual Result read(istream* input) {
+  virtual loos::Matrix<T, Policy> read(istream* input) {
     return(basic_read(input));
   }
 
-  virtual Result read(const string& s) {
+  virtual loos::Matrix<T, Policy> read(const string& s) {
     ifstream ifs(s.c_str());
     if (!ifs)
       throw(runtime_error("Unable to open " + s));
-    return(MatrixReader<T>::read(&ifs));
+    return(MatrixReader<T, Policy>::read(&ifs));
   }
 
 
-  virtual Result read(const char *s) {
+  virtual loos::Matrix<T, Policy> read(const char *s) {
     ifstream ifs(s);
     if (!ifs)
       throw(runtime_error("Unable to open " + string(s)));
-    return(MatrixReader<T>::read(&ifs));
+    return(MatrixReader<T, Policy>::read(&ifs));
   }
 
 protected:
@@ -95,12 +96,12 @@ protected:
  * since we're assuming it'll be fed to lapack/blas...
  */
 
-template<class T>
-class RawAsciiReader : public MatrixReader<T> {
+template<class T, class Policy = loos::ColMajor>
+class RawAsciiReader : public MatrixReader<T, Policy> {
 public:
   static const uint inbufsiz = 256536;
 
-  typename MatrixReader<T>::Result basic_read(istream* input);
+  loos::Matrix<T, Policy> basic_read(istream* input);
 
 private:
   boost::tuple<uint, uint> scanSize(istream* input);
@@ -108,7 +109,7 @@ private:
 
 
 
-template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* input) {
+template<class T, class Policy> boost::tuple<uint,uint> RawAsciiReader<T, Policy>::scanSize(istream* input) {
 
   uint m, n;
   char inbuf[inbufsiz];
@@ -151,17 +152,17 @@ template<class T> boost::tuple<uint,uint> RawAsciiReader<T>::scanSize(istream* i
 }
 
 
-template<class T> typename MatrixReader<T>::Result RawAsciiReader<T>::basic_read(istream* input) {
+template<class T, class Policy> loos::Matrix<T, Policy> RawAsciiReader<T, Policy>::basic_read(istream* input) {
 
   boost::tuple<uint,uint> size = scanSize(input);
   uint m = boost::get<0>(size);
   uint n = boost::get<1>(size);
 
   // Should we impose a max matrix size here???
-  T* data = new T[m*n];
-  T datum;
+  loos::Matrix<T, Policy> M(m, n);
 
   uint i, j;
+  T datum;
   for (j=0; j<m; j++)
     for (i=0; i<n; i++) {
       if (!(*input >> datum)) {
@@ -169,11 +170,10 @@ template<class T> typename MatrixReader<T>::Result RawAsciiReader<T>::basic_read
 	s << "Invalid conversion on matrix read at (" << j << "," << i << ") [" << datum << "]";
 	throw(runtime_error(s.str()));
       }
-      data[i*m+j] = datum;
+      M(j, i) = datum;
     }
 
-  typename MatrixReader<T>::Result result(data, m, n);
-  return(result);
+  return(M);
 }
 
 

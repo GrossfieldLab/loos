@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
   int index = atoi(argv[optind++]);
   PDB pdb(argv[optind++]);
   string prefix(argv[optind++]);
-  RawAsciiReader<double> reader;
+  RawAsciiReader<double, ColMajor> reader;
 
   vector<pAtom> atoms;
   if (mapname == "") {
@@ -123,33 +123,27 @@ int main(int argc, char *argv[]) {
     atoms = getAtoms(pdb, indices);
   }
 
-  MatrixReader<double>::Result lsvs = reader.read(prefix + "U.asc");
-  double *U = boost::get<0>(lsvs);
-  uint m = boost::get<1>(lsvs);
-  uint n = boost::get<2>(lsvs);
+  loos::Matrix<double, ColMajor> U = reader.read(prefix + "U.asc");
+  cerr << "Read in " << U.rows() << " x " << U.cols() << " matrix from " << prefix + "U.asc" << endl;
 
-  cerr << "Read in " << m << " x " << n << " matrix from " << prefix + "U.asc" << endl;
-
-  if (m % 3 != 0) {
+  if (U.rows() % 3 != 0) {
     cerr << "Error- dimensions of LSVs are bad.\n";
     exit(-11);
   }
 
-  MatrixReader<double>::Result svals = reader.read(prefix + "s.asc");
-  double *s = boost::get<0>(svals);
-  cerr << "Read in " << boost::get<1>(svals) << " x " << boost::get<2>(svals) << " matrix from " << prefix + "s.asc" << endl;
+  loos::Matrix<double> s = reader.read(prefix + "s.asc");
+  cerr << "Read in " << s.rows() << " x " << s.cols() << " matrix from " << prefix + "s.asc" << endl;
 
   pAtom pa;
   AtomicGroup::Iterator iter(pdb);
   while (pa = iter())
     pa->bfactor(0.0);
 
-  double *lsv = U + index * m;
   double sval = s[index];
   uint i;
   uint j;
-  for (i=j=0; j<m; j += 3) {
-    GCoord c(lsv[j], lsv[j+1], lsv[j+2]);
+  for (i=j=0; j<U.rows(); j += 3) {
+    GCoord c(U(j, index), U(j+1, index), U(j+2, index));
     c *= sval;
     double b = scale * c.length();
     if (logscale)
