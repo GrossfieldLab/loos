@@ -44,6 +44,10 @@ typedef unsigned int uint;
 //! Class for handling writing of matrices in different formats.
 template<class T>
 class MatrixWriter {
+  struct null_deleter {
+    void operator()(const void *) const { }
+  };
+
 public:
 
   //! Default constructor sends output to cout
@@ -67,15 +71,18 @@ public:
   void metadata(const string& s) { meta_data = s; }
   
 
-  //! This handles writing the matrix out.
-  /** It is assumed that matrices are stored col-major (i.e. Fortran-style)
+  //! This handles writing the matrix output.
+  /** Matrix will always be written in row-major format, but the
+   *  actual storage order will depend on the Policy class used...
+   *
    *  Notable parameters:
    *  \arg \c tag String used to tag the matrix (i.e. name it)
    *  \arg \c trans The matrix is transposed on output
    *  \arg \c maxcol The maximum column to write
    *  \arg \c maxrow The maxmimum row to write
    */
-  void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
+  template<class Policy>
+  void write(const Matrix<T,Policy>& M, const string& tag, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
     uint i, j, k;
     uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
     uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
@@ -95,18 +102,48 @@ public:
     for (j=0; j<mm; j++) {
       for (i=0; i<nn; i++) {
 
+	T datum;
 	if (trans)
-	  k = j*n+i;
+	  T = M(i, j);
 	else
-	  k = i*m+j;
+	  T = M(j, i);
 	assert(k < m*n && "Matrix index exceeds dimensions");
-	OutputDatum(po, data[k]);
+	OutputDatum(po, datum);
       }
       OutputEOL(po);
     }
     OutputCoda(po);
   
     delete ofsp;
+  }
+
+  //! Temporarily wraps data in a Matrix object, then writes it...
+  /** The Matrix class will wrap the data block in a shared_array if we
+   * just pass the T* to it, which then means it will be deallocated
+   * when control leaves the write() function.  So, we have to
+   * pre-wrap it in a shared_array that will not delete itself when it
+   * finally goes out of scope.  This is what the null_deleter does
+   * for us.  For more information, see the Boost documentation...
+   */
+  template<class Policy>
+  void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
+    boost::shared_array<T> temp(data, null_deleter());
+    Matrix<T, Policy> M(sp, m, n);
+    write(M, tag, m, n, trans, maxcol, maxrow);
+  }
+
+
+  //! Temporarily wraps data in a Col-major matrix object, then writes it.
+  /**
+   * This is for compatability with existing code...  The original
+   * interface to write() assumed that the data was stored in
+   * column-major format.
+   */
+
+  void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
+    boost::shared_array<T> temp(data, null_deleter());
+    Matrix<T, ColMajor> M(sp, m, n);
+    write(M, tag, m, n, trans, maxcol, maxrow);
   }
 
   // These are overriden by subclasses to control the output format...
