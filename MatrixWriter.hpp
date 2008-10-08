@@ -36,6 +36,10 @@
 #include <stdexcept>
 #include <cassert>
 
+#include <boost/shared_array.hpp>
+
+#include <Matrix.hpp>
+
 using namespace std;
 
 typedef unsigned int uint;
@@ -82,10 +86,10 @@ public:
    *  \arg \c maxrow The maxmimum row to write
    */
   template<class Policy>
-  void write(const Matrix<T,Policy>& M, const string& tag, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
+  void write(const loos::Matrix<T,Policy>& M, const string& tag, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
     uint i, j, k;
     uint m = M.rows();
-    uint n = N.cols();
+    uint n = M.cols();
     uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
     uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
     ofstream *ofsp = 0;
@@ -106,9 +110,9 @@ public:
 
 	T datum;
 	if (trans)
-	  T = M(i, j);
+	  datum = M(i, j);
 	else
-	  T = M(j, i);
+	  datum = M(j, i);
 	assert(k < m*n && "Matrix index exceeds dimensions");
 	OutputDatum(po, datum);
       }
@@ -130,7 +134,7 @@ public:
   template<class Policy>
   void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
     boost::shared_array<T> temp(data, null_deleter());
-    Matrix<T, Policy> M(sp, m, n);
+    loos::Matrix<T, Policy> M(temp, m, n);
     write(M, tag, m, n, trans, maxcol, maxrow);
   }
 
@@ -143,14 +147,18 @@ public:
    */
 
   void write(const T* data, const string& tag, const uint m, const uint n, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
-    boost::shared_array<T> temp(data, null_deleter());
-    Matrix<T, ColMajor> M(sp, m, n);
-    write(M, tag, m, n, trans, maxcol, maxrow);
+    // This is probably not good, but I can't think of a better way
+    // to put data into a const shared_array...
+    T* p = const_cast<T*>(data);
+    boost::shared_array<T> temp(p, null_deleter());
+    const loos::Matrix<T, loos::ColMajor> M(temp, m, n);
+    write(M, tag, trans, maxcol, maxrow);
   }
 
   template<class Policy>
-  void write(const Matrix<T, Policy>& M, const string tag) {
+  void writeTriangular(const loos::Matrix<T, Policy>& M, const string tag) {
     assert(M.rows() == M.cols() && "Error - cannot write a triangular matrix from a non-square one.");
+    ofstream *ofsp = 0;
 
     // Determine if we need to open a file or not...
     ostream *po = ofs;
@@ -162,7 +170,7 @@ public:
       po = ofsp;
     }
 
-    OutputPreamble(po, tag, M.rows(), M.cols(), trans);
+    OutputPreamble(po, tag, M.rows(), M.cols(), false);
     for (uint j = 0; j<M.rows(); ++j) {
       for (uint i = 0; i<j; ++i)
 	OutputDatum(po, M(j, i));
@@ -222,7 +230,9 @@ public:
     *po << endl;
   }
   
-  void OutputCoda(ostream *po) { }
+  void OutputCoda(ostream *po) {
+    *po << endl;
+ }
 
   string constructFilename(const string& tag) { return(string(RawAsciiWriter<T>::prefixname + tag + ".asc")); }
 };
@@ -237,8 +247,10 @@ public:
   explicit OctaveAsciiWriter(ostream* o) : MatrixWriter<T>(o) { }
 
   void OutputPreamble(ostream *po, const string& tag, const uint m, const uint n, const bool trans) {
-    if (OctaveAsciiWriter<T>::meta_data != "")
+    if (OctaveAsciiWriter<T>::meta_data != "") {
       *po << "% " << OctaveAsciiWriter<T>::meta_data << endl;
+      *po << "% " << m << " x " << n << (trans ? " (transposed) " : "") << endl;
+    }
     *po << tag << " = [\n";
   }
 
@@ -255,6 +267,13 @@ public:
   } 
 
   string constructFilename(const string& tag) { return(string(OctaveAsciiWriter<T>::prefixname + tag + ".m")); }
+
+private:
+
+  // Disable ability to write triangular matrices in octave format
+  // since it can't handle non-rectangular formats...
+  template<class Policy>
+  void writeTriangular(const Matrix<T, Policy>&, const string);
 
 };
 

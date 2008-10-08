@@ -43,7 +43,7 @@ namespace loos {
     Duple() : i(0), j(0) { }
 
     friend ostream& operator<<(ostream& os, const Duple& d) {
-      os << "Duple(" << i << "," << j << ")";
+      os << "Duple(" << d.i << "," << d.j << ")";
       return(os);
     }
 
