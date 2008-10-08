@@ -78,22 +78,6 @@ namespace loos {
       return( (b * (b + 1)) / 2 + a );
     }
 
-    // size, starting (ignored), ending (ignored)
-    struct iterator {
-      iterator(const Duple& si, const Duple& st, const Duple& en) : size(si), start(st), end(en), curr(st) {
-	in = (size.i * (size.i + 1) ) / 2;
-	ii = 0;
-      }
-
-      long next(void) {
-	if (ii > in)
-	  return(-1);
-	return(ii++);
-      }
-
-      long in, ii;
-    }
-
     
   private:
     int m, n;
