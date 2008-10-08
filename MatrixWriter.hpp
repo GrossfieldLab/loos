@@ -84,6 +84,8 @@ public:
   template<class Policy>
   void write(const Matrix<T,Policy>& M, const string& tag, const bool trans = false, const uint maxcol = 0, const uint maxrow = 0) {
     uint i, j, k;
+    uint m = M.rows();
+    uint n = N.cols();
     uint nn = (maxcol == 0 || maxcol > n) ? n : maxcol;
     uint mm = (maxrow == 0 || maxrow > n) ? m : maxrow;
     ofstream *ofsp = 0;
@@ -144,6 +146,31 @@ public:
     boost::shared_array<T> temp(data, null_deleter());
     Matrix<T, ColMajor> M(sp, m, n);
     write(M, tag, m, n, trans, maxcol, maxrow);
+  }
+
+  template<class Policy>
+  void write(const Matrix<T, Policy>& M, const string tag) {
+    assert(M.rows() == M.cols() && "Error - cannot write a triangular matrix from a non-square one.");
+
+    // Determine if we need to open a file or not...
+    ostream *po = ofs;
+    if (!po) {
+      string fname = constructFilename(tag);
+      ofsp = new ofstream(fname.c_str());
+      if (!ofsp)
+	throw(runtime_error("Unable to open file " + fname));
+      po = ofsp;
+    }
+
+    OutputPreamble(po, tag, M.rows(), M.cols(), trans);
+    for (uint j = 0; j<M.rows(); ++j) {
+      for (uint i = 0; i<j; ++i)
+	OutputDatum(po, M(j, i));
+      OutputEOL(po);
+    }
+    OutputCoda(po);
+  
+    delete ofsp;
   }
 
   // These are overriden by subclasses to control the output format...
