@@ -113,21 +113,8 @@ Export('env')
 
 ###################################
 
-# Build the LOOS library...
-library_files = Split('dcd.cpp utils.cpp dcd_utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp')
-library_files += Split('AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp')
-library_files += Split('ccpdb.cpp pdbtraj.cpp tinker_arc.cpp')
+loos = SConscript('SConscript')
 
-
-if int(reparse):
-   library_files += ['grammar.yy', 'scanner.ll']
-else:
-   library_files += ['scanner.cc', 'grammar.cc']
-
-
-loos = env.Library('loos', library_files)
-
-env.Default(loos)
 
 
 docs = env.Doxygen('Doxyfile')
@@ -144,5 +131,9 @@ env.Alias('tools', tools)
 env.Alias('all', loos + tools)
 env.Alias('caboodle', loos + tools + tests + docs)
 
+
+
 if int(regenerate):
    env.Default('caboodle')
+else:
+   env.Default('all')
