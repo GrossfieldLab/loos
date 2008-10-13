@@ -124,7 +124,7 @@ tools = SConscript('Tools/SConscript')
 
 # build targets...
 
-env.Alias('loos', loos)
+env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
