@@ -393,8 +393,15 @@ ostream& operator<<(ostream& os, const PDB& p) {
   for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
     os << p.atomAsString(*i) << endl;
 
-  if (p.hasBonds())
-    FormatConectRecords(os, p);
+  if (p.hasBonds()) {
+    int maxid = 0;
+    for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
+      if ((*i)->id() > maxid)
+	maxid = (*i)->id();
+
+    if (maxid <= 99999)
+      FormatConectRecords(os, p);
+  }
   
   if (p._auto_ter)
     os << "TER     \n";

@@ -1,5 +1,7 @@
 2008-10-14    <tromo@spade.biophysics.rochester.edu>
 
+	* Added check in PDB output to not append CONECT records if there
+	are atomid's >99999 to prevent field overflow.
 	* Added rudimentary support for extracting a Coord<T> from a stream.
 	* Fixed bug in DCD trajectories affecting seeking frames
 	* Fixed bug in DCD trajectories potentially affecting reading the
