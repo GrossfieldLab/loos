@@ -361,7 +361,7 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
     if ((*ci)->checkProperty(Atom::bondsbit)) {
       int donor = (*ci)->id();
 
-      os << format("CONECT%4d") % donor;
+      os << format("CONECT%5d") % donor;
       int i = 0;
 
       vector<int> bonds = (*ci)->getBonds();
@@ -371,7 +371,7 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
 	  i = 1;
 	  os << format("\nCONECT%4d") % donor;
 	}
-	os << format("%4d") % (*cj);
+	os << format("%5d") % (*cj);
       }
       os << endl;
     }

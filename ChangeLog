@@ -1,5 +1,6 @@
 2008-10-14    <tromo@spade.biophysics.rochester.edu>
 
+	* Fixed bug in width of CONECT record fields
 	* Added check in PDB output to not append CONECT records if there
 	are atomid's >99999 to prevent field overflow.
 	* Added rudimentary support for extracting a Coord<T> from a stream.
