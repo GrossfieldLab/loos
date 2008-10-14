@@ -1,3 +1,10 @@
+2008-10-14    <tromo@spade.biophysics.rochester.edu>
+
+	* Added rudimentary support for extracting a Coord<T> from a stream.
+	* Fixed bug in DCD trajectories affecting seeking frames
+	* Fixed bug in DCD trajectories potentially affecting reading the
+	number of frames in a trajectory that comes from NAMD.
+
 2008-09-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::select() to be a const function
