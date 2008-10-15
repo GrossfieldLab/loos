@@ -369,7 +369,7 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
       for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
 	if (++i > 4) {
 	  i = 1;
-	  os << format("\nCONECT%4d") % donor;
+	  os << format("\nCONECT%5d") % donor;
 	}
 	os << format("%5d") % (*cj);
       }
