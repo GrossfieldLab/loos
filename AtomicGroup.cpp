@@ -177,6 +177,15 @@ bool AtomicGroup::hasBonds(void) const {
 }
 
 
+void AtomicGroup::clearBonds(void) {
+  ConstAtomIterator ci;
+
+  for (ci = atoms.begin(); ci != atoms.end(); ++ci)
+    (*ci)->clearBonds();
+}
+
+
+
 // Internal: sort the atom array by atomid
 void AtomicGroup::sort(void) {
   CmpById comp;
