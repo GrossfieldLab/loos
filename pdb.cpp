@@ -354,9 +354,15 @@ ostream& XTALLine(ostream& os, const GCoord& box) {
 }
 
 
-ostream& FormatConectRecords(ostream& os, const PDB& p) {
-  AtomicGroup::ConstAtomIterator ci;
+ostream& FormatConectRecords(ostream& os, PDB& p) {
+  AtomicGroup::AtomIterator ci;
 
+  // We first have to make sure that the base AtomicGroup is sorted
+  // since we will be verifying bound atoms exist by searching for
+  // their ID...this would force a sort while we have iterators
+  // pointing to the vector of atoms which would be bad...
+  p.sort();
+  
   for (ci = p.atoms.begin(); ci != p.atoms.end(); ++ci) {
     if ((*ci)->checkProperty(Atom::bondsbit)) {
       int donor = (*ci)->id();
@@ -371,7 +377,11 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
 	  i = 1;
 	  os << format("\nCONECT%5d") % donor;
 	}
-	os << format("%5d") % (*cj);
+	int bound_id = *cj;
+	pAtom pa = p.findById(bound_id);
+	if (pa == 0)
+	  throw(PDB::BadConnectivity());
+	os << format("%5d") % bound_id;
       }
       os << endl;
     }
@@ -382,8 +392,8 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
 
 
 //! Output the group as a PDB...
-ostream& operator<<(ostream& os, const PDB& p) {
-  AtomicGroup::ConstAtomIterator i;
+ostream& operator<<(ostream& os, PDB& p) {
+  AtomicGroup::AtomIterator i;
 
   os << p._remarks;
   if (p.isPeriodic())
