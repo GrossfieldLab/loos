@@ -218,6 +218,7 @@ int main(int argc, char *argv[]) {
   KernelSelector apply_sel(applyto_parsed.kernel());
 
   AtomicGroup align_sub = pdb.select(align_sel);
+  align_sub.clearBonds();
   if (align_sub.size() == 0) {
     cerr << "Error- there were no atoms selected from the pdb for aligning with.\n";
     exit(-10);
@@ -229,6 +230,7 @@ int main(int argc, char *argv[]) {
     cerr << "Error- there were no atoms selected from the PDB for applying the alignment to.\n";
     exit(-10);
   }
+  applyto_sub.clearBonds();
   cout << "Subset to apply alignment transformation to has " << applyto_sub.size() << " atoms.\n";
 
   // Now do the alignin'...
