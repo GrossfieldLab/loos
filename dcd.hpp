@@ -133,7 +133,7 @@ public:
   bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
 
   virtual float timestep(void) const { return(_delta); }
-  virtual uint nframes(void) const { return(_icntrl[3]); }
+  virtual uint nframes(void) const { return(_icntrl[0]); }
 
   //! Return the raw coords...
   vector<dcd_real> xcoords(void) const { return(xcrds); }

@@ -156,6 +156,32 @@ public:
     return(os);
   }
 
+  friend istream& operator>>(istream& is, Coord<T>& i) {
+    char c;
+    is >> c;
+    if (c != '(')
+      throw(runtime_error("Invalid Coord conversion"));
+    
+    is >> i.x();
+    is >> c;
+    if (c != ',')
+      throw(runtime_error("Invalid Coord conversion"));
+
+    
+    is >> i.y();
+    is >> c;
+    if (c != ',')
+      throw(runtime_error("Invalid Coord conversion"));
+
+    
+    is >> i.z();
+    is >> c;
+    if (c != ')')
+      throw(runtime_error("Invalid Coord conversion"));
+
+    return(is);
+  }
+
   // ---------------------------------------
   // Operators
 

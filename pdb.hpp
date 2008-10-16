@@ -70,6 +70,12 @@ pdb.strict(true);
  */
 class PDB : public AtomicGroup {
 public:
+  struct BadConnectivity : public exception {
+    const char* what(void) const throw() { return("Missing atoms in connectivity list."); }
+  };
+
+
+public:
   PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
   virtual ~PDB() {}
 
@@ -151,7 +157,7 @@ public:
   void unitCell(const UnitCell& c) { cell = c; }
 
   //! Output as a PDB
-  friend ostream& operator<<(ostream& os, const PDB& p);
+  friend ostream& operator<<(ostream& os, PDB& p);
 
   //! Read in PDB from an ifstream
   void read(istream& is);
@@ -177,7 +183,7 @@ private:
   // Convert an Atom to a string representation in PDB format...
   string atomAsString(const pAtom p) const;
 
-  friend ostream& FormatConectRecords(ostream&, const PDB&);
+  friend ostream& FormatConectRecords(ostream&, PDB&);
 
 private:
   bool _show_charge;

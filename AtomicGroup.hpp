@@ -256,6 +256,9 @@ public:
   //! Does any atom in the group have bond information???
   bool hasBonds(void) const;
 
+  //! Remove any bonding information present in contained atoms
+  void clearBonds(void);
+
   //! Is the array of atoms already sorted???
   bool sorted(void) const { return(_sorted); }
 

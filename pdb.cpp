@@ -354,14 +354,20 @@ ostream& XTALLine(ostream& os, const GCoord& box) {
 }
 
 
-ostream& FormatConectRecords(ostream& os, const PDB& p) {
-  AtomicGroup::ConstAtomIterator ci;
+ostream& FormatConectRecords(ostream& os, PDB& p) {
+  AtomicGroup::AtomIterator ci;
 
+  // We first have to make sure that the base AtomicGroup is sorted
+  // since we will be verifying bound atoms exist by searching for
+  // their ID...this would force a sort while we have iterators
+  // pointing to the vector of atoms which would be bad...
+  p.sort();
+  
   for (ci = p.atoms.begin(); ci != p.atoms.end(); ++ci) {
     if ((*ci)->checkProperty(Atom::bondsbit)) {
       int donor = (*ci)->id();
 
-      os << format("CONECT%4d") % donor;
+      os << format("CONECT%5d") % donor;
       int i = 0;
 
       vector<int> bonds = (*ci)->getBonds();
@@ -369,9 +375,13 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
       for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
 	if (++i > 4) {
 	  i = 1;
-	  os << format("\nCONECT%4d") % donor;
+	  os << format("\nCONECT%5d") % donor;
 	}
-	os << format("%4d") % (*cj);
+	int bound_id = *cj;
+	pAtom pa = p.findById(bound_id);
+	if (pa == 0)
+	  throw(PDB::BadConnectivity());
+	os << format("%5d") % bound_id;
       }
       os << endl;
     }
@@ -382,8 +392,8 @@ ostream& FormatConectRecords(ostream& os, const PDB& p) {
 
 
 //! Output the group as a PDB...
-ostream& operator<<(ostream& os, const PDB& p) {
-  AtomicGroup::ConstAtomIterator i;
+ostream& operator<<(ostream& os, PDB& p) {
+  AtomicGroup::AtomIterator i;
 
   os << p._remarks;
   if (p.isPeriodic())
@@ -393,8 +403,15 @@ ostream& operator<<(ostream& os, const PDB& p) {
   for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
     os << p.atomAsString(*i) << endl;
 
-  if (p.hasBonds())
-    FormatConectRecords(os, p);
+  if (p.hasBonds()) {
+    int maxid = 0;
+    for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
+      if ((*i)->id() > maxid)
+	maxid = (*i)->id();
+
+    if (maxid <= 99999)
+      FormatConectRecords(os, p);
+  }
   
   if (p._auto_ter)
     os << "TER     \n";

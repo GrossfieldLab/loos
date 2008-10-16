@@ -1,3 +1,20 @@
+2008-10-15    <tromo@spade.biophysics.rochester.edu>
+
+	* Added AtomicGroup::clearBonds() to wipe out connectivity in a group.
+	* Fixed problem in writing PDBs with bonds to missing atoms.
+	Bonds are now deferenced prior to writing.  NOTE that this now
+	means the PDB is no longer const when written and it will be sorted...
+
+2008-10-14    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in width of CONECT record fields
+	* Added check in PDB output to not append CONECT records if there
+	are atomid's >99999 to prevent field overflow.
+	* Added rudimentary support for extracting a Coord<T> from a stream.
+	* Fixed bug in DCD trajectories affecting seeking frames
+	* Fixed bug in DCD trajectories potentially affecting reading the
+	number of frames in a trajectory that comes from NAMD.
+
 2008-09-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::select() to be a const function
