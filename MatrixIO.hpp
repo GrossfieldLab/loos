@@ -87,11 +87,9 @@ namespace loos {
   void writeAsciiMatrix(ostream& os, const Matrix<T, Triangular>& M, const string& meta) {
     os << "# " << meta << endl;
     os << boost::format("# %d x %d (0) TRIANGULAR\n") % M.rows() % M.cols();
-    for (int j=0; j<M.rows(); j++) {
-      for (int i=0; i<=j; i++)
-	os << M(j, i);
-      os << endl;
-    }
+    long s = M.size();
+    for (long i=0; i<s; i++)
+      cout << M[i] << endl;
   }
 
   template<class T>
@@ -141,8 +139,59 @@ namespace loos {
   template<class T, class P>
   void readAsciiMatrix(const string& fname, Matrix<T,P>& M) {
     ifstream ifs(fname.c_str());
-    readAsciiMatrix(ifs, M);
+    if (!ifs)
+      throw(runtime_error("Cannot open " + fname + " for reading."));
 
+    readAsciiMatrix(ifs, M);
+  }
+
+  // --- Specializations for reading ---
+
+  template<class T>
+  istream& readAsciiMatrix(istream& is, Matrix<T, Triangular>& M) {
+    char inbuf[512];
+    int m = 0, n = 0;
+
+    // First, search for the marker...
+    while (is.getline(inbuf, sizeof(inbuf))) {
+      int t;
+      char buf[20];
+      int i = sscanf(inbuf, "# %d x %d (%d) %10s", &m, &n, t, buf);
+      if (i != 4)
+	continue;
+      if (strncmp(buf, "TRIANGULAR", 10) == 0)
+	break;
+      throw(runtime_error("Magic matrix line found, but the matrix appears not to be triangular."));
+    }
+
+    if (m == 0 && n == 0)
+      return(is);
+
+    Matrix<T, Triangular> R(m, n);
+    long s = R.size();
+    T datum;
+
+    for (long i=0; i<s; i++) {
+      if (!(is >> datum)) {
+	stringstream s;
+	s << "Invalid conversion on matrix read at [" << i << "]";
+	throw(runtime_error(s.str()));
+      }
+      R[i] = datum;
+    }
+
+    M = R;
+    return(is);
+  }
+
+
+  template<class T>
+  void readAsciiMatrix(const string& fname, Matrix<T, Triangular>& M) {
+    ifstream ifs(fname.c_str());
+    if (!ifs)
+      throw(runtime_error("Unable to open " + fname + " for reading."));
+
+    readAsciiMatrix(ifs, M);
   }
 
 }
