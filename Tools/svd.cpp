@@ -63,7 +63,7 @@ struct Globals {
   greal alignment_tol;
   int include_source;
   int terms;
-  MatrixWriter<svdreal>* writer;
+  MatrixWriter* writer;
   string output_type;
   string output_prefix;
   string avg_name;
@@ -140,10 +140,10 @@ void parseOptions(int argc, char *argv[]) {
 
   if (globals.output_type == "ascii") {
     delete globals.writer;
-    globals.writer = new RawAsciiWriter<svdreal>(globals.output_prefix);;
+    globals.writer = new RawAsciiWriter(globals.output_prefix);;
   } else if (globals.output_type == "octaves") {
     delete globals.writer;
-    globals.writer = new OctaveAsciiWriter<svdreal>(globals.output_prefix);
+    globals.writer = new OctaveAsciiWriter(globals.output_prefix);
   } else {
     cerr << "Unknown format type: " << globals.output_type << endl;
     exit(-1);
@@ -286,7 +286,7 @@ int main(int argc, char *argv[]) {
 
 
   if (globals.include_source)
-    globals.writer->write(A, "A", m, n);
+    globals.writer->write<svdreal, loos::ColMajor>(A, "A", m, n);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -322,9 +322,9 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  globals.writer->write(U, "U", m, m, false, globals.terms);
-  globals.writer->write(S, "s", sn, 1, false, globals.terms);
-  globals.writer->write(Vt, "V",  n, n, true, globals.terms);
+  globals.writer->write<svdreal, loos::ColMajor>(U, "U", m, m, false, globals.terms);
+  globals.writer->write<svdreal, loos::ColMajor>(S, "s", sn, 1, false, globals.terms);
+  globals.writer->write<svdreal, loos::ColMajor>(Vt, "V",  n, n, true, globals.terms);
 
   delete[] work;
   delete[] A;

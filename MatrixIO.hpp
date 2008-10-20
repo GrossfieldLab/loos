@@ -92,9 +92,38 @@ namespace loos {
 
   // --- Reading ---
   template<class T, class P>
-  bool readAsciiMatrix<(ostream& os, Matrix<T, P>& M) {
-    
+  istream& readAsciiMatrix<(istream& is, Matrix<T, P>& M) {
+    char inbuf[512];
+    int m = 0, n = 0;
+
+    // First, search for the marker...
+    while (is.getline(inbuf, sizeof(inbuf))) {
+      int i = sscanf(inbuf, "# %d x %d", &m, &n);
+      if (i == 2)
+	break;
+    }
+
+    if (!(m == 0 && n == 0))
+      return(is);
+
+    T datum;
+    Matrix<T,P> R(m, n);
+    for (int j=0;j < m; j++) {
+      for (int i=0; i<n; i++) {
+	if (!(is >> datum)) {
+	  stringstream s;
+	  s << "Invalid conversion on matrix read at (" << j << "," << i << ")";
+	  throw(runtime_error(s.str()));
+	}
+	R(j, i) = datum;
+      }
+    }
+
+    M = R;
+    return(is);
   }
+
+};
 
 
 #endif

@@ -141,6 +141,8 @@ namespace loos {
   class Matrix {
   public:
 
+    Matrix() : m(0), n(0), mi(0), pol(0,0), dptr(0) { }
+
     //! Wrap an existing block of data with a Matrix.
     Matrix(T* p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a) { dptr = boost::shared_array<T>(p); }
 
@@ -150,10 +152,10 @@ namespace loos {
 
     //! Create a new block of data for the requested Matrix
     Matrix(const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a) { allocate(); }
-    
+
     //! Deep copy of a matrix...
-    Matrix<T> copy(void) const {
-      Matrix<T> result(m, n);
+    Matrix<T, Policy> copy(void) const {
+      Matrix<T, Policy> result(m, n);
       long size = pol.size();
       T* p = result.dptr.get();
       T* q = dptr.get();
