@@ -34,10 +34,7 @@
 
 namespace loos {
 
-  // These are the policy classes for the Matrix class.  They define
-  // how the data is actually stored internally, i.e. lower
-  // triangular, column major, or row major order...
-
+  //! Standardize passing of 2-d matrix coords  (row, col)
   struct Duple {
     Duple(const int a, const int b) : j(a), i(b) { }
     Duple() : j(0), i(0) { }
@@ -50,6 +47,14 @@ namespace loos {
     int j, i;
   };
 
+
+
+  // These are the policy classes for the Matrix class.  They define
+  // how the data is actually stored internally, i.e. lower
+  // triangular, column major, or row major order...
+  // Operator() is where all the magic occurs...  It takes a 2-d
+  // matrix coordinate and converts it into a linear index into the
+  // array of data...
 
   //! Class for storing a symmetric triangular matrix
   class Triangular {
@@ -135,12 +140,15 @@ namespace loos {
    * accesses.
    *
    * Newly allocate matrices have each element initialized to 0.
+   *
+   * Note: metadata is currently unused...
    */
 
   template<typename T, class Policy = ColMajor>
   class Matrix {
   public:
 
+    //! Unitialized matrix
     Matrix() : m(0), n(0), mi(0), pol(0,0), dptr(0), meta("") { }
 
     //! Wrap an existing block of data with a Matrix.

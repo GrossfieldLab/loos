@@ -81,6 +81,8 @@ namespace loos {
     loos::writeAsciiMatrix(fname, M, meta, start, end, trans);
   }
 
+  // --- Specializations for writing ---
+
   template<class T>
   void writeAsciiMatrix(ostream& os, const Matrix<T, Triangular>& M, const string& meta) {
     os << "# " << meta << endl;
@@ -102,6 +104,7 @@ namespace loos {
 
 
   // --- Reading ---
+
   template<class T, class P>
   istream& readAsciiMatrix(istream& is, Matrix<T,P>& M) {
     char inbuf[512];
@@ -114,8 +117,9 @@ namespace loos {
 	break;
     }
 
-    if (!(m == 0 && n == 0))
+    if (m == 0 && n == 0)
       return(is);
+
 
     T datum;
     Matrix<T,P> R(m, n);
