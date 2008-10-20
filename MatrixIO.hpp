@@ -51,7 +51,10 @@ namespace loos {
     os << boost::format("# %d x %d (%d)\n") % M.rows() % M.cols() % trans;
     for (int j=start.j; j<end.j; j++) {
       for (int i=start.i; i<end.i; i++)
-	os << M(j, i) << " ";
+	if (trans)
+	  os << M(i, j) << " ";
+	else
+	  os << M(j, i) << " ";
       os << endl;
     }
   }

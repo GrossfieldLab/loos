@@ -268,7 +268,7 @@ int main(int argc, char *argv[]) {
 
 
   if (globals.include_source)
-    writeAsciiMatrix("A.asc", Am, header);
+    writeAsciiMatrix(globals.output_prefix + "A.asc", Am, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -309,8 +309,8 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  loos::writeAsciiMatrix("U.asc", Um, header);
-  loos::writeAsciiMatrix("s.asc", Sm, header);
-  loos::writeAsciiMatrix("V.asc", Vtm, header, loos::Duple(0,0), loos::Duple(n,n), true);
+  loos::writeAsciiMatrix(globals.output_prefix + "U.asc", Um, header);
+  loos::writeAsciiMatrix(globals.output_prefix + "s.asc", Sm, header);
+  loos::writeAsciiMatrix(globals.output_prefix + "V.asc", Vtm, header, true);
 
 }
