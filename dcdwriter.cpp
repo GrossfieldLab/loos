@@ -88,7 +88,7 @@ void DCDWriter::writeHeader(void) {
 
 
 void DCDWriter::writeBox(const GCoord& box) {
-  double xtal[6] = { 1.0, box[0], 1.0, box[1], box[2], 1.0 };
+  double xtal[6] = { box[0], 1.0, box[1], 1.0, 1.0, box[2] };
 
   writeF77Line(_ofs, (char *)xtal, 6*sizeof(double));
 }
