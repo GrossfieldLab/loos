@@ -52,7 +52,6 @@ struct Globals {
 	       svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
 	       alignment_tol(1e-6),
 	       include_source(0),
-	       terms(0),
 	       output_prefix(""),
 	       avg_name(""),
 	       dcdmin(0), dcdmax(0), header("<NULL HEADER>"), mapname("") { }
@@ -61,7 +60,6 @@ struct Globals {
   string alignment_string, svd_string;
   greal alignment_tol;
   int include_source;
-  int terms;
   string output_prefix;
   string avg_name;
   uint dcdmin, dcdmax;
@@ -79,7 +77,6 @@ static struct option long_options[] = {
   {"svd", required_argument, 0, 's'},
   {"tolerance", required_argument, 0, 't'},
   {"source", no_argument, 0, 'i'},
-  {"terms", required_argument, 0, 'S'},
   {"format", required_argument, 0, 'f'},
   {"prefix", required_argument, 0, 'p'},
   {"range", required_argument, 0, 'r'},
@@ -89,7 +86,7 @@ static struct option long_options[] = {
   {0,0,0,0}
 };
 
-static const char* short_options = "a:s:tiS:f:p:r:A:";
+static const char* short_options = "a:s:t:if:p:r:A:m:H";
 
 
 void show_help(void) {
@@ -101,7 +98,6 @@ void show_help(void) {
   cout << "       --avg=fname          [" << defaults.avg_name << "]\n";
   cout << "       --tolerance=float    [" << defaults.alignment_tol << "]\n";
   cout << "       --source=bool        [" << defaults.include_source << "]\n";
-  cout << "       --terms=int          [" << defaults.terms << "]\n";
   cout << "       --prefix=string      [" << defaults.output_prefix << "]\n";
   cout << "       --range=min:max      [" << defaults.dcdmin << ":" << defaults.dcdmax << "]\n";
   cout << "       --map=fname          [" << defaults.mapname << "]\n";
@@ -119,7 +115,6 @@ void parseOptions(int argc, char *argv[]) {
     case 's': globals.svd_string = string(optarg); break;
     case 't': globals.alignment_tol = strtod(optarg, 0); break;
     case 'i': globals.include_source = 1; break;
-    case 'S': globals.terms = atoi(optarg); break;
     case 'H': show_help(); exit(0); break;
     case 'p': globals.output_prefix = string(optarg); break;
     case 'r': if (sscanf(optarg, "%u:%u", &globals.dcdmin, &globals.dcdmax) != 2) {
