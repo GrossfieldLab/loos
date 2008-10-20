@@ -26,7 +26,7 @@
 */
 
 
-#if defined(MATRIXIO_HPP)
+#if !defined(MATRIXIO_HPP)
 #define MATRIXIO_HPP
 
 #include <iostream>
@@ -40,6 +40,7 @@
 
 #include <Matrix.hpp>
 
+
 namespace loos {
 
   // --- Writing ---
@@ -47,9 +48,9 @@ namespace loos {
   template<class T, class P>
   void writeAsciiMatrix(ostream& os, const Matrix<T,P>& M, const string& meta, const Duple& start, const Duple& end, const bool trans = false) {
     os << "# " << meta << endl;
-    os << boost::format("# %d x %d (%d)\n") % M.rows() % M.cols() trans;
-    for (int j=0; j<M.rows(); j++) {
-      for (int i=0; i<M.cols(); i++)
+    os << boost::format("# %d x %d (%d)\n") % M.rows() % M.cols() % trans;
+    for (int j=start.j; j<end.j; j++) {
+      for (int i=start.i; i<end.i; i++)
 	os << M(j, i) << " ";
       os << endl;
     }
@@ -64,10 +65,17 @@ namespace loos {
 
   template<class T, class P>
   void writeAsciiMatrix(const string& fname, const Matrix<T,P>& M, const string& meta, const Duple& start, const Duple& end, const bool trans = false) {
-    ofstream ofs(fname);
+    ofstream ofs(fname.c_str());
     if (ofs == 0)
       throw(runtime_error("Cannot open " + fname + " for writing."));
     writeAsciiMatrix(ofs, M, meta, start, end, trans);
+  }
+
+  template<class T, class P>
+  void writeAsciiMatrix(const string& fname, const Matrix<T,P>& M, const string& meta, const bool trans = false) {
+    Duple start(0,0);
+    Duple end(M.rows(), M.cols());
+    loos::writeAsciiMatrix(fname, M, meta, start, end, trans);
   }
 
   template<class T>
@@ -83,7 +91,7 @@ namespace loos {
 
   template<class T>
   void writeAsciiMatrix(const string& fname, const Matrix<T, Triangular>& M, const string& meta) {
-    ofstream ofs(fname);
+    ofstream ofs(fname.c_str());
     if (ofs == 0)
       throw(runtime_error("Cannot open " + fname + " for writing."));
     writeAsciiMatrix(ofs, M, meta);
@@ -92,7 +100,7 @@ namespace loos {
 
   // --- Reading ---
   template<class T, class P>
-  istream& readAsciiMatrix<(istream& is, Matrix<T, P>& M) {
+  istream& readAsciiMatrix(istream& is, Matrix<T,P>& M) {
     char inbuf[512];
     int m = 0, n = 0;
 
@@ -123,7 +131,13 @@ namespace loos {
     return(is);
   }
 
-};
+  template<class T, class P>
+  void readAsciiMatrix(const string& fname, Matrix<T,P>& M) {
+    ifstream ifs(fname.c_str());
+    readAsciiMatrix(ifs, M);
 
+  }
+
+}
 
 #endif

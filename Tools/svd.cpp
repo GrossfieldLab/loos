@@ -34,6 +34,7 @@
 #include <getopt.h>
 #include <cstdlib>
 
+using namespace loos;
 
 #if defined(__linux__)
 extern "C" {
@@ -52,8 +53,6 @@ struct Globals {
 	       alignment_tol(1e-6),
 	       include_source(0),
 	       terms(0),
-	       writer(0),
-	       output_type("ascii"),
 	       output_prefix(""),
 	       avg_name(""),
 	       dcdmin(0), dcdmax(0), header("<NULL HEADER>"), mapname("") { }
@@ -63,8 +62,6 @@ struct Globals {
   greal alignment_tol;
   int include_source;
   int terms;
-  MatrixWriter* writer;
-  string output_type;
   string output_prefix;
   string avg_name;
   uint dcdmin, dcdmax;
@@ -106,8 +103,6 @@ void show_help(void) {
   cout << "       --source=bool        [" << defaults.include_source << "]\n";
   cout << "       --terms=int          [" << defaults.terms << "]\n";
   cout << "       --prefix=string      [" << defaults.output_prefix << "]\n";
-  cout << "       --format=string      [" << defaults.output_type << "]\n";
-  cout << "                ascii|octaves\n";
   cout << "       --range=min:max      [" << defaults.dcdmin << ":" << defaults.dcdmax << "]\n";
   cout << "       --map=fname          [" << defaults.mapname << "]\n";
   cout << "       --help\n";
@@ -127,7 +122,6 @@ void parseOptions(int argc, char *argv[]) {
     case 'S': globals.terms = atoi(optarg); break;
     case 'H': show_help(); exit(0); break;
     case 'p': globals.output_prefix = string(optarg); break;
-    case 'f': globals.output_type = string(optarg); break;
     case 'r': if (sscanf(optarg, "%u:%u", &globals.dcdmin, &globals.dcdmax) != 2) {
 	cerr << "Unable to parse range.\n";
 	exit(-1);
@@ -137,17 +131,6 @@ void parseOptions(int argc, char *argv[]) {
     case 0: break;
     default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
     }
-
-  if (globals.output_type == "ascii") {
-    delete globals.writer;
-    globals.writer = new RawAsciiWriter(globals.output_prefix);;
-  } else if (globals.output_type == "octaves") {
-    delete globals.writer;
-    globals.writer = new OctaveAsciiWriter(globals.output_prefix);
-  } else {
-    cerr << "Unknown format type: " << globals.output_type << endl;
-    exit(-1);
-  }
 
 }
 
@@ -242,8 +225,6 @@ int main(int argc, char *argv[]) {
   }
   
 
-  globals.writer->metadata(header);
-
   // Need to address this...
   AtomicGroup pdb = loos::createSystem(argv[optind++]);
   pTraj ptraj = loos::createTrajectory(argv[optind], pdb);
@@ -283,10 +264,11 @@ int main(int argc, char *argv[]) {
   f77int m = svdsub.size() * 3;
   f77int n = globals.dcdmax - globals.dcdmin;
   f77int sn = m<n ? m : n;
+  Matrix<svdreal, ColMajor> Am(A, m, n);
 
 
   if (globals.include_source)
-    globals.writer->write<svdreal, loos::ColMajor>(A, "A", m, n);
+    writeAsciiMatrix("A.asc", Am, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -295,8 +277,13 @@ int main(int argc, char *argv[]) {
   svdreal prework[10], *work;
 
   svdreal *U = new svdreal[m*m];
+  Matrix<svdreal, ColMajor> Um(U, m, m);
+
   svdreal *S = new svdreal[sn];
+  Matrix<svdreal, ColMajor> Sm(S,sn,1);
+
   svdreal *Vt = new svdreal[n*n];
+  Matrix<svdreal, ColMajor> Vtm(Vt,n,n);
 
   // First, request the optimal size of the work array...
   SVDFUNC(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, prework, &lwork, &info);
@@ -322,14 +309,8 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  globals.writer->write<svdreal, loos::ColMajor>(U, "U", m, m, false, globals.terms);
-  globals.writer->write<svdreal, loos::ColMajor>(S, "s", sn, 1, false, globals.terms);
-  globals.writer->write<svdreal, loos::ColMajor>(Vt, "V",  n, n, true, globals.terms);
+  loos::writeAsciiMatrix("U.asc", Um, header);
+  loos::writeAsciiMatrix("s.asc", Sm, header);
+  loos::writeAsciiMatrix("V.asc", Vtm, header, loos::Duple(0,0), loos::Duple(n,n), true);
 
-  delete[] work;
-  delete[] A;
-  delete[] U;
-  delete[] S;
-  delete[] Vt;
-  delete globals.writer;
 }

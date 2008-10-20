@@ -39,15 +39,15 @@ namespace loos {
   // triangular, column major, or row major order...
 
   struct Duple {
-    Duple(const int a, const int b) : i(a), j(b) { }
-    Duple() : i(0), j(0) { }
+    Duple(const int a, const int b) : j(a), i(b) { }
+    Duple() : j(0), i(0) { }
 
     friend ostream& operator<<(ostream& os, const Duple& d) {
       os << "Duple(" << d.i << "," << d.j << ")";
       return(os);
     }
 
-    int i, j;
+    int j, i;
   };
 
 
@@ -141,21 +141,22 @@ namespace loos {
   class Matrix {
   public:
 
-    Matrix() : m(0), n(0), mi(0), pol(0,0), dptr(0) { }
+    Matrix() : m(0), n(0), mi(0), pol(0,0), dptr(0), meta("") { }
 
     //! Wrap an existing block of data with a Matrix.
-    Matrix(T* p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a) { dptr = boost::shared_array<T>(p); }
+    Matrix(T* p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a), meta("") { dptr = boost::shared_array<T>(p); }
 
     //! Wrap an already shared block of data...
-    Matrix(boost::shared_array<T>& p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a), dptr(p) { }
+    Matrix(boost::shared_array<T>& p, const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a), dptr(p), meta("") { }
 
 
     //! Create a new block of data for the requested Matrix
-    Matrix(const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a) { allocate(); }
+    Matrix(const int b, const int a) : m(b), n(a), mi(a*b), pol(b, a), meta("") { allocate(); }
 
     //! Deep copy of a matrix...
     Matrix<T, Policy> copy(void) const {
       Matrix<T, Policy> result(m, n);
+      result.meta = meta;
       long size = pol.size();
       T* p = result.dptr.get();
       T* q = dptr.get();
@@ -196,6 +197,9 @@ namespace loos {
       return(dptr[i]);
     }
 
+    void metaData(const string& s) { meta = s; }
+    string metaData(void) const { return(meta); }
+
     //! Deallocate data...
     void free(void) { m = n = 0; dptr.reset(); }
 
@@ -219,6 +223,7 @@ namespace loos {
     int m, n, mi;
     Policy pol;
     boost::shared_array<T> dptr;
+    string meta;
   
   };
 
@@ -238,6 +243,6 @@ namespace loos {
     return(result);
   };
 
-};
+}
 
 #endif

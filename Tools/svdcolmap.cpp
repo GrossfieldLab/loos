@@ -112,7 +112,6 @@ int main(int argc, char *argv[]) {
   int index = atoi(argv[optind++]);
   PDB pdb(argv[optind++]);
   string prefix(argv[optind++]);
-  RawAsciiReader<double, ColMajor> reader;
 
   vector<pAtom> atoms;
   if (mapname == "") {
@@ -123,7 +122,9 @@ int main(int argc, char *argv[]) {
     atoms = getAtoms(pdb, indices);
   }
 
-  loos::Matrix<double, ColMajor> U = reader.read(prefix + "U.asc");
+  loos::Matrix<double, ColMajor> U;
+  readAsciiMatrix(prefix + "U.asc", U);
+
   cerr << "Read in " << U.rows() << " x " << U.cols() << " matrix from " << prefix + "U.asc" << endl;
 
   if (U.rows() % 3 != 0) {
@@ -131,7 +132,8 @@ int main(int argc, char *argv[]) {
     exit(-11);
   }
 
-  loos::Matrix<double> s = reader.read(prefix + "s.asc");
+  loos::Matrix<double, ColMajor> s;
+  readAsciiMatrix(prefix + "s.asc", s);
   cerr << "Read in " << s.rows() << " x " << s.cols() << " matrix from " << prefix + "s.asc" << endl;
 
   pAtom pa;

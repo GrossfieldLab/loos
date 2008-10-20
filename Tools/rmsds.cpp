@@ -191,12 +191,9 @@ int main(int argc, char *argv[]) {
     readFrames(frames, subset, *ptraj);
 
   float *M = interFrameRMSD(frames);
+  loos::Matrix<float, ColMajor> Mm(M, frames.size(), frames.size());
+  loos::writeAsciiMatrix("R.asc", Mm, header);
 
-
-  RawAsciiWriter<float> writer;
-  writer.metadata(header);
-  writer.write(M, "R", frames.size(), frames.size());
-  delete M;
 }
 
 
