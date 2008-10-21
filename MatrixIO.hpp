@@ -46,7 +46,7 @@ namespace loos {
   // --- Writing ---
 
   template<class T, class P>
-  void writeAsciiMatrix(ostream& os, const Matrix<T,P>& M, const string& meta, const Duple& start, const Duple& end, const bool trans = false) {
+  ostream& writeAsciiMatrix(ostream& os, const Matrix<T,P>& M, const string& meta, const Duple& start, const Duple& end, const bool trans = false) {
     os << "# " << meta << endl;
     os << boost::format("# %d x %d (%d)\n") % M.rows() % M.cols() % trans;
     for (int j=start.j; j<end.j; j++) {
@@ -57,13 +57,15 @@ namespace loos {
 	  os << M(j, i) << " ";
       os << endl;
     }
+    return(os);
   }
 
   template<class T, class P>
-  void writeAsciiMatrix(ostream& os, const Matrix<T, P>& M, const string& meta, const bool trans = false) {
+  ostream& writeAsciiMatrix(ostream& os, const Matrix<T, P>& M, const string& meta, const bool trans = false) {
     Duple start(0,0);
     Duple end(M.rows(), M.cols());
     writeAsciiMatrix(os, M, meta, start, end, trans);
+    return(os);
   }
 
   template<class T, class P>
@@ -84,12 +86,14 @@ namespace loos {
   // --- Specializations for writing ---
 
   template<class T>
-  void writeAsciiMatrix(ostream& os, const Matrix<T, Triangular>& M, const string& meta) {
+  ostream& writeAsciiMatrix(ostream& os, const Matrix<T, Triangular>& M, const string& meta) {
     os << "# " << meta << endl;
-    os << boost::format("# %d x %d (0) TRIANGULAR\n") % M.rows() % M.cols();
+    os << boost::format("# %d TRIANGULAR\n") % M.rows();
     long s = M.size();
     for (long i=0; i<s; i++)
-      cout << M[i] << endl;
+      os << M[i] << endl;
+
+    return(os);
   }
 
   template<class T>
@@ -98,6 +102,28 @@ namespace loos {
     if (ofs == 0)
       throw(runtime_error("Cannot open " + fname + " for writing."));
     writeAsciiMatrix(ofs, M, meta);
+  }
+
+  template<class T>
+  ostream& writeTriangularAsFull(ostream& os, const Matrix<T, Triangular>& M, const string& meta) {
+    int n = M.rows();
+    os << "# " << meta << endl;
+    os << boost::format("# %d x %d (0)\n") % n % n;
+    
+    for (int j=0; j<n; j++) {
+      for (int i=0; i<n; i++)
+	os << M(j, i) << " ";
+      os << endl;
+    }
+    return(os);
+  }
+
+  template<class T>
+  void writeTriangularAsFull(const string& fname, const Matrix<T, Triangular>& M, const string& meta) {
+    ofstream ofs(fname.c_str());
+    if (ofs == 0)
+      throw(runtime_error("Cannot open " + fname + " for writing."));
+    writeTriangularAsFull(ofs, M, meta);
   }
 
 
@@ -150,22 +176,22 @@ namespace loos {
   template<class T>
   istream& readAsciiMatrix(istream& is, Matrix<T, Triangular>& M) {
     char inbuf[512];
-    int m = 0, n = 0;
+    int m = 0;
 
     // First, search for the marker...
     while (is.getline(inbuf, sizeof(inbuf))) {
-      int t;
       char buf[20];
-      int i = sscanf(inbuf, "# %d x %d (%d) %10s", &m, &n, t, buf);
-      if (i != 4)
+      int i = sscanf(inbuf, "# %d %10s", &m, buf);
+      if (i != 2)
 	continue;
       if (strncmp(buf, "TRIANGULAR", 10) == 0)
 	break;
       throw(runtime_error("Magic matrix line found, but the matrix appears not to be triangular."));
     }
 
-    if (m == 0 && n == 0)
+    if (m == 0)
       return(is);
+    int n = m;
 
     Matrix<T, Triangular> R(m, n);
     long s = R.size();
