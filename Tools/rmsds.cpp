@@ -43,10 +43,11 @@
 typedef unsigned int uint;
 
 struct Globals {
-  Globals() : alignment("name == 'CA'"), iterate(false) { }
+  Globals() : alignment("name == 'CA'"), iterate(false), full(false) { }
   
   string alignment;
   bool iterate;
+  bool full;
 };
 
 
@@ -56,11 +57,12 @@ Globals globals;
 static struct option long_options[] = {
   {"align", required_argument, 0, 'a'},
   {"iterate", no_argument, 0, 'i'},
+  {"full", no_argument, 0, 'f'},
   {0,0,0,0}
 };
 
 
-static const char* short_options = "a:i";
+static const char* short_options = "a:if";
 
 
 void show_help(void) {
@@ -69,6 +71,7 @@ void show_help(void) {
   cout << "Usage- rmsds [opts] system-file (pdb, psf, ...) trajectory-file (dcd, amber, ...)  >output\n";
   cout << "       --align=selection    [" << defaults.alignment << "]\n";
   cout << "       --iterate            [" << (defaults.iterate ? string("on") : string("off")) << "]\n";
+  cout << "       --full               [" << (defaults.full ? string("on") : string("off")) << "]\n";
 }
 
 
@@ -80,6 +83,7 @@ void parseOptions(int argc, char *argv[]) {
     switch(opt) {
     case 'a': globals.alignment = string(optarg); break;
     case 'i': globals.iterate = true; break;
+    case 'f': globals.full = true; break;
     case 0: break;
     default:
       cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
@@ -120,13 +124,10 @@ void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajecto
 }
 
 
-float *interFrameRMSD(vector<AtomicGroup>& frames) {
+loos::Matrix<float, Triangular> interFrameRMSD(vector<AtomicGroup>& frames) {
   uint n = frames.size();
-  float *M = new float[n*n];
+  loos::Matrix<float, Triangular> M(n,n);
   uint i;
-
-  for (i=0; i<n*n; i++)
-    M[i] = 0.0;
 
   uint total = n*(n+1)/2;
   uint delta = total / 4;
@@ -144,9 +145,7 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
 	rmsd = jframe.rmsd(frames[i]);
       }
 
-
-      M[j*n+i] = rmsd;
-      M[i*n+j] = rmsd;
+      M(j, i) = rmsd;
       
       if (k % delta == 0) {
 	float percent = k * 100.0 / total;
@@ -190,9 +189,11 @@ int main(int argc, char *argv[]) {
   } else
     readFrames(frames, subset, *ptraj);
 
-  float *M = interFrameRMSD(frames);
-  loos::Matrix<float, ColMajor> Mm(M, frames.size(), frames.size());
-  loos::writeAsciiMatrix("R.asc", Mm, header);
+  loos::Matrix< float, Triangular > M = interFrameRMSD(frames);
+  if (globals.full)
+    loos::writeTriangularAsFull("R.asc", M, header);
+  else
+    loos::writeAsciiMatrix("R.asc", M, header);
 
 }
 
