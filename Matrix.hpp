@@ -208,6 +208,8 @@ namespace loos {
     void metaData(const string& s) { meta = s; }
     string metaData(void) const { return(meta); }
 
+    long size(void) const { return(pol.size()); }
+
     //! Deallocate data...
     void free(void) { m = n = 0; dptr.reset(); }
 
