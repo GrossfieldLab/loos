@@ -207,10 +207,7 @@ string PDB::atomAsString(const pAtom p) const {
   s << setw(1) << right << p->chainId();
   s << setw(4) << p->resid();
   s << setw(2) << p->iCode();
-  if (p->resid() < 10000)
-    s << "  ";
-  else
-    s << " ";   // HACK!
+  s << "  ";
   s << crdfmt(p->coords().x());
   s << crdfmt(p->coords().y());
   s << crdfmt(p->coords().z());
