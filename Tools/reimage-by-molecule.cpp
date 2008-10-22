@@ -81,11 +81,19 @@ int main(int argc, char *argv[])
     // split the system by molecule
     vector<AtomicGroup> molecules = psf.splitByMolecule();
 
+    // split the system by segid
+    vector<AtomicGroup> segments = psf.splitByUniqueSegid();
+
+
     // Loop over the frames of the dcd and reimage each molecule
     vector<AtomicGroup>::iterator m;
     while (dcd.readFrame())
         {
         dcd.updateGroupCoords(psf);
+        for (m = segments.begin(); m != segments.end(); m++)
+            {
+            m->reimage();
+            }
         for (m = molecules.begin(); m != molecules.end(); m++)
             {
             m->reimage();
