@@ -1,5 +1,5 @@
 /*
-  bendangle.cpp
+  helix_kink.cpp
 
   
   (c) 2008 Tod D. Romo, Grossfield Lab
@@ -9,21 +9,45 @@
   Bend angle calculation over time...
 
   Usage:
-    bendangle selection-1 selection-2 model trajectory
+    helix_kink selection-1 selection-2 model trajectory
 
   Notes:
     o Automatically appends "&& name == 'CA'" to your selection...
-
+    o Returns the deviation from linearity of the helix kink
+      (i.e. pi - angle)
+    o Angles are actually in degrees, despite the above note
+      
 */
+
+
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 
 #include <loos.hpp>
 
 #include <boost/format.hpp>
 #include <cmath>
-
-#include "Statter.hpp"
-
 
 typedef vector<GCoord> Axes;
 
@@ -32,10 +56,9 @@ const double RAD2DEG = 180.0 / PI;
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  banal::Statter<double> stats;
 
   if (argc != 5) {
-    cout << "Usage- bendangle selection-1 selection-2 model trajectory\n";
+    cout << "Usage- helix_kink selection-1 selection-2 model trajectory\n";
     exit(-1);
   }
 
@@ -72,11 +95,9 @@ int main(int argc, char *argv[]) {
     GCoord u = preax[0];
     GCoord v = -postax[0];
     double angle = acos(u * v / (u.length() * v.length()) ) * RAD2DEG;
-    stats.push_back(angle);
-    cout << boost::format("%10lf     %10lf %10lf %10lf     %10lf %10lf %10lf\n") % angle % u[0] % u[1] % u[2] % v[0] % v[1] % v[2];
+    cout << boost::format("%10lf     %10lf %10lf %10lf     %10lf %10lf %10lf\n") % (180.0 - angle) % u[0] % u[1] % u[2] % v[0] % v[1] % v[2];
   }
 
-  cerr << stats.str() << endl;
 }
 
 
