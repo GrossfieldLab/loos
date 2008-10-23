@@ -117,29 +117,15 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  Parser alignment_parsed(globals.align_string);
-  KernelSelector align_sel(alignment_parsed.kernel());
+  AtomicGroup model = createSystem(argv[optind++]);
 
-  Parser average_parsed(globals.avg_string);
-  KernelSelector avg_sel(average_parsed.kernel());
-
-  AtomicGroup pdb = createSystem(argv[optind++]);
-
-  AtomicGroup align_subset = pdb.select(align_sel);
-  if (align_subset.size() == 0) {
-    cerr << "Error- no atoms selected in alignment subset.\n";
-    exit(-10);
-  }
+  AtomicGroup align_subset = loos::selectAtoms(model, globals.align_string);
   cerr << "Aligning with " << align_subset.size() << " atoms.\n";
 
-  AtomicGroup avg_subset = pdb.select(avg_sel);
-  if (avg_subset.size() == 0) {
-    cerr << "Error- no atoms selected in subset to average over.\n";
-    exit(-10);
-  }
+  AtomicGroup avg_subset = loos::selectAtoms(model, globals.avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
-  pTraj traj = createTrajectory(argv[optind], pdb);
+  pTraj traj = createTrajectory(argv[optind], model);
 
   globals.trajmax = (globals.trajmax == 0) ? traj->nframes() : globals.trajmax+1;
 

@@ -49,11 +49,8 @@ int main(int argc, char *argv[]) {
   PDB pdb(argv[1]);
   AtomicGroup atoms = pdb;
 
-  if (argc > 2) {
-    Parser parsed(argv[2]);
-    KernelSelector parsed_selector(parsed.kernel());
-    atoms = pdb.select(parsed_selector);
-  }
+  if (argc > 2)
+    atoms = loos::selectAtoms(pdb, argv[2]);
 
   AtomicGroup::Iterator i(atoms);
   pAtom pa;

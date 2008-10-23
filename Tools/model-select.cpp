@@ -1,7 +1,7 @@
 /*
-  pdbselect.cpp
+  model-select.cpp
 
-  Takes a PDB and a selection string.  Parses the selection, then
+  Takes a model (PDB, PSF, etc) and a selection string.  Parses the selection, then
   applies it to the PDB and writes the output to stdout.  This tool is
   used maily for checking your selection strings to make sure you're
   actually selecting what you intend to select...
@@ -43,15 +43,11 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  PDB pdb(argv[2]);
-  Parser parsed(argv[1]);
-  KernelSelector parsed_selector(parsed.kernel());
-  
-  AtomicGroup subset = pdb.select(parsed_selector);
+  AtomicGroup model = loos::createSystem(argv[2]);
+  AtomicGroup subset = loos::selectAtoms(model, argv[1]);
 
-  cerr << "You selected " << subset.size() << " atoms out of " << pdb.size() << endl;
+  cerr << "You selected " << subset.size() << " atoms out of " << model.size() << endl;
   
-  PDB output = PDB::fromAtomicGroup(subset);
-  output.remarks().add(header);
-  cout << output;
+  cout << "<!-- " << header << " -->\n";
+  cout << subset << endl;
 }

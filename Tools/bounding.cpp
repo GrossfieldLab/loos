@@ -38,15 +38,12 @@
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    cerr << "Usage: " << argv[0] << " pdb-filename selection-string\n";
+    cerr << "Usage: " << argv[0] << " model-filename selection-string\n";
     exit(-1);
   }
 
-  PDB pdb(argv[1]);
-  Parser parsed(argv[2]);
-  KernelSelector ksel(parsed.kernel());
-
-  AtomicGroup subset = pdb.select(ksel);
+  AtomicGroup model = loos::createSystem(argv[1]);
+  AtomicGroup subset = loos::selectAtoms(model, argv[2]);
   vector<GCoord> bdd = subset.boundingBox();
   cout << subset.size() << " atoms in subset.\n";
   cout << "Centroid at " << subset.centroid() << endl;

@@ -256,22 +256,8 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  Parser alignment_parsed(globals.alignment_string);
-  KernelSelector align_sel(alignment_parsed.kernel());
-  AtomicGroup alignsub = pdb.select(align_sel);
-  if (alignsub.size() == 0) {
-    cerr << "Error- no atoms selected to align with.\n";
-    exit(-1);
-  }
-
-
-  Parser svd_parsed(globals.svd_string);
-  KernelSelector svd_sel(svd_parsed.kernel());
-  AtomicGroup svdsub = pdb.select(svd_sel);
-  if (svdsub.size() == 0) {
-    cerr << "Error- no atoms selected to calculate the SVD of.\n";
-    exit(-1);
-  }
+  AtomicGroup alignsub = loos::selectAtoms(pdb, globals.alignment_string);
+  AtomicGroup svdsub = loos::selectAtoms(pdb, globals.svd_string);
 
   if (globals.mapname != "")
     write_map(globals.mapname, svdsub);

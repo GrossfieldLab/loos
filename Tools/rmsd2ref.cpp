@@ -105,13 +105,11 @@ int main(int argc, char *argv[]) {
   cout << "# " << hdr << endl;
 
   AtomicGroup molecule = createSystem(model_name);
-  pTraj ptraj = createTrajectory(traj_name, molecule);
+  pTraj ptraj = loos::createTrajectory(traj_name, molecule);
 
   cerr << boost::format("Using trajectory \"%s\" with %lu frames.\n") % traj_name % ptraj->nframes();
 
-  Parser parsed(selection_string);
-  KernelSelector selector(parsed.kernel());
-  AtomicGroup subset = molecule.select(selector);
+  AtomicGroup subset = loos::selectAtoms(molecule, selection_string);
 
   AtomicGroup target;
   AtomicGroup target_subset;
@@ -119,8 +117,8 @@ int main(int argc, char *argv[]) {
   if (target_name.empty())
     cerr << boost::format("Computing RMSD vs avg conformation using %d atoms from \"%s\".\n") % subset.size() % selection_string;
   else {
-    target = createSystem(target_name);
-    target_subset = target.select(selector);
+    target = loos::createSystem(target_name);
+    target_subset = loos::selectAtoms(target, selection_string);
     if (target_subset.size() != subset.size()) {
       cerr << boost::format("Error- target selection has %u atoms while trajectory selection has %u.\n") % target_subset.size() % subset.size();
       exit(-1);
@@ -135,9 +133,7 @@ int main(int argc, char *argv[]) {
 
     // First, parse the alignment selection and extract the
     // appropriate bits from the trajectory model...
-    Parser parsed_align(align_string);
-    KernelSelector align_selector(parsed_align.kernel());
-    AtomicGroup align_subset = molecule.select(align_selector);
+    AtomicGroup align_subset = loos::selectAtoms(molecule, align_string);
 
     // Iteratively align the trajectory...
     if (target_name.empty()) {
@@ -157,7 +153,7 @@ int main(int argc, char *argv[]) {
 
     } else {   // A target was provided and aligning was requested...
       
-      AtomicGroup target_align = target.select(align_selector);
+      AtomicGroup target_align = loos::selectAtoms(target, align_string);
       cerr << boost::format("Aligning using %d atoms from \"%s\".\n") % target_align.size() % align_string;
 
       uint n = ptraj->nframes();

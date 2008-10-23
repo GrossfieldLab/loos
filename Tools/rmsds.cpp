@@ -173,14 +173,7 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup molecule = loos::createSystem(argv[optind++]);
   pTraj ptraj = loos::createTrajectory(argv[optind], molecule);
-
-  Parser parsed(globals.alignment);
-  KernelSelector selector(parsed.kernel());
-  AtomicGroup subset = molecule.select(selector);
-  if (subset.size() == 0) {
-    cerr << "Error- no atoms selected.\n";
-    exit(-1);
-  }
+  AtomicGroup subset = loos::selectAtoms(molecule, globals.alignment);
   cerr << "Selected " << subset.size() << " atoms.\n";
 
   vector<AtomicGroup> frames;
