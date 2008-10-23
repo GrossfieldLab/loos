@@ -32,7 +32,7 @@ using namespace std;
 
 void Usage()
     {
-    cerr << "Usage: xy_rdf PSF DCD selection1 selection2 "
+    cerr << "Usage: xy_rdf system traj selection1 selection2 "
          << "min max num_bins skip interval output_dir" 
          << endl;
     }
@@ -51,8 +51,8 @@ if ( (argc <= 1) ||
 cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
-PSF psf(argv[1]);
-DCD dcd(argv[2]);
+AtomicGroup system = loos::createSystem(argv[1]);
+pTraj traj = loos::createTrajectory(argv[2], system);
 char *selection1 = argv[3];
 char *selection2 = argv[4];
 double hist_min = atof(argv[5]);
@@ -64,13 +64,8 @@ char *dir_name = argv[10];
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
-Parser parser1(selection1);
-KernelSelector parsed_sel1(parser1.kernel());
-AtomicGroup group1 = psf.select(parsed_sel1);
-
-Parser parser2(selection2);
-KernelSelector parsed_sel2(parser2.kernel());
-AtomicGroup group2 = psf.select(parsed_sel2);
+AtomicGroup group1 = loos::selectAtoms(system, selection1);
+AtomicGroup group2 = loos::selectAtoms(system, selection2);
 
 // The groups are presumed to be units like lipid headgroups.  We want to 
 // treat each headgroup as a single unit.  This could reasonably be done
@@ -83,10 +78,10 @@ vector<AtomicGroup> g1_mols = group1.splitByUniqueSegid();
 vector<AtomicGroup> g2_mols = group2.splitByUniqueSegid();
 
 // Skip the initial frames
-dcd.readFrame(skip); 
+traj->readFrame(skip); 
 
-// read the initial coordinates into the psf
-dcd.updateGroupCoords(psf);
+// read the initial coordinates into the system
+traj->updateGroupCoords(system);
 
 // Now that we have some real coordinates, we need to subdivide the groups
 // one more time, into upper and lower leaflets. This assumes that the 
@@ -151,14 +146,14 @@ double upper_expected = interval * num_upper;
 double lower_expected = interval * num_lower;
 
 
-// loop over the frames of the dcd file
+// loop over the frames of the traj file
 int frame = 0;
 double area = 0.0;
-while (dcd.readFrame())
+while (traj->readFrame())
     {
     // update coordinates and periodic box
-    dcd.updateGroupCoords(psf);
-    GCoord box = psf.periodicBox(); 
+    traj->updateGroupCoords(system);
+    GCoord box = system.periodicBox(); 
     area += box.x() * box.y();
 
     // compute the distribution of g2 around g1 for the lower leaflet

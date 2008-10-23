@@ -37,7 +37,7 @@ using namespace std;
 
 void Usage()
     {
-    cerr << "Usage: order_params psf dcd skip selection "
+    cerr << "Usage: order_params system traj skip selection "
          << "first_carbon last_carbon"
          << endl;
     }
@@ -57,24 +57,22 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 
-char *psf_filename = argv[1];
-char *dcd_filename = argv[2];
+char *system_filename = argv[1];
+char *traj_filename = argv[2];
 int skip = atoi(argv[3]);
 char *sel= argv[4];
 int first_carbon = atoi(argv[5]);
 int last_carbon = atoi(argv[6]);
 
-// Create the data structures for the system and dcd
-PSF psf(psf_filename);
-DCD dcd(dcd_filename);
+// Create the data structures for the system and trajectory
+AtomicGroup system = loos::createSystem(system_filename);
+pTraj traj = loos::createTrajectory(traj_filename, system);
 
 // NOTE: We assume the selection is a list of all of the relevant carbon atoms. 
 //       We'll break it into invidual carbons ourselves (assuming the normal
 //       convention of C2, C3, ... 
 //       Afterward, we'll figure out the relevant hydrogens ourselves
-Parser main_p(sel);
-KernelSelector main_parsed(main_p.kernel());
-AtomicGroup main_selection = psf.select(main_parsed);
+AtomicGroup main_selection = loos::selectAtoms(system, sel);
 
 // Now break into individual carbons
 vector<AtomicGroup> selections;
@@ -86,9 +84,10 @@ for (int i =first_carbon; i<=last_carbon; i++)
     string name = string(" && name == \"C") + string(carbon_name)
                   + string("\"");
     sel_string.insert(sel_string.size(), name);
-    Parser p(sel_string.c_str());
-    KernelSelector parsed(p.kernel());
-    selections.push_back(main_selection.select(parsed));
+    //Parser p(sel_string.c_str());
+    //KernelSelector parsed(p.kernel());
+    //selections.push_back(main_selection.select(parsed));
+    selections.push_back(loos::selectAtoms(main_selection, sel_string.c_str()));
     }
 
 // Now, figure out which hydrogens go with each carbon selected
@@ -105,7 +104,7 @@ for (unsigned int i=0; i<selections.size(); i++)
     while (p = iter()) 
         {
         vector<int> atom_ids = p->getBonds();
-        AtomicGroup bonded = psf.groupFromID(atom_ids);
+        AtomicGroup bonded = system.groupFromID(atom_ids);
         AtomicGroup bonded_hydrogens = bonded.select(hyd_sel);
         hydrogen_list[i].push_back(bonded_hydrogens);
         }
@@ -130,7 +129,7 @@ for (unsigned int i=0; i<selections.size(); i++)
 
 
 // skip the equilibration frames
-dcd.readFrame(skip);
+traj->readFrame(skip);
 
 
 // set up storage to accumulate the averages
@@ -145,9 +144,9 @@ sums2.insert(sums2.begin(), selections.size(), 0.0);
 counts.insert(counts.begin(), selections.size(), 0);
 
 // loop over pdb files
-while (dcd.readFrame())
+while (traj->readFrame())
     {
-    dcd.updateGroupCoords(psf);
+    traj->updateGroupCoords(system);
 
     // loop over sets of selected carbons
     for (unsigned int i=0; i<selections.size(); i++)

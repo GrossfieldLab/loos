@@ -38,9 +38,10 @@
 void Usage()
     {
     cerr << "Usage: density-dist-windowed "
-         << " PSF DCD E|C|M num_frames_to_skip min_z max_z num_bins window_size"
+         << " system traj E|C|M num_frames_to_skip min_z max_z num_bins window_size"
          << " filename_prototype [extra_selection_1 ...]"
          << endl;
+    cerr << "Note: the system file must specify the mass and charge" << endl;
     }
 
 int main(int argc, char *argv[]) {
@@ -55,8 +56,8 @@ int main(int argc, char *argv[]) {
     cout << "# " << invocationHeader(argc, argv) << endl;
 
 
-    PSF psf(argv[1]);
-    DCD dcd(argv[2]);
+    AtomicGroup system = loos::createSystem(argv[1]); 
+    pTraj traj = loos::createTrajectory(argv[2], system);
     char calc_type = toupper(*argv[3]); // bad programmer, no cookie for you
     int num_skip = atoi(argv[4]);
     double min_z = atof(argv[5]);
@@ -83,11 +84,12 @@ int main(int argc, char *argv[]) {
     // Add an arbitrary number of selections, and track the 
     // density from each selection
     vector<AtomicGroup> subsets;
-    subsets.push_back(psf);
+    subsets.push_back(system);
     for (int i=10; i<argc; i++) {
-        Parser parser(argv[i]);
-        KernelSelector parsed_sel(parser.kernel());
-        AtomicGroup g = psf.select(parsed_sel);
+        //Parser parser(argv[i]);
+        //KernelSelector parsed_sel(parser.kernel());
+        //AtomicGroup g = system.select(parsed_sel);
+        AtomicGroup g = loos::selectAtoms(system, argv[i]);
         subsets.push_back(g);
     }
   
@@ -102,13 +104,13 @@ int main(int argc, char *argv[]) {
         dists.push_back(*v);
     }
     // skip the equilibration frames
-    dcd.readFrame(num_skip);
+    traj->readFrame(num_skip);
   
     // loop over the remaining frames
     int frame = 0;
-    while (dcd.readFrame()) {
+    while (traj->readFrame()) {
         // update coordinates
-        dcd.updateGroupCoords(psf);
+        traj->updateGroupCoords(system);
 
         // Loop over the subsets and compute charge distribution.
         // (first set is all atoms)

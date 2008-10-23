@@ -34,7 +34,7 @@ using namespace std;
 
 void Usage()
     {
-    cerr << "Usage: crossing_waters PSF DCD inner_threshold outer_threshold"
+    cerr << "Usage: crossing_waters system traj inner_threshold outer_threshold"
          << endl;
     }
 
@@ -133,15 +133,15 @@ if ( (argc <= 1) ||
 
 cout << "# " << invocationHeader(argc, argv) << endl;
 
-PSF psf(argv[1]);
-DCD dcd(argv[2]);
+AtomicGroup system = loos::createSystem(argv[1]);
+pTraj traj = loos::createTrajectory(argv[2], system);
 greal inner_threshold = atof(argv[3]);
 greal outer_threshold = atof(argv[4]);
 
 // Select the water oxygens
 HeavySolventSelector water_heavy; // select atoms which are both water 
                                   // and not hydrogens
-AtomicGroup water = psf.select(water_heavy); // apply the selection
+AtomicGroup water = system.select(water_heavy); // apply the selection
 
 
 // Set up a map to store the waters
@@ -149,9 +149,9 @@ map<pAtom,InternalWater> internal_waters;
 vector<InternalWater> exited_waters;
 
 int frame = 0;
-while (dcd.readFrame())
+while (traj->readFrame())
     {
-    dcd.updateGroupCoords(psf);
+    traj->updateGroupCoords(system);
     bool inside_inner, inside_outer;
 
     // loop over water oxygens
