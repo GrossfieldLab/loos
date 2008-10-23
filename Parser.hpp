@@ -97,7 +97,7 @@ public:
   void parse(const string& s) {krnl.clearActions();  driver.parse(s); }
 
   //! Return a ref to the compiled (hopefully) Kernel.
-  Kernel& kernel(void) { return(krnl); }
+  loos::Kernel& kernel(void) { return(krnl); }
 };
 
 
