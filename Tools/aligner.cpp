@@ -56,6 +56,8 @@
 #include <getopt.h>
 #include <cstdlib>
 
+using namespace loos;
+
 // Default values...
 
 
@@ -202,34 +204,21 @@ int main(int argc, char *argv[]) {
   }
 
   // Read the inputs...
-  AtomicGroup pdb = loos::createSystem(argv[optind]);
+  AtomicGroup pdb = createSystem(argv[optind]);
   cout << "Read in " << pdb.size() << " atoms from " << argv[optind++] << endl;
 
-  pTraj traj = loos::createTrajectory(argv[optind], pdb);
+  pTraj traj = createTrajectory(argv[optind], pdb);
 
   cout << "Reading from trajectory " << argv[optind++] << " with " << traj->nframes() << " frames.\n";
   string prefix(argv[optind]);
 
   // Get the selections (subsets) to operate over
-  Parser alignment_parsed(globals.alignment_string);
-  KernelSelector align_sel(alignment_parsed.kernel());
-  
-  Parser applyto_parsed(globals.transform_string);
-  KernelSelector apply_sel(applyto_parsed.kernel());
+  AtomicGroup align_sub = selectAtoms(pdb, globals.alignment_string);
+  AtomicGroup applyto_sub = selectAtoms(pdb, globals.transform_string);
 
-  AtomicGroup align_sub = pdb.select(align_sel);
   align_sub.clearBonds();
-  if (align_sub.size() == 0) {
-    cerr << "Error- there were no atoms selected from the pdb for aligning with.\n";
-    exit(-10);
-  }
   cout << "Subset to align with has " << align_sub.size() << " atoms.\n";
 
-  AtomicGroup applyto_sub = pdb.select(apply_sel);
-  if (applyto_sub.size() == 0) {
-    cerr << "Error- there were no atoms selected from the PDB for applying the alignment to.\n";
-    exit(-10);
-  }
   applyto_sub.clearBonds();
   cout << "Subset to apply alignment transformation to has " << applyto_sub.size() << " atoms.\n";
 

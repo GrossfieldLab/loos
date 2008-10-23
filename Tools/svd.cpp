@@ -34,6 +34,7 @@
 #include <getopt.h>
 #include <cstdlib>
 
+using namespace loos;
 
 #if defined(__linux__)
 extern "C" {
@@ -245,8 +246,8 @@ int main(int argc, char *argv[]) {
   globals.writer->metadata(header);
 
   // Need to address this...
-  AtomicGroup pdb = loos::createSystem(argv[optind++]);
-  pTraj ptraj = loos::createTrajectory(argv[optind], pdb);
+  AtomicGroup pdb = createSystem(argv[optind++]);
+  pTraj ptraj = createTrajectory(argv[optind], pdb);
   
   // Fix max-range for DCD
   if (globals.dcdmax == 0)
@@ -256,8 +257,8 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  AtomicGroup alignsub = loos::selectAtoms(pdb, globals.alignment_string);
-  AtomicGroup svdsub = loos::selectAtoms(pdb, globals.svd_string);
+  AtomicGroup alignsub = selectAtoms(pdb, globals.alignment_string);
+  AtomicGroup svdsub = selectAtoms(pdb, globals.svd_string);
 
   if (globals.mapname != "")
     write_map(globals.mapname, svdsub);

@@ -33,6 +33,8 @@
 #include <getopt.h>
 #include <cmath>
 
+using namespace loos;
+
 string mapname;
 double scale=1.0;
 bool logscale = false;

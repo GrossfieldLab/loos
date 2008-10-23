@@ -33,6 +33,7 @@
 
 #include <loos.hpp>
 
+using namespace loos;
 
 int main(int argc, char *argv[]) {
 
@@ -43,8 +44,8 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  AtomicGroup model = loos::createSystem(argv[2]);
-  AtomicGroup subset = loos::selectAtoms(model, argv[1]);
+  AtomicGroup model = createSystem(argv[2]);
+  AtomicGroup subset = selectAtoms(model, argv[1]);
 
   cerr << "You selected " << subset.size() << " atoms out of " << model.size() << endl;
   

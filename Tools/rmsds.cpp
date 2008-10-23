@@ -40,6 +40,8 @@
 #include <getopt.h>
 #include <cstdlib>
 
+using namespace loos;
+
 typedef unsigned int uint;
 
 struct Globals {
@@ -171,9 +173,9 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  AtomicGroup molecule = loos::createSystem(argv[optind++]);
-  pTraj ptraj = loos::createTrajectory(argv[optind], molecule);
-  AtomicGroup subset = loos::selectAtoms(molecule, globals.alignment);
+  AtomicGroup molecule = createSystem(argv[optind++]);
+  pTraj ptraj = createTrajectory(argv[optind], molecule);
+  AtomicGroup subset = selectAtoms(molecule, globals.alignment);
   cerr << "Selected " << subset.size() << " atoms.\n";
 
   vector<AtomicGroup> frames;

@@ -33,6 +33,8 @@
 #include <getopt.h>
 
 
+using namespace loos;
+
 struct Globals {
   Globals() : align_string("name == 'CA'"),
 	      avg_string("(segid != 'SOLV' && segid != 'BULK') && !hydrogen"),
@@ -119,10 +121,10 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = createSystem(argv[optind++]);
 
-  AtomicGroup align_subset = loos::selectAtoms(model, globals.align_string);
+  AtomicGroup align_subset = selectAtoms(model, globals.align_string);
   cerr << "Aligning with " << align_subset.size() << " atoms.\n";
 
-  AtomicGroup avg_subset = loos::selectAtoms(model, globals.avg_string);
+  AtomicGroup avg_subset = selectAtoms(model, globals.avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
   pTraj traj = createTrajectory(argv[optind], model);

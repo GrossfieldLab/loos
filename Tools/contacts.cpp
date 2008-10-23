@@ -26,10 +26,9 @@
 
 
 
-
-using namespace std;
-
 #include <loos.hpp>
+
+using namespace loos;
 
 
 void Usage()
@@ -59,8 +58,8 @@ int main (int argc, char *argv[])
   double max = strtod(argv[5], 0);
   double max2 = max*max;
 
-  AtomicGroup model = loos::createSystem(model_filename);
-  pTraj traj = loos::createTrajectory(traj_filename, model);
+  AtomicGroup model = createSystem(model_filename);
+  pTraj traj = createTrajectory(traj_filename, model);
 
 
   // The assumption here is that selection1 will specify a bunch of molecules,
@@ -68,11 +67,11 @@ int main (int argc, char *argv[])
   // of those atoms.  However, what we'll actually want to do is work with the 
   // individual molecules' centers of mass, so we'll split g1 into a vector of
   // individual segids (corresponding to individual lipids) called group1
-  AtomicGroup g1 = loos::selectAtoms(model, selection1);
+  AtomicGroup g1 = selectAtoms(model, selection1);
   vector<AtomicGroup> group1 = g1.splitByUniqueSegid();
 
   // g2 / group2 works the same way
-  AtomicGroup g2 = loos::selectAtoms(model, selection2);
+  AtomicGroup g2 = selectAtoms(model, selection2);
   vector<AtomicGroup> group2 = g2.splitByUniqueSegid();
 
 
