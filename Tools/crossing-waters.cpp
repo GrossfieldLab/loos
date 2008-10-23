@@ -139,10 +139,8 @@ greal inner_threshold = atof(argv[3]);
 greal outer_threshold = atof(argv[4]);
 
 // Select the water oxygens
-SolventSelector solvent; // select waters
-HeavyAtomSelector heavy; // select non-hydrogens
-AndSelector water_heavy(solvent, heavy); // select atoms which are both water 
-                                         // and not hydrogens
+HeavySolventSelector water_heavy; // select atoms which are both water 
+                                  // and not hydrogens
 AtomicGroup water = psf.select(water_heavy); // apply the selection
 
 

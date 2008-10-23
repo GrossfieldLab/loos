@@ -31,6 +31,8 @@ using namespace std;
 
 #include <loos.hpp>
 
+
+
 void Usage()
     {
     cerr << "Usage: atomic-rdf system trajectory selection1 selection2 "
@@ -68,14 +70,10 @@ double bin_width = (hist_max - hist_min)/num_bins;
 
 
 // Set up the selector to define group1 atoms
-Parser parser1(selection1);
-KernelSelector parsed_sel1(parser1.kernel());
-AtomicGroup group1 = system.select(parsed_sel1);
+AtomicGroup group1 = loos::selectAtoms(system, selection1);
 
 // Set up the selector to define group2 atoms
-Parser parser2(selection2);
-KernelSelector parsed_sel2(parser2.kernel());
-AtomicGroup group2 = system.select(parsed_sel2);
+AtomicGroup group2 = loos::selectAtoms(system, selection2);
 
 // Skip the initial frames as equilibration
 traj->readFrame(skip); 
