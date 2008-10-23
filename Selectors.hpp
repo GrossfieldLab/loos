@@ -193,6 +193,20 @@ struct SolventSelector : public AtomSelector {
 
 
 
+//! Select only heavy solvent atoms
+struct HeavySolventSelector : public AtomSelector {
+  HeavySolventSelector() : sel(s1, s2) { }
+  bool operator()(const pAtom& pa) const {
+    return(sel(pa));
+  }
+
+  SolventSelector s1;
+  HeavyAtomSelector s2;
+  AndSelector sel;
+};
+
+
+
 
 //! Selection predicate that executes a compiled Kernel
 /**
