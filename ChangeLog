@@ -1,3 +1,14 @@
+2008-10-23  Tod Romo  <tromo@gorgoneion.urmc-sh.rochester.edu>
+
+	* Added helix_kink tool
+	* Fixed problem with PDB output with 10,000 residues or more
+	* Fixed problem with automatically using loos namespace.  LOOS
+	clients should either use fully qualified names for things in the
+	loos namespace, or add a "using namespase loos" statement.
+	* Added HeavySolventSelector to get non-hydrogen water atoms
+	* Changed tools to use new convenience functions and factory
+	functions.
+
 2008-10-21    <tromo@spade.biophysics.rochester.edu>
 
 	* Updated contacts to use any model filetype and any trajectory type.
