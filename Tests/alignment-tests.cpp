@@ -22,6 +22,7 @@
 
 #include <loos.hpp>
 
+using namespace loos;
 
 // Configuration options...
 const int macrocycles = 5;
