@@ -36,7 +36,6 @@
 #include "LoosLexer.hpp"
 
 using namespace std;
-using namespace loos;
 
 //! Driver for the Bison parser (to encapsulate data)
 //! Can parse from either stdin or a string.  Requires a Kernel for
@@ -44,15 +43,15 @@ using namespace loos;
 struct ParserDriver {
   loos::parser *pparser;
   LoosLexer *lexer;
-  Kernel& kern;
+  loos::Kernel& kern;
   istringstream *isp;
   
 
   //! For future parsing...
-  explicit ParserDriver(Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
+  explicit ParserDriver(loos::Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
 
   //! For parsing a string...
-  ParserDriver(const string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
+  ParserDriver(const string s, loos::Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
     if (isp)
       delete isp;
     isp = new istringstream(s);
