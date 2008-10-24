@@ -114,13 +114,13 @@ To build just the library, cd to the top-level directory and run
 SCons:
 \verbatim
 cd /path/to/LOOS
-scons
+scons lib
 \endverbatim
 
 To build the library and tools as well, use:
 
 \verbatim
-scons all
+scons
 \endverbatim
 
 For more detailed information about the build process, see
@@ -389,8 +389,8 @@ There are several build targets available:
 
 <table align="center">
 <tr align="left"><th>Target</th><th>Description</th></tr>
-<tr align="left"><td>(default)</td><td>Just build the library</td></tr>
-<tr align="left"><td>all</td><td>Builds the library plus tools</td></tr>
+<tr align="left"><td>(default)</td><td>Build the library and the tools</td></tr>
+<tr align="left"><td>lib</td><td>Builds the library only</td></tr>
 <tr align="left"><td>tests</td><td>Builds and runs the verification tests</td></tr>
 <tr align="left"><td>docs</td><td>Uses Doxygen to generate new docs.</td></tr>
 <tr align="left"><td>caboodle</td><td>Builds everything, including docs and tests</td></tr>
