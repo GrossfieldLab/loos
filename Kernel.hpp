@@ -50,7 +50,7 @@ namespace loos {
     ~Kernel() {
       vector<Action*>::iterator i;
       for (i = actions.begin(); i != actions.end(); i++)
-	delete (*i);
+        delete (*i);
     }
 
     //! Add a command, setting the data-stack pointer...
@@ -67,8 +67,8 @@ namespace loos {
 
       vector<Action*>::iterator i;
       for (i=actions.begin(); i != actions.end(); i++) {
-	(*i)->setAtom(pa);
-	(*i)->execute();
+        (*i)->setAtom(pa);
+        (*i)->execute();
       }
     }
 
@@ -82,7 +82,7 @@ namespace loos {
 
       os << "Commands:\n";
       for (i=k.actions.begin(); i != k.actions.end(); i++)
-	os << (*i)->name() << endl;
+        os << (*i)->name() << endl;
       os << endl;
       return(os);
     }

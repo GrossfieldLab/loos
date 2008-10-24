@@ -62,9 +62,9 @@ void Amber::parseCharges(istream& is) {
   for (uint i=0; i<n; i++) {
     if (! (is >> setw(16) >> m)) {
       if (is.fail())
-	throw(runtime_error("IO error while reading amber charges"));
+        throw(runtime_error("IO error while reading amber charges"));
       else
-	throw(runtime_error("Invalid conversion while reading amber charges"));
+        throw(runtime_error("Invalid conversion while reading amber charges"));
     }
     atoms[i]->charge(m);
   }
@@ -81,9 +81,9 @@ void Amber::parseMasses(istream& is) {
   for (uint i=0; i<n; i++) {
     if (! (is >> setw(16) >> m)) {
       if (is.fail())
-	throw(runtime_error("IO error while reading amber masses"));
+        throw(runtime_error("IO error while reading amber masses"));
       else
-	throw(runtime_error("Invalid conversion while reading amber masses"));
+        throw(runtime_error("Invalid conversion while reading amber masses"));
     }
     atoms[i]->mass(m);
   }
@@ -98,9 +98,9 @@ void Amber::parseResidueLabels(istream& is) {
     string s;
     if (!(is >> setw(4) >> s)) {
       if (is.fail())
-	throw(runtime_error("IO error while reading residue labels"));
+        throw(runtime_error("IO error while reading residue labels"));
       else
-	throw(runtime_error("Invalid conversion while reading residue labels"));
+        throw(runtime_error("Invalid conversion while reading residue labels"));
     }
     residue_labels.push_back(s);
   }
@@ -114,9 +114,9 @@ void Amber::parseResiduePointers(istream& is) {
     int j;
     if (!(is >> setw(8) >> j)) {
       if (is.fail())
-	throw(runtime_error("IO error while reading residue pointers"));
+        throw(runtime_error("IO error while reading residue pointers"));
       else
-	throw(runtime_error("Invalid conversion while reading residue pointers"));
+        throw(runtime_error("Invalid conversion while reading residue pointers"));
     }
     residue_pointers.push_back(j);
   }
@@ -159,9 +159,9 @@ void Amber::parseBonds(istream& is, const int n) {
   for (i=0; i<n; i++) {
     if (!(is >> a >> b >> k)) {
       if (is.fail())
-	throw(runtime_error("IO error while reading bonds"));
+        throw(runtime_error("IO error while reading bonds"));
       else
-	throw(runtime_error("Invalid conversion while reading bonds"));
+        throw(runtime_error("Invalid conversion while reading bonds"));
     }
 
     a /= 3;
@@ -258,8 +258,8 @@ void Amber::read(istream& is) {
       parseBonds(is, mbona);
     else {
       while (is >> s)
-	if (s == "%FLAG")
-	  break;
+        if (s == "%FLAG")
+          break;
       flag = true;
     }
 
@@ -313,10 +313,10 @@ void Amber::readCoords(istream& is) {
       is >> setw(12) >> dummy >> setw(12) >> dummy;
 
       for (uint i=3; i<n; i++)
-	is >> setw(12) >> dummy >> setw(12) >> dummy >> setw(12) >> dummy;
+        is >> setw(12) >> dummy >> setw(12) >> dummy >> setw(12) >> dummy;
       
       if (is >> setw(12) >> a >> setw(12) >> b >> setw(12) >> c >> setw(12) >> alpha >> setw(12) >> beta >> setw(12) >> gamma) {
-	periodicBox(a, b, c);
+        periodicBox(a, b, c);
       }
 
     } else    // Nothing else read, so we did read a periodic box...

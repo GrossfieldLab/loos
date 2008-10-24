@@ -63,11 +63,11 @@ using namespace loos;
 
 struct Globals {
   Globals() : alignment_string("name == 'CA'"),
-	      transform_string("name == 'CA'"),
-	      alignment_tol(1e-6),
-	      maxiter(5000),
-	      show_rmsd(false),
-	      no_rmsd(false) { }
+          transform_string("name == 'CA'"),
+          alignment_tol(1e-6),
+          maxiter(5000),
+          show_rmsd(false),
+          no_rmsd(false) { }
 
 
   string alignment_string;
@@ -308,7 +308,7 @@ int main(int argc, char *argv[]) {
       applyto_sub.applyTransform(xforms[i]);
       double rms = applyto_sub.rmsd(avg);
       if (globals.show_rmsd)
-	cout << rms << " ;\n";
+        cout << rms << " ;\n";
       avg_rmsd += rms;
     }
     

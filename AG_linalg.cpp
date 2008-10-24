@@ -74,7 +74,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   // Multiply A*A'...
   double C[9];
   cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
-	      3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
+              3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
 
   delete A;
 
@@ -84,7 +84,7 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
   f77int lda = 3;
   double W[3], work[128];
   f77int lwork = 128;   // ???  Just a guess for sufficient storage to be
-		     // efficient... 
+                        // efficient... 
   f77int info;
   nn = 3;
 

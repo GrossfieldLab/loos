@@ -37,19 +37,19 @@ namespace loos {
     case Value::STRING:
       e = (*(x.str) == *(y.str));
       if (!e) {
-	if (*(x.str) < *(y.str))
-	  return(-1);
-	else
-	  return(1);
+        if (*(x.str) < *(y.str))
+          return(-1);
+        else
+          return(1);
       }
       return(0);
 
     case Value::FLOAT:
       d = x.flt - y.flt;
       if (fabs(d) <= FLT_THRESHOLD)
-	return(0);
+        return(0);
       if (d < 0.0)
-	return(-1);
+        return(-1);
       return(1);
       
     case Value::INT:

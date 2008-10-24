@@ -81,7 +81,7 @@ public:
 
   //! Read in PDB from a filename
   explicit PDB(const string fname) : _show_charge(false), _auto_ter(true),
-				     _has_cryst(false), strictness_policy(false) {
+                                     _has_cryst(false), strictness_policy(false) {
     ifstream ifs(fname.c_str());
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + fname));
@@ -90,7 +90,7 @@ public:
 
   //! Read in a PDB from a filename
   explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true),
-				    _has_cryst(false), strictness_policy(false) {
+                                    _has_cryst(false), strictness_policy(false) {
     ifstream ifs(fname);
     if (!ifs)
       throw(runtime_error("Cannot open PDB file " + string(fname)));
@@ -99,7 +99,7 @@ public:
 
   //! Read in a PDB from an ifstream
   explicit PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true),
-				_has_cryst(false), strictness_policy(false) { read(ifs); }
+                                _has_cryst(false), strictness_policy(false) { read(ifs); }
 
 
   //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)

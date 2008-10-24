@@ -165,17 +165,6 @@ void PSF::parseAtomRecord(const string s) {
     // for now, we're going to silently drop this
     ss >> fixed;  
 
-#if 0
-    // Removed -- this is no longer necessary because we have the 
-    // bitmask which lets us mark the coordinates as unset.  In fact
-    // this way would be broken, because it would cause the coordinates 
-    // bit to be set to true
-    GCoord c= GCoord(99999.99, 99999.99, 99999.99); // Marks
-						    // uninitialized
-						    // coords 
-    pa->coords(c);
-#endif 
-
     append(pa);
 }
 

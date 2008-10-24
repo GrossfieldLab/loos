@@ -259,8 +259,8 @@ AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
   for (j=atoms.begin(); j != atoms.end(); j++)
     for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
       if (*i == *j) {
-	res.addAtom(*j);
-	break;
+        res.addAtom(*j);
+        break;
       }
     
   res.box = box;
@@ -299,7 +299,6 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
     j = unique.find((*i)->segid());
     if (j < 0)
       throw(runtime_error("Could not find an atom we already found..."));
-	
     results[j].append(*i);
   }
 
@@ -324,7 +323,7 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
 
 vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
   HashInt seen;                      // Track what atoms we've already
-				     // processed... 
+                                     // processed... 
   vector<AtomicGroup> molecules;
   AtomicGroup current;               // The molecule we're currently building...
 
@@ -676,7 +675,7 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
   for (int j=0; j<nb; j++) {
     for (int i=0; i<na; i++) {
       if (atoms[i]->coords().distance2(grp.atoms[j]->coords()) <= dist2)
-	ids.push_back(atoms[i]->id());
+        ids.push_back(atoms[i]->id());
     }
   }
 

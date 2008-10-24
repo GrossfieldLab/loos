@@ -165,9 +165,9 @@ template<class T> typename MatrixReader<T>::Result RawAsciiReader<T>::basic_read
   for (j=0; j<m; j++)
     for (i=0; i<n; i++) {
       if (!(*input >> datum)) {
-	stringstream s;
-	s << "Invalid conversion on matrix read at (" << j << "," << i << ") [" << datum << "]";
-	throw(runtime_error(s.str()));
+        stringstream s;
+        s << "Invalid conversion on matrix read at (" << j << "," << i << ") [" << datum << "]";
+        throw(runtime_error(s.str()));
       }
       data[i*m+j] = datum;
     }

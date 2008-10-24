@@ -91,21 +91,21 @@ int main (int argc, char *argv[])
       vector<AtomicGroup>::iterator first;
       for (first=group1.begin(); first!=group1.end(); first++)
         {
-	  GCoord com1 = first->centerOfMass();
+      GCoord com1 = first->centerOfMass();
 
-	  vector<AtomicGroup>::iterator second;
-	  for (second=group2.begin(); second!=group2.end(); second++)
+      vector<AtomicGroup>::iterator second;
+      for (second=group2.begin(); second!=group2.end(); second++)
             {
-	      // exclude self pairs 
-	      if (*first == *second)
+          // exclude self pairs 
+          if (*first == *second)
                 continue;
 
-	      GCoord com2 = second->centerOfMass();
+          GCoord com2 = second->centerOfMass();
 
-	      double d2 = com1.distance2(com2, model.periodicBox());
-	      if ( (d2 <= max2) )
+          double d2 = com1.distance2(com2, model.periodicBox());
+          if ( (d2 <= max2) )
                 {
-		  count++;
+          count++;
                 }
             }
         }
@@ -114,9 +114,9 @@ int main (int argc, char *argv[])
       double per_g1_atom = (double)count / group1.size();
       double per_g2_atom = (double)count / group2.size();
       cout << frame << "\t" 
-	   << count << "\t"
-	   << per_g1_atom << "\t"
-	   << per_g2_atom << endl;
+       << count << "\t"
+       << per_g1_atom << "\t"
+       << per_g2_atom << endl;
 
       frame++;
     }

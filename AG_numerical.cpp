@@ -61,9 +61,9 @@ vector<GCoord> AtomicGroup::boundingBox(void) const {
   for (i=atoms.begin()+1; i != atoms.end(); i++)
     for (j=0; j<3; j++) {
       if (max[j] < ((*i)->coords())[j])
-	max[j] = ((*i)->coords())[j];
+        max[j] = ((*i)->coords())[j];
       if (min[j] > ((*i)->coords())[j])
-	min[j] = ((*i)->coords())[j];
+        min[j] = ((*i)->coords())[j];
     }
 
   c.set(min[0], min[1], min[2]);

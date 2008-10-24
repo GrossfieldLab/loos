@@ -50,7 +50,7 @@ namespace loos {
   struct Value {
     //! Type of data this Value contains...
     enum ValueType { NONE, STRING, INT, FLOAT };  // What type of data
-						  // the union contains...
+                                                  // the union contains...
     
     ValueType type;
     union {
@@ -63,14 +63,14 @@ namespace loos {
     void copy(const Value& v) {
       switch(v.type) {
       case STRING:
-	str = new string(*(v.str)); break;
+        str = new string(*(v.str)); break;
       case INT:
-	itg = v.itg; break;
+        itg = v.itg; break;
       case FLOAT:
-	flt = v.flt; break;
+        flt = v.flt; break;
       case NONE:
       default:
-	;
+        ;
       }
       type = v.type;
     }
@@ -86,7 +86,6 @@ namespace loos {
     Value(const string s) { setString(s); }
     Value(const float f) { setFloat(f); }
     Value(const int i) { setInt(i); }
-	
 
     void setString(const string s) { str = new string(s); type = STRING; }
     void setFloat(const float f) { flt = f; type = FLOAT; }
@@ -95,21 +94,21 @@ namespace loos {
     //! Retrieve data, throwing an error if the Value is of the incorrect type.
     string getString(void) const {
       if (type != STRING)
-	throw(runtime_error("Expected a string value..."));
+        throw(runtime_error("Expected a string value..."));
       return(*str);
     }
 
     //! Retrieve data, throwing an error if the Value is of the incorrect type.
     float getFloat(void) const {
       if (type != FLOAT)
-	throw(runtime_error("Expected a float value..."));
+        throw(runtime_error("Expected a float value..."));
       return(flt);
     }
 
     //! Retrieve data, throwing an error if the Value is of the incorrect type.
     int getInt(void) const {
       if (type != INT)
-	throw(runtime_error("Expected an int value..."));
+        throw(runtime_error("Expected an int value..."));
       return(itg);
     }
 
@@ -117,17 +116,17 @@ namespace loos {
     friend ostream& operator<<(ostream& os, const Value& v) {
       switch(v.type) {
       case STRING:
-	os << "<VALUE TYPE='STRING'>" << *(v.str) << "</VALUE>";
-	break;
+        os << "<VALUE TYPE='STRING'>" << *(v.str) << "</VALUE>";
+        break;
       case FLOAT:
-	os << "<VALUE TYPE='FLOAT'>" << v.flt << "</VALUE>";
-	break;
+        os << "<VALUE TYPE='FLOAT'>" << v.flt << "</VALUE>";
+        break;
       case INT:
-	os << "<VALUE TYPE='INT'>" << v.itg << "</VALUE>";
-	break;
+        os << "<VALUE TYPE='INT'>" << v.itg << "</VALUE>";
+        break;
       case NONE:
       default:
-	os << "<VALUE TYPE='NONE'/>";
+        os << "<VALUE TYPE='NONE'/>";
       }
       return(os);
     }

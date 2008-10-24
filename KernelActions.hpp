@@ -83,8 +83,8 @@ namespace loos {
       Value v2 = stack->peek(-2);
 
       if ( (v1.type == Value::INT && v1.itg < 0) ||
-	   (v2.type == Value::INT && v2.itg < 0) )
-	return(true);
+           (v2.type == Value::INT && v2.itg < 0) )
+        return(true);
       
       return(false);
     }
@@ -101,7 +101,7 @@ namespace loos {
     //! Check to make sure an atom has been set...
     void hasAtom(void) {
       if (atom == 0)
-	throw(runtime_error("No atom set"));
+        throw(runtime_error("No atom set"));
     }
 
   public:
@@ -192,10 +192,10 @@ namespace loos {
     void execute(void) {
 
       if (negativeOperand())
-	binaryFalseResult();
+        binaryFalseResult();
       else {
-	Value v(binComp() < 0);
-	stack->push(v);
+        Value v(binComp() < 0);
+        stack->push(v);
       }
 
     }
@@ -208,10 +208,10 @@ namespace loos {
     void execute(void) {
 
       if (negativeOperand())
-	binaryFalseResult();
+        binaryFalseResult();
       else {
-	Value v(binComp() <= 0);
-	stack->push(v);
+        Value v(binComp() <= 0);
+        stack->push(v);
       }
 
     }
@@ -251,7 +251,7 @@ namespace loos {
       Value v = stack->pop();
       Value r(0);
       if (boost::regex_search(v.getString(), regexp))
-	r.setInt(1);
+        r.setInt(1);
 
       stack->push(r);
     }
@@ -280,7 +280,7 @@ namespace loos {
       Value r(0);
       
       if (boost::regex_search(u.getString(), re))
-	r.setInt(1);
+        r.setInt(1);
       
       stack->push(r);
     }
@@ -297,8 +297,8 @@ namespace loos {
   class extractNumber : public Action {
   public:
     explicit extractNumber(const string s) : Action("extractNumber"),
-					     regexp(s, boost::regex::perl|boost::regex::icase),
-					     pattern(s) { }
+                             regexp(s, boost::regex::perl|boost::regex::icase),
+                             pattern(s) { }
 
     void execute(void) {
       Value v = stack->pop();
@@ -306,14 +306,14 @@ namespace loos {
       boost::smatch what;
 
       if (boost::regex_search(v.getString(), what, regexp)) {
-	unsigned i;
-	int val;
-	for (i=0; i<what.size(); i++) {
-	  if ((stringstream(what[i]) >> val)) {
-	    r.setInt(val);
-	    break;
-	  }
-	}
+        unsigned i;
+        int val;
+        for (i=0; i<what.size(); i++) {
+          if ((stringstream(what[i]) >> val)) {
+            r.setInt(val);
+            break;
+          }
+        }
       }
 
       stack->push(r);
@@ -398,7 +398,7 @@ namespace loos {
       Value v1 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-	throw(runtime_error("Invalid operands to logicalAnd"));
+        throw(runtime_error("Invalid operands to logicalAnd"));
 
       Value u(v1.itg && v2.itg);
       stack->push(u);
@@ -414,7 +414,7 @@ namespace loos {
       Value v2 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-	throw(runtime_error("Invalid operands to logicalOr"));
+        throw(runtime_error("Invalid operands to logicalOr"));
 
       Value u(v1.itg || v2.itg);
       stack->push(u);
@@ -430,7 +430,7 @@ namespace loos {
       Value v1 = stack->pop();
 
       if (v1.type != Value::INT)
-	throw(runtime_error("Invalid operand to logicalNot"));
+        throw(runtime_error("Invalid operand to logicalNot"));
 
       Value u(!v1.itg);
       stack->push(u);
@@ -457,7 +457,7 @@ namespace loos {
       
       bool masscheck = true;
       if (atom->checkProperty(Atom::massbit))
-	masscheck = (atom->mass() < 1.1);
+        masscheck = (atom->mass() < 1.1);
 
       string n = atom->name();
       Value v;

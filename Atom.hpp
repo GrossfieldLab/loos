@@ -72,7 +72,6 @@ public:
     }
   };
 
-	 
 
   Atom() { init(); }
 
@@ -230,7 +229,7 @@ checkProperty(Atom::massbit | Atom::chargebit)
       vector<int>::const_iterator i;
       os << ">\n";
       for (i=a.bonds.begin(); i != a.bonds.end(); i++)
-	os << "  <BOND>" << *i << "</BOND>\n";
+        os << "  <BOND>" << *i << "</BOND>\n";
       os << "</ATOM>";
     } else
       os << "/>";

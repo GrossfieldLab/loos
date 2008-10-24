@@ -140,10 +140,10 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
       double rmsd;
 
       if (globals.iterate)
-	rmsd = jframe.rmsd(frames[i]);
+        rmsd = jframe.rmsd(frames[i]);
       else {
-	(void)jframe.alignOnto(frames[i]);
-	rmsd = jframe.rmsd(frames[i]);
+        (void)jframe.alignOnto(frames[i]);
+        rmsd = jframe.rmsd(frames[i]);
       }
 
 
@@ -151,8 +151,8 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
       M[i*n+j] = rmsd;
       
       if (k % delta == 0) {
-	float percent = k * 100.0 / total;
-	cerr << setprecision(3) << percent << "% complete\n";
+        float percent = k * 100.0 / total;
+        cerr << setprecision(3) << percent << "% complete\n";
       }
 
     

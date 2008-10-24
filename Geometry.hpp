@@ -42,10 +42,10 @@ greal angle(const pAtom a, const pAtom b, const pAtom c);
 
 //! Compute the torsion in degrees 
 greal torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
-	      const GCoord &d);
+              const GCoord &d);
 
 greal torsion(const pAtom a, const pAtom b, const pAtom c, 
-	      const pAtom d);
+              const pAtom d);
 
 
 #endif

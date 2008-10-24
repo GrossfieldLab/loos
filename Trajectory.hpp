@@ -158,7 +158,7 @@ public:
 protected:
   StreamWrapper ifs;
   bool cached_first;    // Indicates that the first frame is cached by
-			// the subclass...
+                        // the subclass...
 
 
 private:

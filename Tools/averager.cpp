@@ -37,9 +37,9 @@ using namespace loos;
 
 struct Globals {
   Globals() : align_string("name == 'CA'"),
-	      avg_string("(segid != 'SOLV' && segid != 'BULK') && !hydrogen"),
-	      trajmin(0), trajmax(0),
-	      alignment_tol(1e-6)
+              avg_string("(segid != 'SOLV' && segid != 'BULK') && !hydrogen"),
+              trajmin(0), trajmax(0),
+              alignment_tol(1e-6)
   { }
 
 
@@ -84,8 +84,8 @@ void parseOptions(int argc, char *argv[]) {
     case 'A': globals.avg_string = string(optarg); break;
     case 'a': globals.align_string = string(optarg); break;
     case 'r': if (sscanf(optarg, "%u:%u", &globals.trajmin, &globals.trajmax) != 2) {
-	cerr << "Unable to parse range.\n";
-	exit(-1);
+        cerr << "Unable to parse range.\n";
+        exit(-1);
       }
       break;
     case 0: break;

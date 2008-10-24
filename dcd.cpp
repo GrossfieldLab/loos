@@ -196,7 +196,7 @@ void DCD::readCrystalParams(void) {
   if (len != 48)
     throw(GeneralError("Error while reading crystal parameters"));
   double *dp = (double *)o;  // The values are actually doubles, so we
-			     // have to use a little trickery... 
+                             // have to use a little trickery... 
 
   qcrys[0] = dp[0];
   qcrys[1] = dp[2];

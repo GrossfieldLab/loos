@@ -189,9 +189,9 @@ void MatrixWriter<T>::write(const T* data, const string& tag, const uint m, cons
     for (i=0; i<nn; i++) {
 
       if (trans)
-	k = j*n+i;
+        k = j*n+i;
       else
-	k = i*m+j;
+        k = i*m+j;
       assert(k < m*n && "Matrix index exceeds dimensions");
       OutputDatum(po, data[k]);
     }

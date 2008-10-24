@@ -146,11 +146,11 @@ int main(int argc, char *argv[]) {
       
       uint n = ptraj->nframes();
       for (uint i=0; i<n; i++) {
-	ptraj->readFrame(i);
-	ptraj->updateGroupCoords(subset);
-	subset.applyTransform(xforms[i]);
-	AtomicGroup frame = subset.copy();
-	frames.push_back(frame);
+    ptraj->readFrame(i);
+    ptraj->updateGroupCoords(subset);
+    subset.applyTransform(xforms[i]);
+    AtomicGroup frame = subset.copy();
+    frames.push_back(frame);
       }
 
     } else {   // A target was provided and aligning was requested...
@@ -160,13 +160,13 @@ int main(int argc, char *argv[]) {
 
       uint n = ptraj->nframes();
       for (uint i=0; i<n; i++) {
-	ptraj->readFrame(i);
-	ptraj->updateGroupCoords(molecule);
-	GMatrix M = align_subset.superposition(target_align);
-	XForm W(M);
-	subset.applyTransform(W);
-	AtomicGroup frame = subset.copy();
-	frames.push_back(frame);
+    ptraj->readFrame(i);
+    ptraj->updateGroupCoords(molecule);
+    GMatrix M = align_subset.superposition(target_align);
+    XForm W(M);
+    subset.applyTransform(W);
+    AtomicGroup frame = subset.copy();
+    frames.push_back(frame);
       }
 
 

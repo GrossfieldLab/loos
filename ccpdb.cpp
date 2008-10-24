@@ -38,7 +38,7 @@ void CCPDB::init(void) {
      // Now count the # of END statements...
      while (ifs()->getline(buf, sizeof(buf)))
        if (strncmp("END", buf, 3) == 0)
-	 indices.push_back(ifs()->tellg());
+         indices.push_back(ifs()->tellg());
 
      _nframes = indices.size() - 1;
      ifs()->clear();

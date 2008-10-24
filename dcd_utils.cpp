@@ -104,9 +104,9 @@ double *gridify(DCD& dcd, double *avg_box, double *avg_unitvol, int gridsizes[],
       int u[3];
       int j;
       for (j=0; j<3; j++) {
-	x = cc[j] + box[j] / 2.0;
-	u[j] = (int)floor(x * delta[j]);
-	assert (u[j] >= 0 && u[j] < gridsizes[j]);   // Safety check
+        x = cc[j] + box[j] / 2.0;
+        u[j] = (int)floor(x * delta[j]);
+        assert (u[j] >= 0 && u[j] < gridsizes[j]);   // Safety check
       }
 
       // Get the grid indices

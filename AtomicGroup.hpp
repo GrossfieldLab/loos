@@ -342,7 +342,7 @@ GCoord centroid = f.center();
     explicit Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
     pAtom operator()(void) {
       if (iter >= final)
-	return(pAtom());
+        return(pAtom());
       return(*iter++);
     }
   private:

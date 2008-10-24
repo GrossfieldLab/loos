@@ -49,15 +49,15 @@ typedef float svdreal;
 
 struct Globals {
   Globals()  : alignment_string("name == 'CA'"),
-	       svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
-	       alignment_tol(1e-6),
-	       include_source(0),
-	       terms(0),
-	       writer(0),
-	       output_type("ascii"),
-	       output_prefix(""),
-	       avg_name(""),
-	       dcdmin(0), dcdmax(0), header("<NULL HEADER>"), mapname("") { }
+               svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
+               alignment_tol(1e-6),
+               include_source(0),
+               terms(0),
+               writer(0),
+               output_type("ascii"),
+               output_prefix(""),
+               avg_name(""),
+               dcdmin(0), dcdmax(0), header("<NULL HEADER>"), mapname("") { }
 
 
   string alignment_string, svd_string;
@@ -130,8 +130,8 @@ void parseOptions(int argc, char *argv[]) {
     case 'p': globals.output_prefix = string(optarg); break;
     case 'f': globals.output_type = string(optarg); break;
     case 'r': if (sscanf(optarg, "%u:%u", &globals.dcdmin, &globals.dcdmax) != 2) {
-	cerr << "Unable to parse range.\n";
-	exit(-1);
+        cerr << "Unable to parse range.\n";
+        exit(-1);
       }
       break;
     case 'm': globals.mapname = string(optarg); break;

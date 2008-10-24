@@ -139,7 +139,6 @@ void PDB::parseAtomRecord(const string s) {
     
     if (c != ' ' && !isalpha(c))
       throw(runtime_error("Non-alpha character in iCode column of PDB"));
-	
   } else {
     char c = t[0];
 
@@ -376,15 +375,15 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
       vector<int> bonds = (*ci)->getBonds();
       vector<int>::const_iterator cj;
       for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
-	if (++i > 4) {
-	  i = 1;
-	  os << format("\nCONECT%5d") % donor;
-	}
-	int bound_id = *cj;
-	pAtom pa = p.findById(bound_id);
-	if (pa == 0)
-	  throw(PDB::BadConnectivity());
-	os << format("%5d") % bound_id;
+        if (++i > 4) {
+          i = 1;
+          os << format("\nCONECT%5d") % donor;
+        }
+      int bound_id = *cj;
+      pAtom pa = p.findById(bound_id);
+      if (pa == 0)
+        throw(PDB::BadConnectivity());
+      os << format("%5d") % bound_id;
       }
       os << endl;
     }
@@ -410,7 +409,7 @@ ostream& operator<<(ostream& os, PDB& p) {
     int maxid = 0;
     for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
       if ((*i)->id() > maxid)
-	maxid = (*i)->id();
+        maxid = (*i)->id();
 
     if (maxid <= 99999)
       FormatConectRecords(os, p);

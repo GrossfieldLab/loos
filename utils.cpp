@@ -134,11 +134,11 @@ GCoord boxFromRemarks(const Remarks& r) {
     if (s.substr(0, 6) == " XTAL ") {
       stringstream is(s.substr(5));
       if (!(is >> c.x()))
-	throw(runtime_error("Unable to parse " + s));
+        throw(runtime_error("Unable to parse " + s));
       if (!(is >> c.y()))
-	throw(runtime_error("Unable to parse " + s));
+        throw(runtime_error("Unable to parse " + s));
       if (!(is >> c.z()))
-	throw(runtime_error("Unable to parse " + s));
+        throw(runtime_error("Unable to parse " + s));
 
       break;
     }
@@ -207,7 +207,7 @@ vector<int> loos::parseRangeList(const string& text) {
 
     if (c < a) {
       if (b > 0)
-	throw(runtime_error("Invalid range spec " + *ci));
+        throw(runtime_error("Invalid range spec " + *ci));
       int x = c;
       c = a;
       a = x;
