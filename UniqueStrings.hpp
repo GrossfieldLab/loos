@@ -60,7 +60,7 @@ public:
     slist<string>::const_iterator i;
     for (i = uniques.begin(); i != uniques.end(); i++, j++)
       if (*i == s)
-	return(j);
+        return(j);
     return(-1); 
   }
 
