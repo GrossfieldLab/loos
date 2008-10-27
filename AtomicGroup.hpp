@@ -32,7 +32,7 @@
 #include <vector>
 #include <algorithm>
 
-#include <ext/hash_set>
+#include <tr1/unordered_set>
 
 
 #include <loos_defs.hpp>
@@ -482,14 +482,8 @@ private:
     bool operator()(const pAtom& a) { return(a->id() == id); }
     int id;
   };
-  
-  struct EqInt {
-    bool operator()(const int i, const int j) const {
-      return(i==j);
-    }
-  };
     
-  typedef hash_set<int, hash<int>, EqInt> HashInt;
+  typedef tr1::unordered_set<int> HashInt;
 
   void walkBonds(AtomicGroup& mygroup, HashInt& seen, pAtom moi);
 

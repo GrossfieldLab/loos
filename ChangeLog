@@ -1,3 +1,11 @@
+2008-10-27    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed the internal has used in LOOS from SGI's hash_set to
+	tr1::unordered_set.  This means that any code that relied on loos
+	automatically included ext/hash_set will now need to either switch
+	to using the tr1 equivalent, or explicitly include the hash_set
+	header...
+
 2008-10-23  Tod Romo  <tromo@gorgoneion.urmc-sh.rochester.edu>
 
 	* Added helix_kink tool
