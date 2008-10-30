@@ -50,7 +50,7 @@ class InternalWater
               }
     
   
-        const int entered() {return(entry_frame);}
+        int entered() const {return(entry_frame);}
 
         void set_entered_side(double z)
             {
@@ -76,8 +76,8 @@ class InternalWater
                 }
             }
 
-        const bool from_pos() {return(entered_from_positive);}
-        const int exited() {return(exit_frame);}
+        bool from_pos() const {return(entered_from_positive);}
+        int exited() const {return(exit_frame);}
         void exit(const int frame) {exit_frame = frame;}
 
         bool crossed()
