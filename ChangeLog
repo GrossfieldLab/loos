@@ -1,3 +1,9 @@
+2008-10-31    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in Atom::clearPropertyBit() that caused it to
+	incorrectly toggle other bits (and not always clear the bit it
+	meant to).  This primarily affected the aligner tool.
+
 2008-10-27    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed the internal has used in LOOS from SGI's hash_set to

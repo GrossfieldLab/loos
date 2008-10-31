@@ -260,7 +260,7 @@ private:
   //! Internal function for setting a bitflag
   void setPropertyBit(const bits bitmask) { mask |= bitmask; }
   //! Internal function for clearing a bitflag
-  void clearPropertyBit(const bits bitmask) { mask ^= bitmask; }
+  void clearPropertyBit(const bits bitmask) { mask &= (~bitmask); }
 
 private:
   int _id;
