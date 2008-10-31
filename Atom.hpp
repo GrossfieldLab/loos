@@ -29,8 +29,9 @@
 #include <vector>
 #include <algorithm>
 
-
 #include <loos_defs.hpp>
+
+#include <boost/format.hpp>
 
 using namespace std;
 
@@ -225,6 +226,7 @@ checkProperty(Atom::massbit | Atom::chargebit)
     os << "ALTLOC='" << a._altloc << "' CHAINID='" << a._chainid << "' ICODE='" << a._icode << "' SEGID='" << a._segid << "' ";
     os << "B='" << a._b << "' Q='" << a._q << "' CHARGE='" << a._charge << "' MASS='" << a._mass << "'";
     os << " ATOMICNUMBER='" << a._atomic_number <<"'";
+    os << " MASK='" << boost::format("%x") % a.mask << "'";
     if (a.hasBonds() > 0) {
       vector<int>::const_iterator i;
       os << ">\n";
