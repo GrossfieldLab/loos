@@ -47,6 +47,7 @@ class InternalWater
               exit_frame(-1),
               exited_to_positive(false)
               {
+              set_entered_side(z);
               }
     
   
@@ -194,10 +195,10 @@ while (traj->readFrame())
                 exited_waters.push_back(i);
                 internal_waters.erase(w);
                 // TODO: debugging code, don't leave in
-                if (internal_waters.find(w) != internal_waters.end())
-                    {
-                    throw(runtime_error("Erase didn't erase"));
-                    }
+                //if (internal_waters.find(w) != internal_waters.end())
+                //    {
+                //    throw(runtime_error("Erase didn't erase"));
+                //    }
                 }
             }
         else
