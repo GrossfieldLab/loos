@@ -26,7 +26,8 @@
 
 #include <vector>
 #include <stdexcept>
-#include <math.h>
+#include <cmath>
+#include <cstdlib>
 
 
 using namespace std;
