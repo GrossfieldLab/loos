@@ -33,11 +33,11 @@ clos.AddOptions(
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
 )
 
-clos.Add(PathOption('LAPACK', 'Path to LAPACK', default_lib_path, PathOption.PathAccept))
+clos.Add(PathOption('LAPACK', 'Path to LAPACK', '', PathOption.PathAccept))
 clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
 clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
-clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathOption.PathAccept))
-clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
+clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '', PathOption.PathAccept))
+clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
@@ -69,7 +69,7 @@ release_opts='-O3 -DNDEBUG -Wall'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#', BOOSTINC])
-env.Append(LIBPATH = ['#'])
+env.Append(LIBPATH = ['#', BOOSTLIB])
 env.Append(LIBS = ['loos', BOOSTREGEX])
 env.Append(LEXFLAGS=['-s'])
 
