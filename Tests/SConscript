@@ -86,7 +86,7 @@ def UnitTest(target, source, env):
 
     # If the test passed, create the target file so the test won't be run again
     if res != 0:
-        print "*** WARNING - Differences in test output from " + str(source[0])
+        print "*** ERROR - Differences in test output from " + str(source[0])
     else:
 	cmd = 'touch ' + str(target[0].abspath)
 	run(cmd, env)
