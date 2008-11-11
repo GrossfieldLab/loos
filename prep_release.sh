@@ -23,6 +23,17 @@ fi
 scons -cs caboodle
 rm -rf Docs
 
+# One more sanity check...
+OK=`svn -q status`
+if [ -n "$OK" ] ; then
+    echo "ERROR - you appear to have unchecked modifications to this release."
+    echo "        Please fix this and run this script again..."
+    echo
+    echo "> svn -q status"
+    echo "$OK"
+    exit -1
+fi
+
 scons -s docs
 
 # Massage the ChangeLog
@@ -42,11 +53,11 @@ if [ "$OK" = "Y" -o "$OK" = "y" -o \( -z "$OK" \) ] ; then
     echo "Updating SVN for $RELEASE..."
     
     set -o xtrace
-    svn add Docs
-    svn ci -m 'Added Documentation to $RELEASE' Docs
-    svn ci -m 'Sanitized ChangeLog prior to $RELEASE' ChangeLog
-    svn rm prep_release.sh
-    svn ci -m 'Removed prep_release script from $RELEASE' prep_release.sh
+#    svn add Docs
+#    svn ci -m 'Added Documentation to $RELEASE' Docs
+#    svn ci -m 'Sanitized ChangeLog prior to $RELEASE' ChangeLog
+#    svn rm prep_release.sh
+#    svn ci -m 'Removed prep_release script from $RELEASE' prep_release.sh
 
 else
     echo "***WARNING***WARNING***WARNING***"
