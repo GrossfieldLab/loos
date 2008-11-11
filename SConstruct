@@ -40,6 +40,8 @@ clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '', PathOption.PathAc
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
 clos.Add('CXX', 'C++ Compiler', 'g++')
+clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
+
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
@@ -59,7 +61,7 @@ ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
 BOOSTREGEX = env['BOOSTREGEX']
-
+LIBXTRA = env['LIBXTRA']
 
 
 
@@ -70,7 +72,7 @@ release_opts='-O3 -DNDEBUG -Wall'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#', BOOSTINC])
-env.Append(LIBPATH = ['#', BOOSTLIB])
+env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
 env.Append(LIBS = ['loos', BOOSTREGEX])
 env.Append(LEXFLAGS=['-s'])
 
