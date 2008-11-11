@@ -22,6 +22,9 @@
 ### Edit the lines below for your installation...
 ###
 
+### Edit the following to change which C++ compiler to use
+# CXX='/usr/local/bin/g++'
+
 ### Edit the following to determine the default build-type
 # debug=1
 # release=1
