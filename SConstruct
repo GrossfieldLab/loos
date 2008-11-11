@@ -39,6 +39,7 @@ clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', 
 clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '', PathOption.PathAccept))
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
+clos.Add('CXX', 'C++ Compiler', 'g++')
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
