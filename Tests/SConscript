@@ -99,6 +99,15 @@ env.Append(BUILDERS = {'UnitTest' :  bld})
 
 ### Ok, you can open 'em now...
 
+if os.environ.has_key('LD_LIBRARY_PATH'):
+    ld_library_path = os.environ['LD_LIBRARY_PATH']
+    if env.has_key('LD_LIBRARY_PATH'):
+        env.AppendENVPath('LD_LIBRARY_PATH', ld_library_path)
+    else:
+        env['LD_LIBRARY_PATH'] = ld_library_path
+        
+    print "Set LD_LIBRARY_PATH to ", env['LD_LIBRARY_PATH']
+    
 
 non_testable_tests = 'timeseries-test find_perf_test ccpdb_test pdbtraj_test tinker_arc_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
