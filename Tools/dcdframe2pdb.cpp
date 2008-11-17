@@ -1,7 +1,7 @@
 /*
   dcdframe2pdb
 
-  dcdframe2pdb pdb dcd frameno >output
+  dcdframe2pdb model trajectory frameno >output
 */
 
 
@@ -40,21 +40,23 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  PDB pdb(argv[1]);
-  DCD dcd(argv[2]);
+  string hdr = invocationHeader(argc, argv);
+
+  AtomicGroup model = loos::createSystem(argv[1]);
+  pTraj traj = loos::createTrajectory(argv[2], model);
   int frame = atoi(argv[3]);
 
 
-  bool b = dcd.readFrame(frame);
+  bool b = traj->readFrame(frame);
   if (!b) {
-    cerr << "Could not read frame " << frame << " from DCD " << argv[2] << endl;
+    cerr << "Could not read frame " << frame << " from trajectory " << argv[2] << endl;
     exit(-2);
   }
 
-
-  dcd.updateGroupCoords(pdb);
-
-  cout << pdb;
+  traj->updateGroupCoords(model);
+  PDB pdb = PDB::fromAtomicGroup(model);
+  pdb.remarks().add(hdr);
+  cout << pdb << endl;
 
 }
 
