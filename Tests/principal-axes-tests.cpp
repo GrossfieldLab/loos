@@ -101,7 +101,7 @@ GCoord matchSigns(const GCoord& a, const GCoord& b) {
   int i;
 
   for (i=0; i<3; i++)
-    c[i] = (a[i]<0.0 && b[i]>0.0 || a[i]>0.0 && b[i]<0.0) ? -b[i] : b[i];
+    c[i] = ( (a[i]<0.0 && b[i]>0.0) || (a[i]>0.0 && b[i]<0.0) ) ? -b[i] : b[i];
       
   return(c);
 }
