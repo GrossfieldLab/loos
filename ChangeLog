@@ -3,6 +3,9 @@
 	* Changed BadConnectivity exception to inherit from runtime_error.
 	Now accepts a string to stick into what().
 	* Changed CONECT record reading to use fixed field widths
+	* Changed PDB read code to keep track of what unknown records have
+	been seen, so warnings are only emitted once for each unique
+	unknown record.
 
 2008-11-03    <alan@spade.biophysics.rochester.edu>
 

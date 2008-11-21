@@ -37,6 +37,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
+#include <tr1/unordered_set>
+
 using namespace std;
 
 
@@ -74,7 +76,6 @@ public:
   public:
     explicit BadConnectivity(const string& msg) : runtime_error(msg) { };
   };
-
 
 public:
   PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }

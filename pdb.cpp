@@ -319,6 +319,7 @@ void PDB::parseCryst1Record(const string& s) {
 void PDB::read(istream& is) {
   string input;
   bool has_cryst = false;
+  tr1::unordered_set<string> seen;
 
   while (getline(is, input)) {
     if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
@@ -336,7 +337,11 @@ void PDB::read(istream& is) {
       break;
     else {
       int space = input.find_first_of(' ');
-      cerr << "Warning- Unknown PDB record " << input.substr(0, space) << endl;
+      string record = input.substr(0, space);
+      if (seen.find(record) == seen.end()) {
+        cerr << "Warning - unknown PDB record " << record << endl;
+        seen.insert(record);
+      }
     }
   }
 
