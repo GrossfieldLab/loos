@@ -70,8 +70,9 @@ pdb.strict(true);
  */
 class PDB : public AtomicGroup {
 public:
-  struct BadConnectivity : public exception {
-    const char* what(void) const throw() { return("Missing atoms in connectivity list."); }
+  class BadConnectivity : public runtime_error {
+  public:
+    explicit BadConnectivity(const string& msg) : runtime_error(msg) { };
   };
 
 
@@ -168,17 +169,18 @@ private:
   PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
 
   // Internal routines for parsing...
-  greal parseFloat(const string s, const unsigned int offset, const unsigned int len);
-  gint parseInt(const string s, const unsigned int offset, const unsigned int len);
-  string parseString(const string s, const unsigned int offset, const unsigned int len);
+  greal parseFloat(const string&, const uint, const uint);
+  greal parseFloat(const string&);
+  gint parseInt(const string&, const uint, const uint);
+  gint parseInt(const string&);
+  string parseString(const string&, const uint, const uint);
+  bool emptyString(const string&);
 
-  int stringInt(const string s);
-  
   // These will modify the PDB upon a successful parse...
-  void parseRemark(const string s);
-  void parseAtomRecord(const string s);
-  void parseConectRecord(const string s);
-  void parseCryst1Record(const string s);
+  void parseRemark(const string&);
+  void parseAtomRecord(const string&);
+  void parseConectRecord(const string&);
+  void parseCryst1Record(const string&);
 
   // Convert an Atom to a string representation in PDB format...
   string atomAsString(const pAtom p) const;

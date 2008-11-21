@@ -43,37 +43,46 @@ using namespace boost;
   have a SEGID, or CHARGE, etc.
 */
 
-greal PDB::parseFloat(const string s, const unsigned int offset, const unsigned int len) {
+greal PDB::parseFloat(const string& s) {
   greal result;
+
+  if (!(stringstream(s) >> result))
+    throw(runtime_error("Cannot parse " + s + " as a floating value"));
+
+  return(result);
+}
+
+
+greal PDB::parseFloat(const string& s, const unsigned int offset, const unsigned int len) {
 
   if (offset+len > s.size())
     return(0.0);
-
   string t = s.substr(offset, len);
-  if (!(stringstream(t) >> result))
-    throw(runtime_error("Cannot parse " + t + " as a floating value"));
-
-  return(result);
+  return(parseFloat(t));
 }
 
 
-gint PDB::parseInt(const string s, const int unsigned offset, const unsigned int len) {
+gint PDB::parseInt(const string& s) {
   gint result;
 
-
-  if (offset+len > s.size())
-    return(0);
-  
-  string t = s.substr(offset, len);
-  if (!(stringstream(t) >> result))
-    throw(runtime_error("Cannot parse " + t + " as a integer value"));
+  if (!(stringstream(s) >> result))
+    throw(runtime_error("Cannot parse " + s + " as a integer value"));
 
   return(result);
 }
 
 
+gint PDB::parseInt(const string& s, const int unsigned offset, const unsigned int len) {
+  if (offset+len > s.size())
+    return(0);
 
-string PDB::parseString(const string s, const unsigned int offset, const unsigned int len) {
+  string t = s.substr(offset, len);
+  return(parseInt(t));
+}
+
+
+
+string PDB::parseString(const string& s, const unsigned int offset, const unsigned int len) {
 
   if (offset+len > s.size())
     return(string(""));
@@ -85,10 +94,22 @@ string PDB::parseString(const string s, const unsigned int offset, const unsigne
 }
 
 
+// Assume we're only going to find spaces in a PDB file...
+bool PDB::emptyString(const string& s) {
+  string::const_iterator i;
+
+  for (i = s.begin(); i != s.end(); ++i)
+    if (*i != ' ')
+      return(false);
+
+  return(true);
+}
+
+
 // Special handling for REMARKs to ignore the line code, if
 // present... 
 
-void PDB::parseRemark(const string s) {
+void PDB::parseRemark(const string& s) {
   string t;
 
   if (s[6] == ' ' && isdigit(s[7]))
@@ -102,7 +123,7 @@ void PDB::parseRemark(const string s) {
 
 // Parse an ATOM or HETATM record...
 
-void PDB::parseAtomRecord(const string s) {
+void PDB::parseAtomRecord(const string& s) {
   greal r;
   gint i;
   string t;
@@ -227,41 +248,38 @@ string PDB::atomAsString(const pAtom p) const {
 }
 
 
-int PDB::stringInt(const string s) {
-  int i;
-
-  if (!(stringstream(s) >> i))
-    throw(runtime_error("Cannot convert " + s + " to an integer."));
-
-  return(i);
-}
-
-
 // Parse CONECT records, updating the referenced atoms...
-void PDB::parseConectRecord(const string s) {
-  vector<string> ary;
-  split(ary, s, is_any_of(" "));
+// Couple of issues:
+//
+//    Will accept up to 8 bound atoms and considers them all equal,
+// but the PDB standard says some are h-bonded and some are
+// salt-bridged... 
+//
+//    No check is made for overflow of fields...
 
-  if (ary.size() < 2)
-    throw(runtime_error("Cannot parse CONECT record...must have two or more entries"));
+void PDB::parseConectRecord(const string& s) {
+  int bound_id = parseInt(s, 6, 5);
+  pAtom bound = findById(bound_id);
+  if (bound == 0)
+    throw(PDB::BadConnectivity("Cannot find primary atom " + s.substr(6, 5)));
 
-  int donor_id = stringInt(ary[0]);
-  pAtom donor = findById(donor_id);
-  if (donor == 0)
-    throw(runtime_error("Cannot find donor atom for CONECT record"));
-
-  vector<string>::iterator i;
-  for (i = ary.begin()+1; i != ary.end(); i++) {
-    int acceptor_id = stringInt(*i);
-    pAtom acceptor = findById(acceptor_id);
-    if (acceptor == 0)
-      throw(runtime_error("Cannot find acceptor atom for CONECT record"));
-    donor->addBond(acceptor);
+  // This currently includes fields designated as H-bond indices...
+  // Should we do this? or separate them out?  Hmmm...
+  for (int i=0; i<8; ++i) {
+    int j = i * 5 + 11;
+    string t = s.substr(j, 5);
+    if (emptyString(t))
+      break;
+    int id = parseInt(t);
+    pAtom boundee = findById(id);
+    if (boundee == 0)
+      throw(PDB::BadConnectivity("Cannot find bound atom " + t));
+    bound->addBond(boundee);
   }
 }
 
 
-void PDB::parseCryst1Record(const string s) {
+void PDB::parseCryst1Record(const string& s) {
   greal r;
   gint i;
   string t;
@@ -382,7 +400,7 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
       int bound_id = *cj;
       pAtom pa = p.findById(bound_id);
       if (pa == 0)
-        throw(PDB::BadConnectivity());
+        throw(PDB::BadConnectivity("Cannot write CONECT records - bound atoms are missing"));
       os << format("%5d") % bound_id;
       }
       os << endl;

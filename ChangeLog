@@ -1,3 +1,9 @@
+2008-11-21    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed BadConnectivity exception to inherit from runtime_error.
+	Now accepts a string to stick into what().
+	* Changed CONECT record reading to use fixed field widths
+
 2008-11-03    <alan@spade.biophysics.rochester.edu>
 
 	* Fixed bug in crossing-waters tool where the entry side of the
