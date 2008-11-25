@@ -6,6 +6,7 @@
 	* Changed Tools/reimage-by-molecule to be more generic in what
 	types of files it will take.  Since you could now give it a file
 	without connectivity, it detects this and warns the user...
+	* Added subsetter tool to pull out a subset from a trajectory.
 
 2008-11-21    <tromo@spade.biophysics.rochester.edu>
 

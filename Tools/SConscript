@@ -25,7 +25,7 @@ import sys
 Import('env')
 
 apps = 'density-dist density-dist-windowed center-pdb pdb2matlab dcdframe2pdb contacts order_params bounding aligner svd rmsds xy_rdf xy_rdf_timeseries model-select rdf atomic-rdf crossing-waters'
-apps = apps + ' svdcolmap averager amber2pdb amber2dcd reimage-by-molecule rmsd2ref rgyr dumpmol helix_kink'
+apps = apps + ' svdcolmap averager amber2pdb amber2dcd reimage-by-molecule rmsd2ref rgyr dumpmol helix_kink subsetter'
 
 list = []
 
