@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     AtomicGroup model = loos::createSystem(argv[1]);
     if (!model.hasBonds())
-      cerr << "***WARNING***\nThe model does not have connectivity, so your results may not be what you expect.\n";
+      cerr << "***WARNING***\nThe model does not have connectivity,\nso your results may not be what you expect.\n";
 
     pTraj traj = loos::createTrajectory(argv[2], model);
     DCDWriter dcd_out(argv[3]);
