@@ -1,7 +1,7 @@
 /*
    reimage-by-molecule
   
-   Read a psf and dcd, reimage each frame by molecule, and write a new
+   Read a model and trajectory, reimage each frame by molecule, and write a new
    dcd
 
    Alan Grossfield
@@ -32,7 +32,7 @@
 
 void Usage()
     {
-    cerr << "Usage: reimage-by-molecule psf indcd outdcd [xbox ybox zbox]"
+    cerr << "Usage: reimage-by-molecule model trajectory outdcd [xbox ybox zbox]"
          << endl;
     } 
 
@@ -47,49 +47,52 @@ int main(int argc, char *argv[])
         exit(-1);
         }
 
-    cout << "# " << invocationHeader(argc, argv) << endl;
+    string hdr = invocationHeader(argc, argv);
 
-    PSF psf(argv[1]);
-    DCD dcd(argv[2]);
+    AtomicGroup model = loos::createSystem(argv[1]);
+    if (!model.hasBonds())
+      cerr << "***WARNING***\nThe model does not have connectivity, so your results may not be what you expect.\n";
+
+    pTraj traj = loos::createTrajectory(argv[2], model);
     DCDWriter dcd_out(argv[3]);
 
-    if (!dcd.hasPeriodicBox())
+    if (!traj->hasPeriodicBox())
         {
-        // if the dcd doesn't have periodic box info, we need it from
+        // if the trajectory doesn't have periodic box info, we need it from
         // the user
         if (argc < 7)
             {
-            cerr << "DCD " << argv[2] << " doesn't have box info" << endl;
+            cerr << "Trajectory " << argv[2] << " doesn't have box info" << endl;
             cerr << "so you'll need to supply it on the command line" << endl;
             exit(-1);
             }
 
-        // use the supplied box, set it in psf
+        // use the supplied box, set it in model
         double xbox = atof(argv[4]);
         double ybox = atof(argv[5]);
         double zbox = atof(argv[6]);
         GCoord box(xbox, ybox, zbox);
-        psf.periodicBox(box);
+        model.periodicBox(box);
         }
 
     // duplicate the info from dcd in dcd_out
-    dcd_out.setHeader(dcd.natoms(), dcd.nsteps(), dcd.timestep(), 
+    dcd_out.setHeader(traj->natoms(), traj->nframes(), traj->timestep(), 
                      true );
-    dcd_out.setTitles(dcd.titles());
+    dcd_out.setTitle(hdr);
     dcd_out.writeHeader();
 
     // split the system by molecule
-    vector<AtomicGroup> molecules = psf.splitByMolecule();
+    vector<AtomicGroup> molecules = model.splitByMolecule();
 
     // split the system by segid
-    vector<AtomicGroup> segments = psf.splitByUniqueSegid();
+    vector<AtomicGroup> segments = model.splitByUniqueSegid();
 
 
     // Loop over the frames of the dcd and reimage each molecule
     vector<AtomicGroup>::iterator m;
-    while (dcd.readFrame())
+    while (traj->readFrame())
         {
-        dcd.updateGroupCoords(psf);
+        traj->updateGroupCoords(model);
         for (m = segments.begin(); m != segments.end(); m++)
             {
             m->reimage();
@@ -98,7 +101,7 @@ int main(int argc, char *argv[])
             {
             m->reimage();
             }
-        dcd_out.writeFrame(psf);
+        dcd_out.writeFrame(model);
         }
 
     }

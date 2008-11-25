@@ -327,18 +327,24 @@ vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
   vector<AtomicGroup> molecules;
   AtomicGroup current;               // The molecule we're currently building...
 
-  int n = size();
-  for (int i=0; i<n; i++) {
-    HashInt::iterator it = seen.find(atoms[i]->id());
-    if (it != seen.end())
-      continue;
+  // If no connectivity, just return the entire group...
+  if (!hasBonds()) {
+    molecules.push_back(*this);
+  } else {
 
-    walkBonds(current, seen, atoms[i]);
-    if (current.size() != 0) {       // Just in case...
-      molecules.push_back(current);
-      current = AtomicGroup();
+    int n = size();
+    for (int i=0; i<n; i++) {
+      HashInt::iterator it = seen.find(atoms[i]->id());
+      if (it != seen.end())
+        continue;
+      
+      walkBonds(current, seen, atoms[i]);
+      if (current.size() != 0) {       // Just in case...
+        molecules.push_back(current);
+        current = AtomicGroup();
+      }
+      
     }
-    
   }
 
   // copy the box over
