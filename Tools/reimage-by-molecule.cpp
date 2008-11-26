@@ -1,10 +1,10 @@
 /*
-   reimage-by-molecule
+  reimage-by-molecule
   
-   Read a model and trajectory, reimage each frame by molecule, and write a new
-   dcd
+  Read a model and trajectory, reimage each frame by molecule, and write a new
+  dcd
 
-   Alan Grossfield
+  Alan Grossfield
  
   
   This file is part of LOOS.
@@ -30,85 +30,110 @@
 
 #include <loos.hpp>
 
+const int update_frequency = 250;
+
+
 void Usage()
-    {
-    cerr << "Usage: reimage-by-molecule model trajectory outdcd [xbox ybox zbox]"
-         << endl;
-    } 
+{
+  cerr << "Usage: reimage-by-molecule model trajectory outdcd [xbox ybox zbox]"
+       << endl;
+} 
 
 int main(int argc, char *argv[]) 
-    {
-    if ( (argc <= 1) ||
-         ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-         (argc < 4)
+{
+  if ( (argc <= 1) ||
+       ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
+       (argc < 4)
        )
-        {
-        Usage();
-        exit(-1);
-        }
-
-    string hdr = invocationHeader(argc, argv);
-
-    AtomicGroup model = loos::createSystem(argv[1]);
-    if (!model.hasBonds())
-      cerr << "***WARNING***\nThe model does not have connectivity,\nso your results may not be what you expect.\n";
-
-    pTraj traj = loos::createTrajectory(argv[2], model);
-    DCDWriter dcd_out(argv[3]);
-
-    bool box_override = false;
-    GCoord newbox;
-    
-    if (!traj->hasPeriodicBox())
-        {
-        // if the trajectory doesn't have periodic box info, we need it from
-        // the user
-        if (argc < 7)
-            {
-            cerr << "Trajectory " << argv[2] << " doesn't have box info" << endl;
-            cerr << "so you'll need to supply it on the command line" << endl;
-            exit(-1);
-            }
-
-        // use the supplied box, set it in model
-        double xbox = atof(argv[4]);
-        double ybox = atof(argv[5]);
-        double zbox = atof(argv[6]);
-        newbox = GCoord(xbox, ybox, zbox);
-        model.periodicBox(newbox);
-        box_override = true;
-        }
-
-    // duplicate the info from dcd in dcd_out
-    dcd_out.setHeader(traj->natoms(), traj->nframes(), traj->timestep(), 
-                     true );
-    dcd_out.setTitle(hdr);
-    dcd_out.writeHeader();
-
-    // split the system by molecule
-    vector<AtomicGroup> molecules = model.splitByMolecule();
-
-    // split the system by segid
-    vector<AtomicGroup> segments = model.splitByUniqueSegid();
-
-
-    // Loop over the frames of the dcd and reimage each molecule
-    vector<AtomicGroup>::iterator m;
-    while (traj->readFrame())
-        {
-        traj->updateGroupCoords(model);
-        if (box_override)
-          model.periodicBox(newbox);
-        for (m = segments.begin(); m != segments.end(); m++)
-            {
-            m->reimage();
-            }
-        for (m = molecules.begin(); m != molecules.end(); m++)
-            {
-            m->reimage();
-            }
-        dcd_out.writeFrame(model);
-        }
-
+    {
+      Usage();
+      exit(-1);
     }
+
+  string hdr = invocationHeader(argc, argv);
+
+  AtomicGroup model = loos::createSystem(argv[1]);
+  if (!model.hasBonds())
+    {
+      cerr << "***WARNING***\nThe model does not have connectivity,\nso your results may not be what you expect.\n";
+    }
+
+  pTraj traj = loos::createTrajectory(argv[2], model);
+  DCDWriter dcd_out(argv[3]);
+
+  bool box_override = false;
+  GCoord newbox;
+    
+  if (argc == 7) {
+    // use the supplied box, set it in model
+    double xbox = atof(argv[4]);
+    double ybox = atof(argv[5]);
+    double zbox = atof(argv[6]);
+    newbox = GCoord(xbox, ybox, zbox);
+    model.periodicBox(newbox);
+    box_override = true;
+    if (!traj->hasPeriodicBox())
+      {
+        cerr << "Adding box " << newbox << endl;
+      }
+    else
+      {
+        cerr << "WARNING - Overriding existing box(es) with " << newbox << endl;
+      }
+  }
+
+  if (!traj->hasPeriodicBox() && !box_override)
+    {
+      // if the trajectory doesn't have periodic box info, we need it from
+      // the user
+      cerr << "ERROR - The trajectory has no box information.  You must add it or supply it on the command-line.\n";
+      exit(-1);
+    }
+
+  // duplicate the info from dcd in dcd_out
+  dcd_out.setHeader(traj->natoms(), traj->nframes(), traj->timestep(), 
+                    true );
+  dcd_out.setTitle(hdr);
+  dcd_out.writeHeader();
+
+  // split the system by molecule
+  vector<AtomicGroup> molecules = model.splitByMolecule();
+  cerr << "Found " << molecules.size() << " molecules.\n";
+
+  // split the system by segid
+  vector<AtomicGroup> segments = model.splitByUniqueSegid();
+  cerr << "Found " << segments.size() << " segments.\n";
+
+  cerr << "Trajectory has " << traj->nframes() << " total frames.\n";
+
+
+  // Loop over the frames of the dcd and reimage each molecule
+  vector<AtomicGroup>::iterator m;
+  int frame_no = 0;
+  cerr << "Frames processed - ";
+  while (traj->readFrame())
+    {
+      if (++frame_no % update_frequency == 0)
+        {
+          cerr << frame_no << " ";
+        }
+        
+      traj->updateGroupCoords(model);
+      for (m = segments.begin(); m != segments.end(); m++)
+        {
+          m->reimage();
+        }
+      for (m = molecules.begin(); m != molecules.end(); m++)
+        {
+          m->reimage();
+        }
+
+      if (box_override)
+        model.periodicBox(newbox);
+      dcd_out.writeFrame(model);
+    }
+
+  cerr << " - done\n";
+
+}
 
