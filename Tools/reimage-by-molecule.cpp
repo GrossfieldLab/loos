@@ -56,6 +56,9 @@ int main(int argc, char *argv[])
     pTraj traj = loos::createTrajectory(argv[2], model);
     DCDWriter dcd_out(argv[3]);
 
+    bool box_override = false;
+    GCoord newbox;
+    
     if (!traj->hasPeriodicBox())
         {
         // if the trajectory doesn't have periodic box info, we need it from
@@ -71,8 +74,9 @@ int main(int argc, char *argv[])
         double xbox = atof(argv[4]);
         double ybox = atof(argv[5]);
         double zbox = atof(argv[6]);
-        GCoord box(xbox, ybox, zbox);
-        model.periodicBox(box);
+        newbox = GCoord(xbox, ybox, zbox);
+        model.periodicBox(newbox);
+        box_override = true;
         }
 
     // duplicate the info from dcd in dcd_out
@@ -93,6 +97,8 @@ int main(int argc, char *argv[])
     while (traj->readFrame())
         {
         traj->updateGroupCoords(model);
+        if (box_override)
+          model.periodicBox(newbox);
         for (m = segments.begin(); m != segments.end(); m++)
             {
             m->reimage();
