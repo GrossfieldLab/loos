@@ -117,8 +117,12 @@ int main(int argc, char *argv[])
         {
           cerr << frame_no << " ";
         }
-        
+
       traj->updateGroupCoords(model);
+
+      if (box_override)
+        model.periodicBox(newbox);
+
       for (m = segments.begin(); m != segments.end(); m++)
         {
           m->reimage();
@@ -128,8 +132,6 @@ int main(int argc, char *argv[])
           m->reimage();
         }
 
-      if (box_override)
-        model.periodicBox(newbox);
       dcd_out.writeFrame(model);
     }
 
