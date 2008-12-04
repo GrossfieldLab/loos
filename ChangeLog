@@ -1,3 +1,9 @@
+2008-12-04    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed Tools/aligner to write out the average structure as the
+	PDB corresponding to the aligned DCD rather than just taking the
+	first frame of the trajectory.
+
 2008-11-25    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::splitByMolecule() to short-circuit if the
