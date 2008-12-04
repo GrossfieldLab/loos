@@ -258,21 +258,13 @@ int main(int argc, char *argv[]) {
   frame.applyTransform(xforms[0]);
   frame.renumber();
 
-  // Write out the PDB...
-  PDB outpdb = PDB::fromAtomicGroup(frame);
-  outpdb.remarks().add(header);
-  string pdb_name = prefix + ".pdb";
-  ofstream ofs(pdb_name.c_str());
-  ofs << outpdb;
-  ofs.close();
-
   // Make the first frame...
   AtomicGroup avg = applyto_sub.copy();
 
   // Setup for writing DCD...
   DCDWriter dcdout(prefix + ".dcd");
   dcdout.setHeader(frame.size(), nframes, 1e-3, frame.isPeriodic());
-  dcdout.setTitles(outpdb.remarks().allRemarks());
+  dcdout.setTitle(header);
   dcdout.writeHeader();
   dcdout.writeFrame(frame);
 
@@ -291,12 +283,22 @@ int main(int argc, char *argv[]) {
   }
 
 
+  divCoords(avg, nframes);
+
+  // Write out the PDB...
+  PDB outpdb = PDB::fromAtomicGroup(avg);
+  outpdb.remarks().add(header);
+  string pdb_name = prefix + ".pdb";
+  ofstream ofs(pdb_name.c_str());
+  ofs << outpdb;
+  ofs.close();
+
+
+
   if (!globals.no_rmsd) {
     // Second pass to calc rmsds...
 
     cout << "Calculating rmsds...\n";
-    divCoords(avg, nframes);
-    
   
     double avg_rmsd = 0.0;
     if (globals.show_rmsd)
