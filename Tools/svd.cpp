@@ -31,10 +31,9 @@
 
 #include <loos.hpp>
 
-#include <getopt.h>
-#include <cstdlib>
+#include <boost/program_options.hpp>
 
-using namespace loos;
+namespace po = boost::program_options;
 
 #if defined(__linux__)
 extern "C" {
@@ -45,32 +44,23 @@ extern "C" {
 typedef unsigned int uint;   // Ah, old-style unix C!
 typedef float svdreal;
 
+typedef loos::Matrix<svdreal, loos::ColMajor> Matrix;
+
 #define SVDFUNC  sgesvd_
 
+
+
+
 struct Globals {
-  Globals()  : alignment_string("name == 'CA'"),
-               svd_string("!(segid == 'BULK' || segid == 'SOLV')"),
-               alignment_tol(1e-6),
-               include_source(0),
-               terms(0),
-               writer(0),
-               output_type("ascii"),
-               output_prefix(""),
-               avg_name(""),
-               dcdmin(0), dcdmax(0), header("<NULL HEADER>"), mapname("") { }
-
-
+  string model_name, traj_name;
   string alignment_string, svd_string;
   greal alignment_tol;
-  int include_source;
+  bool include_source;
   int terms;
-  MatrixWriter<svdreal>* writer;
-  string output_type;
-  string output_prefix;
+  string prefix;
   string avg_name;
   uint dcdmin, dcdmax;
   string header;
-  string mapname;
 };
 
 
@@ -78,85 +68,83 @@ struct Globals {
 
 Globals globals;
 
-static struct option long_options[] = {
-  {"align", required_argument, 0, 'a'},
-  {"svd", required_argument, 0, 's'},
-  {"tolerance", required_argument, 0, 't'},
-  {"source", no_argument, 0, 'i'},
-  {"terms", required_argument, 0, 'S'},
-  {"format", required_argument, 0, 'f'},
-  {"prefix", required_argument, 0, 'p'},
-  {"range", required_argument, 0, 'r'},
-  {"avg", required_argument, 0, 'A'},
-  {"map", required_argument, 0, 'm'},
-  {"help", no_argument, 0, 'H'},
-  {0,0,0,0}
-};
+string findBaseName(const string& s) {
+  string result;
 
-static const char* short_options = "a:s:tiS:f:p:r:A:";
+  int n = s.find('.');
+  result = (n <= 0) ? s : s.substr(0, n);
 
-
-void show_help(void) {
-  Globals defaults;
-
-  cout << "Usage- svd [opts] pdb dcd\n";
-  cout << "       --align=string       [" << defaults.alignment_string << "]\n";
-  cout << "       --svd=string         [" << defaults.svd_string << "]\n";
-  cout << "       --avg=fname          [" << defaults.avg_name << "]\n";
-  cout << "       --tolerance=float    [" << defaults.alignment_tol << "]\n";
-  cout << "       --source=bool        [" << defaults.include_source << "]\n";
-  cout << "       --terms=int          [" << defaults.terms << "]\n";
-  cout << "       --prefix=string      [" << defaults.output_prefix << "]\n";
-  cout << "       --format=string      [" << defaults.output_type << "]\n";
-  cout << "                ascii|octaves\n";
-  cout << "       --range=min:max      [" << defaults.dcdmin << ":" << defaults.dcdmax << "]\n";
-  cout << "       --map=fname          [" << defaults.mapname << "]\n";
-  cout << "       --help\n";
+  return(result);
 }
 
+
+// svd [opts] pdb dcd
 
 void parseOptions(int argc, char *argv[]) {
-  int opt, idx;
 
-  while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1)
-    switch(opt) {
-    case 'A': globals.avg_name = string(optarg); break;
-    case 'a': globals.alignment_string = string(optarg); break;
-    case 's': globals.svd_string = string(optarg); break;
-    case 't': globals.alignment_tol = strtod(optarg, 0); break;
-    case 'i': globals.include_source = 1; break;
-    case 'S': globals.terms = atoi(optarg); break;
-    case 'H': show_help(); exit(0); break;
-    case 'p': globals.output_prefix = string(optarg); break;
-    case 'f': globals.output_type = string(optarg); break;
-    case 'r': if (sscanf(optarg, "%u:%u", &globals.dcdmin, &globals.dcdmax) != 2) {
-        cerr << "Unable to parse range.\n";
-        exit(-1);
-      }
-      break;
-    case 'm': globals.mapname = string(optarg); break;
-    case 0: break;
-    default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"), "Selection to align with")
+      ("svd,s", po::value<string>(&globals.svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
+      ("tolerance,t", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
+      ("terms,T", po::value<int>(&globals.terms), "# of terms of the SVD to output")
+      ("average,A", po::value<string>(&globals.avg_name), "Write out the average structure to this filename")
+      ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
+      ("range,r", po::value<string>(), "Range of frames from the trajectory to operate over")
+      ("source,s", po::value<bool>(&globals.include_source)->default_value(false),"Write out the source conformation matrix");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&globals.model_name), "Model filename")
+      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename");
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
+      cerr << "Usage- svd [options] model-name trajectory-name\n";
+      cerr << generic;
+      exit(-1);
     }
 
-  if (globals.output_type == "ascii") {
-    delete globals.writer;
-    globals.writer = new RawAsciiWriter<svdreal>(globals.output_prefix);;
-  } else if (globals.output_type == "octaves") {
-    delete globals.writer;
-    globals.writer = new OctaveAsciiWriter<svdreal>(globals.output_prefix);
-  } else {
-    cerr << "Unknown format type: " << globals.output_type << endl;
+    globals.model_name = vm["model"].as<string>();
+    globals.traj_name = vm["traj"].as<string>();
+
+    if (vm.count("prefix"))
+      globals.prefix = vm["prefix"].as<string>();
+    else
+      globals.prefix = findBaseName(globals.traj_name);
+
+    if (vm.count("range")) {
+      string rangespec = vm["range"].as<string>();
+      int i = sscanf(rangespec.c_str(), "%u:%u", &globals.dcdmin, &globals.dcdmax);
+      if (i != 2) {
+        cerr << "Error - bad range given\n";
+        exit(-1);
+      }
+    }
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
-
 }
 
 
+vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 
-vector<XForm> align(const AtomicGroup& subset, Trajectory& dcd) {
-
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, dcd, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(subset, traj, globals.alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -182,8 +170,8 @@ void writeAverage(const AtomicGroup& avg) {
 // Calculates the transformed avg structure, then extracts the
 // transformed coords from the DCD with the avg subtraced out...
 
-float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, Trajectory& dcd) {
-  AtomicGroup avg = averageStructure(subset, xforms, dcd);
+Matrix extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, pTraj traj) {
+  AtomicGroup avg = loos::averageStructure(subset, xforms, traj);
 
   // Hook to get the avg structure if requested...
   if (globals.avg_name != "")
@@ -192,23 +180,23 @@ float* extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, Tra
   uint natoms = subset.size();
   AtomicGroup frame = subset.copy();
   uint n = globals.dcdmax - globals.dcdmin;
+  uint m = natoms * 3;
+  Matrix M(m, n);
 
-  float *block = new float[n * natoms * 3];
-  uint cox = 0;
-  for (uint i=globals.dcdmin; i<globals.dcdmax; i++) {
-    dcd.readFrame(i);
-    dcd.updateGroupCoords(frame);
-    frame.applyTransform(xforms[i - globals.dcdmin]);
+  for (uint i=0; i<n; ++i) {
+    traj->readFrame(i + globals.dcdmin);
+    traj->updateGroupCoords(frame);
+    frame.applyTransform(xforms[i]);
 
     for (uint j=0; j<natoms; j++) {
       GCoord c = frame[j]->coords() - avg[j]->coords();
-      block[cox++] = c.x();
-      block[cox++] = c.y();
-      block[cox++] = c.z();
+      M(j*3,i) = c.x();
+      M(j*3+1,i) = c.y();
+      M(j*3+2,i) = c.z();
     }
   }
 
-  return(block);
+  return(M);
 }
 
 
@@ -234,20 +222,12 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   globals.header = header;
+
   parseOptions(argc, argv);
 
-  if (argc - optind != 2) {
-    cerr << "Invalid arguments.\n";
-    show_help();
-    exit(-1);
-  }
-  
-
-  globals.writer->metadata(header);
-
   // Need to address this...
-  AtomicGroup pdb = createSystem(argv[optind++]);
-  pTraj ptraj = createTrajectory(argv[optind], pdb);
+  AtomicGroup model = loos::createSystem(globals.model_name);
+  pTraj ptraj = loos::createTrajectory(globals.traj_name, model);
   
   // Fix max-range for DCD
   if (globals.dcdmax == 0)
@@ -257,23 +237,22 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  AtomicGroup alignsub = selectAtoms(pdb, globals.alignment_string);
-  AtomicGroup svdsub = selectAtoms(pdb, globals.svd_string);
+  AtomicGroup alignsub = loos::selectAtoms(model, globals.alignment_string);
+  AtomicGroup svdsub = loos::selectAtoms(model, globals.svd_string);
 
-  if (globals.mapname != "")
-    write_map(globals.mapname, svdsub);
+  write_map(globals.prefix + ".map", svdsub);
 
   cerr << argv[0] << ": Aligning...\n";
-  vector<XForm> xforms = align(alignsub, *ptraj);
+  vector<XForm> xforms = doAlign(alignsub, ptraj);
   cerr << argv[0] << ": Extracting aligned coordinates...\n";
-  svdreal *A = extractCoords(svdsub, xforms, *ptraj);
-  f77int m = svdsub.size() * 3;
-  f77int n = globals.dcdmax - globals.dcdmin;
+  Matrix A = extractCoords(svdsub, xforms, ptraj);
+  f77int m = A.rows();
+  f77int n = A.cols();
   f77int sn = m<n ? m : n;
 
 
   if (globals.include_source)
-    globals.writer->write(A, "A", m, n);
+    loos::writeAsciiMatrix(globals.prefix + "_A.asc", A, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -281,12 +260,12 @@ int main(int argc, char *argv[]) {
   f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
   svdreal prework[10], *work;
 
-  svdreal *U = new svdreal[m*m];
-  svdreal *S = new svdreal[sn];
-  svdreal *Vt = new svdreal[n*n];
+  Matrix U(m,m);
+  Matrix S(sn,1);
+  Matrix Vt(n,n);
 
   // First, request the optimal size of the work array...
-  SVDFUNC(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, prework, &lwork, &info);
+  SVDFUNC(&jobu, &jobvt, &m, &n, A.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
   if (info != 0) {
     cerr << "Error code from size request to dgesvd was " << info << endl;
     exit(-2);
@@ -298,7 +277,7 @@ int main(int argc, char *argv[]) {
   work = new svdreal[lwork];
 
   cerr << argv[0] << ": Calculating SVD...\n";
-  SVDFUNC(&jobu, &jobvt, &m, &n, A, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
+  SVDFUNC(&jobu, &jobvt, &m, &n, A.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
 
   if (info > 0) {
     cerr << "Convergence error in dgesvd\n";
@@ -309,14 +288,9 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  globals.writer->write(U, "U", m, m, false, globals.terms);
-  globals.writer->write(S, "s", sn, 1, false, globals.terms);
-  globals.writer->write(Vt, "V",  n, n, true, globals.terms);
+  loos::writeAsciiMatrix(globals.prefix + "_U.asc", U, header);
+  loos::writeAsciiMatrix(globals.prefix + "_s.asc", S, header);
+  loos::writeAsciiMatrix(globals.prefix + "_V.asc", Vt, header, true);
 
   delete[] work;
-  delete[] A;
-  delete[] U;
-  delete[] S;
-  delete[] Vt;
-  delete globals.writer;
 }
