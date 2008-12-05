@@ -34,15 +34,13 @@
 #include <amber.hpp>
 #include <Fmt.hpp>
 
-using namespace boost;
-
 
 void Amber::verifyFormat(istream& is, const string fmt) {
 
   string str;
   is >> str;
-
-  char_separator<char> sep("()");
+  
+  boost::char_separator<char> sep("()");
   tokenizer tokens(str, sep);
   tokenizer::iterator toks = tokens.begin();
 

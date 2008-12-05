@@ -35,8 +35,6 @@
 #include <pdb.hpp>
 #include <Fmt.hpp>
 
-using namespace boost;
-
 /* The following are utilities to extract a substring and parse it as
   a specific type.  If the offset lies outside the passed string, then
   a default null value is returned.  This is in case some PDBs don't
@@ -88,7 +86,7 @@ string PDB::parseString(const string& s, const unsigned int offset, const unsign
     return(string(""));
 
   string t = s.substr(offset, len);
-  trim(t);
+  boost::trim(t);
 
   return(t);
 }
@@ -392,7 +390,7 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
     if ((*ci)->checkProperty(Atom::bondsbit)) {
       int donor = (*ci)->id();
 
-      os << format("CONECT%5d") % donor;
+      os << boost::format("CONECT%5d") % donor;
       int i = 0;
 
       vector<int> bonds = (*ci)->getBonds();
@@ -400,13 +398,13 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
       for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
         if (++i > 4) {
           i = 1;
-          os << format("\nCONECT%5d") % donor;
+          os << boost::format("\nCONECT%5d") % donor;
         }
       int bound_id = *cj;
       pAtom pa = p.findById(bound_id);
       if (pa == 0)
         throw(PDB::BadConnectivity("Cannot write CONECT records - bound atoms are missing"));
-      os << format("%5d") % bound_id;
+      os << boost::format("%5d") % bound_id;
       }
       os << endl;
     }
