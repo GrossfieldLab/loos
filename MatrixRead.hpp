@@ -32,7 +32,7 @@
 #include <Matrix.hpp>
 
 
-namespace lab {
+namespace loos {
 
   //! Generic reading error class
   class MatrixReadError : public std::runtime_error {

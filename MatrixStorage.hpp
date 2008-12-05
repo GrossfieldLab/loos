@@ -1,7 +1,7 @@
 /*
   MatrixStorage.hpp
 
-  Storage policies for lab::Matrix
+  Storage policies for loos::Matrix
 */
 
 /*
@@ -12,8 +12,8 @@
 
 
 
-#if !defined(LAB_MATRIX_STORAGE_HPP)
-#define LAB_MATRIX_STORAGE_HPP
+#if !defined(LOOS_MATRIX_STORAGE_HPP)
+#define LOOS_MATRIX_STORAGE_HPP
 
 
 #include <string>
@@ -23,7 +23,7 @@
 #include <tr1/unordered_map>
 
 
-namespace lab {
+namespace loos {
 
   template<typename T>
   class SharedArray {

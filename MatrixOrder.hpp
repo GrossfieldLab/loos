@@ -12,14 +12,14 @@
 
 
 
-#if !defined(LAB_MATRIX_ORDER_HPP)
-#define LAB_MATRIX_ORDER_HPP
+#if !defined(LOOS_MATRIX_ORDER_HPP)
+#define LOOS_MATRIX_ORDER_HPP
 
 #include <string>
 #include <cassert>
 #include <stdexcept>
 
-namespace lab {
+namespace loos {
 
 
   // These are the policy classes for the Matrix class.  They define

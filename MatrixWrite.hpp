@@ -30,7 +30,7 @@
 #include <Matrix.hpp>
 
 
-namespace lab {
+namespace loos {
 
   // Convenience typdef for specifying end-points of sub-matrices
   typedef std::pair<int, int> MDuple;

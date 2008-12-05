@@ -12,18 +12,19 @@
 
 
 
-#if !defined(LAB_MATRIX_IMPL_HPP)
-#define LAB_MATRIX_IMPL_HPP
+#if !defined(LOOS_MATRIX_IMPL_HPP)
+#define LOOS_MATRIX_IMPL_HPP
 
 #include <iostream>
 #include <ostream>
 #include <string>
 
+#include <boost/format.hpp>
 
 
 // The various matrix policies require these typedefs...
 
-namespace lab {
+namespace loos {
 
   typedef unsigned int uint;
   typedef unsigned long ulong;
@@ -34,7 +35,7 @@ namespace lab {
 #include <MatrixOrder.hpp>           // Order (layout) policies
 #include <MatrixStorage.hpp>         // Storage (physical) policies
 
-namespace lab {
+namespace loos {
 
   // Forward declarations...
   template <typename T, class P, template<typename> class S>
@@ -143,13 +144,12 @@ namespace lab {
     
     uint m = M.rows();
     uint n = M.cols();
-    os << "[";
+    os << boost::format("# %d %d (0)\n") % m % n;
     for (uint j=0; j<m; ++j) {
       for (uint i=0; i<n; ++i)
         os << M(j, i) << " ";
-      os << ";\n";
+      os << std::endl;
     }
-    os << "];\n";
     return(os);
   }
 
