@@ -47,6 +47,7 @@ struct Globals {
   string model_name;
   string traj_name;
   string alignment;
+  double tol;
   bool iterate;
 };
 
@@ -59,7 +60,9 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
-      ("iterative,i", po::value<bool>(&globals.iterate)->default_value(false),"Use iterative alignment method");
+      ("align,a", po::value<string>(&globals.alignment)->default_value("name == 'CA')"), "Align using this selection")
+      ("iterative,i", po::value<bool>(&globals.iterate)->default_value(false),"Use iterative alignment method")
+      ("tolerance,t", po::value<double>(&globals.tol)->default_value(1e-6), "Tolerance to use for iterative alignment");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -83,9 +86,6 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
-
-    globals.model_name = vm["model"].as<string>();
-    globals.traj_name = vm["traj"].as<string>();
   }
 
   catch(exception& e) {
@@ -106,7 +106,7 @@ void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj)
     frames.push_back(frame);
   }
 
-  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(frames, 0.1, 100);
+  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(frames, globals.tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);

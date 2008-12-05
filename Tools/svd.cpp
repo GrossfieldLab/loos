@@ -118,9 +118,6 @@ void parseOptions(int argc, char *argv[]) {
       exit(-1);
     }
 
-    globals.model_name = vm["model"].as<string>();
-    globals.traj_name = vm["traj"].as<string>();
-
     if (vm.count("prefix"))
       globals.prefix = vm["prefix"].as<string>();
     else
