@@ -34,7 +34,7 @@ namespace loos {
   AtomicGroup averageStructure(const vector<AtomicGroup>& ensemble);
 
   //! Compute the average structure by reading through a trajectory
-  AtomicGroup averageStructure(const AtomicGroup&, const vector<XForm>&, Trajectory&);
+  AtomicGroup averageStructure(const AtomicGroup&, const vector<XForm>&, pTraj);
 
   //! Compute an iterative superposition (a la Alan)
   boost::tuple<vector<XForm>, greal, int> iterativeAlignment(vector<AtomicGroup>& ensemble, greal threshold, int maxiter=1000);
@@ -46,7 +46,7 @@ namespace loos {
    * we make the assumption that you will usually be aligning against
    * a fairly small subset of each frame...
    */
-  boost::tuple<vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, Trajectory& traj, greal threshold, int maxiter=1000);
+  boost::tuple<vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj, greal threshold, int maxiter=1000);
 };
 
 

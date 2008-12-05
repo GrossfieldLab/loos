@@ -54,18 +54,18 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
 
 
 
-AtomicGroup loos::averageStructure(const AtomicGroup& g, const vector<XForm>& xforms, Trajectory& traj) {
+AtomicGroup loos::averageStructure(const AtomicGroup& g, const vector<XForm>& xforms, pTraj traj) {
   AtomicGroup avg = g.copy();
   AtomicGroup frame = g.copy();
   int n = avg.size();
   for (int i=0; i<n; i++)
     avg[i]->coords() = GCoord(0.0, 0.0, 0.0);
 
-  traj.rewind();
-  uint tn = traj.nframes();
+  traj->rewind();
+  uint tn = traj->nframes();
   for (uint j=0; j<tn; j++) {
-    traj.readFrame(j);
-    traj.updateGroupCoords(frame);
+    traj->readFrame(j);
+    traj->updateGroupCoords(frame);
     frame.applyTransform(xforms[j]);
     for (int i=0; i<n; i++)
       avg[i]->coords() += frame[i]->coords();
@@ -115,13 +115,13 @@ boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGrou
 
 
 
-boost::tuple<vector<XForm>, greal, int> loos::iterativeAlignment(const AtomicGroup& g, Trajectory& traj, greal threshold, int maxiter) {
+boost::tuple<vector<XForm>, greal, int> loos::iterativeAlignment(const AtomicGroup& g, pTraj traj, greal threshold, int maxiter) {
   vector<AtomicGroup> frames;
 
-  traj.rewind();
-  while (traj.readFrame()) {
+  traj->rewind();
+  while (traj->readFrame()) {
     AtomicGroup frame = g.copy();
-    traj.updateGroupCoords(frame);
+    traj->updateGroupCoords(frame);
     frames.push_back(frame);
   }
 
