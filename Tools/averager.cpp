@@ -32,7 +32,7 @@
 #include <loos.hpp>
 #include <boost/program_options.hpp>
 
-
+using namespace std;
 namespace po = boost::program_options;
 
 

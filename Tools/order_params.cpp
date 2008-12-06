@@ -30,10 +30,9 @@
 */
 
 
+#include <loos.hpp>
 
 using namespace std;
-
-#include <loos.hpp>
 
 void Usage()
     {

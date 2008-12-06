@@ -33,6 +33,7 @@
 
 #include <loos.hpp>
 
+using namespace std;
 using namespace loos;
 
 int main(int argc, char *argv[]) {

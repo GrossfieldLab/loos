@@ -32,6 +32,7 @@
 
 const int update_frequency = 250;
 
+using namespace std;
 
 void Usage()
 {

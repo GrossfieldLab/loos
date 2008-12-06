@@ -49,6 +49,8 @@
 #include <boost/format.hpp>
 #include <cmath>
 
+using namespace std;
+
 typedef vector<GCoord> Axes;
 
 const double RAD2DEG = 180.0 / PI;

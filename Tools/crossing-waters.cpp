@@ -26,11 +26,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */ 
 
-using namespace std;
 
 #include <iostream>
 #include <map>
 #include <loos.hpp>
+
+using namespace std;
+
 
 void Usage()
     {

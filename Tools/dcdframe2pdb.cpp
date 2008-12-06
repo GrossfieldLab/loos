@@ -34,6 +34,8 @@
 #include <loos.hpp>
 
 
+using namespace std;
+
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     cerr << argv[0] << " pdbfile dcdfile frameno\n";

@@ -35,6 +35,7 @@
 
 namespace po = boost::program_options;
 
+using namespace std;
 
 
 struct Globals {

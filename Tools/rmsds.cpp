@@ -39,6 +39,7 @@
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
+using namespace std;
 
 typedef loos::Math::Matrix<double, loos::Math::Triangular> Matrix;
 

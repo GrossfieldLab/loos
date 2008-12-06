@@ -35,6 +35,8 @@
 
 #include <loos.hpp>
 
+using namespace std;
+
 void Usage()
     {
     cerr << "Usage: density-dist-windowed "

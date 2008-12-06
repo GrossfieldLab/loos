@@ -56,6 +56,7 @@
 #include <getopt.h>
 #include <cstdlib>
 
+using namespace std;
 using namespace loos;
 
 // Default values...

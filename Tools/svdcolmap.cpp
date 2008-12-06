@@ -33,6 +33,7 @@
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
+using namespace std;
 
 typedef loos::Math::Matrix<float, loos::Math::ColMajor> Matrix;
 
