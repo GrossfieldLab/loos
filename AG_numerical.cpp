@@ -32,6 +32,8 @@
 #include <iomanip>
 
 #include <assert.h>
+#include <vector>
+
 #include <algorithm>
 
 #include <boost/random.hpp>
@@ -40,13 +42,12 @@
 
 
 
-
 // Bounding box for all atoms in this group
-vector<GCoord> AtomicGroup::boundingBox(void) const {
+std::vector<GCoord> AtomicGroup::boundingBox(void) const {
   greal min[3] = {0,0,0}, max[3] = {0,0,0};
   ConstAtomIterator i;
   int j;
-  vector<GCoord> res(2);
+  std::vector<GCoord> res(2);
   GCoord c;
 
   if (atoms.size() == 0) {
@@ -174,7 +175,7 @@ greal AtomicGroup::radiusOfGyration(void) const {
 greal AtomicGroup::rmsd(AtomicGroup& v) {
   
   if (size() != v.size())
-    throw(runtime_error("Cannot compute RMSD between groups with different sizes"));
+    throw(std::runtime_error("Cannot compute RMSD between groups with different sizes"));
 
   sort();
   v.sort();
@@ -194,8 +195,8 @@ greal AtomicGroup::rmsd(AtomicGroup& v) {
 
 
 
-vector<GCoord> AtomicGroup::getTransformedCoords(const XForm& M) const {
-  vector<GCoord> crds(atoms.size());
+std::vector<GCoord> AtomicGroup::getTransformedCoords(const XForm& M) const {
+  std::vector<GCoord> crds(atoms.size());
   ConstAtomIterator i;
   GMatrix W = M.current();
   int j = 0;
@@ -219,20 +220,6 @@ void AtomicGroup::applyTransform(const XForm& M) {
 
 }
 
-
-
-void AtomicGroup::dumpMatrix(const string s, double* A, int m, int n) const {
-  cout << s << " = [\n" << endl;
-  int i, j;
-
-  for (j=0; j<m; j++) {
-    for (i=0; i<n; i++)
-      cout << setw(10) << A[i*m+j] << " ";
-    cout << ";\n";
-  }
-  cout << "];\n";
-
-}
 
 // Returns a newly allocated array of double coords in row-major
 // order...

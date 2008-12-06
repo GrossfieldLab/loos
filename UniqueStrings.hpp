@@ -28,9 +28,6 @@
 #include <string>
 #include <ext/slist>
 
-using namespace std;
-using namespace __gnu_cxx;
-
 //! Class for uniquifying strings...
 /**  This class uses an slist and just does a linear search to see if
  *   we've already encountered the passed string before.  This probably
@@ -40,7 +37,7 @@ class UniqueStrings {
 public:
 
   //! Adds a string to the unique string list
-  void add(const string& s) {
+  void add(const std::string& s) {
     if (find(s) < 0)
       uniques.push_front(s);
   }
@@ -49,15 +46,15 @@ public:
   int size(void) const { return(uniques.size()); }
 
   //! Returns the raw slist of strings...
-  slist<string> strings(void) const { return(uniques); }
+  __gnu_cxx::slist<std::string> strings(void) const { return(uniques); }
 
   //! Checks to see if we've encountered this string before...
   /** Returns an index (a unique int) representing this string.
    *  If the string is not found, returns -1.
    */
-  int find(const string& s) {
+  int find(const std::string& s) {
     int j = 0;
-    slist<string>::const_iterator i;
+    __gnu_cxx::slist<std::string>::const_iterator i;
     for (i = uniques.begin(); i != uniques.end(); i++, j++)
       if (*i == s)
         return(j);
@@ -65,7 +62,7 @@ public:
   }
 
 private:
-  slist<string> uniques;
+  __gnu_cxx::slist<std::string> uniques;
 };
 
 #endif

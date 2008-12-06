@@ -38,12 +38,15 @@
 #include <Coord.hpp>
 #include <loos_defs.hpp>
 
-using namespace std;
-
 
 typedef Matrix44<greal> GMatrix;
 
-const double PI = 4.0*atan(1.0);
+// This was formerly global, but now restricted to this unit...
+namespace {
+
+  const double PI = 4.0*atan(1.0);
+
+}
 
 
 
@@ -85,7 +88,7 @@ const double PI = 4.0*atan(1.0);
  */
 
 class XForm {
-  vector<GMatrix> stack;
+  std::vector<GMatrix> stack;
   bool _unset;
 
 public:
@@ -182,7 +185,7 @@ public:
     case 'Z': rotate(GCoord(0,0,1), angle); break;
 
     default:
-      throw(logic_error("Invalid axis in XForm::rotate(const char, const greal)"));
+      throw(std::logic_error("Invalid axis in XForm::rotate(const char, const greal)"));
     }
   }
 

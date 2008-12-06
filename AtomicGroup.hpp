@@ -235,7 +235,7 @@ public:
   AtomicGroup getResidue(pAtom res);
 
   //! Output the group in pseudo-XML format...
-  friend ostream& operator<<(ostream& os, const AtomicGroup& grp);
+  friend std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp);
   
   // Some misc support routines...
 
@@ -478,12 +478,11 @@ private:
     int id;
   };
     
-  typedef tr1::unordered_set<int> HashInt;
+  typedef std::tr1::unordered_set<int> HashInt;
 
   void walkBonds(AtomicGroup& mygroup, HashInt& seen, pAtom moi);
 
 
-  void dumpMatrix(const std::string, double*, int, int) const;
   double *coordsAsArray(void) const;
   double *transformedCoordsAsArray(const XForm&) const;
 

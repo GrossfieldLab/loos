@@ -29,8 +29,6 @@
 #include <sstream>
 #include <stdexcept>
 
-using namespace std;
-
 #include <AtomicGroup.hpp>
 #include <Kernel.hpp>
 #include <ParserDriver.hpp>
@@ -90,11 +88,11 @@ class Parser {
   ParserDriver driver;
 
 public:
-  explicit Parser(const string& s) : driver(s, krnl) { }    // This auto-parses the string...
+  explicit Parser(const std::string& s) : driver(s, krnl) { }    // This auto-parses the string...
   Parser() : driver(krnl) { }
 
   //! Parse the given command string after clearing the action stack
-  void parse(const string& s) {krnl.clearActions();  driver.parse(s); }
+  void parse(const std::string& s) {krnl.clearActions();  driver.parse(s); }
 
   //! Return a ref to the compiled (hopefully) Kernel.
   loos::Kernel& kernel(void) { return(krnl); }

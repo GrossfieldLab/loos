@@ -46,7 +46,7 @@
 #if defined(__linux__) || defined(__APPLE__)
 
 
-vector<GCoord> AtomicGroup::principalAxes(void) const {
+std::vector<GCoord> AtomicGroup::principalAxes(void) const {
   // Extract out the group's coordinates...
   int i;
   int n = size();
@@ -90,12 +90,12 @@ vector<GCoord> AtomicGroup::principalAxes(void) const {
 
   dsyev_(&jobz, &uplo, &nn, C, &lda, W, work, &lwork, &info);
   if (info < 0)
-    throw(runtime_error("dsyev_ reported an argument error..."));
+    throw(std::runtime_error("dsyev_ reported an argument error..."));
 
   if (info > 0)
-    throw(runtime_error("dsyev_ failed to converge..."));
+    throw(std::runtime_error("dsyev_ failed to converge..."));
 
-  vector<GCoord> results(4);
+  std::vector<GCoord> results(4);
   GCoord c;
 
   k = 0;

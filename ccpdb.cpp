@@ -48,12 +48,12 @@ void CCPDB::init(void) {
 
 void CCPDB::seekFrame(const uint i) {
   if (i >= _nframes)
-    throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+    throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
 
   ifs()->clear();
   ifs()->seekg(indices[i]);
   if (ifs()->fail())
-    throw(runtime_error("Error- cannot seek to the requested frame in trajectory."));
+    throw(std::runtime_error("Error- cannot seek to the requested frame in trajectory."));
 }
 
 
@@ -74,8 +74,8 @@ bool CCPDB::parseFrame(void) {
 }
 
 
-vector<GCoord> CCPDB::coords(void) {
-  vector<GCoord> result(_natoms);
+std::vector<GCoord> CCPDB::coords(void) {
+  std::vector<GCoord> result(_natoms);
 
   for (uint i=0; i<_natoms; i++)
     result[i] = frame[i]->coords();

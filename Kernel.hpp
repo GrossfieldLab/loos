@@ -80,8 +80,8 @@ namespace loos {
 
       os << "Commands:\n";
       for (i=k.actions.begin(); i != k.actions.end(); i++)
-        os << (*i)->name() << endl;
-      os << endl;
+        os << (*i)->name() << std::endl;
+      os << std::endl;
       return(os);
     }
 

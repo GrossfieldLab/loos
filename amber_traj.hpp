@@ -51,13 +51,13 @@
 
 class AmberTraj : public Trajectory {
 public:
-  explicit AmberTraj(const string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
+  explicit AmberTraj(const std::string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
   explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
 
   virtual void rewind(void) { ifs()->seekg(frame_offset); }
   virtual uint nframes(void) const { return(_nframes); }
   virtual uint natoms(void) const { return(_natoms); }
-  virtual vector<GCoord> coords(void) { return(frame); }
+  virtual std::vector<GCoord> coords(void) { return(frame); }
   virtual void updateGroupCoords(AtomicGroup&);
 
   virtual void seekNextFrame(void) { }
@@ -83,7 +83,7 @@ private:
   bool periodic;
   bool unread;
   GCoord box;
-  vector<GCoord> frame;
+  std::vector<GCoord> frame;
 
 };
 

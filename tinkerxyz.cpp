@@ -30,20 +30,20 @@
 #include "loos.hpp"
 #include "tinkerxyz.hpp"
 
-void TinkerXYZ::read(istream& is) {
-    string input;
+void TinkerXYZ::read(std::istream& is) {
+    std::string input;
 
     // first line is the header, first field is number of atoms
     if (!getline(is, input))
-        throw(runtime_error("Failed reading first line of xyz"));
+        throw(std::runtime_error("Failed reading first line of xyz"));
     int num_atoms = 0;
-    if (!(stringstream(input) >> num_atoms))
-        throw(runtime_error("TinkerXYZ has malformed header"));
+    if (!(std::stringstream(input) >> num_atoms))
+        throw(std::runtime_error("TinkerXYZ has malformed header"));
 
     // Read the lines
     for (int i=0; i<num_atoms; i++) {
         if (!getline(is, input))
-            throw(runtime_error("Failed reading TinkerXYZ atom line "));
+            throw(std::runtime_error("Failed reading TinkerXYZ atom line "));
         parseAtomRecord(input);
     }
 
@@ -51,22 +51,22 @@ void TinkerXYZ::read(istream& is) {
 
 
 
-void TinkerXYZ::parseAtomRecord(const string s) {
+void TinkerXYZ::parseAtomRecord(const std::string s) {
 
 
     gint index;
-    //string segname("");       // Tinker doesn't have segments
+    //std::string segname("");       // Tinker doesn't have segments
     //gint resid=1;             // Tinker doesn't have residues
-    //string resname("");       // Tinker doesn't have residues
-    string atomname;  
-    string atomtype;          // Tinker atom types are numbers -- crap!
+    //std::string resname("");       // Tinker doesn't have residues
+    std::string atomname;  
+    std::string atomtype;          // Tinker atom types are numbers -- crap!
     //greal charge=0.0;
     //greal mass=1.0;
     //gint atomic_number = 1;
 
     pAtom pa(new Atom);
          
-    stringstream ss(s);
+    std::stringstream ss(s);
 
     ss >> index;
     pa->id(index);

@@ -32,8 +32,6 @@
 
 #include <boost/utility.hpp>
 
-using namespace std;
-
 //! Simple wrapper class for caching stream pointers
 /** This class was written primarily for use with the DCD classes
  *  where we want to have a cached stream that we may read from (or
@@ -53,35 +51,43 @@ public:
   StreamWrapper() : new_stream(false), stream(0) { }
 
   //! Sets the internal stream pointer to fs
-  explicit StreamWrapper(fstream& fs) : new_stream(false), stream(&fs) { }
+  explicit StreamWrapper(std::fstream& fs) : new_stream(false), stream(&fs) { }
 
   //! Opens a new stream with file named 's'
-  StreamWrapper(const string& s, const ios_base::openmode mode = ios_base::in | ios_base::binary) : new_stream(true) {
-    stream = new fstream(s.c_str(), mode);
+  StreamWrapper(const std::string& s,
+                const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+    : new_stream(true)
+  {
+    stream = new std::fstream(s.c_str(), mode);
     if (!stream)
-      throw(runtime_error("Cannot open file " + s));
+      throw(std::runtime_error("Cannot open file " + s));
   }
 
   //! Opens a new stream with file named 's'
-  StreamWrapper(const char* const s, const ios_base::openmode mode = ios_base::in | ios_base::binary) : new_stream(true) {
-    stream = new fstream(s, mode);
+  StreamWrapper(const char* const s,
+                const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+    : new_stream(true)
+  {
+    stream = new std::fstream(s, mode);
     if (!stream)
-      throw(runtime_error("Cannot open file " + string(s)));
+      throw(std::runtime_error("Cannot open file " + std::string(s)));
   }
 
   //! Sets the internal stream to point to a newly opened filed...
-  void setStream(const string& s, const ios_base::openmode mode = ios_base::in | ios_base::binary) {
+  void setStream(const std::string& s,
+                 const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+  {
     if (new_stream)
       delete stream;
 
     new_stream = true;
-    stream = new fstream(s.c_str(), mode);
+    stream = new std::fstream(s.c_str(), mode);
     if (!stream)
-      throw(runtime_error("Cannot open file " + string(s)));
+      throw(std::runtime_error("Cannot open file " + std::string(s)));
   }
 
   //! Sets the internal stream to the passed fstream.
-  void setStream(fstream& fs) {
+  void setStream(std::fstream& fs) {
     if (new_stream)
       delete stream;
     new_stream = false;
@@ -89,9 +95,9 @@ public:
   }
 
   //! Returns the internal fstream pointer
-  fstream* operator()(void) {
+  std::fstream* operator()(void) {
     if (stream == 0)
-      throw(logic_error("Attempting to access an unset stream"));
+      throw(std::logic_error("Attempting to access an unset stream"));
     return(stream);
   }
 
@@ -101,7 +107,7 @@ public:
   //! Checks to see if the stream pointer is set and throws an exception if not.
   void checkSet(void) const {
     if (stream == 0)
-      throw(logic_error("Attempting to use an unset stream"));
+      throw(std::logic_error("Attempting to use an unset stream"));
   }
     
   ~StreamWrapper() { if (new_stream) delete stream; }
@@ -109,7 +115,7 @@ public:
 
 private:
   bool new_stream;
-  fstream* stream;
+  std::fstream* stream;
 };
 
 

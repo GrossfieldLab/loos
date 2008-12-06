@@ -33,8 +33,6 @@
 #include "Atom.hpp"
 #include "AtomicGroup.hpp"
 
-using namespace std;
-
 //! Class for reading a subset of the TinkerXYZ format
 /**
  * Notes:
@@ -47,15 +45,15 @@ public:
     TinkerXYZ() { }
     virtual ~TinkerXYZ() {}
 
-    explicit TinkerXYZ(const string fname) {
-        ifstream ifs(fname.c_str());
+    explicit TinkerXYZ(const std::string fname) {
+        std::ifstream ifs(fname.c_str());
         if (!ifs) {
-            throw(runtime_error("Cannot open TinkerXYZ file " + string(fname)));
+            throw(std::runtime_error("Cannot open TinkerXYZ file " + std::string(fname)));
             }
         read(ifs);
     }
 
-    explicit TinkerXYZ(ifstream &ifs) {
+    explicit TinkerXYZ(std::ifstream &ifs) {
         read(ifs);
     }
 
@@ -73,7 +71,7 @@ public:
     return(p);
   }
 
-   void read(istream& is);  
+   void read(std::istream& is);  
 
 
 private:
@@ -81,7 +79,7 @@ private:
   TinkerXYZ(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
 
-  void parseAtomRecord(const string s);  
+  void parseAtomRecord(const std::string s);  
   
   
 };

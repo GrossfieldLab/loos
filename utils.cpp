@@ -39,9 +39,9 @@
 #include <utils.hpp>
 
 
-string getNextLine(istream& is, int *lineno = 0) {
-  string s;
-  string::size_type i;
+std::string getNextLine(std::istream& is, int *lineno = 0) {
+  std::string s;
+  std::string::size_type i;
 
   for (;;) {
     if (getline(is, s, '\n').eof())
@@ -52,7 +52,7 @@ string getNextLine(istream& is, int *lineno = 0) {
 
     // Strip off comments
     i = s.find('#');
-    if (i != string::npos)
+    if (i != std::string::npos)
       s.erase(i, s.length() - i);
 
     // Remove leading whitespace
@@ -60,7 +60,7 @@ string getNextLine(istream& is, int *lineno = 0) {
     if (i > 0)
       s.erase(0, i);
 
-    // Is string non-empty?
+    // Is std::string non-empty?
     if (s.length() != 0)
       break;
   }
@@ -70,17 +70,17 @@ string getNextLine(istream& is, int *lineno = 0) {
 
 
 
-vector<int> readIndexMap(istream& is) {
-  vector<int> indices;
+std::vector<int> readIndexMap(std::istream& is) {
+  std::vector<int> indices;
   int i;
-  string s;
+  std::string s;
 
   for (;;) {
     s = getNextLine(is);
     if (s.length() == 0)
       break;
 
-    istringstream iss(s);
+    std::istringstream iss(s);
     iss >> i;
     indices.push_back(i);
   }
@@ -90,12 +90,12 @@ vector<int> readIndexMap(istream& is) {
 
 
 
-string invocationHeader(int argc, char *argv[]) {
-  string invoke, user;
+std::string invocationHeader(int argc, char *argv[]) {
+  std::string invoke, user;
   int i;
   
   time_t t = time(0);
-  string timestamp(asctime(localtime(&t)));
+  std::string timestamp(asctime(localtime(&t)));
   timestamp.erase(timestamp.length() - 1, 1);
 
   struct passwd* pwd = getpwuid(getuid());
@@ -104,12 +104,12 @@ string invocationHeader(int argc, char *argv[]) {
   else
     user = pwd->pw_name;
 
-  invoke = string(argv[0]) + " ";
-  string sep(" ");
+  invoke = std::string(argv[0]) + " ";
+  std::string sep(" ");
   for (i=1; i<argc; i++) {
     if (i == argc-1)
       sep = "";
-    invoke += "'" + string(argv[i]) + "'" + sep;
+    invoke += "'" + std::string(argv[i]) + "'" + sep;
   }
 
   invoke += " - " + user + " (" + timestamp + ")";
@@ -130,15 +130,15 @@ GCoord boxFromRemarks(const Remarks& r) {
   GCoord c(99999.99, 99999.99, 99999.99);
 
   for (i=0; i<n; i++) {
-    string s = r[i];
+    std::string s = r[i];
     if (s.substr(0, 6) == " XTAL ") {
-      stringstream is(s.substr(5));
+      std::stringstream is(s.substr(5));
       if (!(is >> c.x()))
-        throw(runtime_error("Unable to parse " + s));
+        throw(std::runtime_error("Unable to parse " + s));
       if (!(is >> c.y()))
-        throw(runtime_error("Unable to parse " + s));
+        throw(std::runtime_error("Unable to parse " + s));
       if (!(is >> c.z()))
-        throw(runtime_error("Unable to parse " + s));
+        throw(std::runtime_error("Unable to parse " + s));
 
       break;
     }
@@ -152,7 +152,7 @@ GCoord boxFromRemarks(const Remarks& r) {
 bool remarksHasBox(const Remarks& r) {
   int n = r.size();
   for (int i = 0; i<n; i++) {
-    string s = r[i];
+    std::string s = r[i];
     if (s.substr(0, 6) == " XTAL ")
       return(true);
   }
@@ -186,12 +186,12 @@ void loos::randomSeedRNG(void) {
  * the specified indices.  There is no bounds checking...  Duplicate
  * indices are filtered and the returned vector is sorted.
  */ 
-vector<int> loos::parseRangeList(const string& text) {
-  vector<string> terms;
-  vector<int> indices;
+std::vector<int> loos::parseRangeList(const std::string& text) {
+  std::vector<std::string> terms;
+  std::vector<int> indices;
 
   boost::split(terms, text, boost::is_any_of(","), boost::token_compress_on);
-  vector<string>::const_iterator ci;
+  std::vector<std::string>::const_iterator ci;
   for (ci = terms.begin(); ci != terms.end(); ci++) {
     int a, b, c;
     int i;
@@ -203,24 +203,24 @@ vector<int> loos::parseRangeList(const string& text) {
       c = a;
       b = 1;
     } else if (i != 3)
-      throw(runtime_error("Cannot parse range list item " + *ci));
+      throw(std::runtime_error("Cannot parse range list item " + *ci));
 
     if (c < a) {
       if (b > 0)
-        throw(runtime_error("Invalid range spec " + *ci));
+        throw(std::runtime_error("Invalid range spec " + *ci));
       int x = c;
       c = a;
       a = x;
       b = -b;
     } else if (b <= 0)
-      throw(runtime_error("Invalid range spec " + *ci));
+      throw(std::runtime_error("Invalid range spec " + *ci));
 
     for (int i=a; i<=c; i += b)
       indices.push_back(i);
   }
   sort(indices.begin(), indices.end());
-  vector<int> results;
-  vector<int>::const_iterator cvi;
+  std::vector<int> results;
+  std::vector<int>::const_iterator cvi;
   int last = indices[0];
   results.push_back(last);
 
@@ -246,7 +246,7 @@ vector<int> loos::parseRangeList(const string& text) {
  *  and null-selection, a runtime_error exception is thrown so the
  *  catcher cannot disambiguate between the two.
 */
-AtomicGroup loos::selectAtoms(const AtomicGroup& source, const string selection) {
+AtomicGroup loos::selectAtoms(const AtomicGroup& source, const std::string selection) {
   
   Parser parser;
 
@@ -254,14 +254,14 @@ AtomicGroup loos::selectAtoms(const AtomicGroup& source, const string selection)
     parser.parse(selection);
   }
   catch(runtime_error e) {
-    throw(runtime_error("Error in parsing '" + selection + "' ... " + e.what()));
+    throw(std::runtime_error("Error in parsing '" + selection + "' ... " + e.what()));
   }
 
   KernelSelector selector(parser.kernel());
   AtomicGroup subset = source.select(selector);
 
   if (subset.size() == 0)
-    throw(runtime_error("No atoms were selected using '" + selection + "'"));
+    throw(std::runtime_error("No atoms were selected using '" + selection + "'"));
 
   return(subset);
 }

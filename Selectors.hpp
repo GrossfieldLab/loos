@@ -42,7 +42,7 @@ struct CAlphaSelector : public AtomSelector {
 //! Predicate for selecting backbone
 struct BackboneSelector : public AtomSelector {
   bool operator()(const pAtom& pa) const {
-    string s = pa->name();
+    std::string s = pa->name();
     return(s == "C" || s == "CA" || s == "O" || s == "N");
   }
 };
@@ -50,12 +50,12 @@ struct BackboneSelector : public AtomSelector {
 
 //! Predicate for selecting atoms based on the passed segid string
 struct SegidSelector : public AtomSelector {
-  explicit SegidSelector(const string s) : str(s) { }
+  explicit SegidSelector(const std::string s) : str(s) { }
   bool operator()(const pAtom& pa) const {
     return(pa->segid() == str);
   }
 
-  string str;
+  std::string str;
 };
 
 //! Predicate for selecting atoms from a range of resid's
@@ -111,7 +111,7 @@ struct HydrogenSelector  : public AtomSelector {
     if (pa->checkProperty(Atom::massbit))
       masscheck = (pa->mass() < 1.1);
 
-    string n = pa->name();
+    std::string n = pa->name();
     return( (n[0] == 'H') && masscheck );
 
   }
@@ -228,12 +228,12 @@ public:
   bool operator()(const pAtom& pa) const {
     krnl.execute(pa);
     if (krnl.stack().size() != 1) {
-      throw(runtime_error("Execution error - unexpected values on stack"));
+      throw(std::runtime_error("Execution error - unexpected values on stack"));
     }
 
     loos::Value results = krnl.stack().pop();
     if (results.type != loos::Value::INT)
-      throw(runtime_error("Execution error - unexpected value on top of stack"));
+      throw(std::runtime_error("Execution error - unexpected value on top of stack"));
 
     return(results.itg);
   }

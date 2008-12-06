@@ -59,7 +59,7 @@ int AtomicGroup::rangeCheck(int i) const {
   if (i < 0)
     i = atoms.size() + i;
   if ((unsigned int)i >= atoms.size())
-    throw(out_of_range("Bad index for an atom"));
+    throw(std::out_of_range("Bad index for an atom"));
 
   return(i);
 }
@@ -90,7 +90,7 @@ void AtomicGroup::deleteAtom(pAtom pa) {
 
   iter = find(atoms.begin(), atoms.end(), pa);
   if (iter == atoms.end())
-    throw(runtime_error("Attempting to delete a non-existent atom"));
+    throw(std::runtime_error("Attempting to delete a non-existent atom"));
 
   atoms.erase(iter);
   _sorted = false;
@@ -213,7 +213,7 @@ boost::tuple<AtomicGroup::AtomIterator, AtomicGroup::AtomIterator> AtomicGroup::
   }
 
   if (b-a >= atoms.size())
-    throw(range_error("Indices out of bounds for subsetting"));
+    throw(std::range_error("Indices out of bounds for subsetting"));
 
   boost::tuple<AtomIterator, AtomIterator> res(atoms.begin() + a, atoms.begin() + b);
 
@@ -298,7 +298,7 @@ std::vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
   for (i = atoms.begin(); i != atoms.end(); i++) {
     j = unique.find((*i)->segid());
     if (j < 0)
-      throw(runtime_error("Could not find an atom we already found..."));
+      throw(std::runtime_error("Could not find an atom we already found..."));
     results[j].append(*i);
   }
 
@@ -318,7 +318,7 @@ std::vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
  * through all of its bonded atoms.
  *
  * If we find a bond that goes to an atom that does not exist in the
- * current group, a runtime_error is thrown.
+ * current group, a std::runtime_error is thrown.
  */
 
 std::vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
@@ -381,7 +381,7 @@ void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, pAtom moi) {
   for (citer = bonds.begin(); citer != bonds.end(); citer++) {
     pAtom toi = findById(*citer);
     if (toi == 0)
-      throw(runtime_error("Missing bonds while trying to walk the connectivity tree."));
+      throw(std::runtime_error("Missing bonds while trying to walk the connectivity tree."));
     walkBonds(current, seen, toi);
   }
 }
@@ -420,7 +420,7 @@ AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) {
 
     for (unsigned int i=0; i<id_list.size(); i++) {
         pAtom pa = findById(id_list[i]);
-        if (!pa) throw(out_of_range("Atom id doesn't exist"));
+        if (!pa) throw(std::out_of_range("Atom id doesn't exist"));
         result.addAtom(pa);
     }
     return(result);
@@ -643,7 +643,7 @@ bool AtomicGroup::operator==(const AtomicGroup& rhs) const {
 
 void AtomicGroup::reimage() {
     if (!(isPeriodic()))
-        throw(runtime_error("trying to reimage a non-periodic group"));
+        throw(std::runtime_error("trying to reimage a non-periodic group"));
     GCoord com = centroid();
     GCoord reimaged = com;
     reimaged.reimage(periodicBox());
@@ -656,7 +656,7 @@ void AtomicGroup::reimage() {
 
 void AtomicGroup::reimageByAtom () {
     if (!(isPeriodic()))
-        throw(runtime_error("trying to reimage a non-periodic group"));
+        throw(std::runtime_error("trying to reimage a non-periodic group"));
     ConstAtomIterator a;
     GCoord box = periodicBox();
     for (a=atoms.begin(); a!=atoms.end(); a++) {
@@ -703,7 +703,7 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
   for (ci = unique_ids.begin(); ci != unique_ids.end(); ci++) {
     pAtom pa = findById(*ci);
     if (pa == 0)
-      throw(logic_error("Cannot find a found atom in AtomicGroup::atomsWithin()"));
+      throw(std::logic_error("Cannot find a found atom in AtomicGroup::atomsWithin()"));
 
     res.addAtom(pa);
   }
@@ -713,14 +713,14 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
 
 
 // XMLish output...
-ostream& operator<<(ostream& os, const AtomicGroup& grp) {
+std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {
   AtomicGroup::ConstAtomIterator i;
   if (grp.isPeriodic())
     os << "<GROUP PERIODIC='" << grp.box.box() << "'>\n";
   else
     os << "<GROUP>\n";
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
-    os << "   " << **i << endl;
+    os << "   " << **i << std::endl;
   os << "</GROUP>";
 
   return(os);

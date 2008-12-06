@@ -41,51 +41,51 @@
   have a SEGID, or CHARGE, etc.
 */
 
-greal PDB::parseFloat(const string& s) {
+greal PDB::parseFloat(const std::string& s) {
   greal result;
 
-  if (!(stringstream(s) >> result))
-    throw(runtime_error("Cannot parse " + s + " as a floating value"));
+  if (!(std::stringstream(s) >> result))
+    throw(std::runtime_error("Cannot parse " + s + " as a floating value"));
 
   return(result);
 }
 
 
-greal PDB::parseFloat(const string& s, const unsigned int offset, const unsigned int len) {
+greal PDB::parseFloat(const std::string& s, const unsigned int offset, const unsigned int len) {
 
   if (offset+len > s.size())
     return(0.0);
-  string t = s.substr(offset, len);
+  std::string t = s.substr(offset, len);
   return(parseFloat(t));
 }
 
 
-gint PDB::parseInt(const string& s) {
+gint PDB::parseInt(const std::string& s) {
   gint result;
 
-  if (!(stringstream(s) >> result))
-    throw(runtime_error("Cannot parse " + s + " as a integer value"));
+  if (!(std::stringstream(s) >> result))
+    throw(std::runtime_error("Cannot parse " + s + " as a integer value"));
 
   return(result);
 }
 
 
-gint PDB::parseInt(const string& s, const int unsigned offset, const unsigned int len) {
+gint PDB::parseInt(const std::string& s, const int unsigned offset, const unsigned int len) {
   if (offset+len > s.size())
     return(0);
 
-  string t = s.substr(offset, len);
+  std::string t = s.substr(offset, len);
   return(parseInt(t));
 }
 
 
 
-string PDB::parseString(const string& s, const unsigned int offset, const unsigned int len) {
+std::string PDB::parseString(const std::string& s, const unsigned int offset, const unsigned int len) {
 
   if (offset+len > s.size())
-    return(string(""));
+    return(std::string(""));
 
-  string t = s.substr(offset, len);
+  std::string t = s.substr(offset, len);
   boost::trim(t);
 
   return(t);
@@ -93,8 +93,8 @@ string PDB::parseString(const string& s, const unsigned int offset, const unsign
 
 
 // Assume we're only going to find spaces in a PDB file...
-bool PDB::emptyString(const string& s) {
-  string::const_iterator i;
+bool PDB::emptyString(const std::string& s) {
+  std::string::const_iterator i;
 
   for (i = s.begin(); i != s.end(); ++i)
     if (*i != ' ')
@@ -107,8 +107,8 @@ bool PDB::emptyString(const string& s) {
 // Special handling for REMARKs to ignore the line code, if
 // present... 
 
-void PDB::parseRemark(const string& s) {
-  string t;
+void PDB::parseRemark(const std::string& s) {
+  std::string t;
 
   if (s[6] == ' ' && isdigit(s[7]))
     t = s.substr(11, 58);
@@ -121,10 +121,10 @@ void PDB::parseRemark(const string& s) {
 
 // Parse an ATOM or HETATM record...
 
-void PDB::parseAtomRecord(const string& s) {
+void PDB::parseAtomRecord(const std::string& s) {
   greal r;
   gint i;
-  string t;
+  std::string t;
   GCoord c;
   pAtom pa(new Atom);
   
@@ -157,7 +157,7 @@ void PDB::parseAtomRecord(const string& s) {
     char c = t[0];
     
     if (c != ' ' && !isalpha(c))
-      throw(runtime_error("Non-alpha character in iCode column of PDB"));
+      throw(std::runtime_error("Non-alpha character in iCode column of PDB"));
   } else {
     char c = t[0];
 
@@ -198,8 +198,8 @@ void PDB::parseAtomRecord(const string& s) {
 
 // Convert an Atom to a string with a PDB format...
 
-string PDB::atomAsString(const pAtom p) const {
-  ostringstream s;
+std::string PDB::atomAsString(const pAtom p) const {
+  std::ostringstream s;
 
   // Float formatter for coords
   Fmt crdfmt(3);
@@ -215,16 +215,16 @@ string PDB::atomAsString(const pAtom p) const {
   bqfmt.trailingZeros(true);
   bqfmt.fixed();
 
-  s << setw(6) << left << p->recordName();
-  s << setw(5) << right << p->id();
-  s << " " << setw(4) << left << p->name();
+  s << std::setw(6) << std::left << p->recordName();
+  s << std::setw(5) << std::right << p->id();
+  s << " " << std::setw(4) << std::left << p->name();
 
-  s << setw(1) << p->altLoc();
-  s << setw(4) << left << p->resname();
+  s << std::setw(1) << p->altLoc();
+  s << std::setw(4) << std::left << p->resname();
 
-  s << setw(1) << right << p->chainId();
-  s << setw(4) << p->resid();
-  s << setw(2) << p->iCode();
+  s << std::setw(1) << std::right << p->chainId();
+  s << std::setw(4) << p->resid();
+  s << std::setw(2) << p->iCode();
   if (p->resid() < 10000)
     s << "  ";
   else
@@ -235,10 +235,10 @@ string PDB::atomAsString(const pAtom p) const {
   s << bqfmt(p->occupancy());
   s << bqfmt(p->bfactor());
   s << "      ";
-  s << setw(4) << left << p->segid();
-  s << setw(2) << right << p->PDBelement();
+  s << std::setw(4) << std::left << p->segid();
+  s << std::setw(2) << std::right << p->PDBelement();
   if (_show_charge)
-    s << setw(2) << p->charge();
+    s << std::setw(2) << p->charge();
   else
     s << "  ";
 
@@ -255,7 +255,7 @@ string PDB::atomAsString(const pAtom p) const {
 //
 //    No check is made for overflow of fields...
 
-void PDB::parseConectRecord(const string& s) {
+void PDB::parseConectRecord(const std::string& s) {
   int bound_id = parseInt(s, 6, 5);
   pAtom bound = findById(bound_id);
   if (bound == 0)
@@ -265,7 +265,7 @@ void PDB::parseConectRecord(const string& s) {
   // Should we do this? or separate them out?  Hmmm...
   for (int i=0; i<8; ++i) {
     int j = i * 5 + 11;
-    string t = s.substr(j, 5);
+    std::string t = s.substr(j, 5);
     if (emptyString(t))
       break;
     int id = parseInt(t);
@@ -277,10 +277,10 @@ void PDB::parseConectRecord(const string& s) {
 }
 
 
-void PDB::parseCryst1Record(const string& s) {
+void PDB::parseCryst1Record(const std::string& s) {
   greal r;
   gint i;
-  string t;
+  std::string t;
 
   r = parseFloat(s, 6, 9);
   cell.a(r);
@@ -314,10 +314,10 @@ void PDB::parseCryst1Record(const string& s) {
 
 //! Top level parser...
 //! Reads a PDB from an input stream
-void PDB::read(istream& is) {
-  string input;
+void PDB::read(std::istream& is) {
+  std::string input;
   bool has_cryst = false;
-  tr1::unordered_set<string> seen;
+  std::tr1::unordered_set<std::string> seen;
 
   while (getline(is, input)) {
     if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
@@ -335,9 +335,9 @@ void PDB::read(istream& is) {
       break;
     else {
       int space = input.find_first_of(' ');
-      string record = input.substr(0, space);
+      std::string record = input.substr(0, space);
       if (seen.find(record) == seen.end()) {
-        cerr << "Warning - unknown PDB record " << record << endl;
+        std::cerr << "Warning - unknown PDB record " << record << std::endl;
         seen.insert(record);
       }
     }
@@ -354,7 +354,7 @@ void PDB::read(istream& is) {
 }
 
 
-ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
+std::ostream& FormattedUnitCell(std::ostream& os, const UnitCell& u) {
   os << "CRYST1";
   Fmt dists(3);
   dists.width(9).right().trailingZeros(true).fixed();
@@ -363,12 +363,12 @@ ostream& FormattedUnitCell(ostream& os, const UnitCell& u) {
 
   os << dists(u.a()) << dists(u.b()) << dists(u.c());
   os << angles(u.alpha()) << angles(u.beta()) << angles(u.gamma());
-  os << " " << setw(10) << left << u.spaceGroup() << setw(4) << u.z();
+  os << " " << std::setw(10) << std::left << u.spaceGroup() << std::setw(4) << u.z();
 
   return(os);
 }
 
-ostream& XTALLine(ostream& os, const GCoord& box) {
+std::ostream& XTALLine(std::ostream& os, const GCoord& box) {
     os << "REMARK  XTAL "
        << box.x() << " "
        << box.y() << " "
@@ -377,7 +377,7 @@ ostream& XTALLine(ostream& os, const GCoord& box) {
 }
 
 
-ostream& FormatConectRecords(ostream& os, PDB& p) {
+std::ostream& FormatConectRecords(std::ostream& os, PDB& p) {
   AtomicGroup::AtomIterator ci;
 
   // We first have to make sure that the base AtomicGroup is sorted
@@ -393,8 +393,8 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
       os << boost::format("CONECT%5d") % donor;
       int i = 0;
 
-      vector<int> bonds = (*ci)->getBonds();
-      vector<int>::const_iterator cj;
+      std::vector<int> bonds = (*ci)->getBonds();
+      std::vector<int>::const_iterator cj;
       for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
         if (++i > 4) {
           i = 1;
@@ -406,7 +406,7 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
         throw(PDB::BadConnectivity("Cannot write CONECT records - bound atoms are missing"));
       os << boost::format("%5d") % bound_id;
       }
-      os << endl;
+      os << std::endl;
     }
   }
 
@@ -415,16 +415,16 @@ ostream& FormatConectRecords(ostream& os, PDB& p) {
 
 
 //! Output the group as a PDB...
-ostream& operator<<(ostream& os, PDB& p) {
+std::ostream& operator<<(std::ostream& os, PDB& p) {
   AtomicGroup::AtomIterator i;
 
   os << p._remarks;
   if (p.isPeriodic())
-    XTALLine(os, p.periodicBox()) << endl;
+    XTALLine(os, p.periodicBox()) << std::endl;
   if (p._has_cryst) 
-    FormattedUnitCell(os, p.cell) << endl;
+    FormattedUnitCell(os, p.cell) << std::endl;
   for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
-    os << p.atomAsString(*i) << endl;
+    os << p.atomAsString(*i) << std::endl;
 
   if (p.hasBonds()) {
     int maxid = 0;

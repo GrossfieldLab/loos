@@ -58,13 +58,13 @@ public:
   Trajectory() : cached_first(false) { }
 
   //! Automatically open the file named \a s
-  Trajectory(const string& s) : ifs(s), cached_first(false) { }
+  Trajectory(const std::string& s) : ifs(s), cached_first(false) { }
 
   //! Automatically open the file named \a s
   Trajectory(const char* s) : ifs(s), cached_first(false) {  }
 
   //! Open using the given stream...
-  Trajectory(fstream& fs) : ifs(fs), cached_first(false) { }
+  Trajectory(std::fstream& fs) : ifs(fs), cached_first(false) { }
   virtual ~Trajectory() { }
 
   //! # of atoms per frame
@@ -94,7 +94,7 @@ public:
    * coordinates.  This means that this could be a potentially
    * expensive operation.
    */
-  virtual vector<GCoord> coords(void) =0;
+  virtual std::vector<GCoord> coords(void) =0;
   
   //! Update the coordinates in an AtomicGroup with the current frame.
   /** As with the coords() member function, some formats may have

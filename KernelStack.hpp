@@ -45,7 +45,7 @@ namespace loos {
 
     void notEmpty(void) const {
       if (values.size() == 0)
-        throw(logic_error("Operation requested on an empty stack."));
+        throw(std::logic_error("Operation requested on an empty stack."));
     }
 
   public:
@@ -76,7 +76,7 @@ namespace loos {
       if (i < 0)
         i += values.size();
       if ((unsigned int)i >= values.size())
-        throw(logic_error("Peeking beyond the stack!"));
+        throw(std::logic_error("Peeking beyond the stack!"));
 
       return(values[i]);
     }
@@ -90,7 +90,7 @@ namespace loos {
       std::vector<Value>::const_iterator i;
 
       for (i=s.values.begin(); i != s.values.end(); i++)
-        os << "  " << *i << endl;
+        os << "  " << *i << std::endl;
 
       return(os);
     }

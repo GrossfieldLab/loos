@@ -53,12 +53,12 @@ void TinkerArc::seekNextFrame(void) {
 
 void TinkerArc::seekFrame(const uint i) {
   if (i >= _nframes)
-    throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+    throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
 
   ifs()->clear();
   ifs()->seekg(indices[i]);
   if (ifs()->fail())
-    throw(runtime_error("Error- cannot seek to the requested frame in trajectory."));
+    throw(std::runtime_error("Error- cannot seek to the requested frame in trajectory."));
 
   current_index = i;
   at_end = false;
@@ -81,8 +81,8 @@ bool TinkerArc::parseFrame(void) {
 }
 
 
-vector<GCoord> TinkerArc::coords(void) {
-  vector<GCoord> result(_natoms);
+std::vector<GCoord> TinkerArc::coords(void) {
+  std::vector<GCoord> result(_natoms);
 
   for (uint i=0; i<_natoms; i++)
     result[i] = frame[i]->coords();

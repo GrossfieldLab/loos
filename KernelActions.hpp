@@ -99,7 +99,7 @@ namespace loos {
     //! Check to make sure an atom has been set...
     void hasAtom(void) {
       if (atom == 0)
-        throw(runtime_error("No atom set"));
+        throw(std::runtime_error("No atom set"));
     }
 
   public:
@@ -396,7 +396,7 @@ namespace loos {
       Value v1 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-        throw(runtime_error("Invalid operands to logicalAnd"));
+        throw(std::runtime_error("Invalid operands to logicalAnd"));
 
       Value u(v1.itg && v2.itg);
       stack->push(u);
@@ -412,7 +412,7 @@ namespace loos {
       Value v2 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-        throw(runtime_error("Invalid operands to logicalOr"));
+        throw(std::runtime_error("Invalid operands to logicalOr"));
 
       Value u(v1.itg || v2.itg);
       stack->push(u);
@@ -428,7 +428,7 @@ namespace loos {
       Value v1 = stack->pop();
 
       if (v1.type != Value::INT)
-        throw(runtime_error("Invalid operand to logicalNot"));
+        throw(std::runtime_error("Invalid operand to logicalNot"));
 
       Value u(!v1.itg);
       stack->push(u);

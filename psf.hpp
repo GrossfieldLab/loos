@@ -33,8 +33,6 @@
 #include "Atom.hpp"
 #include "AtomicGroup.hpp"
 
-using namespace std;
-
 //! Class for reading a subset of the PSF format
 /**
  * Notes:
@@ -49,15 +47,15 @@ public:
     PSF() { }
     virtual ~PSF() {}
 
-    explicit PSF(const string fname) {
-        ifstream ifs(fname.c_str());
+    explicit PSF(const std::string fname) {
+        std::ifstream ifs(fname.c_str());
         if (!ifs) {
-            throw(runtime_error("Cannot open PSF file " + string(fname)));
+            throw(std::runtime_error("Cannot open PSF file " + std::string(fname)));
             }
         read(ifs);
     }
 
-    explicit PSF(ifstream &ifs) {
+    explicit PSF(std::ifstream &ifs) {
         read(ifs);
     }
 
@@ -75,7 +73,7 @@ public:
     return(p);
   }
 
-   void read(istream& is);  
+   void read(std::istream& is);  
 
 
 private:
@@ -83,7 +81,7 @@ private:
   PSF(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
 
-  void parseAtomRecord(const string s);  
+  void parseAtomRecord(const std::string s);  
   
   //! Use the mass to deduce the atomic number of the atom
   int deduceAtomicNumber(pAtom pa);

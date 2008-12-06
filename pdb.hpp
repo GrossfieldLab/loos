@@ -39,9 +39,6 @@
 
 #include <tr1/unordered_set>
 
-using namespace std;
-
-
 #include <loos_defs.hpp>
 #include <Atom.hpp>
 #include <AtomicGroup.hpp>
@@ -72,9 +69,9 @@ pdb.strict(true);
  */
 class PDB : public AtomicGroup {
 public:
-  class BadConnectivity : public runtime_error {
+  class BadConnectivity : public std::runtime_error {
   public:
-    explicit BadConnectivity(const string& msg) : runtime_error(msg) { };
+    explicit BadConnectivity(const std::string& msg) : runtime_error(msg) { };
   };
 
 public:
@@ -82,25 +79,25 @@ public:
   virtual ~PDB() {}
 
   //! Read in PDB from a filename
-  explicit PDB(const string fname) : _show_charge(false), _auto_ter(true),
+  explicit PDB(const std::string fname) : _show_charge(false), _auto_ter(true),
                                      _has_cryst(false), strictness_policy(false) {
-    ifstream ifs(fname.c_str());
+    std::ifstream ifs(fname.c_str());
     if (!ifs)
-      throw(runtime_error("Cannot open PDB file " + fname));
+      throw(std::runtime_error("Cannot open PDB file " + fname));
     read(ifs);
   }
 
   //! Read in a PDB from a filename
   explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true),
                                     _has_cryst(false), strictness_policy(false) {
-    ifstream ifs(fname);
+    std::ifstream ifs(fname);
     if (!ifs)
-      throw(runtime_error("Cannot open PDB file " + string(fname)));
+      throw(std::runtime_error("Cannot open PDB file " + std::string(fname)));
     read(ifs);
   }
 
   //! Read in a PDB from an ifstream
-  explicit PDB(ifstream& ifs) : _show_charge(false), _auto_ter(true),
+  explicit PDB(std::ifstream& ifs) : _show_charge(false), _auto_ter(true),
                                 _has_cryst(false), strictness_policy(false) { read(ifs); }
 
 
@@ -159,10 +156,10 @@ public:
   void unitCell(const UnitCell& c) { cell = c; }
 
   //! Output as a PDB
-  friend ostream& operator<<(ostream& os, PDB& p);
+  friend std::ostream& operator<<(std::ostream& os, PDB& p);
 
   //! Read in PDB from an ifstream
-  void read(istream& is);
+  void read(std::istream& is);
 
 private:
 
@@ -170,23 +167,23 @@ private:
   PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
 
   // Internal routines for parsing...
-  greal parseFloat(const string&, const uint, const uint);
-  greal parseFloat(const string&);
-  gint parseInt(const string&, const uint, const uint);
-  gint parseInt(const string&);
-  string parseString(const string&, const uint, const uint);
-  bool emptyString(const string&);
+  greal parseFloat(const std::string&, const uint, const uint);
+  greal parseFloat(const std::string&);
+  gint parseInt(const std::string&, const uint, const uint);
+  gint parseInt(const std::string&);
+  std::string parseString(const std::string&, const uint, const uint);
+  bool emptyString(const std::string&);
 
   // These will modify the PDB upon a successful parse...
-  void parseRemark(const string&);
-  void parseAtomRecord(const string&);
-  void parseConectRecord(const string&);
-  void parseCryst1Record(const string&);
+  void parseRemark(const std::string&);
+  void parseAtomRecord(const std::string&);
+  void parseConectRecord(const std::string&);
+  void parseCryst1Record(const std::string&);
 
   // Convert an Atom to a string representation in PDB format...
-  string atomAsString(const pAtom p) const;
+  std::string atomAsString(const pAtom p) const;
 
-  friend ostream& FormatConectRecords(ostream&, PDB&);
+  friend std::ostream& FormatConectRecords(std::ostream&, PDB&);
 
 private:
   bool _show_charge;

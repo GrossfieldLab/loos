@@ -36,8 +36,6 @@
 #include <assert.h>
 
 
-using namespace std;
-
 #include <amber_traj.hpp>
 
 // Scan the trajectory file to determine frame sizes and box
@@ -49,7 +47,7 @@ void AmberTraj::init(void) {
   greal x, y, z;
 
   for (uint i=0; i<_natoms; i++) {
-    *(ifs()) >> setw(8) >> x >> setw(8) >> y >> setw(8) >> z;
+    *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
     frame.push_back(GCoord(x,y,z));
   }
 
@@ -60,11 +58,11 @@ void AmberTraj::init(void) {
   ifs()->getline(buf, 1024);
   ifs()->getline(buf, 1024);
   if (ifs()->fail())
-    throw(runtime_error("Error- cannot scan the amber trajectory"));
+    throw(std::runtime_error("Error- cannot scan the amber trajectory"));
 
-  stringstream ss(buf);
+  std::stringstream ss(buf);
   double a= -1, b= -1, c= -1;
-  ss >> setw(8) >> a >> setw(8) >> b >> setw(8) >> c;
+  ss >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
   if (ss.eof()) {
     fpos = ifs()->tellg();
     periodic = true;
@@ -89,7 +87,7 @@ void AmberTraj::init(void) {
 
   // Punt our failure check to the end...for now...
   if (ifs()->fail())
-    throw(runtime_error("Unable to divine frame information from amber trajectory"));
+    throw(std::runtime_error("Unable to divine frame information from amber trajectory"));
 
   // This is a little hook so if we don't re-read the first frame if
   // that's the first frame requested...
@@ -116,7 +114,7 @@ bool AmberTraj::parseFrame(void) {
   // the end...
 
   for (uint i=0; i<_natoms && !(ifs()->eof()); i++) {
-    *(ifs()) >> setw(8) >> x >> setw(8) >> y >> setw(8) >> z;
+    *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
     frame[i] = GCoord(x, y, z);
   }
 
@@ -125,12 +123,12 @@ bool AmberTraj::parseFrame(void) {
 
   if (periodic) {
     greal a, b, c;
-    *(ifs()) >> setw(8) >> a >> setw(8) >> b >> setw(8) >> c;
+    *(ifs()) >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
     box = GCoord(a, b, c);
   }
 
   if (ifs()->fail())
-    throw(runtime_error("Error- IO error while reading Amber trajectory frame"));
+    throw(std::runtime_error("Error- IO error while reading Amber trajectory frame"));
 
   return(true);
 }
@@ -145,12 +143,12 @@ void AmberTraj::seekFrame(const uint i) {
 
   unsigned long fpos = i * frame_size + frame_offset;
   if (fpos >= _nframes)
-    throw(runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
+    throw(std::runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
 
 
   ifs()->seekg(fpos);
   if (ifs()->fail())
-    throw(runtime_error("Error- cannot seek to the requested frame in an Amber trajectory"));
+    throw(std::runtime_error("Error- cannot seek to the requested frame in an Amber trajectory"));
 }
 
 
@@ -161,7 +159,7 @@ void AmberTraj::updateGroupCoords(AtomicGroup& g) {
   while (pa = iter()) {
     uint i = pa->id() - 1;
     if (i >= _natoms)
-      throw(runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
+      throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
     pa->coords(frame[i]);
   }
 

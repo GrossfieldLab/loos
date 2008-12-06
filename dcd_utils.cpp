@@ -54,7 +54,7 @@
   \param scale Scales up the density
 
  */
-double *gridify(DCD& dcd, double *avg_box, double *avg_unitvol, int gridsizes[], const vector<int> indices, int frameno = 0, int window = 1, double scale = 1.0) {
+double *gridify(DCD& dcd, double *avg_box, double *avg_unitvol, int gridsizes[], const std::vector<int> indices, int frameno = 0, int window = 1, double scale = 1.0) {
   int grid_dim = gridsizes[0] * gridsizes[1] * gridsizes[2];
   int* grid = new int[grid_dim];
   double* density = new double[grid_dim];
@@ -83,10 +83,10 @@ double *gridify(DCD& dcd, double *avg_box, double *avg_unitvol, int gridsizes[],
     // boundary conditiones, extract the crystal params and then
     // modulo them back into the unit cell... 
 
-    vector<dcd_double> xtal = dcd.crystalParams();
+    std::vector<dcd_double> xtal = dcd.crystalParams();
     GCoord box(xtal[0], xtal[1], xtal[2]);
 
-    vector<GCoord> crds = dcd.mappedCoords(indices);
+    std::vector<GCoord> crds = dcd.mappedCoords(indices);
 
     for (i=0; i<3; i++)
       avg_box[i] += box[i];

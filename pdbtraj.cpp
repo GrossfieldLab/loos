@@ -34,9 +34,9 @@ void PDBTraj::seekFrame(const uint i) {
 
   uint idx = i * stride + start;
   if (idx < start || i > end)
-    throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+    throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
 
-  stringstream s;
+  std::stringstream s;
   s << boost::format(pattern) % idx;
   current_name = s.str();
   ifs.setStream(current_name);
@@ -76,8 +76,8 @@ bool PDBTraj::parseFrame(void) {
 
 
 
-vector<GCoord> PDBTraj::coords(void) {
-  vector<GCoord> result(_natoms);
+std::vector<GCoord> PDBTraj::coords(void) {
+  std::vector<GCoord> result(_natoms);
 
   for (uint i=0; i<_natoms; i++)
     result[i] = frame[i]->coords();

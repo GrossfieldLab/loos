@@ -22,7 +22,7 @@
 
 #include <sfactories.hpp>
 
-AtomicGroup loos::createSystem(const string& s) {
+AtomicGroup loos::createSystem(const std::string& s) {
 
   if (boost::iends_with(s, ".pdb")) {
     PDB pdb(s);
@@ -34,11 +34,11 @@ AtomicGroup loos::createSystem(const string& s) {
     Amber amber(s);
     return(amber);
   } else
-    throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
+    throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
 }
 
 
-pAtomicGroup loos::createSystemPtr(const string& s) {
+pAtomicGroup loos::createSystemPtr(const std::string& s) {
 
   pAtomicGroup pag;
 
@@ -52,14 +52,14 @@ pAtomicGroup loos::createSystemPtr(const string& s) {
     pAmber p(new Amber(s));
     pag = p;
   } else
-    throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
+    throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
 
   return(pag);
 }
 
 
 
-pTraj loos::createTrajectory(const string& s, const AtomicGroup& g) {
+pTraj loos::createTrajectory(const std::string& s, const AtomicGroup& g) {
 
   if (boost::iends_with(s, ".dcd")) {
     pDCD pd(new DCD(s));
@@ -74,6 +74,6 @@ pTraj loos::createTrajectory(const string& s, const AtomicGroup& g) {
     pTraj pt(ppdb);
     return(pt);
   } else
-    throw(runtime_error("Error- cannot divine file type from name '" + s + "'"));
+    throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
 }
 

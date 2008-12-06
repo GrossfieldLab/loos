@@ -34,8 +34,6 @@
 #include <loos_defs.hpp>
 
 
-using namespace std;
-
 
 // Forward declaration for matrix-vector multiply
 template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
@@ -64,14 +62,14 @@ public:
   //! Index the matrix element at row j and col i
   T& operator()(const int j, const int i) {
     if (j < 0 || i < 0 || i > 3 || j > 3)
-      throw(range_error("Indices into matrix are out of range"));
+      throw(std::range_error("Indices into matrix are out of range"));
     return(matrix[j*4+i]);
   }
 
   //! Index the matrix element at row j and col i
   const T& operator()(const int j, const int i) const {
     if (j < 0 || i < 0 || i > 3 || j > 3)
-      throw(range_error("Indices into matrix are out of range"));
+      throw(std::range_error("Indices into matrix are out of range"));
     return(matrix[j*4+i]);
   }
 
@@ -79,14 +77,14 @@ public:
   //! Allow access to the linear array of matrix elements
   T& operator[](const int i) {
     if (i < 0 || i > 15)
-      throw(range_error("Index into matrix is out of range"));
+      throw(std::range_error("Index into matrix is out of range"));
     return(matrix[i]);
   }
 
   //! Allow access to the linear array of matrix elements
   const T& operator[](const int i) const {
     if (i < 0 || i > 15)
-      throw(range_error("Index into matrix is out of range"));
+      throw(std::range_error("Index into matrix is out of range"));
     return(matrix[i]);
   }
 
@@ -212,7 +210,7 @@ public:
 
   
   //! Output the matrix in pseudo-XML
-  friend ostream& operator<<(ostream&os, const Matrix44& m) {
+  friend std::ostream& operator<<(std::ostream&os, const Matrix44& m) {
     int i, j, k;
 
     os << "[";

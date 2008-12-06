@@ -35,9 +35,6 @@
 #include <assert.h>
 
 
-using namespace std;
-
-
 #include <dcd.hpp>
 
 
@@ -45,9 +42,9 @@ using namespace std;
 // n = number of atoms
 
 void DCD::allocateSpace(const int n) {
-  xcrds = vector<dcd_real>(n);
-  ycrds = vector<dcd_real>(n);
-  zcrds = vector<dcd_real>(n);
+  xcrds = std::vector<dcd_real>(n);
+  ycrds = std::vector<dcd_real>(n);
+  zcrds = std::vector<dcd_real>(n);
 }
 
 
@@ -151,7 +148,7 @@ void DCD::readHeader(void) {
   for (i=0; i<ntitle; i++) {
     memcpy(sbuff, cp + 80*i, 80);
     sbuff[80] = '\0';
-    string s(sbuff);
+    std::string s(sbuff);
     _titles.push_back(s);
   }
   delete[] ptr;
@@ -176,7 +173,7 @@ void DCD::readHeader(void) {
 
 
 
-void DCD::readHeader(fstream& fs) {
+void DCD::readHeader(std::fstream& fs) {
   ifs.setStream(fs);
   readHeader();
 }
@@ -212,7 +209,7 @@ void DCD::readCrystalParams(void) {
 
 // Read a line of coordinates into the specified vector.
 
-void DCD::readCoordLine(vector<dcd_real>& v) {
+void DCD::readCoordLine(std::vector<dcd_real>& v) {
   DataOverlay *op;
   int n = _natoms * sizeof(dcd_real);
   unsigned int len;
@@ -244,7 +241,7 @@ void DCD::seekFrame(const uint i) {
   ifs()->clear();
   ifs()->seekg(first_frame_pos + i * frame_size);
   if (ifs()->fail() || ifs()->bad()) {
-    ostringstream s;
+    std::ostringstream s;
     s << "Cannot seek to frame " << i;
     throw(GeneralError(s.str().c_str()));
   }
@@ -295,8 +292,8 @@ void DCD::rewind(void) {
 // ----------------------------------------------------------
 
 
-vector<GCoord> DCD::coords(void) {
-  vector<GCoord> crds(_natoms);
+std::vector<GCoord> DCD::coords(void) {
+  std::vector<GCoord> crds(_natoms);
   int i;
 
   for (i=0; i<_natoms; i++) {
@@ -308,9 +305,9 @@ vector<GCoord> DCD::coords(void) {
   return(crds);
 }
 
-vector<GCoord> DCD::mappedCoords(const vector<int>& indices) {
-  vector<int>::const_iterator iter;
-  vector<GCoord> crds(indices.size());
+std::vector<GCoord> DCD::mappedCoords(const std::vector<int>& indices) {
+  std::vector<int>::const_iterator iter;
+  std::vector<GCoord> crds(indices.size());
 
   int j = 0;
   for (iter = indices.begin(); iter != indices.end(); iter++, j++) {
@@ -331,7 +328,7 @@ void DCD::updateGroupCoords(AtomicGroup& g) {
   while(pa = iter()) {
     int i = pa->id() - 1;
     if (i < 0 || i >= _natoms)
-      throw(runtime_error("Attempting to index a nonexistent atom in DCD::updateGroupCoords()"));
+      throw(std::runtime_error("Attempting to index a nonexistent atom in DCD::updateGroupCoords()"));
     GCoord c(xcrds[i], ycrds[i], zcrds[i]);
     pa->coords(c);
   }

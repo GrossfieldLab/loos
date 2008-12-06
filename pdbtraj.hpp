@@ -66,14 +66,14 @@ public:
 PDBTraj foo("frame_%03d.pdb", 0, 20, 10);
 \endverbatim
   */
-  explicit PDBTraj(const string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
-  explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+  explicit PDBTraj(const std::string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+  explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(std::string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
 
   virtual void rewind(void) { seekFrame(0); }
   virtual uint nframes(void) const { return(_nframes); }
   virtual uint natoms(void) const { return(_natoms); }
-  virtual vector<GCoord> coords(void);
+  virtual std::vector<GCoord> coords(void);
   virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
 
   virtual void seekNextFrame(void);
@@ -86,7 +86,7 @@ PDBTraj foo("frame_%03d.pdb", 0, 20, 10);
   virtual float timestep(void) const { return(0.001); }
 
   //! Returns the auto-generated name for the file containing the current frame.
-  string currentName(void) const { return(current_name); }
+  std::string currentName(void) const { return(current_name); }
 
   //! See CCPDB::currentFrame() for important notes
   PDB currentFrame(void) const { return(frame); }
@@ -95,12 +95,12 @@ private:
   void init(void);
 
 private:
-  string pattern;
+  std::string pattern;
   uint start, end, stride;
   uint _natoms, _nframes;
   uint current_index;
   bool at_end;
-  string current_name;
+  std::string current_name;
   PDB frame;
 };
 

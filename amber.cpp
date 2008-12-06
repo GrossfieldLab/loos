@@ -35,9 +35,9 @@
 #include <Fmt.hpp>
 
 
-void Amber::verifyFormat(istream& is, const string fmt) {
+void Amber::verifyFormat(std::istream& is, const std::string fmt) {
 
-  string str;
+  std::string str;
   is >> str;
   
   boost::char_separator<char> sep("()");
@@ -46,23 +46,23 @@ void Amber::verifyFormat(istream& is, const string fmt) {
 
   ++toks;
   if (*toks != fmt)
-    throw(runtime_error("Bad format spec"));
+    throw(std::runtime_error("Bad format spec"));
 
 }
 
 
-void Amber::parseCharges(istream& is) {
+void Amber::parseCharges(std::istream& is) {
   verifyFormat(is, "5E16.8");
 
   uint n = atoms.size();
   greal m;
 
   for (uint i=0; i<n; i++) {
-    if (! (is >> setw(16) >> m)) {
+    if (! (is >> std::setw(16) >> m)) {
       if (is.fail())
-        throw(runtime_error("IO error while reading amber charges"));
+        throw(std::runtime_error("IO error while reading amber charges"));
       else
-        throw(runtime_error("Invalid conversion while reading amber charges"));
+        throw(std::runtime_error("Invalid conversion while reading amber charges"));
     }
     atoms[i]->charge(m);
   }
@@ -70,18 +70,18 @@ void Amber::parseCharges(istream& is) {
 
 
 
-void Amber::parseMasses(istream& is) {
+void Amber::parseMasses(std::istream& is) {
   verifyFormat(is, "5E16.8");
 
   uint n = atoms.size();
   greal m;
 
   for (uint i=0; i<n; i++) {
-    if (! (is >> setw(16) >> m)) {
+    if (! (is >> std::setw(16) >> m)) {
       if (is.fail())
-        throw(runtime_error("IO error while reading amber masses"));
+        throw(std::runtime_error("IO error while reading amber masses"));
       else
-        throw(runtime_error("Invalid conversion while reading amber masses"));
+        throw(std::runtime_error("Invalid conversion while reading amber masses"));
     }
     atoms[i]->mass(m);
   }
@@ -89,32 +89,32 @@ void Amber::parseMasses(istream& is) {
 
 
 
-void Amber::parseResidueLabels(istream& is) {
+void Amber::parseResidueLabels(std::istream& is) {
   verifyFormat(is, "20a4");
 
   for (uint i=0; i<nres; i++) {
-    string s;
-    if (!(is >> setw(4) >> s)) {
+    std::string s;
+    if (!(is >> std::setw(4) >> s)) {
       if (is.fail())
-        throw(runtime_error("IO error while reading residue labels"));
+        throw(std::runtime_error("IO error while reading residue labels"));
       else
-        throw(runtime_error("Invalid conversion while reading residue labels"));
+        throw(std::runtime_error("Invalid conversion while reading residue labels"));
     }
     residue_labels.push_back(s);
   }
 }
 
 
-void Amber::parseResiduePointers(istream& is) {
+void Amber::parseResiduePointers(std::istream& is) {
   verifyFormat(is, "10I8");
 
   for (uint i=0; i<nres; i++) {
     int j;
-    if (!(is >> setw(8) >> j)) {
+    if (!(is >> std::setw(8) >> j)) {
       if (is.fail())
-        throw(runtime_error("IO error while reading residue pointers"));
+        throw(std::runtime_error("IO error while reading residue pointers"));
       else
-        throw(runtime_error("Invalid conversion while reading residue pointers"));
+        throw(std::runtime_error("Invalid conversion while reading residue pointers"));
     }
     residue_pointers.push_back(j);
   }
@@ -123,11 +123,11 @@ void Amber::parseResiduePointers(istream& is) {
 
 void Amber::assignResidues(void) {
   if (!(residue_pointers.size() == nres && residue_labels.size() == nres))
-    throw(runtime_error("Unable to assign residues."));
+    throw(std::runtime_error("Unable to assign residues."));
 
   int curresid = 0;
   uint i = 0;
-  string curresname;
+  std::string curresname;
 
   for (i=0; i<nres-1; i++) {
     ++curresid;
@@ -149,7 +149,7 @@ void Amber::assignResidues(void) {
 
 
 
-void Amber::parseBonds(istream& is, const int n) {
+void Amber::parseBonds(std::istream& is, const int n) {
   verifyFormat(is, "10I8");
 
   int i, a, b, k;
@@ -157,9 +157,9 @@ void Amber::parseBonds(istream& is, const int n) {
   for (i=0; i<n; i++) {
     if (!(is >> a >> b >> k)) {
       if (is.fail())
-        throw(runtime_error("IO error while reading bonds"));
+        throw(std::runtime_error("IO error while reading bonds"));
       else
-        throw(runtime_error("Invalid conversion while reading bonds"));
+        throw(std::runtime_error("Invalid conversion while reading bonds"));
     }
 
     a /= 3;
@@ -170,7 +170,7 @@ void Amber::parseBonds(istream& is, const int n) {
 }
 
 
-void Amber::parsePointers(istream& is) {
+void Amber::parsePointers(std::istream& is) {
   verifyFormat(is, "10I8");
   uint dummy;
 
@@ -187,7 +187,7 @@ void Amber::parsePointers(istream& is) {
 
   // Now build up the atomic-group...
   if (atoms.size() != 0)
-    throw(logic_error("Internal error: trying to read in an amber parmtop into a non-empty group!"));
+    throw(std::logic_error("Internal error: trying to read in an amber parmtop into a non-empty group!"));
 
   for (uint i=0; i<natoms; i++) {
     pAtom pa(new Atom);
@@ -199,7 +199,7 @@ void Amber::parsePointers(istream& is) {
 
 
 // Simply slurp up the title (for now)
-void Amber::parseTitle(istream& is) {
+void Amber::parseTitle(std::istream& is) {
   verifyFormat(is, "20a4");
   char buf[1024];
   
@@ -207,33 +207,33 @@ void Amber::parseTitle(istream& is) {
 }
 
 
-void Amber::parseAtomNames(istream& is) {
+void Amber::parseAtomNames(std::istream& is) {
   verifyFormat(is, "20a4");
 
   for (uint i=0; i<natoms; i++) {
-    string s;
-    is >> setw(4) >> s;
+    std::string s;
+    is >> std::setw(4) >> s;
     atoms[i]->name(s);
   }
 
   if (is.fail())
-    throw(runtime_error("IO error while reading atom names"));
+    throw(std::runtime_error("IO error while reading atom names"));
 }
 
 
-void Amber::read(istream& is) {
+void Amber::read(std::istream& is) {
   char buf[1024];
 
   is.getline(buf,1024);
   
   bool flag = false;
-  string s;
+  std::string s;
   is >> s;
 
 
   while (!(is.eof() || is.fail())) {
     if (s != "%FLAG")
-      throw(runtime_error("Parse error: " + s));
+      throw(std::runtime_error("Parse error: " + s));
 
     is >> s;
     if (s == "TITLE")
@@ -274,7 +274,7 @@ void Amber::read(istream& is) {
 
 
 
-void Amber::readCoords(istream& is) {
+void Amber::readCoords(std::istream& is) {
   char buf[1024];
   uint n;
   double timestep;
@@ -285,22 +285,22 @@ void Amber::readCoords(istream& is) {
   is.getline(buf, 1024);
   d = sscanf(buf, "%u,%lf", &n, &timestep);
   if (d < 1 || d > 2)
-    throw(runtime_error("Invalid conversion of number of atoms in coord/restart file"));
+    throw(std::runtime_error("Invalid conversion of number of atoms in coord/restart file"));
 
   if (n != atoms.size())
-    throw(runtime_error("Error- attempting to read mismatched coords into an Amber object."));
+    throw(std::runtime_error("Error- attempting to read mismatched coords into an Amber object."));
 
   for (uint i=0; i<n; i++) {
     greal x, y, z;
 
-    is >> setw(12) >> x >> setw(12) >> y >> setw(12) >> z;
+    is >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
     atoms[i]->coords(GCoord(x,y,z));
   }
 
   greal a=0, b=0, c=0, alpha=0, beta=0, gamma=0;
 
   // First, try to read in a box...
-  if (is >> setw(12) >> a >> setw(12) >> b >> setw(12) >> c >> setw(12) >> alpha >> setw(12) >> beta >> setw(12) >> gamma) {
+  if (is >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c >> std::setw(12) >> alpha >> std::setw(12) >> beta >> std::setw(12) >> gamma) {
   
     double dummy;
     if (is >> dummy) {
@@ -308,12 +308,12 @@ void Amber::readCoords(istream& is) {
       // just read was actually the start of a veolcity block, so skip
       // it and try to read in another box...
       
-      is >> setw(12) >> dummy >> setw(12) >> dummy;
+      is >> std::setw(12) >> dummy >> std::setw(12) >> dummy;
 
       for (uint i=3; i<n; i++)
-        is >> setw(12) >> dummy >> setw(12) >> dummy >> setw(12) >> dummy;
+        is >> std::setw(12) >> dummy >> std::setw(12) >> dummy >> std::setw(12) >> dummy;
       
-      if (is >> setw(12) >> a >> setw(12) >> b >> setw(12) >> c >> setw(12) >> alpha >> setw(12) >> beta >> setw(12) >> gamma) {
+      if (is >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c >> std::setw(12) >> alpha >> std::setw(12) >> beta >> std::setw(12) >> gamma) {
         periodicBox(a, b, c);
       }
 

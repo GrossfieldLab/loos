@@ -30,8 +30,6 @@
 #include <cstdlib>
 
 
-using namespace std;
-
 //! Time Series Class
 /*!
  *  This class provides basic operations on a time series, such
@@ -50,7 +48,7 @@ public:
         init();
     }
 
-    tTimeSeries(const vector<T> &inp) {
+    tTimeSeries(const std::vector<T> &inp) {
         _data = inp; 
     }
 
@@ -98,7 +96,7 @@ public:
 
     tTimeSeries<T> operator+=(const tTimeSeries<T> &rhs) {
         if (_data.size() != rhs.size())
-            throw(runtime_error("mismatched timeseries sizes in +="));
+            throw(std::runtime_error("mismatched timeseries sizes in +="));
         for (unsigned int i=0; i<_data.size(); i++) {
             _data[i] += rhs[i];
         }
@@ -124,7 +122,7 @@ public:
 
     tTimeSeries<T> operator+(const tTimeSeries<T> &rhs) const {
         if (_data.size() != rhs.size())
-            throw(runtime_error("mismatched timeseries sizes in +="));
+            throw(std::runtime_error("mismatched timeseries sizes in +="));
 
         tTimeSeries<T> res(*this);
         for (unsigned int i=0; i<res.size(); i++) {
@@ -142,7 +140,7 @@ public:
 
     tTimeSeries<T> operator-=(const tTimeSeries<T> &rhs) {
         if (_data.size() != rhs.size())
-            throw(runtime_error("mismatched sizes of time series"));
+            throw(std::runtime_error("mismatched sizes of time series"));
         for (unsigned int i=0; i<_data.size(); i++) {
             _data[i] -= rhs[i];
         }
@@ -159,7 +157,7 @@ public:
 
     tTimeSeries<T> operator-(const tTimeSeries<T> &rhs) const {
         if (_data.size() != rhs.size())
-            throw(runtime_error("mismatched timeseries sizes in +="));
+            throw(std::runtime_error("mismatched timeseries sizes in +="));
 
         tTimeSeries<T> res(*this);
         for (unsigned int i=0; i<res.size(); i++) {
@@ -203,7 +201,7 @@ public:
 
     tTimeSeries<T> operator*=(const tTimeSeries<T> &rhs) {
         if ( _data.size() != rhs.size() ) 
-            throw(runtime_error("mismatched timeseries sizes in *="));
+            throw(std::runtime_error("mismatched timeseries sizes in *="));
         for (unsigned int i=0; i<_data.size(); i++) {
             _data[i] *= rhs[i];
         }
@@ -212,7 +210,7 @@ public:
 
     tTimeSeries<T> operator*(const tTimeSeries<T> &rhs) const {
         if ( _data.size() != rhs.size() ) 
-            throw(runtime_error("mismatched timeseries sizes in *="));
+            throw(std::runtime_error("mismatched timeseries sizes in *="));
 
         tTimeSeries<T> res(*this);
         for (unsigned int i=0; i<_data.size(); i++) {
@@ -247,7 +245,7 @@ public:
 
     tTimeSeries<T> operator/=(const tTimeSeries<T> &rhs) {
         if ( _data.size() != rhs.size() ) 
-            throw(runtime_error("mismatched timeseries sizes in *="));
+            throw(std::runtime_error("mismatched timeseries sizes in *="));
         for (unsigned int i=0; i<_data.size(); i++) {
             _data[i] /= rhs[i];
         }
@@ -256,7 +254,7 @@ public:
 
     tTimeSeries<T> operator/(const tTimeSeries<T> &rhs) const {
         if ( _data.size() != rhs.size() ) 
-            throw(runtime_error("mismatched timeseries sizes in *="));
+            throw(std::runtime_error("mismatched timeseries sizes in *="));
 
         tTimeSeries<T> res(*this);
         for (unsigned int i=0; i<_data.size(); i++) {
@@ -382,7 +380,7 @@ public:
         tTimeSeries<T> data = copy();
         const unsigned int n = abs(num_vals);
         if (n > data.size()) {
-            throw(runtime_error("Can't take correlation time longer than time series"));
+            throw(std::runtime_error("Can't take correlation time longer than time series"));
         }
 
         tTimeSeries<T> c(num_vals, 0.0);
@@ -399,7 +397,7 @@ public:
         
         data /= dev;
 
-        vector<int> num_pairs(num_vals);
+        std::vector<int> num_pairs(num_vals);
         num_pairs.assign(num_vals, 0);
         // TODO: This is the O(N^2) way -- there are much faster
         // algorithms for long time series
@@ -420,7 +418,7 @@ public:
     }
 
 private:
-    vector<T> _data;
+    std::vector<T> _data;
 };
 
 typedef tTimeSeries<double> TimeSeries;

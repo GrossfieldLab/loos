@@ -41,21 +41,18 @@
 #include <pdb_remarks.hpp>
 
 
-using namespace std;
-using namespace __gnu_cxx;
-
 //! Get the next line of input, skipping blanks and stripping comments
-string getNextLine(istream&, int*);
+std::string getNextLine(std::istream&, int*);
 
 //! Read a list of integers from a stream
-vector<int> readIndexMap(istream&);
+std::vector<int> readIndexMap(std::istream&);
 
 //! Create an invocation header
 /**
  *This is a string that can be embedded in output that records the
  *invoking user, command-line, and a timestamp.
  */
-string invocationHeader(int, char *[]);
+std::string invocationHeader(int, char *[]);
 
 //! Extract the Alan-style box-size from a PDB Remarks block.
 /** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
@@ -84,10 +81,10 @@ namespace loos {
   void randomSeedRNG(void);
 
   //! Parses a list of Octave-style range specifiers
-  vector<int> parseRangeList(const string& text);
+  std::vector<int> parseRangeList(const std::string& text);
 
   //! Applies a string-based selection to an atomic group...
-  AtomicGroup selectAtoms(const AtomicGroup&, const string);
+  AtomicGroup selectAtoms(const AtomicGroup&, const std::string);
 
 };
 

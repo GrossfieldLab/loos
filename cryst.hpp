@@ -49,13 +49,13 @@ public:
   greal gamma(void) const { return(_gamma); }
   void gamma(const greal x) { _gamma = x; }
 
-  string spaceGroup(void) const { return(sgroup); }
-  void spaceGroup(const string s) { sgroup = s; }
+  std::string spaceGroup(void) const { return(sgroup); }
+  void spaceGroup(const std::string s) { sgroup = s; }
 
   int z(void) const { return(zval); }
   void z(const int i) { zval = i; }
 
-  friend ostream& operator<<(ostream& os, const UnitCell& u) {
+  friend std::ostream& operator<<(std::ostream& os, const UnitCell& u) {
     os << "<UNITCELL A='" << u._a << "' B='" << u._b << "' C='" << u._c << "' ALPHA='";
     os << u._alpha << "' BETA='" << u._beta << "' GAMMA='" << u._gamma << "' SPACEGROUP='";
     os << u.sgroup << "' Z='" << u.zval << "'/>";
@@ -66,7 +66,7 @@ public:
 
 private:
   greal _a, _b, _c, _alpha, _beta, _gamma;
-  string sgroup;
+  std::string sgroup;
   int zval;
 };
 

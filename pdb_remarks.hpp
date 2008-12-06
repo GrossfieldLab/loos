@@ -32,8 +32,6 @@
 #include <algorithm>
 
 
-using namespace std;
-
 
 //! Class for handling PDB Remarks
 /**
@@ -46,29 +44,29 @@ public:
   int numberOf(void) const { return(remarks.size()); }   // Compat with PERL
   int size(void) const { return(remarks.size()); }
   //! Access the ith remark
-  string get(const int i) const;
+  std::string get(const int i) const;
   //! Add a remark
-  void add(const string s);
+  void add(const std::string s);
   //! Erase the ith remark
   void erase(const int i);
 
   //! Access the ith remark
-  string& operator[](const int i);
+  std::string& operator[](const int i);
   //! Access the ith remark
-  const string& operator[](const int i) const;
+  const std::string& operator[](const int i) const;
 
   //! Returns a copy of the remarks vector
-  vector<string> allRemarks(void) const { return(remarks); }
+  std::vector<std::string> allRemarks(void) const { return(remarks); }
 
   //! Output the Remark(s) in PDB format
-  friend ostream& operator<<(ostream& os, const Remarks& r);
+  friend std::ostream& operator<<(std::ostream& os, const Remarks& r);
 
 private:
   void rangeCheck(const unsigned int i) const;
-  string sanitize(const string s) const;
+  std::string sanitize(const std::string s) const;
 
 private:
-  vector<string> remarks;
+  std::vector<std::string> remarks;
 };
 
 
