@@ -38,11 +38,6 @@
 #include <loos_defs.hpp>
 
 
-using namespace std;
-using namespace __gnu_cxx;
-
-
-
 #include <Atom.hpp>
 #include <XForm.hpp>
 #include <UniqueStrings.hpp>
@@ -116,8 +111,8 @@ typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
 
 class AtomicGroup {
 protected:
-  typedef vector<pAtom>::iterator AtomIterator;
-  typedef vector<pAtom>::const_iterator ConstAtomIterator;
+  typedef std::vector<pAtom>::iterator AtomIterator;
+  typedef std::vector<pAtom>::const_iterator ConstAtomIterator;
 
 public:
   AtomicGroup() : _sorted(false) { }
@@ -167,14 +162,14 @@ public:
   //! Append the atom onto the group
   void append(pAtom pa) { atoms.push_back(pa); _sorted = false; }
   //! Append a vector of atoms
-  void append(vector<pAtom> pas);
+  void append(std::vector<pAtom> pas);
   //! Append an entire AtomicGroup onto this one (concatenation)
   void append(const AtomicGroup& grp);
 
   //! Delete a single atom
   void remove(pAtom pa) { deleteAtom(pa); }
   //! Deletes a set of atoms
-  void remove(vector<pAtom> pas);
+  void remove(std::vector<pAtom> pas);
   //! Deletes all atoms in the passed grp that are also in the current group.
   void remove(const AtomicGroup& grp);
 
@@ -224,16 +219,16 @@ public:
   AtomicGroup select(const AtomSelector& sel) const;
 
   //! Returns a vector of AtomicGroups split from the current group based on segid
-  vector<AtomicGroup> splitByUniqueSegid(void) const;
+  std::vector<AtomicGroup> splitByUniqueSegid(void) const;
 
   //! Returns a vector of AtomicGroups split based on bond connectivity
-  vector<AtomicGroup> splitByMolecule(void);
+  std::vector<AtomicGroup> splitByMolecule(void);
 
   //! Find a contained atom by its atomid
   pAtom findById(const int id);
 
   //! Create a new group from a vector of atomids
-  AtomicGroup groupFromID(const vector<int> &id_list);
+  AtomicGroup groupFromID(const std::vector<int> &id_list);
 
   //! Given an Atom, return a group of all the atoms contained by its
   //! containing residue 
@@ -346,13 +341,13 @@ GCoord centroid = f.center();
       return(*iter++);
     }
   private:
-    vector<pAtom>::const_iterator iter, final;
+    std::vector<pAtom>::const_iterator iter, final;
   };
 
 
   // Statistical routines...
   //! Bounding box for the group...
-  vector<GCoord> boundingBox(void) const;
+  std::vector<GCoord> boundingBox(void) const;
 
   //! Translates the group so that the centroid is at the origin.
   /**
@@ -386,7 +381,7 @@ GCoord centroid = f.center();
   /**
    * Does not alter the group's coordinates...
    */
-  vector<GCoord> getTransformedCoords(const XForm&) const;
+  std::vector<GCoord> getTransformedCoords(const XForm&) const;
   
 
   //! Apply the given transform to the group's coordinates...
@@ -436,7 +431,7 @@ GCoord centroid = f.center();
    *  - Potential issue with f77int under linux when not on a 64-bit
    *    architecture. 
    */
-  vector<GCoord> principalAxes(void) const;
+  std::vector<GCoord> principalAxes(void) const;
 
   //! Calculates the transformation matrix for superposition of groups.
   /**
@@ -488,14 +483,14 @@ private:
   void walkBonds(AtomicGroup& mygroup, HashInt& seen, pAtom moi);
 
 
-  void dumpMatrix(const string, double*, int, int) const;
+  void dumpMatrix(const std::string, double*, int, int) const;
   double *coordsAsArray(void) const;
   double *transformedCoordsAsArray(const XForm&) const;
 
   bool _sorted;
 
 protected:
-  vector<pAtom> atoms;
+  std::vector<pAtom> atoms;
   SharedPeriodicBox box;
 
 };

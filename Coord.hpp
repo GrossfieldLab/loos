@@ -28,8 +28,6 @@
 #include <string>
 #include <stdexcept>
 
-using namespace std;
-
 // Forward declarations for matrix-vector multiply...
 
 template<class T> class Coord;
@@ -123,14 +121,14 @@ public:
   //! Retrieve an element from the Coord with range-checking
   T& operator[](const unsigned int i) {
     if (i>=MAXCOORD)
-      throw out_of_range("Index into Coord<T> is out of range.");
+      throw std::out_of_range("Index into Coord<T> is out of range.");
     return(v[i]);
   }
 
   //! Retrieve an element from a const Coord with range-checking 
   const T& operator[](const unsigned int i) const {
     if (i>=MAXCOORD)
-      throw out_of_range("Index into Coord<T> is out of range.");
+      throw std::out_of_range("Index into Coord<T> is out of range.");
     return(v[i]);
   }
 
@@ -147,7 +145,7 @@ public:
   // I/O
 
   //! Output the coordinate in pseudo-XML
-  friend ostream& operator<<(ostream& os, const Coord<T>&o) { 
+  friend std::ostream& operator<<(std::ostream& os, const Coord<T>&o) { 
     os << "(";
     int i;
     for (i=0; i<MAXCOORD; i++)
@@ -156,28 +154,28 @@ public:
     return(os);
   }
 
-  friend istream& operator>>(istream& is, Coord<T>& i) {
+  friend std::istream& operator>>(std::istream& is, Coord<T>& i) {
     char c;
     is >> c;
     if (c != '(')
-      throw(runtime_error("Invalid Coord conversion"));
+      throw(std::runtime_error("Invalid Coord conversion"));
     
     is >> i.x();
     is >> c;
     if (c != ',')
-      throw(runtime_error("Invalid Coord conversion"));
+      throw(std::runtime_error("Invalid Coord conversion"));
 
     
     is >> i.y();
     is >> c;
     if (c != ',')
-      throw(runtime_error("Invalid Coord conversion"));
+      throw(std::runtime_error("Invalid Coord conversion"));
 
     
     is >> i.z();
     is >> c;
     if (c != ')')
-      throw(runtime_error("Invalid Coord conversion"));
+      throw(std::runtime_error("Invalid Coord conversion"));
 
     return(is);
   }

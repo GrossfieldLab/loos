@@ -45,8 +45,6 @@
 #include "KernelStack.hpp"
 
 
-using namespace std;
-
 namespace loos {
 
 
@@ -67,7 +65,7 @@ namespace loos {
     //! Pointer to the atom we'll be working on...
     pAtom atom;
     //! Record of command-name (for printing)
-    string my_name;
+    std::string my_name;
 
     // Some utility functions...
 
@@ -105,12 +103,12 @@ namespace loos {
     }
 
   public:
-    Action(const string s) : stack(0), atom(pAtom()), my_name(s) { }
+    Action(const std::string s) : stack(0), atom(pAtom()), my_name(s) { }
 
     void setStack(ValueStack* ptr) { stack=ptr; }
     void setAtom(pAtom pa) { atom = pa; }
 
-    virtual string name(void) const { return(my_name); }
+    virtual std::string name(void) const { return(my_name); }
 
     virtual void execute(void) =0;
     virtual ~Action() { }
@@ -119,14 +117,14 @@ namespace loos {
 
 
 
-  //! Push a string onto the data stack
+  //! Push a std::string onto the data stack
   class pushString : public Action {
     Value val;
   public:
-    explicit pushString(const string str) : Action("pushString"), val(str) { }
+    explicit pushString(const std::string str) : Action("pushString"), val(str) { }
     void execute(void) { stack->push(val); }
-    string name(void) const {
-      stringstream s;
+    std::string name(void) const {
+      std::stringstream s;
       s << my_name << "(" << val << ")";
       return(s.str());
     }
@@ -139,8 +137,8 @@ namespace loos {
   public:
     explicit pushInt(const int i) : Action("pushInt"), val(i) { }
     void execute(void) { stack->push(val); }
-    string name(void) const {
-      stringstream s;
+    std::string name(void) const {
+      std::stringstream s;
       s << my_name << "(" << val << ")";
       return(s.str());
     }
@@ -152,8 +150,8 @@ namespace loos {
   public:
     explicit pushFloat(const float f) : Action("pushFloat"), val(f) { }
     void execute(void) { stack->push(val); }
-    string name(void) const {
-      stringstream s;
+    std::string name(void) const {
+      std::stringstream s;
       s << my_name << "(" << val << ")";
       return(s.str());
     }
@@ -246,7 +244,7 @@ namespace loos {
   class matchRegex : public Action {
     boost::regex regexp;
   public:
-    explicit matchRegex(const string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
+    explicit matchRegex(const std::string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
     void execute(void) { 
       Value v = stack->pop();
       Value r(0);
@@ -255,12 +253,12 @@ namespace loos {
 
       stack->push(r);
     }
-    string name(void) const {
+    std::string name(void) const {
       return(my_name + "(" + pattern + ")");
     }
     
   private:
-    string pattern;
+    std::string pattern;
   };
   
 
@@ -296,7 +294,7 @@ namespace loos {
    */
   class extractNumber : public Action {
   public:
-    explicit extractNumber(const string s) : Action("extractNumber"),
+    explicit extractNumber(const std::string s) : Action("extractNumber"),
                              regexp(s, boost::regex::perl|boost::regex::icase),
                              pattern(s) { }
 
@@ -309,7 +307,7 @@ namespace loos {
         unsigned i;
         int val;
         for (i=0; i<what.size(); i++) {
-          if ((stringstream(what[i]) >> val)) {
+          if ((std::stringstream(what[i]) >> val)) {
             r.setInt(val);
             break;
           }
@@ -319,13 +317,13 @@ namespace loos {
       stack->push(r);
     }
 
-    string name(void) const {
+    std::string name(void) const {
       return(my_name + "(" + pattern + ")");
     }
 
   private:
     boost::regex regexp;
-    string pattern;
+    std::string pattern;
   };
 
 
@@ -459,7 +457,7 @@ namespace loos {
       if (atom->checkProperty(Atom::massbit))
         masscheck = (atom->mass() < 1.1);
 
-      string n = atom->name();
+      std::string n = atom->name();
       Value v;
       v.setInt( (n[0] == 'H' && masscheck) );
       stack->push(v);

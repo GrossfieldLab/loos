@@ -15,13 +15,11 @@
 #include <sstream>
 #include <iostream>
 
-using namespace std;
-
 class BoundFmt;
 
 //! Output formatter class, adapted from Stroustrup's book
 class Fmt {
-  friend ostream& operator<<(ostream&, const BoundFmt&);
+  friend std::ostream& operator<<(std::ostream&, const BoundFmt&);
 
 public:
   //! Alignment of the text
@@ -30,18 +28,18 @@ public:
   //! Default is for precision width 6, no zeros, padding with spaces,
   //! and left aligned (and general formatting)
   explicit Fmt(int p = 6) : prc(p), wdth(0), fil(' '), trl(false), pos(false), ali(LEFT) {
-    fmt = ~(ios_base::fixed|ios_base::scientific);
+    fmt = ~(std::ios_base::fixed|std::ios_base::scientific);
   }
 
   //! Returns the bound formatter
   BoundFmt operator()(double d) const;
   
   //! Output in scientific format
-  Fmt& scientific() { fmt = ios_base::scientific; return(*this); }
+  Fmt& scientific() { fmt = std::ios_base::scientific; return(*this); }
   //! Output in fixed-point
-  Fmt& fixed() { fmt = ios_base::fixed; return(*this); }
+  Fmt& fixed() { fmt = std::ios_base::fixed; return(*this); }
   //! Output normally (i.e. general)
-  Fmt& general() { fmt = ~(ios_base::fixed|ios_base::scientific); return(*this); }
+  Fmt& general() { fmt = ~(std::ios_base::fixed|std::ios_base::scientific); return(*this); }
 
   //! Set the precision
   Fmt& precision(const int p) { prc = p; return(*this); }
@@ -65,7 +63,7 @@ public:
 private:
 
 private:
-  ios_base::fmtflags fmt;
+  std::ios_base::fmtflags fmt;
   int prc, wdth;
   char fil;
   bool trl, pos;
@@ -81,6 +79,6 @@ struct BoundFmt {
   double val;
 };
 
-ostream& operator<<(ostream&, const BoundFmt&);
+std::ostream& operator<<(std::ostream&, const BoundFmt&);
 
 #endif

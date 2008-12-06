@@ -32,20 +32,16 @@
 #include <stdexcept>
 #include <vector>
 
-#include <string>
-
 
 #include <loos_defs.hpp>
 #include "KernelValue.hpp"
 
 
-using namespace std;
-
 namespace loos {
 
 
   class ValueStack {
-    vector<Value> values;
+    std::vector<Value> values;
 
     void notEmpty(void) const {
       if (values.size() == 0)
@@ -89,9 +85,9 @@ namespace loos {
 
     void clear(void) { values.clear(); }
 
-    friend ostream& operator<<(ostream& os, const ValueStack& s) {
+    friend std::ostream& operator<<(std::ostream& os, const ValueStack& s) {
       os << "<STACK>\n";
-      vector<Value>::const_iterator i;
+      std::vector<Value>::const_iterator i;
 
       for (i=s.values.begin(); i != s.values.end(); i++)
         os << "  " << *i << endl;

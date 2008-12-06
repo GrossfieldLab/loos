@@ -27,7 +27,7 @@
 
 //const double DEGREES = 180 / M_PI ;
 
-greal angle(const GCoord &a, const GCoord &b, const GCoord &c) {
+greal loos::Math::angle(const GCoord &a, const GCoord &b, const GCoord &c) {
     // TODO: check to make sure the sign is right
     GCoord ba = b - a;
     GCoord bc = b - c;
@@ -35,11 +35,11 @@ greal angle(const GCoord &a, const GCoord &b, const GCoord &c) {
     return (acos(cosine) * DEGREES);
 }
 
-greal angle(const pAtom a, const pAtom b, const pAtom c) {
-    return(angle(a->coords(), b->coords(), c->coords()));
+greal loos::Math::angle(const pAtom a, const pAtom b, const pAtom c) {
+  return(angle(a->coords(), b->coords(), c->coords()));
 }
 
-greal torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
+greal loos::Math::torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
           const GCoord &d) {
     // TODO: check to make sure the sign is right
     GCoord ba = b - a;
@@ -55,7 +55,7 @@ greal torsion(const GCoord &a, const GCoord &b, const GCoord &c,
     return(angle);
 }
 
-greal torsion(const pAtom a, const pAtom b, const pAtom c, 
+greal loos::Math::torsion(const pAtom a, const pAtom b, const pAtom c, 
                const pAtom d) {
     return(torsion(a->coords(), b->coords(), c->coords(), d->coords()));
 }

@@ -33,8 +33,6 @@
 
 #include <boost/format.hpp>
 
-using namespace std;
-
 class Atom;
 
 //! Shared pointer to an Atom
@@ -67,7 +65,7 @@ public:
   };
 
   // Exception classes
-  struct UnsetProperty : public exception {
+  struct UnsetProperty : public std::exception {
     virtual const char *what() const throw() {
       return("Attempting to access an unset atom property.");
     }
@@ -84,7 +82,7 @@ public:
    * \param c Coordinates
   */
 
-  Atom(const int i, const string s, const GCoord& c) {
+  Atom(const int i, const std::string s, const GCoord& c) {
     init();
     _id = i;
     _name = s;
@@ -107,26 +105,26 @@ public:
       setPropertyBit(anumbit);
   }
 
-  string name(void) const { return(_name); }
-  void name(const string s) { _name = s; }
+  std::string name(void) const { return(_name); }
+  void name(const std::string s) { _name = s; }
 
-  string altLoc(void) const { return(_altloc); }
-  void altLoc(const string s) { _altloc = s; }
+  std::string altLoc(void) const { return(_altloc); }
+  void altLoc(const std::string s) { _altloc = s; }
 
-  string chainId(void) const { return(_chainid); }
-  void chainId(const string s) { _chainid = s; }
+  std::string chainId(void) const { return(_chainid); }
+  void chainId(const std::string s) { _chainid = s; }
 
-  string resname(void) const { return(_resname); }
-  void resname(const string s) { _resname = s; }
+  std::string resname(void) const { return(_resname); }
+  void resname(const std::string s) { _resname = s; }
 
-  string segid(void) const { return(_segid); }
-  void segid(const string s) { _segid = s; }
+  std::string segid(void) const { return(_segid); }
+  void segid(const std::string s) { _segid = s; }
 
-  string iCode(void) const { return(_icode); }
-  void iCode(const string s) { _icode = s; }
+  std::string iCode(void) const { return(_icode); }
+  void iCode(const std::string s) { _icode = s; }
 
-  string PDBelement(void) const { return(_pdbelement); }
-  void PDBelement(const string s) { _pdbelement = s; }
+  std::string PDBelement(void) const { return(_pdbelement); }
+  void PDBelement(const std::string s) { _pdbelement = s; }
 
   //! Returns a const ref to internally stored coordinates.
   //! This returns a const ref mainly for efficiency, rather than
@@ -170,8 +168,8 @@ public:
   //! Recordname imported from the PDB for this Atom
   //! This is mainly for atoms that come from a PDB, i.e. whether or
   //! not they were an ATOM or a HETATM
-  string recordName(void) const { return(_record); }
-  void recordName(const string s) { _record = s; }
+  std::string recordName(void) const { return(_record); }
+  void recordName(const std::string s) { _record = s; }
 
   //! Clear all stored bonds
   void clearBonds(void) { bonds.clear(); clearPropertyBit(bondsbit); }
@@ -182,9 +180,9 @@ public:
 
   //! Deletes the specified bond.
   void deleteBond(const int b) {
-    vector<int>::iterator i = find(bonds.begin(), bonds.end(), b);
+    std::vector<int>::iterator i = find(bonds.begin(), bonds.end(), b);
     if (i == bonds.end())
-      throw(runtime_error("Attempting to delete a non-existent bond"));
+      throw(std::runtime_error("Attempting to delete a non-existent bond"));
     bonds.erase(i);
     if (bonds.size() == 0)
       clearPropertyBit(bondsbit);
@@ -194,7 +192,7 @@ public:
   void deleteBond(const pAtom& p) { deleteBond(p->id()); }
 
   //! Returns a copy of the bond list.
-  vector<int> getBonds(void) const {
+  std::vector<int> getBonds(void) const {
     if (!(mask & bondsbit))
       throw(UnsetProperty());
     return(bonds);
@@ -219,7 +217,7 @@ checkProperty(Atom::massbit | Atom::chargebit)
 
 
   //! Outputs an atom in pseudo-XML
-  friend ostream& operator<<(ostream& os, const Atom& a) {
+  friend std::ostream& operator<<(std::ostream& os, const Atom& a) {
     os << "<ATOM ID='" << a._id << "' NAME='" << a._name << "' ";
     os << "RESID='" << a._resid << "' RESNAME='" << a._resname << "' ";
     os << "COORDS='" << a._coords << "' ";
@@ -228,7 +226,7 @@ checkProperty(Atom::massbit | Atom::chargebit)
     os << " ATOMICNUMBER='" << a._atomic_number <<"'";
     //    os << " MASK='" << boost::format("%x") % a.mask << "'";
     if (a.hasBonds() > 0) {
-      vector<int>::const_iterator i;
+      std::vector<int>::const_iterator i;
       os << ">\n";
       for (i=a.bonds.begin(); i != a.bonds.end(); i++)
         os << "  <BOND>" << *i << "</BOND>\n";
@@ -264,16 +262,16 @@ private:
 
 private:
   int _id;
-  string _record, _name, _altloc, _resname, _chainid;
+  std::string _record, _name, _altloc, _resname, _chainid;
   int _resid;
   int _atomic_number;
-  string _icode;
+  std::string _icode;
   double _b, _q, _charge, _mass;
-  string _segid, _pdbelement;
+  std::string _segid, _pdbelement;
   GCoord _coords;
   unsigned long mask;
 
-  vector<int> bonds;
+  std::vector<int> bonds;
 };
 
 

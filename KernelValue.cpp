@@ -31,7 +31,7 @@ namespace loos {
     int e;
 
     if (x.type != y.type)
-      throw(runtime_error("Comparing values with different types."));
+      throw(std::runtime_error("Comparing values with different types."));
 
     switch(x.type) {
     case Value::STRING:
@@ -58,7 +58,7 @@ namespace loos {
 
     case Value::NONE:
     default:
-      throw(runtime_error("Invalid comparison"));
+      throw(std::runtime_error("Invalid comparison"));
 
     }
 

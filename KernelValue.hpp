@@ -35,8 +35,6 @@
 #include <loos_defs.hpp>
 
 
-using namespace std;
-
 namespace loos {
 
   const float FLT_THRESHOLD = 1e-10;     // Threshold for floating equality
@@ -54,7 +52,7 @@ namespace loos {
     
     ValueType type;
     union {
-      string *str;
+      std::string *str;
       float flt;
       int itg;
     };
@@ -63,7 +61,7 @@ namespace loos {
     void copy(const Value& v) {
       switch(v.type) {
       case STRING:
-        str = new string(*(v.str)); break;
+        str = new std::string(*(v.str)); break;
       case INT:
         itg = v.itg; break;
       case FLOAT:
@@ -83,37 +81,37 @@ namespace loos {
 
     const Value& operator=(const Value& v) { copy(v); return(*this); }
 
-    Value(const string s) { setString(s); }
+    Value(const std::string s) { setString(s); }
     Value(const float f) { setFloat(f); }
     Value(const int i) { setInt(i); }
 
-    void setString(const string s) { str = new string(s); type = STRING; }
+    void setString(const std::string s) { str = new std::string(s); type = STRING; }
     void setFloat(const float f) { flt = f; type = FLOAT; }
     void setInt(const int i) { itg = i; type = INT; }
 
     //! Retrieve data, throwing an error if the Value is of the incorrect type.
-    string getString(void) const {
+    std::string getString(void) const {
       if (type != STRING)
-        throw(runtime_error("Expected a string value..."));
+        throw(std::runtime_error("Expected a string value..."));
       return(*str);
     }
 
     //! Retrieve data, throwing an error if the Value is of the incorrect type.
     float getFloat(void) const {
       if (type != FLOAT)
-        throw(runtime_error("Expected a float value..."));
+        throw(std::runtime_error("Expected a float value..."));
       return(flt);
     }
 
     //! Retrieve data, throwing an error if the Value is of the incorrect type.
     int getInt(void) const {
       if (type != INT)
-        throw(runtime_error("Expected an int value..."));
+        throw(std::runtime_error("Expected an int value..."));
       return(itg);
     }
 
     //! Output in pseudo-XML
-    friend ostream& operator<<(ostream& os, const Value& v) {
+    friend std::ostream& operator<<(std::ostream& os, const Value& v) {
       switch(v.type) {
       case STRING:
         os << "<VALUE TYPE='STRING'>" << *(v.str) << "</VALUE>";

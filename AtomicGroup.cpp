@@ -86,7 +86,7 @@ const pAtom& AtomicGroup::operator[](const int i) const {
 
 // Internal: removes an atom from this group based on the address of the shared pointer...
 void AtomicGroup::deleteAtom(pAtom pa) {
-  vector<pAtom>::iterator iter;
+  std::vector<pAtom>::iterator iter;
 
   iter = find(atoms.begin(), atoms.end(), pa);
   if (iter == atoms.end())
@@ -98,8 +98,8 @@ void AtomicGroup::deleteAtom(pAtom pa) {
 
 
 // Append each atom from the passed vector onto this group...
-void AtomicGroup::append(vector<pAtom> pas) {
-  vector<pAtom>::iterator i;
+void AtomicGroup::append(std::vector<pAtom> pas) {
+  std::vector<pAtom>::iterator i;
 
   for (i=pas.begin(); i != pas.end(); i++)
     atoms.push_back(*i);
@@ -110,7 +110,7 @@ void AtomicGroup::append(vector<pAtom> pas) {
 
 // Append all atoms from the passed group onto this one
 void AtomicGroup::append(const AtomicGroup& grp) {
-  vector<pAtom>::const_iterator i;
+  std::vector<pAtom>::const_iterator i;
 
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
     addAtom(*i);
@@ -120,8 +120,8 @@ void AtomicGroup::append(const AtomicGroup& grp) {
 
 
 // Remove all atoms in the passed vector
-void AtomicGroup::remove(vector<pAtom> pas) {
-  vector<pAtom>::iterator i;
+void AtomicGroup::remove(std::vector<pAtom> pas) {
+  std::vector<pAtom>::iterator i;
 
   for (i=pas.begin(); i != pas.end(); i++)
     deleteAtom(*i);
@@ -132,7 +132,7 @@ void AtomicGroup::remove(vector<pAtom> pas) {
 
 // Removes all atoms contained in the passed group from this one...
 void AtomicGroup::remove(const AtomicGroup& grp) {
-  vector<pAtom>::const_iterator i;
+  std::vector<pAtom>::const_iterator i;
 
   for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
     deleteAtom(*i);
@@ -253,8 +253,8 @@ AtomicGroup AtomicGroup::excise(const int offset, const int len) {
 AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
   AtomicGroup res;
 
-  vector<pAtom>::iterator j;
-  vector<pAtom>::const_iterator i;
+  std::vector<pAtom>::iterator j;
+  std::vector<pAtom>::const_iterator i;
 
   for (j=atoms.begin(); j != atoms.end(); j++)
     for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
@@ -274,7 +274,7 @@ AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
 AtomicGroup AtomicGroup::select(const AtomSelector& sel) const {
   AtomicGroup res;
 
-  vector<pAtom>::const_iterator i;
+  std::vector<pAtom>::const_iterator i;
   for (i=atoms.begin(); i != atoms.end(); i++)
     if (sel(*i))
       res.addAtom(*i);
@@ -285,7 +285,7 @@ AtomicGroup AtomicGroup::select(const AtomSelector& sel) const {
 
 
 // Split up a group into a vector of groups based on unique segids...
-vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
+std::vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
   ConstAtomIterator i;
   UniqueStrings unique;
 
@@ -294,7 +294,7 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
 
   int n = unique.size();
   int j;
-  vector<AtomicGroup> results(n);
+  std::vector<AtomicGroup> results(n);
   for (i = atoms.begin(); i != atoms.end(); i++) {
     j = unique.find((*i)->segid());
     if (j < 0)
@@ -302,7 +302,7 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
     results[j].append(*i);
   }
 
-  vector<AtomicGroup>::iterator g;
+  std::vector<AtomicGroup>::iterator g;
   for (g=results.begin(); g!=results.end(); g++) {
     g->box = box;
   }
@@ -321,10 +321,10 @@ vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
  * current group, a runtime_error is thrown.
  */
 
-vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
+std::vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
   HashInt seen;                      // Track what atoms we've already
                                      // processed... 
-  vector<AtomicGroup> molecules;
+  std::vector<AtomicGroup> molecules;
   AtomicGroup current;               // The molecule we're currently building...
 
   // If no connectivity, just return the entire group...
@@ -348,7 +348,7 @@ vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
   }
 
   // copy the box over
-  vector<AtomicGroup>::iterator m;
+  std::vector<AtomicGroup>::iterator m;
   for (m=molecules.begin(); m!=molecules.end(); m++) {
     m->box = box;
   }
@@ -376,8 +376,8 @@ void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, pAtom moi) {
   // Now find atoms that are bound to the current atom and recurse
   // through them...
 
-  vector<int> bonds = moi->getBonds();
-  vector<int>::const_iterator citer;
+  std::vector<int> bonds = moi->getBonds();
+  std::vector<int>::const_iterator citer;
   for (citer = bonds.begin(); citer != bonds.end(); citer++) {
     pAtom toi = findById(*citer);
     if (toi == 0)
@@ -413,7 +413,7 @@ pAtom AtomicGroup::findById(const int id) {
 //! using a subselection, unless you're sure the subsection contains these
 //! atoms as well.  The main use of this routine is to create a group of atoms
 //! bound to another atom.
-AtomicGroup AtomicGroup::groupFromID(const vector<int> &id_list) {
+AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) {
     AtomicGroup result;
 
     result.box = box;
@@ -558,7 +558,7 @@ int AtomicGroup::numberOfSegids(void) const {
 
   ConstAtomIterator i;
   int n = 1;
-  string curr_segid = atoms[0]->segid();
+  std::string curr_segid = atoms[0]->segid();
 
   for (i=atoms.begin()+1; i !=atoms.end(); i++)
     if ((*i)->segid() != curr_segid) {
@@ -614,9 +614,9 @@ bool AtomicGroup::operator==(const AtomicGroup& rhs) const {
   if (this == &rhs)
     return(true);
 
-  const vector<pAtom> *lp;
-  const vector<pAtom> *rp;
-  vector<pAtom> lhs_atoms, rhs_atoms;
+  const std::vector<pAtom> *lp;
+  const std::vector<pAtom> *rp;
+  std::vector<pAtom> lhs_atoms, rhs_atoms;
   CmpById comp;
   if (!sorted()) {
     lhs_atoms = atoms;
@@ -676,7 +676,7 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
 
   res.box = box;
   double dist2 = dist * dist;
-  vector<int> ids;
+  std::vector<int> ids;
 
   for (int j=0; j<nb; j++) {
     for (int i=0; i<na; i++) {
@@ -689,9 +689,9 @@ AtomicGroup AtomicGroup::within(const double dist, AtomicGroup& grp) {
   if (ids.size() == 0)
     return(res);
 
-  vector<int> unique_ids;
+  std::vector<int> unique_ids;
   std::sort(ids.begin(), ids.end());
-  vector<int>::const_iterator ci;
+  std::vector<int>::const_iterator ci;
   int last_id = ids[0];
   unique_ids.push_back(last_id);
   for (ci = ids.begin()+1; ci != ids.end(); ci++)

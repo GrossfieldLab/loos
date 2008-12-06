@@ -34,21 +34,19 @@
 #include "KernelStack.hpp"
 #include "KernelActions.hpp"
 
-using namespace std;
-
 namespace loos {
 
   //!The Kernel (virtual machine) for compiling and executing user-defined atom selections
 
   class Kernel {
-    vector<Action*> actions;    //! Commands
+    std::vector<Action*> actions;    //! Commands
     ValueStack val_stack;       //! The data stack...
 
   public:
     
     //! Destroy all of the stored commands...
     ~Kernel() {
-      vector<Action*>::iterator i;
+      std::vector<Action*>::iterator i;
       for (i = actions.begin(); i != actions.end(); i++)
         delete (*i);
     }
@@ -65,7 +63,7 @@ namespace loos {
     //! This does not clear the command stack/list
     void execute(pAtom pa = pAtom()) {
 
-      vector<Action*>::iterator i;
+      std::vector<Action*>::iterator i;
       for (i=actions.begin(); i != actions.end(); i++) {
         (*i)->setAtom(pa);
         (*i)->execute();
@@ -77,8 +75,8 @@ namespace loos {
 
     ValueStack& stack(void) { return(val_stack); }
 
-    friend ostream& operator<<(ostream& os, const Kernel& k) {
-      vector<Action*>::const_iterator i;
+    friend std::ostream& operator<<(std::ostream& os, const Kernel& k) {
+      std::vector<Action*>::const_iterator i;
 
       os << "Commands:\n";
       for (i=k.actions.begin(); i != k.actions.end(); i++)

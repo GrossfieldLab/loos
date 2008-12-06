@@ -1,3 +1,7 @@
+2008-12-05  Tod Romo  <tromo@gorgoneion-w>
+
+	* Moved Matrix classes into loos::Math namespace
+
 2008-12-05  Tod Romo  <tromo@gorgoneion.urmc-sh.rochester.edu>
 
 	* Added a lightweight matrix class
@@ -12,6 +16,7 @@
 	default naming scheme has been changed slightly (it will default
 	to the base-name of the input trajectory unless you explicitly
 	specify a prefix).
+	
 
 2008-12-04    <tromo@spade.biophysics.rochester.edu>
 
