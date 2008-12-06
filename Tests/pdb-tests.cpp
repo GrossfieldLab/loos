@@ -22,6 +22,7 @@
 
 #include <loos.hpp>
 
+using namespce std;
 
 #if !defined(MAXGRPCNT)
 #define MAXGRPCNT 10

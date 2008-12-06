@@ -20,9 +20,10 @@
 */
 
 
-using namespace std;
 
 #include <loos.hpp>
+
+using namespace std;
 
 
 struct SelectorCA : public AtomSelector {

@@ -22,6 +22,7 @@
 
 #include <loos.hpp>
 
+using namespace std;
 using namespace loos;
 
 // Configuration options...

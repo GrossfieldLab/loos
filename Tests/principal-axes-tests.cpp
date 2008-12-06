@@ -22,6 +22,7 @@
 
 #include <loos.hpp>
 
+using namespace std;
 
 // # of iterations
 static const int maxcount = 10000;
