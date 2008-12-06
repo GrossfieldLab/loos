@@ -30,7 +30,7 @@
 
 // Assume all groups are already sorted or matched...
 
-AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
+AtomicGroup loos::averageStructure(const std::vector<AtomicGroup>& ensemble) {
   AtomicGroup avg = ensemble[0].copy();
 
   // First, zap our coords...
@@ -40,7 +40,7 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
     avg[i]->coords() = GCoord(0.0, 0.0, 0.0);
 
   // Now, accumulate...
-  vector<AtomicGroup>::const_iterator j;
+  std::vector<AtomicGroup>::const_iterator j;
   for (j = ensemble.begin(); j != ensemble.end(); j++) {
     for (i = 0; i<n; i++)
       avg[i]->coords() += (*j)[i]->coords();
@@ -54,7 +54,7 @@ AtomicGroup loos::averageStructure(const vector<AtomicGroup>& ensemble) {
 
 
 
-AtomicGroup loos::averageStructure(const AtomicGroup& g, const vector<XForm>& xforms, pTraj traj) {
+AtomicGroup loos::averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj traj) {
   AtomicGroup avg = g.copy();
   AtomicGroup frame = g.copy();
   int n = avg.size();
@@ -80,12 +80,12 @@ AtomicGroup loos::averageStructure(const AtomicGroup& g, const vector<XForm>& xf
 
 
 
-boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGroup>& ensemble,
+boost::tuple<std::vector<XForm>,greal,int> loos::iterativeAlignment(std::vector<AtomicGroup>& ensemble,
                                                                greal threshold, int maxiter) {
   int iter = 0;
   int n = ensemble.size();
   greal rms;
-  vector<XForm> xforms(n);
+  std::vector<XForm> xforms(n);
   AtomicGroup avg;
 
   // Start by aligning against the first structure in the ensemble
@@ -109,16 +109,16 @@ boost::tuple<vector<XForm>,greal,int> loos::iterativeAlignment(vector<AtomicGrou
     iter++;
   } while (rms > threshold && iter <= maxiter );
   
-  boost::tuple<vector<XForm>, greal, int> res(xforms, rms, iter);
+  boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
   return(res);
 }
 
 
 
 
-boost::tuple<vector<XForm>, greal, int> loos::iterativeAlignment(const AtomicGroup& g, pTraj traj,
+boost::tuple<std::vector<XForm>, greal, int> loos::iterativeAlignment(const AtomicGroup& g, pTraj traj,
                                                                  greal threshold, int maxiter) {
-  vector<AtomicGroup> frames;
+  std::vector<AtomicGroup> frames;
 
   traj->rewind();
   while (traj->readFrame()) {
@@ -127,6 +127,6 @@ boost::tuple<vector<XForm>, greal, int> loos::iterativeAlignment(const AtomicGro
     frames.push_back(frame);
   }
 
-  boost::tuple<vector<XForm>, greal, int> result = iterativeAlignment(frames, threshold, maxiter);
+  boost::tuple<std::vector<XForm>, greal, int> result = iterativeAlignment(frames, threshold, maxiter);
   return(result);
 }

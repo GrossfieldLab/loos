@@ -720,20 +720,20 @@ YY_RULE_SETUP
 case 16:
 YY_RULE_SETUP
 #line 43 "scanner.ll"
-{ yylval->sval = new string(yytext, yyleng); return(token::SKEY); }
+{ yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 44 "scanner.ll"
-{ yylval->sval = new string(yytext, yyleng); return(token::NKEY); }
+{ yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 46 "scanner.ll"
 {                /* Special handling for strings... */
- string delim(yytext, yyleng);
+ std::string delim(yytext, yyleng);
  int c;
- string text;
+ std::string text;
 
  while ((c = yyinput()) > 0) {
   if (c == '\n' || c == delim[0])
@@ -743,7 +743,7 @@ YY_RULE_SETUP
 
  if (c < 0)
    return(token::END);
- yylval->sval = new string(text);
+ yylval->sval = new std::string(text);
  return(token::STRING);
 }
 	YY_BREAK

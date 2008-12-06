@@ -36,12 +36,12 @@ void DCDWriter::writeF77Line(StreamWrapper& ofs, const char* const data, const u
 }
 
 
-string DCDWriter::fixStringSize(const string& s, const unsigned int n) {
-  string result(s);
+std::string DCDWriter::fixStringSize(const std::string& s, const unsigned int n) {
+  std::string result(s);
 
   if (s.size() < n) {
     int i = n - s.size();
-    result += string (i, ' ');
+    result += std::string (i, ' ');
   } else if (s.size() > n)
     result = s.substr(0, n);
 
@@ -74,7 +74,7 @@ void DCDWriter::writeHeader(void) {
   unsigned int *iptr = (unsigned int *)ptr;
   *iptr = _titles.size();
   for (i=0; i<_titles.size(); i++) {
-    string s = fixStringSize(_titles[i], 80);
+    std::string s = fixStringSize(_titles[i], 80);
     memcpy(ptr + sizeof(unsigned int) + 80*i, s.c_str(), 80);
   }
   writeF77Line(_ofs, ptr, size);
@@ -104,10 +104,10 @@ void DCDWriter::writeFrame(const AtomicGroup& grp) {
   } else {
 
     if (grp.size() != _natoms)
-      throw(runtime_error("Frame group atom count mismatch"));
+      throw(std::runtime_error("Frame group atom count mismatch"));
 
     if (!_has_box && grp.isPeriodic())
-      throw(runtime_error("Frame has periodic info but none was requested to be written to the DCD."));
+      throw(std::runtime_error("Frame has periodic info but none was requested to be written to the DCD."));
 
   }
 
@@ -115,9 +115,9 @@ void DCDWriter::writeFrame(const AtomicGroup& grp) {
     _ofs()->seekp(0);
     ++_nsteps;
     writeHeader();
-    _ofs()->seekp(0, ios_base::end);
+    _ofs()->seekp(0, std::ios_base::end);
     if (_ofs()->fail())
-      throw(runtime_error("Error while re-writing DCD header"));
+      throw(std::runtime_error("Error while re-writing DCD header"));
   }
 
   if (_has_box)
@@ -143,8 +143,8 @@ void DCDWriter::writeFrame(const AtomicGroup& grp) {
 }
 
 
-void DCDWriter::writeFrame(const vector<AtomicGroup>& grps) {
-  vector<AtomicGroup>::const_iterator i;
+void DCDWriter::writeFrame(const std::vector<AtomicGroup>& grps) {
+  std::vector<AtomicGroup>::const_iterator i;
 
   for (i= grps.begin(); i != grps.end(); i++)
     writeFrame(*i);

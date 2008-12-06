@@ -59,7 +59,7 @@ namespace loos
 #include <string.h>
 
 
-using namespace std;
+//using namespace std;
 //using namespace loos;
 
 class ParserDriver;
@@ -124,7 +124,7 @@ namespace loos
     union semantic_type
 #line 30 "grammar.yy"
 {
-	string *sval;
+	std::string *sval;
 	int ival;
 }
 /* Line 35 of lalr1.cc.  */

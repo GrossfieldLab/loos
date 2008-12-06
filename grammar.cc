@@ -51,7 +51,7 @@
 
 
 namespace loos {
-  void parse_error(const string&);
+  void parse_error(const std::string&);
 };
 
 
@@ -987,11 +987,11 @@ else
 
 
 
-void loos::parser::error(const loos::location& loc, const string& s = "unknown error") {
-  cerr << "***ERROR***  Bad selection syntax - " << s << endl;
+void loos::parser::error(const loos::location& loc, const std::string& s = "unknown error") {
+  std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }
 
-void loos::parse_error(const string& s = "unknown error") {
-  cerr << "***ERROR***  Bad selection syntax - " << s << endl;
+void loos::parse_error(const std::string& s = "unknown error") {
+  std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }
 

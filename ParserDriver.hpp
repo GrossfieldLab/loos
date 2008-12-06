@@ -83,12 +83,12 @@ struct ParserDriver {
   //! Calls the Bison parser
   void parse(void) {
     if (!lexer)
-      throw(runtime_error("Attempting to parse sans lexer"));
+      throw(std::runtime_error("Attempting to parse sans lexer"));
 
     if (!pparser)
       pparser = new loos::parser(*this);
     if (pparser->parse())
-      throw(runtime_error("Parse error"));
+      throw(std::runtime_error("Parse error"));
   }
 
 };

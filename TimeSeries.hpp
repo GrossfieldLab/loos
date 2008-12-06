@@ -336,7 +336,7 @@ public:
     tTimeSeries<T> windowed_average(const int window) const {
 
         if (window > _data.size() )
-            throw(out_of_range("Error in windowed_average: window too large"));
+            throw(std::out_of_range("Error in windowed_average: window too large"));
 
         tTimeSeries result(_data.size() - window);
         T sum = 0;

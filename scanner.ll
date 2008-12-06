@@ -40,13 +40,13 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 
 all                  { return(token::ALL); }
 hydrogen             { return(token::HYDROGEN); }
-name|resname|segid   { yylval->sval = new string(yytext, yyleng); return(token::SKEY); }
-id|resid             { yylval->sval = new string(yytext, yyleng); return(token::NKEY); }
+name|resname|segid   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
+id|resid             { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 
 \"|\'                {                /* Special handling for strings... */
- string delim(yytext, yyleng);
+ std::string delim(yytext, yyleng);
  int c;
- string text;
+ std::string text;
 
  while ((c = yyinput()) > 0) {
   if (c == '\n' || c == delim[0])
@@ -56,7 +56,7 @@ id|resid             { yylval->sval = new string(yytext, yyleng); return(token::
 
  if (c < 0)
    return(token::END);
- yylval->sval = new string(text);
+ yylval->sval = new std::string(text);
  return(token::STRING);
 }
 

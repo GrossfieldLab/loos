@@ -30,24 +30,24 @@
 #include "loos.hpp"
 #include "psf.hpp"
 
-void PSF::read(istream& is) {
-    string input;
+void PSF::read(std::istream& is) {
+    std::string input;
 
     // first line is the PSF header
     if (!getline(is, input))
-        throw(runtime_error("Failed reading first line of psf"));
+        throw(std::runtime_error("Failed reading first line of psf"));
     if (input.substr(0,3) != "PSF")
-        throw(runtime_error("PSF detected a non-PSF file"));
+        throw(std::runtime_error("PSF detected a non-PSF file"));
 
     // second line is blank
     if (!getline(is, input))
-        throw(runtime_error("PSF failed reading first header blank"));
+        throw(std::runtime_error("PSF failed reading first header blank"));
 
     // third line is title header
     getline(is, input);
     int num_title_lines;
-    if (!(stringstream(input) >> num_title_lines)) 
-        throw(runtime_error("PSF has malformed title header"));
+    if (!(std::stringstream(input) >> num_title_lines)) 
+        throw(std::runtime_error("PSF has malformed title header"));
         
     // skip the rest of the title
     for (int i=0; i<num_title_lines; i++) 
@@ -57,44 +57,44 @@ void PSF::read(istream& is) {
     if (!(is.good()))
         // Yes, I know, I should figure out what went wrong instead
         // of running home crying.  Sorry, Tod...
-        throw(runtime_error("PSF choked reading the header"));
+        throw(std::runtime_error("PSF choked reading the header"));
 
     // next line is blank 
     if (!getline(is, input))
-        throw(runtime_error("PSF failed reading second header blank"));
+        throw(std::runtime_error("PSF failed reading second header blank"));
 
     // next line is the number of atoms
     
     if (!getline(is, input))
-        throw(runtime_error("PSF failed reading natom line"));
+        throw(std::runtime_error("PSF failed reading natom line"));
     int num_atoms;
-    if (!(stringstream(input) >> num_atoms))
-        throw(runtime_error("PSF has malformed natom line"));
+    if (!(std::stringstream(input) >> num_atoms))
+        throw(std::runtime_error("PSF has malformed natom line"));
 
     for (int i=0; i<num_atoms; i++) {
         if (!getline(is, input))
-            throw(runtime_error("Failed reading PSF atom line "));
-            //throw(runtime_error("Failed reading PSF atom line " + string(i)));
+            throw(std::runtime_error("Failed reading PSF atom line "));
+            //throw(std::runtime_error("Failed reading PSF atom line " + std::string(i)));
         parseAtomRecord(input);
     }
 
     // next line is blank 
     if (!getline(is, input))
-        throw(runtime_error("PSF failed reading blank after atom lines"));
+        throw(std::runtime_error("PSF failed reading blank after atom lines"));
 
     // next block of lines is the list of bonds
     // Bond title line
     if (!getline(is, input))
-        throw(runtime_error("PSF failed reading nbond line"));
+        throw(std::runtime_error("PSF failed reading nbond line"));
     int num_bonds;
-    if (!(stringstream(input) >> num_bonds))
-        throw(runtime_error("PSF has malformed nbond line"));
+    if (!(std::stringstream(input) >> num_bonds))
+        throw(std::runtime_error("PSF has malformed nbond line"));
 
     int bonds_found = 0;
     getline(is, input);
     while (input.size() > 0) { // end of the block is marked by a blank line
         int ind1, ind2;
-        stringstream s(input);
+        std::stringstream s(input);
         while (s.good()) {
             s >> ind1;
             s >> ind2;
@@ -110,26 +110,26 @@ void PSF::read(istream& is) {
     }
     // sanity check
     if (bonds_found != num_bonds) 
-        throw(runtime_error("PSF number of bonds disagrees with number found"));
+        throw(std::runtime_error("PSF number of bonds disagrees with number found"));
 
 }
 
 
 
-void PSF::parseAtomRecord(const string s) {
+void PSF::parseAtomRecord(const std::string s) {
     gint index;
-    string segname;
+    std::string segname;
     gint resid;
-    string resname;
-    string atomname;
-    string atomtype;
+    std::string resname;
+    std::string atomname;
+    std::string atomtype;
     greal charge;
     greal mass;
     gint fixed;
 
     pAtom pa(new Atom);
          
-    stringstream ss(s);
+    std::stringstream ss(s);
 
     ss >> index;
     pa->id(index);
@@ -181,7 +181,7 @@ int PSF::deduceAtomicNumber(pAtom pa) {
     double mass = pa->mass();
     int an=-1;
     if (mass < 1.0)
-        throw(out_of_range("Atomic mass less than 1.0 in psf"));
+        throw(std::out_of_range("Atomic mass less than 1.0 in psf"));
     else if (mass < 1.1) // Hydrogen = 1.0080
         an=1;
     else if ( (mass >= 4.0) && (mass <= 4.1) )  // Helium = 4.0026
@@ -220,5 +220,5 @@ int PSF::deduceAtomicNumber(pAtom pa) {
     if (an > 0)
         return(an);
     else
-        throw(out_of_range("Couldn't identify an atomic number in psf"));
+        throw(std::out_of_range("Couldn't identify an atomic number in psf"));
 }

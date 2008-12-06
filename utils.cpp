@@ -253,7 +253,7 @@ AtomicGroup loos::selectAtoms(const AtomicGroup& source, const std::string selec
   try {
     parser.parse(selection);
   }
-  catch(runtime_error e) {
+  catch(std::runtime_error e) {
     throw(std::runtime_error("Error in parsing '" + selection + "' ... " + e.what()));
   }
 
