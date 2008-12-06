@@ -40,13 +40,13 @@ namespace loos {
 
       T& operator[](const ulong i) {
         if (i >= dim_)
-          throw(std::out_of_range("Matrix linear index out of range"));
+          throw(std::out_of_range("Matrix index out of range"));
         return(dptr[i]);
       }
 
       const T& operator[](const ulong i) const {
         if (i >= dim_)
-          throw(std::out_of_range("Matrix linear index out of range"));
+          throw(std::out_of_range("Matrix index out of range"));
         return(dptr[i]);
       }
 
@@ -110,7 +110,7 @@ namespace loos {
 
       T& operator[](const ulong i) {
         if (i >= dim_)
-          throw(std::out_of_range("Matrix linear index out of range"));
+          throw(std::out_of_range("Matrix index out of range"));
         return(dmap[i]);
       }
 
@@ -125,7 +125,7 @@ namespace loos {
       const T& operator[](const ulong i) const {
         static T null_value;
         if (i >= dim_)
-          throw(std::out_of_range("Matrix linear index out of range"));
+          throw(std::out_of_range("Matrix index out of range"));
         typename std::tr1::unordered_map<ulong, T>::const_iterator ci = dmap.find(i);
         if (ci == dmap.end()) {
           return(null_value);

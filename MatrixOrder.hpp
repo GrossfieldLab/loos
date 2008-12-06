@@ -42,8 +42,8 @@ namespace loos {
       ulong size(void) const { return(s); }
 
       ulong index(const uint y, const uint x) const {
-        if (x >= n || y >= m)
-          throw(std::out_of_range("Matrix indices out of range"));
+//         if (x >= n || y >= m)
+//           throw(std::out_of_range("Matrix indices out of range"));
 
         uint b = y;
         uint a = x;
@@ -78,8 +78,8 @@ namespace loos {
       ulong size(void) const { return(s); }
 
       ulong index(const uint y, const uint x) const {
-        if (x >= n || y >= m)
-          throw(std::out_of_range("Matrix indices out of range"));
+//         if (x >= n || y >= m)
+//           throw(std::out_of_range("Matrix indices out of range"));
         return(x*m + y);
       }
 
@@ -101,8 +101,8 @@ namespace loos {
       ulong size(void) const { return(s); }
 
       ulong index(const uint y, const uint x) const {
-        if (x >= n || y >= m)
-          throw(std::out_of_range("Matrix indices out of range"));
+//         if (x >= n || y >= m)
+//           throw(std::out_of_range("Matrix indices out of range"));
         return(y*n + x);
       }
 
