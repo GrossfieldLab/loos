@@ -287,6 +287,7 @@ int main(int argc, char *argv[]) {
 
   // Write out the PDB...
   PDB outpdb = PDB::fromAtomicGroup(avg);
+  outpdb.renumber();
   outpdb.remarks().add(header);
   string pdb_name = prefix + ".pdb";
   ofstream ofs(pdb_name.c_str());
