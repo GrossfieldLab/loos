@@ -23,11 +23,9 @@
 
 
 // The various matrix policies require these typedefs...
+typedef unsigned long ulong;
+typedef unsigned int uint;
 
-namespace loos {
-  typedef unsigned long ulong;
-  typedef unsigned int uint;
-}
 
 #include <MatrixOrder.hpp>           // Order (layout) policies
 #include <MatrixStorage.hpp>         // Storage (physical) policies

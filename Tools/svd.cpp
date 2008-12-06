@@ -34,6 +34,7 @@
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
+using namespace loos;
 
 #if defined(__linux__)
 extern "C" {
@@ -41,15 +42,11 @@ extern "C" {
 }
 #endif
 
-typedef unsigned int uint;   // Ah, old-style unix C!
 typedef float svdreal;
 
-typedef loos::Math::Matrix<svdreal, loos::Math::ColMajor> Matrix;
+typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
 
 #define SVDFUNC  sgesvd_
-
-
-
 
 struct Globals {
   string model_name, traj_name;
@@ -141,7 +138,7 @@ void parseOptions(int argc, char *argv[]) {
 
 vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 
-  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(subset, traj, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, globals.alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -168,7 +165,7 @@ void writeAverage(const AtomicGroup& avg) {
 // transformed coords from the DCD with the avg subtraced out...
 
 Matrix extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, pTraj traj) {
-  AtomicGroup avg = loos::averageStructure(subset, xforms, traj);
+  AtomicGroup avg = averageStructure(subset, xforms, traj);
 
   // Hook to get the avg structure if requested...
   if (globals.avg_name != "")
@@ -223,8 +220,8 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   // Need to address this...
-  AtomicGroup model = loos::createSystem(globals.model_name);
-  pTraj ptraj = loos::createTrajectory(globals.traj_name, model);
+  AtomicGroup model = createSystem(globals.model_name);
+  pTraj ptraj = createTrajectory(globals.traj_name, model);
   
   // Fix max-range for DCD
   if (globals.dcdmax == 0)
@@ -234,8 +231,8 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  AtomicGroup alignsub = loos::selectAtoms(model, globals.alignment_string);
-  AtomicGroup svdsub = loos::selectAtoms(model, globals.svd_string);
+  AtomicGroup alignsub = selectAtoms(model, globals.alignment_string);
+  AtomicGroup svdsub = selectAtoms(model, globals.svd_string);
 
   write_map(globals.prefix + ".map", svdsub);
 
@@ -249,7 +246,7 @@ int main(int argc, char *argv[]) {
 
 
   if (globals.include_source)
-    loos::writeAsciiMatrix(globals.prefix + "_A.asc", A, header);
+    writeAsciiMatrix(globals.prefix + "_A.asc", A, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -285,9 +282,9 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  loos::writeAsciiMatrix(globals.prefix + "_U.asc", U, header);
-  loos::writeAsciiMatrix(globals.prefix + "_s.asc", S, header);
-  loos::writeAsciiMatrix(globals.prefix + "_V.asc", Vt, header, true);
+  writeAsciiMatrix(globals.prefix + "_U.asc", U, header);
+  writeAsciiMatrix(globals.prefix + "_s.asc", S, header);
+  writeAsciiMatrix(globals.prefix + "_V.asc", Vt, header, true);
 
   delete[] work;
 }
