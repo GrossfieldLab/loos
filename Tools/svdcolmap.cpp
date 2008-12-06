@@ -34,7 +34,7 @@
 
 namespace po = boost::program_options;
 
-typedef loos::Matrix<float, loos::ColMajor> Matrix;
+typedef loos::Math::Matrix<float, loos::Math::ColMajor> Matrix;
 
 
 struct Globals {

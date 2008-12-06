@@ -40,7 +40,7 @@
 
 namespace po = boost::program_options;
 
-typedef loos::Matrix<double, loos::Triangular> Matrix;
+typedef loos::Math::Matrix<double, loos::Math::Triangular> Matrix;
 
 
 struct Globals {

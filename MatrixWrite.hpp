@@ -45,7 +45,7 @@ namespace loos {
 
   //! Write a submatrix to a stream
   template<class T, class P, template<typename> class S>
-  std::ostream& writeAsciiMatrix(std::ostream& os, const Matrix<T,P,S>& M,
+  std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const MDuple& start,
                                  const MDuple& end, const bool trans = false) {
     return(MatrixWriteImpl<T,P,S>::write(os, M, meta, start, end, trans));
@@ -53,7 +53,7 @@ namespace loos {
 
   //! Write an entire matrix to a stream
   template<class T, class P, template<typename> class S>
-  std::ostream& writeAsciiMatrix(std::ostream& os, const Matrix<T,P,S>& M,
+  std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const bool trans = false) {
     MDuple start(0,0);
     MDuple end(M.rows(), M.cols());
@@ -62,7 +62,7 @@ namespace loos {
 
   //! Write a submatrix to a file
   template<class T, class P, template<typename> class S>
-  void writeAsciiMatrix(const std::string& fname, const Matrix<T,P,S>& M,
+  void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const MDuple& start,
                                  const MDuple& end, const bool trans = false) {
     std::ofstream ofs(fname.c_str());
@@ -74,7 +74,7 @@ namespace loos {
 
   //! Write an entire matrix to a file
   template<class T, class P, template<typename> class S>
-  void writeAsciiMatrix(const std::string& fname, const Matrix<T,P,S>& M,
+  void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const bool trans = false) {
     MDuple start(0,0);
     MDuple end(M.rows(), M.cols());
@@ -91,7 +91,7 @@ namespace loos {
   template<class T, class P, template<typename> class S>
   struct MatrixWriteImpl {
     static std::ostream& write(std::ostream& os,
-                               const Matrix<T,P,S>& M,
+                               const Math::Matrix<T,P,S>& M,
                                const std::string& meta,
                                const MDuple& start, const MDuple& end,
                                const bool trans) {
@@ -112,15 +112,15 @@ namespace loos {
   //! Write out a sparse matrix.
   /** Ignores \a start, \a end, and \a trans */
   template<class T, class P>
-  struct MatrixWriteImpl<T, P, SparseArray > {
+  struct MatrixWriteImpl<T, P, Math::SparseArray > {
     static std::ostream& write(std::ostream& os,
-                               const Matrix<T,P,SparseArray>& M,
+                               const Math::Matrix<T,P,Math::SparseArray>& M,
                                const std::string& meta,
                                const MDuple& start, const MDuple& end,
                                const bool trans) {
       os << "# " << meta << std::endl;
       os << boost::format("# %d %d %d SPARSE\n") % M.actualSize() % M.rows() % M.cols();
-      typename Matrix<T,P,SparseArray>::const_iterator ci;
+      typename Math::Matrix<T,P,Math::SparseArray>::const_iterator ci;
       
       for (ci = M.begin(); ci != M.end(); ++ci)
         os << (*ci).first << "\t" << (*ci).second << std::endl;
@@ -132,9 +132,9 @@ namespace loos {
   //! Write out a triangular matrix
   /** Ignores \a start, \a end, and \a trans */
   template<class T, template<typename> class S>
-  struct MatrixWriteImpl<T, Triangular, S> {
+  struct MatrixWriteImpl<T, Math::Triangular, S> {
     static std::ostream& write(std::ostream& os,
-                               const Matrix<T,Triangular,S>& M,
+                               const Math::Matrix<T,Math::Triangular,S>& M,
                                const std::string& meta,
                                const MDuple& start, const MDuple& end,
                                const bool trans) {

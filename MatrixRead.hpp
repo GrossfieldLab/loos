@@ -53,19 +53,19 @@ namespace loos {
 
   //! Read in a matrix from a stream returning a newly created matrix
   template<class T, class P, template<typename> class S>
-  Matrix<T,P,S> readAsciiMatrix(std::istream& is) {
+  Math::Matrix<T,P,S> readAsciiMatrix(std::istream& is) {
     return(MatrixReadImpl<T,P,S>::read(is));
   }
 
   //! Read in a matrix from a stream storing it in the specified matrix
   template<class T, class P, template<typename> class S>
-  void readAsciiMatrix(std::istream& is, Matrix<T,P,S>& M) {
+  void readAsciiMatrix(std::istream& is, Math::Matrix<T,P,S>& M) {
     M = MatrixReadImpl<T,P,S>::read(is);
   }
 
   //! Read in a matrix from a file returning a newly created matrix
   template<class T, class P, template<typename> class S>
-  Matrix<T,P,S> readAsciiMatrix(const std::string& fname) {
+  Math::Matrix<T,P,S> readAsciiMatrix(const std::string& fname) {
     std::ifstream ifs(fname.c_str());
     if (!ifs)
       throw(MatrixReadError("Cannot open " + fname + " for reading."));
@@ -74,7 +74,7 @@ namespace loos {
 
   //! Read in a matrix from a file storing it in the specified matrix
   template<class T, class P, template<typename> class S>
-  void readAsciiMatrix(const std::string& fname, Matrix<T,P,S>& M) {
+  void readAsciiMatrix(const std::string& fname, Math::Matrix<T,P,S>& M) {
     std::ifstream ifs(fname.c_str());
     if (!ifs)
       throw(MatrixReadError("Cannot open " + fname + " for reading."));
@@ -85,7 +85,7 @@ namespace loos {
 
   template<class T, class P, template<typename> class S>
   struct MatrixReadImpl {
-    static Matrix<T,P,S> read(std::istream& is) {
+    static Math::Matrix<T,P,S> read(std::istream& is) {
       std::string inbuf;
       int m = 0, n = 0;
 
@@ -104,7 +104,7 @@ namespace loos {
 
 
       T datum;
-      Matrix<T,P,S> R(m, n);
+      Math::Matrix<T,P,S> R(m, n);
       for (int j=0;j < m; j++) {
         for (int i=0; i<n; i++) {
           if (!(is >> datum)) {
@@ -122,8 +122,8 @@ namespace loos {
 
   //! Special handling for sparse matrices
   template<class T, class P>
-  struct MatrixReadImpl<T,P,SparseArray> {
-    static Matrix<T,P, SparseArray> read(std::istream& is) {
+  struct MatrixReadImpl<T,P,Math::SparseArray> {
+    static Math::Matrix<T,P, Math::SparseArray> read(std::istream& is) {
       std::string inbuf;
       uint m = 0, n = 0;
       ulong l = 0;
@@ -142,7 +142,7 @@ namespace loos {
       if (m == 0)
         throw(MatrixReadError("Could not find magic matrix line"));
     
-      Matrix<T, P, SparseArray> M(m, n);
+      Math::Matrix<T, P, Math::SparseArray> M(m, n);
       for (ulong i = 0; i<l; ++i) {
         ulong j;
         T datum;
@@ -169,8 +169,8 @@ namespace loos {
 
   //! Special handling for triangular matrices
   template<class T, template<typename> class S>
-  struct MatrixReadImpl<T,Triangular,S> {
-    static Matrix<T, Triangular, S> read(std::istream& is) {
+  struct MatrixReadImpl<T,Math::Triangular,S> {
+    static Math::Matrix<T, Math::Triangular, S> read(std::istream& is) {
       std::string inbuf;
       int m = 0;
 
@@ -189,7 +189,7 @@ namespace loos {
         throw(MatrixReadError("Could not find magic matrix line"));
       int n = m;
 
-      Matrix<T, Triangular,S> R(m, n);
+      Math::Matrix<T, Math::Triangular,S> R(m, n);
       long s = R.size();
       T datum;
 

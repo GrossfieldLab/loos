@@ -44,7 +44,7 @@ extern "C" {
 typedef unsigned int uint;   // Ah, old-style unix C!
 typedef float svdreal;
 
-typedef loos::Matrix<svdreal, loos::ColMajor> Matrix;
+typedef loos::Math::Matrix<svdreal, loos::Math::ColMajor> Matrix;
 
 #define SVDFUNC  sgesvd_
 
