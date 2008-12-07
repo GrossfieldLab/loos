@@ -94,7 +94,7 @@ void parseOptions(int argc, char *argv[]) {
 
 }
 int main(int argc, char *argv[]) {
-  string hdr = invocationHeader(argc, argv);
+  string hdr = loos::invocationHeader(argc, argv);
 
   parseOptions(argc, argv);
 

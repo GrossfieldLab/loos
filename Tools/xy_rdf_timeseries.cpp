@@ -49,7 +49,7 @@ if ( (argc <= 1) ||
     exit(-1);
     }
 
-cout << "# " << invocationHeader(argc, argv) << endl;
+cout << "# " << loos::invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 AtomicGroup system = loos::createSystem(argv[1]);

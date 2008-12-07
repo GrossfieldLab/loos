@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
         exit(-1);
     }
 
-    cout << "# " << invocationHeader(argc, argv) << endl;
+    cout << "# " << loos::invocationHeader(argc, argv) << endl;
 
 
     AtomicGroup system = loos::createSystem(argv[1]);

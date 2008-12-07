@@ -57,7 +57,7 @@ const double RAD2DEG = 180.0 / PI;
 
 
 int main(int argc, char *argv[]) {
-  string header = invocationHeader(argc, argv);
+  string header = loos::invocationHeader(argc, argv);
 
   if (argc != 5) {
     cout << "Usage- helix_kink selection-1 selection-2 model trajectory\n";

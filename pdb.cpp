@@ -344,8 +344,8 @@ void PDB::read(std::istream& is) {
   }
 
   // Do some post-extraction...
-  if (remarksHasBox(_remarks)) {
-    GCoord c = boxFromRemarks(_remarks);
+  if (loos::remarksHasBox(_remarks)) {
+    GCoord c = loos::boxFromRemarks(_remarks);
     periodicBox(c);
   } else if (has_cryst) {
     GCoord c(cell.a(), cell.b(), cell.c());

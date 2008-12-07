@@ -53,7 +53,7 @@ if ( (argc <= 1) ||
     }
 
 // Print the command line arguments
-cout << "# " << invocationHeader(argc, argv) << endl;
+cout << "# " << loos::invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 // Create the system and read the trajectory file

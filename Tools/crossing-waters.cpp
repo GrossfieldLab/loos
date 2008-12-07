@@ -134,7 +134,7 @@ if ( (argc <= 1) ||
     exit(-1);
     }
 
-cout << "# " << invocationHeader(argc, argv) << endl;
+cout << "# " << loos::invocationHeader(argc, argv) << endl;
 
 AtomicGroup system = loos::createSystem(argv[1]);
 pTraj traj = loos::createTrajectory(argv[2], system);

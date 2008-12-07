@@ -41,34 +41,32 @@
 #include <pdb_remarks.hpp>
 
 
-//! Get the next line of input, skipping blanks and stripping comments
-std::string getNextLine(std::istream&, int*);
-
-//! Read a list of integers from a stream
-std::vector<int> readIndexMap(std::istream&);
-
-//! Create an invocation header
-/**
- *This is a string that can be embedded in output that records the
- *invoking user, command-line, and a timestamp.
- */
-std::string invocationHeader(int, char *[]);
-
-//! Extract the Alan-style box-size from a PDB Remarks block.
-/** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
- *  info found in the remarks block.
- */
-GCoord boxFromRemarks(const Remarks&);
-
-//! Checks to see if a Remarks block has an Alan-style box size in it.
-bool remarksHasBox(const Remarks&);
-
-// The following are in LOOS namespace because they are either
-// collisions waiting to or are too esoteric to warrant going into std
-
-//! Namespace for segregating esoteric functions or functions with common names
 namespace loos {
 
+  //! Get the next line of input, skipping blanks and stripping comments
+  std::string getNextLine(std::istream&, int*);
+
+  //! Read a list of integers from a stream
+  std::vector<int> readIndexMap(std::istream&);
+
+  //! Create an invocation header
+  /**
+   *This is a string that can be embedded in output that records the
+   *invoking user, command-line, and a timestamp.
+   */
+  std::string invocationHeader(int, char *[]);
+
+  //! Extract the Alan-style box-size from a PDB Remarks block.
+  /** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
+   *  info found in the remarks block.
+   */
+  GCoord boxFromRemarks(const Remarks&);
+
+  //! Checks to see if a Remarks block has an Alan-style box size in it.
+  bool remarksHasBox(const Remarks&);
+
+  // The following are in LOOS namespace because they are either
+  // collisions waiting to or are too esoteric to warrant going into std
 
   typedef boost::mt19937 base_generator_type;
 

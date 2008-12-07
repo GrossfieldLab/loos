@@ -4,7 +4,7 @@
 
 2008-12-05  Tod Romo  <tromo@gorgoneion.urmc-sh.rochester.edu>
 
-	* Added a lightweight matrix class
+	* Added a new matrix class
 	* Changed matrix IO to use the new templated function calls rather
 	than the polymorphic writer/reader classes.
 	* Removed injection of boost namespace into top-level by LOOS

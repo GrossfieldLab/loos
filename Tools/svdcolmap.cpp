@@ -127,7 +127,7 @@ vector<pAtom> getAtoms(AtomicGroup& grp, const vector<int>& ids) {
 
 int main(int argc, char *argv[]) {
 
-  string header = invocationHeader(argc, argv);
+  string header = loos::invocationHeader(argc, argv);
   parseOptions(argc, argv);
   AtomicGroup model = loos::createSystem(globals.model_name);
 

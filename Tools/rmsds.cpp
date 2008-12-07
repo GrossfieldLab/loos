@@ -166,7 +166,7 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
 
 
 int main(int argc, char *argv[]) {
-  string header = invocationHeader(argc, argv);
+  string header = loos::invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
   AtomicGroup molecule = loos::createSystem(globals.model_name);

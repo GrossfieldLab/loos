@@ -61,7 +61,7 @@ if ( (argc <= 1) ||
     }
 
 // Print the command line arguments
-cout << "# " << invocationHeader(argc, argv) << endl;
+cout << "# " << loos::invocationHeader(argc, argv) << endl;
 
 // Create the system and the trajectory file
 // Note: The pTraj type is a Boost shared pointer, so we'll need
