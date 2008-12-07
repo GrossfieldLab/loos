@@ -48,8 +48,8 @@ you may be affecting multiple groups in potentially unknown ways.
 For assistance using LOOS, to suggest a patch, to request a feature, or simply
 to offer positive feedback, email LOOS-maintainer [AT] urmc.rochester.edu.  The
 latest version of LOOS can be found at <A
-HREF="http://membrane.urmc.rochester.edu/Software/LOOS/Releases">
-http://membrane.urmc.rochester.edu/Software/LOOS/Releases</A>.
+HREF="http://loos.sourceforge.net">
+http://loos.sourceforge.net</A>.
 
 \section Features
 One of the features of LOOS is the multiple ways it supports atom
