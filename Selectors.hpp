@@ -231,8 +231,8 @@ public:
       throw(std::runtime_error("Execution error - unexpected values on stack"));
     }
 
-    loos::Value results = krnl.stack().pop();
-    if (results.type != loos::Value::INT)
+    loos::internal::Value results = krnl.stack().pop();
+    if (results.type != loos::internal::Value::INT)
       throw(std::runtime_error("Execution error - unexpected value on top of stack"));
 
     return(results.itg);

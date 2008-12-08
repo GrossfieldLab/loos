@@ -428,77 +428,77 @@ namespace loos
       {
 	  case 3:
 #line 84 "grammar.yy"
-    { driver.kern.push(new logicalAnd); ;}
+    { driver.kern.push(new internal::logicalAnd); ;}
     break;
 
   case 4:
 #line 85 "grammar.yy"
-    { driver.kern.push(new logicalOr); ;}
+    { driver.kern.push(new internal::logicalOr); ;}
     break;
 
   case 6:
 #line 90 "grammar.yy"
-    { driver.kern.push(new logicalNot); ;}
+    { driver.kern.push(new internal::logicalNot); ;}
     break;
 
   case 7:
 #line 91 "grammar.yy"
-    { driver.kern.push(new lessThan); ;}
+    { driver.kern.push(new internal::lessThan); ;}
     break;
 
   case 8:
 #line 92 "grammar.yy"
-    { driver.kern.push(new lessThanEquals); ;}
+    { driver.kern.push(new internal::lessThanEquals); ;}
     break;
 
   case 9:
 #line 93 "grammar.yy"
-    { driver.kern.push(new greaterThanEquals); ;}
+    { driver.kern.push(new internal::greaterThanEquals); ;}
     break;
 
   case 10:
 #line 94 "grammar.yy"
-    { driver.kern.push(new greaterThan); ;}
+    { driver.kern.push(new internal::greaterThan); ;}
     break;
 
   case 11:
 #line 95 "grammar.yy"
-    { driver.kern.push(new equals); ;}
+    { driver.kern.push(new internal::equals); ;}
     break;
 
   case 12:
 #line 96 "grammar.yy"
-    { driver.kern.push(new equals); driver.kern.push(new logicalNot); ;}
+    { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); ;}
     break;
 
   case 13:
 #line 97 "grammar.yy"
-    { driver.kern.push(new matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+    { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
     break;
 
   case 14:
 #line 98 "grammar.yy"
-    { driver.kern.push(new logicalTrue); ;}
+    { driver.kern.push(new internal::logicalTrue); ;}
     break;
 
   case 15:
 #line 99 "grammar.yy"
-    { driver.kern.push(new Hydrogen); ;}
+    { driver.kern.push(new internal::Hydrogen); ;}
     break;
 
   case 22:
 #line 107 "grammar.yy"
-    { driver.kern.push(new extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+    { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
     break;
 
   case 23:
 #line 109 "grammar.yy"
-    { driver.kern.push(new pushInt((yysemantic_stack_[(1) - (1)].ival))); ;}
+    { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); ;}
     break;
 
   case 26:
 #line 114 "grammar.yy"
-    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new pushString(*((yysemantic_stack_[(1) - (1)].sval)))); ;}
+    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); ;}
     break;
 
   case 28:
@@ -506,11 +506,11 @@ namespace loos
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "name")
-   driver.kern.push(new pushAtomName);
+   driver.kern.push(new internal::pushAtomName);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resname")
-   driver.kern.push(new pushAtomResname);
+   driver.kern.push(new internal::pushAtomResname);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "segid" || *((yysemantic_stack_[(1) - (1)].sval)) == "segname")
-   driver.kern.push(new pushAtomSegid);
+   driver.kern.push(new internal::pushAtomSegid);
 else
    loos::parse_error("Unknown string keyword " + *((yysemantic_stack_[(1) - (1)].sval)));
 ;}
@@ -520,9 +520,9 @@ else
 #line 138 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
-   driver.kern.push(new pushAtomId);
+   driver.kern.push(new internal::pushAtomId);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resid")
-   driver.kern.push(new pushAtomResid);
+   driver.kern.push(new internal::pushAtomResid);
 else
    loos::parse_error("Unknown numeric keyword " + *((yysemantic_stack_[(1) - (1)].sval)));   
 ;}

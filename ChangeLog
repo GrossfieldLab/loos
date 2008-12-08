@@ -1,3 +1,8 @@
+2008-12-08    <tromo@spade.biophysics.rochester.edu>
+
+	* Moved most of the internal classes/routines related to the
+	parsing system into the loos::internal namespace.
+
 2008-12-05  Tod Romo  <tromo@gorgoneion-w>
 
 	* Moved Matrix classes into loos::Math namespace

@@ -39,20 +39,20 @@ namespace loos {
   //!The Kernel (virtual machine) for compiling and executing user-defined atom selections
 
   class Kernel {
-    std::vector<Action*> actions;    //! Commands
-    ValueStack val_stack;       //! The data stack...
+    std::vector<internal::Action*> actions;    //! Commands
+    internal::ValueStack val_stack;       //! The data stack...
 
   public:
     
     //! Destroy all of the stored commands...
     ~Kernel() {
-      std::vector<Action*>::iterator i;
+      std::vector<internal::Action*>::iterator i;
       for (i = actions.begin(); i != actions.end(); i++)
         delete (*i);
     }
 
     //! Add a command, setting the data-stack pointer...
-    void push(Action *act) {
+    void push(internal::Action *act) {
       act->setStack(&val_stack);
       actions.push_back(act); 
     }
@@ -63,7 +63,7 @@ namespace loos {
     //! This does not clear the command stack/list
     void execute(pAtom pa = pAtom()) {
 
-      std::vector<Action*>::iterator i;
+      std::vector<internal::Action*>::iterator i;
       for (i=actions.begin(); i != actions.end(); i++) {
         (*i)->setAtom(pa);
         (*i)->execute();
@@ -73,10 +73,10 @@ namespace loos {
     
     void clearActions(void) { actions.clear(); }
 
-    ValueStack& stack(void) { return(val_stack); }
+    internal::ValueStack& stack(void) { return(val_stack); }
 
     friend std::ostream& operator<<(std::ostream& os, const Kernel& k) {
-      std::vector<Action*>::const_iterator i;
+      std::vector<internal::Action*>::const_iterator i;
 
       os << "Commands:\n";
       for (i=k.actions.begin(); i != k.actions.end(); i++)
