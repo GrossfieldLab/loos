@@ -47,6 +47,11 @@
 
 namespace loos {
 
+  //! Loos esoterica.
+  /** You probably don't want to look in here unless you want to
+   *  program with the virtual machine for atom selections, but I'd
+   *  advise against that...
+   */
   namespace internal {
 
     //! Base class for all commands...

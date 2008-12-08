@@ -31,6 +31,7 @@
 #include "Atom.hpp"
 
 namespace loos {
+  //! Namespace for math and math-related things in loos
   namespace Math {
 
     const double DEGREES = 180 / M_PI ;

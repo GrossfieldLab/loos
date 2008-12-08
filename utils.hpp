@@ -41,6 +41,7 @@
 #include <pdb_remarks.hpp>
 
 
+//! Namespace for most things not already encapsulated within a class.
 namespace loos {
 
   //! Get the next line of input, skipping blanks and stripping comments
