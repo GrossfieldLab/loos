@@ -32,6 +32,9 @@ namespace loos {
 
   
     //! Class for storing a symmetric triangular matrix
+    /**
+     * The matrix is lower-triangular.
+     */
     class Triangular {
     public:
       explicit Triangular() : m(0), n(0), s(0) { }
@@ -41,10 +44,8 @@ namespace loos {
 
       ulong size(void) const { return(s); }
 
+      //! Get the index into the linear array of data
       ulong index(const uint y, const uint x) const {
-//         if (x >= n || y >= m)
-//           throw(std::out_of_range("Matrix indices out of range"));
-
         uint b = y;
         uint a = x;
 
@@ -57,6 +58,9 @@ namespace loos {
       }
 
     protected:
+      
+      //! Reset the [virtual] size of the matrix
+      /** Does not currently force a new allocation of data... */
       void setSize(const uint y, const uint x) {
         assert(y == x && "Cannot have a non-square triangular matrix...  (you know what I mean!)");
         m=y; n=x;
@@ -77,13 +81,14 @@ namespace loos {
 
       ulong size(void) const { return(s); }
 
+      //! Get the index into the linear array of data
       ulong index(const uint y, const uint x) const {
-//         if (x >= n || y >= m)
-//           throw(std::out_of_range("Matrix indices out of range"));
         return(x*m + y);
       }
 
     protected:
+      //! Reset the [virtual] size of the matrix
+      /** Does not currently force a new allocation of data... */
       void setSize(const uint y, const uint x) { m=y; n=x; s = y*x; }
 
     protected:
@@ -100,13 +105,14 @@ namespace loos {
 
       ulong size(void) const { return(s); }
 
+      //! Get the index into the linear array of data
       ulong index(const uint y, const uint x) const {
-//         if (x >= n || y >= m)
-//           throw(std::out_of_range("Matrix indices out of range"));
         return(y*n + x);
       }
 
     protected:
+      //! Reset the [virtual] size of the matrix
+      /** Does not currently force a new allocation of data... */
       void setSize(const uint y, const uint x) { m=y; n=x; s=y*x; }
 
     protected:

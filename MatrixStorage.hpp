@@ -25,6 +25,16 @@
 
 namespace loos {
   namespace Math {
+
+    //! Storage policy for a block of memory wrapped in a boost::shared_array pointer.
+    /**
+     * This policy is based on a block of memory that is wrapped in a
+     * boost::shared_array pointer.  This is the policy that you need
+     * to use for interfacing with Atlas.
+     *
+     * Handles [potentially] actual allocation of data and
+     * range-checking for accesses.
+     */
     template<typename T>
     class SharedArray {
     public:
@@ -96,6 +106,11 @@ namespace loos {
 
     };
 
+
+    //! Storage policy for a sparse matrix.
+    /**
+     * This policy implements a sparse matrix via a hash.
+     */
 
     template<class T>
     class SparseArray {
