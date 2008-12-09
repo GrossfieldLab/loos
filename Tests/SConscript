@@ -106,7 +106,7 @@ if os.environ.has_key('LD_LIBRARY_PATH'):
     else:
         env['LD_LIBRARY_PATH'] = ld_library_path
         
-    print "Set LD_LIBRARY_PATH to ", env['LD_LIBRARY_PATH']
+#    print "Set LD_LIBRARY_PATH to ", env['LD_LIBRARY_PATH']
     
 
 non_testable_tests = 'timeseries-test find_perf_test ccpdb_test pdbtraj_test tinker_arc_test'
