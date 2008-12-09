@@ -49,8 +49,10 @@ For assistance using LOOS, to suggest a patch, to request a feature, or simply
 to offer positive feedback, email LOOS-maintainer [AT] urmc.rochester.edu.  The
 latest version of LOOS can be found at <A
 HREF="http://loos.sourceforge.net">
-http://loos.sourceforge.net</A>.  Information regarding the latest
-changes are available here:
+http://loos.sourceforge.net</A>.
+
+<B> Important information regarding the latest
+changes are available here:</B>
 	\subpage Changes "Change Log"
 
 \section Features
