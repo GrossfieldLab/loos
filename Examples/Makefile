@@ -10,7 +10,13 @@
 
 
 ### Where is LOOS?
-LOOS=$(HOME)/Packages/LOOS-1.0
+
+# An absolute path
+#LOOS=$(HOME)/Packages/LOOS-1.0
+
+# Or a relative path...
+LOOS=..
+
 
 ### Which compiler?
 CXX=/usr/bin/g++
