@@ -1,3 +1,12 @@
+2008-12-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Moved ALMOST everything into loos namespace, save for the
+	lexer.
+	* Fixed problem with SCons not regenerating lex/yacc output
+	properly with the reparse=1 option
+	* Removed top-level typdefs for uint/ulong (assuming they're part
+	of the default set of typedefs)
+
 2008-12-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Moved most of the internal classes/routines related to the
