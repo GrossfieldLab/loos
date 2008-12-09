@@ -31,6 +31,7 @@ clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', 
 clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathOption.PathAccept))
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
+clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
 
 env = Environment(options = clos)
 Help(clos.GenerateHelpText(env))
@@ -44,8 +45,20 @@ ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
 BOOSTREGEX = env['BOOSTREGEX']
+BOOSTPO = env['BOOSTPO']
 LOOS = env['LOOS']
 
+
+
+
+### Autoconf
+if not env.GetOption('clean'):
+   conf = Configure(env)
+   if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+      conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+   if not conf.CheckType('uint','#include <sys/types.h>\n'):
+      conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+   env = conf.Finish()
 
 
 
@@ -57,7 +70,7 @@ release_opts='-O3 -DNDEBUG -Wall'
 # Setup the general environment...
 env.Append(CPPPATH = ['#', LOOS, BOOSTINC])
 env.Append(LIBPATH = ['#', LOOS])
-env.Append(LIBS = ['loos', BOOSTREGEX])
+env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...

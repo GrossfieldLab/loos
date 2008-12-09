@@ -53,3 +53,6 @@
 ### This is the name of the boost-regex library
 # BOOSTREGEX='boost_regex'
 # BOOSTREGEX='boost_regex-gcc43'
+
+### This is the name of the boost-program_options library
+# BOOSTPO='boost_program_options43'

@@ -24,14 +24,14 @@ BOOSTINC=-I/usr/include
 BOOSTLIB=
 ATLASLIB=-L/usr/lib64/atlas
 ATLASINC=-I/usr/include/atlas
-LDLIBS=-lloos -lboost_regex -llapack -latlas
+LDLIBS=-lloos -lboost_regex -lboost_program_options -llapack -latlas
 LDFLAGS=-L$(LOOS) $(BOOSTLIB) $(ATLASLIB)
 CXXFLAGS=$(OPTS) -I. -I$(LOOS) $(BOOSTINC) $(ATLASINC)
 
 ### Use the following for MacOS X
 #BOOSTINC=-I/usr/local/include
 #BOOSTLIB=-L/usr/local/include
-#LDLIBS=-lloos -lboost_regex
+#LDLIBS=-lloos -lboost_regex -lboost_program_options
 #LDFLAGS=-L$(LOOS) $(BOOSTLIB)
 #CXXFLAGS=$(OPTS) -I. -I$(LOOS) $(BOOSTINC) -framework vecLib
 
