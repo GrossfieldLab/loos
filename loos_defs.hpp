@@ -28,6 +28,15 @@
 #define LOOSDEFS_HPP
 
 
+#if defined(REQUIRES_UINT)
+typedef unsigned int     uint;
+#endif
+
+#if defined(REQUIRES_ULONG)
+typedef unsigned long    ulong;
+#endif
+
+
 #include <Coord.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
