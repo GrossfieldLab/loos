@@ -22,66 +22,70 @@
 
 #include <pdbtraj.hpp>
 
-void PDBTraj::init(void) {
-  seekFrame(0);
-  parseFrame();
-  _natoms = frame.size();
-  _nframes = (end - start) / stride + 1;
-}
+namespace loos {
 
-
-void PDBTraj::seekFrame(const uint i) {
-
-  uint idx = i * stride + start;
-  if (idx < start || i > end)
-    throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
-
-  std::stringstream s;
-  s << boost::format(pattern) % idx;
-  current_name = s.str();
-  ifs.setStream(current_name);
-  current_index = i;
-  at_end = false;
-}
-
-
-void PDBTraj::seekNextFrame(void) {
-  if (at_end)
-    return;
-
-  if (current_index >= _nframes)
-    at_end = true;
-  else {
-    seekFrame(current_index);
-    ++current_index;
+  void PDBTraj::init(void) {
+    seekFrame(0);
+    parseFrame();
+    _natoms = frame.size();
+    _nframes = (end - start) / stride + 1;
   }
-}
 
 
-bool PDBTraj::parseFrame(void) {
+  void PDBTraj::seekFrame(const uint i) {
 
-  if (at_end)
-    return(false);
+    uint idx = i * stride + start;
+    if (idx < start || i > end)
+      throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+
+    std::stringstream s;
+    s << boost::format(pattern) % idx;
+    current_name = s.str();
+    ifs.setStream(current_name);
+    current_index = i;
+    at_end = false;
+  }
+
+
+  void PDBTraj::seekNextFrame(void) {
+    if (at_end)
+      return;
+
+    if (current_index >= _nframes)
+      at_end = true;
+    else {
+      seekFrame(current_index);
+      ++current_index;
+    }
+  }
+
+
+  bool PDBTraj::parseFrame(void) {
+
+    if (at_end)
+      return(false);
   
-  PDB newframe;
-  newframe.read(*(ifs()));
-  frame = newframe;
-  if (frame.size() == 0) {
-    at_end = true;
-    return(false);
+    PDB newframe;
+    newframe.read(*(ifs()));
+    frame = newframe;
+    if (frame.size() == 0) {
+      at_end = true;
+      return(false);
+    }
+
+    return(true);
   }
 
-  return(true);
+
+
+  std::vector<GCoord> PDBTraj::coords(void) {
+    std::vector<GCoord> result(_natoms);
+
+    for (uint i=0; i<_natoms; i++)
+      result[i] = frame[i]->coords();
+
+    return(result);
+  }
+
+
 }
-
-
-
-std::vector<GCoord> PDBTraj::coords(void) {
-  std::vector<GCoord> result(_natoms);
-
-  for (uint i=0; i<_natoms; i++)
-    result[i] = frame[i]->coords();
-
-  return(result);
-}
-

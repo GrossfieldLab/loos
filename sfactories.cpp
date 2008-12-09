@@ -22,58 +22,64 @@
 
 #include <sfactories.hpp>
 
-AtomicGroup loos::createSystem(const std::string& s) {
 
-  if (boost::iends_with(s, ".pdb")) {
-    PDB pdb(s);
-    return(pdb);
-  } else if (boost::iends_with(s, ".psf")) {
-    PSF psf(s);
-    return(psf);
-  } else if (boost::iends_with(s, ".prmtop")) {
-    Amber amber(s);
-    return(amber);
-  } else
-    throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
-}
+namespace loos {
 
+  AtomicGroup createSystem(const std::string& s) {
 
-pAtomicGroup loos::createSystemPtr(const std::string& s) {
-
-  pAtomicGroup pag;
-
-  if (boost::iends_with(s, ".pdb")) {
-    pPDB p(new PDB(s));
-    pag = p;
-  } else if (boost::iends_with(s, ".psf")) {
-    pPSF p(new PSF(s));
-    pag = p;
-  } else if (boost::iends_with(s, ".prmtop")) {
-    pAmber p(new Amber(s));
-    pag = p;
-  } else
-    throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
-
-  return(pag);
-}
+    if (boost::iends_with(s, ".pdb")) {
+      PDB pdb(s);
+      return(pdb);
+    } else if (boost::iends_with(s, ".psf")) {
+      PSF psf(s);
+      return(psf);
+    } else if (boost::iends_with(s, ".prmtop")) {
+      Amber amber(s);
+      return(amber);
+    } else
+      throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+  }
 
 
+  pAtomicGroup createSystemPtr(const std::string& s) {
 
-pTraj loos::createTrajectory(const std::string& s, const AtomicGroup& g) {
+    pAtomicGroup pag;
 
-  if (boost::iends_with(s, ".dcd")) {
-    pDCD pd(new DCD(s));
-    pTraj pt(pd);
-    return(pt);
-  } else if (boost::iends_with(s, ".mdcrd")) {
-    pAmberTraj pat(new AmberTraj(s, g.size()));
-    pTraj pt(pat);
-    return(pt);
-  } else if (boost::iends_with(s, ".pdb")) {
-    pCCPDB ppdb(new CCPDB(s));
-    pTraj pt(ppdb);
-    return(pt);
-  } else
-    throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+    if (boost::iends_with(s, ".pdb")) {
+      pPDB p(new PDB(s));
+      pag = p;
+    } else if (boost::iends_with(s, ".psf")) {
+      pPSF p(new PSF(s));
+      pag = p;
+    } else if (boost::iends_with(s, ".prmtop")) {
+      pAmber p(new Amber(s));
+      pag = p;
+    } else
+      throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+
+    return(pag);
+  }
+
+
+
+  pTraj createTrajectory(const std::string& s, const AtomicGroup& g) {
+
+    if (boost::iends_with(s, ".dcd")) {
+      pDCD pd(new DCD(s));
+      pTraj pt(pd);
+      return(pt);
+    } else if (boost::iends_with(s, ".mdcrd")) {
+      pAmberTraj pat(new AmberTraj(s, g.size()));
+      pTraj pt(pat);
+      return(pt);
+    } else if (boost::iends_with(s, ".pdb")) {
+      pCCPDB ppdb(new CCPDB(s));
+      pTraj pt(ppdb);
+      return(pt);
+    } else
+      throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+  }
+
+
 }
 

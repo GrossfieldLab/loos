@@ -35,66 +35,69 @@
 #include "grammar.hh"
 #include "LoosLexer.hpp"
 
-//! Driver for the Bison parser (to encapsulate data)
-//! Can parse from either stdin or a string.  Requires a Kernel for
-//! storing the compiled Actions
-struct ParserDriver {
-  loos::parser *pparser;
-  LoosLexer *lexer;
-  loos::Kernel& kern;
-  std::istringstream *isp;
+
+namespace loos {
+
+  //! Driver for the Bison parser (to encapsulate data)
+  //! Can parse from either stdin or a string.  Requires a Kernel for
+  //! storing the compiled Actions
+  struct ParserDriver {
+    parser *pparser;
+    LoosLexer *lexer;
+    Kernel& kern;
+    std::istringstream *isp;
   
 
-  //! For future parsing...
-  explicit ParserDriver(loos::Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
+    //! For future parsing...
+    explicit ParserDriver(Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) { }
 
-  //! For parsing a string...
-  ParserDriver(const std::string s, loos::Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
-    if (isp)
-      delete isp;
-    isp = new std::istringstream(s);
+    //! For parsing a string...
+    ParserDriver(const std::string s, Kernel& k) : pparser(0), lexer(0), kern(k), isp(0) {
+      if (isp)
+        delete isp;
+      isp = new std::istringstream(s);
 
-    if (lexer)
-      delete lexer;
+      if (lexer)
+        delete lexer;
 
-    lexer = new LoosLexer(isp);
-    parse();
-  }
+      lexer = new LoosLexer(isp);
+      parse();
+    }
 
-  ~ParserDriver() { delete pparser; delete lexer; delete isp; }
+    ~ParserDriver() { delete pparser; delete lexer; delete isp; }
 
-  //! Parse the passed string...
-  /**
-   *Note that it is up to the caller to reset the kernel if you don't
-   *want to concatenate the commands...
-   */
-  void parse(const std::string& s) {
-    if (isp)
-      delete isp;
-    isp = new std::istringstream(s);
+    //! Parse the passed string...
+    /**
+     *Note that it is up to the caller to reset the kernel if you don't
+     *want to concatenate the commands...
+     */
+    void parse(const std::string& s) {
+      if (isp)
+        delete isp;
+      isp = new std::istringstream(s);
 
-    if (lexer)
-      delete lexer;
-    lexer = new LoosLexer(isp);
+      if (lexer)
+        delete lexer;
+      lexer = new LoosLexer(isp);
 
-    parse();
-  }
+      parse();
+    }
 
-  //! Calls the Bison parser
-  void parse(void) {
-    if (!lexer)
-      throw(std::runtime_error("Attempting to parse sans lexer"));
+    //! Calls the Bison parser
+    void parse(void) {
+      if (!lexer)
+        throw(std::runtime_error("Attempting to parse sans lexer"));
 
-    if (!pparser)
-      pparser = new loos::parser(*this);
-    if (pparser->parse())
-      throw(std::runtime_error("Parse error"));
-  }
+      if (!pparser)
+        pparser = new parser(*this);
+      if (pparser->parse())
+        throw(std::runtime_error("Parse error"));
+    }
 
-};
+  };
 
 
-
+}
 
 
 #endif

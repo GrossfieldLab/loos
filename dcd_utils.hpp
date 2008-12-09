@@ -31,7 +31,9 @@
 #include <loos_defs.hpp>
 #include <dcd.hpp>
 
-double *gridify(DCD&, double*, double*, int[], const std::vector<int>, int, int, double);
+namespace loos {
+  double *gridify(DCD&, double*, double*, int[], const std::vector<int>, int, int, double);
+}
 
 
 #endif

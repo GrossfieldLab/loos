@@ -13,10 +13,9 @@
 #include <string.h>
 
 
-//using namespace std;
-//using namespace loos;
-
-class ParserDriver;
+namespace loos {
+   class ParserDriver;
+}
 
 
 #define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)

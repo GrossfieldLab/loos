@@ -32,51 +32,54 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
-typedef unsigned int uint;
+namespace loos {
 
-typedef double greal;
-typedef long gint;
+  typedef unsigned int uint;
 
-typedef float dcd_real;
-typedef double dcd_double;
+  typedef double greal;
+  typedef long gint;
 
-typedef Coord<double> GCoord;
-typedef boost::shared_ptr<GCoord> pGCoord;
+  typedef float dcd_real;
+  typedef double dcd_double;
 
-// Trajectory and subclasses...
-class Trajectory;
-class DCD;
-class AmberTraj;
-class CCPDB;
-class TinkerArc;
-class PDBTraj;
+  typedef Coord<double> GCoord;
+  typedef boost::shared_ptr<GCoord> pGCoord;
 
-
-typedef boost::shared_ptr<Trajectory> pTraj;
-typedef boost::shared_ptr<DCD> pDCD;
-typedef boost::shared_ptr<AmberTraj> pAmberTraj;
-typedef boost::shared_ptr<CCPDB> pCCPDB;
-typedef boost::shared_ptr<TinkerArc> pTinkerArc;
-typedef boost::shared_ptr<PDBTraj> pPDBTraj;
-
-// AtomicGroup and subclasses (i.e. systems formats)
-class AtomicGroup;
-class PDB;
-class PSF;
-class Amber;
-class TinkerXYZ;
-
-typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
-typedef boost::shared_ptr<PDB> pPDB;
-typedef boost::shared_ptr<PSF> pPSF;
-typedef boost::shared_ptr<Amber> pAmber;
-typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
+  // Trajectory and subclasses...
+  class Trajectory;
+  class DCD;
+  class AmberTraj;
+  class CCPDB;
+  class TinkerArc;
+  class PDBTraj;
 
 
-const uint kilobytes = 1024;
-const uint megabytes = kilobytes * kilobytes;
-const uint gigabytes = megabytes * kilobytes;
+  typedef boost::shared_ptr<Trajectory> pTraj;
+  typedef boost::shared_ptr<DCD> pDCD;
+  typedef boost::shared_ptr<AmberTraj> pAmberTraj;
+  typedef boost::shared_ptr<CCPDB> pCCPDB;
+  typedef boost::shared_ptr<TinkerArc> pTinkerArc;
+  typedef boost::shared_ptr<PDBTraj> pPDBTraj;
 
+  // AtomicGroup and subclasses (i.e. systems formats)
+  class AtomicGroup;
+  class PDB;
+  class PSF;
+  class Amber;
+  class TinkerXYZ;
+
+  typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
+  typedef boost::shared_ptr<PDB> pPDB;
+  typedef boost::shared_ptr<PSF> pPSF;
+  typedef boost::shared_ptr<Amber> pAmber;
+  typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
+
+
+  const uint kilobytes = 1024;
+  const uint megabytes = kilobytes * kilobytes;
+  const uint gigabytes = megabytes * kilobytes;
+
+}
 
 #endif
 

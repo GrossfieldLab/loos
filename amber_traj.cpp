@@ -38,131 +38,137 @@
 
 #include <amber_traj.hpp>
 
-// Scan the trajectory file to determine frame sizes and box
-void AmberTraj::init(void) {
-  char buf[1024];
 
-  ifs()->getline(buf, 1024);
-  frame_offset = ifs()->tellg();
-  greal x, y, z;
+namespace loos {
 
-  for (uint i=0; i<_natoms; i++) {
-    *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
-    frame.push_back(GCoord(x,y,z));
+  // Scan the trajectory file to determine frame sizes and box
+  void AmberTraj::init(void) {
+    char buf[1024];
+
+    ifs()->getline(buf, 1024);
+    frame_offset = ifs()->tellg();
+    greal x, y, z;
+
+    for (uint i=0; i<_natoms; i++) {
+      *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
+      frame.push_back(GCoord(x,y,z));
+    }
+
+    unsigned long fpos = ifs()->tellg();
+
+
+    // This is probably not a good way of doing this???
+    ifs()->getline(buf, 1024);
+    ifs()->getline(buf, 1024);
+    if (ifs()->fail())
+      throw(std::runtime_error("Error- cannot scan the amber trajectory"));
+
+    std::stringstream ss(buf);
+    double a= -1, b= -1, c= -1;
+    ss >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
+    if (ss.eof()) {
+      fpos = ifs()->tellg();
+      periodic = true;
+      box = GCoord(a, b, c);
+    }
+
+    frame_size = fpos - frame_offset;
+
+    // Now try to count the number of frames...
+    _nframes = 0;
+    double dummy;
+    while (!ifs()->fail()) {
+      ++_nframes;
+      fpos = _nframes * frame_size + frame_offset;
+      ifs()->seekg(fpos);
+      *(ifs()) >> dummy;
+    }
+
+
+    ifs()->clear();
+    ifs()->seekg(frame_offset + frame_size);
+
+    // Punt our failure check to the end...for now...
+    if (ifs()->fail())
+      throw(std::runtime_error("Unable to divine frame information from amber trajectory"));
+
+    // This is a little hook so if we don't re-read the first frame if
+    // that's the first frame requested...
+    unread = true;
   }
 
-  unsigned long fpos = ifs()->tellg();
 
+  bool AmberTraj::parseFrame(void) {
+    greal x, y, z;
 
-  // This is probably not a good way of doing this???
-  ifs()->getline(buf, 1024);
-  ifs()->getline(buf, 1024);
-  if (ifs()->fail())
-    throw(std::runtime_error("Error- cannot scan the amber trajectory"));
+    if (unread) {
+      unread = false;
+      return(true);
+    }
 
-  std::stringstream ss(buf);
-  double a= -1, b= -1, c= -1;
-  ss >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
-  if (ss.eof()) {
-    fpos = ifs()->tellg();
-    periodic = true;
-    box = GCoord(a, b, c);
-  }
+    if (ifs()->eof())
+      return(false);
 
-  frame_size = fpos - frame_offset;
+    // It seems that it's possible that, at the end of the trajectory,
+    // we may have read the last datum from the last frame but will not
+    // be physically at the EOF.  So, we also check inside the coord
+    // read loop to see if there is an EOF.  Rather than flag this as an
+    // error condition, just return a false indicating we've read past
+    // the end...
 
-  // Now try to count the number of frames...
-  _nframes = 0;
-  double dummy;
-  while (!ifs()->fail()) {
-    ++_nframes;
-    fpos = _nframes * frame_size + frame_offset;
-    ifs()->seekg(fpos);
-    *(ifs()) >> dummy;
-  }
+    for (uint i=0; i<_natoms && !(ifs()->eof()); i++) {
+      *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
+      frame[i] = GCoord(x, y, z);
+    }
 
+    if (ifs()->eof())
+      return(false);
 
-  ifs()->clear();
-  ifs()->seekg(frame_offset + frame_size);
+    if (periodic) {
+      greal a, b, c;
+      *(ifs()) >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
+      box = GCoord(a, b, c);
+    }
 
-  // Punt our failure check to the end...for now...
-  if (ifs()->fail())
-    throw(std::runtime_error("Unable to divine frame information from amber trajectory"));
+    if (ifs()->fail())
+      throw(std::runtime_error("Error- IO error while reading Amber trajectory frame"));
 
-  // This is a little hook so if we don't re-read the first frame if
-  // that's the first frame requested...
-  unread = true;
-}
-
-
-bool AmberTraj::parseFrame(void) {
-  greal x, y, z;
-
-  if (unread) {
-    unread = false;
     return(true);
   }
 
-  if (ifs()->eof())
-    return(false);
 
-  // It seems that it's possible that, at the end of the trajectory,
-  // we may have read the last datum from the last frame but will not
-  // be physically at the EOF.  So, we also check inside the coord
-  // read loop to see if there is an EOF.  Rather than flag this as an
-  // error condition, just return a false indicating we've read past
-  // the end...
+  void AmberTraj::seekFrame(const uint i) {
 
-  for (uint i=0; i<_natoms && !(ifs()->eof()); i++) {
-    *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
-    frame[i] = GCoord(x, y, z);
+    if (i == 0 && unread) {
+      return;
+    }
+    unread = false;
+
+    unsigned long fpos = i * frame_size + frame_offset;
+    if (fpos >= _nframes)
+      throw(std::runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
+
+
+    ifs()->seekg(fpos);
+    if (ifs()->fail())
+      throw(std::runtime_error("Error- cannot seek to the requested frame in an Amber trajectory"));
   }
 
-  if (ifs()->eof())
-    return(false);
 
-  if (periodic) {
-    greal a, b, c;
-    *(ifs()) >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
-    box = GCoord(a, b, c);
+  void AmberTraj::updateGroupCoords(AtomicGroup& g) {
+    AtomicGroup::Iterator iter(g);
+    pAtom pa;
+
+    while (pa = iter()) {
+      uint i = pa->id() - 1;
+      if (i >= _natoms)
+        throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
+      pa->coords(frame[i]);
+    }
+
+    if (periodic)
+      g.periodicBox(box);
   }
 
-  if (ifs()->fail())
-    throw(std::runtime_error("Error- IO error while reading Amber trajectory frame"));
 
-  return(true);
-}
-
-
-void AmberTraj::seekFrame(const uint i) {
-
-  if (i == 0 && unread) {
-    return;
-  }
-  unread = false;
-
-  unsigned long fpos = i * frame_size + frame_offset;
-  if (fpos >= _nframes)
-    throw(std::runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
-
-
-  ifs()->seekg(fpos);
-  if (ifs()->fail())
-    throw(std::runtime_error("Error- cannot seek to the requested frame in an Amber trajectory"));
-}
-
-
-void AmberTraj::updateGroupCoords(AtomicGroup& g) {
-  AtomicGroup::Iterator iter(g);
-  pAtom pa;
-
-  while (pa = iter()) {
-    uint i = pa->id() - 1;
-    if (i >= _natoms)
-      throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
-    pa->coords(frame[i]);
-  }
-
-  if (periodic)
-    g.periodicBox(box);
 }

@@ -27,31 +27,34 @@
 
 #include <ctype.h>
 
-#include "loos.hpp"
-#include "tinkerxyz.hpp"
+#include <loos.hpp>
+#include <tinkerxyz.hpp>
 
-void TinkerXYZ::read(std::istream& is) {
+
+namespace loos {
+
+  void TinkerXYZ::read(std::istream& is) {
     std::string input;
 
     // first line is the header, first field is number of atoms
     if (!getline(is, input))
-        throw(std::runtime_error("Failed reading first line of xyz"));
+      throw(std::runtime_error("Failed reading first line of xyz"));
     int num_atoms = 0;
     if (!(std::stringstream(input) >> num_atoms))
-        throw(std::runtime_error("TinkerXYZ has malformed header"));
+      throw(std::runtime_error("TinkerXYZ has malformed header"));
 
     // Read the lines
     for (int i=0; i<num_atoms; i++) {
-        if (!getline(is, input))
-            throw(std::runtime_error("Failed reading TinkerXYZ atom line "));
-        parseAtomRecord(input);
+      if (!getline(is, input))
+        throw(std::runtime_error("Failed reading TinkerXYZ atom line "));
+      parseAtomRecord(input);
     }
 
-}
+  }
 
 
 
-void TinkerXYZ::parseAtomRecord(const std::string s) {
+  void TinkerXYZ::parseAtomRecord(const std::string s) {
 
 
     gint index;
@@ -85,10 +88,10 @@ void TinkerXYZ::parseAtomRecord(const std::string s) {
     // Now read in the atoms to which this atom is bonded
     int bonded_atom;
     while (ss >> bonded_atom)
-        {
+      {
         // Probably should verify this value is sane
         pa->addBond(bonded_atom); 
-        }
+      }
 
     // Tinker XYZ files don't have segments or residues, so these
     // properties get set to the class defaults by the constructor
@@ -104,5 +107,6 @@ void TinkerXYZ::parseAtomRecord(const std::string s) {
 
 
     append(pa);
-}
+  }
 
+}

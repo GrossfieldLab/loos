@@ -44,9 +44,9 @@ class LoosLexer : public LoosFlexLexer {
 public:
   LoosLexer() { }
   LoosLexer(std::istream* in) : LoosFlexLexer(in, 0) { }
-
+  
   loos::parser::token_type looslex(loos::parser::semantic_type* yylval);
-
+  
 };
 
 

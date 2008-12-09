@@ -36,55 +36,59 @@
 #include <Trajectory.hpp>
 
 
-//! Class for reading amber coordinate trajectories
-/*!
- * This class will read in the first frame of the trajectory upon
- * instantiation.  It will also scan the file to determine how many
- * frames there are.
- *
- * Since the Amber trajectory format does not store the # of atoms
- * present, this must be passed to the AmberTraj constructor.
- *
- * Note that the Amber timestep is (presumably) defined in the parmtop
- * file, not in the trajectory file.  So we return a null-value here...
- */
+namespace loos {
 
-class AmberTraj : public Trajectory {
-public:
-  explicit AmberTraj(const std::string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
-  explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
-
-  virtual void rewind(void) { ifs()->seekg(frame_offset); }
-  virtual uint nframes(void) const { return(_nframes); }
-  virtual uint natoms(void) const { return(_natoms); }
-  virtual std::vector<GCoord> coords(void) { return(frame); }
-  virtual void updateGroupCoords(AtomicGroup&);
-
-  virtual void seekNextFrame(void) { }
-  virtual void seekFrame(const uint);
-  virtual bool parseFrame(void);
-
-  virtual bool hasPeriodicBox(void) const { return(periodic); }
-  virtual GCoord periodicBox(void) const { return(box); }
-
+  //! Class for reading amber coordinate trajectories
   /*!
-   * As stated above, Amber does not store the timestep in the
-   * trajectory, but in the parmtop instead.  So we return a
-   * null-value here...
+   * This class will read in the first frame of the trajectory upon
+   * instantiation.  It will also scan the file to determine how many
+   * frames there are.
+   *
+   * Since the Amber trajectory format does not store the # of atoms
+   * present, this must be passed to the AmberTraj constructor.
+   *
+   * Note that the Amber timestep is (presumably) defined in the parmtop
+   * file, not in the trajectory file.  So we return a null-value here...
    */
-  virtual float timestep(void) const { return(0.0); }  // Dummy routine...
 
-private:
-  void init(void);
+  class AmberTraj : public Trajectory {
+  public:
+    explicit AmberTraj(const std::string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
+    explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
 
-private:
-  uint _natoms, _nframes;
-  unsigned long frame_offset, frame_size;
-  bool periodic;
-  bool unread;
-  GCoord box;
-  std::vector<GCoord> frame;
+    virtual void rewind(void) { ifs()->seekg(frame_offset); }
+    virtual uint nframes(void) const { return(_nframes); }
+    virtual uint natoms(void) const { return(_natoms); }
+    virtual std::vector<GCoord> coords(void) { return(frame); }
+    virtual void updateGroupCoords(AtomicGroup&);
 
-};
+    virtual void seekNextFrame(void) { }
+    virtual void seekFrame(const uint);
+    virtual bool parseFrame(void);
 
+    virtual bool hasPeriodicBox(void) const { return(periodic); }
+    virtual GCoord periodicBox(void) const { return(box); }
+
+    /*!
+     * As stated above, Amber does not store the timestep in the
+     * trajectory, but in the parmtop instead.  So we return a
+     * null-value here...
+     */
+    virtual float timestep(void) const { return(0.0); }  // Dummy routine...
+
+  private:
+    void init(void);
+
+  private:
+    uint _natoms, _nframes;
+    unsigned long frame_offset, frame_size;
+    bool periodic;
+    bool unread;
+    GCoord box;
+    std::vector<GCoord> frame;
+
+  };
+
+
+}
 #endif

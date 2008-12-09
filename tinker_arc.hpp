@@ -37,64 +37,67 @@
 
 #include <tinkerxyz.hpp>
 
-//! Class for handling Tinker ARC files (concatenation of .xyz files)
-/** This class reads a concatenated .xyz tinker trajectory (i.e. an
- *  ARC file).  In order to determine the number of frames present,
- *  the trajectory is scanned from beginning to end upon
- *  instantiation.  A list of seek indices for each frame is also
- *  built.
- *
- *  There seems to be an issue with some .ARC files where reading the
- *  end of the contained TinkerXYZ object does not put the input
- *  stream into an EOF state.  So, we can't depend on checking eof()
- *  in parseFrame() to flag when we've iterated off the end.
- *  TinkerArc therefore keeps track of what index into the Trajectory
- *  it's at and uses that to check to see if it's at the end or not.
- * 
- *  It is possible to get the contained TinkerXYZ object out of a
- *  TinkerArc, but with certain caveats.  See CCPDB::currentFrame()
- *  for more details.
- */
 
-class TinkerArc : public Trajectory {
-public:
-  explicit TinkerArc(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
-  explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+namespace loos {
 
-  virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
-  virtual uint nframes(void) const { return(_nframes); }
-  virtual uint natoms(void) const { return(_natoms); }
-  virtual std::vector<GCoord> coords(void);
-  virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
-
-  virtual void seekNextFrame(void);
-  virtual void seekFrame(const uint);
-  virtual bool parseFrame(void);
-
-  virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
-  virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
-
-  virtual float timestep(void) const { return(0.001); }
-
-  //! Returns the contained TinkerXYZ object.
-  /** See CCPDB::currentFrame() for some important notes about using
-   *  this function.
+  //! Class for handling Tinker ARC files (concatenation of .xyz files)
+  /** This class reads a concatenated .xyz tinker trajectory (i.e. an
+   *  ARC file).  In order to determine the number of frames present,
+   *  the trajectory is scanned from beginning to end upon
+   *  instantiation.  A list of seek indices for each frame is also
+   *  built.
+   *
+   *  There seems to be an issue with some .ARC files where reading the
+   *  end of the contained TinkerXYZ object does not put the input
+   *  stream into an EOF state.  So, we can't depend on checking eof()
+   *  in parseFrame() to flag when we've iterated off the end.
+   *  TinkerArc therefore keeps track of what index into the Trajectory
+   *  it's at and uses that to check to see if it's at the end or not.
+   * 
+   *  It is possible to get the contained TinkerXYZ object out of a
+   *  TinkerArc, but with certain caveats.  See CCPDB::currentFrame()
+   *  for more details.
    */
-  TinkerXYZ currentFrame(void) const { return(frame); }
 
-private:
-  void init(void);
+  class TinkerArc : public Trajectory {
+  public:
+    explicit TinkerArc(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+    explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
-private:
-  uint _natoms, _nframes;
-  uint current_index;
-  bool at_end;
-  TinkerXYZ frame;
-  std::vector<long> indices;
-};
+    virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
+    virtual uint nframes(void) const { return(_nframes); }
+    virtual uint natoms(void) const { return(_natoms); }
+    virtual std::vector<GCoord> coords(void);
+    virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
+
+    virtual void seekNextFrame(void);
+    virtual void seekFrame(const uint);
+    virtual bool parseFrame(void);
+
+    virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
+    virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
+
+    virtual float timestep(void) const { return(0.001); }
+
+    //! Returns the contained TinkerXYZ object.
+    /** See CCPDB::currentFrame() for some important notes about using
+     *  this function.
+     */
+    TinkerXYZ currentFrame(void) const { return(frame); }
+
+  private:
+    void init(void);
+
+  private:
+    uint _natoms, _nframes;
+    uint current_index;
+    bool at_end;
+    TinkerXYZ frame;
+    std::vector<long> indices;
+  };
 
 
-
+}
 
 
 #endif

@@ -31,77 +31,80 @@
 #include <pdb_remarks.hpp>
 
 
+namespace loos {
 
-void Remarks::rangeCheck(const unsigned int i) const {
-  if (i >= remarks.size())
-    throw(std::range_error("Bad indices into remarks"));
-}
-
-
-std::string Remarks::get(const int i) const {
-  rangeCheck(i);
-  return(remarks[i]);
-}
-
-
-void Remarks::add(const std::string s) {
-  std::string t(s);
-  while (t.size() > 58) {
-    remarks.push_back(t.substr(0, 58));
-    t = t.substr(58);
+  void Remarks::rangeCheck(const unsigned int i) const {
+    if (i >= remarks.size())
+      throw(std::range_error("Bad indices into remarks"));
   }
 
-  std::string u = sanitize(t);
-  remarks.push_back(sanitize(t));
-}
 
-
-void Remarks::erase(const int i) {
-  rangeCheck(i);
-  remarks.erase(remarks.begin() + i);
-}
-
-
-std::string& Remarks::operator[](const int i) {
-  rangeCheck(i);
-  return(remarks[i]);
-}
-
-
-const std::string& Remarks::operator[](const int i) const {
-  rangeCheck(i);
-  return(remarks[i]);
-}
-
-
-
-std::string Remarks::sanitize(const std::string s) const {
-  std::string t(s);
-  int n = s.size();
-
-  if (n > 58)
-    t = s.substr(0, 58);
-  else if (n < 58)
-    t = s + std::string(58 - n, ' ');
-
-  return(t);
-}
-
-
-
-std::ostream& operator<<(std::ostream& os, const Remarks& r) {
-  std::vector<std::string>::const_iterator i;
-  int n = 1;
-
-  for (i = r.remarks.begin(); i != r.remarks.end(); i++) {
-    std::string s("REMARK                                                                \n");
-    std::ostringstream ss;
-
-    ss << std::setw(3) << std::setfill('0') << n++;
-    s.replace(7,3, ss.str());
-    s.replace(11,58, *i);
-    os << s;
+  std::string Remarks::get(const int i) const {
+    rangeCheck(i);
+    return(remarks[i]);
   }
 
-  return(os);
+
+  void Remarks::add(const std::string s) {
+    std::string t(s);
+    while (t.size() > 58) {
+      remarks.push_back(t.substr(0, 58));
+      t = t.substr(58);
+    }
+
+    std::string u = sanitize(t);
+    remarks.push_back(sanitize(t));
+  }
+
+
+  void Remarks::erase(const int i) {
+    rangeCheck(i);
+    remarks.erase(remarks.begin() + i);
+  }
+
+
+  std::string& Remarks::operator[](const int i) {
+    rangeCheck(i);
+    return(remarks[i]);
+  }
+
+
+  const std::string& Remarks::operator[](const int i) const {
+    rangeCheck(i);
+    return(remarks[i]);
+  }
+
+
+
+  std::string Remarks::sanitize(const std::string s) const {
+    std::string t(s);
+    int n = s.size();
+
+    if (n > 58)
+      t = s.substr(0, 58);
+    else if (n < 58)
+      t = s + std::string(58 - n, ' ');
+
+    return(t);
+  }
+
+
+
+  std::ostream& operator<<(std::ostream& os, const Remarks& r) {
+    std::vector<std::string>::const_iterator i;
+    int n = 1;
+
+    for (i = r.remarks.begin(); i != r.remarks.end(); i++) {
+      std::string s("REMARK                                                                \n");
+      std::ostringstream ss;
+
+      ss << std::setw(3) << std::setfill('0') << n++;
+      s.replace(7,3, ss.str());
+      s.replace(11,58, *i);
+      os << s;
+    }
+
+    return(os);
+  }
+
 }

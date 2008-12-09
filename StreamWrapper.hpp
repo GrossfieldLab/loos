@@ -32,91 +32,97 @@
 
 #include <boost/utility.hpp>
 
-//! Simple wrapper class for caching stream pointers
-/** This class was written primarily for use with the DCD classes
- *  where we want to have a cached stream that we may read from (or
- *  write to) at various times in the future.  Access to the
- *  underlying fstream pointer is through the operator() functor.
- *
- *  The basic idea here is that you pass the class either a string or
- *  a char array and that will be opened into a new stream (reading by
- *  default).  The fstream pointer will be stored and when the wrapper
- *  object is destroyed, the stream is released & deleted.  If you
- *  pass the wrapper an fstream, however, the internal pointer is
- *  initialized to point to that stream and when the wrapper object is
- *  destroyed, the stream is left alone.
- */
-class StreamWrapper : public boost::noncopyable {
-public:
-  StreamWrapper() : new_stream(false), stream(0) { }
 
-  //! Sets the internal stream pointer to fs
-  explicit StreamWrapper(std::fstream& fs) : new_stream(false), stream(&fs) { }
 
-  //! Opens a new stream with file named 's'
-  StreamWrapper(const std::string& s,
-                const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
-    : new_stream(true)
-  {
-    stream = new std::fstream(s.c_str(), mode);
-    if (!stream)
-      throw(std::runtime_error("Cannot open file " + s));
-  }
+namespace loos {
 
-  //! Opens a new stream with file named 's'
-  StreamWrapper(const char* const s,
-                const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
-    : new_stream(true)
-  {
-    stream = new std::fstream(s, mode);
-    if (!stream)
-      throw(std::runtime_error("Cannot open file " + std::string(s)));
-  }
+  //! Simple wrapper class for caching stream pointers
+  /** This class was written primarily for use with the DCD classes
+   *  where we want to have a cached stream that we may read from (or
+   *  write to) at various times in the future.  Access to the
+   *  underlying fstream pointer is through the operator() functor.
+   *
+   *  The basic idea here is that you pass the class either a string or
+   *  a char array and that will be opened into a new stream (reading by
+   *  default).  The fstream pointer will be stored and when the wrapper
+   *  object is destroyed, the stream is released & deleted.  If you
+   *  pass the wrapper an fstream, however, the internal pointer is
+   *  initialized to point to that stream and when the wrapper object is
+   *  destroyed, the stream is left alone.
+   */
+  class StreamWrapper : public boost::noncopyable {
+  public:
+    StreamWrapper() : new_stream(false), stream(0) { }
 
-  //! Sets the internal stream to point to a newly opened filed...
-  void setStream(const std::string& s,
-                 const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
-  {
-    if (new_stream)
-      delete stream;
+    //! Sets the internal stream pointer to fs
+    explicit StreamWrapper(std::fstream& fs) : new_stream(false), stream(&fs) { }
 
-    new_stream = true;
-    stream = new std::fstream(s.c_str(), mode);
-    if (!stream)
-      throw(std::runtime_error("Cannot open file " + std::string(s)));
-  }
+    //! Opens a new stream with file named 's'
+    StreamWrapper(const std::string& s,
+                  const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+      : new_stream(true)
+    {
+      stream = new std::fstream(s.c_str(), mode);
+      if (!stream)
+        throw(std::runtime_error("Cannot open file " + s));
+    }
 
-  //! Sets the internal stream to the passed fstream.
-  void setStream(std::fstream& fs) {
-    if (new_stream)
-      delete stream;
-    new_stream = false;
-    stream = &fs;
-  }
+    //! Opens a new stream with file named 's'
+    StreamWrapper(const char* const s,
+                  const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+      : new_stream(true)
+    {
+      stream = new std::fstream(s, mode);
+      if (!stream)
+        throw(std::runtime_error("Cannot open file " + std::string(s)));
+    }
 
-  //! Returns the internal fstream pointer
-  std::fstream* operator()(void) {
-    if (stream == 0)
-      throw(std::logic_error("Attempting to access an unset stream"));
-    return(stream);
-  }
+    //! Sets the internal stream to point to a newly opened filed...
+    void setStream(const std::string& s,
+                   const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+    {
+      if (new_stream)
+        delete stream;
 
-  //! Returns true if the internal stream pointer is unset
-  bool isUnset(void) const { return(stream == 0); }
+      new_stream = true;
+      stream = new std::fstream(s.c_str(), mode);
+      if (!stream)
+        throw(std::runtime_error("Cannot open file " + std::string(s)));
+    }
 
-  //! Checks to see if the stream pointer is set and throws an exception if not.
-  void checkSet(void) const {
-    if (stream == 0)
-      throw(std::logic_error("Attempting to use an unset stream"));
-  }
+    //! Sets the internal stream to the passed fstream.
+    void setStream(std::fstream& fs) {
+      if (new_stream)
+        delete stream;
+      new_stream = false;
+      stream = &fs;
+    }
+
+    //! Returns the internal fstream pointer
+    std::fstream* operator()(void) {
+      if (stream == 0)
+        throw(std::logic_error("Attempting to access an unset stream"));
+      return(stream);
+    }
+
+    //! Returns true if the internal stream pointer is unset
+    bool isUnset(void) const { return(stream == 0); }
+
+    //! Checks to see if the stream pointer is set and throws an exception if not.
+    void checkSet(void) const {
+      if (stream == 0)
+        throw(std::logic_error("Attempting to use an unset stream"));
+    }
     
-  ~StreamWrapper() { if (new_stream) delete stream; }
+    ~StreamWrapper() { if (new_stream) delete stream; }
 
 
-private:
-  bool new_stream;
-  std::fstream* stream;
-};
+  private:
+    bool new_stream;
+    std::fstream* stream;
+  };
 
+
+}
 
 #endif
