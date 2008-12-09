@@ -12,6 +12,10 @@
 
 #include <loos.hpp>
 
+using namespace std;
+using namespace loos;
+
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     cerr << "Usage- center-pdb pdb-file >output\n";

@@ -15,7 +15,15 @@ import os
 # This can be reset in custom.py or here...
 
 default_lib_path = '/usr/lib64'
-default_path_to_loose = os.environ.get('HOME') + '/Packages/LOOS-1.0'
+
+### Tell SCons where to find LOOS
+
+# Use the following line to set the absolute path to LOOS
+#default_path_to_loose = os.environ.get('HOME') + '/Packages/LOOS-1.0'
+
+# Or the following to set a relative path...
+default_path_to_loose = os.getcwd() + '/..'
+
 
 # Principal options...
 clos = Options('custom.py')
