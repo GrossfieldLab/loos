@@ -40,8 +40,11 @@
 
 namespace po = boost::program_options;
 using namespace std;
+using namespace loos;
 
-typedef loos::Math::Matrix<double, loos::Math::Triangular> Matrix;
+
+
+typedef Math::Matrix<double, Math::Triangular> Matrix;
 
 
 struct Globals {
@@ -107,7 +110,7 @@ void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj)
     frames.push_back(frame);
   }
 
-  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(frames, globals.tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, globals.tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -166,12 +169,12 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
 
 
 int main(int argc, char *argv[]) {
-  string header = loos::invocationHeader(argc, argv);
+  string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
-  AtomicGroup molecule = loos::createSystem(globals.model_name);
-  pTraj ptraj = loos::createTrajectory(globals.traj_name, molecule);
-  AtomicGroup subset = loos::selectAtoms(molecule, globals.alignment);
+  AtomicGroup molecule = createSystem(globals.model_name);
+  pTraj ptraj = createTrajectory(globals.traj_name, molecule);
+  AtomicGroup subset = selectAtoms(molecule, globals.alignment);
   cerr << "Selected " << subset.size() << " atoms.\n";
 
   vector<AtomicGroup> frames;

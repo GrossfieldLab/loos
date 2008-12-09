@@ -35,6 +35,8 @@
 
 
 using namespace std;
+using namespace loos;
+
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
@@ -42,10 +44,10 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  string hdr = loos::invocationHeader(argc, argv);
+  string hdr = invocationHeader(argc, argv);
 
-  AtomicGroup model = loos::createSystem(argv[1]);
-  pTraj traj = loos::createTrajectory(argv[2], model);
+  AtomicGroup model = createSystem(argv[1]);
+  pTraj traj = createTrajectory(argv[2], model);
   int frame = atoi(argv[3]);
 
 

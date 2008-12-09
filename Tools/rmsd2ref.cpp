@@ -36,6 +36,8 @@
 namespace po = boost::program_options;
 
 using namespace std;
+using namespace loos;
+
 
 
 struct Globals {
@@ -94,18 +96,18 @@ void parseOptions(int argc, char *argv[]) {
 
 }
 int main(int argc, char *argv[]) {
-  string hdr = loos::invocationHeader(argc, argv);
+  string hdr = invocationHeader(argc, argv);
 
   parseOptions(argc, argv);
 
   cout << "# " << hdr << endl;
 
-  AtomicGroup molecule = loos::createSystem(globals.model_name);
-  pTraj ptraj = loos::createTrajectory(globals.traj_name, molecule);
+  AtomicGroup molecule = createSystem(globals.model_name);
+  pTraj ptraj = createTrajectory(globals.traj_name, molecule);
 
   cerr << boost::format("Using trajectory \"%s\" with %lu frames.\n") % globals.traj_name % ptraj->nframes();
 
-  AtomicGroup subset = loos::selectAtoms(molecule, globals.selection);
+  AtomicGroup subset = selectAtoms(molecule, globals.selection);
 
   AtomicGroup target;
   AtomicGroup target_subset;
@@ -113,8 +115,8 @@ int main(int argc, char *argv[]) {
   if (globals.target_name.empty())
     cerr << boost::format("Computing RMSD vs avg conformation using %d atoms from \"%s\".\n") % subset.size() % globals.selection;
   else {
-    target = loos::createSystem(globals.target_name);
-    target_subset = loos::selectAtoms(target, globals.selection);
+    target = createSystem(globals.target_name);
+    target_subset = selectAtoms(target, globals.selection);
     if (target_subset.size() != subset.size()) {
       cerr << boost::format("Error- target selection has %u atoms while trajectory selection has %u.\n") % target_subset.size() % subset.size();
       exit(-1);
@@ -129,13 +131,13 @@ int main(int argc, char *argv[]) {
 
     // First, parse the alignment selection and extract the
     // appropriate bits from the trajectory model...
-    AtomicGroup align_subset = loos::selectAtoms(molecule, globals.alignment);
+    AtomicGroup align_subset = selectAtoms(molecule, globals.alignment);
 
     // Iteratively align the trajectory...
     if (globals.target_name.empty()) {
       cerr << boost::format("Aligning using %d atoms from \"%s\".\n") % align_subset.size() % globals.alignment;
       
-      boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(align_subset, ptraj, globals.tol);
+      boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(align_subset, ptraj, globals.tol);
       vector<XForm> xforms = boost::get<0>(res);
       
       uint n = ptraj->nframes();
@@ -149,7 +151,7 @@ int main(int argc, char *argv[]) {
 
     } else {   // A target was provided and aligning was requested...
       
-      AtomicGroup target_align = loos::selectAtoms(target, globals.alignment);
+      AtomicGroup target_align = selectAtoms(target, globals.alignment);
       cerr << boost::format("Aligning using %d atoms from \"%s\".\n") % target_align.size() % globals.alignment;
 
       uint n = ptraj->nframes();
@@ -182,7 +184,7 @@ int main(int argc, char *argv[]) {
   // to the average of the trajectory...
   if (globals.target_name.empty()) {
     cerr << "Computing using average structure...\n";
-    target = loos::averageStructure(frames);
+    target = averageStructure(frames);
   } else
     target = target_subset;  // Hack!
 

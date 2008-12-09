@@ -34,8 +34,6 @@
 
 namespace loos {
 
-  typedef unsigned int uint;
-
   typedef double greal;
   typedef long gint;
 

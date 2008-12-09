@@ -29,6 +29,8 @@
 
 
 #include <loos.hpp>
+using namespace loos;
+
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -36,6 +38,6 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  AtomicGroup model = loos::createSystem(argv[1]);
+  AtomicGroup model = createSystem(argv[1]);
   std::cout << model << std::endl;
 }

@@ -34,6 +34,8 @@
 
 using namespace std;
 namespace po = boost::program_options;
+using namespace loos;
+
 
 
 struct Globals {
@@ -104,7 +106,7 @@ void parseOptions(int argc, char *argv[]) {
 
 vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 
-  boost::tuple<vector<XForm>, greal, int> res = loos::iterativeAlignment(subset, traj, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, globals.alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -118,19 +120,19 @@ vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 
 
 int main(int argc, char *argv[]) {
-  string header = loos::invocationHeader(argc, argv);
+  string header = invocationHeader(argc, argv);
   
   parseOptions(argc, argv);
 
-  AtomicGroup model = loos::createSystem(globals.model_name);
+  AtomicGroup model = createSystem(globals.model_name);
 
-  AtomicGroup align_subset = loos::selectAtoms(model, globals.align_string);
+  AtomicGroup align_subset = selectAtoms(model, globals.align_string);
   cerr << "Aligning with " << align_subset.size() << " atoms.\n";
 
-  AtomicGroup avg_subset = loos::selectAtoms(model, globals.avg_string);
+  AtomicGroup avg_subset = selectAtoms(model, globals.avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
-  pTraj traj = loos::createTrajectory(globals.traj_name, model);
+  pTraj traj = createTrajectory(globals.traj_name, model);
 
   globals.trajmax = (globals.trajmax == 0) ? traj->nframes() : globals.trajmax+1;
 
@@ -138,7 +140,7 @@ int main(int argc, char *argv[]) {
   vector<XForm> xforms = doAlign(align_subset, traj);
   cerr << "Averaging...\n";
 
-  AtomicGroup avg = loos::averageStructure(avg_subset, xforms, traj);
+  AtomicGroup avg = averageStructure(avg_subset, xforms, traj);
   
   PDB avgpdb = PDB::fromAtomicGroup(avg);
   avgpdb.remarks().add(header);

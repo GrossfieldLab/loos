@@ -31,6 +31,8 @@
 #include <loos.hpp>
 
 using namespace std;
+using namespace loos;
+
 
 
 
@@ -53,12 +55,12 @@ if ( (argc <= 1) ||
     }
 
 // Print the command line arguments
-cout << "# " << loos::invocationHeader(argc, argv) << endl;
+cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 // Create the system and read the trajectory file
-AtomicGroup system = loos::createSystem(argv[1]);
-pTraj traj = loos::createTrajectory(argv[2], system);
+AtomicGroup system = createSystem(argv[1]);
+pTraj traj = createTrajectory(argv[2], system);
 
 char *selection1 = argv[3];  // String describing the first selection
 char *selection2 = argv[4];  // String describing the second selection
@@ -71,10 +73,10 @@ double bin_width = (hist_max - hist_min)/num_bins;
 
 
 // Set up the selector to define group1 atoms
-AtomicGroup group1 = loos::selectAtoms(system, selection1);
+AtomicGroup group1 = selectAtoms(system, selection1);
 
 // Set up the selector to define group2 atoms
-AtomicGroup group2 = loos::selectAtoms(system, selection2);
+AtomicGroup group2 = selectAtoms(system, selection2);
 
 // Skip the initial frames as equilibration
 traj->readFrame(skip); 

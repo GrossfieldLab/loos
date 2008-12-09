@@ -3,6 +3,8 @@
 #include <loos.hpp>
 
 using namespace std;
+using namespace loos;
+
 
 int main(int argc, char *argv[]) {
   Amber file(argv[1], argv[2]);

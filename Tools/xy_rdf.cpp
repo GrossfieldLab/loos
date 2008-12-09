@@ -29,6 +29,9 @@
 #include <loos.hpp>
 
 using namespace std;
+using namespace loos;
+
+
 
 void Usage()
     {
@@ -48,11 +51,11 @@ if ( (argc <= 1) ||
     exit(-1);
     }
 
-cout << "# " << loos::invocationHeader(argc, argv) << endl;
+cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
-AtomicGroup system = loos::createSystem(argv[1]);
-pTraj traj = loos::createTrajectory(argv[2], system);
+AtomicGroup system = createSystem(argv[1]);
+pTraj traj = createTrajectory(argv[2], system);
 char *selection1 = argv[3];
 char *selection2 = argv[4];
 double hist_min = atof(argv[5]);
@@ -62,8 +65,8 @@ int skip = atoi(argv[8]);
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
-AtomicGroup group1 = loos::selectAtoms(system, selection1);
-AtomicGroup group2 = loos::selectAtoms(system, selection2);
+AtomicGroup group1 = selectAtoms(system, selection1);
+AtomicGroup group2 = selectAtoms(system, selection2);
 
 // The groups are presumed to be units like lipid headgroups.  We want to 
 // treat each headgroup as a single unit.  This could reasonably be done

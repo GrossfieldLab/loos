@@ -50,6 +50,8 @@
 #include <cmath>
 
 using namespace std;
+using namespace loos;
+
 
 typedef vector<GCoord> Axes;
 
@@ -57,7 +59,7 @@ const double RAD2DEG = 180.0 / PI;
 
 
 int main(int argc, char *argv[]) {
-  string header = loos::invocationHeader(argc, argv);
+  string header = invocationHeader(argc, argv);
 
   if (argc != 5) {
     cout << "Usage- helix_kink selection-1 selection-2 model trajectory\n";
@@ -69,8 +71,8 @@ int main(int argc, char *argv[]) {
   string sel1(argv[1]);
   string sel2(argv[2]);
 
-  AtomicGroup model = loos::createSystem(argv[3]);
-  pTraj ptraj = loos::createTrajectory(argv[4], model);
+  AtomicGroup model = createSystem(argv[3]);
+  pTraj ptraj = createTrajectory(argv[4], model);
 
   CAlphaSelector casel;
 

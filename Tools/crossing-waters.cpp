@@ -32,6 +32,8 @@
 #include <loos.hpp>
 
 using namespace std;
+using namespace loos;
+
 
 
 void Usage()
@@ -134,10 +136,10 @@ if ( (argc <= 1) ||
     exit(-1);
     }
 
-cout << "# " << loos::invocationHeader(argc, argv) << endl;
+cout << "# " << invocationHeader(argc, argv) << endl;
 
-AtomicGroup system = loos::createSystem(argv[1]);
-pTraj traj = loos::createTrajectory(argv[2], system);
+AtomicGroup system = createSystem(argv[1]);
+pTraj traj = createTrajectory(argv[2], system);
 greal inner_threshold = atof(argv[3]);
 greal outer_threshold = atof(argv[4]);
 

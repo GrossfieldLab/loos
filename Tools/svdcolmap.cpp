@@ -34,8 +34,11 @@
 
 namespace po = boost::program_options;
 using namespace std;
+using namespace loos;
 
-typedef loos::Math::Matrix<float, loos::Math::ColMajor> Matrix;
+
+
+typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
 
 struct Globals {
@@ -127,9 +130,9 @@ vector<pAtom> getAtoms(AtomicGroup& grp, const vector<int>& ids) {
 
 int main(int argc, char *argv[]) {
 
-  string header = loos::invocationHeader(argc, argv);
+  string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
-  AtomicGroup model = loos::createSystem(globals.model_name);
+  AtomicGroup model = createSystem(globals.model_name);
 
   vector<pAtom> atoms;
   if (globals.mapname == "") {
@@ -141,7 +144,7 @@ int main(int argc, char *argv[]) {
   }
 
   Matrix U;
-  loos::readAsciiMatrix(globals.prefix + "_U.asc", U);
+  readAsciiMatrix(globals.prefix + "_U.asc", U);
   uint m = U.rows();
   uint n = U.cols();
 
@@ -153,7 +156,7 @@ int main(int argc, char *argv[]) {
   }
 
   Matrix S;
-  loos::readAsciiMatrix(globals.prefix + "_s.asc", S);
+  readAsciiMatrix(globals.prefix + "_s.asc", S);
   cerr << "Read in " << S.rows() << " singular values from " << globals.prefix + "_s.asc" << endl;
 
   pAtom pa;
