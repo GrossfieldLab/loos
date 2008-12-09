@@ -67,12 +67,13 @@ LIBXTRA = env['LIBXTRA']
 
 
 ### Autoconf
-conf = Configure(env)
-if not conf.CheckType('ulong','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
-if not conf.CheckType('uint','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-env = conf.Finish()
+if not env.GetOption('clean'):
+   conf = Configure(env)
+   if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+      conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+   if not conf.CheckType('uint','#include <sys/types.h>\n'):
+      conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+   env = conf.Finish()
 
 
 ### Compile-flags
