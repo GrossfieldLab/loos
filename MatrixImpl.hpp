@@ -47,31 +47,68 @@ namespace loos {
 
 
 
-    //! Templatized class for intepreting memory as a matrix stored in
-    //! different formats...
-    /** This class is a wrapper around a block of data allowing the user
-     * to access it as a 2D matrix.  The idea is that the data can
-     * internally be stored in a row-major, col-major, or triangular
-     * format but the user-interface is always the same.  In addition,
-     * some capacity to reinterpret the data as col or row major is
-     * provided...
+    //! Simple matrix template class using policy classes to determine behavior
+    /**
+     * This class is essentially a wrapper around a block of data with
+     * a matrix-style interface.  It is not (currently) meant to offer
+     * the same operations that a mathematical matrix would offer,
+     * despite being in the loos::Math namespace.
      *
-     * Newly allocate matrices have each element initialized to 0.
+     * There are two options to a Matrix, other than the raw data type.
+     * The memory layout can be configured, i.e. row-major, column-major,
+     * and triangular (symmetric).  The storage method can also be configured
+     * as either a SharedArray (dense) or SparseArray (sparse).  These
+     * options are passed to the Matrix template at instantiation.
+     * The default options are for a column-major matrix that is dense.
      *
-     * Differing physical storage implementations can be selected by
-     * providing an appropriate storage policy.  The default is to use a
-     * linear array in memory that is controlled by a
-     * boost::shared_array pointer.  Alternatively, a SparseArray is
-     * available that uses a tr1::unordered_map to implement a sparse matrix.
+     * For example, the simplest declaration:
+\verbatim
+loos::Math::Matrix<double> M;
+\endverbatim
+     * creates a dense, column-major matrix \a M whose elements are a double.
      *
-     * Note: metadata is currently unused...
+\verbatim
+loos::Math::Matrix<float, loos::Math::RowMajor> N;
+\endverbatim
+     * This creates a dense, row-major matrix \a N whose elements are floats.
      *
-     * Note: Not all functions will be available depending on how the
-     * Matrix is configured via the policies.  For example, you cannot
-     * call get() on a Matrix formed from a SparseArray storage policy
-     * because a pointer to the map makes no sense.  On the other hand,
-     * the SparseArray provides STL iterator access to the underlying
-     * map which the SharedArray policy does not..
+     * Finally,
+\verbatim
+loos::Math::Matrix<int, loos::Math::Triangular, loos::Math::SparseArray> T;
+\endverbatim
+     * creates a sparse, triangular matrix whose elements are ints.
+     *
+     * Access to the elements of a matrix is permitted in two different ways.
+     * You can access the (j,i)'th element (j-rows, i-cols) by using operator(),
+     * i.e.
+\verbatim
+M(j,i) = foo;
+fu = M(j+1,i);
+\endverbatim
+     * Alternatively, for dense matrices, you can access the linear array of
+     * data underneath the matrix interpretation using operator[], i.e.
+\verbatim
+foo = M[i*rows+j];
+M[i*rows+j+1] = fu;
+\endverbatim
+     * For dense matrices, you can also access the raw block of memory by
+     * getting a pointer to it,
+\verbatim
+double *dblptr = M.get();
+\endverbatim
+     * 
+     * Finally, you can access iterators into the matrix much like you would
+     * with an STL container,
+\verbatim
+copy(M.begin(), M.end(), ostream_iterator<double>(cout, "\n"));
+\endverbatim
+     *
+     * Not all Matrix interface functions are valid for all Matrix types.
+     * As mentioned above, you cannot access the pointer to a sparse matrix
+     * nor use the operator[].
+     *
+     * Finally, all matrices are initialized with 0 for each element...
+     *
      */
 
     template<typename T, class OrderPolicy = ColMajor, template<typename> class StoragePolicy = SharedArray>
