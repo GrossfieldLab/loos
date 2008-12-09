@@ -53,30 +53,25 @@
 
 #include <loos.hpp>
 
-#include <getopt.h>
-#include <cstdlib>
+#include <boost/program_options.hpp>
 
+
+using namespace std;
 using namespace loos;
 
-// Default values...
-
+namespace po = boost::program_options;
 
 struct Globals {
-  Globals() : alignment_string("name == 'CA'"),
-          transform_string("name == 'CA'"),
-          alignment_tol(1e-6),
-          maxiter(5000),
-          show_rmsd(false),
-          no_rmsd(false) { }
-
-
+  string model_name, traj_name, prefix;
   string alignment_string;
   string transform_string;
 
   greal alignment_tol;
+
   int maxiter;
   bool show_rmsd;
-  bool no_rmsd;
+  bool rmsdf;
+  bool center;
 };
 
 
@@ -84,58 +79,59 @@ Globals globals;
 
 
 
-
-static struct option long_options[] = {
-  {"align", required_argument, 0, 'a'},
-  {"transform", required_argument, 0, 't'},
-  {"tolerance", required_argument, 0, 'T'},
-  {"max", required_argument, 0, 'm'},
-  {"show", no_argument, 0, 's'},
-  {"normsd", no_argument, 0, 'n'},
-  {"help", no_argument, 0, 'H'},
-  {0,0,0,0}
-};
-
-
-static const char* short_options = "a:t:T:m:snH";
-
-
-void show_help(void) {
-  Globals defaults;
-  cout << "Usage- aligner [opts] structure-file trajectory output-filename-prefix\n";
-  cout << "   --align=string     [" << defaults.alignment_string << "]\n";
-  cout << "   --transform=string [" << defaults.transform_string << "]\n";
-  cout << "   --tolerance=float  [" << defaults.alignment_tol << "]\n";
-  cout << "   --max=int          [" << defaults.maxiter << "]\n";
-  cout << "   --show       (rmsd)[" << defaults.show_rmsd << "]\n";
-  cout << "   --normsd           [" << defaults.no_rmsd << "]\n";
-  cout << "   --help\n";
-}
-
-
 void parseOptions(int argc, char *argv[]) {
-  int opt, idx;
 
-  while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1) {
-    switch(opt) {
-    case 'a': globals.alignment_string = string(optarg); break;
-    case 't': globals.transform_string = string(optarg); break;
-    case 'T': globals.alignment_tol = strtod(optarg, 0); break;
-    case 'm': globals.maxiter = atoi(optarg); break;
-    case 's': globals.show_rmsd = true; break;
-    case 'n': globals.no_rmsd = true; break;
-    case 'H': show_help(); exit(-1);
-    case 0: break;
-    default: cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"),"Align using this selection")
+      ("transform,t", po::value<string>(&globals.transform_string)->default_value("all"), "Transform this selection")
+      ("maxiter,m", po::value<int>(&globals.maxiter)->default_value(5000), "Maximum number of iterations for the iterative alignment algorithm")
+      ("tolerance,T", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for alignment convergence")
+      ("rmsd,r", po::value<bool>(&globals.rmsdf)->default_value(false), "Calculate RMSD against average")
+      ("showrmsd,s", po::value<bool>(&globals.show_rmsd)->default_value(false), "Show RMSD for each frame")
+      ("center,c", po::value<bool>(&globals.center)->default_value(true), "Auto-center the trajectory");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&globals.model_name), "Model filename")
+      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename")
+      ("prefix", po::value<string>(&globals.prefix), "Output prefix");
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+    p.add("prefix", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("prefix"))) {
+      cerr << "Usage- aligner [options] model-name trajectory-name output prefix\n";
+      cerr << generic;
+      exit(-1);
     }
+
+    if (!globals.rmsdf && globals.show_rmsd) {
+      globals.rmsdf = true;
+      cerr << "Warning - you must use --rmsd with --showrmsd, so adding --rmsd implicitly.\n";
+    }
+
   }
 
-  if (globals.show_rmsd && globals.no_rmsd) {
-    cerr << "Error- you cannot disable RMSD and then show it's results...  That's just daft!\n";
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
 
 }
+
 
 
 double calcRMSD(const string& octave_tag, vector<AtomicGroup>& grps) {
@@ -192,25 +188,30 @@ void divCoords(AtomicGroup& g, const double d) {
 
 
 
+void savePDB(const string& fname, const string& meta, AtomicGroup& structure) {
+  PDB pdb = PDB::fromAtomicGroup(structure);
+  pdb.remarks().add(meta);
+
+  ofstream ofs(fname.c_str());
+  ofs << pdb;
+}
+
+
+
+
 int main(int argc, char *argv[]) {
 
   // Parse command-line options, cache invocation header for later use...
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
-  if (argc - optind != 3) {
-    cerr << "Invalid arguments\n";
-    show_help();
-    exit(-1);
-  }
 
   // Read the inputs...
-  AtomicGroup pdb = createSystem(argv[optind]);
-  cout << "Read in " << pdb.size() << " atoms from " << argv[optind++] << endl;
+  AtomicGroup pdb = createSystem(globals.model_name);
+  cout << "Read in " << pdb.size() << " atoms from " << globals.model_name << endl;
 
-  pTraj traj = createTrajectory(argv[optind], pdb);
+  pTraj traj = createTrajectory(globals.traj_name, pdb);
 
-  cout << "Reading from trajectory " << argv[optind++] << " with " << traj->nframes() << " frames.\n";
-  string prefix(argv[optind]);
+  cout << "Reading from trajectory " << globals.traj_name << " with " << traj->nframes() << " frames.\n";
 
   // Get the selections (subsets) to operate over
   AtomicGroup align_sub = selectAtoms(pdb, globals.alignment_string);
@@ -231,6 +232,10 @@ int main(int argc, char *argv[]) {
   while (traj->readFrame()) {
     traj->updateGroupCoords(align_sub);
     AtomicGroup subcopy = align_sub.copy();
+
+    if (globals.center)
+      subcopy.centerAtOrigin();
+
     frames.push_back(subcopy);
   }
 
@@ -241,7 +246,7 @@ int main(int argc, char *argv[]) {
 
   vector<XForm> xforms = boost::get<0>(res);
 
-  if (!globals.no_rmsd) {
+  if (globals.rmsdf) {
     double avg_rmsd = calcRMSD("r", frames);
     cout << "Average RMSD vs average for aligned subset = " << avg_rmsd << endl;
   }
@@ -257,12 +262,13 @@ int main(int argc, char *argv[]) {
   AtomicGroup frame = applyto_sub.copy();
   frame.applyTransform(xforms[0]);
   frame.renumber();
+  savePDB(globals.prefix + ".pdb", header, frame);
 
   // Make the first frame...
   AtomicGroup avg = applyto_sub.copy();
 
   // Setup for writing DCD...
-  DCDWriter dcdout(prefix + ".dcd");
+  DCDWriter dcdout(globals.prefix + ".dcd");
   dcdout.setHeader(frame.size(), nframes, 1e-3, frame.isPeriodic());
   dcdout.setTitle(header);
   dcdout.writeHeader();
@@ -272,13 +278,16 @@ int main(int argc, char *argv[]) {
   for (unsigned int i = 1; i<nframes; i++) {
     traj->readFrame(i);
     traj->updateGroupCoords(applyto_sub);
+    if (globals.center)
+      applyto_sub.centerAtOrigin();
+
     applyto_sub.applyTransform(xforms[i]);
     frame = applyto_sub.copy();
     frame.renumber();
     dcdout.writeFrame(frame);
 
     // Track average frame...
-    if (!globals.no_rmsd)
+    if (globals.rmsdf)
       addCoords(avg, applyto_sub);
   }
 
@@ -286,17 +295,9 @@ int main(int argc, char *argv[]) {
   divCoords(avg, nframes);
 
   // Write out the PDB...
-  PDB outpdb = PDB::fromAtomicGroup(avg);
-  outpdb.renumber();
-  outpdb.remarks().add(header);
-  string pdb_name = prefix + ".pdb";
-  ofstream ofs(pdb_name.c_str());
-  ofs << outpdb;
-  ofs.close();
+  savePDB(globals.prefix + "_avg.pdb", header, avg);
 
-
-
-  if (!globals.no_rmsd) {
+  if (globals.rmsdf) {
     // Second pass to calc rmsds...
 
     cout << "Calculating rmsds...\n";

@@ -32,75 +32,73 @@
 #include <stdexcept>
 #include <vector>
 
-#include <string>
-
 
 #include <loos_defs.hpp>
 #include "KernelValue.hpp"
 
 
-using namespace std;
-
 namespace loos {
 
+  namespace internal {
 
-  class ValueStack {
-    vector<Value> values;
+    class ValueStack {
+      std::vector<Value> values;
 
-    void notEmpty(void) const {
-      if (values.size() == 0)
-        throw(logic_error("Operation requested on an empty stack."));
-    }
+      void notEmpty(void) const {
+        if (values.size() == 0)
+          throw(std::logic_error("Operation requested on an empty stack."));
+      }
 
-  public:
-    void push(const Value& val) { values.push_back(val); };
+    public:
+      void push(const Value& val) { values.push_back(val); };
 
-    Value pop(void) {
-      notEmpty();
-      Value val = values.back();
-      values.pop_back();
-      return(val); 
-    }
+      Value pop(void) {
+        notEmpty();
+        Value val = values.back();
+        values.pop_back();
+        return(val); 
+      }
 
-    // Duplicate the top entry...
-    void dup(void) {
-      notEmpty();
-      Value val = values.back();
-      push(val);
-    }
+      // Duplicate the top entry...
+      void dup(void) {
+        notEmpty();
+        Value val = values.back();
+        push(val);
+      }
 
-    // Just drop the top entry, i.e. (void)pop()
-    void drop(void) {
-      notEmpty();
-      values.pop_back();
-    }
+      // Just drop the top entry, i.e. (void)pop()
+      void drop(void) {
+        notEmpty();
+        values.pop_back();
+      }
 
-    // Peek at the top value without popping it...
-    Value peek(int i) {
-      if (i < 0)
-        i += values.size();
-      if ((unsigned int)i >= values.size())
-        throw(logic_error("Peeking beyond the stack!"));
+      // Peek at the top value without popping it...
+      Value peek(int i) {
+        if (i < 0)
+          i += values.size();
+        if ((unsigned int)i >= values.size())
+          throw(std::logic_error("Peeking beyond the stack!"));
 
-      return(values[i]);
-    }
+        return(values[i]);
+      }
 
-    unsigned int size(void) const { return(values.size()); }
+      unsigned int size(void) const { return(values.size()); }
 
-    void clear(void) { values.clear(); }
+      void clear(void) { values.clear(); }
 
-    friend ostream& operator<<(ostream& os, const ValueStack& s) {
-      os << "<STACK>\n";
-      vector<Value>::const_iterator i;
+      friend std::ostream& operator<<(std::ostream& os, const ValueStack& s) {
+        os << "<STACK>\n";
+        std::vector<Value>::const_iterator i;
 
-      for (i=s.values.begin(); i != s.values.end(); i++)
-        os << "  " << *i << endl;
+        for (i=s.values.begin(); i != s.values.end(); i++)
+          os << "  " << *i << std::endl;
 
-      return(os);
-    }
-  };
+        return(os);
+      }
+    };
 
-};
+  }
+}
 
 
 #endif

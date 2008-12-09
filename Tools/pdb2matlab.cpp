@@ -39,6 +39,10 @@
 
 #include <loos.hpp>
 
+using namespace std;
+using namespace loos;
+
+
 int main(int argc, char *argv[]) {
   
   if (argc  < 2 || argc > 3) {
@@ -50,7 +54,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup atoms = pdb;
 
   if (argc > 2)
-    atoms = loos::selectAtoms(pdb, argv[2]);
+    atoms = selectAtoms(pdb, argv[2]);
 
   AtomicGroup::Iterator i(atoms);
   pAtom pa;

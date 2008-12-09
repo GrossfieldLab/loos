@@ -29,13 +29,15 @@
 
 
 #include <loos.hpp>
+using namespace loos;
+
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    cerr << "Usage - dumpmol model\n";
+    std::cerr << "Usage - dumpmol model\n";
     exit(-1);
   }
 
-  AtomicGroup model = loos::createSystem(argv[1]);
-  cout << model << endl;
+  AtomicGroup model = createSystem(argv[1]);
+  std::cout << model << std::endl;
 }

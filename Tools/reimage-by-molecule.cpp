@@ -32,6 +32,9 @@
 
 const int update_frequency = 250;
 
+using namespace std;
+using namespace loos;
+
 
 void Usage()
 {
@@ -52,13 +55,13 @@ int main(int argc, char *argv[])
 
   string hdr = invocationHeader(argc, argv);
 
-  AtomicGroup model = loos::createSystem(argv[1]);
+  AtomicGroup model = createSystem(argv[1]);
   if (!model.hasBonds())
     {
       cerr << "***WARNING***\nThe model does not have connectivity,\nso your results may not be what you expect.\n";
     }
 
-  pTraj traj = loos::createTrajectory(argv[2], model);
+  pTraj traj = createTrajectory(argv[2], model);
   DCDWriter dcd_out(argv[3]);
 
   bool box_override = false;

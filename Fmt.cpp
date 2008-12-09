@@ -9,38 +9,42 @@
 #include <Fmt.hpp>
 
 
-//! Return the bound formatter
-BoundFmt Fmt::operator()(double d) const { return(BoundFmt(*this, d)); }
+namespace loos {
 
-//! Create the output with the specified formatter
-ostream& operator<<(ostream& os, const BoundFmt& bf) {
-  ostringstream s;
+  //! Return the bound formatter
+  BoundFmt Fmt::operator()(double d) const { return(BoundFmt(*this, d)); }
 
-  s.precision(bf.f.prc);
-  s.setf(bf.f.fmt, ios_base::floatfield);
-  s.width(bf.f.wdth);
-  s.fill(bf.f.fil);
+  //! Create the output with the specified formatter
+  std::ostream& operator<<(std::ostream& os, const BoundFmt& bf) {
+    std::ostringstream s;
 
-  switch(bf.f.ali) {
-  case Fmt::LEFT:
-    s.setf(ios_base::left, ios_base::adjustfield); break;
-  case Fmt::RIGHT:
-    s.setf(ios_base::right, ios_base::adjustfield); break;
-  default:
-    s.setf(ios_base::internal, ios_base::adjustfield); break;
+    s.precision(bf.f.prc);
+    s.setf(bf.f.fmt, std::ios_base::floatfield);
+    s.width(bf.f.wdth);
+    s.fill(bf.f.fil);
+
+    switch(bf.f.ali) {
+    case Fmt::LEFT:
+      s.setf(std::ios_base::left, std::ios_base::adjustfield); break;
+    case Fmt::RIGHT:
+      s.setf(std::ios_base::right, std::ios_base::adjustfield); break;
+    default:
+      s.setf(std::ios_base::internal, std::ios_base::adjustfield); break;
+    }
+
+    if (bf.f.trl)
+      s.setf(std::ios_base::showpoint);
+    else
+      s.unsetf(std::ios_base::showpoint);
+
+    if (bf.f.pos)
+      s.setf(std::ios_base::showpos);
+    else
+      s.unsetf(std::ios_base::showpos);
+
+    s << bf.val;
+    return(os << s.str());
   }
 
-  if (bf.f.trl)
-    s.setf(ios_base::showpoint);
-  else
-    s.unsetf(ios_base::showpoint);
 
-  if (bf.f.pos)
-    s.setf(ios_base::showpos);
-  else
-    s.unsetf(ios_base::showpos);
-
-  s << bf.val;
-  return(os << s.str());
 }
-

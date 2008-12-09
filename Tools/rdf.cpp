@@ -29,9 +29,12 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-using namespace std;
 
 #include <loos.hpp>
+
+using namespace std;
+using namespace loos;
+
 
 
 void Usage()
@@ -65,8 +68,8 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 // Create the system and the trajectory file
 // Note: The pTraj type is a Boost shared pointer, so we'll need
 //       to use pointer semantics to access it
-AtomicGroup system = loos::createSystem(argv[1]);
-pTraj traj = loos::createTrajectory(argv[2], system);
+AtomicGroup system = createSystem(argv[1]);
+pTraj traj = createTrajectory(argv[2], system);
 
 // Get the selection patterns to identify the atoms to be used
 char *selection1 = argv[3];  // String describing the first selection

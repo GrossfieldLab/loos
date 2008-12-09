@@ -1,3 +1,37 @@
+2008-12-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Moved ALMOST everything into loos namespace, save for the
+	lexer.
+	* Fixed problem with SCons not regenerating lex/yacc output
+	properly with the reparse=1 option
+	* Removed top-level typdefs for uint/ulong (assuming they're part
+	of the default set of typedefs)
+
+2008-12-08    <tromo@spade.biophysics.rochester.edu>
+
+	* Moved most of the internal classes/routines related to the
+	parsing system into the loos::internal namespace.
+
+2008-12-05  Tod Romo  <tromo@gorgoneion-w>
+
+	* Moved Matrix classes into loos::Math namespace
+
+2008-12-05  Tod Romo  <tromo@gorgoneion.urmc-sh.rochester.edu>
+
+	* Added a new matrix class
+	* Changed matrix IO to use the new templated function calls rather
+	than the polymorphic writer/reader classes.
+	* Removed injection of boost namespace into top-level by LOOS
+	* Changed ensemble functions to take a pTraj (pointer to a
+	trajectory) rather than a reference to a Trajectory object.
+	* Added boost_program_options to the libs that must be linked
+	against (and in the custom.py-proto)
+	* Changed the svd tool to always write the map out, and the
+	default naming scheme has been changed slightly (it will default
+	to the base-name of the input trajectory unless you explicitly
+	specify a prefix).
+	
+
 2008-12-04    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed Tools/aligner to write out the average structure as the

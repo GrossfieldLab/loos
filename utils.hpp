@@ -41,37 +41,33 @@
 #include <pdb_remarks.hpp>
 
 
-using namespace std;
-using namespace __gnu_cxx;
-
-//! Get the next line of input, skipping blanks and stripping comments
-string getNextLine(istream&, int*);
-
-//! Read a list of integers from a stream
-vector<int> readIndexMap(istream&);
-
-//! Create an invocation header
-/**
- *This is a string that can be embedded in output that records the
- *invoking user, command-line, and a timestamp.
- */
-string invocationHeader(int, char *[]);
-
-//! Extract the Alan-style box-size from a PDB Remarks block.
-/** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
- *  info found in the remarks block.
- */
-GCoord boxFromRemarks(const Remarks&);
-
-//! Checks to see if a Remarks block has an Alan-style box size in it.
-bool remarksHasBox(const Remarks&);
-
-// The following are in LOOS namespace because they are either
-// collisions waiting to or are too esoteric to warrant going into std
-
-//! Namespace for segregating esoteric functions or functions with common names
+//! Namespace for most things not already encapsulated within a class.
 namespace loos {
 
+  //! Get the next line of input, skipping blanks and stripping comments
+  std::string getNextLine(std::istream&, int*);
+
+  //! Read a list of integers from a stream
+  std::vector<int> readIndexMap(std::istream&);
+
+  //! Create an invocation header
+  /**
+   *This is a string that can be embedded in output that records the
+   *invoking user, command-line, and a timestamp.
+   */
+  std::string invocationHeader(int, char *[]);
+
+  //! Extract the Alan-style box-size from a PDB Remarks block.
+  /** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
+   *  info found in the remarks block.
+   */
+  GCoord boxFromRemarks(const Remarks&);
+
+  //! Checks to see if a Remarks block has an Alan-style box size in it.
+  bool remarksHasBox(const Remarks&);
+
+  // The following are in LOOS namespace because they are either
+  // collisions waiting to or are too esoteric to warrant going into std
 
   typedef boost::mt19937 base_generator_type;
 
@@ -84,10 +80,10 @@ namespace loos {
   void randomSeedRNG(void);
 
   //! Parses a list of Octave-style range specifiers
-  vector<int> parseRangeList(const string& text);
+  std::vector<int> parseRangeList(const std::string& text);
 
   //! Applies a string-based selection to an atomic group...
-  AtomicGroup selectAtoms(const AtomicGroup&, const string);
+  AtomicGroup selectAtoms(const AtomicGroup&, const std::string);
 
 };
 

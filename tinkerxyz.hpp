@@ -29,64 +29,65 @@
 #include <sstream>
 #include <iostream>
 
-#include "loos_defs.hpp"
-#include "Atom.hpp"
-#include "AtomicGroup.hpp"
+#include <loos_defs.hpp>
+#include <Atom.hpp>
+#include <AtomicGroup.hpp>
 
-using namespace std;
 
-//! Class for reading a subset of the TinkerXYZ format
-/**
- * Notes:
- *
- The tinker ARC trajectory file format is just concatenated XYZ, so this
- code should be shared.
- */
-class TinkerXYZ : public AtomicGroup {
-public:
+namespace loos {
+
+  //! Class for reading a subset of the TinkerXYZ format
+  /**
+   * Notes:
+   *
+   The tinker ARC trajectory file format is just concatenated XYZ, so this
+   code should be shared.
+  */
+  class TinkerXYZ : public AtomicGroup {
+  public:
     TinkerXYZ() { }
     virtual ~TinkerXYZ() {}
 
-    explicit TinkerXYZ(const string fname) {
-        ifstream ifs(fname.c_str());
-        if (!ifs) {
-            throw(runtime_error("Cannot open TinkerXYZ file " + string(fname)));
-            }
-        read(ifs);
+    explicit TinkerXYZ(const std::string fname) {
+      std::ifstream ifs(fname.c_str());
+      if (!ifs) {
+        throw(std::runtime_error("Cannot open TinkerXYZ file " + std::string(fname)));
+      }
+      read(ifs);
     }
 
-    explicit TinkerXYZ(ifstream &ifs) {
-        read(ifs);
+    explicit TinkerXYZ(std::ifstream &ifs) {
+      read(ifs);
     }
 
-  //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
-  virtual TinkerXYZ* clone(void) const {
-    return(new TinkerXYZ(*this));
-  }
+    //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
+    virtual TinkerXYZ* clone(void) const {
+      return(new TinkerXYZ(*this));
+    }
 
-  //! Creates a deep copy (see AtomicGroup::copy() for more info)
-  TinkerXYZ copy(void) const {
-    AtomicGroup grp = this->AtomicGroup::copy();
-    TinkerXYZ p(grp);
+    //! Creates a deep copy (see AtomicGroup::copy() for more info)
+    TinkerXYZ copy(void) const {
+      AtomicGroup grp = this->AtomicGroup::copy();
+      TinkerXYZ p(grp);
 
-    // Add TinkerXYZ specific member data copies here...
-    return(p);
-  }
+      // Add TinkerXYZ specific member data copies here...
+      return(p);
+    }
 
-   void read(istream& is);  
-
-
-private:
-
-  TinkerXYZ(const AtomicGroup& grp) : AtomicGroup(grp) { }
+    void read(std::istream& is);  
 
 
-  void parseAtomRecord(const string s);  
+  private:
+
+    TinkerXYZ(const AtomicGroup& grp) : AtomicGroup(grp) { }
+
+
+    void parseAtomRecord(const std::string s);  
   
   
-};
+  };
 
 
-
+}
 
 #endif

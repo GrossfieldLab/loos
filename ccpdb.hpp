@@ -37,64 +37,69 @@
 
 #include <pdb.hpp>
 
-//! Class for interpreting concatenated PDB files as a Trajectory.
-/** This class reads a concatenated PDB Trajectory file as a LOOS Trajectory.
- * Each frame of the trajectory must be separated by an "END" record.
- * Since each frame is a fully-parsed PDB object, there is quite a
- * bit of overhead involved in reading CCPDB trajectories.  In
- * addition, upon instantiation, the trajectory will be scanned for
- * "END" records to build a list of seek indices for each frame.
- *
- * It is possible to get the contained PDB object out of the CCPDB,
- * but be careful of semantics that are slightly inconsistent with the
- * rest of LOOS.  See CCPDB::currentFrame() for more details.
- */
 
-class CCPDB : public Trajectory {
-public:
-  explicit CCPDB(const string& s) : Trajectory(s), _natoms(0), _nframes(0) { init(); }
-  explicit CCPDB(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
+namespace loos {
 
-  virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); }
-  virtual uint nframes(void) const { return(_nframes); }
-  virtual uint natoms(void) const { return(_natoms); }
-  virtual vector<GCoord> coords(void);
-  virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
-
-  virtual void seekNextFrame(void) { }
-  virtual void seekFrame(const uint);
-  virtual bool parseFrame(void);
-
-  virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
-  virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
-
-  //! The timestep is currently meaningless for CCPDB's, so we return
-  //! a nominal 1e-3.
-  virtual float timestep(void) const { return(0.001); }
-
-  //! Returns the current frame as a PDB object.
-  /** CCPDB actually stores a PDB object inside of it that represents
-   *  the currently read frame.  When you request that PDB, what you
-   *  get is a shared copy with the internal one, that is, the
-   *  contained Atom and PeriodicBox objects are shared.  However,
-   *  when you read in a new frame, the internal PDB is swapped out
-   *  with a new one.  So at this point, what you are left holding is
-   *  actually a copy (equivalent to a deep copy) of the previously
-   *  read frame.
+  //! Class for interpreting concatenated PDB files as a Trajectory.
+  /** This class reads a concatenated PDB Trajectory file as a LOOS Trajectory.
+   * Each frame of the trajectory must be separated by an "END" record.
+   * Since each frame is a fully-parsed PDB object, there is quite a
+   * bit of overhead involved in reading CCPDB trajectories.  In
+   * addition, upon instantiation, the trajectory will be scanned for
+   * "END" records to build a list of seek indices for each frame.
    *
-   *  In general, since currentFrame() is not part of the Trajectory
-   *  interface, you should not use it unless you need it...
+   * It is possible to get the contained PDB object out of the CCPDB,
+   * but be careful of semantics that are slightly inconsistent with the
+   * rest of LOOS.  See CCPDB::currentFrame() for more details.
    */
-  PDB currentFrame(void) const { return(frame); }
 
-private:
-  void init(void);
+  class CCPDB : public Trajectory {
+  public:
+    explicit CCPDB(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0) { init(); }
+    explicit CCPDB(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
 
-private:
-  uint _natoms, _nframes;
-  PDB frame;
-  vector<long> indices;
-};
+    virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); }
+    virtual uint nframes(void) const { return(_nframes); }
+    virtual uint natoms(void) const { return(_natoms); }
+    virtual std::vector<GCoord> coords(void);
+    virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
 
+    virtual void seekNextFrame(void) { }
+    virtual void seekFrame(const uint);
+    virtual bool parseFrame(void);
+
+    virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
+    virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
+
+    //! The timestep is currently meaningless for CCPDB's, so we return
+    //! a nominal 1e-3.
+    virtual float timestep(void) const { return(0.001); }
+
+    //! Returns the current frame as a PDB object.
+    /** CCPDB actually stores a PDB object inside of it that represents
+     *  the currently read frame.  When you request that PDB, what you
+     *  get is a shared copy with the internal one, that is, the
+     *  contained Atom and PeriodicBox objects are shared.  However,
+     *  when you read in a new frame, the internal PDB is swapped out
+     *  with a new one.  So at this point, what you are left holding is
+     *  actually a copy (equivalent to a deep copy) of the previously
+     *  read frame.
+     *
+     *  In general, since currentFrame() is not part of the Trajectory
+     *  interface, you should not use it unless you need it...
+     */
+    PDB currentFrame(void) const { return(frame); }
+
+  private:
+    void init(void);
+
+  private:
+    uint _natoms, _nframes;
+    PDB frame;
+    std::vector<long> indices;
+  };
+
+
+}
 
 #endif

@@ -1,6 +1,7 @@
 #include <loos.hpp>
 #include <boost/format.hpp>
 
+using namespace std;
 using namespace boost;
 
 

@@ -26,9 +26,12 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-using namespace std;
 
 #include <loos.hpp>
+
+using namespace std;
+using namespace loos;
+
 
 
 void Usage()
@@ -56,8 +59,8 @@ if ( (argc <= 1) ||
 cout << "# " << invocationHeader(argc, argv) << endl;
 
 // Create the system and the trajectory file
-AtomicGroup system = loos::createSystem(argv[1]);
-pTraj traj = loos::createTrajectory(argv[2], system);
+AtomicGroup system = createSystem(argv[1]);
+pTraj traj = createTrajectory(argv[2], system);
 
 char *selection = argv[3];  // String describing the first selection
 

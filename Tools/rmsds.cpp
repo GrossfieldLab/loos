@@ -36,70 +36,81 @@
 
 
 #include <loos.hpp>
+#include <boost/program_options.hpp>
 
-#include <getopt.h>
-#include <cstdlib>
-
+namespace po = boost::program_options;
+using namespace std;
 using namespace loos;
 
-typedef unsigned int uint;
+
+
+typedef Math::Matrix<double, Math::Triangular> Matrix;
+
 
 struct Globals {
-  Globals() : alignment("name == 'CA'"), iterate(false) { }
-  
+  string model_name;
+  string traj_name;
   string alignment;
+  double tol;
   bool iterate;
 };
 
 
 Globals globals;
 
-
-static struct option long_options[] = {
-  {"align", required_argument, 0, 'a'},
-  {"iterate", no_argument, 0, 'i'},
-  {0,0,0,0}
-};
-
-
-static const char* short_options = "a:i";
-
-
-void show_help(void) {
-  Globals defaults;
-
-  cout << "Usage- rmsds [opts] system-file (pdb, psf, ...) trajectory-file (dcd, amber, ...)  >output\n";
-  cout << "       --align=selection    [" << defaults.alignment << "]\n";
-  cout << "       --iterate            [" << (defaults.iterate ? string("on") : string("off")) << "]\n";
-}
-
-
 void parseOptions(int argc, char *argv[]) {
-  int opt, idx;
 
-  
-  while ((opt = getopt_long(argc, argv, short_options, long_options, &idx)) != -1)
-    switch(opt) {
-    case 'a': globals.alignment = string(optarg); break;
-    case 'i': globals.iterate = true; break;
-    case 0: break;
-    default:
-      cerr << "Unknown option '" << (char)opt << "' - ignored.\n";
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("align,a", po::value<string>(&globals.alignment)->default_value("name == 'CA')"), "Align using this selection")
+      ("iterative,i", po::value<bool>(&globals.iterate)->default_value(false),"Use iterative alignment method")
+      ("tolerance,t", po::value<double>(&globals.tol)->default_value(1e-6), "Tolerance to use for iterative alignment");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&globals.model_name), "Model filename")
+      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename");
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
+      cerr << "Usage- rmsds [options] model-name trajectory-name\n";
+      cerr << generic;
+      exit(-1);
     }
+  }
+
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
+    exit(-1);
+  }
+
 }
 
 
-void align(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& traj) {
-  uint n = traj.nframes();
+void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj) {
+  uint n = traj->nframes();
 
   for (uint i = 0; i<n; i++) {
     AtomicGroup frame = subset.copy();
-    traj.readFrame(i);
-    traj.updateGroupCoords(frame);
+    traj->readFrame(i);
+    traj->updateGroupCoords(frame);
     frames.push_back(frame);
   }
 
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, 0.1, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, globals.tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -110,30 +121,28 @@ void align(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& t
 }
 
 
-void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, Trajectory& traj) {
-  uint n = traj.nframes();
+void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj) {
+  uint n = traj->nframes();
 
   for (uint i=0; i<n; i++) {
     AtomicGroup frame = subset.copy();
-    traj.readFrame(i);
-    traj.updateGroupCoords(frame);
+    traj->readFrame(i);
+    traj->updateGroupCoords(frame);
     frames.push_back(frame);
   }
 }
 
 
-float *interFrameRMSD(vector<AtomicGroup>& frames) {
+Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
   uint n = frames.size();
-  float *M = new float[n*n];
+  Matrix M(n, n);
   uint i;
-
-  for (i=0; i<n*n; i++)
-    M[i] = 0.0;
 
   uint total = n*(n+1)/2;
   uint delta = total / 4;
   uint k = 0;
   uint j;
+
   for (j=0; j<n; j++) {
     AtomicGroup jframe = frames[j].copy();
     for (i=0; i<=j; i++, k++) {
@@ -146,16 +155,12 @@ float *interFrameRMSD(vector<AtomicGroup>& frames) {
         rmsd = jframe.rmsd(frames[i]);
       }
 
-
-      M[j*n+i] = rmsd;
-      M[i*n+j] = rmsd;
+      M(j,i) = rmsd;
       
       if (k % delta == 0) {
         float percent = k * 100.0 / total;
         cerr << setprecision(3) << percent << "% complete\n";
       }
-
-    
     }
   }
 
@@ -167,31 +172,24 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
-  if (argc - optind != 2) {
-    cerr << "Invalid arguments.\n";
-    show_help();
-    exit(-1);
-  }
-
-  AtomicGroup molecule = createSystem(argv[optind++]);
-  pTraj ptraj = createTrajectory(argv[optind], molecule);
+  AtomicGroup molecule = createSystem(globals.model_name);
+  pTraj ptraj = createTrajectory(globals.traj_name, molecule);
   AtomicGroup subset = selectAtoms(molecule, globals.alignment);
   cerr << "Selected " << subset.size() << " atoms.\n";
 
   vector<AtomicGroup> frames;
   if (globals.iterate) {
     cerr << "Aligning...\n";
-    align(frames, subset, *ptraj);
+    doAlign(frames, subset, ptraj);
   } else
-    readFrames(frames, subset, *ptraj);
+    readFrames(frames, subset, ptraj);
 
-  float *M = interFrameRMSD(frames);
+  Matrix M = interFrameRMSD(frames);
 
-
-  RawAsciiWriter<float> writer;
-  writer.metadata(header);
-  writer.write(M, "R", frames.size(), frames.size());
-  delete M;
+  // Note:  using the operator<< on a matrix here will write it out as a full matrix
+  //        i.e. not the special triangular format.
+  cout << "# " << header << endl;
+  cout << M;
 }
 
 

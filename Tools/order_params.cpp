@@ -30,10 +30,11 @@
 */
 
 
+#include <loos.hpp>
 
 using namespace std;
+using namespace loos;
 
-#include <loos.hpp>
 
 void Usage()
     {
@@ -65,14 +66,14 @@ int first_carbon = atoi(argv[5]);
 int last_carbon = atoi(argv[6]);
 
 // Create the data structures for the system and trajectory
-AtomicGroup system = loos::createSystem(system_filename);
-pTraj traj = loos::createTrajectory(traj_filename, system);
+AtomicGroup system = createSystem(system_filename);
+pTraj traj = createTrajectory(traj_filename, system);
 
 // NOTE: We assume the selection is a list of all of the relevant carbon atoms. 
 //       We'll break it into invidual carbons ourselves (assuming the normal
 //       convention of C2, C3, ... 
 //       Afterward, we'll figure out the relevant hydrogens ourselves
-AtomicGroup main_selection = loos::selectAtoms(system, sel);
+AtomicGroup main_selection = selectAtoms(system, sel);
 
 // Now break into individual carbons
 vector<AtomicGroup> selections;
@@ -87,7 +88,7 @@ for (int i =first_carbon; i<=last_carbon; i++)
     //Parser p(sel_string.c_str());
     //KernelSelector parsed(p.kernel());
     //selections.push_back(main_selection.select(parsed));
-    selections.push_back(loos::selectAtoms(main_selection, sel_string.c_str()));
+    selections.push_back(selectAtoms(main_selection, sel_string.c_str()));
     }
 
 // Now, figure out which hydrogens go with each carbon selected

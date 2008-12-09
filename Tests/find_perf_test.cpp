@@ -23,6 +23,7 @@
 
 #include <loos.hpp>
 
+using namespace std;
 
 #define ERROR_CHECK
 

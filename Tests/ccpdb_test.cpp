@@ -1,7 +1,9 @@
 #include <loos.hpp>
 #include <boost/format.hpp>
 
+using namespace std;
 using namespace boost;
+
 
 int main(int argc, char *argv[]) {
   CCPDB ccpdb(argv[1]);

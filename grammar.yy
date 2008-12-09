@@ -13,10 +13,9 @@
 #include <string.h>
 
 
-using namespace std;
-//using namespace loos;
-
-class ParserDriver;
+namespace loos {
+   class ParserDriver;
+}
 
 
 #define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
@@ -28,7 +27,7 @@ class ParserDriver;
 
 %union
 {
-	string *sval;
+	std::string *sval;
 	int ival;
 };
 
@@ -44,7 +43,7 @@ class ParserDriver;
 
 
 namespace loos {
-  void parse_error(const string&);
+  void parse_error(const std::string&);
 };
 
 %}
@@ -81,22 +80,22 @@ namespace loos {
 
 
 expr  : rexpr
-      | expr "&&" rexpr   { driver.kern.push(new logicalAnd); }
-      | expr "||" rexpr   { driver.kern.push(new logicalOr); }
+      | expr "&&" rexpr   { driver.kern.push(new internal::logicalAnd); }
+      | expr "||" rexpr   { driver.kern.push(new internal::logicalOr); }
       ;
 
 
 rexpr : '(' expr ')'
-      | '!' rexpr              { driver.kern.push(new logicalNot); }
-      | value "<" value { driver.kern.push(new lessThan); }
-      | value "<=" value { driver.kern.push(new lessThanEquals); }
-      | value ">=" value { driver.kern.push(new greaterThanEquals); }
-      | value ">" value { driver.kern.push(new greaterThan); }
-      | value "==" value { driver.kern.push(new equals); }
-      | value "!=" value { driver.kern.push(new equals); driver.kern.push(new logicalNot); }
-      | alphid "=~" strval { driver.kern.push(new matchRegex(*($3))); }
-      | ALL { driver.kern.push(new logicalTrue); }
-      | HYDROGEN { driver.kern.push(new Hydrogen); }
+      | '!' rexpr              { driver.kern.push(new internal::logicalNot); }
+      | value "<" value { driver.kern.push(new internal::lessThan); }
+      | value "<=" value { driver.kern.push(new internal::lessThanEquals); }
+      | value ">=" value { driver.kern.push(new internal::greaterThanEquals); }
+      | value ">" value { driver.kern.push(new internal::greaterThan); }
+      | value "==" value { driver.kern.push(new internal::equals); }
+      | value "!=" value { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); }
+      | alphid "=~" strval { driver.kern.push(new internal::matchRegex(*($3))); }
+      | ALL { driver.kern.push(new internal::logicalTrue); }
+      | HYDROGEN { driver.kern.push(new internal::Hydrogen); }
       ;
 
 
@@ -104,14 +103,14 @@ value : '(' value ')' | numeric | alpha | numex;
 
 numeric : number | numid;
 
-numex : alphid "->" strval { driver.kern.push(new extractNumber(*($3))); } ;
+numex : alphid "->" strval { driver.kern.push(new internal::extractNumber(*($3))); } ;
 
-number  : NUMBER        { driver.kern.push(new pushInt($1)); }  ;
+number  : NUMBER        { driver.kern.push(new internal::pushInt($1)); }  ;
 
 alpha   : string | alphid
         ;
 
-string  : STRING        { $$ = $1; driver.kern.push(new pushString(*($1))); } ;
+string  : STRING        { $$ = $1; driver.kern.push(new internal::pushString(*($1))); } ;
 
 strval  : STRING ;      /* Non-pushing string so we can compiled it */
                         /* into the regular expression operator */
@@ -123,11 +122,11 @@ rather than use a table... */
 alphid  : SKEY          {
 $$ = $1;
 if (*($1) == "name")
-   driver.kern.push(new pushAtomName);
+   driver.kern.push(new internal::pushAtomName);
 else if (*($1) == "resname")
-   driver.kern.push(new pushAtomResname);
+   driver.kern.push(new internal::pushAtomResname);
 else if (*($1) == "segid" || *($1) == "segname")
-   driver.kern.push(new pushAtomSegid);
+   driver.kern.push(new internal::pushAtomSegid);
 else
    loos::parse_error("Unknown string keyword " + *($1));
 }
@@ -137,9 +136,9 @@ else
 
 numid   : NKEY          {
 if (*($1) == "id")
-   driver.kern.push(new pushAtomId);
+   driver.kern.push(new internal::pushAtomId);
 else if (*($1) == "resid")
-   driver.kern.push(new pushAtomResid);
+   driver.kern.push(new internal::pushAtomResid);
 else
    loos::parse_error("Unknown numeric keyword " + *($1));   
 }
@@ -149,10 +148,10 @@ else
 %%
 
 
-void loos::parser::error(const loos::location& loc, const string& s = "unknown error") {
-  cerr << "***ERROR***  Bad selection syntax - " << s << endl;
+void loos::parser::error(const loos::location& loc, const std::string& s = "unknown error") {
+  std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }
 
-void loos::parse_error(const string& s = "unknown error") {
-  cerr << "***ERROR***  Bad selection syntax - " << s << endl;
+void loos::parse_error(const std::string& s = "unknown error") {
+  std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }

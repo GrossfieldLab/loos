@@ -50,9 +50,6 @@
 #include <amber_traj.hpp>
 #include <ccpdb.hpp>
 
-using namespace std;
-
-
 namespace loos {
   //! Factory function for reading in structure files.
   /*!
@@ -60,9 +57,9 @@ namespace loos {
    * file by examining the suffix of the file.  It will return an
    * AtomicGroup copy of the input structure.
    */
-  AtomicGroup createSystem(const string&);
+  AtomicGroup createSystem(const std::string&);
 
-  pAtomicGroup createSystemPtr(const string&);
+  pAtomicGroup createSystemPtr(const std::string&);
 
   //! Factory function for reading in a trajectory file.
   /*!
@@ -75,7 +72,7 @@ namespace loos {
    * wrapped in a boost shared pointer to the base class.  Do not
    * try to deference it and assign it to a Trajectory object...
    */
-  pTraj createTrajectory(const string&, const AtomicGroup&);
+  pTraj createTrajectory(const std::string&, const AtomicGroup&);
 };
 
 

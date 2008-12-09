@@ -39,6 +39,7 @@ clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', 
 clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '', PathOption.PathAccept))
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
+clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
 
@@ -61,6 +62,7 @@ ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
 BOOSTREGEX = env['BOOSTREGEX']
+BOOSTPO = env['BOOSTPO']
 LIBXTRA = env['LIBXTRA']
 
 
@@ -73,7 +75,7 @@ release_opts='-O3 -DNDEBUG -Wall'
 # Setup the general environment...
 env.Append(CPPPATH = ['#', BOOSTINC])
 env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
-env.Append(LIBS = ['loos', BOOSTREGEX])
+env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...

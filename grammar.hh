@@ -59,10 +59,9 @@ namespace loos
 #include <string.h>
 
 
-using namespace std;
-//using namespace loos;
-
-class ParserDriver;
+namespace loos {
+   class ParserDriver;
+}
 
 
 #define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
@@ -71,7 +70,7 @@ class ParserDriver;
 
 
 /* Line 35 of lalr1.cc.  */
-#line 75 "grammar.hh"
+#line 74 "grammar.hh"
 
 #include "location.hh"
 
@@ -122,13 +121,13 @@ namespace loos
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 30 "grammar.yy"
+#line 29 "grammar.yy"
 {
-	string *sval;
+	std::string *sval;
 	int ival;
 }
 /* Line 35 of lalr1.cc.  */
-#line 132 "grammar.hh"
+#line 131 "grammar.hh"
 	;
 #else
     typedef YYSTYPE semantic_type;

@@ -28,6 +28,7 @@
 
 #include <loos.hpp>
 
+using namespace std;
 using namespace loos;
 
 

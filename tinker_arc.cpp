@@ -21,72 +21,77 @@
 
 #include <tinker_arc.hpp>
 
-void TinkerArc::init(void) {
-  char buf[512];
 
-  // Read the first frame to get the # of atoms...
-  frame.read(*(ifs()));
-  _natoms = frame.size();
-  indices.push_back(0l);
-  cached_first = true;
+namespace loos {
 
-  // Now determine the # of frames...
-  while (!ifs()->eof()) {
-    indices.push_back(ifs()->tellg());
-    ifs()->getline(buf, sizeof(buf));
-    for (uint i=0; i<_natoms; ++i)
+  void TinkerArc::init(void) {
+    char buf[512];
+
+    // Read the first frame to get the # of atoms...
+    frame.read(*(ifs()));
+    _natoms = frame.size();
+    indices.push_back(0l);
+    cached_first = true;
+
+    // Now determine the # of frames...
+    while (!ifs()->eof()) {
+      indices.push_back(ifs()->tellg());
       ifs()->getline(buf, sizeof(buf));
+      for (uint i=0; i<_natoms; ++i)
+        ifs()->getline(buf, sizeof(buf));
+    }
+
+    _nframes = indices.size() - 1;
+
+    ifs()->clear();
+    ifs()->seekg(indices[1]);
   }
 
-  _nframes = indices.size() - 1;
 
-  ifs()->clear();
-  ifs()->seekg(indices[1]);
-}
-
-
-void TinkerArc::seekNextFrame(void) {
-  if (++current_index >= _nframes)
-    at_end = true;
-}
-
-
-void TinkerArc::seekFrame(const uint i) {
-  if (i >= _nframes)
-    throw(runtime_error("Error- Attempting to access more frames than are in the trajectory."));
-
-  ifs()->clear();
-  ifs()->seekg(indices[i]);
-  if (ifs()->fail())
-    throw(runtime_error("Error- cannot seek to the requested frame in trajectory."));
-
-  current_index = i;
-  at_end = false;
-}
-
-
-bool TinkerArc::parseFrame(void) {
-  if (ifs()->eof() || at_end)
-    return(false);
-
-  TinkerXYZ newframe;
-  newframe.read(*(ifs()));
-  frame = newframe;
-  if (frame.size() == 0) {
-    at_end = true;
-    return(false);
+  void TinkerArc::seekNextFrame(void) {
+    if (++current_index >= _nframes)
+      at_end = true;
   }
 
-  return(true);
+
+  void TinkerArc::seekFrame(const uint i) {
+    if (i >= _nframes)
+      throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+
+    ifs()->clear();
+    ifs()->seekg(indices[i]);
+    if (ifs()->fail())
+      throw(std::runtime_error("Error- cannot seek to the requested frame in trajectory."));
+
+    current_index = i;
+    at_end = false;
+  }
+
+
+  bool TinkerArc::parseFrame(void) {
+    if (ifs()->eof() || at_end)
+      return(false);
+
+    TinkerXYZ newframe;
+    newframe.read(*(ifs()));
+    frame = newframe;
+    if (frame.size() == 0) {
+      at_end = true;
+      return(false);
+    }
+
+    return(true);
+  }
+
+
+  std::vector<GCoord> TinkerArc::coords(void) {
+    std::vector<GCoord> result(_natoms);
+
+    for (uint i=0; i<_natoms; i++)
+      result[i] = frame[i]->coords();
+
+    return(result);
+  }
+
+
 }
-
-
-vector<GCoord> TinkerArc::coords(void) {
-  vector<GCoord> result(_natoms);
-
-  for (uint i=0; i<_natoms; i++)
-    result[i] = frame[i]->coords();
-
-  return(result);
-}
-

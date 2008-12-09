@@ -38,7 +38,7 @@
 #include "grammar.hh"
 
 /* User implementation prologue.  */
-#line 35 "grammar.yy"
+#line 34 "grammar.yy"
 
 
 #include "ParserDriver.hpp"
@@ -51,7 +51,7 @@
 
 
 namespace loos {
-  void parse_error(const string&);
+  void parse_error(const std::string&);
 };
 
 
@@ -215,27 +215,27 @@ namespace loos
     switch (yytype)
       {
         case 4: /* "STRING" */
-#line 78 "grammar.yy"
+#line 77 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 221 "grammar.cc"
 	break;
       case 5: /* "SKEY" */
-#line 78 "grammar.yy"
+#line 77 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 226 "grammar.cc"
 	break;
       case 6: /* "NKEY" */
-#line 78 "grammar.yy"
+#line 77 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 231 "grammar.cc"
 	break;
       case 30: /* "string" */
-#line 78 "grammar.yy"
+#line 77 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 236 "grammar.cc"
 	break;
       case 31: /* "strval" */
-#line 78 "grammar.yy"
+#line 77 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 #line 241 "grammar.cc"
 	break;
@@ -427,102 +427,102 @@ namespace loos
     switch (yyn)
       {
 	  case 3:
-#line 84 "grammar.yy"
-    { driver.kern.push(new logicalAnd); ;}
+#line 83 "grammar.yy"
+    { driver.kern.push(new internal::logicalAnd); ;}
     break;
 
   case 4:
-#line 85 "grammar.yy"
-    { driver.kern.push(new logicalOr); ;}
+#line 84 "grammar.yy"
+    { driver.kern.push(new internal::logicalOr); ;}
     break;
 
   case 6:
-#line 90 "grammar.yy"
-    { driver.kern.push(new logicalNot); ;}
+#line 89 "grammar.yy"
+    { driver.kern.push(new internal::logicalNot); ;}
     break;
 
   case 7:
-#line 91 "grammar.yy"
-    { driver.kern.push(new lessThan); ;}
+#line 90 "grammar.yy"
+    { driver.kern.push(new internal::lessThan); ;}
     break;
 
   case 8:
-#line 92 "grammar.yy"
-    { driver.kern.push(new lessThanEquals); ;}
+#line 91 "grammar.yy"
+    { driver.kern.push(new internal::lessThanEquals); ;}
     break;
 
   case 9:
-#line 93 "grammar.yy"
-    { driver.kern.push(new greaterThanEquals); ;}
+#line 92 "grammar.yy"
+    { driver.kern.push(new internal::greaterThanEquals); ;}
     break;
 
   case 10:
-#line 94 "grammar.yy"
-    { driver.kern.push(new greaterThan); ;}
+#line 93 "grammar.yy"
+    { driver.kern.push(new internal::greaterThan); ;}
     break;
 
   case 11:
-#line 95 "grammar.yy"
-    { driver.kern.push(new equals); ;}
+#line 94 "grammar.yy"
+    { driver.kern.push(new internal::equals); ;}
     break;
 
   case 12:
-#line 96 "grammar.yy"
-    { driver.kern.push(new equals); driver.kern.push(new logicalNot); ;}
+#line 95 "grammar.yy"
+    { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); ;}
     break;
 
   case 13:
-#line 97 "grammar.yy"
-    { driver.kern.push(new matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+#line 96 "grammar.yy"
+    { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
     break;
 
   case 14:
-#line 98 "grammar.yy"
-    { driver.kern.push(new logicalTrue); ;}
+#line 97 "grammar.yy"
+    { driver.kern.push(new internal::logicalTrue); ;}
     break;
 
   case 15:
-#line 99 "grammar.yy"
-    { driver.kern.push(new Hydrogen); ;}
+#line 98 "grammar.yy"
+    { driver.kern.push(new internal::Hydrogen); ;}
     break;
 
   case 22:
-#line 107 "grammar.yy"
-    { driver.kern.push(new extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+#line 106 "grammar.yy"
+    { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
     break;
 
   case 23:
-#line 109 "grammar.yy"
-    { driver.kern.push(new pushInt((yysemantic_stack_[(1) - (1)].ival))); ;}
+#line 108 "grammar.yy"
+    { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); ;}
     break;
 
   case 26:
-#line 114 "grammar.yy"
-    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new pushString(*((yysemantic_stack_[(1) - (1)].sval)))); ;}
+#line 113 "grammar.yy"
+    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); ;}
     break;
 
   case 28:
-#line 123 "grammar.yy"
+#line 122 "grammar.yy"
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "name")
-   driver.kern.push(new pushAtomName);
+   driver.kern.push(new internal::pushAtomName);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resname")
-   driver.kern.push(new pushAtomResname);
+   driver.kern.push(new internal::pushAtomResname);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "segid" || *((yysemantic_stack_[(1) - (1)].sval)) == "segname")
-   driver.kern.push(new pushAtomSegid);
+   driver.kern.push(new internal::pushAtomSegid);
 else
    loos::parse_error("Unknown string keyword " + *((yysemantic_stack_[(1) - (1)].sval)));
 ;}
     break;
 
   case 29:
-#line 138 "grammar.yy"
+#line 137 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
-   driver.kern.push(new pushAtomId);
+   driver.kern.push(new internal::pushAtomId);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resid")
-   driver.kern.push(new pushAtomResid);
+   driver.kern.push(new internal::pushAtomResid);
 else
    loos::parse_error("Unknown numeric keyword " + *((yysemantic_stack_[(1) - (1)].sval)));   
 ;}
@@ -892,9 +892,9 @@ else
   const unsigned char
   parser::yyrline_[] =
   {
-         0,    83,    83,    84,    85,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   103,   103,   103,   103,
-     105,   105,   107,   109,   111,   111,   114,   116,   123,   138
+         0,    82,    82,    83,    84,    88,    89,    90,    91,    92,
+      93,    94,    95,    96,    97,    98,   102,   102,   102,   102,
+     104,   104,   106,   108,   110,   110,   113,   115,   122,   137
   };
 
   // Print the state stack on the debug stream.
@@ -983,15 +983,15 @@ else
 
 } // namespace loos
 
-#line 149 "grammar.yy"
+#line 148 "grammar.yy"
 
 
 
-void loos::parser::error(const loos::location& loc, const string& s = "unknown error") {
-  cerr << "***ERROR***  Bad selection syntax - " << s << endl;
+void loos::parser::error(const loos::location& loc, const std::string& s = "unknown error") {
+  std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }
 
-void loos::parse_error(const string& s = "unknown error") {
-  cerr << "***ERROR***  Bad selection syntax - " << s << endl;
+void loos::parse_error(const std::string& s = "unknown error") {
+  std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }
 

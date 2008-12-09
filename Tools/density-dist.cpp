@@ -33,6 +33,10 @@
 
 #include <loos.hpp>
 
+using namespace std;
+using namespace loos;
+
+
 void Usage()
     {
     cerr << "Usage: density-dist "
@@ -54,8 +58,8 @@ int main(int argc, char *argv[]) {
     cout << "# " << invocationHeader(argc, argv) << endl;
 
 
-    AtomicGroup system = loos::createSystem(argv[1]);
-    pTraj traj = loos::createTrajectory(argv[2], system);
+    AtomicGroup system = createSystem(argv[1]);
+    pTraj traj = createTrajectory(argv[2], system);
 
 
     char calc_type = toupper(*argv[3]); // bad programmer, no cookie for you
@@ -87,7 +91,7 @@ int main(int argc, char *argv[]) {
         //Parser parser(argv[i]);
         //KernelSelector parsed_sel(parser.kernel());
         //AtomicGroup g = system.select(parsed_sel);
-        AtomicGroup g = loos::selectAtoms(system, argv[i]);
+        AtomicGroup g = selectAtoms(system, argv[i]);
         subsets.push_back(g);
     }
   

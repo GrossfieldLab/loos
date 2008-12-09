@@ -49,6 +49,10 @@
 #include <boost/format.hpp>
 #include <cmath>
 
+using namespace std;
+using namespace loos;
+
+
 typedef vector<GCoord> Axes;
 
 const double RAD2DEG = 180.0 / PI;
@@ -67,8 +71,8 @@ int main(int argc, char *argv[]) {
   string sel1(argv[1]);
   string sel2(argv[2]);
 
-  AtomicGroup model = loos::createSystem(argv[3]);
-  pTraj ptraj = loos::createTrajectory(argv[4], model);
+  AtomicGroup model = createSystem(argv[3]);
+  pTraj ptraj = createTrajectory(argv[4], model);
 
   CAlphaSelector casel;
 
