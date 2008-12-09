@@ -50,13 +50,13 @@ namespace loos {
 
     //! Setup for writing to a file named by \a s
     /** You can opt to write the header explicitly, i.e.
-     * \verbatim
+     * \code
      DCDWriter dcd("output.dcd");
      dcd.setHeader(500, 10, 1e-3, no);
      dcd.setTitles("MY TITLE HERE");
      dcd.writeHeader();
      dcd.writeFrame(frame);
-     \endverbatim
+     \endcode
      * Or you can let dcdwriter create the header from the first frame written...
      */
     explicit DCDWriter(const std::string& s) : _natoms(0), _nsteps(0), _timestep(0.001), _current(0),

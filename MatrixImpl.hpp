@@ -58,52 +58,70 @@ namespace loos {
      * The default options are for a column-major matrix that is dense.
      *
      * For example, the simplest declaration:
-\verbatim
+\code
 loos::Math::Matrix<double> M;
-\endverbatim
+\endcode
      * creates a dense, column-major matrix \a M whose elements are a double.
      *
-\verbatim
+\code
 loos::Math::Matrix<float, loos::Math::RowMajor> N;
-\endverbatim
+\endcode
      * This creates a dense, row-major matrix \a N whose elements are floats.
      *
      * Finally,
-\verbatim
+\code
 loos::Math::Matrix<int, loos::Math::Triangular, loos::Math::SparseArray> T;
-\endverbatim
+\endcode
      * creates a sparse, triangular matrix whose elements are ints.
      *
      * Access to the elements of a matrix is permitted in two different ways.
      * You can access the (j,i)'th element (j-rows, i-cols) by using operator(),
      * i.e.
-\verbatim
+\code
 M(j,i) = foo;
 fu = M(j+1,i);
-\endverbatim
+\endcode
      * Alternatively, for dense matrices, you can access the linear array of
      * data underneath the matrix interpretation using operator[], i.e.
-\verbatim
+\code
 foo = M[i*rows+j];
 M[i*rows+j+1] = fu;
-\endverbatim
+\endcode
      * For dense matrices, you can also access the raw block of memory by
      * getting a pointer to it,
-\verbatim
+\code
 double *dblptr = M.get();
-\endverbatim
+\endcode
      * 
      * Finally, you can access iterators into the matrix much like you would
      * with an STL container,
-\verbatim
-copy(M.begin(), M.end(), ostream_iterator<double>(cout, "\n"));
-\endverbatim
+\code
+std::copy(M.begin(), M.end(), ostream_iterator<double>(cout, "\n"));
+\endcode
      *
      * Not all Matrix interface functions are valid for all Matrix types.
      * As mentioned above, you cannot access the pointer to a sparse matrix
      * nor use the operator[].
      *
      * Finally, all matrices are initialized with 0 for each element...
+     *
+     * \b NOTE
+     * Although the Matrix class lives in loos::Math, the I/O
+     * functions are all in the loos namespace.  The reason for this
+     * is so you can import the loos namespace and get the I/O
+     * functions without importing the Matrix name, thereby allowing
+     * you to typedef it in your code...
+\code
+using namespace std;
+using namespace loos;
+
+typedef Math::Matrix<double, Math::Triangular> Matrix;
+...
+Matrix M;
+writeAsciiMatrix(filename, M, "My matrix");
+\endcode
+     * 
+     * For more information, see loos::writeAsciiMatrix() and loos::readAsciiMatrix()
      *
      */
 

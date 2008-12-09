@@ -293,7 +293,7 @@ namespace loos {
      * object is also returned (in case it retained state).  For
      * example, the following code snippet shows how to calculate the
      * centroid of a group using apply and a functor...
-     \verbatim
+     \code
      struct Functor {
      Functor() : C(GCoord(0,0,0)), n(0) { }
      void operator()(pAtom& p) { C += p->coords(); ++n; }
@@ -305,7 +305,7 @@ namespace loos {
 
      Functor f = group.apply(Functor());
      GCoord centroid = f.center();
-     \endverbatim
+     \endcode
     */
 
 
@@ -319,13 +319,13 @@ namespace loos {
 
     //! Our own simple iterator for stepping over all managed atoms.
     /** Example:
-     *  \verbatim
+     *  \code
      *  AtomicGroup::Iterator iter(an_atomic_group);
      *  pAtom p;
      *
      *   while (p = iter())
      *    do_something(p);
-     *  \endverbatim
+     *  \endcode
      *
      *  Note that the shared atom returned is a copy of the shared-atom
      *  pointer stored, rather than a ref to the shared atom pointer...

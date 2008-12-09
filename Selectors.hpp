@@ -86,10 +86,10 @@ namespace loos {
   /*!
     Example:
 
-    \verbatim
+    \code
     SegidSelector solvsel("SOLV");
     NotSelector notsolvsel(solvsel);
-    \endverbatim
+    \endcode
 
     This will select all atoms that are NOT solvent
   */
@@ -132,11 +132,11 @@ namespace loos {
 
   //! Combines two selectors with a logical "and"
   /** Example:
-   *  \verbatim
+   *  \code
    *  SegidSelector prot("PROT");
    *  MainChainSelector main_chain;
    *  AndSelector main_chain_protein(main_chain, prot);
-   *  \endverbatim
+   *  \endcode
    *
    *  The main_chain_protein selector will select for all atoms that are
    *  both main chain and have a segid of "PROT".
@@ -156,11 +156,11 @@ namespace loos {
 
   //! Combines two selectors with a logical "or"
   /** Example:
-   *  \verbatim
+   *  \code
    *  SegidSelector prot("PROT");
    *  SegidSelector heme("HEME");
    *  OrSelector prot_with_heme(prot, heme);
-   *  \endverbatim
+   *  \endcode
    *
    *  This selector will pick any atom that has a segid of either "PROT"
    *  or "HEME".
@@ -217,10 +217,10 @@ namespace loos {
    * handling selections based on user input.
    *
    * Example:
-   * \verbatim
+   * \code
    * Parser parsed(selection_string);
    * KernelSelector sel(parsed.kernel());
-   * \endverbatim
+   * \endcode
    *
    */
   class KernelSelector : public AtomSelector {

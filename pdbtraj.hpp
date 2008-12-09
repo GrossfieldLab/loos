@@ -66,9 +66,9 @@ namespace loos {
      *  -frame_010.pdb
      *  -frame_020.pdb
      *  You can manipulate these as a trajectory using,
-     \verbatim
+     \code
      PDBTraj foo("frame_%03d.pdb", 0, 20, 10);
-     \endverbatim
+     \endcode
     */
     explicit PDBTraj(const std::string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
     explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(std::string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }

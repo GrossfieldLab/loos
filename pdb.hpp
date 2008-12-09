@@ -63,10 +63,10 @@ namespace loos {
    * in the resid field to be accepted.  If you would rather have the
    * strict formatting honored, you'll need to set each PDB object to
    * strict:
-   \verbatim
+   \code
    PDB pdb;
    pdb.strict(true);
-   \endverbatim
+   \endcode
   */
   class PDB : public AtomicGroup {
   public:
