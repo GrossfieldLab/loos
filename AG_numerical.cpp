@@ -46,7 +46,7 @@ namespace loos {
   // Bounding box for all atoms in this group
   std::vector<GCoord> AtomicGroup::boundingBox(void) const {
     greal min[3] = {0,0,0}, max[3] = {0,0,0};
-    ConstAtomIterator i;
+    const_iterator i;
     int j;
     std::vector<GCoord> res(2);
     GCoord c;
@@ -79,7 +79,7 @@ namespace loos {
   // Geometric center of the group
   GCoord AtomicGroup::centroid(void) const {
     GCoord c(0,0,0);
-    ConstAtomIterator i;
+    const_iterator i;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
       c += (*i)->coords();
@@ -91,7 +91,7 @@ namespace loos {
 
   GCoord AtomicGroup::centerOfMass(void) const {
     GCoord c(0,0,0);
-    ConstAtomIterator i;
+    const_iterator i;
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
       c += (*i)->mass() * (*i)->coords();
@@ -103,7 +103,7 @@ namespace loos {
 
   GCoord AtomicGroup::centerOfCharge(void) const {
     GCoord c(0,0,0);
-    ConstAtomIterator i;
+    const_iterator i;
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
       c += (*i)->charge() * (*i)->coords();
@@ -115,7 +115,7 @@ namespace loos {
   GCoord AtomicGroup::dipoleMoment(void) const {
     GCoord center = centerOfCharge();
     GCoord moment(0,0,0);
-    ConstAtomIterator i;
+    const_iterator i;
     for (i=atoms.begin(); i != atoms.end(); i++) {
       moment += (*i)->charge() * ((*i)->coords() - center);
     }
@@ -123,7 +123,7 @@ namespace loos {
   }
 
   greal AtomicGroup::totalCharge(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
     greal charge = 0.0;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
@@ -133,7 +133,7 @@ namespace loos {
   }
 
   greal AtomicGroup::totalMass(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
     greal mass = 0.0;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
@@ -146,7 +146,7 @@ namespace loos {
   greal AtomicGroup::radius(void) const {
     GCoord c = centroid();
     greal radius = 0.0;
-    ConstAtomIterator i;
+    const_iterator i;
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
       greal d = c.distance2((*i)->coords());
@@ -163,7 +163,7 @@ namespace loos {
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();
     greal radius = 0;
-    ConstAtomIterator i;
+    const_iterator i;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
       radius += c.distance2((*i)->coords());
@@ -198,7 +198,7 @@ namespace loos {
 
   std::vector<GCoord> AtomicGroup::getTransformedCoords(const XForm& M) const {
     std::vector<GCoord> crds(atoms.size());
-    ConstAtomIterator i;
+    const_iterator i;
     GMatrix W = M.current();
     int j = 0;
 
@@ -213,7 +213,7 @@ namespace loos {
 
 
   void AtomicGroup::applyTransform(const XForm& M) {
-    AtomIterator i;
+    iterator i;
     GMatrix W = M.current();
 
     for (i = atoms.begin(); i != atoms.end(); i++)
@@ -265,7 +265,7 @@ namespace loos {
 
   GCoord AtomicGroup::centerAtOrigin(void) {
     GCoord c = centroid();
-    AtomIterator i;
+    iterator i;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
       (*i)->coords() -= c;

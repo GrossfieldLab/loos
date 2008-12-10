@@ -381,7 +381,7 @@ namespace loos {
 
 
   std::ostream& FormatConectRecords(std::ostream& os, PDB& p) {
-    AtomicGroup::AtomIterator ci;
+    AtomicGroup::iterator ci;
 
     // We first have to make sure that the base AtomicGroup is sorted
     // since we will be verifying bound atoms exist by searching for
@@ -419,7 +419,7 @@ namespace loos {
 
   //! Output the group as a PDB...
   std::ostream& operator<<(std::ostream& os, PDB& p) {
-    AtomicGroup::AtomIterator i;
+    AtomicGroup::iterator i;
 
     os << p._remarks;
     if (p.isPeriodic())

@@ -112,9 +112,9 @@ namespace loos {
 
 
   class AtomicGroup {
-  protected:
-    typedef std::vector<pAtom>::iterator AtomIterator;
-    typedef std::vector<pAtom>::const_iterator ConstAtomIterator;
+  public:
+    typedef std::vector<pAtom>::iterator       iterator;
+    typedef std::vector<pAtom>::const_iterator const_iterator;
 
   public:
     AtomicGroup() : _sorted(false) { }
@@ -310,7 +310,7 @@ namespace loos {
 
 
     template<class T> T apply(T func) {
-      for (AtomIterator i = atoms.begin(); i != atoms.end(); ++i)
+      for (iterator i = atoms.begin(); i != atoms.end(); ++i)
         func(*i);
       return(func);
     }
@@ -345,6 +345,14 @@ namespace loos {
     private:
       std::vector<pAtom>::const_iterator iter, final;
     };
+
+    // STL-iterator access
+    // Should these reset sort status?
+    iterator begin(void) { return(atoms.begin()); }
+    const_iterator begin(void) const { return(atoms.begin()); }
+
+    iterator end(void) { return(atoms.end()); }
+    const_iterator end(void) const { return(atoms.end()); }
 
 
     // Statistical routines...
@@ -396,7 +404,7 @@ namespace loos {
      */
   
     void copyCoordinates(AtomicGroup& g) {
-      AtomIterator i, j;
+      iterator i, j;
 
       for (i = atoms.begin(), j = g.atoms.begin(); i != atoms.end(); i++, j++)
         (*i)->coords((*j)->coords());
@@ -405,8 +413,6 @@ namespace loos {
     //! Each atom is moved in a random direction by a vector of the passed size
     void perturbCoords(const greal);
 
-
-#if defined(__linux__) || defined(__APPLE__)
     //! Compute the principal axes of a group
     /** Calculates the eigendecomposition of AA' where A is column-wise
      * concatenation of coordinates from all atoms in the group.  The mean
@@ -451,8 +457,6 @@ namespace loos {
      */
     GMatrix alignOnto(const AtomicGroup&);
 
-#endif
-
   private:
 
     // *** Internal routines ***  See the .cpp file for details...
@@ -463,7 +467,7 @@ namespace loos {
     void addAtom(pAtom pa) { atoms.push_back(pa); _sorted = false; }
     void deleteAtom(pAtom pa);
 
-    boost::tuple<AtomIterator, AtomIterator> calcSubsetIterators(const int offset, const int len = 0);
+    boost::tuple<iterator, iterator> calcSubsetIterators(const int offset, const int len = 0);
 
     void copyCoordinatesById(AtomicGroup& g);
 

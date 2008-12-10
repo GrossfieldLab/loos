@@ -41,7 +41,7 @@ namespace loos {
 
 
   AtomicGroup AtomicGroup::copy(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
     AtomicGroup res;
 
     for (i = atoms.begin(); i != atoms.end(); i++) {
@@ -168,7 +168,7 @@ namespace loos {
 
 
   bool AtomicGroup::hasBonds(void) const {
-    ConstAtomIterator ci;
+    const_iterator ci;
 
     for (ci = atoms.begin(); ci != atoms.end(); ++ci)
       if ((*ci)->checkProperty(Atom::bondsbit))
@@ -179,7 +179,7 @@ namespace loos {
 
 
   void AtomicGroup::clearBonds(void) {
-    ConstAtomIterator ci;
+    const_iterator ci;
 
     for (ci = atoms.begin(); ci != atoms.end(); ++ci)
       (*ci)->clearBonds();
@@ -202,7 +202,7 @@ namespace loos {
   // Internal: calculates the start and stop iterators given offset and len args
   // as in PERL's substr()...
 
-  boost::tuple<AtomicGroup::AtomIterator, AtomicGroup::AtomIterator> AtomicGroup::calcSubsetIterators(const int offset, const int len) {
+  boost::tuple<AtomicGroup::iterator, AtomicGroup::iterator> AtomicGroup::calcSubsetIterators(const int offset, const int len) {
     unsigned int a, b;
 
     if (offset < 0) {
@@ -216,7 +216,7 @@ namespace loos {
     if (b-a >= atoms.size())
       throw(std::range_error("Indices out of bounds for subsetting"));
 
-    boost::tuple<AtomIterator, AtomIterator> res(atoms.begin() + a, atoms.begin() + b);
+    boost::tuple<iterator, iterator> res(atoms.begin() + a, atoms.begin() + b);
 
     return(res);
   }
@@ -226,7 +226,7 @@ namespace loos {
   AtomicGroup AtomicGroup::subset(const int offset, const int len) {
     AtomicGroup res;
 
-    boost::tuple<AtomIterator, AtomIterator> iters = calcSubsetIterators(offset, len);
+    boost::tuple<iterator, iterator> iters = calcSubsetIterators(offset, len);
     res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
 
     res.box = box;
@@ -237,7 +237,7 @@ namespace loos {
   AtomicGroup AtomicGroup::excise(const int offset, const int len) {
     AtomicGroup res;
 
-    boost::tuple<AtomIterator, AtomIterator> iters = calcSubsetIterators(offset, len);
+    boost::tuple<iterator, iterator> iters = calcSubsetIterators(offset, len);
 
     res.atoms.insert(res.atoms.begin(), boost::get<0>(iters), boost::get<1>(iters));
     atoms.erase(boost::get<0>(iters), boost::get<1>(iters));
@@ -287,7 +287,7 @@ namespace loos {
 
   // Split up a group into a vector of groups based on unique segids...
   std::vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
     UniqueStrings unique;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
@@ -431,7 +431,7 @@ namespace loos {
   // passed atom...  The returned atoms will not be in order.  If
   // you want that, then explicitly sort the group.
   AtomicGroup AtomicGroup::getResidue(pAtom res) {
-    AtomIterator i;
+    iterator i;
     AtomicGroup result;
 
     result.box = box;
@@ -439,7 +439,7 @@ namespace loos {
     if (i == atoms.end())
       return(result);
 
-    AtomIterator j = i;
+    iterator j = i;
 
     while (j >= atoms.begin()) {
       if ((*j)->resid() == res->resid() && (*j)->segid() == res->segid())
@@ -465,7 +465,7 @@ namespace loos {
 
   // renumber the atomids of the group...
   void AtomicGroup::renumber(const int start, const int stride) {
-    AtomIterator i;
+    iterator i;
     int id = start;
 
     for (i=atoms.begin(); i != atoms.end(); i++, id += stride)
@@ -475,7 +475,7 @@ namespace loos {
 
   // Get the min and max atomid's...
   int AtomicGroup::minId(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
 
     if (atoms.size() == 0)
       return(-1);
@@ -490,7 +490,7 @@ namespace loos {
 
 
   int AtomicGroup::maxId(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
   
     if (atoms.size() == 0)
       return(-1);
@@ -504,7 +504,7 @@ namespace loos {
 
 
   int AtomicGroup::minResid(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
 
     if (atoms.size() == 0)
       return(-1);
@@ -518,7 +518,7 @@ namespace loos {
   }
 
   int AtomicGroup::maxResid(void) const {
-    ConstAtomIterator i;
+    const_iterator i;
 
     if (atoms.size() == 0)
       return(-1);
@@ -538,7 +538,7 @@ namespace loos {
     if (atoms.size() == 0)
       return(0);
 
-    ConstAtomIterator i;
+    const_iterator i;
     int n = 1;
     int curr_resid = atoms[0]->resid();
 
@@ -557,7 +557,7 @@ namespace loos {
     if (atoms.size() == 0)
       return(0);
 
-    ConstAtomIterator i;
+    const_iterator i;
     int n = 1;
     std::string curr_segid = atoms[0]->segid();
 
@@ -649,7 +649,7 @@ namespace loos {
     GCoord reimaged = com;
     reimaged.reimage(periodicBox());
     GCoord trans = reimaged - com;
-    ConstAtomIterator a;
+    const_iterator a;
     for (a=atoms.begin(); a!=atoms.end(); a++) {
       (*a)->coords() += trans;
     }
@@ -658,7 +658,7 @@ namespace loos {
   void AtomicGroup::reimageByAtom () {
     if (!(isPeriodic()))
       throw(std::runtime_error("trying to reimage a non-periodic group"));
-    ConstAtomIterator a;
+    const_iterator a;
     GCoord box = periodicBox();
     for (a=atoms.begin(); a!=atoms.end(); a++) {
       (*a)->coords().reimage(box);
@@ -715,7 +715,7 @@ namespace loos {
 
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {
-    AtomicGroup::ConstAtomIterator i;
+    AtomicGroup::const_iterator i;
     if (grp.isPeriodic())
       os << "<GROUP PERIODIC='" << grp.box.box() << "'>\n";
     else
