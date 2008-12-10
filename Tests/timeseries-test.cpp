@@ -28,6 +28,7 @@
 #include <TimeSeries.hpp>
 
 using namespace std;
+using namespace loos;
 
 int main(int argc, char *argv[]) {
     vector<double> tmp;

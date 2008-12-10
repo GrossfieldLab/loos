@@ -1,15 +1,17 @@
 #include <loos.hpp>
 #include <boost/format.hpp>
 
+using namespace std;
+using namespace loos;
 
 
 
 GMatrix randomMatrix(const double range) {
   GMatrix M;
 
-  loos::base_generator_type& rng = loos::rng_singleton();
+  base_generator_type& rng = rng_singleton();
   boost::uniform_real<> rngmap(-range, range);
-  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > randoms(rng, rngmap);
+  boost::variate_generator<base_generator_type&, boost::uniform_real<> > randoms(rng, rngmap);
 
   for (int i=0; i<16; i++) {
     M[i] = randoms();

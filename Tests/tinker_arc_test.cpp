@@ -2,6 +2,7 @@
 #include <boost/format.hpp>
 
 using namespace std;
+using namespace loos;
 using namespace boost;
 
 int main(int argc, char *argv[]) {

@@ -23,6 +23,8 @@
 #include <loos.hpp>
 
 using namespce std;
+using namespace loos;
+
 
 #if !defined(MAXGRPCNT)
 #define MAXGRPCNT 10
@@ -30,7 +32,7 @@ using namespce std;
 
 
 const static unsigned int maxgrpcnt = MAXGRPCNT;
-static loos::base_generator_type& rng = loos::rng_singleton();
+static base_generator_type& rng = rng_singleton();
 
 void test_findById(PDB& pdb) {
   int i;
@@ -39,7 +41,7 @@ void test_findById(PDB& pdb) {
   int maxid = pdb.maxId();
   int minid = pdb.minId();
   boost::uniform_int<> atomid_map(-maxid, maxid);
-  boost::variate_generator<loos::base_generator_type&, boost::uniform_int<> > random_ids(rng, atomid_map);
+  boost::variate_generator<base_generator_type&, boost::uniform_int<> > random_ids(rng, atomid_map);
   for (i = 0; i < 25000; i++) {
     int id = random_ids();
     pAtom pa = pdb.findById(id);
@@ -151,10 +153,10 @@ int main(int argc, char *argv[]) {
   // Suppress for easy diffs...
   //cout << invocationHeader(argc, argv) << endl;
 
-  //loos::base_generator_type& rng = loos::rng_singleton();
+  //base_generator_type& rng = rng_singleton();
 
   // Uncommont the follong to seed the suite-wide RNG
-  //loos::randomSeedRNG();
+  //randomSeedRNG();
 
 
   PDB pdb(argv[1]);

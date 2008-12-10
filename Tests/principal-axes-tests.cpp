@@ -23,6 +23,8 @@
 #include <loos.hpp>
 
 using namespace std;
+using namespace loos;
+
 
 // # of iterations
 static const int maxcount = 10000;
@@ -49,7 +51,7 @@ static const bool exit_on_failure = false;
 static const bool show_results = false;
 
 
-static loos::base_generator_type& rng = loos::rng_singleton();
+static base_generator_type& rng = rng_singleton();
 static const double pi = 4.0*atan2(1,1);
 
 
@@ -57,7 +59,7 @@ XForm randomXForm(void) {
   XForm M;
 
   boost::uniform_real<> map(0.0, 1.0);
-  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > randy(rng, map);
+  boost::variate_generator<base_generator_type&, boost::uniform_real<> > randy(rng, map);
 
   greal xt = 50 * randy() - 25;
   greal yt = 50 * randy() - 25;
@@ -79,7 +81,7 @@ AtomicGroup createGroup(const int natoms, const float a, const float b, const fl
   XForm M;
   
   boost::uniform_real<> map(0.0, 1.0);
-  boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > randy(rng, map);
+  boost::variate_generator<base_generator_type&, boost::uniform_real<> > randy(rng, map);
   
   int i;
   for (i=0; i<natoms; i++) {
