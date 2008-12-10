@@ -1,6 +1,6 @@
 /*
-   Given a selection of 4 atoms and a trajectory, compute the torsion time 
-   series.
+  Given 4 selections, compute the torsion angle for their centroids.  This 
+  program loops over a trajectory and writes the torsion angle time series.
 
   Alan Grossfield
   Grossfield Lab
@@ -71,20 +71,6 @@ AtomicGroup group3 = loos::selectAtoms(system, selection3);
 AtomicGroup group4 = loos::selectAtoms(system, selection4);
 
 
-if ( (group1.size() != 1) ||
-     (group2.size() != 1) ||
-     (group3.size() != 1) || 
-     (group4.size() != 1) )
-    {
-    cerr << "Each selection must contain exactly 1 atom" << endl;
-    exit(-1);
-    }
-
-pAtom a1 = group1[0];
-pAtom a2 = group2[0];
-pAtom a3 = group3[0];
-pAtom a4 = group4[0];
-
 // read the initial coordinates into the system
 traj->updateGroupCoords(system);
 
@@ -94,7 +80,8 @@ double t;
 while (traj->readFrame())
     {
     traj->updateGroupCoords(system);
-    t = Math::torsion(a1,a2,a3,a4);
+    t = Math::torsion(group1.centroid(), group2.centroid(),
+                      group3.centroid(), group4.centroid());
     cout << frame << "\t" << t << endl;
     frame++;
     }
