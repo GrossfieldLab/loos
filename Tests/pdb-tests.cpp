@@ -22,7 +22,7 @@
 
 #include <loos.hpp>
 
-using namespce std;
+using namespace std;
 using namespace loos;
 
 
