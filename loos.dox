@@ -110,7 +110,12 @@ tell LOOS where its required components are.  To do this, do the following:
 cp custom.py-proto custom.py
 \endverbatim
 Then edit your \c custom.py file to tell SCons and LOOS where your
-libraries are.  You can temporarily override the defaults (and what's
+libraries are.  \b NOTE:  If you're compiling under MacOS X, you will
+almost certainly need to use a custom.py to correctly name your BOOST
+libraries.  Look at the \c BOOSTREGEX and \c BOOSTPO variables for the
+boost regular expression library and the program options library respectively.
+
+You can temporarily override the defaults (and what's
 set in your \c custom.py file by specifying the appropriate variables
 on the command-line (run \c scons \c -h for more information)
 
