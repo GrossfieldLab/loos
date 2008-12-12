@@ -112,7 +112,7 @@ if os.environ.has_key('LD_LIBRARY_PATH'):
 non_testable_tests = 'timeseries-test find_perf_test ccpdb_test pdbtraj_test tinker_arc_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
 tinker_tests = 'tinkerxyz-tests'
-solo_tests = 'principal-axes-tests atomic-group-test timeseries-test'
+solo_tests = 'principal-axes-tests atomic-group-test timeseries-test matrix_test'
 
 
 

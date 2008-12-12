@@ -1,15 +1,21 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <iterator>
 #include <stdexcept>
 
 #include <boost/format.hpp>
 
 
-#include "Matrix.hpp"
+#include <Matrix.hpp>
 
 using namespace std;
-using namespace lab;
+using namespace loos;
+using namespace loos::Math;
+
+
+
+const bool test_files = true;
 
 // Quick formatted output of a matrix...
 template<class T>
@@ -40,10 +46,9 @@ void showLinear(const T& M, const string& s, const string& fmt) {
 
 int main(int argc, char *argv[]) {
 
-  // How to write/read a matrix...
-  if (argc == 2) {
-    string name(argv[1]);
-    name += ".asc";
+  if (test_files) {
+    stringstream ss;
+    // How to write/read a matrix...
     Matrix<float> M(4,4);
     
     int k=0;
@@ -53,17 +58,19 @@ int main(int argc, char *argv[]) {
     
     show(M, "M", "%8.2f");
     
-    writeAsciiMatrix(name, M, "Testing");
+    writeAsciiMatrix(ss, M, "Testing");
+    ss.seekg(0);
     
     // First form for reading...
-    Matrix<float, ColMajor, SharedArray> A = readAsciiMatrix<float, ColMajor, SharedArray>(name);
+    Matrix<float, ColMajor, SharedArray> A = readAsciiMatrix<float, ColMajor, SharedArray>(ss);
     cout << boost::format("Read in a %d x %d matrix.\n") % A.rows() % A.cols();
     show(A, "A", "%8.2f");
 
     // Second form for reading...
     // Relies on default polices...
+    ss.seekg(0);
     Matrix<float> B;
-    readAsciiMatrix(name, B);
+    readAsciiMatrix(ss, B);
     cout << boost::format("(2nd form) read in a %d x %d matrix.\n") % B.rows() % B.cols();
     show(B, "B", "%8.2f");
   }
@@ -127,13 +134,14 @@ int main(int argc, char *argv[]) {
   copy(T.begin(), T.end(), ostream_iterator<int>(cout, ","));
   cout << endl;
 
-  if (argc == 2) {
+  if (test_files) {
     cout << "* Writing Triangular Matrix *\n";
-    string name(argv[1]);
-    name += ".tri";
-    writeAsciiMatrix(name, T, "Testing");
+    stringstream ss;
+
+    writeAsciiMatrix(ss, T, "Testing");
     Matrix<int, Triangular> TT;
-    readAsciiMatrix(name, TT);
+    ss.seekg(0);
+    readAsciiMatrix(ss, TT);
     cout << boost::format("Read in a %d x %d triangular matrix.\n") % TT.rows() % TT.cols();
     show(TT, "T (from file)", "%8.2f");
   }
@@ -157,14 +165,14 @@ int main(int argc, char *argv[]) {
   cout << "actualSize = " << S.actualSize() << endl;
 
   // This tests writing/reading of sparse matrices...
-  if (argc == 2) {
-    string name(argv[1]);
-    name += ".spm";
+  if (test_files) {
+    stringstream ss;
 
     cout << "* Sparse IO test *\n";
-    writeAsciiMatrix(name, S, "Testing");
+    writeAsciiMatrix(ss, S, "Testing");
+    ss.seekg(0);
     Matrix<float, RowMajor, SparseArray> SS;
-    readAsciiMatrix(name, SS);
+    readAsciiMatrix(ss, SS);
 
     cout << boost::format("Read in a %d x %d sparse matrix.\n") % SS.rows() % SS.cols();
     cout << "actualSize = " << SS.actualSize() << endl;
