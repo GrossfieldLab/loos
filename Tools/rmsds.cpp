@@ -64,7 +64,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
-      ("align,a", po::value<string>(&globals.alignment)->default_value("name == 'CA')"), "Align using this selection")
+      ("align,a", po::value<string>(&globals.alignment)->default_value("name == 'CA'"), "Align using this selection")
       ("iterative,i", po::value<bool>(&globals.iterate)->default_value(false),"Use iterative alignment method")
       ("tolerance,t", po::value<double>(&globals.tol)->default_value(1e-6), "Tolerance to use for iterative alignment");
 
