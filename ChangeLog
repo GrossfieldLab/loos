@@ -1,3 +1,8 @@
+2008-12-12    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in AtomicGroup::PrincipalAxes() where coord array was
+	deleted incorrectly...
+
 2008-12-09    <tromo@spade.biophysics.rochester.edu>
 
 	* Moved ALMOST everything into loos namespace, save for the

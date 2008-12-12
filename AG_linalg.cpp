@@ -73,7 +73,7 @@ namespace loos {
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
                 3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
 
-    delete A;
+    delete[] A;
 
     // Now compute the eigen-decomp...
     char jobz = 'V', uplo = 'U';
