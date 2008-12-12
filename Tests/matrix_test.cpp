@@ -6,8 +6,8 @@
 
 #include <boost/format.hpp>
 
+#include <loos.hpp>
 
-#include <Matrix.hpp>
 
 using namespace std;
 using namespace loos;
