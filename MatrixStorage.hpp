@@ -78,7 +78,7 @@ namespace loos {
 
       void copyData(const SharedArray<T>& s) {
         allocate(s.dim_);
-        for (long i=0; i<dim_; ++i)
+        for (ulong i=0; i<dim_; ++i)
           dptr[i] = s.dptr[i];
       };
 
