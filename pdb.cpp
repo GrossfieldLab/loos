@@ -219,19 +219,29 @@ namespace loos {
     bqfmt.fixed();
 
     s << std::setw(6) << std::left << p->recordName();
-    s << std::setw(5) << std::right << p->id();
-    s << " " << std::setw(4) << std::left << p->name();
+    // Adjust widths if writing a PDB with MANY atoms...
+    if (p->id() >= 100000)
+      s << std::setw(6) << std::right << p->id();
+    else
+      s << std::setw(5) << std::right << p->id() << " ";
+    s << std::setw(4) << std::left << p->name();
 
     s << std::setw(1) << p->altLoc();
     s << std::setw(4) << std::left << p->resname();
-
-    s << std::setw(1) << std::right << p->chainId();
-    s << std::setw(4) << p->resid();
-    s << std::setw(2) << p->iCode();
-    if (p->resid() < 10000)
-      s << "  ";
-    else
-      s << " ";   // HACK!
+    
+    // Some corresponding voodoo to handle large resids...
+    if (p->resid() >= 100000) {
+      s << std::setw(6) << p->resid();
+      s << "   ";
+    } else {
+      s << std::setw(1) << std::right << p->chainId();
+      s << std::setw(4) << p->resid();
+      s << std::setw(2) << p->iCode();
+      if (p->resid() < 10000)
+        s << "  ";
+      else
+        s << " ";   // HACK!
+    }
     s << crdfmt(p->coords().x());
     s << crdfmt(p->coords().y());
     s << crdfmt(p->coords().z());
