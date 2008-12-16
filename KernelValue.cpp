@@ -22,11 +22,68 @@
 
 
 
-#include "KernelValue.hpp"
+#include <KernelValue.hpp>
 
 namespace loos {
 
   namespace internal {
+    
+
+
+    std::string Value::getString(void) const {
+      if (type != Value::STRING)
+        throw(std::runtime_error("Expected a string value..."));
+      return(*str);
+    }
+    
+    float Value::getFloat(void) const {
+      if (type != Value::FLOAT)
+        throw(std::runtime_error("Expected a float value..."));
+      return(flt);
+    }
+
+    int Value::getInt(void) const {
+      if (type != Value::INT)
+        throw(std::runtime_error("Expected an int value..."));
+      return(itg);
+    }
+
+    //! Output in pseudo-XML
+    std::ostream& operator<<(std::ostream& os, const Value& v) {
+      switch(v.type) {
+      case Value::STRING:
+        os << "<VALUE TYPE='STRING'>" << *(v.str) << "</VALUE>";
+        break;
+      case Value::FLOAT:
+        os << "<VALUE TYPE='FLOAT'>" << v.flt << "</VALUE>";
+        break;
+      case Value::INT:
+        os << "<VALUE TYPE='INT'>" << v.itg << "</VALUE>";
+        break;
+      case Value::NONE:
+      default:
+        os << "<VALUE TYPE='NONE'/>";
+      }
+      return(os);
+    }
+
+
+    void Value::copy(const Value& v) {
+      switch(v.type) {
+      case Value::STRING:
+        str = new std::string(*(v.str)); break;
+      case Value::INT:
+        itg = v.itg; break;
+      case Value::FLOAT:
+        flt = v.flt; break;
+      case Value::NONE:
+      default:
+        ;
+      }
+      type = v.type;
+    }
+    
+
   
     int compare(const Value& x, const Value& y) {
       float d;

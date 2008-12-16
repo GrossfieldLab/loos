@@ -60,21 +60,7 @@ namespace loos {
       };
 
       //! Make a copy (clone) of a Value.
-      void copy(const Value& v) {
-        switch(v.type) {
-        case STRING:
-          str = new std::string(*(v.str)); break;
-        case INT:
-          itg = v.itg; break;
-        case FLOAT:
-          flt = v.flt; break;
-        case NONE:
-        default:
-          ;
-        }
-        type = v.type;
-      }
-
+      void copy(const Value&);
 
       Value() : type(NONE) { }
       ~Value() { if (type == STRING) delete str; }
@@ -92,44 +78,17 @@ namespace loos {
       void setInt(const int i) { itg = i; type = INT; }
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
-      std::string getString(void) const {
-        if (type != STRING)
-          throw(std::runtime_error("Expected a string value..."));
-        return(*str);
-      }
+      std::string getString(void) const;
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
-      float getFloat(void) const {
-        if (type != FLOAT)
-          throw(std::runtime_error("Expected a float value..."));
-        return(flt);
-      }
+      float getFloat(void) const;
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
-      int getInt(void) const {
-        if (type != INT)
-          throw(std::runtime_error("Expected an int value..."));
-        return(itg);
-      }
+      int getInt(void) const;
+
 
       //! Output in pseudo-XML
-      friend std::ostream& operator<<(std::ostream& os, const Value& v) {
-        switch(v.type) {
-        case STRING:
-          os << "<VALUE TYPE='STRING'>" << *(v.str) << "</VALUE>";
-          break;
-        case FLOAT:
-          os << "<VALUE TYPE='FLOAT'>" << v.flt << "</VALUE>";
-          break;
-        case INT:
-          os << "<VALUE TYPE='INT'>" << v.itg << "</VALUE>";
-          break;
-        case NONE:
-        default:
-          os << "<VALUE TYPE='NONE'/>";
-        }
-        return(os);
-      }
+      friend std::ostream& operator<<(std::ostream&, const Value&);
 
     };
 
