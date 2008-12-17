@@ -146,6 +146,10 @@ or the following for OS X
 g++ -framework vecLib -o mytool mytool.cpp -I/Users/myself/LOOS -L/Users/myself/LOOS -lloos -lboost_regex
 \endverbatim
 
+Alternatively, look in the <I>Examples</I> directory for a simple
+example program and prototypical SConstruct/SConscript files.  There
+is also a Makefile in there if you'd rather not use SCons...
+
 \section future Future Plans
 
 <ul>
