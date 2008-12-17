@@ -318,6 +318,11 @@ namespace loos {
    * append it to the current group and mark it as seen, then recurse
    * through all of its bonded atoms.
    *
+   * Since splitByMolecule() recurses through the connectivity list,
+   * the ordering of the atoms returned will not necessarily be the
+   * same as the input group.  We therefore sort each group returned
+   * to hopefully maintain correct relative ordering.
+   *
    * If we find a bond that goes to an atom that does not exist in the
    * current group, a std::runtime_error is thrown.
    */
@@ -330,6 +335,7 @@ namespace loos {
 
     // If no connectivity, just return the entire group...
     if (!hasBonds()) {
+      sort();
       molecules.push_back(*this);
     } else {
 
@@ -341,6 +347,7 @@ namespace loos {
       
         walkBonds(current, seen, atoms[i]);
         if (current.size() != 0) {       // Just in case...
+          current.sort();
           molecules.push_back(current);
           current = AtomicGroup();
         }
