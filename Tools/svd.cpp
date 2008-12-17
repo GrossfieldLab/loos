@@ -50,8 +50,11 @@ typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
 #define SVDFUNC  sgesvd_
 
 struct Globals {
+  Globals() : noalign(false) { }
+
   string model_name, traj_name;
   string alignment_string, svd_string;
+  bool noalign;
   greal alignment_tol;
   bool include_source;
   int terms;
@@ -81,12 +84,13 @@ string findBaseName(const string& s) {
 void parseOptions(int argc, char *argv[]) {
 
   try {
-    po::options_description generic("Allowed options");
+    po::options_description generic("Allowed options", 120);
     generic.add_options()
       ("help", "Produce this help message")
       ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"), "Selection to align with")
       ("svd,s", po::value<string>(&globals.svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
       ("tolerance,t", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
+      ("noalign,n", "Do NOT align the frames of trajectory")
       ("terms,T", po::value<int>(&globals.terms), "# of terms of the SVD to output")
       ("average,A", po::value<string>(&globals.avg_name), "Write out the average structure to this filename")
       ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
@@ -129,6 +133,10 @@ void parseOptions(int argc, char *argv[]) {
         exit(-1);
       }
     }
+
+    if (vm.count("noalign"))
+      globals.noalign = true;
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -237,9 +245,18 @@ int main(int argc, char *argv[]) {
 
   write_map(globals.prefix + ".map", svdsub);
 
-  cerr << argv[0] << ": Aligning...\n";
-  vector<XForm> xforms = doAlign(alignsub, ptraj);
-  cerr << argv[0] << ": Extracting aligned coordinates...\n";
+  vector<XForm> xforms;
+  if (globals.noalign) {
+    // Make noop xforms to prevent doing any alignment...
+    cerr << argv[0] << ": SKIPPING ALIGNMENT\n";
+    for (uint i=0; i<ptraj->nframes(); ++i)
+      xforms.push_back(XForm());
+  } else {
+    cerr << argv[0] << ": Aligning...\n";
+    xforms = doAlign(alignsub, ptraj);
+  }
+
+  cerr << argv[0] << ": Extracting coordinates...\n";
   Matrix A = extractCoords(svdsub, xforms, ptraj);
   f77int m = A.rows();
   f77int n = A.cols();
