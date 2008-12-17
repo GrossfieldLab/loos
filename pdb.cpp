@@ -428,6 +428,14 @@ namespace loos {
 
 
   //! Output the group as a PDB...
+  /**
+   * There are some formatting changes that occur when the group has a
+   * large number of atoms or resids.  The most significant is when
+   * you have 100,000 or more, in which case you lose the altloc and
+   * chainid fields on output.  However, the output PDB will load into
+   * pymol...
+   *
+   */
   std::ostream& operator<<(std::ostream& os, PDB& p) {
     AtomicGroup::iterator i;
 

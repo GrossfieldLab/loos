@@ -1,3 +1,22 @@
+2008-12-17    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed PDB output to allow for >= 100000 atoms/residues.  The
+	catch is that this is a hack and will exclude altloc/chainid
+	info.  However, the output PDBs are readable by pymol...
+
+	* Matrix output now uses a formatting functor so you can adjust
+	the output precision, or do whatever you want to with it...
+
+	* Added tool for torsion timeseries (alan)
+
+	* Changed AtomicGroup::splitByMolecule() to automatically sort
+	each returned AtomicGroup...this solves a problem when use
+	splitByMolecule() and then try to match the molecules with a DCD
+	that's being written.
+	
+
+	
+
 2008-12-12    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::PrincipalAxes() where coord array was
@@ -11,6 +30,9 @@
 	properly with the reparse=1 option
 	* Removed top-level typdefs for uint/ulong (assuming they're part
 	of the default set of typedefs)
+	* Changed the SConstruct so that it tests for ulong/uint and
+	defines appropriate flags for loos.  This is in case your system
+	doesn't define one or the other.
 
 2008-12-08    <tromo@spade.biophysics.rochester.edu>
 

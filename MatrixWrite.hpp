@@ -55,6 +55,20 @@ namespace loos {
   // MatrixWriteImpl class...
 
   //! Write a submatrix to a stream
+  /**
+   * This family of functions write a matrix in ASCII format suitable
+   * for loading into Octave/Matlab or gnuplot.  The \a meta
+   * information is written as part of the comment at the start of the
+   * file.  The MDuple \a start and \a end are just pairs that give an
+   * \a (j,i) starting and ending point within the matrix to write.
+   * Note that these arguments are not always honored (such as with a
+   * triangular matrix).  The \a trans flag causes the output matrix
+   * to be the transpose of the stored matrix.  The \a fmt arg is a
+   * functor that is expected for format each element of the matrix as
+   * a string.  You can use this to adjust the precision of the output
+   * or delimit it, etc.  The default is to use whatever the default
+   * operator<<() would be for type T.
+   */
   template<class T, class P, template<typename> class S, class F>
   std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const MDuple& start,
