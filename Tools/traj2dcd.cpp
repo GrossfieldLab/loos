@@ -71,5 +71,7 @@ int main(int argc, char *argv[]) {
     traj->updateGroupCoords(model);
     dcd.writeFrame(model);
   }
+  
+  cout << " done\n";
 }
 
