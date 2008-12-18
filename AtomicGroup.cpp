@@ -186,6 +186,16 @@ namespace loos {
   }
 
 
+  bool AtomicGroup::hasCoords(void) const {
+    const_iterator ci;
+
+    for (ci = atoms.begin(); ci != atoms.end(); ++ci)
+      if (!((*ci)->checkProperty(Atom::coordsbit)))
+        return(false);
+
+    return(true);
+  }
+
 
   // Internal: sort the atom array by atomid
   void AtomicGroup::sort(void) {
