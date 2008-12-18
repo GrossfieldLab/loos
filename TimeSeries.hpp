@@ -44,28 +44,28 @@ namespace loos {
    */
 
   template<class T>
-  class tTimeSeries {
+  class TimeSeries {
   public:
-    tTimeSeries() {
+    TimeSeries() {
       init();
     }
 
-    tTimeSeries(const std::vector<T> &inp) {
+    TimeSeries(const std::vector<T> &inp) {
       _data = inp; 
     }
 
-    tTimeSeries(const int size, const T *array) {
+    TimeSeries(const int size, const T *array) {
       _data.reserve(size);
       for (unsigned int i=0; i<size; i++) {
         _data.push_back(array[i]);
       }
     }
 
-    tTimeSeries(const tTimeSeries<T> &inp) {
+    TimeSeries(const TimeSeries<T> &inp) {
       _data = inp._data;
     }
 
-    tTimeSeries(const int n, const T val) {
+    TimeSeries(const int n, const T val) {
       _data.assign(n, (T) val);
     }
 
@@ -89,14 +89,14 @@ namespace loos {
       return (_data.size());
     }
 
-    tTimeSeries<T> operator+=(const T val) {
+    TimeSeries<T> operator+=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] += val;
       }
       return(*this);
     }
 
-    tTimeSeries<T> operator+=(const tTimeSeries<T> &rhs) {
+    TimeSeries<T> operator+=(const TimeSeries<T> &rhs) {
       if (_data.size() != rhs.size())
         throw(std::runtime_error("mismatched timeseries sizes in +="));
       for (unsigned int i=0; i<_data.size(); i++) {
@@ -105,8 +105,8 @@ namespace loos {
       return(*this);
     }
 
-    tTimeSeries<T> operator+(const T val) const {
-      tTimeSeries<T> res(*this);
+    TimeSeries<T> operator+(const T val) const {
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] += val;
       }
@@ -114,33 +114,33 @@ namespace loos {
     }
 
 
-    friend tTimeSeries<T> operator+(const T lhs, const tTimeSeries<T> &rhs) {
-      tTimeSeries<T> res( rhs.size(), (T) 0.0 );
+    friend TimeSeries<T> operator+(const T lhs, const TimeSeries<T> &rhs) {
+      TimeSeries<T> res( rhs.size(), (T) 0.0 );
       for (unsigned int i=0; i<rhs.size(); i++) {
         res[i] = lhs + rhs[i];
       }
       return(res);
     }
 
-    tTimeSeries<T> operator+(const tTimeSeries<T> &rhs) const {
+    TimeSeries<T> operator+(const TimeSeries<T> &rhs) const {
       if (_data.size() != rhs.size())
         throw(std::runtime_error("mismatched timeseries sizes in +="));
 
-      tTimeSeries<T> res(*this);
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<res.size(); i++) {
         res[i] += rhs[i];
       }
       return(res);
     }
 
-    tTimeSeries<T> operator-=(const T val) {
+    TimeSeries<T> operator-=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] -= val;
       }
       return(*this);
     }
 
-    tTimeSeries<T> operator-=(const tTimeSeries<T> &rhs) {
+    TimeSeries<T> operator-=(const TimeSeries<T> &rhs) {
       if (_data.size() != rhs.size())
         throw(std::runtime_error("mismatched sizes of time series"));
       for (unsigned int i=0; i<_data.size(); i++) {
@@ -149,19 +149,19 @@ namespace loos {
       return(*this);
     }
 
-    tTimeSeries<T> operator-(const T val) const {
-      tTimeSeries<T> res(*this);
+    TimeSeries<T> operator-(const T val) const {
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] -= val;
       }
       return(res);
     }
 
-    tTimeSeries<T> operator-(const tTimeSeries<T> &rhs) const {
+    TimeSeries<T> operator-(const TimeSeries<T> &rhs) const {
       if (_data.size() != rhs.size())
         throw(std::runtime_error("mismatched timeseries sizes in +="));
 
-      tTimeSeries<T> res(*this);
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<res.size(); i++) {
         res[i] -= rhs[i];
       }
@@ -170,38 +170,38 @@ namespace loos {
 
 
 
-    tTimeSeries<T> operator-() const {
-      tTimeSeries<T> res(*this);
+    TimeSeries<T> operator-() const {
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] = -res[i];
       }
       return(res);
     }
 
-    friend tTimeSeries<T> operator-(const T lhs, const tTimeSeries<T> &rhs) {
-      tTimeSeries<T> res( rhs.size() );
+    friend TimeSeries<T> operator-(const T lhs, const TimeSeries<T> &rhs) {
+      TimeSeries<T> res( rhs.size() );
       for (unsigned int i=0; i<rhs.size(); i++) {
         res[i] = lhs - rhs[i];
       }
       return(res);
     }
 
-    tTimeSeries<T> operator*=(const T val) {
+    TimeSeries<T> operator*=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] *= val;
       }
       return(*this);
     }
 
-    tTimeSeries<T> operator*(const T val) const {
-      tTimeSeries<T> res(*this);
+    TimeSeries<T> operator*(const T val) const {
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] *= val;
       }
       return(res);
     }
 
-    tTimeSeries<T> operator*=(const tTimeSeries<T> &rhs) {
+    TimeSeries<T> operator*=(const TimeSeries<T> &rhs) {
       if ( _data.size() != rhs.size() ) 
         throw(std::runtime_error("mismatched timeseries sizes in *="));
       for (unsigned int i=0; i<_data.size(); i++) {
@@ -210,19 +210,19 @@ namespace loos {
       return(*this);
     }
 
-    tTimeSeries<T> operator*(const tTimeSeries<T> &rhs) const {
+    TimeSeries<T> operator*(const TimeSeries<T> &rhs) const {
       if ( _data.size() != rhs.size() ) 
         throw(std::runtime_error("mismatched timeseries sizes in *="));
 
-      tTimeSeries<T> res(*this);
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] *= rhs[i];
       }
       return(res);
     }
 
-    friend tTimeSeries<T> operator*(const T lhs, const tTimeSeries<T> &rhs) {
-      tTimeSeries<T> res( rhs.size(), (T) 0.0 );
+    friend TimeSeries<T> operator*(const T lhs, const TimeSeries<T> &rhs) {
+      TimeSeries<T> res( rhs.size(), (T) 0.0 );
       for (unsigned int i=0; i<rhs.size(); i++) {
         res[i] = lhs * rhs[i];
       }
@@ -230,22 +230,22 @@ namespace loos {
     }
 
 
-    tTimeSeries<T> operator/=(const T val) {
+    TimeSeries<T> operator/=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] /= val;
       }
       return(*this);
     }
 
-    tTimeSeries<T> operator/(const T val) const {
-      tTimeSeries<T> res(*this);
+    TimeSeries<T> operator/(const T val) const {
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] /= val;
       }
       return(res);
     }
 
-    tTimeSeries<T> operator/=(const tTimeSeries<T> &rhs) {
+    TimeSeries<T> operator/=(const TimeSeries<T> &rhs) {
       if ( _data.size() != rhs.size() ) 
         throw(std::runtime_error("mismatched timeseries sizes in *="));
       for (unsigned int i=0; i<_data.size(); i++) {
@@ -254,27 +254,27 @@ namespace loos {
       return(*this);
     }
 
-    tTimeSeries<T> operator/(const tTimeSeries<T> &rhs) const {
+    TimeSeries<T> operator/(const TimeSeries<T> &rhs) const {
       if ( _data.size() != rhs.size() ) 
         throw(std::runtime_error("mismatched timeseries sizes in *="));
 
-      tTimeSeries<T> res(*this);
+      TimeSeries<T> res(*this);
       for (unsigned int i=0; i<_data.size(); i++) {
         res[i] /= rhs[i];
       }
       return(res);
     }
 
-    friend tTimeSeries<T> operator/(const T lhs, const tTimeSeries<T> &rhs) {
-      tTimeSeries<T> res( rhs.size() );
+    friend TimeSeries<T> operator/(const T lhs, const TimeSeries<T> &rhs) {
+      TimeSeries<T> res( rhs.size() );
       for (unsigned int i=0; i<rhs.size(); i++) {
         res[i] = lhs / rhs[i];
       }
       return(res);
     }
 
-    tTimeSeries<T> copy(void) const {
-      tTimeSeries<T> result(_data.size(), 0.0);
+    TimeSeries<T> copy(void) const {
+      TimeSeries<T> result(_data.size(), 0.0);
       for (unsigned int i = 0; i < _data.size(); i++) {
         result[i] = _data[i];
       }
@@ -320,8 +320,8 @@ namespace loos {
 
     //! Return a new timeseries of the same size as the current one,
     //! containing the running average of the time series
-    tTimeSeries<T> running_average(void) const {
-      tTimeSeries<T> result(_data.size() );
+    TimeSeries<T> running_average(void) const {
+      TimeSeries<T> result(_data.size() );
       T sum = 0.0;
       for (unsigned int i=0; i<_data.size(); i++) {
         sum += _data[i];
@@ -335,12 +335,12 @@ namespace loos {
     //! ith value of the new time series =  1/window * sum(data[i:i+window]).
     //! NOTE: The present algorithm is relatively fast, but can be prone
     //! to roundoff.
-    tTimeSeries<T> windowed_average(const int window) const {
+    TimeSeries<T> windowed_average(const int window) const {
 
       if (window > _data.size() )
         throw(std::out_of_range("Error in windowed_average: window too large"));
 
-      tTimeSeries result(_data.size() - window);
+      TimeSeries result(_data.size() - window);
       T sum = 0;
       for (int i=0; i<window; i++) {
         sum += _data[i];
@@ -378,14 +378,14 @@ namespace loos {
       return (block_ave2 - block_ave*block_ave);
     }
 
-    tTimeSeries<T> correl(const int num_vals, T tol=1.0e-8) const {
-      tTimeSeries<T> data = copy();
+    TimeSeries<T> correl(const int num_vals, T tol=1.0e-8) const {
+      TimeSeries<T> data = copy();
       const unsigned int n = abs(num_vals);
       if (n > data.size()) {
         throw(std::runtime_error("Can't take correlation time longer than time series"));
       }
 
-      tTimeSeries<T> c(num_vals, 0.0);
+      TimeSeries<T> c(num_vals, 0.0);
 
       // normalize the data
       data -= data.average();
@@ -423,8 +423,8 @@ namespace loos {
     std::vector<T> _data;
   };
 
-  typedef tTimeSeries<double> TimeSeries;
-  typedef tTimeSeries<float> fTimeSeries;
+  typedef TimeSeries<double> dTimeSeries;
+  typedef TimeSeries<float> fTimeSeries;
 
 
 }
