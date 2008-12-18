@@ -41,6 +41,17 @@
 
 namespace loos {
 
+  
+  std::string findBaseName(const std::string& s) {
+    std::string result;
+
+    int n = s.find('.');
+    result = (n <= 0) ? s : s.substr(0, n);
+    
+    return(result);
+  }
+
+
   std::string getNextLine(std::istream& is, int *lineno = 0) {
     std::string s;
     std::string::size_type i;
