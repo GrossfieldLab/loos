@@ -1,5 +1,41 @@
-#include <iostream>
-#include <string>
+/*
+  convert2pdb
+
+
+  Converts a LOOS-supported format to a PDB (so long as coordinates
+  are present)
+
+  Usage:
+
+    convert2pdb structure-file >output.pdb
+
+*/
+
+
+
+
+/*
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <loos.hpp>
 
 using namespace std;
@@ -7,8 +43,19 @@ using namespace loos;
 
 
 int main(int argc, char *argv[]) {
-  Amber file(argv[1], argv[2]);
+  if (argc != 2) {
+    cerr << "Usage- convert2pdb structure-file >output.pdb\n";
+    exit(-1);
+  }
 
-  PDB pdb = PDB::fromAtomicGroup(file);
+  AtomicGroup model = createSystem(argv[1]);
+  if (! model.hasCoords()) {
+    cerr << "ERROR - the model does not have coordinates.\n";
+    exit(-10);
+  }
+
+  PDB pdb = PDB::fromAtomicGroup(model);
+  pdb.remarks().add(invocationHeader(argc, argv));
+
   cout << pdb;
 }
