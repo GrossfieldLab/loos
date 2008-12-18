@@ -600,7 +600,7 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release130 Version 1.3.0 (12-9-2008)
+\section release130 Version 1.3.0 (12-18-2008)
 
 \subsection r130_namespace Namespace Changes
 This release represents some major changes to the internal structure
@@ -658,6 +658,10 @@ torsion() are now in the \c loos::Math namespace.
 \subsection r130_added_changed Added or Altered Functionality
 
 <UL>
+ <LI> When \c loos::createSystem() sees an Amber prmtop file, it will
+ automatically look for a corresponding .inpcrd file and load the
+ coordinates from that.  Otherwise, it returns an AtomicGroup sans
+ coordinates.
  <LI> The ensemble functions (such as \c loos::averageStructure()) now
  take a \c loos::pTraj instead of a reference to a \c
  loos::Trajectory&.

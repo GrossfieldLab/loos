@@ -1,3 +1,9 @@
+2008-12-18    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed loos::createSystem() so that it will automatically look
+	for a coordinate file if passed an Amber prmtop file.  If found,
+	it will load those coordinates in.
+
 2008-12-17    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed PDB output to allow for >= 100000 atoms/residues.  The
