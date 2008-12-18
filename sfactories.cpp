@@ -21,7 +21,7 @@
 
 
 #include <sfactories.hpp>
-
+#include <sys/stat.h>
 
 namespace loos {
 
@@ -34,8 +34,19 @@ namespace loos {
       PSF psf(s);
       return(psf);
     } else if (boost::iends_with(s, ".prmtop")) {
+      
+      // Special handling to see if there is a crds file...
+      std::string coords = findBaseName(s);
+      coords += ".inpcrd";
+      struct stat buf;
+      if (stat(coords.c_str(), &buf) == 0) {
+        Amber amber(s, coords);
+        return(amber);
+      }
+
       Amber amber(s);
       return(amber);
+
     } else
       throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
   }

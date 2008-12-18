@@ -56,6 +56,13 @@ namespace loos {
    * This function will try to determine the filetype for a structure
    * file by examining the suffix of the file.  It will return an
    * AtomicGroup copy of the input structure.
+   *
+   * Amber files are handled differently...  If the filename ends with
+   * ".prmtop", then LOOS will check for a corresponding ".inpcrd"
+   * file.  If one is found, then the coords will be loaded into the
+   * group.  Otherwise, the prmtop will be loaded without coords and
+   * returned.
+   *
    */
   AtomicGroup createSystem(const std::string&);
 
