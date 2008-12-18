@@ -69,17 +69,6 @@ struct Globals {
 
 Globals globals;
 
-string findBaseName(const string& s) {
-  string result;
-
-  int n = s.find('.');
-  result = (n <= 0) ? s : s.substr(0, n);
-
-  return(result);
-}
-
-
-// svd [opts] pdb dcd
 
 void parseOptions(int argc, char *argv[]) {
 

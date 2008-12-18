@@ -44,6 +44,9 @@
 //! Namespace for most things not already encapsulated within a class.
 namespace loos {
 
+  //! Pull off the file name extension (if present)
+  std::string findBaseName(const std::string&);
+
   //! Get the next line of input, skipping blanks and stripping comments
   std::string getNextLine(std::istream&, int*);
 
