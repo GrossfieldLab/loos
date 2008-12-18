@@ -145,7 +145,7 @@ namespace loos {
     unread = false;
 
     unsigned long fpos = i * frame_size + frame_offset;
-    if (fpos >= _nframes)
+    if (i >= _nframes)
       throw(std::runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
 
 
