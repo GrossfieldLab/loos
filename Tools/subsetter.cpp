@@ -50,6 +50,7 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(argv[2], model);
   string prefix(argv[3]);
   AtomicGroup subset = selectAtoms(model, argv[4]);
+  subset.clearBonds();
 
   // Now get ready to write the DCD...
   DCDWriter dcdout(prefix + ".dcd");
