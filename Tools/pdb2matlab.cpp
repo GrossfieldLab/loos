@@ -1,5 +1,5 @@
 /*
-  pdb2matlab.cpp
+  model2matlab.cpp
 
   Takes a PDB and a selection and an optional selection and writes out
   the coordinates to stdout in matlab format...
@@ -46,15 +46,17 @@ using namespace loos;
 int main(int argc, char *argv[]) {
   
   if (argc  < 2 || argc > 3) {
-    cerr << "Usage: " << argv[0] << " pdb-filename [selection string]" << endl;
+    cerr << "Usage: " << argv[0] << " [selection] pdb-filename" << endl;
     exit(-1);
   }
 
-  PDB pdb(argv[1]);
-  AtomicGroup atoms = pdb;
+  AtomicGroup atoms;
+  if (argc == 3) {
+    AtomicGroup model = createSystem(argv[3]);
+    atoms = selectAtoms(model, argv[2]);
+  } else
+    atoms = createSystem(argv[2]);
 
-  if (argc > 2)
-    atoms = selectAtoms(pdb, argv[2]);
 
   AtomicGroup::Iterator i(atoms);
   pAtom pa;
