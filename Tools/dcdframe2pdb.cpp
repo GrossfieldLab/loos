@@ -1,7 +1,7 @@
 /*
-  dcdframe2pdb
+  frame2pdb
 
-  dcdframe2pdb model trajectory frameno >output
+  frame2pdb model trajectory frameno >output
 */
 
 

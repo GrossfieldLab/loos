@@ -36,9 +36,16 @@ using namespace loos;
 
 int main(int argc, char *argv[]) {
 
-  PDB pdb(argv[1]);
-  pdb.centerAtOrigin();
+  if (argc != 2) {
+    cerr << "Usage: center-pdb structure-file >output.pdb\n";
+    exit(-1);
+  }
 
+  AtomicGroup model = createSystem(argv[1]);
+  model.centerAtOrigin();
+
+  PDB pdb = PDB::fromAtomicGroup(model);
+  pdb.remarks().add(invocationHeader(argc, argv));
   cout << pdb << endl;
 }
 
