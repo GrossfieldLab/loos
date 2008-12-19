@@ -55,7 +55,7 @@ Globals globals;
 void parseOptions(int argc, char *argv[]) {
 
   try {
-    po::options_description generic("Allowed options");
+    po::options_description generic("Allowed options", 120);
     generic.add_options()
       ("help", "Produce this help message")
       ("align,a", po::value<string>(&globals.align_string)->default_value("name == 'CA'"),"Align using this selection")
