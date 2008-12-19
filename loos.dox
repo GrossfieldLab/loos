@@ -677,6 +677,9 @@ torsion() are now in the \c loos::Math namespace.
 
 \subsection r130_bugs Bug Fixes
 <UL>
+ <LI> Fixed a bug in the Amber trajectory reader that caused LOOS to
+ incorrectly seek frames.  This affected using readFrame(i) but not
+ readFrame().
  <LI> \c AtomicGroup::splitByMolecule() now handles groups without
  connectivity.
  <LI> Fixed a problem with the PDB reading code that mangled wide

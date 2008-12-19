@@ -1,3 +1,8 @@
+2008-12-18  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed moderately severe bug when reading Amber trajectories by
+	using readFrame(i) rather than readFrame().
+
 2008-12-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed loos::createSystem() so that it will automatically look

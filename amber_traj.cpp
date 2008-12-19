@@ -54,11 +54,11 @@ namespace loos {
       frame.push_back(GCoord(x,y,z));
     }
 
-    unsigned long fpos = ifs()->tellg();
-
 
     // This is probably not a good way of doing this???
     ifs()->getline(buf, 1024);
+    unsigned long fpos = ifs()->tellg();
+
     ifs()->getline(buf, 1024);
     if (ifs()->fail())
       throw(std::runtime_error("Error- cannot scan the amber trajectory"));
