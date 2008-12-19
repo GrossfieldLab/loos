@@ -111,8 +111,8 @@ namespace loos {
       if (grp.size() != _natoms)
         throw(std::runtime_error("Frame group atom count mismatch"));
 
-      if (!_has_box && grp.isPeriodic())
-        throw(std::runtime_error("Frame has periodic info but none was requested to be written to the DCD."));
+      if (_has_box && !grp.isPeriodic())
+        throw(std::runtime_error("Periodic box data was requested for the DCD but the passed frame is missing it"));
 
     }
 
