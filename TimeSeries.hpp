@@ -28,6 +28,9 @@
 #include <stdexcept>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 
 namespace loos {
@@ -43,9 +46,9 @@ namespace loos {
    *
    */
 
-  template<class T>
-  class TimeSeries {
-  public:
+template<class T>
+class TimeSeries {
+public:
     TimeSeries() {
       init();
     }
@@ -68,6 +71,42 @@ namespace loos {
     TimeSeries(const int n, const T val) {
       _data.assign(n, (T) val);
     }
+
+
+    //! Read a simple text file and create a timeseries
+    //! The file is assumed to be simple columnated data.  Blank lines and 
+    //! lines starting with "#" are ignored.
+    TimeSeries (const std::string &filename, const int col=2) {
+        std::ifstream ifs(filename.c_str());
+        if (!ifs) {
+            throw(std::runtime_error("Cannot open timeseries file " 
+                                     + filename));
+        }
+
+        std::string line;
+        while (ifs.good()) {
+            getline(ifs, line);
+            if ( (line.substr(0,1) == "#") || (line.empty()) ){
+                // comment -- do nothing
+            }
+            else {
+                std::stringstream s(line);
+                double val;
+                int i=0;
+                while (i < col) {
+                    if (!s.good()) {
+                  throw(std::runtime_error("Problem reading timeseries file "
+                                           + filename));
+                    }
+                    s >> val;
+                    i++;
+                }
+                _data.push_back(val);    
+            }
+        }
+    }
+
+
 
     void init(void) {
       _data.clear();
@@ -419,12 +458,15 @@ namespace loos {
       return(c);
     }
 
-  private:
+private:
     std::vector<T> _data;
-  };
+};
 
-  typedef TimeSeries<double> dTimeSeries;
-  typedef TimeSeries<float> fTimeSeries;
+
+
+typedef TimeSeries<double> dTimeSeries;
+typedef TimeSeries<float> fTimeSeries;
+
 
 
 }
