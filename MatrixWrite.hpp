@@ -177,7 +177,6 @@ namespace loos {
     }
   };
 
-#if !(__GNUC__ == 4 && __GNUC_MINOR__ < 1)
   //! Write out a sparse matrix.
   /** Ignores \a start, \a end, and \a trans */
   template<class T, class P, class F>
@@ -189,16 +188,14 @@ namespace loos {
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
       os << boost::format("# %d %d %d SPARSE\n") % M.actualSize() % M.rows() % M.cols();
-      typename Math::Matrix<T,P,Math::SparseArray>::const_iterator ci(M.begin());
+      typename Math::Matrix<T,P,Math::SparseArray>::const_iterator ci;
       
-      for (; ci != M.end(); ++ci)
+      for (ci = M.begin(); ci != M.end(); ++ci)
         os << (*ci).first << "\t" << fmt((*ci).second) << std::endl;
       
       return(os);
     }
   };
-
-#endif
 
 
   //! Write out a triangular matrix

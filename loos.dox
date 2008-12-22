@@ -600,7 +600,7 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release130 Version 1.3.0 (12-18-2008)
+\section release130 Version 1.3.0 (12-22-2008)
 
 \subsection r130_namespace Namespace Changes
 This release represents some major changes to the internal structure
@@ -655,9 +655,14 @@ writeAsciiMatrix(filename, M, "My matrix");
 Additionally, math functions that were at a global scope, such as \c angle() and \c
 torsion() are now in the \c loos::Math namespace.
 
-\subsection r130_added_changed Added or Altered Functionality
+\subsection r130_added_changed Added or Altered Functionality and Notables
 
 <UL>
+ <LI> There is an issue with tr1::unordered_set in gcc-4.0.1.  This
+ the internal data structure used by the sparse matrix policy.  To
+ work around this, LOOS will switch to using the GNU provided hash_map
+ if you're using gcc-4.0.1.  This is most likely to affect MacOS users
+ running 10.4 and XCode 2.5 and earlier.
  <LI> When \c loos::createSystem() sees an Amber prmtop file, it will
  automatically look for a corresponding .inpcrd file and load the
  coordinates from that.  Otherwise, it returns an AtomicGroup sans

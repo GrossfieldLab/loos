@@ -153,8 +153,6 @@ int main(int argc, char *argv[]) {
   show(M, "Original (1,1)=pi", "%8.2f");
   show(MC, "Copy (1,1)=e", "%8.2f");
 
-#if !(__GNUC__ == 4 && __GNUC_MINOR__ < 1)
-
   // Sparse test...
   Matrix<float, RowMajor, SparseArray> S(4,4);
   S(1,1) = 1;
@@ -186,7 +184,4 @@ int main(int argc, char *argv[]) {
   copyMatrix(SC, S);
   cout << "actualSize of copy = " << SC.actualSize() << endl;
   cout << "Density is " << SC.density() << endl;
-
-#endif
-  
 }

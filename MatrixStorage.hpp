@@ -20,7 +20,12 @@
 #include <stdexcept>
 #include <boost/shared_array.hpp>
 #include <vector>
+
+#if __GNUC__ == 4 && __GNUC_MINOR__ < 1
+#include <ext/hash_map>
+#else
 #include <tr1/unordered_map>
+#endif
 
 
 namespace loos {
@@ -107,32 +112,27 @@ namespace loos {
     };
 
 
-    // There are problems with tr1::unordered_map with XCode 2.5 and
-    // earlier...  We sidestep the issue by disabling.  If you've
-    // built your own GCC, then chances are it's a more recent version
-    // and this should work...
-
-#if (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
-    // Disabled warnings...  Too much output...
-    // #warning Sparse Matrix code cannot be built in this configuration
-#else
-
     //! Storage policy for a sparse matrix (see important note in the detailed documentation).
     /**
      * This policy implements a sparse matrix via a hash.
      *
      * There are apparently some issues using the tr1::unordered_map
-     * using gcc-4.0.1.  The SparseArray policy is disabled on these
-     * systems.  If you want to use it, you're going to need to build
-     * a more recent version of GCC.
+     * using gcc-4.0.1.  If you're using gcc-4.0.1, LOOS will switch 
+     * to using the GNU provided hash_map instead.  Caveat
+     * programmer...
      */
 
     template<class T>
     class SparseArray {
     public:
 
+#if __GNUC__ == 4 && __GNUC_MINOR__ < 1
+      typedef typename __gnu_cxx::hash_map<ulong, T>::const_iterator const_iterator;
+      typedef typename __gnu_cxx::hash_map<ulong, T>::iterator iterator;
+#else
       typedef typename std::tr1::unordered_map<ulong, T>::const_iterator const_iterator;
       typedef typename std::tr1::unordered_map<ulong, T>::iterator iterator;
+#endif
 
       SparseArray(const ulong n) : dim_(n) { }
       SparseArray() : dim_(0) { }
@@ -156,7 +156,14 @@ namespace loos {
         static T null_value;
         if (i >= dim_)
           throw(std::out_of_range("Matrix index out of range"));
-        typename std::tr1::unordered_map<ulong, T>::const_iterator ci = dmap.find(i);
+
+#if __GNUC__ == 4 && __GNUC_MINOR__ < 1
+        typename __gnu_cxx::hash_map<ulong, T>::const_iterator ci;
+#else
+        typename std::tr1::unordered_map<ulong, T>::const_iterator ci;
+#endif
+        
+        ci = dmap.find(i);
         if (ci == dmap.end()) {
           return(null_value);
         }
@@ -202,17 +209,18 @@ namespace loos {
 
     private:
       ulong dim_;
+
+
+#if __GNUC__ == 4 && __GNUC_MINOR__ < 1
+      __gnu_cxx::hash_map<ulong, T> dmap;
+#else
       std::tr1::unordered_map<ulong, T> dmap;
-
-    };
-
 #endif
 
+
+    };
   }
 
 }
-
-
-
 
 #endif

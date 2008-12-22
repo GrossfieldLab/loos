@@ -1,7 +1,9 @@
 2008-12-22    <tromo@spade.biophysics.rochester.edu>
 
-	* Changed matrix code to disable sparse matrices for gcc-4.0.1.
-	The tr1::unordered_map appears to be broken in this version...
+	* Changed the sparse matrix policy to use the GNU provided
+	hash_map rather than the tr1::unordered_map if you're using
+	gcc-4.0.1.  This is to work around an issue with the
+	tr1::unordered_map implementation in gcc-4.0.1.
 
 2008-12-18  Tod Romo  <tromo@gorgoneion>
 
