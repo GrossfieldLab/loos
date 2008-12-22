@@ -113,7 +113,7 @@ namespace loos {
     // and this should work...
 
 #if defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
-#warn Sparse Matrix code cannot be built in this configuration
+#warning Sparse Matrix code cannot be built in this configuration
 #else
 
     //! Storage policy for a sparse matrix.

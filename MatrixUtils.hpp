@@ -45,7 +45,7 @@ namespace loos {
       A = B;
     }
 
-
+#if !(defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
     //! Overload for copying a sparse matrix that preserves the original
     // matrix's sparseness...
     /** Note:  static null_value SHOULD match what's in MatrixStorage, but
@@ -69,6 +69,7 @@ namespace loos {
         }
       A = B;
     }
+#endif
 
     template<typename T, template<typename> class S>
     Matrix<T, RowMajor, S> reinterpretOrder(const Matrix<T, ColMajor, S>& A) {
