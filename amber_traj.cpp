@@ -29,7 +29,6 @@
 #include <exception>
 #include <stdexcept>
 #include <vector>
-#include <tr1/memory>
 
 #include <stdio.h>
 #include <string.h>

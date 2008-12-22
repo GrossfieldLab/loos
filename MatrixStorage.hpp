@@ -122,10 +122,9 @@ namespace loos {
      * This policy implements a sparse matrix via a hash.
      *
      * There are apparently some issues using the tr1::unordered_map
-     * Using gcc-4.0.1.  The SparseArray policy is disabled on these
+     * using gcc-4.0.1.  The SparseArray policy is disabled on these
      * systems.  If you want to use it, you're going to need to build
-     * a more recent version of GCC.  This issue does not affect the
-     * linux systems we have tested...
+     * a more recent version of GCC.
      */
 
     template<class T>

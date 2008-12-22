@@ -27,6 +27,10 @@
 #if !defined(LOOSDEFS_HPP)
 #define LOOSDEFS_HPP
 
+#if __GNUC__ < 4
+#error LOOS Requires GCC-4.0.1 or higher
+#endif
+
 
 #if defined(REQUIRES_UINT)
 typedef unsigned int     uint;
