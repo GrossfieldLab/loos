@@ -107,6 +107,15 @@ namespace loos {
     };
 
 
+    // There are problems with tr1::unordered_map with XCode 2.5 and
+    // earlier...  We sidestep the issue by disabling.  If you've
+    // built your own GCC, then chances are it's a more recent version
+    // and this should work...
+
+#if defined(__APPLE__) && ( __GNU__ == 4 ) && ( __GNUC_MINOR < 1 )
+#warn Sparse Matrix code cannot be built in this configuration
+#else
+
     //! Storage policy for a sparse matrix.
     /**
      * This policy implements a sparse matrix via a hash.
@@ -190,6 +199,8 @@ namespace loos {
       std::tr1::unordered_map<ulong, T> dmap;
 
     };
+
+#endif
 
   }
 

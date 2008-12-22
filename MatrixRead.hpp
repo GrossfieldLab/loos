@@ -120,6 +120,7 @@ namespace loos {
     }
   };
 
+#if !(defined(__APPLE__) && ( __GNU__ == 4 ) && ( __GNUC_MINOR < 1 ))
   //! Special handling for sparse matrices
   template<class T, class P>
   struct MatrixReadImpl<T,P,Math::SparseArray> {
@@ -166,6 +167,9 @@ namespace loos {
       return(M);
     }
   };
+
+#endif
+
 
   //! Special handling for triangular matrices
   template<class T, template<typename> class S>

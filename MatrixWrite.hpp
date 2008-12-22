@@ -177,6 +177,8 @@ namespace loos {
     }
   };
 
+#if !(defined(__APPLE__) && ( __GNU__ == 4 ) && ( __GNUC_MINOR < 1 ))
+
   //! Write out a sparse matrix.
   /** Ignores \a start, \a end, and \a trans */
   template<class T, class P, class F>
@@ -196,6 +198,9 @@ namespace loos {
       return(os);
     }
   };
+
+#endif
+
 
   //! Write out a triangular matrix
   /** Ignores \a start, \a end, and \a trans */
