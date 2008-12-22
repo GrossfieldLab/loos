@@ -558,11 +558,14 @@ namespace loos {
     const_iterator i;
     int n = 1;
     int curr_resid = atoms[0]->resid();
+    std::string curr_segid = atoms[0]->segid();
 
     for (i=atoms.begin()+1; i !=atoms.end(); i++)
-      if ((*i)->resid() != curr_resid) {
+      if (((*i)->resid() != curr_resid) || 
+          ((*i)->segid() != curr_segid)) {
         ++n;
         curr_resid = (*i)->resid();
+        curr_segid = (*i)->segid();
       }
 
     return(n);
