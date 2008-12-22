@@ -113,12 +113,20 @@ namespace loos {
     // and this should work...
 
 #if defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
-#warning Sparse Matrix code cannot be built in this configuration
+    // Disabled warnings...  Too much output...
+    // #warning Sparse Matrix code cannot be built in this configuration
 #else
 
-    //! Storage policy for a sparse matrix.
+    //! Storage policy for a sparse matrix (see important note in the detailed documentation).
     /**
      * This policy implements a sparse matrix via a hash.
+     *
+     * There are apparently some issues using the tr1::unordered_map
+     * on Mac's running 10.4 and XCode 2.5 (and earlier).  The
+     * SparseArray policy is disabled on these systems.  If you want
+     * to use it, you're going to need to build a more recent version
+     * of GCC.  This issue does not affect the linux systems we have
+     * tested...
      */
 
     template<class T>
