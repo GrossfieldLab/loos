@@ -177,7 +177,7 @@ namespace loos {
     }
   };
 
-#if !(defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
+#if !(__GNUC__ == 4 && __GNUC_MINOR__ < 1)
   //! Write out a sparse matrix.
   /** Ignores \a start, \a end, and \a trans */
   template<class T, class P, class F>

@@ -1,11 +1,7 @@
 2008-12-22    <tromo@spade.biophysics.rochester.edu>
 
-	* Changed matrix code to disable sparse matrices for MacOS X and
-	XCode 2.5 (and earlier).  There is an issue with
-	tr1::unordered_map that will cause the build to break.  You can
-	build your own GCC to avoid this problem if you want to use the
-	sparse matrix policy.  This does NOT affect any linux system we've
-	tested...
+	* Changed matrix code to disable sparse matrices for gcc-4.0.1.
+	The tr1::unordered_map appears to be broken in this version...
 
 2008-12-18  Tod Romo  <tromo@gorgoneion>
 
