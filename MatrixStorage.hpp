@@ -112,7 +112,7 @@ namespace loos {
     // built your own GCC, then chances are it's a more recent version
     // and this should work...
 
-#if defined(__APPLE__) && ( __GNU__ == 4 ) && ( __GNUC_MINOR < 1 )
+#if defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1)
 #warn Sparse Matrix code cannot be built in this configuration
 #else
 

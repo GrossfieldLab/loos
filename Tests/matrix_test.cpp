@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
   show(M, "Original (1,1)=pi", "%8.2f");
   show(MC, "Copy (1,1)=e", "%8.2f");
 
-#if !(defined(__APPLE__) && ( __GNU__ == 4 ) && ( __GNUC_MINOR < 1 ))
+#if !(defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
 
   // Sparse test...
   Matrix<float, RowMajor, SparseArray> S(4,4);

@@ -177,8 +177,7 @@ namespace loos {
     }
   };
 
-#if !(defined(__APPLE__) && ( __GNU__ == 4 ) && ( __GNUC_MINOR < 1 ))
-
+#if !(defined(__APPLE__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
   //! Write out a sparse matrix.
   /** Ignores \a start, \a end, and \a trans */
   template<class T, class P, class F>
@@ -190,9 +189,9 @@ namespace loos {
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
       os << boost::format("# %d %d %d SPARSE\n") % M.actualSize() % M.rows() % M.cols();
-      typename Math::Matrix<T,P,Math::SparseArray>::const_iterator ci;
+      typename Math::Matrix<T,P,Math::SparseArray>::const_iterator ci(M.begin());
       
-      for (ci = M.begin(); ci != M.end(); ++ci)
+      for (; ci != M.end(); ++ci)
         os << (*ci).first << "\t" << fmt((*ci).second) << std::endl;
       
       return(os);
