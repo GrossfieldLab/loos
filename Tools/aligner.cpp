@@ -260,6 +260,8 @@ int main(int argc, char *argv[]) {
   traj->readFrame(0);
   traj->updateGroupCoords(applyto_sub);
   AtomicGroup frame = applyto_sub.copy();
+  if (globals.center)
+    frame.centerAtOrigin();
   frame.applyTransform(xforms[0]);
   frame.renumber();
   savePDB(globals.prefix + ".pdb", header, frame);

@@ -21,9 +21,15 @@ LOOS=..
 ### Which compiler?
 CXX=/usr/bin/g++
 
+### Platform specific options
+# These would normally be set by SCons for you...
+#
+# The following is required for MacOS X
+#POPTS=-DREQUIRES_ULONG
+
 ### Release/debugging options
-OPTS=-g -Wall -fno-inline
-#OPTS=-O3 -DNDEBUG -Wall
+OPTS=-g -Wall -fno-inline $(POPTS)
+#OPTS=-O3 -DNDEBUG -Wall $(POPTS)
 
 ### Use the following for Linux
 BOOSTINC=-I/usr/include

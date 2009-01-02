@@ -1,3 +1,9 @@
+2009-01-02  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed bug in build for MacOS X 10.5 (missing types)
+	* Fixed bug in aligner where the PDB that's written out was not
+	centered despite giving it the "--center" flag.
+
 2008-12-22    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed the sparse matrix policy to use the GNU provided
