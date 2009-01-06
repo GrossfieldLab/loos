@@ -288,9 +288,7 @@ int main(int argc, char *argv[]) {
     frame.renumber();
     dcdout.writeFrame(frame);
 
-    // Track average frame...
-    if (globals.rmsdf)
-      addCoords(avg, applyto_sub);
+    addCoords(avg, applyto_sub);
   }
 
 
