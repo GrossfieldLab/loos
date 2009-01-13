@@ -61,7 +61,7 @@ void parseOptions(int argc, char *argv[]) {
       ("map,m", po::value<string>(&globals.mapname), "Use a map file to select atoms to color")
       ("scale,s", po::value<double>(&globals.scale)->default_value(1.0), "Scale magnitudes by this amount")
       ("log,l", po::value<bool>(&globals.log)->default_value(false),"Log-scale the output")
-      ("index", po::value<int>(&globals.index)->default_value(0), "SVD Term index to use");
+      ("index,i", po::value<int>(&globals.index)->default_value(0), "SVD Term index to use");
 
 
     po::options_description hidden("Hidden options");
@@ -167,12 +167,21 @@ int main(int argc, char *argv[]) {
   double sval = S[globals.index];
   uint i;
   uint j;
+  bool warned = false;
   for (i=j=0; j<m; j += 3) {
     GCoord c(U(j, globals.index), U(j+1, globals.index), U(j+2, globals.index));
     c *= sval;
     double b = globals.scale * c.length();
     if (globals.log)
       b = log(b);
+
+    if (b<0.0) {
+      if (!warned) {
+        cerr << "WARNING - There are negative B-values.  These will be reset to zero.\n";
+        warned = true;
+      }
+      b = 0.0;
+    }
     atoms[i++]->bfactor(b);
   }
 
