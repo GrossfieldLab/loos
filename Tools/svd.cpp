@@ -80,7 +80,7 @@ void parseOptions(int argc, char *argv[]) {
       ("svd,s", po::value<string>(&globals.svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
       ("tolerance,t", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
       ("noalign,n", "Do NOT align the frames of trajectory")
-      ("terms,T", po::value<int>(&globals.terms), "# of terms of the SVD to output")
+      ("terms,T", po::value<int>(), "# of terms of the SVD to output")
       ("average,A", po::value<string>(&globals.avg_name), "Write out the average structure to this filename")
       ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
       ("range,r", po::value<string>(), "Range of frames from the trajectory to operate over")
@@ -108,6 +108,11 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
+
+    if (vm.count("terms"))
+      globals.terms = vm["terms"].as<int>();
+    else
+      globals.terms = 0;
 
     if (vm.count("prefix"))
       globals.prefix = vm["prefix"].as<string>();
@@ -289,9 +294,27 @@ int main(int argc, char *argv[]) {
   }
   cerr << argv[0] << ": Done!\n";
 
-  writeAsciiMatrix(globals.prefix + "_U.asc", U, header);
-  writeAsciiMatrix(globals.prefix + "_s.asc", S, header);
-  writeAsciiMatrix(globals.prefix + "_V.asc", Vt, header, true);
+
+  MDuple orig(0,0);
+  MDuple Usize(m,m);
+  MDuple Ssize(sn,1);
+  MDuple Vsize(n,n);
+
+  if (globals.terms > 0) {
+    if (globals.terms > m || globals.terms > sn || globals.terms > n) {
+      cerr << "ERROR- The number of terms requested exceeds matrix dimensions.\n";
+      exit(-1);
+    }
+    Usize = MDuple(m, globals.terms);
+    Ssize = MDuple(globals.terms, 1);
+    Vsize = MDuple(n, globals.terms);
+  }
+
+  cerr << argv[0] << ": Writing results...\n";
+  writeAsciiMatrix(globals.prefix + "_U.asc", U, header, orig, Usize);
+  writeAsciiMatrix(globals.prefix + "_s.asc", S, header, orig, Ssize);
+  writeAsciiMatrix(globals.prefix + "_V.asc", Vt, header, orig, Vsize, true);
+  cerr << argv[0] << ": done!\n";
 
   delete[] work;
 }
