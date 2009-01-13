@@ -80,7 +80,7 @@ void parseOptions(int argc, char *argv[]) {
     po::notify(vm);
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- rmsds [options] model-name trajectory-name\n";
+      cerr << "Usage- averager [options] model-name trajectory-name\n";
       cerr << generic;
       exit(-1);
     }
