@@ -1,3 +1,11 @@
+2009-01-14    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in aligner where average structure was not correctly
+	computed unless --rmsd was used
+	* Added warning in svdcolmap when b's will go negative (and
+	clamped them to 0)
+	* Added the --terms command-line option back to svd
+
 2009-01-02  Tod Romo  <tromo@gorgoneion>
 
 	* Fixed bug in build for MacOS X 10.5 (missing types)
