@@ -165,10 +165,14 @@ namespace loos {
           throw(std::runtime_error("Invalid conversion while reading bonds"));
       }
 
-      a /= 3;
-      b /= 3;
+      pAtom aatom = atoms[a/3];
+      pAtom batom = atoms[b/3];
 
-      atoms[a]->addBond(b+1);
+      // Amber bond lists are not symmetric, so make sure we add both pairs...
+      if (!(aatom->isBoundTo(batom)))
+        aatom->addBond(batom);
+      if (!(batom->isBoundTo(aatom)))
+        batom->addBond(aatom);
     }
   }
 
