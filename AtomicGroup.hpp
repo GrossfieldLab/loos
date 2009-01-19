@@ -396,6 +396,7 @@ namespace loos {
      */
     std::vector<GCoord> getTransformedCoords(const XForm&) const;
   
+    void translate(const GCoord & v);
 
     //! Apply the given transform to the group's coordinates...
     void applyTransform(const XForm&);

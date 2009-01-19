@@ -211,6 +211,11 @@ namespace loos {
   }
 
 
+  void AtomicGroup::translate(const GCoord & v) {
+      iterator i;
+      for (i = atoms.begin(); i != atoms.end(); i++)
+          (*i)->coords() += v;
+  }
 
   void AtomicGroup::applyTransform(const XForm& M) {
     iterator i;
