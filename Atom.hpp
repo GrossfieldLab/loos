@@ -203,6 +203,14 @@ namespace loos {
 
     bool hasBonds(void) const { return(bonds.size() != 0); }
 
+    //! Checks to see if this atom is bound to another atom
+    bool isBoundTo(const int i) {
+      std::vector<int>::iterator found = find(bonds.begin(), bonds.end(), i);
+      return(found != bonds.end());
+    }
+
+    bool isBoundTo(const pAtom& p) { return(isBoundTo(p->id())); }
+
     //! Given a bit-mask, checks to see if those bits are set.
     /** For example, to check whether or not the coords have been set,
      *  do,
