@@ -600,6 +600,18 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
+\section release132 Version 1.3.2 (1-XX-2009)
+\subsection r132_bugs Bug Fixes
+<UL>
+ <LI> Fixed <B>severe</B> bug that results in bad connectivity
+ information when reading from Amber prmtop files.
+</UL>
+
+\subsection r132_added_changed Added or Altered Functionality and Notables
+<UL>
+ <LI> Added Atom::isBoundTo()
+</UL>
+
 \section release131 Version 1.3.1 (1-14-2009)
 \subsection r131_bugs Bug Fixes
 <UL>

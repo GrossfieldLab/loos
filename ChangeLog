@@ -1,3 +1,10 @@
+2009-01-19    <tromo@spade.biophysics.rochester.edu>
+
+	* Added Atom::isBoundTo() to check whether or not one atom is
+	bound to another
+	* Fixed severe bug in reading Amber prmtop files that resulted in
+	incorrect connectivity information.
+
 2009-01-14    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in aligner where average structure was not correctly
