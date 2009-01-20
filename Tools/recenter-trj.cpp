@@ -40,28 +40,38 @@ using namespace loos;
 int main(int argc, char *argv[])
 {
 
-if (argc != 5)
+if (argc != 6)
     {
-    cerr << "Usage: recenter-trj model-file trajectory-file selection-string dcd-name" << endl;
+    cerr << "Usage: recenter-trj model-file trajectory-file selection-string [Z|A] dcd-name" << endl;
     exit(-1);
     }
 
 AtomicGroup model = createSystem(argv[1]);
 pTraj traj = createTrajectory(argv[2], model);
 AtomicGroup center = selectAtoms(model, argv[3]);
+string z_flag = string(argv[4]);
+bool just_z = false;
+if ( (z_flag == "Z") || (z_flag == "z"))
+    {
+    just_z = true;
+    }
+
+DCDWriter dcd(argv[5]);
+//dcd.setHeader(model.size(), traj->nframes(), 1e-3, traj->hasPeriodicBox());
+dcd.setTitle(invocationHeader(argc, argv));
 
 vector<AtomicGroup> molecules= model.splitByMolecule();
-
-DCDWriter dcd(argv[4]);
-//dcd.setHeader(model.size(), traj->nframes(), 1e-3, traj->hasPeriodicBox());
-//dcd.setTitle(invocationHeader(argc, argv));
-
 vector<AtomicGroup>::iterator m;
 
 while (traj->readFrame())
     {
     traj->updateGroupCoords(model); 
     GCoord centroid = center.centroid();
+    if (just_z)
+        {
+        centroid.x() = 0.0;
+        centroid.y() = 0.0;
+        }
     model.translate(-centroid);
     for (m=molecules.begin(); m!=molecules.end(); m++)
         {
