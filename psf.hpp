@@ -40,10 +40,18 @@ namespace loos {
   /**
    * Notes:
    *
-   *  - Coords are initialized to (99999.99, 99999.99, 99999.99) by
-   default since the PSF does not contain coordinate information.
-   This will hopefully make it obvious when a PSF is used without a
-   matching PDB or DCD...
+   * PSF files don't have coordinates, so the coordinates property won't be
+   * set.  As a result, you'll get an UnsetProperty exception if you try to 
+   * access the coordinates.  The idea is you use a PSF with something else
+   * which will supply the coordinates (usually some kind of Trajectory).
+   *
+   * This code will read both NAMD and CHARMM PSF files, since it doesn't use
+   * the atom type information anyway.
+   *
+   * The code extracts the atom/residue/segment names and numbers, plus mass, 
+   * partial charge, and connectivity.  Higher order connectivity (angles, 
+   * dihedrals, etc) are ignored.
+   *
   */
   class PSF : public AtomicGroup {
   public:
