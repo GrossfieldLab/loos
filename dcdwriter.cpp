@@ -144,6 +144,7 @@ namespace loos {
 
     delete[] data;
 
+    _ofs()->flush();
     ++_current;
   }
 
