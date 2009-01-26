@@ -59,7 +59,6 @@ struct Globals {
   bool include_source;
   int terms;
   string prefix;
-  string avg_name;
   uint dcdmin, dcdmax;
   string header;
 };
@@ -81,7 +80,6 @@ void parseOptions(int argc, char *argv[]) {
       ("tolerance,t", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
       ("noalign,n", "Do NOT align the frames of trajectory")
       ("terms,T", po::value<int>(), "# of terms of the SVD to output")
-      ("average,A", po::value<string>(&globals.avg_name), "Write out the average structure to this filename")
       ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
       ("range,r", po::value<string>(), "Range of frames from the trajectory to operate over")
       ("source,s", po::value<bool>(&globals.include_source)->default_value(false),"Write out the source conformation matrix");
@@ -105,7 +103,7 @@ void parseOptions(int argc, char *argv[]) {
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
       cerr << "Usage- svd [options] model-name trajectory-name\n";
-      cerr << generic;
+      cerr << setprecision(2) << generic;
       exit(-1);
     }
 
@@ -157,9 +155,11 @@ vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 void writeAverage(const AtomicGroup& avg) {
   PDB avgpdb = PDB::fromAtomicGroup(avg);
   avgpdb.remarks().add(globals.header);
-  ofstream ofs(globals.avg_name.c_str());
+
+  string fname(globals.prefix + "_avg.pdb");
+  ofstream ofs(fname.c_str());
   if (!ofs)
-    throw(runtime_error("Cannot open " + globals.avg_name));
+    throw(runtime_error("Cannot open " + fname));
   ofs << avgpdb;
 }
 
@@ -168,11 +168,9 @@ void writeAverage(const AtomicGroup& avg) {
 // transformed coords from the DCD with the avg subtraced out...
 
 Matrix extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, pTraj traj) {
-  AtomicGroup avg = averageStructure(subset, xforms, traj);
 
-  // Hook to get the avg structure if requested...
-  if (globals.avg_name != "")
-    writeAverage(avg);
+  AtomicGroup avg = averageStructure(subset, xforms, traj);
+  writeAverage(avg);
 
   uint natoms = subset.size();
   AtomicGroup frame = subset.copy();
