@@ -261,9 +261,18 @@ sub getTrajInfo {
 # Reads the contents of a file, returning each line in an array
 sub readFromFile {
   my $fn = shift;
-  my $fh = new FileHandle $fn;
-  defined($fh) || die "$0: Error- cannot open $fn for reading.";
-  my @lines = <$fh>;
+
+# Hack to see if what's passed is a file.  If not, split and return it
+# as the array...this lets you put Pymol commands on the command-line
+  my @lines;
+  if (-e $fn) {
+    my $fh = new FileHandle $fn;
+    defined($fh) || die "$0: Error- cannot open $fn for reading.";
+    @lines = <$fh>;
+  } else {
+    @lines = split(/[\n;]+/, $fn)
+  }
+
   return(@lines);
 }
 
