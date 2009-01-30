@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <set>
 #include <stdexcept>
 
 
@@ -116,7 +117,7 @@ namespace loos {
       return(indices);
     }
 
-    is >> a >> sep >> b;
+    is >> sep >> b;
     if (is.fail() || sep != ':')
       throw(std::runtime_error("Could not parse range " + text));
     
@@ -155,8 +156,8 @@ namespace loos {
   template<typename T>
   std::vector<T> parseRangeList(const std::string& text) {
     std::vector<std::string> terms;
-    std::vector<T> indices;
-    std::insert_iterator< std::vector<T> > ii(indices, indices.begin());
+    std::set<T> indices;
+    std::insert_iterator< std::set<T> > ii(indices, indices.begin());
 
     boost::split(terms, text, boost::is_any_of(","), boost::token_compress_on);
     std::vector<std::string>::const_iterator ci;
@@ -166,17 +167,8 @@ namespace loos {
       std::vector<T> result = parseRange<T>(*ci);
       std::copy(result.begin(), result.end(), ii);
     }
-
-    std::sort(indices.begin(), indices.end());
-    std::vector<T> results;
-    typename std::vector<T>::const_iterator cri;
-    T last = indices[0];
-    for (cri = indices.begin() + 1; cri != indices.end(); ++cri)
-      if (*cri != last) {
-        last = *cri;
-        results.push_back(*cri);
-      }
-    
+    std::vector<T> results(indices.size());
+    std::copy(indices.begin(), indices.end(), results.begin());
     return(results);
   }
 
