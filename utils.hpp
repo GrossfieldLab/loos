@@ -26,6 +26,9 @@
 #define UTILS_HPP
 
 #include <iostream>
+#include <sstream>
+#include <iterator>
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -33,6 +36,8 @@
 
 #include <boost/random.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/foreach.hpp>
+
 #include <ctime>
 
 
@@ -82,8 +87,110 @@ namespace loos {
    */
   void randomSeedRNG(void);
 
-  //! Parses a list of Octave-style range specifiers
-  std::vector<int> parseRangeList(const std::string& text);
+  //! Parse an Octave/Matlab-style range
+  /**
+   * The Octave format is one of the following:
+   * - value
+   * - start:stop
+   * - start:step:stop
+   *
+   * The range is inclusive for both ends.  Internally, a vector of
+   * T's is created.  There is no checking to make sure that the
+   * vector doesn't completely fill up memory.
+   *
+   * Care should also be exercised when using unsigned types and
+   * reversed ranges, i.e. parseRange<unsigned int>("5:0")
+   */
+  template<typename T>
+  std::vector<T> parseRange(const std::string& text) {
+    T a;
+    T b;
+    T c;
+    char sep;
+    std::vector<T> indices;
+    std::istringstream is(text);
+    
+    is >> a;
+    if (is.eof()) {
+      indices.push_back(a);
+      return(indices);
+    }
+
+    is >> a >> sep >> b;
+    if (is.fail() || sep != ':')
+      throw(std::runtime_error("Could not parse range " + text));
+    
+    if (is.eof())
+      c = 1;
+    else {
+      c = b;
+        is >> sep >> b;
+        if (is.fail() || sep != ':')
+          throw(std::runtime_error("Could not parse range " + text));
+    }
+
+    // Catch a potentially sticky situation...
+    if (a < -a && b == 0)
+      throw(std::logic_error("Using an unsigned type with a reverse-range ending at zero."));
+
+    if (b >= a)
+      for (T i=a; i <= b; i += c)
+        indices.push_back(i);
+    else
+      for (T i=a; i >= b; i -= c)
+        indices.push_back(i);
+
+    return(indices);
+  }
+
+
+  //! Parses a comma-separated list of Octave-style ranges
+  /**
+   * This function breaks apart a string at the commas and passes each
+   * substring to parseRange.  The union of all of the vectors
+   * returned by parseRange is then sorted in ascending order and
+   * duplicate values are removed.  This vector is then returned to
+   * the caller.
+   */
+  template<typename T>
+  std::vector<T> parseRangeList(const std::string& text) {
+    std::vector<std::string> terms;
+    std::vector<T> indices;
+    std::insert_iterator< std::vector<T> > ii(indices, indices.begin());
+
+    boost::split(terms, text, boost::is_any_of(","), boost::token_compress_on);
+    std::vector<std::string>::const_iterator ci;
+    for (ci = terms.begin(); ci != terms.end(); ci++) {
+      if (ci->empty())
+        continue;
+      std::vector<T> result = parseRange<T>(*ci);
+      std::copy(result.begin(), result.end(), ii);
+    }
+
+    std::sort(indices.begin(), indices.end());
+    std::vector<T> results;
+    typename std::vector<T>::const_iterator cri;
+    T last = indices[0];
+    for (cri = indices.begin() + 1; cri != indices.end(); ++cri)
+      if (*cri != last) {
+        last = *cri;
+        results.push_back(*cri);
+      }
+    
+    return(results);
+  }
+
+
+  //! Parses a list of Octave-style range specifiers (for compatability)
+  std::vector<int> parseRangeList(const std::string&);
+
+  //! Parses a list of Octave-style ranges taken from a vector of strings
+  template<typename T>
+  std::vector<T> parseRangeList(const std::vector<std::string>& ranges) {
+    std::ostringstream os;
+    std::copy(ranges.begin(), ranges.end(), std::ostream_iterator<std::string>(os, ","));
+      return(parseRangeList<T>(os.str()));
+  }
 
   //! Applies a string-based selection to an atomic group...
   AtomicGroup selectAtoms(const AtomicGroup&, const std::string);

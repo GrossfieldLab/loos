@@ -187,65 +187,10 @@ namespace loos {
     rng.seed(static_cast<unsigned int>(time(0)));
   }
 
-  /** This routine breaks the input string into chunks delimited by
-   * commas.  Each chunk is a range specified in Octave format, i.e.
-   * - start:stop
-   * - start:step:stop
-   *
-   * The range is inclusive of both ends.  Additionally, a single index
-   * can be specified.
-   *
-   * Internally, this routine creates a vector of ints that represent
-   * the specified indices.  There is no bounds checking...  Duplicate
-   * indices are filtered and the returned vector is sorted.
-   */ 
+
   std::vector<int> parseRangeList(const std::string& text) {
-    std::vector<std::string> terms;
-    std::vector<int> indices;
-
-    boost::split(terms, text, boost::is_any_of(","), boost::token_compress_on);
-    std::vector<std::string>::const_iterator ci;
-    for (ci = terms.begin(); ci != terms.end(); ci++) {
-      int a, b, c;
-      int i;
-      i = sscanf(ci->c_str(), "%d:%d:%d", &a, &b, &c);
-      if (i == 2) {
-        c = b;
-        b = 1;
-      } else if (i == 1) {
-        c = a;
-        b = 1;
-      } else if (i != 3)
-        throw(std::runtime_error("Cannot parse range list item " + *ci));
-
-      if (c < a) {
-        if (b > 0)
-          throw(std::runtime_error("Invalid range spec " + *ci));
-        int x = c;
-        c = a;
-        a = x;
-        b = -b;
-      } else if (b <= 0)
-        throw(std::runtime_error("Invalid range spec " + *ci));
-
-      for (int i=a; i<=c; i += b)
-        indices.push_back(i);
-    }
-    sort(indices.begin(), indices.end());
-    std::vector<int> results;
-    std::vector<int>::const_iterator cvi;
-    int last = indices[0];
-    results.push_back(last);
-
-    for (cvi = indices.begin()+1; cvi != indices.end(); cvi++)
-      if (*cvi != last) {
-        last = *cvi;
-        results.push_back(last);
-      }
-
-    return(results);
+    return(parseRangeList<int>(text));
   }
-
 
   /** This routine parses the passed string, turning it into a selector
    *  and applies it to \a source.  If there is an exception in the
