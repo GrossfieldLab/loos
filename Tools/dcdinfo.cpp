@@ -85,6 +85,9 @@ int main(int argc, char *argv[]) {
 
   DCD dcd(argv[opt]);
 
+  if (!dcd.nativeFormat())
+    cout << "The DCD is not in a native binary format.\n";
+
   cout << boost::format("* DCD has %u atoms in %u frames with a timestep of %f.\n") % dcd.natoms() % dcd.nframes() % dcd.timestep();
   if (dcd.hasCrystalParams()) {
     if (!scan)
