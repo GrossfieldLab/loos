@@ -44,6 +44,7 @@ namespace po = boost::program_options;
 string model_name, traj_name;
 bool brief = false;
 bool box_info = false;
+bool centroid = false;
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -53,6 +54,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("brief,b", "Minimal output")
+      ("centroid,c", "Report average centroid")
       ("box,B", "Report periodic box info");
 
     po::options_description hidden("Hidden options");
@@ -82,6 +84,8 @@ void parseOptions(int argc, char *argv[]) {
       brief = true;
     if (vm.count("box"))
       box_info = true;
+    if (vm.count("centroid"))
+      centroid = true;
 
   }
 
@@ -131,6 +135,43 @@ BoxInfo scanBoxes(AtomicGroup& model, pTraj& traj) {
 
 
 
+boost::tuple<GCoord, GCoord> scanCentroid(AtomicGroup& model, pTraj& traj) {
+  vector<GCoord> centers;
+  GCoord avg;
+
+  traj->rewind();
+  while (traj->readFrame()) {
+    traj->updateGroupCoords(model);
+    GCoord c = model.centroid();
+    centers.push_back(c);
+    avg += c;
+  }
+
+  avg /= traj->nframes();
+
+  GCoord std;
+  for (int i=0; i<traj->nframes(); ++i) {
+    GCoord c = centers[i] - avg;
+    std += c*c;
+  }
+
+  std /= (traj->nframes() - 1);
+  for (int i=0; i<3; i++)
+    std[i] = sqrt(std[i]);
+
+  boost::tuple<GCoord, GCoord> result(avg, std);
+  return(result);
+}
+
+
+uint verifyFrames(AtomicGroup& model, pTraj& traj) {
+  uint n = 0;
+  traj->rewind();
+  while (traj->readFrame())
+    ++n;
+
+  return(n);
+}
 
 
 // Boost doesn't currently allow you to specify the width in an arg, so we have
@@ -142,6 +183,9 @@ void verbInfo(AtomicGroup& model, pTraj& traj) {
   cout << boost::format(fldpre + "%s\n") % "Trajectory name" % traj_name;
   cout << boost::format(fldpre + "%d\n") % "Number of atoms" % traj->natoms();
   cout << boost::format(fldpre + "%d\n") % "Number of frames" % traj->nframes();
+  uint n = verifyFrames(model, traj);
+  cout << boost::format(fldpre + "%d\n") % "Actual frames" % n;
+
   cout << boost::format(fldpre + "%f\n") % "Timestep" % traj->timestep();
   if (traj->hasPeriodicBox()) {
     cout << boost::format(fldpre + "%s\n") % "Periodic box" % "yes";
@@ -154,6 +198,11 @@ void verbInfo(AtomicGroup& model, pTraj& traj) {
     }
   } else
     cout << boost::format(fldpre + "%s\n") % "Periodic box:" % "no";
+
+  if (centroid) {
+    boost::tuple<GCoord, GCoord> res = scanCentroid(model, traj);
+    cout << boost::format(fldpre + "%s +- %s\n") % "Average Centroid" % boost::get<0>(res) % boost::get<1>(res);
+  }
 }
 
 
