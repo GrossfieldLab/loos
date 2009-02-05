@@ -43,15 +43,17 @@ using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
-vector<uint> indices;
-vector<uint> file_binding;
-vector<uint> local_indices;
-uint stride = 0;
+vector<uint> indices;            // Global indices of frames to extract
+vector<uint> file_binding;       // Links global frame # to the corresponding filename
+vector<uint> local_indices;      // Maps global frame numbers into local frame numbers
+uint stride = 0;                 // Step through frames by this amount
+                                 // (unless ranges were specified)
 string model_name, out_name;
 vector<string> traj_names;
 string selection;
 bool verbose = false;
-uint verbose_updates;
+uint verbose_updates;            // Frequency of writing updates with
+                                 // verbose logging..
 
 
 
@@ -170,6 +172,7 @@ int main(int argc, char *argv[]) {
 
   BOOST_FOREACH(uint i, indices) {
 
+    // Have we switched to a new file??
     if (static_cast<int>(file_binding[i]) != current) {
       current = file_binding[i];
       traj = createTrajectory(traj_names[current], model);

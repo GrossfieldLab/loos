@@ -70,6 +70,7 @@ namespace loos {
     // Use a union to convert data to appropriate type...
     typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay;
 
+    // Byte-swap an aribtrary type...  Returns a swapped copy of the data.
     template<typename T>
     T swab(const T& datum) {
       uint size = sizeof(T);
@@ -163,6 +164,7 @@ namespace loos {
     int nfile(void) const { return(_icntrl[0]); }
     int nfixed(void) const { return(_icntrl[8]); }
 
+    //! Returns true if the DCD file being read is in the native endian format
     bool nativeFormat(void) const { return(!swabbing); }
 
     //! Auto-interleave the coords into a vector of GCoord()'s.
