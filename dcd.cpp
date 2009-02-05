@@ -88,8 +88,6 @@ namespace loos {
       swabbing = true;
     } else
       swabbing = false;
-
-    std::cerr << "Probe: swabbing = " << swabbing << std::endl;
   }
 
 
