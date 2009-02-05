@@ -649,7 +649,36 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release132 Version 1.3.2 (1-XX-2009)
+\section release133 Version 1.3.3 (2-5-2009)
+\subsection r133_added_changed Added, Changed, or Notables
+<UL>
+  <LI> Added recenter-trj tool to center trajectories
+  <LI> Added trajinfo tool to print out information about generic trajectories
+  <LI> Added concat-selection tool to concatenate atoms from a
+  trajectory into a single PDB.  This is useful for visualization atom
+  distributions over the entire trajectory
+  <LI> Added blurrogram.pl, a PERL script to aid in creating
+  "blurrogram" figures using Pymol
+  <LI> Added AtomicGroup::translate()
+  <LI> The frame2pdb tool now accepts a selection (subset) to write
+  out
+  <LI> The svd tool always writes out an average structure now
+  <LI> The subsetter tool can now accept a list of aribtrary ranges of
+  frames to extract, or a stride option.  It can also take an
+  arbitrary list of input trajectories to combine and extract from.
+  <LI> The DCD class will now handle reading of non-native endian DCD
+  files
+  <LI> The DCDWriter class will now flush the output streams after
+  each frame is written to ensure all data is actually written to disk
+<UL>
+
+\subsection r133_bugs Bug Fixes
+<UL>
+  <LI> Fixed a typo in the default alignment selection for the
+  rmsd2ref tool
+</UL>
+
+\section release132 Version 1.3.2 (1-20-2009)
 \subsection r132_bugs Bug Fixes
 <UL>
  <LI> Fixed <B>severe</B> bug that results in bad connectivity

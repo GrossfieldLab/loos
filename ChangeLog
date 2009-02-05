@@ -1,3 +1,36 @@
+2009-02-05    <tromo@spade.biophysics.rochester.edu>
+
+	* Added tool to concatenate atoms together from a trajectory into
+	a single PDB (for visualizing distributions of atoms over time)
+	* Added ability to give a selection (subset) in frame2pdb
+	* Added trajinfo tool to return information about generic
+	trajectories
+	* Added blurrogram.pl, a PERL program for automatically generating
+	"blurrograms" suitable for visualizing in Pymol
+	* Changed the svd tool to always write out an average structure
+	* Changed the way LOOS parses range lists so it can now take a
+	vector of strings representing ranges and parse all of them
+	together.  A non-templated parseRangeList() is still retained for
+	legacy code.
+	* Changed subsetter so that it can now accept a list of arbirary
+	ranges of frames to extract or, alternativey, a stride
+	(step-size).  Subsetter can now also take multiple input
+	trajectories and combine them (a la catdcd).  NOTE: this means the
+	command-line syntax has changed...  You specify the output prefix
+	FIRST, then the model, followed by the list of input trajectories.
+	* Changed the DCD class so it now automatically detects non-native
+	endian files and byte-swaps them on input.  Note that the
+	DCDWriter will still only write out DCD's in the native format.
+	* Fixed bug in rmsd2ref where the default alignment selection had
+	a typo...
+
+2009-01-21    <alan@spade.biophysics.rochester.edu>
+
+	* Added translate member function to AtomicGroup for convenience
+	* Added recenter-trj tool to center trajectories
+	* Changed DCDWriter to explicitly flush the output after every
+	frame is written.
+
 2009-01-19    <tromo@spade.biophysics.rochester.edu>
 
 	* Added Atom::isBoundTo() to check whether or not one atom is
