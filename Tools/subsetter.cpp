@@ -44,9 +44,14 @@ using namespace loos;
 namespace po = boost::program_options;
 
 vector<uint> indices;
-string model_name, traj_name, prefix;
+vector<uint> file_binding;
+vector<uint> local_indices;
+uint stride = 0;
+string model_name, out_name;
+vector<string> traj_names;
 string selection;
 bool verbose = false;
+uint verbose_updates;
 
 
 
@@ -60,30 +65,32 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("verbose,v", "Verbose output")
+      ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
+      ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
       ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("prefix", po::value<string>(&prefix), "Output prefix");
+      ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames")
+      ("out", po::value<string>(&out_name), "Output prefix");
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
 
     po::positional_options_description p;
+    p.add("out", 1);
     p.add("model", 1);
-    p.add("traj", 1);
-    p.add("prefix", 1);
+    p.add("traj", -1);
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("prefix"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name prefix\n";
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
+      cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name\n";
       cerr << generic;
       exit(-1);
     }
@@ -93,8 +100,11 @@ void parseOptions(int argc, char *argv[]) {
       indices = parseRangeList<uint>(ranges);
     }
 
-    if (vm.count("verbose"))
+    if (vm.count("verbose") || vm.count("updates"))
       verbose = true;
+
+    if (vm.count("stride"))
+      stride = vm["stride"].as<uint>();
 
   }
   catch(exception& e) {
@@ -105,31 +115,67 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
+uint getNumberOfFrames(const string& fname, AtomicGroup& model) {
+  pTraj traj = createTrajectory(fname, model);
+  return(traj->nframes());
+}
+
+
+uint bindFilesToIndices(AtomicGroup& model) {
+  uint total_frames = 0;
+
+  for (uint j=0; j<traj_names.size(); ++j)  {
+    uint n = getNumberOfFrames(traj_names[j], model);
+    if (verbose)
+      cout << boost::format("Trajectory %s has %d frames\n") % traj_names[j] % n;
+    total_frames += n;
+    for (uint i=0; i<n; ++i) {
+      file_binding.push_back(j);
+      local_indices.push_back(i);
+    }
+  }
+
+  return(total_frames);
+}
+
+
+
+
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
   AtomicGroup subset = selectAtoms(model, selection);
   subset.clearBonds();
 
+  uint total_frames = bindFilesToIndices(model);
   // Handle null-list of frames to use...
   if (indices.empty()) {
-    for (uint i=0; i<traj->nframes(); ++i)
+    stride = (!stride) ? 1 : stride;
+    for (uint i=0; i<total_frames; i += stride)
       indices.push_back(i);
   }
 
   // Now get ready to write the DCD...
-  DCDWriter dcdout(prefix + ".dcd");
+  DCDWriter dcdout(out_name + ".dcd");
   dcdout.setTitle(hdr);
 
   bool first = true;
   uint cnt = 0;
 
+  pTraj traj;
+  int current = -1;
+
   BOOST_FOREACH(uint i, indices) {
-    traj->readFrame(i);
+
+    if (static_cast<int>(file_binding[i]) != current) {
+      current = file_binding[i];
+      traj = createTrajectory(traj_names[current], model);
+    }
+
+    traj->readFrame(local_indices[i]);
     traj->updateGroupCoords(subset);
     dcdout.writeFrame(subset);
 
@@ -137,7 +183,7 @@ int main(int argc, char *argv[]) {
     if (first) {
       PDB pdb = PDB::fromAtomicGroup(subset);
       pdb.remarks().add(hdr);
-      string out_pdb_name = prefix + ".pdb";
+      string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
       ofs << pdb;
       ofs.close();
@@ -145,10 +191,12 @@ int main(int argc, char *argv[]) {
     }
 
     ++cnt;
-    if (verbose && (cnt % 100 == 0))
-      cerr << boost::format("Processing frame %d (%d)...\n") % cnt % i;
+    if (verbose && (cnt % verbose_updates == 0))
+      cerr << boost::format("Processing frame #%d (%d:%s:%d)...\n") % cnt % i % traj_names[current] %
+        local_indices[i];
   }
 
   if (verbose)
-    cerr << boost::format("Wrote %d frames to %s\n") % cnt % (prefix + ".dcd");
+    cerr << boost::format("Wrote %d frames to %s\n") % cnt % (out_name + ".dcd");
+  
 }
