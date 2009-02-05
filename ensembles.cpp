@@ -65,6 +65,11 @@ namespace loos {
 
     traj->rewind();
     uint tn = traj->nframes();
+    
+    // Safety check...
+    if (tn != xforms.size())
+      throw(std::runtime_error("Mismatch in number of frames in the trajectory and passed transforms for loos::averageStructure()"));
+
     for (uint j=0; j<tn; j++) {
       traj->readFrame(j);
       traj->updateGroupCoords(frame);
