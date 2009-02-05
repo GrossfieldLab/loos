@@ -54,8 +54,6 @@ namespace loos {
    *
    *Notes:
    *
-   *  - Does NOT handle ENDIAN issues (i.e. auto-swab)
-   *
    *  - Does NOT support fixed atoms
    *
    *  - Does NOT support velocity format
@@ -64,11 +62,27 @@ namespace loos {
    *    a more sensible order (i.e. a, b, c, alpha, beta, gamma)
    *    
    *  - [Almost] everything returned is a copy
+   *
+   *  - Endian detection is based on the expected size of the header
    */
   class DCD : public Trajectory {
 
     // Use a union to convert data to appropriate type...
-    typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay; 
+    typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay;
+
+    template<typename T>
+    T swab(const T& datum) {
+      uint size = sizeof(T);
+      const unsigned char* p = reinterpret_cast<const unsigned char*>(&datum);
+      T swabbed;
+      unsigned char* q = reinterpret_cast<unsigned char*>(&swabbed);
+
+      uint i, j;
+      for (i=0, j=size-1; i<size; ++i, --j)
+        q[i] = p[j];
+
+      return(swabbed);
+    }
 
 
   public:
@@ -83,8 +97,6 @@ namespace loos {
     struct LineError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
     //! Unexpected EOF
     struct EndOfFile : public std::exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
-    //! Endianness of file doesn't match local architecture...
-    struct EndianMismatch : public std::exception { virtual const char *what() const throw() { return("Endianness of file does not match local architecture"); }; } endian_mismatch;
     //! General error...
     struct GeneralError : public std::exception {
       GeneralError(const char *s) : msg(s) { };
@@ -93,16 +105,16 @@ namespace loos {
     };
 
 
-    explicit DCD() : Trajectory(), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0) { }
+    explicit DCD() : Trajectory(), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0), swabbing(false) { }
 
     //! Begin reading from the file named s
-    explicit DCD(const std::string s) :  Trajectory(s), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+    explicit DCD(const std::string s) :  Trajectory(s), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0), swabbing(false) { readHeader(); }
 
     //! Begin reading from the file named s
-    explicit DCD(const char* s) :  Trajectory(s), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); }
+    explicit DCD(const char* s) :  Trajectory(s), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0), swabbing(false) { readHeader(); }
 
     //! Begin reading from the stream ifs
-    explicit DCD(std::fstream& fs) : Trajectory(fs), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0) { readHeader(); };
+    explicit DCD(std::fstream& fs) : Trajectory(fs), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0), swabbing(false) { readHeader(); };
 
     //! Read in the header from the stored stream
     void readHeader(void);
@@ -151,6 +163,8 @@ namespace loos {
     int nfile(void) const { return(_icntrl[0]); }
     int nfixed(void) const { return(_icntrl[8]); }
 
+    bool nativeFormat(void) const { return(!swabbing); }
+
     //! Auto-interleave the coords into a vector of GCoord()'s.
     /*!  This can be a pretty slow operation, so be careful. */
     virtual std::vector<GCoord> coords(void);
@@ -176,7 +190,7 @@ namespace loos {
     void readCrystalParams(void);
     void readCoordLine(std::vector<float>& v);
 
-    bool endianMatch(StreamWrapper& fsw);
+    void endianMatch(StreamWrapper& fsw);
 
     // For reading F77 I/O
     unsigned int readRecordLen(void);
@@ -193,6 +207,8 @@ namespace loos {
 
     unsigned long frame_size;          // *Internal* size (in bytes) of each frame
     unsigned long first_frame_pos;     // *Internal* location in file of start of data frames
+
+    bool swabbing;            // DCD being read is not in native format...
   
     std::vector<dcd_real> xcrds, ycrds, zcrds;
   

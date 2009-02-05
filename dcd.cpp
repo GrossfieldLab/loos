@@ -63,13 +63,16 @@ namespace loos {
     if (ifs()->fail())
       throw(record_error);
 
+    uint data = o.ui;
+    if (swabbing)
+      data = swab(data);
 
-    return(o.ui);
+    return(data);
   }
 
 
   // Check for endian-ness
-  bool DCD::endianMatch(StreamWrapper& fsw) {
+  void DCD::endianMatch(StreamWrapper& fsw) {
     unsigned long curpos = fsw()->tellg();
     unsigned int datum;
     ifs()->read((char *)(&datum), sizeof(datum));
@@ -78,16 +81,21 @@ namespace loos {
     if (ifs()->eof() || ifs()->fail())
       throw(GeneralError("Unable to read first datum from DCD file"));
 
-    if (datum == 0x54000000)
-      throw(endian_mismatch);
-    else if (datum != 0x54)
-      throw(GeneralError("Unable to determine endian-ness of DCD file"));
+    if (datum != 0x54) {
+      datum = swab(datum);
+      if (datum != 0x54)
+        throw(GeneralError("Unable to determine endian-ness of DCD file"));
+      swabbing = true;
+    } else
+      swabbing = false;
 
-    return(true);
+    std::cerr << "Probe: swabbing = " << swabbing << std::endl;
   }
+
 
   // Read a full line of F77-formatted data.
   // Returns a pointer to the read data and puts the # of bytes read into *len
+  // Note:  It is up to the caller to swab individual elements...
 
   DCD::DataOverlay* DCD::readF77Line(unsigned int *len) {
     DataOverlay* ptr;
@@ -125,15 +133,23 @@ namespace loos {
       throw(header_error);
 
     // Check for the magic name.  Ignore swabbing for now...
-    if (!(ptr->c[0] == 'C' && ptr->c[1] == 'O' && ptr->c[2] == 'R' && ptr->c[3] == 'D'))
+    DataOverlay o = ptr[0];
+    if (!(o.c[0] == 'C' && o.c[1] == 'O' && o.c[2] == 'R' && o.c[3] == 'D'))
       throw(header_error);
 
     // Copy in the ICNTRL data...
-    for (i=0; i<20; i++)
-      _icntrl[i] = (ptr[i+1]).i;
-
+    for (i=0; i<20; i++) {
+      if (swabbing)
+        _icntrl[i] = swab(ptr[i+1].i);
+      else
+        _icntrl[i] = ptr[i+1].i;
+    }
+      
     // Extract the delta value...
-    _delta = ptr[10].f;
+    if (swabbing)
+      _delta = swab(ptr[10].f);
+    else
+      _delta = ptr[10].f;
 
     if (nfixed() != 0)
       throw(GeneralError("Fixed atoms not yet supported"));
@@ -145,6 +161,9 @@ namespace loos {
     ptr = readF77Line(&len);
     char sbuff[81];
     int ntitle = ptr[0].i;
+    if (swabbing)
+      ntitle = swab(ntitle);
+
     cp = (char *)(ptr + 1);
 
     for (i=0; i<ntitle; i++) {
@@ -159,7 +178,10 @@ namespace loos {
     ptr = readF77Line(&len);
     if (len != 4)
       throw(header_error);
-    _natoms = ptr->i;
+    if (swabbing)
+      _natoms = swab(ptr->i);
+    else
+      _natoms = ptr->i;
     delete[] ptr;
 
 
@@ -203,6 +225,10 @@ namespace loos {
     qcrys[3] = dp[1];
     qcrys[4] = dp[3];
     qcrys[5] = dp[4];
+    
+    if (swabbing)
+      for (int i=0; i<6; ++i)
+        qcrys[i] = swab(qcrys[i]);
 
     delete[] o;
   }
@@ -225,7 +251,10 @@ namespace loos {
     // Recast the values as floats and store them...
     int i;
     for (i=0; i<_natoms; i++)
-      v[i] = op[i].f;
+      if (swabbing)
+        v[i] = swab(op[i].f);
+      else
+        v[i] = op[i].f;
 
     delete[] op;
 
