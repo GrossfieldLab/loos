@@ -127,7 +127,7 @@ uint bindFilesToIndices(AtomicGroup& model) {
   for (uint j=0; j<traj_names.size(); ++j)  {
     uint n = getNumberOfFrames(traj_names[j], model);
     if (verbose)
-      cout << boost::format("Trajectory %s has %d frames\n") % traj_names[j] % n;
+      cout << boost::format("Trajectory \"%s\" has %d frames\n") % traj_names[j] % n;
     total_frames += n;
     for (uint i=0; i<n; ++i) {
       file_binding.push_back(j);
