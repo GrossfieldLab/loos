@@ -5,7 +5,7 @@
   The output is always in DCD format.
 
   Usage:
-    subsetter [options] input-model input-trajectory output-prefix
+    subsetter [options] output-prefix input-model input-trajectory [input-trajectory ...]
 
 */
 
@@ -92,7 +92,7 @@ void parseOptions(int argc, char *argv[]) {
     po::notify(vm);
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
-      cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name\n";
+      cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name [trajectory-name ...]\n";
       cerr << generic;
       exit(-1);
     }
@@ -116,12 +116,16 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-
 uint getNumberOfFrames(const string& fname, AtomicGroup& model) {
   pTraj traj = createTrajectory(fname, model);
   return(traj->nframes());
 }
 
+
+
+// Build the mapping of global frame indices into individual files,
+// and into the frame number within each file...  Also returns the
+// total number of frames in the composite trajectory.
 
 uint bindFilesToIndices(AtomicGroup& model) {
   uint total_frames = 0;
@@ -153,23 +157,27 @@ int main(int argc, char *argv[]) {
   subset.clearBonds();
 
   uint total_frames = bindFilesToIndices(model);
-  // Handle null-list of frames to use...
+
+  // If no frame ranges were specified, fill in all possible frames,
+  // using the stride (if given)...
   if (indices.empty()) {
     stride = (!stride) ? 1 : stride;
     for (uint i=0; i<total_frames; i += stride)
       indices.push_back(i);
   }
 
-  // Now get ready to write the DCD...
   DCDWriter dcdout(out_name + ".dcd");
   dcdout.setTitle(hdr);
 
-  bool first = true;
-  uint cnt = 0;
+  bool first = true;  // Flag to pick off the first frame for a
+                      // reference structure
+  uint cnt = 0;       // Count of frames actually written
 
   pTraj traj;
-  int current = -1;
+  int current = -1;   // Track the index of the current trajectory
+                      // we're reading from...
 
+  // Iterate over all requested global-frames...
   BOOST_FOREACH(uint i, indices) {
 
     // Have we switched to a new file??
@@ -178,13 +186,16 @@ int main(int argc, char *argv[]) {
       traj = createTrajectory(traj_names[current], model);
     }
 
+    // Read teh apropriate local frame...
     traj->readFrame(local_indices[i]);
     traj->updateGroupCoords(subset);
     dcdout.writeFrame(subset);
 
-    // Pick off the first frame for the DCD...
+    // Pick off the first frame for the reference structure...
     if (first) {
       PDB pdb = PDB::fromAtomicGroup(subset);
+      if (selection != "all")     // Strip connectivity if subsetting,
+        pdb.clearBonds();         // otherwise the PDB writer will fail...
       pdb.remarks().add(hdr);
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
@@ -201,5 +212,4 @@ int main(int argc, char *argv[]) {
 
   if (verbose)
     cerr << boost::format("Wrote %d frames to %s\n") % cnt % (out_name + ".dcd");
-  
 }
