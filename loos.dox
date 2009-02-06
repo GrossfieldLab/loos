@@ -649,11 +649,13 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release133 Version 1.3.3 (2-5-2009)
+\section release133 Version 1.3.3 (2-6-2009)
 \subsection r133_added_changed Added, Changed, or Notables
 <UL>
   <LI> Added recenter-trj tool to center trajectories
-  <LI> Added trajinfo tool to print out information about generic trajectories
+  <LI> Added trajinfo tool to print out information about generic
+  trajectories.  This tool will also verify the number of frames
+  actually present in the trajectory.
   <LI> Added concat-selection tool to concatenate atoms from a
   trajectory into a single PDB.  This is useful for visualization atom
   distributions over the entire trajectory
@@ -676,6 +678,14 @@ averaging over the whole trajectory.
 <UL>
   <LI> Fixed a typo in the default alignment selection for the
   rmsd2ref tool
+  <LI> Fixed a bug in the svd tool that affected using a PSF file for
+  the model when writing out the average structure to a PDB file
+  <LI> The loos::averageStructure() function did not verify that the
+  input vector<XForm> matches the numbef of frames in the passed
+  trajectory.  This results in a segmentation fault when the
+  trajectory has a bad header (i.e. the number of frames listed does
+  not reflect the number of frames actually in the trajectory).  This
+  case is now checked for and a slightly more sensible error is thrown.
 </UL>
 
 \section release132 Version 1.3.2 (1-20-2009)
