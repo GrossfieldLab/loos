@@ -187,6 +187,25 @@ namespace loos {
   //! Applies a string-based selection to an atomic group...
   AtomicGroup selectAtoms(const AtomicGroup&, const std::string);
 
+
+  //! Returns a byte-swapped copy of an arbitrary type
+  /** 
+   * Only valid for simple types (i.e. int, float, double)
+   */
+  template<typename T>
+  T swab(const T& datum) {
+    uint size = sizeof(T);
+    const unsigned char* p = reinterpret_cast<const unsigned char*>(&datum);
+    T swabbed;
+    unsigned char* q = reinterpret_cast<unsigned char*>(&swabbed);
+    
+    uint i, j;
+    for (i=0, j=size-1; i<size; ++i, --j)
+      q[i] = p[j];
+    
+    return(swabbed);
+  }
+
 };
 
 #endif

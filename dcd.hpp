@@ -70,22 +70,6 @@ namespace loos {
     // Use a union to convert data to appropriate type...
     typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay;
 
-    // Byte-swap an aribtrary type...  Returns a swapped copy of the data.
-    template<typename T>
-    T swab(const T& datum) {
-      uint size = sizeof(T);
-      const unsigned char* p = reinterpret_cast<const unsigned char*>(&datum);
-      T swabbed;
-      unsigned char* q = reinterpret_cast<unsigned char*>(&swabbed);
-
-      uint i, j;
-      for (i=0, j=size-1; i<size; ++i, --j)
-        q[i] = p[j];
-
-      return(swabbed);
-    }
-
-
   public:
 
     // Error classes that we may or may not return...
