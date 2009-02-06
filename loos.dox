@@ -678,8 +678,9 @@ averaging over the whole trajectory.
 <UL>
   <LI> Fixed a typo in the default alignment selection for the
   rmsd2ref tool
-  <LI> Fixed a bug in the svd tool that affected using a PSF file for
-  the model when writing out the average structure to a PDB file
+  <LI> Fixed a bug in several tools that affected using a PSF file for
+  the model when writing out a PDB file that had been subset with a
+  selection.
   <LI> The loos::averageStructure() function did not verify that the
   input vector<XForm> matches the numbef of frames in the passed
   trajectory.  This results in a segmentation fault when the

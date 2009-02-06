@@ -190,6 +190,7 @@ void divCoords(AtomicGroup& g, const double d) {
 
 void savePDB(const string& fname, const string& meta, AtomicGroup& structure) {
   PDB pdb = PDB::fromAtomicGroup(structure);
+  pdb.clearBonds();
   pdb.remarks().add(meta);
 
   ofstream ofs(fname.c_str());

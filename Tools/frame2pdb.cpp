@@ -104,6 +104,8 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, selection);
   traj->updateGroupCoords(subset);
   PDB pdb = PDB::fromAtomicGroup(subset);
+  if (selection != "all")
+    pdb.clearBonds();
   pdb.remarks().add(hdr);
   cout << pdb << endl;
 }
