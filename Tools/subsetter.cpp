@@ -38,6 +38,7 @@
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
+#include <sstream>
 
 using namespace std;
 using namespace loos;
@@ -55,6 +56,9 @@ bool verbose = false;
 uint verbose_updates;            // Frequency of writing updates with
                                  // verbose logging..
 
+bool box_override = false;
+GCoord box;
+
 
 
 
@@ -70,7 +74,8 @@ void parseOptions(int argc, char *argv[]) {
       ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
       ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
-      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
+      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
+      ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -107,6 +112,16 @@ void parseOptions(int argc, char *argv[]) {
 
     if (vm.count("stride"))
       stride = vm["stride"].as<uint>();
+
+    if (vm.count("box")) {
+      string s = vm["box"].as<string>();
+      istringstream is(s);
+      if (!(is >> box)) {
+        cerr << "ERROR - unable to convert " << s << ".  It must be in (a,b,c) format.\n";
+        exit(-1);
+      }
+      box_override = 1;
+    }
 
   }
   catch(exception& e) {
@@ -186,9 +201,16 @@ int main(int argc, char *argv[]) {
       traj = createTrajectory(traj_names[current], model);
     }
 
-    // Read teh apropriate local frame...
+    // Read the apropriate local frame...
     traj->readFrame(local_indices[i]);
     traj->updateGroupCoords(subset);
+
+    if (box_override) {
+      if (first && subset.isPeriodic())
+        cerr << "WARNING - overriding existing periodic box.\n";
+      subset.periodicBox(box);
+    }
+
     dcdout.writeFrame(subset);
 
     // Pick off the first frame for the reference structure...
