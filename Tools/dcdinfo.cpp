@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iterator>
 #include <loos.hpp>
 #include <boost/format.hpp>
 
@@ -41,6 +42,12 @@
 
 using namespace std;
 using namespace loos;
+
+uint countFrames(DCD& dcd) {
+  uint c = 0;
+  for (dcd.rewind(); dcd.readFrame(); ++c) ;
+  return(c);
+}
 
 
 void analyzeBoxes(DCD& dcd) {
@@ -89,10 +96,17 @@ int main(int argc, char *argv[]) {
     cout << "The DCD is not in a native binary format.\n";
 
   cout << boost::format("* DCD has %u atoms in %u frames with a timestep of %f.\n") % dcd.natoms() % dcd.nframes() % dcd.timestep();
+  uint n = countFrames(dcd);
+  if (n != dcd.nframes())
+    cout << boost::format("***WARNING***  Trajectory actually has %d rather than what is given in the header!\n") % n;
   if (dcd.hasCrystalParams()) {
-    if (!scan)
-      cout << "* DCD HAS box/crystal information.\n";
-    else {
+    cout << "* DCD HAS box/crystal information.\n";
+    dcd.readFrame();
+    vector<double> xtal = dcd.crystalParams();
+    cout << "* DCD Crystal params (first frame): ";
+    copy(xtal.begin(), xtal.end(), ostream_iterator<double>(cout, " "));
+    cout << endl;
+    if (scan) {
       cout << "Scanning trajectory for box information...\n";
       analyzeBoxes(dcd);
     }
