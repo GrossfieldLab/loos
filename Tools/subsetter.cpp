@@ -44,6 +44,8 @@ using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
+// Globals...yuck...
+
 vector<uint> indices;            // Global indices of frames to extract
 vector<uint> file_binding;       // Links global frame # to the corresponding filename
 vector<uint> local_indices;      // Maps global frame numbers into local frame numbers
@@ -58,6 +60,9 @@ uint verbose_updates;            // Frequency of writing updates with
 
 bool box_override = false;
 GCoord box;
+
+string center_selection;
+bool center_flag = false;
 
 
 
@@ -75,7 +80,8 @@ void parseOptions(int argc, char *argv[]) {
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
       ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
-      ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)");
+      ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
+      ("center,c", po::value<string>(), "Recenter the trajectory using this selection");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -122,6 +128,11 @@ void parseOptions(int argc, char *argv[]) {
       }
       box_override = 1;
     }
+
+    if (vm.count("center")) {
+      center_selection = vm["center"].as<string>();
+      center_flag = true;
+    }      
 
   }
   catch(exception& e) {
@@ -171,6 +182,10 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, selection);
   subset.clearBonds();
 
+  AtomicGroup centered;
+  if (!center_selection.empty())
+    centered = selectAtoms(model, center_selection);
+
   uint total_frames = bindFilesToIndices(model);
 
   // If no frame ranges were specified, fill in all possible frames,
@@ -203,8 +218,15 @@ int main(int argc, char *argv[]) {
 
     // Read the apropriate local frame...
     traj->readFrame(local_indices[i]);
-    traj->updateGroupCoords(subset);
+    traj->updateGroupCoords(model);
 
+    // Handle centering...
+    if (center_flag) {
+      GCoord c = centered.centroid();
+      model.translate(-c);
+    }
+
+    // Handle Periodic boundary conditions...
     if (box_override) {
       if (first && subset.isPeriodic())
         cerr << "WARNING - overriding existing periodic box.\n";
