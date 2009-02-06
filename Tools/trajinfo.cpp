@@ -197,7 +197,7 @@ void verbInfo(AtomicGroup& model, pTraj& traj) {
       cout << boost::format(fldpre + "%s x %s\n") % "Box extents" % boost::get<3>(box) % boost::get<4>(box);
     }
   } else
-    cout << boost::format(fldpre + "%s\n") % "Periodic box:" % "no";
+    cout << boost::format(fldpre + "%s\n") % "Periodic box" % "no";
 
   if (centroid) {
     boost::tuple<GCoord, GCoord> res = scanCentroid(model, traj);
