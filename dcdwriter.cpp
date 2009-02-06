@@ -29,6 +29,9 @@
 namespace loos {
 
 
+  const double default_unit_cell_angle = 90.0;   // This should make VMD happy...
+
+
 
   void DCDWriter::writeF77Line(StreamWrapper& ofs, const char* const data, const unsigned int len) {
     DataOverlay d;
@@ -93,7 +96,8 @@ namespace loos {
 
 
   void DCDWriter::writeBox(const GCoord& box) {
-    double xtal[6] = { box[0], 1.0, box[1], 1.0, 1.0, box[2] };
+    double xtal[6] = { box[0], default_unit_cell_angle, box[1],
+                       default_unit_cell_angle, default_unit_cell_angle, box[2] };
 
     writeF77Line(_ofs, (char *)xtal, 6*sizeof(double));
   }
