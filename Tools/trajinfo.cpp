@@ -98,7 +98,7 @@ void parseOptions(int argc, char *argv[]) {
 
 typedef boost::tuple<GCoord, GCoord, GCoord, GCoord, GCoord> BoxInfo;
 
-BoxInfo scanBoxes(AtomicGroup& model, pTraj& traj) {
+BoxInfo scanBoxes(pTraj& traj) {
   GCoord min, max, avg;
   GCoord mine, maxe;
 
@@ -150,13 +150,13 @@ boost::tuple<GCoord, GCoord> scanCentroid(AtomicGroup& model, pTraj& traj) {
   avg /= traj->nframes();
 
   GCoord std;
-  for (int i=0; i<traj->nframes(); ++i) {
+  for (uint i=0; i<traj->nframes(); ++i) {
     GCoord c = centers[i] - avg;
     std += c*c;
   }
 
   std /= (traj->nframes() - 1);
-  for (int i=0; i<3; i++)
+  for (uint i=0; i<3; i++)
     std[i] = sqrt(std[i]);
 
   boost::tuple<GCoord, GCoord> result(avg, std);
@@ -164,7 +164,7 @@ boost::tuple<GCoord, GCoord> scanCentroid(AtomicGroup& model, pTraj& traj) {
 }
 
 
-uint verifyFrames(AtomicGroup& model, pTraj& traj) {
+uint verifyFrames(pTraj& traj) {
   uint n = 0;
   traj->rewind();
   while (traj->readFrame())
@@ -183,14 +183,14 @@ void verbInfo(AtomicGroup& model, pTraj& traj) {
   cout << boost::format(fldpre + "%s\n") % "Trajectory name" % traj_name;
   cout << boost::format(fldpre + "%d\n") % "Number of atoms" % traj->natoms();
   cout << boost::format(fldpre + "%d\n") % "Number of frames" % traj->nframes();
-  uint n = verifyFrames(model, traj);
+  uint n = verifyFrames(traj);
   cout << boost::format(fldpre + "%d\n") % "Actual frames" % n;
 
   cout << boost::format(fldpre + "%f\n") % "Timestep" % traj->timestep();
   if (traj->hasPeriodicBox()) {
     cout << boost::format(fldpre + "%s\n") % "Periodic box" % "yes";
     if (box_info) {
-      BoxInfo box = scanBoxes(model, traj);
+      BoxInfo box = scanBoxes(traj);
       cout << boost::format(fldpre + "%s\n") % "Average box" % boost::get<0>(box);
       cout << boost::format(fldpre + "%s\n") % "Smallest box" % boost::get<1>(box);
       cout << boost::format(fldpre + "%s\n") % "Largest box" % boost::get<2>(box);
@@ -206,7 +206,7 @@ void verbInfo(AtomicGroup& model, pTraj& traj) {
 }
 
 
-void briefInfo(AtomicGroup& model, pTraj& traj) {
+void briefInfo(pTraj& traj) {
   cout << traj->natoms() << " " << traj->nframes() << " " << traj->timestep() << " " << traj->hasPeriodicBox() << endl;
 }
 
@@ -224,6 +224,6 @@ int main(int argc, char *argv[]) {
   if (!brief)
     verbInfo(model, traj);
   else
-    briefInfo(model, traj);
+    briefInfo(traj);
 }
 
