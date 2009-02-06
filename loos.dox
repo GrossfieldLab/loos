@@ -668,6 +668,7 @@ averaging over the whole trajectory.
   <LI> The subsetter tool can now accept a list of aribtrary ranges of
   frames to extract, or a stride option.  It can also take an
   arbitrary list of input trajectories to combine and extract from.
+  In addition, it can override or add periodic box information.
   <LI> The DCD class will now handle reading of non-native endian DCD
   files
   <LI> The DCDWriter class will now flush the output streams after
@@ -676,6 +677,10 @@ averaging over the whole trajectory.
 
 \subsection r133_bugs Bug Fixes
 <UL>
+  <LI> Fixed an issue with DCD's written by LOOS that have periodic
+  boundary information.  The default unit cell angles were 1, rather
+  than 90 degrees.  This prevents programs like VMD from correctly
+  displaying the periodic images.
   <LI> Fixed a typo in the default alignment selection for the
   rmsd2ref tool
   <LI> Fixed a bug in several tools that affected using a PSF file for

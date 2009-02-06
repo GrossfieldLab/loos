@@ -1,5 +1,9 @@
 2009-02-06    <tromo@spade.biophysics.rochester.edu>
 
+	* Added box override/setting to subsetter
+	* Fixed problem with DCDWriter not writing out rectangular angles
+	for unit cells by default.
+	* Added more diagnostics to dcdinfo
 	* Fixed bug in several tools that could cause an error when
 	using a PSF for the model and applying a selection to it.
 	* Added verification of the number of frames in a trajectory with
