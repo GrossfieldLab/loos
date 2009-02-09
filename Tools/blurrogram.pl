@@ -65,15 +65,15 @@ Sets the number of structures generated
 
 =item --script
 
-Reads the script body from the specified filename
+Reads the script body from the specified filename or specifies commands to use
 
 =item --preamble
 
-Reads the script preamble from the specified filename
+Reads the script preamble from the specified filename or specifies commands to use
 
 =item --postscript
 
-Reads the script postscript from the specified filename
+Reads the script postscript from the specified filename or specifies commands to use
 
 =item --filespec
 
