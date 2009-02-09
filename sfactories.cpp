@@ -48,7 +48,7 @@ namespace loos {
       return(amber);
 
     } else
-      throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+      throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
   }
 
 
@@ -66,7 +66,7 @@ namespace loos {
       pAmber p(new Amber(s));
       pag = p;
     } else
-      throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+      throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
 
     return(pag);
   }
@@ -88,7 +88,7 @@ namespace loos {
       pTraj pt(ppdb);
       return(pt);
     } else
-      throw(std::runtime_error("Error- cannot divine file type from name '" + s + "'"));
+      throw(std::runtime_error("Error- cannot divine trajectory file type from name '" + s + "'"));
   }
 
 
