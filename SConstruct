@@ -29,6 +29,7 @@ clos = Options('custom.py')
 clos.AddOptions(
 	('regenerate', 'Set to 1 to regenerate test outputs', 0),
 	('debug', 'Set to 1 to add -DDEBUG to build', 0),
+        ('profile', 'Set to 1 to build the code for profiling', 0),
 	('release', 'Set to 1 to configure for release.', 0),
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
 )
@@ -80,6 +81,7 @@ if not env.GetOption('clean'):
 
 debug_opts='-g -Wall -Wextra -fno-inline'
 release_opts='-O3 -DNDEBUG -Wall'
+profile_opts='-pg'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#', BOOSTINC])
@@ -96,19 +98,29 @@ else:
       env.Append(LIBPATH = [LAPACK, ATLAS])
       env.Append(CPPPATH = [ATLASINC]) 
 
+
 # Determine what kind of build...
+# No option implies debugging, but only an explicit debug defines
+# the DEBUG symbol...  Yes, it's a bit obtuse, but it allows
+# you to control the level of debugging output through the
+# DEBUG definition...
+
 release = env['release']
+debug = env['debug']
+profile = env['profile']
+
 if int(release):
     env.Append(CCFLAGS=release_opts)
 else:
-    env.Append(CCFLAGS=debug_opts)
+   env.Append(CCFLAGS=debug_opts)
 
-debug = env['debug']
-if int(debug):
-   if int(release):
-      print "***ERROR*** You cannot have a release with debugging code included."
-      Exit(1)
+if (debug > 0):
    env.Append(CCFLAGS=" -DDEBUG=$debug")
+
+# Profiling is independent of release/debug status...
+if int(profile):
+   env.Append(CCFLAGS=profile_opts)
+   env.Append(LINKFLAGS=profile_opts)
 
 
 # Allow overrides from environment...
