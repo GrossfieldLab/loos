@@ -109,10 +109,6 @@ namespace loos {
       avg = averageStructure(ensemble);
       rms = avg.rmsd(target);
       target = avg;
-
-#if defined(DEBUG)
-      cerr << "iterativeAlignment - iter = " << iter << ", rms = " << rms << endl;
-#endif
       iter++;
     } while (rms > threshold && iter <= maxiter );
   
