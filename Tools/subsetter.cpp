@@ -1,11 +1,39 @@
 /*
   subsetter.cpp
 
-  Subsets a trajectory (stripping out any atoms that don't match the given selection)
+  A general purpose tool for subsetting a trajectory.  This tool can
+  be used to extract specific atoms from a trajectory or specific
+  frames.  It can also be used to add periodic box information (or
+  correct it) to a trajectory.  It can also be used to concatenate
+  trajectories together (optionally extracting a subset of the
+  concatenated trajectory).  Finally, you can center the output so
+  that the centroid of the selection is the origin.  Note that the
+  selection used for centering comes from the specified subset...
+
   The output is always in DCD format.
 
   Usage:
     subsetter [options] output-prefix input-model input-trajectory [input-trajectory ...]
+
+  Examples:
+
+  * subsetter -S10 out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd
+    This concatenates the 3 trajectories together and outputs every
+    10th frame to out.dcd
+
+  * subsetter -c 'name == "CA"' out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd
+    This concatenates the 3 trajectories together centering the output
+    using the centroid of all c-alphas.
+
+  * subsetter -c 'segid == "HEME"' -s '!hydrogen' out.dcd model.pdb traj.dcd
+    This pulls all non-hydrogen atoms out of the trajectory and writes
+    them to out.dcd, centering so that the HEME segment is at the
+    origin.
+
+  * subsetter -r 0:49 -r 150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd
+    This concatenates the two trajectories together, then writes out
+    the first 50 frames, then frames 150 through 300 stepping by 10
+    frames.  The frame indices written are of the composite trajectory.
 
 */
 
@@ -81,7 +109,7 @@ void parseOptions(int argc, char *argv[]) {
       ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
-      ("center,c", po::value<string>(), "Recenter the trajectory using this selection");
+      ("center,c", po::value<string>(), "Recenter the trajectory using this selection (of the subset)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -184,7 +212,7 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup centered;
   if (!center_selection.empty())
-    centered = selectAtoms(model, center_selection);
+    centered = selectAtoms(subset, center_selection);
 
   uint total_frames = bindFilesToIndices(model);
 
