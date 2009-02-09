@@ -523,7 +523,9 @@ file.
 
 \section dcdinfo dcdinfo
 
-Extract the header information from a CHARMM/NAMD dcd file.
+Extract the header information from a CHARMM/NAMD dcd file.  Will
+verify the number of frames present and report periodic box
+information.
 
 \section density-dist density-dist
 
@@ -608,7 +610,12 @@ atoms.
 
 \section subsetter subsetter
 
-Subsets a trajectory (stripping out any atoms that don't match the given selection), and writes a new DCD file.
+Subsets a trajectory (stripping out any atoms that don't match the
+given selection), and writes a new DCD file.  Can be used to
+concatenate trajectories, pull specific frames out, as well as
+adjusting periodic box information and centering the trajectory on a
+selection...
+
 
 \section svd svd
 
@@ -632,6 +639,10 @@ program loops over a trajectory and writes the torsion angle time series.
 
 Converts a LOOS-supported format to a DCD.
 
+\section trajinfo
+
+Similar to dcdinfo, but works with generic trajectories.
+
 \section xy_rdf xy_rdf
 
 Compute a two dimension radial distribution function in the xy plane,
@@ -649,7 +660,7 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release133 Version 1.3.3 (2-6-2009)
+\section release133 Version 1.3.3 (2-9-2009)
 \subsection r133_added_changed Added, Changed, or Notables
 <UL>
   <LI> Added recenter-trj tool to center trajectories
