@@ -1,3 +1,12 @@
+2009-02-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Added profile=1 build option for inserting profiling flags
+	* Added more sensible error message from the auto-file-type
+	divination code in the factory functions.
+	* Changed subsetter so that the centering selection is applied to
+	the subset rather than the model...it doesn't make much sense to
+	center on something that's not in the output...
+
 2009-02-06    <tromo@spade.biophysics.rochester.edu>
 
 	* Added box override/setting to subsetter
