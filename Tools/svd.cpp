@@ -282,7 +282,11 @@ int main(int argc, char *argv[]) {
   work = new svdreal[lwork];
 
   cerr << argv[0] << ": Calculating SVD...\n";
+  Timer<WallTimer> timer;
+  timer.start();
   SVDFUNC(&jobu, &jobvt, &m, &n, A.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
+  timer.stop();
+  cerr << argv[0] << ": Done!  Calculation took " << timeAsString(timer.elapsed()) << endl;
 
   if (info > 0) {
     cerr << "Convergence error in dgesvd\n";
@@ -291,7 +295,6 @@ int main(int argc, char *argv[]) {
     cerr << "Error in " << info << "th argument to dgesvd\n";
     exit(-4);
   }
-  cerr << argv[0] << ": Done!\n";
 
 
   MDuple orig(0,0);
