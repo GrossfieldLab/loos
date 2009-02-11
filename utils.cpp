@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 #include <boost/algorithm/string.hpp>
 
@@ -223,5 +224,28 @@ namespace loos {
 
     return(subset);
   }
+
+  std::string timeAsString(const double t) {
+    if (t < 90.0) {
+      std::stringstream s;
+      s << std::fixed << std::setprecision(3) << t << "s";
+      return(s.str());
+    }
+  
+    double mins = floor(t / 60.0);
+    double secs = t - mins * 60.0;
+    if (mins < 90.0) {
+      std::stringstream s;
+      s << std::fixed << std::setprecision(0) << mins << "m" << std::setprecision(3) << secs << "s";
+      return(s.str());
+    }
+  
+    double hrs = floor(mins / 60.0);
+    mins -= hrs * 60.0;
+    std::stringstream s;
+    s << std::fixed << std::setprecision(0) << hrs << "h" << mins << "m" << std::setprecision(3) << secs << "s";
+    return(s.str());
+  }
+
 
 }

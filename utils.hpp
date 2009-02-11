@@ -206,6 +206,8 @@ namespace loos {
     return(swabbed);
   }
 
+  std::string timeAsString(const double t);
+
 };
 
 #endif
