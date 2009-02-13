@@ -20,7 +20,8 @@
 
 
 Import('env')
-
+clone = env.Clone()
+clone.Append(LIBS = ['loos'])
 
 
 ### Major uglage ensues...  Close your eyes if you're squeamish...
@@ -98,16 +99,12 @@ bld = Builder(action = Action(UnitTest, varlist = ['REGENERATE']), emitter = uni
 env.Append(BUILDERS = {'UnitTest' :  bld})
 
 ### Ok, you can open 'em now...
-
-if os.environ.has_key('LD_LIBRARY_PATH'):
-    ld_library_path = os.environ['LD_LIBRARY_PATH']
-    if env.has_key('LD_LIBRARY_PATH'):
-        env.AppendENVPath('LD_LIBRARY_PATH', ld_library_path)
+if env.has_key('LD_LIBRARY_PATH'):
+    if os.environ.has_key('LD_LIBRARY_PATH'):
+        ld_path = os.environ['LD_LIBRARY_PATH']
+        os.environ['LD_LIBRARY_PATH'] = env['LD_LIBRARY_PATH'] + ":" + ld_path
     else:
-        env['LD_LIBRARY_PATH'] = ld_library_path
-        
-#    print "Set LD_LIBRARY_PATH to ", env['LD_LIBRARY_PATH']
-    
+        os.environ['LD_LIBARY_PATH' ] = env['LD_LIBRARY_PATH']
 
 non_testable_tests = 'timeseries-test find_perf_test ccpdb_test pdbtraj_test tinker_arc_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
@@ -122,14 +119,14 @@ list = []
 # First, process non-testable tests...
 for name in Split(non_testable_tests):
     fname = name + '.cpp'
-    prog = env.Program(fname)
+    prog = clone.Program(fname)
     list.append(prog)
 
 # Now run the tests that take no inputs...
 for name in Split(solo_tests):
     fname = name + '.cpp'
     tname = name
-    prog = env.Program(fname)
+    prog = clone.Program(fname)
     test = env.UnitTest(tname, [prog])
     list.append(test)
 
@@ -138,7 +135,7 @@ for name in Split(solo_tests):
 for name in Split(pdb_based_tests):
     fname = name + '.cpp'
     tname = name
-    prog = env.Program(fname)
+    prog = clone.Program(fname)
     test = env.UnitTest(tname, [prog, 'test.pdb'])
     list.append(test)
 
@@ -146,7 +143,7 @@ for name in Split(pdb_based_tests):
 for name in Split(tinker_tests):
     fname = name + '.cpp'
     tname = name
-    prog = env.Program(fname)
+    prog = clone.Program(fname)
     test = env.UnitTest(tname, [prog, 'test.xyz'])
     list.append(test)
 

@@ -32,6 +32,7 @@ clos.AddOptions(
         ('profile', 'Set to 1 to build the code for profiling', 0),
 	('release', 'Set to 1 to configure for release.', 0),
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
+        ('shared', 'Set to 1 to build a shared LOOS library.', 0)
 )
 
 clos.Add(PathOption('LAPACK', 'Path to LAPACK', '', PathOption.PathAccept))
@@ -43,6 +44,8 @@ clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.Pat
 clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
+clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/usr/local', PathOption.PathAccept))
+
 
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
@@ -65,6 +68,7 @@ BOOSTINC = env['BOOSTINC']
 BOOSTREGEX = env['BOOSTREGEX']
 BOOSTPO = env['BOOSTPO']
 LIBXTRA = env['LIBXTRA']
+PREFIX = env['PREFIX']
 
 
 ### Autoconf
@@ -86,7 +90,7 @@ profile_opts='-pg'
 # Setup the general environment...
 env.Append(CPPPATH = ['#', BOOSTINC])
 env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
-env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
+env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...
@@ -139,6 +143,12 @@ Export('env')
 
 ###################################
 
+
+###################################
+
+if int(env['shared']):
+   env['LD_LIBRARY_PATH'] = "."
+
 loos = SConscript('SConscript')
 
 
@@ -158,7 +168,7 @@ env.Alias('tools', tools)
 env.Alias('all', loos + tools)
 env.Alias('caboodle', loos + tools + tests + docs)
 
-
+env.Alias('install', ['lib_install', 'tools_install'] )
 
 if int(regenerate):
    env.Default('caboodle')
