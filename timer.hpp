@@ -41,7 +41,7 @@ namespace loos {
   //! Policy class for tracking wall-time
   class WallTimer {
   public:
-    double currentTime(void) {
+    double currentTime(void) const {
       struct timeval tv;
       
       int i = gettimeofday(&tv, 0);
@@ -54,7 +54,7 @@ namespace loos {
   //! Policy class for tracking only user process time
   class UserTimer {
   public:
-    double currentTime(void) {
+    double currentTime(void) const {
       struct rusage ru;
       int i = getrusage(RUSAGE_SELF, &ru);
       if (i < 0)
@@ -106,7 +106,7 @@ namespace loos {
      * stopped, then it returns the length of time the timer was
      * active.
      */
-    double elapsed(void) { return( running ? TimerType::currentTime() - t0 : t1 - t0 ); }
+    double elapsed(void) const { return( running ? TimerType::currentTime() - t0 : t1 - t0 ); }
 
     //! Returns the current lap time
     /**
@@ -128,14 +128,19 @@ namespace loos {
 
     //! Return the current average lap-time...
     double averageLapTime(void) { return(avg / n); }
-
+    
   private:
     double t0, t1, avg, lapt;
     ulong n;
     bool running;
   };
 
-
+  template<class T>
+  std::ostream& operator<<(std::ostream& os, const Timer<T>& t) {
+    std::string s = timeAsString(t.elapsed());
+    os << "Elapsed time " << s;
+    return(os);
+  }
 }
 
 
