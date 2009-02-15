@@ -156,6 +156,7 @@ loos = SConscript('SConscript')
 docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
+nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
 
 # build targets...
@@ -163,12 +164,12 @@ tools = SConscript('Tools/SConscript')
 env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools)
+env.Alias('tools', tools + nm_tools)
 
-env.Alias('all', loos + tools)
-env.Alias('caboodle', loos + tools + tests + docs)
+env.Alias('all', loos + tools + nm_tools)
+env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
 
-env.Alias('install', ['lib_install', 'tools_install'] )
+env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install'] )
 
 if int(regenerate):
    env.Default('caboodle')

@@ -1,20 +1,44 @@
 /*
-  movie
+  enmovie
 
-    (c) 2008 Tod D. Romo, Grossfield Lab
+    (c) 2008,2009 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
-      MOde VIsualizer for Enm
+      Elastic Network MOde VIsualizEr
 
 
   Usage:
-    movie [options] model-name prefix output-name
+    enmovie [options] model-name prefix output-name
 
   Notes:
     use the "--help" option for more information about how to run...
 
 */
+
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008,2009 Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 
 
 
@@ -79,7 +103,7 @@ void parseOptions(int argc, char *argv[]) {
     po::notify(vm);
 
     if (vm.count("help") || !(vm.count("model") && vm.count("inprefix") && vm.count("outprefix")) ) {
-      cerr << "Usage- movie [options] model-name input-prefix output-prefix\n";
+      cerr << "Usage- enmovie [options] model-name input-prefix output-prefix\n";
       cerr << generic;
       exit(-1);
     }

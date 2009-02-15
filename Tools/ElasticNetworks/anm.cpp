@@ -1,7 +1,7 @@
 /*
   anm
 
-  (c) 2008 Tod D. Romo, Grossfield Lab
+  (c) 2008,2009 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
@@ -30,6 +30,31 @@
   
 */
 
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008,2009 Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+
+
 #include <loos.hpp>
 
 #include <boost/format.hpp>
@@ -37,9 +62,6 @@
 
 #include <Matrix.hpp>
 #include <MatrixIO.hpp>
-
-#include "timer.hpp"
-
 
 using namespace std;
 using namespace loos;
@@ -168,8 +190,6 @@ Matrix hessian(const AtomicGroup& model, const double radius) {
 
 int main(int argc, char *argv[]) {
 
-  Timer t;
-
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
@@ -177,12 +197,13 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, selection);
   cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
+  Timer<WallTimer> timer;
   cerr << "Calculating hessian...";
-  t.start();
+  timer.start();
   Matrix H = hessian(subset, cutoff);
-  t.stop();
+  timer.stop();
   cerr << boost::format(" done (%dx%d)\n") % H.rows() % H.cols();
-  cerr << "Calculation took " << t << endl;
+  cerr << timer << endl;
   writeAsciiMatrix(prefix + "_H.asc", H, header);
 
   // Setup for SVD calc, i.e. deal with lame f77 interface
@@ -208,10 +229,11 @@ int main(int argc, char *argv[]) {
 
   // Now do the actual SVD calculation...
   cerr << "Calculating SVD - ";
-  t.start();
+  timer.start();
   dgesvd_(&jobu, &jobvt, &m, &n, H.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
-  t.stop();
+  timer.stop();
   cerr << "done\n";
+  cerr << timer << endl;
   
   if (info > 0) {
     cerr << "Convergence error in dgesvd\n";
@@ -220,7 +242,6 @@ int main(int argc, char *argv[]) {
     cerr << "Error in " << info << "th argument to dgesvd\n";
     exit(-4);
   }
-  cerr << "Calculation took " << t << endl;
 
   // Write out the parts of the SVD...
   writeAsciiMatrix(prefix + "_U.asc", U, header);
