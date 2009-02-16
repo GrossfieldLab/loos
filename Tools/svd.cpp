@@ -74,7 +74,7 @@ void parseOptions(int argc, char *argv[]) {
   try {
     po::options_description generic("Allowed options", 120);
     generic.add_options()
-      ("help", "Produce this help message")
+      ("help,h", "Produce this help message")
       ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"), "Selection to align with")
       ("svd,s", po::value<string>(&globals.svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
       ("tolerance,t", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
@@ -82,7 +82,7 @@ void parseOptions(int argc, char *argv[]) {
       ("terms,T", po::value<int>(), "# of terms of the SVD to output")
       ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
       ("range,r", po::value<string>(), "Range of frames from the trajectory to operate over")
-      ("source,s", po::value<bool>(&globals.include_source)->default_value(false),"Write out the source conformation matrix");
+      ("source,S", po::value<bool>(&globals.include_source)->default_value(false),"Write out the source conformation matrix");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
