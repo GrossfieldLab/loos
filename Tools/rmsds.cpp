@@ -37,6 +37,7 @@
 
 #include <loos.hpp>
 #include <boost/program_options.hpp>
+#include <boost/format.hpp>
 
 namespace po = boost::program_options;
 using namespace std;
@@ -143,6 +144,9 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
   uint k = 0;
   uint j;
 
+  double max = 0.0;
+  double mean = 0.0;
+
   for (j=0; j<n; j++) {
     AtomicGroup jframe = frames[j].copy();
     for (i=0; i<=j; i++, k++) {
@@ -156,6 +160,9 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
       }
 
       M(j,i) = rmsd;
+      mean += rmsd;
+      if (rmsd > max)
+        max = rmsd;
       
       if (k % delta == 0) {
         float percent = k * 100.0 / total;
@@ -163,6 +170,9 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
       }
     }
   }
+
+  mean /= ( n*(n+1)/2 );
+  cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max % mean;
 
   return(M);
 }
