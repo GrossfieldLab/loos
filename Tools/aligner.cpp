@@ -273,7 +273,7 @@ int main(int argc, char *argv[]) {
   savePDB(globals.prefix + ".pdb", header, frame);
 
   // Make the first frame...
-  AtomicGroup avg = applyto_sub.copy();
+  AtomicGroup avg = frame.copy();
 
   // Setup for writing DCD...
   DCDWriter dcdout(globals.prefix + ".dcd");
