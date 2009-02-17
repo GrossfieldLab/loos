@@ -1,3 +1,8 @@
+2009-02-16  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed bug in aligner when centering the trajectory and when
+	using different alignment and transformation subsets...
+
 2009-02-09    <tromo@spade.biophysics.rochester.edu>
 
 	* Added profile=1 build option for inserting profiling flags

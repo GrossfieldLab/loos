@@ -84,14 +84,14 @@ void parseOptions(int argc, char *argv[]) {
   try {
     po::options_description generic("Allowed options");
     generic.add_options()
-      ("help", "Produce this help message")
+      ("help,h", "Produce this help message")
       ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"),"Align using this selection")
       ("transform,t", po::value<string>(&globals.transform_string)->default_value("all"), "Transform this selection")
       ("maxiter,m", po::value<int>(&globals.maxiter)->default_value(5000), "Maximum number of iterations for the iterative alignment algorithm")
       ("tolerance,T", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for alignment convergence")
       ("rmsd,r", po::value<bool>(&globals.rmsdf)->default_value(false), "Calculate RMSD against average")
       ("showrmsd,s", po::value<bool>(&globals.show_rmsd)->default_value(false), "Show RMSD for each frame")
-      ("center,c", po::value<bool>(&globals.center)->default_value(true), "Auto-center the trajectory");
+      ("center,c", po::value<bool>(&globals.center)->default_value(true), "Auto-center the trajectory using the alignment subset");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -198,6 +198,11 @@ void savePDB(const string& fname, const string& meta, AtomicGroup& structure) {
 }
 
 
+void centerFrame(AtomicGroup& src, AtomicGroup& trg) {
+  GCoord c = src.centroid();
+  trg.translate(-c);
+}
+
 
 
 int main(int argc, char *argv[]) {
@@ -207,16 +212,16 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   // Read the inputs...
-  AtomicGroup pdb = createSystem(globals.model_name);
-  cout << "Read in " << pdb.size() << " atoms from " << globals.model_name << endl;
+  AtomicGroup model = createSystem(globals.model_name);
+  cout << "Read in " << model.size() << " atoms from " << globals.model_name << endl;
 
-  pTraj traj = createTrajectory(globals.traj_name, pdb);
+  pTraj traj = createTrajectory(globals.traj_name, model);
 
   cout << "Reading from trajectory " << globals.traj_name << " with " << traj->nframes() << " frames.\n";
 
   // Get the selections (subsets) to operate over
-  AtomicGroup align_sub = selectAtoms(pdb, globals.alignment_string);
-  AtomicGroup applyto_sub = selectAtoms(pdb, globals.transform_string);
+  AtomicGroup align_sub = selectAtoms(model, globals.alignment_string);
+  AtomicGroup applyto_sub = selectAtoms(model, globals.transform_string);
 
   align_sub.clearBonds();
   cout << "Subset to align with has " << align_sub.size() << " atoms.\n";
@@ -259,10 +264,10 @@ int main(int argc, char *argv[]) {
   // Go ahead and make first transformation (to make VMD happy so that
   // the PDB is just a copy of the first trajectory frame...
   traj->readFrame(0);
-  traj->updateGroupCoords(applyto_sub);
+  traj->updateGroupCoords(model);
   AtomicGroup frame = applyto_sub.copy();
   if (globals.center)
-    frame.centerAtOrigin();
+    centerFrame(align_sub, frame);
   frame.applyTransform(xforms[0]);
   frame.renumber();
   savePDB(globals.prefix + ".pdb", header, frame);
@@ -280,14 +285,12 @@ int main(int argc, char *argv[]) {
   // Now apply the alignment transformations to the requested subsets
   for (unsigned int i = 1; i<nframes; i++) {
     traj->readFrame(i);
-    traj->updateGroupCoords(applyto_sub);
+    traj->updateGroupCoords(model);
     if (globals.center)
-      applyto_sub.centerAtOrigin();
+      centerFrame(align_sub, applyto_sub);
 
     applyto_sub.applyTransform(xforms[i]);
-    frame = applyto_sub.copy();
-    frame.renumber();
-    dcdout.writeFrame(frame);
+    dcdout.writeFrame(applyto_sub);
 
     addCoords(avg, applyto_sub);
   }

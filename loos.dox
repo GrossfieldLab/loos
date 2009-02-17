@@ -664,6 +664,18 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
+\section release134 Version 1.3.4 (2-16-2009)
+\subsection r134_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in aligner affecting centering the trajectory while
+using different alignment and transformation subsets.  The output
+trajectory was incorrectly transformed.  The error committed is
+proportional to the difference in the centroids between the two
+subsets...
+</UL>
+
+
+
 \section release133 Version 1.3.3 (2-9-2009)
 \subsection r133_added_changed Added, Changed, or Notables
 <UL>
