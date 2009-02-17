@@ -175,7 +175,7 @@ while (traj->readFrame())
             GCoord displ = (p2 - p1);
             displ.reimage(box);
             double d2 = (displ.x() * displ.x()) + (displ.y() * displ.y());
-            if ( (d2 <= max2) && (d2 >= min2) )
+            if ( (d2 < max2) && (d2 > min2) )
                 {
                 double d = sqrt(d2);
                 int bin = int((d-hist_min)/bin_width);
@@ -199,7 +199,7 @@ while (traj->readFrame())
             GCoord displ = (p2 - p1);
             displ.reimage(box);
             double d2 = (displ.x() * displ.x()) + (displ.y() * displ.y());
-            if ( (d2 <= max2) && (d2 >= min2) )
+            if ( (d2 < max2) && (d2 > min2) )
                 {
                 double d = sqrt(d2);
                 int bin = int((d-hist_min)/bin_width);

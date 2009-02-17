@@ -168,7 +168,7 @@ while (traj->readFrame())
             
             // Compute the distance squared, taking periodicity into account
             double d2 = p1.distance2(p2, box);
-            if ( (d2 <= max2) && (d2 >= min2) )
+            if ( (d2 < max2) && (d2 > min2) )
                 {
                 double d = sqrt(d2);
                 int bin = int((d-hist_min)/bin_width);
