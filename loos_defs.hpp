@@ -31,6 +31,8 @@
 #error LOOS Requires GCC-4.0.1 or higher
 #endif
 
+#include <sys/types.h>
+
 
 #if defined(REQUIRES_UINT)
 typedef unsigned int     uint;
