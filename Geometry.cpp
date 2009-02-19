@@ -43,18 +43,12 @@ namespace loos {
 
   greal Math::torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
                             const GCoord &d) {
-    // TODO: check to make sure the sign is right
-    GCoord ba = b - a;
-    GCoord cb = c - b;
-    GCoord dc = d - c;
-
-    GCoord norm1 = ba.cross(cb);
-    GCoord norm2 = cb.cross(dc);
-    greal cosine = norm1*norm2 / (norm1.length() * norm2.length());
-    greal angle = acos(cosine) * DEGREES;
-    greal sign = ba * norm2;
-    if (sign < 0) angle = -angle;
-    return(angle);
+    GCoord b1 = b - a;
+    GCoord b2 = c - b;
+    GCoord b3 = d - c;
+    greal phi = atan2( (b2.length() * b1) * (b2.cross(b3)),
+                       (b1.cross(b2)) * (b2.cross(b3)) );
+    return(phi * DEGREES);
   }
 
   greal Math::torsion(const pAtom a, const pAtom b, const pAtom c, 
