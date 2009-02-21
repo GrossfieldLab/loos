@@ -1,3 +1,13 @@
+2009-02-20  Tod Romo  <tromo@gorgoneion-w>
+
+	* Added rotamer tool to calculate chi-1, chi-2 torsion angles over
+	time...
+	* Added Elastic Network Model tools (ANM/GNM)
+	* Added rmsfit tool to superimpose two structures
+	* rmsds tool now reports simple statistics for the matrices it
+	constructs
+	
+
 2009-02-17    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed potential issue with histogram size/bounds for rdf
