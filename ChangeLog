@@ -6,6 +6,8 @@
 	* Added rmsfit tool to superimpose two structures
 	* rmsds tool now reports simple statistics for the matrices it
 	constructs
+	* Added install target for SCons...
+	* Added support for building a shared-library version of LOOS
 	
 
 2009-02-17    <tromo@spade.biophysics.rochester.edu>
