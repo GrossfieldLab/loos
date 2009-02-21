@@ -67,6 +67,7 @@ struct AtomNameSelector : public AtomSelector {
 class Torsion {
 public:
   virtual double torsion(void) =0;
+  virtual ~Torsion() { }
 };
 
 
@@ -78,6 +79,7 @@ public:
   TorsionedAtoms(pAtom a, pAtom b, pAtom c, pAtom d) {
     atoms = a + b + c + d;
   }
+  virtual ~TorsionedAtoms() { }
 
   double torsion(void) { return(Math::torsion(atoms[0], atoms[1], atoms[2], atoms[3])); }
 
@@ -98,6 +100,7 @@ private:
 class NoTorsion : public Torsion {
 public:
   double torsion(void) { return(null_value); }
+  virtual ~NoTorsion() { }
 };
 
 
