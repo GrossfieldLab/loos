@@ -135,6 +135,18 @@ scons
 For more detailed information about the build process, see
 \subpage building "Building LOOS"
 
+To install LOOS, use the "install" target:
+
+\verbatin
+scons install
+\endverbatim
+
+This will cause SCons to copy the tools into /usr/local/bin, the
+library into /usr/local/lib, and the header files into
+/usr/local/include/loos.  You can change the destination location from
+/usr/local to wherever you want by changing the PREFIX variable in
+your custom.py file...
+
 To use LOOS, you will want to include the top-level LOOS directory in
 both your include path and your library paths, so something like the
 following for linux
@@ -664,6 +676,25 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
+\section release140 Version 1.4.0 (2-20-2009)
+\subsection r140_added_changed Added, Changed, or otherwise Notable
+<UL>
+  <LI> Added a "rotamer" tool for calculating the chi-1, chi-2 torsion
+angles for side-chains.
+  <LI> Added "rmsfit" tool to superimpose one model upon another
+  <LI> Added a suite of Elastic Network Modeling tools inside Tools:
+  <UL>
+     <LI> "anm" calculates an anistropic network model
+     <LI> "gnm" calculaes a gaussian network model
+     <LI> "flucc2b" maps anm/gnm fluctuations onto a PDB's B-values
+     <LI> "enmovie" creates a DCD trajectory showing motion based on
+anm/gnm results.
+  </UL>
+  <LI> Added an install target for SCons
+  <LI> Added support for building a shared-library version of LOOS
+</UL>
+
+
 \section release134 Version 1.3.4 (2-16-2009)
 \subsection r134_bugs Bug Fixes
 <UL>
