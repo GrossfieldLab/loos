@@ -129,33 +129,32 @@ namespace loos {
 
   // ------------------------------------------------------------------------------------------
 
-  class DotProgress : public AbstractObserver {
+  class BasicProgress : public AbstractObserver {
   public:
-    DotProgress(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
+    BasicProgress() : os_(std::cerr), prefix_("Progress - "), msg_("."), suffix_(" done!\n") { }
+    BasicProgress(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
       os_(os), prefix_(prefix), msg_(msg), suffix_(suffix) { }
 
-    DotProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
+    BasicProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
       os_(std::cerr), prefix_(prefix), msg_(msg), suffix_(suffix) { }
 
     void start(SimpleCounter* subj) { os_ << prefix_; }
     void update(SimpleCounter* subj) { os_ << msg_; }
     void finish(SimpleCounter* subj) { os_ << suffix_; }
 
-  private:
+  protected:
     std::ostream& os_;
     std::string prefix_, msg_, suffix_;
   };
 
-
-  class PercentProgress : public AbstractObserver {
+  class PercentProgress : public BasicProgress {
   public:
+    PercentProgress() { }
     PercentProgress(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
-      os_(os), prefix_(prefix), msg_(msg), suffix_(suffix) { }
-
+      BasicProgress(os, prefix, msg, suffix) { }
     PercentProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
-      os_(std::cerr), prefix_(prefix), msg_(msg), suffix_(suffix) { }
+      BasicProgress(std::cerr, prefix, msg, suffix) { }
 
-    void start(SimpleCounter* s) { os_ << prefix_; }
     void update(SimpleCounter* s) {
       uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
       os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
@@ -165,9 +164,6 @@ namespace loos {
       os_ << suffix_;
       os_ << "Total elapsed time was " << timeAsString(s->elapsed()) << std::endl;
     }
-  private:
-    std::ostream& os_;
-    std::string prefix_, msg_, suffix_;
   };
 
 
