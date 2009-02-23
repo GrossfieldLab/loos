@@ -70,7 +70,7 @@ namespace loos {
     virtual double elapsed(void) { return(timer_.elapsed()); }
 
     virtual uint remaining(void) { throw(std::logic_error("remaining() is unimplemented")); }
-    virtual double timeRemaning(void) { throw(std::logic_error("timeRemaining() is unimplemented")); }
+    virtual double timeRemaining(void) { throw(std::logic_error("timeRemaining() is unimplemented")); }
     virtual double fractionComplete(void) { throw(std::logic_error("fractionComplete() is unimplemented")); }
 
   protected:
@@ -158,7 +158,7 @@ namespace loos {
     void start(SimpleCounter* s) { os_ << prefix_; }
     void update(SimpleCounter* s) {
       uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
-      os_ << i << "% " << msg_ << "(" << timeAsString(s->elapsed()) << " remaining)\n";
+      os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
     }
 
     void finish(SimpleCounter* s) {

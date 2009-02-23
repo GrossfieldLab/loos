@@ -147,10 +147,19 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
   double max = 0.0;
   double mean = 0.0;
 
+  PercentProgress watcher("Computing RMSDS:\n", "complete", "Done!\n");
+  PercentTrigger trigger(0.1);
+
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter((n*(n+1))/2));
+  slayer.attach(&watcher);
+  slayer.start();
+
   for (j=0; j<n; j++) {
     AtomicGroup jframe = frames[j].copy();
     for (i=0; i<=j; i++, k++) {
       double rmsd;
+
+      slayer.update();
 
       if (globals.iterate)
         rmsd = jframe.rmsd(frames[i]);
@@ -164,13 +173,10 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
       if (rmsd > max)
         max = rmsd;
       
-      if (k % delta == 0) {
-        float percent = k * 100.0 / total;
-        cerr << setprecision(3) << percent << "% complete\n";
-      }
     }
   }
 
+  slayer.finish();
   mean /= ( n*(n+1)/2 );
   cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max % mean;
 

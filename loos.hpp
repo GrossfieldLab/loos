@@ -85,6 +85,8 @@
 #include <sfactories.hpp>
 
 #include <timer.hpp>
+#include <ProgressCounters.hpp>
+#include <ProgressTriggers.hpp>
 
 #endif
 
