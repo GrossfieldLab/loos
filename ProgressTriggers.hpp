@@ -28,7 +28,7 @@
 
 namespace loos {
 
-
+  //! Trigger every i-iterations
   class TriggerEvery {
   public:
     TriggerEvery(const uint i) : freq(i) { }
@@ -43,7 +43,7 @@ namespace loos {
   };
 
 
-
+  //! Trigger whenever at least frac percent more iterations have happened
   class PercentTrigger {
   public:
     PercentTrigger(double frac) : frac_(frac), chunk_(0) { }

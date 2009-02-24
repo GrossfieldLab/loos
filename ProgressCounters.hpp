@@ -38,7 +38,6 @@ namespace loos {
 
   class SimpleCounter;
 
-
   class AbstractObserver {
   public:
     virtual ~AbstractObserver() { }
@@ -49,6 +48,20 @@ namespace loos {
   };
 
 
+  //! Basic progress counter object, defining the interface...
+  /**
+   * The idea here is that SimpleCounter and its children are
+   * "observable" objects (a la the Observer pattern).  The
+   * SimpleCounter handles the basic time-keeping functions and
+   * forwards messages along to its observers when certain events
+   * happen, such as starting, stopping, and updating.  Not all
+   * functions are implemented though.  For example, the SimpleTimer
+   * doesn't have an estimate for the total number of updates it will
+   * receive, so the estimating functions will throw an error.
+   *
+   * This class is not actually meant to be used by itself, but via
+   * the aggregator ProgressCounter class defined later...
+   */
   class SimpleCounter  {
     typedef AbstractObserver ObsT;
     typedef std::vector<ObsT*> Observers;
@@ -65,12 +78,14 @@ namespace loos {
       observers.erase(i);
     }
 
+    //! Notify observers that an update should occur
     virtual void notify(void) {
       Observers::iterator i;
       for (i = observers.begin(); i != observers.end(); ++i)
         (*i)->update(this);
     }
 
+    //! Notify observers that we've finished with our calculation
     virtual void finish(void) {
       timer_.stop();
       Observers::iterator i;
@@ -78,7 +93,7 @@ namespace loos {
         (*i)->finish(this);
     }
 
-
+    //! Notify observers that we're starting a calculation
     virtual void start(void) {
       count_ = 0;
       timer_.start();
@@ -88,12 +103,19 @@ namespace loos {
     }
 
 
+    //! Number of iterations we've seen so far
     uint count(void) const { return(count_); }
 
+    //! Total elapsed wall-time
     virtual double elapsed(void) { return(timer_.elapsed()); }
 
+    //! Remaining iterations (if applicable)
     virtual uint remaining(void) { throw(std::logic_error("remaining() is unimplemented")); }
+
+    //! Remaining time (estimated, again if applicable)
     virtual double timeRemaining(void) { throw(std::logic_error("timeRemaining() is unimplemented")); }
+
+    //! Percent complete (if applicable)
     virtual double fractionComplete(void) { throw(std::logic_error("fractionComplete() is unimplemented")); }
 
   protected:
@@ -103,19 +125,29 @@ namespace loos {
   };
 
 
-
+  //! A progress counter that can estimate how much time is left
+  /**
+   * This class has to know the count of expected iterations so it can
+   * estimate how much time is left...
+   */
   class EstimatingCounter : public SimpleCounter {
   public:
     EstimatingCounter(const uint n) : expected(n) { }
+
+    //! Alter the expected count
     void setExpected(uint n) { expected = n; }
 
+    //! Returns the number of iterations left
     uint remaining(void) { return(expected - count_); }
 
+    //! Estimates the amount of time left using the current average
+    //! time per iteration
     double timeRemaining(void) {
       double avg = timer_.elapsed() / count_;
       return(remaining() * avg);
     }
 
+    //! Returns the percent completed so far
     double fractionComplete(void) { return(static_cast<double>(count_) / expected); }
 
   protected:
@@ -123,21 +155,35 @@ namespace loos {
   };
 
 
+  //! This is a simple "trigger" for use as a default
   class TriggerAlways {
   public:
     bool operator()(SimpleCounter* s) { return(true); }
   };
 
 
-
+  //! The progress counter front-end
+  /**
+   *
+   * This class combines a counter with a trigger.  You can pick
+   * whether or not you use a simple counter or an estimating counter,
+   * for example, and then combine that with a criterion for firing
+   * off a message to any observers that they need to update their
+   * display/output.  The trigger is just a functor that returns a
+   * true value if the update notification should be sent, or a false
+   * if not.
+   */
   template<class Trigger = TriggerAlways, class Counter = SimpleCounter>
   class ProgressCounter : public Counter {
   public:
     ProgressCounter(Trigger& t) : trig(t) { }
     ProgressCounter(Trigger& t, const Counter& c) : Counter(c), trig(t) { }
 
+    //! Change the trigger
     void setTrigger(const Trigger& t) { trig = t; }
 
+    //! Update the number of iterations and decide whether or not to
+    //! notify based on the trigger policy
     void update(void) {
       ++Counter::count_;
       if (trig(this))
@@ -152,6 +198,15 @@ namespace loos {
 
   // ------------------------------------------------------------------------------------------
 
+  //! A basic progrss update "watcher", outputting dots for each
+  //! update
+  /**
+   *
+   * This class is the prototypic progress update class.  It has pre-
+   * and post- condition output messages and then writes out a message
+   * at each update.  You can control where the output goes by
+   * instantiating with an appropriate ostream object.
+   */
   class BasicProgress : public AbstractObserver {
   public:
     BasicProgress() : os_(std::cerr), prefix_("Progress - "), msg_("."), suffix_(" done!\n") { }
@@ -161,15 +216,26 @@ namespace loos {
     BasicProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
       os_(std::cerr), prefix_(prefix), msg_(msg), suffix_(suffix) { }
 
-    void start(SimpleCounter* subj) { os_ << prefix_; }
-    void update(SimpleCounter* subj) { os_ << msg_; }
-    void finish(SimpleCounter* subj) { os_ << suffix_; }
+    virtual void start(SimpleCounter* subj) { os_ << prefix_; }
+    virtual void update(SimpleCounter* subj) { os_ << msg_; }
+    virtual void finish(SimpleCounter* subj) { os_ << suffix_; }
 
   protected:
     std::ostream& os_;
     std::string prefix_, msg_, suffix_;
   };
 
+
+  //! Provide feedback by percent-complete with estimates of time
+  //! remaining
+  /**
+   *
+   * This class provides basically the same functionality as the
+   * BasicProgress class, except that we override the update and
+   * finish functions to provide more detailed information.  This
+   * class requires a counter that implements the timeRemaining() and
+   * fractionComplete() functions.
+   */
   class PercentProgress : public BasicProgress {
   public:
     PercentProgress() { }
