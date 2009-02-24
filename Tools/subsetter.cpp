@@ -65,7 +65,6 @@
 #include <loos.hpp>
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
-#include <boost/foreach.hpp>
 #include <sstream>
 
 using namespace std;
@@ -236,16 +235,17 @@ int main(int argc, char *argv[]) {
                       // we're reading from...
 
   // Iterate over all requested global-frames...
-  BOOST_FOREACH(uint i, indices) {
+  vector<uint>::iterator vi;
+  for (vi = indices.begin(); vi != indices.end(); ++vi) {
 
     // Have we switched to a new file??
-    if (static_cast<int>(file_binding[i]) != current) {
-      current = file_binding[i];
+    if (static_cast<int>(file_binding[*vi]) != current) {
+      current = file_binding[*vi];
       traj = createTrajectory(traj_names[current], model);
     }
 
     // Read the apropriate local frame...
-    traj->readFrame(local_indices[i]);
+    traj->readFrame(local_indices[*vi]);
     traj->updateGroupCoords(model);
 
     // Handle centering...
@@ -278,8 +278,8 @@ int main(int argc, char *argv[]) {
 
     ++cnt;
     if (verbose && (cnt % verbose_updates == 0))
-      cerr << boost::format("Processing frame #%d (%d:%s:%d)...\n") % cnt % i % traj_names[current] %
-        local_indices[i];
+      cerr << boost::format("Processing frame #%d (%d:%s:%d)...\n") % cnt % *vi % traj_names[current] %
+        local_indices[*vi];
   }
 
   if (verbose)

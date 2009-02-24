@@ -37,7 +37,6 @@
 
 #include <boost/random.hpp>
 #include <boost/algorithm/string.hpp>
-#include <boost/foreach.hpp>
 
 #include <ctime>
 

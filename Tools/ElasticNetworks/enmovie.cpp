@@ -46,7 +46,6 @@
 #include <iterator>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
-#include <boost/foreach.hpp>
 
 #include <cassert>
 
@@ -164,10 +163,11 @@ int main(int argc, char *argv[]) {
 
   // Since we've decomposed a hessian, the slowest modes have the 
   // smallest singular values, but we have to exclude the 6 lowest...
-  BOOST_FOREACH(int& i, modes) {
-    i = n - 7 - i;
-    if (i < 0) {
-      cerr << boost::format("ERROR - you requested an invalid mode (%d).\n") % (n - (i + 7));
+  vector<int>::iterator vi;
+  for (vi = modes.begin(); vi != modes.end(); ++vi) {
+    *vi = n - 7 - *vi;
+    if (*vi < 0) {
+      cerr << boost::format("ERROR - you requested an invalid mode (%d).\n") % (n - (*vi + 7));
       exit(-1);
     }
   }
