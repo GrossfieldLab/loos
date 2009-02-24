@@ -1,0 +1,54 @@
+Building and Installing Loos
+----------------------------
+
+*** FOR THE IMPATIENT ***
+
+= Fedora Core =
+
+   scons release=1
+   sudo scons release=1 install
+
+Note: LOOS requires ATLAS and BOOST.  You can install both via the
+"yum" package manager.  You will need to install both the basic
+package and the devel package, i.e.
+	yum install boost.x86_64
+	yum install boost-devel.x86_64
+
+
+*** FOR THE LESS IMPATIENT ***
+
+= LINUX =
+
+You will need to have ATLAS and BOOST installed, including the BOOST
+libraries.  You will also need SCons to build the software and,
+optionally, Doxygen to regenerate the documentation.  Use your
+favorite package manager to install these components, or download and
+build them.
+
+You will probably need to create a custom.py file to tell LOOS where
+the required compenents are.  There is a template custom.py file
+already as part of LOOS.  Copy this,
+	cp custom.py-proto custom.py
+
+Now edit this file.  Follow the comments to figure out what variables
+need to be changed.  In particular, note that the names of the BOOST
+libraries will change (i.e. BOOSTREGEX and BOOSTPO)
+
+Now you're ready to build...
+    scons release=1
+
+-or- if you have 4 cores,
+     scons -j4 release=1
+
+If you want to install LOOS, use the install target,
+   scons release=1 install
+
+The default installation location is in /opt/loos.  You can change
+this by either setting PREFIX in your custom.py file, or specifying it
+on the command line, i.e.
+   scons release=1 PREFIX=/usr/local/loos-latest install
+
+= MAC OS X =
+
+Follow the instructions for LINUX above, but omit ATLAS.  You will, at
+a minimum, need the developer's tools installed along with BOOST.

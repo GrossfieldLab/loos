@@ -110,10 +110,11 @@ tell LOOS where its required components are.  To do this, do the following:
 cp custom.py-proto custom.py
 \endverbatim
 Then edit your \c custom.py file to tell SCons and LOOS where your
-libraries are.  \b NOTE:  If you're compiling under MacOS X, you will
-almost certainly need to use a custom.py to correctly name your BOOST
-libraries.  Look at the \c BOOSTREGEX and \c BOOSTPO variables for the
-boost regular expression library and the program options library respectively.
+libraries are.  \b NOTE: If you're compiling under MacOS X or a linux
+distro other than Fedora Core 9, you will almost certainly need to use
+a custom.py to correctly name your BOOST libraries.  Look at the \c
+BOOSTREGEX and \c BOOSTPO variables for the boost regular expression
+library and the program options library respectively.
 
 You can temporarily override the defaults (and what's
 set in your \c custom.py file by specifying the appropriate variables
@@ -141,21 +142,19 @@ To install LOOS, use the "install" target:
 scons install
 \endverbatim
 
-This will cause SCons to copy the tools into /usr/local/bin, the
-library into /usr/local/lib, and the header files into
-/usr/local/include/loos.  You can change the destination location from
-/usr/local to wherever you want by changing the PREFIX variable in
-your custom.py file...
+This will cause SCons to copy the headers, tools, and library into
+ /opt/loos.  You can change where LOOS is installed by changing the
+ PREFIX variable in either your custom.py file or on the command line.
 
 To use LOOS, you will want to include the top-level LOOS directory in
 both your include path and your library paths, so something like the
 following for linux
 \verbatim
-g++ -o mytool mytool.cpp -I/Users/myself/LOOS -L/Users/myself/LOOS -lloos -lboost_regex -llapack -latlas
+g++ -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex -llapack -latlas
 \endverbatim
 or the following for OS X
 \verbatim
-g++ -framework vecLib -o mytool mytool.cpp -I/Users/myself/LOOS -L/Users/myself/LOOS -lloos -lboost_regex
+g++ -framework vecLib -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex
 \endverbatim
 
 Alternatively, look in the <I>Examples</I> directory for a simple
