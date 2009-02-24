@@ -128,7 +128,8 @@ namespace loos {
   //! A progress counter that can estimate how much time is left
   /**
    * This class has to know the count of expected iterations so it can
-   * estimate how much time is left...
+   * estimate how much time is left.  It is assumed that the execution
+   * time per iteration is largely constant.
    */
   class EstimatingCounter : public SimpleCounter {
   public:

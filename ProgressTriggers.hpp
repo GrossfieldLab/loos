@@ -44,6 +44,11 @@ namespace loos {
 
 
   //! Trigger whenever at least frac percent more iterations have happened
+  /**
+   * This trigger tracks which fractional update it's in.  If you want
+   * to reuse the trigger, you must reset it prior to starting up the
+   * counter again...
+   */
   class PercentTrigger {
   public:
     PercentTrigger(double frac) : frac_(frac), chunk_(0) { }
