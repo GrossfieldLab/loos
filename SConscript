@@ -43,7 +43,7 @@ hdr = hdr + ' Selectors.hpp sfactories.hpp StreamWrapper.hpp timer.hpp'
 hdr = hdr + ' TimeSeries.hpp tinker_arc.hpp tinkerxyz.hpp Trajectory.hpp'
 hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp'
 
-loos_hdr_inst = env.Install(PREFIX + '/include/loos', Split(hdr))
+loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
 
 env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 

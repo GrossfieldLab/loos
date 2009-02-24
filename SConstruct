@@ -44,7 +44,7 @@ clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.Pat
 clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
-clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/usr/local', PathOption.PathAccept))
+clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/opt/loos', PathOption.PathAccept))
 
 
 
