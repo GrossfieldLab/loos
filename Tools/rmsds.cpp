@@ -139,8 +139,6 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
   Matrix M(n, n);
   uint i;
 
-  uint total = n*(n+1)/2;
-  uint delta = total / 4;
   uint k = 0;
   uint j;
 
