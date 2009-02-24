@@ -144,11 +144,12 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
 
   double max = 0.0;
   double mean = 0.0;
+  uint total = n*(n+1)/2;
 
-  PercentProgress watcher("Computing RMSDS:\n", "complete", "Done!\n");
-  PercentTrigger trigger(0.1);
+  PercentProgress watcher;
+  PercentTrigger trigger(0.25);
 
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter((n*(n+1))/2));
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
   slayer.attach(&watcher);
   slayer.start();
 
@@ -175,7 +176,7 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
   }
 
   slayer.finish();
-  mean /= ( n*(n+1)/2 );
+  mean /= total;
   cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max % mean;
 
   return(M);
@@ -189,7 +190,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup molecule = createSystem(globals.model_name);
   pTraj ptraj = createTrajectory(globals.traj_name, molecule);
   AtomicGroup subset = selectAtoms(molecule, globals.alignment);
-  cerr << "Selected " << subset.size() << " atoms.\n";
+  cerr << "Selected " << subset.size() << " atoms in subset.\n";
 
   vector<AtomicGroup> frames;
   if (globals.iterate) {
@@ -198,6 +199,7 @@ int main(int argc, char *argv[]) {
   } else
     readFrames(frames, subset, ptraj);
 
+  cerr << "Computing RMSD matrix...\n";
   Matrix M = interFrameRMSD(frames);
 
   // Note:  using the operator<< on a matrix here will write it out as a full matrix

@@ -238,7 +238,7 @@ namespace loos {
    */
   class PercentProgress : public BasicProgress {
   public:
-    PercentProgress() { }
+    PercentProgress() : BasicProgress("Progress:\n", "complete", "") { }
     PercentProgress(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
       BasicProgress(os, prefix, msg, suffix) { }
     PercentProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
