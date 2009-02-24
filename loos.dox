@@ -676,9 +676,11 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release140 Version 1.4.0 (2-20-2009)
+\section release140 Version 1.4.0 (2-24-2009)
 \subsection r140_added_changed Added, Changed, or otherwise Notable
 <UL>
+  <LI> Removed the use of BOOST_FOREACH.  This solves a compatability
+  issue with older versions of BOOST and LOOS.
   <LI> Added a "rotamer" tool for calculating the chi-1, chi-2 torsion
 angles for side-chains.
   <LI> Added "rmsfit" tool to superimpose one model upon another
@@ -692,6 +694,10 @@ anm/gnm results.
   </UL>
   <LI> Added an install target for SCons
   <LI> Added support for building a shared-library version of LOOS
+  <LI> Added a set of classes for providing user-feedback when a tool
+  may take some time to execute.  See loos::ProgressCounter for more
+  information, and the rmsds tool for an example of how to use the new
+  classes.
 </UL>
 
 
