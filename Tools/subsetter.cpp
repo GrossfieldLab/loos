@@ -228,11 +228,16 @@ int main(int argc, char *argv[]) {
 
   bool first = true;  // Flag to pick off the first frame for a
                       // reference structure
-  uint cnt = 0;       // Count of frames actually written
-
   pTraj traj;
   int current = -1;   // Track the index of the current trajectory
                       // we're reading from...
+
+  // Setup for progress output...
+  PercentProgress watcher;
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.25), EstimatingCounter(indices.size()));
+  slayer.attach(&watcher);
+  if (verbose)
+    slayer.start();
 
   // Iterate over all requested global-frames...
   vector<uint>::iterator vi;
@@ -276,12 +281,10 @@ int main(int argc, char *argv[]) {
       first = false;
     }
 
-    ++cnt;
-    if (verbose && (cnt % verbose_updates == 0))
-      cerr << boost::format("Processing frame #%d (%d:%s:%d)...\n") % cnt % *vi % traj_names[current] %
-        local_indices[*vi];
+    if (verbose)
+      slayer.update();
   }
 
   if (verbose)
-    cerr << boost::format("Wrote %d frames to %s\n") % cnt % (out_name + ".dcd");
+    slayer.finish();
 }
