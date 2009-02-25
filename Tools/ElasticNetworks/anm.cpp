@@ -1,7 +1,7 @@
 /*
   anm
 
-  (c) 2008,2009 Tod D. Romo, Grossfield Lab
+  (c) 2008 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 

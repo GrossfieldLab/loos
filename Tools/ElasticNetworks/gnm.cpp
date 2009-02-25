@@ -1,7 +1,7 @@
 /*
   gnm
 
-  (c) 2008,2009 Tod D. Romo, Grossfield Lab
+  (c) 2008 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
@@ -37,7 +37,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008,2009 Tod D. Romo
+  Copyright (c) 2008 Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
