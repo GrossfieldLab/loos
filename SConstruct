@@ -160,6 +160,7 @@ nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
 # Special handling for docs installation...
 docs_inst = env.InstallAs(PREFIX + '/share/loos', 'Docs')
+Depends(docs_inst, 'Docs/index.html')
 
 
 # build targets...
