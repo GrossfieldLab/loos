@@ -158,6 +158,9 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
+# Special handling for docs installation...
+docs_inst = env.InstallAs(PREFIX + '/share/loos', 'Docs')
+
 
 # build targets...
 
@@ -169,7 +172,7 @@ env.Alias('tools', tools + nm_tools)
 env.Alias('all', loos + tools + nm_tools)
 env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
 
-env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install'] )
+env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install', docs_inst] )
 
 if int(regenerate):
    env.Default('caboodle')
