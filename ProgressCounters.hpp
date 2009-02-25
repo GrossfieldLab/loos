@@ -177,8 +177,8 @@ namespace loos {
   template<class Trigger = TriggerAlways, class Counter = SimpleCounter>
   class ProgressCounter : public Counter {
   public:
-    ProgressCounter(Trigger& t) : trig(t) { }
-    ProgressCounter(Trigger& t, const Counter& c) : Counter(c), trig(t) { }
+    ProgressCounter(const Trigger& t) : trig(t) { }
+    ProgressCounter(const Trigger& t, const Counter& c) : Counter(c), trig(t) { }
 
     //! Change the trigger
     void setTrigger(const Trigger& t) { trig = t; }
