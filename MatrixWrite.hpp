@@ -9,7 +9,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008-2009, Tod D. Romo, Alan Grossfield
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
