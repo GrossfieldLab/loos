@@ -1,7 +1,7 @@
 ##############################################################
 # Skeleton makefile for use with LOOS
 #
-# (c) 2008 Tod D. Romo
+# (c) 2008-2009 Tod D. Romo
 #     Grossfield Lab
 #     Department of Biochemistry & Biophysics
 #     University of Rochester Medical School
@@ -9,14 +9,14 @@
 ##############################################################
 
 
-### Where is LOOS?
-
-# An absolute path
-#LOOS=$(HOME)/Packages/LOOS-1.0
-
-# Or a relative path...
-LOOS=..
-
+### Where is LOOS?  This assumes you've installed LOOS somewhere...
+### If you haven't installed LOOS, you will also need to change the
+### LOOSINC and LOOSLIB appropriately...
+LOOS=/opt/loos
+LOOSINC=$(LOOS)/include
+LOOSLIB=$(LOOS)/lib
+#LOOSINC=$(LOOS)
+#LOOSLIB=$(LOOS)
 
 ### Which compiler?
 CXX=/usr/bin/g++
@@ -37,15 +37,15 @@ BOOSTLIB=
 ATLASLIB=-L/usr/lib64/atlas
 ATLASINC=-I/usr/include/atlas
 LDLIBS=-lloos -lboost_regex -lboost_program_options -llapack -latlas
-LDFLAGS=-L$(LOOS) $(BOOSTLIB) $(ATLASLIB)
-CXXFLAGS=$(OPTS) -I. -I$(LOOS) $(BOOSTINC) $(ATLASINC)
+LDFLAGS=-L$(LOOSLIB) $(BOOSTLIB) $(ATLASLIB)
+CXXFLAGS=$(OPTS) -I. -I$(LOOSINC) $(BOOSTINC) $(ATLASINC)
 
 ### Use the following for MacOS X
 #BOOSTINC=-I/usr/local/include
 #BOOSTLIB=-L/usr/local/include
 #LDLIBS=-lloos -lboost_regex -lboost_program_options
-#LDFLAGS=-L$(LOOS) $(BOOSTLIB)
-#CXXFLAGS=$(OPTS) -I. -I$(LOOS) $(BOOSTINC) -framework vecLib
+#LDFLAGS=-L$(LOOSLIB) $(BOOSTLIB)
+#CXXFLAGS=$(OPTS) -I. -I$(LOOSINC) $(BOOSTINC) -framework vecLib
 
 
 
