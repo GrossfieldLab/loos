@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# (c) 2008 Tod D. Romo
+# (c) 2008-2009 Tod D. Romo
 #
 # Grossfield Lab
 # Department of Biochemistry & Biophysics
@@ -17,22 +17,20 @@ import os
 default_lib_path = '/usr/lib64'
 
 ### Tell SCons where to find LOOS
-
-# Use the following line to set the absolute path to LOOS
-#default_path_to_loose = os.environ.get('HOME') + '/Packages/LOOS-1.0'
-
-# Or the following to set a relative path...
-default_path_to_loose = os.getcwd() + '/..'
-
+### This assumes you have installed LOOS.  If you have not,
+### you will need to change the LOOSINC and LOOSLIB variables below and
+### change the default path...
+default_path_to_loos = '/opt/loos'
 
 # Principal options...
 clos = Options('custom.py')
 clos.AddOptions(
 	('debug', 'Set to 1 to add -DDEBUG to build', 0),
-	('release', 'Set to 1 to configure for release.', 0),
+	('release', 'Set to 1 to build with optimization on', 0),
+        ('profile', 'Set to 1 to build with profiling on', 0)
 )
 
-clos.Add(PathOption('LOOS', 'Path to LOOS', default_path_to_loose, PathOption.PathAccept))
+clos.Add(PathOption('LOOS', 'Path to LOOS', default_path_to_loos, PathOption.PathAccept))
 clos.Add(PathOption('LAPACK', 'Path to LAPACK', default_lib_path, PathOption.PathAccept))
 clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
 clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
@@ -40,6 +38,8 @@ clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, Pat
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
 clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
+clos.Add('CXX', 'C++ Compiler', 'g++')
+clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
 
 env = Environment(options = clos)
 Help(clos.GenerateHelpText(env))
@@ -56,6 +56,14 @@ BOOSTREGEX = env['BOOSTREGEX']
 BOOSTPO = env['BOOSTPO']
 LOOS = env['LOOS']
 
+### These variables point to the subparts of LOOS required to build a tool.
+
+LOOSINC = LOOS + '/include'
+LOOSLIB = LOOS + '/lib'
+
+### Use the following if you want to build without having installed LOOS
+#LOOSINC = LOOS
+#LOOSLIB = LOOS
 
 
 
@@ -72,14 +80,14 @@ if not env.GetOption('clean'):
 
 ### Compile-flags
 
-debug_opts='-g -Wall -fno-inline'
+debug_opts='-g -Wall -Wextra -fno-inline'
 release_opts='-O3 -DNDEBUG -Wall'
+profile_opts='-pg'
 
 # Setup the general environment...
-env.Append(CPPPATH = ['#', LOOS, BOOSTINC])
-env.Append(LIBPATH = ['#', LOOS])
+env.Append(CPPPATH = ['#', LOOSINC, BOOSTINC])
+env.Append(LIBPATH = ['#', LOOSLIB])
 env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
-env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...
 if platform == 'darwin':
@@ -90,19 +98,29 @@ else:
       env.Append(LIBPATH = [LAPACK, ATLAS])
       env.Append(CPPPATH = [ATLASINC]) 
 
+
 # Determine what kind of build...
+# No option implies debugging, but only an explicit debug defines
+# the DEBUG symbol...  Yes, it's a bit obtuse, but it allows
+# you to control the level of debugging output through the
+# DEBUG definition...
+
 release = env['release']
+debug = env['debug']
+profile = env['profile']
+
 if int(release):
     env.Append(CCFLAGS=release_opts)
 else:
-    env.Append(CCFLAGS=debug_opts)
+   env.Append(CCFLAGS=debug_opts)
 
-debug = env['debug']
-if int(debug):
-   if int(release):
-      print "***ERROR*** You cannot have a release with debugging code included."
-      Exit(1)
+if (debug > 0):
    env.Append(CCFLAGS=" -DDEBUG=$debug")
+
+# Profiling is independent of release/debug status...
+if int(profile):
+   env.Append(CCFLAGS=profile_opts)
+   env.Append(LINKFLAGS=profile_opts)
 
 
 # Allow overrides from environment...
