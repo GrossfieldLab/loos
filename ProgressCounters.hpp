@@ -159,7 +159,7 @@ namespace loos {
   //! This is a simple "trigger" for use as a default
   class TriggerAlways {
   public:
-    bool operator()(SimpleCounter* s) { return(true); }
+    bool operator()(SimpleCounter*) { return(true); }
   };
 
 
@@ -217,9 +217,9 @@ namespace loos {
     BasicProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
       os_(std::cerr), prefix_(prefix), msg_(msg), suffix_(suffix) { }
 
-    virtual void start(SimpleCounter* subj) { os_ << prefix_; }
-    virtual void update(SimpleCounter* subj) { os_ << msg_; }
-    virtual void finish(SimpleCounter* subj) { os_ << suffix_; }
+    virtual void start(SimpleCounter*) { os_ << prefix_; }
+    virtual void update(SimpleCounter*) { os_ << msg_; }
+    virtual void finish(SimpleCounter*) { os_ << suffix_; }
 
   protected:
     std::ostream& os_;
