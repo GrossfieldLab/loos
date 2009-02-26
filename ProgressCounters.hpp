@@ -33,7 +33,6 @@
 #include <loos_defs.hpp>
 #include <timer.hpp>
 
-
 namespace loos {
 
   class SimpleCounter;
@@ -247,7 +246,7 @@ namespace loos {
 
     void update(SimpleCounter* s) {
       uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
-      os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
+      os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\r";
     }
 
     void finish(SimpleCounter* s) {

@@ -22,7 +22,6 @@
 
 
 
-#include <loos.hpp>
 #include <dcdwriter.hpp>
 
 

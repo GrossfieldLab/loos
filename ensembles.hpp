@@ -28,6 +28,9 @@
 #include <XForm.hpp>
 
 #include <loos_defs.hpp>
+#include <Atom.hpp>
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
 
 namespace loos {
   //! Compute the average structure of a set of AtomicGroup objects

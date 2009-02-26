@@ -19,15 +19,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#include <ios>
-#include <sstream>
-#include <iostream>
-#include <stdexcept>
-
-#include <ctype.h>
-
-#include <loos.hpp>
 #include <tinkerxyz.hpp>
 
 

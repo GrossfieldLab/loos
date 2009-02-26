@@ -29,6 +29,9 @@
 #include <sstream>
 #include <iostream>
 
+#include <stdexcept>
+#include <ctype.h>
+
 #include <loos_defs.hpp>
 #include <Atom.hpp>
 #include <AtomicGroup.hpp>

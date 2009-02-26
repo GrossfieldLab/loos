@@ -21,20 +21,6 @@
 
 
 
-
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <exception>
-#include <stdexcept>
-#include <vector>
-
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-
-
 #include <amber_traj.hpp>
 
 

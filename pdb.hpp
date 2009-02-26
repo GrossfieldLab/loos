@@ -30,12 +30,18 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
+
+#include <stdlib.h>
+#include <ctype.h>
 
 #include <tr1/unordered_set>
 
@@ -45,6 +51,7 @@
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
 #include <utils.hpp>
+#include <Fmt.hpp>
 
 namespace loos {
 

@@ -23,8 +23,6 @@
 
 
 
-#include <loos.hpp>
-#include <AtomicGroup.hpp>
 #include <ensembles.hpp>
 
 
