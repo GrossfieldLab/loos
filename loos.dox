@@ -138,7 +138,7 @@ For more detailed information about the build process, see
 
 To install LOOS, use the "install" target:
 
-\verbatin
+\verbatim
 scons install
 \endverbatim
 
