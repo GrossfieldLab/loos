@@ -30,7 +30,7 @@ clos.AddOptions(
 	('regenerate', 'Set to 1 to regenerate test outputs', 0),
 	('debug', 'Set to 1 to add -DDEBUG to build', 0),
         ('profile', 'Set to 1 to build the code for profiling', 0),
-	('release', 'Set to 1 to configure for release.', 0),
+	('release', 'Set to 1 to configure for release.', 1),
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
         ('shared', 'Set to 1 to build a shared LOOS library.', 0)
 )
