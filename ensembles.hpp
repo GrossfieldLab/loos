@@ -25,14 +25,12 @@
 #define ENSEMBLES_HPP
 
 #include <vector>
-#include <XForm.hpp>
-
 #include <loos_defs.hpp>
-#include <Atom.hpp>
-#include <AtomicGroup.hpp>
-#include <Trajectory.hpp>
+
 
 namespace loos {
+  class XForm;
+
   //! Compute the average structure of a set of AtomicGroup objects
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble);
 
