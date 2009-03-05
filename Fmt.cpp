@@ -10,6 +10,21 @@
 
 
 namespace loos {
+  Fmt& Fmt::scientific() { fmt = std::ios_base::scientific; return(*this); }
+    Fmt& Fmt::fixed() { fmt = std::ios_base::fixed; return(*this); }
+    Fmt& Fmt::general() { fmt = ~(std::ios_base::fixed|std::ios_base::scientific); return(*this); }
+
+    Fmt& Fmt::precision(const int p) { prc = p; return(*this); }
+    Fmt& Fmt::width(const int w) { wdth = w; return(*this); }
+    Fmt& Fmt::fill(const char c) { fil = c; return(*this); }
+
+    Fmt& Fmt::trailingZeros(bool b) { trl = b; return(*this); }
+    Fmt& Fmt::plus(bool b) { pos = b; return(*this); }
+
+    Fmt& Fmt::left(void) { ali = LEFT; return(*this); }
+    Fmt& Fmt::right(void) { ali = RIGHT; return(*this); }
+    Fmt& Fmt::internal(void) { ali = INTERNAL; return(*this); }
+
 
   //! Return the bound formatter
   BoundFmt Fmt::operator()(double d) const { return(BoundFmt(*this, d)); }
