@@ -246,7 +246,7 @@ namespace loos {
 
     void update(SimpleCounter* s) {
       uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
-      os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\033[0K\r";
+      os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
     }
 
     void finish(SimpleCounter* s) {
