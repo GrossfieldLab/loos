@@ -30,7 +30,6 @@
 #include <boost/utility.hpp>
 
 #include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
 #include <StreamWrapper.hpp>
 
 namespace loos {

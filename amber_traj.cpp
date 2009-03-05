@@ -22,7 +22,9 @@
 
 
 #include <amber_traj.hpp>
-
+#include <AtomicGroup.hpp>
+#include <iomanip>
+#include <sstream>
 
 namespace loos {
 
