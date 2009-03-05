@@ -43,7 +43,6 @@
 
 
 #include <loos.hpp>
-#include <Matrix.hpp>
 #include <iterator>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>

@@ -36,7 +36,6 @@
 
 
 #include <loos.hpp>
-#include <Matrix.hpp>
 #include <boost/format.hpp>
 #include <tr1/unordered_map>
 #include <boost/algorithm/string.hpp>
