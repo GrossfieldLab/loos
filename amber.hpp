@@ -27,28 +27,18 @@
 
 
 
-#include <ios>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iomanip>
 #include <string>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
-#include <boost/shared_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <stdlib.h>
-#include <ctype.h>
-
 #include <loos_defs.hpp>
-#include <Atom.hpp>
 #include <AtomicGroup.hpp>
-#include <utils.hpp>
-#include <Fmt.hpp>
+
 
 namespace loos {
 
