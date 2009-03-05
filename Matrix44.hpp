@@ -33,6 +33,8 @@
 
 #include <loos_defs.hpp>
 
+#include <string.h>
+
 
 namespace loos {
 
