@@ -69,53 +69,32 @@ namespace loos {
     SimpleCounter() : count_(0) { }
     virtual ~SimpleCounter() { }
 
-    void attach(ObsT* obs) { observers.push_back(obs); }
-    void detach(ObsT* obs) {
-      Observers::iterator i = std::find(observers.begin(), observers.end(), obs);
-      if (i == observers.end())
-        throw(std::logic_error("Attempting to detach an observer that was never attached"));
-      observers.erase(i);
-    }
+    void attach(ObsT*);
+    void detach(ObsT*);
 
     //! Notify observers that an update should occur
-    virtual void notify(void) {
-      Observers::iterator i;
-      for (i = observers.begin(); i != observers.end(); ++i)
-        (*i)->update(this);
-    }
+    virtual void notify(void);
 
     //! Notify observers that we've finished with our calculation
-    virtual void finish(void) {
-      timer_.stop();
-      Observers::iterator i;
-      for (i = observers.begin(); i != observers.end(); ++i)
-        (*i)->finish(this);
-    }
+    virtual void finish(void);
 
     //! Notify observers that we're starting a calculation
-    virtual void start(void) {
-      count_ = 0;
-      timer_.start();
-      Observers::iterator i;
-      for (i = observers.begin(); i != observers.end(); ++i)
-        (*i)->start(this);
-    }
-
+    virtual void start(void);
 
     //! Number of iterations we've seen so far
-    uint count(void) const { return(count_); }
+    uint count(void) const;
 
     //! Total elapsed wall-time
-    virtual double elapsed(void) { return(timer_.elapsed()); }
+    virtual double elapsed(void);
 
     //! Remaining iterations (if applicable)
-    virtual uint remaining(void) { throw(std::logic_error("remaining() is unimplemented")); }
+    virtual uint remaining(void);
 
     //! Remaining time (estimated, again if applicable)
-    virtual double timeRemaining(void) { throw(std::logic_error("timeRemaining() is unimplemented")); }
+    virtual double timeRemaining(void);
 
     //! Percent complete (if applicable)
-    virtual double fractionComplete(void) { throw(std::logic_error("fractionComplete() is unimplemented")); }
+    virtual double fractionComplete(void);
 
   protected:
     uint count_;
@@ -135,20 +114,17 @@ namespace loos {
     EstimatingCounter(const uint n) : expected(n) { }
 
     //! Alter the expected count
-    void setExpected(uint n) { expected = n; }
+    void setExpected(uint);
 
     //! Returns the number of iterations left
-    uint remaining(void) { return(expected - count_); }
+    uint remaining(void);
 
     //! Estimates the amount of time left using the current average
     //! time per iteration
-    double timeRemaining(void) {
-      double avg = timer_.elapsed() / count_;
-      return(remaining() * avg);
-    }
+    double timeRemaining(void);
 
     //! Returns the percent completed so far
-    double fractionComplete(void) { return(static_cast<double>(count_) / expected); }
+    double fractionComplete(void);
 
   protected:
     uint expected;
@@ -216,9 +192,9 @@ namespace loos {
     BasicProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
       os_(std::cerr), prefix_(prefix), msg_(msg), suffix_(suffix) { }
 
-    virtual void start(SimpleCounter*) { os_ << prefix_; }
-    virtual void update(SimpleCounter*) { os_ << msg_; }
-    virtual void finish(SimpleCounter*) { os_ << suffix_; }
+    virtual void start(SimpleCounter*);
+    virtual void update(SimpleCounter*);
+    virtual void finish(SimpleCounter*);
 
   protected:
     std::ostream& os_;
@@ -244,15 +220,8 @@ namespace loos {
     PercentProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
       BasicProgress(std::cerr, prefix, msg, suffix) { }
 
-    void update(SimpleCounter* s) {
-      uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
-      os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
-    }
-
-    void finish(SimpleCounter* s) {
-      os_ << suffix_;
-      os_ << "Total elapsed time was " << timeAsString(s->elapsed()) << std::endl;
-    }
+    void update(SimpleCounter*);
+    void finish(SimpleCounter*);
   };
 
 
