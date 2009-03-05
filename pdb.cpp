@@ -21,6 +21,13 @@
 
 
 #include <pdb.hpp>
+#include <utils.hpp>
+#include <Fmt.hpp>
+
+#include <iomanip>
+#include <tr1/unordered_set>
+#include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 
 namespace loos {
@@ -449,6 +456,46 @@ namespace loos {
 
     return(os);
   }
+
+  PDB PDB::copy(void) const {
+    AtomicGroup grp = this->AtomicGroup::copy();
+    PDB p(grp);
+    
+    p._show_charge = _show_charge;
+    p._auto_ter = _auto_ter;
+    p._has_cryst = _has_cryst;
+    p._remarks = _remarks;
+    p.cell = cell;
+    
+    return(p);
+  }
+
+  PDB* PDB::clone(void) const {
+    return(new PDB(*this));
+  }
+
+  PDB PDB::fromAtomicGroup(const AtomicGroup& g) {
+    PDB p(g);
+    
+    return(p);
+  }
+
+
+  bool PDB::showCharge(void) const { return(_show_charge); }
+  void PDB::showCharge(bool b) { _show_charge = b; }
+  bool PDB::strict(void) const { return(strictness_policy); }
+  void PDB::strict(const bool b) { strictness_policy = b; }
+
+  bool PDB::autoTerminate(void) const { return(_auto_ter); }
+
+  void PDB::autoTerminate(bool b) { _auto_ter = b; }
+
+  Remarks& PDB::remarks(void) { return(_remarks); }
+  void PDB::remarks(const Remarks& r) { _remarks = r; }
+
+  UnitCell& PDB::unitCell(void) { return(cell); }
+  void PDB::unitCell(const UnitCell& c) { cell = c; }
+
 
 
 }
