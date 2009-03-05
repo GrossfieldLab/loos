@@ -25,8 +25,6 @@
 
 #include <string>
 
-#include <vector>
-
 #include <loos_defs.hpp>
 #include <Trajectory.hpp>
 

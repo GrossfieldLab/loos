@@ -26,6 +26,7 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include <boost/utility.hpp>
 
