@@ -36,6 +36,7 @@
 
 
 #include <loos.hpp>
+#include <Matrix.hpp>
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
 

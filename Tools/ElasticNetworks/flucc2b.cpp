@@ -36,6 +36,7 @@
 
 
 #include <loos.hpp>
+#include <Matrix.hpp>
 #include <boost/format.hpp>
 #include <boost/tuple/tuple.hpp>
 

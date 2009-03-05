@@ -30,6 +30,7 @@
 
 
 #include <loos.hpp>
+#include <Matrix.hpp>
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
