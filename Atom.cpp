@@ -20,7 +20,8 @@
 */
 
 #include <Atom.hpp>
-
+#include <algorithm>
+#include <boost/format.hpp>
 
 namespace loos {
 

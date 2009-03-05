@@ -59,6 +59,7 @@ namespace loos {
   typedef boost::shared_ptr<GCoord> pGCoord;
 
   // Trajectory and subclasses...
+  class Atom;
   class Trajectory;
   class DCD;
   class AmberTraj;
@@ -66,7 +67,7 @@ namespace loos {
   class TinkerArc;
   class PDBTraj;
 
-
+  typedef boost::shared_ptr<Atom> pAtom;
   typedef boost::shared_ptr<Trajectory> pTraj;
   typedef boost::shared_ptr<DCD> pDCD;
   typedef boost::shared_ptr<AmberTraj> pAmberTraj;

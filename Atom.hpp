@@ -27,19 +27,10 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
 
 #include <loos_defs.hpp>
 
-#include <boost/format.hpp>
-
-
 namespace loos {
-
-  class Atom;
-
-  //! Shared pointer to an Atom
-  typedef boost::shared_ptr<Atom> pAtom;
 
   //! Basic Atom class for handling atom properties.
   /**
