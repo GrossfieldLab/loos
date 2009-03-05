@@ -29,26 +29,9 @@
 
 
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <fstream>
 #include <string>
-#include <stdexcept>
-
-#include <boost/algorithm/string.hpp>
 
 #include <loos_defs.hpp>
-
-#include <AtomicGroup.hpp>
-#include <pdb.hpp>
-#include <psf.hpp>
-#include <amber.hpp>
-
-#include <Trajectory.hpp>
-#include <dcd.hpp>
-#include <amber_traj.hpp>
-#include <ccpdb.hpp>
 
 namespace loos {
   //! Factory function for reading in structure files.

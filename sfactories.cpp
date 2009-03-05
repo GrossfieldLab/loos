@@ -23,6 +23,20 @@
 #include <sfactories.hpp>
 #include <sys/stat.h>
 
+
+#include <boost/algorithm/string.hpp>
+
+#include <AtomicGroup.hpp>
+#include <pdb.hpp>
+#include <psf.hpp>
+#include <amber.hpp>
+
+#include <Trajectory.hpp>
+#include <dcd.hpp>
+#include <amber_traj.hpp>
+#include <ccpdb.hpp>
+
+
 namespace loos {
 
   AtomicGroup createSystem(const std::string& s) {
