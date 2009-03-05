@@ -30,10 +30,8 @@
 #include <iostream>
 
 #include <stdexcept>
-#include <ctype.h>
 
 #include <loos_defs.hpp>
-#include <Atom.hpp>
 #include <AtomicGroup.hpp>
 
 
@@ -51,7 +49,7 @@ namespace loos {
     TinkerXYZ() { }
     virtual ~TinkerXYZ() {}
 
-    explicit TinkerXYZ(const std::string fname) {
+    explicit TinkerXYZ(const std::string& fname) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
         throw(std::runtime_error("Cannot open TinkerXYZ file " + std::string(fname)));
@@ -64,18 +62,10 @@ namespace loos {
     }
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
-    virtual TinkerXYZ* clone(void) const {
-      return(new TinkerXYZ(*this));
-    }
+    virtual TinkerXYZ* clone(void) const;
 
     //! Creates a deep copy (see AtomicGroup::copy() for more info)
-    TinkerXYZ copy(void) const {
-      AtomicGroup grp = this->AtomicGroup::copy();
-      TinkerXYZ p(grp);
-
-      // Add TinkerXYZ specific member data copies here...
-      return(p);
-    }
+    TinkerXYZ copy(void) const;
 
     void read(std::istream& is);  
 
@@ -85,7 +75,7 @@ namespace loos {
     TinkerXYZ(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
 
-    void parseAtomRecord(const std::string s);  
+    void parseAtomRecord(const std::string&);  
   
   
   };

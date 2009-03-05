@@ -20,9 +20,23 @@
 */
 
 #include <tinkerxyz.hpp>
-
+#include <Atom.hpp>
 
 namespace loos {
+
+
+  TinkerXYZ* TinkerXYZ::clone(void) const {
+    return(new TinkerXYZ(*this));
+  }
+
+  TinkerXYZ TinkerXYZ::copy(void) const {
+    AtomicGroup grp = this->AtomicGroup::copy();
+    TinkerXYZ p(grp);
+    
+    // Add TinkerXYZ specific member data copies here...
+    return(p);
+  }
+
 
   void TinkerXYZ::read(std::istream& is) {
     std::string input;
@@ -45,7 +59,7 @@ namespace loos {
 
 
 
-  void TinkerXYZ::parseAtomRecord(const std::string s) {
+  void TinkerXYZ::parseAtomRecord(const std::string& s) {
 
 
     gint index;
