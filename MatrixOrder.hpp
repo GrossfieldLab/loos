@@ -33,6 +33,8 @@
 #include <cassert>
 #include <stdexcept>
 
+#include <loos_defs.hpp>
+
 namespace loos {
 
   namespace Math {
