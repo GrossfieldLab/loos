@@ -22,7 +22,7 @@
 
 
 #include <Geometry.hpp>
-
+#include <Atom.hpp>
 
 
 namespace loos {
@@ -37,7 +37,7 @@ namespace loos {
     return (acos(cosine) * DEGREES);
   }
 
-  greal Math::angle(const pAtom a, const pAtom b, const pAtom c) {
+  greal Math::angle(const pAtom& a, const pAtom& b, const pAtom& c) {
     return(angle(a->coords(), b->coords(), c->coords()));
   }
 
@@ -51,8 +51,8 @@ namespace loos {
     return(phi * DEGREES);
   }
 
-  greal Math::torsion(const pAtom a, const pAtom b, const pAtom c, 
-                            const pAtom d) {
+  greal Math::torsion(const pAtom& a, const pAtom& b, const pAtom& c, 
+                            const pAtom& d) {
     return(torsion(a->coords(), b->coords(), c->coords(), d->coords()));
   }
 
