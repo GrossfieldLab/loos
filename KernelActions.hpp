@@ -27,20 +27,15 @@
 #define KERNELACTIONS_HPP
 
 
-#include <sstream>
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include <vector>
-
 #include <string.h>
-
-#include <boost/regex.hpp>
 
 
 #include <loos_defs.hpp>
+#include <boost/regex.hpp>
 
-#include "Atom.hpp"
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 
@@ -76,45 +71,22 @@ namespace loos {
       // Some utility functions...
 
       //! Compare the top two items on the stack...
-      int binComp(void) {
-        Value v1 = stack->pop();
-        Value v2 = stack->pop();
-        return(compare(v2, v1));
-      }
+      int binComp(void);
 
-      bool negativeOperand(void) {
-        Value v1 = stack->peek(-1);
-        Value v2 = stack->peek(-2);
+      bool negativeOperand(void);
 
-        if ( (v1.type == Value::INT && v1.itg < 0) ||
-             (v2.type == Value::INT && v2.itg < 0) )
-          return(true);
-      
-        return(false);
-      }
-
-      void binaryFalseResult(void) {
-        Value v(0);
-
-        stack->drop();
-        stack->drop();
-        stack->push(v);
-      }
-
+      void binaryFalseResult(void);
 
       //! Check to make sure an atom has been set...
-      void hasAtom(void) {
-        if (atom == 0)
-          throw(std::runtime_error("No atom set"));
-      }
+      void hasAtom(void);
 
     public:
       Action(const std::string s) : stack(0), atom(pAtom()), my_name(s) { }
 
-      void setStack(ValueStack* ptr) { stack=ptr; }
-      void setAtom(pAtom pa) { atom = pa; }
+      void setStack(ValueStack*);
+      void setAtom(pAtom&);
 
-      virtual std::string name(void) const { return(my_name); }
+      virtual std::string name(void) const;
 
       virtual void execute(void) =0;
       virtual ~Action() { }
@@ -128,13 +100,8 @@ namespace loos {
       Value val;
     public:
       explicit pushString(const std::string str) : Action("pushString"), val(str) { }
-      void execute(void) { stack->push(val); }
-      std::string name(void) const {
-        std::stringstream s;
-        s << my_name << "(" << val << ")";
-        return(s.str());
-      }
-
+      void execute(void);
+      std::string name(void) const;
     };
 
     //! Push an integer onto the data stack
@@ -142,12 +109,8 @@ namespace loos {
       Value val;
     public:
       explicit pushInt(const int i) : Action("pushInt"), val(i) { }
-      void execute(void) { stack->push(val); }
-      std::string name(void) const {
-        std::stringstream s;
-        s << my_name << "(" << val << ")";
-        return(s.str());
-      }
+      void execute(void);
+      std::string name(void) const;
     };
 
     //! Push a float onto the data stack
@@ -155,12 +118,8 @@ namespace loos {
       Value val;
     public:
       explicit pushFloat(const float f) : Action("pushFloat"), val(f) { }
-      void execute(void) { stack->push(val); }
-      std::string name(void) const {
-        std::stringstream s;
-        s << my_name << "(" << val << ")";
-        return(s.str());
-      }
+      void execute(void);
+      std::string name(void) const;
     };
 
 
@@ -168,14 +127,14 @@ namespace loos {
     class drop : public Action {
     public:
       drop() : Action("drop") { }
-      void execute(void) { stack->drop(); }
+      void execute(void);
     };
 
     //! Duplicate the top item on the stack
     class dup : public Action {
     public:
       dup() : Action("dup") { }
-      void execute(void) { stack->dup(); }
+      void execute(void);
     };
 
 
@@ -183,62 +142,35 @@ namespace loos {
     class equals : public Action {
     public:
       equals() : Action("==") { }
-      void execute(void) {
-        Value v(binComp() == 0);
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! Relation operators...:  ARG1 ARG2 <
     class lessThan : public Action {
     public:
       lessThan() : Action("<") { }
-      void execute(void) {
-
-        if (negativeOperand())
-          binaryFalseResult();
-        else {
-          Value v(binComp() < 0);
-          stack->push(v);
-        }
-
-      }
+      void execute(void);
     };
 
     //! ARG1 ARG2 <=
     class lessThanEquals : public Action {
     public:
       lessThanEquals() : Action("<=") { }
-      void execute(void) {
-
-        if (negativeOperand())
-          binaryFalseResult();
-        else {
-          Value v(binComp() <= 0);
-          stack->push(v);
-        }
-
-      }
+      void execute(void);
     };
 
     //! ARG1 ARG2 >
     class greaterThan : public Action {
     public:
       greaterThan() : Action(">") { }
-      void execute(void) {
-        Value v(binComp() > 0);
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! ARG1 ARG2 >=
     class greaterThanEquals : public Action {
     public:
       greaterThanEquals() : Action(">=") { }
-      void execute(void) {
-        Value v(binComp() >= 0);
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! Regular expression matching: ARG1 regexp(S)
@@ -251,17 +183,8 @@ namespace loos {
       boost::regex regexp;
     public:
       explicit matchRegex(const std::string s) : Action("matchRegex"), regexp(s, boost::regex::perl|boost::regex::icase), pattern(s) { }
-      void execute(void) { 
-        Value v = stack->pop();
-        Value r(0);
-        if (boost::regex_search(v.getString(), regexp))
-          r.setInt(1);
-
-        stack->push(r);
-      }
-      std::string name(void) const {
-        return(my_name + "(" + pattern + ")");
-      }
+      void execute(void);
+      std::string name(void) const;
     
     private:
       std::string pattern;
@@ -277,17 +200,7 @@ namespace loos {
     class matchStringAsRegex : public Action {
     public:
       matchStringAsRegex() : Action("matchStringAsRegex") { }
-      void execute(void) {
-        Value v = stack->pop();
-        boost::regex re(v.getString(), boost::regex::perl|boost::regex::icase);
-        Value u = stack->pop();
-        Value r(0);
-      
-        if (boost::regex_search(u.getString(), re))
-          r.setInt(1);
-      
-        stack->push(r);
-      }
+      void execute(void);
     };
   
   
@@ -304,28 +217,8 @@ namespace loos {
                                                     regexp(s, boost::regex::perl|boost::regex::icase),
                                                     pattern(s) { }
 
-      void execute(void) {
-        Value v = stack->pop();
-        Value r(-1);
-        boost::smatch what;
-
-        if (boost::regex_search(v.getString(), what, regexp)) {
-          unsigned i;
-          int val;
-          for (i=0; i<what.size(); i++) {
-            if ((std::stringstream(what[i]) >> val)) {
-              r.setInt(val);
-              break;
-            }
-          }
-        }
-
-        stack->push(r);
-      }
-
-      std::string name(void) const {
-        return(my_name + "(" + pattern + ")");
-      }
+      void execute(void);
+      std::string name(void) const;
 
     private:
       boost::regex regexp;
@@ -339,55 +232,35 @@ namespace loos {
     class pushAtomName : public Action {
     public:
       pushAtomName() : Action("pushAtomName") { }
-      void execute(void) {
-        hasAtom();
-        Value v(atom->name());
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! Push atom id onto the stack
     class pushAtomId : public Action {
     public:
       pushAtomId() : Action("pushAtomId") { }
-      void execute(void) {
-        hasAtom();
-        Value v(atom->id());
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! Push atom'ss residue name onto the stack
     class pushAtomResname : public Action {
     public:
       pushAtomResname() : Action("pushAtomResname") { }
-      void execute(void) {
-        hasAtom();
-        Value v(atom->resname());
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! Push atom's residue id onto the stack
     class pushAtomResid : public Action {
     public:
       pushAtomResid() : Action("pushAtomResid") { }
-      void execute(void) {
-        hasAtom();
-        Value v(atom->resid());
-        stack->push(v);
-      }
+      void execute(void);
     };
 
     //! Push atom's segid onto the stack
     class pushAtomSegid : public Action {
     public:
       pushAtomSegid() : Action("pushAtomSegid") { }
-      void execute(void) {
-        hasAtom();
-        Value v(atom->segid());
-        stack->push(v);
-      }
+      void execute(void);
     };
 
 
@@ -397,32 +270,14 @@ namespace loos {
     class logicalAnd : public Action {
     public:
       logicalAnd() : Action("&&") { }
-      void execute(void) {
-        Value v2 = stack->pop();
-        Value v1 = stack->pop();
-
-        if (!(v1.type == Value::INT && v2.type == Value::INT))
-          throw(std::runtime_error("Invalid operands to logicalAnd"));
-
-        Value u(v1.itg && v2.itg);
-        stack->push(u);
-      }
+      void execute(void);
     };
 
     //! ARG1 ARG2 ||
     class logicalOr : public Action {
     public:
       logicalOr() : Action("||") { }
-      void execute(void) {
-        Value v1 = stack->pop();
-        Value v2 = stack->pop();
-
-        if (!(v1.type == Value::INT && v2.type == Value::INT))
-          throw(std::runtime_error("Invalid operands to logicalOr"));
-
-        Value u(v1.itg || v2.itg);
-        stack->push(u);
-      }
+      void execute(void);
     };
 
 
@@ -430,25 +285,14 @@ namespace loos {
     class logicalNot : public Action {
     public:
       logicalNot() : Action("!") { }
-      void execute(void) {
-        Value v1 = stack->pop();
-
-        if (v1.type != Value::INT)
-          throw(std::runtime_error("Invalid operand to logicalNot"));
-
-        Value u(!v1.itg);
-        stack->push(u);
-      }
+      void execute(void);
     };
 
     //! Always returns true...
     class logicalTrue : public Action {
     public:
       logicalTrue() : Action("TRUE") { }
-      void execute(void) {
-        Value v((int)1);
-        stack->push(v);
-      }
+      void execute(void);
     };
 
 
@@ -456,18 +300,7 @@ namespace loos {
     class Hydrogen : public Action {
     public:
       Hydrogen() : Action("Hydrogen") { }
-      void execute(void) {
-        hasAtom();
-      
-        bool masscheck = true;
-        if (atom->checkProperty(Atom::massbit))
-          masscheck = (atom->mass() < 1.1);
-
-        std::string n = atom->name();
-        Value v;
-        v.setInt( (n[0] == 'H' && masscheck) );
-        stack->push(v);
-      }
+      void execute(void);
     };
   
 
