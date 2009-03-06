@@ -202,6 +202,21 @@ namespace loos {
   };
 
 
+
+  //! Provide feedback by percent-complete
+  class PercentProgress : public BasicProgress {
+  public:
+    PercentProgress() : BasicProgress("Progress:\n", "complete", "") { }
+    PercentProgress(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
+      BasicProgress(os, prefix, msg, suffix) { }
+    PercentProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
+      BasicProgress(std::cerr, prefix, msg, suffix) { }
+
+    void update(SimpleCounter*);
+    void finish(SimpleCounter*);
+  };
+
+
   //! Provide feedback by percent-complete with estimates of time
   //! remaining
   /**
@@ -212,12 +227,12 @@ namespace loos {
    * class requires a counter that implements the timeRemaining() and
    * fractionComplete() functions.
    */
-  class PercentProgress : public BasicProgress {
+  class PercentProgressWithTime : public BasicProgress {
   public:
-    PercentProgress() : BasicProgress("Progress:\n", "complete", "") { }
-    PercentProgress(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
+    PercentProgressWithTime() : BasicProgress("Progress:\n", "complete", "") { }
+    PercentProgressWithTime(std::ostream& os, const std::string& prefix, const std::string& msg, const std::string& suffix) :
       BasicProgress(os, prefix, msg, suffix) { }
-    PercentProgress(const std::string& prefix, const std::string& msg, const std::string& suffix) :
+    PercentProgressWithTime(const std::string& prefix, const std::string& msg, const std::string& suffix) :
       BasicProgress(std::cerr, prefix, msg, suffix) { }
 
     void update(SimpleCounter*);

@@ -91,10 +91,22 @@ namespace loos {
 
   void PercentProgress::update(SimpleCounter* s) {
     uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
-    os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
+    os_ << i << "% " << msg_ << std::endl;
   }
 
   void PercentProgress::finish(SimpleCounter* s) {
+    os_ << suffix_;
+    os_ << "Total elapsed time was " << timeAsString(s->elapsed()) << std::endl;
+  }
+
+  // -----------------------------------------------------------
+
+  void PercentProgressWithTime::update(SimpleCounter* s) {
+    uint i = static_cast<uint>(floor(s->fractionComplete() * 100.0));
+    os_ << i << "% " << msg_ << " (" << timeAsString(s->timeRemaining()) << " remaining)\n";
+  }
+
+  void PercentProgressWithTime::finish(SimpleCounter* s) {
     os_ << suffix_;
     os_ << "Total elapsed time was " << timeAsString(s->elapsed()) << std::endl;
   }

@@ -146,7 +146,7 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
   double mean = 0.0;
   uint total = n*(n+1)/2;
 
-  PercentProgress watcher;
+  PercentProgressWithTime watcher;
   PercentTrigger trigger(0.25);
 
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));

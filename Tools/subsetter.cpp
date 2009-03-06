@@ -233,7 +233,7 @@ int main(int argc, char *argv[]) {
                       // we're reading from...
 
   // Setup for progress output...
-  PercentProgress watcher;
+  PercentProgressWithTime watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.25), EstimatingCounter(indices.size()));
   slayer.attach(&watcher);
   if (verbose)
