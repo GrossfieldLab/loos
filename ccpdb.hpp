@@ -27,11 +27,7 @@
 #include <string>
 #include <stdexcept>
 
-#include <boost/utility.hpp>
-
 #include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <StreamWrapper.hpp>
 #include <Trajectory.hpp>
 
 #include <pdb.hpp>

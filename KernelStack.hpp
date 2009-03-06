@@ -44,59 +44,23 @@ namespace loos {
     class ValueStack {
       std::vector<Value> values;
 
-      void notEmpty(void) const {
-        if (values.size() == 0)
-          throw(std::logic_error("Operation requested on an empty stack."));
-      }
+      void notEmpty(void) const;
 
     public:
-      void push(const Value& val) { values.push_back(val); };
-
-      Value pop(void) {
-        notEmpty();
-        Value val = values.back();
-        values.pop_back();
-        return(val); 
-      }
-
-      // Duplicate the top entry...
-      void dup(void) {
-        notEmpty();
-        Value val = values.back();
-        push(val);
-      }
-
-      // Just drop the top entry, i.e. (void)pop()
-      void drop(void) {
-        notEmpty();
-        values.pop_back();
-      }
+      void push(const Value&);
+      Value pop(void);
+      void dup(void);
+      void drop(void);
 
       // Peek at the top value without popping it...
-      Value peek(int i) {
-        if (i < 0)
-          i += values.size();
-        if ((unsigned int)i >= values.size())
-          throw(std::logic_error("Peeking beyond the stack!"));
+      Value peek(int);
+      
+      unsigned int size(void) const;
 
-        return(values[i]);
-      }
+      void clear(void);
 
-      unsigned int size(void) const { return(values.size()); }
-
-      void clear(void) { values.clear(); }
-
-      friend std::ostream& operator<<(std::ostream& os, const ValueStack& s) {
-        os << "<STACK>\n";
-        std::vector<Value>::const_iterator i;
-
-        for (i=s.values.begin(); i != s.values.end(); i++)
-          os << "  " << *i << std::endl;
-
-        return(os);
-      }
+      friend std::ostream& operator<<(std::ostream&, const ValueStack&);
     };
-
   }
 }
 

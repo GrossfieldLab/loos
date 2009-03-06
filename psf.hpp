@@ -30,10 +30,8 @@
 #include <iostream>
 
 #include <stdexcept>
-#include <ctype.h>
 
 #include <loos_defs.hpp>
-#include <Atom.hpp>
 #include <AtomicGroup.hpp>
 
 
@@ -74,18 +72,10 @@ namespace loos {
     }
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
-    virtual PSF* clone(void) const {
-      return(new PSF(*this));
-    }
+    virtual PSF* clone(void) const;
 
     //! Creates a deep copy (see AtomicGroup::copy() for more info)
-    PSF copy(void) const {
-      AtomicGroup grp = this->AtomicGroup::copy();
-      PSF p(grp);
-
-      // Add PSF specific member data copies here...
-      return(p);
-    }
+    PSF copy(void) const;
 
     void read(std::istream& is);  
 

@@ -60,8 +60,6 @@
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
-#include <Matrix.hpp>
-#include <MatrixIO.hpp>
 
 using namespace std;
 using namespace loos;

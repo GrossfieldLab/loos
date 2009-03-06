@@ -30,12 +30,9 @@
 #include <string>
 #include <stdexcept>
 #include <exception>
-#include <vector>
-#include <boost/utility.hpp>
 
 #include <loos_defs.hpp>
 
-#include <AtomicGroup.hpp>
 #include <StreamWrapper.hpp>
 #include <Trajectory.hpp>
 
@@ -118,38 +115,38 @@ namespace loos {
 
     // Accessor methods...
 
-    virtual uint natoms(void) const { return(_natoms); }
-    virtual bool hasPeriodicBox(void) const { return(_icntrl[10] == 1); }
-    virtual GCoord periodicBox(void) const { return(GCoord(qcrys[0], qcrys[1], qcrys[2])); }
+    virtual uint natoms(void) const;
+    virtual bool hasPeriodicBox(void) const;
+    virtual GCoord periodicBox(void) const;
 
-    std::vector<std::string> titles(void) const { return(_titles); }
+    std::vector<std::string> titles(void) const;
 
-    int icntrl(const int i) const { assert(i>=0 && i<20); return(_icntrl[i]); }
-    void icntrl(const int i, const int val) { assert(i>=0 && i<20); _icntrl[i] = val; }
+    int icntrl(const int) const;
+    void icntrl(const int, const int);
 
     // * legacy *
-    std::vector<double> crystalParams(void) const { return(qcrys); }
-    bool hasCrystalParams(void) const { return(_icntrl[10] == 1); }
+    std::vector<double> crystalParams(void) const;
+    bool hasCrystalParams(void) const;
 
-    virtual float timestep(void) const { return(_delta); }
-    virtual uint nframes(void) const { return(_icntrl[0]); }
+    virtual float timestep(void) const;
+    virtual uint nframes(void) const;
 
     //! Return the raw coords...
-    std::vector<dcd_real> xcoords(void) const { return(xcrds); }
+    std::vector<dcd_real> xcoords(void) const;
     //! Return the raw coords...
-    std::vector<dcd_real> ycoords(void) const { return(ycrds); }
+    std::vector<dcd_real> ycoords(void) const;
     //! Return the raw coords...
-    std::vector<dcd_real> zcoords(void) const { return(zcrds); }
+    std::vector<dcd_real> zcoords(void) const;
 
     // The following track CHARMm names (more or less...)
-    unsigned int nsteps(void) const { return(_icntrl[3]); }
-    float delta(void) const { return(_delta); }
-    int nsavc(void) const { return(_icntrl[2]); }
-    int nfile(void) const { return(_icntrl[0]); }
-    int nfixed(void) const { return(_icntrl[8]); }
+    unsigned int nsteps(void) const;
+    float delta(void) const;
+    int nsavc(void) const;
+    int nfile(void) const;
+    int nfixed(void) const;
 
     //! Returns true if the DCD file being read is in the native endian format
-    bool nativeFormat(void) const { return(!swabbing); }
+    bool nativeFormat(void) const;
 
     //! Auto-interleave the coords into a vector of GCoord()'s.
     /*!  This can be a pretty slow operation, so be careful. */

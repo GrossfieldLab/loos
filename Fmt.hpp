@@ -37,30 +37,30 @@ namespace loos {
     BoundFmt operator()(double d) const;
   
     //! Output in scientific format
-    Fmt& scientific() { fmt = std::ios_base::scientific; return(*this); }
+    Fmt& scientific(void);
     //! Output in fixed-point
-    Fmt& fixed() { fmt = std::ios_base::fixed; return(*this); }
+    Fmt& fixed(void);
     //! Output normally (i.e. general)
-    Fmt& general() { fmt = ~(std::ios_base::fixed|std::ios_base::scientific); return(*this); }
+    Fmt& general(void);
 
     //! Set the precision
-    Fmt& precision(const int p) { prc = p; return(*this); }
+    Fmt& precision(const int);
     //! Set the output field width
-    Fmt& width(const int w) { wdth = w; return(*this); }
+    Fmt& width(const int);
     //! Set the fill character
-    Fmt& fill(const char c) { fil = c; return(*this); }
+    Fmt& fill(const char);
 
     //! Determines whether or not trailing zeros are shown
-    Fmt& trailingZeros(bool b=true) { trl = b; return(*this); }
+    Fmt& trailingZeros(bool b = true);
     //! Prepend plus sign?
-    Fmt& plus(bool b=true) { pos = b; return(*this); }
+    Fmt& plus(bool b = true);
 
     //! Align left
-    Fmt& left(void) { ali = LEFT; return(*this); }
+    Fmt& left(void);
     //! Align right
-    Fmt& right(void) { ali = RIGHT; return(*this); }
+    Fmt& right(void);
     //! Align "internal" (see C++ ref)
-    Fmt& internal(void) { ali = INTERNAL; return(*this); }
+    Fmt& internal(void);
 
   private:
 

@@ -28,8 +28,6 @@
 
 #include <vector>
 
-#include "Atom.hpp"
-
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 #include "KernelActions.hpp"
@@ -45,48 +43,23 @@ namespace loos {
   public:
     
     //! Destroy all of the stored commands...
-    ~Kernel() {
-      std::vector<internal::Action*>::iterator i;
-      for (i = actions.begin(); i != actions.end(); i++)
-        delete (*i);
-    }
+    ~Kernel();
 
     //! Add a command, setting the data-stack pointer...
-    void push(internal::Action *act) {
-      act->setStack(&val_stack);
-      actions.push_back(act); 
-    }
+    void push(internal::Action*);
 
-    void pop(void) { actions.pop_back(); }
+    void pop(void);
 
     //! Execute the stored commands for a specific atom.
     //! This does not clear the command stack/list
-    void execute(pAtom pa = pAtom()) {
-
-      std::vector<internal::Action*>::iterator i;
-      for (i=actions.begin(); i != actions.end(); i++) {
-        (*i)->setAtom(pa);
-        (*i)->execute();
-      }
-    }
-
+    void execute(pAtom pa = pAtom());
     
-    void clearActions(void) { actions.clear(); }
+    void clearActions(void);
 
-    internal::ValueStack& stack(void) { return(val_stack); }
+    internal::ValueStack& stack(void);
 
-    friend std::ostream& operator<<(std::ostream& os, const Kernel& k) {
-      std::vector<internal::Action*>::const_iterator i;
-
-      os << "Commands:\n";
-      for (i=k.actions.begin(); i != k.actions.end(); i++)
-        os << (*i)->name() << std::endl;
-      os << std::endl;
-      return(os);
-    }
-
+    friend std::ostream& operator<<(std::ostream&, const Kernel&);
   };
-
 };
 
 

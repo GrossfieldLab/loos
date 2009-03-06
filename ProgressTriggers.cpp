@@ -19,48 +19,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(PROGRESSTRIGGERS_HPP)
-#define PROGRESSTRIGGERS_HPP
 
-#include <loos_defs.hpp>
-#include <ProgressCounters.hpp>
+#include <ProgressTriggers.hpp>
 
 
 namespace loos {
 
-  //! Trigger every i-iterations
-  class TriggerEvery {
-  public:
-    TriggerEvery(const uint i) : freq(i) { }
-    bool operator()(SimpleCounter*);
-    void setFrequency(const uint);
+  bool TriggerEvery::operator()(SimpleCounter* subj) {
+    return(subj->count() % freq == 0);
+  }
 
-  private:
-    uint freq;
+  void TriggerEvery::setFrequency(const uint i) { freq = i; }
+
+
+  //----------------------------------------------------------
+  void PercentTrigger::setFraction(double frac) { frac_ = frac; }
+  void PercentTrigger::reset(void) { chunk_ = 0; }
+
+  bool PercentTrigger::operator()(SimpleCounter* subj) {
+    int chunk = static_cast<int>( subj->fractionComplete() / frac_ );
+    if (chunk != chunk_) {
+      chunk_ = chunk;
+      return(true);
+    }
+    return(false);
   };
-
-
-  //! Trigger whenever at least frac percent more iterations have happened
-  /**
-   * This trigger tracks which fractional update it's in.  If you want
-   * to reuse the trigger, you must reset it prior to starting up the
-   * counter again...
-   */
-  class PercentTrigger {
-  public:
-    PercentTrigger(double frac) : frac_(frac), chunk_(0) { }
-    void setFraction(double);
-    void reset(void);
-
-    bool operator()(SimpleCounter*);
-
-  private:
-    double frac_;
-    int chunk_;
-  };
-
-
+  
 }
-
-
-#endif

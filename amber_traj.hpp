@@ -23,20 +23,9 @@
 #define AMBER_TRAJ_HPP
 
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <iomanip>
 #include <string>
-#include <stdexcept>
-
-#include <vector>
-
-#include <boost/utility.hpp>
 
 #include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <StreamWrapper.hpp>
 #include <Trajectory.hpp>
 
 

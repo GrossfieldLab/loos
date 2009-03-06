@@ -35,10 +35,40 @@
 
 
 #include <dcd.hpp>
-
+#include <AtomicGroup.hpp>
 
 
 namespace loos {
+
+  uint DCD::natoms(void) const { return(_natoms); }
+  bool DCD::hasPeriodicBox(void) const { return(_icntrl[10] == 1); }
+  GCoord DCD::periodicBox(void) const { return(GCoord(qcrys[0], qcrys[1], qcrys[2])); }
+
+  std::vector<std::string> DCD::titles(void) const { return(_titles); }
+
+  int DCD::icntrl(const int i) const { assert(i>=0 && i<20); return(_icntrl[i]); }
+  void DCD::icntrl(const int i, const int val) { assert(i>=0 && i<20); _icntrl[i] = val; }
+
+  // * legacy *
+  std::vector<double> DCD::crystalParams(void) const { return(qcrys); }
+  bool DCD::hasCrystalParams(void) const { return(_icntrl[10] == 1); }
+
+  float DCD::timestep(void) const { return(_delta); }
+  uint DCD::nframes(void) const { return(_icntrl[0]); }
+
+  std::vector<dcd_real> DCD::xcoords(void) const { return(xcrds); }
+  std::vector<dcd_real> DCD::ycoords(void) const { return(ycrds); }
+  std::vector<dcd_real> DCD::zcoords(void) const { return(zcrds); }
+
+  // The following track CHARMm names (more or less...)
+  unsigned int DCD::nsteps(void) const { return(_icntrl[3]); }
+  float DCD::delta(void) const { return(_delta); }
+  int DCD::nsavc(void) const { return(_icntrl[2]); }
+  int DCD::nfile(void) const { return(_icntrl[0]); }
+  int DCD::nfixed(void) const { return(_icntrl[8]); }
+
+  bool DCD::nativeFormat(void) const { return(!swabbing); }
+
 
   // Allocate the input buffer and pre-size the coordinate vectors.
   // n = number of atoms

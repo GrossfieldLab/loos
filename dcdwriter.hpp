@@ -31,7 +31,6 @@
 #include <stdexcept>
 #include <exception>
 #include <vector>
-#include <boost/utility.hpp>
 
 #include <loos_defs.hpp>
 

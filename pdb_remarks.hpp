@@ -29,7 +29,6 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
 
 namespace loos {
 
@@ -41,8 +40,8 @@ namespace loos {
    */
   class Remarks {
   public:
-    int numberOf(void) const { return(remarks.size()); }   // Compat with PERL
-    int size(void) const { return(remarks.size()); }
+    int numberOf(void) const;
+    int size(void) const;
     //! Access the ith remark
     std::string get(const int i) const;
     //! Add a remark

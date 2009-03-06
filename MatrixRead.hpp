@@ -44,6 +44,7 @@
 
 #include <boost/format.hpp>
 
+#include <loos_defs.hpp>
 #include <Matrix.hpp>
 
 

@@ -26,6 +26,7 @@
 #if !defined(CRYST_HPP)
 #define CRYST_HPP
 
+#include <loos_defs.hpp>
 
 namespace loos {
 

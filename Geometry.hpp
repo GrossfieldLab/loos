@@ -25,10 +25,8 @@
 #if !defined(GEOM_HPP)
 #define GEOM_HPP
 
-#include "loos_defs.hpp"
-
+#include <loos_defs.hpp>
 #include <cmath>
-#include "Atom.hpp"
 
 namespace loos {
   //! Namespace for math and math-related things in loos
@@ -37,17 +35,17 @@ namespace loos {
     const double DEGREES = 180 / M_PI ;
     
     //! Compute the angle in degrees assuming the middle is the vertex
-    greal angle(const GCoord &a, const GCoord &b, const GCoord &c);
+    greal angle(const GCoord&, const GCoord&, const GCoord&);
     
     //! Compute the angle in degrees assuming the middle is the vertex
-    greal angle(const pAtom a, const pAtom b, const pAtom c);
+    greal angle(const pAtom&, const pAtom&, const pAtom&);
     
     //! Compute the torsion in degrees 
-    greal torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
-                  const GCoord &d);
+    greal torsion(const GCoord&, const GCoord&, const GCoord&, 
+                  const GCoord&);
     
-    greal torsion(const pAtom a, const pAtom b, const pAtom c, 
-                  const pAtom d);
+    greal torsion(const pAtom&, const pAtom&, const pAtom&, 
+                  const pAtom&);
   }
 }
 

@@ -21,6 +21,10 @@
 
 
 #include <amber.hpp>
+#include <stdlib.h>
+#include <ctype.h>
+
+#include <iomanip>
 
 namespace loos {
 

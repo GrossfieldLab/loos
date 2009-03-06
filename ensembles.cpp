@@ -24,7 +24,9 @@
 
 
 #include <ensembles.hpp>
-
+#include <XForm.hpp>
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
 
 namespace loos {
 

@@ -36,26 +36,19 @@ namespace loos {
 
   //! Predicate for selecting CA atoms
   struct CAlphaSelector : public AtomSelector {
-    bool operator()(const pAtom& pa) const {
-      return(pa->name() == "CA");
-    }
+    bool operator()(const pAtom&) const;
   };
 
   //! Predicate for selecting backbone
   struct BackboneSelector : public AtomSelector {
-    bool operator()(const pAtom& pa) const {
-      std::string s = pa->name();
-      return(s == "C" || s == "CA" || s == "O" || s == "N");
-    }
+    bool operator()(const pAtom&) const;
   };
 
 
   //! Predicate for selecting atoms based on the passed segid string
   struct SegidSelector : public AtomSelector {
     explicit SegidSelector(const std::string s) : str(s) { }
-    bool operator()(const pAtom& pa) const {
-      return(pa->segid() == str);
-    }
+    bool operator()(const pAtom&) const;
 
     std::string str;
   };
@@ -63,9 +56,7 @@ namespace loos {
   //! Predicate for selecting atoms from a range of resid's
   struct ResidRangeSelector : public AtomSelector {
     ResidRangeSelector(const int low, const int high) : _low(low), _high(high) { }
-    bool operator()(const pAtom& pa) const {
-      return(pa->resid() >= _low && pa->resid() <= _high);
-    }
+    bool operator()(const pAtom&) const;
 
     int _low, _high;
   };
@@ -73,10 +64,7 @@ namespace loos {
   //! Predicate for selecting atoms in a specific range of z values
   struct ZSliceSelector : public AtomSelector {
     ZSliceSelector(const greal min, const greal max) : _min(min), _max(max) { }
-    bool operator()(const pAtom& pa) const {
-      greal z = (pa->coords()).z();
-      return ( (z>=_min) && (z<_max) );
-    }
+    bool operator()(const pAtom& pa) const;
 
     greal _min, _max;
   };
@@ -96,9 +84,7 @@ namespace loos {
 
   struct NotSelector : public AtomSelector {
     explicit NotSelector(const AtomSelector& s) : sel(s) { }
-    bool operator()(const pAtom& pa) const {
-      return(!(sel(pa)));
-    }
+    bool operator()(const pAtom&) const;
 
     const AtomSelector& sel;
   };
@@ -106,17 +92,7 @@ namespace loos {
 
   //! Select hydrogen atoms
   struct HydrogenSelector  : public AtomSelector {
-    bool operator()(const pAtom& pa) const {
-
-      bool masscheck = true;
-
-      if (pa->checkProperty(Atom::massbit))
-        masscheck = (pa->mass() < 1.1);
-
-      std::string n = pa->name();
-      return( (n[0] == 'H') && masscheck );
-
-    }
+    bool operator()(const pAtom&) const;
   };
 
   //! Select non-hydrogen atoms
@@ -124,9 +100,7 @@ namespace loos {
     HydrogenSelector hsel;
     NotSelector not_heavy;
     HeavyAtomSelector() : not_heavy(hsel) { }
-    bool operator()(const pAtom& pa) const {
-      return (not_heavy(pa));
-    }
+    bool operator()(const pAtom& pa) const;
   };
 
 
@@ -144,9 +118,7 @@ namespace loos {
 
   struct AndSelector : public AtomSelector {
     AndSelector(const AtomSelector& x, const AtomSelector& y) : lhs(x), rhs(y) { }
-    bool operator()(const pAtom& pa) const {
-      return(lhs(pa) && rhs(pa));
-    }
+    bool operator()(const pAtom& pa) const;
 
     const AtomSelector& lhs;
     const AtomSelector& rhs;
@@ -168,9 +140,7 @@ namespace loos {
 
   struct OrSelector : public AtomSelector {
     OrSelector(const AtomSelector& x, const AtomSelector& y) : lhs(x), rhs(y) { }
-    bool operator()(const pAtom& pa) const {
-      return(lhs(pa) || rhs(pa));
-    }
+    bool operator()(const pAtom& pa) const;
 
     const AtomSelector& lhs;
     const AtomSelector& rhs;
@@ -185,9 +155,7 @@ namespace loos {
   //! Predicate for selecting solvent based on common solvent SEGIDs
   struct SolventSelector : public AtomSelector {
     SolventSelector() : s1("SOLV"), s2("BULK"), osel(s1, s2) {}
-    bool operator()(const pAtom& pa) const {
-      return(osel(pa));
-    }
+    bool operator()(const pAtom& pa) const;
 
     SegidSelector s1, s2;
     OrSelector osel;
@@ -198,9 +166,7 @@ namespace loos {
   //! Select only heavy solvent atoms
   struct HeavySolventSelector : public AtomSelector {
     HeavySolventSelector() : sel(s1, s2) { }
-    bool operator()(const pAtom& pa) const {
-      return(sel(pa));
-    }
+    bool operator()(const pAtom& pa) const;
 
     SolventSelector s1;
     HeavyAtomSelector s2;
@@ -227,19 +193,7 @@ namespace loos {
   public:
     explicit KernelSelector(Kernel& k) : krnl(k) { }
 
-    bool operator()(const pAtom& pa) const {
-      krnl.execute(pa);
-      if (krnl.stack().size() != 1) {
-        throw(std::runtime_error("Execution error - unexpected values on stack"));
-      }
-
-      internal::Value results = krnl.stack().pop();
-      if (results.type != internal::Value::INT)
-        throw(std::runtime_error("Execution error - unexpected value on top of stack"));
-
-      return(results.itg);
-    }
-
+    bool operator()(const pAtom& pa) const;
 
   private:
     Kernel& krnl;

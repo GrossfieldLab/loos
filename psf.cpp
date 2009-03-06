@@ -26,6 +26,19 @@
 namespace loos {
 
 
+  PSF* PSF::clone(void) const {
+    return(new PSF(*this));
+  }
+
+  PSF PSF::copy(void) const {
+    AtomicGroup grp = this->AtomicGroup::copy();
+    PSF p(grp);
+    
+    // Add PSF specific member data copies here...
+    return(p);
+  }
+
+
 
   void PSF::read(std::istream& is) {
     std::string input;

@@ -99,109 +99,51 @@ namespace loos {
     explicit XForm(const GMatrix& m) { stack.push_back(m); }
 
     //! Push the current matrix onto the stack
-    void push(void) { GMatrix M = stack.back(); stack.push_back(M); _unset = false; }
+    void push(void);
     //! Pop the top matrix off the stack
-    void pop(void) {  stack.pop_back(); _unset = false; }
+    void pop(void);
     //! Load a matrix onto the current transform
-    void load(const GMatrix& m) { stack.back() = m; _unset = false; }
+    void load(const GMatrix&);
     //! Concatenate (post-multiply) a matrix with the current transform
-    void concat(const GMatrix& m) { stack.back() *= m; _unset = false; }
+    void concat(const GMatrix&);
 
     //! Premultiply the current transform
-    void premult(const GMatrix& m) { GMatrix t = stack.back(); stack.back() = m * t; _unset = false; }
+    void premult(const GMatrix&);
 
     //! Set the current transform to the identity
-    void identity(void) { GMatrix m;  stack.back() = m;  _unset = true; }
+    void identity(void);
 
-    bool unset(void) const { return(_unset); }
+    bool unset(void) const;
   
     //! Translation matrix
-    void translate(const greal x, const greal y, const greal z) {
-      GMatrix M;
-
-      M(0, 3) = x;
-      M(1, 3) = y;
-      M(2, 3) = z;
-      concat(M);
-    }
+    void translate(const greal, const greal, const greal);
 
     //! Translation specified by a GCoord()
-    void translate(const GCoord& g) {
-      translate(g[0], g[1], g[2]);
-    }
+    void translate(const GCoord&);
 
     //! Scaling
-    void scale(const greal x, const greal y, const greal z) {
-      GMatrix M;
-
-      M(0,0) = x;
-      M(1,1) = y;
-      M(2,2) = z;
-      concat(M);
-    }
+    void scale(const greal, const greal, const greal);
 
     //! Scaling
-    void scale(const GCoord& g) {
-      scale(g[0], g[1], g[2]);
-    }
-
+    void scale(const GCoord&);
 
     // Angles are in degrees.
 
     //! Rotate about an arbitrary vector
     //! Angles are specified in degrees.
-    void rotate(const GCoord& v, const greal angle) {
-      greal theta = PI * angle / 180.0;
-      greal c = cos(theta);
-      greal s = sin(theta);
-      GMatrix M;
-
-      M[0] = v.x() * v.x() * (1.0 - c) + c;
-      M[1] = v.x() * v.y() * (1.0 - c) - v.z() * s;
-      M[2] = v.x() * v.z() * (1.0 - c) + v.y() * s;
-
-      M[4] = v.x() * v.y() * (1.0 - c) + v.z() * s;
-      M[5] = v.y() * v.y() * (1.0 - c) + c;
-      M[6] = v.y() * v.z() * (1.0 - c) - v.x() * s;
-
-      M[8] = v.x() * v.z() * (1.0 - c) - v.y() * s;
-      M[9] = v.y() * v.z() * (1.0 - c) + v.x() * s;
-      M[10] = v.z() * v.z() * (1.0 - c) + c;
-    
-      concat(M);
-    }
+    void rotate(const GCoord&, const greal);
 
     //! Rotate about a specified axis
     //! Axis is given by either 'x', 'y', or 'z'.
     //! Angles are in degrees.
-    void rotate(const char axis, const greal angle) {
-      switch(axis) {
-      case 'x':
-      case 'X': rotate(GCoord(1,0,0), angle); break;
-
-      case 'y':
-      case 'Y': rotate(GCoord(0,1,0), angle); break;
-
-      case 'z':
-      case 'Z': rotate(GCoord(0,0,1), angle); break;
-
-      default:
-        throw(std::logic_error("Invalid axis in XForm::rotate(const char, const greal)"));
-      }
-    }
+    void rotate(const char, const greal);
 
     //! Transform a GCoord() with the current transformation
-    GCoord transform(const GCoord& v) {
-      return(stack.back() * v);
-    }
+    GCoord transform(const GCoord&);
 
     //! Get the current trasnformation
     // Should we copy or return a ref?
-    GMatrix current(void) const {
-      GMatrix M = stack.back();
-      return(M);
-    }
-
+    GMatrix current(void) const;
 
   };
 

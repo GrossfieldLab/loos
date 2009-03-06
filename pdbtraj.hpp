@@ -29,12 +29,9 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <boost/utility.hpp>
-#include <boost/format.hpp>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
-#include <StreamWrapper.hpp>
 #include <Trajectory.hpp>
 
 #include <pdb.hpp>
@@ -74,26 +71,26 @@ namespace loos {
     explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(std::string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
 
-    virtual void rewind(void) { seekFrame(0); }
-    virtual uint nframes(void) const { return(_nframes); }
-    virtual uint natoms(void) const { return(_natoms); }
+    virtual void rewind(void);
+    virtual uint nframes(void) const;
+    virtual uint natoms(void) const;
     virtual std::vector<GCoord> coords(void);
-    virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
+    virtual void updateGroupCoords(AtomicGroup&);
 
     virtual void seekNextFrame(void);
     virtual void seekFrame(const uint);
     virtual bool parseFrame(void);
 
-    virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
-    virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
+    virtual bool hasPeriodicBox(void) const;
+    virtual GCoord periodicBox(void) const;
 
-    virtual float timestep(void) const { return(0.001); }
+    virtual float timestep(void) const;
 
     //! Returns the auto-generated name for the file containing the current frame.
-    std::string currentName(void) const { return(current_name); }
+    std::string currentName(void) const;
 
     //! See CCPDB::currentFrame() for important notes
-    PDB currentFrame(void) const { return(frame); }
+    PDB currentFrame(void) const;
 
   private:
     void init(void);

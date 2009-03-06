@@ -20,7 +20,7 @@
 */
 
 #include <tinker_arc.hpp>
-
+#include <AtomicGroup.hpp>
 
 namespace loos {
 

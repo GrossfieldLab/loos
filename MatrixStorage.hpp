@@ -41,6 +41,7 @@
 #include <tr1/unordered_map>
 #endif
 
+#include <loos_defs.hpp>
 
 namespace loos {
   namespace Math {

@@ -21,8 +21,19 @@
 
 
 #include <pdbtraj.hpp>
+#include <boost/format.hpp>
 
 namespace loos {
+  void PDBTraj::rewind(void) { seekFrame(0); }
+  uint PDBTraj::nframes(void) const { return(_nframes); }
+  uint PDBTraj::natoms(void) const { return(_natoms); }
+  void PDBTraj::updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
+  bool PDBTraj::hasPeriodicBox(void) const { return(frame.isPeriodic()); }
+  GCoord PDBTraj::periodicBox(void) const { return(frame.periodicBox()); }
+  float PDBTraj::timestep(void) const { return(0.001); }
+  std::string PDBTraj::currentName(void) const { return(current_name); }
+  PDB PDBTraj::currentFrame(void) const { return(frame); }
+  
 
   void PDBTraj::init(void) {
     seekFrame(0);

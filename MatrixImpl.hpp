@@ -33,6 +33,8 @@
 #include <ostream>
 #include <string>
 
+#include <loos_defs.hpp>
+
 #include <boost/format.hpp>
 
 

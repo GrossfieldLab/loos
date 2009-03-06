@@ -30,28 +30,14 @@
 
 #include <iostream>
 #include <fstream>
-#include <iomanip>
-#include <string>
 #include <stdexcept>
 #include <vector>
-#include <algorithm>
-#include <boost/shared_ptr.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
-
-#include <stdlib.h>
-#include <ctype.h>
-
-#include <tr1/unordered_set>
 
 #include <loos_defs.hpp>
-#include <Atom.hpp>
 #include <AtomicGroup.hpp>
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
-#include <utils.hpp>
-#include <Fmt.hpp>
+
 
 namespace loos {
 
@@ -110,61 +96,44 @@ namespace loos {
 
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
-    virtual PDB* clone(void) const {
-      return(new PDB(*this));
-    }
+    virtual PDB* clone(void) const;
 
     //! Creates a deep copy (see AtomicGroup::copy() for more info)
-    PDB copy(void) const {
-      AtomicGroup grp = this->AtomicGroup::copy();
-      PDB p(grp);
-
-      p._show_charge = _show_charge;
-      p._auto_ter = _auto_ter;
-      p._has_cryst = _has_cryst;
-      p._remarks = _remarks;
-      p.cell = cell;
-
-      return(p);
-    }
+    PDB copy(void) const;
 
     //! Class method for creating a PDB from an AtomicGroup
     /** There should probably be some internal checks to make sure we
      *  have enough info to actually write out a PDB, but currently
      *  there are no such checks...
      */
-    static PDB fromAtomicGroup(const AtomicGroup& g) {
-      PDB p(g);
-    
-      return(p);
-    }
+    static PDB fromAtomicGroup(const AtomicGroup&);
 
-    bool showCharge(void) const { return(_show_charge); }
+    bool showCharge(void) const;
     //! Special handling for charges since the PDB form is daft
-    void showCharge(bool b = true) { _show_charge = b; }
+    void showCharge(bool b = true);
 
-    bool strict(void) const { return(strictness_policy); }
+    bool strict(void) const;
     //! Determins how strict the input parser is to the '96 PDB standard.
-    void strict(const bool b) { strictness_policy = b; }
+    void strict(const bool b);
 
-    bool autoTerminate(void) const { return(_auto_ter); }
+    bool autoTerminate(void) const;
 
     //! Automatically insert TER record at end of output.
     /*! Controls whether or not a "TER" record is automatically added
       when printing out the group/PDB
     */
-    void autoTerminate(bool b = true) { _auto_ter = b; }
+    void autoTerminate(bool b = true);
 
     //! Accessor for the remarks object...
-    Remarks& remarks(void) { return(_remarks); }
+    Remarks& remarks(void);
     //! Accessor for the remarks object...
-    void remarks(const Remarks& r) { _remarks = r; }
+    void remarks(const Remarks&);
 
-    UnitCell& unitCell(void) { return(cell); }
-    void unitCell(const UnitCell& c) { cell = c; }
+    UnitCell& unitCell(void);
+    void unitCell(const UnitCell&);
 
     //! Output as a PDB
-    friend std::ostream& operator<<(std::ostream& os, PDB& p);
+    friend std::ostream& operator<<(std::ostream&, PDB&);
 
     //! Read in PDB from an ifstream
     void read(std::istream& is);

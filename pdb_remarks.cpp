@@ -33,6 +33,9 @@
 
 namespace loos {
 
+  int Remarks::numberOf(void) const { return(remarks.size()); }   // Compat with PERL
+  int Remarks::size(void) const { return(remarks.size()); }
+
   void Remarks::rangeCheck(const unsigned int i) const {
     if (i >= remarks.size())
       throw(std::range_error("Bad indices into remarks"));
