@@ -30,7 +30,6 @@ namespace loos {
   //const double DEGREES = 180 / M_PI ;
 
   greal Math::angle(const GCoord &a, const GCoord &b, const GCoord &c) {
-    // TODO: check to make sure the sign is right
     GCoord ba = b - a;
     GCoord bc = b - c;
     greal cosine = (ba * bc) / (ba.length() * bc.length());

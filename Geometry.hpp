@@ -38,14 +38,15 @@ namespace loos {
     greal angle(const GCoord&, const GCoord&, const GCoord&);
     
     //! Compute the angle in degrees assuming the middle is the vertex
-    greal angle(const pAtom&, const pAtom&, const pAtom&);
+    greal angle(const pAtom& a, const pAtom& b, const pAtom& c);
     
     //! Compute the torsion in degrees 
-    greal torsion(const GCoord&, const GCoord&, const GCoord&, 
-                  const GCoord&);
+    greal torsion(const GCoord& a, const GCoord& b, const GCoord& c, 
+                  const GCoord& d);
     
-    greal torsion(const pAtom&, const pAtom&, const pAtom&, 
-                  const pAtom&);
+    greal torsion(const pAtom& a, const pAtom& b, const pAtom& c, 
+                  const pAtom& d);
+
   }
 }
 
