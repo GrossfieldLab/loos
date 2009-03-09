@@ -168,9 +168,12 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
       }
 
       M(j,i) = rmsd;
-      mean += rmsd;
-      if (rmsd > max)
-        max = rmsd;
+
+      if (j != i) {
+        mean += rmsd;
+        if (rmsd > max)
+          max = rmsd;
+      }
       
     }
   }
