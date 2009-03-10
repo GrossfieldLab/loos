@@ -46,35 +46,6 @@
 
 
 
-#if defined(__linux__)
-
-extern "C" {
-
-#include <cblas.h>
-#include <clapack.h>
-
-  void dsyev_(char*, char*, int*, double*, int*, double*, double*, int*, int*);
-  void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);
-
-}
-
-
-// May need to fix this???
-typedef int f77int;
-
-#elif defined(__APPLE__)
-
-#include <vecLib/vecLib.h>
-
-typedef __CLPK_integer f77int;
-
-#else
-
-#error You are building in an unsupported environment.  You will need to specify how to access ATLAS.
-
-#endif
-
-
 namespace loos {
 
 
