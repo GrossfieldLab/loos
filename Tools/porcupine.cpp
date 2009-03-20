@@ -70,6 +70,7 @@ vector<uint> cols;
 vector<double> scales;
 double global_scale;
 bool uniform;
+bool double_sided;
 string model_name;
 string map_name;
 
@@ -88,7 +89,8 @@ void parseOptions(int argc, char *argv[]) {
       ("scale,s", po::value< vector<double> >(&scales), "Scale the requested columns")
       ("global,g", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
       ("uniform,u", "Scale all elements uniformly")
-      ("map,M", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids");
+      ("map,M", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
+      ("double_sided,d", "Use double-sided vectors");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -112,6 +114,11 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
+
+    if (vm.count("double_sided"))
+      double_sided = true;
+    else
+      double_sided = false;
 
     if (vm.count("uniform"))
       uniform = true;
@@ -224,7 +231,12 @@ int main(int argc, char *argv[]) {
       atom1->resname(porcupine_tag);
       atom1->segid(segid);
 
-      pAtom atom2(new Atom(atomid++, porcupine_tag, c-v));
+      pAtom atom2;
+      if (double_sided)
+        atom2 = pAtom(new Atom(atomid++, porcupine_tag, c-v));
+      else
+        atom2 = pAtom(new Atom(atomid++, porcupine_tag, c));
+
       atom2->resid(resid++);
       atom2->resname(porcupine_tag);
       atom2->segid(segid);
