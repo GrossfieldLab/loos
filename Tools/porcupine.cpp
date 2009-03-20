@@ -73,8 +73,10 @@ bool uniform;
 bool double_sided;
 string model_name;
 string map_name;
+double tip_frac;
 
 const string porcupine_tag("POR");
+const string tip_tag("POT");
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -90,6 +92,7 @@ void parseOptions(int argc, char *argv[]) {
       ("global,g", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
       ("uniform,u", "Scale all elements uniformly")
       ("map,M", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
+      ("tips,t", po::value<double>(&tip_frac)->default_value(0.0), "Fraction of vector length to make the tip (for single-sided only)")
       ("double_sided,d", "Use double-sided vectors");
 
     po::options_description hidden("Hidden options");
@@ -226,11 +229,6 @@ int main(int argc, char *argv[]) {
       pAtom pa = avg.findById(atomids[i/3]);
       GCoord c = pa->coords();
 
-      pAtom atom1(new Atom(atomid++, porcupine_tag, c+v));
-      atom1->resid(resid);
-      atom1->resname(porcupine_tag);
-      atom1->segid(segid);
-
       pAtom atom2;
       if (double_sided)
         atom2 = pAtom(new Atom(atomid++, porcupine_tag, c-v));
@@ -241,11 +239,43 @@ int main(int argc, char *argv[]) {
       atom2->resname(porcupine_tag);
       atom2->segid(segid);
 
-      atom1->addBond(atom2);
-      atom2->addBond(atom1);
 
-      spines.append(atom1);
-      spines.append(atom2);
+      if (tip_frac == 0.0) {
+        pAtom atom1(new Atom(atomid++, porcupine_tag, c+v));
+        atom1->resid(resid);
+        atom1->resname(porcupine_tag);
+        atom1->segid(segid);
+
+
+        atom1->addBond(atom2);
+        atom2->addBond(atom1);
+
+        spines.append(atom2);
+        spines.append(atom1);
+
+      } else {
+
+        GCoord base = (c + (v * (1.0 -tip_frac)));
+        GCoord tip = c + v;
+
+        pAtom atom1(new Atom(atomid++, porcupine_tag, base));
+        atom1->resid(resid);
+        atom1->resname(porcupine_tag);
+        atom1->segid(segid);
+        atom1->addBond(atom2);
+        atom2->addBond(atom1);
+
+        pAtom atom0(new Atom(atomid++, tip_tag, tip));
+        atom0->resid(resid);
+        atom0->resname(porcupine_tag);
+        atom0->segid(segid);
+        atom1->addBond(atom0);
+        atom0->addBond(atom1);
+        
+        spines.append(atom2);
+        spines.append(atom1);
+        spines.append(atom0);
+      }
     }
 
   }
