@@ -89,8 +89,9 @@ int main(int argc, char *argv[]) {
   AtomicGroup post = model.select(postsel);
   assert(post.size() != 0 && "No atoms selected from second selection");
   cerr << boost::format("Selected %u atoms from second selection.\n") % post.size();
-  cout << boost::format("#%10s     %10s %10s %10s     %10s %10s %10s\n") % "angle" % "x_0" % "y_0" % "z_0" % "x_1" % "y_1" % "z_1";
+  cout << boost::format("#%6s %10s     %10s %10s %10s     %10s %10s %10s\n") % "t" % "angle" % "x_0" % "y_0" % "z_0" % "x_1" % "y_1" % "z_1";
 
+  uint t = 0;
   while (ptraj->readFrame()) {
     ptraj->updateGroupCoords(model);
     Axes preax = pre.principalAxes();
@@ -99,7 +100,7 @@ int main(int argc, char *argv[]) {
     GCoord u = preax[0];
     GCoord v = -postax[0];
     double angle = acos(u * v / (u.length() * v.length()) ) * RAD2DEG;
-    cout << boost::format("%10lf     %10lf %10lf %10lf     %10lf %10lf %10lf\n") % (180.0 - angle) % u[0] % u[1] % u[2] % v[0] % v[1] % v[2];
+    cout << boost::format("%6d %10lf     %10lf %10lf %10lf     %10lf %10lf %10lf\n") % (t++) % (180.0 - angle) % u[0] % u[1] % u[2] % v[0] % v[1] % v[2];
   }
 
 }
