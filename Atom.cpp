@@ -60,7 +60,7 @@ namespace loos {
 
   const GCoord& Atom::coords(void) const {
     if (!(mask & coordsbit))
-      throw(UnsetProperty());
+      throw(UnsetProperty("Atom has no coordinates"));
     return(_coords);
   }
 
@@ -76,7 +76,7 @@ namespace loos {
 
   double Atom::charge(void) const {
     if (!(mask & chargebit))
-      throw(UnsetProperty());
+      throw(UnsetProperty("Atom has no charge set"));
     return(_charge);
   }
 
@@ -116,7 +116,7 @@ namespace loos {
     //! Returns a copy of the bond list.
   std::vector<int> Atom::getBonds(void) const {
     if (!(mask & bondsbit))
-      throw(UnsetProperty());
+      throw(UnsetProperty("Atom has no connectivity"));
     return(bonds);
   }
 

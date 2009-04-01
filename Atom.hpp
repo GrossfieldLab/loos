@@ -60,9 +60,14 @@ namespace loos {
 
     // Exception classes
     struct UnsetProperty : public std::exception {
+      UnsetProperty() { message = "Attempting to access an unset atom property"; }
+      UnsetProperty(const char* p) : message(p) { }
+
       virtual const char *what() const throw() {
-        return("Attempting to access an unset atom property.");
+        return(message);
       }
+
+      const char* message;
     };
 
 
