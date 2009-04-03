@@ -59,8 +59,11 @@ namespace loos {
   void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
 
   void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory);
+  void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory, std::vector<uint>& frames);
+
   RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble);
   RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
+
   void subtractAverage(RealMatrix& M);
   
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M);

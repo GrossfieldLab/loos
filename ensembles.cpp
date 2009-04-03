@@ -157,6 +157,22 @@ namespace loos {
   }
 
 
+  void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory, std::vector<uint>& frames) {
+    AtomicGroup clone = model.copy();
+    
+    std::vector<uint>::iterator i;
+    for (i = frames.begin(); i != frames.end(); ++i) {
+      if (*i >= trajectory->nframes())
+        throw(std::runtime_error("Frame index exceeds trajectory size in readTrajectory()"));
+      trajectory->readFrame(*i);
+      trajectory->updateGroupCoords(clone);
+      AtomicGroup frame = clone.copy();
+      ensemble.push_back(frame);
+    }
+  }
+
+
+
   RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble) {
     uint n = ensemble.size();
     uint m = ensemble[0].size() * 3;
