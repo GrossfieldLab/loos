@@ -38,34 +38,28 @@ using namespace loos;
 
 
 
-struct Globals {
-  Globals() : trajmin(0), trajmax(0) { }
-
-  string align_string;
-  string avg_string;
-  uint trajmin, trajmax;
-  double alignment_tol;
-  string model_name, traj_name;
-};
-
-Globals globals;
-
+string align_string;
+string avg_string;
+double alignment_tol;
+string model_name, traj_name;
+vector<uint> indices;
 
 
 void parseOptions(int argc, char *argv[]) {
+  vector<string> ranges;
 
   try {
     po::options_description generic("Allowed options", 120);
     generic.add_options()
       ("help", "Produce this help message")
-      ("align,a", po::value<string>(&globals.align_string)->default_value("name == 'CA'"),"Align using this selection")
-      ("average,A", po::value<string>(&globals.avg_string)->default_value("!(hydrogen || segid == 'SOLV' || segid == 'BULK')"), "Average over this selection")
-      ("range,r", po::value<string>(), "Range of frames to average over (min:max)");
+      ("align,a", po::value<string>(&align_string)->default_value("name == 'CA'"),"Align using this selection")
+      ("average,A", po::value<string>(&avg_string)->default_value("!(hydrogen || segid == 'SOLV' || segid == 'BULK')"), "Average over this selection")
+      ("range,r", po::value< vector<string> >(&ranges), "Range of frames to average over (Octave-style)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
-      ("model", po::value<string>(&globals.model_name), "Model filename")
-      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename");
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value<string>(&traj_name), "Trajectory filename");
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
@@ -85,15 +79,9 @@ void parseOptions(int argc, char *argv[]) {
       exit(-1);
     }
 
-    if (vm.count("range")) {
-      string rangespec = vm["range"].as<string>();
-      int i = sscanf(rangespec.c_str(), "%u:%u", &globals.trajmin, &globals.trajmax);
-      if (i != 2) {
-        cerr << "Error - invalid range specified for trajectory.\n";
-        exit(-1);
-      }
+    if (!ranges.empty())
+      indices = parseRangeList<uint>(ranges);
 
-    }
   }
 
   catch(exception& e) {
@@ -104,43 +92,48 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
-
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, globals.alignment_tol, 100);
-  vector<XForm> xforms = boost::get<0>(res);
-  greal rmsd = boost::get<1>(res);
-  int iters = boost::get<2>(res);
-
-  cerr << "Subset alignment with " << subset.size()
-       << " atoms converged to " << rmsd << " rmsd after "
-       << iters << " iterations.\n";
-
-  return(xforms);
-}
-
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(globals.model_name);
+  AtomicGroup model = createSystem(model_name);
 
-  AtomicGroup align_subset = selectAtoms(model, globals.align_string);
+  AtomicGroup align_subset = selectAtoms(model, align_string);
   cerr << "Aligning with " << align_subset.size() << " atoms.\n";
 
-  AtomicGroup avg_subset = selectAtoms(model, globals.avg_string);
+  AtomicGroup avg_subset = selectAtoms(model, avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
-  pTraj traj = createTrajectory(globals.traj_name, model);
+  pTraj traj = createTrajectory(traj_name, model);
 
-  globals.trajmax = (globals.trajmax == 0) ? traj->nframes() : globals.trajmax+1;
+  if (indices.empty()) {
+    for (uint i = 0; i < traj->nframes(); ++i)
+      indices.push_back(i);
+  }
 
+  cerr << "Using " << indices.size() << " frames from the trajectory...\n";
+
+  // First, align...
   cerr << "Aligning...\n";
-  vector<XForm> xforms = doAlign(align_subset, traj);
-  cerr << "Averaging...\n";
+  vector<AtomicGroup> ensemble;
+  readTrajectory(ensemble, align_subset, traj, indices);
+  boost::tuple<vector<XForm>, greal, int> result = iterativeAlignment(ensemble);
+  vector<XForm> xforms = boost::get<0>(result);
+  double rmsd = boost::get<1>(result);
+  int niters = boost::get<2>(result);
+  cerr << boost::format("Aligned in %d iterations with final error of %g.\n") % niters % rmsd;
 
-  AtomicGroup avg = averageStructure(avg_subset, xforms, traj);
+  // Now re-read the average subset
+  cerr << "Averaging...\n";
+  ensemble.clear();
+  readTrajectory(ensemble, avg_subset, traj, indices);
+  // First, apply the transformations...
+  uint n = xforms.size();
+  for (uint i=0; i<n; ++i)
+    ensemble[i].applyTransform(xforms[i]);
+  AtomicGroup avg = averageStructure(ensemble);
   
   PDB avgpdb = PDB::fromAtomicGroup(avg);
   avgpdb.clearBonds();
