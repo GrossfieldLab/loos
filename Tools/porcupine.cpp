@@ -13,12 +13,14 @@
 
   Notes:
 
-    The eigenvectors are taken to be column-vectors from the
-  input matrix.  Since SVD's are often computed over subsets of a
-  structure, the eigenvectors can be mapped back onto the appropriate
-  atoms from a larger model by using a map file.  This is just a list
-  of the eigenvector id's (i.e. column #'s) and the corresponding
-  atomid's.  For example:
+    You can use a "map" file to map the eigenvectors back onto specific
+  atoms via atomid.  The eigenvector matrix is arranged so that the
+  eigenvectors are stored as column-vectors, but each triplet of rows
+  is the eigenvector corresponding to an individual atom.  The map
+  then consists of two columns: the left is the tripled index
+  (i.e. row/3) and the right column is the atomid of the corresponding
+  atom.
+  
      0     30
      1     42
      2     57
@@ -74,6 +76,7 @@ bool double_sided;
 string model_name;
 string map_name;
 double tip_frac;
+string selection;
 
 const string porcupine_tag("POR");
 const string tip_tag("POT");
@@ -87,6 +90,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("selection,S", po::value<string>(&selection), "Infer mapping using this selection")
       ("columns,c", po::value< vector<string> >(&strings), "Columns to use")
       ("scale,s", po::value< vector<double> >(&scales), "Scale the requested columns")
       ("global,g", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
@@ -191,6 +195,19 @@ vector<int> fakeMap(const AtomicGroup& g) {
 }
 
 
+vector<int> inferMap(const AtomicGroup& g, const string& sel) {
+  AtomicGroup subset = selectAtoms(g, sel);
+  vector<int> atomids;
+
+  AtomicGroup::iterator ci;
+  for (ci = subset.begin(); ci != subset.end(); ++ci)
+    atomids.push_back((*ci)->id());
+
+  
+  return(atomids);
+}
+
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
@@ -205,9 +222,18 @@ int main(int argc, char *argv[]) {
   AtomicGroup avg = createSystem(model_name);
 
   vector<int> atomids;
-  if (map_name.empty())
-    atomids = fakeMap(avg);
-  else
+  if (map_name.empty()) {
+    if (selection.empty())
+      atomids = fakeMap(avg);
+    else {
+      atomids = inferMap(avg, selection);
+      if (atomids.size() * 3 != m) {
+        cerr << boost::format("Error - inferred map has %d atoms, but expected %d.\n") %
+          atomids.size() % (m / 3);
+        exit(-1);
+      }
+    }
+  } else
     atomids = readMap(map_name);
 
   int atomid = 1;
