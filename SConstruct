@@ -113,6 +113,10 @@ release = env['release']
 debug = env['debug']
 profile = env['profile']
 
+# If debug is requested, make sure there is no optimization...
+if (debug > 0):
+   release=0
+
 if int(release):
     env.Append(CCFLAGS=release_opts)
 else:
