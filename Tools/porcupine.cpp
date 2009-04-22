@@ -26,6 +26,10 @@
      2     57
      3     66
 
+  Alternatively, porcupine can infer the mapping of vectors to atoms
+  by giving it the same selection you used to compute the vectors
+  along with the same model...
+
 */
 
 
@@ -164,6 +168,10 @@ string generateSegid(const uint n) {
 }
 
 
+
+// Accept a map file mapping the vectors (3-tuples in the rows) back
+// onto the appropriate atoms
+
 vector<int> readMap(const string& name) {
   ifstream ifs(name.c_str());
   string line;
@@ -184,6 +192,8 @@ vector<int> readMap(const string& name) {
 }
 
 
+// Fake the mapping, i.e. each vector corresponds to each atom...
+
 vector<int> fakeMap(const AtomicGroup& g) {
   AtomicGroup::const_iterator ci;
   vector<int> atomids;
@@ -194,6 +204,10 @@ vector<int> fakeMap(const AtomicGroup& g) {
   return(atomids);
 }
 
+
+// Record the atomid's for each atom in the selected subset.  This
+// allows use to map vectors back onto the correct atoms when they
+// were computed from a subset...
 
 vector<int> inferMap(const AtomicGroup& g, const string& sel) {
   AtomicGroup subset = selectAtoms(g, sel);
@@ -225,16 +239,18 @@ int main(int argc, char *argv[]) {
   if (map_name.empty()) {
     if (selection.empty())
       atomids = fakeMap(avg);
-    else {
+    else
       atomids = inferMap(avg, selection);
-      if (atomids.size() * 3 != m) {
-        cerr << boost::format("Error - inferred map has %d atoms, but expected %d.\n") %
-          atomids.size() % (m / 3);
-        exit(-1);
-      }
-    }
+
   } else
     atomids = readMap(map_name);
+  
+  // Double check size of atomid map
+  if (atomids.size() * 3 != m) {
+    cerr << boost::format("Error - The vector-to-atom map (provided or inferred) has %d atoms, but expected %d.\n") %
+      atomids.size() % (m / 3);
+    exit(-1);
+  }
 
   int atomid = 1;
   int resid = 1;
