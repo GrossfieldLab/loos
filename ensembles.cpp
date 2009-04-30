@@ -56,39 +56,58 @@ namespace loos {
 
 
 
-  AtomicGroup averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj traj) {
+  AtomicGroup averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj& traj, std::vector<uint>& frame_indices) {
     AtomicGroup avg = g.copy();
     AtomicGroup frame = g.copy();
     int n = avg.size();
     for (int i=0; i<n; i++)
       avg[i]->coords() = GCoord(0.0, 0.0, 0.0);
-
-    traj->rewind();
+    
     uint tn = traj->nframes();
+    uint fn = frame_indices.size();
     
     // Safety check...
-    if (tn != xforms.size())
-      throw(std::runtime_error("Mismatch in number of frames in the trajectory and passed transforms for loos::averageStructure()"));
-
-    for (uint j=0; j<tn; j++) {
-      traj->readFrame(j);
+    if (fn != xforms.size())
+      throw(std::runtime_error("Mismatch in number of frames in the trajectory requested and passed transforms for loos::averageStructure()"));
+    
+    for (uint j=0; j<fn; ++j) {
+      if (frame_indices[j] >= tn)
+        throw(std::runtime_error("Frame index exceeds trajectory size"));
+      
+      traj->readFrame(frame_indices[j]);
       traj->updateGroupCoords(frame);
       frame.applyTransform(xforms[j]);
       for (int i=0; i<n; i++)
         avg[i]->coords() += frame[i]->coords();
     }
-
+    
     for (int i=0; i<n; i++)
-      avg[i]->coords() /= tn;
-
+      avg[i]->coords() /= fn;
+    
     return(avg);
+  }
+  
+  
+  
+  AtomicGroup averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj& traj) {
+    uint nx = xforms.size();
+    uint nt = traj->nframes();
+    
+    if (nt != nx)
+      throw(std::runtime_error("Mismatch in number of frames in the trajectory and passed transforms"));
+    std::vector<uint> frame_indices;
+    for (uint i=0; i<nt; ++i)
+      frame_indices.push_back(i);
+
+    return(averageStructure(g, xforms, traj, frame_indices));
   }
 
 
 
 
+
   boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(std::vector<AtomicGroup>& ensemble,
-                                                                      greal threshold, int maxiter) {
+                                                                greal threshold, int maxiter) {
     int iter = 0;
     int n = ensemble.size();
     greal rms;
@@ -111,20 +130,25 @@ namespace loos {
       target = avg;
       iter++;
     } while (rms > threshold && iter <= maxiter );
-  
+    
     boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
     return(res);
   }
 
 
 
-
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj traj,
-                                                                        greal threshold, int maxiter) {
+  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, std::vector<uint>& frame_indices,
+                                                                  greal threshold, int maxiter) {
     std::vector<AtomicGroup> frames;
 
-    traj->rewind();
-    while (traj->readFrame()) {
+    uint nf = frame_indices.size();
+    uint nt = traj->nframes();
+
+    for (uint i=0; i<nf; ++i) {
+      if (frame_indices[i] >= nt)
+        throw(std::runtime_error("Frame index exceeds trajectory size"));
+
+      traj->readFrame(frame_indices[i]);
       AtomicGroup frame = g.copy();
       traj->updateGroupCoords(frame);
       frames.push_back(frame);
@@ -133,6 +157,18 @@ namespace loos {
     boost::tuple<std::vector<XForm>, greal, int> result = iterativeAlignment(frames, threshold, maxiter);
     return(result);
   }
+
+
+  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj,
+                                                                  greal threshold, int maxiter) {
+
+    std::vector<uint> frame_indices;
+    uint nt = traj->nframes();
+    for (uint i=0; i<nt; ++i)
+      frame_indices.push_back(i);
+    return(iterativeAlignment(g, traj, frame_indices, threshold, maxiter));
+  }
+
 
 
   void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms) {
