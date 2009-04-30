@@ -44,7 +44,6 @@ double alignment_tol;
 string model_name, traj_name;
 vector<uint> indices;
 
-
 void parseOptions(int argc, char *argv[]) {
   vector<string> ranges;
 
@@ -52,7 +51,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options", 120);
     generic.add_options()
       ("help", "Produce this help message")
-      ("align,a", po::value<string>(&align_string)->default_value("name == 'CA'"),"Align using this selection")
+      ("align,a", po::value<string>(&align_string),"Align using this selection (or skip aligning)")
       ("average,A", po::value<string>(&avg_string)->default_value("!(hydrogen || segid == 'SOLV' || segid == 'BULK')"), "Average over this selection")
       ("range,r", po::value< vector<string> >(&ranges), "Range of frames to average over (Octave-style)");
 
@@ -100,9 +99,6 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = createSystem(model_name);
 
-  AtomicGroup align_subset = selectAtoms(model, align_string);
-  cerr << "Aligning with " << align_subset.size() << " atoms.\n";
-
   AtomicGroup avg_subset = selectAtoms(model, avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
@@ -116,25 +112,28 @@ int main(int argc, char *argv[]) {
   cerr << "Using " << indices.size() << " frames from the trajectory...\n";
 
   // First, align...
-  cerr << "Aligning...\n";
-  vector<AtomicGroup> ensemble;
-  readTrajectory(ensemble, align_subset, traj, indices);
-  boost::tuple<vector<XForm>, greal, int> result = iterativeAlignment(ensemble);
-  vector<XForm> xforms = boost::get<0>(result);
-  double rmsd = boost::get<1>(result);
-  int niters = boost::get<2>(result);
-  cerr << boost::format("Aligned in %d iterations with final error of %g.\n") % niters % rmsd;
+  vector<XForm> xforms;
+  if (align_string.empty()) {
+
+    cerr << "Skipping alignment...\n";
+    for (uint i=0; i<traj->nframes(); ++i)
+      xforms.push_back(XForm());
+
+  } else {
+
+    AtomicGroup align_subset = selectAtoms(model, align_string);
+    cerr << "Aligning with " << align_subset.size() << " atoms.\n";
+
+    boost::tuple<vector<XForm>, greal, int> result = iterativeAlignment(align_subset, traj, indices);
+    xforms = boost::get<0>(result);
+    double rmsd = boost::get<1>(result);
+    int niters = boost::get<2>(result);
+    cerr << boost::format("Aligned in %d iterations with final error of %g.\n") % niters % rmsd;
+  }
 
   // Now re-read the average subset
   cerr << "Averaging...\n";
-  ensemble.clear();
-  readTrajectory(ensemble, avg_subset, traj, indices);
-  // First, apply the transformations...
-  uint n = xforms.size();
-  for (uint i=0; i<n; ++i)
-    ensemble[i].applyTransform(xforms[i]);
-  AtomicGroup avg = averageStructure(ensemble);
-  
+  AtomicGroup avg = averageStructure(avg_subset, xforms, traj, indices);
   PDB avgpdb = PDB::fromAtomicGroup(avg);
   avgpdb.clearBonds();
   avgpdb.remarks().add(header);
