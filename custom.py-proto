@@ -65,7 +65,7 @@
 ### location)
 # LIBXTRA='/usr/local/gcc-4.3.2/lib64'
 
-### Edit the following to insert a build-code into the default output
-### from LOOS.  This will instruct the SConstruct to use svnversion to
-### find out what the current revision is for your LOOS tree
-# REVISION=1
+### If REVISION is set to a null string, then the SConstruct will use
+# svnversion to figure out what the SVN revision number is for the
+# source tree...
+# REVISION=''

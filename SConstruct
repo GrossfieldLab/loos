@@ -24,8 +24,14 @@ from subprocess import *
 from time import strftime
 
 
+
 # This can be reset in custom.py
 default_lib_path = '/usr/lib64'
+
+
+# This is the version-tag for LOOS output
+loos_version = '1.4.0'
+
 
 # Principal options...
 clos = Options('custom.py')
@@ -52,7 +58,7 @@ clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/opt/loos',
 
 # This is a developer setting...  Do not set unless you know what you
 # are doing...
-clos.Add('REVISION', 'Add build information', 0)
+clos.Add('REVISION', 'Add build information', loos_version)
 
 
 
@@ -151,10 +157,14 @@ if os.environ.has_key('CCFLAGS'):
    env['CCFLAGS'] = CCFLAGS
 
 # Divine the current revision...
-if int(env['REVISION']) > 0:
+revision = ''
+if env['REVISION'] == '':
    revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
-   revision = revision + " " + strftime("%y%m%d")
-   env.Append(CCFLAGS=" -DREVISION='\"" + revision + "\"'")
+else:
+   revision = env['REVISION']
+
+revision = revision + " " + strftime("%y%m%d")
+env.Append(CCFLAGS=" -DREVISION='\"" + revision + "\"'")
 
 # Export for subsidiary SConscripts
 
