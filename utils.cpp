@@ -40,6 +40,7 @@
 #include <utils.hpp>
 
 
+
 namespace loos {
 
   
@@ -127,6 +128,10 @@ namespace loos {
     }
 
     invoke += " - " + user + " (" + timestamp + ")";
+
+#if defined(REVISION)
+    invoke += " [" + std::string(REVISION) + "]";
+#endif
 
     // Since some args my be brought in from a file via the shell
     // back-tick operator, we process embedded returns...

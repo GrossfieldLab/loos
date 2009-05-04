@@ -20,6 +20,9 @@
 
 import sys
 import os
+from subprocess import *
+from time import strftime
+
 
 # This can be reset in custom.py
 default_lib_path = '/usr/lib64'
@@ -32,7 +35,7 @@ clos.AddOptions(
         ('profile', 'Set to 1 to build the code for profiling', 0),
 	('release', 'Set to 1 to configure for release.', 1),
 	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
-        ('shared', 'Set to 1 to build a shared LOOS library.', 0)
+        ('shared', 'Set to 1 to build a shared LOOS library.', 0),
 )
 
 clos.Add(PathOption('LAPACK', 'Path to LAPACK', '', PathOption.PathAccept))
@@ -40,11 +43,16 @@ clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathO
 clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
 clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '', PathOption.PathAccept))
 clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '', PathOption.PathAccept))
-clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
-clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
+clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex')
+clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options')
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
-clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/opt/loos', PathOption.PathAccept))
+clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/opt/loos',
+                    PathOption.PathAccept))
+
+# This is a developer setting...  Do not set unless you know what you
+# are doing...
+clos.Add('REVISION', 'Add build information', 0)
 
 
 
@@ -109,9 +117,9 @@ else:
 # you to control the level of debugging output through the
 # DEBUG definition...
 
-release = env['release']
-debug = env['debug']
-profile = env['profile']
+release = int(env['release'])
+debug = int(env['debug'])
+profile = int(env['profile'])
 
 # If debug is requested, make sure there is no optimization...
 if (debug > 0):
@@ -142,10 +150,16 @@ if os.environ.has_key('CCFLAGS'):
    print "Changing CCFLAGS to ", CCFLAGS
    env['CCFLAGS'] = CCFLAGS
 
+# Divine the current revision...
+if int(env['REVISION']) > 0:
+   revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
+   revision = revision + " " + strftime("%y%m%d")
+   env.Append(CCFLAGS=" -DREVISION='\"" + revision + "\"'")
+
 # Export for subsidiary SConscripts
+
 Export('env')
 
-###################################
 
 
 ###################################
