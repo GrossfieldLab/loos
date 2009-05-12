@@ -197,6 +197,9 @@ namespace loos {
     //! Returns a vector of AtomicGroups split based on bond connectivity
     std::vector<AtomicGroup> splitByMolecule(void);
 
+    //! Returns a vector of AtomicGroups, each comprising a single residue
+    std::vector<AtomicGroup> splitByResidue(void) const;
+
     //! Find a contained atom by its atomid
     pAtom findById(const int id);
 

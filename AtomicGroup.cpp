@@ -405,6 +405,35 @@ namespace loos {
   }
 
 
+  /**
+   * Splits an AtomicGroup into individual residues.  The residue
+   * boundary is marked by either a change in the resid or in the
+   * segid.
+   */
+  std::vector<AtomicGroup> AtomicGroup::splitByResidue(void) const {
+    std::vector<AtomicGroup> residues;
+
+    int curr_resid = atoms[0]->resid();
+    std::string curr_segid = atoms[0]->segid();
+    
+    AtomicGroup residue;
+    AtomicGroup::const_iterator ci;
+    for (ci = atoms.begin(); ci != atoms.end(); ++ci) {
+      if (curr_resid != (*ci)->resid() || (*ci)->segid() != curr_segid) {
+        residues.push_back(residue);
+        residue = AtomicGroup();
+        curr_resid = (*ci)->resid();
+        curr_segid = (*ci)->segid();
+      } 
+      residue.append(*ci);
+    }
+    
+    if (residue.size() != 0)
+      residues.push_back(residue);
+    
+    return(residues);
+  }
+
 
   // Find an atom based on atomid
   // Returns 0 (null shared_ptr) if not found...
