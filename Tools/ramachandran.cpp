@@ -85,51 +85,63 @@ struct AtomNameSelector : public AtomSelector {
 
 
 // Extractor is the base-class (interface) to how we extract atoms to
-// compute torsions for.  It uses NVI to make the extract function
-// polymorphic while allowing pre-conditions implemented in the
-// base-class.  For more details about NVI,
-// see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface
-// 
+// compute torsions for.
 
 
 class Extractor {
 public:
 
+  Extractor() : missing_atoms_warn(true) { }
+
+
+
+  void missingAtomsWarn() { missing_atoms_warn = true; }
+
   // Returns the names of the torsions
   virtual vector<string> names(void) =0;
 
   // Utility function to make sure each AtomicGroup has only 4 atoms
-  void checkFail(const string& s, const AtomicGroup& nascent, const AtomicGroup& residue) {
+  void checkAtoms(const string& s, const AtomicGroup& nascent, const AtomicGroup& residue) {
+    if (!missing_atoms_warn)
+      return;
+
     if (nascent.size() != 4) {
-      cerr << "***ERROR***\n";
+      cerr << "***WARNING***\n";
       cerr << "Unable to extract atoms for torsion " << s << endl;
       cerr << "Residue dump:\n";
       cerr << residue << endl;
-      exit(-10);
+      cerr << "Extracted:\n";
+      cerr << nascent;
+      exit(-1);
     }
   }
 
 
-  // This is the interface to atom extraction.  Given a vector of
-  // AtomicGroups representing residues and an index into the vector,
-  // extract the appropriate torsion atoms.
+  // Polymorphic extractAtoms function...  This is what changes to
+  // provide more types of torsions to extract.
+  virtual vGroup extractAtoms(vGroup&, int) =0;
 
-  vGroup extractAtoms(vGroup& residues, int i) {
 
-    // pre-condition making sure the index is valid
-    if (i < 1 || i >= static_cast<int>(residues.size())-1)
-      throw(runtime_error("Index into residues is out of bounds"));
+protected:
 
-    return(extractImpl(residues, i));
+
+  // This is used by the derived classes to make sure that going out
+  // of bounds on the vector index isn't fatal...
+  AtomicGroup& getResidue(vGroup& residues, const int i) {
+    
+    if (i < 0 || i >= static_cast<int>(residues.size())) {
+      static AtomicGroup null_group;
+      return(null_group);
+    }
+
+    return(residues[i]);
   }
+
 
 
 private:
 
-  // Polymorphic implementation of the actual extraction...  This is
-  // what changes if you want to add different types of torsions to
-  // use... 
-  virtual vGroup extractImpl(vGroup&, int) =0;
+  bool missing_atoms_warn;
 };
 
 
@@ -152,21 +164,21 @@ public:
   // Implementation of function to extract the appropriate atoms for
   // phi & psi...
 
-  vGroup extractImpl(vGroup& residues, int i) {
+  vGroup extractAtoms(vGroup& residues, int i) {
     
     // Select specific atom types
     AtomNameSelector carbon("C");
     AtomNameSelector nitrogen("N");
     CAlphaSelector calpha;
-    
+
     // Pull out the atoms we'll use.  Since AtomicGroup::select() only
     // returns an AtomicGroup, we use this even though we're actually
     // dealing with a single atom in the group...
-    AtomicGroup C_prev = residues[i-1].select(carbon);
-    AtomicGroup N = residues[i].select(nitrogen);
-    AtomicGroup CA = residues[i].select(calpha);
-    AtomicGroup C = residues[i].select(carbon);
-    AtomicGroup N_succ = residues[i+1].select(nitrogen);
+    AtomicGroup C_prev = getResidue(residues, i-1).select(carbon);
+    AtomicGroup N = getResidue(residues, i).select(nitrogen);
+    AtomicGroup CA = getResidue(residues, i).select(calpha);
+    AtomicGroup C = getResidue(residues, i).select(carbon);
+    AtomicGroup N_succ = getResidue(residues, i+1).select(nitrogen);
     
     // Now build an AtomicGroup corresponding to the atoms used to
     // calculate phi
@@ -174,13 +186,13 @@ public:
     phi.append(N);
     phi.append(CA);
     phi.append(C);
-    checkFail("phi", phi, residues[i]);
+    checkAtoms("phi", phi, getResidue(residues, i));
     
     AtomicGroup psi = N;
     psi.append(CA);
     psi.append(C);
     psi.append(N_succ);
-    checkFail("psi", psi, residues[i]);
+    checkAtoms("psi", psi, getResidue(residues, i));
 
     // Combine the two AtomicGroup's into a vector & return this...
     vGroup dihe;
@@ -210,31 +222,31 @@ public:
 
 
 
-  vGroup extractImpl(vGroup& residues, int i) {
+  vGroup extractAtoms(vGroup& residues, int i) {
 
     // Select specific atom types
     AtomNameSelector C4P("C4'");
     AtomNameSelector P("P");
 
     // Extract all the atoms we'll use to build the psuedo-torsions
-    AtomicGroup c4p_prev = residues[i-1].select(C4P);
-    AtomicGroup p = residues[i].select(P);
-    AtomicGroup c4p = residues[i].select(C4P);
-    AtomicGroup p_succ = residues[i+1].select(P);
-    AtomicGroup c4p_succ = residues[i+1].select(C4P);
+    AtomicGroup c4p_prev = getResidue(residues, i-1).select(C4P);
+    AtomicGroup p = getResidue(residues, i).select(P);
+    AtomicGroup c4p = getResidue(residues, i).select(C4P);
+    AtomicGroup p_succ = getResidue(residues, i+1).select(P);
+    AtomicGroup c4p_succ = getResidue(residues, i+1).select(C4P);
 
     // Assemble the group representing eta
     AtomicGroup eta = c4p_prev;
     eta.append(p);
     eta.append(c4p);
     eta.append(p_succ);
-    checkFail("eta", eta, residues[i]);
+    checkAtoms("eta", eta, getResidue(residues, i));
 
     AtomicGroup theta = p;
     theta.append(c4p);
     theta.append(p_succ);
     theta.append(c4p_succ);
-    checkFail("theta", theta, residues[i]);
+    checkAtoms("theta", theta, getResidue(residues, i));
 
     // Combine the groups into a vector
     vGroup dihe;
@@ -259,6 +271,9 @@ string sel_name;         // Selection
 Extractor *extractor;    // Extractor object that's used to specify
                          // which torsions to compute at run-time...
 
+double missing_flag = -9999;  // Value to use when a torsion can't be
+                              // computed...
+
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -268,6 +283,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("pseudo", "Use RNA pseudo-torsions")
+      ("missing", po::value<double>(&missing_flag)->default_value(-9999))
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
 
 
@@ -348,7 +364,7 @@ int main(int argc, char *argv[]) {
   // list of all residues/nucleotides to operate over...
 
   vvGroup torsion_atoms;
-  for (int i=1; i<static_cast<int>(residues.size())-1; ++i) {
+  for (int i=0; i<static_cast<int>(residues.size()); ++i) {
     vGroup atoms = extractor->extractAtoms(residues, i);
     torsion_atoms.push_back(atoms);
   }
@@ -380,7 +396,9 @@ int main(int argc, char *argv[]) {
       // the residue...
       vGroup::iterator vi;
       for (vi = (*vvi).begin(); vi != (*vvi).end(); ++vi) {
-        double angle = Math::torsion((*vi)[0], (*vi)[1], (*vi)[2], (*vi)[3]);
+        double angle = missing_flag;
+        if ((*vi).size() == 4)
+          angle = Math::torsion((*vi)[0], (*vi)[1], (*vi)[2], (*vi)[3]);
         cout << angle << "\t";
       }
       cout << endl;
