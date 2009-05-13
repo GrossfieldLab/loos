@@ -1,3 +1,35 @@
+2009-05-13    <tromo@spade.biophysics.rochester.edu>
+	* Fixed problem with averager where it was caching all frames of
+	the trajectory.  It will now scan through the trajectory so it
+	wont swap with large files...
+	* Fixed some issues with the SConstruct
+	* Added a revision tag to the build/tool output when building from
+	the trunk.
+	* Added a check for building with ubuntu because of a potential
+	problem with atlas not linking with gfortran
+	* Added AtomicGroup::splitByResidue()
+	* Added tool to calculate ramachandran plots for proteins and RNA
+	
+
+2009-04-03    <tromo@spade.biophysics.rochester.edu>
+	* Fixed bug in averager that caused it NOT to respect the range of
+	trajectory frames given on the command-line
+
+2009-03-20    <tromo@spade.biophysics.rochester.edu>
+	* Added tool "drifter" to look at centroid drift
+	* Added tool "porcupine" to generate porcupine models from SVD/ENM
+	results.
+
+2009-03-11    <tromo@spade.biophysics.rochester.edu>
+	* Added a number of support/utility functions to read a whole
+	trajectory in, to align/average over specific frames in a
+	trajectory, and an SVD function that is a front-end to
+	Atlas/Accelerate.
+
+2009-03-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in rmsds that caused incorrect average rmsd calculation
+
 2009-02-24    <tromo@spade.biophysics.rochester.edu>
 
 	* Added a set of classes for providing flexible progress updates
