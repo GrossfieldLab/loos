@@ -167,11 +167,13 @@ if os.environ.has_key('CCFLAGS'):
 revision = ''
 if env['REVISION'] == '':
    revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
+   revision = revision.rstrip("\n")
 else:
    revision = env['REVISION']
 
 revision = revision + " " + strftime("%y%m%d")
-env.Append(CCFLAGS=" -DREVISION='\"" + revision + "\"'")
+revstr = " -DREVISION=\'\"" + revision + "\"\'"
+env.Append(CCFLAGS=revstr)
 
 # Export for subsidiary SConscripts
 
