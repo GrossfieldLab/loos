@@ -12,9 +12,18 @@
   
   Notes:
 
-  o The selection must include an extra residue at the beginning and
-  end of the segment, i.e. if you want to compute the torsions for
-  residues 5-8, then you must use a selection that picks residues 4-9
+  o Not all torsions for a selection can be computed, such as phi-psi
+    at the ends of a segment.
+
+  o Missing torsions are replaced with a special value (default is
+    -9999)
+
+  o Use the "--skip" flag to exclude residues for which not all
+    torsions can be calculated...note that this requires you to select
+    one extra residue at either end of the segment
+
+  o Use the "--warn" flag to have ramachandran write out debugging
+    info for any residue for which it cannot compute all torsions
 
 */
 
@@ -85,22 +94,33 @@ struct AtomNameSelector : public AtomSelector {
 
 
 // Extractor is the base-class (interface) to how we extract atoms to
-// compute torsions for.
+// compute torsions for.  It uses NVI to make the extract function
+// polymorphic while allowing pre- and post-conditions implemented in
+// the base-class.  For more details about NVI,
+// see http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Non-Virtual_Interface
+// 
 
 
 class Extractor {
 public:
 
-  Extractor() : missing_atoms_warn(false) { }
+  Extractor() : missing_atoms_warn(false), skip_when_missing(false) { }
 
 
 
+  // Configuration...
+  // Warn if atoms are missing and a torsion cannot be calculated...
   void missingAtomsWarn() { missing_atoms_warn = true; }
+
+  // If atoms are missing, return an empty vGroup so this residue will
+  // be skipped in future calculations...
+  void skipMissingResidues() { skip_when_missing = true; }
 
   // Returns the names of the torsions
   virtual vector<string> names(void) =0;
 
   // Utility function to make sure each AtomicGroup has only 4 atoms
+  // for a torsion
   void checkAtoms(const string& s, const AtomicGroup& nascent, const AtomicGroup& residue) {
     if (!missing_atoms_warn)
       return;
@@ -113,12 +133,27 @@ public:
       cerr << "Extracted:\n";
       cerr << nascent;
     }
+
+    return;
   }
 
 
-  // Polymorphic extractAtoms function...  This is what changes to
-  // provide more types of torsions to extract.
-  virtual vGroup extractAtoms(vGroup&, const int) =0;
+  // Front-end to atom extraction.  This is used to provide a
+  // post-condition where an empty vGroup is returned if not all
+  // torsions could be calculated for the ith residue (and the user
+  // wants us to skip it)...
+  vGroup extractAtoms(vGroup& residues, const int i) {
+    vGroup result = extractImpl(residues, i);
+
+    if (skip_when_missing) {
+      vGroup::iterator vi;
+      for (vi = result.begin(); vi != result.end(); ++vi)
+        if ((*vi).size() != 4)
+          return(vGroup());
+    }
+
+    return(result);
+  }
 
 
 protected:
@@ -126,21 +161,28 @@ protected:
 
   // This is used by the derived classes to make sure that going out
   // of bounds on the vector index isn't fatal...
+
   AtomicGroup& getResidue(vGroup& residues, const int i) {
 
     if (i < 0 || i >= static_cast<int>(residues.size())) {
       static AtomicGroup null_group;
-      return(null_group);
+      return(null_group);   // Yes, returning a handle to internal
+                            // data is generally a bad idea, but we
+                            // really need to return a ref, alors...
     }
 
     return(residues[i]);
   }
 
-
-
 private:
 
+  // Polymorphic extractAtoms function...  This is what changes to
+  // provide more types of torsions to extract.
+  virtual vGroup extractImpl(vGroup&, const int) =0;
+
+
   bool missing_atoms_warn;
+  bool skip_when_missing;
 };
 
 
@@ -163,7 +205,7 @@ public:
   // Implementation of function to extract the appropriate atoms for
   // phi & psi...
 
-  vGroup extractAtoms(vGroup& residues, const int i) {
+  vGroup extractImpl(vGroup& residues, const int i) {
     
     // Select specific atom types
     AtomNameSelector carbon("C");
@@ -221,7 +263,7 @@ public:
 
 
 
-  vGroup extractAtoms(vGroup& residues, const int i) {
+  vGroup extractImpl(vGroup& residues, const int i) {
 
     // Select specific atom types
     AtomNameSelector C4P("C4'");
@@ -284,6 +326,7 @@ void parseOptions(int argc, char *argv[]) {
       ("pseudo,p", "Use RNA pseudo-torsions")
       ("missing,m", po::value<double>(&missing_flag)->default_value(-9999))
       ("warn,w", "Warn when atoms are missing a torsion")
+      ("skip,s", "Skip residues where not all torsions are available")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
 
 
@@ -331,6 +374,9 @@ void parseOptions(int argc, char *argv[]) {
     if (vm.count("warn"))
       extractor->missingAtomsWarn();
 
+    if (vm.count("skip"))
+      extractor->skipMissingResidues();
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -360,7 +406,6 @@ int main(int argc, char *argv[]) {
 
   // Split selection into individual residues to operate over...
   vGroup residues = subset.splitByResidue();
-  cerr << boost::format("Found %d residues...\n") % residues.size();
 
 
   // Data-structure here is a vector of vectors of AtomicGroups.  Each
@@ -372,7 +417,8 @@ int main(int argc, char *argv[]) {
   vvGroup torsion_atoms;
   for (int i=0; i<static_cast<int>(residues.size()); ++i) {
     vGroup atoms = extractor->extractAtoms(residues, i);
-    torsion_atoms.push_back(atoms);
+    if (!atoms.empty())
+      torsion_atoms.push_back(atoms);
   }
   
   cout << "# " << hdr << endl;
