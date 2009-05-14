@@ -91,7 +91,7 @@ struct AtomNameSelector : public AtomSelector {
 class Extractor {
 public:
 
-  Extractor() : missing_atoms_warn(true) { }
+  Extractor() : missing_atoms_warn(false) { }
 
 
 
@@ -112,14 +112,13 @@ public:
       cerr << residue << endl;
       cerr << "Extracted:\n";
       cerr << nascent;
-      exit(-1);
     }
   }
 
 
   // Polymorphic extractAtoms function...  This is what changes to
   // provide more types of torsions to extract.
-  virtual vGroup extractAtoms(vGroup&, int) =0;
+  virtual vGroup extractAtoms(vGroup&, const int) =0;
 
 
 protected:
@@ -128,7 +127,7 @@ protected:
   // This is used by the derived classes to make sure that going out
   // of bounds on the vector index isn't fatal...
   AtomicGroup& getResidue(vGroup& residues, const int i) {
-    
+
     if (i < 0 || i >= static_cast<int>(residues.size())) {
       static AtomicGroup null_group;
       return(null_group);
@@ -164,7 +163,7 @@ public:
   // Implementation of function to extract the appropriate atoms for
   // phi & psi...
 
-  vGroup extractAtoms(vGroup& residues, int i) {
+  vGroup extractAtoms(vGroup& residues, const int i) {
     
     // Select specific atom types
     AtomNameSelector carbon("C");
@@ -222,7 +221,7 @@ public:
 
 
 
-  vGroup extractAtoms(vGroup& residues, int i) {
+  vGroup extractAtoms(vGroup& residues, const int i) {
 
     // Select specific atom types
     AtomNameSelector C4P("C4'");
@@ -282,8 +281,9 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
-      ("pseudo", "Use RNA pseudo-torsions")
-      ("missing", po::value<double>(&missing_flag)->default_value(-9999))
+      ("pseudo,p", "Use RNA pseudo-torsions")
+      ("missing,m", po::value<double>(&missing_flag)->default_value(-9999))
+      ("warn,w", "Warn when atoms are missing a torsion")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
 
 
@@ -318,12 +318,18 @@ void parseOptions(int argc, char *argv[]) {
     }
 
 
+
     // Instantiate correct Extractor-derived object based on
     // user-selected mode...
     if (vm.count("pseudo"))
       extractor = new PseudoTorsions;
     else
       extractor = new PhiPsi;                // ASSume protein
+
+    // Configure extractor to warn upon finding atoms missing, if the
+    // user wants it...
+    if (vm.count("warn"))
+      extractor->missingAtomsWarn();
 
   }
   catch(exception& e) {
