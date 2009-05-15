@@ -48,17 +48,22 @@ namespace loos {
     // This should probably be in an initialization rather than here...???
     frame.reserve(na);
 
-    for (uint i=0; i<_natoms && !(ifs()->eof()); ++i) {
+    uint i;
+    for (i=0; i<_natoms && !(ifs()->eof()); ++i) {
       *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
       frame[i] = GCoord(x, y, z);
     }
 
-    if (ifs()->eof())
+    if (i != _natoms)
       return(false);
 
     // Probe for velocities or periodic box...
     greal a, b, c;
     *(ifs()) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
+    if (ifs()->eof())
+      return(true);     // No box even...
+
+    // Finish reading the putative box...
     *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
     // Check to see if there are more numbers...  If so, implies we're
