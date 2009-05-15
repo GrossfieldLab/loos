@@ -34,6 +34,7 @@
 #include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <amber_traj.hpp>
+#include <amber_rst.hpp>
 #include <ccpdb.hpp>
 
 
@@ -96,6 +97,10 @@ namespace loos {
     } else if (boost::iends_with(s, ".mdcrd")) {
       pAmberTraj pat(new AmberTraj(s, g.size()));
       pTraj pt(pat);
+      return(pt);
+    } else if (boost::iends_with(s, ".rst") || boost::iends_with(s, ".rst7")) {
+      pAmberRst par(new AmberRst(s, g.size()));
+      pTraj pt(par);
       return(pt);
     } else if (boost::iends_with(s, ".pdb")) {
       pCCPDB ppdb(new CCPDB(s));

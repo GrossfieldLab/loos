@@ -109,12 +109,15 @@ namespace loos {
   class PDB;
   class PSF;
   class Amber;
+  class AmberRst;
   class TinkerXYZ;
+
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
   typedef boost::shared_ptr<PDB> pPDB;
   typedef boost::shared_ptr<PSF> pPSF;
   typedef boost::shared_ptr<Amber> pAmber;
+  typedef boost::shared_ptr<AmberRst> pAmberRst;
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
 
 

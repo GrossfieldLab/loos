@@ -34,7 +34,7 @@ else:
 apps = apps + 'dcd.cpp utils.cpp dcd_utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
 apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp'
 apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
-apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp'
+apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp amber_rst.cpp'
 
 if int(env['shared']):
    loos = env.SharedLibrary('loos', Split(apps))
@@ -51,7 +51,7 @@ loos_lib_inst = env.Install(PREFIX + '/lib', loos)
  
 # Header files...
 hdr = 'loos.hpp'
-hdr = 'amber.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
+hdr = 'amber.hpp amber_rst.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
 hdr = hdr + ' cryst.hpp dcd.hpp dcd_utils.hpp dcdwriter.hpp ensembles.hpp Fmt.hpp'
 hdr = hdr + ' Geometry.hpp KernelActions.hpp Kernel.hpp KernelStack.hpp'
 hdr = hdr + ' KernelValue.hpp loos_defs.hpp loos.hpp LoosLexer.hpp Matrix44.hpp'

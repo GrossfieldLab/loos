@@ -72,6 +72,7 @@
 #include <dcdwriter.hpp>
 
 #include <amber_traj.hpp>
+#include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <pdbtraj.hpp>
 #include <tinker_arc.hpp>
