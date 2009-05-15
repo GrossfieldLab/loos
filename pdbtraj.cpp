@@ -24,7 +24,7 @@
 #include <boost/format.hpp>
 
 namespace loos {
-  void PDBTraj::rewind(void) { seekFrame(0); }
+  void PDBTraj::rewindImpl(void) { seekFrame(0); }
   uint PDBTraj::nframes(void) const { return(_nframes); }
   uint PDBTraj::natoms(void) const { return(_natoms); }
   void PDBTraj::updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
@@ -43,7 +43,7 @@ namespace loos {
   }
 
 
-  void PDBTraj::seekFrame(const uint i) {
+  void PDBTraj::seekFrameImpl(const uint i) {
 
     uint idx = i * stride + start;
     if (idx < start || i > end)
@@ -58,7 +58,7 @@ namespace loos {
   }
 
 
-  void PDBTraj::seekNextFrame(void) {
+  void PDBTraj::seekNextFrameImpl(void) {
     if (at_end)
       return;
 

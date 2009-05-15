@@ -67,15 +67,6 @@ namespace loos {
       read(ifs);
     }
 
-    //! Read in a parmtop file and assign coordinates from the \a crds file.
-    explicit Amber(const std::string parm, const std::string crds) : natoms(0), nres(0), nbonh(0), mbona(0) {
-      std::ifstream ifs(parm.c_str());
-      if (!ifs)
-        throw(std::runtime_error("Cannot open Amber parmtop file " + parm));
-      read(ifs);
-      readCoords(crds);
-    }
-
     //! Read in a parmtop file
     explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname);
@@ -83,16 +74,6 @@ namespace loos {
         throw(std::runtime_error("Cannot open Amber parmtop file " + std::string(fname)));
       read(ifs);
     }
-
-    //! Read in a parmtop file and assign coordinates from the \a crds file.
-    explicit Amber(const char* parm, const char* crds) : natoms(0), nres(0), nbonh(0), mbona(0) {
-      std::ifstream ifs(parm);
-      if (!ifs)
-        throw(std::runtime_error("Cannot open Amber parmtop file " + std::string(parm)));
-      read(ifs);
-      readCoords(crds);
-    }
-
 
     explicit Amber(std::ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0) {
       read(ifs);
@@ -113,34 +94,6 @@ namespace loos {
 
     //! Parse the parmtop file
     void read(std::istream& is);
-
-    //! Read in a coord (or restart file)
-    void readCoords(const char* fname) {
-      std::ifstream ifs(fname);
-      if (!ifs)
-        throw(std::runtime_error("Cannot open Amber crdinp file " + std::string(fname)));
-      readCoords(ifs);
-    }
-
-    //! Read in a coord (or restart) file.
-    void readCoords(const std::string& fname) {
-      std::ifstream ifs(fname.c_str());
-      if (!ifs)
-        throw(std::runtime_error("Cannot open Amber crdinp file " + fname));
-      readCoords(ifs);
-    }
-
-
-    //! Parses a coord/restart file from the given stream...
-    /*!
-     * This member function will auto-detect whether or not the file is
-     * a coordinates file or a restart file and will handle either
-     * appropriately.  Will also auto-detect box parameters and update
-     * them, if present.
-     */
-    void readCoords(std::istream& is);
-
-
 
   private:
 

@@ -46,17 +46,17 @@ namespace loos {
 
   class AmberTraj : public Trajectory {
   public:
-    explicit AmberTraj(const std::string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
-    explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false), unread(false) { init(); }
+    explicit AmberTraj(const std::string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false)  { init(); }
+    explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false) { init(); }
 
-    virtual void rewind(void) { ifs()->seekg(frame_offset); }
+    virtual void rewindImpl(void) { ifs()->seekg(frame_offset); }
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void) { return(frame); }
     virtual void updateGroupCoords(AtomicGroup&);
 
-    virtual void seekNextFrame(void) { }
-    virtual void seekFrame(const uint);
+    virtual void seekNextFrameImpl(void) { }
+    virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const { return(periodic); }
@@ -76,7 +76,6 @@ namespace loos {
     uint _natoms, _nframes;
     unsigned long frame_offset, frame_size;
     bool periodic;
-    bool unread;
     GCoord box;
     std::vector<GCoord> frame;
 

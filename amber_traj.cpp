@@ -62,7 +62,7 @@ namespace loos {
     frame_size = fpos - frame_offset;
 
     // Now try to count the number of frames...
-    _nframes = 0;
+    _nframes = 1;
     double dummy;
     while (!ifs()->fail()) {
       ++_nframes;
@@ -79,19 +79,12 @@ namespace loos {
     if (ifs()->fail())
       throw(std::runtime_error("Unable to divine frame information from amber trajectory"));
 
-    // This is a little hook so if we don't re-read the first frame if
-    // that's the first frame requested...
-    unread = true;
+    cached_first = true;
   }
 
 
   bool AmberTraj::parseFrame(void) {
     greal x, y, z;
-
-    if (unread) {
-      unread = false;
-      return(true);
-    }
 
     if (ifs()->eof())
       return(false);
@@ -124,13 +117,9 @@ namespace loos {
   }
 
 
-  void AmberTraj::seekFrame(const uint i) {
+  void AmberTraj::seekFrameImpl(const uint i) {
 
-    if (i == 0 && unread) {
-      return;
-    }
-    unread = false;
-
+    cached_first = false;
     unsigned long fpos = i * frame_size + frame_offset;
     if (i >= _nframes)
       throw(std::runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));

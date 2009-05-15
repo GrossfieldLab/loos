@@ -104,14 +104,14 @@ namespace loos {
     void readHeader(std::fstream& ifs);
 
     // Trajectory member functions we must provide...
-    virtual void seekNextFrame(void) { }    // DCD frames are always contiguous, so do nothing...
+    virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
-    virtual void seekFrame(const uint);
+    virtual void seekFrameImpl(const uint);
     //! Parse a frame of the DCD
     virtual bool parseFrame(void);
 
     //! Rewind the file to the first DCD frame.
-    virtual void rewind(void);
+    virtual void rewindImpl(void);
 
     // Accessor methods...
 

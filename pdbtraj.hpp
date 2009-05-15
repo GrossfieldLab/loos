@@ -71,14 +71,14 @@ namespace loos {
     explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(std::string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
 
-    virtual void rewind(void);
+    virtual void rewindImpl(void);
     virtual uint nframes(void) const;
     virtual uint natoms(void) const;
     virtual std::vector<GCoord> coords(void);
     virtual void updateGroupCoords(AtomicGroup&);
 
-    virtual void seekNextFrame(void);
-    virtual void seekFrame(const uint);
+    virtual void seekNextFrameImpl(void);
+    virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const;

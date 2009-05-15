@@ -52,6 +52,13 @@ namespace loos {
    *  cached.  If true, then the readFrame() method will not actually do
    *  anything for its first invocation.
    *
+   *  Since it is possible for a subclass to cache the first frame of
+   *  a trajectory, we use a cached_first flag to tell readFrame()
+   *  that it doesn't have to actually do anything for its first
+   *  invocation.  This flag must be invalidated when seeking,
+   *  however.  To ensure this is the case, we use a non-virtual
+   *  inheritance scheme for the seek functions.
+   *
    *  Additionally, this class is not designed to provide output, only
    *  input...
    */
@@ -78,7 +85,10 @@ namespace loos {
     virtual uint nframes(void) const =0;
 
     //! Rewinds the readFrame() iterator
-    virtual void rewind(void) =0;
+    void rewind(void) {
+      cached_first = false;
+      rewindImpl();
+    }
 
     //! Tests whether or not the given frame/trajectory has periodic
     //! boundary information.
@@ -116,11 +126,17 @@ namespace loos {
 
     //! Seek to the next frame in the sequence (used by readFrame() when
     //! operating as an iterator).
-    virtual void seekNextFrame(void) =0;
+    void seekNextFrame(void) {
+      cached_first = false;
+      seekNextFrameImpl();
+    }
 
     //! Seek to a specific frame, be it in the same contiguous file or
     //! in separate files.
-    virtual void seekFrame(const uint) =0;
+    void seekFrame(const uint i) {
+      cached_first = false;
+      seekFrameImpl(i);
+    }
 
     //! Parse an actual frame.
     /** parseFrame() is expected to read in a frame through the
@@ -165,6 +181,16 @@ namespace loos {
 
 
   private:
+    
+    //! NVI implementation for seeking next frame
+    virtual void seekNextFrameImpl() =0;
+
+    //! NVI implementation for seeking a specific frame
+    virtual void seekFrameImpl(const uint) =0;
+
+    //! NVI implementation of rewind
+    virtual void rewindImpl(void) =0;
+
   };
 
 }

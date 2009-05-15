@@ -53,14 +53,14 @@ namespace loos {
     explicit CCPDB(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0) { init(); }
     explicit CCPDB(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
 
-    virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); }
+    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
     virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
 
-    virtual void seekNextFrame(void) { }
-    virtual void seekFrame(const uint);
+    virtual void seekNextFrameImpl(void) { }
+    virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }

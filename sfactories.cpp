@@ -49,16 +49,6 @@ namespace loos {
       PSF psf(s);
       return(psf);
     } else if (boost::iends_with(s, ".prmtop")) {
-      
-      // Special handling to see if there is a crds file...
-      std::string coords = findBaseName(s);
-      coords += ".inpcrd";
-      struct stat buf;
-      if (stat(coords.c_str(), &buf) == 0) {
-        Amber amber(s, coords);
-        return(amber);
-      }
-
       Amber amber(s);
       return(amber);
 
@@ -98,7 +88,9 @@ namespace loos {
       pAmberTraj pat(new AmberTraj(s, g.size()));
       pTraj pt(pat);
       return(pt);
-    } else if (boost::iends_with(s, ".rst") || boost::iends_with(s, ".rst7")) {
+    } else if (boost::iends_with(s, ".rst")
+               || boost::iends_with(s, ".rst7")
+               || boost::iends_with(s, ".inpcrd")) {
       pAmberRst par(new AmberRst(s, g.size()));
       pTraj pt(par);
       return(pt);

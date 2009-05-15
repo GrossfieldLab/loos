@@ -270,57 +270,5 @@ namespace loos {
   }
 
 
-
-
-  void Amber::readCoords(std::istream& is) {
-    char buf[1024];
-    uint n;
-    double timestep;
-    int d;
-
-    // Skip the "title" line.
-    is.getline(buf, 1024);
-    is.getline(buf, 1024);
-    d = sscanf(buf, "%u,%lf", &n, &timestep);
-    if (d < 1 || d > 2)
-      throw(std::runtime_error("Invalid conversion of number of atoms in coord/restart file"));
-
-    if (n != atoms.size())
-      throw(std::runtime_error("Error- attempting to read mismatched coords into an Amber object."));
-
-    for (uint i=0; i<n; i++) {
-      greal x, y, z;
-
-      is >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
-      atoms[i]->coords(GCoord(x,y,z));
-    }
-
-    greal a=0, b=0, c=0, alpha=0, beta=0, gamma=0;
-
-    // First, try to read in a box...
-    if (is >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c >> std::setw(12) >> alpha >> std::setw(12) >> beta >> std::setw(12) >> gamma) {
-  
-      double dummy;
-      if (is >> dummy) {
-        // If we can read in another number, then assume that what was
-        // just read was actually the start of a veolcity block, so skip
-        // it and try to read in another box...
-      
-        is >> std::setw(12) >> dummy >> std::setw(12) >> dummy;
-
-        for (uint i=3; i<n; i++)
-          is >> std::setw(12) >> dummy >> std::setw(12) >> dummy >> std::setw(12) >> dummy;
-      
-        if (is >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c >> std::setw(12) >> alpha >> std::setw(12) >> beta >> std::setw(12) >> gamma) {
-          periodicBox(a, b, c);
-        }
-
-      } else    // Nothing else read, so we did read a periodic box...
-        periodicBox(a, b, c);
-
-    }
-
-  }
-
 }
 

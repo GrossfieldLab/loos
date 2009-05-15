@@ -48,13 +48,13 @@ namespace loos {
   }
 
 
-  void TinkerArc::seekNextFrame(void) {
+  void TinkerArc::seekNextFrameImpl(void) {
     if (++current_index >= _nframes)
       at_end = true;
   }
 
 
-  void TinkerArc::seekFrame(const uint i) {
+  void TinkerArc::seekFrameImpl(const uint i) {
     if (i >= _nframes)
       throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
 

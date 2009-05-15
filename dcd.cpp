@@ -289,7 +289,7 @@ namespace loos {
   }
 
 
-  void DCD::seekFrame(const uint i) {
+  void DCD::seekFrameImpl(const uint i) {
   
     if (first_frame_pos == 0)
       throw(GeneralError("Trying to seek to a DCD frame without having first read the header"));
@@ -340,7 +340,7 @@ namespace loos {
   }
 
 
-  void DCD::rewind(void) {
+  void DCD::rewindImpl(void) {
     ifs()->clear();
     ifs()->seekg(first_frame_pos);
     if (ifs()->fail() || ifs()->bad())

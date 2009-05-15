@@ -59,14 +59,14 @@ namespace loos {
     explicit TinkerArc(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
     explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
 
-    virtual void rewind(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
+    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
     virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
 
-    virtual void seekNextFrame(void);
-    virtual void seekFrame(const uint);
+    virtual void seekNextFrameImpl(void);
+    virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }

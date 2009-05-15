@@ -47,7 +47,7 @@ namespace loos {
   }
 
 
-  void CCPDB::seekFrame(const uint i) {
+  void CCPDB::seekFrameImpl(const uint i) {
     if (i >= _nframes)
       throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
 

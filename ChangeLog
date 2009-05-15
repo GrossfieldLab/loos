@@ -1,3 +1,12 @@
+2009-05-15    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for Amber RST and INPCRD files as a single-frame
+	trajectory.  This is handled transparently by createTrajectory()
+	* Changed the Trajectory interface slightly...  Seeking and
+	rewinding now use non-virtual inheritance so that conditions can
+	be imposed on the function invocation (namely to invalidate the
+	cached_first flag).  This change SHOULD be transparent
+
 2009-05-13    <tromo@spade.biophysics.rochester.edu>
 	* Fixed problem with averager where it was caching all frames of
 	the trajectory.  It will now scan through the trajectory so it

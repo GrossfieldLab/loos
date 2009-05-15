@@ -61,8 +61,10 @@ namespace loos {
     *(ifs()) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
     *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
+    // Check to see if there are more numbers...  If so, implies we're
+    // in velocities...
+    *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
-    (*ifs()) >> std::setw(12) >> x;
     if (ifs()->eof()) {
       periodic = true;
       box = GCoord(a, b, c);
@@ -72,15 +74,19 @@ namespace loos {
     // This means we probably have velocities, so now we have to skip
     // the appropriate # of atoms and try again for the box...
 
-    for (uint i=7; i<_natoms && !(ifs()->eof()); ++i)
+    for (uint i=3; i<_natoms && !(ifs()->eof()); ++i)
       *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
+    // Now read the box in...
     *(ifs()) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
-    if (ifs()->eof())
+    *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
+
+    if (ifs()->eof() || ifs()->fail())
       return(true);    // Apparently, no box info...
 
     periodic = true;
     box = GCoord(a, b, c);
+
     return(true);
   }
 
@@ -103,7 +109,7 @@ namespace loos {
   }
 
 
-  void AmberRst::seekNextFrame(void) {
+  void AmberRst::seekNextFrameImpl(void) {
     if (!seek_flag) {
       seek_flag = true;
       return;
@@ -112,7 +118,7 @@ namespace loos {
     throw(std::logic_error("Amber RST files cannot be seeked beyond the first frame"));
   }
 
-  void AmberRst::seekFrame(const uint i) {
+  void AmberRst::seekFrameImpl(const uint i) {
     if (i != 0)
       throw(std::logic_error("Amber RST files cannot be seeked beyond the first frame"));
   }
