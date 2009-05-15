@@ -585,6 +585,14 @@ Extract embedded OCTAVE data from a LOOS output/log.
 Compute the deuterium quadrupolar splitting order parameters for lipid
 molecules.  The model file must have connectivity information.
 
+\section ramachandran ramachandran
+
+Computes a ramachandran map for a given selection of a specified range
+of frames in a trajectory (or all frames).  Note that some torsions
+may be missing for the residues at the ends of the selection.  To
+avoid this, expand your selection by a residue in both directions,
+then use the "--skip" flag.
+
 \section rdf rdf
 
 Loop over a trajectory file and compute the radial distribution function
@@ -675,11 +683,34 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release140 Version 1.4.0 (2-24-2009)
+\section release140 Version 1.4.0 (5-15-2009)
+There has been a change in philosophy of how LOOS handles system
+descriptions vs models/trajectories/coordinates.  Previously, LOOS
+would try to create an AtomicGroup that had complete information, such
+as when given an Amber prmtop file.  In this case, LOOS would go
+looking for a file with the same name ending in ".inpcrd" and load
+this in with the prmtop file.  Now, LOOS will treat coordinate files
+as a special trajectory that has only one frame.  This way, most tools
+that can operate over a trajectory can also operate on a single model,
+and vice versa.  For example, the following are all valid:
+\verbatim
+ramachandran --pseuo foo.prmtop foo.rst all
+ramachandran --pseudo foo.prmtop foo.mdcrd all
+ramachandran foo.psf foo.dcd all
+ramachandran foo.psf foo.pdb all
+ramachandran foo.pdb foo.pdb all
+\endverbatim
+
+This can lead to the somewhat awkward usage in the last example, but
+think of it as the first PDB provides the system description and the
+second provides the actual model, even though they're both the same.
+
 \subsection r140_added_changed Added, Changed, or otherwise Notable
 <UL>
-  <LI> Removed the use of BOOST_FOREACH.  This solves a compatability
-  issue with older versions of BOOST and LOOS.
+  <LI> Added a porcupine tool for creating porcupine plots for SVD/ENM
+  results
+  <LI> Added drifter tool for tracking centroid movement
+  <LI> Added a ramachandran tool for calculating ramachandran maps
   <LI> Added a "rotamer" tool for calculating the chi-1, chi-2 torsion
 angles for side-chains.
   <LI> Added "rmsfit" tool to superimpose one model upon another
@@ -693,10 +724,59 @@ anm/gnm results.
   </UL>
   <LI> Added an install target for SCons
   <LI> Added support for building a shared-library version of LOOS
+  <LI> Added a special SCons check for ubuntu.  Some systems appear to
+  have an issue where they require the gfortran lib to be explicitly
+  linked.  If this causes an issue for you, simply comment out the
+  ubuntu check in the SConstruct.
+</UL>
+
+\subsection r140_internal Internal Changes
+<UL>
   <LI> Added a set of classes for providing user-feedback when a tool
   may take some time to execute.  See loos::ProgressCounter for more
   information, and the rmsds tool for an example of how to use the new
   classes.
+
+  <LI> Removed the use of BOOST_FOREACH.  This solves a compatability
+  issue with older versions of BOOST and LOOS.
+
+  <LI> Added a number of support utilities for reading in whole
+  trajectories and reading in specific frames.
+
+  <LI> The ensemble functions (i.e. align and average) can now operate
+  over a user-specified set of frames from a trajectory.
+
+  <LI> Added AtomicGroup::splitByResidue() that splits up a group by
+  residue (based on changes in resid and/or segid), returning a
+  vector<AtomicGroup>.
+
+  <LI> The createSystem factory function now no longer tries to
+  automatically find and import an Amber coord file when reading in a
+  PRMTOP.  In addition, the Amber::readCoords() function has been
+  removed.
+  
+  <LI> Added support for Amber restart and coord files as a special
+  1-frame trajectory.  This is transparently handled by the
+  createTrajectory factory function.
+
+  <LI> The Trajectory class now uses NVI for the seek and rewind
+  member functions so it can impose some pre-conditions.  This means
+  the Trajectory base class handles the cached_first flag.  Unless
+  you're writing your own trajectory class, this wont affect you.  If
+  you are, it means the seek and rewind functions are now handled by
+  rewindImpl(), seekImpl(), etc.
+
+</UL>
+
+\subsection r140_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in rmsds that caused the average rmsd to be
+  calculated incorrectly.
+
+  <LI> Fixed some issues with the SConstruct file
+
+  <LI> Fixed a problem with averager where it was caching all frames
+  of the trajectory causing swapping for large trajectories
 </UL>
 
 
