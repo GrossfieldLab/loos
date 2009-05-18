@@ -53,6 +53,16 @@ namespace loos {
     std::string str;
   };
 
+
+  //! Predicate for selecting atoms based on explicit name matching
+  struct AtomNameSelector : public AtomSelector {
+    explicit AtomNameSelector(const std::string& s) : str(s) { }
+    bool operator()(const pAtom&) const;
+
+    std::string str;
+  };
+
+
   //! Predicate for selecting atoms from a range of resid's
   struct ResidRangeSelector : public AtomSelector {
     ResidRangeSelector(const int low, const int high) : _low(low), _high(high) { }

@@ -36,6 +36,10 @@ namespace loos {
     return(pa->segid() == str);
   }
 
+  bool AtomNameSelector::operator()(const pAtom& pa) const {
+    return(pa->name() == str);
+  }
+
   bool ResidRangeSelector::operator()(const pAtom& pa) const {
     return(pa->resid() >= _low && pa->resid() <= _high);
   }

@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(argv[3]);
   pTraj ptraj = createTrajectory(argv[4], model);
 
-  CAlphaSelector casel;
+  AtomNameSelector casel("CA");
 
   Parser parsed1(sel1);
   KernelSelector ksel1(parsed1.kernel());

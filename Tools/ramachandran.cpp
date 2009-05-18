@@ -69,23 +69,6 @@ typedef vector<AtomicGroup> vGroup;
 typedef vector<vGroup> vvGroup;
 
 
-// ----------------------------------------------------------
-// Custom selectors...
-
-
-// Select an atom based on a specific name
-struct AtomNameSelector : public AtomSelector {
-  AtomNameSelector(const string& s) : name(s) { }
-  bool operator()(const pAtom& pa) const {
-    return(pa->name() == name);
-  }
-
-  string name;
-};
-
-
-
-
 
 // ----------------------------------------------------------
 // Classes to handle extraction of atoms...  This enables easy
@@ -210,7 +193,7 @@ public:
     // Select specific atom types
     AtomNameSelector carbon("C");
     AtomNameSelector nitrogen("N");
-    CAlphaSelector calpha;
+    AtomNameSelector calpha("CA");
 
     // Pull out the atoms we'll use.  Since AtomicGroup::select() only
     // returns an AtomicGroup, we use this even though we're actually

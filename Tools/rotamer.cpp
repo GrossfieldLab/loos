@@ -49,19 +49,6 @@ using namespace loos;
 const double null_value = -9999.99;
 
 
-// Custom selector to pick out atom names...
-
-struct AtomNameSelector : public AtomSelector {
-  AtomNameSelector(const string& s) : name(s) { }
-  bool operator()(const pAtom& pa) const {
-    return(pa->name() == name);
-  }
-
-  string name;
-};
-
-
-
 // Interface for torsion calculation...
 
 class Torsion {
