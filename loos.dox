@@ -110,11 +110,45 @@ tell LOOS where its required components are.  To do this, do the following:
 cp custom.py-proto custom.py
 \endverbatim
 Then edit your \c custom.py file to tell SCons and LOOS where your
-libraries are.  \b NOTE: If you're compiling under MacOS X or a linux
-distro other than Fedora Core 9, you will almost certainly need to use
-a custom.py to correctly name your BOOST libraries.  Look at the \c
-BOOSTREGEX and \c BOOSTPO variables for the boost regular expression
-library and the program options library respectively.
+libraries are.
+
+\subsection build_fedora Building with Fedora
+We recommend you use the the \c yum tool that comes with Fedora to
+install the required packages.  You will need, at a minimum, to
+install atlas, boost, and SCons.  Fedora splits many packages into the
+libraries necessary to run and the libraries and headers necessary for
+development.  You will need to be sure to install the development
+versions as well, i.e.
+\verbatim
+yum install boost.x86_64
+yum install boost-devel.x86_64
+\endverbatim
+
+\subsection build_ubunto Building with Ubuntu
+You will need to install atlas, boost, and SCons.  LOOS has been
+tested with \c atlas3-sse2-devel and \c boost-devel installed under the
+latest Ubuntu.  You will need to use a \c custom.py file to change where
+atlas and lapack are for LOOS.  Copy the \c custom.py-proto to
+\c custom.py and edit it.  Change the \c LAPACK and \c ATLAS variables to
+the following:
+\verbatim
+LAPACK='/usr/lib/sse2/atlas'
+ATLAS='/usr/lib/sse2'
+\endverbatim
+
+\subsection build_other Building with MacOS X
+
+You will need to download and install boost and SCons.  You may also
+want to install Doxygen if you want a local copy of the
+documentation.  You will also need to create a \c custom.py file to
+tell LOOS where to find the libraries and headers that it needs.  Copy
+the \c custom.py-proto to \c custom.py and edit it.  In particular, look
+at the \c BOOSTREGEX and \c BOOSTPO variables for the boost regular
+expression library and program options libraries.  You will most
+likely need to change these names...
+
+
+\subsection compiling Compiling
 
 You can temporarily override the defaults (and what's
 set in your \c custom.py file by specifying the appropriate variables
@@ -146,6 +180,8 @@ This will cause SCons to copy the headers, tools, and library into
  /opt/loos.  You can change where LOOS is installed by changing the
  PREFIX variable in either your custom.py file or on the command line.
 
+\subsection BYO Building Your Own Tools
+
 To use LOOS, you will want to include the top-level LOOS directory in
 both your include path and your library paths, so something like the
 following for linux
@@ -157,9 +193,13 @@ or the following for OS X
 g++ -framework vecLib -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex
 \endverbatim
 
-Alternatively, look in the <I>Examples</I> directory for a simple
-example program and prototypical SConstruct/SConscript files.  There
-is also a Makefile in there if you'd rather not use SCons...
+Keep in mind that the above lines may be greatly oversimplified...
+You will almost certainly need to change the names of the libraries to
+reflect the versions you have installed, as well as the directories
+for the header files.  This can get quite messy.  As such, we strongly
+recommend you use either the \c SConstruct/SConscript or the \c
+Makefile in the <I>Examples</I> directory as a template for building
+your own tools.
 
 \section future Future Plans
 
