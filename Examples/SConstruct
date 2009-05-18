@@ -105,9 +105,13 @@ else:
 # you to control the level of debugging output through the
 # DEBUG definition...
 
-release = env['release']
-debug = env['debug']
-profile = env['profile']
+release = int(env['release'])
+debug = int(env['debug'])
+profile = int(env['profile'])
+
+# If debug is requested, make sure there is no optimization...
+if (debug > 0):
+   release=0
 
 if int(release):
     env.Append(CCFLAGS=release_opts)
