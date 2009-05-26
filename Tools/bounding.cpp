@@ -51,4 +51,9 @@ int main(int argc, char *argv[]) {
   cout << "Centroid at " << subset.centroid() << endl;
   cout << "Bounds: " << bdd[0] << " x " << bdd[1] << endl;
 
+  GCoord box = bdd[1];
+  box.x() += fabs(bdd[0].x());
+  box.y() += fabs(bdd[0].y());
+  box.z() += fabs(bdd[0].z());
+  cout << "Box: " << box << endl;
 }
