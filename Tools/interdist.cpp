@@ -38,7 +38,7 @@
 
 
 #include <loos.hpp>
-#include <getopt.h>
+#include <limits>
 
 using namespace std;
 using namespace loos;
@@ -54,38 +54,33 @@ double CenterDistance(AtomicGroup& u, AtomicGroup& v) {
 
 
 double MinDistance(AtomicGroup& u, AtomicGroup& v) {
-  AtomicGroup::Iterator viter(v);
-  pAtom pv;
-    
-  double mind = 1e30;
-  while (pv = viter()) {
-    GCoord cv = pv->coords();
-    AtomicGroup::Iterator uiter(u);
-    pAtom pu;
-    while (pu = uiter()) {
-      GCoord cu = pu->coords();
-      double d2 = cv.distance2(cu);
-      if (d2 < mind)
-        mind = d2;
+  double mind = numeric_limits<double>::max();
+  AtomicGroup::iterator aj;
+  for (aj = v.begin(); aj != v.end(); ++aj) {
+    AtomicGroup::iterator ai;
+    GCoord y = (*aj)->coords();
+
+    for (ai = u.begin(); ai != u.end(); ++ ai) {
+      double d = y.distance2((*ai)->coords());
+      if (d < mind)
+        mind = d;
     }
   }
-  
-  return (sqrt(mind));
+
+  return(sqrt(mind));
 }
 
 
 double MaxDistance(AtomicGroup& u, AtomicGroup& v) {
-  AtomicGroup::Iterator viter(v);
+  AtomicGroup::iterator aj;
   pAtom pv;
   
   double maxd = -1;
-  while (pv = viter()) {
-    GCoord cv = pv->coords();
-    AtomicGroup::Iterator uiter(u);
-    pAtom pu;
-    while (pu = uiter()) {
-      GCoord cu = pu->coords();
-      double d2 = cv.distance2(cu);
+  for (aj = v.begin(); aj != v.end(); ++aj) {
+    GCoord cv = (*aj)->coords();
+    AtomicGroup::iterator ai;
+    for (ai = u.begin(); ai != u.end(); ++ai) {
+      double d2 = cv.distance2((*ai)->coords());
       if (d2 > maxd)
         maxd = d2;
     }
