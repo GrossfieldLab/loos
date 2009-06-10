@@ -239,16 +239,6 @@ int main(int argc, char *argv[]) {
   if (verbose)
     slayer.start();
 
-  cout << "DEBUG> Indices - ";
-  copy(indices.begin(), indices.end(), ostream_iterator<uint>(cout, ","));
-  cout << endl;
-
-  cout << "DEBUG> file bindings - ";
-  copy(file_binding.begin(), file_binding.end(), ostream_iterator<uint>(cout, ","));
-  cout << endl;
-
-  
-
   // Iterate over all requested global-frames...
   vector<uint>::iterator vi;
   for (vi = indices.begin(); vi != indices.end(); ++vi) {
