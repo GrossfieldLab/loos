@@ -88,6 +88,7 @@ class Extractor {
 public:
 
   Extractor() : missing_atoms_warn(false), skip_when_missing(false) { }
+  virtual ~Extractor() { }
 
 
 
@@ -175,6 +176,8 @@ private:
 class PhiPsi : public Extractor {
 public:
 
+  virtual ~PhiPsi() { }
+
   // Names, i.e. phi and psi
   vector<string> names(void) {
     vector<string> s;
@@ -236,6 +239,8 @@ public:
 
 class PseudoTorsions : public Extractor {
 public:
+  virtual ~PseudoTorsions() { }
+
   vector<string> names(void) {
     vector<string> s;
 
