@@ -229,7 +229,7 @@ int main(int argc, char *argv[]) {
   bool first = true;  // Flag to pick off the first frame for a
                       // reference structure
   pTraj traj;
-  int current = -1;   // Track the index of the current trajectory
+  uint current = 0;   // Track the index of the current trajectory
                       // we're reading from...
 
   // Setup for progress output...
@@ -239,12 +239,26 @@ int main(int argc, char *argv[]) {
   if (verbose)
     slayer.start();
 
+  cout << "DEBUG> Indices - ";
+  copy(indices.begin(), indices.end(), ostream_iterator<uint>(cout, ","));
+  cout << endl;
+
+  cout << "DEBUG> file bindings - ";
+  copy(file_binding.begin(), file_binding.end(), ostream_iterator<uint>(cout, ","));
+  cout << endl;
+
+  
+
   // Iterate over all requested global-frames...
   vector<uint>::iterator vi;
   for (vi = indices.begin(); vi != indices.end(); ++vi) {
 
     // Have we switched to a new file??
-    if (static_cast<int>(file_binding[*vi]) != current) {
+    // Note: Because of the way file bindings are setup, it is
+    // possible to get an out-of-range index prior to trying to read
+    // the trajectory frame...  This is solved by using the at()
+    // method here.
+    if (file_binding.at(*vi) != current || first) {
       current = file_binding[*vi];
       traj = createTrajectory(traj_names[current], model);
     }
