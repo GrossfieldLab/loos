@@ -112,6 +112,22 @@ namespace loos {
     return(c);
   }
 
+  //* Note: this code implicitly assumes the group is neutral,
+  //  since it sums based on atomic number
+  GCoord AtomicGroup::centerOfElectrons(void) const {
+    GCoord c(0,0,0);
+    const_iterator i;
+    int electrons = 0;
+
+    for (i=atoms.begin(); i != atoms.end(); i++) {
+      int an = (*i)->atomic_number();  
+      c += an * (*i)->coords();
+      electrons += an;
+    }
+    c /= electrons;
+    return(c);
+  }
+
   GCoord AtomicGroup::dipoleMoment(void) const {
     GCoord center = centerOfCharge();
     GCoord moment(0,0,0);
