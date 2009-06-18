@@ -209,17 +209,22 @@ void makeMaps(void) {
 // Given a map of residue to torsion atoms, pull them out of the
 // passed group and bind it to a torsion calculator...
 
-Torsion* makeTorsion(const AtomicGroup& grp, const ResidueDihedralAtoms& binding) {
-  ResidueDihedralAtoms::const_iterator ci;
-  string name = grp[0]->resname();
+Torsion* makeTorsion(const AtomicGroup& grp, ResidueDihedralAtoms& binding) {
 
-  ci = binding.find(name);
-  if (ci == binding.end()) {
+  // Note: G++ < 4.1 has a bug in tr1::unordered_map where there is no
+  // default constructor for the iterators, so we must use the CC to
+  // instantiate them...  This also apparently causes an issue when
+  // trying to make binding const (and use a const_iterator)
+  ResidueDihedralAtoms::iterator i(binding.end());
+
+  string name = grp[0]->resname();
+  i = binding.find(name);
+  if (i == binding.end()) {
     cerr << "ERROR - no torsion information available for " << name << endl;
     exit(-20);
   }
 
-  DihedralAtoms atoms = ci->second;
+  DihedralAtoms atoms = i->second;
   return(torsionFactory(grp, atoms.a, atoms.b, atoms.c, atoms.d));
 }
 
