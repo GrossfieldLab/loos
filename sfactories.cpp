@@ -36,6 +36,8 @@
 #include <amber_traj.hpp>
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
+#include <tinkerxyz.hpp>
+#include <tinker_arc.hpp>
 
 
 namespace loos {
@@ -51,6 +53,9 @@ namespace loos {
     } else if (boost::iends_with(s, ".prmtop")) {
       Amber amber(s);
       return(amber);
+    } else if (boost::iends_with(s, ".xyz")) {
+      TinkerXYZ tinkerxyz(s);
+      return(tinkerxyz);
 
     } else
       throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
@@ -70,6 +75,10 @@ namespace loos {
     } else if (boost::iends_with(s, ".prmtop")) {
       pAmber p(new Amber(s));
       pag = p;
+    } else if (boost::iends_with(s, ".xyz")) {
+      pTinkerXYZ p(new TinkerXYZ(s));
+      pag = p;
+
     } else
       throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
 
@@ -97,6 +106,10 @@ namespace loos {
     } else if (boost::iends_with(s, ".pdb")) {
       pCCPDB ppdb(new CCPDB(s));
       pTraj pt(ppdb);
+      return(pt);
+    } else if (boost::iends_with(s, ".arc")) {
+      pTinkerArc pta(new TinkerArc(s));
+      pTraj pt(pta);
       return(pt);
     } else
       throw(std::runtime_error("Error- cannot divine trajectory file type from name '" + s + "'"));
