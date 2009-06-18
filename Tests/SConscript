@@ -26,6 +26,8 @@ clone.Append(LIBS = ['loos'])
 
 ### Major uglage ensues...  Close your eyes if you're squeamish...
 
+### This is adapted from Matt Doar's UnitTest work ( see http://www.scons.org/wiki/UnitTests )
+
 import os
 import sys
 def run(cmd, env):
@@ -111,6 +113,7 @@ pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
 tinker_tests = 'tinkerxyz-tests'
 solo_tests = 'principal-axes-tests atomic-group-test timeseries-test matrix_test'
 
+script_tests = 'dumpmol.sh'
 
 
 # This is the master list of dependencies to pass to our caller...
@@ -148,6 +151,9 @@ for name in Split(tinker_tests):
     list.append(test)
 
 
+for name in Split(script_tests):
+    test = env.UnitTest(name)
+    list.append(test)
 
 
 Return('list')
