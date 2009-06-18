@@ -46,8 +46,13 @@ namespace loos {
 
   class AmberTraj : public Trajectory {
   public:
-    explicit AmberTraj(const std::string& s, const int na) : Trajectory(s), _natoms(na), frame_offset(0), frame_size(0), periodic(false)  { init(); }
-    explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na), frame_offset(0), frame_size(0), periodic(false) { init(); }
+    explicit AmberTraj(const std::string& s, const int na) : Trajectory(s),
+                                                             _natoms(na), frame_offset(0),
+                                                             frame_size(0), periodic(false) { init(); }
+
+    explicit AmberTraj(const char* p, const int na) : Trajectory(p), _natoms(na),
+                                                      frame_offset(0), frame_size(0),
+                                                      periodic(false) { init(); }
 
     virtual void rewindImpl(void) { ifs()->seekg(frame_offset); }
     virtual uint nframes(void) const { return(_nframes); }

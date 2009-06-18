@@ -42,6 +42,9 @@ namespace loos {
    *  instantiation.  A list of seek indices for each frame is also
    *  built.
    *
+   *  The first frame is read in by init(), so there is no explicit
+   *  readFrame() during initialization.
+   *
    *  There seems to be an issue with some .ARC files where reading the
    *  end of the contained TinkerXYZ object does not put the input
    *  stream into an EOF state.  So, we can't depend on checking eof()
@@ -56,8 +59,10 @@ namespace loos {
 
   class TinkerArc : public Trajectory {
   public:
-    explicit TinkerArc(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
-    explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+    explicit TinkerArc(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0),
+                                               current_index(0), at_end(false) { init(); }
+    explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0),
+                                        _nframes(0), current_index(0), at_end(false) { init(); }
 
     virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
     virtual uint nframes(void) const { return(_nframes); }

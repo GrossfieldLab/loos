@@ -67,8 +67,13 @@ namespace loos {
      PDBTraj foo("frame_%03d.pdb", 0, 20, 10);
      \endcode
     */
-    explicit PDBTraj(const std::string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
-    explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(std::string(p)), start(st), end(en), stride(str), _natoms(0), _nframes(0), current_index(0), at_end(false) { init(); }
+    explicit PDBTraj(const std::string& s, uint st, uint en, uint str=1) : Trajectory(), pattern(s), start(st), end(en),
+                                                                           stride(str), _natoms(0), _nframes(0), current_index(0),
+                                                                           at_end(false) { init(); readFrame(0); cached_first = true; }
+
+    explicit PDBTraj(const char *p, uint st, uint en, uint str=1) : Trajectory(), pattern(std::string(p)),
+                                                                    start(st), end(en), stride(str), _natoms(0),
+                                                                    _nframes(0), current_index(0), at_end(false) { init(); readFrame(0); cached_first = true; }
 
 
     virtual void rewindImpl(void);

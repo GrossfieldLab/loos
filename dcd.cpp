@@ -224,11 +224,13 @@ namespace loos {
   }
 
 
+#if defined(LOOS_LEGACY)
 
   void DCD::readHeader(std::fstream& fs) {
     ifs.setStream(fs);
     readHeader();
   }
+#endif
 
 
 

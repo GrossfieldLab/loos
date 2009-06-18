@@ -39,28 +39,24 @@ namespace loos {
   //! Base-class for polymorphic trajectories.
   /** This is the interface for trajectories in LOOS.  It is expected
    *  that at least one frame of coordinates will be buffered internally
-   *  at any given time.  It is also not guaranteed that any frames will
-   *  be read upon opening/instantiation.  For example, with a DCD
-   *  class, the header might be read at instantiation, but no frames
-   *  would necessarily be read at that point.
-   *
-   *  Some formats (subclasses), must read the first frame as part of
-   *  their initialization.  Examples include CCPDB and TinkerArc.  As
-   *  such, there's no point in re-reading the first frame again if
-   *  that's what's requested by the client.  So the cached_first
-   *  variable is used to indicate that the first frame has been
-   *  cached.  If true, then the readFrame() method will not actually do
-   *  anything for its first invocation.
-   *
-   *  Since it is possible for a subclass to cache the first frame of
-   *  a trajectory, we use a cached_first flag to tell readFrame()
-   *  that it doesn't have to actually do anything for its first
-   *  invocation.  This flag must be invalidated when seeking,
-   *  however.  To ensure this is the case, we use a non-virtual
-   *  inheritance scheme for the seek functions.
+   *  at any given time.
    *
    *  Additionally, this class is not designed to provide output, only
    *  input...
+   *
+   *  +IMPORTANT NOTE+
+   *  The derived classes MUST read in and cache the first frame as
+   *  part of their initialization.  This prevents problems where
+   *  updateGroupCoords() is called prior to the class reading any
+   *  trajectory data (which can occur with some formats, such as
+   *  DCD's, that only have to read a header to configure the internal
+   *  data...  However, just inserting a readFrame(0) in the
+   *  constructor will leave the trajectory iterator in an incorrect
+   *  state--the first call to readFrame() will return the 2nd frame,
+   *  not the first, which is probably not the desired behavior.  The
+   *  derived class must also then set the cached_first flag to true
+   *  after the readFrame(0).  See the DCD class for an example of
+   *  this.
    */
 
   class Trajectory : public boost::noncopyable {
@@ -71,7 +67,7 @@ namespace loos {
     Trajectory(const std::string& s) : ifs(s), cached_first(false) { }
 
     //! Automatically open the file named \a s
-    Trajectory(const char* s) : ifs(s), cached_first(false) {  }
+    Trajectory(const char* s) : ifs(s), cached_first(false) { }
 
     //! Open using the given stream...
     Trajectory(std::fstream& fs) : ifs(fs), cached_first(false) { }
@@ -177,8 +173,7 @@ namespace loos {
   protected:
     StreamWrapper ifs;
     bool cached_first;    // Indicates that the first frame is cached by
-    // the subclass...
-
+                          // the subclass...
 
   private:
     

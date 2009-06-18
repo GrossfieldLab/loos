@@ -1,3 +1,12 @@
+2009-06-18    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed the specs for classes derived from the Trajectory
+	class.  All derived classes must now ensure that the first frame
+	of the trajectory is read in and cached as part of their
+	initialization.  In order to keep the readFrame() iterator from
+	skipping the first frame, the derived classes must also set the
+	cached_first flag.
+
 2009-05-15    <tromo@spade.biophysics.rochester.edu>
 
 	* Added support for Amber RST and INPCRD files as a single-frame
