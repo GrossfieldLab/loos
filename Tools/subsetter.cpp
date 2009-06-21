@@ -92,6 +92,42 @@ string center_selection;
 bool center_flag = false;
 
 
+struct SortDatum {
+  SortDatum(const string& s_, const uint n_) : s(s_), n(n_) { }
+  SortDatum() : s(""), n(0) { }
+
+  string s;
+  uint n;
+};
+
+
+bool operator<(const SortDatum& a, const SortDatum& b) {
+  return(a.n < b.n);
+}
+
+
+
+vector<string> sortNamesByFormat(vector<string>& names, const string& fmt) {
+  uint n = names.size();
+  vector<SortDatum> bound(n);
+  for (uint i=0; i<n; ++i) {
+    uint d;
+    if (sscanf(names[i].c_str(), fmt.c_str(), &d) != 1) {
+      cerr << boost::format("Bad conversion of '%s' using format '%s'\n") % names[i] % fmt;
+      exit(-10);
+    }
+
+    bound[i] = SortDatum(names[i], d);
+  }
+  
+  sort(bound.begin(), bound.end());
+
+  vector<string> sorted(n);
+  for (uint i=0; i<n; ++i)
+    sorted[i] = bound[i].s;
+
+  return(sorted);
+}
 
 
 
@@ -108,7 +144,8 @@ void parseOptions(int argc, char *argv[]) {
       ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
-      ("center,c", po::value<string>(), "Recenter the trajectory using this selection (of the subset)");
+      ("center,c", po::value<string>(), "Recenter the trajectory using this selection (of the subset)")
+      ("sort", po::value<string>(), "Sort (numerically) the input DCD files using the specified scanf format string");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -159,7 +196,13 @@ void parseOptions(int argc, char *argv[]) {
     if (vm.count("center")) {
       center_selection = vm["center"].as<string>();
       center_flag = true;
-    }      
+    }
+
+    // Sort trajectory filenames if requested...
+    if (vm.count("sort")) {
+      string fmt = vm["sort"].as<string>();
+      traj_names = sortNamesByFormat(traj_names, fmt);
+    }
 
   }
   catch(exception& e) {
