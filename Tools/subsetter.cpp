@@ -33,8 +33,68 @@
   * subsetter -r 0:49 -r 150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd
     This concatenates the two trajectories together, then writes out
     the first 50 frames, then frames 150 through 300 stepping by 10
-    frames.  The frame indices written are of the composite trajectory.
+    frames.  The frame indices written are of the composite
+    trajectory.
 
+  * subsetter --sort out.dcd model.pdb frames_*.dcd
+    This will concatenate all frames together, sorting them
+    numerically so that frames_0.dcd is first, followed by
+    frames_1.dcd, frames_2.dcd, etc.
+
+  * subsetter --sort --scanf 'run_13_%u.dcd' out.dcd model.pdb *.dcd
+    This will concatenate all frames together, sorting them
+    numerically as above, but will extract the second number from the
+    filename as the trajectory file index.  Alternatively, the
+    following option could be used in lieu of the --scanf option:
+      --regex 'run_\d+_(\d+).dcd'
+
+
+  Notes:
+
+    The sorting option addresses a problem where you want to combine a
+    set of trajectories that have have a linearly increasing id
+    associated with them, i.e. "traj.0.dcd", "traj.1.dcd", etc.  If
+    you give "traj.*.dcd" on the command-line, you will [most likely]
+    get the files sorted in lexical order, not numerical order:
+      traj.0.dcd
+      traj.1.dcd
+      traj.10.dcd
+      traj.11.dcd
+      ...
+      traj.2.dcd
+      traj.20.dcd
+      ...
+
+    Giving subsetter the "--sort" option causes subsetter to extract a
+    number from the trajectory filename and sort based on that
+    number.  There are two ways you can tell subsetter how to extract
+    that number.  The first is to use a scanf-style format string, the
+    second is to use a regular expression.  The default is to use a
+    regular expression that extracts the longest sequence of digits
+    from the filename...  In all cases, there is only one number that
+    can be extracted and sorted on (i.e. you cannot do a two-column
+    sort).
+
+    scanf-style format
+
+      For more detailed information, see the man-page for scanf.  In
+    brief, you will want to insert a "%u" wherever the number appears
+    in the filename.  In the case that you have two varying numbers,
+    but you want to extract the second (or later one), use "%*u" to
+    match a number without extracting it, i.e. "run_%*u_chunk_%u.dcd"
+
+    regular expression format
+
+      The regular expression (regex) format supported by subsetter is
+    the BOOST regular expression library standard with PERL
+    extensions.  The extractor looks for the first matched
+    subexpression where the entire match can be converted to a
+    number.  This means you can have multiple subexpressions, so long
+    as the first one that is entirely a number is the one you want to
+    extract one.  The default regex is "(\d+)" which means it will
+    match the longest string of digits in the filename.  As in the
+    example above, to match the second set of digits, use a regular
+    expression like "run_\d+_(\d+).dcd".
 */
 
 
@@ -65,7 +125,10 @@
 #include <loos.hpp>
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
+#include <boost/regex.hpp>
 #include <sstream>
+
+#include <stdlib.h>
 
 using namespace std;
 using namespace loos;
@@ -92,6 +155,58 @@ string center_selection;
 bool center_flag = false;
 
 
+
+// Code required for parsing trajectory filenames...
+
+struct ScanfFmt {
+  ScanfFmt(const string& s) : fmt(s) { }
+
+  uint operator()(const string& s) const {
+    uint d;
+    if (sscanf(s.c_str(), fmt.c_str(), &d) != 1) {
+      cerr << boost::format("Bad conversion of '%s' using format '%s'\n") % s % fmt;
+      exit(-20);
+    }
+
+    return(d);
+  }
+
+  string fmt;
+};
+
+
+
+struct RegexFmt {
+  RegexFmt(const string& s) : fmt(s) {
+    regexp = boost::regex(s, boost::regex::perl);
+  }
+  
+  uint operator()(const string& s) const {
+    boost::smatch what;
+    if (boost::regex_search(s, what, regexp)) {
+      for (uint i=0; i<what.size(); ++i) {
+        string submatch(what.str(i));
+        char *p;
+        if (submatch.empty())    // Should never happen?
+          continue;
+
+        uint val = strtoul(submatch.c_str(), &p, 10);
+        if (*p == '\0')
+          return(val);
+      }
+    }
+    
+    cerr << boost::format("Bad conversion of '%s' using regexp '%s'\n") % s % fmt;
+    exit(-20);
+  }
+
+  string fmt;
+  boost::regex regexp;
+};
+
+
+
+// Binding of trajectory name to the file # for sorting...
 struct SortDatum {
   SortDatum(const string& s_, const uint n_) : s(s_), n(n_) { }
   SortDatum() : s(""), n(0) { }
@@ -101,23 +216,23 @@ struct SortDatum {
 };
 
 
+// Define comparison function for sort
 bool operator<(const SortDatum& a, const SortDatum& b) {
   return(a.n < b.n);
 }
 
 
 
-vector<string> sortNamesByFormat(vector<string>& names, const string& fmt) {
+// Given a vector of trajectory filenames, along with a functor for
+// extracting the frame index from the filename, sorts it in numeric
+// ascending order...
+
+template<class FmtOp>
+vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
   uint n = names.size();
   vector<SortDatum> bound(n);
   for (uint i=0; i<n; ++i) {
-    uint d;
-    if (sscanf(names[i].c_str(), fmt.c_str(), &d) != 1) {
-      cerr << boost::format("Bad conversion of '%s' using format '%s'\n") % names[i] % fmt;
-      exit(-10);
-    }
-
-    bound[i] = SortDatum(names[i], d);
+    bound[i] = SortDatum(names[i], op(names[i]));
   }
   
   sort(bound.begin(), bound.end());
@@ -131,8 +246,9 @@ vector<string> sortNamesByFormat(vector<string>& names, const string& fmt) {
 
 
 
-void parseOptions(int argc, char *argv[]) {
 
+
+void parseOptions(int argc, char *argv[]) {
   try {
 
     po::options_description generic("Allowed options");
@@ -145,7 +261,9 @@ void parseOptions(int argc, char *argv[]) {
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
       ("center,c", po::value<string>(), "Recenter the trajectory using this selection (of the subset)")
-      ("sort", po::value<string>(), "Sort (numerically) the input DCD files using the specified scanf format string");
+      ("sort", "Sort (numerically) the input DCD files.")
+      ("scanf", po::value<string>(), "Sort using a scanf-style format string")
+      ("regex", po::value<string>()->default_value("(\\d+)"), "Sort using a regular expression");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -200,8 +318,17 @@ void parseOptions(int argc, char *argv[]) {
 
     // Sort trajectory filenames if requested...
     if (vm.count("sort")) {
-      string fmt = vm["sort"].as<string>();
-      traj_names = sortNamesByFormat(traj_names, fmt);
+      if (vm.count("scanf")) {
+        string fmt = vm["scanf"].as<string>();
+        traj_names = sortNamesByFormat(traj_names, ScanfFmt(fmt));
+
+      } else {
+
+        string fmt = vm["regex"].as<string>();
+        traj_names = sortNamesByFormat(traj_names, RegexFmt(fmt));
+
+      }
+
     }
 
   }
