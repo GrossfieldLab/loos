@@ -295,7 +295,7 @@ void parseOptions(int argc, char *argv[]) {
       indices = parseRangeList<uint>(ranges);
     }
 
-    if (vm.count("verbose") || vm.count("updates"))
+    if (vm.count("verbose"))
       verbose = true;
 
     if (vm.count("stride"))
