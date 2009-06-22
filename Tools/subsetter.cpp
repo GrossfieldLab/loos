@@ -431,6 +431,10 @@ int main(int argc, char *argv[]) {
     if (center_flag) {
       GCoord c = centered.centroid();
       model.translate(-c);
+
+      GCoord q = centered.centroid();
+      if (q.length2() > 1e-4)
+        cerr << "WARNING: " << q.length2() << endl;
     }
 
     // Handle Periodic boundary conditions...

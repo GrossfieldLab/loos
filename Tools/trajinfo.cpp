@@ -46,6 +46,9 @@ bool brief = false;
 bool box_info = false;
 bool centroid = false;
 
+string centroid_selection;
+
+
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -54,7 +57,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("brief,b", "Minimal output")
-      ("centroid,c", "Report average centroid")
+      ("centroid,c", po::value<string>(), "Report average centroid")
       ("box,B", "Report periodic box info");
 
     po::options_description hidden("Hidden options");
@@ -84,8 +87,12 @@ void parseOptions(int argc, char *argv[]) {
       brief = true;
     if (vm.count("box"))
       box_info = true;
-    if (vm.count("centroid"))
+
+    if (vm.count("centroid")) {
       centroid = true;
+      centroid_selection = vm["centroid"].as<string>();
+    }
+
 
   }
 
@@ -178,7 +185,7 @@ uint verifyFrames(pTraj& traj) {
 // to build the format string to fake it...
 const string fldpre("%20s: ");
 
-void verbInfo(AtomicGroup& model, pTraj& traj) {
+void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center) {
   cout << boost::format(fldpre + "%s\n") % "Model name" % model_name;
   cout << boost::format(fldpre + "%s\n") % "Trajectory name" % traj_name;
   cout << boost::format(fldpre + "%d\n") % "Number of atoms" % traj->natoms();
@@ -200,7 +207,7 @@ void verbInfo(AtomicGroup& model, pTraj& traj) {
     cout << boost::format(fldpre + "%s\n") % "Periodic box" % "no";
 
   if (centroid) {
-    boost::tuple<GCoord, GCoord> res = scanCentroid(model, traj);
+    boost::tuple<GCoord, GCoord> res = scanCentroid(center, traj);
     cout << boost::format(fldpre + "%s +- %s\n") % "Average Centroid" % boost::get<0>(res) % boost::get<1>(res);
   }
 }
@@ -221,8 +228,12 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(model_name);
   pTraj traj = createTrajectory(traj_name, model);
 
+  AtomicGroup center;
+  if (centroid)
+    center = selectAtoms(model, centroid_selection);
+
   if (!brief)
-    verbInfo(model, traj);
+    verbInfo(model, traj, center);
   else
     briefInfo(traj);
 }
