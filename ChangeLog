@@ -1,3 +1,9 @@
+2009-06-22    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed subsetter to permit numerical sorting of the input
+	trajectory files.  The sort key can be extracted by using either a
+	scanf-style format or a regular expression.
+
 2009-06-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed the specs for classes derived from the Trajectory
