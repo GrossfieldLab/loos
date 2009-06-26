@@ -64,6 +64,11 @@ namespace loos {
     return(_coords);
   }
 
+  /** This can cause problems since we track whether the coords are
+   * set or not via the bitmask.  We assume that if you're accessing
+   * this as non-const, your intention is to set the coords, so the
+   * bit flagging coords is set automatically.
+   */
   GCoord& Atom::coords(void) {setPropertyBit(coordsbit);  return(_coords); }
 
   void Atom::coords(const GCoord& c) { _coords = c; setPropertyBit(coordsbit); }

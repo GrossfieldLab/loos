@@ -123,11 +123,6 @@ namespace loos {
     const GCoord& coords(void) const;
 
     //! Returns a writable ref to the internally stored coords.
-    /** This can cause problems since we track whether the coords are
-     * set or not via the bitmask.  We assume that if you're accessing
-     * this as non-const, your intention is to set the coords, so the
-     * bit flagging coords is set automatically.
-     */
     GCoord& coords(void);
 
     //! Sets the coords to \a c
