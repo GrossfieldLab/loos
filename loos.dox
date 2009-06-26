@@ -204,7 +204,7 @@ your own tools.
 \section future Future Plans
 
 <ul>
-    <li> Support for other simulation packages (Tinker, Gromacs, etc)
+    <li> Support for other simulation packages (Gromacs, etc)
 
     <li> Python bindings for easier scripting support
 </ul>
@@ -527,105 +527,157 @@ will produce incorrect answers if trajectories using different box shapes
 (eg truncated octahedron) are used in programs which make use of
 periodicity (eg rdf).
 
-\section aligner aligner
+
+<HR>
+
+\section ENM Elastic Network Models
+
+A collection of tools for working with ENMs
+
+\subsection anm anm
+
+Computes the anisotropic network model for a structure
+
+\subsection gnm gnm
+
+Computes the gaussian network model for a structure
+
+\subsection enmovie enmovie
+
+Creates a DCD depicting motion along the axes taken from an ENM result
+
+\subsection flucc2b flucc2b
+
+Computes B-values based on ENM results
+
+<HR>
+
+\section core_tools Core Tools
+
+Core tools included with LOOS.
+
+\subsection aligner aligner
 
 Align structures in a trajectory against the average using an
 iterative refinement scheme.  Can read any LOOS trajectory format, but
 will write the aligned trajectory as a DCD.
 
-\section atomic-rdf atomic-rdf
+\subsection atomic-rdf atomic-rdf
 
 Compute the radial distribution function for 2 selections of atoms taken
 from a trajectory, treating each selection as a set of individual atoms.
 For contrast, see rdf.
 
-\section averager averager
+\subsection averager averager
 
 Compute the average structure for a set of molecules from a trajectory,
 using an iterative scheme.
 
-\section blurrogram blurrogram.pl
+\subsection blurrogram blurrogram.pl
 
 A PERL tool for creating "blurrogram" style figures with Pymol.
 
-\section bounding bounding
+\subsection bounding bounding
 
 Write out the bounding box for a selection of atoms from a structure file.
 
-\section center-pdb center-pdb
+\subsection center-pdb center-pdb
 
 Read in a structure file, shift its centroid to the origin, and write a new
 pdb file to stdout.  
 
-\section contacts contacts
+\subsection contacts contacts
 
 Loop over a trajectory and count the number of contacts between two
 sets of atoms.  
 
-\section convert2pdb convert2pdb
+\subsection convert2pdb convert2pdb
 
 Read in a structure file in a LOOS-supported format, and write it out as 
 a pdb file.
 
-\section crossing-waters crossing-waters
+\subsection crossing-waters crossing-waters
 
 Loop over a trajectory and compute the number waters crossing a membrane.
 
-\section dcdframe2pdb dcdframe2pdb
+\subsection dcdframe2pdb dcdframe2pdb
 
 Extract a frame from a CHARMM/NAMD dcd trajectory file and write it as a pdb 
 file.
 
-\section dcdinfo dcdinfo
+\subsection dcdinfo dcdinfo
 
 Extract the header information from a CHARMM/NAMD dcd file.  Will
 verify the number of frames present and report periodic box
 information.
 
-\section density-dist density-dist
+\subsection density-dist density-dist
 
 Compute the charge/electron/mass density distribution for the system along
 the z-axis. Produces the distribution for the whole system and an arbitrary
 number of selections.  Requires a structure file format which supplies 
 mass and/or charge.
 
-\section density-dist-windowed density-dist-windowed
+\subsection density-dist-windowed density-dist-windowed
 
 Compute the charge/electron/mass density distribution for the system along
 the z-axis for blocks of time within a trajectory, producing a density
 distribution time series.  Currently assumes PSF and DCD formats.
 
-\section frame2pdb
+\subsection drifter drifter
+
+Calculates movement centroids over a trajectory
+
+\subsection frame2pdb
 
 Extract a frame from a trajectory and write it as a pdb file.
 
-\section helix_kink helix_kink
+\subsection helix_kink helix_kink
 
 Given two selections and a trajectory, compute the time series of the 
 angle between their principal components.
 
-\section model-select model-select
+\subsection interdist interdist
+
+Calculates distances between a selection and an aribtrary set of other
+selections over a trajectory.  The distance computed can be the
+distance between the centroids, the minimum distance between any atom
+in any group, or the max distance between any atom in any group.
+
+\subsection model-select model-select
 
 Takes a model (PDB, PSF, etc) and a selection string.  Parses the selection,
 then applies it to the PDB and writes the output to stdout.  This tool is used
 maily for checking your selection strings to make sure you're actually
 selecting what you intend to select...
 
-\section model2matlab model2matlab
+\subsection model2matlab model2matlab
 
 Takes a PDB and a selection and an optional selection and writes out
 the coordinates to stdout in matlab format.
 
-\section octavex octavex
+\subsection octavex octavex
 
 Extract embedded OCTAVE data from a LOOS output/log.
 
-\section order_params order_params
+\subsection order_params order_params
 
 Compute the deuterium quadrupolar splitting order parameters for lipid
 molecules.  The model file must have connectivity information.
 
-\section ramachandran ramachandran
+\subsection paxes paxes
+
+Computes the magnitude of the principal axes of a set of selections
+over the trajectory.  This can be used to analyze shape changes over
+time.
+
+\subsection porcupine porcupine
+
+Creates a faux-PDB containing atoms/bonds that represent a "porcupine"
+figure for a column vector from a matrix.  This can be used to
+visualize the direction of motion from SVD and ENM results.
+
+\subsection ramachandran ramachandran
 
 Computes a ramachandran map for a given selection of a specified range
 of frames in a trajectory (or all frames).  Note that some torsions
@@ -633,7 +685,12 @@ may be missing for the residues at the ends of the selection.  To
 avoid this, expand your selection by a residue in both directions,
 then use the "--skip" flag.
 
-\section rdf rdf
+\subsection rotamer rotamer
+
+Computes the chi-1 and chi-2 angles for a given selection over an
+entire trajectory.
+
+\subsection rdf rdf
 
 Loop over a trajectory file and compute the radial distribution function
 for two selections.  The selections are split up by molecule and the center
@@ -641,7 +698,7 @@ of mass is used.  For example, selecting all water molecules will cause it
 to compute the radial distribution of the centers of mass of individual
 water molecules.  For contrast, see atomic-rdf.
 
-\section recenter-trj
+\subsection recenter-trj
 
 Loop over a trajectory, translating the entire system such that the selected
 portion remains at the origin, and reimaging the rest on a molecule by 
@@ -649,70 +706,87 @@ molecule basis.  It can also just do translations in the z-dimension.  The
 model file must have connectivity information, and the trajectory must have
 periodic box information.  This program writes a DCD file as output.
 
-\section reimage-by-molecule reimage-by-molecule
+\subsection reimage-by-molecule reimage-by-molecule
 
 Reads a trajectory, and writes a new DCD which has been reimaged on a molecule
 by molecule basis.  The model file must have connectivity information, and the
 trajectory must have periodic box information.
 
-\section rgyr rgyr
+\subsection rgyr rgyr
 
 Loop over a trajectory and compute the radius of gyration for a selection of 
 atoms.  Optionally, it can break your selection into individual molecules, 
 if for example you have multiple solutes in the system.
 
-\section rmsd2ref
+\subsection rmsd2ref rmsd2ref
 
 Computes rmsds between a selection and either its average conformation or a
 reference model, optionally aligning the selection.
 
-\section rmsds rmsds
+\subsection rmsfit rmsfit
+
+Superimpose two structures using Kabsch RMS alignment.
+
+\subsection rmsds rmsds
 
 Loops over a trajectory and computes the pairwise RMSDs for a selection of
 atoms.
 
-\section subsetter subsetter
+\subsection subsetter subsetter
 
 Subsets a trajectory (stripping out any atoms that don't match the
 given selection), and writes a new DCD file.  Can be used to
 concatenate trajectories, pull specific frames out, as well as
 adjusting periodic box information and centering the trajectory on a
-selection...
+selection.  Since trajectories are often stored in files with an
+ascending numerical sequence name (i.e. frame_1.dcd, frame_2.dcd,
+etc), and since the shell globbing doesn't sort these in numerical
+order, a command such as,
+\verbatim
+subsetter foo model.pdb frame_*.dcd
+\endverbatim
+will not concatenate your frames in the order you want.  You can tell
+subsetter to sort the input trajectories so that they are in numerical
+order by using the "--sort" flag.  For more detailed information, use
+the "--fullhelp" option with subsetter.
 
 
-\section svd svd
+\subsection svd svd
 
 Performs principal component analysis for a trajectory using singular value
 decomposition, writing out the eigenvalues, left singular vectors
 (eigenvectors) and the right singular vectors (projection timeseries) as
 OCTAVE-formatted text files. 
 
-\section svdcolmap svdcolmap
+\subsection svdcolmap svdcolmap
 
 Map the magnitude of a left singular vector onto a PDB file's B-value
 column.  Useful for visualizing which portions of a molecule are mobile for
 a given SVD mode.
 
-\section torsion torsion
+\subsection torsion torsion
 
 Given 4 selections, compute the torsion angle for their centroids.  This 
 program loops over a trajectory and writes the torsion angle time series.
 
-\section traj2dcd
+\subsection traj2dcd
 
 Converts a LOOS-supported format to a DCD.
 
-\section trajinfo
+\subsection trajinfo
 
-Similar to dcdinfo, but works with generic trajectories.
+Similar to dcdinfo, but works with generic trajectories.  Can report
+box information and the centroid of a selection.  Useful for verifying
+trajectory header information and extracting the number of frames and
+atoms in a trajectory.
 
-\section xy_rdf xy_rdf
+\subsection xy_rdf xy_rdf
 
 Compute a two dimension radial distribution function in the xy plane,
 splitting the system into upper and lower leaflets.  Primarily intended for
 analyzing lateral organization of lipid-water interfaces.  
 
-\section xy_rdf_timeseries xy_rdf_timeseries
+\subsection xy_rdf_timeseries xy_rdf_timeseries
 
 Same as xy_rdf, except producing a series of block averages rather than
 averaging over the whole trajectory.  
@@ -723,7 +797,7 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
-\section release140 Version 1.4.0 (5-15-2009)
+\section release140 Version 1.4.0 (6-26-2009)
 There has been a change in philosophy of how LOOS handles system
 descriptions vs models/trajectories/coordinates.  Previously, LOOS
 would try to create an AtomicGroup that had complete information, such
@@ -747,8 +821,18 @@ second provides the actual model, even though they're both the same.
 
 \subsection r140_added_changed Added, Changed, or otherwise Notable
 <UL>
+  <LI> Added an AtomNameSelector() to match arbitraty atoms
+  <LI> Added centerOfElectrons() to AtomicGroup class
+  <LI> Added support for Tinker file formats in the factory functions
+  <LI> Added a renum-pdb tool for renumbering models
+  <LI> Added interdist tool for calculating distances between selections
+  <LI> Added support for numerically sorting the input trajectory
+  filenames in subsetter.  See the tool documentation above for more
+  information.
   <LI> Added a porcupine tool for creating porcupine plots for SVD/ENM
   results
+  <LI> Added paxes tool for computing the principal axes magnitudes
+  (i.e. eigenvalues) of a set of selections over a trajectory.
   <LI> Added drifter tool for tracking centroid movement
   <LI> Added a ramachandran tool for calculating ramachandran maps
   <LI> Added a "rotamer" tool for calculating the chi-1, chi-2 torsion
@@ -762,6 +846,7 @@ angles for side-chains.
      <LI> "enmovie" creates a DCD trajectory showing motion based on
 anm/gnm results.
   </UL>
+  <LI> Reduced the size of the test files
   <LI> Added an install target for SCons
   <LI> Added support for building a shared-library version of LOOS
   <LI> Added a special SCons check for ubuntu.  Some systems appear to
@@ -772,33 +857,31 @@ anm/gnm results.
 
 \subsection r140_internal Internal Changes
 <UL>
+  <LI> Changed how Trajectory classes work slightly...
+  Trajectory-derived classes must now read in and cache the first
+  frame of the trajectory as part of their initialization.
+  <LI> CAlphaSelector() is now deprecated; use AtomNameSelector("CA")
+  instead.
   <LI> Added a set of classes for providing user-feedback when a tool
   may take some time to execute.  See loos::ProgressCounter for more
   information, and the rmsds tool for an example of how to use the new
   classes.
-
   <LI> Removed the use of BOOST_FOREACH.  This solves a compatability
   issue with older versions of BOOST and LOOS.
-
   <LI> Added a number of support utilities for reading in whole
   trajectories and reading in specific frames.
-
   <LI> The ensemble functions (i.e. align and average) can now operate
   over a user-specified set of frames from a trajectory.
-
   <LI> Added AtomicGroup::splitByResidue() that splits up a group by
   residue (based on changes in resid and/or segid), returning a
   vector<AtomicGroup>.
-
   <LI> The createSystem factory function now no longer tries to
   automatically find and import an Amber coord file when reading in a
   PRMTOP.  In addition, the Amber::readCoords() function has been
   removed.
-  
   <LI> Added support for Amber restart and coord files as a special
   1-frame trajectory.  This is transparently handled by the
   createTrajectory factory function.
-
   <LI> The Trajectory class now uses NVI for the seek and rewind
   member functions so it can impose some pre-conditions.  This means
   the Trajectory base class handles the cached_first flag.  Unless
@@ -810,11 +893,12 @@ anm/gnm results.
 
 \subsection r140_bugs Bug Fixes
 <UL>
+  <LI> Fixed bug in subsetter where verbose output was always on.
+  <LI> Fixed bug in subsetter where out of range frame indices would
+  cause a seg-fault.
   <LI> Fixed bug in rmsds that caused the average rmsd to be
   calculated incorrectly.
-
   <LI> Fixed some issues with the SConstruct file
-
   <LI> Fixed a problem with averager where it was caching all frames
   of the trajectory causing swapping for large trajectories
 </UL>
