@@ -76,7 +76,7 @@ typedef vector<vGroup> vvGroup;
 // computed... 
 
 
-// Extractor is the base-class (interface) to how we extract atoms to
+// Extractor is the base-class (interface) for how we extract atoms to
 // compute torsions for.  It uses NVI to make the extract function
 // polymorphic while allowing pre- and post-conditions implemented in
 // the base-class.  For more details about NVI,
@@ -355,7 +355,7 @@ void parseOptions(int argc, char *argv[]) {
     if (vm.count("pseudo"))
       extractor = new PseudoTorsions;
     else
-      extractor = new PhiPsi;                // ASSume protein
+      extractor = new PhiPsi;                // Assume protein
 
     // Configure extractor to warn upon finding atoms missing, if the
     // user wants it...

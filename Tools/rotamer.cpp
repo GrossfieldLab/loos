@@ -49,7 +49,7 @@ using namespace loos;
 const double null_value = -9999.99;
 
 
-// Interface for torsion calculation...
+// Interface for torsion calculation class.
 
 class Torsion {
 public:
@@ -126,6 +126,7 @@ Torsion* torsionFactory(const AtomicGroup& grp, const string& a, const string& b
 }
 
 
+// ---------------------------------------------------------------
 
 // Map of residues to chi-1, chi-2 atom lists.  An atom name of "-"
 // indicates that this angle can't be calculated.  An entry of all "-"
@@ -229,6 +230,7 @@ Torsion* makeTorsion(const AtomicGroup& grp, ResidueDihedralAtoms& binding) {
 }
 
 
+// ---------------------------------------------------------------
 
 
 int main(int argc, char *argv[]) {

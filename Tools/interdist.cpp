@@ -43,7 +43,14 @@
 using namespace std;
 using namespace loos;
 
+
+// Function pointer used to determine which kind of distance
+// calculation we're going to do...
+
 typedef double (*DistFPtr)(AtomicGroup&, AtomicGroup&);
+
+
+// Distance between centroid of groups
 
 double CenterDistance(AtomicGroup& u, AtomicGroup& v) {
   GCoord cu = u.centroid();
@@ -52,6 +59,9 @@ double CenterDistance(AtomicGroup& u, AtomicGroup& v) {
   return(cu.distance(cv));
 }
 
+
+// Minimum distance between any member of group u vs any member of
+// group v
 
 double MinDistance(AtomicGroup& u, AtomicGroup& v) {
   double mind = numeric_limits<double>::max();
@@ -71,6 +81,9 @@ double MinDistance(AtomicGroup& u, AtomicGroup& v) {
 }
 
 
+// Maximum distance between any member of group u and any member of
+// group v
+
 double MaxDistance(AtomicGroup& u, AtomicGroup& v) {
   AtomicGroup::iterator aj;
   pAtom pv;
@@ -88,6 +101,8 @@ double MaxDistance(AtomicGroup& u, AtomicGroup& v) {
   
   return (sqrt(maxd));
 }
+
+
 
 
 int main(int argc, char *argv[]) {
@@ -109,6 +124,7 @@ int main(int argc, char *argv[]) {
     compute = &MinDistance;
   else {
     cerr << "ERROR- unknown mode '" << argv[1] << "'\n";
+    cerr << "Must be either center, max, or min\n";
     exit(-1);
   }
 
