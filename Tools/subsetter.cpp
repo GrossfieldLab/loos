@@ -14,87 +14,6 @@
 
   Usage:
     subsetter [options] output-prefix input-model input-trajectory [input-trajectory ...]
-
-  Examples:
-
-  * subsetter -S10 out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd
-    This concatenates the 3 trajectories together and outputs every
-    10th frame to out.dcd
-
-  * subsetter -c 'name == "CA"' out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd
-    This concatenates the 3 trajectories together centering the output
-    using the centroid of all c-alphas.
-
-  * subsetter -c 'segid == "HEME"' -s '!hydrogen' out.dcd model.pdb traj.dcd
-    This pulls all non-hydrogen atoms out of the trajectory and writes
-    them to out.dcd, centering so that the HEME segment is at the
-    origin.
-
-  * subsetter -r 0:49 -r 150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd
-    This concatenates the two trajectories together, then writes out
-    the first 50 frames, then frames 150 through 300 stepping by 10
-    frames.  The frame indices written are of the composite
-    trajectory.
-
-  * subsetter --sort out.dcd model.pdb frames_*.dcd
-    This will concatenate all frames together, sorting them
-    numerically so that frames_0.dcd is first, followed by
-    frames_1.dcd, frames_2.dcd, etc.
-
-  * subsetter --sort --scanf 'run_13_%u.dcd' out.dcd model.pdb *.dcd
-    This will concatenate all frames together, sorting them
-    numerically as above, but will extract the second number from the
-    filename as the trajectory file index.  Alternatively, the
-    following option could be used in lieu of the --scanf option:
-      --regex 'run_\d+_(\d+).dcd'
-
-
-  Notes:
-
-    The sorting option addresses a problem where you want to combine a
-    set of trajectories that have have a linearly increasing id
-    associated with them, i.e. "traj.0.dcd", "traj.1.dcd", etc.  If
-    you give "traj.*.dcd" on the command-line, you will [most likely]
-    get the files sorted in lexical order, not numerical order:
-      traj.0.dcd
-      traj.1.dcd
-      traj.10.dcd
-      traj.11.dcd
-      ...
-      traj.2.dcd
-      traj.20.dcd
-      ...
-
-    Giving subsetter the "--sort" option causes subsetter to extract a
-    number from the trajectory filename and sort based on that
-    number.  There are two ways you can tell subsetter how to extract
-    that number.  The first is to use a scanf-style format string, the
-    second is to use a regular expression.  The default is to use a
-    regular expression that extracts the longest sequence of digits
-    from the filename...  In all cases, there is only one number that
-    can be extracted and sorted on (i.e. you cannot do a two-column
-    sort).
-
-    scanf-style format
-
-      For more detailed information, see the man-page for scanf.  In
-    brief, you will want to insert a "%u" wherever the number appears
-    in the filename.  In the case that you have two varying numbers,
-    but you want to extract the second (or later one), use "%*u" to
-    match a number without extracting it, i.e. "run_%*u_chunk_%u.dcd"
-
-    regular expression format
-
-      The regular expression (regex) format supported by subsetter is
-    the BOOST regular expression library standard with PERL
-    extensions.  The extractor looks for the first matched
-    subexpression where the entire match can be converted to a
-    number.  This means you can have multiple subexpressions, so long
-    as the first one that is entirely a number is the one you want to
-    extract one.  The default regex is "(\d+)" which means it will
-    match the longest string of digits in the filename.  As in the
-    example above, to match the second set of digits, use a regular
-    expression like "run_\d+_(\d+).dcd".
 */
 
 
@@ -245,6 +164,92 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
 }
 
 
+void fullHelp(void) {
+
+  cout << 
+    "\n"
+    "Examples:\n"
+    "\n"
+    "  * subsetter -S10 out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd\n"
+    "    This concatenates the 3 trajectories together and outputs every\n"
+    "    10th frame to out.dcd\n"
+    "\n"
+    "  * subsetter -c 'name == \"CA\"' out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd\n"
+    "    This concatenates the 3 trajectories together centering the output\n"
+    "    using the centroid of all c-alphas.\n"
+    "\n"
+    "  * subsetter -c 'segid == \"HEME\"' -s '!hydrogen' out.dcd model.pdb traj.dcd\n"
+    "    This pulls all non-hydrogen atoms out of the trajectory and writes\n"
+    "    them to out.dcd, centering so that the HEME segment is at the\n"
+    "    origin.\n"
+    "\n"
+    "  * subsetter -r 0:49 -r 150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd\n"
+    "    This concatenates the two trajectories together, then writes out\n"
+    "    the first 50 frames, then frames 150 through 300 stepping by 10\n"
+    "    frames.  The frame indices written are of the composite\n"
+    "    trajectory.\n"
+    "\n"
+    "  * subsetter --sort out.dcd model.pdb frames_*.dcd\n"
+    "    This will concatenate all frames together, sorting them\n"
+    "    numerically so that frames_0.dcd is first, followed by\n"
+    "    frames_1.dcd, frames_2.dcd, etc.\n"
+    "\n"
+    "  * subsetter --sort --scanf 'run_13_%u.dcd' out.dcd model.pdb *.dcd\n"
+    "    This will concatenate all frames together, sorting them\n"
+    "    numerically as above, but will extract the second number from the\n"
+    "    filename as the trajectory file index.  Alternatively, the\n"
+    "    following option could be used in lieu of the --scanf option:\n"
+    "      --regex 'run_\\d+_(\\d+).dcd'\n"
+    "\n"
+    "\n"
+    "  Notes:\n"
+    "\n"
+    "    The sorting option addresses a problem where you want to combine a\n"
+    "    set of trajectories that have have a linearly increasing id\n"
+    "    associated with them, i.e. \"traj.0.dcd\", \"traj.1.dcd\", etc.  If\n"
+    "    you give \"traj.*.dcd\" on the command-line, you will [most likely]\n"
+    "    get the files sorted in lexical order, not numerical order:\n"
+    "      traj.0.dcd\n"
+    "      traj.1.dcd\n"
+    "      traj.10.dcd\n"
+    "      traj.11.dcd\n"
+    "      ...\n"
+    "      traj.2.dcd\n"
+    "      traj.20.dcd\n"
+    "      ...\n"
+    "\n"
+    "    Giving subsetter the \"--sort\" option causes subsetter to extract a\n"
+    "    number from the trajectory filename and sort based on that\n"
+    "    number.  There are two ways you can tell subsetter how to extract\n"
+    "    that number.  The first is to use a scanf-style format string, the\n"
+    "    second is to use a regular expression.  The default is to use a\n"
+    "    regular expression that extracts the longest sequence of digits\n"
+    "    from the filename...  In all cases, there is only one number that\n"
+    "    can be extracted and sorted on (i.e. you cannot do a two-column\n"
+    "    sort).\n"
+    "\n"
+    "    * scanf-style format *\n"
+    "\n"
+    "      For more detailed information, see the man-page for scanf.  In\n"
+    "    brief, you will want to insert a \"%u\" wherever the number appears\n"
+    "    in the filename.  In the case that you have two varying numbers,\n"
+    "    but you want to extract the second (or later one), use \"%*u\" to\n"
+    "    match a number without extracting it, i.e. \"run_%*u_chunk_%u.dcd\"\n"
+    "\n"
+    "    * regular expression format *\n"
+    "\n"
+    "      The regular expression (regex) format supported by subsetter is\n"
+    "    the BOOST regular expression library standard with PERL\n"
+    "    extensions.  The extractor looks for the first matched\n"
+    "    subexpression where the entire match can be converted to a\n"
+    "    number.  This means you can have multiple subexpressions, so long\n"
+    "    as the first one that is entirely a number is the one you want to\n"
+    "    extract one.  The default regex is \"(\\d+)\" which means it will\n"
+    "    match the longest string of digits in the filename.  As in the\n"
+    "    example above, to match the second set of digits, use a regular\n"
+    "    expression like \"run_\\d+_(\\d+).dcd\".\n";
+}
+
 
 
 
@@ -254,6 +259,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("fullhelp", "More detailed help (including examples)")
       ("verbose,v", "Verbose output")
       ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
@@ -284,9 +290,11 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
       cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name [trajectory-name ...]\n";
       cerr << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(-1);
     }
 
