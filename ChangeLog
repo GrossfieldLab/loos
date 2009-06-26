@@ -1,8 +1,16 @@
+
 2009-06-22    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed subsetter to permit numerical sorting of the input
 	trajectory files.  The sort key can be extracted by using either a
 	scanf-style format or a regular expression.
+	* Fixed bug in subsetter where verbosity was always turned on.
+	* Changed the centroid reporting in trajinfo to report the
+	centroid of a selection.
+	* Changed the size of the test PDB file so it's much more
+	reasonably sized.
+	* Changed test code to reflect changes in PDB test file, including
+	updating of expected test output.
 
 2009-06-18    <tromo@spade.biophysics.rochester.edu>
 
@@ -12,6 +20,19 @@
 	initialization.  In order to keep the readFrame() iterator from
 	skipping the first frame, the derived classes must also set the
 	cached_first flag.
+	* Added support for Tinker format in the factory functions.
+	* Added centerOfElectrons() method to AtomicGroup (by Alan)
+	* Fixed bug in subsetter where out-of-range frame indices caused a
+	seg-fault.
+	* Changed bounding to report periodic box size (not just the
+	extents).
+	* Added renum-pdb tool to renumber a model
+	* Added an AtomNameSelector() that will select an atom with the
+	passed name.  AtomNameSelector("CA") should be used instead of
+	CAlphaSelector(), which is now deprecated.
+	* Removed ubuntu-specific build check, given the new build
+	protocol for ubuntu (see the Doxygen docs for more information)
+	
 
 2009-05-15    <tromo@spade.biophysics.rochester.edu>
 
