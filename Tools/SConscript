@@ -41,6 +41,8 @@ for name in Split(apps):
 
 PREFIX = env['PREFIX']
 
+apps = apps + ' blurrogram.pl'
+
 loos_tools = env.Install(PREFIX + '/bin', Split(apps))
 env.Alias('tools_install', loos_tools)
 
