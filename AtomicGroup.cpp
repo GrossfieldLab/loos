@@ -762,6 +762,23 @@ namespace loos {
   }
 
 
+  void AtomicGroup::findBonds(const double dist) {
+    AtomicGroup::iterator ij;
+    double dist2 = dist * dist;
+    
+    for (ij = begin(); ij != end() - 1; ++ij) {
+      AtomicGroup::iterator ii;
+      GCoord u = (*ij)->coords();
+
+      for (ii = begin() + 1; ii != end(); ++ii) {
+        if (u.distance2((*ii)->coords()) < dist2) {
+          (*ij)->addBond(*ii);
+          (*ii)->addBond(*ij);
+        }
+      }
+    }
+  }
+
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {
     AtomicGroup::const_iterator i;

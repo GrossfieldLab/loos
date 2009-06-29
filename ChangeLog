@@ -1,3 +1,7 @@
+2009-06-29    <tromo@spade.biophysics.rochester.edu>
+
+	* Added AtomicGroup::findBonds() to perform a distance-based
+	search... 
 
 2009-06-22    <tromo@spade.biophysics.rochester.edu>
 
