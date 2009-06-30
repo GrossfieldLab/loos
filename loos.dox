@@ -178,7 +178,17 @@ scons install
 
 This will cause SCons to copy the headers, tools, and library into
  /opt/loos.  You can change where LOOS is installed by changing the
- PREFIX variable in either your custom.py file or on the command line.
+ PREFIX variable in either your custom.py file or on the command
+ line.  LOOS will create a /bin, /include, /lib, and /docs directory
+ and copy the appropriate files.  The recommended installation
+ methodology is to install LOOS into a version-specific directory, and
+ then set up a symlink from \c loos-latest to the most recent
+ installed version:
+\verbatim
+scons PREFIX=/opt/loos-1.4.0 install
+ln -s /opt/loos-1.4.0 /opt/loos-latest
+\endverbatim
+
 
 \subsection BYO Building Your Own Tools
 

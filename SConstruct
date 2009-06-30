@@ -196,7 +196,7 @@ tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
 # Special handling for docs installation...
-docs_inst = env.InstallAs(PREFIX + '/share/loos', 'Docs')
+docs_inst = env.InstallAs(PREFIX + '/docs', 'Docs')
 Depends(docs_inst, 'foobar')
 
 

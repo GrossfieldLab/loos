@@ -15,6 +15,18 @@ package and the devel package, i.e.
 	yum install boost-devel.x86_64
 
 
+= Ubuntu =
+
+You will need to install atlas, boost, and SCons.  LOOS has been
+tested with atlas3-sse2-devel and boost-devel installed under the
+latest Ubuntu.  You will need to use a custom.py file to change where
+atlas and lapack are for LOOS.  Copy the custom.py-proto to
+custom.py and edit it.  Change the LAPACK and ATLAS variables to
+the following:
+    LAPACK='/usr/lib/sse2/atlas'
+    ATLAS='/usr/lib/sse2'
+
+
 *** FOR THE LESS IMPATIENT ***
 
 = LINUX =
@@ -47,6 +59,13 @@ The default installation location is in /opt/loos.  You can change
 this by either setting PREFIX in your custom.py file, or specifying it
 on the command line, i.e.
    scons release=1 PREFIX=/usr/local/loos-latest install
+
+The recommended installation methodology is to install LOOS into a
+version-specific directory, and then set up a symlink from
+"loos-latest" to the most recent installed version:
+
+   scons PREFIX=/opt/loos-1.4.0 install
+   ln -s /opt/loos-1.4.0 /opt/loos-latest
 
 = MAC OS X =
 
