@@ -53,6 +53,8 @@ using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
+typedef vector<AtomicGroup>   vGroup;
+
 // Globals...yuck...
 
 vector<uint> indices;            // Global indices of frames to extract
@@ -63,12 +65,14 @@ uint stride = 0;                 // Step through frames by this amount
 string model_name, out_name;
 vector<string> traj_names;
 string selection;
-bool verbose = false;
+int verbose = 0;
 uint verbose_updates;            // Frequency of writing updates with
                                  // verbose logging..
 
 bool box_override = false;
 GCoord box;
+
+bool reimage = false;
 
 string center_selection;
 bool center_flag = false;
@@ -260,12 +264,14 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("fullhelp", "More detailed help (including examples)")
-      ("verbose,v", "Verbose output")
+      ("verbose,v", "Verbose output (verbosity = 1")
+      ("verbosity,V", po::value<int>(&verbose)->default_value(0), "Verbosity level (higher equals more output)")
       ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
       ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
+      ("reimage,R", "Reimage by molecule")
       ("center,c", po::value<string>(), "Recenter the trajectory using this selection (of the subset)")
       ("sort", "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(), "Sort using a scanf-style format string")
@@ -304,7 +310,7 @@ void parseOptions(int argc, char *argv[]) {
     }
 
     if (vm.count("verbose"))
-      verbose = true;
+      verbose = 1;
 
     if (vm.count("stride"))
       stride = vm["stride"].as<uint>();
@@ -318,6 +324,9 @@ void parseOptions(int argc, char *argv[]) {
       }
       box_override = 1;
     }
+
+    if (vm.count("reimage"))
+      reimage = true;
 
     if (vm.count("center")) {
       center_selection = vm["center"].as<string>();
@@ -363,7 +372,7 @@ uint bindFilesToIndices(AtomicGroup& model) {
 
   for (uint j=0; j<traj_names.size(); ++j)  {
     uint n = getNumberOfFrames(traj_names[j], model);
-    if (verbose)
+    if (verbose > 1)
       cout << boost::format("Trajectory \"%s\" has %d frames\n") % traj_names[j] % n;
     total_frames += n;
     for (uint i=0; i<n; ++i) {
@@ -385,7 +394,6 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
-  subset.clearBonds();
 
   AtomicGroup centered;
   if (!center_selection.empty())
@@ -409,6 +417,20 @@ int main(int argc, char *argv[]) {
   pTraj traj;
   uint current = 0;   // Track the index of the current trajectory
                       // we're reading from...
+
+  // If reimaging, break out the subsets to iterate over...
+  vector<AtomicGroup> molecules;
+  vector<AtomicGroup> segments;
+  if (reimage) {
+    if (!model.hasBonds()) {
+      cerr << "WARNING- the model has no connectivity.  Assigning bonds based on distance.\n";
+      model.findBonds();
+    }
+    molecules = model.splitByMolecule();
+    segments = model.splitByUniqueSegid();
+    if (verbose)
+      cout << boost::format("Reimaging %d segments and %d molecules\n") % segments.size() % molecules.size();
+  }
 
   // Setup for progress output...
   PercentProgressWithTime watcher;
@@ -435,17 +457,35 @@ int main(int argc, char *argv[]) {
     traj->readFrame(local_indices[*vi]);
     traj->updateGroupCoords(model);
 
-    // Handle centering...
-    if (center_flag) {
-      GCoord c = centered.centroid();
-      model.translate(-c);
-    }
-
     // Handle Periodic boundary conditions...
     if (box_override) {
       if (first && subset.isPeriodic())
         cerr << "WARNING - overriding existing periodic box.\n";
-      subset.periodicBox(box);
+      model.periodicBox(box);
+    }
+
+    // Handle reimaging...
+    if (reimage) {
+      for (vGroup::iterator segment = segments.begin(); segment != segments.end(); ++segment)
+        segment->reimage();
+
+      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+        mol->reimage();
+    }
+
+
+    // Handle centering...
+    if (center_flag) {
+      GCoord c = centered.centroid();
+      model.translate(-c);
+
+      if (reimage) {
+        for (vGroup::iterator segment = segments.begin(); segment != segments.end(); ++segment)
+          segment->reimage();
+        
+        for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+          mol->reimage();
+      }
     }
 
     dcdout.writeFrame(subset);
