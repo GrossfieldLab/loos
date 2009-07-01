@@ -289,9 +289,11 @@ namespace loos {
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
      *  does NOT clear the existing bond list prior to building new
-     *  bonds.  The default distance cutoff is 2.0
+     *  bonds.  The default distance cutoff is 1.25
      */
-    void findBonds(const double dist = 2.0);
+
+    // Larger distances cause problems with hydrogens...
+    void findBonds(const double dist = 1.25);
 
 
     template<class T> T apply(T func) {

@@ -770,7 +770,7 @@ namespace loos {
       AtomicGroup::iterator ii;
       GCoord u = (*ij)->coords();
 
-      for (ii = begin() + 1; ii != end(); ++ii) {
+      for (ii = ij + 1; ii != end(); ++ii) {
         if (u.distance2((*ii)->coords()) < dist2) {
           (*ij)->addBond(*ii);
           (*ii)->addBond(*ij);
