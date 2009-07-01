@@ -493,8 +493,7 @@ int main(int argc, char *argv[]) {
     // Pick off the first frame for the reference structure...
     if (first) {
       PDB pdb = PDB::fromAtomicGroup(subset);
-      if (selection != "all")     // Strip connectivity if subsetting,
-        pdb.clearBonds();         // otherwise the PDB writer will fail...
+      if (selection != "all")
       pdb.remarks().add(hdr);
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
