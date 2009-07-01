@@ -409,9 +409,8 @@ namespace loos {
           }
           int bound_id = *cj;
           pAtom pa = p.findById(bound_id);
-          if (pa == 0)
-            throw(PDB::BadConnectivity("Cannot write CONECT records - bound atoms are missing"));
-          os << boost::format("%5d") % bound_id;
+          if (pa != 0)
+            os << boost::format("%5d") % bound_id;
         }
         os << std::endl;
       }
