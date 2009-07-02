@@ -137,7 +137,7 @@ string angle_mapping[][3] = {
   { "ALA", "-,-,-,-", "-,-,-,-" },
   { "VAL", "N,CA,CB,CG1", "-,-,-,-" },
   { "LEU", "N,CA,CB,CG", "CA,CB,CG,CD1" },
-  { "ILE", "N,CA,CB,CG1", "CA,CB,CG1,CD1" },
+  { "ILE", "N,CA,CB,CG1", "CA,CB,CG1,CD" },
   { "PRO", "N,CA,CB,CG", "CA,CB,CG,CD" },
   { "PHE", "N,CA,CB,CG", "CA,CB,CG,CD1" },
   { "TYR", "N,CA,CB,CG", "CA,CB,CG,CD1" },
