@@ -68,7 +68,7 @@ void parseOptions(int argc, char *argv[]) {
       ("inner,i", po::value<double>(&inner_cutoff)->default_value(2.0), "Inner cutoff (ignore atoms closer than this)")
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
       ("density,d", "Compute exposure by density rather than contacts")
-      ("reimage,r", "Consider symmetry when computing distances");
+      ("reimage,R", "Consider symmetry when computing distances");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -99,7 +99,7 @@ void parseOptions(int argc, char *argv[]) {
     if (vm.count("density"))
       volumetric = true;
     
-    if (vm.count("symmetry"))
+    if (vm.count("reimage"))
       symmetry = true;
 
   }
