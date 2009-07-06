@@ -464,28 +464,14 @@ int main(int argc, char *argv[]) {
       model.periodicBox(box);
     }
 
-    // Handle reimaging...
-    if (reimage) {
-      for (vGroup::iterator segment = segments.begin(); segment != segments.end(); ++segment)
-        segment->reimage();
-
-      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-        mol->reimage();
-    }
-
-
     // Handle centering...
     if (center_flag) {
       GCoord c = centered.centroid();
       model.translate(-c);
 
-      if (reimage) {
-        for (vGroup::iterator segment = segments.begin(); segment != segments.end(); ++segment)
-          segment->reimage();
-        
+      if (reimage)
         for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
           mol->reimage();
-      }
     }
 
     dcdout.writeFrame(subset);
