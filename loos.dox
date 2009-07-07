@@ -127,14 +127,7 @@ yum install boost-devel.x86_64
 \subsection build_ubunto Building with Ubuntu
 You will need to install atlas, boost, and SCons.  LOOS has been
 tested with \c atlas3-sse2-devel and \c boost-devel installed under the
-latest Ubuntu.  You will need to use a \c custom.py file to change where
-atlas and lapack are for LOOS.  Copy the \c custom.py-proto to
-\c custom.py and edit it.  Change the \c LAPACK and \c ATLAS variables to
-the following:
-\verbatim
-LAPACK='/usr/lib/sse2/atlas'
-ATLAS='/usr/lib/sse2'
-\endverbatim
+latest Ubuntu.  You should not need to use a custom.py.
 
 \subsection build_other Building with MacOS X
 

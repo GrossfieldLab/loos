@@ -116,11 +116,10 @@ else:
       env.Append(LIBS = ['lapack', 'atlas'])
       env.Append(LIBPATH = [LAPACK, ATLAS])
       env.Append(CPPPATH = [ATLASINC]) 
-### Deprecated check for ubuntu
-#      fv = open('/proc/version', 'r')
-#      f = fv.read()
-#      if re.search("[Uu]buntu", f):
-#         env.Append(LIBS= ['gfortran'])
+      fv = open('/proc/version', 'r')
+      f = fv.read()
+      if re.search("[Uu]buntu", f):
+         env.Append(LIBS= ['gfortran'])
       
 
 

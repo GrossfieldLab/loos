@@ -9,6 +9,8 @@
 	segids)
 	* Changed AtomicGroup::intersect() to now use an atom comparison
 	policy rather than comparing the pAtom addresses.
+	* Readded ubuntu-specific check.
+	
 
 2009-07-01    <tromo@spade.biophysics.rochester.edu>
 
