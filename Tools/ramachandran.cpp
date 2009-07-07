@@ -312,7 +312,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("pseudo,p", "Use RNA pseudo-torsions")
-      ("missing,m", po::value<double>(&missing_flag)->default_value(-9999))
+      ("missing,m", po::value<double>(&missing_flag)->default_value(-9999), "Value to use for missing torsions")
       ("warn,w", "Warn when atoms are missing a torsion")
       ("skip,s", "Skip residues where not all torsions are available")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
