@@ -185,8 +185,68 @@ namespace loos {
     //! excise returns the excised atoms as a group...
     AtomicGroup excise(const int offset, const int len = 0);
 
+
+    //! Determines if a pAtom is contained in this group using the EqualsOp atom-equality policy
+    /**
+     * The problem with determining containment/intersection/etc is
+     * how to define when two atoms are equal...  This is done by
+     * specifying a comparison functor (the EqualsOp) as a policy.
+     * There are two comparison policies currently in LOOS: AtomEquals
+     * and AtomCoordsEquals.  The default behavior is to use
+     * AtomEquals which only compares a subset of the available Atom
+     * metadata.  You can specify the more restrictive policy (or an
+     * user-defined policy) like:
+     * \code
+     * bool b = group.contains(an_atom, loos::AtomCoordsEquals());
+     * \endcode
+     *
+     * Or as another example, comparing only residue numbers...
+     * \code
+     * struct ResidEquals : public std::binary_function<pAtom, pAtom, bool> {
+     *   bool operator()(const pAtom& a, const pAtom& b) { return(a.resid() == b.resid()); }
+     * };
+     *
+     * bool b = group.contains(an_atom, ResidEquals());
+     * \endcode
+     */
+
+    template<class EqualsOp> bool contains(const pAtom& p, const EqualsOp& op) {
+      const_iterator ci = std::find_if(begin(), end(), bind2nd(op, p));
+      return(ci != end());
+    }
+    
+    //! Determines if a pAtom is contained in this group using the AtomEquals policy (ie the default comparison policy)
+    bool contains(const pAtom& p) { return(contains(p, AtomEquals())); }
+
+
+    //! Determines if the passed group is a subset of the current group using the EqualsOp atom-equality policy
+    template<class EqualsOp> bool contains(const AtomicGroup& g, const EqualsOp& op) {
+      for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
+        if (std::find_if(begin(), end(), bind2nd(op, *cj)) == end())
+          return(false);
+      return(true);
+    }
+    
+    //! Determines if a group is a subset of the current group using the default AtomEquals policy
+    bool contains(const AtomicGroup& g) { return(contains(g, AtomEquals())); }
+    
+    //! Computes the intersection of two groups using the EqualsOp atom-equality policy
+    /**
+     * See AtomicGroup::contains(const pAtom&, const EqualsOp&) for more details
+     */
+    template<class EqualsOp> AtomicGroup intersect(const AtomicGroup& g, const EqualsOp& op) {
+      AtomicGroup result;
+
+      for (const_iterator cj = begin(); cj != end(); ++ cj)
+        if (std::find_if(g.begin(), g.end(), bind2nd(op, *cj)) != g.end())
+          result.addAtom(*cj);
+
+      result.box = box;
+      return(result);
+    }
+
     //! Intersection of two groups
-    AtomicGroup intersect(const AtomicGroup& grp);
+    AtomicGroup intersect(const AtomicGroup& g) { return(intersect(g, AtomEquals())); }
 
     //! Return a group consisting of atoms for which sel predicate returns true...
     AtomicGroup select(const AtomSelector& sel) const;

@@ -258,27 +258,6 @@ namespace loos {
     return(res);
   }
 
-
-  // Not a bright algorithm...
-
-  AtomicGroup AtomicGroup::intersect(const AtomicGroup& grp) {
-    AtomicGroup res;
-
-    std::vector<pAtom>::iterator j;
-    std::vector<pAtom>::const_iterator i;
-
-    for (j=atoms.begin(); j != atoms.end(); j++)
-      for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
-        if (*i == *j) {
-          res.addAtom(*j);
-          break;
-        }
-    
-    res.box = box;
-    return(res);
-  }
-
-
   // Select atoms from the current group, adding them to a new group
   // based on the sel functor/predicate...
 

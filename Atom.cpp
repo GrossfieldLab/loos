@@ -188,6 +188,26 @@ namespace loos {
   }
 
 
+  bool AtomEquals::operator()(const pAtom& a, const pAtom& b) const {
+    return(a->name() == b->name()
+           && a->id() == b->id()
+           && a->resname() == b->resname()
+           && a->resid() == b->resid()
+           && a->segid() == b->segid());
+  }
+
+  bool AtomCoordsEquals::operator()(const pAtom& a, const pAtom& b) const {
+    bool bb = (a->name() == b->name()
+               && a->id() == b->id()
+               && a->resname() == b->resname()
+               && a->resid() == b->resid()
+               && a->segid() == b->segid());
+    if (!bb)
+      return(false);
+
+    double d = a->coords().distance2(b->coords());
+    return( d <= threshold );
+  }
 
 }
 

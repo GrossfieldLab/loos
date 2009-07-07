@@ -1,3 +1,15 @@
+2009-07-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for testing atom equality using the binary
+	predicates: AtomEquals and AtomCoordsEquals
+	* Added support for testing whether an AtomicGroup contains an
+	atom or another group via the AtomicGroup::contains() member
+	function.  This function can take an atom-comparison policy, or
+	use the default AtomEquals (which just compares names, ids, and
+	segids)
+	* Changed AtomicGroup::intersect() to now use an atom comparison
+	policy rather than comparing the pAtom addresses.
+
 2009-07-01    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::findBonds().  Changed default distance

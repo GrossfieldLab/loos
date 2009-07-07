@@ -27,6 +27,7 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <functional>
 
 #include <loos_defs.hpp>
 
@@ -222,6 +223,25 @@ namespace loos {
     std::vector<int> bonds;
   };
 
+
+
+  //! Compares two atoms based solely on name, id, resid, resname, and segid
+  struct AtomEquals : public std::binary_function<pAtom, pAtom, bool> {
+    bool operator()(const pAtom& a, const pAtom& b) const;
+  };
+
+
+  //! Compares two atoms based on name, id, resid, resname, segid, and coords
+  /**
+   * The default distance threshold is 1e-3 Angstroms
+   */
+  struct AtomCoordsEquals : public std::binary_function<pAtom, pAtom, bool> {
+    AtomCoordsEquals(const double d) : threshold(d*d) { }
+    AtomCoordsEquals() : threshold(1e-6) { }
+
+    bool operator()(const pAtom& a, const pAtom& b) const;
+    double threshold;
+  };
 
 }
 
