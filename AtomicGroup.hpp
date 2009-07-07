@@ -248,6 +248,25 @@ namespace loos {
     //! Intersection of two groups
     AtomicGroup intersect(const AtomicGroup& g) { return(intersect(g, AtomEquals())); }
 
+    //! Union of two groups using the specified atom-equality policy
+    /**
+     * Note that the periodic box of the current group is unchanged by this operation
+     */
+    template<class EqualsOp> AtomicGroup merge(const AtomicGroup& g, const EqualsOp& op) {
+      AtomicGroup result = copy();
+
+      for (const_iterator ci = g.begin(); ci != g.end(); ++ci)
+        if (std::find_if(begin(), end(), bind2nd(op, *ci)) == end())
+          result.addAtom(*ci);
+
+      return(result);
+    }
+
+
+    //! Union of two groups using the default AtomEquals atom-equality policy
+    AtomicGroup merge(const AtomicGroup& g) { return(merge(g, AtomEquals())); }
+
+
     //! Return a group consisting of atoms for which sel predicate returns true...
     AtomicGroup select(const AtomSelector& sel) const;
 

@@ -184,6 +184,8 @@
 	DCDWriter will still only write out DCD's in the native format.
 	* Fixed bug in rmsd2ref where the default alignment selection had
 	a typo...
+	* Added AtomicGroup::merge() function to find the union of two
+	groups
 
 2009-01-21    <alan@spade.biophysics.rochester.edu>
 
