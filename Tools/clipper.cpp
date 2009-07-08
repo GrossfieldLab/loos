@@ -87,8 +87,8 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || vm.count("fullhelp") || !vm.count("model") || clips.empty() || clips.size() % 2 != 0) {
-      cerr << "Usage- " << argv[0] << " [options] model-name (v1) (v2) [(v1) (v2) ...]\n";
+    if (vm.count("help") || vm.count("fullhelp") || !vm.count("model") || clips.empty() || clips.size() % 3 != 0) {
+      cerr << "Usage- " << argv[0] << " [options] model-name (p1) (p2) (p3) [(p1) (p2) (p3) ...]\n";
       cerr << generic;
       if (vm.count("fullhelp"))
         fullHelp();
@@ -131,12 +131,14 @@ int main(int argc, char *argv[]) {
     (*i)->clearProperty(Atom::flagbit);
 
   for (vector<GCoord>::iterator vi = planes.begin(); vi != planes.end();) {
-    GCoord u = *vi++;
-    GCoord v = *vi++;
-    GCoord n = u^v;
+    GCoord x1 = *vi++;
+    GCoord x2 = *vi++;
+    GCoord x3 = *vi++;
+    GCoord n = (x2-x1) ^ (x3-x1);
+    n /= n.length();
 
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i) {
-      double d = n * ((*i)->coords() - u);
+      double d = n * ((*i)->coords() - x1);
       if (d >= 0) {
         if (byresidue) {
           AtomicGroup residue = subset.getResidue(*i);
