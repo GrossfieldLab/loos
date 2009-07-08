@@ -56,7 +56,11 @@ namespace loos {
       bondsbit = coordsbit << 1,
       massbit = bondsbit << 1,
       chargebit = massbit << 1,
-      anumbit = chargebit << 1
+      anumbit = chargebit << 1,
+      flagbit = anumbit << 1,
+      usr1bit = flagbit << 1,
+      usr2bit = usr1bit << 1,
+      usr3bit = usr2bit << 1
     };
 
     // Exception classes
