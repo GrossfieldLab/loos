@@ -200,8 +200,23 @@ namespace loos {
      checkProperty(Atom::massbit | Atom::chargebit)
      \endverbatim
     */
-    bool checkProperty(const bits);
+    bool checkProperty(const bits bitmask);
 
+    
+    //! Sets user-defined bits
+    /** The user-available property bits are flagbit, usr1bit,
+     * usr2bit, and usr3bit.  Attempting to set any other bits will
+     * cause a logic_error exception to be thrown.
+     *
+     * This facility is useful if you want to tag atoms for later
+     * processing without putting them in a separate group, for
+     * example...
+     */
+    void setProperty(const bits bitmask);
+    
+
+    //! Clears user-defined bits...
+    void clearProperty(const bits bitmask);
 
     //! Outputs an atom in pseudo-XML
     friend std::ostream& operator<<(std::ostream&, const Atom&);
@@ -212,6 +227,8 @@ namespace loos {
     void setPropertyBit(const bits);
     //! Internal function for clearing a bitflag
     void clearPropertyBit(const bits);
+
+    void checkUserBits(const bits bitmask);
 
   private:
     int _id;

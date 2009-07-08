@@ -146,6 +146,22 @@ namespace loos {
   bool Atom::checkProperty(const bits bitmask) { return((mask & bitmask) != 0); }
 
 
+  void Atom::checkUserBits(const bits bitmask) {
+    if (! bitmask & (flagbit|usr1bit|usr2bit|usr3bit) )
+      throw(std::logic_error("Attempting to set a non-user property bit in an Atom"));
+  }
+
+  void Atom::setProperty(const bits bitmask) {
+    checkUserBits(bitmask);
+    setPropertyBit(bitmask);
+  }
+
+  void Atom::clearProperty(const bits bitmask) {
+    checkUserBits(bitmask);
+    clearPropertyBit(bitmask);
+  }
+
+
   void Atom::init() {
     _id = 1;
     _resid = 1;
