@@ -52,7 +52,36 @@ bool byresidue = false;
 
 
 void fullHelp(void) {
-  cout << "Sorry, no extra help available at this time\n";
+  cout <<
+    "\n"
+    "Clipper implements a set of arbitrary clipping planes that can be\n"
+    "applied to a selection or to the entire model.  When a selection is\n"
+    "used, only the selection is clipped--all other atoms are retained in\n"
+    "the output.  Clipping planes are specified by providing three\n"
+    "coordinates.  The normal to the plane is determined using the\n"
+    "right-hand rule (i.e. assuming the points define the plane in a\n"
+    "counter-clockwise fashion).  Atoms that lie on the normal side of the\n"
+    "plane are clipped.  Alternatively, if the --byres flag is given, then\n"
+    "if an atom is clipped, the entire residue that contains that atom is\n"
+    "also clipped regardless of where it lies with respect to the clipping\n"
+    "plane.  Finally, any number of clipping planes can be specified on the\n"
+    "command line.\n"
+    "\n"
+    "Examples:\n"
+    "\n"
+    "  * clipper '(0,0,0)' '(1,0,0)' '(0,1,0)' model.pdb >clipped.pdb\n"
+    "    This defines a clipping plane at z=0 with the normal pointing\n"
+    "    along the positive z-axis.\n"
+    "\n"
+    "  * clipper '(0,4,0)' '(1,4,0)' '(0,4,1)' model.pdb >clipped.pdb\n"
+    "    This defines a clipping plane at y=4 with the normal pointing\n"
+    "    along the positive y-axis\n"
+    "\n"
+    "  * clipper --byres --selection 'segid==\"BULK\"' '(0,0,0)' '(1,0,0)' '(0,1,0)' model.pdb >clipped.pdb\n"
+    "    This defines a clipping plane at z=0 with the normal pointing\n"
+    "    along the positive z-axis, but only waters are clipped and if any\n"
+    "    water atom is clipped, then the entire water molecule is also\n"
+    "    clipped.\n";
 }
 
 
