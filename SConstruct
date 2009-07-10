@@ -35,27 +35,26 @@ loos_version = '1.4.0'
 
 
 # Principal options...
-clos = Options('custom.py')
-clos.AddOptions(
-	('regenerate', 'Set to 1 to regenerate test outputs', 0),
-	('debug', 'Set to 1 to add -DDEBUG to build', 0),
-        ('profile', 'Set to 1 to build the code for profiling', 0),
-	('release', 'Set to 1 to configure for release.', 1),
-	('reparse', 'Set to 1 to regenerate parser-related files.', 0),
-        ('shared', 'Set to 1 to build a shared LOOS library.', 0),
-)
+clos = Variables('custom.py')
+clos.Add('regenerate', 'Set to 1 to regenerate test outputs', 0)
+clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
+clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
+clos.Add('release', 'Set to 1 to configure for release.', 1)
+clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
+clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0),
 
-clos.Add(PathOption('LAPACK', 'Path to LAPACK', '', PathOption.PathAccept))
-clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
-clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
-clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', '', PathOption.PathAccept))
-clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '', PathOption.PathAccept))
+
+clos.Add(PathVariable('LAPACK', 'Path to LAPACK', '', PathVariable.PathAccept))
+clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
+clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
 clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex')
 clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options')
 clos.Add('CXX', 'C++ Compiler', 'g++')
-clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
-clos.Add(PathOption('PREFIX', 'Path to install LOOS as', '/opt/loos',
-                    PathOption.PathAccept))
+clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
+clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
+                    PathVariable.PathAccept))
 
 # This is a developer setting...  Do not set unless you know what you
 # are doing...
