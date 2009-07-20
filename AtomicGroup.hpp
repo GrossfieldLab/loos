@@ -372,7 +372,7 @@ namespace loos {
      */
 
     // Larger distances cause problems with hydrogens...
-    void findBonds(const double dist = 1.25);
+    void findBonds(const double dist = 1.65);
 
 
     template<class T> T apply(T func) {
