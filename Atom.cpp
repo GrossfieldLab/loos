@@ -58,13 +58,9 @@ namespace loos {
   std::string Atom::PDBelement(void) const { return(_pdbelement); }
   void Atom::PDBelement(const std::string s) { _pdbelement = s; }
 
-  const GCoord& Atom::coords(void) const {
-    if (!(mask & coordsbit))
-      throw(UnsetProperty("Atom has no coordinates"));
-    return(_coords);
-  }
+  const GCoord& Atom::coords(void) const { return(_coords); }
 
-  GCoord& Atom::coords(void) {setPropertyBit(coordsbit);  return(_coords); }
+  GCoord& Atom::coords(void) { return(_coords); }
 
   void Atom::coords(const GCoord& c) { _coords = c; setPropertyBit(coordsbit); }
 
