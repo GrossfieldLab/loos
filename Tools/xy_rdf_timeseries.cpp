@@ -234,8 +234,8 @@ while (traj->readFrame())
             float d_outer = d_inner + bin_width;
             float norm = M_PI*(d_outer*d_outer - d_inner*d_inner)/area;
 
-            float upper = hist_upper[m]/(norm*upper_expected/area);
-            float lower = hist_lower[m]/(norm*lower_expected/area);
+            float upper = hist_upper[m]/(norm*upper_expected);
+            float lower = hist_lower[m]/(norm*lower_expected);
             float total = (hist_upper[m] + hist_lower[m])/
                                 (norm*(upper_expected + lower_expected) );
             cum += (hist_upper[m] + hist_lower[m])/(group1.size()*interval);
