@@ -75,7 +75,10 @@ void fullHelp(void) {
     " * exposure -R -i 2 -p 'segid != \"BULK\"' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
     "   Computes the degree to which P1 is buried, i.e. the density of non-\n"
     "   water atoms about P1, excluding any atom that is within 2 A of an atom\n"
-    "   in P1.  Also considers periodic boundaries when computing distances.\n";
+    "   in P1.  Also considers periodic boundaries when computing distances.\n"
+    "\n"
+    " * exposure -p '!(segid == \"BULK\" || segid == \"P1\")' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
+    "   Computes the degree to which P1 is buried, ignoring the atoms from P1.\n";
 }
 
 
