@@ -48,6 +48,7 @@ string selection_name;
 
 vector<GCoord> planes;
 bool byresidue = false;
+bool cliponly = false;
 
 
 
@@ -96,7 +97,8 @@ void parseOptions(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("fullhelp", "Even more help")
       ("byres,b", "Clip by residue (rather than by atom)")
-      ("selection,s", po::value<string>(&selection_name)->default_value("all"), "Selection to apply clipping planes to");
+      ("selection,s", po::value<string>(&selection_name)->default_value("all"), "Selection to apply clipping planes to")
+      ("cliponly,o", po::value<bool>(&cliponly)->default_value(false), "Set to 1 to only output the clipped selection, not the whole model");
 
 
     po::options_description hidden("Hidden options");
@@ -181,9 +183,16 @@ int main(int argc, char *argv[]) {
   }
 
   AtomicGroup clipped;
-  for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
-    if (!(*i)->checkProperty(Atom::flagbit))
-      clipped.append(*i);
+  if (cliponly) {
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+      if (!(*i)->checkProperty(Atom::flagbit))
+        clipped.append(*i);
+    
+  } else {
+    for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
+      if (!(*i)->checkProperty(Atom::flagbit))
+        clipped.append(*i);
+  }
 
   PDB pdb = PDB::fromAtomicGroup(clipped);
   pdb.remarks().add(hdr);
