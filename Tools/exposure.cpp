@@ -78,7 +78,10 @@ void fullHelp(void) {
     "   in P1.  Also considers periodic boundaries when computing distances.\n"
     "\n"
     " * exposure -p '!(segid == \"BULK\" || segid == \"P1\")' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
-    "   Computes the degree to which P1 is buried, ignoring the atoms from P1.\n";
+    "   Computes the degree to which P1 is buried, ignoring the atoms from P1.\n"
+    "\n"
+    " Note: Exposure calculations can be quite lengthy for large systems/trajectories.\n"
+    "       you may want to add '&& !hydrogen' to your selections if speed is an issue.\n";
 }
 
 

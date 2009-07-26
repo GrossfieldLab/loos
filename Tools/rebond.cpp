@@ -48,8 +48,28 @@ double radius;
 
 
 void fullHelp(void) {
-  cout << "Extended help not available at this time...\n";
-  exit(-1);
+  cout <<
+    "Examples:\n"
+    "rebound --full 0 --radius 15 --selection 'name == \"CA\"' model.pdb >network.pdb\n"
+    "  This is useful for visualizing the ENM connection network.  It finds\n"
+    "  all connections between all CA atoms within 15 Angstroms of each other.\n"
+    "  Only the CA atoms and their bonds are output in this case.\n"
+    "\n"
+    "rebound --radius 15 --selection 'name == \"CA\"' model.pdb >network.pdb\n"
+    "  Same as above, but will output the entire model.  Any pre-existing bonds\n"
+    "  stored in the PDB will be removed and only those bonds between CA atoms\n"
+    "  will be present.\n"
+    "\n"
+    "rebond --radius 4 ca_trace.pdb >model.pdb\n"
+    "  Given a PDB of only CA atoms, this will connect them back into chains.\n"
+    "  This is useful with the CA-only PDB output from tools like svd.\n"
+    "  The radius may need to be tweaked...\n"
+    "\n"
+    "Note: Some visualization programs, such as VMD, have a hard-coded maximum\n"
+    "      number of bonds that can be displayed.  This may be lower than the\n"
+    "      real number of bonds when visualizaing ENM networks.  You will need\n"
+    "      to either recompile your software, or use one that has larger limits,\n"
+    "      such as PyMol.\n";
 }
 
 
