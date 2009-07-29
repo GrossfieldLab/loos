@@ -102,7 +102,7 @@ namespace loos {
         static bool init(false);
 
         if (!init)
-          for (int i=0; i<sizeof(uint); ++i)
+          for (uint i=0; i<sizeof(uint); ++i)
             buf[i] = '\0';
 
         rndup = n % sizeof(uint);

@@ -33,4 +33,8 @@ int main(int argc, char *argv[]) {
     cout << box[i] << ((i == 8) ? "" : ",");
   cout << endl;
 
+  vector<float> coords;
+  float precision;
+  r = loos::xdrfile_read_compr_coord(coords, &precision, &xfile);
+  cout << format("Read of coords: r=%d, prec=%f\n") % r % precision;
 }
