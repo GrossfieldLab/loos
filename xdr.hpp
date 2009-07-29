@@ -1,5 +1,5 @@
-#if !defined(XDRFILE_HPP)
-#define XDRFILE_HPP
+#if !defined(XDR_HPP)
+#define XDR_HPP
 
 #include <iostream>
 #include <string>
@@ -18,7 +18,7 @@ namespace loos {
 
     class XDR {
     public:
-      XDR(iostream* s) : stream(s), need_to_swab(false) {
+      XDR(std::iostream* s) : stream(s), need_to_swab(false) {
         int test = 0x1234;
         if (*(reinterpret_cast<char*>(&test)) == 0x34) {
           need_to_swab = true;
@@ -29,7 +29,7 @@ namespace loos {
       template<typename T> int read(T* p) {
 
         if (sizeof(T) > sizeof(uint))
-          throw(logic_error("Attempting to read a POD that is too large"));
+          throw(std::logic_error("Attempting to read a POD that is too large"));
 
         uint data;
         stream->read(reinterpret_cast<char*>(&data), sizeof(uint));
@@ -73,7 +73,7 @@ namespace loos {
       template<typename T> int write(T* p) {
 
         if (sizeof(T) > sizeof(uint))
-          throw(logic_error("Attempting to write a POD that is too large"));
+          throw(std::logic_error("Attempting to write a POD that is too large"));
 
         uint u;
         T* up = reinterpret_cast<T*>(&u);
@@ -117,7 +117,7 @@ namespace loos {
       }
 
     private:
-      iostream* stream;
+      std::iostream* stream;
       bool need_to_swab;
 
     };
