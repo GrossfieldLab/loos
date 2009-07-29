@@ -8,27 +8,34 @@
 
 namespace loos {
 
-  namespace {
-    int sizeofint(int);
-    int sizeofints(uint*, const int);
-    int decodebits(int*, int);
-    void decodeints(int*, const int, int, uint*, int*);
+  namespace internal {
+    namespace xdr {
+
+      int sizeofint(int);
+      int sizeofints(uint*, const int);
+      int decodebits(int*, int);
+      void decodeints(int*, const int, int, uint*, int*);
     
   
-    const int magicints[] = {
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
-      80, 101, 128, 161, 203, 256, 322, 406, 512, 645, 812, 1024, 1290, // 31
-      1625, 2048, 2580, 3250, 4096, 5060, 6501, 8192, 10321, 13003, // 41
-      16384, 20642, 26007, 32768, 41285, 52015, 65536,82570, 104031, // 50
-      131072, 165140, 208063, 262144, 330280, 416127, 524287, 660561, // 58
-      832255, 1048576, 1321122, 1664510, 2097152, 2642245, 3329021, // 65
-      4194304, 5284491, 6658042, 8388607, 10568983, 13316085, 16777216 // 72
-    };
-
-    const int firstidx = 9;
-    const int lastidx = 72;
+      const int magicints[] = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
+        80, 101, 128, 161, 203, 256, 322, 406, 512, 645, 812, 1024, 1290, // 31
+        1625, 2048, 2580, 3250, 4096, 5060, 6501, 8192, 10321, 13003, // 41
+        16384, 20642, 26007, 32768, 41285, 52015, 65536,82570, 104031, // 50
+        131072, 165140, 208063, 262144, 330280, 416127, 524287, 660561, // 58
+        832255, 1048576, 1321122, 1664510, 2097152, 2642245, 3329021, // 65
+        4194304, 5284491, 6658042, 8388607, 10568983, 13316085, 16777216 // 72
+      };
+      
+      const int firstidx = 9;
+      const int lastidx = 72;
+      
+    }
 
   }
+  
+  using namespace internal::xdr;
+
 
   template<typename T>
   int xdrfile_read_compr_coord(std::vector<T> fp, /* length 3*ncoord */ 
@@ -37,7 +44,7 @@ namespace loos {
    {
      int minint[3], maxint[3], *lip;
      int smallidx, minidx, maxidx;
-     unsigned sizeint[3], sizesmall[3], bitsizeint[3], size3;
+     uint sizeint[3], sizesmall[3], bitsizeint[3], size3;
      int k, *buf1, *buf2, lsize, flag;
      int smallnum, smaller, larger, i, is_smaller, run;
      T inv_precision;
@@ -82,7 +89,7 @@ namespace loos {
        bitsizeint[2] = sizeofint(sizeint[2]);
        bitsize = 0; /* flag the use of large sizes */
      } else {
-       bitsize = sizeofints(3, sizeint);
+       bitsize = sizeofints(sizeint, 3);
      }
 	
      if (!xfp->read(smallidx)) {
@@ -109,7 +116,7 @@ namespace loos {
        return(0);
      }
 
-     if (!xfp->read(static_cast<char*>(&(buf2[3])), static_cast<unsigned int>(buf2[0]))) {
+     if (!xfp->read(reinterpret_cast<char*>(&(buf2[3])), static_cast<int>(buf2[0]))) {
        delete[] buf1;
        delete[] buf2;
        return(0);
