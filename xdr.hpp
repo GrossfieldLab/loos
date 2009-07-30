@@ -56,15 +56,22 @@ namespace loos {
         uint rndup;
         static char buf[sizeof(uint)];
 
+        if (n == 0)
+          return(1);
+
         rndup = n % sizeof(uint);
         if (rndup > 0)
           rndup = sizeof(uint) - rndup;
 
         stream->read(p, n);
-        if (!stream->fail())
-          stream->read(buf, rndup);
+        if (stream->fail())
+          return(0);
+        if (!rndup)
+          return(1);
 
-        return(stream->gcount());
+        stream->read(buf, rndup);
+
+        return(1);
       }
 
 

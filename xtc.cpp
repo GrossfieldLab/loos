@@ -34,7 +34,7 @@ namespace loos {
             tmp >>= 8;
           }
           while (tmp != 0) {
-            bytes[bytecnt] = tmp & 0xff;
+            bytes[bytecnt++] = tmp & 0xff;
             tmp >>= 8;
           }
           nbytes = bytecnt;
@@ -44,7 +44,7 @@ namespace loos {
         --nbytes;
         while (bytes[nbytes] >= num) {
           ++nbits;
-          num <<= 1;
+          num *= 2;
         }
 
         return(nbits + nbytes*8);
@@ -55,7 +55,7 @@ namespace loos {
 
         int mask = (1 << nbits) -1;
 
-        unsigned char *cbuf = reinterpret_cast<unsigned char*>(&(buf[3]));
+        unsigned char *cbuf = reinterpret_cast<unsigned char*>(buf) + 3*sizeof(*buf);
         int cnt = buf[0];
         uint lastbits = static_cast<uint>(buf[1]);
         uint lastbyte = static_cast<uint>(buf[2]);

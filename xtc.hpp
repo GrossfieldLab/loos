@@ -6,6 +6,8 @@
 #include <xdr.hpp>
 #include <Trajectory.hpp>
 
+#include <boost/format.hpp>
+
 namespace loos {
 
   namespace internal {
@@ -28,7 +30,7 @@ namespace loos {
       };
       
       const int firstidx = 9;
-      const int lastidx = 72;
+      const int lastidx = 73;
       
     }
 
@@ -116,7 +118,7 @@ namespace loos {
        return(0);
      }
 
-     if (!xfp->read(reinterpret_cast<char*>(&(buf2[3])), static_cast<int>(buf2[0]))) {
+     if (!xfp->read(reinterpret_cast<char*>(&(buf2[3])), static_cast<uint>(buf2[0]))) {
        delete[] buf1;
        delete[] buf2;
        return(0);
@@ -173,22 +175,36 @@ namespace loos {
              prevcoord[1] = tmp;
              tmp = thiscoord[2]; thiscoord[2] = prevcoord[2];
              prevcoord[2] = tmp;
-             fp.push_back(prevcoord[0] * inv_precision);
-             fp.push_back(prevcoord[1] * inv_precision);
-             fp.push_back(prevcoord[2] * inv_precision);
+
+             T x = prevcoord[0] * inv_precision;
+             T y = prevcoord[1] * inv_precision;
+             T z = prevcoord[2] * inv_precision;
+             fp.push_back(x);
+             fp.push_back(y);
+             fp.push_back(z);
+             std::cerr << "(" << x << "," << y << "," << z << ")\n";
            } else {
              prevcoord[0] = thiscoord[0];
              prevcoord[1] = thiscoord[1];
              prevcoord[2] = thiscoord[2];
            }
-           fp.push_back(thiscoord[0] * inv_precision);
-           fp.push_back(thiscoord[1] * inv_precision);
-           fp.push_back(thiscoord[2] * inv_precision);
+           T x = thiscoord[0] * inv_precision;
+           T y = thiscoord[1] * inv_precision;
+           T z = thiscoord[2] * inv_precision;
+           fp.push_back(x);
+           fp.push_back(y);
+           fp.push_back(z);
+           std::cerr << "(" << x << "," << y << "," << z << ")\n";
+
          }
        } else {
-         fp.push_back(thiscoord[0] * inv_precision);
-         fp.push_back(thiscoord[1] * inv_precision);
-         fp.push_back(thiscoord[2] * inv_precision);	
+         T x = thiscoord[0] * inv_precision;
+         T y = thiscoord[1] * inv_precision;
+         T z = thiscoord[2] * inv_precision;
+         fp.push_back(x);
+         fp.push_back(y);
+         fp.push_back(z);
+         std::cerr << "(" << x << "," << y << "," << z << ")\n";
        }
        smallidx += is_smaller;
        if (is_smaller < 0) {
