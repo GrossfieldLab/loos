@@ -26,6 +26,11 @@ namespace loos {
       }
 
 
+      uint block_size(void) const { return(sizeof(uint)); }
+
+      std::iostream* get(void) { return(stream); }
+
+
       template<typename T> uint read(T* p) {
 
         if (sizeof(T) > sizeof(uint))

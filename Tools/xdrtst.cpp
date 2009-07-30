@@ -7,55 +7,56 @@
 using namespace std;
 using namespace boost;
 
-int main(int argc, char *argv[]) {
-  fstream fs("f.xtc", ios_base::in);
-  loos::internal::XDR xfile(&fs);
 
+bool readHeader(loos::internal::XDR& xf) {
   int natoms;
   int step;
   float time;
   float box[9];
 
   int magic = 99;
-  int r = xfile.read(magic);
+  int r = xf.read(magic);
+  if (!r)
+    return(false);
   cout << format("magic=%d\n") % magic;
-  cout << format("r=%d\n") % r;
 
-  xfile.read(natoms);
-  xfile.read(step);
-  xfile.read(time);
-  xfile.read(box, 9);
-
+  xf.read(natoms);
+  xf.read(step);
+  xf.read(time);
+  xf.read(box, 9);
 
   cout << format("natoms=%d, step=%d, time=%f\n") % natoms % step % time;
   cout << "box=(";
   for (int i=0; i<9; ++i)
-    cout << box[i] << ((i == 8) ? "" : ",");
-  cout << endl;
+    cout << box[i] << ((i == 8) ? ")\n" : ",");
 
-  vector<float> coords;
-  float precision;
-  r = loos::internal::xtc::xdrfile_read_compr_coord(coords, &precision, &xfile);
-  cout << format("Read of coords: r=%d, prec=%f\n") % r % precision;
-
-  coords.clear();
-
-  r = xfile.read(magic);
-  cout << format("magic=%d\n") % magic;
-  cout << format("r=%d\n") % r;
-  xfile.read(natoms);
-  xfile.read(step);
-  xfile.read(time);
-  xfile.read(box, 9);
+  return(true);
+}
 
 
-  cout << format("natoms=%d, step=%d, time=%f\n") % natoms % step % time;
-  cout << "box=(";
-  for (int i=0; i<9; ++i)
-    cout << box[i] << ((i == 8) ? "" : ",");
-  cout << endl;
+void scanFile(loos::internal::XDR& xf) {
+ 
+  for (int n = 0; readHeader(xf); ++n) {
+    cout << "-- FRAME #" << n << endl;
+    
+    uint offset = 9 * xf.block_size();
+    (xf.get())->seekg(offset, ios_base::cur);
+    uint nbytes;
+    xf.read(&nbytes);
+    uint nblocks = nbytes / xf.block_size();
+    if (nbytes % xf.block_size() != 0)
+      ++nblocks;
+    offset = nblocks * xf.block_size();
+    (xf.get())->seekg(offset, ios_base::cur);
+  }
+}
 
-  r = loos::internal::xtc::xdrfile_read_compr_coord(coords, &precision, &xfile);
-  cout << format("Read of coords: r=%d, prec=%f\n") % r % precision;
 
+
+
+int main(int argc, char *argv[]) {
+  fstream fs("f.xtc", ios_base::in);
+  loos::internal::XDR xfile(&fs);
+
+  scanFile(xfile);
 }
