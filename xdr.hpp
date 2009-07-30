@@ -26,7 +26,7 @@ namespace loos {
       }
 
 
-      template<typename T> int read(T* p) {
+      template<typename T> uint read(T* p) {
 
         if (sizeof(T) > sizeof(uint))
           throw(std::logic_error("Attempting to read a POD that is too large"));
@@ -43,16 +43,16 @@ namespace loos {
         return(!stream->fail());
       }
 
-      template<typename T> int read(T& t) { return(read(&t)); }
+      template<typename T> uint read(T& t) { return(read(&t)); }
 
-      template<typename T> int read(T* ary, const uint n) {
-        int i;
+      template<typename T> uint read(T* ary, const uint n) {
+        uint i;
         for (i=0; i<n && read(&(ary[i])); ++i) ;
         return(i);
       }
 
 
-      int read(char* p, uint n) {
+      uint read(char* p, uint n) {
         uint rndup;
         static char buf[sizeof(uint)];
 
@@ -66,18 +66,16 @@ namespace loos {
         stream->read(p, n);
         if (stream->fail())
           return(0);
-        if (!rndup)
-          return(1);
+        if (rndup)
+          stream->read(buf, rndup);
 
-        stream->read(buf, rndup);
-
-        return(1);
+        return(n);
       }
 
 
       // -----------------------------------------------------
 
-      template<typename T> int write(T* p) {
+      template<typename T> uint write(T* p) {
 
         if (sizeof(T) > sizeof(uint))
           throw(std::logic_error("Attempting to write a POD that is too large"));
@@ -95,15 +93,15 @@ namespace loos {
         return(!stream->fail());
       }
 
-      template<typename T> int write(T& t) { return(write(&t)); }
+      template<typename T> uint write(T& t) { return(write(&t)); }
 
-      template<typename T> int write(T* ary, const uint n) {
-        int i;
+      template<typename T> uint write(T* ary, const uint n) {
+        uint i;
         for (i=0; i<n && write(&(ary[i])); ++i) ;
         return(i);
       }
 
-      int write(char* p, uint n) {
+      uint write(char* p, const uint n) {
         uint rndup;
         static char buf[sizeof(uint)];
         static bool init(false);

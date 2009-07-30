@@ -6,7 +6,7 @@ namespace loos {
 
   namespace internal {
 
-    namespace xdr {
+    namespace xtc {
 
 
       int sizeofint(int size) {
@@ -19,7 +19,7 @@ namespace loos {
       }
 
 
-      int sizeofints(uint* data, const int n) {
+      int sizeofints(uint* data, const uint n) {
         uint nbytes = 1;
         uint bytes[32];
         uint nbits = 0;
@@ -51,7 +51,7 @@ namespace loos {
       }
 
 
-      int decodebits(int* buf, int nbits) {
+      int decodebits(int* buf, uint nbits) {
 
         int mask = (1 << nbits) -1;
 
