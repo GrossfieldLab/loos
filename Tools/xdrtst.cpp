@@ -59,4 +59,11 @@ int main(int argc, char *argv[]) {
   loos::internal::XDR xfile(&fs);
 
   scanFile(xfile);
+  fs.close();
+
+  // Now try it through trajectory interface...
+  loos::XTC<float> xtc("f.xtc");
+  cout << "nframes = " << xtc.nframes() << endl;
+  cout << "natoms = " << xtc.natoms() << endl;
+  
 }
