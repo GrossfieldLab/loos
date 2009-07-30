@@ -65,5 +65,16 @@ int main(int argc, char *argv[]) {
   loos::XTC<float> xtc("f.xtc");
   cout << "nframes = " << xtc.nframes() << endl;
   cout << "natoms = " << xtc.natoms() << endl;
+
+  int n = 0;
+  while (xtc.readFrame()) {
+    cout << format("Frame = %d\n") % n++;
+    cout << format("Box = %s\n") % xtc.periodicBox();
+    cout << "First 5 coords:\n";
+    vector<loos::GCoord> crds = xtc.coords();
+    for (int i=0; i<5; ++i)
+      cout << "\t" << crds[i] << endl;
+    cout << endl;
+  }
   
 }
