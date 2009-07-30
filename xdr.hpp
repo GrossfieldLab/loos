@@ -45,7 +45,7 @@ namespace loos {
 
       template<typename T> int read(T& t) { return(read(&t)); }
 
-      template<typename T> int read(T* ary, const int n) {
+      template<typename T> int read(T* ary, const uint n) {
         int i;
         for (i=0; i<n && read(&(ary[i])); ++i) ;
         return(i);
@@ -97,7 +97,7 @@ namespace loos {
 
       template<typename T> int write(T& t) { return(write(&t)); }
 
-      template<typename T> int write(T* ary, const int n) {
+      template<typename T> int write(T* ary, const uint n) {
         int i;
         for (i=0; i<n && write(&(ary[i])); ++i) ;
         return(i);
