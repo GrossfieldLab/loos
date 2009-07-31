@@ -17,6 +17,7 @@ namespace loos {
 
 
     class XDR {
+    public:
       typedef unsigned int           block_type;
     public:
       XDR(std::iostream* s) : stream(s), need_to_swab(false) {
