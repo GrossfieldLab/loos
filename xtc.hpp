@@ -48,7 +48,24 @@ namespace loos {
     uint nframes(void) const { return(frame_indices.size()); }
     bool hasPeriodicBox(void) const { return(true); }
     GCoord periodicBox(void) const { return(box); }
-    void updateGroupCoords(AtomicGroup& g) { }
+
+    void updateGroupCoords(AtomicGroup& g) {
+
+      int ncatoms = coords_.size() / 3;
+
+      for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+        int atomid = (*i)->id();
+        if (atomid < 0 || atomid >= ncatoms)
+          throw(std::runtime_error("atom index into trajectory frame is out of range"));
+        uint j = atomid * 3;
+        (*i)->coords(GCoord(coords_[j], coords_[j+1], coords_[j+2]));
+      }
+    }
+
+
+
+
+
     bool parseFrame(void) {
       if (ifs()->eof())
         return(false);
