@@ -6,7 +6,7 @@ Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
 Rotated rmsd = 36.578
 Aligned rmsd = 0.387488
-[0.815839 0.0132152 -0.578128 -1.14391;-0.00962541 0.999911 0.00927343 -0.189822;0.578199 -0.0020009 0.815893 -0.617105;0 0 0 1;];
+[0.815839 0.0132152 -0.578128 -1.14391;-0.00962541 0.999911 0.00927342 -0.189822;0.578199 -0.0020009 0.815893 -0.617105;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 3
@@ -14,26 +14,26 @@ All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'resid == 5 && segid == 'PE1''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 25 atoms with selector 'resid == 5'.
+RMSD test = 1
+Rotated rmsd = 21.9362
+Aligned rmsd = 0.395982
+[0.824163 0.00931855 -0.566277 -0.534982;-0.0122896 0.999923 -0.00143184 -1.05251;0.56622 0.0081394 0.824214 -0.897601;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 4
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'segid == 'PE3''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 125 atoms with selector 'segid == 'L2''.
+RMSD test = 1
+Rotated rmsd = 17.2089
+Aligned rmsd = 0.461547
+[0.82007 0.00466835 -0.572244 -0.638468;-0.00302984 0.999988 0.00381588 -0.545196;0.572255 -0.00139548 0.820075 -0.526273;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 3
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
@@ -43,9 +43,9 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.623
-Aligned rmsd = 0.428256
-[0.814035 -0.00700546 -0.580773 0.453634;0.00797037 0.999968 -0.00089031 -0.94601;0.580761 -0.00390423 0.814065 -0.48844;0 0 0 1;];
+Rotated rmsd = 36.629
+Aligned rmsd = 0.500755
+[0.812497 -0.000160906 -0.582965 0.0912101;0.0169925 0.999582 0.0234072 -1.98124;0.582718 -0.0289243 0.81216 1.2867;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 3
@@ -53,26 +53,26 @@ All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'resid == 5 && segid == 'PE1''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 25 atoms with selector 'resid == 5'.
+RMSD test = 1
+Rotated rmsd = 22.0483
+Aligned rmsd = 0.398268
+[0.825523 0.0171226 -0.564108 -0.620984;0.0115658 0.998816 0.0472429 0.15415;0.56425 -0.0455245 0.824348 0.277286;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 4
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'segid == 'PE3''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 125 atoms with selector 'segid == 'L2''.
+RMSD test = 1
+Rotated rmsd = 17.1939
+Aligned rmsd = 0.44868
+[0.822617 0.00232882 -0.568592 -0.495575;-0.00405327 0.99999 -0.00176839 -0.614485;0.568582 0.00375937 0.822618 -0.745413;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 3
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
@@ -82,9 +82,9 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.663
-Aligned rmsd = 0.40132
-[0.818014 -0.00861337 -0.575133 0.159964;0.0129108 0.999911 0.00338817 -1.3268;0.575053 -0.010197 0.818053 0.209386;0 0 0 1;];
+Rotated rmsd = 36.7042
+Aligned rmsd = 0.440215
+[0.811726 -0.00178711 -0.584036 0.208648;0.016717 0.999657 0.0201754 -1.90087;0.5838 -0.0261402 0.811477 1.07661;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 3
@@ -92,26 +92,26 @@ All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'resid == 5 && segid == 'PE1''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 25 atoms with selector 'resid == 5'.
+RMSD test = 1
+Rotated rmsd = 21.9938
+Aligned rmsd = 0.396203
+[0.833996 0.00638316 -0.551734 -0.0327035;0.00519507 0.999798 0.0194197 -0.206546;0.551747 -0.0190623 0.833794 -0.784199;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 4
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'segid == 'PE3''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 125 atoms with selector 'segid == 'L2''.
+RMSD test = 1
+Rotated rmsd = 17.2099
+Aligned rmsd = 0.449109
+[0.816618 0.000136767 -0.577178 -0.601315;0.000428693 1 0.000843492 -0.506849;0.577178 -0.000936243 0.816618 -0.379083;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 3
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
@@ -121,9 +121,9 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.5734
-Aligned rmsd = 0.383284
-[0.829187 0.00221896 -0.558967 -1.56264;-0.0179656 0.999581 -0.0226825 0.976063;0.558683 0.0288502 0.828879 -1.98054;0 0 0 1;];
+Rotated rmsd = 36.5714
+Aligned rmsd = 0.414367
+[0.820307 -0.000804153 -0.571924 -0.528207;0.00476149 0.999974 0.00542336 -0.972914;0.571904 -0.00717203 0.820289 0.0673236;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 3
@@ -131,26 +131,26 @@ All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'resid == 5 && segid == 'PE1''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 25 atoms with selector 'resid == 5'.
+RMSD test = 1
+Rotated rmsd = 22.0354
+Aligned rmsd = 0.406626
+[0.798763 -0.0390666 -0.600376 -0.299913;0.0222877 0.999126 -0.035361 0.00479352;0.601233 0.014864 0.798936 0.0106806;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 4
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'segid == 'PE3''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 125 atoms with selector 'segid == 'L2''.
+RMSD test = 1
+Rotated rmsd = 17.189
+Aligned rmsd = 0.430835
+[0.817961 0.00106176 -0.575273 -0.596852;-3.84404e-05 0.999998 0.001791 -0.544198;0.575274 -0.00144285 0.817959 -0.397139;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 3
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
@@ -160,9 +160,9 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.6105
-Aligned rmsd = 0.432885
-[0.820233 0.00287108 -0.572022 -0.825699;-0.00729285 0.999959 -0.00543838 0.0420149;0.571983 0.00863241 0.82022 -1.09972;0 0 0 1;];
+Rotated rmsd = 36.6261
+Aligned rmsd = 0.510137
+[0.820166 0.00564521 -0.572098 -1.01297;-0.0100922 0.999938 -0.00460135 0.152003;0.572037 0.0095476 0.820172 -1.07495;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 3
@@ -170,26 +170,26 @@ All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'resid == 5 && segid == 'PE1''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 25 atoms with selector 'resid == 5'.
+RMSD test = 1
+Rotated rmsd = 21.9148
+Aligned rmsd = 0.388345
+[0.825381 0.0871252 -0.557812 -2.48003;-0.0516819 0.995532 0.0790206 -1.80908;0.562205 -0.0363934 0.826197 0.0644541;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 4
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
-Selected 0 atoms with selector 'segid == 'PE3''.
-RMSD test = nan
-Rotated rmsd = nan
-Aligned rmsd = nan
-[nan nan nan nan;nan nan nan nan;nan nan nan nan;nan nan nan nan;];
+Selected 125 atoms with selector 'segid == 'L2''.
+RMSD test = 1
+Rotated rmsd = 17.1793
+Aligned rmsd = 0.437595
+[0.821113 -0.001711 -0.570763 -0.436329;0.00103065 0.999998 -0.00151502 -0.506424;0.570765 0.00065575 0.821113 -0.576866;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 1
+Total iterations = 3
 All tests passed (threshold = 0.01 : 2)
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************

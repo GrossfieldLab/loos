@@ -216,9 +216,9 @@ int main(int argc, char *argv[]) {
     cout << "\n\n-=-=-=-=-=-=-=- MACROCYCLE #" << i << " -=-=-=-=-=-=-=-\n";
     if (!run_tests(pdb, "name == 'CA'"))
       die();
-    if (!run_tests(pdb, "resid == 5 && segid == 'PE1'"))
+    if (!run_tests(pdb, "resid == 5"))
       die();
-    if (!run_tests(pdb, "segid == 'PE3'"))
+    if (!run_tests(pdb, "segid == 'L2'"))
       die();
   }
 }
