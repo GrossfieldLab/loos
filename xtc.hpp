@@ -19,8 +19,8 @@ namespace loos {
   class XTC : public Trajectory {
 
     struct Header {
-      int magic;
-      int natoms, step;
+      uint magic;
+      uint natoms, step;
       float time, box[9];
     };
 
