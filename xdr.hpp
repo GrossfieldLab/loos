@@ -77,10 +77,32 @@ namespace loos {
         return(n);
       }
 
+      uint read(char** p) {
+        uint n;
+
+        if (!read(n))
+          return(0);
+        char* s = new char[n+1];
+        s[n] = '\0';
+        uint i = read(s, n);
+        *p = s;
+        return(i);
+      }
+
+      uint read(std::string& s) {
+        char* p;
+        uint i = read(&p);
+        if (!i)
+          return(0);
+
+        s = std::string(p);
+        return(i);
+      }
+
 
       // -----------------------------------------------------
 
-      template<typename T> uint write(T* p) {
+      template<typename T> uint write(const T* p) {
 
         if (sizeof(T) > sizeof(block_type))
           throw(std::logic_error("Attempting to write a POD that is too large"));
@@ -98,15 +120,15 @@ namespace loos {
         return(!stream->fail());
       }
 
-      template<typename T> uint write(T& t) { return(write(&t)); }
+      template<typename T> uint write(const T& t) { return(write(&t)); }
 
-      template<typename T> uint write(T* ary, const uint n) {
+      template<typename T> uint write(const T* ary, const uint n) {
         uint i;
         for (i=0; i<n && write(&(ary[i])); ++i) ;
         return(i);
       }
 
-      uint write(char* p, const uint n) {
+      uint write(const char* p, const uint n) {
         uint rndup;
         static char buf[sizeof(block_type)];
         static bool init(false);
@@ -125,6 +147,14 @@ namespace loos {
 
         return(stream->fail() ? 0 : n);
       }
+
+      uint write(const char* p) {
+        uint n = strlen(p);
+        write(n);
+        return(write(p, n));
+      }
+
+      uint write(const std::string& s) { return(write(s.c_str())); }
 
     private:
       std::iostream* stream;
