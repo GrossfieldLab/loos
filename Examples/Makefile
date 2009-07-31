@@ -41,9 +41,11 @@ LDFLAGS=-L$(LOOSLIB) $(BOOSTLIB) $(ATLASLIB)
 CXXFLAGS=$(OPTS) -I. -I$(LOOSINC) $(BOOSTINC) $(ATLASINC)
 
 ### Use the following for MacOS X
-#BOOSTINC=-I/usr/local/include
-#BOOSTLIB=-L/usr/local/include
-#LDLIBS=-lloos -lboost_regex -lboost_program_options
+#BOOSTINC=-I/usr/local/include      # Note: this will probably need to
+                                    # change depending on your installation
+#BOOSTLIB=-L/usr/local/lib
+#LDLIBS=-lloos -lboost_regex -lboost_program_options   # Note: the library names
+                                                       # will most likely need to change too...
 #LDFLAGS=-L$(LOOSLIB) $(BOOSTLIB)
 #CXXFLAGS=$(OPTS) -I. -I$(LOOSINC) $(BOOSTINC) -framework vecLib
 
