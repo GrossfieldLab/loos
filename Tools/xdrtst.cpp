@@ -62,25 +62,29 @@ int main(int argc, char *argv[]) {
   scanFile(xfile);
   fs.close();
 
-  // Now try it through trajectory interface...
-  loos::XTC xtc("f.xtc");
-  cout << "nframes = " << xtc.nframes() << endl;
-  cout << "natoms = " << xtc.natoms() << endl;
+  cout << "--MARKER--MARKER--MARKER--MARKER--\n";
 
-  int n = 0;
-  while (xtc.readFrame()) {
-    cout << format("Frame = %d\n") % n++;
-    cout << format("Box = %s\n") % xtc.periodicBox();
-    cout << "First 5 coords:\n";
-    vector<loos::GCoord> crds = xtc.coords();
-    for (int i=0; i<5; ++i)
-      cout << "\t" << crds[i] << endl;
-    cout << endl;
-  }
+  // Now try it through trajectory interface...
+  loos::AtomicGroup model = loos::createSystem("f.gro");
+
+  cout << model;
 
   cout << "--MARKER--MARKER--MARKER--MARKER--\n";
 
-  loos::Gromacs gro("f.gro");
-  cout << gro;
+  loos::pTraj traj = loos::createTrajectory("f.xtc", model);
+
+
+  cout << "nframes = " << traj->nframes() << endl;
+  cout << "natoms = " << traj->natoms() << endl;
+
+  int n = 0;
+  while (traj->readFrame()) {
+    cout << format("Frame = %d\n") % n++;
+    cout << format("Box = %s\n") % traj->periodicBox();
+    traj->updateGroupCoords(model);
+    for (uint i=0; i<5; ++i)
+      cout << *(model[i]) << endl;
+  }
+
   
 }

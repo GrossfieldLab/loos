@@ -114,6 +114,7 @@ namespace loos {
   class Amber;
   class AmberRst;
   class TinkerXYZ;
+  class Gromacs;
 
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
@@ -122,6 +123,7 @@ namespace loos {
   typedef boost::shared_ptr<Amber> pAmber;
   typedef boost::shared_ptr<AmberRst> pAmberRst;
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
+  typedef boost::shared_ptr<Gromacs> pGromacs;
 
 
   const uint kilobytes = 1024;
