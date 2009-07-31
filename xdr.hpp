@@ -17,6 +17,7 @@ namespace loos {
 
 
     class XDR {
+      typedef unsigned int           block_type;
     public:
       XDR(std::iostream* s) : stream(s), need_to_swab(false) {
         int test = 0x1234;
@@ -26,18 +27,16 @@ namespace loos {
       }
 
 
-      uint block_size(void) const { return(sizeof(uint)); }
-
       std::iostream* get(void) { return(stream); }
 
 
       template<typename T> uint read(T* p) {
 
-        if (sizeof(T) > sizeof(uint))
+        if (sizeof(T) > sizeof(block_type))
           throw(std::logic_error("Attempting to read a POD that is too large"));
 
         uint data;
-        stream->read(reinterpret_cast<char*>(&data), sizeof(uint));
+        stream->read(reinterpret_cast<char*>(&data), sizeof(block_type));
 
         T* pdata = reinterpret_cast<T*>(&data);
         T result(*pdata);
@@ -59,14 +58,14 @@ namespace loos {
 
       uint read(char* p, uint n) {
         uint rndup;
-        static char buf[sizeof(uint)];
+        static char buf[sizeof(block_type)];
 
         if (n == 0)
           return(1);
 
-        rndup = n % sizeof(uint);
+        rndup = n % sizeof(block_type);
         if (rndup > 0)
-          rndup = sizeof(uint) - rndup;
+          rndup = sizeof(block_type) - rndup;
 
         stream->read(p, n);
         if (stream->fail())
@@ -82,7 +81,7 @@ namespace loos {
 
       template<typename T> uint write(T* p) {
 
-        if (sizeof(T) > sizeof(uint))
+        if (sizeof(T) > sizeof(block_type))
           throw(std::logic_error("Attempting to write a POD that is too large"));
 
         uint u;
@@ -93,7 +92,7 @@ namespace loos {
           u = swab(u);
 
     
-        stream->write(reinterpret_cast<char*>(&u), sizeof(uint));
+        stream->write(reinterpret_cast<char*>(&u), sizeof(block_type));
 
         return(!stream->fail());
       }
@@ -108,16 +107,16 @@ namespace loos {
 
       uint write(char* p, const uint n) {
         uint rndup;
-        static char buf[sizeof(uint)];
+        static char buf[sizeof(block_type)];
         static bool init(false);
 
         if (!init)
-          for (uint i=0; i<sizeof(uint); ++i)
+          for (uint i=0; i<sizeof(block_type); ++i)
             buf[i] = '\0';
 
-        rndup = n % sizeof(uint);
+        rndup = n % sizeof(block_type);
         if (rndup > 0)
-          rndup = sizeof(uint) - rndup;
+          rndup = sizeof(block_type) - rndup;
 
         stream->write(p, n);
         if (!stream->fail())
