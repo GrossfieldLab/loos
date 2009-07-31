@@ -1,3 +1,26 @@
+2009-07-31    <tromo@spade.biophysics.rochester.edu>
+
+	* Added utility functions for extracting type-specific records
+	from a string (loos::parseStringAs<>()).  This is useful if you
+	need to extract columns from a line of input, for example.
+	* Changed the underlying stream type in all trajectories from
+	fstream to iostream.  This should not break anything unless you've
+	written your own Trajectory subclass.  This really should have
+	been an iostream in the first place so that it doesn't matter what
+	kind of stream you're passing to the Trajectory classes (i.e. it
+	could just as easily be a stringstream).
+	* Fixed a couple of trajectory subclasses (such as AmberTraj) that
+	didn't provide a constructor with a stream.
+	* Changed the Trajectory subclasses to move the implementation
+	functions to be private.  These really should not have been
+	exposed in the first place.  This does have the potential to break
+	code that was relying on the internals of the subclasses.
+	* Added an XDR class for simulating the rpc/xdr library, but it's
+	templated so it has a [hopefully] easier API and it works with C++
+	streams.
+	* Added support for Gromacs .gro and .xtc (single-precision only)
+	files.
+
 2009-07-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Added some new bits to Atoms that can be set/queried by the
