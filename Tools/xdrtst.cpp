@@ -77,5 +77,10 @@ int main(int argc, char *argv[]) {
       cout << "\t" << crds[i] << endl;
     cout << endl;
   }
+
+  cout << "--MARKER--MARKER--MARKER--MARKER--\n";
+
+  loos::Gromacs gro("f.gro");
+  cout << gro;
   
 }

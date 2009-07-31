@@ -77,6 +77,7 @@
 #include <pdbtraj.hpp>
 #include <tinker_arc.hpp>
 #include <xtc.hpp>
+#include <gro.hpp>
 
 #include <Geometry.hpp>
 #include <ensembles.hpp>
