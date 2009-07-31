@@ -76,15 +76,10 @@ namespace loos {
                                                                     _nframes(0), current_index(0), at_end(false) { init(); readFrame(0); cached_first = true; }
 
 
-    virtual void rewindImpl(void);
     virtual uint nframes(void) const;
     virtual uint natoms(void) const;
     virtual std::vector<GCoord> coords(void);
     virtual void updateGroupCoords(AtomicGroup&);
-
-    virtual void seekNextFrameImpl(void);
-    virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const;
     virtual GCoord periodicBox(void) const;
@@ -99,6 +94,12 @@ namespace loos {
 
   private:
     void init(void);
+    virtual void rewindImpl(void);
+    virtual void seekNextFrameImpl(void);
+    virtual void seekFrameImpl(const uint);
+    virtual bool parseFrame(void);
+
+
 
   private:
     std::string pattern;

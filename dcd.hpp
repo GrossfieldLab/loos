@@ -114,16 +114,6 @@ namespace loos {
     void readHeader(std::fstream& ifs);
 #endif
 
-    // Trajectory member functions we must provide...
-    virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
-    //! Calculate offset into DCD file for frame and seek to it.
-    virtual void seekFrameImpl(const uint);
-    //! Parse a frame of the DCD
-    virtual bool parseFrame(void);
-
-    //! Rewind the file to the first DCD frame.
-    virtual void rewindImpl(void);
-
     // Accessor methods...
 
     virtual uint natoms(void) const;
@@ -180,6 +170,19 @@ namespace loos {
     virtual void updateGroupCoords(AtomicGroup& g);
 
   private:
+
+    // Trajectory member functions we must provide...
+    virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
+    //! Calculate offset into DCD file for frame and seek to it.
+    virtual void seekFrameImpl(const uint);
+    //! Parse a frame of the DCD
+    virtual bool parseFrame(void);
+
+    //! Rewind the file to the first DCD frame.
+    virtual void rewindImpl(void);
+
+
+
     void allocateSpace(const int n);
     void readCrystalParams(void);
     void readCoordLine(std::vector<float>& v);

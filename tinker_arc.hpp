@@ -64,15 +64,13 @@ namespace loos {
     explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0),
                                         _nframes(0), current_index(0), at_end(false) { init(); }
 
-    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
+    explicit TinkerArc(std::iostream& is) : Trajectory(is), _natoms(0),
+                                        _nframes(0), current_index(0), at_end(false) { init(); }
+
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
     virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
-
-    virtual void seekNextFrameImpl(void);
-    virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
     virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
@@ -87,6 +85,11 @@ namespace loos {
 
   private:
     void init(void);
+    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
+    virtual void seekNextFrameImpl(void);
+    virtual void seekFrameImpl(const uint);
+    virtual bool parseFrame(void);
+
 
   private:
     uint _natoms, _nframes;
