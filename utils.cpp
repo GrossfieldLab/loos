@@ -253,4 +253,21 @@ namespace loos {
   }
 
 
+  template<>
+  std::string parseStringAs<std::string>(const std::string& source, const uint pos, const uint nelem) {
+    std::string val;
+
+    uint n = !nelem ? source.size() - pos : nelem;
+    if (pos + n > source.size())
+      return(val);
+
+    for (uint i=pos; i<pos+n; ++i)
+      if (source[i] != ' ')
+        val += source[i];
+
+    return(val);
+  }
+
+
+
 }

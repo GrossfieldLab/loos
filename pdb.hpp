@@ -37,6 +37,8 @@
 #include <AtomicGroup.hpp>
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
+#include <utils.hpp>
+
 
 
 namespace loos {
@@ -143,12 +145,6 @@ namespace loos {
     //! Create a PDB from an AtomicGroup (i.e. upcast)
     PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
 
-    // Internal routines for parsing...
-    greal parseFloat(const std::string&, const uint, const uint);
-    greal parseFloat(const std::string&);
-    gint parseInt(const std::string&, const uint, const uint);
-    gint parseInt(const std::string&);
-    std::string parseString(const std::string&, const uint, const uint);
     bool emptyString(const std::string&);
 
     // These will modify the PDB upon a successful parse...
