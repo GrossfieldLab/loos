@@ -96,6 +96,9 @@ namespace loos {
   class TinkerArc;
   class PDBTraj;
 
+  template<typename T> class XTC;
+  typedef XTC<float> GromacsXTC;
+
   typedef boost::shared_ptr<Atom> pAtom;
   typedef boost::shared_ptr<Trajectory> pTraj;
   typedef boost::shared_ptr<DCD> pDCD;
@@ -103,6 +106,7 @@ namespace loos {
   typedef boost::shared_ptr<CCPDB> pCCPDB;
   typedef boost::shared_ptr<TinkerArc> pTinkerArc;
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;
+  typedef boost::shared_ptr<GromacsXTC> pGromacsXTC;
 
   // AtomicGroup and subclasses (i.e. systems formats)
   class AtomicGroup;
