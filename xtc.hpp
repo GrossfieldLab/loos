@@ -15,23 +15,6 @@
 
 namespace loos {
 
-  namespace internal {
-    namespace xtc {
-      static const int magicints[] = {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
-        80, 101, 128, 161, 203, 256, 322, 406, 512, 645, 812, 1024, 1290, // 31
-        1625, 2048, 2580, 3250, 4096, 5060, 6501, 8192, 10321, 13003, // 41
-        16384, 20642, 26007, 32768, 41285, 52015, 65536,82570, 104031, // 50
-        131072, 165140, 208063, 262144, 330280, 416127, 524287, 660561, // 58
-        832255, 1048576, 1321122, 1664510, 2097152, 2642245, 3329021, // 65
-        4194304, 5284491, 6658042, 8388607, 10568983, 13316085, 16777216 // 72
-      };
-
-      static  const int firstidx = 9;
-      static const int lastidx = 73;
-    }
-  }
-
   template<typename T>
   class XTC : public Trajectory {
 
@@ -40,6 +23,9 @@ namespace loos {
       int natoms, step;
       float time, box[9];
     };
+
+    static const int magicints[];
+    static const int firstidx, lastidx;
 
   public:
     explicit XTC(const std::string& s) : Trajectory(s), xdr_file(ifs()),natoms_(0) {
@@ -329,14 +315,14 @@ namespace loos {
       }
 
       tmp=smallidx+8;
-      maxidx = (internal::xtc::lastidx<tmp) ? internal::xtc::lastidx : tmp;
+      maxidx = (lastidx<tmp) ? lastidx : tmp;
       minidx = maxidx - 8; /* often this equal smallidx */
       tmp = smallidx-1;
-      tmp = (internal::xtc::firstidx>tmp) ? internal::xtc::firstidx : tmp;
-      smaller = internal::xtc::magicints[tmp] / 2;
-      smallnum = internal::xtc::magicints[smallidx] / 2;
-      sizesmall[0] = sizesmall[1] = sizesmall[2] = internal::xtc::magicints[smallidx] ;
-      larger = internal::xtc::magicints[maxidx];
+      tmp = (firstidx>tmp) ? firstidx : tmp;
+      smaller = magicints[tmp] / 2;
+      smallnum = magicints[smallidx] / 2;
+      sizesmall[0] = sizesmall[1] = sizesmall[2] = magicints[smallidx] ;
+      larger = magicints[maxidx];
 
       /* buf2[0] holds the length in bytes */
   
@@ -426,16 +412,16 @@ namespace loos {
         smallidx += is_smaller;
         if (is_smaller < 0) {
           smallnum = smaller;
-          if (smallidx > internal::xtc::firstidx) {
-            smaller = internal::xtc::magicints[smallidx - 1] /2;
+          if (smallidx > firstidx) {
+            smaller = magicints[smallidx - 1] /2;
           } else {
             smaller = 0;
           }
         } else if (is_smaller > 0) {
           smaller = smallnum;
-          smallnum = internal::xtc::magicints[smallidx] / 2;
+          smallnum = magicints[smallidx] / 2;
         }
-        sizesmall[0] = sizesmall[1] = sizesmall[2] = internal::xtc::magicints[smallidx] ;
+        sizesmall[0] = sizesmall[1] = sizesmall[2] = magicints[smallidx] ;
       }
 
       delete[] buf1;
@@ -445,6 +431,26 @@ namespace loos {
 
 
   };
+
+
+  template<typename T>
+  const int XTC<T>::magicints[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
+    80, 101, 128, 161, 203, 256, 322, 406, 512, 645, 812, 1024, 1290, // 31
+    1625, 2048, 2580, 3250, 4096, 5060, 6501, 8192, 10321, 13003, // 41
+    16384, 20642, 26007, 32768, 41285, 52015, 65536,82570, 104031, // 50
+    131072, 165140, 208063, 262144, 330280, 416127, 524287, 660561, // 58
+    832255, 1048576, 1321122, 1664510, 2097152, 2642245, 3329021, // 65
+    4194304, 5284491, 6658042, 8388607, 10568983, 13316085, 16777216 // 72
+  };
+
+  template<typename T>
+  const int XTC<T>::firstidx = 9;
+
+  template<typename T>
+  const int XTC<T>::lastidx = 73;
+
+
 };
 
 
