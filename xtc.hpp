@@ -8,6 +8,7 @@
 
 #include <loos_defs.hpp>
 
+#include <Coord.hpp>
 #include <xdr.hpp>
 #include <AtomicGroup.hpp>
 #include <Trajectory.hpp>
@@ -52,11 +53,7 @@ namespace loos {
 
     void updateGroupCoords(AtomicGroup& g);
 
-
-    std::vector<GCoord> coords(void);
-      
-
-    
+    std::vector<GCoord> coords(void) { return(coords_); }
 
   private:
 
@@ -65,7 +62,7 @@ namespace loos {
     uint natoms_;
     GCoord box;
     double precision_;
-    std::vector<xtc_t> coords_;
+    std::vector<GCoord> coords_;
 
 
   private:
@@ -81,7 +78,7 @@ namespace loos {
     void seekNextFrameImpl(void) { }
     void seekFrameImpl(uint);
     void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
-    bool readCompressedCoords(std::vector<xtc_t>&);
+    bool readCompressedCoords(std::vector<GCoord>&);
 
   };
 

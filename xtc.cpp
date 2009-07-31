@@ -22,26 +22,15 @@ namespace loos {
 
   void XTC::updateGroupCoords(AtomicGroup& g) {
 
-    int ncatoms = coords_.size() / 3;
+    int natoms = g.size();
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int atomid = (*i)->id();
-      if (atomid < 0 || atomid >= ncatoms)
+      if (atomid < 0 || atomid > natoms)
         throw(std::runtime_error("atom index into trajectory frame is out of range"));
-      uint j = atomid * 3;
-      (*i)->coords(GCoord(coords_[j], coords_[j+1], coords_[j+2]));
+      (*i)->coords(coords_[atomid]);
     }
   }
-
-
-  std::vector<GCoord> XTC::coords(void) {
-    std::vector<GCoord> result;
-    for (uint i=0; i<coords_.size(); i += 3)
-      result.push_back(GCoord(coords_[i], coords_[i+1], coords_[i+2]));
-    
-    return(result);
-  }
-
 
 
   bool XTC::parseFrame(void) {
@@ -226,7 +215,7 @@ namespace loos {
 
 
 
-  bool XTC::readCompressedCoords(std::vector<xtc_t>& fp)
+  bool XTC::readCompressedCoords(std::vector<GCoord>& fp)
   {
     int minint[3], maxint[3], *lip;
     int smallidx, minidx, maxidx;
@@ -247,8 +236,8 @@ namespace loos {
     if(lsize<=9) {
       float* tmp = new xtc_t[size3];
       xdr_file.read(tmp, size3);
-      for (uint i=0; i<size3; ++i)
-        fp.push_back(tmp[i]);
+      for (uint i=0; i<size3; i += 3)
+        fp.push_back(GCoord(tmp[i], tmp[i+1], tmp[i+2]));
       delete[] tmp;
       return(true);
     }
@@ -361,24 +350,22 @@ namespace loos {
             tmp = thiscoord[2]; thiscoord[2] = prevcoord[2];
             prevcoord[2] = tmp;
 
-            fp.push_back(prevcoord[0] * inv_precision);
-            fp.push_back(prevcoord[1] * inv_precision);
-            fp.push_back(prevcoord[2] * inv_precision);
-
+            fp.push_back(GCoord(prevcoord[0] * inv_precision,
+                                prevcoord[1] * inv_precision,
+                                prevcoord[2] * inv_precision));
           } else {
             prevcoord[0] = thiscoord[0];
             prevcoord[1] = thiscoord[1];
             prevcoord[2] = thiscoord[2];
           }
-          fp.push_back(thiscoord[0] * inv_precision);
-          fp.push_back(thiscoord[1] * inv_precision);
-          fp.push_back(thiscoord[2] * inv_precision);
-
+          fp.push_back(GCoord(thiscoord[0] * inv_precision,
+                              thiscoord[1] * inv_precision,
+                              thiscoord[2] * inv_precision));
         }
       } else {
-        fp.push_back(thiscoord[0] * inv_precision);
-        fp.push_back(thiscoord[1] * inv_precision);
-        fp.push_back(thiscoord[2] * inv_precision);
+        fp.push_back(GCoord(thiscoord[0] * inv_precision,
+                            thiscoord[1] * inv_precision,
+                            thiscoord[2] * inv_precision));
       }
       smallidx += is_smaller;
       if (is_smaller < 0) {
