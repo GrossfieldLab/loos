@@ -54,6 +54,10 @@ namespace loos {
                                                       frame_offset(0), frame_size(0),
                                                       periodic(false) { init(); }
 
+    explicit AmberTraj(std::iostream& is, const int na) : Trajectory(is), _natoms(na),
+                                                     frame_offset(0), frame_size(0),
+                                                     periodic(false) { init(); }
+
     virtual void rewindImpl(void) { ifs()->seekg(frame_offset); }
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
