@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
   fs.close();
 
   // Now try it through trajectory interface...
-  loos::XTC<float> xtc("f.xtc");
+  loos::XTC xtc("f.xtc");
   cout << "nframes = " << xtc.nframes() << endl;
   cout << "natoms = " << xtc.natoms() << endl;
 
