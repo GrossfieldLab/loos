@@ -90,12 +90,14 @@ namespace loos {
       }
 
       uint read(std::string& s) {
-        char* p;
+        char* p = 0;
         uint i = read(&p);
         if (!i)
           return(0);
 
         s = std::string(p);
+
+        delete[] p;
         return(i);
       }
 
