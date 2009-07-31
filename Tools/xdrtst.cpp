@@ -39,14 +39,15 @@ void scanFile(loos::internal::XDR& xf) {
   for (int n = 0; readHeader(xf); ++n) {
     cout << "-- FRAME #" << n << endl;
     
-    uint offset = 9 * xf.block_size();
+    uint block_size = sizeof(loos::internal::XDR::block_type);
+    uint offset = 9 * block_size;
     (xf.get())->seekg(offset, ios_base::cur);
     uint nbytes;
     xf.read(&nbytes);
-    uint nblocks = nbytes / xf.block_size();
-    if (nbytes % xf.block_size() != 0)
+    uint nblocks = nbytes / block_size;
+    if (nbytes % block_size != 0)
       ++nblocks;
-    offset = nblocks * xf.block_size();
+    offset = nblocks * block_size;
     (xf.get())->seekg(offset, ios_base::cur);
   }
 }
