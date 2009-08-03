@@ -1,3 +1,25 @@
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #if !defined(XDR_HPP)
 #define XDR_HPP
 
@@ -15,11 +37,21 @@ namespace loos {
 
   namespace internal {
 
-
+    //! This class provides some facility for handling XDR data
+    /**
+     * The read and write functions use templates to read the
+     * appropriate raw data.  Beware of unexpected type
+     * conversions...  All functions also return a 0 for error, or a 1
+     * for success (or the number of elements actually read/written).
+     */
     class XDR {
     public:
+      //! Type (and hence size) of the external block
       typedef unsigned int           block_type;
+
     public:
+
+      //! Constructor determines need to convert data at instantiation
       XDR(std::iostream* s) : stream(s), need_to_swab(false) {
         int test = 0x1234;
         if (*(reinterpret_cast<char*>(&test)) == 0x34) {
@@ -27,10 +59,10 @@ namespace loos {
         }
       }
 
-
+      //! Returns the stored iostream pointer
       std::iostream* get(void) { return(stream); }
 
-
+      //! Read a single datum
       template<typename T> uint read(T* p) {
 
         if (sizeof(T) > sizeof(block_type))
@@ -50,6 +82,7 @@ namespace loos {
 
       template<typename T> uint read(T& t) { return(read(&t)); }
 
+      //! Read an n-array of data
       template<typename T> uint read(T* ary, const uint n) {
         uint i;
         for (i=0; i<n && read(&(ary[i])); ++i) ;
@@ -57,6 +90,7 @@ namespace loos {
       }
 
 
+      //! Read in an opaque array of n-bytes (same as xdr_opaque)
       uint read(char* p, uint n) {
         uint rndup;
         static char buf[sizeof(block_type)];
@@ -77,6 +111,7 @@ namespace loos {
         return(n);
       }
 
+      //! Same as xdr_string
       uint read(char** p) {
         uint n;
 
