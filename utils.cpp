@@ -268,6 +268,14 @@ namespace loos {
     return(val);
   }
 
+  template<>
+  std::string fixedSizeFormat(const std::string& s, const uint n) {
+    uint m = s.size();
+    if (m > n)
+      return(s.substr(m-n, n));
+    return(s);
+  }
+
 
 
 }
