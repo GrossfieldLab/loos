@@ -155,6 +155,8 @@ namespace loos {
     bqfmt.trailingZeros(true);
     bqfmt.fixed();
 
+    // We don't worry about strings exceeding field-widths (yet),
+    // but do check for numeric overflows...
     s << std::setw(6) << std::left << p->recordName();
     s << std::setw(5) << std::right << fixedSizeFormat(p->id(), 5) << " ";
     s << std::setw(4) << std::left << p->name();

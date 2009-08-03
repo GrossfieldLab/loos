@@ -42,6 +42,9 @@ namespace loos {
       throw(std::runtime_error("Cannot parse box '" + buf + "'"));
     periodicBox(box);
 
+    // Since the atomic field in .gro files is only 5-chars wide, it can
+    // overflow.  if there are enough atoms to cause an overflow, manually
+    // renumber everything...
     if (atoms.size() >= 100000)
       renumber();
   }

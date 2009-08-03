@@ -1,3 +1,16 @@
+2009-08-03  Tod Romo  <tromo@gorgoneion-w>
+
+	* Changed the Fmt formatter will now truncate output so that it is
+	never greater than the requested field-width.
+	* Added fixedSizeFormat() to aid creating text fields for output
+	that will be truncated to their max size.
+	* Changed PDB and GRO reading code so if there are >= 100,000
+	atoms read in, they will be renumbered to be monotonically
+	increasing.
+	* Changed PDB output code to have fixed field-widths (i.e. maximum
+	field widths).  LOOS now adhears closer to the PDB v2.2 spec with
+	the exception that residue names are 4-characters long.
+
 2009-07-31    <tromo@spade.biophysics.rochester.edu>
 
 	* Added utility functions for extracting type-specific records
@@ -19,7 +32,7 @@
 	templated so it has a [hopefully] easier API and it works with C++
 	streams.
 	* Added support for Gromacs .gro and .xtc (single-precision only)
-	files.
+	files.  Note:  coordinates are transformed into Angstroms!
 
 2009-07-08    <tromo@spade.biophysics.rochester.edu>
 
