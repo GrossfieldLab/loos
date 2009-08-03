@@ -19,9 +19,9 @@ namespace loos {
       std::string resname = parseStringAs<std::string>(buf, 5, 5);
       std::string name = parseStringAs<std::string>(buf, 10, 5);
       int atomid = parseStringAs<int>(buf, 15, 5);
-      float x = parseStringAs<float>(buf, 20, 8);
-      float y = parseStringAs<float>(buf, 28, 8);
-      float z = parseStringAs<float>(buf, 36, 8);
+      float x = parseStringAs<float>(buf, 20, 8) * 10.0;
+      float y = parseStringAs<float>(buf, 28, 8) * 10.0;
+      float z = parseStringAs<float>(buf, 36, 8) * 10.0;
       
       // We ignore velocities...
       pAtom pa(new Atom);
@@ -41,5 +41,9 @@ namespace loos {
     if (!(iss >> box[0] >> box[1] >> box[2]))
       throw(std::runtime_error("Cannot parse box '" + buf + "'"));
     periodicBox(box);
+
+    if (atoms.size() >= 100000)
+      renumber();
   }
+
 }
