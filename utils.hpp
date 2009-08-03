@@ -236,6 +236,19 @@ namespace loos {
 
   template<> std::string parseStringAs<std::string>(const std::string& source, const uint pos, const uint nelem);
 
+  template<typename T>
+  std::string fixedSizeFormat(const T t, const uint n) {
+    std::stringstream ss;
+    ss << t;
+    std::string s(ss.str());
+    uint m = s.size();
+    if (m > n)
+      return(s.substr(m-n, n));
+    return(s);
+  }
+
+  template<> std::string fixedSizeFormat(const std::string& s, const uint n);
+
 };
 
 #endif
