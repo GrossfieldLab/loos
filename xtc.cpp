@@ -1,9 +1,40 @@
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+/*
+  NOTE:  This code is based on the xdrfile library authored by:
+    David van der Spoel <spoel@gromacs.org>
+    Erik Lindahl <lindahl@gromacs.org>
+  and covered by the GLPL-v3 license
+*/
+
+
 #include <xtc.hpp>
 
 
 namespace loos {
 
 
+  // Globals...
   const int XTC::magicints[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
     80, 101, 128, 161, 203, 256, 322, 406, 512, 645, 812, 1024, 1290, // 31
@@ -18,35 +49,10 @@ namespace loos {
 
   const int XTC::lastidx = 73;
 
+  const int XTC::magic = 1995;
 
 
-  void XTC::updateGroupCoords(AtomicGroup& g) {
-
-    int natoms = g.size();
-
-    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-      int atomid = (*i)->id();
-      if (atomid < 0 || atomid > natoms)
-        throw(std::runtime_error("atom index into trajectory frame is out of range"));
-      (*i)->coords(coords_[atomid]);
-    }
-  }
-
-
-  bool XTC::parseFrame(void) {
-    if (ifs()->eof())
-      return(false);
-    
-    coords_.clear();
-    Header h;
-    if (!readFrameHeader(h))
-      return(false);
-    
-    box = GCoord(h.box[0], h.box[4], h.box[8]);
-    return(readCompressedCoords(coords_));
-  }
-
-
+  // The following are largely from the xdrlib...
   int XTC::sizeofint(int size) {
     int n = 0;
     while ( size > 0 ) {
@@ -88,6 +94,7 @@ namespace loos {
     return(nbits + nbytes*8);
   }
 
+  
   int XTC::decodebits(int* buf, uint nbits) {
 
     int mask = (1 << nbits) -1;
@@ -119,21 +126,22 @@ namespace loos {
     return(num);
   }
 
-  void XTC::decodeints(int* buf, const int num_of_ints, int num_of_bits,
+
+  void XTC::decodeints(int* buf, const int nints, int nbits,
                        uint* sizes, int* nums) {
     int bytes[32];
     int i, j, num_of_bytes, p, num;
   
     bytes[1] = bytes[2] = bytes[3] = 0;
     num_of_bytes = 0;
-    while (num_of_bits > 8) {
+    while (nbits > 8) {
       bytes[num_of_bytes++] = decodebits(buf, 8);
-      num_of_bits -= 8;
+      nbits -= 8;
     }
-    if (num_of_bits > 0) {
-      bytes[num_of_bytes++] = decodebits(buf, num_of_bits);
+    if (nbits > 0) {
+      bytes[num_of_bytes++] = decodebits(buf, nbits);
     }
-    for (i = num_of_ints-1; i > 0; i--) {
+    for (i = nints-1; i > 0; i--) {
       num = 0;
       for (j = num_of_bytes-1; j >=0; j--) {
         num = (num << 8) | bytes[j];
@@ -147,75 +155,11 @@ namespace loos {
   }
 
 
-  
 
-  bool XTC::readFrameHeader(XTC::Header& hdr) {
-    int magic;
-    int ok = xdr_file.read(magic);
-    if (!ok)
-      return(false);
-    if (magic != 1995)
-      throw(std::runtime_error("Invalid XTC magic number"));
+  // Coordinates are converted into GCoords and stored in the object's
+  // coords_ vector
 
-    xdr_file.read(hdr.natoms);
-
-    xdr_file.read(hdr.step);
-    xdr_file.read(hdr.time);
-    ok = xdr_file.read(hdr.box, 9);
-    if (!ok)
-      throw(std::runtime_error("Error while reading XTC frame header"));
-
-    return(true);
-  }
-
-
-  void XTC::scanFrames(void) {
-    frame_indices.clear();
-    
-    rewindImpl();
-
-    Header h;
-
-    while (! ifs()->eof()) {
-      size_t pos = ifs()->tellg();
-      bool ok = readFrameHeader(h);
-      if (!ok) {
-        rewindImpl();
-        return;
-      }
-
-      frame_indices.push_back(pos);
-      if (natoms_ == 0)
-        natoms_ = h.natoms;
-      else if (natoms_ != h.natoms)
-        throw(std::runtime_error("XTC frames have differing numbers of atoms"));
-
-      uint block_size = sizeof(internal::XDR::block_type);
-      size_t offset = 9 * block_size;
-      ifs()->seekg(offset, std::ios_base::cur);
-      uint nbytes;
-      xdr_file.read(nbytes);
-      uint nblocks = nbytes / block_size;
-      if (nbytes % block_size != 0)
-        ++nblocks;   // round up
-      offset = nblocks * block_size;
-      ifs()->seekg(offset, std::ios_base::cur);
-    }
-  }
-
-
-  void XTC::seekFrameImpl(const uint i) {
-    if (i >= frame_indices.size())
-      throw(std::runtime_error("Trying to seek past the end of the file"));
-    
-    ifs()->clear();
-    ifs()->seekg(frame_indices[i], std::ios_base::beg);
-  }
-
-
-
-
-  bool XTC::readCompressedCoords(std::vector<GCoord>& fp)
+  bool XTC::readCompressedCoords(void)
   {
     int minint[3], maxint[3], *lip;
     int smallidx, minidx, maxidx;
@@ -237,7 +181,7 @@ namespace loos {
       float* tmp = new xtc_t[size3];
       xdr_file.read(tmp, size3);
       for (uint i=0; i<size3; i += 3)
-        fp.push_back(GCoord(tmp[i], tmp[i+1], tmp[i+2]));
+        coords_.push_back(GCoord(tmp[i], tmp[i+1], tmp[i+2]) * 10.0);
       delete[] tmp;
       return(true);
     }
@@ -350,22 +294,22 @@ namespace loos {
             tmp = thiscoord[2]; thiscoord[2] = prevcoord[2];
             prevcoord[2] = tmp;
 
-            fp.push_back(GCoord(prevcoord[0] * inv_precision,
+            coords_.push_back(GCoord(prevcoord[0] * inv_precision,
                                 prevcoord[1] * inv_precision,
-                                prevcoord[2] * inv_precision));
+                                prevcoord[2] * inv_precision) * 10.0);
           } else {
             prevcoord[0] = thiscoord[0];
             prevcoord[1] = thiscoord[1];
             prevcoord[2] = thiscoord[2];
           }
-          fp.push_back(GCoord(thiscoord[0] * inv_precision,
+          coords_.push_back(GCoord(thiscoord[0] * inv_precision,
                               thiscoord[1] * inv_precision,
-                              thiscoord[2] * inv_precision));
+                              thiscoord[2] * inv_precision) * 10.0);
         }
       } else {
-        fp.push_back(GCoord(thiscoord[0] * inv_precision,
+        coords_.push_back(GCoord(thiscoord[0] * inv_precision,
                             thiscoord[1] * inv_precision,
-                            thiscoord[2] * inv_precision));
+                            thiscoord[2] * inv_precision) * 10.0);
       }
       smallidx += is_smaller;
       if (is_smaller < 0) {
@@ -385,6 +329,104 @@ namespace loos {
     delete[] buf1;
     delete[] buf2;
     return(true);
+  }
+
+
+  void XTC::updateGroupCoords(AtomicGroup& g) {
+
+    int natoms = g.size();
+
+    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+      int atomid = (*i)->id()-1;
+      if (atomid < 0 || atomid > natoms)
+        throw(std::runtime_error("atom index into trajectory frame is out of range"));
+      (*i)->coords(coords_[atomid]);
+    }
+  }
+
+
+  bool XTC::parseFrame(void) {
+    if (ifs()->eof())
+      return(false);
+
+    // First, clear out existing coords...  A read error after this
+    // point will invalidate the current object's coord state
+
+    coords_.clear();
+    Header h;
+    if (!readFrameHeader(h))
+      return(false);
+    
+    box = GCoord(h.box[0], h.box[4], h.box[8]);
+    return(readCompressedCoords());
+  }
+
+
+  bool XTC::readFrameHeader(XTC::Header& hdr) {
+    int magic_no;
+    int ok = xdr_file.read(magic_no);
+    if (!ok)
+      return(false);
+    if (magic_no != magic)
+      throw(std::runtime_error("Invalid XTC magic number"));
+
+    // Defer error-checks until the end...
+    xdr_file.read(hdr.natoms);
+
+    xdr_file.read(hdr.step);
+    xdr_file.read(hdr.time);
+    ok = xdr_file.read(hdr.box, 9);
+    if (!ok)
+      throw(std::runtime_error("Error while reading XTC frame header"));
+
+    return(true);
+  }
+
+
+  // Scan the trajectory file, skipping each compressed frame.  In the
+  // process, we build up an index relating file-pos to frame index.
+  // This permits fast seeking of indivual frames.
+  void XTC::scanFrames(void) {
+    frame_indices.clear();
+    
+    rewindImpl();
+
+    Header h;
+
+    while (! ifs()->eof()) {
+      size_t pos = ifs()->tellg();
+      bool ok = readFrameHeader(h);
+      if (!ok) {
+        rewindImpl();
+        return;
+      }
+
+      frame_indices.push_back(pos);
+      if (natoms_ == 0)
+        natoms_ = h.natoms;
+      else if (natoms_ != h.natoms)
+        throw(std::runtime_error("XTC frames have differing numbers of atoms"));
+
+      uint block_size = sizeof(internal::XDR::block_type);
+      size_t offset = 9 * block_size;
+      ifs()->seekg(offset, std::ios_base::cur);
+      uint nbytes;
+      xdr_file.read(nbytes);
+      uint nblocks = nbytes / block_size;
+      if (nbytes % block_size != 0)
+        ++nblocks;   // round up
+      offset = nblocks * block_size;
+      ifs()->seekg(offset, std::ios_base::cur);
+    }
+  }
+
+
+  void XTC::seekFrameImpl(const uint i) {
+    if (i >= frame_indices.size())
+      throw(std::runtime_error("Trying to seek past the end of the file"));
+    
+    ifs()->clear();
+    ifs()->seekg(frame_indices[i], std::ios_base::beg);
   }
 
 }
