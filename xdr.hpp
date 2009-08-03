@@ -28,7 +28,6 @@
 #include <stdexcept>
 #include <vector>
 
-
 #include <loos_defs.hpp>
 #include <utils.hpp>
 
@@ -111,16 +110,17 @@ namespace loos {
         return(n);
       }
 
-      //! Same as xdr_string
-      uint read(char** p) {
+      //! Same as xdr_string.
+
+      uint read(boost::shared_ptr<char>& p) {
         uint n;
 
         if (!read(n))
           return(0);
         char* s = new char[n+1];
-        s[n] = '\0';
         uint i = read(s, n);
-        *p = s;
+        s[n] = '\0';
+        p = boost::shared_ptr<char>(s);
         return(i);
       }
 
@@ -139,6 +139,7 @@ namespace loos {
 
       // -----------------------------------------------------
 
+      //! Writes a single datum
       template<typename T> uint write(const T* p) {
 
         if (sizeof(T) > sizeof(block_type))
@@ -159,12 +160,14 @@ namespace loos {
 
       template<typename T> uint write(const T& t) { return(write(&t)); }
 
+      //! Writes an n-array of data
       template<typename T> uint write(const T* ary, const uint n) {
         uint i;
         for (i=0; i<n && write(&(ary[i])); ++i) ;
         return(i);
       }
 
+      //! Writes an opaque array of n-bytes
       uint write(const char* p, const uint n) {
         uint rndup;
         static char buf[sizeof(block_type)];
@@ -185,6 +188,7 @@ namespace loos {
         return(stream->fail() ? 0 : n);
       }
 
+      //! Writes a C-string (ie xdr_string)
       uint write(const char* p) {
         uint n = strlen(p);
         write(n);
