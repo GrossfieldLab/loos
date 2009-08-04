@@ -91,6 +91,8 @@ namespace loos {
 
     dop[0].ui = _natoms;
     writeF77Line(_ofs, (char *)dop, 1 * sizeof(unsigned int));
+
+    _header_written = true;
   }
 
 
