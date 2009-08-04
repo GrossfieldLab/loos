@@ -86,7 +86,7 @@ profile_opts='-pg'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#', LOOSINC, BOOSTINC])
-env.Append(LIBPATH = ['#', LOOSLIB])
+env.Append(LIBPATH = ['#', LOOSLIB, BOOSTLIB])
 env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
 
 # Platform specific build options...
