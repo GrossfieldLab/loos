@@ -1,3 +1,9 @@
+2009-08-04    <tromo@spade.biophysics.rochester.edu>
+
+	* Added safety check in DCDWriter that prevents modifying the
+	header (such as adding new title lines to it) once it has been
+	written to the trajectory.
+
 2009-08-03  Tod Romo  <tromo@gorgoneion-w>
 
 	* Changed the Fmt formatter will now truncate output so that it is
