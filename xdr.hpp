@@ -67,11 +67,8 @@ namespace loos {
         if (sizeof(T) > sizeof(block_type))
           throw(std::logic_error("Attempting to read a POD that is too large"));
 
-        uint data;
-        stream->read(reinterpret_cast<char*>(&data), sizeof(block_type));
-
-        T* pdata = reinterpret_cast<T*>(&data);
-        T result(*pdata);
+        T result;
+        stream->read(reinterpret_cast<char*>(&result), sizeof(block_type));
         if (sizeof(T) > 1 && need_to_swab)
           result = swab(result);
 
@@ -84,7 +81,7 @@ namespace loos {
       //! Read an n-array of data
       template<typename T> uint read(T* ary, const uint n) {
         uint i;
-        for (i=0; i<n && read(&(ary[i])); ++i) ;
+        for (i=0; i<n && read(ary+i); ++i) ;
         return(i);
       }
 
@@ -125,14 +122,13 @@ namespace loos {
       }
 
       uint read(std::string& s) {
-        char* p = 0;
-        uint i = read(&p);
+        boost::shared_ptr<char> p;
+        int i = read(p);
         if (!i)
           return(0);
 
-        s = std::string(p);
+        s = std::string(p.get());
 
-        delete[] p;
         return(i);
       }
 
