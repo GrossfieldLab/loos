@@ -163,7 +163,7 @@ namespace loos {
   {
     int minint[3], maxint[3], *lip;
     int smallidx, minidx, maxidx;
-    uint sizeint[3], sizesmall[3], bitsizeint[3], size3;
+    uint sizeint[3], sizesmall[3], bitsizeint[3] = {0,0,0}, size3;
     int k, *buf1, *buf2, lsize, flag;
     int smallnum, smaller, larger, i, is_smaller, run;
     xtc_t precision, inv_precision;
