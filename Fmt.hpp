@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <loos_defs.hpp>
+
 namespace loos {
 
   class BoundFmt;
