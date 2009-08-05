@@ -52,6 +52,7 @@ string probe_selection;
 string model_name, traj_name;
 vector<string> target_selections;
 bool symmetry = false;
+int verbosity = 0;
 
 
 
@@ -91,8 +92,9 @@ void parseOptions(int argc, char *argv[]) {
 
     po::options_description generic("Allowed options");
     generic.add_options()
-      ("help", "Produce this help message")
+      ("help,h", "Produce this help message")
       ("fullhelp", "Even more help")
+      ("verbose,v", "Verbose output")
       ("probe,p", po::value<string>(&probe_selection)->default_value("segid == 'BULK' && name == 'OH2'"), "Subset to compute exposure against")
       ("inner,i", po::value<double>(&inner_cutoff)->default_value(0.0), "Inner cutoff (ignore atoms closer than this)")
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
@@ -128,6 +130,9 @@ void parseOptions(int argc, char *argv[]) {
 
     if (vm.count("reimage"))
       symmetry = true;
+
+    if (vm.count("verbose"))
+      verbosity = 1;
 
   }
   catch(exception& e) {
@@ -195,6 +200,12 @@ int main(int argc, char *argv[]) {
 
   ulong t = 0;
 
+  PercentProgressWithTime watcher;
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(traj->nframes()));
+  slayer.attach(&watcher);
+  if (verbosity)
+    slayer.start();
+
   while (traj->readFrame()) {
     traj->updateGroupCoords(model);
 
@@ -212,5 +223,10 @@ int main(int argc, char *argv[]) {
     }
     cout << endl;
     ++t;
+    if (verbosity)
+      slayer.update();
   }
+
+  if (verbosity)
+    slayer.finish();
 }
