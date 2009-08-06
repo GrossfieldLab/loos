@@ -174,7 +174,7 @@ Matrix hessian(const AtomicGroup& model, const double radius) {
       
       for (int x=0; x<3; ++x)
         for (int y=0; y<3; ++y)
-          B(y,x) += H(i*3 + y, j*3 + x);
+          B(y,x) += H(j*3 + y, i*3 + x);
     }
 
     for (int x=0; x<3; ++x)
