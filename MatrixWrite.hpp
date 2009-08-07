@@ -67,6 +67,25 @@ namespace loos {
     };
   }
 
+
+  template<typename T>
+  class PreciseMatrixFormatter {
+  public:
+    PreciseMatrixFormatter(const int width, const int precision) : wi(width), pr(precision) { }
+    PreciseMatrixFormatter() : wi(16), pr(8) { }
+
+    std::string operator()(const T& t) {
+      std::ostringstream oss;
+      oss << std::setw(wi) << std::setprecision(pr) << t;
+      return(oss.str());
+    }
+
+  private:
+    int wi, pr;
+
+  };
+
+
   // The following are the templated global functions.  Do not
   // overload/specialize them.  Instead, specialize the
   // MatrixWriteImpl class...
