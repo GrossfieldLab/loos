@@ -57,6 +57,8 @@ namespace loos {
   struct MatrixWriteImpl;
 
   namespace internal {
+
+    // This is the default formatter for matrix elements
     template<typename T>
     struct BasicMatrixFormatter {
       std::string operator()(const T& t) {
@@ -68,6 +70,16 @@ namespace loos {
   }
 
 
+  //! Generic matrix element formatter allowing setting of width and precision
+  /**
+   * Example use:
+\code
+Matrix<double> M;
+WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10));
+\endcode
+   * This writes the matrix \a M to \a filename using a width of 16
+   * and a precision of 10.
+  **/
   template<typename T>
   class PreciseMatrixFormatter {
   public:
