@@ -32,63 +32,6 @@
 
 namespace loos {
 
-  /* The following are utilities to extract a substring and parse it as
-     a specific type.  If the offset lies outside the passed string, then
-     a default null value is returned.  This is in case some PDBs don't
-     have a SEGID, or CHARGE, etc.
-  */
-
-  greal PDB::parseFloat(const std::string& s) {
-    greal result;
-
-    if (!(std::stringstream(s) >> result))
-      throw(std::runtime_error("Cannot parse " + s + " as a floating value"));
-
-    return(result);
-  }
-
-
-  greal PDB::parseFloat(const std::string& s, const unsigned int offset, const unsigned int len) {
-
-    if (offset+len > s.size())
-      return(0.0);
-    std::string t = s.substr(offset, len);
-    return(parseFloat(t));
-  }
-
-
-  gint PDB::parseInt(const std::string& s) {
-    gint result;
-
-    if (!(std::stringstream(s) >> result))
-      throw(std::runtime_error("Cannot parse " + s + " as a integer value"));
-
-    return(result);
-  }
-
-
-  gint PDB::parseInt(const std::string& s, const int unsigned offset, const unsigned int len) {
-    if (offset+len > s.size())
-      return(0);
-
-    std::string t = s.substr(offset, len);
-    return(parseInt(t));
-  }
-
-
-
-  std::string PDB::parseString(const std::string& s, const unsigned int offset, const unsigned int len) {
-
-    if (offset+len > s.size())
-      return(std::string(""));
-
-    std::string t = s.substr(offset, len);
-    boost::trim(t);
-
-    return(t);
-  }
-
-
   // Assume we're only going to find spaces in a PDB file...
   bool PDB::emptyString(const std::string& s) {
     std::string::const_iterator i;
@@ -125,28 +68,28 @@ namespace loos {
     GCoord c;
     pAtom pa(new Atom);
   
-    t = parseString(s, 0, 6);
+    t = parseStringAs<std::string>(s, 0, 6);
     pa->recordName(t);
 
-    i = parseInt(s, 6, 5);
+    i = parseStringAs<int>(s, 6, 5);
     pa->id(i);
 
-    t = parseString(s, 12, 4);
+    t = parseStringAs<std::string>(s, 12, 4);
     pa->name(t);
 
-    t = parseString(s, 16, 1);
+    t = parseStringAs<std::string>(s, 16, 1);
     pa->altLoc(t);
 
-    t = parseString(s, 17, 4);
+    t = parseStringAs<std::string>(s, 17, 4);
     pa->resname(t);
 
-    t = parseString(s, 21, 1);
+    t = parseStringAs<std::string>(s, 21, 1);
     pa->chainId(t);
 
-    i = parseInt(s, 22, 4);
+    i = parseStringAs<int>(s, 22, 4);
     pa->resid(i);
   
-    t = parseString(s, 26, 1);
+    t = parseStringAs<std::string>(s, 26, 1);
 
     // Special handling of resid field since it may be frame-shifted by
     // 1 col in some cases...
@@ -159,7 +102,7 @@ namespace loos {
       char c = t[0];
 
       if (c != ' ' && isdigit(c)) {
-        i = parseInt(s, 22, 5);
+        i = parseStringAs<int>(s, 22, 5);
         pa->resid(i);
         t = " ";
       }
@@ -167,26 +110,26 @@ namespace loos {
     }
     pa->iCode(t);
 
-    c[0] = parseFloat(s, 30, 8);
-    c[1] = parseFloat(s, 38, 8);
-    c[2] = parseFloat(s, 46, 8);
+    c[0] = parseStringAs<float>(s, 30, 8);
+    c[1] = parseStringAs<float>(s, 38, 8);
+    c[2] = parseStringAs<float>(s, 46, 8);
     pa->coords(c);
   
-    r = parseFloat(s, 54, 6);
+    r = parseStringAs<float>(s, 54, 6);
     pa->occupancy(r);
 
-    r = parseFloat(s, 60, 6);
+    r = parseStringAs<float>(s, 60, 6);
     pa->bfactor(r);
 
-    t = parseString(s, 72, 4);
+    t = parseStringAs<std::string>(s, 72, 4);
     pa->segid(t);
 
-    t = parseString(s, 76, 2);
+    t = parseStringAs<std::string>(s, 76, 2);
     pa->PDBelement(t);
 
 
     // Charge is not currently handled...
-    t = parseString(s, 78, 2);
+    t = parseStringAs<std::string>(s, 78, 2);
 
     append(pa);
   }
@@ -212,30 +155,20 @@ namespace loos {
     bqfmt.trailingZeros(true);
     bqfmt.fixed();
 
+    // We don't worry about strings exceeding field-widths (yet),
+    // but do check for numeric overflows...
     s << std::setw(6) << std::left << p->recordName();
-    // Adjust widths if writing a PDB with MANY atoms...
-    if (p->id() >= 100000)
-      s << std::setw(6) << std::right << p->id();
-    else
-      s << std::setw(5) << std::right << p->id() << " ";
+    s << std::setw(5) << std::right << fixedSizeFormat(p->id(), 5) << " ";
     s << std::setw(4) << std::left << p->name();
 
     s << std::setw(1) << p->altLoc();
     s << std::setw(4) << std::left << p->resname();
     
-    // Some corresponding voodoo to handle large resids...
-    if (p->resid() >= 100000) {
-      s << std::setw(6) << p->resid();
-      s << "   ";
-    } else {
-      s << std::setw(1) << std::right << p->chainId();
-      s << std::setw(4) << p->resid();
-      s << std::setw(2) << p->iCode();
-      if (p->resid() < 10000)
-        s << "  ";
-      else
-        s << " ";   // HACK!
-    }
+    s << std::setw(1) << std::right << p->chainId();
+    s << std::setw(4) << fixedSizeFormat(p->resid(), 4);
+    s << std::setw(2) << p->iCode();
+    s << "  ";
+        
     s << crdfmt(p->coords().x());
     s << crdfmt(p->coords().y());
     s << crdfmt(p->coords().z());
@@ -263,7 +196,7 @@ namespace loos {
   //    No check is made for overflow of fields...
 
   void PDB::parseConectRecord(const std::string& s) {
-    int bound_id = parseInt(s, 6, 5);
+    int bound_id = parseStringAs<int>(s, 6, 5);
     pAtom bound = findById(bound_id);
     if (bound == 0)
       throw(PDB::BadConnectivity("Cannot find primary atom " + s.substr(6, 5)));
@@ -275,7 +208,7 @@ namespace loos {
       std::string t = s.substr(j, 5);
       if (emptyString(t))
         break;
-      int id = parseInt(t);
+      int id = parseStringAs<int>(t);
       pAtom boundee = findById(id);
       if (boundee == 0)
         throw(PDB::BadConnectivity("Cannot find bound atom " + t));
@@ -289,18 +222,18 @@ namespace loos {
     gint i;
     std::string t;
 
-    r = parseFloat(s, 6, 9);
+    r = parseStringAs<float>(s, 6, 9);
     cell.a(r);
-    r = parseFloat(s, 15, 9);
+    r = parseStringAs<float>(s, 15, 9);
     cell.b(r);
-    r = parseFloat(s, 24, 9);
+    r = parseStringAs<float>(s, 24, 9);
     cell.c(r);
 
-    r = parseFloat(s, 33, 7);
+    r = parseStringAs<float>(s, 33, 7);
     cell.alpha(r);
-    r = parseFloat(s, 40, 7);
+    r = parseStringAs<float>(s, 40, 7);
     cell.beta(r);
-    r = parseFloat(s, 47, 7);
+    r = parseStringAs<float>(s, 47, 7);
     cell.gamma(r);
 
     // Special handling in case of mangled CRYST1 record...
@@ -309,9 +242,9 @@ namespace loos {
       cell.spaceGroup(t);
       cell.z(-1);   // ??? 
     } else {
-      t = parseString(s, 55, 11);
+      t = parseStringAs<std::string>(s, 55, 11);
       cell.spaceGroup(t);
-      i = parseInt(s, 66, 4);
+      i = parseStringAs<int>(s, 66, 4);
       cell.z(i);
     }
 
@@ -358,6 +291,10 @@ namespace loos {
       GCoord c(cell.a(), cell.b(), cell.c());
       periodicBox(c);
     }
+
+    // Force atom id's to be monotonic if there was an overflow event...
+    if (atoms.size() >= 100000)
+      renumber();
   }
 
 

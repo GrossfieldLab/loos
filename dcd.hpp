@@ -26,7 +26,6 @@
 
 
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <stdexcept>
 #include <exception>
@@ -103,7 +102,7 @@ namespace loos {
                                    first_frame_pos(0), swabbing(false) { readHeader(); readFrame(0); cached_first = true; }
 
     //! Begin reading from the stream ifs
-    explicit DCD(std::fstream& fs) : Trajectory(fs), _natoms(0),
+    explicit DCD(std::iostream& fs) : Trajectory(fs), _natoms(0),
                                      qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0),
                                      swabbing(false) { readHeader(); readFrame(0); cached_first = true; };
 
@@ -114,16 +113,6 @@ namespace loos {
     //! Read in the header from the specified stream
     void readHeader(std::fstream& ifs);
 #endif
-
-    // Trajectory member functions we must provide...
-    virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
-    //! Calculate offset into DCD file for frame and seek to it.
-    virtual void seekFrameImpl(const uint);
-    //! Parse a frame of the DCD
-    virtual bool parseFrame(void);
-
-    //! Rewind the file to the first DCD frame.
-    virtual void rewindImpl(void);
 
     // Accessor methods...
 
@@ -181,6 +170,19 @@ namespace loos {
     virtual void updateGroupCoords(AtomicGroup& g);
 
   private:
+
+    // Trajectory member functions we must provide...
+    virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
+    //! Calculate offset into DCD file for frame and seek to it.
+    virtual void seekFrameImpl(const uint);
+    //! Parse a frame of the DCD
+    virtual bool parseFrame(void);
+
+    //! Rewind the file to the first DCD frame.
+    virtual void rewindImpl(void);
+
+
+
     void allocateSpace(const int n);
     void readCrystalParams(void);
     void readCoordLine(std::vector<float>& v);

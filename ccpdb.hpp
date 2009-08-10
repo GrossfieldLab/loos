@@ -52,16 +52,12 @@ namespace loos {
   public:
     explicit CCPDB(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0) { init(); }
     explicit CCPDB(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
+    explicit CCPDB(std::iostream& is) : Trajectory(is), _natoms(0), _nframes(0) { init(); }
 
-    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
     virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
-
-    virtual void seekNextFrameImpl(void) { }
-    virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
     virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
@@ -87,6 +83,10 @@ namespace loos {
 
   private:
     void init(void);
+    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
+    virtual void seekNextFrameImpl(void) { }
+    virtual void seekFrameImpl(const uint);
+    virtual bool parseFrame(void);
 
   private:
     uint _natoms, _nframes;

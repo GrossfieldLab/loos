@@ -23,7 +23,6 @@
 #define TRAJECTORY_HPP
 
 #include <iostream>
-#include <fstream>
 #include <string>
 #include <stdexcept>
 #include <vector>
@@ -70,7 +69,8 @@ namespace loos {
     Trajectory(const char* s) : ifs(s), cached_first(false) { }
 
     //! Open using the given stream...
-    Trajectory(std::fstream& fs) : ifs(fs), cached_first(false) { }
+    Trajectory(std::iostream& fs) : ifs(fs), cached_first(false) { }
+
     virtual ~Trajectory() { }
 
     //! # of atoms per frame

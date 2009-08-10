@@ -113,7 +113,8 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   cout << "# " << hdr << endl;
-  cout << "# t cX cY cZ minX minY minZ maxX maxY maxZ pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
+  cout << "# 1 2  3  4  5   6    7    8    9       10  11  12  13:15 16:18 19:21\n";
+  cout << "# t cX cY cZ Vol BoxX BoxY BoxZ pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
   
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
@@ -125,10 +126,13 @@ int main(int argc, char *argv[]) {
     traj->updateGroupCoords(subset);
     GCoord c = subset.centroid();
     vector<GCoord> bdd = subset.boundingBox();
+    GCoord box = bdd[1] - bdd[0];
+    double vol = box[0] * box[1] * box[2];
     vector<GCoord> paxes = subset.principalAxes();
+    double ratio = paxes[3][0] / paxes[3][1];
 
-    cout << setw(10) << t <<  " " << split(c) << " " << split(bdd[0]) << " " << split(bdd[1]) << " ";
-    cout << split(paxes[3]) << " " << split(paxes[0]) << " " << split(paxes[1]) << " " << split(paxes[2]) << endl;
+    cout << setw(10) << t <<  " " << split(c) << " " << vol << " " << split(box) << " ";
+    cout << ratio << " " << split(paxes[3]) << " " << split(paxes[0]) << " " << split(paxes[1]) << " " << split(paxes[2]) << endl;
     
     ++t;
   }

@@ -38,6 +38,9 @@
 #include <ccpdb.hpp>
 #include <tinkerxyz.hpp>
 #include <tinker_arc.hpp>
+#include <gro.hpp>
+#include <xtc.hpp>
+#include <trr.hpp>
 
 
 namespace loos {
@@ -56,6 +59,9 @@ namespace loos {
     } else if (boost::iends_with(s, ".xyz")) {
       TinkerXYZ tinkerxyz(s);
       return(tinkerxyz);
+    } else if (boost::iends_with(s, ".gro")) {
+      Gromacs gromacs(s);
+      return(gromacs);
 
     } else
       throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
@@ -77,6 +83,9 @@ namespace loos {
       pag = p;
     } else if (boost::iends_with(s, ".xyz")) {
       pTinkerXYZ p(new TinkerXYZ(s));
+      pag = p;
+    } else if (boost::iends_with(s, ".gro")) {
+      pGromacs p(new Gromacs(s));
       pag = p;
 
     } else
@@ -111,6 +120,15 @@ namespace loos {
       pTinkerArc pta(new TinkerArc(s));
       pTraj pt(pta);
       return(pt);
+    } else if (boost::iends_with(s, ".xtc")) {
+      pXTC pxtc(new XTC(s));
+      pTraj pt(pxtc);
+      return(pt);
+    } else if (boost::iends_with(s, ".trr")) {
+      pTRR ptrr(new TRR(s));
+      pTraj pt(ptrr);
+      return(pt);
+
     } else
       throw(std::runtime_error("Error- cannot divine trajectory file type from name '" + s + "'"));
   }

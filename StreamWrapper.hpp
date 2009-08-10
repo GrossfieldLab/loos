@@ -55,7 +55,7 @@ namespace loos {
     StreamWrapper() : new_stream(false), stream(0) { }
 
     //! Sets the internal stream pointer to fs
-    explicit StreamWrapper(std::fstream& fs) : new_stream(false), stream(&fs) { }
+    explicit StreamWrapper(std::iostream& fs) : new_stream(false), stream(&fs) { }
 
     //! Opens a new stream with file named 's'
     StreamWrapper(const std::string& s,
@@ -91,7 +91,7 @@ namespace loos {
     }
 
     //! Sets the internal stream to the passed fstream.
-    void setStream(std::fstream& fs) {
+    void setStream(std::iostream& fs) {
       if (new_stream)
         delete stream;
       new_stream = false;
@@ -99,7 +99,7 @@ namespace loos {
     }
 
     //! Returns the internal fstream pointer
-    std::fstream* operator()(void) {
+    std::iostream* operator()(void) {
       if (stream == 0)
         throw(std::logic_error("Attempting to access an unset stream"));
       return(stream);
@@ -119,7 +119,7 @@ namespace loos {
 
   private:
     bool new_stream;
-    std::fstream* stream;
+    std::iostream* stream;
   };
 
 

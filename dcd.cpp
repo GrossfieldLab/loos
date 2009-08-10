@@ -383,15 +383,13 @@ namespace loos {
 
 
   void DCD::updateGroupCoords(AtomicGroup& g) {
-    AtomicGroup::Iterator iter(g);
-    pAtom pa;
+    int natoms = g.size();
 
-    while(pa = iter()) {
-      int i = pa->id() - 1;
-      if (i < 0 || i >= _natoms)
-        throw(std::runtime_error("Attempting to index a nonexistent atom in DCD::updateGroupCoords()"));
-      GCoord c(xcrds[i], ycrds[i], zcrds[i]);
-      pa->coords(c);
+    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+      int idx = (*i)->id()-1;
+      if (idx < 0 || idx > natoms)
+        throw(std::runtime_error("atom index into trajectory frame is out of range"));
+      (*i)->coords(GCoord(xcrds[idx], ycrds[idx], zcrds[idx]));
     }
 
     // Handle periodic boundary conditions (if present)

@@ -31,6 +31,7 @@ apps = 'density-dist density-dist-windowed center-pdb model2matlab frame2pdb con
 apps = apps + ' svdcolmap averager convert2pdb traj2dcd reimage-by-molecule rmsd2ref rgyr dumpmol helix_kink subsetter torsion'
 apps = apps + ' dcdinfo recenter-trj concat-selection trajinfo rmsf interdist paxes rmsfit rotamer'
 apps = apps + ' drifter porcupine ramachandran renum-pdb exposure clipper rebond molwatch'
+apps = apps + ' xdrtst trrtst'
 
 list = []
 

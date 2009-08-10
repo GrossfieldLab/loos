@@ -207,6 +207,48 @@ namespace loos {
 
   std::string timeAsString(const double t);
 
+  //! Extracts a field from a string
+  template<typename T>
+  T parseStringAs(const std::string& source, const uint pos =0, const uint nelem =0) {
+    T val;
+
+    uint n = !nelem ? source.size() - pos : nelem;
+    if (pos + n > source.size())
+      return(val);
+    
+    std::string element(source.substr(pos, n));
+    std::istringstream iss(element);
+    if (!(iss >> val)) {
+      std::stringstream msg;
+      msg << "PARSE ERROR\n" << source << std::endl;
+      for (uint i=0; i<pos; ++i)
+        msg << ' ';
+      msg << '^';
+      if (n > 1)
+        for (uint i=1; i<n; ++i)
+          msg << '^';
+      msg << std::endl;
+      throw(std::runtime_error(msg.str()));
+    }
+
+    return(val);
+  }
+
+  template<> std::string parseStringAs<std::string>(const std::string& source, const uint pos, const uint nelem);
+
+  template<typename T>
+  std::string fixedSizeFormat(const T t, const uint n) {
+    std::stringstream ss;
+    ss << t;
+    std::string s(ss.str());
+    uint m = s.size();
+    if (m > n)
+      return(s.substr(m-n, n));
+    return(s);
+  }
+
+  template<> std::string fixedSizeFormat(const std::string& s, const uint n);
+
 };
 
 #endif

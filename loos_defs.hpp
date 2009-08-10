@@ -95,6 +95,9 @@ namespace loos {
   class CCPDB;
   class TinkerArc;
   class PDBTraj;
+  class XTC;
+  class TRR;
+
 
   typedef boost::shared_ptr<Atom> pAtom;
   typedef boost::shared_ptr<Trajectory> pTraj;
@@ -103,6 +106,8 @@ namespace loos {
   typedef boost::shared_ptr<CCPDB> pCCPDB;
   typedef boost::shared_ptr<TinkerArc> pTinkerArc;
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;
+  typedef boost::shared_ptr<XTC> pXTC;
+  typedef boost::shared_ptr<TRR> pTRR;
 
   // AtomicGroup and subclasses (i.e. systems formats)
   class AtomicGroup;
@@ -111,6 +116,7 @@ namespace loos {
   class Amber;
   class AmberRst;
   class TinkerXYZ;
+  class Gromacs;
 
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
@@ -119,6 +125,7 @@ namespace loos {
   typedef boost::shared_ptr<Amber> pAmber;
   typedef boost::shared_ptr<AmberRst> pAmberRst;
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
+  typedef boost::shared_ptr<Gromacs> pGromacs;
 
 
   const uint kilobytes = 1024;

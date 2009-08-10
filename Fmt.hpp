@@ -15,6 +15,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <loos_defs.hpp>
+
 namespace loos {
 
   class BoundFmt;
@@ -29,7 +31,7 @@ namespace loos {
 
     //! Default is for precision width 6, no zeros, padding with spaces,
     //! and left aligned (and general formatting)
-    explicit Fmt(int p = 6) : prc(p), wdth(0), fil(' '), trl(false), pos(false), ali(LEFT) {
+    explicit Fmt(uint p = 6) : prc(p), wdth(0), fil(' '), trl(false), pos(false), ali(LEFT) {
       fmt = ~(std::ios_base::fixed|std::ios_base::scientific);
     }
 
@@ -44,9 +46,9 @@ namespace loos {
     Fmt& general(void);
 
     //! Set the precision
-    Fmt& precision(const int);
+    Fmt& precision(const uint);
     //! Set the output field width
-    Fmt& width(const int);
+    Fmt& width(const uint);
     //! Set the fill character
     Fmt& fill(const char);
 
@@ -66,7 +68,7 @@ namespace loos {
 
   private:
     std::ios_base::fmtflags fmt;
-    int prc, wdth;
+    uint prc, wdth;
     char fil;
     bool trl, pos;
     FmtAlignment ali;

@@ -14,8 +14,8 @@ namespace loos {
     Fmt& Fmt::fixed() { fmt = std::ios_base::fixed; return(*this); }
     Fmt& Fmt::general() { fmt = ~(std::ios_base::fixed|std::ios_base::scientific); return(*this); }
 
-    Fmt& Fmt::precision(const int p) { prc = p; return(*this); }
-    Fmt& Fmt::width(const int w) { wdth = w; return(*this); }
+    Fmt& Fmt::precision(const uint p) { prc = p; return(*this); }
+    Fmt& Fmt::width(const uint w) { wdth = w; return(*this); }
     Fmt& Fmt::fill(const char c) { fil = c; return(*this); }
 
     Fmt& Fmt::trailingZeros(bool b) { trl = b; return(*this); }
@@ -58,7 +58,12 @@ namespace loos {
       s.unsetf(std::ios_base::showpos);
 
     s << bf.val;
-    return(os << s.str());
+
+    std::string ss(s.str());
+    if (ss.size() > bf.f.wdth)
+      ss = ss.substr(ss.size() - bf.f.wdth, bf.f.wdth);
+
+    return(os << ss);
   }
 
 
