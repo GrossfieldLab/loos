@@ -77,19 +77,13 @@ namespace loos {
   public:
     explicit TRR(const std::string& s) : Trajectory(s), xdr_file(ifs()) {
       init();
-      rewindImpl();
-      parseFrame();
     }
 
     explicit TRR(const char* p) : Trajectory(p), xdr_file(ifs()) {
       init();
-      rewindImpl();
-      parseFrame();
     }
     explicit TRR(std::iostream& is) : Trajectory(is), xdr_file(ifs()) {
       init();
-      rewindImpl();
-      parseFrame();
     }
 
     uint natoms(void) const { return(hdr_.natoms); }

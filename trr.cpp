@@ -103,6 +103,10 @@ namespace loos {
     coords_.reserve(maxatoms);
     velo_.reserve(maxatoms);
     forc_.reserve(maxatoms);
+
+    rewindImpl();
+    parseFrame();
+    cached_first = true;
   }
 
   void TRR::updateGroupCoords(AtomicGroup& g) {
