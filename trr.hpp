@@ -48,10 +48,39 @@
 
 namespace loos {
 
+  //! Class representing the GROMACS TRR trajectory files
+  /**
+   * The TRR format can technically have differing numbers of atoms or
+   * even components (ie coords, velocities, forces) per frame.  This
+   * is supported by LOOS, to an extent.  If the components vary, then
+   * so long as there are coordinates, there should be no problem.  If
+   * the number of atoms vary and you're using the updateGroupCoords()
+   * function, then care must be taken that the group matches the
+   * frame.  Recall that the atomids are actually indices into the
+   * trajectory frame (ie atomid 1 takes its coords from the first
+   * trajectory coordinate, etc).
+   *
+   * The TRR format can be written in either a single or double
+   * precision format.  Internally, LOOS will read in either and
+   * translate it into whatever the default size is for LOOS (ie
+   * GCoord, which by default is a double).  Metadata, such as lambda,
+   * or box sizes, are always upconverted to double by LOOS.
+   *
+   * Since the TRR frame size is not fixed, the entire
+   * trajectory will be quickly scanned to build up an index of where
+   * the frames begin (see the loos::XTC class for more information).
+   *
+   * Finally, note that GROMACS stores data in nm whereas LOOS uses
+   * angstroms, so coordinate/box data will be automatically scaled by
+   * LOOS.
+   */
+  
   class TRR : public Trajectory {
-    static const int magic;
+    static const int magic;       // various internal constants
+                                  // GROMACS uses...
     static const int DIM;
 
+    // This is the internal header for a TRR frame
     struct Header {
       bool bDouble;
       int ir_size;
@@ -87,7 +116,12 @@ namespace loos {
     }
 
     uint natoms(void) const { return(hdr_.natoms); }
+
+    /**
+     * GROMACS trajectories do not define a timestep value as DCD does
+     */
     float timestep(void) const { return(0); }
+
     uint nframes(void) const { return(frame_indices.size()); }
     bool hasPeriodicBox(void) const { return(hdr_.box_size != 0); }
     GCoord periodicBox(void) const { return(box); }
@@ -120,6 +154,10 @@ namespace loos {
     int floatSize(Header& h);
     bool readHeader(Header& h);
 
+    // These simplify reading of blocks of data from the TRR file.
+    // Templatized since GROMACS can store data in either single or
+    // double-precision...
+
     template<typename T>
     void readBlock(std::vector<double>& v, const uint n, const std::string& msg) {
       T buf[n];
@@ -130,7 +168,9 @@ namespace loos {
         v.push_back(buf[i]);
     }
 
-    // By default, this converts to angstroms...
+
+    // This assumes the block of data are triplets and converts them
+    // into GCoords, scaling from nm to Angstroms along the way...
     template<typename T>
     void readBlock(std::vector<GCoord>& v, const uint n, const std::string& msg) {
       T* buf = new T[n];
@@ -148,6 +188,7 @@ namespace loos {
     }
 
 
+    // Note: Assumes that the object Header has already been read...
     template<typename T>
     bool readRawFrame() {
       
@@ -193,7 +234,7 @@ namespace loos {
 
 
     bool parseFrame(void) {
-      if (!readHeader(hdr_))
+      if (!readHeader(hdr_))  // Catch EOF
         return(false);
 
       if (hdr_.bDouble)
@@ -208,7 +249,8 @@ namespace loos {
     std::vector<GCoord> coords_;
     GCoord box;
     uint natoms_;
-    std::vector<size_t> frame_indices;
+    std::vector<size_t> frame_indices;   // Index into file for start
+                                         // of frame header
 
     std::vector<double> box_;
     std::vector<double> vir_;

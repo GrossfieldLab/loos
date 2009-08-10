@@ -1,11 +1,44 @@
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+/*
+  NOTE:  This code is based on the xdrfile library authored by:
+    David van der Spoel <spoel@gromacs.org>
+    Erik Lindahl <lindahl@gromacs.org>
+  and covered by the GLPL-v3 license
+*/
+
+
 #include <trr.hpp>
 
 
 namespace loos {
 
+  // GROMACS magic constants...
   const int TRR::magic = 1993;
   const int TRR::DIM = 3;
 
+
+  // GROMACS voodoo to determine precision of stored data...
   int TRR::floatSize(Header& hdr) {
     int i;
 
@@ -76,9 +109,13 @@ namespace loos {
   }
 
 
+  // Initialize the object, along with scanning file for frames to
+  // build the frame index, and finally caches the first frame.
   void TRR::init(void) {
     Header h;
 
+    // Since the trajectory can have different number of atoms per
+    // frame, we track the max and then reserve that space...
     int maxatoms = 0;
 
     rewindImpl();
