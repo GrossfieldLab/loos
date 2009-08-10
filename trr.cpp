@@ -119,4 +119,13 @@ namespace loos {
       g.periodicBox(box);
   }
 
+  void TRR::seekFrameImpl(uint i) {
+    if (i >= frame_indices.size())
+      throw(std::runtime_error("Trying to seek past the end of the file"));
+    
+    ifs()->clear();
+    ifs()->seekg(frame_indices[i], std::ios_base::beg);
+  }
+
+
 }

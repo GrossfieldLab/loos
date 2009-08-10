@@ -102,6 +102,24 @@ namespace loos {
     
     std::vector<GCoord> coords(void) { return(coords_); }
 
+    // TRR specific attributes...
+    std::vector<double> virial(void) const { return(vir_); }
+    std::vector<double> pressure(void) const { return(pres_); }
+    std::vector<GCoord> velocities(void) const { return(velo_); }
+    std::vector<GCoord> forces(void) const { return(forc_); }
+
+    bool isDouble(void) const { return(hdr_.bDouble); }
+    bool hasVirial(void) const { return(hdr_.vir_size != 0); }
+    bool hasPressure(void) const { return(hdr_.pres_size != 0); }
+    bool hasCoords(void) const { return(hdr_.x_size != 0); }
+    bool hasVelocities(void) const { return(hdr_.v_size != 0); }
+    bool hasForces(void) const { return(hdr_.f_size != 0); }
+
+    double time(void) const { return( hdr_.bDouble ? hdr_.td : hdr_.tf ); }
+    double lambda(void) const { return( hdr_.bDouble ? hdr_.lambdad : hdr_.lambdaf); }
+
+    int step(void) const { return(hdr_.step); }
+
 
   private:
     void init(void);
@@ -177,7 +195,7 @@ namespace loos {
 
     void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0, std::ios_base::beg); }
     void seekNextFrameImpl(void) { }
-    void seekFrameImpl(uint) { throw(std::logic_error("Not yet implemented")); }
+    void seekFrameImpl(uint);
 
 
     bool parseFrame(void) {
