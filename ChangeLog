@@ -1,3 +1,9 @@
+2009-08-10    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for Gromacs TRR files.  The reader can handle
+	either double or single precision TRR files, but internally, all
+	data is converted into doubles (or GCoords).
+
 2009-08-04    <tromo@spade.biophysics.rochester.edu>
 
 	* Added safety check in DCDWriter that prevents modifying the
