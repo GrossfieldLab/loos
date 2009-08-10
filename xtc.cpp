@@ -337,11 +337,14 @@ namespace loos {
     int natoms = g.size();
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-      int atomid = (*i)->id()-1;
-      if (atomid < 0 || atomid > natoms)
+      int idx = (*i)->id()-1;
+      if (idx < 0 || idx > natoms)
         throw(std::runtime_error("atom index into trajectory frame is out of range"));
-      (*i)->coords(coords_[atomid]);
+      (*i)->coords(coords_[idx]);
     }
+    
+    // XTC files *always* have a periodic box...
+    g.periodicBox(box);
   }
 
 
@@ -357,7 +360,7 @@ namespace loos {
     if (!readFrameHeader(h))
       return(false);
     
-    box = GCoord(h.box[0], h.box[4], h.box[8]);
+    box = GCoord(h.box[0], h.box[4], h.box[8]) * 10.0; // Convert to Angstroms
     return(readCompressedCoords());
   }
 
