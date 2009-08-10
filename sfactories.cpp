@@ -40,6 +40,7 @@
 #include <tinker_arc.hpp>
 #include <gro.hpp>
 #include <xtc.hpp>
+#include <trr.hpp>
 
 
 namespace loos {
@@ -122,6 +123,10 @@ namespace loos {
     } else if (boost::iends_with(s, ".xtc")) {
       pXTC pxtc(new XTC(s));
       pTraj pt(pxtc);
+      return(pt);
+    } else if (boost::iends_with(s, ".trr")) {
+      pTRR ptrr(new TRR(s));
+      pTraj pt(ptrr);
       return(pt);
 
     } else
