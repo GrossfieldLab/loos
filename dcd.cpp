@@ -33,7 +33,6 @@
 #include <string.h>
 #include <assert.h>
 
-
 #include <dcd.hpp>
 #include <AtomicGroup.hpp>
 
@@ -383,11 +382,9 @@ namespace loos {
 
 
   void DCD::updateGroupCoords(AtomicGroup& g) {
-    int natoms = g.size();
-
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int idx = (*i)->id()-1;
-      if (idx < 0 || idx > natoms)
+      if (idx < 0 || idx >= _natoms)
         throw(std::runtime_error("atom index into trajectory frame is out of range"));
       (*i)->coords(GCoord(xcrds[idx], ycrds[idx], zcrds[idx]));
     }
