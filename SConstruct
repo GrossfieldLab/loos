@@ -103,7 +103,15 @@ release_opts='-O3 -DNDEBUG -Wall'
 profile_opts='-pg'
 
 # Setup the general environment...
-env.Append(CPPPATH = ['#', BOOSTINC])
+env.Append(CPPPATH = ['#'])
+
+# Ideally, what's below should be added to the CPPPATH above, but
+# doing so causes SCons to scan headers from that directory generating
+# implicit dependencies.  SCons seems to mangle these so changing one
+# file ends up forcing a complete rebuild.  Setting the include dirs
+# directly solves this problem, but it does mean that changes to the
+# include files in BOOST and ATLAS will not be picked up by SCons...
+env.Append(CPPFLAGS = ['-I' + BOOSTINC])
 env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
 env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
@@ -115,7 +123,8 @@ else:
    if platform == 'linux2':
       env.Append(LIBS = ['lapack', 'atlas'])
       env.Append(LIBPATH = [LAPACK, ATLAS])
-      env.Append(CPPPATH = [ATLASINC]) 
+      #env.Append(CPPPATH = [ATLASINC])       # See above...
+      env.Append(CPPFLAGS = ['-I' + ATLASINC])
       fv = open('/proc/version', 'r')
       f = fv.read()
       if re.search("[Uu]buntu", f):
