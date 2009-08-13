@@ -111,7 +111,8 @@ env.Append(CPPPATH = ['#'])
 # file ends up forcing a complete rebuild.  Setting the include dirs
 # directly solves this problem, but it does mean that changes to the
 # include files in BOOST and ATLAS will not be picked up by SCons...
-env.Append(CPPFLAGS = ['-I' + BOOSTINC])
+if BOOSTINC != '':
+   env.Append(CPPFLAGS = ['-I' + BOOSTINC])
 env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
 env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
@@ -124,7 +125,8 @@ else:
       env.Append(LIBS = ['lapack', 'atlas'])
       env.Append(LIBPATH = [LAPACK, ATLAS])
       #env.Append(CPPPATH = [ATLASINC])       # See above...
-      env.Append(CPPFLAGS = ['-I' + ATLASINC])
+      if ATLASINC != '':
+         env.Append(CPPFLAGS = ['-I' + ATLASINC])
       fv = open('/proc/version', 'r')
       f = fv.read()
       if re.search("[Uu]buntu", f):
