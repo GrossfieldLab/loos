@@ -48,16 +48,14 @@ using namespace loos;
 typedef Math::Matrix<double, Math::Triangular> Matrix;
 
 
-struct Globals {
-  string model_name;
-  string traj_name;
-  string alignment;
-  double tol;
-  bool iterate;
-};
+string model_name;
+string traj_name;
+string alignment;
+double tol;
+bool iterate;
+bool no_output;
+vector<uint> indices;
 
-
-Globals globals;
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -65,14 +63,16 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
-      ("align,a", po::value<string>(&globals.alignment)->default_value("name == 'CA'"), "Align using this selection")
-      ("iterative,i", po::value<bool>(&globals.iterate)->default_value(false),"Use iterative alignment method")
-      ("tolerance,t", po::value<double>(&globals.tol)->default_value(1e-6), "Tolerance to use for iterative alignment");
+      ("align,a", po::value<string>(&alignment)->default_value("name == 'CA'"), "Align using this selection")
+      ("iterative,i", po::value<bool>(&iterate)->default_value(false),"Use iterative alignment method")
+      ("tolerance,t", po::value<double>(&tol)->default_value(1e-6), "Tolerance to use for iterative alignment")
+      ("range,r", po::value< vector<string> >(), "Frames of the trajectory to use (list of Octave-style ranges)")
+      ("noout,n", po::value<bool>(&no_output)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
-      ("model", po::value<string>(&globals.model_name), "Model filename")
-      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename");
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value<string>(&traj_name), "Trajectory filename");
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
@@ -91,6 +91,13 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
+    
+    if (vm.count("range")) {
+      vector<string> ranges = vm["range"].as< vector<string> >();
+      indices = parseRangeList<uint>(ranges);
+    }
+
+
   }
 
   catch(exception& e) {
@@ -101,17 +108,16 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj) {
-  uint n = traj->nframes();
+void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj, vector<uint>& idx) {
 
-  for (uint i = 0; i<n; i++) {
+  for (vector<uint>::iterator i = idx.begin(); i != idx.end(); ++i) {
     AtomicGroup frame = subset.copy();
-    traj->readFrame(i);
+    traj->readFrame(*i);
     traj->updateGroupCoords(frame);
     frames.push_back(frame);
   }
 
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, globals.tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(frames, tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -122,12 +128,11 @@ void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj)
 }
 
 
-void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj) {
-  uint n = traj->nframes();
+void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj, vector<uint>& idx) {
 
-  for (uint i=0; i<n; i++) {
+  for (vector<uint>::iterator i = idx.begin(); i != idx.end(); ++i) {
     AtomicGroup frame = subset.copy();
-    traj->readFrame(i);
+    traj->readFrame(*i);
     traj->updateGroupCoords(frame);
     frames.push_back(frame);
   }
@@ -160,7 +165,7 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
 
       slayer.update();
 
-      if (globals.iterate)
+      if (iterate)
         rmsd = jframe.rmsd(frames[i]);
       else {
         (void)jframe.alignOnto(frames[i]);
@@ -190,25 +195,31 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
-  AtomicGroup molecule = createSystem(globals.model_name);
-  pTraj ptraj = createTrajectory(globals.traj_name, molecule);
-  AtomicGroup subset = selectAtoms(molecule, globals.alignment);
+  AtomicGroup molecule = createSystem(model_name);
+  pTraj ptraj = createTrajectory(traj_name, molecule);
+  AtomicGroup subset = selectAtoms(molecule, alignment);
   cerr << "Selected " << subset.size() << " atoms in subset.\n";
 
+  if (indices.empty())
+    for (uint i=0; i<ptraj->nframes(); ++i)
+      indices.push_back(i);
+
   vector<AtomicGroup> frames;
-  if (globals.iterate) {
+  if (iterate) {
     cerr << "Aligning...\n";
-    doAlign(frames, subset, ptraj);
+    doAlign(frames, subset, ptraj, indices);
   } else
-    readFrames(frames, subset, ptraj);
+    readFrames(frames, subset, ptraj, indices);
 
   cerr << "Computing RMSD matrix...\n";
   Matrix M = interFrameRMSD(frames);
 
-  // Note:  using the operator<< on a matrix here will write it out as a full matrix
-  //        i.e. not the special triangular format.
-  cout << "# " << header << endl;
-  cout << M;
+  if (!no_output) {
+    // Note:  using the operator<< on a matrix here will write it out as a full matrix
+    //        i.e. not the special triangular format.
+    cout << "# " << header << endl;
+    cout << M;
+  }
 }
 
 
