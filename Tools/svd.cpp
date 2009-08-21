@@ -283,7 +283,7 @@ int main(int argc, char *argv[]) {
   MDuple orig(0,0);
   MDuple Usize(m,m);
   MDuple Ssize(sn,1);
-  MDuple Vsize(n,n);
+  MDuple Vsize(n,sn);
 
   if (terms > 0) {
     if (terms > m || terms > sn || terms > n) {
