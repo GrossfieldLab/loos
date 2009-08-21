@@ -49,24 +49,18 @@ typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
 
 #define SVDFUNC  sgesvd_
 
-struct Globals {
-  Globals() : noalign(false) { }
-
-  string model_name, traj_name;
-  string alignment_string, svd_string;
-  bool noalign;
-  greal alignment_tol;
-  bool include_source;
-  int terms;
-  string prefix;
-  uint dcdmin, dcdmax;
-  string header;
-};
+string model_name, traj_name;
+string alignment_string, svd_string;
+bool noalign;
+greal alignment_tol;
+bool include_source;
+int terms;
+string prefix;
+string header;
+vector<uint> indices;
 
 
 
-
-Globals globals;
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -75,19 +69,19 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options", 120);
     generic.add_options()
       ("help,h", "Produce this help message")
-      ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"), "Selection to align with")
-      ("svd,s", po::value<string>(&globals.svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
-      ("tolerance,t", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
-      ("noalign,n", "Do NOT align the frames of trajectory")
+      ("align,a", po::value<string>(&alignment_string)->default_value("name == 'CA'"), "Selection to align with")
+      ("svd,s", po::value<string>(&svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
+      ("tolerance,t", po::value<greal>(&alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
+      ("noalign,n", po::value<bool>(&noalign)->default_value(false), "Do NOT align the frames of trajectory")
       ("terms,T", po::value<int>(), "# of terms of the SVD to output")
       ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
-      ("range,r", po::value<string>(), "Range of frames from the trajectory to operate over")
-      ("source,S", po::value<bool>(&globals.include_source)->default_value(false),"Write out the source conformation matrix");
+      ("range,r", po::value< vector<string> >(), "Range of frames from the trajectory to operate over")
+      ("source,S", po::value<bool>(&include_source)->default_value(false),"Write out the source conformation matrix");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
-      ("model", po::value<string>(&globals.model_name), "Model filename")
-      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename");
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value<string>(&traj_name), "Trajectory filename");
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
@@ -108,26 +102,19 @@ void parseOptions(int argc, char *argv[]) {
     }
 
     if (vm.count("terms"))
-      globals.terms = vm["terms"].as<int>();
+      terms = vm["terms"].as<int>();
     else
-      globals.terms = 0;
+      terms = 0;
 
     if (vm.count("prefix"))
-      globals.prefix = vm["prefix"].as<string>();
+      prefix = vm["prefix"].as<string>();
     else
-      globals.prefix = findBaseName(globals.traj_name);
+      prefix = findBaseName(traj_name);
 
     if (vm.count("range")) {
-      string rangespec = vm["range"].as<string>();
-      int i = sscanf(rangespec.c_str(), "%u:%u", &globals.dcdmin, &globals.dcdmax);
-      if (i != 2) {
-        cerr << "Error - bad range given\n";
-        exit(-1);
-      }
+      vector<string> ranges = vm["range"].as< vector<string> >();
+      indices = parseRangeList<uint>(ranges);
     }
-
-    if (vm.count("noalign"))
-      globals.noalign = true;
 
   }
   catch(exception& e) {
@@ -139,7 +126,7 @@ void parseOptions(int argc, char *argv[]) {
 
 vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, globals.alignment_tol, 100);
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, indices, alignment_tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -155,9 +142,9 @@ vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 void writeAverage(const AtomicGroup& avg) {
   PDB avgpdb = PDB::fromAtomicGroup(avg);
   avgpdb.clearBonds();
-  avgpdb.remarks().add(globals.header);
+  avgpdb.remarks().add(header);
 
-  string fname(globals.prefix + "_avg.pdb");
+  string fname(prefix + "_avg.pdb");
   ofstream ofs(fname.c_str());
   if (!ofs)
     throw(runtime_error("Cannot open " + fname));
@@ -170,17 +157,17 @@ void writeAverage(const AtomicGroup& avg) {
 
 Matrix extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, pTraj traj) {
 
-  AtomicGroup avg = averageStructure(subset, xforms, traj);
+  AtomicGroup avg = averageStructure(subset, xforms, traj, indices);
   writeAverage(avg);
 
   uint natoms = subset.size();
   AtomicGroup frame = subset.copy();
-  uint n = globals.dcdmax - globals.dcdmin;
+  uint n = indices.size();
   uint m = natoms * 3;
   Matrix M(m, n);
 
   for (uint i=0; i<n; ++i) {
-    traj->readFrame(i + globals.dcdmin);
+    traj->readFrame(indices[i]);
     traj->updateGroupCoords(frame);
     frame.applyTransform(xforms[i]);
 
@@ -217,47 +204,43 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  globals.header = header;
+  header = header;
 
   parseOptions(argc, argv);
 
   // Need to address this...
-  AtomicGroup model = createSystem(globals.model_name);
-  pTraj ptraj = createTrajectory(globals.traj_name, model);
-  
-  // Fix max-range for DCD
-  if (globals.dcdmax == 0)
-    globals.dcdmax = ptraj->nframes();
-  if (globals.dcdmin > ptraj->nframes() || globals.dcdmax > ptraj->nframes()) {
-    cerr << "Invalid Trajectory range requested.\n";
-    exit(-1);
-  }
+  AtomicGroup model = createSystem(model_name);
+  pTraj ptraj = createTrajectory(traj_name, model);
 
-  AtomicGroup alignsub = selectAtoms(model, globals.alignment_string);
-  AtomicGroup svdsub = selectAtoms(model, globals.svd_string);
+  AtomicGroup alignsub = selectAtoms(model, alignment_string);
+  AtomicGroup svdsub = selectAtoms(model, svd_string);
 
-  write_map(globals.prefix + ".map", svdsub);
+  if (indices.empty())
+    for (uint i=0; i<ptraj->nframes(); ++i)
+      indices.push_back(i);
+
+  write_map(prefix + ".map", svdsub);
 
   vector<XForm> xforms;
-  if (globals.noalign) {
+  if (noalign) {
     // Make noop xforms to prevent doing any alignment...
     cerr << argv[0] << ": SKIPPING ALIGNMENT\n";
-    for (uint i=0; i<ptraj->nframes(); ++i)
+    for (uint i=0; i<indices.size(); ++i)
       xforms.push_back(XForm());
   } else {
     cerr << argv[0] << ": Aligning...\n";
-    xforms = doAlign(alignsub, ptraj);
+    xforms = doAlign(alignsub, ptraj);   // Honors indices
   }
 
   cerr << argv[0] << ": Extracting coordinates...\n";
-  Matrix A = extractCoords(svdsub, xforms, ptraj);
+  Matrix A = extractCoords(svdsub, xforms, ptraj);   // Honors indices
   f77int m = A.rows();
   f77int n = A.cols();
   f77int sn = m<n ? m : n;
 
 
-  if (globals.include_source)
-    writeAsciiMatrix(globals.prefix + "_A.asc", A, header);
+  if (include_source)
+    writeAsciiMatrix(prefix + "_A.asc", A, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
   cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
@@ -302,20 +285,20 @@ int main(int argc, char *argv[]) {
   MDuple Ssize(sn,1);
   MDuple Vsize(n,n);
 
-  if (globals.terms > 0) {
-    if (globals.terms > m || globals.terms > sn || globals.terms > n) {
+  if (terms > 0) {
+    if (terms > m || terms > sn || terms > n) {
       cerr << "ERROR- The number of terms requested exceeds matrix dimensions.\n";
       exit(-1);
     }
-    Usize = MDuple(m, globals.terms);
-    Ssize = MDuple(globals.terms, 1);
-    Vsize = MDuple(n, globals.terms);
+    Usize = MDuple(m, terms);
+    Ssize = MDuple(terms, 1);
+    Vsize = MDuple(n, terms);
   }
 
   cerr << argv[0] << ": Writing results...\n";
-  writeAsciiMatrix(globals.prefix + "_U.asc", U, header, orig, Usize);
-  writeAsciiMatrix(globals.prefix + "_s.asc", S, header, orig, Ssize);
-  writeAsciiMatrix(globals.prefix + "_V.asc", Vt, header, orig, Vsize, true);
+  writeAsciiMatrix(prefix + "_U.asc", U, header, orig, Usize);
+  writeAsciiMatrix(prefix + "_s.asc", S, header, orig, Ssize);
+  writeAsciiMatrix(prefix + "_V.asc", Vt, header, orig, Vsize, true);
   cerr << argv[0] << ": done!\n";
 
   delete[] work;
