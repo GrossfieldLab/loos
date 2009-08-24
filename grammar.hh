@@ -155,7 +155,8 @@ namespace loos
      EQ = 270,
      NE = 271,
      REGEX = 272,
-     NEKEY = 273
+     NEKEY = 273,
+     NOT = 274
    };
 
     };

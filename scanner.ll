@@ -31,11 +31,14 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 ">"                     { return(token::GT); }
 "=="                    { return(token::EQ); }
 "!="                    { return(token::NE); }
+"ne"                    { return(token::NE); }
 "=~"                    { return(token::REGEX); }
 
 "&&"                    { return(token::AND); }
 "||"                    { return(token::OR); }
 
+"!"                     { return(token::NOT); }
+"not"                   { return(token::NOT); }
 "->"                 { return(token::NEKEY); }
 
 all                  { return(token::ALL); }

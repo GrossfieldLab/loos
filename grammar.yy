@@ -68,6 +68,7 @@ namespace loos {
 %token NE  "!="
 %token REGEX "=~"
 %token NEKEY "->"
+%token NOT "!"
 
 %left "&&" "||"
 %left "<" "<=" ">=" ">" "==" "!=" "=~"
@@ -86,7 +87,7 @@ expr  : rexpr
 
 
 rexpr : '(' expr ')'
-      | '!' rexpr              { driver.kern.push(new internal::logicalNot); }
+      | NOT rexpr              { driver.kern.push(new internal::logicalNot); }
       | value "<" value { driver.kern.push(new internal::lessThan); }
       | value "<=" value { driver.kern.push(new internal::lessThanEquals); }
       | value ">=" value { driver.kern.push(new internal::greaterThanEquals); }
