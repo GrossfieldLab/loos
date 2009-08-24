@@ -98,6 +98,25 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   };
 
 
+  //! Generic matrix element formatter using scientific notation...
+  template<typename T>
+  class ScientificMatrixFormatter {
+  public:
+    ScientificMatrixFormatter(const int width, const int precision) : wi (width), pr(precision) { }
+    ScientificMatrixFormatter() : wi(16), pr(8) { }
+
+    std::string operator()(const T& t) {
+      std::ostringstream oss;
+      oss << std::scientific << std::setw(wi) << std::setprecision(pr) << t;
+      return(oss.str());
+    }
+
+  private:
+    int wi, pr;
+
+  };
+
+
   // The following are the templated global functions.  Do not
   // overload/specialize them.  Instead, specialize the
   // MatrixWriteImpl class...
