@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
   if (align_string.empty()) {
 
     cerr << "Skipping alignment...\n";
-    for (uint i=0; i<traj->nframes(); ++i)
+    for (uint i=0; i<indices.size(); ++i)
       xforms.push_back(XForm());
 
   } else {
