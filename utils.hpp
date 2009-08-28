@@ -249,7 +249,10 @@ namespace loos {
 
   template<> std::string fixedSizeFormat(const std::string& s, const uint n);
 
+  //! Convert a hybrid-36 encoded string into an int
   int parseStringAsHybrid36(const std::string& source, const uint pos =0, const uint nelem =0);
+
+  //! Convert an int into a hybrid-36 encoded string
   std::string hybrid36AsString(int value, uint fieldsize);
 
 };

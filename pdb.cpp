@@ -71,7 +71,7 @@ namespace loos {
     t = parseStringAs<std::string>(s, 0, 6);
     pa->recordName(t);
 
-    i = parseStringAs<int>(s, 6, 5);
+    i = parseStringAsHybrid36(s, 6, 5);
     pa->id(i);
 
     t = parseStringAs<std::string>(s, 12, 4);
@@ -86,7 +86,7 @@ namespace loos {
     t = parseStringAs<std::string>(s, 21, 1);
     pa->chainId(t);
 
-    i = parseStringAs<int>(s, 22, 4);
+    i = parseStringAsHybrid36(s, 22, 4);
     pa->resid(i);
   
     t = parseStringAs<std::string>(s, 26, 1);
@@ -101,6 +101,7 @@ namespace loos {
     } else {
       char c = t[0];
 
+      // Assume that if we see this variant, then we're not using hybrid-36
       if (c != ' ' && isdigit(c)) {
         i = parseStringAs<int>(s, 22, 5);
         pa->resid(i);
@@ -158,14 +159,14 @@ namespace loos {
     // We don't worry about strings exceeding field-widths (yet),
     // but do check for numeric overflows...
     s << std::setw(6) << std::left << p->recordName();
-    s << std::setw(5) << std::right << fixedSizeFormat(p->id(), 5) << " ";
+    s << hybrid36AsString(p->id(), 5) << " ";
     s << std::setw(4) << std::left << p->name();
 
     s << std::setw(1) << p->altLoc();
     s << std::setw(4) << std::left << p->resname();
     
     s << std::setw(1) << std::right << p->chainId();
-    s << std::setw(4) << fixedSizeFormat(p->resid(), 4);
+    s << hybrid36AsString(p->resid(), 4);
     s << std::setw(2) << p->iCode();
     s << "  ";
         
@@ -208,7 +209,7 @@ namespace loos {
       std::string t = s.substr(j, 5);
       if (emptyString(t))
         break;
-      int id = parseStringAs<int>(t);
+      int id = parseStringAsHybrid36(t);
       pAtom boundee = findById(id);
       if (boundee == 0)
         throw(PDB::BadConnectivity("Cannot find bound atom " + t));
@@ -334,7 +335,7 @@ namespace loos {
       if ((*ci)->checkProperty(Atom::bondsbit)) {
         int donor = (*ci)->id();
 
-        os << boost::format("CONECT%5d") % donor;
+        os << "CONECT" << hybrid36AsString(donor, 5);
         int i = 0;
 
         std::vector<int> bonds = (*ci)->getBonds();
@@ -342,12 +343,12 @@ namespace loos {
         for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
           if (++i > 4) {
             i = 1;
-            os << boost::format("\nCONECT%5d") % donor;
+            os << "\nCONECT" << hybrid36AsString(donor, 5);
           }
           int bound_id = *cj;
           pAtom pa = p.findById(bound_id);
           if (pa != 0)
-            os << boost::format("%5d") % bound_id;
+            os << hybrid36AsString(bound_id, 5);
         }
         os << std::endl;
       }

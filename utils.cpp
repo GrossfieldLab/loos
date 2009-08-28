@@ -303,10 +303,14 @@ namespace loos {
       --n;
     }
 
-    int offset = 0;
-    char cbase = 'a';
-    int ibase = 10;
+    // Skip leading whitespace
+    for (;si != s.end() && *si == ' '; ++si, --n) ;
 
+    int offset = 0;   // This adjusts the range of the result
+    char cbase = 'a'; // Which set or characters (upper or lower) for the alpha-part
+    int ibase = 10;   // Number-base (i.e. 10 or 36)
+
+    // Decide which chunk we're in...
     if (*si >= 'a') {
       offset = pow10[n] + 16*pow36[n-1];
       cbase = 'a';
@@ -334,6 +338,8 @@ namespace loos {
 
 
 
+  // Note: this currently will overflow if sufficiently negative
+  // to overflow the base-10 part...
   std::string hybrid36AsString(int d, uint n) {
 
     if (n > 6)
@@ -341,7 +347,8 @@ namespace loos {
 
     int n10 = pow10[n];
     int n36 = pow36[n-1];
-    int cuta = n10 + n36 * 26;
+    int cuta = n10 + n36 * 26;  // Cutoff between upper and lower
+                                // representations (i.e. A000 vs a000)
     bool negative(false);
 
     if (d < 0) {
@@ -352,8 +359,8 @@ namespace loos {
     if (d >= n10 + 52 * n36)
       throw(std::runtime_error("Number out of range"));
 
-    unsigned char coffset = '0';
-    int ibase = 10;
+    unsigned char coffset = '0';   // Digits offset for output
+    int ibase = 10;                // Numeric base (i.e. 10 or 36)
 
     if (d >= cuta) {
       coffset = 'a' - 10;
@@ -379,6 +386,7 @@ namespace loos {
     if (negative)
       result.push_back('-');
 
+    // right-justify...should we be left instead??
     for (uint i=result.size(); i < n; ++i)
       result.push_back(' ');
 
