@@ -277,5 +277,115 @@ namespace loos {
   }
 
 
+  namespace {
+    int pow10[6]={1,10,100,1000,10000,100000};
+    int pow36[6]={1,36,1296,46656,1679616,60466176};
+  };
+
+
+  
+  int parseStringAsHybrid36(const std::string& source, const uint pos, const uint nelem) {
+    uint n = !nelem ? source.size() - pos : nelem;
+    if (pos + n > source.size())
+      return(0);
+
+    if (n > 6)
+      throw(std::logic_error("Requested size exceeds max"));
+    
+    std::string s(source.substr(pos, n));
+    bool negative(false);
+    std::string::iterator si(s.begin());
+    n = s.size();
+
+    if (*si == '-') {
+      negative = true;
+      ++si;
+      --n;
+    }
+
+    int offset = 0;
+    char cbase = 'a';
+    int ibase = 10;
+
+    if (*si >= 'a') {
+      offset = pow10[n] + 16*pow36[n-1];
+      cbase = 'a';
+      ibase = 36;
+    } else if (*si >= 'A') {
+      offset = pow10[n] - 10*pow36[n-1];
+      cbase = 'A';
+      ibase = 36;
+    }
+
+    int result = 0;
+    while (si != s.end()) {
+      int c = (*si >= cbase) ? *si-cbase+10 : *si-'0';
+      result = result * ibase + c;
+      ++si;
+    }
+
+    result += offset;
+
+    if (negative)
+      return(-result);
+
+    return(result);
+  }
+
+
+
+  std::string hybrid36AsString(int d, uint n) {
+
+    if (n > 6)
+      throw(std::logic_error("Requested size exceeds max"));
+
+    int n10 = pow10[n];
+    int n36 = pow36[n-1];
+    int cuta = n10 + n36 * 26;
+    bool negative(false);
+
+    if (d < 0) {
+      negative = true;
+      d = -d;
+    }
+
+    if (d >= n10 + 52 * n36)
+      throw(std::runtime_error("Number out of range"));
+
+    unsigned char coffset = '0';
+    int ibase = 10;
+
+    if (d >= cuta) {
+      coffset = 'a' - 10;
+      ibase = 36;
+      d -= cuta;
+      d += 10*n36;
+    } else if (d >= n10) {
+      coffset = 'A' - 10;
+      d -= n10;
+      d += 10*n36;
+      ibase = 36;
+    }
+
+    std::string result;
+    while (d > 0) {
+      unsigned char digit = d % ibase;
+      digit += (digit > 9) ? coffset : '0';
+
+      result.push_back(digit);
+      d /= ibase;
+    }
+
+    if (negative)
+      result.push_back('-');
+
+    for (uint i=result.size(); i < n; ++i)
+      result.push_back(' ');
+
+    std::reverse(result.begin(), result.end());
+    return(result);
+  }
+
+
 
 }

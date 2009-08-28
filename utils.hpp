@@ -210,7 +210,7 @@ namespace loos {
   //! Extracts a field from a string
   template<typename T>
   T parseStringAs(const std::string& source, const uint pos =0, const uint nelem =0) {
-    T val;
+    T val(0);
 
     uint n = !nelem ? source.size() - pos : nelem;
     if (pos + n > source.size())
@@ -248,6 +248,9 @@ namespace loos {
   }
 
   template<> std::string fixedSizeFormat(const std::string& s, const uint n);
+
+  int parseStringAsHybrid36(const std::string& source, const uint pos =0, const uint nelem =0);
+  std::string hybrid36AsString(int value, uint fieldsize);
 
 };
 
