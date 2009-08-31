@@ -117,6 +117,18 @@ class InternalWater
             return(atom->id());
             }
 
+        const int exit_side() const
+            {
+            if (exited_to_positive)
+                {
+                return +1;
+                }
+            else
+                {
+                return -1;
+                }
+            }
+
     private:
         pAtom atom;
         int entry_frame;
@@ -225,7 +237,7 @@ while (traj->readFrame())
 
 vector<InternalWater>::iterator wat;
 cout << "# Total frames = " << frame << endl;
-cout << "#AtomID\tLifetime\tEntered\tExited" << endl;
+cout << "#AtomID\tLifetime\tEntered\tExited\tExitedPositive" << endl;
 for (wat = exited_waters.begin(); wat != exited_waters.end(); wat++)
     {
     if (wat->crossed())
@@ -233,7 +245,8 @@ for (wat = exited_waters.begin(); wat != exited_waters.end(); wat++)
         cout << wat->atom_id() << "\t"
              << wat->lifetime() << "\t"
              << wat->entered() << "\t"
-             << wat->exited() 
+             << wat->exited() << "\t"
+             << wat->exit_side()
              << endl;
         }
     }
