@@ -121,11 +121,17 @@ namespace loos {
 
       T datum;
       Math::Matrix<T,P,S> R(m, n);
-      for (int j=0;j < m; j++) {
-        for (int i=0; i<n; i++) {
-          if (!(is >> datum)) {
+      for (int j=0;j < m; ++j) {
+        for (int i=0; i<n; ++i) {
+          if (!(is >> inbuf)) {
             std::stringstream s;
-            s << "Invalid conversion on matrix read at (" << j << "," << i << ")";
+            s << "Read error at (" << j << "," << i << ") with input '" << inbuf << "'";
+            throw(MatrixReadError(s.str()));
+          }
+          std::istringstream iss(inbuf);
+          if (!(iss >> datum)) {
+            std::stringstream s;
+            s << "Invalid conversion on matrix read at (" << j << "," << i << ") of '" << inbuf << "'";
             throw(MatrixReadError(s.str()));
           }
           R(j, i) = datum;
