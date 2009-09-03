@@ -231,7 +231,9 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
                                const MDuple& start, const MDuple& end,
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
-      os << boost::format("# %d %d (%d)\n") % M.rows() % M.cols() % trans;
+      uint m = end.first - start.first;
+      uint n = end.second - start.second;
+      os << boost::format("# %d %d (%d)\n") % m % n % trans;
       for (int j=start.first; j<end.first; j++) {
         for (int i=start.second; i<end.second; i++)
           if (trans)
