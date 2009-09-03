@@ -1,3 +1,29 @@
+2009-09-03  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed bug in DCD::updateGroupCoords where the upper-bounds check
+	on atomid's was incorrect.
+	* Fixed problem with spurious complete rebuilds of LOOS by SCons
+	* Changed rmsds so it can work with a subset of frames from the
+	trajectory
+	* Fixed bug in box size reported by bounding tool
+	* Updates to several tools to be consistent with contemporary LOOS
+	style
+	* SVD now only writes out the non-zero RSV's (i.e. those that have
+	non-zero singular values).
+	* Added a "not" operator to the selection language.  This can be
+	used in lieu of the '!' character, so you don't have to worry
+	about shells munging it.
+	* Changed the parseAsString<> family to explicitly initialize
+	return values to 0 and return this on an error, rather than rely
+	on the default type initialization.
+	* Added hybrid-36 support for PDBs.  See
+	http://cci.lbl.gov/hybrid_36 for more details.  LOOS internally
+	translates the hybrid-36 codes into integers.  LOOS does not yet
+	support the 2-char chainId.
+	* Fixed bug affecting writeAsciiMatrix() when using a dense matrix
+	and only writing out a subset of the matrix.  The size of the
+	sub-matrix encoded in the output metadata was incorrect.
+
 2009-08-10    <tromo@spade.biophysics.rochester.edu>
 
 	* Added support for Gromacs TRR files.  The reader can handle
