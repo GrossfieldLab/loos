@@ -178,8 +178,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.4.1 install
-ln -s /opt/loos-1.4.1 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.0 install
+ln -s /opt/loos-1.5.0 /opt/loos-latest
 \endverbatim
 
 
@@ -800,6 +800,68 @@ averaging over the whole trajectory.
 
 
 /*! \page Changes Change Log
+\section release150 Version 1.5.0 (9-17-2009)
+Many of the changes in this version are internal (primarily as new
+functions and features).  The big change is that LOOS now supports
+Gromacs .gro, .trr, and .xtc file formats.  Since Gromacs stores
+coordinates in nm, LOOS the coordinates into Angstroms upon reading.
+LOOS only supports single precision .xtc files.
+LOOS now also uses the hybrid-36 encoding method for PDB files with a
+large number of atoms or residues.  See <A
+href="http://cci.lbl.gov/hybrid_36">here</A> for more information.
+
+<em>Important note regarding Gromacs support:  While we have tested
+the gromacs support with a limited set of sample files, the code has
+not been as rigorously tested as support for previous formats have
+been.  Gromacs support should therefore be considered experimental at
+this stage.  Please report any problems or errors to as at
+loos_maintainer [at] urmc.rochester.edu</em>
+
+\subsection r150_added_changed Added, Changed, or otherwise Notable
+<UL>
+  <LI> Added AtomicGroup::findBonds() to perform a simple
+  distance-search for bonds.
+  <LI> Added support for testing Atom equality.  See loos::AtomEquals,
+  loos::AtomCoordsEquals for more information.
+  <LI> Added loos::AtomicGroup::contains() and loos::AtomicGroup::intersect() for
+  set operations.
+  <LI> Added new bits to loos::Atom that can be used as flags (i.e. flagbit,
+  usr1bit, ...)
+  <LI> Added Gromacs classes: loos::Gromacs, loos::TRR, and loos::XTC.
+  <LI> Changes to the Trajectory class and subclasses:
+  <UL>
+	<LI> Changed the underlying stream type to iostream.  This
+	should not break anything unless you have subclassed
+	Trajectory for your own purposes.
+	<LI> Implementation functions are now private.
+	<LI> Added some missing constructors in the subclasses.
+  </UL>
+  <LI> Added some utilities for parsing strings
+  (loos::parseStringAs<>())
+  <LI> Added new formatters for matrix output that make it easier to
+  set the width and precision of the matrix elements, or write them
+  out in scientific notation (i.e. loos::ScientificMatrixFormatter)
+  <LI> Added Hybrid-36 support to PDB's (both reading and writing)
+  <LI> rmsds can now work with a subset of frames from a trajectory
+  <LI> subsetter can now reimage
+  <LI> SVD now will only write out the non-zero terms of the SVD
+  rather than the entire matrix.
+  <LI> Added a "not" operator to the selection language so there's no
+  more fighting with the shell over '!'.
+</UL>
+
+\subsection r150_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in loos::writeAsciiMatrix() when only writing a subset of a
+  matrix.
+  <LI> Fixed bug in bounding tool's box size
+  <LI> Fixed problem with spurious rebuilds of all of LOOS with
+  SCons.
+  <LI> Fixed bug in loos::DCD::updateGroupCoords where the upper-bounds
+  check on atomid's was incorrect.
+</UL>
+
+
 \section release140 Version 1.4.0 (6-26-2009)
 There has been a change in philosophy of how LOOS handles system
 descriptions vs models/trajectories/coordinates.  Previously, LOOS
