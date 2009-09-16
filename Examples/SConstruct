@@ -23,23 +23,22 @@ default_lib_path = '/usr/lib64'
 default_path_to_loos = '/opt/loos'
 
 # Principal options...
-clos = Options('custom.py')
-clos.AddOptions(
-	('debug', 'Set to 1 to add -DDEBUG to build', 0),
-	('release', 'Set to 1 to build with optimization on', 0),
-        ('profile', 'Set to 1 to build with profiling on', 0)
-)
+clos = Variables('custom.py')
+clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
+clos.Add('release', 'Set to 1 to build with optimization on', 0)
+clos.Add('profile', 'Set to 1 to build with profiling on', 0)
 
-clos.Add(PathOption('LOOS', 'Path to LOOS', default_path_to_loos, PathOption.PathAccept))
-clos.Add(PathOption('LAPACK', 'Path to LAPACK', default_lib_path, PathOption.PathAccept))
-clos.Add(PathOption('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathOption.PathAccept))
-clos.Add(PathOption('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathOption.PathAccept))
-clos.Add(PathOption('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathOption.PathAccept))
-clos.Add(PathOption('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathOption.PathAccept))
-clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathOption.PathAccept)
-clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathOption.PathAccept)
+
+clos.Add(PathVariable('LOOS', 'Path to LOOS', default_path_to_loos, PathVariable.PathAccept))
+clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
+clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
+clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathVariable.PathAccept))
+clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathVariable.PathAccept)
+clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathVariable.PathAccept)
 clos.Add('CXX', 'C++ Compiler', 'g++')
-clos.Add(PathOption('LIBXTRA', 'Path to additional libraries', '', PathOption.PathAccept))
+clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 
 env = Environment(options = clos)
 Help(clos.GenerateHelpText(env))
@@ -55,6 +54,7 @@ BOOSTINC = env['BOOSTINC']
 BOOSTREGEX = env['BOOSTREGEX']
 BOOSTPO = env['BOOSTPO']
 LOOS = env['LOOS']
+LIBXTRA = env['LIBXTRA']
 
 ### These variables point to the subparts of LOOS required to build a tool.
 
@@ -85,7 +85,20 @@ release_opts='-O3 -DNDEBUG -Wall'
 profile_opts='-pg'
 
 # Setup the general environment...
-env.Append(CPPPATH = ['#', LOOSINC, BOOSTINC])
+env.Append(CPPPATH = ['#', LOOSINC])
+
+# Ideally, what's below should be added to the CPPPATH above, but
+# doing so causes SCons to scan headers from that directory generating
+# implicit dependencies.  SCons seems to mangle these so changing one
+# file ends up forcing a complete rebuild.  Setting the include dirs
+# directly solves this problem, but it does mean that changes to the
+# include files in BOOST and ATLAS will not be picked up by SCons...
+if BOOSTINC != '':
+   env.Append(CPPFLAGS = ['-I' + BOOSTINC])
+env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
+env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
+env.Append(LEXFLAGS=['-s'])
+
 env.Append(LIBPATH = ['#', LOOSLIB, BOOSTLIB])
 env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
 
