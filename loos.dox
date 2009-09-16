@@ -848,6 +848,22 @@ loos_maintainer [at] urmc.rochester.edu</em>
   rather than the entire matrix.
   <LI> Added a "not" operator to the selection language so there's no
   more fighting with the shell over '!'.
+  <LI> Some tools have been updated internally to be more
+  consistent with the current LOOS idioms...  There may be minor
+  changes in usage:
+  <UL>
+	<LI> SVD now requires a 1 or 0 for the -S option
+  </UL>
+  <LI> New tools:
+  <DL>
+	<DT> molshape
+	<DD> Reports statistics about a selection (i.e. extents,
+	radius of gyration, location of centroid, principal axes, etc)
+
+	<DT> native_contacts
+	<DD> Compute the fraction of native contacts in a trajectory
+	based on an initial structure
+  </DL>
 </UL>
 
 \subsection r150_bugs Bug Fixes
