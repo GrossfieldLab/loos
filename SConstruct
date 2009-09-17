@@ -41,8 +41,8 @@ clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
 clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0),
-clos.Add('tag', 'Set to 1 to add a revision tag in the code.', 1),
+clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0)
+clos.Add('tag', 'Set to 1 to add a revision tag in the code.', 1)
 
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', '', PathVariable.PathAccept))

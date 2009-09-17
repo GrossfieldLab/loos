@@ -28,6 +28,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 <hr>
 
+\section Citing
+If you use LOOS in your work, please reference the following publication:
+\verbatim
+@InProceedings{loos2009,
+  author = 	 {T. D. Romo and A. Grossfield},
+  title = 	 {{LOOS}: An Extensible Platform for the Structural Analysis of Simulations},
+  pages =	 {2332-2335},
+  year =	 {2009},
+  volume =	 {31st Annual International Conference of the IEEE EMBS},
+  organization = {IEEE EMBS},
+}
+\endverbatim
+<hr>
+
 \section Introduction
 
 Welcome to the LOOS library,  a product of the Grossfield Lab at the University
