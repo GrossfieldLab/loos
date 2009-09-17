@@ -155,12 +155,18 @@ Matrix mmult(Matrix& A, Matrix& B, const bool transa = false, const bool transb 
   f77int ldb = transb ? n : k;
   f77int ldc = m;
 
-  char ta = (transa ? 'T' : 'N');
-  char tb = (transb ? 'T' : 'N');
 
   Matrix C(m, n);
 
+#if defined(LINUX)
+  char ta = (transa ? 'T' : 'N');
+  char tb = (transb ? 'T' : 'N');
+
   dgemm_(&ta, &tb, &m, &n, &k, &alpha, A.get(), &lda, B.get(), &ldb, &beta, C.get(), &ldc);
+#else
+  cblas_dgemm(CblasColMajor, transa ? CblasTrans : CblasNoTrans, transb ? CblasTrans : CblasNoTrans,
+              m, n, k, alpha, A.get(), lda, B.get(), ldb, beta, C.get(), ldc);
+#endif
 
   return(C);
 }
@@ -290,7 +296,7 @@ int main(int argc, char *argv[]) {
   f77int ldvl = 1;
   Matrix VR(fn,fn);
   f77int ldvr = fn;
-  int lwork = 64 * fn;
+  f77int lwork = 64 * fn;
   Matrix WORK(lwork, 1);
 
   f77int info;
