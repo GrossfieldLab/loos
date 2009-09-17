@@ -158,7 +158,7 @@ Matrix mmult(Matrix& A, Matrix& B, const bool transa = false, const bool transb 
 
   Matrix C(m, n);
 
-#if defined(LINUX)
+#if defined(__linux__)
   char ta = (transa ? 'T' : 'N');
   char tb = (transb ? 'T' : 'N');
 
