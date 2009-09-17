@@ -143,7 +143,7 @@ Matrix submatrix(const Matrix& M, const Range& rows, const Range& cols) {
 
 
 
-Matrix mmult(Matrix& A, Matrix& B, const bool transa = false, const bool transb = false) {
+Matrix mmult(const Matrix& A, const Matrix& B, const bool transa = false, const bool transb = false) {
 
   f77int m = transa ? A.cols() : A.rows();
   f77int n = transb ? B.rows() : B.cols();
@@ -210,7 +210,7 @@ void operator+=(Matrix& A, const Matrix& B) {
 }
 
 Matrix operator+(const Matrix& A, const Matrix& B) {
-  Matrix C(A);
+  Matrix C(A.copy());
   C += B;
   return(C);
 }
@@ -225,10 +225,42 @@ void operator-=(Matrix& A, const Matrix& B) {
 }
 
 Matrix operator-(const Matrix& A, const Matrix& B) {
-  Matrix C(A);
+  Matrix C(A.copy());
   C -= B;
   return(C);
 }
+
+
+void operator*=(Matrix& A, const double d) {
+  for (uint i=0; i<A.rows() * A.cols(); ++i)
+    A[i] *= d;
+}
+
+Matrix operator*(const Matrix& A, const double d) {
+  Matrix B(A.copy());
+  B *= d;
+  return(B);
+}
+
+void operator*=(Matrix& A, const Matrix& B) {
+  Matrix C = mmult(A, B);
+  A=C;
+}
+
+Matrix operator*(const Matrix& A, const Matrix& B) {
+  Matrix C = mmult(A, B);
+  return(C);
+}
+
+
+Matrix operator-(Matrix& A) {
+  Matrix B(A.copy());
+  for (uint i=0; i<B.rows() * B.cols(); ++i)
+    B[i] = -B[i];
+  return(B);
+}
+  
+
 
 Matrix eye(const uint n) {
   Matrix I(n, n);
@@ -245,6 +277,69 @@ struct SortPredicate {
 
   const Matrix& M;
 };
+
+
+boost::tuple<Matrix, Matrix> eigenDecomp(Matrix& A, Matrix& B) {
+  char jobvl = 'N';
+  char jobvr = 'V';
+  f77int fn = A.rows();
+  f77int lda = fn;
+  f77int ldb = fn;
+  Matrix AR(fn,1);
+  Matrix AI(fn,1);
+  Matrix BETA(fn,1);
+  double vl;
+  f77int ldvl = 1;
+  Matrix VR(fn,fn);
+  f77int ldvr = fn;
+  f77int lwork = 64 * fn;
+  Matrix WORK(lwork, 1);
+
+  f77int info;
+
+  cout << "Calling dggev...\n";
+  dggev_(&jobvl, &jobvr, &fn, A.get(), &lda, B.get(), &ldb, AR.get(), AI.get(), BETA.get(),
+         &vl, &ldvl, VR.get(), &ldvr, WORK.get(), &lwork, &info);
+  cout << "Result = " << info << endl;
+
+  Matrix eigvals(fn, 1);
+  for (int i=0; i<fn; ++i) {
+    if (AI[i] == 0.0)
+      eigvals[i] = AR[i] / BETA[i];
+    else
+      eigvals[i] = 0.0;
+  }
+
+  // normalize
+  for (int i=0; i<fn; ++i) {
+    double norm = 0.0;
+    for (int j=0; j<fn; ++j)
+      norm += (VR(j,i) * VR(j,i));
+    norm = sqrt(norm);
+    for (int j=0; j<fn; ++j)
+      VR(j,i) /= norm;
+  }
+
+  // Sort by eigenvalue
+  vector<int> indices;
+  for (int i=0; i<fn; ++i)
+    indices.push_back(i);
+  SortPredicate sp(eigvals);
+  sort(indices.begin(), indices.end(), sp);
+
+  // Now copy over in order...
+  Matrix SD(fn, 1);
+  Matrix SU(fn, fn);
+  for (int i=0; i<fn; ++i) {
+    SD(i,0) = eigvals[indices[i]];
+    for (int j=0; j<fn; ++j)
+      SU(j,i) = VR(j,indices[i]);
+  }
+
+  boost::tuple<Matrix, Matrix> result(SD, SU);
+  return(result);
+}
+
 
 
 int main(int argc, char *argv[]) {
@@ -294,62 +389,17 @@ int main(int argc, char *argv[]) {
   cout << boost::format("Hssp is %dx%d\n") % Hssp.rows() % Hssp.cols();
   cout << boost::format("Msp is %dx%d\n") % Msp.rows() % Msp.cols();
 
-  char jobvl = 'N';
-  char jobvr = 'V';
-  f77int fn = Hssp.rows();
-  f77int lda = fn;
-  f77int ldb = fn;
-  Matrix AR(fn,1);
-  Matrix AI(fn,1);
-  Matrix BETA(fn,1);
-  double vl;
-  f77int ldvl = 1;
-  Matrix VR(fn,fn);
-  f77int ldvr = fn;
-  f77int lwork = 64 * fn;
-  Matrix WORK(lwork, 1);
+  boost::tuple<Matrix, Matrix> eigenpairs = eigenDecomp(Hssp, Msp);
+  Matrix Ds = boost::get<0>(eigenpairs);
+  Matrix Us = boost::get<1>(eigenpairs);
 
-  f77int info;
+  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr);
+  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr);
 
-  cout << "Calling dggev...\n";
-  dggev_(&jobvl, &jobvr, &fn, Hssp.get(), &lda, Msp.get(), &ldb, AR.get(), AI.get(), BETA.get(),
-         &vl, &ldvl, VR.get(), &ldvr, WORK.get(), &lwork, &info);
-  cout << "Result = " << info << endl;
-
-  Matrix eigvals(fn, 1);
-  for (int i=0; i<fn; ++i) {
-    if (AI[i] == 0.0)
-      eigvals[i] = AR[i] / BETA[i];
-    else
-      eigvals[i] = 0.0;
-  }
-
-  // normalize
-  for (int i=0; i<fn; ++i) {
-    double norm = 0.0;
-    for (int j=0; j<fn; ++j)
-      norm += (VR(j,i) * VR(j,i));
-    norm = sqrt(norm);
-    for (int j=0; j<fn; ++j)
-      VR(j,i) /= norm;
-  }
-
-  // Sort by eigenvalue
-  vector<int> indices;
-  for (int i=0; i<fn; ++i)
-    indices.push_back(i);
-  SortPredicate sp(eigvals);
-  sort(indices.begin(), indices.end(), sp);
-
-  // Now copy over in order...
-  Matrix SD(fn, 1);
-  Matrix SU(fn, fn);
-  for (int i=0; i<fn; ++i) {
-    SD(i,0) = eigvals[indices[i]];
-    for (int j=0; j<fn; ++j)
-      SU(j,i) = VR(j,indices[i]);
-  }
-
-  writeAsciiMatrix(prefix + "_D.asc", SD, hdr);
-  writeAsciiMatrix(prefix + "_U.asc", SU, hdr);
+//   Matrix Ue = -Heei * Hes * Us;
+//   X = Heei * Me * Heei * Hes * Us;
+//   Y = -Ds;
+//   Matrix De = mmult(Y, X, true, false);
+//   writeAsciiMatrix(prefix + "_De.asc", De, hdr, true);
+//   writeAsciiMatrix(prefix + "_Ue.asc", Ue, hdr);
 }
