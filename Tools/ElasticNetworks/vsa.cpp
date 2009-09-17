@@ -11,7 +11,7 @@
   modes).
 
   Usage:
-    vsa environment subset radius model output_prefix
+    vsa subset environment radius model output_prefix
 
 */
 
@@ -251,8 +251,8 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   uint k=1;
 
-  string envsel(argv[k++]);
   string subsel(argv[k++]);
+  string envsel(argv[k++]);
   double rad = strtod(argv[k++], 0);
   
   AtomicGroup model = createSystem(argv[k++]);
@@ -271,10 +271,10 @@ int main(int argc, char *argv[]) {
   uint l = subset.size() * 3;
 
   uint n = H.cols() - 1;
-  Matrix Hss = submatrix(H, Range(0,l), Range(0,l));
-  Matrix Hee = submatrix(H, Range(l+1, n), Range(l+1, n));
-  Matrix Hse = submatrix(H, Range(0,l), Range(l+1, n));
-  Matrix Hes = submatrix(H, Range(l+1, n), Range(0, l));
+  Matrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
+  Matrix Hee = submatrix(H, Range(l, n), Range(l, n));
+  Matrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
+  Matrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
 
   Matrix Heei = invert(Hee);
   Matrix X = mmult(Hse, Heei);
