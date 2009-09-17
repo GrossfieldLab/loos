@@ -174,7 +174,10 @@ Matrix mmult(Matrix& A, Matrix& B, const bool transa = false, const bool transb 
 
 Matrix invert(Matrix& A, const double eps = 1e-6) {
 
-  Matrix B(A);
+  // The SVD (at least dgesvd) will destroy the source matrix, so we
+  // need to make an explicit copy...
+
+  Matrix B(A.copy());
   boost::tuple<Matrix, Matrix, Matrix> res = svd(B);
   Matrix U(boost::get<0>(res));
   Matrix S(boost::get<1>(res));
@@ -235,7 +238,7 @@ Matrix eye(const uint n) {
   return(I);
 }
 
-
+// Sorts a vector of indices based on the first column of the bound matrix...
 struct SortPredicate {
   SortPredicate(const Matrix& A) : M(A) { }
   bool operator()(const int i, const int j) { return(M[i]> M[j]); }
