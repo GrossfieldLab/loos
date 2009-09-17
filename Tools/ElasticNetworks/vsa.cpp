@@ -142,6 +142,13 @@ Matrix submatrix(const Matrix& M, const Range& rows, const Range& cols) {
 }
 
 
+// --------------------------------------------------------------------------------------------------
+//
+// Math routines...
+//
+
+
+// Multiply two matrices using BLAS
 
 Matrix mmult(const Matrix& A, const Matrix& B, const bool transa = false, const bool transb = false) {
 
@@ -172,6 +179,8 @@ Matrix mmult(const Matrix& A, const Matrix& B, const bool transa = false, const 
 }
 
 
+// Pseudo-inverse of a matrix using the SVD
+
 Matrix invert(Matrix& A, const double eps = 1e-6) {
 
   // The SVD (at least dgesvd) will destroy the source matrix, so we
@@ -200,6 +209,9 @@ Matrix invert(Matrix& A, const double eps = 1e-6) {
 }
 
 
+// Basic math operators...  These are not going to be terribly
+// efficient due to lots of copying and temporaries being
+// generated...
 
 void operator+=(Matrix& A, const Matrix& B) {
   if (A.rows() != B.rows() || A.cols() != B.cols())
@@ -261,6 +273,7 @@ Matrix operator-(Matrix& A) {
 }
   
 
+// Create a square identity matrix
 
 Matrix eye(const uint n) {
   Matrix I(n, n);
@@ -302,6 +315,7 @@ boost::tuple<Matrix, Matrix> eigenDecomp(Matrix& A, Matrix& B) {
          &vl, &ldvl, VR.get(), &ldvr, WORK.get(), &lwork, &info);
   cout << "Result = " << info << endl;
 
+  // Complex eigenvalues are set to 0
   Matrix eigvals(fn, 1);
   for (int i=0; i<fn; ++i) {
     if (AI[i] == 0.0)
@@ -372,18 +386,12 @@ int main(int argc, char *argv[]) {
   Matrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
 
   Matrix Heei = invert(Hee);
-  Matrix X = mmult(Hse, Heei);
-  Matrix Y = mmult(X, Hes);
-  Matrix Hssp = Hss - Y;
+  Matrix Hssp = Hss - Hse * Heei * Hes;
 
   Matrix Ms = eye(Hss.rows());
   Matrix Me = eye(Hee.rows());
 
-  X = mmult(Hse, Heei);
-  Y = mmult(X, Me);
-  X = mmult(Y, Heei);
-  Y = mmult(X, Hes);
-  Matrix Msp = Ms + Y;
+  Matrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
   // Debugging...
   cout << boost::format("Hssp is %dx%d\n") % Hssp.rows() % Hssp.cols();
