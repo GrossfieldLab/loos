@@ -236,6 +236,13 @@ Matrix eye(const uint n) {
 }
 
 
+struct SortPredicate {
+  SortPredicate(const Matrix& A) : M(A) { }
+  bool operator()(const int i, const int j) { return(M[i]> M[j]); }
+
+  const Matrix& M;
+};
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
@@ -324,6 +331,22 @@ int main(int argc, char *argv[]) {
       VR(j,i) /= norm;
   }
 
-  writeAsciiMatrix(prefix + "_D.asc", eigvals, hdr);
-  writeAsciiMatrix(prefix + "_U.asc", VR, hdr);
+  // Sort by eigenvalue
+  vector<int> indices;
+  for (int i=0; i<fn; ++i)
+    indices.push_back(i);
+  SortPredicate sp(eigvals);
+  sort(indices.begin(), indices.end(), sp);
+
+  // Now copy over in order...
+  Matrix SD(fn, 1);
+  Matrix SU(fn, fn);
+  for (int i=0; i<fn; ++i) {
+    SD(i,0) = eigvals[indices[i]];
+    for (int j=0; j<fn; ++j)
+      SU(j,i) = VR(j,indices[i]);
+  }
+
+  writeAsciiMatrix(prefix + "_D.asc", SD, hdr);
+  writeAsciiMatrix(prefix + "_U.asc", SU, hdr);
 }
