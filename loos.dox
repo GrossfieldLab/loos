@@ -113,16 +113,16 @@ For more information, see the
 
 \section Bugs
 There are none...only features.  So don't worry about them!
-(email us directly if you find a bug^H^H^H unintended feature)
+Email us directly (LOOS-maintainer [AT] urmc.rochester.edu) if you find a bug^H^H^H unintended feature.
 
 \section build Building and Installing
 LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> to build.  It also
 requires the vecLib framework and Developer's Tools for OS X or <A
 href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> for Linux.  It also
 requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for both
-(including the regular expression library).  To build from scratch, you will also need the
+(including the regular expression library).  If you plan to modify the parser (you probably don't), you'll need the
 GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
-<A href="http://www.gnu.org/software/bison/">bison</A>.
+<A href="http://www.gnu.org/software/bison/">bison</A>.  Similarly, if you want to rebuild the documentation, you'll need to install Doxygen.
 
 If your libraries are installed in non-standard locations, you may need to 
 tell LOOS where its required components are.  To do this, do the following:
@@ -630,7 +630,7 @@ periodicity (eg rdf).
    <DT><B>density-dist-windowed</B>
    <DD>Compute the charge/electron/mass density distribution for the system along
    the z-axis for blocks of time within a trajectory, producing a density
-   distribution time series.  Currently assumes PSF and DCD formats.
+   distribution time series.  
 
    <DT><B>drifter</B>
    <DD>Calculates movement centroids over a trajectory
@@ -651,7 +651,7 @@ periodicity (eg rdf).
 
    <DT><B>helix_kink</B>
    <DD>Given two selections and a trajectory, compute the time series of the 
-   angle between their principal components.
+   angle between their principal components.  Also useful for measuring domain hinge motions.
 
    <DT><B>interdist</B>
    <DD>Calculates distances between a selection and an aribtrary set of other
@@ -663,7 +663,7 @@ periodicity (eg rdf).
    <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the selection,
    then applies it to the PDB and writes the output to stdout.  This tool is used
    mainly for checking your selection strings to make sure you're actually
-   selecting what you intend to select...
+   selecting what you intend to select.
 
    <DT><B>model2matlab</B>
    <DD>Takes a PDB and a selection and an optional selection and writes out
@@ -802,11 +802,8 @@ periodicity (eg rdf).
 Many of the changes in this version are internal (primarily as new
 functions and features).  The big change is that LOOS now supports
 Gromacs .gro, .trr, and .xtc file formats.  Since Gromacs stores
-coordinates in nm, LOOS the coordinates into Angstroms upon reading.
+coordinates in nm, LOOS converts the coordinates into Angstroms upon reading.
 LOOS only supports single precision .xtc files.
-LOOS now also uses the hybrid-36 encoding method for PDB files with a
-large number of atoms or residues.  See <A
-href="http://cci.lbl.gov/hybrid_36">here</A> for more information.
 
 <em>Important note regarding Gromacs support:  While we have tested
 the gromacs support with a limited set of sample files, the code has
@@ -814,6 +811,10 @@ not been as rigorously tested as support for previous formats have
 been.  Gromacs support should therefore be considered experimental at
 this stage.  Please report any problems or errors to as at
 loos_maintainer [at] urmc.rochester.edu</em>
+
+LOOS now also uses the hybrid-36 encoding method for PDB files with a
+large number of atoms or residues.  See <A
+href="http://cci.lbl.gov/hybrid_36">here</A> for more information.
 
 \subsection r150_added_changed Added, Changed, or otherwise Notable
 <UL>
