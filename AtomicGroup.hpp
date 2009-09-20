@@ -124,6 +124,7 @@ namespace loos {
 
     int length(void) const { return(atoms.size()); }
     int size(void) const { return(atoms.size()); }
+    bool empty(void) const { return(atoms.empty()); }
 
     //! Get the ith atom from this group.
     pAtom getAtom(const int i) const;
