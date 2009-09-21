@@ -393,10 +393,6 @@ int main(int argc, char *argv[]) {
 
   Matrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
-  // Debugging...
-  cout << boost::format("Hssp is %dx%d\n") % Hssp.rows() % Hssp.cols();
-  cout << boost::format("Msp is %dx%d\n") % Msp.rows() % Msp.cols();
-
   boost::tuple<Matrix, Matrix> eigenpairs = eigenDecomp(Hssp, Msp);
   Matrix Ds = boost::get<0>(eigenpairs);
   Matrix Us = boost::get<1>(eigenpairs);
