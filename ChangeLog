@@ -1,3 +1,7 @@
+2009-09-21    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed install target--was missing trr.hpp
+
 2009-09-03  Tod Romo  <tromo@gorgoneion>
 
 	* Fixed bug in DCD::updateGroupCoords where the upper-bounds check
