@@ -198,8 +198,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.1 install
-ln -s /opt/loos-1.5.1 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.2 install
+ln -s /opt/loos-1.5.2 /opt/loos-latest
 \endverbatim
 
 
