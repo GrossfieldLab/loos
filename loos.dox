@@ -198,8 +198,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.0 install
-ln -s /opt/loos-1.5.0 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.1 install
+ln -s /opt/loos-1.5.1 /opt/loos-latest
 \endverbatim
 
 
@@ -798,6 +798,13 @@ periodicity (eg rdf).
 
 
 /*! \page Changes Change Log
+\section release151 Version 1.5.1 (9-21-2009)
+\subsection r150_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in install target where trr.hpp was not copied to the
+  installation directory.
+</UL>
+
 \section release150 Version 1.5.0 (9-17-2009)
 Many of the changes in this version are internal (primarily as new
 functions and features).  The big change is that LOOS now supports
