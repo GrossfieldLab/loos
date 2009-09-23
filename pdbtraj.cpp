@@ -27,7 +27,20 @@ namespace loos {
   void PDBTraj::rewindImpl(void) { seekFrame(0); }
   uint PDBTraj::nframes(void) const { return(_nframes); }
   uint PDBTraj::natoms(void) const { return(_natoms); }
-  void PDBTraj::updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
+
+
+  void PDBTraj::updateGroupCoords(AtomicGroup& g) {
+
+    if (g.size() == frame.size()) {
+      g.copyCoordinates(frame);
+    } else {
+      for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+        int idx = (*i)->id() - 1;
+        (*i)->coords(frame[idx]->coords());
+      }
+    }
+  }
+
   bool PDBTraj::hasPeriodicBox(void) const { return(frame.isPeriodic()); }
   GCoord PDBTraj::periodicBox(void) const { return(frame.periodicBox()); }
   float PDBTraj::timestep(void) const { return(0.001); }

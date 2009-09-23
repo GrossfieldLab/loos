@@ -1,3 +1,17 @@
+2009-09-23    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed a bug in the CCPDB and PDBTraj classes when using
+	updateGroupCoords with an AtomicGroup that is a subset of the
+	model that corresponds to the trajectory.  Previously,
+	updateGroupCoords simply copies coordinates directly into the
+	passed AtomicGroup.  If the AtomicGroup is a subset, however, this
+	would result in incorrect coordinates.  This has been fixed so
+	that if the passed AtomicGroup is the same size as the one used to
+	create the Trajectory, then the coordinates are copied straight as
+	before.  However, if the passed AtomicGroup is a different size,
+	then the atom id's are assumed to be indices (+1) into the
+	trajectory frame.
+
 2009-09-21    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed install target--was missing trr.hpp
