@@ -43,7 +43,7 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 
 all                  { return(token::ALL); }
 hydrogen             { return(token::HYDROGEN); }
-name|resname|segid   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
+name|resname|segid|segname   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
 id|resid             { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 
 \"|\'                {                /* Special handling for strings... */
