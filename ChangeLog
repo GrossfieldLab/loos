@@ -1,3 +1,8 @@
+2009-10-06    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed a bug where segname was not properly handled as a synonym
+	for segid...
+
 2009-09-23    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed a bug in the CCPDB and PDBTraj classes when using
