@@ -30,6 +30,7 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <map>
 #include <algorithm>
 
 #include <tr1/unordered_set>
@@ -279,6 +280,9 @@ namespace loos {
 
     //! Returns a vector of AtomicGroups, each comprising a single residue
     std::vector<AtomicGroup> splitByResidue(void) const;
+
+    //! Returns a vector of AtomicGroups, each containing atoms with the same name
+    std::map<std::string, AtomicGroup> splitByName(void) const;
 
     //! Find a contained atom by its atomid
     pAtom findById(const int id);

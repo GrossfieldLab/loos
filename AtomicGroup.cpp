@@ -300,6 +300,30 @@ namespace loos {
     return(results);
   }
 
+  std::map<std::string, AtomicGroup> AtomicGroup::splitByName(void) const {
+    const_iterator i;
+    std::map<std::string, AtomicGroup> groups;
+
+    // Loop over atoms, adding them to groups based on their name, creating the 
+    // map entry for each new name as we find it
+    std::map<std::string, AtomicGroup>::iterator g;
+    for (i = atoms.begin(); i != atoms.end(); ++i) {
+        g = groups.find((*i)->name());
+        if (g == groups.end()) { // not found, need to create a new AG
+            AtomicGroup ag;
+            ag.append(*i);
+            ag.box = box; // copy the current groups periodic box
+            groups[(*i)->name()] = ag;
+        }  else {              // found group for that atom name, 
+                               // so add the atom to it
+            g->second.append(*i);
+        }
+
+    }
+
+    return(groups);
+  }
+
   /** The idea is that we iterate over the list of contained atoms.  For
    * each atom, we recurse through the list of bonded atoms.  Each time
    * we visit an atom, we mark it as having been seen via the hash_set.
