@@ -798,8 +798,19 @@ periodicity (eg rdf).
 
 
 /*! \page Changes Change Log
+\section release152 Version 1.5.2 (10-9-2009)
+\subsection r151_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug where segname was not correctly handled as a synonym
+  for segid.
+  <LI> Fixed bug affecting Amber restart files.  These are handled as
+  a special trajectory with one frame, but the readFrame() iterator
+  was not correctly set so the first call would return a false,
+  indicating that all frames had been read.
+</UL>
+
 \section release151 Version 1.5.1 (9-21-2009)
-\subsection r150_bugs Bug Fixes
+\subsection r151_bugs Bug Fixes
 <UL>
   <LI> Fixed bug in install target where trr.hpp was not copied to the
   installation directory.

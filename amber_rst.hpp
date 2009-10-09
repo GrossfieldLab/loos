@@ -40,6 +40,8 @@ namespace loos {
                                                             periodic(false), seek_flag(false) {
       if (!parseFrame())
         throw(std::runtime_error("Could not open the Amber RST file"));
+
+      cached_first = true;
     }
 
 
@@ -49,6 +51,8 @@ namespace loos {
                                                      periodic(false), seek_flag(false) {
       if (!parseFrame())
         throw(std::runtime_error("Could not open the Amber RST file"));
+
+      cached_first = true;
     }
 
 
