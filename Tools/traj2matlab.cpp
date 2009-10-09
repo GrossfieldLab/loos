@@ -1,15 +1,5 @@
 /*
-  model2matlab.cpp
-
-  Takes a PDB and a selection and an optional selection and writes out
-  the coordinates to stdout in matlab format...
-
-  The matrix is written in row-major order though, i.e.
-  [ X_0 Y_0 Z_0 ;
-    X_1 Y_1 Z_1 ;
-       ...
-    X_i Y_i Z_i ]
-
+  traj2matlab.cpp
 */
 
 
@@ -19,7 +9,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008, Tod D. Romo
+  Copyright (c) 2009, Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -42,26 +32,34 @@
 using namespace std;
 using namespace loos;
 
+typedef Math::Matrix<double, Math::RowMajor>   Matrix;
+
+
 
 int main(int argc, char *argv[]) {
-  
-  if (argc  != 5) {
-    cerr << "Usage: " << argv[0] << " model trajectory selection frame" << endl;
+  string hdr = invocationHeader(argc, argv);
+
+  if (argc  != 4) {
+    cerr << "Usage: " << argv[0] << " model trajectory selection" << endl;
     exit(-1);
   }
 
   AtomicGroup model = createSystem(argv[1]);
   pTraj traj = createTrajectory(argv[2], model);
   AtomicGroup subset = selectAtoms(model, argv[3]);
-  int frame = atoi(argv[4]);
 
-  traj->readFrame(frame);
-  traj->updateGroupCoords(subset);
-  cout << "A = [\n";
-  for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i) {
-    GCoord c = (*i)->coords();
-    cout << "  " << c.x() << " " << c.y() << " " << c.z() << " ;\n";
+  Matrix A(model.size() * 3, traj->nframes());
+  for (uint i = 0; i<traj->nframes(); ++i) {
+    traj->readFrame(i);
+    traj->updateGroupCoords(subset);
+    
+    for (int j=0, k=0; j<model.size(); ++j) {
+      GCoord c = subset[j]->coords();
+      A(k++,i) = c.x();
+      A(k++,i) = c.y();
+      A(k++,i) = c.z();
+    }
   }
-  cout << "];\n";
 
+  writeAsciiMatrix(cout, A, hdr);
 }
