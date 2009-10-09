@@ -7,9 +7,7 @@
 
 
   Calculates the magnitude of the principal axes (the corresponding
-  eivenvalue) over time and writes this out...
-
-  Assumes that the trajectory has already been aligned.
+  eigenvalue) over time and writes this out...
 
   Usage:  paxes mode pdb dcd sel1 sel2 [sel3 ...]
 */
