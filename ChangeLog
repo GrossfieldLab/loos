@@ -1,3 +1,8 @@
+2009-10-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug where readFrame() incorrectly returned a false on the
+	first frame of an Amber restart file.
+
 2009-10-06    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed a bug where segname was not properly handled as a synonym
