@@ -50,6 +50,7 @@
 // These are the LOOS-specific includes...
 
 #include <loos_defs.hpp>
+#include <exceptions.hpp>
 #include <utils.hpp>
 
 #include <Kernel.hpp>

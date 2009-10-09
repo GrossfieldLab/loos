@@ -30,6 +30,7 @@
 
 #include <FlexLexer.h>
 
+#include "exceptions.hpp"
 #include "Kernel.hpp"
 
 #include "grammar.hh"
@@ -91,7 +92,7 @@ namespace loos {
       if (!pparser)
         pparser = new parser(*this);
       if (pparser->parse())
-        throw(std::runtime_error("Parse error"));
+        throw(ParseError("Parse error"));
     }
 
   };

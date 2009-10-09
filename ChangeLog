@@ -1,3 +1,13 @@
+2009-10-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Added AtomicGroup::splitByName() which returns a std::map
+	mapping unique atom names to an AtomicGroup containing only those
+	atoms (by Alan)
+
+	* Added support for a LOOS family of exceptions in exception.hpp.
+	LOOS will gradually migrate to using LOOSError derived exceptions
+	for errors that are specific to LOOS...
+
 2009-10-06    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed a bug where segname was not properly handled as a synonym

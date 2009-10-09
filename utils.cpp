@@ -153,11 +153,11 @@ namespace loos {
       if (s.substr(0, 6) == " XTAL ") {
         std::stringstream is(s.substr(5));
         if (!(is >> c.x()))
-          throw(std::runtime_error("Unable to parse " + s));
+          throw(ParseError("Unable to parse " + s));
         if (!(is >> c.y()))
-          throw(std::runtime_error("Unable to parse " + s));
+          throw(ParseError("Unable to parse " + s));
         if (!(is >> c.z()))
-          throw(std::runtime_error("Unable to parse " + s));
+          throw(ParseError("Unable to parse " + s));
 
         break;
       }
@@ -217,15 +217,15 @@ namespace loos {
     try {
       parser.parse(selection);
     }
-    catch(std::runtime_error e) {
-      throw(std::runtime_error("Error in parsing '" + selection + "' ... " + e.what()));
+    catch(ParseError e) {
+      throw(ParseError("Error in parsing '" + selection + "' ... " + e.what()));
     }
 
     KernelSelector selector(parser.kernel());
     AtomicGroup subset = source.select(selector);
 
     if (subset.size() == 0)
-      throw(std::runtime_error("No atoms were selected using '" + selection + "'"));
+      throw(NullResult("No atoms were selected using '" + selection + "'"));
 
     return(subset);
   }

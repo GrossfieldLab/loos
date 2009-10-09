@@ -32,6 +32,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <exception>
 #include <stdexcept>
 
 
@@ -42,6 +43,7 @@
 
 
 #include <loos_defs.hpp>
+#include <exceptions.hpp>
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
 
@@ -118,7 +120,7 @@ namespace loos {
 
     is >> sep >> b;
     if (is.fail() || sep != ':')
-      throw(std::runtime_error("Could not parse range " + text));
+      throw(ParseError("Could not parse range " + text));
     
     if (is.eof())
       c = 1;
@@ -126,7 +128,7 @@ namespace loos {
       c = b;
         is >> sep >> b;
         if (is.fail() || sep != ':')
-          throw(std::runtime_error("Could not parse range " + text));
+          throw(ParseError("Could not parse range " + text));
     }
 
     // Catch a potentially sticky situation...
@@ -228,7 +230,7 @@ namespace loos {
         for (uint i=1; i<n; ++i)
           msg << '^';
       msg << std::endl;
-      throw(std::runtime_error(msg.str()));
+      throw(ParseError(msg.str()));
     }
 
     return(val);
