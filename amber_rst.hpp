@@ -36,22 +36,19 @@ namespace loos {
   class AmberRst : public Trajectory {
   public:
     explicit AmberRst(const std::string& s, const int na) : Trajectory(s), _natoms(na),
-                                                            frame_offset(0), frame_size(0),
+                                                            frame_offset(0), frame_size(0), current_time(0.0),
                                                             periodic(false), seek_flag(false) {
-      if (!parseFrame())
-        throw(std::runtime_error("Could not open the Amber RST file"));
 
+      parseFrame();
       cached_first = true;
     }
 
 
 
     explicit AmberRst(const char* p, const int na) : Trajectory(p), _natoms(na),
-                                                     frame_offset(0), frame_size(0),
+                                                     frame_offset(0), frame_size(0), current_time(0.0),
                                                      periodic(false), seek_flag(false) {
-      if (!parseFrame())
-        throw(std::runtime_error("Could not open the Amber RST file"));
-
+      parseFrame();
       cached_first = true;
     }
 

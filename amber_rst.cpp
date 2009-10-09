@@ -31,19 +31,27 @@ namespace loos {
 
 
   bool AmberRst::parseFrame(void) {
-    char buf[1024];
+    std::string buf;
     greal x, y, z;
 
     // Skip the title...
-    ifs()->getline(buf, 1024);
+    std::getline(*(ifs()), buf);
+    if (ifs()->eof())
+      return(false);   //  Catch the initial EOF...
 
-
-    // If the # of atoms in the rst file mismatch the expected count,
-    // return an error...
+    // Check the # of atoms...
+    // Note: the Amber spec says that this line should contain both
+    // the number of atoms and the current time, but some restart
+    // files "in the wild" only have the number of atoms...
+    std::getline(*(ifs()), buf);
+    std::istringstream iss(buf);
     uint na;
-    *(ifs()) >> na >> current_time;
+    iss >> na;
     if (na != _natoms)
-      return(false);
+      throw(LOOSError("Number of atoms mismatch in Amber restart file"));
+
+    iss >> current_time;
+
 
     // This should probably be in an initialization rather than here...???
     frame.reserve(na);
@@ -55,13 +63,13 @@ namespace loos {
     }
 
     if (i != _natoms)
-      return(false);
+      throw(LOOSError("Number of atoms read is not what was expected"));
 
     // Probe for velocities or periodic box...
     greal a, b, c;
     *(ifs()) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
     if (ifs()->eof())
-      return(true);     // No box even...
+      return(true);
 
     // Finish reading the putative box...
     *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
@@ -87,7 +95,7 @@ namespace loos {
     *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
     if (ifs()->eof() || ifs()->fail())
-      return(true);    // Apparently, no box info...
+      return(true);
 
     periodic = true;
     box = GCoord(a, b, c);
