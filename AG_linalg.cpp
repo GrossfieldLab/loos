@@ -107,6 +107,7 @@ namespace loos {
     c[0] = W[2];
     c[1] = W[1];
     c[2] = W[0];
+    c /= size();   // Scale by # of atoms...
 
     results[3] = c;
 

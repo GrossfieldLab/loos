@@ -1,3 +1,9 @@
+2009-10-10  Tod Romo  <tromo@gorgoneion>
+
+	* Changed AtomicGroup::principalAxis() to automatically scale the
+	returned eigenvalues by the number of atoms used in the
+	calculation.  Previously, the UNSCALED eigenvalues were returned.
+
 2009-10-09    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug where readFrame() incorrectly returned a false on the
