@@ -1,5 +1,6 @@
 %{
 #include <string>
+#include <stdio.h>
 
 #define yyterminate()     return token::END
 
