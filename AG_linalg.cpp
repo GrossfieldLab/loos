@@ -48,8 +48,6 @@ namespace loos {
     GCoord c = centerOfMass();
 
     for (uint i = 0; i < atoms.size(); ++i) {
-      if (_strict && !atoms[i]->checkProperty(Atom::massbit))
-        throw(MissingProperty(*(atoms[i]), "Atom has no mass"));
 
       GCoord u = atoms[i]->coords() - c;
       double m = atoms[i]->mass();

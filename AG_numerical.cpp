@@ -94,9 +94,6 @@ namespace loos {
     const_iterator i;
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
-      if (_strict && !(*i)->checkProperty(Atom::massbit))
-        throw(MissingProperty(**i, "Atom has no mass"));
-
       c += (*i)->mass() * (*i)->coords();
     }
     c /= totalMass();
@@ -123,9 +120,6 @@ namespace loos {
     int electrons = 0;
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
-      if (_strict && !(*i)->checkProperty(Atom::anumbit))
-        throw(MissingProperty(**i, "Atom has no atomic number"));
-
       int an = (*i)->atomic_number();  
       c += an * (*i)->coords();
       electrons += an;

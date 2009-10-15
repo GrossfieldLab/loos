@@ -90,13 +90,13 @@ namespace loos {
     typedef std::vector<pAtom>::const_iterator const_iterator;
 
   public:
-    AtomicGroup() : _sorted(false), _strict(true) { }
+    AtomicGroup() : _sorted(false) { }
 
     //! Creates a new AtomicGroup with \a n un-initialized atoms.
     /** The atoms will all have ascending atomid's beginning with 1, but
      *  otherwise no other properties will be set.
      */
-    AtomicGroup(const int n) : _sorted(true), _strict(true) {
+    AtomicGroup(const int n) : _sorted(true) {
       assert(n >= 1 && "Invalid size in AtomicGroup(n)");
       for (int i=1; i<n; i++) {
         pAtom pa(new Atom);
@@ -123,10 +123,6 @@ namespace loos {
      *  copy() method instead.
      */
     virtual AtomicGroup* clone(void) const;
-
-    bool strict() const { return(_strict); }
-    void strict() { _strict = true; }
-    void permissive() { _strict = false; }
 
 
     int length(void) const { return(atoms.size()); }
@@ -583,7 +579,6 @@ namespace loos {
     double *transformedCoordsAsArray(const XForm&) const;
 
     bool _sorted;
-    bool _strict;
 
   protected:
     std::vector<pAtom> atoms;
