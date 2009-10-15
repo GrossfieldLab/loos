@@ -29,6 +29,9 @@
 #if !defined(MATRIXIO_HPP)
 #define MATRIXIO_HPP
 
+#include <iostream>
+#include <iomanip>
+
 #include <Matrix.hpp>
 #include <MatrixWrite.hpp>
 #include <MatrixRead.hpp>
