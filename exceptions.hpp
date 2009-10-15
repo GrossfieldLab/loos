@@ -55,6 +55,12 @@ namespace loos {
     explicit NullResult(const std::string& arg) : LOOSError(arg) { }
   };
 
+  //! Exception caused by insufficient atom properties..
+  class MissingProperty : public LOOSError {
+  public:
+    explicit MissingProperty(const std::string& arg) : LOOSError(arg) { }
+  };
+
 
 
 };
