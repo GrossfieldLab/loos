@@ -24,11 +24,11 @@
 #define EXCEPTIONS_HPP
 
 
-
+#include <sstream>
 #include <exception>
 #include <string>
 
-
+#include <Atom.hpp>
 
 namespace loos {
 
@@ -38,6 +38,12 @@ namespace loos {
     std::string _msg;
   public:
     explicit LOOSError(const std::string& arg) : _msg(arg) { }
+    explicit LOOSError(const Atom& a, const std::string& arg) {
+      std::stringstream ss;
+      ss << a << std::endl << arg;
+      _msg = ss.str();
+    }
+
     virtual ~LOOSError() throw() {};
     virtual const char* what(void) const throw() { return(_msg.c_str()); }
   };
@@ -59,6 +65,7 @@ namespace loos {
   class MissingProperty : public LOOSError {
   public:
     explicit MissingProperty(const std::string& arg) : LOOSError(arg) { }
+    explicit MissingProperty(const Atom& a, const std::string& arg) : LOOSError(a, arg) { }
   };
 
 
