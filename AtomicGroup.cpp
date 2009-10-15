@@ -167,6 +167,22 @@ namespace loos {
   }
 
 
+  bool AtomicGroup::allHaveProperty(const Atom::bits& property) const {
+    for (const_iterator ci = atoms.begin(); ci != atoms.end(); ++ci)
+      if (!(*ci)->checkProperty(property))
+        return(false);
+
+    return(true);
+  }
+
+  bool AtomicGroup::anyHaveProperty(const Atom::bits& property) const {
+    for (const_iterator ci = atoms.begin(); ci != atoms.end(); ++ci)
+      if ((*ci)->checkProperty(property))
+        return(true);
+
+    return(false);
+  }
+
   bool AtomicGroup::hasBonds(void) const {
     const_iterator ci;
 

@@ -309,14 +309,21 @@ namespace loos {
     int numberOfResidues(void) const;
     int numberOfSegids(void) const;
 
+    //! True if all atoms in the group have the passed property(ies)
+    bool allHaveProperty(const Atom::bits& property) const;
+    
+    //! True if any atom in the group have the passed property(ies)
+    bool anyHaveProperty(const Atom::bits& property) const;
+
+    // These are now deprecated in favor of the above functions...
     //! Does any atom in the group have bond information???
     bool hasBonds(void) const;
 
-    //! Remove any bonding information present in contained atoms
-    void clearBonds(void);
-
     //! Does all the atoms in the group have coordinates?
     bool hasCoords(void) const;
+
+    //! Remove any bonding information present in contained atoms
+    void clearBonds(void);
 
     //! Is the array of atoms already sorted???
     bool sorted(void) const { return(_sorted); }
