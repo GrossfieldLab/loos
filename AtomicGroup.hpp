@@ -453,8 +453,11 @@ namespace loos {
 
     //! Center of mass of the group (in group coordinates)
     GCoord centerOfMass(void) const;
-    GCoord centerOfCharge(void) const;
+
+    //! Analogous to center of mass
     GCoord centerOfElectrons(void) const;
+
+    //! Dipole moment, relative to group's centroid
     GCoord dipoleMoment(void) const;
     greal totalCharge(void) const;
     greal totalMass(void) const;
