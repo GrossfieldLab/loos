@@ -43,6 +43,64 @@
 
 namespace loos {
 
+  std::vector<GCoord> AtomicGroup::momentsOfInertia(void) const {
+    Math::Matrix<double, Math::ColMajor> I(3, 3);  // This gets initialized to zero...
+    GCoord c = centerOfMass();
+
+    for (uint i = 0; i < atoms.size(); ++i) {
+      if (!atoms[i]->checkProperty(Atom::massbit))
+        throw(MissingProperty("Atoms have no mass"));
+
+      GCoord u = atoms[i]->coords() - c;
+      double m = atoms[i]->mass();
+      I(0,0) += m * (u.y() * u.y() + u.z() * u.z());
+      I(1,0) += m * u.x() * u.y();
+      I(2,0) += m * u.x() * u.z();
+      I(1,1) += m * (u.x() * u.x() + u.z() * u.z());
+      I(2,1) += m * u.y() * u.z();
+      I(2,2) += m * (u.x() * u.x() + u.y() * u.y());
+    }
+
+    I(1,0) = I(0,1) = -I(1,0);
+    I(2,0) = I(0,2) = -I(2,0);
+    I(2,1) = I(1,2) = -I(2,1);
+
+    
+    // Now compute the eigen-decomp...
+    char jobz = 'V', uplo = 'U';
+    f77int nn;
+    f77int lda = 3;
+    double W[3], work[128];
+    f77int lwork = 128;   // ???  Just a guess for sufficient storage
+    f77int info;
+    nn = 3;
+
+    dsyev_(&jobz, &uplo, &nn, I.get(), &lda, W, work, &lwork, &info);
+    if (info < 0)
+      throw(std::runtime_error("dsyev_ reported an argument error..."));
+
+    if (info > 0)
+      throw(std::runtime_error("dsyev_ failed to converge..."));
+
+    std::vector<GCoord> results(4);
+
+    for (int i=0; i<3; i++)
+      results[2-i] = GCoord( I(0,i), I(1,i), I(2,i) );
+
+
+    // Now push the eigenvalues on as a GCoord...
+    c[0] = W[2];
+    c[1] = W[1];
+    c[2] = W[0];
+
+    c /= size();
+
+    results[3] = c;
+
+    return(results);
+  }
+
+
   std::vector<GCoord> AtomicGroup::principalAxes(void) const {
     // Extract out the group's coordinates...
     int i;

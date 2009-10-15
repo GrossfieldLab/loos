@@ -44,6 +44,7 @@
 #include <UniqueStrings.hpp>
 #include <PeriodicBox.hpp>
 #include <utils.hpp>
+#include <Matrix.hpp>
 
 
 
@@ -513,6 +514,10 @@ namespace loos {
      *    architecture. 
      */
     std::vector<GCoord> principalAxes(void) const;
+
+
+    //! Computes the moments of inertia for a group
+    std::vector<GCoord> momentsOfInertia(void) const;
 
     //! Calculates the transformation matrix for superposition of groups.
     /**
