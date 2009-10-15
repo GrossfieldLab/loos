@@ -79,7 +79,10 @@ int main(int argc, char *argv[]) {
   int m = G.rows();
   int n = G.cols();
 
-  assert(m == n && "ERROR - pseudoinverse matrix is non-square");
+  if (m != n) {
+      cerr << "ERROR - pseudoinverse matrix is non-square" << endl;
+      exit(-1);
+  }
 
   if (m == subset.size()) {
 
