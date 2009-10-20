@@ -482,9 +482,10 @@ int main(int argc, char *argv[]) {
 
     // Pick off the first frame for the reference structure...
     if (first) {
-      PDB pdb = PDB::fromAtomicGroup(subset);
-      if (selection != "all")
+      PDB pdb = PDB::fromAtomicGroup(subset.copy());
       pdb.remarks().add(hdr);
+      if (selection != "all")
+        pdb.renumber();
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
       ofs << pdb;
