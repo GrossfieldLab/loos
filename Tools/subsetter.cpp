@@ -484,8 +484,10 @@ int main(int argc, char *argv[]) {
     if (first) {
       PDB pdb = PDB::fromAtomicGroup(subset.copy());
       pdb.remarks().add(hdr);
-      if (selection != "all")
+      if (selection != "all") {
         pdb.renumber();
+        pdb.clearBonds();
+      }
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
       ofs << pdb;
