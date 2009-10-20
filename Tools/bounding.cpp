@@ -39,21 +39,42 @@ using namespace std;
 using namespace loos;
 
 int main(int argc, char *argv[]) {
-  if (argc != 3) {
-    cerr << "Usage: " << argv[0] << " model-filename selection-string\n";
+  if (argc != 4) {
+    cerr << "Usage: " << argv[0] << " model-filename trajectory selection-string\n";
     exit(-1);
   }
 
   AtomicGroup model = createSystem(argv[1]);
-  AtomicGroup subset = selectAtoms(model, argv[2]);
-  vector<GCoord> bdd = subset.boundingBox();
-  cout << subset.size() << " atoms in subset.\n";
-  cout << "Centroid at " << subset.centroid() << endl;
-  cout << "Bounds: " << bdd[0] << " x " << bdd[1] << endl;
+  pTraj traj = createTrajectory(argv[2], model);
+  AtomicGroup subset = selectAtoms(model, argv[3]);
 
-  GCoord box = bdd[1];
-  box.x() -= bdd[0].x();
-  box.y() -= bdd[0].y();
-  box.z() -= bdd[0].z();
-  cout << "Box: " << box << endl;
+
+
+  GCoord centroid(0,0,0);
+  double maxval = numeric_limits<double>::max();
+  GCoord max(-maxval, -maxval, -maxval);
+  GCoord min(maxval, maxval, maxval);
+
+  while (traj->readFrame()) {
+    traj->updateGroupCoords(subset);
+    GCoord center(0,0,0);
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i) {
+      GCoord c = (*i)->coords();
+      for (int j = 0; j<3; ++j) {
+        if (max[j] < c[j])
+          max[j] = c[j];
+        if (min[j] > c[j])
+          min[j] = c[j];
+      }
+      center += c;
+    }
+    center /= subset.size();
+    centroid += center;
+  }
+
+  centroid /= traj->nframes();
+
+  cout << "Bounds: " << min << " to " << max << endl;
+  cout << "Box: " << max - min << endl;
+  cout << "Center: " << centroid << endl;
 }
