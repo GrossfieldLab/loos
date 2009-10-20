@@ -98,7 +98,7 @@ void parseOptions(int argc, char *argv[]) {
       ("probe,p", po::value<string>(&probe_selection)->default_value("segid == 'BULK' && name == 'OH2'"), "Subset to compute exposure against")
       ("inner,i", po::value<double>(&inner_cutoff)->default_value(0.0), "Inner cutoff (ignore atoms closer than this)")
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
-      ("reimage,R", "Consider symmetry when computing distances");
+      ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -127,9 +127,6 @@ void parseOptions(int argc, char *argv[]) {
         fullHelp();
       exit(-1);
     }
-
-    if (vm.count("reimage"))
-      symmetry = true;
 
     if (vm.count("verbose"))
       verbosity = 1;
