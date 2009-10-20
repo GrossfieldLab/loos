@@ -1,3 +1,9 @@
+2009-10-20    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed exposure to default to reimaging distances.  Also
+	changed how the flag is set.  "-R 1" turns reimaging on (the
+	default) and "-R 0" turns it off.
+
 2009-10-10  Tod Romo  <tromo@gorgoneion>
 
 	* Changed AtomicGroup::principalAxis() to automatically scale the
