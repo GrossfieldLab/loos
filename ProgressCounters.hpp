@@ -30,6 +30,8 @@
 #include <string>
 #include <stdexcept>
 
+#include <vector>
+
 #include <loos_defs.hpp>
 #include <timer.hpp>
 
