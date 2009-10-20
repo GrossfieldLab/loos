@@ -1,5 +1,8 @@
 2009-10-20    <tromo@spade.biophysics.rochester.edu>
 
+	* Fixed bug in subsetter that caused reimaging to ONLY be
+	performed if centering was turned on.
+
 	* Changed exposure to default to reimaging distances.  Also
 	changed how the flag is set.  "-R 1" turns reimaging on (the
 	default) and "-R 0" turns it off.

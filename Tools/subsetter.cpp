@@ -468,10 +468,14 @@ int main(int argc, char *argv[]) {
     if (center_flag) {
       GCoord c = centered.centroid();
       model.translate(-c);
+    }
 
-      if (reimage)
-        for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-          mol->reimage();
+
+    if (reimage) {
+      for (vGroup::iterator seg = segments.begin(); seg != segments.end(); ++seg)
+        seg->reimage();
+      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+        mol->reimage();
     }
 
     dcdout.writeFrame(subset);
