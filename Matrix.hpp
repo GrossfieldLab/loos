@@ -32,5 +32,6 @@
 #include <MatrixImpl.hpp>
 #include <MatrixIO.hpp>
 #include <MatrixUtils.hpp>
+#include <MatrixOps.hpp>
 
 #endif

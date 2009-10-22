@@ -29,13 +29,11 @@
 
 #include <loos_defs.hpp>
 #include <MatrixImpl.hpp>
+#include <MatrixOps.hpp>
 
 
 namespace loos {
   class XForm;
-
-  typedef Math::Matrix<float, Math::ColMajor> RealMatrix;
-  typedef Math::Matrix<double, Math::ColMajor> DoubleMatrix;
 
   //! Compute the average structure of a set of AtomicGroup objects
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble);
@@ -70,9 +68,6 @@ namespace loos {
   RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
 
   void subtractAverage(RealMatrix& M);
-  
-  boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M);
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M);
 
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble);
 

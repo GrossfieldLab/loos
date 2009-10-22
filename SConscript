@@ -35,7 +35,7 @@ apps = apps + 'dcd.cpp utils.cpp dcd_utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp K
 apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp'
 apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
 apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp amber_rst.cpp'
-apps = apps + ' xtc.cpp gro.cpp trr.cpp'
+apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 
 if int(env['shared']):
    loos = env.SharedLibrary('loos', Split(apps))
@@ -63,7 +63,7 @@ hdr = hdr + ' Selectors.hpp sfactories.hpp StreamWrapper.hpp timer.hpp'
 hdr = hdr + ' TimeSeries.hpp tinker_arc.hpp tinkerxyz.hpp Trajectory.hpp'
 hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp ProgressTriggers.hpp'
 hdr = hdr + ' grammar.hh location.hh position.hh stack.hh'
-hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp'
+hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp'
 
 loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
 

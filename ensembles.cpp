@@ -269,74 +269,6 @@ namespace loos {
         M(j,i) -= avg[j];
   }
 
-  boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M) {
-    f77int m = M.rows();
-    f77int n = M.cols();
-    f77int sn = m<n ? m : n;
-    long estimate = (m*m + n*n + m*n + sn) * sizeof(float);
-    // This is somewhat vestigial...  We continue to estimate the
-    // total storage required for the SVD in case we want to do
-    // something with it in the future...
-
-
-
-    char jobu = 'A', jobvt = 'A';
-    f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
-    float prework[10], *work;
-    
-    RealMatrix U(m, m);
-    RealMatrix S(sn, 1);
-    RealMatrix Vt(n, n);
-
-    sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
-    if (info != 0) {
-      // throw here...
-      exit(-2);
-    }
-
-    lwork = (f77int)prework[0];
-    estimate += lwork * sizeof(double);
-    work = new float[lwork];
-
-    sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
-
-    boost::tuple<RealMatrix, RealMatrix, RealMatrix> result(U, S, Vt);
-    return(result);
-  }
-
-
-
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M) {
-    f77int m = M.rows();
-    f77int n = M.cols();
-    f77int sn = m<n ? m : n;
-    long estimate = (m*m + n*n + m*n + sn) * sizeof(double);
-
-
-    char jobu = 'A', jobvt = 'A';
-    f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
-    double prework[10], *work;
-    
-    DoubleMatrix U(m, m);
-    DoubleMatrix S(sn, 1);
-    DoubleMatrix Vt(n, n);
-
-    dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
-    if (info != 0) {
-      // throw here...
-      exit(-2);
-    }
-
-    lwork = (f77int)prework[0];
-    estimate += lwork * sizeof(double);
-    work = new double[lwork];
-
-    dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
-
-    boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result(U, S, Vt);
-    return(result);
-  }
-
 
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, bool align = true) {
 
@@ -348,7 +280,7 @@ namespace loos {
       M = extractCoords(ensemble);
 
     subtractAverage(M);
-    boost::tuple<RealMatrix, RealMatrix, RealMatrix> res = svd(M);
+    boost::tuple<RealMatrix, RealMatrix, RealMatrix> res = Math::svd(M);
     return(res);
   }
 
