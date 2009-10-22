@@ -38,15 +38,34 @@ namespace loos {
   typedef Math::Matrix<float, Math::ColMajor> RealMatrix;
   typedef Math::Matrix<double, Math::ColMajor> DoubleMatrix;
 
+  /**
+   * Note: the operator overloads presented for DoubleMatrix are not
+   * going to be efficient.  They are only provided as a convenience
+   * for working with matrices in LOOS.  If you need to perform more
+   * serious linear algebra operations, you are encouraged to use
+   * a 3rd party library for your tool.
+   */
   namespace Math {
 
-
+    //! Compute the SVD of a single precision matrix
     boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M);
+
+    //! Compute the SVD of a double precision matrix
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M);
+
+    //! Matrix-matrix multiply (using BLAS)
     DoubleMatrix MMMultiply(const DoubleMatrix& A, const DoubleMatrix& B, const bool transa = false, const bool transb = false);
+
+    //! Pseudo-inverse of a matrix using the SVD
     DoubleMatrix invert(DoubleMatrix& A, const double eps = 1e-6);
 
+    //! An identity matrix of size n
+    DoubleMatrix eye(const uint n);
+
+
+    //! Overloaded operators for DoubleMatrix matrices (see important note below)
     void operator+=(DoubleMatrix& A, const DoubleMatrix& B);
+
     DoubleMatrix operator+(const DoubleMatrix& A, const DoubleMatrix& B);
     void operator-=(DoubleMatrix& A, const DoubleMatrix& B);
     DoubleMatrix operator-(const DoubleMatrix& A, const DoubleMatrix& B);
@@ -55,7 +74,6 @@ namespace loos {
     void operator*=(DoubleMatrix& A, const DoubleMatrix& B);
     DoubleMatrix operator*(const DoubleMatrix& A, const DoubleMatrix& B);
     DoubleMatrix operator-(DoubleMatrix& A);
-    DoubleMatrix eye(const uint n);
 
 
   };
