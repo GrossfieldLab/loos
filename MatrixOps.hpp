@@ -51,6 +51,9 @@ namespace loos {
     boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M);
 
     //! Compute the SVD of a double precision matrix
+    /**
+     * The SVD functions will overwrite the source matrix \arg M
+     */
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M);
 
     //! Matrix-matrix multiply (using BLAS)
