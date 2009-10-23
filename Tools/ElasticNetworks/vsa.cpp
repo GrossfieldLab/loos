@@ -200,6 +200,42 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
 }
 
 
+void assignMasses(AtomicGroup& grp, const string& name) {
+  ifstream ifs(name.c_str());
+  if (!ifs) {
+    cerr << "Warning- no masses will be used\n";
+    return;
+  }
+
+  double mass;
+  int i=0;
+  while (ifs >> mass) {
+    grp[i++]->mass(mass);
+    if (i >= grp.size())
+      break;
+  }
+
+}
+
+
+DoubleMatrix getMasses(const AtomicGroup& grp) {
+  uint n = grp.size();
+
+  DoubleMatrix M(3*n,3*n);
+  for (uint i=0, k=0; i<n; ++i, k += 3) {
+    M(k,k) = grp[i]->mass();
+    M(k+1,k+1) = grp[i]->mass();
+    M(k+2,k+2) = grp[i]->mass();
+  }
+
+  return(M);
+}
+
+
+void showSize(const string& s, const DoubleMatrix& M) {
+  cout << s << M.rows() << " x " << M.cols() << endl;
+}
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
@@ -211,39 +247,56 @@ int main(int argc, char *argv[]) {
   
   AtomicGroup model = createSystem(argv[k++]);
   string prefix(argv[k++]);
+  assignMasses(model, argv[k++]);
 
   AtomicGroup subset = selectAtoms(model, subsel);
   AtomicGroup environment = selectAtoms(model, envsel);
   AtomicGroup composite = subset + environment;
 
-  cout << "Subset size is " << subset.size() << endl;
-  cout << "Environment size is " << environment.size() << endl;
+  cerr << "Subset size is " << subset.size() << endl;
+  cerr << "Environment size is " << environment.size() << endl;
 
   DoubleMatrix H = hessian(composite, rad);
-  cout << boost::format("Hession is %dx%d\n") % H.rows() % H.cols();
+  showSize("H: ", H);
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
 
   uint n = H.cols() - 1;
   DoubleMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
-  DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  DoubleMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
-  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
+  showSize("Hss: ", Hss);
 
+  DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
+  showSize("Hee: ", Hee);
+
+  DoubleMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
+  showSize("Hse: ", Hse);
+
+  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
+  showSize("Hes: ", Hes);
+
+  cerr << "Inverting environment hessian...\n";
   DoubleMatrix Heei = Math::invert(Hee);
+  cerr << "Computing Hssp...\n";
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
 
-  DoubleMatrix Ms = Math::eye(Hss.rows());
-  DoubleMatrix Me = Math::eye(Hee.rows());
+  DoubleMatrix Ms = getMasses(subset);
+  showSize("Ms: ", Ms);
+  DoubleMatrix Me = getMasses(environment);
+  showSize("Me: ", Me);
 
+  cerr << "Computing Msp...\n";
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
+  cout << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix\n";
   boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs = eigenDecomp(Hssp, Msp);
+  cout << "done\n";
   DoubleMatrix Ds = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
 
   writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr);
   writeAsciiMatrix(prefix + "_Us.asc", Us, hdr);
+
+  
 
 //   DoubleMatrix Ue = -Heei * Hes * Us;
 //   X = Heei * Me * Heei * Hes * Us;
