@@ -5,10 +5,6 @@
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
-  Computes the anisotropic network model for a structure.  It does
-  this by building a hessian for the structure, then computing the SVD
-  of it and the corresponding pseudo-inverse (ignoring the 6 lowest
-  modes).
 
   Usage:
     vsa subset environment radius model output_prefix
