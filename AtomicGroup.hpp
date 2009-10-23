@@ -528,6 +528,12 @@ namespace loos {
 
 
     //! Computes the moments of inertia for a group
+    /**
+     * Calculates the principal moments and principal axes (from the
+     * moment of inertia).  This is distinct from the principalAxes()
+     * function which calculates the distribution of points about the
+     * centroid.
+     */
     std::vector<GCoord> momentsOfInertia(void) const;
 
     //! Calculates the transformation matrix for superposition of groups.
