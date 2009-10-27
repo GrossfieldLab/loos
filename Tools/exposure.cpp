@@ -53,6 +53,8 @@ string model_name, traj_name;
 vector<string> target_selections;
 bool symmetry = false;
 int verbosity = 0;
+bool normalize = true;
+bool average = true;
 
 
 
@@ -95,6 +97,8 @@ void parseOptions(int argc, char *argv[]) {
       ("help,h", "Produce this help message")
       ("fullhelp", "Even more help")
       ("verbose,v", "Verbose output")
+      ("normalize,n", po::value<bool>(&normalize)->default_value(true), "Normalize by volume (i.e. output is density)")
+      ("average,a", po::value<bool>(&average)->default_value(true), "Average contacts over selection")
       ("probe,p", po::value<string>(&probe_selection)->default_value("segid == 'BULK' && name == 'OH2'"), "Subset to compute exposure against")
       ("inner,i", po::value<double>(&inner_cutoff)->default_value(0.0), "Inner cutoff (ignore atoms closer than this)")
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
@@ -143,7 +147,6 @@ void parseOptions(int argc, char *argv[]) {
 
 double density(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius) {
   
-  double dens = 0.0;
   double or2 = outer_radius * outer_radius;
   double ir2 = inner_radius * inner_radius;
 
@@ -152,7 +155,8 @@ double density(const AtomicGroup& target, const AtomicGroup& probe, const double
   double vol = vol_out - vol_inn;
 
   GCoord box = target.periodicBox();
-  
+  ulong contacts = 0;
+
   for (AtomicGroup::const_iterator j = target.begin(); j != target.end(); ++j) {
     GCoord v = (*j)->coords();
     ulong probed = 0;
@@ -164,12 +168,14 @@ double density(const AtomicGroup& target, const AtomicGroup& probe, const double
         ++probed;
       }
     }
-
-    double d = static_cast<double>(probed) / vol;
-    dens += d;
+    contacts += probed;
   }
 
-  dens /= target.size();
+  double dens = static_cast<double>(contacts);
+  if (average)
+    dens /= target.size();
+  if (normalize)
+    dens /= vol;
   return(dens);
 }
 
