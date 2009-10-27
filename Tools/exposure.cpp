@@ -47,6 +47,7 @@ namespace po = boost::program_options;
 typedef vector<AtomicGroup> vGroup;
 
 
+vector<uint> indices;
 double inner_cutoff, outer_cutoff;
 string probe_selection;
 string model_name, traj_name;
@@ -102,7 +103,8 @@ void parseOptions(int argc, char *argv[]) {
       ("probe,p", po::value<string>(&probe_selection)->default_value("segid == 'BULK' && name == 'OH2'"), "Subset to compute exposure against")
       ("inner,i", po::value<double>(&inner_cutoff)->default_value(0.0), "Inner cutoff (ignore atoms closer than this)")
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
-      ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances");
+      ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances")
+      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (in Octave-style ranges)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -134,6 +136,11 @@ void parseOptions(int argc, char *argv[]) {
 
     if (vm.count("verbose"))
       verbosity = 1;
+
+    if (vm.count("range")) {
+      vector<string> ranges = vm["range"].as< vector<string> >();
+      indices = parseRangeList<uint>(ranges);
+    }
 
   }
   catch(exception& e) {
@@ -189,6 +196,10 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(model_name);
   pTraj traj = createTrajectory(traj_name, model);
 
+  if (indices.empty())
+    for (uint i=0; i<traj->nframes(); ++i)
+      indices.push_back(i);
+
   AtomicGroup probe = selectAtoms(model, probe_selection);
 
   vGroup targets;
@@ -204,12 +215,13 @@ int main(int argc, char *argv[]) {
   ulong t = 0;
 
   PercentProgressWithTime watcher;
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(traj->nframes()));
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(indices.size()));
   slayer.attach(&watcher);
   if (verbosity)
     slayer.start();
 
-  while (traj->readFrame()) {
+  for (vector<uint>::iterator frame = indices.begin(); frame != indices.end(); ++frame) {
+    traj->readFrame(*frame);
     traj->updateGroupCoords(model);
 
     if (symmetry && !model.isPeriodic()) {
