@@ -208,13 +208,25 @@ void assignMasses(AtomicGroup& grp, const string& name) {
   }
 
   double mass;
-  int i=0;
-  while (ifs >> mass) {
-    grp[i++]->mass(mass);
-    if (i >= grp.size())
-      break;
+  string pattern;
+  bool no_masses_set = true;
+
+  while (ifs >> pattern >> mass) {
+    string selection("name =~ '");
+    selection += pattern + "'";
+    Parser parser(selection);
+    KernelSelector selector(parser.kernel());
+    AtomicGroup subset = grp.select(selector);
+    if (subset.empty())
+      continue;
+    no_masses_set = false;
+    cerr << "Assigning " << subset.size() << " atoms of type " << pattern << " to mass " << mass << endl;
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+      (*i)->mass(mass);
   }
 
+  if (no_masses_set)
+    cerr << "WARNING- no masses were assigned!\n";
 }
 
 
