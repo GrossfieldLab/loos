@@ -207,6 +207,11 @@ int main(int argc, char *argv[]) {
     exit(-4);
   }
 
+  vector<uint> sorted = sortedIndex(S);
+  U = permuteColumns(U, sorted);
+  S = permuteRows(S, sorted);
+  Vt = permuteRows(Vt, sorted);
+
   // Write out the parts of the SVD...
   writeAsciiMatrix(prefix + "_U.asc", U, header);
   writeAsciiMatrix(prefix + "_s.asc", S, header);
@@ -220,8 +225,8 @@ int main(int argc, char *argv[]) {
   // Remember, Vt is stored col-major but transposed, hence the
   // somewhat funky indices...
   //
-  // Note:  We have to toss the last term (see Chennubhotla et al (Phys Biol 2(2005:S173-S180))
-  for (int i=0; i<n-1; i++) {
+  // Note:  We have to toss the first term (see Chennubhotla et al (Phys Biol 2(2005:S173-S180))
+  for (int i=1; i<n; i++) {
     double s = 1.0/S[i];
     for (int j=0; j<n; j++)
       Vt(i, j) *= s;
