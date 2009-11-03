@@ -98,10 +98,10 @@ void parseOptions(int argc, char *argv[]) {
       ("columns,c", po::value< vector<string> >(&strings), "Columns to use")
       ("scale,s", po::value< vector<double> >(&scales), "Scale the requested columns")
       ("global,g", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
-      ("uniform,u", "Scale all elements uniformly")
+      ("uniform,u", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
       ("map,M", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
       ("tips,t", po::value<double>(&tip_frac)->default_value(0.0), "Fraction of vector length to make the tip (for single-sided only)")
-      ("double_sided,d", "Use double-sided vectors");
+      ("double_sided,d", po::value<bool>(&double_sided)->default_value(false), "Use double-sided vectors");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -125,16 +125,6 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
-
-    if (vm.count("double_sided"))
-      double_sided = true;
-    else
-      double_sided = false;
-
-    if (vm.count("uniform"))
-      uniform = true;
-    else
-      uniform = false;
 
     if (!strings.empty())
       cols = parseRangeList<uint>(strings);
