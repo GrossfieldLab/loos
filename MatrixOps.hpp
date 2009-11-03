@@ -78,6 +78,8 @@ namespace loos {
     DoubleMatrix operator*(const DoubleMatrix& A, const DoubleMatrix& B);
     DoubleMatrix operator-(DoubleMatrix& A);
 
+    DoubleMatrix permuteColumns(const DoubleMatrix& A, const std::vector<uint> indices);
+    DoubleMatrix permuteRows(const DoubleMatrix& A, const std::vector<uint> indices);
 
   };
 

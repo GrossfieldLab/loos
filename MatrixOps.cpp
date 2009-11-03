@@ -233,6 +233,41 @@ namespace loos {
     }
 
 
+    
+    DoubleMatrix permuteColumns(const DoubleMatrix& A, const std::vector<uint> indices) {
+      if (indices.size() != A.cols())
+        throw(std::logic_error("indices to permuteColumns must match the size of the matrix"));
+
+      DoubleMatrix B(A.rows(), A.cols());
+
+      for (uint i=0; i<A.cols(); ++i) {
+        if (indices[i] > A.cols())
+          throw(std::out_of_range("Permutation index is out of bounds"));
+        for (uint j=0; j<A.rows(); ++j)
+          B(j, i) = A(j, indices[i]);
+      }
+
+      return(B);
+    }
+
+    
+    DoubleMatrix permuteRows(const DoubleMatrix& A, const std::vector<uint> indices) {
+      if (indices.size() != A.rows())
+        throw(std::logic_error("indices to permuteRows must match the size of the matrix"));
+
+      DoubleMatrix B(A.rows(), A.cols());
+
+      for (uint j=0; j<A.rows(); ++j) {
+        if (indices[j] > A.rows())
+          throw(std::out_of_range("Permutation index is out of bounds"));
+        for (uint i=0; i<A.cols(); ++i)
+          B(j, i) = A(indices[j], i);
+      }
+
+      return(B);
+    }
+
   }
+
 }
 
