@@ -51,9 +51,63 @@ typedef pair<uint,uint> Range;
 
 
 
+// Globals...
+double normalization = 1.0;
+double threshold = 1e-10;
 
-const double normalization = 1.0;
-double threshold = 1e-6;
+string subset_selection, environment_selection, model_name, prefix, mass_file;
+double cutoff;
+int verbosity = 0;
+
+
+
+void parseOptions(int argc, char *argv[]) {
+
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
+      ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
+      ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level");
+
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("subset", po::value<string>(&subset_selection), "Subset selection")
+      ("env", po::value<string>(&environment_selection), "Environment selection")
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("prefix", po::value<string>(&prefix), "Output prefix");
+    
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("subset", 1);
+    p.add("env", 1);
+    p.add("model", 1);
+    p.add("prefix", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("prefix") && vm.count("subset") && vm.count("env"))) {
+      cerr << "Usage- vsa [options] subset environment model-name output-prefix\n";
+      cerr << generic;
+      exit(-1);
+    }
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
+    exit(-1);
+  }
+}
+
+
+
+
 
 
 DoubleMatrix hblock(const int i, const int j, const AtomicGroup& model, const double radius2) {
@@ -147,10 +201,17 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
 
   f77int info;
 
-  cout << "Calling dggev...\n";
   dggev_(&jobvl, &jobvr, &fn, A.get(), &lda, B.get(), &ldb, AR.get(), AI.get(), BETA.get(),
          &vl, &ldvl, VR.get(), &ldvr, WORK.get(), &lwork, &info);
-  cout << "Result = " << info << endl;
+
+  if (info != 0) {
+    cerr << "ERROR- DGGEV result = " << info << endl;
+    exit(-10);
+  }
+
+  if (verbosity > 1)
+    cout << "DGGEV Result = " << info << endl;
+
 
   // Complex eigenvalues are set to 0
   DoubleMatrix eigvals(fn, 1);
@@ -200,13 +261,14 @@ void assignMasses(AtomicGroup& grp, const string& name) {
     if (subset.empty())
       continue;
     no_masses_set = false;
-    cerr << "Assigning " << subset.size() << " atoms of type " << pattern << " to mass " << mass << endl;
+    if (verbosity > 1)
+      cout << "Assigning " << subset.size() << " atoms with pattern '" << pattern << "' to mass " << mass << endl;
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
       (*i)->mass(mass);
   }
 
   if (no_masses_set)
-    cerr << "WARNING- no masses were assigned!\n";
+    cerr << "WARNING- no masses were assigned\n";
 }
 
 
@@ -231,69 +293,68 @@ void showSize(const string& s, const DoubleMatrix& M) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  uint k=1;
+  parseOptions(argc, argv);
 
-  string subsel(argv[k++]);
-  string envsel(argv[k++]);
-  double rad = strtod(argv[k++], 0);
-  
-  AtomicGroup model = createSystem(argv[k++]);
-  string prefix(argv[k++]);
-  assignMasses(model, argv[k++]);
+  AtomicGroup model = createSystem(model_name);
+  if (mass_file.empty())
+    cerr << "WARNING- using default masses\n";
+  else
+    assignMasses(model, mass_file);
 
-  AtomicGroup subset = selectAtoms(model, subsel);
-  AtomicGroup environment = selectAtoms(model, envsel);
+  AtomicGroup subset = selectAtoms(model, subset_selection);
+  AtomicGroup environment = selectAtoms(model, environment_selection);
   AtomicGroup composite = subset + environment;
 
-  cerr << "Subset size is " << subset.size() << endl;
-  cerr << "Environment size is " << environment.size() << endl;
+  if (verbosity > 1) {
+    cout << "Subset size is " << subset.size() << endl;
+    cout << "Environment size is " << environment.size() << endl;
+  }
 
-  DoubleMatrix H = hessian(composite, rad);
-  showSize("H: ", H);
+  DoubleMatrix H = hessian(composite, cutoff);
+
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
 
   uint n = H.cols() - 1;
   DoubleMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
-  showSize("Hss: ", Hss);
-
   DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  showSize("Hee: ", Hee);
-
   DoubleMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
-  showSize("Hse: ", Hse);
-
   DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
-  showSize("Hes: ", Hes);
 
-  cerr << "Inverting environment hessian...\n";
+
+  Timer<WallTimer> timer;
+  if (verbosity > 0) {
+    cout << "Inverting environment hessian...\n";
+    timer.start();
+    if (verbosity > 1)
+      showSize("Hee = ", Hee);
+  }
+
   DoubleMatrix Heei = Math::invert(Hee);
-  cerr << "Computing Hssp...\n";
+  if (verbosity > 0) {
+    timer.stop();
+    cout << timer << endl;
+  }
+
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
-
   DoubleMatrix Ms = getMasses(subset);
-  showSize("Ms: ", Ms);
   DoubleMatrix Me = getMasses(environment);
-  showSize("Me: ", Me);
-
-  cerr << "Computing Msp...\n";
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
-  cout << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix\n";
+  if (verbosity > 0) {
+    cout << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
+    timer.start();
+  }
   boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs = eigenDecomp(Hssp, Msp);
-  cout << "done\n";
+  if (verbosity > 0) {
+    timer.stop();
+    cout << "done\n";
+    cout << timer << endl;
+  }
+    
   DoubleMatrix Ds = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
 
   writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr);
   writeAsciiMatrix(prefix + "_Us.asc", Us, hdr);
-
-  
-
-//   DoubleMatrix Ue = -Heei * Hes * Us;
-//   X = Heei * Me * Heei * Hes * Us;
-//   Y = -Ds;
-//   DoubleMatrix De = mmult(Y, X, true, false);
-//   writeAsciiMatrix(prefix + "_De.asc", De, hdr, true);
-//   writeAsciiMatrix(prefix + "_Ue.asc", Ue, hdr);
 }
