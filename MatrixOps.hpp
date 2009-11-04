@@ -78,10 +78,14 @@ namespace loos {
     DoubleMatrix operator*(const DoubleMatrix& A, const DoubleMatrix& B);
     DoubleMatrix operator-(DoubleMatrix& A);
 
+    //! Returns a copy of the matrix with the columns permuted by the indices
     DoubleMatrix permuteColumns(const DoubleMatrix& A, const std::vector<uint> indices);
+    //! Returns a copy of the matrix with the rows permuted by the indices
     DoubleMatrix permuteRows(const DoubleMatrix& A, const std::vector<uint> indices);
     
+    //! Reverses the columns in place
     void reverseColumns(DoubleMatrix& A);
+    //! Reverses the rows in place
     void reverseRows(DoubleMatrix& A);
 
   };

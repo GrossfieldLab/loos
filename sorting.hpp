@@ -33,6 +33,7 @@
 
 namespace loos {
 
+  //! Policy class for sorting in ascending sequence
   template<typename T>
   class AscendingSort {
   public:
@@ -45,6 +46,7 @@ namespace loos {
     const T& A_;
   };
 
+  //! Policy class for sorting in descending sequence
   template<typename T>
   class DescendingSort {
   public:
@@ -57,6 +59,14 @@ namespace loos {
     const T& A_;
   };
 
+
+  //! Sort a container using the given sort policy, returning the
+  //! indices that permutes the container into the sorted order.
+  /**
+   * The container to be sorted must support T::size() and
+   * T::operator[].  What is returned is a vector of unsigned ints
+   * that represent the index into the container when it is sorted.
+   */
   template<typename T, class SortPredicate>
   std::vector<uint> sortedIndex(const T& A) {
     std::vector<uint> indices(A.size());
@@ -68,6 +78,7 @@ namespace loos {
     return(indices);
   }
 
+  //! Sort a container in ascending sequence
   template<typename T>
   std::vector<uint> sortedIndex(const T& A) {
     return(sortedIndex<T, AscendingSort<T> >(A));
