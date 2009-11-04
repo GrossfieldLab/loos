@@ -257,46 +257,7 @@ namespace loos {
   //! Convert an int into a hybrid-36 encoded string
   std::string hybrid36AsString(int value, uint fieldsize);
 
-
-  template<typename T>
-  class AscendingSortPred {
-  public:
-    AscendingSortPred(const T& A) : A_(A) { }
-    bool operator()(const uint i, const uint j) const {
-      return(A_[i] < A_[j]);
-    }
-    
-  private:
-    const T& A_;
-  };
-
-  template<typename T>
-  class DescendingSortPred {
-  public:
-    DescendingSortPred(const T& A) : A_(A) { }
-    bool operator()(const uint i, const uint j) const {
-      return(A_[i] < A_[j]);
-    }
-    
-  private:
-    const T& A_;
-  };
-
-  template<typename T, class SortPredicate>
-  std::vector<uint> sortedIndex(const T& A) {
-    std::vector<uint> indices(A.size());
-    
-    for (uint i = 0; i<A.size(); ++i)
-      indices[i] = i;
-    
-    std::sort(indices.begin(), indices.end(), SortPredicate(A));
-    return(indices);
-  }
-
-  template<typename T>
-  std::vector<uint> sortedIndex(const T& A) {
-    return(sortedIndex<T, AscendingSortPred<T> >(A));
-  }
+  
 };
 
 #endif

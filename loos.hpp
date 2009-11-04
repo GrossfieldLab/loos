@@ -93,6 +93,8 @@
 #include <ProgressCounters.hpp>
 #include <ProgressTriggers.hpp>
 
+#include <sorting.hpp>
+
 #endif
 
 
