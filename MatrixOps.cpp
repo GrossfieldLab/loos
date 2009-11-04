@@ -267,6 +267,28 @@ namespace loos {
       return(B);
     }
 
+
+    void reverseColumns(DoubleMatrix& A) {
+      uint m = A.rows();
+      uint n = A.cols();
+      uint k = n / 2;
+
+      for (uint i=0; i<k; ++i)
+        for (uint j=0; j<m; ++j)
+          std::swap(A(j,i), A(j,n-i-1));
+    }
+
+    void reverseRows(DoubleMatrix& A) {
+      uint m = A.rows();
+      uint n = A.cols();
+      uint k = m / 2;
+
+      for (uint j=0; j<k; ++j)
+        for (uint i=0; i<n; ++i)
+          std::swap(A(j, i), A(m-j-1, i));
+    }
+
+
   }
 
 }

@@ -80,6 +80,9 @@ namespace loos {
 
     DoubleMatrix permuteColumns(const DoubleMatrix& A, const std::vector<uint> indices);
     DoubleMatrix permuteRows(const DoubleMatrix& A, const std::vector<uint> indices);
+    
+    void reverseColumns(DoubleMatrix& A);
+    void reverseRows(DoubleMatrix& A);
 
   };
 
