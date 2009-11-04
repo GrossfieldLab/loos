@@ -9,7 +9,7 @@
 
 
   Usage:
-    enmovie [options] model-name prefix output-name
+    enmovie [options] model-name eigenvector-matrix output-name
 
   Notes:
     use the "--help" option for more information about how to run...
@@ -59,18 +59,20 @@ typedef Math::Matrix<double> Matrix;
 
 // Globals, yuck!
 string selection;
-string mode_string;
-string input_prefix;
+string supersel;
+string eigvec_name, eigval_name;
 string output_name;
 string model_name;
-double scale;
+bool invert_eigvals;
 int steps;
-bool scale_by_sval(true);
 
-vector<int> modes;
+vector<uint> modes;
+vector<double> scales;
 
 
 void parseOptions(int argc, char *argv[]) {
+  string scale;
+  string mode_string;
 
   try {
     po::options_description generic("Allowed options");
@@ -79,13 +81,15 @@ void parseOptions(int argc, char *argv[]) {
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection used in computing the ANM")
       ("nsteps,n", po::value<int>(&steps)->default_value(100), "Number of steps to use in generating the trajectory")
       ("modes,m", po::value<string>(&mode_string)->default_value("0"), "List of modes to use")
-      ("scale,S", po::value<double>(&scale)->default_value(1.0), "Scale the displacements by this factor")
-      ("norelative", "Do NOT scale the displacements by the corresponding singular value");
+      ("scales,S", po::value<string>(&scale)->default_value("1.0"), "Scale the displacements by this factor")
+      ("invert,i", po::value<bool>(&invert_eigvals)->default_value(true), "Invert the eigenvalues for scaling")
+      ("eigs,e", po::value<string>(&eigval_name), "Scale using corresponding eigenvalues from this file")
+      ("superset,u", po::value<string>(&supersel)->default_value("all"), "Superset to use for frames in the output");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
       ("model", po::value<string>(&model_name), "Model filename")
-      ("inprefix", po::value<string>(&input_prefix), "Prefix for input filenames")
+      ("eigvec", po::value<string>(&eigvec_name), "Eigenvector name")
       ("outprefix", po::value<string>(&output_name), "Prefix for output filenames");
 
     po::options_description command_line;
@@ -93,7 +97,7 @@ void parseOptions(int argc, char *argv[]) {
 
     po::positional_options_description p;
     p.add("model", 1);
-    p.add("inprefix", 1);
+    p.add("eigvec", 1);
     p.add("outprefix", 1);
 
     po::variables_map vm;
@@ -101,25 +105,44 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("inprefix") && vm.count("outprefix")) ) {
-      cerr << "Usage- enmovie [options] model-name input-prefix output-prefix\n";
+    if (vm.count("help") || !(vm.count("model") && vm.count("eigvec") && vm.count("outprefix")) ) {
+      cerr << "Usage- enmovie [options] model-name eigenvector-filename output-prefix\n";
       cerr << generic;
       exit(-1);
     }
 
-    if (vm.count("norelative"))
-      scale_by_sval = false;
-    
-    modes = parseRangeList(mode_string);
+    modes = parseRangeList<uint>(mode_string);
     if (modes.empty()) {
       cerr << "Error- invalid mode list.\n";
       exit(-1);
     }
 
+    scales = parseRangeList<double>(scale);
+    if (scales.size() == 1)
+      for (vector<uint>::iterator i = modes.begin() + 1; i != modes.end(); ++i)
+        scales.push_back(scales[0]);
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
     exit(-1);
+  }
+}
+
+
+
+
+// Assume the scales.size() == modes.sizes()
+void scaleByEigenvalues(vector<double>& scales, const vector<uint>& modes, const string& fname) {
+  DoubleMatrix M;
+  readAsciiMatrix(fname, M);
+
+  for (uint i=0; i<modes.size(); ++i) {
+    if (modes[i] >= M.rows()) {
+      cerr << "ERROR- mode index " << modes[i] << " exceeds eigenvalue matrix dimensions.\n";
+      exit(-10);
+    }
+    scales[i] *= (invert_eigvals ? 1./M[modes[i]] : M[modes[i]]);
   }
 }
 
@@ -133,54 +156,28 @@ int main(int argc, char *argv[]) {
 
   // Get the structure and select out the appropriate atoms...
   AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection);
-  int natoms = subset.size();
-
-  cout << boost::format("Selected %u atoms out of %u from %s.\n") % subset.size() % model.size() % model_name;
-
-  // Write out the selection, converting it to a PDB
-  string outpdb(output_name + ".pdb");
-  ofstream ofs(outpdb.c_str());
-  PDB pdb;
-  pdb = PDB::fromAtomicGroup(subset);
-  pdb.remarks().add(header);
-  ofs << pdb;
+  AtomicGroup superset = selectAtoms(model, supersel);
+  AtomicGroup subset = selectAtoms(superset, selection);
+  uint natoms = subset.size();
 
   Matrix U;
-  readAsciiMatrix(input_prefix + "_U.asc", U);
+  readAsciiMatrix(eigvec_name, U);
   int m = U.rows();
-  int n = U.cols();
-  cout << boost::format("Read in a %dx%d matrix of left singular vectors.\n") % m % n;
-  assert(m == 3*natoms && "Incorrect number of atoms in SVD versus selection");
-
-
-  Matrix S;
-  readAsciiMatrix(input_prefix + "_s.asc", S);
-  int sm = S.rows();
-  int sn = S.cols();
-  cout << boost::format("Read in a %dx%d matrix of singular values.\n") % sm % sn;
-  assert(sm == 3*natoms && "Incorrect number of atoms in SVD versus selection");
-
-  // Since we've decomposed a hessian, the slowest modes have the 
-  // smallest singular values, but we have to exclude the 6 lowest...
-  vector<int>::iterator vi;
-  for (vi = modes.begin(); vi != modes.end(); ++vi) {
-    *vi = n - 7 - *vi;
-    if (*vi < 0) {
-      cerr << boost::format("ERROR - you requested an invalid mode (%d).\n") % (n - (*vi + 7));
-      exit(-1);
-    }
+  if (m != subset.size() * 3) {
+    cerr << boost::format("ERROR- subset size (%d) does not match eigenvector matrix size (%d)\n")
+      % (subset.size() * 3)
+      % m;
+    exit(-10);
   }
 
-  cout << "Transformed mode indices: ";
-  copy(modes.begin(), modes.end(), ostream_iterator<int>(cout, ","));
-  cout << endl;
+  if (!eigval_name.empty())
+    scaleByEigenvalues(scales, modes, eigval_name);
   
 
   // Instantiate a DCD writer...
   DCDWriter dcd(output_name + ".dcd");
 
-  // We'll step along the LSV's using a sin wave as a final scaling...
+  // We'll step along the Eigenvectors using a sin wave as a final scaling...
   double delta = 2*PI/steps;
 
   // Loop over requested number of frames...
@@ -189,28 +186,37 @@ int main(int argc, char *argv[]) {
 
     // Have to make a copy of the atoms since we're computing a
     // displacement from the model structure...
-    AtomicGroup frame = subset.copy();
+    AtomicGroup frame = superset.copy();
+    AtomicGroup frame_subset = selectAtoms(frame, selection);
 
     // Loop over all requested modes...
-    vector<int>::const_iterator ci;
-    for (ci = modes.begin(); ci != modes.end(); ++ci) {
+    for (uint j = 0; j<modes.size(); ++j) {
       // Loop over all atoms...
-      for (int i=0; i<natoms; i++) {
-	GCoord c = frame[i]->coords();
+      for (uint i=0; i<natoms; i++) {
+	GCoord c = frame_subset[i]->coords();
 
 	// This gets the displacement vector for the ith atom of the
 	// ci'th mode...
-        GCoord d( U(i*3, *ci), U(i*3+1, *ci), U(i*3+2, *ci) );
+        GCoord d( U(i*3, modes[j]), U(i*3+1, modes[j]), U(i*3+2, modes[j]) );
 
-        if (scale_by_sval)
-          d /= S[*ci];
-
-	c += scale * k * d;
+	c += k * scales[j] * d;
 
 	// Stuff those coords back into the Atom object...
-	frame[i]->coords(c);
+	frame_subset[i]->coords(c);
+        frame_subset[i]->chainId("E");
       }
     }
+
+    if (k == 0) {
+      // Write out the selection, converting it to a PDB
+      string outpdb(output_name + ".pdb");
+      ofstream ofs(outpdb.c_str());
+      PDB pdb;
+      pdb = PDB::fromAtomicGroup(frame);
+      pdb.remarks().add(header);
+      ofs << pdb;
+    }
+
 
     // Now that we've displaced the frame, add it to the growing DCD trajectory...
     dcd.writeFrame(frame);
