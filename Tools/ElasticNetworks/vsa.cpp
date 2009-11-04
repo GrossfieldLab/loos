@@ -128,14 +128,6 @@ DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& co
 }
 
 
-// Sorts a vector of indices based on the first column of the bound matrix...
-struct SortPredicate {
-  SortPredicate(const DoubleMatrix& A) : M(A) { }
-  bool operator()(const int i, const int j) { return(M[i]> M[j]); }
-
-  const DoubleMatrix& M;
-};
-
 
 boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
   char jobvl = 'N';
@@ -179,23 +171,11 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
       VR(j,i) /= norm;
   }
 
-  // Sort by eigenvalue
-  vector<int> indices;
-  for (int i=0; i<fn; ++i)
-    indices.push_back(i);
-  SortPredicate sp(eigvals);
-  sort(indices.begin(), indices.end(), sp);
+  vector<uint> indices = sortedIndex(eigvals);
+  eigvals = permuteRows(eigvals, indices);
+  VR = permuteColumns(VR, indices);
 
-  // Now copy over in order...
-  DoubleMatrix SD(fn, 1);
-  DoubleMatrix SU(fn, fn);
-  for (int i=0; i<fn; ++i) {
-    SD(i,0) = eigvals[indices[i]];
-    for (int j=0; j<fn; ++j)
-      SU(j,i) = VR(j,indices[i]);
-  }
-
-  boost::tuple<DoubleMatrix, DoubleMatrix> result(SD, SU);
+  boost::tuple<DoubleMatrix, DoubleMatrix> result(eigvals, VR);
   return(result);
 }
 
