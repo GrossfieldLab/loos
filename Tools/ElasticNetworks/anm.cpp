@@ -241,10 +241,9 @@ int main(int argc, char *argv[]) {
     exit(-4);
   }
 
-  vector<uint> sorted = sortedIndex(S);
-  U = permuteColumns(U, sorted);
-  S = permuteRows(S, sorted);
-  Vt = permuteRows(Vt, sorted);
+  reverseRows(S);
+  reverseColumns(U);
+  reverseRows(Vt);
 
   // Write out the parts of the SVD...
   writeAsciiMatrix(prefix + "_U.asc", U, header);
