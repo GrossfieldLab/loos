@@ -1,7 +1,46 @@
+2009-11-04    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed exposure so that it can now operate over a range of frames
+
+	* Changed porcupine to use new-style command-line flags
+
+	* Added a VSA (vibrational subsystem analysis) tool
+
+	* Changed the enmovie tool to be a little more generic and
+	useful.  See the help information regarding how its invocation has
+	changed.
+
+	* Changed the output of the ENM tools...  For ENM results, the
+	smallest non-zero eigenvalue corresponds to the lowest frequency
+	motion.  These came at the end of the output from the ENM tools,
+	which can cause confusion.  We therefore now sort the eigenpairs
+	so that the smallest (i.e. lowest frequency) come first.  The zero
+	modes are not stripped off.
+
+	* Added a set of generic sorting functions that will sort a
+	container and return a vector giving the indices that can be used
+	to permute the container into the sorted order.  This is useful
+	for doing things like sorting multiple containers based on the
+	contents of one.
+
+	* Added a suite of overloaded operators and support functions for
+	operations on matrices.  Note: these are for quick-n-dirty tool
+	development.  If you want performance or efficiency, you're
+	strongly encouraged to look for a better method for implementing
+	your linear algebra code.
+
+	* Added alignto tool that aligns a trajectory to a given reference
+	structure.
+	
+
 2009-10-20    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in subsetter that caused reimaging to ONLY be
 	performed if centering was turned on.
+
+	* Fixed bug in subsetter that caused bonds to not be cleared when
+	subsetting...
+	
 
 	* Changed exposure to default to reimaging distances.  Also
 	changed how the flag is set.  "-R 1" turns reimaging on (the
