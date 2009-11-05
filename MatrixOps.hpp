@@ -30,6 +30,7 @@
 #include <MatrixImpl.hpp>
 #include <exceptions.hpp>
 #include <stdexcept>
+#include <cmath>
 
 
 
@@ -90,7 +91,7 @@ namespace loos {
     void reverseRows(RealMatrix& A);
 
     double subspaceOverlap(const RealMatrix& A, const RealMatrix& B);
-
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB);
   };
 
 

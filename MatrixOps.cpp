@@ -311,6 +311,28 @@ namespace loos {
     }
 
 
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB) {
+      uint n = UA.cols();
+
+      if (!(n == UA.cols() && n == UB.cols() && n == lamB.rows() && UA.rows() == UB.rows()))
+        throw(NumericalError("Matrices have incorrect dimensions"));
+
+      double lamsum = 0.0;
+      for (uint i=0; i<n; ++i)
+        lamsum += lamA[i] + lamB[i];
+
+      double dblsum = 0.0;
+      for (uint i=0; i<n; ++i)
+        for (uint j=0; j<n; ++j) {
+          double d = colDotProd(UA, i, UB, j);
+          dblsum += sqrt(lamA[i]*lamB[j]) * d * d;
+        }
+      
+      double co = 1.0 - sqrt( (lamsum - 2.0 * dblsum) / lamsum );
+      return(co);
+    }
+
+
   }
 
 }
