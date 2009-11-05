@@ -165,41 +165,12 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_K.asc", K, header);
 
-  // Setup for SVD calc, i.e. deal with lame f77 interface
-  f77int m = subset.size();
-  f77int n = m;
-  f77int sn = m<n ? m : n;
+  boost::tuple<RealMatrix, RealMatrix, RealMatrix> result = svd(K);
+  Matrix U = boost::get<0>(result);
+  Matrix S = boost::get<1>(result);
+  Matrix Vt = boost::get<2>(result);
 
-  Matrix U(m, m);
-  Matrix S(sn, 1);
-  Matrix Vt(n, n);
-
-  char jobu = 'A';
-  char jobvt = 'A';
-  f77int lda = m, ldu = n, lwork = -1, info, ldvt = n;
-  float prework[10], *work;
-
-  // First, request the optimal size of the work array...
-  sgesvd_(&jobu, &jobvt, &m, &n, K.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
-  
-  lwork = (f77int)prework[0];
-  work = new float[lwork];
-
-  // Now do the actual SVD calculation...
-  cerr << boost::format("Calculating %d x %d SVD - ") % m % n;
-  timer.start();
-  sgesvd_(&jobu, &jobvt, &m, &n, K.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
-  timer.stop();
-  cerr << "done\n";
-  cerr << "Elapsed time = " << timer << endl;
-  
-  if (info > 0) {
-    cerr << "Convergence error in sgesvd\n";
-    exit(-3);
-  } else if (info < 0) {
-    cerr << "Error in " << info << "th argument to sgesvd\n";
-    exit(-4);
-  }
+  uint n = S.rows();
 
   reverseRows(S);
   reverseColumns(U);
@@ -210,7 +181,6 @@ int main(int argc, char *argv[]) {
   writeAsciiMatrix(prefix + "_s.asc", S, header);
   writeAsciiMatrix(prefix + "_V.asc", Vt, header, true);
 
-  assert(sn == n && "Insufficient singular values!");
 
   // Now go ahead and compute the pseudo-inverse...
 
@@ -219,17 +189,12 @@ int main(int argc, char *argv[]) {
   // somewhat funky indices...
   //
   // Note:  We have to toss the first term (see Chennubhotla et al (Phys Biol 2(2005:S173-S180))
-  for (int i=1; i<n; i++) {
+  for (uint i=1; i<n; i++) {
     double s = 1.0/S[i];
-    for (int j=0; j<n; j++)
+    for (uint j=0; j<n; j++)
       Vt(i, j) *= s;
   }
   
-  // Ki = Vt * U';
-  // Again, Vt is internally transposed, so we have to specify
-  // transposing it to sgemm in order to multiply the non-transposed
-  // V...
-  Matrix Ki(n, n);
-  cblas_sgemm(CblasColMajor, CblasTrans, CblasTrans, n, n, n-1, 1.0, Vt.get(), n, U.get(), n, 0.0, Ki.get(), n);
+  Matrix Ki = MMMultiply(Vt, U, true, true);
   writeAsciiMatrix(prefix + "_Ki.asc", Ki, header);
 }
