@@ -61,7 +61,7 @@ namespace loos {
     RealMatrix MMMultiply(const RealMatrix& A, const RealMatrix& B, const bool transa = false, const bool transb = false);
 
     //! Pseudo-inverse of a matrix using the SVD
-    RealMatrix invert(RealMatrix& A, const float eps = 1e-6);
+    RealMatrix invert(RealMatrix& A, const float eps = 1e-5);
 
     //! An identity matrix of size n
     RealMatrix eye(const uint n);
