@@ -215,6 +215,7 @@ int main(int argc, char *argv[]) {
 
   // Write out the LSVs (or eigenvectors)
   writeAsciiMatrix(prefix + "_U.asc", U, header);
+  writeAsciiMatrix(prefix + "_s.asc", S, header);
 
   // Now go ahead and compute the pseudo-inverse...
 
@@ -235,11 +236,5 @@ int main(int argc, char *argv[]) {
   // V...
   Matrix Hi = MMMultiply(Vt, U, true, true);
   writeAsciiMatrix(prefix + "_Hi.asc", Hi, header);
-
-
-  // Now square the singular values so they are actually the eigenvalues...
-  for (uint i=0; i<n; ++i)
-    S[i] *= S[i];
-  writeAsciiMatrix(prefix + "_s.asc", S, header);
 
 }

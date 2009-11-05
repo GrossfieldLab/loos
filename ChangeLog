@@ -1,14 +1,7 @@
 2009-11-05    <tromo@spade.biophysics.rochester.edu>
 
-	* Changed (MAJOR) the output of the ENM tools...  The ANM and GNM
-	tools both used an SVD to calculate the pseudoinverse of the
-	kirchoff/hessian matrix.  Originally, what was written out were
-	the components of the SVD (i.e. LSV, singular values, and RSV).
-	Generally, we're interested in only the eigenvectors and
-	eigenvalues of the hessian, not the full SVD.  So now, only the
-	LSV (i.e. the eigenvectors) are written out, and the singular
-	values are squared so they are actually the corresponding
-	eigenvalues...
+	* Changed anm and gnm tools to not write out the right singular
+	vectors (as it's unlikely these would actually be needed)
 
 2009-11-04    <tromo@spade.biophysics.rochester.edu>
 
