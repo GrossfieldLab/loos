@@ -28,6 +28,7 @@
 
 #include <loos_defs.hpp>
 #include <MatrixImpl.hpp>
+#include <exceptions.hpp>
 #include <stdexcept>
 
 

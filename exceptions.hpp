@@ -35,8 +35,10 @@ namespace loos {
 
   //! Generic LOOS exception
   class LOOSError : public std::exception {
+  protected:
     std::string _msg;
   public:
+    explicit LOOSError() : _msg("LOOS Error") { }
     explicit LOOSError(const std::string& arg) : _msg(arg) { }
     explicit LOOSError(const Atom& a, const std::string& arg) {
       std::stringstream ss;
@@ -66,6 +68,17 @@ namespace loos {
   public:
     explicit MissingProperty(const std::string& arg) : LOOSError(arg) { }
     explicit MissingProperty(const Atom& a, const std::string& arg) : LOOSError(a, arg) { }
+  };
+
+  //! Exception caused by a blas/atlas error
+  class NumericalError : public LOOSError {
+  public:
+    explicit NumericalError(const std::string& arg, const int info) {
+      std::stringstream ss;
+      ss << arg << ", info = " << info;
+      _msg = ss.str();
+    }
+    explicit NumericalError(const std::string& arg) : LOOSError(arg) { }
   };
 
 

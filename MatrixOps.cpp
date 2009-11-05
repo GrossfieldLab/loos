@@ -53,10 +53,8 @@ namespace loos {
       RealMatrix Vt(n, n);
 
       sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
-      if (info != 0) {
-        // throw here...
-        exit(-2);
-      }
+      if (info != 0)
+        throw(NumericalError("Failure in SVD"));
 
       lwork = (f77int)prework[0];
       estimate += lwork * sizeof(double);
@@ -86,10 +84,9 @@ namespace loos {
       DoubleMatrix Vt(n, n);
 
       dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
-      if (info != 0) {
-        // throw here...
-        exit(-2);
-      }
+      if (info != 0)
+        throw(NumericalError("Failure in SVD"));
+
 
       lwork = (f77int)prework[0];
       estimate += lwork * sizeof(double);
