@@ -66,14 +66,8 @@ using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
-typedef Math::Matrix<double, Math::ColMajor> Matrix;
+typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
-
-#if defined(__linux__)
-extern "C" {
-  void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);
-}
-#endif
 
 // Globals... Fah!
 
@@ -183,27 +177,27 @@ int main(int argc, char *argv[]) {
   char jobu = 'A';
   char jobvt = 'A';
   f77int lda = m, ldu = n, lwork = -1, info, ldvt = n;
-  double prework[10], *work;
+  float prework[10], *work;
 
   // First, request the optimal size of the work array...
-  dgesvd_(&jobu, &jobvt, &m, &n, K.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
+  sgesvd_(&jobu, &jobvt, &m, &n, K.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
   
   lwork = (f77int)prework[0];
-  work = new double[lwork];
+  work = new float[lwork];
 
   // Now do the actual SVD calculation...
   cerr << boost::format("Calculating %d x %d SVD - ") % m % n;
   timer.start();
-  dgesvd_(&jobu, &jobvt, &m, &n, K.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
+  sgesvd_(&jobu, &jobvt, &m, &n, K.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
   timer.stop();
   cerr << "done\n";
   cerr << "Elapsed time = " << timer << endl;
   
   if (info > 0) {
-    cerr << "Convergence error in dgesvd\n";
+    cerr << "Convergence error in sgesvd\n";
     exit(-3);
   } else if (info < 0) {
-    cerr << "Error in " << info << "th argument to dgesvd\n";
+    cerr << "Error in " << info << "th argument to sgesvd\n";
     exit(-4);
   }
 
@@ -233,9 +227,9 @@ int main(int argc, char *argv[]) {
   
   // Ki = Vt * U';
   // Again, Vt is internally transposed, so we have to specify
-  // transposing it to dgemm in order to multiply the non-transposed
+  // transposing it to sgemm in order to multiply the non-transposed
   // V...
   Matrix Ki(n, n);
-  cblas_dgemm(CblasColMajor, CblasTrans, CblasTrans, n, n, n-1, 1.0, Vt.get(), n, U.get(), n, 0.0, Ki.get(), n);
+  cblas_sgemm(CblasColMajor, CblasTrans, CblasTrans, n, n, n-1, 1.0, Vt.get(), n, U.get(), n, 0.0, Ki.get(), n);
   writeAsciiMatrix(prefix + "_Ki.asc", Ki, header);
 }
