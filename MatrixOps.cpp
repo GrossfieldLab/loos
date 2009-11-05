@@ -286,6 +286,31 @@ namespace loos {
     }
 
 
+    namespace {
+      double colDotProd(const RealMatrix& A, const uint i, const RealMatrix& B, const uint j) {
+        double sum = 0.0;
+        for (uint k=0; k<A.rows(); ++k)
+          sum += A(k,i) * B(k,j);
+        return(sum);
+      }
+    }
+    
+    
+    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B) {
+      if (A.rows() != B.rows() || A.cols() != B.cols())
+        throw(NumericalError("Matrices have different dimensions"));
+
+      double sum = 0.0;
+      for (uint i=0; i<A.cols(); ++i)
+        for (uint j=0; j<A.cols(); ++j) {
+          double d = colDotProd(A, i, B, j);
+          sum += d*d;
+        }
+
+      return(sum / A.cols());
+    }
+
+
   }
 
 }

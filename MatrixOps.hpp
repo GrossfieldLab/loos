@@ -89,6 +89,8 @@ namespace loos {
     //! Reverses the rows in place
     void reverseRows(RealMatrix& A);
 
+    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B);
+
   };
 
 

@@ -71,29 +71,6 @@ namespace loos {
 
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble);
 
-  namespace {
-    template<typename T, typename R>
-    double colDotProd(const T& A, const uint i, const R& B, const uint j) {
-      double sum = 0.0;
-      for (uint k=0; k<A.rows(); ++k)
-        sum += A(k,i) * B(k,j);
-      return(sum);
-    }
-  }
-
-
-  template<typename T, typename R>
-  double subspaceOverlap(const T& A, const R& B) {
-    double sum = 0.0;
-    for (uint i=0; i<A.cols(); ++i)
-      for (uint j=0; j<A.cols(); ++j) {
-        double d = colDotProd(A, i, B, j);
-        sum += d*d;
-      }
-
-    return(sum / A.cols());
-  }
-
 };
 
 
