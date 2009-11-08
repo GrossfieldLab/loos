@@ -90,7 +90,23 @@ namespace loos {
     //! Reverses the rows in place
     void reverseRows(RealMatrix& A);
 
+    //! Computes the overlap between two subspaces (matrices of column vectors)
     double subspaceOverlap(const RealMatrix& A, const RealMatrix& B);
+
+    //! Computes the covariance overlap between two subspaces
+    /**
+     * This function expects a set of eigenpairs for comparison.  The
+     * eigenvalues are stored in a Matrix-vector (i.e. an nx1
+     * matrix).  The eigenvectors are stored in the columns of the
+     * respective matrices.
+     *
+     * Note: Be sure that the eigenvalues are scaled appropriately.
+     * For example, when comparing PCA and ENM, the ENM eigenvalues
+     * are inversely proportional to the PCA eigenvalues while the PCA
+     * "eigenvalues" are actually the singular values (and hence the
+     * square-root of the eigenvalues of AA'
+     *
+     */
     double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB);
   };
 
