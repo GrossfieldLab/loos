@@ -203,8 +203,7 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 
 
 int main(int argc, char *argv[]) {
-  string header = invocationHeader(argc, argv);
-  header = header;
+  header = invocationHeader(argc, argv);
 
   parseOptions(argc, argv);
 
