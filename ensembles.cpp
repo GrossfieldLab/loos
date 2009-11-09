@@ -274,8 +274,11 @@ namespace loos {
 
     RealMatrix M;
     if (align) {
+      cerr << "PROBE-1\n";
       boost::tuple<std::vector<XForm>, greal, int> res = iterativeAlignment(ensemble);
+      cerr << "PROBE-2\n";
       M = extractCoords(ensemble, boost::get<0>(res));
+      cerr << "PROBE-3\n";
     } else
       M = extractCoords(ensemble);
 
