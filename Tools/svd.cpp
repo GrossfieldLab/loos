@@ -211,8 +211,6 @@ int main(int argc, char *argv[]) {
   // Need to address this...
   AtomicGroup model = createSystem(model_name);
   pTraj ptraj = createTrajectory(traj_name, model);
-
-  AtomicGroup alignsub = selectAtoms(model, alignment_string);
   AtomicGroup svdsub = selectAtoms(model, svd_string);
 
   if (indices.empty())
@@ -228,6 +226,7 @@ int main(int argc, char *argv[]) {
     for (uint i=0; i<indices.size(); ++i)
       xforms.push_back(XForm());
   } else {
+    AtomicGroup alignsub = selectAtoms(model, alignment_string);
     cerr << argv[0] << ": Aligning...\n";
     xforms = doAlign(alignsub, ptraj);   // Honors indices
   }

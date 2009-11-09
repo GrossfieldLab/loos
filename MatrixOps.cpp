@@ -312,11 +312,12 @@ namespace loos {
 
 
     double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB) {
-      uint n = UA.cols();
-
-      if (!(n == UA.cols() && n == UB.cols() && n == lamB.rows() && UA.rows() == UB.rows()))
+      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows()))
         throw(NumericalError("Matrices have incorrect dimensions"));
+      if (lamA.rows() > UA.cols())
+        throw(NumericalError("More eigenvalues than eigenvectors!"));
 
+      uint n = lamA.rows();
       double lamsum = 0.0;
       for (uint i=0; i<n; ++i)
         lamsum += lamA[i] + lamB[i];
