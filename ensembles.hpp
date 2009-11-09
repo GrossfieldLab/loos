@@ -69,7 +69,7 @@ namespace loos {
 
   void subtractAverage(RealMatrix& M);
 
-  boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble);
+  boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, const bool align = true);
 
 };
 

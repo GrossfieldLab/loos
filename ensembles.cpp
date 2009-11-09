@@ -270,7 +270,7 @@ namespace loos {
   }
 
 
-  boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, bool align = true) {
+  boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, bool align) {
 
     RealMatrix M;
     if (align) {
