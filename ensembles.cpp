@@ -211,8 +211,8 @@ namespace loos {
 
   RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble) {
     uint n = ensemble.size();
-    uint m = ensemble[0].size() * 3;
-    RealMatrix M(m, n);
+    uint m = ensemble[0].size();
+    RealMatrix M(3*m, n);
 
     for (uint i=0; i<n; ++i)
       for (uint j=0; j<m; ++j) {
@@ -231,8 +231,8 @@ namespace loos {
     if (n != xforms.size())
       throw(std::runtime_error("Mismatch between the size of the ensemble and the transformations"));
 
-    uint m = ensemble[0].size() * 3;
-    RealMatrix M(m, n);
+    uint m = ensemble[0].size();
+    RealMatrix M(3*m, n);
 
     for (uint i=0; i<n; ++i) {
       GMatrix W = xforms[i].current();
