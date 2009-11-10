@@ -44,6 +44,8 @@ bool append_bonds = false;
 bool full_model_output = true;
 string model_name;
 string selection;
+string super;
+string segid;
 double radius;
 
 
@@ -65,6 +67,12 @@ void fullHelp(void) {
     "  This is useful with the CA-only PDB output from tools like svd.\n"
     "  The radius may need to be tweaked...\n"
     "\n"
+    "rebond -r 15 -s 'name = \"CA\" && resid < 10'  -S 'name == \"CA\"' -t ENV model.pdb >network.pdb\n"
+    "  The superset selection and tagging are useful for visualizing the connections\n"
+    "  between the environment and the subset in a VSA calculation.  In this example,\n"
+    "  bonds are only calculated between CAs with resid < 10 and all other CAs.  The\n"
+    "  atoms that belong to the subset are also tagged with the segid 'ENV'.\n"
+    "\n"
     "Note: Some visualization programs, such as VMD, have a hard-coded maximum\n"
     "      number of bonds that can be displayed.  This may be lower than the\n"
     "      real number of bonds when visualizaing ENM networks.  You will need\n"
@@ -82,8 +90,10 @@ void parseOptions(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("fullhelp", "Extended help")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset to search for bonds over")
+      ("superset,S", po::value<string>(&super)->default_value("all"), "Subset to search for bonds against the selection")
       ("radius,r", po::value<double>(&radius)->default_value(1.25), "Radius cutoff for bonding")
       ("add,a", po::value<bool>(&append_bonds)->default_value(false), "Add to existing bonds")
+      ("tag,t", po::value<string>(&segid), "Tag the bound atoms with this segid")
       ("full,f", po::value<bool>(&full_model_output)->default_value(true), "Output the entire model (or just the subset if =0)");
 
 
@@ -129,7 +139,25 @@ int main(int argc, char *argv[]) {
     model.clearBonds();
 
   AtomicGroup subset = selectAtoms(model, selection);
-  subset.findBonds(radius);
+  AtomicGroup superset = selectAtoms(model, super);
+
+  for (AtomicGroup::iterator j = subset.begin(); j != subset.end(); ++j) {
+    GCoord c = (*j)->coords();
+    if (!segid.empty())
+      (*j)->segid(segid);
+
+    for (AtomicGroup::iterator i = superset.begin(); i != superset.end(); ++i) {
+      double d = c.distance((*i)->coords());
+      if (d <= radius) {
+        (*j)->addBond(*i);
+      }
+
+    }
+  }
+
+  if (!segid.empty())
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+      (*i)->segid(segid);
 
   PDB pdb;
   if (full_model_output)
