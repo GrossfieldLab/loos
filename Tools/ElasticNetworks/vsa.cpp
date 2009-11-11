@@ -184,59 +184,54 @@ RealMatrix submatrix(const RealMatrix& M, const Range& rows, const Range& cols) 
 
 
 boost::tuple<RealMatrix, RealMatrix> eigenDecomp(RealMatrix& A, RealMatrix& B) {
-  char jobvl = 'N';
-  char jobvr = 'V';
-  f77int fn = A.rows();
-  f77int lda = fn;
-  f77int ldb = fn;
-  RealMatrix AR(fn,1);
-  RealMatrix AI(fn,1);
-  RealMatrix BETA(fn,1);
-  float vl;
-  f77int ldvl = 1;
-  RealMatrix VR(fn,fn);
-  f77int ldvr = fn;
-  f77int lwork = 64 * fn;
-  RealMatrix WORK(lwork, 1);
 
+  writeAsciiMatrix("A.asc", A, "");
+  writeAsciiMatrix("B.asc", B, "");
+
+  RealMatrix AA = A.copy();
+  RealMatrix BB = B.copy();
+
+  f77int itype = 1;
+  char jobz = 'V';
+  char uplo = 'U';
+  f77int n = AA.rows();
+  f77int lda = n;
+  f77int ldb = n;
+  f77int lwork = -1;
   f77int info;
 
-  sggev_(&jobvl, &jobvr, &fn, A.get(), &lda, B.get(), &ldb, AR.get(), AI.get(), BETA.get(),
-         &vl, &ldvl, VR.get(), &ldvr, WORK.get(), &lwork, &info);
-
+  float *work = new float[1];
+  RealMatrix W(n, 1);
+  ssygv_(&itype, &jobz, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, W.get(), work, &lwork, &info);
   if (info != 0) {
-    cerr << "ERROR- SGGEV result = " << info << endl;
-    exit(-10);
+    cerr << "ERROR- ssygv returned " << info << endl;
+    exit(-1);
   }
 
-  if (verbosity > 1)
-    cout << "SGGEV Result = " << info << endl;
-
-
-  // Complex eigenvalues are set to 0
-  RealMatrix eigvals(fn, 1);
-  for (int i=0; i<fn; ++i) {
-    if (AI[i] == 0.0)
-      eigvals[i] = AR[i] / BETA[i];
-    else
-      eigvals[i] = 0.0;
+  lwork = work[0];
+  delete[] work;
+  work = new float[lwork];
+  ssygv_(&itype, &jobz, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, W.get(), work, &lwork, &info);
+  if (info != 0) {
+    cerr << "ERROR- ssygv returned " << info << endl;
+    exit(-1);
   }
-
+ 
   // normalize
-  for (int i=0; i<fn; ++i) {
+  for (int i=0; i<n; ++i) {
     double norm = 0.0;
-    for (int j=0; j<fn; ++j)
-      norm += (VR(j,i) * VR(j,i));
+    for (int j=0; j<n; ++j)
+      norm += (AA(j,i) * AA(j,i));
     norm = sqrt(norm);
-    for (int j=0; j<fn; ++j)
-      VR(j,i) /= norm;
+    for (int j=0; j<n; ++j)
+      AA(j,i) /= norm;
   }
 
-  vector<uint> indices = sortedIndex(eigvals);
-  eigvals = permuteRows(eigvals, indices);
-  VR = permuteColumns(VR, indices);
+  vector<uint> indices = sortedIndex(W);
+  W = permuteRows(W, indices);
+  AA = permuteColumns(AA, indices);
 
-  boost::tuple<RealMatrix, RealMatrix> result(eigvals, VR);
+  boost::tuple<RealMatrix, RealMatrix> result(W, AA);
   return(result);
 }
 
