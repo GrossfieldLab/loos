@@ -59,6 +59,8 @@ extern "C" {
   void sggev_(char*, char*, int*, float*, int*, float*, int*, float*, float*, float*, float*, int*, float*, int*, float*, int*, int*);
   void ssyev_(char*, char*, int*, float*, int*, float*, float*, int*, int*);
   void ssygv_(int*, char*, char*, int*, float*, int*, float*, int*, float*, float*, int*, int*);
+  void ssygvx_(int*, char*, char*, char*, int*, float*, int*, float*, int*, float*, float*, int*, int*, float*, int*, float*, float*, int*, float*, int*, int*, int*, int*);
+  double dlamch_(char*);
 }
 
 

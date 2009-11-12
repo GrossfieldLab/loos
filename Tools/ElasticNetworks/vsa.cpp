@@ -194,38 +194,60 @@ boost::tuple<RealMatrix, RealMatrix> eigenDecomp(RealMatrix& A, RealMatrix& B) {
   f77int itype = 1;
   char jobz = 'V';
   char uplo = 'U';
+  char range = 'I';
   f77int n = AA.rows();
   f77int lda = n;
   f77int ldb = n;
+  float vl = 0.0;
+  float vu = 0.0;
+  f77int il = 7;
+  f77int iu = n;
+
+  char dpar = 'S';
+  //  float abstol = 2.0 * dlamch_(&dpar);
+  float abstol = -1.0;
+
+  f77int m;
+  RealMatrix W(n, 1);
+  RealMatrix Z(n, n);
+  f77int ldz = n;
+
   f77int lwork = -1;
   f77int info;
-
   float *work = new float[1];
-  RealMatrix W(n, 1);
-  ssygv_(&itype, &jobz, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, W.get(), work, &lwork, &info);
+
+  f77int *iwork = new f77int[5*n];
+  f77int *ifail = new f77int[n];
+
+  ssygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
   if (info != 0) {
-    cerr << "ERROR- ssygv returned " << info << endl;
+    cerr << "ERROR- ssygvx returned " << info << endl;
     exit(-1);
   }
 
   lwork = work[0];
   delete[] work;
   work = new float[lwork];
-  ssygv_(&itype, &jobz, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, W.get(), work, &lwork, &info);
+  ssygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
   if (info != 0) {
-    cerr << "ERROR- ssygv returned " << info << endl;
+    cerr << "ERROR- ssygvx returned " << info << endl;
     exit(-1);
+  }
+
+  if (m != n-6) {
+    cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
+    exit(-10);
   }
  
   // normalize
-  for (int i=0; i<n; ++i) {
-    double norm = 0.0;
-    for (int j=0; j<n; ++j)
-      norm += (AA(j,i) * AA(j,i));
-    norm = sqrt(norm);
-    for (int j=0; j<n; ++j)
-      AA(j,i) /= norm;
-  }
+//   for (int i=0; i<m; ++i) {
+//     double norm = 0.0;
+//     for (int j=0; j<n; ++j)
+//       norm += (AA(j,i) * AA(j,i));
+//     norm = sqrt(norm);
+//     for (int j=0; j<n; ++j)
+//       AA(j,i) /= norm;
+//   }
 
   vector<uint> indices = sortedIndex(W);
   W = permuteRows(W, indices);
