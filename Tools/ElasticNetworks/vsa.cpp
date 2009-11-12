@@ -185,75 +185,23 @@ RealMatrix submatrix(const RealMatrix& M, const Range& rows, const Range& cols) 
 
 boost::tuple<RealMatrix, RealMatrix> eigenDecomp(RealMatrix& A, RealMatrix& B) {
 
-  writeAsciiMatrix("A.asc", A, "");
-  writeAsciiMatrix("B.asc", B, "");
+  //  writeAsciiMatrix("A.asc", A, "");
+  //writeAsciiMatrix("B.asc", B, "");
 
   RealMatrix AA = A.copy();
   RealMatrix BB = B.copy();
 
-  f77int itype = 1;
-  char jobz = 'V';
-  char uplo = 'U';
-  char range = 'I';
-  f77int n = AA.rows();
-  f77int lda = n;
-  f77int ldb = n;
-  float vl = 0.0;
-  float vu = 0.0;
-  f77int il = 7;
-  f77int iu = n;
+  RealMatrix Bi = invert(BB);
+  AA *= Bi;
+  boost::tuple<RealMatrix, RealMatrix, RealMatrix> res = svd(AA);
+  RealMatrix U = boost::get<0>(res);
+  RealMatrix S = boost::get<1>(res);
 
-  char dpar = 'S';
-  //  float abstol = 2.0 * dlamch_(&dpar);
-  float abstol = -1.0;
+  vector<uint> indices = sortedIndex(S);
+  S = permuteRows(S, indices);
+  U = permuteColumns(U, indices);
 
-  f77int m;
-  RealMatrix W(n, 1);
-  RealMatrix Z(n, n);
-  f77int ldz = n;
-
-  f77int lwork = -1;
-  f77int info;
-  float *work = new float[1];
-
-  f77int *iwork = new f77int[5*n];
-  f77int *ifail = new f77int[n];
-
-  ssygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
-  if (info != 0) {
-    cerr << "ERROR- ssygvx returned " << info << endl;
-    exit(-1);
-  }
-
-  lwork = work[0];
-  delete[] work;
-  work = new float[lwork];
-  ssygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
-  if (info != 0) {
-    cerr << "ERROR- ssygvx returned " << info << endl;
-    exit(-1);
-  }
-
-  if (m != n-6) {
-    cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
-    exit(-10);
-  }
- 
-  // normalize
-//   for (int i=0; i<m; ++i) {
-//     double norm = 0.0;
-//     for (int j=0; j<n; ++j)
-//       norm += (AA(j,i) * AA(j,i));
-//     norm = sqrt(norm);
-//     for (int j=0; j<n; ++j)
-//       AA(j,i) /= norm;
-//   }
-
-  vector<uint> indices = sortedIndex(W);
-  W = permuteRows(W, indices);
-  AA = permuteColumns(AA, indices);
-
-  boost::tuple<RealMatrix, RealMatrix> result(W, AA);
+  boost::tuple<RealMatrix, RealMatrix> result(S, U);
   return(result);
 }
 
@@ -304,7 +252,7 @@ RealMatrix getMasses(const AtomicGroup& grp) {
 
 
 void showSize(const string& s, const RealMatrix& M) {
-  cout << s << M.rows() << " x " << M.cols() << endl;
+  cerr << s << M.rows() << " x " << M.cols() << endl;
 }
 
 
@@ -323,8 +271,8 @@ int main(int argc, char *argv[]) {
   AtomicGroup composite = subset + environment;
 
   if (verbosity > 1) {
-    cout << "Subset size is " << subset.size() << endl;
-    cout << "Environment size is " << environment.size() << endl;
+    cerr << "Subset size is " << subset.size() << endl;
+    cerr << "Environment size is " << environment.size() << endl;
   }
 
   RealMatrix H = hessian(composite, cutoff);
@@ -341,7 +289,7 @@ int main(int argc, char *argv[]) {
 
   Timer<WallTimer> timer;
   if (verbosity > 0) {
-    cout << "Inverting environment hessian...\n";
+    cerr << "Inverting environment hessian...\n";
     timer.start();
     if (verbosity > 1)
       showSize("Hee = ", Hee);
@@ -350,7 +298,7 @@ int main(int argc, char *argv[]) {
   RealMatrix Heei = Math::invert(Hee);
   if (verbosity > 0) {
     timer.stop();
-    cout << timer << endl;
+    cerr << timer << endl;
   }
 
   RealMatrix Hssp = Hss - Hse * Heei * Hes;
@@ -359,14 +307,14 @@ int main(int argc, char *argv[]) {
   RealMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
   if (verbosity > 0) {
-    cout << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
+    cerr << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
     timer.start();
   }
   boost::tuple<RealMatrix, RealMatrix> eigenpairs = eigenDecomp(Hssp, Msp);
   if (verbosity > 0) {
     timer.stop();
-    cout << "done\n";
-    cout << timer << endl;
+    cerr << "done\n";
+    cerr << timer << endl;
   }
     
   RealMatrix Ds = boost::get<0>(eigenpairs);
