@@ -214,6 +214,8 @@ int main(int argc, char *argv[]) {
       PDB pdb;
       pdb = PDB::fromAtomicGroup(frame);
       pdb.remarks().add(header);
+      pdb.renumber();
+      pdb.clearBonds();
       ofs << pdb;
     }
 
