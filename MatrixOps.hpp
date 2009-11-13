@@ -91,7 +91,7 @@ namespace loos {
     void reverseRows(RealMatrix& A);
 
     //! Computes the overlap between two subspaces (matrices of column vectors)
-    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B);
+    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B, uint nmodes = 0);
 
     //! Computes the covariance overlap between two subspaces
     /**

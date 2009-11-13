@@ -296,18 +296,23 @@ namespace loos {
     }
     
     
-    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B) {
-      if (A.rows() != B.rows() || A.cols() != B.cols())
+    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B, uint nmodes) {
+      if (A.rows() != B.rows())
         throw(NumericalError("Matrices have different dimensions"));
 
+      if (nmodes == 0)
+        nmodes = A.cols();
+      if (nmodes > A.cols() || nmodes > B.cols())
+        throw(NumericalError("Requested number of modes exceeds matrix dimensions"));
+      
       double sum = 0.0;
-      for (uint i=0; i<A.cols(); ++i)
-        for (uint j=0; j<A.cols(); ++j) {
+      for (uint i=0; i<nmodes; ++i)
+        for (uint j=0; j<nmodes; ++j) {
           double d = colDotProd(A, i, B, j);
           sum += d*d;
         }
 
-      return(sum / A.cols());
+      return(sum / nmodes);
     }
 
 
