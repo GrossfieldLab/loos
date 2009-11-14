@@ -213,8 +213,8 @@ DoubleMatrix invertMatrix(const DoubleMatrix& M) {
 
 boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
 
-  writeAsciiMatrix("A.asc", A, "");
-  writeAsciiMatrix("B.asc", B, "");
+  writeAsciiMatrix("A.asc", A, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("B.asc", B, "", false, ScientificMatrixFormatter<double>());
 
 
   DoubleMatrix AA = A.copy();
@@ -367,10 +367,10 @@ int main(int argc, char *argv[]) {
   DoubleMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
   DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
 
-  writeAsciiMatrix("Hss.asc", Hss, "");
-  writeAsciiMatrix("Hee.asc", Hee, "");
-  writeAsciiMatrix("Hse.asc", Hse, "");
-  writeAsciiMatrix("Hes.asc", Hes, "");
+  writeAsciiMatrix("Hss.asc", Hss, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Hee.asc", Hee, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Hse.asc", Hse, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Hes.asc", Hes, "", false, ScientificMatrixFormatter<double>());
 
 
   Timer<WallTimer> timer;
@@ -387,10 +387,12 @@ int main(int argc, char *argv[]) {
     cerr << timer << endl;
   }
 
-  writeAsciiMatrix("Heei.asc", Heei, "");
+  writeAsciiMatrix("Heei.asc", Heei, "", false, ScientificMatrixFormatter<double>());
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
   DoubleMatrix Ms = getMasses(subset);
   DoubleMatrix Me = getMasses(environment);
+  writeAsciiMatrix("Ms.asc", Ms, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Me.asc", Me, "", false, ScientificMatrixFormatter<double>());
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
   if (verbosity > 0) {
@@ -407,6 +409,6 @@ int main(int argc, char *argv[]) {
   DoubleMatrix Ds = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
 
-  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr);
-  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr);
+  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr, false, ScientificMatrixFormatter<double>());
 }
