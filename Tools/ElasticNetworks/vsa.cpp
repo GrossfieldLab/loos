@@ -183,6 +183,34 @@ DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& co
 
 
 
+DoubleMatrix invertMatrix(const DoubleMatrix& M) {
+  DoubleMatrix A = M.copy();
+
+  char uplo = 'L';
+  f77int n = M.rows();
+  f77int lda = n;
+  f77int info;
+  
+  dpotrf_(&uplo, &n, A.get(), &lda, &info);
+  if (info != 0) {
+    cerr << "ERROR- dpotrf returned info = " << info << endl;
+    exit(-10);
+  }
+
+  dpotri_(&uplo, &n, A.get(), &lda, &info);
+  if (info != 0) {
+    cerr << "ERROR- dpotri returned info = " << info << endl;
+    exit(-10);
+  }
+
+  for (uint j=0; j<A.rows(); ++j)
+    for (uint i=0; i<j; ++i)
+      A(i,j) = A(j,i);
+
+  return(A);
+}
+
+
 boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
 
   writeAsciiMatrix("A.asc", A, "");
@@ -330,7 +358,6 @@ int main(int argc, char *argv[]) {
   }
 
   DoubleMatrix H = hessian(composite, cutoff);
-
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
 
@@ -354,7 +381,7 @@ int main(int argc, char *argv[]) {
       showSize("Hee = ", Hee);
   }
 
-  DoubleMatrix Heei = Math::invert(Hee);
+  DoubleMatrix Heei = invertMatrix(Hee);
   if (verbosity > 0) {
     timer.stop();
     cerr << timer << endl;
