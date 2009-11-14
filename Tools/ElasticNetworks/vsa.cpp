@@ -110,9 +110,9 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-RealMatrix hblock(const int i, const int j, const AtomicGroup& model, const double radius2) {
+DoubleMatrix hblock(const int i, const int j, const AtomicGroup& model, const double radius2) {
 
-  RealMatrix B(3,3);
+  DoubleMatrix B(3,3);
   GCoord u = model[i]->coords();
   GCoord v = model[j]->coords();
   GCoord d = v - u;
@@ -130,15 +130,15 @@ RealMatrix hblock(const int i, const int j, const AtomicGroup& model, const doub
 
 
 
-RealMatrix hessian(const AtomicGroup& model, const double radius) {
+DoubleMatrix hessian(const AtomicGroup& model, const double radius) {
   
   int n = model.size();
-  RealMatrix H(3*n,3*n);
+  DoubleMatrix H(3*n,3*n);
   double r2 = radius * radius;
 
   for (int i=1; i<n; ++i) {
     for (int j=0; j<i; ++j) {
-      RealMatrix B = hblock(i, j, model, r2);
+      DoubleMatrix B = hblock(i, j, model, r2);
       for (int x = 0; x<3; ++x)
         for (int y = 0; y<3; ++y) {
           H(i*3 + y, j*3 + x) = -B(y, x);
@@ -149,7 +149,7 @@ RealMatrix hessian(const AtomicGroup& model, const double radius) {
 
   // Now handle the diagonal...
   for (int i=0; i<n; ++i) {
-    RealMatrix B(3,3);
+    DoubleMatrix B(3,3);
     for (int j=0; j<n; ++j) {
       if (j == i)
         continue;
@@ -169,11 +169,11 @@ RealMatrix hessian(const AtomicGroup& model, const double radius) {
 
 
 
-RealMatrix submatrix(const RealMatrix& M, const Range& rows, const Range& cols) {
+DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& cols) {
   uint m = rows.second - rows.first + 1;
   uint n = cols.second - cols.first + 1;
 
-  RealMatrix A(m,n);
+  DoubleMatrix A(m,n);
   for (uint i=0; i < n; ++i)
     for (uint j=0; j < m; ++j)
       A(j,i) = M(j+rows.first, i+cols.first);
@@ -183,26 +183,80 @@ RealMatrix submatrix(const RealMatrix& M, const Range& rows, const Range& cols) 
 
 
 
-boost::tuple<RealMatrix, RealMatrix> eigenDecomp(RealMatrix& A, RealMatrix& B) {
+boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
 
-  //  writeAsciiMatrix("A.asc", A, "");
-  //writeAsciiMatrix("B.asc", B, "");
+  writeAsciiMatrix("A.asc", A, "");
+  writeAsciiMatrix("B.asc", B, "");
 
-  RealMatrix AA = A.copy();
-  RealMatrix BB = B.copy();
 
-  RealMatrix Bi = invert(BB);
-  AA *= Bi;
-  boost::tuple<RealMatrix, RealMatrix, RealMatrix> res = svd(AA);
-  RealMatrix U = boost::get<0>(res);
-  RealMatrix S = boost::get<1>(res);
+  DoubleMatrix AA = A.copy();
+  DoubleMatrix BB = B.copy();
 
-  vector<uint> indices = sortedIndex(S);
-  S = permuteRows(S, indices);
-  U = permuteColumns(U, indices);
+  f77int itype = 1;
+  char jobz = 'V';
+  char uplo = 'U';
+  char range = 'I';
+  f77int n = AA.rows();
+  f77int lda = n;
+  f77int ldb = n;
+  double vl = 0.0;
+  double vu = 0.0;
+  f77int il = 7;
+  f77int iu = n;
 
-  boost::tuple<RealMatrix, RealMatrix> result(S, U);
+  char dpar = 'S';
+  double abstol = 2.0 * dlamch_(&dpar);
+  //double abstol = -1.0;
+
+  f77int m;
+  DoubleMatrix W(n, 1);
+  DoubleMatrix Z(n, n);
+  f77int ldz = n;
+
+  f77int lwork = -1;
+  f77int info;
+  double *work = new double[1];
+
+  f77int *iwork = new f77int[5*n];
+  f77int *ifail = new f77int[n];
+
+  dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
+  if (info != 0) {
+    cerr << "ERROR- ssygvx returned " << info << endl;
+    exit(-1);
+  }
+
+  lwork = work[0];
+  delete[] work;
+  work = new double[lwork];
+  dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
+  if (info != 0) {
+    cerr << "ERROR- ssygvx returned " << info << endl;
+    exit(-1);
+  }
+
+  if (m != n-6) {
+    cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
+    exit(-10);
+  }
+ 
+  // normalize
+  for (int i=0; i<m; ++i) {
+    double norm = 0.0;
+    for (int j=0; j<n; ++j)
+      norm += (AA(j,i) * AA(j,i));
+    norm = sqrt(norm);
+    for (int j=0; j<n; ++j)
+      AA(j,i) /= norm;
+  }
+
+  vector<uint> indices = sortedIndex(W);
+  W = permuteRows(W, indices);
+  AA = permuteColumns(AA, indices);
+
+  boost::tuple<DoubleMatrix, DoubleMatrix> result(W, AA);
   return(result);
+
 }
 
 
@@ -237,10 +291,10 @@ void assignMasses(AtomicGroup& grp, const string& name) {
 }
 
 
-RealMatrix getMasses(const AtomicGroup& grp) {
+DoubleMatrix getMasses(const AtomicGroup& grp) {
   uint n = grp.size();
 
-  RealMatrix M(3*n,3*n);
+  DoubleMatrix M(3*n,3*n);
   for (uint i=0, k=0; i<n; ++i, k += 3) {
     M(k,k) = grp[i]->mass();
     M(k+1,k+1) = grp[i]->mass();
@@ -251,7 +305,7 @@ RealMatrix getMasses(const AtomicGroup& grp) {
 }
 
 
-void showSize(const string& s, const RealMatrix& M) {
+void showSize(const string& s, const DoubleMatrix& M) {
   cerr << s << M.rows() << " x " << M.cols() << endl;
 }
 
@@ -275,16 +329,21 @@ int main(int argc, char *argv[]) {
     cerr << "Environment size is " << environment.size() << endl;
   }
 
-  RealMatrix H = hessian(composite, cutoff);
+  DoubleMatrix H = hessian(composite, cutoff);
 
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
 
   uint n = H.cols() - 1;
-  RealMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
-  RealMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  RealMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
-  RealMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
+  DoubleMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
+  DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
+  DoubleMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
+  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
+
+  writeAsciiMatrix("Hss.asc", Hss, "");
+  writeAsciiMatrix("Hee.asc", Hee, "");
+  writeAsciiMatrix("Hse.asc", Hse, "");
+  writeAsciiMatrix("Hes.asc", Hes, "");
 
 
   Timer<WallTimer> timer;
@@ -295,30 +354,31 @@ int main(int argc, char *argv[]) {
       showSize("Hee = ", Hee);
   }
 
-  RealMatrix Heei = Math::invert(Hee);
+  DoubleMatrix Heei = Math::invert(Hee);
   if (verbosity > 0) {
     timer.stop();
     cerr << timer << endl;
   }
 
-  RealMatrix Hssp = Hss - Hse * Heei * Hes;
-  RealMatrix Ms = getMasses(subset);
-  RealMatrix Me = getMasses(environment);
-  RealMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
+  writeAsciiMatrix("Heei.asc", Heei, "");
+  DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
+  DoubleMatrix Ms = getMasses(subset);
+  DoubleMatrix Me = getMasses(environment);
+  DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
   if (verbosity > 0) {
     cerr << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
     timer.start();
   }
-  boost::tuple<RealMatrix, RealMatrix> eigenpairs = eigenDecomp(Hssp, Msp);
+  boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs = eigenDecomp(Hssp, Msp);
   if (verbosity > 0) {
     timer.stop();
     cerr << "done\n";
     cerr << timer << endl;
   }
     
-  RealMatrix Ds = boost::get<0>(eigenpairs);
-  RealMatrix Us = boost::get<1>(eigenpairs);
+  DoubleMatrix Ds = boost::get<0>(eigenpairs);
+  DoubleMatrix Us = boost::get<1>(eigenpairs);
 
   writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr);
   writeAsciiMatrix(prefix + "_Us.asc", Us, hdr);
