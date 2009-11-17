@@ -254,7 +254,7 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
     exit(-1);
   }
 
-  lwork = work[0];
+  lwork = static_cast<f77int>(work[0]);
   delete[] work;
   work = new double[lwork];
   dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
@@ -360,6 +360,10 @@ int main(int argc, char *argv[]) {
   DoubleMatrix H = hessian(composite, cutoff);
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
+
+  ostringstream oss;
+  oss << "l = " << l;
+  writeAsciiMatrix("H.asc", H, oss.str(), false, ScientificMatrixFormatter<double>());
 
   uint n = H.cols() - 1;
   DoubleMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
