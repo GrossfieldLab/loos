@@ -541,17 +541,12 @@ Below is a summary of the tools currently distributed with LOOS.  To get a
 detailed summary of the command line arguments, run the program without
 arguments or using "-h".  A growing number of tools also support the
 "--fullhelp" options, which will display more detailed help
-information including examples of how to use the tool.  Many of the
-programs are simulation package 
-agnostic (meaning they'll work equally well with CHARMM/NAMD or Amber file
-formats), but some still specifically assume CHARMM formats.  These are
-mostly membrane-specific programs, which we felt are less likely to be used
-with Amber formats. 
+information including examples of how to use the tool.  All of the tools are now package agnostic, in the sense that they will take any of the file formats supported by LOOS as input.
 
-NOTE: At present, LOOS assumes that all periodic boxes are rectangular, and
+At present, LOOS assumes that all periodic boxes are rectangular, and
 will produce incorrect answers if trajectories using different box shapes
 (eg truncated octahedron) are used in programs which make use of
-periodicity (eg rdf).
+periodicity (eg rdf).  We have no immediate plans to generalize the code to handle other periodicities, but are willing to reconsider if there is significant demand from users.
 
 
 <HR>
