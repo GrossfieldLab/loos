@@ -170,14 +170,17 @@ DoubleMatrix hessian(const AtomicGroup& model, const double radius) {
 
 
 DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& cols) {
-  uint m = rows.second - rows.first + 1;
-  uint n = cols.second - cols.first + 1;
+  uint m = rows.second - rows.first;
+  uint n = cols.second - cols.first;
+
+  cerr << boost::format("Probe - submatrix(%dx%d, (%d,%d), (%d,%d))\n") % M.rows() % M.cols() % rows.first % rows.second % cols.first % cols.second;
 
   DoubleMatrix A(m,n);
   for (uint i=0; i < n; ++i)
     for (uint j=0; j < m; ++j)
       A(j,i) = M(j+rows.first, i+cols.first);
 
+  cerr << boost::format("Probe - submatrix : A=%dx%d\n") % A.rows() % A.cols();
   return(A);
 }
 
@@ -352,6 +355,24 @@ int main(int argc, char *argv[]) {
   AtomicGroup environment = selectAtoms(model, environment_selection);
   AtomicGroup composite = subset + environment;
 
+  ofstream ofs("composite.xml");
+  ofs << composite;
+  ofs.close();
+
+  ofs.open("subset.xml");
+  ofs << subset;
+  ofs.close();
+
+  ofs.open("environment.xml");
+  ofs << environment;
+  ofs.close();
+
+  ofs.open("atom_dump.txt");
+  ofs << "size = " << composite.size() << endl;
+  for (uint i=0; i<composite.size(); ++i)
+    ofs << i << "\t" << composite[i]->id() << endl;
+  ofs.close();
+
   if (verbosity > 1) {
     cerr << "Subset size is " << subset.size() << endl;
     cerr << "Environment size is " << environment.size() << endl;
@@ -364,12 +385,18 @@ int main(int argc, char *argv[]) {
   ostringstream oss;
   oss << "l = " << l;
   writeAsciiMatrix("H.asc", H, oss.str(), false, ScientificMatrixFormatter<double>());
+  showSize("H ", H);
 
-  uint n = H.cols() - 1;
-  DoubleMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
+  uint n = H.rows();
+
+  DoubleMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
+  showSize("Hss ", Hss);
   DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  DoubleMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
-  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
+  showSize("Hee ", Hee);
+  DoubleMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
+  showSize("Hse ", Hse);
+  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
+  showSize("Hes ", Hes);
 
   writeAsciiMatrix("Hss.asc", Hss, "", false, ScientificMatrixFormatter<double>());
   writeAsciiMatrix("Hee.asc", Hee, "", false, ScientificMatrixFormatter<double>());
