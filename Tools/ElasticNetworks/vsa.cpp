@@ -59,6 +59,10 @@ string subset_selection, environment_selection, model_name, prefix, mass_file;
 double cutoff;
 int verbosity = 0;
 
+double baseline;
+uint periodicity;
+double massscale;
+
 
 const int width = 24;
 const int precision = 20;
@@ -73,6 +77,9 @@ void parseOptions(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
+      ("baseline,b", po::value<double>(&baseline)->default_value(1.0), "Baseline mass for atoms")
+      ("period,p", po::value<uint>(&periodicity)->default_value(5), "Periodicity of mass perturbation")
+      ("scale,s", po::value<double>(&massscale)->default_value(0.1), "Scaling for mass perturbation")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level");
 
 
@@ -337,14 +344,21 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);
-  if (mass_file.empty())
-    cerr << "WARNING- using default masses\n";
-  else
-    assignMasses(model, mass_file);
-
   AtomicGroup subset = selectAtoms(model, subset_selection);
   AtomicGroup environment = selectAtoms(model, environment_selection);
   AtomicGroup composite = subset + environment;
+
+  if (mass_file.empty()) {
+    cerr << "WARNING- Assigning arbitrary masses based on partitioning...\n";
+    uint k = 0;
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+      (*i)->mass(baseline + ((k++)%periodicity) * massscale);
+    for (AtomicGroup::iterator i = environment.begin(); i != environment.end(); ++i)
+      (*i)->mass(baseline + ((k++)%periodicity) * massscale);
+    
+  } else
+    assignMasses(model, mass_file);
+
 
   ofstream ofs("composite.xml");
   ofs << composite;
