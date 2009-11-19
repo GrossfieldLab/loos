@@ -60,6 +60,10 @@ double cutoff;
 int verbosity = 0;
 
 
+const int width = 24;
+const int precision = 20;
+
+
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -216,8 +220,8 @@ DoubleMatrix invertMatrix(const DoubleMatrix& M) {
 
 boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
 
-  writeAsciiMatrix("A.asc", A, "", false, ScientificMatrixFormatter<double>());
-  writeAsciiMatrix("B.asc", B, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("A.asc", A, "", false, ScientificMatrixFormatter<double>(width, precision));
+  writeAsciiMatrix("B.asc", B, "", false, ScientificMatrixFormatter<double>(width, precision));
 
 
   DoubleMatrix AA = A.copy();
@@ -384,7 +388,7 @@ int main(int argc, char *argv[]) {
 
   ostringstream oss;
   oss << "l = " << l;
-  writeAsciiMatrix("H.asc", H, oss.str(), false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("H.asc", H, oss.str(), false, ScientificMatrixFormatter<double>(width, precision));
   showSize("H ", H);
 
   uint n = H.rows();
@@ -398,10 +402,10 @@ int main(int argc, char *argv[]) {
   DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
   showSize("Hes ", Hes);
 
-  writeAsciiMatrix("Hss.asc", Hss, "", false, ScientificMatrixFormatter<double>());
-  writeAsciiMatrix("Hee.asc", Hee, "", false, ScientificMatrixFormatter<double>());
-  writeAsciiMatrix("Hse.asc", Hse, "", false, ScientificMatrixFormatter<double>());
-  writeAsciiMatrix("Hes.asc", Hes, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Hss.asc", Hss, "", false, ScientificMatrixFormatter<double>(width, precision));
+  writeAsciiMatrix("Hee.asc", Hee, "", false, ScientificMatrixFormatter<double>(width, precision));
+  writeAsciiMatrix("Hse.asc", Hse, "", false, ScientificMatrixFormatter<double>(width, precision));
+  writeAsciiMatrix("Hes.asc", Hes, "", false, ScientificMatrixFormatter<double>(width, precision));
 
 
   Timer<WallTimer> timer;
@@ -418,12 +422,12 @@ int main(int argc, char *argv[]) {
     cerr << timer << endl;
   }
 
-  writeAsciiMatrix("Heei.asc", Heei, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Heei.asc", Heei, "", false, ScientificMatrixFormatter<double>(width, precision));
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
   DoubleMatrix Ms = getMasses(subset);
   DoubleMatrix Me = getMasses(environment);
-  writeAsciiMatrix("Ms.asc", Ms, "", false, ScientificMatrixFormatter<double>());
-  writeAsciiMatrix("Me.asc", Me, "", false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix("Ms.asc", Ms, "", false, ScientificMatrixFormatter<double>(width, precision));
+  writeAsciiMatrix("Me.asc", Me, "", false, ScientificMatrixFormatter<double>(width, precision));
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
   if (verbosity > 0) {
@@ -440,6 +444,6 @@ int main(int argc, char *argv[]) {
   DoubleMatrix Ds = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
 
-  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, ScientificMatrixFormatter<double>());
-  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr, false, ScientificMatrixFormatter<double>());
+  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, ScientificMatrixFormatter<double>(width, precision));
+  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr, false, ScientificMatrixFormatter<double>(width, precision));
 }
