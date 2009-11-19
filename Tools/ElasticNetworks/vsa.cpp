@@ -220,6 +220,7 @@ DoubleMatrix invertMatrix(const DoubleMatrix& M) {
 
 boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
 
+
   writeAsciiMatrix("A.asc", A, "", false, ScientificMatrixFormatter<double>(width, precision));
   writeAsciiMatrix("B.asc", B, "", false, ScientificMatrixFormatter<double>(width, precision));
 
@@ -236,7 +237,7 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
   f77int ldb = n;
   double vl = 0.0;
   double vu = 0.0;
-  f77int il = 7;
+  f77int il = 1;
   f77int iu = n;
 
   char dpar = 'S';
@@ -270,26 +271,12 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
     exit(-1);
   }
 
-  if (m != n-6) {
-    cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
-    exit(-10);
-  }
- 
-  // normalize
-  for (int i=0; i<m; ++i) {
-    double norm = 0.0;
-    for (int j=0; j<n; ++j)
-      norm += (AA(j,i) * AA(j,i));
-    norm = sqrt(norm);
-    for (int j=0; j<n; ++j)
-      AA(j,i) /= norm;
-  }
+//   if (m != n-6) {
+//     cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
+//     exit(-10);
+//   }
 
-  vector<uint> indices = sortedIndex(W);
-  W = permuteRows(W, indices);
-  AA = permuteColumns(AA, indices);
-
-  boost::tuple<DoubleMatrix, DoubleMatrix> result(W, AA);
+  boost::tuple<DoubleMatrix, DoubleMatrix> result(W, Z);
   return(result);
 
 }
