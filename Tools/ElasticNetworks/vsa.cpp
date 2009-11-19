@@ -350,6 +350,7 @@ int main(int argc, char *argv[]) {
 
   if (mass_file.empty()) {
     cerr << "WARNING- Assigning arbitrary masses based on partitioning...\n";
+    cerr << "Baseline = " << baseline << ", period = " << periodicity << ", scale = " << massscale << endl;
     uint k = 0;
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
       (*i)->mass(baseline + ((k++)%periodicity) * massscale);
