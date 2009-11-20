@@ -63,6 +63,8 @@ double baseline;
 uint periodicity;
 double massscale;
 
+bool automass;
+
 
 const int width = 24;
 const int precision = 20;
@@ -76,6 +78,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
+      ("automass,a", po::value<bool>(&automass)->default_value(false), "Automatically perturb masses")
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
       ("baseline,b", po::value<double>(&baseline)->default_value(1.0), "Baseline mass for atoms")
       ("period,p", po::value<uint>(&periodicity)->default_value(5), "Periodicity of mass perturbation")
@@ -349,13 +352,16 @@ int main(int argc, char *argv[]) {
   AtomicGroup composite = subset + environment;
 
   if (mass_file.empty()) {
-    cerr << "WARNING- Assigning arbitrary masses based on partitioning...\n";
-    cerr << "Baseline = " << baseline << ", period = " << periodicity << ", scale = " << massscale << endl;
-    uint k = 0;
-    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
-      (*i)->mass(baseline + ((k++)%periodicity) * massscale);
-    for (AtomicGroup::iterator i = environment.begin(); i != environment.end(); ++i)
-      (*i)->mass(baseline + ((k++)%periodicity) * massscale);
+    if (automass) {
+      cerr << "WARNING- Assigning arbitrary masses based on partitioning...\n";
+      cerr << "Baseline = " << baseline << ", period = " << periodicity << ", scale = " << massscale << endl;
+      uint k = 0;
+      for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+        (*i)->mass(baseline + ((k++)%periodicity) * massscale);
+      for (AtomicGroup::iterator i = environment.begin(); i != environment.end(); ++i)
+        (*i)->mass(baseline + ((k++)%periodicity) * massscale);
+    } else
+      cerr << "WARNING- using default atom masses.\n";
     
   } else
     assignMasses(model, mass_file);
