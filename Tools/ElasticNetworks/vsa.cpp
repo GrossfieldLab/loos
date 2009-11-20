@@ -170,8 +170,8 @@ RealMatrix hessian(const AtomicGroup& model, const double radius) {
 
 
 RealMatrix submatrix(const RealMatrix& M, const Range& rows, const Range& cols) {
-  uint m = rows.second - rows.first + 1;
-  uint n = cols.second - cols.first + 1;
+  uint m = rows.second - rows.first;
+  uint n = cols.second - cols.first;
 
   RealMatrix A(m,n);
   for (uint i=0; i < n; ++i)
@@ -184,9 +184,6 @@ RealMatrix submatrix(const RealMatrix& M, const Range& rows, const Range& cols) 
 
 
 boost::tuple<RealMatrix, RealMatrix> eigenDecomp(RealMatrix& A, RealMatrix& B) {
-
-  //  writeAsciiMatrix("A.asc", A, "");
-  //writeAsciiMatrix("B.asc", B, "");
 
   RealMatrix AA = A.copy();
   RealMatrix BB = B.copy();
@@ -281,10 +278,10 @@ int main(int argc, char *argv[]) {
   uint l = subset.size() * 3;
 
   uint n = H.cols() - 1;
-  RealMatrix Hss = submatrix(H, Range(0,l-1), Range(0,l-1));
+  RealMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
   RealMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  RealMatrix Hse = submatrix(H, Range(0,l-1), Range(l, n));
-  RealMatrix Hes = submatrix(H, Range(l, n), Range(0, l-1));
+  RealMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
+  RealMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
 
 
   Timer<WallTimer> timer;
