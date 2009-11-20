@@ -337,7 +337,7 @@ namespace loos {
 
       double num = lamsum - 2.0 * dblsum;
       double co;
-      if (abs(num) <= tol)
+      if (fabs(num) <= tol)
         co = 1.0;
       else
         co = 1.0 - sqrt( (lamsum - 2.0 * dblsum) / lamsum );
