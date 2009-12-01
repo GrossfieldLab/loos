@@ -303,6 +303,9 @@ int main(int argc, char *argv[]) {
   RealMatrix Me = getMasses(environment);
   RealMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
 
+  writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr);
+  writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr);
+
   if (verbosity > 0) {
     cerr << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
     timer.start();
