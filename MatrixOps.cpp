@@ -316,20 +316,24 @@ namespace loos {
     }
 
 
-    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol) {
-      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows()))
-        throw(NumericalError("Matrices have incorrect dimensions"));
-      if (lamA.rows() > UA.cols())
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol, uint nmodes) {
+      if (UA.rows() != UB.rows())
+        throw(NumericalError("Matrices have different number of rows"));
+      if (lamA.rows() > UA.cols() || lamB.rows() > UB.cols())
         throw(NumericalError("More eigenvalues than eigenvectors!"));
 
-      uint n = lamA.rows();
+      if (nmodes == 0)
+        nmodes = lamA.rows();
+      else if (nmodes > lamA.rows() || nmodes > lamB.rows())
+        throw(NumericalError("More modes requested than eigenvalues"));
+
       double lamsum = 0.0;
-      for (uint i=0; i<n; ++i)
+      for (uint i=0; i<nmodes; ++i)
         lamsum += lamA[i] + lamB[i];
 
       double dblsum = 0.0;
-      for (uint i=0; i<n; ++i)
-        for (uint j=0; j<n; ++j) {
+      for (uint i=0; i<nmodes; ++i)
+        for (uint j=0; j<nmodes; ++j) {
           double d = colDotProd(UA, i, UB, j);
           dblsum += sqrt(lamA[i]*lamB[j]) * d * d;
         }
