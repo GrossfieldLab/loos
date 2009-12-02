@@ -418,7 +418,8 @@ public:
     }
 
     TimeSeries<T> correl(const int max_time, 
-                         const int interval=1,
+                         const int interval=1, 
+                         const bool normalize=true,
                          T tol=1.0e-8) const {
 
       TimeSeries<T> data = copy();
@@ -431,16 +432,18 @@ public:
       TimeSeries<T> c(n, 0.0);
 
       // normalize the data
-      data -= data.average();
-      T dev = data.stdev();
-        
-      // drop through if this is a constant array
-      if (dev < tol) {
-        c._data.assign(n, 1.0);
-        return(c);
+      if (normalize) {
+          data -= data.average();
+          T dev = data.stdev();
+            
+          // drop through if this is a constant array
+          if (dev < tol) {
+            c._data.assign(n, 1.0);
+            return(c);
+          }
+            
+          data /= dev;
       }
-        
-      data /= dev;
 
       std::vector<int> num_pairs(n);
       num_pairs.assign(n, 0);
@@ -455,7 +458,7 @@ public:
 
       }
 
-      // Normalize the correlation function
+      // Divide each value by the number of pairs used to generated it
       for (uint i = 0; i < n; i++) {
         c[i] /= num_pairs[i];
       }
