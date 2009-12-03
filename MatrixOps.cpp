@@ -317,7 +317,7 @@ namespace loos {
 
 
     double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol) {
-      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols()))
+      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows() && lamA.rows() == UA.cols()))
         throw(NumericalError("Matrices have different dimensions"));
 
       uint nmodes = UA.cols();
