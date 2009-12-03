@@ -106,8 +106,17 @@ namespace loos {
      * "eigenvalues" are actually the singular values (and hence the
      * square-root of the eigenvalues of AA'
      *
+     * Note: It is possible for double sum to be slightly greater than
+     * 2x the sum of the eigenvalues, which results in trying to take
+     * the square root of a negative number.  To prevent this, we
+     * actually use the absolute value of the difference.
+     *
+     * Note: Due to rounding errors in single precision, it is
+     * possible that the covariance overlap of a set of eigenpairs
+     * against itself will not come out to be exactly 1, but will be
+     * close (i.e. to within 1e-3).
      */
-    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol = 1e-3);
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB);
   };
 
 

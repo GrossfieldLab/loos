@@ -316,7 +316,7 @@ namespace loos {
     }
 
 
-    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol) {
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB) {
       if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows() && lamA.rows() == UA.cols()))
         throw(NumericalError("Matrices have different dimensions"));
 
@@ -335,11 +335,7 @@ namespace loos {
       
 
       double num = lamsum - 2.0 * dblsum;
-      double co;
-      if (fabs(num) <= tol)
-        co = 1.0;
-      else
-        co = 1.0 - sqrt( (lamsum - 2.0 * dblsum) / lamsum );
+      double co = 1.0 - sqrt( fabs(num) / lamsum );
 
       return(co);
     }
