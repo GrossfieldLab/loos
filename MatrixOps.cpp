@@ -316,16 +316,11 @@ namespace loos {
     }
 
 
-    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol, uint nmodes) {
-      if (UA.rows() != UB.rows())
-        throw(NumericalError("Matrices have different number of rows"));
-      if (lamA.rows() > UA.cols() || lamB.rows() > UB.cols())
-        throw(NumericalError("More eigenvalues than eigenvectors!"));
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol) {
+      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols()))
+        throw(NumericalError("Matrices have different dimensions"));
 
-      if (nmodes == 0)
-        nmodes = lamA.rows();
-      else if (nmodes > lamA.rows() || nmodes > lamB.rows())
-        throw(NumericalError("More modes requested than eigenvalues"));
+      uint nmodes = UA.cols();
 
       double lamsum = 0.0;
       for (uint i=0; i<nmodes; ++i)

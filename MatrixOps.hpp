@@ -107,7 +107,7 @@ namespace loos {
      * square-root of the eigenvalues of AA'
      *
      */
-    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol = 1e-3, uint nmodes = 0);
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB, const double tol = 1e-3);
   };
 
 
