@@ -277,11 +277,24 @@ int main(int argc, char *argv[]) {
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
 
-  uint n = H.cols() - 1;
+  uint n = H.cols();
+
+  ScientificMatrixFormatter<double> sp(24,18);
+
   RealMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
+  if (verbosity > 1)
+    showSize("Hss = ", Hss);
+  writeAsciiMatrix("Hss.asc", Hss, "", false, sp);
+
   RealMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
+  if (verbosity > 1)
+    showSize("Hee = ", Hee);
+  writeAsciiMatrix("Hee.asc", Hee, "", false, sp);
+
   RealMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
+  writeAsciiMatrix("Hse.asc", Hse, "", false, sp);
   RealMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
+  writeAsciiMatrix("Hes.asc", Hes, "", false, sp);
 
 
   Timer<WallTimer> timer;
@@ -297,14 +310,22 @@ int main(int argc, char *argv[]) {
     timer.stop();
     cerr << timer << endl;
   }
+  writeAsciiMatrix("Heei.asc", Heei, "", false, sp);
 
   RealMatrix Hssp = Hss - Hse * Heei * Hes;
+  writeAsciiMatrix("Hssp.asc", Hssp, "", false, sp);
   RealMatrix Ms = getMasses(subset);
+  writeAsciiMatrix("Ms.asc", Ms, "", false, sp);
   RealMatrix Me = getMasses(environment);
-  RealMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
+  if (verbosity > 1)
+    showSize("Me = ", Me);
 
-  writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr);
-  writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr);
+  writeAsciiMatrix("Me.asc", Me, "", false, sp);
+  RealMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
+  writeAsciiMatrix("Msp.asc", Hss, "", false, sp);
+
+  //writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr);
+  //writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr);
 
   if (verbosity > 0) {
     cerr << "Running eigendecomp of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
