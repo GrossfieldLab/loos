@@ -224,11 +224,12 @@ namespace loos {
     void openStream(const std::string& fname, const bool append = false) {
       std::ios_base::openmode mode = std::ios_base::out | std::ios_base::binary;
       if (append)
-        mode |= std::ios_base::ate;
+        mode |= std::ios_base::in;
       else
         mode |= std::ios_base::trunc;
 
       _stream = new std::fstream(fname.c_str(), mode);
+      std::streampos p = _stream->tellg();
       nodelete = false;
     }
 
