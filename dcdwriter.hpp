@@ -32,6 +32,10 @@
 #include <exception>
 #include <vector>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <loos_defs.hpp>
 
 #include <AtomicGroup.hpp>
@@ -90,8 +94,9 @@ namespace loos {
       nodelete(false),
       _header_written(false)
     {
+      struct stat statbuf;
 
-      if (append) {
+      if (append && !stat(s.c_str(), &statbuf)) {
         readExistingHeader(s);
         openStream(s, true);
       } else {
@@ -113,8 +118,9 @@ namespace loos {
       nodelete(false),
       _header_written(false)
     {
+      struct stat statbuf;
       
-      if (append) {
+      if (append && !stat(s.c_str(), &statbuf)) {
         readExistingHeader(s);
         openStream(s, true);
       } else {
@@ -136,7 +142,9 @@ namespace loos {
       nodelete(false),
       _header_written(false)
     {
-      if (append) {
+      struct stat statbuf;
+
+      if (append && !stat(s.c_str(), &statbuf)) {
         readExistingHeader(s);
         openStream(s, true);
       } else

@@ -168,7 +168,7 @@ namespace loos {
     _natoms = dcd.natoms();
     _has_box = dcd.hasPeriodicBox();
     _timestep = dcd.timestep();
-    _nsteps = dcd.nframes();
+    _current = _nsteps = dcd.nframes();
     _titles = dcd.titles();
   }
 
