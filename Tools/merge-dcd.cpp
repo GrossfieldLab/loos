@@ -30,8 +30,80 @@
 #include <loos.hpp>
 
 using namespace std;
-using namespace loos;
+#include <boost/program_options.hpp>
 
+using namespace loos;
+namespace po = boost::program_options;
+
+// global for parsing program options
+string model_name, output_traj, output_traj_downsample;
+string center_selection;
+vector<string> input_dcd_list;
+int downsample_rate;
+
+
+void parseOptions(int argc, char *argv[])
+    {
+    try
+        {
+        po::options_description generic("Allowed options"); 
+        generic.add_options()
+            ("help", "Produce this message")
+            ("downsample-dcd", po::value<string>(&output_traj_downsample),
+                                    "Downsampled DCD, must be synced with output_traj")
+            ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
+                                    "Write every nth frame to downsampled DCD")
+            ("centering-selection", 
+                    po::value<string>(&center_selection)->default_value(string("")),
+                                    "Selection for centering")
+            ("input_trajs", po::value< vector<string> >()->multitoken(), "Trajs to merge")
+            ;
+            
+        po::options_description hidden("Hidden options");
+        hidden.add_options()
+            ("model", po::value<string>(&model_name), "Model filename")
+            ("output_traj", po::value<string>(&output_traj), "DCD filename")
+            ;
+
+        po::options_description command_line;
+        command_line.add(hidden).add(generic);
+
+        po::positional_options_description p;
+        p.add("model", 1);
+        p.add("output_traj", 1);
+
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc,argv).
+                    options(command_line).positional(p).run(), vm);
+        po::notify(vm);
+
+        if ( vm.count("help") || !( vm.count("model") &&
+                                    vm.count("output_traj") &&
+                                    vm.count("input_trajs")
+                                  )
+           )                        
+            {
+            cerr << "Usage: " << argv[0]
+                 << " model output_traj "
+                 << "[options] "
+                 << "--input_trajs file1 [file2 ...]"
+                 << endl;
+            cerr << generic;
+            exit(-1);
+            }
+
+        input_dcd_list = vm["input_trajs"].as<vector<string> >();
+
+        }
+    catch (exception &e)
+        {
+        cerr << "Error: " << e.what() << endl;
+        exit(-1);
+        }
+    }
+
+
+#if 0
 void Usage()
     {
     cerr << "Usage: merge-dcd system recenter-selection output-dcdname "
@@ -41,9 +113,12 @@ void Usage()
     cerr << "The input dcd files are concatenated in the command line order."
          << endl;
     }
+#endif
 
 int main(int argc, char *argv[])
     {
+    parseOptions(argc, argv);
+#if 0
     if ( (argc <=1) || 
          ( (argc >=2) && ((strncmp(argv[1], "-h", 2) == 0) ) ) ||
          (argc < 5) )
@@ -51,23 +126,32 @@ int main(int argc, char *argv[])
         Usage();
         exit(-1);
         }
+#endif
 
-    cout << invocationHeader(argc, argv) << endl;
-
-    AtomicGroup system = createSystem(argv[1]);
-    string selection_string = string(argv[2]);
+    cout << invocationHeader(argc, argv);
+    AtomicGroup system = createSystem(model_name);
     bool do_recenter = true;
-    if ( selection_string.length() == 0 )
+    if ( center_selection.length() == 0 )
         {
         do_recenter = false;
         }
 
+    DCDWriter output(output_traj, true);
+
+    DCDWriter *output_downsample;
+    bool do_downsample = (output_traj_downsample.length() > 0);
+    if (do_downsample)
+        {
+        output_downsample = new DCDWriter(output_traj_downsample, true);
+        }
+
+    // Set up to do the recentering
     vector<AtomicGroup> molecules;
     AtomicGroup center;
     vector<AtomicGroup>::iterator m;
     if ( do_recenter )
         {
-        center = selectAtoms(system, selection_string);
+        center = selectAtoms(system, center_selection);
 
         if ( system.allHaveProperty(Atom::bondsbit) )
             {
@@ -79,7 +163,6 @@ int main(int argc, char *argv[])
             }
         }
     
-    DCDWriter output(argv[3], true);
     uint original_num_frames = output.framesWritten();
     cout << "Target trajectory " 
          << argv[3]
@@ -89,11 +172,11 @@ int main(int argc, char *argv[])
          << endl;
 
     uint previous_frames = 0;
-    for (int file_index=4; file_index<argc; file_index++ )
+    vector<string>::iterator f;
+    for (f=input_dcd_list.begin(); f!=input_dcd_list.end(); ++f)
         {
-        pTraj traj=createTrajectory(argv[file_index], system);
-        cout << "File: " << argv[file_index]
-             << ": " << traj->nframes();
+        pTraj traj=createTrajectory(*f, system);
+        cout << "File: " << *f << ": " << traj->nframes();
 
         if ( previous_frames + traj->nframes() <= original_num_frames) 
             // all of this file is contained in the existing file, skip it
@@ -139,6 +222,10 @@ int main(int argc, char *argv[])
                     }
 
                 output.writeFrame(system);
+                if ( do_downsample && (previous_frames % downsample_rate == 0) )
+                    {
+                    output_downsample->writeFrame(system);
+                    }
                 previous_frames++;
                 }
             }
