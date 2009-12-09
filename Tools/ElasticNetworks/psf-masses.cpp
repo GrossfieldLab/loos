@@ -7,9 +7,6 @@
 
   Takes masses from a PSF file and places them into the occupancy field of a PDB.
       
-  Notes:
-
-    o Assumes that the atoms are in the same order between the PDB and the PSF
 */
 
 
@@ -45,6 +42,19 @@ using namespace loos;
 using namespace std;
 
 
+pAtom findMatch(const pAtom& probe, const AtomicGroup& grp) {
+  for (AtomicGroup::const_iterator i = grp.begin(); i != grp.end(); ++i)
+    if ((*i)->name() == probe->name() && (*i)->id() == probe->id()
+        && (*i)->resname() == probe->resname() && (*i)->resid() == probe->resid()
+        && (*i)->segid() == probe->segid())
+      return(*i);
+
+  pAtom null;
+  return(null);
+}
+
+
+
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -57,22 +67,19 @@ int main(int argc, char *argv[]) {
   AtomicGroup source = createSystem(argv[1]);
   AtomicGroup target = createSystem(argv[2]);
 
-  if (source.size() != target.size()) {
-    cerr << "ERROR- the files have different number of atoms.\n";
-    exit(-1);
-  }
-
-  bool flag = false;
-  for (int i=0; i<source.size(); ++i) {
-    if (source[i]->name() != target[i]->name()) {
-      cerr << "ERROR- atom mismatch at position " << i << endl;
+  for (AtomicGroup::iterator i = target.begin(); i != target.end(); ++i) {
+    pAtom match = findMatch(*i, source);
+    if (!match) {
+      cerr << "ERROR- no match found for atom " << **i << endl;
       exit(-1);
     }
-    if (flag && ! source[i]->checkProperty(Atom::massbit)) {
-      flag = false;
-      cerr << "WARNING- the PSF does not appear to have masses...using defaults.\n";
+
+    if (!match->checkProperty(Atom::massbit)) {
+      cerr << "ERROR- Atom has no mass: " << *match << endl;
+      exit(-1);
     }
-    target[i]->occupancy(source[i]->mass());
+
+    (*i)->occupancy(match->mass());
   }
 
 
