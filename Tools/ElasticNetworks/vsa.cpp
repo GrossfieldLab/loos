@@ -58,6 +58,7 @@ double threshold = 1e-10;
 string subset_selection, environment_selection, model_name, prefix, mass_file;
 double cutoff;
 int verbosity = 0;
+bool occupancies_are_masses;
 
 
 
@@ -69,7 +70,8 @@ void parseOptions(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
-      ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level");
+      ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
+      ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field");
 
 
     po::options_description hidden("Hidden options");
@@ -258,13 +260,22 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);
-  if (mass_file.empty())
-    cerr << "WARNING- using default masses\n";
-  else
-    assignMasses(model, mass_file);
+  if (occupancies_are_masses) {
+
+    cerr << "Assigning masses from occupancies...\n";
+    for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
+      (*i)->mass((*i)->occupancy());
+
+  } else {
+    if (mass_file.empty())
+      cerr << "WARNING- using default masses\n";
+    else
+      assignMasses(model, mass_file);
+  }
 
   AtomicGroup subset = selectAtoms(model, subset_selection);
   AtomicGroup environment = selectAtoms(model, environment_selection);
+
   AtomicGroup composite = subset + environment;
 
   if (verbosity > 1) {
