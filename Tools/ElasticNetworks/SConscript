@@ -27,7 +27,7 @@ Import('env')
 clone = env.Clone()
 clone.Append(LIBS = ['loos'])
 
-apps = 'anm gnm enmovie flucc2b vsa'
+apps = 'anm gnm enmovie flucc2b vsa psf-masses'
 
 list = []
 
