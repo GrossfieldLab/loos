@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         }
 #endif
 
-    cout << invocationHeader(argc, argv);
+    cout << invocationHeader(argc, argv) << endl;
     AtomicGroup system = createSystem(model_name);
     bool do_recenter = true;
     if ( center_selection.length() == 0 )
@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
     
     uint original_num_frames = output.framesWritten();
     cout << "Target trajectory " 
-         << argv[3]
+         << output_traj
          << " has " 
          << original_num_frames
          << " frames."
