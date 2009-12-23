@@ -352,6 +352,6 @@ int main(int argc, char *argv[]) {
   DoubleMatrix Ds = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
 
-  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr);
-  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr);
+  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, sp);
+  writeAsciiMatrix(prefix + "_Us.asc", Us, hdr, false, sp);
 }

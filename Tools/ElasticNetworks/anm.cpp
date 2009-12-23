@@ -196,7 +196,10 @@ int main(int argc, char *argv[]) {
   timer.stop();
   cerr << boost::format(" done (%dx%d)\n") % H.rows() % H.cols();
   cerr << timer << endl;
-  writeAsciiMatrix(prefix + "_H.asc", H, header);
+
+  ScientificMatrixFormatter<double> sp(24, 18);
+
+  writeAsciiMatrix(prefix + "_H.asc", H, header, false, sp);
 
   cerr << "Calculating SVD - ";
   timer.start();
@@ -214,8 +217,8 @@ int main(int argc, char *argv[]) {
   reverseRows(Vt);
 
   // Write out the LSVs (or eigenvectors)
-  writeAsciiMatrix(prefix + "_U.asc", U, header);
-  writeAsciiMatrix(prefix + "_s.asc", S, header);
+  writeAsciiMatrix(prefix + "_U.asc", U, header, false, sp);
+  writeAsciiMatrix(prefix + "_s.asc", S, header, false, sp);
 
   // Now go ahead and compute the pseudo-inverse...
 
@@ -235,6 +238,6 @@ int main(int argc, char *argv[]) {
   // transposing it to sgemm in order to multiply the non-transposed
   // V...
   Matrix Hi = MMMultiply(Vt, U, true, true);
-  writeAsciiMatrix(prefix + "_Hi.asc", Hi, header);
+  writeAsciiMatrix(prefix + "_Hi.asc", Hi, header, false, sp);
 
 }
