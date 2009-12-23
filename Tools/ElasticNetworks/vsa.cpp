@@ -191,8 +191,8 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
   DoubleMatrix BB = B.copy();
 
   DoubleMatrix Bi = invert(BB);
-  AA *= Bi;
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> res = svd(AA);
+  Bi *= AA;
+  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> res = svd(Bi);
   DoubleMatrix U = boost::get<0>(res);
   DoubleMatrix S = boost::get<1>(res);
 
