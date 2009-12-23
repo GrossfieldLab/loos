@@ -60,17 +60,19 @@ namespace loos {
 
     //! Matrix-matrix multiply (using BLAS)
     RealMatrix MMMultiply(const RealMatrix& A, const RealMatrix& B, const bool transa = false, const bool transb = false);
+    DoubleMatrix MMMultiply(const DoubleMatrix& A, const DoubleMatrix& B, const bool transa = false, const bool transb = false);
 
     //! Pseudo-inverse of a matrix using the SVD
     RealMatrix invert(RealMatrix& A, const float eps = 1e-5);
+    DoubleMatrix invert(DoubleMatrix& A, const double eps = 1e-5);
 
     //! An identity matrix of size n
     RealMatrix eye(const uint n);
+    DoubleMatrix deye(const uint n);
 
 
     //! Overloaded operators for RealMatrix matrices (see important note below)
     void operator+=(RealMatrix& A, const RealMatrix& B);
-
     RealMatrix operator+(const RealMatrix& A, const RealMatrix& B);
     void operator-=(RealMatrix& A, const RealMatrix& B);
     RealMatrix operator-(const RealMatrix& A, const RealMatrix& B);
@@ -80,18 +82,107 @@ namespace loos {
     RealMatrix operator*(const RealMatrix& A, const RealMatrix& B);
     RealMatrix operator-(RealMatrix& A);
 
-    //! Returns a copy of the matrix with the columns permuted by the indices
-    RealMatrix permuteColumns(const RealMatrix& A, const std::vector<uint> indices);
-    //! Returns a copy of the matrix with the rows permuted by the indices
-    RealMatrix permuteRows(const RealMatrix& A, const std::vector<uint> indices);
-    
-    //! Reverses the columns in place
-    void reverseColumns(RealMatrix& A);
-    //! Reverses the rows in place
-    void reverseRows(RealMatrix& A);
+    void operator+=(DoubleMatrix& A, const DoubleMatrix& B);
+    DoubleMatrix operator+(const DoubleMatrix& A, const DoubleMatrix& B);
+    void operator-=(DoubleMatrix& A, const DoubleMatrix& B);
+    DoubleMatrix operator-(const DoubleMatrix& A, const DoubleMatrix& B);
+    void operator*=(DoubleMatrix& A, const double d);
+    DoubleMatrix operator*(const DoubleMatrix& A, const double d);
+    void operator*=(DoubleMatrix& A, const DoubleMatrix& B);
+    DoubleMatrix operator*(const DoubleMatrix& A, const DoubleMatrix& B);
+    DoubleMatrix operator-(DoubleMatrix& A);
 
-    //! Computes the overlap between two subspaces (matrices of column vectors)
-    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B, uint nmodes = 0);
+    //! Returns a copy of the matrix with the columns permuted by the indices
+    template<typename T>
+    T permuteColumns(const T& A, const std::vector<uint>& indices) {
+      if (indices.size() != A.cols())
+        throw(std::logic_error("indices to permuteColumns must match the size of the matrix"));
+
+      T B(A.rows(), A.cols());
+
+      for (uint i=0; i<A.cols(); ++i) {
+        if (indices[i] > A.cols())
+          throw(std::out_of_range("Permutation index is out of bounds"));
+        for (uint j=0; j<A.rows(); ++j)
+          B(j, i) = A(j, indices[i]);
+      }
+
+      return(B);
+    }
+
+    //! Returns a copy of the matrix with the rows permuted by the indices
+    template<typename T>
+    T permuteRows(const T& A, const std::vector<uint>& indices) {
+      if (indices.size() != A.rows())
+        throw(std::logic_error("indices to permuteRows must match the size of the matrix"));
+
+      T B(A.rows(), A.cols());
+
+      for (uint j=0; j<A.rows(); ++j) {
+        if (indices[j] > A.rows())
+          throw(std::out_of_range("Permutation index is out of bounds"));
+        for (uint i=0; i<A.cols(); ++i)
+          B(j, i) = A(indices[j], i);
+      }
+
+      return(B);
+    }
+
+    template<typename T>
+    void reverseColumns(T& A) {
+      uint m = A.rows();
+      uint n = A.cols();
+      uint k = n / 2;
+
+      for (uint i=0; i<k; ++i)
+        for (uint j=0; j<m; ++j)
+          std::swap(A(j,i), A(j,n-i-1));
+    }
+
+    template<typename T>
+    void reverseRows(T& A) {
+      uint m = A.rows();
+      uint n = A.cols();
+      uint k = m / 2;
+
+      for (uint j=0; j<k; ++j)
+        for (uint i=0; i<n; ++i)
+          std::swap(A(j, i), A(m-j-1, i));
+    }
+
+
+
+    namespace {
+      template<typename T>
+      double colDotProd(const T& A, const uint i, const T& B, const uint j) {
+        double sum = 0.0;
+        for (uint k=0; k<A.rows(); ++k)
+          sum += A(k,i) * B(k,j);
+        return(sum);
+      }
+    }
+    
+    template<typename T>
+    double subspaceOverlap(const T& A, const T& B, const uint nmodes = 0) {
+      if (A.rows() != B.rows())
+        throw(NumericalError("Matrices have different dimensions"));
+
+      if (nmodes == 0)
+        nmodes = A.cols();
+      if (nmodes > A.cols() || nmodes > B.cols())
+        throw(NumericalError("Requested number of modes exceeds matrix dimensions"));
+      
+      double sum = 0.0;
+      for (uint i=0; i<nmodes; ++i)
+        for (uint j=0; j<nmodes; ++j) {
+          double d = colDotProd(A, i, B, j);
+          sum += d*d;
+        }
+
+      return(sum / nmodes);
+    }
+
+
 
     //! Computes the covariance overlap between two subspaces
     /**
@@ -116,7 +207,31 @@ namespace loos {
      * against itself will not come out to be exactly 1, but will be
      * close (i.e. to within 1e-3).
      */
-    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB);
+    template<typename T>
+    double covarianceOverlap(const T& lamA, const T& UA, const T& lamB, const T& UB) {
+      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows() && lamA.rows() == UA.cols()))
+        throw(NumericalError("Matrices have different dimensions"));
+
+      uint nmodes = UA.cols();
+
+      double lamsum = 0.0;
+      for (uint i=0; i<nmodes; ++i)
+        lamsum += lamA[i] + lamB[i];
+
+      double dblsum = 0.0;
+      for (uint i=0; i<nmodes; ++i)
+        for (uint j=0; j<nmodes; ++j) {
+          double d = colDotProd(UA, i, UB, j);
+          dblsum += sqrt(lamA[i]*lamB[j]) * d * d;
+        }
+      
+
+      double num = lamsum - 2.0 * dblsum;
+      double co = 1.0 - sqrt( fabs(num) / lamsum );
+
+      return(co);
+    }
+
   };
 
 
