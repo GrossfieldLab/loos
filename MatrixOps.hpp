@@ -163,7 +163,7 @@ namespace loos {
     }
     
     template<typename T>
-    double subspaceOverlap(const T& A, const T& B, const uint nmodes = 0) {
+    double subspaceOverlap(const T& A, const T& B, uint nmodes = 0) {
       if (A.rows() != B.rows())
         throw(NumericalError("Matrices have different dimensions"));
 
