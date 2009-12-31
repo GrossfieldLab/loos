@@ -52,6 +52,7 @@ typedef pair<uint,uint> Range;
 #if defined(__linux__)
 extern "C" {
   void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
+  void dsygvd_(int*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, int*, int*);
 }
 #endif
 
@@ -65,6 +66,7 @@ double cutoff;
 int verbosity = 0;
 bool occupancies_are_masses;
 bool use_eigendecomp;
+bool alternate;
 
 
 
@@ -78,7 +80,8 @@ void parseOptions(int argc, char *argv[]) {
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
-      ("eigen,e", po::value<bool>(&use_eigendecomp)->default_value(false), "Use eigen decomposition (possibly non-orthogonal) rather than the SVD");
+      ("eigen,e", po::value<bool>(&use_eigendecomp)->default_value(false), "Use eigen decomposition (possibly non-orthogonal) rather than the SVD")
+      ("alt,a", po::value<bool>(&alternate)->default_value(false), "Use alternative (DSYGVD) method for computing eigenpairs");
 
 
     po::options_description hidden("Hidden options");
@@ -199,6 +202,7 @@ boost::tuple<DoubleMatrix, DoubleMatrix> SVDDecomp(DoubleMatrix& A, DoubleMatrix
 
   DoubleMatrix Bi = invert(BB);
   Bi *= AA;
+
   boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> res = svd(Bi);
   DoubleMatrix U = boost::get<0>(res);
   DoubleMatrix S = boost::get<1>(res);
@@ -281,6 +285,68 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
   Z = permuteColumns(Z, indices);
 
   boost::tuple<DoubleMatrix, DoubleMatrix> result(W, Z);
+  return(result);
+
+}
+
+
+
+boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp_alt(DoubleMatrix& A, DoubleMatrix& B) {
+
+  DoubleMatrix AA = A.copy();
+  DoubleMatrix BB = B.copy();
+
+  f77int itype = 1;
+  char jobz = 'V';
+  char uplo = 'U';
+  f77int n = AA.rows();
+  f77int lda = n;
+  f77int ldb = n;
+
+
+  DoubleMatrix W(n, 1);
+
+  f77int lwork = -1;
+  f77int info;
+  double *work = new double[1];
+
+  f77int *iwork = new f77int[1];
+  f77int liwork = -1;
+
+  dsygvd_(&itype, &jobz, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, W.get(), work, &lwork, iwork, &liwork, &info);
+  if (info != 0) {
+    cerr << "ERROR- dsygvd returned " << info << endl;
+    exit(-1);
+  }
+
+  lwork = work[0];
+  liwork = iwork[0];
+  delete[] work;
+  delete[] iwork;
+  work = new double[lwork];
+  iwork = new f77int[liwork];
+
+  dsygvd_(&itype, &jobz, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, W.get(), work, &lwork, iwork, &liwork, &info);
+  if (info != 0) {
+    cerr << "ERROR- dsygvx returned " << info << endl;
+    exit(-1);
+  }
+ 
+  // normalize
+  for (int i=0; i<n; ++i) {
+    double norm = 0.0;
+    for (int j=0; j<n; ++j)
+      norm += (AA(j,i) * AA(j,i));
+    norm = sqrt(norm);
+    for (int j=0; j<n; ++j)
+      AA(j,i) /= norm;
+  }
+
+  vector<uint> indices = sortedIndex(W);
+  W = permuteRows(W, indices);
+  AA = permuteColumns(AA, indices);
+
+  boost::tuple<DoubleMatrix, DoubleMatrix> result(W, AA);
   return(result);
 
 }
@@ -415,18 +481,21 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix("Me.asc", Me, "", false, sp);
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
-  writeAsciiMatrix("Msp.asc", Hss, "", false, sp);
+  writeAsciiMatrix("Msp.asc", Msp, "", false, sp);
 
   //writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr);
   //writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr);
 
   if (verbosity > 0) {
-    cerr << "Running " << (use_eigendecomp ? "eigen-" : " SVD") << "decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
+    cerr << "Running " << (use_eigendecomp ? "eigen-" : " SVD ") << "decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
     timer.start();
   }
   boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs;
   if (use_eigendecomp)
-    eigenpairs = eigenDecomp(Hssp, Msp);
+    if (alternate)
+      eigenpairs = eigenDecomp_alt(Hssp, Msp);
+    else
+      eigenpairs = eigenDecomp(Hssp, Msp);
   else
     eigenpairs = SVDDecomp(Hssp, Msp);
 
