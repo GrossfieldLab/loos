@@ -165,7 +165,7 @@ namespace loos {
     template<typename T>
     double subspaceOverlap(const T& A, const T& B, uint nmodes = 0) {
       if (A.rows() != B.rows())
-        throw(NumericalError("Matrices have different dimensions"));
+        throw(NumericalError("subspaceOverlap: Matrices have different dimensions"));
 
       if (nmodes == 0)
         nmodes = A.cols();
@@ -209,18 +209,18 @@ namespace loos {
      */
     template<typename T>
     double covarianceOverlap(const T& lamA, const T& UA, const T& lamB, const T& UB) {
-      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows() && lamA.rows() == UA.cols()))
-        throw(NumericalError("Matrices have different dimensions"));
-
-      uint nmodes = UA.cols();
+      if (!(UA.rows() == UB.rows() && lamA.rows() <= UA.cols() && lamB.rows() <= UB.cols()))
+        throw(NumericalError("covarianceOverlap: Matrices have different dimensions"));
 
       double lamsum = 0.0;
-      for (uint i=0; i<nmodes; ++i)
-        lamsum += lamA[i] + lamB[i];
+      for (uint i=0; i<lamA.rows(); ++i)
+        lamsum += lamA[i];
+      for (uint i=0; i<lamB.rows(); ++i)
+        lamsum += lamB[i];
 
       double dblsum = 0.0;
-      for (uint i=0; i<nmodes; ++i)
-        for (uint j=0; j<nmodes; ++j) {
+      for (uint i=0; i<lamA.rows(); ++i)
+        for (uint j=0; j<lamB.rows(); ++j) {
           double d = colDotProd(UA, i, UB, j);
           dblsum += sqrt(lamA[i]*lamB[j]) * d * d;
         }
