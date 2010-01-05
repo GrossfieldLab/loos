@@ -210,7 +210,7 @@ namespace loos {
     template<typename T>
     double covarianceOverlap(const T& lamA, const T& UA, const T& lamB, const T& UB) {
       if (!(UA.rows() == UB.rows() && lamA.rows() <= UA.cols() && lamB.rows() <= UB.cols()))
-        throw(NumericalError("covarianceOverlap: Matrices have different dimensions"));
+        throw(NumericalError("covarianceOverlap: Matrices have incorrect dimensions"));
 
       double lamsum = 0.0;
       for (uint i=0; i<lamA.rows(); ++i)
