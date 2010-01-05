@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 
     DCDWriter output(output_traj, true);
 
-    DCDWriter *output_downsample;
+    DCDWriter *output_downsample = 0;
     bool do_downsample = (output_traj_downsample.length() > 0);
     if (do_downsample)
         {
