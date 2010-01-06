@@ -431,29 +431,31 @@ int main(int argc, char *argv[]) {
     cerr << "Environment size is " << environment.size() << endl;
   }
 
+
+  ScientificMatrixFormatter<double> sp(24,18);
+
   DoubleMatrix H = hessian(composite, cutoff);
+  writeAsciiMatrix("H.asc", H, hdr, false, sp);
 
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
 
   uint n = H.cols();
 
-  ScientificMatrixFormatter<double> sp(24,18);
-
   DoubleMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
   if (verbosity > 1)
     showSize("Hss = ", Hss);
-  writeAsciiMatrix("Hss.asc", Hss, "", false, sp);
+  writeAsciiMatrix("Hss.asc", Hss, hdr, false, sp);
 
   DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
   if (verbosity > 1)
     showSize("Hee = ", Hee);
-  writeAsciiMatrix("Hee.asc", Hee, "", false, sp);
+  writeAsciiMatrix("Hee.asc", Hee, hdr, false, sp);
 
   DoubleMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
-  writeAsciiMatrix("Hse.asc", Hse, "", false, sp);
+  writeAsciiMatrix("Hse.asc", Hse, hdr, false, sp);
   DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
-  writeAsciiMatrix("Hes.asc", Hes, "", false, sp);
+  writeAsciiMatrix("Hes.asc", Hes, hdr, false, sp);
 
 
   Timer<WallTimer> timer;
@@ -469,19 +471,19 @@ int main(int argc, char *argv[]) {
     timer.stop();
     cerr << timer << endl;
   }
-  writeAsciiMatrix("Heei.asc", Heei, "", false, sp);
+  writeAsciiMatrix("Heei.asc", Heei, hdr, false, sp);
 
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
-  writeAsciiMatrix("Hssp.asc", Hssp, "", false, sp);
+  writeAsciiMatrix("Hssp.asc", Hssp, hdr, false, sp);
   DoubleMatrix Ms = getMasses(subset);
-  writeAsciiMatrix("Ms.asc", Ms, "", false, sp);
+  writeAsciiMatrix("Ms.asc", Ms, hdr, false, sp);
   DoubleMatrix Me = getMasses(environment);
   if (verbosity > 1)
     showSize("Me = ", Me);
 
-  writeAsciiMatrix("Me.asc", Me, "", false, sp);
+  writeAsciiMatrix("Me.asc", Me, hdr, false, sp);
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
-  writeAsciiMatrix("Msp.asc", Msp, "", false, sp);
+  writeAsciiMatrix("Msp.asc", Msp, hdr, false, sp);
 
   //writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr);
   //writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr);
