@@ -80,7 +80,6 @@ string selection;
 string model_name;
 string prefix;
 double cutoff;
-string output_map;
 
 
 
@@ -91,8 +90,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
-      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
-      ("map,m", po::value<string>(&output_map), "Output a map (as a PDB) of residues picked to this file");
+      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -190,12 +188,6 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
   cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
-  if (! output_map.empty()) {
-    ofstream ofs(output_map.c_str());
-    PDB pdb = PDB::fromAtomicGroup(subset);
-    pdb.remarks().add(header);
-    ofs << pdb;
-  }
 
   Timer<WallTimer> timer;
   cerr << "Calculating hessian...";
