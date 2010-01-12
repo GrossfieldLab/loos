@@ -54,8 +54,7 @@ typedef pair<uint,uint> Range;
 extern "C" {
   void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
   void dsygvd_(int*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, int*, int*);
-  void dtrmm_(char, char, char, int*, int*, double*, double*, int*, double*, int*);
-  void dpotrf_(char, int*, double*, int*, int*);
+  void dpotrf_(char*, int*, double*, int*, int*);
 }
 #endif
 
@@ -304,18 +303,7 @@ DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
   double alpha = 1.0;
   f77int ldb = m;
 
-#if defined(__linux__)
-  char side = 'L';
-  char transa = 'N';
-  char diag = 'N';
-
-  dtrmm_(&side, &uplo, &transa, &diag, &m, &n, &alpha, R.get(), &lda, UU.get(), &ldb);
-
-#else
-
   cblas_dtrmm(CblasColMajor, CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, m, n, alpha, R.get(), lda, UU.get(), ldb);
-
-#endif
 
   normalizeColumns(UU);
   return(UU);
