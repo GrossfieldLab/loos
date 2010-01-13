@@ -38,6 +38,7 @@
 
 #include <loos.hpp>
 
+#include <limits>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
@@ -72,6 +73,10 @@ bool debug = false;
 bool occupancies_are_masses;
 string psf_file;
 
+// Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
+bool parameter_free;
+
+
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -83,6 +88,7 @@ void parseOptions(int argc, char *argv[]) {
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
+      ("pfree,P", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field");
@@ -114,6 +120,12 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
+
+    // This forces the hessian calc to consider all atoms...although
+    // it does mean that it will unnecessarily compute inter-node distances
+    if (parameter_free)
+      cutoff = numeric_limits<double>::max();
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -367,6 +379,12 @@ int main(int argc, char *argv[]) {
   ScientificMatrixFormatter<double> sp(24,18);
 
   DoubleMatrix H = hessian(composite, cutoff);
+  if (parameter_free) {
+    if (verbosity > 0)
+      cerr << "Distance-weighting the hessian for parameter-free mode...\n";
+    distanceWeight(H, composite);
+  }
+    
   if (debug)
     writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
 

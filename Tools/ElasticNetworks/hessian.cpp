@@ -92,3 +92,22 @@ DoubleMatrix hessian(const AtomicGroup& model, const double radius) {
   return(H);
 }
 
+
+
+
+void distanceWeight(DoubleMatrix& H, const AtomicGroup& nodes, const double power) {
+  
+  for (uint j=1; j<static_cast<uint>(nodes.size()); ++j) {
+    uint jj = 3*j;
+    GCoord cj = nodes[j]->coords();
+
+    for (uint i=0; i<j; ++i) {
+      uint ii = 3*i;
+      double d = pow(cj.distance(nodes[i]->coords()), power);
+                     
+      for (uint y=0; y<3; ++y)
+        for (uint x=0; x<3; ++x)
+          H(jj+y, ii+x) *= d;
+    }
+  }
+}

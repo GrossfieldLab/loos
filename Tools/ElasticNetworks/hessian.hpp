@@ -42,5 +42,6 @@ using namespace loos;
 DoubleMatrix hessian_block(const int i, const int j, const AtomicGroup& model, const double radius2);
 DoubleMatrix hessian(const AtomicGroup& model, const double radius);
 
+void distanceWeight(DoubleMatrix& H, const AtomicGroup& nodes, const double power = -2.0);
 
 #endif

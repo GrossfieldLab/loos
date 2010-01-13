@@ -58,6 +58,7 @@
 #include <loos.hpp>
 #include "hessian.hpp"
 
+#include <limits>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
@@ -78,6 +79,9 @@ string model_name;
 string prefix;
 double cutoff;
 
+// Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
+bool parameter_free;
+
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -87,6 +91,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
+      ("pfree,P", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact");
 
     po::options_description hidden("Hidden options");
@@ -111,6 +116,11 @@ void parseOptions(int argc, char *argv[]) {
       cerr << generic;
       exit(-1);
     }
+
+    // Force the hessian to include all nodes...
+    if (parameter_free)
+      cutoff = numeric_limits<double>::max();
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -135,6 +145,9 @@ int main(int argc, char *argv[]) {
   timer.stop();
   cerr << boost::format(" done (%dx%d)\n") % H.rows() % H.cols();
   cerr << timer << endl;
+
+  if (parameter_free)
+    distanceWeight(H, subset);
 
   ScientificMatrixFormatter<double> sp(24, 18);
 
