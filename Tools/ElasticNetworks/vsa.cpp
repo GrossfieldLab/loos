@@ -265,37 +265,6 @@ DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
   
 
 
-void assignMasses(AtomicGroup& grp, const string& name) {
-  ifstream ifs(name.c_str());
-  if (!ifs) {
-    cerr << "Warning- no masses will be used\n";
-    return;
-  }
-
-  double mass;
-  string pattern;
-  bool no_masses_set = true;
-
-  while (ifs >> pattern >> mass) {
-    string selection("name =~ '");
-    selection += pattern + "'";
-    Parser parser(selection);
-    KernelSelector selector(parser.kernel());
-    AtomicGroup subset = grp.select(selector);
-    if (subset.empty())
-      continue;
-    no_masses_set = false;
-    if (verbosity > 1)
-      cout << "Assigning " << subset.size() << " atoms with pattern '" << pattern << "' to mass " << mass << endl;
-    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
-      (*i)->mass(mass);
-  }
-
-  if (no_masses_set)
-    cerr << "WARNING- no masses were assigned\n";
-}
-
-
 void massFromPSF(AtomicGroup& grp, const string& name) {
   AtomicGroup psf = createSystem(name);
   if (psf.size() != grp.size()) {
@@ -313,6 +282,11 @@ void massFromPSF(AtomicGroup& grp, const string& name) {
 }
 
 
+void massFromOccupancy(AtomicGroup& grp) {
+  for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i)
+      (*i)->mass((*i)->occupancy());
+}
+
 
 
 DoubleMatrix getMasses(const AtomicGroup& grp) {
@@ -329,9 +303,6 @@ DoubleMatrix getMasses(const AtomicGroup& grp) {
 }
 
 
-void showSize(const string& s, const DoubleMatrix& M) {
-  cerr << s << M.rows() << " x " << M.cols() << endl;
-}
 
 
 int main(int argc, char *argv[]) {
@@ -342,25 +313,14 @@ int main(int argc, char *argv[]) {
 
 
   // Ugly way of handling multiple methods for getting masses into the equation...
-  if (occupancies_are_masses) {
-    if (verbosity > 0)
-      cerr << "Assigning masses from occupancies...\n";
-    for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
-      (*i)->mass((*i)->occupancy());
-    
-  } else if (! psf_file.empty()) {
-    
-    if (verbosity > 0)
-      cerr << "Assigning masses from PSF file " << psf_file << endl;
+  if (verbosity > 0)
+    cerr << "Assigning masses...\n";
+
+  if (! psf_file.empty())
     massFromPSF(model, psf_file);
-    
-  } else if (!mass_file.empty()) {
-    
-    if (verbosity > 0)
-      cerr << "Assigning masses using mass file " << mass_file << endl;
-    assignMasses(model, mass_file);
-    
-  } else
+  else if (occupancies_are_masses)
+    massFromOccupancy(model);
+  else
     cerr << "WARNING- using default masses\n";
 
 
@@ -374,7 +334,6 @@ int main(int argc, char *argv[]) {
     cerr << "Environment size is " << environment.size() << endl;
   }
 
-
   ScientificMatrixFormatter<double> sp(24,18);
 
   SuperBlock* blocker = 0;
@@ -386,9 +345,7 @@ int main(int argc, char *argv[]) {
     blocker = new DistanceCutoff(composite, cutoff);
 
   DoubleMatrix H = hessian(blocker);
-    
-  if (debug)
-    writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
+  delete blocker;
 
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
@@ -396,28 +353,14 @@ int main(int argc, char *argv[]) {
   uint n = H.cols();
 
   DoubleMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
-  if (debug)
-    writeAsciiMatrix(prefix + "_Hss.asc", Hss, hdr, false, sp);
-
   DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  if (debug)
-    writeAsciiMatrix(prefix + "_Hee.asc", Hee, hdr, false, sp);
-
   DoubleMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
-  if (debug)
-    writeAsciiMatrix(prefix + "_Hse.asc", Hse, hdr, false, sp);
-
   DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
-  if (debug)
-  writeAsciiMatrix(prefix + "_Hes.asc", Hes, hdr, false, sp);
-
 
   Timer<WallTimer> timer;
   if (verbosity > 0) {
     cerr << "Inverting environment hessian...\n";
     timer.start();
-    if (verbosity > 1)
-      showSize("Hee = ", Hee);
   }
 
   DoubleMatrix Heei = Math::invert(Hee);
@@ -426,25 +369,23 @@ int main(int argc, char *argv[]) {
     cerr << timer << endl;
   }
   
-  if (debug)
-    writeAsciiMatrix(prefix + "_Heei.asc", Heei, hdr, false, sp);
-
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
-  if (debug)
-    writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr, false, sp);
-
-
   DoubleMatrix Ms = getMasses(subset);
-  if (debug)
-    writeAsciiMatrix(prefix + "_Ms.asc", Ms, hdr, false, sp);
-
   DoubleMatrix Me = getMasses(environment);
-  if (debug)
-    writeAsciiMatrix(prefix + "_Me.asc", Me, hdr, false, sp);
-
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
-  if (debug)
+
+  if (debug) {
+    writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Hss.asc", Hss, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Hee.asc", Hee, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Hse.asc", Hse, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Hes.asc", Hes, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Heei.asc", Heei, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Ms.asc", Ms, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_Me.asc", Me, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr, false, sp);
+  }
 
   if (verbosity > 0) {
     cerr << "Running eigen-decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
@@ -469,6 +410,4 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, sp);
   writeAsciiMatrix(prefix + "_Us.asc", MUs, hdr, false, sp);
-
-  delete blocker;
 }

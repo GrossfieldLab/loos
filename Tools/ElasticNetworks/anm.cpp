@@ -81,8 +81,12 @@ double cutoff;
 
 // Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
 bool parameter_free;
+
 bool exp_method;
 double power;
+
+int verbosity;
+bool debug;
 
 
 
@@ -92,6 +96,8 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
+      ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
       ("exp,e", po::value<bool>(&exp_method)->default_value(false), "Use the exponential distance weighting method")
@@ -140,9 +146,11 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
-  cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
+  if (verbosity > 0)
+    cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
+  // Determine which kind of scaling to apply to the Hessian...
   SuperBlock* blocker = 0;
   if (parameter_free)
     blocker = new DistanceWeight(subset, power);
@@ -152,18 +160,24 @@ int main(int argc, char *argv[]) {
     blocker = new DistanceCutoff(subset, cutoff);
 
   DoubleMatrix H = hessian(blocker);
-
+  delete blocker;
 
   ScientificMatrixFormatter<double> sp(24, 18);
 
-  writeAsciiMatrix(prefix + "_H.asc", H, header, false, sp);
+  if (debug)
+    writeAsciiMatrix(prefix + "_H.asc", H, header, false, sp);
 
-  cerr << "Calculating SVD - ";
+  if (verbosity > 0)
+    cerr << "Calculating SVD - ";
   Timer<WallTimer> timer;
-  timer.start();
+  if (verbosity > 1)
+    timer.start();
   boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(H);
-  timer.stop();
-  cerr << "done\n" << timer << endl;
+  cerr << "done\n";
+  if (verbosity > 1) {
+    timer.stop();
+    cerr << timer << endl;
+  }
 
   Matrix U = boost::get<0>(result);
   Matrix S = boost::get<1>(result);
@@ -197,7 +211,5 @@ int main(int argc, char *argv[]) {
   // V...
   Matrix Hi = MMMultiply(Vt, U, true, true);
   writeAsciiMatrix(prefix + "_Hi.asc", Hi, header, false, sp);
-
-  delete blocker;
 
 }
