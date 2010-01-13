@@ -265,20 +265,26 @@ DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
   
 
 
-void massFromPSF(AtomicGroup& grp, const string& name) {
-  AtomicGroup psf = createSystem(name);
-  if (psf.size() != grp.size()) {
-    cerr << "ERROR- PSF and model have different numbers of atoms!\n";
+void copyMasses(AtomicGroup& target, const AtomicGroup& source) {
+  if (target.size() != source.size()) {
+    cerr << "ERROR- groups have different sizes in copyMasses... (maybe your PSF doesn't match the model?)\n";
     exit(-1);
   }
 
-  for (int i=0; i<grp.size(); ++i) {
-    if (psf[i]->name() != grp[i]->name()) {
+  for (int i=0; i<target.size(); ++i) {
+    if (source[i]->name() != target[i]->name()) {
       cerr << "ERROR- atom mismatch at position " << i << endl;
       exit(-1);
     }
-    grp[i]->mass(psf[i]->mass());
+    target[i]->mass(source[i]->mass());
   }
+}
+
+
+
+void massFromPSF(AtomicGroup& grp, const string& name) {
+  AtomicGroup psf = createSystem(name);
+  copyMasses(grp, psf);
 }
 
 
