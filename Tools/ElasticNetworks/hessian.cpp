@@ -34,16 +34,18 @@
 #include "hessian.hpp"
 
 
+using namespace loos;
 
-DoubleMatrix hessian_block(const int i, const int j, const AtomicGroup& model, const double radius2) {
+
+DoubleMatrix DistanceCutoff::blockImpl(const uint i, const uint j) {
 
   DoubleMatrix B(3,3);
-  GCoord u = model[i]->coords();
-  GCoord v = model[j]->coords();
+  GCoord u = nodes[i]->coords();
+  GCoord v = nodes[j]->coords();
   GCoord d = v - u;
 
   double s = d.length2();
-  if (s <= radius2) {
+  if (s <= radius) {
 
     for (int j=0; j<3; ++j)
       for (int i=0; i<3; ++i)
@@ -54,18 +56,34 @@ DoubleMatrix hessian_block(const int i, const int j, const AtomicGroup& model, c
 }
 
 
+DoubleMatrix DistanceWeight::blockImpl(const uint i, const uint j) {
 
-DoubleMatrix hessian(const AtomicGroup& model, const double radius) {
+  DoubleMatrix B(3,3);
+  GCoord u = nodes[i]->coords();
+  GCoord v = nodes[j]->coords();
+  GCoord d = v - u;
+
+  double s = d.length();
+  s = pow(s, power);
+  for (int j=0; j<3; ++j)
+    for (int i=0; i<3; ++i)
+      B(i,j) = d[i]*d[j] * s;
+
+  return(B);
+}
+
+
+
+DoubleMatrix hessian(SuperBlock* blockMethod) {
   
-  int n = model.size();
+  uint n = blockMethod->size();
   DoubleMatrix H(3*n,3*n);
-  double r2 = radius * radius;
 
-  for (int i=1; i<n; ++i) {
-    for (int j=0; j<i; ++j) {
-      DoubleMatrix B = hessian_block(i, j, model, r2);
-      for (int x = 0; x<3; ++x)
-        for (int y = 0; y<3; ++y) {
+  for (uint i=1; i<n; ++i) {
+    for (uint j=0; j<i; ++j) {
+      DoubleMatrix B = blockMethod->block(i, j);
+      for (uint x = 0; x<3; ++x)
+        for (uint y = 0; y<3; ++y) {
           H(i*3 + y, j*3 + x) = -B(y, x);
           H(j*3 + x, i*3 + y) = -B(x ,y);
         }
@@ -73,44 +91,22 @@ DoubleMatrix hessian(const AtomicGroup& model, const double radius) {
   }
 
   // Now handle the diagonal...
-  for (int i=0; i<n; ++i) {
+  for (uint i=0; i<n; ++i) {
     DoubleMatrix B(3,3);
-    for (int j=0; j<n; ++j) {
+    for (uint j=0; j<n; ++j) {
       if (j == i)
         continue;
       
-      for (int x=0; x<3; ++x)
-        for (int y=0; y<3; ++y)
+      for (uint x=0; x<3; ++x)
+        for (uint y=0; y<3; ++y)
           B(y,x) += H(j*3 + y, i*3 + x);
     }
 
-    for (int x=0; x<3; ++x)
-      for (int y=0; y<3; ++y)
+    for (uint x=0; x<3; ++x)
+      for (uint y=0; y<3; ++y)
         H(i*3 + y, i*3 + x) = -B(y,x);
   }
 
   return(H);
 }
 
-
-
-
-void distanceWeight(DoubleMatrix& H, const AtomicGroup& nodes, const double power) {
-  
-  for (uint j=1; j<static_cast<uint>(nodes.size()); ++j) {
-    uint jj = 3*j;
-    GCoord cj = nodes[j]->coords();
-
-    for (uint i=0; i<j; ++i) {
-      uint ii = 3*i;
-      double d = pow(cj.distance(nodes[i]->coords()), power);
-      std::cerr << "DEBUG> (" << j << "," << i << ") = " << d << std::endl;
-                     
-      for (uint y=0; y<3; ++y)
-        for (uint x=0; x<3; ++x) {
-          H(jj+y, ii+x) *= d;
-          H(ii+x, jj+y) *= d;
-        }
-    }
-  }
-}

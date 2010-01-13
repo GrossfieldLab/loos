@@ -37,11 +37,51 @@
 
 #include <loos.hpp>
 
-using namespace loos;
 
-DoubleMatrix hessian_block(const int i, const int j, const AtomicGroup& model, const double radius2);
-DoubleMatrix hessian(const AtomicGroup& model, const double radius);
+class SuperBlock {
+public:
+  SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist) { }
+  
+  loos::DoubleMatrix block(const uint j, const uint i) {
+    if (j >= size() || i >= size())
+      throw(std::range_error("Invalid indices into SuperBlock"));
+    return(blockImpl(j, i));
+  }
 
-void distanceWeight(DoubleMatrix& H, const AtomicGroup& nodes, const double power = -2.0);
+
+  uint size() const { return(static_cast<uint>(nodes.size())); }
+
+
+protected:
+  loos::AtomicGroup nodes;
+
+private:
+  virtual loos::DoubleMatrix blockImpl(const uint j, const uint i) =0;
+
+};
+
+
+
+
+class DistanceCutoff : public SuperBlock {
+public:
+  DistanceCutoff(const loos::AtomicGroup& nodelist, const double r) : SuperBlock(nodelist), radius(r*r) { }
+private:
+  loos::DoubleMatrix blockImpl(const uint j, const uint i);
+  double radius;
+};
+
+
+class DistanceWeight : public SuperBlock {
+public:
+  DistanceWeight(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), power(-2.0) { }
+  DistanceWeight(const loos::AtomicGroup& nodelist, const double power_) : SuperBlock(nodelist), power(power_) { }
+private:
+  loos::DoubleMatrix blockImpl(const uint j, const uint i);
+  double power;
+};
+
+
+loos::DoubleMatrix hessian(SuperBlock* block);
 
 #endif

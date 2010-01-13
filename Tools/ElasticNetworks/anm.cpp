@@ -81,6 +81,7 @@ double cutoff;
 
 // Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
 bool parameter_free;
+double pf_power;
 
 
 
@@ -91,7 +92,8 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
-      ("pfree,P", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
+      ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
+      ("power,P", po::value<double>(&pf_power)->default_value(-2.0), "Power scale to use for parameter-free method")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact");
 
     po::options_description hidden("Hidden options");
@@ -138,22 +140,22 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, selection);
   cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
-  Timer<WallTimer> timer;
-  cerr << "Calculating hessian...";
-  timer.start();
-  Matrix H = hessian(subset, cutoff);
-  timer.stop();
-  cerr << boost::format(" done (%dx%d)\n") % H.rows() % H.cols();
-  cerr << timer << endl;
 
+  SuperBlock* blocker = 0;
   if (parameter_free)
-    distanceWeight(H, subset);
+    blocker = new DistanceWeight(subset, pf_power);
+  else
+    blocker = new DistanceCutoff(subset, cutoff);
+
+  DoubleMatrix H = hessian(blocker);
+
 
   ScientificMatrixFormatter<double> sp(24, 18);
 
   writeAsciiMatrix(prefix + "_H.asc", H, header, false, sp);
 
   cerr << "Calculating SVD - ";
+  Timer<WallTimer> timer;
   timer.start();
   boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(H);
   timer.stop();

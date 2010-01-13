@@ -45,8 +45,8 @@ PREFIX = env['PREFIX']
 vsa = clone.Program("vsa", ["vsa.cpp", "hessian.cpp"])
 list.append(vsa)
 
-vsa = clone.Program("anm", ["anm.cpp", "hessian.cpp"])
-list.append(vsa)
+anm = clone.Program("anm", ["anm.cpp", "hessian.cpp"])
+list.append(anm)
 
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
