@@ -104,10 +104,13 @@ void distanceWeight(DoubleMatrix& H, const AtomicGroup& nodes, const double powe
     for (uint i=0; i<j; ++i) {
       uint ii = 3*i;
       double d = pow(cj.distance(nodes[i]->coords()), power);
+      std::cerr << "DEBUG> (" << j << "," << i << ") = " << d << std::endl;
                      
       for (uint y=0; y<3; ++y)
-        for (uint x=0; x<3; ++x)
+        for (uint x=0; x<3; ++x) {
           H(jj+y, ii+x) *= d;
+          H(ii+x, jj+y) *= d;
+        }
     }
   }
 }
