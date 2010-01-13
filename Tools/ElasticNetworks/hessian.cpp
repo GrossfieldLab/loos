@@ -74,6 +74,25 @@ DoubleMatrix DistanceWeight::blockImpl(const uint i, const uint j) {
 
 
 
+DoubleMatrix ExponentialDistance::blockImpl(const uint i, const uint j) {
+
+  DoubleMatrix B(3,3);
+  GCoord u = nodes[i]->coords();
+  GCoord v = nodes[j]->coords();
+  GCoord d = v - u;
+
+  double s = d.length();
+  s = exp(scale * s);
+
+  for (int j=0; j<3; ++j)
+    for (int i=0; i<3; ++i)
+      B(i,j) = d[i]*d[j] * s;
+
+  return(B);
+}
+
+
+
 DoubleMatrix hessian(SuperBlock* blockMethod) {
   
   uint n = blockMethod->size();

@@ -75,7 +75,8 @@ string psf_file;
 
 // Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
 bool parameter_free;
-double pf_power;
+double power;
+bool exp_method;
 
 
 
@@ -90,7 +91,8 @@ void parseOptions(int argc, char *argv[]) {
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
-      ("power,P", po::value<double>(&pf_power)->default_value(-2.0), "Power scale to use for parameter-free method")
+      ("exp,e", po::value<bool>(&exp_method)->default_value(false), "Use an exponential distance scaling")
+      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free and exponential methods")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field");
@@ -377,7 +379,9 @@ int main(int argc, char *argv[]) {
 
   SuperBlock* blocker = 0;
   if (parameter_free)
-    blocker = new DistanceWeight(composite, pf_power);
+    blocker = new DistanceWeight(composite, power);
+  else if (exp_method)
+    blocker = new ExponentialDistance(composite, power);
   else
     blocker = new DistanceCutoff(composite, cutoff);
 
@@ -465,4 +469,6 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, sp);
   writeAsciiMatrix(prefix + "_Us.asc", MUs, hdr, false, sp);
+
+  delete blocker;
 }

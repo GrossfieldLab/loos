@@ -82,6 +82,16 @@ private:
 };
 
 
+class ExponentialDistance : public SuperBlock {
+public:
+  ExponentialDistance(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), scale(-1.0) { }
+  ExponentialDistance(const loos::AtomicGroup& nodelist, const double scale_) : SuperBlock(nodelist), scale(scale_) { }
+private:
+  loos::DoubleMatrix blockImpl(const uint j, const uint i);
+  double scale;
+};
+
+
 loos::DoubleMatrix hessian(SuperBlock* block);
 
 #endif
