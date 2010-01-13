@@ -70,6 +70,7 @@ double cutoff;
 int verbosity = 0;
 bool debug = false;
 bool occupancies_are_masses;
+string psf_file;
 
 
 
@@ -81,6 +82,7 @@ void parseOptions(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
+      ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field");
@@ -283,6 +285,25 @@ void assignMasses(AtomicGroup& grp, const string& name) {
 }
 
 
+void massFromPSF(AtomicGroup& grp, const string& name) {
+  AtomicGroup psf = createSystem(name);
+  if (psf.size() != grp.size()) {
+    cerr << "ERROR- PSF and model have different numbers of atoms!\n";
+    exit(-1);
+  }
+
+  for (int i=0; i<grp.size(); ++i) {
+    if (psf[i]->name() != grp[i]->name()) {
+      cerr << "ERROR- atom mismatch at position " << i << endl;
+      exit(-1);
+    }
+    grp[i]->mass(psf[i]->mass());
+  }
+}
+
+
+
+
 DoubleMatrix getMasses(const AtomicGroup& grp) {
   uint n = grp.size();
 
@@ -307,18 +328,30 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);
-  if (occupancies_are_masses) {
 
-    cerr << "Assigning masses from occupancies...\n";
+
+  // Ugly way of handling multiple methods for getting masses into the equation...
+  if (occupancies_are_masses) {
+    if (verbosity > 0)
+      cerr << "Assigning masses from occupancies...\n";
     for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
       (*i)->mass((*i)->occupancy());
+    
+  } else if (! psf_file.empty()) {
+    
+    if (verbosity > 0)
+      cerr << "Assigning masses from PSF file " << psf_file << endl;
+    massFromPSF(model, psf_file);
+    
+  } else if (!mass_file.empty()) {
+    
+    if (verbosity > 0)
+      cerr << "Assigning masses using mass file " << mass_file << endl;
+    assignMasses(model, mass_file);
+    
+  } else
+    cerr << "WARNING- using default masses\n";
 
-  } else {
-    if (mass_file.empty())
-      cerr << "WARNING- using default masses\n";
-    else
-      assignMasses(model, mass_file);
-  }
 
   AtomicGroup subset = selectAtoms(model, subset_selection);
   AtomicGroup environment = selectAtoms(model, environment_selection);
