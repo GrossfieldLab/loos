@@ -56,6 +56,7 @@
 
 
 #include <loos.hpp>
+#include "hessian.hpp"
 
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
@@ -71,10 +72,6 @@ typedef Math::Matrix<double, Math::ColMajor> Matrix;
 
 
 // Globals...  Icky poo!
-
-// This is the Kirchoff normalization constant (see Bahar, Atilgan,
-// and Erman.  Folding & Design 2:173)
-double normalization = 1.0;
 
 string selection;
 string model_name;
@@ -119,64 +116,6 @@ void parseOptions(int argc, char *argv[]) {
     cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
-}
-
-
-Matrix hblock(const int i, const int j, const AtomicGroup& model, const double radius2) {
-
-  Matrix B(3,3);
-  GCoord u = model[i]->coords();
-  GCoord v = model[j]->coords();
-  GCoord d = v - u;
-
-  double s = d.length2();
-  if (s <= radius2) {
-
-    for (int j=0; j<3; ++j)
-      for (int i=0; i<3; ++i)
-        B(i,j) = normalization * d[i]*d[j] / s;
-  }
-
-  return(B);
-}
-
-
-
-Matrix hessian(const AtomicGroup& model, const double radius) {
-  
-  int n = model.size();
-  Matrix H(3*n,3*n);
-  double r2 = radius * radius;
-
-  for (int i=1; i<n; ++i) {
-    for (int j=0; j<i; ++j) {
-      Matrix B = hblock(i, j, model, r2);
-      for (int x = 0; x<3; ++x)
-        for (int y = 0; y<3; ++y) {
-          H(i*3 + y, j*3 + x) = -B(y, x);
-          H(j*3 + x, i*3 + y) = -B(x ,y);
-        }
-    }
-  }
-
-  // Now handle the diagonal...
-  for (int i=0; i<n; ++i) {
-    Matrix B(3,3);
-    for (int j=0; j<n; ++j) {
-      if (j == i)
-        continue;
-      
-      for (int x=0; x<3; ++x)
-        for (int y=0; y<3; ++y)
-          B(y,x) += H(j*3 + y, i*3 + x);
-    }
-
-    for (int x=0; x<3; ++x)
-      for (int y=0; y<3; ++y)
-        H(i*3 + y, i*3 + x) = -B(y,x);
-  }
-
-  return(H);
 }
 
 

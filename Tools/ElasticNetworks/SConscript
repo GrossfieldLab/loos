@@ -27,7 +27,8 @@ Import('env')
 clone = env.Clone()
 clone.Append(LIBS = ['loos'])
 
-apps = 'anm gnm enmovie flucc2b vsa psf-masses heavy-ca'
+apps = 'gnm enmovie flucc2b psf-masses heavy-ca'
+install_apps = apps + ' vsa anm'
 
 list = []
 
@@ -38,7 +39,17 @@ for name in Split(apps):
 
 PREFIX = env['PREFIX']
 
-loos_tools = env.Install(PREFIX + '/bin', Split(apps))
+
+# Special apps...
+
+vsa = clone.Program("vsa", ["vsa.cpp", "hessian.cpp"])
+list.append(vsa)
+
+vsa = clone.Program("anm", ["anm.cpp", "hessian.cpp"])
+list.append(vsa)
+
+
+loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('nm_tools_install', loos_tools)
 
 Return('list')
