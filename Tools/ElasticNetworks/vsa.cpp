@@ -1,7 +1,7 @@
 /*
   vsa
 
-  (c) 2009 Tod D. Romo, Grossfield Lab
+  (c) 2009,2010 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
@@ -77,6 +77,7 @@ string psf_file;
 bool parameter_free;
 double power;
 bool exp_method;
+bool hca_method;
 
 
 
@@ -92,6 +93,7 @@ void parseOptions(int argc, char *argv[]) {
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
       ("exp,e", po::value<bool>(&exp_method)->default_value(false), "Use an exponential distance scaling")
+      ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free and exponential methods")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
@@ -347,6 +349,8 @@ int main(int argc, char *argv[]) {
     blocker = new DistanceWeight(composite, power);
   else if (exp_method)
     blocker = new ExponentialDistance(composite, power);
+  else if (hca_method)
+    blocker = new HCA(composite);
   else
     blocker = new DistanceCutoff(composite, cutoff);
 

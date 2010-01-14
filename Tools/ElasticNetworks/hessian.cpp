@@ -92,6 +92,30 @@ DoubleMatrix ExponentialDistance::blockImpl(const uint i, const uint j) {
 }
 
 
+DoubleMatrix HCA::blockImpl(const uint i, const uint j) {
+
+  DoubleMatrix B(3,3);
+  GCoord u = nodes[i]->coords();
+  GCoord v = nodes[j]->coords();
+  GCoord d = v - u;
+
+  double s = d.length();
+  double k;
+  if (s <= 4.0)
+    k = 205.5 * s - 571.2;
+  else
+    k = 305.9e3 * pow(s, -6);
+
+  for (int j=0; j<3; ++j)
+    for (int i=0; i<3; ++i)
+      B(i,j) = d[i]*d[j] * k;
+
+  return(B);
+
+
+}
+
+
 
 DoubleMatrix hessian(SuperBlock* blockMethod) {
   

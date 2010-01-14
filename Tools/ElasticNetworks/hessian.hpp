@@ -92,6 +92,14 @@ private:
 };
 
 
+
+class HCA : public SuperBlock {
+public:
+  HCA(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist) { }
+private:
+  loos::DoubleMatrix blockImpl(const uint j, const uint i);
+};
+
 loos::DoubleMatrix hessian(SuperBlock* block);
 
 #endif
