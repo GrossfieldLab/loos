@@ -73,11 +73,11 @@ bool debug = false;
 bool occupancies_are_masses;
 string psf_file;
 
-// Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
 bool parameter_free;
 double power;
 bool exp_method;
 bool hca_method;
+bool nomass;
 
 
 
@@ -97,7 +97,8 @@ void parseOptions(int argc, char *argv[]) {
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free and exponential methods")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
-      ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field");
+      ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
+      ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution");
 
 
     po::options_description hidden("Hidden options");
@@ -380,18 +381,34 @@ int main(int argc, char *argv[]) {
   }
   
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
-  DoubleMatrix Ms = getMasses(subset);
-  DoubleMatrix Me = getMasses(environment);
-  DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
-
   if (debug) {
     writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Hss.asc", Hss, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Hee.asc", Hee, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Hse.asc", Hse, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hes.asc", Hes, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Heei.asc", Heei, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr, false, sp);
+  }
+
+  if (nomass) {
+    boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp);
+    DoubleMatrix U(boost::get<0>(svdresult));
+    DoubleMatrix S(boost::get<1>(svdresult));
+
+    reverseColumns(U);
+    reverseRows(S);
+
+    writeAsciiMatrix(prefix + "_U.asc", U, hdr, false, sp);
+    writeAsciiMatrix(prefix + "_s.asc", S, hdr, false, sp);
+    exit(0);
+  }
+
+
+  DoubleMatrix Ms = getMasses(subset);
+  DoubleMatrix Me = getMasses(environment);
+  DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
+
+  if (debug) {
     writeAsciiMatrix(prefix + "_Ms.asc", Ms, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Me.asc", Me, hdr, false, sp);
     writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr, false, sp);
