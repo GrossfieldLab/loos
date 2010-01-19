@@ -70,6 +70,9 @@ int main(int argc, char *argv[]) {
     
     GCoord c = sidechain.centerOfMass();
     pAtom pa(new Atom(++currid, "CGS", c));
+    pa->resid(CA[0]->resid());
+    pa->resname(CA[0]->resname());
+    pa->segid(CA[0]->segid());
 
     cg_sites += pa;
   }
