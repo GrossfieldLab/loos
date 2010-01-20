@@ -48,6 +48,15 @@ int main(int argc, char *argv[]) {
   string selection(argv[k++]);
   AtomicGroup model = createSystem(argv[k++]);
   AtomicGroup subset = selectAtoms(model, selection);
+  if (argc > k) {
+    AtomicGroup structure = createSystem(argv[k++]);
+    if (structure.size() != model.size()) {
+      cerr << "Error- model and structure have different numbers of atoms.\n";
+      exit(-10);
+    }
+    for (int i=0; i<structure.size(); ++i)
+      model[i]->mass(structure[i]->mass());
+  }
 
   vector<AtomicGroup> residues = subset.splitByResidue();
   AtomicGroup cg_sites;
@@ -73,6 +82,8 @@ int main(int argc, char *argv[]) {
     pa->resid(CA[0]->resid());
     pa->resname(CA[0]->resname());
     pa->segid(CA[0]->segid());
+    double m = sidechain.totalMass();
+    pa->occupancy(m);
 
     cg_sites += pa;
   }
