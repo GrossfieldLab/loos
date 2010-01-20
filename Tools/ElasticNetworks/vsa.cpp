@@ -329,7 +329,7 @@ int main(int argc, char *argv[]) {
     massFromPSF(model, psf_file);
   else if (occupancies_are_masses)
     massFromOccupancy(model);
-  else
+  else if (!nomass)
     cerr << "WARNING- using default masses\n";
 
 
