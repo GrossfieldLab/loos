@@ -41,7 +41,26 @@
 using namespace std;
 using namespace loos;
 
+
+pAtom findMatch(const pAtom& probe, const AtomicGroup& grp) {
+  for (AtomicGroup::const_iterator i = grp.begin(); i != grp.end(); ++i)
+    if ((*i)->name() == probe->name() && (*i)->id() == probe->id()
+        && (*i)->resname() == probe->resname() && (*i)->resid() == probe->resid()
+        && (*i)->segid() == probe->segid())
+      return(*i);
+
+  pAtom null;
+  return(null);
+}
+
+
+
 int main(int argc, char *argv[]) {
+
+  if (argc == 1) {
+    cout << "Usage- side-nodes selection model [psf] >output.pdb\n";
+    exit(0);
+  }
 
   string hdr = invocationHeader(argc, argv);
   int k = 1;
@@ -50,12 +69,20 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, selection);
   if (argc > k) {
     AtomicGroup structure = createSystem(argv[k++]);
-    if (structure.size() != model.size()) {
-      cerr << "Error- model and structure have different numbers of atoms.\n";
-      exit(-10);
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i) {
+      pAtom match = findMatch(*i, structure);
+      if (!match) {
+        cerr << "ERROR- no match found for atom " << **i << endl;
+        exit(-1);
+      }
+      
+      if (!match->checkProperty(Atom::massbit)) {
+        cerr << "ERROR- Atom has no mass: " << *match << endl;
+        exit(-1);
+      }
+      
+      (*i)->mass(match->mass());
     }
-    for (int i=0; i<structure.size(); ++i)
-      model[i]->mass(structure[i]->mass());
   }
 
   vector<AtomicGroup> residues = subset.splitByResidue();
@@ -69,6 +96,7 @@ int main(int argc, char *argv[]) {
       cerr << "Error- cannot find CA.\n" << *vi;
       exit(-10);
     }
+    CA[0]->occupancy(CA[0]->mass());
     cg_sites += CA[0];
 
     AtomicGroup sidechain = (*vi).select(NotSelector(BackboneSelector()));
