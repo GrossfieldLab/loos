@@ -41,6 +41,7 @@
 class SuperBlock {
 public:
   SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist) { }
+  virtual ~SuperBlock() { }
   
   loos::DoubleMatrix block(const uint j, const uint i) {
     if (j >= size() || i >= size())
