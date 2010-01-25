@@ -67,8 +67,9 @@ namespace loos {
                                                                           _has_box(false), nodelete(false),
                                                                           _header_written(false)
     {
+      struct stat statbuf;
 
-      if (append) {
+      if (append && !stat(s.c_str(), &statbuf)) {
         readExistingHeader(s);
         openStream(s, true);
       } else {
