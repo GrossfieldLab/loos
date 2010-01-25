@@ -63,7 +63,7 @@ namespace loos {
       : new_stream(true)
     {
       stream = new std::fstream(s.c_str(), mode);
-      if (!stream)
+      if (!stream->good())
         throw(std::runtime_error("Cannot open file " + s));
     }
 
@@ -73,7 +73,7 @@ namespace loos {
       : new_stream(true)
     {
       stream = new std::fstream(s, mode);
-      if (!stream)
+      if (!stream->good())
         throw(std::runtime_error("Cannot open file " + std::string(s)));
     }
 
@@ -86,7 +86,7 @@ namespace loos {
 
       new_stream = true;
       stream = new std::fstream(s.c_str(), mode);
-      if (!stream)
+      if (!stream->good())
         throw(std::runtime_error("Cannot open file " + std::string(s)));
     }
 
