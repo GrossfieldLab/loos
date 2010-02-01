@@ -56,6 +56,35 @@ namespace loos {
 
 
 
+  AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms) {
+    if (xforms.size() != ensemble.size())
+      throw(LOOSError("Transforms do not match the passed ensemble in loos::averageStructure()"));
+
+    AtomicGroup avg = ensemble[0].copy();
+
+    // First, zap our coords...
+    int n = avg.size();
+    int i;
+    for (i=0; i<n; i++)
+      avg[i]->coords() = GCoord(0.0, 0.0, 0.0);
+
+    // Now, accumulate...
+    for (uint j=0; j<ensemble.size(); ++j) {
+      AtomicGroup frame = ensemble[j].copy();
+      frame.applyTransform(xforms[j]);
+      for (i = 0; i<n; i++)
+        avg[i]->coords() += frame[i]->coords();
+    }
+    
+    for (i=0; i<n; i++)
+      avg[i]->coords() /= ensemble.size();
+
+    return(avg);
+  }
+
+
+
+
   AtomicGroup averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj& traj, std::vector<uint>& frame_indices) {
     AtomicGroup avg = g.copy();
     AtomicGroup frame = g.copy();

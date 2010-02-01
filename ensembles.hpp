@@ -38,6 +38,12 @@ namespace loos {
   //! Compute the average structure of a set of AtomicGroup objects
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble);
 
+  //! Compute the average structure of a set of AtomicGroup objects
+  /**
+   * Takes into consideration the passed set of transforms...
+   */
+  AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
+
   //! Compute the average structure from a trajectory reading only certain frames
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj, std::vector<uint>& indices);
 
