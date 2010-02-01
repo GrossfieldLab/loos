@@ -284,47 +284,6 @@ namespace loos {
     return(res);
   }
 
-  
-  boost::tuple<RealMatrix, RealMatrix> pca(std::vector<AtomicGroup>& ensemble, const AtomicGroup& avg) {
-
-    RealMatrix M = extractCoords(ensemble);
-    if (3 * static_cast<uint>(avg.size()) != M.rows())
-      throw(LOOSError("Average structure size does not match the ensemble in loos::pca()"));
-
-    for (uint i=0; i<M.cols(); ++i)
-      for (uint j=0; j<static_cast<uint>(avg.size()); ++j) {
-        GCoord c = avg[j]->coords();
-        M(j*3, i) -= c.x();
-        M(j*3+1, i) -= c.y();
-        M(j*3+2, i) -= c.z();
-      }
-    RealMatrix C = MMMultiply(M, M, false, true);
-
-    // Compute [U,D] = eig(C)
-    char jobz = 'V';
-    char uplo = 'L';
-    f77int n = M.rows();
-    f77int lda = n;
-    float dummy;
-    RealMatrix W(n, 1);
-    f77int lwork = -1;
-    f77int info;
-    ssyev_(&jobz, &uplo, &n, C.get(), &lda, W.get(), &dummy, &lwork, &info);
-    if (info != 0)
-      throw(NumericalError("ssyev failed in loos::pca()", info));
-
-   
-    lwork = static_cast<f77int>(dummy);
-    float *work = new float[lwork+1];
-
-    ssyev_(&jobz, &uplo, &n, C.get(), &lda, W.get(), work, &lwork, &info);
-    if (info != 0)
-      throw(NumericalError("ssyev failed in loos::pca()", info));
-  
-    reverseColumns(C);
-    boost::tuple<RealMatrix, RealMatrix> result(W, C);
-    return(result);
-  }
 
 
 }

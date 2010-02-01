@@ -71,14 +71,6 @@ namespace loos {
 
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, const bool align = true);
 
-
-  //! Computes a PCA given an ensemble and it's average.
-  /**
-   * In contrast with the SVD functions, this computes a PCA using an
-   * eigendecomposition.  This means that the eigenvalues are the
-   * squares of the corresponding singular values...
-   */
-  boost::tuple<RealMatrix, RealMatrix> pca(std::vector<AtomicGroup>& ensemble, const AtomicGroup& avg);
 };
 
 
