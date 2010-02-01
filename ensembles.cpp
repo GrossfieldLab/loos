@@ -238,7 +238,7 @@ namespace loos {
 
 
 
-  RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble) {
+  RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble) {
     uint n = ensemble.size();
     uint m = ensemble[0].size();
     RealMatrix M(3*m, n);
@@ -254,7 +254,7 @@ namespace loos {
   }
 
 
-  RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms) {
+  RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms) {
     uint n = ensemble.size();
 
     if (n != xforms.size())

@@ -70,8 +70,8 @@ namespace loos {
   void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory);
   void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory, std::vector<uint>& frames);
 
-  RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble);
-  RealMatrix extractCoords(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
+  RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble);
+  RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
 
   void subtractAverage(RealMatrix& M);
 
