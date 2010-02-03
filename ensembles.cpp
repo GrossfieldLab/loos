@@ -302,11 +302,10 @@ namespace loos {
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, bool align) {
 
     RealMatrix M;
-    if (align) {
-      boost::tuple<std::vector<XForm>, greal, int> res = iterativeAlignment(ensemble);
-      M = extractCoords(ensemble, boost::get<0>(res));
-    } else
-      M = extractCoords(ensemble);
+    if (align)
+      iterativeAlignment(ensemble);
+    
+    M = extractCoords(ensemble);
 
     subtractAverage(M);
     boost::tuple<RealMatrix, RealMatrix, RealMatrix> res = Math::svd(M);
