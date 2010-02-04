@@ -38,11 +38,18 @@
 #include <loos.hpp>
 
 
+//! Base class for defining different methods of adjusting spring constants within the Hessian...
+/**
+ * Uses NVI idiom
+ */
+
 class SuperBlock {
 public:
+  //! Constructor; must pass the model we're going to work on
   SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist) { }
   virtual ~SuperBlock() { }
   
+  //! Computes a 3x3 superblock
   loos::DoubleMatrix block(const uint j, const uint i) {
     if (j >= size() || i >= size())
       throw(std::range_error("Invalid indices into SuperBlock"));
@@ -57,13 +64,14 @@ protected:
   loos::AtomicGroup nodes;
 
 private:
+  //! Polymorphic super-block function
   virtual loos::DoubleMatrix blockImpl(const uint j, const uint i) =0;
 
 };
 
 
 
-
+//! Use a constant spring and a distance cutoff
 class DistanceCutoff : public SuperBlock {
 public:
   DistanceCutoff(const loos::AtomicGroup& nodelist, const double r) : SuperBlock(nodelist), radius(r*r) { }
@@ -73,6 +81,7 @@ private:
 };
 
 
+//! Spring constant is a function of distance raised to a power (see Yang et al, PNAS (2009) 106:12347)
 class DistanceWeight : public SuperBlock {
 public:
   DistanceWeight(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), power(-2.0) { }
@@ -83,6 +92,7 @@ private:
 };
 
 
+//! Spring constant is an exponential function of distance
 class ExponentialDistance : public SuperBlock {
 public:
   ExponentialDistance(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), scale(-1.0) { }
@@ -93,7 +103,7 @@ private:
 };
 
 
-
+//! Use HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37
 class HCA : public SuperBlock {
 public:
   HCA(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist) { }

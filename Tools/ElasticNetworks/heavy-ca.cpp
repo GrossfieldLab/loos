@@ -5,11 +5,11 @@
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
-  Given a massified PDB file, assign the mass of the entire residue
-  to the CA.
+  Given a PDB where masses are stored in the occupancy field, reduce
+  the structure to CA's only where the mass of the CA is the sum of
+  the mass of all atoms in the corresponding residue...
 
-
-  Usage- heavy-ca selection [model | <model] >output
+  Usage- heavy-ca selection model >output
       
 */
 

@@ -7,7 +7,11 @@
 
 
   Usage:
-    vsa subset environment radius model output_prefix
+    vsa [options] subset environment model output_prefix
+
+  See:
+    Woodcock et al, J Chem Phys (2008) 129:214109
+    Haffner & Zheng, J Chem Phys (2009) 130:194111
 
 */
 
@@ -75,7 +79,6 @@ string psf_file;
 
 bool parameter_free;
 double power;
-bool exp_method;
 bool hca_method;
 bool nomass;
 
@@ -92,9 +95,8 @@ void parseOptions(int argc, char *argv[]) {
       ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
-      ("exp,e", po::value<bool>(&exp_method)->default_value(false), "Use an exponential distance scaling")
       ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
-      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free and exponential methods")
+      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free method")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
@@ -215,7 +217,7 @@ boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatr
 }
 
 
-
+// Matrix holds column vectors.  Each vector is normalized...
 void normalizeColumns(DoubleMatrix& A) {
   for (uint i=0; i<A.cols(); ++i) {
     double sum = 0.0;
@@ -235,7 +237,7 @@ void normalizeColumns(DoubleMatrix& A) {
 
 
 
-
+// Mass-weight eigenvectors
 DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
 
   // First, compute the cholesky decomp of M (i.e. it's square-root)
@@ -268,6 +270,7 @@ DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
   
 
 
+// Map masses from one group onto another...  Minimal error checking...
 void copyMasses(AtomicGroup& target, const AtomicGroup& source) {
   if (target.size() != source.size()) {
     cerr << "ERROR- groups have different sizes in copyMasses... (maybe your PSF doesn't match the model?)\n";
@@ -284,20 +287,21 @@ void copyMasses(AtomicGroup& target, const AtomicGroup& source) {
 }
 
 
-
+// Copy the masses from a PSF onto a group
 void massFromPSF(AtomicGroup& grp, const string& name) {
   AtomicGroup psf = createSystem(name);
   copyMasses(grp, psf);
 }
 
 
+// The masses are stored in the occupancy field of a PDB...
 void massFromOccupancy(AtomicGroup& grp) {
   for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i)
       (*i)->mass((*i)->occupancy());
 }
 
 
-
+// Build the 3n x 3n diagonal mass matrix for a group
 DoubleMatrix getMasses(const AtomicGroup& grp) {
   uint n = grp.size();
 
@@ -325,6 +329,8 @@ int main(int argc, char *argv[]) {
   if (verbosity > 0)
     cerr << "Assigning masses...\n";
 
+  // Get masess from somewhere, or rely on the defaults provided by
+  // Atom (i.e. should be 1)
   if (! psf_file.empty())
     massFromPSF(model, psf_file);
   else if (occupancies_are_masses)
@@ -333,9 +339,9 @@ int main(int argc, char *argv[]) {
     cerr << "WARNING- using default masses\n";
 
 
+  // Partition the model for building the composite Hessian
   AtomicGroup subset = selectAtoms(model, subset_selection);
   AtomicGroup environment = selectAtoms(model, environment_selection);
-
   AtomicGroup composite = subset + environment;
 
   if (verbosity > 1) {
@@ -345,22 +351,21 @@ int main(int argc, char *argv[]) {
 
   ScientificMatrixFormatter<double> sp(24,18);
 
+  // Determine how we're going to weight the Hessian's spring constants...
   SuperBlock* blocker = 0;
   if (parameter_free)
     blocker = new DistanceWeight(composite, power);
-  else if (exp_method)
-    blocker = new ExponentialDistance(composite, power);
   else if (hca_method)
     blocker = new HCA(composite);
   else
     blocker = new DistanceCutoff(composite, cutoff);
 
+  // Now build the Hessian
   DoubleMatrix H = hessian(blocker);
   delete blocker;
 
   // Now, burst out the subparts...
   uint l = subset.size() * 3;
-
   uint n = H.cols();
 
   DoubleMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
@@ -380,6 +385,7 @@ int main(int argc, char *argv[]) {
     cerr << timer << endl;
   }
   
+  // Build the effective Hessian
   DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
   if (debug) {
     writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
@@ -390,6 +396,8 @@ int main(int argc, char *argv[]) {
     writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr, false, sp);
   }
 
+  // Shunt in the event of using unit masses...  We can use the SVD to
+  // to get the eigenpairs from Hssp
   if (nomass) {
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp);
     DoubleMatrix U(boost::get<0>(svdresult));
@@ -404,6 +412,7 @@ int main(int argc, char *argv[]) {
   }
 
 
+  // Build the effective mass matrix
   DoubleMatrix Ms = getMasses(subset);
   DoubleMatrix Me = getMasses(environment);
   DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
@@ -414,6 +423,7 @@ int main(int argc, char *argv[]) {
     writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr, false, sp);
   }
 
+  // Run the eigen-decomposition...
   if (verbosity > 0) {
     cerr << "Running eigen-decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
     timer.start();
@@ -424,6 +434,7 @@ int main(int argc, char *argv[]) {
   DoubleMatrix Ds = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
 
+  // Need to mass-weight the eigenvectors so they're orthogonal in R3...
   if (verbosity > 0)
     cerr << "mass weighting eigenvectors...";
 

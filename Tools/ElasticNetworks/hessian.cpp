@@ -91,7 +91,7 @@ DoubleMatrix ExponentialDistance::blockImpl(const uint i, const uint j) {
   return(B);
 }
 
-
+// Method based on Hinsen et al, Harmonicity in slow protein dynamics. (2000) Chem Phys 261:25-37
 DoubleMatrix HCA::blockImpl(const uint i, const uint j) {
 
   DoubleMatrix B(3,3);
