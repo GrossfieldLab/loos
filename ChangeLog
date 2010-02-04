@@ -1,3 +1,58 @@
+2010-02-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in svd function that takes a vector of AtomicGroup's
+	and when aligning is requested...the alignment transform is
+	applied twice to each AtomicGroup.  No other svd calls were
+	affected and no LOOS tools were affected by this.
+
+2010-01-13    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed ENM code so that the Hessian construction is in its own
+	module.
+	* Fixed numerous problems in VSA code.  It now works correctly
+	(i.e. gives mass-weighted eigenvectors).  It can also be run in a
+	unit-mass mode.
+
+2009-12-28    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for doctoring PDB files to include masses
+	(i.e. new tools in ElasticNetworks)
+	* Changed matrix code to support single or double precision
+	matrices through overloading.
+	* Changed permutation and overlap codes to be template-based, so
+	will work with any Matrix form (though you cannot mix and match
+	them).
+	* Changed ENM tools to use double precision and high precision in
+	ASCII output...
+
+2009-12-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed DCDWriter substantially...  It no longer uses a
+	StreamWrapper, but manages its own iostream*.  Optional flag to
+	constructors control whether the iostream* is deleted on
+	destruction or not.
+	* Added ability to use DCDWriter to append to an existing DCD.
+	* Added merge-dcd tool (alan)
+
+2009-12-02    <alan@membrane.biophysics.rochester.edu>
+
+	* Changed correl method in TimeSeries so normalization is now optional
+
+2009-11-13    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in enmovie tool where bond connectivity was not
+	cleared before writing the reference PDB.  The reference PDB is
+	also renumbered to correctly match the output DCD.
+
+2009-11-10    <tromo@spade.biophysics.rochester.edu>
+
+	* Upgrades to rebond tool.  See tool help for details.
+	* Fixed bug in svd tool requiring a valid alignment selection even
+	if no aligning was done.
+	* Fixed bug in extractCoords() causing it to fail for any
+	invocation
+	* Added covariance and subspace overlap functions
+
 2009-11-05    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed anm and gnm tools to not write out the right singular
