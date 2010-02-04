@@ -198,8 +198,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.2 install
-ln -s /opt/loos-1.5.2 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.3 install
+ln -s /opt/loos-1.5.3 /opt/loos-latest
 \endverbatim
 
 
@@ -562,11 +562,21 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DT> <B>gnm</B>
       <DD> Computes the gaussian network model for a structure
 
+      <DT> <B>vsa</B>
+      <DD> Computes the vibrational subsystem analysis model for a structure
+
+      <DT> <B>psf-masses</B>
+      <DD> Copies atom masses from a PSF into the occupancy field of a PDB
+
+      <DT> <B>heavy-ca</B>
+      <DD> Places the total mass for a residue into its CA (for a PDB with masses)
+
       <DT> <B>enmovie</B>
       <DD> Creates a DCD depicting motion along the axes taken from an ENM result
 
       <DT> <B>flucc2b</B>
       <DD> Computes B-values based on ENM 
+
    </DL>
 
    <DT> <B>aligner</B>
@@ -653,6 +663,10 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    selections over a trajectory.  The distance computed can be the
    distance between the centroids, the minimum distance between any atom
    in any group, or the max distance between any atom in any group.
+
+   <DT><B>merge-dcd</B>
+   <DD>Merges DCDs by appending.  Can also concurrently downsample the
+   trajectory to another DCD.
 
    <DT><B>model-select</B>
    <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the selection,
@@ -793,14 +807,50 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
+\section release153 Version 1.5.3 (2-XX-2010)
+\subsection r153_added_changed Added, Changed, or otherwise Notable
+<UL>
+  <LI> Changed exposure tool to default to reimaging
+  <LI> Added alignto tool for aligning a trajectory to a reference
+  structure
+  <LI> Added a set of generic sorting functions
+  <LI> Added support for single and double precision matrix
+  operations.  Note that these are for "quick-and-dirty" work and are
+  not meant to give good performance...
+  <LI> ENM tools sort their output from smallest to largest
+  eigenvalue, and the zero eigenpairs always come first
+  <LI> Added a VSA tool (along with psf-masses and heavy-ca tools for
+  getting mass information into the VSA tool)
+  <LI> Added covariance and subspace overlap functions
+  <LI> Changed DCDWriter so that it can now append to an existing DCD
+  <LI> Changed ENM tools use a Hessian constructor that's in a
+  separate module, along with different methods for handling the
+  spring constants via a polymorphic "superblock" object pointer...
+  This will make more sense looking at the code itself...
+</UL>
+
+\subsection r153_bugs Bug Fixes
+<UL>
+  <LI> Fixed bugs in subsetter affecting reimaging only occuring if
+  centering was turned on, and one causing bonds not to be cleared
+  when subsetting.
+  <LI> Fixed bug in extractCoords() causing it to always fail.
+  <LI> Fixed bug in enmovie tool affecting connectivity not being
+  cleared and atom number mismatches between the reference PDB and the
+  DCD.
+  <LI> Fixed bug in svd function that takes a vector<AtomicGroup>, but
+  only when aligning was requested.  The alignment transform was
+  doubly-applied to the passed vector.  No tools were affected by
+  this.  No other invocations of svd() were affected either.
+
 \section release152 Version 1.5.2 (10-9-2009)
-\subsection r151_added_changed
+\subsection r152_added_changed Added, Changed, or otherwise Notable
 <UL>
   <LI> Changed AtomicGroup::principalAxes() so that it scales the
   eigenvalues by the number of atoms.
 </UL>
 
-\subsection r151_bugs Bug Fixes
+\subsection r152_bugs Bug Fixes
 <UL>
   <LI> Fixed bug where segname was not correctly handled as a synonym
   for segid.
