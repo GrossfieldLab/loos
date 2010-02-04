@@ -12,6 +12,7 @@
 	* Fixed numerous problems in VSA code.  It now works correctly
 	(i.e. gives mass-weighted eigenvectors).  It can also be run in a
 	unit-mass mode.
+	* Added support for various forms of weighting in the Hessian.
 
 2009-12-28    <tromo@spade.biophysics.rochester.edu>
 
