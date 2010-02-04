@@ -82,7 +82,6 @@ double cutoff;
 // Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
 bool parameter_free;
 
-bool exp_method;
 double power;
 bool hca_method;
 
@@ -101,9 +100,8 @@ void parseOptions(int argc, char *argv[]) {
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
-      ("exp,e", po::value<bool>(&exp_method)->default_value(false), "Use the exponential distance weighting method")
       ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
-      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free and exponential weighting methods")
+      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact");
 
     po::options_description hidden("Hidden options");
@@ -156,8 +154,6 @@ int main(int argc, char *argv[]) {
   SuperBlock* blocker = 0;
   if (parameter_free)
     blocker = new DistanceWeight(subset, power);
-  else if (exp_method)
-    blocker = new ExponentialDistance(subset, power);
   else if (hca_method)
     blocker = new HCA(subset);
   else
