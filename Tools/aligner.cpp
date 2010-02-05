@@ -61,21 +61,16 @@ using namespace loos;
 
 namespace po = boost::program_options;
 
-struct Globals {
-  string model_name, traj_name, prefix;
-  string alignment_string;
-  string transform_string;
+string model_name, traj_name, prefix;
+string alignment_string;
+string transform_string;
 
-  greal alignment_tol;
+greal alignment_tol;
 
-  int maxiter;
-  bool show_rmsd;
-  bool rmsdf;
-  bool center;
-};
-
-
-Globals globals;
+int maxiter;
+bool show_rmsd;
+bool rmsdf;
+bool center;
 
 
 
@@ -85,19 +80,19 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help,h", "Produce this help message")
-      ("align,a", po::value<string>(&globals.alignment_string)->default_value("name == 'CA'"),"Align using this selection")
-      ("transform,t", po::value<string>(&globals.transform_string)->default_value("all"), "Transform this selection")
-      ("maxiter,m", po::value<int>(&globals.maxiter)->default_value(5000), "Maximum number of iterations for the iterative alignment algorithm")
-      ("tolerance,T", po::value<greal>(&globals.alignment_tol)->default_value(1e-6), "Tolerance for alignment convergence")
-      ("rmsd,r", po::value<bool>(&globals.rmsdf)->default_value(false), "Calculate RMSD against average")
-      ("showrmsd,s", po::value<bool>(&globals.show_rmsd)->default_value(false), "Show RMSD for each frame")
-      ("center,c", po::value<bool>(&globals.center)->default_value(true), "Auto-center the trajectory using the alignment subset");
+      ("align,a", po::value<string>(&alignment_string)->default_value("name == 'CA'"),"Align using this selection")
+      ("transform,t", po::value<string>(&transform_string)->default_value("all"), "Transform this selection")
+      ("maxiter,m", po::value<int>(&maxiter)->default_value(5000), "Maximum number of iterations for the iterative alignment algorithm")
+      ("tolerance,T", po::value<greal>(&alignment_tol)->default_value(1e-6), "Tolerance for alignment convergence")
+      ("rmsd,r", po::value<bool>(&rmsdf)->default_value(false), "Calculate RMSD against average")
+      ("showrmsd,s", po::value<bool>(&show_rmsd)->default_value(false), "Show RMSD for each frame")
+      ("center,c", po::value<bool>(&center)->default_value(true), "Auto-center the trajectory using the alignment subset");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
-      ("model", po::value<string>(&globals.model_name), "Model filename")
-      ("traj", po::value<string>(&globals.traj_name), "Trajectory filename")
-      ("prefix", po::value<string>(&globals.prefix), "Output prefix");
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value<string>(&traj_name), "Trajectory filename")
+      ("prefix", po::value<string>(&prefix), "Output prefix");
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
@@ -118,8 +113,8 @@ void parseOptions(int argc, char *argv[]) {
       exit(-1);
     }
 
-    if (!globals.rmsdf && globals.show_rmsd) {
-      globals.rmsdf = true;
+    if (!rmsdf && show_rmsd) {
+      rmsdf = true;
       cerr << "Warning - you must use --rmsd with --showrmsd, so adding --rmsd implicitly.\n";
     }
 
@@ -138,19 +133,19 @@ double calcRMSD(const string& octave_tag, vector<AtomicGroup>& grps) {
 
   unsigned int nframes = grps.size();
   double avg_rmsd = 0.0;
-  if (globals.show_rmsd)
+  if (show_rmsd)
     cout << "<OCTAVE>\n";
   AtomicGroup avg = averageStructure(grps);
-  if (globals.show_rmsd)
+  if (show_rmsd)
     cout << octave_tag << " = [\n";
   for (unsigned int i = 0; i<nframes; i++) {
     greal irmsd = avg.rmsd(grps[i]);
-    if (globals.show_rmsd)
+    if (show_rmsd)
       cout << irmsd << " ;\n";
     avg_rmsd += irmsd;
   }
   
-  if (globals.show_rmsd) {
+  if (show_rmsd) {
     cout << "];\n";
     cout << "</OCTAVE>\n";
   }
@@ -185,24 +180,17 @@ void divCoords(AtomicGroup& g, const double d) {
     g[i]->coords() /= d;
 }
 
-
-
-
-void savePDB(const string& fname, const string& meta, AtomicGroup& structure) {
-  PDB pdb = PDB::fromAtomicGroup(structure);
-  pdb.clearBonds();
-  pdb.remarks().add(meta);
-
-  ofstream ofs(fname.c_str());
-  ofs << pdb;
-}
-
-
 void centerFrame(AtomicGroup& src, AtomicGroup& trg) {
   GCoord c = src.centroid();
   trg.translate(-c);
 }
 
+void savePDB(const string& fname, const string& meta, const AtomicGroup& grp) {
+  PDB pdb = PDB::fromAtomicGroup(grp);
+  pdb.remarks().add(meta);
+  ofstream ofs(fname.c_str());
+  ofs << pdb;
+}
 
 
 int main(int argc, char *argv[]) {
@@ -212,16 +200,16 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
 
   // Read the inputs...
-  AtomicGroup model = createSystem(globals.model_name);
-  cout << "Read in " << model.size() << " atoms from " << globals.model_name << endl;
+  AtomicGroup model = createSystem(model_name);
+  cout << "Read in " << model.size() << " atoms from " << model_name << endl;
 
-  pTraj traj = createTrajectory(globals.traj_name, model);
+  pTraj traj = createTrajectory(traj_name, model);
 
-  cout << "Reading from trajectory " << globals.traj_name << " with " << traj->nframes() << " frames.\n";
+  cout << "Reading from trajectory " << traj_name << " with " << traj->nframes() << " frames.\n";
 
   // Get the selections (subsets) to operate over
-  AtomicGroup align_sub = selectAtoms(model, globals.alignment_string);
-  AtomicGroup applyto_sub = selectAtoms(model, globals.transform_string);
+  AtomicGroup align_sub = selectAtoms(model, alignment_string);
+  AtomicGroup applyto_sub = selectAtoms(model, transform_string);
 
   align_sub.clearBonds();
   cout << "Subset to align with has " << align_sub.size() << " atoms.\n";
@@ -238,21 +226,17 @@ int main(int argc, char *argv[]) {
   while (traj->readFrame()) {
     traj->updateGroupCoords(align_sub);
     AtomicGroup subcopy = align_sub.copy();
-
-    if (globals.center)
-      subcopy.centerAtOrigin();
-
     frames.push_back(subcopy);
   }
 
-  boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, globals.alignment_tol, globals.maxiter);
+  boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, alignment_tol, maxiter);
   greal final_rmsd = boost::get<1>(res);
   cout << "Final RMSD between average structures is " << final_rmsd << endl;
   cout << "Total iters = " << boost::get<2>(res) << endl;
 
   vector<XForm> xforms = boost::get<0>(res);
 
-  if (globals.rmsdf) {
+  if (rmsdf) {
     double avg_rmsd = calcRMSD("r", frames);
     cout << "Average RMSD vs average for aligned subset = " << avg_rmsd << endl;
   }
@@ -261,36 +245,27 @@ int main(int argc, char *argv[]) {
   frames.clear();
 
   cout << "Aligning transformation subset...\n";
-  // Go ahead and make first transformation (to make VMD happy so that
-  // the PDB is just a copy of the first trajectory frame...
-  traj->readFrame(0);
-  traj->updateGroupCoords(model);
-  AtomicGroup frame = applyto_sub.copy();
-  if (globals.center)
-    centerFrame(align_sub, frame);
-  frame.applyTransform(xforms[0]);
-  frame.renumber();
-  savePDB(globals.prefix + ".pdb", header, frame);
-
-  // Make the first frame...
-  AtomicGroup avg = frame.copy();
+  AtomicGroup avg;
+  zeroCoords(avg);
 
   // Setup for writing DCD...
-  DCDWriter dcdout(globals.prefix + ".dcd");
-  dcdout.setHeader(frame.size(), nframes, 1e-3, frame.isPeriodic());
+  DCDWriter dcdout(prefix + ".dcd");
+  dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, traj->hasPeriodicBox());
   dcdout.setTitle(header);
   dcdout.writeHeader();
-  dcdout.writeFrame(frame);
 
   // Now apply the alignment transformations to the requested subsets
-  for (unsigned int i = 1; i<nframes; i++) {
+  for (unsigned int i = 0; i<nframes; i++) {
     traj->readFrame(i);
     traj->updateGroupCoords(model);
-    if (globals.center)
-      centerFrame(align_sub, applyto_sub);
-
     applyto_sub.applyTransform(xforms[i]);
+
+    if (center)
+      centerFrame(align_sub, applyto_sub);
     dcdout.writeFrame(applyto_sub);
+
+    if (i == 0) 
+      savePDB(prefix + ".pdb", header, applyto_sub);
 
     addCoords(avg, applyto_sub);
   }
@@ -299,15 +274,15 @@ int main(int argc, char *argv[]) {
   divCoords(avg, nframes);
 
   // Write out the PDB...
-  savePDB(globals.prefix + "_avg.pdb", header, avg);
+  savePDB(prefix + "_avg.pdb", header, avg);
 
-  if (globals.rmsdf) {
+  if (rmsdf) {
     // Second pass to calc rmsds...
 
     cout << "Calculating rmsds...\n";
   
     double avg_rmsd = 0.0;
-    if (globals.show_rmsd)
+    if (show_rmsd)
       cout << "<OCTAVE>\nrall = [\n";
     
     for (unsigned int i=0; i<nframes; i++) {
@@ -315,12 +290,12 @@ int main(int argc, char *argv[]) {
       traj->updateGroupCoords(applyto_sub);
       applyto_sub.applyTransform(xforms[i]);
       double rms = applyto_sub.rmsd(avg);
-      if (globals.show_rmsd)
+      if (show_rmsd)
         cout << rms << " ;\n";
       avg_rmsd += rms;
     }
     
-    if (globals.show_rmsd)
+    if (show_rmsd)
       cout << "];\n</OCTAVE>\n";
 
     avg_rmsd /= nframes;
