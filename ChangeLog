@@ -1,3 +1,9 @@
+2010-02-05    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in aligner that sometimes caused the target selection
+	to not be correctly centered.  The frames were still aligned
+	correctly, but the global center was not correctly applied.
+
 2010-02-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in svd function that takes a vector of AtomicGroup's

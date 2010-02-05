@@ -842,6 +842,9 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
   only when aligning was requested.  The alignment transform was
   doubly-applied to the passed vector.  No tools were affected by
   this.  No other invocations of svd() were affected either.
+  <LI> Fixed bug in aligner where the target selection was not always
+  correctly centered.  It would be aligned correctly, just not always
+  centered...
 
 \section release152 Version 1.5.2 (10-9-2009)
 \subsection r152_added_changed Added, Changed, or otherwise Notable
