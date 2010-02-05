@@ -118,6 +118,10 @@ void parseOptions(int argc, char *argv[]) {
       cerr << "Warning - you must use --rmsd with --showrmsd, so adding --rmsd implicitly.\n";
     }
 
+    if (rmsdf || show_rmsd) {
+      cerr << "Warning- these options are now deprecated and will go away in future releases.\n";
+    }
+
   }
 
   catch(exception& e) {
