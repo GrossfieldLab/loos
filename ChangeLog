@@ -1,3 +1,12 @@
+2010-02-10  Tod Romo  <tromo@gorgoneion-w>
+
+	* Changed PDB::fromAtomicGroup so that if the AtomicGroup has a
+	periodic box, then the PDB's UnitCell is set to the same
+	dimensions (with 90 degrees for all angles).  This will the be
+	written out as a CRYST1 record.
+	* Changed PDB::unitCell() so that the unitCell& it returns is a
+	const.
+
 2010-02-05    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in aligner that sometimes caused the target selection
