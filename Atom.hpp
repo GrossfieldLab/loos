@@ -180,6 +180,9 @@ namespace loos {
     //! Returns a copy of the bond list.
     std::vector<int> getBonds(void) const;
 
+    //! Sets the bonds list
+    void setBonds(const std::vector<int>& list);
+
     bool hasBonds(void) const;
 
     //! Checks to see if this atom is bound to another atom

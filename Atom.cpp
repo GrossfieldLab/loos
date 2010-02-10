@@ -116,6 +116,11 @@ namespace loos {
     return(bonds);
   }
 
+  void Atom::setBonds(const std::vector<int>& list) {
+    bonds = list;
+    setPropertyBit(bondsbit);
+  }
+
   bool Atom::hasBonds(void) const { return(bonds.size() != 0); }
 
     //! Checks to see if this atom is bound to another atom
