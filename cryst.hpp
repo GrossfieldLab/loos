@@ -27,13 +27,20 @@
 #define CRYST_HPP
 
 #include <loos_defs.hpp>
+#include <Coord.hpp>
 
 namespace loos {
 
   //! This class encapsulates crystallographic unit cell data
   class UnitCell {
   public:
-    UnitCell() : _a(1.0), _b(1.0), _c(1.0), _alpha(90.0), _beta(90.0), _gamma(90.0), sgroup("P1"), zval(1) { }
+    UnitCell() : _a(1.0), _b(1.0), _c(1.0),
+                 _alpha(90.0), _beta(90.0), _gamma(90.0),
+                 sgroup("P1"), zval(1) { }
+
+    UnitCell(const GCoord& v) : _a(v.x()), _b(v.y()), _c(v.z()),
+                                _alpha(90.0), _beta(90.0), _gamma(90.0),
+                                sgroup("P1"), zval(1) { }
 
     greal a(void) const { return(_a); }
     void a(const greal x) { _a = x; }
