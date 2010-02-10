@@ -371,7 +371,7 @@ namespace loos {
     AtomicGroup::iterator i;
 
     os << p._remarks;
-    if (p.isPeriodic())
+    if (p.isPeriodic()) 
       XTALLine(os, p.periodicBox()) << std::endl;
     if (p._has_cryst) 
       FormattedUnitCell(os, p.cell) << std::endl;
@@ -413,6 +413,9 @@ namespace loos {
 
   PDB PDB::fromAtomicGroup(const AtomicGroup& g) {
     PDB p(g);
+
+    if (p.isPeriodic()) 
+      p.unitCell(UnitCell(p.periodicBox()));
     
     return(p);
   }
@@ -430,8 +433,8 @@ namespace loos {
   Remarks& PDB::remarks(void) { return(_remarks); }
   void PDB::remarks(const Remarks& r) { _remarks = r; }
 
-  UnitCell& PDB::unitCell(void) { return(cell); }
-  void PDB::unitCell(const UnitCell& c) { cell = c; }
+  const UnitCell& PDB::unitCell(void) { return(cell); }
+  void PDB::unitCell(const UnitCell& c) { _has_cryst = true; cell = c; }
 
 
 

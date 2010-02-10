@@ -131,7 +131,7 @@ namespace loos {
     //! Accessor for the remarks object...
     void remarks(const Remarks&);
 
-    UnitCell& unitCell(void);
+    const UnitCell& unitCell(void);
     void unitCell(const UnitCell&);
 
     //! Output as a PDB
