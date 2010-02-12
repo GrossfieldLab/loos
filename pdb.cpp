@@ -229,26 +229,33 @@ namespace loos {
     cell.b(r);
     r = parseStringAs<float>(s, 24, 9);
     cell.c(r);
-
+    
     r = parseStringAs<float>(s, 33, 7);
     cell.alpha(r);
     r = parseStringAs<float>(s, 40, 7);
     cell.beta(r);
     r = parseStringAs<float>(s, 47, 7);
     cell.gamma(r);
-
-    // Special handling in case of mangled CRYST1 record...
-    if (s.length() < 66) {
-      t = s.substr(55);
-      cell.spaceGroup(t);
-      cell.z(-1);   // ??? 
-    } else {
-      t = parseStringAs<std::string>(s, 55, 11);
-      cell.spaceGroup(t);
-      i = parseStringAs<int>(s, 66, 4);
-      cell.z(i);
+    
+    try {
+      // Special handling in case of mangled CRYST1 record...
+      if (s.length() < 66) {
+        t = s.substr(55);
+        
+        cell.spaceGroup(t);
+        cell.z(-1);   // ??? 
+      } else {
+        t = parseStringAs<std::string>(s, 55, 11);
+        cell.spaceGroup(t);
+        i = parseStringAs<int>(s, 66, 4);
+        cell.z(i);
+      }
     }
-
+    catch (...) {
+      std::cerr << "Error while parsing space group in CRYST1 record." << std::endl;
+      throw;
+    }
+      
     _has_cryst = true;
   }
 
