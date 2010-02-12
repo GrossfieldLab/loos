@@ -42,6 +42,7 @@ typedef vector<AtomicGroup>            vGroup;
 string model_name, bonds_name;
 string center_sel, apply_sel, write_sel;
 bool reimage;
+bool center_xy;
 
 
 
@@ -55,7 +56,8 @@ void parseOptions(int argc, char *argv[]) {
       ("center,c", po::value<string>(&center_sel)->default_value("all"), "Selection to calculate the offset from")
       ("apply,a", po::value<string>(&apply_sel)->default_value("all"), "Selection to actually center")
       ("write,w", po::value<string>(&write_sel)->default_value("all"), "Selection to write to stdout")
-      ("reimage,r", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule first")
+      ("reimage,r", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule after")
+      ("center_xy,x", po::value<bool>(&center_xy)->default_value(false), "Center only x&y dimensions")
       ("bonds,b", po::value<string>(&bonds_name), "Use this model for connectivity");
 
     po::options_description hidden("Hidden options");
@@ -120,24 +122,27 @@ int main(int argc, char *argv[]) {
         cerr << "WARNING- The model has no connectivity.  Assigning bonds based on distance.\n";
         model.findBonds();
       }
-
-      vGroup molecules = model.splitByMolecule();
-      vGroup segments = model.splitByUniqueSegid();
-      
-      for (vGroup::iterator seg = segments.begin(); seg != segments.end(); ++seg)
-        seg->reimage();
-
-      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-        mol->reimage();
     }
   }
 
   AtomicGroup center_mol = selectAtoms(model, center_sel);
   GCoord center = center_mol.centroid();
+  if (center_xy) center.z() = 0.0;
 
   AtomicGroup apply_mol = selectAtoms(model, apply_sel);
   for (AtomicGroup::iterator atom = apply_mol.begin(); atom != apply_mol.end(); ++atom)
     (*atom)->coords() -= center;
+
+  if (reimage) {
+    vGroup molecules = model.splitByMolecule();
+    vGroup segments = model.splitByUniqueSegid();
+      
+    for (vGroup::iterator seg = segments.begin(); seg != segments.end(); ++seg)
+      seg->reimage();
+
+    for (vGroup::iterator mol =molecules.begin(); mol != molecules.end(); ++mol)
+      mol->reimage();
+  }
 
   AtomicGroup write_mol = selectAtoms(model, write_sel);
   PDB pdb = PDB::fromAtomicGroup(write_mol);
