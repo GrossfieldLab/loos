@@ -278,7 +278,7 @@ namespace loos {
         int space = input.find_first_of(' ');
         std::string record = input.substr(0, space);
         if (seen.find(record) == seen.end()) {
-          std::cerr << "Warning - unknown PDB record " << record << std::endl;
+          std::cerr << "Warning - unknown PDB record '" << record << "'" << std::endl;
           seen.insert(record);
         }
       }
