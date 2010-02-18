@@ -1,13 +1,31 @@
 /*
   contact-time
-  
-  (c) 2010 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochster School of Medicine and Dentistry
 
   Computes the number of contacts between a probe group and a set of target groups...
 */
 
+
+/*
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, 2010 Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 
 #include <loos.hpp>
@@ -27,13 +45,30 @@ double inner_cutoff, outer_cutoff;
 string probe_selection;
 string model_name, traj_name;
 vector<string> target_selections;
-bool symmetry = false;
-int verbosity = 0;
-bool normalize = true;
-bool max_norm = false;
-bool local_normal = false;
-bool auto_self = false;
+bool symmetry;
+int verbosity;
+bool normalize;
+bool max_norm;
+bool auto_self;
 
+
+
+void fullHelp() {
+  cout <<
+    "* Normalization *\n"
+    "Normalization can be performed in two ways: row or column.\n"
+    "Row normalization gives the percentage contact between the probe\n"
+    "and each target relative to all contacts.  Column normalization\n"
+    "gives the percentage contact between the probe and each target\n"
+    "relative to the maximum number of contacts against the respective\n"
+    "target.\n"
+    "\n"
+    "* Autoself *\n"
+    "The autoself option splits the probe selection into a set of\n"
+    "molecules based on segid.  It then computes the contacts between\n"
+    "all of these molecules (excluding self-to-self) and includes this\n"
+    "as an extra column in the output.\n";
+}
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -43,10 +78,9 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help,h", "Produce this help message")
       ("fullhelp", "Even more help")
-      ("verbose,v", "Verbose output")
-      ("normalize,n", po::value<bool>(&normalize)->default_value(true), "Normalize total # of contacts")
-      ("max,m", po::value<bool>(&max_norm)->default_value(false), "Normalize by max value down a column")
-      ("local,l", po::value<bool>(&local_normal)->default_value(false), "Normalize by possible # of contacts (i.e. size of probe selection)")
+      ("verbose,v", po::value<int>(&verbosity)->default_value(1), "Enable verbose output")
+      ("rownorm,n", po::value<bool>(&normalize)->default_value(true), "Normalize total # of contacts (across row)")
+      ("colnorm,c", po::value<bool>(&max_norm)->default_value(false), "Normalize by max value (down a column)")
       ("inner,i", po::value<double>(&inner_cutoff)->default_value(1.5), "Inner cutoff (ignore atoms closer than this)")
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(2.5), "Outer cutoff (ignore atoms further away than this)")
       ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances")
@@ -76,13 +110,20 @@ void parseOptions(int argc, char *argv[]) {
     po::notify(vm);
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj") && !target_selections.empty() && vm.count("probe"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name probe target [target ...]\n";
+      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name probe target [target ...] >output\n";
       cerr << generic;
       exit(-1);
     }
 
-    if (vm.count("verbose"))
-      verbosity = 1;
+    if (vm.count("fullhelp")) {
+      fullHelp();
+      exit(0);
+    }
+
+    if (normalize && max_norm) {
+      cerr << "Error- cannot use both column and row normalization at the same time\n";
+      exit(-1);
+    }
 
     if (vm.count("range")) {
       vector<string> ranges = vm["range"].as< vector<string> >();
@@ -120,32 +161,37 @@ double contacts(const AtomicGroup& target, const AtomicGroup& probe, const doubl
   }
 
   double val = static_cast<double>(contact);
-  if (local_normal)
-    val /= probe.size();
-
   return(val);
 }
 
 
 
-// This assumes that you want to compare the -ENTIRE- molecule
-double autoSelfContacts(const vGroup& memyselfandi, const double inner_radius, const double outer_radius) {
+// Given a vector of groups, compute the number of contacts between
+// unique pairs of groups, excluding the self-to-self
+//
+// Note: this assumes that you want to compare the -ENTIRE- molecule
+double autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius) {
   
   double total_contact = 0.0;
-  uint n = memyselfandi.size();
+  uint n = selves.size();
   for (uint j=0; j<n-1; ++j)
     for (uint i=j+1; i<n; ++i) {
-      total_contact += contacts(memyselfandi[j], memyselfandi[i], inner_radius, outer_radius);
+      total_contact += contacts(selves[j], selves[i], inner_radius, outer_radius);
     }
-
-  // Dubious usage...
-  if (local_normal)
-    total_contact /= memyselfandi[0].size();
 
   return(total_contact);
 }
 
 
+
+
+// Normalize across a row of contacts against targets.
+// Skips the first col [expecting time to be stored there]
+// This gives the percentage of all contacts against each target in
+// the respective columns...
+//
+// If the normalization would be 0, then leave the elements unchanged,
+// but issue a warning
 
 void rowNormalize(DoubleMatrix& M) {
 
@@ -162,6 +208,15 @@ void rowNormalize(DoubleMatrix& M) {
   }
 }
 
+
+
+// Normalize down a column of contacts by the max contacts.
+// Skips the first col [expecting time to be stored there]
+// This gives the fractional contacts (vs max) for each target over
+// time.
+//
+// If the normalization would be 0, then leave the elements unchanged,
+// but issue a warning
 
 void colNormalize(DoubleMatrix& M) {
 
@@ -182,6 +237,7 @@ void colNormalize(DoubleMatrix& M) {
 
 
 
+
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   parseOptions(argc, argv);
@@ -189,29 +245,35 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(model_name);
   pTraj traj = createTrajectory(traj_name, model);
 
+  // Handle a request for a subset of frames
   if (indices.empty())
     for (uint i=0; i<traj->nframes(); ++i)
       indices.push_back(i);
 
   AtomicGroup probe = selectAtoms(model, probe_selection);
 
+  // Build each of the requested targets...
   vGroup targets;
   for (vector<string>::iterator i = target_selections.begin(); i != target_selections.end(); ++i)
     targets.push_back(selectAtoms(model, *i));
 
-  vGroup myself;
+
+  // Size of the output matrix
   uint rows = indices.size();
   uint cols = targets.size() + 1;
+
+  // If comparing self, split apart molecules by unique segids
+  vGroup myselves;
   if (auto_self) {
     ++cols;
-    myself = probe.splitByUniqueSegid();
+    myselves = probe.splitByUniqueSegid();
   }
-    
 
   DoubleMatrix M(rows, cols);
-
   uint t = 0;
 
+  // Setup our progress counter since this can be a time-consuming
+  // program, but only if verbose output is requested.
   PercentProgressWithTime watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(indices.size()));
   slayer.attach(&watcher);
@@ -235,7 +297,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (auto_self)
-      M(t, cols-1) = autoSelfContacts(myself, inner_cutoff, outer_cutoff);
+      M(t, cols-1) = autoSelfContacts(myselves, inner_cutoff, outer_cutoff);
 
     ++t;
     if (verbosity)
@@ -246,13 +308,18 @@ int main(int argc, char *argv[]) {
     slayer.finish();
 
   if (normalize) {
-    cerr << "Normalizing across the row...\n";
+    if (verbosity)
+      cerr << "Normalizing across the row...\n";
     rowNormalize(M);
+
   } else if (max_norm) {
-    cerr << "Normalizing by max column value...\n";
+    if (verbosity)
+      cerr << "Normalizing by max column value...\n";
     colNormalize(M);
+
   } else
-    cerr << "No normalization.\n";
+    if (verbosity)
+      cerr << "No normalization.\n";
 
   writeAsciiMatrix(cout, M, hdr);
 }
