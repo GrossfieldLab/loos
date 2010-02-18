@@ -599,6 +599,12 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    <DT><B>bounding</B>
    <DD>Write out the bounding box for a selection of atoms from a structure file.
 
+   <DT><B>center-molecule</B>
+   <DD>A more flexible tool for centering molecules.  Can use
+   different subsets for calculating the center, controlling what is
+   translated, and what goes to the output.  It can also reimage the
+   molecule and center only within the x,y plane.
+
    <DT><B>center-pdb</B>
    <DD>Read in a structure file, shift its centroid to the origin, and write a new
    pdb file to stdout.  
@@ -609,6 +615,15 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    <DT><B>concat-selection</B>
    <DD>Concatenates atoms from a trajectory into a single PDB.  Useful
    for seeing where something has been...
+   
+   <DT><B>contact-time</B>
+   <DD>This tool computes the number of contacts between a probe
+   selection and a set of target selections.  The output is in the
+   form of a matrix and can be normalized by either total number of
+   contacts (across the row) or by the maximum # of contacts per
+   target (down the column).  In addition, it can automatically split
+   the probe into separate molecules, based on their segids, and
+   compute the inter-probe contacts as well.
 
    <DT><B>contacts</B>
    <DD>Loop over a trajectory and count the number of contacts between two
@@ -807,9 +822,15 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
-\section release153 Version 1.5.3 (2-XX-2010)
+\section release153 Version 1.5.3 (2-19-2010)
 \subsection r153_added_changed Added, Changed, or otherwise Notable
 <UL>
+  <LI> PDB::fromAtomicGroup() now generates a UnitCell if the
+       passed AtomicGroup has periodic boundary information.  This
+       means that the output PDB will have a CRYST1 record.
+  <LI> Added a more flexible centering tool called center-molecule
+  <LI> Added a new tool for computing inter-selection contacts
+       over time called contact-time
   <LI> Changed exposure tool to default to reimaging
   <LI> Added alignto tool for aligning a trajectory to a reference
   structure

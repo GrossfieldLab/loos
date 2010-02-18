@@ -1,3 +1,11 @@
+2010-02-18    <tromo@spade.biophysics.rochester.edu>
+
+	* Added center-molecule tool...a slightly more flexible tool for
+	centering molecules than center-pdb
+	* Added contact-time, a tool for computing the number of contacts
+	between a "probe" selection and a set of "targets" over time, with
+	various methods of normalizing the output.
+
 2010-02-10  Tod Romo  <tromo@gorgoneion-w>
 
 	* Changed PDB::fromAtomicGroup so that if the AtomicGroup has a
