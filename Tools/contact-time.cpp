@@ -67,8 +67,22 @@ void fullHelp() {
     "The autoself option splits the probe selection into a set of\n"
     "molecules based on segid.  It then computes the contacts between\n"
     "all of these molecules (excluding self-to-self) and includes this\n"
-    "as an extra column in the output.\n";
+    "as an extra column in the output.  As an example, suppose\n"
+    "you have a number of AMLPs in a membrane, each with a different\n"
+    "segid (i.e. PE1, PE2, ...) and you want to find the percentage\n"
+    "contacts between the AMLPs and PEGL, PGGL, and each other.  The\n"
+    "command for this would be:\n"
+    "\n"
+    "contact-time -a1 model.pdb traj.dcd  'segid =~ \"PE\\d+\"'\\\n"
+    "      'resname == \"PEGL\"' and 'resname == \"PGGL\"'\n"
+    "\n"
+    "This will automatically generate a new set of targets based\n"
+    "on the probe selection, splitting them into separate molecules\n"
+    "based on their segid.  It then computes the unique pair-wise\n"
+    "contacts between each AMLP.  The total number of self-contacts\n"
+    "is then included as an extra column in the output.\n";
 }
+
 
 
 void parseOptions(int argc, char *argv[]) {
