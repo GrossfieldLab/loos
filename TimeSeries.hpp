@@ -32,6 +32,7 @@
 #include <fstream>
 #include <sstream>
 
+#include <loos_defs.hpp>
 
 namespace loos {
 
