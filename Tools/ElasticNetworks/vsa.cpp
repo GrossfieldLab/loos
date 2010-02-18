@@ -1,7 +1,7 @@
 /*
   vsa
 
-  (c) 2009,2010 Tod D. Romo, Grossfield Lab
+  (c) 2009 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
@@ -349,6 +349,7 @@ int main(int argc, char *argv[]) {
     cerr << "Environment size is " << environment.size() << endl;
   }
 
+  // Insanely high precision output
   ScientificMatrixFormatter<double> sp(24,18);
 
   // Determine how we're going to weight the Hessian's spring constants...
