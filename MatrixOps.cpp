@@ -100,28 +100,28 @@ namespace loos {
 
     // Multiply two matrices using BLAS
 
-    DoubleMatrix MMMultiply(const DoubleMatrix& A, const DoubleMatrix& B, const bool transa, const bool transb) {
+    RealMatrix MMMultiply(const RealMatrix& A, const RealMatrix& B, const bool transa, const bool transb) {
 
       f77int m = transa ? A.cols() : A.rows();
       f77int n = transb ? B.rows() : B.cols();
       f77int k = transa ? A.rows() : A.cols();
-      double alpha = 1.0;
-      double beta = 0.0;
+      float alpha = 1.0;
+      float beta = 0.0;
 
       f77int lda = transa ? k : m;
       f77int ldb = transb ? n : k;
       f77int ldc = m;
 
 
-      DoubleMatrix C(m, n);
+      RealMatrix C(m, n);
 
 #if defined(__linux__)
       char ta = (transa ? 'T' : 'N');
       char tb = (transb ? 'T' : 'N');
 
-      dgemm_(&ta, &tb, &m, &n, &k, &alpha, A.get(), &lda, B.get(), &ldb, &beta, C.get(), &ldc);
+      sgemm_(&ta, &tb, &m, &n, &k, &alpha, A.get(), &lda, B.get(), &ldb, &beta, C.get(), &ldc);
 #else
-      cblas_dgemm(CblasColMajor, transa ? CblasTrans : CblasNoTrans, transb ? CblasTrans : CblasNoTrans,
+      cblas_sgemm(CblasColMajor, transa ? CblasTrans : CblasNoTrans, transb ? CblasTrans : CblasNoTrans,
                   m, n, k, alpha, A.get(), lda, B.get(), ldb, beta, C.get(), ldc);
 #endif
 
@@ -131,16 +131,16 @@ namespace loos {
 
     // Pseudo-inverse of a matrix using the SVD
 
-    DoubleMatrix invert(DoubleMatrix& A, const float eps) {
+    RealMatrix invert(RealMatrix& A, const float eps) {
 
       // The SVD (at least dgesvd) will destroy the source matrix, so we
       // need to make an explicit copy...
 
-      DoubleMatrix B(A.copy());
-      boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> res = svd(B);
-      DoubleMatrix U(boost::get<0>(res));
-      DoubleMatrix S(boost::get<1>(res));
-      DoubleMatrix Vt(boost::get<2>(res));
+      RealMatrix B(A.copy());
+      boost::tuple<RealMatrix, RealMatrix, RealMatrix> res = svd(B);
+      RealMatrix U(boost::get<0>(res));
+      RealMatrix S(boost::get<1>(res));
+      RealMatrix Vt(boost::get<2>(res));
 
 
       for (uint i=0; i<Vt.rows(); ++i) {
@@ -154,12 +154,12 @@ namespace loos {
           Vt(i,j) *= sv;
       }
 
-      DoubleMatrix Ai = MMMultiply(Vt, U, true, true);
+      RealMatrix Ai = MMMultiply(Vt, U, true, true);
       return(Ai);
     }
 
 
-    void operator+=(DoubleMatrix& A, const DoubleMatrix& B) {
+    void operator+=(RealMatrix& A, const RealMatrix& B) {
       if (A.rows() != B.rows() || A.cols() != B.cols())
         throw(std::logic_error("Matrices are not the same size"));
 
@@ -167,14 +167,14 @@ namespace loos {
         A[i] += B[i];
     }
 
-    DoubleMatrix operator+(const DoubleMatrix& A, const DoubleMatrix& B) {
-      DoubleMatrix C(A.copy());
+    RealMatrix operator+(const RealMatrix& A, const RealMatrix& B) {
+      RealMatrix C(A.copy());
       C += B;
       return(C);
     }
 
 
-    void operator-=(DoubleMatrix& A, const DoubleMatrix& B) {
+    void operator-=(RealMatrix& A, const RealMatrix& B) {
       if (A.rows() != B.rows() || A.cols() != B.cols())
         throw(std::logic_error("Matrices are not the same size"));
 
@@ -182,37 +182,37 @@ namespace loos {
         A[i] -= B[i];
     }
 
-    DoubleMatrix operator-(const DoubleMatrix& A, const DoubleMatrix& B) {
-      DoubleMatrix C(A.copy());
+    RealMatrix operator-(const RealMatrix& A, const RealMatrix& B) {
+      RealMatrix C(A.copy());
       C -= B;
       return(C);
     }
 
 
-    void operator*=(DoubleMatrix& A, const float d) {
+    void operator*=(RealMatrix& A, const float d) {
       for (uint i=0; i<A.rows() * A.cols(); ++i)
         A[i] *= d;
     }
 
-    DoubleMatrix operator*(const DoubleMatrix& A, const float d) {
-      DoubleMatrix B(A.copy());
+    RealMatrix operator*(const RealMatrix& A, const float d) {
+      RealMatrix B(A.copy());
       B *= d;
       return(B);
     }
 
-    void operator*=(DoubleMatrix& A, const DoubleMatrix& B) {
-      DoubleMatrix C = MMMultiply(A, B);
+    void operator*=(RealMatrix& A, const RealMatrix& B) {
+      RealMatrix C = MMMultiply(A, B);
       A=C;
     }
 
-    DoubleMatrix operator*(const DoubleMatrix& A, const DoubleMatrix& B) {
-      DoubleMatrix C = MMMultiply(A, B);
+    RealMatrix operator*(const RealMatrix& A, const RealMatrix& B) {
+      RealMatrix C = MMMultiply(A, B);
       return(C);
     }
 
 
-    DoubleMatrix operator-(DoubleMatrix& A) {
-      DoubleMatrix B(A.copy());
+    RealMatrix operator-(RealMatrix& A) {
+      RealMatrix B(A.copy());
       for (uint i=0; i<B.rows() * B.cols(); ++i)
         B[i] = -B[i];
       return(B);
@@ -221,8 +221,8 @@ namespace loos {
 
     // Create a square identity matrix
 
-    DoubleMatrix eye(const uint n) {
-      DoubleMatrix I(n, n);
+    RealMatrix eye(const uint n) {
+      RealMatrix I(n, n);
       for (uint i=0; i<n; ++i)
         I(i,i) = 1.0;
 
@@ -231,11 +231,11 @@ namespace loos {
 
 
     
-    DoubleMatrix permuteColumns(const DoubleMatrix& A, const std::vector<uint> indices) {
+    RealMatrix permuteColumns(const RealMatrix& A, const std::vector<uint> indices) {
       if (indices.size() != A.cols())
         throw(std::logic_error("indices to permuteColumns must match the size of the matrix"));
 
-      DoubleMatrix B(A.rows(), A.cols());
+      RealMatrix B(A.rows(), A.cols());
 
       for (uint i=0; i<A.cols(); ++i) {
         if (indices[i] > A.cols())
@@ -248,11 +248,11 @@ namespace loos {
     }
 
     
-    DoubleMatrix permuteRows(const DoubleMatrix& A, const std::vector<uint> indices) {
+    RealMatrix permuteRows(const RealMatrix& A, const std::vector<uint> indices) {
       if (indices.size() != A.rows())
         throw(std::logic_error("indices to permuteRows must match the size of the matrix"));
 
-      DoubleMatrix B(A.rows(), A.cols());
+      RealMatrix B(A.rows(), A.cols());
 
       for (uint j=0; j<A.rows(); ++j) {
         if (indices[j] > A.rows())
@@ -265,7 +265,7 @@ namespace loos {
     }
 
 
-    void reverseColumns(DoubleMatrix& A) {
+    void reverseColumns(RealMatrix& A) {
       uint m = A.rows();
       uint n = A.cols();
       uint k = n / 2;
@@ -275,7 +275,7 @@ namespace loos {
           std::swap(A(j,i), A(j,n-i-1));
     }
 
-    void reverseRows(DoubleMatrix& A) {
+    void reverseRows(RealMatrix& A) {
       uint m = A.rows();
       uint n = A.cols();
       uint k = m / 2;
@@ -287,7 +287,7 @@ namespace loos {
 
 
     namespace {
-      double colDotProd(const DoubleMatrix& A, const uint i, const DoubleMatrix& B, const uint j) {
+      double colDotProd(const RealMatrix& A, const uint i, const RealMatrix& B, const uint j) {
         double sum = 0.0;
         for (uint k=0; k<A.rows(); ++k)
           sum += A(k,i) * B(k,j);
@@ -296,7 +296,7 @@ namespace loos {
     }
     
     
-    double subspaceOverlap(const DoubleMatrix& A, const DoubleMatrix& B, uint nmodes) {
+    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B, uint nmodes) {
       if (A.rows() != B.rows())
         throw(NumericalError("Matrices have different dimensions"));
 
@@ -316,31 +316,26 @@ namespace loos {
     }
 
 
-    double covarianceOverlap(const DoubleMatrix& lamA, const DoubleMatrix& UA, const DoubleMatrix& lamB, const DoubleMatrix& UB, const double tol) {
-      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows()))
-        throw(NumericalError("Matrices have incorrect dimensions"));
-      if (lamA.rows() > UA.cols())
-        throw(NumericalError("More eigenvalues than eigenvectors!"));
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB) {
+      if (!(UA.rows() == UB.rows() && UA.cols() == UB.cols() && lamA.rows() == lamB.rows() && lamA.rows() == UA.cols()))
+        throw(NumericalError("Matrices have different dimensions"));
 
-      uint n = lamA.rows();
+      uint nmodes = UA.cols();
+
       double lamsum = 0.0;
-      for (uint i=0; i<n; ++i)
+      for (uint i=0; i<nmodes; ++i)
         lamsum += lamA[i] + lamB[i];
 
       double dblsum = 0.0;
-      for (uint i=0; i<n; ++i)
-        for (uint j=0; j<n; ++j) {
+      for (uint i=0; i<nmodes; ++i)
+        for (uint j=0; j<nmodes; ++j) {
           double d = colDotProd(UA, i, UB, j);
           dblsum += sqrt(lamA[i]*lamB[j]) * d * d;
         }
       
 
       double num = lamsum - 2.0 * dblsum;
-      double co;
-      if (fabs(num) <= tol)
-        co = 1.0;
-      else
-        co = 1.0 - sqrt( (lamsum - 2.0 * dblsum) / lamsum );
+      double co = 1.0 - sqrt( fabs(num) / lamsum );
 
       return(co);
     }

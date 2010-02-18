@@ -417,41 +417,49 @@ public:
       return (block_ave2 - block_ave*block_ave);
     }
 
-    TimeSeries<T> correl(const int num_vals, T tol=1.0e-8) const {
+    TimeSeries<T> correl(const int max_time, 
+                         const int interval=1, 
+                         const bool normalize=true,
+                         T tol=1.0e-8) const {
+
       TimeSeries<T> data = copy();
-      const unsigned int n = abs(num_vals);
+      uint n = abs(max_time);
       if (n > data.size()) {
         throw(std::runtime_error("Can't take correlation time longer than time series"));
       }
 
-      TimeSeries<T> c(num_vals, 0.0);
+      n /= interval;
+      TimeSeries<T> c(n, 0.0);
 
       // normalize the data
-      data -= data.average();
-      T dev = data.stdev();
-        
-      // drop through if this is a constant array
-      if (dev < tol) {
-        c._data.assign(num_vals, 1.0);
-        return(c);
+      if (normalize) {
+          data -= data.average();
+          T dev = data.stdev();
+            
+          // drop through if this is a constant array
+          if (dev < tol) {
+            c._data.assign(n, 1.0);
+            return(c);
+          }
+            
+          data /= dev;
       }
-        
-      data /= dev;
 
-      std::vector<int> num_pairs(num_vals);
-      num_pairs.assign(num_vals, 0);
+      std::vector<int> num_pairs(n);
+      num_pairs.assign(n, 0);
       // TODO: This is the O(N^2) way -- there are much faster
       // algorithms for long time series
-      for (int i = 0; i < num_vals; i++) {
+      for (int i = 0; i < max_time; i+=interval) {
+        int index = i / interval;
         for (unsigned int j = 0; j < data.size() - i; j++) {
-          c[i] += data[j] * data[j+i];
-          num_pairs[i]++;
+          c[index] += data[j] * data[j+i];
+          num_pairs[index]++;
         }
 
       }
 
-      // Normalize the correlation function
-      for (int i = 0; i < num_vals; i++) {
+      // Divide each value by the number of pairs used to generated it
+      for (uint i = 0; i < n; i++) {
         c[i] /= num_pairs[i];
       }
 

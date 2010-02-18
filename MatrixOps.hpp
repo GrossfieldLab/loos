@@ -59,39 +59,39 @@ namespace loos {
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M);
 
     //! Matrix-matrix multiply (using BLAS)
-    DoubleMatrix MMMultiply(const DoubleMatrix& A, const DoubleMatrix& B, const bool transa = false, const bool transb = false);
+    RealMatrix MMMultiply(const RealMatrix& A, const RealMatrix& B, const bool transa = false, const bool transb = false);
 
     //! Pseudo-inverse of a matrix using the SVD
-    DoubleMatrix invert(DoubleMatrix& A, const float eps = 1e-5);
+    RealMatrix invert(RealMatrix& A, const float eps = 1e-5);
 
     //! An identity matrix of size n
-    DoubleMatrix eye(const uint n);
+    RealMatrix eye(const uint n);
 
 
-    //! Overloaded operators for DoubleMatrix matrices (see important note below)
-    void operator+=(DoubleMatrix& A, const DoubleMatrix& B);
+    //! Overloaded operators for RealMatrix matrices (see important note below)
+    void operator+=(RealMatrix& A, const RealMatrix& B);
 
-    DoubleMatrix operator+(const DoubleMatrix& A, const DoubleMatrix& B);
-    void operator-=(DoubleMatrix& A, const DoubleMatrix& B);
-    DoubleMatrix operator-(const DoubleMatrix& A, const DoubleMatrix& B);
-    void operator*=(DoubleMatrix& A, const float d);
-    DoubleMatrix operator*(const DoubleMatrix& A, const float d);
-    void operator*=(DoubleMatrix& A, const DoubleMatrix& B);
-    DoubleMatrix operator*(const DoubleMatrix& A, const DoubleMatrix& B);
-    DoubleMatrix operator-(DoubleMatrix& A);
+    RealMatrix operator+(const RealMatrix& A, const RealMatrix& B);
+    void operator-=(RealMatrix& A, const RealMatrix& B);
+    RealMatrix operator-(const RealMatrix& A, const RealMatrix& B);
+    void operator*=(RealMatrix& A, const float d);
+    RealMatrix operator*(const RealMatrix& A, const float d);
+    void operator*=(RealMatrix& A, const RealMatrix& B);
+    RealMatrix operator*(const RealMatrix& A, const RealMatrix& B);
+    RealMatrix operator-(RealMatrix& A);
 
     //! Returns a copy of the matrix with the columns permuted by the indices
-    DoubleMatrix permuteColumns(const DoubleMatrix& A, const std::vector<uint> indices);
+    RealMatrix permuteColumns(const RealMatrix& A, const std::vector<uint> indices);
     //! Returns a copy of the matrix with the rows permuted by the indices
-    DoubleMatrix permuteRows(const DoubleMatrix& A, const std::vector<uint> indices);
+    RealMatrix permuteRows(const RealMatrix& A, const std::vector<uint> indices);
     
     //! Reverses the columns in place
-    void reverseColumns(DoubleMatrix& A);
+    void reverseColumns(RealMatrix& A);
     //! Reverses the rows in place
-    void reverseRows(DoubleMatrix& A);
+    void reverseRows(RealMatrix& A);
 
     //! Computes the overlap between two subspaces (matrices of column vectors)
-    double subspaceOverlap(const DoubleMatrix& A, const DoubleMatrix& B, uint nmodes = 0);
+    double subspaceOverlap(const RealMatrix& A, const RealMatrix& B, uint nmodes = 0);
 
     //! Computes the covariance overlap between two subspaces
     /**
@@ -106,8 +106,17 @@ namespace loos {
      * "eigenvalues" are actually the singular values (and hence the
      * square-root of the eigenvalues of AA'
      *
+     * Note: It is possible for double sum to be slightly greater than
+     * 2x the sum of the eigenvalues, which results in trying to take
+     * the square root of a negative number.  To prevent this, we
+     * actually use the absolute value of the difference.
+     *
+     * Note: Due to rounding errors in single precision, it is
+     * possible that the covariance overlap of a set of eigenpairs
+     * against itself will not come out to be exactly 1, but will be
+     * close (i.e. to within 1e-3).
      */
-    double covarianceOverlap(const DoubleMatrix& lamA, const DoubleMatrix& UA, const DoubleMatrix& lamB, const DoubleMatrix& UB, const double tol = 1e-3);
+    double covarianceOverlap(const RealMatrix& lamA, const RealMatrix& UA, const RealMatrix& lamB, const RealMatrix& UB);
   };
 
 

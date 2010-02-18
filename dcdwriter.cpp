@@ -33,14 +33,14 @@ namespace loos {
 
 
 
-  void DCDWriter::writeF77Line(StreamWrapper& ofs, const char* const data, const unsigned int len) {
+  void DCDWriter::writeF77Line(const char* const data, const unsigned int len) {
     DataOverlay d;
 
     d.ui = len;
 
-    ofs()->write((char *)&d, sizeof(len));
-    ofs()->write(data, len);
-    ofs()->write((char *)&d, sizeof(len));
+    _stream->write((char *)&d, sizeof(len));
+    _stream->write(data, len);
+    _stream->write((char *)&d, sizeof(len));
   }
 
 
@@ -75,7 +75,7 @@ namespace loos {
     icntrl[20] = 27;
     dop[0].c[0] = 'C'; dop[0].c[1] = 'O'; dop[0].c[2] = 'R'; dop[0].c[3] = 'D';
 
-    writeF77Line(_ofs, (char *)dop, 21 * sizeof(unsigned int));
+    writeF77Line((char *)dop, 21 * sizeof(unsigned int));
 
     unsigned int size = 4 + 80 * _titles.size();
     char *ptr = new char[size];
@@ -85,12 +85,12 @@ namespace loos {
       std::string s = fixStringSize(_titles[i], 80);
       memcpy(ptr + sizeof(unsigned int) + 80*i, s.c_str(), 80);
     }
-    writeF77Line(_ofs, ptr, size);
+    writeF77Line(ptr, size);
     delete[] ptr;
   
 
     dop[0].ui = _natoms;
-    writeF77Line(_ofs, (char *)dop, 1 * sizeof(unsigned int));
+    writeF77Line((char *)dop, 1 * sizeof(unsigned int));
 
     _header_written = true;
   }
@@ -101,7 +101,7 @@ namespace loos {
     double xtal[6] = { box[0], default_unit_cell_angle, box[1],
                        default_unit_cell_angle, default_unit_cell_angle, box[2] };
 
-    writeF77Line(_ofs, (char *)xtal, 6*sizeof(double));
+    writeF77Line((char *)xtal, 6*sizeof(double));
   }
 
 
@@ -123,11 +123,11 @@ namespace loos {
     }
 
     if (_current >= _nsteps) {
-      _ofs()->seekp(0);
+      _stream->seekp(0);
       ++_nsteps;
       writeHeader();
-      _ofs()->seekp(0, std::ios_base::end);
-      if (_ofs()->fail())
+      _stream->seekp(0, std::ios_base::end);
+      if (_stream->fail())
         throw(std::runtime_error("Error while re-writing DCD header"));
     }
 
@@ -138,19 +138,19 @@ namespace loos {
     int i;
     for (i=0; i<_natoms; i++)
       data[i] = grp[i]->coords().x();
-    writeF77Line(_ofs, (char *)data, _natoms * sizeof(float));
+    writeF77Line((char *)data, _natoms * sizeof(float));
 
     for (i=0; i<_natoms; i++)
       data[i] = grp[i]->coords().y();
-    writeF77Line(_ofs, (char *)data, _natoms * sizeof(float));
+    writeF77Line((char *)data, _natoms * sizeof(float));
 
     for (i=0; i<_natoms; i++)
       data[i] = grp[i]->coords().z();
-    writeF77Line(_ofs, (char *)data, _natoms * sizeof(float));
+    writeF77Line((char *)data, _natoms * sizeof(float));
 
     delete[] data;
 
-    _ofs()->flush();
+    _stream->flush();
     ++_current;
   }
 
@@ -162,6 +162,16 @@ namespace loos {
       writeFrame(*i);
   }
 
+  void DCDWriter::readExistingHeader(const std::string& fname) {
+
+    DCD dcd(fname);
+    _natoms = dcd.natoms();
+    _has_box = dcd.hasPeriodicBox();
+    _timestep = dcd.timestep();
+    _current = _nsteps = dcd.nframes();
+    _titles = dcd.titles();
+  }
 
 }
+
 

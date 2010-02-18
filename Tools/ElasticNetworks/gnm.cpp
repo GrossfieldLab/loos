@@ -66,7 +66,7 @@ using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
-typedef Math::Matrix<double, Math::ColMajor> Matrix;
+typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
 
 // Globals... Fah!
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_K.asc", K, header);
 
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(K);
+  boost::tuple<RealMatrix, RealMatrix, RealMatrix> result = svd(K);
   Matrix U = boost::get<0>(result);
   Matrix S = boost::get<1>(result);
   Matrix Vt = boost::get<2>(result);

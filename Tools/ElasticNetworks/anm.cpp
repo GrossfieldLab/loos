@@ -66,7 +66,7 @@ using namespace loos;
 namespace po = boost::program_options;
 
 
-typedef Math::Matrix<double, Math::ColMajor> Matrix;
+typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
 
 
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
 
   cerr << "Calculating SVD - ";
   timer.start();
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(H);
+  boost::tuple<RealMatrix, RealMatrix, RealMatrix> result = svd(H);
   timer.stop();
   cerr << "done\n" << timer << endl;
 
