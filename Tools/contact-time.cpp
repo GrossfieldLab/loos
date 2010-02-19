@@ -51,6 +51,9 @@ bool normalize;
 bool max_norm;
 bool auto_self;
 
+bool fast_filter;
+double fast_pad;
+
 
 
 void fullHelp() {
@@ -99,7 +102,9 @@ void parseOptions(int argc, char *argv[]) {
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(2.5), "Outer cutoff (ignore atoms further away than this)")
       ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (in Octave-style ranges)")
-      ("autoself,a", po::value<bool>(&auto_self)->default_value(false), "Automatically include self-to-self");
+      ("autoself,a", po::value<bool>(&auto_self)->default_value(false), "Automatically include self-to-self")
+      ("fast,f", po::value<bool>(&fast_filter)->default_value(true), "Use the fast-filter method")
+      ("fastpad,p", po::value<double>(&fast_pad)->default_value(1.0), "Padding for the fast-filter method");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -154,14 +159,13 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-double contacts(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius) {
+uint contacts(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius) {
   
   double or2 = outer_radius * outer_radius;
   double ir2 = inner_radius * inner_radius;
 
   GCoord box = target.periodicBox();
   uint contact = 0;
-
 
   for (AtomicGroup::const_iterator j = probe.begin(); j != probe.end(); ++j) {
     GCoord v = (*j)->coords();
@@ -174,19 +178,51 @@ double contacts(const AtomicGroup& target, const AtomicGroup& probe, const doubl
     }
   }
 
-  double val = static_cast<double>(contact);
-  return(val);
+  return(contact);
 }
 
+
+AtomicGroup pickNearbyAtoms(const AtomicGroup& target, const AtomicGroup& probe, const double radius) {
+
+  GCoord c = probe.centroid();
+  GCoord box = probe.periodicBox();
+  double maxrad = probe.radius() + radius;
+  maxrad *= maxrad;
+
+  
+  AtomicGroup nearby;
+  nearby.periodicBox(probe.periodicBox());
+  for (AtomicGroup::const_iterator i = target.begin(); i != target.end(); ++i) {
+    double d = symmetry ? c.distance2((*i)->coords(), box) : c.distance2((*i)->coords());
+    if (d <= maxrad)
+      nearby.append(*i);
+  }
+
+  return(nearby);
+}
+
+
+uint fastContacts(const AtomicGroup& target, const vGroup& probes, const double inner, const double outer) {
+  uint total_contacts = 0;
+
+  
+  for (vGroup::const_iterator i = probes.begin(); i != probes.end(); ++i) {
+    AtomicGroup new_target = pickNearbyAtoms(target, *i, outer+fast_pad);
+    uint c = contacts(new_target, *i, inner, outer);
+    total_contacts += c;
+  }
+
+  return(total_contacts);
+}
 
 
 // Given a vector of groups, compute the number of contacts between
 // unique pairs of groups, excluding the self-to-self
 //
 // Note: this assumes that you want to compare the -ENTIRE- molecule
-double autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius) {
+uint autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius) {
   
-  double total_contact = 0.0;
+  uint total_contact = 0;
   uint n = selves.size();
   for (uint j=0; j<n-1; ++j)
     for (uint i=j+1; i<n; ++i) {
@@ -278,8 +314,9 @@ int main(int argc, char *argv[]) {
 
   // If comparing self, split apart molecules by unique segids
   vGroup myselves;
-  if (auto_self) {
-    ++cols;
+  if (auto_self || fast_filter) {
+    if (auto_self)
+      ++cols;
     myselves = probe.splitByUniqueSegid();
   }
 
@@ -306,7 +343,11 @@ int main(int argc, char *argv[]) {
     M(t, 0) = t;
     for (uint i=0; i<targets.size(); ++i) {
       double d;
-      d = contacts(targets[i], probe, inner_cutoff, outer_cutoff);
+      if (fast_filter)
+        d = fastContacts(targets[i], myselves, inner_cutoff, outer_cutoff);
+      else
+        d = contacts(targets[i], probe, inner_cutoff, outer_cutoff);
+
       M(t, i+1) = d;
     }
 
