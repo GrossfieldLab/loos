@@ -315,7 +315,7 @@ namespace loos {
 
     os << dists(u.a()) << dists(u.b()) << dists(u.c());
     os << angles(u.alpha()) << angles(u.beta()) << angles(u.gamma());
-    os << " " << std::setw(10) << std::left << u.spaceGroup() << std::setw(4) << u.z();
+    os << " " << std::setw(11) << std::left << u.spaceGroup() << std::setw(4) << u.z();
 
     return(os);
   }
