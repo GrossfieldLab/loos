@@ -136,15 +136,17 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && !target_selections.empty() && vm.count("probe"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && !target_selections.empty() && vm.count("probe"))) {
       cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name probe target [target ...] >output\n";
       cerr << generic;
-      exit(-1);
-    }
 
-    if (vm.count("fullhelp")) {
-      fullHelp();
-      exit(0);
+
+      if (vm.count("fullhelp")) {
+        fullHelp();
+        exit(0);
+      }
+
+      exit(-1);
     }
 
     if (normalize && max_norm) {
