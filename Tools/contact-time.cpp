@@ -83,7 +83,15 @@ void fullHelp() {
     "on the probe selection, splitting them into separate molecules\n"
     "based on their segid.  It then computes the unique pair-wise\n"
     "contacts between each AMLP.  The total number of self-contacts\n"
-    "is then included as an extra column in the output.\n";
+    "is then included as an extra column in the output.\n"
+    "\n"
+    "* Fast mode *\n"
+    "By default, contact-time uses a distance filter to eliminate\n"
+    "target atoms that are too far to be considered when looking\n"
+    "at each probe atom.  The padding for the radius used to\n"
+    "exclude target atoms can be adjusted with the '-p' option.\n"
+    "In the unlikely event the filter causes problems, it can\n"
+    "be disabled with '-f0'.\n";
 }
 
 
