@@ -101,8 +101,8 @@ int main(int argc, char *argv[]) {
 
     AtomicGroup sidechain = (*vi).select(NotSelector(BackboneSelector()));
     if (sidechain.empty()) {
-      cerr << "Error- No sidechain atoms for:\n" << *vi;
-      exit(-10);
+      cerr << "Warning- No sidechain atoms for:\n" << *vi;
+      continue;
     }
     
     GCoord c = sidechain.centerOfMass();
