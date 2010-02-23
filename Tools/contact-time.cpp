@@ -51,6 +51,9 @@ bool normalize;
 bool max_norm;
 bool auto_self;
 
+bool fast_filter;
+double fast_pad;
+
 
 
 void fullHelp() {
@@ -80,7 +83,15 @@ void fullHelp() {
     "on the probe selection, splitting them into separate molecules\n"
     "based on their segid.  It then computes the unique pair-wise\n"
     "contacts between each AMLP.  The total number of self-contacts\n"
-    "is then included as an extra column in the output.\n";
+    "is then included as an extra column in the output.\n"
+    "\n"
+    "* Fast mode *\n"
+    "By default, contact-time uses a distance filter to eliminate\n"
+    "target atoms that are too far to be considered when looking\n"
+    "at each probe atom.  The padding for the radius used to\n"
+    "exclude target atoms can be adjusted with the '-p' option.\n"
+    "In the unlikely event the filter causes problems, it can\n"
+    "be disabled with '-f0'.\n";
 }
 
 
@@ -99,7 +110,9 @@ void parseOptions(int argc, char *argv[]) {
       ("outer,o", po::value<double>(&outer_cutoff)->default_value(2.5), "Outer cutoff (ignore atoms further away than this)")
       ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (in Octave-style ranges)")
-      ("autoself,a", po::value<bool>(&auto_self)->default_value(false), "Automatically include self-to-self");
+      ("autoself,a", po::value<bool>(&auto_self)->default_value(false), "Automatically include self-to-self")
+      ("fast,f", po::value<bool>(&fast_filter)->default_value(true), "Use the fast-filter method")
+      ("fastpad,p", po::value<double>(&fast_pad)->default_value(1.0), "Padding for the fast-filter method");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -123,15 +136,17 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && !target_selections.empty() && vm.count("probe"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && !target_selections.empty() && vm.count("probe"))) {
       cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name probe target [target ...] >output\n";
       cerr << generic;
-      exit(-1);
-    }
 
-    if (vm.count("fullhelp")) {
-      fullHelp();
-      exit(0);
+
+      if (vm.count("fullhelp")) {
+        fullHelp();
+        exit(0);
+      }
+
+      exit(-1);
     }
 
     if (normalize && max_norm) {
@@ -154,14 +169,13 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-double contacts(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius) {
+uint contacts(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius) {
   
   double or2 = outer_radius * outer_radius;
   double ir2 = inner_radius * inner_radius;
 
   GCoord box = target.periodicBox();
   uint contact = 0;
-
 
   for (AtomicGroup::const_iterator j = probe.begin(); j != probe.end(); ++j) {
     GCoord v = (*j)->coords();
@@ -174,19 +188,51 @@ double contacts(const AtomicGroup& target, const AtomicGroup& probe, const doubl
     }
   }
 
-  double val = static_cast<double>(contact);
-  return(val);
+  return(contact);
 }
 
+
+AtomicGroup pickNearbyAtoms(const AtomicGroup& target, const AtomicGroup& probe, const double radius) {
+
+  GCoord c = probe.centroid();
+  GCoord box = probe.periodicBox();
+  double maxrad = probe.radius() + radius;
+  maxrad *= maxrad;
+
+  
+  AtomicGroup nearby;
+  nearby.periodicBox(probe.periodicBox());
+  for (AtomicGroup::const_iterator i = target.begin(); i != target.end(); ++i) {
+    double d = symmetry ? c.distance2((*i)->coords(), box) : c.distance2((*i)->coords());
+    if (d <= maxrad)
+      nearby.append(*i);
+  }
+
+  return(nearby);
+}
+
+
+uint fastContacts(const AtomicGroup& target, const vGroup& probes, const double inner, const double outer) {
+  uint total_contacts = 0;
+
+  
+  for (vGroup::const_iterator i = probes.begin(); i != probes.end(); ++i) {
+    AtomicGroup new_target = pickNearbyAtoms(target, *i, outer+fast_pad);
+    uint c = contacts(new_target, *i, inner, outer);
+    total_contacts += c;
+  }
+
+  return(total_contacts);
+}
 
 
 // Given a vector of groups, compute the number of contacts between
 // unique pairs of groups, excluding the self-to-self
 //
 // Note: this assumes that you want to compare the -ENTIRE- molecule
-double autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius) {
+uint autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius) {
   
-  double total_contact = 0.0;
+  uint total_contact = 0;
   uint n = selves.size();
   for (uint j=0; j<n-1; ++j)
     for (uint i=j+1; i<n; ++i) {
@@ -278,8 +324,9 @@ int main(int argc, char *argv[]) {
 
   // If comparing self, split apart molecules by unique segids
   vGroup myselves;
-  if (auto_self) {
-    ++cols;
+  if (auto_self || fast_filter) {
+    if (auto_self)
+      ++cols;
     myselves = probe.splitByUniqueSegid();
   }
 
@@ -306,7 +353,11 @@ int main(int argc, char *argv[]) {
     M(t, 0) = t;
     for (uint i=0; i<targets.size(); ++i) {
       double d;
-      d = contacts(targets[i], probe, inner_cutoff, outer_cutoff);
+      if (fast_filter)
+        d = fastContacts(targets[i], myselves, inner_cutoff, outer_cutoff);
+      else
+        d = contacts(targets[i], probe, inner_cutoff, outer_cutoff);
+
       M(t, i+1) = d;
     }
 

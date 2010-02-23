@@ -1,3 +1,8 @@
+2010-02-20  Tod Romo  <tromo@gorgoneion-w>
+
+	* Changed contact-time to filter target atoms so that only nearby
+	atoms are considered in the all-to-all check.
+
 2010-02-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Added center-molecule tool...a slightly more flexible tool for
