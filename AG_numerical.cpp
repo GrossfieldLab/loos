@@ -177,13 +177,11 @@ namespace loos {
   }
 
 
-  greal AtomicGroup::rmsd(AtomicGroup& v) {
+  greal AtomicGroup::rmsd(const AtomicGroup& v) {
   
     if (size() != v.size())
       throw(std::runtime_error("Cannot compute RMSD between groups with different sizes"));
 
-    sort();
-    v.sort();
 
     int n = size();
     double d = 0.0;
