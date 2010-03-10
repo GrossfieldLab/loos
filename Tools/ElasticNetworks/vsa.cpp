@@ -81,6 +81,8 @@ double power;
 bool hca_method;
 bool nomass;
 
+double hca_constants[5];
+bool user_defined_hca_constants(false);
 
 
 
@@ -95,6 +97,7 @@ void parseOptions(int argc, char *argv[]) {
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
       ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
+      ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free method")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
@@ -127,6 +130,17 @@ void parseOptions(int argc, char *argv[]) {
       cerr << "Usage- vsa [options] subset environment model-name output-prefix\n";
       cerr << generic;
       exit(-1);
+    }
+
+    if (vm.count("hparams")) {
+      string s = vm["hparams"].as<string>();
+      int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
+                     hca_constants+3, hca_constants+4);
+      if (i != 5) {
+        cerr << boost::format("Error - invalid conversion of HCA constants '%s'\n") % s;
+        exit(-1);
+      }
+      user_defined_hca_constants = true;
     }
 
   }
@@ -355,9 +369,12 @@ int main(int argc, char *argv[]) {
   SuperBlock* blocker = 0;
   if (parameter_free)
     blocker = new DistanceWeight(composite, power);
-  else if (hca_method)
-    blocker = new HCA(composite);
-  else
+  else if (hca_method) {
+    if (user_defined_hca_constants)
+      blocker = new HCA(composite, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
+    else
+      blocker = new HCA(composite);
+  } else
     blocker = new DistanceCutoff(composite, cutoff);
 
   // Now build the Hessian
