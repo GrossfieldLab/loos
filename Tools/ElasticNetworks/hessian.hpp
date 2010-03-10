@@ -106,11 +106,21 @@ private:
 //! Use HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37
 class HCA : public SuperBlock {
 public:
-  HCA(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist) { }
+  HCA(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist),
+                                           cutoff(4.0), k1(205.5), k2(571.2),
+                                           k3(305.9e3), k4(6) { }
+
+  HCA(const loos::AtomicGroup& nodelist, const double cut, const double a, const double b, const double c, const double d) :
+    SuperBlock(nodelist),
+    cutoff(cut), k1(a), k2(b), k3(c), k4(d) { }
 private:
   loos::DoubleMatrix blockImpl(const uint j, const uint i);
+
+  double cutoff, k1, k2, k3, k4;
 };
 
 loos::DoubleMatrix hessian(SuperBlock* block);
+
+
 
 #endif

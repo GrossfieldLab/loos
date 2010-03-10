@@ -101,10 +101,10 @@ DoubleMatrix HCA::blockImpl(const uint i, const uint j) {
 
   double s = d.length();
   double k;
-  if (s <= 4.0)
-    k = 205.5 * s - 571.2;
+  if (s <= cutoff)
+    k = k1 * s - k2;
   else
-    k = 305.9e3 * pow(s, -6);
+    k = k3 * pow(s, -k4);
 
   for (int j=0; j<3; ++j)
     for (int i=0; i<3; ++i)
