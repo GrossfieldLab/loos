@@ -28,6 +28,10 @@
 
 #include <string>
 
+// Putative patch for debian
+#if !defined(EOF)
+#define EOF    (-1)
+#endif
 
 // Flex's c++ support is daft...
 #undef yyFlexLexer
