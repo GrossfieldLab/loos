@@ -45,7 +45,7 @@ clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0)
 clos.Add('tag', 'Set to 1 to add a revision tag in the code.', 1)
 
 
-clos.Add(PathVariable('LAPACK', 'Path to LAPACK', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
@@ -131,10 +131,12 @@ else:
       # OpenSUSE doesn't have an atlas package, so use native lapack/blas
       if (re.search("[Ss][Uu][Ss][Ee]", f)):
          env.Append(LIBS = ['lapack', 'blas', 'gfortran'])
+         env.Append(LIBPATH = [LAPACK])
 
       # Ubuntu requires gfortran
       elif (re.search("[Uu]buntu", f)):
          env.Append(LIBS = ['lapack', 'atlas', 'gfortran'])
+         env.Append(LIBPATH = [LAPACK, ATLAS])
 
       # Fedora or similar
       else:
