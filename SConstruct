@@ -31,7 +31,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.5.2'
+loos_version = '1.5.4'
 
 
 # Principal options...
@@ -130,11 +130,11 @@ else:
 
       # OpenSUSE doesn't have an atlas package, so use native lapack/blas
       if (re.search("[Ss][Uu][Ss][Ee]", f)):
-         env.Append(['lapack', 'blas', 'gfortran'])
+         env.Append(LIBS = ['lapack', 'blas', 'gfortran'])
 
       # Ubuntu requires gfortran
       elif (re.search("[Uu]buntu", f)):
-         env.Append(['lapack', 'atlas', 'gfortran'])
+         env.Append(LIBS = ['lapack', 'atlas', 'gfortran'])
 
       # Fedora or similar
       else:

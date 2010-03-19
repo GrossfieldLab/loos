@@ -75,8 +75,8 @@ The recommended installation methodology is to install LOOS into a
 version-specific directory, and then set up a symlink from
 "loos-latest" to the most recent installed version:
 
-   scons PREFIX=/opt/loos-1.5.2 install
-   ln -s /opt/loos-1.5.2 /opt/loos-latest
+   scons PREFIX=/opt/loos-1.5.4 install
+   ln -s /opt/loos-1.5.4 /opt/loos-latest
 
 = MAC OS X =
 
