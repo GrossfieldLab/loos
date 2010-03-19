@@ -122,17 +122,28 @@ if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
 else:
    if platform == 'linux2':
-      env.Append(LIBS = ['lapack', 'atlas'])
-      env.Append(LIBPATH = [LAPACK, ATLAS])
+      noatlas = 0
+
+      # Determine linux variant
+      fv = open('/proc/version', 'r')
+      f = fv.read()
+
+      # OpenSUSE doesn't have an atlas package, so use native lapack/blas
+      if (re.search("[Ss][Uu][Ss][Ee]", f)):
+         env.Append(['lapack', 'blas', 'gfortran'])
+
+      # Ubuntu requires gfortran
+      elif (re.search("[Uu]buntu", f)):
+         env.Append(['lapack', 'atlas', 'gfortran'])
+
+      # Fedora or similar
+      else:
+         env.Append(LIBS = ['lapack', 'atlas'])
+         env.Append(LIBPATH = [LAPACK, ATLAS])
+
       #env.Append(CPPPATH = [ATLASINC])       # See above...
       if ATLASINC != '':
          env.Append(CPPFLAGS = ['-I' + ATLASINC])
-      fv = open('/proc/version', 'r')
-      f = fv.read()
-      if re.search("[Uu]buntu", f):
-         env.Append(LIBS= ['gfortran'])
-      
-
 
 # Determine what kind of build...
 # No option implies debugging, but only an explicit debug defines
