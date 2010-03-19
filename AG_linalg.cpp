@@ -126,8 +126,19 @@ namespace loos {
 
     // Multiply A*A'...
     double C[9];
+#if defined(__linux__)
+    char ta = 'N';
+    char tb = 'T';
+    f77int three = 3;
+    double zero = 0.0;
+    double one = 1.0;
+
+    dgemm_(&ta, &tb, &three, &three, &n, &one, A, &three, A, &three, &zero, C, &three);
+    
+#else
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
                 3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
+#endif
 
     delete[] A;
 
@@ -192,7 +203,20 @@ namespace loos {
 
     // Compute correlation matrix...
     double R[9];
+#if defined(__linux__)
+    char ta = 'N';
+    char tb = 'T';
+    f77int three = 3;
+    double one = 1.0;
+    double zero = 0.0;
+    
+    dgemm_(&ta, &tb, &three, &three, &n, &one, X, &three, Y, &three, &zero, R, &three);
+
+#else
+
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, X, 3, Y, 3, 0.0, R, 3);
+
+#endif
 
     double det = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
       R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
@@ -215,7 +239,16 @@ namespace loos {
 
     // Compute the rotation matrix...
     double M[9];
+
+#if defined(__linux__)
+
+    dgemm_(&ta, &ta, &three, &three, &three, &one, U, &three, Vt, &three, &zero, M, &three);
+
+#else
+
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, U, 3, Vt, 3, 0.0, M, 3);
+
+#endif
 
     // Construct the new transformation matrix...  (W = M')
     GMatrix Z;
