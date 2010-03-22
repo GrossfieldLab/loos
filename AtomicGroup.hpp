@@ -467,7 +467,7 @@ namespace loos {
     /**Sorts both groups (if necessary), then assumes a 1:1
      *correspondence between ith atoms.
      */
-    greal rmsd(AtomicGroup&);
+    greal rmsd(const AtomicGroup&);
 
     // Geometric transformations...
   

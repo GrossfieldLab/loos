@@ -52,7 +52,7 @@ namespace loos {
   public:
     DescendingSort(const T& A) : A_(A) { }
     bool operator()(const uint i, const uint j) const {
-      return(A_[i] < A_[j]);
+      return(A_[i] > A_[j]);
     }
     
   private:

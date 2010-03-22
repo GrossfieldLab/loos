@@ -64,6 +64,7 @@ string eigvec_name, eigval_name;
 string output_name;
 string model_name;
 bool invert_eigvals;
+bool tag;
 int steps;
 
 vector<uint> modes;
@@ -84,7 +85,8 @@ void parseOptions(int argc, char *argv[]) {
       ("scales,S", po::value<string>(&scale)->default_value("1.0"), "Scale the displacements by this factor")
       ("invert,i", po::value<bool>(&invert_eigvals)->default_value(true), "Invert the eigenvalues for scaling")
       ("eigs,e", po::value<string>(&eigval_name), "Scale using corresponding eigenvalues from this file")
-      ("superset,u", po::value<string>(&supersel)->default_value("all"), "Superset to use for frames in the output");
+      ("superset,u", po::value<string>(&supersel)->default_value("all"), "Superset to use for frames in the output")
+      ("tag,t", po::value<bool>(&tag)->default_value(false), "Tag ENM atoms with 'E' alt-loc");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -203,7 +205,8 @@ int main(int argc, char *argv[]) {
 
 	// Stuff those coords back into the Atom object...
 	frame_subset[i]->coords(c);
-        frame_subset[i]->chainId("E");
+        if (tag)
+          frame_subset[i]->chainId("E");
       }
     }
 

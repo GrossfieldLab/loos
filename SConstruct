@@ -31,7 +31,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.5.2'
+loos_version = '1.5.4'
 
 
 # Principal options...
@@ -45,7 +45,7 @@ clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0)
 clos.Add('tag', 'Set to 1 to add a revision tag in the code.', 1)
 
 
-clos.Add(PathVariable('LAPACK', 'Path to LAPACK', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
@@ -122,17 +122,30 @@ if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
 else:
    if platform == 'linux2':
-      env.Append(LIBS = ['lapack', 'atlas'])
-      env.Append(LIBPATH = [LAPACK, ATLAS])
+      noatlas = 0
+
+      # Determine linux variant
+      fv = open('/proc/version', 'r')
+      f = fv.read()
+
+      # OpenSUSE doesn't have an atlas package, so use native lapack/blas
+      if (re.search("[Ss][Uu][Ss][Ee]", f)):
+         env.Append(LIBS = ['lapack', 'blas', 'gfortran'])
+         env.Append(LIBPATH = [LAPACK])
+
+      # Ubuntu requires gfortran
+      elif (re.search("[Uu]buntu", f)):
+         env.Append(LIBS = ['lapack', 'atlas', 'gfortran'])
+         env.Append(LIBPATH = [LAPACK, ATLAS])
+
+      # Fedora or similar
+      else:
+         env.Append(LIBS = ['lapack', 'atlas'])
+         env.Append(LIBPATH = [LAPACK, ATLAS])
+
       #env.Append(CPPPATH = [ATLASINC])       # See above...
       if ATLASINC != '':
          env.Append(CPPFLAGS = ['-I' + ATLASINC])
-      fv = open('/proc/version', 'r')
-      f = fv.read()
-      if re.search("[Uu]buntu", f):
-         env.Append(LIBS= ['gfortran'])
-      
-
 
 # Determine what kind of build...
 # No option implies debugging, but only an explicit debug defines
