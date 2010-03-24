@@ -287,8 +287,6 @@ int main(int argc, char *argv[]) {
 
       } else {
 
-        //        GCoord base = (c + (v * (1.0 -tip_frac)));
-        //        GCoord tip = c + v;
         GCoord base = c + v;
         GCoord tip = base + (v / v.length()) * tip_size;
 
