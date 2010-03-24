@@ -79,7 +79,7 @@ bool uniform;
 bool double_sided;
 string model_name;
 string map_name;
-double tip_frac;
+double tip_size;
 string selection;
 
 const string porcupine_tag("POR");
@@ -100,7 +100,7 @@ void parseOptions(int argc, char *argv[]) {
       ("global,g", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
       ("uniform,u", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
       ("map,M", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
-      ("tips,t", po::value<double>(&tip_frac)->default_value(0.0), "Fraction of vector length to make the tip (for single-sided only)")
+      ("tips,t", po::value<double>(&tip_size)->default_value(0.0), "Length (in Angstroms) to make the tip (for single-sided only)")
       ("double_sided,d", po::value<bool>(&double_sided)->default_value(false), "Use double-sided vectors");
 
     po::options_description hidden("Hidden options");
@@ -272,7 +272,7 @@ int main(int argc, char *argv[]) {
       atom2->segid(segid);
 
 
-      if (tip_frac == 0.0) {
+      if (tip_size == 0.0) {
         pAtom atom1(new Atom(atomid++, porcupine_tag, c+v));
         atom1->resid(resid);
         atom1->resname(porcupine_tag);
@@ -287,8 +287,10 @@ int main(int argc, char *argv[]) {
 
       } else {
 
-        GCoord base = (c + (v * (1.0 -tip_frac)));
-        GCoord tip = c + v;
+        //        GCoord base = (c + (v * (1.0 -tip_frac)));
+        //        GCoord tip = c + v;
+        GCoord base = c + v;
+        GCoord tip = base + (v / v.length()) * tip_size;
 
         pAtom atom1(new Atom(atomid++, porcupine_tag, base));
         atom1->resid(resid);
