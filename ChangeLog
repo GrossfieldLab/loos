@@ -1,3 +1,17 @@
+2010-03-24    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed VSA/ANM to accept user-defined HCA constants
+	* Fixed bug in parser code where Debian systems didn't have EOF
+	already defined.
+	* Changed linux numerical code to use blas rather than cblas
+	* Fixed SConstruct to make support for Ubuntu/SUSE better
+	* Changed AtomicGroup::rmsd() to take a constant arg (i.e. it no
+	longer implicitly sorts the corresponding AtomicGroup objects)
+	* Changed porcupine tool to have fixed-length tips rather than
+	proportional ones.
+	* Changed porcupine tool to make tagging of altered atoms via
+	altLoc optional.
+
 2010-03-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in DescendingSort sort predicate causing it to sort

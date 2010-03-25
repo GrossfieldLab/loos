@@ -89,6 +89,10 @@ int verbosity;
 bool debug;
 
 
+double hca_constants[5];
+bool user_defined_hca_constants(false);
+
+
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -101,6 +105,7 @@ void parseOptions(int argc, char *argv[]) {
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
       ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
+      ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact");
 
@@ -131,6 +136,19 @@ void parseOptions(int argc, char *argv[]) {
     if (parameter_free)
       cutoff = numeric_limits<double>::max();
 
+    
+    if (vm.count("hparams")) {
+      string s = vm["hparams"].as<string>();
+      int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
+                     hca_constants+3, hca_constants+4);
+      if (i != 5) {
+        cerr << boost::format("Error - invalid conversion of HCA constants '%s'\n") % s;
+        exit(-1);
+      }
+      user_defined_hca_constants = true;
+    }
+
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -154,9 +172,12 @@ int main(int argc, char *argv[]) {
   SuperBlock* blocker = 0;
   if (parameter_free)
     blocker = new DistanceWeight(subset, power);
-  else if (hca_method)
-    blocker = new HCA(subset);
-  else
+  else if (hca_method) {
+    if (user_defined_hca_constants)
+      blocker = new HCA(subset, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
+    else
+      blocker = new HCA(subset);
+  } else
     blocker = new DistanceCutoff(subset, cutoff);
 
   DoubleMatrix H = hessian(blocker);
