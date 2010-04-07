@@ -106,6 +106,11 @@ DoubleMatrix HCA::blockImpl(const uint i, const uint j) {
   else
     k = k3 * pow(s, -k4);
 
+  if (k < 0.0) {
+    warnOnNegativeSprings();
+    k = 0.0;
+  }
+
   for (int j=0; j<3; ++j)
     for (int i=0; i<3; ++i)
       B(i,j) = d[i]*d[j] * k;

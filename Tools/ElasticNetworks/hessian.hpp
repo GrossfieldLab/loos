@@ -46,7 +46,7 @@
 class SuperBlock {
 public:
   //! Constructor; must pass the model we're going to work on
-  SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist) { }
+  SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist), warned_negative(false) { }
   virtual ~SuperBlock() { }
   
   //! Computes a 3x3 superblock
@@ -60,12 +60,22 @@ public:
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
 
+  // This can be overridden if you really want to change the behavior...
+  virtual void warnOnNegativeSprings() {
+    if (!warned_negative) {
+      warned_negative = true;
+      std::cerr << "***WARNING***  There are negative spring constants that will be set to zero.\n";
+    }
+  }
+
 protected:
   loos::AtomicGroup nodes;
 
 private:
   //! Polymorphic super-block function
   virtual loos::DoubleMatrix blockImpl(const uint j, const uint i) =0;
+
+  bool warned_negative;
 
 };
 
