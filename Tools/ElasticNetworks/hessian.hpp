@@ -59,14 +59,23 @@ public:
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
-
-  // This can be overridden if you really want to change the behavior...
-  virtual void warnOnNegativeSprings() {
+  //! Handles negative spring constants, issuing a one-time warning
+  /**
+   * This handles negative spring constants by issuing a one-time
+   * warning and by returning what the new spring constant should be.
+   *
+   * Override this to change the behavior of negative springs,
+   * however, this mechanism my change in future releases...
+   */
+  virtual double negativeSprings(const double k) {
     if (!warned_negative) {
       warned_negative = true;
       std::cerr << "***WARNING***  There are negative spring constants that will be set to zero.\n";
     }
+
+    return(0.0);
   }
+
 
 protected:
   loos::AtomicGroup nodes;
@@ -76,7 +85,6 @@ private:
   virtual loos::DoubleMatrix blockImpl(const uint j, const uint i) =0;
 
   bool warned_negative;
-
 };
 
 
