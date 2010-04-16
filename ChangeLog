@@ -1,3 +1,8 @@
+2010-04-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed SuperBlock in the ENM tools to catch and truncate
+	negative spring constants
+
 2010-03-24    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed VSA/ANM to accept user-defined HCA constants

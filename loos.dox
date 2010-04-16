@@ -198,8 +198,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.3 install
-ln -s /opt/loos-1.5.3 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.4 install
+ln -s /opt/loos-1.5.4 /opt/loos-latest
 \endverbatim
 
 
@@ -819,6 +819,33 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 */
 
 
+
+/*! \page Changes Change Log
+\section release154 Version 1.5.4 (4-19-2010)
+\subsection r154_added_changed Added, Changed, or otherwise Notable
+<UL>
+  <LI> Changed contact-time to use "fast" method that uses a
+  distance-cutoff to restrict which target atoms are considered.  This
+  can be disabled if necessary.  See "contact-time --help" for more
+  details.
+  <LI> Fixed bug in DescendingSort that caused it to sort ascending
+  instead.
+  <LI> Changed porcupine tool to make tagging of altered atoms
+  optional and to have fixed length tips rather than proportional
+  length ones.
+  <LI> Changed AtomicGroup::rmsd() to take a const arg (this means
+  that it no longer implicitly sorts the AtomicGroup objects).
+  Implicit sorting is one "feature" that is going to gradually go away
+  from AtomicGroup.
+  <LI> Changed VSA/ANM tools so as to allow user-defined HCA
+  parameters
+  <LI> Fixed Hessian code (affecting ANM/VSA) to truncate negative
+  spring constants to 0 (generally, this happens when using HCA with
+  nodes that are too close together).
+  <LI> Fixed bug in parser for Debian systems
+  <LI> Changed Linux code to use blas rather than cblas
+  <LI> Changes made to SConstruct for better Ubuntu/SUSE support
+</UL>
 
 
 /*! \page Changes Change Log
