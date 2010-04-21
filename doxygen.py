@@ -162,6 +162,15 @@ def DoxySourceScan(node, env, path):
             file = os.path.join(conf_dir, file)
          if os.path.isfile(file):
             sources.append(file)
+         if not os.path.isabs(out_dir):
+            conf_dir = os.path.dirname(str(source[0]))
+            out_dir = os.path.join(conf_dir, out_dir)
+      tagfile = data.get("GENERATE_TAGFILE", "")
+      if tagfile != "":
+         if not os.path.iabs(tagfile):
+            conf_dir = os.path.dirname(str(source[0]))
+            tagfile = os.path.join(conf_dir, tagfile)
+         targets.append(env.File(tagfile))
 
    append_additional_source("HTML_STYLESHEET")
    append_additional_source("HTML_HEADER")
@@ -184,7 +193,7 @@ def DoxyEmitter(source, target, env):
       "HTML": ("YES", "html"),
       "LATEX": ("YES", "latex"),
       "RTF": ("NO", "rtf"),
-      "MAN": ("YES", "man"),
+      "MAN": ("NO", "man"),
       "XML": ("NO", "xml"),
    }
 
