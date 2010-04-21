@@ -1,9 +1,9 @@
-2010-04-07    <tromo@spade.biophysics.rochester.edu>
+2010-04-07    <tromo>
 
 	* Changed SuperBlock in the ENM tools to catch and truncate
 	negative spring constants
 
-2010-03-24    <tromo@spade.biophysics.rochester.edu>
+2010-03-24    <tromo>
 
 	* Changed VSA/ANM to accept user-defined HCA constants
 	* Fixed bug in parser code where Debian systems didn't have EOF
@@ -17,17 +17,17 @@
 	* Changed porcupine tool to make tagging of altered atoms via
 	altLoc optional.
 
-2010-03-02    <tromo@spade.biophysics.rochester.edu>
+2010-03-02    <tromo>
 
 	* Fixed bug in DescendingSort sort predicate causing it to sort
 	ascending.
 
-2010-02-20  Tod Romo  <tromo@gorgoneion-w>
+2010-02-20  Tod Romo  <tromo>
 
 	* Changed contact-time to filter target atoms so that only nearby
 	atoms are considered in the all-to-all check.
 
-2010-02-18    <tromo@spade.biophysics.rochester.edu>
+2010-02-18    <tromo>
 
 	* Added center-molecule tool...a slightly more flexible tool for
 	centering molecules than center-pdb
@@ -35,7 +35,7 @@
 	between a "probe" selection and a set of "targets" over time, with
 	various methods of normalizing the output.
 
-2010-02-10  Tod Romo  <tromo@gorgoneion-w>
+2010-02-10  Tod Romo  <tromo>
 
 	* Changed PDB::fromAtomicGroup so that if the AtomicGroup has a
 	periodic box, then the PDB's UnitCell is set to the same
@@ -44,20 +44,20 @@
 	* Changed PDB::unitCell() so that the unitCell& it returns is a
 	const.
 
-2010-02-05    <tromo@spade.biophysics.rochester.edu>
+2010-02-05    <tromo>
 
 	* Fixed bug in aligner that sometimes caused the target selection
 	to not be correctly centered.  The frames were still aligned
 	correctly, but the global center was not correctly applied.
 
-2010-02-02    <tromo@spade.biophysics.rochester.edu>
+2010-02-02    <tromo>
 
 	* Fixed bug in svd function that takes a vector of AtomicGroup's
 	and when aligning is requested...the alignment transform is
 	applied twice to each AtomicGroup.  No other svd calls were
 	affected and no LOOS tools were affected by this.
 
-2010-01-13    <tromo@spade.biophysics.rochester.edu>
+2010-01-13    <tromo>
 
 	* Changed ENM code so that the Hessian construction is in its own
 	module.
@@ -66,7 +66,7 @@
 	unit-mass mode.
 	* Added support for various forms of weighting in the Hessian.
 
-2009-12-28    <tromo@spade.biophysics.rochester.edu>
+2009-12-28    <tromo>
 
 	* Added support for doctoring PDB files to include masses
 	(i.e. new tools in ElasticNetworks)
@@ -78,7 +78,7 @@
 	* Changed ENM tools to use double precision and high precision in
 	ASCII output...
 
-2009-12-07    <tromo@spade.biophysics.rochester.edu>
+2009-12-07    <tromo>
 
 	* Changed DCDWriter substantially...  It no longer uses a
 	StreamWrapper, but manages its own iostream*.  Optional flag to
@@ -87,17 +87,17 @@
 	* Added ability to use DCDWriter to append to an existing DCD.
 	* Added merge-dcd tool (alan)
 
-2009-12-02    <alan@membrane.biophysics.rochester.edu>
+2009-12-02    <alan>
 
 	* Changed correl method in TimeSeries so normalization is now optional
 
-2009-11-13    <tromo@spade.biophysics.rochester.edu>
+2009-11-13    <tromo>
 
 	* Fixed bug in enmovie tool where bond connectivity was not
 	cleared before writing the reference PDB.  The reference PDB is
 	also renumbered to correctly match the output DCD.
 
-2009-11-10    <tromo@spade.biophysics.rochester.edu>
+2009-11-10    <tromo>
 
 	* Upgrades to rebond tool.  See tool help for details.
 	* Fixed bug in svd tool requiring a valid alignment selection even
@@ -106,12 +106,12 @@
 	invocation
 	* Added covariance and subspace overlap functions
 
-2009-11-05    <tromo@spade.biophysics.rochester.edu>
+2009-11-05    <tromo>
 
 	* Changed anm and gnm tools to not write out the right singular
 	vectors (as it's unlikely these would actually be needed)
 
-2009-11-04    <tromo@spade.biophysics.rochester.edu>
+2009-11-04    <tromo>
 
 	* Changed exposure so that it can now operate over a range of frames
 
@@ -146,7 +146,7 @@
 	structure.
 	
 
-2009-10-20    <tromo@spade.biophysics.rochester.edu>
+2009-10-20    <tromo>
 
 	* Fixed bug in subsetter that caused reimaging to ONLY be
 	performed if centering was turned on.
@@ -159,13 +159,13 @@
 	changed how the flag is set.  "-R 1" turns reimaging on (the
 	default) and "-R 0" turns it off.
 
-2009-10-10  Tod Romo  <tromo@gorgoneion>
+2009-10-10  Tod Romo  <tromo>
 
 	* Changed AtomicGroup::principalAxis() to automatically scale the
 	returned eigenvalues by the number of atoms used in the
 	calculation.  Previously, the UNSCALED eigenvalues were returned.
 
-2009-10-09    <tromo@spade.biophysics.rochester.edu>
+2009-10-09    <tromo>
 
 	* Added AtomicGroup::splitByName() which returns a std::map
 	mapping unique atom names to an AtomicGroup containing only those
@@ -178,12 +178,12 @@
 	* Fixed bug where readFrame() incorrectly returned a false on the
 	first frame of an Amber restart file.
 
-2009-10-06    <tromo@spade.biophysics.rochester.edu>
+2009-10-06    <tromo>
 
 	* Fixed a bug where segname was not properly handled as a synonym
 	for segid...
 
-2009-09-23    <tromo@spade.biophysics.rochester.edu>
+2009-09-23    <tromo>
 
 	* Fixed a bug in the CCPDB and PDBTraj classes when using
 	updateGroupCoords with an AtomicGroup that is a subset of the
@@ -197,11 +197,11 @@
 	then the atom id's are assumed to be indices (+1) into the
 	trajectory frame.
 
-2009-09-21    <tromo@spade.biophysics.rochester.edu>
+2009-09-21    <tromo>
 
 	* Fixed install target--was missing trr.hpp
 
-2009-09-03  Tod Romo  <tromo@gorgoneion>
+2009-09-03  Tod Romo  <tromo>
 
 	* Fixed bug in DCD::updateGroupCoords where the upper-bounds check
 	on atomid's was incorrect.
@@ -227,19 +227,19 @@
 	and only writing out a subset of the matrix.  The size of the
 	sub-matrix encoded in the output metadata was incorrect.
 
-2009-08-10    <tromo@spade.biophysics.rochester.edu>
+2009-08-10    <tromo>
 
 	* Added support for Gromacs TRR files.  The reader can handle
 	either double or single precision TRR files, but internally, all
 	data is converted into doubles (or GCoords).
 
-2009-08-04    <tromo@spade.biophysics.rochester.edu>
+2009-08-04    <tromo>
 
 	* Added safety check in DCDWriter that prevents modifying the
 	header (such as adding new title lines to it) once it has been
 	written to the trajectory.
 
-2009-08-03  Tod Romo  <tromo@gorgoneion-w>
+2009-08-03  Tod Romo  <tromo>
 
 	* Changed the Fmt formatter will now truncate output so that it is
 	never greater than the requested field-width.
@@ -252,7 +252,7 @@
 	field widths).  LOOS now adhears closer to the PDB v2.2 spec with
 	the exception that residue names are 4-characters long.
 
-2009-07-31    <tromo@spade.biophysics.rochester.edu>
+2009-07-31    <tromo>
 
 	* Added utility functions for extracting type-specific records
 	from a string (loos::parseStringAs<>()).  This is useful if you
@@ -275,12 +275,12 @@
 	* Added support for Gromacs .gro and .xtc (single-precision only)
 	files.  Note:  coordinates are transformed into Angstroms!
 
-2009-07-08    <tromo@spade.biophysics.rochester.edu>
+2009-07-08    <tromo>
 
 	* Added some new bits to Atoms that can be set/queried by the
 	programmer...  flagbit, and usr1bit through usr3bit.
 
-2009-07-07    <tromo@spade.biophysics.rochester.edu>
+2009-07-07    <tromo>
 
 	* Added support for testing atom equality using the binary
 	predicates: AtomEquals and AtomCoordsEquals
@@ -294,7 +294,7 @@
 	* Readded ubuntu-specific check.
 	
 
-2009-07-01    <tromo@spade.biophysics.rochester.edu>
+2009-07-01    <tromo>
 
 	* Fixed bug in AtomicGroup::findBonds().  Changed default distance
 	threshold to 1.25 \AA.
@@ -304,12 +304,12 @@
 	are missing...this means you do not nead to clearBonds() prior to
 	writing out a PDB.
 
-2009-06-29    <tromo@spade.biophysics.rochester.edu>
+2009-06-29    <tromo>
 
 	* Added AtomicGroup::findBonds() to perform a distance-based
 	search... 
 
-2009-06-22    <tromo@spade.biophysics.rochester.edu>
+2009-06-22    <tromo>
 
 	* Changed subsetter to permit numerical sorting of the input
 	trajectory files.  The sort key can be extracted by using either a
@@ -322,7 +322,7 @@
 	* Changed test code to reflect changes in PDB test file, including
 	updating of expected test output.
 
-2009-06-18    <tromo@spade.biophysics.rochester.edu>
+2009-06-18    <tromo>
 
 	* Changed the specs for classes derived from the Trajectory
 	class.  All derived classes must now ensure that the first frame
@@ -344,7 +344,7 @@
 	protocol for ubuntu (see the Doxygen docs for more information)
 	
 
-2009-05-15    <tromo@spade.biophysics.rochester.edu>
+2009-05-15    <tromo>
 
 	* Added support for Amber RST and INPCRD files as a single-frame
 	trajectory.  This is handled transparently by createTrajectory()
@@ -353,7 +353,7 @@
 	be imposed on the function invocation (namely to invalidate the
 	cached_first flag).  This change SHOULD be transparent
 
-2009-05-13    <tromo@spade.biophysics.rochester.edu>
+2009-05-13    <tromo>
 	* Fixed problem with averager where it was caching all frames of
 	the trajectory.  It will now scan through the trajectory so it
 	wont swap with large files...
@@ -366,26 +366,26 @@
 	* Added tool to calculate ramachandran plots for proteins and RNA
 	
 
-2009-04-03    <tromo@spade.biophysics.rochester.edu>
+2009-04-03    <tromo>
 	* Fixed bug in averager that caused it NOT to respect the range of
 	trajectory frames given on the command-line
 
-2009-03-20    <tromo@spade.biophysics.rochester.edu>
+2009-03-20    <tromo>
 	* Added tool "drifter" to look at centroid drift
 	* Added tool "porcupine" to generate porcupine models from SVD/ENM
 	results.
 
-2009-03-11    <tromo@spade.biophysics.rochester.edu>
+2009-03-11    <tromo>
 	* Added a number of support/utility functions to read a whole
 	trajectory in, to align/average over specific frames in a
 	trajectory, and an SVD function that is a front-end to
 	Atlas/Accelerate.
 
-2009-03-09    <tromo@spade.biophysics.rochester.edu>
+2009-03-09    <tromo>
 
 	* Fixed bug in rmsds that caused incorrect average rmsd calculation
 
-2009-02-24    <tromo@spade.biophysics.rochester.edu>
+2009-02-24    <tromo>
 
 	* Added a set of classes for providing flexible progress updates
 	to the user.  See the Doxygen docs for the ProgressCounter class
@@ -394,7 +394,7 @@
 	* Removed BOOST_FOREACH usage.  This solves a compatability issue
 	with older versions of BOOST.
 
-2009-02-20    <tromo@gorgoneion-w>
+2009-02-20    <tromo>
 
 	* Added rotamer tool to calculate chi-1, chi-2 torsion angles over
 	time...
@@ -406,17 +406,17 @@
 	* Added support for building a shared-library version of LOOS
 	
 
-2009-02-17    <tromo@spade.biophysics.rochester.edu>
+2009-02-17    <tromo>
 
 	* Fixed potential issue with histogram size/bounds for rdf
 	tools... 
 
-2009-02-16    <tromo@gorgoneion>
+2009-02-16    <tromo>
 
 	* Fixed bug in aligner when centering the trajectory and when
 	using different alignment and transformation subsets...
 
-2009-02-09    <tromo@spade.biophysics.rochester.edu>
+2009-02-09    <tromo>
 
 	* Added profile=1 build option for inserting profiling flags
 	* Added more sensible error message from the auto-file-type
@@ -425,7 +425,7 @@
 	the subset rather than the model...it doesn't make much sense to
 	center on something that's not in the output...
 
-2009-02-06    <tromo@spade.biophysics.rochester.edu>
+2009-02-06    <tromo>
 
 	* Added box override/setting to subsetter
 	* Fixed problem with DCDWriter not writing out rectangular angles
@@ -443,7 +443,7 @@
 	* Added generic byte-swapping templated function to utils.hpp
 	
 
-2009-02-05    <tromo@spade.biophysics.rochester.edu>
+2009-02-05    <tromo>
 
 	* Added tool to concatenate atoms together from a trajectory into
 	a single PDB (for visualizing distributions of atoms over time)
@@ -471,21 +471,21 @@
 	* Added AtomicGroup::merge() function to find the union of two
 	groups
 
-2009-01-21    <alan@spade.biophysics.rochester.edu>
+2009-01-21    <alan>
 
 	* Added translate member function to AtomicGroup for convenience
 	* Added recenter-trj tool to center trajectories
 	* Changed DCDWriter to explicitly flush the output after every
 	frame is written.
 
-2009-01-19    <tromo@spade.biophysics.rochester.edu>
+2009-01-19    <tromo>
 
 	* Added Atom::isBoundTo() to check whether or not one atom is
 	bound to another
 	* Fixed severe bug in reading Amber prmtop files that resulted in
 	incorrect connectivity information.
 
-2009-01-14    <tromo@spade.biophysics.rochester.edu>
+2009-01-14    <tromo>
 
 	* Fixed bug in aligner where average structure was not correctly
 	computed unless --rmsd was used
@@ -493,31 +493,31 @@
 	clamped them to 0)
 	* Added the --terms command-line option back to svd
 
-2009-01-02    <tromo@gorgoneion>
+2009-01-02    <tromo>
 
 	* Fixed bug in build for MacOS X 10.5 (missing types)
 	* Fixed bug in aligner where the PDB that's written out was not
 	centered despite giving it the "--center" flag.
 
-2008-12-22    <tromo@spade.biophysics.rochester.edu>
+2008-12-22    <tromo>
 
 	* Changed the sparse matrix policy to use the GNU provided
 	hash_map rather than the tr1::unordered_map if you're using
 	gcc-4.0.1.  This is to work around an issue with the
 	tr1::unordered_map implementation in gcc-4.0.1.
 
-2008-12-18    <tromo@gorgoneion>
+2008-12-18    <tromo>
 
 	* Fixed moderately severe bug when reading Amber trajectories by
 	using readFrame(i) rather than readFrame().
 
-2008-12-18    <tromo@spade.biophysics.rochester.edu>
+2008-12-18    <tromo>
 
 	* Changed loos::createSystem() so that it will automatically look
 	for a coordinate file if passed an Amber prmtop file.  If found,
 	it will load those coordinates in.
 
-2008-12-17    <tromo@spade.biophysics.rochester.edu>
+2008-12-17    <tromo>
 
 	* Changed PDB output to allow for >= 100000 atoms/residues.  The
 	catch is that this is a hack and will exclude altloc/chainid
@@ -536,12 +536,12 @@
 
 	
 
-2008-12-12    <tromo@spade.biophysics.rochester.edu>
+2008-12-12    <tromo>
 
 	* Fixed bug in AtomicGroup::PrincipalAxes() where coord array was
 	deleted incorrectly...
 
-2008-12-09    <tromo@spade.biophysics.rochester.edu>
+2008-12-09    <tromo>
 
 	* Moved ALMOST everything into loos namespace, save for the
 	lexer.
@@ -553,16 +553,16 @@
 	defines appropriate flags for loos.  This is in case your system
 	doesn't define one or the other.
 
-2008-12-08    <tromo@spade.biophysics.rochester.edu>
+2008-12-08    <tromo>
 
 	* Moved most of the internal classes/routines related to the
 	parsing system into the loos::internal namespace.
 
-2008-12-05    <tromo@gorgoneion-w>
+2008-12-05    <tromo>
 
 	* Moved Matrix classes into loos::Math namespace
 
-2008-12-05    <tromo@gorgoneion.urmc-sh.rochester.edu>
+2008-12-05    <tromo>
 
 	* Added a new matrix class
 	* Changed matrix IO to use the new templated function calls rather
@@ -578,13 +578,13 @@
 	specify a prefix).
 	
 
-2008-12-04    <tromo@spade.biophysics.rochester.edu>
+2008-12-04    <tromo>
 
 	* Changed Tools/aligner to write out the average structure as the
 	PDB corresponding to the aligned DCD rather than just taking the
 	first frame of the trajectory.
 
-2008-11-25    <tromo@spade.biophysics.rochester.edu>
+2008-11-25    <tromo>
 
 	* Changed AtomicGroup::splitByMolecule() to short-circuit if the
 	group has no bond connectivity and return a vector with the entire
@@ -594,7 +594,7 @@
 	without connectivity, it detects this and warns the user...
 	* Added subsetter tool to pull out a subset from a trajectory.
 
-2008-11-21    <tromo@spade.biophysics.rochester.edu>
+2008-11-21    <tromo>
 
 	* Changed BadConnectivity exception to inherit from runtime_error.
 	Now accepts a string to stick into what().
@@ -603,18 +603,18 @@
 	been seen, so warnings are only emitted once for each unique
 	unknown record.
 
-2008-11-03    <alan@spade.biophysics.rochester.edu>
+2008-11-03    <alan>
 
 	* Fixed bug in crossing-waters tool where the entry side of the
 	water was never set.
 
-2008-10-31    <tromo@spade.biophysics.rochester.edu>
+2008-10-31    <tromo>
 
 	* Fixed bug in Atom::clearPropertyBit() that caused it to
 	incorrectly toggle other bits (and not always clear the bit it
 	meant to).  This primarily affected the aligner tool.
 
-2008-10-27    <tromo@spade.biophysics.rochester.edu>
+2008-10-27    <tromo>
 
 	* Changed the internal has used in LOOS from SGI's hash_set to
 	tr1::unordered_set.  This means that any code that relied on loos
@@ -622,7 +622,7 @@
 	to using the tr1 equivalent, or explicitly include the hash_set
 	header...
 
-2008-10-23    <tromo@gorgoneion.urmc-sh.rochester.edu>
+2008-10-23    <tromo>
 
 	* Added helix_kink tool
 	* Fixed problem with PDB output with 10,000 residues or more
@@ -633,23 +633,23 @@
 	* Changed tools to use new convenience functions and factory
 	functions.
 
-2008-10-21    <tromo@spade.biophysics.rochester.edu>
+2008-10-21    <tromo>
 
 	* Updated contacts to use any model filetype and any trajectory type.
 
-2008-10-20    <tromo@spade.biophysics.rochester.edu>
+2008-10-20    <tromo>
 
 	* Fixed MAJOR bug in DCDWriter that caused output periodic box
 	sizes be set to (1,1,1).
 
-2008-10-15    <tromo@spade.biophysics.rochester.edu>
+2008-10-15    <tromo>
 
 	* Added AtomicGroup::clearBonds() to wipe out connectivity in a group.
 	* Fixed problem in writing PDBs with bonds to missing atoms.
 	Bonds are now deferenced prior to writing.  NOTE that this now
 	means the PDB is no longer const when written and it will be sorted...
 
-2008-10-14    <tromo@spade.biophysics.rochester.edu>
+2008-10-14    <tromo>
 
 	* Fixed bug in width of CONECT record fields
 	* Added check in PDB output to not append CONECT records if there
@@ -659,18 +659,18 @@
 	* Fixed bug in DCD trajectories potentially affecting reading the
 	number of frames in a trajectory that comes from NAMD.
 
-2008-09-30    <tromo@spade.biophysics.rochester.edu>
+2008-09-30    <tromo>
 
 	* Changed AtomicGroup::select() to be a const function
 	* Added loos::selectAtoms() to parse a selection string and apply
 	it to an AtomicGroup.
 
-2008-09-19    <tromo@spade.biophysics.rochester.edu>
+2008-09-19    <tromo>
 
 	* Added support for writing out CONECT records for PDBs
 	* Fixed bug in Atom::checkProperty() that caused erroneous results
 
-2008-09-08    <tromo@spade.biophysics.rochester.edu>
+2008-09-08    <tromo>
 
 	* Added autocorrelation function to time-series class (Alan)
 
@@ -682,7 +682,7 @@
 	* Fixed another small bug in iterative alignment that affects
 	groups that were not already close to their centroid.
 
-2008-08-11    <tromo@spade.biophysics.rochester.edu>
+2008-08-11    <tromo>
 
 	* Major reorganization of Trajectory class.  The class now uses a
 	template pattern for reading frames in addition to being an
@@ -706,12 +706,12 @@
 	* Changed Atom defaults to initialize atomid and resid to 1,
 	rather than -1.
 
-2008-08-05    <tromo@spade.biophysics.rochester.edu>
+2008-08-05    <tromo>
 
 	* Added tool to compute the RMSD between a selection and its
 	average structure over the course of a trajectory.
 
-2008-08-04    <tromo@spade.biophysics.rochester.edu>
+2008-08-04    <tromo>
 
 	= BUGS =
 	
