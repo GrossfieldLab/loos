@@ -235,7 +235,7 @@ env.Alias('tools', tools + nm_tools)
 env.Alias('all', loos + tools + nm_tools)
 env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
 
-env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install', docs_inst] )
+env.Alias('install', PREFIX)
 
 if int(regenerate):
    env.Default('caboodle')
