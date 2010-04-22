@@ -1,0 +1,5 @@
+<area shape="rect" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="27,219,141,253">
+<area shape="rect" href="$classloos_1_1_stream_wrapper.html" title="Simple wrapper class for caching stream pointers." alt="" coords="5,112,152,147">
+<area shape="rect" href="$classloos_1_1_tinker_x_y_z.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="168,219,291,253">
+<area shape="rect" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)." alt="" coords="176,112,309,147">
+<area shape="rect" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="159,5,327,40">

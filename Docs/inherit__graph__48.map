@@ -1,0 +1,9 @@
+<area shape="rect" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="5,211,120,245">
+<area shape="rect" href="$classloos_1_1_amber_rst.html" title="Class for reading amber restart files as a single&#45;frame trajectory." alt="" coords="171,5,285,40">
+<area shape="rect" href="$classloos_1_1_amber_traj.html" title="Class for reading amber coordinate trajectories." alt="" coords="169,64,287,99">
+<area shape="rect" href="$classloos_1_1_c_c_p_d_b.html" title="Class for interpreting concatenated PDB files as a Trajectory." alt="" coords="179,123,277,157">
+<area shape="rect" href="$classloos_1_1_d_c_d.html" title="Class for reading DCD files." alt="" coords="187,181,269,216">
+<area shape="rect" href="$classloos_1_1_p_d_b_traj.html" title="Class for intepreting separate PDB files as a single trajectory." alt="" coords="176,240,280,275">
+<area shape="rect" href="$classloos_1_1_tinker_arc.html" title="Class for handling Tinker ARC files (concatenation of .xyz files)." alt="" coords="169,299,287,333">
+<area shape="rect" href="$classloos_1_1_t_r_r.html" title="Class representing the GROMACS TRR trajectory files." alt="" coords="185,357,271,392">
+<area shape="rect" href="$classloos_1_1_x_t_c.html" title="Class representing GROMACS reduced precision, compressed trajectories." alt="" coords="187,416,269,451">

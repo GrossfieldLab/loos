@@ -1,0 +1,6 @@
+<area shape="rect" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="243,12,357,47">
+<area shape="rect" href="$classloos_1_1_stream_wrapper.html" title="Simple wrapper class for caching stream pointers." alt="" coords="5,12,152,47">
+<area shape="rect" href="$structloos_1_1_d_c_d_1_1_record_error.html" title="Error while reading the F77 guard data." alt="" coords="217,71,383,105">
+<area shape="rect" href="$structloos_1_1_d_c_d_1_1_header_error.html" title="General error while parsing the DCD header." alt="" coords="217,129,383,164">
+<area shape="rect" href="$structloos_1_1_d_c_d_1_1_line_error.html" title="General error while reading an F77 data record." alt="" coords="225,188,375,223">
+<area shape="rect" href="$structloos_1_1_d_c_d_1_1_end_of_file.html" title="Unexpected EOF." alt="" coords="224,247,376,281">

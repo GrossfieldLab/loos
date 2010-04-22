@@ -1,0 +1,3 @@
+<area shape="rect" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="24,5,157,40">
+<area shape="rect" href="$structloos_1_1_not_selector.html" title="Negates a selection predicate." alt="" coords="31,112,153,147">
+<area shape="rect" href="$structloos_1_1_hydrogen_selector.html" title="Select hydrogen atoms." alt="" coords="177,112,340,147">
