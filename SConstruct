@@ -202,7 +202,7 @@ if tag:
 
 ### Special handling for pre-packaged documentation...
 docs_inst = PREFIX+'/docs'
-env.Command(docs_inst, 'docs.prebuilt', Copy("$TARGET", 'Docs'))
+env.Command(docs_inst, 'docs.built', Copy("$TARGET", 'Docs'))
 
 
 
