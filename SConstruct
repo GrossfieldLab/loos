@@ -23,6 +23,7 @@ import os
 import re
 from subprocess import *
 from time import strftime
+import shutil
 
 
 
@@ -201,12 +202,27 @@ if tag:
    env.Append(CCFLAGS=revstr)
 
 ### Special handling for pre-packaged documentation...
-docs_inst = PREFIX+'/docs'
-env.Command(docs_inst, 'docs.built', Copy("$TARGET", 'Docs'))
 
+
+def DocsInstaller(target, source, env):
+   shutil.copy2(source[0].rstr(), target[0].rstr())
+   docspath = os.path.split(target[0].rstr())
+   docsdir = os.path.join(docspath[0], 'docs')
+ 
+   srcpath = os.path.split(source[0].rstr())
+   srcdir = os.path.join(srcpath[0], 'Docs')
+
+   shutil.rmtree(docsdir)
+   shutil.copytree(srcdir, docsdir)
+
+
+env.Command(PREFIX + '/docs.built', 'docs.built', DocsInstaller)
 
 
 # Export for subsidiary SConscripts
+
+
+
 
 Export('env')
 
@@ -226,7 +242,6 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
-
 # build targets...
 
 env.Alias('lib', loos)
@@ -237,7 +252,7 @@ env.Alias('tools', tools + nm_tools)
 env.Alias('all', loos + tools + nm_tools)
 env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
 
-env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install', docs_inst] )
+env.Alias('install', PREFIX)
 
 if int(regenerate):
    env.Default('caboodle')
