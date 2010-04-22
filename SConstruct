@@ -202,21 +202,21 @@ if tag:
    env.Append(CCFLAGS=revstr)
 
 ### Special handling for pre-packaged documentation...
-
-
 def DocsInstaller(target, source, env):
-   shutil.copy2(source[0].rstr(), target[0].rstr())
-   docspath = os.path.split(target[0].rstr())
-   docsdir = os.path.join(docspath[0], 'docs')
- 
+   # Get the path to the installed docs dir...
+   trgname = target[0].rstr()
+   docspath = os.path.split(trgname)
+   docsdir = docspath[0]
+
+   # Get path to the source docs dir
    srcpath = os.path.split(source[0].rstr())
    srcdir = os.path.join(srcpath[0], 'Docs')
 
    shutil.rmtree(docsdir)
    shutil.copytree(srcdir, docsdir)
 
-
-env.Command(PREFIX + '/docs.built', 'docs.built', DocsInstaller)
+# Installed docs depend on the docs.built file
+env.Command(PREFIX + '/docs/main.html', 'docs.built', DocsInstaller)
 
 
 # Export for subsidiary SConscripts
