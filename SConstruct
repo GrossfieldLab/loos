@@ -200,6 +200,12 @@ if tag:
    revstr = " -DREVISION=\'\"" + revision + "\"\'"
    env.Append(CCFLAGS=revstr)
 
+### Special handling for pre-packaged documentation...
+docs_inst = PREFIX+'/docs'
+env.Command(docs_inst, 'docs.prebuilt', Copy("$TARGET", 'Docs'))
+
+
+
 # Export for subsidiary SConscripts
 
 Export('env')
@@ -219,10 +225,6 @@ docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
-
-# Special handling for docs installation...
-docs_inst = env.InstallAs(PREFIX + '/docs', 'Docs')
-Depends(docs_inst, 'foobar')
 
 
 # build targets...

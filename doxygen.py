@@ -196,7 +196,7 @@ def DoxyEmitter(source, target, env):
       conf_dir = os.path.dirname(str(source[0]))
       out_dir = os.path.join(conf_dir, out_dir)
 
-   targets.append(env.File( os.path.join(out_dir, 'foobar')))
+   targets.append(env.File( os.path.join(out_dir, 'docs.prebuilt')))
 
    # add our output locations
    for (k, v) in output_formats.items():
