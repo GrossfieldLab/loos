@@ -23,6 +23,7 @@ import os
 import re
 from subprocess import *
 from time import strftime
+import shutil
 
 
 
@@ -200,7 +201,28 @@ if tag:
    revstr = " -DREVISION=\'\"" + revision + "\"\'"
    env.Append(CCFLAGS=revstr)
 
+### Special handling for pre-packaged documentation...
+def DocsInstaller(target, source, env):
+   # Get the path to the installed docs dir...
+   trgname = target[0].rstr()
+   docspath = os.path.split(trgname)
+   docsdir = docspath[0]
+
+   # Get path to the source docs dir
+   srcpath = os.path.split(source[0].rstr())
+   srcdir = os.path.join(srcpath[0], 'Docs')
+
+   shutil.rmtree(docsdir)
+   shutil.copytree(srcdir, docsdir)
+
+# Installed docs depend on the docs.built file
+env.Command(PREFIX + '/docs/main.html', 'docs.built', DocsInstaller)
+
+
 # Export for subsidiary SConscripts
+
+
+
 
 Export('env')
 
@@ -220,10 +242,6 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
-# Special handling for docs installation...
-docs_inst = env.InstallAs(PREFIX + '/docs', 'Docs')
-Depends(docs_inst, 'foobar')
-
 
 # build targets...
 
@@ -235,7 +253,7 @@ env.Alias('tools', tools + nm_tools)
 env.Alias('all', loos + tools + nm_tools)
 env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
 
-env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install', docs_inst] )
+env.Alias('install', PREFIX)
 
 if int(regenerate):
    env.Default('caboodle')

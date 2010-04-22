@@ -1,3 +1,9 @@
+2010-04-22    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed build system to handle installing pre-build docs
+	better.  Note that the existing installed docs dir will be
+	removed, then the pre-built will be copied into its place.
+
 2010-04-07    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed SuperBlock in the ENM tools to catch and truncate

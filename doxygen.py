@@ -196,7 +196,7 @@ def DoxyEmitter(source, target, env):
       conf_dir = os.path.dirname(str(source[0]))
       out_dir = os.path.join(conf_dir, out_dir)
 
-   targets.append(env.File( os.path.join(out_dir, 'foobar')))
+   targets.append(env.File( os.path.join(out_dir, 'docs.built')))
 
    # add our output locations
    for (k, v) in output_formats.items():
@@ -234,7 +234,7 @@ def generate(env):
 
    import SCons.Builder
    doxyfile_builder = SCons.Builder.Builder(
-      action = "cd ${SOURCE.dir}  &&  ${DOXYGEN} ${SOURCE.file} && touch ${TARGET}",
+      action = "cd ${SOURCE.dir}  &&  ${DOXYGEN} ${SOURCE.file} && date >docs.built",
       emitter = DoxyEmitter,
       target_factory = env.fs.Entry,
       single_source = True,
