@@ -216,7 +216,7 @@ def DocsInstaller(target, source, env):
    shutil.copytree(srcdir, docsdir)
 
 # Installed docs depend on the docs.built file
-env.Command(PREFIX + '/docs/main.html', 'docs.install', DocsInstaller)
+env.Command(PREFIX + '/docs/main.html', 'docs.built', DocsInstaller)
 
 
 # Export for subsidiary SConscripts

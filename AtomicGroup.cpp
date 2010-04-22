@@ -354,6 +354,7 @@ namespace loos {
    *
    * If we find a bond that goes to an atom that does not exist in the
    * current group, a std::runtime_error is thrown.
+   * SUCKS
    */
 
   std::vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {

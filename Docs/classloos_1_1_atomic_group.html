@@ -493,7 +493,7 @@ Despite the name, this is meant for polymorphic use. It is <em>not</em> a deep c
 Equality test for two groups. 
 <p>
 The test for equality is based on whether or not the contained atom pointers are the same. This operator will also force both sides of the equation to be sorted. 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00659">659</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00660">660</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -517,7 +517,7 @@ The test for equality is based on whether or not the contained atom pointers are
 Equality test for const groups. 
 <p>
 Similar to the non-const version, but it will sort <em>copies</em> of the atom lists if they are not already sorted... 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00679">679</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00680">680</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -687,8 +687,8 @@ Returns a vector of AtomicGroups split based on bond connectivity.
 <p>
 The idea is that we iterate over the list of contained atoms. For each atom, we recurse through the list of bonded atoms. Each time we visit an atom, we mark it as having been seen via the hash_set. In the recursive function, every time we find a new unseen atom, we append it to the current group and mark it as seen, then recurse through all of its bonded atoms.<p>
 Since <a class="el" href="classloos_1_1_atomic_group.html#56508c28c9c4cf4c5c2bda430eb8ae1c" title="Returns a vector of AtomicGroups split based on bond connectivity.">splitByMolecule()</a> recurses through the connectivity list, the ordering of the atoms returned will not necessarily be the same as the input group. We therefore sort each group returned to hopefully maintain correct relative ordering.<p>
-If we find a bond that goes to an atom that does not exist in the current group, a std::runtime_error is thrown. 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00359">359</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+If we find a bond that goes to an atom that does not exist in the current group, a std::runtime_error is thrown. SUCKS 
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00360">360</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -712,7 +712,7 @@ If we find a bond that goes to an atom that does not exist in the current group,
 Returns a vector of AtomicGroups, each comprising a single residue. 
 <p>
 Splits an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually).">AtomicGroup</a> into individual residues. The residue boundary is marked by either a change in the resid or in the segid. 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00432">432</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00433">433</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -736,7 +736,7 @@ Splits an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for 
 Create a new group from a vector of atomids. 
 <p>
 Note: when calling this, you'll want to make sure you use the outermost group (eg the psf or pdb you used to create things, rather than using a subselection, unless you're sure the subsection contains these atoms as well. The main use of this routine is to create a group of atoms bound to another atom. 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00482">482</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00483">483</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -758,7 +758,7 @@ Note: when calling this, you'll want to make sure you use the outermost group (e
 
 <p>
 Given an <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a>, return a group of all the atoms contained by its containing residue 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00498">498</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00499">499</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -779,7 +779,7 @@ Given an <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class fo
 
 <p>
 Translate the entire group so that the centroid is in the primary cell 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00713">713</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00714">714</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -811,7 +811,7 @@ Translate the entire group so that the centroid is in the primary cell
 <p>
 Find atoms in <em>grp</em> that are within <em>dist</em> angstroms of atoms in the current group.<p>
 Uses a not-very-bright algorithm that compares all atoms against all atoms... 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00741">741</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00742">742</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -846,7 +846,7 @@ apply() let's you apply a functor or a function pointer to each atom in the grou
      Functor f = group.apply(Functor());
      GCoord <a class="code" href="classloos_1_1_atomic_group.html#d26667576771cba32914ee97113a3b7f" title="Centroid of atoms (ignores mass, operates in group coordinates).">centroid</a> = f.center();
 </pre></div> Distance-based search for bonds Searches for bonds within an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually).">AtomicGroup</a> based on distance. does NOT clear the existing bond list prior to building new bonds. The default distance cutoff is 1.25 
-<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00784">784</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
+<p>Definition at line <a class="el" href="_atomic_group_8cpp-source.html#l00785">785</a> of file <a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div><p>
@@ -1060,7 +1060,7 @@ Calls superposition to calculate the transformation matrix to superimpose the cu
 <hr>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_atomic_group_8hpp-source.html">AtomicGroup.hpp</a><li><a class="el" href="_a_g__linalg_8cpp-source.html">AG_linalg.cpp</a><li><a class="el" href="_a_g__numerical_8cpp-source.html">AG_numerical.cpp</a><li><a class="el" href="_atomic_group_8cpp-source.html">AtomicGroup.cpp</a></ul>
 </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Thu Apr 22 16:42:12 2010 for LOOS by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Thu Apr 22 17:00:59 2010 for LOOS by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.6 </small></address>
 </body>
