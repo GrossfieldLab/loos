@@ -1,3 +1,0 @@
-<area shape="rect" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="20,5,153,40">
-<area shape="rect" href="$structloos_1_1_or_selector.html" title="Combines two selectors with a logical &quot;or&quot;." alt="" coords="29,136,147,171">
-<area shape="rect" href="$structloos_1_1_segid_selector.html" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="171,136,307,171">

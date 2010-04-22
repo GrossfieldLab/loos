@@ -1,7 +1,0 @@
-<area shape="rect" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="69,219,184,253">
-<area shape="rect" href="$classloos_1_1_stream_wrapper.html" title="Simple wrapper class for caching stream pointers." alt="" coords="5,112,152,147">
-<area shape="rect" href="$classloos_1_1_p_d_b.html" title="PDB reading/writing class." alt="" coords="303,219,383,253">
-<area shape="rect" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)." alt="" coords="176,112,309,147">
-<area shape="rect" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="159,5,327,40">
-<area shape="rect" href="$classloos_1_1_remarks.html" title="Class for handling PDB Remarks." alt="" coords="333,112,445,147">
-<area shape="rect" href="$classloos_1_1_unit_cell.html" title="This class encapsulates crystallographic unit cell data." alt="" coords="469,112,573,147">

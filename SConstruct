@@ -221,8 +221,8 @@ tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
 # Special handling for docs installation...
-Command(PREFIX + '/docs', [], Copy("$TARGET", "Docs"))
-env.Alias('docs_inst', PREFIX+'/docs')
+docs_inst = env.InstallAs(PREFIX + '/docs', 'Docs')
+Depends(docs_inst, 'foobar')
 
 
 # build targets...

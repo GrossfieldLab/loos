@@ -1,6 +1,0 @@
-<area shape="rect" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)." alt="" coords="7,123,140,157">
-<area shape="rect" href="$classloos_1_1_amber.html" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="205,5,299,40">
-<area shape="rect" href="$classloos_1_1_gromacs.html" title="Implements a GROMACS model file (.gro)." alt="" coords="197,64,307,99">
-<area shape="rect" href="$classloos_1_1_p_d_b.html" title="PDB reading/writing class." alt="" coords="212,123,292,157">
-<area shape="rect" href="$classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format." alt="" coords="213,181,291,216">
-<area shape="rect" href="$classloos_1_1_tinker_x_y_z.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="191,240,313,275">

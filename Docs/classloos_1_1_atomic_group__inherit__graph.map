@@ -1,5 +1,0 @@
-<area shape="rect" href="$classloos_1_1_amber.html" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="5,88,99,123">
-<area shape="rect" href="$classloos_1_1_gromacs.html" title="Implements a GROMACS model file (.gro)." alt="" coords="123,88,232,123">
-<area shape="rect" href="$classloos_1_1_p_d_b.html" title="PDB reading/writing class." alt="" coords="256,88,336,123">
-<area shape="rect" href="$classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format." alt="" coords="360,88,437,123">
-<area shape="rect" href="$classloos_1_1_tinker_x_y_z.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="461,88,584,123">

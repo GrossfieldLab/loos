@@ -1,4 +1,0 @@
-<area shape="rect" href="$classloos_1_1_missing_property.html" title="Exception caused by insufficient atom properties.." alt="" coords="5,88,160,123">
-<area shape="rect" href="$classloos_1_1_null_result.html" title="Exception cause by some operation failing (ie no atoms selected)." alt="" coords="184,88,307,123">
-<area shape="rect" href="$classloos_1_1_numerical_error.html" title="Exception caused by a blas/atlas error." alt="" coords="331,88,480,123">
-<area shape="rect" href="$classloos_1_1_parse_error.html" title="Exception when parsing input data." alt="" coords="504,88,624,123">
