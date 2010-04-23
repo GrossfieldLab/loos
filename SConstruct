@@ -67,6 +67,8 @@ clos.Add('REVISION', 'Add build information', loos_version)
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
 
+env.Decider('MD5-timestamp')
+
 # vestigial...
 regenerate = env['regenerate']
 env['REGENERATE'] = regenerate
@@ -201,28 +203,7 @@ if tag:
    revstr = " -DREVISION=\'\"" + revision + "\"\'"
    env.Append(CCFLAGS=revstr)
 
-### Special handling for pre-packaged documentation...
-def DocsInstaller(target, source, env):
-   # Get the path to the installed docs dir...
-   trgname = target[0].rstr()
-   docspath = os.path.split(trgname)
-   docsdir = docspath[0]
-
-   # Get path to the source docs dir
-   srcpath = os.path.split(source[0].rstr())
-   srcdir = os.path.join(srcpath[0], 'Docs')
-
-   shutil.rmtree(docsdir)
-   shutil.copytree(srcdir, docsdir)
-
-# Installed docs depend on the docs.built file
-env.Command(PREFIX + '/docs/main.html', 'docs.built', DocsInstaller)
-
-
 # Export for subsidiary SConscripts
-
-
-
 
 Export('env')
 
@@ -242,6 +223,16 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 
+
+### Special handling for pre-packaged documentation...
+
+env.Command(PREFIX + '/docs/main.html', [], [
+      Delete(PREFIX + '/docs'),
+      Copy(PREFIX + '/docs', 'Docs'),
+      ])
+env.AlwaysBuild(PREFIX + '/docs/main.html')
+
+
 # build targets...
 
 env.Alias('lib', loos)
@@ -251,6 +242,7 @@ env.Alias('tools', tools + nm_tools)
 
 env.Alias('all', loos + tools + nm_tools)
 env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
+
 
 env.Alias('install', PREFIX)
 
