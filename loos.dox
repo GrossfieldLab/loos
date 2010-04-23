@@ -821,7 +821,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
-\section release154 Version 1.5.4 (4-19-2010)
+\section release154 Version 1.5.4 (4-23-2010)
 \subsection r154_added_changed Added, Changed, or otherwise Notable
 <UL>
   <LI> Changed contact-time to use "fast" method that uses a
@@ -848,7 +848,6 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 </UL>
 
 
-/*! \page Changes Change Log
 \section release153 Version 1.5.3 (2-19-2010)
 \subsection r153_added_changed Added, Changed, or otherwise Notable
 <UL>
