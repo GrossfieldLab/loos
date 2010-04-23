@@ -3,50 +3,69 @@ Building and Installing Loos
 
 *** FOR THE IMPATIENT ***
 
-= Fedora =
 
-You will need to install SCons, lapack, atlas, and boost (the
-developer's versions).  These can be easily installed using "yum".
+
+= Building and Installing =
+
+Please refer to the OS-specific instructions below in order to satisfy
+LOOS' dependencies....
+
+LOOS can then be built using the following command:
 
    scons release=1
+
+Or installed (to /opt as a default):
    sudo scons release=1 install
 
-Or to install in a user-specified location:
+To install in a user-specified location:
 
    scons release=1 PREFIX=/path/to/install install
 
 
 
-= Ubuntu =
+--= Fedora =--
 
-You will need to install SCons, lapack, atlas, and boost (developer's
-versions).  On some systems, the names of the boost libraries vary.
-In these cases, you will need to use a custom configuration.  Copy
-"custom.py-proto" to "custom.py" and edit it, commenting out the lines
-marked for Ubuntu.  Alternatively, verify the names of the boost regex
-and program_options libraries and set these appropriately in your
-"custom.py" file.
+You will need to install SCons, lapack, atlas, and boost (the
+developer's versions).  These can be easily installed using "yum":
+
+   yum install scons.noarch atlas.x86_64 atlas-devel.x86_64 lapack.x86_64 lapack-devel.x86_64
+   yum install boost.x86_64 boost-devel.x86_64
 
 
+--= Ubuntu =--
 
-= openSUSE =
+You will need to install SCons, lapack, atlas, and boost.  Using
+aptitude (or your favorite tool), install the "libboost-dev" package
+(or a specific version (i.e. libboost1.38-dev)), "libatlas-base-dev",
+"libatlas-headers", "liblapack-dev", and "scons".  On some systems,
+the names of the boost libraries vary.  In these cases, you will need
+to use a custom configuration.  Copy "custom.py-proto" to "custom.py"
+and edit it, uncommenting the lines marked for Ubuntu.
+Alternatively, verify the names of the boost regex and program_options
+libraries and set these appropriately in your "custom.py" file.
+
+
+
+--= openSUSE =--
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
-install lapack, blas, boost, and SCons.  Then follow the directions
-for Fedora above.
+install lapack, blas, boost, and SCons.  Using zypper (or your
+favorite package manager), install the following:
+
+   zypper install scons boost-devel lapack blas
 
 
 
-
-= MACOS X (10.4+) =
+--= MACOS X (10.4+) =--
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  You can find it on your MacOS X install disk or,
 alternatively, you can sign up for a free account with the Apple
 Developer's Connection and download the latest version.  Next, you
-will need to install SCons and BOOST.  If all went well, you should be
-able to cd to where you have the LOOS source and run "scons release=1".
+will need to install SCons (http://scons.org) and Boost
+(http://boost.org) by visiting their websites, downloading the
+software, and following their installation instructions.
 
 
 
