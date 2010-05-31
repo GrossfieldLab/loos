@@ -477,6 +477,7 @@ namespace loos {
      */
     std::vector<GCoord> getTransformedCoords(const XForm&) const;
   
+    //! Translate an atomic group by vector v
     void translate(const GCoord & v);
 
     //! Apply the given transform to the group's coordinates...
