@@ -1,3 +1,8 @@
+2010-06-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in AtomicGroup::perturbCoords() where the directions
+	picked were not actually uniform on the sphere.
+
 2010-04-22    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed build system to handle installing pre-build docs
