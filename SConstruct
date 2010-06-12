@@ -138,12 +138,12 @@ else:
 
       # Ubuntu requires gfortran
       elif (re.search("[Uu]buntu", f)):
-         env.Append(LIBS = ['lapack', 'atlas', 'gfortran'])
+         env.Append(LIBS = ['atlas', 'lapack', 'gfortran'])
          env.Append(LIBPATH = [LAPACK, ATLAS])
 
       # Fedora or similar
       else:
-         env.Append(LIBS = ['lapack', 'atlas'])
+         env.Append(LIBS = [''atlas', 'lapack'])
          env.Append(LIBPATH = [LAPACK, ATLAS])
 
       #env.Append(CPPPATH = [ATLASINC])       # See above...
