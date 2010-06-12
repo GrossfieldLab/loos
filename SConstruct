@@ -143,7 +143,7 @@ else:
 
       # Fedora or similar
       else:
-         env.Append(LIBS = [''atlas', 'lapack'])
+         env.Append(LIBS = ['atlas', 'lapack'])
          env.Append(LIBPATH = [LAPACK, ATLAS])
 
       #env.Append(CPPPATH = [ATLASINC])       # See above...
