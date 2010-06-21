@@ -1,3 +1,7 @@
+2010-06-21    <alan@membrane.biophysics.rochester.edu>
+	* Changed order_params to handle both 1- and 3-residue per lipid
+	  formats.
+
 2010-06-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::perturbCoords() where the directions
