@@ -22,6 +22,10 @@
 ### Edit the lines below for your installation...
 ###
 
+### Note: the following is Python code.  This means that to uncomment
+### a line, you must delete the '#' and the following space so the
+### variable name is flush with the left-most column.
+
 
 ### Edit the following to determine the default build-type
 # debug=1
