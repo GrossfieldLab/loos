@@ -1,6 +1,6 @@
 2010-06-21    <alan@membrane.biophysics.rochester.edu>
 	* Changed order_params to handle both 1- and 3-residue per lipid
-	  formats.
+	  formats. Verified works for new and old CHARMM parameters.
 
 2010-06-02    <tromo@spade.biophysics.rochester.edu>
 
