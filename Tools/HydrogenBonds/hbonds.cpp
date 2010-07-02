@@ -1,11 +1,31 @@
 /*
-  better_hbonds
-  (c) 2010 Tod D. Romo, Grossfield Lab, URMC
-  
-  A better approach to finding hbonds...
+  hbonds
 
-  Criteria are user-settable and consist of a range of distances and angles (deviation from linear).
+  Find putative hydrogen-bonds based on user-specified criteria (angle and distance)
+*/
 
+
+
+/*
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2010, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -13,7 +33,7 @@
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
-#include "hbonds_core.hpp"
+#include "hcore.hpp"
 
 using namespace std;
 using namespace loos;

@@ -31,18 +31,18 @@ PREFIX = env['PREFIX']
 
 list = []
 
-hbonds_core = clone.Object('hbonds_core.cpp')
+hcore = clone.Object('hcore.cpp')
 
-hbonds_corr = clone.Program('hbonds_correlation', ['hbonds_correlation.cpp', hbonds_core])
-list.append(hbonds_corr)
+hcorr = clone.Program('hcorrelation', ['hcorrelation.cpp', hcore])
+list.append(hcorr)
 
-better_hbonds = clone.Program('hbonds', ['hbonds.cpp', hbonds_core])
-list.append(better_hbonds)
+hbonds = clone.Program('hbonds', ['hbonds.cpp', hcore])
+list.append(hbonds)
 
-hbonds_as_matrix = clone.Program('hbonds_as_matrix', ['hbonds_as_matrix.cpp', hbonds_core])
-list.append(hbonds_as_matrix)
+hmatrix = clone.Program('hmatrix', ['hmatrix.cpp', hcore])
+list.append(hmatrix)
 
-install_apps = 'hbonds hbonds_correlation hbonds_as_matrix'
+install_apps = 'hbonds hcorrelation hmatrix'
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('h_tools_install', loos_tools)
