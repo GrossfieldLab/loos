@@ -67,7 +67,7 @@ string donor_selection;
 string model_name;
 vector<string> traj_names;
 
-uint currentTimeStep = 0;
+uint skip = 0;
 
 
 // ---------------
@@ -86,13 +86,15 @@ void parseArgs(int argc, char *argv[]) {
       ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
       ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
       ("acceptor_name,N", po::value< vector<string> >(&acceptor_names), "Name of an acceptor selection (required)")
-      ("acceptor,S", po::value< vector<string> >(&acceptor_selections), "Acceptor selection (required)");
+      ("acceptor,S", po::value< vector<string> >(&acceptor_selections), "Acceptor selection (required)")
+      ("skip,k", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of the trajectory");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
       ("donor", po::value<string>(&donor_selection), "Donor selection")
       ("model", po::value<string>(&model_name), "Model filename")
       ("trajs", po::value< vector<string> >(&traj_names), "Traj filename");
+
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
@@ -214,10 +216,17 @@ int main(int argc, char *argv[]) {
       cerr << traj_names[k] << " ";
 
     pTraj traj = createTrajectory(traj_names[k], model);
+    if (skip >= traj->nframes()) {
+      cerr << boost::format("Error- trajectory '%s' only has %d frames in it, but we are skipping %d frames...\n")
+        % traj_names[k]
+        % traj->nframes()
+        % skip;
+      exit(-20);
+    }
 
     BondMatrix B(m, donors.size());
 
-    for (uint t = 0; t<traj->nframes(); ++t) {
+    for (uint t = skip; t<traj->nframes(); ++t) {
       traj->readFrame(t);
       traj->updateGroupCoords(model);
 
