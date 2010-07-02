@@ -38,7 +38,9 @@ double SimpleAtom::outer = 3.5;
 double SimpleAtom::deviation = 20.0;
 
 
-
+// Reports distance^2 between hydrogen and heavy atom
+// D-H ... X
+//     ^^^ 
 double SimpleAtom::distance2(const SimpleAtom& s) const
 {
   double d;
@@ -52,6 +54,10 @@ double SimpleAtom::distance2(const SimpleAtom& s) const
 }
 
 
+// Returns angle between atoms in degrees...
+//
+//  D-H ... X
+//   \---/
 double SimpleAtom::angle(const SimpleAtom& s) const {
   loos::GCoord left, middle, right;
   
@@ -85,9 +91,6 @@ double SimpleAtom::angle(const SimpleAtom& s) const {
 
 
 
-// Convert an AtomicGroup to a vector of SimpleAtoms.  We need the
-// parent group (i.e. the system) in order to find atoms bound to
-// atoms in the model group
 
 
 std::vector<SimpleAtom> SimpleAtom::processSelection(const std::string& selection, const loos::AtomicGroup& system, const bool use_periodicity) {

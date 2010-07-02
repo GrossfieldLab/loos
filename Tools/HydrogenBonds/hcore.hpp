@@ -69,8 +69,7 @@ struct ErrorWithAtom : public std::exception {
 class SimpleAtom {
 public:
   SimpleAtom(const loos::pAtom& a) : atom(a), isHydrogen(false), usePeriodicity(false) { }
-  SimpleAtom(const loos::pAtom& a, const loos::SharedPeriodicBox& b) : atom(a), isHydrogen(false), usePeriodicity(true), sbox(b) { }
-  SimpleAtom(const loos::pAtom& a, const loos::SharedPeriodicBox& b, const bool c) : atom(a), isHydrogen(false), usePeriodicity(c), sbox(b) { }
+  SimpleAtom(const loos::pAtom& a, const loos::SharedPeriodicBox& b, const bool c = true) : atom(a), isHydrogen(false), usePeriodicity(c), sbox(b) { }
 
   double distance2(const SimpleAtom& s) const;
   double angle(const SimpleAtom& s) const;
@@ -88,25 +87,40 @@ public:
   static void maxDeviation(const double d)  { deviation = d; }
 
 
+  // Tests whether two SimpleAtoms have a potential hydrogen-bond
+  // between them.
   bool hydrogenBond(const SimpleAtom& other) const;
+
+  // Returns an AtomicGroup of all atoms that may have hydrogen-bonds
+  // to the current SimpleAtom
   loos::AtomicGroup findHydrogenBonds(const std::vector<SimpleAtom>& group, const bool findFirstOnly = true);
   
+  // Returns a matrix where the rows represent time (frames in the
+  // trajectory) and columns represent acceptors (i.e. the passed
+  // group).  Wherever there is a hydrogen-bond, U_ij is 1, and 0
+  // otherwise.
+  //
+  // maxt determines the maximum time (frame #) that is considered.
   BondMatrix findHydrogenBondsMatrix(const std::vector<SimpleAtom>& group, loos::pTraj& traj, loos::AtomicGroup& model, const uint maxt) const;
   BondMatrix findHydrogenBondsMatrix(const std::vector<SimpleAtom>& group, loos::pTraj& traj, loos::AtomicGroup& model) const {
     return(findHydrogenBondsMatrix(group, traj, model, traj->nframes()));
   }
 
 
+  // Converts an AtomicGroup into a vector of SimpleAtom's based on
+  // the passed selection.  The use_periodicity is applied to all
+  // created SimpleAtoms...they also shared the PeriodicBox with the
+  // passed AtomicGroup.
+
   static std::vector<SimpleAtom> processSelection(const std::string& selection, const loos::AtomicGroup& system, const bool use_periodicity = false);
-
-
-  
-
 
   friend std::ostream& operator<<(std::ostream& os, const SimpleAtom& s) {
     os << "<SimpleAtom>\n";
     os << *(s.atom) << std::endl;
     os << "<isHydrogen " << s.isHydrogen << "/>\n";
+    os << "<usePeriodicity " << s.usePeriodicity << "/>\n";
+    if (s.usePeriodicity)
+      os << "<PeriodicBox>" << s.sbox.box() << "</PeriodicBox>\n";
     if (s.attached_to != 0)
       os << *(s.attached_to) << std::endl;
     os << "</SimpleAtom>";
@@ -130,15 +144,10 @@ private:
 
 
 
+// Typedefs to make life easier in the tools...
 
 typedef SimpleAtom    SAtom;
 typedef std::vector<SAtom> SAGroup;
-
-
-
-extern BondMatrix findHydrogenBonds(const SAtom& donor, const SAGroup& acceptors, loos::pTraj& traj, loos::AtomicGroup& model, const uint maxt);
-
-
 
 
 #endif
