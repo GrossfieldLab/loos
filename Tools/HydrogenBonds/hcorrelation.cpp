@@ -46,7 +46,6 @@ typedef vector<double>     vecDouble;
 typedef vector<vecDouble>    vecvecDouble;
 typedef vector<string>     vString;
 
-
 // ---------------  GLOBALS
 
 double length_low, length_high;
@@ -217,7 +216,6 @@ int main(int argc, char *argv[]) {
   
   
   SAGroup donors = SimpleAtom::processSelection(donor_selection, model, use_periodicity);
-
   SAGroup acceptors = SimpleAtom::processSelection(acceptor_selection, model, use_periodicity);
 
 
@@ -234,17 +232,37 @@ int main(int argc, char *argv[]) {
   for (vString::const_iterator ci = traj_names.begin(); ci != traj_names.end(); ++ci) {
     cerr << "Processing " << *ci << endl;
     pTraj traj = createTrajectory(*ci, model);
+    
+    for (SAGroup::iterator j = donors.begin(); j != donors.end(); ++j) {
+      BondMatrix bonds = j->findHydrogenBondsMatrix(acceptors, traj, model);
+      
+      for (uint i=0; i<bonds.cols(); ++i) {
+        bool found = false;
+        for (uint j=0; j<bonds.rows(); ++j)
+          if (bonds(j, i) != 0) { 
+            found = true;
+            break;
+          }
 
-    for (SAGroup::const_iterator i = donors.begin(); i != donors.end(); ++i) {
-      BondMatrix bonds = (*i).findHydrogenBondsMatrix(acceptors, traj, model, maxrows);
-      vecvecDouble corrtmp = extractCorrelations(bonds);
-      copy(corrtmp.begin(), corrtmp.end(), corr_appender);
+        if (found) {
+          TimeSeries<double> ts;
+          for (uint j=0; j<bonds.rows(); ++j)
+            ts.push_back(bonds(j, i));
+          TimeSeries<double> tcorr = ts.correl(maxrows);
+          vecDouble vtmp;
+          copy(tcorr.begin(), tcorr.end(), back_inserter(vtmp));
+          correlations.push_back(vtmp);
+        }
+
+      }
+
     }
+
   }
 
 
 
-  cerr << boost::format("Found %d correlations.\n") % correlations.size();
+  cerr << boost::format("Found %d time-correlations.\n") % correlations.size();
 
   vecDouble avg = average(correlations);
   vecDouble std = stddev(correlations, avg);
