@@ -55,6 +55,7 @@ string donor_selection, acceptor_selection;
 string model_name;
 vString traj_names;
 uint maxrows;
+uint skip;
 
 // ---------------
 
@@ -73,7 +74,8 @@ void parseArgs(int argc, char *argv[]) {
       ("bhi,D", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
       ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
       ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
-      ("clip,c", po::value<uint>(&maxrows)->default_value(0), "Clip size of trajectories to this (0 = auto-size)");
+      ("clip,c", po::value<uint>(&maxrows)->default_value(0), "Clip size of trajectories to this (0 = auto-size)")
+      ("skip,s", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of each trajectory");
 
 
     po::options_description hidden("Hidden options");
@@ -111,42 +113,6 @@ void parseArgs(int argc, char *argv[]) {
 
 }
 
-
-
-
-vecvecDouble extractCorrelations(const BondMatrix& M) {
-  vecvecDouble correlations;
-
-  uint m = M.rows();
-  uint n = M.cols();
-
-  for (uint i=0; i<n; ++i) {
-    bool is_there_anybody_out_there = false;
-    
-    for (uint j=0; j<m; ++j)
-      if (M(j,i)) {
-        is_there_anybody_out_there = true;
-        break;
-      }
-
-    if (!is_there_anybody_out_there)
-      continue;
-
-    vecDouble v;
-    for (uint j=0; j<m; ++j)
-      v.push_back(M(j, i));
-
-    TimeSeries<double> ts(v);
-
-    TimeSeries<double> tc = ts.correl(m/2);
-    vecDouble u;
-    for (uint j=0; j<tc.size(); ++j)
-      u.push_back(tc[j]);
-    correlations.push_back(u);
-  }
-
-  return(correlations);
-}
 
 
 vecDouble average(const vecvecDouble& A) {
@@ -234,6 +200,9 @@ int main(int argc, char *argv[]) {
     pTraj traj = createTrajectory(*ci, model);
     
     for (SAGroup::iterator j = donors.begin(); j != donors.end(); ++j) {
+      if (skip > 0)
+        traj->readFrame(skip-1);
+
       BondMatrix bonds = j->findHydrogenBondsMatrix(acceptors, traj, model);
       
       for (uint i=0; i<bonds.cols(); ++i) {
