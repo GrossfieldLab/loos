@@ -155,6 +155,15 @@ loos::AtomicGroup SimpleAtom::findHydrogenBonds(const std::vector<SimpleAtom>& g
   return(results);
 }
 
+std::vector<uint> SimpleAtom::findHydrogenBondsVector(const std::vector<SimpleAtom>& group) {
+  std::vector<uint> results;
+
+  for (SAGroup::const_iterator i = group.begin(); i != group.end(); ++i)
+    results.push_back(hydrogenBond(*i));
+
+  return(results);
+}
+
 
 
 BondMatrix SimpleAtom::findHydrogenBondsMatrix(const std::vector<SimpleAtom>& group, loos::pTraj& traj, loos::AtomicGroup& model, const uint maxt) const {

@@ -94,6 +94,8 @@ public:
   // Returns an AtomicGroup of all atoms that may have hydrogen-bonds
   // to the current SimpleAtom
   loos::AtomicGroup findHydrogenBonds(const std::vector<SimpleAtom>& group, const bool findFirstOnly = true);
+
+  std::vector<uint> findHydrogenBondsVector(const std::vector<SimpleAtom>& group);
   
   // Returns a matrix where the rows represent time (frames in the
   // trajectory) and columns represent acceptors (i.e. the passed
