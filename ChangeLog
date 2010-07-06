@@ -1,7 +1,25 @@
+2010-07-06    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for some STL algorithms with TimeSeries
+	(i.e. begin, end, and push_back)
+	* Added a set of hydrogen-bonding analysis tools in
+	Tools/HydrogenBonds
+
+2010-06-22    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for accesing the shared periodic box contained in
+	an AtomicGroup.
+
+
 2010-06-21    <alan@membrane.biophysics.rochester.edu>
 	* Changed order_params to handle both 1- and 3-residue per lipid
 	  formats. Verified works for new and old CHARMM parameters.
+	
+2010-06-11    <tromo@spade.biophysics.rochester.edu>
 
+	* Fixed library link order for linux.  Will now correctly link
+	against ATLAS first, then LAPACK...
+	
 2010-06-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::perturbCoords() where the directions
