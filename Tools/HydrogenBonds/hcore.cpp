@@ -40,7 +40,7 @@ double SimpleAtom::deviation = 20.0;
 
 // Reports distance^2 between hydrogen and heavy atom
 // D-H ... X
-//     ^^^ 
+//   |-----|
 double SimpleAtom::distance2(const SimpleAtom& s) const
 {
   double d;
@@ -92,6 +92,8 @@ double SimpleAtom::angle(const SimpleAtom& s) const {
 
 
 
+// Converts a selection into a vector of SimpleAtoms.  All new
+// SimpleAtom's get assigned the use_periodicity flag
 
 std::vector<SimpleAtom> SimpleAtom::processSelection(const std::string& selection, const loos::AtomicGroup& system, const bool use_periodicity) {
   std::vector<SimpleAtom> processed;
@@ -128,6 +130,9 @@ std::vector<SimpleAtom> SimpleAtom::processSelection(const std::string& selectio
 
 
 
+
+// Check for a hdyrogen bond between two SimpleAtom's
+
 bool SimpleAtom::hydrogenBond(const SAtom& o) const {
   double dist = distance2(o);
   double angl = angle(o);
@@ -139,6 +144,11 @@ bool SimpleAtom::hydrogenBond(const SAtom& o) const {
 }
 
 
+
+// Returns an AtomicGroup containing the atoms that are hydrogen
+// bonded to self.  If findFirstOnly is true, than the first hydrogen
+// bond found causes the function to return...  (i.e. it may be a
+// small optimization in performance)
 
 loos::AtomicGroup SimpleAtom::findHydrogenBonds(const std::vector<SimpleAtom>& group, const bool findFirstOnly) {
   loos::AtomicGroup results;
@@ -155,6 +165,11 @@ loos::AtomicGroup SimpleAtom::findHydrogenBonds(const std::vector<SimpleAtom>& g
   return(results);
 }
 
+
+
+// Returns a vector of flags indicating which SimpleAtoms form a
+// hydrogen bond to self.
+
 std::vector<uint> SimpleAtom::findHydrogenBondsVector(const std::vector<SimpleAtom>& group) {
   std::vector<uint> results;
 
@@ -165,6 +180,8 @@ std::vector<uint> SimpleAtom::findHydrogenBondsVector(const std::vector<SimpleAt
 }
 
 
+// Returns a matrix of flags indicating which SimpleAtoms form a
+// hydrogen bond to self of a trajectory
 
 BondMatrix SimpleAtom::findHydrogenBondsMatrix(const std::vector<SimpleAtom>& group, loos::pTraj& traj, loos::AtomicGroup& model, const uint maxt) const {
 
