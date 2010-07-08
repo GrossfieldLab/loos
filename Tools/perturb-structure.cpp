@@ -30,27 +30,80 @@
 
 
 #include <loos.hpp>
-
+#include <boost/format.hpp>
+#include <boost/program_options.hpp>
 
 
 using namespace std;
 using namespace loos;
+namespace po = boost::program_options;
 
 
-int main(int argc, char *argv[]) {
-  if (argc != 4) {
-    cout << "Usage- perturb_structure magnitude [selection|all] structure-file >output.pdb\n";
+uint seed;
+string selection;
+string model_name;
+double magnitude;
+
+
+
+void parseArgs(int argc, char *argv[]) {
+  
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("selection,s", po::value<string>(&selection)->default_value("all"), "Selection to perturb")
+      ("seed,S", po::value<uint>(&seed)->default_value(0l), "Random number seed (0 = use current time)");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("magnitude", po::value<double>(&magnitude), "Magnitude");
+
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("magnitude", 1);
+    p.add("model", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+      cout << "Usage- " << argv[0] << " [options] magnitude model >output.pdb\n";
+      cout << generic;
+      exit(0);
+    }
+
+    if (seed == 0)
+      randomSeedRNG();
+    else {
+      base_generator_type& rng = rng_singleton();
+      rng.seed(seed);
+    }
+      
+
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
 
-  
+}
+
+
+
+
+
+int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
+  parseArgs(argc, argv);
 
-  int k = 1;
-  double magnitude = strtod(argv[k++], 0);
-  string selection(argv[k++]);
-  AtomicGroup model = createSystem(argv[k++]);
-
+  AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
 
   subset.perturbCoords(magnitude);
