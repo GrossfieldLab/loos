@@ -27,7 +27,7 @@ Import('env')
 clone = env.Clone()
 clone.Prepend(LIBS = ['loos'])
 
-apps = 'gnm enmovie flucc2b psf-masses heavy-ca'
+apps = 'gnm enmovie flucc2b psf-masses heavy-ca eigenflucc'
 install_apps = apps + ' vsa anm'
 
 list = []
