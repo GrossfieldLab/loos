@@ -141,8 +141,9 @@ int main(int argc, char *argv[]) {
   DoubleMatrix U = loos::Math::MMMultiply(VS,V,false,true);
 
   vector<double> B;
+  double prefactor = 8.0 *  M_PI * M_PI / 3.0;
   for (uint i=0; i<m; i += 3) {
-    double b = 8.0 * M_PI * M_PI * (U(i,i) + U(i+1, i+1) + U(i+2, i+2)) / 3.0;
+    double b = prefactor * (U(i,i) + U(i+1, i+1) + U(i+2, i+2));
     B.push_back(b);
     cout << boost::format("%-8d %g\n") % (i/3) % b;
   }
@@ -151,7 +152,7 @@ int main(int argc, char *argv[]) {
     AtomicGroup model = createSystem(pdb_name);
     AtomicGroup subset = selectAtoms(model, selection);
 
-    if (subset.size() != B.size()) {
+    if ((unsigned int)subset.size() != B.size()) {
       cerr << boost::format("Error- selection has %d atoms, but %d were expected.\n") % subset.size() % B.size();
       exit(-10);
     }
