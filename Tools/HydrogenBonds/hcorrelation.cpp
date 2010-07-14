@@ -54,7 +54,7 @@ bool use_periodicity;
 string donor_selection, acceptor_selection;
 string model_name;
 vString traj_names;
-uint maxrows;
+uint maxtime;
 uint skip;
 
 // ---------------
@@ -74,7 +74,7 @@ void parseArgs(int argc, char *argv[]) {
       ("bhi,D", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
       ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
       ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
-      ("clip,c", po::value<uint>(&maxrows)->default_value(0), "Clip size of trajectories to this (0 = auto-size)")
+      ("maxtime,m", po::value<uint>(&maxtime)->default_value(0), "Max time for correlation (0 = auto-size)")
       ("skip,s", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of each trajectory");
 
 
@@ -189,10 +189,10 @@ int main(int argc, char *argv[]) {
   back_insert_iterator<vecvecDouble> corr_appender(correlations);
 
 
-  if (maxrows == 0)
-    maxrows = findMinSize(model, traj_names);
+  if (maxtime == 0)
+    maxtime = findMinSize(model, traj_names) / 2;
 
-  cerr << boost::format("Using %d as row cutoff.\n") % maxrows;
+  cerr << boost::format("Using %d as max time for correlation.\n") % maxtime;
 
 
   for (vString::const_iterator ci = traj_names.begin(); ci != traj_names.end(); ++ci) {
@@ -217,7 +217,7 @@ int main(int argc, char *argv[]) {
           TimeSeries<double> ts;
           for (uint j=0; j<bonds.rows(); ++j)
             ts.push_back(bonds(j, i));
-          TimeSeries<double> tcorr = ts.correl(maxrows);
+          TimeSeries<double> tcorr = ts.correl(maxtime);
           vecDouble vtmp;
           copy(tcorr.begin(), tcorr.end(), back_inserter(vtmp));
           correlations.push_back(vtmp);
