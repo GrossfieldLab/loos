@@ -22,11 +22,13 @@
 
 
 #include <sys/types.h>
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
+#include <cstring>
 #include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
 #include <pwd.h>
+#include <glob.h>
 
 #include <algorithm>
 #include <string>
@@ -44,6 +46,33 @@
 namespace loos {
 
   
+  // Should this throw rather than exit?
+  namespace {
+    int globError(const char* p, int errno) {
+      char *msg = strerror(errno);
+      std::cerr << msg << " - '" << p << "'" << std::endl;
+      exit(-errno);
+    }
+  }
+
+  std::vector<std::string> globFilenames(const std::string& pattern) {
+    glob_t buf;
+    buf.gl_offs = 0;
+
+    int i = glob(pattern.c_str(), 0, &globError, &buf);
+    if (i != 0) {
+      std::cerr << "Error code " << i << " from globbing '" << pattern << "'" << std::endl;
+      exit(-255);
+    }
+
+    std::vector<std::string> names;
+    for (uint j = 0; j<buf.gl_pathc; ++j)
+      names.push_back(std::string( (buf.gl_pathv)[i] ));
+
+    return(names);
+  }
+
+
   std::string findBaseName(const std::string& s) {
     std::string result;
 

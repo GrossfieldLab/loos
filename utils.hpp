@@ -51,6 +51,9 @@
 //! Namespace for most things not already encapsulated within a class.
 namespace loos {
 
+  //! Given a pattern, glob the filenames like the shell would...
+  std::vector<std::string> globFilenames(const std::string& pattern);
+
   //! Pull off the file name extension (if present)
   std::string findBaseName(const std::string&);
 
