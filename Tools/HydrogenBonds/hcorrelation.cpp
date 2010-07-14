@@ -51,6 +51,7 @@ typedef vector<string>     vString;
 double length_low, length_high;
 double max_angle;
 bool use_periodicity;
+bool use_stderr;
 string donor_selection, acceptor_selection;
 string model_name;
 vString traj_names;
@@ -75,7 +76,8 @@ void parseArgs(int argc, char *argv[]) {
       ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
       ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
       ("maxtime,m", po::value<uint>(&maxtime)->default_value(0), "Max time for correlation (0 = auto-size)")
-      ("skip,s", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of each trajectory");
+      ("skip,s", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of each trajectory")
+      ("stderr,S", po::value<bool>(&use_stderr)->default_value(0), "Report standard error rather than standard deviation");
 
 
     po::options_description hidden("Hidden options");
@@ -235,8 +237,16 @@ int main(int argc, char *argv[]) {
 
   vecDouble avg = average(correlations);
   vecDouble std = stddev(correlations, avg);
+  double scaling = 1.0;
+  if (use_stderr)
+    scaling = sqrt(correlations.size());
+
+  cout << "# " << hdr << endl;
+  cout << "# Found " << correlations.size() << " time-correlations." << endl;
+  cout << "# Using " << ( use_stderr ? "stderr" : "stddev") << endl;
+
   for (uint j=0; j<avg.size(); ++j)
-    cout << j << "\t" << avg[j] << "\t" << std[j] << endl;
+    cout << j << "\t" << avg[j] << "\t" << (std[j] / scaling) << endl;
   
 }
 
