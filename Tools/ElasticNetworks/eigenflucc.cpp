@@ -91,7 +91,7 @@ void parseArgs(int argc, char *argv[]) {
     po::notify(vm);
 
     if (vm.count("help")) {
-      cout << "Usage- " << argv[0] << " [options] eigenvectors eigenvalues\n";
+      cout << "Usage- " << argv[0] << " [options] eigenvalues eigenvectors\n";
       cout << generic;
       exit(0);
     }
