@@ -109,7 +109,7 @@ void parseArgs(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help")) {
+    if (vm.count("help") || !(vm.count("donor") && vm.count("model") && vm.count("trajs"))) {
       cout << "Usage- " << argv[0] << " [options] donor model traj [traj...]\n";
       cout << generic;
       exit(0);
