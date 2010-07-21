@@ -1,3 +1,39 @@
+/*
+  coverlap
+
+  (c) 2009 Tod D. Romo, Grossfield Lab
+           Department of Biochemistry
+           University of Rochster School of Medicine and Dentistry
+
+
+  Covariance overlap between ENM and/or PCA results (i.e. eigenpairs)
+*/
+
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009 Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+
+
 #include <loos.hpp>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
@@ -12,9 +48,7 @@ bool left_is_enm;
 bool right_is_enm;
 bool square_left;
 bool square_right;
-bool scale_to_svals;
-bool scale_to_sum;
-bool squares;
+bool scale_power;
 uint number_of_modes;
 double lscale;
 double rscale;
@@ -34,9 +68,7 @@ void parseArgs(int argc, char *argv[]) {
       ("right_enm,E", po::value<bool>(&right_is_enm)->default_value(false), "Right side contains ENM results")
       ("square_left,s", po::value<bool>(&square_left)->default_value(false), "Square left side (assumes PCA)")
       ("square_right,S", po::value<bool>(&square_right)->default_value(false), "Square right side (assumes PCA)")
-      ("scale,r", po::value<bool>(&scale_to_svals)->default_value(false), "Scale ENM eigenvalues (right) to PCA svals (left)")
-      ("sum,R", po::value<bool>(&scale_to_sum)->default_value(false), "Scale ENM eigenvalues (right) to PCA svals (left) using sum")
-      ("squares,q", po::value<bool>(&squares)->default_value(false), "Use square in sum")
+      ("power,p", po::value<bool>(&scale_power)->default_value(false), "Scale the eigenvalue power of the right side to the left")
       ("modes,m", po::value<uint>(&number_of_modes)->default_value(0), "Number of modes to compare...  0 = all")
       ("left_scale,k", po::value<double>(&lscale)->default_value(1.0), "Scale left eigenvalues by this constant")
       ("right_scale,K", po::value<double>(&rscale)->default_value(1.0), "Scale right eigenvalues by this constant")
@@ -110,32 +142,14 @@ RMDuple firstColumns(const RealMatrix& S, const RealMatrix& U, const uint nmodes
 }
 
 
-RealMatrix scaleSvals(const RealMatrix& A, const RealMatrix& B) {
-  RealMatrix E(A.rows(), 1);
 
-  double mean = 0.0;
-  for (uint j=0; j<A.rows(); ++j)
-    mean += B[j] / A[j];
-
-  mean /= A.rows();
-  cerr << "Scale factor " << 1/mean << endl;
-  for (uint j=0; j<A.rows(); ++j)
-    E[j] = B[j] / mean;
-
-  return(E);
-}
-
-
-RealMatrix scaleSquares(const RealMatrix& A, const RealMatrix& B) {
+RealMatrix scalePower(const RealMatrix& A, const RealMatrix& B) {
 
   double sumB = 0.0;
   double sumA = 0.0; 
   for (uint j=0; j<B.rows(); ++j) {
     sumB += B[j];
-    if (squares)
-      sumA += A[j] * A[j];
-    else
-      sumA += A[j];
+    sumA += A[j];
   }
 
   double scale = sumA / sumB;
@@ -226,17 +240,15 @@ int main(int argc, char *argv[]) {
     lSS[j] *= lscale;
   }
 
-  if (scale_to_svals)
-    rSS = scaleSvals(lSS, rSS);
-  else if (scale_to_sum)
-    rSS = scaleSquares(lSS, rSS);
+  if (scale_power)
+    rSS = scalePower(lSS, rSS);
 
   double overlap = covarianceOverlap(lSS, lUU, rSS, rUU);
   double subover = subspaceOverlap(lUU, rUU, subspace_size);
 
-  cout << "Modes: " << number_of_modes << endl;
+  cout << "Covariance Modes: " << number_of_modes << endl;
   cout << "Covariance overlap: " << overlap << endl;
-  cout << "Modes: " << subspace_size << endl;
+  cout << "Subspace Modes: " << subspace_size << endl;
   cout << "Subspace overlap: " << subover << endl;
 
 }
