@@ -48,8 +48,10 @@ namespace po = boost::program_options;
 // --------------- GLOBALS
 
 bool verbose;
+bool pca_input;
 vector<uint> modes;
 string eigvals_name, eigvecs_name, pdb_name;
+string out_name;
 double scale;
 string selection;
 
@@ -64,9 +66,11 @@ void parseArgs(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("verbose,v", po::value<bool>(&verbose)->default_value(false), "Verbose output")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection used to make the ENM (only when altering a PDB)")
-      ("pdb,p", po::value<string>(&pdb_name), "Alter the B-factors in a PDB, writing to stderr")
+      ("pdb,p", po::value<string>(&pdb_name), "Alter the B-factors in a PDB")
+      ("outpdb,o", po::value<string>(&out_name), "Filename to output PDB to")
       ("modes,m", po::value< vector<string> >(), "Modes to use (default is all)")
-      ("scale,S", po::value<double>(&scale)->default_value(1.0), "Scaling factor to apply to eigenvalues");
+      ("scale,S", po::value<double>(&scale)->default_value(1.0), "Scaling factor to apply to eigenvalues")
+      ("pca,P", po::value<bool>(&pca_input)->default_value(false), "Eigenpairs come from PCA, not ENM");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -96,6 +100,11 @@ void parseArgs(int argc, char *argv[]) {
       vector<string> mode_list = vm["modes"].as< vector<string> >();
       modes = parseRangeList<uint>(mode_list);
     }
+
+    if (!pdb_name.empty())
+      if (out_name.empty())
+        out_name = findBaseName(pdb_name) + "-ef.pdb";
+
 
   }
   catch(exception& e) {
@@ -131,15 +140,21 @@ int main(int argc, char *argv[]) {
     for (uint j=0; j<m; ++j)
       V(j, i) = eigvecs(j, modes[i]);
 
+  // Make a copy and scale by the appropriate eigenvalue,
+  // remembering that eigenvalues are inverted for ENM,
+  // or squaring and not inverting in the case of PCA
   DoubleMatrix VS = V.copy();
-   for (uint i=0; i<n; ++i) {
-      double s = scale / eigvals[modes[i]];
-      for (uint j=0; j<m; ++j)
-        VS(j, i) *= s;
-   }
-
+  for (uint i=0; i<n; ++i) {
+    double e = eigvals[modes[i]];
+    double s = (pca_input) ? (scale * e * e): (scale / e);
+    for (uint j=0; j<m; ++j)
+      VS(j, i) *= s;
+  }
+  
+  // U = Covariance matrix
   DoubleMatrix U = loos::Math::MMMultiply(VS,V,false,true);
 
+  // B-factors come from trace of diagonal 3x3 superblocks
   vector<double> B;
   double prefactor = 8.0 *  M_PI * M_PI / 3.0;
   for (uint i=0; i<m; i += 3) {
@@ -162,7 +177,8 @@ int main(int argc, char *argv[]) {
 
     PDB pdb = PDB::fromAtomicGroup(model);
     pdb.remarks().add(hdr);
-    cerr << pdb;
+    ofstream ofs(out_name.c_str());
+    ofs << pdb;
   }
 
 }
