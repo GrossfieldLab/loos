@@ -57,12 +57,53 @@ uint subspace_size;
 uint skip;
 
 
+void fullHelp() {
+  cout << "\n"
+    "* More help *\n"
+    "\n"
+    "Think of coverlap as an '=' operator.  It compares a left and a right side,\n"
+    "which are actually eigenpairs (eigenvalue and eigenvector files).  Since\n"
+    "ENM eigenpairs are handled differently from PCA eigenpairs, you must specify\n"
+    "which sides are ENM results.  Additionally, PCA eigenpairs can be real eigenpairs\n"
+    "or they can come from an SVD, in which case the 'eigenvalues' must be squared.\n"
+    "This is an additional command-line option.  Finally, when comparing ENM and PCA\n"
+    "you will probably want to scale the eigenvalues such that the total power on each\n"
+    "side are comparable.  The --power option does this.\n"
+    "\n"
+    " * Examples *\n"
+    "\n"
+    " + coverlap -e1 -S1 -p1 -u50 anm_s.asc anm_U.asc pca_s.asc pca_U.asc\n"
+    "   This computes the covariance overlap between an ANM result (the left side)\n"
+    "   and a PCA (the right side) that came from an SVD.  On the right side,\n"
+    "   the singular values are squared (to make them eigenvalues) and they are\n"
+    "   scaled to match the ANM eigenvalues.  Finally, a subspace overlap using\n"
+    "   the first 50 modes is also computed.\n"
+    "\n"
+    " + coverlap -e1 -p1 -u50 anm_s.asc anm_U.asc pca_s.asc pca_U.asc\n"
+    "   The same as the above example, but here the PCA came from an eigendecomp,\n"
+    "   so the eigenvalues used are real eigenvalues and do not need to be squared.\n"
+    "\n"
+    " + coverlap -e1 -E1 -u25 anm_s.asc anm_U.asc vsa_s.asc vsa_U.asc\n"
+    "   This computes the covariance overlap between an ANM and a VSA model.\n"
+    "   No scaling is applied to either side.  The subspace overlap using the\n"
+    "   first 25 modes is also computed.\n"
+    "\n"
+
+    " + coverlap -e1 -E1 -u25 -k 1.234 anm_s.asc anm_U.asc vsa_s.asc vsa_U.asc\n"
+    "   The same as the above example, but here 1.234 is used to scale the\n"
+    "   ANM eigenvalues.\n"
+    "\n";
+}
+
+
+
 void parseArgs(int argc, char *argv[]) {
 
   try {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("fullhelp", "Get extended help")
       ("skip,i", po::value<uint>(&skip)->default_value(6), "# of eigenvalues to skip for ENM")
       ("left_enm,e", po::value<bool>(&left_is_enm)->default_value(false), "Left side contains ENM results")
       ("right_enm,E", po::value<bool>(&right_is_enm)->default_value(false), "Right side contains ENM results")
@@ -97,9 +138,11 @@ void parseArgs(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("ls") && vm.count("lu") && vm.count("rs") && vm.count("ru"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("ls") && vm.count("lu") && vm.count("rs") && vm.count("ru"))) {
       cerr << "Usage- " << argv[0] << " [options] ls lU rs rU >output\n";
       cerr << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(-1);
     }
 
