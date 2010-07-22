@@ -38,6 +38,7 @@
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
+#include <exceptions.hpp>
 
 
 
@@ -229,6 +230,8 @@ namespace loos {
     double S[3], U[9], Vt[9];
   
     dgesvd_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
+    if (info != 0)
+      throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
 
     // Adjust U (if necessary)
     if (det < 0.0) {
