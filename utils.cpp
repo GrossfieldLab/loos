@@ -45,21 +45,23 @@
 
 namespace loos {
 
-  
-  // Should this throw rather than exit?
   namespace {
+    // Should this throw rather than exit?
     int globError(const char* p, int errno) {
       char *msg = strerror(errno);
       std::cerr << msg << " - '" << p << "'" << std::endl;
       exit(-errno);
     }
-  }
+  };
 
   std::vector<std::string> globFilenames(const std::string& pattern) {
     glob_t buf;
     buf.gl_offs = 0;
 
-    int i = glob(pattern.c_str(), 0, &globError, &buf);
+    const char *p = pattern.c_str();
+    // Temporary fix for OS X issue in globError conversion...
+    //    int i = glob(p, 0, &globError, &buf);
+    int i = glob(p, 0, 0, &buf);
     if (i != 0) {
       std::cerr << "Error code " << i << " from globbing '" << pattern << "'" << std::endl;
       exit(-255);
@@ -68,6 +70,8 @@ namespace loos {
     std::vector<std::string> names;
     for (uint j = 0; j<buf.gl_pathc; ++j)
       names.push_back(std::string( (buf.gl_pathv)[i] ));
+
+    globfree(&buf);
 
     return(names);
   }
