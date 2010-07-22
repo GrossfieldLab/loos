@@ -47,10 +47,12 @@ namespace loos {
 
   namespace {
     // Should this throw rather than exit?
-    int globError(const char* p, int errno) {
-      char *msg = strerror(errno);
+    // Note that glob() expects this to return an int, but I think
+    // it's better to abort with an error...
+    int globError(const char* p, int errnum) {
+      char *msg = strerror(errnum);
       std::cerr << msg << " - '" << p << "'" << std::endl;
-      exit(-errno);
+      exit(-errnum);
     }
   };
 
@@ -59,9 +61,7 @@ namespace loos {
     buf.gl_offs = 0;
 
     const char *p = pattern.c_str();
-    // Temporary fix for OS X issue in globError conversion...
-    //    int i = glob(p, 0, &globError, &buf);
-    int i = glob(p, 0, 0, &buf);
+    int i = glob(p, 0, &globError, &buf);
     if (i != 0) {
       std::cerr << "Error code " << i << " from globbing '" << pattern << "'" << std::endl;
       exit(-255);
