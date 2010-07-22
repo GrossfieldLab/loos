@@ -60,8 +60,7 @@ namespace loos {
     glob_t buf;
     buf.gl_offs = 0;
 
-    const char *p = pattern.c_str();
-    int i = glob(p, 0, &globError, &buf);
+    int i = glob(pattern.c_str(), 0, &globError, &buf);
     if (i != 0) {
       std::cerr << "Error code " << i << " from globbing '" << pattern << "'" << std::endl;
       exit(-255);
