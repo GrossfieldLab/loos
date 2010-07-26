@@ -39,15 +39,17 @@ using namespace loos;
 
 #if defined(__linux__)
 extern "C" {
-  void sgesvd_(char*, char*, int*, int*, float*, int*, float*, float*, int*, float*, int*, float*, int*, int*);
+  void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);
 }
 #endif
 
-typedef float svdreal;
+
+typedef double svdreal;
+#define SVDFUNC  dgesvd_
+
 
 typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
 
-#define SVDFUNC  sgesvd_
 
 string model_name, traj_name;
 string alignment_string, svd_string;
