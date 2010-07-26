@@ -1,3 +1,35 @@
+/*
+  big-svd
+
+  Compute the SVD (PCA) of a large system/long trajectory.  This tool
+  should use less memory than the svd tool does.
+*/
+
+
+
+/*
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include <loos.hpp>
 #include <boost/format.hpp>
 
@@ -17,7 +49,7 @@ RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp) {
   for (uint i=0; i<n; ++i) {
     traj->readFrame(i);
     traj->updateGroupCoords(grp);
-    for (uint j=0; j<grp.size(); ++j) {
+    for (uint j=0; j<static_cast<uint>(grp.size()); ++j) {
       GCoord c = grp[j]->coords();
       A(3*j, i) = c.x();
       avg[3*j] += c.x();
@@ -41,26 +73,10 @@ RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp) {
 }
 
 
-// Don't want to bother with an in-place transpose...just eat up memory instead!
-
-RealMatrix transpose(const RealMatrix& A) {
-  uint m = A.rows();
-  uint n = A.cols();
-
-  RealMatrix At(A.cols(), A.rows());
-  for (uint j=0; j<m; ++j)
-    for (uint i=0; i<n; ++i)
-      At(i,j) = A(j, i);
-
-  return(At);
-}
-
-
-
 
 int main(int argc, char *argv[]) {
   if (argc == 1) {
-    cerr << "Usage- bigsvd selection model traj prefix\n";
+    cerr << "Usage- big-svd selection model traj prefix\n";
     exit(0);
   }
 
@@ -131,10 +147,8 @@ int main(int argc, char *argv[]) {
 
   cerr << "Multiplying to get RSVs...\n";
   RealMatrix Vt = MMMultiply(C, A, true, false);
-  RealMatrix V = transpose(Vt);
   cerr << "Done!\n";
-  Vt.reset();
   C.reset();
-  writeAsciiMatrix(prefix + "_V.asc", V, hdr, false);
+  writeAsciiMatrix(prefix + "_V.asc", Vt, hdr, true);
 
 }
