@@ -2,7 +2,8 @@
   big-svd
 
   Compute the SVD (PCA) of a large system/long trajectory.  This tool
-  should use less memory than the svd tool does.
+  will use less memory than the svd tool since it does not compute all
+  of the [unnecessary] right singular vectors.
 */
 
 
@@ -32,9 +33,11 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
+#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
+namespace po = boost::program_options;
 
 
 const double KB = 1024.0;
@@ -86,15 +89,82 @@ struct TrackStorage {
 
 
 
-RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp) {
+// --------------------------- GLOBALS
+
+vector<uint> indices;
+string traj_name;
+string model_name;
+string prefix;
+string selection;
+bool write_source_matrix;
+
+
+
+void parseArgs(int argc, char *argv[]) {
+  
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("range,r", po::value< vector<string> >(), "Range of frames from the trajectory to operate over")
+      ("svd,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection to calculate the SVD of")
+      ("source,S", po::value<bool>(&write_source_matrix)->default_value(false), "Write out the source data matrix")
+      ("prefix,p", po::value<string>(&prefix), "Output prefix");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value<string>(&traj_name), "Traj filename");
+
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
+      cout << "Usage- " << argv[0] << " [options] model traj output-prefix\n";
+      cout << generic;
+      exit(0);
+    }
+
+    if (vm.count("range")) {
+      vector<string> ranges = vm["range"].as< vector<string> >();
+      indices = parseRangeList<uint>(ranges);
+    }
+
+    if (vm.count("prefix"))
+      prefix = vm["prefix"].as<string>();
+    else
+      prefix = findBaseName(traj_name);
+
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
+    exit(-1);
+  }
+
+}
+
+
+
+
+RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp, const vector<uint>& indices) {
   uint m = grp.size() * 3;
-  uint n = traj->nframes();
+  uint n = indices.size();
 
   RealMatrix A(m, n);
   vector<double> avg(m, 0.0);
 
   for (uint i=0; i<n; ++i) {
-    traj->readFrame(i);
+    traj->readFrame(indices[i]);
     traj->updateGroupCoords(grp);
     for (uint j=0; j<static_cast<uint>(grp.size()); ++j) {
       GCoord c = grp[j]->coords();
@@ -122,32 +192,49 @@ RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp) {
 
 
 
+void writeMap(const string& fname, const AtomicGroup& grp) {
+  ofstream fout(fname.c_str());
+
+  if (!fout) {
+    cerr << "Unable to open " << fname << " for output.\n";
+    exit(-10);
+  }
+
+  pAtom pa;
+  AtomicGroup::Iterator iter(grp);
+  int i = 0;
+  while (pa = iter())
+    fout << i++ << "\t" << pa->id() << "\t" << pa->resid() << endl;
+
+}
+
+
+
 
 int main(int argc, char *argv[]) {
-  if (argc == 1) {
-    cerr << "Usage- big-svd selection model traj prefix\n";
-    exit(0);
-  }
+
+  string hdr = invocationHeader(argc, argv);
+  parseArgs(argc, argv);
 
   TrackStorage store;
 
-  string hdr = invocationHeader(argc, argv);
-  int k = 1;
-  string selection(argv[k++]);
-  string modelname(argv[k++]);
-  string trajname(argv[k++]);
-  string prefix(argv[k++]);
-
-  AtomicGroup model = createSystem(modelname);
+  AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
-  pTraj traj = createTrajectory(trajname, model);
+  pTraj traj = createTrajectory(traj_name, model);
+
+  writeMap(prefix + ".map", subset);
+
+  if (indices.empty())
+    for (uint i=0; i<traj->nframes(); ++i)
+      indices.push_back(i);
 
   // Build AA'
 
-  RealMatrix A = extractCoordinates(traj, subset);
+  RealMatrix A = extractCoordinates(traj, subset, indices);
   cerr << boost::format("Coordinate matrix is %d x %d\n") % A.rows() % A.cols();
   store.allocate(A.rows() * A.cols());
-  writeAsciiMatrix(prefix + "_A.asc", A, hdr);
+  if (write_source_matrix)
+    writeAsciiMatrix(prefix + "_A.asc", A, hdr);
 
 
   store.allocate(A.rows() * A.rows());
