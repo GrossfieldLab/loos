@@ -37,6 +37,53 @@ using namespace std;
 using namespace loos;
 
 
+const double KB = 1024.0;
+const double MB = 1024 * KB;
+const double GB = 1024 * MB;
+
+
+struct TrackStorage {
+  TrackStorage() : storage(0) { }
+  
+  void allocate(ulong n) {
+
+    n *= sizeof(float);
+    storage += n;
+    cerr << boost::format("Allocated %s for a total of %s memory\n")
+      % memory(n)
+      % memory(storage);
+  }
+
+  void free(const ulong n) {
+    storage -= n;
+  }
+
+
+  string memory(const ulong n) {
+    double val = static_cast<double>(n);
+    string units;
+
+    if (val >= GB) {
+      val /= GB;
+      units = "GB";
+    } else if (val >= MB) {
+      val /= MB;
+      units = "MB";
+    } else if (val >= KB) {
+      val /= KB;
+      units = "KB";
+    } else
+      units = "Bytes";
+
+    ostringstream oss;
+    oss << boost::format("%.2f %s") % val % units;
+    return(oss.str());
+  }
+
+  ulong storage;
+};
+
+
 
 
 RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp) {
@@ -74,12 +121,15 @@ RealMatrix extractCoordinates(pTraj& traj, AtomicGroup& grp) {
 
 
 
+
+
 int main(int argc, char *argv[]) {
   if (argc == 1) {
     cerr << "Usage- big-svd selection model traj prefix\n";
     exit(0);
   }
 
+  TrackStorage store;
 
   string hdr = invocationHeader(argc, argv);
   int k = 1;
@@ -88,7 +138,6 @@ int main(int argc, char *argv[]) {
   string trajname(argv[k++]);
   string prefix(argv[k++]);
 
-
   AtomicGroup model = createSystem(modelname);
   AtomicGroup subset = selectAtoms(model, selection);
   pTraj traj = createTrajectory(trajname, model);
@@ -96,13 +145,15 @@ int main(int argc, char *argv[]) {
   // Build AA'
 
   RealMatrix A = extractCoordinates(traj, subset);
+  cerr << boost::format("Coordinate matrix is %d x %d\n") % A.rows() % A.cols();
+  store.allocate(A.rows() * A.cols());
   writeAsciiMatrix(prefix + "_A.asc", A, hdr);
 
 
+  store.allocate(A.rows() * A.rows());
   cerr << "Multiplying transpose...\n";
   RealMatrix C = MMMultiply(A, A, false, true);
   cerr << "Done!\n";
-  writeAsciiMatrix(prefix + "_AA.asc", C, hdr);
 
   // Compute [U,D] = eig(C)
 
@@ -124,7 +175,7 @@ int main(int argc, char *argv[]) {
   }
    
   lwork = static_cast<f77int>(dummy);
-  cerr << boost::format("Allocating space %f MB\n") % (dummy / (1024.0 * 1024.0));
+  store.allocate(lwork);
   float *work = new float[lwork+1];
 
   cerr << "Calling ssyev for eigendecomp...\n";
@@ -144,11 +195,16 @@ int main(int argc, char *argv[]) {
 
   reverseRows(W);
   writeAsciiMatrix(prefix + "_s.asc", W, hdr);
+  W.reset();
 
+  store.free(W.rows() * W.cols());
+
+  store.allocate(A.cols() * A.rows());
   cerr << "Multiplying to get RSVs...\n";
   RealMatrix Vt = MMMultiply(C, A, true, false);
   cerr << "Done!\n";
   C.reset();
+  A.reset();
   writeAsciiMatrix(prefix + "_V.asc", Vt, hdr, true);
 
 }
