@@ -135,8 +135,8 @@ namespace loos {
 
 
   const uint kilobytes = 1024;
-  const uint megabytes = kilobytes * kilobytes;
-  const uint gigabytes = megabytes * kilobytes;
+  const uint megabytes = 1024 * kilobytes;
+  const uint gigabytes = 1024 * megabytes;
 
 }
 
