@@ -54,7 +54,7 @@ namespace loos {
     class Triangular {
     public:
       explicit Triangular() : m(0), n(0), s(0) { }
-      explicit Triangular(const uint y, const uint x) : m(y), n(x), s( (y*(y+1))/2 ) {
+      explicit Triangular(const uint y, const uint x) : m(y), n(x), s( (static_cast<ulong>(y)*(y+1))/2 ) {
         assert(y == x && "Cannot have a non-square triangular matrix...  (you know what I mean!)");
       }
 
@@ -62,8 +62,8 @@ namespace loos {
 
       //! Get the index into the linear array of data
       ulong index(const uint y, const uint x) const {
-        uint b = y;
-        uint a = x;
+        ulong b = y;
+        ulong a = x;
 
         if (x > y) {
           b = x;
@@ -80,7 +80,7 @@ namespace loos {
       void setSize(const uint y, const uint x) {
         assert(y == x && "Cannot have a non-square triangular matrix...  (you know what I mean!)");
         m=y; n=x;
-        s = (y*(y+1))/2;
+        s = (static_cast<ulong>(y)*(y+1))/2;
       }
 
     
@@ -93,19 +93,19 @@ namespace loos {
     class ColMajor {
     public:
       explicit ColMajor() : m(0), n(0), s(0) { }
-      explicit ColMajor(const uint y, const uint x) : m(y), n(x), s(y*x) { }
+      explicit ColMajor(const uint y, const uint x) : m(y), n(x), s(static_cast<ulong>(y)*x) { }
 
       ulong size(void) const { return(s); }
 
       //! Get the index into the linear array of data
       ulong index(const uint y, const uint x) const {
-        return(x*m + y);
+        return(static_cast<ulong>(x)*m + y);
       }
 
     protected:
       //! Reset the [virtual] size of the matrix
       /** Does not currently force a new allocation of data... */
-      void setSize(const uint y, const uint x) { m=y; n=x; s = y*x; }
+      void setSize(const uint y, const uint x) { m=y; n=x; s = static_cast<ulong>(y)*x; }
 
     protected:
       uint m, n;
@@ -117,19 +117,19 @@ namespace loos {
     class RowMajor {
     public:
       explicit RowMajor() : m(0), n(0), s(0) { }
-      explicit RowMajor(const uint y, const uint x) : m(y), n(x), s(y*x) { }
+      explicit RowMajor(const uint y, const uint x) : m(y), n(x), s(static_cast<ulong>(y)*x) { }
 
       ulong size(void) const { return(s); }
 
       //! Get the index into the linear array of data
       ulong index(const uint y, const uint x) const {
-        return(y*n + x);
+        return(static_cast<ulong>(y)*n + x);
       }
 
     protected:
       //! Reset the [virtual] size of the matrix
       /** Does not currently force a new allocation of data... */
-      void setSize(const uint y, const uint x) { m=y; n=x; s=y*x; }
+      void setSize(const uint y, const uint x) { m=y; n=x; s=static_cast<ulong>(y)*x; }
 
     protected:
       uint m, n;
