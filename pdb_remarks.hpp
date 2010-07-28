@@ -46,6 +46,8 @@ namespace loos {
     std::string get(const int i) const;
     //! Add a remark
     void add(const std::string s);
+    //! Add multiple remarks
+    void add(const std::vector<std::string>& s);
     //! Erase the ith remark
     void erase(const int i);
 
