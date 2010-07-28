@@ -38,6 +38,9 @@
 
 #include <boost/random.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/any.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/program_options.hpp>
 
 #include <ctime>
 
@@ -260,7 +263,25 @@ namespace loos {
   //! Convert an int into a hybrid-36 encoded string
   std::string hybrid36AsString(int value, uint fieldsize);
 
-  
+  // The following are for support of boost::program_options
+
+  //! Convert something that can iterate into a string...
+  template<typename T> std::string vToString(const T& x) {
+    std::ostringstream oss;
+
+    for (typename T::const_iterator i = x.begin(); i != x.end(); ++i)
+      oss << *i << ((i == x.end() - 1) ? "" : ",");
+
+    return(oss.str());
+  }
+
+
+  //! convert a boost::any into a string
+  std::string anyToString(const boost::any& x);
+
+  //! Converts a boost::program_options::variables_map into a string suitable for logging
+  std::string variableValuesHeader(const boost::program_options::variables_map& m);
+
 };
 
 #endif

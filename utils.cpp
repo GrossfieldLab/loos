@@ -43,6 +43,7 @@
 
 
 
+
 namespace loos {
 
   namespace {
@@ -426,6 +427,43 @@ namespace loos {
     return(result);
   }
 
+
+  std::string anyToString(const boost::any& x) {
+    std::string s;
+
+    if (x.type() == typeid(int))
+      s = boost::lexical_cast<std::string>(boost::any_cast<int>(x));
+    else if (x.type() == typeid(double))
+      s = boost::lexical_cast<std::string>(boost::any_cast<double>(x));
+    else if (x.type() == typeid(std::string))
+      s = boost::any_cast<std::string>(x);
+    else if (x.type() == typeid(bool))
+      s = (boost::any_cast<bool>(x)) ? "true" : "false";
+    else if (x.type() == typeid(uint))
+      s = boost::lexical_cast<std::string>(boost::any_cast<uint>(x));
+    else if (x.type() == typeid(ulong))
+      s = boost::lexical_cast<std::string>(boost::any_cast<ulong>(x));
+    else if (x.type() == typeid(float))
+      s = boost::lexical_cast<std::string>(boost::any_cast<float>(x));
+    else if (x.type() == typeid(std::vector<std::string>))
+      s = vToString( boost::any_cast< std::vector<std::string> >(x));
+    else
+      throw(LOOSError("Unknown type in anyToString() conversion"));
+
+    return(s);
+
+  }
+
+
+
+  std::string variableValuesHeader(const boost::program_options::variables_map& m) {
+    std::ostringstream oss;
+
+    for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i)
+      oss << "# " << (*i).first << " = " << anyToString((*i).second.value()) << std::endl;
+
+    return(oss.str());
+  }
 
 
 }
