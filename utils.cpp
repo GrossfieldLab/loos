@@ -460,9 +460,13 @@ namespace loos {
     std::ostringstream oss;
 
     for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i)
-      oss << "# " << (*i).first << " = " << anyToString((*i).second.value()) << std::endl;
+      oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'" << std::endl;
+    
+    // Remove the trailing newline...
+    std::string s = oss.str();
+    s.erase(s.begin() + s.size() - 1);
 
-    return(oss.str());
+    return(s);
   }
 
 

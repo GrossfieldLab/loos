@@ -100,8 +100,10 @@ bool write_source_matrix;
 
 
 
-void parseArgs(int argc, char *argv[]) {
+string parseArgs(int argc, char *argv[]) {
   
+  string hdr;
+
   try {
     po::options_description generic("Allowed options");
     generic.add_options()
@@ -145,11 +147,15 @@ void parseArgs(int argc, char *argv[]) {
     else
       prefix = findBaseName(traj_name);
 
+    hdr = variableValuesHeader(vm);
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
+
+  return(hdr);
 
 }
 
@@ -214,7 +220,9 @@ void writeMap(const string& fname, const AtomicGroup& grp) {
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseArgs(argc, argv);
+  string vals = parseArgs(argc, argv);
+
+  hdr += "\n" + vals;
 
   TrackStorage store;
 
