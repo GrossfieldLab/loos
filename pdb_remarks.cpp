@@ -59,6 +59,11 @@ namespace loos {
     remarks.push_back(sanitize(t));
   }
 
+  void Remarks::add(const std::vector<std::string>& s) {
+    for (std::vector<std::string>::const_iterator i = s.begin(); i != s.end(); ++i)
+      add(*i);
+  }
+
 
   void Remarks::erase(const int i) {
     rangeCheck(i);
