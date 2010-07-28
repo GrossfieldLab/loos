@@ -170,21 +170,6 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
 
 
 
-vector<string> processFiles(const vector<string>& names) {
-  vector<string> full_names;
-
-  for (vector<string>::const_iterator i = names.begin(); i != names.end(); ++i) {
-    vector<string> globbed = globFilenames(*i);
-    if (globbed.empty())
-      full_names.push_back(*i);
-    else
-      copy(globbed.begin(), globbed.end(), back_inserter(full_names));
-  }
-
-  return(full_names);
-}
-
-
 
 void fullHelp(void) {
 
@@ -351,8 +336,6 @@ void parseOptions(int argc, char *argv[]) {
       center_selection = vm["center"].as<string>();
       center_flag = true;
     }
-
-    traj_names = processFiles(traj_names);
 
     // Sort trajectory filenames if requested...
     if (vm.count("sort")) {
