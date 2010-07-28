@@ -168,6 +168,24 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
 }
 
 
+
+
+vector<string> processFiles(const vector<string>& names) {
+  vector<string> full_names;
+
+  for (vector<string>::const_iterator i = names.begin(); i != names.end(); ++i) {
+    vector<string> globbed = globFilenames(*i);
+    if (globbed.empty())
+      full_names.push_back(*i);
+    else
+      copy(globbed.begin(), globbed.end(), back_inserter(full_names));
+  }
+
+  return(full_names);
+}
+
+
+
 void fullHelp(void) {
 
   cout << 
@@ -257,14 +275,16 @@ void fullHelp(void) {
 
 
 
-void parseOptions(int argc, char *argv[]) {
+string parseOptions(int argc, char *argv[]) {
+  string hdr;
+
   try {
 
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
       ("fullhelp", "More detailed help (including examples)")
-      ("verbose,v", "Verbose output (verbosity = 1")
+      ("verbose,v", "Verbose output (verbosity = 1)")
       ("verbosity,V", po::value<int>(&verbose)->default_value(0), "Verbosity level (higher equals more output)")
       ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
@@ -333,6 +353,8 @@ void parseOptions(int argc, char *argv[]) {
       center_flag = true;
     }
 
+    traj_names = processFiles(traj_names);
+
     // Sort trajectory filenames if requested...
     if (vm.count("sort")) {
       if (vm.count("scanf")) {
@@ -348,11 +370,15 @@ void parseOptions(int argc, char *argv[]) {
 
     }
 
+    hdr = variableValuesHeader(vm);
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
+
+  return(hdr);
 }
 
 
@@ -389,8 +415,7 @@ uint bindFilesToIndices(AtomicGroup& model) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-
-  parseOptions(argc, argv);
+  string opthdr = parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
