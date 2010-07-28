@@ -46,36 +46,6 @@
 
 namespace loos {
 
-  namespace {
-    // Should this throw rather than exit?
-    // Note that glob() expects this to return an int, but I think
-    // it's better to abort with an error...
-    int globError(const char* p, int errnum) {
-      char *msg = strerror(errnum);
-      std::cerr << msg << " - '" << p << "'" << std::endl;
-      exit(-errnum);
-    }
-  };
-
-  std::vector<std::string> globFilenames(const std::string& pattern) {
-    glob_t buf;
-    buf.gl_offs = 0;
-
-    int i = glob(pattern.c_str(), 0, &globError, &buf);
-    if (i != 0) {
-      std::cerr << "Error code " << i << " from globbing '" << pattern << "'" << std::endl;
-      exit(-255);
-    }
-
-    std::vector<std::string> names;
-    for (uint j = 0; j<buf.gl_pathc; ++j)
-      names.push_back(std::string( (buf.gl_pathv)[i] ));
-
-    globfree(&buf);
-
-    return(names);
-  }
-
 
   std::string findBaseName(const std::string& s) {
     std::string result;
