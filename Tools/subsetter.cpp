@@ -275,8 +275,7 @@ void fullHelp(void) {
 
 
 
-string parseOptions(int argc, char *argv[]) {
-  string hdr;
+void parseOptions(int argc, char *argv[]) {
 
   try {
 
@@ -369,16 +368,11 @@ string parseOptions(int argc, char *argv[]) {
       }
 
     }
-
-    hdr = variableValuesHeader(vm);
-
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
     exit(-1);
   }
-
-  return(hdr);
 }
 
 
@@ -415,7 +409,7 @@ uint bindFilesToIndices(AtomicGroup& model) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  string opthdr = parseOptions(argc, argv);
+  parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);

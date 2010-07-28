@@ -456,18 +456,40 @@ namespace loos {
 
 
 
-  std::string variableValuesHeader(const boost::program_options::variables_map& m) {
-    std::ostringstream oss;
+  std::vector<std::string> optionsValues(const boost::program_options::variables_map& m) {
+    std::vector<std::string> results;
 
-    for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i)
-      oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'" << std::endl;
+    for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i) {
+      std::ostringstream oss;
+      oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'";
+      results.push_back(oss.str());
+    }
+      
     
-    // Remove the trailing newline...
-    std::string s = oss.str();
-    s.erase(s.begin() + s.size() - 1);
+    return(results);
+  }
+
+
+  std::string stringsAsComments(const std::vector<std::string>& v) {
+    std::string s;
+
+    for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i)
+      s += "# " + *i + "\n";
 
     return(s);
   }
 
+
+  std::string stringsAsString(const std::vector<std::string>& v) {
+    std::string s;
+
+    for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i)
+      s += *i + "\n";
+
+    // Remove the trailing newline...
+    s.erase(s.end()-1);
+
+    return(s);
+  }
 
 }

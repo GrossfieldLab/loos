@@ -100,9 +100,11 @@ bool write_source_matrix;
 
 
 
-string parseArgs(int argc, char *argv[]) {
+vector<string> parseArgs(int argc, char *argv[]) {
   
-  string hdr;
+  vector<string> hdrs;
+
+  hdrs.push_back(invocationHeader(argc, argv));
 
   try {
     po::options_description generic("Allowed options");
@@ -147,7 +149,8 @@ string parseArgs(int argc, char *argv[]) {
     else
       prefix = findBaseName(traj_name);
 
-    hdr = variableValuesHeader(vm);
+    vector<string> opt_hdrs = optionsValues(vm);
+    copy(opt_hdrs.begin(), opt_hdrs.end(), back_inserter(hdrs));
 
   }
   catch(exception& e) {
@@ -155,7 +158,7 @@ string parseArgs(int argc, char *argv[]) {
     exit(-1);
   }
 
-  return(hdr);
+  return(hdrs);
 
 }
 
@@ -219,10 +222,7 @@ void writeMap(const string& fname, const AtomicGroup& grp) {
 
 int main(int argc, char *argv[]) {
 
-  string hdr = invocationHeader(argc, argv);
-  string vals = parseArgs(argc, argv);
-
-  hdr += "\n" + vals;
+  vector<string> hdrs = parseArgs(argc, argv);
 
   TrackStorage store;
 
@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
   cerr << boost::format("Coordinate matrix is %d x %d\n") % A.rows() % A.cols();
   store.allocate(A.rows() * A.cols());
   if (write_source_matrix)
-    writeAsciiMatrix(prefix + "_A.asc", A, hdr);
+    writeAsciiMatrix(prefix + "_A.asc", A, stringsAsString(hdrs));
 
 
   store.allocate(A.rows() * A.rows());
@@ -282,14 +282,14 @@ int main(int argc, char *argv[]) {
   cerr << "Finished!\n";
   
   reverseColumns(C);
-  writeAsciiMatrix(prefix + "_U.asc", C, hdr);
+  writeAsciiMatrix(prefix + "_U.asc", C, stringsAsString(hdrs));
 
   // D = sqrt(D);  Scale eigenvectors...
   for (uint j=0; j<W.rows(); ++j)
     W[j] = W[j] < 0 ? 0.0 : sqrt(W[j]);
 
   reverseRows(W);
-  writeAsciiMatrix(prefix + "_s.asc", W, hdr);
+  writeAsciiMatrix(prefix + "_s.asc", W, stringsAsString(hdrs));
   W.reset();
 
   store.free(W.rows() * W.cols());
@@ -300,6 +300,6 @@ int main(int argc, char *argv[]) {
   cerr << "Done!\n";
   C.reset();
   A.reset();
-  writeAsciiMatrix(prefix + "_V.asc", Vt, hdr, true);
+  writeAsciiMatrix(prefix + "_V.asc", Vt, stringsAsString(hdrs), true);
 
 }

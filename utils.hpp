@@ -279,8 +279,15 @@ namespace loos {
   //! convert a boost::any into a string
   std::string anyToString(const boost::any& x);
 
-  //! Converts a boost::program_options::variables_map into a string suitable for logging
-  std::string variableValuesHeader(const boost::program_options::variables_map& m);
+  //! Converts a boost::program_options::variables_map into a vector of strings
+  std::vector<std::string> optionsValues(const boost::program_options::variables_map& m);
+
+  //! Converts a vector of strings into a standard log format
+  std::string stringsAsComments(const std::vector<std::string>& v);
+
+
+  //! Converts a vector of strings into a single string with newlines
+  std::string stringsAsString(const std::vector<std::string>& v);
 
 };
 
