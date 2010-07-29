@@ -289,7 +289,7 @@ int main(int argc, char *argv[]) {
   MDuple orig(0,0);
   MDuple Usize(m,m);
   MDuple Ssize(sn,1);
-  MDuple Vsize(n,sn);
+  MDuple Vsize(sn,n);
 
   if (terms > 0) {
     if (terms > m || terms > sn || terms > n) {
@@ -298,7 +298,7 @@ int main(int argc, char *argv[]) {
     }
     Usize = MDuple(m, terms);
     Ssize = MDuple(terms, 1);
-    Vsize = MDuple(n, terms);
+    Vsize = MDuple(terms, n);
   }
 
   cerr << argv[0] << ": Writing results...\n";
