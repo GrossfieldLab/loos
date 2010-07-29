@@ -729,7 +729,10 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
    <DT><B>order_params</B>
    <DD>Compute the deuterium quadrupolar splitting order parameters for lipid
-   molecules.  The model file must have connectivity information.
+   molecules.  The model file must have connectivity information.  As of 
+   version 1.5.5, 1 residue per lipid format (as used by the CHARMM36 
+   parameters) is supported, in addition to 3 residues per lipid.
+
 
    <DT><B>paxes</B>
    <DD>Computes the magnitude of the principal axes of a set of selections
