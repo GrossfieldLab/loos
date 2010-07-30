@@ -346,6 +346,9 @@ namespace loos {
       box.box(GCoord(x,y,z));
     }
 
+    //! Provide access to the underlying shared periodic box...
+    SharedPeriodicBox sharedPeriodicBox() const { return(box); }
+
     //! Translate the entire group so that the centroid is in the 
     //! primary cell
     void reimage();
@@ -477,6 +480,7 @@ namespace loos {
      */
     std::vector<GCoord> getTransformedCoords(const XForm&) const;
   
+    //! Translate an atomic group by vector v
     void translate(const GCoord & v);
 
     //! Apply the given transform to the group's coordinates...

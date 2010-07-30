@@ -168,6 +168,9 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
 }
 
 
+
+
+
 void fullHelp(void) {
 
   cout << 
@@ -258,13 +261,14 @@ void fullHelp(void) {
 
 
 void parseOptions(int argc, char *argv[]) {
+
   try {
 
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
       ("fullhelp", "More detailed help (including examples)")
-      ("verbose,v", "Verbose output (verbosity = 1")
+      ("verbose,v", "Verbose output (verbosity = 1)")
       ("verbosity,V", po::value<int>(&verbose)->default_value(0), "Verbosity level (higher equals more output)")
       ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
@@ -347,7 +351,6 @@ void parseOptions(int argc, char *argv[]) {
       }
 
     }
-
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -389,7 +392,6 @@ uint bindFilesToIndices(AtomicGroup& model) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-
   parseOptions(argc, argv);
 
   AtomicGroup model = createSystem(model_name);

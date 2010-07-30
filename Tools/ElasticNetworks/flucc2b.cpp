@@ -58,6 +58,8 @@ void show_help(void) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
+  cerr << "Warning- this tool is now deprecated.  Please use eigenflucc instead.\n";
+
   if (argc < 5 || argc > 6)
     show_help();
 

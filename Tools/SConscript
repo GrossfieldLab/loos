@@ -25,13 +25,14 @@ import sys
 Import('env')
 
 clone = env.Clone()
-clone.Append(LIBS = ['loos'])
+clone.Prepend(LIBS = ['loos'])
 
 apps = 'density-dist density-dist-windowed center-pdb model2matlab frame2pdb contacts order_params bounding aligner svd rmsds xy_rdf xy_rdf_timeseries model-select rdf atomic-rdf crossing-waters'
 apps = apps + ' svdcolmap averager convert2pdb traj2dcd reimage-by-molecule rmsd2ref rgyr dumpmol helix_kink subsetter torsion'
 apps = apps + ' dcdinfo recenter-trj concat-selection trajinfo rmsf interdist paxes rmsfit rotamer'
 apps = apps + ' drifter porcupine ramachandran renum-pdb exposure clipper rebond molshape native_contacts traj2matlab'
-apps = apps + ' alignto traj2pdb merge-dcd center-molecule contact-time'
+apps = apps + ' alignto traj2pdb merge-dcd center-molecule contact-time perturb-structure coverlap phase-pdb'
+apps = apps + ' big-svd'
 
 list = []
 

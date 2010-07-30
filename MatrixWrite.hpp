@@ -39,6 +39,8 @@
 #include <cassert>
 #include <iterator>
 
+#include <algorithm>
+
 #include <utility>
 #include <boost/format.hpp>
 
@@ -231,11 +233,23 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
                                const MDuple& start, const MDuple& end,
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
+
       uint m = end.first - start.first;
       uint n = end.second - start.second;
-      os << boost::format("# %d %d (%d)\n") % m % n % trans;
-      for (int j=start.first; j<end.first; j++) {
-        for (int i=start.second; i<end.second; i++)
+      uint ja = start.first;
+      uint jb = end.first;
+      uint ia = start.second;
+      uint ib = end.second;
+
+      if (trans) {
+        std::swap(m,n);
+        std::swap(ja, ia);
+        std::swap(jb, ib);
+      }
+
+      os << boost::format("# %d %d (%d)\n") % m % n % 0;
+      for (uint j=ja; j<jb; j++) {
+        for (uint i=ia; i<ib; i++)
           if (trans)
             os << fmt(M(i, j)) << " ";
           else

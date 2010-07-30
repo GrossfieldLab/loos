@@ -70,7 +70,7 @@ double normalization = 1.0;
 double threshold = 1e-10;
 
 string hdr;
-string subset_selection, environment_selection, model_name, prefix, mass_file;
+string subset_selection, environment_selection, model_name, prefix;
 double cutoff;
 int verbosity = 0;
 bool debug = false;
@@ -86,6 +86,87 @@ double hca_constants[5];
 bool user_defined_hca_constants(false);
 
 
+void fullHelp() {
+
+  cout <<
+    "\n"
+    "Computes the VSA network model given a subsystem and an\n"
+    "environment selection.  The output consists of several different\n"
+    "ASCII formatted matrices (that can be read by Matlab/Octave) and\n"
+    "depends on whether or not masses are included in the\n"
+    "calculation.  If debugging is turned on (--debug), then the\n"
+    "intermediate matrices are written out:\n"
+    "\tfoo_H.asc    = Composite Hessian\n"
+    "\tfoo_Hss.asc  = Subsystem Hessian\n"
+    "\tfoo_Hee.asc  = Environment Hessian\n"
+    "\tfoo_Hse.asc  = Subsystem-Environment Hessian\n"
+    "\tfoo_Heei.asc = Inverted Environment Hessian\n"
+    "\tfoo_Hssp.asc = Effective Subsystem Hessian\n"
+    "\tfoo_Ms.asc   = Subsystem mass (optional)\n"
+    "\tfoo_Me.asc   = Environment mass (optional)\n"
+    "\tfoo_Msp.asc  = Effective subsystem mass (optional)\n"
+    "\tfoo_R.asc    = Cholesky decomposition of Msp (optional)\n"
+    "\n\n"
+    "* Unit Subsystem Mass, Zero Environment Mass *\n\n"
+    "Here, the effective subsystem Hessian is created and a Singular\n"
+    "Value Decomposition used to solve the eigenproblem:\n"
+    "\tfoo_U.asc = Subsystem eigenvectors\n"
+    "\tfoo_s.asc = Subsystem eigenvalues\n"
+    "\n\n"
+    "* Subsystem and Environment Mass *\n\n"
+    "The generalized eigenvalue problem is solved creating the\n"
+    "following matrices:\n"
+    "\tfoo_Ds.asc = Subsystem eigenvalues (mass-weighted)\n"
+    "\tfoo_Us.asc = Subsystem eigenvectors (mass-weighted)\n"
+    "\n\n"
+    "* Spring Constant Control *\n\n"
+    "Different methods for assigning the spring constants in the\n"
+    "Hessian can be used.  For example, \"--free 1\" selects the\n"
+    "\"parameter free\" method which can be combined with the \"--power\"\n"
+    "option, which controls the exponent used (the default is -2).\n"
+    "Note that setting the parameter-free method does not alter the\n"
+    "cutoff radius used in building the Hessian, so you may want to\n"
+    "set that to something very large (i.e. \"--cutoff 100\").\n"
+    "Alternatively, the \"HCA\" method can be used via the \"--hca 1\"\n"
+    "option.  The constants used in HCA can be set with the\n"
+    "\"--hparams r_c,k1,k2,k3,k4\" option where the spring constant, k,\n"
+    "is defined as,\n"
+    "\tk = k1 * s - k2        if (s <= r_c)\n"
+    "\tk = k3 * pow(s, -k4)   if (s > r_c)\n"
+    "and s is the distance between the nodes.\n"
+    "\n\n"
+    "* Mass Control *\n\n"
+    "VSA, by default, assumes that masses will be present.  These can\n"
+    "come from one of two sources.  If \"--psf foo.psf\" is given,\n"
+    "then the masses will be assigned using the \"foo.psf\" file.  This\n"
+    "assumes that the atoms are in the same order between the PSF file\n"
+    "and the structure file given on the command line.  Alternatively,\n"
+    "the occupancy field of the PDB can be used with the\n"
+    "\"--occupancies 1\" option.  See the psf-masses tool for one way to\n"
+    "copy masses into a PDB's occupancies.\n"
+    "\n"
+    "To disable masses (i.e. use unit masses for the subsystem and\n"
+    "zero masses for the environment), use the \"--nomass 1\" option.\n"
+    "\n\n"
+    "* Examples *\n\n"
+    "\n"
+    "Compute the VSA for a transmembrane region based on segid with the\n"
+    "masses stored in the occupancy field of the PDB,\n"
+    "\tvsa --occupancies 1 'segid == \"TRAN\" && name == \"CA\"' 'segid != \"TRAN\" && name == \"CA\"' foo.pdb foo_vsa\n"
+    "\n"
+    "Compute the VSA for a transmembrane region where the selection\n"
+    "is stored in a file and masses taken from a PSF file,\n"
+    "\tvsa --psf foo.psf \"`cat selection` && name == 'CA'\" \"not (`cat selection`) && name == 'CA'\" foo.pdb foo_vsa\n"
+    "\n"
+    "Compute the mass-less VSA with CAs as the subsystem and all other\n"
+    "backbone atoms as the environment,\n"
+    "\tvsa --nomass 1 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n"
+    "\n"
+    "The same example as above, but using the HCA spring constants,\n"
+    "\tvsa --nomass 1 --hca 1 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n";
+    
+}
+
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -93,8 +174,8 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options", 120);
     generic.add_options()
       ("help", "Produce this help message")
+      ("fullhelp", "More detailed help")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
-      ("masses,m", po::value<string>(&mass_file), "Name of file that contains atom mass assignments")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
       ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
       ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
@@ -127,9 +208,11 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("prefix") && vm.count("subset") && vm.count("env"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix") && vm.count("subset") && vm.count("env"))) {
       cerr << "Usage- vsa [options] subset environment model-name output-prefix\n";
       cerr << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(-1);
     }
 

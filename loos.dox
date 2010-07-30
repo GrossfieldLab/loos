@@ -10,7 +10,7 @@
 \section copyright Copyright and License
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2009, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2010, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -198,8 +198,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.3 install
-ln -s /opt/loos-1.5.3 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.4 install
+ln -s /opt/loos-1.5.4 /opt/loos-latest
 \endverbatim
 
 
@@ -575,9 +575,28 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DD> Creates a DCD depicting motion along the axes taken from an ENM result
 
       <DT> <B>flucc2b</B>
-      <DD> Computes B-values based on ENM 
+      <DD> Computes B-values based on ENM (<I>now deprecated</I>)
+
+      <DT> <B>eigenflucc</B>
+      <DD> Computes the fluctuations from either ENM or PCA output.
+      These can be mapped to B-values in a structure.
 
    </DL>
+
+   <DT> <B><I>Hydrogen Bonding Tools</I></B>
+   <DD>
+      <DL>
+            <DT><B>hbonds</B>
+	    <DD> Finds putative h-bonds based on angle and distance
+
+	    <DT><B>hmatrix</B>
+	    <DD> Writes out a binary matrix indicating which atoms
+	    have possible h-bonds at each time-point in a trajectory.
+
+	    <DT><B>hcorrelation</B>
+	    <DD> Computes the time-correlation function for h-bonds.
+      </DL>
+	    
 
    <DT> <B>aligner</B>
    <DD> Align structures in a trajectory against the average using an
@@ -592,6 +611,13 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    <DT><B>averager</B>
    <DD>Compute the average structure for a set of molecules from a trajectory,
    using an iterative scheme.
+
+   <DT><B>big-svd</B>
+   <DD>Computes the SVD/PCA for a trajectory.  This differs from the
+   svd below in that it uses single precision math and it computes
+   fewer right singular vectors (e.g. if your structure has N atoms
+   and you have T timestemps in the trajectory, then the RSV matrix
+   will be T x 3N as opposed to T x T in the svd tool).
 
    <DT><B>blurrogram.pl</B>
    <DD>A PERL tool for creating "blurrogram" style figures with Pymol.
@@ -632,6 +658,10 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    <DT><B>convert2pdb</B>
    <DD>Read in a structure file in a LOOS-supported format, and write it out as 
    a pdb file.
+
+   <DT><B>coverlap</B>
+   <DD>Compute the covariance and subspace overlaps between either ENM
+   results or PCA results (or any combination).
 
    <DT><B>crossing-waters</B>
    <DD>Loop over a trajectory and compute the number waters crossing a membrane.
@@ -699,7 +729,10 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
    <DT><B>order_params</B>
    <DD>Compute the deuterium quadrupolar splitting order parameters for lipid
-   molecules.  The model file must have connectivity information.
+   molecules.  The model file must have connectivity information.  As of 
+   version 1.5.5, 1 residue per lipid format (as used by the CHARMM36 
+   parameters) is supported, in addition to 3 residues per lipid.
+
 
    <DT><B>paxes</B>
    <DD>Computes the magnitude of the principal axes of a set of selections
@@ -820,8 +853,71 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 
-
 /*! \page Changes Change Log
+\section release155 Version 1.5.5 (8-2-2010)
+\subsection r155_add_changed Added, Changed, or Otherwise Notable
+<UL>
+  <LI> Added a tool to randomly perturb structures
+  <LI> Added a tool for computing fluctuations from ENM/PCA (the old
+  flucc2b tool is now deprecated)
+  <LI> Added a tool for computing SVD's of large systems or when there
+  are many time-steps
+  <LI> Added a tool to compute the covariance and subspace overlaps
+  from ENM and PCA results
+  <LI> Added a new suite of tools for analyzing hydrogen-bonding
+  <LI> Added support for accessing the SharedPeriodicBox in
+  AtomicGroup
+  <LI> Added support for some STL algorithms in TimeSeries class
+  <LI> Changed the order_params tool to handle both 1- and 3-residue
+  per lipid formats
+  <LI> Changed the regular SVD tool to use double-precision
+  <LI> The transpose flag in ASCII matrices is now deprecated
+</UL>
+
+\subsection r155_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in linux that affected library link order.  ATLAS is
+  now correctly linked in first.
+  <LI> Fixed bug in AtomicGroup::perturbCoords() where the directions
+  picked were not actually uniformly distributed on the sphere.
+  <LI> Fixed bug in writing internally transposed matrices.
+  <LI> Fixed bug in Matrix code that affected large matrices (those
+  with more than 2^32 elements).
+  <LI> Fixed bug in svd tool only for MacOS.  This bug is one in the
+  vecLib framework and may or may not effect the SVD output for single
+  precision.  Symptoms include non-orthogonal LSVs and all non-zero
+  singular values (there should be 6-zeros if using an aligned
+  trajectory).  The double-precision svd does not have this problem
+  nor does the implementation in big-svd.
+
+
+\section release154 Version 1.5.4 (4-23-2010)
+\subsection r154_added_changed Added, Changed, or otherwise Notable
+<UL>
+  <LI> Changed contact-time to use "fast" method that uses a
+  distance-cutoff to restrict which target atoms are considered.  This
+  can be disabled if necessary.  See "contact-time --help" for more
+  details.
+  <LI> Fixed bug in DescendingSort that caused it to sort ascending
+  instead.
+  <LI> Changed porcupine tool to make tagging of altered atoms
+  optional and to have fixed length tips rather than proportional
+  length ones.
+  <LI> Changed AtomicGroup::rmsd() to take a const arg (this means
+  that it no longer implicitly sorts the AtomicGroup objects).
+  Implicit sorting is one "feature" that is going to gradually go away
+  from AtomicGroup.
+  <LI> Changed VSA/ANM tools so as to allow user-defined HCA
+  parameters
+  <LI> Fixed Hessian code (affecting ANM/VSA) to truncate negative
+  spring constants to 0 (generally, this happens when using HCA with
+  nodes that are too close together).
+  <LI> Fixed bug in parser for Debian systems
+  <LI> Changed Linux code to use blas rather than cblas
+  <LI> Changes made to SConstruct for better Ubuntu/SUSE support
+</UL>
+
+
 \section release153 Version 1.5.3 (2-19-2010)
 \subsection r153_added_changed Added, Changed, or otherwise Notable
 <UL>

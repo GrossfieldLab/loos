@@ -1,3 +1,69 @@
+2010-07-27    <tromo@spade.biophysics.rochester.edu>
+
+	* Added a tool for perturbing structures randomly
+	* Added a new tool for computing ENM fluctuations and mapping them
+	onto a structure (eigenflucc).
+	* Deprecated the flucc2b tool
+	* Fixed minor issues in h-bonding tools and improved help
+	messages.
+	* Added covariance overlap tool
+	* Fixed issue in AtomicGroup::superposition where failures in the
+	alignment code would not get caught.
+	* Changed svd tool to use doubles rather than floats.  This is in
+	part to address a bug in MacOS 10.6 that causes the SVD to fail
+	without flagging it as an error.  This only seemed to occur in
+	certain rare circumstances (e.g. multiple, very similar
+	trajectories).  Symptoms of the problem include non-orthogonal
+	LSVs and no 6 zero-svals.
+	* Added big-svd tool to compute the SVD of large systems.  It uses
+	floats rather than doubles.  More importantly, if A is m x n, then
+	the RSV matrix V would be n x n, which can be huge.  Here, only
+	the first m columns of V are computed.
+	* Fixed bug in writing of internally transposed matrices.
+	* Deprecated the use of the transpose flag in ACSII matrices
+	(i.e. in the file format)
+	* Fixed bug in the Matrix code that affected large matrices
+	(i.e. where m * n >= 2^32)
+	
+
+2010-07-06    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for some STL algorithms with TimeSeries
+	(i.e. begin, end, and push_back)
+	* Added a set of hydrogen-bonding analysis tools in
+	Tools/HydrogenBonds
+
+2010-06-22    <tromo@spade.biophysics.rochester.edu>
+
+	* Added support for accesing the shared periodic box contained in
+	an AtomicGroup.
+
+
+2010-06-21    <alan@membrane.biophysics.rochester.edu>
+	* Changed order_params to handle both 1- and 3-residue per lipid
+	  formats. Verified works for new and old CHARMM parameters.
+	
+2010-06-11    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed library link order for linux.  Will now correctly link
+	against ATLAS first, then LAPACK...
+	
+2010-06-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in AtomicGroup::perturbCoords() where the directions
+	picked were not actually uniform on the sphere.
+
+2010-04-22    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed build system to handle installing pre-build docs
+	better.  Note that the existing installed docs dir will be
+	removed, then the pre-built will be copied into its place.
+
+2010-04-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed SuperBlock in the ENM tools to catch and truncate
+	negative spring constants
+
 2010-03-24    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed VSA/ANM to accept user-defined HCA constants

@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
 
   for (vector<AtomicGroup>::iterator vi = residues.begin(); vi != residues.end(); ++vi) {
     // First, pick off the CA
-    AtomicGroup CA = (*vi).select(AtomNameSelector("CA"));
+    AtomicGroup CA = vi->select(AtomNameSelector("CA"));
     if (CA.empty()) {
       cerr << "Error- cannot find CA.\n" << *vi;
       exit(-10);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
     CA[0]->occupancy(CA[0]->mass());
     cg_sites += CA[0];
 
-    AtomicGroup sidechain = (*vi).select(NotSelector(BackboneSelector()));
+    AtomicGroup sidechain = vi->select(NotSelector(BackboneSelector()));
     if (sidechain.empty()) {
       cerr << "Warning- No sidechain atoms for:\n" << *vi;
       continue;

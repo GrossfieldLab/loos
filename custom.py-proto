@@ -22,6 +22,10 @@
 ### Edit the lines below for your installation...
 ###
 
+### Note: the following is Python code.  This means that to uncomment
+### a line, you must delete the '#' and the following space so the
+### variable name is flush with the left-most column.
+
 
 ### Edit the following to determine the default build-type
 # debug=1
@@ -50,11 +54,13 @@
 # BOOSTLIB='/usr/local/lib'
 
 ### This is the name of the boost-regex library
-# BOOSTREGEX='boost_regex'
-# BOOSTREGEX='boost_regex-gcc43'
+## Uncomment the following for Ubuntu
+# BOOSTREGEX='boost_regex-mt'
+
 
 ### This is the name of the boost-program-options Library
-# BOOSTPO='boost_program_options'
+## Uncomment the following for Ubuntu
+# BOOSTPO='boost_program_options-mt'
 
 
 ### Edit the following to change which C++ compiler to use

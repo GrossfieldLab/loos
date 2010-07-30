@@ -22,11 +22,13 @@
 
 
 #include <sys/types.h>
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
+#include <cstring>
 #include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
-#include <time.h>
 #include <pwd.h>
+#include <glob.h>
 
 #include <algorithm>
 #include <string>
@@ -41,9 +43,10 @@
 
 
 
+
 namespace loos {
 
-  
+
   std::string findBaseName(const std::string& s) {
     std::string result;
 
@@ -395,5 +398,68 @@ namespace loos {
   }
 
 
+  std::string anyToString(const boost::any& x) {
+    std::string s;
+
+    if (x.type() == typeid(int))
+      s = boost::lexical_cast<std::string>(boost::any_cast<int>(x));
+    else if (x.type() == typeid(double))
+      s = boost::lexical_cast<std::string>(boost::any_cast<double>(x));
+    else if (x.type() == typeid(std::string))
+      s = boost::any_cast<std::string>(x);
+    else if (x.type() == typeid(bool))
+      s = (boost::any_cast<bool>(x)) ? "true" : "false";
+    else if (x.type() == typeid(uint))
+      s = boost::lexical_cast<std::string>(boost::any_cast<uint>(x));
+    else if (x.type() == typeid(ulong))
+      s = boost::lexical_cast<std::string>(boost::any_cast<ulong>(x));
+    else if (x.type() == typeid(float))
+      s = boost::lexical_cast<std::string>(boost::any_cast<float>(x));
+    else if (x.type() == typeid(std::vector<std::string>))
+      s = vToString( boost::any_cast< std::vector<std::string> >(x));
+    else
+      throw(LOOSError("Unknown type in anyToString() conversion"));
+
+    return(s);
+
+  }
+
+
+
+  std::vector<std::string> optionsValues(const boost::program_options::variables_map& m) {
+    std::vector<std::string> results;
+
+    for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i) {
+      std::ostringstream oss;
+      oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'";
+      results.push_back(oss.str());
+    }
+      
+    
+    return(results);
+  }
+
+
+  std::string stringsAsComments(const std::vector<std::string>& v) {
+    std::string s;
+
+    for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i)
+      s += "# " + *i + "\n";
+
+    return(s);
+  }
+
+
+  std::string stringsAsString(const std::vector<std::string>& v) {
+    std::string s;
+
+    for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i)
+      s += *i + "\n";
+
+    // Remove the trailing newline...
+    s.erase(s.end()-1);
+
+    return(s);
+  }
 
 }

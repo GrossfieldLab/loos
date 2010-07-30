@@ -23,6 +23,7 @@ import os
 import re
 from subprocess import *
 from time import strftime
+import shutil
 
 
 
@@ -31,7 +32,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.5.4'
+loos_version = '1.5.5'
 
 
 # Principal options...
@@ -65,6 +66,8 @@ clos.Add('REVISION', 'Add build information', loos_version)
 
 env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
 Help(clos.GenerateHelpText(env))
+
+env.Decider('MD5-timestamp')
 
 # vestigial...
 regenerate = env['regenerate']
@@ -135,12 +138,12 @@ else:
 
       # Ubuntu requires gfortran
       elif (re.search("[Uu]buntu", f)):
-         env.Append(LIBS = ['lapack', 'atlas', 'gfortran'])
+         env.Append(LIBS = ['atlas', 'lapack', 'gfortran'])
          env.Append(LIBPATH = [LAPACK, ATLAS])
 
       # Fedora or similar
       else:
-         env.Append(LIBS = ['lapack', 'atlas'])
+         env.Append(LIBS = ['atlas', 'lapack'])
          env.Append(LIBPATH = [LAPACK, ATLAS])
 
       #env.Append(CPPPATH = [ATLASINC])       # See above...
@@ -219,10 +222,16 @@ docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
+h_tools = SConscript('Tools/HydrogenBonds/SConscript')
 
-# Special handling for docs installation...
-docs_inst = env.InstallAs(PREFIX + '/docs', 'Docs')
-Depends(docs_inst, 'foobar')
+
+### Special handling for pre-packaged documentation...
+
+env.Command(PREFIX + '/docs/main.html', [], [
+      Delete(PREFIX + '/docs'),
+      Copy(PREFIX + '/docs', 'Docs'),
+      ])
+env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 
 # build targets...
@@ -230,12 +239,13 @@ Depends(docs_inst, 'foobar')
 env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools + nm_tools)
+env.Alias('tools', tools + nm_tools + h_tools)
 
-env.Alias('all', loos + tools + nm_tools)
-env.Alias('caboodle', loos + tools + nm_tools + tests + docs)
+env.Alias('all', loos + tools + nm_tools + h_tools)
+env.Alias('caboodle', loos + tools + nm_tools + h_tools + tests + docs)
 
-env.Alias('install', ['lib_install', 'tools_install', 'nm_tools_install', docs_inst] )
+
+env.Alias('install', PREFIX)
 
 if int(regenerate):
    env.Default('caboodle')

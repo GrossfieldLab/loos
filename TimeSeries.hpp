@@ -50,6 +50,12 @@ namespace loos {
 template<class T>
 class TimeSeries {
 public:
+  typedef typename std::vector<T>::iterator       iterator;
+  typedef typename std::vector<T>::const_iterator const_iterator;
+  typedef const T&  const_reference;
+  typedef T&        reference;
+
+
     TimeSeries() {
       init();
     }
@@ -466,6 +472,16 @@ public:
 
       return(c);
     }
+
+  // Vector interface...
+  void push_back(const T& x) { _data.push_back(x); }
+
+  iterator begin() { return(_data.begin()); }
+  const_iterator begin() const { return(_data.begin()); }
+  
+  iterator end() { return(_data.end()); }
+  const_iterator end() const { return(_data.end()); }
+
 
 private:
     std::vector<T> _data;

@@ -3,87 +3,95 @@ Building and Installing Loos
 
 *** FOR THE IMPATIENT ***
 
-= Fedora =
+
+
+= Building and Installing =
+
+Please refer to the OS-specific instructions below in order to satisfy
+LOOS' dependencies....
+
+LOOS can then be built using the following command:
 
    scons release=1
+
+Or installed (to /opt as a default):
    sudo scons release=1 install
 
-Note: LOOS requires ATLAS and BOOST.  You can install both via the
-"yum" package manager.  You will need to install both the basic
-package and the devel package, i.e.
-	yum install boost.x86_64
-	yum install boost-devel.x86_64
+To install in a user-specified location:
+
+   scons release=1 PREFIX=/path/to/install install
 
 
-= Ubuntu =
 
-You will need to install atlas, boost, and SCons.  LOOS has been
-tested with atlas3-sse2-devel and boost-devel installed under the
-latest Ubuntu.  You will need to use a custom.py file to change where
-atlas and lapack are for LOOS.  Copy the custom.py-proto to
-custom.py and edit it.  Change the LAPACK and ATLAS variables to
-the following:
-    LAPACK='/usr/lib/sse2/atlas'
-    ATLAS='/usr/lib/sse2'
+--= Fedora =--
 
-= MACOS X (10.4+) =
+You will need to install SCons, lapack, atlas, and boost (the
+developer's versions).  These can be easily installed using "yum":
+
+   yum install scons.noarch atlas.x86_64 atlas-devel.x86_64 lapack.x86_64 lapack-devel.x86_64
+   yum install boost.x86_64 boost-devel.x86_64
+
+
+--= Ubuntu =--
+
+You will need to install SCons, lapack, atlas, and boost.  Using
+aptitude (or your favorite tool), install the "libboost-dev" package
+(or a specific version (i.e. libboost1.38-dev)), "libatlas-base-dev",
+"libatlas-headers", "liblapack-dev", and "scons".  On some systems,
+the names of the boost libraries vary.  In these cases, you will need
+to use a custom configuration.  Copy "custom.py-proto" to "custom.py"
+and edit it, uncommenting the lines marked for Ubuntu.
+Alternatively, verify the names of the boost regex and program_options
+libraries and set these appropriately in your "custom.py" file.
+
+
+
+--= openSUSE =--
+
+There is no pre-built ATLAS package (that we could find) for
+openSUSE.  LOOS will use the blas packages instead.  You will need to
+install lapack, blas, boost, and SCons.  Using zypper (or your
+favorite package manager), install the following:
+
+   zypper install scons boost-devel lapack blas
+
+
+
+--= MACOS X (10.4+) =--
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  You can find it on your MacOS X install disk or,
 alternatively, you can sign up for a free account with the Apple
 Developer's Connection and download the latest version.  Next, you
-will need to install SCons and BOOST.  If all went well, you should be
-able to cd to where you have the LOOS source and run "scons release=1".
+will need to install SCons (http://scons.org) and Boost
+(http://boost.org) by visiting their websites, downloading the
+software, and following their installation instructions.
 
 
 
 
-*** FOR THE LESS IMPATIENT ***
+*** GENERAL NOTES ***
 
-= LINUX =
+There is some variability in the naming used for the Boost libraries.
+If your build fails even though you just installed the latest Boost,
+check the names of the regex and program_options libraries and set
+these in your "custom.py" file.
 
-You will need to have ATLAS and BOOST installed, including the BOOST
-libraries.  You will also need SCons to build the software and,
-optionally, Doxygen to regenerate the documentation.  Use your
-favorite package manager to install these components, or download and
-build them.
+If you're using a compiler in a non-standard location (e.g. you have
+your own build of the latest and greatest gcc), SCons may not be using
+it even though your $PATH is set correctly.  You can force which
+compiler is used to build LOOS by setting the CXX variable in your
+"custom.py" file.  You may also need to specify the "LIBXTRA" path...
 
-You will probably need to create a custom.py file to tell LOOS where
-the required compenents are.  There is a template custom.py file
-already as part of LOOS.  Copy this,
-	cp custom.py-proto custom.py
+SCons supports building LOOS in parallel.  If you have 4 cores, for
+example, use "scons -j4" to use all 4 cores.
 
-Now edit this file.  Follow the comments to figure out what variables
-need to be changed.  In particular, note that the names of the BOOST
-libraries will change (i.e. BOOSTREGEX and BOOSTPO)
-
-Now you're ready to build...
-    scons release=1
-
--or- if you have 4 cores,
-     scons -j4 release=1
-
-If you want to install LOOS, use the install target,
-   scons release=1 install
-
-The default installation location is in /opt/loos.  You can change
-this by either setting PREFIX in your custom.py file, or specifying it
-on the command line, i.e.
-   scons release=1 PREFIX=/usr/local/loos-latest install
-
-The recommended installation methodology is to install LOOS into a
-version-specific directory, and then set up a symlink from
-"loos-latest" to the most recent installed version:
-
-   scons PREFIX=/opt/loos-1.5.4 install
-   ln -s /opt/loos-1.5.4 /opt/loos-latest
-
-= MAC OS X =
-
-If LOOS does not build after following the "quick" instructions above
-for MacOS, check to see if the boost libraries are named based on your
-compiler and boost version, i.e. libboost_regex-gcc43.a rather than
-libboost_regex.a.  If this is the case, copy the custom.py,
-   cp custom.py-proto custom.py
-and then edit it to change the BOOSTREGEX and BOOSTPO variables to
-point to the correct library name.
+Prebuilt documentation for LOOS is provided as part of the
+distribution.  This is simply copied into the install directory as
+part of installation.  Should you want to build a new version of the
+documentation, Doxygen is required.  Moreover, due to an issue we ran
+into with SCons, documentation building and installation are
+decoupled.  What this means is that you must explicitly build the docs
+(i.e. "scons docs") and -then- install, "scons install".  Running
+"scons install" will -not- rebuild the documentation, even if it out
+of date (or nonexistent).

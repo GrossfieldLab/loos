@@ -39,6 +39,7 @@
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
+#include <utils.hpp>
 
 
 namespace loos {
@@ -287,17 +288,12 @@ namespace loos {
     GCoord r;
 
     loos::base_generator_type& rng = loos::rng_singleton();
-    boost::uniform_real<> uni;
-    boost::variate_generator<loos::base_generator_type&, boost::uniform_real<> > func(rng, uni);
+    boost::uniform_on_sphere<> uni(3);
+    boost::variate_generator<loos::base_generator_type&, boost::uniform_on_sphere<> > func(rng, uni);
 
     for (i=0; i<n; i++) {
-      r.x(func());
-      r.y(func());
-      r.z(func());
-
-      r /= r.length();
-      r *= rms;
-
+      std::vector<double> v = func();
+      GCoord r(rms * v[0], rms * v[1], rms * v[2]);
       atoms[i]->coords() += r;
     }
   }

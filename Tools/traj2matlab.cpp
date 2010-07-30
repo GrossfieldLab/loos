@@ -48,12 +48,12 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(argv[2], model);
   AtomicGroup subset = selectAtoms(model, argv[3]);
 
-  Matrix A(model.size() * 3, traj->nframes());
+  Matrix A(subset.size() * 3, traj->nframes());
   for (uint i = 0; i<traj->nframes(); ++i) {
     traj->readFrame(i);
     traj->updateGroupCoords(subset);
     
-    for (int j=0, k=0; j<model.size(); ++j) {
+    for (int j=0, k=0; j<subset.size(); ++j) {
       GCoord c = subset[j]->coords();
       A(k++,i) = c.x();
       A(k++,i) = c.y();

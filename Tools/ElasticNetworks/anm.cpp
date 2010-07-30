@@ -92,6 +92,44 @@ bool debug;
 double hca_constants[5];
 bool user_defined_hca_constants(false);
 
+void fullHelp() {
+
+  cout <<
+    "\n"
+    "Computes the anisotropic network model for a structure.  It does\n"
+    "this by building a hessian for the structure, then computing the SVD\n"
+    "of it and the corresponding pseudo-inverse (ignoring the 6 lowest\n"
+    "modes).\n"
+    "\n"
+    "This creates the following files:\n"
+    "\tfoo_H.asc      == The hessian\n"
+    "\tfoo_U.asc      == Left singular vectors\n"
+    "\tfoo_s.asc      == Singular values\n"
+    "\tfoo_V.asc      == Right singular vectors\n"
+    "\tfoo_Hi.asc     == Pseudo-inverse of H\n"
+    "\n"
+    "\n"
+    "* Spring Constant Control *\n\n"
+    "Different methods for assigning the spring constants in the\n"
+    "Hessian can be used.  For example, \"--free 1\" selects the\n"
+    "\"parameter free\" method which can be combined with the \"--power\"\n"
+    "option, which controls the exponent used (the default is -2).\n"
+    "Note that setting the parameter-free method does not alter the\n"
+    "cutoff radius used in building the Hessian, so you may want to\n"
+    "set that to something very large (i.e. \"--cutoff 100\").\n"
+    "Alternatively, the \"HCA\" method can be used via the \"--hca 1\"\n"
+    "option.  The constants used in HCA can be set with the\n"
+    "\"--hparams r_c,k1,k2,k3,k4\" option where the spring constant, k,\n"
+    "is defined as,\n"
+    "\tk = k1 * s - k2        if (s <= r_c)\n"
+    "\tk = k3 * pow(s, -k4)   if (s > r_c)\n"
+    "and s is the distance between the nodes.\n"
+    "\n\n"
+    "Examples:\n\n"
+    "Compute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
+    "\tanm 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n";
+}
+
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -107,7 +145,8 @@ void parseOptions(int argc, char *argv[]) {
       ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
       ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
-      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact");
+      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
+      ("fullhelp", "More detailed help");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -126,9 +165,11 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("prefix"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix"))) {
       cerr << "Usage- anm [options] model-name output-prefix\n";
       cerr << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(-1);
     }
 

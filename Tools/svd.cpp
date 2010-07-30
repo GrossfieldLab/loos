@@ -39,15 +39,18 @@ using namespace loos;
 
 #if defined(__linux__)
 extern "C" {
+  void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);
   void sgesvd_(char*, char*, int*, int*, float*, int*, float*, float*, int*, float*, int*, float*, int*, int*);
 }
 #endif
 
+
 typedef float svdreal;
+#define SVDFUNC  sgesvd_
+
 
 typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
 
-#define SVDFUNC  sgesvd_
 
 string model_name, traj_name;
 string alignment_string, svd_string;
@@ -241,7 +244,12 @@ int main(int argc, char *argv[]) {
     writeAsciiMatrix(prefix + "_A.asc", A, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
-  cerr << argv[0] << ": Allocating space... (" << m << "," << n << ") for " << estimate/megabytes << "Mb\n";
+  cerr << boost::format("%s: Allocating estimated %.2f MB for %d x %d SVD\n")
+    % argv[0]
+    % (estimate / megabytes)
+    % m
+    % n;
+
   char jobu = 'A', jobvt = 'A';
   f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
   svdreal prework[10], *work;
@@ -249,7 +257,7 @@ int main(int argc, char *argv[]) {
   Matrix U(m,m);
   Matrix S(sn,1);
   Matrix Vt(n,n);
-
+  
   // First, request the optimal size of the work array...
   SVDFUNC(&jobu, &jobvt, &m, &n, A.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
   if (info != 0) {
@@ -281,7 +289,7 @@ int main(int argc, char *argv[]) {
   MDuple orig(0,0);
   MDuple Usize(m,m);
   MDuple Ssize(sn,1);
-  MDuple Vsize(n,sn);
+  MDuple Vsize(sn,n);
 
   if (terms > 0) {
     if (terms > m || terms > sn || terms > n) {
@@ -290,7 +298,7 @@ int main(int argc, char *argv[]) {
     }
     Usize = MDuple(m, terms);
     Ssize = MDuple(terms, 1);
-    Vsize = MDuple(n, terms);
+    Vsize = MDuple(terms, n);
   }
 
   cerr << argv[0] << ": Writing results...\n";

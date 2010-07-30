@@ -21,7 +21,7 @@
 
 Import('env')
 clone = env.Clone()
-clone.Append(LIBS = ['loos'])
+clone.Prepend(LIBS = ['loos'])
 
 
 ### Major uglage ensues...  Close your eyes if you're squeamish...
