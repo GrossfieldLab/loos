@@ -56,17 +56,17 @@ public:
     if (springs == 0)
       throw(std::runtime_error("No spring function defined for hessian!"));
 
-    loos::GCoord u = nodes[j]->coords();
-    loos::GCoord v = nodes[i]->coords();
-    loos::GCoord d = u - v;
+    loos::GCoord u = nodes[i]->coords();
+    loos::GCoord v = nodes[j]->coords();
+    loos::GCoord d = v - u;
     
     loos::DoubleMatrix K = springs->constant(u, v, d);
     loos::DoubleMatrix B(3, 3);
     for (uint y=0; y<3; ++y)
       for (uint x=0; x<3; ++x)
-        B(y, x) = d[y]*d[x] * K(y,x);
+        B(x, y) = d[x]*d[y] * K(x,y);
 
-    return(K);
+    return(B);
   }
 
 
