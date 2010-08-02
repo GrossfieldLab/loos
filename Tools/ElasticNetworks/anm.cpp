@@ -210,19 +210,22 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
-  SuperBlock* blocker = 0;
+  SpringFunction* spring = 0;
   if (parameter_free)
-    blocker = new DistanceWeight(subset, power);
+    spring = new DistanceWeight(power);
   else if (hca_method) {
     if (user_defined_hca_constants)
-      blocker = new HCA(subset, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
+      spring = new HCA(hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
     else
-      blocker = new HCA(subset);
+      spring = new HCA;
   } else
-    blocker = new DistanceCutoff(subset, cutoff);
+    spring = new DistanceCutoff(cutoff);
+
+  SuperBlock* blocker = new SuperBlock(spring, subset);
 
   DoubleMatrix H = hessian(blocker);
   delete blocker;
+  delete spring;
 
   ScientificMatrixFormatter<double> sp(24, 18);
 

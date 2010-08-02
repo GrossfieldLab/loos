@@ -37,105 +37,45 @@
 
 #include <loos.hpp>
 
+#include "spring_functions.hpp"
+
 
 //! Base class for defining different methods of adjusting spring constants within the Hessian...
-/**
- * Uses NVI idiom
- */
 
 class SuperBlock {
 public:
-  //! Constructor; must pass the model we're going to work on
-  SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist), warned_negative(false) { }
+  SuperBlock(SpringFunction* func, const loos::AtomicGroup& nodelist) : springs(func), nodes(nodelist) { }
   virtual ~SuperBlock() { }
-  
-  //! Computes a 3x3 superblock
-  loos::DoubleMatrix block(const uint j, const uint i) {
-    if (j >= size() || i >= size())
-      throw(std::range_error("Invalid indices into SuperBlock"));
-    return(blockImpl(j, i));
-  }
-
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
-  //! Handles negative spring constants, issuing a one-time warning
-  /**
-   * This handles negative spring constants by issuing a one-time
-   * warning and by returning what the new spring constant should be.
-   *
-   * Override this to change the behavior of negative springs,
-   * however, this mechanism my change in future releases...
-   */
-  virtual double negativeSprings(const double k) {
-    if (!warned_negative) {
-      warned_negative = true;
-      std::cerr << "***WARNING***  There are negative spring constants that will be set to zero.\n";
-    }
+  virtual loos::DoubleMatrix block(const uint j, const uint i) {
+    if (i >= size() || j >= size())
+      throw(std::runtime_error("Invalid index in Hessian SuperBlock"));
 
-    return(0.0);
+    if (springs == 0)
+      throw(std::runtime_error("No spring function defined for hessian!"));
+
+    loos::GCoord u = nodes[j]->coords();
+    loos::GCoord v = nodes[i]->coords();
+    loos::GCoord d = u - v;
+    
+    loos::DoubleMatrix K = springs->constant(u, v, d);
+    loos::DoubleMatrix B(3, 3);
+    for (uint y=0; y<3; ++y)
+      for (uint x=0; x<3; ++x)
+        B(y, x) = d[y]*d[x] * K(y,x);
+
+    return(K);
   }
 
 
 protected:
+  SpringFunction* springs;
   loos::AtomicGroup nodes;
-
-private:
-  //! Polymorphic super-block function
-  virtual loos::DoubleMatrix blockImpl(const uint j, const uint i) =0;
-
-  bool warned_negative;
 };
 
 
-
-//! Use a constant spring and a distance cutoff
-class DistanceCutoff : public SuperBlock {
-public:
-  DistanceCutoff(const loos::AtomicGroup& nodelist, const double r) : SuperBlock(nodelist), radius(r*r) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-  double radius;
-};
-
-
-//! Spring constant is a function of distance raised to a power (see Yang et al, PNAS (2009) 106:12347)
-class DistanceWeight : public SuperBlock {
-public:
-  DistanceWeight(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), power(-2.0) { }
-  DistanceWeight(const loos::AtomicGroup& nodelist, const double power_) : SuperBlock(nodelist), power(power_) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-  double power;
-};
-
-
-//! Spring constant is an exponential function of distance
-class ExponentialDistance : public SuperBlock {
-public:
-  ExponentialDistance(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), scale(-1.0) { }
-  ExponentialDistance(const loos::AtomicGroup& nodelist, const double scale_) : SuperBlock(nodelist), scale(scale_) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-  double scale;
-};
-
-
-//! Use HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37
-class HCA : public SuperBlock {
-public:
-  HCA(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist),
-                                           cutoff(4.0), k1(205.5), k2(571.2),
-                                           k3(305.9e3), k4(6) { }
-
-  HCA(const loos::AtomicGroup& nodelist, const double cut, const double a, const double b, const double c, const double d) :
-    SuperBlock(nodelist),
-    cutoff(cut), k1(a), k2(b), k3(c), k4(d) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-
-  double cutoff, k1, k2, k3, k4;
-};
 
 loos::DoubleMatrix hessian(SuperBlock* block);
 

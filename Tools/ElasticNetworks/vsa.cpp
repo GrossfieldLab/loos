@@ -459,21 +459,25 @@ int main(int argc, char *argv[]) {
   // Insanely high precision output
   ScientificMatrixFormatter<double> sp(24,18);
 
-  // Determine how we're going to weight the Hessian's spring constants...
-  SuperBlock* blocker = 0;
+
+  // Determine which kind of scaling to apply to the Hessian...
+  SpringFunction* spring = 0;
   if (parameter_free)
-    blocker = new DistanceWeight(composite, power);
+    spring = new DistanceWeight(power);
   else if (hca_method) {
     if (user_defined_hca_constants)
-      blocker = new HCA(composite, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
+      spring = new HCA(hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
     else
-      blocker = new HCA(composite);
+      spring = new HCA;
   } else
-    blocker = new DistanceCutoff(composite, cutoff);
+    spring = new DistanceCutoff(cutoff);
 
-  // Now build the Hessian
+  SuperBlock* blocker = new SuperBlock(spring, composite);
+
   DoubleMatrix H = hessian(blocker);
   delete blocker;
+  delete spring;
+
 
   // Now, burst out the subparts...
   uint l = subset.size() * 3;

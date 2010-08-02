@@ -31,103 +31,23 @@
 */
 
 
+#include "spring_functions.hpp"
 #include "hessian.hpp"
 
 
 using namespace loos;
 
 
-DoubleMatrix DistanceCutoff::blockImpl(const uint i, const uint j) {
-
-  DoubleMatrix B(3,3);
-  GCoord u = nodes[i]->coords();
-  GCoord v = nodes[j]->coords();
-  GCoord d = v - u;
-
-  double s = d.length2();
-  if (s <= radius) {
-
-    for (int j=0; j<3; ++j)
-      for (int i=0; i<3; ++i)
-        B(i,j) = d[i]*d[j] / s;
-  }
-
-  return(B);
-}
 
 
-DoubleMatrix DistanceWeight::blockImpl(const uint i, const uint j) {
-
-  DoubleMatrix B(3,3);
-  GCoord u = nodes[i]->coords();
-  GCoord v = nodes[j]->coords();
-  GCoord d = v - u;
-
-  double s = d.length();
-  s = pow(s, power);
-  for (int j=0; j<3; ++j)
-    for (int i=0; i<3; ++i)
-      B(i,j) = d[i]*d[j] * s;
-
-  return(B);
-}
-
-
-
-DoubleMatrix ExponentialDistance::blockImpl(const uint i, const uint j) {
-
-  DoubleMatrix B(3,3);
-  GCoord u = nodes[i]->coords();
-  GCoord v = nodes[j]->coords();
-  GCoord d = v - u;
-
-  double s = d.length();
-  s = exp(scale * s);
-
-  for (int j=0; j<3; ++j)
-    for (int i=0; i<3; ++i)
-      B(i,j) = d[i]*d[j] * s;
-
-  return(B);
-}
-
-// Method based on Hinsen et al, Harmonicity in slow protein dynamics. (2000) Chem Phys 261:25-37
-DoubleMatrix HCA::blockImpl(const uint i, const uint j) {
-
-  DoubleMatrix B(3,3);
-  GCoord u = nodes[i]->coords();
-  GCoord v = nodes[j]->coords();
-  GCoord d = v - u;
-
-  double s = d.length();
-  double k;
-  if (s <= cutoff)
-    k = k1 * s - k2;
-  else
-    k = k3 * pow(s, -k4);
-
-  if (k < 0.0)
-    k = negativeSprings(k);
-
-  for (int j=0; j<3; ++j)
-    for (int i=0; i<3; ++i)
-      B(i,j) = d[i]*d[j] * k;
-
-  return(B);
-
-
-}
-
-
-
-DoubleMatrix hessian(SuperBlock* blockMethod) {
+DoubleMatrix hessian(SuperBlock* block) {
   
-  uint n = blockMethod->size();
+  uint n = block->size();
   DoubleMatrix H(3*n,3*n);
 
   for (uint i=1; i<n; ++i) {
     for (uint j=0; j<i; ++j) {
-      DoubleMatrix B = blockMethod->block(i, j);
+      DoubleMatrix B = block->block(i, j);
       for (uint x = 0; x<3; ++x)
         for (uint y = 0; y<3; ++y) {
           H(i*3 + y, j*3 + x) = -B(y, x);
