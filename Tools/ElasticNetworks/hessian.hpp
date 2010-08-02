@@ -44,6 +44,7 @@
 
 class SuperBlock {
 public:
+  SuperBlock() : springs(0) { }
   SuperBlock(SpringFunction* func, const loos::AtomicGroup& nodelist) : springs(func), nodes(nodelist) { }
   virtual ~SuperBlock() { }
 
@@ -75,6 +76,55 @@ protected:
   loos::AtomicGroup nodes;
 };
 
+
+class SuperBlockDecorator : public SuperBlock {
+public:
+  SuperBlockDecorator(SuperBlock* b) : decorated(b) { }
+
+protected:
+  SuperBlock *decorated;
+};
+
+
+
+class BoundSuperBlock : public SuperBlockDecorator {
+public:
+  BoundSuperBlock(SuperBlock* b, SpringFunction* bs, loos::Math::Matrix<int>& cm) :
+    SuperBlockDecorator(b),
+    bound_spring(bs),
+    connectivity(cm) { }
+
+  loos::DoubleMatrix block(const uint j, const uint i) {
+    if (j >= connectivity.rows() || i >= connectivity.cols())
+      throw(std::runtime_error("Invalid connectivity index"));
+    if (j >= size() || i >= size())
+      throw(std::runtime_error("Invalid index in Hessian SuperBlock"));
+    if (bound_spring == 0)
+      throw(std::runtime_error("No spring function defined for bound hessian"));
+
+    loos::DoubleMatrix B(3, 3);
+    if (connectivity(j, i)) {
+      loos::GCoord u = nodes[i]->coords();
+      loos::GCoord v = nodes[j]->coords();
+      loos::GCoord d = v - u;
+
+    
+      loos::DoubleMatrix K = springs->constant(u, v, d);
+      for (uint y=0; y<3; ++y)
+        for (uint x=0; x<3; ++x)
+          B(x, y) = d[x]*d[y] * K(x,y);
+    } else
+      B = decorated->block(j, i);
+
+    return(B);
+  }
+
+
+private:
+  SpringFunction* bound_spring;
+  loos::Math::Matrix<int> connectivity;
+
+};
 
 
 loos::DoubleMatrix hessian(SuperBlock* block);
