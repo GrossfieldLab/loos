@@ -23,7 +23,7 @@ To install in a user-specified location:
 
 
 
---= Fedora =--
+------= Fedora =------
 
 You will need to install SCons, lapack, atlas, and boost (the
 developer's versions).  These can be easily installed using "yum":
@@ -32,7 +32,7 @@ developer's versions).  These can be easily installed using "yum":
    yum install boost.x86_64 boost-devel.x86_64
 
 
---= Ubuntu =--
+------= Ubuntu =------
 
 You will need to install SCons, lapack, atlas, and boost.  Using
 aptitude (or your favorite tool), install the "libboost-dev" package
@@ -44,9 +44,48 @@ and edit it, uncommenting the lines marked for Ubuntu.
 Alternatively, verify the names of the boost regex and program_options
 libraries and set these appropriately in your "custom.py" file.
 
+* The following additional installation tips come courtesy of Dow
+  Hurst:
+
+To get the most currently available version of scons for Ubuntu Hardy 8.04 you have to add a
+PPA repository.  Do this by getting the server key first, and then add the repository to the
+/etc/apt/sources.list file.  The command and repository listing is below:
+
+sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com B5140445
+
+# grep geek /etc/apt/sources.list
+#  Added medigeek experimental repository on 20100622, done by Dow Hurst
+deb http://ppa.launchpad.net/medigeek/experimental/ubuntu hardy main 
+deb-src http://ppa.launchpad.net/medigeek/experimental/ubuntu hardy main
+
+apt-get update
+
+apt-get install scons libboost-dev libboost-date-time-dev libboost-doc libboost-filesystem-dev libboost-graph-dev \
+                libboost-iostreams-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev  \
+                libatlas-base-dev libatlas-headers liblapack-dev
+
+Copy custom.py-proto to custom.py
+
+Modify custom.py for the BOOSTREGEX and BOOSTPO variables so the lines look like this:
+
+### This is the name of the boost-regex library
+## Uncomment the following for Ubuntu
+BOOSTREGEX='boost_regex-mt'
 
 
---= openSUSE =--
+### This is the name of the boost-program-options Library
+## Uncomment the following for Ubuntu
+BOOSTPO='boost_program_options-mt'
+
+Then issue the following command using sudo:
+
+sudo scons release=1 PREFIX=/opt/LOOS-1.5.4 install
+
+If you have root access then you can forget the sudo and issue the command without it.
+
+
+
+------= openSUSE =------
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
@@ -57,7 +96,7 @@ favorite package manager), install the following:
 
 
 
---= MACOS X (10.4+) =--
+-----= MACOS X (10.4+) =-----
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  You can find it on your MacOS X install disk or,
