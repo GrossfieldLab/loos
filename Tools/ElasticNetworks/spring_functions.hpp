@@ -8,6 +8,18 @@
 
 
 
+// These classes define the various possible spring functions used in
+// creating the Hessian.  All derived from the SpringFunction base
+// class.  This class returns a 3x3 DoubleMatrix containing the spring
+// constants...
+//
+// The SpringFunction::constant() function takes the coords of the two
+// nodes plus their difference vector (since it'll almost always be
+// computed prior to calling SpringFunction, no since in recomputing
+// it).
+//
+
+
 class SpringFunction {
 public:
   SpringFunction() : warned(false) { }
@@ -18,6 +30,10 @@ public:
   virtual loos::DoubleMatrix constant(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) =0;
 
 protected:
+
+  // Check for negative spring-constants.  If found, issue a one-time
+  // warning, but only for this specific spring function...
+
   double checkConstant(double d) {
     if (d < 0.0 && !warned) {
       warned = true;
@@ -32,6 +48,17 @@ private:
   bool warned;
 };
 
+
+
+
+// Many spring functions are actually uniform over the 3x3 matrix.
+// The UniformSpringFunction uses the NVI idiom
+// (http://www.gotw.ca/publications/mill18.htm) to allow subclasses to
+// only return a double value, which then gets copied into all
+// elements of the 3x3 matrix.
+//
+// Note: this means you override the constantImpl() implementation
+// function, NOT the public constant() function.
 
 class UniformSpringFunction : public SpringFunction {
 public:
@@ -51,6 +78,10 @@ private:
 
 
 
+// The following are all uniform spring constants...
+
+
+// Basic distance cutoff for "traditional" ENM
 
 class DistanceCutoff : public UniformSpringFunction {
 public:
@@ -71,6 +102,7 @@ private:
 };
 
 
+// Distance weighting (i.e. ||u-v||^p)
 
 class DistanceWeight : public UniformSpringFunction {
 public:
@@ -89,6 +121,9 @@ private:
 
 
 
+
+// Exponential distance weighting (i.e. exp(k * ||u-v||))
+
 class ExponentialDistance : public UniformSpringFunction {
 public:
   ExponentialDistance(const double s) : scale(s) { }
@@ -105,6 +140,10 @@ private:
 };
 
 
+
+
+
+// HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37)
 
 class HCA : public UniformSpringFunction {
 public:
