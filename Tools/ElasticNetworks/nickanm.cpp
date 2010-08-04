@@ -99,7 +99,7 @@ bool user_defined_hca_constants(false);
  *Adding functionality for choosing which spring to use:
  *
  */
-SpringFunction chooseSpring(const string chooseSpringFunction) {
+SpringFunction chooseBondedSpring(const string chooseSpringFunction) {
   if (chooseSpringFunction == "HCA")
     return HCA;
   if (chooseSpringFunction == "DistanceCutoff")
@@ -112,7 +112,20 @@ SpringFunction chooseSpring(const string chooseSpringFunction) {
     cout << "That is not a valid option.  Using default..." << endl;
     return ExponentialDistance;
   }
-  
+}
+SpringFunction chooseNonbondedSpring(const string chooseSpringFunction) {
+  if (chooseSpringFunction == "HCA")
+    return HCA;
+  if (chooseSpringFunction == "DistanceCutoff")
+    return DistanceCutoff;
+  if (chooseSpringFunction == "DistanceWeight")
+    return DistanceWeight;
+  if (chooseSpringFunction == "ExponentialDistance")
+    return ExponentialDistance;
+  else{
+    cout << "That is not a valid option.  Using default..." << endl;
+    return ExponentialDistance;
+  }
 }
 
 
@@ -231,12 +244,8 @@ void parseOptions(int argc, char *argv[]) {
 
 
 int main(int argc, char *argv[]) {
-  /*
-   *
-   *Impleminting the decorator
-   *
-   */
- 
+
+  
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
@@ -257,11 +266,28 @@ int main(int argc, char *argv[]) {
       blocker = new HCA(subset);
   } else
     blocker = new DistanceCutoff(subset, cutoff);
+
   /*
    *
    *Adding the connectivity map
    *
    */
+  Matrix connectivity_map();//how do we call this for the correct size???
+  if (subset.hasBonds()){
+    for (subset::iterator j = subset.begin(); subset.end(); ++j){
+      vector<int> jbonds = subset[j]->getBonds();
+      for (jbonds::iterator i = jbonds.begin(); jbonds.end(); ++i){
+	
+      }
+    }
+  }
+  /*
+   *
+   *Impleminting the decorator
+   *
+   */
+  SuperBlock* bondedTerm = new SuperBlock(chooseBondedSpring, subset);
+  BoundSuperBlock* nonbondedTerm = new BoundSuperBlock(bondedTerm, chooseNonbondedSpring, connectivity_matrix);
 
 
 
@@ -319,4 +345,6 @@ int main(int argc, char *argv[]) {
   Matrix Hi = MMMultiply(Vt, U, true, true);
   writeAsciiMatrix(prefix + "_Hi.asc", Hi, header, false, sp);
 
+  delete[] nonbondedTerm;
+  delete[] bondedTerm;
 }
