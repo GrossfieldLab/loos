@@ -3,6 +3,10 @@
 //
 
 
+#if !defined(ANM_LIB_HPP)
+#define ANM_LIB_HPP
+
+
 #include "enm-lib.hpp"
 
 
@@ -44,3 +48,7 @@ private:
   loos::DoubleMatrix rsv_;
 
 };
+
+
+
+#endif
