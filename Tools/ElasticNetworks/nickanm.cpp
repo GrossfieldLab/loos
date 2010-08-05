@@ -184,7 +184,7 @@ void parseOptions(int argc, char *argv[]) {
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("fullhelp", "More detailed help")
-      ("bonded_function,b", po::value<string>(&bSpringFunc)->default_value("ExponentialDistance"), "Which spring funtion should be used for bonded nodes")
+      ("bonded_function,b", po::value<string>(&bsf)->default_value("ExponentialDistance"), "Which spring funtion should be used for bonded nodes")
       ("nonbonded_function,n", po::value<string>(&nbSpringFunc)->default_value("ExponentialDistance"), "Which spring funtion should be used for NONbonded nodes");
 
 
@@ -256,8 +256,12 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
+  SpringFunction* bound_spring;
+  SpringFunction* nonbound_spring;
+
+  // Corrected...
   if (bsf) 
-    SpringFunction::springFactory(bsf);
+    bound_spring = springFactor(bsf);
   if (nbsf)
     SpringFunction::springFactory(nbsf);
 
