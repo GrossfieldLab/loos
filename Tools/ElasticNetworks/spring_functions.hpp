@@ -1,3 +1,10 @@
+/*
+  Spring Functions from Elastic Network Tools in LOOS
+  (c) 2010 Tod D. Romo, Grossfield Lab, URMC
+*/
+
+
+
 #if !defined(SPRING_FUNCTIONS_HPP)
 #define SPRING_FUNCTIONS_HPP
 
@@ -86,6 +93,7 @@ private:
 class DistanceCutoff : public UniformSpringFunction {
 public:
   DistanceCutoff(const double& r) : radius(r*r) { }
+  DistanceCutoff() : radius(15.0*15.0) { }
 
   std::string name() const { return("DistanceCutoff"); }
 
@@ -107,6 +115,7 @@ private:
 class DistanceWeight : public UniformSpringFunction {
 public:
   DistanceWeight(const double p) : power(p) { }
+  DistanceWeight() : power(-2.0) { }
 
   std::string name() const { return("DistanceWeight"); }
 
@@ -127,6 +136,7 @@ private:
 class ExponentialDistance : public UniformSpringFunction {
 public:
   ExponentialDistance(const double s) : scale(s) { }
+  ExponentialDistance() : scale(-2.0) { }
 
   std::string name() const { return("ExponentialDistance"); }
 
@@ -144,6 +154,7 @@ private:
 
 
 // HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37)
+// Note: The defaults are the original Hinsen constants...
 
 class HCA : public UniformSpringFunction {
 public:
@@ -168,6 +179,10 @@ private:
   double rcut, k1, k2, k3, k4;
 };
 
+
+
+
+SpringFunction* springFactor(const std::string& spring_desc);
 
 
 #endif
