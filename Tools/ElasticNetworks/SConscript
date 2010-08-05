@@ -42,10 +42,10 @@ PREFIX = env['PREFIX']
 
 # Special apps...
 
-vsa = clone.Program("vsa", ["vsa.cpp", "hessian.cpp", "spring_functions.cpp"])
+vsa = clone.Program("vsa", ["vsa.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(vsa)
 
-anm = clone.Program("anm", ["anm.cpp", "hessian.cpp", "spring_functions.cpp"])
+anm = clone.Program("anm", ["anm.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(anm)
 
 

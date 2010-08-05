@@ -1,7 +1,7 @@
 /*
   enm-lib
 
-  (c) 2009 Tod D. Romo, Grossfield Lab
+  (c) 2010 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
@@ -38,18 +38,41 @@
 #if !defined(ENMLIB_HPP)
 #define ENMLIB_HPP
 
-#include <loos_defs.hpp>
-#include <GCoord.hpp>
-#include <AtomicGroup.hpp>
-#include <Selectors.hpp>
-
-#include <vector>
+#include <loos.hpp>
 
 
-std::vector<loos::AtomicGroup> sideChainCentroids(const loos::AtomicGroup& grp, int maxid = 0, int maxresid = 0,
-                                            const std::string& name = "SID", const std::string& resname = "SID", const std::string& segid = "SIDE");
+
+#if defined(__linux__)
+extern "C" {
+  void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
+  void dpotrf_(char*, int*, double*, int*, int*);
+  void dtrmm_(char*, char*, char*, char*, int*, int*, double*, double*, int*, double*, int*);
+}
+#endif
 
 
+
+typedef std::pair<uint,uint> Range;
+
+loos::DoubleMatrix submatrix(const loos::DoubleMatrix& M, const Range& rows, const Range& cols);
+
+void normalizeColumns(loos::DoubleMatrix& A);
+
+
+// Map masses from one group onto another...  Minimal error checking...
+void copyMasses(loos::AtomicGroup& target, const loos::AtomicGroup& source);
+
+
+
+// Copy the masses from a PSF onto a group
+void massFromPSF(loos::AtomicGroup& grp, const std::string& name);
+
+// The masses are stored in the occupancy field of a PDB...
+void massFromOccupancy(loos::AtomicGroup& grp);
+
+
+// Build the 3n x 3n diagonal mass matrix for a group
+loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
 
 
