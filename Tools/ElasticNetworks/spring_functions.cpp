@@ -14,35 +14,48 @@
 //
 // name[,const1[,const2[,...]]]
 //
-//
 // hca,4.0,1,2,3,4
 // power,-2.0
 //
-
-
-
-std::vector<std::string> splitCommaSeparatedList(const std::string& s) {
-  std::vector<std::string> tokens;
-  // Split of comma-separated string into a vector of strings...
-
-  return(tokens);
+void splitCommaSeparatedList(const std::string& s, std::vector<std::string>& holder){
+  std::string::size_type prev =s.find_first_not_of(",", 0);
+  std::string::size_type pos = s.find_first_of(",", prev);
+    
+  while (pos != std::string::npos || prev != std::string::npos){
+    holder.push_back(s.substr(prev, pos-prev));
+    prev = s.find_first_not_of(",", pos);
+    pos = s.find_first_of(",", prev);
+  } 
 }
+
 
 SpringFunction* springFactory(const std::string& spring_desc) {
 
   std::vector<std::string> list = splitCommaSeparatedList(spring_desc);
 
-  if (list[0] == "weighted") {
+  if (list[0] == "distance") {
     if (list.size() > 1)
-      return(new DistanceWeight(loos::parseStringAs<double>(list[1])));
-    return(new DistanceWeight);
+      return(new DistanceCutoff(parseStringAs<double>(list[1])));//will this jsut send list[1] or does parseStringAs concat??  this won't work it list[1] is not a double
+    return(new DistanceCutoff);
   }
 
-  if (spring_desc == "exponential")
-    return(new ExponentialDistance);
+  if (list[0] == "weighted"){
+    if (list.size() > 1)
+      return(new DistanceWeighted(parseStringAs<double>(list[1])));
+    return(new DistanceWeighted);
+  }
 
-  if (spring_desc == "hca" || spring_desc == "HCA")
+  if (list[0] == "exponential"){
+    if (list.size() > 1)
+      return(new ExponentialDistance(parseStringAs<double>(list[1])));
+    return(new ExponentialDistance);
+  }
+  
+  if (list[0] == "hca" || spring_desc == "HCA"){
+    if (list.size() > 1)
+      return(new HCA(parseStringAs<double>(list[1])));
     return(new HCA);
+  }
     
 
 
