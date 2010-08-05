@@ -80,9 +80,10 @@ loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
 class ElasticNetworkModel {
 public:
-  ENM(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), debugging_(false), verbosity_(0) { }
-  virtual ~ENM() { }
+  ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), debugging_(false), verbosity_(0) { }
+  virtual ~ElasticNetworkModel() { }
 
+  // Should we allow this?
   void setSuperBlockFunction(SuperBlock* p) { blocker_ = p; }
 
   virtual void solve() =0;
