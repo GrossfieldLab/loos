@@ -256,6 +256,14 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
+  if (bsf) 
+    SpringFunction::springFactory(bsf);
+  if (nbsf)
+    SpringFunction::springFactory(nbsf);
+
+  /////////////////////////////////////////////
+  //   old method
+  /////////////////////////////////////////////
   SuperBlock* blocker = 0;
   if (parameter_free)
     blocker = new DistanceWeight(subset, power);
@@ -266,7 +274,7 @@ int main(int argc, char *argv[]) {
       blocker = new HCA(subset);
   } else
     blocker = new DistanceCutoff(subset, cutoff);
-
+  ////////////////////////////////////////////////
   /*
    *
    *Adding the connectivity map
