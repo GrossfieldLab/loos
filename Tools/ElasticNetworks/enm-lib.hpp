@@ -39,7 +39,7 @@
 #define ENMLIB_HPP
 
 #include <loos.hpp>
-
+#include "hessian.hpp"
 
 
 #if defined(__linux__)
@@ -74,6 +74,89 @@ void massFromOccupancy(loos::AtomicGroup& grp);
 // Build the 3n x 3n diagonal mass matrix for a group
 loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
+
+
+
+
+class ElasticNetworkModel {
+public:
+  ENM(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), debugging_(false), verbosity_(0) { }
+  virtual ~ENM() { }
+
+  void setSuperBlockFunction(SuperBlock* p) { blocker_ = p; }
+
+  virtual void solve() =0;
+
+
+
+  void prefix(const std::string& s) { prefix_ = s; }
+  std::string prefix() const { return(prefix_); }
+
+  void debugging(const bool b) { debugging_ = b; }
+  bool debugging() const { return(debugging_); }
+
+  void verbosity(const int i) { verbosity_ = i; }
+  int verbosity() const { return(verbosity_); }
+
+  const loos::DoubleMatrix& eigenvectors() const { return(eigenvecs_); }
+  const loos::DoubleMatrix& eigenvalues() const { return(eigenvals_); }
+  const loos::DoubleMatrix& hessian() const { return(hessian_); }
+
+protected:
+  
+
+  void buildHessian() {
+  
+    uint n = blocker_->size();
+    loos::DoubleMatrix hessian_(3*n,3*n);
+
+    for (uint i=1; i<n; ++i) {
+      for (uint j=0; j<i; ++j) {
+        loos::DoubleMatrix B = blocker_->block(i, j);
+        for (uint x = 0; x<3; ++x)
+          for (uint y = 0; y<3; ++y) {
+            hessian_(i*3 + y, j*3 + x) = -B(y, x);
+            hessian_(j*3 + x, i*3 + y) = -B(x ,y);
+          }
+      }
+    }
+
+    // Now handle the diagonal...
+    for (uint i=0; i<n; ++i) {
+      loos::DoubleMatrix B(3,3);
+      for (uint j=0; j<n; ++j) {
+        if (j == i)
+          continue;
+      
+        for (uint x=0; x<3; ++x)
+          for (uint y=0; y<3; ++y)
+            B(y,x) += hessian_(j*3 + y, i*3 + x);
+      }
+
+      for (uint x=0; x<3; ++x)
+        for (uint y=0; y<3; ++y)
+          hessian_(i*3 + y, i*3 + x) = -B(y,x);
+    }
+
+  }
+
+
+protected:
+  // Arguably, some of the following should be private rather than
+  // protected...  But for now, we'll just cheat and make 'em all
+  // protected...   Nyah, nyah!
+  SuperBlock* blocker_;
+  std::string name_;
+  std::string prefix_;
+  bool debugging_;
+  int verbosity_;
+
+  loos::DoubleMatrix eigenvecs_;
+  loos::DoubleMatrix eigenvals_;
+
+  loos::DoubleMatrix hessian_;
+  
+};
 
 
 #endif
