@@ -76,7 +76,7 @@ typedef Math::Matrix<double, Math::ColMajor> Matrix;
 // Globals...  Icky poo!
 
 string selection;
-string bSpringFunc, nbSpringFunc;
+string bsf, nbsf;
 
 string model_name;
 string prefix;
@@ -94,39 +94,6 @@ bool debug;
 
 double hca_constants[5];
 bool user_defined_hca_constants(false);
-/*
- *
- *Adding functionality for choosing which spring to use:
- *
- */
-SpringFunction chooseBondedSpring(const string chooseSpringFunction) {
-  if (chooseSpringFunction == "HCA")
-    return HCA;
-  if (chooseSpringFunction == "DistanceCutoff")
-    return DistanceCutoff;
-  if (chooseSpringFunction == "DistanceWeight")
-    return DistanceWeight;
-  if (chooseSpringFunction == "ExponentialDistance")
-    return ExponentialDistance;
-  else{
-    cout << "That is not a valid option.  Using default..." << endl;
-    return ExponentialDistance;
-  }
-}
-SpringFunction chooseNonbondedSpring(const string chooseSpringFunction) {
-  if (chooseSpringFunction == "HCA")
-    return HCA;
-  if (chooseSpringFunction == "DistanceCutoff")
-    return DistanceCutoff;
-  if (chooseSpringFunction == "DistanceWeight")
-    return DistanceWeight;
-  if (chooseSpringFunction == "ExponentialDistance")
-    return ExponentialDistance;
-  else{
-    cout << "That is not a valid option.  Using default..." << endl;
-    return ExponentialDistance;
-  }
-}
 
 
 void fullHelp() {
@@ -184,8 +151,8 @@ void parseOptions(int argc, char *argv[]) {
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("fullhelp", "More detailed help")
-      ("bonded_function,b", po::value<string>(&bsf)->default_value("ExponentialDistance"), "Which spring funtion should be used for bonded nodes")
-      ("nonbonded_function,n", po::value<string>(&nbSpringFunc)->default_value("ExponentialDistance"), "Which spring funtion should be used for NONbonded nodes");
+      ("bonded_function,b", po::value<string>(&bsf)->default_value("exponential"), "Which spring funtion should be used for bonded nodes")
+      ("nonbonded_function,n", po::value<string>(&nbsf)->default_value("exponential"), "Which spring funtion should be used for NONbonded nodes");
 
 
     po::options_description hidden("Hidden options");
@@ -217,11 +184,11 @@ void parseOptions(int argc, char *argv[]) {
     if (parameter_free)
       cutoff = numeric_limits<double>::max();
 
-    if (vm.count("bonded_function"))
-      string bsf = vm["bonded_function"].as<string>();
+    // if (vm.count("bonded_function"))
+    //   string bsf = vm["bonded_function"].as<string>();
     
-    if (vm.count("nonbonded_function"))
-      string nbsf = vm["nonbonded_function"].as<string>();
+    // if (vm.count("nonbonded_function"))
+    //   string nbsf = vm["nonbonded_function"].as<string>();
 
     if (vm.count("hparams")) {
       string s = vm["hparams"].as<string>();
@@ -259,37 +226,39 @@ int main(int argc, char *argv[]) {
   SpringFunction* bound_spring;
   SpringFunction* nonbound_spring;
 
-  // Corrected...
   if (bsf) 
-    bound_spring = springFactor(bsf);
+    bound_spring = springFactory(bsf);
   if (nbsf)
-    SpringFunction::springFactory(nbsf);
+    nonbound_spring  = springFactory(nbsf);
 
   /////////////////////////////////////////////
   //   old method
   /////////////////////////////////////////////
-  SuperBlock* blocker = 0;
-  if (parameter_free)
-    blocker = new DistanceWeight(subset, power);
-  else if (hca_method) {
-    if (user_defined_hca_constants)
-      blocker = new HCA(subset, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
-    else
-      blocker = new HCA(subset);
-  } else
-    blocker = new DistanceCutoff(subset, cutoff);
+  // SuperBlock* blocker = 0;
+  // if (parameter_free)
+  //   blocker = new DistanceWeight(subset, power);
+  // else if (hca_method) {
+  //   if (user_defined_hca_constants)
+  //     blocker = new HCA(subset, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
+  //   else
+  //     blocker = new HCA(subset);
+  // } else
+  //   blocker = new DistanceCutoff(subset, cutoff);
   ////////////////////////////////////////////////
   /*
    *
    *Adding the connectivity map
    *
    */
-  Matrix connectivity_map();//how do we call this for the correct size???
+  Matrix connectivity_map(subset.size(), subset.size());//how do we call this for the correct size???
   if (subset.hasBonds()){
-    for (subset::iterator j = subset.begin(); subset.end(); ++j){
+    for (int j = 0; subset.size(); ++j){
       vector<int> jbonds = subset[j]->getBonds();
-      for (jbonds::iterator i = jbonds.begin(); jbonds.end(); ++i){
-	
+      for (int i = 0; jbonds.size(); ++i){
+	if (subset[j]->getBonds() == subset[i]->getBonds())
+	  connectivity_map(j,i) = 1;
+	else
+	  connectivity_map(j,i) = 0;
       }
     }
   }
@@ -300,10 +269,12 @@ int main(int argc, char *argv[]) {
    */
   SuperBlock* bondedTerm = new SuperBlock(chooseBondedSpring, subset);
   BoundSuperBlock* nonbondedTerm = new BoundSuperBlock(bondedTerm, chooseNonbondedSpring, connectivity_matrix);
+  //loop over connectivity_map
+  //if (j,i) = 1 than use bondedTerm if = 0 use nonbondedTerm
+  //does this get rid of the need for DoubleMatrix H??
+  
 
-
-
-
+  /////i think that this should be a boundsuperblock!!!!
   DoubleMatrix H = hessian(blocker);
   delete blocker;
 
