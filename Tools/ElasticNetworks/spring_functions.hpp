@@ -182,7 +182,7 @@ private:
 
 
 
-SpringFunction* springFactor(const std::string& spring_desc);
+SpringFunction* springFactory(const std::string& spring_desc);
 
 
 #endif
