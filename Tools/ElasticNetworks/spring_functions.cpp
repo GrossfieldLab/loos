@@ -46,14 +46,15 @@ SpringFunction* springFactory(const std::string& spring_desc) {
   }
 
   if (list[0] == "exponential"){
-    if (list.size() > 1)
-      return(new ExponentialDistance(parseStringAs<double>(list[1])));
+    //i don't think ExponentialDistance takes any additional args at this time....
+    // if (list.size() > 1)
+    //   return(new ExponentialDistance(parseStringAs<double>(list[1])));
     return(new ExponentialDistance);
   }
   
   if (list[0] == "hca" || spring_desc == "HCA"){
     if (list.size() > 1)
-      return(new HCA(parseStringAs<double>(list[1])));
+      return(new HCA(parseStringAs<double>(list[1]),parseStringAs<double>(list[2]),parseStringAs<double>(list[3]),parseStringAs<double>(list[4]),parseStringAs<double>(list[5])));
     return(new HCA);
   }
     
