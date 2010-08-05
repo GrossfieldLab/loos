@@ -22,27 +22,27 @@
 
 
 std::vector<std::string> splitCommaSeparatedList(const std::string& s) {
+  std::vector<std::string> tokens;
   // Split of comma-separated string into a vector of strings...
 
+  return(tokens);
 }
 
 SpringFunction* springFactory(const std::string& spring_desc) {
 
   std::vector<std::string> list = splitCommaSeparatedList(spring_desc);
 
-  if (list[0] == "distance") {
+  if (list[0] == "weighted") {
     if (list.size() > 1)
-      return(new DistanceWeighted(parseStringAs<double>(list[1])));
-    return(new DistanceWeighted);
+      return(new DistanceWeight(loos::parseStringAs<double>(list[1])));
+    return(new DistanceWeight);
   }
 
-  if (spring_desc == "weighted")
-    return(new DistanceWeighted);
   if (spring_desc == "exponential")
     return(new ExponentialDistance);
+
   if (spring_desc == "hca" || spring_desc == "HCA")
     return(new HCA);
-  if (spring_desc = "membrane")
     
 
 
