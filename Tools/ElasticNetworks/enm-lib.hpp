@@ -42,15 +42,6 @@
 #include "hessian.hpp"
 
 
-#if defined(__linux__)
-extern "C" {
-  void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
-  void dpotrf_(char*, int*, double*, int*, int*);
-  void dtrmm_(char*, char*, char*, char*, int*, int*, double*, double*, int*, double*, int*);
-}
-#endif
-
-
 
 typedef std::pair<uint,uint> Range;
 
