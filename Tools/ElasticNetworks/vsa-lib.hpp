@@ -21,10 +21,16 @@ extern "C" {
 
 class VSA : public ElasticNetworkModel {
 public:
-  VSA(SuperBlock* blocker, const uint subn, const bool massflag = false) : 
+  VSA(SuperBlock* blocker, const uint subn) : 
     ElasticNetworkModel(blocker),
-    subset_size_(subn),
-    massed_(massflag) { }
+    subset_size_(subn)
+  {}
+
+  VSA(SuperBlock* blocker, const uint subn, const loos::DoubleMatrix& M) :
+    ElasticNetworkModel(blocker),
+    subset_size(subn),
+    masses_(M)
+  {}
 
 
   void solve() {
@@ -41,12 +47,12 @@ public:
     DoubleMatrix Heei = Math::invert(Hee);
   
     // Build the effective Hessian
-    DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
+    Hssp_ = Hss - Hse * Heei * Hes;
 
     // Shunt in the event of using unit masses...  We can use the SVD to
     // to get the eigenpairs from Hssp
-    if (!massed_) {
-      boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp);
+    if (masses_.rows() == 0) {
+      boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp_);
 
       eigenvecs_ = boost::get<0>(svdresult);
       eigenvals_ = boost::get<1>(svdresult);
@@ -59,52 +65,61 @@ public:
 
 
     // Build the effective mass matrix
-    DoubleMatrix Ms = getMasses(subset);
-    DoubleMatrix Me = getMasses(environment);
-    DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
+    DoubleMatrix Ms = submatrix(masses_, Range(0, l), Range(0, l));
+    DoubleMatrix Me = submatrix(masses_, Range(l, n), Range(l, n));
+
+    Msp_ = Ms + Hse * Heei * Me * Heei * Hes;
 
     if (debug) {
       writeAsciiMatrix(prefix + "_Ms.asc", Ms, hdr, false, sp);
       writeAsciiMatrix(prefix + "_Me.asc", Me, hdr, false, sp);
-      writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr, false, sp);
+      writeAsciiMatrix(prefix + "_Msp.asc", Msp_, hdr, false, sp);
     }
 
     // Run the eigen-decomposition...
     if (verbosity > 0) {
-      cerr << "Running eigen-decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
+      cerr << "Running eigen-decomposition of " << Hssp_.rows() << " x " << Hssp_.cols() << " matrix ...";
       timer.start();
     }
     boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs;
-    eigenpairs = eigenDecomp(Hssp, Msp);
+    eigenpairs = eigenDecomp(Hssp_, Msp_);
 
-    DoubleMatrix Ds = boost::get<0>(eigenpairs);
+    eigenvals_ = boost::get<0>(eigenpairs);
     DoubleMatrix Us = boost::get<1>(eigenpairs);
 
     // Need to mass-weight the eigenvectors so they're orthogonal in R3...
     if (verbosity > 0)
       cerr << "mass weighting eigenvectors...";
 
-    DoubleMatrix MUs = massWeight(Us, Msp);
+    eigenvecs_ = massWeight(Us, Msp_);
 
     if (verbosity > 0) {
       timer.stop();
       cerr << "done\n";
       cerr << timer << endl;
     }
-
-    writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Us.asc", MUs, hdr, false, sp);
-
-
   }
   
 
+  void setMasses(const loos::DoubleMatrix& M) {
+    masses_ = M;
+  };
+
+
+  // Free up internal storage...
+  void free() {
+    masses_.reset();
+    Msp_.reset();
+    Hssp_.reset();
+  }
+
+  
 private:
   uint subset_size_;
+  DoubleMatrix masses_;
 
-
-
-
+  DoubleMatrix Msp_;
+  DoubleMatrix Hssp_;
 };
 
 
