@@ -56,19 +56,20 @@
 
 
 #include <loos.hpp>
-#include "hessian.hpp"
 
 #include <limits>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
 
+#include "hessian.hpp"
+#include "enm-lib.hpp"
+#include "anm-lib.hpp"
+
+
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
-
-
-typedef Math::Matrix<double, Math::ColMajor> Matrix;
 
 
 
@@ -223,58 +224,17 @@ int main(int argc, char *argv[]) {
 
   SuperBlock* blocker = new SuperBlock(spring, subset);
 
-  DoubleMatrix H = hessian(blocker);
-  delete blocker;
-  delete spring;
+  ANM anm(blocker);
+  anm.debugging(debug);
+  anm.prefix(prefix);
+  anm.meta(header);
 
-  ScientificMatrixFormatter<double> sp(24, 18);
+  anm.solve();
 
-  if (debug)
-    writeAsciiMatrix(prefix + "_H.asc", H, header, false, sp);
-
-  if (verbosity > 0)
-    cerr << "Calculating SVD - ";
-  Timer<WallTimer> timer;
-  if (verbosity > 1)
-    timer.start();
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(H);
-  cerr << "done\n";
-  if (verbosity > 1) {
-    timer.stop();
-    cerr << timer << endl;
-  }
-
-  Matrix U = boost::get<0>(result);
-  Matrix S = boost::get<1>(result);
-  Matrix Vt = boost::get<2>(result);
-  uint n = S.rows();
-
-  reverseRows(S);
-  reverseColumns(U);
-  reverseRows(Vt);
 
   // Write out the LSVs (or eigenvectors)
-  writeAsciiMatrix(prefix + "_U.asc", U, header, false, sp);
-  writeAsciiMatrix(prefix + "_s.asc", S, header, false, sp);
+  writeAsciiMatrix(prefix + "_U.asc", anm.eigenvectors(), header, false);
+  writeAsciiMatrix(prefix + "_s.asc", anm.eigenvalues(), header, false);
 
-  // Now go ahead and compute the pseudo-inverse...
-
-  // Vt = Vt * diag(1./diag(S))
-  // Remember, Vt is stored col-major but transposed, hence the
-  // inverted indices...
-  //
-  // Note:  We have to toss the first 6 terms
-  for (uint i=6; i<n; i++) {
-    double s = 1.0/S[i];
-    for (uint j=0; j<n; j++)
-      Vt(i,j) *= s;
-  }
-  
-  // Ki = Vt * U';
-  // Again, Vt is internally transposed, so we have to specify
-  // transposing it to sgemm in order to multiply the non-transposed
-  // V...
-  Matrix Hi = MMMultiply(Vt, U, true, true);
-  writeAsciiMatrix(prefix + "_Hi.asc", Hi, header, false, sp);
-
+  writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
 }
