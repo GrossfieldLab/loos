@@ -53,6 +53,7 @@ class SuperBlock {
 public:
   SuperBlock() : springs(0) { }
   SuperBlock(SpringFunction* func, const loos::AtomicGroup& nodelist) : springs(func), nodes(nodelist) { }
+  SuperBlock(const SuperBlock& b) : springs(b.springs), nodes(b.nodes) { }
   virtual ~SuperBlock() { }
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
@@ -109,7 +110,7 @@ protected:
 
 class SuperBlockDecorator : public SuperBlock {
 public:
-  SuperBlockDecorator(SuperBlock* b) : decorated(b) { }
+  SuperBlockDecorator(SuperBlock* b) : SuperBlock(*b), decorated(b) { }
 
 protected:
   SuperBlock *decorated;
@@ -171,7 +172,7 @@ public:
     else
       return(blockImpl(j, i, springs));
   }
-
+  
 
 private:
   SpringFunction* bound_spring;
