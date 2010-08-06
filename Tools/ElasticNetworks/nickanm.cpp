@@ -250,15 +250,18 @@ int main(int argc, char *argv[]) {
    *Adding the connectivity map
    *
    */
-  Matrix connectivity_map(subset.size(), subset.size());//how do we call this for the correct size???
+  Matrix connectivity_map(subset.size(), subset.size());
   if (subset.hasBonds()){
     for (int j = 0; subset.size(); ++j){
       vector<int> jbonds = subset[j]->getBonds();
+      // jbonds now holds the indices for all atoms bonded to j
       for (int i = 0; jbonds.size(); ++i){
-	if (subset[j]->getBonds() == subset[i]->getBonds())
-	  connectivity_map(j,i) = 1;
-	else
-	  connectivity_map(j,i) = 0;
+	for (int k = 0; k <= subset.size(); ++k) {
+	  if (jbonds[i] == subset[k]->id())
+	    connectivity_map(j,k) = 1;
+	  else
+	    connectivity_map(j,k) = 0;
+	}
       }
     }
   }
@@ -275,7 +278,7 @@ int main(int argc, char *argv[]) {
   
 
   /////i think that this should be a boundsuperblock!!!!
-  DoubleMatrix H = hessian(blocker);
+  DoubleMatrix H = hessiann(blocker);
   delete blocker;
 
   ScientificMatrixFormatter<double> sp(24, 18);
