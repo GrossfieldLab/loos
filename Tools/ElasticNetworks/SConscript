@@ -48,6 +48,9 @@ list.append(vsa)
 anm = clone.Program("anm", ["anm.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(anm)
 
+nickanm = clone.Program("nickanm", ["nickanm.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
+list.append(nickanm)
+
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('nm_tools_install', loos_tools)
