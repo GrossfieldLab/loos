@@ -57,7 +57,11 @@ HI NICK!!!!
 
 
 #include <loos.hpp>
-#include "oldhessian.hpp"
+//#include "oldhessian.hpp"
+
+#include "hessian.hpp"
+#include "enm-lib.hpp"
+#include "anm-lib.hpp"
 
 #include <limits>
 #include <boost/format.hpp>
@@ -223,12 +227,12 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
-  SpringFunction* bound_spring;
-  SpringFunction* nonbound_spring;
+  SpringFunction* bound_spring = 0;
+  SpringFunction* nonbound_spring = 0;
 
-  if (bsf) 
+  if (!bsf.empty()) 
     bound_spring = springFactory(bsf);
-  if (nbsf)
+  if (!nbsf.empty())
     nonbound_spring  = springFactory(nbsf);
 
   /////////////////////////////////////////////
@@ -250,7 +254,7 @@ int main(int argc, char *argv[]) {
    *Adding the connectivity map
    *
    */
-  Matrix connectivity_map(subset.size(), subset.size());
+  loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
   if (subset.hasBonds()){
     for (int j = 0; subset.size(); ++j){
       vector<int> jbonds = subset[j]->getBonds();
@@ -270,8 +274,8 @@ int main(int argc, char *argv[]) {
    *Impleminting the decorator
    *
    */
-  SuperBlock* forbondedTerms = new SuperBlock(chooseBondedSpring, subset);
-  BoundSuperBlock* forAllTerms = new BoundSuperBlock(bondedTerm, chooseNonbondedSpring, connectivity_matrix);
+  SuperBlock* forbondedTerms = new SuperBlock(bound_spring, subset);
+  BoundSuperBlock* forAllTerms = new BoundSuperBlock(forbondedTerms, nonbound_spring, connectivity_map);
   //loop over connectivity_map
   //if (j,i) = 1 than use bondedTerm if = 0 use nonbondedTerm
   //does this get rid of the need for DoubleMatrix H??
@@ -281,58 +285,15 @@ int main(int argc, char *argv[]) {
   ANM anm(forAllTerms);
   anm.prefix(prefix);
   anm.meta(header);
-  //  DoubleMatrix H = hessiann(blocker);
-  //delete blocker;
 
-  ScientificMatrixFormatter<double> sp(24, 18);
-
-  if (debug)
-    writeAsciiMatrix(prefix + "_H.asc", H, header, false, sp);
-
-  if (verbosity > 0)
-    cerr << "Calculating SVD - ";
-  Timer<WallTimer> timer;
-  if (verbosity > 1)
-    timer.start();
-  boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(H);
-  cerr << "done\n";
-  if (verbosity > 1) {
-    timer.stop();
-    cerr << timer << endl;
-  }
-
-  Matrix U = boost::get<0>(result);
-  Matrix S = boost::get<1>(result);
-  Matrix Vt = boost::get<2>(result);
-  uint n = S.rows();
-
-  reverseRows(S);
-  reverseColumns(U);
-  reverseRows(Vt);
+  anm.solve();
+ 
 
   // Write out the LSVs (or eigenvectors)
-  writeAsciiMatrix(prefix + "_U.asc", U, header, false, sp);
-  writeAsciiMatrix(prefix + "_s.asc", S, header, false, sp);
+  writeAsciiMatrix(prefix + "_U.asc", anm.eigenvectors(), header, false);
+  writeAsciiMatrix(prefix + "_s.asc", anm.eigenvalues(), header, false);
 
-  // Now go ahead and compute the pseudo-inverse...
-
-  // Vt = Vt * diag(1./diag(S))
-  // Remember, Vt is stored col-major but transposed, hence the
-  // inverted indices...
-  //
-  // Note:  We have to toss the first 6 terms
-  for (uint i=6; i<n; i++) {
-    double s = 1.0/S[i];
-    for (uint j=0; j<n; j++)
-      Vt(i,j) *= s;
-  }
-  
-  // Ki = Vt * U';
-  // Again, Vt is internally transposed, so we have to specify
-  // transposing it to sgemm in order to multiply the non-transposed
-  // V...
-  Matrix Hi = MMMultiply(Vt, U, true, true);
-  writeAsciiMatrix(prefix + "_Hi.asc", Hi, header, false, sp);
+  writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
 
   delete[] forAllTerms;
   delete[] forbondedTerms;
