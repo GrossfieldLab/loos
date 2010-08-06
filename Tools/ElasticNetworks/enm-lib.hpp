@@ -71,7 +71,7 @@ loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
 class ElasticNetworkModel {
 public:
-  ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), debugging_(false), verbosity_(0) { }
+  ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), meta_(""), debugging_(false), verbosity_(0) { }
   virtual ~ElasticNetworkModel() { }
 
   // Should we allow this?
@@ -83,6 +83,9 @@ public:
 
   void prefix(const std::string& s) { prefix_ = s; }
   std::string prefix() const { return(prefix_); }
+
+  void meta(const std::string& s) { meta_ = s; }
+  std::string meta() const { return(meta_); }
 
   void debugging(const bool b) { debugging_ = b; }
   bool debugging() const { return(debugging_); }
@@ -100,15 +103,15 @@ protected:
   void buildHessian() {
   
     uint n = blocker_->size();
-    loos::DoubleMatrix hessian_(3*n,3*n);
+    loos::DoubleMatrix H(3*n,3*n);
 
     for (uint i=1; i<n; ++i) {
       for (uint j=0; j<i; ++j) {
         loos::DoubleMatrix B = blocker_->block(i, j);
         for (uint x = 0; x<3; ++x)
           for (uint y = 0; y<3; ++y) {
-            hessian_(i*3 + y, j*3 + x) = -B(y, x);
-            hessian_(j*3 + x, i*3 + y) = -B(x ,y);
+            H(i*3 + y, j*3 + x) = -B(y, x);
+            H(j*3 + x, i*3 + y) = -B(x ,y);
           }
       }
     }
@@ -122,14 +125,15 @@ protected:
       
         for (uint x=0; x<3; ++x)
           for (uint y=0; y<3; ++y)
-            B(y,x) += hessian_(j*3 + y, i*3 + x);
+            B(y,x) += H(j*3 + y, i*3 + x);
       }
 
       for (uint x=0; x<3; ++x)
         for (uint y=0; y<3; ++y)
-          hessian_(i*3 + y, i*3 + x) = -B(y,x);
+          H(i*3 + y, i*3 + x) = -B(y,x);
     }
 
+    hessian_ = H;
   }
 
 
@@ -140,6 +144,7 @@ protected:
   SuperBlock* blocker_;
   std::string name_;
   std::string prefix_;
+  std::string meta_;
   bool debugging_;
   int verbosity_;
 
