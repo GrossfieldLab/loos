@@ -270,16 +270,19 @@ int main(int argc, char *argv[]) {
    *Impleminting the decorator
    *
    */
-  SuperBlock* bondedTerm = new SuperBlock(chooseBondedSpring, subset);
-  BoundSuperBlock* nonbondedTerm = new BoundSuperBlock(bondedTerm, chooseNonbondedSpring, connectivity_matrix);
+  SuperBlock* forbondedTerms = new SuperBlock(chooseBondedSpring, subset);
+  BoundSuperBlock* forAllTerms = new BoundSuperBlock(bondedTerm, chooseNonbondedSpring, connectivity_matrix);
   //loop over connectivity_map
   //if (j,i) = 1 than use bondedTerm if = 0 use nonbondedTerm
   //does this get rid of the need for DoubleMatrix H??
   
 
   /////i think that this should be a boundsuperblock!!!!
-  DoubleMatrix H = hessiann(blocker);
-  delete blocker;
+  ANM anm(forAllTerms);
+  anm.prefix(prefix);
+  anm.meta(header);
+  //  DoubleMatrix H = hessiann(blocker);
+  //delete blocker;
 
   ScientificMatrixFormatter<double> sp(24, 18);
 
@@ -331,6 +334,6 @@ int main(int argc, char *argv[]) {
   Matrix Hi = MMMultiply(Vt, U, true, true);
   writeAsciiMatrix(prefix + "_Hi.asc", Hi, header, false, sp);
 
-  delete[] nonbondedTerm;
-  delete[] bondedTerm;
+  delete[] forAllTerms;
+  delete[] forbondedTerms;
 }
