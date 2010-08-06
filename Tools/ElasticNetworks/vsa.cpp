@@ -48,22 +48,13 @@
 
 #include "hessian.hpp"
 #include "enm-lib.hpp"
+#include "vsa-lib.hpp"
+
 
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
-
-typedef pair<uint,uint> Range;
-
-
-#if defined(__linux__)
-extern "C" {
-  void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
-  void dpotrf_(char*, int*, double*, int*, int*);
-  void dtrmm_(char*, char*, char*, char*, int*, int*, double*, double*, int*, double*, int*);
-}
-#endif
 
 
 // Globals...
@@ -240,116 +231,6 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
-
-  DoubleMatrix AA = A.copy();
-  DoubleMatrix BB = B.copy();
-
-  f77int itype = 1;
-  char jobz = 'V';
-  char uplo = 'U';
-  char range = 'I';
-  f77int n = AA.rows();
-  f77int lda = n;
-  f77int ldb = n;
-  double vl = 0.0;
-  double vu = 0.0;
-  f77int il = 7;
-  f77int iu = n;
-
-  char dpar = 'S';
-  double abstol = 2.0 * dlamch_(&dpar);
-  //double abstol = -1.0;
-
-  f77int m;
-  DoubleMatrix W(n, 1);
-  DoubleMatrix Z(n, n);
-  f77int ldz = n;
-
-  f77int lwork = -1;
-  f77int info;
-  double *work = new double[1];
-
-  f77int *iwork = new f77int[5*n];
-  f77int *ifail = new f77int[n];
-
-  dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
-  if (info != 0) {
-    cerr << "ERROR- dsygvx returned " << info << endl;
-    exit(-1);
-  }
-
-  lwork = work[0];
-  delete[] work;
-  work = new double[lwork];
-  dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
-  if (info != 0) {
-    cerr << "ERROR- dsygvx returned " << info << endl;
-    exit(-1);
-  }
-
-  if (m != n-6) {
-    cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
-    exit(-10);
-  }
-
-  vector<uint> indices = sortedIndex(W);
-  W = permuteRows(W, indices);
-  Z = permuteColumns(Z, indices);
-
-  boost::tuple<DoubleMatrix, DoubleMatrix> result(W, Z);
-  return(result);
-
-}
-
-
-
-
-// Mass-weight eigenvectors
-DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
-
-  // First, compute the cholesky decomp of M (i.e. it's square-root)
-  DoubleMatrix R = M.copy();
-  char uplo = 'U';
-  f77int n = M.rows();
-  f77int lda = n;
-  f77int info;
-  dpotrf_(&uplo, &n, R.get(), &lda, &info);
-  if (info != 0) {
-    cerr << "ERROR- dpotrf() returned " << info << endl;
-    exit(-1);
-  }
-
-  if (debug)
-    writeAsciiMatrix(prefix + "_R.asc", R, hdr, false, ScientificMatrixFormatter<double>(24, 18));
-
-  // Now multiply M * U
-  DoubleMatrix UU = U.copy();
-  f77int m = U.rows();
-  n = U.cols();
-  double alpha = 1.0;
-  f77int ldb = m;
-
-#if defined(__linux__)
-  char side = 'L';
-  char notrans = 'N';
-  char diag = 'N';
-
-  dtrmm_(&side, &uplo, &notrans, &diag, &m, &n, &alpha, R.get(), &lda, UU.get(), &ldb);
-
-#else
-
-  cblas_dtrmm(CblasColMajor, CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, m, n, alpha, R.get(), lda, UU.get(), ldb);
-#endif
-
-  normalizeColumns(UU);
-  return(UU);
-}
-  
-
-
-
-
 int main(int argc, char *argv[]) {
   hdr = invocationHeader(argc, argv);
   parseOptions(argc, argv);
@@ -381,10 +262,6 @@ int main(int argc, char *argv[]) {
     cerr << "Environment size is " << environment.size() << endl;
   }
 
-  // Insanely high precision output
-  ScientificMatrixFormatter<double> sp(24,18);
-
-
   // Determine which kind of scaling to apply to the Hessian...
   SpringFunction* spring = 0;
   if (parameter_free)
@@ -399,93 +276,18 @@ int main(int argc, char *argv[]) {
 
   SuperBlock* blocker = new SuperBlock(spring, composite);
 
-  DoubleMatrix H = hessian(blocker);
-  delete blocker;
-  delete spring;
+  VSA vsa(blocker, subset.size());
+  vsa.prefix(prefix);
+  vsa.meta(hdr);
 
-
-  // Now, burst out the subparts...
-  uint l = subset.size() * 3;
-  uint n = H.cols();
-
-  DoubleMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
-  DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  DoubleMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
-  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
-
-  Timer<WallTimer> timer;
-  if (verbosity > 0) {
-    cerr << "Inverting environment hessian...\n";
-    timer.start();
+  if (!nomass) {
+    DoubleMatrix M = getMasses(composite);
+    vsa.setMasses(M);
   }
 
-  DoubleMatrix Heei = Math::invert(Hee);
-  if (verbosity > 0) {
-    timer.stop();
-    cerr << timer << endl;
-  }
+  vsa.solve();
   
-  // Build the effective Hessian
-  DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
-  if (debug) {
-    writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hss.asc", Hss, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hee.asc", Hee, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hse.asc", Hse, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Heei.asc", Heei, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr, false, sp);
-  }
+  writeAsciiMatrix(prefix + "_U.asc", vsa.eigenvectors(), hdr, false);
+  writeAsciiMatrix(prefix + "_s.asc", vsa.eigenvalues(), hdr, false);
 
-  // Shunt in the event of using unit masses...  We can use the SVD to
-  // to get the eigenpairs from Hssp
-  if (nomass) {
-    boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp);
-    DoubleMatrix U(boost::get<0>(svdresult));
-    DoubleMatrix S(boost::get<1>(svdresult));
-
-    reverseColumns(U);
-    reverseRows(S);
-
-    writeAsciiMatrix(prefix + "_U.asc", U, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_s.asc", S, hdr, false, sp);
-    exit(0);
-  }
-
-
-  // Build the effective mass matrix
-  DoubleMatrix Ms = getMasses(subset);
-  DoubleMatrix Me = getMasses(environment);
-  DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
-
-  if (debug) {
-    writeAsciiMatrix(prefix + "_Ms.asc", Ms, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Me.asc", Me, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr, false, sp);
-  }
-
-  // Run the eigen-decomposition...
-  if (verbosity > 0) {
-    cerr << "Running eigen-decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
-    timer.start();
-  }
-  boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs;
-  eigenpairs = eigenDecomp(Hssp, Msp);
-
-  DoubleMatrix Ds = boost::get<0>(eigenpairs);
-  DoubleMatrix Us = boost::get<1>(eigenpairs);
-
-  // Need to mass-weight the eigenvectors so they're orthogonal in R3...
-  if (verbosity > 0)
-    cerr << "mass weighting eigenvectors...";
-
-  DoubleMatrix MUs = massWeight(Us, Msp);
-
-  if (verbosity > 0) {
-    timer.stop();
-    cerr << "done\n";
-    cerr << timer << endl;
-  }
-
-  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, sp);
-  writeAsciiMatrix(prefix + "_Us.asc", MUs, hdr, false, sp);
 }
