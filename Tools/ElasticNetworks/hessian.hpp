@@ -100,8 +100,7 @@ protected:
 
 
 
-// The following is a decorator for a SuperBlock.  {NOTE: Insert GoF
-// citation}
+// The following is a decorator for a SuperBlock.
 // It both inherits from (so it can be used in place of a SuperBlock)
 // and contains a SuperBlock.  This allows additional behavior to be
 // layed on top of the SuperBlock.
