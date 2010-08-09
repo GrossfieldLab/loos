@@ -103,7 +103,7 @@ public:
 
   std::string name() const { return("DistanceCutoff"); }
 
-  void setConstant(const double d) { radius = d*d; }
+  void setConstants(const double d) { radius = d*d; }
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length2();
@@ -127,7 +127,7 @@ public:
 
   std::string name() const { return("DistanceWeight"); }
 
-  void setConstant(const double d) { power = d; }
+  void setConstants(const double d) { power = d; }
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
@@ -150,7 +150,7 @@ public:
 
   std::string name() const { return("ExponentialDistance"); }
 
-  void setConstant(const double d) { scale = d; }
+  void setConstants(const double d) { scale = d; }
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
