@@ -16,6 +16,7 @@
 #if !defined(FITTER_HPP)
 #define FITTER_HPP
 
+#include <limits>
 #include <loos.hpp>
 #include "enm-lib.hpp"
 
@@ -45,14 +46,35 @@ public:
 
 
   double operator()(const std::vector<double>& v) {
-    enm_->setConstants(v);
+    if (! enm_->setConstants(v))
+      return(std::numeric_limits<double>::max());
     enm_->solve();
     
     uint n = (enm_->eigenvalues()).rows();
     uint m = (enm_->eigenvectors()).rows();
 
-    loos::DoubleMatrix s = submatrix(enm_->eigenvalues(), Range(6, n), Range(0, 1));
-    loos::DoubleMatrix U = submatrix(enm_->eigenvectors(), Range(0, m), Range(6, n));
+    loos::DoubleMatrix s(n-6,1);
+    loos::DoubleMatrix U(m, n-6);
+    
+    for (uint i=0; i<n-6; ++i) {
+      try {
+        s[i] = 1.0 / ((enm_->eigenvalues())[n-i-1]);
+      }
+      catch (...) {
+        std::cerr << "Failure in eigenvalues at i = " << i << "\n";
+        exit(-1);
+      }
+
+      for (uint j=0; j<m; ++j) {
+        try {
+          U(j, i) = (enm_->eigenvectors())(j, n-i-1);
+        }
+        catch (...) {
+          std::cerr << "Failure in eigenvectors at i = " << i << ", j = " << j << "\n";
+          exit(-2);
+        }
+      }
+    }
 
     if (normalize_) {
       double scale = normalizePower(s);
@@ -60,7 +82,16 @@ public:
         s[j] *= scale;
     }
 
-    return(loos::Math::covarianceOverlap(s, U, ref_eigvals_, ref_eigvecs_));
+    double d = loos::Math::covarianceOverlap(s, U, ref_eigvals_, ref_eigvecs_);
+
+    // Probe
+    std::cerr << "(";
+    for (uint i=0; i<v.size(); ++i)
+      std::cerr << v[i] << (i == v.size()-1 ? "" : ",");
+    std::cerr << ") = " << d << std::endl;
+
+    // Maximizing covariance overlap, remember?
+    return(-d);
   }
 
 

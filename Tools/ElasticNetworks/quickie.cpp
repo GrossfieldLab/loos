@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
   VSA vsa(blocker, subsystem.size());
   
   Simplex<double> simp(5);
+  simp.tolerance(1e-4);
   
   vector<double> seeds;
   seeds.push_back(4.0);
@@ -51,11 +52,8 @@ int main(int argc, char *argv[]) {
   seeds.push_back(6);
   
   vector<double> lengths;
-  lengths.push_back(2);
-  lengths.push_back(100);
-  lengths.push_back(260);
-  lengths.push_back(150e3);
-  lengths.push_back(3);
+  for (vector<double>::iterator vi = seeds.begin(); vi != seeds.end(); ++vi)
+    lengths.push_back(*vi/2.0);
 
   simp.seedLengths(lengths);
   

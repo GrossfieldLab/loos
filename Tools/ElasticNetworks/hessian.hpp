@@ -58,8 +58,8 @@ public:
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
-  virtual void setConstants(std::vector<double>& v) {
-    springs->setConstants(v);
+  virtual bool setConstants(std::vector<double>& v) {
+    return(springs->setConstants(v));
   }
 
 
@@ -176,10 +176,11 @@ public:
       return(decorated->block(j, i));
   }
 
-  void setConstants(std::vector<double>& v) {
-    bound_spring->setConstants(v);
-    if (! v.empty())
-      decorated->setConstants(v);
+  bool setConstants(std::vector<double>& v) {
+    bool b = bound_spring->setConstants(v);
+    if (! v.empty() && b)
+      b &= decorated->setConstants(v);
+    return(b);
   }
 
 private:
