@@ -235,59 +235,45 @@ int main(int argc, char *argv[]) {
   if (!nbsf.empty())
     nonbound_spring  = springFactory(nbsf);
 
-  /////////////////////////////////////////////
-  //   old method
-  /////////////////////////////////////////////
-  // SuperBlock* blocker = 0;
-  // if (parameter_free)
-  //   blocker = new DistanceWeight(subset, power);
-  // else if (hca_method) {
-  //   if (user_defined_hca_constants)
-  //     blocker = new HCA(subset, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
-  //   else
-  //     blocker = new HCA(subset);
-  // } else
-  //   blocker = new DistanceCutoff(subset, cutoff);
-  ////////////////////////////////////////////////
-  /*
-   *
-   *Adding the connectivity map
-   *
-   */
+  cerr << "\n made springs...\t" << subset.size();
+//   Adding the connectivity map
   loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
   if (subset.hasBonds()){
+    cerr << "\n has bonds!";
     for (int j = 0; subset.size(); ++j){
-      vector<int> jbonds = subset[j]->getBonds();
-      // jbonds now holds the indices for all atoms bonded to j
-      for (int i = 0; jbonds.size(); ++i){
-	for (int k = 0; k <= subset.size(); ++k) {
-	  if (jbonds[i] == subset[k]->id())
-	    connectivity_map(j,k) = 1;
-	  else
-	    connectivity_map(j,k) = 0;
+      cerr << "\n current j:  " << j;
+      if (subset[j].hasBonds()){
+	vector<int> jbonds = subset[j]->getBonds();
+	// jbonds now holds the indices for all atoms bonded to j
+	for (int i = 0; i < jbonds.size(); ++i){
+	  cerr << "\n current i:  " << i;
+	  for (int k = 0; k < subset.size(); ++k) {
+	    // cerr << "\t current k:  " << k;
+	    if (jbonds[i] == subset[k]->id())
+	      connectivity_map(j,k) = 1;
+	    else
+	      connectivity_map(j,k) = 0;
+	  }
 	}
       }
     }
   }
-  /*
-   *
-   *Impleminting the decorator
-   *
-   */
+  cerr << "defined connectivity map \n";
+  //   Impleminting the decorator
   SuperBlock* forbondedTerms = new SuperBlock(bound_spring, subset);
   BoundSuperBlock* forAllTerms = new BoundSuperBlock(forbondedTerms, nonbound_spring, connectivity_map);
   //loop over connectivity_map
   //if (j,i) = 1 than use bondedTerm if = 0 use nonbondedTerm
   //does this get rid of the need for DoubleMatrix H??
-  
+
 
   /////i think that this should be a boundsuperblock!!!!
   ANM anm(forAllTerms);
   anm.prefix(prefix);
   anm.meta(header);
-
   anm.solve();
- 
+  
+  writeAsciiMatrix(prefix + "_map.asc", connectivity_map, header, false);
 
   // Write out the LSVs (or eigenvectors)
   writeAsciiMatrix(prefix + "_U.asc", anm.eigenvectors(), header, false);
@@ -295,6 +281,6 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
 
-  delete[] forAllTerms;
-  delete[] forbondedTerms;
+  delete forAllTerms;
+  delete forbondedTerms;
 }
