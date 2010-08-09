@@ -25,7 +25,13 @@
 // computed prior to calling SpringFunction, no since in recomputing
 // it).
 //
-
+//
+// * Misc notes *
+//
+// Each spring function should have some form of a setConstant() or
+// setConstants() function.  This particular mechanism/implementation
+// however is not set, so don't depend on it yet...
+//
 
 class SpringFunction {
 public:
@@ -97,6 +103,8 @@ public:
 
   std::string name() const { return("DistanceCutoff"); }
 
+  void setConstant(const double d) { radius = d*d; }
+
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length2();
     if (s <= radius)
@@ -119,6 +127,8 @@ public:
 
   std::string name() const { return("DistanceWeight"); }
 
+  void setConstant(const double d) { power = d; }
+
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
     return(pow(s, power));
@@ -139,6 +149,8 @@ public:
   ExponentialDistance() : scale(-2.0) { }
 
   std::string name() const { return("ExponentialDistance"); }
+
+  void setConstant(const double d) { scale = d; }
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
@@ -165,6 +177,14 @@ public:
     rcut(4.0), k1(205.5), k2(571.2), k3(305.9e3), k4(6.0) { }
 
   std::string name() const { return("HCA"); }
+
+  void setConstants(const double rc, const double a, const double b, const double c, const double d) {
+    rcut = rc;
+    k1 = a;
+    k2 = b;
+    k3 = c;
+    k4 = d;
+  }
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
