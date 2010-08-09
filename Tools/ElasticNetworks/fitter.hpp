@@ -64,23 +64,9 @@ public:
     loos::DoubleMatrix U(m, n-6);
     
     for (uint i=0; i<n-6; ++i) {
-      try {
         s[i] = 1.0 / ((enm_->eigenvalues())[n-i-1]);
-      }
-      catch (...) {
-        std::cerr << "Failure in eigenvalues at i = " << i << "\n";
-        exit(-1);
-      }
-
-      for (uint j=0; j<m; ++j) {
-        try {
-          U(j, i) = (enm_->eigenvectors())(j, n-i-1);
-        }
-        catch (...) {
-          std::cerr << "Failure in eigenvectors at i = " << i << ", j = " << j << "\n";
-          exit(-2);
-        }
-      }
+      for (uint j=0; j<m; ++j)
+        U(j, i) = (enm_->eigenvectors())(j, n-i-1);
     }
 
     if (normalize_) {
