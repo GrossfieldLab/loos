@@ -25,7 +25,8 @@ class ENMFitter {
 public:
   ENMFitter(ElasticNetworkModel* model, const loos::DoubleMatrix& s, const loos::DoubleMatrix& U) :
     enm_(model),
-    normalize_(false)
+    normalize_(false),
+    verbose_(false)
   {
     uint m = U.rows();
     uint n = s.rows();
@@ -43,6 +44,12 @@ public:
 
   void normalize(const bool b) { normalize_ = b; }
   bool normalize() const { return(normalize_); }
+
+  void name(const std::string& s) { name_ = s; }
+  std::string name() const { return(name_); }
+
+  void verbose(const bool b) { verbose_ = b; }
+  bool verbose() const { return(verbose_); }
 
 
   double operator()(const std::vector<double>& v) {
@@ -84,11 +91,13 @@ public:
 
     double d = loos::Math::covarianceOverlap(s, U, ref_eigvals_, ref_eigvecs_);
 
-    // Probe
-    std::cerr << "(";
-    for (uint i=0; i<v.size(); ++i)
-      std::cerr << v[i] << (i == v.size()-1 ? "" : ",");
-    std::cerr << ") = " << d << std::endl;
+    if (verbose_) {
+      std::cout << name_ << ": ";
+      std::cout << "\t(";
+      for (uint i=0; i<v.size(); ++i)
+        std::cout << v[i] << (i == v.size()-1 ? "" : ",");
+      std::cout << ") = " << d << std::endl;
+    }
 
     // Maximizing covariance overlap, remember?
     return(-d);
@@ -119,6 +128,8 @@ private:
   loos::DoubleMatrix ref_eigvecs_;
 
   bool normalize_;
+  bool verbose_;
+  std::string name_;
 
 
 };
