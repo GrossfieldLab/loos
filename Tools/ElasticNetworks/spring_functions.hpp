@@ -28,10 +28,14 @@
 //
 // * Misc notes *
 //
-// Each spring function should have some form of a setConstant() or
-// setConstants() function.  This particular mechanism/implementation
-// however is not set, so don't depend on it yet...
-//
+// The setConstants() function is destructive to its parameter.  I'm
+// not sure if this is the best way to implement this, so don't depend
+// on it staying this way.  The vector is treated as a LIFO stack.  It
+// is expected that where there are multiple constants, they will be
+// pushed in the order they would have been passed had setConstants()
+// taken a regular argument list, i.e.
+//    head --> rcut, k1, k2, k3, k4  <-- tail
+
 
 class SpringFunction {
 public:
