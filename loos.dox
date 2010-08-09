@@ -182,6 +182,8 @@ scons
 
 For more detailed information about the build process, see
 \subpage building "Building LOOS"
+For information about installation on specific systems, see the
+"INSTALL" file that came with LOOS.
 
 To install LOOS, use the "install" target:
 
@@ -198,8 +200,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.4 install
-ln -s /opt/loos-1.5.4 /opt/loos-latest
+scons PREFIX=/opt/loos-1.5.5 install
+ln -s /opt/loos-1.5.5 /opt/loos-latest
 \endverbatim
 
 
@@ -889,6 +891,8 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
   singular values (there should be 6-zeros if using an aligned
   trajectory).  The double-precision svd does not have this problem
   nor does the implementation in big-svd.
+  <LI> Fixed big in traj2matlab where the wrong subset of atoms was
+  used to create the matrix.
 
 
 \section release154 Version 1.5.4 (4-23-2010)

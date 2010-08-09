@@ -24,6 +24,8 @@
 	(i.e. in the file format)
 	* Fixed bug in the Matrix code that affected large matrices
 	(i.e. where m * n >= 2^32)
+	* Fixed bug in traj2matlab where the wrong subset of atoms was
+	used to create the matrix.
 	
 
 2010-07-06    <tromo@spade.biophysics.rochester.edu>
