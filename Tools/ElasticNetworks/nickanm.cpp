@@ -57,7 +57,6 @@ HI NICK!!!!
 
 
 #include <loos.hpp>
-//#include "oldhessian.hpp"
 
 #include "hessian.hpp"
 #include "enm-lib.hpp"
@@ -187,13 +186,7 @@ void parseOptions(int argc, char *argv[]) {
     // Force the hessian to include all nodes...
     if (parameter_free)
       cutoff = numeric_limits<double>::max();
-
-    // if (vm.count("bonded_function"))
-    //   string bsf = vm["bonded_function"].as<string>();
-    
-    // if (vm.count("nonbonded_function"))
-    //   string nbsf = vm["nonbonded_function"].as<string>();
-
+ 
     if (vm.count("hparams")) {
       string s = vm["hparams"].as<string>();
       int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
@@ -235,17 +228,15 @@ int main(int argc, char *argv[]) {
   if (!nbsf.empty())
     nonbound_spring  = springFactory(nbsf);
 
-  //  cerr << "\n made springs...\t" << subset.size();
-//   Adding the connectivity map
+
+  //   Filling the connectivity map
+  //   Decides which spring function to use..
   loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
   if (subset.hasBonds()){
-    // cerr << "\n has bonds!";
     for (int j = 0; j < subset.size(); ++j){
-      //cerr << "\n current j:  " << j;
       if (subset[j]->hasBonds()){
-	//	vector<int> jbonds = subset[j]->getBonds();
 	for (int k = 0; k < subset.size(); ++k) {
-	  if (subset[j]->isBoundTo(subset[k]->id()))// == subset[k]->id())
+	  if (subset[j]->isBoundTo(subset[k]->id()))
 	    connectivity_map(j,k) = 1;
 	  else
 	    connectivity_map(j,k) = 0;
@@ -253,40 +244,19 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-	//cerr << "\n j,getbonds::  " << j << "   ";
-	// for(int nick =0; nick < jbonds.size(); ++nick){
-	//   cerr << jbonds[nick] << "  ";
-	// }
-	// jbonds now holds the indices for all atoms bonded to j
-	// for (int i = 0; i < jbonds.size(); ++i){
-	//   //cerr << "\t current i:  " << i;
-	//   for (int k = 0; k < subset.size(); ++k) {
-	//     // cerr << "\t current k:  " << k;
-	//     if (*(jbonds[i]).isBoundTo(subset[k]->id()))// == subset[k]->id())
-	//       connectivity_map(j,k) = 1;
-	//     else
-	//       connectivity_map(j,k) = 0;
-  // 	  }
-  // 	}
-  //     }
-  //   }
-  // }
   cerr << "\n\ndefined connectivity map... \n";
   //   Impleminting the decorator
   SuperBlock* forbondedTerms = new SuperBlock(bound_spring, subset);
   BoundSuperBlock* forAllTerms = new BoundSuperBlock(forbondedTerms, nonbound_spring, connectivity_map);
-  //loop over connectivity_map
-  //if (j,i) = 1 than use bondedTerm if = 0 use nonbondedTerm
-  //does this get rid of the need for DoubleMatrix H??
 
 
-  /////i think that this should be a boundsuperblock!!!!
   ANM anm(forAllTerms);
   anm.prefix(prefix);
   anm.meta(header);
   anm.solve();
   
-  writeAsciiMatrix(prefix + "_map.asc", connectivity_map, header, false);
+  if (verbosity > 1)
+    writeAsciiMatrix(prefix + "_connectivity_map.asc", connectivity_map, header, false);
 
   // Write out the LSVs (or eigenvectors)
   writeAsciiMatrix(prefix + "_U.asc", anm.eigenvectors(), header, false);
