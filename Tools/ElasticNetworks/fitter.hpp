@@ -22,7 +22,7 @@
 
 class ENMFitter {
 public:
-  ENMFitter(const ElasticNetworkModel* model, const loos::DoubleMatrix& s, const loos::DoubleMatrix& U) :
+  ENMFitter(ElasticNetworkModel* model, const loos::DoubleMatrix& s, const loos::DoubleMatrix& U) :
     enm_(model),
     normalize_(false)
   {
@@ -43,21 +43,16 @@ public:
   void normalize(const bool b) { normalize_ = b; }
   bool normalize() const { return(normalize_); }
 
-  // Set the constants required for the ENM
-  void setConstants(const std::vector<double>& konst) {
-    std::vector<double> v = konst;
-    model->setConstants(v);
-  }
 
   double operator()(const std::vector<double>& v) {
-    setConstants(v);
-    model->solve();
+    enm_->setConstants(v);
+    enm_->solve();
     
-    uint n = (model->eigenvalues()).rows();
-    uint m = (model->eigenvectors()).rows();
+    uint n = (enm_->eigenvalues()).rows();
+    uint m = (enm_->eigenvectors()).rows();
 
-    loos::DoubleMatrix s = submatrix(model->eigenvalues(), Range(6, n), Range(0, 1));
-    loos::DoubleMatrix U = submatrix(model->eigenvectors(), Range(0, m), Range(6, n));
+    loos::DoubleMatrix s = submatrix(enm_->eigenvalues(), Range(6, n), Range(0, 1));
+    loos::DoubleMatrix U = submatrix(enm_->eigenvectors(), Range(0, m), Range(6, n));
 
     if (normalize_) {
       double scale = normalizePower(s);

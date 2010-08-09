@@ -93,6 +93,11 @@ public:
   void verbosity(const int i) { verbosity_ = i; }
   int verbosity() const { return(verbosity_); }
 
+  void setConstants(const std::vector<double>& v) {
+    std::vector<double> u = v;
+    blocker_->setConstants(u);
+  }
+
   const loos::DoubleMatrix& eigenvectors() const { return(eigenvecs_); }
   const loos::DoubleMatrix& eigenvalues() const { return(eigenvals_); }
   const loos::DoubleMatrix& hessian() const { return(hessian_); }
