@@ -235,30 +235,43 @@ int main(int argc, char *argv[]) {
   if (!nbsf.empty())
     nonbound_spring  = springFactory(nbsf);
 
-  cerr << "\n made springs...\t" << subset.size();
+  //  cerr << "\n made springs...\t" << subset.size();
 //   Adding the connectivity map
   loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
   if (subset.hasBonds()){
-    cerr << "\n has bonds!";
-    for (int j = 0; subset.size(); ++j){
-      cerr << "\n current j:  " << j;
-      if (subset[j].hasBonds()){
-	vector<int> jbonds = subset[j]->getBonds();
-	// jbonds now holds the indices for all atoms bonded to j
-	for (int i = 0; i < jbonds.size(); ++i){
-	  cerr << "\n current i:  " << i;
-	  for (int k = 0; k < subset.size(); ++k) {
-	    // cerr << "\t current k:  " << k;
-	    if (jbonds[i] == subset[k]->id())
-	      connectivity_map(j,k) = 1;
-	    else
-	      connectivity_map(j,k) = 0;
-	  }
+    // cerr << "\n has bonds!";
+    for (int j = 0; j < subset.size(); ++j){
+      //cerr << "\n current j:  " << j;
+      if (subset[j]->hasBonds()){
+	//	vector<int> jbonds = subset[j]->getBonds();
+	for (int k = 0; k < subset.size(); ++k) {
+	  if (subset[j]->isBoundTo(subset[k]->id()))// == subset[k]->id())
+	    connectivity_map(j,k) = 1;
+	  else
+	    connectivity_map(j,k) = 0;
 	}
       }
     }
   }
-  cerr << "defined connectivity map \n";
+	//cerr << "\n j,getbonds::  " << j << "   ";
+	// for(int nick =0; nick < jbonds.size(); ++nick){
+	//   cerr << jbonds[nick] << "  ";
+	// }
+	// jbonds now holds the indices for all atoms bonded to j
+	// for (int i = 0; i < jbonds.size(); ++i){
+	//   //cerr << "\t current i:  " << i;
+	//   for (int k = 0; k < subset.size(); ++k) {
+	//     // cerr << "\t current k:  " << k;
+	//     if (*(jbonds[i]).isBoundTo(subset[k]->id()))// == subset[k]->id())
+	//       connectivity_map(j,k) = 1;
+	//     else
+	//       connectivity_map(j,k) = 0;
+  // 	  }
+  // 	}
+  //     }
+  //   }
+  // }
+  cerr << "\n\ndefined connectivity map... \n";
   //   Impleminting the decorator
   SuperBlock* forbondedTerms = new SuperBlock(bound_spring, subset);
   BoundSuperBlock* forAllTerms = new BoundSuperBlock(forbondedTerms, nonbound_spring, connectivity_map);
