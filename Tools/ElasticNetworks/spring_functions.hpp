@@ -38,6 +38,11 @@ public:
   SpringFunction() : warned(false) { }
   virtual ~SpringFunction() { }
   virtual std::string name() const =0;
+
+  // Sets the internal spring constants (destructively)
+  virtual void setConstants(std::vector<double>& konst) =0;
+  // Returns the # of spring constants used by this spring function
+  virtual uint numberOfConstants() const =0;
   
   
   virtual loos::DoubleMatrix constant(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) =0;
@@ -103,7 +108,14 @@ public:
 
   std::string name() const { return("DistanceCutoff"); }
 
-  void setConstants(const double d) { radius = d*d; }
+  void setConstants(std::vector<double>& konst) {
+    radius = konst.back();
+    radius *= radius;
+    konst.pop_back();
+  }
+
+  uint numberOfConstants() const { return(1); }
+
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length2();
@@ -127,7 +139,14 @@ public:
 
   std::string name() const { return("DistanceWeight"); }
 
-  void setConstants(const double d) { power = d; }
+
+  void setConstants(std::vector<double>& konst) {
+    power = konst.back();
+    konst.pop_back();
+  }
+
+  uint numberOfConstants() const { return(1); }
+
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
@@ -150,7 +169,13 @@ public:
 
   std::string name() const { return("ExponentialDistance"); }
 
-  void setConstants(const double d) { scale = d; }
+  void setConstants(std::vector<double>& konst) {
+    scale = konst.back();
+    konst.pop_back();
+  }
+
+  uint numberOfConstants() const { return(1); }
+
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
@@ -178,13 +203,25 @@ public:
 
   std::string name() const { return("HCA"); }
 
-  void setConstants(const double rc, const double a, const double b, const double c, const double d) {
-    rcut = rc;
-    k1 = a;
-    k2 = b;
-    k3 = c;
-    k4 = d;
+  void setConstants(std::vector<double>& konst) {
+    k4 = konst.back();
+    konst.pop_back();
+
+    k3 = konst.back();
+    konst.pop_back();
+
+    k2 = konst.back();
+    konst.pop_back();
+
+    k1 = konst.back();
+    konst.pop_back();
+
+    rcut = konst.back();
+    konst.pop_back();
   }
+
+  uint numberOfConstants() const { return(5); }
+
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();

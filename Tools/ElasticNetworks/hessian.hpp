@@ -58,6 +58,10 @@ public:
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
+  virtual void setConstants(std::vector<double>& v) {
+    springs->setConstants(v);
+  }
+
 
   // Returns a 3x3 matrix representing a superblock in the Hessian for
   // the two nodes...
@@ -169,9 +173,14 @@ public:
     if (connectivity(j, i))
       return(blockImpl(j, i, bound_spring));
     else
-      return(blockImpl(j, i, springs));
+      return(decorated->block(j, i));
   }
-  
+
+  void setConstants(std::vector<double>& v) {
+    bound_spring->setConstants(v);
+    if (! v.empty())
+      decorated->setConstants(v);
+  }
 
 private:
   SpringFunction* bound_spring;
