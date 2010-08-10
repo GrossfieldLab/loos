@@ -63,19 +63,13 @@ double threshold = 1e-10;
 
 string hdr;
 string subset_selection, environment_selection, model_name, prefix;
-double cutoff;
 int verbosity = 0;
 bool debug = false;
 bool occupancies_are_masses;
 string psf_file;
 
-bool parameter_free;
-double power;
-bool hca_method;
+string spring_desc;
 bool nomass;
-
-double hca_constants[5];
-bool user_defined_hca_constants(false);
 
 
 void fullHelp() {
@@ -167,16 +161,12 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("fullhelp", "More detailed help")
-      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
-      ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
-      ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
-      ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
-      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free method")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
-      ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution");
+      ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution")
+      ("spring,s", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments");
 
 
     po::options_description hidden("Hidden options");
@@ -207,18 +197,6 @@ void parseOptions(int argc, char *argv[]) {
         fullHelp();
       exit(-1);
     }
-
-    if (vm.count("hparams")) {
-      string s = vm["hparams"].as<string>();
-      int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
-                     hca_constants+3, hca_constants+4);
-      if (i != 5) {
-        cerr << boost::format("Error - invalid conversion of HCA constants '%s'\n") % s;
-        exit(-1);
-      }
-      user_defined_hca_constants = true;
-    }
-
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -263,16 +241,8 @@ int main(int argc, char *argv[]) {
   }
 
   // Determine which kind of scaling to apply to the Hessian...
-  SpringFunction* spring = 0;
-  if (parameter_free)
-    spring = new DistanceWeight(power);
-  else if (hca_method) {
-    if (user_defined_hca_constants)
-      spring = new HCA(hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
-    else
-      spring = new HCA;
-  } else
-    spring = new DistanceCutoff(cutoff);
+  SpringFunction* spring = springFactory(spring_desc);
+  cout << "Using spring: " << spring->name() << endl;
 
   SuperBlock* blocker = new SuperBlock(spring, composite);
 

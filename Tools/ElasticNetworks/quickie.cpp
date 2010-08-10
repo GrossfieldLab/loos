@@ -32,8 +32,12 @@ int main(int argc, char *argv[]) {
   // Track allocations for cleanup...
   vector<ENMFitter*> fits;
   vector<SuperBlock*> blocks;
-  SpringFunction *spring = new HCA;
-
+  SpringFunction *spring = springFactory(argv[k++]);
+  uint nargs = spring->paramSize();
+  vector<double> seeds;
+  cout << "Expecting " << nargs << " seeds.\n";
+  for (uint i=0; i<nargs; ++i)
+    seeds.push_back(strtod(argv[k++], 0));
 
   while (k < argc) {
     string tag(argv[k++]);
@@ -66,15 +70,8 @@ int main(int argc, char *argv[]) {
 
 
   
-  Simplex<double> simp(5);
+  Simplex<double> simp(nargs);
   simp.tolerance(1e-4);
-  
-  vector<double> seeds;
-  seeds.push_back(4.0);
-  seeds.push_back(205.5);
-  seeds.push_back(571.2);
-  seeds.push_back(305.9e3);
-  seeds.push_back(6);
   
   vector<double> lengths;
   for (vector<double>::iterator vi = seeds.begin(); vi != seeds.end(); ++vi)
