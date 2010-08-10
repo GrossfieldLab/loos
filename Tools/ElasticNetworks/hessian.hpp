@@ -196,11 +196,4 @@ private:
   loos::Math::Matrix<int> connectivity;
 };
 
-
-
-
-loos::DoubleMatrix hessian(SuperBlock* block);
-
-
-
 #endif

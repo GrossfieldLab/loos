@@ -42,13 +42,13 @@ PREFIX = env['PREFIX']
 
 # Special apps...
 
-vsa = clone.Program("vsa", ["vsa.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+vsa = clone.Program("vsa", ["vsa.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
 list.append(vsa)
 
-anm = clone.Program("anm", ["anm.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
+anm = clone.Program("anm", ["anm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(anm)
 
-quickie = clone.Program("quickie", ["quickie.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+quickie = clone.Program("quickie", ["quickie.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
 list.append(quickie)
 
 nickanm = clone.Program("nickanm", ["nickanm.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
