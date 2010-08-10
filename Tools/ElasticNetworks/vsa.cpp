@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Determine which kind of scaling to apply to the Hessian...
-  SpringFunction* spring;
+  SpringFunction* spring = 0;
   try {
     spring = springFactory(spring_desc);
   }

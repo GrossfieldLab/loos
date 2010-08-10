@@ -78,20 +78,11 @@ namespace po = boost::program_options;
 string selection;
 string model_name;
 string prefix;
-double cutoff;
-
-// Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
-bool parameter_free;
-
-double power;
-bool hca_method;
 
 int verbosity;
 bool debug;
 
-
-double hca_constants[5];
-bool user_defined_hca_constants(false);
+string spring_desc;
 
 void fullHelp() {
 
@@ -142,11 +133,7 @@ void parseOptions(int argc, char *argv[]) {
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
-      ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
-      ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
-      ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
-      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
-      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
+      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("fullhelp", "More detailed help");
 
     po::options_description hidden("Hidden options");
@@ -174,23 +161,6 @@ void parseOptions(int argc, char *argv[]) {
       exit(-1);
     }
 
-    // Force the hessian to include all nodes...
-    if (parameter_free)
-      cutoff = numeric_limits<double>::max();
-
-    
-    if (vm.count("hparams")) {
-      string s = vm["hparams"].as<string>();
-      int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
-                     hca_constants+3, hca_constants+4);
-      if (i != 5) {
-        cerr << boost::format("Error - invalid conversion of HCA constants '%s'\n") % s;
-        exit(-1);
-      }
-      user_defined_hca_constants = true;
-    }
-
-
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -212,15 +182,24 @@ int main(int argc, char *argv[]) {
 
   // Determine which kind of scaling to apply to the Hessian...
   SpringFunction* spring = 0;
-  if (parameter_free)
-    spring = new DistanceWeight(power);
-  else if (hca_method) {
-    if (user_defined_hca_constants)
-      spring = new HCA(hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
-    else
-      spring = new HCA;
-  } else
-    spring = new DistanceCutoff(cutoff);
+  try {
+    spring = springFactory(spring_desc);
+  }
+  catch (BadSpringFunction& s) {
+    cerr << "Error- " << s.what() << endl;
+    cerr << "Available springs: ";
+    vector<string> names = springNames();
+    copy(names.begin(), names.end(), ostream_iterator<string>(cerr, " "));
+    cerr << endl;
+    exit(-1);
+  }
+  catch (BadSpringParameter& s) {
+    cerr << "Error- " << s.what() << endl;
+    exit(-2);
+  }
+
+  cout << "Using spring: " << spring->name() << endl;
+
 
   SuperBlock* blocker = new SuperBlock(spring, subset);
 
@@ -237,4 +216,7 @@ int main(int argc, char *argv[]) {
   writeAsciiMatrix(prefix + "_s.asc", anm.eigenvalues(), header, false);
 
   writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
+
+  delete blocker;
+  delete spring;
 }
