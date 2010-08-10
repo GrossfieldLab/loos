@@ -29,6 +29,11 @@ int main(int argc, char *argv[]) {
 
   FitAggregator uberfit;
 
+  // Track allocations for cleanup...
+  vector<ENMFitter*> fits;
+  vector<SuperBlock*> blocks;
+  vector<SpringFunction*> springs;
+
   while (k < argc) {
     string tag(argv[k++]);
     AtomicGroup model = createSystem(argv[k++]);
@@ -54,6 +59,10 @@ int main(int argc, char *argv[]) {
     fitter->normalize(true);
 
     uberfit.push_back(fitter);
+
+    fits.push_back(fitter);
+    blocks.push_back(blocker);
+    springs.push_back(spring);
   }
 
 
@@ -84,5 +93,12 @@ int main(int argc, char *argv[]) {
   cout << simp.finalValue() << "\t= ";
   copy(fit.begin(), fit.end(), ostream_iterator<double>(cout, "\t"));
   cout << endl;
+
+  // Cleanup (make valgrind happy)
+  for (uint i=0; i<fits.size(); ++i) {
+    delete fits[i];
+    delete blocks[i];
+    delete springs[i];
+  }
 
 }
