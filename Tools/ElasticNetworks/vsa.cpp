@@ -265,6 +265,7 @@ int main(int argc, char *argv[]) {
   VSA vsa(blocker, subset.size());
   vsa.prefix(prefix);
   vsa.meta(hdr);
+  vsa.debugging(debug);
 
   if (!nomass) {
     DoubleMatrix M = getMasses(composite);

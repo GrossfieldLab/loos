@@ -128,6 +128,7 @@ void VSA::solve() {
   DoubleMatrix Hes = submatrix(hessian_, Range(l, n), Range(0, l));
 
   if (debugging_) {
+    writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
     writeAsciiMatrix(prefix_ + "_Hss.asc", Hss, meta_, false);
     writeAsciiMatrix(prefix_ + "_Hee.asc", Hee, meta_, false);
     writeAsciiMatrix(prefix_ + "_Hse.asc", Hse, meta_, false);
