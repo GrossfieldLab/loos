@@ -91,8 +91,8 @@ protected:
     if (fptr == 0)
       throw(std::runtime_error("No spring function defined for hessian!"));
 
-    loos::GCoord u = nodes[i]->coords();
-    loos::GCoord v = nodes[j]->coords();
+    loos::GCoord u = nodes[j]->coords();
+    loos::GCoord v = nodes[i]->coords();
     loos::GCoord d = v - u;
     
     loos::DoubleMatrix K = springs->constant(u, v, d);
