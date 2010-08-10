@@ -82,9 +82,11 @@ protected:
   // warning, but only for this specific spring function...
 
   double checkConstant(double d) {
-    if (d < 0.0 && !warned) {
-      warned = true;
-      std::cerr << "Warning- negative spring constants found in " << name() << ".  Setting to 0.\n";
+    if (d < 0.0) {
+      if (!warned) {
+        warned = true;
+        std::cerr << "Warning- negative spring constants found in " << name() << ".  Setting to 0.\n";
+      }
       d = 0.0;
     }
 
@@ -271,11 +273,14 @@ public:
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
-    
-    if (s <= rcut)
-      return(k1 * s - k2);
+    double k;
 
-    return(k3 * pow(s, -k4));
+    if (s <= rcut)
+      k = k1 * s - k2;
+    else
+      k = k3 * pow(s, -k4);
+
+    return(k);
   }
 
 private:
