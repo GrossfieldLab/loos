@@ -35,37 +35,30 @@ std::vector<std::string> splitCommaSeparatedList(const std::string& s){
 SpringFunction* springFactory(const std::string& spring_desc) {
 
   std::vector<std::string> list = splitCommaSeparatedList(spring_desc);
+  SpringFunction *spring;
 
-  if (list[0] == "distance") {
-    if (list.size() > 1)
-      return(new DistanceCutoff(loos::parseStringAs<double>(list[1])));//will this jsut send list[1] or does parseStringAs concat??  this won't work it list[1] is not a double
-    return(new DistanceCutoff);
+  if (list[0] == "distance")
+    spring = new DistanceCutoff;
+  else if (list[0] == "weighted")
+    spring = new DistanceWeight;
+  else if (list[0] == "exponential")
+    spring = new ExponentialDistance;
+  else if  (list[0] == "hca" || spring_desc == "HCA")
+    spring = new HCA;
+  else {
+    std::stringstream oss;
+    oss << "Error- unknown spring function '" << spring_desc << "'" << std::endl;
+    oss << "Try: \"distance\", \"hca\", \"weighted\", or \"exponential\" " << std::endl;
+    throw(std::runtime_error(oss.str()));
   }
 
-  if (list[0] == "weighted"){
-    if (list.size() > 1)
-      return(new DistanceWeight(loos::parseStringAs<double>(list[1])));
-    return(new DistanceWeight);
+  if (list.size() > 1) {
+    std::vector<double> params;
+
+    for (uint i=1; i <= spring->paramSize(); ++i)
+      params.push_back(loos::parseStringAs<double>(list.at(i)));
+    spring->setParams(params);
   }
 
-  if (list[0] == "exponential"){
-    //i don't think ExponentialDistance takes any additional args at this time....
-    // if (list.size() > 1)
-    //   return(new ExponentialDistance(parseStringAs<double>(list[1])));
-    return(new ExponentialDistance);
-  }
-  
-  if (list[0] == "hca" || spring_desc == "HCA"){
-    if (list.size() > 1)
-      return(new HCA(loos::parseStringAs<double>(list[1]),loos::parseStringAs<double>(list[2]),loos::parseStringAs<double>(list[3]),loos::parseStringAs<double>(list[4]),loos::parseStringAs<double>(list[5])));
-    return(new HCA);
-  }
-    
-
-
-  std::stringstream oss;
-  oss << "Error- unknown spring function '" << spring_desc << "'" << std::endl;
-  oss << "Try: \"distance\", \"hca\", \"weighted\", or \"exponential\" " << std::endl;
-  throw(std::runtime_error(oss.str()));
-
+  return(spring);
 }
