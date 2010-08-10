@@ -124,3 +124,39 @@ void normalizeColumns(DoubleMatrix& A) {
 }
 
 
+
+
+void ElasticNetworkModel::buildHessian() {
+  uint n = blocker_->size();
+  loos::DoubleMatrix H(3*n,3*n);
+
+  for (uint i=1; i<n; ++i) {
+    for (uint j=0; j<i; ++j) {
+      loos::DoubleMatrix B = blocker_->block(i, j);
+      for (uint x = 0; x<3; ++x)
+        for (uint y = 0; y<3; ++y) {
+          H(i*3 + y, j*3 + x) = -B(y, x);
+          H(j*3 + x, i*3 + y) = -B(x ,y);
+        }
+    }
+  }
+
+  // Now handle the diagonal...
+  for (uint i=0; i<n; ++i) {
+    loos::DoubleMatrix B(3,3);
+    for (uint j=0; j<n; ++j) {
+      if (j == i)
+        continue;
+      
+      for (uint x=0; x<3; ++x)
+        for (uint y=0; y<3; ++y)
+          B(y,x) += H(j*3 + y, i*3 + x);
+    }
+
+    for (uint x=0; x<3; ++x)
+      for (uint y=0; y<3; ++y)
+        H(i*3 + y, i*3 + x) = -B(y,x);
+  }
+
+  hessian_ = H;
+}

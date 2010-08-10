@@ -48,10 +48,10 @@ list.append(vsa)
 anm = clone.Program("anm", ["anm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(anm)
 
-quickie = clone.Program("quickie", ["quickie.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+quickie = clone.Program("quickie", ["quickie.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
 list.append(quickie)
 
-nickanm = clone.Program("nickanm", ["nickanm.cpp", "hessian.cpp", "spring_functions.cpp", "enm-lib.cpp"])
+nickanm = clone.Program("nickanm", ["nickanm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(nickanm)
 
 
