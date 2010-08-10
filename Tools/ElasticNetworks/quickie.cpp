@@ -32,7 +32,8 @@ int main(int argc, char *argv[]) {
   // Track allocations for cleanup...
   vector<ENMFitter*> fits;
   vector<SuperBlock*> blocks;
-  vector<SpringFunction*> springs;
+  SpringFunction *spring = new HCA;
+
 
   while (k < argc) {
     string tag(argv[k++]);
@@ -48,7 +49,6 @@ int main(int argc, char *argv[]) {
     readAsciiMatrix(argv[k++], U);
     
     // Now setup blocker & springs...
-    SpringFunction *spring = new HCA;
     SuperBlock *blocker = new SuperBlock(spring, combined);
     
     VSA* vsa = new VSA(blocker, subsystem.size());
@@ -62,7 +62,6 @@ int main(int argc, char *argv[]) {
 
     fits.push_back(fitter);
     blocks.push_back(blocker);
-    springs.push_back(spring);
   }
 
 
@@ -84,21 +83,28 @@ int main(int argc, char *argv[]) {
   simp.seedLengths(lengths);
 
   // Do a quick check first...
+  cout << "----INITIAL----\n";
   double check = uberfit(seeds);
-  cout << "*** Initial = " << -check << " ***\n";
+  cout << "----INITIAL----\n";
+  uberfit.resetCount();
+
 
   vector<double> fit = simp.optimize(seeds, uberfit);
 
-  cout << "Final fit: ";
+  cout << "----FINAL----\n";
   cout << simp.finalValue() << "\t= ";
   copy(fit.begin(), fit.end(), ostream_iterator<double>(cout, "\t"));
   cout << endl;
+  uberfit.resetCount();
+  check = uberfit(fit);
+  cout << "----FINAL----\n";
+  
 
   // Cleanup (make valgrind happy)
   for (uint i=0; i<fits.size(); ++i) {
     delete fits[i];
     delete blocks[i];
-    delete springs[i];
   }
+  delete spring;
 
 }
