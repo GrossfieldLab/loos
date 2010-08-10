@@ -102,20 +102,18 @@ void fullHelp() {
     "\n"
     "\n"
     "* Spring Constant Control *\n\n"
-    "Different methods for assigning the spring constants in the\n"
-    "Hessian can be used.  For example, \"--free 1\" selects the\n"
-    "\"parameter free\" method which can be combined with the \"--power\"\n"
-    "option, which controls the exponent used (the default is -2).\n"
-    "Note that setting the parameter-free method does not alter the\n"
-    "cutoff radius used in building the Hessian, so you may want to\n"
-    "set that to something very large (i.e. \"--cutoff 100\").\n"
-    "Alternatively, the \"HCA\" method can be used via the \"--hca 1\"\n"
-    "option.  The constants used in HCA can be set with the\n"
-    "\"--hparams r_c,k1,k2,k3,k4\" option where the spring constant, k,\n"
-    "is defined as,\n"
-    "\tk = k1 * s - k2        if (s <= r_c)\n"
-    "\tk = k3 * pow(s, -k4)   if (s > r_c)\n"
-    "and s is the distance between the nodes.\n"
+    "The spring constant used is controlled by the --spring option.\n"
+    "If only the name for the spring function is given, then the default\n"
+    "parameters are used.  Alternatively, the name may include a\n"
+    "comma-separated list of parameters to be passed to the spring\n"
+    "function, i.e. --spring=distance,15.0\n\n"
+    "Available spring functions:\n";
+
+  vector<string> names = springNames();
+  for (vector<string>::iterator i = names.begin(); i != names.end(); ++i)
+    cout << "\t" << *i << endl;
+
+  cout <<
     "\n\n"
     "Examples:\n\n"
     "Compute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
@@ -182,21 +180,7 @@ int main(int argc, char *argv[]) {
 
   // Determine which kind of scaling to apply to the Hessian...
   SpringFunction* spring = 0;
-  try {
-    spring = springFactory(spring_desc);
-  }
-  catch (BadSpringFunction& s) {
-    cerr << "Error- " << s.what() << endl;
-    cerr << "Available springs: ";
-    vector<string> names = springNames();
-    copy(names.begin(), names.end(), ostream_iterator<string>(cerr, " "));
-    cerr << endl;
-    exit(-1);
-  }
-  catch (BadSpringParameter& s) {
-    cerr << "Error- " << s.what() << endl;
-    exit(-2);
-  }
+  spring = springFactory(spring_desc);
 
   cout << "Using spring: " << spring->name() << endl;
 
