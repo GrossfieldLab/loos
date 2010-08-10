@@ -9,7 +9,6 @@
 #include <Simplex.hpp>
 #include "fitter.hpp"
 #include "vsa-lib.hpp"
-#include "fit_aggregator.hpp"
 
 
 using namespace loos;
