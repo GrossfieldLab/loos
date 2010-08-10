@@ -37,17 +37,19 @@
 //    head --> rcut, k1, k2, k3, k4  <-- tail
 
 
+
+
 class SpringFunction {
+public:
+  typedef std::vector<double>      Params;
 public:
   SpringFunction() : warned(false) { }
   virtual ~SpringFunction() { }
   virtual std::string name() const =0;
 
-  // Sets the internal spring constants (destructively).  Returns true
-  // if constants are "valid"
-  virtual bool setConstants(std::vector<double>& konst) =0;
-  // Returns the # of spring constants used by this spring function
-  virtual uint numberOfConstants() const =0;
+  virtual Params setParams(const Params& konst) =0;
+  virtual bool validParams() const =0;
+
 
   
   
@@ -114,15 +116,15 @@ public:
 
   std::string name() const { return("DistanceCutoff"); }
 
-  bool setConstants(std::vector<double>& konst) {
-    radius = konst.back();
+  Params setParams(const Params& p) {
+    Params q(p);
+    radius = q.back();
     radius *= radius;
-    konst.pop_back();
-    return(radius != 0.0);
+    q.pop_back();
+    return(q);
   }
 
-  uint numberOfConstants() const { return(1); }
-
+  bool validParams() const { return(radius > 0.0); }
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length2();
@@ -147,13 +149,14 @@ public:
   std::string name() const { return("DistanceWeight"); }
 
 
-  bool setConstants(std::vector<double>& konst) {
-    power = konst.back();
-    konst.pop_back();
-    return(power < 0.0);
+  Params setParams(const Params& p) {
+    Params q(p);
+    power = q.back();
+    q.pop_back();
+    return(q);
   }
 
-  uint numberOfConstants() const { return(1); }
+  bool validParams() const { return(power < 0.0); }
 
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
@@ -177,13 +180,14 @@ public:
 
   std::string name() const { return("ExponentialDistance"); }
 
-  bool setConstants(std::vector<double>& konst) {
-    scale = konst.back();
-    konst.pop_back();
-    return(scale != 0.0);
+  Params setParams(const Params& p) {
+    Params q(p);
+    scale = q.back();
+    q.pop_back();
+    return(q);
   }
 
-  uint numberOfConstants() const { return(1); }
+  bool validParams() const { return(scale != 0.0); }
 
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
@@ -212,26 +216,28 @@ public:
 
   std::string name() const { return("HCA"); }
 
-  bool setConstants(std::vector<double>& konst) {
-    k4 = konst.back();
-    konst.pop_back();
+  Params setParams(const Params& p) {
+    Params q(p);
+    
+    k4 = q.back();
+    q.pop_back();
 
-    k3 = konst.back();
-    konst.pop_back();
+    k3 = q.back();
+    q.pop_back();
 
-    k2 = konst.back();
-    konst.pop_back();
+    k2 = q.back();
+    q.pop_back();
 
-    k1 = konst.back();
-    konst.pop_back();
+    k1 = q.back();
+    q.pop_back();
 
-    rcut = konst.back();
-    konst.pop_back();
+    rcut = q.back();
+    q.pop_back();
 
-    return( rcut >= 0.0 && k4 >= 0.0 );
+    return(q);
   }
 
-  uint numberOfConstants() const { return(5); }
+  bool validParams() const { return(rcut >= 0.0 && k4 >= 0.0); }
 
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {

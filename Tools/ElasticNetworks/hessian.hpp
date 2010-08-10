@@ -58,9 +58,11 @@ public:
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
-  virtual bool setConstants(std::vector<double>& v) {
-    return(springs->setConstants(v));
+  virtual SpringFunction::Params setParams(const SpringFunction::Params& v) {
+    return(springs->setParams(v));
   }
+
+  virtual bool validParams() const { return(springs->validParams()); }
 
 
   // Returns a 3x3 matrix representing a superblock in the Hessian for
@@ -176,12 +178,14 @@ public:
       return(decorated->block(j, i));
   }
 
-  bool setConstants(std::vector<double>& v) {
-    bool b = bound_spring->setConstants(v);
-    if (! v.empty() && b)
-      b &= decorated->setConstants(v);
-    return(b);
+  SpringFunction::Params setParams(const SpringFunction::Params& v) {
+    SpringFunction::Params u = bound_spring->setParams(v);
+    if (! u.empty())
+      u = decorated->setParams(u);
+    return(u);
   }
+
+  bool validParams() const { return(bound_spring->validParams() && decorated->validParams()); }
 
 private:
   SpringFunction* bound_spring;

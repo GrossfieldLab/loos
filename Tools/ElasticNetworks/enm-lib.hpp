@@ -93,10 +93,11 @@ public:
   void verbosity(const int i) { verbosity_ = i; }
   int verbosity() const { return(verbosity_); }
 
-  bool setConstants(const std::vector<double>& v) {
-    std::vector<double> u = v;
-    return(blocker_->setConstants(u));
+  SpringFunction::Params setParams(const SpringFunction::Params& v) {
+    return(blocker_->setParams(v));
   }
+
+  bool validParams() const { return(blocker_->validParams()); }
 
   const loos::DoubleMatrix& eigenvectors() const { return(eigenvecs_); }
   const loos::DoubleMatrix& eigenvalues() const { return(eigenvals_); }

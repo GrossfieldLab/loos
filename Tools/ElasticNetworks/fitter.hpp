@@ -53,7 +53,8 @@ public:
 
 
   double operator()(const std::vector<double>& v) {
-    if (! enm_->setConstants(v))
+    enm_->setParams(v);
+    if (! enm_->validParams())
       return(std::numeric_limits<double>::max());
     enm_->solve();
     
