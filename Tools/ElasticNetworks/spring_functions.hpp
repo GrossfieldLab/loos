@@ -13,8 +13,6 @@
 
 #include <loos.hpp>
 
-
-
 // These classes define the various possible spring functions used in
 // creating the Hessian.  All derived from the SpringFunction base
 // class.  This class returns a 3x3 DoubleMatrix containing the spring
@@ -35,6 +33,20 @@
 // pushed in the order they would have been passed had setConstants()
 // taken a regular argument list, i.e.
 //    head --> rcut, k1, k2, k3, k4  <-- tail
+
+
+
+class BadSpringFunction : public std::runtime_error
+{
+public:
+  BadSpringFunction(const std::string& s) : runtime_error(s) { }
+};
+
+class BadSpringParameter : public std::runtime_error
+{
+public:
+  BadSpringParameter(const std::string& s) : runtime_error(s) { }
+};
 
 
 
@@ -268,5 +280,6 @@ private:
 
 SpringFunction* springFactory(const std::string& spring_desc);
 
+std::vector<std::string> springNames();
 
 #endif

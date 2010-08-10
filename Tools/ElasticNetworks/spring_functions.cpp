@@ -8,6 +8,7 @@
 #include "spring_functions.hpp"
 
 
+
 // Factory function for SpringFunction's.  In the future, there will
 // be additional argument processing here (i.e. constants for the
 // spring functions)...
@@ -35,7 +36,7 @@ std::vector<std::string> splitCommaSeparatedList(const std::string& s){
 SpringFunction* springFactory(const std::string& spring_desc) {
 
   std::vector<std::string> list = splitCommaSeparatedList(spring_desc);
-  SpringFunction *spring;
+  SpringFunction *spring = 0;
 
   if (list[0] == "distance")
     spring = new DistanceCutoff;
@@ -45,20 +46,34 @@ SpringFunction* springFactory(const std::string& spring_desc) {
     spring = new ExponentialDistance;
   else if  (list[0] == "hca" || spring_desc == "HCA")
     spring = new HCA;
-  else {
-    std::stringstream oss;
-    oss << "Error- unknown spring function '" << spring_desc << "'" << std::endl;
-    oss << "Try: \"distance\", \"hca\", \"weighted\", or \"exponential\" " << std::endl;
-    throw(std::runtime_error(oss.str()));
-  }
+  else
+    throw(BadSpringFunction("Bad Spring Function Name"));
 
   if (list.size() > 1) {
+    if (list.size() < spring->paramSize())
+      throw(BadSpringParameter("Too few spring parameters"));
+
     std::vector<double> params;
 
     for (uint i=1; i <= spring->paramSize(); ++i)
       params.push_back(loos::parseStringAs<double>(list.at(i)));
+
     spring->setParams(params);
+    if (!spring->validParams())
+      throw(BadSpringParameter("Bad Spring Parameter"));
   }
 
   return(spring);
+}
+
+
+std::vector<std::string> springNames() {
+  std::vector<std::string> names;
+
+  names.push_back("distance");
+  names.push_back("weighted");
+  names.push_back("exponential");
+  names.push_back("hca");
+
+  return(names);
 }

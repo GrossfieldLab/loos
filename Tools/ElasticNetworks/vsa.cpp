@@ -241,7 +241,23 @@ int main(int argc, char *argv[]) {
   }
 
   // Determine which kind of scaling to apply to the Hessian...
-  SpringFunction* spring = springFactory(spring_desc);
+  SpringFunction* spring;
+  try {
+    spring = springFactory(spring_desc);
+  }
+  catch (BadSpringFunction& s) {
+    cerr << "Error- " << s.what() << endl;
+    cerr << "Available springs: ";
+    vector<string> names = springNames();
+    copy(names.begin(), names.end(), ostream_iterator<string>(cerr, " "));
+    cerr << endl;
+    exit(-1);
+  }
+  catch (BadSpringParameter& s) {
+    cerr << "Error- " << s.what() << endl;
+    exit(-2);
+  }
+
   cout << "Using spring: " << spring->name() << endl;
 
   SuperBlock* blocker = new SuperBlock(spring, composite);
