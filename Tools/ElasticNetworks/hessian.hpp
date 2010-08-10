@@ -58,6 +58,9 @@ public:
 
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
+  // ------------------------------------------------------
+  // The following forward to the contained SpringFunction...
+
   virtual SpringFunction::Params setParams(const SpringFunction::Params& v) {
     return(springs->setParams(v));
   }
@@ -65,7 +68,7 @@ public:
   virtual bool validParams() const { return(springs->validParams()); }
 
   virtual uint paramSize() const { return(springs->paramSize()); }
-
+  // ------------------------------------------------------
 
   // Returns a 3x3 matrix representing a superblock in the Hessian for
   // the two nodes...
@@ -173,6 +176,9 @@ public:
       throw(std::runtime_error("Connectivity matrix and Nodelist have differing sizes"));
   }
 
+
+  // Block now checks to see if nodes i and j are connected and, if
+  // so, uses our alternative spring function.
   loos::DoubleMatrix block(const uint j, const uint i) {
     if (connectivity(j, i))
       return(blockImpl(j, i, bound_spring));
@@ -180,6 +186,7 @@ public:
       return(decorated->block(j, i));
   }
 
+  // Parameters will be propagated into the decorated SuperBlocks if necessary.
   SpringFunction::Params setParams(const SpringFunction::Params& v) {
     SpringFunction::Params u = bound_spring->setParams(v);
     if (! u.empty())
@@ -187,8 +194,11 @@ public:
     return(u);
   }
 
+  // Must check that both our alternative springFunction is valid as
+  // well as the decorated one...
   bool validParams() const { return(bound_spring->validParams() && decorated->validParams()); }
 
+  // Same concept.
   uint paramSize() const { return(bound_spring->paramSize() + decorated->paramSize()); }
 
 private:

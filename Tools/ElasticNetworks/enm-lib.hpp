@@ -43,7 +43,12 @@
 
 
 
+
+// -------------------------------------
+// Support routines & types
+
 typedef std::pair<uint,uint> Range;
+
 
 loos::DoubleMatrix submatrix(const loos::DoubleMatrix& M, const Range& rows, const Range& cols);
 
@@ -66,7 +71,13 @@ void massFromOccupancy(loos::AtomicGroup& grp);
 loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
 
+// -------------------------------------
 
+
+
+// This class describes the interface for all ENMs...
+// To instantiate, you must pass a SuperBlock which determines how the
+// hessian is built.
 
 
 class ElasticNetworkModel {
@@ -77,22 +88,27 @@ public:
   // Should we allow this?
   void setSuperBlockFunction(SuperBlock* p) { blocker_ = p; }
 
+  // This computes the hessian and solves for the eigenpairs
   virtual void solve() =0;
 
-
-
+  // filename prefix when we have to write something out
   void prefix(const std::string& s) { prefix_ = s; }
   std::string prefix() const { return(prefix_); }
 
+  // Any metadata that gets added to matrices written out
   void meta(const std::string& s) { meta_ = s; }
   std::string meta() const { return(meta_); }
 
+  // Debugging flag (generally means write out all intermediate matrices)
   void debugging(const bool b) { debugging_ = b; }
   bool debugging() const { return(debugging_); }
 
+  // How wordy are we?
   void verbosity(const int i) { verbosity_ = i; }
   int verbosity() const { return(verbosity_); }
 
+  // -----------------------------------------------------
+  // The following forward to the contained SuperBlock...
   SpringFunction::Params setParams(const SpringFunction::Params& v) {
     return(blocker_->setParams(v));
   }
@@ -100,14 +116,21 @@ public:
   bool validParams() const { return(blocker_->validParams()); }
 
   uint paramSize() const { return(blocker_->paramSize()); }
+  // -----------------------------------------------------
 
+
+  // Accessors for eigenpairs and hessian
   const loos::DoubleMatrix& eigenvectors() const { return(eigenvecs_); }
   const loos::DoubleMatrix& eigenvalues() const { return(eigenvals_); }
   const loos::DoubleMatrix& hessian() const { return(hessian_); }
 
+
+
 protected:
   
 
+  // It is not expected that subclasses will want to override this...
+  // Uses the contained SuperBlock to build a hessian
   void buildHessian() {
   
     uint n = blocker_->size();
@@ -148,7 +171,7 @@ protected:
 protected:
   // Arguably, some of the following should be private rather than
   // protected...  But for now, we'll just cheat and make 'em all
-  // protected...   Nyah, nyah!
+  // protected..
   SuperBlock* blocker_;
   std::string name_;
   std::string prefix_;

@@ -24,11 +24,14 @@ extern "C" {
 
 class VSA : public ElasticNetworkModel {
 public:
+
+  // Non-mass case
   VSA(SuperBlock* blocker, const uint subn) : 
     ElasticNetworkModel(blocker),
     subset_size_(subn)
   { prefix_ = "vsa"; }
 
+  // Mass case
   VSA(SuperBlock* blocker, const uint subn, const loos::DoubleMatrix& M) :
     ElasticNetworkModel(blocker),
     subset_size_(subn),

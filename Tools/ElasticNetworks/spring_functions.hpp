@@ -13,29 +13,8 @@
 
 #include <loos.hpp>
 
-// These classes define the various possible spring functions used in
-// creating the Hessian.  All derived from the SpringFunction base
-// class.  This class returns a 3x3 DoubleMatrix containing the spring
-// constants...
-//
-// The SpringFunction::constant() function takes the coords of the two
-// nodes plus their difference vector (since it'll almost always be
-// computed prior to calling SpringFunction, no since in recomputing
-// it).
-//
-//
-// * Misc notes *
-//
-// The setConstants() function is destructive to its parameter.  I'm
-// not sure if this is the best way to implement this, so don't depend
-// on it staying this way.  The vector is treated as a LIFO stack.  It
-// is expected that where there are multiple constants, they will be
-// pushed in the order they would have been passed had setConstants()
-// taken a regular argument list, i.e.
-//    head --> rcut, k1, k2, k3, k4  <-- tail
 
-
-
+// Exceptions classes (primarily for springFactory())
 class BadSpringFunction : public std::runtime_error
 {
 public:
@@ -50,6 +29,27 @@ public:
 
 
 
+/*
+  These classes define the various possible spring functions used in
+  creating the Hessian.  All derived from the SpringFunction base
+  class.  This class returns a 3x3 DoubleMatrix containing the spring
+  constants...
+
+  The SpringFunction::constant() function takes the coords of the two
+  nodes plus their difference vector (since it'll almost always be
+  computed prior to calling SpringFunction, no since in recomputing
+  it).
+
+
+  * Misc notes *
+
+  setParams() takes a vector of doubles that represents the internal
+  "constants" for the spring functions.  It treats the vector as a
+  LIFO stack and picks off the ones it neds, returning the rest.
+*/
+
+
+
 
 class SpringFunction {
 public:
@@ -57,16 +57,23 @@ public:
 public:
   SpringFunction() : warned(false) { }
   virtual ~SpringFunction() { }
+
+  // Name for the function
   virtual std::string name() const =0;
 
+  // Sets the internal constants.  Returns the remaining ones from the
+  // konst vector...
   virtual Params setParams(const Params& konst) =0;
+
+  // Determines if the internal constants are "valid"
   virtual bool validParams() const =0;
 
+  // How many internal constants there are
   virtual uint paramSize() const =0;
 
 
   
-  
+  // Actually compute the spring constant as a 3x3 matrix
   virtual loos::DoubleMatrix constant(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) =0;
 
 protected:

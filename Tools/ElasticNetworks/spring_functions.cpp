@@ -8,16 +8,6 @@
 #include "spring_functions.hpp"
 
 
-
-// Factory function for SpringFunction's.  In the future, there will
-// be additional argument processing here (i.e. constants for the
-// spring functions)...
-//
-// name[,const1[,const2[,...]]]
-//
-// hca,4.0,1,2,3,4
-// power,-2.0
-//
 std::vector<std::string> splitCommaSeparatedList(const std::string& s){
   std::vector<std::string> holder;
   std::string::size_type prev =s.find_first_not_of(",", 0);
@@ -31,6 +21,17 @@ std::vector<std::string> splitCommaSeparatedList(const std::string& s){
 
   return(holder);
 }
+
+
+
+// Factory function for spring constants.  The spring description is
+// the name of the spring function with an optional comma-separated
+// list of parameters to pass to it, i.e.
+//    distance
+//    distance,15.0
+//    hca,1,2,3,4,5
+//
+// Will throw in the event of an error.
 
 
 SpringFunction* springFactory(const std::string& spring_desc) {
@@ -66,6 +67,10 @@ SpringFunction* springFactory(const std::string& spring_desc) {
   return(spring);
 }
 
+
+
+// Returns a list of names for spring functions.  Needs to match
+// what's checked for above...
 
 std::vector<std::string> springNames() {
   std::vector<std::string> names;
