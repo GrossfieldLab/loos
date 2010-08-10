@@ -99,6 +99,8 @@ public:
 
   bool validParams() const { return(blocker_->validParams()); }
 
+  uint paramSize() const { return(blocker_->paramSize()); }
+
   const loos::DoubleMatrix& eigenvectors() const { return(eigenvecs_); }
   const loos::DoubleMatrix& eigenvalues() const { return(eigenvals_); }
   const loos::DoubleMatrix& hessian() const { return(hessian_); }

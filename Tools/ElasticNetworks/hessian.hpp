@@ -64,6 +64,8 @@ public:
 
   virtual bool validParams() const { return(springs->validParams()); }
 
+  virtual uint paramSize() const { return(springs->paramSize()); }
+
 
   // Returns a 3x3 matrix representing a superblock in the Hessian for
   // the two nodes...
@@ -186,6 +188,8 @@ public:
   }
 
   bool validParams() const { return(bound_spring->validParams() && decorated->validParams()); }
+
+  uint paramSize() const { return(bound_spring->paramSize() + decorated->paramSize()); }
 
 private:
   SpringFunction* bound_spring;

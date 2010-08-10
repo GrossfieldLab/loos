@@ -50,6 +50,8 @@ public:
   virtual Params setParams(const Params& konst) =0;
   virtual bool validParams() const =0;
 
+  virtual uint paramSize() const =0;
+
 
   
   
@@ -126,6 +128,8 @@ public:
 
   bool validParams() const { return(radius > 0.0); }
 
+  uint paramSize() const { return(1); }
+
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length2();
     if (s <= radius)
@@ -158,6 +162,8 @@ public:
 
   bool validParams() const { return(power < 0.0); }
 
+  uint paramSize() const { return(1); }
+
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
     double s = d.length();
@@ -188,6 +194,8 @@ public:
   }
 
   bool validParams() const { return(scale != 0.0); }
+
+  uint paramSize() const { return(1); }
 
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
@@ -238,6 +246,8 @@ public:
   }
 
   bool validParams() const { return(rcut >= 0.0 && k4 >= 0.0); }
+
+  uint paramSize() const { return(5); }
 
 
   double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
