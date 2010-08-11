@@ -242,14 +242,13 @@ int main(int argc, char *argv[]) {
   SpringFunction* spring = 0;
   spring = springFactory(spring_desc);
 
-  cout << "Using spring: " << spring->name() << endl;
-
   SuperBlock* blocker = new SuperBlock(spring, composite);
 
   VSA vsa(blocker, subset.size());
   vsa.prefix(prefix);
   vsa.meta(hdr);
   vsa.debugging(debug);
+  vsa.verbosity(verbosity);
 
   if (!nomass) {
     DoubleMatrix M = getMasses(composite);

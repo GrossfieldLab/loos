@@ -49,8 +49,12 @@ boost::tuple<DoubleMatrix, DoubleMatrix> VSA::eigenDecomp(DoubleMatrix& A, Doubl
   }
 
   lwork = work[0];
+  if (verbosity_ > 1)
+    std::cerr << "dsygvx requested " << work[0] /(1024.0*1024.0) << " MB\n";
+
   delete[] work;
   work = new double[lwork];
+
   dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
   if (info != 0) {
     cerr << "ERROR- dsygvx returned " << info << endl;
@@ -117,6 +121,9 @@ DoubleMatrix VSA::massWeight(DoubleMatrix& U, DoubleMatrix& M) {
 
 
 void VSA::solve() {
+
+  if (verbosity_ > 1)
+    std::cerr << "Building hessian...\n";
   buildHessian();
     
   uint n = hessian_.cols();
@@ -134,9 +141,14 @@ void VSA::solve() {
     writeAsciiMatrix(prefix_ + "_Hse.asc", Hse, meta_, false);
   }
 
+  if (verbosity_ > 1)
+    std::cerr << "Inverting environment hessian...\n";
   DoubleMatrix Heei = Math::invert(Hee);
   
   // Build the effective Hessian
+  if (verbosity_ > 1)
+    std::cerr << "Computing effective hessian...\n";
+
   Hssp_ = Hss - Hse * Heei * Hes;
 
   if (debugging_)
@@ -145,7 +157,17 @@ void VSA::solve() {
   // Shunt in the event of using unit masses...  We can use the SVD to
   // to get the eigenpairs from Hssp
   if (masses_.rows() == 0) {
+    Timer<> t;
+
+    if (verbosity_ > 0)
+      std::cerr << "Calculating SVD of effective hessian...\n";
+
+    t.start();
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp_);
+    t.stop();
+
+    if (verbosity_ > 0)
+      std::cerr << "SVD took " << loos::timeAsString(t.elapsed()) << std::endl;
 
     eigenvecs_ = boost::get<0>(svdresult);
     eigenvals_ = boost::get<1>(svdresult);
@@ -161,6 +183,8 @@ void VSA::solve() {
   DoubleMatrix Ms = submatrix(masses_, Range(0, l), Range(0, l));
   DoubleMatrix Me = submatrix(masses_, Range(l, n), Range(l, n));
 
+  if (verbosity_ > 1)
+    std::cerr << "Computing effective mass matrix...\n";
   Msp_ = Ms + Hse * Heei * Me * Heei * Hes;
 
   if (debugging_) {
@@ -171,7 +195,16 @@ void VSA::solve() {
 
   // Run the eigen-decomposition...
   boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs;
+  Timer<> t;
+  if (verbosity_ > 0)
+    std::cerr << "Computing eigendecomposition...\n";
+
+  t.start();
   eigenpairs = eigenDecomp(Hssp_, Msp_);
+  t.stop();
+
+  if (verbosity_ > 0)
+    std::cerr << "Eigendecomposition took " << loos::timeAsString(t.elapsed()) << std::endl;
 
   eigenvals_ = boost::get<0>(eigenpairs);
   DoubleMatrix Us = boost::get<1>(eigenpairs);
