@@ -62,6 +62,8 @@ namespace loos {
 
       sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
 
+      delete[] work;
+
       boost::tuple<RealMatrix, RealMatrix, RealMatrix> result(U, S, Vt);
       return(result);
     }
@@ -93,6 +95,8 @@ namespace loos {
       work = new double[lwork];
 
       dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
+
+      delete[] work;
 
       boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result(U, S, Vt);
       return(result);
