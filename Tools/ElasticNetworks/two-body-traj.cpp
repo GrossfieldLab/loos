@@ -60,6 +60,8 @@ void parseOptions(int argc, char *argv[]) {
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
       cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name\n";
+      cerr << generic;
+      exit(-1);
     }
     
   }
