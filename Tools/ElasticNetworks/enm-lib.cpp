@@ -132,7 +132,7 @@ void ElasticNetworkModel::buildHessian() {
 
   for (uint i=1; i<n; ++i) {
     for (uint j=0; j<i; ++j) {
-      loos::DoubleMatrix B = blocker_->block(i, j);
+      loos::DoubleMatrix B = blocker_->block(j, i);
       for (uint x = 0; x<3; ++x)
         for (uint y = 0; y<3; ++y) {
           H(i*3 + y, j*3 + x) = -B(y, x);
