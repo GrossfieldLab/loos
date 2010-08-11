@@ -20,7 +20,7 @@
 #include <loos.hpp>
 #include "enm-lib.hpp"
 
-
+//! Class for fitting ENM spring parameters by comparing an ENM and PCA results
 class ENMFitter {
 public:
   ENMFitter(ElasticNetworkModel* model, const loos::DoubleMatrix& s, const loos::DoubleMatrix& U) :
@@ -77,7 +77,7 @@ private:
 
 
 
-
+//! Combines multiple ENMFitters together to return a joint overlap
 class FitAggregator {
 public:
   FitAggregator() : iters_(0), verbose_(true) { }

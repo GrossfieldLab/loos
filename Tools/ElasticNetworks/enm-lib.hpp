@@ -47,27 +47,29 @@
 // -------------------------------------
 // Support routines & types
 
+//! Specify a range of columns/rows [first,second)
 typedef std::pair<uint,uint> Range;
 
-
+//! Extracts a submatrix
 loos::DoubleMatrix submatrix(const loos::DoubleMatrix& M, const Range& rows, const Range& cols);
 
+//! Normalizes each column as a column-vector
 void normalizeColumns(loos::DoubleMatrix& A);
 
 
-// Map masses from one group onto another...  Minimal error checking...
+//! Map masses from one group onto another...  Minimal error checking...
 void copyMasses(loos::AtomicGroup& target, const loos::AtomicGroup& source);
 
 
 
-// Copy the masses from a PSF onto a group
+//! Copy the masses from a PSF onto a group
 void massFromPSF(loos::AtomicGroup& grp, const std::string& name);
 
-// The masses are stored in the occupancy field of a PDB...
+//! The masses are stored in the occupancy field of a PDB...
 void massFromOccupancy(loos::AtomicGroup& grp);
 
 
-// Build the 3n x 3n diagonal mass matrix for a group
+//! Build the 3n x 3n diagonal mass matrix for a group
 loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
 
@@ -79,7 +81,7 @@ loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 // To instantiate, you must pass a SuperBlock which determines how the
 // hessian is built.
 
-
+//! Interface for all ENMs
 class ElasticNetworkModel {
 public:
   ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), meta_(""), debugging_(false), verbosity_(0) { }

@@ -11,7 +11,7 @@
 
 
 
-
+//! Anisotropic network model
 class ANM : public ElasticNetworkModel {
 public:
   ANM(SuperBlock* b) : ElasticNetworkModel(b) { prefix_ = "anm"; }

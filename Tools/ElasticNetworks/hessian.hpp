@@ -39,16 +39,17 @@
 
 #include "spring_functions.hpp"
 
-
-// This is the base class for defining elements (superblocks) in the
-// Hessian.  The SuperBlock takes as an argument a pointer to a
-// SpringFunction.  This determines what spring constants are used for
-// a given node-pair.  It also takes an AtomicGroup representing the
-// nodes (for coordinates, etc).
-//
-// Note that this class does NOT use NVI, so derived classes should
-// verify that they have valid args for the block() function.
-
+//! This class creates superblocks in a hessian
+/**
+ *This is the base class for defining elements (superblocks) in the
+ * Hessian.  The SuperBlock takes as an argument a pointer to a
+ * SpringFunction.  This determines what spring constants are used for
+ * a given node-pair.  It also takes an AtomicGroup representing the
+ * nodes (for coordinates, etc).
+ *
+ * Note that this class does NOT use NVI, so derived classes should
+ * verify that they have valid args for the block() function.
+ */
 class SuperBlock {
 public:
   SuperBlock() : springs(0) { }
@@ -59,20 +60,19 @@ public:
   uint size() const { return(static_cast<uint>(nodes.size())); }
 
   // ------------------------------------------------------
-  // The following forward to the contained SpringFunction...
-
+  //! Forwards to the contained SpringFunction...
   virtual SpringFunction::Params setParams(const SpringFunction::Params& v) {
     return(springs->setParams(v));
   }
 
+  //! Forwards to the contained SpringFunction...
   virtual bool validParams() const { return(springs->validParams()); }
 
+  //! Forwards to the contained SpringFunction...
   virtual uint paramSize() const { return(springs->paramSize()); }
   // ------------------------------------------------------
 
-  // Returns a 3x3 matrix representing a superblock in the Hessian for
-  // the two nodes...
-
+  //! Returns a 3x3 matrix representing a superblock in the Hessian for the two nodes
   virtual loos::DoubleMatrix block(const uint j, const uint i) {
     return(blockImpl(j, i, springs));
   }
@@ -80,10 +80,12 @@ public:
 
 protected:
 
-  // This is the actual implementation of the SuperBlock calculation.
-  // In most cases, derived clases will probably want to use this but
-  // with alternative spring functions...
-
+  //! Implementation of the superblock calculation
+  /**
+   *This is the actual implementation of the SuperBlock calculation.
+   *In most cases, derived clases will probably want to use this but
+   * with alternative spring functions...
+   */
   loos::DoubleMatrix blockImpl(const uint j, const uint i, const SpringFunction* fptr) {
     if (i >= size() || j >= size())
       throw(std::runtime_error("Invalid index in Hessian SuperBlock"));
@@ -111,13 +113,13 @@ protected:
 
 
 
-// The following is a decorator for a SuperBlock.
-// It both inherits from (so it can be used in place of a SuperBlock)
-// and contains a SuperBlock.  This allows additional behavior to be
-// layed on top of the SuperBlock.
-
-
-
+//! SuperBlock decorator base class
+/**
+ *The following is a decorator for a SuperBlock.
+ *It both inherits from (so it can be used in place of a SuperBlock)
+ *and contains a SuperBlock.  This allows additional behavior to be
+ *layed on top of the SuperBlock.
+ */
 class SuperBlockDecorator : public SuperBlock {
 public:
   SuperBlockDecorator(SuperBlock* b) : SuperBlock(*b), decorated(b) { }
@@ -128,43 +130,45 @@ protected:
 
 
 
-// The following is a decorator for SuperBlock that implements an
-// alternative set of spring constants for nodes that are "bound"
-// together.  The constructor takes a SuperBlock to decorate, along
-// with a pointer to the alternative SpringFunction and a matrix of
-// ints representing the connectivity (i.e. 1 if two nodes are
-// connected, 0 otherwise).
-//
-// A few notes about using decorators...  The idea behind a decorator
-// is that you add layers (or decorate) to a class by combining
-// multiple decorators.  For example, suppose you have two different
-// kinds of connectivity you want to represent in a Hessian.  You
-// would set-up your SuperBlock like,
-//    SuperBlock* unbound = new SuperBlock(unbound_spring, nodes);
-//    BoundSuperBlock* backboned = new BoundSuperBlock(unbound, backbone_springs, backbone_bonds);
-//    BoundSuperBlock* side_chained = new BoundSuperBlock(backboned, side_chain_springs, side_chain_bonds);
-//
-// You now always work with the last decorated object,
-// i.e. side_chained.  When side_chained->block() is called, it first
-// checks to see if the nodes represent a side-chain bond.  If so,
-// that spring function is used.  If not, then it passes control to
-// the object it decorates, i.e. backboned.  Backboned now checks to
-// see if the nodes represent a backbone bond.  If so, it uses that
-// spring function.  If not, then control is passed to the inner
-// unbound SuperBlock which uses its spring function.
-//
-// This method has two important caveats.  First, the calculation is
-// now order-dependent.  If, for some reason, you have nodes that are
-// listed as both side-chains and backbones (for a contrived example),
-// then the one used will depend on the order in which the SuperBlock
-// was decorated.  The second caveat is that we are using real, raw
-// pointers here, so be careful about cleaning up to avoid memory
-// leaks and also keep in mind that the intermediate pointers
-// (i.e. backboned) are contained within the higher-level decorators.
-// So, do NOT delete any of the intermediate steps until you are sure
-// you are done with everything.
-
-
+//! Decorator for switching spring functions based on a matrix of flags
+/**
+ *The following is a decorator for SuperBlock that implements an
+ *alternative set of spring constants for nodes that are "bound"
+ *together.  The constructor takes a SuperBlock to decorate, along
+ *with a pointer to the alternative SpringFunction and a matrix of
+ *ints representing the connectivity (i.e. 1 if two nodes are
+ *connected, 0 otherwise).
+ *
+ *A few notes about using decorators...  The idea behind a decorator
+ *is that you add layers (or decorate) to a class by combining
+ *multiple decorators.  For example, suppose you have two different
+ *kinds of connectivity you want to represent in a Hessian.  You
+ *would set-up your SuperBlock like,
+\code
+   SuperBlock* unbound = new SuperBlock(unbound_spring, nodes);
+   BoundSuperBlock* backboned = new BoundSuperBlock(unbound, backbone_springs, backbone_bonds);
+   BoundSuperBlock* side_chained = new BoundSuperBlock(backboned, side_chain_springs, side_chain_bonds);
+\endcode
+ *You now always work with the last decorated object,
+ *i.e. side_chained.  When side_chained->block() is called, it first
+ *checks to see if the nodes represent a side-chain bond.  If so,
+ *that spring function is used.  If not, then it passes control to
+ *the object it decorates, i.e. backboned.  Backboned now checks to
+ *see if the nodes represent a backbone bond.  If so, it uses that
+ *spring function.  If not, then control is passed to the inner
+ *unbound SuperBlock which uses its spring function.
+ *
+ *This method has two important caveats.  First, the calculation is
+ *now order-dependent.  If, for some reason, you have nodes that are
+ *listed as both side-chains and backbones (for a contrived example),
+ *then the one used will depend on the order in which the SuperBlock
+ *was decorated.  The second caveat is that we are using real, raw
+ *pointers here, so be careful about cleaning up to avoid memory
+ *leaks and also keep in mind that the intermediate pointers
+ *(i.e. backboned) are contained within the higher-level decorators.
+ *So, do NOT delete any of the intermediate steps until you are sure
+ *you are done with everything.
+*/
 class BoundSuperBlock : public SuperBlockDecorator {
 public:
   BoundSuperBlock(SuperBlock* b, SpringFunction* bs, loos::Math::Matrix<int>& cm) :

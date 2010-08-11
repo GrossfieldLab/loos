@@ -21,7 +21,7 @@ extern "C" {
 
 
 
-
+//! Vibrational subsystem analysis ENM
 class VSA : public ElasticNetworkModel {
 public:
 

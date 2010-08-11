@@ -15,12 +15,14 @@
 
 
 // Exceptions classes (primarily for springFactory())
+//! Bad spring function was requested
 class BadSpringFunction : public std::runtime_error
 {
 public:
   BadSpringFunction(const std::string& s) : runtime_error(s) { }
 };
 
+//! Unspecified problem with parameters in SpringFunction
 class BadSpringParameter : public std::runtime_error
 {
 public:
@@ -29,28 +31,25 @@ public:
 
 
 
-/*
-  These classes define the various possible spring functions used in
-  creating the Hessian.  All derived from the SpringFunction base
-  class.  This class returns a 3x3 DoubleMatrix containing the spring
-  constants...
-
-  The SpringFunction::constant() function takes the coords of the two
-  nodes plus their difference vector (since it'll almost always be
-  computed prior to calling SpringFunction, no since in recomputing
-  it).
-
-
-  * Misc notes *
-
-  setParams() takes a vector of doubles that represents the internal
-  "constants" for the spring functions.  It treats the vector as a
-  LIFO stack and picks off the ones it neds, returning the rest.
+//! Interface for ENM spring functions
+/**
+ *These classes define the various possible spring functions used in
+ *creating the Hessian.  All derived from the SpringFunction base
+ *class.  This class returns a 3x3 DoubleMatrix containing the spring
+ *constants...
+ *
+ *The SpringFunction::constant() function takes the coords of the two
+ *nodes plus their difference vector (since it'll almost always be
+ *computed prior to calling SpringFunction, no since in recomputing
+ *it).
+ *
+ *
+ * =Misc notes=
+ *
+ *setParams() takes a vector of doubles that represents the internal
+ *"constants" for the spring functions.  It treats the vector as a
+ *LIFO stack and picks off the ones it neds, returning the rest.
 */
-
-
-
-
 class SpringFunction {
 public:
   typedef std::vector<double>      Params;
@@ -99,15 +98,16 @@ private:
 
 
 
-
-// Many spring functions are actually uniform over the 3x3 matrix.
-// The UniformSpringFunction uses the NVI idiom
-// (http://www.gotw.ca/publications/mill18.htm) to allow subclasses to
-// only return a double value, which then gets copied into all
-// elements of the 3x3 matrix.
-//
-// Note: this means you override the constantImpl() implementation
-// function, NOT the public constant() function.
+//! Spring functions that are uniform in all directions (ie return a single value)
+/** Many spring functions are actually uniform over the 3x3 matrix.
+ *The UniformSpringFunction uses the NVI idiom
+ *(http://www.gotw.ca/publications/mill18.htm) to allow subclasses to
+ *only return a double value, which then gets copied into all
+ *elements of the 3x3 matrix.
+ *
+ *Note: this means you override the constantImpl() implementation
+ *function, NOT the public constant() function.
+*/
 
 class UniformSpringFunction : public SpringFunction {
 public:
@@ -130,8 +130,15 @@ private:
 // The following are all uniform spring constants...
 
 
-// Basic distance cutoff for "traditional" ENM
-
+//! Basic distance cutoff for "traditional" ENM
+/**
+ \f{eqnarray*}{
+ r^{-2} & \mbox{for} & r \leq r_c \\
+ 0 & \mbox{for} & r > r_c\\
+}
+ \f}
+ *Where r is the distance between nodes.
+*/
 class DistanceCutoff : public UniformSpringFunction {
 public:
   DistanceCutoff(const double& r) : radius(r*r) { }
@@ -164,8 +171,7 @@ private:
 };
 
 
-// Distance weighting (i.e. ||u-v||^p)
-
+//! Distance weighting (i.e. \f$r^p\f$)
 class DistanceWeight : public UniformSpringFunction {
 public:
   DistanceWeight(const double p) : power(p) { }
@@ -198,8 +204,7 @@ private:
 
 
 
-// Exponential distance weighting (i.e. exp(k * ||u-v||))
-
+//! Exponential distance weighting (i.e. \f$\exp(k r)\f$)
 class ExponentialDistance : public UniformSpringFunction {
 public:
   ExponentialDistance(const double s) : scale(s) { }
@@ -232,8 +237,16 @@ private:
 
 
 
-// HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37)
-// Note: The defaults are the original Hinsen constants...
+//! HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37)
+/**
+ *Note: The defaults are the original Hinsen constants...
+ *
+ *\f{eqnarray*}{
+ ar + b & \mbox{for} & r < r_c \\
+c r^{-d} & \mbox{for} & r \geq r_c\\
+}
+ \f}
+ */
 
 class HCA : public UniformSpringFunction {
 public:
@@ -289,9 +302,10 @@ private:
 
 
 
-
+//! Factory function for creating new SpringFunctions
 SpringFunction* springFactory(const std::string& spring_desc);
 
+//! List of possible names for springFactory()
 std::vector<std::string> springNames();
 
 #endif
