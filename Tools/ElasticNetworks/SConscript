@@ -48,8 +48,8 @@ list.append(vsa)
 anm = clone.Program("anm", ["anm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(anm)
 
-enm_single_fit = clone.Program("enm_single_fit", ["enm_single_fit.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
-list.append(enm_single_fit)
+vsa_fit = clone.Program("vsa_fit", ["vsa_fit.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+list.append(vsa_fit)
 
 nickanm = clone.Program("nickanm", ["nickanm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(nickanm)
