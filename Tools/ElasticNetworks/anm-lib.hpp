@@ -17,11 +17,25 @@ public:
   ANM(SuperBlock* b) : ElasticNetworkModel(b) { prefix_ = "anm"; }
 
   void solve() {
+
+    if (verbosity_ > 1)
+      std::cerr << "Building hessian...\n";
     buildHessian();
     if (debugging_)
       loos::writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
 
+    loos::Timer<> t;
+    if (verbosity_ > 0)
+      std::cerr << "Computing SVD of hessian...\n";
+    t.start();
+
     boost::tuple<loos::DoubleMatrix, loos::DoubleMatrix, loos::DoubleMatrix> result = svd(hessian_);
+    
+    t.stop();
+    if (verbosity_ > 0)
+      std::cerr << "SVD took " << loos::timeAsString(t.elapsed()) << std::endl;
+
+
     eigenvecs_ = boost::get<0>(result);
     eigenvals_ = boost::get<1>(result);
     rsv_ = boost::get<2>(result);

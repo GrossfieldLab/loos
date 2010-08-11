@@ -182,15 +182,13 @@ int main(int argc, char *argv[]) {
   SpringFunction* spring = 0;
   spring = springFactory(spring_desc);
 
-  cout << "Using spring: " << spring->name() << endl;
-
-
   SuperBlock* blocker = new SuperBlock(spring, subset);
 
   ANM anm(blocker);
   anm.debugging(debug);
   anm.prefix(prefix);
   anm.meta(header);
+  anm.verbosity(verbosity);
 
   anm.solve();
 
