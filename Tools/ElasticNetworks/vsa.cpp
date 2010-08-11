@@ -260,4 +260,8 @@ int main(int argc, char *argv[]) {
   writeAsciiMatrix(prefix + "_U.asc", vsa.eigenvectors(), hdr, false);
   writeAsciiMatrix(prefix + "_s.asc", vsa.eigenvalues(), hdr, false);
 
+  // Be good...
+  delete spring;
+  delete blocker;
+
 }
