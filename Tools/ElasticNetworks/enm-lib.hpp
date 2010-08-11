@@ -82,7 +82,7 @@ loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 
 class ElasticNetworkModel {
 public:
-  ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), meta_(""), debugging_(false), verbosity_(0) { }
+  ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), meta_(""), debugns ging_(false), verbosity_(0) { }
   virtual ~ElasticNetworkModel() { }
 
   // Should we allow this?
