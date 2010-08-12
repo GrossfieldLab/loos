@@ -3,7 +3,7 @@
   (c) 2010 Tod D. Romo, Grossfield Lab, URMC
 */
 
-
+/** @file */
 
 #include "spring_functions.hpp"
 
@@ -24,16 +24,15 @@ std::vector<std::string> splitCommaSeparatedList(const std::string& s){
 
 
 
-// Factory function for spring constants.  The spring description is
-// the name of the spring function with an optional comma-separated
-// list of parameters to pass to it, i.e.
-//    distance
-//    distance,15.0
-//    hca,1,2,3,4,5
-//
-// Will throw in the event of an error.
-
-
+/** Factory function for spring constants.  The spring description is
+ * the name of the spring function with an optional comma-separated
+ * list of parameters to pass to it, i.e.
+ *    distance
+ *    distance,15.0
+ *    hca,1,2,3,4,5
+ *
+ * Will throw in the event of an error.
+ */
 SpringFunction* springFactory(const std::string& spring_desc) {
 
   std::vector<std::string> list = splitCommaSeparatedList(spring_desc);

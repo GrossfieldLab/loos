@@ -3,7 +3,7 @@
   (c) 2010 Tod D. Romo, Grossfield Lab, URMC
 */
 
-
+/** @file */>
 
 #if !defined(SPRING_FUNCTIONS_HPP)
 #define SPRING_FUNCTIONS_HPP
@@ -300,7 +300,7 @@ private:
 
 
 
-//! Factory function for creating new SpringFunctions
+//! Factory function for generating new SpringFunction instances based on a user string
 SpringFunction* springFactory(const std::string& spring_desc);
 
 //! List of possible names for springFactory()
