@@ -3,7 +3,10 @@
   (c) 2010 Tod D. Romo, Grossfield Lab, URMC
 */
 
-/** @file */>
+/** @file */
+/** \addtogroup ENM
+ *@{
+ */
 
 #if !defined(SPRING_FUNCTIONS_HPP)
 #define SPRING_FUNCTIONS_HPP
@@ -307,3 +310,5 @@ SpringFunction* springFactory(const std::string& spring_desc);
 std::vector<std::string> springNames();
 
 #endif
+
+/** @} */

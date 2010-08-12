@@ -34,6 +34,9 @@
 */
 
 
+/** \defgroup ENM Elastic Network Models
+ *@{
+ */
 
 #if !defined(ENMLIB_HPP)
 #define ENMLIB_HPP
@@ -156,3 +159,6 @@ protected:
 
 
 #endif
+
+
+/** @} */
