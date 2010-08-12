@@ -57,6 +57,7 @@ clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
                     PathVariable.PathAccept))
+clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
 
 # This is a developer setting...  Do not set unless you know what you
 # are doing...
@@ -87,6 +88,14 @@ BOOSTREGEX = env['BOOSTREGEX']
 BOOSTPO = env['BOOSTPO']
 LIBXTRA = env['LIBXTRA']
 PREFIX = env['PREFIX']
+ALTPATH = env['ALTPATH']
+
+if ALTPATH != '':
+   buildenv = env['ENV']
+   path = buildenv['PATH']
+   path = ALTPATH + ':' + path
+   buildenv['PATH'] = path
+
 
 
 ### Autoconf
