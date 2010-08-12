@@ -59,29 +59,29 @@ public:
   SpringFunction() : warned(false) { }
   virtual ~SpringFunction() { }
 
-  // Name for the function
+  //! Name for this particular spring function
   virtual std::string name() const =0;
 
-  // Sets the internal constants.  Returns the remaining ones from the
-  // konst vector...
+  //! Sets the internal constants, returning the unused ones
   virtual Params setParams(const Params& konst) =0;
 
-  // Determines if the internal constants are "valid"
+  //! Determines if the internal constants are "valid"
   virtual bool validParams() const =0;
 
-  // How many internal constants there are
+  //! How many internal constants there are
   virtual uint paramSize() const =0;
 
 
   
-  // Actually compute the spring constant as a 3x3 matrix
+  //! Actually compute the spring constant as a 3x3 matrix
   virtual loos::DoubleMatrix constant(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) =0;
 
 protected:
 
-  // Check for negative spring-constants.  If found, issue a one-time
-  // warning, but only for this specific spring function...
-
+  //! Check for negative spring-constants
+  /**
+   * Issues a one-time warning if a negative spring constant is found
+   */
   double checkConstant(double d) {
     if (d < 0.0) {
       if (!warned) {
@@ -124,6 +124,8 @@ public:
   }
 
 private:
+
+  //! Implementation of the spring constant calculation
   virtual double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) =0;
 };
 

@@ -128,6 +128,8 @@ protected:
  */
 class SuperBlockDecorator : public SuperBlock {
 public:
+
+  //! Constructor that takes a SuperBlock to decorate
   SuperBlockDecorator(SuperBlock* b) : SuperBlock(*b), decorated(b) { }
 
 protected:
@@ -196,7 +198,7 @@ public:
       return(decorated->block(j, i));
   }
 
-  // Parameters will be propagated into the decorated SuperBlocks if necessary.
+  //! Assign parameters and propagate to the decorated superblock
   SpringFunction::Params setParams(const SpringFunction::Params& v) {
     SpringFunction::Params u = bound_spring->setParams(v);
     if (! u.empty())
@@ -204,11 +206,10 @@ public:
     return(u);
   }
 
-  // Must check that both our alternative springFunction is valid as
-  // well as the decorated one...
+  //! Both the alternate and all decorated parameters are valid
   bool validParams() const { return(bound_spring->validParams() && decorated->validParams()); }
 
-  // Same concept.
+  //! Returns the aggregate parameter size
   uint paramSize() const { return(bound_spring->paramSize() + decorated->paramSize()); }
 
 private:

@@ -30,13 +30,13 @@ extern "C" {
 class VSA : public ElasticNetworkModel {
 public:
 
-  // Non-mass case
+  //! Constructor for VSA without masses
   VSA(SuperBlock* blocker, const uint subn) : 
     ElasticNetworkModel(blocker),
     subset_size_(subn)
   { prefix_ = "vsa"; }
 
-  // Mass case
+  //! Constructor for VSA with masses
   VSA(SuperBlock* blocker, const uint subn, const loos::DoubleMatrix& M) :
     ElasticNetworkModel(blocker),
     subset_size_(subn),
@@ -47,13 +47,22 @@ public:
 
   void solve();
   
-
+  //! Sets the mass matrix and determines what kind of VSA calc to use
+  /**
+   * Setting the mass matrix to an initialized matrix implies that VSA
+   * will use the mass-VSA version.  On the other hand, setting the
+   * matrix to a default, uninitialized matrix will switch to the
+   * mass-less VSA:
+\code
+vsa.setMasses(DoubleMatrix());
+\endcode
+  */
   void setMasses(const loos::DoubleMatrix& M) {
     masses_ = M;
   };
 
 
-  // Free up internal storage...
+  //! Free up internal storage...
   void free() {
     masses_.reset();
     Msp_.reset();

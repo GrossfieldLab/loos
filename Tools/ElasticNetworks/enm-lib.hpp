@@ -93,40 +93,46 @@ public:
   // Should we allow this?
   void setSuperBlockFunction(SuperBlock* p) { blocker_ = p; }
 
-  // This computes the hessian and solves for the eigenpairs
+  //! Computes the hessian and solves for the eigenpairs
   virtual void solve() =0;
 
-  // filename prefix when we have to write something out
+  //! Filename prefix when we have to write something out
   void prefix(const std::string& s) { prefix_ = s; }
   std::string prefix() const { return(prefix_); }
 
-  // Any metadata that gets added to matrices written out
+  //! Any metadata that gets added to matrices written out
   void meta(const std::string& s) { meta_ = s; }
   std::string meta() const { return(meta_); }
 
-  // Debugging flag (generally means write out all intermediate matrices)
+  //! Debugging flag (generally means write out all intermediate matrices)
   void debugging(const bool b) { debugging_ = b; }
   bool debugging() const { return(debugging_); }
 
-  // How wordy are we?
+  //! How wordy are we?
   void verbosity(const int i) { verbosity_ = i; }
   int verbosity() const { return(verbosity_); }
 
   // -----------------------------------------------------
-  // The following forward to the contained SuperBlock...
+  //! Forwards to contained superblock
   SpringFunction::Params setParams(const SpringFunction::Params& v) {
     return(blocker_->setParams(v));
   }
 
+  //! Forwards to contained superblock
   bool validParams() const { return(blocker_->validParams()); }
 
+  //! Forwards to contained superblock
   uint paramSize() const { return(blocker_->paramSize()); }
   // -----------------------------------------------------
 
 
-  // Accessors for eigenpairs and hessian
+  //! Accessors for eigenpairs and hessian
   const loos::DoubleMatrix& eigenvectors() const { return(eigenvecs_); }
+
+  //! Accessors for eigenpairs and hessian
   const loos::DoubleMatrix& eigenvalues() const { return(eigenvals_); }
+
+  //! Accessors for eigenpairs and hessian
   const loos::DoubleMatrix& hessian() const { return(hessian_); }
 
 
@@ -134,8 +140,11 @@ public:
 protected:
   
 
-  // It is not expected that subclasses will want to override this...
-  // Uses the contained SuperBlock to build a hessian
+  //! Construct the hessian using the contained SuperBlock
+  /**
+   * It is not expected that subclasses will want to override this...
+   * Uses the contained SuperBlock to build a hessian
+   */
   void buildHessian();
   
 
