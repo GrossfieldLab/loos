@@ -1,3 +1,5 @@
+/** @file */
+
 //28July10 - looks at side-nodes.cpp (unreleased loos tool made by Tod)
 
 #include <loos.hpp>
@@ -115,12 +117,19 @@ int main(int argc, char *argv[]) {
     for (vector<AtomicGroup>::iterator vi = residues.begin(); vi != residues.end(); ++vi) {
       // First, pick off the CA
       AtomicGroup CA = (*vi).select(AtomNameSelector("CA"));
+      AtomicGroup BB = (*vi).select(BackboneSelector());
       if (CA.empty()) {
 	//	cerr << "Error- cannot find CA.\n" << *vi;
 	//	exit(-10);
 	continue;
       }
-      CA[0]->occupancy(CA[0]->mass());
+      double assholder = 0.0;
+      assholder += BB[0]->mass();
+      assholder += BB[1]->mass();
+      assholder += BB[2]->mass();
+      CA[0]->occupancy(assholder);
+      
+      //      CA[0]->occupancy(CA[0]->mass());
       //adds pAtom CA's to AtomicGroup cg_sites
       cg_sites += CA[0];
       
