@@ -49,7 +49,11 @@ public:
   }
 
 
+  //! Return the inverted hessian matrix
   loos::DoubleMatrix inverseHessian() {
+
+    if (rsv_.rows() == 0)
+      throw(std::logic_error("ANM::inverseHessian() called before ANM::solve()"));
 
     uint n = eigenvals_.rows();
     for (uint i=6; i<n; ++i) {
