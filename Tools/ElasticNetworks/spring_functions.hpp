@@ -132,10 +132,9 @@ private:
 
 //! Basic distance cutoff for "traditional" ENM
 /**
- \f{eqnarray*}{
+ \f{eqnarray*}
  r^{-2} & \mbox{for} & r \leq r_c \\
  0 & \mbox{for} & r > r_c\\
-}
  \f}
  *Where r is the distance between nodes.
 */
@@ -241,10 +240,9 @@ private:
 /**
  *Note: The defaults are the original Hinsen constants...
  *
- *\f{eqnarray*}{
+ *\f{eqnarray*}
  ar + b & \mbox{for} & r < r_c \\
 c r^{-d} & \mbox{for} & r \geq r_c\\
-}
  \f}
  */
 
