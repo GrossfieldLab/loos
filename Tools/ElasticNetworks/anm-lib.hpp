@@ -2,6 +2,9 @@
 // (c) 2010 Tod D. Romo, Grossfield Lab, URMC
 //
 
+/** \addtogroup ENM
+ *@{
+ */
 
 #if !defined(ANM_LIB_HPP)
 #define ANM_LIB_HPP
@@ -68,3 +71,6 @@ private:
 
 
 #endif
+
+
+/** @} */

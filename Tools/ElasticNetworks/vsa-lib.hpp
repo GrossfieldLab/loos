@@ -5,6 +5,11 @@
 //
 
 
+/** \addtogroup ENM
+ *@{
+ */
+
+
 #if !defined(VSA_LIB_HPP)
 #define VSA_LIB_HPP
 
@@ -71,3 +76,7 @@ private:
 
 
 #endif
+
+
+
+/** @} */

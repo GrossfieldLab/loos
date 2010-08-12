@@ -31,6 +31,12 @@
 */
 
 
+/** \addtogroup ENM
+ *@{
+ */
+
+
+
 #if !defined(HESSIAN_HPP)
 #define HESSIAN_HPP
 
@@ -211,3 +217,7 @@ private:
 };
 
 #endif
+
+
+
+/** @} */

@@ -3,7 +3,6 @@
   (c) 2010 Tod D. Romo, Grossfield Lab, URMC
 */
 
-/** @file */
 /** \addtogroup ENM
  *@{
  */

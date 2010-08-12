@@ -47,6 +47,8 @@ int main(int argc, char *argv[]) {
   // Track allocations for cleanup...
   vector<ENMFitter*> fits;
   vector<SuperBlock*> blocks;
+  vector<VSA*> vsas;
+
   SpringFunction *spring = springFactory(argv[k++]);
   uint nargs = spring->paramSize();
   vector<double> seeds;
@@ -88,6 +90,7 @@ int main(int argc, char *argv[]) {
 
     fits.push_back(fitter);
     blocks.push_back(blocker);
+    vsas.push_back(vsa);
   }
 
 
@@ -123,6 +126,7 @@ int main(int argc, char *argv[]) {
   for (uint i=0; i<fits.size(); ++i) {
     delete fits[i];
     delete blocks[i];
+    delete vsas[i];
   }
   delete spring;
 

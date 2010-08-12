@@ -12,6 +12,10 @@
 */
 
 
+/** \addtogroup ENM
+ *@{
+ */
+
 
 #if !defined(FITTER_HPP)
 #define FITTER_HPP
@@ -118,3 +122,7 @@ private:
 
 
 #endif
+
+
+
+/** @} */
