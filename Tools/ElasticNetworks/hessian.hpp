@@ -48,17 +48,25 @@
 //! This class creates superblocks in a hessian
 /**
  *This is the base class for defining elements (superblocks) in the
- * Hessian.  The SuperBlock takes as an argument a pointer to a
- * SpringFunction.  This determines what spring constants are used for
- * a given node-pair.  It also takes an AtomicGroup representing the
- * nodes (for coordinates, etc).
- *
- * Note that this class does NOT use NVI, so derived classes should
+ * Hessian.  Note that this class does NOT use NVI, so derived classes should
  * verify that they have valid args for the block() function.
  */
 class SuperBlock {
 public:
   SuperBlock() : springs(0) { }
+  
+  //! Constructor taking a spring function and a list of nodes
+  /**
+   * Arguments:
+   * \arg \c func SpringFunction to use to determine spring constants between nodes
+   * \arg nodelist List of nodes in the model
+   *
+   * For example, to compute a hessian using the HCA method,
+\code
+SpringFunction *spring = new HCA;
+SuperBlock *blocker = new SuperBlock(spring, model);
+\endcode
+   */
   SuperBlock(SpringFunction* func, const loos::AtomicGroup& nodelist) : springs(func), nodes(nodelist) { }
   SuperBlock(const SuperBlock& b) : springs(b.springs), nodes(b.nodes) { }
   virtual ~SuperBlock() { }

@@ -27,16 +27,37 @@ extern "C" {
 
 
 //! Vibrational subsystem analysis ENM
+/**
+ *  References:
+ *    - <a href="http://dx.doi.org/10.1063/1.3013558">Woodcock et al, J Chem Phys (2008) 129:214109</a>
+ *    - <a href="http://dx.doi.org/10.1063/1.3141022">Haffner & Zheng, J Chem Phys (2009) 130:194111</a>
+ *
+ * The VSA class expects that the list of nodes contained in the
+ * passed SuperBlock instance represents the combined system,
+ * i.e. subsystem and environment.  The first \a subn nodes are the
+ * subsystem.
+ */
 class VSA : public ElasticNetworkModel {
 public:
 
   //! Constructor for VSA without masses
+  /**
+   * Arguments:
+   * \arg \c blocker Determines how the Hessian is built
+   * \arg \c subn The number of nodes in the subsystem
+   */
   VSA(SuperBlock* blocker, const uint subn) : 
     ElasticNetworkModel(blocker),
     subset_size_(subn)
   { prefix_ = "vsa"; }
 
   //! Constructor for VSA with masses
+  /**
+   * Arguments:
+   * \arg c blocker Determines how the Hessian is built
+   * \arg c subn The number of nodes in the subsystem
+   * \arg c M Diagonal 3N x 3N matrix of node masses
+   */
   VSA(SuperBlock* blocker, const uint subn, const loos::DoubleMatrix& M) :
     ElasticNetworkModel(blocker),
     subset_size_(subn),

@@ -87,6 +87,12 @@ loos::DoubleMatrix getMasses(const loos::AtomicGroup& grp);
 //! Interface for all ENMs
 class ElasticNetworkModel {
 public:
+  //! Base constructor for all ENMs
+  /**
+   * The \a blocker arg determines how the hessian is actually
+  constructed, i.e. what nodes are used and how the spring function
+  between them is calculated.
+  */
   ElasticNetworkModel(SuperBlock* blocker) : blocker_(blocker), name_("ENM"), prefix_(""), meta_(""), debugging_(false), verbosity_(0) { }
   virtual ~ElasticNetworkModel() { }
 

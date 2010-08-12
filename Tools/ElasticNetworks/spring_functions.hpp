@@ -240,9 +240,11 @@ private:
 
 
 
-//! HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37)
+//! HCA method (bimodal distance-based function)
 /**
- *Note: The defaults are the original Hinsen constants...
+ * See <a href="http://dx.doi.org/10.1016/S0301-0104(00)00222-6">Hinsen et al, Chem Phys (2000) 261:25-37</a>
+ *
+ * Note: The defaults are the original Hinsen constants...
  *
  *\f{eqnarray*}
  ar + b & \mbox{for} & r < r_c \\
