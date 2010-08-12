@@ -12,7 +12,48 @@
 #include <vector>
 
 
-//! Nelder-Meade Simplex Optimizer
+//! Nelder-Meade Simplex Optimizer (based loosely on the NRC (1996) implementation)
+/**
+ * The Simplex class is templated so it can work with doubles, floats,
+ * etc.  What is actually optimized is a functor that takes a vector
+ * containing the parameters.
+ *
+ * For example, suppose you're trying to optimize the 2D Rosenbrock
+ * function, you could define a functor like,
+\code
+struct Rosenbrock {
+  double operator()(const vector<double>& v) {
+    double x1 = 1.0 - v[0];
+    double x2 = v[1] - v[0] * v[0];
+    double x = x1 * x1 + 105.0 * x2 * x2;
+    return(x);
+  }
+};
+\endcode
+ * 
+ * Now to optimize this, create a Simplex instance with the same type,
+ * and appropriate number of dimensions,
+\code
+Simplex<double> opt(2);
+\endcode
+ * 
+ * This create a new 2-D Simplex optimizer.  The optimizer needs to
+ * have a starting guess (seed) as well as an initial step size
+ * (length).  For the Rosenbrock, let's make the initial guess (0,0)
+ * and length of 2 in both dimensions,
+\code
+vector<double> seeds(2, 0.0);
+vector<double> lengths(2, 2.0);
+
+opt.seedLengths(lengths);
+vector<double> final = opt.optimize(seeds, Rosenbrock());
+double final_value = opt.finalValue();
+\endcode
+ *
+ * Now \a final is a vector containing the best fit parameters and \a
+ * final_value is the value of the Rosenbrock function at that
+ * location.
+ */
 template<typename T = double>
 class Simplex {
   typedef std::vector< std::vector<T> >     VVectors;
