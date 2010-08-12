@@ -12,6 +12,7 @@
 #include <vector>
 
 
+//! Nelder-Meade Simplex Optimizer
 template<typename T = double>
 class Simplex {
   typedef std::vector< std::vector<T> >     VVectors;
@@ -151,20 +152,29 @@ public:
     allocateSpace(n);
   }
 
+  //! Set the number of dimensions
   void dim(const int n) { ndim = n; allocateSpace(n); }
 
+  //! Initial guess
   void seedLengths(const std::vector<T>& seeds) { characteristics = seeds; }
+
+  //! Convergence criterion
   void tolerance(const double d) { tol = d; }
+
+  //! Limit on the number of function evaluations to perform
   void maximumIterations(const int n) { maxiters = n; }
   
+  //! Retrieve the final (best fit) parameters
   std::vector<T> finalParameters(void) const {
     if (best < 0)
       throw(std::logic_error("Simplex has not been optimized"));
     return(simplex[best]);
   }
 
+  //! Final (best) value
   T finalValue(void) const { return(values[best]); }
  
+  //! Optimize via a functor
   template<class C>
   std::vector<T> optimize(std::vector<T>& f, C& ftor) {
     int i, j, n;
