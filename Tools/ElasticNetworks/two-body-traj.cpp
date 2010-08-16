@@ -116,15 +116,16 @@ int main(int argc, char *argv[]) {
     int currid = model.maxId();
     for (vector<AtomicGroup>::iterator vi = residues.begin(); vi != residues.end(); ++vi) {
       // First, pick off the CA and BB atoms for EACH residue
-      AtomicGroup CA = (*vi).select(AtomNameSelector("CA"));
-      AtomicGroup BB = (*vi).select(BackboneSelector());
+      AtomicGroup thisResidue = (*vi).select(HeavyAtomSelector());
+      AtomicGroup CA = thisResidue.select(AtomNameSelector("CA"));
+      AtomicGroup BB = thisResidue.select(BackboneSelector());
       if (CA.empty()) {
 	//	cerr << "Error- cannot find CA.\n" << *vi;
 	//	exit(-10);
 	continue;
       }
       double massholder = 0.0;
-      for (uint bbi = 0; bbi < BB.size(); ++bbi) {
+      for (int bbi = 0; bbi < BB.size(); ++bbi) {
 	massholder += BB[bbi]->mass();      
       }
       //CA should be an AtomicGroup of only one atom, the CA of residue *vi
@@ -134,7 +135,7 @@ int main(int argc, char *argv[]) {
       //adds pAtom CA's to AtomicGroup cg_sites
       cg_sites += CA[0];
       
-      AtomicGroup sidechain = (*vi).select(NotSelector(BackboneSelector()));
+      AtomicGroup sidechain = thisResidue.select(NotSelector(BackboneSelector()));
       if (sidechain.empty()) {
 	//	cerr << "Warning- No sidechain atoms for:\n" << *vi;
 	continue;
