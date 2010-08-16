@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     AtomicGroup cg_sites;
     int currid = model.maxId();
     for (vector<AtomicGroup>::iterator vi = residues.begin(); vi != residues.end(); ++vi) {
-      // First, pick off the CA
+      // First, pick off the CA and BB atoms for EACH residue
       AtomicGroup CA = (*vi).select(AtomNameSelector("CA"));
       AtomicGroup BB = (*vi).select(BackboneSelector());
       if (CA.empty()) {
@@ -123,11 +123,12 @@ int main(int argc, char *argv[]) {
 	//	exit(-10);
 	continue;
       }
-      double assholder = 0.0;
-      assholder += BB[0]->mass();
-      assholder += BB[1]->mass();
-      assholder += BB[2]->mass();
-      CA[0]->occupancy(assholder);
+      double massholder = 0.0;
+      for (uint bbi = 0; bbi < BB.size(); ++bbi) {
+	massholder += BB[bbi]->mass();      
+      }
+      //CA should be an AtomicGroup of only one atom, the CA of residue *vi
+      CA[0]->occupancy(massholder);
       
       //      CA[0]->occupancy(CA[0]->mass());
       //adds pAtom CA's to AtomicGroup cg_sites
@@ -138,7 +139,8 @@ int main(int argc, char *argv[]) {
 	//	cerr << "Warning- No sidechain atoms for:\n" << *vi;
 	continue;
       }
-      
+      //Make a new atom, "CGS" and assign it the CMS and 
+      //sumed weight of the side chain of residue *vi
       GCoord c = sidechain.centerOfMass();
       pAtom pa(new Atom(++currid, "CGS", c));
       //give pa the same resid, resname, and segid as the current CA 
