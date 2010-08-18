@@ -54,8 +54,8 @@ public:
     uint m = U.rows();
     uint n = s.rows();
 
-    ref_eigvals_ = submatrix(s, Range(0, n-6), Range(0, 1));
-    ref_eigvecs_ = submatrix(U, Range(0, m), Range(0, n-6));
+    ref_eigvals_ = submatrix(s, loos::Math::Range(0, n-6), loos::Math::Range(0, 1));
+    ref_eigvecs_ = submatrix(U, loos::Math::Range(0, m), loos::Math::Range(0, n-6));
 
 
     // These PCA eigenpairs actually come from an SVD, so must square

@@ -32,7 +32,7 @@ void showSprings(ostream& os) {
 
 int main(int argc, char *argv[]) {
   if (argc == 1) {
-    cout << "Usage- quickie spring-type spring-seed [spring-seed ...] tag model subsystem environment eigvals eigvecs [tag model sub env eigvals eigvecs ...]\n";
+    cout << "Usage- vsa_fit spring-type spring-seed [spring-seed ...] tag model subsystem environment eigvals eigvecs [tag model sub env eigvals eigvecs ...]\n";
     showSprings(cout);
     exit(0);
   }

@@ -129,10 +129,10 @@ void VSA::solve() {
   uint n = hessian_.cols();
   uint l = subset_size_ * 3;
     
-  DoubleMatrix Hss = submatrix(hessian_, Range(0,l), Range(0,l));
-  DoubleMatrix Hee = submatrix(hessian_, Range(l, n), Range(l, n));
-  DoubleMatrix Hse = submatrix(hessian_, Range(0,l), Range(l, n));
-  DoubleMatrix Hes = submatrix(hessian_, Range(l, n), Range(0, l));
+  DoubleMatrix Hss = submatrix(hessian_, Math::Range(0,l), Math::Range(0,l));
+  DoubleMatrix Hee = submatrix(hessian_, Math::Range(l, n), Math::Range(l, n));
+  DoubleMatrix Hse = submatrix(hessian_, Math::Range(0,l), Math::Range(l, n));
+  DoubleMatrix Hes = submatrix(hessian_, Math::Range(l, n), Math::Range(0, l));
 
   if (debugging_) {
     writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
@@ -180,8 +180,8 @@ void VSA::solve() {
 
 
   // Build the effective mass matrix
-  DoubleMatrix Ms = submatrix(masses_, Range(0, l), Range(0, l));
-  DoubleMatrix Me = submatrix(masses_, Range(l, n), Range(l, n));
+  DoubleMatrix Ms = submatrix(masses_, Math::Range(0, l), Math::Range(0, l));
+  DoubleMatrix Me = submatrix(masses_, Math::Range(l, n), Math::Range(l, n));
 
   if (verbosity_ > 1)
     std::cerr << "Computing effective mass matrix...\n";

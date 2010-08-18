@@ -50,15 +50,6 @@
 // -------------------------------------
 // Support routines & types
 
-//! Specify a range of columns/rows [first,second)
-typedef std::pair<uint,uint> Range;
-
-//! Extracts a submatrix
-loos::DoubleMatrix submatrix(const loos::DoubleMatrix& M, const Range& rows, const Range& cols);
-
-//! Normalizes each column as a column-vector
-void normalizeColumns(loos::DoubleMatrix& A);
-
 
 //! Map masses from one group onto another...  Minimal error checking...
 void copyMasses(loos::AtomicGroup& target, const loos::AtomicGroup& source);
