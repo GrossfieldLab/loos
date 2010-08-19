@@ -70,6 +70,7 @@ HI NICK!!!!
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
+using namespace ENM;
 
 
 typedef Math::Matrix<double, Math::ColMajor> Matrix;

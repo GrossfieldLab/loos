@@ -17,6 +17,7 @@
 
 using namespace loos;
 using namespace std;
+using namespace ENM;
 
 
 
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
   FitAggregator uberfit;
 
   // Track allocations for cleanup...
-  vector<ENMFitter*> fits;
+  vector<Fitter*> fits;
   vector<SuperBlock*> blocks;
   vector<VSA*> vsas;
 
@@ -81,7 +82,7 @@ int main(int argc, char *argv[]) {
     
     VSA* vsa = new VSA(blocker, subsystem.size());
   
-    ENMFitter* fitter = new ENMFitter(vsa, s, U);
+    Fitter* fitter = new Fitter(vsa, s, U);
     fitter->name(tag);
     fitter->verbose(true);
     fitter->normalize(true);
