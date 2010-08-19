@@ -46,6 +46,8 @@ namespace ENM {
       spring = new ExponentialDistance;
     else if  (list[0] == "hca" || spring_desc == "HCA")
       spring = new HCA;
+    else if (list[0] == "constant")
+      spring = new ConstBonded;
     else
       throw(BadSpringFunction("Bad Spring Function Name"));
 
