@@ -306,7 +306,36 @@ namespace ENM {
     double rcut, k1, k2, k3, k4;
   };
 
+//! Use a spring function that is a constant weight regardless of distance
+class ConstBonded : public UniformSpringFunction {
+public:
+  ConstBonded(const double& s) : scale(s) { }
+  ConstBonded() : scale(1) { }
+  
+  std::string name() const { return("ConstBonded"); }
 
+<<<<<<< .mine
+  Params setParams(const Params& p) {
+    Params q(p);
+    scale = q.back();
+    //   scale = scale(s);
+    q.pop_back();
+    //    std::cerr << "In params in constbonded :)\n";
+    return(q);
+  }
+
+  bool validParams() const { return(scale > 0.0); }
+
+  uint paramSize() const { return(1); }
+
+  double constantImpl(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) {
+    //std::cerr << "In impl in constbonded :)\n";
+    return(scale);
+  }
+
+private:
+  double scale;
+};
 
   //! Factory function for generating new SpringFunction instances based on a user string
   SpringFunction* springFactory(const std::string& spring_desc);
