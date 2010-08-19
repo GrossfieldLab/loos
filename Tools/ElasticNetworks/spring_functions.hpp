@@ -314,7 +314,6 @@ public:
   
   std::string name() const { return("ConstBonded"); }
 
-<<<<<<< .mine
   Params setParams(const Params& p) {
     Params q(p);
     scale = q.back();
