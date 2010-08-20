@@ -33,7 +33,7 @@ void showSprings(ostream& os) {
 
 int main(int argc, char *argv[]) {
   if (argc == 1) {
-    cout << "Usage- vsa_fit spring-type spring-seed [spring-seed ...] tag model subsystem environment eigvals eigvecs [tag model sub env eigvals eigvecs ...]\n";
+    cout << "Usage- vsa_fit [mass|nomass] spring-type spring-seed [spring-seed ...] tag model subsystem environment eigvals eigvecs [tag model sub env eigvals eigvecs ...]\n";
     showSprings(cout);
     exit(0);
   }
@@ -49,6 +49,10 @@ int main(int argc, char *argv[]) {
   vector<Fitter*> fits;
   vector<SuperBlock*> blocks;
   vector<VSA*> vsas;
+
+  // See whether to include masses...
+  bool mass_flag = (string(argv[k++]) == "mass");
+  cout << "mass_flag = " << mass_flag << endl;
 
   SpringFunction *spring = springFactory(argv[k++]);
   uint nargs = spring->paramSize();
@@ -67,6 +71,8 @@ int main(int argc, char *argv[]) {
   while (k < argc) {
     string tag(argv[k++]);
     AtomicGroup model = createSystem(argv[k++]);
+    if (mass_flag)
+      massFromOccupancy(model);
     AtomicGroup subsystem = selectAtoms(model, argv[k++]);
     AtomicGroup environment = selectAtoms(model, argv[k++]);
     AtomicGroup combined = subsystem + environment;
@@ -81,6 +87,11 @@ int main(int argc, char *argv[]) {
     SuperBlock *blocker = new SuperBlock(spring, combined);
     
     VSA* vsa = new VSA(blocker, subsystem.size());
+
+    if (mass_flag) {
+      DoubleMatrix M = getMasses(combined);
+      vsa->setMasses(M);
+    }
   
     Fitter* fitter = new Fitter(vsa, s, U);
     fitter->name(tag);
