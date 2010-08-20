@@ -155,8 +155,10 @@ void fullHelp() {
 void parseOptions(int argc, char *argv[]) {
 
   try {
-    po::options_description generic("Allowed options", 120);
-    generic.add_options()
+    string config_file;
+
+    po::options_description visible("Allowed options", 120);
+    visible.add_options()
       ("help", "Produce this help message")
       ("fullhelp", "More detailed help")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
@@ -164,7 +166,8 @@ void parseOptions(int argc, char *argv[]) {
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
       ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution")
-      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments");
+      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments")
+      ("config,C", po::value<string>(&config_file), "Options config file");
 
 
     po::options_description hidden("Hidden options");
@@ -175,7 +178,7 @@ void parseOptions(int argc, char *argv[]) {
       ("prefix", po::value<string>(&prefix), "Output prefix");
     
     po::options_description command_line;
-    command_line.add(generic).add(hidden);
+    command_line.add(visible).add(hidden);
 
     po::positional_options_description p;
     p.add("subset", 1);
@@ -188,9 +191,20 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
+    // Now handle config file...
+    if (!config_file.empty()) {
+      ifstream ifs(config_file.c_str());
+      if (!ifs) {
+        cerr << "Cannot open config file " << config_file << endl;
+        exit(-1);
+      }
+      store(parse_config_file(ifs, command_line), vm);
+      notify(vm);
+    }
+
     if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix") && vm.count("subset") && vm.count("env"))) {
       cerr << "Usage- vsa [options] subset environment model-name output-prefix\n";
-      cerr << generic;
+      cerr << visible;
       if (vm.count("fullhelp"))
         fullHelp();
       exit(-1);
