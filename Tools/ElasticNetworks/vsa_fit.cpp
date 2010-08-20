@@ -42,6 +42,8 @@ vector<double> initial_seeds, initial_lengths;
 
 FitAggregator* parseOptions(int argc, char *argv[]) {
 
+  string hdr = invocationHeader(argc, argv);
+
   FitAggregator* uberfit = new FitAggregator;
 
   try {
@@ -160,6 +162,11 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
       blocks.push_back(blocker);
       vsas.push_back(vsa);
     }
+
+    // Now dump the options for logging...
+    cout << "# " << hdr << endl;
+    vector<string> opts = optionsValues(vm);
+    copy(opts.begin(), opts.end(), ostream_iterator<string>(cout, "\n"));
     
   }
   catch(exception& e) {
@@ -185,7 +192,6 @@ void showSprings(ostream& os) {
 
 int main(int argc, char *argv[]) {
   
-  string hdr = invocationHeader(argc, argv);
   FitAggregator* uberfit = parseOptions(argc, argv);
   
   Simplex<double> simp(spring->paramSize());

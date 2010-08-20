@@ -61,6 +61,7 @@ int terms;
 string prefix;
 string header;
 vector<uint> indices;
+double zero_threshold;
 
 
 
@@ -79,7 +80,8 @@ void parseOptions(int argc, char *argv[]) {
       ("terms,T", po::value<int>(), "# of terms of the SVD to output")
       ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
       ("range,r", po::value< vector<string> >(), "Range of frames from the trajectory to operate over")
-      ("source,S", po::value<bool>(&include_source)->default_value(false),"Write out the source conformation matrix");
+      ("source,S", po::value<bool>(&include_source)->default_value(false),"Write out the source conformation matrix")
+      ("zero,z", po::value<double>(&zero_threshold)->default_value(1e-10), "Any sval lower is set to 0");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -254,8 +256,11 @@ int main(int argc, char *argv[]) {
   f77int lda = m, ldu = m, ldvt = n, lwork= -1, info;
   svdreal prework[10], *work;
 
+  // A note about the size of S...  What comes out of the xGESVD is a
+  // vector of size 'sn', but in the case where m > n, it's embedded
+  // in a larger
   Matrix U(m,m);
-  Matrix S(sn,1);
+  Matrix S(m,1);
   Matrix Vt(n,n);
   
   // First, request the optimal size of the work array...
@@ -286,9 +291,11 @@ int main(int argc, char *argv[]) {
   }
 
 
+
+
   Math::Range orig(0,0);
   Math::Range Usize(m,m);
-  Math::Range Ssize(sn,1);
+  Math::Range Ssize(m,1);
   Math::Range Vsize(sn,n);
 
   if (terms > 0) {
