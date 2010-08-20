@@ -155,8 +155,8 @@ void parseOptions(int argc, char *argv[]) {
       ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("fullhelp", "More detailed help")
-      ("bonded_function,b", po::value<string>(&bsf)->default_value("exponential"), "Which spring funtion should be used for bonded nodes")
-      ("nonbonded_function,n", po::value<string>(&nbsf)->default_value("exponential"), "Which spring funtion should be used for NONbonded nodes");
+      ("bonded_function,b", po::value<string>(&bsf)->default_value("distance"), "Which spring funtion should be used for bonded nodes")
+      ("nonbonded_function,n", po::value<string>(&nbsf)->default_value("distance"), "Which spring funtion should be used for NONbonded nodes");
 
 
     po::options_description hidden("Hidden options");
@@ -247,11 +247,11 @@ int main(int argc, char *argv[]) {
   }
   cerr << "\n\ndefined connectivity map... \n";
   //   Impleminting the decorator
-  SuperBlock* forbondedTerms = new SuperBlock(bound_spring, subset);
-  BoundSuperBlock* forAllTerms = new BoundSuperBlock(forbondedTerms, nonbound_spring, connectivity_map);
+  SuperBlock* forAllTerms = new SuperBlock(nonbound_spring, subset);
+  BoundSuperBlock* forBondedTerms = new BoundSuperBlock(forAllTerms, bound_spring, connectivity_map);
 
 
-  ANM anm(forAllTerms);
+  ANM anm(forBondedTerms);
   anm.prefix(prefix);
   anm.meta(header);
   anm.solve();
@@ -265,6 +265,6 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
 
+  delete forBondedTerms;
   delete forAllTerms;
-  delete forbondedTerms;
 }
