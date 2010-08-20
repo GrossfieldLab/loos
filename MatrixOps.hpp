@@ -50,10 +50,6 @@ namespace loos {
   namespace Math {
 
 
-    //! Specify a range for columns/rows [first,second)
-    typedef std::pair<uint,uint> Range;
-
-
     //! Compute the SVD of a single precision matrix
     boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M);
 

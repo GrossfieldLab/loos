@@ -45,6 +45,9 @@ namespace loos {
 
   namespace Math {
 
+    //! Specify a range for columns/rows [first,second)
+    typedef std::pair<uint,uint> Range;
+
     // Forward declarations...
     template <typename T, class P, template<typename> class S>
     class Matrix;

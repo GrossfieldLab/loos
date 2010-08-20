@@ -51,8 +51,6 @@
 
 namespace loos {
 
-  // Convenience typdef for specifying end-points of sub-matrices
-  typedef std::pair<int, int> MDuple;
 
   // Forward declaration for matrix writing implementation
   template<class T, class P, template<typename> class S, class F>
@@ -128,7 +126,7 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
    * This family of functions write a matrix in ASCII format suitable
    * for loading into Octave/Matlab or gnuplot.  The \a meta
    * information is written as part of the comment at the start of the
-   * file.  The MDuple \a start and \a end are just pairs that give an
+   * file.  The Math::Range \a start and \a end are just pairs that give an
    * \a (j,i) starting and ending point within the matrix to write.
    * Note that these arguments are not always honored (such as with a
    * triangular matrix).  The \a trans flag causes the output matrix
@@ -140,8 +138,8 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
    */
   template<class T, class P, template<typename> class S, class F>
   std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
-                                 const std::string& meta, const MDuple& start,
-                                 const MDuple& end, const bool trans = false, F fmt = F()) {
+                                 const std::string& meta, const Math::Range& start,
+                                 const Math::Range& end, const bool trans = false, F fmt = F()) {
     return(MatrixWriteImpl<T,P,S,F>::write(os, M, meta, start, end, trans, fmt));
   }
 
@@ -149,8 +147,8 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   //! Write a submatrix to a stream
   template<class T, class P, template<typename> class S>
   std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
-                                 const std::string& meta, const MDuple& start,
-                                 const MDuple& end, const bool trans = false) {
+                                 const std::string& meta, const Math::Range& start,
+                                 const Math::Range& end, const bool trans = false) {
     return(MatrixWriteImpl<T,P,S,internal::BasicMatrixFormatter<T> >::write(os, M, meta, start, end, trans));
   }
 
@@ -158,8 +156,8 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   template<class T, class P, template<typename> class S, class F>
   std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const bool trans = false, F fmt = F()) {
-    MDuple start(0,0);
-    MDuple end(M.rows(), M.cols());
+    Math::Range start(0,0);
+    Math::Range end(M.rows(), M.cols());
     return(MatrixWriteImpl<T,P,S,F>::write(os, M, meta, start, end, trans, fmt));
   }
 
@@ -167,16 +165,16 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   template<class T, class P, template<typename> class S>
   std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const bool trans = false) {
-    MDuple start(0,0);
-    MDuple end(M.rows(), M.cols());
+    Math::Range start(0,0);
+    Math::Range end(M.rows(), M.cols());
     return(MatrixWriteImpl<T,P,S,internal::BasicMatrixFormatter<T> >::write(os, M, meta, start, end, trans));
   }
 
   //! Write a submatrix to a file
   template<class T, class P, template<typename> class S, class F>
   void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
-                                 const std::string& meta, const MDuple& start,
-                        const MDuple& end, const bool trans = false, F fmt = F()) {
+                                 const std::string& meta, const Math::Range& start,
+                        const Math::Range& end, const bool trans = false, F fmt = F()) {
     std::ofstream ofs(fname.c_str());
     if (ofs == 0)
       throw(std::runtime_error("Cannot open " + fname + " for writing."));
@@ -186,8 +184,8 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   //! Write a submatrix to a file
   template<class T, class P, template<typename> class S>
   void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
-                                 const std::string& meta, const MDuple& start,
-                        const MDuple& end, const bool trans = false) {
+                                 const std::string& meta, const Math::Range& start,
+                        const Math::Range& end, const bool trans = false) {
     std::ofstream ofs(fname.c_str());
     if (ofs == 0)
       throw(std::runtime_error("Cannot open " + fname + " for writing."));
@@ -199,8 +197,8 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   template<class T, class P, template<typename> class S, class F>
   void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
                         const std::string& meta, const bool trans = false, F fmt = F()) {
-    MDuple start(0,0);
-    MDuple end(M.rows(), M.cols());
+    Math::Range start(0,0);
+    Math::Range end(M.rows(), M.cols());
 
     std::ofstream ofs(fname.c_str());
     if (ofs == 0)
@@ -213,8 +211,8 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   template<class T, class P, template<typename> class S>
   void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
                         const std::string& meta, const bool trans = false) {
-    MDuple start(0,0);
-    MDuple end(M.rows(), M.cols());
+    Math::Range start(0,0);
+    Math::Range end(M.rows(), M.cols());
 
     std::ofstream ofs(fname.c_str());
     if (ofs == 0)
@@ -230,7 +228,7 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
     static std::ostream& write(std::ostream& os,
                                const Math::Matrix<T,P,S>& M,
                                const std::string& meta,
-                               const MDuple& start, const MDuple& end,
+                               const Math::Range& start, const Math::Range& end,
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
 
@@ -267,7 +265,7 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
     static std::ostream& write(std::ostream& os,
                                const Math::Matrix<T,P,Math::SparseArray>& M,
                                const std::string& meta,
-                               const MDuple& start, const MDuple& end,
+                               const Math::Range& start, const Math::Range& end,
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
       os << boost::format("# %d %d %d SPARSE\n") % M.actualSize() % M.rows() % M.cols();
@@ -288,7 +286,7 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
     static std::ostream& write(std::ostream& os,
                                const Math::Matrix<T,Math::Triangular,S>& M,
                                const std::string& meta,
-                               const MDuple& start, const MDuple& end,
+                               const Math::Range& start, const Math::Range& end,
                                const bool trans, F fmt = F()) {
       os << "# " << meta << std::endl;
       os << boost::format("# %d TRIANGULAR\n") % M.rows();

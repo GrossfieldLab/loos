@@ -286,19 +286,19 @@ int main(int argc, char *argv[]) {
   }
 
 
-  MDuple orig(0,0);
-  MDuple Usize(m,m);
-  MDuple Ssize(sn,1);
-  MDuple Vsize(sn,n);
+  Math::Range orig(0,0);
+  Math::Range Usize(m,m);
+  Math::Range Ssize(sn,1);
+  Math::Range Vsize(sn,n);
 
   if (terms > 0) {
     if (terms > m || terms > sn || terms > n) {
       cerr << "ERROR- The number of terms requested exceeds matrix dimensions.\n";
       exit(-1);
     }
-    Usize = MDuple(m, terms);
-    Ssize = MDuple(terms, 1);
-    Vsize = MDuple(terms, n);
+    Usize = Math::Range(m, terms);
+    Ssize = Math::Range(terms, 1);
+    Vsize = Math::Range(terms, n);
   }
 
   cerr << argv[0] << ": Writing results...\n";
