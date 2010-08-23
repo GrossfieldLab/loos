@@ -433,11 +433,19 @@ namespace loos {
   std::vector<std::string> optionsValues(const boost::program_options::variables_map& m) {
     std::vector<std::string> results;
 
+#if BOOST_VERSION >= 104000
+
     for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i) {
       std::ostringstream oss;
       oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'";
       results.push_back(oss.str());
     }
+
+#else
+
+    results.push_back("# program options dump unavailable with older BOOST libraries");
+
+#endif
       
     
     return(results);
