@@ -76,7 +76,7 @@ namespace ENM {
 
   
     //! Actually compute the spring constant as a 3x3 matrix
-    virtual loos::DoubleMatrix constant(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d) =0;
+    virtual loos::DoubleMatrix constant(const loos::GCoord& u, const loos::GCoord& v, const loos::GCoord& d)  =0;
 
   protected:
 

@@ -102,7 +102,7 @@ namespace ENM {
      *In most cases, derived clases will probably want to use this but
      * with alternative spring functions...
      */
-    loos::DoubleMatrix blockImpl(const uint j, const uint i, const SpringFunction* fptr) {
+    loos::DoubleMatrix blockImpl(const uint j, const uint i, SpringFunction* fptr) {
       if (i >= size() || j >= size())
         throw(std::runtime_error("Invalid index in Hessian SuperBlock"));
 
@@ -113,7 +113,7 @@ namespace ENM {
       loos::GCoord v = nodes[i]->coords();
       loos::GCoord d = v - u;
     
-      loos::DoubleMatrix K = springs->constant(u, v, d);
+      loos::DoubleMatrix K = fptr->constant(u, v, d);
       loos::DoubleMatrix B(3, 3);
       for (uint y=0; y<3; ++y)
         for (uint x=0; x<3; ++x)
