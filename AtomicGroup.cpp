@@ -456,8 +456,7 @@ namespace loos {
 
   // Find an atom based on atomid
   // Returns 0 (null shared_ptr) if not found...
-  pAtom AtomicGroup::findById(const int id) {
-    sort();
+  pAtom AtomicGroup::findById_binarySearch(const int id) {
     int bottom = 0, top = size()-1, middle;
 
     while (top > bottom) {
@@ -473,6 +472,24 @@ namespace loos {
 
     return(pAtom());
   }
+
+
+  pAtom AtomicGroup::findById_linearSearch(const int id) const {
+    for (AtomicGroup::const_iterator i = begin(); i != end(); ++i)
+      if ((*i)->id() == id)
+        return(*i);
+
+    return(pAtom());
+  }
+  
+
+  pAtom AtomicGroup::findById(const int id) {
+    if (sorted())
+      return(findById_binarySearch(id));
+
+    return(findById_linearSearch(id));
+  }
+
 
   //! Note: when calling this, you'll want to make sure you use the 
   //! outermost group (eg the psf or pdb you used to create things, rather than
@@ -797,6 +814,14 @@ namespace loos {
       }
     }
   }
+
+
+  void AtomicGroup::pruneBonds() {
+    
+
+
+  }
+
 
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {
