@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
   frames.clear();
 
   cout << "Aligning transformation subset...\n";
-  AtomicGroup avg;
+  AtomicGroup avg = applyto_sub.copy();
   zeroCoords(avg);
 
   // Setup for writing DCD...
