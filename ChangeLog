@@ -1,3 +1,17 @@
+2010-08-23    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed the Elastic Networking Tools.  This is a total revamp of
+	the ENM code to turn it into a useful library as well as a suite
+	of tools.  More information can be found in the Doxygen
+	documentation for namespace ENM or in the ENM module.
+	* Changed AtomicGroup::findById() so that it no longer implicitly
+	sorts atoms in the contained AtomicGroup.  If the group has been
+	explicitly sorted (AtomicGroup::sort()), then the old binary
+	search will be used.  Otherwise, a linear search will be used.
+	* Added AtomicGroup::pruneBonds() to remove bonds to non-existant
+	atoms (for subsetted AtomicGroups).
+	
+
 2010-07-27    <tromo@spade.biophysics.rochester.edu>
 
 	* Added a tool for perturbing structures randomly
