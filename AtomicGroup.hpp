@@ -287,6 +287,13 @@ namespace loos {
     std::map<std::string, AtomicGroup> splitByName(void) const;
 
     //! Find a contained atom by its atomid
+    /**
+     * The default behavior is to assume that the atoms in the
+     * AtomicGroup are not in order of increasing atomid and to
+     * therefore use a linear search.  If the atoms are sorted
+     * (AtomicGroup::sort()), then the more efficient binary search
+     * will be used.
+     */
     pAtom findById(const int id);
     pAtom findById(const int id) const { return(findById_linearSearch(id)); }
 

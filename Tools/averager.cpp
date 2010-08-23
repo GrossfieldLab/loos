@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
   cerr << "Averaging...\n";
   AtomicGroup avg = averageStructure(avg_subset, xforms, traj, indices);
   PDB avgpdb = PDB::fromAtomicGroup(avg);
-  avgpdb.clearBonds();
+  avgpdb.pruneBonds();
   avgpdb.remarks().add(header);
   cout << avgpdb;
 }

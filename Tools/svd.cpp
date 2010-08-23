@@ -144,7 +144,7 @@ vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
 
 void writeAverage(const AtomicGroup& avg) {
   PDB avgpdb = PDB::fromAtomicGroup(avg);
-  avgpdb.clearBonds();
+  avgpdb.pruneBonds();
   avgpdb.remarks().add(header);
 
   string fname(prefix + "_avg.pdb");

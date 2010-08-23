@@ -816,10 +816,31 @@ namespace loos {
   }
 
 
+
+  /**
+   * The connectivity list is searched for each atom and if a bond is
+   * not found in the current group, then it is removed from the
+   * bond-list for that atom.  Note that this means that any
+   * AtomicGroup sharing the atom in question will also now have the
+   * modified bond list.  It's therefore recommended that this
+   * function be called on a copy (AtomicGroup::copy()).  Also note
+   * that FindById() does not implicitly sort the atoms for more
+   * efficient searching.  You may want to call AtomicGroup::sort()
+   * prior to AtomicGroup::pruneBonds() if the exact atom order does
+   * not matter.
+   */
+
   void AtomicGroup::pruneBonds() {
     
-
-
+    for (AtomicGroup::iterator j = begin(); j != end(); ++j)
+      if ((*j)->hasBonds()) {
+        std::vector<int> bonds = (*j)->getBonds();
+        std::vector<int> pruned_bonds;
+        for (std::vector<int>::const_iterator i = bonds.begin(); i != bonds.end(); ++i)
+          if (findById(*i) != 0)
+            pruned_bonds.push_back(*i);
+        (*j)->setBonds(pruned_bonds);
+      }
   }
 
 
