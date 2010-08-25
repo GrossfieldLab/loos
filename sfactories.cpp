@@ -36,6 +36,7 @@
 #include <amber_traj.hpp>
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
+#include <charmm.hpp>
 #include <tinkerxyz.hpp>
 #include <tinker_arc.hpp>
 #include <gro.hpp>
@@ -62,6 +63,9 @@ namespace loos {
     } else if (boost::iends_with(s, ".gro")) {
       Gromacs gromacs(s);
       return(gromacs);
+    } else if (boost::iends_with(s, ".crd")) {
+      CHARMM charmm(s);
+      return(charmm);
 
     } else
       throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));

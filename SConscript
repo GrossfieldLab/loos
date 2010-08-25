@@ -36,6 +36,7 @@ apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp ambe
 apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
 apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp amber_rst.cpp'
 apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
+apps = apps + ' charmm.cpp'
 
 if int(env['shared']):
    loos = env.SharedLibrary('loos', Split(apps))
