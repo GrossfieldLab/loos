@@ -80,14 +80,15 @@ int main(int argc, char *argv[]) {
   DoubleMatrix M;
   readAsciiMatrix(argv[1], M);
 
-  DoubleMatrix K(M.cols(), 2);
+  DoubleMatrix K(M.cols(), 3);
 
   for (uint i=0; i<M.cols(); ++i) {
     double avg = mean(M, i);
     double dev = stddev(M, i, avg);
     
-    K(i, 0) = moment(M, i, avg, dev, 3);
-    K(i, 1) = moment(M, i, avg, dev, 4) - 3.0;
+    K(i, 0) = i;
+    K(i, 1) = moment(M, i, avg, dev, 3);
+    K(i, 2) = moment(M, i, avg, dev, 4) - 3.0;
   }
 
   writeAsciiMatrix(cout, K, hdr);
