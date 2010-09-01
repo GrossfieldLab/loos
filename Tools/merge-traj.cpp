@@ -58,7 +58,7 @@ void parseOptions(int argc, char *argv[])
                     po::value<string>(&center_selection)->default_value(string("")),
                                     "Selection for centering")
             ("input_trajs", po::value< vector<string> >()->multitoken(), "Trajs to merge")
-            ("skip-first-frame", "Skip first frame of each trajectory")
+            ("skip-first-frame", "Skip first frame of each trajectory (for xtc files)")
             ;
             
         po::options_description hidden("Hidden options");
