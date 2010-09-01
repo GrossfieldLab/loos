@@ -84,6 +84,7 @@ int verbosity;
 bool debug;
 
 string spring_desc;
+string bound_spring_desc;
 
 void fullHelp() {
 
@@ -133,6 +134,7 @@ void parseOptions(int argc, char *argv[]) {
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
       ("spring,S", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
+      ("bound,b", po::value<string>(&bound_spring_desc)->default_value("distance"), "Bound spring")
       ("fullhelp", "More detailed help");
 
     po::options_description hidden("Hidden options");
@@ -168,6 +170,24 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
+loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
+  uint n = model.size();
+  loos::Math::Matrix<int> M(n, n);
+  
+  for (uint j=0; j<n-1; ++j)
+    for (uint i=j; i<n; ++i)
+      if (i == j)
+        M(j, i) = 1;
+      else {
+        M(j, i) = model[j]->isBoundTo(model[i]);
+        M(i, j) = M(j, i);
+      }
+  
+  return(M);
+}
+
+
+
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
@@ -180,10 +200,32 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
+  vector<SpringFunction*> springs;
   SpringFunction* spring = 0;
   spring = springFactory(spring_desc);
+  springs.push_back(spring);
 
+  vector<SuperBlock*> blocks;
   SuperBlock* blocker = new SuperBlock(spring, subset);
+  blocks.push_back(blocker);
+
+
+  // Handle Decoration (if necessary)
+  if (!bound_spring_desc.empty()) {
+    if (! model.hasBonds()) {
+      cerr << "Error- cannot use bound springs unless the model has connectivity\n";
+      exit(-10);
+    }
+    loos::Math::Matrix<int> M = buildConnectivity(subset);
+    SpringFunction* bound_spring = springFactory(bound_spring_desc);
+    springs.push_back(bound_spring);
+
+    BoundSuperBlock* decorator = new BoundSuperBlock(blocker, bound_spring, M);
+    blocks.push_back(decorator);
+
+    blocker = decorator;
+  }
+
 
   ANM anm(blocker);
   anm.debugging(debug);
@@ -200,6 +242,9 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
 
-  delete blocker;
-  delete spring;
+  for (vector<SuperBlock*>::iterator i = blocks.begin(); i != blocks.end(); ++i)
+    delete *i;
+  for (vector<SpringFunction*>::iterator i = springs.begin(); i != springs.end(); ++i)
+    delete *i;
+  
 }
