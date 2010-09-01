@@ -40,6 +40,7 @@ string model_name, output_traj, output_traj_downsample;
 string center_selection;
 vector<string> input_dcd_list;
 int downsample_rate;
+bool skip_first_frame;
 
 
 void parseOptions(int argc, char *argv[])
@@ -57,6 +58,7 @@ void parseOptions(int argc, char *argv[])
                     po::value<string>(&center_selection)->default_value(string("")),
                                     "Selection for centering")
             ("input_trajs", po::value< vector<string> >()->multitoken(), "Trajs to merge")
+            ("skip-first-frame", "Skip first frame of each trajectory")
             ;
             
         po::options_description hidden("Hidden options");
@@ -93,6 +95,16 @@ void parseOptions(int argc, char *argv[])
             }
 
         input_dcd_list = vm["input_trajs"].as<vector<string> >();
+
+        if (vm.count("skip-first-frame"))
+            {
+            skip_first_frame=true;
+            }
+        else
+            {
+            skip_first_frame=false;
+            }
+
 
         }
     catch (exception &e)
@@ -176,13 +188,18 @@ int main(int argc, char *argv[])
     for (f=input_dcd_list.begin(); f!=input_dcd_list.end(); ++f)
         {
         pTraj traj=createTrajectory(*f, system);
-        cout << "File: " << *f << ": " << traj->nframes();
+        int nframes = traj->nframes();
+        if (skip_first_frame)
+            {
+            nframes--;
+            }
+        cout << "File: " << *f << ": " << nframes;
 
-        if ( previous_frames + traj->nframes() <= original_num_frames) 
+        if ( previous_frames + nframes <= original_num_frames) 
             // all of this file is contained in the existing file, skip it
             {
             // increment the frame pointer
-            previous_frames += traj->nframes();
+            previous_frames += nframes;
             cout << " ( " << previous_frames << " )"
                  << "\tSkipping trajectory " 
                  << endl;
@@ -201,9 +218,15 @@ int main(int argc, char *argv[])
                 frames_to_skip = 0;
                 }
 
-            cout << " ( " << previous_frames + traj->nframes() - frames_to_skip
+            // if this is an xtc file, we need to skip 1 more frame
+            if (skip_first_frame)
+                {
+                traj->readFrame();
+                }
+
+            cout << " ( " << previous_frames + nframes - frames_to_skip
                  << " ) "
-                 << "\t Writing " << traj->nframes() - frames_to_skip 
+                 << "\t Writing " << nframes - frames_to_skip 
                  << " frames."
                  << endl;
 
