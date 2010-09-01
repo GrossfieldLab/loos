@@ -54,6 +54,9 @@ list.append(vsa_fit)
 nickanm = clone.Program("nickanm", ["nickanm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(nickanm)
 
+vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+list.append(vsa_fit_bonds)
+
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('nm_tools_install', loos_tools)
