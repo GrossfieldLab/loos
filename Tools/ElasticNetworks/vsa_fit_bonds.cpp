@@ -37,8 +37,8 @@ SpringFunction* spring;
 int verbosity;
 bool mass_flag;
 
-vector<double> initial_seeds, initial_lengths;
-
+vector<double> initial_seeds, initial_bound_lengths, initial_unbound_lengths;
+vector<double> bound_seeds, unbound_seeds;
 
 FitAggregator* parseOptions(int argc, char *argv[]) {
 
@@ -53,7 +53,7 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
     vString models;
     vString pcas;
     vString subs;
-    vString envs;
+    //    vString envs;
 
     vector<string> spring_name;
     vector<double> seed_scale;
@@ -78,7 +78,7 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
       ("tag", po::value<vString>(&tags)->composing(), "Name to associate with system")
       ("model", po::value<vString>(&models)->composing(), "Model coordinates")
       ("sub", po::value<vString>(&subs)->composing(), "Subsystem selection")
-      ("env", po::value<vString>(&envs)->composing(), "Environment selection")
+      //      ("env", po::value<vString>(&envs)->composing(), "Environment selection")
       ("pca", po::value<vString>(&pcas)->composing(), "PCA file prefix");
     
     po::options_description command_line;
@@ -116,50 +116,67 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
     // Set up global spring function...
     
     bound_spring = springFactory(spring_name[0]);
-    uint nargs = bound_spring->paramSize();
-    if (initial_seeds.size() != nargs) {
-      cerr << "Error- spring wanted " << nargs << " seed values.\n";
-      exit(-2);
-    }
-
     unbound_spring = springFactory(spring_name[1]);
-    uint nargs = unbound_spring->paramSize();
+    uint nargs = bound_spring->paramSize();
+    nargs += unbound_spring->paramSize();
     if (initial_seeds.size() != nargs) {
-      cerr << "Error- spring wanted " << nargs << " seed values.\n";
+      cerr << "Error- Your springs wanted " << nargs << " total seed values.\n";
       exit(-2);
     }
 
-
-
-    for (vector<double>::iterator i = initial_seeds.begin(); i != initial_seeds.end(); ++i)
-      initial_lengths.push_back(*i * seed_scale);
-
+    
+    for (uint i = 0; i <= bound_spring->paramSize(); ++i){
+      initial_bound_lengths.push_back(initial_seeds[i] * seed_scale[0]);
+      bound_seeds.pushback(initial_seeds[i]);
+    }
+    for (uint i = bound_spring->paramSize(); i <= nargs; ++i)[
+      initial_unbound_lengths.push_back(initial_seeds[i] * seed_scale[1]);
+      unbound_seeds.pushback(initial_seeds[i]);
+    }
 
 
     for (uint i=0; i<tags.size(); ++i) {
       AtomicGroup model = createSystem(models[i]);
       if (mass_flag)
         massFromOccupancy(model);
-      AtomicGroup subsystem = selectAtoms(model, subs[i]);
-      AtomicGroup environment = selectAtoms(model, envs[i]);
-      AtomicGroup combined = subsystem + environment;
+      AtomicGroup subset = selectAtoms(model, subs[i]);
+      //AtomicGroup environment = selectAtoms(model, envs[i]);
+      //AtomicGroup combined = subsystem + environment;
     
       DoubleMatrix s;
       readAsciiMatrix(pcas[i] + "_s.asc", s);
     
       DoubleMatrix U;
       readAsciiMatrix(pcas[i] + "_U.asc", U);
-    
+      ///////////////////////////////////////////
+      
+      //   Filling the connectivity map
+      //   Decides which spring function to use..
+      loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
+      if (subset.hasBonds()){
+	for (int j = 0; j < subset.size(); ++j){
+	  if (subset[j]->hasBonds()){
+	    for (int k = 0; k < subset.size(); ++k) {
+	      if (subset[j]->isBoundTo(subset[k]->id()))
+		connectivity_map(j,k) = 1;
+	      else
+		connectivity_map(j,k) = 0;
+	    }
+	  }
+	}
+      }
+      //////////////////////////////////////////////////////
+
       // Now setup blocker & springs...
-      SuperBlock *blocker = new SuperBlock(spring, combined);
-      BoundSuperBlock *decBlocker = new BoundSuperBlock(blocker, );
+      SuperBlock *blocker = new SuperBlock(unbound_spring, subset);
+      BoundSuperBlock *decBlocker = new BoundSuperBlock(blocker, bound_spring, connectivity_map);
     
       ANM* anm = new ANM(decBlocker);//, subsystem.size());
 
-      if (mass_flag) {
-        DoubleMatrix M = getMasses(combined);
-        anm->setMasses(M);
-      }
+      // if (mass_flag) {
+      //   DoubleMatrix M = getMasses(combined);
+      //   anm->setMasses(M);
+      // }
   
       Fitter* fitter = new Fitter(anm, s, U);
       fitter->name(tags[i]);
@@ -204,19 +221,24 @@ int main(int argc, char *argv[]) {
   
   FitAggregator* uberfit = parseOptions(argc, argv);
   
-  Simplex<double> simp(spring->paramSize());
+  Simplex<double> bound_simp(bound_spring->paramSize());
+  simp.tolerance(1e-4);
+  Simplex<double> unbound_simp(bound_spring->paramSize());
   simp.tolerance(1e-4);
   
-  simp.seedLengths(initial_lengths);
+  bound_simp.seedLengths(initial_bound_lengths);
+  unbound_simp.seedLengths(initial_unbound_lengths);
 
   // Do a quick check first...
   cout << "----INITIAL----\n";
-  double check = (*uberfit)(initial_seeds);
+  double check = (*uberfit)(bound_seeds);
+  double check = (*uberfit)(unbound_seeds);
   cout << "----INITIAL----\n";
   uberfit->resetCount();
 
 
-  vector<double> fit = simp.optimize(initial_seeds, *uberfit);
+  vector<double> bound_fit = bound_simp.optimize(bound_seeds, *uberfit);
+vector<double> unbound_fit = unbound_simp.optimize(unbound_seeds, *uberfit);
 
   cout << "----FINAL----\n";
   cout << simp.finalValue() << "\t= ";
