@@ -32,12 +32,13 @@ typedef vector<string>    vString;
 vector<Fitter*> fits;
 vector<SuperBlock*> blocks;
 vector<ANM*> anms;
-SpringFunction* spring;
+SpringFunction* bound_spring;
+SpringFunction* unbound_spring;
 
 int verbosity;
 bool mass_flag;
 
-vector<double> initial_seeds, initial_bound_lengths, initial_unbound_lengths;
+vector<double> initial_seeds, initial_lengths;
 vector<double> bound_seeds, unbound_seeds;
 
 FitAggregator* parseOptions(int argc, char *argv[]) {
@@ -125,14 +126,13 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
     }
 
     
-    for (uint i = 0; i <= bound_spring->paramSize(); ++i){
-      initial_bound_lengths.push_back(initial_seeds[i] * seed_scale[0]);
-      bound_seeds.pushback(initial_seeds[i]);
-    }
-    for (uint i = bound_spring->paramSize(); i <= nargs; ++i)[
-      initial_unbound_lengths.push_back(initial_seeds[i] * seed_scale[1]);
-      unbound_seeds.pushback(initial_seeds[i]);
-    }
+    // for (uint i = 0; i <= bound_spring->paramSize(); ++i)
+    //   initial_bound_lengths.push_back(initial_seeds[i] * seed_scale[0]);
+    // for (uint i = bound_spring->paramSize(); i <= nargs; ++i)
+    //   initial_unbound_lengths.push_back(initial_seeds[i] * seed_scale[1]);
+
+    for (vector<double>::iterator i = initial_seeds.begin(); i != initial_seeds.end(); ++i)
+      initial_lengths.push_back(*i * seed_scale);
 
 
     for (uint i=0; i<tags.size(); ++i) {
@@ -220,25 +220,22 @@ void showSprings(ostream& os) {
 int main(int argc, char *argv[]) {
   
   FitAggregator* uberfit = parseOptions(argc, argv);
-  
-  Simplex<double> bound_simp(bound_spring->paramSize());
-  simp.tolerance(1e-4);
-  Simplex<double> unbound_simp(bound_spring->paramSize());
+  //!!!!!! how do i set up the simplex?   FOR ONE !!!
+  Simplex<double> simp(bound_spring->paramSize());
   simp.tolerance(1e-4);
   
-  bound_simp.seedLengths(initial_bound_lengths);
-  unbound_simp.seedLengths(initial_unbound_lengths);
+  simp.seedLengths(initial_lengths);
+
 
   // Do a quick check first...
   cout << "----INITIAL----\n";
-  double check = (*uberfit)(bound_seeds);
-  double check = (*uberfit)(unbound_seeds);
+  double check = (*uberfit)(initial_seeds);
   cout << "----INITIAL----\n";
   uberfit->resetCount();
 
 
-  vector<double> bound_fit = bound_simp.optimize(bound_seeds, *uberfit);
-vector<double> unbound_fit = unbound_simp.optimize(unbound_seeds, *uberfit);
+  vector<double> fit = simp.optimize(initial_seeds, *uberfit);
+  //  vector<double> unbound_fit = unbound_simp.optimize(unbound_seeds, *uberfit);
 
   cout << "----FINAL----\n";
   cout << simp.finalValue() << "\t= ";
@@ -255,7 +252,7 @@ vector<double> unbound_fit = unbound_simp.optimize(unbound_seeds, *uberfit);
     delete blocks[i];
     delete anms[i];
   }
-  delete unbound_spring;
   delete bound_spring;
+  delete unbound_spring;
 
 }
