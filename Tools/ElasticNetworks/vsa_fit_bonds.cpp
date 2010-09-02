@@ -132,7 +132,7 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
     //   initial_unbound_lengths.push_back(initial_seeds[i] * seed_scale[1]);
 
     for (vector<double>::iterator i = initial_seeds.begin(); i != initial_seeds.end(); ++i)
-      initial_lengths.push_back(*i * seed_scale);
+      initial_lengths.push_back(*i * seed_scale[0]);
 
 
     for (uint i=0; i<tags.size(); ++i) {
