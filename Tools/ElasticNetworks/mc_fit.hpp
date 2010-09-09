@@ -15,10 +15,10 @@ class mcoptimo {
   typedef std::vector< std::vector<T> >     VVectors;
 
 public:
-   void reseed(const mcoptimo& previous, mcoptimo &current){
-     current.setParams(randomize(previous.getParams()));
-     //    current.setParams() = randomize(previous.getParams());
-  }
+  //  void reseed(const mcoptimo& previous, mcoptimo &current){
+  //    current.setParams(randomize(previous.getParams()));
+  //    //    current.setParams() = randomize(previous.getParams());
+  // }
   
 
    void setParams(const vector<T>& v) {
@@ -33,10 +33,6 @@ public:
 
 private:
   vector<T> myparams;
-
-
-
-           
 
 
 //   void accept(&previous, const &current){
@@ -58,52 +54,60 @@ private:
     //use the BOOST random generator per alan's suggestion
     //using type pseudo-random number generator, based on the previous k's
     //rand_num generator(time(0)); //<---Talk to Tod about other seeds!!!
+    base_generator_type& generator = rng_singleton();
+
     vector<T> newParams;
-    for (int i = 0; i < previous.getParams->paramSize(); ++i){
+    for (int i = 0; i < previous.getParams->paramSize(); ++i){//i want the size of the vector myparams
+                                                              //for the 'previous' instance of mcoptimize
       T springval = 0;//add stuff here to grab that a particular param 
 
       // Set range/bounds to the size here...
 
       T lowerbound = springval / 2;
       T upperbound = 3 * springval / 2;
-      //boost::uniform_real<> uni_dist(lowerbound , upperbound);
-      //boost::variate_generator<rand_num&, boost::uniform_real<> > uni(generator, uni_dist);
+      boost::uniform_real<> uni_dist(lowerbound , upperbound);
+      boost::variate_generator<rand_num&, boost::uniform_real<> > uni(generator, uni_dist);
       newParams.push_back(uni() + uni() + current[i]);
     }
 
     return(newParams);
   }
 
+  template<class C>
+  T acceptance(uint iter){
+    //this should not be hard wired.  
+    //we want another ftor that pts
+    //to an acceptance function    
+  }
 
 
   template<class C>
-  vector<T> takeStep(const vector<T>& current, const vector<T>& sizes, C& ftor) {
+  vector<T> takeStep(const vector<T>& current, const vector<T>& sizes, C& ftor, uint iter) {
     
     vector<T> newStep = randomize(current, sizes);
     T prev = ftor(current);
     T val = ftor(newStep);
 
-    if (val < prev)
+    if (val < prev){
+      return(newStep);
+    }elseif (random_number < acceptance(iter)){//define both of these!!!
       return(newStep);
 
+    }
     return(current);
   }
 
   // vector<double> takeStep(const vector<double>& current, const vector<double>& sizes, FitAggregator& ftor)
-
-
-
   template<class C>
   vector<T> optimize(const vector<T>& current, C& ftor) {
     
-    vector<T> params(current);
+    vector<T> params(current);//<<----do i need this??
     vector<T> sizes(initial_sizes);
-
+    uint iter = 0;
+    
     while (!converged) {
-      vector<T> params = takeStep(params, sizes, ftor);
-      for (i=0; i<sizes.size(); ++i)
-        sizes[i] /= 2.0;
-    }
+      vector<T> params = takeStep(params, sizes, ftor, iter);
+      ++iter;
 
     return(params);
   }
