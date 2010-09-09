@@ -15,58 +15,108 @@ class mcoptimo {
   typedef std::vector< std::vector<T> >     VVectors;
 
 public:
-   void reseed(const &previous, &current){
-    current.setParams() = randomize(previous.getParams());
+   void reseed(const mcoptimo& previous, mcoptimo &current){
+     current.setParams(randomize(previous.getParams()));
+     //    current.setParams() = randomize(previous.getParams());
   }
+  
 
-  void accept(&previous, const &current){
-    if (current.getCov() > previous.getCov()){       //accept
-      previous = current;
-      // }else if (current.getCov() > e^(Energy/T_star)){ //accept
-      // previous = current;
-    } // else{                                           //reject
-      //   continue; 
-      // }
-  }
+   void setParams(const vector<T>& v) {
+     myparams = v;
+   }
 
-  void optimum(const &current, &best){
-    if (current.getCov() > best.getCov()) best = current;
-  }
+  vector<T> getParams() const { return(myparams); }
 
-  void randomize(const &previous, &current){
-    //use the BOOST random generator per alan's suggestion
-    //using type pseudo-random number generator, based on the previous k's
-    rand_num generator(time(0)); //<---Talk to Tod about other seeds!!!
-    vector<double> newParams;
-    for (int i = 0; i < previous.getParams->paramSize(); ++i){
-      double springval = 0;//add stuff here to grab that a particular param 
-      double lowerbound = springval / 2;
-      double upperbound = 3 * springval / 2;
-      boost::uniform_real<> uni_dist(lowerbound , upperbound);
-      boost::variate_generator<rand_num&, boost::uniform_real<> > uni(generator, uni_dist);
-      newParams.push_back(uni() + uni());
-    }
-    current.setParams(newParams);
-  }
 
-  double getCov(){return this->cov;}
-  void setCov(&cov_){this->cov = cov_}
+  //  vector<T>& setParams() { return(myparams); }
 
-  params getParams(){return this->K;}
-  void setParams(&K_/*a vector of params!*/){
-    for (int i = 0; i < K_.size(); ++i)
-      K.push_back(K_);
-  }
-
-  void operator=(&A, &B){
-    A.setCov(B.getCov);
-    A.setParams(B.getParams);
-  }
-  void operator()(){}//i have no idea why i need this...but all ftors use it!!!
 
 private:
-  double cov;
-  params K; //should this be a springFactory instance???
+  vector<T> myparams;
+
+
+
+           
+
+
+//   void accept(&previous, const &current){
+//     if (current.getCov() > previous.getCov()){       //accept
+//       previous = current;
+//       // }else if (current.getCov() > e^(Energy/T_star)){ //accept
+//       // previous = current;
+//     } // else{                                           //reject
+//       //   continue; 
+//       // }
+//   }
+
+  //  void optimum(const &current, &best){
+  //    if (current.getCov() > best.getCov()) best = current;
+  //  }
+
+  // Return a perturbed set of parameters
+  vector<T> randomize(const vector<T>& current, const vector<T>& sizes) {
+    //use the BOOST random generator per alan's suggestion
+    //using type pseudo-random number generator, based on the previous k's
+    //rand_num generator(time(0)); //<---Talk to Tod about other seeds!!!
+    vector<T> newParams;
+    for (int i = 0; i < previous.getParams->paramSize(); ++i){
+      T springval = 0;//add stuff here to grab that a particular param 
+
+      // Set range/bounds to the size here...
+
+      T lowerbound = springval / 2;
+      T upperbound = 3 * springval / 2;
+      //boost::uniform_real<> uni_dist(lowerbound , upperbound);
+      //boost::variate_generator<rand_num&, boost::uniform_real<> > uni(generator, uni_dist);
+      newParams.push_back(uni() + uni() + current[i]);
+    }
+
+    return(newParams);
+  }
+
+
+
+  template<class C>
+  vector<T> takeStep(const vector<T>& current, const vector<T>& sizes, C& ftor) {
+    
+    vector<T> newStep = randomize(current, sizes);
+    T prev = ftor(current);
+    T val = ftor(newStep);
+
+    if (val < prev)
+      return(newStep);
+
+    return(current);
+  }
+
+  // vector<double> takeStep(const vector<double>& current, const vector<double>& sizes, FitAggregator& ftor)
+
+
+
+  template<class C>
+  vector<T> optimize(const vector<T>& current, C& ftor) {
+    
+    vector<T> params(current);
+    vector<T> sizes(initial_sizes);
+
+    while (!converged) {
+      vector<T> params = takeStep(params, sizes, ftor);
+      for (i=0; i<sizes.size(); ++i)
+        sizes[i] /= 2.0;
+    }
+
+    return(params);
+  }
+
+  void setSizes(const vector<T>& s) {
+    initial_sizes = s;
+  }
+
+
+private:
+  //double cov;
+  //params K; //should this be a springFactory instance???
+  vector<T> initial_sizes;
 
 
 
