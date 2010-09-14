@@ -40,6 +40,7 @@ void Usage()
     {
     cerr << "Usage: order_params system traj skip selection "
          << "first_carbon last_carbon [1|3]"
+         << endl
          << endl;
     cerr << "The code will attempt to deduce whether you're using "
          << "one or three residues per lipid molecule.  To force it, "
@@ -233,11 +234,18 @@ traj->readFrame(skip);
 // we're going to dump all of the data from a given selection into one
 // big lump, so the dimension of sums and counts should match the number of 
 // selections specified 
-vector<float> sums;
-vector<float> sums2;
+vector<float> sums_x, sums_y, sums_z;
+vector<float> sums2_x, sums2_y, sums2_z;
 vector<int> counts;
-sums.insert(sums.begin(), selections.size(), 0.0);
-sums2.insert(sums2.begin(), selections.size(), 0.0);
+sums_x.insert(sums_x.begin(), selections.size(), 0.0);
+sums2_x.insert(sums2_x.begin(), selections.size(), 0.0);
+
+sums_y.insert(sums_y.begin(), selections.size(), 0.0);
+sums2_y.insert(sums2_y.begin(), selections.size(), 0.0);
+
+sums_z.insert(sums_z.begin(), selections.size(), 0.0);
+sums2_z.insert(sums2_z.begin(), selections.size(), 0.0);
+
 counts.insert(counts.begin(), selections.size(), 0);
 
 // loop over pdb files
@@ -261,21 +269,44 @@ while (traj->readFrame())
             while (h = iter() )
                 {
                 GCoord v = carbon->coords() - h->coords();
-                double cos_val =  v.z() / v.length();
+                double length = v.length();
+                double cos_val =  v.z()/length;
                 double order = 0.5 - 1.5*cos_val*cos_val;
-                sums[i] += order;
-                sums2[i] += order*order;
+                sums_z[i] += order;
+                sums2_z[i] += order*order;
+            
+                cos_val =  v.x()/length;
+                order = 0.5 - 1.5*cos_val*cos_val;
+                sums_x[i] += order;
+                sums2_x[i] += order*order;
+            
+                cos_val =  v.y()/length;
+                order = 0.5 - 1.5*cos_val*cos_val;
+                sums_y[i] += order;
+                sums2_y[i] += order*order;
+
                 counts[i]++;
                 }
             }
         }
     }
 
+// Print header
+cout << "# Carb\tS_cd(z)\t\t+/-\t\tS_cd(x)\t\t+/-\t\tS_cd(y)\t\t+/-" << endl;
+
 for (unsigned int i = 0; i < selections.size(); i++)
     {
-    double ave = sums[i] / counts[i];
-    double ave2 = sums2[i] / counts[i];
-    double dev = sqrt(ave2 - ave*ave);
+    double ave_x = sums_x[i] / counts[i];
+    double ave2_x = sums2_x[i] / counts[i];
+    double dev_x = sqrt(ave2_x - ave_x*ave_x);
+
+    double ave_y = sums_y[i] / counts[i];
+    double ave2_y = sums2_y[i] / counts[i];
+    double dev_y = sqrt(ave2_y - ave_y*ave_y);
+
+    double ave_z = sums_z[i] / counts[i];
+    double ave2_z = sums2_z[i] / counts[i];
+    double dev_z = sqrt(ave2_z - ave_z*ave_z);
 
     // get carbon number
     pAtom pa = selections[i].getAtom(0);
@@ -283,7 +314,11 @@ for (unsigned int i = 0; i < selections.size(); i++)
     name.erase(0,1); // delete the C
     int index = atoi(name.c_str());
 
-    cout << index << "\t" << ave << "\t" << dev << endl;
+    cout << index 
+         << "\t" << ave_z << "\t" << dev_z 
+         << "\t" << ave_x << "\t" << dev_x 
+         << "\t" << ave_y << "\t" << dev_y 
+         << endl;
 
     }
 
