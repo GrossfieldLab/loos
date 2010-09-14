@@ -21,18 +21,18 @@ public:
   // }
   
 
-   void setParams(const vector<T>& v) {
-     myparams = v;
-   }
-
+  void setParams(const vector<T>& v) {
+    myparams = v;
+  }
+  
   vector<T> getParams() const { return(myparams); }
 
 
   //  vector<T>& setParams() { return(myparams); }
 
 
-private:
-  vector<T> myparams;
+  //private:
+  //  vector<T> myparams;
 
 
 //   void accept(&previous, const &current){
@@ -62,22 +62,37 @@ private:
       T springval = 0;//add stuff here to grab that a particular param 
 
       // Set range/bounds to the size here...
-
-      T lowerbound = springval / 2;
-      T upperbound = 3 * springval / 2;
-      boost::uniform_real<> uni_dist(lowerbound , upperbound);
+      // T lowerbound = springval / 2;
+      // T upperbound = 3 * springval / 2;
+      // boost::uniform_real<> uni_dist(lowerbound , upperbound);
+      boost::uniform_real<> uni_dist(-1, 1);
       boost::variate_generator<rand_num&, boost::uniform_real<> > uni(generator, uni_dist);
-      newParams.push_back(uni() + uni() + current[i]);
+      double scaled_random = (uni() + uni()) * current[i]; 
+      newParams.push_back(scaled_random + current[i]);
     }
-
     return(newParams);
   }
 
   template<class C>
-  T acceptance(uint iter){
+  T randomize(uint iter){
+    base_generator_type& single_random = rng_singleton();
+    T upperbound = acceptance(iter);
+    boost::uniform_real<> uni_dist(0, upperbound*2);
+    boost::variate_generator<rand_num&, boost::uniform_real<> > uni(single_random, uni_dist);
+    double my_random = uni();
+    return(my_random);
+  }
+
+  template<class C>
+  T acceptance(uint iter, const uint stepSize, const uint absTemp){
+    //maybe use scope to grab stepSize and absTemp
+    //but what scope do they belong in??
+                                                                  
     //this should not be hard wired.  
     //we want another ftor that pts
-    //to an acceptance function    
+    //to an acceptance function
+    T cutoff = absTemp - (stepSize * iter);
+    return(cutoff);
   }
 
 
@@ -90,9 +105,8 @@ private:
 
     if (val < prev){
       return(newStep);
-    }elseif (random_number < acceptance(iter)){//define both of these!!!
+    }elseif (randomize(iter) < acceptance(iter)){//define both of these!!!
       return(newStep);
-
     }
     return(current);
   }
@@ -121,7 +135,7 @@ private:
   //double cov;
   //params K; //should this be a springFactory instance???
   vector<T> initial_sizes;
-
+  vector<T> myparams;
 
 
   //////////////////////////////////////////////////
