@@ -10,6 +10,24 @@
 
 typedef boost::minstd_rand rand_num;
 
+struct ConstantAcceptor {
+  ConstantAcceptor() : val(0.25) { }
+  ConstantAcceptor(double d) : val(d) { }
+  double operator()(const uint iter) { return(val); }
+
+  double val;
+};
+
+
+struct ExponentialAcceptor {
+  ExponentialAcceptor() : k(1.0) { }
+  ExponentialAcceptor(const double scale) : k(scale) { }
+  double operator()(const uint iter) { return(exp(-k * iter)); }
+
+  double k;
+};
+
+
 template<typename T = double>
 class mcoptimo {
   typedef std::vector< std::vector<T> >     VVectors;
@@ -54,7 +72,7 @@ public:
     //use the BOOST random generator per alan's suggestion
     //using type pseudo-random number generator, based on the previous k's
     //rand_num generator(time(0)); //<---Talk to Tod about other seeds!!!
-    base_generator_type& generator = rng_singleton();
+    //    base_generator_type& generator = rng_singleton();
 
     vector<T> newParams;
     for (int i = 0; i < previous.getParams->paramSize(); ++i){//i want the size of the vector myparams
@@ -73,7 +91,7 @@ public:
     return(newParams);
   }
 
-  template<class C>
+  //  template<class C>
   T randomize(uint iter){
     base_generator_type& single_random = rng_singleton();
     T upperbound = acceptance(iter);
@@ -83,21 +101,21 @@ public:
     return(my_random);
   }
 
-  template<class C>
-  T acceptance(uint iter, const uint stepSize, const uint absTemp){
-    //maybe use scope to grab stepSize and absTemp
-    //but what scope do they belong in??
+//   template<class C>
+//   T acceptance(uint iter, const uint stepSize, const uint absTemp){
+//     //maybe use scope to grab stepSize and absTemp
+//     //but what scope do they belong in??
                                                                   
-    //this should not be hard wired.  
-    //we want another ftor that pts
-    //to an acceptance function
-    T cutoff = absTemp - (stepSize * iter);
-    return(cutoff);
-  }
+//     //this should not be hard wired.  
+//     //we want another ftor that pts
+//     //to an acceptance function
+//     T cutoff = absTemp - (stepSize * iter);
+//     return(cutoff);
+//  }
 
 
-  template<class C>
-  vector<T> takeStep(const vector<T>& current, const vector<T>& sizes, C& ftor, uint iter) {
+  template<class C, class Acceptor = ConstantAcceptor>
+  vector<T> takeStep(const vector<T>& current, const vector<T>& sizes, C& ftor, Acceptor& acc, uint iter) {
     
     vector<T> newStep = randomize(current, sizes);
     T prev = ftor(current);
@@ -105,22 +123,24 @@ public:
 
     if (val < prev){
       return(newStep);
-    }elseif (randomize(iter) < acceptance(iter)){//define both of these!!!
+    }elseif (randomize(iter) < acc(iter)){//define both of these!!!
       return(newStep);
     }
     return(current);
   }
 
+  
+
   // vector<double> takeStep(const vector<double>& current, const vector<double>& sizes, FitAggregator& ftor)
-  template<class C>
-  vector<T> optimize(const vector<T>& current, C& ftor) {
+  template<class C, class A = ConstantAcceptor>
+  vector<T> optimize(const vector<T>& current, C& ftor, A& ator) {
     
     vector<T> params(current);//<<----do i need this??
     vector<T> sizes(initial_sizes);
     uint iter = 0;
     
     while (!converged) {
-      vector<T> params = takeStep(params, sizes, ftor, iter);
+      vector<T> params = takeStep(params, sizes, ftor, ator, iter);
       ++iter;
 
     return(params);
