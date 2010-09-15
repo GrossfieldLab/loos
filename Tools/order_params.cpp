@@ -31,6 +31,7 @@
 
 
 #include <loos.hpp>
+#include <boost/format.hpp>
 
 using namespace std;
 using namespace loos;
@@ -292,7 +293,7 @@ while (traj->readFrame())
     }
 
 // Print header
-cout << "# Carb\tS_cd(z)\t\t+/-\t\tS_cd(x)\t\t+/-\t\tS_cd(y)\t\t+/-" << endl;
+cout << "# Carbon  S_cd(z)   +/-   S_cd(x)   +/-   S_cd(y)   +/-" << endl;
 
 for (unsigned int i = 0; i < selections.size(); i++)
     {
@@ -314,11 +315,19 @@ for (unsigned int i = 0; i < selections.size(); i++)
     name.erase(0,1); // delete the C
     int index = atoi(name.c_str());
 
+#if 0
     cout << index 
          << "\t" << ave_z << "\t" << dev_z 
          << "\t" << ave_x << "\t" << dev_x 
          << "\t" << ave_y << "\t" << dev_y 
          << endl;
+#endif
+    cout << boost::format("%d\t%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f") %
+                          index % 
+                          ave_z % dev_z %
+                          ave_x % dev_x %
+                          ave_y % dev_y;
+    cout << endl;
 
     }
 
