@@ -190,10 +190,13 @@ namespace loos {
   }
 
 
-  void randomSeedRNG(void) {
+  ulong randomSeedRNG(void) {
     base_generator_type& rng = rng_singleton();
 
-    rng.seed(static_cast<unsigned int>(time(0)));
+    ulong seedval = static_cast<ulong>(time(0));
+
+    rng.seed(seedval);
+    return(seedval);
   }
 
 
