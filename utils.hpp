@@ -91,7 +91,7 @@ namespace loos {
   /**Currently uses time(3) to seed the RNG obtained from the singleton...
    * Returns the seed used.
    */
-  ulong randomSeedRNG(void);
+  uint randomSeedRNG(void);
 
   //! Parse an Octave/Matlab-style range
   /**
