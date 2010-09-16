@@ -287,7 +287,15 @@ namespace loos {
     std::map<std::string, AtomicGroup> splitByName(void) const;
 
     //! Find a contained atom by its atomid
+    /**
+     * The default behavior is to assume that the atoms in the
+     * AtomicGroup are not in order of increasing atomid and to
+     * therefore use a linear search.  If the atoms are sorted
+     * (AtomicGroup::sort()), then the more efficient binary search
+     * will be used.
+     */
     pAtom findById(const int id);
+    pAtom findById(const int id) const { return(findById_linearSearch(id)); }
 
     //! Create a new group from a vector of atomids
     AtomicGroup groupFromID(const std::vector<int> &id_list);
@@ -325,6 +333,9 @@ namespace loos {
 
     //! Remove any bonding information present in contained atoms
     void clearBonds(void);
+
+    //! Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)
+    void pruneBonds();
 
     //! Is the array of atoms already sorted???
     bool sorted(void) const { return(_sorted); }
@@ -560,6 +571,9 @@ namespace loos {
 
     // *** Internal routines ***  See the .cpp file for details...
     void sorted(bool b) { _sorted = b; }
+
+    pAtom findById_linearSearch(const int id) const;
+    pAtom findById_binarySearch(const int id);
 
     int rangeCheck(int) const;
 

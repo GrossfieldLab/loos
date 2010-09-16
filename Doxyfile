@@ -5,7 +5,7 @@
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = LOOS
-PROJECT_NUMBER         = v1.5.5
+PROJECT_NUMBER         = v1.6.0
 OUTPUT_DIRECTORY       = .
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -124,7 +124,7 @@ FILE_PATTERNS          = *.c \
                          *.f \
                          *.vhd \
                          *.vhdl
-RECURSIVE              = NO
+RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = *.cc \
@@ -262,7 +262,7 @@ CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 GROUP_GRAPHS           = YES
 UML_LOOK               = NO
-TEMPLATE_RELATIONS     = NO
+TEMPLATE_RELATIONS     = YES
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
 CALL_GRAPH             = NO

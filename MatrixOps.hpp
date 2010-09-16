@@ -49,6 +49,7 @@ namespace loos {
    */
   namespace Math {
 
+
     //! Compute the SVD of a single precision matrix
     boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M);
 
@@ -70,6 +71,12 @@ namespace loos {
     RealMatrix eye(const uint n);
     DoubleMatrix deye(const uint n);
 
+
+    //! Extracts a submatrix
+    loos::DoubleMatrix submatrix(const loos::DoubleMatrix& M, const Range& rows, const Range& cols);
+
+    //! Normalizes each column as a column-vector
+    void normalizeColumns(loos::DoubleMatrix& A);
 
     //! Overloaded operators for RealMatrix matrices (see important note below)
     void operator+=(RealMatrix& A, const RealMatrix& B);

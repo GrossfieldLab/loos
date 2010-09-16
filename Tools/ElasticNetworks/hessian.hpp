@@ -31,114 +31,206 @@
 */
 
 
+/** \addtogroup ENM
+ *@{
+ */
+
+
+
 #if !defined(HESSIAN_HPP)
 #define HESSIAN_HPP
 
 
 #include <loos.hpp>
 
+#include "spring_functions.hpp"
 
-//! Base class for defining different methods of adjusting spring constants within the Hessian...
-/**
- * Uses NVI idiom
- */
+namespace ENM {
 
-class SuperBlock {
-public:
-  //! Constructor; must pass the model we're going to work on
-  SuperBlock(const loos::AtomicGroup& nodelist) : nodes(nodelist), warned_negative(false) { }
-  virtual ~SuperBlock() { }
-  
-  //! Computes a 3x3 superblock
-  loos::DoubleMatrix block(const uint j, const uint i) {
-    if (j >= size() || i >= size())
-      throw(std::range_error("Invalid indices into SuperBlock"));
-    return(blockImpl(j, i));
-  }
-
-
-  uint size() const { return(static_cast<uint>(nodes.size())); }
-
-  //! Handles negative spring constants, issuing a one-time warning
+  //! This class creates superblocks in a hessian
   /**
-   * This handles negative spring constants by issuing a one-time
-   * warning and by returning what the new spring constant should be.
-   *
-   * Override this to change the behavior of negative springs,
-   * however, this mechanism my change in future releases...
+   *This is the base class for defining elements (superblocks) in the
+   * Hessian.  Note that this class does NOT use NVI, so derived classes should
+   * verify that they have valid args for the block() function.
    */
-  virtual double negativeSprings(const double k) {
-    if (!warned_negative) {
-      warned_negative = true;
-      std::cerr << "***WARNING***  There are negative spring constants that will be set to zero.\n";
+  class SuperBlock {
+  public:
+    SuperBlock() : springs(0) { }
+  
+    //! Constructor taking a spring function and a list of nodes
+    /**
+     * Arguments:
+     * \arg \c func SpringFunction to use to determine spring constants between nodes
+     * \arg nodelist List of nodes in the model
+     *
+     * For example, to compute a hessian using the HCA method,
+     \code
+     SpringFunction *spring = new HCA;
+     SuperBlock *blocker = new SuperBlock(spring, model);
+     \endcode
+    */
+    SuperBlock(SpringFunction* func, const loos::AtomicGroup& nodelist) : springs(func), nodes(nodelist) { }
+    SuperBlock(const SuperBlock& b) : springs(b.springs), nodes(b.nodes) { }
+    virtual ~SuperBlock() { }
+
+    uint size() const { return(static_cast<uint>(nodes.size())); }
+
+    // ------------------------------------------------------
+    //! Forwards to the contained SpringFunction...
+    virtual SpringFunction::Params setParams(const SpringFunction::Params& v) {
+      return(springs->setParams(v));
     }
 
-    return(0.0);
-  }
+    //! Forwards to the contained SpringFunction...
+    virtual bool validParams() const { return(springs->validParams()); }
+
+    //! Forwards to the contained SpringFunction...
+    virtual uint paramSize() const { return(springs->paramSize()); }
+    // ------------------------------------------------------
+
+    //! Returns a 3x3 matrix representing a superblock in the Hessian for the two nodes
+    virtual loos::DoubleMatrix block(const uint j, const uint i) {
+      return(blockImpl(j, i, springs));
+    }
 
 
-protected:
-  loos::AtomicGroup nodes;
+  protected:
 
-private:
-  //! Polymorphic super-block function
-  virtual loos::DoubleMatrix blockImpl(const uint j, const uint i) =0;
+    //! Implementation of the superblock calculation
+    /**
+     *This is the actual implementation of the SuperBlock calculation.
+     *In most cases, derived clases will probably want to use this but
+     * with alternative spring functions...
+     */
+    loos::DoubleMatrix blockImpl(const uint j, const uint i, SpringFunction* fptr) {
+      if (i >= size() || j >= size())
+        throw(std::runtime_error("Invalid index in Hessian SuperBlock"));
 
-  bool warned_negative;
+      if (fptr == 0)
+        throw(std::runtime_error("No spring function defined for hessian!"));
+
+      loos::GCoord u = nodes[j]->coords();
+      loos::GCoord v = nodes[i]->coords();
+      loos::GCoord d = v - u;
+    
+      loos::DoubleMatrix K = fptr->constant(u, v, d);
+      loos::DoubleMatrix B(3, 3);
+      for (uint y=0; y<3; ++y)
+        for (uint x=0; x<3; ++x)
+          B(x, y) = d[x]*d[y] * K(x,y);
+
+      return(B);
+    }
+
+
+    SpringFunction* springs;
+    loos::AtomicGroup nodes;
+  };
+
+
+
+  //! SuperBlock decorator base class
+  /**
+   *The following is a decorator for a SuperBlock.
+   *It both inherits from (so it can be used in place of a SuperBlock)
+   *and contains a SuperBlock.  This allows additional behavior to be
+   *layed on top of the SuperBlock.
+   */
+  class SuperBlockDecorator : public SuperBlock {
+  public:
+
+    //! Constructor that takes a SuperBlock to decorate
+    SuperBlockDecorator(SuperBlock* b) : SuperBlock(*b), decorated(b) { }
+
+  protected:
+    SuperBlock *decorated;
+  };
+
+
+
+  //! Decorator for switching spring functions based on a matrix of flags
+  /**
+   *The following is a decorator for SuperBlock that implements an
+   *alternative set of spring constants for nodes that are "bound"
+   *together.  The constructor takes a SuperBlock to decorate, along
+   *with a pointer to the alternative SpringFunction and a matrix of
+   *ints representing the connectivity (i.e. 1 if two nodes are
+   *connected, 0 otherwise).
+   *
+   *A few notes about using decorators...  The idea behind a decorator
+   *is that you add layers (or decorate) to a class by combining
+   *multiple decorators.  For example, suppose you have two different
+   *kinds of connectivity you want to represent in a Hessian.  You
+   *would set-up your SuperBlock like,
+   \code
+   SuperBlock* unbound = new SuperBlock(unbound_spring, nodes);
+   BoundSuperBlock* backboned = new BoundSuperBlock(unbound, backbone_springs, backbone_bonds);
+   BoundSuperBlock* side_chained = new BoundSuperBlock(backboned, side_chain_springs, side_chain_bonds);
+   \endcode
+   *You now always work with the last decorated object,
+   *i.e. side_chained.  When side_chained->block() is called, it first
+   *checks to see if the nodes represent a side-chain bond.  If so,
+   *that spring function is used.  If not, then it passes control to
+   *the object it decorates, i.e. backboned.  Backboned now checks to
+   *see if the nodes represent a backbone bond.  If so, it uses that
+   *spring function.  If not, then control is passed to the inner
+   *unbound SuperBlock which uses its spring function.
+   *
+   *This method has two important caveats.  First, the calculation is
+   *now order-dependent.  If, for some reason, you have nodes that are
+   *listed as both side-chains and backbones (for a contrived example),
+   *then the one used will depend on the order in which the SuperBlock
+   *was decorated.  The second caveat is that we are using real, raw
+   *pointers here, so be careful about cleaning up to avoid memory
+   *leaks and also keep in mind that the intermediate pointers
+   *(i.e. backboned) are contained within the higher-level decorators.
+   *So, do NOT delete any of the intermediate steps until you are sure
+   *you are done with everything.
+   */
+  class BoundSuperBlock : public SuperBlockDecorator {
+  public:
+    BoundSuperBlock(SuperBlock* b, SpringFunction* bs, loos::Math::Matrix<int>& cm) :
+      SuperBlockDecorator(b),
+      bound_spring(bs),
+      connectivity(cm)
+    {
+      if (connectivity.rows() != connectivity.cols() && connectivity.cols() != size())
+        throw(std::runtime_error("Connectivity matrix and Nodelist have differing sizes"));
+    }
+
+
+    // Block now checks to see if nodes i and j are connected and, if
+    // so, uses our alternative spring function.
+    loos::DoubleMatrix block(const uint j, const uint i) {
+      if (connectivity(j, i))
+        return(blockImpl(j, i, bound_spring));
+      else
+        return(decorated->block(j, i));
+    }
+
+    //! Assign parameters and propagate to the decorated superblock
+    SpringFunction::Params setParams(const SpringFunction::Params& v) {
+      SpringFunction::Params u = bound_spring->setParams(v);
+      if (! u.empty())
+        u = decorated->setParams(u);
+      return(u);
+    }
+
+    //! Both the alternate and all decorated parameters are valid
+    bool validParams() const { return(bound_spring->validParams() && decorated->validParams()); }
+
+    //! Returns the aggregate parameter size
+    uint paramSize() const { return(bound_spring->paramSize() + decorated->paramSize()); }
+
+  private:
+    SpringFunction* bound_spring;
+    loos::Math::Matrix<int> connectivity;
+  };
+
 };
-
-
-
-//! Use a constant spring and a distance cutoff
-class DistanceCutoff : public SuperBlock {
-public:
-  DistanceCutoff(const loos::AtomicGroup& nodelist, const double r) : SuperBlock(nodelist), radius(r*r) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-  double radius;
-};
-
-
-//! Spring constant is a function of distance raised to a power (see Yang et al, PNAS (2009) 106:12347)
-class DistanceWeight : public SuperBlock {
-public:
-  DistanceWeight(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), power(-2.0) { }
-  DistanceWeight(const loos::AtomicGroup& nodelist, const double power_) : SuperBlock(nodelist), power(power_) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-  double power;
-};
-
-
-//! Spring constant is an exponential function of distance
-class ExponentialDistance : public SuperBlock {
-public:
-  ExponentialDistance(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist), scale(-1.0) { }
-  ExponentialDistance(const loos::AtomicGroup& nodelist, const double scale_) : SuperBlock(nodelist), scale(scale_) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-  double scale;
-};
-
-
-//! Use HCA method (see Hinsen et al, Chem Phys (2000) 261:25-37
-class HCA : public SuperBlock {
-public:
-  HCA(const loos::AtomicGroup& nodelist) : SuperBlock(nodelist),
-                                           cutoff(4.0), k1(205.5), k2(571.2),
-                                           k3(305.9e3), k4(6) { }
-
-  HCA(const loos::AtomicGroup& nodelist, const double cut, const double a, const double b, const double c, const double d) :
-    SuperBlock(nodelist),
-    cutoff(cut), k1(a), k2(b), k3(c), k4(d) { }
-private:
-  loos::DoubleMatrix blockImpl(const uint j, const uint i);
-
-  double cutoff, k1, k2, k3, k4;
-};
-
-loos::DoubleMatrix hessian(SuperBlock* block);
-
-
 
 #endif
+
+
+
+/** @} */

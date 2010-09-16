@@ -47,22 +47,14 @@
 #include <boost/program_options.hpp>
 
 #include "hessian.hpp"
+#include "enm-lib.hpp"
+#include "vsa-lib.hpp"
+
 
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
-
-
-typedef pair<uint,uint> Range;
-
-
-#if defined(__linux__)
-extern "C" {
-  void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
-  void dpotrf_(char*, int*, double*, int*, int*);
-  void dtrmm_(char*, char*, char*, char*, int*, int*, double*, double*, int*, double*, int*);
-}
-#endif
+using namespace ENM;
 
 
 // Globals...
@@ -71,19 +63,13 @@ double threshold = 1e-10;
 
 string hdr;
 string subset_selection, environment_selection, model_name, prefix;
-double cutoff;
 int verbosity = 0;
 bool debug = false;
 bool occupancies_are_masses;
 string psf_file;
 
-bool parameter_free;
-double power;
-bool hca_method;
+string spring_desc;
 bool nomass;
-
-double hca_constants[5];
-bool user_defined_hca_constants(false);
 
 
 void fullHelp() {
@@ -116,24 +102,22 @@ void fullHelp() {
     "* Subsystem and Environment Mass *\n\n"
     "The generalized eigenvalue problem is solved creating the\n"
     "following matrices:\n"
-    "\tfoo_Ds.asc = Subsystem eigenvalues (mass-weighted)\n"
-    "\tfoo_Us.asc = Subsystem eigenvectors (mass-weighted)\n"
+    "\tfoo_s.asc = Subsystem eigenvalues (mass-weighted)\n"
+    "\tfoo_U.asc = Subsystem eigenvectors (mass-weighted)\n"
     "\n\n"
     "* Spring Constant Control *\n\n"
-    "Different methods for assigning the spring constants in the\n"
-    "Hessian can be used.  For example, \"--free 1\" selects the\n"
-    "\"parameter free\" method which can be combined with the \"--power\"\n"
-    "option, which controls the exponent used (the default is -2).\n"
-    "Note that setting the parameter-free method does not alter the\n"
-    "cutoff radius used in building the Hessian, so you may want to\n"
-    "set that to something very large (i.e. \"--cutoff 100\").\n"
-    "Alternatively, the \"HCA\" method can be used via the \"--hca 1\"\n"
-    "option.  The constants used in HCA can be set with the\n"
-    "\"--hparams r_c,k1,k2,k3,k4\" option where the spring constant, k,\n"
-    "is defined as,\n"
-    "\tk = k1 * s - k2        if (s <= r_c)\n"
-    "\tk = k3 * pow(s, -k4)   if (s > r_c)\n"
-    "and s is the distance between the nodes.\n"
+    "The spring constant used is controlled by the --spring option.\n"
+    "If only the name for the spring function is given, then the default\n"
+    "parameters are used.  Alternatively, the name may include a\n"
+    "comma-separated list of parameters to be passed to the spring\n"
+    "function, i.e. --spring=distance,15.0\n\n"
+    "Available spring functions:\n";
+
+  vector<string> names = springNames();
+  for (vector<string>::iterator i = names.begin(); i != names.end(); ++i)
+    cout << "\t" << *i << endl;
+
+  cout <<
     "\n\n"
     "* Mass Control *\n\n"
     "VSA, by default, assumes that masses will be present.  These can\n"
@@ -163,7 +147,7 @@ void fullHelp() {
     "\tvsa --nomass 1 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n"
     "\n"
     "The same example as above, but using the HCA spring constants,\n"
-    "\tvsa --nomass 1 --hca 1 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n";
+    "\tvsa --nomass 1 --spring hca 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n";
     
 }
 
@@ -171,20 +155,19 @@ void fullHelp() {
 void parseOptions(int argc, char *argv[]) {
 
   try {
-    po::options_description generic("Allowed options", 120);
-    generic.add_options()
+    string config_file;
+
+    po::options_description visible("Allowed options", 120);
+    visible.add_options()
       ("help", "Produce this help message")
       ("fullhelp", "More detailed help")
-      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
       ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
-      ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than a cutoff")
-      ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
-      ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
-      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale factor to use for parameter-free method")
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
-      ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution");
+      ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution")
+      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments")
+      ("config,C", po::value<string>(&config_file), "Options config file");
 
 
     po::options_description hidden("Hidden options");
@@ -195,7 +178,7 @@ void parseOptions(int argc, char *argv[]) {
       ("prefix", po::value<string>(&prefix), "Output prefix");
     
     po::options_description command_line;
-    command_line.add(generic).add(hidden);
+    command_line.add(visible).add(hidden);
 
     po::positional_options_description p;
     p.add("subset", 1);
@@ -208,25 +191,24 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
+    // Now handle config file...
+    if (!config_file.empty()) {
+      ifstream ifs(config_file.c_str());
+      if (!ifs) {
+        cerr << "Cannot open config file " << config_file << endl;
+        exit(-1);
+      }
+      store(parse_config_file(ifs, command_line), vm);
+      notify(vm);
+    }
+
     if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix") && vm.count("subset") && vm.count("env"))) {
       cerr << "Usage- vsa [options] subset environment model-name output-prefix\n";
-      cerr << generic;
+      cerr << visible;
       if (vm.count("fullhelp"))
         fullHelp();
       exit(-1);
     }
-
-    if (vm.count("hparams")) {
-      string s = vm["hparams"].as<string>();
-      int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
-                     hca_constants+3, hca_constants+4);
-      if (i != 5) {
-        cerr << boost::format("Error - invalid conversion of HCA constants '%s'\n") % s;
-        exit(-1);
-      }
-      user_defined_hca_constants = true;
-    }
-
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -235,192 +217,6 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-
-
-
-DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& cols) {
-  uint m = rows.second - rows.first;
-  uint n = cols.second - cols.first;
-
-  DoubleMatrix A(m,n);
-  for (uint i=0; i < n; ++i)
-    for (uint j=0; j < m; ++j)
-      A(j,i) = M(j+rows.first, i+cols.first);
-
-  return(A);
-}
-
-
-boost::tuple<DoubleMatrix, DoubleMatrix> eigenDecomp(DoubleMatrix& A, DoubleMatrix& B) {
-
-  DoubleMatrix AA = A.copy();
-  DoubleMatrix BB = B.copy();
-
-  f77int itype = 1;
-  char jobz = 'V';
-  char uplo = 'U';
-  char range = 'I';
-  f77int n = AA.rows();
-  f77int lda = n;
-  f77int ldb = n;
-  double vl = 0.0;
-  double vu = 0.0;
-  f77int il = 7;
-  f77int iu = n;
-
-  char dpar = 'S';
-  double abstol = 2.0 * dlamch_(&dpar);
-  //double abstol = -1.0;
-
-  f77int m;
-  DoubleMatrix W(n, 1);
-  DoubleMatrix Z(n, n);
-  f77int ldz = n;
-
-  f77int lwork = -1;
-  f77int info;
-  double *work = new double[1];
-
-  f77int *iwork = new f77int[5*n];
-  f77int *ifail = new f77int[n];
-
-  dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
-  if (info != 0) {
-    cerr << "ERROR- dsygvx returned " << info << endl;
-    exit(-1);
-  }
-
-  lwork = work[0];
-  delete[] work;
-  work = new double[lwork];
-  dsygvx_(&itype, &jobz, &range, &uplo, &n, AA.get(), &lda, BB.get(), &ldb, &vl, &vu, &il, &iu, &abstol, &m, W.get(), Z.get(), &ldz, work, &lwork, iwork, ifail, &info);
-  if (info != 0) {
-    cerr << "ERROR- dsygvx returned " << info << endl;
-    exit(-1);
-  }
-
-  if (m != n-6) {
-    cerr << "ERROR- only got " << m << " eigenpairs instead of " << n-6 << endl;
-    exit(-10);
-  }
-
-  vector<uint> indices = sortedIndex(W);
-  W = permuteRows(W, indices);
-  Z = permuteColumns(Z, indices);
-
-  boost::tuple<DoubleMatrix, DoubleMatrix> result(W, Z);
-  return(result);
-
-}
-
-
-// Matrix holds column vectors.  Each vector is normalized...
-void normalizeColumns(DoubleMatrix& A) {
-  for (uint i=0; i<A.cols(); ++i) {
-    double sum = 0.0;
-    for (uint j=0; j<A.rows(); ++j)
-      sum += A(j, i) * A(j, i);
-
-    if (sum <= 0) {
-      for (uint j=0; j<A.rows(); ++j)
-        A(j, i) = 0.0;
-    } else {
-      sum = sqrt(sum);
-      for (uint j=0; j<A.rows(); ++j)
-        A(j, i) /= sum;
-    }
-  }
-}
-
-
-
-// Mass-weight eigenvectors
-DoubleMatrix massWeight(DoubleMatrix& U, DoubleMatrix& M) {
-
-  // First, compute the cholesky decomp of M (i.e. it's square-root)
-  DoubleMatrix R = M.copy();
-  char uplo = 'U';
-  f77int n = M.rows();
-  f77int lda = n;
-  f77int info;
-  dpotrf_(&uplo, &n, R.get(), &lda, &info);
-  if (info != 0) {
-    cerr << "ERROR- dpotrf() returned " << info << endl;
-    exit(-1);
-  }
-
-  if (debug)
-    writeAsciiMatrix(prefix + "_R.asc", R, hdr, false, ScientificMatrixFormatter<double>(24, 18));
-
-  // Now multiply M * U
-  DoubleMatrix UU = U.copy();
-  f77int m = U.rows();
-  n = U.cols();
-  double alpha = 1.0;
-  f77int ldb = m;
-
-#if defined(__linux__)
-  char side = 'L';
-  char notrans = 'N';
-  char diag = 'N';
-
-  dtrmm_(&side, &uplo, &notrans, &diag, &m, &n, &alpha, R.get(), &lda, UU.get(), &ldb);
-
-#else
-
-  cblas_dtrmm(CblasColMajor, CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, m, n, alpha, R.get(), lda, UU.get(), ldb);
-#endif
-
-  normalizeColumns(UU);
-  return(UU);
-}
-  
-
-
-// Map masses from one group onto another...  Minimal error checking...
-void copyMasses(AtomicGroup& target, const AtomicGroup& source) {
-  if (target.size() != source.size()) {
-    cerr << "ERROR- groups have different sizes in copyMasses... (maybe your PSF doesn't match the model?)\n";
-    exit(-1);
-  }
-
-  for (int i=0; i<target.size(); ++i) {
-    if (source[i]->name() != target[i]->name()) {
-      cerr << "ERROR- atom mismatch at position " << i << endl;
-      exit(-1);
-    }
-    target[i]->mass(source[i]->mass());
-  }
-}
-
-
-// Copy the masses from a PSF onto a group
-void massFromPSF(AtomicGroup& grp, const string& name) {
-  AtomicGroup psf = createSystem(name);
-  copyMasses(grp, psf);
-}
-
-
-// The masses are stored in the occupancy field of a PDB...
-void massFromOccupancy(AtomicGroup& grp) {
-  for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i)
-      (*i)->mass((*i)->occupancy());
-}
-
-
-// Build the 3n x 3n diagonal mass matrix for a group
-DoubleMatrix getMasses(const AtomicGroup& grp) {
-  uint n = grp.size();
-
-  DoubleMatrix M(3*n,3*n);
-  for (uint i=0, k=0; i<n; ++i, k += 3) {
-    M(k,k) = grp[i]->mass();
-    M(k+1,k+1) = grp[i]->mass();
-    M(k+2,k+2) = grp[i]->mass();
-  }
-
-  return(M);
-}
 
 
 
@@ -456,107 +252,30 @@ int main(int argc, char *argv[]) {
     cerr << "Environment size is " << environment.size() << endl;
   }
 
-  // Insanely high precision output
-  ScientificMatrixFormatter<double> sp(24,18);
+  // Determine which kind of scaling to apply to the Hessian...
+  SpringFunction* spring = 0;
+  spring = springFactory(spring_desc);
 
-  // Determine how we're going to weight the Hessian's spring constants...
-  SuperBlock* blocker = 0;
-  if (parameter_free)
-    blocker = new DistanceWeight(composite, power);
-  else if (hca_method) {
-    if (user_defined_hca_constants)
-      blocker = new HCA(composite, hca_constants[0], hca_constants[1], hca_constants[2], hca_constants[3], hca_constants[4]);
-    else
-      blocker = new HCA(composite);
-  } else
-    blocker = new DistanceCutoff(composite, cutoff);
+  SuperBlock* blocker = new SuperBlock(spring, composite);
 
-  // Now build the Hessian
-  DoubleMatrix H = hessian(blocker);
+  VSA vsa(blocker, subset.size());
+  vsa.prefix(prefix);
+  vsa.meta(hdr);
+  vsa.debugging(debug);
+  vsa.verbosity(verbosity);
+
+  if (!nomass) {
+    DoubleMatrix M = getMasses(composite);
+    vsa.setMasses(M);
+  }
+
+  vsa.solve();
+  
+  writeAsciiMatrix(prefix + "_U.asc", vsa.eigenvectors(), hdr, false);
+  writeAsciiMatrix(prefix + "_s.asc", vsa.eigenvalues(), hdr, false);
+
+  // Be good...
+  delete spring;
   delete blocker;
 
-  // Now, burst out the subparts...
-  uint l = subset.size() * 3;
-  uint n = H.cols();
-
-  DoubleMatrix Hss = submatrix(H, Range(0,l), Range(0,l));
-  DoubleMatrix Hee = submatrix(H, Range(l, n), Range(l, n));
-  DoubleMatrix Hse = submatrix(H, Range(0,l), Range(l, n));
-  DoubleMatrix Hes = submatrix(H, Range(l, n), Range(0, l));
-
-  Timer<WallTimer> timer;
-  if (verbosity > 0) {
-    cerr << "Inverting environment hessian...\n";
-    timer.start();
-  }
-
-  DoubleMatrix Heei = Math::invert(Hee);
-  if (verbosity > 0) {
-    timer.stop();
-    cerr << timer << endl;
-  }
-  
-  // Build the effective Hessian
-  DoubleMatrix Hssp = Hss - Hse * Heei * Hes;
-  if (debug) {
-    writeAsciiMatrix(prefix + "_H.asc", H, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hss.asc", Hss, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hee.asc", Hee, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hse.asc", Hse, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Heei.asc", Heei, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Hssp.asc", Hssp, hdr, false, sp);
-  }
-
-  // Shunt in the event of using unit masses...  We can use the SVD to
-  // to get the eigenpairs from Hssp
-  if (nomass) {
-    boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svdresult = svd(Hssp);
-    DoubleMatrix U(boost::get<0>(svdresult));
-    DoubleMatrix S(boost::get<1>(svdresult));
-
-    reverseColumns(U);
-    reverseRows(S);
-
-    writeAsciiMatrix(prefix + "_U.asc", U, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_s.asc", S, hdr, false, sp);
-    exit(0);
-  }
-
-
-  // Build the effective mass matrix
-  DoubleMatrix Ms = getMasses(subset);
-  DoubleMatrix Me = getMasses(environment);
-  DoubleMatrix Msp = Ms + Hse * Heei * Me * Heei * Hes;
-
-  if (debug) {
-    writeAsciiMatrix(prefix + "_Ms.asc", Ms, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Me.asc", Me, hdr, false, sp);
-    writeAsciiMatrix(prefix + "_Msp.asc", Msp, hdr, false, sp);
-  }
-
-  // Run the eigen-decomposition...
-  if (verbosity > 0) {
-    cerr << "Running eigen-decomposition of " << Hssp.rows() << " x " << Hssp.cols() << " matrix ...";
-    timer.start();
-  }
-  boost::tuple<DoubleMatrix, DoubleMatrix> eigenpairs;
-  eigenpairs = eigenDecomp(Hssp, Msp);
-
-  DoubleMatrix Ds = boost::get<0>(eigenpairs);
-  DoubleMatrix Us = boost::get<1>(eigenpairs);
-
-  // Need to mass-weight the eigenvectors so they're orthogonal in R3...
-  if (verbosity > 0)
-    cerr << "mass weighting eigenvectors...";
-
-  DoubleMatrix MUs = massWeight(Us, Msp);
-
-  if (verbosity > 0) {
-    timer.stop();
-    cerr << "done\n";
-    cerr << timer << endl;
-  }
-
-  writeAsciiMatrix(prefix + "_Ds.asc", Ds, hdr, false, sp);
-  writeAsciiMatrix(prefix + "_Us.asc", MUs, hdr, false, sp);
 }

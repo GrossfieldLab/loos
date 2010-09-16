@@ -420,6 +420,10 @@ namespace loos {
       s = boost::lexical_cast<std::string>(boost::any_cast<float>(x));
     else if (x.type() == typeid(std::vector<std::string>))
       s = vToString( boost::any_cast< std::vector<std::string> >(x));
+    else if (x.type() == typeid(std::vector<double>))
+      s = vToString(boost::any_cast< std::vector<double> >(x));
+    else if (x.type() == typeid(std::vector<uint>))
+      s = vToString(boost::any_cast< std::vector<uint> >(x));
     else
       throw(LOOSError("Unknown type in anyToString() conversion"));
 
@@ -437,7 +441,6 @@ namespace loos {
       oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'";
       results.push_back(oss.str());
     }
-      
     
     return(results);
   }

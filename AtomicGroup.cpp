@@ -456,8 +456,7 @@ namespace loos {
 
   // Find an atom based on atomid
   // Returns 0 (null shared_ptr) if not found...
-  pAtom AtomicGroup::findById(const int id) {
-    sort();
+  pAtom AtomicGroup::findById_binarySearch(const int id) {
     int bottom = 0, top = size()-1, middle;
 
     while (top > bottom) {
@@ -473,6 +472,24 @@ namespace loos {
 
     return(pAtom());
   }
+
+
+  pAtom AtomicGroup::findById_linearSearch(const int id) const {
+    for (AtomicGroup::const_iterator i = begin(); i != end(); ++i)
+      if ((*i)->id() == id)
+        return(*i);
+
+    return(pAtom());
+  }
+  
+
+  pAtom AtomicGroup::findById(const int id) {
+    if (sorted())
+      return(findById_binarySearch(id));
+
+    return(findById_linearSearch(id));
+  }
+
 
   //! Note: when calling this, you'll want to make sure you use the 
   //! outermost group (eg the psf or pdb you used to create things, rather than
@@ -797,6 +814,35 @@ namespace loos {
       }
     }
   }
+
+
+
+  /**
+   * The connectivity list is searched for each atom and if a bond is
+   * not found in the current group, then it is removed from the
+   * bond-list for that atom.  Note that this means that any
+   * AtomicGroup sharing the atom in question will also now have the
+   * modified bond list.  It's therefore recommended that this
+   * function be called on a copy (AtomicGroup::copy()).  Also note
+   * that FindById() does not implicitly sort the atoms for more
+   * efficient searching.  You may want to call AtomicGroup::sort()
+   * prior to AtomicGroup::pruneBonds() if the exact atom order does
+   * not matter.
+   */
+
+  void AtomicGroup::pruneBonds() {
+    
+    for (AtomicGroup::iterator j = begin(); j != end(); ++j)
+      if ((*j)->hasBonds()) {
+        std::vector<int> bonds = (*j)->getBonds();
+        std::vector<int> pruned_bonds;
+        for (std::vector<int>::const_iterator i = bonds.begin(); i != bonds.end(); ++i)
+          if (findById(*i) != 0)
+            pruned_bonds.push_back(*i);
+        (*j)->setBonds(pruned_bonds);
+      }
+  }
+
 
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {

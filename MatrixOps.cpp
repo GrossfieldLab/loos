@@ -62,6 +62,8 @@ namespace loos {
 
       sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
 
+      delete[] work;
+
       boost::tuple<RealMatrix, RealMatrix, RealMatrix> result(U, S, Vt);
       return(result);
     }
@@ -93,6 +95,8 @@ namespace loos {
       work = new double[lwork];
 
       dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
+
+      delete[] work;
 
       boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result(U, S, Vt);
       return(result);
@@ -361,6 +365,43 @@ namespace loos {
 
       return(I);
     }
+
+
+
+    DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& cols) {
+      uint m = rows.second - rows.first;
+      uint n = cols.second - cols.first;
+
+      DoubleMatrix A(m,n);
+      for (uint i=0; i < n; ++i)
+        for (uint j=0; j < m; ++j)
+          A(j,i) = M(j+rows.first, i+cols.first);
+
+      return(A);
+    }
+
+
+
+
+
+    // Matrix holds column vectors.  Each vector is normalized...
+    void normalizeColumns(DoubleMatrix& A) {
+      for (uint i=0; i<A.cols(); ++i) {
+        double sum = 0.0;
+        for (uint j=0; j<A.rows(); ++j)
+          sum += A(j, i) * A(j, i);
+
+        if (sum <= 0) {
+          for (uint j=0; j<A.rows(); ++j)
+            A(j, i) = 0.0;
+        } else {
+          sum = sqrt(sum);
+          for (uint j=0; j<A.rows(); ++j)
+            A(j, i) /= sum;
+        }
+      }
+    }
+
 
 
 

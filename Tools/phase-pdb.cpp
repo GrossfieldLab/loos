@@ -41,17 +41,22 @@ namespace po = boost::program_options;
 
 
 vector<uint> columns;
+vector<uint> rows;
 vector<double> scales;
 uint chunksize;
 string segid_fmt;
 string residue_name;
 string atom_name;
 
+bool bonds;
+
 string matrix_name;
 
 
 void parseArgs(int argc, char *argv[]) {
   
+  string rowdesc;
+
   try {
     po::options_description generic("Allowed options");
     generic.add_options()
@@ -59,9 +64,11 @@ void parseArgs(int argc, char *argv[]) {
       ("segid,S", po::value<string>(&segid_fmt)->default_value("P%03d"), "Segid printf format")
       ("atom,a", po::value<string>(&atom_name)->default_value("CA"), "Atom name to use")
       ("residue,r", po::value<string>(&residue_name)->default_value("SVD"), "Residue name to use")
+      ("rows,R", po::value<string>(&rowdesc)->default_value("all"), "Rows to use")
       ("column,c", po::value< vector<uint> >(&columns), "Columns to use (default are first 3)")
-      ("scales,s", po::value< vector<double> >(&scales), "Scale columns (default is 10,10,10)")
-      ("chunk,C", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows"); 
+      ("scales,s", po::value< vector<double> >(&scales), "Scale columns (default is 100,100,100)")
+      ("chunk,C", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows")
+      ("bonds,b", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -91,7 +98,7 @@ void parseArgs(int argc, char *argv[]) {
 
     if (scales.empty())
       for (uint i=0; i<3; ++i)
-        scales.push_back(10.0);
+        scales.push_back(100.0);
     else if (scales.size() == 1)
       for (uint i=0; i<2; ++i)
         scales.push_back(scales[0]);
@@ -105,6 +112,9 @@ void parseArgs(int argc, char *argv[]) {
       cerr << "Error- must select 3 columns\n";
       exit(-1);
     }
+
+    if (rowdesc != "all")
+      rows = parseRangeList<uint>(rowdesc);
 
 
   }
@@ -126,22 +136,28 @@ int main(int argc, char *argv[]) {
   readAsciiMatrix(matrix_name, A);
   uint m = A.rows();
 
+  if (rows.empty())
+    for (uint i=0; i<m; ++i)
+      rows.push_back(i);
+
   uint resid = 1;
   uint chunk = 1;
   AtomicGroup model;
 
-  for (uint atomid = 0; atomid < m; ++atomid, ++resid) {
+  for (uint atomid = 0; atomid < rows.size(); ++atomid, ++resid) {
     if (chunksize && resid > chunksize) {
-      for (uint i=atomid - chunksize + 1; i<atomid; ++i)
-        model[i]->addBond(model[i-1]);
+      if (bonds) {
+        for (uint i=atomid - chunksize; i<atomid-1; ++i)
+          model[i]->addBond(model[i+1]);
+      }
 
       resid = 1;
       ++chunk;
     }
 
-    GCoord c(scales[0] * A(atomid, columns[0]),
-             scales[1] * A(atomid, columns[1]),
-             scales[2] * A(atomid, columns[2]));
+    GCoord c(scales[0] * A(rows[atomid], columns[0]),
+             scales[1] * A(rows[atomid], columns[1]),
+             scales[2] * A(rows[atomid], columns[2]));
     pAtom pa(new Atom(atomid+1, atom_name, c));
     pa->resid(resid);
     pa->resname(residue_name);
@@ -150,15 +166,25 @@ int main(int argc, char *argv[]) {
     segstream << boost::format(segid_fmt) % chunk;
     pa->segid(segstream.str());
 
+    double b;
+    if (chunksize)
+      b = (100.0 * (resid-1)) / chunksize;
+    else
+      b = 100.0 * atomid / rows.size();
+
+    pa->bfactor(b);
+
     model.append(pa);
   }
 
-  if (chunksize && resid > chunksize)
-    for (uint i=m - chunksize + 1; i<m; ++i)
-      model[i]->addBond(model[i-1]);
-  else
-    for (uint i=1; i<m; ++i)
-      model[i]->addBond(model[i-1]);
+  if (bonds) {
+    if (chunksize && resid > chunksize)
+      for (uint i=rows.size() - chunksize; i<rows.size()-1; ++i)
+        model[i]->addBond(model[i+1]);
+    else
+      for (uint i=0; i<rows.size()-1; ++i)
+        model[i]->addBond(model[i+1]);
+  }
   
   PDB pdb = PDB::fromAtomicGroup(model);
   pdb.remarks().add(hdr);

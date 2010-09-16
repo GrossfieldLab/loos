@@ -1,4 +1,5 @@
 /*
+HI NICK!!!!
   anm
 
   (c) 2008 Tod D. Romo, Grossfield Lab
@@ -57,14 +58,13 @@
 
 #include <loos.hpp>
 
-#include <limits>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
-
-
 #include "hessian.hpp"
 #include "enm-lib.hpp"
 #include "anm-lib.hpp"
+
+#include <limits>
+#include <boost/format.hpp>
+#include <boost/program_options.hpp>
 
 
 using namespace std;
@@ -73,18 +73,32 @@ namespace po = boost::program_options;
 using namespace ENM;
 
 
+typedef Math::Matrix<double, Math::ColMajor> Matrix;
+
+
 
 // Globals...  Icky poo!
 
 string selection;
+string bsf, nbsf;
+
 string model_name;
 string prefix;
+double cutoff;
+
+// Turns on parameter-free mode a la Yang et al, PNAS (2009) 106:12347
+bool parameter_free;
+
+double power;
+bool hca_method;
 
 int verbosity;
 bool debug;
 
-string spring_desc;
-string bound_spring_desc;
+
+double hca_constants[5];
+bool user_defined_hca_constants(false);
+
 
 void fullHelp() {
 
@@ -104,18 +118,20 @@ void fullHelp() {
     "\n"
     "\n"
     "* Spring Constant Control *\n\n"
-    "The spring constant used is controlled by the --spring option.\n"
-    "If only the name for the spring function is given, then the default\n"
-    "parameters are used.  Alternatively, the name may include a\n"
-    "comma-separated list of parameters to be passed to the spring\n"
-    "function, i.e. --spring=distance,15.0\n\n"
-    "Available spring functions:\n";
-
-  vector<string> names = springNames();
-  for (vector<string>::iterator i = names.begin(); i != names.end(); ++i)
-    cout << "\t" << *i << endl;
-
-  cout <<
+    "Different methods for assigning the spring constants in the\n"
+    "Hessian can be used.  For example, \"--free 1\" selects the\n"
+    "\"parameter free\" method which can be combined with the \"--power\"\n"
+    "option, which controls the exponent used (the default is -2).\n"
+    "Note that setting the parameter-free method does not alter the\n"
+    "cutoff radius used in building the Hessian, so you may want to\n"
+    "set that to something very large (i.e. \"--cutoff 100\").\n"
+    "Alternatively, the \"HCA\" method can be used via the \"--hca 1\"\n"
+    "option.  The constants used in HCA can be set with the\n"
+    "\"--hparams r_c,k1,k2,k3,k4\" option where the spring constant, k,\n"
+    "is defined as,\n"
+    "\tk = k1 * s - k2        if (s <= r_c)\n"
+    "\tk = k3 * pow(s, -k4)   if (s > r_c)\n"
+    "and s is the distance between the nodes.\n"
     "\n\n"
     "Examples:\n\n"
     "Compute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
@@ -133,9 +149,15 @@ void parseOptions(int argc, char *argv[]) {
       ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
-      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
-      ("bound,b", po::value<string>(&bound_spring_desc)->default_value("distance"), "Bound spring")
-      ("fullhelp", "More detailed help");
+      ("free,f", po::value<bool>(&parameter_free)->default_value(false), "Use the parameter-free method rather than the cutoff")
+      ("hca,h", po::value<bool>(&hca_method)->default_value(false), "Use the HCA distance scaling method")
+      ("hparams,H", po::value<string>(), "Constants to use in HCA scaling (rcut, k1, k2, k3, k4)")
+      ("power,P", po::value<double>(&power)->default_value(-2.0), "Scale to use for parameter-free")
+      ("cutoff,c", po::value<double>(&cutoff)->default_value(15.0), "Cutoff distance for node contact")
+      ("fullhelp", "More detailed help")
+      ("bonded_function,b", po::value<string>(&bsf)->default_value("distance"), "Which spring funtion should be used for bonded nodes")
+      ("nonbonded_function,n", po::value<string>(&nbsf)->default_value("distance"), "Which spring funtion should be used for NONbonded nodes");
+
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -162,6 +184,22 @@ void parseOptions(int argc, char *argv[]) {
       exit(-1);
     }
 
+    // Force the hessian to include all nodes...
+    if (parameter_free)
+      cutoff = numeric_limits<double>::max();
+ 
+    if (vm.count("hparams")) {
+      string s = vm["hparams"].as<string>();
+      int i = sscanf(s.c_str(), "%lf,%lf,%lf,%lf,%lf", hca_constants, hca_constants+1, hca_constants+2,
+                     hca_constants+3, hca_constants+4);
+      if (i != 5) {
+        cerr << boost::format("Error - invalid conversion of HCA constants '%s'\n") % s;
+        exit(-1);
+      }
+      user_defined_hca_constants = true;
+    }
+
+
   }
   catch(exception& e) {
     cerr << "Error - " << e.what() << endl;
@@ -170,26 +208,9 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
-  uint n = model.size();
-  loos::Math::Matrix<int> M(n, n);
-  
-  for (uint j=0; j<n-1; ++j)
-    for (uint i=j; i<n; ++i)
-      if (i == j)
-        M(j, i) = 1;
-      else {
-        M(j, i) = model[j]->isBoundTo(model[i]);
-        M(i, j) = M(j, i);
-      }
-  
-  return(M);
-}
-
-
-
 int main(int argc, char *argv[]) {
 
+  
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
@@ -200,41 +221,43 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
-  vector<SpringFunction*> springs;
-  SpringFunction* spring = 0;
-  spring = springFactory(spring_desc);
-  springs.push_back(spring);
+  SpringFunction* bound_spring = 0;
+  SpringFunction* nonbound_spring = 0;
 
-  vector<SuperBlock*> blocks;
-  SuperBlock* blocker = new SuperBlock(spring, subset);
-  blocks.push_back(blocker);
+  if (!bsf.empty()) 
+    bound_spring = springFactory(bsf);
+  if (!nbsf.empty())
+    nonbound_spring  = springFactory(nbsf);
 
 
-  // Handle Decoration (if necessary)
-  if (!bound_spring_desc.empty()) {
-    if (! model.hasBonds()) {
-      cerr << "Error- cannot use bound springs unless the model has connectivity\n";
-      exit(-10);
+  //   Filling the connectivity map
+  //   Decides which spring function to use..
+  loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
+  if (subset.hasBonds()){
+    for (int j = 0; j < subset.size(); ++j){
+      if (subset[j]->hasBonds()){
+	for (int k = 0; k < subset.size(); ++k) {
+	  if (subset[j]->isBoundTo(subset[k]->id()))
+	    connectivity_map(j,k) = 1;
+	  else
+	    connectivity_map(j,k) = 0;
+	}
+      }
     }
-    loos::Math::Matrix<int> M = buildConnectivity(subset);
-    SpringFunction* bound_spring = springFactory(bound_spring_desc);
-    springs.push_back(bound_spring);
-
-    BoundSuperBlock* decorator = new BoundSuperBlock(blocker, bound_spring, M);
-    blocks.push_back(decorator);
-
-    blocker = decorator;
   }
+  cerr << "\n\ndefined connectivity map... \n";
+  //   Impleminting the decorator
+  SuperBlock* forAllTerms = new SuperBlock(nonbound_spring, subset);
+  BoundSuperBlock* forBondedTerms = new BoundSuperBlock(forAllTerms, bound_spring, connectivity_map);
 
 
-  ANM anm(blocker);
-  anm.debugging(debug);
+  ANM anm(forBondedTerms);
   anm.prefix(prefix);
   anm.meta(header);
-  anm.verbosity(verbosity);
-
   anm.solve();
-
+  
+  if (verbosity > 1)
+    writeAsciiMatrix(prefix + "_connectivity_map.asc", connectivity_map, header, false);
 
   // Write out the LSVs (or eigenvectors)
   writeAsciiMatrix(prefix + "_U.asc", anm.eigenvectors(), header, false);
@@ -242,9 +265,6 @@ int main(int argc, char *argv[]) {
 
   writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
 
-  for (vector<SuperBlock*>::iterator i = blocks.begin(); i != blocks.end(); ++i)
-    delete *i;
-  for (vector<SpringFunction*>::iterator i = springs.begin(); i != springs.end(); ++i)
-    delete *i;
-  
+  delete forBondedTerms;
+  delete forAllTerms;
 }

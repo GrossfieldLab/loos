@@ -27,7 +27,7 @@ Import('env')
 clone = env.Clone()
 clone.Prepend(LIBS = ['loos'])
 
-apps = 'gnm enmovie flucc2b psf-masses heavy-ca eigenflucc'
+apps = 'gnm enmovie flucc2b psf-masses heavy-ca eigenflucc two-body-traj'
 install_apps = apps + ' vsa anm'
 
 list = []
@@ -42,11 +42,20 @@ PREFIX = env['PREFIX']
 
 # Special apps...
 
-vsa = clone.Program("vsa", ["vsa.cpp", "hessian.cpp"])
+vsa = clone.Program("vsa", ["vsa.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
 list.append(vsa)
 
-anm = clone.Program("anm", ["anm.cpp", "hessian.cpp"])
+anm = clone.Program("anm", ["anm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
 list.append(anm)
+
+vsa_fit = clone.Program("vsa_fit", ["vsa_fit.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+list.append(vsa_fit)
+
+nickanm = clone.Program("nickanm", ["nickanm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
+list.append(nickanm)
+
+vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+list.append(vsa_fit_bonds)
 
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))

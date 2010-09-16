@@ -113,7 +113,7 @@ void parseArgs(int argc, char *argv[]) {
       ("modes,m", po::value<uint>(&number_of_modes)->default_value(0), "Number of modes to compare...  0 = all")
       ("left_scale,k", po::value<double>(&lscale)->default_value(1.0), "Scale left eigenvalues by this constant")
       ("right_scale,K", po::value<double>(&rscale)->default_value(1.0), "Scale right eigenvalues by this constant")
-      ("subspace,u", po::value<uint>(&subspace_size)->default_value(0), "# of modes to use for the subspace overlap (0 = same as covariance)");
+      ("subspace,u", po::value<uint>(&subspace_size)->default_value(25), "# of modes to use for the subspace overlap (0 = same as covariance)");
 
 
     po::options_description hidden("Hidden options");
@@ -234,13 +234,10 @@ int main(int argc, char *argv[]) {
   }
 
 
-  if (subspace_size == 0)
-    subspace_size = number_of_modes;
-  else
-    if (subspace_size > number_of_modes) {
-      cerr << "ERROR- subspace size cannot exceed number of modes for covariance overlap\n";
-      exit(-1);
-    }
+  if (subspace_size > number_of_modes) {
+    cerr << "ERROR- subspace size cannot exceed number of modes for covariance overlap\n";
+    exit(-1);
+  }
 
   RealMatrix lSS;
   RealMatrix lUU;

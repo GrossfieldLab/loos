@@ -75,3 +75,7 @@
 # svnversion to figure out what the SVN revision number is for the
 # source tree...
 # REVISION=''
+
+### Uncomment the following to alter the PATH SCons uses to find
+### programs (e.g. if you have TeX in a nonstandard location)
+# ALTPATH='/usr/local/texlive/2007/bin/i386-darwin'

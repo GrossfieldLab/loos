@@ -213,12 +213,12 @@ int main(int argc, char *argv[]) {
 
   // Get the selections (subsets) to operate over
   AtomicGroup align_sub = selectAtoms(model, alignment_string);
-  AtomicGroup applyto_sub = selectAtoms(model, transform_string);
 
-  align_sub.clearBonds();
+  AtomicGroup applyto_sub = selectAtoms(model, transform_string);
+  applyto_sub.pruneBonds();
+
   cout << "Subset to align with has " << align_sub.size() << " atoms.\n";
 
-  applyto_sub.clearBonds();
   cout << "Subset to apply alignment transformation to has " << applyto_sub.size() << " atoms.\n";
 
   // Now do the alignin'...
@@ -249,7 +249,7 @@ int main(int argc, char *argv[]) {
   frames.clear();
 
   cout << "Aligning transformation subset...\n";
-  AtomicGroup avg;
+  AtomicGroup avg = applyto_sub.copy();
   zeroCoords(avg);
 
   // Setup for writing DCD...

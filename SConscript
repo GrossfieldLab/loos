@@ -65,6 +65,7 @@ hdr = hdr + ' TimeSeries.hpp tinker_arc.hpp tinkerxyz.hpp Trajectory.hpp'
 hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp ProgressTriggers.hpp'
 hdr = hdr + ' grammar.hh location.hh position.hh stack.hh'
 hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
+hdr = hdr + ' Simplex.hpp'
 
 loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
 
