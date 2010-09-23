@@ -191,6 +191,7 @@ void centerFrame(AtomicGroup& src, AtomicGroup& trg) {
 
 void savePDB(const string& fname, const string& meta, const AtomicGroup& grp) {
   PDB pdb = PDB::fromAtomicGroup(grp);
+  pdb.renumber();
   pdb.remarks().add(meta);
   ofstream ofs(fname.c_str());
   ofs << pdb;
