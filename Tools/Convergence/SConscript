@@ -1,37 +1,57 @@
 #!/usr/bin/env python
-# SConscript
-# (c) 2008 Tod D. Romo
+# SConscript for Convergence Tools
 #
-# Grossfield Lab
-# Department of Biochemistry & Biophysics
-# University of Rochester Medical School
+#  LOOS (Lightweight Object-Oriented Structure library)
+#  Copyright (c) 2010 Tod D. Romo
+#  Department of Biochemistry and Biophysics
+#  School of Medicine & Dentistry, University of Rochester
 #
+#  This package (LOOS) is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation under version 3 of the License.
 #
+#  This package is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 import sys
 
 Import('env')
 
+clone = env.Clone()
+clone.Prepend(LIBS = ['loos'])
+
+PREFIX = env['PREFIX']
+
 # Stand-alone apps...
 
-bcomlib = env.Object('bcomlib.cpp')
+bcomlib = clone.Object('bcomlib.cpp')
 
-bcom = env.Program('bcom', ['bcom.cpp', bcomlib])
-boot_bcom = env.Program('boot_bcom', ['boot_bcom.cpp', bcomlib])
+bcom = clone.Program('bcom', ['bcom.cpp', bcomlib])
+boot_bcom = clone.Program('boot_bcom', ['boot_bcom.cpp', bcomlib])
 
-fidlib = env.Object('fid-lib.cpp')
+fidlib = clone.Object('fid-lib.cpp')
 
-fidpick = env.Program('fidpick.cpp')
-ufidpick = env.Program('ufidpick', ['ufidpick.cpp', fidlib])
-shist = env.Program('shist.cpp')
-sortfids = env.Program('sortfids.cpp')
+fidpick = clone.Program('fidpick.cpp')
+ufidpick = clone.Program('ufidpick', ['ufidpick.cpp', fidlib])
+shist = clone.Program('shist.cpp')
+sortfids = clone.Program('sortfids.cpp')
 
-decorr_time = env.Program('decorr_time', ['decorr_time.cpp', fidlib])
+decorr_time = clone.Program('decorr_time', ['decorr_time.cpp', fidlib])
 
-hierarchy = env.Program('hierarchy.cpp')
-neff = env.Program('neff.cpp')
+hierarchy = clone.Program('hierarchy.cpp')
+neff = clone.Program('neff.cpp')
 
 list = [ bcom, boot_bcom, fidpick, shist, sortfids, ufidpick, decorr_time, hierarchy, neff ]
+
+
+conv_tools = env.Install(PREFIX + '/bin', Split(install_apps))
+env.Alias('conv_tools_install', conv_tools)
 
 
 Return('list')
