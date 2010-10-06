@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+# SConscript
+# (c) 2008 Tod D. Romo
+#
+# Grossfield Lab
+# Department of Biochemistry & Biophysics
+# University of Rochester Medical School
+#
+#
+
+import sys
+
+Import('env')
+
+# Stand-alone apps...
+
+bcomlib = env.Object('bcomlib.cpp')
+
+bcom = env.Program('bcom', ['bcom.cpp', bcomlib])
+boot_bcom = env.Program('boot_bcom', ['boot_bcom.cpp', bcomlib])
+
+fidlib = env.Object('fid-lib.cpp')
+
+fidpick = env.Program('fidpick.cpp')
+ufidpick = env.Program('ufidpick', ['ufidpick.cpp', fidlib])
+shist = env.Program('shist.cpp')
+sortfids = env.Program('sortfids.cpp')
+
+decorr_time = env.Program('decorr_time', ['decorr_time.cpp', fidlib])
+
+hierarchy = env.Program('hierarchy.cpp')
+neff = env.Program('neff.cpp')
+
+list = [ bcom, boot_bcom, fidpick, shist, sortfids, ufidpick, decorr_time, hierarchy, neff ]
+
+
+Return('list')
