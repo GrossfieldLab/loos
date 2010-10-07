@@ -114,6 +114,8 @@ void parseOptions(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
+  cerr << "WARNING- this tool is deprecated...it's functionality is now in aligner\n";
+
   parseOptions(argc, argv);
   AtomicGroup reference = createSystem(ref_name);
   AtomicGroup ref_subset = selectAtoms(reference, ref_sel);
