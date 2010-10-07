@@ -404,7 +404,9 @@ public:
     //! Divides the timeseries into num_blocks equally sized blocks
     //! (discarding the remaining blocks at the end), computes the average
     //! for each block, and returns the variance of the averages.
-    //! This is useful for doing Flyvjberg and Jensen-style block averaging.
+    //! This is useful for doing Flyvjberg and Petersen-style block averaging.
+    //! Flyvbjerg, H. & Petersen, H. G. J. Chem. Phys., 1989, 91, 461-466
+    // 
     T block_var(const int num_blocks) const {
       int points_per_block = this->size() / num_blocks;
       T block_ave = 0.0;
