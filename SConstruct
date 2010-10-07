@@ -233,6 +233,7 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
 h_tools = SConscript('Tools/HydrogenBonds/SConscript')
+conv_tools = SConscript('Tools/Convergence/SConscript')
 
 
 ### Special handling for pre-packaged documentation...
@@ -249,10 +250,10 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools + nm_tools + h_tools)
+env.Alias('tools', tools + nm_tools + h_tools + conv_tools)
 
-env.Alias('all', loos + tools + nm_tools + h_tools)
-env.Alias('caboodle', loos + tools + nm_tools + h_tools + tests + docs)
+env.Alias('all', loos + tools + nm_tools + h_tools + conv_tools)
+env.Alias('caboodle', loos + tools + nm_tools + h_tools + conv_tools + tests + docs)
 
 
 env.Alias('install', PREFIX)

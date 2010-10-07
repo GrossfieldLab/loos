@@ -39,7 +39,6 @@ fidlib = clone.Object('fid-lib.cpp')
 
 fidpick = clone.Program('fidpick.cpp')
 ufidpick = clone.Program('ufidpick', ['ufidpick.cpp', fidlib])
-shist = clone.Program('shist.cpp')
 sortfids = clone.Program('sortfids.cpp')
 
 decorr_time = clone.Program('decorr_time', ['decorr_time.cpp', fidlib])
@@ -47,7 +46,8 @@ decorr_time = clone.Program('decorr_time', ['decorr_time.cpp', fidlib])
 hierarchy = clone.Program('hierarchy.cpp')
 neff = clone.Program('neff.cpp')
 
-list = [ bcom, boot_bcom, fidpick, shist, sortfids, ufidpick, decorr_time, hierarchy, neff ]
+list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff ]
+install_apps = list
 
 
 conv_tools = env.Install(PREFIX + '/bin', Split(install_apps))
