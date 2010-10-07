@@ -1,3 +1,10 @@
+2010-10-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Added convergence tools
+	* Deprecated features from aligner removed
+	* Added ability to use aligner to align trajectory to a reference
+	structure.
+
 2010-09-10  Tod Romo  <tromo@gorgoneion>
 
 	* Fixed bug affecting calling Trajectory::rewind() on Tinker ARC files
