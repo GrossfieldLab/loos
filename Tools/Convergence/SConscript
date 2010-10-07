@@ -28,6 +28,10 @@ clone.Prepend(LIBS = ['loos'])
 
 PREFIX = env['PREFIX']
 
+# Scripts
+
+scripts = 'bootstrap_overlap.pl decorr_plot.sh effsize.pl'
+
 # Stand-alone apps...
 
 bcomlib = clone.Object('bcomlib.cpp')
@@ -47,7 +51,8 @@ hierarchy = clone.Program('hierarchy.cpp')
 neff = clone.Program('neff.cpp')
 
 list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff ]
-install_apps = list
+
+install_apps = list + Split(scripts)
 
 
 conv_tools = env.Install(PREFIX + '/bin', Split(install_apps))
