@@ -7,27 +7,14 @@
 \image html gplv3.png
 
 <hr>
-\section copyright Copyright and License
-
-<I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2010, Tod D. Romo, Alan Grossfield\n
-Department of Biochemistry and Biophysics\n
-School of Medicine & Dentistry, University of Rochester\n
-
-This package (LOOS) is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation under version 3 of the License.
-
-This package is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+Quick links:
+      - \subpage intro
+      - \subpage feats
+      - \subpage building
+      - \subpage tools
+      - \subpage Changes
 
 <hr>
-
 \section Citing
 If you use LOOS in your work, please reference the following
 publication:
@@ -48,7 +35,7 @@ Conference of the IEEE EMBS (2009): 2332-2335
 \endverbatim
 <hr>
 
-\section Introduction
+\section intro Introduction
 
 Welcome to the LOOS library,  a product of the Grossfield Lab at the University
 of Rochester Medical School and the Department of Biochemistry and Biophysics.
@@ -71,11 +58,7 @@ latest version of LOOS can be found at <A
 HREF="http://loos.sourceforge.net">
 http://loos.sourceforge.net</A>.
 
-<B> Important information regarding the latest
-changes are available here:</B>
-	\subpage Changes "Change Log"
-
-\section Features
+\section feats Features
 One of the features of LOOS is the multiple ways it supports atom
 selection.  AtomicGroup objects can create subsets of themselves by
 using an AtomSelector (a predicate).  There are several useful ones
@@ -101,7 +84,7 @@ More information is available here:
 \section Applications
 
 Although LOOS is primarily intended as a platform for developing analysis
-tools,it is distributed with a number of prebuilt applications, located in
+tools, it is distributed with a number of prebuilt applications, located in
 the Tools/ directory.  These tools were developed for use in our research,
 but they should be of general utility.  Moreover, they provide examples of
 the intended use of the LOOS library, and will probably make helpful
@@ -115,124 +98,34 @@ For more information, see the
 There are none...only features.  So don't worry about them!
 Email us directly (LOOS-maintainer [AT] urmc.rochester.edu) if you find a bug^H^H^H unintended feature.
 
-\section build Building and Installing
-LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> to build.  It also
-requires the vecLib framework and Developer's Tools for OS X or <A
-href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> for Linux.  It also
-requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for both
-(including the regular expression library).  If you plan to modify the parser (you probably don't), you'll need the
-GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
-<A href="http://www.gnu.org/software/bison/">bison</A>.  Similarly, if you want to rebuild the documentation, you'll need to install Doxygen.
-
-If your libraries are installed in non-standard locations, you may need to 
-tell LOOS where its required components are.  To do this, do the following:
-\verbatim
-cp custom.py-proto custom.py
-\endverbatim
-Then edit your \c custom.py file to tell SCons and LOOS where your
-libraries are.
-
-\subsection build_fedora Building with Fedora
-We recommend you use the the \c yum tool that comes with Fedora to
-install the required packages.  You will need, at a minimum, to
-install atlas, boost, and SCons.  Fedora splits many packages into the
-libraries necessary to run and the libraries and headers necessary for
-development.  You will need to be sure to install the development
-versions as well, i.e.
-\verbatim
-yum install boost.x86_64
-yum install boost-devel.x86_64
-\endverbatim
-
-\subsection build_ubunto Building with Ubuntu
-You will need to install atlas, boost, and SCons.  LOOS has been
-tested with \c atlas3-sse2-devel and \c boost-devel installed under the
-latest Ubuntu.  You should not need to use a custom.py.
-
-\subsection build_other Building with MacOS X
-
-You will need to download and install boost and SCons.  You may also
-want to install Doxygen if you want a local copy of the
-documentation.  You will also need to create a \c custom.py file to
-tell LOOS where to find the libraries and headers that it needs.  Copy
-the \c custom.py-proto to \c custom.py and edit it.  In particular, look
-at the \c BOOSTREGEX and \c BOOSTPO variables for the boost regular
-expression library and program options libraries.  You will most
-likely need to change these names...
-
-
-\subsection compiling Compiling
-
-You can temporarily override the defaults (and what's
-set in your \c custom.py file by specifying the appropriate variables
-on the command-line (run \c scons \c -h for more information)
-
-To build just the library, cd to the top-level directory and run
-SCons:
-\verbatim
-cd /path/to/LOOS
-scons lib
-\endverbatim
-
-To build the library and tools as well, use:
-
-\verbatim
-scons
-\endverbatim
-
-For more detailed information about the build process, see
-\subpage building "Building LOOS"
-For information about installation on specific systems, see the
-"INSTALL" file that came with LOOS.
-
-To install LOOS, use the "install" target:
-
-\verbatim
-scons install
-\endverbatim
-
-This will cause SCons to copy the headers, tools, and library into
- /opt/loos.  You can change where LOOS is installed by changing the
- PREFIX variable in either your custom.py file or on the command
- line.  LOOS will create a /bin, /include, /lib, and /docs directory
- and copy the appropriate files.  The recommended installation
- methodology is to install LOOS into a version-specific directory, and
- then set up a symlink from \c loos-latest to the most recent
- installed version:
-\verbatim
-scons PREFIX=/opt/loos-1.5.5 install
-ln -s /opt/loos-1.5.5 /opt/loos-latest
-\endverbatim
-
-
-\subsection BYO Building Your Own Tools
-
-To use LOOS, you will want to include the top-level LOOS directory in
-both your include path and your library paths, so something like the
-following for linux
-\verbatim
-g++ -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex -llapack -latlas
-\endverbatim
-or the following for OS X
-\verbatim
-g++ -framework vecLib -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex
-\endverbatim
-
-Keep in mind that the above lines may be greatly oversimplified...
-You will almost certainly need to change the names of the libraries to
-reflect the versions you have installed, as well as the directories
-for the header files.  This can get quite messy.  As such, we strongly
-recommend you use either the \c SConstruct/SConscript or the \c
-Makefile in the <I>Examples</I> directory as a template for building
-your own tools.
-
 \section future Future Plans
 
 <ul>
-    <li> Support for other simulation packages (Gromacs, etc)
-
     <li> Python bindings for easier scripting support
 </ul>
+
+<hr>
+
+\section copyright Copyright and License
+
+<I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
+Copyright &copy; 2008-2010, Tod D. Romo, Alan Grossfield\n
+Department of Biochemistry and Biophysics\n
+School of Medicine & Dentistry, University of Rochester\n
+
+This package (LOOS) is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation under version 3 of the License.
+
+This package is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 
 */
 
@@ -471,8 +364,224 @@ segid == "BULK")    # or named BULK
 
 
 /*! \page building Building LOOS
+\section basicbuild Building Basics
+LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> to build.  It also
+requires the vecLib framework and Developer's Tools for OS X or <A
+href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> for Linux.  It also
+requires the <A href="http://boost.org" target="_blank">Boost</A> libraries for both
+(including the regular expression library).  If you plan to modify the parser (you probably don't), you'll need the
+GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
+<A href="http://www.gnu.org/software/bison/">bison</A>.  Similarly, if
+you want to rebuild the documentation, you'll need to install
+Doxygen.  For information regarding building LOOS on a specific OS,
+see \ref platform.
 
-\section Build Configuration
+If your libraries are installed in non-standard locations, you may need to 
+tell LOOS where its required components are.  To do this, do the following:
+\verbatim
+cp custom.py-proto custom.py
+\endverbatim
+Then edit your \c custom.py file to tell SCons and LOOS where your
+libraries are.
+
+\subsection compiling Compiling
+
+You can temporarily override the defaults (and what's
+set in your \c custom.py file by specifying the appropriate variables
+on the command-line (run \c scons \c -h for more information)
+
+To build just the library, cd to the top-level directory and run
+SCons:
+\verbatim
+cd /path/to/LOOS
+scons lib
+\endverbatim
+
+To build the library and tools as well, use:
+
+\verbatim
+scons
+\endverbatim
+
+
+To install LOOS, use the "install" target:
+
+\verbatim
+scons install
+\endverbatim
+
+This will cause SCons to copy the headers, tools, and library into
+ /opt/loos.  You can change where LOOS is installed by changing the
+ PREFIX variable in either your custom.py file or on the command
+ line.  LOOS will create a /bin, /include, /lib, and /docs directory
+ and copy the appropriate files.  The recommended installation
+ methodology is to install LOOS into a version-specific directory, and
+ then set up a symlink from \c loos-latest to the most recent
+ installed version:
+\verbatim
+scons PREFIX=/opt/loos-1.5.5 install
+ln -s /opt/loos-1.5.5 /opt/loos-latest
+\endverbatim
+
+
+\subsection general General Notes
+
+
+There is some variability in the naming used for the Boost libraries.
+If your build fails even though you just installed the latest Boost,
+check the names of the regex and program_options libraries and set
+these in your "custom.py" file.
+
+If you're using a compiler in a non-standard location (e.g. you have
+your own build of the latest and greatest gcc), SCons may not be using
+it even though your $PATH is set correctly.  You can force which
+compiler is used to build LOOS by setting the CXX variable in your
+"custom.py" file.  You may also need to specify the "LIBXTRA" path...
+
+SCons supports building LOOS in parallel.  If you have 4 cores, for
+example, use "scons -j4" to use all 4 cores.
+
+Prebuilt documentation for LOOS is provided as part of the
+distribution.  This is simply copied into the install directory as
+part of installation.  Should you want to build a new version of the
+documentation, Doxygen is required.  Moreover, due to an issue we ran
+into with SCons, documentation building and installation are
+decoupled.  What this means is that you must explicitly build the docs
+(i.e. "scons docs") and -then- install, "scons install".  Running
+"scons install" will -not- rebuild the documentation, even if it out
+of date (or nonexistent).
+
+
+\subsection BYO Building Your Own Tools
+
+To use LOOS, you will want to include the top-level LOOS directory in
+both your include path and your library paths, so something like the
+following for linux
+\verbatim
+g++ -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex -llapack -latlas
+\endverbatim
+or the following for OS X
+\verbatim
+g++ -framework vecLib -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex
+\endverbatim
+
+Keep in mind that the above lines may be greatly oversimplified...
+You will almost certainly need to change the names of the libraries to
+reflect the versions you have installed, as well as the directories
+for the header files.  This can get quite messy.  As such, we strongly
+recommend you use either the \c SConstruct/SConscript or the \c
+Makefile in the <I>Examples</I> directory as a template for building
+your own tools.
+
+
+<hr>
+
+\section platform Platform Specific Notes
+
+\subsection fedora Fedora
+
+We recommend you use the the \c yum tool that comes with Fedora to
+install the required packages.  You will need, at a minimum, to
+install atlas, boost, and SCons.  Fedora splits many packages into the
+libraries necessary to run and the libraries and headers necessary for
+development.  You will need to be sure to install the development
+versions as well.  These can be easily installed using "yum":
+
+\verbatim
+   yum install scons.noarch atlas.x86_64 atlas-devel.x86_64 lapack.x86_64 lapack-devel.x86_64
+   yum install boost.x86_64 boost-devel.x86_64
+\endverbatim
+
+
+
+\subsection ubuntu Ubuntu
+
+You will need to install SCons, lapack, atlas, and boost.  Using
+aptitude (or your favorite tool), install the "libboost-dev" package
+(or a specific version (i.e. libboost1.38-dev)), "libatlas-base-dev",
+"libatlas-headers", "liblapack-dev", and "scons".  On some systems,
+the names of the boost libraries vary.  In these cases, you will need
+to use a custom configuration.  Copy "custom.py-proto" to "custom.py"
+and edit it, uncommenting the lines marked for Ubuntu.
+Alternatively, verify the names of the boost regex and program_options
+libraries and set these appropriately in your "custom.py" file.
+
+<em>The following additional installation tips come courtesy of Dow Hurst:</em>
+
+To get the most currently available version of scons for Ubuntu Hardy 8.04 you have to add a
+PPA repository.  Do this by getting the server key first, and then add the repository to the
+/etc/apt/sources.list file.  The command and repository listing is below
+
+\verbatim
+sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com B5140445
+
+deb http://ppa.launchpad.net/medigeek/experimental/ubuntu hardy main 
+deb-src http://ppa.launchpad.net/medigeek/experimental/ubuntu hardy main
+
+apt-get update
+
+apt-get install scons libboost-dev libboost-date-time-dev libboost-doc libboost-filesystem-dev libboost-graph-dev \
+                libboost-iostreams-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev  \
+                libatlas-base-dev libatlas-headers liblapack-dev
+\endverbatim
+
+Copy custom.py-proto to custom.py
+
+Modify custom.py for the BOOSTREGEX and BOOSTPO variables so the lines look like this:
+
+\verbatim
+### This is the name of the boost-regex library
+## Uncomment the following for Ubuntu
+BOOSTREGEX='boost_regex-mt'
+
+
+### This is the name of the boost-program-options Library
+## Uncomment the following for Ubuntu
+BOOSTPO='boost_program_options-mt'
+\endverbatim
+
+Then issue the following command using sudo:
+
+\verbatim
+sudo scons release=1 PREFIX=/opt/LOOS-1.5.4 install
+\endverbatim
+
+If you have root access then you can forget the sudo and issue the command without it.
+
+
+\subsection openSUSE
+
+There is no pre-built ATLAS package (that we could find) for
+openSUSE.  LOOS will use the blas packages instead.  You will need to
+install lapack, blas, boost, and SCons.  Using zypper (or your
+favorite package manager), install the following:
+
+\verbatim
+zypper install scons boost-devel lapack blas
+\endverbatim
+
+
+\subsection osx MacOS X
+
+First, make sure you have the Developer's Tools (i.e. XCode)
+installed.  You can find it on your MacOS X install disk or,
+alternatively, you can sign up for a free account with the Apple
+Developer's Connection and download the latest version.  Next, you
+will need to install SCons (http://scons.org) and Boost
+(http://boost.org) by visiting their websites, downloading the
+software, and following their installation instructions.  You may also
+want to install Doxygen if you want a local copy of the documentation.
+You will also need to create a \c custom.py file to tell LOOS where to
+find the libraries and headers that it needs.  Copy the \c
+custom.py-proto to \c custom.py and edit it.  In particular, look at
+the \c BOOSTREGEX and \c BOOSTPO variables for the boost regular
+expression library and program options libraries.  You will most
+likely need to change these names...
+
+<hr>
+
+
+\section Build Targets
 
 There are several build targets available:
 
