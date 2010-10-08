@@ -554,6 +554,15 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 <HR>
 
 <DL>
+  <DT> <B><I> Convergence Analysis Tools</I></B>
+  <DD> A collection of tools for assessing statistical error and convergence
+       in trajectories:
+    <DL>
+      <DT> <B>block_average</B>
+      <DD> Reads a simple columnated text file, and computes the block-averaged
+           standard error.  Reference: Flyvbjerg, H. & Petersen, H. G. 
+           J. Chem. Phys., 1989, 91, 461-466
+    </DL>
 
   <DT> <B><I>ENM Elastic Network Models</I></B>
   <DD> A collection of tools for working with ENMs:
