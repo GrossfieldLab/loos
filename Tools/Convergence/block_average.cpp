@@ -1,6 +1,18 @@
 /* 
   Compute block-averaged standard error for a time series
-  using the Flyvbjerg & Petersen approach
+  using the Flyvbjerg & Petersen approach.  Outputs the block averaged
+  standard error as a function of block size -- you'll need to plot it
+  and estimate the plateau value.
+ 
+  References: 
+  
+  Flyvbjerg, H. & Petersen, H. G. Error estimates on averages 
+  of correlated data J. Chem. Phys., 1989, 91, 461-466
+
+  Grossfield, A., and Zuckerman, D. M. Quantifying uncertainty and sampling 
+  quality in biomolecular simulations, Ann. Reports in Comp. Chem., 2009, 
+  5, 23-48
+
  
   Alan Grossfield
   Grossfield Lab
@@ -26,9 +38,6 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
- 
-  Reference: Flyvbjerg, H. & Petersen, H. G. Error estimates on averages 
-  of correlated data J. Chem. Phys., 1989, 91, 461-466
 */
 
 #include <loos.hpp>
@@ -118,8 +127,8 @@ for (int i=max_blocks; i>=2; i--)
     float time = (float)num_points / i;
     float variance = data.block_var(i);
     float std_err = sqrt(variance/i);
-    cout << i << "\t"
-         << time << "\t"
+    cout << i << "\t\t"
+         << time << "\t\t"
          << std_err
          << endl;
     }

@@ -331,7 +331,7 @@ public:
     //! Remove num_points from the front of the time series, as you
     //! would to eliminate the equilibration time
     void set_skip(unsigned int num_points) {
-        if ( (num_points > 0) && (num_points < _data.size()) ) {
+        if (num_points < _data.size()) {
             _data.erase(_data.begin(), _data.begin()+num_points);
         } 
         else {
@@ -420,7 +420,7 @@ public:
     //! Flyvbjerg, H. & Petersen, H. G. J. Chem. Phys., 1989, 91, 461-466
     // 
     T block_var(const int num_blocks) const {
-      int points_per_block = this->size() / num_blocks;
+      int points_per_block = size() / num_blocks;
       T block_ave = 0.0;
       T block_ave2 = 0.0;
       for (int i=0; i<num_blocks; i++) {
@@ -435,7 +435,12 @@ public:
       }
       block_ave /= num_blocks;
       block_ave2 /= num_blocks;
-      return (block_ave2 - block_ave*block_ave);
+
+      // The variance must be computed with N-1, not N, because
+      // we determine the mean from the data (as opposed to independently
+      // specifying it)
+      T ratio = num_blocks/(num_blocks-1.0);
+      return (block_ave2 - block_ave*block_ave)*ratio;
     }
 
     TimeSeries<T> correl(const int max_time, 
