@@ -50,7 +50,9 @@ decorr_time = clone.Program('decorr_time', ['decorr_time.cpp', fidlib])
 hierarchy = clone.Program('hierarchy.cpp')
 neff = clone.Program('neff.cpp')
 
-list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff ]
+block_average = clone.Program('block_average.cpp')
+
+list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average ]
 
 install_apps = list + Split(scripts)
 

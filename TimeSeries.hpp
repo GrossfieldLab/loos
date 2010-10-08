@@ -135,6 +135,7 @@ public:
       return (_data.size());
     }
 
+
     TimeSeries<T> operator+=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] += val;
@@ -325,6 +326,17 @@ public:
         result[i] = _data[i];
       }
       return(result);
+    }
+
+    //! Remove num_points from the front of the time series, as you
+    //! would to eliminate the equilibration time
+    void set_skip(unsigned int num_points) {
+        if ( (num_points > 0) && (num_points < _data.size()) ) {
+            _data.erase(_data.begin(), _data.begin()+num_points);
+        } 
+        else {
+            throw(std::out_of_range("num_points has invalid value in set_skip"));
+        }
     }
 
     //! Return average of time series
