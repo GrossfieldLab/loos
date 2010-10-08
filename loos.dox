@@ -2,7 +2,10 @@
 
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
-\image html grossfield_logo.jpg
+Copyright &copy; 2008-2010, Tod D. Romo, Alan Grossfield\n
+Department of Biochemistry and Biophysics\n
+School of Medicine & Dentistry, University of Rochester\n
+
 
 \image html gplv3.png
 
@@ -13,6 +16,7 @@ Quick links:
       - \subpage building
       - \subpage tools
       - \subpage Changes
+      - \subpage license
 
 <hr>
 \section Citing
@@ -106,7 +110,9 @@ Email us directly (LOOS-maintainer [AT] urmc.rochester.edu) if you find a bug^H^
 
 <hr>
 
-\section copyright Copyright and License
+\section license License
+
+\image html grossfield_logo.jpg
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
 Copyright &copy; 2008-2010, Tod D. Romo, Alan Grossfield\n
