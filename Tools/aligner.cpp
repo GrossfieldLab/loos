@@ -148,21 +148,13 @@ int main(int argc, char *argv[]) {
 
   // Read the inputs...
   AtomicGroup model = createSystem(model_name);
-  cout << "Read in " << model.size() << " atoms from " << model_name << endl;
-
   pTraj traj = createTrajectory(traj_name, model);
-
-  cout << "Reading from trajectory " << traj_name << " with " << traj->nframes() << " frames.\n";
 
   // Get the selections (subsets) to operate over
   AtomicGroup align_sub = selectAtoms(model, alignment_string);
 
   AtomicGroup applyto_sub = selectAtoms(model, transform_string);
   applyto_sub.pruneBonds();
-
-  cout << "Subset to align with has " << align_sub.size() << " atoms.\n";
-
-  cout << "Subset to apply alignment transformation to has " << applyto_sub.size() << " atoms.\n";
 
   // Now do the alignin'...
   unsigned int nframes = traj->nframes();
@@ -181,15 +173,13 @@ int main(int argc, char *argv[]) {
     
     boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, alignment_tol, maxiter);
     greal final_rmsd = boost::get<1>(res);
-    cout << "Final RMSD between average structures is " << final_rmsd << endl;
-    cout << "Total iters = " << boost::get<2>(res) << endl;
+    cerr << "Final RMSD between average structures is " << final_rmsd << endl;
+    cerr << "Total iters = " << boost::get<2>(res) << endl;
     
     vector<XForm> xforms = boost::get<0>(res);
     
     // Zzzzap our stored groups...
     frames.clear();
-    
-    cout << "Aligning transformation subset...\n";
     
     // Setup for writing DCD...
     DCDWriter dcdout(prefix + ".dcd");
