@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(argv[k++], model);
   string sel = string(argv[k++]);
   uint step = atoi(argv[k++]);
-  locally_optimal =  (argv[k++][0] == '1');
+  locally_optimal =  (argc == 6);
   
   AtomicGroup subset = selectAtoms(model, sel);
   cout << boost::format("# Subset has %d atoms\n") % subset.size();
