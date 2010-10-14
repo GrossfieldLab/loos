@@ -52,7 +52,9 @@ neff = clone.Program('neff.cpp')
 
 block_average = clone.Program('block_average.cpp')
 
-list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average ]
+avgconv = clone.Program('avgconv.cpp')
+
+list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average, avgconv ]
 
 install_apps = list + Split(scripts)
 
