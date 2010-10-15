@@ -45,8 +45,8 @@ extern "C" {
 #endif
 
 
-typedef float svdreal;
-#define SVDFUNC  sgesvd_
+typedef double svdreal;
+#define SVDFUNC  dgesvd_
 
 
 typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
