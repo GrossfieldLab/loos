@@ -134,7 +134,7 @@ vector<string> parseArgs(int argc, char *argv[]) {
     po::notify(vm);
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cout << "Usage- " << argv[0] << " [options] model traj output-prefix\n";
+      cout << "Usage- " << argv[0] << " [options] model traj\n";
       cout << generic;
       exit(0);
     }
