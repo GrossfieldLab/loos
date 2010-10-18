@@ -54,7 +54,9 @@ block_average = clone.Program('block_average.cpp')
 
 avgconv = clone.Program('avgconv.cpp')
 
-list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average, avgconv ]
+boot_avgconv = clone.Program('boot_avgconv.cpp')
+
+list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average, avgconv, boot_avgconv ]
 
 install_apps = list + Split(scripts)
 
