@@ -44,14 +44,14 @@ typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 
 
 struct Datum {
-  Datum(const double avg, const double var, const double power) : avg_coverlap(avg),
-                                                                  var_coverlap(var),
-                                                                  avg_power(power) { }
+  Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
+                                                                var_coverlap(var),
+                                                                nblocks(nblks) { }
 
 
   double avg_coverlap;
   double var_coverlap;
-  double avg_power;
+  uint nblocks;
 };
 
 
@@ -92,23 +92,12 @@ vGroup subgroup(const vGroup& A, const vector<uint>& picks) {
 
 
 
-double sum(const RealMatrix& v) {
-  double s = 0.0;
-  for (uint j=0; j<v.rows(); ++j)
-    s += v[j];
-
-  return(s);
-}
-
-
 template<class ExtractPolicy>
 Datum blocker(const RealMatrix& Ua, const RealMatrix sa, const vGroup& ensemble, const uint blocksize, uint repeats, ExtractPolicy& policy) {
 
 
   
-  double sa_sum = sum(sa);
-  vector<double> coverlaps;
-  vector<double> powers;
+  TimeSeries<double> coverlaps;
 
   for (uint i=0; i<repeats; ++i) {
     vector<uint> picks = pickFrames(ensemble.size(), blocksize);
@@ -127,13 +116,10 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, const vGroup& ensemble,
       for (uint j=0; j<s.rows(); ++j)
         s[j] /= blocksize;
 
-    powers.push_back(sa_sum / sum(s));
     coverlaps.push_back(covarianceOverlap(sa, Ua, s, U));
   }
 
-  TimeSeries<double> coverlaps_t(coverlaps);
-  TimeSeries<double> powt(powers);
-  return( Datum(coverlaps_t.average(), coverlaps_t.variance(), powt.average()) );
+  return( Datum(coverlaps.average(), coverlaps.variance(), coverlaps.size()) );
 
 }
 
@@ -187,7 +173,7 @@ int main(int argc, char *argv[]) {
   cout << "# Config flags: length_normalize=" << length_normalize << endl;
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
   cout << "# seed = " << seed << endl;
-  cout << "# n\tCoverlap\tVariance\tAvg Pow Ratio\n";
+  cout << "# n\tCoverlap\tVariance\tN_blocks\n";
   // Now iterate over all requested block sizes...
 
   PercentProgress watcher;
@@ -198,7 +184,7 @@ int main(int argc, char *argv[]) {
 
   for (vector<uint>::iterator i = blocksizes.begin(); i != blocksizes.end(); ++i) {
     Datum result = blocker(UA, Us, ensemble, *i, nreps, policy);
-    cout << *i << "\t" << result.avg_coverlap << "\t" << result.var_coverlap << "\t" << result.avg_power << endl;
+    cout << *i << "\t" << result.avg_coverlap << "\t" << result.var_coverlap << "\t" << result.nblocks << endl;
     slayer.update();
   }
 
