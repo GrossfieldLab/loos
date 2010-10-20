@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
   vector<uint> sizes = parseRangeList<uint>(argv[k++]);
 
   cout << "# " << hdr << endl;
-  cout << "# n\tavg\tvar\n";
+  cout << "# n\tavg\tvar\tblocks\n";
 
   vector<AtomicGroup> ensemble;
   readTrajectory(ensemble, subset, traj);
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
       rmsds.push_back(avg.rmsd(sub_avg));
     }
 
-    cout << boost::format("%d\t%f\t%f\n") % *size % rmsds.average() % rmsds.variance();
+    cout << boost::format("%d\t%f\t%f\t%d\n") % *size % rmsds.average() % rmsds.variance() % rmsds.size();
   }
   
 }
