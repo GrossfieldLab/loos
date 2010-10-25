@@ -40,7 +40,7 @@ namespace loos {
   typedef typename __gnu_cxx::hash_map<int,int>   IMap;
 #else
 #include <tr1/unordered_map>
-  typedef typename std::tr1::unordered_map<int,int>    IMap;
+  typedef std::tr1::unordered_map<int,int>    IMap;
 #endif
 
 
