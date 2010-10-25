@@ -130,7 +130,9 @@ void centerFrame(AtomicGroup& src, AtomicGroup& trg) {
 }
 
 void savePDB(const string& fname, const string& meta, const AtomicGroup& grp) {
-  PDB pdb = PDB::fromAtomicGroup(grp);
+  AtomicGroup dup = grp.copy();
+  PDB pdb = PDB::fromAtomicGroup(dup);
+  pdb.pruneBonds();
   pdb.renumber();
   pdb.remarks().add(meta);
   ofstream ofs(fname.c_str());
@@ -154,7 +156,6 @@ int main(int argc, char *argv[]) {
   AtomicGroup align_sub = selectAtoms(model, alignment_string);
 
   AtomicGroup applyto_sub = selectAtoms(model, transform_string);
-  applyto_sub.pruneBonds();
 
   // Now do the alignin'...
   unsigned int nframes = traj->nframes();
