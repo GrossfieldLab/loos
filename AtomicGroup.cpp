@@ -35,6 +35,15 @@
 
 namespace loos {
 
+#if __GNUC__ == 4 && __GNUC_MINOR__ < 1
+#include <ext/hash_map>
+  typedef typename __gnu_cxx::hash_map<int,int>   IMap;
+#else
+#include <tr1/unordered_map>
+  typedef typename std::tr1::unordered_map<int,int>    IMap;
+#endif
+
+
   AtomicGroup* AtomicGroup::clone(void) const {
     return(new AtomicGroup(*this));
   }
@@ -545,15 +554,46 @@ namespace loos {
   }
 
 
-  // renumber the atomids of the group...
+  namespace {
+    // renumber the atomids of the group...
+    void renumberWithoutBonds(AtomicGroup& grp, const int start, const int stride) {
+      AtomicGroup::iterator i;
+      int id = start;
+      
+      for (i=grp.begin(); i != grp.end(); i++, id += stride)
+        (*i)->id(id);
+    }
+    
+    
+    void renumberWithBonds(AtomicGroup& grp, const int start, const int stride) {
+      IMap bond_map;
+      
+      int id = start;
+      for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i, id += stride) {
+        bond_map[(*i)->id()] = id;
+        (*i)->id(id);
+      }
+      
+      // Now transform bond list
+      for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i, id += stride) {
+        std::vector<int> bonds = (*i)->getBonds();
+        for (std::vector<int>::iterator j = bonds.begin(); j != bonds.end(); ++j) {
+          IMap::iterator k = bond_map.find(*j);
+          if (k != bond_map.end())
+            *j = k->second;
+        }
+        (*i)->setBonds(bonds);
+      }
+    }
+  };
+
   void AtomicGroup::renumber(const int start, const int stride) {
-    iterator i;
-    int id = start;
-
-    for (i=atoms.begin(); i != atoms.end(); i++, id += stride)
-      (*i)->id(id);
+    
+    if (hasBonds())
+      renumberWithBonds(*this, start, stride);
+    else
+      renumberWithoutBonds(*this, start, stride);
   }
-
 
   // Get the min and max atomid's...
   int AtomicGroup::minId(void) const {
