@@ -218,6 +218,17 @@ void writeMap(const string& fname, const AtomicGroup& grp) {
 }
 
 
+void normalizeRows(RealMatrix& A) {
+  for (uint j=0; j<A.rows(); ++j) {
+    double sum = 0.0;
+    for (uint i=0; i<A.cols(); ++i)
+      sum += A(j, i) * A(j, i);
+
+    sum = sqrt(sum);
+    for (uint i=0; i<A.cols(); ++i)
+      A(j, i) /= sum;
+  }
+}
 
 
 int main(int argc, char *argv[]) {
@@ -290,8 +301,16 @@ int main(int argc, char *argv[]) {
 
   reverseRows(W);
   writeAsciiMatrix(prefix + "_s.asc", W, stringsAsString(hdrs));
-  W.reset();
 
+  // Multiply eigenvectors by inverse eigenvalues
+  for (uint i=0; i<C.cols(); ++i) {
+    double konst = (W[i] > 0.0) ? (1.0/W[i]) : 0.0;
+
+    for (uint j=0; j<C.rows(); ++j)
+      C(j, i) *= konst;
+  }
+
+  W.reset();
   store.free(W.rows() * W.cols());
 
   store.allocate(A.cols() * A.rows());
@@ -300,6 +319,7 @@ int main(int argc, char *argv[]) {
   cerr << "Done!\n";
   C.reset();
   A.reset();
+
   writeAsciiMatrix(prefix + "_V.asc", Vt, stringsAsString(hdrs), true);
 
 }
