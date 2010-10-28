@@ -32,7 +32,7 @@ TITLE=${2:-Decorrelation Time Analysis}
 SCALE=${3:-1}
 
 
-RANGE=`perl -ane 'BEGIN{$min=1e100;$max=0;}{next if(/^#/);if($F[0]>$max){$max=$F[0];}if($F[0]<$min){$min=$F[0];}}END{print"[$min:$max]";}' $DATA`
+RANGE=`perl -ane 'BEGIN{$min=1e100;$max=0;$s=shift}{next if(/^#/);if($F[0]>$max){$max=$F[0];}if($F[0]<$min){$min=$F[0];}}END{$min/=$s;$max/=$s;print"[$min:$max]";}' $SCALE $DATA`
 echo "$RANGE"
 
 gnuplot <<EOF
