@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #
 # Basic plotting of decorr_time results (using defaults, mostly)
 #
@@ -26,6 +26,11 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+if [ -z "$1" -o "$1" = "-h" -o "$1" == "--help" ] ; then
+    echo "decorr_plot.sh datafile [title [time scale] ]"
+    exit 0
+fi
+
 DATA="$1"
 BASE=`echo $DATA | cut -d. -f1`
 TITLE=${2:-Decorrelation Time Analysis}
@@ -33,7 +38,6 @@ SCALE=${3:-1}
 
 
 RANGE=`perl -ane 'BEGIN{$min=1e100;$max=0;$s=shift}{next if(/^#/);if($F[0]>$max){$max=$F[0];}if($F[0]<$min){$min=$F[0];}}END{$min/=$s;$max/=$s;print"[$min:$max]";}' $SCALE $DATA`
-echo "$RANGE"
 
 gnuplot <<EOF
 set out "$BASE.ps"
