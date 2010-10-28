@@ -78,6 +78,7 @@ my $binsize = int($nframes / $nbins);
 my $range = $binsize * $nbins - 1;
 
 print "# $hdr\n# binsize=$binsize, frac=$frac, range=$range\n";
+print "# iter\tneff\tneff Total\n";
 
 my @neffs;
 
