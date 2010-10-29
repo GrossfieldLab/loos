@@ -152,6 +152,9 @@ namespace ENM {
     std::string name() const { return("DistanceCutoff"); }
 
     Params setParams(const Params& p) {
+      if (p.size() < 1)
+        throw(BadSpringParameter("Insufficient number of spring parameters"));
+
       Params q(p);
       radius = q.back();
       radius *= radius;
@@ -186,6 +189,9 @@ namespace ENM {
 
 
     Params setParams(const Params& p) {
+      if (p.size() < 1)
+        throw(BadSpringParameter("Insufficient number of spring parameters"));
+
       Params q(p);
       power = q.back();
       q.pop_back();
@@ -218,6 +224,9 @@ namespace ENM {
     std::string name() const { return("ExponentialDistance"); }
 
     Params setParams(const Params& p) {
+      if (p.size() < 1)
+        throw(BadSpringParameter("Insufficient number of spring parameters"));
+
       Params q(p);
       scale = q.back();
       q.pop_back();
@@ -265,6 +274,9 @@ namespace ENM {
     std::string name() const { return("HCA"); }
 
     Params setParams(const Params& p) {
+      if (p.size() < 5)
+        throw(BadSpringParameter("Insufficient number of spring parameters"));
+
       Params q(p);
     
       k4 = q.back();
@@ -315,11 +327,12 @@ public:
   std::string name() const { return("ConstBonded"); }
 
   Params setParams(const Params& p) {
+    if (p.size() < 1)
+      throw(BadSpringParameter("Insufficient number of spring parameters"));
+
     Params q(p);
     scale = q.back();
-    //   scale = scale(s);
     q.pop_back();
-    //    std::cerr << "In params in constbonded :)\n";
     return(q);
   }
 
