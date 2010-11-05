@@ -134,7 +134,7 @@ void parseOptions(int argc, char *argv[]) {
       ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
       ("spring,S", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
-      ("bound,b", po::value<string>(&bound_spring_desc)->default_value("distance"), "Bound spring")
+      ("bound,b", po::value<string>(&bound_spring_desc), "Bound spring")
       ("fullhelp", "More detailed help");
 
     po::options_description hidden("Hidden options");
