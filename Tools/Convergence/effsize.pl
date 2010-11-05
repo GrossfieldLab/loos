@@ -105,6 +105,11 @@ my $total_std = $std * $nbins;
 
 print "# Total samples = $total_samples += $total_std\n";
 
+my $low_td = $range/($total_samples + $total_std);
+my $high_td = $range/($total_samples - $total_std);
+print "# Effective Td = $low_td - $high_td\n";
+
+
 
 #############################################################
 
