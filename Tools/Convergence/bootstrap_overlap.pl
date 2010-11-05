@@ -171,8 +171,9 @@ c=0.5
 d=$$rseeds[1]
 
 
-f(x) = a*exp(-x/b)+c*exp(-x/d)+1
-fit f(x) "$fni" u (\$1/$scale):(\$5/\$2) via a,b,c,d
+f(x) = a*exp(-x/b)+c*exp(-x/d)+e*exp(-x/f)+1
+a=1;b=10;c=1;d=100;e=1;f=1000
+fit f(x) "$fni" u (\$1/$scale):(\$5/\$2) via a,b,c,d,e,f
 
 set multiplot layout 2,1
 set ylabel "Covariance Overlap"
@@ -194,7 +195,7 @@ set yrange [*:*]
 set key top right
 
 plot "$fni" u (\$1/$scale):(\$5/\$2) w l ls 5 ti 'Ratio',\\
-"" u (\$1/$scale):(f(\$1/$scale)) w l ls 6 ti sprintf('y=%.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + 1', a, b, c, d)
+"" u (\$1/$scale):(f(\$1/$scale)) w l ls 6 ti sprintf('y=%.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + 1', a, b, c, d, e, f)
 
 unset multiplot
 
