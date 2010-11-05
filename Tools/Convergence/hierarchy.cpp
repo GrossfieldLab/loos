@@ -327,8 +327,11 @@ int main(int argc, char *argv[]) {
   DoubleMatrix M = computeRates(argv[k++]);
   vector<uPair> pairs = sortRates(M);
   vvUint states = cluster(pairs);
-  if (states.size() != 2)
+  if (states.size() != 2) {
     cerr << boost::format("Warning- clustering finished with %d states.\n") % states.size();
+    if (states.size() < 2)
+      exit(-100);
+  }
 
   cout << "# " << hdr << endl;
   dumpMatrix(cout, states);
