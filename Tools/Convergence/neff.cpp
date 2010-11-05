@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
       uint col = i*partition_size + k;
       uint bin = binmap[assignments[col]];
       if (bin > N) {
-        cerr << "Error- internal error, bin=" << bin << endl;
+        cerr << "Error- internal error, bin=" << bin << ", N=" << N << endl;
         exit(-20);
       }
       M(bin, i) += 1;
