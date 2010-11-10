@@ -37,7 +37,7 @@ using namespace loos;
 
 
 
-vecUint findFreeFrames(const vector<int>& map) {
+vecUint findFreeFrames(const vecInt& map) {
   vecUint indices;
 
   for (uint i=0; i<map.size(); ++i)

@@ -48,7 +48,7 @@ typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
 
-const bool debugging = false;
+const bool debugging = true;
 
 
 double mfpt(const vector<int>& assign, const uint x, const uint y) {
@@ -327,12 +327,15 @@ int main(int argc, char *argv[]) {
   DoubleMatrix M = computeRates(argv[k++]);
   vector<uPair> pairs = sortRates(M);
   vvUint states = cluster(pairs);
+
+
+  cout << "# " << hdr << endl;
+  dumpMatrix(cout, states);
+
+
   if (states.size() != 2) {
     cerr << boost::format("Warning- clustering finished with %d states.\n") % states.size();
     if (states.size() < 2)
       exit(-100);
   }
-
-  cout << "# " << hdr << endl;
-  dumpMatrix(cout, states);
 }

@@ -42,7 +42,8 @@ RANGE=`perl -ane 'BEGIN{$min=1e100;$max=0;$s=shift}{next if(/^#/);if($F[0]>$max)
 gnuplot <<EOF
 set out "$BASE.ps"
 set term post enhanced solid color landscape
-set log x
+#set log x
+set xtics 25
 set title "$TITLE"
 set xlabel '{/Symbol t}_d'
 set ylabel '{/Symbol s}^2'
