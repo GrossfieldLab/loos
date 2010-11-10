@@ -48,7 +48,7 @@ typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
 
-const bool debugging = true;
+const bool debugging = false;
 
 
 double mfpt(const vector<int>& assign, const uint x, const uint y) {
@@ -315,6 +315,28 @@ vvUint cluster(const vector<uPair>& pairs) {
 }
 
 
+void findOrphans(vvUint& states, const uint max_states) {
+  vUint seen;
+
+  if (debugging)
+    cerr << "DEBUG> Finding orphans- ";
+
+  for (vvUint::iterator v = states.begin(); v != states.end(); ++v)
+    copy(v->begin(), v->end(), back_inserter(seen));
+
+  vUint unseen;
+  for (uint i = 0; i<max_states; ++i)
+    if (find(seen.begin(), seen.end(), i) == seen.end())
+      unseen.push_back(i);
+
+  if (debugging)
+    cerr << "found " << unseen.size() << endl;
+
+  states.push_back(unseen);
+}
+
+
+
 
 int main(int argc, char *argv[]) {
   if (argc == 1) {
@@ -327,15 +349,14 @@ int main(int argc, char *argv[]) {
   DoubleMatrix M = computeRates(argv[k++]);
   vector<uPair> pairs = sortRates(M);
   vvUint states = cluster(pairs);
+  
+  findOrphans(states, M.rows());
 
 
   cout << "# " << hdr << endl;
   dumpMatrix(cout, states);
 
 
-  if (states.size() != 2) {
+  if (states.size() != 2)
     cerr << boost::format("Warning- clustering finished with %d states.\n") % states.size();
-    if (states.size() < 2)
-      exit(-100);
-  }
 }
