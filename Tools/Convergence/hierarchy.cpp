@@ -332,7 +332,8 @@ void findOrphans(vvUint& states, const uint max_states) {
   if (debugging)
     cerr << "found " << unseen.size() << endl;
 
-  states.push_back(unseen);
+  if (! seen.empty())
+    states.push_back(unseen);
 }
 
 
