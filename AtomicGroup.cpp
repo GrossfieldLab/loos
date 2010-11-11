@@ -37,7 +37,7 @@ namespace loos {
 
 #if __GNUC__ == 4 && __GNUC_MINOR__ < 1
 #include <ext/hash_map>
-  typedef typename __gnu_cxx::hash_map<int,int>   IMap;
+  typedef __gnu_cxx::hash_map<int,int>   IMap;
 #else
 #include <tr1/unordered_map>
   typedef std::tr1::unordered_map<int,int>    IMap;
