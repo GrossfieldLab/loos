@@ -303,10 +303,32 @@ sub showHelp {
   my $rh = shift;
 
   print "Usage- bootstrap_overlap.pl [options] model traj selection\n";
-  print "options:\n";
+  print "Options:\n";
   foreach (sort keys %$rh) {
-    print "\t$_\n";
+    next if ($_ eq 'help');
+
+    my $rval = $rh->{$_};
+    my $val;
+
+    # Is this option bound to a variable?
+    if (ref($rval) ne '') {
+      # Special handling of arrays
+      if (ref($rval) eq 'ARRAY') {
+	$val = '(' .  join(',', @$rval) . ')';
+      } else {
+	if (!defined($$rval)) {
+	  $val = '<not set>';
+	} else {
+	  $val = "'$$rval'";
+	}
+      }
+    } else {
+      die "Should not be here!";
+    }
+
+    printf "\t%20s = %s\n", $_, $val;
   }
+
 
   exit(0);
 }
