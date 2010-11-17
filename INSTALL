@@ -93,6 +93,16 @@ sudo scons release=1 PREFIX=/opt/LOOS-1.5.4 install
 
 If you have root access then you can forget the sudo and issue the command without it.
 
+------= Debian =------
+
+Loos has been tested with: 5.0.6
+
+Using the synaptic manager (or apt-get), install the following packages:
+      libboost-dev
+      scons
+      libatlas-base-dev
+      libatlas-headers
+      libatlas3gf-base (optional)
 
 
 ------= openSUSE =------
