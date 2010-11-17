@@ -25,12 +25,11 @@ To install in a user-specified location:
 
 ------= Fedora =------
 
-You will need to install SCons, lapack, atlas, and boost (the
-developer's versions).  These can be easily installed using "yum":
+LOOS has been tested on Fedora 8, 9, 12, and 14.  We assume you
+already have the basic compiler tools installed (i.e. g++).  You will
+need to install scons, boost, and atlas:
 
-   yum install scons.noarch atlas.x86_64 atlas-devel.x86_64 lapack.x86_64 lapack-devel.x86_64
-   yum install boost.x86_64 boost-devel.x86_64
-
+sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
 ------= Ubuntu =------
 
