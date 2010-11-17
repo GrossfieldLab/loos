@@ -25,7 +25,7 @@ To install in a user-specified location:
 
 ------= Fedora =------
 
-LOOS has been tested on Fedora 8, 9, 12, and 14.  We assume you
+LOOS has been tested on Fedora (64-bit) 8, 9, 12, and 14.  We assume you
 already have the basic compiler tools installed (i.e. g++).  You will
 need to install scons, boost, and atlas:
 
@@ -33,15 +33,26 @@ sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
 ------= Ubuntu =------
 
-You will need to install SCons, lapack, atlas, and boost.  Using
-aptitude (or your favorite tool), install the "libboost-dev" package
-(or a specific version (i.e. libboost1.38-dev)), "libatlas-base-dev",
-"libatlas-headers", "liblapack-dev", and "scons".  On some systems,
-the names of the boost libraries vary.  In these cases, you will need
-to use a custom configuration.  Copy "custom.py-proto" to "custom.py"
-and edit it, uncommenting the lines marked for Ubuntu.
-Alternatively, verify the names of the boost regex and program_options
-libraries and set these appropriately in your "custom.py" file.
+LOOS has been tested on Ubuntu 8-10.  The following instructions have
+been used to install LOOS on a fresh 64-bit 10.10 installation.  Use
+the Ubuntu software center (or apt-get) to install the following
+packages:
+	g++
+	scons
+	libboost-all-devel
+	libatlas-dev
+	libatlas-base-dev
+
+Optionally, you can install a machine-specific atlas, however, you
+must still install the packages above.  For example, on an i7 machine,
+install both atlas packages listed above as well as
+libatlas3gf-corei7sse3.
+
+NOTE:  Older version of Ubuntu may vary the names of the BOOST
+libraries.  If you see link errors related to boost libraries, then
+you will need to setup a custom.py file.  Copy the custom.py-proto to
+custom.py and find the appropriate library names (in /usr/lib64) and
+edit the custom.py file to reflect these names.
 
 * The following additional installation tips come courtesy of Dow
   Hurst:
