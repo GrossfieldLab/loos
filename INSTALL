@@ -107,12 +107,18 @@ Using the synaptic manager (or apt-get), install the following packages:
 
 ------= openSUSE =------
 
+LOOS has been tested with: 11.3
+
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
 install lapack, blas, boost, and SCons.  Using zypper (or your
 favorite package manager), install the following:
 
-   zypper install scons boost-devel lapack blas
+   zypper install scons boost-devel lapack lapack3
+
+You should get the blas as a dependency for lapack.  You may also have lapack3
+installed by default, however we've found that lapack must also be installed
+in order to build LOOS.
 
 
 

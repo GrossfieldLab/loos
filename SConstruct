@@ -141,14 +141,19 @@ else:
       fv = open('/proc/version', 'r')
       f = fv.read()
 
+      ### Note for OpenSUSE and Ubuntu...
+      ### Older versions of those distros may require the gfortran
+      ### package be linked in.  If you see strange link errors for
+      ### unresolved symbols, try adding "gfortran" to the LIBS list
+      ### for your OS below...
+
       # OpenSUSE doesn't have an atlas package, so use native lapack/blas
       if (re.search("[Ss][Uu][Ss][Ee]", f)):
-         env.Append(LIBS = ['lapack', 'blas', 'gfortran'])
+         env.Append(LIBS = ['lapack', 'blas'])
          env.Append(LIBPATH = [LAPACK])
 
       # Ubuntu MAY require gfortran...more recent builds seem not to
       elif (re.search("[Uu]buntu", f)):
-#         env.Append(LIBS = ['atlas', 'lapack', 'gfortran'])
          env.Append(LIBS = ['atlas', 'lapack'])
          env.Append(LIBPATH = [LAPACK, ATLAS])
 
