@@ -1,0 +1,156 @@
+
+--------------------------------------
+Parsing 'name == 'CA''
+Commands:
+pushAtomName
+pushString(<VALUE TYPE='STRING'>CA</VALUE>)
+==
+
+
+Selected 28 @ (29.5157,71.1618,51.4522) & (12.069,63.203,42.07) x (43.116,78.268,56.835)
+
+--------------------------------------
+Parsing 'resid =~ '1\d+''
+Expected exception caught.
+
+--------------------------------------
+Parsing '!(name == 'CA')'
+Commands:
+pushAtomName
+pushString(<VALUE TYPE='STRING'>CA</VALUE>)
+==
+!
+
+
+Selected 497 @ (13.3716,43.8001,13.9885) & (-30.599,-33.181,-38.314) x (46.108,82.251,60.197)
+
+--------------------------------------
+Parsing '!(name == 'CA''
+Expected exception caught.
+
+--------------------------------------
+Parsing 'hydrogen'
+Commands:
+Hydrogen
+
+
+Selected 182 @ (2.11614,24.7385,-11.0071) & (-30.599,-33.181,-38.314) x (33.505,39.06,41.025)
+
+--------------------------------------
+Parsing '!hydrogen'
+Commands:
+Hydrogen
+!
+
+
+Selected 343 @ (20.6618,56.148,30.3097) & (-30.118,-32.397,-38.105) x (46.108,82.251,60.197)
+
+--------------------------------------
+Parsing 'resname == 'TIP3' && !hydrogen'
+Commands:
+pushAtomResname
+pushString(<VALUE TYPE='STRING'>TIP3</VALUE>)
+==
+Hydrogen
+!
+&&
+
+
+Selected 15 @ (1.208,-2.20973,5.77073) & (-30.118,-32.397,-38.105) x (32.577,36.303,41.516)
+
+--------------------------------------
+Parsing 'segid == 'BULK' && !(name =~ '^H')'
+Commands:
+pushAtomSegid
+pushString(<VALUE TYPE='STRING'>BULK</VALUE>)
+==
+pushAtomName
+matchRegex(^H)
+!
+&&
+
+
+Selected 15 @ (1.208,-2.20973,5.77073) & (-30.118,-32.397,-38.105) x (32.577,36.303,41.516)
+
+--------------------------------------
+Parsing 'segid -> 'L(\d+)' < 3'
+Commands:
+pushAtomSegid
+extractNumber(L(\d+))
+pushInt(<VALUE TYPE='INT'>3</VALUE>)
+<
+
+
+Selected 250 @ (2.30834,29.9708,-15.0605) & (-29.851,20.523,-28.806) x (32.177,39.06,-1.664)
+
+--------------------------------------
+Parsing '(segid -> '(L|P)(\d+)') <= 3'
+Commands:
+pushAtomSegid
+extractNumber((L|P)(\d+))
+pushInt(<VALUE TYPE='INT'>3</VALUE>)
+<=
+
+
+Selected 250 @ (2.30834,29.9708,-15.0605) & (-29.851,20.523,-28.806) x (32.177,39.06,-1.664)
+
+--------------------------------------
+Parsing '(segid -> '(L|P)(\d+)') <= 10 && name =~ 'C''
+Commands:
+pushAtomSegid
+extractNumber((L|P)(\d+))
+pushInt(<VALUE TYPE='INT'>10</VALUE>)
+<=
+pushAtomName
+matchRegex(C)
+&&
+
+
+Selected 82 @ (2.42504,30.0193,-14.0074) & (-28.83,21.167,-27.993) x (31.14,38.176,-2.557)
+
+--------------------------------------
+Parsing 'name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV''
+Commands:
+pushAtomName
+matchRegex(C)
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>10</VALUE>)
+>=
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>63</VALUE>)
+<=
+&&
+&&
+pushAtomSegid
+pushString(<VALUE TYPE='STRING'>SOLV</VALUE>)
+==
+!
+&&
+
+
+Selected 133 @ (31.4936,72.0786,51.5679) & (14.046,61.254,41.056) x (46.108,81.604,59.229)
+
+--------------------------------------
+Parsing '!(name =~ 'C' && (resid >= 10 && resid <= 63) && segid != 'SOLV')'
+Commands:
+pushAtomName
+matchRegex(C)
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>10</VALUE>)
+>=
+pushAtomResid
+pushInt(<VALUE TYPE='INT'>63</VALUE>)
+<=
+&&
+&&
+pushAtomSegid
+pushString(<VALUE TYPE='STRING'>SOLV</VALUE>)
+==
+!
+&&
+!
+
+
+Selected 392 @ (8.37624,36.16,3.91431) & (-30.599,-33.181,-38.314) x (45.491,82.251,60.197)
+***ERROR***  Bad selection syntax - syntax error
+***ERROR***  Bad selection syntax - syntax error

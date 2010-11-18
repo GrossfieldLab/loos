@@ -133,38 +133,46 @@ env.Append(LEXFLAGS=['-s'])
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
-else:
-   if platform == 'linux2':
-      noatlas = 0
+elif platform == 'linux2':
+   noatlas = 0
 
-      # Determine linux variant
-      fv = open('/proc/version', 'r')
-      f = fv.read()
+   # Determine linux variant
+   fv = open('/proc/version', 'r')
+   f = fv.read()
+   
+   ### Note for OpenSUSE and Ubuntu...
+   ### Older versions of those distros may require the gfortran
+   ### package be linked in.  If you see strange link errors for
+   ### unresolved symbols, try adding "gfortran" to the LIBS list
+   ### for your OS below...
 
-      ### Note for OpenSUSE and Ubuntu...
-      ### Older versions of those distros may require the gfortran
-      ### package be linked in.  If you see strange link errors for
-      ### unresolved symbols, try adding "gfortran" to the LIBS list
-      ### for your OS below...
-
-      # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-      if (re.search("[Ss][Uu][Ss][Ee]", f)):
-         env.Append(LIBS = ['lapack', 'blas'])
-         env.Append(LIBPATH = [LAPACK])
+   # OpenSUSE doesn't have an atlas package, so use native lapack/blas
+   if (re.search("[Ss][Uu][Ss][Ee]", f)):
+      env.Append(LIBS = ['lapack', 'blas'])
+      env.Append(LIBPATH = [LAPACK])
 
       # Ubuntu MAY require gfortran...more recent builds seem not to
-      elif (re.search("[Uu]buntu", f)):
-         env.Append(LIBS = ['atlas', 'lapack'])
-         env.Append(LIBPATH = [LAPACK, ATLAS])
-
+   elif (re.search("[Uu]buntu", f)):
+      env.Append(LIBS = ['atlas', 'lapack'])
+      env.Append(LIBPATH = [LAPACK, ATLAS])
+      
       # Fedora or similar
-      else:
-         env.Append(LIBS = ['atlas', 'lapack'])
-         env.Append(LIBPATH = [LAPACK, ATLAS])
-
+   else:
+      env.Append(LIBS = ['atlas', 'lapack'])
+      env.Append(LIBPATH = [LAPACK, ATLAS])
+      
       #env.Append(CPPPATH = [ATLASINC])       # See above...
-      if ATLASINC != '':
-         env.Append(CPPFLAGS = ['-I' + ATLASINC])
+   if ATLASINC != '':
+      env.Append(CPPFLAGS = ['-I' + ATLASINC])
+
+
+# CYGWIN does not have an atlas package, so use lapack/blas instead
+elif (platform == 'cygwin'):
+   env.Append(LIBS = ['lapack', 'blas'])
+   env.Append(LIBPATH = [LAPACK])
+
+
+
 
 # Determine what kind of build...
 # No option implies debugging, but only an explicit debug defines

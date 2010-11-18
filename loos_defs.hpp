@@ -42,7 +42,7 @@ typedef unsigned int     uint;
 typedef unsigned long    ulong;
 #endif
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__CYGWIN__)
 
 extern "C" {
 

@@ -16,7 +16,7 @@
 #include <loos.hpp>
 #include "enm-lib.hpp"
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__CYGWIN__)
 extern "C" {
   void dsygvx_(int*, char*, char*, char*, int*, double*, int*, double*, int*, double*, double*, int*, int*, double*, int*, double*, double*, int*, double*, int*, int*, int*, int*);
   void dpotrf_(char*, int*, double*, int*, int*);

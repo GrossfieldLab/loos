@@ -104,7 +104,7 @@ namespace ENM {
     double alpha = 1.0;
     f77int ldb = m;
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__CYGWIN__)
     char side = 'L';
     char notrans = 'N';
     char diag = 'N';
