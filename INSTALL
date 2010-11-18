@@ -133,6 +133,29 @@ will need to install SCons (http://scons.org) and Boost
 software, and following their installation instructions.
 
 
+-----= CYGWIN =-----
+
+Tested versions: 1.7.7
+
+You will need to install libboost-devel and liblapack-devel along with
+the g++ compiler using the cygwin setup.exe program.  (Note: if loos
+still does not build, try installing the additional lapack and boost
+packages).  There is no atlas package that we could find for cygwin,
+so the native lapack/blas will be used instead.
+
+There is no scons install option from setup.exe, so you need to
+manually download the latest scons distribution from
+http://www.scons.org/download.php (the gzip tar file) and install it.
+
+The boost libraries cygwin uses have different names than what the
+default build of LOOS expects.  You will need to set up a new
+custom.py file.  Copy the "custom.py-proto" file in the loos directory
+to "custom.py".  Look for the BOOSTPO and BOOSTREGEX symbols and
+uncomment the appropriate lines.
+
+
+
+
 
 
 *** GENERAL NOTES ***
