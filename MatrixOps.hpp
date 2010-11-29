@@ -29,8 +29,12 @@
 #include <loos_defs.hpp>
 #include <MatrixImpl.hpp>
 #include <exceptions.hpp>
+#include <sorting.hpp>
+#include <utils.hpp>
 #include <stdexcept>
 #include <cmath>
+
+
 
 
 
@@ -134,6 +138,23 @@ namespace loos {
 
       return(B);
     }
+
+    
+    //! Randomly shuffle the columns of a matrix
+    template<typename T>
+    T shuffleColumns(const T& A) {
+      std::vector<float> random_numbers(A.cols());
+      base_generator_type& rng = rng_singleton();
+      boost::uniform_real<> rngmap(0.0, 1.0);
+      boost::variate_generator<base_generator_type&, boost::uniform_real<> > rnd(rng, rngmap);
+
+      for (uint i=0; i<A.cols(); ++i)
+        random_numbers[i] = rnd();
+
+      std::vector<uint> indices = sortedIndex(random_numbers);
+      return(permuteColumns(A, indices));
+    }
+
 
     template<typename T>
     void reverseColumns(T& A) {
