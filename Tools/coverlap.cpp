@@ -54,6 +54,7 @@ double lscale;
 double rscale;
 uint subspace_size;
 uint ntries;
+uint seed = 0;
 
 uint skip;
 
@@ -115,7 +116,8 @@ void parseArgs(int argc, char *argv[]) {
       ("left_scale,k", po::value<double>(&lscale)->default_value(1.0), "Scale left eigenvalues by this constant")
       ("right_scale,K", po::value<double>(&rscale)->default_value(1.0), "Scale right eigenvalues by this constant")
       ("subspace,u", po::value<uint>(&subspace_size)->default_value(25), "# of modes to use for the subspace overlap (0 = same as covariance)")
-      ("zscore,z", po::value<uint>(&ntries)->default_value(0), "Use z-score (sets number of repeats)");
+      ("zscore,z", po::value<uint>(&ntries)->default_value(0), "Use z-score (sets number of repeats)")
+      ("seed", po::value<uint>(&seed)->default_value(0), "Seed for random number generator (0 = auto)");
 
 
     po::options_description hidden("Hidden options");
@@ -291,6 +293,11 @@ int main(int argc, char *argv[]) {
     double overlap = covarianceOverlap(lSS, lUU, rSS, rUU);
     cout << "Covariance overlap: " << overlap << endl;
   } else {
+    if (seed == 0)
+      randomSeedRNG();
+    else
+      rng_singleton().seed(seed);
+
     boost::tuple<double,double> overlap = zCovarianceOverlap(lSS, lUU, rSS, rUU, ntries);
     cout << "Covariance overlap: " << boost::get<1>(overlap) << endl;
     cout << "Z-score: " << boost::get<0>(overlap) << endl;
