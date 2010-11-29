@@ -31,6 +31,7 @@
 #include <exceptions.hpp>
 #include <sorting.hpp>
 #include <utils.hpp>
+#include <TimeSeries.hpp>
 #include <stdexcept>
 #include <cmath>
 
@@ -259,6 +260,26 @@ namespace loos {
 
       return(co);
     }
+
+
+    template<typename T>
+    boost::tuple<double, double> zCovarianceOverlap(const T& lamA, const T& UA, const T& lamB, const T& UB, const uint tries) {
+      double coverlap = covarianceOverlap(lamA, UA, lamB, UB);
+      std::vector<double> random_coverlaps(tries);
+
+      for (uint i=0; i<tries; ++i) {
+        T shuffled_UA = shuffleColumns(UA);
+        T shuffled_UB = shuffleColumns(UB);
+        random_coverlaps[i] = covarianceOverlap(lamA, shuffled_UA, lamB, shuffled_UB);
+      }
+
+      TimeSeries<double> ts(random_coverlaps);
+      double score = (coverlap - ts.average()) / ts.stdev();
+
+      boost::tuple<double, double> result(score, coverlap);
+      return(result);
+    }
+
 
   };
 

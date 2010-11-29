@@ -53,6 +53,7 @@ uint number_of_modes;
 double lscale;
 double rscale;
 uint subspace_size;
+uint ntries;
 
 uint skip;
 
@@ -113,7 +114,8 @@ void parseArgs(int argc, char *argv[]) {
       ("modes,m", po::value<uint>(&number_of_modes)->default_value(0), "Number of modes to compare...  0 = all")
       ("left_scale,k", po::value<double>(&lscale)->default_value(1.0), "Scale left eigenvalues by this constant")
       ("right_scale,K", po::value<double>(&rscale)->default_value(1.0), "Scale right eigenvalues by this constant")
-      ("subspace,u", po::value<uint>(&subspace_size)->default_value(25), "# of modes to use for the subspace overlap (0 = same as covariance)");
+      ("subspace,u", po::value<uint>(&subspace_size)->default_value(25), "# of modes to use for the subspace overlap (0 = same as covariance)")
+      ("zscore,z", po::value<uint>(&ntries)->default_value(0), "Use z-score (sets number of repeats)");
 
 
     po::options_description hidden("Hidden options");
@@ -283,11 +285,18 @@ int main(int argc, char *argv[]) {
   if (scale_power)
     rSS = scalePower(lSS, rSS);
 
-  double overlap = covarianceOverlap(lSS, lUU, rSS, rUU);
-  double subover = subspaceOverlap(lUU, rUU, subspace_size);
 
   cout << "Covariance Modes: " << number_of_modes << endl;
-  cout << "Covariance overlap: " << overlap << endl;
+  if (ntries == 0) {
+    double overlap = covarianceOverlap(lSS, lUU, rSS, rUU);
+    cout << "Covariance overlap: " << overlap << endl;
+  } else {
+    boost::tuple<double,double> overlap = zCovarianceOverlap(lSS, lUU, rSS, rUU, ntries);
+    cout << "Covariance overlap: " << boost::get<1>(overlap) << endl;
+    cout << "Z-score: " << boost::get<0>(overlap) << endl;
+  }
+
+  double subover = subspaceOverlap(lUU, rUU, subspace_size);
   cout << "Subspace Modes: " << subspace_size << endl;
   cout << "Subspace overlap: " << subover << endl;
 
