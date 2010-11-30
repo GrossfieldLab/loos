@@ -44,10 +44,16 @@
 # ATLASINC='/usr/include'
 
 
-### The following -may- work with a full ATLAS + LAPACK install (and uses the threaded versions)
+### The following -may- enable a parallel ATLAS/LAPACK version of LOOS
+## This is for Fedora
 # ATLAS='/usr/lib64/atlas'
 # LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas gfortran'
 # LIBS_PATHS_OVERRIDE = ATLAS
+## Ubuntu
+# ATLAS='/usr/lib64/atlas-base'
+# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
+# LIBS_PATHS_OVERRIDE = ATLAS
+
 
 ### This is where the parent directory of where BOOST include files
 ### are installed... 
