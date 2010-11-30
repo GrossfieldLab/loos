@@ -43,6 +43,12 @@
 # ATLASINC='/usr/include/atlas'
 # ATLASINC='/usr/include'
 
+
+### The following -may- work with a full ATLAS + LAPACK install (and uses the threaded versions)
+# ATLAS='/usr/local/lib'
+# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas gfortran'
+# LIBS_PATHS_OVERRIDE = ATLAS
+
 ### This is where the parent directory of where BOOST include files
 ### are installed... 
 # BOOSTINC='/usr/include'

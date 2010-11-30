@@ -59,6 +59,8 @@ clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariabl
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
                     PathVariable.PathAccept))
 clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
 
 # This is a developer setting...  Do not set unless you know what you
 # are doing...
@@ -90,6 +92,8 @@ BOOSTPO = env['BOOSTPO']
 LIBXTRA = env['LIBXTRA']
 PREFIX = env['PREFIX']
 ALTPATH = env['ALTPATH']
+LIBS_OVERRIDE = env['LIBS_OVERRIDE']
+LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
 
 if ALTPATH != '':
    buildenv = env['ENV']
@@ -140,6 +144,10 @@ elif platform == 'linux2':
    fv = open('/proc/version', 'r')
    f = fv.read()
    
+
+   LIBS_LINKED_TO = 'atlas lapack'
+   LIBS_PATHS_TO = LAPACK + ' ' + ATLAS
+
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
    ### package be linked in.  If you see strange link errors for
@@ -148,29 +156,31 @@ elif platform == 'linux2':
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
    if (re.search("[Ss][Uu][Ss][Ee]", f)):
-      env.Append(LIBS = ['lapack', 'blas'])
-      env.Append(LIBPATH = [LAPACK])
+      LIBS_LINKED_TO = 'lapack blas'
+      LIBS_PATHS_TO = "LAPACK"
 
       # Ubuntu MAY require gfortran...more recent builds seem not to
-   elif (re.search("[Uu]buntu", f)):
-      env.Append(LIBS = ['atlas', 'lapack'])
-      env.Append(LIBPATH = [LAPACK, ATLAS])
-      
-      # Fedora or similar
-   else:
-      env.Append(LIBS = ['atlas', 'lapack'])
-      env.Append(LIBPATH = [LAPACK, ATLAS])
-      
-      #env.Append(CPPPATH = [ATLASINC])       # See above...
-   if ATLASINC != '':
-      env.Append(CPPFLAGS = ['-I' + ATLASINC])
+   #elif (re.search("[Uu]buntu", f)):
+      # LIBS_LINKED_TO = 'lapack blas gfortran'
+
+      # Fedora & Similar
+   #else
+
+
+   if LIBS_OVERRIDE != '':
+      LIBS_LINKED_TO = LIBS_OVERRIDE
+
+   if LIBS_PATHS_OVERRIDE != '':
+      LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
+
+   env.Append(LIBS = Split(LIBS_LINKED_TO))
+   env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 # CYGWIN does not have an atlas package, so use lapack/blas instead
 elif (platform == 'cygwin'):
    env.Append(LIBS = ['lapack', 'blas'])
    env.Append(LIBPATH = [LAPACK])
-
 
 
 
