@@ -158,6 +158,27 @@ namespace loos {
 
 
     template<typename T>
+    T shuffleVector(const T& v) {
+      std::vector<float> random_numbers(v.size());
+      base_generator_type& rng = rng_singleton();
+      boost::uniform_real<> rngmap(0.0, 1.0);
+      boost::variate_generator<base_generator_type&, boost::uniform_real<> > rnd(rng, rngmap);
+
+      for (uint i=0; i<v.size(); ++i)
+        random_numbers[i] = rnd();
+
+      std::vector<uint> indices = sortedIndex(random_numbers);
+
+      // This forces the result to -always- be a column vector...
+      T u(v.size(), 1);
+      for (uint i=0; i<v.size(); ++i)
+        u[i] = v[indices[i]];
+
+      return(u);
+    }
+
+
+    template<typename T>
     void reverseColumns(T& A) {
       uint m = A.rows();
       uint n = A.cols();
@@ -241,22 +262,26 @@ namespace loos {
       if (!(UA.rows() == UB.rows() && lamA.rows() <= UA.cols() && lamB.rows() <= UB.cols()))
         throw(NumericalError("covarianceOverlap: Matrices have incorrect dimensions"));
 
-      double lamsum = 0.0;
-      for (uint i=0; i<lamA.rows(); ++i)
-        lamsum += lamA[i];
-      for (uint i=0; i<lamB.rows(); ++i)
-        lamsum += lamB[i];
-
-      double dblsum = 0.0;
-      for (uint i=0; i<lamA.rows(); ++i)
-        for (uint j=0; j<lamB.rows(); ++j) {
-          double d = colDotProd(UA, i, UB, j);
-          dblsum += sqrt(lamA[i]*lamB[j]) * d * d;
-        }
+      // X = abs(UB'*UA)
+      T X = MMMultiply(UB,UA,true,false);
+      for (ulong i = 0; i < X.size(); ++i)
+        X[i] = fabs(X[i]);
       
+      // L = abs(lamB*lamA')
+      T L = MMMultiply(lamB, lamA, false, true);
 
-      double num = lamsum - 2.0 * dblsum;
-      double co = 1.0 - sqrt( fabs(num) / lamsum );
+      // y = sum(sum(sqrt(L).*X.*X));
+      double y = 0;
+      for (ulong i = 0; i<X.size(); ++i)
+        y += sqrt(L[i]) * X[i] * X[i];
+
+      // e = sum(s.*t);
+      double e =0;
+      for (ulong i=0; i<lamA.size(); ++i)
+        e += lamA[i] + lamB[i];
+
+      double num = e - 2.0 * y;
+      double co = 1.0 - sqrt( fabs(num) / e );
 
       return(co);
     }
@@ -268,9 +293,9 @@ namespace loos {
       std::vector<double> random_coverlaps(tries);
 
       for (uint i=0; i<tries; ++i) {
-        T shuffled_UA = shuffleColumns(UA);
-        T shuffled_UB = shuffleColumns(UB);
-        random_coverlaps[i] = covarianceOverlap(lamA, shuffled_UA, lamB, shuffled_UB);
+        T shuffled_lamA = shuffleVector(lamA);
+        T shuffled_lamB = shuffleVector(lamB);
+        random_coverlaps[i] = covarianceOverlap(shuffled_lamA, UA, shuffled_lamB, UB);
       }
 
       TimeSeries<double> ts(random_coverlaps);
