@@ -148,6 +148,8 @@ writeAsciiMatrix(filename, M, "My matrix");
     class Matrix : public OrderPolicy, public StoragePolicy<T> {
     public:
 
+      typedef T      element_type;
+
       //! Unitialized matrix
       Matrix() : meta("") { }
 
