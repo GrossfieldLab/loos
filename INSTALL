@@ -22,6 +22,19 @@ To install in a user-specified location:
    scons release=1 PREFIX=/path/to/install install
 
 
+= Parallel (Multithreaded) ATLAS =
+
+If you have a full install of ATLAS including threaded versions of the
+BLAS and LAPACK, you can link against these to take advantage of
+multiple cores in LOOS.  Copy the custom.py-proto to custom.py and
+uncomment/change the appropriate lines.
+
+The MacOS version by default uses the vecLib framework which is
+already multithreaded.
+
+
+
+
 
 ------= Fedora =------
 
