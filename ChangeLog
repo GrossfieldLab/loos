@@ -1,3 +1,10 @@
+2010-11-30    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed covarianceOverlap() routine to use BLAS and faster
+	matrix operations for significant performance boost.
+	* Added z-scored covariance overlap (zCovarianceOverlap()) along
+	with support for this in the coverlap tool.
+
 2010-11-22    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed [another] compiler issue in AtomicGroup for older g++
