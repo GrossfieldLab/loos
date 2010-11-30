@@ -45,9 +45,11 @@
 
 
 ### The following -may- enable a parallel ATLAS/LAPACK version of LOOS
+### Note: Depending on how your system is setup, you may need to add
+### gfortran to the end of LIBS_OVERRIDE
 ## This is for Fedora
 # ATLAS='/usr/lib64/atlas'
-# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas gfortran'
+# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
 # LIBS_PATHS_OVERRIDE = ATLAS
 ## Ubuntu
 # ATLAS='/usr/lib64/atlas-base'
