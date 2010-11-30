@@ -45,7 +45,7 @@
 
 
 ### The following -may- work with a full ATLAS + LAPACK install (and uses the threaded versions)
-# ATLAS='/usr/local/lib'
+# ATLAS='/usr/lib64/atlas'
 # LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas gfortran'
 # LIBS_PATHS_OVERRIDE = ATLAS
 
