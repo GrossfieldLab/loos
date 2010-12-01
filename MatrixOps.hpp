@@ -157,8 +157,9 @@ namespace loos {
     }
 
 
+    //!! Randomly shuffle the rows of a single column vector
     template<typename T>
-    T shuffleVector(const T& v) {
+    T shuffleColumnVector(const T& v) {
       std::vector<float> random_numbers(v.size());
       base_generator_type& rng = rng_singleton();
       boost::uniform_real<> rngmap(0.0, 1.0);
@@ -293,8 +294,8 @@ namespace loos {
       std::vector<double> random_coverlaps(tries);
 
       for (uint i=0; i<tries; ++i) {
-        T shuffled_lamA = shuffleVector(lamA);
-        T shuffled_lamB = shuffleVector(lamB);
+        T shuffled_lamA = shuffleColumnVector(lamA);
+        T shuffled_lamB = shuffleColumnVector(lamB);
         random_coverlaps[i] = covarianceOverlap(shuffled_lamA, UA, shuffled_lamB, UB);
       }
 
