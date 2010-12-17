@@ -1,3 +1,8 @@
+2010-12-17    <alan@membrane>
+	* Changed Tools/rdf to be able to split by molecule, residue, or segment. 
+	  Now uses boost program options, so the command line is not backward
+	  compatible.  TODO: add a fullhelp option
+	
 2010-11-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed covarianceOverlap() routine to use BLAS and faster
