@@ -31,12 +31,16 @@
  */
 
 #include <loos.hpp>
+#include <boost/program_options.hpp>
+
 
 using namespace std;
 using namespace loos;
 
+namespace po = boost::program_options;
 
 
+#if 0
 void Usage()
     {
     cerr << "Usage: rdf SystemFile Trajectory selection1 selection2 "
@@ -50,9 +54,114 @@ void Usage()
          << " or any other format supported by LOOS"
          << endl;
     }
+#endif
+
+string system_filename;
+string traj_filename;
+string selection1, selection2;
+string split_by;
+double hist_min, hist_max;
+int num_bins;
+int skip;
+
+void parseOptions(int argc, char *argv[])
+    {
+    try 
+        {
+        po::options_description generic("Allowed options");
+        generic.add_options()
+            ("help,h", "Produce this help message")
+            //("fullhelp", "Even more help")
+            ("sel1", po::value<string>(&selection1), "first selection")
+            ("sel2", po::value<string>(&selection2), "second selection")
+            ("split-mode",po::value<string>(&split_by), "how to split the selections")
+            ("skip", po::value<int>(&skip)->default_value(0), "frames to skip");
+        
+        po::options_description hidden("Hidden options");
+        hidden.add_options()
+            ("model", po::value<string>(&system_filename), "Model filename")
+            ("traj", po::value<string>(&traj_filename), "Trajectory filename")
+            ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
+            ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
+            ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+
+        po::options_description command_line;
+        command_line.add(generic).add(hidden);
+
+        po::positional_options_description p;
+        p.add("model", 1);
+        p.add("traj", 1);
+        p.add("hist-min", 1);
+        p.add("hist-max", 1);
+        p.add("num-bins", 1);
+
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+        po::notify(vm);
+
+        if (vm.count("help") || 
+            !vm.count("model") || !vm.count("traj") || 
+            !vm.count("hist-min") || !vm.count("hist-max") ||
+            !vm.count("num-bins") ||
+            !vm.count("sel1") 
+           )
+            {
+            cerr << "Usage: " << argv[0] << " "
+                 << "model-name trajectory-name hist-min hist-max num-bins "
+                 << "--split-mode by-residue|by-segment|by-molecule"
+                 << "--sel1 SELECTION [--sel2 SELECTION] "
+                 << endl;
+            cerr << generic;
+            exit(-1);
+            }
+        
+        // if there's only 1 selection, duplicate it
+        if (!vm.count("sel2"))
+            {
+            selection2 = selection1;
+            }
+        }
+    catch(exception& e) 
+        {
+        cerr << "Error - " << e.what() << endl;
+        exit(-1);
+        }
+    }
+
+enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE };
+
+split_mode parseSplit(const string &split_by)
+    {
+    split_mode split;
+    // figure out the splitting mode
+    if (!split_by.compare("by-residue"))
+        {
+        split = BY_RESIDUE;
+        }
+    else if (!split_by.compare("by-segment"))
+        {
+        split = BY_SEGMENT;
+        }
+    else if (!split_by.compare("by-molecule"))
+        {
+        split = BY_MOLECULE;
+        }
+    else
+        {
+        cerr << "--split-mode must be: by-residue|by-segment|by-molecule"
+             << endl;
+        cerr << "If unset, defaults to by-molecule";
+        cerr << endl;
+        exit(-1);
+        }
+    return (split);
+    }
+
 
 int main (int argc, char *argv[])
 {
+#if 0
 if ( (argc <= 1) || 
      ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
      (argc < 9)
@@ -61,6 +170,14 @@ if ( (argc <= 1) ||
     Usage();
     exit(-1);
     }
+#endif
+
+// parse the command line options
+parseOptions(argc, argv);
+cout << "#split_by = " << split_by << endl;
+
+// parse the split mode, barf if you can't do it
+split_mode split=parseSplit(split_by);
 
 // Print the command line arguments
 cout << "# " << invocationHeader(argc, argv) << endl;
@@ -68,17 +185,8 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 // Create the system and the trajectory file
 // Note: The pTraj type is a Boost shared pointer, so we'll need
 //       to use pointer semantics to access it
-AtomicGroup system = createSystem(argv[1]);
-pTraj traj = createTrajectory(argv[2], system);
-
-// Get the selection patterns to identify the atoms to be used
-char *selection1 = argv[3];  // String describing the first selection
-char *selection2 = argv[4];  // String describing the second selection
-
-// Get the histogram parameters
-double hist_min = atof(argv[5]); // Lower edge of the histogram
-double hist_max = atof(argv[6]); // Upper edge of the histogram
-int num_bins = atoi(argv[7]); // Number of bins in the histogram
+AtomicGroup system = createSystem(system_filename);
+pTraj traj = createTrajectory(traj_filename, system);
 
 // Get the number of frames to discard as equilibration
 int skip = atoi(argv[8]);  
@@ -94,8 +202,19 @@ double bin_width = (hist_max - hist_min)/num_bins;
 // are present (so you can walk the connectivity tree correctly), what we'll
 // do is first split the atoms by molecules, then rejoin the ones which match
 // each of the patterns.
-vector<AtomicGroup> molecules = system.splitByMolecule();
-
+vector<AtomicGroup> grouping;
+if (split == BY_MOLECULE)
+    {
+    grouping = system.splitByMolecule();
+    }
+else if (split == BY_RESIDUE)
+    {
+    grouping = system.splitByResidue();
+    }
+else if (split == BY_SEGMENT)
+    {
+    grouping = system.splitByUniqueSegid();
+    }
 
 // Set up the selector to define group1 atoms
 Parser parser1(selection1);
@@ -107,16 +226,16 @@ KernelSelector parsed_sel2(parser2.kernel());
 
 // Loop over the molecules and add them to group1 or group2
 vector<AtomicGroup> g1_mols, g2_mols;
-vector<AtomicGroup>::iterator m;
-for (m=molecules.begin(); m!=molecules.end(); m++)
+vector<AtomicGroup>::iterator g;
+for (g=grouping.begin(); g!=grouping.end(); g++)
     {
-    AtomicGroup tmp = m->select(parsed_sel1);
+    AtomicGroup tmp = g->select(parsed_sel1);
     if (tmp.size() > 0)
         {
         g1_mols.push_back(tmp);
         }
 
-    AtomicGroup tmp2 = m->select(parsed_sel2);
+    AtomicGroup tmp2 = g->select(parsed_sel2);
     if (tmp2.size() > 0)
         {
         g2_mols.push_back(tmp2);
@@ -144,7 +263,6 @@ double volume = 0.0;
 int unique_pairs=0;
 while (traj->readFrame())
     {
-    cerr << "Processing frame " << frame << endl;
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 
