@@ -366,24 +366,25 @@ namespace loos {
    */
 
   std::vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
-    HashInt seen;                      // Track what atoms we've already
-    // processed... 
     std::vector<AtomicGroup> molecules;
-    AtomicGroup current;               // The molecule we're currently building...
 
     // If no connectivity, just return the entire group...
     if (!hasBonds()) {
       sort();
       molecules.push_back(*this);
     } else {
+      HashInt seen;                      // Track what atoms we've already processed
+      AtomicGroup current;               // The molecule we're currently building...
+      AtomicGroup working(*this);        // Copy, so we can sort without mucking up original order
+      working.sort();
 
       int n = size();
       for (int i=0; i<n; i++) {
-        HashInt::iterator it = seen.find(atoms[i]->id());
+        HashInt::iterator it = seen.find(working.atoms[i]->id());
         if (it != seen.end())
           continue;
       
-        walkBonds(current, seen, atoms[i]);
+        walkBonds(current, seen, working, working.atoms[i]);
         if (current.size() != 0) {       // Just in case...
           current.sort();
           molecules.push_back(current);
@@ -402,7 +403,7 @@ namespace loos {
   }
 
 
-  void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, pAtom moi) {
+  void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, AtomicGroup& working, pAtom& moi) {
     int myid = moi->id();
     HashInt::iterator it = seen.find(myid);
 
@@ -425,10 +426,10 @@ namespace loos {
     std::vector<int> bonds = moi->getBonds();
     std::vector<int>::const_iterator citer;
     for (citer = bonds.begin(); citer != bonds.end(); citer++) {
-      pAtom toi = findById(*citer);
+      pAtom toi = working.findById(*citer);
       if (toi == 0)
         throw(std::runtime_error("Missing bonds while trying to walk the connectivity tree."));
-      walkBonds(current, seen, toi);
+      walkBonds(current, seen, working, toi);
     }
   }
 

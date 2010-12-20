@@ -599,7 +599,7 @@ namespace loos {
     
     typedef std::tr1::unordered_set<int> HashInt;
 
-    void walkBonds(AtomicGroup& mygroup, HashInt& seen, pAtom moi);
+    void walkBonds(AtomicGroup& mygroup, HashInt& seen, AtomicGroup& working, pAtom& moi);
 
 
     double *coordsAsArray(void) const;
