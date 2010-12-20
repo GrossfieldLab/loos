@@ -222,12 +222,10 @@ namespace loos {
   }
 
 
-  // Internal: sort the atom array by atomid
   void AtomicGroup::sort(void) {
     CmpById comp;
 
-    if (!sorted())
-      std::sort(atoms.begin(), atoms.end(), comp);
+    std::sort(atoms.begin(), atoms.end(), comp);
 
     sorted(true);
   }

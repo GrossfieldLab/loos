@@ -338,6 +338,12 @@ namespace loos {
     void pruneBonds();
 
     //! Is the array of atoms already sorted???
+    /**
+     * While we make some effort to ensure that alterations to the AtomicGroup
+     * will invalidate the sorted status, it's a good idea to
+     * explicitly sort if you want to make sure that the group is in
+     * fact sorted.
+     */
     bool sorted(void) const { return(_sorted); }
 
     //! Sort based on atomid
