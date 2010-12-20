@@ -174,7 +174,6 @@ if ( (argc <= 1) ||
 
 // parse the command line options
 parseOptions(argc, argv);
-cout << "#split_by = " << split_by << endl;
 
 // parse the split mode, barf if you can't do it
 split_mode split=parseSplit(split_by);
