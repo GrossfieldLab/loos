@@ -27,21 +27,134 @@
  */
 
 #include <loos.hpp>
+#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
 
+namespace po = boost::program_options;
 
-
+#if 0
 void Usage()
     {
     cerr << "Usage: xy_rdf system traj selection1 selection2 "
          << "min max num_bins skip" 
          << endl;
     }
+#endif
+
+string system_filename;
+string traj_filename;
+string selection1, selection2;
+string split_by;
+double hist_min, hist_max;
+int num_bins;
+int skip;
+int timeseries_interval;
+string output_directory;
+
+void parseOptions(int argc, char *argv[])
+    {
+    try 
+        {
+        po::options_description generic("Allowed options");
+        generic.add_options()
+            ("help,h", "Produce this help message")
+            //("fullhelp", "Even more help")
+            ("sel1", po::value<string>(&selection1), "first selection")
+            ("sel2", po::value<string>(&selection2), "second selection")
+            ("split-mode",po::value<string>(&split_by), "how to split the selections")
+            ("skip", po::value<int>(&skip)->default_value(0), "frames to skip")
+            ("timeseries", po::value<int>(&timeseries_interval)->default_value(0), "Interval to write out timeseries, 0 means never")
+            ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("foo")));
+        
+        po::options_description hidden("Hidden options");
+        hidden.add_options()
+            ("model", po::value<string>(&system_filename), "Model filename")
+            ("traj", po::value<string>(&traj_filename), "Trajectory filename")
+            ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
+            ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
+            ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+
+        po::options_description command_line;
+        command_line.add(generic).add(hidden);
+
+        po::positional_options_description p;
+        p.add("model", 1);
+        p.add("traj", 1);
+        p.add("hist-min", 1);
+        p.add("hist-max", 1);
+        p.add("num-bins", 1);
+
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+        po::notify(vm);
+
+        if (vm.count("help") || 
+            !vm.count("model") || !vm.count("traj") || 
+            !vm.count("hist-min") || !vm.count("hist-max") ||
+            !vm.count("num-bins") ||
+            !vm.count("sel1") 
+           )
+            {
+            cerr << "Usage: " << argv[0] << " "
+                 << "model-name trajectory-name hist-min hist-max num-bins "
+                 << "--split-mode by-residue|by-segment|by-molecule"
+                 << "--sel1 SELECTION [--sel2 SELECTION] "
+                 << "--timeseries VALUE --timeseries-directory DIR"
+                 << endl;
+            cerr << generic;
+            exit(-1);
+            }
+        
+        // if there's only 1 selection, duplicate it
+        if (!vm.count("sel2"))
+            {
+            selection2 = selection1;
+            }
+        }
+    catch(exception& e) 
+        {
+        cerr << "Error - " << e.what() << endl;
+        exit(-1);
+        }
+    }
+
+enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE };
+
+split_mode parseSplit(const string &split_by)
+    {
+    split_mode split;
+    // figure out the splitting mode
+    if (!split_by.compare("by-residue"))
+        {
+        split = BY_RESIDUE;
+        }
+    else if (!split_by.compare("by-segment"))
+        {
+        split = BY_SEGMENT;
+        }
+    else if (!split_by.compare("by-molecule"))
+        {
+        split = BY_MOLECULE;
+        }
+    else
+        {
+        cerr << "--split-mode must be: by-residue|by-segment|by-molecule"
+             << endl;
+        cerr << "If unset, defaults to by-molecule";
+        cerr << endl;
+        exit(-1);
+        }
+    return (split);
+    }
+
 
 int main (int argc, char *argv[])
 {
+
+#if 0
 if ( (argc <= 1) || 
      ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
      (argc < 9)
@@ -50,33 +163,43 @@ if ( (argc <= 1) ||
     Usage();
     exit(-1);
     }
+#endif
+
+// parse the command line options
+parseOptions(argc, argv);
+
+// parse the split mode, barf if you can't do it
+split_mode split=parseSplit(split_by);
 
 cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
-AtomicGroup system = createSystem(argv[1]);
-pTraj traj = createTrajectory(argv[2], system);
-char *selection1 = argv[3];
-char *selection2 = argv[4];
-double hist_min = atof(argv[5]);
-double hist_max = atof(argv[6]);
-int num_bins = atoi(argv[7]);
-int skip = atoi(argv[8]);
+AtomicGroup system = createSystem(system_filename);
+pTraj traj = createTrajectory(traj_filename, system);
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
 AtomicGroup group1 = selectAtoms(system, selection1);
 AtomicGroup group2 = selectAtoms(system, selection2);
 
-// The groups are presumed to be units like lipid headgroups.  We want to 
-// treat each headgroup as a single unit.  This could reasonably be done
-// with splitByUniqueSegid() or splitByMolecule(), depending on the details.
-// For lipids and lipopeptides, it's the same (although splitByMolecule will 
-// have more overhead), but if you want water, then you need splitbyMolecule.
-// If you get weird-looking behavior, you might want to change this to use
-// splitByMolecule.
-vector<AtomicGroup> g1_mols = group1.splitByUniqueSegid();
-vector<AtomicGroup> g2_mols = group2.splitByUniqueSegid();
+// Split the groups into chunks, depending on how the user asked
+// us to.  
+vector<AtomicGroup> g1_mols, g2_mols;
+if (split == BY_MOLECULE)
+    {
+    g1_mols = group1.splitByMolecule();
+    g2_mols = group2.splitByMolecule();
+    }
+else if (split == BY_RESIDUE)
+    {
+    g1_mols = group1.splitByResidue();
+    g2_mols = group2.splitByResidue();
+    }
+else if (split == BY_SEGMENT)
+    {
+    g1_mols = group1.splitByUniqueSegid();
+    g2_mols = group2.splitByUniqueSegid();
+    }
 
 // Skip the initial frames
 traj->readFrame(skip); 
@@ -118,11 +241,35 @@ for (unsigned int i = 0; i < g2_mols.size(); i++)
 
 
 // Create 2 histograms -- one for top, one for bottom
+// Also create 2 histograms to store the total
 vector<double> hist_lower, hist_upper;
+vector<double> hist_lower_total, hist_upper_total;
 hist_lower.reserve(num_bins);
 hist_upper.reserve(num_bins);
+hist_lower_total.reserve(num_bins);
+hist_upper_total.reserve(num_bins);
 hist_lower.insert(hist_lower.begin(), num_bins, 0.0);
 hist_upper.insert(hist_upper.begin(), num_bins, 0.0);
+hist_lower_total.insert(hist_lower_total.begin(), num_bins, 0.0);
+hist_upper_total.insert(hist_upper_total.begin(), num_bins, 0.0);
+
+
+// Figure out the number of unique pairs -- if the groups are the same,
+// we skip self pairs, so the normalization is different
+int num_upper, num_lower;
+if (group1 == group2)
+    {
+    // the two selection groups are the same
+    num_upper = g1_upper.size()*(g1_upper.size()-1);
+    num_lower = g1_lower.size()*(g1_lower.size()-1);
+    }
+else
+    {
+    // the two selection groups are different
+    num_upper = g1_upper.size() * g2_upper.size();
+    num_lower = g1_lower.size() * g2_lower.size();
+    }
+
 
 double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
@@ -130,19 +277,15 @@ double max2 = hist_max*hist_max;
 // loop over the frames of the traj file
 int frame = 0;
 double area = 0.0;
+double total_area = 0.0;
+
+
 while (traj->readFrame())
     {
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 
     area += box.x() * box.y();
-
-#if 0
-    if (frame % 10 == 0)
-        {
-        cout << "#Processing file " << file_list[i] << endl;
-        }
-#endif
 
     // compute the distribution of g2 around g1 for the lower leaflet
     for (unsigned int j = 0; j < g1_lower.size(); j++)
@@ -193,30 +336,94 @@ while (traj->readFrame())
         }
 
     frame++;
+
+    // if requested, write out timeseries as well
+    if (timeseries_interval && (frame % timeseries_interval == 0))
+        {
+        total_area += area;
+        area /= timeseries_interval;
+        double upper_expected = timeseries_interval * num_upper / total_area;
+        double lower_expected = timeseries_interval * num_lower / total_area;
+
+
+        // create the output file
+        ostringstream outfilename;
+        outfilename << output_directory << "/" << "rdf_" << frame << ".dat";
+        ofstream out(outfilename.str().c_str());
+        if (out.fail())
+            {
+            cerr << "couldn't open " << outfilename << " ... exiting" << endl;
+            exit(-1);
+            }
+        out << "# Dist\tTotal\tUpper\tLower\tCum" << endl;
+        double cum = 0.0;
+        for (int m = 0; m < num_bins; m++)
+            {
+            double d = bin_width*(m + 0.5);
+
+            double d_inner = bin_width*m;
+            double d_outer = d_inner + bin_width;
+            double norm = M_PI*(d_outer*d_outer - d_inner*d_inner)/area;
+
+            double upper = hist_upper[m]/(norm*upper_expected);
+            double lower = hist_lower[m]/(norm*lower_expected);
+            double total = (hist_upper[m] + hist_lower[m])/
+                                (norm*(upper_expected + lower_expected) );
+            cum += (hist_upper[m] + hist_lower[m])/(group1.size()*timeseries_interval);
+
+            out << d << "\t"
+                << total << "\t"
+                << upper << "\t"
+                << lower << "\t"
+                << cum   << endl;
+
+            }
+
+        out << endl; // blank line for gnuplot
+        out.close();
+        
+        // sum up the total histograms
+        for (int i=0; i<num_bins; ++i)
+            {
+            hist_upper_total[i] += hist_upper[i];
+            hist_lower_total[i] += hist_lower[i];
+            }
+
+        // rezero the histograms
+        hist_upper.assign(num_bins, 0.0);
+        hist_lower.assign(num_bins, 0.0);
+
+        // zero out the area
+        area = 0;
+        
+        }
+
     }
 
-area /= frame;
-
-int num_upper, num_lower;
-// Normalization is slightly different is this is a self distribution
-if (group1 == group2)
+// normalize the area
+if (timeseries_interval)
     {
-    // the two selection groups are the same
-    num_upper = g1_upper.size()*(g1_upper.size()-1);
-    num_lower = g1_lower.size()*(g1_lower.size()-1);
+    total_area /= frame;
     }
 else
     {
-    // the two selection groups are different
-    num_upper = g1_upper.size() * g2_upper.size();
-    num_lower = g1_lower.size() * g2_lower.size();
+    total_area = area/frame;
     }
 
-double upper_expected = frame * num_upper / area;
-double lower_expected = frame * num_lower / area;
+// if we didn't write timeseries, then we need to copy the interval histograms
+// to the total ones
+if (timeseries_interval)
+    {
+    hist_lower_total = hist_lower;
+    hist_upper_total = hist_upper;
+    }
+
+double upper_expected = frame * num_upper / total_area;
+double lower_expected = frame * num_lower / total_area;
 
 // Output the results
-cout << "# Dist\tTotal\tUpper\tLower" << endl;
+cout << "# Dist\tTotal\tUpper\tLower\tCum" << endl;
+double cum = 0.0;
 for (int i = 0; i < num_bins; i++)
     {
     double d = bin_width*(i + 0.5);
@@ -229,11 +436,13 @@ for (int i = 0; i < num_bins; i++)
     double lower = hist_lower[i]/(norm*lower_expected);
     double total = (hist_upper[i] + hist_lower[i])/
                         (norm*(upper_expected + lower_expected));
+    cum += (hist_upper[i] + hist_lower[i])/(group1.size()*timeseries_interval);
 
-    cout << d << "\t";
-    cout << total << "\t";
-    cout << upper << "\t";
-    cout << lower << endl;
+    cout << d     << "\t"
+         << total << "\t"
+         << upper << "\t"
+         << lower << "\t"
+         << cum   << endl;
 
     }
 }
