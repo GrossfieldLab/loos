@@ -187,9 +187,6 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 AtomicGroup system = createSystem(system_filename);
 pTraj traj = createTrajectory(traj_filename, system);
 
-// Get the number of frames to discard as equilibration
-int skip = atoi(argv[8]);  
-
 double bin_width = (hist_max - hist_min)/num_bins;
 
 // The groups may describe a set of individual atoms (eg water oxygens) 
