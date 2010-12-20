@@ -39,6 +39,9 @@ void Usage()
     cerr << "Usage: xy_rdf system traj selection1 selection2 "
          << "min max num_bins skip interval output_dir" 
          << endl;
+    cerr << "This program is now deprecated in favor of "
+         << "xy_rdf, with the --timeseries argument"
+         << endl;
     }
 
 int main (int argc, char *argv[])
@@ -53,6 +56,9 @@ if ( (argc <= 1) ||
     }
 
 cout << "# " << invocationHeader(argc, argv) << endl;
+cout << "# This program is now deprecated in favor of "
+     << "xy_rdf, with the --timeseries argument"
+     << endl;
 
 // copy the command line variables to real variable names
 AtomicGroup system = createSystem(argv[1]);
