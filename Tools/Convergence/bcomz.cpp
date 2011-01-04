@@ -1,6 +1,6 @@
 /*
   
-  Perform a block-overlap in comparison to a full PCA
+  Perform block coverlap against self using z-score
 
 */
 
@@ -11,7 +11,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2009, Tod D. Romo
+  Copyright (c) 2009-2011, Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -44,13 +44,12 @@ typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 
 
 struct Datum {
-  Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
-                                                                var_coverlap(var),
+  Datum(const double avg, const double var, const uint nblks) : average(avg),
+                                                                variance(var),
                                                                 nblocks(nblks) { }
 
 
-  double avg_coverlap;
-  double var_coverlap;
+  double average, variance;
   uint nblocks;
 };
 
@@ -73,10 +72,10 @@ vGroup subgroup(const vGroup& A, const uint a, const uint b) {
 
 
 template<class ExtractPolicy>
-Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const uint blocksize, ExtractPolicy& policy) {
+Datum blocker(const uint n, vGroup& ensemble, const uint blocksize, ExtractPolicy& policy) {
 
 
-  TimeSeries<double> coverlaps;
+  TimeSeries<double> zees;
 
   for (uint i=0; i<ensemble.size() - blocksize; i += blocksize) {
     vGroup subset = subgroup(ensemble, i, i+blocksize);
@@ -88,11 +87,11 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const
       for (uint j=0; j<s.rows(); ++j)
         s[j] /= blocksize;
 
-
-    coverlaps.push_back(covarianceOverlap(sa, Ua, s, U));
+    boost::tuple<double, double> result = zCovarianceOverlap(s, U, s, U, n);
+    zees.push_back(boost::get<0>(result));
   }
 
-  return( Datum(coverlaps.average(), coverlaps.variance(), coverlaps.size()) );
+  return( Datum(zees.average(), zees.variance(), zees.size()) );
 }
 
 
@@ -103,7 +102,7 @@ int main(int argc, char *argv[]) {
   int k=1;
 
   if (argc != 6) {
-    cerr << "Usage- bcom model traj sel [1=local avg|0=global avg] blocks\n";
+    cerr << "Usage- bcom model traj sel ntries blocks\n";
     exit(0);
   }
 
@@ -111,7 +110,7 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(argv[k++], model);
 
   AtomicGroup subset = selectAtoms(model, argv[k++]);
-  int local_flag = atoi(argv[k++]);
+  uint ntries = strtol(argv[k++], NULL, 10);
   vector<uint> blocksizes = parseRangeList<uint>(argv[k++]);
 
   vector<AtomicGroup> ensemble;
@@ -120,20 +119,12 @@ int main(int argc, char *argv[]) {
   // First, get the complete PCA result...
   boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble);
   AtomicGroup avg = averageStructure(ensemble);
-  NoAlignPolicy policy(avg, local_flag);
-  boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
-
-  RealMatrix Us = boost::get<0>(res);
-  RealMatrix UA = boost::get<1>(res);
-
-  if (length_normalize)
-    for (uint i=0; i<Us.rows(); ++i)
-      Us[i] /= traj->nframes();
+  NoAlignPolicy policy(avg, 1); // force local-avg
 
   cout << "# " << hdr << endl;
   cout << "# Config flags: length_normalize=" << length_normalize << endl;
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
-  cout << "# n\tCoverlap\tVariance\tN_blocks\n";
+  cout << "# n\tZ-avg\tZ-var\tN_blocks\n";
   // Now iterate over all requested block sizes...
   
   PercentProgress watcher;
@@ -142,8 +133,8 @@ int main(int argc, char *argv[]) {
   slayer.start();
 
   for (vector<uint>::iterator i = blocksizes.begin(); i != blocksizes.end(); ++i) {
-    Datum result = blocker(UA, Us, ensemble, *i, policy);
-    cout << *i << "\t" << result.avg_coverlap << "\t" << result.var_coverlap << "\t" << result.nblocks << endl;
+    Datum result = blocker(ntries, ensemble, *i, policy);
+    cout << boost::format("%d\t%10f\t%10f\t%d\n") % *i % result.average % result.variance % result.nblocks;
     slayer.update();
   }
 

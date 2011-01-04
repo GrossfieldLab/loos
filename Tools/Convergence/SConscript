@@ -37,6 +37,7 @@ scripts = 'bootstrap_overlap.pl decorr_plot.sh effsize.pl'
 bcomlib = clone.Object('bcomlib.cpp')
 
 bcom = clone.Program('bcom', ['bcom.cpp', bcomlib])
+bcomz = clone.Program('bcomz', ['bcomz.cpp', bcomlib])
 boot_bcom = clone.Program('boot_bcom', ['boot_bcom.cpp', bcomlib])
 
 fidlib = clone.Object('fid-lib.cpp')
@@ -57,7 +58,7 @@ avgconv = clone.Program('avgconv.cpp')
 boot_avgconv = clone.Program('boot_avgconv.cpp')
 block_avgconv = clone.Program('block_avgconv.cpp')
 
-list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average, avgconv, boot_avgconv, block_avgconv ]
+list = [ bcom, bcomz, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average, avgconv, boot_avgconv, block_avgconv ]
 
 install_apps = list + Split(scripts)
 
