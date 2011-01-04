@@ -88,26 +88,6 @@ namespace loos {
 
 
 
-  std::vector<int> readIndexMap(std::istream& is) {
-    std::vector<int> indices;
-    int i;
-    std::string s;
-
-    for (;;) {
-      s = getNextLine(is);
-      if (s.length() == 0)
-        break;
-
-      std::istringstream iss(s);
-      iss >> i;
-      indices.push_back(i);
-    }
-
-    return(indices);
-  }
-
-
-
   std::string invocationHeader(int argc, char *argv[]) {
     std::string invoke, user;
     int i;

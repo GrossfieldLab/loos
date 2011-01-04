@@ -58,10 +58,25 @@ namespace loos {
   std::string findBaseName(const std::string&);
 
   //! Get the next line of input, skipping blanks and stripping comments
-  std::string getNextLine(std::istream&, int*);
+  std::string getNextLine(std::istream& is, int* lineno);
 
-  //! Read a list of integers from a stream
-  std::vector<int> readIndexMap(std::istream&);
+  //! Read a list of numbers from a stream
+  template<typename T>
+  std::vector<T> readVector(std::istream& is) {
+    std::vector<T> data;
+    for (;;) {
+      std::string s = getNextLine(is, 0);
+      if (s.length() == 0)
+        break;
+
+      std::istringstream iss(s);
+      T datum;
+      iss >> datum;
+      data.push_back(datum);
+    }
+
+    return(data);
+  }
 
   //! Create an invocation header
   /**
