@@ -45,6 +45,7 @@ fidlib = clone.Object('fid-lib.cpp')
 #fidpick = clone.Program('fidpick.cpp')
 ufidpick = clone.Program('ufidpick', ['ufidpick.cpp', fidlib])
 #sortfids = clone.Program('sortfids.cpp')
+assign_frames = clone.Program('assign_frames', ['assign_frames.cpp', fidlib])
 
 #decorr_time = clone.Program('decorr_time', ['decorr_time.cpp', fidlib])
 
@@ -59,7 +60,7 @@ boot_avgconv = clone.Program('boot_avgconv.cpp')
 block_avgconv = clone.Program('block_avgconv.cpp')
 
 #list = [ bcom, bcomz, boot_bcom, fidpick, sortfids, ufidpick, decorr_time, hierarchy, neff, block_average, avgconv, boot_avgconv, block_avgconv ]
-list = [ bcom, bcomz, boot_bcom, ufidpick, hierarchy, neff, block_average, avgconv, boot_avgconv, block_avgconv ]
+list = [ bcom, bcomz, boot_bcom, ufidpick, assign_frames, hierarchy, neff, block_average, avgconv, boot_avgconv, block_avgconv ]
 
 install_apps = list + Split(scripts)
 
