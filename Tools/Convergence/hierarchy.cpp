@@ -48,7 +48,7 @@ typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
 
-const bool debugging = false;
+const bool debugging = true;
 
 
 double mfpt(const vector<uint>& assign, const uint x, const uint y) {
@@ -142,7 +142,7 @@ vector<uPair>  sortRates(const DoubleMatrix& M) {
   for (vector<RatePair>::iterator i = rates.begin(); i != rates.end(); ++i) {
     pairs.push_back(i->pair);
     if (debugging)
-      cerr << boost::format("%d %d\n") % i->pair.first % i->pair.second;
+      cerr << boost::format("%d %d = %f\n") % i->pair.first % i->pair.second % i->rate;
   }
   
   if (debugging)
