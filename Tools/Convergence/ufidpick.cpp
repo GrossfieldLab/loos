@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   if (argc < 7 || argc > 8) {
-    cerr << "Usage - fidpick model trajectory range|all selection output-name cutoff [seed]\n";
+    cerr << "Usage - " << argv[0] << " model trajectory range|all selection output-name cutoff [seed]\n";
     exit(-1);
   }
 
@@ -77,19 +77,16 @@ int main(int argc, char *argv[]) {
   else
     frames = parseRangeList<uint>(range);
 
-  boost::tuple<vecInt, vecUint, vecGroup, vecDouble> result = assignFrames(subset, traj, frames, cutoff);
+  boost::tuple<vecGroup, vecUint> result = pickFiducials(subset, traj, frames, cutoff);
 
   cout << "# " << hdr << endl;
   cout << "# seed = " << seed << endl;
-  cout << boost::format("# i %-10s %-10s %-10s\n") % "Ref" % "Bin size" % "Radius";
-  vecInt assignments = boost::get<0>(result);
-  vecUint refs = boost::get<1>(result);
-  vecGroup fiducials = boost::get<2>(result);
-  vecDouble radii = boost::get<3>(result);
+  cout << "# n\tref\n";
+  vecGroup fiducials = boost::get<0>(result);
+  vecUint id = boost::get<1>(result);
 
-  vecUint hist = histogramBins(assignments);
-  for (uint i=0; i<refs.size(); ++i)
-    cout << boost::format("%-3d %-10d %-10d %10f\n") % i % refs[i] % hist[i] % radii[i];
+  for (uint i=0; i<id.size(); ++i)
+    cout << i << "\t" << id[i] << "\n";
 
 
   DCDWriter dcd(outname + ".dcd", fiducials, hdr);
@@ -100,10 +97,5 @@ int main(int argc, char *argv[]) {
   string fname = outname + ".pdb";
   ofstream ofs(fname.c_str());
   ofs << pdb;
-
-  fname = outname + "_assignments.asc";
-  ofstream fass(fname.c_str());
-  fass << "# " << hdr << endl;
-  copy(assignments.begin(), assignments.end(), ostream_iterator<int>(fass, "\n"));
 
 }
