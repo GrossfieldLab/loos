@@ -87,8 +87,13 @@ Datum blocker(const uint n, vGroup& ensemble, const uint blocksize, ExtractPolic
       for (uint j=0; j<s.rows(); ++j)
         s[j] /= blocksize;
 
-    boost::tuple<double, double> result = zCovarianceOverlap(s, U, s, U, n);
-    zees.push_back(boost::get<0>(result));
+    boost::tuple<double, double, double> result = zCovarianceOverlap(s, U, s, U, n);
+    double score = boost::get<0>(result);
+    double cover = boost::get<1>(result);
+    double dev = boost::get<2>(result);
+    double avg = cover - dev * score;
+
+    zees.push_back(avg / dev);
   }
 
   return( Datum(zees.average(), zees.variance(), zees.size()) );
