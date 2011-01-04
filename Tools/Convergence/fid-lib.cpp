@@ -133,7 +133,7 @@ int findMaxBin(const vecInt& assignments) {
 
 vecUint histogramBins(const vecInt& assignments) {
   int max = findMaxBin(assignments);
-  vecUint histogram(max, 0);
+  vecUint histogram(max+1, 0);
 
   for (vecInt::const_iterator i = assignments.begin(); i != assignments.end(); ++i)
     if (*i >= 0)
