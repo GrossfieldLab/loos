@@ -58,17 +58,13 @@ double mfpt(const vector<uint>& assign, const uint x, const uint y) {
   bool state = false;
   uint start = 0;
   for (uint j=0; j<assign.size(); ++j) {
-    if (assign[j] < 0) {
-      cerr << "ERROR- unassigned frame found at position " << j << endl;
-      exit(-10);
-    }
     if (!state) {
-      if (static_cast<uint>(assign[j]) == x) {
+      if (assign[j] == x) {
         start = j;
         state = true;
       }
     } else {
-      if (static_cast<uint>(assign[j]) == y) {
+      if (assign[j] == y) {
         fpt += (j - start);
         ++n;
         state = false;
