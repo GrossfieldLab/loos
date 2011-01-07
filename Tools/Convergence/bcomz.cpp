@@ -88,15 +88,14 @@ Datum blocker(const uint n, vGroup& ensemble, const uint blocksize, ExtractPolic
         s[j] /= blocksize;
 
     boost::tuple<double, double, double> result = zCovarianceOverlap(s, U, s, U, n);
-    //    double score = boost::get<0>(result);
-    //    double cover = boost::get<1>(result);
-    //    double dev = boost::get<2>(result);
-    //    double avg = cover - dev * score;
+    double score = boost::get<0>(result);
+    double cover = boost::get<1>(result);
+    double dev = boost::get<2>(result);
+    double avg = cover - dev * score;
 
-    zees.push_back(boost::get<0>(result));
-    double cov = boost::get<1>(result);
-    if (fabs(1.0 - cov) > cov_threshold) {
-      cerr << "ERROR- covariance overlap exceeded threshold (" << cov << ").\n";
+    zees.push_back(avg);
+    if (fabs(1.0 - cover) > cov_threshold) {
+      cerr << "ERROR- covariance overlap exceeded threshold (" << cover << ").\n";
       exit(-1);
     }
   }
