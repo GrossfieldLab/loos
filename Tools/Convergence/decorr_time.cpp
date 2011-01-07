@@ -124,11 +124,11 @@ void parseOptions(int argc, char *argv[]) {
 // Despite the name, this histograms the assignments (i.e. frequency
 // of the various fiducials in the trajectory)
 
-vecDouble rebinFrames(const vecInt& assignments, const uint S, const vecUint& ensemble) {
+vecDouble rebinFrames(const vecUint& assignments, const uint S, const vecUint& ensemble) {
   vecUint hist(S, 0);
 
   for (vecUint::const_iterator i = ensemble.begin(); i != ensemble.end(); ++i) {
-    if (static_cast<uint>(assignments[*i]) >= S)
+    if (assignments[*i] >= S)
       throw(runtime_error("Bin index exceeds number of fiducials in rebinFrames()"));
 
     ++hist[assignments[*i]];
@@ -144,7 +144,7 @@ vecDouble rebinFrames(const vecInt& assignments, const uint S, const vecUint& en
 
 
 
-vecDouble binVariances(const vecInt& assignments, const uint S, const uint n, const uint t) {
+vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, const uint t) {
   vector<vecDouble> fik;
   
   uint curframe = 0;
@@ -209,7 +209,7 @@ double avgVariance(const vecDouble& vars) {
 }
 
 
-double sigma(const vecInt& assignments, const uint S, const uint n, const uint t) {
+double sigma(const vecUint& assignments, const uint S, const uint n, const uint t) {
   
   vecDouble vars = binVariances(assignments, S, n, t);
   double mean_vars = avgVariance(vars);
@@ -290,9 +290,9 @@ int main(int argc, char *argv[]) {
     if (verbosity > 0)
       cerr << "Replica #" << k << endl;
 
-    boost::tuple<vecInt, vecUint, vecGroup, vecDouble> fids = assignFrames(subset, traj, indices, frac);
-    vecInt assignments = boost::get<0>(fids);
-    vecGroup fiducials = boost::get<2>(fids);
+    boost::tuple<vecGroup, vecUint> fids = pickFiducials(subset, traj, indices, frac);
+    vecGroup fiducials = boost::get<0>(fids);
+    vecUint assignments = assignStructures(subset, traj, indices, fiducials);
     uint S = fiducials.size();
     
     DoubleMatrix M(trange.size(), nrange.size() + 1);
