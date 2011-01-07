@@ -48,7 +48,7 @@ typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
 
-const bool debugging = true;
+const bool debugging = false;
 
 
 double mfpt(const vector<uint>& assign, const uint x, const uint y) {
