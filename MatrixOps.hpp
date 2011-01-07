@@ -288,6 +288,7 @@ namespace loos {
     }
 
 
+    // Returns: z-score, raw covariance overlap, and stddev used in the z-score
     template<typename T>
     boost::tuple<double, double, double> zCovarianceOverlap(const T& lamA, const T& UA, const T& lamB, const T& UB, const uint tries) {
       double coverlap = covarianceOverlap(lamA, UA, lamB, UB);
