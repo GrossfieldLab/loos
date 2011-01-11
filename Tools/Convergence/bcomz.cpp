@@ -57,6 +57,7 @@ struct Datum {
 
 const bool length_normalize = true;
 const double cov_threshold = 1e-2;
+const bool use_score = true;
 
 
 
@@ -93,7 +94,11 @@ Datum blocker(const uint n, vGroup& ensemble, const uint blocksize, ExtractPolic
     double dev = boost::get<2>(result);
     double avg = cover - dev * score;
 
-    zees.push_back(avg);
+    if (use_score)
+      zees.push_back(score);
+    else
+      zees.push_back(avg);
+
     if (fabs(1.0 - cover) > cov_threshold) {
       cerr << "ERROR- covariance overlap exceeded threshold (" << cover << ").\n";
       exit(-1);
