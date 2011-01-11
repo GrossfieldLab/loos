@@ -70,17 +70,23 @@ int main(int argc, char *argv[]) {
   } else
     seed = randomSeedRNG();
 
-  vector<uint> frames;
-  if (range == "all")
-    for (uint i=0; i<traj->nframes(); ++i)
-      frames.push_back(i);
-  else
-    frames = parseRangeList<uint>(range);
-
-  boost::tuple<vecGroup, vecUint> result = pickFiducials(subset, traj, frames, cutoff);
 
   cout << "# " << hdr << endl;
   cout << "# seed = " << seed << endl;
+
+
+  vector<uint> source_frames;
+  if (range == "all")
+    for (uint i=0; i<traj->nframes(); ++i)
+      source_frames.push_back(i);
+  else
+    source_frames = parseRangeList<uint>(range);
+
+  vector<uint> frames = trimFrames(source_frames, cutoff);
+  if (frames.size() != source_frames.size())
+    cout << "# WARNING- truncated last " << source_frames.size() - frames.size() << " frames\n";
+
+  boost::tuple<vecGroup, vecUint> result = pickFiducials(subset, traj, frames, cutoff);
   cout << "# n\tref\n";
   vecGroup fiducials = boost::get<0>(result);
   vecUint id = boost::get<1>(result);

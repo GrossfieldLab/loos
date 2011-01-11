@@ -75,6 +75,19 @@ vecUint assignStructures(AtomicGroup& model, pTraj& traj, const vecUint& frames,
 }
 
 
+vecUint trimFrames(const vecUint& frames, const double frac) {
+  uint bin_size = frac * frames.size();
+  uint remainder = frames.size() - static_cast<uint>(bin_size / frac);
+
+  vecUint truncated;
+  vecUint::const_iterator vi = frames.begin();
+  for (uint i = 0; i<frames.size() - remainder; ++i)
+    truncated.push_back(*vi++);
+  
+  return(truncated);
+}
+
+
 
 
 boost::tuple<vecGroup, vecUint> pickFiducials(AtomicGroup& model, pTraj& traj, const vecUint& frames, const double f) {

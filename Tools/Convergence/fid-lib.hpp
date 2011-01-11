@@ -47,6 +47,7 @@ typedef std::vector<double>             vecDouble;
 vecUint findFreeFrames(const vecInt& map);
 
 vecUint assignStructures(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const vecGroup& refs);
+vecUint trimFrames(const vecUint& frames, const double frac);
 boost::tuple<vecGroup, vecUint> pickFiducials(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const double f);
 
 int findMaxBin(const vecInt& assignments);
