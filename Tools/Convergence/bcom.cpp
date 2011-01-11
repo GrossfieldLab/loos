@@ -111,7 +111,7 @@ void parseOptions(int argc, char *argv[]) {
     }
 
     if (vm.count("blocks")) {
-      string s = vm["string"].as<string>();
+      string s = vm["blocks"].as<string>();
       blocksizes = parseRangeList<uint>(s);
     }
 
