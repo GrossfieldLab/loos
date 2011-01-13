@@ -87,7 +87,7 @@ typedef vector<vGroup> vvGroup;
 class Extractor {
 public:
 
-  Extractor() : missing_atoms_warn(false), skip_when_missing(false) { }
+  Extractor() : missing_atoms_warn(false), skip_when_missing(false), show_atoms(false) { }
   virtual ~Extractor() { }
 
 
@@ -100,12 +100,20 @@ public:
   // be skipped in future calculations...
   void skipMissingResidues() { skip_when_missing = true; }
 
+  // Show which atoms are being used for what torsion
+  void showAtoms() { show_atoms = true; }
+
   // Returns the names of the torsions
   virtual vector<string> names(void) =0;
 
   // Utility function to make sure each AtomicGroup has only 4 atoms
   // for a torsion
   void checkAtoms(const string& s, const AtomicGroup& nascent, const AtomicGroup& residue) {
+    if (show_atoms && nascent.size() == 4) {
+      cerr << "Extracted residues for torsion " << s << endl;
+      cerr << nascent << endl;
+    }
+
     if (!missing_atoms_warn)
       return;
 
@@ -115,7 +123,7 @@ public:
       cerr << "Residue dump:\n";
       cerr << residue << endl;
       cerr << "Extracted:\n";
-      cerr << nascent;
+      cerr << nascent << endl;
     }
 
     return;
@@ -132,8 +140,11 @@ public:
     if (skip_when_missing) {
       vGroup::iterator vi;
       for (vi = result.begin(); vi != result.end(); ++vi)
-        if ((*vi).size() != 4)
+        if ((*vi).size() != 4) {
+          if (show_atoms)
+            cerr << "***SKIPPING PREVIOUS RESIDUE***\n";
           return(vGroup());
+        }
     }
 
     return(result);
@@ -167,6 +178,7 @@ private:
 
   bool missing_atoms_warn;
   bool skip_when_missing;
+  bool show_atoms;
 };
 
 
@@ -315,6 +327,7 @@ void parseOptions(int argc, char *argv[]) {
       ("missing,m", po::value<double>(&missing_flag)->default_value(-9999), "Value to use for missing torsions")
       ("warn,w", "Warn when atoms are missing a torsion")
       ("skip,s", "Skip residues where not all torsions are available")
+      ("show,S", "Show atoms used for each torsion")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
 
 
@@ -364,6 +377,9 @@ void parseOptions(int argc, char *argv[]) {
 
     if (vm.count("skip"))
       extractor->skipMissingResidues();
+
+    if (vm.count("show"))
+      extractor->showAtoms();
 
   }
   catch(exception& e) {
