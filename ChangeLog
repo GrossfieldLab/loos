@@ -1,3 +1,8 @@
+2011-01-14    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in AtomicGroup::renumberWithBonds() that would blindly
+	try to renumber bonds for atoms that had no bonds.
+
 2010-12-20    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::splitByMolecule() so that it should be 20x-30x faster.

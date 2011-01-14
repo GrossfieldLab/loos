@@ -575,13 +575,15 @@ namespace loos {
       
       // Now transform bond list
       for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i, id += stride) {
-        std::vector<int> bonds = (*i)->getBonds();
-        for (std::vector<int>::iterator j = bonds.begin(); j != bonds.end(); ++j) {
-          IMap::iterator k = bond_map.find(*j);
-          if (k != bond_map.end())
-            *j = k->second;
+        if ((*i)->hasBonds()) {
+          std::vector<int> bonds = (*i)->getBonds();
+          for (std::vector<int>::iterator j = bonds.begin(); j != bonds.end(); ++j) {
+            IMap::iterator k = bond_map.find(*j);
+            if (k != bond_map.end())
+              *j = k->second;
+          }
+          (*i)->setBonds(bonds);
         }
-        (*i)->setBonds(bonds);
       }
     }
   };
