@@ -192,7 +192,7 @@ namespace loos {
     os << "ALTLOC='" << a._altloc << "' CHAINID='" << a._chainid << "' ICODE='" << a._icode << "' SEGID='" << a._segid << "' ";
     os << "B='" << a._b << "' Q='" << a._q << "' CHARGE='" << a._charge << "' MASS='" << a._mass << "'";
     os << " ATOMICNUMBER='" << a._atomic_number <<"'";
-    //    os << " MASK='" << boost::format("%x") % a.mask << "'";
+    os << " MASK='" << boost::format("%x") % a.mask << "'";
     if (a.hasBonds() > 0) {
       std::vector<int>::const_iterator i;
       os << ">\n";
