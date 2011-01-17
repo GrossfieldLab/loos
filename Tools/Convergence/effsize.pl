@@ -84,6 +84,7 @@ my @neffs;
 
 for (my $i=0; $i<$nreps; ++$i) {
   &runCommand("ufidpick $model_name $traj_name 0:$range '$selection' $prefix $frac >& $prefix.log");
+  &runCommand("assign_frames $model_name $traj_name '$selection' $prefix.dcd >${prefix}_assignments.asc 2>>$prefix.log");
   &runCommand("hierarchy ${prefix}_assignments.asc >$prefix.states");
   &runCommand("neff ${prefix}_assignments.asc $prefix.states $binsize >$prefix.samples");
 
