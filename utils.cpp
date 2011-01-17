@@ -170,6 +170,8 @@ namespace loos {
   }
 
 
+  // Seeding based on the block is not the best method, but probably
+  // sufficient for our purposes...
   uint randomSeedRNG(void) {
     base_generator_type& rng = rng_singleton();
 
