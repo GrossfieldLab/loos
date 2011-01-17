@@ -69,6 +69,7 @@ int main(int argc, char *argv[]) {
         indices[j] = i+j;
       
       AtomicGroup sub_avg = averageSelectedSubset(ensemble, indices);
+      sub_avg.alignOnto(avg);
       rmsds.push_back(avg.rmsd(sub_avg));
     }
 
