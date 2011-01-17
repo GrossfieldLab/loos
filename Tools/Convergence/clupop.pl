@@ -109,7 +109,9 @@ if ($log_scale) {
 
 
 print "# $hdr\n";
+print "# t bin0 bin1 ...\n";
 for (my $j=0; $j<=$#M; ++$j) {
+  print "$j\t";
   for (my $i=0; $i<=$#bins; ++$i) {
     print $M[$j]->[$i], "\t";
   }
