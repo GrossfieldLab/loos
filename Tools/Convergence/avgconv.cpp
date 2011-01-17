@@ -75,6 +75,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup preceding = calcAverage(ensemble, blocks[0]);
   for (vector<uint>::const_iterator ci = blocks.begin()+1; ci != blocks.end(); ++ci) {
     AtomicGroup avg = calcAverage(ensemble, *ci);
+    avg.alignOnto(preceding);
     double rmsd = preceding.rmsd(avg);
 
     cout << boost::format("%d\t%f\n") % *ci % rmsd;
