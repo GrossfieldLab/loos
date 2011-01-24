@@ -29,11 +29,13 @@
 
 
 #include <loos.hpp>
+#include <boost/program_options.hpp>
 #include "bcomlib.hpp"
 
 using namespace std;
 using namespace loos;
 using namespace Convergence;
+namespace po = boost::program_options;
 
 
 const bool debug = false;
@@ -56,8 +58,75 @@ struct Datum {
 
 
 
+// Configuration
 
 const bool length_normalize = true;
+const uint nsteps = 25;
+
+
+// Global options
+string model_name, traj_name, selection;
+vector<uint> blocksizes;
+bool local_average;
+uint nreps;
+uint seed;
+
+
+void parseOptions(int argc, char *argv[]) {
+
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("seed,s", po::value<uint>(), "Seed for RNG")
+      ("blocks,b", po::value<string>(), "Block sizes (MATLAB style range)")
+      ("replicates,r", po::value<uint>(&nreps)->default_value(20), "Number of replicates for bootstrap")
+      ("local,l", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&model_name), "model")
+      ("traj", po::value<string>(&traj_name), "trajectory")
+      ("selection", po::value<string>(&selection), "selection");
+    
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+    p.add("selection", 1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("selection"))) {
+      cerr << "Usage- " << argv[0] << " [options] model trajectory selection >output\n";
+      cerr << generic;
+      exit(-1);
+    }
+
+    if (vm.count("blocks")) {
+      string s = vm["blocks"].as<string>();
+      blocksizes = parseRangeList<uint>(s);
+    }
+
+    if (vm.count("seed")) {
+      seed = vm["seed"].as<uint>();
+      rng_singleton().seed(seed);
+    } else
+      seed = randomSeedRNG();
+
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
+    exit(-1);
+  }
+}
+
 
 
 
@@ -128,27 +197,30 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, const vGroup& ensemble,
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  int k=1;
 
-  if (argc != 8) {
-    cerr << "Usage- " << argv[0] << " model traj sel replicates [0|seed] [1=local avg|0=global avg] blocks\n";
-    exit(0);
+  parseOptions(argc, argv);
+
+  cout << "# " << hdr << endl;
+  cout << "# replicates = " << nreps << ", local_average = " << local_average << endl;
+  cout << "# length_normalize = " << length_normalize << endl;
+
+  AtomicGroup model = createSystem(model_name);
+  pTraj traj = createTrajectory(traj_name, model);
+
+  AtomicGroup subset = selectAtoms(model, selection);
+
+  if (blocksizes.empty()) {
+    uint n = traj->nframes();
+    uint half = n / 2;
+    uint step = half / nsteps;
+    if (step < 1)
+      step = 1;
+    cout << "# Auto block-sizes - " << step << ":" << step << ":" << half << endl;
+
+    for (uint i = step; i <= half; i += step)
+      blocksizes.push_back(i);
   }
 
-  AtomicGroup model = createSystem(argv[k++]);
-  pTraj traj = createTrajectory(argv[k++], model);
-
-  AtomicGroup subset = selectAtoms(model, argv[k++]);
-  int nreps = strtol(argv[k++],0, 10);
-  uint seed = strtol(argv[k++],0, 10);
-  if (seed == 0)
-    seed = randomSeedRNG();
-  else
-    rng_singleton().seed(static_cast<ulong>(seed));
-
-  int local_flag = atoi(argv[k++]);
-
-  vector<uint> blocksizes = parseRangeList<uint>(argv[k++]);
 
   vector<AtomicGroup> ensemble;
   readTrajectory(ensemble, subset, traj);
@@ -156,7 +228,7 @@ int main(int argc, char *argv[]) {
   // First, get the complete PCA result...
   boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble);
   AtomicGroup avg = averageStructure(ensemble);
-  NoAlignPolicy policy(avg, local_flag);
+  NoAlignPolicy policy(avg, local_average);
   boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
 
   RealMatrix Us = boost::get<0>(res);
@@ -169,8 +241,6 @@ int main(int argc, char *argv[]) {
 
 
   
-  cout << "# " << hdr << endl;
-  cout << "# Config flags: length_normalize=" << length_normalize << endl;
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
   cout << "# seed = " << seed << endl;
   cout << "# n\tCoverlap\tVariance\tN_blocks\n";

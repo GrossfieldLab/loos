@@ -38,9 +38,10 @@ namespace Convergence {
 
   void subtractStructure(loos::RealMatrix& M, const loos::AtomicGroup& model);
 
+  
+  // ** Various policies that determine how blocks are aligned and averaged **
 
-  // Various policies that determine how blocks are aligned and averaged...
-
+  // Align to the passed structure
   struct AlignToPolicy {
     AlignToPolicy(const loos::AtomicGroup& targ) : target(targ), local_average(true) { }
     AlignToPolicy(const loos::AtomicGroup& targ, const bool flag) : target(targ), local_average(flag) { }
@@ -64,6 +65,7 @@ namespace Convergence {
   };
 
 
+  // Do no aligning
   struct NoAlignPolicy {
     NoAlignPolicy() : local_average(true) { }
     NoAlignPolicy(const loos::AtomicGroup& avg_) : avg(avg_), local_average(false) { }
@@ -85,6 +87,12 @@ namespace Convergence {
   };
 
 
+
+
+
+  // Compute the PCA of an ensemble using the specified coordinate
+  // extraction policy...
+  //
 
   template<class ExtractPolicy>
   boost::tuple<loos::RealMatrix, loos::RealMatrix> pca(std::vector<loos::AtomicGroup>& ensemble, ExtractPolicy& extractor) {

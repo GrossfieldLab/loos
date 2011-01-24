@@ -51,24 +51,20 @@ typedef vector<vUint>        vvUint;
 const bool debugging = false;
 
 
-double mfpt(const vector<int>& assign, const uint x, const uint y) {
+double mfpt(const vector<uint>& assign, const uint x, const uint y) {
   double fpt = 0.0;
   uint n = 0;
 
   bool state = false;
   uint start = 0;
   for (uint j=0; j<assign.size(); ++j) {
-    if (assign[j] < 0) {
-      cerr << "ERROR- unassigned frame found at position " << j << endl;
-      exit(-10);
-    }
     if (!state) {
-      if (static_cast<uint>(assign[j]) == x) {
+      if (assign[j] == x) {
         start = j;
         state = true;
       }
     } else {
-      if (static_cast<uint>(assign[j]) == y) {
+      if (assign[j] == y) {
         fpt += (j - start);
         ++n;
         state = false;
@@ -85,9 +81,9 @@ double mfpt(const vector<int>& assign, const uint x, const uint y) {
 DoubleMatrix computeRates(const string& fname) {
   ifstream ifs(fname.c_str());
 
-  vector<int> assignments = readIndexMap(ifs);
+  vector<uint> assignments = readVector<uint>(ifs);
   uint nbins = 0;
-  for (vector<int>::iterator i = assignments.begin(); i != assignments.end(); ++i)
+  for (vector<uint>::iterator i = assignments.begin(); i != assignments.end(); ++i)
     if (*i > 0 && static_cast<uint>(*i) > nbins)
       nbins = *i;
   
@@ -146,7 +142,7 @@ vector<uPair>  sortRates(const DoubleMatrix& M) {
   for (vector<RatePair>::iterator i = rates.begin(); i != rates.end(); ++i) {
     pairs.push_back(i->pair);
     if (debugging)
-      cerr << boost::format("%d %d\n") % i->pair.first % i->pair.second;
+      cerr << boost::format("%d %d = %f\n") % i->pair.first % i->pair.second % i->rate;
   }
   
   if (debugging)

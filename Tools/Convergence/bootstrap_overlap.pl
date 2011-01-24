@@ -40,7 +40,7 @@ my $units = 'ns';
 my @seeds;
 my $replot = 0;
 my $npts = 100;
-my $parallel = 1;
+my $parallel = 0;
 
 my $hdr = &header($0, \@ARGV);
 
@@ -94,12 +94,12 @@ if ($#seeds < 0) {
 
 if (!$replot) {
   if ($parallel) {
-    my $child = &forkCommand("bcom $model $traj '$sel' 1 $range >$prefix.bcom.asc");
-    &runCommand("boot_bcom $model $traj '$sel' $nreps 0 1 $range >$prefix.boot_bcom.asc");
+    my $child = &forkCommand("bcom --blocks $range $model $traj '$sel' >$prefix.bcom.asc");
+    &runCommand("boot_bcom --blocks $range --replicates $nreps $model $traj '$sel' >$prefix.boot_bcom.asc");
     my $stat = waitpid $child, 0;
   } else {
-    &runCommand("bcom $model $traj '$sel' 1 $range >$prefix.bcom.asc");
-    &runCommand("boot_bcom $model $traj '$sel' $nreps 0 1 $range >$prefix.boot_bcom.asc");
+    &runCommand("bcom  --blocks $range $model $traj '$sel' >$prefix.bcom.asc");
+    &runCommand("boot_bcom --blocks $range --replicates $nreps $model $traj '$sel' >$prefix.boot_bcom.asc");
   }
   
   &mergeFiles("$prefix.conv.asc", "$prefix.bcom.asc", "$prefix.boot_bcom.asc");

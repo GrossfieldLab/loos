@@ -84,9 +84,9 @@ vvUint readStates(const string& fname) {
   return(states);
 }
 
-vector<int> readAssignments(const string& fname) {
+vector<uint> readAssignments(const string& fname) {
   ifstream ifs(fname.c_str());
-  return(readIndexMap(ifs));
+  return(readVector<uint>(ifs));
 }
 
 vUint mapStates(const vvUint& states) {
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   int k = 1;
-  vector<int> assignments = readAssignments(argv[k++]);
+  vector<uint> assignments = readAssignments(argv[k++]);
 
   vvUint states = readStates(argv[k++]);
   uint N = states.size();

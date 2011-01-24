@@ -46,7 +46,9 @@ typedef std::vector<double>             vecDouble;
 
 vecUint findFreeFrames(const vecInt& map);
 
-boost::tuple<vecInt, vecUint, vecGroup, vecDouble> assignFrames(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const double f);
+vecUint assignStructures(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const vecGroup& refs);
+vecUint trimFrames(const vecUint& frames, const double frac);
+boost::tuple<vecGroup, vecUint> pickFiducials(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const double f);
 
 int findMaxBin(const vecInt& assignments);
 vecUint histogramBins(const vecInt& assignments);

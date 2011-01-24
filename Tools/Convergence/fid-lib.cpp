@@ -49,10 +49,48 @@ vecUint findFreeFrames(const vecInt& map) {
 
 
 
+vecUint assignStructures(AtomicGroup& model, pTraj& traj, const vecUint& frames, const vecGroup& refs) {
+  vecUint assignments(frames.size(), 0);
+  uint j = 0;
+
+  for (vecUint::const_iterator frame = frames.begin(); frame != frames.end(); ++frame) {
+    traj->readFrame(*frame);
+    traj->updateGroupCoords(model);
+
+    double mind = numeric_limits<double>::max();
+    uint mini = refs.size() + 1;
+    
+    for (uint i = 0; i < refs.size(); ++i) {
+      double d = model.rmsd(refs[i]);
+      if (d < mind) {
+        mind = d;
+        mini = i;
+      }
+    }
+
+    assignments[j++] = mini;
+  }
+
+  return(assignments);
+}
+
+
+vecUint trimFrames(const vecUint& frames, const double frac) {
+  uint bin_size = frac * frames.size();
+  uint remainder = frames.size() - static_cast<uint>(bin_size / frac);
+
+  vecUint truncated;
+  vecUint::const_iterator vi = frames.begin();
+  for (uint i = 0; i<frames.size() - remainder; ++i)
+    truncated.push_back(*vi++);
+  
+  return(truncated);
+}
 
 
 
-boost::tuple<vecInt, vecUint, vecGroup, vecDouble> assignFrames(AtomicGroup& model, pTraj& traj, const vecUint& frames, const double f) {
+
+boost::tuple<vecGroup, vecUint> pickFiducials(AtomicGroup& model, pTraj& traj, const vecUint& frames, const double f) {
 
   uint bin_size = f * frames.size();
   boost::uniform_real<> rmap;
@@ -112,7 +150,7 @@ boost::tuple<vecInt, vecUint, vecGroup, vecDouble> assignFrames(AtomicGroup& mod
     if (*i < 0)
       throw(runtime_error("A frame was not assigned in binFrames()"));
 
-  boost::tuple<vecInt, vecUint, vecGroup, vecDouble> result(assignments, refs, fiducials, radii);
+  boost::tuple<vecGroup, vecUint> result(fiducials, refs);
   return(result);
 }
 

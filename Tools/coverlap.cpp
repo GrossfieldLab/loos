@@ -298,7 +298,7 @@ int main(int argc, char *argv[]) {
     else
       rng_singleton().seed(seed);
 
-    boost::tuple<double,double> overlap = zCovarianceOverlap(lSS, lUU, rSS, rUU, ntries);
+    boost::tuple<double,double,double> overlap = zCovarianceOverlap(lSS, lUU, rSS, rUU, ntries);
     cout << "Covariance overlap: " << boost::get<1>(overlap) << endl;
     cout << "Z-score: " << boost::get<0>(overlap) << endl;
   }
