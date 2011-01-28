@@ -40,13 +40,16 @@ using namespace loos;
 namespace po = boost::program_options;
 
 string system_filename;
-string traj_filename;
+string timeseries_filename;
 int skip;
 string selection;
 int first_carbon, last_carbon;
 int axis_index;
 bool one_res_lipid = false;
 bool three_res_lipid = false;
+
+bool dump_timeseries;
+string traj_filename;
 
 void parseOptions(int argc, char *argv[])
     {
@@ -58,7 +61,8 @@ void parseOptions(int argc, char *argv[])
             ("1", "Use 1 residue lipids")
             ("3", "Use 3 residue lipids")
             ("y_axis,y", "Use y axis as magnetic field")
-            ("x_axis,x", "Use x axis as magnetic field");
+            ("x_axis,x", "Use x axis as magnetic field")
+            ("timeseries,t", po::value<string>(&timeseries_filename), "File name for outputing timeseries");
 
         po::options_description hidden("Hidden options");
         hidden.add_options()
@@ -121,7 +125,7 @@ void parseOptions(int argc, char *argv[])
         // Verify sanity of options for which axis to use as magnetic field direction
         if (vm.count("y_axis") && vm.count("x_axis"))
             {
-            cerr << "Can't specific \"--y_axis\" and \"--x_axis\" at the same time"
+            cerr << "Can't specify \"--y_axis\" and \"--x_axis\" at the same time"
                  << endl
                  << "You can only compute the order parameters for 1 magnetic field "
                  << endl
@@ -140,6 +144,16 @@ void parseOptions(int argc, char *argv[])
         else  // default to using the z-axis
             {
             axis_index = 2;
+            }
+
+        // Did the user request time series output?
+        if (vm.count("timeseries"))
+            {
+            dump_timeseries = true;
+            }
+        else
+            {
+            dump_timeseries = false;
             }
 
         }
@@ -310,26 +324,57 @@ for (unsigned int i=0; i<selections.size(); i++)
 #endif
 
 
+
 // skip the equilibration frames
 traj->readFrame(skip);
 
+const int num_frames = traj->nframes() - skip;
 
-// set up storage to accumulate the averages
-// we're going to dump all of the data from a given selection into one
-// big lump, so the dimension of sums and counts should match the number of 
-// selections specified 
-vector<float> sums;
-vector<float> sums2;
+// We're going to accumulate the time series of average values for each
+// carbon position, and turn this into an average at the end.
+// This will let us do better uncertainty analysis.
+vector<vector<float> > values;
 vector<int> counts;
-sums.insert(sums.begin(), selections.size(), 0.0);
-sums2.insert(sums2.begin(), selections.size(), 0.0);
+values.resize(selections.size());
+for (uint i=0; i<values.size(); i++)
+    {
+    values[i].insert(values[i].begin(), num_frames, 0.0);
+    }
 counts.insert(counts.begin(), selections.size(), 0);
 
-// loop over pdb files
+ofstream timeseries_outfile;
+if (dump_timeseries)
+    {
+    timeseries_outfile.open(timeseries_filename.c_str());
+    if (!timeseries_outfile.good())
+        {
+        cerr << "Error opening time series output file " 
+             << timeseries_filename
+             << endl
+             << "Proceeding without outputing time series"
+             << endl;
+        dump_timeseries = false;
+        }
+    else
+        {
+        // write the header
+        timeseries_outfile <<"# Timestep\t";
+        for (int i=first_carbon; i<=last_carbon; i++)
+            {
+            timeseries_outfile << i << "\t";
+            }
+        timeseries_outfile << endl;
+        }
+        
+    }
+
+// loop over frames in the trajectory
+int frame_index = 0;
 while (traj->readFrame())
     {
     traj->updateGroupCoords(system);
 
+    
     // loop over sets of selected carbons
     for (unsigned int i=0; i<selections.size(); i++)
         {
@@ -349,13 +394,31 @@ while (traj->readFrame())
                 double length = v.length();
                 double cos_val =  v[axis_index]/length;
                 double order = 0.5 - 1.5*cos_val*cos_val;
-                sums[i] += order;
-                sums2[i] += order*order;
-            
+                values[i][frame_index] += order;
                 counts[i]++;
                 }
             }
         }
+    // turn the sum into an average
+    if (dump_timeseries)
+        {
+        timeseries_outfile << frame_index << "\t";
+        }
+    for (unsigned int i=0; i<selections.size(); i++)
+        {
+        values[i][frame_index] /= counts[i];
+        if (dump_timeseries)
+            {
+            timeseries_outfile << boost::format("%8.3f") % values[i][frame_index];
+            }
+        counts[i] = 0;
+        }
+    if (dump_timeseries)
+        {
+        timeseries_outfile << endl;
+        }
+
+    frame_index++;
     }
 
 // Print header
@@ -363,9 +426,9 @@ cout << "# Carbon  S_cd   +/-" << endl;
 
 for (unsigned int i = 0; i < selections.size(); i++)
     {
-    double ave = sums[i] / counts[i];
-    double ave2 = sums2[i] / counts[i];
-    double dev = sqrt(ave2 - ave*ave);
+    TimeSeries<float> t(values[i]);
+    double ave = t.average();
+    double dev = t.stdev();
 
     // get carbon number
     pAtom pa = selections[i].getAtom(0);
@@ -378,6 +441,7 @@ for (unsigned int i = 0; i < selections.size(); i++)
     cout << endl;
 
     }
+
 
 }
 
