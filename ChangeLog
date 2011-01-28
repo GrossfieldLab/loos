@@ -1,3 +1,15 @@
+2011-01-28    <alan@membrane.urmc.rochester.edu>
+
+	* Modified Tools/order_params.  Now uses boost program options (command
+	line is similar, but not precisely backward compatible), has the option to
+	use y or x as the direction of the magnetic field, and has the option to
+	dump out the timeseries of the order parameters.  Specifically, the last
+	quantity is computes the average instantaneous order parameter for each
+	carbon position at each time point.  The "+/-" column in the output is the
+	stdev of these timeseries, which is _not_ a good measure of the
+	statistical uncertainty.  To get that, one should use block averaging on
+	the time series.
+
 2011-01-14    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::renumberWithBonds() that would blindly
