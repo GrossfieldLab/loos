@@ -45,6 +45,9 @@ namespace po = boost::program_options;
 string model_name, traj_name;
 string selection;
 int verbosity = 0;
+bool split_by_mol;
+bool split_by_segid;
+bool zabs;
 
 
 
@@ -59,6 +62,9 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help,h", "Produce this help message")
+      ("molecule,m", po::value<bool>(&split_by_mol)->default_value(false), "Split by molecule")
+      ("segid,s", po::value<bool>(&split_by_segid)->default_value(false), "Split by segid")
+      ("abs,a", po::value<bool>(&zabs)->default_value(false), "Use absolute Z-value")
       ("fullhelp", "Even more help");
 
 
@@ -107,33 +113,57 @@ string split(const loos::Coord<double>& g) {
 }
 
 
+void modifyZ(AtomicGroup& grp) {
+
+  for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i) {
+    GCoord c = (*i)->coords();
+    c.z() = abs(c.z());
+    (*i)->coords(c);
+  }
+}
+
+
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   parseOptions(argc, argv);
 
   cout << "# " << hdr << endl;
-  cout << "# 1 2  3  4  5   6    7    8    9    10      11  12  13  14:16 17:19 20:22\n";
-  cout << "# t cX cY cZ Vol BoxX BoxY BoxZ rgyr pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
   
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
+
+  vector<AtomicGroup> objects;
+  if (split_by_mol)
+    objects = subset.splitByMolecule();
+  else if (split_by_segid)
+    objects = subset.splitByUniqueSegid();
+  else
+    objects.push_back(subset);
+
+  cout << "# 1 2  3  4  5   6    7    8    9    10      11  12  13  14:16 17:19 20:22\n";
+  cout << "# t cX cY cZ Vol BoxX BoxY BoxZ rgyr pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
+
   
   pTraj traj = createTrajectory(traj_name, model);
 
   uint t=0;
   while (traj->readFrame()) {
     traj->updateGroupCoords(subset);
-    GCoord c = subset.centroid();
-    vector<GCoord> bdd = subset.boundingBox();
-    GCoord box = bdd[1] - bdd[0];
-    double vol = box[0] * box[1] * box[2];
-    vector<GCoord> paxes = subset.principalAxes();
-    double ratio = paxes[3][0] / paxes[3][1];
-    double rgyr = subset.radiusOfGyration();
-
-    cout << setw(10) << t <<  " " << split(c) << " " << vol << " " << split(box) << " " << rgyr << " ";
-    cout << ratio << " " << split(paxes[3]) << " " << split(paxes[0]) << " " << split(paxes[1]) << " " << split(paxes[2]) << endl;
+    if (zabs)
+      modifyZ(subset);
+    for (uint i=0; i<objects.size(); ++i) {
+      GCoord c = objects[i].centroid();
+      vector<GCoord> bdd = objects[i].boundingBox();
+      GCoord box = bdd[1] - bdd[0];
+      double vol = box[0] * box[1] * box[2];
+      vector<GCoord> paxes = objects[i].principalAxes();
+      double ratio = paxes[3][0] / paxes[3][1];
+      double rgyr = objects[i].radiusOfGyration();
+      
+      cout << setw(10) << t <<  " " << split(c) << " " << vol << " " << split(box) << " " << rgyr << " ";
+      cout << ratio << " " << split(paxes[3]) << " " << split(paxes[0]) << " " << split(paxes[1]) << " " << split(paxes[2]) << endl;
+    }
     
     ++t;
   }
