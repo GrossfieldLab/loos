@@ -62,6 +62,7 @@ vector<uint> file_binding;       // Links global frame # to the corresponding fi
 vector<uint> local_indices;      // Maps global frame numbers into local frame numbers
 uint stride = 0;                 // Step through frames by this amount
                                  // (unless ranges were specified)
+uint skip = 0;
 string model_name, out_name;
 vector<string> traj_names;
 string selection;
@@ -273,6 +274,7 @@ void parseOptions(int argc, char *argv[]) {
       ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
       ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
       ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
+      ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at start of each trajectory")
       ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
       ("reimage,R", "Reimage by molecule")
@@ -377,8 +379,15 @@ uint bindFilesToIndices(AtomicGroup& model) {
     uint n = getNumberOfFrames(traj_names[j], model);
     if (verbose > 1)
       cout << boost::format("Trajectory \"%s\" has %d frames\n") % traj_names[j] % n;
-    total_frames += n;
-    for (uint i=0; i<n; ++i) {
+
+    if (n <= skip) {
+      cerr << boost::format("Warning- skipping trajectory \"%s\" which has only %d frames\n") % traj_names[j] % n;
+      continue;
+    }
+
+
+    total_frames += (n-skip);
+    for (uint i=skip; i<n; ++i) {
       file_binding.push_back(j);
       local_indices.push_back(i);
     }
