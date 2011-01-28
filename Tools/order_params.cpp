@@ -39,25 +39,12 @@ using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
 
-#if 0
-void Usage()
-    {
-    cerr << "Usage: order_params system traj skip selection "
-         << "first_carbon last_carbon [1|3]"
-         << endl
-         << endl;
-    cerr << "The code will attempt to deduce whether you're using "
-         << "one or three residues per lipid molecule.  To force it, "
-         << "give the value 1 or 3 as the last argument."
-         << endl;
-    }
-#endif
-
 string system_filename;
 string traj_filename;
 int skip;
 string selection;
 int first_carbon, last_carbon;
+int axis_index;
 bool one_res_lipid = false;
 bool three_res_lipid = false;
 
@@ -69,7 +56,9 @@ void parseOptions(int argc, char *argv[])
         generic.add_options()
             ("help,h", "Produce this help message")
             ("1", "Use 1 residue lipids")
-            ("3", "Use 3 residue lipids");
+            ("3", "Use 3 residue lipids")
+            ("y_axis,y", "Use y axis as magnetic field")
+            ("x_axis,x", "Use x axis as magnetic field");
 
         po::options_description hidden("Hidden options");
         hidden.add_options()
@@ -111,7 +100,7 @@ void parseOptions(int argc, char *argv[])
             exit(-1);
             }
 
-        // Verify sanity
+        // Verify sanity of the options for number of residues per lipid
         if (vm.count("1") && vm.count("3"))
             {
             cerr << "Can't select \"--1\" and \"--3\" at the same time" 
@@ -129,6 +118,30 @@ void parseOptions(int argc, char *argv[])
             three_res_lipid = true;
             }
 
+        // Verify sanity of options for which axis to use as magnetic field direction
+        if (vm.count("y_axis") && vm.count("x_axis"))
+            {
+            cerr << "Can't specific \"--y_axis\" and \"--x_axis\" at the same time"
+                 << endl
+                 << "You can only compute the order parameters for 1 magnetic field "
+                 << endl
+                 << "at a time.  Exiting..."
+                 << endl;
+            exit(-1);
+            }
+        if (vm.count("y_axis"))
+            {
+            axis_index = 1;
+            }
+        else if (vm.count("x_axis"))
+            {
+            axis_index = 0;
+            }
+        else  // default to using the z-axis
+            {
+            axis_index = 2;
+            }
+
         }
     catch(exception& e)
         {
@@ -142,47 +155,10 @@ void parseOptions(int argc, char *argv[])
 int main (int argc, char *argv[])
 {
 
-#if 0
-if ( (argc <= 1) || 
-     ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 7)
-   )
-    {
-    Usage();
-    exit(-1);
-    }
-#endif
-
 // parse the command line options
 parseOptions(argc, argv);
 
 cout << "# " << invocationHeader(argc, argv) << endl;
-
-#if 0
-// copy the command line variables to real variable names
-char *system_filename = argv[1];
-char *traj_filename = argv[2];
-int skip = atoi(argv[3]);
-char *sel= argv[4];
-int first_carbon = atoi(argv[5]);
-int last_carbon = atoi(argv[6]);
-#endif
-
-#if 0
-int one_or_three = 0;
-if (argc > 7)
-    {
-    one_or_three = atoi(argv[7]);
-    if ( (one_or_three != 1) && (one_or_three != 3) )
-        {
-        cerr << "If set, the last argument must be \"1\" or \"3\": "
-             << one_or_three
-             << endl;
-        Usage();
-        exit(-1);
-        }
-    }
-#endif 
 
 // Create the data structures for the system and trajectory
 AtomicGroup system = createSystem(system_filename);
@@ -206,6 +182,9 @@ if ( !one_res_lipid && !three_res_lipid)
     // it could be because the user just selected a subset of carbon positions
     // to look at; we'll guess 3-residues per and inform the user.  
     // If we find both, we're screwed, and will die screaming.
+    // Note: this gets CHARMM (pre- and post-C36 parameters) right, but hasn't been 
+    // tested on anything else.  GROMACS doesn't have hydrogens, so this whole code
+    // won't work, and I don't have access to anything else (eg AMBER GAFF).
     string sel1 = string("name =~ \"^C[1-9]$\"");
     string sel3 = string("name =~ \"^C[1-9][0-9][0-9]$\"");
     AtomicGroup a1, a3;
@@ -339,18 +318,11 @@ traj->readFrame(skip);
 // we're going to dump all of the data from a given selection into one
 // big lump, so the dimension of sums and counts should match the number of 
 // selections specified 
-vector<float> sums_x, sums_y, sums_z;
-vector<float> sums2_x, sums2_y, sums2_z;
+vector<float> sums;
+vector<float> sums2;
 vector<int> counts;
-sums_x.insert(sums_x.begin(), selections.size(), 0.0);
-sums2_x.insert(sums2_x.begin(), selections.size(), 0.0);
-
-sums_y.insert(sums_y.begin(), selections.size(), 0.0);
-sums2_y.insert(sums2_y.begin(), selections.size(), 0.0);
-
-sums_z.insert(sums_z.begin(), selections.size(), 0.0);
-sums2_z.insert(sums2_z.begin(), selections.size(), 0.0);
-
+sums.insert(sums.begin(), selections.size(), 0.0);
+sums2.insert(sums2.begin(), selections.size(), 0.0);
 counts.insert(counts.begin(), selections.size(), 0);
 
 // loop over pdb files
@@ -375,21 +347,11 @@ while (traj->readFrame())
                 {
                 GCoord v = carbon->coords() - h->coords();
                 double length = v.length();
-                double cos_val =  v.z()/length;
+                double cos_val =  v[axis_index]/length;
                 double order = 0.5 - 1.5*cos_val*cos_val;
-                sums_z[i] += order;
-                sums2_z[i] += order*order;
+                sums[i] += order;
+                sums2[i] += order*order;
             
-                cos_val =  v.x()/length;
-                order = 0.5 - 1.5*cos_val*cos_val;
-                sums_x[i] += order;
-                sums2_x[i] += order*order;
-            
-                cos_val =  v.y()/length;
-                order = 0.5 - 1.5*cos_val*cos_val;
-                sums_y[i] += order;
-                sums2_y[i] += order*order;
-
                 counts[i]++;
                 }
             }
@@ -397,40 +359,22 @@ while (traj->readFrame())
     }
 
 // Print header
-cout << "# Carbon  S_cd(z)   +/-   S_cd(x)   +/-   S_cd(y)   +/-" << endl;
+cout << "# Carbon  S_cd   +/-" << endl;
 
 for (unsigned int i = 0; i < selections.size(); i++)
     {
-    double ave_x = sums_x[i] / counts[i];
-    double ave2_x = sums2_x[i] / counts[i];
-    double dev_x = sqrt(ave2_x - ave_x*ave_x);
-
-    double ave_y = sums_y[i] / counts[i];
-    double ave2_y = sums2_y[i] / counts[i];
-    double dev_y = sqrt(ave2_y - ave_y*ave_y);
-
-    double ave_z = sums_z[i] / counts[i];
-    double ave2_z = sums2_z[i] / counts[i];
-    double dev_z = sqrt(ave2_z - ave_z*ave_z);
+    double ave = sums[i] / counts[i];
+    double ave2 = sums2[i] / counts[i];
+    double dev = sqrt(ave2 - ave*ave);
 
     // get carbon number
     pAtom pa = selections[i].getAtom(0);
     string name = pa->name();
     name.erase(0,1); // delete the C
     int index = atoi(name.c_str());
-
-#if 0
-    cout << index 
-         << "\t" << ave_z << "\t" << dev_z 
-         << "\t" << ave_x << "\t" << dev_x 
-         << "\t" << ave_y << "\t" << dev_y 
-         << endl;
-#endif
-    cout << boost::format("%d\t%8.3f%8.3f%8.3f%8.3f%8.3f%8.3f") %
+    cout << boost::format("%d\t%8.3f%8.3f") %
                           index % 
-                          ave_z % dev_z %
-                          ave_x % dev_x %
-                          ave_y % dev_y;
+                          ave % dev;
     cout << endl;
 
     }
