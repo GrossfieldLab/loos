@@ -48,8 +48,12 @@ int axis_index;
 bool one_res_lipid = false;
 bool three_res_lipid = false;
 
-bool dump_timeseries;
+bool dump_timeseries = false;
 string traj_filename;
+
+bool block_average = false;
+string block_filename;
+int ba_first, ba_last;
 
 void parseOptions(int argc, char *argv[])
     {
@@ -62,7 +66,10 @@ void parseOptions(int argc, char *argv[])
             ("3", "Use 3 residue lipids")
             ("y_axis,y", "Use y axis as magnetic field")
             ("x_axis,x", "Use x axis as magnetic field")
-            ("timeseries,t", po::value<string>(&timeseries_filename), "File name for outputing timeseries");
+            ("timeseries,t", po::value<string>(&timeseries_filename), "File name for outputing timeseries")
+            ("block_average,b", po::value<string>(&block_filename),"File name for block averaging data")
+            ("ba_first,f", po::value<int>(&ba_first), "Lower range of blocks to average over to calculate uncertainty")
+            ("ba_last,l", po::value<int>(&ba_last), "Upper range of blocks to average over to calculate uncertainty");
 
         po::options_description hidden("Hidden options");
         hidden.add_options()
@@ -154,6 +161,15 @@ void parseOptions(int argc, char *argv[])
         else
             {
             dump_timeseries = false;
+            }
+
+        // Did the user request block averaging?
+        // If so, set the boolean flag
+        if (vm.count("block_average"))
+            {
+            block_average = true;
+            if (!vm.count("ba_first")) ba_first = 2;
+            if (!vm.count("ba_last")) ba_first = 5;
             }
 
         }
@@ -417,27 +433,82 @@ while (traj->readFrame())
         {
         timeseries_outfile << endl;
         }
-
     frame_index++;
     }
 
 // Print header
-cout << "# Carbon  S_cd   +/-" << endl;
+if (!block_average)
+    {
+    cout << "# Carbon  S_cd   +/-" << endl;
+    }
+else
+    {
+    cout << "# Carbon  S_cd   +/-     BSE" << endl;
+    }
+
+ofstream ba_outfile;
+int ba_maxblocks = -1;
+if (block_average)
+    {
+    ba_outfile.open(block_filename.c_str());
+    if (!ba_outfile.good())
+        {
+        cerr << "Failed opening block averaging output file " 
+             << block_filename 
+             << endl
+             << "Turning off block averaging"
+             << endl;
+        block_average = false;
+        }
+    else
+        {
+        // Write a header
+        ba_outfile << "# Carb\tBlock\tBlockSize\tStdErr" << endl;
+
+        // Figure out the maximum number of blocks to try
+        ba_maxblocks = (int)(frame_index / 10.0);
+        }
+    }
+
 
 for (unsigned int i = 0; i < selections.size(); i++)
     {
     TimeSeries<float> t(values[i]);
     double ave = t.average();
     double dev = t.stdev();
-
+    
     // get carbon number
     pAtom pa = selections[i].getAtom(0);
     string name = pa->name();
     name.erase(0,1); // delete the C
     int index = atoi(name.c_str());
-    cout << boost::format("%d\t%8.3f%8.3f") %
-                          index % 
-                          ave % dev;
+
+    float sum = 0.0;
+    cout << boost::format("%d\t%8.5f%8.5f") %
+                      index % 
+                      ave % dev;
+    if (block_average)
+        {
+        for (int j=2; j<ba_maxblocks; j++)
+            {
+            float variance = t.block_var(j);
+            float std_err = sqrt(variance/j);
+
+            // The "plateau" region of many block averaging plots
+            // is noisy, so we average over a range of block sizes
+            if ( (j >= ba_first) && (j <= ba_last) )
+                {
+                sum += std_err;
+                }
+            float block_size = frame_index / j;
+            ba_outfile << boost::format("%d\t%d\t%8.3f\t%8.5f") %
+                                        index % j % block_size % std_err;
+            ba_outfile << endl;
+            }
+        ba_outfile << endl;
+        float bse = sum / (ba_last - ba_first + 1);
+        cout << boost::format("%8.5f") % bse;
+        }
     cout << endl;
 
     }
