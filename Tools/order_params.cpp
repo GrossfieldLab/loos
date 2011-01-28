@@ -32,11 +32,14 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
+#include <boost/program_options.hpp>
+
 
 using namespace std;
 using namespace loos;
+namespace po = boost::program_options;
 
-
+#if 0
 void Usage()
     {
     cerr << "Usage: order_params system traj skip selection "
@@ -48,9 +51,98 @@ void Usage()
          << "give the value 1 or 3 as the last argument."
          << endl;
     }
+#endif
+
+string system_filename;
+string traj_filename;
+int skip;
+string selection;
+int first_carbon, last_carbon;
+bool one_res_lipid = false;
+bool three_res_lipid = false;
+
+void parseOptions(int argc, char *argv[])
+    {
+    try
+        {
+        po::options_description generic("Allowed options");
+        generic.add_options()
+            ("help,h", "Produce this help message")
+            ("1", "Use 1 residue lipids")
+            ("3", "Use 3 residue lipids");
+
+        po::options_description hidden("Hidden options");
+        hidden.add_options()
+            ("model", po::value<string>(&system_filename), "Model filename")
+            ("traj", po::value<string>(&traj_filename), "Trajectory filename")
+            ("sel", po::value<string>(&selection), "Selection string for carbons")
+            ("skip", po::value<int>(&skip), "Frames to skip")
+            ("first_carbon", po::value<int>(&first_carbon), "Number of first carbon")
+            ("last_carbon", po::value<int>(&last_carbon), "Number of last carbon");
+            
+        po::options_description command_line;
+        command_line.add(generic).add(hidden);
+
+        po::positional_options_description p;
+        p.add("model", 1);
+        p.add("traj", 1);
+        p.add("skip", 1);
+        p.add("sel", 1);
+        p.add("first_carbon", 1);
+        p.add("last_carbon", 1);
+
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc,argv).
+                options(command_line).positional(p).run(), vm);
+        po::notify(vm);
+
+        if (vm.count("help")              ||
+                !vm.count("model")        || !vm.count("traj")         ||
+                !vm.count("skip")         || !vm.count("sel")          ||
+                !vm.count("first_carbon") || !vm.count("last_carbon")
+           )
+            {
+            cerr << "Usage: " << argv[0] << " "
+                 << "model-name trajectory-name skip-frames selection-string "
+                 << "first-carbon last-carbon "
+                 << "[--1|--3]"
+                 << endl;
+            cerr << generic;
+            exit(-1);
+            }
+
+        // Verify sanity
+        if (vm.count("1") && vm.count("3"))
+            {
+            cerr << "Can't select \"--1\" and \"--3\" at the same time" 
+                 << endl
+                 << "Your lipids either have 1 residue or 3, not both" 
+                 << endl;
+            exit(-1);
+            }
+        else if (vm.count("1"))
+            {
+            one_res_lipid = true;
+            }
+        else if (vm.count("3"))
+            {
+            three_res_lipid = true;
+            }
+
+        }
+    catch(exception& e)
+        {
+        cerr << "Error - " << e.what() << endl;
+        exit(-1);
+        }
+
+    }
+
 
 int main (int argc, char *argv[])
 {
+
+#if 0
 if ( (argc <= 1) || 
      ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
      (argc < 7)
@@ -59,18 +151,24 @@ if ( (argc <= 1) ||
     Usage();
     exit(-1);
     }
+#endif
+
+// parse the command line options
+parseOptions(argc, argv);
 
 cout << "# " << invocationHeader(argc, argv) << endl;
 
+#if 0
 // copy the command line variables to real variable names
-
 char *system_filename = argv[1];
 char *traj_filename = argv[2];
 int skip = atoi(argv[3]);
 char *sel= argv[4];
 int first_carbon = atoi(argv[5]);
 int last_carbon = atoi(argv[6]);
+#endif
 
+#if 0
 int one_or_three = 0;
 if (argc > 7)
     {
@@ -84,6 +182,7 @@ if (argc > 7)
         exit(-1);
         }
     }
+#endif 
 
 // Create the data structures for the system and trajectory
 AtomicGroup system = createSystem(system_filename);
@@ -94,10 +193,11 @@ pTraj traj = createTrajectory(traj_filename, system);
 // NOTE: We assume the selection is a list of all of the relevant carbon atoms. 
 //       We'll split it into the individual carbon positions ourselves, then
 //       figure out the relevant hydrogens from connectivity.
-AtomicGroup main_selection = selectAtoms(system, sel);
+AtomicGroup main_selection = selectAtoms(system, selection);
 
 // Do we need to figure out how many residues per lipid?
-if ( (one_or_three != 1) && (one_or_three != 3) )
+// If both are false, then neither option was set on the command line
+if ( !one_res_lipid && !three_res_lipid)
     {
     // Number of residues per lipid wasn't set, try to figure it out.
     // If we find things that look like "C3" (one number after the carbon),
@@ -130,7 +230,7 @@ if ( (one_or_three != 1) && (one_or_three != 3) )
         {
         // found only 1 digit numbers and no 3 digit numbers,
         // so it must be 3 residues per lipid
-        one_or_three = 3;
+        three_res_lipid = true;
         cout << "# guessing there are 3 residues per lipid"
              << endl;
         }
@@ -138,7 +238,7 @@ if ( (one_or_three != 1) && (one_or_three != 3) )
         {
         // found only 3 digit numbers and no 1 digit ones, so
         // it must be 1 residue per lipid
-        one_or_three = 1;
+        one_res_lipid = true;
         cout << "# guessing there is 1 residue per lipid"
              << endl;
         }
@@ -164,23 +264,27 @@ if ( (one_or_three != 1) && (one_or_three != 3) )
         cerr << "but if this guess is wrong, you'll need to rerun with "
              << "the correct value specified."
              << endl;
-        one_or_three = 3;
+        three_res_lipid = true;
         }
     }
+
+// At this point, we must have either three_res_lipid or one_res_lipid set.
+// This means we only have to test one to decide what to do.
+assert(one_res_lipid != three_res_lipid);
 
 // Now break into individual carbons
 vector<AtomicGroup> selections;
 for (int i =first_carbon; i<=last_carbon; i++)
     {
-    string sel_string = string(sel);
     char carbon_name[4];
+    string sel_string = selection;
     sprintf(carbon_name, "%d", i);
     string name;
-    if (one_or_three == 3)
+    if (three_res_lipid)
         {
         name = string(" && name == \"C");
         }
-    else if (one_or_three == 1)
+    else  // implies one_res_lipid is true
         {
         name = string(" && name =~ \"C[23]");
         }
