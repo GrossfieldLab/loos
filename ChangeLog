@@ -8,7 +8,12 @@
 	carbon position at each time point.  The "+/-" column in the output is the
 	stdev of these timeseries, which is _not_ a good measure of the
 	statistical uncertainty.  To get that, one should use block averaging on
-	the time series.
+	the time series.  This is also an option -- in principle, you read off the
+	plateau value from the block averaging plot, but since this plateau is
+	noisy, I make you specify a range of block sizes over which to average
+	(the defaults are 2 blocks to 5 blocks, but you really should run the
+	program twice, and the first time look at the block averaging plots to see
+	where the block standard error converges.
 
 2011-01-14    <tromo@spade.biophysics.rochester.edu>
 
