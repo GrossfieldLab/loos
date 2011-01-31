@@ -855,9 +855,24 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
    <DT><B>order_params</B>
    <DD>Compute the deuterium quadrupolar splitting order parameters for lipid
-   molecules.  The model file must have connectivity information.  As of 
-   version 1.5.5, 1 residue per lipid format (as used by the CHARMM36 
-   parameters) is supported, in addition to 3 residues per lipid.
+   molecules.  The model file must have connectivity information.  The current 
+   version supports both 3 residues/lipid and 1 residue/lipid topology files, 
+   and can optionally compute order parameters relative to the x and y
+   axes.  In addition, a more careful estimate of statistical
+   uncertainties is available using block averaging.  
+
+   If you wish to use block averaging to estimate the errors, we suggest
+   running the tool twice: the first time will give you the block standard
+   error as a function of block size, and you can read out the true
+   standard error as the plateau value at large block size.  Because the
+   plateau region is often noisy (since the number of blocks is getting
+   small), the code offers you the ability to estimate the plateau value by
+   averaging over a range of numbers of blocks.  This defaults to using the
+   estimates from 2 blocks through 5 blocks, but you should check the plots
+   yourself to make sure this is appropriate for your data set.  For more
+   on block averaging, see the review by Grossfield and Zuckerman,
+   "Quantifying uncertainty and sampling quality in biomolecular
+   simulations", Annual Reports in Computational Chemistry, 2009, 5, 23-48.
 
 
    <DT><B>paxes</B>
