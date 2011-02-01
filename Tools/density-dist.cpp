@@ -32,135 +32,164 @@
 #include <ctype.h>
 
 #include <loos.hpp>
+#include <boost/program_options.hpp>
+
 
 using namespace std;
 using namespace loos;
+namespace po = boost::program_options;
 
+// Globals
 
-void Usage()
-    {
-    cerr << "Usage: density-dist "
-         << " system traj E|C|M num_frames_to_skip min_z max_z num_bins"
-         << " [extra_selection_1 ...]"
-         << endl;
-    cerr << "Note: the system file must specify the mass and charge" << endl;
+enum CalculationType { ELECTRON, CHARGE, MASS };
+
+CalculationType calc_type;
+bool symmetrize;
+uint skip, nbins;
+double min_z, max_z;
+string model_name, traj_name;
+vector<string> selections;
+
+void parseOptions(int argc, char *argv[]) {
+  string calc_type_desc;
+
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of starting frames to skip")
+      ("zsymmetry,z", po::value<bool>(&symmetrize)->default_value(false), "Symmetric with respect to Z")
+      ("type,t", po::value<string>(&calc_type_desc)->default_value("mass"), "Calculation type (mass, charge, electron)");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&model_name), "model")
+      ("traj", po::value<string>(&traj_name), "trajectory")
+      ("nbins", po::value<uint>(&nbins), "nbins")
+      ("minz", po::value<double>(&min_z), "minz")
+      ("maxz", po::value<double>(&max_z), "max_z")
+      ("selection", po::value< vector<string> >(&selections), "selections");
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+    p.add("minz", 1);
+    p.add("maxz", 1);
+    p.add("nbins", 1);
+    p.add("selection", -1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+    
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("nbins") && vm.count("minz") && vm.count("maxz"))) {
+      cerr << "Usage- " << argv[0] << " [options] model trajectory min-z max-z nbins [selection ...] >output\n";
+      cerr << generic;
+      exit(-1);
     }
+    
+    if (toupper(calc_type_desc[0]) == 'C')
+      calc_type = CHARGE;
+    else if (toupper(calc_type_desc[0]) == 'E')
+      calc_type = ELECTRON;
+    else if (toupper(calc_type_desc[0]) == 'M')
+      calc_type = MASS;
+    else {
+      cerr << "Error- unknown calculation type '" << calc_type_desc << "' (should be either charge, mass or electron)\n";
+      exit(-1);
+    }
+
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
+    exit(-1);
+  }
+}
+
 
 int main(int argc, char *argv[]) {
 
-    if ( (argc <= 1) || 
-         (strncmp(argv[1], "-h", 2) == 0) ||
-         (argc < 8) ) {
-        Usage();
-        exit(-1);
-    }
-
-    cout << "# " << invocationHeader(argc, argv) << endl;
+  string hdr = invocationHeader(argc, argv);
+  parseOptions(argc, argv);
 
 
-    AtomicGroup system = createSystem(argv[1]);
-    pTraj traj = createTrajectory(argv[2], system);
+  cout << "# " << hdr << endl;
 
 
-    char calc_type = toupper(*argv[3]); // bad programmer, no cookie for you
-    int num_skip = atoi(argv[4]);
-    double min_z = atof(argv[5]);
-    double max_z = atof(argv[6]);
-    int num_bins = atoi(argv[7]);
-
-    bool do_charge = false;
-    bool do_mass = false;
-    bool do_elec = false;
-
-    // Figure out if we're doing charge, electron density, or mass
-    if (calc_type == 'C')
-        do_charge = true;
-    else if (calc_type == 'E')
-        do_elec = true;
-    else if (calc_type == 'M')
-        do_mass = true;
-    else
-        throw(runtime_error("calc type must be C, E, or M"));
+  AtomicGroup system = createSystem(model_name);
+  pTraj traj = createTrajectory(traj_name, system);
 
 
-    // TODO: add an arbitrary number of selections, and track the charge 
-    // density from each selection
-    vector<AtomicGroup> subsets;
-    subsets.push_back(system);
-    for (int i=8; i<argc; i++) {
-        //Parser parser(argv[i]);
-        //KernelSelector parsed_sel(parser.kernel());
-        //AtomicGroup g = system.select(parsed_sel);
-        AtomicGroup g = selectAtoms(system, argv[i]);
-        subsets.push_back(g);
-    }
+  // density from each selection
+  vector<AtomicGroup> subsets;
+  subsets.push_back(system);
+  for (vector<string>::iterator i = selections.begin(); i != selections.end(); ++i)
+    subsets.push_back(selectAtoms(system, *i));
   
-    double bin_width = (max_z - min_z) / num_bins;
+  double bin_width = (max_z - min_z) / nbins;
+
+  // Create and zero out the total charge_distribution
+  vector< vector<double> > dists(subsets.size(), vector<double>(nbins, 0.0));
+
+  // skip the equilibration frames
+  traj->readFrame(skip);
   
-    // Create and zero out the total charge_distribution
-    vector< vector<double> > dists;
-    dists.reserve(subsets.size());
-    for (unsigned int i=0; i<=subsets.size(); i++) {
-        vector<double> *v = new vector<double>;
-        v->insert(v->begin(), num_bins, 0.0);
-        dists.push_back(*v);
-    }
-    // skip the equilibration frames
-    traj->readFrame(num_skip);
-  
-    // loop over the remaining frames
-    int frame = 0;
-    while (traj->readFrame()) {
-        // update coordinates
-        traj->updateGroupCoords(system);
+  // loop over the remaining frames
+  uint frame = 0;
+  while (traj->readFrame()) {
+    // update coordinates
+    traj->updateGroupCoords(system);
 
-        // Compute the bin volume for normalization purposes
-        GCoord box = system.periodicBox();
-        double bin_volume = bin_width * box.x() * box.y();
+    // Compute the bin volume for normalization purposes
+    GCoord box = system.periodicBox();
+    double bin_volume = bin_width * box.x() * box.y();
 
-        // Loop over the subsets and compute charge distribution.
-        // (first set is all atoms)
-        for (unsigned int i=0; i<subsets.size(); i++) {
-            pAtom pa;
-            AtomicGroup::Iterator iter(subsets[i]);
-            double weight;
-            while ( pa = iter() ) {
-                if (do_charge)
-                    weight = pa->charge();
-                else if (do_mass)
-                    weight = pa->mass();
-                else if (do_elec)
-                    weight = pa->atomic_number() - pa->charge();
-                else
-                    throw(runtime_error(
-                                    "must choose either charge, mass or elec"));
-                double z = pa->coords().z();
-
-                if ( (z > min_z) && (z < max_z) ) {
-                    int bin = (int)( (z - min_z) / bin_width );
-                    dists[i][bin] += weight/bin_volume;
-                }
-            }
+    // Loop over the subsets and compute charge distribution.
+    // (first set is all atoms)
+    for (uint i=0; i<subsets.size(); i++) {
+      double weight;
+      for (AtomicGroup::iterator atom = subsets[i].begin(); atom != subsets[i].end(); ++atom) {
+        switch(calc_type) {
+        case CHARGE: weight = (*atom)->charge(); break;
+        case MASS: weight = (*atom)->mass(); break;
+        case ELECTRON: weight = (*atom)->atomic_number() - (*atom)->charge(); break;
+        default:
+          cerr << "ERROR- unknown calculation type\n";
+          exit(-1);
         }
-    frame++;
+        double z = (*atom)->coords().z();
+        if (symmetrize)
+          z = abs(z);
+        
+        if ( (z > min_z) && (z < max_z) ) {
+          uint bin = (int)( (z - min_z) / bin_width );
+          dists[i][bin] += weight/bin_volume;
+        }
+      }
     }
+    ++frame;
+  }
 
-    // Normalize by the number of frames and output the average charge density
-    cout << "# Z\tAllAtoms";
-    for (unsigned int i=1; i<subsets.size(); i++) {
-        cout << " Set(" << i <<") "; 
+  // Normalize by the number of frames and output the average charge density
+  cout << "# Z\tAllAtoms";
+  for (uint i=1; i<subsets.size(); i++) {
+    cout << " Set(" << i <<") "; 
+  }
+  cout << endl;
+
+  for (uint i=0; i<nbins; i++) {
+    double z = (i+0.5)*bin_width + min_z;
+    cout << z << "\t"; 
+    for (uint j=0; j<subsets.size(); j++) {
+      double c = dists[j][i] / frame;
+      cout << c << "\t";
     }
     cout << endl;
-
-    for (int i=0; i<num_bins; i++) {
-        double z = (i+0.5)*bin_width + min_z;
-        cout << z << "\t"; 
-        for (unsigned int j=0; j<subsets.size(); j++) {
-            double c = dists[j][i] / frame;
-            cout << c << "\t";
-        }
-        cout << endl;
-    }
+  }
 
 
   
