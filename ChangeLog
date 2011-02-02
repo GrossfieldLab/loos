@@ -1,3 +1,9 @@
+2011-02-02    <alan@membrane>
+	* Modified Tools/density-dist to fold in the functionality from
+      density-dist-windowed.  The latter is marked deprecated.  Note: to get 
+	  around a design flaw in boost program options, you have to manually
+	  specify --minz and --maxz (because program options tries to grab
+	  negative numbers as options).
 2011-02-02    <tromo@spade>
 	* Modified Tools/density-dist to use boost program options, and added a 
 	  symmetrize flag to make the density symmetric about the membrane center.

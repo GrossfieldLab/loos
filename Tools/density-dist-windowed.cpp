@@ -50,6 +50,11 @@ void Usage()
 
 int main(int argc, char *argv[]) {
 
+    cout << "# This program is now deprecated: we suggest you use density-dist"
+         << " with the --window option instead."
+         << endl;
+
+
     if ( (argc <= 1) || 
          (strncmp(argv[1], "-h", 2) == 0) ||
          (argc < 10) ) {

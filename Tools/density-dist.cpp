@@ -46,8 +46,9 @@ enum CalculationType { ELECTRON, CHARGE, MASS };
 CalculationType calc_type;
 bool symmetrize;
 uint skip, nbins;
+uint window=0;
 double min_z, max_z;
-string model_name, traj_name;
+string model_name, traj_name, file_name_proto;
 vector<string> selections;
 
 void parseOptions(int argc, char *argv[]) {
@@ -59,15 +60,21 @@ void parseOptions(int argc, char *argv[]) {
       ("help", "Produce this help message")
       ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of starting frames to skip")
       ("zsymmetry,z", po::value<bool>(&symmetrize)->default_value(false), "Symmetric with respect to Z")
-      ("type,t", po::value<string>(&calc_type_desc)->default_value("mass"), "Calculation type (mass, charge, electron)");
+      ("type,t", po::value<string>(&calc_type_desc)->default_value("mass"), "Calculation type (mass, charge, electron)")
+      ("window,w", po::value<uint>(&window), "Window size (in frames) for time series")
+      ("filename,f", po::value<string>(&file_name_proto), "Root of file name for windowed time series")
+      ("minz", po::value<double>(&min_z), "minz")
+      ("maxz", po::value<double>(&max_z), "maxz")
+      ;
+      
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
       ("model", po::value<string>(&model_name), "model")
       ("traj", po::value<string>(&traj_name), "trajectory")
       ("nbins", po::value<uint>(&nbins), "nbins")
-      ("minz", po::value<double>(&min_z), "minz")
-      ("maxz", po::value<double>(&max_z), "max_z")
+      //("minz", po::value<double>(&min_z), "minz")
+      //("maxz", po::value<double>(&max_z), "maxz")
       ("selection", po::value< vector<string> >(&selections), "selections");
 
     po::options_description command_line;
@@ -76,16 +83,17 @@ void parseOptions(int argc, char *argv[]) {
     po::positional_options_description p;
     p.add("model", 1);
     p.add("traj", 1);
-    p.add("minz", 1);
-    p.add("maxz", 1);
+    //p.add("minz", 1);
+    //p.add("maxz", 1);
     p.add("nbins", 1);
     p.add("selection", -1);
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).
               options(command_line).positional(p).run(), vm);
+    //po::store(parse_command_line(argc, argv, command_line,po::command_line_style::unix_style ^ po::command_line_style::allow_short), vm);
     po::notify(vm);
-    
+
     if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("nbins") && vm.count("minz") && vm.count("maxz"))) {
       cerr << "Usage- " << argv[0] << " [options] model trajectory min-z max-z nbins [selection ...] >output\n";
       cerr << generic;
@@ -102,6 +110,13 @@ void parseOptions(int argc, char *argv[]) {
       cerr << "Error- unknown calculation type '" << calc_type_desc << "' (should be either charge, mass or electron)\n";
       exit(-1);
     }
+
+    if (vm.count("filename") != vm.count("window")) {
+        cerr << "If you want windowed time series, you must specify both a window size and a filename root"
+             << endl;
+        exit(-1);
+    }
+
 
   }
   catch(exception& e) {
@@ -134,6 +149,9 @@ int main(int argc, char *argv[]) {
 
   // Create and zero out the total charge_distribution
   vector< vector<double> > dists(subsets.size(), vector<double>(nbins, 0.0));
+  // If we do windowed time series too, we'll need to zero out as we go, which 
+  // means we'll need separate storage for the sum
+  vector< vector<double> > cum_dists(subsets.size(), vector<double>(nbins, 0.0));
 
   // skip the equilibration frames
   traj->readFrame(skip);
@@ -152,7 +170,9 @@ int main(int argc, char *argv[]) {
     // (first set is all atoms)
     for (uint i=0; i<subsets.size(); i++) {
       double weight;
-      for (AtomicGroup::iterator atom = subsets[i].begin(); atom != subsets[i].end(); ++atom) {
+      for (AtomicGroup::iterator atom = subsets[i].begin(); 
+                                 atom != subsets[i].end(); 
+                                 ++atom) {
         switch(calc_type) {
         case CHARGE: weight = (*atom)->charge(); break;
         case MASS: weight = (*atom)->mass(); break;
@@ -172,6 +192,54 @@ int main(int argc, char *argv[]) {
       }
     }
     ++frame;
+
+    // If windowed time series were requested, output them here
+    if (window && (frame % window == 0)) {
+        uint output_val = frame / window;
+
+        // build the output file name
+        char piece[128];
+        snprintf(piece, 128, "_%d.dat", output_val);
+        string file_name = file_name_proto + string(piece);
+        ofstream outfile(file_name.c_str());
+        if (!outfile.is_open() ) {
+            throw(runtime_error("couldn't open output file"));
+            }
+
+        // write the header
+        outfile << "# Z\tAllAtoms";
+        for (uint i=1; i<subsets.size(); i++) {
+          outfile << " Set(" << i <<") "; 
+        }
+        outfile << endl;
+
+        // Normalize by the number of frames and
+        // output the average density
+        for (uint i=0; i<nbins; i++) {
+            double z = (i+0.5)*bin_width + min_z;
+            outfile << z << "\t";
+            for (unsigned int j=0; j<subsets.size(); j++) {
+                double c = dists[j][i] / window;
+                outfile << c << "\t";
+            }
+            outfile << endl;
+        }
+
+        // Add the windowed density to the cumulative density and
+        // zero out the distributions
+        
+        for (uint i=0; i<dists.size(); i++) {
+            for (uint j=0; j<nbins; j++) {
+                cum_dists[i][j] += dists[i][j];
+            }
+
+            // zero out the windowed dist
+            dists[i].assign(dists[i].size(), 0.0);
+        }
+        
+    }
+
+
   }
 
   // Normalize by the number of frames and output the average charge density
@@ -181,11 +249,26 @@ int main(int argc, char *argv[]) {
   }
   cout << endl;
 
+  // If we didn't output windowed time series, we never used cum_dists, so we need 
+  // to copy it over here
+  // If we did, we may have some data in dists that hasn't been added to cum_dists yet
+  if (!window) {
+      cum_dists = dists;
+  }
+  else if (frame % window != 0){
+     for (uint i=0; i<dists.size(); i++) {
+         for (uint j=0; j<nbins; j++) {
+             cum_dists[i][j] += dists[i][j];
+         }
+     }
+  }
+
   for (uint i=0; i<nbins; i++) {
     double z = (i+0.5)*bin_width + min_z;
     cout << z << "\t"; 
     for (uint j=0; j<subsets.size(); j++) {
-      double c = dists[j][i] / frame;
+      double c = cum_dists[j][i] / frame;
+      
       cout << c << "\t";
     }
     cout << endl;
