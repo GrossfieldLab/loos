@@ -1,3 +1,11 @@
+2011-02-02    <tromo@spade>
+	* Modified Tools/density-dist to use boost program options, and added a 
+	  symmetrize flag to make the density symmetric about the membrane center.
+	  This assumes the trajectory has already been aligned with the
+	  membrane center at z=0 for each frame.  This can easily be accomplished
+	  when you merge and downsample your trajectories using merge-traj, which
+	  has an option to allow you to center a specific selection (eg your
+	  lipids).
 2011-01-28    <alan@membrane.urmc.rochester.edu>
 
 	* Modified Tools/order_params.  Now uses boost program options (command
