@@ -798,10 +798,14 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    information.
 
    <DT><B>density-dist</B>
-   <DD>Compute the charge/electron/mass density distribution for the system along
-   the z-axis. Produces the distribution for the whole system and an arbitrary
-   number of selections.  Requires a structure file format which supplies 
-   mass and/or charge.
+   <DD>Compute the charge/electron/mass density distribution for the system
+   along the z-axis. Produces the distribution for the whole system and an
+   arbitrary number of selections.  Requires a structure file format which
+   supplies mass and/or charge.  The newest version also has an option to
+   symmetrize the density distribution in z.  This assumes that the input
+   trajectory has already been set up with the membrane center at z=0.  You
+   can accomplish this using merge-traj, which can optionally recenter a
+   selection at every frame.
 
    <DT><B>density-dist-windowed</B>
    <DD>Compute the charge/electron/mass density distribution for the system along
