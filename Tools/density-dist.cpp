@@ -58,13 +58,11 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
-      ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of starting frames to skip")
-      ("zsymmetry,z", po::value<bool>(&symmetrize)->default_value(false), "Symmetric with respect to Z")
-      ("type,t", po::value<string>(&calc_type_desc)->default_value("mass"), "Calculation type (mass, charge, electron)")
-      ("window,w", po::value<uint>(&window), "Window size (in frames) for time series")
-      ("filename,f", po::value<string>(&file_name_proto), "Root of file name for windowed time series")
-      ("minz", po::value<double>(&min_z), "minz")
-      ("maxz", po::value<double>(&max_z), "maxz")
+      ("skip", po::value<uint>(&skip)->default_value(0), "Number of starting frames to skip")
+      ("zsymmetry", po::value<bool>(&symmetrize)->default_value(false), "Symmetric with respect to Z")
+      ("type", po::value<string>(&calc_type_desc)->default_value("electron"), "Calculation type (mass, charge, electron)")
+      ("window", po::value<uint>(&window), "Window size (in frames) for time series")
+      ("filename", po::value<string>(&file_name_proto), "Root of file name for windowed time series")
       ;
       
 
@@ -73,8 +71,8 @@ void parseOptions(int argc, char *argv[]) {
       ("model", po::value<string>(&model_name), "model")
       ("traj", po::value<string>(&traj_name), "trajectory")
       ("nbins", po::value<uint>(&nbins), "nbins")
-      //("minz", po::value<double>(&min_z), "minz")
-      //("maxz", po::value<double>(&max_z), "maxz")
+      ("minz", po::value<double>(&min_z), "minz")
+      ("maxz", po::value<double>(&max_z), "maxz")
       ("selection", po::value< vector<string> >(&selections), "selections");
 
     po::options_description command_line;
@@ -83,15 +81,14 @@ void parseOptions(int argc, char *argv[]) {
     po::positional_options_description p;
     p.add("model", 1);
     p.add("traj", 1);
-    //p.add("minz", 1);
-    //p.add("maxz", 1);
+    p.add("minz", 1);
+    p.add("maxz", 1);
     p.add("nbins", 1);
     p.add("selection", -1);
 
     po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
+    po::store(po::command_line_parser(argc, argv).style(po::command_line_style::unix_style ^ po::command_line_style::allow_short).
               options(command_line).positional(p).run(), vm);
-    //po::store(parse_command_line(argc, argv, command_line,po::command_line_style::unix_style ^ po::command_line_style::allow_short), vm);
     po::notify(vm);
 
     if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("nbins") && vm.count("minz") && vm.count("maxz"))) {
