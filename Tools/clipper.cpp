@@ -45,6 +45,7 @@ namespace po = boost::program_options;
 
 string model_name;
 string selection_name;
+string auto_selection;
 
 vector<GCoord> planes;
 bool byresidue = false;
@@ -98,6 +99,7 @@ void parseOptions(int argc, char *argv[]) {
       ("fullhelp", "Even more help")
       ("byres,b", "Clip by residue (rather than by atom)")
       ("selection,s", po::value<string>(&selection_name)->default_value("all"), "Selection to apply clipping planes to")
+      ("auto,a", po::value<string>(&auto_selection), "Automatically generate clipping planes for selection")
       ("cliponly,o", po::value<bool>(&cliponly)->default_value(false), "Set to 1 to only output the clipped selection, not the whole model");
 
 
@@ -118,8 +120,8 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || vm.count("fullhelp") || !vm.count("model") || clips.empty() || clips.size() % 3 != 0) {
-      cerr << "Usage- " << argv[0] << " [options] model-name (p1) (p2) (p3) [(p1) (p2) (p3) ...]\n";
+    if (vm.count("help") || vm.count("fullhelp") || !vm.count("model") || (clips.empty() && auto_selection.empty()) || clips.size() % 3 != 0) {
+      cerr << "Usage- " << argv[0] << " [options] model-name [(p1) (p2) (p3) ...]\n";
       cerr << generic;
       if (vm.count("fullhelp"))
         fullHelp();
@@ -149,6 +151,22 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
+void generateClippingPlanes(vector<GCoord>& planes, AtomicGroup& model, const string& sel) {
+
+  AtomicGroup subset = selectAtoms(model, sel);
+  vector<GCoord> axes = subset.principalAxes();
+  GCoord center = subset.centroid();
+  
+  planes.push_back(center);
+  planes.push_back(center + axes[0]);
+  planes.push_back(center + axes[1]);
+
+  cerr << "Automatically adding the following clipping plane:\n\t" << center << endl;
+  cerr << "\t" << center + axes[0] << endl;
+  cerr << "\t" << center + axes[1] << endl;
+}
+
+
 
 int main(int argc, char *argv[]) {
 
@@ -156,6 +174,9 @@ int main(int argc, char *argv[]) {
   parseOptions(argc, argv);
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection_name);
+
+  if (!auto_selection.empty())
+    generateClippingPlanes(planes, model, auto_selection);
 
   // First, make sure all atoms are unflagged
   for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
