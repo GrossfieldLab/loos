@@ -45,6 +45,7 @@ enum CalculationType { ELECTRON, CHARGE, MASS };
 
 CalculationType calc_type;
 bool symmetrize;
+bool auto_all;
 uint skip, nbins;
 uint window=0;
 double min_z, max_z;
@@ -58,6 +59,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("auto", po::value<bool>(&auto_all)->default_value(true), "Automatically compute system density")
       ("skip", po::value<uint>(&skip)->default_value(0), "Number of starting frames to skip")
       ("zsymmetry", po::value<bool>(&symmetrize)->default_value(false), "Symmetric with respect to Z")
       ("type", po::value<string>(&calc_type_desc)->default_value("electron"), "Calculation type (mass, charge, electron)")
@@ -138,7 +140,8 @@ int main(int argc, char *argv[]) {
 
   // density from each selection
   vector<AtomicGroup> subsets;
-  subsets.push_back(system);
+  if (auto_all)
+    subsets.push_back(system);
   for (vector<string>::iterator i = selections.begin(); i != selections.end(); ++i)
     subsets.push_back(selectAtoms(system, *i));
   
@@ -240,7 +243,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Normalize by the number of frames and output the average charge density
-  cout << "# Z\tAllAtoms";
+  cout << "# Z\t" << (auto_all ? "AllAtoms" : "");
   for (uint i=1; i<subsets.size(); i++) {
     cout << " Set(" << i <<") "; 
   }
