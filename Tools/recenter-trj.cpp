@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
 if (argc != 6)
     {
-    cerr << "Usage: recenter-trj model-file trajectory-file selection-string [Z|A] dcd-name" << endl;
+    cerr << "Usage: recenter-trj model-file trajectory-file selection-string [Z|XY|A] dcd-name" << endl;
     exit(-1);
     }
 
@@ -64,13 +64,51 @@ else if ( (flag == "XY") || (flag == "xy"))
 DCDWriter dcd(argv[5]);
 dcd.setTitle(invocationHeader(argc, argv));
 
+if (!model.hasBonds())
+    {
+    cerr << "Error: " << argv[0]
+         << " will only work if the system has connectivity information."
+         << endl
+         << "You'll need to use something like a PSF or PDB with conect records"
+         << endl;
+    exit(-1);
+    }
+
 vector<AtomicGroup> molecules= model.splitByMolecule();
 vector<AtomicGroup>::iterator m;
 
 while (traj->readFrame())
     {
     traj->updateGroupCoords(model); 
-    GCoord centroid = center.centroid();
+
+    // Simple approach won't work if the centering selection is split
+    // across the periodic image.  In that case, the centroid may be near the 
+    // middle even if none of the atoms are near there.
+
+    // pick a single atom in the selection, and center based on it.
+    // This will make sure the selection is now _not_ split acrosst the 
+    // periodic image
+    GCoord centroid = center[0]->coords();
+    if (just_z)
+        {
+        centroid.x() = 0.0;
+        centroid.y() = 0.0;
+        }
+    else if (just_xy)
+        {
+        centroid.z() = 0.0;
+        }
+
+    model.translate(-centroid);
+    for (m=molecules.begin(); m!=molecules.end(); m++)
+        {
+        m->reimage();
+        }
+    
+    // now, center as we did in the original algorithm:
+    // Move the whole system such that selected region is at the origin and
+    // reimage
+    centroid = center.centroid();
     if (just_z)
         {
         centroid.x() = 0.0;

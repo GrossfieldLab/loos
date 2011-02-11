@@ -1,3 +1,8 @@
+2011-02-11    <alan@membrane>
+	* Added a simply xy-only option to recenter-trj
+	* Modified recenter-trj to be more robust (although half as fast), so that
+	  it does the right thing even if the centering selection is split
+      across the periodic image
 2011-02-02    <alan@membrane>
 	* Modified Tools/density-dist to fold in the functionality from
       density-dist-windowed.  The latter is marked deprecated.  Note: to get 
