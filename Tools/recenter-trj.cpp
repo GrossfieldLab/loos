@@ -49,15 +49,19 @@ if (argc != 6)
 AtomicGroup model = createSystem(argv[1]);
 pTraj traj = createTrajectory(argv[2], model);
 AtomicGroup center = selectAtoms(model, argv[3]);
-string z_flag = string(argv[4]);
+string flag = string(argv[4]);
 bool just_z = false;
-if ( (z_flag == "Z") || (z_flag == "z"))
+bool just_xy = false;
+if ( (flag == "Z") || (flag == "z"))
     {
     just_z = true;
     }
+else if ( (flag == "XY") || (flag == "xy"))
+    {
+    just_xy = true;
+    }
 
 DCDWriter dcd(argv[5]);
-//dcd.setHeader(model.size(), traj->nframes(), 1e-3, traj->hasPeriodicBox());
 dcd.setTitle(invocationHeader(argc, argv));
 
 vector<AtomicGroup> molecules= model.splitByMolecule();
@@ -72,6 +76,11 @@ while (traj->readFrame())
         centroid.x() = 0.0;
         centroid.y() = 0.0;
         }
+    else if (just_xy)
+        {
+        centroid.z() = 0.0;
+        }
+
     model.translate(-centroid);
     for (m=molecules.begin(); m!=molecules.end(); m++)
         {
