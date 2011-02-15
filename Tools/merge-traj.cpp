@@ -258,8 +258,9 @@ int main(int argc, char *argv[])
                             {
                             GCoord atom_pos = m->getAtom(0)->coords();
                             m->translate(-atom_pos);
-                            m->reimage();
+                            m->reimageByAtom();
                             m->translate(atom_pos);
+                            m->reimage();
                             }
                         }
 
