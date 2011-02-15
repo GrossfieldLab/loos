@@ -1,3 +1,7 @@
+2011-02-15    <alan@membrane>
+	* Added option to Tools/merge-traj to fix by molecule, so that
+	  trajectories that have molecules broken across the periodic boundary (eg
+	  gromacs output) come out looking clean
 2011-02-11    <alan@membrane>
 	* Added a simply xy-only option to recenter-trj
 	* Modified recenter-trj to be more robust (although half as fast), so that

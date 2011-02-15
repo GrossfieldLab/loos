@@ -40,7 +40,8 @@ string model_name, output_traj, output_traj_downsample;
 string center_selection;
 vector<string> input_dcd_list;
 int downsample_rate;
-bool skip_first_frame;
+bool skip_first_frame=false;
+bool reimage_by_molecule=false;
 
 
 void parseOptions(int argc, char *argv[])
@@ -59,6 +60,7 @@ void parseOptions(int argc, char *argv[])
                                     "Selection for centering")
             ("input_trajs", po::value< vector<string> >()->multitoken(), "Trajs to merge")
             ("skip-first-frame", "Skip first frame of each trajectory (for xtc files)")
+            ("fix-imaging", "Reimage the system so molecules aren't broken across image boundaries")
             ;
             
         po::options_description hidden("Hidden options");
@@ -99,6 +101,15 @@ void parseOptions(int argc, char *argv[])
         if (vm.count("skip-first-frame"))
             {
             skip_first_frame=true;
+            }
+        else
+            {
+            skip_first_frame=false;
+            }
+
+        if (vm.count("reimage-by-molecule"))
+            {
+            reimage_by_molecule=true;
             }
         else
             {
@@ -174,7 +185,7 @@ int main(int argc, char *argv[])
             molecules = system.splitByUniqueSegid();
             }
         }
-    
+
     uint original_num_frames = output.framesWritten();
     cout << "Target trajectory " 
          << output_traj
@@ -236,8 +247,27 @@ int main(int argc, char *argv[])
 
                 if ( do_recenter )
                     {
+                    // If molecules can be broken across image bondaries
+                    // (eg GROMACS), then we may need 2 translations to 
+                    // fix them -- first, translate the whole molecule such 
+                    // that a single atom is at the origin, reimage the
+                    // molecule, and put it back
+                    if (reimage_by_molecule)
+                        {
+                        for (m=molecules.begin(); m != molecules.end(); ++m )
+                            {
+                            GCoord atom_pos = m->getAtom(0)->coords();
+                            m->translate(-atom_pos);
+                            m->reimage();
+                            m->translate(atom_pos);
+                            }
+                        }
+
+                    // Now, do the regular imaging.  Put the system centroid 
+                    // at the origin, and reimage by molecule
                     GCoord centroid = center.centroid();
                     system.translate(-centroid);
+
                     for (m=molecules.begin(); m != molecules.end(); ++m )
                         {
                         m->reimage();
