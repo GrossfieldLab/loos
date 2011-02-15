@@ -141,15 +141,6 @@ void Usage()
 int main(int argc, char *argv[])
     {
     parseOptions(argc, argv);
-#if 0
-    if ( (argc <=1) || 
-         ( (argc >=2) && ((strncmp(argv[1], "-h", 2) == 0) ) ) ||
-         (argc < 5) )
-        {
-        Usage();
-        exit(-1);
-        }
-#endif
 
     cout << invocationHeader(argc, argv) << endl;
     AtomicGroup system = createSystem(model_name);
@@ -175,8 +166,11 @@ int main(int argc, char *argv[])
     if ( do_recenter )
         {
         center = selectAtoms(system, center_selection);
+        }
 
-        if ( system.allHaveProperty(Atom::bondsbit) )
+    if ( do_recenter || reimage_by_molecule)
+        {
+        if ( system.hasBonds() )
             {
             molecules = system.splitByMolecule();
             }
@@ -245,16 +239,33 @@ int main(int argc, char *argv[])
                 {
                 traj->updateGroupCoords(system);
 
-                if ( do_recenter )
+                // Find the smallest box dimension
+                GCoord box = system.periodicBox();
+                double smallest=1e20;
+                for (int i=0; i<3; i++)
                     {
-                    // If molecules can be broken across image bondaries
-                    // (eg GROMACS), then we may need 2 translations to 
-                    // fix them -- first, translate the whole molecule such 
-                    // that a single atom is at the origin, reimage the
-                    // molecule, and put it back
-                    if (reimage_by_molecule)
+                    if (box[i] < smallest)
                         {
-                        for (m=molecules.begin(); m != molecules.end(); ++m )
+                        smallest = box[i];
+                        }
+                    }
+
+                smallest /=2.0;
+
+
+                // If molecules can be broken across image bondaries
+                // (eg GROMACS), then we may need 2 translations to 
+                // fix them -- first, translate the whole molecule such 
+                // that a single atom is at the origin, reimage the
+                // molecule, and put it back
+                if (reimage_by_molecule)
+                    {
+                    for (m=molecules.begin(); m != molecules.end(); ++m )
+                        {
+                        // This is relatively slow, so we'll skip the 
+                        // cases we know we won't need this -- 1 particle
+                        // molecules and molecules with small radii 
+                        if ( (m->size() > 1) && (m->radius() > smallest) )
                             {
                             GCoord atom_pos = m->getAtom(0)->coords();
                             m->translate(-atom_pos);
@@ -263,7 +274,11 @@ int main(int argc, char *argv[])
                             m->reimage();
                             }
                         }
+                    }
 
+
+                if ( do_recenter )
+                    {
                     // Now, do the regular imaging.  Put the system centroid 
                     // at the origin, and reimage by molecule
                     GCoord centroid = center.centroid();
