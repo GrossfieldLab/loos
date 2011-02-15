@@ -14,7 +14,7 @@ Quick links:
       - \subpage intro
       - \subpage feats
       - \subpage building
-      - \subpage tools
+      - \subpage tools "Description of included tools"
       - \subpage Changes
       - \subpage license
 
@@ -675,7 +675,9 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
     <DL>
       <DT> <B>block_average</B>
       <DD> Reads a simple columnated text file, and computes the block-averaged
-           standard error.  Reference: Flyvbjerg, H. & Petersen, H. G. 
+           standard error as a function of block size.  The plateau value
+           is the best estimate for the true standard error.
+           Reference: Flyvbjerg, H. & Petersen, H. G. 
            J. Chem. Phys., 1989, 91, 461-466
     </DL>
 
@@ -841,9 +843,15 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    distance between the centroids, the minimum distance between any atom
    in any group, or the max distance between any atom in any group.
 
-   <DT><B>merge-dcd</B>
-   <DD>Merges DCDs by appending.  Can also concurrently downsample the
-   trajectory to another DCD.
+   <DT><B>merge-traj</B>
+   <DD> Merges a series of trajectory files into a single DCD file.  If you
+   give it a pre-existing merged file to work from, it simply appends the
+   new data to it by counting frames in the merged DCD and skipping that
+   many frames in the input; this enormously reduces the time needed to
+   merge large data sets.  It also has options to produce a second
+   down-sampled trajectory, to translate and reimage each frame such that a
+   particular set of atoms is centered at the origin, and to fix imaging
+   such that molecules aren't broken across the periodic image.  
 
    <DT><B>model-select</B>
    <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the selection,
@@ -913,7 +921,8 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
    <DT><B>recenter-trj</B>
    <DD>Loop over a trajectory, translating the entire system such that the selected
    portion remains at the origin, and reimaging the rest on a molecule by 
-   molecule basis.  It can also just do translations in the z-dimension.  The
+   molecule basis.  It can also just do translations in the z-dimension, or
+   just in the xy-plane (these options are useful for membrane systems).  The
    model file must have connectivity information, and the trajectory must have
    periodic box information.  This program writes a DCD file as
    output.
