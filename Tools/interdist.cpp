@@ -39,111 +39,166 @@
 
 #include <loos.hpp>
 #include <limits>
+#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
+namespace po = boost::program_options;
 
 
-// Function pointer used to determine which kind of distance
-// calculation we're going to do...
-
-typedef double (*DistFPtr)(AtomicGroup&, AtomicGroup&);
 
 
-// Distance between centroid of groups
+struct DistanceCalculation {
+  virtual double operator()(const AtomicGroup&, const AtomicGroup&) = 0;
+  virtual ~DistanceCalculation() { }
+};
 
-double CenterDistance(AtomicGroup& u, AtomicGroup& v) {
-  GCoord cu = u.centroid();
-  GCoord cv = v.centroid();
+
+
+struct CenterDistance : public DistanceCalculation {
+  double operator()(const AtomicGroup& u, const AtomicGroup& v) {
+    GCoord cu = u.centroid();
+    GCoord cv = v.centroid();
   
-  return(cu.distance(cv));
-}
+    return(cu.distance(cv));
+  }
+};
 
 
 // Minimum distance between any member of group u vs any member of
 // group v
 
-double MinDistance(AtomicGroup& u, AtomicGroup& v) {
-  double mind = numeric_limits<double>::max();
-  AtomicGroup::iterator aj;
-  for (aj = v.begin(); aj != v.end(); ++aj) {
-    AtomicGroup::iterator ai;
-    GCoord y = (*aj)->coords();
+struct MinDistance : public DistanceCalculation {
+  double operator()(const AtomicGroup& u, const AtomicGroup& v) {
+    double mind = numeric_limits<double>::max();
 
-    for (ai = u.begin(); ai != u.end(); ++ ai) {
-      double d = y.distance2((*ai)->coords());
-      if (d < mind)
-        mind = d;
+    for (AtomicGroup::const_iterator aj = v.begin(); aj != v.end(); ++aj) {
+      GCoord y = (*aj)->coords();
+      
+      for (AtomicGroup::const_iterator ai = u.begin(); ai != u.end(); ++ai) {
+        double d = y.distance2((*ai)->coords());
+        if (d < mind)
+          mind = d;
+      }
     }
+    
+    return(sqrt(mind));
   }
-
-  return(sqrt(mind));
-}
+};
 
 
-// Maximum distance between any member of group u and any member of
+// Maximum distance between any member of group u vs any member of
 // group v
 
-double MaxDistance(AtomicGroup& u, AtomicGroup& v) {
-  AtomicGroup::iterator aj;
-  pAtom pv;
-  
-  double maxd = -1;
-  for (aj = v.begin(); aj != v.end(); ++aj) {
-    GCoord cv = (*aj)->coords();
-    AtomicGroup::iterator ai;
-    for (ai = u.begin(); ai != u.end(); ++ai) {
-      double d2 = cv.distance2((*ai)->coords());
-      if (d2 > maxd)
-        maxd = d2;
-    }
-  }
-  
-  return (sqrt(maxd));
-}
+struct MaxDistance : public DistanceCalculation {
+  double operator()(const AtomicGroup& u, const AtomicGroup& v) {
+    double maxd = 0.0;
 
+    for (AtomicGroup::const_iterator aj = v.begin(); aj != v.end(); ++aj) {
+      GCoord y = (*aj)->coords();
+      
+      for (AtomicGroup::const_iterator ai = u.begin(); ai != u.end(); ++ai) {
+        double d = y.distance2((*ai)->coords());
+        if (d > maxd)
+          maxd = d;
+      }
+    }
+    
+    return(sqrt(maxd));
+  }
+};
+
+
+
+// Globals
+string model_name, traj_name;
+vector<string> selection_names;
+uint skip = 0;
+DistanceCalculation *calc_type;
+
+
+void parseOptions(int argc, char *argv[]) {
+  string mode_name;
+
+  try {
+    po::options_description generic("Allowed options");
+    generic.add_options()
+      ("help", "Produce this help message")
+      ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of frames to skip at start of traj")
+      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max)");
+
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
+      ("model", po::value<string>(&model_name), "model")
+      ("traj", po::value<string>(&traj_name), "trajectory")
+      ("selection", po::value< vector<string> >(&selection_names), "selection");
+    
+
+    po::options_description command_line;
+    command_line.add(generic).add(hidden);
+
+    po::positional_options_description p;
+    p.add("model", 1);
+    p.add("traj", 1);
+    p.add("selection", -1);
+
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+              options(command_line).positional(p).run(), vm);
+    po::notify(vm);
+
+    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && selection_names.size() >= 2)) {
+      cerr << "Usage- " << argv[0] << " [options] model trajectory sel-1 sel-2 [sel-3 ...] >output\n";
+      cerr << generic;
+      exit(-1);
+    }
+
+    if (mode_name == "center")
+      calc_type = new CenterDistance;
+    else if (mode_name == "min")
+      calc_type = new MinDistance;
+    else if (mode_name == "max")
+      calc_type = new MaxDistance;
+    else {
+      cerr << "Error- calculation mode must be either 'center', 'min', or 'max.'\n";
+      exit(-1);
+    }
+
+  }
+  catch(exception& e) {
+    cerr << "Error - " << e.what() << endl;
+    exit(-1);
+  }
+}
 
 
 
 int main(int argc, char *argv[]) {
-  if (argc < 6) {
-    cerr << "Usage: interdist mode model trajectory sel1 sel2 [sel3 ...]\n";
-    cerr << "       mode = center|min|max\n";
-    exit(-1);
-  }
 
   string header = invocationHeader(argc, argv);
+  parseOptions(argc, argv);
   cout << "# " << header << endl;
 
-  DistFPtr compute;
-  if (strcmp(argv[1], "center") == 0)
-    compute = &CenterDistance;
-  else if (strcmp(argv[1], "max") == 0)
-    compute = &MaxDistance;
-  else if (strcmp(argv[1], "min") == 0)
-    compute = &MinDistance;
-  else {
-    cerr << "ERROR- unknown mode '" << argv[1] << "'\n";
-    cerr << "Must be either center, max, or min\n";
-    exit(-1);
-  }
+  AtomicGroup model = createSystem(model_name);
+  pTraj traj = createTrajectory(traj_name, model);
 
-  AtomicGroup model = createSystem(argv[2]);
-  pTraj traj = createTrajectory(argv[3], model);
-
-  AtomicGroup src = selectAtoms(model, argv[4]);
+  AtomicGroup src = selectAtoms(model, selection_names[0]);
 
   cout << "# t ";
   
   vector<AtomicGroup> targets;
-  for (int i=5; i<argc; ++i) {
-    AtomicGroup trg = selectAtoms(model, argv[i]);
+  for (uint i=1; i<selection_names.size(); ++i) {
+    AtomicGroup trg = selectAtoms(model, selection_names[i]);
     targets.push_back(trg);
-    cout << "d_0_" << i-4 << " ";
+    cout << "d_0_" << i-1 << " ";
   }
   cout << endl;
 
-  uint t = 0;
+  uint t = skip;
+  if (skip > 0)
+    traj->readFrame(skip-1);
+
   while (traj->readFrame()) {
 
     traj->updateGroupCoords(model);
@@ -152,7 +207,7 @@ int main(int argc, char *argv[]) {
 
     vector<AtomicGroup>::iterator i;
     for (i = targets.begin(); i != targets.end(); ++i)
-      cout << (*compute)(src, *i) << " ";
+      cout << (*calc_type)(src, *i) << " ";
     cout << endl;
   }
 
