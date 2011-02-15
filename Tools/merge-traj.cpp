@@ -107,7 +107,7 @@ void parseOptions(int argc, char *argv[])
             skip_first_frame=false;
             }
 
-        if (vm.count("reimage-by-molecule"))
+        if (vm.count("fix-imaging"))
             {
             reimage_by_molecule=true;
             }
