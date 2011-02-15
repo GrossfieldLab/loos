@@ -230,6 +230,8 @@ namespace loos {
         mode |= std::ios_base::trunc;
 
       _stream = new std::fstream(fname.c_str(), mode);
+      if (!_stream->good())
+        throw(std::runtime_error("Error while opening output DCD file"));
       std::streampos p = _stream->tellg();
       nodelete = false;
     }
