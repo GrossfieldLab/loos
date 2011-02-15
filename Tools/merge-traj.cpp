@@ -113,7 +113,7 @@ void parseOptions(int argc, char *argv[])
             }
         else
             {
-            skip_first_frame=false;
+            reimage_by_molecule=false;
             }
 
 
