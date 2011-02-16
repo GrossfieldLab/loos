@@ -667,7 +667,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 <HR>
-Categories of Tools
+<B><I> Categories of Tools </I> </B>
       - \subpage Convergence "Convergence Tools"
       - \subpage enm "Elastic Networks"
       - \subpage hbond "Hydrogen Bonding"
@@ -681,12 +681,70 @@ Categories of Tools
   convergence, found in the Tools/Convergence/ directory:
 
     <DL>
+      <DT> <B> assign_frames </B>
+      <DD>
+
+      <DT> <B> avgconv </B>
+      <DD>
+
+      <DT> <B> bcom </B>
+      <DD>
+
+      <DT> <B> bcomz </B>
+      <DD>
+
       <DT> <B>block_average</B>
       <DD> Reads a simple columnated text file, and computes the block-averaged
            standard error as a function of block size.  The plateau value
            is the best estimate for the true standard error.
            Reference: Flyvbjerg, H. & Petersen, H. G. 
            J. Chem. Phys., 1989, 91, 461-466
+
+      <DT> <B> block_avgconv </B>
+      <DD>
+
+      <DT> <B> bootstrap_overlap.pl </B>
+      <DD>
+
+      <DT> <B> boot_avgconv </B>
+      <DD>
+
+      <DT> <B> boot_bcom </B>
+      <DD>
+
+      <DT> <B> clupop.pl </B>
+      <DD>
+
+      <DT> <B> clupop.pl </B>
+      <DD>
+
+      <DT> <B> decorr_plot.sh </B>
+      <DD>
+
+      <DT> <B> decorr_time </B>
+      <DD>
+
+      <DT> <B> effsize.pl </B>
+      <DD>
+
+      <DT> <B> fidpick </B>
+      <DD>
+
+      <DT> <B> fidpick </B>
+      <DD>
+
+      <DT> <B> hierarchy </B>
+      <DD>
+
+      <DT> <B> neff </B>
+      <DD>
+
+      <DT> <B> sortfids </B>
+      <DD>
+
+      <DT> <B> ufidpick </B>
+      <DD>
+
     </DL>
 
   \page enm 
@@ -945,7 +1003,7 @@ Categories of Tools
        svd below in that it uses single precision math and it computes
        fewer right singular vectors (e.g. if your structure has N atoms
        and you have T timestemps in the trajectory, then the RSV matrix
-       will be T x 3N as opposed to T x T in the svd tool).
+       will be T x 3N as opposed to T x T in the svd tool).  See also svd.
 
        <DT><B>svd</B>
        <DD>Performs principal component analysis for a trajectory using
