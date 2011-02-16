@@ -783,7 +783,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
    </DL>
 
-/*! \page hbond 
+    \page hbond 
    <DT> <B><I>Hydrogen Bonding Tools</I></B>
    <DD> A set of tools for analyzing hydrogen bonding, found in
    Tools/HydrogenBonds/ directory:
@@ -799,7 +799,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 	    <DD> Computes the time-correlation function for h-bonds.
       </DL>
 	    
-/*! \page Trajectory manipulation
+    \page Trajectory manipulation
    <DT> <B><I> Trajectory manipulation tools </I></B>
    <DD> A set of tools for manipulating structure and trajectory
    files, found in the Tools/ directory:
@@ -921,7 +921,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
        </DL>
         
 
-/*! \page Membranes
+   \page Membranes
    <DT> <B><I> Tools for membrane systems</I></B>
    <DD> Tools specifically intended for analyzing lipid bilayers and
    related systems, found in the Tools/
@@ -987,7 +987,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
        </DL>
 
-/*! \page PCA
+    \page PCA
    <DT> <B><I> Principal component analysis </I> </B>
    <DD> Tools for performing PCA, found in Tools/.  Note: some related
    tools are also found in the ENM section.
@@ -1018,7 +1018,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
        </DL>
 
 
-/*! \page other
+    \page other
    <DT> <B><I> General purpose tools</I> </B>
    <DD> 
 
