@@ -667,11 +667,19 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 <HR>
+Categories of Tools
+      - \subpage Convergence "Convergence Tools"
+      - \subpage enm "Elastic Networks"
+      - \subpage hbond "Hydrogen Bonding"
+      - \subpage PCA "Principal component analysis"
+      - \subpage other "General purpose tools"
 
 <DL>
+  \page Convergence
   <DT> <B><I> Convergence Analysis Tools</I></B>
-  <DD> A collection of tools for assessing statistical error and convergence
-       in trajectories:
+  <DD> A collection of tools for assessing statistical error and
+  convergence, found in the Tools/Convergence/ directory:
+
     <DL>
       <DT> <B>block_average</B>
       <DD> Reads a simple columnated text file, and computes the block-averaged
@@ -681,17 +689,23 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
            J. Chem. Phys., 1989, 91, 461-466
     </DL>
 
-  <DT> <B><I>ENM Elastic Network Models</I></B>
-  <DD> A collection of tools for working with ENMs:
+  \page enm 
+  <DT> <B><I>Elastic Network Models</I></B>
+  <DD> A collection of tools for working with ENMs, found in the
+  Tools/ElasticNetworks/ directory:
     <DL>
       <DT> <B>anm</B>
-      <DD> Computes the anisotropic network model for a structure
+      <DD> Computes the anisotropic network model for a structure.
+      Reference: Atilgan, et al., Biophys. J. 80, 505-515, (2001).
 
       <DT> <B>gnm</B>
-      <DD> Computes the gaussian network model for a structure
+      <DD> Computes the gaussian network model for a structure. Reference:
+      Bahar, et al, Folding and Design 2, 173-181, 1997.
 
       <DT> <B>vsa</B>
-      <DD> Computes the vibrational subsystem analysis model for a structure
+      <DD> Computes the vibrational subsystem analysis model for a
+      structure. Reference: Woodcock, et al, J. Chem. Phys., 129, 214109-9,
+      2008
 
       <DT> <B>psf-masses</B>
       <DD> Copies atom masses from a PSF into the occupancy field of a PDB
@@ -711,10 +725,12 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
    </DL>
 
+/*! \page hbond 
    <DT> <B><I>Hydrogen Bonding Tools</I></B>
-   <DD>
+   <DD> A set of tools for analyzing hydrogen bonding, found in
+   Tools/HydrogenBonds/ directory:
       <DL>
-            <DT><B>hbonds</B>
+        <DT><B>hbonds</B>
 	    <DD> Finds putative h-bonds based on angle and distance
 
 	    <DT><B>hmatrix</B>
@@ -725,285 +741,329 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 	    <DD> Computes the time-correlation function for h-bonds.
       </DL>
 	    
+/*! \page Trajectory manipulation
+   <DT> <B><I> Trajectory manipulation tools </I></B>
+   <DD> A set of tools for manipulating structure and trajectory
+   files, found in the Tools/ directory:
+       <DL>
+       <DT> <B>aligner</B>
+       <DD> Align structures in a trajectory against the average using an
+       iterative refinement scheme.  Can read any LOOS trajectory format, but
+       will write the aligned trajectory as a DCD.
 
-   <DT> <B>aligner</B>
-   <DD> Align structures in a trajectory against the average using an
-   iterative refinement scheme.  Can read any LOOS trajectory format, but
-   will write the aligned trajectory as a DCD.
+       <DT><B>center-molecule</B>
+       <DD>A more flexible tool for centering molecules.  Can use
+       different subsets for calculating the center, controlling what is
+       translated, and what goes to the output.  It can also reimage the
+       molecule and center only within the x,y plane.
 
-   <DT> <B>atomic-rdf</B>
-   <DD>Compute the radial distribution function for 2 selections of atoms taken
-   from a trajectory, treating each selection as a set of individual atoms.
-   For contrast, see rdf.
+       <DT><B>center-pdb</B>
+       <DD>Read in a structure file, shift its centroid to the origin, and 
+       write a new pdb file to stdout.  
 
-   <DT><B>averager</B>
-   <DD>Compute the average structure for a set of molecules from a trajectory,
-   using an iterative scheme.
+       <DT><B>clipper</B>
+       <DD>Manually clip a model using arbitrary sets of clipping planes.  
+       Outputs a PDB.
 
-   <DT><B>big-svd</B>
-   <DD>Computes the SVD/PCA for a trajectory.  This differs from the
-   svd below in that it uses single precision math and it computes
-   fewer right singular vectors (e.g. if your structure has N atoms
-   and you have T timestemps in the trajectory, then the RSV matrix
-   will be T x 3N as opposed to T x T in the svd tool).
+       <DT><B>concat-selection</B>
+       <DD>Concatenates atoms from a trajectory into a single PDB.  Useful
+       for seeing where something has been...
+       
+       <DT><B>convert2pdb</B>
+       <DD>Read in a structure file in a LOOS-supported format, and write it 
+       out as a pdb file.
 
-   <DT><B>blurrogram.pl</B>
-   <DD>A PERL tool for creating "blurrogram" style figures with Pymol.
+       <DT><B>dcdinfo</B>
+       <DD>Extract the header information from a CHARMM/NAMD dcd file.  Will
+       verify the number of frames present and report periodic box
+       information.
 
-   <DT><B>bounding</B>
-   <DD>Write out the bounding box for a selection of atoms from a structure file.
+       <DT><B>dumpmol</B>
+       <DD>Outputs the low-level AtomicGroup representation for a model.
+       Useful for double-checking LOOS' parsing of a file.
 
-   <DT><B>center-molecule</B>
-   <DD>A more flexible tool for centering molecules.  Can use
-   different subsets for calculating the center, controlling what is
-   translated, and what goes to the output.  It can also reimage the
-   molecule and center only within the x,y plane.
+       <DT><B>frame2pdb</B>
+       <DD>Extract a frame from a trajectory and write it as a pdb file.
 
-   <DT><B>center-pdb</B>
-   <DD>Read in a structure file, shift its centroid to the origin, and write a new
-   pdb file to stdout.  
+       <DT><B>merge-traj</B>
+       <DD> Merges a series of trajectory files into a single DCD file.  If you
+       give it a pre-existing merged file to work from, it simply appends the
+       new data to it by counting frames in the merged DCD and skipping that
+       many frames in the input; this enormously reduces the time needed to
+       merge large data sets.  It also has options to produce a second
+       down-sampled trajectory, to translate and reimage each frame such that a
+       particular set of atoms is centered at the origin, and to fix imaging
+       such that molecules aren't broken across the periodic image.  
 
-   <DT><B>clipper</B>
-   <DD>Manually clip a model using arbitrary sets of clipping planes.  Outputs a PDB.
-   
-   <DT><B>concat-selection</B>
-   <DD>Concatenates atoms from a trajectory into a single PDB.  Useful
-   for seeing where something has been...
-   
-   <DT><B>contact-time</B>
-   <DD>This tool computes the number of contacts between a probe
-   selection and a set of target selections.  The output is in the
-   form of a matrix and can be normalized by either total number of
-   contacts (across the row) or by the maximum # of contacts per
-   target (down the column).  In addition, it can automatically split
-   the probe into separate molecules, based on their segids, and
-   compute the inter-probe contacts as well.
+       <DT><B>model-select</B>
+       <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the 
+       selection, then applies it to the PDB and writes the output to stdout.  
+       This tool is used mainly for checking your selection strings to make 
+       sure you're actually selecting what you intend to select.
 
-   <DT><B>contacts</B>
-   <DD>Loop over a trajectory and count the number of contacts between two
-   sets of atoms.  
+       <DT><B>model2matlab</B>
+       <DD>Takes a PDB and a selection and an optional selection and writes out
+       the coordinates to stdout in matlab format.
 
-   <DT><B>convert2pdb</B>
-   <DD>Read in a structure file in a LOOS-supported format, and write it out as 
-   a pdb file.
+       <DT><B>porcupine</B>
+       <DD>Creates a faux-PDB containing atoms/bonds that represent a 
+       "porcupine" figure for a column vector from a matrix.  This can be used 
+       to visualize the direction of motion from SVD and ENM results.
 
-   <DT><B>coverlap</B>
-   <DD>Compute the covariance and subspace overlaps between either ENM
-   results or PCA results (or any combination).
+       <DT><B>rebond</B>
+       <DD>Distance-based search for bonds, that are explicitly added to
+       the output PDB.  Use this tool to visualize your ENM networks, or
+       to reconnect CA traces from SVD results...
 
-   <DT><B>crossing-waters</B>
-   <DD>Loop over a trajectory and compute the number waters crossing a membrane.
+       <DT><B>recenter-trj</B>
+       <DD>Loop over a trajectory, translating the entire system such that
+       the selected portion remains at the origin, and reimaging the rest
+       on a molecule by molecule basis.  It can also just do translations
+       in the z-dimension, or just in the xy-plane (these options are
+       useful for membrane systems).  The model file must have connectivity
+       information, and the trajectory must have periodic box information.
+       This program writes a DCD file as output.
 
-   <DT><B>dcdinfo</B>
-   <DD>Extract the header information from a CHARMM/NAMD dcd file.  Will
-   verify the number of frames present and report periodic box
-   information.
+       <DT><B>reimage-by-molecule</B>
+       <DD>Reads a trajectory, and writes a new DCD which has been reimaged
+       on a molecule by molecule basis.  The model file must have
+       connectivity information, and the trajectory must have periodic box
+       information.
 
-   <DT><B>density-dist</B>
-   <DD>Compute the charge/electron/mass density distribution for the system
-   along the z-axis. Produces the distribution for the whole system and an
-   arbitrary number of selections.  Requires a structure file format which
-   supplies mass and/or charge.  The newest version also has an option to
-   symmetrize the density distribution in z.  This assumes that the input
-   trajectory has already been set up with the membrane center at z=0.  You
-   can accomplish this using merge-traj, which can optionally recenter a
-   selection at every frame.  The functionality from density-dist-windowed
-   has also been folded in, using the --window option.
+       <DT><B>renum-pdb</B>
+       <DD>Used primarily to renumber atoms/residues in a PDB...but it can
+       work with any LOOS-supported format.
 
-   <DT><B>density-dist-windowed</B>
-   <DD>Compute the charge/electron/mass density distribution for the system along
-   the z-axis for blocks of time within a trajectory, producing a density
-   distribution time series.  This is deprecated, since the functionality
-   has been merged into density-dist.
+       <DT><B>rmsfit</B>
+       <DD>Superimpose two structures using Kabsch RMS alignment.
 
-   <DT><B>drifter</B>
-   <DD>Calculates movement centroids over a trajectory
+       <DT><B>subsetter</B>
+       <DD>Subsets a trajectory (stripping out any atoms that don't match the
+       given selection), and writes a new DCD file.  Can be used to
+       concatenate trajectories, pull specific frames out, as well as
+       adjusting periodic box information and centering the trajectory on a
+       selection.  Since trajectories are often stored in files with an
+       ascending numerical sequence name (i.e. frame_1.dcd, frame_2.dcd,
+       etc), and since the shell globbing doesn't sort these in numerical
+       order, a command such as
+    <PRE>subsetter foo model.pdb frame_*.dcd</PRE>
+       will not concatenate your frames in the order you want.  You can tell
+       subsetter to sort the input trajectories so that they are in numerical
+       order by using the "--sort" flag.  For more detailed information, use
+       the "--fullhelp" option with subsetter.
 
-   <DT><B>dumpmol</B>
-   <DD>Outputs the low-level AtomicGroup representation for a model.
-   Useful for double-checking LOOS' parsing of a file.
+       <DT><B>traj2dcd</B>
+       <DD>Converts a LOOS-supported format to a DCD.
 
-   <DT><B>exposure</B>
-   <DD>Computes the degree of exposure of a set of selections over
-   time.  The exposure is defined as the average density of a probe
-   selection within a spherical shell about each target atom.  This
-   tool can be used to determine how exposed to solvent a selection
-   is, or alternatively how buried a selection is.
+       <DT><B>trajinfo</B>
+       <DD>Similar to dcdinfo, but works with generic trajectories.  Can report
+       box information and the centroid of a selection.  Useful for verifying
+       trajectory header information and extracting the number of frames and
+       atoms in a trajectory.
+       </DL>
+        
 
-   <DT><B>frame2pdb</B>
-   <DD>Extract a frame from a trajectory and write it as a pdb file.
+/*! \page Membranes
+   <DT> <B><I> Tools for membrane systems</I></B>
+   <DD> Tools specifically intended for analyzing lipid bilayers and
+   related systems, found in the Tools/
+   directory:
+       <DL>
 
-   <DT><B>helix_kink</B>
-   <DD>Given two selections and a trajectory, compute the time series of the 
-   angle between their principal components.  Also useful for measuring domain hinge motions.
+       <DT><B>crossing-waters</B>
+       <DD>Loop over a trajectory and compute the number waters crossing a 
+       membrane.
 
-   <DT><B>interdist</B>
-   <DD>Calculates distances between a selection and an aribtrary set of other
-   selections over a trajectory.  The distance computed can be the
-   distance between the centroids, the minimum distance between any atom
-   in any group, or the max distance between any atom in any group.
+       <DT><B>density-dist</B>
+       <DD>Compute the charge/electron/mass density distribution for the system
+       along the z-axis. Produces the distribution for the whole system and an
+       arbitrary number of selections.  Requires a structure file format which
+       supplies mass and/or charge.  The newest version also has an option to
+       symmetrize the density distribution in z.  This assumes that the input
+       trajectory has already been set up with the membrane center at z=0.  You
+       can accomplish this using merge-traj, which can optionally recenter a
+       selection at every frame.  The functionality from density-dist-windowed
+       has also been folded in, using the --window option.
 
-   <DT><B>merge-traj</B>
-   <DD> Merges a series of trajectory files into a single DCD file.  If you
-   give it a pre-existing merged file to work from, it simply appends the
-   new data to it by counting frames in the merged DCD and skipping that
-   many frames in the input; this enormously reduces the time needed to
-   merge large data sets.  It also has options to produce a second
-   down-sampled trajectory, to translate and reimage each frame such that a
-   particular set of atoms is centered at the origin, and to fix imaging
-   such that molecules aren't broken across the periodic image.  
+       <DT><B>density-dist-windowed</B>
+       <DD>Compute the charge/electron/mass density distribution for the
+       system along the z-axis for blocks of time within a trajectory,
+       producing a density distribution time series.  This is deprecated,
+       since the functionality has been merged into density-dist.
 
-   <DT><B>model-select</B>
-   <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the selection,
-   then applies it to the PDB and writes the output to stdout.  This tool is used
-   mainly for checking your selection strings to make sure you're actually
-   selecting what you intend to select.
+       <DT><B>order_params</B>
+       <DD>Compute the deuterium quadrupolar splitting order parameters for
+       lipid molecules.  The model file must have connectivity information.
+       The current version supports both 3 residues/lipid and 1
+       residue/lipid topology files, and can optionally compute order
+       parameters relative to the x and y axes.  In addition, a more
+       careful estimate of statistical uncertainties is available using
+       block averaging.  
 
-   <DT><B>model2matlab</B>
-   <DD>Takes a PDB and a selection and an optional selection and writes out
-   the coordinates to stdout in matlab format.
+       If you wish to use block averaging to estimate the errors, we suggest
+       running the tool twice: the first time will give you the block standard
+       error as a function of block size, and you can read out the true
+       standard error as the plateau value at large block size.  Because the
+       plateau region is often noisy (since the number of blocks is getting
+       small), the code offers you the ability to estimate the plateau value by
+       averaging over a range of numbers of blocks.  This defaults to using the
+       estimates from 2 blocks through 5 blocks, but you should check the plots
+       yourself to make sure this is appropriate for your data set.  For more
+       on block averaging, see the review by Grossfield and Zuckerman,
+       "Quantifying uncertainty and sampling quality in biomolecular
+       simulations", Annual Reports in Computational Chemistry, 2009, 5, 23-48.
 
-   <DT><B>octavex</B>
-   <DD>Extract embedded OCTAVE data from a LOOS output/log.  This is
-   used with aligner.
+       <DT><B>xy_rdf</B>
+       <DD>Compute a two dimension radial distribution function in the xy plane,
+       splitting the system into upper and lower leaflets.  Primarily intended 
+       for analyzing lateral organization of lipid-water interfaces.  Note
+       that as of version 1.6.0, the command line arguments have changed
+       significantly. The new version allows you control how your selection
+       is split up, by residue, segment ID, or molecule (if your system
+       file has connectivity).
 
-   <DT><B>order_params</B>
-   <DD>Compute the deuterium quadrupolar splitting order parameters for lipid
-   molecules.  The model file must have connectivity information.  The current 
-   version supports both 3 residues/lipid and 1 residue/lipid topology files, 
-   and can optionally compute order parameters relative to the x and y
-   axes.  In addition, a more careful estimate of statistical
-   uncertainties is available using block averaging.  
+       <DT><B>xy_rdf_timeseries</B>
+       <DD>Same as xy_rdf, except producing a series of block averages rather 
+       than averaging over the whole trajectory.  This program is
+       deprecated, because its functionality has been merged into xy_rdf.
 
-   If you wish to use block averaging to estimate the errors, we suggest
-   running the tool twice: the first time will give you the block standard
-   error as a function of block size, and you can read out the true
-   standard error as the plateau value at large block size.  Because the
-   plateau region is often noisy (since the number of blocks is getting
-   small), the code offers you the ability to estimate the plateau value by
-   averaging over a range of numbers of blocks.  This defaults to using the
-   estimates from 2 blocks through 5 blocks, but you should check the plots
-   yourself to make sure this is appropriate for your data set.  For more
-   on block averaging, see the review by Grossfield and Zuckerman,
-   "Quantifying uncertainty and sampling quality in biomolecular
-   simulations", Annual Reports in Computational Chemistry, 2009, 5, 23-48.
+       </DL>
+
+/*! \page PCA
+   <DT> <B><I> Principal component analysis </I> </B>
+   <DD> Tools for performing PCA, found in Tools/.  Note: some related
+   tools are also found in the ENM section.
+
+       <DL>
+       <DT><B>coverlap</B>
+       <DD>Compute the covariance and subspace overlaps between either ENM
+       results or PCA results (or any combination).  The covariance overlap
+       was defined in  Hess, Phys. Rev. E, 65, 031910, 2002
+
+       <DT><B>big-svd</B>
+       <DD>Computes the SVD/PCA for a trajectory.  This differs from the
+       svd below in that it uses single precision math and it computes
+       fewer right singular vectors (e.g. if your structure has N atoms
+       and you have T timestemps in the trajectory, then the RSV matrix
+       will be T x 3N as opposed to T x T in the svd tool).
+
+       <DT><B>svd</B>
+       <DD>Performs principal component analysis for a trajectory using
+       singular value decomposition, writing out the eigenvalues, left
+       singular vectors (eigenvectors) and the right singular vectors
+       (projection timeseries) as OCTAVE-formatted text files.
+
+       <DT><B>svdcolmap</B>
+       <DD>Map the magnitude of a left singular vector onto a PDB file's B-value
+       column.  Useful for visualizing which portions of a molecule are mobile 
+       for a given SVD mode.
+       </DL>
 
 
-   <DT><B>paxes</B>
-   <DD>Computes the magnitude of the principal axes of a set of selections
-   over the trajectory.  This can be used to analyze shape changes over
-   time.
+/*! \page other
+   <DT> <B><I> General purpose tools</I> </B>
+   <DD> 
 
-   <DT><B>porcupine</B>
-   <DD>Creates a faux-PDB containing atoms/bonds that represent a "porcupine"
-   figure for a column vector from a matrix.  This can be used to
-   visualize the direction of motion from SVD and ENM results.
+       <DL>
 
-   <DT><B>ramachandran</B>
-   <DD>Computes a ramachandran map for a given selection of a specified range
-   of frames in a trajectory (or all frames).  Note that some torsions
-   may be missing for the residues at the ends of the selection.  To
-   avoid this, expand your selection by a residue in both directions,
-   then use the "--skip" flag.
+       <DT><B>averager</B>
+       <DD>Compute the average structure for a set of molecules from a 
+       trajectory, using an iterative scheme.
 
-   <DT><B>rdf</B>
-   <DD>Loop over a trajectory file and compute the radial distribution function
-   for two selections.  The selections are split up by molecule and the center
-   of mass is used.  For example, selecting all water molecules will cause it
-   to compute the radial distribution of the centers of mass of individual
-   water molecules.  For contrast, see atomic-rdf.
+       <DT> <B>atomic-rdf</B>
+       <DD>Compute the radial distribution function for 2 selections of
+       atoms taken from a trajectory, treating each selection as a set of
+       individual atoms.  For contrast, see rdf.
 
-   <DT><B>rebond</B>
-   <DD>Distance-based search for bonds, that are explicitly added to
-   the output PDB.  Use this tool to visualize your ENM networks, or
-   to reconnect CA traces from SVD results...
+       <DT><B>blurrogram.pl</B>
+       <DD>A PERL tool for creating "blurrogram" style figures with Pymol.
 
-   <DT><B>recenter-trj</B>
-   <DD>Loop over a trajectory, translating the entire system such that the selected
-   portion remains at the origin, and reimaging the rest on a molecule by 
-   molecule basis.  It can also just do translations in the z-dimension, or
-   just in the xy-plane (these options are useful for membrane systems).  The
-   model file must have connectivity information, and the trajectory must have
-   periodic box information.  This program writes a DCD file as
-   output.
+       <DT><B>bounding</B>
+       <DD>Write out the bounding box for a selection of atoms from a 
+       structure file.
+       
+       <DT><B>contact-time</B>
+       <DD>This tool computes the number of contacts between a probe
+       selection and a set of target selections.  The output is in the
+       form of a matrix and can be normalized by either total number of
+       contacts (across the row) or by the maximum # of contacts per
+       target (down the column).  In addition, it can automatically split
+       the probe into separate molecules, based on their segids, and
+       compute the inter-probe contacts as well.
 
-   <DT><B>reimage-by-molecule</B>
-   <DD>Reads a trajectory, and writes a new DCD which has been reimaged on a molecule
-   by molecule basis.  The model file must have connectivity information, and the
-   trajectory must have periodic box information.
+       <DT><B>contacts</B>
+       <DD>Loop over a trajectory and count the number of contacts between two
+       sets of atoms.  
 
-   <DT><B>renum-pdb</B>
-   <DD>Used primarily to renumber atoms/residues in a PDB...but it can
-   work with any LOOS-supported format.
+       <DT><B>drifter</B>
+       <DD>Calculates movement centroids over a trajectory
 
-   <DT><B>rgyr</B>
-   <DD>Loop over a trajectory and compute the radius of gyration for a selection of 
-   atoms.  Optionally, it can break your selection into individual molecules, 
-   if for example you have multiple solutes in the system.
+       <DT><B>exposure</B>
+       <DD>Computes the degree of exposure of a set of selections over
+       time.  The exposure is defined as the average density of a probe
+       selection within a spherical shell about each target atom.  This
+       tool can be used to determine how exposed to solvent a selection
+       is, or alternatively how buried a selection is.
 
-   <DT><B>rmsd2ref</B>
-   <DD>Computes rmsds between a selection and either its average conformation or a
-   reference model, optionally aligning the selection.
+       <DT><B>helix_kink</B>
+       <DD>Given two selections and a trajectory, compute the time series
+       of the angle between their principal components.  Also useful for
+       measuring domain hinge motions.
 
-   <DT><B>rmsfit</B>
-   <DD>Superimpose two structures using Kabsch RMS alignment.
+       <DT><B>interdist</B>
+       <DD>Calculates distances between a selection and an aribtrary set of 
+       other selections over a trajectory.  The distance computed can be the
+       distance between the centroids, the minimum distance between any atom
+       in any group, or the max distance between any atom in any group.
 
-   <DT><B>rmsds</B>
-   <DD>Loops over a trajectory and computes the pairwise RMSDs for a selection of
-   atoms.
+       <DT><B>octavex</B>
+       <DD>Extract embedded OCTAVE data from a LOOS output/log.  This is
+       used with aligner.
 
-   <DT><B>rotamer</B>
-   <DD>Computes the chi-1 and chi-2 angles for a given selection over an
-   entire trajectory.
+       <DT><B>paxes</B>
+       <DD>Computes the magnitude of the principal axes of a set of selections
+       over the trajectory.  This can be used to analyze shape changes over
+       time.
 
-   <DT><B>subsetter</B>
-   <DD>Subsets a trajectory (stripping out any atoms that don't match the
-   given selection), and writes a new DCD file.  Can be used to
-   concatenate trajectories, pull specific frames out, as well as
-   adjusting periodic box information and centering the trajectory on a
-   selection.  Since trajectories are often stored in files with an
-   ascending numerical sequence name (i.e. frame_1.dcd, frame_2.dcd,
-   etc), and since the shell globbing doesn't sort these in numerical
-   order, a command such as
-<PRE>subsetter foo model.pdb frame_*.dcd</PRE>
-   will not concatenate your frames in the order you want.  You can tell
-   subsetter to sort the input trajectories so that they are in numerical
-   order by using the "--sort" flag.  For more detailed information, use
-   the "--fullhelp" option with subsetter.
+       <DT><B>ramachandran</B>
+       <DD>Computes a ramachandran map for a given selection of a specified
+       range of frames in a trajectory (or all frames).  Note that some
+       torsions may be missing for the residues at the ends of the
+       selection.  To avoid this, expand your selection by a residue in
+       both directions, then use the "--skip" flag.
 
-   <DT><B>svd</B>
-   <DD>Performs principal component analysis for a trajectory using singular value
-   decomposition, writing out the eigenvalues, left singular vectors
-   (eigenvectors) and the right singular vectors (projection timeseries) as
-   OCTAVE-formatted text files.
+       <DT><B>rdf</B>
 
-   <DT><B>svdcolmap</B>
-   <DD>Map the magnitude of a left singular vector onto a PDB file's B-value
-   column.  Useful for visualizing which portions of a molecule are mobile for
-   a given SVD mode.
+       <DD>Computes the radial distribution function for two selections
+       averagd over a trajectory.  The selections are split up by molecule
+       and the center of mass is used.  For example, selecting all water
+       molecules will cause it to compute the radial distribution of the
+       centers of mass of individual water molecules.  For contrast, see
+       atomic-rdf.
 
-   <DT><B>torsion</B>
-   <DD>Given 4 selections, compute the torsion angle for their centroids.  This 
-   program loops over a trajectory and writes the torsion angle time series.
+       <DT><B>rgyr</B>
+       <DD>Compute the radius of gyration for a selection of atoms.
+       Optionally, it can break your selection into individual molecules,
+       if for example you have multiple solutes in the system.
 
-   <DT><B>traj2dcd</B>
-   <DD>Converts a LOOS-supported format to a DCD.
+       <DT><B>rmsd2ref</B>
+       <DD>Computes rmsds between a selection and either its average
+       conformation or a reference model, optionally aligning the
+       selection.
 
-   <DT><B>trajinfo</B>
-   <DD>Similar to dcdinfo, but works with generic trajectories.  Can report
-   box information and the centroid of a selection.  Useful for verifying
-   trajectory header information and extracting the number of frames and
-   atoms in a trajectory.
+       <DT><B>rmsds</B>
+       <DD>Loops over a trajectory and computes the pairwise RMSDs for a 
+       selection of atoms.
 
-   <DT><B>xy_rdf</B>
-   <DD>Compute a two dimension radial distribution function in the xy plane,
-   splitting the system into upper and lower leaflets.  Primarily intended for
-   analyzing lateral organization of lipid-water interfaces.  
+       <DT><B>rotamer</B>
+       <DD>Computes the chi-1 and chi-2 angles for a given selection over an
+       entire trajectory.
 
-   <DT><B>xy_rdf_timeseries</B>
-   <DD>Same as xy_rdf, except producing a series of block averages rather than
-   averaging over the whole trajectory.  
-</DL>
+       <DT><B>torsion</B>
+       <DD>Given 4 selections, compute the torsion angle for their centroids.  
+       This program loops over a trajectory and writes the torsion angle time 
+       series.
+    </DL>
 
 */
 
