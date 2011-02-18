@@ -11,50 +11,38 @@ School of Medicine & Dentistry, University of Rochester\n
 
 <hr>
 Quick links:
-      - \subpage intro
-      - \subpage feats
-      - \subpage building
-      - \subpage tools "Description of included tools"
+      - \subpage building "Building LOOS"
+      - \subpage tools "Tools included with LOOS"
+      - \subpage citing "Citing LOOS in published work"
       - \subpage Changes
-      - \subpage license
-
-<hr>
-\section Citing
-If you use LOOS in your work, please reference the following
-publication:
-
-Romo, T.D., Grossfield, A. "LOOS: An extensible platform for the
-structural analysis of simulations."  31st Annual International
-Conference of the IEEE EMBS (2009): 2332-2335
-
-\verbatim
-@InProceedings{loos2009,
-  author = 	 {T. D. Romo and A. Grossfield},
-  title = 	 {{LOOS}: An Extensible Platform for the Structural Analysis of Simulations},
-  pages =	 {2332-2335},
-  year =	 {2009},
-  volume =	 {31st Annual International Conference of the IEEE EMBS},
-  organization = {IEEE EMBS},
-}
-\endverbatim
-<hr>
 
 \section intro Introduction
 
-Welcome to the LOOS library,  a product of the Grossfield Lab at the University
-of Rochester Medical School and the Department of Biochemistry and Biophysics.
-The idea behind LOOS is to provide a lightweight C++ library for analysis of
-molecular dynamics simulations.  This includes parsing a number of PDB
-variants, as well as the native system description and trajectory formats for
-CHARMM, NAMD, and Amber.  LOOS is not intended to be an all-encompassing
-library and it is primarily geared towards reading data in and processing
-rather than manipulating the files and structures and writing them out.
+Welcome to LOOS, a product of the Grossfield Lab at the University of
+Rochester Medical School and the Department of Biochemistry and Biophysics.
+Our goal in developing LOOS is to make it easier to analyze molecular
+dynamics simulations.  LOOS is a code library for developing new analysis
+applications, designed to simplify the common tasks (reading structure and
+trajectory files, selecting atoms, computing geometric quantities) found in
+almost every application.  Moreover, it is distributed with a 
+number of useful standalone tools, ranging from simple things like radial
+distribution functions and radii of gyration to principal component 
+analysis to sophisticated methods for analyzing statistical errors.  
 
-LOOS operates mainly on groups of atoms, called an AtomicGroup.  The
-atoms are stored as Boost shared pointers, so multiple groups can
-contain the same atom without having to actually copy it.  This does
-mean that you should be careful though when modifying an atom since
-you may be affecting multiple groups in potentially unknown ways.
+LOOS has several major features:
+    - It transparently reads the native file formats for most major
+      biomolecular simulation pacakges, including CHARMM, NAMD, gromacs,
+      AMBER, and Tinker.
+    - It uses an expressive syntax to allow selection of atoms using 
+      all available metadata (e.g. atom number, residue name, etc).
+      For more information see \subpage selections "Selection Language".
+    - It allows novel analysis applications to be developed rapidly, with
+      minimal programming skill required.  For example, atoms are referred
+      to using reference-counted shared pointers, which retain the benefits
+      of using pointers (e.g. rapid, lightweight copying) without requiring
+      the developer to do manual memory management.
+    - It should run on any unix-like environment, and is tested under
+      multiple linux versions, Mac OSX, and cygwin.
 
 For assistance using LOOS, to suggest a patch, to request a feature, or simply
 to offer positive feedback, email LOOS-maintainer [AT] urmc.rochester.edu.  The
@@ -62,40 +50,31 @@ latest version of LOOS can be found at <A
 HREF="http://loos.sourceforge.net">
 http://loos.sourceforge.net</A>.
 
-\section feats Features
-One of the features of LOOS is the multiple ways it supports atom
-selection.  AtomicGroup objects can create subsets of themselves by
-using an AtomSelector (a predicate).  There are several useful ones
-already pre-defined, such as CAlphaSelector and SolventSelector.
-These can even be combined with logical operations.  The
-SolventSelector is actually written this way.
-
-Alternatively, LOOS supports selections created from user-input.  LOOS
-can parse a selection string (in a format based on C expression
-syntax) and use this for picking atoms.  For example, it's trivial to
-write you tool so that a user can pick which atoms to consider at
-run-time with a string like:
-\verbatim
-(resid >= 10 && resid <= 100) && (segid == "PROT" || segid == "HEME") && !(name =~ "H")
-\endverbatim
-which picks atoms with resid's between 10 and 100, a segid of either
-"HEME" or "PROT", and all non-hydrogen atoms.  PERL-style regular
-expressions are also supported using the "=~" operator.
-
-More information is available here:
-     \subpage selections "Selection Language"
-
 \section Applications
 
-Although LOOS is primarily intended as a platform for developing analysis
-tools, it is distributed with a number of prebuilt applications, located in
-the Tools/ directory.  These tools were developed for use in our research,
-but they should be of general utility.  Moreover, they provide examples of
-the intended use of the LOOS library, and will probably make helpful
-templates for people looking to develop new tools.  
+Although we primarily view LOOS as a development platform -- a tool for
+making tools -- it is distributed with a number of prebuilt applications.
+The included tools were developed in the course of research in the
+Grossfield lab, but we believe them to be generally useful enough to merit
+their inclusion.  The code for these programs is found in the Tools/
+directories, and in various subdirectories (e.g. Tools/Convergence/).
 
 For more information, see the 
     \subpage tools "Tools page"
+
+In addition to providing valuable functionality (principal component
+analysis, structure alignment, etc), these applications can also be useful
+as templates for developing new applications using LOOS.  We have taken a
+general design approach of developing relatively simple, single-purpose
+tools, as we believe that makes it easier to quickly add functionality and
+experiment with analysis methods, without the overhead of integrating with
+a larger package.  Many (if not most) analysis involve the same sequence of
+steps: read a description of the system (e.g. a PDB, PSF, parmtop, or gro
+file), select which atoms will be examined, and then, for each frame in a
+trajectory, compute some geometric quantity using the coodinates (e.g.
+their centroid or moments of inertia).
+
+
 
 
 \section Bugs
@@ -106,13 +85,14 @@ Email us directly (LOOS-maintainer [AT] urmc.rochester.edu) if you find a bug^H^
 
 <ul>
     <li> Python bindings for easier scripting support
+    <li> More extensive manual, including developer's tutorial
+    <li> More applications
 </ul>
 
 <hr>
 
 \section license License
 
-\image html grossfield_logo.jpg
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
 Copyright &copy; 2008-2010, Tod D. Romo, Alan Grossfield\n
@@ -131,7 +111,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+\image html grossfield_logo.jpg
 
+
+*/
+
+
+/*! \page citing "Citing LOOS in published work"
+If you use LOOS in your work, please reference the following
+publication:
+
+Romo, T.D., Grossfield, A. "LOOS: An extensible platform for the
+structural analysis of simulations."  31st Annual International
+Conference of the IEEE EMBS (2009): 2332-2335
 
 */
 
@@ -460,7 +452,7 @@ of date (or nonexistent).
 
 \subsection BYO Building Your Own Tools
 
-To use LOOS, you will want to include the top-level LOOS directory in
+To use LOOS to develop your own tools, you will want to include the top-level LOOS directory in
 both your include path and your library paths, so something like the
 following for linux
 \verbatim
@@ -575,8 +567,7 @@ alternatively, you can sign up for a free account with the Apple
 Developer's Connection and download the latest version.  Next, you
 will need to install SCons (http://scons.org) and Boost
 (http://boost.org) by visiting their websites, downloading the
-software, and following their installation instructions.  You may also
-want to install Doxygen if you want a local copy of the documentation.
+software, and following their installation instructions.  
 You will also need to create a \c custom.py file to tell LOOS where to
 find the libraries and headers that it needs.  Copy the \c
 custom.py-proto to \c custom.py and edit it.  In particular, look at
@@ -668,10 +659,12 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 <HR>
 <B><I> Categories of Tools </I> </B>
-      - \subpage Convergence "Convergence Tools"
-      - \subpage enm "Elastic Networks"
+      - \subpage manipulation "Manipulating trajectory files"
+      - \subpage Convergence "Assessing statistical errors and convergence"
       - \subpage hbond "Hydrogen Bonding"
       - \subpage PCA "Principal component analysis"
+      - \subpage Membranes "Membrane systems"
+      - \subpage enm "Elastic network models"
       - \subpage other "General purpose tools"
 
 <DL>
@@ -710,9 +703,6 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DD>
 
       <DT> <B> boot_bcom </B>
-      <DD>
-
-      <DT> <B> clupop.pl </B>
       <DD>
 
       <DT> <B> clupop.pl </B>
@@ -799,7 +789,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 	    <DD> Computes the time-correlation function for h-bonds.
       </DL>
 	    
-    \page Trajectory manipulation
+    \page manipulation Trajectory manipulation
    <DT> <B><I> Trajectory manipulation tools </I></B>
    <DD> A set of tools for manipulating structure and trajectory
    files, found in the Tools/ directory:
@@ -921,7 +911,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
        </DL>
         
 
-   \page Membranes
+   \page Membranes "Membrane systems"
    <DT> <B><I> Tools for membrane systems</I></B>
    <DD> Tools specifically intended for analyzing lipid bilayers and
    related systems, found in the Tools/
@@ -990,7 +980,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
     \page PCA
    <DT> <B><I> Principal component analysis </I> </B>
    <DD> Tools for performing PCA, found in Tools/.  Note: some related
-   tools are also found in the ENM section.
+   tools are also found in the network models section (\subpage enm).
 
        <DL>
        <DT><B>coverlap</B>
