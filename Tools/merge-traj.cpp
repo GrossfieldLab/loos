@@ -288,6 +288,27 @@ int main(int argc, char *argv[])
                         {
                         m->reimage();
                         }
+
+                    // Sometimes if the box has drifted enough, reimaging by molecule
+                    // will significantly alter the centroid of the selected system, so
+                    // we need to center a second time, which perversely means we'll need
+                    // to reimage again. In my tests, this second go around is necessary and
+                    // sufficient to fix everything, but I'm willing to be proved wrong.
+
+                    centroid = center.centroid();
+#if DEBUG
+                    cerr << "centroid after reimaging: " << centroid << endl;
+#endif
+                    system.translate(-centroid);
+
+                    for (m=molecules.begin(); m != molecules.end(); ++m )
+                        {
+                        m->reimage();
+                        }
+#if DEBUG
+                    centroid = center.centroid();
+                    cerr << "centroid after second reimaging: " << centroid << endl;
+#endif 
                     }
 
                 output.writeFrame(system);
