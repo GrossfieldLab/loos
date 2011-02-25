@@ -372,6 +372,11 @@ namespace loos {
   
     //! Reimage atoms individually into the primary cell
     void reimageByAtom();
+
+    //! Takes a group that's split across a periodic boundary and reimages it so it's all together.  
+    void mergeImage(pAtom &p);
+    //! Takes a group that's split across a periodic boundary and reimages it so it's all together, using the first atom in the AtomicGroup as the reference
+    void mergeImage();
   
     //! Find atoms in \a grp that are within \a dist angstroms of atoms
     //! in the current group.

@@ -791,6 +791,31 @@ namespace loos {
     }
   }
     
+  /** Works by translating the system so one atom is in the center of the
+   *  box, reimaging by atom (so now the group is all in the middle of the box),
+   *  and then translating back.
+   *
+   *  If you don't want to give it a reference atom, call the version 
+   *  that takes no argument; it uses the first atom in the 
+   *  AtomicGroup.
+   *
+   */
+  void AtomicGroup::mergeImage(pAtom &p ) {
+      GCoord ref = p->coords();
+
+      translate(-ref);
+      reimageByAtom();
+      translate(ref);
+  }
+
+  /** Does the same as the other mergeImage, only using the first atom in the 
+   *  AtomicGroup as the reference atom.
+   */
+  void AtomicGroup::mergeImage() {
+    mergeImage(atoms[0]);
+  }
+
+
 
   /** Uses a not-very-bright algorithm that compares all atoms against
    * all atoms... 
