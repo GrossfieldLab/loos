@@ -267,10 +267,7 @@ int main(int argc, char *argv[])
                         // molecules and molecules with small radii 
                         if ( (m->size() > 1) && (m->radius() > smallest) )
                             {
-                            GCoord atom_pos = m->getAtom(0)->coords();
-                            m->translate(-atom_pos);
-                            m->reimageByAtom();
-                            m->translate(atom_pos);
+                            m->mergeImage();
                             m->reimage();
                             }
                         }
