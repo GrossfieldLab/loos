@@ -712,29 +712,43 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DD>
 
       <DT> <B> decorr_time </B>
-      <DD>
+      <DD> Decorrelaton time as computed by structural histogram
+      analysis
+      Reference: Lyman & Zuckerman, J Phys Chem B (2007) 111:1287-82
 
       <DT> <B> effsize.pl </B>
-      <DD>
+      <DD> PERL front-end to the effective sample size tools (Neff)
+      Reference:
 
       <DT> <B> fidpick </B>
-      <DD>
-
-      <DT> <B> fidpick </B>
-      <DD>
+      <DD> Picks fiducial structures for structural histograms
+      Reference: Lyman & Zuckerman, Biophys J (2006) 91:164-72
 
       <DT> <B> hierarchy </B>
-      <DD>
+      <DD>Given a trajectory whose structures have been binned into
+      states via reference structures, computes the MFPT between
+      states and then constructs a hierarchy of states based on
+      exchange rates.  Used to generate input for neff.
+        Based on Zhang, Bhatt, and Zuckerman; JCTC, DOI: 10.1021/ct1002384
+	and code provided by the Zuckerman Lab
+	(http://www.ccbb.pitt.edu/Faculty/zuckerman/software.html)
+
 
       <DT> <B> neff </B>
-      <DD>
+      <DD> Computes effective sample size given an assignment and
+      state file (from hierarchy).
+      Based on Zhang, Bhatt, and Zuckerman; JCTC, DOI: 10.1021/ct1002384
+      and code provided by the Zuckerman Lab
+      (http://www.ccbb.pitt.edu/Faculty/zuckerman/software.html)
+
 
       <DT> <B> sortfids </B>
       <DD>
 
       <DT> <B> ufidpick </B>
-      <DD>
-
+      <DD> Picks a set of fiducial structures from a trajectory using
+      a uniform distribution.
+      Reference: Lyman & Zuckerman, J Phys Chem B (2007) 111:12876-82
     </DL>
 
   \page enm 
