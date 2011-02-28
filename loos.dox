@@ -675,7 +675,10 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
     <DL>
       <DT> <B> assign_frames </B>
-      <DD>
+      <DD>  Given a trajectory and a set of fiducial structures (histogram
+      centers), assign each frame in the trajectory to a histogram bin.
+      Part of the workflow for computing the effective sample size.  (See
+      effsize.pl)
 
       <DT> <B> avgconv </B>
       <DD>
@@ -713,21 +716,29 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
       <DT> <B> decorr_time </B>
       <DD> Decorrelaton time as computed by structural histogram
-      analysis
+      analysis.
       Reference: Lyman & Zuckerman, J Phys Chem B (2007) 111:1287-82
 
       <DT> <B> effsize.pl </B>
-      <DD> PERL front-end to the effective sample size tools (Neff)
-      Reference:
+      <DD> PERL front-end to the effective sample size tools (ufidpick,
+      assign_frames, hierarchy, neff).  If you want to apply the
+      Zuckerman-style effective sample size method (see the entry for neff,
+      below), you probably should use this script instead of the individual
+      tools, since this tool automates the process of picking fiducial
+      structures (the frames that will be the centers of your histogram
+      bins), assigning the frames from the trajectories to those bins,
+      working out the mean first passage time between bins, and computing
+      the effective sample size.  Reference: Lyman & Zuckerman, Biophys J 
+      (2006) 91:164-72
 
       <DT> <B> fidpick </B>
-      <DD> Picks fiducial structures for structural histograms
+      <DD> Picks fiducial structures for structural histograms.
       Reference: Lyman & Zuckerman, Biophys J (2006) 91:164-72
 
       <DT> <B> hierarchy </B>
       <DD>Given a trajectory whose structures have been binned into
-      states via reference structures, computes the MFPT between
-      states and then constructs a hierarchy of states based on
+      states via reference structures, computes the mean first passage time
+      between states and then constructs a hierarchy of states based on
       exchange rates.  Used to generate input for neff.
         Based on Zhang, Bhatt, and Zuckerman; JCTC, DOI: 10.1021/ct1002384
 	and code provided by the Zuckerman Lab
