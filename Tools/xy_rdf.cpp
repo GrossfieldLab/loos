@@ -277,7 +277,7 @@ double max2 = hist_max*hist_max;
 // loop over the frames of the traj file
 int frame = 0;
 double area = 0.0;
-double total_area = 0.0;
+double interval_area = 0.0;
 
 
 while (traj->readFrame())
@@ -286,6 +286,7 @@ while (traj->readFrame())
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 
     area += box.x() * box.y();
+    interval_area += box.x() * box.y();
 
     // compute the distribution of g2 around g1 for the lower leaflet
     for (unsigned int j = 0; j < g1_lower.size(); j++)
@@ -340,10 +341,9 @@ while (traj->readFrame())
     // if requested, write out timeseries as well
     if (timeseries_interval && (frame % timeseries_interval == 0))
         {
-        total_area += area;
-        area /= timeseries_interval;
-        double upper_expected = timeseries_interval * num_upper / total_area;
-        double lower_expected = timeseries_interval * num_lower / total_area;
+        interval_area /= timeseries_interval;
+        double upper_expected = timeseries_interval * num_upper / interval_area;
+        double lower_expected = timeseries_interval * num_lower / interval_area;
 
 
         // create the output file
@@ -363,7 +363,7 @@ while (traj->readFrame())
 
             double d_inner = bin_width*m;
             double d_outer = d_inner + bin_width;
-            double norm = M_PI*(d_outer*d_outer - d_inner*d_inner)/area;
+            double norm = M_PI*(d_outer*d_outer - d_inner*d_inner);
 
             double upper = hist_upper[m]/(norm*upper_expected);
             double lower = hist_lower[m]/(norm*lower_expected);
@@ -394,32 +394,33 @@ while (traj->readFrame())
         hist_lower.assign(num_bins, 0.0);
 
         // zero out the area
-        area = 0;
-        
+        interval_area = 0.0;
         }
 
     }
 
 // normalize the area
-if (timeseries_interval)
-    {
-    total_area /= frame;
-    }
-else
-    {
-    total_area = area/frame;
-    }
+area /=frame;
 
-// if we didn't write timeseries, then we need to copy the interval histograms
-// to the total ones
-if (timeseries_interval)
+// If we didn't write timeseries, then we need to copy the interval histograms
+// to the total ones.  If we did, we need to add in the additional data points
+// since the last time we wrote out a times series file
+if (!timeseries_interval)
     {
     hist_lower_total = hist_lower;
     hist_upper_total = hist_upper;
     }
+else if (frame % timeseries_interval != 0)
+    {
+    for (int i=0; i< num_bins; i++)
+        {
+        hist_lower_total[i] += hist_lower[i];
+        hist_upper_total[i] += hist_upper[i];
+        }
+    }
 
-double upper_expected = frame * num_upper / total_area;
-double lower_expected = frame * num_lower / total_area;
+double upper_expected = frame * num_upper / area;
+double lower_expected = frame * num_lower / area;
 
 // Output the results
 cout << "# Dist\tTotal\tUpper\tLower\tCum" << endl;
@@ -432,11 +433,12 @@ for (int i = 0; i < num_bins; i++)
     double d_outer = d_inner + bin_width;
     double norm = M_PI*(d_outer*d_outer - d_inner*d_inner);
 
-    double upper = hist_upper[i]/(norm*upper_expected);
-    double lower = hist_lower[i]/(norm*lower_expected);
-    double total = (hist_upper[i] + hist_lower[i])/
+    double upper = hist_upper_total[i]/(norm*upper_expected);
+    double lower = hist_lower_total[i]/(norm*lower_expected);
+    double total = (hist_upper_total[i] + hist_lower_total[i])/
                         (norm*(upper_expected + lower_expected));
-    cum += (hist_upper[i] + hist_lower[i])/(group1.size()*timeseries_interval);
+    cum += (hist_upper_total[i] + hist_lower_total[i])
+                    /(group1.size()*frame);
 
     cout << d     << "\t"
          << total << "\t"
