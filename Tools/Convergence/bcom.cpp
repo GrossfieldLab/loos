@@ -45,6 +45,7 @@ typedef vector<AtomicGroup>                               vGroup;
 typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 
 
+// Convenience structure for aggregating results
 struct Datum {
   Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
                                                                 var_coverlap(var),
@@ -136,6 +137,8 @@ vGroup subgroup(const vGroup& A, const uint a, const uint b) {
 }
 
 
+// Breaks the ensemble up into blocks and computes the PCA for each
+// block and the statistics for the covariance overlaps...
 
 template<class ExtractPolicy>
 Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const uint blocksize, ExtractPolicy& policy) {
@@ -149,6 +152,7 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const
     RealMatrix s = boost::get<0>(pca_result);
     RealMatrix U = boost::get<1>(pca_result);
 
+    // Scale the singular values by block-size
     if (length_normalize)
       for (uint j=0; j<s.rows(); ++j)
         s[j] /= blocksize;
@@ -219,8 +223,9 @@ int main(int argc, char *argv[]) {
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
   cout << "# n\t" << (use_zscore ? "Z-score" : "Coverlap") << "\tVariance\tN_blocks\n";
 
-  // Now iterate over all requested block sizes...
-  
+  // Now iterate over all requested block sizes
+
+  // Provide user-feedback since this can be a slow computation
   PercentProgress watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(blocksizes.size()));
   slayer.attach(&watcher);

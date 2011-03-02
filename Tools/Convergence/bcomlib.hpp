@@ -34,12 +34,37 @@
 
 #include <loos.hpp>
 
+/*
+ * = Developer's Note =
+ *
+ * Some of the following is vestigial from the develpment of the BCOM method.
+ * These interfaces and classes may go away or change substantially in
+ * the next release or two, so caveat programmer...comments may also
+ * be quite sparse...
+ */
+
+
+
 namespace Convergence {
 
+  // Treats an AtomicGroup as a column vector and subtracts it from
+  // each column of the matrix M.
   void subtractStructure(loos::RealMatrix& M, const loos::AtomicGroup& model);
 
   
-  // ** Various policies that determine how blocks are aligned and averaged **
+  /*
+   * Various policies that determine how blocks are extracted and
+   * averaged/aligned.  The idea is that they are really functors
+   * which, given a vector<AtomicGroup> ensemble, will extract a
+   * RealMatrix of coordinates where each AtomicGroup is a column
+   * vector.  The appropriate processing (i.e. average subtraction) is
+   * also performed by the functor.
+   *
+   * local_average, when set, means that the average of the ensemble
+   * is used rather than the average passed to the constructor
+   * (presumably, the average of the -entire- trajectory)
+   */
+
 
   // Align to the passed structure
   struct AlignToPolicy {
