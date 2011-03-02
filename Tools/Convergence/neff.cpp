@@ -84,10 +84,13 @@ vvUint readStates(const string& fname) {
   return(states);
 }
 
+
 vector<uint> readAssignments(const string& fname) {
   ifstream ifs(fname.c_str());
   return(readVector<uint>(ifs));
 }
+
+
 
 vUint mapStates(const vvUint& states) {
   uint maxbin = 0;

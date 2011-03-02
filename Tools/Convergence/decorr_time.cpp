@@ -40,8 +40,10 @@ using namespace loos;
 
 namespace po = boost::program_options;
 
-// Globals..ugh...
+// * GLOBALS *
 
+
+// Turning on generates some internal debugging information
 const bool debugging = false;
 uint verbosity;
 
@@ -175,7 +177,6 @@ vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, c
   }
 
   vecDouble vars(S, 0.0);
-  //  double mean = 1.0 / S;
 
   for (vector<vecDouble>::iterator j = fik.begin(); j != fik.end(); ++j)
     for (uint i=0; i<S; ++i) {
@@ -183,7 +184,6 @@ vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, c
       vars[i] += d*d;
     }
 
-  // Shouldn't this be N-1?
   for (vecDouble::iterator i = vars.begin(); i != vars.end(); ++i)
     *i /= fik.size();
 

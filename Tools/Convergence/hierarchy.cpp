@@ -47,7 +47,9 @@ typedef pair<uint, uint>     uPair;
 typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
-
+// Debugging generates a lot of information about the internal state
+// of the code.  This was used to validate its operation with respect
+// to Dan's PERL code.
 const bool debugging = false;
 
 
@@ -110,7 +112,7 @@ DoubleMatrix computeRates(const string& fname) {
 
 
 
-
+// Simple class to sort pairs of numbers based on a third (the rate)
 struct RatePair {
   RatePair(const double d, const uint a, const uint b) :
     rate(d), pair(a,b) { }
@@ -126,7 +128,6 @@ struct RatePair {
 
 
 vector<uPair>  sortRates(const DoubleMatrix& M) {
-
   vector<RatePair> rates;
   for (uint j=0; j<M.cols()-1; ++j)
     for (uint i=j+1; i<M.cols(); ++i)
@@ -163,6 +164,7 @@ void dumpMatrix(ostream& os, const vvUint& M) {
 }
 
 
+// Yes, this really needs to be commented...  Maybe in the next release.
 vvUint cluster(const vector<uPair>& pairs) {
   vvUint states;
   vUint list;
@@ -346,7 +348,9 @@ int main(int argc, char *argv[]) {
   DoubleMatrix M = computeRates(argv[k++]);
   vector<uPair> pairs = sortRates(M);
   vvUint states = cluster(pairs);
-  
+
+  // Not all states will get clustered, so manually search for
+  // "orphaned" ones and add them in...
   findOrphans(states, M.rows());
 
 
@@ -354,6 +358,7 @@ int main(int argc, char *argv[]) {
   dumpMatrix(cout, states);
 
 
+  // If this happens, you are likely very undersampled
   if (states.size() != 2)
     cerr << boost::format("Warning- clustering finished with %d states.\n") % states.size();
 }

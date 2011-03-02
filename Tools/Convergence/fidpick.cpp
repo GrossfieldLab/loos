@@ -4,6 +4,11 @@
 
 
   Usage- fidpick model trajectory selection output-name cutoff [seed]
+
+
+  Note: This is the older method of partitioning based on a distance
+  cutoff only, rather than only taking the closest N structures (used
+  in the decorr-time and Neff methods
 */
 
 
