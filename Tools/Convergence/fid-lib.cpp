@@ -61,6 +61,7 @@ vecUint assignStructures(AtomicGroup& model, pTraj& traj, const vecUint& frames,
     uint mini = refs.size() + 1;
     
     for (uint i = 0; i < refs.size(); ++i) {
+      model.alignOnto(refs[i]);
       double d = model.rmsd(refs[i]);
       if (d < mind) {
         mind = d;
@@ -92,22 +93,37 @@ vecUint trimFrames(const vecUint& frames, const double frac) {
 
 boost::tuple<vecGroup, vecUint> pickFiducials(AtomicGroup& model, pTraj& traj, const vecUint& frames, const double f) {
 
+  // Size of bin
   uint bin_size = f * frames.size();
+
+  // Initialize a RNG to use a uniform random distribution.
+  // Use the LOOS generator singleton so the random number stream can
+  // be seeded (or automatically seeded) by LOOS...
   boost::uniform_real<> rmap;
   boost::variate_generator< base_generator_type&, boost::uniform_real<> > rng(rng_singleton(), rmap);
 
+  // Vector of AtomicGroup's representing the fiducial structures
   vecGroup fiducials;
+
+  // Track which trajectory frame has been assigned to which fiducial
   vecInt assignments(frames.size(), -1);
+
+  // The indices (frame #'s) of the structures picked to be fiducials
   vecUint refs;
   vecDouble radii;
   
+  // Unassigned frames...bootstrap the loop
   vecUint possible_frames = findFreeFrames(assignments);
+
+  // Are there any unassigned frames left?
   while (! possible_frames.empty()) {
+    // Randomly pick one
     uint pick = possible_frames[static_cast<uint>(floor(possible_frames.size() * rng()))];
 
     traj->readFrame(frames[pick]);
     traj->updateGroupCoords(model);
 
+    // Make a copy and assign a new bin # to the fiducial
     AtomicGroup fiducial = model.copy();
     fiducial.centerAtOrigin();
     uint myid = fiducials.size();
@@ -119,6 +135,8 @@ boost::tuple<vecGroup, vecUint> pickFiducials(AtomicGroup& model, pTraj& traj, c
     fiducials.push_back(fiducial);
     refs.push_back(pick);
     
+    // Now find the distance from every unassigned frame to this new fiducial (aligning
+    // them first), and then sort by distance...
     vector<double> distances(assignments.size(), numeric_limits<double>::max());
     for (uint i = 0; i<assignments.size(); ++i) {
       if (assignments[i] >= 0)
@@ -133,6 +151,9 @@ boost::tuple<vecGroup, vecUint> pickFiducials(AtomicGroup& model, pTraj& traj, c
     vecUint indices = sortedIndex(distances);
     uint picked = 0;
     double maxd = 0.0;
+
+    // Pick the first bin_size of them (or however many are remaining)
+    // and assign these to the newly picked fiducial
     for (uint i=0; i<assignments.size() && picked < bin_size; ++i) {
       if (assignments[indices[i]] < 0) {
         assignments[indices[i]] = myid;

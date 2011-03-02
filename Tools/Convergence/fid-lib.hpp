@@ -43,14 +43,25 @@ typedef std::vector<double>             vecDouble;
 
 
 
-
+// Return indices of non-zero entries in the vector (i.e. frames that are not assigned)
 vecUint findFreeFrames(const vecInt& map);
 
+// Given a set of reference structures and a trajectory, classify the trajectory
+// based on which reference structure is closest to each trajectory frame
 vecUint assignStructures(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const vecGroup& refs);
+
+// Given a vector that contains indices into a trajectory, will trim off the
+// end so the # of frames is an even multiple of the requested bin size (via frac)
 vecUint trimFrames(const vecUint& frames, const double frac);
+
+// Randomly partition trajectory space
+// f = the fractional bin size (i.e. probability)
 boost::tuple<vecGroup, vecUint> pickFiducials(loos::AtomicGroup& model, loos::pTraj& traj, const vecUint& frames, const double f);
 
+// Find the max value in the vector
 int findMaxBin(const vecInt& assignments);
+
+// Simple histogram of bin assignments
 vecUint histogramBins(const vecInt& assignments);
 
 
