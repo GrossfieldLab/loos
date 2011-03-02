@@ -44,7 +44,7 @@ const bool debug = false;
 typedef vector<AtomicGroup>                               vGroup;
 typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 
-
+// Convenience structure for aggregating results
 struct Datum {
   Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
                                                                 var_coverlap(var),
@@ -129,7 +129,7 @@ void parseOptions(int argc, char *argv[]) {
 
 
 
-
+// Randomly pick frames
 vector<uint> pickFrames(const uint nframes, const uint blocksize) {
   
   boost::uniform_int<uint> imap(0,nframes-1);
@@ -150,6 +150,7 @@ void dumpPicks(const vector<uint>& picks) {
 }
 
 
+// Extract a subgroup of the vector<AtomicGroup> given the indices in picks...
 vGroup subgroup(const vGroup& A, const vector<uint>& picks) {
   vGroup B;
   
@@ -160,6 +161,9 @@ vGroup subgroup(const vGroup& A, const vector<uint>& picks) {
 }
 
 
+
+// Breaks the ensemble up into blocks and computes the PCA for each
+// block and the statistics for the covariance overlaps...
 
 template<class ExtractPolicy>
 Datum blocker(const RealMatrix& Ua, const RealMatrix sa, const vGroup& ensemble, const uint blocksize, uint repeats, ExtractPolicy& policy) {
