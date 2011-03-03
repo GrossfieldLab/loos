@@ -686,9 +686,6 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DT> <B> bcom </B>
       <DD>
 
-      <DT> <B> bcomz </B>
-      <DD>
-
       <DT> <B>block_average</B>
       <DD> Reads a simple columnated text file, and computes the block-averaged
            standard error as a function of block size.  The plateau value
@@ -702,16 +699,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DT> <B> bootstrap_overlap.pl </B>
       <DD>
 
-      <DT> <B> boot_avgconv </B>
-      <DD>
-
       <DT> <B> boot_bcom </B>
-      <DD>
-
-      <DT> <B> clupop.pl </B>
-      <DD>
-
-      <DT> <B> decorr_plot.sh </B>
       <DD>
 
       <DT> <B> decorr_time </B>
