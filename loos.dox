@@ -712,12 +712,14 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       <DD> PERL program to compute the bcom and bootstrapped bcom for
       a trajectory, generating a plot of their ratio and an
       exponential fit.  Also generates a plot of the residual error in
-      the fit.  Requires gnuplot.  Use the "--help" option for
-      more details.  Note that the number of block sizes used is
-      somewhat conservative, so it's probably a good idea to use a low
-      number of block sizes initially to get a quick idea of how good
-      or bad the sampling is, and then use the higher number of blocks
-      for a more detailed analysis.
+      the fit.  Use the "--help" option for more details.  Note that
+      the number of block sizes used is somewhat conservative, so it's
+      probably a good idea to use a low number of block sizes
+      initially to get a quick idea of how good or bad the sampling
+      is, and then use the higher number of blocks for a more detailed
+      analysis.  Also note that plotting requires gnuplot.  If you do
+      not have gnuplot installed (or do not like gnuplot), use the
+      "--noplot" flag to disable this.
 
       <DT> <B> boot_bcom </B>
       <DD> Bootstrapped bcom is similar to bcom above, but rather than
