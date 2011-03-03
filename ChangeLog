@@ -1,20 +1,20 @@
 2011-02-15    <alan@membrane>
 	* Added option to Tools/merge-traj to fix by molecule, so that
-	  trajectories that have molecules broken across the periodic boundary (eg
-	  gromacs output) come out looking clean
+	trajectories that have molecules broken across the periodic boundary (eg
+	gromacs output) come out looking clean
 2011-02-11    <alan@membrane>
 	* Added a simply xy-only option to recenter-trj
 	* Modified recenter-trj to be more robust (although half as fast), so that
-	  it does the right thing even if the centering selection is split
-      across the periodic image
+	it does the right thing even if the centering selection is split
+	across the periodic image
 2011-02-02    <alan@membrane>
 	* Modified Tools/density-dist to fold in the functionality from
-      density-dist-windowed.  The latter is marked deprecated.  Note: to get 
-	  around a design flaw in boost program options, you have to manually
-	  specify --minz and --maxz (because program options tries to grab
-	  negative numbers as options).
+	density-dist-windowed.  The latter is marked deprecated.  Note: to get
+	around a design flaw in boost program options, you have to manually
+	specify --minz and --maxz (because program options tries to grab
+	negative numbers as options).
 2011-02-02    <tromo@spade>
-	* Modified Tools/density-dist to use boost program options, and added a 
+	* Modified Tools/density-dist to use boost program options, and added a
 	  symmetrize flag to make the density symmetric about the membrane center.
 	  This assumes the trajectory has already been aligned with the
 	  membrane center at z=0 for each frame.  This can easily be accomplished
@@ -50,15 +50,16 @@
 
 2010-12-20    <alan@membrane>
 	* Changes Tools/xy_rdf.  Now able to split by molecule, residue, or
-	  segment.  Also, merged the functionality of xy_rdf_timeseries into 
+	  segment.  Also, merged the functionality of xy_rdf_timeseries into
 	  xy_rdf.  xy_rdf_timeseries is now deprecated, and will be deleted
 	  before the next release.
 
 2010-12-17    <alan@membrane>
-	* Changed Tools/rdf to be able to split by molecule, residue, or segment. 
+	* Changed Tools/rdf to be able to split by molecule, residue, or segment.
 	  Now uses boost program options, so the command line is not backward
 	  compatible.  TODO: add a fullhelp option
-	
+
+
 2010-11-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed covarianceOverlap() routine to use BLAS and faster
