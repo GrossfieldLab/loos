@@ -6,6 +6,8 @@
 
   Usage- sortfids model selection fids hist newfidname
 
+  Sorts fiducials based on decreasing histogram bin population
+
 */
 
 
@@ -44,6 +46,7 @@ typedef vector<AtomicGroup>                   vGroup;
 typedef Math::Matrix<double, Math::RowMajor>  Matrix;
 
 
+// Sorts based on 3rd col of a matrix
 
 struct Adapter {
   Adapter(const Matrix& M) : A(M) { }
