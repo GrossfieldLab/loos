@@ -29,7 +29,9 @@
 
 use FileHandle;
 use Getopt::Long;
+use Env qw/@PATH/;
 
+&loosCheck(qw/trajinfo ufidpick assign_frames hierarchy neff/);   # Check loos installation
 
 
 my $prefix;          # Prefix for intermediate files
@@ -241,4 +243,24 @@ Options:
  --verbosity=i (1)    How verbose output is during operation
 EOF
   exit(0);
+}
+
+
+
+sub loosCheck {
+  my @exes = @_;
+
+  foreach my $name (@exes) {
+    my $flag = 0;
+    foreach my $dir (@PATH) {
+      if (-e "$dir/$name") {
+	$flag = 1;
+	last;
+      }
+    }
+    if (!$flag) {
+      print STDERR "Error- $name not found.  Are you sure LOOS is correctly installed and in your shell's path?\n";
+      die;
+    }
+  }
 }
