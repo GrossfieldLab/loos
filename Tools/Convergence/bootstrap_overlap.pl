@@ -188,7 +188,7 @@ sub gnuplot {
 
   print "DEBUG> lower=$lower, upper=$upper\n" if ($verbosity > 2);
   print "DEBUG> half=$half, scale=$scale, units=$units\n" if ($verbosity > 2);
-  print "DEBUG> seeds=(", join(',', @$rseeds)), ")\n" if ($verbosity > 2);
+  print "DEBUG> seeds=(", join(',', @$rseeds), ")\n" if ($verbosity > 2);
 
   # Pipe output straight into gnuplot
   my $fh = new FileHandle "|gnuplot";
