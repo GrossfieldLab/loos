@@ -2,6 +2,23 @@
 #
 # Usage- bootstrap_overlap.pl model trajectory selection
 #
+# Notes:
+# o If your BLAS/ATLAS are not in parallel, you can try running
+#   concurrent BCOM/BOOTBCOM jobs with this script by using the
+#   "--parallel" flag.
+#
+# Assumes the various LOOS tools are in your shell path
+#
+# Assumes you have gnuplot installed and is in your path
+#
+# The plotting is hard-coded.  If you want to change the plot, you
+# will either need to change the code in the gnuplot function, or
+# pattern your own gnuplot script after this.  Turning on debugging
+# output (i.e. verbosity=3) will output the values used by the PERL
+# program in gnuplot...
+#
+#
+#
 
 
 #  This file is part of LOOS.
@@ -30,17 +47,17 @@ use Getopt::Long;
 
 
 
-my $nreps = 10;
-my $range = undef;
-my $stepsize = undef;
-my $verbosity = 2;
-my $prefix = undef;
-my $scale = 1.0;
-my $units = 'ns';
-my @seeds;
-my $replot = 0;
-my $npts = 100;
-my $parallel = 0;
+my $nreps = 10;        # Number of replicates for bootstrap
+my $range = undef;     # Traj range to use (undef = auto)
+my $stepsize = undef;  # Block size increment (undef = auto)
+my $verbosity = 2;     # Extent of logging
+my $prefix = undef;    # Intermediate file prefix (undef = auto)
+my $scale = 1.0;       # Convert frame to time
+my $units = 'ns';      # Units for plotting
+my @seeds;             # Seeds for the exp fit in gnuplot
+my $replot = 0;        # 1 = only generate plot
+my $npts = 100;        # When range is auto, how many block sizes to use
+my $parallel = 0;      # 1 = run boot/bcom concurrently
 
 my $hdr = &header($0, \@ARGV);
 
@@ -56,12 +73,14 @@ my %options = (
 	       'seed=f' => \@seeds,
 	       'plotonly' => \$replot,
 	       'npts=i' => \$npts,
-	       'parallel!' => \$parallel
+	       'parallel!' => \$parallel,
+	       "help" => sub { &showHelp; }
+	       
 	      );
 
 my $ok = GetOptions(%options);
 
-&showHelp(\%options) if (!$ok || $#ARGV != 2);
+&showHelp if (!$ok || $#ARGV != 2);
 
 
 my $model = shift;
@@ -69,6 +88,8 @@ my $traj = shift;
 my $sel = shift;
 
 
+# Prefix is automatically generated from traj name, stripping off
+# suffix
 if (!defined($prefix)) {
   if ($traj =~ /\./) {
     $traj =~ /^(.+)\..+?$/;
@@ -79,6 +100,11 @@ if (!defined($prefix)) {
 }
 
 
+
+# Auto-generate the range if not specified by user.  We take the first
+# half of the trajectory using the user-defined stepsize, or how many
+# blocks were requested.  Stepsize has priority.
+
 my $nframes = &getNumberOfFrames($model, $traj);
 my $half = int($nframes/2);
 if (!defined($range)) {
@@ -86,6 +112,8 @@ if (!defined($range)) {
   $range = "$delta:$delta:$half";
 }
 
+
+# If no seeds specified, use 1/2 and 1/20th of traj size
 if ($#seeds < 0) {
   @seeds = ($half, $half/10.0);
 }
@@ -93,17 +121,28 @@ if ($#seeds < 0) {
 
 
 if (!$replot) {
+
+
   if ($parallel) {
+    # Run the BCOM job in the background if in parallel mode...
     my $child = &forkCommand("bcom --blocks $range $model $traj '$sel' >$prefix.bcom.asc");
     &runCommand("boot_bcom --blocks $range --replicates $nreps $model $traj '$sel' >$prefix.boot_bcom.asc");
+
+    # Reap the forked proc...no zombies
     my $stat = waitpid $child, 0;
+
   } else {
+    # Run jobs serially...
     &runCommand("bcom  --blocks $range $model $traj '$sel' >$prefix.bcom.asc");
     &runCommand("boot_bcom --blocks $range --replicates $nreps $model $traj '$sel' >$prefix.boot_bcom.asc");
   }
   
+  # Combine the two separate output files from bcom and bootbcom into
+  # one file for easy plotting...
   &mergeFiles("$prefix.conv.asc", "$prefix.bcom.asc", "$prefix.boot_bcom.asc");
 }
+
+# Call gnuplot to generate the plot
 &gnuplot("$prefix.conv.ps", "$prefix.conv.asc", $prefix, $units, $scale, $nframes, \@seeds);
 
 
@@ -111,6 +150,7 @@ if (!$replot) {
 ##############################################################################
 
 
+# Forks, then runs command.
 sub forkCommand {
   my $cmd = shift;
 
@@ -131,22 +171,26 @@ sub forkCommand {
 
 
 sub gnuplot {
-  my $fno = shift;
-  my $fni = shift;
-  my $ti = shift;
-  my $units = shift;
-  my $scale = shift;
-  my $num = shift;
-  my $rseeds = shift;
+  my $fno = shift;    # output filename
+  my $fni = shift;    # input filename
+  my $ti = shift;     # base prefix name (used for labeling the plot)
+  my $units = shift;  # Units string
+  my $scale = shift;  # Scales frame into time
+  my $num = shift;    # Size of traj
+  my $rseeds = shift; # Seeds for exp fit
 
+  # Get bounds for plot/fit
   my $half = int($num / 2);
   $num /= $scale;
   my($lower, $upper) = &findRange($fni);
   $lower /= $scale;
   $upper /= $scale;
 
-  print STDERR "DEBUG> lower=$lower, upper=$upper\n";
+  print "DEBUG> lower=$lower, upper=$upper\n" if ($verbosity > 2);
+  print "DEBUG> half=$half, scale=$scale, units=$units\n" if ($verbosity > 2);
+  print "DEBUG> seeds=(", join(',', @$rseeds)), ")\n" if ($verbosity > 2);
 
+  # Pipe output straight into gnuplot
   my $fh = new FileHandle "|gnuplot";
   defined($fh) || die 'Error- cannot open pipe to gnuplot';
   print $fh <<EOF;
@@ -211,6 +255,7 @@ EOF
 }
 
 
+# Run command providing logging (if necessary) and checks for errors
 sub runCommand {
   my $cmd = shift;
 
@@ -219,6 +264,9 @@ sub runCommand {
   die "Error- '$cmd' failed with code ", $failed >> 8 if ($failed);
 }
 
+
+# Merges the BCOM & BOOTBCOM outputs into one file
+# &mergeFiles(output, bcom, bootbcom)
 
 sub mergeFiles {
   my $fno = shift;
@@ -232,21 +280,22 @@ sub mergeFiles {
   my($f1, $f2);
 
   while (<$fh1>) {
-    next if /^#/;
+    next if /^#/;     # Skip header metadata
     $f1 = $_;
     do {
       $f2 = <$fh2>;
-    } while ($f2 =~ /^#/);
+    } while ($f2 =~ /^#/); # Also skip in the 2nd file
     chomp($f2);
     my @ary = split(/\s+/, $f2);
-    shift(@ary);
+    shift(@ary);      # Shift off the frame no since it should be the
+                      # same in both files
     chomp($f1);
     
-    print $fho "$f1\t", join("\t", @ary), "\n";
+    print $fho "$f1\t", join("\t", @ary), "\n";  # And merge
   }
 }
 
-
+# Finds the min and max time (frame no, in col-0) in the data file
 sub findRange {
   my $fn = shift;
   my $fh = new FileHandle $fn; defined($fh) || die "Error- cannot open $fn";
@@ -270,6 +319,8 @@ sub findRange {
 }
 
 
+# Calls trajinfo on a model/traj pair to get the # of frames in the
+# trajectory
 sub getNumberOfFrames {
   my $model = shift;
   my $traj = shift;
@@ -284,6 +335,7 @@ sub getNumberOfFrames {
 }
 
 
+# Generate logging header
 sub header {
   my $prog = shift;
   my $ra = shift;
@@ -300,35 +352,32 @@ sub header {
 
 
 sub showHelp {
-  my $rh = shift;
+  my $seed_string = join(',', @seeds);
+  my $parallel_string = $parallel ? 'yes' : 'no';
+  my $range_string = defined($range) ? $range : 'auto';
+  my $step_string = defined($stepsize) ? $stepsize : 'auto';
+  my $prefix_string = defined($prefix) ? $prefix : 'auto';
 
-  print "Usage- bootstrap_overlap.pl [options] model traj selection\n";
-  print "Options:\n";
-  foreach (sort keys %$rh) {
-    next if ($_ eq 'help');
-
-    my $rval = $rh->{$_};
-    my $val;
-
-    # Is this option bound to a variable?
-    if (ref($rval) ne '') {
-      # Special handling of arrays
-      if (ref($rval) eq 'ARRAY') {
-	$val = '(' .  join(',', @$rval) . ')';
-      } else {
-	if (!defined($$rval)) {
-	  $val = '<not set>';
-	} else {
-	  $val = "'$$rval'";
-	}
-      }
-    } else {
-      die "Should not be here!";
-    }
-
-    printf "\t%20s = %s\n", $_, $val;
-  }
-
+  print <<EOF;
+Usage- bootstrap_overlap.pl [options] model traj selection  
+Options:
+  --nreps=i ($nreps)\tNumber of replicates for bootstrap
+  --range=s ($range_string)\tMatlab-style range of traj frames to use
+  --stepsize=i ($step_string)\tBlock size increment
+  --verbosity=i ($verbosity)\tAmount of logging
+  --scale=f ($scale)\t\tScales frame index into time units
+                    \t  e.g. units are in ns and each traj
+                    \t  frame is in 0.1 ns, then scale=10
+  --units=s ($units)\tString for time units in the plot
+  --prefix=s ($prefix_string)\tPrefix for intermediate files
+  --seed=f ($seed_string)\t\tSeeds for exponential fit in the plots
+  --plotonly         \tOnly generate the plot (do not run BCOM/BOOTBCOM)
+  --npts=i ($npts)   \tWhen auto-generating the traj range to use, use
+                     \t  this number of points in the range (i.e. how
+                     \t  many block-sizes to use
+  --[no]parallel ($parallel_string)\tRun BCOM/BOOTBCOM concurrently
+  --help
+EOF
 
   exit(0);
 }
