@@ -104,7 +104,7 @@ for (my $i=0; $i<$nreps; ++$i) {
 
   # Next, go back through the trajectory and assign each structure to
   # the nearest reference structure.
-  &runCommand("assign_frames $model_name $traj_name '$selection' $prefix.dcd >${prefix}_assignments.asc 2>>$prefix.log");
+  &runCommand("assign_frames $model_name $traj_name 0:$range '$selection' $prefix.dcd >${prefix}_assignments.asc 2>>$prefix.log");
 
   # Hierchy takes the assignments and constructs a hierarchical
   # clustering that is written into the states file
