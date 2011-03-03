@@ -9,7 +9,7 @@
 #
 # Assumes the various LOOS tools are in your shell path
 #
-# Assumes you have gnuplot installed and is in your path
+# Plotting assumes you have gnuplot installed and in your path
 #
 # The plotting is hard-coded.  If you want to change the plot, you
 # will either need to change the code in the gnuplot function, or
@@ -44,6 +44,9 @@
 
 use FileHandle;
 use Getopt::Long;
+use Env qw/@PATH/;
+
+&loosCheck(qw/trajinfo bcom boot_bcom/);   # Check loos installation
 
 
 
@@ -56,6 +59,7 @@ my $scale = 1.0;       # Convert frame to time
 my $units = 'ns';      # Units for plotting
 my @seeds;             # Seeds for the exp fit in gnuplot
 my $replot = 0;        # 1 = only generate plot
+my $plot = 1;          # 0 = do not plot
 my $npts = 100;        # When range is auto, how many block sizes to use
 my $parallel = 0;      # 1 = run boot/bcom concurrently
 
@@ -72,6 +76,7 @@ my %options = (
 	       'prefix=s' => \$prefix,
 	       'seed=f' => \@seeds,
 	       'plotonly' => \$replot,
+	       'plot!' => \$plot,
 	       'npts=i' => \$npts,
 	       'parallel!' => \$parallel,
 	       "help" => sub { &showHelp; }
@@ -142,8 +147,10 @@ if (!$replot) {
   &mergeFiles("$prefix.conv.asc", "$prefix.bcom.asc", "$prefix.boot_bcom.asc");
 }
 
-# Call gnuplot to generate the plot
-&gnuplot("$prefix.conv.ps", "$prefix.conv.asc", $prefix, $units, $scale, $nframes, \@seeds);
+if ($plot) {
+  # Call gnuplot to generate the plot
+  &gnuplot("$prefix.conv.ps", "$prefix.conv.asc", $prefix, $units, $scale, $nframes, \@seeds);
+}
 
 
 
@@ -372,6 +379,7 @@ Options:
   --prefix=s ($prefix_string)\tPrefix for intermediate files
   --seed=f ($seed_string)\t\tSeeds for exponential fit in the plots
   --plotonly         \tOnly generate the plot (do not run BCOM/BOOTBCOM)
+  --noplot           \tDo NOT generate the plot
   --npts=i ($npts)   \tWhen auto-generating the traj range to use, use
                      \t  this number of points in the range (i.e. how
                      \t  many block-sizes to use
@@ -380,4 +388,24 @@ Options:
 EOF
 
   exit(0);
+}
+
+
+
+sub loosCheck {
+  my @exes = @_;
+
+  foreach my $name (@exes) {
+    my $flag = 0;
+    foreach my $dir (@PATH) {
+      if (-e "$dir/$name") {
+	$flag = 1;
+	last;
+      }
+    }
+    if (!$flag) {
+      print STDERR "Error- $name not found.  Are you sure LOOS is correctly installed and in your shell's path?\n";
+      die;
+    }
+  }
 }
