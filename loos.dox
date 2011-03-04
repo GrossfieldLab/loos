@@ -1163,6 +1163,73 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
+\section release156 Version 1.5.6 (3-4-2011)
+\subsection f156_bugs Bug Fixes
+
+<UL>
+  <LI> Fixed bug affecting Trajectory::rewind() for Tinker ARC files
+  <LI> Fixed bug when computing variance in TimeSeries
+  <LI> Re-fixed bug in svd tool for MacOS (precision issue with
+  vecLib)
+  <LI> Fixed compiler issue in AtomicGroup for older versions of g++
+  <LI> Fixed bug in AtomicGroup::renumberWithBonds()
+  <LI> Fixed bug in big-svd where RSVs were not normalized
+  
+</UL>
+\subsection r156_add_changed Added, Changed, or Otherwise Notable
+  <LI> Substantial change in ENM code to turn it into a library in its
+  own right.  More information can be found within the Doxygen docs
+  (in ENM namespace)
+  <LI> AtomicGroup::findById() no longer implicitly sorts atoms.  If
+  the AtomicGroup has been explicitly sorted, then the binary search
+  will still be used to find the atom.  Otherwise, a linear search is
+  used.
+  <LI> Order parameters now uses boost program options (command
+	line is similar, but not precisely backward compatible), has the option to
+	use y or x as the direction of the magnetic field, and has the option to
+	dump out the timeseries of the order parameters.  Specifically, the last
+	quantity is computes the average instantaneous order parameter for each
+	carbon position at each time point.  The "+/-" column in the output is the
+	stdev of these timeseries, which is _not_ a good measure of the
+	statistical uncertainty.  To get that, one should use block averaging on
+	the time series.  This is also an option -- in principle, you read off the
+	plateau value from the block averaging plot, but since this plateau is
+	noisy, I make you specify a range of block sizes over which to average
+	(the defaults are 2 blocks to 5 blocks, but you really should run the
+	program twice, and the first time look at the block averaging plots to see
+	where the block standard error converges.
+  <LI> Added a simple Nelder-Meade Simplex optimizer
+  <LI> Changed averager so that bonds are pruned (rather than cleared)
+  when subsetting.
+  <LI> Improved phase-pdb tool.  See "--help" for more details
+  <LI> Added kurskew tool to compute moments for RSVs (useful for
+  quick and dirty checks for modality)
+  <LI> Added block averaging tool
+  <LI> The aligner tool can now align to a reference structure and
+    deprecated options removed
+  <LI> Added a suite of convergence tools (see Doxygen docs for more
+  details)
+  <LI> covarianceOverlap() now uses BLAS and matrix operations so it
+  is significantly faster.
+  <LI> Added z-score for covariance overlap and support for this in
+  the coverlap tool.
+  <LI> Changed rdf tool to split by molecule, residue, or segment.
+  <LI> AtomicGroup::splitByMolecule() has been improved and should be
+  20-30x faster.
+  <LI> density-dist can now make the density symmetric about the
+  membrane center (assuming the system has been centered such that the
+  membrane center is at z=0).
+  <LI> Many more tools now use boost::program_options
+  <LI> density-dist-windowed is now deprecated, having been folded
+  into density-dist
+  <LI> recenter-trj should be more robust (although slower)
+  <LI> Added option to merge-traj to "fix by molecule" so that
+  trajectories that have molecules broken across the periodic boundary
+  (eg gromacs output) come out looking clean.
+<UL>
+
+</UL>
+
 \section release155 Version 1.5.5 (8-2-2010)
 \subsection r155_add_changed Added, Changed, or Otherwise Notable
 <UL>
