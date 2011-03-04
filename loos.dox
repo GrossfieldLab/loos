@@ -1177,6 +1177,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
   
 </UL>
 \subsection r160_add_changed Added, Changed, or Otherwise Notable
+<UL>
   <LI> Substantial change in ENM code to turn it into a library in its
   own right.  More information can be found within the Doxygen docs
   (in ENM namespace)
@@ -1226,8 +1227,6 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
   <LI> Added option to merge-traj to "fix by molecule" so that
   trajectories that have molecules broken across the periodic boundary
   (eg gromacs output) come out looking clean.
-<UL>
-
 </UL>
 
 \section release155 Version 1.5.5 (8-2-2010)
