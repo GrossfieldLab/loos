@@ -417,8 +417,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.5.5 install
-ln -s /opt/loos-1.5.5 /opt/loos-latest
+scons PREFIX=/opt/loos-1.6.0 install
+ln -s /opt/loos-1.6.0 /opt/loos-latest
 \endverbatim
 
 
@@ -486,23 +486,32 @@ development.  You will need to be sure to install the development
 versions as well.  These can be easily installed using "yum":
 
 \verbatim
-   yum install scons.noarch atlas.x86_64 atlas-devel.x86_64 lapack.x86_64 lapack-devel.x86_64
-   yum install boost.x86_64 boost-devel.x86_64
+sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 \endverbatim
 
 
 
 \subsection ubuntu Ubuntu
+LOOS has been tested on Ubuntu 8-10.  The following instructions have
+been used to install LOOS on a fresh 64-bit 10.10 installation.  Use
+the Ubuntu software center (or apt-get) to install the following
+packages:
+	- g++
+	- scons
+	- libboost-all-devel
+	- libatlas-dev
+	- libatlas-base-dev
 
-You will need to install SCons, lapack, atlas, and boost.  Using
-aptitude (or your favorite tool), install the "libboost-dev" package
-(or a specific version (i.e. libboost1.38-dev)), "libatlas-base-dev",
-"libatlas-headers", "liblapack-dev", and "scons".  On some systems,
-the names of the boost libraries vary.  In these cases, you will need
-to use a custom configuration.  Copy "custom.py-proto" to "custom.py"
-and edit it, uncommenting the lines marked for Ubuntu.
-Alternatively, verify the names of the boost regex and program_options
-libraries and set these appropriately in your "custom.py" file.
+Optionally, you can install a machine-specific atlas, however, you
+must still install the packages above.  For example, on an i7 machine,
+install both atlas packages listed above as well as
+libatlas3gf-corei7sse3.
+
+NOTE:  Older version of Ubuntu may vary the names of the BOOST
+libraries.  If you see link errors related to boost libraries, then
+you will need to setup a custom.py file.  Copy the custom.py-proto to
+custom.py and find the appropriate library names (in /usr/lib64) and
+edit the custom.py file to reflect these names.
 
 <em>The following additional installation tips come courtesy of Dow Hurst:</em>
 
@@ -546,8 +555,22 @@ sudo scons release=1 PREFIX=/opt/LOOS-1.5.4 install
 
 If you have root access then you can forget the sudo and issue the command without it.
 
+\subsection Debian
+
+Loos has been tested with: 5.0.6
+
+Using the synaptic manager (or apt-get), install the following packages:
+      - libboost-dev
+      - scons
+      - libatlas-base-dev
+      - libatlas-headers
+      - libatlas3gf-base (optional)
+
+
+
 
 \subsection openSUSE
+LOOS has been tested with: 11.3
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
@@ -555,9 +578,12 @@ install lapack, blas, boost, and SCons.  Using zypper (or your
 favorite package manager), install the following:
 
 \verbatim
-zypper install scons boost-devel lapack blas
+sudo zypper install scons boost-devel lapack lapack3
 \endverbatim
 
+You should get the blas as a dependency for lapack.  You may also have lapack3
+installed by default, however we've found that lapack must also be installed
+in order to build LOOS.
 
 \subsection osx MacOS X
 
@@ -574,6 +600,26 @@ custom.py-proto to \c custom.py and edit it.  In particular, look at
 the \c BOOSTREGEX and \c BOOSTPO variables for the boost regular
 expression library and program options libraries.  You will most
 likely need to change these names...
+
+\subsection cygwin
+Tested versions: 1.7.7
+
+You will need to install libboost-devel and liblapack-devel along with
+the g++ compiler using the cygwin setup.exe program.  (Note: if loos
+still does not build, try installing the additional lapack and boost
+packages).  There is no atlas package that we could find for cygwin,
+so the native lapack/blas will be used instead.
+
+There is no scons install option from setup.exe, so you need to
+manually download the latest scons distribution from
+http://www.scons.org/download.php (the gzip tar file) and install it.
+
+The boost libraries cygwin uses have different names than what the
+default build of LOOS expects.  You will need to set up a new
+custom.py file.  Copy the "custom.py-proto" file in the loos directory
+to "custom.py".  Look for the BOOSTPO and BOOSTREGEX symbols and
+uncomment the appropriate lines.
+
 
 <hr>
 
