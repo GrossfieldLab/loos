@@ -1163,8 +1163,8 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
-\section release156 Version 1.5.6 (3-4-2011)
-\subsection f156_bugs Bug Fixes
+\section release160 Version 1.6.0 (3-4-2011)
+\subsection f160_bugs Bug Fixes
 
 <UL>
   <LI> Fixed bug affecting Trajectory::rewind() for Tinker ARC files
@@ -1176,7 +1176,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
   <LI> Fixed bug in big-svd where RSVs were not normalized
   
 </UL>
-\subsection r156_add_changed Added, Changed, or Otherwise Notable
+\subsection r160_add_changed Added, Changed, or Otherwise Notable
   <LI> Substantial change in ENM code to turn it into a library in its
   own right.  More information can be found within the Doxygen docs
   (in ENM namespace)
