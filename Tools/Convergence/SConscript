@@ -58,6 +58,7 @@ avgconv = clone.Program('avgconv.cpp')
 block_avgconv = clone.Program('block_avgconv.cpp')
 
 list = [ bcom, boot_bcom, fidpick, sortfids, ufidpick, assign_frames, decorr_time, hierarchy, neff, block_average, avgconv, block_avgconv ]
+scripts = [ 'bootstrap_overlap.pl', 'effsize.pl' ]
 
 install_apps = list + Split(scripts)
 
