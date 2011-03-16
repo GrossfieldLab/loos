@@ -1,5 +1,5 @@
 /*
-  Simple Density Grid Class
+  Simple Density Grid Class for LOOS
   (c) 2008, 2011 Tod D. Romo,
       Grossfield Lab,
       University of Rochester Medical and Dental School
@@ -166,20 +166,21 @@ cout << i[0].world() << endl;
    * grid-space to real-space and back.  Individual grid elements can
    * be indexed any number of ways.  The DensityGridPoint type is really a
    * LOOS Coord, but with integer elements.  You can index a
-   * grid-point by using an DensityGridPoint, i.e.
+   * grid-point by using a DensityGridPoint, i.e.
 \verbatim
 DensityGridPoint p(1,2,3);
 T value = a_grid(p);
 \endverbatim
-   * DensityGrid's operator() will automatically make an DensityGridPoint for you
-   * if you pass it multiple integers, i.e.
+   * Alternatively, you can pass the indices separately to the grid ()
+   * operator,
 \verbatim
 T value = a_grid(3,2,1);
 \endverbatim
-   * Note that in this case, the order of the indices is reversed from
-   * the DensityGridPoint constructor.  This may seem a little confusing at
-   * first, but it was meant to be consistent with how you would
-   * access the grid with the operator[] (shown below).
+   * This can be the source of some confusion about how to index the
+   * grid.  The above example has the form a_grid(z,y,x), which mimics
+   * how one would address a multidimensional array in C/C++.  When
+   * using a DensityGridPoint, however, the components are specified
+   * as a regular coordinate, i.e. (x,y,z).
    * As an alternative, you can access the grid as though it was a linear
    * array by passing a long to operator(), i.e.
 \verbatim
@@ -298,7 +299,7 @@ T value = a_grid[3][2][1];
     //! Takes an DensityGridPoint and returns the "linear" index into the
     //! grid
     long gridToIndex(const DensityGridpoint v) const {
-      return( (v[2] * dims[1] + v[1]) * dims[0] + v[0] );
+      return( (v.z() * dims[1] + v.y()) * dims[0] + v.x() );
     }
 
 
