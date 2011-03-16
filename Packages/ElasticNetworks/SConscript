@@ -28,7 +28,6 @@ clone = env.Clone()
 clone.Prepend(LIBS = ['loos'])
 
 apps = 'gnm enmovie flucc2b psf-masses heavy-ca eigenflucc two-body-traj'
-install_apps = apps + ' vsa anm'
 
 list = []
 
@@ -37,25 +36,32 @@ for name in Split(apps):
     prog = clone.Program(fname)
     list.append(prog)
 
-PREFIX = env['PREFIX']
 
+### Library generation
+# Be sure to add new modules/headers here!!!
+library_sources = 'spring_functions.cpp enm-lib.cpp vsa-lib.cpp'
+library_headers = 'anm-lib.hpp enm-lib.hpp spring_functions.hpp vsa-lib.hpp'
 
-# Tools requiring a library...
-
-loos_enm = clone.Library('loos_enm', ['spring_functions.cpp', 'enm-lib.cpp', 'vsa-lib.cpp'])
+loos_enm = clone.Library('loos_enm', Split(library_sources))
 clone.Prepend(LIBS=['loos_enm'])
 clone.Prepend(LIBPATH=['#/Packages/ElasticNetworks'])
 
 
-
+# Tools requiring the library
 vsa = clone.Program('vsa.cpp')
 list.append(vsa)
 
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
+# These use shared code which is not installed
 vsa_fit = clone.Program("vsa_fit", ["vsa_fit.cpp", "fitter.cpp"])
 list.append(vsa_fit)
+
+# Update to include the above apps
+apps = apps + ' vsa anm vsa_fit'
+
+
 
 nickanm = clone.Program("nickanm", ["nickanm.cpp"])
 list.append(nickanm)
@@ -64,9 +70,14 @@ vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp
 list.append(vsa_fit_bonds)
 
 
-enm_tools = env.Install(PREFIX + '/bin', Split(install_apps))
+### Installation specific
+
+PREFIX = env['PREFIX']
+
+
+enm_tools = env.Install(PREFIX + '/bin', Split(apps))
 enm_libs = env.Install(PREFIX + '/lib', [loos_enm])
-enm_headers = env.Install(PREFIX + '/include', Split('anm-lib.hpp enm-lib.hpp spring_functions.hpp vsa-lib.hpp'))
+enm_headers = env.Install(PREFIX + '/include', Split(library_headers))
 env.Alias('elastic_networks_package', enm_tools + enm_libs + enm_headers)
 
 Return('list')
