@@ -40,21 +40,27 @@ for name in Split(apps):
 PREFIX = env['PREFIX']
 
 
-# Special apps...
+# Tools requiring a library...
 
-vsa = clone.Program("vsa", ["vsa.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+loos_enm = clone.Library('loos_enm', ['spring_functions.cpp', 'enm-lib.cpp', 'vsa-lib.cpp'])
+clone.Prepend(LIBS=['loos_enm'])
+clone.Prepend(LIBPATH=['#/Packages/ElasticNetworks'])
+
+
+
+vsa = clone.Program('vsa.cpp')
 list.append(vsa)
 
-anm = clone.Program("anm", ["anm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
+anm = clone.Program('anm.cpp')
 list.append(anm)
 
-vsa_fit = clone.Program("vsa_fit", ["vsa_fit.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+vsa_fit = clone.Program("vsa_fit", ["vsa_fit.cpp", "fitter.cpp"])
 list.append(vsa_fit)
 
-nickanm = clone.Program("nickanm", ["nickanm.cpp", "spring_functions.cpp", "enm-lib.cpp"])
+nickanm = clone.Program("nickanm", ["nickanm.cpp"])
 list.append(nickanm)
 
-vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp", "spring_functions.cpp", "enm-lib.cpp", "vsa-lib.cpp"])
+vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp"])
 list.append(vsa_fit_bonds)
 
 
