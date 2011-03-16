@@ -255,11 +255,13 @@ loos = SConscript('SConscript')
 docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
-nm_tools = SConscript('Packages/ElasticNetworks/SConscript')
+elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
 #g_tools = SConscript('Packages/DensityTools/SConscript')
 conv_tools = SConscript('Packages/Convergence/SConscript')
 
+
+all_packages = elastic_networks_package
 
 ### Special handling for pre-packaged documentation...
 
@@ -275,10 +277,12 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools + nm_tools + h_tools + conv_tools)
+env.Alias('tools', tools)
 
-env.Alias('all', loos + tools + nm_tools + h_tools + conv_tools)
-env.Alias('caboodle', loos + tools + nm_tools + h_tools + conv_tools + tests + docs)
+env.Alias('enm', elastic_networks_package)
+
+env.Alias('all', loos + tools + all_packages)
+env.Alias('caboodle', loos + tools + all_packages + tests + docs)
 
 
 env.Alias('install', PREFIX)

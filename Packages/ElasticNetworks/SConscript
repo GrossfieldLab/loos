@@ -64,7 +64,9 @@ vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp
 list.append(vsa_fit_bonds)
 
 
-loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
-env.Alias('nm_tools_install', loos_tools)
+enm_tools = env.Install(PREFIX + '/bin', Split(install_apps))
+enm_libs = env.Install(PREFIX + '/lib', [loos_enm])
+enm_headers = env.Install(PREFIX + '/include', Split('anm-lib.hpp enm-lib.hpp spring_functions.hpp vsa-lib.hpp'))
+env.Alias('elastic_networks_package', enm_tools + enm_libs + enm_headers)
 
 Return('list')
