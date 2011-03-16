@@ -1,12 +1,12 @@
 /*
-  Simple Grid Class
-  (c) 2008 Tod D. Romo,
+  Simple Density Grid Class
+  (c) 2008, 2011 Tod D. Romo,
       Grossfield Lab,
       University of Rochester Medical and Dental School
 */
 
-#if !defined(SGRID_HPP)
-#define SGRID_HPP
+#if !defined(DENSITYGRID_HPP)
+#define DENSITYGRID_HPP
 
 #include <cmath>
 #include <stdexcept>
@@ -19,26 +19,26 @@
 #include <loos.hpp>
 #include <Coord.hpp>
 
-#include <smetad.hpp>
+#include <SimpleMeta.hpp>
 
-namespace lab {
-
-
-  typedef loos::Coord<int> SGridpoint;
+namespace loos {
 
 
-  template<class T> class SGrid;
+  typedef Coord<int> DensityGridpoint;
 
-  //! Encapsulates a j-row from an SGrid
+
+  template<class T> class DensityGrid;
+
+  //! Encapsulates a j-row from an DensityGrid
   /**
    * This class allows you to access individual columns from the row
    * via operator[].  Only meant to be used in conjunction with
-   * SGridPlane.
+   * DensityGridPlane.
    */
   template<class T>
-  class SGridRow {
+  class DensityGridRow {
   public:
-    SGridRow(const long i, SGrid<T>& g) : idx(i), grid(g) { }
+    DensityGridRow(const long i, DensityGrid<T>& g) : idx(i), grid(g) { }
   
     T& operator[](const int i) {
       assert(i >= 0 && i < grid.dims[0]);
@@ -48,43 +48,43 @@ namespace lab {
 
   private:
     long idx;
-    SGrid<T>& grid;
+    DensityGrid<T>& grid;
   };
 
 
-  //! Encapsulates an i,j-plane from an SGrid
+  //! Encapsulates an i,j-plane from an DensityGrid
   /**
-   * This class indexes an i,j-plane by row, returning an SGridRow
+   * This class indexes an i,j-plane by row, returning an DensityGridRow
    * object.  This allows access to elements in the plane through
    * using two operator[] calls, i.e.  a_grid[row][col]
    */
   template<class T>
-  class SGridPlane {
+  class DensityGridPlane {
   public:
-    SGridPlane(const long i, SGrid<T>& g) : idx(i), grid(g) { }
+    DensityGridPlane(const long i, DensityGrid<T>& g) : idx(i), grid(g) { }
 
-    SGridRow<T> operator[](const int j) {
+    DensityGridRow<T> operator[](const int j) {
       assert(j >= 0 && j < grid.dims[1]);
       assert(grid.ptr != 0);
-      return(SGridRow<T>(idx + j*grid.dims[0], grid));
+      return(DensityGridRow<T>(idx + j*grid.dims[0], grid));
     }
 
   private:
     long idx;
-    SGrid<T>& grid;
+    DensityGrid<T>& grid;
   };
 
 
   //! Random access iterator using the BOOST facade
   /**
-   * This iterator generates a family of iterators for an SGrid
+   * This iterator generates a family of iterators for an DensityGrid
    * object.  The iterators are random access and provide a "world()"
    * public method that can return the world coordinates of the
    * current iterator location and a "grid()" that returns the grid
    * coordinates.  Note that this is a method of the iterator.
    * For example,
 \code
-SGridIterator<double, double> i = grid.begin();
+DensityGridIterator<double, double> i = grid.begin();
 cout << *i << endl;
 cout << i.world() << endl;
 \endcode
@@ -104,11 +104,11 @@ cout << i[0].world() << endl;
   // handle both const and non-const iterators).
   //
   // Internally, the iterator position is stored as an index into the
-  // block of data managed by the SGrid, and is a long, hence the
+  // block of data managed by the DensityGrid, and is a long, hence the
   // difference type below...
   template<typename T, typename R>
-  class SGridIterator : public boost::iterator_facade<
-    SGridIterator<T, R>,
+  class DensityGridIterator : public boost::iterator_facade<
+    DensityGridIterator<T, R>,
     T,
     boost::random_access_traversal_tag,
     R&,
@@ -116,29 +116,29 @@ cout << i[0].world() << endl;
     >
   {
   public:
-    SGridIterator() : src(0), offset(0) { }
-    explicit SGridIterator(const SGrid<T>& g, long l) : src(&g), offset(l) { }
+    DensityGridIterator() : src(0), offset(0) { }
+    explicit DensityGridIterator(const DensityGrid<T>& g, long l) : src(&g), offset(l) { }
 
     // Converts from any dereference type...
-    template<typename S> SGridIterator(const SGridIterator<T, S>& o) : src(o.src), offset(o.offset) { }
+    template<typename S> DensityGridIterator(const DensityGridIterator<T, S>& o) : src(o.src), offset(o.offset) { }
 
     loos::GCoord world() const { return(src->gridToWorld(src->indexToGrid(offset))); }
     loos::GCoord coords() const { return(world()); }
-    SGridpoint grid() const { return(src->indexToGrid(offset)); }
+    DensityGridpoint grid() const { return(src->indexToGrid(offset)); }
 
   private:
 
     friend class boost::iterator_core_access;
 
-    // This lets any other SGridIterator access our internal bits...
-    template<typename,typename> friend class SGridIterator;
+    // This lets any other DensityGridIterator access our internal bits...
+    template<typename,typename> friend class DensityGridIterator;
 
     void increment() { ++offset; }
     void decrement() { --offset; }
     void advance(const long n) { offset += n; }
 
     template<typename S>
-    bool equal(const SGridIterator<T, S>& other) const {
+    bool equal(const DensityGridIterator<T, S>& other) const {
       return(src == other.src && offset == other.offset);
     }
 
@@ -148,13 +148,13 @@ cout << i[0].world() << endl;
       return(src->ptr[offset]);
     }
 
-    long distance_to(const SGridIterator<T, R>& other) const {
+    long distance_to(const DensityGridIterator<T, R>& other) const {
       if (src != other.src)
         throw(std::logic_error("Grid mismatch"));
       return(other.offset - offset);
     }
 
-    const SGrid<T>* src;
+    const DensityGrid<T>* src;
     long offset;
   };
 
@@ -164,20 +164,20 @@ cout << i[0].world() << endl;
    * This class represents a simple 3D grid of elements.  The grid is
    * located somewhere in realspace and supports conversion from
    * grid-space to real-space and back.  Individual grid elements can
-   * be indexed any number of ways.  The SGridPoint type is really a
+   * be indexed any number of ways.  The DensityGridPoint type is really a
    * LOOS Coord, but with integer elements.  You can index a
-   * grid-point by using an SGridPoint, i.e.
+   * grid-point by using an DensityGridPoint, i.e.
 \verbatim
-SGridPoint p(1,2,3);
+DensityGridPoint p(1,2,3);
 T value = a_grid(p);
 \endverbatim
-   * SGrid's operator() will automatically make an SGridPoint for you
+   * DensityGrid's operator() will automatically make an DensityGridPoint for you
    * if you pass it multiple integers, i.e.
 \verbatim
 T value = a_grid(3,2,1);
 \endverbatim
    * Note that in this case, the order of the indices is reversed from
-   * the SGridPoint constructor.  This may seem a little confusing at
+   * the DensityGridPoint constructor.  This may seem a little confusing at
    * first, but it was meant to be consistent with how you would
    * access the grid with the operator[] (shown below).
    * As an alternative, you can access the grid as though it was a linear
@@ -197,47 +197,47 @@ T value = a_grid[3][2][1];
    * operators...
    */
   template<class T>
-  class SGrid {
+  class DensityGrid {
   public:
 
     typedef T                          value_type;
-    typedef SGridIterator<T, T>        iterator;
-    typedef SGridIterator<T, const T>  const_iterator;
+    typedef DensityGridIterator<T, T>        iterator;
+    typedef DensityGridIterator<T, const T>  const_iterator;
 
-    friend class SGridRow<T>;
-    friend class SGridPlane<T>;
+    friend class DensityGridRow<T>;
+    friend class DensityGridPlane<T>;
 
-    friend class SGridIterator<T, T>;
-    friend class SGridIterator<T, const T>;
+    friend class DensityGridIterator<T, T>;
+    friend class DensityGridIterator<T, const T>;
 
     typedef std::pair<int, int>        Range;
 
     //! Empty grid
-    SGrid() : ptr(0), _gridmin(loos::GCoord(0,0,0)), _gridmax(loos::GCoord(0,0,0)),
-	      dims(SGridpoint(0,0,0)) { }
+    DensityGrid() : ptr(0), _gridmin(loos::GCoord(0,0,0)), _gridmax(loos::GCoord(0,0,0)),
+	      dims(DensityGridpoint(0,0,0)) { }
 
     //! Create a grid with explicit location in realspace and dimensions
     /**
      * The passed GCoords are the corners of the grid in real-space.
-     * The SGridpoint defines the size of each dimension of the grid.
+     * The DensityGridpoint defines the size of each dimension of the grid.
      */
-    SGrid(const loos::GCoord& gmin, const loos::GCoord& gmax, const SGridpoint& griddims) :
+    DensityGrid(const loos::GCoord& gmin, const loos::GCoord& gmax, const DensityGridpoint& griddims) :
       ptr(0), _gridmin(gmin), _gridmax(gmax), dims(griddims) { init(); }
 
     //! Creates a grid with an explicit location and uniform size in
     //! all dimensions
-    SGrid(const loos::GCoord& gmin, const loos::GCoord& gmax, const int dim) :
+    DensityGrid(const loos::GCoord& gmin, const loos::GCoord& gmax, const int dim) :
       ptr(0), _gridmin(gmin), _gridmax(gmax), dims(dim, dim, dim) { init(); }
 
     //! Copies an existing grid
-    SGrid(const SGrid<T>& g) : ptr(0), _gridmin(g._gridmin), _gridmax(g._gridmax),
+    DensityGrid(const DensityGrid<T>& g) : ptr(0), _gridmin(g._gridmin), _gridmax(g._gridmax),
 			       dims(g.dims) {
       init();
       memcpy(ptr, g.ptr, dimabc * sizeof(T));
       meta_ = g.meta_;
     }
 
-    void resize(const loos::GCoord& gmin, const loos::GCoord& gmax, const SGridpoint& griddims) {
+    void resize(const loos::GCoord& gmin, const loos::GCoord& gmax, const DensityGridpoint& griddims) {
       if (ptr != 0)
         delete[] ptr;
       _gridmin = gmin;
@@ -247,7 +247,7 @@ T value = a_grid[3][2][1];
     }
 
     //! This is a "deep" copy of grid
-    const SGrid<T>& operator=(const SGrid<T>& g) {
+    const DensityGrid<T>& operator=(const DensityGrid<T>& g) {
       if (this == &g)
 	return(*this);
 
@@ -268,21 +268,21 @@ T value = a_grid[3][2][1];
     }
 
 
-    ~SGrid() { delete[] ptr; }
+    ~DensityGrid() { delete[] ptr; }
 
 
 
-    SGrid<T> subset(const Range& c, const Range& b, const Range& a) {
-      SGridpoint dim;
+    DensityGrid<T> subset(const Range& c, const Range& b, const Range& a) {
+      DensityGridpoint dim;
 
       dim.x(a.second - a.first + 1);
       dim.y(b.second - b.first + 1);
       dim.z(c.second - c.first + 1);
 
-      loos::GCoord bottom = gridToWorld(SGridpoint(a.first, b.first, c.first));
-      loos::GCoord top = gridToWorld(SGridpoint(a.second, b.second, c.second));
+      loos::GCoord bottom = gridToWorld(DensityGridpoint(a.first, b.first, c.first));
+      loos::GCoord top = gridToWorld(DensityGridpoint(a.second, b.second, c.second));
 
-      SGrid<T> sub(bottom, top, dim);
+      DensityGrid<T> sub(bottom, top, dim);
       for (int k=0; k<dim.z(); ++k)
         for (int j=0; j<dim.y(); ++j)
           for (int i=0; i<dim.x(); ++i)
@@ -295,16 +295,16 @@ T value = a_grid[3][2][1];
     void zero(void) { for (long i=0; i<dimabc; i++) ptr[i] = 0; }
   
 
-    //! Takes an SGridPoint and returns the "linear" index into the
+    //! Takes an DensityGridPoint and returns the "linear" index into the
     //! grid
-    long gridToIndex(const SGridpoint v) const {
+    long gridToIndex(const DensityGridpoint v) const {
       return( (v[2] * dims[1] + v[1]) * dims[0] + v[0] );
     }
 
 
     //! Converts a real-space coordinate into grid coords
-    SGridpoint gridpoint(const loos::GCoord& x) const {
-      SGridpoint v;
+    DensityGridpoint gridpoint(const loos::GCoord& x) const {
+      DensityGridpoint v;
 
       for (int i=0; i<3; i++) {
 	long k = static_cast<long>(floor( (x[i] - _gridmin[i]) * delta[i] + 0.5 ));
@@ -315,14 +315,14 @@ T value = a_grid[3][2][1];
     }
     
     //! Converts a real-space coordinate into grid coords
-    SGridpoint gridpoint(const double z, const double y, const double x) const {
+    DensityGridpoint gridpoint(const double z, const double y, const double x) const {
       loos::GCoord c(x,y,z);
       return(gridpoint(c));
     }
 
 
     //! Checks to make sure the gridpoint lies within the grid boundaries
-    bool inRange(const SGridpoint& g) const {
+    bool inRange(const DensityGridpoint& g) const {
       for (int i=0; i<3; i++)
 	if (g[i] < 0 || g[i] >= dims[i])
 	  return(false);
@@ -331,7 +331,7 @@ T value = a_grid[3][2][1];
     }
 
     bool inRange(const int k, const int j, const int i) const {
-      return(inRange(SGridpoint(i, j, k)));
+      return(inRange(DensityGridpoint(i, j, k)));
     }
 
     //! Access the grid element indexed by k, j, i
@@ -345,8 +345,8 @@ T value = a_grid[3][2][1];
       return(ptr[x]);
     }
 
-    //! Access the grid element indexed by the SGridPoint
-    T& operator()(const SGridpoint& v) {
+    //! Access the grid element indexed by the DensityGridPoint
+    T& operator()(const DensityGridpoint& v) {
       for (int i=0; i<3; i++)
 	assert(v[i] >= 0 && v[i] < dims[i]);
       return(ptr[ (v[2] * dims.y() + v[1]) * dims.x() + v[0] ]);
@@ -374,7 +374,7 @@ T value = a_grid[3][2][1];
       return(ptr[x]);
     }
 
-    const T& operator()(const SGridpoint& v) const {
+    const T& operator()(const DensityGridpoint& v) const {
       for (int i=0; i<3; i++)
 	assert(v[i] >= 0 && v[i] < dims[i]);
       return(ptr[ (v[2] * dims.y() + v[1]) * dims.x() + v[0] ]);
@@ -394,14 +394,14 @@ T value = a_grid[3][2][1];
     // Slicin' und dicin'...
 
     //! Returns the kth plane from the grid
-    SGridPlane<T> operator[](const int k) {
+    DensityGridPlane<T> operator[](const int k) {
       assert(k >= 0 && k < dims[2]);
-      return(SGridPlane<T>(k * dimab, *this));
+      return(DensityGridPlane<T>(k * dimab, *this));
     }
 
 
     //! Converts grid coords to real-space (world) coords
-    loos::GCoord gridToWorld(const SGridpoint& v) const {
+    loos::GCoord gridToWorld(const DensityGridpoint& v) const {
       loos::GCoord c;
     
       for (int i=0; i<3; i++)
@@ -411,18 +411,18 @@ T value = a_grid[3][2][1];
     }
 
     //! Calculates the grid coords from a linear index
-    SGridpoint indexToGrid(const long idx) const {
+    DensityGridpoint indexToGrid(const long idx) const {
       int c = idx / dimab;
       int r = idx % dimab;
       int b = r / dims[0];
       int a = r % dims[0];
 
-      return(SGridpoint(a, b, c));
+      return(DensityGridpoint(a, b, c));
     }
   
 
     //! Squared-distance (in real-space) between two grid coords
-    double gridDist2(const SGridpoint& u, const SGridpoint& v) {
+    double gridDist2(const DensityGridpoint& u, const DensityGridpoint& v) {
       loos::GCoord x = gridToWorld(u);
       loos::GCoord y = gridToWorld(v);
 
@@ -430,19 +430,19 @@ T value = a_grid[3][2][1];
     }
 
     //! Linear distance (in real-space) between two grid coords
-    double gridDist(const SGridpoint& u, const SGridpoint& v) {
+    double gridDist(const DensityGridpoint& u, const DensityGridpoint& v) {
 
       return(sqrt(gridDist2(u, v)));
     }
 
-    //! Returns a vector of SGridPoints that lie within a box
+    //! Returns a vector of DensityGridPoints that lie within a box
     //! containing a sphere of radius \a r
-    std::vector<SGridpoint> withinBoxRadius(const double r, const loos::GCoord& u, const int pad = 0) const {
+    std::vector<DensityGridpoint> withinBoxRadius(const double r, const loos::GCoord& u, const int pad = 0) const {
 
-      SGridpoint a = gridpoint(u - r);
-      SGridpoint b = gridpoint(u + r);
+      DensityGridpoint a = gridpoint(u - r);
+      DensityGridpoint b = gridpoint(u + r);
 
-      std::vector<SGridpoint> res;
+      std::vector<DensityGridpoint> res;
       for (int k=a[2]-pad; k <= b[2]+pad; k++) {
 	if (k < 0 || k >= dims[2])
 	  continue;
@@ -452,7 +452,7 @@ T value = a_grid[3][2][1];
 	  for (int i=a[0]-pad;i <= b[0]+pad; i++) {
 	    if (i < 0 || i >= dims[0])
 	      continue;
-	    res.push_back(SGridpoint(i, j, k));
+	    res.push_back(DensityGridpoint(i, j, k));
 	  }
 	}
       }
@@ -461,19 +461,19 @@ T value = a_grid[3][2][1];
     }
 
 
-    //! Returns a vector of SGridPoints that lie within a given
+    //! Returns a vector of DensityGridPoints that lie within a given
     //! radius of a real-space coord
     /**
      * This first converts the real-space coords into grid-space, then
      * finds the bounding box for the sphere with radius \r.  It then
      * checks each grid-point to see if it actually lies on the
      * surface or within the sphere and returns a vector of
-     * SGridPoints that do.
+     * DensityGridPoints that do.
      */
-    std::vector<SGridpoint> withinRadius(const double r, const loos::GCoord& u) const {
-      std::vector<SGridpoint> pts = withinBoxRadius(r, u);
-      std::vector<SGridpoint> res;
-      std::vector<SGridpoint>::iterator i;
+    std::vector<DensityGridpoint> withinRadius(const double r, const loos::GCoord& u) const {
+      std::vector<DensityGridpoint> pts = withinBoxRadius(r, u);
+      std::vector<DensityGridpoint> res;
+      std::vector<DensityGridpoint>::iterator i;
 
       double r2 = r*r;
 
@@ -498,11 +498,11 @@ T value = a_grid[3][2][1];
      */
     template<typename Func>
     void applyWithinRadius(const double r, const loos::GCoord& u, const Func& f) {
-      SGridpoint a = gridpoint(u - r);
-      SGridpoint b = gridpoint(u + r);
+      DensityGridpoint a = gridpoint(u - r);
+      DensityGridpoint b = gridpoint(u + r);
       double r2 = r * r;
 
-      std::vector<SGridpoint> res;
+      std::vector<DensityGridpoint> res;
       for (int k=a[2]; k <= b[2]; k++) {
 	if (k < 0 || k >= dims[2])
 	  continue;
@@ -513,7 +513,7 @@ T value = a_grid[3][2][1];
 	    if (i < 0 || i >= dims[0])
 	      continue;
 	    
-	    SGridpoint point(i, j, k);
+	    DensityGridpoint point(i, j, k);
 	    loos::GCoord v = gridToWorld(point);
 	    double d = u.distance2(v);
 	    if (d <= r2)
@@ -537,7 +537,7 @@ T value = a_grid[3][2][1];
     }
 
 
-    SGridpoint gridDims(void) const { return(dims); }
+    DensityGridpoint gridDims(void) const { return(dims); }
     loos::GCoord minCoord(void) const { return(_gridmin); }
     loos::GCoord maxCoord(void) const { return(_gridmax); }
     loos::GCoord gridDelta(void) const { return(delta); }
@@ -552,8 +552,8 @@ T value = a_grid[3][2][1];
      * empty, it will be rather wasteful.  On the other handle, it IS
      * a simple grid implementation...
      */
-    friend std::ostream& operator<<(std::ostream& os, const SGrid<T>& grid) {
-      os << "# SGrid-1.1\n";
+    friend std::ostream& operator<<(std::ostream& os, const DensityGrid<T>& grid) {
+      os << "# DensityGrid-1.1\n";
       os << grid.meta_;
       os << grid.dims << std::endl;
       os << grid._gridmin << std::endl;
@@ -569,12 +569,12 @@ T value = a_grid[3][2][1];
      * Any existing grid will get clobbered--replaced by the grid
      * being read in.
      */
-    friend std::istream& operator>>(std::istream& is, SGrid<T>& grid) {
+    friend std::istream& operator>>(std::istream& is, DensityGrid<T>& grid) {
       std::string s;
 
       std::getline(is, s);
-      if (s != "# SGrid-1.1")
-	throw(std::runtime_error("Bad input format for SGrid  - " + s));
+      if (s != "# DensityGrid-1.1")
+	throw(std::runtime_error("Bad input format for DensityGrid  - " + s));
 
       is >> grid.meta_;
 
@@ -628,7 +628,7 @@ T value = a_grid[3][2][1];
   private:
     T* ptr;
     loos::GCoord _gridmin, _gridmax, delta;
-    SGridpoint dims;
+    DensityGridpoint dims;
     long dimabc, dimab;
 
     SMetaData meta_;
