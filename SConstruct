@@ -258,7 +258,7 @@ tools = SConscript('Tools/SConscript')
 nm_tools = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
 #g_tools = SConscript('Packages/DensityTools/SConscript')
-conv_tools = SConscript('Tools/Convergence/SConscript')
+conv_tools = SConscript('Packages/Convergence/SConscript')
 
 
 ### Special handling for pre-packaged documentation...
