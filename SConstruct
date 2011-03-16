@@ -258,10 +258,10 @@ tools = SConscript('Tools/SConscript')
 elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
 #g_tools = SConscript('Packages/DensityTools/SConscript')
-conv_tools = SConscript('Packages/Convergence/SConscript')
+convergence_package = SConscript('Packages/Convergence/SConscript')
 
 
-all_packages = elastic_networks_package
+all_packages = elastic_networks_package + convergence_package
 
 ### Special handling for pre-packaged documentation...
 
@@ -278,8 +278,6 @@ env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-
-env.Alias('enm', elastic_networks_package)
 
 env.Alias('all', loos + tools + all_packages)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs)
