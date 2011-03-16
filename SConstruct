@@ -255,8 +255,9 @@ loos = SConscript('SConscript')
 docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
-nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
-h_tools = SConscript('Tools/HydrogenBonds/SConscript')
+nm_tools = SConscript('Packages/ElasticNetworks/SConscript')
+h_tools = SConscript('Packages/HydrogenBonds/SConscript')
+#g_tools = SConscript('Packages/DensityTools/SConscript')
 conv_tools = SConscript('Tools/Convergence/SConscript')
 
 
