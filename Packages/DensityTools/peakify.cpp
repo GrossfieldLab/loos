@@ -12,12 +12,12 @@
 
 
 #include <loos.hpp>
-#include <sgrid.hpp>
-#include <sgrid_utils.hpp>
+#include <DensityGrid.hpp>
+#include <GridUtils.hpp>
 
 using namespace std;
 using namespace loos;
-using namespace lab;
+using namespace loos::DensityTools;
 
 
 int main(int argc, char *argv[]) {
@@ -29,12 +29,12 @@ int main(int argc, char *argv[]) {
   double thresh = strtod(argv[1], 0);
 
   string hdr = invocationHeader(argc, argv);
-  SGrid<double> grid;
+  DensityGrid<double> grid;
   cin >> grid;
 
   cerr << "Read in grid " << grid.gridDims() << "\n";
 
-  SGrid<int> blobs(grid.minCoord(), grid.maxCoord(), grid.gridDims());
+  DensityGrid<int> blobs(grid.minCoord(), grid.maxCoord(), grid.gridDims());
 
   PDB pdb;
   vector<GCoord> peaks = findPeaks(grid, Threshold<double>(thresh));

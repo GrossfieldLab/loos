@@ -17,16 +17,17 @@
 #include <sstream>
 #include <limits>
 
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 using namespace std;
 using namespace loos;
+using namespace loos::DensityTools;
 
 
 
 
-int countBlobs(const lab::SGrid<int>& grid) {
-  lab::SGridpoint dims = grid.gridDims();
+int countBlobs(const DensityGrid<int>& grid) {
+  DensityGridpoint dims = grid.gridDims();
   long k = dims[0] * dims[1] * dims[2];
   int n = 0;
 
@@ -38,12 +39,12 @@ int countBlobs(const lab::SGrid<int>& grid) {
 }
 
 
-vector<int> sizeBlobs(const lab::SGrid<int>& grid) {
+vector<int> sizeBlobs(const DensityGrid<int>& grid) {
 
   int n = countBlobs(grid);
   vector<int> sizes(n+1, 0);
 
-  lab::SGridpoint dims = grid.gridDims();
+  DensityGridpoint dims = grid.gridDims();
   long k = dims[0] * dims[1] * dims[2];
   
   for (long i=0; i<k; i++)
@@ -53,15 +54,15 @@ vector<int> sizeBlobs(const lab::SGrid<int>& grid) {
 }
 
 
-vector<GCoord> blobCentroids(const int n, const lab::SGrid<int>& grid) {
+vector<GCoord> blobCentroids(const int n, const DensityGrid<int>& grid) {
   vector<GCoord> centers(n+1, GCoord(0,0,0));
   vector<int> counts(n+1, 0);
 
-  lab::SGridpoint dims = grid.gridDims();
+  DensityGridpoint dims = grid.gridDims();
   for (int k=0; k<dims[2]; k++)
     for (int j=0; j<dims[1]; j++)
       for (int i=0; i<dims[0]; i++) {
-	lab::SGridpoint point(i,j,k);
+	DensityGridpoint point(i,j,k);
 	GCoord u = grid.gridToWorld(point);
 	int id = grid(point);
 
@@ -77,7 +78,7 @@ vector<GCoord> blobCentroids(const int n, const lab::SGrid<int>& grid) {
 
 
 int main(int argc, char *argv[]) {
-  lab::SGrid<int> grid;
+  DensityGrid<int> grid;
 
   cin >> grid;
   cout << "Read in grid with dimensions " << grid.gridDims() << endl;

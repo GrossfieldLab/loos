@@ -12,15 +12,16 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 using namespace std;
 using namespace loos;
+using namespace loos::DensityTools;
 
 
 
 
-double avgDens(lab::SGrid<double>& grid) {
+double avgDens(DensityGrid<double>& grid) {
   long i, n = grid.maxGridIndex();
   double avg = 0.0;
 
@@ -31,7 +32,7 @@ double avgDens(lab::SGrid<double>& grid) {
 }
 
 
-double zavgDens(lab::SGrid<double>& grid) {
+double zavgDens(DensityGrid<double>& grid) {
   long n = grid.maxGridIndex();
   long m = 0;
   double avg = 0.0;
@@ -49,7 +50,7 @@ double zavgDens(lab::SGrid<double>& grid) {
 }
 
 
-double stdDens(lab::SGrid<double>& grid, const double avg) {
+double stdDens(DensityGrid<double>& grid, const double avg) {
   long i, n = grid.maxGridIndex();
   double std = 0.0;
 
@@ -60,7 +61,7 @@ double stdDens(lab::SGrid<double>& grid, const double avg) {
 }
 
 
-double zstdDens(lab::SGrid<double>& grid, const double avg) {
+double zstdDens(DensityGrid<double>& grid, const double avg) {
   long i, n = grid.maxGridIndex();
   double std = 0.0;
 
@@ -75,7 +76,7 @@ double zstdDens(lab::SGrid<double>& grid, const double avg) {
 }
 
 
-double maxDens(lab::SGrid<double>& grid) {
+double maxDens(DensityGrid<double>& grid) {
   long i, n = grid.maxGridIndex();
   double max = 0.0;
 
@@ -88,7 +89,7 @@ double maxDens(lab::SGrid<double>& grid) {
 
 
 
-void quickHist(lab::SGrid<double>& grid, const double x, const int nbins) {
+void quickHist(DensityGrid<double>& grid, const double x, const int nbins) {
   long *bins = new long[nbins];
   double delta = x / nbins;
   
@@ -115,8 +116,8 @@ void quickHist(lab::SGrid<double>& grid, const double x, const int nbins) {
 }
 
 
-void zAverage(lab::SGrid<double>& grid, const int nbins) {
-  lab::SGridpoint dims = grid.gridDims();
+void zAverage(DensityGrid<double>& grid, const int nbins) {
+  DensityGridpoint dims = grid.gridDims();
 
   int chunk_size = dims[2] / nbins;
   long volume = chunk_size * dims[1] * dims[0];
@@ -128,8 +129,8 @@ void zAverage(lab::SGrid<double>& grid, const int nbins) {
   int kk = 0;
   for (int k = 0; k<nbins; k++) {
     // Calculate z-range...
-    lab::SGridpoint bottom(0,0,k*chunk_size);
-    lab::SGridpoint top(0,0,chunk_size*(k+1));
+    DensityGridpoint bottom(0,0,k*chunk_size);
+    DensityGridpoint top(0,0,chunk_size*(k+1));
     
     GCoord wbottom = grid.gridToWorld(bottom);
     GCoord wtop = grid.gridToWorld(top);
@@ -146,7 +147,7 @@ void zAverage(lab::SGrid<double>& grid, const int nbins) {
   }
 
   if (kk < dims[2]) {
-    lab::SGridpoint bottom(0,0,kk);
+    DensityGridpoint bottom(0,0,kk);
     GCoord wbottom = grid.gridToWorld(bottom);
     double avg = 0.0;
 
@@ -156,7 +157,7 @@ void zAverage(lab::SGrid<double>& grid, const int nbins) {
 	for (int i=0; i<dims[0]; i++, volume++)
 	  avg += grid(kk, j, i);
 
-    lab::SGridpoint top(0,0,kk);
+    DensityGridpoint top(0,0,kk);
     GCoord wtop = grid.gridToWorld(top);
 
     avg /= volume;
@@ -177,7 +178,7 @@ int main(int argc, char *argv[]) {
   double nbins = strtod(argv[1], 0);
   double zbins = strtod(argv[2], 0);
 
-  lab::SGrid<double> grid;
+  DensityGrid<double> grid;
   cin >> grid;
 
   cout << "Read in grid of size " << grid.gridDims() << endl;

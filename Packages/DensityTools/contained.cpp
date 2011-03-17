@@ -20,11 +20,12 @@
 #include <limits>
 #include <list>
 
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 
 using namespace std;
 using namespace loos;
+using namespace loos::DensityTools;
 
 
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[]) {
     cerr << "Error - cannot open " << argv[4] << " for reading.\n";
     exit(-1);
   }
-  lab::SGrid<int> grid;
+  DensityGrid<int> grid;
 
   ifs >> grid;
 
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
     pAtom atom;
 
     while (atom = ai()) {
-      lab::SGridpoint point = grid.gridpoint(atom->coords());
+      DensityGridpoint point = grid.gridpoint(atom->coords());
       if (!grid.inRange(point))
 	continue;
       if (grid(point) != 0)

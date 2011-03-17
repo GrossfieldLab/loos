@@ -13,11 +13,11 @@
 #include <loos.hpp>
 #include <boost/format.hpp>
 #include <boost/tuple/tuple.hpp>
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 using namespace std;
 using namespace loos;
-using namespace lab;
+using namespace loos::DensityTools;
 
 typedef Math::Matrix<double, Math::RowMajor> Matrix;
 
@@ -39,9 +39,9 @@ int main(int argc, char *argv[]) {
   string plane(argv[1]);
   int idx = atoi(argv[2]);
 
-  SGrid<double> grid;
+  DensityGrid<double> grid;
   cin >> grid;
-  SGridpoint dims = grid.gridDims();
+  DensityGridpoint dims = grid.gridDims();
   cerr << boost::format("Grid dimensions are %d x %d x %d (i x j x k)\n") % dims[0] % dims[1] % dims[2];
   if (plane == "k") {
 

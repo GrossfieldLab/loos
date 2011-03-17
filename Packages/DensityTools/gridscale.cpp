@@ -8,11 +8,11 @@
 
 
 #include <loos.hpp>
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 using namespace std;
 using namespace loos;
-using namespace lab;
+using namespace loos::DensityTools;
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
   double konst = strtod(argv[1], 0);
 
-  SGrid<double> grid;
+  DensityGrid<double> grid;
   cin >> grid;
   grid.scale(konst);
   grid.addMetadata(hdr);

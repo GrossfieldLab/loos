@@ -18,10 +18,11 @@
 #include <sstream>
 #include <limits>
 
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 using namespace std;
 using namespace loos;
+using namespace DensityTools;
 
 
 
@@ -31,7 +32,7 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  lab::SGrid<int> mask;
+  DensityGrid<int> mask;
   ifstream ifs(argv[1]);
   if (!ifs) {
     cerr << "Error - cannot open " << argv[1] << " for reading.\n";
@@ -40,11 +41,11 @@ int main(int argc, char *argv[]) {
 
   ifs >> mask;
 
-  lab::SGrid<double> data;
+  DensityGrid<double> data;
   cin >> data;
 
-  lab::SGridpoint dims = data.gridDims();
-  lab::SGridpoint ddims = mask.gridDims();
+  DensityGridpoint dims = data.gridDims();
+  DensityGridpoint ddims = mask.gridDims();
   if (dims != ddims) {
     cerr << "Error - differing dimensions between mask and density grids.\n";
     exit(-10);

@@ -17,13 +17,14 @@
 #include <limits>
 #include <ext/slist>
 
-#include <sgrid.hpp>
-#include <sgrid_utils.hpp>
+#include <DensityGrid.hpp>
+#include <GridUtils.hpp>
 
 namespace po = boost::program_options;
 
 using namespace std;
 using namespace loos;
+using namespace loos::DensityTools;
 
 
 
@@ -80,14 +81,14 @@ boost::tuple<double, double> parseOptions(int argc, char *argv[]) {
 }
 
 
-int fill(const lab::SGridpoint seed, const int val, lab::SGrid<double>& data_grid, lab::SGrid<int>& blob_grid, const double low, const double high) {
-  vector<lab::SGridpoint> blob = floodFill(seed, data_grid, val, blob_grid, lab::ThresholdRange<double>(low, high));
+int fill(const DensityGridpoint seed, const int val, DensityGrid<double>& data_grid, DensityGrid<int>& blob_grid, const double low, const double high) {
+  vector<DensityGridpoint> blob = floodFill(seed, data_grid, val, blob_grid, ThresholdRange<double>(low, high));
   return(blob.size());
 }
 
 
-boost::tuple<int, int, int, double> findBlobs(lab::SGrid<double>& data_grid, lab::SGrid<int>& blob_grid, const double low, const double high) {
-  lab::SGridpoint dims = data_grid.gridDims();
+boost::tuple<int, int, int, double> findBlobs(DensityGrid<double>& data_grid, DensityGrid<int>& blob_grid, const double low, const double high) {
+  DensityGridpoint dims = data_grid.gridDims();
 
   int id = 1;
   int min = numeric_limits<int>::max();
@@ -97,7 +98,7 @@ boost::tuple<int, int, int, double> findBlobs(lab::SGrid<double>& data_grid, lab
   for (int k=0; k<dims[2]; k++) {
     for (int j=0; j<dims[1]; j++)
       for (int i=0; i<dims[0]; i++) {
-	lab::SGridpoint point(i,j,k);
+	DensityGridpoint point(i,j,k);
 	if (blob_grid(point) == 0 && (data_grid(point) >= low && data_grid(point) <= high)) {
 	  int n = fill(point, id++, data_grid, blob_grid, low, high);
 	  if (n < min)
@@ -121,12 +122,12 @@ int main(int argc, char *argv[]) {
   double lower = boost::get<0>(toil);
   double upper = boost::get<1>(toil);
 
-  lab::SGrid<double> data;
+  DensityGrid<double> data;
   cin >> data;
 
   cerr << "Read in grid with size " << data.gridDims() << endl;
 
-  lab::SGrid<int> blobs(data.minCoord(), data.maxCoord(), data.gridDims());
+  DensityGrid<int> blobs(data.minCoord(), data.maxCoord(), data.gridDims());
   boost::tuple<int, int, int, double> stats = findBlobs(data, blobs, lower, upper);
   cerr << boost::format("Found %d blobs in range %6.4g to %6.4g\n") % boost::get<0>(stats) % lower % upper;
   cerr << boost::format("Min blob size = %d, max blob size = %d, avg blob size = %6.4f\n")

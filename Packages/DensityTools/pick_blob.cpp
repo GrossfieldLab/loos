@@ -19,10 +19,11 @@
 #include <sstream>
 #include <limits>
 
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 using namespace std;
 using namespace loos;
+using namespace loos::DensityTools;
 
 
 
@@ -31,7 +32,7 @@ struct Blob {
 	   real_dist(numeric_limits<double>::max()) { }
 
   int id;
-  lab::SGridpoint closest_point;
+  DensityGridpoint closest_point;
   double grid_dist;
   double real_dist;
 };
@@ -124,13 +125,13 @@ void parseOptions(int argc, char *argv[]) {
 }
 
 
-void zapGrid(lab::SGrid<int>& grid, const vector<int>& vals) {
-  lab::SGridpoint dims = grid.gridDims();
+void zapGrid(DensityGrid<int>& grid, const vector<int>& vals) {
+  DensityGridpoint dims = grid.gridDims();
 
   for (int k=0; k<dims[2]; k++)
     for (int j=0; j<dims[1]; j++)
       for (int i=0; i<dims[0]; i++) {
-	lab::SGridpoint point(i,j,k);
+	DensityGridpoint point(i,j,k);
 	int val = grid(point);
 	vector<int>::const_iterator ci = find(vals.begin(), vals.end(), val);
 	if (ci == vals.end())
@@ -139,8 +140,8 @@ void zapGrid(lab::SGrid<int>& grid, const vector<int>& vals) {
 }
 
 
-int maxBlobId(const lab::SGrid<int>& grid) {
-  lab::SGridpoint dims = grid.gridDims();
+int maxBlobId(const DensityGrid<int>& grid) {
+  DensityGridpoint dims = grid.gridDims();
   long k = dims[0] * dims[1] * dims[2];
   int maxid = 0;
 
@@ -152,8 +153,8 @@ int maxBlobId(const lab::SGrid<int>& grid) {
 }
 
 
-vector<Blob> pickBlob(const lab::SGrid<int>& grid, const vector<GCoord>& points) {
-  vector<lab::SGridpoint> gridded;
+vector<Blob> pickBlob(const DensityGrid<int>& grid, const vector<GCoord>& points) {
+  vector<DensityGridpoint> gridded;
   vector<GCoord>::const_iterator ci;
 
   for (ci = points.begin(); ci != points.end(); ++ci)
@@ -166,16 +167,16 @@ vector<Blob> pickBlob(const lab::SGrid<int>& grid, const vector<GCoord>& points)
   
   vector<Blob> blobs(maxid+1, Blob());
 
-  lab::SGridpoint dims = grid.gridDims();
+  DensityGridpoint dims = grid.gridDims();
   for (int k=0; k<dims[2]; k++)
     for (int j=0; j<dims[1]; j++)
       for (int i=0; i<dims[0]; i++) {
-	lab::SGridpoint point(i,j,k);
+	DensityGridpoint point(i,j,k);
 	int id = grid(point);
 	if (!id)
 	  continue;
 
-	vector<lab::SGridpoint>::iterator cj;
+	vector<DensityGridpoint>::iterator cj;
 	for (cj = gridded.begin(); cj != gridded.end(); ++cj) {
 	  double d = point.distance2(*cj);
 	  if (d < blobs[id].grid_dist) {
@@ -238,7 +239,7 @@ int main(int argc, char *argv[]) {
       points.push_back(atom->coords());
   }
 
-  lab::SGrid<int> grid;
+  DensityGrid<int> grid;
   cin >> grid;
 
   cerr << "Read in grid with dimensions " << grid.gridDims() << endl;
