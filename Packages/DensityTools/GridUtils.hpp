@@ -44,24 +44,24 @@ namespace loos {
 
 
     template<typename T, class Functor>
-    std::vector<SGridpoint> floodFill(const SGridpoint seed, const SGrid<T>& data_grid,
-                                      const int id, SGrid<int>& blob_grid, const Functor& op)
+    std::vector<DensityGridpoint> floodFill(const DensityGridpoint seed, const DensityGrid<T>& data_grid,
+                                      const int id, DensityGrid<int>& blob_grid, const Functor& op)
     {
-      std::vector<SGridpoint> stack;
+      std::vector<DensityGridpoint> stack;
       stack.push_back(seed);
-      std::vector<SGridpoint> list;
+      std::vector<DensityGridpoint> list;
       list.push_back(seed);
       blob_grid(seed) = id;
 
       while(!stack.empty()) {
-        SGridpoint point = stack.back();
+        DensityGridpoint point = stack.back();
         stack.pop_back();
         for (int k=-1; k<=1; ++k)
           for (int j=-1; j<=1; ++j)
             for (int i=-1; i<=1; ++i) {
               if (i == j && j == k)
                 continue;
-              SGridpoint probe = point + SGridpoint(i, j, k);
+              DensityGridpoint probe = point + DensityGridpoint(i, j, k);
               if (!data_grid.inRange(probe))
                 continue;
               if (blob_grid(probe) == 0 && op(data_grid(probe))) {
@@ -77,31 +77,31 @@ namespace loos {
     }
 
     template<typename T, class Functor>
-    int floodFill(const SGridpoint seed, const SGrid<T>& data_grid, const Functor& op) {
-      SGrid<int> blob_grid(data_grid.minCoord(), data_grid.maxCoord(), data_grid.gridDims());
+    int floodFill(const DensityGridpoint seed, const DensityGrid<T>& data_grid, const Functor& op) {
+      DensityGrid<int> blob_grid(data_grid.minCoord(), data_grid.maxCoord(), data_grid.gridDims());
     
-      std::vector<SGridpoint> result = floodFill(seed, data_grid, 1, blob_grid, op);
+      std::vector<DensityGridpoint> result = floodFill(seed, data_grid, 1, blob_grid, op);
       return(result.size());
     }
 
 
     template<typename T, class Functor>
-    std::vector<loos::GCoord> findPeaks(const SGrid<T>& grid, SGrid<int>& blobs, const Functor& op) {
+    std::vector<loos::GCoord> findPeaks(const DensityGrid<T>& grid, DensityGrid<int>& blobs, const Functor& op) {
       std::vector<loos::GCoord> peaks;
 
-      SGridpoint dims = grid.gridDims();
+      DensityGridpoint dims = grid.gridDims();
 
       int id = 0;
       for (int k=0; k<dims.z(); ++k)
         for (int j=0; j<dims.y(); ++j)
           for (int i=0; i<dims.x(); ++i) {
-            SGridpoint p (i, j, k);
+            DensityGridpoint p (i, j, k);
             if (!blobs(p) && op(grid(p))) {
-              std::vector<SGridpoint> points = floodFill(p, grid, ++id, blobs, op);
+              std::vector<DensityGridpoint> points = floodFill(p, grid, ++id, blobs, op);
               if (!points.empty()) {
                 loos::GCoord center(0,0,0);
                 double mass = 0.0;
-                for (std::vector<SGridpoint>::iterator i = points.begin(); i != points.end(); ++i) {
+                for (std::vector<DensityGridpoint>::iterator i = points.begin(); i != points.end(); ++i) {
                   double m = grid(*i);
                   center += m * grid.gridToWorld(*i);
                   mass += m;
@@ -118,24 +118,24 @@ namespace loos {
 
 
     template<typename T, class Functor>
-    std::vector<loos::GCoord> findPeaks(const SGrid<T>& grid, const Functor& op) {
+    std::vector<loos::GCoord> findPeaks(const DensityGrid<T>& grid, const Functor& op) {
 
-      SGridpoint dims = grid.gridDims();
-      SGrid<int> blobs(grid.minCoord(), grid.maxCoord(), dims);
+      DensityGridpoint dims = grid.gridDims();
+      DensityGrid<int> blobs(grid.minCoord(), grid.maxCoord(), dims);
       return(findPeaks(grid, blobs, op));
     }
 
 
     template<class T, class Functor>
-    loos::AtomicGroup gridToAtomicGroup(const SGrid<T>& grid, const Functor& op) {
+    loos::AtomicGroup gridToAtomicGroup(const DensityGrid<T>& grid, const Functor& op) {
       loos::AtomicGroup group;
-      SGridpoint dims = grid.gridDims();
+      DensityGridpoint dims = grid.gridDims();
 
       int id = 0;
       for (int k=0; k<dims.z(); ++k)
         for (int j=0; j<dims.y(); ++j)
           for (int i=0; i<dims.x(); ++i) {
-            SGridpoint p(i, j, k);
+            DensityGridpoint p(i, j, k);
             if (op(grid(p))) {
               loos::pAtom atom(new loos::Atom(++id, "UNK", grid.gridToWorld(p)));
               atom->resid(id);
@@ -150,10 +150,10 @@ namespace loos {
 
 
     template<class T>
-    void gridConvolve(SGrid<T>& grid, SGrid<T>& kernel) {
-      SGrid<T> tmp(grid);
-      SGridpoint gdim = grid.gridDims();
-      SGridpoint kdim = kernel.gridDims();
+    void gridConvolve(DensityGrid<T>& grid, DensityGrid<T>& kernel) {
+      DensityGrid<T> tmp(grid);
+      DensityGridpoint gdim = grid.gridDims();
+      DensityGridpoint kdim = kernel.gridDims();
     
       int kkc = kdim.z() / 2;
       int kjc = kdim.y() / 2;
@@ -190,12 +190,12 @@ namespace loos {
 
 
     template<class T>
-    void gridConvolve(SGrid<T>& grid, std::vector<T>& kernel) {
-      SGridpoint gdim = grid.gridDims();
+    void gridConvolve(DensityGrid<T>& grid, std::vector<T>& kernel) {
+      DensityGridpoint gdim = grid.gridDims();
       int kn = kernel.size();
       int kc = kn / 2;
 
-      SGrid<T> tmp(grid.minCoord(), grid.maxCoord(), grid.gridDims());
+      DensityGrid<T> tmp(grid.minCoord(), grid.maxCoord(), grid.gridDims());
       tmp.metadata(grid.metadata());
 
       // First convolve along the k axis...
@@ -213,7 +213,7 @@ namespace loos {
           }
 
       // Convolve along the j axis
-      SGrid<T> tmp2(grid.minCoord(), grid.maxCoord(), grid.gridDims());
+      DensityGrid<T> tmp2(grid.minCoord(), grid.maxCoord(), grid.gridDims());
       tmp2.metadata(grid.metadata());
       for (int k=0; k<gdim.z(); ++k)
         for (int i=0; i<gdim.x(); ++i)

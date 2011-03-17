@@ -259,9 +259,10 @@ elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
 #g_tools = SConscript('Packages/DensityTools/SConscript')
 convergence_package = SConscript('Packages/Convergence/SConscript')
+density_package = SConscript('Packages/DensityTools/SConscript')
 
 
-all_packages = elastic_networks_package + convergence_package
+all_packages = elastic_networks_package + convergence_package + density_package
 
 ### Special handling for pre-packaged documentation...
 

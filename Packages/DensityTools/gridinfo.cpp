@@ -14,6 +14,7 @@
 
 using namespace std;
 using namespace loos;
+using namespace loos::DensityTools;
 
 
 

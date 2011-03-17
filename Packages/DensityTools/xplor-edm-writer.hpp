@@ -12,6 +12,7 @@
 #include <loos.hpp>
 
 #include <DensityGrid.hpp>
+#include <SimpleMeta.hpp>
 
 namespace loos {
 
@@ -48,15 +49,15 @@ namespace loos {
 
 
 
-  //! Write out an SGrid as an ASCII formatted X-PLOR electron density map
-  template<class T> void writeXplorEDM(std::ostream& os, SGrid<T>& grid) {
+  //! Write out an DensityTools::DensityGrid as an ASCII formatted X-PLOR electron density map
+  template<class T> void writeXplorEDM(std::ostream& os, DensityTools::DensityGrid<T>& grid) {
     loos::GCoord gridmin = grid.minCoord();
     loos::GCoord gridmax = grid.maxCoord();
     loos::GCoord delta = grid.gridDelta();
     loos::GCoord gridsize;
-    SGridpoint dims = grid.gridDims();
+    DensityTools::DensityGridpoint dims = grid.gridDims();
 
-    SGridpoint mins, maxs, nas;
+    DensityTools::DensityGridpoint mins, maxs, nas;
 
     // Handle the header...
     for (int i=0; i<3; i++) {
@@ -66,13 +67,10 @@ namespace loos {
     }
     nas = dims;
 
-//     os << std::endl << std::setw(8) << 1 << std::endl;
-//     os << "XPLOR-EDM FROM SGRID\n";
-
     // Special handling for grid meta-data...
-    SMetaData meta = grid.metadata();
+    SimpleMeta meta = grid.metadata();
     os << std::endl << std::setw(8) << meta.size() << std::endl;
-    for (SMetaData::iterator i = meta.begin(); i != meta.end(); ++i)
+    for (SimpleMeta::iterator i = meta.begin(); i != meta.end(); ++i)
       os << *i << std::endl;
 
     for (int i=0; i<3; i++)
@@ -93,7 +91,7 @@ namespace loos {
     // a plane via operator[] and operate on that...
 
     for (int k=0; k<dims[2]; k++) {
-      SGridPlane<T> plane = grid[k];
+      DensityTools::DensityGridPlane<T> plane = grid[k];
 
       // Prime the output
       writer.frame(k);
