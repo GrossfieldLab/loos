@@ -14,7 +14,7 @@
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 #include <xplor-edm-writer.hpp>
 
 
@@ -23,7 +23,7 @@ namespace po = boost::program_options;
 
 using namespace std;
 using namespace loos;
-using namespace lab;
+using namespace loos::DensityTools;
 
 
 
@@ -81,10 +81,10 @@ void parseOptions(int argc, char *argv[]) {
 
 
 template<typename T>
-lab::SGrid<double> scaleGrid(lab::SGrid<T>& g, const double scale) {
-  lab::SGridpoint dims = g.gridDims();
+DensityGrid<double> scaleGrid(DensityGrid<T>& g, const double scale) {
+  DensityGridpoint dims = g.gridDims();
   long k = dims[0] * dims[1] * dims[2];
-  lab::SGrid<double> out(g.minCoord(), g.maxCoord(), g.gridDims());
+  DensityGrid<double> out(g.minCoord(), g.maxCoord(), g.gridDims());
 
   for (long i = 0; i<k; i++)
     out(i) = g(i) * scale;
@@ -98,24 +98,24 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   parseOptions(argc, argv);
 
-  lab::SGrid<double> edm;
+  DensityGrid<double> edm;
   if (gtype == CHAR) {
-    lab::SGrid<char> grid;
+    DensityGrid<char> grid;
     cin >> grid;
     edm = scaleGrid(grid, scaling);
 
   } else if (gtype == INT) {
-    lab::SGrid<int> grid;
+    DensityGrid<int> grid;
     cin >> grid;
     edm = scaleGrid(grid, scaling);
 
   } else if (gtype == FLOAT) {
-    lab::SGrid<float> grid;
+    DensityGrid<float> grid;
     cin >> grid;
     edm = scaleGrid(grid, scaling);
 
   } else if (gtype == DOUBLE) {
-    lab::SGrid<double> grid;
+    DensityGrid<double> grid;
     cin >> grid;
     edm = scaleGrid(grid, scaling);
 
@@ -127,10 +127,10 @@ int main(int argc, char *argv[]) {
   edm.addMetadata(header);
   GCoord min = edm.minCoord();
   GCoord max = edm.maxCoord();
-  SGridpoint dim = edm.gridDims();
+  DensityGridpoint dim = edm.gridDims();
   cerr << "Read in a grid of size " << dim << endl;
   cerr << "Grid range is from " << min << " to " << max << endl;
 
-  lab::writeXplorEDM<double>(cout, edm);
+  writeXplorEDM<double>(cout, edm);
 
 }

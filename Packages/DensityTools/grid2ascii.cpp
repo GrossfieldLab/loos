@@ -9,20 +9,19 @@
 
 
 #include <loos.hpp>
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
 #include <boost/format.hpp>
 
 using namespace std;
 using namespace loos;
-using namespace lab;
-
+using namespace loos::DensityTools;
 
 int main(int argc, char *argv[]) {
-  SGrid<float> grid;
+  DensityGrid<float> grid;
 
   cin >> grid;
-  SGridpoint dim = grid.gridDims();
+  DensityGridpoint dim = grid.gridDims();
   GCoord min = grid.minCoord();
   GCoord max = grid.maxCoord();
 

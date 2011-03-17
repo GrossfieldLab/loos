@@ -1,7 +1,7 @@
 /*
-  smetad.hpp
+  SimpleMeta.hpp
 
-  (c) 2009 Tod D. Romo, Grossfield Lab, URMC
+  (c) 2009,2011 Tod D. Romo, Grossfield Lab, URMC
 
 
   Simple meta-data handler...
@@ -11,8 +11,8 @@
 
 
 
-#if !defined(SMETAD_HPP)
-#define SMETAD_HPP
+#if !defined(SIMPLEMETA_HPP)
+#define SIMPLEMETA_HPP
 
 
 #include <iostream>
@@ -21,9 +21,9 @@
 #include <stdexcept>
 
 
-namespace lab {
+namespace loos {
 
-  class SMetaData {
+  class SimpleMeta {
   public:
 
     typedef std::string                     value_type;
@@ -31,9 +31,9 @@ namespace lab {
     typedef container_type::iterator        iterator;
     typedef container_type::const_iterator  const_iterator;
 
-    SMetaData() { }
-    SMetaData(const std::string& s) { data_.push_back(s); }
-    SMetaData(const std::vector<std::string>& v) : data_(v) { }
+    SimpleMeta() { }
+    SimpleMeta(const std::string& s) { data_.push_back(s); }
+    SimpleMeta(const std::vector<std::string>& v) : data_(v) { }
 
     container_type& data() { return(data_); }
     const container_type& data() const { return(data_); }
@@ -50,13 +50,13 @@ namespace lab {
     void set(const std::string& s) { data_.clear(); data_.push_back(s); }
     void add(const std::string& s) { data_.push_back(s); }
 
-    friend std::ostream& operator<<(std::ostream& os, const SMetaData& m) {
+    friend std::ostream& operator<<(std::ostream& os, const SimpleMeta& m) {
       for (const_iterator i = m.data_.begin(); i != m.data_.end(); ++i)
         os << "# " << *i << std::endl;
       return(os);
     }
 
-    friend std::istream& operator>>(std::istream& is, SMetaData& m) {
+    friend std::istream& operator>>(std::istream& is, SimpleMeta& m) {
       std::string buf;
 
       m.data_.clear();

@@ -7,14 +7,12 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <sgrid.hpp>
-#include <sgrid_utils.hpp>
-
-#include "banal-lib.hpp"
+#include <DensityGrid.hpp>
+#include <GridUtils.hpp>
 
 using namespace std;
 using namespace loos;
-using namespace lab;
+using namespace loos::DensityTools;
 
 
 int main(int argc, char *argv[]) {
@@ -28,12 +26,12 @@ int main(int argc, char *argv[]) {
   int width = atoi(argv[1]) - 1;
   double sigma = strtod(argv[2], 0);
 
-  vector<double> kernel = banal::gaussian1d(width, sigma);
+  vector<double> kernel = gaussian1d(width, sigma);
   cerr << "Kernel (" << kernel.size() << "): ";
   copy(kernel.begin(), kernel.end(), ostream_iterator<double>(cerr, ","));
   cerr << endl;
 
-  SGrid<double> grid;
+  DensityGrid<double> grid;
   cin >> grid;
   gridConvolve(grid, kernel);
 

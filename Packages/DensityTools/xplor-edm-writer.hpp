@@ -11,9 +11,9 @@
 
 #include <loos.hpp>
 
-#include <sgrid.hpp>
+#include <DensityGrid.hpp>
 
-namespace lab {
+namespace loos {
 
   //! Functor for writing out ASCII formatted X-Plor electron density maps
   template<class T>
