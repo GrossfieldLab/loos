@@ -146,7 +146,7 @@ elif platform == 'linux2':
    
 
    LIBS_LINKED_TO = 'atlas lapack'
-   LIBS_PATHS_TO = LAPACK + ' ' + ATLAS
+   LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
