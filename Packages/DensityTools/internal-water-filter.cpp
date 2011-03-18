@@ -137,7 +137,7 @@ namespace loos {
       stringstream s;
       GCoord min = blob_.minCoord();
       GCoord max = blob_.maxCoord();
-      SGridpoint dim = blob_.gridDims();
+      DensityGridpoint dim = blob_.gridDims();
       s << "WaterFilterBlob(" << dim << ":" << min << "x" << max << ")";
       return(s.str());
     }
@@ -165,7 +165,7 @@ namespace loos {
       uint j = 0;
       for (ci = solv.begin(); ci != solv.end(); ++ci) {
         GCoord c = (*ci)->coords();
-        SGridpoint probe = blob_.gridpoint(c);
+        DensityGridpoint probe = blob_.gridpoint(c);
         if (blob_.inRange(probe))
           result[j++] = (blob_(c) != 0);
         else
@@ -181,14 +181,14 @@ namespace loos {
       if (bdd_set)
         return(bdd_);
   
-      SGridpoint dim = blob_.gridDims();
-      SGridpoint min = dim;
-      SGridpoint max(0,0,0);
+      DensityGridpoint dim = blob_.gridDims();
+      DensityGridpoint min = dim;
+      DensityGridpoint max(0,0,0);
 
       for (int k=0; k<dim[2]; ++k)
         for (int j=0; j<dim[1]; ++j)
           for (int i=0; i<dim[0]; ++i) {
-            SGridpoint probe(i,j,k);
+            DensityGridpoint probe(i,j,k);
             if (blob_(probe) != 0)
               for (int x=0; x<3; ++x) {
                 if (probe[x] < min[x])

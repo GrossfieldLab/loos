@@ -18,7 +18,7 @@ namespace loos {
 
 
     void ZClipEstimator::reinitialize(pTraj& traj, const std::vector<uint>& frames) {
-        std::vector<GCoord> bdd = banal::water::getBounds(traj, water_, frames);
+        std::vector<GCoord> bdd = getBounds(traj, water_, frames);
 
         bdd[0] -= 1;
         if (bdd[0][2] > zclip_)
@@ -83,7 +83,7 @@ namespace loos {
 
 
     void WaterHistogrammer::setGrid(pTraj& traj, const std::vector<uint>& frames, const double resolution, const double pad) {
-      std::vector<GCoord> bdd = banal::water::getBounds(traj, protein_, frames);
+      std::vector<GCoord> bdd = getBounds(traj, protein_, frames);
       setGrid(bdd[0] - pad, bdd[1] + pad, resolution);
     }
     

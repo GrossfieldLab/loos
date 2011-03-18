@@ -93,7 +93,7 @@ namespace loos {
 
     class WaterHistogrammer {
     public:
-      WaterHistogrammer(const AtomicGroup& protein, const AtomicGroup& water, BulkEstimator* est, WaterFilter::Base* filter) :
+      WaterHistogrammer(const AtomicGroup& protein, const AtomicGroup& water, BulkEstimator* est, WaterFilterBase* filter) :
         protein_(protein), water_(water), estimator_(est), the_filter(filter), out_of_bounds(0) { }
 
       void clear() { grid_.clear(); out_of_bounds = 0; }
@@ -111,7 +111,7 @@ namespace loos {
     private:
       AtomicGroup protein_, water_;
       BulkEstimator* estimator_;
-      WaterFilter::Base* the_filter;
+      WaterFilterBase* the_filter;
       long out_of_bounds;
       DensityGrid<double> grid_;
     };

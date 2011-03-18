@@ -154,7 +154,7 @@ namespace loos {
     //! Restrict waters to be within a given z-range
     class ZClippedWaterFilter : public WaterFilterDecorator {
     public:
-      ZClippedWaterFilter(WaterFilterBase* p, const double zmin, const double zmax) : Decorator(p),
+      ZClippedWaterFilter(WaterFilterBase* p, const double zmin, const double zmax) : WaterFilterDecorator(p),
                                                                                       zmin_(zmin), zmax_(zmax) { }
       virtual ~ZClippedWaterFilter() { }
 
@@ -185,7 +185,7 @@ namespace loos {
      */
     class BulkedWaterFilter : public WaterFilterDecorator {
     public:
-      BulkedWaterFilter(WaterFilterBase* p, const double pad, const double zmin, const double zmax) : Decorator(p),
+      BulkedWaterFilter(WaterFilterBase* p, const double pad, const double zmin, const double zmax) : WaterFilterDecorator(p),
                                                                                                       pad_(pad),
                                                                                                       zmin_(zmin), zmax_(zmax) { }
       virtual ~BulkedWaterFilter() { }
