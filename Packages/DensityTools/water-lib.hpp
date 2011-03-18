@@ -18,12 +18,11 @@
 #include <loos.hpp>
 
 
-namespace banal {
-  namespace water {
+namespace loos {
+  namespace DensityTools {
 
-    using namespace loos;
-
-    std::vector<GCoord> getBounds(pTraj&, AtomicGroup&, const std::vector<uint>&);
+    //! Get the max bounding box for a group over the trajectory
+    std::vector<GCoord> getBounds(pTraj& traj, AtomicGroup& group, const std::vector<uint>& frames);
 
   };
 

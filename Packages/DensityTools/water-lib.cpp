@@ -14,8 +14,8 @@
 #include "water-lib.hpp"
 
 
-namespace banal {
-  namespace water {
+namespace loos {
+  namespace DensityTools {
 
     std::vector<GCoord> getBounds(pTraj& traj, AtomicGroup& g, const std::vector<uint>& indices) {
       double d = std::numeric_limits<double>::max();

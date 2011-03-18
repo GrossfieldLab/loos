@@ -14,17 +14,15 @@
 
 #include <iostream>
 
-#include <sgrid.hpp>
-#include <sgrid_utils.hpp>
-#include "water-lib.hpp"
-#include "internal_water_filter.hpp"
+#include <DensityGrid.hpp>
+#include <GridUtils.hpp>
+#include <water-lib.hpp>
+#include <internal-water-filter.hpp>
 
 
-namespace banal {
+namespace loos {
 
-  namespace water {
-
-    using namespace loos;
+  namespace DensityTools {
 
 
     class BulkEstimator {
@@ -87,7 +85,7 @@ namespace banal {
       AtomicGroup water_;
       double zclip_, gridres_;
       bool count_zero;
-      lab::SGrid<double> thegrid;
+      DensityGrid<double> thegrid;
     };
 
 
@@ -105,7 +103,7 @@ namespace banal {
 
       void accumulate(const double density);
       void accumulate(pTraj& traj, const std::vector<uint>& frames);
-      lab::SGrid<double> grid() const { return(grid_); }
+      DensityGrid<double> grid() const { return(grid_); }
       long outOfBounds() const { return(out_of_bounds); }
 
 
@@ -115,7 +113,7 @@ namespace banal {
       BulkEstimator* estimator_;
       WaterFilter::Base* the_filter;
       long out_of_bounds;
-      lab::SGrid<double> grid_;
+      DensityGrid<double> grid_;
     };
 
 

@@ -10,11 +10,11 @@
 
 
 
-#include "water-hist-lib.hpp"
+#include <water-hist-lib.hpp>
 
 
-namespace banal {
-  namespace water {
+namespace loos {
+  namespace DensityTools {
 
 
     void ZClipEstimator::reinitialize(pTraj& traj, const std::vector<uint>& frames) {
@@ -28,7 +28,7 @@ namespace banal {
     
         GCoord gridsize = bdd[1] - bdd[0] + 1;
         gridsize /= gridres_;
-        lab::SGridpoint dims;
+        DensityGridpoint dims;
         for (int i=0; i<3; ++i)
           dims[i] = static_cast<int>(floor(gridsize[i] + 0.5));
     
@@ -74,7 +74,7 @@ namespace banal {
     void WaterHistogrammer::setGrid(GCoord min, GCoord max, const double resolution) {
       GCoord gridsize = max - min + 1;
       gridsize /= resolution;
-      lab::SGridpoint dims;
+      DensityGridpoint dims;
       for (int i=0; i<3; ++i)
         dims[i] = static_cast<int>(floor(gridsize[i] + 0.5));
       
