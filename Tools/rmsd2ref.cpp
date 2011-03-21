@@ -213,6 +213,6 @@ int main(int argc, char *argv[]) {
 
   cerr << boost::format("Average RMSD was %.3lf, std RMSD was %.3lf\n") % avg_rmsd % std_rmsd;
   for (uint i=0; i<rmsds.size(); i++)
-    cout << rmsds[i] << endl;
+    cout << i << "\t" << rmsds[i] << endl;
 
 }
