@@ -80,12 +80,6 @@ TimeSeries<float> data = TimeSeries<float>(datafile, column);
 unsigned int num_points = data.size();
 
 // validate the arguments
-if (skip < 0)
-    {
-    cerr << "Command line value for skip must be >= 0" << endl;
-    exit(-1);
-    }
-
 if (skip > num_points)
     {
     cerr << "You set skip ( " << skip << " ) greater than the number "
@@ -99,12 +93,6 @@ if (skip > num_points)
 // Remove the equilibration time
 data.set_skip(skip);
 num_points -= skip;
-
-if (max_blocks < 0)
-    {
-    cerr << "Command line value for max_blocks must be >= 0" << endl;
-    exit(-1);
-    }
 
 if (max_blocks > num_points)
     {
