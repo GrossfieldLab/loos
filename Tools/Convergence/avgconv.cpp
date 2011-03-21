@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   if (argc == 4) {
 
     uint step = traj->nframes() / 100;
-    for (uint i=0; i<traj->nframes(); i += step)
+    for (uint i=step; i<traj->nframes(); i += step)
       blocks.push_back(i);
 
   } else {
