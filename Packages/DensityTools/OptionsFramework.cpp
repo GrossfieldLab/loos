@@ -17,6 +17,8 @@ namespace loos {
         return(oss.str());
       }
 
+      // -------------------------------------------------------
+
       void OutputPrefixOptions::addGeneric(po::options_description& opts) {
         opts.add_options()
           ("prefix,p", po::value<string>(&prefix)->default_value(prefix), "Output prefix");
@@ -28,6 +30,8 @@ namespace loos {
         return(oss.str());
       }
       
+      // -------------------------------------------------------
+
       void BasicSelectionOptions::addGeneric(po::options_description& opts) {
         opts.add_options()
           ("selection,s", po::value<string>(&selection)->default_value(selection), "Which atoms to use");
@@ -38,6 +42,9 @@ namespace loos {
         oss << "# selection='" << selection << "'\n";
         return(oss.str());
       }
+
+
+      // -------------------------------------------------------
 
 
       void BasicTrajectoryOptions::addGeneric(po::options_description& opts) {
@@ -66,6 +73,7 @@ namespace loos {
           cerr << "Error- you cannot specify both a skip and a frame range...I might get confused!\n";
           return(false);
         }
+
         return(true);
       }
 
@@ -83,7 +91,7 @@ namespace loos {
       }
 
 
-
+      // -------------------------------------------------------
 
 
       AggregateOptions& AggregateOptions::addOptions(OptionsPackage* pack) {
