@@ -42,12 +42,6 @@ namespace opts = loos::DensityTools::OptionsFramework;
 typedef Math::Matrix<int, Math::ColMajor>    Matrix;
 
 
-// Globals...  BOOO!
-WaterFilterBase* filter_func;
-string water_string, prot_string, model_name, traj_name, prefix;
-DensityGrid<int> the_grid;
-
-
 
     
 
@@ -77,22 +71,14 @@ int main(int argc, char *argv[]) {
   if (!options.parseOptions(argc, argv))
     exit(-1);
 
-  // Copy globals back
-  model_name = trajopts->model_name;
-  traj_name = trajopts->traj_name;
-  prot_string = watopts->prot_string;
-  water_string = watopts->water_string;
-  filter_func = watopts->filter_func;
-  the_grid = watopts->the_grid;
-  prefix = prefopts->prefix;
 
 
-  AtomicGroup model = loos::createSystem(model_name);
-  pTraj traj = loos::createTrajectory(traj_name, model);
-  vector<uint> frames = assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
+  AtomicGroup model = loos::createSystem(trajopts->model_name);
+  pTraj traj = loos::createTrajectory(trajopts->traj_name, model);
+  vector<uint> frames = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
 
-  AtomicGroup subset = loos::selectAtoms(model, prot_string);
-  AtomicGroup waters = loos::selectAtoms(model, water_string);
+  AtomicGroup subset = loos::selectAtoms(model, watopts->prot_string);
+  AtomicGroup waters = loos::selectAtoms(model, watopts->water_string);
 
   uint m = waters.size();
   uint n = traj->nframes();
@@ -110,7 +96,7 @@ int main(int argc, char *argv[]) {
     traj->readFrame(*t);
     traj->updateGroupCoords(model);
 
-    vector<int> mask = filter_func->filter(waters, subset);
+    vector<int> mask = watopts->filter_func->filter(waters, subset);
     if (mask.size() != m) {
       cerr << boost::format("ERROR - returned mask has size %u but expected %u.\n") % mask.size() % m;
       exit(-10);
@@ -119,12 +105,12 @@ int main(int argc, char *argv[]) {
     for (uint j=0; j<m; ++j)
       M(j,i) = mask[j];
 
-    V(i,0) = filter_func->volume();
+    V(i,0) = watopts->filter_func->volume();
     ++i;
   }
 
   cerr << " done\n";
-  writeAsciiMatrix(prefix + ".asc", M, hdr);
-  writeAsciiMatrix(prefix + ".vol", V, hdr);
-  writeAtomIds(prefix + ".atoms", waters, hdr);
+  writeAsciiMatrix(prefopts->prefix + ".asc", M, hdr);
+  writeAsciiMatrix(prefopts->prefix + ".vol", V, hdr);
+  writeAtomIds(prefopts->prefix + ".atoms", waters, hdr);
 }
