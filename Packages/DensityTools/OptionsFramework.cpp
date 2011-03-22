@@ -93,12 +93,12 @@ namespace loos {
       // -------------------------------------------------------
 
 
-      AggregateOptions& AggregateOptions::addOptions(OptionsPackage* pack) {
+      AggregateOptions& AggregateOptions::add(OptionsPackage* pack) {
         options.push_back(pack); return(*this);
       }
 
 
-      bool AggregateOptions::parseOptions(int argc, char *argv[]) {
+      bool AggregateOptions::parse(int argc, char *argv[]) {
 
         po::options_description generic("Allowed options");
         for (vOpts::iterator i = options.begin(); i != options.end(); ++i)

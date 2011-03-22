@@ -98,9 +98,9 @@ namespace loos {
 
       class AggregateOptions {
       public:
-        AggregateOptions& addOptions(OptionsPackage* pack);
+        AggregateOptions& add(OptionsPackage* pack);
 
-        bool parseOptions(int argc, char *argv[]);
+        bool parse(int argc, char *argv[]);
         std::string print() const;
 
       private:

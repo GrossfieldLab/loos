@@ -67,8 +67,8 @@ int main(int argc, char *argv[]) {
   opts::BasicWaterOptions* watopts = new opts::BasicWaterOptions;
 
   opts::AggregateOptions options;
-  options.addOptions(basopts).addOptions(prefopts).addOptions(trajopts).addOptions(watopts);
-  if (!options.parseOptions(argc, argv))
+  options.add(basopts).add(prefopts).add(trajopts).add(watopts);
+  if (!options.parse(argc, argv))
     exit(-1);
 
 
