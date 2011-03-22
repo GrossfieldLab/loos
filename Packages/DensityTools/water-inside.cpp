@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = loos::createSystem(model_name);
   pTraj traj = loos::createTrajectory(traj_name, model);
+  vector<uint> frames = assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
 
   AtomicGroup subset = loos::selectAtoms(model, prot_string);
   AtomicGroup waters = loos::selectAtoms(model, water_string);
@@ -102,10 +103,11 @@ int main(int argc, char *argv[]) {
   uint i = 0;
   cerr << "Processing - ";
 
-  while (traj->readFrame()) {
-    if (i % 250 == 0)
+  for (vector<uint>::iterator t = frames.begin(); t != frames.end(); ++t) {
+    if (i % 100 == 0)
       cerr << ".";
 
+    traj->readFrame(*t);
     traj->updateGroupCoords(model);
 
     vector<int> mask = filter_func->filter(waters, subset);

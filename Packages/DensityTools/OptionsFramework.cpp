@@ -163,7 +163,18 @@ namespace loos {
 
 
 
+      std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip = 0) {
+        std::vector<uint> frames;
 
+        if (desc.empty())
+          for (uint i=skip; i<traj->nframes(); ++i)
+            frames.push_back(i);
+        else
+          frames = parseRangeList<uint>(desc);
+
+        return(frames);
+          
+      }
 
     };
   };

@@ -107,6 +107,10 @@ namespace loos {
         std::vector<OptionsPackage *> options;
       };
 
+      // ----------------------------------------------------------------------
+
+      std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip);
+
 
     };
   };
