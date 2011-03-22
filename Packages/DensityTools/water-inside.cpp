@@ -59,7 +59,7 @@ void writeAtomIds(const string& fname, const AtomicGroup& grp, const string& hdr
 
 
 int main(int argc, char *argv[]) {
-  string hdr = loos::invocationHeader(argc, argv);
+  string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* basopts = new opts::BasicOptions;
   opts::OutputPrefixOptions* prefopts = new opts::OutputPrefixOptions;
@@ -73,12 +73,12 @@ int main(int argc, char *argv[]) {
 
 
 
-  AtomicGroup model = loos::createSystem(trajopts->model_name);
-  pTraj traj = loos::createTrajectory(trajopts->traj_name, model);
+  AtomicGroup model = createSystem(trajopts->model_name);
+  pTraj traj = createTrajectory(trajopts->traj_name, model);
   vector<uint> frames = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
 
-  AtomicGroup subset = loos::selectAtoms(model, watopts->prot_string);
-  AtomicGroup waters = loos::selectAtoms(model, watopts->water_string);
+  AtomicGroup subset = selectAtoms(model, watopts->prot_string);
+  AtomicGroup waters = selectAtoms(model, watopts->water_string);
 
   uint m = waters.size();
   uint n = traj->nframes();
