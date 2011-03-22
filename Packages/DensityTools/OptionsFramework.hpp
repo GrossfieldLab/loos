@@ -21,14 +21,14 @@ namespace loos {
         virtual void addGeneric(po::options_description& opts) { }
         virtual void addHidden(po::options_description& opts) { }
         virtual void addPositional(po::positional_options_description& opts) { }
-        virtual string print() const { return(""); }
+        virtual std::string print() const { return(""); }
 
         // true = problem with options, false = ok
         virtual bool check(po::variables_map& map) { return(false); }
   
         virtual bool postConditions(po::variables_map& map) { return(true); }
 
-        virtual string help() const { return(""); }
+        virtual std::string help() const { return(""); }
       };
 
 
@@ -39,7 +39,7 @@ namespace loos {
         BasicOptions() : verbosity(0) { }
 
         void addGeneric(po::options_description& opts);
-        string print() const;
+        std::string print() const;
 
         int verbosity;
       };
@@ -49,9 +49,9 @@ namespace loos {
       class OutputPrefixOptions : public OptionsPackage {
       public:
         void addGeneric(po::options_description& opts);
-        string print() const;
+        std::string print() const;
 
-        string prefix;
+        std::string prefix;
       };
       
       // -------------------------------------------------
@@ -61,9 +61,9 @@ namespace loos {
         BasicSelectionOptions() : selection("all") { }
 
         void addGeneric(po::options_description& opts);
-        string print() const;
+        std::string print() const;
 
-        string selection;
+        std::string selection;
       };
 
       // -------------------------------------------------
@@ -81,19 +81,19 @@ namespace loos {
 
         bool postConditions(po::variables_map& map);
 
-        string help() const;
-        string print() const;
+        std::string help() const;
+        std::string print() const;
 
-        string frame_index_spec;
-        string model_name, traj_name;
         unsigned int skip;
+        std::string frame_index_spec;
+        std::string model_name, traj_name;
       };
 
 
 
       // ----------------------------------------------------------------------
 
-      typedef vector<OptionsPackage *> vOpts;
+      typedef std::vector<OptionsPackage *> vOpts;
 
 
       class AggregateOptions {
@@ -101,10 +101,10 @@ namespace loos {
         AggregateOptions& addOptions(OptionsPackage* pack);
 
         bool parseOptions(int argc, char *argv[]);
-        string print() const;
+        std::string print() const;
 
       private:
-        vector<OptionsPackage *> options;
+        std::vector<OptionsPackage *> options;
       };
 
 

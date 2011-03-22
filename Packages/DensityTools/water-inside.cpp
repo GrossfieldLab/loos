@@ -29,11 +29,14 @@
 #include <boost/program_options.hpp>
 #include <DensityGrid.hpp>
 #include <internal-water-filter.hpp>
+#include <OptionsFramework.hpp>
+#include <DensityOptions.hpp>
 
 using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
-namespace po = boost::program_options;
+namespace opts = loos::DensityTools::OptionsFramework;
+
 
 
 typedef Math::Matrix<int, Math::ColMajor>    Matrix;
@@ -41,101 +44,12 @@ typedef Math::Matrix<int, Math::ColMajor>    Matrix;
 
 // Globals...  BOOO!
 WaterFilterBase* filter_func;
-double zmin, zmax;
-string water_string, prot_string, model_name, traj_name, grid_name, prefix;
+string water_string, prot_string, model_name, traj_name, prefix;
 DensityGrid<int> the_grid;
 
 
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    double pad;
-    double radius;
-    string mode;
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("pad,P", po::value<double>(&pad)->default_value(1.0), "Pad (for bounding box)")
-      ("radius,r", po::value<double>(&radius)->default_value(10.0), "Radius (for principal axis filter)")
-      ("zrange", po::value<string>(), "Clamp the volume to integrate over in Z (min:max)")
-      ("water,w", po::value<string>(&water_string)->default_value("name == 'OH2'"), "Water selection")
-      ("prot,p", po::value<string>(&prot_string)->default_value("name == 'CA'"), "Protein selection")
-      ("grid,g", po::value<string>(), "Name of grid to use in grid-mode")
-      ("mode,m", po::value<string>(&mode)->default_value("axis"), "Mode (axis|box|grid)");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("prefix", po::value<string>(&prefix), "Output prefix");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("prefix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- water-inside [options] model-name trajectory-name prefix\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    // Handle modes & validation
-    if (mode == "axis") {
-      filter_func = new WaterFilterAxis(radius);
-    } else if (mode == "box") {
-      filter_func = new WaterFilterBox(pad);
-    } else if (mode == "grid") {
-      if (! vm.count("grid")) {
-        cerr << "ERROR - you must specify a grid to use when using grid-mode\n";
-        exit(-1);
-      }
-
-      string grid_name = vm["grid"].as<string>();
-      ifstream ifs(grid_name.c_str());
-      ifs >> the_grid;
-      cerr << "Read in grid with size " << the_grid.gridDims() << endl;
-      
-      filter_func = new WaterFilterBlob(the_grid);
-
-    } else {
-      cerr << "ERROR - unknown mode " << mode << endl;
-      exit(-1);
-    }
-
-
-    // Handle "decoration"
-    if (vm.count("zrange")) {
-      double zmin, zmax;
-      string s = vm["zrange"].as<string>();
-      int i = sscanf(s.c_str(), "%lf:%lf", &zmin, &zmax);
-      if (i != 2) {
-        cerr << boost::format("ERROR - unable to parse range '%s'\n") % s;
-        exit(-1);
-      }
-
-      filter_func = new ZClippedWaterFilter(filter_func, zmin, zmax);
-    }
 
     
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
-
-
 
 void writeAtomIds(const string& fname, const AtomicGroup& grp, const string& hdr) {
   ofstream ofs(fname.c_str());
@@ -152,7 +66,26 @@ void writeAtomIds(const string& fname, const AtomicGroup& grp, const string& hdr
 
 int main(int argc, char *argv[]) {
   string hdr = loos::invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+
+  opts::BasicOptions* basopts = new opts::BasicOptions;
+  opts::OutputPrefixOptions* prefopts = new opts::OutputPrefixOptions;
+  opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
+  opts::BasicWaterOptions* watopts = new opts::BasicWaterOptions;
+
+  opts::AggregateOptions options;
+  options.addOptions(basopts).addOptions(prefopts).addOptions(trajopts).addOptions(watopts);
+  if (!options.parseOptions(argc, argv))
+    exit(-1);
+
+  // Copy globals back
+  model_name = trajopts->model_name;
+  traj_name = trajopts->traj_name;
+  prot_string = watopts->prot_string;
+  water_string = watopts->water_string;
+  filter_func = watopts->filter_func;
+  the_grid = watopts->the_grid;
+  prefix = prefopts->prefix;
+
 
   AtomicGroup model = loos::createSystem(model_name);
   pTraj traj = loos::createTrajectory(traj_name, model);

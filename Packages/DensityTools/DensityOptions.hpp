@@ -25,43 +25,43 @@ namespace loos {
           opts.add_options()
             ("pad,P", po::value<double>(&pad)->default_value(pad), "Pad (for bounding box)")
             ("radius,r", po::value<double>(&radius)->default_value(radius), "Radius (for principal axis filter)")
-            ("zrange", po::value<string>(), "Clamp the volume to integrate over in Z (min:max)")
-            ("water,w", po::value<string>(&water_string)->default_value(water_string), "Water selection")
-            ("prot,p", po::value<string>(&prot_string)->default_value(prot_string), "Protein selection")
-            ("grid,g", po::value<string>(), "Name of grid to use in grid-mode")
-            ("mode,m", po::value<string>(&mode)->default_value(filter_mode), "Mode (axis|box|grid)");
+            ("zrange", po::value<std::string>(), "Clamp the volume to integrate over in Z (min:max)")
+            ("water,w", po::value<std::string>(&water_string)->default_value(water_string), "Water selection")
+            ("prot,p", po::value<std::string>(&prot_string)->default_value(prot_string), "Protein selection")
+            ("grid,g", po::value<std::string>(), "Name of grid to use in grid-mode")
+            ("mode,m", po::value<std::string>(&filter_mode)->default_value(filter_mode), "Mode (axis|box|grid)");
         }
 
         bool postConditions(po::variables_map& map) {
-          if (mode == "axis") {
+          if (filter_mode == "axis") {
             filter_func = new WaterFilterAxis(radius);
-          } else if (mode == "box") {
+          } else if (filter_mode == "box") {
             filter_func = new WaterFilterBox(pad);
-          } else if (mode == "grid") {
-            if (! vm.count("grid")) {
-              cerr << "ERROR - you must specify a grid to use when using grid-mode\n";
+          } else if (filter_mode == "grid") {
+            if (! map.count("grid")) {
+              std::cerr << "ERROR - you must specify a grid to use when using grid-mode\n";
               return(false);
             }
 
-            string grid_name = vm["grid"].as<string>();
-            ifstream ifs(grid_name.c_str());
+            std::string grid_name = map["grid"].as<std::string>();
+            std::ifstream ifs(grid_name.c_str());
             ifs >> the_grid;
-            cerr << "Read in grid with size " << the_grid.gridDims() << endl;
+            std::cerr << "Read in grid with size " << the_grid.gridDims() << std::endl;
       
             filter_func = new WaterFilterBlob(the_grid);
 
           } else {
-            cerr << "ERROR - unknown mode " << mode << endl;
+            std::cerr << "ERROR - unknown mode " << filter_mode << std::endl;
             return(false);
           }
           
           // Handle "decoration"
-          if (vm.count("zrange")) {
+          if (map.count("zrange")) {
             double zmin, zmax;
-            string s = vm["zrange"].as<string>();
+            std::string s = map["zrange"].as<std::string>();
             int i = sscanf(s.c_str(), "%lf:%lf", &zmin, &zmax);
             if (i != 2) {
-              cerr << boost::format("ERROR - unable to parse range '%s'\n") % s;
+              std::cerr << boost::format("ERROR - unable to parse range '%s'\n") % s;
               return(false);
             }
 
@@ -74,7 +74,7 @@ namespace loos {
         double zmin, zmax;
         double pad;
         double radius;
-        string water_string, prot_string, grid_name, filter_mode;
+        std::string water_string, prot_string, grid_name, filter_mode;
         DensityGrid<int> the_grid;
         WaterFilterBase* filter_func;
       };
