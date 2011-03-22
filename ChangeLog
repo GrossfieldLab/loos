@@ -1,3 +1,10 @@
+2011-03-21    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed library search order to fix a problem that cropped up on
+	some Fedora 14 installs.
+	* Fixed bug in avgconv that caused a core dump when using
+	automatic block-sizes.
+
 2011-02-15    <alan@membrane>
 	* Added option to Tools/merge-traj to fix by molecule, so that
 	trajectories that have molecules broken across the periodic boundary (eg
