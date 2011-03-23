@@ -118,13 +118,30 @@ namespace loos {
 
       class AggregateOptions {
       public:
+        AggregateOptions() : program_name("unknown_tool"),
+                             generic("Allowed Options"),
+                             hidden("Hidden Options")
+        { }
+
         AggregateOptions& add(OptionsPackage* pack);
 
         bool parse(int argc, char *argv[]);
         std::string print() const;
+        void showHelp();
 
       private:
+        std::string program_name;
+
+        po::options_description generic;
+        po::options_description hidden;
+        po::options_description command_line;
+        po::positional_options_description pos;
+        po::variables_map vm;
+
         std::vector<OptionsPackage *> options;
+
+
+        void setupOptions();
       };
 
       // ----------------------------------------------------------------------

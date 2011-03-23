@@ -130,26 +130,34 @@ namespace loos {
       }
 
 
-      bool AggregateOptions::parse(int argc, char *argv[]) {
-
-        po::options_description generic("Allowed options");
+      void AggregateOptions::setupOptions() {
         for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
           (*i)->addGeneric(generic);
 
-        po::options_description hidden("Hidden options");
         for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
           (*i)->addHidden(hidden);
 
-        po::options_description command_line;
         command_line.add(generic).add(hidden);
 
-        po::positional_options_description pos;
+        pos = po::positional_options_description();
         for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
           (*i)->addPositional(pos);
+      }
 
+      void AggregateOptions::showHelp() {
+        std::cout << "Usage- " << program_name << " [options] ";
+        for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
+          std::cout << (*i)->help() << " ";
+        std::cout << std::endl;
+        std::cout << generic;
+      }
+
+
+      bool AggregateOptions::parse(int argc, char *argv[]) {
+        program_name = std::string(argv[0]);
+        setupOptions();
         bool show_help = false;
 
-        po::variables_map vm;
         try {
           po::store(po::command_line_parser(argc, argv).
                     options(command_line).positional(pos).run(), vm);
@@ -168,17 +176,15 @@ namespace loos {
             show_help = (*i)->check(vm);
 
         if (show_help) {
-          std::cout << "Usage- " << argv[0] << " [options] ";
-          for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
-            std::cout << (*i)->help() << " ";
-          std::cout << std::endl;
-          std::cout << generic;
+          showHelp();
           return(false);
         }
 
         for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
-          if (!(*i)->postConditions(vm))
+          if (!(*i)->postConditions(vm)) {
+            showHelp():
             return(false);
+          }
 
         return(true);
       
