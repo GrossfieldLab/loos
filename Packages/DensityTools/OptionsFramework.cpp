@@ -42,6 +42,38 @@ namespace loos {
         return(oss.str());
       }
 
+      // -------------------------------------------------------
+
+      void ModelWithCoordsOptions::addGeneric(po::options_description& opts) {
+        opts.add_options()
+          ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates");
+      }
+
+      void ModelWithCoordsOptions::addHidden(po::options_description& opts) {
+        opts.add_options()
+          ("model", po::value<std::string>(&model_name), "Model Filename");
+      }
+
+
+      void ModelWithCoordsOptions::addPositional(po::positional_options_description& pos) {
+        pos.add("model", 1);
+      }
+
+
+      bool ModelWithCoordsOptions::check(po::variables_map& map) {
+        return(!map.count("model"));
+      }
+
+      std::string ModelWithCoordsOptions::help() const { return("model"); }
+
+
+      std::string ModelWithCoordsOptions::print() const {
+        std::ostringstream oss;
+
+        return(oss.str());
+      }
+
+
 
       // -------------------------------------------------------
 
@@ -174,6 +206,19 @@ namespace loos {
 
         return(frames);
           
+      }
+
+      AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string coord_name = std::string("")) {
+        AtomicGroup model = createSystem(model_name);
+        if (!coord_name.empty()) {
+          AtomicGroup coords = createSystem(coord_name);
+          model.copyCoordinates(coords);
+        }
+
+        if (! model.hasCoords())
+          throw(LOOSError("Error- no coordinates found in specified model(s)"));
+
+        return(model);
       }
 
     };

@@ -68,6 +68,26 @@ namespace loos {
 
       // -------------------------------------------------
 
+      class ModelWithCoordsOptions : public OptionsPackage {
+      public:
+        ModelWithCoordsOptions() : coords_name("") { }
+
+        void addGeneric(po::options_description& opts);
+        void addHidden(po::options_description& opts);
+        void addPositional(po::positional_options_description& pos);
+
+        bool check(po::variables_map& map);
+
+        std::string help() const;
+        std::string print() const;
+        
+        std::string model_name, coords_name;
+      };
+
+
+
+      // -------------------------------------------------
+
       class BasicTrajectoryOptions : public OptionsPackage {
       public:
         BasicTrajectoryOptions() : skip(0), frame_index_spec("") { }
@@ -110,6 +130,7 @@ namespace loos {
       // ----------------------------------------------------------------------
 
       std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip);
+      AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string optional_coords_name);
 
 
     };
