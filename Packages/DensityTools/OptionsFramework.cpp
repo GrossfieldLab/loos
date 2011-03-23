@@ -182,7 +182,7 @@ namespace loos {
 
         for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
           if (!(*i)->postConditions(vm)) {
-            showHelp():
+            showHelp();
             return(false);
           }
 
