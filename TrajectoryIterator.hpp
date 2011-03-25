@@ -20,6 +20,14 @@
 */
 
 
+// ▖  ▖ ▗▖ ▗▄▄ ▗▖ ▖▗▄▄ ▗▖ ▖ ▗▄ 
+// ▌▐ ▌ ▐▌ ▐ ▝▌▐▚ ▌ ▐  ▐▚ ▌▗▘ ▘   : The following code is experimental.  Use it
+// ▘▛▌▌ ▌▐ ▐▄▄▘▐▐▖▌ ▐  ▐▐▖▌▐ ▗▖   : carefully and be aware that it may change
+// ▐▌█▘ ▙▟ ▐ ▝▖▐ ▌▌ ▐  ▐ ▌▌▐  ▌   : significantly in future releases!
+// ▐ ▐ ▐  ▌▐  ▘▐ ▐▌▗▟▄ ▐ ▐▌ ▚▄▘   :                       --The Management
+                            
+
+
 
 #if !defined(TRAJECTORY_ITERATOR_HPP)
 #define TRAJECTORY_ITERATOR_HPP
@@ -34,6 +42,36 @@ namespace loos {
   /**
    * This class wraps a Trajectory and an AtomicGroup.  It can operate
    * similar to any C++ const iterator.
+   *
+   * The AtomicGroup that's wrapped by this iterator (and returned
+   * when you dereference) is just a lightweight copy from the one
+   * that was passed to the constructor.  This means that multiple
+   * iterators could overwrite the atoms they return.  On the other
+   * hand, it also means that if you've split your system up into
+   * multiple groups, then dereferencing the iterator will update all
+   * of them.  For this to work, however, you should always pass the
+   * full system to the constructor...
+   *
+\code
+AtomicGroup model = createSystem("foo.pdb");
+pTraj traj = createTrajectory("foo.dcd", model);
+
+TrajectoryIterator traj_iter(model, traj);
+
+AtomicGroup calphas = selectAtoms(model, "name == 'CA'");
+AtomicGroup backbone = selectAtoms(model, "name =~ '^(C|O|N|CA)$'");
+
+for (TrajectoryIterator::const_iterator i = traj_iter.begin(); i != traj_iter.end(); ++i) {
+   AtomicGroup frame = *i;
+   processModel(frame);
+   processCAlphas(calphas);
+   processBackbone(backbone);
+}
+\endcode
+   * In this case, while frame is created by dereferencing the
+   * iterator, the calphas and backbone groups all share atoms with
+   * frame which shares atoms with model.
+   *
    */
   class TrajectoryIterator : public boost::iterator_facade<
     TrajectoryIterator,
@@ -49,7 +87,7 @@ namespace loos {
     typedef TrajectoryIterator                const_iterator;
 
 
-    TrajectoryIterator(AtomicGroup model, pTraj traj) : model_(model.copy()),
+    TrajectoryIterator(AtomicGroup model, pTraj traj) : model_(model),
                                                         trajectory_(traj),
                                                         current_frame_number_(0)
     {
@@ -57,7 +95,7 @@ namespace loos {
     }
 
 
-    TrajectoryIterator(AtomicGroup model, pTraj traj, const long n) : model_(model.copy()),
+    TrajectoryIterator(AtomicGroup model, pTraj traj, const long n) : model_(model),
                                                                       trajectory_(traj),
                                                                       current_frame_number_(n)
     {
