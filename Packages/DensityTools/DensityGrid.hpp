@@ -11,7 +11,6 @@
 #include <cmath>
 #include <stdexcept>
 #include <utility>
-#include <boost/iterator/iterator_facade.hpp>
 
 #include <stdexcept>
 #include <boost/iterator/iterator_facade.hpp>
