@@ -11,6 +11,8 @@
 
 import sys
 import os
+import re
+import shutil
 
 # This can be reset in custom.py or here...
 
@@ -39,6 +41,11 @@ clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathVariable.P
 clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathVariable.PathAccept)
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
+clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
+clos.Add(PathVariable('LOOSINC', 'Directory for LOOS include files (relative to LOOS)', 'include', PathVariable.PathAccept))
+clos.Add(PathVariable('LOOSLIB', 'Directory for LOOS library files (relative to LOOS)', 'lib', PathVariable.PathAccept))
 
 env = Environment(options = clos)
 Help(clos.GenerateHelpText(env))
@@ -55,16 +62,23 @@ BOOSTREGEX = env['BOOSTREGEX']
 BOOSTPO = env['BOOSTPO']
 LOOS = env['LOOS']
 LIBXTRA = env['LIBXTRA']
+ALTPATH = env['ALTPATH']
+LIBS_OVERRIDE = env['LIBS_OVERRIDE']
+LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
+LOOSINC = env['LOOSINC']
+LOOSLIB = env['LOOSLIB']
 
-### These variables point to the subparts of LOOS required to build a tool.
 
-LOOSINC = LOOS + '/include'
-LOOSLIB = LOOS + '/lib'
+# Fix include/lib locations...
+LOOSINC = LOOS + '/' + LOOSINC
+LOOSLIB = LOOS + '/' + LOOSLIB
 
-### Use the following if you want to build without having installed LOOS
-#LOOSINC = LOOS
-#LOOSLIB = LOOS
 
+if ALTPATH != '':
+   buildenv = env['ENV']
+   path = buildenv['PATH']
+   path = ALTPATH + ':' + path
+   buildenv['PATH'] = path
 
 
 ### Autoconf
@@ -95,21 +109,58 @@ env.Append(CPPPATH = ['#', LOOSINC])
 # include files in BOOST and ATLAS will not be picked up by SCons...
 if BOOSTINC != '':
    env.Append(CPPFLAGS = ['-I' + BOOSTINC])
-env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
-env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
-env.Append(LEXFLAGS=['-s'])
-
-env.Append(LIBPATH = ['#', LOOSLIB, BOOSTLIB])
+env.Append(LIBPATH = ['#', LOOSLIB, BOOSTLIB, LIBXTRA])
 env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
+env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
-else:
-   if platform == 'linux2':
-      env.Append(LIBS = ['lapack', 'atlas'])
-      env.Append(LIBPATH = [LAPACK, ATLAS])
-      env.Append(CPPPATH = [ATLASINC]) 
+elif platform == 'linux2':
+   noatlas = 0
+
+   # Determine linux variant
+   fv = open('/proc/version', 'r')
+   f = fv.read()
+   
+
+   LIBS_LINKED_TO = 'atlas lapack'
+   LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
+
+   ### Note for OpenSUSE and Ubuntu...
+   ### Older versions of those distros may require the gfortran
+   ### package be linked in.  If you see strange link errors for
+   ### unresolved symbols, try adding "gfortran" to the LIBS list
+   ### for your OS below...
+
+   # OpenSUSE doesn't have an atlas package, so use native lapack/blas
+   if (re.search("[Ss][Uu][Ss][Ee]", f)):
+      LIBS_LINKED_TO = 'lapack blas'
+      LIBS_PATHS_TO = "LAPACK"
+
+      # Ubuntu MAY require gfortran...more recent builds seem not to
+   #elif (re.search("[Uu]buntu", f)):
+      # LIBS_LINKED_TO = 'lapack blas gfortran'
+
+      # Fedora & Similar
+   #else
+
+
+   if LIBS_OVERRIDE != '':
+      LIBS_LINKED_TO = LIBS_OVERRIDE
+
+   if LIBS_PATHS_OVERRIDE != '':
+      LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
+
+   env.Append(LIBS = Split(LIBS_LINKED_TO))
+   env.Append(LIBPATH = Split(LIBS_PATHS_TO))
+
+
+# CYGWIN does not have an atlas package, so use lapack/blas instead
+elif (platform == 'cygwin'):
+   env.Append(LIBS = ['lapack', 'blas'])
+   env.Append(LIBPATH = [LAPACK])
+
 
 
 # Determine what kind of build...
@@ -151,7 +202,13 @@ if os.environ.has_key('CCFLAGS'):
    print "Changing CCFLAGS to ", CCFLAGS
    env['CCFLAGS'] = CCFLAGS
 
+
 # Export for subsidiary SConscripts
+
 Export('env')
+
+
+
+# Invoke subsidiary sconscripts...
 
 SConscript('SConscript')
