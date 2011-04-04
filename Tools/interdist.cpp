@@ -61,18 +61,20 @@ struct CenterDistance : public DistanceCalculation {
   double operator()(const AtomicGroup& u, const AtomicGroup& v) {
     GCoord cu = u.centroid();
     GCoord cv = v.centroid();
-    
-    if ( z_only ){
-      
-      GCoord temp = cu - cv;
-      return (temp.z());
-
-
-    } else {
 
     return(cu.distance(cv));
   
-    }
+  }
+};
+
+struct CenterDistanceZ : public DistanceCalculation {
+  double operator()(const AtomicGroup& u, const AtomicGroup& v) {
+    GCoord cu = u.centroid();
+    GCoord cv = v.centroid();
+
+    GCoord temp = cu - cv;
+    return (temp.z());
+
   }
 };
 
@@ -137,8 +139,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of frames to skip at start of traj")
-      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max)")
-      ("zonly,z", po::value<bool>(&z_only)->default_value(false), "Consider only distance in z-dimension. Only works when ---mode==center");
+      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max|zonly)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -166,19 +167,14 @@ void parseOptions(int argc, char *argv[]) {
       exit(-1);
     }
 
-    if (z_only && !(mode_name=="center")) {
-      cerr << "zonly can only be set to 1 when the calculation type (mode) is set to center.\n";
-      cerr << generic;
-      exit(-1);
-
-    }
-
     if (mode_name == "center")
       calc_type = new CenterDistance;
     else if (mode_name == "min")
       calc_type = new MinDistance;
     else if (mode_name == "max")
       calc_type = new MaxDistance;
+    else if (mode_name == "zonly")
+      calc_type = new CenterDistanceZ;
     else {
       cerr << "Error- calculation mode must be either 'center', 'min', or 'max.'\n";
       exit(-1);
