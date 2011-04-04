@@ -1,10 +1,12 @@
 /*
   interdist.cpp
 
-  (c) 2008, 2009 Tod D. Romo, Grossfield Lab
+  (c) 2008, 2009, 2011 Tod D. Romo, Grossfield Lab
   Department of Biochemistry
   University of Rochster School of Medicine and Dentistry
 
+  Modified by Joshua H. Horn, Grossfield Lab
+  Added functionality to consider distance only in Z-dimension
 
   Computes distances between two selections over a trajectory...
 
@@ -46,7 +48,7 @@ using namespace loos;
 namespace po = boost::program_options;
 
 
-
+bool z_only;
 
 struct DistanceCalculation {
   virtual double operator()(const AtomicGroup&, const AtomicGroup&) = 0;
@@ -59,8 +61,18 @@ struct CenterDistance : public DistanceCalculation {
   double operator()(const AtomicGroup& u, const AtomicGroup& v) {
     GCoord cu = u.centroid();
     GCoord cv = v.centroid();
-  
+    
+    if ( z_only ){
+      
+      GCoord temp = cu - cv;
+      return (temp.z());
+
+
+    } else {
+
     return(cu.distance(cv));
+  
+    }
   }
 };
 
@@ -125,8 +137,8 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of frames to skip at start of traj")
-      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max)");
-
+      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max)")
+      ("zonly,z", po::value<bool>(&z_only)->default_value(false), "Consider only distance in z-dimension. Only works when ---mode==center");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -152,6 +164,13 @@ void parseOptions(int argc, char *argv[]) {
       cerr << "Usage- " << argv[0] << " [options] model trajectory sel-1 sel-2 [sel-3 ...] >output\n";
       cerr << generic;
       exit(-1);
+    }
+
+    if (z_only && !(mode_name=="center")) {
+      cerr << "zonly can only be set to 1 when the calculation type (mode) is set to center.\n";
+      cerr << generic;
+      exit(-1);
+
     }
 
     if (mode_name == "center")
