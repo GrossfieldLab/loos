@@ -79,6 +79,11 @@ public:
       _data.assign(n, (T) val);
     }
 
+    //! Resize the TimeSeries by calling the underlying vector's resize
+    void resize(const int n, const T val= (T) 0.0) {
+        _data.resize(n, val);
+    }
+
 
     //! Read a simple text file and create a timeseries
     //! The file is assumed to be simple columnated data.  Blank lines and 
