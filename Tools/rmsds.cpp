@@ -47,6 +47,9 @@ using namespace loos;
 
 typedef Math::Matrix<double, Math::Triangular> Matrix;
 
+const int matrix_precision = 2;    // Controls precision in output matrix
+
+
 
 string model_name;
 string traj_name;
@@ -218,7 +221,7 @@ int main(int argc, char *argv[]) {
     // Note:  using the operator<< on a matrix here will write it out as a full matrix
     //        i.e. not the special triangular format.
     cout << "# " << header << endl;
-    cout << M;
+    cout << setprecision(matrix_precision) << M;
   }
 }
 
