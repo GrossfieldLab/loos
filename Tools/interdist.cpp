@@ -176,7 +176,7 @@ void parseOptions(int argc, char *argv[]) {
     else if (mode_name == "zonly")
       calc_type = new CenterDistanceZ;
     else {
-      cerr << "Error- calculation mode must be either 'center', 'min', or 'max.'\n";
+      cerr << "Error- calculation mode must be either 'center', 'min', 'max', or 'zonly'\n";
       exit(-1);
     }
 
