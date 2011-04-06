@@ -67,6 +67,19 @@ namespace loos {
 
             filter_func = new ZClippedWaterFilter(filter_func, zmin, zmax);
           }
+
+          if (vm.count("water")) {
+            double zmin, zmax, pad;
+            string s = vm["water"].as<string>();
+            int i = sscanf(s.c_str(), "%lf,%lf:%lf", &pad, &zmin, &zmax);
+            if (i != 3) {
+              cerr << boost::format("ERROR - unable to parse bulk range '%s'\n") % s;
+              exit(-1);
+            }
+            
+            the_filter = new BulkedWaterFilter(filter_func, pad, zmin, zmax);
+          }
+
           
           return(true);
         }
