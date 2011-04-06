@@ -10,6 +10,7 @@
 #include <loos.hpp>
 #include <DensityGrid.hpp>
 #include <internal-water-filter.hpp>
+#include <water-hist-lib.hpp>
 #include <OptionsFramework.hpp>
 #include <DensityOptions.hpp>
 
@@ -18,10 +19,11 @@ using namespace loos;
 using namespace loos::DensityTools;
 
 namespace opts = loos::DensityTools::OptionsFramework;
+namespace po = boost::program_options;
 
 
 
-class WaterHistogramOptions : public OptionsPackage {
+class WaterHistogramOptions : public opts::OptionsPackage {
 public:
   WaterHistogramOptions() :
     grid_resolution(1.0),
@@ -30,7 +32,7 @@ public:
     bulk_zclip(0.0)
   { }
 
-  void addGeneric(po::options_descriptions& opts) {
+  void addGeneric(po::options_description& opts) {
     opts.add_options()
       ("gridres,G", po::value<double>(&grid_resolution)->default_value(grid_resolution), "Grid resolution")
       ("empty", po::value<bool>(&count_empty_voxels)->default_value(count_empty_voxels), "Count empty voxels in bulk density estimate")
@@ -59,11 +61,11 @@ public:
       if (!(ss >> clamp_max)) {
         cerr << "Error- cannot parse upper bounds for box-clamp\n";
         return(false);
-      clamped_box.push_back(clamp_max);
+        clamped_box.push_back(clamp_max);
+      }
     }
     return(true);
-  }
-    
+  }    
 
 public:
   double grid_resolution;
@@ -71,9 +73,6 @@ public:
   bool rescale_density;
   double bulk_zclip;
   vector<GCoord> clamped_box;
-
-
-
 };
 
 
@@ -100,10 +99,10 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = createSystem(trajopts->model_name);
   pTraj traj = createTrajectory(trajopts->traj_name, model);
-  vector<uint> indices = opts::assignFrameIndices(trajm trajopts->frame_index_spec, trajopts->skip);
+  vector<uint> indices = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
 
-  AtomicGroup protein = selectAtoms(model, watopts->prot_sel);
-  AtomicGroup water = selectAtoms(model, watopts->water_sel);
+  AtomicGroup protein = selectAtoms(model, watopts->prot_string);
+  AtomicGroup water = selectAtoms(model, watopts->water_string);
 
   BulkEstimator* est;
   if (xopts->rescale_density) {
@@ -115,7 +114,7 @@ int main(int argc, char *argv[]) {
       cerr << "***WARNING: the z-clip for bulk solvent overlaps the protein***\n";
 
     ZClipEstimator* myest = new ZClipEstimator(water, traj, indices, xopts->bulk_zclip, xopts->grid_resolution);
-    myest->countZero(count_zero);
+    myest->countZero(xopts->count_empty_voxels);
     est = myest;
   } else
     est = new NullEstimator();
@@ -124,8 +123,6 @@ int main(int argc, char *argv[]) {
 
   WaterHistogrammer wh(protein, water, est, watopts->filter_func);
   if (!xopts->clamped_box.empty()) {
-    clamp_min -= gridpad;
-    clamp_max += gridpad;
     wh.setGrid(xopts->clamped_box[0]-watopts->pad, xopts->clamped_box[1]+watopts->pad, xopts->grid_resolution);
   } else
     wh.setGrid(traj, indices, xopts->grid_resolution, watopts->pad);
@@ -139,7 +136,7 @@ int main(int argc, char *argv[]) {
   DensityGrid<double> grid = wh.grid();
   cerr << boost::format("Grid = %s x %s @ %s\n") % grid.minCoord() % grid.maxCoord() % grid.gridDims();
 
-  if (estimate_bulk) {
+  if (xopts->rescale_density) {
     double d = est->bulkDensity();
     double s = est->stdDev(d);
     cerr << boost::format("Bulk density estimate = %f, std = %f\n") % d % s;
