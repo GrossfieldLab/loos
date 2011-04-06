@@ -2,6 +2,10 @@
   water-hist.cpp
 
   (c) 2009 Tod D. Romo, Grossfield Lab, URMC
+
+
+
+
 */
 
 #include <boost/format.hpp>
@@ -22,7 +26,7 @@ namespace opts = loos::DensityTools::OptionsFramework;
 namespace po = boost::program_options;
 
 
-
+// Additional options required by this tool...
 class WaterHistogramOptions : public opts::OptionsPackage {
 public:
   WaterHistogramOptions() :
@@ -34,7 +38,7 @@ public:
 
   void addGeneric(po::options_description& opts) {
     opts.add_options()
-      ("gridres,G", po::value<double>(&grid_resolution)->default_value(grid_resolution), "Grid resolution")
+      ("gridres", po::value<double>(&grid_resolution)->default_value(grid_resolution), "Grid resolution")
       ("empty", po::value<bool>(&count_empty_voxels)->default_value(count_empty_voxels), "Count empty voxels in bulk density estimate")
       ("bulk", po::value<double>(&bulk_zclip)->default_value(bulk_zclip), "Bulk water is defined as |Z| >= k")
       ("scale", po::value<bool>(&rescale_density)->default_value(rescale_density), "Scale density by bulk estimate")
@@ -85,6 +89,7 @@ public:
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
+  // Build up possible options
   opts::BasicOptions* basopts = new opts::BasicOptions;
   opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
   opts::BasicWaterOptions* watopts = new opts::BasicWaterOptions;
@@ -101,11 +106,10 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(trajopts->traj_name, model);
   vector<uint> indices = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
 
-  cerr << "Probe: protein = " << watopts->prot_string << endl;
-  cerr << "Probe: water = " << watopts->water_string << endl;
   AtomicGroup protein = selectAtoms(model, watopts->prot_string);
   AtomicGroup water = selectAtoms(model, watopts->water_string);
 
+  // Handle rescaling density by using a bulk-water density estimator
   BulkEstimator* est;
   if (xopts->rescale_density) {
     // Double-check the clip
