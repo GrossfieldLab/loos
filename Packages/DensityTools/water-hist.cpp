@@ -36,9 +36,9 @@ public:
     opts.add_options()
       ("gridres,G", po::value<double>(&grid_resolution)->default_value(grid_resolution), "Grid resolution")
       ("empty", po::value<bool>(&count_empty_voxels)->default_value(count_empty_voxels), "Count empty voxels in bulk density estimate")
-      ("bulkz,Z", po::value<double>(&bulk_zclip)->default_value(bulk_zclip), "Bulk water is defined as |Z| >= k")
-      ("scale,S", po::value<bool>(&rescale_density)->default_value(rescale_density), "Scale density by bulk estimate")
-      ("clamp,C", po::value<string>(), "Clamp the bounding box [(x,y,z),(x,y,z)]");
+      ("bulk", po::value<double>(&bulk_zclip)->default_value(bulk_zclip), "Bulk water is defined as |Z| >= k")
+      ("scale", po::value<bool>(&rescale_density)->default_value(rescale_density), "Scale density by bulk estimate")
+      ("clamp", po::value<string>(), "Clamp the bounding box [(x,y,z),(x,y,z)]");
   }
 
 
@@ -101,6 +101,8 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(trajopts->traj_name, model);
   vector<uint> indices = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
 
+  cerr << "Probe: protein = " << watopts->prot_string << endl;
+  cerr << "Probe: water = " << watopts->water_string << endl;
   AtomicGroup protein = selectAtoms(model, watopts->prot_string);
   AtomicGroup water = selectAtoms(model, watopts->water_string);
 

@@ -23,13 +23,14 @@ namespace loos {
         
         void addGeneric(po::options_description& opts) {
           opts.add_options()
-            ("pad,P", po::value<double>(&pad)->default_value(pad), "Pad (for bounding box)")
+            ("water,W", po::value<std::string>(&water_string)->default_value(water_string), "Water selection")
+            ("prot,P", po::value<std::string>(&prot_string)->default_value(prot_string), "Protein selection")
+            ("pad", po::value<double>(&pad)->default_value(pad), "Pad (for bounding box)")
+            ("bulked", po::value<std::string>(), "Add bulk water (z-slices between cutoff and bounding box) [pad,zmin:zmax]")
             ("radius,r", po::value<double>(&radius)->default_value(radius), "Radius (for principal axis filter)")
             ("zrange", po::value<std::string>(), "Clamp the volume to integrate over in Z (min:max)")
-            ("water,w", po::value<std::string>(&water_string)->default_value(water_string), "Water selection")
-            ("prot,p", po::value<std::string>(&prot_string)->default_value(prot_string), "Protein selection")
-            ("grid,g", po::value<std::string>(), "Name of grid to use in grid-mode")
-            ("mode,m", po::value<std::string>(&filter_mode)->default_value(filter_mode), "Mode (axis|box|grid)");
+            ("grid,G", po::value<std::string>(), "Name of grid to use in grid-mode (for internal waters)")
+            ("mode,M", po::value<std::string>(&filter_mode)->default_value(filter_mode), "Mode (axis|box|grid)");
         }
 
         bool postConditions(po::variables_map& map) {
@@ -68,7 +69,7 @@ namespace loos {
             filter_func = new ZClippedWaterFilter(filter_func, zmin, zmax);
           }
 
-          if (map.count("water")) {
+          if (map.count("bulked")) {
             double zmin, zmax, pad;
             std::string s = map["water"].as<std::string>();
             int i = sscanf(s.c_str(), "%lf,%lf:%lf", &pad, &zmin, &zmax);
