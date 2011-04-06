@@ -47,8 +47,8 @@ public:
 
 
   bool postConditions(po::variables_map& map) {
-    GCoord clamp_min, clamp_max;
     if (map.count("clamp")) {
+      GCoord clamp_min, clamp_max;
       string s = map["clamp"].as<string>();
       stringstream ss(s);
       if (!(ss >> clamp_min)) {
@@ -70,6 +70,21 @@ public:
     }
     return(true);
   }    
+
+  string print() const {
+    ostringstream oss;
+    oss << "# gridres=" << grid_resolution << endl;
+    oss << "# empty=" << count_empty_voxels << endl;
+    oss << "# bulk=" << bulk_zclip << endl;
+    oss << "# scale=" << rescale_density << endl;
+    oss << "# clamp=";
+    if (clamped_box.empty())
+      oss << "<undefined>\n";
+    else
+      oss << "[" << clamped_box[0] << "," << clamped_box[1] << "]\n";
+
+    return(oss.str());
+  }
 
 public:
   double grid_resolution;
