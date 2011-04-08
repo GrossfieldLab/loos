@@ -27,7 +27,7 @@ namespace loos {
             ("prot,P", po::value<std::string>(&prot_string)->default_value(prot_string), "Protein selection")
             ("pad", po::value<double>(&pad)->default_value(pad), "Pad (for bounding box)")
             ("bulked", po::value<std::string>(), "Add bulk water (z-slices between cutoff and bounding box) [pad,zmin:zmax]")
-            ("radius,r", po::value<double>(&radius)->default_value(radius), "Radius (for principal axis filter)")
+            ("radius,R", po::value<double>(&radius)->default_value(radius), "Radius (for principal axis filter)")
             ("zrange", po::value<std::string>(), "Clamp the volume to integrate over in Z (min:max)")
             ("grid,G", po::value<std::string>(), "Name of grid to use in grid-mode (for internal waters)")
             ("mode,M", po::value<std::string>(&filter_mode)->default_value(filter_mode), "Mode (axis|box|grid)");

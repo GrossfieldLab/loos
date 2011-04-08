@@ -18,6 +18,14 @@ namespace loos {
 
 
       //! Base class for options
+      /**
+       * Options may have a short (1-letter) equivalent.  The
+       * convention is that core options (i.e. those declared in
+       * OptionsFramework.cpp) should all be lower-case.  Package
+       * options should be in upper-case.  Tool-specific options
+       * should all be long-form, unless they are commonly used, in
+       * which case it's recommended that they be upper-case.
+       **/
       class OptionsPackage {
       public:
         virtual ~OptionsPackage() { }
@@ -114,7 +122,7 @@ namespace loos {
       //! Basic trajectory options
       /**
        * Adds a model and trajectory argument to the command line, and
-       * provides --skip (-S) and --range (-r) options for specifying
+       * provides --skip (-k) and --range (-r) options for specifying
        * which frames of the trajectory to operate over.
        **/
       class BasicTrajectoryOptions : public OptionsPackage {

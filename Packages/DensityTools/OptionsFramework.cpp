@@ -80,7 +80,7 @@ namespace loos {
 
       void BasicTrajectoryOptions::addGeneric(po::options_description& opts) {
         opts.add_options()
-          ("skip,S", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+          ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
           ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range)");
       };
 
