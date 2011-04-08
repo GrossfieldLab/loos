@@ -155,7 +155,8 @@ namespace loos {
       //! Combines a set of OptionsPackages
       class AggregateOptions {
       public:
-        AggregateOptions() : program_name("unknown_tool"),
+        //! Name is taken from argv[0] when AggregateOptions::parse() is called
+        AggregateOptions() : program_name(""),
                              generic("Allowed Options"),
                              hidden("Hidden Options")
         { }

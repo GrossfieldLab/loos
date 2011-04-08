@@ -73,15 +73,16 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << "# gridres=" << grid_resolution << endl;
-    oss << "# empty=" << count_empty_voxels << endl;
-    oss << "# bulk=" << bulk_zclip << endl;
-    oss << "# scale=" << rescale_density << endl;
-    oss << "# clamp=";
-    if (clamped_box.empty())
-      oss << "<undefined>\n";
-    else
-      oss << "[" << clamped_box[0] << "," << clamped_box[1] << "]\n";
+    oss << boost::format("gridres=%f, empty=%d, bulk_zclip=%f, scale=%d")
+      % grid_resolution
+      % count_empty_voxels
+      % bulk_zclip
+      % rescale_density;
+
+    if (!clamped_box.empty())
+      oss << boost::format(", clamp=[%s,%s]")
+        % clamped_box[0]
+        % clamped_box[1];
 
     return(oss.str());
   }
@@ -171,6 +172,7 @@ int main(int argc, char *argv[]) {
   }
 
   grid.addMetadata(hdr);
+  grid.addMetadata(options.print());
   cout << grid;
 }
 

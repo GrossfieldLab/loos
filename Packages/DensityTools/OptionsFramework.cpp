@@ -12,7 +12,7 @@ namespace loos {
 
       std::string BasicOptions::print() const {
         std::ostringstream oss;
-        oss << "# verbosity=" << verbosity ;
+        oss << "verbosity=" << verbosity ;
         return(oss.str());
       }
 
@@ -25,7 +25,7 @@ namespace loos {
 
       std::string OutputPrefixOptions::print() const {
         std::ostringstream oss;
-        oss << "# prefix='" << prefix << "'\n";
+        oss << "prefix='" << prefix << "'";
         return(oss.str());
       }
       
@@ -38,7 +38,7 @@ namespace loos {
 
       std::string BasicSelectionOptions::print() const {
         std::ostringstream oss;
-        oss << "# selection='" << selection << "'\n";
+        oss << "selection='" << selection << "'";
         return(oss.str());
       }
 
@@ -69,6 +69,10 @@ namespace loos {
 
       std::string ModelWithCoordsOptions::print() const {
         std::ostringstream oss;
+
+        oss << boost::format("model='%s'") % model_name;
+        if (!coords_name.empty())
+          oss << boost::format(", coords='%s'") % coords_name;
 
         return(oss.str());
       }
@@ -111,12 +115,11 @@ namespace loos {
       std::string BasicTrajectoryOptions::help() const { return("model trajectory"); }
       std::string BasicTrajectoryOptions::print() const {
         std::ostringstream oss;
-        oss << "# model='" << model_name << "', traj='" << traj_name << "', ";
+        oss << boost::format("model='%s', traj='%s', ") % model_name % traj_name;
         if (skip > 0)
           oss << "skip=" << skip;
         else
           oss << "range=" << frame_index_spec;
-        oss << std::endl;
 
         return(oss.str());
       }
@@ -154,7 +157,9 @@ namespace loos {
 
 
       bool AggregateOptions::parse(int argc, char *argv[]) {
-        program_name = std::string(argv[0]);
+        if (program_name.empty())
+          program_name = std::string(argv[0]);
+
         setupOptions();
         bool show_help = false;
 
@@ -191,10 +196,15 @@ namespace loos {
       }
 
       std::string AggregateOptions::print() const {
-        std::string result;
+        std::string result(program_name);
+
+        result += ": ";
     
-        for (vOpts::const_iterator i = options.begin(); i != options.end(); ++i)
+        for (vOpts::const_iterator i = options.begin(); i != options.end(); ++i) {
           result += (*i)->print();
+          if (i != options.end() - 1)
+            result += ", ";
+        }
 
         return(result);
       }
