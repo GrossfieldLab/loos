@@ -73,7 +73,7 @@ struct CenterDistanceZ : public DistanceCalculation {
     GCoord cv = v.centroid();
 
     GCoord temp = cu - cv;
-    return (temp.z());
+    return (abs(temp.z()));
 
   }
 };
