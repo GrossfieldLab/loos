@@ -508,6 +508,9 @@ namespace loos {
     //! Apply the given transform to the group's coordinates...
     void applyTransform(const XForm&);
 
+    //! Apply a rotation to the group's coordinates...
+    void applyRotation(const GCoord& axis, const greal angle_in_degrees);
+
 
     //! Copy coordinates from one group into another...
     /** Requires that the groups be the same size and that the ith atom

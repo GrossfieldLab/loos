@@ -230,6 +230,16 @@ namespace loos {
   }
 
 
+  void AtomicGroup::applyRotation(const GCoord& axis, const greal angle_in_degrees) {
+    XForm M;
+
+    GCoord center = centroid();
+    M.translate(center);
+    M.rotate(axis, angle_in_degrees);
+    M.translate(-center);
+    applyTransform(M);
+  }
+
   // Returns a newly allocated array of double coords in row-major
   // order...
   double* AtomicGroup::coordsAsArray(void) const {
