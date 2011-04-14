@@ -508,7 +508,7 @@ namespace loos {
     //! Apply the given transform to the group's coordinates...
     void applyTransform(const XForm&);
 
-    //! Apply a rotation to the group's coordinates...
+    //! Apply a rotation to the group's coordinates (left-handed, about centroid)
     void applyRotation(const GCoord& axis, const greal angle_in_degrees);
 
 
