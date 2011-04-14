@@ -230,12 +230,12 @@ namespace loos {
   }
 
 
-  void AtomicGroup::applyRotation(const GCoord& axis, const greal angle_in_degrees) {
+  void AtomicGroup::rotate(const GCoord& axis, const greal angle_in_degrees) {
     XForm M;
 
     GCoord center = centroid();
     M.translate(center);
-    M.rotate(axis, angle_in_degrees);
+    M.rotate(axis, -angle_in_degrees);
     M.translate(-center);
     applyTransform(M);
   }
