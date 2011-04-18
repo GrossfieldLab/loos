@@ -63,7 +63,7 @@ namespace loos {
     GCoord box;
     if (!(iss >> box[0] >> box[1] >> box[2]))
       throw(std::runtime_error("Cannot parse box '" + buf + "'"));
-    periodicBox(box);
+    periodicBox(box * 10.0);
 
     // Since the atomic field in .gro files is only 5-chars wide, it can
     // overflow.  if there are enough atoms to cause an overflow, manually
