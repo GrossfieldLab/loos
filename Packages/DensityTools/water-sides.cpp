@@ -18,10 +18,13 @@
 #include <limits>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
+#include <OptionsFramework.hpp>
 
 
 using namespace std;
 using namespace loos;
+
+namespace opts = loos::DensityTools::OptionsFramework;
 namespace po = boost::program_options;
 
 typedef std::pair<double,double> Range;
@@ -31,6 +34,38 @@ Range membrane(0.0, 0.0);
 string model_name, traj_name, selection_string;
 
 enum Location { UPPER = 1, MEMBRANE = 0, LOWER = -1 };
+
+
+class WaterSidesOptions : public opts::OptionsPackage {
+public:
+
+  WaterSidesOptions() : lower_bounds(0.0), upper_bounds(0.0) { }
+
+  void addHidden(po::options_description& opts) {
+    opts.add_options()
+      ("lower", po::value<double>(&lower_bounds), "Lower leaflet bounds")
+      ("upper", po::value<double>(&upper_bounds), "Upper leaflet bounds");
+  }
+
+  void addPositional(po::positional_options_description& opts) {
+    opts.add("lower", 1);
+    opts.add("upper", 1);
+  }
+
+  bool check(po::variables_map& map) {
+    return(! (map.count("lower") && map.count("upper")) );
+  }
+
+  string help() const { return("membrane-lower-bounds membrane-upper-bounds"); }
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("lower=%f, upper=%f") % lower_bounds % upper_bounds;
+    return(oss.str());
+  }
+
+  double lower_bounds, upper_bounds;
+};
+
 
 
 Range parseRange(const string& s) {
