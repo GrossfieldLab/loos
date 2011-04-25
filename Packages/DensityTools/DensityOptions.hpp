@@ -14,6 +14,19 @@ namespace loos {
 
     namespace OptionsFramework {
 
+      //! Options specific to tools that work with water/internal-water
+      /**
+       * Allows definition of water, protein, padding, among others.
+       * Also includes a "factory" for setting how internal waters are defined
+       * (selected).
+       *
+       * Mode can be: axis (distance from principal axis), box (a
+       * bounding box), and grid (grid-mask).
+       *
+       * Decorations include Z-range (clamping to a set-zrange),
+       * and "bulked", which adds back in the entire system above and
+       * below a z-plane.
+       **/
       class BasicWaterOptions : public OptionsPackage {
       public:
         BasicWaterOptions() :
@@ -24,7 +37,8 @@ namespace loos {
           grid_name(""),
           filter_mode("axis"),
           bulked_spec(""),
-          zrange_spec("")
+          zrange_spec(""),
+          filter_func(0)
         { }
         
         void addGeneric(po::options_description& opts) {
@@ -105,13 +119,19 @@ namespace loos {
         }
         
 
+        ~BasicWaterOptions() {
+          if (filter_func)
+            delete filter_func;
+          filter_func = 0;
+        }
+        
         double zmin, zmax;
         double pad;
         double radius;
         std::string water_string, prot_string, grid_name, filter_mode;
         std::string bulked_spec, zrange_spec;
-        DensityGrid<int> the_grid;
         WaterFilterBase* filter_func;
+        DensityGrid<int> the_grid;
       };
       
 
