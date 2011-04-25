@@ -124,13 +124,20 @@ namespace loos {
             delete filter_func;
           filter_func = 0;
         }
-        
+
+        //! Parameters sent to various decorators
         double zmin, zmax;
+        //! Extra padding for water
         double pad;
+        //! Optional parameter used in by the WaterFilter
         double radius;
+        //! User-specified strings
         std::string water_string, prot_string, grid_name, filter_mode;
+        //! User-specified strings (used internally by the WaterFilter decorators)
         std::string bulked_spec, zrange_spec;
+        //! Filter for determining internal waters
         WaterFilterBase* filter_func;
+        //! Grid mask for internal waters
         DensityGrid<int> the_grid;
       };
       
