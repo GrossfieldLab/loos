@@ -79,67 +79,38 @@ Range parseRange(const string& s) {
 }
 
 
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    string s;
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("selection,s", po::value<string>(&selection_string)->default_value("name == 'OH2'"), "Atoms to calculate over")
-      ("membrane,m", po::value<string>(), "Range for the membrane (zmin:zmax)");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (vm.count("membrane"))
-      membrane = parseRange(vm["membrane"].as<string>());
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
 
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions *basic_opts = new opts::BasicOptions;
+  opts::BasicSelectionOptions *basic_selection = new opts::BasicSelectionOptions;
+  basic_selection->selection = "name == 'OH2'";
+  opts::BasicTrajectoryOptions *basic_traj = new opts::BasicTrajectoryOptions;
+  WaterSidesOptions *my_opts = new WaterSidesOptions;
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
-  AtomicGroup subset = selectAtoms(model, selection_string);
+  opts::AggregateOptions options;
+  options.add(basic_opts).add(basic_selection).add(basic_traj).add(my_opts);
+  if (!options.parse(argc, argv)) {
+    options.showHelp();
+    exit(0);
+  }
 
-  uint m = subset.size();
-  uint n = traj->nframes();
+  AtomicGroup model = createSystem(basic_traj->model_name);
+  pTraj traj = createTrajectory(basic_traj->traj_name, model);
+  AtomicGroup subset = selectAtoms(model, basic_selection->selection);
+  vector<uint> frames = opts::assignFrameIndices(traj, basic_traj->frame_index_spec, basic_traj->skip);
+
+  uint n = subset.size();
+  uint m = frames.size();
   
-  Matrix M(m,n);
-  for (uint i=0; i<n; ++i) {
-    traj->readFrame(i);
+  Matrix M(m,n+1);
+  for (uint j=0; j<m; ++j) {
+    traj->readFrame(frames[j]);
     traj->updateGroupCoords(subset);
-    for (uint j=0; j<m; ++j) {
-      GCoord c = subset[j]->coords();
+    M(j, 0) = frames[j];
+    for (uint i=0; i<n; ++i) {
+      GCoord c = subset[i]->coords();
       Location l;
       if (c[2] > membrane.second)
         l = UPPER;
@@ -147,7 +118,7 @@ int main(int argc, char *argv[]) {
         l = MEMBRANE;
       else
         l = LOWER;
-      M(j,i) = l;
+      M(j, i+1) = l;
     }
   }
 
