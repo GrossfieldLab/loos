@@ -17,15 +17,12 @@
 #include <loos.hpp>
 #include <limits>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
-#include <OptionsFramework.hpp>
+#include <DensityTools.hpp>
 
 
 using namespace std;
 using namespace loos;
 
-namespace opts = loos::DensityTools::OptionsFramework;
-namespace po = boost::program_options;
 
 typedef std::pair<double,double> Range;
 typedef Math::Matrix<int, Math::ColMajor> Matrix;

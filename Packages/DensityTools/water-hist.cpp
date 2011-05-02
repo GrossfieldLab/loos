@@ -13,17 +13,14 @@
 
 #include <loos.hpp>
 #include <DensityGrid.hpp>
-#include <internal-water-filter.hpp>
 #include <water-hist-lib.hpp>
-#include <OptionsFramework.hpp>
+#include <DensityTools.hpp>
 #include <DensityOptions.hpp>
 
 using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
-namespace opts = loos::DensityTools::OptionsFramework;
-namespace po = boost::program_options;
 
 
 // Additional options required by this tool...
