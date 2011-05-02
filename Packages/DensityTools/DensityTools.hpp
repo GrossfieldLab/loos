@@ -11,6 +11,7 @@
 #define DENSITYTOOLS_HPP
 
 #include <boost/program_options.hpp>
+#include <boost/format.hpp>
 
 #include <OptionsFramework.hpp>
 
