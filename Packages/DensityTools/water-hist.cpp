@@ -23,7 +23,8 @@ using namespace loos::DensityTools;
 
 
 
-// Additional options required by this tool...
+/// @cond TOOLS_INTERAL
+
 class WaterHistogramOptions : public opts::OptionsPackage {
 public:
   WaterHistogramOptions() :
@@ -92,6 +93,7 @@ public:
   vector<GCoord> clamped_box;
 };
 
+/// @endcond
 
 
 

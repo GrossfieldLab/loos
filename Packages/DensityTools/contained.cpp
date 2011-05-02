@@ -27,6 +27,7 @@ using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
+/// @cond INTERNAL_TOOLS
 
 class ContainedOptions : public opts::OptionsPackage {
 public:
@@ -54,6 +55,7 @@ public:
   string grid_name;
 };
 
+/// @endcond
 
 
 int main(int argc, char *argv[]) {
