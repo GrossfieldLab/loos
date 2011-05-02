@@ -38,15 +38,15 @@ public:
 
   WaterSidesOptions() : lower_bounds(0.0), upper_bounds(0.0) { }
 
-  void addHidden(po::options_description& opts) {
-    opts.add_options()
+  void addHidden(po::options_description& options) {
+    options.add_options()
       ("lower", po::value<double>(&lower_bounds), "Lower leaflet bounds")
       ("upper", po::value<double>(&upper_bounds), "Upper leaflet bounds");
   }
 
-  void addPositional(po::positional_options_description& opts) {
-    opts.add("lower", 1);
-    opts.add("upper", 1);
+  void addPositional(po::positional_options_description& options) {
+    options.add("lower", 1);
+    options.add("upper", 1);
   }
 
   bool check(po::variables_map& map) {
