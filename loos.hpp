@@ -95,6 +95,8 @@
 
 #include <sorting.hpp>
 
+#include <OptionsFramework.hpp>
+
 #endif
 
 

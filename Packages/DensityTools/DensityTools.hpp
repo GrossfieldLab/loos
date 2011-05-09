@@ -13,10 +13,10 @@
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
 
-#include <OptionsFramework.hpp>
+#include <DensityOptions.hpp>
 
 
-namespace opts = loos::DensityTools::OptionsFramework;
+namespace opts = loos::OptionsFramework;
 namespace po = boost::program_options;
 
 

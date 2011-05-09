@@ -28,8 +28,8 @@ clone = env.Clone()
 clone.Prepend(LIBS = ['loos'])
 
 ### Library Generation
-library_sources = 'GridUtils.cpp internal-water-filter.cpp water-hist-lib.cpp water-lib.cpp OptionsFramework.cpp'
-library_headers = 'DensityGrid.hpp GridUtils.hpp internal-water-filter.hpp water-hist-lib.hpp water-lib.hpp OptionsFramework.hpp DensityOptions.hpp'
+library_sources = 'GridUtils.cpp internal-water-filter.cpp water-hist-lib.cpp water-lib.cpp'
+library_headers = 'DensityGrid.hpp GridUtils.hpp internal-water-filter.hpp water-hist-lib.hpp water-lib.hpp DensityOptions.hpp'
 
 density_lib = clone.Library('loos_density', Split(library_sources))
 clone.Prepend(LIBS=['loos_density'])

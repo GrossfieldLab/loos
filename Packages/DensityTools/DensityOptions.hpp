@@ -7,12 +7,10 @@
 #include <loos.hpp>
 #include <DensityGrid.hpp>
 #include <internal-water-filter.hpp>
-#include <OptionsFramework.hpp>
 
 namespace loos {
-  namespace DensityTools {
 
-    namespace OptionsFramework {
+  namespace OptionsFramework {
 
       //! Options specific to tools that work with water/internal-water
       /**
@@ -55,9 +53,9 @@ namespace loos {
 
         bool postConditions(po::variables_map& map) {
           if (filter_mode == "axis") {
-            filter_func = new WaterFilterAxis(radius);
+            filter_func = new DensityTools::WaterFilterAxis(radius);
           } else if (filter_mode == "box") {
-            filter_func = new WaterFilterBox(pad);
+            filter_func = new DensityTools::WaterFilterBox(pad);
           } else if (filter_mode == "grid") {
             if (grid_name.empty()) {
               std::cerr << "ERROR - you must specify a grid to use when using grid-mode\n";
@@ -68,7 +66,7 @@ namespace loos {
             ifs >> the_grid;
             std::cerr << "Read in grid with size " << the_grid.gridDims() << std::endl;
       
-            filter_func = new WaterFilterBlob(the_grid);
+            filter_func = new DensityTools::WaterFilterBlob(the_grid);
 
           } else {
             std::cerr << "ERROR - unknown mode " << filter_mode << std::endl;
@@ -84,7 +82,7 @@ namespace loos {
               return(false);
             }
 
-            filter_func = new ZClippedWaterFilter(filter_func, zmin, zmax);
+            filter_func = new DensityTools::ZClippedWaterFilter(filter_func, zmin, zmax);
           }
 
           if (!bulked_spec.empty()) {
@@ -95,7 +93,7 @@ namespace loos {
               return(false);
             }
             
-            filter_func = new BulkedWaterFilter(filter_func, pad, zmin, zmax);
+            filter_func = new DensityTools::BulkedWaterFilter(filter_func, pad, zmin, zmax);
           }
           
           
@@ -136,16 +134,14 @@ namespace loos {
         //! User-specified strings (used internally by the WaterFilter decorators)
         std::string bulked_spec, zrange_spec;
         //! Filter for determining internal waters
-        WaterFilterBase* filter_func;
+        DensityTools::WaterFilterBase* filter_func;
         //! Grid mask for internal waters
-        DensityGrid<int> the_grid;
+        DensityTools::DensityGrid<int> the_grid;
       };
       
 
-    };
-
-  
   };
+
 };
 
 
