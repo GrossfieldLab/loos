@@ -5,6 +5,7 @@
 
 #include <loos.hpp>
 #include <boost/program_options.hpp>
+#include <tr1/unordered_set>
 
 
 namespace loos {
@@ -149,6 +150,26 @@ namespace loos {
       std::string model_name, traj_name;
     };
 
+
+    // -------------------------------------------------
+
+    class RequiredOptions : public OptionsPackage {
+      typedef std::tr1::unordered_map<std::string,std::string>    Hash;
+    public:
+      void addHidden(po::options_description& o);
+      void addPositional(po::positional_options_description& pos);
+      bool check(po::variables_map& map);
+      bool postConditions(po::variables_map& map);
+      std::string help() const;
+      std::string print() const;
+
+      void addOption(const std::string& name, const std::string& description);
+      std::string value(const std::string& s);
+
+    private:
+      Hash keys;
+      Hash values;
+    };
 
 
     // ----------------------------------------------------------------------

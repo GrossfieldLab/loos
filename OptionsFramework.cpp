@@ -123,6 +123,68 @@ namespace loos {
       return(oss.str());
     }
 
+    // -------------------------------------------------------
+    void RequiredOptions::addOption(const std::string& name, const std::string& description) {
+      if (keys.find(name) != keys.end()) {
+        std::cerr <<"ERROR\n";
+        exit(-1);
+      }
+      keys[name] = description;
+    }
+
+    void RequiredOptions::addHidden(po::options_description& o) {
+      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+        o.add_options()(i->first.c_str(), po::value<std::string>(), i->second.c_str());
+    }
+
+    void RequiredOptions::addPositional(po::positional_options_description& pos) {
+      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+        pos.add(i->first.c_str(), 1);
+    }
+
+    bool RequiredOptions::check(po::variables_map& map) {
+      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+        if (! map.count(i->first.c_str()) )
+          return(true);
+
+      return(false);
+    }
+
+    bool RequiredOptions::postConditions(po::variables_map& map) {
+      values.clear();
+      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+        values[i->first] = map[i->first.c_str()].as<std::string>();
+
+      return(true);
+    }
+
+    std::string RequiredOptions::value(const std::string& s) {
+      std::string val;
+      Hash::const_iterator i = values.find(s);
+      if (i != values.end())
+        val = i->second;
+
+      return(val);
+    }
+
+    std::string RequiredOptions::help() const {
+      std::string s;
+      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+        s = s + "[" + i->first + "] ";
+      return(s);
+    }
+
+    std::string RequiredOptions::print() const {
+      std::ostringstream oss;
+      for (Hash::const_iterator i = values.begin(); i != values.end(); ++i)
+        oss << i->first << "='" << i->second << "'";
+      
+      std::string s = oss.str();
+      s.erase(s.size()-1,1);
+
+      return(s);
+    }
+
 
     // -------------------------------------------------------
 
