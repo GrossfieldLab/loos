@@ -57,6 +57,7 @@ namespace loos {
     class BasicOptions : public OptionsPackage {
     public:
       BasicOptions() : verbosity(0) { }
+      BasicOptions(const int i) : verbosity(i) { }
 
       void addGeneric(po::options_description& opts);
       std::string print() const;
@@ -69,6 +70,9 @@ namespace loos {
     //! Options related to specifying an output prefix
     class OutputPrefixOptions : public OptionsPackage {
     public:
+      OutputPrefixOptions() : prefix("output") { }
+      OutputPrefixOptions(const std::string& s) : prefix(s) { }
+
       void addGeneric(po::options_description& opts);
       std::string print() const;
 
@@ -81,6 +85,7 @@ namespace loos {
     class BasicSelectionOptions : public OptionsPackage {
     public:
       BasicSelectionOptions() : selection("all") { }
+      BasicSelectionOptions(const std::string& sel) : selection(sel) { }
 
       void addGeneric(po::options_description& opts);
       std::string print() const;
