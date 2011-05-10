@@ -155,6 +155,7 @@ namespace loos {
 
     class RequiredOptions : public OptionsPackage {
       typedef std::tr1::unordered_map<std::string,std::string>    Hash;
+      typedef std::pair<std::string, std::string>    StringPair;
     public:
       void addHidden(po::options_description& o);
       void addPositional(po::positional_options_description& pos);
@@ -167,7 +168,7 @@ namespace loos {
       std::string value(const std::string& s);
 
     private:
-      Hash keys;
+      std::vector<StringPair> arguments;
       Hash values;
     };
 

@@ -125,25 +125,26 @@ namespace loos {
 
     // -------------------------------------------------------
     void RequiredOptions::addOption(const std::string& name, const std::string& description) {
-      if (keys.find(name) != keys.end()) {
-        std::cerr <<"ERROR\n";
-        exit(-1);
+      StringPair arg(name, description);
+      if (find(arguments.begin(), arguments.end(), arg) != arguments.end()) {
+        std::cerr << "ERROR\n";
+        exit(-10);
       }
-      keys[name] = description;
+      arguments.push_back(arg);
     }
 
     void RequiredOptions::addHidden(po::options_description& o) {
-      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         o.add_options()(i->first.c_str(), po::value<std::string>(), i->second.c_str());
     }
 
     void RequiredOptions::addPositional(po::positional_options_description& pos) {
-      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         pos.add(i->first.c_str(), 1);
     }
 
     bool RequiredOptions::check(po::variables_map& map) {
-      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         if (! map.count(i->first.c_str()) )
           return(true);
 
@@ -152,7 +153,7 @@ namespace loos {
 
     bool RequiredOptions::postConditions(po::variables_map& map) {
       values.clear();
-      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         values[i->first] = map[i->first.c_str()].as<std::string>();
 
       return(true);
@@ -169,8 +170,8 @@ namespace loos {
 
     std::string RequiredOptions::help() const {
       std::string s;
-      for (Hash::const_iterator i = keys.begin(); i != keys.end(); ++i)
-        s = s + "[" + i->first + "] ";
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
+        s = s + " " + i->first;
       return(s);
     }
 
