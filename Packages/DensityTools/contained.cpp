@@ -27,36 +27,6 @@ using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
-/// @cond INTERNAL_TOOLS
-
-class ContainedOptions : public opts::OptionsPackage {
-public:
-
-  void addHidden(po::options_description& opts) {
-    opts.add_options()
-      ("grid", po::value<string>(&grid_name), "Grid name");
-  }
-
-  void addPositional(po::positional_options_description& options) {
-    options.add("grid", 1);
-  }
-
-  bool check(po::variables_map& map) {
-    return(!map.count("grid"));
-  }
-
-  string help() const { return("grid-name"); }
-  string print() const {
-    ostringstream oss;
-    oss << boost::format("grid=%s") % grid_name;
-    return(oss.str());
-  }
-
-  string grid_name;
-};
-
-/// @endcond
-
 
 int main(int argc, char *argv[]) {
   if (argc != 5) {
@@ -69,10 +39,11 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions *basic_opts = new opts::BasicOptions;
   opts::BasicSelectionOptions *basic_selection = new opts::BasicSelectionOptions;
   opts::BasicTrajectoryOptions *basic_traj = new opts::BasicTrajectoryOptions;
-  ContainedOptions *my_opts = new ContainedOptions;
+  opts::RequiredOptions *ropts = new opts::RequiredOptions;
+  ropts->addOption("grid", "grid-name");
 
   opts::AggregateOptions options;
-    options.add(basic_opts).add(basic_selection).add(basic_traj).add(my_opts);
+  options.add(basic_opts).add(basic_selection).add(basic_traj).add(ropts);
   if (!options.parse(argc, argv)) {
     options.showHelp();
     exit(0);
@@ -89,9 +60,10 @@ int main(int argc, char *argv[]) {
   cout << "# t n\n";
   DensityGrid<int> grid;
 
-  ifstream ifs(my_opts->grid_name.c_str());
+  string grid_name = ropts->value("grid");
+  ifstream ifs(grid_name.c_str());
   if (!ifs) {
-    cerr << "Error- cannot open " << my_opts->grid_name << endl;
+    cerr << "Error- cannot open " << grid_name << endl;
     exit(-1);
   }
   ifs >> grid;
