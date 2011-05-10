@@ -5,7 +5,6 @@
 
 #include <loos.hpp>
 #include <boost/program_options.hpp>
-#include <tr1/unordered_set>
 
 
 namespace loos {
@@ -154,7 +153,6 @@ namespace loos {
     // -------------------------------------------------
 
     class RequiredOptions : public OptionsPackage {
-      typedef std::tr1::unordered_map<std::string,std::string>    Hash;
       typedef std::pair<std::string, std::string>    StringPair;
     public:
       void addHidden(po::options_description& o);
@@ -169,7 +167,7 @@ namespace loos {
 
     private:
       std::vector<StringPair> arguments;
-      Hash values;
+      po::variables_map held_map;
     };
 
 

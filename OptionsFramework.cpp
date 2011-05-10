@@ -152,20 +152,15 @@ namespace loos {
     }
 
     bool RequiredOptions::postConditions(po::variables_map& map) {
-      values.clear();
-      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
-        values[i->first] = map[i->first.c_str()].as<std::string>();
-
+      held_map = map;
       return(true);
     }
 
     std::string RequiredOptions::value(const std::string& s) {
-      std::string val;
-      Hash::const_iterator i = values.find(s);
-      if (i != values.end())
-        val = i->second;
-
-      return(val);
+      std::string result;
+      if (held_map.count(s))
+        result = held_map[s].as<std::string>();
+      return(result);
     }
 
     std::string RequiredOptions::help() const {
@@ -177,8 +172,8 @@ namespace loos {
 
     std::string RequiredOptions::print() const {
       std::ostringstream oss;
-      for (Hash::const_iterator i = values.begin(); i != values.end(); ++i)
-        oss << i->first << "='" << i->second << "'";
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
+        oss << i->first << "='" << held_map[i->first].as<std::string>() << "',";
       
       std::string s = oss.str();
       s.erase(s.size()-1,1);
