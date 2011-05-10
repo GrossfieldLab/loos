@@ -39,7 +39,7 @@ public:
 
   void addGeneric(opts::po::options_description& o) {
     o.add_options()
-      ("nlipids", opts::po::value<uint>(&n_lipids)->default_value(0), "Explicitly set the number of lipids per leaflet");
+      ("nlipids", opts::po::value<uint>(&n_lipids)->default_value(n_lipids), "Explicitly set the number of lipids per leaflet");
   }
 
   string print() const {
