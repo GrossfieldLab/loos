@@ -60,9 +60,13 @@ namespace loos {
       BasicOptions(const int i) : verbosity(i) { }
 
       void addGeneric(po::options_description& opts);
+      bool postConditions(po::variables_map& map);
       std::string print() const;
 
+      void setFullHelp(const std::string& s);
+
       int verbosity;
+      std::string full_help;
     };
 
     // -------------------------------------------------

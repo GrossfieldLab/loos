@@ -4,6 +4,9 @@ namespace loos {
   namespace OptionsFramework {
 
     void BasicOptions::addGeneric(po::options_description& opts) {
+      if (!full_help.empty())
+        opts.add_options()("fullhelp", "More detailed help");
+
       opts.add_options()
         ("help", "Produce this message")
         ("verbosity,v", po::value<int>(&verbosity)->default_value(verbosity), "Verbosity");
@@ -13,6 +16,19 @@ namespace loos {
       std::ostringstream oss;
       oss << "verbosity=" << verbosity ;
       return(oss.str());
+    }
+
+    bool BasicOptions::postConditions(po::variables_map& map) {
+      if (!full_help.empty())
+        if (map.count("fullhelp")) {
+          std::cout << full_help;
+          return(false);
+        }
+      return(true);
+    }
+
+    void BasicOptions::setFullHelp(const std::string& s) {
+      full_help = s;
     }
 
     // -------------------------------------------------------
