@@ -141,13 +141,18 @@ namespace loos {
          
     std::stringstream ss(s);
 
-    ss >> index;
+    // A hack to handle hybrid-36 resids & atomids
+    std::string buf;
+    ss >> buf;
+    index = parseStringAsHybrid36(buf);
     pa->id(index);
      
     ss >> segname;
     pa->segid(segname);
 
-    ss >> resid;
+
+    ss >> buf;
+    resid = parseStringAsHybrid36(buf);
     pa->resid(resid);
 
     ss >> resname;
@@ -190,7 +195,7 @@ namespace loos {
   int PSF::deduceAtomicNumber(pAtom pa) {
     double mass = pa->mass();
     int an=-1;
-    if (mass < 1.0)
+    if (mass < 1.0) 
       throw(std::out_of_range("Atomic mass less than 1.0 in psf"));
     else if (mass < 1.1) // Hydrogen = 1.0080
       an=1;
