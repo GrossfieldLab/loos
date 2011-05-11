@@ -152,6 +152,17 @@ namespace loos {
 
     // -------------------------------------------------
 
+    //! Provides simple way to add command-line arguments (required options)
+    /**
+     * This class handles required command-line options (also known as
+     * command line arguments).  Each argument is defined by a string
+     * tag and a description and is parsed from the command line as a
+     * string.  Arguments are added via the addOption() method and the
+     * values are retrieved using value().
+     *
+     * Since these are required options, the class will automatically
+     * generate a parsing error if any argument is unset.
+    **/
     class RequiredOptions : public OptionsPackage {
       typedef std::pair<std::string, std::string>    StringPair;
     public:
@@ -162,7 +173,10 @@ namespace loos {
       std::string help() const;
       std::string print() const;
 
+      //! Add a required argument given a name (tag) and a description (currently unused)
       void addOption(const std::string& name, const std::string& description);
+
+      //! Retrieve the value for an argument
       std::string value(const std::string& s);
 
     private:
