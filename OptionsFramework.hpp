@@ -58,6 +58,8 @@ namespace loos {
     public:
       BasicOptions() : verbosity(0) { }
       BasicOptions(const int i) : verbosity(i) { }
+      BasicOptions(const std::string& s) : verbosity(0), full_help(s) { }
+      BasicOptions(const int i, const std::string& s) : verbosity(i), full_help(s) { }
 
       void addGeneric(po::options_description& opts);
       bool postConditions(po::variables_map& map);
