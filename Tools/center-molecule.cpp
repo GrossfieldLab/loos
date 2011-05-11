@@ -35,7 +35,7 @@
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
 
 typedef vector<AtomicGroup>            vGroup;
 
@@ -45,48 +45,49 @@ bool reimage;
 bool center_xy;
 
 
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() :
+    center_sel("all"),
+    apply_sel("all"),
+    write_sel("all"),
+    bonds_name(""),
+    reimage(false),
+    center_xy(false)
+  { }
 
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("center,c", po::value<string>(&center_sel)->default_value("all"), "Selection to calculate the offset from")
-      ("apply,a", po::value<string>(&apply_sel)->default_value("all"), "Selection to actually center")
-      ("write,w", po::value<string>(&write_sel)->default_value("all"), "Selection to write to stdout")
-      ("reimage,r", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule after")
-      ("center_xy,x", po::value<bool>(&center_xy)->default_value(false), "Center only x&y dimensions")
-      ("bonds,b", po::value<string>(&bonds_name), "Use this model for connectivity");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !vm.count("model")) {
-      cerr << "Usage- " << argv[0] << " [options] model-name >output.pdb\n";
-      cerr << generic;
-      exit(-1);
-    }
-
+  void addGeneric(opts::po::options_description& o) {
+    o.add_options()
+      ("center", opts::po::value<string>(&center_sel)->default_value(center_sel), "Selection to calculate the offset from")
+      ("apply", opts::po::value<string>(&apply_sel)->default_value(apply_sel), "Selection to actually center")
+      ("write", opts::po::value<string>(&write_sel)->default_value(write_sel), "Selection to write to stdout")
+      ("reimage", opts::po::value<bool>(&reimage)->default_value(reimage), "Reimage by molecule after")
+      ("center_xy", opts::po::value<bool>(&center_xy)->default_value(center_xy), "Center only x&y dimensions")
+      ("bonds", opts::po::value<string>(&bonds_name), "Use this model for connectivity");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+
+    oss << boost::format("center='%s',apply='%s',write='%s',reimage=%d,center_xy=%d,bonds='%s'")
+      % center_sel
+      % apply_sel
+      % write_sel
+      % reimage
+      % center_xy
+      % bonds_name;
+
+    return(oss.str());
   }
-}
+
+
+  string center_sel, apply_sel, write_sel, bonds_name;
+  bool reimage, center_xy;
+};
+// @endcond
+
+
 
 
 void copyBonds(AtomicGroup& target, AtomicGroup& source) {
@@ -105,16 +106,23 @@ void copyBonds(AtomicGroup& target, AtomicGroup& source) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::ModelWithCoordsOptions* mopts = new opts::ModelWithCoordsOptions;
+  ToolOptions* topts = new ToolOptions;
+  opts::AggregateOptions options;
+  options.add(bopts).add(mopts).add(topts);
 
-  AtomicGroup model = createSystem(model_name);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = opts::loadStructureWithCoords(mopts->model_name, mopts->coords_name);
   
-  if (reimage) {
+  if (topts->reimage) {
     if (!model.isPeriodic()) {
       cerr << "WARNING- Reimaging requested, but the model has no periodic box information\n";
     } else {
-      if (!bonds_name.empty()) {
-        AtomicGroup bonds = createSystem(bonds_name);
+      if (!topts->bonds_name.empty()) {
+        AtomicGroup bonds = createSystem(topts->bonds_name);
         copyBonds(model, bonds);
       }
 
@@ -125,15 +133,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  AtomicGroup center_mol = selectAtoms(model, center_sel);
+  AtomicGroup center_mol = selectAtoms(model, topts->center_sel);
   GCoord center = center_mol.centroid();
-  if (center_xy) center.z() = 0.0;
+  if (topts->center_xy) center.z() = 0.0;
 
-  AtomicGroup apply_mol = selectAtoms(model, apply_sel);
+  AtomicGroup apply_mol = selectAtoms(model, topts->apply_sel);
   for (AtomicGroup::iterator atom = apply_mol.begin(); atom != apply_mol.end(); ++atom)
     (*atom)->coords() -= center;
 
-  if (reimage) {
+  if (topts->reimage) {
     vGroup molecules = model.splitByMolecule();
     vGroup segments = model.splitByUniqueSegid();
       
@@ -144,7 +152,7 @@ int main(int argc, char *argv[]) {
       mol->reimage();
   }
 
-  AtomicGroup write_mol = selectAtoms(model, write_sel);
+  AtomicGroup write_mol = selectAtoms(model, topts->write_sel);
   PDB pdb = PDB::fromAtomicGroup(write_mol);
   pdb.remarks().add(hdr);
   cout << pdb;
