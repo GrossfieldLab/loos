@@ -127,9 +127,11 @@ namespace loos {
     void RequiredOptions::addOption(const std::string& name, const std::string& description) {
       StringPair arg(name, description);
       if (find(arguments.begin(), arguments.end(), arg) != arguments.end()) {
-        std::cerr << "ERROR\n";
-        exit(-10);
+        std::ostringstream oss;
+        oss << "Error- duplicate command line argument requested for '" << name << "'";
+        throw(LOOSError(oss.str()));
       }
+
       arguments.push_back(arg);
     }
 
