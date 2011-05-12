@@ -176,6 +176,8 @@ namespace loos {
     class RequiredOptions : public OptionsPackage {
       typedef std::pair<std::string, std::string>    StringPair;
     public:
+      RequiredOptions() : vargs_set(false) { }
+
       void addHidden(po::options_description& o);
       void addPositional(po::positional_options_description& pos);
       bool check(po::variables_map& map);
@@ -186,11 +188,17 @@ namespace loos {
       //! Add a required argument given a name (tag) and a description (currently unused)
       void addOption(const std::string& name, const std::string& description);
 
+      void addVariableOption(const std::string& name, const std::string& description);
+
       //! Retrieve the value for an argument
-      std::string value(const std::string& s);
+      std::string value(const std::string& s) const;
+
+      std::vector<std::string> variableValues(const std::string& s) const;
 
     private:
+      bool vargs_set;
       std::vector<StringPair> arguments;
+      StringPair variable_arguments;
       po::variables_map held_map;
     };
 

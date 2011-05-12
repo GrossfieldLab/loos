@@ -131,10 +131,10 @@ namespace loos {
         std::cerr << "Error- you cannot specify both a skip and a frame range...I might get confused!\n";
         return(false);
       }
-
+      
       return(true);
     }
-
+    
     std::string BasicTrajectoryOptions::help() const { return("model trajectory"); }
     std::string BasicTrajectoryOptions::print() const {
       std::ostringstream oss;
@@ -143,10 +143,10 @@ namespace loos {
         oss << "skip=" << skip;
       else
         oss << "range=" << frame_index_spec;
-
+      
       return(oss.str());
     }
-
+    
     // -------------------------------------------------------
     void RequiredOptions::addOption(const std::string& name, const std::string& description) {
       StringPair arg(name, description);
@@ -155,44 +155,68 @@ namespace loos {
         oss << "Error- duplicate command line argument requested for '" << name << "'";
         throw(LOOSError(oss.str()));
       }
-
+      
       arguments.push_back(arg);
     }
-
+    
+    void RequiredOptions::addVariableOption(const std::string& name, const std::string& description) {
+      if (vargs_set)
+        throw(LOOSError("Multiple variable arguments requested"));
+      
+      variable_arguments = StringPair(name, description);
+      vargs_set = true;
+    }
+    
     void RequiredOptions::addHidden(po::options_description& o) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         o.add_options()(i->first.c_str(), po::value<std::string>(), i->second.c_str());
+      if (vargs_set)
+        o.add_options()(variable_arguments.first.c_str(), variable_arguments.second.c_str());
     }
-
+    
     void RequiredOptions::addPositional(po::positional_options_description& pos) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         pos.add(i->first.c_str(), 1);
+      if (vargs_set)
+        pos.add(variable_arguments.first.c_str(), -1);
     }
-
+    
+    
     bool RequiredOptions::check(po::variables_map& map) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         if (! map.count(i->first.c_str()) )
           return(true);
-
+      
+      if (vargs_set && !map.count(variable_arguments.first))
+        return(true);
+      
       return(false);
     }
-
+    
     bool RequiredOptions::postConditions(po::variables_map& map) {
       held_map = map;
       return(true);
     }
 
-    std::string RequiredOptions::value(const std::string& s) {
+    std::string RequiredOptions::value(const std::string& s) const {
       std::string result;
       if (held_map.count(s))
         result = held_map[s].as<std::string>();
       return(result);
     }
 
+  
+    std::vector<std::string> RequiredOptions::variableValues(const std::string& s) const {
+      return(held_map[s].as< std::vector<std::string> >());
+    }
+
+
     std::string RequiredOptions::help() const {
       std::string s;
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         s = s + " " + i->first;
+      if (vargs_set)
+        s = s + variable_arguments.first + " [" + variable_arguments.first + " ...]";
       return(s);
     }
 
@@ -201,10 +225,14 @@ namespace loos {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         oss << i->first << "='" << held_map[i->first].as<std::string>() << "',";
       
-      std::string s = oss.str();
-      s.erase(s.size()-1,1);
+      if (vargs_set) {
+        std::vector<std::string> v = variableValues(variable_arguments.first);
+        oss << variable_arguments.first << "=(";
+        for (uint i=0; i<v.size(); ++i)
+          oss << "'" << v[i] << "'" << ((i == v.size() - 1 ) ? "" : ",");
+      }
 
-      return(s);
+      return(oss.str());
     }
 
 
