@@ -863,6 +863,13 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       These can be mapped to B-values in a structure.
 
    </DL>
+   <H3>Important note</H3><p>
+   The ENM tools return <i>all</i> eigenpairs, including the
+   zero-modes.  The results are ordered such that the first 6 entries
+   correspond to the zero modes in a typical case.  This means that
+   when you specify a mode to subsequent analysis tools (such as
+   porcupine or eigenflucc), you <i>must</i> account for this
+   (i.e. add 6 to the mode requested).
 
     \page hbond 
    <DT> <B><I>Hydrogen Bonding Tools</I></B>
