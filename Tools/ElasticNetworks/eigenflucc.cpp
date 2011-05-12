@@ -68,7 +68,7 @@ void parseArgs(int argc, char *argv[]) {
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection used to make the ENM (only when altering a PDB)")
       ("pdb,p", po::value<string>(&pdb_name), "Alter the B-factors in a PDB")
       ("outpdb,o", po::value<string>(&out_name), "Filename to output PDB to")
-      ("modes,m", po::value< vector<string> >(), "Modes to use (default is all)")
+      ("modes,m", po::value< vector<string> >(), "Modes to use (default is all, note: ENMs have the first 6 modes as zeros)")
       ("scale,S", po::value<double>(&scale)->default_value(1.0), "Scaling factor to apply to eigenvalues")
       ("pca,P", po::value<bool>(&pca_input)->default_value(false), "Eigenpairs come from PCA, not ENM");
 
@@ -128,8 +128,13 @@ int main(int argc, char *argv[]) {
   readAsciiMatrix(eigvecs_name, eigvecs);
 
   if (modes.empty())
-    for (uint i=0; i<eigvals.rows(); ++i)
-      modes.push_back(i);
+    if (pca_input)
+      for (uint i=0; i<eigvals.rows()-6; ++i)
+        modes.push_back(i);
+    else
+      for (uint i=6; i<eigvals.rows(); ++i)
+        modes.push_back(i);
+
 
   uint n = modes.size();
   uint m = eigvecs.rows();
