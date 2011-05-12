@@ -44,7 +44,10 @@ namespace loos {
       virtual bool check(po::variables_map& map) { return(false); }
 
       //! Post-processing of options
-      virtual bool postConditions(po::variables_map& map) { return(true); }
+      virtual bool postConditions(po::variables_map& map) {
+        std::cerr << "==PROBE==\n";
+        return(true);
+      }
 
       //! Returns a slice of the example command-line in the help output
       virtual std::string help() const { return(""); }
@@ -62,7 +65,8 @@ namespace loos {
       BasicOptions(const int i, const std::string& s) : verbosity(i), full_help(s) { }
 
       void addGeneric(po::options_description& opts);
-      bool postConditions(po::variables_map& map);
+      bool check(po::variables_map& map);
+
       std::string print() const;
 
       void setFullHelp(const std::string& s);

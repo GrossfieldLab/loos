@@ -18,14 +18,22 @@ namespace loos {
       return(oss.str());
     }
 
-    bool BasicOptions::postConditions(po::variables_map& map) {
-      if (!full_help.empty())
+
+    // Presumably, BasicOptions will be the first OptionsPackage in
+    // the list of options.  This means we can catch the --fullhelp at
+    // the check() stage.  If we try later (i.e. with
+    // postConditions()), then another OptionsPackage may fail the
+    // check (such as required args or a model name)
+    bool BasicOptions::check(po::variables_map& map) {
+      if (!full_help.empty()) {
         if (map.count("fullhelp")) {
-          std::cout << full_help;
-          return(false);
+          std::cout << full_help << std::endl;
+          return(true);
         }
-      return(true);
+      }
+      return(false);
     }
+
 
     void BasicOptions::setFullHelp(const std::string& s) {
       full_help = s;
