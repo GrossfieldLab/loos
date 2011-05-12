@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
 
 
 
@@ -110,50 +110,31 @@ struct MaxDistance : public DistanceCalculation {
 
 
 
-// Globals
-string model_name, traj_name;
-vector<string> selection_names;
-uint skip = 0;
-DistanceCalculation *calc_type;
 
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : mode_name("center") { }
 
-void parseOptions(int argc, char *argv[]) {
-  string mode_name;
+  void addGeneric(opts::po::options_description& o) {
+    o.add_options()
+      ("mode", opts::po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|min|max)");
+  }
 
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of frames to skip at start of traj")
-      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max)");
+  void addHidden(opts::po::options_description& o) {
+    o.add_options()
+      ("selection", opts::po::value< vector<string> >(&selection_names), "Selections");
+  }
 
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "model")
-      ("traj", po::value<string>(&traj_name), "trajectory")
-      ("selection", po::value< vector<string> >(&selection_names), "selection");
-    
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
+  void addPositional(opts::po::positional_options_description& p) {
     p.add("selection", -1);
+  }
 
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
+  bool check(opts::po::variables_map& map) {
+    return(!selection_names.empty());
+  }
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && selection_names.size() >= 2)) {
-      cerr << "Usage- " << argv[0] << " [options] model trajectory sel-1 sel-2 [sel-3 ...] >output\n";
-      cerr << generic;
-      exit(-1);
-    }
-
+  bool postConditions(opts::po::variables_map& map) {
     if (mode_name == "center")
       calc_type = new CenterDistance;
     else if (mode_name == "min")
@@ -161,53 +142,60 @@ void parseOptions(int argc, char *argv[]) {
     else if (mode_name == "max")
       calc_type = new MaxDistance;
     else {
-      cerr << "Error- calculation mode must be either 'center', 'min', or 'max.'\n";
-      exit(-1);
+      cerr << "Error- calculation mode must be 'center', 'min', or 'max'.\n";
+      return(false);
     }
 
+    return(true);
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
+
+  string mode_name;
+  vector<string> selection_names;
+  DistanceCalculation* calc_type;
+};
+// @endcond
 
 
 
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
   cout << "# " << header << endl;
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = createSystem(tropts->model_name);
+  pTraj traj = createTrajectory(tropts->traj_name, model);
+  vector<uint> indices = opts::assignFrameIndices(traj, tropts->frame_index_spec, tropts->skip);
 
-  AtomicGroup src = selectAtoms(model, selection_names[0]);
+  AtomicGroup src = selectAtoms(model, topts->selection_names[0]);
 
   cout << "# t ";
   
   vector<AtomicGroup> targets;
-  for (uint i=1; i<selection_names.size(); ++i) {
-    AtomicGroup trg = selectAtoms(model, selection_names[i]);
+  for (uint i=1; i<topts->selection_names.size(); ++i) {
+    AtomicGroup trg = selectAtoms(model, topts->selection_names[i]);
     targets.push_back(trg);
     cout << "d_0_" << i-1 << " ";
   }
   cout << endl;
 
-  uint t = skip;
-  if (skip > 0)
-    traj->readFrame(skip-1);
 
-  while (traj->readFrame()) {
-
+  for (uint j=0; j<indices.size(); ++j) {
+    traj->readFrame(indices[j]);
     traj->updateGroupCoords(model);
 
-    cout << t++ << " ";
+    cout << j << " ";
 
-    vector<AtomicGroup>::iterator i;
-    for (i = targets.begin(); i != targets.end(); ++i)
-      cout << (*calc_type)(src, *i) << " ";
+    for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i)
+      cout << (*(topts->calc_type))(src, *i) << " ";
     cout << endl;
   }
 
