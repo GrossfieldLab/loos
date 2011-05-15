@@ -1216,6 +1216,19 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
+\section release161 Version 1.6.0 5-16-2011)
+\subsection f161_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in GRO files where the periodic box was not converted into Angstroms.
+  <LI> Fixed bug in eigenflucc that included the rotation/translation
+  modes when computing B-factors.
+</UL>
+\subsection r161_add_changed Added, Changed, or Otherwise Notable
+<UL>
+  <LI> Added support for hybrid-36 encoding in atomids and resids in
+  PSF files.
+</UL>
+
 \section release160 Version 1.6.0 (3-4-2011)
 \subsection f160_bugs Bug Fixes
 

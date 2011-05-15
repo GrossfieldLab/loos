@@ -1,7 +1,14 @@
+2011-05-15  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Fixed bug in eigenflucc tool where the zero-modes would be
+	included when requesting "all" modes.
+	* Added support for hybrid-36 encoding of atomids and resids in
+	PSF files.
+
 2011-04-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in GRO file handling where the periodic box was
-	not converted into Angstroms
+	not converted into Angstroms.
 
 2011-03-21    <tromo@spade.biophysics.rochester.edu>
 
