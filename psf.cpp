@@ -105,9 +105,14 @@ namespace loos {
     while (input.size() > 0) { // end of the block is marked by a blank line
       int ind1, ind2;
       std::stringstream s(input);
+      std::string sind1, sind2;   // Hold string representations of id's before we hybrid36 decode them...
       while (s.good()) {
-        s >> ind1;
-        s >> ind2;
+        s >> sind1;
+        s >> sind2;
+
+        ind1 = parseStringAsHybrid36(sind1);
+        ind2 = parseStringAsHybrid36(sind2);
+
         ind1--;  // our indices are 1 off from the numbering in the pdb/psf file
         ind2--;
         pAtom pa1 = getAtom(ind1);                
