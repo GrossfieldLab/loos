@@ -37,7 +37,7 @@ using namespace loos;
 int main(int argc, char *argv[]) {
 
   if (argc != 2) {
-    cerr << "Usage: center-pdb structure-file >output.pdb\n";
+    cerr << "Usage: center-model structure-file >output.pdb\n";
     exit(-1);
   }
 
