@@ -1,5 +1,10 @@
 #include <OptionsFramework.hpp>
 
+#include <cstdlib>
+#include <unistd.h>
+#include <pwd.h>
+
+
 namespace loos {
   namespace OptionsFramework {
 
@@ -138,11 +143,11 @@ namespace loos {
     std::string BasicTrajectoryOptions::help() const { return("model trajectory"); }
     std::string BasicTrajectoryOptions::print() const {
       std::ostringstream oss;
-      oss << boost::format("model='%s', traj='%s', ") % model_name % traj_name;
+      oss << boost::format("model='%s', traj='%s'") % model_name % traj_name;
       if (skip > 0)
-        oss << "skip=" << skip;
-      else
-        oss << "range=" << frame_index_spec;
+        oss << ", skip=" << skip;
+      else if (!frame_index_spec.empty())
+        oss << ", range='" << frame_index_spec << "'";
       
       return(oss.str());
     }
@@ -320,6 +325,26 @@ namespace loos {
       return(result);
     }
 
+
+    std::string AggregateOptions::header() const {
+      std::ostringstream oss;
+
+      time_t t = time(0);
+      std::string timestamp(asctime(localtime(&t)));
+      timestamp.erase(timestamp.length() - 1, 1);
+
+      std::string user("UNKNOWN USER");
+      struct passwd* pwd = getpwuid(getuid());
+      if (pwd != 0)
+        user = pwd->pw_name;
+
+      oss << "# " << user << " (" << timestamp << ")" << std::endl;
+#if defined(REVISION)
+      oss << "# LOOS Version " << REVISION << std::endl;
+#endif
+      oss << "# " << print() << std::endl;
+      return(oss.str());
+    }
 
 
     std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip = 0) {
