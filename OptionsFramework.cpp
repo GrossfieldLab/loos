@@ -171,7 +171,7 @@ namespace loos {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         o.add_options()(i->first.c_str(), po::value<std::string>(), i->second.c_str());
       if (vargs_set)
-        o.add_options()(variable_arguments.first.c_str(), variable_arguments.second.c_str());
+        o.add_options()(variable_arguments.first.c_str(), po::value< std::vector<std::string> >(), variable_arguments.second.c_str());
     }
     
     void RequiredOptions::addPositional(po::positional_options_description& pos) {

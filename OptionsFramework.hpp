@@ -45,7 +45,6 @@ namespace loos {
 
       //! Post-processing of options
       virtual bool postConditions(po::variables_map& map) {
-        std::cerr << "==PROBE==\n";
         return(true);
       }
 
