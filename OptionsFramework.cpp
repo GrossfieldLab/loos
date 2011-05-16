@@ -101,6 +101,18 @@ namespace loos {
       return(oss.str());
     }
 
+    AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string coord_name = std::string("")) {
+      AtomicGroup model = createSystem(model_name);
+      if (!coord_name.empty()) {
+        AtomicGroup coords = createSystem(coord_name);
+        model.copyCoordinates(coords);
+      }
+
+      if (! model.hasCoords())
+        throw(LOOSError("Error- no coordinates found in specified model(s)"));
+
+      return(model);
+    }
 
 
     // -------------------------------------------------------
@@ -337,18 +349,6 @@ namespace loos {
           
     }
 
-    AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string coord_name = std::string("")) {
-      AtomicGroup model = createSystem(model_name);
-      if (!coord_name.empty()) {
-        AtomicGroup coords = createSystem(coord_name);
-        model.copyCoordinates(coords);
-      }
-
-      if (! model.hasCoords())
-        throw(LOOSError("Error- no coordinates found in specified model(s)"));
-
-      return(model);
-    }
 
     std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v) {
       std::ostringstream oss;

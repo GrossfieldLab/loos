@@ -123,6 +123,8 @@ namespace loos {
 
       std::string help() const;
       std::string print() const;
+
+      AtomicGroup createModel() const;
         
       std::string model_name, coords_name;
     };
@@ -274,8 +276,6 @@ namespace loos {
      **/
     std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip);
 
-    //! Load a model with an optional coordinates file
-    AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string optional_coords_name);
 
     std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v);
 
