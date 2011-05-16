@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  cout << "# " << header << endl;
+  cout << options.header();
 
   AtomicGroup model = createSystem(tropts->model_name);
   pTraj traj = createTrajectory(tropts->traj_name, model);
