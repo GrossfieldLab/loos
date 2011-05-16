@@ -36,7 +36,8 @@
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+
 
 
 uint seed;
@@ -45,55 +46,54 @@ string model_name;
 double magnitude;
 
 
+// @cond TOOL_INTERNAL
 
-void parseArgs(int argc, char *argv[]) {
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : seed(0), magnitude(0.0) { }
+
+  void addGeneric(opts::po::options_description& o) {
+    o.add_options()
+      ("seed", opts::po::value<uint>(&seed)->default_value(seed), "Random number seed (0 = use current time)");
+  }
   
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("selection,s", po::value<string>(&selection)->default_value("all"), "Selection to perturb")
-      ("seed,S", po::value<uint>(&seed)->default_value(0l), "Random number seed (0 = use current time)");
+  void addHidden(opts::po::options_description& o) {
+    o.add_options()
+      ("magnitude", opts::po::value<double>(&magnitude), "magnitude");
+  }
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("magnitude", po::value<double>(&magnitude), "Magnitude");
+  void addPositional(opts::po::positional_options_description& pos) {
+    pos.add("magnitude", 1);
+  }
 
+  bool check(opts::po::variables_map& map) {
+    return(!map.count("magnitude"));
+  }
 
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
+  string help() const { return("magnitude"); }
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("seed=%d, magnitude=%f") % seed % magnitude;
+    return(oss.str());
+  }
 
-    po::positional_options_description p;
-    p.add("magnitude", 1);
-    p.add("model", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help")) {
-      cout << "Usage- " << argv[0] << " [options] magnitude model >output.pdb\n";
-      cout << generic;
-      exit(0);
-    }
-
+  bool postConditions(opts::po::variables_map& map) {
     if (seed == 0)
       randomSeedRNG();
     else {
       base_generator_type& rng = rng_singleton();
       rng.seed(seed);
     }
-      
 
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+    return(true);
   }
 
-}
+  uint seed;
+  double magnitude;
+};
+
+// @endcond
+
 
 
 
@@ -101,15 +101,22 @@ void parseArgs(int argc, char *argv[]) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseArgs(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelectionOptions* sopts = new opts::BasicSelectionOptions;
+  opts::ModelWithCoordsOptions* mwcopts = new opts::ModelWithCoordsOptions;
+  ToolOptions* topts = new ToolOptions;
 
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(mwcopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
-  subset.perturbCoords(magnitude);
+  AtomicGroup model = opts::loadStructureWithCoords(mwcopts->model_name, mwcopts->coords_name);
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+
+  subset.perturbCoords(topts->magnitude);
   PDB pdb = PDB::fromAtomicGroup(model);
   pdb.remarks().add(hdr);
 
   cout << pdb;
-
 }
