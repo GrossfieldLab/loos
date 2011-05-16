@@ -1,9 +1,5 @@
 #include <OptionsFramework.hpp>
 
-#include <cstdlib>
-#include <unistd.h>
-#include <pwd.h>
-
 
 namespace loos {
   namespace OptionsFramework {
@@ -326,25 +322,6 @@ namespace loos {
     }
 
 
-    std::string AggregateOptions::header() const {
-      std::ostringstream oss;
-
-      time_t t = time(0);
-      std::string timestamp(asctime(localtime(&t)));
-      timestamp.erase(timestamp.length() - 1, 1);
-
-      std::string user("UNKNOWN USER");
-      struct passwd* pwd = getpwuid(getuid());
-      if (pwd != 0)
-        user = pwd->pw_name;
-
-      oss << "# " << user << " (" << timestamp << ")" << std::endl;
-#if defined(REVISION)
-      oss << "# LOOS Version " << REVISION << std::endl;
-#endif
-      oss << "# " << print() << std::endl;
-      return(oss.str());
-    }
 
 
     std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip = 0) {

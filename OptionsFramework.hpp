@@ -247,8 +247,6 @@ namespace loos {
       //! Displays the help for this tool
       void showHelp();
 
-      std::string header() const;
-
     private:
       std::string program_name;
 
