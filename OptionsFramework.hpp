@@ -277,6 +277,7 @@ namespace loos {
     //! Load a model with an optional coordinates file
     AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string optional_coords_name);
 
+    std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v);
 
   };
 };

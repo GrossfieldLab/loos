@@ -228,8 +228,8 @@ namespace loos {
       if (vargs_set) {
         std::vector<std::string> v = variableValues(variable_arguments.first);
         oss << variable_arguments.first << "=(";
-        for (uint i=0; i<v.size(); ++i)
-          oss << "'" << v[i] << "'" << ((i == v.size() - 1 ) ? "" : ",");
+        oss << stringVectorAsStringWithCommas(v);
+        oss << ")";
       }
 
       return(oss.str());
@@ -346,6 +346,13 @@ namespace loos {
         throw(LOOSError("Error- no coordinates found in specified model(s)"));
 
       return(model);
+    }
+
+    std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v) {
+      std::ostringstream oss;
+      for (uint i=0; i<v.size(); ++i)
+        oss << "'" << v[i] << "'" << ((i == v.size() - 1 ) ? "" : ",");
+      return(oss.str());
     }
 
   };
