@@ -121,18 +121,6 @@ public:
       ("mode", opts::po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|min|max)");
   }
 
-  void addHidden(opts::po::options_description& o) {
-    o.add_options()
-      ("selection", opts::po::value< vector<string> >(&selection_names), "Selections");
-  }
-
-  void addPositional(opts::po::positional_options_description& p) {
-    p.add("selection", -1);
-  }
-
-  bool check(opts::po::variables_map& map) {
-    return(!selection_names.empty());
-  }
 
   bool postConditions(opts::po::variables_map& map) {
     if (mode_name == "center")
@@ -150,7 +138,6 @@ public:
   }
 
   string mode_name;
-  vector<string> selection_names;
   DistanceCalculation* calc_type;
 };
 // @endcond
@@ -163,11 +150,15 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
   ToolOptions* topts = new ToolOptions;
+  opts::RequiredOptions* ropts = new opts::RequiredOptions;
+  ropts->addVariableOption("selection", "selection");
 
   opts::AggregateOptions options;
-  options.add(bopts).add(tropts).add(topts);
+  options.add(bopts).add(tropts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
+
+  vector<string> selection_names = ropts->variableValues("selection");
 
   cout << "# " << header << endl;
 
@@ -175,13 +166,13 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(tropts->traj_name, model);
   vector<uint> indices = opts::assignFrameIndices(traj, tropts->frame_index_spec, tropts->skip);
 
-  AtomicGroup src = selectAtoms(model, topts->selection_names[0]);
+  AtomicGroup src = selectAtoms(model, selection_names[0]);
 
   cout << "# t ";
   
   vector<AtomicGroup> targets;
-  for (uint i=1; i<topts->selection_names.size(); ++i) {
-    AtomicGroup trg = selectAtoms(model, topts->selection_names[i]);
+  for (uint i=1; i<selection_names.size(); ++i) {
+    AtomicGroup trg = selectAtoms(model, selection_names[i]);
     targets.push_back(trg);
     cout << "d_0_" << i-1 << " ";
   }
