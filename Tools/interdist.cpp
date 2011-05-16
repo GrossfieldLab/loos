@@ -123,15 +123,17 @@ public:
 
   void addHidden(opts::po::options_description& o) {
     o.add_options()
+      ("target", opts::po::value<string>(&target_name), "Target")
       ("selection", opts::po::value< vector<string> >(&selection_names), "Selections");
   }
 
   void addPositional(opts::po::positional_options_description& p) {
+    p.add("target", 1);
     p.add("selection", -1);
   }
 
   bool check(opts::po::variables_map& map) {
-    return(!selection_names.empty());
+    return(selection_names.empty() || target_name.empty());
   }
 
   bool postConditions(opts::po::variables_map& map) {
@@ -149,7 +151,19 @@ public:
     return(true);
   }
 
+  string help() const { return("target selection [selection ...]"); }
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("mode='%s', target='%s', selections=(%s)") 
+      % mode_name
+      % target_name
+      % opts::stringVectorAsStringWithCommas(selection_names);
+
+    return(oss.str());
+  }
+
   string mode_name;
+  string target_name;
   vector<string> selection_names;
   DistanceCalculation* calc_type;
 };
@@ -175,15 +189,15 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(tropts->traj_name, model);
   vector<uint> indices = opts::assignFrameIndices(traj, tropts->frame_index_spec, tropts->skip);
 
-  AtomicGroup src = selectAtoms(model, topts->selection_names[0]);
+  AtomicGroup src = selectAtoms(model, topts->target_name);
 
   cout << "# t ";
   
   vector<AtomicGroup> targets;
-  for (uint i=1; i<topts->selection_names.size(); ++i) {
+  for (uint i=0; i<topts->selection_names.size(); ++i) {
     AtomicGroup trg = selectAtoms(model, topts->selection_names[i]);
     targets.push_back(trg);
-    cout << "d_0_" << i-1 << " ";
+    cout << "d_0_" << i << " ";
   }
   cout << endl;
 
