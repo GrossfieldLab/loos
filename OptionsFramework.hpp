@@ -188,11 +188,20 @@ namespace loos {
       //! Add a required argument given a name (tag) and a description (currently unused)
       void addOption(const std::string& name, const std::string& description);
 
+      //! Add a required argument that can be an arbitrary number of items
+      /**
+       * This argument will always appear at the end of the command
+       * line, after all other required arguments.  It also means that
+       * the RequiredOptions object should be the last one added to
+       * the AggregateOptions object, otherwise any subsequence
+       * positional arguments will be missed...
+       */
       void addVariableOption(const std::string& name, const std::string& description);
 
       //! Retrieve the value for an argument
       std::string value(const std::string& s) const;
 
+      //! Retreive the variable-number argument
       std::vector<std::string> variableValues(const std::string& s) const;
 
     private:
