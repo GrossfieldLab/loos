@@ -61,6 +61,10 @@ must still install the packages above.  For example, on an i7 machine,
 install both atlas packages listed above as well as
 libatlas3gf-corei7sse3.
 
+
+NOTE: Ubuntu 10.04 LTS x86_64 uses libboost1.40-all-dev instead of
+libboost-all-devel.
+
 NOTE:  Older version of Ubuntu may vary the names of the BOOST
 libraries.  If you see link errors related to boost libraries, then
 you will need to setup a custom.py file.  Copy the custom.py-proto to
