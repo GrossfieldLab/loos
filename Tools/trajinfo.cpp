@@ -33,75 +33,46 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
 #include <boost/tuple/tuple.hpp>
 
 using namespace std;
 using namespace loos;
 
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
 
 string model_name, traj_name;
 bool brief = false;
 bool box_info = false;
-bool centroid = false;
 
 string centroid_selection;
 
 
 
-void parseOptions(int argc, char *argv[]) {
+// @cond TOOLS_INTERNAL
 
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("brief,b", "Minimal output")
-      ("centroid,c", po::value<string>(), "Report average centroid")
-      ("box,B", "Report periodic box info");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- " << argv[0] << " [options] model trajectory\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (vm.count("brief"))
-      brief = true;
-    if (vm.count("box"))
-      box_info = true;
-
-    if (vm.count("centroid")) {
-      centroid = true;
-      centroid_selection = vm["centroid"].as<string>();
-    }
-
-
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : brief(false), box_info(false), centroid_selection("") { }
+  
+  void addGeneric(opts::po::options_description& o) {
+    o.add_options()
+      ("brief", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
+      ("centroid", opts::po::value<string>(&centroid_selection), "Report average centroid")
+      ("box", opts::po::value<bool>(&box_info)->default_value(box_info), "Report periodic box info");
   }
 
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
+  string print() const {
+    ostringstream oss;
 
+    oss << boost::format("brief=%d,centroid='%s',box=%d") % brief % centroid_selection % box_info;
+    return(oss.str());
+  }
+
+  bool brief, box_info;
+  string centroid_selection;
+};
+
+// @endcond
 
 typedef boost::tuple<GCoord, GCoord, GCoord, GCoord, GCoord> BoxInfo;
 
@@ -173,6 +144,7 @@ boost::tuple<GCoord, GCoord> scanCentroid(AtomicGroup& model, pTraj& traj) {
 
 uint verifyFrames(pTraj& traj) {
   uint n = 0;
+  
   traj->rewind();
   while (traj->readFrame())
     ++n;
@@ -185,7 +157,7 @@ uint verifyFrames(pTraj& traj) {
 // to build the format string to fake it...
 const string fldpre("%20s: ");
 
-void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center) {
+void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool centroid = false) {
   cout << boost::format(fldpre + "%s\n") % "Model name" % model_name;
   cout << boost::format(fldpre + "%s\n") % "Trajectory name" % traj_name;
   cout << boost::format(fldpre + "%d\n") % "Number of atoms" % traj->natoms();
@@ -223,17 +195,28 @@ void briefInfo(pTraj& traj) {
 
 int main(int argc, char *argv[]) {
 
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  opts::AggregateOptions options;
+  options.add(bopts).add(tropts).add(topts);
+
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  if (tropts->skip != 0)
+    cerr << "Warning:  --skip is ignored by this tool\n";
+
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
 
   AtomicGroup center;
-  if (centroid)
-    center = selectAtoms(model, centroid_selection);
+  if (!(topts->centroid_selection.empty()))
+    center = selectAtoms(model, topts->centroid_selection);
 
   if (!brief)
-    verbInfo(model, traj, center);
+    verbInfo(model, traj, center, !(topts->centroid_selection.empty()));
   else
     briefInfo(traj);
 }
