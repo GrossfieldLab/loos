@@ -36,10 +36,15 @@
 #include <iomanip>
 
 #include <boost/algorithm/string.hpp>
+#include <AtomicGroup.hpp>
+#include <sfactories.hpp>
+#include <Trajectory.hpp>
 
 #include <Selectors.hpp>
 #include <Parser.hpp>
 #include <utils.hpp>
+
+
 
 
 
@@ -451,7 +456,7 @@ namespace loos {
   }
 
 
-  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& coord_name) const {
+  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& coord_name) {
       AtomicGroup model = createSystem(model_name);
       if (!coord_name.empty()) {
         AtomicGroup coords = createSystem(coord_name);
@@ -465,11 +470,11 @@ namespace loos {
   }
 
 
-  std::vector<uint> assignTrajectoryFrames(pTraj& traj, const std::string& frame_index_spec, uint skip = 0) const {
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0)  {
     std::vector<uint> frames;
     
     if (frame_index_spec.empty())
-      for (uint i=skip; i<trajectory->nframes(); ++i)
+      for (uint i=skip; i<traj->nframes(); ++i)
         frames.push_back(i);
     else
       frames = parseRangeList<uint>(frame_index_spec);

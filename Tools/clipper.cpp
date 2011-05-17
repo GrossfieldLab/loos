@@ -156,8 +156,8 @@ int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelectionOptions* sopts = new opts::BasicSelectionOptions;
-  opts::ModelWithCoordsOptions* mopts = new opts::ModelWithCoordsOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;

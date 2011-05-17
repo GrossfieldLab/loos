@@ -49,15 +49,15 @@ int main (int argc, char *argv[])
 
 // Build options
 opts::BasicOptions* bopts = new opts::BasicOptions;
-opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
-opts::RequiredOptions* ropts = new opts::RequiredOptions;
+opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::RequiredArguments* ropts = new opts::RequiredArguments;
 
 // These are required command-line arguments (non-optional options)
-ropts->addOption("selection1", "selection1");
-ropts->addOption("selection2", "selection2");
-ropts->addOption("min", "min radius");
-ropts->addOption("max", "max radius");
-ropts->addOption("num_bins", "number of bins");
+ropts->addArgument("selection1", "selection1");
+ropts->addArgument("selection2", "selection2");
+ropts->addArgument("min", "min radius");
+ropts->addArgument("max", "max radius");
+ropts->addArgument("num_bins", "number of bins");
 
 opts::AggregateOptions options;
 options.add(bopts).add(tropts).add(ropts);
@@ -72,9 +72,6 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 // Create the system and read the trajectory file
 AtomicGroup system = tropts->model;
 pTraj traj = tropts->trajectory;
-
-// Figure out which frames of the trajectory to operate over
-vector<uint> frames = tropts->frameList();
 
 // Extract our required command-line arguments
 string selection1 = ropts->value("selection1");  // String describing the first selection
@@ -105,9 +102,9 @@ double max2 = hist_max*hist_max;
 int frame = 0;
 double volume = 0.0;
 int unique_pairs=0;
-for (vector<uint>::iterator index = frames.begin(); index != frames.end(); ++index)
+while (traj->readFrame())
     {
-    traj->readFrame(*index);
+
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 

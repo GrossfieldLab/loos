@@ -60,9 +60,9 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* basopts = new opts::BasicOptions;
-  opts::OutputPrefixOptions* prefopts = new opts::OutputPrefixOptions;
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
-  opts::BasicWaterOptions* watopts = new opts::BasicWaterOptions;
+  opts::OutputPrefix* prefopts = new opts::OutputPrefix;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  opts::BasicWater* watopts = new opts::BasicWater;
 
   opts::AggregateOptions options;
   options.add(basopts).add(prefopts).add(tropts).add(watopts);

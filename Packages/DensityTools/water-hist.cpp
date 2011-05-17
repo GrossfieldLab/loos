@@ -106,8 +106,8 @@ int main(int argc, char *argv[]) {
 
   // Build up possible options
   opts::BasicOptions* basopts = new opts::BasicOptions;
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
-  opts::BasicWaterOptions* watopts = new opts::BasicWaterOptions;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  opts::BasicWater* watopts = new opts::BasicWater;
   WaterHistogramOptions *xopts = new WaterHistogramOptions;
 
   opts::AggregateOptions options;

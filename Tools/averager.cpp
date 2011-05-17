@@ -71,8 +71,8 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
   opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::BasicSelectionOptions* sopts = new opts::BasicSelectionOptions("");
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection("");
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* toolopts = new ToolOptions("!hydrogen || segid == 'SOLV' || segid == 'BULK'");
 
   opts::AggregateOptions options;

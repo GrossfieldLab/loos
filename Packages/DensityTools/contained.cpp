@@ -37,10 +37,10 @@ int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions *basic_opts = new opts::BasicOptions;
-  opts::BasicSelectionOptions *basic_selection = new opts::BasicSelectionOptions;
-  opts::BasicTrajectoryOptions *basic_traj = new opts::BasicTrajectoryOptions;
-  opts::RequiredOptions *ropts = new opts::RequiredOptions;
-  ropts->addOption("grid", "grid-name");
+  opts::BasicSelection *basic_selection = new opts::BasicSelection;
+  opts::TrajectoryWithFrameIndices *basic_traj = new opts::TrajectoryWithFrameIndices;
+  opts::RequiredArguments *ropts = new opts::RequiredArguments;
+  ropts->addArgument("grid", "grid-name");
 
   opts::AggregateOptions options;
   options.add(basic_opts).add(basic_selection).add(basic_traj).add(ropts);

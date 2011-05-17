@@ -107,7 +107,7 @@ void copyBonds(AtomicGroup& target, AtomicGroup& source) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::ModelWithCoordsOptions* mopts = new opts::ModelWithCoordsOptions;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
   ToolOptions* topts = new ToolOptions;
   opts::AggregateOptions options;
   options.add(bopts).add(mopts).add(topts);

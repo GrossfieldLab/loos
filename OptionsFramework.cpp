@@ -42,12 +42,12 @@ namespace loos {
 
     // -------------------------------------------------------
 
-    void OutputPrefixOptions::addGeneric(po::options_description& opts) {
+    void OutputPrefix::addGeneric(po::options_description& opts) {
       opts.add_options()
         ("prefix,p", po::value<std::string>(&prefix)->default_value(prefix), "Output prefix");
     }
 
-    std::string OutputPrefixOptions::print() const {
+    std::string OutputPrefix::print() const {
       std::ostringstream oss;
       oss << "prefix='" << prefix << "'";
       return(oss.str());
@@ -55,12 +55,12 @@ namespace loos {
       
     // -------------------------------------------------------
 
-    void BasicSelectionOptions::addGeneric(po::options_description& opts) {
+    void BasicSelection::addGeneric(po::options_description& opts) {
       opts.add_options()
         ("selection,s", po::value<std::string>(&selection)->default_value(selection), "Which atoms to use");
     }
 
-    std::string BasicSelectionOptions::print() const {
+    std::string BasicSelection::print() const {
       std::ostringstream oss;
       oss << "selection='" << selection << "'";
       return(oss.str());
@@ -68,35 +68,35 @@ namespace loos {
 
     // -------------------------------------------------------
 
-    void ModelWithCoordsOptions::addGeneric(po::options_description& opts) {
+    void ModelWithCoords::addGeneric(po::options_description& opts) {
       opts.add_options()
         ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates");
     }
 
-    void ModelWithCoordsOptions::addHidden(po::options_description& opts) {
+    void ModelWithCoords::addHidden(po::options_description& opts) {
       opts.add_options()
         ("model", po::value<std::string>(&model_name), "Model Filename");
     }
 
 
-    void ModelWithCoordsOptions::addPositional(po::positional_options_description& pos) {
+    void ModelWithCoords::addPositional(po::positional_options_description& pos) {
       pos.add("model", 1);
     }
 
 
-    bool ModelWithCoordsOptions::check(po::variables_map& map) {
+    bool ModelWithCoords::check(po::variables_map& map) {
       return(!map.count("model"));
     }
 
-    bool ModelWithCoordsOptions::postConditions(po::variables_map& map) {
+    bool ModelWithCoords::postConditions(po::variables_map& map) {
       model = loadStructureWithCoords(model_name, coords_name);
       return(true);
     }
 
-    std::string ModelWithCoordsOptions::help() const { return("model"); }
+    std::string ModelWithCoords::help() const { return("model"); }
 
 
-    std::string ModelWithCoordsOptions::print() const {
+    std::string ModelWithCoords::print() const {
       std::ostringstream oss;
 
       oss << boost::format("model='%s'") % model_name;
@@ -112,28 +112,73 @@ namespace loos {
     // -------------------------------------------------------
 
 
-    void BasicTrajectoryOptions::addGeneric(po::options_description& opts) {
+    void BasicTrajectory::addGeneric(po::options_description& opts) {
       opts.add_options()
-        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
-        ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range)");
+        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip");
     };
 
-    void BasicTrajectoryOptions::addHidden(po::options_description& opts) {
+    void BasicTrajectory::addHidden(po::options_description& opts) {
       opts.add_options()
         ("model", po::value<std::string>(&model_name), "Model filename")
         ("traj", po::value<std::string>(&traj_name), "Trajectory filename");
     }
 
-    void BasicTrajectoryOptions::addPositional(po::positional_options_description& pos) {
+    void BasicTrajectory::addPositional(po::positional_options_description& pos) {
       pos.add("model", 1);
       pos.add("traj", 1);
     }
 
-    bool BasicTrajectoryOptions::check(po::variables_map& map) {
+    bool BasicTrajectory::check(po::variables_map& map) {
       return(! (map.count("model") && map.count("traj")));
     }
 
-    bool BasicTrajectoryOptions::postConditions(po::variables_map& map) {
+    bool BasicTrajectory::postConditions(po::variables_map& map) {
+      model = createSystem(model_name);
+      trajectory = createTrajectory(traj_name, model);
+      if (skip > 0)
+        trajectory->readFrame(skip-1);
+
+      return(true);
+    }
+    
+    std::string BasicTrajectory::help() const { return("model trajectory"); }
+    std::string BasicTrajectory::print() const {
+      std::ostringstream oss;
+      oss << boost::format("model='%s', traj='%s', skip=%d") % model_name % traj_name % skip;
+      return(oss.str());
+    }
+
+    
+    std::vector<uint> BasicTrajectory::frameList() const {
+      return(assignTrajectoryFrames(trajectory, "", skip));
+    }
+
+
+    // -------------------------------------------------------
+
+
+    void TrajectoryWithFrameIndices::addGeneric(po::options_description& opts) {
+      opts.add_options()
+        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range)");
+    };
+
+    void TrajectoryWithFrameIndices::addHidden(po::options_description& opts) {
+      opts.add_options()
+        ("model", po::value<std::string>(&model_name), "Model filename")
+        ("traj", po::value<std::string>(&traj_name), "Trajectory filename");
+    }
+
+    void TrajectoryWithFrameIndices::addPositional(po::positional_options_description& pos) {
+      pos.add("model", 1);
+      pos.add("traj", 1);
+    }
+
+    bool TrajectoryWithFrameIndices::check(po::variables_map& map) {
+      return(! (map.count("model") && map.count("traj")));
+    }
+
+    bool TrajectoryWithFrameIndices::postConditions(po::variables_map& map) {
       if (skip > 0 && !frame_index_spec.empty()) {
         std::cerr << "Error- you cannot specify both a skip and a frame range...I might get confused!\n";
         return(false);
@@ -145,8 +190,8 @@ namespace loos {
       return(true);
     }
     
-    std::string BasicTrajectoryOptions::help() const { return("model trajectory"); }
-    std::string BasicTrajectoryOptions::print() const {
+    std::string TrajectoryWithFrameIndices::help() const { return("model trajectory"); }
+    std::string TrajectoryWithFrameIndices::print() const {
       std::ostringstream oss;
       oss << boost::format("model='%s', traj='%s'") % model_name % traj_name;
       if (skip > 0)
@@ -158,11 +203,15 @@ namespace loos {
     }
 
     
+    std::vector<uint> TrajectoryWithFrameIndices::frameList() const {
+      return(assignTrajectoryFrames(trajectory, frame_index_spec, skip));
+    }
 
 
 
     // -------------------------------------------------------
-    void RequiredOptions::addOption(const std::string& name, const std::string& description) {
+
+    void RequiredArguments::addArgument(const std::string& name, const std::string& description) {
       StringPair arg(name, description);
       if (find(arguments.begin(), arguments.end(), arg) != arguments.end()) {
         std::ostringstream oss;
@@ -173,7 +222,7 @@ namespace loos {
       arguments.push_back(arg);
     }
     
-    void RequiredOptions::addVariableOption(const std::string& name, const std::string& description) {
+    void RequiredArguments::addVariableArguments(const std::string& name, const std::string& description) {
       if (vargs_set)
         throw(LOOSError("Multiple variable arguments requested"));
       
@@ -181,14 +230,14 @@ namespace loos {
       vargs_set = true;
     }
     
-    void RequiredOptions::addHidden(po::options_description& o) {
+    void RequiredArguments::addHidden(po::options_description& o) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         o.add_options()(i->first.c_str(), po::value<std::string>(), i->second.c_str());
       if (vargs_set)
         o.add_options()(variable_arguments.first.c_str(), po::value< std::vector<std::string> >(), variable_arguments.second.c_str());
     }
     
-    void RequiredOptions::addPositional(po::positional_options_description& pos) {
+    void RequiredArguments::addPositional(po::positional_options_description& pos) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         pos.add(i->first.c_str(), 1);
       if (vargs_set)
@@ -196,7 +245,7 @@ namespace loos {
     }
     
     
-    bool RequiredOptions::check(po::variables_map& map) {
+    bool RequiredArguments::check(po::variables_map& map) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         if (! map.count(i->first.c_str()) )
           return(true);
@@ -207,12 +256,12 @@ namespace loos {
       return(false);
     }
     
-    bool RequiredOptions::postConditions(po::variables_map& map) {
+    bool RequiredArguments::postConditions(po::variables_map& map) {
       held_map = map;
       return(true);
     }
 
-    std::string RequiredOptions::value(const std::string& s) const {
+    std::string RequiredArguments::value(const std::string& s) const {
       std::string result;
       if (held_map.count(s))
         result = held_map[s].as<std::string>();
@@ -220,12 +269,12 @@ namespace loos {
     }
 
   
-    std::vector<std::string> RequiredOptions::variableValues(const std::string& s) const {
+    std::vector<std::string> RequiredArguments::variableValues(const std::string& s) const {
       return(held_map[s].as< std::vector<std::string> >());
     }
 
 
-    std::string RequiredOptions::help() const {
+    std::string RequiredArguments::help() const {
       std::string s;
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         s = s + " " + i->first;
@@ -234,7 +283,7 @@ namespace loos {
       return(s);
     }
 
-    std::string RequiredOptions::print() const {
+    std::string RequiredArguments::print() const {
       std::ostringstream oss;
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         oss << i->first << "='" << held_map[i->first].as<std::string>() << "',";

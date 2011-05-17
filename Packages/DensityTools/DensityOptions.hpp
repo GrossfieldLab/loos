@@ -25,9 +25,9 @@ namespace loos {
        * and "bulked", which adds back in the entire system above and
        * below a z-plane.
        **/
-      class BasicWaterOptions : public OptionsPackage {
+      class BasicWater : public OptionsPackage {
       public:
-        BasicWaterOptions() :
+        BasicWater() :
           pad(1.0),
           radius(10.0),
           water_string("name == 'OH2'"),
@@ -117,7 +117,7 @@ namespace loos {
         }
         
 
-        ~BasicWaterOptions() {
+        ~BasicWater() {
           if (filter_func)
             delete filter_func;
           filter_func = 0;

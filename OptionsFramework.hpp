@@ -77,10 +77,10 @@ namespace loos {
     // -------------------------------------------------
 
     //! Options related to specifying an output prefix
-    class OutputPrefixOptions : public OptionsPackage {
+    class OutputPrefix : public OptionsPackage {
     public:
-      OutputPrefixOptions() : prefix("output") { }
-      OutputPrefixOptions(const std::string& s) : prefix(s) { }
+      OutputPrefix() : prefix("output") { }
+      OutputPrefix(const std::string& s) : prefix(s) { }
 
       void addGeneric(po::options_description& opts);
       std::string print() const;
@@ -91,10 +91,10 @@ namespace loos {
     // -------------------------------------------------
 
     //! Provide a single selection
-    class BasicSelectionOptions : public OptionsPackage {
+    class BasicSelection : public OptionsPackage {
     public:
-      BasicSelectionOptions() : selection("all") { }
-      BasicSelectionOptions(const std::string& sel) : selection(sel) { }
+      BasicSelection() : selection("all") { }
+      BasicSelection(const std::string& sel) : selection(sel) { }
 
       void addGeneric(po::options_description& opts);
       std::string print() const;
@@ -111,9 +111,9 @@ namespace loos {
      * -c or --coordinates option.  Also adds a positional argument
      * for the model description.
      **/
-    class ModelWithCoordsOptions : public OptionsPackage {
+    class ModelWithCoords : public OptionsPackage {
     public:
-      ModelWithCoordsOptions() : coords_name("") { }
+      ModelWithCoords() : coords_name("") { }
 
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);
@@ -144,9 +144,9 @@ namespace loos {
      * The contained trajectory object will already be skipped to the
      * correct frame by postConditions().
      **/
-    class BasicTrajectoryOptions : public OptionsPackage {
+    class BasicTrajectory : public OptionsPackage {
     public:
-      BasicTrajectoryOptions() : skip(0) { }
+      BasicTrajectory() : skip(0) { }
 
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);
@@ -173,13 +173,13 @@ namespace loos {
 
     // -------------------------------------------------
 
-    //! Basic trajectory options
+    //! Trajectory with range or skip
     /**
      * Adds a model and trajectory argument to the command line, and
      * provides --skip (-k) and --range (-r) options for specifying
      * which frames of the trajectory to operate over.
      **/
-    class TrajectoryWithFrameIndicesOptions : public OptionsPackage {
+    class TrajectoryWithFrameIndices : public OptionsPackage {
     public:
       TrajectoryWithFrameIndices() : skip(0), frame_index_spec("") { }
 
@@ -219,10 +219,10 @@ namespace loos {
      * Since these are required options, the class will automatically
      * generate a parsing error if any argument is unset.
     **/
-    class RequiredOptions : public OptionsPackage {
+    class RequiredArguments : public OptionsPackage {
       typedef std::pair<std::string, std::string>    StringPair;
     public:
-      RequiredOptions() : vargs_set(false) { }
+      RequiredArguments() : vargs_set(false) { }
 
       void addHidden(po::options_description& o);
       void addPositional(po::positional_options_description& pos);
@@ -232,7 +232,7 @@ namespace loos {
       std::string print() const;
 
       //! Add a required argument given a name (tag) and a description (currently unused)
-      void addOption(const std::string& name, const std::string& description);
+      void addArgument(const std::string& name, const std::string& description);
 
       //! Add a required argument that can be an arbitrary number of items
       /**
@@ -242,7 +242,7 @@ namespace loos {
        * the AggregateOptions object, otherwise any subsequence
        * positional arguments will be missed...
        */
-      void addVariableOption(const std::string& name, const std::string& description);
+      void addVariableArguments(const std::string& name, const std::string& description);
 
       //! Retrieve the value for an argument
       std::string value(const std::string& s) const;

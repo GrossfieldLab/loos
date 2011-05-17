@@ -306,7 +306,7 @@ namespace loos {
   AtomicGroup loadStructureWithCoords(const std::string& model, const std::string& cooords);
 
   //! Builds a list of trajectory indices (frame_index_spec supercedes skip)
-  std::vector<uint> assignTrajectoryFrames(pTraj& traj, const std::string& frame_index_spec, uint skip);
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip);
 
 };
 

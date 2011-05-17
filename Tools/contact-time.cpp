@@ -301,7 +301,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions();
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices();
   ToolOptions* toolopts = new ToolOptions;
 
   opts::AggregateOptions options;

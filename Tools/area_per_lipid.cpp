@@ -60,8 +60,8 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   
   opts::BasicOptions* basic = new opts::BasicOptions;
-  opts::BasicSelectionOptions* select = new opts::BasicSelectionOptions("resname =~ 'P.GL'");
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
+  opts::BasicSelection* select = new opts::BasicSelection("resname =~ 'P.GL'");
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* toolopts = new ToolOptions;
   opts::AggregateOptions options;
 
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
   }
 
   traj->rewind();
-  uint t = 0;
+  uint t = tropts->skip;
   cout << "# t\tArea\n";
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();

@@ -175,7 +175,7 @@ int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;

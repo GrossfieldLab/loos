@@ -83,9 +83,8 @@ Range parseRange(const string& s) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions *basic_opts = new opts::BasicOptions;
-  opts::BasicSelectionOptions *basic_selection = new opts::BasicSelectionOptions;
-  basic_selection->selection = "name == 'OH2'";
-  opts::BasicTrajectoryOptions *basic_traj = new opts::BasicTrajectoryOptions;
+  opts::BasicSelection *basic_selection = new opts::BasicSelection("name == 'OH2'");
+  opts::TrajectoryWithFrameIndices *basic_traj = new opts::TrajectoryWithFrameIndices;
   WaterSidesOptions *my_opts = new WaterSidesOptions;
 
   opts::AggregateOptions options;

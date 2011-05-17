@@ -133,8 +133,8 @@ int main(int argc, char *argv[]) {
   // Parse command-line options, cache invocation header for later use...
   string header = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::OutputPrefixOptions* prefopts = new opts::OutputPrefixOptions;
-  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
+  opts::OutputPrefix* prefopts = new opts::OutputPrefix;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* toolopts = new ToolOptions;
 
   opts::AggregateOptions options;
