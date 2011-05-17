@@ -49,7 +49,7 @@ int main (int argc, char *argv[])
 
 // Build options
 opts::BasicOptions* bopts = new opts::BasicOptions;
-opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
+opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
 opts::RequiredOptions* ropts = new opts::RequiredOptions;
 
 // These are required command-line arguments (non-optional options)
@@ -60,7 +60,7 @@ ropts->addOption("max", "max radius");
 ropts->addOption("num_bins", "number of bins");
 
 opts::AggregateOptions options;
-options.add(bopts).add(trajopts).add(ropts);
+options.add(bopts).add(tropts).add(ropts);
 if (!options.parse(argc, argv))
   exit(-1);
 
@@ -70,11 +70,11 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 // Create the system and read the trajectory file
-AtomicGroup system = createSystem(trajopts->model_name);
-pTraj traj = createTrajectory(trajopts->traj_name, system);
+AtomicGroup system = tropts->model;
+pTraj traj = tropts->trajectory;
 
 // Figure out which frames of the trajectory to operate over
-vector<uint> frames = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
+vector<uint> frames = tropts->frameList();
 
 // Extract our required command-line arguments
 string selection1 = ropts->value("selection1");  // String describing the first selection

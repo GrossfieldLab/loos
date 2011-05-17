@@ -32,19 +32,19 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* basopts = new opts::BasicOptions;
-  opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
+  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
   opts::BasicWaterOptions* watopts = new opts::BasicWaterOptions;
 
   opts::AggregateOptions options;
-  options.add(basopts).add(trajopts).add(watopts);
+  options.add(basopts).add(tropts).add(watopts);
   if (!options.parse(argc, argv))
     exit(-1);
 
 
 
-  AtomicGroup model = createSystem(trajopts->model_name);
-  pTraj traj = createTrajectory(trajopts->traj_name, model);
-  vector<uint> frames = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  vector<uint> frames = tropts->frameList();
 
   AtomicGroup subset = selectAtoms(model, watopts->prot_string);
   AtomicGroup waters = selectAtoms(model, watopts->water_string);

@@ -88,6 +88,11 @@ namespace loos {
       return(!map.count("model"));
     }
 
+    bool ModelWithCoordsOptions::postConditions(po::variables_map& map) {
+      model = loadStructureWithCoords(model_name, coords_name);
+      return(true);
+    }
+
     std::string ModelWithCoordsOptions::help() const { return("model"); }
 
 
@@ -101,7 +106,8 @@ namespace loos {
       return(oss.str());
     }
 
-    AtomicGroup loadStructureWithCoords(const std::string model_name, const std::string coord_name = std::string("")) {
+
+    AtomicGroup ModelWithCoordsOptions::loadStructureWithCoords(const std::string& model_name, const std::string coord_name = std::string("")) const {
       AtomicGroup model = createSystem(model_name);
       if (!coord_name.empty()) {
         AtomicGroup coords = createSystem(coord_name);
@@ -144,6 +150,9 @@ namespace loos {
         std::cerr << "Error- you cannot specify both a skip and a frame range...I might get confused!\n";
         return(false);
       }
+
+      model = createSystem(model_name);
+      trajectory = createTrajectory(traj_name, model);
       
       return(true);
     }
@@ -159,7 +168,22 @@ namespace loos {
       
       return(oss.str());
     }
+
     
+    std::vector<uint> BasicTrajectoryOptions::frameList() const {
+      std::vector<uint> frames;
+
+      if (frame_index_spec.empty())
+        for (uint i=skip; i<trajectory->nframes(); ++i)
+          frames.push_back(i);
+      else
+        frames = parseRangeList<uint>(frame_index_spec);
+
+      return(frames);
+    }
+
+
+
     // -------------------------------------------------------
     void RequiredOptions::addOption(const std::string& name, const std::string& description) {
       StringPair arg(name, description);
@@ -336,18 +360,6 @@ namespace loos {
 
 
 
-    std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip = 0) {
-      std::vector<uint> frames;
-
-      if (desc.empty())
-        for (uint i=skip; i<traj->nframes(); ++i)
-          frames.push_back(i);
-      else
-        frames = parseRangeList<uint>(desc);
-
-      return(frames);
-          
-    }
 
 
     std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v) {

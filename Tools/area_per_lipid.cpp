@@ -61,18 +61,18 @@ int main(int argc, char *argv[]) {
   
   opts::BasicOptions* basic = new opts::BasicOptions;
   opts::BasicSelectionOptions* select = new opts::BasicSelectionOptions("resname =~ 'P.GL'");
-  opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
+  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
   ToolOptions* toolopts = new ToolOptions;
   opts::AggregateOptions options;
 
-  options.add(basic).add(select).add(trajopts).add(toolopts);
+  options.add(basic).add(select).add(tropts).add(toolopts);
   if (!options.parse(argc, argv))
     exit(-1);
 
   cout << "# " << hdr << endl;
 
-  AtomicGroup model = createSystem(trajopts->model_name);
-  pTraj traj = createTrajectory(trajopts->traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
   if (!traj->hasPeriodicBox()) {
     cerr << "Error- trajectory has no periodicity.  Cannot compute area per lipid.\n";
     exit(-2);

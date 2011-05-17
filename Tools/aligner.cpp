@@ -134,17 +134,17 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::OutputPrefixOptions* prefopts = new opts::OutputPrefixOptions;
-  opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
+  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
   ToolOptions* toolopts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(prefopts).add(trajopts).add(toolopts);
+  options.add(bopts).add(prefopts).add(tropts).add(toolopts);
   if (!options.parse(argc, argv))
     exit(-1);
 
   // Read the inputs...
-  AtomicGroup model = createSystem(trajopts->model_name);
-  pTraj traj = createTrajectory(trajopts->traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
 
   // Get the selections (subsets) to operate over
   AtomicGroup align_sub = selectAtoms(model, toolopts->alignment_string);

@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  AtomicGroup model = opts::loadStructureWithCoords(mwcopts->model_name, mwcopts->coords_name);
+  AtomicGroup model = mwcopts->model;
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
   subset.perturbCoords(topts->magnitude);

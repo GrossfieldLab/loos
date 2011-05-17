@@ -121,12 +121,17 @@ namespace loos {
 
       bool check(po::variables_map& map);
 
+      bool postConditions(po::variables_map& map);
+
       std::string help() const;
       std::string print() const;
 
-      AtomicGroup createModel() const;
-        
       std::string model_name, coords_name;
+
+      AtomicGroup model;
+
+    private:
+      AtomicGroup loadStructureWithCoords(const std::string& model, const std::string cooords) const;
     };
 
 
@@ -155,9 +160,14 @@ namespace loos {
       std::string help() const;
       std::string print() const;
 
+      std::vector<uint> frameList() const;
+
       unsigned int skip;
       std::string frame_index_spec;
       std::string model_name, traj_name;
+
+      AtomicGroup model;
+      pTraj trajectory;
     };
 
 
@@ -266,15 +276,6 @@ namespace loos {
 
     // ----------------------------------------------------------------------
 
-    //! Generate a vector of frame indices to operate over
-    /**
-     * This utility function takes a string and skip and will
-     * generate a vector containing the frames of the trajectory to
-     * use.  If the string is nonempty, it takes priority over the
-     * skip.  The string can be a comma-separated list of
-     * octave/matlab-style ranges.
-     **/
-    std::vector<uint> assignFrameIndices(pTraj& traj, const std::string& desc, const uint skip);
 
 
     std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v);

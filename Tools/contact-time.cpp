@@ -301,19 +301,18 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicTrajectoryOptions* topts = new opts::BasicTrajectoryOptions();
+  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions();
   ToolOptions* toolopts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(topts).add(toolopts);
+  options.add(bopts).add(tropts).add(toolopts);
 
   if (!options.parse(argc, argv))
     exit(-1);
 
-  AtomicGroup model = createSystem(topts->model_name);
-  pTraj traj = createTrajectory(topts->traj_name, model);
-
-  vector<uint> indices = opts::assignFrameIndices(traj, topts->frame_index_spec, topts->skip);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  vector<uint> indices = tropts->frameList();
 
   AtomicGroup probe = selectAtoms(model, toolopts->probe_selection);
 

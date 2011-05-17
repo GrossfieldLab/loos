@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  AtomicGroup model = opts::loadStructureWithCoords(mopts->model_name, mopts->coords_name);
+  AtomicGroup model = mopts->model;
   if (!topts->append_bonds)
     model.clearBonds();
 

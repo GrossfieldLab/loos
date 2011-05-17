@@ -49,10 +49,10 @@ int main(int argc, char *argv[]) {
     exit(0);
   }
 
-  AtomicGroup model = createSystem(basic_traj->model_name);
-  pTraj traj = createTrajectory(basic_traj->traj_name, model);
+  AtomicGroup model = basic_traj->model;
+  pTraj traj = basic_traj->trajectory;
   AtomicGroup subset = selectAtoms(model, basic_selection->selection);
-  vector<uint> frames = opts::assignFrameIndices(traj, basic_traj->frame_index_spec, basic_traj->skip);
+  vector<uint> frames = basic_traj->frameList();
 
   
 

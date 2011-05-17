@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
 
 
 
-  AtomicGroup model = opts::loadStructureWithCoords(mopts->model_name, mopts->coords_name);
+  AtomicGroup model = mopts->model;
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
   if (!topts->auto_selection.empty())

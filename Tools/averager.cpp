@@ -72,23 +72,23 @@ int main(int argc, char *argv[]) {
 
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelectionOptions* sopts = new opts::BasicSelectionOptions("");
-  opts::BasicTrajectoryOptions* trajopts = new opts::BasicTrajectoryOptions;
+  opts::BasicTrajectoryOptions* tropts = new opts::BasicTrajectoryOptions;
   ToolOptions* toolopts = new ToolOptions("!hydrogen || segid == 'SOLV' || segid == 'BULK'");
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(trajopts).add(toolopts);
+  options.add(bopts).add(sopts).add(tropts).add(toolopts);
   if (!options.parse(argc, argv))
     exit(-1);
 
 
 
-  AtomicGroup model = createSystem(trajopts->model_name);
+  AtomicGroup model = tropts->model;
 
   AtomicGroup avg_subset = selectAtoms(model, toolopts->avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
-  pTraj traj = createTrajectory(trajopts->traj_name, model);
-  vector<uint> indices = opts::assignFrameIndices(traj, trajopts->frame_index_spec, trajopts->skip);
+  pTraj traj = tropts->trajectory;
+  vector<uint> indices = tropts->frameList();
   cerr << "Using " << indices.size() << " frames from the trajectory...\n";
 
   // First, align...

@@ -185,9 +185,9 @@ int main(int argc, char *argv[]) {
 
   cout << "# " << header << endl;
 
-  AtomicGroup model = createSystem(tropts->model_name);
-  pTraj traj = createTrajectory(tropts->traj_name, model);
-  vector<uint> indices = opts::assignFrameIndices(traj, tropts->frame_index_spec, tropts->skip);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  vector<uint> indices = tropts->frameList();
 
   AtomicGroup src = selectAtoms(model, topts->target_name);
 
