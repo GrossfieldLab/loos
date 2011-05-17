@@ -288,13 +288,6 @@ namespace loos {
     return(oss.str());
   }
 
-
-  //! convert a boost::any into a string
-  std::string anyToString(const boost::any& x);
-
-  //! Converts a boost::program_options::variables_map into a vector of strings
-  std::vector<std::string> optionsValues(const boost::program_options::variables_map& m);
-
   //! Converts a vector of strings into a standard log format
   std::string stringsAsComments(const std::vector<std::string>& v);
 

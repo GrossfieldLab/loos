@@ -190,10 +190,8 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
       anms.push_back(anm);
     }
 
-    // Now dump the options for logging...
+    // options dump temporarily removed
     cout << "# " << hdr << endl;
-    vector<string> opts = optionsValues(vm);
-    copy(opts.begin(), opts.end(), ostream_iterator<string>(cout, "\n"));
     
   }
   catch(exception& e) {
