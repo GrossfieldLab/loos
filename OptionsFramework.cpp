@@ -369,18 +369,15 @@ namespace loos {
       
     }
 
-    std::string AggregateOptions::print() const {
-      std::string result(program_name);
+    std::vector<std::string> AggregateOptions::print() const {
+      std::vector<std::string> results;
 
-      result += ": ";
+      results.push_back(program_name);
     
-      for (vOpts::const_iterator i = options.begin(); i != options.end(); ++i) {
-        result += (*i)->print();
-        if (i != options.end() - 1)
-          result += ", ";
-      }
+      for (vOpts::const_iterator i = options.begin(); i != options.end(); ++i)
+        results.push_back((*i)->print());
 
-      return(result);
+      return(results);
     }
 
 

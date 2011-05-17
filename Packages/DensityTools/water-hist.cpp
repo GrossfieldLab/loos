@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
   }
 
   grid.addMetadata(hdr);
-  grid.addMetadata(options.print());
+  grid.addMetadata(stringsAsString(options.print()));
   cout << grid;
 }
 

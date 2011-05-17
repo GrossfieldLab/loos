@@ -289,7 +289,7 @@ namespace loos {
       bool parse(int argc, char *argv[]);
 
       //! Prints out the values of the options in all contained OptionsPackages
-      std::string print() const;
+      std::vector<std::string> print() const;
 
       //! Displays the help for this tool
       void showHelp();
