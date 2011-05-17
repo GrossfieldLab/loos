@@ -29,7 +29,6 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 #include <boost/format.hpp>
 #include <limits>
 

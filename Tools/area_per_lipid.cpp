@@ -24,11 +24,9 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
-//namespace po = boost::program_options;
 namespace opts = loos::OptionsFramework;
 
 

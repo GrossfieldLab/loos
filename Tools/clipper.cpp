@@ -35,7 +35,6 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
 #include <cmath>
 #include <sstream>
 
