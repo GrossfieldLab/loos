@@ -450,4 +450,32 @@ namespace loos {
     return(s);
   }
 
+
+  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& coord_name) const {
+      AtomicGroup model = createSystem(model_name);
+      if (!coord_name.empty()) {
+        AtomicGroup coords = createSystem(coord_name);
+        model.copyCoordinates(coords);
+      }
+
+      if (! model.hasCoords())
+        throw(LOOSError("Error- no coordinates found in specified model(s)"));
+      
+      return(model);
+  }
+
+
+  std::vector<uint> assignTrajectoryFrames(pTraj& traj, const std::string& frame_index_spec, uint skip = 0) const {
+    std::vector<uint> frames;
+    
+    if (frame_index_spec.empty())
+      for (uint i=skip; i<trajectory->nframes(); ++i)
+        frames.push_back(i);
+    else
+      frames = parseRangeList<uint>(frame_index_spec);
+    
+    return(frames);
+  }
+
+
 }

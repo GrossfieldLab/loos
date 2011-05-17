@@ -130,8 +130,43 @@ namespace loos {
 
       AtomicGroup model;
 
-    private:
-      AtomicGroup loadStructureWithCoords(const std::string& model, const std::string cooords) const;
+    };
+
+
+
+    // -------------------------------------------------
+
+    //! Basic trajectory options
+    /**
+     * Adds a model and trajectory argument to the command line, and
+     * provides --skip (-k) option for skipping the first n-frames.
+     * 
+     * The contained trajectory object will already be skipped to the
+     * correct frame by postConditions().
+     **/
+    class BasicTrajectoryOptions : public OptionsPackage {
+    public:
+      BasicTrajectoryOptions() : skip(0) { }
+
+      void addGeneric(po::options_description& opts);
+      void addHidden(po::options_description& opts);
+
+      void addPositional(po::positional_options_description& pos);
+
+      bool check(po::variables_map& map);
+
+      bool postConditions(po::variables_map& map);
+
+      std::string help() const;
+      std::string print() const;
+
+      std::vector<uint> frameList() const;
+
+      unsigned int skip;
+      std::string model_name, traj_name;
+
+      AtomicGroup model;
+      pTraj trajectory;
     };
 
 
@@ -144,9 +179,9 @@ namespace loos {
      * provides --skip (-k) and --range (-r) options for specifying
      * which frames of the trajectory to operate over.
      **/
-    class BasicTrajectoryOptions : public OptionsPackage {
+    class TrajectoryWithFrameIndicesOptions : public OptionsPackage {
     public:
-      BasicTrajectoryOptions() : skip(0), frame_index_spec("") { }
+      TrajectoryWithFrameIndices() : skip(0), frame_index_spec("") { }
 
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);
