@@ -10,7 +10,7 @@ namespace loos {
 
       opts.add_options()
         ("help", "Produce this message")
-        ("verbosity,v", po::value<int>(&verbosity)->default_value(verbosity), "Verbosity");
+        ("verbosity,v", po::value<int>(&verbosity)->default_value(verbosity), "Verbosity of output (if available)");
     }
 
     std::string BasicOptions::print() const {
