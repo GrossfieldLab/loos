@@ -279,7 +279,7 @@ namespace loos {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         s = s + " " + i->first;
       if (vargs_set)
-        s = s + variable_arguments.first + " [" + variable_arguments.first + " ...]";
+        s = s + " " + variable_arguments.first + " [" + variable_arguments.first + " ...]";
       return(s);
     }
 
