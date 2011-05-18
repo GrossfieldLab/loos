@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(popts).add(tropts).add(ropts).add(topts);
+  options.add(bopts).add(popts).add(tropts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
 
