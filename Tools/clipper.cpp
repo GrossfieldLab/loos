@@ -41,6 +41,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 vector<GCoord> planes;
@@ -50,29 +51,29 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : byresidue(false), cliponly(false), auto_selection("") { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("byres", opts::po::value<bool>(&byresidue)->default_value(byresidue), "Set to 1 to clip by residue (rather than by atom)")
-      ("auto", opts::po::value<string>(&auto_selection)->default_value(auto_selection), "Automatically generate clipping planes for selection")
-      ("cliponly", opts::po::value<bool>(&cliponly)->default_value(cliponly), "Set to 1 to only output the clipped selection, not the whole model");
+      ("byres", po::value<bool>(&byresidue)->default_value(byresidue), "Set to 1 to clip by residue (rather than by atom)")
+      ("auto", po::value<string>(&auto_selection)->default_value(auto_selection), "Automatically generate clipping planes for selection")
+      ("cliponly", po::value<bool>(&cliponly)->default_value(cliponly), "Set to 1 to only output the clipped selection, not the whole model");
   }
 
-  void addHidden(opts::po::options_description& o) {
+  void addHidden(po::options_description& o) {
     o.add_options()
-      ("clip", opts::po::value< vector<string> >(&clips), "Clipping planes");
+      ("clip", po::value< vector<string> >(&clips), "Clipping planes");
   }
 
-  void addPositional(opts::po::positional_options_description& pos) {
+  void addPositional(po::positional_options_description& pos) {
     pos.add("clip", -1);
   }
 
-  bool check(opts::po::variables_map& map) {
+  bool check(po::variables_map& map) {
     return( (clips.empty() && auto_selection.empty()) ||
             (clips.size() % 3 != 0) );
   }
 
   // Clipping planes are specified via 3 points, so must convert them from command-line input
-  bool postConditions(opts::po::variables_map& map) {
+  bool postConditions(po::variables_map& map) {
     for (vector<string>::iterator i = clips.begin(); i != clips.end(); ++i) {
       istringstream ss(*i);
       GCoord c;

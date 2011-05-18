@@ -44,6 +44,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 
@@ -116,27 +117,27 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : mode_name("center") { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("mode", opts::po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|min|max)");
+      ("mode", po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|min|max)");
   }
 
-  void addHidden(opts::po::options_description& o) {
+  void addHidden(po::options_description& o) {
     o.add_options()
-      ("target", opts::po::value<string>(&target_name), "Target")
-      ("selection", opts::po::value< vector<string> >(&selection_names), "Selections");
+      ("target", po::value<string>(&target_name), "Target")
+      ("selection", po::value< vector<string> >(&selection_names), "Selections");
   }
 
-  void addPositional(opts::po::positional_options_description& p) {
+  void addPositional(po::positional_options_description& p) {
     p.add("target", 1);
     p.add("selection", -1);
   }
 
-  bool check(opts::po::variables_map& map) {
+  bool check(po::variables_map& map) {
     return(selection_names.empty() || target_name.empty());
   }
 
-  bool postConditions(opts::po::variables_map& map) {
+  bool postConditions(po::variables_map& map) {
     if (mode_name == "center")
       calc_type = new CenterDistance;
     else if (mode_name == "min")

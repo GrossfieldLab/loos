@@ -56,8 +56,9 @@
 using namespace std;
 using namespace loos;
 
-//namespace po = boost::program_options;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
 
 string model_name, traj_name, prefix;
 string alignment_string;
@@ -84,15 +85,15 @@ public:
                   maxiter(5000),
                   center(true) { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("align", opts::po::value<string>(&alignment_string)->default_value(alignment_string), "Align using this selection")
-      ("transform", opts::po::value<string>(&transform_string)->default_value(transform_string), "Transform using this selection")
-      ("maxiter", opts::po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
-      ("tolerance", opts::po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
-      ("center", opts::po::value<bool>(&center)->default_value(center), "Auto-center the trajectory using the alignment subset")
-      ("reference", opts::po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
-      ("refsel", opts::po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)");
+      ("align", po::value<string>(&alignment_string)->default_value(alignment_string), "Align using this selection")
+      ("transform", po::value<string>(&transform_string)->default_value(transform_string), "Transform using this selection")
+      ("maxiter", po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
+      ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
+      ("center", po::value<bool>(&center)->default_value(center), "Auto-center the trajectory using the alignment subset")
+      ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
+      ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)");
   }
 
   string alignment_string, transform_string;

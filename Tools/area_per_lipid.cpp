@@ -28,6 +28,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 // @cond TOOLS_INTERNAL
@@ -35,9 +36,9 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : n_lipids(0) { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("nlipids", opts::po::value<uint>(&n_lipids)->default_value(n_lipids), "Explicitly set the number of lipids per leaflet");
+      ("nlipids", po::value<uint>(&n_lipids)->default_value(n_lipids), "Explicitly set the number of lipids per leaflet");
   }
 
   string print() const {

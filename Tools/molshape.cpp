@@ -41,6 +41,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 string model_name, traj_name;
 string selection;
@@ -56,11 +57,11 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : split_by_mol(false), split_by_segid(false), zabs(false) { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("molecule", opts::po::value<bool>(&split_by_mol)->default_value(split_by_mol), "Split by molecule")
-      ("segid", opts::po::value<bool>(&split_by_segid)->default_value(split_by_segid), "Split by segid")
-      ("abs", opts::po::value<bool>(&zabs)->default_value(zabs), "Use absolute Z-value");
+      ("molecule", po::value<bool>(&split_by_mol)->default_value(split_by_mol), "Split by molecule")
+      ("segid", po::value<bool>(&split_by_segid)->default_value(split_by_segid), "Split by segid")
+      ("abs", po::value<bool>(&zabs)->default_value(zabs), "Use absolute Z-value");
   }
 
   string print() const {

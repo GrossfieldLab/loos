@@ -35,6 +35,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup> vGroup;
 
@@ -99,30 +100,30 @@ public:
   { }
 
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("rownorm", opts::po::value<bool>(&normalize)->default_value(normalize), "Normalize total # of contacts (across row)")
-      ("colnorm", opts::po::value<bool>(&max_norm)->default_value(max_norm), "Normalize by max value (down a column)")
-      ("inner", opts::po::value<double>(&inner_cutoff)->default_value(inner_cutoff), "Inner cutoff (ignore atoms closer than this)")
-      ("outer", opts::po::value<double>(&outer_cutoff)->default_value(outer_cutoff), "Outer cutoff (ignore atoms further away than this)")
-      ("reimage", opts::po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
-      ("autoself", opts::po::value<bool>(&auto_self)->default_value(auto_self), "Automatically include self-to-self")
-      ("fast", opts::po::value<bool>(&fast_filter)->default_value(fast_filter), "Use the fast-filter method")
-      ("fastpad", opts::po::value<double>(&fast_pad)->default_value(fast_pad), "Padding for the fast-filter method");
+      ("rownorm", po::value<bool>(&normalize)->default_value(normalize), "Normalize total # of contacts (across row)")
+      ("colnorm", po::value<bool>(&max_norm)->default_value(max_norm), "Normalize by max value (down a column)")
+      ("inner", po::value<double>(&inner_cutoff)->default_value(inner_cutoff), "Inner cutoff (ignore atoms closer than this)")
+      ("outer", po::value<double>(&outer_cutoff)->default_value(outer_cutoff), "Outer cutoff (ignore atoms further away than this)")
+      ("reimage", po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
+      ("autoself", po::value<bool>(&auto_self)->default_value(auto_self), "Automatically include self-to-self")
+      ("fast", po::value<bool>(&fast_filter)->default_value(fast_filter), "Use the fast-filter method")
+      ("fastpad", po::value<double>(&fast_pad)->default_value(fast_pad), "Padding for the fast-filter method");
   }
 
-  void addHidden(opts::po::options_description& o) {
+  void addHidden(po::options_description& o) {
     o.add_options()
-      ("probe", opts::po::value<string>(&probe_selection), "Probe selection")
-      ("target", opts::po::value< vector<string> >(&target_selections), "Target selections");
+      ("probe", po::value<string>(&probe_selection), "Probe selection")
+      ("target", po::value< vector<string> >(&target_selections), "Target selections");
   }
 
-  void addPositional(opts::po::positional_options_description& p) {
+  void addPositional(po::positional_options_description& p) {
     p.add("probe", 1);
     p.add("target", -1);
   }
 
-  bool check(opts::po::variables_map& map) {
+  bool check(po::variables_map& map) {
     if (target_selections.empty() || probe_selection.empty())
       return(true);
     if (normalize && max_norm) {

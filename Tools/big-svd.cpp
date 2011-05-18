@@ -37,6 +37,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 const double KB = 1024.0;
@@ -92,9 +93,9 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : write_source_matrix(false) { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("source", opts::po::value<bool>(&write_source_matrix)->default_value(write_source_matrix), "Write out source matrix");
+      ("source", po::value<bool>(&write_source_matrix)->default_value(write_source_matrix), "Write out source matrix");
   }
 
   string print() const {

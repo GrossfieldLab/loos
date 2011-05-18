@@ -39,6 +39,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 
@@ -88,13 +89,13 @@ public:
     radius(1.25)
   { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("superset", opts::po::value<string>(&super)->default_value(super), "Subset to search for bonds against the selection")
-      ("radius", opts::po::value<double>(&radius)->default_value(radius), "Radius cutoff for bonding")
-      ("add", opts::po::value<bool>(&append_bonds)->default_value(append_bonds), "Add to existing bonds")
-      ("tag", opts::po::value<string>(&segid), "Tag the bound atoms with this segid")
-      ("full", opts::po::value<bool>(&full_model_output)->default_value(full_model_output), "Output the entire model (or just the subset if =0)");
+      ("superset", po::value<string>(&super)->default_value(super), "Subset to search for bonds against the selection")
+      ("radius", po::value<double>(&radius)->default_value(radius), "Radius cutoff for bonding")
+      ("add", po::value<bool>(&append_bonds)->default_value(append_bonds), "Add to existing bonds")
+      ("tag", po::value<string>(&segid), "Tag the bound atoms with this segid")
+      ("full", po::value<bool>(&full_model_output)->default_value(full_model_output), "Output the entire model (or just the subset if =0)");
   }
 
   string print() const {

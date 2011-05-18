@@ -37,6 +37,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 
@@ -52,21 +53,21 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : seed(0), magnitude(0.0) { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("seed", opts::po::value<uint>(&seed)->default_value(seed), "Random number seed (0 = use current time)");
+      ("seed", po::value<uint>(&seed)->default_value(seed), "Random number seed (0 = use current time)");
   }
   
-  void addHidden(opts::po::options_description& o) {
+  void addHidden(po::options_description& o) {
     o.add_options()
-      ("magnitude", opts::po::value<double>(&magnitude), "magnitude");
+      ("magnitude", po::value<double>(&magnitude), "magnitude");
   }
 
-  void addPositional(opts::po::positional_options_description& pos) {
+  void addPositional(po::positional_options_description& pos) {
     pos.add("magnitude", 1);
   }
 
-  bool check(opts::po::variables_map& map) {
+  bool check(po::variables_map& map) {
     return(!map.count("magnitude"));
   }
 
@@ -77,7 +78,7 @@ public:
     return(oss.str());
   }
 
-  bool postConditions(opts::po::variables_map& map) {
+  bool postConditions(po::variables_map& map) {
     if (seed == 0)
       randomSeedRNG();
     else {

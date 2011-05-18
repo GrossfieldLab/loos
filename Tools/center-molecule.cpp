@@ -35,6 +35,7 @@
 using namespace std;
 using namespace loos;
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup>            vGroup;
 
@@ -56,14 +57,14 @@ public:
     center_xy(false)
   { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("center", opts::po::value<string>(&center_sel)->default_value(center_sel), "Selection to calculate the offset from")
-      ("apply", opts::po::value<string>(&apply_sel)->default_value(apply_sel), "Selection to actually center")
-      ("write", opts::po::value<string>(&write_sel)->default_value(write_sel), "Selection to write to stdout")
-      ("reimage", opts::po::value<bool>(&reimage)->default_value(reimage), "Reimage by molecule after")
-      ("center_xy", opts::po::value<bool>(&center_xy)->default_value(center_xy), "Center only x&y dimensions")
-      ("bonds", opts::po::value<string>(&bonds_name), "Use this model for connectivity");
+      ("center", po::value<string>(&center_sel)->default_value(center_sel), "Selection to calculate the offset from")
+      ("apply", po::value<string>(&apply_sel)->default_value(apply_sel), "Selection to actually center")
+      ("write", po::value<string>(&write_sel)->default_value(write_sel), "Selection to write to stdout")
+      ("reimage", po::value<bool>(&reimage)->default_value(reimage), "Reimage by molecule after")
+      ("center_xy", po::value<bool>(&center_xy)->default_value(center_xy), "Center only x&y dimensions")
+      ("bonds", po::value<string>(&bonds_name), "Use this model for connectivity");
   }
 
   string print() const {

@@ -34,6 +34,7 @@ using namespace std;
 using namespace loos;
 
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 

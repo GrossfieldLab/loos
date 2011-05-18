@@ -32,8 +32,10 @@
 #include <loos.hpp>
 
 using namespace std;
-namespace opts = loos::OptionsFramework;
 using namespace loos;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 
@@ -44,9 +46,9 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions(const string& s) : avg_string(s) { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("average", opts::po::value<string>(&avg_string)->default_value(avg_string), "Average over this selection");
+      ("average", po::value<string>(&avg_string)->default_value(avg_string), "Average over this selection");
   }
 
   string print() const {

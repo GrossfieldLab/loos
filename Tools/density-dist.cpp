@@ -37,7 +37,9 @@
 
 using namespace std;
 using namespace loos;
+
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 enum CalculationType { ELECTRON, CHARGE, MASS };
 
@@ -51,16 +53,16 @@ public:
     calc_type_desc("electron")
   { }
 
-  void addGeneric(opts::po::options_description& o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
-      ("auto", opts::po::value<bool>(&auto_all)->default_value(auto_all), "Automatically compute system density")
-      ("zsymmetry", opts::po::value<bool>(&symmetrize)->default_value(symmetrize), "Symmetric with respect to Z")
-      ("type", opts::po::value<string>(&calc_type_desc)->default_value(calc_type_desc), "Calculation type (mass, charge, electron)")
-      ("window", opts::po::value<uint>(&window)->default_value(window), "Window size (in frames) for time series (0 = disabled)")
+      ("auto", po::value<bool>(&auto_all)->default_value(auto_all), "Automatically compute system density")
+      ("zsymmetry", po::value<bool>(&symmetrize)->default_value(symmetrize), "Symmetric with respect to Z")
+      ("type", po::value<string>(&calc_type_desc)->default_value(calc_type_desc), "Calculation type (mass, charge, electron)")
+      ("window", po::value<uint>(&window)->default_value(window), "Window size (in frames) for time series (0 = disabled)")
       ;
   }
 
-  bool postConditions(opts::po::variables_map& map) {
+  bool postConditions(po::variables_map& map) {
     if (toupper(calc_type_desc[0]) == 'C')
       calc_type = CHARGE;
     else if (toupper(calc_type_desc[0]) == 'E')
