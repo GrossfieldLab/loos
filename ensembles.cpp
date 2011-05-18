@@ -85,7 +85,7 @@ namespace loos {
 
 
 
-  AtomicGroup averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj& traj, std::vector<uint>& frame_indices) {
+  AtomicGroup averageStructure(const AtomicGroup& g, const std::vector<XForm>& xforms, pTraj& traj, const std::vector<uint>& frame_indices) {
     AtomicGroup avg = g.copy();
     AtomicGroup frame = g.copy();
     int n = avg.size();
@@ -166,7 +166,7 @@ namespace loos {
 
 
 
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, std::vector<uint>& frame_indices,
+  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, const std::vector<uint>& frame_indices,
                                                                   greal threshold, int maxiter) {
     std::vector<AtomicGroup> frames;
 
