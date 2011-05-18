@@ -31,11 +31,11 @@
 
 #include <loos.hpp>
 
-#include <boost/program_options.hpp>
-
-namespace po = boost::program_options;
 using namespace std;
 using namespace loos;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 #if defined(__linux__)
 extern "C" {
@@ -52,84 +52,67 @@ typedef double svdreal;
 typedef Math::Matrix<svdreal, Math::ColMajor> Matrix;
 
 
-string model_name, traj_name;
-string alignment_string, svd_string;
-bool noalign;
-greal alignment_tol;
-bool include_source;
-int terms;
-string prefix;
-string header;
-vector<uint> indices;
+
+// Globals
+string header("NO HEADER SPECIFIED");
+string prefix("output");
 
 
+// @cond TOOLS_INTERNAL
+
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() :
+    alignment_string("name == 'CA'"),
+    svd_string("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"),
+    noalign(false),
+    include_source(false),
+    alignment_tol(1e-6),
+    terms(0)
+  { }
 
 
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    po::options_description generic("Allowed options", 120);
-    generic.add_options()
-      ("help,h", "Produce this help message")
-      ("align,a", po::value<string>(&alignment_string)->default_value("name == 'CA'"), "Selection to align with")
-      ("svd,s", po::value<string>(&svd_string)->default_value("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"), "Selection to calculate the SVD of")
-      ("tolerance,t", po::value<greal>(&alignment_tol)->default_value(1e-6), "Tolerance for iterative alignment")
-      ("noalign,n", po::value<bool>(&noalign)->default_value(false), "Do NOT align the frames of trajectory")
-      ("terms,T", po::value<int>(), "# of terms of the SVD to output")
-      ("prefix,p", po::value<string>(), "Prefix SVD output filenames with this string")
-      ("range,r", po::value< vector<string> >(), "Range of frames from the trajectory to operate over")
-      ("source,S", po::value<bool>(&include_source)->default_value(false),"Write out the source conformation matrix");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- svd [options] model-name trajectory-name\n";
-      cerr << setprecision(2) << generic;
-      exit(-1);
-    }
-
-    if (vm.count("terms"))
-      terms = vm["terms"].as<int>();
-    else
-      terms = 0;
-
-    if (vm.count("prefix"))
-      prefix = vm["prefix"].as<string>();
-    else
-      prefix = findBaseName(traj_name);
-
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("align,A", po::value<string>(&alignment_string)->default_value(alignment_string), "Selection to align with")
+      ("svd,S", po::value<string>(&svd_string)->default_value(svd_string), "Selection to calculate the SVD of")
+      ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for iterative alignment")
+      ("noalign,N", po::value<bool>(&noalign)->default_value(noalign), "Do NOT align the frames of the trajectory")
+      ("source", po::value<bool>(&include_source)->default_value(include_source), "Write out source conformation matrix")
+      ("terms", po::value<uint>(&terms), "# of terms of the SVD to output");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+
+    oss << boost::format("align='%s', svd='%s', tolerance=%f, noalign=%d, source=%d, terms=%d")
+      % alignment_string
+      % svd_string
+      % noalign
+      % include_source
+      % alignment_tol
+      % terms;
+    return(oss.str());
   }
-}
 
 
-vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj) {
+  string alignment_string, svd_string;
+  bool noalign, include_source;
+  double alignment_tol;
+  uint terms;
+};
 
-  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, indices, alignment_tol, 100);
+// @endcond
+
+
+
+
+
+
+
+vector<XForm> doAlign(const AtomicGroup& subset, pTraj traj, const vector<uint>& indices, const double tol) {
+
+  boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(subset, traj, indices, tol, 100);
   vector<XForm> xforms = boost::get<0>(res);
   greal rmsd = boost::get<1>(res);
   int iters = boost::get<2>(res);
@@ -158,7 +141,7 @@ void writeAverage(const AtomicGroup& avg) {
 // Calculates the transformed avg structure, then extracts the
 // transformed coords from the DCD with the avg subtraced out...
 
-Matrix extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, pTraj traj) {
+Matrix extractCoords(const AtomicGroup& subset, const vector<XForm>& xforms, pTraj traj, const vector<uint>& indices) {
 
   AtomicGroup avg = averageStructure(subset, xforms, traj, indices);
   writeAverage(avg);
@@ -208,39 +191,45 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 int main(int argc, char *argv[]) {
   header = invocationHeader(argc, argv);
 
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::OutputPrefix* popts = new opts::OutputPrefix;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* topts = new ToolOptions;
 
-  // Need to address this...
-  AtomicGroup model = createSystem(model_name);
-  pTraj ptraj = createTrajectory(traj_name, model);
-  AtomicGroup svdsub = selectAtoms(model, svd_string);
+  opts::AggregateOptions options;
+  options.add(bopts).add(popts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
-  if (indices.empty())
-    for (uint i=0; i<ptraj->nframes(); ++i)
-      indices.push_back(i);
+  prefix = popts->prefix;
+  AtomicGroup model = tropts->model;
+  pTraj ptraj = tropts->trajectory;
+  vector<uint> indices = tropts->frameList();
+
+  AtomicGroup svdsub = selectAtoms(model, topts->svd_string);
 
   write_map(prefix + ".map", svdsub);
 
   vector<XForm> xforms;
-  if (noalign) {
+  if (topts->noalign) {
     // Make noop xforms to prevent doing any alignment...
     cerr << argv[0] << ": SKIPPING ALIGNMENT\n";
     for (uint i=0; i<indices.size(); ++i)
       xforms.push_back(XForm());
   } else {
-    AtomicGroup alignsub = selectAtoms(model, alignment_string);
+    AtomicGroup alignsub = selectAtoms(model, topts->alignment_string);
     cerr << argv[0] << ": Aligning...\n";
-    xforms = doAlign(alignsub, ptraj);   // Honors indices
+    xforms = doAlign(alignsub, ptraj, indices, topts->alignment_tol);   // Honors indices
   }
 
   cerr << argv[0] << ": Extracting coordinates...\n";
-  Matrix A = extractCoords(svdsub, xforms, ptraj);   // Honors indices
+  Matrix A = extractCoords(svdsub, xforms, ptraj, indices);   // Honors indices
   f77int m = A.rows();
   f77int n = A.cols();
   f77int sn = m<n ? m : n;
 
 
-  if (include_source)
+  if (topts->include_source)
     writeAsciiMatrix(prefix + "_A.asc", A, header);
 
   double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
@@ -291,7 +280,8 @@ int main(int argc, char *argv[]) {
   Math::Range Ssize(sn,1);
   Math::Range Vsize(sn,n);
 
-  if (terms > 0) {
+  if (topts->terms) {
+    int terms = static_cast<int>(topts->terms);
     if (terms > m || terms > sn || terms > n) {
       cerr << "ERROR- The number of terms requested exceeds matrix dimensions.\n";
       exit(-1);
