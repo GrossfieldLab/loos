@@ -1,3 +1,7 @@
+2011-05-18    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug where charmm.hpp was not installed
+
 2011-05-15  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Fixed bug in eigenflucc tool where the zero-modes would be
