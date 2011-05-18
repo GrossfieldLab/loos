@@ -41,6 +41,8 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
+  cerr << "***WARNING: This tool is deprecated and will be removed in a future version of LOOS\n";
+
   AtomicGroup model = createSystem(argv[1]);
   model.centerAtOrigin();
 
