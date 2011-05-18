@@ -149,11 +149,6 @@ namespace loos {
     }
 
     
-    std::vector<uint> BasicTrajectory::frameList() const {
-      return(assignTrajectoryFrames(trajectory, "", skip));
-    }
-
-
     // -------------------------------------------------------
 
 
