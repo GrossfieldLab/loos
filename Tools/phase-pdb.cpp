@@ -98,6 +98,23 @@ public:
     return(true);
   }
 
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("segid='%s', atom='%s', residue='%s', rows='%s', chunk=%d, bonds=%d, columns=(%s), scales=(%f)")
+      % segid_fmt
+      % atom_name
+      % residue_name
+      % rowdesc
+      % rowdesc
+      % chunksize
+      % bonds
+      % vectorAsStringWithCommas<uint>(columns)
+      % vectorAsStringWithCommas<double>(scales);
+
+    return(oss.str());
+  }
+
   string rowdesc;
 
 };
