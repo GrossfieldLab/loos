@@ -30,9 +30,6 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
-
 
 using namespace std;
 using namespace loos;
