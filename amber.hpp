@@ -52,7 +52,7 @@ namespace loos {
    * generated if an atomic mass is unknown to LOOS.  In order to
    * verify that all atoms have an assigned mass, use the following,
    *\code
-   * bool ok = amber.allHaveProperty(Atom::massbit);
+   * bool ok = amber.allHaveProperty(Atom::anumbit);
    *\endcode
    *
    */

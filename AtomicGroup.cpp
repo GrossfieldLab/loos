@@ -911,15 +911,23 @@ namespace loos {
   }
 
 
+  /**
+   * If an atom has a mass, then this is used to look up it's atomic
+   * number.  Note that LOOS only has the first 96 elements in its
+   * tables.  If a mass is not found in the LOOS table, then the
+   * atomic number is not modified (or set), otherwise any existing
+   * atomic number is overwritten.
+   */
   uint AtomicGroup::deduceAtomicNumberFromMass(const double tol) {
     uint n = 0;
 
     for (AtomicGroup::iterator i = begin(); i != end(); ++i)
       if ((*i)->checkProperty(Atom::massbit)) {
         uint an = loos::deduceAtomicNumberFromMass((*i)->mass(), tol);
-        (*i)->atomic_number(an);
-        if (an)
+        if (an) {
+          (*i)->atomic_number(an);
           ++n;
+        }
       }
 
     return(n);

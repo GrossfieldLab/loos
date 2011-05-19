@@ -25,6 +25,11 @@ namespace loos {
 
   };
 
+  //! Deduce an atomic number from the mass
+  /**
+   * Only the first 96 elements are included in LOOS.  An atomic
+   * number of 0 is returned if the mass is not found within LOOS' table.
+   */
   unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance = 0.1);
 
 };

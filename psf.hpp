@@ -54,7 +54,7 @@ namespace loos {
    * generated if an atomic mass is unknown to LOOS.  In order to
    * verify that all atoms have an assigned mass, use the following,
    *\code
-   * bool ok = psf.allHaveProperty(Atom::massbit);
+   * bool ok = psf.allHaveProperty(Atom::anumbit);
    *\endcode
   */
   class PSF : public AtomicGroup {
