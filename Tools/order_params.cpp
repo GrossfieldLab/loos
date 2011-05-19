@@ -31,13 +31,18 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
+
+// Note: this code originally used globals and program_options directly
+//       To ease the conversion into OptionsFramework, the use of globals
+//       is retained...
 
 string system_filename;
 string timeseries_filename;
@@ -55,145 +60,167 @@ bool block_average = false;
 string block_filename;
 int ba_first, ba_last;
 
-void parseOptions(int argc, char *argv[])
-    {
-    try
-        {
-        po::options_description generic("Allowed options");
-        generic.add_options()
-            ("help,h", "Produce this help message")
-            ("1", "Use 1 residue lipids")
-            ("3", "Use 3 residue lipids")
-            ("y_axis,y", "Use y axis as magnetic field")
-            ("x_axis,x", "Use x axis as magnetic field")
-            ("timeseries,t", po::value<string>(&timeseries_filename), "File name for outputing timeseries")
-            ("block_average,b", po::value<string>(&block_filename),"File name for block averaging data")
-            ("ba_first,f", po::value<int>(&ba_first), "Lower range of blocks to average over to calculate uncertainty")
-            ("ba_last,l", po::value<int>(&ba_last), "Upper range of blocks to average over to calculate uncertainty");
 
-        po::options_description hidden("Hidden options");
-        hidden.add_options()
-            ("model", po::value<string>(&system_filename), "Model filename")
-            ("traj", po::value<string>(&traj_filename), "Trajectory filename")
-            ("sel", po::value<string>(&selection), "Selection string for carbons")
-            ("skip", po::value<int>(&skip), "Frames to skip")
-            ("first_carbon", po::value<int>(&first_carbon), "Number of first carbon")
-            ("last_carbon", po::value<int>(&last_carbon), "Number of last carbon");
-            
-        po::options_description command_line;
-        command_line.add(generic).add(hidden);
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage
+{
+public:
+  
+  void addGeneric(po::options_description& o)
+  {
+    o.add_options()
+      ("1", "Use 1 residue lipids")
+      ("3", "Use 3 residue lipids")
+      ("y_axis,Y", "Use y axis as magnetic field")
+      ("x_axis,X", "Use x axis as magnetic field")
+      ("timeseries,T", po::value<string>(&timeseries_filename), "File name for outputing timeseries")
+      ("block_average", po::value<string>(&block_filename),"File name for block averaging data")
+      ("ba_first", po::value<int>(&ba_first), "Lower range of blocks to average over to calculate uncertainty")
+      ("ba_last", po::value<int>(&ba_last), "Upper range of blocks to average over to calculate uncertainty");
+  }
 
-        po::positional_options_description p;
-        p.add("model", 1);
-        p.add("traj", 1);
-        p.add("skip", 1);
-        p.add("sel", 1);
-        p.add("first_carbon", 1);
-        p.add("last_carbon", 1);
+  void addHidden(po::options_description& o)
+  {
+    o.add_options()
+      ("sel", po::value<string>(&selection), "Selection string for carbons")
+      ("first_carbon", po::value<int>(&first_carbon), "Number of first carbon")
+      ("last_carbon", po::value<int>(&last_carbon), "Number of last carbon");
+  }
 
-        po::variables_map vm;
-        po::store(po::command_line_parser(argc,argv).
-                options(command_line).positional(p).run(), vm);
-        po::notify(vm);
+  void addPositional(po::positional_options_description& p) {
+    p.add("sel", 1);
+    p.add("first_carbon", 1);
+    p.add("last_carbon", 1);
+  }
 
-        if (vm.count("help")              ||
-                !vm.count("model")        || !vm.count("traj")         ||
-                !vm.count("skip")         || !vm.count("sel")          ||
-                !vm.count("first_carbon") || !vm.count("last_carbon")
-           )
-            {
-            cerr << "Usage: " << argv[0] << " "
-                 << "model-name trajectory-name skip-frames selection-string "
-                 << "first-carbon last-carbon "
-                 << "[--1|--3]"
-                 << endl;
-            cerr << generic;
-            exit(-1);
-            }
+  bool check(po::variables_map& vm)
+  {
+    if (!(vm.count("sel") && vm.count("first_carbon") && vm.count("last_carbon")))
+      return(true);
+    if (vm.count("1") && vm.count("3"))
+      {
+        cerr << "Can't select \"--1\" and \"--3\" at the same time" 
+             << endl
+             << "Your lipids either have 1 residue or 3, not both" 
+             << endl;
+        return(true);
+      }
 
-        // Verify sanity of the options for number of residues per lipid
-        if (vm.count("1") && vm.count("3"))
-            {
-            cerr << "Can't select \"--1\" and \"--3\" at the same time" 
-                 << endl
-                 << "Your lipids either have 1 residue or 3, not both" 
-                 << endl;
-            exit(-1);
-            }
-        else if (vm.count("1"))
-            {
-            one_res_lipid = true;
-            }
-        else if (vm.count("3"))
-            {
-            three_res_lipid = true;
-            }
+    if (vm.count("y_axis") && vm.count("x_axis"))
+      {
+        cerr << "Can't specify \"--y_axis\" and \"--x_axis\" at the same time"
+             << endl
+             << "You can only compute the order parameters for 1 magnetic field "
+             << endl
+             << "at a time."
+             << endl;
+        return(true);
+      }
 
-        // Verify sanity of options for which axis to use as magnetic field direction
-        if (vm.count("y_axis") && vm.count("x_axis"))
-            {
-            cerr << "Can't specify \"--y_axis\" and \"--x_axis\" at the same time"
-                 << endl
-                 << "You can only compute the order parameters for 1 magnetic field "
-                 << endl
-                 << "at a time.  Exiting..."
-                 << endl;
-            exit(-1);
-            }
-        if (vm.count("y_axis"))
-            {
-            axis_index = 1;
-            }
-        else if (vm.count("x_axis"))
-            {
-            axis_index = 0;
-            }
-        else  // default to using the z-axis
-            {
-            axis_index = 2;
-            }
+    return(false);
+  }
 
-        // Did the user request time series output?
-        if (vm.count("timeseries"))
-            {
-            dump_timeseries = true;
-            }
-        else
-            {
-            dump_timeseries = false;
-            }
+  bool postConditions(po::variables_map& vm) {
+    if (vm.count("1"))
+      {
+        one_res_lipid = true;
+      }
+    else if (vm.count("3"))
+      {
+        three_res_lipid = true;
+      }
 
-        // Did the user request block averaging?
-        // If so, set the boolean flag
-        if (vm.count("block_average"))
-            {
-            block_average = true;
-            if (!vm.count("ba_first")) ba_first = 2;
-            if (!vm.count("ba_last")) ba_first = 5;
-            }
+    if (vm.count("y_axis"))
+      {
+        axis_index = 1;
+      }
+    else if (vm.count("x_axis"))
+      {
+        axis_index = 0;
+      }
+    else // default to z-axis
+      {
+        axis_index = 2;
+      }
 
-        }
-    catch(exception& e)
-        {
-        cerr << "Error - " << e.what() << endl;
-        exit(-1);
-        }
+    // Did the user request time series output?
+    if (vm.count("timeseries"))
+      {
+        dump_timeseries = true;
+      }
+    else
+      {
+        dump_timeseries = false;
+      }
 
-    }
+    // Did the user request block averaging?
+    // If so, set the boolean flag
+    if (vm.count("block_average"))
+      {
+        block_average = true;
+        if (!vm.count("ba_first")) ba_first = 2;
+        if (!vm.count("ba_last")) ba_first = 5;
+      }
+
+
+    return(true);
+  }
+
+  string help() const {
+    return("selection first_carbon_number last_carbon_number");
+  }
+
+  string print() const {
+    ostringstream oss;
+
+    oss << boost::format("axis_index=%d, one_res_lipid=%d, three_res_lipid=%d, dump_timeseries=%d, block_average=%d, ba_first=%d, ba_last=%d")
+      % axis_index
+      % one_res_lipid
+      % three_res_lipid
+      % dump_timeseries
+      % block_average
+      % ba_first
+      % ba_last;
+    return(oss.str());
+  }
+  
+
+  
+};
+
+// @endcond
+
+
 
 
 int main (int argc, char *argv[])
 {
 
 // parse the command line options
-parseOptions(argc, argv);
+string hdr = invocationHeader(argc, argv);
+opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+ToolOptions* topts = new ToolOptions;
 
-cout << "# " << invocationHeader(argc, argv) << endl;
+opts::AggregateOptions options;
+options.add(bopts).add(tropts).add(topts);
+if (!options.parse(argc, argv))
+  exit(-1);
+
+
+// *** Copy options back into globals (that aren't already there...) ***
+skip = tropts->skip;
+system_filename = tropts->model_name;
+traj_filename = tropts->traj_name;
 
 // Create the data structures for the system and trajectory
-AtomicGroup system = createSystem(system_filename);
-pTraj traj = createTrajectory(traj_filename, system);
+// (just copied from the BasicTrajectory object)
+AtomicGroup system = tropts->model;
+pTraj traj = tropts->trajectory;
 
+
+
+cout << "# " << invocationHeader(argc, argv) << endl;
 // TODO: add a check for connectivity
 
 // NOTE: We assume the selection is a list of all of the relevant carbon atoms. 
@@ -340,9 +367,6 @@ for (unsigned int i=0; i<selections.size(); i++)
 #endif
 
 
-
-// skip the equilibration frames
-traj->readFrame(skip);
 
 const int num_frames = traj->nframes() - skip;
 
