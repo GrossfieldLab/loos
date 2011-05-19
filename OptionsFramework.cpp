@@ -9,7 +9,7 @@ namespace loos {
         opts.add_options()("fullhelp", "More detailed help");
 
       opts.add_options()
-        ("help", "Produce this message")
+        ("help,h", "Produce this message")
         ("verbosity,v", po::value<int>(&verbosity)->default_value(verbosity), "Verbosity of output (if available)");
     }
 
