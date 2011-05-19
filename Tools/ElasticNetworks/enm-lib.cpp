@@ -50,7 +50,7 @@ namespace ENM {
       exit(-1);
     }
 
-    for (int i=0; i<target.size(); ++i) {
+    for (uint i=0; i<target.size(); ++i) {
       if (source[i]->name() != target[i]->name()) {
         cerr << "ERROR- atom mismatch at position " << i << endl;
         exit(-1);

@@ -125,8 +125,8 @@ namespace loos {
     virtual AtomicGroup* clone(void) const;
 
 
-    int length(void) const { return(atoms.size()); }
-    int size(void) const { return(atoms.size()); }
+    uint length(void) const { return(atoms.size()); }
+    uint size(void) const { return(atoms.size()); }
     bool empty(void) const { return(atoms.empty()); }
 
     //! Get the ith atom from this group.

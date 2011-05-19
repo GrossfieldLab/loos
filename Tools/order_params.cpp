@@ -395,7 +395,7 @@ while (traj->readFrame())
     for (unsigned int i=0; i<selections.size(); i++)
         {
         AtomicGroup *g = &(selections[i]);
-        for (int j=0; j<g->size(); j++)
+        for (uint j=0; j<g->size(); j++)
             {
             // get the carbon
             pAtom carbon = g->getAtom(j);

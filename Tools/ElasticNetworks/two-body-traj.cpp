@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
 	continue;
       }
       double massholder = 0.0;
-      for (int bbi = 0; bbi < BB.size(); ++bbi) {
+      for (uint bbi = 0; bbi < BB.size(); ++bbi) {
 	massholder += BB[bbi]->mass();      
       }
       //CA should be an AtomicGroup of only one atom, the CA of residue *vi

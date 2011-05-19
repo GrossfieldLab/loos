@@ -135,16 +135,15 @@ namespace loos {
       writeBox(grp.periodicBox());
 
     float *data = new float[_natoms];
-    int i;
-    for (i=0; i<_natoms; i++)
+    for (uint i=0; i<_natoms; i++)
       data[i] = grp[i]->coords().x();
     writeF77Line((char *)data, _natoms * sizeof(float));
 
-    for (i=0; i<_natoms; i++)
+    for (uint i=0; i<_natoms; i++)
       data[i] = grp[i]->coords().y();
     writeF77Line((char *)data, _natoms * sizeof(float));
 
-    for (i=0; i<_natoms; i++)
+    for (uint i=0; i<_natoms; i++)
       data[i] = grp[i]->coords().z();
     writeF77Line((char *)data, _natoms * sizeof(float));
 

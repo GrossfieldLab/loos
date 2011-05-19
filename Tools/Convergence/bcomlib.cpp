@@ -35,7 +35,7 @@
 void Convergence::subtractStructure(loos::RealMatrix& M, const loos::AtomicGroup& model) {
   std::vector<float> avg(model.size() * 3);
   int k = 0;
-  for (int i=0; i<model.size(); ++i) {
+  for (uint i=0; i<model.size(); ++i) {
     loos::GCoord c = model[i]->coords();
     avg[k++] = c.x();
     avg[k++] = c.y();

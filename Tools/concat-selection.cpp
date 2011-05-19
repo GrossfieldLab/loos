@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
   while (traj->readFrame()) {
     traj->updateGroupCoords(model);
     for (int i=0; i<nsegments; ++i) {
-      for (int j=0; j<subsets[i].size(); ++j) {
+      for (uint j=0; j<subsets[i].size(); ++j) {
         pAtom atom(new Atom(*(subsets[i][j])));
         segments[i].append(atom);
       }
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
   int atomid = 1;
   AtomicGroup combined;
   for (int j=0; j<nsegments; ++j) {
-    for (int i=0; i<segments[j].size(); ++i) {
+    for (uint i=0; i<segments[j].size(); ++i) {
       segments[j][i]->id(atomid++);
       segments[j][i]->resid(i+1);
     }

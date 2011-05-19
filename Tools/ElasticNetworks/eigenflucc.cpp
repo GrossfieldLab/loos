@@ -127,13 +127,15 @@ int main(int argc, char *argv[]) {
   DoubleMatrix eigvecs;
   readAsciiMatrix(eigvecs_name, eigvecs);
 
-  if (modes.empty())
-    if (pca_input)
+  if (modes.empty()) {
+    if (pca_input) {
       for (uint i=0; i<eigvals.rows()-6; ++i)
         modes.push_back(i);
-    else
+    } else {
       for (uint i=6; i<eigvals.rows(); ++i)
         modes.push_back(i);
+    }
+  }
 
 
   uint n = modes.size();

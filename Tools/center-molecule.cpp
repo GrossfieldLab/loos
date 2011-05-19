@@ -96,7 +96,7 @@ void copyBonds(AtomicGroup& target, AtomicGroup& source) {
     exit(-1);
   }
 
-  for (int i=0; i<target.size(); ++i)
+  for (uint i=0; i<target.size(); ++i)
     target[i]->setBonds(source[i]->getBonds());
 }
 

@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 
   vector<pAtom> atoms;
   if (globals.mapname == "") {
-    for (int i=0; i<model.size(); i++)
+    for (uint i=0; i<model.size(); i++)
       atoms.push_back(model[i]);
   } else {
     vector<int> indices = readMap(globals.mapname);

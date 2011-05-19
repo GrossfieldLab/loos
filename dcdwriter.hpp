@@ -237,9 +237,9 @@ namespace loos {
     }
 
   private:
-    int _natoms, _nsteps;
+    uint _natoms, _nsteps;
     greal _timestep;
-    int _current;
+    uint _current;
     bool _has_box;
     std::iostream* _stream;
     bool nodelete;

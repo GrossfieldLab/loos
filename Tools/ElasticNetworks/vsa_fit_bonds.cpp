@@ -154,9 +154,9 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
       //   Decides which spring function to use..
       loos::Math::Matrix<int> connectivity_map(subset.size(), subset.size());
       if (subset.hasBonds()){
-	for (int j = 0; j < subset.size(); ++j){
+	for (uint j = 0; j < subset.size(); ++j){
 	  if (subset[j]->hasBonds()){
-	    for (int k = 0; k < subset.size(); ++k) {
+	    for (uint k = 0; k < subset.size(); ++k) {
 	      if (subset[j]->isBoundTo(subset[k]->id()))
 		connectivity_map(j,k) = 1;
 	      else

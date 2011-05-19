@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     traj->readFrame(i);
     traj->updateGroupCoords(subset);
     
-    for (int j=0, k=0; j<subset.size(); ++j) {
+    for (uint j=0, k=0; j<subset.size(); ++j) {
       GCoord c = subset[j]->coords();
       A(k++,i) = c.x();
       A(k++,i) = c.y();

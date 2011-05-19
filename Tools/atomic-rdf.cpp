@@ -105,11 +105,11 @@ while (traj->readFrame())
 
     unique_pairs = 0;
     // compute the distribution of g2 around g1 
-    for (int j = 0; j < group1.size(); j++)
+    for (uint j = 0; j < group1.size(); j++)
         {
         pAtom a1 = group1[j];
         GCoord p1 = a1->coords();
-        for (int k = 0; k < group2.size(); k++)
+        for (uint k = 0; k < group2.size(); k++)
             {
             pAtom a2 = group2[k];
             // skip "self" pairs 
