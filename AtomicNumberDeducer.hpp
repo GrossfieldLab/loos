@@ -25,7 +25,7 @@ namespace loos {
 
   };
 
-  unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance);
+  unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance = 0.1);
 
 };
 

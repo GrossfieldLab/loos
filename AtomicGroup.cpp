@@ -31,6 +31,7 @@
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
+#include <AtomicNumberDeducer.hpp>
 
 
 namespace loos {
@@ -907,6 +908,21 @@ namespace loos {
             pruned_bonds.push_back(*i);
         (*j)->setBonds(pruned_bonds);
       }
+  }
+
+
+  uint AtomicGroup::deduceAtomicNumberFromMass(const double tol) {
+    uint n = 0;
+
+    for (AtomicGroup::iterator i = begin(); i != end(); ++i)
+      if ((*i)->checkProperty(Atom::massbit)) {
+        uint an = loos::deduceAtomicNumberFromMass((*i)->mass(), tol);
+        (*i)->atomic_number(an);
+        if (an)
+          ++n;
+      }
+
+    return(n);
   }
 
 

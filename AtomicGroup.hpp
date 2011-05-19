@@ -337,6 +337,9 @@ namespace loos {
     //! Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)
     void pruneBonds();
 
+    //! Deduce atomic number from mass (if present), returning number of atoms assigned
+    uint deduceAtomicNumberFromMass(const double tol = 0.1);
+
     //! Is the array of atoms already sorted???
     /**
      * While we make some effort to ensure that alterations to the AtomicGroup

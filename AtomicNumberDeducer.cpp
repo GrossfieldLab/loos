@@ -7,7 +7,7 @@ namespace loos {
 
   namespace internal {
 
-    unsigned int AtomicNumberDeducer::deduceFromMass(const double mass, const double tolerance = 0.1) {
+    unsigned int AtomicNumberDeducer::deduceFromMass(const double mass, const double tolerance) {
       
       std::vector<MassNumber>::iterator i;
       for (i = element_table.begin(); i != element_table.end(); ++i)
@@ -131,7 +131,7 @@ namespace loos {
 
 
 
-  unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance = 0.1) {
+  unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance) {
     static internal::AtomicNumberDeducer deducer;
 
     return(deducer.deduceFromMass(mass, tolerance));
