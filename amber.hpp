@@ -47,6 +47,14 @@ namespace loos {
    * This class is largely geared towards reading parmtop files.  It
    * only parses a subset of the spec and follows more the format as
    * defined from example files and VMD than from the Amber website.
+   *
+   * Atomic numbers will be deduced from the masses.  No error is
+   * generated if an atomic mass is unknown to LOOS.  In order to
+   * verify that all atoms have an assigned mass, use the following,
+   *\code
+   * bool ok = amber.allHaveProperty(Atom::massbit);
+   *\endcode
+   *
    */
 
   class Amber : public AtomicGroup {

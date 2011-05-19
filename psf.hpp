@@ -50,6 +50,12 @@ namespace loos {
    * partial charge, and connectivity.  Higher order connectivity (angles, 
    * dihedrals, etc) are ignored.
    *
+   * Atomic numbers will be deduced from the masses.  No error is
+   * generated if an atomic mass is unknown to LOOS.  In order to
+   * verify that all atoms have an assigned mass, use the following,
+   *\code
+   * bool ok = psf.allHaveProperty(Atom::massbit);
+   *\endcode
   */
   class PSF : public AtomicGroup {
   public:
