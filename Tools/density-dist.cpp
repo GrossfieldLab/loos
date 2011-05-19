@@ -137,13 +137,27 @@ int main(int argc, char *argv[]) {
   AtomicGroup system = createSystem(model_name);
   pTraj traj = createTrajectory(traj_name, system);
 
-
   // density from each selection
   vector<AtomicGroup> subsets;
   if (auto_all)
     subsets.push_back(system);
   for (vector<string>::iterator i = selections.begin(); i != selections.end(); ++i)
     subsets.push_back(selectAtoms(system, *i));
+
+  // Verify properties...
+  for (vector<AtomicGroup>::iterator i = subsets.begin(); i != subsets.end(); ++i) {
+    bool ok;
+    switch(calc_type) {
+    case CHARGE: ok = i->allHaveProperty(Atom::chargebit); break;
+    case ELECTRON: ok = (i->allHaveProperty(Atom::anumbit) && i->allHaveProperty(Atom::chargebit)); break;
+    case MASS: ok = i->allHaveProperty(Atom::massbit); break;
+    default: cerr << "Internal Error- unknown calculation type\n"; exit(-1);
+    }
+    if (!ok) {
+      cerr << "Error: A system selection does not have the required properties for the desired calculation type.\n";
+      exit(-1);
+    }
+  }
   
   double bin_width = (max_z - min_z) / nbins;
 
