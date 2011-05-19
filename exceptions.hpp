@@ -82,7 +82,11 @@ namespace loos {
   };
 
 
-
+  //! Exception caused by inability to assign atomic numbers
+  class UnknownAtomicMass : public LOOSError {
+  public:
+    explicit UnknownAtomicMass(const std::string& arg) : LOOSError(arg) { }
+  };
 };
 
 

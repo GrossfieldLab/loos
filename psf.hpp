@@ -24,11 +24,8 @@
 #if !(defined PSF_HPP)
 #define PSF_HPP
 
-#include <ios>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
+#include <fstream>
 #include <stdexcept>
 
 #include <loos_defs.hpp>
@@ -86,9 +83,6 @@ namespace loos {
 
 
     void parseAtomRecord(const std::string s);  
-  
-    //! Use the mass to deduce the atomic number of the atom
-    int deduceAtomicNumber(pAtom pa);
 
   };
 

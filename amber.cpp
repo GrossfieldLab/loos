@@ -267,6 +267,7 @@ namespace loos {
     }
 
     assignResidues();
+    deduceAtomicNumberFromMass();
   }
 
 
