@@ -59,15 +59,16 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 #include <limits>
 
 using namespace std;
 using namespace loos;
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
-namespace po = boost::program_options;
+
+
 typedef Math::Matrix<float, Math::ColMajor>   Matrix;
 
 
@@ -85,68 +86,60 @@ string selection;
 const string porcupine_tag("POR");
 const string tip_tag("POT");
 
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
 
-void parseOptions(int argc, char *argv[]) {
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("columns,C", po::value< vector<string> >(&strings), "Columns to use")
+      ("scale,S", po::value< vector<double> >(&scales), "Scale the requested columns")
+      ("global", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
+      ("uniform", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
+      ("map", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
+      ("tips,T", po::value<double>(&tip_size)->default_value(0.0), "Length (in Angstroms) to make the tip (for single-sided only)")
+      ("double_sided", po::value<bool>(&double_sided)->default_value(false), "Use double-sided vectors");
+  }
 
-  try {
-    vector<string> strings;
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("selection,S", po::value<string>(&selection), "Infer mapping using this selection")
-      ("columns,c", po::value< vector<string> >(&strings), "Columns to use")
-      ("scale,s", po::value< vector<double> >(&scales), "Scale the requested columns")
-      ("global,g", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
-      ("uniform,u", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
-      ("map,M", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
-      ("tips,t", po::value<double>(&tip_size)->default_value(0.0), "Length (in Angstroms) to make the tip (for single-sided only)")
-      ("double_sided,d", po::value<bool>(&double_sided)->default_value(false), "Use double-sided vectors");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model name")
-      ("lsv", po::value<string>(&vec_name), "Left singular vector matrix");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("lsv", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("lsv"))) {
-      cerr << "Usage- " << argv[0] << " [options] model eigenvector_matrix\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (!strings.empty())
-      cols = parseRangeList<uint>(strings);
-    else
+  bool postConditions(po::variables_map& vm) {
+    if (strings.empty())
       cols.push_back(0);
+    else
+      cols = parseRangeList<uint>(strings);
 
     if (!scales.empty()) {
       if (scales.size() != cols.size()) {
         cerr << "ERROR - You must have the same number of scalings as columns or rely on the global scaling\n";
-        exit(-1);
+        return(false);
       }
     } else {
       for (uint i=0; i<cols.size(); ++i)
         scales.push_back(1.0);
     }
 
+
+    return(true);
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', tips=%f, double_sided=%d")
+      % opts::stringVectorAsStringWithCommas(strings)
+      % global_scale
+      % uniform
+      % map_name
+      % tip_size
+      % double_sided;
+    oss << "scale='";
+    copy(scales.begin(), scales.end(), ostream_iterator<double>(oss, ","));
+    oss << "'";
+    return(oss.str());
   }
-}
+
+  vector<string> strings;
+};
+// @endcond
+
 
 
 
@@ -216,21 +209,32 @@ vector<int> inferMap(const AtomicGroup& g, const string& sel) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments *ropts = new opts::RequiredArguments;
+  ropts->addArgument("lsv", "left-singular-vector-file");
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
   // First, read in the LSVs
   Matrix U;
   readAsciiMatrix(vec_name, U);
   uint m = U.rows();
 
   // Read in the average structure...
-  AtomicGroup avg = createSystem(model_name);
+  AtomicGroup avg = mopts->model;
 
   vector<int> atomids;
   if (map_name.empty()) {
-    if (selection.empty())
+    if (sopts->selection.empty())
       atomids = fakeMap(avg);
     else
-      atomids = inferMap(avg, selection);
+      atomids = inferMap(avg, sopts->selection);
 
   } else
     atomids = readMap(map_name);
@@ -316,3 +320,4 @@ int main(int argc, char *argv[]) {
   outpdb.remarks().add(hdr);
   cout << outpdb;
 }
+
