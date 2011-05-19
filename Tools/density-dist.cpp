@@ -154,8 +154,8 @@ int main(int argc, char *argv[]) {
     default: cerr << "Internal Error- unknown calculation type\n"; exit(-1);
     }
     if (!ok) {
-      cerr << "Error: A system selection does not have the required properties for the desired calculation type.\n";
-      exit(-1);
+      cerr << "WARNING- system is missing properties required for calculation type.  Default values will be used where possible.\n";
+      break;
     }
   }
   
