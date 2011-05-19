@@ -62,6 +62,9 @@
 #include <XForm.hpp>
 #include <Matrix.hpp>
 
+#include <AtomicNumberDeducer.hpp>
+#include <Atom.hpp>
+#include <AtomicGroup.hpp>
 #include <pdb.hpp>
 #include <psf.hpp>
 #include <amber.hpp>
