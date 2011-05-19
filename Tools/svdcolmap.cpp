@@ -30,68 +30,54 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 
-namespace po = boost::program_options;
+
 using namespace std;
 using namespace loos;
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() :
+    scale(1.0),
+    log(false),
+    index(0),
+    mapname("")
+  { }
 
-struct Globals {
-  string mapname;
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("map", po::value<string>(&mapname), "Use a map file to select atoms to color")
+      ("scale", po::value<double>(&scale)->default_value(scale), "Scale magnitudes by this amount")
+      ("log", po::value<bool>(&log)->default_value(log),"Log-scale the output")
+      ("index", po::value<int>(&index)->default_value(index), "SVD Term index to use");
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("map='%s',scale=%f,log=%d,index=%d")
+      % mapname
+      % scale
+      % log
+      % index;
+    return(oss.str());
+  }
+
+
   double scale;
   bool log;
   int index;
-  string model_name;
-  string prefix;
+  string mapname;
+
 };
+// @endcond
 
-Globals globals;
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("map,m", po::value<string>(&globals.mapname), "Use a map file to select atoms to color")
-      ("scale,s", po::value<double>(&globals.scale)->default_value(1.0), "Scale magnitudes by this amount")
-      ("log,l", po::value<bool>(&globals.log)->default_value(false),"Log-scale the output")
-      ("index,i", po::value<int>(&globals.index)->default_value(0), "SVD Term index to use");
-
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&globals.model_name), "Model filename")
-      ("prefix", po::value<string>(&globals.prefix), "Prefix for SVD files");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("prefix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("prefix"))) {
-      cerr << "Usage- svdcolmap [options] model-name svd-prefix\n";
-      cerr << generic;
-      exit(-1);
-    }
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
 
 
 vector<int> readMap(const string& fname) {
@@ -131,24 +117,35 @@ vector<pAtom> getAtoms(AtomicGroup& grp, const vector<int>& ids) {
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
-  AtomicGroup model = createSystem(globals.model_name);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::OutputPrefix* popts = new opts::OutputPrefix;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(popts).add(mopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+
+  AtomicGroup model = mopts->model;
 
   vector<pAtom> atoms;
-  if (globals.mapname == "") {
+  if (topts->mapname == "") {
     for (int i=0; i<model.size(); i++)
       atoms.push_back(model[i]);
   } else {
-    vector<int> indices = readMap(globals.mapname);
+    vector<int> indices = readMap(topts->mapname);
     atoms = getAtoms(model, indices);
   }
 
   Matrix U;
-  readAsciiMatrix(globals.prefix + "_U.asc", U);
+  readAsciiMatrix(popts->prefix + "_U.asc", U);
   uint m = U.rows();
   uint n = U.cols();
 
-  cerr << "Read in " << m << " x " << n << " matrix from " << globals.prefix + "_U.asc" << endl;
+  cerr << "Read in " << m << " x " << n << " matrix from " << popts->prefix + "_U.asc" << endl;
 
   if (m % 3 != 0) {
     cerr << "Error- dimensions of LSVs are bad.\n";
@@ -156,23 +153,23 @@ int main(int argc, char *argv[]) {
   }
 
   Matrix S;
-  readAsciiMatrix(globals.prefix + "_s.asc", S);
-  cerr << "Read in " << S.rows() << " singular values from " << globals.prefix + "_s.asc" << endl;
+  readAsciiMatrix(popts->prefix + "_s.asc", S);
+  cerr << "Read in " << S.rows() << " singular values from " << popts->prefix + "_s.asc" << endl;
 
   pAtom pa;
   AtomicGroup::Iterator iter(model);
   while (pa = iter())
     pa->bfactor(0.0);
 
-  double sval = S[globals.index];
+  double sval = S[topts->index];
   uint i;
   uint j;
   bool warned = false;
   for (i=j=0; j<m; j += 3) {
-    GCoord c(U(j, globals.index), U(j+1, globals.index), U(j+2, globals.index));
+    GCoord c(U(j, topts->index), U(j+1, topts->index), U(j+2, topts->index));
     c *= sval;
-    double b = globals.scale * c.length();
-    if (globals.log)
+    double b = topts->scale * c.length();
+    if (topts->log)
       b = log(b);
 
     if (b<0.0) {
