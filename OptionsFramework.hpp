@@ -497,12 +497,6 @@ namespace loos {
       void setupOptions();
     };
 
-    // ----------------------------------------------------------------------
-
-
-    //! Convert a vector of strings into a comma-separated list
-    std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v);
-
   };
 };
 

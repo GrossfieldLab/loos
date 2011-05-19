@@ -286,7 +286,7 @@ namespace loos {
       if (vargs_set) {
         std::vector<std::string> v = variableValues(variable_arguments.first);
         oss << variable_arguments.first << "=(";
-        oss << stringVectorAsStringWithCommas(v);
+        oss << vectorAsStringWithCommas<std::string>(v);
         oss << ")";
       }
 
@@ -373,18 +373,6 @@ namespace loos {
         results.push_back((*i)->print());
 
       return(results);
-    }
-
-
-
-
-
-
-    std::string stringVectorAsStringWithCommas(const std::vector<std::string>& v) {
-      std::ostringstream oss;
-      for (uint i=0; i<v.size(); ++i)
-        oss << "'" << v[i] << "'" << ((i == v.size() - 1 ) ? "" : ",");
-      return(oss.str());
     }
 
   };
