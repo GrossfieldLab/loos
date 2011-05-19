@@ -157,7 +157,7 @@ public:
     oss << boost::format("mode='%s', target='%s', selections=(%s)") 
       % mode_name
       % target_name
-      % opts::stringVectorAsStringWithCommas(selection_names);
+      % vectorAsStringWithCommas<string>(selection_names);
 
     return(oss.str());
   }

@@ -124,7 +124,7 @@ public:
   string print() const {
     ostringstream oss;
     oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', tips=%f, double_sided=%d")
-      % opts::stringVectorAsStringWithCommas(strings)
+      % vectorAsStringWithCommas<string>(strings)
       % global_scale
       % uniform
       % map_name
