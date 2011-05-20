@@ -31,7 +31,6 @@
  */
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 
 
 using namespace std;
@@ -106,71 +105,6 @@ public:
 };
 // @endcond
 
-
-void parseOptions(int argc, char *argv[])
-    {
-    try 
-        {
-        po::options_description generic("Allowed options");
-        generic.add_options()
-            ("help,h", "Produce this help message")
-            //("fullhelp", "Even more help")
-            ("sel1", po::value<string>(&selection1), "first selection")
-            ("sel2", po::value<string>(&selection2), "second selection")
-            ("split-mode",po::value<string>(&split_by), "how to split the selections")
-            ("skip", po::value<int>(&skip)->default_value(0), "frames to skip");
-        
-        po::options_description hidden("Hidden options");
-        hidden.add_options()
-            ("model", po::value<string>(&system_filename), "Model filename")
-            ("traj", po::value<string>(&traj_filename), "Trajectory filename")
-            ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
-            ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
-            ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
-
-        po::options_description command_line;
-        command_line.add(generic).add(hidden);
-
-        po::positional_options_description p;
-        p.add("model", 1);
-        p.add("traj", 1);
-        p.add("hist-min", 1);
-        p.add("hist-max", 1);
-        p.add("num-bins", 1);
-
-        po::variables_map vm;
-        po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-        po::notify(vm);
-
-        if (vm.count("help") || 
-            !vm.count("model") || !vm.count("traj") || 
-            !vm.count("hist-min") || !vm.count("hist-max") ||
-            !vm.count("num-bins") ||
-            !vm.count("sel1") 
-           )
-            {
-            cerr << "Usage: " << argv[0] << " "
-                 << "model-name trajectory-name hist-min hist-max num-bins "
-                 << "--split-mode by-residue|by-segment|by-molecule"
-                 << "--sel1 SELECTION [--sel2 SELECTION] "
-                 << endl;
-            cerr << generic;
-            exit(-1);
-            }
-        
-        // if there's only 1 selection, duplicate it
-        if (!vm.count("sel2"))
-            {
-            selection2 = selection1;
-            }
-        }
-    catch(exception& e) 
-        {
-        cerr << "Error - " << e.what() << endl;
-        exit(-1);
-        }
-    }
 
 enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE };
 
