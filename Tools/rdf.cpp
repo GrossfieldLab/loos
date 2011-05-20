@@ -40,8 +40,6 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-string system_filename;
-string traj_filename;
 string selection1, selection2;
 string split_by;
 double hist_min, hist_max;
