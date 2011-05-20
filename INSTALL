@@ -112,7 +112,7 @@ If you have root access then you can forget the sudo and issue the command witho
 
 ------= Debian =------
 
-Loos has been tested with: 5.0.6
+Loos has been tested with: 5.0.6, 6.0.1
 
 Using the synaptic manager (or apt-get), install the following packages:
       libboost-dev
