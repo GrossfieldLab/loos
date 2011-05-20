@@ -37,24 +37,9 @@
 using namespace std;
 using namespace loos;
 
-namespace po = boost::program_options;
-
-
-#if 0
-void Usage()
-    {
-    cerr << "Usage: rdf SystemFile Trajectory selection1 selection2 "
-         << "min max num_bins skip" 
-         << endl;
-    cerr << endl;
-    cerr << "SystemFile can be a CHARMM/XPLOR PSF, an AMBER parmtop, a PDB"
-         << " file, or any other format supported by LOOS"
-         << endl;
-    cerr << "Trajectory can be a CHARMM/NAMD DCD or AMBER trajectory," 
-         << " or any other format supported by LOOS"
-         << endl;
-    }
-#endif
+using namespace loos;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 string system_filename;
 string traj_filename;
@@ -63,6 +48,64 @@ string split_by;
 double hist_min, hist_max;
 int num_bins;
 int skip;
+
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage
+{
+public:
+  
+  void addGeneric(po::options_description& o) 
+  {
+    o.add_options()
+      ("split-mode",po::value<string>(&split_by), "how to split the selections");
+  }
+
+  void addHidden(po::options_description& o)
+  {
+    o.add_options()
+      ("sel1", po::value<string>(&selection1), "first selection")
+      ("sel2", po::value<string>(&selection2), "second selection")
+      ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
+      ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
+      ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+  }
+
+  bool check(po::variables_map& vm)
+  {
+    return(!(vm.count("sel1") 
+             && vm.count("hist-min")
+             && vm.count("hist-max")
+             && vm.count("num-bins")));
+  }
+
+  bool postCondition(po::variables_map& vm)
+  {
+    if (vm.count("sel1") && !vm.count("sel2"))
+      selection2 = selection1;
+    return(true);
+  }
+
+  string help() const
+  {
+    return("first-selection second-selection histogrm-min histogram-min histogram-bins");
+  }
+
+  string print() const
+  {
+    ostringstream oss;
+    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f")
+      % split_by
+      % selection1
+      % selection2
+      % hist_min
+      % hist_max
+      % num_bins;
+    return(oss.str());
+  }
+
+};
+// @endcond
+
 
 void parseOptions(int argc, char *argv[])
     {
@@ -161,31 +204,29 @@ split_mode parseSplit(const string &split_by)
 
 int main (int argc, char *argv[])
 {
-#if 0
-if ( (argc <= 1) || 
-     ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 9)
-   )
-    {
-    Usage();
-    exit(-1);
-    }
-#endif
 
 // parse the command line options
-parseOptions(argc, argv);
+string hdr = invocationHeader(argc, argv);
+opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+ToolOptions* topts = new ToolOptions;
+
+opts::AggregateOptions options;
+options.add(bopts).add(tropts).add(topts);
+if (!options.parse(argc, argv))
+  exit(-1);
 
 // parse the split mode, barf if you can't do it
 split_mode split=parseSplit(split_by);
 
 // Print the command line arguments
-cout << "# " << invocationHeader(argc, argv) << endl;
+cout << "# " << hdr << endl;
 
 // Create the system and the trajectory file
 // Note: The pTraj type is a Boost shared pointer, so we'll need
 //       to use pointer semantics to access it
-AtomicGroup system = createSystem(system_filename);
-pTraj traj = createTrajectory(traj_filename, system);
+AtomicGroup system = tropts->model;
+pTraj traj = tropts->trajectory;
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -238,9 +279,6 @@ for (g=grouping.begin(); g!=grouping.end(); g++)
         }
     }
 
-
-// Skip the initial frames as equilibration
-traj->readFrame(skip); 
 
 // read the initial coordinates into the system
 traj->updateGroupCoords(system);
