@@ -30,75 +30,90 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
 
 using namespace std;
 using namespace loos;
 
 // Globals...blech...
 
-string source_name, target_name;
 string source_selection, target_selection, apply_selection;
-bool quiet = false;
 
 
-void parseOptions(int argc, char *argv[]) {
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("apply,A", po::value<string>(&apply_selection)->default_value("all"), "Subset of source model to apply transformation to")
+      ("source,S", po::value<string>(&source_selection)->default_value("name == 'CA'"), "Subset of the source model to align with")
+      ("target,T", po::value<string>(&target_selection)->default_value("name == 'CA'"), "Subset of the target model to align with");
 
-  try {
-    po::options_description generic("Allowed options", 100);
-    generic.add_options()
-      ("help,h", "Produce this help message")
-      ("apply,a", po::value<string>(&apply_selection)->default_value("all"), "Subset of source model to apply transformation to")
-      ("source,s", po::value<string>(&source_selection)->default_value("name == 'CA'"), "Subset of the source model to align with")
-      ("target,t", po::value<string>(&target_selection)->default_value("name == 'CA'"), "Subset of the target model to align with")
-      ("quiet,Q", "Suppress writing out details of superposition");
+  }
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
+  void addHidden(po::options_description& o) {
+    o.add_options()
       ("source_name", po::value<string>(&source_name), "Source model filename")
       ("target_name", po::value<string>(&target_name), "Target model filename");
+  }
 
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
+  void addPositional(po::positional_options_description& p) {
     p.add("source_name", 1);
     p.add("target_name", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("source_name") && vm.count("target_name"))) {
-      cerr << "Usage- rmsfit [options] source-model target-model >superimposed.pdb\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (vm.count("quiet"))
-      quiet = true;
-
   }
 
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+  bool check(po::variables_map& vm) {
+    return(!(vm.count("source_name") && vm.count("target_name")));
   }
-}
+
+  bool postConditions(po::variables_map& vm) {
+    source_model = createSystem(source_name);
+    target_model = createSystem(target_name);
+
+    return(true);
+  }
+
+  string help() const { return("source-filename target-filename"); }
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("apply='%s', source='%s', target='%s, source_name='%s', target_name='%s'")
+      % apply_selection
+      % source_selection
+      % target_selection
+      % source_name
+      % target_name;
+    return(oss.str());
+  }
+
+
+  string source_name;
+  string target_name;
+
+  AtomicGroup source_model;
+  AtomicGroup target_model;
+};
+
+// @endcond
 
 
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
-  AtomicGroup source_model = createSystem(source_name);
-  AtomicGroup target_model = createSystem(target_name);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup source_model = topts->source_model;
+  AtomicGroup target_model = topts->target_model;
 
   AtomicGroup source_subset = selectAtoms(source_model, source_selection);
   AtomicGroup apply_subset = selectAtoms(source_model, apply_selection);
@@ -117,7 +132,7 @@ int main(int argc, char *argv[]) {
   GMatrix M = source_subset.superposition(target_subset);
   XForm W(M);
   apply_subset.applyTransform(W);
-  if (!quiet) {
+  if (bopts->verbosity) {
     double d = source_subset.rmsd(target_subset);
     cerr << "Final RMSD = " << d << endl;
   }
