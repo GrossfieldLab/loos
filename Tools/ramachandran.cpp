@@ -347,10 +347,12 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("pseudo=%d, missing=%d, warn=%d, skipmissing=%d, show=%d")
+    oss << boost::format("pseudo=%d, missing=%f, warn=%d, skipmissing=%d, show=%d")
       % pseudo_flag % missing_flag % warn_flag % skip_flag % show_flag;
     return(oss.str());
   }
+
+  bool pseudo_flag, warn_flag, skip_flag, show_flag;
 
 };
 
