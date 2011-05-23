@@ -316,32 +316,40 @@ public:
   
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("pseudo", "Use RNA pseudo-torsions")
+      ("pseudo", po::value<bool>(&pseudo_flag)->default_value(false), "Use RNA pseudo-torsions")
       ("missing", po::value<double>(&missing_flag)->default_value(-9999), "Value to use for missing torsions")
-      ("warn", "Warn when atoms are missing a torsion")
-      ("show", "Show atoms used for each torsion");
+      ("warn", po::value<bool>(&warn_flag)->default_value(true), "Warn when atoms are missing a torsion")
+      ("skipmissing", po::value<bool>(&skip_flag)->default_value(true), "Skip residues missing torsions")
+      ("show", po::value<bool>(&show_flag)->default_value(false), "Show atoms used for each torsion");
   }
 
   bool postConditions(po::variables_map& vm) {
     // Instantiate correct Extractor-derived object based on
     // user-selected mode...
-    if (vm.count("pseudo"))
+    if (pseudo_flag)
       extractor = new PseudoTorsions;
     else
       extractor = new PhiPsi;                // Assume protein
 
     // Configure extractor to warn upon finding atoms missing, if the
     // user wants it...
-    if (vm.count("warn"))
+    if (warn_flag)
       extractor->missingAtomsWarn();
 
-    if (vm.count("skip"))
+    if (skip_flag)
       extractor->skipMissingResidues();
 
-    if (vm.count("show"))
+    if (show_flag)
       extractor->showAtoms();
 
     return(true);
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("pseudo=%d, missing=%d, warn=%d, skipmissing=%d, show=%d")
+      % pseudo_flag % missing_flag % warn_flag % skip_flag % show_flag;
+    return(oss.str());
   }
 
 };
