@@ -42,16 +42,16 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
-#include <boost/format.hpp>
 #include <boost/regex.hpp>
 #include <sstream>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup>   vGroup;
 
@@ -172,9 +172,9 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
 
 
 
-void fullHelp(void) {
+string fullHelpMessage(void) {
 
-  cout << 
+  string s =
     "\n"
     "Examples:\n"
     "\n"
@@ -256,109 +256,107 @@ void fullHelp(void) {
     "    match the longest string of digits in the filename.  As in the\n"
     "    example above, to match the second set of digits, use a regular\n"
     "    expression like \"run_\\d+_(\\d+).dcd\".\n";
+
+  return(s);
 }
 
 
-
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("fullhelp", "More detailed help (including examples)")
-      ("verbose,v", "Verbose output (verbosity = 1)")
-      ("verbosity,V", po::value<int>(&verbose)->default_value(0), "Verbosity level (higher equals more output)")
-      ("updates,u", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
-      ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
-      ("stride,S", po::value<uint>(), "Step through this number of frames in each trajectory")
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("updates", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
+      ("stride,S", po::value<uint>(&stride)->default_value(1), "Step through this number of frames in each trajectory")
       ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at start of each trajectory")
-      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)")
-      ("box,b", po::value<string>(), "Override any periodic box present with this one (a,b,c)")
-      ("reimage,R", "Reimage by molecule")
-      ("center,c", po::value<string>(), "Recenter the trajectory using this selection (of the subset)")
-      ("sort", "Sort (numerically) the input DCD files.")
-      ("scanf", po::value<string>(), "Sort using a scanf-style format string")
-      ("regex", po::value<string>()->default_value("(\\d+)"), "Sort using a regular expression");
+      ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
+      ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
+      ("reimage", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule")
+      ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
+      ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
+      ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
+      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)"), "Sort using a regular expression");
+  }
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
+  void addHidden(po::options_description& o) {
+    o.add_options()
       ("model", po::value<string>(&model_name), "Model filename")
       ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames")
       ("out", po::value<string>(&out_name), "Output prefix");
+  }
 
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
+  bool check(po::variables_map& vm) {
+    return ( model_name.empty() || out_name.empty() || traj_names.empty());
+  }
 
-    po::positional_options_description p;
-    p.add("out", 1);
-    p.add("model", 1);
-    p.add("traj", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
-      cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name [trajectory-name ...]\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
-    if (vm.count("verbose"))
-      verbose = 1;
-
-    if (vm.count("stride"))
-      stride = vm["stride"].as<uint>();
-
-    if (vm.count("box")) {
-      string s = vm["box"].as<string>();
-      istringstream is(s);
+  bool postConditions(po::variables_map& vm) {
+    if (!box_spec.empty()) {
+      istringstream is(box_spec);
       if (!(is >> box)) {
-        cerr << "ERROR - unable to convert " << s << ".  It must be in (a,b,c) format.\n";
-        exit(-1);
+        cerr << "ERROR - unable to convert " << box_spec << ".  It must be in (a,b,c) format.\n";
+        return(false);
       }
       box_override = 1;
     }
 
-    if (vm.count("reimage"))
-      reimage = true;
-
-    if (vm.count("center")) {
-      center_selection = vm["center"].as<string>();
-      center_flag = true;
-    }
-
-    // Sort trajectory filenames if requested...
-    if (vm.count("sort")) {
-      if (vm.count("scanf")) {
-        string fmt = vm["scanf"].as<string>();
-        traj_names = sortNamesByFormat(traj_names, ScanfFmt(fmt));
-
+    if (sort_flag) {
+      if (!scanf_spec.empty()) {
+        traj_names = sortNamesByFormat(traj_names, ScanfFmt(scanf_spec));
       } else {
-
-        string fmt = vm["regex"].as<string>();
-        traj_names = sortNamesByFormat(traj_names, RegexFmt(fmt));
-
+        traj_names = sortNamesByFormat(traj_names, RegexFmt(regex_spec));
       }
-
     }
+
+    center_flag = !center_selection.empty();
+
+    if (!range_spec.empty())
+      indices = parseRangeList<uint>(range_spec);
+
+    return(true);
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string help() const { 
+    return("output-name model trajectory [trajectory ...]");
   }
-}
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, center='%s', sort=%d")
+      % verbose_updates
+      % stride
+      % skip
+      % range_spec
+      % box_spec
+      % reimage
+      % center_selection
+      % sort_flag;
+    if (sort_flag) {
+      if (!scanf_spec.empty())
+        oss << boost::format("scanf='%s'") % scanf_spec;
+      else
+        oss << boost::format("regex='%s'") % regex_spec;
+    }
+
+    oss << boost::format("out='%s', model='%s', traj='%s'")
+      % out_name
+      % model_name
+      % vectorAsStringWithCommas(traj_names);
+
+    return(oss.str());
+  }
+
+
+  bool sort_flag;
+  string regex_spec;
+  string scanf_spec;
+  string range_spec;
+  string box_spec;
+};
+
+// @endcond
+
+
 
 
 uint getNumberOfFrames(const string& fname, AtomicGroup& model) {
@@ -401,7 +399,15 @@ uint bindFilesToIndices(AtomicGroup& model) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+  
 
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, selection);
