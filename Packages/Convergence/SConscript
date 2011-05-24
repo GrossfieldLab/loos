@@ -53,7 +53,7 @@ clone.Prepend(LIBPATH=['#/Packages/Convergence'])
 
 # Tools requiring the above library
 dependent = 'bcom boot_bcom ufidpick assign_frames decorr_time'
-for name in Split(apps):
+for name in Split(dependent):
     fname = name + '.cpp'
     prog = clone.Program(fname)
     list.append(prog)
