@@ -493,6 +493,7 @@ namespace loos {
 
     private:
       std::string program_name;
+      std::string config_name;
 
       po::options_description generic;
       po::options_description hidden;

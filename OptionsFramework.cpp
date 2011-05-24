@@ -329,6 +329,9 @@ namespace loos {
       if (program_name.empty())
         program_name = std::string(argv[0]);
 
+      generic.add_options()
+        ("config", po::value<std::string>(&config_name), "Options config file");
+
       setupOptions();
       bool show_help = false;
 
@@ -336,6 +339,15 @@ namespace loos {
         po::store(po::command_line_parser(argc, argv).
                   options(command_line).positional(pos).run(), vm);
         po::notify(vm);
+
+        if (!config_name.empty()) {
+          std::ifstream ifs(config_name.c_str());
+          if (!ifs)
+            throw(LOOSError("Cannot open options config file"));
+          store(parse_config_file(ifs, command_line), vm);
+          notify(vm);
+        }
+
       }
       catch (std::exception& e) {
         std::cerr << "Error- " << e.what() << std::endl;
