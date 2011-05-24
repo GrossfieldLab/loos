@@ -30,10 +30,11 @@
 #include <loos.hpp>
 
 using namespace std;
-#include <boost/program_options.hpp>
 
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 // global for parsing program options
 string model_name, output_traj, output_traj_downsample;
@@ -44,105 +45,65 @@ bool skip_first_frame=false;
 bool reimage_by_molecule=false;
 
 
-void parseOptions(int argc, char *argv[])
-    {
-    try
-        {
-        po::options_description generic("Allowed options"); 
-        generic.add_options()
-            ("help", "Produce this message")
-            ("downsample-dcd", po::value<string>(&output_traj_downsample),
-                                    "Downsampled DCD, must be synced with output_traj")
-            ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
-                                    "Write every nth frame to downsampled DCD")
-            ("centering-selection", 
-                    po::value<string>(&center_selection)->default_value(string("")),
-                                    "Selection for centering")
-            ("input_trajs", po::value< vector<string> >()->multitoken(), "Trajs to merge")
-            ("skip-first-frame", "Skip first frame of each trajectory (for xtc files)")
-            ("fix-imaging", "Reimage the system so molecules aren't broken across image boundaries")
-            ;
-            
-        po::options_description hidden("Hidden options");
-        hidden.add_options()
-            ("model", po::value<string>(&model_name), "Model filename")
-            ("output_traj", po::value<string>(&output_traj), "DCD filename")
-            ;
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage
+{
+public:
 
-        po::options_description command_line;
-        command_line.add(hidden).add(generic);
+  void addGeneric(po::options_description& o)
+  {
+    o.add_options()
+      ("downsample-dcd", po::value<string>(&output_traj_downsample),
+       "Downsampled DCD, must be synced with output_traj")
+      ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
+       "Write every nth frame to downsampled DCD")
+      ("centering-selection", 
+       po::value<string>(&center_selection)->default_value(string("")),
+       "Selection for centering")
+      ("skip-first-frame", po::value<bool>(&skip_first_frame)->default_value(false), "Skip first frame of each trajectory (for xtc files)")
+      ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
+      ;
+  }
 
-        po::positional_options_description p;
-        p.add("model", 1);
-        p.add("output_traj", 1);
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("downsample-dcd='%s', downsample-rate=%d, centering-selection='%s', skip-first-frame=%d, fix-imaging=%d")
+      % output_traj_downsample
+      % downsample_rate
+      % center_selection
+      % skip_first_frame
+      % reimage_by_molecule;
 
-        po::variables_map vm;
-        po::store(po::command_line_parser(argc,argv).
-                    options(command_line).positional(p).run(), vm);
-        po::notify(vm);
+    return(oss.str());
+  }
+};
 
-        if ( vm.count("help") || !( vm.count("model") &&
-                                    vm.count("output_traj") &&
-                                    vm.count("input_trajs")
-                                  )
-           )                        
-            {
-            cerr << "Usage: " << argv[0]
-                 << " model output_traj "
-                 << "[options] "
-                 << "--input_trajs file1 [file2 ...]"
-                 << endl;
-            cerr << generic;
-            exit(-1);
-            }
-
-        input_dcd_list = vm["input_trajs"].as<vector<string> >();
-
-        if (vm.count("skip-first-frame"))
-            {
-            skip_first_frame=true;
-            }
-        else
-            {
-            skip_first_frame=false;
-            }
-
-        if (vm.count("fix-imaging"))
-            {
-            reimage_by_molecule=true;
-            }
-        else
-            {
-            reimage_by_molecule=false;
-            }
+// @endcond
 
 
-        }
-    catch (exception &e)
-        {
-        cerr << "Error: " << e.what() << endl;
-        exit(-1);
-        }
-    }
 
-
-#if 0
-void Usage()
-    {
-    cerr << "Usage: merge-dcd system recenter-selection output-dcdname "
-            "input-dcd [input-dcd2 ...]"
-         << endl;    
-    cerr << "Giving a empty selection string turns off centering" << endl;
-    cerr << "The input dcd files are concatenated in the command line order."
-         << endl;
-    }
-#endif
 
 int main(int argc, char *argv[])
     {
-    parseOptions(argc, argv);
 
-    cout << invocationHeader(argc, argv) << endl;
+    string hdr = invocationHeader(argc, argv);
+    opts::BasicOptions* bopts = new opts::BasicOptions;
+    ToolOptions* topts = new ToolOptions;
+    opts::RequiredArguments* ropts = new opts::RequiredArguments;
+    ropts->addArgument("model", "model-filename");
+    ropts->addArgument("output_traj", "output-dcd");
+    ropts->addVariableArguments("input_traj", "trajectory");
+
+    opts::AggregateOptions options;
+    options.add(bopts).add(topts).add(ropts);
+    if (!options.parse(argc, argv))
+      exit(-1);
+
+    model_name = ropts->value("model");
+    output_traj = ropts->value("output_traj");
+    input_dcd_list = ropts->variableValues("intput_traj");
+
+    cout << hdr << endl;
     AtomicGroup system = createSystem(model_name);
     bool do_recenter = true;
     if ( center_selection.length() == 0 )
