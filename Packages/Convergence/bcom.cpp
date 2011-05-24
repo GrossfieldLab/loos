@@ -31,14 +31,16 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
+
 
 #include "bcomlib.hpp"
 
 using namespace std;
 using namespace loos;
 using namespace Convergence;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 typedef vector<AtomicGroup>                               vGroup;
@@ -72,6 +74,42 @@ bool use_zscore;
 uint ntries;
 vector<uint> blocksizes;
 string model_name, traj_name, selection;
+
+
+// @cond TOOLS_INTERAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
+      ("zscore,Z", po::value<bool>(&use_zscore)->default_value(false), "Use Z-score rather than covariance overlap")
+      ("ntries,N", po::value<uint>(&ntries)->default_value(20), "Number of tries for Z-score")
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
+
+  }
+
+  bool postConditions(po::variables_map& vm) {
+    if (!blocks_spec.empty())
+      blocksizes = parseRangeList<uint>(blocks_spec);
+
+    return(true);
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d")
+      % blocks_spec
+      % use_zscore
+      % ntries
+      % local_average;
+    return(oss.str());
+  }
+
+  string blocks_spec;
+};
+// @endcond
+
 
 
 void parseOptions(int argc, char *argv[]) {
@@ -176,16 +214,23 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
   cout << "# " << hdr << endl;
-  cout << "# Config flags: length_normalize=" << length_normalize << endl;
+  cout << "# " << vectorAsStringWithCommas<string>(options.print()) << endl;
 
-  parseOptions(argc, argv);
-
-  cout << "# use_zscore=" << use_zscore << ", ntries=" << ntries << ", local_average=" << local_average << endl;
-
-
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  if (tropts->skip)
+    cerr << "Warning: --skip option ignored\n";
 
 
   if (blocksizes.empty()) {
@@ -201,7 +246,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  AtomicGroup subset = selectAtoms(model, selection);
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
 
 
   vector<AtomicGroup> ensemble;
