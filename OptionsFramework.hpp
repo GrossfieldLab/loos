@@ -111,6 +111,15 @@ namespace loos {
    *     use a small amount of memory and will need to exist for the
    *     life of a tool anyway, so deletion of the objects should not
    *     be a problem.
+   *
+   *   - OptionsPackages cannot be combined multiple times, e.g. using
+   *     two BasicTrajectory objects because the tool needs to read
+   *     from two different trajectories.  We anticipate these cases
+   *     as being infrequent, and as such, there is no direct support
+   *     for it in OptionsPackages.  Use a tool-specific
+   *     OptionsPackage that handles the required args (matching as
+   *     closely as possible the existing OptionsPackage options).
+   *
    */
   namespace OptionsFramework {
 
