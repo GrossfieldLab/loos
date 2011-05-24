@@ -12,11 +12,7 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <algorithm>
-#include <sstream>
 #include <limits>
 
 #include <DensityGrid.hpp>
@@ -25,7 +21,8 @@ using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
-
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 struct Blob {
   Blob() : closest_point(0,0,0), grid_dist(numeric_limits<double>::max()),
@@ -41,88 +38,52 @@ struct Blob {
 int debug = 0;
 
 
-string pdbname, selection;
+string model_name, selection;
 GCoord spot;
 int picked_id;
 bool use_spot = false;
 bool largest = false;
 double range = 0.0;
 
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("model", po::value<string>(&model_name)->default_value(""), "Select using this model (must have coords)")
+      ("selection", po::value<string>(&selection)->default_value(""), "Select atoms within the PDB to find nearest blob")
+      ("id", po::value<int>(&picked_id)->default_value(-1), "Select blob with this ID")
+      ("point", po::value<string>(&point_spec), "Select blob closest to this point")
+      ("range", po::value<double>(&range), "Select blobs that are closer than this distance")
+      ("largest", po::value<bool>(&largest)->default_value(false), "Select only the largest blob that fits the distance criterion");
+  }
 
-namespace po = boost::program_options;
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-
-    po::options_description desc("Allowed options");
-    desc.add_options()
-      ("help", "Produce this help message")
-      ("pdb", po::value<string>(), "Use this PDB with a selection")
-      ("selection", po::value<string>(), "Select atoms within the PDB to find nearest blob")
-      ("id,i", po::value<int>(&picked_id)->default_value(-1), "Select blob with this ID")
-      ("point,p", po::value<string>(), "Select blob closest to this point")
-      ("range,r", po::value<double>(&range), "Select blobs that are closer than this distance")
-      ("largest,l", "Select only the largest blob that fits the distance criterion")
-      ("verbose,v", "Verbose output")
-      ("verbosity,V", po::value<int>(), "Set verbosity level");
-
-    po::positional_options_description p;
-    p.add("pdb", 1);
-    p.add("selection", 2);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-	      options(desc).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help")) {
-      cerr << desc;
-      exit(-1);
-    }
-
-    if (vm.count("verbose"))
-      debug = 1;
-    if (vm.count("verbosity"))
-      debug = vm["verbosity"].as<int>();
-
-    if (vm.count("pdb")) {
-      if (!vm.count("selection")) {
-	cerr << "ERROR- you must give a selection along with a PDB\n";
-	exit(-1);
+  bool postConditions(po::variables_map& vm) {
+    if (!model_name.empty()) {
+      if (selection.empty()) {
+        cerr << "Error: must provide a selection when using a model to select blobs\n";
+        return(false);
       }
-
-      pdbname = vm["pdb"].as<string>();
-      selection = vm["selection"].as<string>();
-
-    } else if (vm.count("point")) {
-
+    } else if (!point_spec.empty()) {
       use_spot = true;
-      string spot_str = vm["point"].as<string>();
-      stringstream ss(spot_str);
-      if (!(ss >> spot)) {
-	cerr << "ERROR- cannot parse coordinate " << spot_str << endl;
-	exit(-1);
+      istringstream iss(point_spec);
+      if (!(iss >> spot)) {
+        cerr << "Error: cannot parse coordinate " << point_spec << endl;
+        return(false);
       }
-
     } else if (picked_id < 0) {
-      cerr << "You must specify either a PDB and a selection, a point, or a blob-ID to pick\n";
-      exit(-1);
+      cerr << "Error: must specify either a PDB with selection, a point, or a blob-ID to pick\n";
+      return(false);
     }
 
-    if (vm.count("largest"))
-      largest = true;
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-  catch(...) {
-    cerr << "Exception of unknown type!\n";
+    return(true);
   }
 
-}
+  string model_name;
+  string spot_spec;
+  string point_spec;
+};
 
 
 void zapGrid(DensityGrid<int>& grid, const vector<int>& vals) {
@@ -224,19 +185,24 @@ vector<Blob> pickBlob(const DensityGrid<int>& grid, const vector<GCoord>& points
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   vector<GCoord> points;
   if (use_spot)
     points.push_back(spot);
   else {
-    AtomicGroup model = createSystem(pdbname);
+    AtomicGroup model = createSystem(model_name);
     AtomicGroup subset = selectAtoms(model, selection);
-    
-    AtomicGroup::Iterator iter(subset);
-    pAtom atom;
-    while (atom = iter())
-      points.push_back(atom->coords());
+
+    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+      points.push_back((*i)->coords());
   }
 
   DensityGrid<int> grid;
