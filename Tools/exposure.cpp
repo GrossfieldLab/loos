@@ -58,29 +58,29 @@ bool average = true;
 
 
 
-string fullHelp(void) {
+string fullHelpMessage(void) {
   string s = "Examples:\n"
     " * exposure simulation.pdb simulation.dcd 'segid == \"PROT\"'\n"
     "   Computes the solvent exposure for the molecule with segid\n"
     "   \"PROT\".\n"
     "\n"
-    " * exposure -p 'segid =~ \"^L\"' simulation.pdb simulation.dcd 'resname == \"HEXO\" && segid == \"P1\"'\n"
+    " * exposure -P 'segid =~ \"^L\"' simulation.pdb simulation.dcd 'resname == \"HEXO\" && segid == \"P1\"'\n"
     "   Computes the exposure of the residue HEXO with segid P1 to a\n"
     "   lipid membrane (assuming the lipids have segids begining with \"L\".\n"
     "   This could be used to determine the degree of insertion of the\n"
     "   residue into the membrane, for example.\n"
     "\n"
-    " * exposure -R -p 'segid =~ \"^L\"' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
+    " * exposure -R1 -P 'segid =~ \"^L\"' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
     "   Similar to above, except that it averages over the entire peptide\n"
     "   with segid P1 and considers periodic boundaries when determining\n"
     "   which atoms are within the probe shell.\n"
     "\n"
-    " * exposure -R -i 2 -p 'segid != \"BULK\"' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
+    " * exposure -R1 -I2 -P 'segid != \"BULK\"' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
     "   Computes the degree to which P1 is buried, i.e. the density of non-\n"
     "   water atoms about P1, excluding any atom that is within 2 A of an atom\n"
     "   in P1.  Also considers periodic boundaries when computing distances.\n"
     "\n"
-    " * exposure -p '!(segid == \"BULK\" || segid == \"P1\")' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
+    " * exposure -P '!(segid == \"BULK\" || segid == \"P1\")' simulation.pdb simulation.dcd 'segid == \"P1\"'\n"
     "   Computes the degree to which P1 is buried, ignoring the atoms from P1.\n"
     "\n"
     " Note: Exposure calculations can be quite lengthy for large systems/trajectories.\n"
@@ -163,7 +163,7 @@ double density(const AtomicGroup& target, const AtomicGroup& probe, const double
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments;
