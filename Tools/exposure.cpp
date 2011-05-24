@@ -37,12 +37,12 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
-#include <boost/format.hpp>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup> vGroup;
 
@@ -50,7 +50,6 @@ typedef vector<AtomicGroup> vGroup;
 vector<uint> indices;
 double inner_cutoff, outer_cutoff;
 string probe_selection;
-string model_name, traj_name;
 vector<string> target_selections;
 bool symmetry = false;
 int verbosity = 0;
@@ -59,8 +58,8 @@ bool average = true;
 
 
 
-void fullHelp(void) {
-  cout << "Examples:\n"
+string fullHelp(void) {
+  string s = "Examples:\n"
     " * exposure simulation.pdb simulation.dcd 'segid == \"PROT\"'\n"
     "   Computes the solvent exposure for the molecule with segid\n"
     "   \"PROT\".\n"
@@ -86,68 +85,40 @@ void fullHelp(void) {
     "\n"
     " Note: Exposure calculations can be quite lengthy for large systems/trajectories.\n"
     "       you may want to add '&& !hydrogen' to your selections if speed is an issue.\n";
+
+  return(s);
 }
 
 
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
 
-void parseOptions(int argc, char *argv[]) {
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help,h", "Produce this help message")
-      ("fullhelp", "Even more help")
-      ("verbose,v", "Verbose output")
-      ("normalize,n", po::value<bool>(&normalize)->default_value(true), "Normalize by volume (i.e. output is density)")
-      ("average,a", po::value<bool>(&average)->default_value(true), "Average contacts over selection")
-      ("probe,p", po::value<string>(&probe_selection)->default_value("segid == 'BULK' && name == 'OH2'"), "Subset to compute exposure against")
-      ("inner,i", po::value<double>(&inner_cutoff)->default_value(0.0), "Inner cutoff (ignore atoms closer than this)")
-      ("outer,o", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
-      ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances")
-      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (in Octave-style ranges)");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("target", po::value< vector<string> >(&target_selections), "Target selections");
-    
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-    
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("target", -1);
-
-    
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && !target_selections.empty())) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name target [target ...]\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
-    if (vm.count("verbose"))
-      verbosity = 1;
-
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("normalize,N", po::value<bool>(&normalize)->default_value(true), "Normalize by volume (i.e. output is density)")
+      ("average,A", po::value<bool>(&average)->default_value(true), "Average contacts over selection")
+      ("probe,P", po::value<string>(&probe_selection)->default_value("segid == 'BULK' && name == 'OH2'"), "Subset to compute exposure against")
+      ("inner,I", po::value<double>(&inner_cutoff)->default_value(0.0), "Inner cutoff (ignore atoms closer than this)")
+      ("outer,O", po::value<double>(&outer_cutoff)->default_value(5.0), "Outer cutoff (ignore atoms further away than this)")
+      ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("normalize=%d, average=%d, probe='%s', inner=%f, outer=%f, reimage=%d")
+      % normalize
+      % average
+      % probe_selection
+      % inner_cutoff
+      % outer_cutoff
+      % symmetry;
+
+    return(oss.str());
   }
-}
+};
+// @endcond
+
 
 
 
@@ -191,14 +162,25 @@ double density(const AtomicGroup& target, const AtomicGroup& probe, const double
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ropts->addVariableArguments("target", "target-selection");
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(tropts).add(topts).add(ropts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
-  if (indices.empty())
-    for (uint i=0; i<traj->nframes(); ++i)
-      indices.push_back(i);
+  verbosity = bopts->verbosity;
+  
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  indices = tropts->frameList();
+
+  target_selections = ropts->variableValues("target");
 
   AtomicGroup probe = selectAtoms(model, probe_selection);
 
