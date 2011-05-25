@@ -27,18 +27,9 @@ Import('env')
 clone = env.Clone()
 clone.Prepend(LIBS = ['loos'])
 
-### Library Generation
-library_sources = 'GridUtils.cpp internal-water-filter.cpp water-hist-lib.cpp water-lib.cpp'
-library_headers = 'DensityGrid.hpp GridUtils.hpp internal-water-filter.hpp water-hist-lib.hpp water-lib.hpp DensityOptions.hpp'
-
-density_lib = clone.Library('loos_density', Split(library_sources))
-clone.Prepend(LIBS=['loos_density'])
-clone.Prepend(LIBPATH=['#/Packages/DensityTools'])
-clone.Prepend(CPPPATH='#/Packages/DensityTools')
 
 
-apps = 'gridinfo grid2ascii grid2xplor gridgauss gridscale gridslice gridmask blobid contained gridstat peakify pick_blob blob_stats water-inside water-extract'
-apps += ' water-hist water-count water-sides'
+apps = 'model_tool_template'
 
 list = []
 
@@ -53,9 +44,9 @@ for name in Split(apps):
 PREFIX = env['PREFIX']
 
 
-density_tools = env.Install(PREFIX + '/bin', Split(apps))
-density_libs = env.Install(PREFIX + '/lib', [density_lib])
-density_headers = env.Install(PREFIX + '/include', Split(library_headers))
-env.Alias('density_tools_package', density_tools + density_libs + density_headers)
+user_tools = env.Install(PREFIX + '/bin', Split(apps))
+#user_libs = env.Install(PREFIX + '/lib', [user_lib])
+#user_headers = env.Install(PREFIX + '/include', Split(user_headers))
+env.Alias('user_package', user_tools)
 
 Return('list')
