@@ -29,29 +29,57 @@ namespace loos {
 
   //const double DEGREES = 180 / M_PI ;
 
-  greal Math::angle(const GCoord &a, const GCoord &b, const GCoord &c) {
+  /**
+   *  If you pass a pointer to a GCoord specifying the box size, this
+   *  function will correctly handle periodicity
+   */
+  greal Math::angle(const GCoord &a, const GCoord &b, const GCoord &c, 
+                    const GCoord *box) {
     GCoord ba = b - a;
     GCoord bc = b - c;
+    if (box != NULL) {
+        ba.reimage(*box);
+        bc.reimage(*box);
+    }
     greal cosine = (ba * bc) / (ba.length() * bc.length());
     return (acos(cosine) * DEGREES);
   }
 
-  greal Math::angle(const pAtom& a, const pAtom& b, const pAtom& c) {
-    return(angle(a->coords(), b->coords(), c->coords()));
+  /**
+   *  If you pass a pointer to a GCoord specifying the box size, this
+   *  function will correctly handle periodicity
+   */
+  greal Math::angle(const pAtom& a, const pAtom& b, const pAtom& c, 
+                    const GCoord *box) {
+    return(angle(a->coords(), b->coords(), c->coords(), box));
   }
 
+  /**
+   *  If you pass a pointer to a GCoord specifying the box size, this
+   *  function will correctly handle periodicity
+   */
   greal Math::torsion(const GCoord &a, const GCoord &b, const GCoord &c, 
-                            const GCoord &d) {
+                      const GCoord &d, const GCoord *box) {
     GCoord b1 = b - a;
     GCoord b2 = c - b;
     GCoord b3 = d - c;
+    if (box != NULL) {
+        b1.reimage(*box);
+        b2.reimage(*box);
+        b3.reimage(*box);
+    }
+
     greal phi = atan2( (b2.length() * b1) * (b2.cross(b3)),
                        (b1.cross(b2)) * (b2.cross(b3)) );
     return(phi * DEGREES);
   }
 
+  /**
+   *  If you pass a pointer to a GCoord specifying the box size, this
+   *  function will correctly handle periodicity
+   */
   greal Math::torsion(const pAtom& a, const pAtom& b, const pAtom& c, 
-                            const pAtom& d) {
+                      const pAtom& d, const GCoord *box) {
     return(torsion(a->coords(), b->coords(), c->coords(), d->coords()));
   }
 
