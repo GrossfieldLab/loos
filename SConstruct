@@ -260,6 +260,7 @@ h_tools = SConscript('Packages/HydrogenBonds/SConscript')
 #g_tools = SConscript('Packages/DensityTools/SConscript')
 convergence_package = SConscript('Packages/Convergence/SConscript')
 density_package = SConscript('Packages/DensityTools/SConscript')
+user_package = SConscript('Packages/User/SConscript')
 
 
 all_packages = elastic_networks_package + convergence_package + density_package
@@ -282,6 +283,7 @@ env.Alias('tools', tools)
 
 env.Alias('all', loos + tools + all_packages)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs)
+env.Alias('user', user_package)
 
 
 env.Alias('install', PREFIX)
