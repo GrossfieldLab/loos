@@ -67,6 +67,18 @@ struct CenterDistance : public DistanceCalculation {
   }
 };
 
+struct CenterOfMassDistance : public DistanceCalculation {
+  double operator()(const AtomicGroup& u, const AtomicGroup& v) {
+    GCoord cu = u.centerOfMass();
+    GCoord cv = v.centerOfMass();
+
+    return(cu.distance(cv));
+  
+  }
+};
+
+
+
 struct CenterDistanceZ : public DistanceCalculation {
   double operator()(const AtomicGroup& u, const AtomicGroup& v) {
     GCoord cu = u.centroid();
@@ -139,7 +151,7 @@ void parseOptions(int argc, char *argv[]) {
     generic.add_options()
       ("help", "Produce this help message")
       ("skip,s", po::value<uint>(&skip)->default_value(0), "Number of frames to skip at start of traj")
-      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|min|max|zonly)");
+      ("mode,m", po::value<string>(&mode_name)->default_value("center"), "Calculation type (center|mass|min|max|zonly)");
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
@@ -175,8 +187,10 @@ void parseOptions(int argc, char *argv[]) {
       calc_type = new MaxDistance;
     else if (mode_name == "zonly")
       calc_type = new CenterDistanceZ;
+    else if (mode_name == "mass")
+      calc_type = new CenterOfMassDistance;
     else {
-      cerr << "Error- calculation mode must be either 'center', 'min', 'max', or 'zonly'\n";
+      cerr << "Error- calculation mode must be either 'center', 'mass', 'min', 'max', or 'zonly'\n";
       exit(-1);
     }
 
