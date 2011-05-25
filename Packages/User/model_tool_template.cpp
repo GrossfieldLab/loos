@@ -1,5 +1,5 @@
 /*
-  model_tool_template.cpp
+  model_tool.cpp
 
   (c) 2011 Tod D. Romo, Grossfield Lab
            Department of Biochemistry

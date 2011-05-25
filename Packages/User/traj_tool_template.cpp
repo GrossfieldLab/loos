@@ -1,5 +1,5 @@
 /*
-  traj_tool_template.cpp
+  traj_tool.cpp
 
   (c) 2011 Tod D. Romo, Grossfield Lab
            Department of Biochemistry
