@@ -43,8 +43,6 @@
 #include <loos.hpp>
 
 #include <limits>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 #include "hessian.hpp"
 #include "enm-lib.hpp"
@@ -53,8 +51,11 @@
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
 using namespace ENM;
+
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 // Globals...
@@ -62,7 +63,7 @@ double normalization = 1.0;
 double threshold = 1e-10;
 
 string hdr;
-string subset_selection, environment_selection, model_name, prefix;
+string subsystem_selection, environment_selection, model_name, prefix;
 int verbosity = 0;
 bool debug = false;
 bool occupancies_are_masses;
@@ -72,9 +73,9 @@ string spring_desc;
 bool nomass;
 
 
-void fullHelp() {
+string fullHelpMessage() {
 
-  cout <<
+  string s =
     "\n"
     "Computes the VSA network model given a subsystem and an\n"
     "environment selection.  The output consists of several different\n"
@@ -115,9 +116,9 @@ void fullHelp() {
 
   vector<string> names = springNames();
   for (vector<string>::iterator i = names.begin(); i != names.end(); ++i)
-    cout << "\t" << *i << endl;
+    s = s + "\t" + *i + "\n";
 
-  cout <<
+  s +=
     "\n\n"
     "* Mass Control *\n\n"
     "VSA, by default, assumes that masses will be present.  These can\n"
@@ -148,85 +149,68 @@ void fullHelp() {
     "\n"
     "The same example as above, but using the HCA spring constants,\n"
     "\tvsa --nomass 1 --spring hca 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n";
+
+  return(s);
     
 }
 
 
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    string config_file;
-
-    po::options_description visible("Allowed options", 120);
-    visible.add_options()
-      ("help", "Produce this help message")
-      ("fullhelp", "More detailed help")
-      ("psf,p", po::value<string>(&psf_file), "Take masses from the specified PSF file")
-      ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
-      ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
-      ("occupancies,o", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
-      ("nomass,n", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution")
-      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments")
-      ("config,C", po::value<string>(&config_file), "Options config file");
 
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("subset", po::value<string>(&subset_selection), "Subset selection")
-      ("env", po::value<string>(&environment_selection), "Environment selection")
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("prefix", po::value<string>(&prefix), "Output prefix");
-    
-    po::options_description command_line;
-    command_line.add(visible).add(hidden);
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
 
-    po::positional_options_description p;
-    p.add("subset", 1);
-    p.add("env", 1);
-    p.add("model", 1);
-    p.add("prefix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    // Now handle config file...
-    if (!config_file.empty()) {
-      ifstream ifs(config_file.c_str());
-      if (!ifs) {
-        cerr << "Cannot open config file " << config_file << endl;
-        exit(-1);
-      }
-      store(parse_config_file(ifs, command_line), vm);
-      notify(vm);
-    }
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix") && vm.count("subset") && vm.count("env"))) {
-      cerr << "Usage- vsa [options] subset environment model-name output-prefix\n";
-      cerr << visible;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("psf", po::value<string>(&psf_file), "Take masses from the specified PSF file")
+      ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
+      ("occupancies", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
+      ("nomass", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution")
+      ("spring", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("psf='%s', debug=%d, occupancies=%d, nomass=%d, spring='%s'")
+      % psf_file
+      % debug
+      % occupancies_are_masses
+      % nomass
+      % spring_desc;
+    return(oss.str());
   }
-}
 
 
+};
+// @endcond
 
 
 
 
 int main(int argc, char *argv[]) {
   hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(model_name);
+  // Build up options
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ropts->addArgument("subsystem", "subsystem-selection");
+  ropts->addArgument("environment", "environment-selection");
+  ropts->addArgument("prefix", "output-prefix");
 
+  opts::AggregateOptions options;
+  options.add(bopts).add(mopts).add(topts).add(ropts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  // Extract values
+  AtomicGroup model = mopts->model;
+  verbosity = bopts->verbosity;
+  subsystem_selection = ropts->value("subsystem");
+  environment_selection = ropts->value("environment");
+  prefix = ropts->value("prefix");
 
   // Ugly way of handling multiple methods for getting masses into the equation...
   if (verbosity > 0)
@@ -243,12 +227,12 @@ int main(int argc, char *argv[]) {
 
 
   // Partition the model for building the composite Hessian
-  AtomicGroup subset = selectAtoms(model, subset_selection);
+  AtomicGroup subsystem = selectAtoms(model, subsystem_selection);
   AtomicGroup environment = selectAtoms(model, environment_selection);
-  AtomicGroup composite = subset + environment;
+  AtomicGroup composite = subsystem + environment;
 
   if (verbosity > 1) {
-    cerr << "Subset size is " << subset.size() << endl;
+    cerr << "Subsystem size is " << subsystem.size() << endl;
     cerr << "Environment size is " << environment.size() << endl;
   }
 
@@ -258,7 +242,7 @@ int main(int argc, char *argv[]) {
 
   SuperBlock* blocker = new SuperBlock(spring, composite);
 
-  VSA vsa(blocker, subset.size());
+  VSA vsa(blocker, subsystem.size());
   vsa.prefix(prefix);
   vsa.meta(hdr);
   vsa.debugging(debug);
