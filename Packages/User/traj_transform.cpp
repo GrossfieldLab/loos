@@ -162,7 +162,19 @@ int main(int argc, char *argv[]) {
     // If this is the first frame, then also write it out as a PDB
     if (first_frame) {
       first_frame = false;
-      PDB pdb = PDB::fromAtomicGroup(subset);
+
+      // Note: the atomids must be renumbered to be sequential.  This
+      // can also break connectivity, so we prune the connectivity
+      // first, then renumber.  We also work with a *copy* of the
+      // subset so that we don't alter the one used for reading in the
+      // trajectory.
+
+      AtomicGroup frame_copy = subset.copy();
+      frame_copy.pruneBonds();
+      frame_copy.renumber();
+
+      // Now convert to a PDB
+      PDB pdb = PDB::fromAtomicGroup(frame_copy);
       pdb.remarks().add(header);
       string output_pdbname = prefix + ".pdb";
       ofstream ofs(output_pdbname.c_str());
