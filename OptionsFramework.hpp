@@ -409,6 +409,11 @@ namespace loos {
     public:
       RequiredArguments() : vargs_set(false) { }
 
+      RequiredArguments(const std::string& argname, const std::string& argdesc) : vargs_set(false)
+      {
+        addArgument(argname, argdesc);
+      }
+
 
       //! Add a required argument given a name (tag) and a description (currently unused)
       void addArgument(const std::string& name, const std::string& description);
