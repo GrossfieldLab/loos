@@ -3,11 +3,13 @@
 //28July10 - looks at side-nodes.cpp (unreleased loos tool made by Tod)
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
 
 typedef vector<AtomicGroup>   vGroup;
 
@@ -26,60 +28,51 @@ pAtom findMatch(const pAtom& probe, const AtomicGroup& grp) {
 
 
 string selection, psf_file;
-string model_name, out_name, traj_names;
-bool CM_backbone = false; //this should be an additional option
 
 
-void parseOptions(int argc, char *argv[]) {
-  try {
+// @cond TOOLS_INTERNAL
+class ToolOptions : public OptionsPackage {
+public:
 
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset selection")
-      ("psf,m", po::value<string>(&psf_file), "Include a psf file for mass information")
-      ("CM_backbone,b", po::value<string>(), "Compute center of mass of backbone - default uses alpha carbons");
-    
-  
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_names), "Trajectory filename")
-      ("out", po::value<string>(&out_name), "Output prefix");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("out", 1);
-    p.add("model", 1);
-    p.add("traj", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("out"))) {
-      cerr << "Usage- " << argv[0] << " [options] output-prefix model-name trajectory-name\n";
-      cerr << generic;
-      exit(-1);
-    }
-    
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("psf", po::value<string>(&psf_file), "Include a psf file for mass information");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("psf='%s'") % psf_file;
+    return(oss.str());
+};
+
+// @endcond
+
 
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection);
-  pTraj traj = createTrajectory(traj_names, model);
+
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments("output", "output-prefix");
+
+  opts::AggregateOptions options;
+  // Note slightly unusual order here because we want to keep the
+  // output as the first required argument (i.e. appearing before the
+  // model & trajectory)
+  options.add(bopts).add(sopts).add(ropts).add(tropts).add(topts);
+
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = tropts->model;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+  pTraj traj = tropts->trajectory;
+
+  string out_name = ropts->value("output");
+
   DCDWriter dcdout(out_name + ".dcd");
   dcdout.setTitle(hdr);
   bool first = true;

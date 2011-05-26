@@ -170,8 +170,7 @@ int main(int argc, char *argv[]) {
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
   ToolOptions* topts = new ToolOptions;
-  opts::RequiredArguments* ropts = new opts::RequiredArguments;
-  ropts->addArgument("prefix", "output-prefix");
+  opts::RequiredArguments* ropts = new opts::RequiredArguments("prefix", "output-prefix");
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
