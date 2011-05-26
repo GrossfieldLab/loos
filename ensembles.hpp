@@ -45,7 +45,7 @@ namespace loos {
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
 
   //! Compute the average structure from a trajectory reading only certain frames
-  AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj, std::vector<uint>& indices);
+  AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj, const std::vector<uint>& indices);
 
   //! Compute the average structure using all frames in a trajectory
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
@@ -60,7 +60,7 @@ namespace loos {
    * we make the assumption that you will usually be aligning against
    * a fairly small subset of each frame...
    */
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, std::vector<uint>& frame_indices, greal threshold = 1e-6, int maxiter=1000);
+  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, const std::vector<uint>& frame_indices, greal threshold = 1e-6, int maxiter=1000);
 
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000);
 

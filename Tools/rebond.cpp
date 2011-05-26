@@ -32,25 +32,17 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
-
-bool append_bonds = false;
-bool full_model_output = true;
-string model_name;
-string selection;
-string super;
-string segid;
-double radius;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
-void fullHelp(void) {
-  cout <<
+
+string fullHelpMessage(void) {
+  string s =
     "Examples:\n"
     "rebound --full 0 --radius 15 --selection 'name == \"CA\"' model.pdb >network.pdb\n"
     "  This is useful for visualizing the ENM connection network.  It finds\n"
@@ -67,7 +59,7 @@ void fullHelp(void) {
     "  This is useful with the CA-only PDB output from tools like svd.\n"
     "  The radius may need to be tweaked...\n"
     "\n"
-    "rebond -r 15 -s 'name = \"CA\" && resid < 10'  -S 'name == \"CA\"' -t ENV model.pdb >network.pdb\n"
+    "rebond --radius 15 --selection 'name = \"CA\" && resid < 10'  --super 'name == \"CA\"' --tag ENV model.pdb >network.pdb\n"
     "  The superset selection and tagging are useful for visualizing the connections\n"
     "  between the environment and the subset in a VSA calculation.  In this example,\n"
     "  bonds are only calculated between CAs with resid < 10 and all other CAs.  The\n"
@@ -78,89 +70,87 @@ void fullHelp(void) {
     "      real number of bonds when visualizaing ENM networks.  You will need\n"
     "      to either recompile your software, or use one that has larger limits,\n"
     "      such as PyMol.\n";
+
+  return(s);
 }
 
 
-void parseOptions(int argc, char *argv[]) {
 
-  try {
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() :
+    append_bonds(false),
+    full_model_output(true),
+    super("all"),
+    segid(""),
+    radius(1.25)
+  { }
 
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("fullhelp", "Extended help")
-      ("selection,s", po::value<string>(&selection)->default_value("all"), "Subset to search for bonds over")
-      ("superset,S", po::value<string>(&super)->default_value("all"), "Subset to search for bonds against the selection")
-      ("radius,r", po::value<double>(&radius)->default_value(1.25), "Radius cutoff for bonding")
-      ("add,a", po::value<bool>(&append_bonds)->default_value(false), "Add to existing bonds")
-      ("tag,t", po::value<string>(&segid), "Tag the bound atoms with this segid")
-      ("full,f", po::value<bool>(&full_model_output)->default_value(true), "Output the entire model (or just the subset if =0)");
-
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !vm.count("model")) {
-      cerr << "Usage- " << argv[0] << " [options] model-name\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("superset", po::value<string>(&super)->default_value(super), "Subset to search for bonds against the selection")
+      ("radius", po::value<double>(&radius)->default_value(radius), "Radius cutoff for bonding")
+      ("add", po::value<bool>(&append_bonds)->default_value(append_bonds), "Add to existing bonds")
+      ("tag", po::value<string>(&segid), "Tag the bound atoms with this segid")
+      ("full", po::value<bool>(&full_model_output)->default_value(full_model_output), "Output the entire model (or just the subset if =0)");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("superset='%s', radius=%f, add=%d, tag='%s', full=%d")
+      % super % radius % append_bonds % segid % full_model_output;
+    return(oss.str());
   }
-}
 
+  bool append_bonds, full_model_output;
+  string super, segid;
+  double radius;
+};
 
+// @endcond
 
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(model_name);
-  if (!append_bonds)
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(mopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = mopts->model;
+  if (!topts->append_bonds)
     model.clearBonds();
 
-  AtomicGroup subset = selectAtoms(model, selection);
-  AtomicGroup superset = selectAtoms(model, super);
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+  AtomicGroup superset = selectAtoms(model, topts->super);
 
   for (AtomicGroup::iterator j = subset.begin(); j != subset.end(); ++j) {
     GCoord c = (*j)->coords();
-    if (!segid.empty())
-      (*j)->segid(segid);
+    if (!topts->segid.empty())
+      (*j)->segid(topts->segid);
 
     for (AtomicGroup::iterator i = superset.begin(); i != superset.end(); ++i) {
       double d = c.distance((*i)->coords());
-      if (d <= radius) {
+      if (d <= topts->radius) {
         (*j)->addBond(*i);
       }
 
     }
   }
 
-  if (!segid.empty())
+  if (!topts->segid.empty())
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
-      (*i)->segid(segid);
+      (*i)->segid(topts->segid);
 
   PDB pdb;
-  if (full_model_output)
+  if (topts->full_model_output)
     pdb = PDB::fromAtomicGroup(model);
   else
     pdb = PDB::fromAtomicGroup(subset);

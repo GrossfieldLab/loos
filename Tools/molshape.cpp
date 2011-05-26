@@ -35,12 +35,12 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
-#include <boost/format.hpp>
+
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 string model_name, traj_name;
 string selection;
@@ -50,58 +50,32 @@ bool split_by_segid;
 bool zabs;
 
 
+// @cond TOOLS_INTERNAL
 
-void fullHelp(void) {
-}
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : split_by_mol(false), split_by_segid(false), zabs(false) { }
 
-
-
-void parseOptions(int argc, char *argv[]) {
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help,h", "Produce this help message")
-      ("molecule,m", po::value<bool>(&split_by_mol)->default_value(false), "Split by molecule")
-      ("segid,s", po::value<bool>(&split_by_segid)->default_value(false), "Split by segid")
-      ("abs,a", po::value<bool>(&zabs)->default_value(false), "Use absolute Z-value")
-      ("fullhelp", "Even more help");
-
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("selection", po::value<string>(&selection), "Selection to compute over");
-    
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-    
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("selection", 1);
-
-    
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && vm.count("selection"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name selection\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("molecule", po::value<bool>(&split_by_mol)->default_value(split_by_mol), "Split by molecule")
+      ("segid", po::value<bool>(&split_by_segid)->default_value(split_by_segid), "Split by segid")
+      ("abs", po::value<bool>(&zabs)->default_value(zabs), "Use absolute Z-value");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("molecule=%d, segid=%d, zabs=%d") % split_by_mol % split_by_segid % zabs;
+    return(oss.str());
   }
-}
+
+
+  bool split_by_mol, split_by_segid, zabs;
+};
+
+// @endcond
+
+
 
 
 
@@ -125,13 +99,22 @@ void modifyZ(AtomicGroup& grp) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection("!hydrogen || !(segid == 'BULK' || segid == 'SOLV')");
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
 
-  parseOptions(argc, argv);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   cout << "# " << hdr << endl;
   
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection);
+  AtomicGroup model = tropts->model;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+  pTraj traj = tropts->trajectory;
 
   vector<AtomicGroup> objects;
   if (split_by_mol)
@@ -145,9 +128,8 @@ int main(int argc, char *argv[]) {
   cout << "# t cX cY cZ Vol BoxX BoxY BoxZ rgyr pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
 
   
-  pTraj traj = createTrajectory(traj_name, model);
 
-  uint t=0;
+  uint t=tropts->skip;
   while (traj->readFrame()) {
     traj->updateGroupCoords(subset);
     if (zabs)

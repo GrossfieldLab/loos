@@ -30,90 +30,71 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 
 using namespace std;
-namespace po = boost::program_options;
 using namespace loos;
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
-string align_string;
-string avg_string;
-double alignment_tol;
-string model_name, traj_name;
-vector<uint> indices;
 
-void parseOptions(int argc, char *argv[]) {
-  vector<string> ranges;
 
-  try {
-    po::options_description generic("Allowed options", 120);
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("align,a", po::value<string>(&align_string),"Align using this selection (or skip aligning)")
-      ("average,A", po::value<string>(&avg_string)->default_value("!(hydrogen || segid == 'SOLV' || segid == 'BULK')"), "Average over this selection")
-      ("range,r", po::value< vector<string> >(&ranges), "Range of frames to average over (Octave-style)");
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename");
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions(const string& s) : avg_string(s) { }
 
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- averager [options] model-name trajectory-name\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (!ranges.empty())
-      indices = parseRangeList<uint>(ranges);
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("average", po::value<string>(&avg_string)->default_value(avg_string), "Average over this selection");
   }
 
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+  string print() const {
+    ostringstream oss;
+
+    oss << boost::format("avg_string='%s'") % avg_string;
+    return(oss.str());
   }
 
-}
+
+  string avg_string;
+};
+
+// @endcond
+
+
 
 
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  
-  parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(model_name);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection("");
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* toolopts = new ToolOptions("!hydrogen || segid == 'SOLV' || segid == 'BULK'");
 
-  AtomicGroup avg_subset = selectAtoms(model, avg_string);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(toolopts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+
+
+  AtomicGroup model = tropts->model;
+
+  AtomicGroup avg_subset = selectAtoms(model, toolopts->avg_string);
   cerr << "Averaging over " << avg_subset.size() << " atoms.\n";
 
-  pTraj traj = createTrajectory(traj_name, model);
-
-  if (indices.empty()) {
-    for (uint i = 0; i < traj->nframes(); ++i)
-      indices.push_back(i);
-  }
-
+  pTraj traj = tropts->trajectory;
+  vector<uint> indices = tropts->frameList();
   cerr << "Using " << indices.size() << " frames from the trajectory...\n";
 
   // First, align...
   vector<XForm> xforms;
-  if (align_string.empty()) {
+  if (sopts->selection.empty()) {
 
     cerr << "Skipping alignment...\n";
     for (uint i=0; i<indices.size(); ++i)
@@ -121,7 +102,7 @@ int main(int argc, char *argv[]) {
 
   } else {
 
-    AtomicGroup align_subset = selectAtoms(model, align_string);
+    AtomicGroup align_subset = selectAtoms(model, sopts->selection);
     cerr << "Aligning with " << align_subset.size() << " atoms.\n";
 
     boost::tuple<vector<XForm>, greal, int> result = iterativeAlignment(align_subset, traj, indices);

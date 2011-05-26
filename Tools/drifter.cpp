@@ -30,29 +30,27 @@
 */
 
 
-#include <string>
-#include <sstream>
-#include <vector>
-#include <boost/program_options.hpp>
-
 #include <loos.hpp>
 
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
+// @cond TOOLS_INTERNAL
 
 struct Base {
   virtual ~Base() { }
 
-  virtual double operator()(const GCoord& c, const uint t) =0;
+  virtual double operator()(const GCoord& c) =0;
 };
 
 
 
 struct averageCentroid : public Base {
-  averageCentroid(AtomicGroup& model, pTraj traj) : avg(0,0,0) {
+  averageCentroid(AtomicGroup& model, pTraj& traj) : avg(0,0,0) {
     uint n = traj->nframes();
     for (uint i=0; i<n; ++i) {
       traj->readFrame(i);
@@ -64,7 +62,7 @@ struct averageCentroid : public Base {
     avg /= n;
   }
 
-  double operator()(const GCoord& c, const uint) {
+  double operator()(const GCoord& c) {
     return(c.distance(avg));
   }
 
@@ -72,31 +70,12 @@ struct averageCentroid : public Base {
 };
 
 
-// Note: This relies on a little trickery...  First, it assumes that
-// the appropriate frame will always have been read prior to calling.
-// Second, it bypass the prohibition on copying Trajectory objects by
-// binding a reference to the pTraj shared pointer...  It's probably
-// better not to do these sorts of things unless you understand LOOS
-// reasonably well...
-
-struct selectionCentroid : public Base {
-  selectionCentroid(AtomicGroup& subset, pTraj& traj) : ref_subset(subset.copy()), traj_(traj) { }
-
-  double operator()(const GCoord& c, const uint) {
-    traj_->updateGroupCoords(ref_subset);
-    GCoord ctr = ref_subset.centroid();
-    return(c.distance(ctr));
-  }
-
-  AtomicGroup ref_subset;
-  pTraj& traj_;
-};
 
 
 struct fixedPoint : public Base {
   fixedPoint(GCoord& c) : fixed(c) { }
 
-  double operator()(const GCoord& c, const uint) {
+  double operator()(const GCoord& c) {
     return(c.distance(fixed));
   }
 
@@ -104,92 +83,71 @@ struct fixedPoint : public Base {
 };
 
 
+class ToolOptions : public opts::OptionsPackage {
+public:
 
-string model_name, traj_name, selection;
-Base* compute = 0;
-AtomicGroup model;
-pTraj traj;
-AtomicGroup subset;
-
-
-
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Subset selection")
-      ("average,a", "Calculate distance from selection to the average centroid (default)")
-      ("centroid,c", po::value<string>(), "Calculate distance to the centroid of this selection")
-      ("fixed,f", po::value<string>(), "Calculate distance to a fixed point (x,y,z)");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filenames");
-
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    model = createSystem(model_name);
-    traj = createTrajectory(traj_name, model);
-    subset = selectAtoms(model, selection);
-
-    if (vm.count("centroid")) {
-      string sel = vm["centroid"].as<string>();
-      AtomicGroup refsub = selectAtoms(model, sel);
-      compute = new selectionCentroid(refsub, traj);
-    } else if (vm.count("fixed")) {
-      string s = vm["fixed"].as<string>();
-      stringstream ss(s);
-      GCoord c;
-      if (!(ss >> c)) {
-        cerr << "Error - cannot parse '" << s << "' as a coordinate.  It must be (x,y,z).\n";
-        exit(-1);
-      }
-      compute = new fixedPoint(c);
-    } else
-      compute = new averageCentroid(subset, traj);
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("average", "Calculate distance from selection to the average centroid (default)")
+      ("centroid", po::value<string>(&centroid), "Calculate distance to the average centroid of this selection")
+      ("fixed", po::value<string>(&fixed), "Calculate distance to a fixed point (x,y,z)");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("centroid='%s', fixed='%s'") % centroid % fixed;
+    return(oss.str());
   }
-}
+
+  string centroid, fixed;
+};
+// @endcond
+
+
+
+
 
 
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  // Handle computation mode...
+  Base* compute;
+
+  AtomicGroup subset = selectAtoms(tropts->model, sopts->selection);
+
+  if (! topts->centroid.empty()) {
+    AtomicGroup refsub = selectAtoms(tropts->model, topts->centroid);
+    compute = new averageCentroid(refsub, tropts->trajectory);
+  } else if (! topts->fixed.empty()) {
+    istringstream iss(topts->fixed);
+    GCoord c;
+    if (!(iss >> c)) {
+      cerr << boost::format("Error: cannot parse %s as a corodinate.\n") % topts->fixed;
+      exit(-1);
+    }
+    compute = new fixedPoint(c);
+  } else {
+    AtomicGroup subset = selectAtoms(tropts->model, sopts->selection);
+    compute = new averageCentroid(subset, tropts->trajectory);
+  }
 
   cout << "# " << hdr << endl;
   cout << "# t d\n";
-  uint n = traj->nframes();
-  for (uint i=0; i<n; ++i) {
-    traj->readFrame(i);
-    traj->updateGroupCoords(subset);
+  uint t = 0;
+  while (tropts->trajectory->readFrame()) {
+    tropts->trajectory->updateGroupCoords(subset);
     GCoord c = subset.centroid();
-    cout << i << " " << (*compute)(c, i) << endl;
+    cout << t++ << " " << (*compute)(c) << endl;
   }
 }

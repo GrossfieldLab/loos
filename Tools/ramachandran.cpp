@@ -53,14 +53,14 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 #include <cmath>
 #include <sstream>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 // Convenience typedefs...
@@ -69,6 +69,7 @@ typedef vector<AtomicGroup> vGroup;
 typedef vector<vGroup> vvGroup;
 
 
+// @cond TOOLS_INTERNAL
 
 // ----------------------------------------------------------
 // Classes to handle extraction of atoms...  This enables easy
@@ -303,12 +304,6 @@ public:
 
 // Globals...yuck!
 
-vector<uint> indices;    // Frame indices from the trajectory to use
-
-string model_name;       // Name of the model
-string traj_name;        // Trajectory
-string sel_name;         // Selection
-
 Extractor *extractor;    // Extractor object that's used to specify
                          // which torsions to compute at run-time...
 
@@ -316,97 +311,75 @@ double missing_flag = -9999;  // Value to use when a torsion can't be
                               // computed...
 
 
-void parseOptions(int argc, char *argv[]) {
+class ToolOptions : public opts::OptionsPackage {
+public:
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("pseudo", po::value<bool>(&pseudo_flag)->default_value(false), "Use RNA pseudo-torsions")
+      ("missing", po::value<double>(&missing_flag)->default_value(-9999), "Value to use for missing torsions")
+      ("warn", po::value<bool>(&warn_flag)->default_value(true), "Warn when atoms are missing a torsion")
+      ("skipmissing", po::value<bool>(&skip_flag)->default_value(true), "Skip residues missing torsions")
+      ("show", po::value<bool>(&show_flag)->default_value(false), "Show atoms used for each torsion");
+  }
 
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("pseudo,p", "Use RNA pseudo-torsions")
-      ("missing,m", po::value<double>(&missing_flag)->default_value(-9999), "Value to use for missing torsions")
-      ("warn,w", "Warn when atoms are missing a torsion")
-      ("skip,s", "Skip residues where not all torsions are available")
-      ("show,S", "Show atoms used for each torsion")
-      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (list of Octave-style ranges)");
-
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("selection", po::value<string>(&sel_name), "Selection");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("selection", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("selection"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name selection\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
-
-
+  bool postConditions(po::variables_map& vm) {
     // Instantiate correct Extractor-derived object based on
     // user-selected mode...
-    if (vm.count("pseudo"))
+    if (pseudo_flag)
       extractor = new PseudoTorsions;
     else
       extractor = new PhiPsi;                // Assume protein
 
     // Configure extractor to warn upon finding atoms missing, if the
     // user wants it...
-    if (vm.count("warn"))
+    if (warn_flag)
       extractor->missingAtomsWarn();
 
-    if (vm.count("skip"))
+    if (skip_flag)
       extractor->skipMissingResidues();
 
-    if (vm.count("show"))
+    if (show_flag)
       extractor->showAtoms();
 
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+    return(true);
   }
 
-}
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("pseudo=%d, missing=%f, warn=%d, skipmissing=%d, show=%d")
+      % pseudo_flag % missing_flag % warn_flag % skip_flag % show_flag;
+    return(oss.str());
+  }
 
+  bool pseudo_flag, warn_flag, skip_flag, show_flag;
+
+};
+
+// @endcond
 
 
 
 int main(int argc, char *argv[]) {
   
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   // Read-in/setup objects to access data...
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
-  AtomicGroup subset = selectAtoms(model, sel_name);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
 
-  // If no frame-range specified, use all...
-  if (indices.empty()) {
-    for (uint i=0; i<traj->nframes(); ++i)
-      indices.push_back(i);
-  }
+  vector<uint> indices = tropts->frameList();
 
   // Split selection into individual residues to operate over...
   vGroup residues = subset.splitByResidue();
@@ -434,8 +407,7 @@ int main(int argc, char *argv[]) {
   cout << endl;
 
   // Iterate over the requested frames from the trajectory...
-  vector<uint>::iterator frameno;
-  for (frameno = indices.begin(); frameno != indices.end(); ++frameno) {
+  for (vector<uint>::iterator frameno = indices.begin(); frameno != indices.end(); ++frameno) {
     traj->readFrame(*frameno);
 
     // Update ALL atoms...since atoms are shared between AtomicGroups,

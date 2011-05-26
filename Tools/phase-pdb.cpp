@@ -32,12 +32,12 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 vector<uint> columns;
@@ -53,49 +53,28 @@ bool bonds;
 string matrix_name;
 
 
-void parseArgs(int argc, char *argv[]) {
-  
-  string rowdesc;
+// @cond TOOLS_INTERNAL
 
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("segid,S", po::value<string>(&segid_fmt)->default_value("P%03d"), "Segid printf format")
-      ("atom,a", po::value<string>(&atom_name)->default_value("CA"), "Atom name to use")
-      ("residue,r", po::value<string>(&residue_name)->default_value("SVD"), "Residue name to use")
-      ("rows,R", po::value<string>(&rowdesc)->default_value("all"), "Rows to use")
-      ("column,c", po::value< vector<uint> >(&columns), "Columns to use (default are first 3)")
-      ("scales,s", po::value< vector<double> >(&scales), "Scale columns (default is 100,100,100)")
-      ("chunk,C", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows")
-      ("bonds,b", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds");
+class ToolOptions : public opts::OptionsPackage {
+public:
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("matrix", po::value<string>(&matrix_name), "Matrix file");
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("segid", po::value<string>(&segid_fmt)->default_value("P%03d"), "Segid printf format")
+      ("atom", po::value<string>(&atom_name)->default_value("CA"), "Atom name to use")
+      ("residue", po::value<string>(&residue_name)->default_value("SVD"), "Residue name to use")
+      ("rows", po::value<string>(&rowdesc)->default_value("all"), "Rows to use")
+      ("column,C", po::value< vector<uint> >(&columns), "Columns to use (default are first 3)")
+      ("scales,S", po::value< vector<double> >(&scales), "Scale columns (default is 100,100,100)")
+      ("chunk", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows")
+      ("bonds", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds");
+  }
 
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("matrix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("matrix"))) {
-      cout << "Usage- " << argv[0] << " [options] matrix >output.pdb\n";
-      cout << generic;
-      exit(0);
-    }
-
+  bool postConditions(po::variables_map& vm) {
     if (columns.empty())
       for (uint i=0; i<3; ++i)
         columns.push_back(i);
-
+    
     if (scales.empty())
       for (uint i=0; i<3; ++i)
         scales.push_back(100.0);
@@ -105,32 +84,60 @@ void parseArgs(int argc, char *argv[]) {
 
     if (columns.size() != scales.size()) {
       cerr << "Error- number of columns selected does not equal number of scales\n";
-      exit(-1);
+      return(false);
     }
 
     if (columns.size() != 3) {
       cerr << "Error- must select 3 columns\n";
-      exit(-1);
+      return(false);
     }
 
     if (rowdesc != "all")
       rows = parseRangeList<uint>(rowdesc);
-
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+    
+    return(true);
   }
 
-}
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("segid='%s', atom='%s', residue='%s', rows='%s', chunk=%d, bonds=%d, columns=(%s), scales=(%f)")
+      % segid_fmt
+      % atom_name
+      % residue_name
+      % rowdesc
+      % rowdesc
+      % chunksize
+      % bonds
+      % vectorAsStringWithCommas<uint>(columns)
+      % vectorAsStringWithCommas<double>(scales);
+
+    return(oss.str());
+  }
+
+  string rowdesc;
+
+};
+
+// @endcond
+
 
 
 
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseArgs(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ropts->addArgument("matrix", "matrix-file");
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts).add(ropts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  string matrix_name = ropts->value("matrix");
 
   RealMatrix A;
   readAsciiMatrix(matrix_name, A);

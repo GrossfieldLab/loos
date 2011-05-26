@@ -27,99 +27,84 @@
  */
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
+
 
 using namespace std;
 using namespace loos;
 
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
-#if 0
-void Usage()
-    {
-    cerr << "Usage: xy_rdf system traj selection1 selection2 "
-         << "min max num_bins skip" 
-         << endl;
-    }
-#endif
-
-string system_filename;
-string traj_filename;
 string selection1, selection2;
 string split_by;
 double hist_min, hist_max;
 int num_bins;
-int skip;
 int timeseries_interval;
 string output_directory;
 
-void parseOptions(int argc, char *argv[])
-    {
-    try 
-        {
-        po::options_description generic("Allowed options");
-        generic.add_options()
-            ("help,h", "Produce this help message")
-            //("fullhelp", "Even more help")
-            ("sel1", po::value<string>(&selection1), "first selection")
-            ("sel2", po::value<string>(&selection2), "second selection")
-            ("split-mode",po::value<string>(&split_by), "how to split the selections")
-            ("skip", po::value<int>(&skip)->default_value(0), "frames to skip")
-            ("timeseries", po::value<int>(&timeseries_interval)->default_value(0), "Interval to write out timeseries, 0 means never")
-            ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("foo")));
-        
-        po::options_description hidden("Hidden options");
-        hidden.add_options()
-            ("model", po::value<string>(&system_filename), "Model filename")
-            ("traj", po::value<string>(&traj_filename), "Trajectory filename")
-            ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
-            ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
-            ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage
+{
+public:
+  
+  void addGeneric(po::options_description& o) 
+  {
+    o.add_options()
+      ("split-mode",po::value<string>(&split_by), "how to split the selections")
+      ("timeseries", po::value<int>(&timeseries_interval)->default_value(0), "Interval to write out timeseries, 0 means never")
+      ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("output")));
 
-        po::options_description command_line;
-        command_line.add(generic).add(hidden);
+  }
 
-        po::positional_options_description p;
-        p.add("model", 1);
-        p.add("traj", 1);
-        p.add("hist-min", 1);
-        p.add("hist-max", 1);
-        p.add("num-bins", 1);
+  void addHidden(po::options_description& o)
+  {
+    o.add_options()
+      ("sel1", po::value<string>(&selection1), "first selection")
+      ("sel2", po::value<string>(&selection2), "second selection")
+      ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
+      ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
+      ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+  }
 
-        po::variables_map vm;
-        po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-        po::notify(vm);
+  bool check(po::variables_map& vm)
+  {
+    return(!(vm.count("sel1") 
+             && vm.count("hist-min")
+             && vm.count("hist-max")
+             && vm.count("num-bins")));
+  }
 
-        if (vm.count("help") || 
-            !vm.count("model") || !vm.count("traj") || 
-            !vm.count("hist-min") || !vm.count("hist-max") ||
-            !vm.count("num-bins") ||
-            !vm.count("sel1") 
-           )
-            {
-            cerr << "Usage: " << argv[0] << " "
-                 << "model-name trajectory-name hist-min hist-max num-bins "
-                 << "--split-mode by-residue|by-segment|by-molecule"
-                 << "--sel1 SELECTION [--sel2 SELECTION] "
-                 << "--timeseries VALUE --timeseries-directory DIR"
-                 << endl;
-            cerr << generic;
-            exit(-1);
-            }
-        
-        // if there's only 1 selection, duplicate it
-        if (!vm.count("sel2"))
-            {
-            selection2 = selection1;
-            }
-        }
-    catch(exception& e) 
-        {
-        cerr << "Error - " << e.what() << endl;
-        exit(-1);
-        }
-    }
+  bool postCondition(po::variables_map& vm)
+  {
+    if (vm.count("sel1") && !vm.count("sel2"))
+      selection2 = selection1;
+    return(true);
+  }
+
+  string help() const
+  {
+    return("first-selection second-selection histogrm-min histogram-min histogram-bins");
+  }
+
+  string print() const
+  {
+    ostringstream oss;
+    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f, timeseries=%d, timeseries-directory='%s'")
+      % split_by
+      % selection1
+      % selection2
+      % hist_min
+      % hist_max
+      % num_bins
+      % timeseries_interval
+      % output_directory;
+    return(oss.str());
+  }
+
+};
+// @endcond
+
+
 
 enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE };
 
@@ -154,19 +139,17 @@ split_mode parseSplit(const string &split_by)
 int main (int argc, char *argv[])
 {
 
-#if 0
-if ( (argc <= 1) || 
-     ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 9)
-   )
-    {
-    Usage();
-    exit(-1);
-    }
-#endif
-
 // parse the command line options
-parseOptions(argc, argv);
+string hdr = invocationHeader(argc, argv);
+opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+ToolOptions* topts = new ToolOptions;
+
+opts::AggregateOptions options;
+options.add(bopts).add(tropts).add(topts);
+if (!options.parse(argc, argv))
+  exit(-1);
+
 
 // parse the split mode, barf if you can't do it
 split_mode split=parseSplit(split_by);
@@ -174,8 +157,8 @@ split_mode split=parseSplit(split_by);
 cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
-AtomicGroup system = createSystem(system_filename);
-pTraj traj = createTrajectory(traj_filename, system);
+AtomicGroup system = tropts->model;
+pTraj traj = tropts->trajectory;
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -200,9 +183,6 @@ else if (split == BY_SEGMENT)
     g1_mols = group1.splitByUniqueSegid();
     g2_mols = group2.splitByUniqueSegid();
     }
-
-// Skip the initial frames
-traj->readFrame(skip); 
 
 // read the initial coordinates into the system
 traj->updateGroupCoords(system);

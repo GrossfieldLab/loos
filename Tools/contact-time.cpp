@@ -29,35 +29,22 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 #include <boost/format.hpp>
 #include <limits>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup> vGroup;
 
 
-vector<uint> indices;
-double inner_cutoff, outer_cutoff;
-string probe_selection;
-string model_name, traj_name;
-vector<string> target_selections;
-bool symmetry;
-int verbosity;
-bool normalize;
-bool max_norm;
-bool auto_self;
-
-bool fast_filter;
-double fast_pad;
 
 
 
-void fullHelp() {
-  cout <<
+string fullHelpMessage() {
+  string s = 
     "* Normalization *\n"
     "Normalization can be performed in two ways: row or column.\n"
     "Row normalization gives the percentage contact between the probe\n"
@@ -76,7 +63,7 @@ void fullHelp() {
     "contacts between the AMLPs and PEGL, PGGL, and each other.  The\n"
     "command for this would be:\n"
     "\n"
-    "contact-time -a1 model.pdb traj.dcd  'segid =~ \"PE\\d+\"'\\\n"
+    "contact-time --autoself=1 model.pdb traj.dcd  'segid =~ \"PE\\d+\"'\\\n"
     "      'resname == \"PEGL\"' and 'resname == \"PGGL\"'\n"
     "\n"
     "This will automatically generate a new set of targets based\n"
@@ -89,87 +76,99 @@ void fullHelp() {
     "By default, contact-time uses a distance filter to eliminate\n"
     "target atoms that are too far to be considered when looking\n"
     "at each probe atom.  The padding for the radius used to\n"
-    "exclude target atoms can be adjusted with the '-p' option.\n"
+    "exclude target atoms can be adjusted with the '--fastpad' option.\n"
     "In the unlikely event the filter causes problems, it can\n"
-    "be disabled with '-f0'.\n";
+    "be disabled with '--fast=0'.\n";
+  
+  return(s);
 }
 
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage
+{
+public:
+  ToolOptions() :
+    inner_cutoff(1.5),
+    outer_cutoff(2.5),
+    fast_pad(1.0),
+    probe_selection(""),
+    symmetry(true),
+    normalize(true),
+    max_norm(false),
+    auto_self(false),
+    fast_filter(true)
+  { }
 
 
-void parseOptions(int argc, char *argv[]) {
-  try {
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("rownorm", po::value<bool>(&normalize)->default_value(normalize), "Normalize total # of contacts (across row)")
+      ("colnorm", po::value<bool>(&max_norm)->default_value(max_norm), "Normalize by max value (down a column)")
+      ("inner", po::value<double>(&inner_cutoff)->default_value(inner_cutoff), "Inner cutoff (ignore atoms closer than this)")
+      ("outer", po::value<double>(&outer_cutoff)->default_value(outer_cutoff), "Outer cutoff (ignore atoms further away than this)")
+      ("reimage", po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
+      ("autoself", po::value<bool>(&auto_self)->default_value(auto_self), "Automatically include self-to-self")
+      ("fast", po::value<bool>(&fast_filter)->default_value(fast_filter), "Use the fast-filter method")
+      ("fastpad", po::value<double>(&fast_pad)->default_value(fast_pad), "Padding for the fast-filter method");
+  }
 
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help,h", "Produce this help message")
-      ("fullhelp", "Even more help")
-      ("verbose,v", po::value<int>(&verbosity)->default_value(1), "Enable verbose output")
-      ("rownorm,n", po::value<bool>(&normalize)->default_value(true), "Normalize total # of contacts (across row)")
-      ("colnorm,c", po::value<bool>(&max_norm)->default_value(false), "Normalize by max value (down a column)")
-      ("inner,i", po::value<double>(&inner_cutoff)->default_value(1.5), "Inner cutoff (ignore atoms closer than this)")
-      ("outer,o", po::value<double>(&outer_cutoff)->default_value(2.5), "Outer cutoff (ignore atoms further away than this)")
-      ("reimage,R", po::value<bool>(&symmetry)->default_value(true), "Consider symmetry when computing distances")
-      ("range,r", po::value< vector<string> >(), "Frames of the DCD to use (in Octave-style ranges)")
-      ("autoself,a", po::value<bool>(&auto_self)->default_value(false), "Automatically include self-to-self")
-      ("fast,f", po::value<bool>(&fast_filter)->default_value(true), "Use the fast-filter method")
-      ("fastpad,p", po::value<double>(&fast_pad)->default_value(1.0), "Padding for the fast-filter method");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
+  void addHidden(po::options_description& o) {
+    o.add_options()
       ("probe", po::value<string>(&probe_selection), "Probe selection")
       ("target", po::value< vector<string> >(&target_selections), "Target selections");
-    
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-    
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
+  }
+
+  void addPositional(po::positional_options_description& p) {
     p.add("probe", 1);
     p.add("target", -1);
+  }
 
-    
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && !target_selections.empty() && vm.count("probe"))) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name probe target [target ...] >output\n";
-      cerr << generic;
-
-
-      if (vm.count("fullhelp")) {
-        fullHelp();
-        exit(0);
-      }
-
-      exit(-1);
-    }
-
+  bool check(po::variables_map& map) {
+    if (target_selections.empty() || probe_selection.empty())
+      return(true);
     if (normalize && max_norm) {
-      cerr << "Error- cannot use both column and row normalization at the same time\n";
-      exit(-1);
+      cerr << "Error- you cannot use both column and row normalization at the same time\n";
+      return(true);
     }
-
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
+    return(false);
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+
+  string help() const {
+    return("probe target [target ...]");
   }
-}
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("inner=%f,outer=%f,rownorm=%d,colnorm=%d,reimage=%d,autoself=%d,fast=%d,fastpad=%f,probe='%s',targets=")
+      % inner_cutoff
+      % outer_cutoff
+      % normalize
+      % max_norm
+      % symmetry
+      % auto_self
+      % fast_filter
+      % fast_pad
+      % probe_selection;
+
+    for (uint i=0; i<target_selections.size(); ++i)
+      oss << "'" << target_selections[i] << "'" << (i == target_selections.size() - 1 ? "" : ",");
+
+    return(oss.str());
+  }
+
+
+  double inner_cutoff, outer_cutoff, fast_pad;
+  string probe_selection;
+  bool symmetry, normalize, max_norm, auto_self, fast_filter;
+  vector<string> target_selections;
+};
+// @endcond
 
 
 
 
-uint contacts(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius) {
+uint contacts(const AtomicGroup& target, const AtomicGroup& probe, const double inner_radius, const double outer_radius, const bool symmetry) {
   
   double or2 = outer_radius * outer_radius;
   double ir2 = inner_radius * inner_radius;
@@ -192,7 +191,7 @@ uint contacts(const AtomicGroup& target, const AtomicGroup& probe, const double 
 }
 
 
-AtomicGroup pickNearbyAtoms(const AtomicGroup& target, const AtomicGroup& probe, const double radius) {
+AtomicGroup pickNearbyAtoms(const AtomicGroup& target, const AtomicGroup& probe, const double radius, const bool symmetry) {
 
   GCoord c = probe.centroid();
   GCoord box = probe.periodicBox();
@@ -212,13 +211,13 @@ AtomicGroup pickNearbyAtoms(const AtomicGroup& target, const AtomicGroup& probe,
 }
 
 
-uint fastContacts(const AtomicGroup& target, const vGroup& probes, const double inner, const double outer) {
+uint fastContacts(const AtomicGroup& target, const vGroup& probes, const double inner, const double outer, const double fast_pad, const bool symmetry) {
   uint total_contacts = 0;
 
   
   for (vGroup::const_iterator i = probes.begin(); i != probes.end(); ++i) {
-    AtomicGroup new_target = pickNearbyAtoms(target, *i, outer+fast_pad);
-    uint c = contacts(new_target, *i, inner, outer);
+    AtomicGroup new_target = pickNearbyAtoms(target, *i, outer+fast_pad, symmetry);
+    uint c = contacts(new_target, *i, inner, outer, symmetry);
     total_contacts += c;
   }
 
@@ -230,13 +229,13 @@ uint fastContacts(const AtomicGroup& target, const vGroup& probes, const double 
 // unique pairs of groups, excluding the self-to-self
 //
 // Note: this assumes that you want to compare the -ENTIRE- molecule
-uint autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius) {
+uint autoSelfContacts(const vGroup& selves, const double inner_radius, const double outer_radius, const bool symmetry) {
   
   uint total_contact = 0;
   uint n = selves.size();
   for (uint j=0; j<n-1; ++j)
     for (uint i=j+1; i<n; ++i) {
-      total_contact += contacts(selves[j], selves[i], inner_radius, outer_radius);
+      total_contact += contacts(selves[j], selves[i], inner_radius, outer_radius, symmetry);
     }
 
   return(total_contact);
@@ -300,21 +299,26 @@ void colNormalize(DoubleMatrix& M) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices();
+  ToolOptions* toolopts = new ToolOptions;
 
-  // Handle a request for a subset of frames
-  if (indices.empty())
-    for (uint i=0; i<traj->nframes(); ++i)
-      indices.push_back(i);
+  opts::AggregateOptions options;
+  options.add(bopts).add(tropts).add(toolopts);
 
-  AtomicGroup probe = selectAtoms(model, probe_selection);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  vector<uint> indices = tropts->frameList();
+
+  AtomicGroup probe = selectAtoms(model, toolopts->probe_selection);
 
   // Build each of the requested targets...
   vGroup targets;
-  for (vector<string>::iterator i = target_selections.begin(); i != target_selections.end(); ++i)
+  for (vector<string>::iterator i = toolopts->target_selections.begin(); i != toolopts->target_selections.end(); ++i)
     targets.push_back(selectAtoms(model, *i));
 
 
@@ -324,8 +328,8 @@ int main(int argc, char *argv[]) {
 
   // If comparing self, split apart molecules by unique segids
   vGroup myselves;
-  if (auto_self || fast_filter) {
-    if (auto_self)
+  if (toolopts->auto_self || toolopts->fast_filter) {
+    if (toolopts->auto_self)
       ++cols;
     myselves = probe.splitByUniqueSegid();
   }
@@ -338,14 +342,14 @@ int main(int argc, char *argv[]) {
   PercentProgressWithTime watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(indices.size()));
   slayer.attach(&watcher);
-  if (verbosity)
+  if (bopts->verbosity)
     slayer.start();
 
   for (vector<uint>::iterator frame = indices.begin(); frame != indices.end(); ++frame) {
     traj->readFrame(*frame);
     traj->updateGroupCoords(model);
 
-    if (symmetry && !model.isPeriodic()) {
+    if (toolopts->symmetry && !model.isPeriodic()) {
       cerr << "ERROR - the trajectory must be periodic to use --reimage\n";
       exit(-1);
     }
@@ -353,37 +357,37 @@ int main(int argc, char *argv[]) {
     M(t, 0) = t;
     for (uint i=0; i<targets.size(); ++i) {
       double d;
-      if (fast_filter)
-        d = fastContacts(targets[i], myselves, inner_cutoff, outer_cutoff);
+      if (toolopts->fast_filter)
+        d = fastContacts(targets[i], myselves, toolopts->inner_cutoff, toolopts->outer_cutoff, toolopts->fast_pad, toolopts->symmetry);
       else
-        d = contacts(targets[i], probe, inner_cutoff, outer_cutoff);
+        d = contacts(targets[i], probe, toolopts->inner_cutoff, toolopts->outer_cutoff, toolopts->symmetry);
 
       M(t, i+1) = d;
     }
 
-    if (auto_self)
-      M(t, cols-1) = autoSelfContacts(myselves, inner_cutoff, outer_cutoff);
+    if (toolopts->auto_self)
+      M(t, cols-1) = autoSelfContacts(myselves, toolopts->inner_cutoff, toolopts->outer_cutoff, toolopts->symmetry);
 
     ++t;
-    if (verbosity)
+    if (bopts->verbosity)
       slayer.update();
   }
 
-  if (verbosity)
+  if (bopts->verbosity)
     slayer.finish();
 
-  if (normalize) {
-    if (verbosity)
+  if (toolopts->normalize) {
+    if (bopts->verbosity)
       cerr << "Normalizing across the row...\n";
     rowNormalize(M);
 
-  } else if (max_norm) {
-    if (verbosity)
+  } else if (toolopts->max_norm) {
+    if (bopts->verbosity)
       cerr << "Normalizing by max column value...\n";
     colNormalize(M);
 
   } else
-    if (verbosity)
+    if (bopts->verbosity)
       cerr << "No normalization.\n";
 
   writeAsciiMatrix(cout, M, hdr);

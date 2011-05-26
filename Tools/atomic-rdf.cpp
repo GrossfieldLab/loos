@@ -33,6 +33,8 @@
 using namespace std;
 using namespace loos;
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 
@@ -45,29 +47,40 @@ void Usage()
 
 int main (int argc, char *argv[])
 {
-if ( (argc <= 1) || 
-     ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 9)
-   )
-    {
-    Usage();
-    exit(-1);
-    }
+
+// Build options
+opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::RequiredArguments* ropts = new opts::RequiredArguments;
+
+// These are required command-line arguments (non-optional options)
+ropts->addArgument("selection1", "selection1");
+ropts->addArgument("selection2", "selection2");
+ropts->addArgument("min", "min radius");
+ropts->addArgument("max", "max radius");
+ropts->addArgument("num_bins", "number of bins");
+
+opts::AggregateOptions options;
+options.add(bopts).add(tropts).add(ropts);
+if (!options.parse(argc, argv))
+  exit(-1);
+
 
 // Print the command line arguments
 cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 // Create the system and read the trajectory file
-AtomicGroup system = createSystem(argv[1]);
-pTraj traj = createTrajectory(argv[2], system);
+AtomicGroup system = tropts->model;
+pTraj traj = tropts->trajectory;
 
-char *selection1 = argv[3];  // String describing the first selection
-char *selection2 = argv[4];  // String describing the second selection
-double hist_min = atof(argv[5]); // Lower edge of the histogram
-double hist_max = atof(argv[6]); // Upper edge of the histogram
-int num_bins = atoi(argv[7]); // Number of bins in the histogram
-int skip = atoi(argv[8]);  // Number of frames to skip as equilibration
+// Extract our required command-line arguments
+string selection1 = ropts->value("selection1");  // String describing the first selection
+string selection2 = ropts->value("selection2");  // String describing the second selection
+double hist_min = parseStringAs<double>(ropts->value("min")); // Lower edge of the histogram
+double hist_max = parseStringAs<double>(ropts->value("max")); // Upper edge of the histogram
+int num_bins = parseStringAs<double>(ropts->value("num_bins")); // Number of bins in the histogram
+
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -77,12 +90,6 @@ AtomicGroup group1 = selectAtoms(system, selection1);
 
 // Set up the selector to define group2 atoms
 AtomicGroup group2 = selectAtoms(system, selection2);
-
-// Skip the initial frames as equilibration
-traj->readFrame(skip); 
-
-// read the initial coordinates into the system
-traj->updateGroupCoords(system);
 
 // Create the histogram and zero it out
 vector<double> hist;
@@ -98,6 +105,7 @@ double volume = 0.0;
 int unique_pairs=0;
 while (traj->readFrame())
     {
+
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 

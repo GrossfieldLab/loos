@@ -53,13 +53,12 @@
 
 #include <loos.hpp>
 
-#include <boost/program_options.hpp>
-
-
 using namespace std;
 using namespace loos;
 
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
 
 string model_name, traj_name, prefix;
 string alignment_string;
@@ -75,53 +74,38 @@ bool center;
 
 
 
-void parseOptions(int argc, char *argv[]) {
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : alignment_string("name == 'CA'"),
+                  transform_string("all"),
+                  reference_name(""),
+                  reference_sel(""),
+                  alignment_tol(1e-6),
+                  maxiter(5000),
+                  center(true) { }
 
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help,h", "Produce this help message")
-      ("align,a", po::value<string>(&alignment_string)->default_value("name == 'CA'"),"Align using this selection")
-      ("transform,t", po::value<string>(&transform_string)->default_value("all"), "Transform this selection")
-      ("maxiter,m", po::value<int>(&maxiter)->default_value(5000), "Maximum number of iterations for the iterative alignment algorithm")
-      ("tolerance,T", po::value<greal>(&alignment_tol)->default_value(1e-6), "Tolerance for alignment convergence")
-      ("center,c", po::value<bool>(&center)->default_value(true), "Auto-center the trajectory using the alignment subset")
-      ("reference,r", po::value<string>(&reference_name), "Align to a reference structure (do not use iterative method)")
-      ("refsel,s", po::value<string>(&reference_sel), "Selection to align against in reference (default is the same as --align)");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("prefix", po::value<string>(&prefix), "Output prefix");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("prefix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("prefix"))) {
-      cerr << "Usage- aligner [options] model-name trajectory-name output prefix\n";
-      cerr << generic;
-      exit(-1);
-    }
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("align", po::value<string>(&alignment_string)->default_value(alignment_string), "Align using this selection")
+      ("transform", po::value<string>(&transform_string)->default_value(transform_string), "Transform using this selection")
+      ("maxiter", po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
+      ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
+      ("center", po::value<bool>(&center)->default_value(center), "Auto-center the trajectory using the alignment subset")
+      ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
+      ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)");
   }
 
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
+  string alignment_string, transform_string;
+  string reference_name, reference_sel;
+  double alignment_tol;
+  uint maxiter;
+  bool center;
+};
 
-}
+
+// @endcond
+
 
 
 void centerFrame(AtomicGroup& src, AtomicGroup& trg) {
@@ -146,22 +130,30 @@ int main(int argc, char *argv[]) {
 
   // Parse command-line options, cache invocation header for later use...
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::OutputPrefix* prefopts = new opts::OutputPrefix;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* toolopts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(prefopts).add(tropts).add(toolopts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   // Read the inputs...
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
 
   // Get the selections (subsets) to operate over
-  AtomicGroup align_sub = selectAtoms(model, alignment_string);
+  AtomicGroup align_sub = selectAtoms(model, toolopts->alignment_string);
 
-  AtomicGroup applyto_sub = selectAtoms(model, transform_string);
+  AtomicGroup applyto_sub = selectAtoms(model, toolopts->transform_string);
 
   // Now do the alignin'...
   unsigned int nframes = traj->nframes();
 
   
-  if (reference_name.empty()) {
+  if (toolopts->reference_name.empty()) {
 
     // Read in the trajectory frames and extract the coordinates for the
     // aligning subset...
@@ -172,7 +164,7 @@ int main(int argc, char *argv[]) {
       frames.push_back(subcopy);
     }
     
-    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, alignment_tol, maxiter);
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, toolopts->alignment_tol, toolopts->maxiter);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
@@ -183,7 +175,7 @@ int main(int argc, char *argv[]) {
     frames.clear();
     
     // Setup for writing DCD...
-    DCDWriter dcdout(prefix + ".dcd");
+    DCDWriter dcdout(prefopts->prefix + ".dcd");
     dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, traj->hasPeriodicBox());
     dcdout.setTitle(header);
     dcdout.writeHeader();
@@ -199,23 +191,22 @@ int main(int argc, char *argv[]) {
       dcdout.writeFrame(applyto_sub);
       
       if (i == 0) 
-        savePDB(prefix + ".pdb", header, applyto_sub);
+        savePDB(prefopts->prefix + ".pdb", header, applyto_sub);
     }
     
   } else {
     
-    AtomicGroup reference = createSystem(reference_name);
+    AtomicGroup reference = createSystem(toolopts->reference_name);
     
-    if (reference_sel.empty())
-      reference_sel = alignment_string;
-    AtomicGroup refsub = selectAtoms(reference, reference_sel);
+    string refsel = toolopts->reference_sel.empty() ? toolopts->alignment_string : toolopts->reference_sel;
+    AtomicGroup refsub = selectAtoms(reference, refsel);
 
     if (refsub.size() != align_sub.size()) {
       cerr << boost::format("ERROR- alignment subset has %d atoms but reference subset has %d.  They must match.\n") % align_sub.size() % refsub.size();
       exit(-10);
     }
 
-    DCDWriter dcdout(prefix + ".dcd");
+    DCDWriter dcdout(prefopts->prefix + ".dcd");
     dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, traj->hasPeriodicBox());
     dcdout.setTitle(header);
     dcdout.writeHeader();
@@ -233,7 +224,7 @@ int main(int argc, char *argv[]) {
       dcdout.writeFrame(applyto_sub);
 
       if (first) {
-        savePDB(prefix + ".pdb", header, applyto_sub);
+        savePDB(prefopts->prefix + ".pdb", header, applyto_sub);
         first = false;
       }
     }

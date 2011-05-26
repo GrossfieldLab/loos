@@ -48,6 +48,7 @@ using namespace loos;
 
 const double null_value = -9999.99;
 
+/// @cond TOOLS_INTERNAL
 
 // Interface for torsion calculation class.
 
@@ -91,6 +92,7 @@ public:
 };
 
 
+/// @endcond
 
 // Utility function to pick a specific atom by name out of a group.
 // It's overkill, but doing it this way does make it easy to note when

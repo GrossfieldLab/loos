@@ -33,17 +33,19 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 const double KB = 1024.0;
 const double MB = 1024 * KB;
 const double GB = 1024 * MB;
 
+// Don't include these classes in Doxygen
+// @cond TOOLS_INTERNAL
 
 struct TrackStorage {
   TrackStorage() : storage(0) { }
@@ -87,80 +89,27 @@ struct TrackStorage {
 };
 
 
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : write_source_matrix(false) { }
 
-
-// --------------------------- GLOBALS
-
-vector<uint> indices;
-string traj_name;
-string model_name;
-string prefix;
-string selection;
-bool write_source_matrix;
-
-
-
-vector<string> parseArgs(int argc, char *argv[]) {
-  
-  vector<string> hdrs;
-
-  hdrs.push_back(invocationHeader(argc, argv));
-
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("range,r", po::value< vector<string> >(), "Range of frames from the trajectory to operate over")
-      ("svd,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection to calculate the SVD of")
-      ("source,S", po::value<bool>(&write_source_matrix)->default_value(false), "Write out the source data matrix")
-      ("prefix,p", po::value<string>(&prefix), "Output prefix");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Traj filename");
-
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cout << "Usage- " << argv[0] << " [options] model traj\n";
-      cout << generic;
-      exit(0);
-    }
-
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
-    if (vm.count("prefix"))
-      prefix = vm["prefix"].as<string>();
-    else
-      prefix = findBaseName(traj_name);
-
-    vector<string> opt_hdrs = optionsValues(vm);
-    copy(opt_hdrs.begin(), opt_hdrs.end(), back_inserter(hdrs));
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("source", po::value<bool>(&write_source_matrix)->default_value(write_source_matrix), "Write out source matrix");
   }
 
-  return(hdrs);
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("source=%d") % write_source_matrix;
+    return(oss.str());
+  }
 
-}
+  bool write_source_matrix;
+};
+// @endcond
+
+
+
 
 
 
@@ -233,27 +182,37 @@ void normalizeRows(RealMatrix& A) {
 
 int main(int argc, char *argv[]) {
 
-  vector<string> hdrs = parseArgs(argc, argv);
+  string hdr = invocationHeader(argc, argv);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
+  opts::OutputPrefix* popts = new opts::OutputPrefix;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(popts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   TrackStorage store;
 
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = tropts->model;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+  pTraj traj = tropts->trajectory;
+
+  string prefix = popts->prefix;
+  vector<uint> indices = tropts->frameList();
 
   writeMap(prefix + ".map", subset);
-
-  if (indices.empty())
-    for (uint i=0; i<traj->nframes(); ++i)
-      indices.push_back(i);
 
   // Build AA'
 
   RealMatrix A = extractCoordinates(traj, subset, indices);
   cerr << boost::format("Coordinate matrix is %d x %d\n") % A.rows() % A.cols();
   store.allocate(A.rows() * A.cols());
-  if (write_source_matrix)
-    writeAsciiMatrix(prefix + "_A.asc", A, stringsAsString(hdrs));
+  if (topts->write_source_matrix)
+    writeAsciiMatrix(prefix + "_A.asc", A, hdr);
 
 
   store.allocate(A.rows() * A.rows());
@@ -293,14 +252,14 @@ int main(int argc, char *argv[]) {
   cerr << "Finished!\n";
   
   reverseColumns(C);
-  writeAsciiMatrix(prefix + "_U.asc", C, stringsAsString(hdrs));
+  writeAsciiMatrix(prefix + "_U.asc", C, hdr);
 
   // D = sqrt(D);  Scale eigenvectors...
   for (uint j=0; j<W.rows(); ++j)
     W[j] = W[j] < 0 ? 0.0 : sqrt(W[j]);
 
   reverseRows(W);
-  writeAsciiMatrix(prefix + "_s.asc", W, stringsAsString(hdrs));
+  writeAsciiMatrix(prefix + "_s.asc", W, hdr);
 
   // Multiply eigenvectors by inverse eigenvalues
   for (uint i=0; i<C.cols(); ++i) {
@@ -320,6 +279,6 @@ int main(int argc, char *argv[]) {
   C.reset();
   A.reset();
 
-  writeAsciiMatrix(prefix + "_V.asc", Vt, stringsAsString(hdrs), true);
+  writeAsciiMatrix(prefix + "_V.asc", Vt, hdr, true);
 
 }

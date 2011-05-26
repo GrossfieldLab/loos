@@ -24,87 +24,70 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
-string model_name, traj_name;
-string lipid_selection;
-uint n_lipids;
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : n_lipids(0) { }
 
-
-
-void parseArgs(int argc, char *argv[]) {
-  
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("nlipids,n", po::value<uint>(&n_lipids)->default_value(0), "Explicit number of lipids per leaflet")
-      ("headgroup,h", po::value<string>(&lipid_selection)->default_value("resname =~ 'P.GL'"), "Selection to pick lipid head groups");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model")
-      ("trajectory", po::value<string>(&traj_name), "Traj");
-
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("trajectory", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("trajectory"))) {
-      cout << "Usage- " << argv[0] << " [options] model trajectory\n";
-      cout << generic;
-      exit(0);
-    }
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("nlipids", po::value<uint>(&n_lipids)->default_value(n_lipids), "Explicitly set the number of lipids per leaflet");
   }
 
-}
+  string print() const {
+    ostringstream oss;
+    oss << "nlipids=" << n_lipids;
+    return(oss.str());
+  }
+
+  uint n_lipids;
+};
 
 
+// @endcond
 
 
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseArgs(argc, argv);
+  
+  opts::BasicOptions* basic = new opts::BasicOptions;
+  opts::BasicSelection* select = new opts::BasicSelection("resname =~ 'P.GL'");
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* toolopts = new ToolOptions;
+  opts::AggregateOptions options;
+
+  options.add(basic).add(select).add(tropts).add(toolopts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   cout << "# " << hdr << endl;
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
   if (!traj->hasPeriodicBox()) {
     cerr << "Error- trajectory has no periodicity.  Cannot compute area per lipid.\n";
     exit(-2);
   }
 
   // Divine how many lipids there are per leaflet...
+  uint n_lipids = toolopts->n_lipids;
   if (n_lipids == 0) {
-    if (lipid_selection.empty()) {
+    if (select->selection.empty()) {
       cerr << "Error- you must specify either an explicit number of lipids per leaflet or the selection to pick out the head groups\n";
       exit(-2);
     }
 
     traj->readFrame();
     traj->updateGroupCoords(model);
-    AtomicGroup subset = selectAtoms(model, lipid_selection);
+    AtomicGroup subset = selectAtoms(model, select->selection);
     vector<AtomicGroup> heads = subset.splitByResidue();
     for (vector<AtomicGroup>::iterator i = heads.begin(); i != heads.end(); ++i) {
       GCoord c = (*i).centroid();
@@ -115,7 +98,7 @@ int main(int argc, char *argv[]) {
   }
 
   traj->rewind();
-  uint t = 0;
+  uint t = tropts->skip;
   cout << "# t\tArea\n";
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();

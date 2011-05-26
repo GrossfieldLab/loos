@@ -35,26 +35,70 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <boost/program_options.hpp>
 #include <cmath>
 #include <sstream>
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
-string model_name;
-string selection_name;
-string auto_selection;
 
 vector<GCoord> planes;
-bool byresidue = false;
-bool cliponly = false;
+
+// @cond TOOL_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : byresidue(false), cliponly(false), auto_selection("") { }
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("byres", po::value<bool>(&byresidue)->default_value(byresidue), "Set to 1 to clip by residue (rather than by atom)")
+      ("auto", po::value<string>(&auto_selection)->default_value(auto_selection), "Automatically generate clipping planes for selection")
+      ("cliponly", po::value<bool>(&cliponly)->default_value(cliponly), "Set to 1 to only output the clipped selection, not the whole model");
+  }
+
+  void addHidden(po::options_description& o) {
+    o.add_options()
+      ("clip", po::value< vector<string> >(&clips), "Clipping planes");
+  }
+
+  void addPositional(po::positional_options_description& pos) {
+    pos.add("clip", -1);
+  }
+
+  bool check(po::variables_map& map) {
+    return( (clips.empty() && auto_selection.empty()) ||
+            (clips.size() % 3 != 0) );
+  }
+
+  // Clipping planes are specified via 3 points, so must convert them from command-line input
+  bool postConditions(po::variables_map& map) {
+    for (vector<string>::iterator i = clips.begin(); i != clips.end(); ++i) {
+      istringstream ss(*i);
+      GCoord c;
+      if (!(ss >> c)) {
+        cerr << "*ERROR* Cannot parse coordinates " << *i << endl;
+        return(false);
+      }
+      planes.push_back(c);
+    }
+    return(true);
+  }
+
+
+  bool byresidue, cliponly;
+  string auto_selection;
+  vector<GCoord> planes;
+  vector<string> clips;
+};
+// @endcond
 
 
 
-void fullHelp(void) {
-  cout <<
+
+string fullHelpMessage(void) {
+  string msg = 
     "\n"
     "Clipper implements a set of arbitrary clipping planes that can be\n"
     "applied to a selection or to the entire model.  When a selection is\n"
@@ -84,71 +128,11 @@ void fullHelp(void) {
     "    along the positive z-axis, but only waters are clipped and if any\n"
     "    water atom is clipped, then the entire water molecule is also\n"
     "    clipped.\n";
+
+  return(msg);
 }
 
 
-
-void parseOptions(int argc, char *argv[]) {
-  vector<string> clips;
-
-  try {
-
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("fullhelp", "Even more help")
-      ("byres,b", "Clip by residue (rather than by atom)")
-      ("selection,s", po::value<string>(&selection_name)->default_value("all"), "Selection to apply clipping planes to")
-      ("auto,a", po::value<string>(&auto_selection), "Automatically generate clipping planes for selection")
-      ("cliponly,o", po::value<bool>(&cliponly)->default_value(false), "Set to 1 to only output the clipped selection, not the whole model");
-
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("clip", po::value< vector<string> >(&clips), "Clipping planes");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("clip", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !vm.count("model") || (clips.empty() && auto_selection.empty()) || clips.size() % 3 != 0) {
-      cerr << "Usage- " << argv[0] << " [options] model-name [(p1) (p2) (p3) ...]\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
-    // Process the clipping plane specifications...
-    for (vector<string>::iterator i = clips.begin(); i != clips.end(); ++i) {
-      istringstream ss(*i);
-      GCoord c;
-      if (!(ss >> c)) {
-        cerr << "*ERROR* Cannot parse coordinates " << *i << endl;
-        exit(-10);
-      }
-      planes.push_back(c);
-    }
-    
-    if (vm.count("byres"))
-      byresidue = true;
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-
-}
 
 
 void generateClippingPlanes(vector<GCoord>& planes, AtomicGroup& model, const string& sel) {
@@ -171,12 +155,25 @@ void generateClippingPlanes(vector<GCoord>& planes, AtomicGroup& model, const st
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection_name);
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
 
-  if (!auto_selection.empty())
-    generateClippingPlanes(planes, model, auto_selection);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(mopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+
+
+  AtomicGroup model = mopts->model;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+
+  if (!topts->auto_selection.empty())
+    generateClippingPlanes(planes, model, topts->auto_selection);
+  else
+    planes = topts->planes;
 
   // First, make sure all atoms are unflagged
   for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
@@ -192,7 +189,7 @@ int main(int argc, char *argv[]) {
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i) {
       double d = n * ((*i)->coords() - x1);
       if (d >= 0) {
-        if (byresidue) {
+        if (topts->byresidue) {
           AtomicGroup residue = subset.getResidue(*i);
           for (AtomicGroup::iterator j = residue.begin(); j != residue.end(); ++j)
             (*j)->setProperty(Atom::flagbit);
@@ -204,7 +201,7 @@ int main(int argc, char *argv[]) {
   }
 
   AtomicGroup clipped;
-  if (cliponly) {
+  if (topts->cliponly) {
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
       if (!(*i)->checkProperty(Atom::flagbit))
         clipped.append(*i);

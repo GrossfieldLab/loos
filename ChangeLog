@@ -1,3 +1,25 @@
+
+2011-05-26    <tromo@spade.biophysics.rochester.edu>
+
+	* MAJOR reorganization of how LOOS is structured.  Tool suites are
+	now "packages" and contained within the "Packages" directory.  The
+	Tools directory now only contains the "core" set of LOOS tools.
+	* Added an OptionsFramework and AggregateOptions class to provide
+	a more consistent set of options across most tools and packages.
+	See the class documentation for OptionsFramework for more details.
+	***IMPORTANT NOTE***  This means that command-line options for
+	most tools have changed.  In particular, many of the single-letter
+	shortcut options have changed or been removed.
+	* Added a Packages/User directory that contains "template"
+	programs for common tasks.  To write a new tool, copy the template
+	that is closest to what you want to do, then edit the regions
+	marked by "***EDIT***" comments.
+	* Added several general utility functions include:
+	loadStructureWithCoords(), assignTrajectoryFrames(), and
+	vectorAsStringWithCommas<T>().
+	* Added a "Density Tools" package.  This is used primarily for
+	water visualization and analysis.
+
 2011-05-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug where charmm.hpp was not installed

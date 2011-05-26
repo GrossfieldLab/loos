@@ -32,8 +32,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.6.1'
-
+loos_version = '1.7.0'
 
 
 # Principal options...
@@ -255,10 +254,15 @@ loos = SConscript('SConscript')
 docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
-nm_tools = SConscript('Tools/ElasticNetworks/SConscript')
-h_tools = SConscript('Tools/HydrogenBonds/SConscript')
-conv_tools = SConscript('Tools/Convergence/SConscript')
+elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
+h_tools = SConscript('Packages/HydrogenBonds/SConscript')
+#g_tools = SConscript('Packages/DensityTools/SConscript')
+convergence_package = SConscript('Packages/Convergence/SConscript')
+density_package = SConscript('Packages/DensityTools/SConscript')
+user_package = SConscript('Packages/User/SConscript')
 
+
+all_packages = elastic_networks_package + convergence_package + density_package
 
 ### Special handling for pre-packaged documentation...
 
@@ -274,10 +278,11 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools + nm_tools + h_tools + conv_tools)
+env.Alias('tools', tools)
 
-env.Alias('all', loos + tools + nm_tools + h_tools + conv_tools)
-env.Alias('caboodle', loos + tools + nm_tools + h_tools + conv_tools + tests + docs)
+env.Alias('all', loos + tools + all_packages)
+env.Alias('caboodle', loos + tools + all_packages + tests + docs)
+env.Alias('user', user_package)
 
 
 env.Alias('install', PREFIX)

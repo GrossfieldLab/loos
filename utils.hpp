@@ -288,19 +288,25 @@ namespace loos {
     return(oss.str());
   }
 
-
-  //! convert a boost::any into a string
-  std::string anyToString(const boost::any& x);
-
-  //! Converts a boost::program_options::variables_map into a vector of strings
-  std::vector<std::string> optionsValues(const boost::program_options::variables_map& m);
-
   //! Converts a vector of strings into a standard log format
   std::string stringsAsComments(const std::vector<std::string>& v);
 
 
   //! Converts a vector of strings into a single string with newlines
   std::string stringsAsString(const std::vector<std::string>& v);
+
+  //! Loads a structure and optional coordinates
+  AtomicGroup loadStructureWithCoords(const std::string& model, const std::string& cooords);
+
+  //! Builds a list of trajectory indices (frame_index_spec supercedes skip)
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip);
+
+  //! Convert a vector of type T to a string-list with commas
+  template<typename T> std::string vectorAsStringWithCommas(const std::vector<T>& v) {
+    std::ostringstream oss;
+    std::copy(v.begin(), v.end(), std::ostream_iterator<T>(oss, ","));
+    return(oss.str());
+  }
 
 };
 

@@ -36,82 +36,46 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
-#include <boost/format.hpp>
 
-namespace po = boost::program_options;
 using namespace std;
 using namespace loos;
 
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
-typedef Math::Matrix<double, Math::Triangular> Matrix;
 
 const int matrix_precision = 2;    // Controls precision in output matrix
 
 
+typedef Math::Matrix<double, Math::Triangular> Matrix;
 
-string model_name;
-string traj_name;
-string alignment;
-double tol;
-bool iterate;
-bool no_output;
-vector<uint> indices;
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : tol(1e-6), iterate(false), noop(false) { }
 
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("align,a", po::value<string>(&alignment)->default_value("name == 'CA'"), "Align using this selection")
-      ("iterative,i", po::value<bool>(&iterate)->default_value(false),"Use iterative alignment method")
-      ("tolerance,t", po::value<double>(&tol)->default_value(1e-6), "Tolerance to use for iterative alignment")
-      ("range,r", po::value< vector<string> >(), "Frames of the trajectory to use (list of Octave-style ranges)")
-      ("noout,n", po::value<bool>(&no_output)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj"))) {
-      cerr << "Usage- rmsds [options] model-name trajectory-name\n";
-      cerr << generic;
-      exit(-1);
-    }
-    
-    if (vm.count("range")) {
-      vector<string> ranges = vm["range"].as< vector<string> >();
-      indices = parseRangeList<uint>(ranges);
-    }
-
-
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("iterative,I", po::value<bool>(&iterate)->default_value(iterate),"Use iterative alignment method")
+      ("tolerance,T", po::value<double>(&tol)->default_value(tol), "Tolerance to use for iterative alignment")
+      ("noout,N", po::value<bool>(&noop)->default_value(noop), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)");
   }
 
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("iterative=%d, tolerance=%f, noout=%d") % iterate % tol % noop;
+    return(oss.str());
   }
 
-}
+
+  double tol;
+  bool iterate;
+  bool noop;
+};
 
 
-void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj, vector<uint>& idx) {
+void doAlign(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj traj, vector<uint>& idx, const double tol) {
 
   for (vector<uint>::iterator i = idx.begin(); i != idx.end(); ++i) {
     AtomicGroup frame = subset.copy();
@@ -142,7 +106,7 @@ void readFrames(vector<AtomicGroup>& frames, const AtomicGroup& subset, pTraj tr
 }
 
 
-Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
+Matrix interFrameRMSD(vector<AtomicGroup>& frames, bool iterate) {
   uint n = frames.size();
   Matrix M(n, n);
   uint i;
@@ -196,28 +160,35 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames) {
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  ToolOptions* topts = new ToolOptions;
 
-  AtomicGroup molecule = createSystem(model_name);
-  pTraj ptraj = createTrajectory(traj_name, molecule);
-  AtomicGroup subset = selectAtoms(molecule, alignment);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup molecule = tropts->model;
+  pTraj ptraj = tropts->trajectory;
+  AtomicGroup subset = selectAtoms(molecule, sopts->selection);
   cerr << "Selected " << subset.size() << " atoms in subset.\n";
 
-  if (indices.empty())
-    for (uint i=0; i<ptraj->nframes(); ++i)
-      indices.push_back(i);
+  vector<uint> indices = tropts->frameList();
 
   vector<AtomicGroup> frames;
-  if (iterate) {
+  if (topts->iterate) {
     cerr << "Aligning...\n";
-    doAlign(frames, subset, ptraj, indices);
+    doAlign(frames, subset, ptraj, indices, topts->tol);
   } else
     readFrames(frames, subset, ptraj, indices);
 
   cerr << "Computing RMSD matrix...\n";
-  Matrix M = interFrameRMSD(frames);
+  Matrix M = interFrameRMSD(frames, topts->iterate);
 
-  if (!no_output) {
+  if (!topts->noop) {
     // Note:  using the operator<< on a matrix here will write it out as a full matrix
     //        i.e. not the special triangular format.
     cout << "# " << header << endl;

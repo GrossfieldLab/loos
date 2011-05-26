@@ -36,10 +36,15 @@
 #include <iomanip>
 
 #include <boost/algorithm/string.hpp>
+#include <AtomicGroup.hpp>
+#include <sfactories.hpp>
+#include <Trajectory.hpp>
 
 #include <Selectors.hpp>
 #include <Parser.hpp>
 #include <utils.hpp>
+
+
 
 
 
@@ -383,50 +388,6 @@ namespace loos {
   }
 
 
-  std::string anyToString(const boost::any& x) {
-    std::string s;
-
-    if (x.type() == typeid(int))
-      s = boost::lexical_cast<std::string>(boost::any_cast<int>(x));
-    else if (x.type() == typeid(double))
-      s = boost::lexical_cast<std::string>(boost::any_cast<double>(x));
-    else if (x.type() == typeid(std::string))
-      s = boost::any_cast<std::string>(x);
-    else if (x.type() == typeid(bool))
-      s = (boost::any_cast<bool>(x)) ? "true" : "false";
-    else if (x.type() == typeid(uint))
-      s = boost::lexical_cast<std::string>(boost::any_cast<uint>(x));
-    else if (x.type() == typeid(ulong))
-      s = boost::lexical_cast<std::string>(boost::any_cast<ulong>(x));
-    else if (x.type() == typeid(float))
-      s = boost::lexical_cast<std::string>(boost::any_cast<float>(x));
-    else if (x.type() == typeid(std::vector<std::string>))
-      s = vToString( boost::any_cast< std::vector<std::string> >(x));
-    else if (x.type() == typeid(std::vector<double>))
-      s = vToString(boost::any_cast< std::vector<double> >(x));
-    else if (x.type() == typeid(std::vector<uint>))
-      s = vToString(boost::any_cast< std::vector<uint> >(x));
-    else
-      throw(LOOSError("Unknown type in anyToString() conversion"));
-
-    return(s);
-
-  }
-
-
-
-  std::vector<std::string> optionsValues(const boost::program_options::variables_map& m) {
-    std::vector<std::string> results;
-
-    for (boost::program_options::variables_map::const_iterator i = m.begin(); i != m.end(); ++i) {
-      std::ostringstream oss;
-      oss << "# " << (*i).first << " = '" << anyToString((*i).second.value()) << "'";
-      results.push_back(oss.str());
-    }
-    
-    return(results);
-  }
-
 
   std::string stringsAsComments(const std::vector<std::string>& v) {
     std::string s;
@@ -449,5 +410,33 @@ namespace loos {
 
     return(s);
   }
+
+
+  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& coord_name) {
+      AtomicGroup model = createSystem(model_name);
+      if (!coord_name.empty()) {
+        AtomicGroup coords = createSystem(coord_name);
+        model.copyCoordinates(coords);
+      }
+
+      if (! model.hasCoords())
+        throw(LOOSError("Error- no coordinates found in specified model(s)"));
+      
+      return(model);
+  }
+
+
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0)  {
+    std::vector<uint> frames;
+    
+    if (frame_index_spec.empty())
+      for (uint i=skip; i<traj->nframes(); ++i)
+        frames.push_back(i);
+    else
+      frames = parseRangeList<uint>(frame_index_spec);
+    
+    return(frames);
+  }
+
 
 }

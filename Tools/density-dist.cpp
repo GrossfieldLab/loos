@@ -32,73 +32,36 @@
 #include <ctype.h>
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
 
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
 
-// Globals
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 enum CalculationType { ELECTRON, CHARGE, MASS };
 
-CalculationType calc_type;
-bool symmetrize;
-bool auto_all;
-uint skip, nbins;
-uint window=0;
-double min_z, max_z;
-string model_name, traj_name, file_name_proto;
-vector<string> selections;
 
-void parseOptions(int argc, char *argv[]) {
-  string calc_type_desc;
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() :
+    symmetrize(false),
+    auto_all(true),
+    calc_type_desc("electron")
+  { }
 
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("auto", po::value<bool>(&auto_all)->default_value(true), "Automatically compute system density")
-      ("skip", po::value<uint>(&skip)->default_value(0), "Number of starting frames to skip")
-      ("zsymmetry", po::value<bool>(&symmetrize)->default_value(false), "Symmetric with respect to Z")
-      ("type", po::value<string>(&calc_type_desc)->default_value("electron"), "Calculation type (mass, charge, electron)")
-      ("window", po::value<uint>(&window), "Window size (in frames) for time series")
-      ("filename", po::value<string>(&file_name_proto), "Root of file name for windowed time series")
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("auto", po::value<bool>(&auto_all)->default_value(auto_all), "Automatically compute system density")
+      ("zsymmetry", po::value<bool>(&symmetrize)->default_value(symmetrize), "Symmetric with respect to Z")
+      ("type", po::value<string>(&calc_type_desc)->default_value(calc_type_desc), "Calculation type (mass, charge, electron)")
+      ("window", po::value<uint>(&window)->default_value(window), "Window size (in frames) for time series (0 = disabled)")
       ;
-      
+  }
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "model")
-      ("traj", po::value<string>(&traj_name), "trajectory")
-      ("nbins", po::value<uint>(&nbins), "nbins")
-      ("minz", po::value<double>(&min_z), "minz")
-      ("maxz", po::value<double>(&max_z), "maxz")
-      ("selection", po::value< vector<string> >(&selections), "selections");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("minz", 1);
-    p.add("maxz", 1);
-    p.add("nbins", 1);
-    p.add("selection", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).style(po::command_line_style::unix_style ^ po::command_line_style::allow_short).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("nbins") && vm.count("minz") && vm.count("maxz"))) {
-      cerr << "Usage- " << argv[0] << " [options] model trajectory min-z max-z nbins [selection ...] >output\n";
-      cerr << generic;
-      exit(-1);
-    }
-    
+  bool postConditions(po::variables_map& map) {
     if (toupper(calc_type_desc[0]) == 'C')
       calc_type = CHARGE;
     else if (toupper(calc_type_desc[0]) == 'E')
@@ -107,39 +70,71 @@ void parseOptions(int argc, char *argv[]) {
       calc_type = MASS;
     else {
       cerr << "Error- unknown calculation type '" << calc_type_desc << "' (should be either charge, mass or electron)\n";
-      exit(-1);
+      return(false);
     }
-
-    if (vm.count("filename") != vm.count("window")) {
-        cerr << "If you want windowed time series, you must specify both a window size and a filename root"
-             << endl;
-        exit(-1);
-    }
-
-
+    return(true);
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("auto=%d, zsymmetry=%d, type='%s', window=%d") 
+      % auto_all
+      % symmetrize
+      % calc_type_desc
+      % window;
+    return(oss.str());
   }
-}
+
+  bool symmetrize, auto_all;
+  uint window;
+  string calc_type_desc;
+  CalculationType calc_type;
+};
+
+// @endcond
+
+
+
 
 
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
+  // Options handling...
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::OutputPrefix* popts = new opts::OutputPrefix;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+
+  // The required options could have been folded into ToolOptions, but
+  // using RequiredArguments saves us from having to handle the help()
+  // and print() methods...
+  opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ropts->addArgument("minz", "min-z");
+  ropts->addArgument("maxz", "max-z");
+  ropts->addArgument("nbins", "number-of-bins");
+  ropts->addVariableArguments("selection", "selection");
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(popts).add(tropts).add(topts).add(ropts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  double min_z = parseStringAs<double>(ropts->value("minz"));
+  double max_z = parseStringAs<double>(ropts->value("maxz"));
+  uint nbins = parseStringAs<uint>(ropts->value("nbins"));
+  vector<string> selections = ropts->variableValues("selection");
+
+  AtomicGroup system = tropts->model;
+  pTraj traj = tropts->trajectory;
+  // End of options
 
   cout << "# " << hdr << endl;
 
-
-  AtomicGroup system = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, system);
-
   // density from each selection
   vector<AtomicGroup> subsets;
-  if (auto_all)
+  if (topts->auto_all)
     subsets.push_back(system);
   for (vector<string>::iterator i = selections.begin(); i != selections.end(); ++i)
     subsets.push_back(selectAtoms(system, *i));
@@ -147,7 +142,7 @@ int main(int argc, char *argv[]) {
   // Verify properties...
   for (vector<AtomicGroup>::iterator i = subsets.begin(); i != subsets.end(); ++i) {
     bool ok;
-    switch(calc_type) {
+    switch(topts->calc_type) {
     case CHARGE: ok = i->allHaveProperty(Atom::chargebit); break;
     case ELECTRON: ok = (i->allHaveProperty(Atom::anumbit) && i->allHaveProperty(Atom::chargebit)); break;
     case MASS: ok = i->allHaveProperty(Atom::massbit); break;
@@ -167,8 +162,7 @@ int main(int argc, char *argv[]) {
   // means we'll need separate storage for the sum
   vector< vector<double> > cum_dists(subsets.size(), vector<double>(nbins, 0.0));
 
-  // skip the equilibration frames
-  traj->readFrame(skip);
+  // Note: the equillibration frames are already skipped by opts::BasicTrajectory
   
   // loop over the remaining frames
   uint frame = 0;
@@ -187,7 +181,7 @@ int main(int argc, char *argv[]) {
       for (AtomicGroup::iterator atom = subsets[i].begin(); 
                                  atom != subsets[i].end(); 
                                  ++atom) {
-        switch(calc_type) {
+        switch(topts->calc_type) {
         case CHARGE: weight = (*atom)->charge(); break;
         case MASS: weight = (*atom)->mass(); break;
         case ELECTRON: weight = (*atom)->atomic_number() - (*atom)->charge(); break;
@@ -196,7 +190,7 @@ int main(int argc, char *argv[]) {
           exit(-1);
         }
         double z = (*atom)->coords().z();
-        if (symmetrize)
+        if (topts->symmetrize)
           z = abs(z);
         
         if ( (z > min_z) && (z < max_z) ) {
@@ -208,13 +202,13 @@ int main(int argc, char *argv[]) {
     ++frame;
 
     // If windowed time series were requested, output them here
-    if (window && (frame % window == 0)) {
-        uint output_val = frame / window;
+    if (topts->window && (frame % topts->window == 0)) {
+        uint output_val = frame / topts->window;
 
         // build the output file name
         char piece[128];
         snprintf(piece, 128, "_%d.dat", output_val);
-        string file_name = file_name_proto + string(piece);
+        string file_name = popts->prefix + string(piece);
         ofstream outfile(file_name.c_str());
         if (!outfile.is_open() ) {
             throw(runtime_error("couldn't open output file"));
@@ -233,7 +227,7 @@ int main(int argc, char *argv[]) {
             double z = (i+0.5)*bin_width + min_z;
             outfile << z << "\t";
             for (unsigned int j=0; j<subsets.size(); j++) {
-                double c = dists[j][i] / window;
+                double c = dists[j][i] / topts->window;
                 outfile << c << "\t";
             }
             outfile << endl;
@@ -257,7 +251,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Normalize by the number of frames and output the average charge density
-  cout << "# Z\t" << (auto_all ? "AllAtoms" : "");
+  cout << "# Z\t" << (topts->auto_all ? "AllAtoms" : "");
   for (uint i=1; i<subsets.size(); i++) {
     cout << " Set(" << i <<") "; 
   }
@@ -266,10 +260,10 @@ int main(int argc, char *argv[]) {
   // If we didn't output windowed time series, we never used cum_dists, so we need 
   // to copy it over here
   // If we did, we may have some data in dists that hasn't been added to cum_dists yet
-  if (!window) {
+  if (!topts->window) {
       cum_dists = dists;
   }
-  else if (frame % window != 0){
+  else if (frame % topts->window != 0){
      for (uint i=0; i<dists.size(); i++) {
          for (uint j=0; j<nbins; j++) {
              cum_dists[i][j] += dists[i][j];
