@@ -56,8 +56,9 @@ Although we primarily view LOOS as a development platform -- a tool for
 making tools -- it is distributed with a number of prebuilt applications.
 The included tools were developed in the course of research in the
 Grossfield lab, but we believe them to be generally useful enough to merit
-their inclusion.  The code for these programs is found in the Tools/
-directories, and in various subdirectories (e.g. Tools/Convergence/).
+their inclusion.  Some of the code for these programs is found in the Tools/
+directories, while other related programs are grouped together as Packages
+(e.g. Packages/Convergence/).
 
 For more information, see the 
     \subpage tools "Tools page"
@@ -452,9 +453,23 @@ of date (or nonexistent).
 
 \subsection BYO Building Your Own Tools
 
-To use LOOS to develop your own tools, you will want to include the top-level LOOS directory in
-both your include path and your library paths, so something like the
-following for linux
+You have two choices for building your own tools depending on LOOS.  The
+simplest way is to work in the Packages/User directory.  In that case, all you
+need to do to build against LOOS (other than write your application, of
+course) is edit the SConscript file in that directory, adding your program
+to the build list.  Specifically, you edit the line that creates a variable
+"apps", appending your program's name to the end of the string.  Then, run
+scons from the main LOOS directory, and your program will be built.  We
+have included a number of trivial programs in the User directory; they
+don't actually do anything useful, but they provide basic templates for how
+to use the command line options, and get the basic setup you'll need.
+
+
+If you wish to work outside the LOOS directory structure, you'll need set up 
+your build environment to include the top-level LOOS directory in
+both your include path and your library paths.  For example, under linux 
+you'd want something like 
+
 \verbatim
 g++ -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex -llapack -latlas
 \endverbatim
@@ -710,17 +725,19 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 <B><I> Categories of Tools </I> </B>
       - \subpage manipulation "Manipulating trajectory files"
       - \subpage Convergence "Assessing statistical errors and convergence"
+      - \subpage density "3D density distributions"
       - \subpage hbond "Hydrogen Bonding"
       - \subpage PCA "Principal component analysis"
       - \subpage Membranes "Membrane systems"
       - \subpage enm "Elastic network models"
       - \subpage other "General purpose tools"
+      - \subpage user "User-created tools"
 
 <DL>
   \page Convergence
   <DT> <B><I> Convergence Analysis Tools</I></B>
   <DD> A collection of tools for assessing statistical error and
-  convergence, found in the Tools/Convergence/ directory:
+  convergence, found in the Packages/Convergence/ directory:
 
     <DL>
       <DT> <B> assign_frames </B>
@@ -831,10 +848,18 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       Reference: Lyman & Zuckerman, J Phys Chem B (2007) 111:12876-82
     </DL>
 
+  \page density
+  <DT> <B><I>Density Tools</I></B>
+  <DD> A collection of tools for working with 3D density distributions,
+  found in Packages/DensityTools:
+       <DL>
+       <DT> <B> SOME TOOL GOES HERE </B>
+       <DD> Some description goes here.
+
   \page enm 
   <DT> <B><I>Elastic Network Models</I></B>
   <DD> A collection of tools for working with ENMs, found in the
-  Tools/ElasticNetworks/ directory:
+  Packages/ElasticNetworks/ directory:
     <DL>
       <DT> <B>anm</B>
       <DD> Computes the anisotropic network model for a structure.
@@ -877,7 +902,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
     \page hbond 
    <DT> <B><I>Hydrogen Bonding Tools</I></B>
    <DD> A set of tools for analyzing hydrogen bonding, found in
-   Tools/HydrogenBonds/ directory:
+   Packages/HydrogenBonds/ directory:
       <DL>
         <DT><B>hbonds</B>
 	    <DD> Finds putative h-bonds based on angle and distance
@@ -1213,6 +1238,13 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
        This program loops over a trajectory and writes the torsion angle time 
        series.
     </DL>
+
+    \page user
+     <DT> <B><I> User-created tools</I> </B>
+   <DD>  Create your own tools in Packages/User/.  Currently contains 
+   a number of templates for different kinds of apps.
+
+
 
 */
 
