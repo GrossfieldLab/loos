@@ -62,6 +62,9 @@ int main(int argc, char *argv[]) {
   // Select a subset of it
   AtomicGroup subset = selectAtoms(model, argv[arg_index++]);
 
+  // Prune the bonds-list (if present)
+  subset.pruneBonds();
+
   // ***EDIT***
   // Iterate over all atoms in the subset, performing some computation
   for (AtomicGroup::iterator atom = subset.begin(); atom != subset.end(); ++atom) {
