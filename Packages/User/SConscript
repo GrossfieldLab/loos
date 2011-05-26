@@ -29,7 +29,7 @@ clone.Prepend(LIBS = ['loos'])
 
 
 
-apps = 'model_calc traj_calc simple_model_calc simple_model_transform'
+apps = 'model_calc traj_calc simple_model_calc simple_model_transform traj_transform'
 
 list = []
 

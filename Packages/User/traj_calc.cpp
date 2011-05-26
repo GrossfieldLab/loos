@@ -45,6 +45,7 @@ namespace po = loos::OptionsFramework::po;
 
 
 // ----------------------------------------------------------------
+// ***EDIT***
 // The following code is for implementing tool-specific
 // options if the tool requires them.  If not, this section can be
 // deleted.
@@ -80,6 +81,7 @@ public:
 // ----------------------------------------------------------------
 
 
+// ***EDIT***
 void calculate(const AtomicGroup& structure) {
   // Do something here with an atom...
 }
@@ -109,9 +111,11 @@ int main(int argc, char *argv[]) {
   // that is already primed for reading...
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
 
+  // ***EDIT***
   // Tool-specific options can be included here...
   ToolOptions* topts = new ToolOptions;
 
+  // ***EDIT***
   // All of the OptionsPackages are combined via the AggregateOptions
   // object.  First instantiate it, then add the desired
   // OptionsPackage objects.  The order is important.  We recommend
@@ -142,8 +146,12 @@ int main(int argc, char *argv[]) {
     // interested in...
     traj->updateGroupCoords(subset);
 
+    // ***EDIT***
     // Now calculate something with the AtomicGroup
     calculate(subset);
   }
+
+  // ***EDIT***
+  // Output results...
 
 }

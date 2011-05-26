@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
   // How the tool was invoked, for logging purposes...
   string header = invocationHeader(argc, argv);
 
+  // ***EDIT***
   // Verify correct number of command-line arguments
   if (argc != 3) {
     cerr << "Usage- simple_model_tool_template model-name selection\n";
@@ -61,9 +62,14 @@ int main(int argc, char *argv[]) {
   // Select a subset of it
   AtomicGroup subset = selectAtoms(model, argv[arg_index++]);
 
+  // ***EDIT***
   // Iterate over all atoms in the subset, performing some computation
   for (AtomicGroup::iterator atom = subset.begin(); atom != subset.end(); ++atom) {
-    // Do something with *atom
+    // Do something
+    // calculateSomething(*atom)
   }
+
+  // ***EDIT***
+  // Show results...
 
 }

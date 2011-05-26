@@ -45,6 +45,7 @@ namespace po = loos::OptionsFramework::po;
 
 
 // ----------------------------------------------------------------
+// ***EDIT***
 // The following code is for implementing tool-specific
 // options if the tool requires them.  If not, this section can be
 // deleted.
@@ -80,11 +81,6 @@ public:
 // ----------------------------------------------------------------
 
 
-void calculate(pAtom& atom) {
-  // Do something here with an atom...
-}
-
-
 
 
 int main(int argc, char *argv[]) {
@@ -108,9 +104,11 @@ int main(int argc, char *argv[]) {
   // with a PDB)
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
 
+  // ***EDIT***
   // Tool-specific options can be included here...
   ToolOptions* topts = new ToolOptions;
 
+  // ***EDIT***
   // All of the OptionsPackages are combined via the AggregateOptions
   // object.  First instantiate it, then add the desired
   // OptionsPackage objects.  The order is important.  We recommend
@@ -130,8 +128,14 @@ int main(int argc, char *argv[]) {
   // Select the desired atoms to operate over...
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
+  // ***EDIT***
   // Now iterate over all atoms in the subset and perform some
   // computation...
-  for (AtomicGroup::iterator atom = subset.begin(); atom != subset.end(); ++atom)
-    calculate(*atom);
+  for (AtomicGroup::iterator atom = subset.begin(); atom != subset.end(); ++atom) {
+    // Perform some calculation...
+    // calculateSomething(*atom)
+  }
+
+  // ***EDIT***
+  // output results
 }
