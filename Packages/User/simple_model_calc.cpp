@@ -1,12 +1,12 @@
 /*
-  simple_model_tool.cpp
+  simple_model_calc.cpp
 
   (c) 2011 Tod D. Romo, Grossfield Lab
            Department of Biochemistry
            University of Rochster School of Medicine and Dentistry
 
 
-  C++ template for writing a tool that works with a model with minimal
+  C++ template for writing a tool that performs a calculation on a model with minimal
   command-line options
 */
 

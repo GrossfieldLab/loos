@@ -1,13 +1,13 @@
 /*
- simple_model_output.cpp
+ simple_model_transform.cpp
 
   (c) 2011 Tod D. Romo, Grossfield Lab
            Department of Biochemistry
            University of Rochster School of Medicine and Dentistry
 
 
-  C++ template for writing a tool that works with a model with minimal
-  command-line options
+  C++ template for writing a tool that transforms a model, writing it
+  out as a PDB to stdout
 */
 
 

@@ -1,12 +1,12 @@
 /*
-  traj_tool.cpp
+  traj_calc.cpp
 
   (c) 2011 Tod D. Romo, Grossfield Lab
            Department of Biochemistry
            University of Rochster School of Medicine and Dentistry
 
 
-  C++ template for writing a tool that works with a trajectory
+  C++ template for writing a tool that performs a calculation on a trajectory
 */
 
 
