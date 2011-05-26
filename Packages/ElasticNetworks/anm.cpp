@@ -58,8 +58,6 @@
 #include <loos.hpp>
 
 #include <limits>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
 
 #include "hessian.hpp"
@@ -69,15 +67,15 @@
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
 using namespace ENM;
 
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 // Globals...  Icky poo!
 
-string selection;
-string model_name;
 string prefix;
 
 int verbosity;
@@ -86,9 +84,9 @@ bool debug;
 string spring_desc;
 string bound_spring_desc;
 
-void fullHelp() {
+string fullHelpMessage() {
 
-  cout <<
+  string s = 
     "\n"
     "Computes the anisotropic network model for a structure.  It does\n"
     "this by building a hessian for the structure, then computing the SVD\n"
@@ -112,62 +110,38 @@ void fullHelp() {
     "Available spring functions:\n";
 
   vector<string> names = springNames();
-  for (vector<string>::iterator i = names.begin(); i != names.end(); ++i)
-    cout << "\t" << *i << endl;
+  for (vector<string>::const_iterator i = names.begin(); i != names.end(); ++i)
+    s = s + "\t" + *i + "\n";
 
-  cout <<
+  s += 
     "\n\n"
     "Examples:\n\n"
     "Compute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
     "\tanm 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n";
+
+  return(s);
 }
 
-
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("verbosity,v", po::value<int>(&verbosity)->default_value(0), "Verbosity level")
-      ("debug,d", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
-      ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
-      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
-      ("bound,b", po::value<string>(&bound_spring_desc), "Bound spring")
-      ("fullhelp", "More detailed help");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("prefix", po::value<string>(&prefix), "Output prefix");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("prefix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix"))) {
-      cerr << "Usage- anm [options] model-name output-prefix\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
+      ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
+      ("bound", po::value<string>(&bound_spring_desc), "Bound spring");
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("debug=%d, spring='%s', bound='%s'") % debug % spring_desc % bound_spring_desc;
+    return(oss.str());
   }
-}
+};
+
+// @endcond
+
 
 
 loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
@@ -191,13 +165,28 @@ loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ropts->addArgument("prefix", "output-prefix");
 
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup subset = selectAtoms(model, selection);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = mopts->model;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+
+  verbosity = bopts->verbosity;
+  prefix = ropts->value("prefix");
+
 
   if (verbosity > 0)
-    cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % model_name;
+    cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % mopts->model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
   vector<SpringFunction*> springs;
