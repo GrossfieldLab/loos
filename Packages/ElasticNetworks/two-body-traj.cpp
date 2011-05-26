@@ -31,7 +31,7 @@ string selection, psf_file;
 
 
 // @cond TOOLS_INTERNAL
-class ToolOptions : public OptionsPackage {
+class ToolOptions : public opts::OptionsPackage {
 public:
 
   void addGeneric(po::options_description& o) {
@@ -43,6 +43,7 @@ public:
     ostringstream oss;
     oss << boost::format("psf='%s'") % psf_file;
     return(oss.str());
+  }
 };
 
 // @endcond
