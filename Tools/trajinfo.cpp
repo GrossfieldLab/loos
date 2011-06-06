@@ -54,7 +54,7 @@ public:
   
   void addGeneric(opts::po::options_description& o) {
     o.add_options()
-      ("brief", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
+      ("brief,B", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
       ("centroid", opts::po::value<string>(&centroid_selection), "Report average centroid")
       ("box", opts::po::value<bool>(&box_info)->default_value(box_info), "Report periodic box info");
   }
