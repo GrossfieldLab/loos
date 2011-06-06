@@ -286,6 +286,12 @@ public:
       ("out", po::value<string>(&out_name), "Output prefix");
   }
 
+  void addPositional(po::positional_options_description& o) {
+    o.add("out", 1);
+    o.add("model", 1);
+    o.add("traj", -1);
+  }
+
   bool check(po::variables_map& vm) {
     return ( model_name.empty() || out_name.empty() || traj_names.empty());
   }
@@ -401,15 +407,17 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection("all");
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(topts);
+  options.add(bopts).add(sopts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
   
 
   AtomicGroup model = createSystem(model_name);
+  selection = sopts->selection;
   AtomicGroup subset = selectAtoms(model, selection);
 
   AtomicGroup centered;
