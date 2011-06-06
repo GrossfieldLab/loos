@@ -107,6 +107,8 @@ namespace loos {
     else
       user = pwd->pw_name;
 
+    char *current_dir = get_current_dir_name();
+
     invoke = std::string(argv[0]) + " ";
     std::string sep(" ");
     for (i=1; i<argc; i++) {
@@ -116,6 +118,10 @@ namespace loos {
     }
 
     invoke += " - " + user + " (" + timestamp + ")";
+    if (current_dir != NULL) {
+      invoke += " {" + std::string(current_dir) + "}";
+      free(current_dir);
+    }
 
 #if defined(REVISION)
     invoke += " [" + std::string(REVISION) + "]";
