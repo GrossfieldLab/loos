@@ -42,6 +42,10 @@ using namespace loos;
 using namespace std;
 
 
+const uint default_starting_number_of_blocks = 500;
+const double default_fraction_of_trajectory = 0.25;    
+
+
 AtomicGroup averageSelectedSubset(const vector<AtomicGroup>& ensemble, const vector<uint>& indices) {
   AtomicGroup avg = ensemble[0].copy();
   for (AtomicGroup::iterator i = avg.begin(); i != avg.end(); ++i)
@@ -63,8 +67,8 @@ AtomicGroup averageSelectedSubset(const vector<AtomicGroup>& ensemble, const vec
 
 int main(int argc, char *argv[]) {
   
-  if (argc < 5 || argc > 6) {
-    cerr << "Usage- block_avgconv model traj sel range [1 = do not align trajectory]\n";
+  if (argc < 4 || argc > 6) {
+    cerr << "Usage- block_avgconv model traj sel [range [1 = do not align trajectory]]\n";
     exit(0);
   }
 
@@ -74,8 +78,20 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(argv[k++]);
   pTraj traj = createTrajectory(argv[k++], model);
   AtomicGroup subset = selectAtoms(model, argv[k++]);
-  vector<uint> sizes = parseRangeList<uint>(argv[k++]);
-  bool do_align = argc != 6;
+  
+  vector<uint> sizes;
+  bool do_align = true;
+
+  if (argc == 4) {
+    uint step = traj->nframes() / default_starting_number_of_blocks;
+    for (uint i=step; i<traj->nframes() * default_fraction_of_trajectory; i += step)
+      sizes.push_back(i);
+  } else {
+    sizes = parseRangeList<uint>(argv[k++]);
+    if (argc == 6)
+      do_align = (argv[6][0] != '1');
+  }
+
 
   cout << "# " << hdr << endl;
   cout << "# n\tavg\tvar\tblocks\tstderr\n";
