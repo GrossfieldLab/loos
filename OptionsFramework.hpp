@@ -285,6 +285,46 @@ namespace loos {
       std::string print() const;
     };
 
+    // -------------------------------------------------
+
+    //! Request Two models with coordinates
+    /**
+     * Since not all formats have coordinates (i.e. PSF),
+     * the coordinates can be taken from an alternate file using the
+     * -c or --coordinates option.  Also adds a positional argument
+     * for the model description.
+     **/
+    class TwoModelsWithCoords : public OptionsPackage {
+    public:
+      TwoModelsWithCoords() : coords1_name(""), desc1("model1"),
+                              coords2_name(""), desc2("model2") { }
+
+      TwoModelsWithCoords(const std::string& d1,
+                          const std::string& d2) :
+        coords1_name(""), desc1(d1),
+        coords2_name(""), desc2(d2)
+      { }
+
+      std::string model1_name, coords1_name, desc1;
+      std::string model2_name, coords2_name, desc2;
+
+      AtomicGroup model1;
+      AtomicGroup model2;
+
+    private:
+      void addGeneric(po::options_description& opts);
+      void addHidden(po::options_description& opts);
+      void addPositional(po::positional_options_description& pos);
+
+      bool check(po::variables_map& map);
+
+      bool postConditions(po::variables_map& map);
+
+      std::string help() const;
+      std::string print() const;
+    };
+
+
 
 
     // -------------------------------------------------

@@ -112,6 +112,66 @@ namespace loos {
     // -------------------------------------------------------
 
 
+    void TwoModelsWithCoords::addGeneric(po::options_description& opts) {
+      std::string optdesc1 = std::string("File to use for coordinates for") + desc1;
+      std::string optdesc2 = std::string("File to use for coordinates for") + desc2;
+
+
+      opts.add_options()
+        ("coord1,c", po::value<std::string>(&coords1_name)->default_value(coords1_name), optdesc1.c_str())
+        ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str());
+    }
+
+    void TwoModelsWithCoords::addHidden(po::options_description& opts) {
+      opts.add_options()
+        ("model1", po::value<std::string>(&model1_name), desc1.c_str())
+        ("model2", po::value<std::string>(&model2_name), desc2.c_str());
+    }
+
+
+    void TwoModelsWithCoords::addPositional(po::positional_options_description& pos) {
+      pos.add("model1", 1);
+      pos.add("model2", 1);
+    }
+
+
+    bool TwoModelsWithCoords::check(po::variables_map& map) {
+      return(!(map.count("model1") && map.count("model2")));
+    }
+
+    bool TwoModelsWithCoords::postConditions(po::variables_map& map) {
+      model1 = loadStructureWithCoords(model1_name, coords1_name);
+      model2 = loadStructureWithCoords(model2_name, coords2_name);
+      return(true);
+    }
+
+    std::string TwoModelsWithCoords::help() const {
+      std::string msg = desc1 + " " + desc2;
+      return(msg);
+    }
+
+
+    std::string TwoModelsWithCoords::print() const {
+      std::ostringstream oss;
+
+      oss << boost::format("model1='%s'") % model1_name;
+      if (!coords1_name.empty())
+        oss << boost::format(", coords1='%s'") % coords1_name;
+
+      oss << boost::format("model2='%s'") % model2_name;
+      if (!coords2_name.empty())
+        oss << boost::format(", coords2='%s'") % coords2_name;
+
+      return(oss.str());
+    }
+
+
+
+
+    // -------------------------------------------------------
+
+
+
     void BasicTrajectory::addGeneric(po::options_description& opts) {
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip");
