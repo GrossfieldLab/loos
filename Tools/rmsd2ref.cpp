@@ -45,19 +45,23 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("align", po::value<string>(&alignment)->default_value("name == 'CA'"), "Align using this selection")
+      ("rmsd", po::value<string>(&selection)->default_value("!(hydrogen || segid =~ 'SOLV|BULK')"), "Compute the RMSD over this selection")
       ("iterative", po::value<bool>(&iterate)->default_value(false),"Use iterative alignment method")
       ("target", po::value<string>(&target_name), "Compute RMSD against this reference target (must have coordinates)")
-      ("tolerance", po::value<double>(&tol)->default_value(1e-6), "Tolerance to use for iterative alignment")
-      ("rmsd", po::value<string>(&selection)->default_value("!(hydrogen || segid =~ 'SOLV|BULK')"), "Compute the RMSD over this selection");
+      ("talign", po::value<string>(&target_align)->default_value(""), "Selection for target to use to align (default is to use --align)")
+      ("trmsd", po::value<string>(&target_selection)->default_value(""), "Compute the RMSD over this selection for the target (default is to use --rmsd)")
+      ("tolerance", po::value<double>(&tol)->default_value(1e-6), "Tolerance to use for iterative alignment");
   }
 
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("align='%s', iterative=%d, target='%s', tolerance=%f, rmsd='%s'")
+    oss << boost::format("align='%s', iterative=%d, target='%s', talign='%s', trmsd='%s', tolerance=%f, rmsd='%s'")
       % alignment
       % iterate
       % target_name
+      % target_align
+      % target_selection
       % tol
       % selection;
 
@@ -65,9 +69,25 @@ public:
   }
 
 
+  bool postConditions(po::variables_map& map) {
+
+    if (target_align.empty()) {
+      target_align = alignment;
+      cerr << "Warning: Using --align selection for target\n";
+    }
+
+    if (target_selection.empty()) {
+      target_selection = selection;
+      cerr << "Warning: Using --rmsd selectionh for target\n";
+    }
+      
+    return(true);
+  }
+
   string alignment;
   bool iterate;
   string target_name;
+  string target_align, target_selection;
   double tol;
   string selection;
 };
@@ -104,7 +124,7 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Computing RMSD vs avg conformation using %d atoms from \"%s\".\n") % subset.size() % topts->selection;
   else {
     target = createSystem(topts->target_name);
-    target_subset = selectAtoms(target, topts->selection);
+    target_subset = selectAtoms(target, topts->target_selection);
     if (target_subset.size() != subset.size()) {
       cerr << boost::format("Error- target selection has %u atoms while trajectory selection has %u.\n") % target_subset.size() % subset.size();
       exit(-1);
@@ -138,7 +158,7 @@ int main(int argc, char *argv[]) {
 
     } else {   // A target was provided and aligning was requested...
       
-      AtomicGroup target_align = selectAtoms(target, topts->alignment);
+      AtomicGroup target_align = selectAtoms(target, topts->target_align);
       cerr << boost::format("Aligning using %d atoms from \"%s\".\n") % target_align.size() % topts->alignment;
 
       for (uint i=0; i<indices.size(); i++) {
