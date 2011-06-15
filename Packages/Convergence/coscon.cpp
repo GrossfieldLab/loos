@@ -62,7 +62,7 @@ struct Datum {
 
 // Configuration
 
-const uint nsteps = 25;
+const uint nsteps = 50;
 
 
 
