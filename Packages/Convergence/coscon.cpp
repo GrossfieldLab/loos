@@ -1,6 +1,9 @@
 /*
   
-  Cosine content for varying windows
+  Cosine content for varying windows of a trajectory,
+  based on:
+    Hess, B.  "Convergence of sampling in protein simulations."
+      Phys Rev E (2002) 65(3):031910
 
 */
 
@@ -135,8 +138,8 @@ double cosineContent(const RealMatrix& V, const uint index) {
 }
 
 
-// Breaks the ensemble up into blocks and computes the PCA for each
-// block and the statistics for the covariance overlaps...
+// Breaks the ensemble up into blocks and computes the RSV for each
+// block and the statistics for the cosine content...
 
 template<class ExtractPolicy>
 Datum blocker(const uint pc, vGroup& ensemble, const uint blocksize, ExtractPolicy& policy) {
