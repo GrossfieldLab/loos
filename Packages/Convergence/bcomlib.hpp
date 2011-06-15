@@ -166,7 +166,7 @@ namespace Convergence {
   //
 
   template<class ExtractPolicy>
-  boost::tuple<loos::RealMatrix> rsv(std::vector<loos::AtomicGroup>& ensemble, ExtractPolicy& extractor) {
+  loos::RealMatrix rsv(std::vector<loos::AtomicGroup>& ensemble, ExtractPolicy& extractor) {
 
     loos::RealMatrix M = extractor(ensemble);
     loos::RealMatrix C = loos::Math::MMMultiply(M, M, false, true);
