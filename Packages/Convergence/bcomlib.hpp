@@ -159,6 +159,61 @@ namespace Convergence {
 
   }
 
+
+
+  // Get just the RSVs (this is for cosine-content calculations)
+  // given an extraction policy...
+  //
+
+  template<class ExtractPolicy>
+  boost::tuple<loos::RealMatrix> rsv(std::vector<loos::AtomicGroup>& ensemble, ExtractPolicy& extractor) {
+
+    loos::RealMatrix M = extractor(ensemble);
+    loos::RealMatrix C = loos::Math::MMMultiply(M, M, false, true);
+
+    // Compute [U,D] = eig(C)
+    char jobz = 'V';
+    char uplo = 'L';
+    f77int n = M.rows();
+    f77int lda = n;
+    float dummy;
+    loos::RealMatrix W(n, 1);
+    f77int lwork = -1;
+    f77int info;
+    ssyev_(&jobz, &uplo, &n, C.get(), &lda, W.get(), &dummy, &lwork, &info);
+    if (info != 0)
+      throw(loos::NumericalError("ssyev failed in loos::pca()", info));
+
+   
+    lwork = static_cast<f77int>(dummy);
+    float *work = new float[lwork+1];
+
+    ssyev_(&jobz, &uplo, &n, C.get(), &lda, W.get(), work, &lwork, &info);
+    if (info != 0)
+      throw(loos::NumericalError("ssyev failed in loos::pca()", info));
+  
+    reverseColumns(C);
+    reverseRows(W);
+
+    // Correctly scale the eigenvalues
+    for (uint j=0; j<W.rows(); ++j)
+      W[j] = W[j] < 0 ? 0.0 : sqrt(W[j]);
+
+    // Multiply eigenvectors by inverse eigenvalues
+    for (uint i=0; i<C.cols(); ++i) {
+      double konst = (W[i] > 0.0) ? (1.0/W[i]) : 0.0;
+
+      for (uint j=0; j<C.rows(); ++j)
+        C(j, i) *= konst;
+    }
+
+    W.reset();
+    loos::RealMatrix Vt = loos::Math::MMMultiply(C, M, true, false);
+    loos::RealMatrix V = loos::Math::transpose(Vt);
+    return(V);
+  }
+
+
 }
 
 #endif
