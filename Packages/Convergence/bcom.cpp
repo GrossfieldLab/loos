@@ -112,56 +112,6 @@ public:
 
 
 
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("blocks,b", po::value<string>(), "Block sizes (MATLAB style range)")
-      ("zscore,z", po::value<bool>(&use_zscore)->default_value(false), "Use Z-score rather than covariance overlap")
-      ("ntries,n", po::value<uint>(&ntries)->default_value(20), "Number of tries for Z-score")
-      ("local,l", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "model")
-      ("traj", po::value<string>(&traj_name), "trajectory")
-      ("selection", po::value<string>(&selection), "selection");
-    
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("selection", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("selection"))) {
-      cerr << "Usage- " << argv[0] << " [options] model trajectory selection >output\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (vm.count("blocks")) {
-      string s = vm["blocks"].as<string>();
-      blocksizes = parseRangeList<uint>(s);
-    }
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
-
-
 
 
 
