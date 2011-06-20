@@ -29,6 +29,7 @@
 
 
 #include <loos.hpp>
+#include "ConvergenceOptions.hpp"
 #include "bcomlib.hpp"
 
 using namespace std;
@@ -56,7 +57,6 @@ const uint nsteps = 25;
 vector<uint> blocksizes;
 bool local_average;
 uint nreps;
-uint seed;
 
 // @cond TOOLS_INTERAL
 class ToolOptions : public opts::OptionsPackage {
@@ -66,8 +66,7 @@ public:
     o.add_options()
       ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
       ("reps", po::value<uint>(&nreps)->default_value(20), "Number of replicates for bootstrap")
-      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global")
-      ("seed", po::value<uint>(&seed)->default_value(0), "Random number seed (0 = auto)");
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
 
   }
 
@@ -75,21 +74,15 @@ public:
     if (!blocks_spec.empty())
       blocksizes = parseRangeList<uint>(blocks_spec);
 
-    if (seed == 0)
-      seed = randomSeedRNG();
-    else
-      rng_singleton().seed(seed);
-
     return(true);
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("blocks='%s', local=%d, reps=%d, seed=%d")
+    oss << boost::format("blocks='%s', local=%d, reps=%d")
       % blocks_spec
       % local_average
-      % nreps
-      % seed;
+      % nreps;
     return(oss.str());
   }
 
@@ -186,10 +179,11 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  opts::BasicConvergence* copts = new opts::BasicConvergence;
   ToolOptions* topts = new ToolOptions;
   
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(tropts).add(topts);
+  options.add(bopts).add(sopts).add(tropts).add(copts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -238,7 +232,6 @@ int main(int argc, char *argv[]) {
 
   
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
-  cout << "# seed = " << seed << endl;
   cout << "# n\tCoverlap\tVariance\tN_blocks\n";
   // Now iterate over all requested block sizes...
 

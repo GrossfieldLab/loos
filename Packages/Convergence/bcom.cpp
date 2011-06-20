@@ -32,8 +32,9 @@
 
 #include <loos.hpp>
 
-
+#include "ConvergenceOptions.hpp"
 #include "bcomlib.hpp"
+
 
 using namespace std;
 using namespace loos;
@@ -74,8 +75,7 @@ public:
       ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
       ("zscore,Z", po::value<bool>(&use_zscore)->default_value(false), "Use Z-score rather than covariance overlap")
       ("ntries,N", po::value<uint>(&ntries)->default_value(20), "Number of tries for Z-score")
-      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global")
-      ("seed", po::value<uint>(&seed)->default_value(0), "Random number seed (0 = auto)");
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
 
   }
 
@@ -83,18 +83,13 @@ public:
     if (!blocks_spec.empty())
       blocksizes = parseRangeList<uint>(blocks_spec);
 
-    if (seed == 0)
-      seed = randomSeedRNG();
-    else
-      rng_singleton().seed(seed);
-
     return(true);
   }
 
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d, seed=%d")
+    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d")
       % blocks_spec
       % use_zscore
       % ntries
@@ -175,10 +170,11 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  opts::BasicConvergence* copts = new opts::BasicConvergence;
   ToolOptions* topts = new ToolOptions;
   
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(tropts).add(topts);
+  options.add(bopts).add(sopts).add(tropts).add(copts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
