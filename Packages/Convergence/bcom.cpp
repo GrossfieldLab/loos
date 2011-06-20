@@ -62,7 +62,6 @@ bool local_average;
 bool use_zscore;
 uint ntries;
 vector<uint> blocksizes;
-string model_name, traj_name, selection;
 uint seed;
 
 

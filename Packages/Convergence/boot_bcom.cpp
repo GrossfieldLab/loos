@@ -53,7 +53,6 @@ const uint nsteps = 25;
 
 
 // Global options
-string model_name, traj_name, selection;
 vector<uint> blocksizes;
 bool local_average;
 uint nreps;
