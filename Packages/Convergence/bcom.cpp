@@ -47,17 +47,6 @@ typedef vector<AtomicGroup>                               vGroup;
 typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 
 
-// Convenience structure for aggregating results
-struct Datum {
-  Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
-                                                                var_coverlap(var),
-                                                                nblocks(nblks) { }
-
-
-  double avg_coverlap;
-  double var_coverlap;
-  uint nblocks;
-};
 
 
 
@@ -74,6 +63,7 @@ bool use_zscore;
 uint ntries;
 vector<uint> blocksizes;
 string model_name, traj_name, selection;
+uint seed;
 
 
 // @cond TOOLS_INTERAL
@@ -85,7 +75,8 @@ public:
       ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
       ("zscore,Z", po::value<bool>(&use_zscore)->default_value(false), "Use Z-score rather than covariance overlap")
       ("ntries,N", po::value<uint>(&ntries)->default_value(20), "Number of tries for Z-score")
-      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global")
+      ("seed", po::value<uint>(&seed)->default_value(0), "Random number seed (0 = auto)");
 
   }
 
@@ -93,12 +84,18 @@ public:
     if (!blocks_spec.empty())
       blocksizes = parseRangeList<uint>(blocks_spec);
 
+    if (seed == 0)
+      seed = randomSeedRNG();
+    else
+      rng_singleton().seed(seed);
+
     return(true);
   }
 
+
   string print() const {
     ostringstream oss;
-    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d")
+    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d, seed=%d")
       % blocks_spec
       % use_zscore
       % ntries
@@ -107,6 +104,18 @@ public:
   }
 
   string blocks_spec;
+};
+
+// Convenience structure for aggregating results
+struct Datum {
+  Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
+                                                                var_coverlap(var),
+                                                                nblocks(nblks) { }
+
+
+  double avg_coverlap;
+  double var_coverlap;
+  uint nblocks;
 };
 // @endcond
 
