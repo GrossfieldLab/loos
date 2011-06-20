@@ -124,19 +124,6 @@ vGroup subgroup(const vGroup& A, const uint a, const uint b) {
 }
 
 
-double cosineContent(const RealMatrix& V, const uint index) {
-  double sum1 = 0;
-  double sum2 = 0;
-
-  double k = (index+1) * M_PI / V.rows();
-  for (uint j=0; j<V.rows(); ++j) {
-    sum1 += cos(k * j) * V(j, index);
-    sum2 += V(j, index) * V(j, index);
-  }
-  double c = 2.0 * sum1 * sum1 / (sum2 * V.rows());
-  return(c);
-}
-
 
 // Breaks the ensemble up into blocks and computes the RSV for each
 // block and the statistics for the cosine content...
