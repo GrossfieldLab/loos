@@ -49,7 +49,38 @@ namespace Convergence {
 
   // Treats an AtomicGroup as a column vector and subtracts it from
   // each column of the matrix M.
-  void subtractStructure(loos::RealMatrix& M, const loos::AtomicGroup& model);
+  template<typename T>
+  void subtractStructure(T& M, const loos::AtomicGroup& model) {
+    std::vector<float> avg(model.size() * 3);
+    uint k = 0;
+    for (uint i=0; i<model.size(); ++i) {
+      loos::GCoord c = model[i]->coords();
+      avg[k++] = c.x();
+      avg[k++] = c.y();
+      avg[k++] = c.z();
+    }
+    
+    for (uint i=0; i<M.cols(); ++i)
+      for (uint j=0; j<M.rows(); ++j)
+        M(j, i) -= avg[j];
+  }
+
+  // Computes the cosine content for a col-vector
+  template<typename T>
+  double cosineContent(T& V, const uint col) {
+    double sum1 = 0;
+    double sum2 = 0;
+
+    uint m = V.rows();
+    double k = (col+1) * M_PI / m;
+    for (uint j=0; j<m; ++j) {
+      sum1 += cos(k * j) * V(j, col);
+      sum2 += V(j, col) * V(j, col);
+    }
+    double c = 2.0 * sum1 * sum1 / (sum2 * m);
+    return(c);
+  }
+  
 
   
   /*

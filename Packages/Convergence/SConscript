@@ -43,7 +43,7 @@ for name in Split(apps):
 
 ### Library generation
 # Be sure to add new modules/headers here!!!
-library_sources = 'bcomlib.cpp fid-lib.cpp'
+library_sources = 'fid-lib.cpp'
 library_headers = 'bcomlib.hpp fid-lib.hpp'
 
 loos_convergence = clone.Library('loos_convergence', Split(library_sources))
