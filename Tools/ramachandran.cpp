@@ -88,10 +88,11 @@ typedef vector<vGroup> vvGroup;
 class Extractor {
 public:
 
-  Extractor() : missing_atoms_warn(false), skip_when_missing(false), show_atoms(false) { }
+  Extractor() : missing_atoms_warn(false), skip_when_missing(false), show_atoms(false), verbosity_(0) { }
   virtual ~Extractor() { }
 
-
+  void verbosity(uint v) { verbosity_ = v; }
+  uint verbosity() const { return(verbosity_); }
 
   // Configuration...
   // Warn if atoms are missing and a torsion cannot be calculated...
@@ -119,12 +120,17 @@ public:
       return;
 
     if (nascent.size() != 4) {
-      cerr << "***WARNING***\n";
-      cerr << "Unable to extract atoms for torsion " << s << endl;
-      cerr << "Residue dump:\n";
-      cerr << residue << endl;
-      cerr << "Extracted:\n";
-      cerr << nascent << endl;
+      cerr << boost::format("Warning- unable to determine %s from resid %d, segid '%s'\n")
+        % s
+        % residue[0]->resid()
+        % residue[0]->segid();
+
+      if (verbosity_ > 0) {
+        cerr << "Residue dump:\n";
+        cerr << residue << endl;
+        cerr << "Extracted:\n";
+        cerr << nascent << endl;
+      }
     }
 
     return;
@@ -180,6 +186,7 @@ private:
   bool missing_atoms_warn;
   bool skip_when_missing;
   bool show_atoms;
+  uint verbosity_;
 };
 
 
@@ -373,6 +380,8 @@ int main(int argc, char *argv[]) {
   options.add(bopts).add(sopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
+
+  extractor->verbosity(bopts->verbosity);
 
   // Read-in/setup objects to access data...
   AtomicGroup model = tropts->model;
