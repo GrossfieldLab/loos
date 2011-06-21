@@ -390,8 +390,6 @@ int main(int argc, char *argv[]) {
 
   vector<uint> indices = tropts->frameList();
 
-  // Split selection into individual residues to operate over...
-  vGroup residues = subset.splitByResidue();
 
 
   // Data-structure here is a vector of vectors of AtomicGroups.  Each
@@ -399,12 +397,19 @@ int main(int argc, char *argv[]) {
   // Each inner vector of AtomicGroups describes the torsions to
   // calculate for each residue/nucleotide.  The outer-vector is the
   // list of all residues/nucleotides to operate over...
-
   vvGroup torsion_atoms;
-  for (int i=0; i<static_cast<int>(residues.size()); ++i) {
-    vGroup atoms = extractor->extractAtoms(residues, i);
-    if (!atoms.empty())
-      torsion_atoms.push_back(atoms);
+
+  vGroup chains = subset.splitByUniqueSegid();
+  for (vGroup::iterator chain = chains.begin(); chain != chains.end(); ++chain) {
+
+    // Split selection into individual residues to operate over...
+    vGroup residues = chain->splitByResidue();
+
+    for (int i=0; i<static_cast<int>(residues.size()); ++i) {
+      vGroup atoms = extractor->extractAtoms(residues, i);
+      if (!atoms.empty())
+        torsion_atoms.push_back(atoms);
+    }
   }
   
   cout << "# " << hdr << endl;
