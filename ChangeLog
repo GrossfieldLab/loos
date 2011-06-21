@@ -1,4 +1,19 @@
+2011-06-21    <tromo@spade.biophysics.rochester.edu>
+	* Added cosine content tools to the Convergence Package
+	* Fixed a minor bug with ramachandran where structures containing
+	multiple chains were not handled correctly at the chain terminii
+	(i.e. ramachandran would treat the structure as one contiguous
+	chain with only two terminii).
+	* Added a transpose() function for matrices (this is NOT an
+	in-place transposition, so beware of memory constraints)
+	* Added support for using different selections for the trajectory
+	and the reference structure in rmsd2ref
+	* Fixed bug in avgconv where using the default block-sizes would
+	cause a segfault.
+	* Changed the output metadata header (from invocationHeader()) to
+	include the current working directory, if available.
 
+	
 2011-05-26    <tromo@spade.biophysics.rochester.edu>
 
 	* MAJOR reorganization of how LOOS is structured.  Tool suites are
@@ -10,6 +25,8 @@
 	***IMPORTANT NOTE***  This means that command-line options for
 	most tools have changed.  In particular, many of the single-letter
 	shortcut options have changed or been removed.
+	
+
 	* Added a Packages/User directory that contains "template"
 	programs for common tasks.  To write a new tool, copy the template
 	that is closest to what you want to do, then edit the regions
