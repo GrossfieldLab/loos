@@ -3,8 +3,12 @@
 #if !defined(OPTIONS_FRAMEWORK_HPP)
 #define OPTIONS_FRAMEWORK_HPP
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <boost/program_options.hpp>
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
+#include <sfactories.hpp>
+
 
 
 namespace loos {
