@@ -1,13 +1,27 @@
+// -------------------------------------------------
+// Simple Metadata Handling
+// -------------------------------------------------
+
 /*
-  SimpleMeta.hpp
+  This file is part of LOOS.
 
-  (c) 2009,2011 Tod D. Romo, Grossfield Lab, URMC
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009 Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
 
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
 
-  Simple meta-data handler...
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 
 
 
@@ -23,6 +37,13 @@
 
 namespace loos {
 
+  //! Simple class for handling metadata
+  /**
+   * Metadata consists of multiple lines that begin with a hash-mark
+   * ('#').  When reading into a SimpleMeta object, the hash-marks are
+   * stripped and each line becomes a string in a vector.  When
+   * writing out, the process is reversed.
+   */
   class SimpleMeta {
   public:
 
@@ -35,10 +56,11 @@ namespace loos {
     SimpleMeta(const std::string& s) { data_.push_back(s); }
     SimpleMeta(const std::vector<std::string>& v) : data_(v) { }
 
+    //! Direct access to stored container of data
     container_type& data() { return(data_); }
     const container_type& data() const { return(data_); }
 
-    // For convenience...
+    //! Allow STL-iteration
     iterator begin() { return(data_.begin()); }
     iterator end() { return(data_.end()); }
     const_iterator begin() const { return(data_.begin()); }
@@ -46,8 +68,13 @@ namespace loos {
     bool empty() const { return(data_.empty()); }
     unsigned int size() const { return(data_.size()); }
 
+    //! Clear all contained metadata
     void clear() { data_.clear(); }
+
+    //! Set metadata to string (deletes existing metadata)
     void set(const std::string& s) { data_.clear(); data_.push_back(s); }
+    
+    //! Append metadata
     void add(const std::string& s) { data_.push_back(s); }
 
     friend std::ostream& operator<<(std::ostream& os, const SimpleMeta& m) {
@@ -74,6 +101,8 @@ namespace loos {
 
 
   private:
+
+    // Strip leading space (skipping meta-marker)
     std::string stripper(const std::string& s) {
       unsigned int i;
       for (i=1; i < s.size() && s[i] == ' '; ++i) ;
