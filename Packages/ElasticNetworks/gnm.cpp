@@ -1,10 +1,6 @@
 /*
   gnm
 
-  (c) 2008 Tod D. Romo, Grossfield Lab
-      Department of Biochemistry
-      University of Rochster School of Medicine and Dentistry
-
   Computes the gaussian normal mode (elastic network model)
   decomposition for a structure.  Does this by building the Kirchoff
   matrix given a PDB and a selection, then computes the SVD of the

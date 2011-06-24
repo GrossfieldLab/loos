@@ -1,9 +1,5 @@
 /*
-  hessian
-
-  (c) 2009,2010 Tod D. Romo, Grossfield Lab
-      Department of Biochemistry
-      University of Rochster School of Medicine and Dentistry
+  hessian matrix construction code
 
 */
 

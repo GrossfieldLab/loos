@@ -1,11 +1,7 @@
 /*
   enmovie
 
-    (c) 2008 Tod D. Romo, Grossfield Lab
-      Department of Biochemistry
-      University of Rochster School of Medicine and Dentistry
-
-      Elastic Network MOde VIsualizEr
+  Elastic Network MOde VIsualizEr
 
 
   Usage:
