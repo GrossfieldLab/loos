@@ -59,7 +59,7 @@ void parseOptions(int argc, char *argv[]) {
     desc.add_options()
       ("help", "Produce this help message")
       ("type", po::value<string>(&type)->default_value("double"), "Set the grid type (char, int, float, double)")
-      ("scale,s", po::value<double>(&scaling)->default_value(1.0), "Scale the grid data");
+      ("scale", po::value<double>(&scaling)->default_value(1.0), "Scale the grid data");
 
 
     po::variables_map vm;
