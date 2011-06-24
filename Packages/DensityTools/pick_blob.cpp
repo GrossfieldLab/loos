@@ -41,6 +41,7 @@ using namespace loos::DensityTools;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
+// @cond TOOL_INTERNAL
 struct Blob {
   Blob() : closest_point(0,0,0), grid_dist(numeric_limits<double>::max()),
 	   real_dist(numeric_limits<double>::max()) { }
@@ -50,7 +51,7 @@ struct Blob {
   double grid_dist;
   double real_dist;
 };
-
+// @endcond
 
 int debug = 0;
 

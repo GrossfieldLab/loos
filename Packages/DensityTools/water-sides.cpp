@@ -47,7 +47,7 @@ string model_name, traj_name, selection_string;
 
 enum Location { UPPER = 1, MEMBRANE = 0, LOWER = -1 };
 
-/// @cond TOOLS_INTERNAL
+// @cond TOOLS_INTERNAL
 
 class WaterSidesOptions : public opts::OptionsPackage {
 public:
@@ -79,7 +79,7 @@ public:
   double lower_bounds, upper_bounds;
 };
 
-/// @endcond
+// @endcond
 
 
 Range parseRange(const string& s) {
