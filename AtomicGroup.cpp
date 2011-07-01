@@ -109,46 +109,50 @@ namespace loos {
 
 
   // Append each atom from the passed vector onto this group...
-  void AtomicGroup::append(std::vector<pAtom> pas) {
+  AtomicGroup& AtomicGroup::append(std::vector<pAtom> pas) {
     std::vector<pAtom>::iterator i;
 
     for (i=pas.begin(); i != pas.end(); i++)
       atoms.push_back(*i);
 
     _sorted = false;
+    return(*this);
   }
 
 
   // Append all atoms from the passed group onto this one
-  void AtomicGroup::append(const AtomicGroup& grp) {
+  AtomicGroup& AtomicGroup::append(const AtomicGroup& grp) {
     std::vector<pAtom>::const_iterator i;
 
     for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
       addAtom(*i);
 
     _sorted = false;
+    return(*this);
   }
 
 
   // Remove all atoms in the passed vector
-  void AtomicGroup::remove(std::vector<pAtom> pas) {
+  AtomicGroup& AtomicGroup::remove(std::vector<pAtom> pas) {
     std::vector<pAtom>::iterator i;
 
     for (i=pas.begin(); i != pas.end(); i++)
       deleteAtom(*i);
 
     _sorted = false;
+    return(*this);
   }
 
 
   // Removes all atoms contained in the passed group from this one...
-  void AtomicGroup::remove(const AtomicGroup& grp) {
+  AtomicGroup& AtomicGroup::remove(const AtomicGroup& grp) {
     std::vector<pAtom>::const_iterator i;
 
     for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
       deleteAtom(*i);
 
     _sorted = false;
+    return(*this);
   }
 
 

@@ -1,3 +1,10 @@
+2011-07-01    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed AtomicGroup::append() and AtomicGroup::remove()
+	functions to return a reference to the AtomicGroup operated on.
+	This means you can now chain operations,
+	i.e. foo.add().add().add()
+
 2011-06-21    <tromo@spade.biophysics.rochester.edu>
 	* Added cosine content tools to the Convergence Package
 	* Fixed a minor bug with ramachandran where structures containing
