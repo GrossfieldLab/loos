@@ -140,6 +140,14 @@ FitAggregator* parseOptions(int argc, char *argv[]) {
     
       DoubleMatrix U;
       readAsciiMatrix(pcas[i] + "_U.asc", U);
+
+      if (s.rows() < U.cols()) {
+        DoubleMatrix ss(U.cols(), 1);
+        for (uint i=0; i<s.rows(); ++i)
+          ss[i] = s[i];
+
+        s = ss;
+      }
     
       // Now setup blocker & springs...
       SuperBlock *blocker = new SuperBlock(spring, combined);
