@@ -6,11 +6,11 @@
 
   Usage:
 
-    aligner [options] structure-file trajectory-file output-prefix
+    aligner [options] model trajectory
 
   Notes:
 
-  Takes two selections.  The first is the subset of atoms that will
+  Can take two selections.  The first is the subset of atoms that will
   be used for the alignment.  The second is the subset of atoms that
   will then be transformed by the alignment and written out.  The
   alignment scheme is to calculate an average structure, align all
@@ -18,10 +18,18 @@
   iterated until the difference in average structures is below the
   specified tolerance.
 
+  An alternative mode can be used to align a trajectory to a single
+  reference frame.
+
   The output will ALWAYS be a DCD!
 
-  Aligner will cache the entire alignment selection in memory, so
-  beware potential memory issues...
+
+
+
+  Notes:
+
+  o Aligner will cache the entire alignment selection in memory, so
+    beware potential memory issues...
 
 */
 
@@ -60,17 +68,6 @@ namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 
-string model_name, traj_name, prefix;
-string alignment_string;
-string transform_string;
-
-string reference_name;
-string reference_sel;
-
-greal alignment_tol;
-
-int maxiter;
-bool center;
 
 
 
@@ -133,10 +130,10 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::OutputPrefix* prefopts = new opts::OutputPrefix;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
-  ToolOptions* toolopts = new ToolOptions;
+  ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(prefopts).add(tropts).add(toolopts);
+  options.add(bopts).add(prefopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -145,15 +142,15 @@ int main(int argc, char *argv[]) {
   pTraj traj = tropts->trajectory;
 
   // Get the selections (subsets) to operate over
-  AtomicGroup align_sub = selectAtoms(model, toolopts->alignment_string);
+  AtomicGroup align_sub = selectAtoms(model, topts->alignment_string);
 
-  AtomicGroup applyto_sub = selectAtoms(model, toolopts->transform_string);
+  AtomicGroup applyto_sub = selectAtoms(model, topts->transform_string);
 
   // Now do the alignin'...
   unsigned int nframes = traj->nframes();
 
   
-  if (toolopts->reference_name.empty()) {
+  if (topts->reference_name.empty()) {
 
     // Read in the trajectory frames and extract the coordinates for the
     // aligning subset...
@@ -164,7 +161,7 @@ int main(int argc, char *argv[]) {
       frames.push_back(subcopy);
     }
     
-    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, toolopts->alignment_tol, toolopts->maxiter);
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, topts->alignment_tol, topts->maxiter);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
@@ -186,7 +183,7 @@ int main(int argc, char *argv[]) {
       traj->updateGroupCoords(model);
       applyto_sub.applyTransform(xforms[i]);
       
-      if (center)
+      if (topts->center)
         centerFrame(align_sub, applyto_sub);
       dcdout.writeFrame(applyto_sub);
       
@@ -196,9 +193,9 @@ int main(int argc, char *argv[]) {
     
   } else {
     
-    AtomicGroup reference = createSystem(toolopts->reference_name);
+    AtomicGroup reference = createSystem(topts->reference_name);
     
-    string refsel = toolopts->reference_sel.empty() ? toolopts->alignment_string : toolopts->reference_sel;
+    string refsel = topts->reference_sel.empty() ? topts->alignment_string : topts->reference_sel;
     AtomicGroup refsub = selectAtoms(reference, refsel);
 
     if (refsub.size() != align_sub.size()) {
@@ -219,7 +216,7 @@ int main(int argc, char *argv[]) {
       XForm W(M);
       applyto_sub.applyTransform(W);
 
-      if (center)
+      if (topts->center)
         centerFrame(align_sub, applyto_sub);
       dcdout.writeFrame(applyto_sub);
 
