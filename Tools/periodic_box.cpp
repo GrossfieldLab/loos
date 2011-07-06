@@ -1,10 +1,5 @@
 /*
-  coverlap
-
-  (c) 2010 Tod D. Romo, Grossfield Lab
-           Department of Biochemistry
-           University of Rochster School of Medicine and Dentistry
-
+  periodic_box.cpp
 
    Extracts the periodic box information from a trajectory and writes it out to stdout
 */
@@ -14,7 +9,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2009 Tod D. Romo
+  Copyright (c) 2010 Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
