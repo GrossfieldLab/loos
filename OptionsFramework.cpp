@@ -67,7 +67,7 @@ namespace loos {
 
     void OutputPrefix::addGeneric(po::options_description& opts) {
       opts.add_options()
-        ("prefix,p", po::value<std::string>(&prefix)->default_value(prefix), "Output prefix");
+        ("prefix,p", po::value<std::string>(&prefix)->default_value(prefix), label.c_str());
     }
 
     std::string OutputPrefix::print() const {
@@ -80,7 +80,7 @@ namespace loos {
 
     void BasicSelection::addGeneric(po::options_description& opts) {
       opts.add_options()
-        ("selection,s", po::value<std::string>(&selection)->default_value(selection), "Which atoms to use");
+        ("selection,s", po::value<std::string>(&selection)->default_value(selection), label.c_str());
     }
 
     std::string BasicSelection::print() const {

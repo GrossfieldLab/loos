@@ -255,10 +255,13 @@ namespace loos {
     //! Gets a string as prefix for output files (--prefix)
     class OutputPrefix : public OptionsPackage {
     public:
-      OutputPrefix() : prefix("output") { }
-      OutputPrefix(const std::string& s) : prefix(s) { }
+      OutputPrefix() : prefix("output"), label("Output prefix") { }
+      OutputPrefix(const std::string& s) : prefix(s), label("Output prefix") { }
+      OutputPrefix(const std::string& s, const std::string& t) : prefix(s), label(t) { }
+
 
       std::string prefix;
+      std::string label;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -270,10 +273,15 @@ namespace loos {
     //! Provides a single LOOS selection (--selection)
     class BasicSelection : public OptionsPackage {
     public:
-      BasicSelection() : selection("all") { }
-      BasicSelection(const std::string& sel) : selection(sel) { }
+      BasicSelection() : selection("all"), label("Which atoms to use") { }
+      BasicSelection(const std::string& sel) : selection(sel), label("Which atoms to use") { }
+      BasicSelection(const std::string& sel, const std::string& lbl) :
+        selection(sel),
+        label(lbl)
+      { }
 
       std::string selection;
+      std::string label;
 
     private:
       void addGeneric(po::options_description& opts);
