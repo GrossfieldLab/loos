@@ -1,6 +1,5 @@
 /*
   avgconv
-  (c) 2010 Tod D. Romo, Grossfield Lab, URMC
 
   Usage- avgconv model traj selection range
 */
