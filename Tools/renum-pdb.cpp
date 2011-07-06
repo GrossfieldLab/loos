@@ -2,7 +2,7 @@
   renum-pdb
 
   Renumbers a PDB (though it could take any arbitrary model that LOOS
-  understands...
+  understands...)
 */
 
 
