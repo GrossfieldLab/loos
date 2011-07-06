@@ -355,9 +355,9 @@ namespace loos {
     std::string RequiredArguments::help() const {
       std::string s;
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
-        s = s + " " + i->first;
+        s = s + (i == arguments.begin() ? "" : " ") + i->first;
       if (vargs_set)
-        s = s + " " + variable_arguments.first + " [" + variable_arguments.first + " ...]";
+        s = s + (s.empty() ? "" : " ") + variable_arguments.first + " [" + variable_arguments.first + " ...]";
       return(s);
     }
 
@@ -401,8 +401,11 @@ namespace loos {
 
     void AggregateOptions::showHelp() {
       std::cout << "Usage- " << program_name << " [options] ";
-      for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
-        std::cout << (*i)->help() << " ";
+      for (vOpts::iterator i = options.begin(); i != options.end(); ++i) {
+        std::string help_text = (*i)->help();
+        if (! help_text.empty())
+          std::cout << (*i)->help() << " ";
+      }
       std::cout << std::endl;
       std::cout << generic;
     }
