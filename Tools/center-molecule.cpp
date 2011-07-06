@@ -39,11 +39,6 @@ namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup>            vGroup;
 
-string model_name, bonds_name;
-string center_sel, apply_sel, write_sel;
-bool reimage;
-bool center_xy;
-
 
 // @cond TOOL_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
