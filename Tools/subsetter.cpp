@@ -262,6 +262,9 @@ string fullHelpMessage(void) {
 
 
 // @cond TOOLS_INTERNAL
+// Note: We do not use the TrajectoryWithFrameIndices class here
+// because this tool supports a more complex arrangement of
+// trajectories with ranges and skips...
 class ToolOptions : public opts::OptionsPackage {
 public:
   
