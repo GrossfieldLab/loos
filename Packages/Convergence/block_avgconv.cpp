@@ -1,6 +1,6 @@
 /*
   block_avgconv.cpp
-  (c) 2010 Tod D. Romo, Grossfield Lab, URMC
+
 
   Convergence of average via block averaging
 
