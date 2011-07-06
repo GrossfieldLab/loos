@@ -212,6 +212,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
 
+  // Export names for subsequent functions
   model_name = tropts->model_name;
   traj_name = tropts->traj_name;
 
