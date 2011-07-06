@@ -38,11 +38,6 @@ namespace po = loos::OptionsFramework::po;
 
 
 
-uint seed;
-string selection;
-string model_name;
-double magnitude;
-
 
 // @cond TOOL_INTERNAL
 
