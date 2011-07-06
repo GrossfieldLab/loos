@@ -40,10 +40,6 @@ namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 
-// Note: this code originally used globals and program_options directly
-//       To ease the conversion into OptionsFramework, the use of globals
-//       is retained...
-
 string system_filename;
 string timeseries_filename;
 int skip;
