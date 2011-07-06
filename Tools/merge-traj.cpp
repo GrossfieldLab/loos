@@ -57,8 +57,7 @@ public:
        "Downsampled DCD, must be synced with output_traj")
       ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
        "Write every nth frame to downsampled DCD")
-      ("centering-selection", 
-       po::value<string>(&center_selection)->default_value(string("")),
+      ("centering-selection", po::value<string>(&center_selection)->default_value(string("")),
        "Selection for centering")
       ("skip-first-frame", po::value<bool>(&skip_first_frame)->default_value(false), "Skip first frame of each trajectory (for xtc files)")
       ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
