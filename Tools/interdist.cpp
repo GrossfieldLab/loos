@@ -138,7 +138,7 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("mode", po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|mass|min|max)");
+      ("mode", po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|mass|min|max|zonly)");
   }
 
   void addHidden(po::options_description& o) {
