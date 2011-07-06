@@ -1,5 +1,13 @@
 /*
   traj2matlab.cpp
+
+  Matrix written is in row-major order
+  [ x x x ... ]
+  [ y y y ... ]
+  [ z z z ... ]
+  [ . . . ... ]
+  [ . . . ... ]
+  [ . . . ... ]
 */
 
 
