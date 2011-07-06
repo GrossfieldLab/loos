@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
         {
         pTraj traj=createTrajectory(*f, system);
         int nframes = traj->nframes();
-        if (skip_first_frame)
+        if (skip_first_frame && nframes > 1)
             {
             nframes--;
             }
