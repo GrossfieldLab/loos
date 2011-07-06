@@ -1,16 +1,10 @@
 /*
   interdist.cpp
 
-  (c) 2008, 2009, 2011 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochster School of Medicine and Dentistry
-
   Modified by Joshua H. Horn, Grossfield Lab
-  Added functionality to consider distance only in Z-dimension
+  -  Added functionality to consider distance only in Z-dimension
 
   Computes distances between two selections over a trajectory...
-
-  Assumes that the trajectory has already been aligned.
 
   Usage:  interdist mode pdb dcd sel1 sel2 [sel3 ...]
 */
@@ -19,7 +13,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008,2009 Tod Romo
+  Copyright (c) 2008 Tod Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
