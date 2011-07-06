@@ -1,7 +1,15 @@
 /*
-  average.cpp
+  averager.cpp
 
-  Computes the average structure post-aligning...
+  Computes the average structure post-aligning
+
+  Usage:
+    averager [options] model traj >average.pdb
+
+
+  The --selection option determines which atoms are used for the
+  iterative alignment.  The --average option determines which atoms
+  are actually averaged and written out.
 */
 
 
