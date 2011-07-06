@@ -1,10 +1,6 @@
 /*
   rmsf.cpp
 
-  (c) 2008,2009 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochster School of Medicine and Dentistry
-
   Compute the root mean square fluctuations (generally for CA's)
 */
 
@@ -12,7 +8,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008, 2009, Tod Romo
+  Copyright (c) 2008, Tod Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -39,12 +35,6 @@ using namespace loos;
 
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
-
-
-string selection, modelname, trajname;
-unsigned int start_frame, end_frame;
-
-
 
 
 
