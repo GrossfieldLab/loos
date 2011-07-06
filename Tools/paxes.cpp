@@ -1,11 +1,6 @@
 /*
   paxes.cpp
 
-  (c) 2009 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochster School of Medicine and Dentistry
-
-
   Calculates the magnitude of the principal axes (the corresponding
   eigenvalue) over time and writes this out...
 
