@@ -1,10 +1,6 @@
 /*
   rotamer.cpp
 
-  
-  (c) 2008,2009 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochster School of Medicine and Dentistry
 
   Computes chi-1, chi-2 angles for selected side-chains.  If the
   requested angle doesn't exist, then -9999.99 is output as a marker.
@@ -17,7 +13,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008-2009 Tod D. Romo
+  Copyright (c) 2008 Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
