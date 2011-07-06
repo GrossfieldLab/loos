@@ -4,12 +4,6 @@
   Takes a PDB and a selection and an optional selection and writes out
   the coordinates to stdout in matlab format...
 
-  The matrix is written in row-major order though, i.e.
-  [ X_0 Y_0 Z_0 ;
-    X_1 Y_1 Z_1 ;
-       ...
-    X_i Y_i Z_i ]
-
 */
 
 
