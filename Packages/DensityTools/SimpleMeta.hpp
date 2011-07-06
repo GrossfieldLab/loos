@@ -37,86 +37,88 @@
 
 namespace loos {
 
-  //! Simple class for handling metadata
-  /**
-   * Metadata consists of multiple lines that begin with a hash-mark
-   * ('#').  When reading into a SimpleMeta object, the hash-marks are
-   * stripped and each line becomes a string in a vector.  When
-   * writing out, the process is reversed.
-   */
-  class SimpleMeta {
-  public:
+  namespace DensityTools {
 
-    typedef std::string                     value_type;
-    typedef std::vector<value_type>         container_type;
-    typedef container_type::iterator        iterator;
-    typedef container_type::const_iterator  const_iterator;
+    //! Simple class for handling metadata
+    /**
+     * Metadata consists of multiple lines that begin with a hash-mark
+     * ('#').  When reading into a SimpleMeta object, the hash-marks are
+     * stripped and each line becomes a string in a vector.  When
+     * writing out, the process is reversed.
+     */
+    class SimpleMeta {
+    public:
 
-    SimpleMeta() { }
-    SimpleMeta(const std::string& s) { data_.push_back(s); }
-    SimpleMeta(const std::vector<std::string>& v) : data_(v) { }
+      typedef std::string                     value_type;
+      typedef std::vector<value_type>         container_type;
+      typedef container_type::iterator        iterator;
+      typedef container_type::const_iterator  const_iterator;
 
-    //! Direct access to stored container of data
-    container_type& data() { return(data_); }
-    const container_type& data() const { return(data_); }
+      SimpleMeta() { }
+      SimpleMeta(const std::string& s) { data_.push_back(s); }
+      SimpleMeta(const std::vector<std::string>& v) : data_(v) { }
 
-    //! Allow STL-iteration
-    iterator begin() { return(data_.begin()); }
-    iterator end() { return(data_.end()); }
-    const_iterator begin() const { return(data_.begin()); }
-    const_iterator end() const { return(data_.end()); }
-    bool empty() const { return(data_.empty()); }
-    unsigned int size() const { return(data_.size()); }
+      //! Direct access to stored container of data
+      container_type& data() { return(data_); }
+      const container_type& data() const { return(data_); }
 
-    //! Clear all contained metadata
-    void clear() { data_.clear(); }
+      //! Allow STL-iteration
+      iterator begin() { return(data_.begin()); }
+      iterator end() { return(data_.end()); }
+      const_iterator begin() const { return(data_.begin()); }
+      const_iterator end() const { return(data_.end()); }
+      bool empty() const { return(data_.empty()); }
+      unsigned int size() const { return(data_.size()); }
 
-    //! Set metadata to string (deletes existing metadata)
-    void set(const std::string& s) { data_.clear(); data_.push_back(s); }
+      //! Clear all contained metadata
+      void clear() { data_.clear(); }
+
+      //! Set metadata to string (deletes existing metadata)
+      void set(const std::string& s) { data_.clear(); data_.push_back(s); }
     
-    //! Append metadata
-    void add(const std::string& s) { data_.push_back(s); }
+      //! Append metadata
+      void add(const std::string& s) { data_.push_back(s); }
 
-    friend std::ostream& operator<<(std::ostream& os, const SimpleMeta& m) {
-      for (const_iterator i = m.data_.begin(); i != m.data_.end(); ++i)
-        os << "# " << *i << std::endl;
-      return(os);
-    }
-
-    friend std::istream& operator>>(std::istream& is, SimpleMeta& m) {
-      std::string buf;
-
-      m.data_.clear();
-      while (true) {
-        int c = is.peek();
-        if (c != '#')
-          break;
-        std::getline(is, buf);
-        if (is.fail() || is.eof())
-          throw(std::runtime_error("Error while reading metadata"));
-        m.data_.push_back(m.stripper(buf));
+      friend std::ostream& operator<<(std::ostream& os, const SimpleMeta& m) {
+        for (const_iterator i = m.data_.begin(); i != m.data_.end(); ++i)
+          os << "# " << *i << std::endl;
+        return(os);
       }
-      return(is);
-    }
+
+      friend std::istream& operator>>(std::istream& is, SimpleMeta& m) {
+        std::string buf;
+
+        m.data_.clear();
+        while (true) {
+          int c = is.peek();
+          if (c != '#')
+            break;
+          std::getline(is, buf);
+          if (is.fail() || is.eof())
+            throw(std::runtime_error("Error while reading metadata"));
+          m.data_.push_back(m.stripper(buf));
+        }
+        return(is);
+      }
 
 
-  private:
+    private:
 
-    // Strip leading space (skipping meta-marker)
-    std::string stripper(const std::string& s) {
-      unsigned int i;
-      for (i=1; i < s.size() && s[i] == ' '; ++i) ;
-      return(s.substr(i, s.size()));
-    }
+      // Strip leading space (skipping meta-marker)
+      std::string stripper(const std::string& s) {
+        unsigned int i;
+        for (i=1; i < s.size() && s[i] == ' '; ++i) ;
+        return(s.substr(i, s.size()));
+      }
 
-  private:
-    std::vector<std::string> data_;
+    private:
+      std::vector<std::string> data_;
+    };
+
+
+
+
   };
-
-
-
-
-
 
 
 };
