@@ -713,12 +713,16 @@ Below is a summary of the tools currently distributed with LOOS.  To get a
 detailed summary of the command line arguments, run the program without
 arguments or using "-h".  A growing number of tools also support the
 "--fullhelp" options, which will display more detailed help
-information including examples of how to use the tool.  All of the tools are now package agnostic, in the sense that they will take any of the file formats supported by LOOS as input.
+information including examples of how to use the tool.  All of the
+tools are now package agnostic, in the sense that they will take any
+of the file formats supported by LOOS as input. 
 
 At present, LOOS assumes that all periodic boxes are rectangular, and
 will produce incorrect answers if trajectories using different box shapes
 (eg truncated octahedron) are used in programs which make use of
-periodicity (eg rdf).  We have no immediate plans to generalize the code to handle other periodicities, but are willing to reconsider if there is significant demand from users.
+periodicity (eg rdf).  We have no immediate plans to generalize the
+code to handle other periodicities, but are willing to reconsider if
+there is significant demand from users. 
 
 
 <HR>
@@ -796,6 +800,12 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       clock).  The --replicates option determines how many blocks are
       generated for a given size.
 
+      <DT> <B> coscon </B>
+      <DD> Computes the cosine content for varying windows of a
+      trajectory, based on Hess, B.  "Convergence of sampling in
+      protein simulations." Phys Rev E (2002) 65(3):031910
+
+
       <DT> <B> decorr_time </B>
       <DD> Decorrelaton time as computed by structural histogram
       analysis.  The default values for the range of N-values,
@@ -837,6 +847,10 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
       and code provided by the Zuckerman Lab
       (http://www.ccbb.pitt.edu/Faculty/zuckerman/software.html)
 
+      <DT> <B> qcoscon </B>
+      <DD> Computes a "quick" cosine content using the entire trajectory
+      for the top few modes, based on Hess, B.  "Convergence of
+      sampling in protein simulations." Phys Rev E (2002) 65(3):031910
 
       <DT> <B> sortfids </B>
       <DD>Sorts fiducials (from fidpick) based on a decreasing bin
@@ -851,10 +865,106 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
   \page density
   <DT> <B><I>Density Tools</I></B>
   <DD> A collection of tools for working with 3D density distributions,
-  found in Packages/DensityTools:
+  found in Packages/DensityTools.  This includes new classes such as
+  loos::DensityTools::DensityGrid and loos::DensityTools::SimpleMeta.
+  Some of the grid tools read and write to stdout so they can be
+  chained, for example:
+<pre>
+	water-hist foo.pdb foo.dcd | gridgauss 4 2 | grid2xplor >foo.map
+</pre>
+   Water-specific tools may allow you to specify "internal" waters to
+  proteins.  This is done by one of 3 methods: axis, box, and grid.
+  Axis picks waters that are within a given radius from the principal
+  axis of the protein.  Box uses the bounding box of a protein.  Grid
+  uses a grid mask to only consider waters within the non-zero portion
+  of the mask.  Note that "water" and "protein" are just LOOS
+  selections so there are no restrictions on what part of your system
+  can be used for building the histogram (e.g. ligand density in a
+  binding simulation).
+
        <DL>
-       <DT> <B> SOME TOOL GOES HERE </B>
-       <DD> Some description goes here.
+       <DT> <B> blobid </B>
+       <DD> Identifies "blobs" in a grid using a flood-fill algorithm
+
+       <DT> <B>  blob_stats </B>
+       <DD> Takes a blobid'd grid and prints out statistics about each blob
+
+       <DT> <B>  contained </B>
+       <DD> Given a thresholded grid and a trajectory, counts the
+       number of atoms that are contained within the grid segment at
+       each time point.
+
+       <DT> <B>  grid2ascii </B>
+       <DD> Converts a grid into a serialized ASCII representation
+
+       <DT> <B>  grid2xplor </B>
+       <DD> Converts a grid into an XPLOR compatible ASCII electron
+       density map.  Requires that the "type" of the grid be specified
+       (i.e. float, double [default], etc)
+
+       <DT> <B>  gridgauss </B>
+       <DD> Convolves a grid with a Gaussian kernel for smoothing
+
+       <DT> <B> gridinfo  </B>
+       <DD> Prints out basic information about a grid
+
+       <DT> <B>  gridmask </B>
+       <DD> Applies a binary mask (a grid containing ints) to a density grid
+       of doubles.  Any grid point where the mask is non-zero is
+       copied into a new density grid.  All other voxels are zero.
+       Use this to "clip" out unwanted blobs in a grid.
+
+       <DT> <B> gridscale </B>
+       <DD> Applies a constant scaling to a grid.  Assumes a density
+       grid (i.e. grid of doubles)
+
+       <DT> <B>  gridstat </B>
+       <DD> Simple statistics about the data stored in a density grid
+       (i.e. grid of doubles)
+
+       <DT> <B>  peakify </B>
+       <DD> Finds peaks in a density grid using a threshold cutoff.
+       Blobs are found by flood-filling the grid and the centroid of
+       the blob is used as the peak.
+
+       <DT> <B>  pick_block </B>
+       <DD> Given a grid mask (i.e. grid of ints), create another grid
+       mask containing only the blobs that are requested (near an
+       atom or a gridpoint).
+
+       <DT> <B> water-count </B>
+       <DD> Counts the number of waters inside a protein at each
+       time-point.  Requires an "internal water matrix" (see water-inside).
+
+
+       <DT> <B>  water-extract </B>
+       <DD> Extracts "internal" waters from a trajectory and
+       concatenates them into a single PDB for visualizing water
+       pockets/channels.
+
+       <DT> <B> water-hist </B>
+       <DD> Creates a density grid (histogram) that represents water
+       locations throughout the trajectory.  Bulk water can be
+       explicitly added into the histogram by using the --bulked option
+       (this is useful for transmembrane proteins).
+
+       Scaling the density by the bulk water density currently only
+       works for membrane systems (or systems where the bulk water
+       lies in a plane).  Use the --scale option along with the --bulk
+       option to specify what z-range to use for the bulk density estimate.
+
+       <DT> <B> water-inside </B>
+       <DD> Classifies waters as being inside a protein (by various
+       user-specified criteria) over the course of a trajectory.  The
+       state of all waters is written as a large matrix where the rows
+       represent time, columns represent different waters, and a 1
+       means the water is inside at time t.
+
+       <DT> <B> water-sides </B>
+       <DD> Similar to water-inside, but classifies water based on
+       which side of a membrane it lies (or whether it's internal).
+
+       </DL>
 
   \page enm 
   <DT> <B><I>Elastic Network Models</I></B>
@@ -1251,8 +1361,49 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 
 
 /*! \page Changes Change Log
-\section release161 Version 1.6.0 5-18-2011)
-\subsection f161_bugs Bug Fixes
+\section release170 Version 1.7.0 (7-11-2011)
+\subsection r170_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in avgconv where the default block-sizes would cause
+  a segfault.
+  <LI> Fixed bug in ramachandran for structures with multiple chains
+  where the terminii were not handled correctly.
+</UL>
+
+\subsection r170_add_changed Added, Changed, or Otherwise Notable
+<UL>
+  <LI> Reorganized LOOS into the core LOOS library, core tools, and a
+  set of packages.
+  <LI> Added a "User" package with several tool templates that cover
+  common tool cases (e.g. calculations based on a model, based on a
+  trajectory, etc).  These are built using the LOOS top-level
+  SConstruct.  However, they are <em>not</em> not part of the default
+  build, so you must explicitly build them with "scons user".
+  <LI> Added a "Density" package primarily for analyzing water density
+  from MD simulations.
+  <LI> Added a new options handling framework (OptionsFramework).
+  Many tools (and some packages) now use this framework.  This will
+  ensure more consistent options across tools.  The catch is that this
+  means many tools now have slightly different command-line usage.
+  This will break existing scripts that use the old LOOS tool
+  command-line options.  See the documentation for OptionsFramework
+  for more information.
+  <LI> Added general utility functions including
+  loadStructureWithCoords(), assignTrajectoryFrames(), and
+  vectorAsStringWithCommas<T>(const vector<T>& v)
+  <LI> AtomicGroup::append() and AtomicGroup::remove() now return an
+  AtomicGroup reference so they may be chained.
+  <LI> Added a Math::transpose() function (this is <em>not</em> an
+  in-place transpose)
+  <LI> Changed the header/metadata from LOOS tools to include the
+  current working directory (if available).
+  <LI> Added support for using different selections for the trajectory
+  and the reference structure in rmsd2ref
+</UL>
+
+
+\section release161 Version 1.6.0 (5-18-2011)
+\subsection r161_bugs Bug Fixes
 <UL>
   <LI> Fixed bug where charmm.hpp was not copied as part of an install
   <LI> Fixed bug in GRO files where the periodic box was not converted into Angstroms.
@@ -1266,7 +1417,7 @@ periodicity (eg rdf).  We have no immediate plans to generalize the code to hand
 </UL>
 
 \section release160 Version 1.6.0 (3-4-2011)
-\subsection f160_bugs Bug Fixes
+\subsection r160_bugs Bug Fixes
 
 <UL>
   <LI> Fixed bug affecting Trajectory::rewind() for Tinker ARC files
