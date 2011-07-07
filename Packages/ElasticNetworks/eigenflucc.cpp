@@ -1,11 +1,6 @@
 /*
   eigenflucc
 
-  (c) 2010 Tod D. Romo, Grossfield Lab
-           Department of Biochemistry
-           University of Rochster School of Medicine and Dentistry
-
-
   Predict isotropic B-factors from a set of eigenpairs...
 */
 

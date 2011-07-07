@@ -1,11 +1,6 @@
 /*
   porcupine
   
-  (c) 2009 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochester School of Medicine and Dentistry
-
-
 
   Creates "porcupine" plots by placing atoms at the endpoints of the
   vectors and adding a bond between them.  This is all written out a

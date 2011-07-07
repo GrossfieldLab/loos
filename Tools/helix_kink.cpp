@@ -2,10 +2,6 @@
   helix_kink.cpp
 
   
-  (c) 2008 Tod D. Romo, Grossfield Lab
-  Department of Biochemistry
-  University of Rochster School of Medicine and Dentistry
-
   Bend angle calculation over time...
 
   Usage:

@@ -57,9 +57,7 @@ public:
        "Downsampled DCD, must be synced with output_traj")
       ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
        "Write every nth frame to downsampled DCD")
-      ("centering-selection", 
-       po::value<string>(&center_selection)->default_value(string("")),
-       "Selection for centering")
+      ("centering-selection", po::value<string>(&center_selection)->default_value(""), "Selection for centering")
       ("skip-first-frame", po::value<bool>(&skip_first_frame)->default_value(false), "Skip first frame of each trajectory (for xtc files)")
       ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
       ;
@@ -67,6 +65,7 @@ public:
 
   string print() const {
     ostringstream oss;
+
     oss << boost::format("downsample-dcd='%s', downsample-rate=%d, centering-selection='%s', skip-first-frame=%d, fix-imaging=%d")
       % output_traj_downsample
       % downsample_rate
@@ -101,7 +100,7 @@ int main(int argc, char *argv[])
 
     model_name = ropts->value("model");
     output_traj = ropts->value("output_traj");
-    input_dcd_list = ropts->variableValues("intput_traj");
+    input_dcd_list = ropts->variableValues("input_traj");
 
     cout << hdr << endl;
     AtomicGroup system = createSystem(model_name);
@@ -155,7 +154,7 @@ int main(int argc, char *argv[])
         {
         pTraj traj=createTrajectory(*f, system);
         int nframes = traj->nframes();
-        if (skip_first_frame)
+        if (skip_first_frame && nframes > 1)
             {
             nframes--;
             }

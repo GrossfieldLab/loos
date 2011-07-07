@@ -1,3 +1,19 @@
+/*
+
+  area_per_lipid.cpp
+
+  Calculates the area-per-lipid for a trajectory
+
+  Usage:
+    area_per_lipid [options] model traj
+
+
+  Requires periodic boundary information in the trajectory to
+  determine leaflet area.  The selection option determines what
+  residues are considered lipids (you only need to select the
+  head-group).  The number of lipids can be explicitly set via the
+  "--nlipids" option.
+*/
 
 /*
 
@@ -61,10 +77,10 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* basic = new opts::BasicOptions;
   opts::BasicSelection* select = new opts::BasicSelection("resname =~ 'P.GL'");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
-  ToolOptions* toolopts = new ToolOptions;
+  ToolOptions* topts = new ToolOptions;
   opts::AggregateOptions options;
 
-  options.add(basic).add(select).add(tropts).add(toolopts);
+  options.add(basic).add(select).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -78,7 +94,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Divine how many lipids there are per leaflet...
-  uint n_lipids = toolopts->n_lipids;
+  uint n_lipids = topts->n_lipids;
   if (n_lipids == 0) {
     if (select->selection.empty()) {
       cerr << "Error- you must specify either an explicit number of lipids per leaflet or the selection to pick out the head groups\n";

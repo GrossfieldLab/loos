@@ -57,21 +57,19 @@ int main(int argc, char *argv[]) {
   dcd.setTitle(invocationHeader(argc, argv));
   dcd.writeHeader();
 
-  cout << boost::format("There are %d atoms and %d frames.\n") % model.size() % n;
+  cerr << boost::format("There are %d atoms and %d frames.\n") % model.size() % n;
 
-  cout << "Processing - ";
-  cout.flush();
+  cerr << "Processing - ";
+  cerr.flush();
 
   for (uint i=0; i<n; ++i) {
-    if (i % 250 == 0) {
-      cout << '.';
-      cout.flush();
-    }
+    if (i % 250 == 0)
+      cerr << '.';
     traj->readFrame(i);
     traj->updateGroupCoords(model);
     dcd.writeFrame(model);
   }
   
-  cout << " done\n";
+  cerr << " done\n";
 }
 

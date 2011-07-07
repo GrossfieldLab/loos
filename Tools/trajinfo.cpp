@@ -41,10 +41,8 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 
 string model_name, traj_name;
-bool brief = false;
 bool box_info = false;
-
-string centroid_selection;
+bool centroid = false;
 
 
 
@@ -56,7 +54,7 @@ public:
   
   void addGeneric(opts::po::options_description& o) {
     o.add_options()
-      ("brief", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
+      ("brief,B", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
       ("centroid", opts::po::value<string>(&centroid_selection), "Report average centroid")
       ("box", opts::po::value<bool>(&box_info)->default_value(box_info), "Report periodic box info");
   }
@@ -208,14 +206,21 @@ int main(int argc, char *argv[]) {
   if (tropts->skip != 0)
     cerr << "Warning:  --skip is ignored by this tool\n";
 
+  box_info = topts->box_info;
+  centroid = !topts->centroid_selection.empty();
+
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
 
+  // Export names for subsequent functions
+  model_name = tropts->model_name;
+  traj_name = tropts->traj_name;
+
   AtomicGroup center;
-  if (!(topts->centroid_selection.empty()))
+  if (centroid)
     center = selectAtoms(model, topts->centroid_selection);
 
-  if (!brief)
+  if (!topts->brief)
     verbInfo(model, traj, center, !(topts->centroid_selection.empty()));
   else
     briefInfo(traj);

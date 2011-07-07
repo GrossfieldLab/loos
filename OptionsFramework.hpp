@@ -1,10 +1,35 @@
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2011, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 
 #if !defined(OPTIONS_FRAMEWORK_HPP)
 #define OPTIONS_FRAMEWORK_HPP
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
 #include <boost/program_options.hpp>
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
+#include <sfactories.hpp>
+
 
 
 namespace loos {
@@ -230,10 +255,13 @@ namespace loos {
     //! Gets a string as prefix for output files (--prefix)
     class OutputPrefix : public OptionsPackage {
     public:
-      OutputPrefix() : prefix("output") { }
-      OutputPrefix(const std::string& s) : prefix(s) { }
+      OutputPrefix() : prefix("output"), label("Output prefix") { }
+      OutputPrefix(const std::string& s) : prefix(s), label("Output prefix") { }
+      OutputPrefix(const std::string& s, const std::string& t) : prefix(s), label(t) { }
+
 
       std::string prefix;
+      std::string label;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -245,10 +273,15 @@ namespace loos {
     //! Provides a single LOOS selection (--selection)
     class BasicSelection : public OptionsPackage {
     public:
-      BasicSelection() : selection("all") { }
-      BasicSelection(const std::string& sel) : selection(sel) { }
+      BasicSelection() : selection("all"), label("Which atoms to use") { }
+      BasicSelection(const std::string& sel) : selection(sel), label("Which atoms to use") { }
+      BasicSelection(const std::string& sel, const std::string& lbl) :
+        selection(sel),
+        label(lbl)
+      { }
 
       std::string selection;
+      std::string label;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -284,6 +317,46 @@ namespace loos {
       std::string help() const;
       std::string print() const;
     };
+
+    // -------------------------------------------------
+
+    //! Request Two models with coordinates
+    /**
+     * Since not all formats have coordinates (i.e. PSF),
+     * the coordinates can be taken from an alternate file using the
+     * -c or --coordinates option.  Also adds a positional argument
+     * for the model description.
+     **/
+    class TwoModelsWithCoords : public OptionsPackage {
+    public:
+      TwoModelsWithCoords() : coords1_name(""), desc1("model1"),
+                              coords2_name(""), desc2("model2") { }
+
+      TwoModelsWithCoords(const std::string& d1,
+                          const std::string& d2) :
+        coords1_name(""), desc1(d1),
+        coords2_name(""), desc2(d2)
+      { }
+
+      std::string model1_name, coords1_name, desc1;
+      std::string model2_name, coords2_name, desc2;
+
+      AtomicGroup model1;
+      AtomicGroup model2;
+
+    private:
+      void addGeneric(po::options_description& opts);
+      void addHidden(po::options_description& opts);
+      void addPositional(po::positional_options_description& pos);
+
+      bool check(po::variables_map& map);
+
+      bool postConditions(po::variables_map& map);
+
+      std::string help() const;
+      std::string print() const;
+    };
+
 
 
 

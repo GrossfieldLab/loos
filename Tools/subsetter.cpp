@@ -262,6 +262,9 @@ string fullHelpMessage(void) {
 
 
 // @cond TOOLS_INTERNAL
+// Note: We do not use the TrajectoryWithFrameIndices class here
+// because this tool supports a more complex arrangement of
+// trajectories with ranges and skips...
 class ToolOptions : public opts::OptionsPackage {
 public:
   
@@ -284,6 +287,12 @@ public:
       ("model", po::value<string>(&model_name), "Model filename")
       ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames")
       ("out", po::value<string>(&out_name), "Output prefix");
+  }
+
+  void addPositional(po::positional_options_description& o) {
+    o.add("out", 1);
+    o.add("model", 1);
+    o.add("traj", -1);
   }
 
   bool check(po::variables_map& vm) {
@@ -401,15 +410,17 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection("all");
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(topts);
+  options.add(bopts).add(sopts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
   
 
   AtomicGroup model = createSystem(model_name);
+  selection = sopts->selection;
   AtomicGroup subset = selectAtoms(model, selection);
 
   AtomicGroup centered;

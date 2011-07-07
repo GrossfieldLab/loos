@@ -29,12 +29,14 @@
 
 
 #include <loos.hpp>
-#include <boost/program_options.hpp>
+#include "ConvergenceOptions.hpp"
 #include "bcomlib.hpp"
 
 using namespace std;
 using namespace loos;
 using namespace Convergence;
+
+namespace opts = loos::OptionsFramework;
 namespace po = boost::program_options;
 
 
@@ -43,6 +45,49 @@ const bool debug = false;
 
 typedef vector<AtomicGroup>                               vGroup;
 typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
+
+
+// Configuration
+
+const bool length_normalize = true;
+const uint nsteps = 25;
+
+
+// Global options
+vector<uint> blocksizes;
+bool local_average;
+uint nreps;
+
+// @cond TOOLS_INTERAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
+      ("reps", po::value<uint>(&nreps)->default_value(20), "Number of replicates for bootstrap")
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
+
+  }
+
+  bool postConditions(po::variables_map& vm) {
+    if (!blocks_spec.empty())
+      blocksizes = parseRangeList<uint>(blocks_spec);
+
+    return(true);
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("blocks='%s', local=%d, reps=%d")
+      % blocks_spec
+      % local_average
+      % nreps;
+    return(oss.str());
+  }
+
+  string blocks_spec;
+};
 
 // Convenience structure for aggregating results
 struct Datum {
@@ -55,78 +100,7 @@ struct Datum {
   double var_coverlap;
   uint nblocks;
 };
-
-
-
-// Configuration
-
-const bool length_normalize = true;
-const uint nsteps = 25;
-
-
-// Global options
-string model_name, traj_name, selection;
-vector<uint> blocksizes;
-bool local_average;
-uint nreps;
-uint seed;
-
-
-void parseOptions(int argc, char *argv[]) {
-
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("seed,s", po::value<uint>(), "Seed for RNG")
-      ("blocks,b", po::value<string>(), "Block sizes (MATLAB style range)")
-      ("replicates,r", po::value<uint>(&nreps)->default_value(20), "Number of replicates for bootstrap")
-      ("local,l", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "model")
-      ("traj", po::value<string>(&traj_name), "trajectory")
-      ("selection", po::value<string>(&selection), "selection");
-    
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("selection", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("selection"))) {
-      cerr << "Usage- " << argv[0] << " [options] model trajectory selection >output\n";
-      cerr << generic;
-      exit(-1);
-    }
-
-    if (vm.count("blocks")) {
-      string s = vm["blocks"].as<string>();
-      blocksizes = parseRangeList<uint>(s);
-    }
-
-    if (vm.count("seed")) {
-      seed = vm["seed"].as<uint>();
-      rng_singleton().seed(seed);
-    } else
-      seed = randomSeedRNG();
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
-
+// @endcond
 
 
 // Randomly pick frames
@@ -202,16 +176,25 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, const vGroup& ensemble,
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  opts::BasicConvergence* copts = new opts::BasicConvergence;
+  ToolOptions* topts = new ToolOptions;
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(copts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   cout << "# " << hdr << endl;
-  cout << "# replicates = " << nreps << ", local_average = " << local_average << endl;
-  cout << "# length_normalize = " << length_normalize << endl;
+  cout << "# " << vectorAsStringWithCommas<string>(options.print()) << endl;
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  if (tropts->skip)
+    cerr << "Warning: --skip option ignored\n";
 
-  AtomicGroup subset = selectAtoms(model, selection);
 
   if (blocksizes.empty()) {
     uint n = traj->nframes();
@@ -224,6 +207,9 @@ int main(int argc, char *argv[]) {
     for (uint i = step; i <= half; i += step)
       blocksizes.push_back(i);
   }
+
+
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
 
 
   vector<AtomicGroup> ensemble;
@@ -246,7 +232,6 @@ int main(int argc, char *argv[]) {
 
   
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
-  cout << "# seed = " << seed << endl;
   cout << "# n\tCoverlap\tVariance\tN_blocks\n";
   // Now iterate over all requested block sizes...
 

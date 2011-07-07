@@ -1,84 +1,89 @@
 /*
   blobid.cpp
 
-
-  (c) 2008 Tod D. Romo, Grossfield Lab
-      Department of Biochemistry
-      University of Rochster School of Medicine and Dentistry
-
   Flood-fills a grid to identify blobs...
 */
 
 
+
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
-#include <boost/tuple/tuple.hpp>
 #include <limits>
 #include <ext/slist>
 
+#include <DensityTools.hpp>
 #include <DensityGrid.hpp>
 #include <GridUtils.hpp>
 
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
+double lower, upper;
 
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
 
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("lower", po::value<double>(), "Sets the lower threshold for segmenting the grid")
+      ("upper", po::value<double>(), "Sets the upper threshold for segmenting the grid")
+      ("thresh", po::value<double>(), "Sets the threshold for segmenting the grid.");
+  }
 
-boost::tuple<double, double> parseOptions(int argc, char *argv[]) {
-  double low, high;
-
-  try {
-    po::options_description desc("Allowed options");
-    desc.add_options()
-      ("help", "Produce this help message")
-      ("lower-threshold,l", po::value<double>(), "Sets the lower threshold for segmenting the grid")
-      ("upper-threshold,u", po::value<double>(), "Sets the upper threshold for segmenting the grid")
-      ("threshold,t", po::value<double>(), "Sets the threshold for segmenting the grid.");
-
-    po::positional_options_description p;
-    p.add("threshold", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-	      options(desc).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help")) {
-      cerr << desc << endl;
-      exit(-1);
-    }
-
+  bool postConditions(po::variables_map& vm) {
     if (vm.count("threshold")) {
-      low = vm["threshold"].as<double>();
-      high = numeric_limits<double>::max();
+      lower = vm["threshold"].as<double>();
+      upper = numeric_limits<double>::max();
     } else {
       if (!(vm.count("lower-threshold") && vm.count("upper-threshold"))) {
 	cerr << "Error- you must specify either a treshold or a threshold range.\n";
-	exit(-1);
+        return(false);
       }
 
-      low = vm["lower-threshold"].as<double>();
-      high = vm["upper-threshold"].as<double>();
+      lower = vm["lower-threshold"].as<double>();
+      upper = vm["upper-threshold"].as<double>();
     }
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-  catch(...) {
-    cerr << "Error - unknown exception.\n";
-    exit(-1);
+    return(true);
   }
 
-  boost::tuple<double, double> res(low, high);
+  string print() const {
+    ostringstream oss;
 
-  return(res);
-}
+    oss << boost::format("lower=%f, upper=%f") % lower % upper;
+    return(oss.str());
+  }
+
+};
+// @endcond
+
+
 
 
 int fill(const DensityGridpoint seed, const int val, DensityGrid<double>& data_grid, DensityGrid<int>& blob_grid, const double low, const double high) {
@@ -118,9 +123,16 @@ boost::tuple<int, int, int, double> findBlobs(DensityGrid<double>& data_grid, De
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  boost::tuple<double, double> toil = parseOptions(argc, argv);
-  double lower = boost::get<0>(toil);
-  double upper = boost::get<1>(toil);
+  
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+
 
   DensityGrid<double> data;
   cin >> data;

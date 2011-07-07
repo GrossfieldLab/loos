@@ -254,7 +254,7 @@ int main(int argc, char *argv[]) {
   reverseColumns(C);
   writeAsciiMatrix(prefix + "_U.asc", C, hdr);
 
-  // D = sqrt(D);  Scale eigenvectors...
+  // D = sqrt(D);  Scale eigenvalues...
   for (uint j=0; j<W.rows(); ++j)
     W[j] = W[j] < 0 ? 0.0 : sqrt(W[j]);
 

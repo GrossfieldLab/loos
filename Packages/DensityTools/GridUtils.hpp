@@ -1,9 +1,27 @@
 /*
-  grid_utils
+  Utility functions/classes for LOOS grids
+*/
 
-  (c) 2009 Tod D. Romo, Grossfield Lab, URMC
 
-  Utils for grids...duh...
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2009, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -15,7 +33,11 @@
 namespace loos {
 
   namespace DensityTools {
+
+
+    // Functors for grid operations
   
+    //! Functor that is true if value is greater than or equal to threshold
     template<typename T>
     class Threshold {
     public:
@@ -25,6 +47,7 @@ namespace loos {
       T thresh;
     };
 
+    //! Functor that is true if value is between low and hi, inclusive
     template<typename T>
     class ThresholdRange {
     public:
@@ -34,7 +57,7 @@ namespace loos {
       T lo, hi;
     };
 
-
+    //! Functor that is true for any non-zero density
     template<typename T>
     class NonzeroDensity {
     public:
@@ -42,7 +65,16 @@ namespace loos {
     };
 
 
-
+    //! Flood-fill a grid
+    /**
+     * Requires a seed-point to start the grid at.
+     * The data_grid is untouched by the fill.  Instead, a grid of
+     * ints (id's) is filled it using the passed id value.  The
+     * functor op determines the criteria for filling (i.e. using a
+     * threshold, range, or non-zero points).
+     *
+     * Returns a list of grindpoints that were filled in.
+     */
     template<typename T, class Functor>
     std::vector<DensityGridpoint> floodFill(const DensityGridpoint seed, const DensityGrid<T>& data_grid,
                                       const int id, DensityGrid<int>& blob_grid, const Functor& op)
@@ -76,6 +108,7 @@ namespace loos {
       return(list);
     }
 
+    //! Flood-fill a grid, returning a list of points filled in
     template<typename T, class Functor>
     int floodFill(const DensityGridpoint seed, const DensityGrid<T>& data_grid, const Functor& op) {
       DensityGrid<int> blob_grid(data_grid.minCoord(), data_grid.maxCoord(), data_grid.gridDims());
@@ -85,6 +118,18 @@ namespace loos {
     }
 
 
+    //! Find peaks in a grid given the criteria defined by the passed functor
+    /**
+     * Requires a data-grid, a grid to contain the flood-filled
+     * assignments, and a functor that determines what points in the
+     * data-grid to operate on.
+     *
+     * This function segments the grid into a blobs based on the
+     * functor.  For each unique blob, it returns the center of mass
+     * of the blob as a vector of GCoords.  The vector index
+     * corresponds to the blob_id - 1 in the blobs grid.
+     */
+    
     template<typename T, class Functor>
     std::vector<loos::GCoord> findPeaks(const DensityGrid<T>& grid, DensityGrid<int>& blobs, const Functor& op) {
       std::vector<loos::GCoord> peaks;
@@ -116,7 +161,7 @@ namespace loos {
     }
 
 
-
+    //! Find peaks in a grid based on the functor
     template<typename T, class Functor>
     std::vector<loos::GCoord> findPeaks(const DensityGrid<T>& grid, const Functor& op) {
 
@@ -126,6 +171,7 @@ namespace loos {
     }
 
 
+    //! Converts grid points (determined by functor) into an AtomicGroup of pseudo-atoms
     template<class T, class Functor>
     loos::AtomicGroup gridToAtomicGroup(const DensityGrid<T>& grid, const Functor& op) {
       loos::AtomicGroup group;
@@ -149,6 +195,7 @@ namespace loos {
 
 
 
+    //! Convolve a grid with another grid (kernel)
     template<class T>
     void gridConvolve(DensityGrid<T>& grid, DensityGrid<T>& kernel) {
       DensityGrid<T> tmp(grid);
@@ -189,6 +236,7 @@ namespace loos {
     }
 
 
+    //! Convolve a grid with a 1D kernel stored in a vector
     template<class T>
     void gridConvolve(DensityGrid<T>& grid, std::vector<T>& kernel) {
       DensityGridpoint gdim = grid.gridDims();
@@ -245,6 +293,7 @@ namespace loos {
       grid = tmp;
     }
 
+    //! Construct a 1D gaussian
     std::vector<double> gaussian1d(const int, const double);
 
   };

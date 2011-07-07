@@ -29,16 +29,16 @@
 
 
 #include <loos.hpp>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
 
+#include "ConvergenceOptions.hpp"
 #include "fid-lib.hpp"
 
 using namespace std;
 using namespace loos;
 
 
-namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 // * GLOBALS *
 
@@ -55,6 +55,37 @@ double frac;
 vecUint trange;
 vecUint nrange;
 vecUint indices;
+
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("nrange", po::value<string>(&nrange_spec)->default_value("2,4,10"), "Range of N to use")
+      ("frac", po::value<double>(&frac)->default_value(0.05), "Bin fraction")
+      ("reps", po::value<uint>(&nreps)->default_value(5), "# of repetitions to use for each N");
+  }
+
+  bool postConditions(po::variables_map& vm) {
+    nrange = parseRangeList<uint>(nrange_spec);
+    return(true);
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("nrange='%s', frac=%f, reps=%f")
+      % nrange_spec
+      % frac
+      % nreps;
+    return(oss.str());
+  }
+
+  string nrange_spec;
+};
+
+
+// @endcond
 
 
 
@@ -265,24 +296,28 @@ DoubleMatrix statistics(const vector<DoubleMatrix>& V) {
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions *bopts = new opts::BasicOptions;
+  opts::BasicSelection *sopts = new opts::BasicSelection;
+  opts::TrajectoryWithFrameIndices *tropts = new opts::TrajectoryWithFrameIndices;
+  opts::BasicConvergence *copts = new opts::BasicConvergence;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments("trange", "T-range");
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(tropts).add(copts).add(topts).add(ropts);
+
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   cout << "# " << hdr << endl;
+  cout << "# " << vectorAsStringWithCommas<string>(options.print()) << endl;
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
-  AtomicGroup subset = selectAtoms(model, selection);
 
-  if (indices.empty())
-    for (uint i=0; i<traj->nframes(); ++i)
-      indices.push_back(i);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
 
-  if (seed == 0)
-    seed = randomSeedRNG();
-  else
-    rng_singleton().seed(static_cast<unsigned int>(seed));
-
-  cout << "# seed = " << seed << endl;
+  indices = assignTrajectoryFrames(traj, tropts->frame_index_spec, tropts->skip);
     
 
   vector<DoubleMatrix> results;

@@ -137,18 +137,18 @@ namespace loos {
     const pAtom& operator[](const int i) const;
 
     //! Append the atom onto the group
-    void append(pAtom pa) { atoms.push_back(pa); _sorted = false; }
+    AtomicGroup& append(pAtom pa) { atoms.push_back(pa); _sorted = false; return(*this); }
     //! Append a vector of atoms
-    void append(std::vector<pAtom> pas);
+    AtomicGroup& append(std::vector<pAtom> pas);
     //! Append an entire AtomicGroup onto this one (concatenation)
-    void append(const AtomicGroup& grp);
+    AtomicGroup& append(const AtomicGroup& grp);
 
     //! Delete a single atom
-    void remove(pAtom pa) { deleteAtom(pa); }
+    AtomicGroup& remove(pAtom pa) { deleteAtom(pa); return(*this); }
     //! Deletes a set of atoms
-    void remove(std::vector<pAtom> pas);
+    AtomicGroup& remove(std::vector<pAtom> pas);
     //! Deletes all atoms in the passed grp that are also in the current group.
-    void remove(const AtomicGroup& grp);
+    AtomicGroup& remove(const AtomicGroup& grp);
 
     // Concatenation of groups and/or atoms
     AtomicGroup& operator+=(const AtomicGroup& rhs);

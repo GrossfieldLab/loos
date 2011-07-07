@@ -302,10 +302,10 @@ int main(int argc, char *argv[]) {
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices();
-  ToolOptions* toolopts = new ToolOptions;
+  ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(tropts).add(toolopts);
+  options.add(bopts).add(tropts).add(topts);
 
   if (!options.parse(argc, argv))
     exit(-1);
@@ -314,11 +314,11 @@ int main(int argc, char *argv[]) {
   pTraj traj = tropts->trajectory;
   vector<uint> indices = tropts->frameList();
 
-  AtomicGroup probe = selectAtoms(model, toolopts->probe_selection);
+  AtomicGroup probe = selectAtoms(model, topts->probe_selection);
 
   // Build each of the requested targets...
   vGroup targets;
-  for (vector<string>::iterator i = toolopts->target_selections.begin(); i != toolopts->target_selections.end(); ++i)
+  for (vector<string>::iterator i = topts->target_selections.begin(); i != topts->target_selections.end(); ++i)
     targets.push_back(selectAtoms(model, *i));
 
 
@@ -328,8 +328,8 @@ int main(int argc, char *argv[]) {
 
   // If comparing self, split apart molecules by unique segids
   vGroup myselves;
-  if (toolopts->auto_self || toolopts->fast_filter) {
-    if (toolopts->auto_self)
+  if (topts->auto_self || topts->fast_filter) {
+    if (topts->auto_self)
       ++cols;
     myselves = probe.splitByUniqueSegid();
   }
@@ -349,7 +349,7 @@ int main(int argc, char *argv[]) {
     traj->readFrame(*frame);
     traj->updateGroupCoords(model);
 
-    if (toolopts->symmetry && !model.isPeriodic()) {
+    if (topts->symmetry && !model.isPeriodic()) {
       cerr << "ERROR - the trajectory must be periodic to use --reimage\n";
       exit(-1);
     }
@@ -357,16 +357,16 @@ int main(int argc, char *argv[]) {
     M(t, 0) = t;
     for (uint i=0; i<targets.size(); ++i) {
       double d;
-      if (toolopts->fast_filter)
-        d = fastContacts(targets[i], myselves, toolopts->inner_cutoff, toolopts->outer_cutoff, toolopts->fast_pad, toolopts->symmetry);
+      if (topts->fast_filter)
+        d = fastContacts(targets[i], myselves, topts->inner_cutoff, topts->outer_cutoff, topts->fast_pad, topts->symmetry);
       else
-        d = contacts(targets[i], probe, toolopts->inner_cutoff, toolopts->outer_cutoff, toolopts->symmetry);
+        d = contacts(targets[i], probe, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
 
       M(t, i+1) = d;
     }
 
-    if (toolopts->auto_self)
-      M(t, cols-1) = autoSelfContacts(myselves, toolopts->inner_cutoff, toolopts->outer_cutoff, toolopts->symmetry);
+    if (topts->auto_self)
+      M(t, cols-1) = autoSelfContacts(myselves, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
 
     ++t;
     if (bopts->verbosity)
@@ -376,12 +376,12 @@ int main(int argc, char *argv[]) {
   if (bopts->verbosity)
     slayer.finish();
 
-  if (toolopts->normalize) {
+  if (topts->normalize) {
     if (bopts->verbosity)
       cerr << "Normalizing across the row...\n";
     rowNormalize(M);
 
-  } else if (toolopts->max_norm) {
+  } else if (topts->max_norm) {
     if (bopts->verbosity)
       cerr << "Normalizing by max column value...\n";
     colNormalize(M);

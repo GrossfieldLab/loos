@@ -1,3 +1,24 @@
+2011-07-01    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed AtomicGroup::append() and AtomicGroup::remove()
+	functions to return a reference to the AtomicGroup operated on.
+	This means you can now chain operations,
+	i.e. foo.add().add().add()
+
+2011-06-21    <tromo@spade.biophysics.rochester.edu>
+	* Added cosine content tools to the Convergence Package
+	* Fixed a minor bug with ramachandran where structures containing
+	multiple chains were not handled correctly at the chain terminii
+	(i.e. ramachandran would treat the structure as one contiguous
+	chain with only two terminii).
+	* Added a transpose() function for matrices (this is NOT an
+	in-place transposition, so beware of memory constraints)
+	* Added support for using different selections for the trajectory
+	and the reference structure in rmsd2ref
+	* Fixed bug in avgconv where using the default block-sizes would
+	cause a segfault.
+	* Changed the output metadata header (from invocationHeader()) to
+	include the current working directory, if available.
 
 2011-05-26    <tromo@spade.biophysics.rochester.edu>
 

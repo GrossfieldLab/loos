@@ -1,11 +1,6 @@
 /*
   vsa
 
-  (c) 2009 Tod D. Romo, Grossfield Lab
-      Department of Biochemistry
-      University of Rochster School of Medicine and Dentistry
-
-
   Usage:
     vsa [options] subset environment model output_prefix
 

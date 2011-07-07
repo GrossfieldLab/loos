@@ -1,13 +1,30 @@
 /*
   pick_blob.cpp
 
-
-  (c) 2008 Tod D. Romo, Grossfield Lab
-      Department of Biochemistry
-      University of Rochster School of Medicine and Dentistry
-
   Given an grid-mask, a PDB, and a selection, finds the blob closest
   to ANY atom in the selection...
+*/
+
+
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
@@ -24,6 +41,7 @@ using namespace loos::DensityTools;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
+// @cond TOOL_INTERNAL
 struct Blob {
   Blob() : closest_point(0,0,0), grid_dist(numeric_limits<double>::max()),
 	   real_dist(numeric_limits<double>::max()) { }
@@ -33,7 +51,7 @@ struct Blob {
   double grid_dist;
   double real_dist;
 };
-
+// @endcond
 
 int debug = 0;
 

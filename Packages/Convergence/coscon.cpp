@@ -1,6 +1,9 @@
 /*
   
-  Perform a block-overlap in comparison to a full PCA
+  Cosine content for varying windows of a trajectory,
+  based on:
+    Hess, B.  "Convergence of sampling in protein simulations."
+      Phys Rev E (2002) 65(3):031910
 
 */
 
@@ -11,7 +14,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2009, Tod D. Romo
+  Copyright (c) 2011, Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -32,9 +35,8 @@
 
 #include <loos.hpp>
 
-#include "ConvergenceOptions.hpp"
-#include "bcomlib.hpp"
 
+#include "bcomlib.hpp"
 
 using namespace std;
 using namespace loos;
@@ -45,25 +47,33 @@ namespace po = loos::OptionsFramework::po;
 
 
 typedef vector<AtomicGroup>                               vGroup;
-typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 
 
+// Convenience structure for aggregating results
+struct Datum {
+  Datum(const double avg, const double var, const uint nblks) : avg_cosine(avg),
+                                                                var_cosine(var),
+                                                                nblocks(nblks) { }
+
+
+  double avg_cosine;
+  double var_cosine;
+  uint nblocks;
+};
 
 
 
 // Configuration
 
-const bool length_normalize = true;
-const uint nsteps = 25;
+const uint nsteps = 50;
 
 
 
 // Global options
 bool local_average;
-bool use_zscore;
-uint ntries;
 vector<uint> blocksizes;
-uint seed;
+string model_name, traj_name, selection;
+uint principal_component;
 
 
 // @cond TOOLS_INTERAL
@@ -72,9 +82,8 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
+      ("pc", po::value<uint>(&principal_component)->default_value(0), "Which principal component to use")
       ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
-      ("zscore,Z", po::value<bool>(&use_zscore)->default_value(false), "Use Z-score rather than covariance overlap")
-      ("ntries,N", po::value<uint>(&ntries)->default_value(20), "Number of tries for Z-score")
       ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
 
   }
@@ -86,32 +95,19 @@ public:
     return(true);
   }
 
-
   string print() const {
     ostringstream oss;
-    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d")
+    oss << boost::format("blocks='%s', local=%d, pc=%d")
       % blocks_spec
-      % use_zscore
-      % ntries
-      % local_average;
+      % local_average
+      % principal_component;
     return(oss.str());
   }
 
   string blocks_spec;
 };
-
-// Convenience structure for aggregating results
-struct Datum {
-  Datum(const double avg, const double var, const uint nblks) : avg_coverlap(avg),
-                                                                var_coverlap(var),
-                                                                nblocks(nblks) { }
-
-
-  double avg_coverlap;
-  double var_coverlap;
-  uint nblocks;
-};
 // @endcond
+
 
 
 
@@ -128,37 +124,25 @@ vGroup subgroup(const vGroup& A, const uint a, const uint b) {
 }
 
 
-// Breaks the ensemble up into blocks and computes the PCA for each
-// block and the statistics for the covariance overlaps...
+
+// Breaks the ensemble up into blocks and computes the RSV for each
+// block and the statistics for the cosine content...
 
 template<class ExtractPolicy>
-Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const uint blocksize, ExtractPolicy& policy) {
+Datum blocker(const uint pc, vGroup& ensemble, const uint blocksize, ExtractPolicy& policy) {
 
 
-  TimeSeries<double> coverlaps;
+  TimeSeries<double> cosines;
 
   for (uint i=0; i<ensemble.size() - blocksize; i += blocksize) {
     vGroup subset = subgroup(ensemble, i, i+blocksize);
-    boost::tuple<RealMatrix, RealMatrix> pca_result = pca(subset, policy);
-    RealMatrix s = boost::get<0>(pca_result);
-    RealMatrix U = boost::get<1>(pca_result);
+    RealMatrix V = rsv(subset, policy);
 
-    // Scale the singular values by block-size
-    if (length_normalize)
-      for (uint j=0; j<s.rows(); ++j)
-        s[j] /= blocksize;
-
-    double val;
-    if (use_zscore) {
-      boost::tuple<double, double, double> result = zCovarianceOverlap(sa, Ua, s, U, ntries);
-      val = boost::get<0>(result);
-    } else
-      val = covarianceOverlap(sa, Ua, s, U);
-
-    coverlaps.push_back(val);
+    double val = cosineContent(V, pc);
+    cosines.push_back(val);
   }
 
-  return( Datum(coverlaps.average(), coverlaps.variance(), coverlaps.size()) );
+  return( Datum(cosines.average(), cosines.variance(), cosines.size()) );
 }
 
 
@@ -170,11 +154,10 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
-  opts::BasicConvergence* copts = new opts::BasicConvergence;
   ToolOptions* topts = new ToolOptions;
   
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(tropts).add(copts).add(topts);
+  options.add(bopts).add(sopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -189,13 +172,12 @@ int main(int argc, char *argv[]) {
 
   if (blocksizes.empty()) {
     uint n = traj->nframes();
-    uint half = n / 2;
-    uint step = half / nsteps;
+    uint step = n / nsteps;
     if (step < 1)
       step = 1;
-    cout << "# Auto block-sizes - " << step << ":" << step << ":" << half << endl;
+    cout << "# Auto block-sizes - " << step << ":" << step << ":" << n-1 << endl;
 
-    for (uint i = step; i <= half; i += step)
+    for (uint i = step; i < n; i += step)
       blocksizes.push_back(i);
   }
 
@@ -206,21 +188,11 @@ int main(int argc, char *argv[]) {
   vector<AtomicGroup> ensemble;
   readTrajectory(ensemble, subset, traj);
  
-  // First, get the complete PCA result...
+  // First, read in and align trajectory
   boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble);
   AtomicGroup avg = averageStructure(ensemble);
   NoAlignPolicy policy(avg, local_average);
-  boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
 
-  RealMatrix Us = boost::get<0>(res);
-  RealMatrix UA = boost::get<1>(res);
-
-  if (length_normalize)
-    for (uint i=0; i<Us.rows(); ++i)
-      Us[i] /= traj->nframes();
-
-  cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
-  cout << "# n\t" << (use_zscore ? "Z-score" : "Coverlap") << "\tVariance\tN_blocks\n";
 
   // Now iterate over all requested block sizes
 
@@ -231,8 +203,8 @@ int main(int argc, char *argv[]) {
   slayer.start();
 
   for (vector<uint>::iterator i = blocksizes.begin(); i != blocksizes.end(); ++i) {
-    Datum result = blocker(UA, Us, ensemble, *i, policy);
-    cout << *i << "\t" << result.avg_coverlap << "\t" << result.var_coverlap << "\t" << result.nblocks << endl;
+    Datum result = blocker(principal_component, ensemble, *i, policy);
+    cout << *i << "\t" << result.avg_cosine << "\t" << result.var_cosine << "\t" << result.nblocks << endl;
     slayer.update();
   }
 

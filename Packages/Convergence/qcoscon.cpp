@@ -1,7 +1,12 @@
 /*
-  perturb-structure.cpp
+  
+  "Quick" Cosine content.  Calculates the cosine content for the
+  entire trajectory for the first N modes.
 
-  Apply a random perturbation to a structure (random directions, fixed magnitude)
+  based on:
+    Hess, B.  "Convergence of sampling in protein simulations."
+      Phys Rev E (2002) 65(3):031910
+
 */
 
 
@@ -11,7 +16,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2010, Tod D. Romo
+  Copyright (c) 2011, Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -30,86 +35,72 @@
 
 
 #include <loos.hpp>
+#include "bcomlib.hpp"
 
 using namespace std;
 using namespace loos;
+using namespace Convergence;
+
+
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 
+typedef vector<AtomicGroup>                               vGroup;
 
 
-// @cond TOOL_INTERNAL
+uint nmodes;
 
+//@cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : seed(0), magnitude(0.0) { }
-
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("seed", po::value<uint>(&seed)->default_value(seed), "Random number seed (0 = use current time)");
-  }
-  
-  void addHidden(po::options_description& o) {
-    o.add_options()
-      ("magnitude", po::value<double>(&magnitude), "magnitude");
+      ("modes", po::value<uint>(&nmodes)->default_value(10), "Compute cosine content for first N modes");
   }
 
-  void addPositional(po::positional_options_description& pos) {
-    pos.add("magnitude", 1);
-  }
-
-  bool check(po::variables_map& map) {
-    return(!map.count("magnitude"));
-  }
-
-  string help() const { return("magnitude"); }
   string print() const {
     ostringstream oss;
-    oss << boost::format("seed=%d, magnitude=%f") % seed % magnitude;
+    oss << boost::format("modes=%d") % nmodes;
     return(oss.str());
   }
 
-  bool postConditions(po::variables_map& map) {
-    if (seed == 0)
-      randomSeedRNG();
-    else {
-      base_generator_type& rng = rng_singleton();
-      rng.seed(seed);
-    }
-
-    return(true);
-  }
-
-  uint seed;
-  double magnitude;
 };
-
-// @endcond
-
-
-
-
 
 
 int main(int argc, char *argv[]) {
+
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelection* sopts = new opts::BasicSelection;
-  opts::ModelWithCoords* mwcopts = new opts::ModelWithCoords;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
-
+  
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(mwcopts).add(topts);
+  options.add(bopts).add(sopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
-  AtomicGroup model = mwcopts->model;
+  cout << "# " << hdr << endl;
+  cout << "# " << vectorAsStringWithCommas<string>(options.print()) << endl;
+
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  if (tropts->skip)
+    cerr << "Warning: --skip option ignored\n";
+
   AtomicGroup subset = selectAtoms(model, sopts->selection);
+  vector<AtomicGroup> ensemble;
+  readTrajectory(ensemble, subset, traj);
+ 
+  // Read in and align...
+  boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble);
+  AtomicGroup avg = averageStructure(ensemble);
 
-  subset.perturbCoords(topts->magnitude);
-  PDB pdb = PDB::fromAtomicGroup(model);
-  pdb.remarks().add(hdr);
+  NoAlignPolicy policy(avg, true);
+  RealMatrix V = rsv(ensemble, policy);
+  cout << "# n\tcoscon\n";
+  for (uint i=0; i<nmodes; ++i)
+    cout << i << "\t" << cosineContent(V, i) << endl;
 
-  cout << pdb;
 }

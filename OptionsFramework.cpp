@@ -1,3 +1,26 @@
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2011, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+
 #include <OptionsFramework.hpp>
 
 
@@ -44,7 +67,7 @@ namespace loos {
 
     void OutputPrefix::addGeneric(po::options_description& opts) {
       opts.add_options()
-        ("prefix,p", po::value<std::string>(&prefix)->default_value(prefix), "Output prefix");
+        ("prefix,p", po::value<std::string>(&prefix)->default_value(prefix), label.c_str());
     }
 
     std::string OutputPrefix::print() const {
@@ -57,7 +80,7 @@ namespace loos {
 
     void BasicSelection::addGeneric(po::options_description& opts) {
       opts.add_options()
-        ("selection,s", po::value<std::string>(&selection)->default_value(selection), "Which atoms to use");
+        ("selection,s", po::value<std::string>(&selection)->default_value(selection), label.c_str());
     }
 
     std::string BasicSelection::print() const {
@@ -110,6 +133,66 @@ namespace loos {
 
 
     // -------------------------------------------------------
+
+
+    void TwoModelsWithCoords::addGeneric(po::options_description& opts) {
+      std::string optdesc1 = std::string("File to use for coordinates for") + desc1;
+      std::string optdesc2 = std::string("File to use for coordinates for") + desc2;
+
+
+      opts.add_options()
+        ("coord1,c", po::value<std::string>(&coords1_name)->default_value(coords1_name), optdesc1.c_str())
+        ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str());
+    }
+
+    void TwoModelsWithCoords::addHidden(po::options_description& opts) {
+      opts.add_options()
+        ("model1", po::value<std::string>(&model1_name), desc1.c_str())
+        ("model2", po::value<std::string>(&model2_name), desc2.c_str());
+    }
+
+
+    void TwoModelsWithCoords::addPositional(po::positional_options_description& pos) {
+      pos.add("model1", 1);
+      pos.add("model2", 1);
+    }
+
+
+    bool TwoModelsWithCoords::check(po::variables_map& map) {
+      return(!(map.count("model1") && map.count("model2")));
+    }
+
+    bool TwoModelsWithCoords::postConditions(po::variables_map& map) {
+      model1 = loadStructureWithCoords(model1_name, coords1_name);
+      model2 = loadStructureWithCoords(model2_name, coords2_name);
+      return(true);
+    }
+
+    std::string TwoModelsWithCoords::help() const {
+      std::string msg = desc1 + " " + desc2;
+      return(msg);
+    }
+
+
+    std::string TwoModelsWithCoords::print() const {
+      std::ostringstream oss;
+
+      oss << boost::format("model1='%s'") % model1_name;
+      if (!coords1_name.empty())
+        oss << boost::format(", coords1='%s'") % coords1_name;
+
+      oss << boost::format("model2='%s'") % model2_name;
+      if (!coords2_name.empty())
+        oss << boost::format(", coords2='%s'") % coords2_name;
+
+      return(oss.str());
+    }
+
+
+
+
+    // -------------------------------------------------------
+
 
 
     void BasicTrajectory::addGeneric(po::options_description& opts) {
@@ -272,9 +355,9 @@ namespace loos {
     std::string RequiredArguments::help() const {
       std::string s;
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
-        s = s + " " + i->first;
+        s = s + (i == arguments.begin() ? "" : " ") + i->first;
       if (vargs_set)
-        s = s + " " + variable_arguments.first + " [" + variable_arguments.first + " ...]";
+        s = s + (s.empty() ? "" : " ") + variable_arguments.first + " [" + variable_arguments.first + " ...]";
       return(s);
     }
 
@@ -318,8 +401,11 @@ namespace loos {
 
     void AggregateOptions::showHelp() {
       std::cout << "Usage- " << program_name << " [options] ";
-      for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
-        std::cout << (*i)->help() << " ";
+      for (vOpts::iterator i = options.begin(); i != options.end(); ++i) {
+        std::string help_text = (*i)->help();
+        if (! help_text.empty())
+          std::cout << (*i)->help() << " ";
+      }
       std::cout << std::endl;
       std::cout << generic;
     }

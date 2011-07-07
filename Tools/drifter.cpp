@@ -1,9 +1,9 @@
 /*
   drifter.cpp
 
-  Calculates the average centroid for a selection, then writes out the
-  distance between the centroid of each frame's selection and the
-  average
+  Calculates the distance between the centroid of each frame and
+  either the average (optionally of another selection) or a fixed
+  point.
 */
 
 

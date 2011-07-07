@@ -49,7 +49,38 @@ namespace Convergence {
 
   // Treats an AtomicGroup as a column vector and subtracts it from
   // each column of the matrix M.
-  void subtractStructure(loos::RealMatrix& M, const loos::AtomicGroup& model);
+  template<typename T>
+  void subtractStructure(T& M, const loos::AtomicGroup& model) {
+    std::vector<float> avg(model.size() * 3);
+    uint k = 0;
+    for (uint i=0; i<model.size(); ++i) {
+      loos::GCoord c = model[i]->coords();
+      avg[k++] = c.x();
+      avg[k++] = c.y();
+      avg[k++] = c.z();
+    }
+    
+    for (uint i=0; i<M.cols(); ++i)
+      for (uint j=0; j<M.rows(); ++j)
+        M(j, i) -= avg[j];
+  }
+
+  // Computes the cosine content for a col-vector
+  template<typename T>
+  double cosineContent(T& V, const uint col) {
+    double sum1 = 0;
+    double sum2 = 0;
+
+    uint m = V.rows();
+    double k = (col+1) * M_PI / m;
+    for (uint j=0; j<m; ++j) {
+      sum1 += cos(k * j) * V(j, col);
+      sum2 += V(j, col) * V(j, col);
+    }
+    double c = 2.0 * sum1 * sum1 / (sum2 * m);
+    return(c);
+  }
+  
 
   
   /*
@@ -158,6 +189,61 @@ namespace Convergence {
     return(result);
 
   }
+
+
+
+  // Get just the RSVs (this is for cosine-content calculations)
+  // given an extraction policy...
+  //
+
+  template<class ExtractPolicy>
+  loos::RealMatrix rsv(std::vector<loos::AtomicGroup>& ensemble, ExtractPolicy& extractor) {
+
+    loos::RealMatrix M = extractor(ensemble);
+    loos::RealMatrix C = loos::Math::MMMultiply(M, M, false, true);
+
+    // Compute [U,D] = eig(C)
+    char jobz = 'V';
+    char uplo = 'L';
+    f77int n = M.rows();
+    f77int lda = n;
+    float dummy;
+    loos::RealMatrix W(n, 1);
+    f77int lwork = -1;
+    f77int info;
+    ssyev_(&jobz, &uplo, &n, C.get(), &lda, W.get(), &dummy, &lwork, &info);
+    if (info != 0)
+      throw(loos::NumericalError("ssyev failed in loos::pca()", info));
+
+   
+    lwork = static_cast<f77int>(dummy);
+    float *work = new float[lwork+1];
+
+    ssyev_(&jobz, &uplo, &n, C.get(), &lda, W.get(), work, &lwork, &info);
+    if (info != 0)
+      throw(loos::NumericalError("ssyev failed in loos::pca()", info));
+  
+    reverseColumns(C);
+    reverseRows(W);
+
+    // Correctly scale the eigenvalues
+    for (uint j=0; j<W.rows(); ++j)
+      W[j] = W[j] < 0 ? 0.0 : sqrt(W[j]);
+
+    // Multiply eigenvectors by inverse eigenvalues
+    for (uint i=0; i<C.cols(); ++i) {
+      double konst = (W[i] > 0.0) ? (1.0/W[i]) : 0.0;
+
+      for (uint j=0; j<C.rows(); ++j)
+        C(j, i) *= konst;
+    }
+
+    W.reset();
+    loos::RealMatrix Vt = loos::Math::MMMultiply(C, M, true, false);
+    loos::RealMatrix V = loos::Math::transpose(Vt);
+    return(V);
+  }
+
 
 }
 
