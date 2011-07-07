@@ -124,7 +124,7 @@ Using the synaptic manager (or apt-get), install the following packages:
 
 ------= openSUSE =------
 
-LOOS has been tested with: 11.3
+LOOS has been tested with: 11.3, 11.4
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
