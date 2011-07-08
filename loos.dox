@@ -1368,6 +1368,13 @@ there is significant demand from users.
   a segfault.
   <LI> Fixed bug in ramachandran for structures with multiple chains
   where the terminii were not handled correctly.
+  <LI> Fixed bug in Trajectory class where the following code would
+  result in a duplicated first frame being read:
+\code
+traj->readFrame(0);  // Reads first frame and leaves iterator at second
+traj->readFrame();   // Reads second frame and bumps iterator
+\endcode
+  Instead, the second readFrame() call would return the first frame.
 </UL>
 
 \subsection r170_add_changed Added, Changed, or Otherwise Notable
