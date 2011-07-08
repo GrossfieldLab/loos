@@ -163,10 +163,10 @@ namespace loos {
       bool b = true;
 
       if (!(i == 0 && cached_first)) {
-        cached_first = false;
         seekFrame(i);
         b = parseFrame();
-      } 
+      }
+      cached_first = false;
       return(b);
     }
 
