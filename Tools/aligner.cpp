@@ -147,7 +147,8 @@ int main(int argc, char *argv[]) {
   AtomicGroup applyto_sub = selectAtoms(model, topts->transform_string);
 
   // Now do the alignin'...
-  unsigned int nframes = traj->nframes();
+  vector<uint> indices = tropts->frameList();
+  unsigned int nframes = indices.size();
 
   
   if (topts->reference_name.empty()) {
@@ -155,7 +156,8 @@ int main(int argc, char *argv[]) {
     // Read in the trajectory frames and extract the coordinates for the
     // aligning subset...
     vector<AtomicGroup> frames;
-    while (traj->readFrame()) {
+    for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
+      traj->readFrame(*i);
       traj->updateGroupCoords(align_sub);
       AtomicGroup subcopy = align_sub.copy();
       frames.push_back(subcopy);
@@ -210,7 +212,8 @@ int main(int argc, char *argv[]) {
 
 
     bool first = true;
-    while (traj->readFrame()) {
+    for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
+      traj->readFrame(*i);
       traj->updateGroupCoords(model);
       GMatrix M = align_sub.superposition(refsub);
       XForm W(M);
