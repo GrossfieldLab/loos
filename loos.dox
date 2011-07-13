@@ -927,7 +927,7 @@ there is significant demand from users.
        Blobs are found by flood-filling the grid and the centroid of
        the blob is used as the peak.
 
-       <DT> <B>  pick_block </B>
+       <DT> <B>  pick_blob </B>
        <DD> Given a grid mask (i.e. grid of ints), create another grid
        mask containing only the blobs that are requested (near an
        atom or a gridpoint).
