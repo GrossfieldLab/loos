@@ -66,6 +66,14 @@ public:
       ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
   }
 
+  void addPositional(po::positional_options_description& p) {
+    p.add("sel1", 1);
+    p.add("sel2", 1);
+    p.add("hist-min", 1);
+    p.add("hist-max", 1);
+    p.add("num-bins", 1);
+  }
+
   bool check(po::variables_map& vm)
   {
     return(!(vm.count("sel1") 
@@ -83,7 +91,7 @@ public:
 
   string help() const
   {
-    return("first-selection second-selection histogrm-min histogram-min histogram-bins");
+    return("first-selection second-selection histogram-min histogram-min histogram-bins");
   }
 
   string print() const
