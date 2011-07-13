@@ -262,7 +262,7 @@ density_package = SConscript('Packages/DensityTools/SConscript')
 user_package = SConscript('Packages/User/SConscript')
 
 
-all_packages = elastic_networks_package + convergence_package + density_package
+all_packages = elastic_networks_package + h_tools + convergence_package + density_package
 
 ### Special handling for pre-packaged documentation...
 
