@@ -54,8 +54,8 @@ PREFIX = env['PREFIX']
 
 
 density_tools = env.Install(PREFIX + '/bin', Split(apps))
-density_libs = env.Install(PREFIX + '/lib', [density_lib])
-density_headers = env.Install(PREFIX + '/include', Split(library_headers))
-env.Alias('density_tools_package', density_tools + density_libs + density_headers)
+#density_libs = env.Install(PREFIX + '/lib', [density_lib])
+#density_headers = env.Install(PREFIX + '/include', Split(library_headers))
+env.Alias('density_tools_package', density_tools)
 
 Return('list')

@@ -1412,7 +1412,7 @@ traj->readFrame();   // Reads second frame and bumps iterator
 </UL>
 
 
-\section release161 Version 1.6.0 (5-18-2011)
+\section release161 Version 1.6.1 (5-18-2011)
 \subsection r161_bugs Bug Fixes
 <UL>
   <LI> Fixed bug where charmm.hpp was not copied as part of an install
