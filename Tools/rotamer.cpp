@@ -156,6 +156,8 @@ string angle_mapping[][3] = {
 };
 
 
+// @cond TOOLS_INTERNAL
+
 // Convenience class for grouping 4 strings together...
 
 struct DihedralAtoms {
@@ -183,6 +185,7 @@ typedef std::tr1::unordered_map<string, DihedralAtoms> ResidueDihedralAtoms;
 ResidueDihedralAtoms Chi1Atoms;
 ResidueDihedralAtoms Chi2Atoms;
 
+// @endcond
 
 // Initialize the maps...
 

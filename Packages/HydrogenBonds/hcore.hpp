@@ -26,7 +26,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+// @cond PACKAGES_INTERNAL
 
 #if !defined(HCORE_HPP)
 #define HCORE_HPP

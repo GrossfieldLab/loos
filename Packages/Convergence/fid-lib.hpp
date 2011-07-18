@@ -25,7 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+// @cond PACKAGES_INTERNAL
 
 #if !defined(FIDLIB_HPP)
 #define FIDLIB_HPP

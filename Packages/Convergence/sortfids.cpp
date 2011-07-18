@@ -45,6 +45,7 @@ using namespace loos;
 typedef vector<AtomicGroup>                   vGroup;
 typedef Math::Matrix<double, Math::RowMajor>  Matrix;
 
+// @cond TOOLS_INTERNAL
 
 // Sorts based on 3rd col of a matrix
 
@@ -60,6 +61,7 @@ struct Adapter {
 
 };
 
+// @endcond
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);

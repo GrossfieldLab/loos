@@ -41,6 +41,8 @@
 */
 
 
+// @cond TOOLS_INTERNAL
+
 #include <loos.hpp>
 #include <boost/regex.hpp>
 #include <sstream>
