@@ -1361,7 +1361,7 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
-\section release170 Version 1.7.0 (7-11-2011)
+\section release170 Version 1.7.0 (7-18-2011)
 \subsection r170_bugs Bug Fixes
 <UL>
   <LI> Fixed bug in avgconv where the default block-sizes would cause
@@ -1375,6 +1375,7 @@ traj->readFrame(0);  // Reads first frame and leaves iterator at second
 traj->readFrame();   // Reads second frame and bumps iterator
 \endcode
   Instead, the second readFrame() call would return the first frame.
+  This is now fixed.
 </UL>
 
 \subsection r170_add_changed Added, Changed, or Otherwise Notable
@@ -1394,7 +1395,9 @@ traj->readFrame();   // Reads second frame and bumps iterator
   means many tools now have slightly different command-line usage.
   This will break existing scripts that use the old LOOS tool
   command-line options.  See the documentation for OptionsFramework
-  for more information.
+  for more information.  <em>NOTE: User-written code does NOT have to
+  use the OptionsFramework system.  You can still use whatever method
+  you want to handle the command line.</em>
   <LI> Added general utility functions including
   loadStructureWithCoords(), assignTrajectoryFrames(), and
   vectorAsStringWithCommas<T>(const vector<T>& v)
