@@ -46,6 +46,7 @@
 
 
 
+extern std::string revision_label;
 
 
 namespace loos {
@@ -130,9 +131,8 @@ namespace loos {
       invoke += " {" + std::string(current_dir) + "}";
     delete[] cwdbuf;
 
-#if defined(REVISION)
-    invoke += " [" + std::string(REVISION) + "]";
-#endif
+    invoke += " [" + revision_label + "]";
+
 
     // Since some args my be brought in from a file via the shell
     // back-tick operator, we process embedded returns...

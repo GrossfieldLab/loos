@@ -43,7 +43,6 @@ clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0)
-clos.Add('tag', 'Set to 1 to add a revision tag in the code.', 1)
 
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
@@ -192,7 +191,6 @@ elif (platform == 'cygwin'):
 release = int(env['release'])
 debug = int(env['debug'])
 profile = int(env['profile'])
-tag = int(env['tag'])
 
 # If debug is requested, make sure there is no optimization...
 if (debug > 0):
@@ -223,18 +221,26 @@ if os.environ.has_key('CCFLAGS'):
    print "Changing CCFLAGS to ", CCFLAGS
    env['CCFLAGS'] = CCFLAGS
 
-if tag:
-   # Divine the current revision...
-   revision = ''
-   if env['REVISION'] == '':
-      revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
-      revision = revision.rstrip("\n")
-   else:
-      revision = env['REVISION']
+# Divine the current revision...
+revision = ''
+if env['REVISION'] == '':
+   revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
+   revision = revision.rstrip("\n")
+else:
+   revision = env['REVISION']
       
-   revision = revision + " " + strftime("%y%m%d")
-   revstr = " -DREVISION=\'\"" + revision + "\"\'"
-   env.Append(CCFLAGS=revstr)
+revision = revision + " " + strftime("%y%m%d")
+
+# Now, write this out to a cpp file that can be linked in...this avoids having
+# to recompile everything when building on a new date.  We also rely on SCons
+# using the MD5 checksum to detect changes in the file (even though it's always
+# rewritten)
+revfile = open('revision.cpp', 'w')
+revfile.write('#include <string>\n')
+revfile.write('std::string revision_label = "')
+revfile.write(revision)
+revfile.write('";\n')
+revfile.close()
 
 # Export for subsidiary SConscripts
 
