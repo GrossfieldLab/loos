@@ -2,6 +2,7 @@
 
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
+
 Copyright &copy; 2008-2011, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
@@ -10,7 +11,9 @@ School of Medicine & Dentistry, University of Rochester\n
 \image html gplv3.png
 
 <hr>
-Quick links:
+
+<h2>Quick Links</h2>
+      -  <a href="http://sourceforge.net/projects/loos">Download LOOS at http://sourceforge.net/projects/loos</a>
       - \subpage building "Building LOOS"
       - \subpage tools "Tools included with LOOS"
       - \subpage citing "Citing LOOS in published work"
