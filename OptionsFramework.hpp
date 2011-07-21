@@ -413,12 +413,12 @@ namespace loos {
      **/
     class TrajectoryWithFrameIndices : public OptionsPackage {
     public:
-      TrajectoryWithFrameIndices() : skip(0), frame_index_spec("") { }
+      TrajectoryWithFrameIndices() : skip(0), stride(1), frame_index_spec("") { }
 
       //! Returns the list of frames the user requested
       std::vector<uint> frameList() const;
 
-      unsigned int skip;
+      unsigned int skip, stride;
       std::string frame_index_spec;
       std::string model_name, traj_name;
 

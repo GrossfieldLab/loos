@@ -238,7 +238,8 @@ namespace loos {
     void TrajectoryWithFrameIndices::addGeneric(po::options_description& opts) {
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
-        ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range)");
+        ("stride,i", po::value<unsigned int>(&stride)->default_value(stride), "Take every ith frame")
+        ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range, overrides stride and skip)");
     };
 
     void TrajectoryWithFrameIndices::addHidden(po::options_description& opts) {
@@ -282,7 +283,7 @@ namespace loos {
 
     
     std::vector<uint> TrajectoryWithFrameIndices::frameList() const {
-      return(assignTrajectoryFrames(trajectory, frame_index_spec, skip));
+      return(assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride));
     }
 
 

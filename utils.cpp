@@ -439,11 +439,11 @@ namespace loos {
   }
 
 
-  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0)  {
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip, uint stride)  {
     std::vector<uint> frames;
     
     if (frame_index_spec.empty())
-      for (uint i=skip; i<traj->nframes(); ++i)
+      for (uint i=skip; i<traj->nframes(); i += stride)
         frames.push_back(i);
     else
       frames = parseRangeList<uint>(frame_index_spec);
