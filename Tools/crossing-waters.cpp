@@ -42,6 +42,8 @@ void Usage()
          << endl;
     }
 
+// @cond TOOLS_INTERNAL
+
 class InternalWater
     {
     public:
@@ -136,6 +138,8 @@ class InternalWater
         bool entered_from_positive; 
         bool exited_to_positive;
     };
+
+// @endcond
 
 int main (int argc, char *argv[])
 {

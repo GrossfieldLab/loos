@@ -42,6 +42,7 @@ namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 
+// @cond TOOLS_INTERNAL
 bool z_only;
 
 struct DistanceCalculation {
@@ -131,7 +132,6 @@ struct MaxDistance : public DistanceCalculation {
 
 
 
-// @cond TOOL_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : mode_name("center") { }

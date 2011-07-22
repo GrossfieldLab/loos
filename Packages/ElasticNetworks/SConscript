@@ -76,8 +76,8 @@ PREFIX = env['PREFIX']
 
 
 enm_tools = env.Install(PREFIX + '/bin', Split(apps))
-enm_libs = env.Install(PREFIX + '/lib', [loos_enm])
-enm_headers = env.Install(PREFIX + '/include', Split(library_headers))
-env.Alias('elastic_networks_package', enm_tools + enm_libs + enm_headers)
+#enm_libs = env.Install(PREFIX + '/lib', [loos_enm])
+#enm_headers = env.Install(PREFIX + '/include', Split(library_headers))
+env.Alias('elastic_networks_package', enm_tools)
 
 Return('list')

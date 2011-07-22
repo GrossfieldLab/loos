@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
   if (sopts->selection != "all")
     pdb.clearBonds();
   pdb.remarks().add(hdr);
-  cout << pdb << endl;
+  cout << pdb;
 }
 
 

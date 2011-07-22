@@ -24,6 +24,7 @@
 */
 
 
+
 #if !defined(DENSITY_OPTIONS_HPP)
 #define DENSITY_OPTIONS_HPP
 

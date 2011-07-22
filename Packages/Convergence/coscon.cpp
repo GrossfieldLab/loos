@@ -45,8 +45,10 @@ using namespace Convergence;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
+// @cond TOOLS_INTERNAL
 
 typedef vector<AtomicGroup>                               vGroup;
+
 
 
 // Convenience structure for aggregating results
@@ -62,6 +64,7 @@ struct Datum {
 };
 
 
+// @endcond
 
 // Configuration
 

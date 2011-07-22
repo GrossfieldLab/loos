@@ -1,3 +1,11 @@
+2011-07-08    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in Trajectory class where the following caused a
+	duplicate first-frame to be read:
+	   traj->readFrame(0);   // Reads first frame
+	   traj->readFrame();    // Should read second frame
+	The second line would instead return the first frame again.
+
 2011-07-01    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::append() and AtomicGroup::remove()

@@ -299,7 +299,7 @@ namespace loos {
   AtomicGroup loadStructureWithCoords(const std::string& model, const std::string& cooords);
 
   //! Builds a list of trajectory indices (frame_index_spec supercedes skip)
-  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip);
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0, uint stride = 1);
 
   //! Convert a vector of type T to a string-list with commas
   template<typename T> std::string vectorAsStringWithCommas(const std::vector<T>& v) {

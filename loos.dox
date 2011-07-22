@@ -2,6 +2,7 @@
 
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
+
 Copyright &copy; 2008-2011, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
@@ -10,7 +11,9 @@ School of Medicine & Dentistry, University of Rochester\n
 \image html gplv3.png
 
 <hr>
-Quick links:
+
+<h2>Quick Links</h2>
+      -  <a href="http://sourceforge.net/projects/loos">Download LOOS at http://sourceforge.net/projects/loos</a>
       - \subpage building "Building LOOS"
       - \subpage tools "Tools included with LOOS"
       - \subpage citing "Citing LOOS in published work"
@@ -927,7 +930,7 @@ there is significant demand from users.
        Blobs are found by flood-filling the grid and the centroid of
        the blob is used as the peak.
 
-       <DT> <B>  pick_block </B>
+       <DT> <B>  pick_blob </B>
        <DD> Given a grid mask (i.e. grid of ints), create another grid
        mask containing only the blobs that are requested (near an
        atom or a gridpoint).
@@ -1361,13 +1364,21 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
-\section release170 Version 1.7.0 (7-11-2011)
+\section release170 Version 1.7.0 (7-18-2011)
 \subsection r170_bugs Bug Fixes
 <UL>
   <LI> Fixed bug in avgconv where the default block-sizes would cause
   a segfault.
   <LI> Fixed bug in ramachandran for structures with multiple chains
   where the terminii were not handled correctly.
+  <LI> Fixed bug in Trajectory class where the following code would
+  result in a duplicated first frame being read:
+\code
+traj->readFrame(0);  // Reads first frame and leaves iterator at second
+traj->readFrame();   // Reads second frame and bumps iterator
+\endcode
+  Instead, the second readFrame() call would return the first frame.
+  This is now fixed.
 </UL>
 
 \subsection r170_add_changed Added, Changed, or Otherwise Notable
@@ -1387,7 +1398,9 @@ there is significant demand from users.
   means many tools now have slightly different command-line usage.
   This will break existing scripts that use the old LOOS tool
   command-line options.  See the documentation for OptionsFramework
-  for more information.
+  for more information.  <em>NOTE: User-written code does NOT have to
+  use the OptionsFramework system.  You can still use whatever method
+  you want to handle the command line.</em>
   <LI> Added general utility functions including
   loadStructureWithCoords(), assignTrajectoryFrames(), and
   vectorAsStringWithCommas<T>(const vector<T>& v)
@@ -1402,7 +1415,7 @@ there is significant demand from users.
 </UL>
 
 
-\section release161 Version 1.6.0 (5-18-2011)
+\section release161 Version 1.6.1 (5-18-2011)
 \subsection r161_bugs Bug Fixes
 <UL>
   <LI> Fixed bug where charmm.hpp was not copied as part of an install

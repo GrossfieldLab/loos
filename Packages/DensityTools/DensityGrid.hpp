@@ -26,6 +26,7 @@
 
 
 
+
 #if !defined(DENSITYGRID_HPP)
 #define DENSITYGRID_HPP
 
@@ -42,7 +43,8 @@
 #include <SimpleMeta.hpp>
 
 namespace loos {
-  
+
+  //! Namespace for Density package
   namespace DensityTools {
 
     typedef Coord<int> DensityGridpoint;

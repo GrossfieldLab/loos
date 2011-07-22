@@ -46,6 +46,7 @@
 
 
 
+extern std::string revision_label;
 
 
 namespace loos {
@@ -130,9 +131,8 @@ namespace loos {
       invoke += " {" + std::string(current_dir) + "}";
     delete[] cwdbuf;
 
-#if defined(REVISION)
-    invoke += " [" + std::string(REVISION) + "]";
-#endif
+    invoke += " [" + revision_label + "]";
+
 
     // Since some args my be brought in from a file via the shell
     // back-tick operator, we process embedded returns...
@@ -439,11 +439,11 @@ namespace loos {
   }
 
 
-  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0)  {
+  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip, uint stride)  {
     std::vector<uint> frames;
     
     if (frame_index_spec.empty())
-      for (uint i=skip; i<traj->nframes(); ++i)
+      for (uint i=skip; i<traj->nframes(); i += stride)
         frames.push_back(i);
     else
       frames = parseRangeList<uint>(frame_index_spec);
