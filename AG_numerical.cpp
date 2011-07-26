@@ -82,6 +82,11 @@ namespace loos {
     GCoord c(0,0,0);
     const_iterator i;
 
+    // Optimization for groups containing only one atom (such as a
+    // water heavy-atom)
+    if (atoms.size() == 1)
+      return(atoms[0]->coords());
+
     for (i = atoms.begin(); i != atoms.end(); i++)
       c += (*i)->coords();
 
@@ -93,6 +98,12 @@ namespace loos {
   GCoord AtomicGroup::centerOfMass(void) const {
     GCoord c(0,0,0);
     const_iterator i;
+
+    // Optimization for groups containing only one atom (such as a
+    // water heavy-atom)
+    if (atoms.size() == 1) {
+      return(atoms[0]->coords());
+    }
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
       c += (*i)->mass() * (*i)->coords();
