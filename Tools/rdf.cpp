@@ -231,6 +231,20 @@ hist.insert(hist.begin(), num_bins, 0.0);
 double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
+// Precompute the overlap between the two groups (this can be an
+// expensive operation, so it's better to have it outside the
+// while-loop)
+
+Math::Matrix<int, Math::RowMajor> group_overlap(g1_mols.size(), g2_mols.size());
+for (uint j=0; j<g1_mols.size(); ++j)
+{
+  for (uint i=0; i<g2_mols.size(); ++i)
+  {
+    group_overlap(j, i) = (g1_mols[j] == g2_mols[i]);
+  }
+}
+
+
 // loop over the frames of the trajectory
 int frame = 0;
 double volume = 0.0;
@@ -251,7 +265,7 @@ while (traj->readFrame())
         for (unsigned int k = 0; k < g2_mols.size(); k++)
             {
             // skip "self" pairs -- in case selection1 and selection2 overlap
-            if (g1_mols[j] == g2_mols[k])
+            if (group_overlap(j, k))
                 {
                 continue;
                 }
