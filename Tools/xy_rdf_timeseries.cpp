@@ -137,7 +137,7 @@ double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
 // Set up the normalization
-int num_upper, num_lower;
+uint num_upper, num_lower;
 // Normalization is slightly different is this is a self distribution
 if (group1 == group2)
     {

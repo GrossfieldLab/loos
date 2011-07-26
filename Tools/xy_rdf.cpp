@@ -244,7 +244,7 @@ hist_upper_total.insert(hist_upper_total.begin(), num_bins, 0.0);
 
 // Figure out the number of unique pairs -- if the groups are the same,
 // we skip self pairs, so the normalization is different
-int num_upper, num_lower;
+uint num_upper, num_lower;
 if (group1 == group2)
     {
     // the two selection groups are the same
