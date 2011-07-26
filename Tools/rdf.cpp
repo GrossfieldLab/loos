@@ -54,7 +54,7 @@ public:
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("split-mode",po::value<string>(&split_by), "how to split the selections");
+      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections");
   }
 
   void addHidden(po::options_description& o)
@@ -134,8 +134,6 @@ split_mode parseSplit(const string &split_by)
         {
         cerr << "--split-mode must be: by-residue|by-segment|by-molecule"
              << endl;
-        cerr << "If unset, defaults to by-molecule";
-        cerr << endl;
         exit(-1);
         }
     return (split);
