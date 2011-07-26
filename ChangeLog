@@ -1,3 +1,10 @@
+2011-07-26    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in rdf tool where command-line options were not
+	correctly handled.
+	* Fixed bug in rdf and atomic-rdf tool for very large trajectories
+	that resulted in negative values.
+	
 2011-07-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in Trajectory class where the following caused a

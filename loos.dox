@@ -1364,6 +1364,15 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
+\section release171 Version 1.7.1 (7-26-2011)
+\subsection r170_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in the rdf tool that incorrectly processed the
+  command-line arguments, preventing it from running.
+  <LI> Fixed an issue in rdf, atomic-rdf when using long
+  trajectories.
+</UL>
+
 \section release170 Version 1.7.0 (7-18-2011)
 \subsection r170_bugs Bug Fixes
 <UL>
