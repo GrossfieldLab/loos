@@ -50,7 +50,7 @@ public:
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("split-mode",po::value<string>(&split_by), "how to split the selections")
+      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment)")
       ("timeseries", po::value<int>(&timeseries_interval)->default_value(0), "Interval to write out timeseries, 0 means never")
       ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("output")));
 

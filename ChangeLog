@@ -3,6 +3,8 @@
 	* Fixed bug in rgyr that did not write out correct bin coords when
 	hist_min != 0
 	* Changed rmsds so non-verbose mode does not give progress updates
+	* Changed xy_rdf to not require --split-mode (correctly has
+	default).  All RDF tools now list split-mode options in help.
 
 2011-07-26    <tromo@spade.biophysics.rochester.edu>
 
