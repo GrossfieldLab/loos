@@ -102,7 +102,7 @@ double max2 = hist_max*hist_max;
 // loop over the frames of the trajectory
 int frame = 0;
 double volume = 0.0;
-int unique_pairs=0;
+unsigned long unique_pairs=0;
 while (traj->readFrame())
     {
 

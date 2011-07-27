@@ -54,7 +54,7 @@ public:
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("split-mode",po::value<string>(&split_by), "how to split the selections");
+      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections");
   }
 
   void addHidden(po::options_description& o)
@@ -65,6 +65,14 @@ public:
       ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
       ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
       ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+  }
+
+  void addPositional(po::positional_options_description& p) {
+    p.add("sel1", 1);
+    p.add("sel2", 1);
+    p.add("hist-min", 1);
+    p.add("hist-max", 1);
+    p.add("num-bins", 1);
   }
 
   bool check(po::variables_map& vm)
@@ -126,8 +134,6 @@ split_mode parseSplit(const string &split_by)
         {
         cerr << "--split-mode must be: by-residue|by-segment|by-molecule"
              << endl;
-        cerr << "If unset, defaults to by-molecule";
-        cerr << endl;
         exit(-1);
         }
     return (split);
@@ -223,10 +229,24 @@ hist.insert(hist.begin(), num_bins, 0.0);
 double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
+// Precompute the overlap between the two groups (this can be an
+// expensive operation, so it's better to have it outside the
+// while-loop)
+
+Math::Matrix<int, Math::RowMajor> group_overlap(g1_mols.size(), g2_mols.size());
+for (uint j=0; j<g1_mols.size(); ++j)
+{
+  for (uint i=0; i<g2_mols.size(); ++i)
+  {
+    group_overlap(j, i) = (g1_mols[j] == g2_mols[i]);
+  }
+}
+
+
 // loop over the frames of the trajectory
 int frame = 0;
 double volume = 0.0;
-int unique_pairs=0;
+unsigned long unique_pairs=0;
 while (traj->readFrame())
     {
     // update coordinates and periodic box
@@ -243,7 +263,7 @@ while (traj->readFrame())
         for (unsigned int k = 0; k < g2_mols.size(); k++)
             {
             // skip "self" pairs -- in case selection1 and selection2 overlap
-            if (g1_mols[j] == g2_mols[k])
+            if (group_overlap(j, k))
                 {
                 continue;
                 }
