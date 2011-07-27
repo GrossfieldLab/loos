@@ -149,7 +149,7 @@ cout << "# Rgyr\tProb\tCum" << endl;
 greal cum = 0.0;
 for (int i = 0; i < num_bins; i++)
     {
-    greal d = bin_width*(i + 0.5);
+    greal d = bin_width*(i + 0.5) + hist_min;
 
 
     greal prob = hist[i]/ count;
