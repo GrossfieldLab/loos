@@ -2,6 +2,9 @@
 
 	* Fixed bug in xy_rdf that caused the by-molecule split-mode to
 	not work correctly if the selection "pruned" any bonds.
+	* Fixed bug in center-molecule where the --center and --center_xy
+	options could not be used (this appears to relate to certain
+	versions of BOOST Options).
 
 2011-07-27    <tromo@spade.biophysics.rochester.edu>
 

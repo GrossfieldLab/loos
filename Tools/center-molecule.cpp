@@ -58,7 +58,7 @@ public:
       ("apply", po::value<string>(&apply_sel)->default_value(apply_sel), "Selection to actually center")
       ("write", po::value<string>(&write_sel)->default_value(write_sel), "Selection to write to stdout")
       ("reimage", po::value<bool>(&reimage)->default_value(reimage), "Reimage by molecule after")
-      ("center_xy", po::value<bool>(&center_xy)->default_value(center_xy), "Center only x&y dimensions")
+      ("xy", po::value<bool>(&center_xy)->default_value(center_xy), "Center only x&y dimensions")
       ("bonds", po::value<string>(&bonds_name), "Use this model for connectivity");
   }
 
