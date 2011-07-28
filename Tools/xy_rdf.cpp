@@ -171,7 +171,10 @@ pTraj traj = tropts->trajectory;
 double bin_width = (hist_max - hist_min)/num_bins;
 
 AtomicGroup group1 = selectAtoms(system, selection1);
+group1.pruneBonds();
+
 AtomicGroup group2 = selectAtoms(system, selection2);
+group2.pruneBonds();
 
 // Split the groups into chunks, depending on how the user asked
 // us to.  
