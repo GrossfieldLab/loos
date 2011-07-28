@@ -111,7 +111,10 @@ for (m=molecules.begin(); m!=molecules.end(); m++)
 
 
 // Skip the initial frames as equilibration
-traj->readFrame(skip); 
+if (skip > 0)
+{
+  traj->readFrame(skip - 1); 
+}
 
 // read the initial coordinates into the system
 traj->updateGroupCoords(system);
