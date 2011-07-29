@@ -1,3 +1,9 @@
+2011-07-29    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in water-hist that caused a corrupted header in the
+	output grid.
+	* Changed vectorAsStringWithCommas() to suppress the trailing comma
+
 2011-07-28    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in xy_rdf that caused the by-molecule split-mode to
