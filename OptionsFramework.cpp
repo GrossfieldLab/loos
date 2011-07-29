@@ -423,7 +423,7 @@ namespace loos {
       bool show_help = false;
 
       try {
-        po::store(po::command_line_parser(argc, argv).
+        po::store(po::command_line_parser(argc, argv).style(po::command_line_style::default_style ^ po::command_line_style::allow_guessing).
                   options(command_line).positional(pos).run(), vm);
         po::notify(vm);
 

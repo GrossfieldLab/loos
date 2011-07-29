@@ -6,6 +6,9 @@
 	comma
 	* Added a --brange option to water-hist to take the bulk estimate
 	from a slice in Z
+	* Fixed bug in older versions of BOOST where similar long option
+	names would be confused and the tool would not run with a
+	"multiple occurences" error
 
 2011-07-28    <tromo@spade.biophysics.rochester.edu>
 
