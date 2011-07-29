@@ -2,7 +2,10 @@
 
 	* Fixed bug in water-hist that caused a corrupted header in the
 	output grid.
-	* Changed vectorAsStringWithCommas() to suppress the trailing comma
+	* Changed vectorAsStringWithCommas() to suppress the trailing
+	comma
+	* Added a --brange option to water-hist to take the bulk estimate
+	from a slice in Z
 
 2011-07-28    <tromo@spade.biophysics.rochester.edu>
 
