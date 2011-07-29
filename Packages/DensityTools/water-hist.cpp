@@ -58,7 +58,7 @@ public:
       ("gridres", po::value<double>(&grid_resolution)->default_value(grid_resolution), "Grid resolution")
       ("empty", po::value<bool>(&count_empty_voxels)->default_value(count_empty_voxels), "Count empty voxels in bulk density estimate")
       ("bulk", po::value<double>(&bulk_zclip)->default_value(bulk_zclip), "Bulk water is defined as |Z| >= k")
-      ("brange", po::value<string>(), "Bulk water (a,b) is defined as a <= z < b")
+      ("brange", po::value<string>(), "Bulk water (--brange a,b) is defined as a <= z < b")
       ("scale", po::value<bool>(&rescale_density)->default_value(rescale_density), "Scale density by bulk estimate")
       ("clamp", po::value<string>(), "Clamp the bounding box [(x,y,z),(x,y,z)]");
   }
