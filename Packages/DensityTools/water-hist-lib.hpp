@@ -106,6 +106,36 @@ namespace loos {
     };
 
 
+    class ZSliceEstimator : public BulkEstimator {
+    public:
+      ZSliceEstimator(AtomicGroup& water, pTraj& traj, const std::vector<uint>& frames, const double zmin, const double zmax, const double gridres)
+        : water_(water), zmin_(zmin), zmax_(zmax), gridres_(gridres), count_zero(false)
+      {
+        reinitialize(traj, frames);
+      }
+
+      void countZero(const bool flag = true) { count_zero = flag; }
+
+      void reinitialize(pTraj& traj, const std::vector<uint>& frames);
+      void operator()(const double density);
+      double bulkDensity(void) const;
+      double stdDev(const double mean) const;
+      void clear(void) { thegrid.clear(); }
+
+    private:
+      std::ostream& print(std::ostream& os) const {
+        os << boost::format("ZSliceEstimator = %s x %s @ %s") % thegrid.minCoord() % thegrid.maxCoord() % thegrid.gridDims();
+        return(os);
+      }
+
+    private:
+      AtomicGroup water_;
+      double zmin_, zmax_, gridres_;
+      bool count_zero;
+      DensityGrid<double> thegrid;
+    };
+
+
 
 
     class WaterHistogrammer {

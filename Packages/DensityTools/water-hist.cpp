@@ -49,7 +49,8 @@ public:
     grid_resolution(1.0),
     count_empty_voxels(false),
     rescale_density(false),
-    bulk_zclip(0.0)
+    bulk_zclip(0.0),
+    bulk_zmin(0.0), bulk_zmax(0.0)
   { }
 
   void addGeneric(po::options_description& opts) {
@@ -57,6 +58,7 @@ public:
       ("gridres", po::value<double>(&grid_resolution)->default_value(grid_resolution), "Grid resolution")
       ("empty", po::value<bool>(&count_empty_voxels)->default_value(count_empty_voxels), "Count empty voxels in bulk density estimate")
       ("bulk", po::value<double>(&bulk_zclip)->default_value(bulk_zclip), "Bulk water is defined as |Z| >= k")
+      ("brange", po::value<string>(), "Bulk water (a,b) is defined as a <= z < b")
       ("scale", po::value<bool>(&rescale_density)->default_value(rescale_density), "Scale density by bulk estimate")
       ("clamp", po::value<string>(), "Clamp the bounding box [(x,y,z),(x,y,z)]");
   }
@@ -84,16 +86,38 @@ public:
         clamped_box.push_back(clamp_max);
       }
     }
+
+    if (map.count("brange")) {
+      string s = map["brange"].as<string>();
+      istringstream iss(s);
+      if (!(iss >> bulk_zmin)) {
+        cerr << "Error- brange format is low,high\n";
+        return(false);
+      }
+      char c;
+      iss >> c;
+      if (c != ',') {
+        cerr << "Error- brange format is low,high\n";
+        return(false);
+      }
+      if (!(iss >> bulk_zmax)) {
+        cerr << "Error- brange format is low,high\n";
+        return(false);
+      }
+      
+    }
     return(true);
   }    
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("gridres=%f, empty=%d, bulk_zclip=%f, scale=%d")
+    oss << boost::format("gridres=%f, empty=%d, bulk_zclip=%d, scale=%d, bulk_zmin=%d, bulk_zmax=%d")
       % grid_resolution
       % count_empty_voxels
       % bulk_zclip
-      % rescale_density;
+      % rescale_density
+      % bulk_zmin
+      % bulk_zmax;
 
     if (!clamped_box.empty())
       oss << boost::format(", clamp=[%s,%s]")
@@ -108,6 +132,7 @@ public:
   bool count_empty_voxels;
   bool rescale_density;
   double bulk_zclip;
+  double bulk_zmin, bulk_zmax;
   vector<GCoord> clamped_box;
 };
 
@@ -143,20 +168,26 @@ int main(int argc, char *argv[]) {
   AtomicGroup water = selectAtoms(model, watopts->water_string);
 
   // Handle rescaling density by using a bulk-water density estimator
-  BulkEstimator* est;
+  BulkEstimator* est = 0;
   if (xopts->rescale_density) {
     // Double-check the clip
     traj->readFrame(indices[0]);
     traj->updateGroupCoords(protein);
     vector<GCoord> bdd = protein.boundingBox();
-    if (xopts->bulk_zclip <= bdd[1].z())
-      cerr << "***WARNING: the z-clip for bulk solvent overlaps the protein***\n";
 
-    ZClipEstimator* myest = new ZClipEstimator(water, traj, indices, xopts->bulk_zclip, xopts->grid_resolution);
-    myest->countZero(xopts->count_empty_voxels);
-    est = myest;
-  } else
-    est = new NullEstimator();
+    if (xopts->bulk_zclip != 0.0) {
+      if (xopts->bulk_zclip <= bdd[1].z())
+        cerr << "***WARNING: the z-clip for bulk solvent overlaps the protein***\n";
+
+      ZClipEstimator* myest = new ZClipEstimator(water, traj, indices, xopts->bulk_zclip, xopts->grid_resolution);
+      myest->countZero(xopts->count_empty_voxels);
+      est = myest;
+    } else if (xopts->bulk_zmin != 0.0 || xopts->bulk_zmax != 0.0) {
+      ZSliceEstimator* myest = new ZSliceEstimator(water, traj, indices, xopts->bulk_zmin, xopts->bulk_zmax, xopts->grid_resolution);
+      est = myest;
+    } else
+      est = new NullEstimator();
+  }
 
   cerr << *est << endl;
 
