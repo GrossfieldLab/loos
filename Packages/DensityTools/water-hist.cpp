@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
   }
 
   grid.addMetadata(hdr);
-  grid.addMetadata(stringsAsString(options.print()));
+  grid.addMetadata(vectorAsStringWithCommas(options.print()));
   cout << grid;
 }
 
