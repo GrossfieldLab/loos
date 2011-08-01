@@ -174,8 +174,7 @@ namespace loos {
             else
               grid_(c) += density;
           }
-        if (estimator_ != 0)
-          (*estimator_)(density);
+        (*estimator_)(density);
       }
 
       void WaterHistogrammer::accumulate(pTraj& traj, const std::vector<uint>& frames) {

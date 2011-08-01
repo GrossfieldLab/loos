@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup water = selectAtoms(model, watopts->water_string);
 
   // Handle rescaling density by using a bulk-water density estimator
-  BulkEstimator* est = 0;
+  BulkEstimator* est;
   if (xopts->rescale_density) {
     // Double-check the clip
     traj->readFrame(indices[0]);
@@ -187,7 +187,8 @@ int main(int argc, char *argv[]) {
       est = myest;
     } else
       est = new NullEstimator();
-  }
+  } else
+    est = new NullEstimator();
 
   cerr << *est << endl;
 
