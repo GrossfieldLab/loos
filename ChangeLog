@@ -1,3 +1,8 @@
+2011-08-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in blobid that incorrectly parsed the command-line
+	* Fixed bug in contained that incorrectly parsed the command-line
+
 2011-07-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in water-hist that caused a corrupted header in the
