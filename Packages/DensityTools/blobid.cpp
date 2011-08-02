@@ -54,7 +54,7 @@ class ToolOptions : public opts::OptionsPackage {
     o.add_options()
       ("lower", po::value<double>(), "Sets the lower threshold for segmenting the grid")
       ("upper", po::value<double>(), "Sets the upper threshold for segmenting the grid")
-      ("thresh", po::value<double>(), "Sets the threshold for segmenting the grid.");
+      ("threshold", po::value<double>(), "Sets the threshold for segmenting the grid.");
   }
 
   bool postConditions(po::variables_map& vm) {
