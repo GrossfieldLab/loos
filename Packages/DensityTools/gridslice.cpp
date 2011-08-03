@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
     if (idx > dims[2])
       invalidIndex(idx);
-    Matrix M(dims[0]+1, dims[1]+1);
+    Matrix M(dims[1]+1, dims[0]+1);
     for (int j=0; j<dims[1]; ++j)
       for (int i=0; i<dims[0]; ++i)
         M(j,i) = grid(idx,j,i);
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
     if (idx > dims[1])
       invalidIndex(idx);
-    Matrix M(dims[0]+1, dims[2]+1);
+    Matrix M(dims[2]+1, dims[0]+1);
     for (int k=0; k<dims[2]; ++k)
       for (int i=0; i<dims[0]; ++i)
         M(k,i) = grid(k,idx,i);
@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 
     if (idx > dims[0])
       invalidIndex(idx);
-    Matrix M(dims[1]+1, dims[2]+1);
+    Matrix M(dims[2]+1, dims[1]+1);
     for (int k=0; k<dims[2]; ++k)
       for (int j=0; j<dims[1]; ++j)
         M(k,j) = grid(k,j,idx);

@@ -1,3 +1,8 @@
+2011-08-03    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in gridslice that transposed output matrix (or crashed
+	the tool)
+
 2011-08-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in blobid that incorrectly parsed the command-line
