@@ -4,6 +4,8 @@
 	the tool)
 	* Fixed bugs in pick_blob that caused the tool to not accept
 	model files or blob id's.
+	* Fixed bug in avgconv that would fill up memory if the number of
+	frames in the trajectory was too small.
 
 2011-08-02    <tromo@spade.biophysics.rochester.edu>
 
