@@ -2,6 +2,8 @@
 
 	* Fixed bug in gridslice that transposed output matrix (or crashed
 	the tool)
+	* Fixed bugs in pick_blob that caused the tool to not accept
+	model files or blob id's.
 
 2011-08-02    <tromo@spade.biophysics.rochester.edu>
 

@@ -98,7 +98,6 @@ public:
     return(true);
   }
 
-  string model_name;
   string spot_spec;
   string point_spec;
 };
@@ -213,14 +212,16 @@ int main(int argc, char *argv[]) {
     exit(-1);
 
   vector<GCoord> points;
-  if (use_spot)
-    points.push_back(spot);
-  else {
-    AtomicGroup model = createSystem(model_name);
-    AtomicGroup subset = selectAtoms(model, selection);
-
-    for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
-      points.push_back((*i)->coords());
+  if (picked_id < 0) {
+    if (use_spot)
+      points.push_back(spot);
+    else {
+      AtomicGroup model = createSystem(model_name);
+      AtomicGroup subset = selectAtoms(model, selection);
+      
+      for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i)
+        points.push_back((*i)->coords());
+    }
   }
 
   DensityGrid<int> grid;
