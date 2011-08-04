@@ -87,6 +87,7 @@ if (!defined($prefix)) {
 my $nframes = &getNumberOfFrames($model_name, $traj_name);
 my $frac = 1.0 / $nbins;
 my $binsize = int($nframes / $nbins);
+$binsize = 1 if ($binsize < 1);
 my $range = $binsize * $nbins - 1;
 
 # Log command-line options
@@ -207,7 +208,7 @@ sub getNumberOfFrames {
   my $model = shift;
   my $traj = shift;
 
-  my $fh = new FileHandle "trajinfo -b $model $traj 2>&1|";
+  my $fh = new FileHandle "trajinfo -B1 $model $traj 2>&1|";
   defined($fh) || die "Error- cannot open pipe from trajinfo command";
 
   my $dummy = <$fh>;
