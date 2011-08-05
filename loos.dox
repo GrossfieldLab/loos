@@ -1364,6 +1364,40 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
+\section release172 Version 1.7.2 (8-5-2011)
+\subsection r170_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in xy_rdf causing "by-molecule" split-mode to fail in
+  some cases.
+  <LI> Fixed bug caused by certain older versions of BOOST where
+  similar command-line option names would cause an error
+  (e.g. --center and --center_xy in the center-molecule tool)
+  <LI> Fixed bug in density-dist-windowed and rgyr where the first
+  frame of the trajectory would be skipped if no explicit skip was
+  given on the command-line
+  <LI> Fixed bug in water-hist that caused a corrupted grid to be
+  written out
+  <LI> Fixed bugs in command-line handling for contained, blobid, and
+  pick_blob
+  <LI> Fixed bug in avgconv that would fill up memory if the
+  trajectory was too small
+  <LI> Fixed bug in gridslice tool that either transposed the output
+  matrix or crashed the tool
+  <LI> Fixed bug in xy_rdf and rdf tool where there was no default
+  split-mode (despite the help saying there was)
+</UL>
+\subsection r172_added_changed Added, Changed, or Otherwise Notable
+<UL>
+  <LI> Added a --brange option to water-hist to take the bulk water
+  estimate from a Z-slice
+  <LI> Performance optimization in rdf tool
+  <LI> Changed how the build-date is handled.  It is now placed in a
+  source file, so building LOOS on a new day will only involve
+  recompiling that file and relinking all tools (as opposed to
+  recompiling EVERYTHING).
+</UL>
+
+
 \section release171 Version 1.7.1 (7-26-2011)
 \subsection r170_bugs Bug Fixes
 <UL>
