@@ -48,12 +48,6 @@ using namespace loos::DensityTools;
 
 
 int main(int argc, char *argv[]) {
-  if (argc != 5) {
-    cerr << "Usage - contained model trajectory selection grid\n";
-    exit(-1);
-  }
-
-
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions *basic_opts = new opts::BasicOptions;
   opts::BasicSelection *basic_selection = new opts::BasicSelection;
@@ -64,7 +58,6 @@ int main(int argc, char *argv[]) {
   opts::AggregateOptions options;
   options.add(basic_opts).add(basic_selection).add(basic_traj).add(ropts);
   if (!options.parse(argc, argv)) {
-    options.showHelp();
     exit(0);
   }
 

@@ -111,7 +111,10 @@ for (m=molecules.begin(); m!=molecules.end(); m++)
 
 
 // Skip the initial frames as equilibration
-traj->readFrame(skip); 
+if (skip > 0)
+{
+  traj->readFrame(skip - 1); 
+}
 
 // read the initial coordinates into the system
 traj->updateGroupCoords(system);
@@ -149,7 +152,7 @@ cout << "# Rgyr\tProb\tCum" << endl;
 greal cum = 0.0;
 for (int i = 0; i < num_bins; i++)
     {
-    greal d = bin_width*(i + 0.5);
+    greal d = bin_width*(i + 0.5) + hist_min;
 
 
     greal prob = hist[i]/ count;

@@ -54,7 +54,7 @@ public:
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections");
+      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment)");
   }
 
   void addHidden(po::options_description& o)
@@ -233,28 +233,32 @@ double max2 = hist_max*hist_max;
 // expensive operation, so it's better to have it outside the
 // while-loop)
 
+unsigned long unique_pairs = 0;
 Math::Matrix<int, Math::RowMajor> group_overlap(g1_mols.size(), g2_mols.size());
+
 for (uint j=0; j<g1_mols.size(); ++j)
-{
-  for (uint i=0; i<g2_mols.size(); ++i)
-  {
-    group_overlap(j, i) = (g1_mols[j] == g2_mols[i]);
-  }
-}
+    {
+    for (uint i=0; i<g2_mols.size(); ++i)
+      {
+      bool b = (g1_mols[j] == g2_mols[i]);
+      group_overlap(j, i) = b;
+      if ( !b )
+        {
+          ++unique_pairs;
+        }
+      }
+    }
 
 
 // loop over the frames of the trajectory
 int frame = 0;
 double volume = 0.0;
-unsigned long unique_pairs=0;
 while (traj->readFrame())
     {
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 
     volume += box.x() * box.y() * box.z();
-
-    unique_pairs = 0;
 
     // compute the distribution of g2 around g1 
     for (unsigned int j = 0; j < g1_mols.size(); j++)
@@ -267,7 +271,6 @@ while (traj->readFrame())
                 {
                 continue;
                 }
-            unique_pairs++;
             GCoord p2 = g2_mols[k].centerOfMass();
             
             // Compute the distance squared, taking periodicity into account

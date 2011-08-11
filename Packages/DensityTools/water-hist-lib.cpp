@@ -86,6 +86,66 @@ namespace loos {
       }
 
 
+    // ------------------------------------------------------------------------
+
+    // Note: no checks on whether the z-slice is sensible...
+
+    void ZSliceEstimator::reinitialize(pTraj& traj, const std::vector<uint>& frames) {
+        std::vector<GCoord> bdd = getBounds(traj, water_, frames);
+
+        bdd[0] -= 1;
+        bdd[0][2] = zmin_;
+        bdd[1] += 1;
+        bdd[1][2] = zmax_;
+    
+        GCoord gridsize = bdd[1] - bdd[0] + 1;
+        gridsize /= gridres_;
+        DensityGridpoint dims;
+        for (int i=0; i<3; ++i)
+          dims[i] = static_cast<int>(floor(gridsize[i] + 0.5));
+    
+        thegrid.resize(bdd[0], bdd[1], dims);
+      }
+
+    void ZSliceEstimator::operator()(const double density) {
+        for (AtomicGroup::const_iterator i = water_.begin(); i != water_.end(); ++i) {
+          GCoord c = (*i)->coords();
+          if (c.z() >= zmin_ && c.z() < zmax_)
+            thegrid((*i)->coords()) += density;
+        }
+      }
+
+    double ZSliceEstimator::bulkDensity(void) const {
+        double mean = 0.0;
+        long n = 0;
+        for (long i = 0; i < thegrid.maxGridIndex(); ++i) {
+          if (!count_zero && thegrid(i) == 0.0)
+            continue;
+          mean += thegrid(i);
+          ++n;
+        }
+
+        return(mean/n);
+      }
+
+      double ZSliceEstimator::stdDev(const double mean) const {
+        double std = 0.0;
+        long n = 0;
+        for (long i = 0; i < thegrid.maxGridIndex(); ++i)
+          if (thegrid(i) != 0.0) {
+            double d = thegrid(i) - mean;
+            std += d*d;
+            ++n;
+          }
+
+        std = sqrt(std/(n-1));
+        return(std);
+      }
+
+
+    // ------------------------------------------------------------------------
+
+
     void WaterHistogrammer::setGrid(GCoord min, GCoord max, const double resolution) {
       GCoord gridsize = max - min + 1;
       gridsize /= resolution;

@@ -47,6 +47,9 @@ namespace po = loos::OptionsFramework::po;
 
 const int matrix_precision = 2;    // Controls precision in output matrix
 
+int verbosity;
+
+
 
 typedef Math::Matrix<double, Math::Triangular> Matrix;
 
@@ -122,15 +125,18 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames, bool iterate) {
   PercentTrigger trigger(0.25);
 
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  slayer.attach(&watcher);
-  slayer.start();
+  if (verbosity > 0) {
+    slayer.attach(&watcher);
+    slayer.start();
+  }
 
   for (j=0; j<n; j++) {
     AtomicGroup jframe = frames[j].copy();
     for (i=0; i<=j; i++, k++) {
       double rmsd;
 
-      slayer.update();
+      if (verbosity > 0)
+        slayer.update();
 
       if (iterate)
         rmsd = jframe.rmsd(frames[i]);
@@ -150,7 +156,8 @@ Matrix interFrameRMSD(vector<AtomicGroup>& frames, bool iterate) {
     }
   }
 
-  slayer.finish();
+  if (verbosity > 0)
+    slayer.finish();
   mean /= total;
   cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max % mean;
 
@@ -171,6 +178,7 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
+  verbosity = bopts->verbosity;
   AtomicGroup molecule = tropts->model;
   pTraj ptraj = tropts->trajectory;
   AtomicGroup subset = selectAtoms(molecule, sopts->selection);

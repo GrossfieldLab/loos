@@ -304,7 +304,11 @@ namespace loos {
   //! Convert a vector of type T to a string-list with commas
   template<typename T> std::string vectorAsStringWithCommas(const std::vector<T>& v) {
     std::ostringstream oss;
-    std::copy(v.begin(), v.end(), std::ostream_iterator<T>(oss, ","));
+    for (typename std::vector<T>::const_iterator i = v.begin(); i != v.end(); ++i) {
+      oss << *i;
+      if (i != v.end() - 1)
+        oss << ",";
+    }
     return(oss.str());
   }
 

@@ -1,3 +1,53 @@
+2011-08-04    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in effsize.pl that used incorrect options to trajinfo
+	to determine trajectory size.
+
+2011-08-03    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in gridslice that transposed output matrix (or crashed
+	the tool)
+	* Fixed bugs in pick_blob that caused the tool to not accept
+	model files or blob id's.
+	* Fixed bug in avgconv that would fill up memory if the number of
+	frames in the trajectory was too small.
+
+2011-08-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in blobid that incorrectly parsed the command-line
+	* Fixed bug in contained that incorrectly parsed the command-line
+
+2011-07-29    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in water-hist that caused a corrupted header in the
+	output grid.
+	* Changed vectorAsStringWithCommas() to suppress the trailing
+	comma
+	* Added a --brange option to water-hist to take the bulk estimate
+	from a slice in Z
+	* Fixed bug in older versions of BOOST where similar long option
+	names would be confused and the tool would not run with a
+	"multiple occurences" error
+
+2011-07-28    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in xy_rdf that caused the by-molecule split-mode to
+	not work correctly if the selection "pruned" any bonds.
+	* Fixed bug in center-molecule where the --center and --center_xy
+	options could not be used (this appears to relate to certain
+	versions of BOOST Options).
+	* Fixed bug in density-dist-windowed and rgyr that caused the
+	first frame of the trajectory to be skipped if no explicit skip
+	was specified.
+
+2011-07-27    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in rgyr that did not write out correct bin coords when
+	hist_min != 0
+	* Changed rmsds so non-verbose mode does not give progress updates
+	* Changed xy_rdf to not require --split-mode (correctly has
+	default).  All RDF tools now list split-mode options in help.
+
 2011-07-26    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in rdf tool where command-line options were not

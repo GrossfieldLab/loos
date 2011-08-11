@@ -50,7 +50,7 @@ public:
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("split-mode",po::value<string>(&split_by), "how to split the selections")
+      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment)")
       ("timeseries", po::value<int>(&timeseries_interval)->default_value(0), "Interval to write out timeseries, 0 means never")
       ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("output")));
 
@@ -171,7 +171,10 @@ pTraj traj = tropts->trajectory;
 double bin_width = (hist_max - hist_min)/num_bins;
 
 AtomicGroup group1 = selectAtoms(system, selection1);
+group1.pruneBonds();
+
 AtomicGroup group2 = selectAtoms(system, selection2);
+group2.pruneBonds();
 
 // Split the groups into chunks, depending on how the user asked
 // us to.  

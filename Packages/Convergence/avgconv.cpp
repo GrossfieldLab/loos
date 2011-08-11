@@ -76,6 +76,10 @@ int main(int argc, char *argv[]) {
   if (argc == 4) {
 
     uint step = traj->nframes() / 100;
+    if (step == 0) {
+      cerr << "Error- too few frames for auto-blocksizes.  Please specify block sizes explicitly\n";
+      exit(-1);
+    }
     for (uint i=step; i<traj->nframes(); i += step)
       blocks.push_back(i);
 

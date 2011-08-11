@@ -124,9 +124,6 @@ int main(int argc, char *argv[]) {
   SimpleAtom::outerRadius(length_high);
   SimpleAtom::maxDeviation(max_angle);
 
-  cout << "# " << hdr << endl;
-
-
   SAGroup donors = SimpleAtom::processSelection(donor_selection, model, use_periodicity);
   if (donors.size() != 1) {
     cerr << "Error- only specify one donor atom (the attached hydrogen)\n";

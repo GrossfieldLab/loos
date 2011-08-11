@@ -113,7 +113,8 @@ int main(int argc, char *argv[]) {
         dists.push_back(*v);
     }
     // skip the equilibration frames
-    traj->readFrame(num_skip);
+    if (num_skip > 0)
+      traj->readFrame(num_skip-1);
   
     // loop over the remaining frames
     int frame = 0;
