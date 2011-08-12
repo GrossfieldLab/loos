@@ -24,6 +24,7 @@ import re
 from subprocess import *
 from time import strftime
 import shutil
+import distutils.sysconfig
 
 
 
@@ -66,7 +67,7 @@ clos.Add('REVISION', 'Add build information', loos_version)
 
 
 
-env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
+env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python'],CPPPATH=[distutils.sysconfig.get_python_inc()],SHLIBPREFIX="")
 Help(clos.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')

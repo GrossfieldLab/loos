@@ -72,4 +72,7 @@ loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
 
 env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 
+swigs = env.SharedLibrary('_Coord.so', ['Coord.i'])
+loos = [loos, swigs]
+
 Return('loos')
