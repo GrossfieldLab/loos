@@ -143,7 +143,6 @@ namespace loos {
     const pAtom& operator[](const int i) const;
 
     //! Append the atom onto the group
-    void appendAtom(Atom& a);
     AtomicGroup& append(pAtom pa) { atoms.push_back(pa); _sorted = false; return(*this); }
     //! Append a vector of atoms
     AtomicGroup& append(std::vector<pAtom> pas);
