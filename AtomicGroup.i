@@ -624,6 +624,17 @@ namespace loos {
   AtomicGroup operator+(const pAtom& lhs, const pAtom& rhs);
   AtomicGroup operator+(const pAtom& lhs, const AtomicGroup& rhs);
 
+  %extend AtomicGroup {
+    pAtom __getitem__(const int i) {
+      return((*self)[i]);
+    }
+    
+    void __setitem__(const int i, const pAtom& d) {
+      (*self)[i] = d;
+    }
+  };
+
+
 
 };
 
