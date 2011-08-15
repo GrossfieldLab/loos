@@ -72,11 +72,14 @@ loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
 
 env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 
+
+lib_swig = env.SharedLibrary('_loos.so', Split(apps))
+
 coord_swig = env.SharedLibrary('_Coord.so', ['Coord.i'])
 atom_swig = env.SharedLibrary('_Atom.so', ['Atom.i', 'Coord.i', 'Atom.cpp'])
 matrix44_swig = env.SharedLibrary('_Matrix44.so', ['Matrix44.i'])
-xform_swig = env.SharedLibrary('_XForm.so', ['XForm.i'])
-atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'AtomicGroup.cpp', 'AG_linalg.cpp', 'AG_numerical.cpp', 'Atom.i', 'Coord.i', 'Atom.cpp', 'Matrix44.i', 'XForm.i', 'XForm.cpp'])
+xform_swig = env.SharedLibrary('_XForm.so', ['XForm.i', 'XForm.cpp'])
+atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'Atom.i', 'Coord.i', 'Matrix44.i', 'XForm.i', lib_swig])
 loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig]
 
 Return('loos')

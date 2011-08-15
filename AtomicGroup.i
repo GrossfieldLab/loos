@@ -34,6 +34,22 @@
 
 %{
 #include <AtomicGroup.hpp>
+#include <sfactories.hpp>
+#include <Trajectory.hpp>
+
+#include <Selectors.hpp>
+#include <Parser.hpp>
+#include <utils.hpp>
+
+#include <Kernel.hpp>
+#include <KernelValue.hpp>
+#include <KernelActions.hpp>
+#include <KernelStack.hpp>
+#include <Selectors.hpp>
+
+#include <pdb_remarks.hpp>
+
+
   typedef double    greal;
   typedef loos::Matrix44<double>   GMatrix;
 %}
@@ -127,6 +143,7 @@ namespace loos {
     const pAtom& operator[](const int i) const;
 
     //! Append the atom onto the group
+    void appendAtom(Atom& a);
     AtomicGroup& append(pAtom pa) { atoms.push_back(pa); _sorted = false; return(*this); }
     //! Append a vector of atoms
     AtomicGroup& append(std::vector<pAtom> pas);
