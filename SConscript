@@ -80,9 +80,12 @@ atom_swig = env.SharedLibrary('_Atom.so', ['Atom.i', 'Coord.i', 'Atom.cpp'])
 matrix44_swig = env.SharedLibrary('_Matrix44.so', ['Matrix44.i'])
 xform_swig = env.SharedLibrary('_XForm.so', ['XForm.i', 'XForm.cpp'])
 atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'Atom.i', 'Coord.i', 'Matrix44.i', 'XForm.i', lib_swig])
+traj_swig = env.SharedLibrary('_Trajectory.so', ['Trajectory.i', 'AtomicGroup.i', lib_swig])
+
 sfactories_swig = env.SharedLibrary('_sfactories.so', ['sfactories.i', 'AtomicGroup.i', lib_swig])
 
 
-loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig]
+
+loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig, traj_swig]
 
 Return('loos')

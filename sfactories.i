@@ -25,9 +25,11 @@
 %module sfactories
 %include "std_string.i"
 %include "AtomicGroup.i"
+%include "Trajectory.i"
 
 %{
 #include <loos_defs.hpp>
+  //  typedef boost::shared_ptr<Trajectory>   pTraj;
 %}
 
 namespace loos {
@@ -59,6 +61,6 @@ namespace loos {
    * wrapped in a boost shared pointer to the base class.  Do not
    * try to deference it and assign it to a Trajectory object...
    */
-  //  pTraj createTrajectory(const std::string&, const AtomicGroup&);
+  pTraj createTrajectory(const std::string&, const AtomicGroup&);
 };
 
