@@ -49,6 +49,8 @@
 
 #include <pdb_remarks.hpp>
 
+#include <sstream>
+
 
   typedef double    greal;
   typedef loos::Matrix44<double>   GMatrix;
@@ -642,11 +644,21 @@ namespace loos {
 
   %extend AtomicGroup {
     pAtom __getitem__(const int i) {
-      return((*self)[i]);
+      return((*$self)[i]);
     }
     
     void __setitem__(const int i, const pAtom& d) {
-      (*self)[i] = d;
+      (*$self)[i] = d;
+    }
+
+    // Will this leak?
+    char* __str__() {
+      std::ostringstream oss;
+      oss << *$self;
+      size_t n = oss.str().size();
+      char* buf = new char[n+1];
+      strncpy(buf, oss.str().c_str(), n+1);
+      return(buf);
     }
   };
 

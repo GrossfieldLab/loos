@@ -21,6 +21,8 @@
 #include <loos_defs.hpp>
 #include "Atom.hpp"
 
+#include <sstream>
+
 %}
 
 
@@ -223,6 +225,16 @@ namespace loos {
   //   bool operator()(const pAtom& a, const pAtom& b) const;
   //   double threshold;
   // };
+
+  %extend Atom {
+    char* __str__() {
+      static char buf[1024];
+      std::ostringstream oss;
+      oss << *$self;
+      strncpy(buf, oss.str().c_str(), sizeof(buf));
+      return(buf);
+    }
+  };
 
 
 };

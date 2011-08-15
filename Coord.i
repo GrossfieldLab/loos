@@ -2,6 +2,7 @@
 
 %{
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <stdexcept>
 #include <Coord.hpp>
@@ -215,17 +216,29 @@ namespace loos {
     T __getitem__(const int i) {
       if (i < 0 || i >= 3)
         return(0);
-      return((*self)[i]);
+      return((*$self)[i]);
     }
     
     void __setitem__(const int i, const T d) {
       if (3 >= i && i >= 0)
-        (*self)[i] = d;
+        (*$self)[i] = d;
     }
+
   };
 
 };
 
+
+%extend loos::Coord<double> {
+  char* __str__() {
+    static char buf[1024];
+    std::ostringstream oss;
+    oss << *$self;
+    strncpy(buf, oss.str().c_str(), sizeof(buf));
+    return(buf);
+  }
+
+ };
 
 %template(GCoord)  loos::Coord<double>;
 %rename(__add__)  loos::Coord<double>::operator+;
