@@ -72,19 +72,19 @@ namespace loos {
     }
 
 
-    //! Allow access to the linear array of matrix elements
-    T& operator[](const int i) {
-      if (i < 0 || i > 15)
-        throw(std::range_error("Index into matrix is out of range"));
-      return(matrix[i]);
-    }
+    // //! Allow access to the linear array of matrix elements
+    // T& operator[](const int i) {
+    //   if (i < 0 || i > 15)
+    //     throw(std::range_error("Index into matrix is out of range"));
+    //   return(matrix[i]);
+    // }
 
-    //! Allow access to the linear array of matrix elements
-    const T& operator[](const int i) const {
-      if (i < 0 || i > 15)
-        throw(std::range_error("Index into matrix is out of range"));
-      return(matrix[i]);
-    }
+    // //! Allow access to the linear array of matrix elements
+    // const T& operator[](const int i) const {
+    //   if (i < 0 || i > 15)
+    //     throw(std::range_error("Index into matrix is out of range"));
+    //   return(matrix[i]);
+    // }
 
     //! Returns the array pointer
     T* data(void) { return(matrix); }
@@ -111,11 +111,11 @@ namespace loos {
     //! Relies on the constructor from a constant to handle the case where
     //! you have a matrix + a constant...
 
-    friend Matrix44<T> operator+(const T lhs, const Matrix44<T>& rhs) {
-      Matrix44<T> res(rhs);
-      res += lhs;
-      return(res);
-    }
+    // friend Matrix44<T> operator+(const T lhs, const Matrix44<T>& rhs) {
+    //   Matrix44<T> res(rhs);
+    //   res += lhs;
+    //   return(res);
+    // }
 
     //! Subtracting matrices
     Matrix44<T>& operator-=(const Matrix44<T>& rhs) {
@@ -133,11 +133,11 @@ namespace loos {
     }
 
     //! Subtraction of a constant from a matrix
-    friend Matrix44<T> operator-(const T lhs, const Matrix44<T>& rhs) {
-      Matrix44<T> res(rhs);
-      res -= lhs;
-      return(res);
-    }
+    // friend Matrix44<T> operator-(const T lhs, const Matrix44<T>& rhs) {
+    //   Matrix44<T> res(rhs);
+    //   res -= lhs;
+    //   return(res);
+    // }
 
 
 
@@ -199,12 +199,12 @@ namespace loos {
     }
 
     //! Handle the constant * matrix case
-    friend Matrix44<T> operator*(const T x, const Matrix44<T>& rhs) {
-      Matrix44<T> res(rhs);
+    // friend Matrix44<T> operator*(const T x, const Matrix44<T>& rhs) {
+    //   Matrix44<T> res(rhs);
     
-      res *= x;
-      return(res);
-    }
+    //   res *= x;
+    //   return(res);
+    // }
 
   
     //! Output the matrix in pseudo-XML
@@ -240,6 +240,17 @@ namespace loos {
   //   return(result);
   // }
 
+
+  %extend Matrix44<double> {
+    double __getitem__(const int i) {
+      return((*$self)[i]);
+    }
+
+    void __setitem__(const int i, const double d) {
+      (*$self)[i] = d;
+    }
+
+  };
 
 };
 
