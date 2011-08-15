@@ -30,12 +30,16 @@
 %include "Coord.i"
 %include "Atom.i"
 %include "Matrix44.i"
+%include "XForm.i"
 
 %{
 #include <AtomicGroup.hpp>
   typedef double    greal;
   typedef loos::Matrix44<double>   GMatrix;
 %}
+
+
+%rename(GCoordVector) std::vector<loos::GCoord>;
 
 namespace loos {
 
@@ -489,7 +493,7 @@ namespace loos {
     /**
      * Does not alter the group's coordinates...
      */
-    //std::vector<GCoord> getTransformedCoords(const XForm&) const;
+    std::vector<GCoord> getTransformedCoords(const XForm&) const;
   
     //! Translate an atomic group by vector v
     void translate(const GCoord & v);
@@ -498,7 +502,7 @@ namespace loos {
     void rotate(const GCoord& axis, const greal angle_in_degrees);
 
     //! Apply the given transform to the group's coordinates...
-    //void applyTransform(const XForm&);
+    void applyTransform(const XForm&);
 
 
 
@@ -607,7 +611,7 @@ namespace loos {
 
 
     double *coordsAsArray(void) const;
-    //double *transformedCoordsAsArray(const XForm&) const;
+    double *transformedCoordsAsArray(const XForm&) const;
 
     bool _sorted;
 
