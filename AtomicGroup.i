@@ -141,8 +141,8 @@ namespace loos {
     pAtom getAtom(const int i) const;
 
     //! Same as getAtom(i)
-    pAtom& operator[](const int i);
-    const pAtom& operator[](const int i) const;
+    //    pAtom& operator[](const int i);
+    //    const pAtom& operator[](const int i) const;
 
     //! Append the atom onto the group
     AtomicGroup& append(pAtom pa) { atoms.push_back(pa); _sorted = false; return(*this); }
@@ -175,7 +175,7 @@ namespace loos {
     /**Similar to the non-const version, but it will sort <I>copies</I>
      *of the atom lists if they are not already sorted...
      */
-    bool operator==(const AtomicGroup& rhs) const;
+    //    bool operator==(const AtomicGroup& rhs) const;
 
     //! Inequality test for two groups
     bool operator!=(AtomicGroup& rhs) {
@@ -183,9 +183,9 @@ namespace loos {
     }
 
     //! Inequality test for two groups
-    bool operator!=(const AtomicGroup& rhs) const {
-      return(!(operator==(rhs)));
-    }
+    // bool operator!=(const AtomicGroup& rhs) const {
+    //   return(!(operator==(rhs)));
+    // }
 
     //! subset() and excise() args are patterned after perl's substr...
     /** If offset is negative, then it's relative to the end of the
@@ -450,17 +450,17 @@ namespace loos {
      *  you're iterating over.  In fact, don't do it, unless you are
      *  sure you know what you're doing.
      */
-    class Iterator {
-    public:
-      explicit Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
-      pAtom operator()(void) {
-        if (iter >= final)
-          return(pAtom());
-        return(*iter++);
-      }
-    private:
-      std::vector<pAtom>::const_iterator iter, final;
-    };
+    // class Iterator {
+    // public:
+    //   explicit Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
+    //   pAtom operator()(void) {
+    //     if (iter >= final)
+    //       return(pAtom());
+    //     return(*iter++);
+    //   }
+    // private:
+    //   std::vector<pAtom>::const_iterator iter, final;
+    // };
 
     // STL-iterator access
     // Should these reset sort status?
