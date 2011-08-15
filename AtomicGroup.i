@@ -29,10 +29,12 @@
 
 %include "Coord.i"
 %include "Atom.i"
+%include "Matrix44.i"
 
 %{
 #include <AtomicGroup.hpp>
   typedef double    greal;
+  typedef loos::Matrix44<double>   GMatrix;
 %}
 
 namespace loos {
@@ -559,7 +561,7 @@ namespace loos {
      * transformation matrix that superimposes the current group onto
      * the passed group.  Returns the matrix.
      */
-    //GMatrix superposition(const AtomicGroup&);
+    GMatrix superposition(const AtomicGroup&);
 
     //! Superimposes the current group onto the passed group.
     /**
@@ -567,7 +569,7 @@ namespace loos {
      * superimpose the current group onto the passed one, then applies the
      * transformation to the current group's coordinates.
      */
-    //GMatrix alignOnto(const AtomicGroup&);
+    GMatrix alignOnto(const AtomicGroup&);
 
   private:
 

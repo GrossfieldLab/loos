@@ -74,7 +74,8 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 
 coord_swig = env.SharedLibrary('_Coord.so', ['Coord.i'])
 atom_swig = env.SharedLibrary('_Atom.so', ['Atom.i', 'Coord.i', 'Atom.cpp'])
-atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'AtomicGroup.cpp', 'AG_linalg.cpp', 'AG_numerical.cpp', 'Atom.i', 'Coord.i', 'Atom.cpp'])
-loos = [loos, coord_swig, atom_swig, atomicgroup_swig]
+matrix44_swig = env.SharedLibrary('_Matrix44.so', ['Matrix44.i'])
+atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'AtomicGroup.cpp', 'AG_linalg.cpp', 'AG_numerical.cpp', 'Atom.i', 'Coord.i', 'Atom.cpp', 'Matrix44.i'])
+loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig]
 
 Return('loos')
