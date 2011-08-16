@@ -429,11 +429,11 @@ namespace loos {
     void findBonds(const double dist = 1.65);
 
 
-    template<class T> T apply(T func) {
-      for (iterator i = atoms.begin(); i != atoms.end(); ++i)
-        func(*i);
-      return(func);
-    }
+    /* template<class T> T apply(T func) { */
+    /*   for (iterator i = atoms.begin(); i != atoms.end(); ++i) */
+    /*     func(*i); */
+    /*   return(func); */
+    /* } */
 
     // *** Helper classes...
 
@@ -599,47 +599,47 @@ namespace loos {
 
   private:
 
-    // *** Internal routines ***  See the .cpp file for details...
-    void sorted(bool b) { _sorted = b; }
+  //   // *** Internal routines ***  See the .cpp file for details...
+  //   void sorted(bool b) { _sorted = b; }
 
-    pAtom findById_linearSearch(const int id) const;
-    pAtom findById_binarySearch(const int id);
+  //   pAtom findById_linearSearch(const int id) const;
+  //   pAtom findById_binarySearch(const int id);
 
-    int rangeCheck(int) const;
+  //   int rangeCheck(int) const;
 
-    void addAtom(pAtom pa) { atoms.push_back(pa); _sorted = false; }
-    void deleteAtom(pAtom pa);
+  //   void addAtom(pAtom pa) { atoms.push_back(pa); _sorted = false; }
+  //   void deleteAtom(pAtom pa);
 
-    boost::tuple<iterator, iterator> calcSubsetIterators(const int offset, const int len = 0);
+  //   boost::tuple<iterator, iterator> calcSubsetIterators(const int offset, const int len = 0);
 
-    void copyCoordinatesById(AtomicGroup& g);
+  //   void copyCoordinatesById(AtomicGroup& g);
 
-    // Some helper classes for using the STL
-    struct CmpById {
-      bool operator()(const pAtom& a, const pAtom& b) {
-        return(a->id() < b->id());
-      }
-    };
+  //   // Some helper classes for using the STL
+  //   struct CmpById {
+  //     bool operator()(const pAtom& a, const pAtom& b) {
+  //       return(a->id() < b->id());
+  //     }
+  //   };
 
-    struct BindId {
-      BindId(const int i) : id(i) { }
-      bool operator()(const pAtom& a) { return(a->id() == id); }
-      int id;
-    };
+  //   struct BindId {
+  //     BindId(const int i) : id(i) { }
+  //     bool operator()(const pAtom& a) { return(a->id() == id); }
+  //     int id;
+  //   };
     
-    typedef std::tr1::unordered_set<int> HashInt;
+  //   typedef std::tr1::unordered_set<int> HashInt;
 
-    void walkBonds(AtomicGroup& mygroup, HashInt& seen, AtomicGroup& working, pAtom& moi);
+  //   void walkBonds(AtomicGroup& mygroup, HashInt& seen, AtomicGroup& working, pAtom& moi);
 
 
-    double *coordsAsArray(void) const;
-    double *transformedCoordsAsArray(const XForm&) const;
+  //   double *coordsAsArray(void) const;
+  //   double *transformedCoordsAsArray(const XForm&) const;
 
-    bool _sorted;
+  //   bool _sorted;
 
-  protected:
-    std::vector<pAtom> atoms;
-    SharedPeriodicBox box;
+  // protected:
+  //   std::vector<pAtom> atoms;
+  //   SharedPeriodicBox box;
 
   };
 
