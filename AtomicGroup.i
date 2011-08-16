@@ -58,7 +58,9 @@ typedef unsigned int   uint;
 typedef unsigned long  ulong;
 
 
-%rename(GCoordVector) std::vector<loos::GCoord>;
+%template(GCoordVector) std::vector<loos::GCoord>;
+
+%template(AtomicGroupVector) std::vector<loos::AtomicGroup>;
 
 
 namespace loos {
@@ -224,22 +226,22 @@ namespace loos {
      * \endcode
      */
 
-    template<class EqualsOp> bool contains(const pAtom& p, const EqualsOp& op) {
-      const_iterator ci = std::find_if(begin(), end(), bind2nd(op, p));
-      return(ci != end());
-    }
+    /* template<class EqualsOp> bool contains(const pAtom& p, const EqualsOp& op) { */
+    /*   const_iterator ci = std::find_if(begin(), end(), bind2nd(op, p)); */
+    /*   return(ci != end()); */
+    /* } */
     
     //! Determines if a pAtom is contained in this group using the AtomEquals policy (ie the default comparison policy)
     bool contains(const pAtom& p) { return(contains(p, AtomEquals())); }
 
 
     //! Determines if the passed group is a subset of the current group using the EqualsOp atom-equality policy
-    template<class EqualsOp> bool contains(const AtomicGroup& g, const EqualsOp& op) {
-      for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
-        if (std::find_if(begin(), end(), bind2nd(op, *cj)) == end())
-          return(false);
-      return(true);
-    }
+    /* template<class EqualsOp> bool contains(const AtomicGroup& g, const EqualsOp& op) { */
+    /*   for (const_iterator cj = g.begin(); cj != g.end(); ++cj) */
+    /*     if (std::find_if(begin(), end(), bind2nd(op, *cj)) == end()) */
+    /*       return(false); */
+    /*   return(true); */
+    /* } */
     
     //! Determines if a group is a subset of the current group using the default AtomEquals policy
     bool contains(const AtomicGroup& g) { return(contains(g, AtomEquals())); }
@@ -248,16 +250,16 @@ namespace loos {
     /**
      * See AtomicGroup::contains(const pAtom&, const EqualsOp&) for more details
      */
-    template<class EqualsOp> AtomicGroup intersect(const AtomicGroup& g, const EqualsOp& op) {
-      AtomicGroup result;
+    /* template<class EqualsOp> AtomicGroup intersect(const AtomicGroup& g, const EqualsOp& op) { */
+    /*   AtomicGroup result; */
 
-      for (const_iterator cj = begin(); cj != end(); ++ cj)
-        if (std::find_if(g.begin(), g.end(), bind2nd(op, *cj)) != g.end())
-          result.addAtom(*cj);
+    /*   for (const_iterator cj = begin(); cj != end(); ++ cj) */
+    /*     if (std::find_if(g.begin(), g.end(), bind2nd(op, *cj)) != g.end()) */
+    /*       result.addAtom(*cj); */
 
-      result.box = box;
-      return(result);
-    }
+    /*   result.box = box; */
+    /*   return(result); */
+    /* } */
 
     //! Intersection of two groups
     AtomicGroup intersect(const AtomicGroup& g) { return(intersect(g, AtomEquals())); }
@@ -266,15 +268,15 @@ namespace loos {
     /**
      * Note that the periodic box of the current group is unchanged by this operation
      */
-    template<class EqualsOp> AtomicGroup merge(const AtomicGroup& g, const EqualsOp& op) {
-      AtomicGroup result = copy();
+    /* template<class EqualsOp> AtomicGroup merge(const AtomicGroup& g, const EqualsOp& op) { */
+    /*   AtomicGroup result = copy(); */
 
-      for (const_iterator ci = g.begin(); ci != g.end(); ++ci)
-        if (std::find_if(begin(), end(), bind2nd(op, *ci)) == end())
-          result.addAtom(*ci);
+    /*   for (const_iterator ci = g.begin(); ci != g.end(); ++ci) */
+    /*     if (std::find_if(begin(), end(), bind2nd(op, *ci)) == end()) */
+    /*       result.addAtom(*ci); */
 
-      return(result);
-    }
+    /*   return(result); */
+    /* } */
 
 
     //! Union of two groups using the default AtomEquals atom-equality policy
