@@ -52,9 +52,12 @@
 #include <sstream>
 
 
+%}
+
   typedef double    greal;
   typedef loos::Matrix44<double>   GMatrix;
-%}
+  typedef unsigned int   uint;
+  typedef unsigned long  ulong;
 
 
 %rename(GCoordVector) std::vector<loos::GCoord>;
