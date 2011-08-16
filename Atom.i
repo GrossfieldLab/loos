@@ -9,12 +9,6 @@
 %include "Coord.i"
 
 %{
-#include <iostream>
-#include <string>
-#include <stdexcept>
-#include <vector>
-#include <functional>
-
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
