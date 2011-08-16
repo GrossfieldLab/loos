@@ -24,8 +24,8 @@
 
 
 %module AtomicGroup
-%include "std_string.i"
-%include "std_vector.i"
+%include <std_string.i>
+%include <std_vector.i>
 
 %include "Coord.i"
 %include "Atom.i"
@@ -50,17 +50,16 @@
 #include <pdb_remarks.hpp>
 
 #include <sstream>
-
-
 %}
 
-  typedef double    greal;
-  typedef loos::Matrix44<double>   GMatrix;
-  typedef unsigned int   uint;
-  typedef unsigned long  ulong;
+typedef double    greal;
+typedef loos::Matrix44<double>   GMatrix;
+typedef unsigned int   uint;
+typedef unsigned long  ulong;
 
 
 %rename(GCoordVector) std::vector<loos::GCoord>;
+
 
 namespace loos {
 

@@ -1,6 +1,6 @@
 %module Atom
-%include "std_string.i"
-%include "std_vector.i"
+%include <std_string.i>
+%include <std_vector.i>
 %include <boost_shared_ptr.i>
 
 %template(IntVector) std::vector<int>;
