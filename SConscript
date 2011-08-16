@@ -83,9 +83,10 @@ atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'Atom.
 traj_swig = env.SharedLibrary('_Trajectory.so', ['Trajectory.i', 'AtomicGroup.i', lib_swig])
 
 sfactories_swig = env.SharedLibrary('_sfactories.so', ['sfactories.i', 'AtomicGroup.i', lib_swig])
+utils_swig = env.SharedLibrary('_loos_utils.so', ['utils.i', lib_swig])
 
 
 
-loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig, traj_swig]
+loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig, traj_swig, utils_swig]
 
 Return('loos')
