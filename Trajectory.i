@@ -25,6 +25,7 @@
 %include "boost_shared_ptr.i"
 
 %shared_ptr(loos::Trajectory)
+%rename(GCoordVector) std::vector<loos::GCoord>;
 
 %include "AtomicGroup.i"
 
@@ -32,6 +33,10 @@
 #include <Trajectory.hpp>
 #include <StreamWrapper.hpp>
 %}
+
+typedef unsigned int   uint;
+typedef unsigned long  ulong;
+
 
 namespace loos {
 
