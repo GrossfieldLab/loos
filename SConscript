@@ -85,8 +85,11 @@ traj_swig = env.SharedLibrary('_Trajectory.so', ['Trajectory.i', 'AtomicGroup.i'
 sfactories_swig = env.SharedLibrary('_sfactories.so', ['sfactories.i', 'AtomicGroup.i', lib_swig])
 utils_swig = env.SharedLibrary('_loos_utils.so', ['utils.i', lib_swig])
 
+pdb_remarks_swig = env.SharedLibrary('_pdb_remarks.so', ['pdb_remarks.i', lib_swig])
+cryst_swig = env.SharedLibrary('_cryst.so', ['cryst.i', lib_swig])
+pdb_swig = env.SharedLibrary('_pdb.so', ['pdb.i', 'cryst.i', 'pdb_remarks.i', 'utils.i', 'AtomicGroup.i', lib_swig])
 
 
-loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig, traj_swig, utils_swig]
+loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig, traj_swig, utils_swig, pdb_remarks_swig, cryst_swig, pdb_swig]
 
 Return('loos')
