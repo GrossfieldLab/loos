@@ -99,8 +99,6 @@ namespace loos {
     std::string PDBelement(void) const;
     void PDBelement(const std::string);
 
-    const GCoord& coords(void) const;
-
     GCoord& coords(void);
 
     void coords(const GCoord&);

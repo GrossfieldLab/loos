@@ -307,7 +307,6 @@ namespace loos {
      * will be used.
      */
     pAtom findById(const int id);
-    pAtom findById(const int id) const { return(findById_linearSearch(id)); }
 
     //! Create a new group from a vector of atomids
     AtomicGroup groupFromID(const std::vector<int> &id_list);
@@ -469,10 +468,8 @@ namespace loos {
     // STL-iterator access
     // Should these reset sort status?
     iterator begin(void) { return(atoms.begin()); }
-    const_iterator begin(void) const { return(atoms.begin()); }
 
     iterator end(void) { return(atoms.end()); }
-    const_iterator end(void) const { return(atoms.end()); }
 
 
     // Statistical routines...

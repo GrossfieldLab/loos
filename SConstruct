@@ -67,7 +67,7 @@ clos.Add('REVISION', 'Add build information', loos_version)
 
 
 
-env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python'],CPPPATH=[distutils.sysconfig.get_python_inc()],SHLIBPREFIX="")
+env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],CPPPATH=[distutils.sysconfig.get_python_inc()],SHLIBPREFIX="")
 Help(clos.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')

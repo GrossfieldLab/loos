@@ -64,27 +64,7 @@ namespace loos {
       return(matrix[j*4+i]);
     }
 
-    //! Index the matrix element at row j and col i
-    const T& operator()(const int j, const int i) const {
-      if (j < 0 || i < 0 || i > 3 || j > 3)
-        throw(std::range_error("Indices into matrix are out of range"));
-      return(matrix[j*4+i]);
-    }
 
-
-    // //! Allow access to the linear array of matrix elements
-    // T& operator[](const int i) {
-    //   if (i < 0 || i > 15)
-    //     throw(std::range_error("Index into matrix is out of range"));
-    //   return(matrix[i]);
-    // }
-
-    // //! Allow access to the linear array of matrix elements
-    // const T& operator[](const int i) const {
-    //   if (i < 0 || i > 15)
-    //     throw(std::range_error("Index into matrix is out of range"));
-    //   return(matrix[i]);
-    // }
 
     //! Returns the array pointer
     T* data(void) { return(matrix); }

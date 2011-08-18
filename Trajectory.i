@@ -34,8 +34,6 @@
 #include <StreamWrapper.hpp>
 %}
 
-typedef unsigned int   uint;
-typedef unsigned long  ulong;
 
 
 namespace loos {
