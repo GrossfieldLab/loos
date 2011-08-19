@@ -21,5 +21,6 @@ typedef unsigned long     ulong;
 %include "sfactories.i"
 %include "dcdwriter.i"
 %include "ensembles.i"
+%include "Geometry.i"
 
 
