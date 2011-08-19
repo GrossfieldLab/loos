@@ -19,4 +19,5 @@ typedef unsigned long     ulong;
 %include "cryst.i"
 %include "pdb.i"
 %include "sfactories.i"
+%include "dcdwriter.i"
 
