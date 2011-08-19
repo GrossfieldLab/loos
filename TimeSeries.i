@@ -46,73 +46,14 @@ public:
   typedef T&        reference;
 
 
-    TimeSeries() {
-      init();
-    }
-
-    TimeSeries(const std::vector<T> &inp) {
-      _data = inp; 
-    }
-
-    TimeSeries(const uint size, const T *array) {
-      _data.reserve(size);
-      for (unsigned int i=0; i<size; i++) {
-        _data.push_back(array[i]);
-      }
-    }
-
-    TimeSeries(const TimeSeries<T> &inp) {
-      _data = inp._data;
-    }
-
-    TimeSeries(const uint n) {
-      _data = std::vector<T>(n, 0);
-    }
-
-    TimeSeries(const uint n, const T val) {
-      _data.assign(n, (T) val);
-    }
-
-    //! Resize the TimeSeries by calling the underlying vector's resize
-    void resize(const uint n, const T val= (T) 0.0) {
-        _data.resize(n, val);
-    }
-
-
-    //! Read a simple text file and create a timeseries
-    //! The file is assumed to be simple columnated data.  Blank lines and 
-    //! lines starting with "#" are ignored.
-    TimeSeries (const std::string &filename, const int col=2) {
-        std::ifstream ifs(filename.c_str());
-        if (!ifs) {
-            throw(std::runtime_error("Cannot open timeseries file " 
-                                     + filename));
-        }
-
-        std::string line;
-        while (ifs.good()) {
-            getline(ifs, line);
-            if ( (line.substr(0,1) == "#") || (line.empty()) ){
-                // comment -- do nothing
-            }
-            else {
-                std::stringstream s(line);
-                double val;
-                int i=0;
-                while (i < col) {
-                    if (!s.good()) {
-                  throw(std::runtime_error("Problem reading timeseries file "
-                                           + filename));
-                    }
-                    s >> val;
-                    i++;
-                }
-                _data.push_back(val);    
-            }
-        }
-    }
-
-
+  TimeSeries();
+  TimeSeries(const std::vector<T> &inp);
+  TimeSeries(const uint size, const T *array);
+  TimeSeries(const TimeSeries<T> &inp);
+  TimeSeries(const uint n);
+  TimeSeries(const uint n, const T val);
+  void resize(const uint n, const T val= (T) 0.0);
+  TimeSeries (const std::string &filename, const int col=2);
 
   void zero(void);
   unsigned int size(void) const;
