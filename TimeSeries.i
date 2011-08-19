@@ -511,7 +511,7 @@ public:
   %rename(__div__) loos::TimeSeries<double>::operator/;
 
 
-  %template(DTimeSeries) loos::TimeSeries<double>;
+  %template(TimeSeriesDbl) loos::TimeSeries<double>;
   
 
 
