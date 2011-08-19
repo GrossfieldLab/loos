@@ -37,37 +37,31 @@ namespace loos {
   //! This class encapsulates crystallographic unit cell data
   class UnitCell {
   public:
-    UnitCell() : _a(1.0), _b(1.0), _c(1.0),
-                 _alpha(90.0), _beta(90.0), _gamma(90.0),
-                 sgroup("P1"), zval(1) { }
+    UnitCell();
+    UnitCell(const GCoord& v);
+    greal a(void) const;
+    void a(const greal x);
 
-    UnitCell(const GCoord& v) : _a(v.x()), _b(v.y()), _c(v.z()),
-                                _alpha(90.0), _beta(90.0), _gamma(90.0),
-                                sgroup("P1"), zval(1) { }
+    greal b(void) const;
+    void b(const greal x);
 
-    greal a(void) const { return(_a); }
-    void a(const greal x) { _a = x; }
+    greal c(void) const;
+    void c(const greal x);
 
-    greal b(void) const { return(_b); }
-    void b(const greal x) { _b = x; }
+    greal alpha(void) const;
+    void alpha(const greal x);
 
-    greal c(void) const { return(_c); }
-    void c(const greal x) { _c = x; }
+    greal beta(void) const;
+    void beta(const greal x);
 
-    greal alpha(void) const { return(_alpha); }
-    void alpha(const greal x) { _alpha = x; }
+    greal gamma(void) const;
+    void gamma(const greal x);
 
-    greal beta(void) const { return(_beta); }
-    void beta(const greal x) { _beta = x; }
+    std::string spaceGroup(void) const;
+    void spaceGroup(const std::string s);
 
-    greal gamma(void) const { return(_gamma); }
-    void gamma(const greal x) { _gamma = x; }
-
-    std::string spaceGroup(void) const { return(sgroup); }
-    void spaceGroup(const std::string s) { sgroup = s; }
-
-    int z(void) const { return(zval); }
-    void z(const int i) { zval = i; }
+    int z(void) const;
+    void z(const int i);
 
     %extend {
       char* __str__() {
