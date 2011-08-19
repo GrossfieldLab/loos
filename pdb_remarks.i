@@ -19,12 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-%module pdb_remarks
 
-%include <std_string.i>
-%include <std_vector.i>
-
-%{
+%header %{
 #include <sstream>
 #include "pdb_remarks.hpp"
 %}

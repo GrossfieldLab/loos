@@ -73,23 +73,10 @@ loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
 env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 
 
-lib_swig = env.SharedLibrary('_loos.so', Split(apps))
+looslib_swig = env.SharedLibrary('_looslib.so', Split(apps))
+loos_swig = env.SharedLibrary('_loos.so', ['loos.i', looslib_swig])
 
-coord_swig = env.SharedLibrary('_Coord.so', ['Coord.i'])
-atom_swig = env.SharedLibrary('_Atom.so', ['Atom.i', 'Coord.i', 'Atom.cpp'])
-matrix44_swig = env.SharedLibrary('_Matrix44.so', ['Matrix44.i'])
-xform_swig = env.SharedLibrary('_XForm.so', ['XForm.i', 'XForm.cpp'])
-atomicgroup_swig = env.SharedLibrary('_AtomicGroup.so', ['AtomicGroup.i', 'Atom.i', 'Coord.i', 'Matrix44.i', 'XForm.i', lib_swig])
-traj_swig = env.SharedLibrary('_Trajectory.so', ['Trajectory.i', 'AtomicGroup.i', lib_swig])
+loos = [loos, loos_swig]
 
-sfactories_swig = env.SharedLibrary('_sfactories.so', ['sfactories.i', 'AtomicGroup.i', lib_swig])
-utils_swig = env.SharedLibrary('_loos_utils.so', ['utils.i', lib_swig])
-
-pdb_remarks_swig = env.SharedLibrary('_pdb_remarks.so', ['pdb_remarks.i', lib_swig])
-cryst_swig = env.SharedLibrary('_cryst.so', ['cryst.i', lib_swig])
-pdb_swig = env.SharedLibrary('_pdb.so', ['pdb.i', 'cryst.i', 'pdb_remarks.i', 'utils.i', 'AtomicGroup.i', lib_swig])
-
-
-loos = [loos, coord_swig, atom_swig, matrix44_swig, atomicgroup_swig, sfactories_swig, traj_swig, utils_swig, pdb_remarks_swig, cryst_swig, pdb_swig]
 
 Return('loos')

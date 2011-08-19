@@ -22,15 +22,6 @@
 
 
 
-%module sfactories
-%include "std_string.i"
-%include "AtomicGroup.i"
-%include "Trajectory.i"
-
-%{
-#include <loos_defs.hpp>
-  //  typedef boost::shared_ptr<Trajectory>   pTraj;
-%}
 
 namespace loos {
   //! Factory function for reading in structure files.

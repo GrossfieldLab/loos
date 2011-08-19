@@ -21,16 +21,9 @@
 
 
 
-%module loos_utils
-%include <std_string.i>
-%include <std_vector.i>
-%include <boost_shared_ptr.i>
-
-%include "AtomicGroup.i"
-%include "Trajectory.i"
 
 
-%{
+%header %{
 #include <iostream>
 #include <sstream>
 #include <iterator>

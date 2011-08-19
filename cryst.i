@@ -21,14 +21,9 @@
 
 
 
-%module cryst
-%include "Coord.i"
 
-%{
+%header %{
 #include <cryst.hpp>
-
-typedef loos::Coord<double>   GCoord;
-typedef double                greal;
 %}
 
 

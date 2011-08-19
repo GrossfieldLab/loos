@@ -1,4 +1,4 @@
-%module Atom
+
 %include <std_string.i>
 %include <std_vector.i>
 %include <boost_shared_ptr.i>
@@ -6,7 +6,6 @@
 %template(IntVector) std::vector<int>;
 %shared_ptr(loos::Atom)
 
-%include "Coord.i"
 
 %{
 #include <boost/shared_ptr.hpp>

@@ -19,15 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-%module pdb
 
-%include "AtomicGroup.i"
-%include "utils.i"
-%include "pdb_remarks.i"
-%include "cryst.i"
-
-
-%{
+%header %{
 #include <pdb.hpp>
 %}
 

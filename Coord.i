@@ -1,11 +1,12 @@
-%module Coord
 
-%{
+%header %{
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <stdexcept>
 #include <Coord.hpp>
+
+  typedef loos::Coord<double>   GCoord;
 %}
 
 namespace loos {

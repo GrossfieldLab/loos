@@ -20,12 +20,8 @@
 */
 
 
-%module XForm;
 
-%include "Matrix44.i"
-%include "Coord.i"
-
-%{
+%header %{
 #include <XForm.hpp>
 
   typedef double                   greal;

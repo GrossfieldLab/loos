@@ -19,11 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-%module Matrix44;
-%include "std_string.i"
-%include "std_vector.i"
 
-%{
+%header %{
 #include <Matrix44.hpp>
 %}
 

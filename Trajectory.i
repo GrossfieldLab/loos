@@ -19,17 +19,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-%module Trajectory;
-%include "std_vector.i"
-%include "std_string.i"
-%include "boost_shared_ptr.i"
-
 %shared_ptr(loos::Trajectory)
 %rename(GCoordVector) std::vector<loos::GCoord>;
 
-%include "AtomicGroup.i"
 
-%{
+%header %{
 #include <Trajectory.hpp>
 #include <StreamWrapper.hpp>
 %}

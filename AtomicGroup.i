@@ -23,16 +23,8 @@
 
 
 
-%module AtomicGroup
-%include <std_string.i>
-%include <std_vector.i>
 
-%include "Coord.i"
-%include "Atom.i"
-%include "Matrix44.i"
-%include "XForm.i"
-
-%{
+%header %{
 #include <AtomicGroup.hpp>
 #include <sfactories.hpp>
 #include <Trajectory.hpp>
@@ -52,11 +44,13 @@
 #include <sstream>
 %}
 
+%wrapper %{
+typedef loos::Coord<double>   GCoord;
 typedef double    greal;
 typedef loos::Matrix44<double>   GMatrix;
 typedef unsigned int   uint;
 typedef unsigned long  ulong;
-
+ %}
 
 %template(GCoordVector) std::vector<loos::GCoord>;
 
