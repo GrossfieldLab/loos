@@ -22,5 +22,4 @@ typedef unsigned long     ulong;
 %include "dcdwriter.i"
 %include "ensembles.i"
 %include "Geometry.i"
-
-
+%include "TimeSeries.i"
