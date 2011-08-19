@@ -140,5 +140,6 @@ namespace loos {
 
   };
 
+  %rename(XFormVector)    std::vector<XForm>;
 
 };
