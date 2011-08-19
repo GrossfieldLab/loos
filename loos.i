@@ -20,4 +20,6 @@ typedef unsigned long     ulong;
 %include "pdb.i"
 %include "sfactories.i"
 %include "dcdwriter.i"
+%include "ensembles.i"
+
 
