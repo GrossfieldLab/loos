@@ -26,28 +26,15 @@
 %}
 
 namespace loos {
-
-  //! Class for handling PDB Remarks
-  /**
-   *This class just manages a vector of strings, but it will
-   *truncate/pad the input strings to the appropriate length for a PDB
-   *file and then output them with record numbers.
-   */
   class Remarks {
   public:
     int numberOf(void) const;
     int size(void) const;
-    //! Access the ith remark
     std::string get(const int i) const;
-    //! Add a remark
     void add(const std::string s);
-    //! Add multiple remarks
     void add(const std::vector<std::string>& s);
-    //! Erase the ith remark
     void erase(const int i);
-
-    //! Returns a copy of the remarks vector
-    std::vector<std::string> allRemarks(void) const { return(remarks); }
+    std::vector<std::string> allRemarks(void) const;
 
     %extend {
       std::string __getitiem__(const int i) {

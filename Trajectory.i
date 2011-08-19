@@ -32,9 +32,10 @@
 
 namespace loos {
 
+  // Note, this is actually derived from boost::noncopyable
   class Trajectory;
   typedef boost::shared_ptr<Trajectory> pTraj;
-  class Trajectory : public boost::noncopyable {
+  class Trajectory {
   public:
     Trajectory();
     Trajectory(const std::string& s);
