@@ -29,19 +29,10 @@ namespace loos {
   //! Namespace for math and math-related things in loos
   namespace Math {
 
-    const double DEGREES = 180 / M_PI ;
-    
-    //! Compute the angle in degrees assuming the middle is the vertex
     greal angle(const GCoord&, const GCoord&, const GCoord&, const GCoord* =NULL);
-    
-    //! Compute the angle in degrees assuming the middle is the vertex
     greal angle(const pAtom& a, const pAtom& b, const pAtom& c, const GCoord * =NULL);
-    
-    //! Compute the torsion in degrees 
     greal torsion(const GCoord& a, const GCoord& b, const GCoord& c, 
                   const GCoord& d, const GCoord* =NULL);
-    
-    //! Compute the torsion in degrees 
     greal torsion(const pAtom& a, const pAtom& b, const pAtom& c, 
                   const pAtom& d, const GCoord* =NULL);
 
