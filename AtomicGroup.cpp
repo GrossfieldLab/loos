@@ -469,7 +469,7 @@ namespace loos {
 
   // Find an atom based on atomid
   // Returns 0 (null shared_ptr) if not found...
-  pAtom AtomicGroup::findById_binarySearch(const int id) {
+  pAtom AtomicGroup::findById_binarySearch(const int id) const {
     int bottom = 0, top = size()-1, middle;
 
     while (top > bottom) {
@@ -496,7 +496,7 @@ namespace loos {
   }
   
 
-  pAtom AtomicGroup::findById(const int id) {
+  pAtom AtomicGroup::findById(const int id) const {
     if (sorted())
       return(findById_binarySearch(id));
 
@@ -509,7 +509,7 @@ namespace loos {
   //! using a subselection, unless you're sure the subsection contains these
   //! atoms as well.  The main use of this routine is to create a group of atoms
   //! bound to another atom.
-  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) {
+  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) const {
     AtomicGroup result;
 
     result.box = box;
