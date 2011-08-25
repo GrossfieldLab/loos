@@ -155,7 +155,7 @@ public:
       {
         block_average = true;
         if (!vm.count("ba_first")) ba_first = 2;
-        if (!vm.count("ba_last")) ba_first = 5;
+        if (!vm.count("ba_last")) ba_last = 5;
       }
 
 
