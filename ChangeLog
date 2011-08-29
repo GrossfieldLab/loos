@@ -1,3 +1,8 @@
+2011-08-29    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in effsize.pl where the seed value was not correctly
+	used. 
+
 2011-08-25    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in order_params where NOT specifying the ba_last

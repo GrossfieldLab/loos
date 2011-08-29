@@ -107,7 +107,7 @@ for (my $i=0; $i<$nreps; ++$i) {
   # First, partition the trajectory's configuration space using a
   # uniform structural histogram structural.  Creates a trajectory
   # (DCD) containing the reference structures (aka fiducials)
-  &runCommand("ufidpick $model_name $traj_name 0:$range '$selection' $prefix $frac $seedv >& $prefix.log");
+  &runCommand("ufidpick $model_name $traj_name 0:$range '$selection' $prefix $frac $seedval >& $prefix.log");
 
   # Next, go back through the trajectory and assign each structure to
   # the nearest reference structure.
