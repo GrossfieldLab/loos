@@ -294,11 +294,10 @@ namespace loos {
      * (AtomicGroup::sort()), then the more efficient binary search
      * will be used.
      */
-    pAtom findById(const int id);
-    pAtom findById(const int id) const { return(findById_linearSearch(id)); }
+    pAtom findById(const int id) const;
 
     //! Create a new group from a vector of atomids
-    AtomicGroup groupFromID(const std::vector<int> &id_list);
+    AtomicGroup groupFromID(const std::vector<int> &id_list) const;
 
     //! Given an Atom, return a group of all the atoms contained by its
     //! containing residue 
@@ -591,7 +590,7 @@ namespace loos {
     void sorted(bool b) { _sorted = b; }
 
     pAtom findById_linearSearch(const int id) const;
-    pAtom findById_binarySearch(const int id);
+    pAtom findById_binarySearch(const int id) const;
 
     int rangeCheck(int) const;
 
