@@ -13,7 +13,7 @@ sed -r 's/@[^>]+//' <ChangeLog- >ChangeLog
 rm ChangeLog-
 
 
-tar cvf - --transform="s/^\./$REVISION/" --exclude=.svn --exclude='*~' --exclude='.scon*' . | bzip2 -cv9 >$HOME/$REVISION.tar.bz2
+tar cvf - --transform="s/^\./$REVISION/" --exclude=.svn --exclude='*~' --exclude='.scon*' --exclude '#*#' --exclude '*-held' . | bzip2 -cv9 >$HOME/$REVISION.tar.bz2
 
 svn revert ChangeLog
 
