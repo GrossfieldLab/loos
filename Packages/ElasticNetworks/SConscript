@@ -54,20 +54,10 @@ list.append(vsa)
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
-# These use shared code which is not installed
-vsa_fit = clone.Program("vsa_fit", ["vsa_fit.cpp", "fitter.cpp"])
-list.append(vsa_fit)
-
 # Update to include the above apps
-apps = apps + ' vsa anm vsa_fit'
+apps = apps + ' vsa anm'
 
 
-
-nickanm = clone.Program("nickanm", ["nickanm.cpp"])
-list.append(nickanm)
-
-vsa_fit_bonds = clone.Program("vsa_fit_bonds", ["vsa_fit_bonds.cpp", "fitter.cpp"])
-list.append(vsa_fit_bonds)
 
 
 ### Installation specific
