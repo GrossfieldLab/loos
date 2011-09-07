@@ -1,6 +1,5 @@
 %module loos
 
-
 %include <std_string.i>
 %include <std_vector.i>
 %include <boost_shared_ptr.i>

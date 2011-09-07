@@ -45,14 +45,12 @@
 %}
 
 %wrapper %{
-typedef loos::Coord<double>   GCoord;
 typedef double    greal;
 typedef loos::Matrix44<double>   GMatrix;
 typedef unsigned int   uint;
 typedef unsigned long  ulong;
  %}
 
-%template(GCoordVector) std::vector<loos::GCoord>;
 %template(AtomicGroupVector) std::vector<loos::AtomicGroup>;
 
 
@@ -159,7 +157,7 @@ namespace loos {
     void applyTransform(const XForm&);
     void copyCoordinates(AtomicGroup& g);
     void perturbCoords(const greal);
-    std::vector<GCoord> principalAxes(void) const;
+    std::vector<loos::Coord<double> > principalAxes(void) const;
     std::vector<GCoord> momentsOfInertia(void) const;
     GMatrix superposition(const AtomicGroup&);
     GMatrix alignOnto(const AtomicGroup&);

@@ -5,9 +5,14 @@
 #include <string>
 #include <stdexcept>
 #include <Coord.hpp>
+%}
+
+%wrapper %{
 
   typedef loos::Coord<double>   GCoord;
-%}
+
+  %}
+
 
 namespace loos {
 
@@ -95,6 +100,7 @@ namespace loos {
  };
 
 %template(GCoord)  loos::Coord<double>;
+
 %rename(__add__)  loos::Coord<double>::operator+;
 %rename(__sub__) loos::Coord<double>::operator-;
 %rename(__mul__) loos::Coord<double>::operator*;
@@ -103,3 +109,7 @@ namespace loos {
 %rename(__pow__) loos::Coord<double>::operator^;
 %rename(__eq__) loos::Coord<double>::operator==;
 %rename(__ne__) loos::Coord<double>::operator!=;
+
+
+
+%template(GCoordVector)   std::vector<loos::Coord<double> >;
