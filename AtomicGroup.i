@@ -139,7 +139,7 @@ namespace loos {
     void mergeImage();
     void findBonds(const double dist = 1.65);
 
-    std::vector<GCoord> boundingBox(void) const;
+    std::vector<loos::Coord<double> > boundingBox(void) const;
     GCoord centerAtOrigin(void);
     GCoord centroid(void) const;
     greal radius(void) const;
@@ -151,14 +151,14 @@ namespace loos {
     greal radiusOfGyration(void) const;
     greal rmsd(const AtomicGroup&);
 
-    std::vector<GCoord> getTransformedCoords(const XForm&) const;
+    std::vector<loos::Coord<double> > getTransformedCoords(const XForm&) const;
     void translate(const GCoord & v);
     void rotate(const GCoord& axis, const greal angle_in_degrees);
     void applyTransform(const XForm&);
     void copyCoordinates(AtomicGroup& g);
     void perturbCoords(const greal);
     std::vector<loos::Coord<double> > principalAxes(void) const;
-    std::vector<GCoord> momentsOfInertia(void) const;
+    std::vector<loos::Coord<double> > momentsOfInertia(void) const;
     GMatrix superposition(const AtomicGroup&);
     GMatrix alignOnto(const AtomicGroup&);
   };
