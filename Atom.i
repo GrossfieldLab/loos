@@ -24,7 +24,6 @@
 namespace loos {
 
   class Atom;
-  typedef Coord<double>   GCoord;
   typedef boost::shared_ptr<Atom> pAtom;
 
   class Atom {

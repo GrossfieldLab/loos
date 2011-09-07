@@ -53,7 +53,6 @@ typedef unsigned long  ulong;
  %}
 
 %template(GCoordVector) std::vector<loos::GCoord>;
-
 %template(AtomicGroupVector) std::vector<loos::AtomicGroup>;
 
 

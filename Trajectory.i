@@ -20,8 +20,6 @@
 */
 
 %shared_ptr(loos::Trajectory)
-%rename(GCoordVector) std::vector<loos::GCoord>;
-
 
 %header %{
 #include <Trajectory.hpp>

@@ -31,7 +31,6 @@
 
 namespace loos {
 
-  typedef Coord<double>         GCoord;
   typedef double                greal;
 
   //! This class encapsulates crystallographic unit cell data
