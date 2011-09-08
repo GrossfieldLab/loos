@@ -50,7 +50,7 @@ typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 // Configuration
 
 const bool length_normalize = true;
-const uint nsteps = 25;
+uint nsteps = 25;
 
 
 // Global options
@@ -65,6 +65,7 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
+      ("steps", po::value<uint>(&nsteps)->default_value(25), "Max number of blocks for auto-ranging")
       ("reps", po::value<uint>(&nreps)->default_value(20), "Number of replicates for bootstrap")
       ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
 
