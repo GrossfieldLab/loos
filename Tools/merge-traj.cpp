@@ -43,6 +43,7 @@ vector<string> input_dcd_list;
 int downsample_rate;
 bool skip_first_frame=false;
 bool reimage_by_molecule=false;
+bool selection_split=false;
 
 
 // @cond TOOLS_INTERNAL
@@ -58,6 +59,7 @@ public:
       ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
        "Write every nth frame to downsampled DCD")
       ("centering-selection", po::value<string>(&center_selection)->default_value(""), "Selection for centering")
+      ("selection-is-split", po::value<bool>(&selection_split)->default_value(false), "Selection is split across image boundaries")
       ("skip-first-frame", po::value<bool>(&skip_first_frame)->default_value(false), "Skip first frame of each trajectory (for xtc files)")
       ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
       ;
@@ -236,6 +238,21 @@ int main(int argc, char *argv[])
 
                 if ( do_recenter )
                     {
+                    // If the selection is split, then we effectively need to 
+                    // do the centering twice.  First, we pick one atom from the
+                    // centering selection, translate the entire system so it's
+                    // at the origin, and reimage.  This will get the selection
+                    // region to not be split on the image boundary.  At that 
+                    // point, we can just do regular imaging.
+                    if (selection_split)
+                        {
+                        GCoord centroid = center[0]->coords();
+                        system.translate(-centroid);
+                        for (m=molecules.begin(); m!=molecules.end(); m++)
+                            {
+                            m->reimage();
+                            }
+                        }
                     // Now, do the regular imaging.  Put the system centroid 
                     // at the origin, and reimage by molecule
                     GCoord centroid = center.centroid();
