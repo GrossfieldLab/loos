@@ -1,3 +1,8 @@
+2011-09-08 <alan> 
+    * Added new option to merge-trj (selection-is-split) to handle the case 
+	where the centering selection is split across an image boundary more 
+	robustly.  This is basically the same algorithm that's in recenter-trj
+
 2011-08-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in effsize.pl where the seed value was not correctly
