@@ -2,6 +2,9 @@
 
 	* Added check in rdf-based tools to ensure either the model or the
 	trajectory has periodic box information.
+	* Added --any mode to hcorrelations.  This computes the
+	time-correlation for whether this is any hydrogen bound, rather
+	than a specific hydrogen.
 
 2011-09-08 <alan> 
     * Added new option to merge-trj (selection-is-split) to handle the case 
