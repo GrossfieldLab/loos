@@ -49,6 +49,7 @@ public:
   ToolOptions() :
     symmetrize(false),
     auto_all(true),
+    window(0),
     calc_type_desc("electron")
   { }
 
