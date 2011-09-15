@@ -1,5 +1,7 @@
 2011-09-15    <tromo@spade.biophysics.rochester.edu>
 
+	* Added Atom::atomType() to support tinkerXYZ atom type info
+
 	* Fixed bug in density-dist where the default window was not 0,
 	causing the time-series to always be written.
 

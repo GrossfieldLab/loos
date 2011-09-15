@@ -162,6 +162,14 @@ namespace loos {
     clearPropertyBit(bitmask);
   }
 
+  void Atom::atomType(const int i) {
+    _atom_type = i;
+  }
+
+  int Atom::atomType() const {
+    return(_atom_type);
+  }
+
 
   void Atom::init() {
     _id = 1;
@@ -177,6 +185,7 @@ namespace loos {
     _segid = "    ";
     _pdbelement = "";
     _record = "ATOM";
+    _atom_type = -1;
     mask = nullbit;   // Nullbit means nothing was set...
   }
 
