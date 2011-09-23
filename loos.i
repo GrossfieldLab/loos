@@ -7,6 +7,16 @@
 typedef unsigned int    uint;
 typedef unsigned long     ulong;
 
+namespace loos {
+  typedef double greal;
+  typedef long gint;
+
+  typedef float dcd_real;
+  typedef double dcd_double;
+
+  typedef Coord<double> GCoord;
+}
+
 %include "Coord.i"
 %include "Atom.i"
 %include "Matrix44.i"
