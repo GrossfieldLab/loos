@@ -1,3 +1,8 @@
+2011-09-29    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed XForm::rotate() so that the passed axis vector is
+	normalized internally.
+
 2011-09-15    <tromo@spade.biophysics.rochester.edu>
 
 	* Added Atom::atomType() to support tinkerXYZ atom type info
