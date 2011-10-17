@@ -1,3 +1,8 @@
+2011-10-17    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed default spring constant for exponential springs to -6
+	(from -2).
+
 2011-09-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed XForm::rotate() so that the passed axis vector is
