@@ -146,13 +146,19 @@ namespace loos {
 
   // Removes all atoms contained in the passed group from this one...
   AtomicGroup& AtomicGroup::remove(const AtomicGroup& grp) {
-    std::vector<pAtom>::const_iterator i;
 
-    for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
-      deleteAtom(*i);
 
-    _sorted = false;
-    return(*this);
+    if (&grp == this)
+      atoms.clear();      // Assume caller meant to clean out AtomicGroup
+    else {
+      std::vector<pAtom>::const_iterator i;
+
+      for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
+        deleteAtom(*i);
+      
+      _sorted = false;
+      return(*this);
+    }
   }
 
 
