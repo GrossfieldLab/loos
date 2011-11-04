@@ -37,8 +37,8 @@ already multithreaded.
 
 ------= Fedora =------
 
-LOOS has been tested on Fedora (64-bit) 8, 9, 12, and 14.  We assume you
-already have the basic compiler tools installed (i.e. g++).  You will
+LOOS has been tested on Fedora (64-bit) 8, 9, 12, 14, and 15.  We assume
+you already have the basic compiler tools installed (i.e. g++).  You will
 need to install scons, boost, and atlas:
 
 sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
