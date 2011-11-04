@@ -159,6 +159,8 @@ namespace loos {
       _sorted = false;
       return(*this);
     }
+
+    return(*this);
   }
 
 
@@ -436,9 +438,8 @@ namespace loos {
     std::vector<int>::const_iterator citer;
     for (citer = bonds.begin(); citer != bonds.end(); citer++) {
       pAtom toi = working.findById(*citer);
-      if (toi == 0)
-        throw(std::runtime_error("Missing bonds while trying to walk the connectivity tree."));
-      walkBonds(current, seen, working, toi);
+      if (toi != 0)
+        walkBonds(current, seen, working, toi);
     }
   }
 
