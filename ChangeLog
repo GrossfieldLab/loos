@@ -1,3 +1,12 @@
+2011-11-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed AtomicGroup::splitByMolecule() so that missing bonds do
+	not throw an error.  Instead, they are ignored.
+	* Changed trajinfo to warn if there is a mismatch between the 
+	system size and the trajectory size
+	* Changed xy_rdf to emit 0's rather than NaN's if there are
+	missing atoms in a leaflet.
+
 2011-10-17    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed default spring constant for exponential springs to -6
