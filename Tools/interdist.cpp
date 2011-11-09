@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
     traj->readFrame(indices[j]);
     traj->updateGroupCoords(model);
 
-    cout << j << " ";
+    cout << indices[j] << " ";
 
     for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i)
       cout << (*(topts->calc_type))(src, *i) << " ";
