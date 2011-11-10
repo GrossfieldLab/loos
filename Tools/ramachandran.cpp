@@ -410,7 +410,7 @@ int main(int argc, char *argv[]) {
   }
   
   cout << "# " << hdr << endl;
-  cout << "# t\t";
+  cout << "# frame\t";
 
   // Construct the header of what torsions were computed...
   vector<string> torsion_names = extractor->names();

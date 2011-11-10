@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
     targets.push_back(selectAtoms(model, *i));
 
   cout << "# " << hdr << endl;
-  cout << "# t ";
+  cout << "# frame ";
   for (uint i=0; i < target_selections.size(); ++i)
     cout << "Density_" << i << "\t";
   cout << endl;

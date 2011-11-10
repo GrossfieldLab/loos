@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  cout << "# " << hdr << "\n# t\tX\tY\tZ\n";
+  cout << "# " << hdr << "\n# frame\tX\tY\tZ\n";
   uint t = 0;
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();

@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup src = selectAtoms(model, topts->target_name);
 
-  cout << "# t ";
+  cout << "# frame ";
   
   vector<AtomicGroup> targets;
   for (uint i=0; i<topts->selection_names.size(); ++i) {

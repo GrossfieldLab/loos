@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 
   traj->rewind();
   uint t = tropts->skip;
-  cout << "# t\tArea\n";
+  cout << "# frame\tArea\n";
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();
     double apl = box.x() * box.y() / n_lipids;

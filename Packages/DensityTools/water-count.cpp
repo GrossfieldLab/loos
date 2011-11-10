@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
   }
 
   cout << "# " << hdr << endl;
-  cout << "# t\tcount\tvolume\n";
+  cout << "# frame\tcount\tvolume\n";
   for (uint i=0; i<n; ++i) {
     long cnt = 0;
     for (uint j=0; j<m; ++j)

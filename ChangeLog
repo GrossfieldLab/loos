@@ -1,3 +1,8 @@
+2011-11-10    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed header output in tools so that it says "frame" rather
+	than "t".
+
 2011-11-09    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed "bug" interdist, rmsd2ref, and contact-time tools so that

@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
   }
 
   cout << "# " << hdr << endl;
-  cout << "# t d\n";
+  cout << "# frame d\n";
   uint t = 0;
   while (tropts->trajectory->readFrame()) {
     tropts->trajectory->updateGroupCoords(subset);
