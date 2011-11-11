@@ -37,7 +37,7 @@ already multithreaded.
 
 ------= Fedora =------
 
-LOOS has been tested on Fedora (64-bit) 8, 9, 12, 14, and 15.  We assume
+LOOS has been tested on Fedora (64-bit) 12-16.  We assume
 you already have the basic compiler tools installed (i.e. g++).  You will
 need to install scons, boost, and atlas:
 
@@ -46,8 +46,8 @@ sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
 ------= Ubuntu =------
 
-LOOS has been tested on Ubuntu 8-10.  The following instructions have
-been used to install LOOS on a fresh 64-bit 10.10 installation.  Use
+LOOS has been tested on Ubuntu 8-11.  The following instructions have
+been used to install LOOS on a fresh 64-bit 11.04 installation.  Use
 the Ubuntu software center (or apt-get) to install the following
 packages:
 	g++
@@ -62,53 +62,18 @@ install both atlas packages listed above as well as
 libatlas3gf-corei7sse3.
 
 
+* Ubuntu 8.04 *
+
+Do not install scons using the package manager--the available version
+is incompatable with LOOS.  Instead, download any version >= 1.0 and
+install that.  Also, there is no boost-all package, so you must
+install the components separately: libboost-dev, libboost-regex-dev,
+and libboost-program-options-dev
+
+
 NOTE: Ubuntu 10.04 LTS x86_64 uses libboost1.40-all-dev instead of
 libboost-all-devel.
 
-NOTE:  Older version of Ubuntu may vary the names of the BOOST
-libraries.  If you see link errors related to boost libraries, then
-you will need to setup a custom.py file.  Copy the custom.py-proto to
-custom.py and find the appropriate library names (in /usr/lib64) and
-edit the custom.py file to reflect these names.
-
-* The following additional installation tips come courtesy of Dow
-  Hurst:
-
-To get the most currently available version of scons for Ubuntu Hardy 8.04 you have to add a
-PPA repository.  Do this by getting the server key first, and then add the repository to the
-/etc/apt/sources.list file.  The command and repository listing is below:
-
-sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com B5140445
-
-# grep geek /etc/apt/sources.list
-#  Added medigeek experimental repository on 20100622, done by Dow Hurst
-deb http://ppa.launchpad.net/medigeek/experimental/ubuntu hardy main 
-deb-src http://ppa.launchpad.net/medigeek/experimental/ubuntu hardy main
-
-apt-get update
-
-apt-get install scons libboost-dev libboost-date-time-dev libboost-doc libboost-filesystem-dev libboost-graph-dev \
-                libboost-iostreams-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev  \
-                libatlas-base-dev libatlas-headers liblapack-dev
-
-Copy custom.py-proto to custom.py
-
-Modify custom.py for the BOOSTREGEX and BOOSTPO variables so the lines look like this:
-
-### This is the name of the boost-regex library
-## Uncomment the following for Ubuntu
-BOOSTREGEX='boost_regex-mt'
-
-
-### This is the name of the boost-program-options Library
-## Uncomment the following for Ubuntu
-BOOSTPO='boost_program_options-mt'
-
-Then issue the following command using sudo:
-
-sudo scons release=1 PREFIX=/opt/LOOS-1.5.4 install
-
-If you have root access then you can forget the sudo and issue the command without it.
 
 ------= Debian =------
 
