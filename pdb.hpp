@@ -32,6 +32,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <vector>
+#include <map>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
@@ -162,6 +163,8 @@ namespace loos {
 
     friend std::ostream& FormatConectRecords(std::ostream&, PDB&);
 
+    pAtom findAtom(const int i);
+
   private:
     bool _show_charge;
     bool _auto_ter;
@@ -169,7 +172,7 @@ namespace loos {
     bool strictness_policy;
     Remarks _remarks;
     UnitCell cell;
-    AtomicGroup _sorted_copy;
+    std::map<int, pAtom> _atomid_to_patom;
   };
 
 }
