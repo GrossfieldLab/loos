@@ -133,6 +133,7 @@ namespace loos {
     t = parseStringAs<std::string>(s, 78, 2);
 
     append(pa);
+    
   }
 
 
@@ -198,7 +199,13 @@ namespace loos {
 
   void PDB::parseConectRecord(const std::string& s) {
     int bound_id = parseStringAs<int>(s, 6, 5);
-    pAtom bound = findById(bound_id);
+
+    if (_sorted_copy.empty()) {
+      _sorted_copy = *this;
+      _sorted_copy.sort();
+    }
+
+    pAtom bound = _sorted_copy.findById(bound_id);
     if (bound == 0)
       throw(PDB::BadConnectivity("Cannot find primary atom " + s.substr(6, 5)));
 
@@ -210,7 +217,7 @@ namespace loos {
       if (emptyString(t))
         break;
       int id = parseStringAsHybrid36(t);
-      pAtom boundee = findById(id);
+      pAtom boundee = _sorted_copy.findById(id);
       if (boundee == 0)
         throw(PDB::BadConnectivity("Cannot find bound atom " + t));
       bound->addBond(boundee);
@@ -290,6 +297,9 @@ namespace loos {
         }
       }
     }
+
+    // Clean-up sorted copy if we made one...
+    _sorted_copy = AtomicGroup();
 
     // Do some post-extraction...
     if (loos::remarksHasBox(_remarks)) {

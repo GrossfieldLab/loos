@@ -141,6 +141,10 @@ namespace loos {
     void read(std::istream& is);
 
   private:
+    class ComparePatoms {
+      bool operator()(const pAtom& a, const pAtom& b) { return(a->id() < b->id()); }
+    };
+
 
     //! Create a PDB from an AtomicGroup (i.e. upcast)
     PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
@@ -165,7 +169,7 @@ namespace loos {
     bool strictness_policy;
     Remarks _remarks;
     UnitCell cell;
-
+    AtomicGroup _sorted_copy;
   };
 
 }
