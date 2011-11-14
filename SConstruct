@@ -133,7 +133,6 @@ env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...
-print "PLATFORM=", platform
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
 elif platform == 'freebsd8':
