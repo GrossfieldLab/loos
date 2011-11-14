@@ -119,7 +119,7 @@ namespace loos {
 
       RealMatrix C(m, n);
 
-#if defined(__linux__) | defined(__CYGWIN__)
+#if defined(__linux__) | defined(__CYGWIN__) || defined(__FreeBSD__)
       char ta = (transa ? 'T' : 'N');
       char tb = (transb ? 'T' : 'N');
 
@@ -148,7 +148,7 @@ namespace loos {
 
       DoubleMatrix C(m, n);
 
-#if defined(__linux__) || defined(__CYGWIN__)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
       char ta = (transa ? 'T' : 'N');
       char tb = (transb ? 'T' : 'N');
 
