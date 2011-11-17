@@ -43,6 +43,11 @@ need to install scons, boost, and atlas:
 
 sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
+------= CentOS =------
+
+LOOS has been tested with CentOS 5 and 6.  Follow the instructions for
+Fedora, however there is no scons package available via yum.  Instead,
+download and install any version of scons more recent than 1.0.
 
 ------= Ubuntu =------
 
@@ -77,7 +82,7 @@ libboost-all-devel.
 
 ------= Debian =------
 
-Loos has been tested with: 5.0.6, 6.0.1
+Loos has been tested with: 5, 6
 
 Using the synaptic manager (or apt-get), install the following packages:
       libboost-dev
@@ -89,7 +94,7 @@ Using the synaptic manager (or apt-get), install the following packages:
 
 ------= openSUSE =------
 
-LOOS has been tested with: 11.3, 11.4
+LOOS has been tested with: 11
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
@@ -104,7 +109,10 @@ in order to build LOOS.
 
 
 
------= MACOS X (10.4+) =-----
+-----= MACOS X =-----
+
+LOOS has been tested with MacOS 10.6, however, it *should* be
+compatable with version 10.4-10.6.
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  You can find it on your MacOS X install disk or,
@@ -136,6 +144,11 @@ to "custom.py".  Look for the BOOSTPO and BOOSTREGEX symbols and
 uncomment the appropriate lines.
 
 
+-----= FreeBSD =-----
+
+LOOS has been tested with FreeBSD 8.  You will need to install the gcc
+suite, atlas, scons, and boost by whatever means you prefer (note:
+LOOS was tested using the versions installed via ports).
 
 
 
