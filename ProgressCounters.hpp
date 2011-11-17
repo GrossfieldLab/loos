@@ -22,8 +22,8 @@
 
 
 
-#if !defined(PROGRESSCOUNTERS_HPP)
-#define PROGRESSCOUNTERS_HPP
+#if !defined(LOOS_PROGRESSCOUNTERS_HPP)
+#define LOOS_PROGRESSCOUNTERS_HPP
 
 
 #include <iostream>

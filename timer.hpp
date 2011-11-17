@@ -22,8 +22,8 @@
 */
 
 
-#if !defined(TIMER_HPP)
-#define TIMER_HPP
+#if !defined(LOOS_TIMER_HPP)
+#define LOOS_TIMER_HPP
 
 #include <iostream>
 #include <string>

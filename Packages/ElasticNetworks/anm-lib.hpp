@@ -23,8 +23,8 @@
  *@{
  */
 
-#if !defined(ANM_LIB_HPP)
-#define ANM_LIB_HPP
+#if !defined(LOOS_ANM_LIB_HPP)
+#define LOOS_ANM_LIB_HPP
 
 
 #include "enm-lib.hpp"

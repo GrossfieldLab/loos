@@ -27,8 +27,8 @@
 
 
 
-#if !defined(GRID_UTILS_HPP)
-#define GRID_UTILS_HPP
+#if !defined(LOOS_GRID_UTILS_HPP)
+#define LOOS_GRID_UTILS_HPP
 
 #include <DensityGrid.hpp>
 

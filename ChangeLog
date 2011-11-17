@@ -1,3 +1,9 @@
+2011-11-17  Tod Romo  <tromo@gorgoneion>
+
+	* Changed header file CPP guards to have "LOOS_" as a prefix
+	(e.g. LOOS_ATOM_HPP rather than ATOM_HPP) to prevent potential
+	collisions with user code.
+
 2011-11-10    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed header output in tools so that it says "frame" rather

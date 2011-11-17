@@ -21,8 +21,8 @@
 
 
 
-#if !defined(SORTING_HPP)
-#define SORTING_HPP
+#if !defined(LOOS_SORTING_HPP)
+#define LOOS_SORTING_HPP
 
 
 #include <vector>

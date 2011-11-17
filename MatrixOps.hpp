@@ -23,8 +23,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined MATRIXOPS_HPP
-#define MATRIXOPS_HPP
+#if !defined LOOS_MATRIXOPS_HPP
+#define LOOS_MATRIXOPS_HPP
 
 #include <loos_defs.hpp>
 #include <MatrixImpl.hpp>

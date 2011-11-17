@@ -27,8 +27,8 @@
 
 // @cond PACKAGES_INTERNAL
 
-#if !defined(FIDLIB_HPP)
-#define FIDLIB_HPP
+#if !defined(LOOS_FIDLIB_HPP)
+#define LOOS_FIDLIB_HPP
 
 
 

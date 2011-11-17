@@ -21,8 +21,8 @@
 
 
 
-#if !defined(COORDS_HPP)
-#define COORDS_HPP
+#if !defined(LOOS_COORDS_HPP)
+#define LOOS_COORDS_HPP
 
 #include <iostream>
 #include <string>

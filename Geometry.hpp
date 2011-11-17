@@ -22,8 +22,8 @@
 
 
 
-#if !defined(GEOM_HPP)
-#define GEOM_HPP
+#if !defined(LOOS_GEOM_HPP)
+#define LOOS_GEOM_HPP
 
 #include <loos_defs.hpp>
 #include <cmath>

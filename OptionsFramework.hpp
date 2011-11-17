@@ -21,8 +21,8 @@
 
 
 
-#if !defined(OPTIONS_FRAMEWORK_HPP)
-#define OPTIONS_FRAMEWORK_HPP
+#if !defined(LOOS_OPTIONS_FRAMEWORK_HPP)
+#define LOOS_OPTIONS_FRAMEWORK_HPP
 
 #include <loos_defs.hpp>
 #include <boost/program_options.hpp>

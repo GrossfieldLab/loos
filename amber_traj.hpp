@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(AMBER_TRAJ_HPP)
-#define AMBER_TRAJ_HPP
+#if !defined(LOOS_AMBER_TRAJ_HPP)
+#define LOOS_AMBER_TRAJ_HPP
 
 
 #include <string>

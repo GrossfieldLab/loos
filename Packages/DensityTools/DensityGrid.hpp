@@ -27,8 +27,8 @@
 
 
 
-#if !defined(DENSITYGRID_HPP)
-#define DENSITYGRID_HPP
+#if !defined(LOOS_DENSITYGRID_HPP)
+#define LOOS_DENSITYGRID_HPP
 
 #include <cmath>
 #include <stdexcept>

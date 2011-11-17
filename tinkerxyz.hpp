@@ -21,8 +21,8 @@
 
 
 
-#if !(defined TINKERXYZ_HPP)
-#define TINKERXYZ_HPP
+#if !(defined LOOS_TINKERXYZ_HPP)
+#define LOOS_TINKERXYZ_HPP
 
 #include <ios>
 #include <fstream>

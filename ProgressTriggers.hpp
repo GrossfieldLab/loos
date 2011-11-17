@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(PROGRESSTRIGGERS_HPP)
-#define PROGRESSTRIGGERS_HPP
+#if !defined(LOOS_PROGRESSTRIGGERS_HPP)
+#define LOOS_PROGRESSTRIGGERS_HPP
 
 #include <loos_defs.hpp>
 #include <ProgressCounters.hpp>

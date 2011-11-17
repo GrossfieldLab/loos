@@ -33,8 +33,8 @@
 
 
 
-#if !defined(HESSIAN_HPP)
-#define HESSIAN_HPP
+#if !defined(LOOS_HESSIAN_HPP)
+#define LOOS_HESSIAN_HPP
 
 
 #include <loos.hpp>

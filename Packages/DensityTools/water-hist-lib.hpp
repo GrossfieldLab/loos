@@ -26,8 +26,8 @@
 
 
 
-#if !defined(WATER_HIST_LIB_HPP)
-#define WATER_HIST_LIB_HPP
+#if !defined(LOOS_WATER_HIST_LIB_HPP)
+#define LOOS_WATER_HIST_LIB_HPP
 
 #include <iostream>
 

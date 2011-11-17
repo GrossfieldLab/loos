@@ -8,8 +8,8 @@
 
 
 
-#if !defined(LOOSFMT_HPP)
-#define LOOSFMT_HPP
+#if !defined(LOOS_FMT_HPP)
+#define LOOS_FMT_HPP
 
 #include <ios>
 #include <sstream>

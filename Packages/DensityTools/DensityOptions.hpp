@@ -25,8 +25,8 @@
 
 
 
-#if !defined(DENSITY_OPTIONS_HPP)
-#define DENSITY_OPTIONS_HPP
+#if !defined(LOOS_DENSITY_OPTIONS_HPP)
+#define LOOS_DENSITY_OPTIONS_HPP
 
 #include <boost/format.hpp>
 

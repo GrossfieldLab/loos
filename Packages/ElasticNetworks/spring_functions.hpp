@@ -25,8 +25,8 @@
  *@{
  */
 
-#if !defined(SPRING_FUNCTIONS_HPP)
-#define SPRING_FUNCTIONS_HPP
+#if !defined(LOOS_SPRING_FUNCTIONS_HPP)
+#define LOOS_SPRING_FUNCTIONS_HPP
 
 
 

@@ -20,8 +20,8 @@
 */
 
 
-#if !defined(XDR_HPP)
-#define XDR_HPP
+#if !defined(LOOS_XDR_HPP)
+#define LOOS_XDR_HPP
 
 #include <iostream>
 #include <string>

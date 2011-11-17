@@ -28,8 +28,8 @@
 
 
 
-#if !defined(XPLOREDMWRITER_HPP)
-#define XPLOREDMWRITER_HPP
+#if !defined(LOOS_XPLOREDMWRITER_HPP)
+#define LOOS_XPLOREDMWRITER_HPP
 
 #include <loos.hpp>
 

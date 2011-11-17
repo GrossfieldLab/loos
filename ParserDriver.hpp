@@ -22,8 +22,8 @@
 
 
 
-#if !defined(PARSERDRIVER_HPP)
-#define PARSERDRIVER_HPP
+#if !defined(LOOS_PARSERDRIVER_HPP)
+#define LOOS_PARSERDRIVER_HPP
 
 #include <string>
 #include <vector>

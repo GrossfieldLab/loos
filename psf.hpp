@@ -21,8 +21,8 @@
 
 
 
-#if !(defined PSF_HPP)
-#define PSF_HPP
+#if !(defined LOOS_PSF_HPP)
+#define LOOS_PSF_HPP
 
 
 #include <fstream>

@@ -20,8 +20,8 @@
 */
 
 
-#if !defined(ATOM_HPP)
-#define ATOM_HPP
+#if !defined(LOOS_ATOM_HPP)
+#define LOOS_ATOM_HPP
 
 #include <iostream>
 #include <string>

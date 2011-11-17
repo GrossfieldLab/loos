@@ -7,8 +7,8 @@
 
 
 
-#if !defined(DENSITYTOOLS_HPP)
-#define DENSITYTOOLS_HPP
+#if !defined(LOOS_DENSITYTOOLS_HPP)
+#define LOOS_DENSITYTOOLS_HPP
 
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>

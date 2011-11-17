@@ -21,8 +21,8 @@
 
 
 
-#if !defined(DCDWRITER_HPP)
-#define DCDWRITER_HPP
+#if !defined(LOOS_DCDWRITER_HPP)
+#define LOOS_DCDWRITER_HPP
 
 #include <ios>
 #include <iostream>

@@ -21,8 +21,8 @@
 
 
 
-#if !defined(TIMESERIES_HPP)
-#define TIMESERIES_HPP
+#if !defined(LOOS_TIMESERIES_HPP)
+#define LOOS_TIMESERIES_HPP
 
 #include <vector>
 #include <stdexcept>

@@ -23,8 +23,8 @@
 
 
 
-#if !defined(KERNELSTACK_HPP)
-#define KERNELSTACK_HPP
+#if !defined(LOOS_KERNELSTACK_HPP)
+#define LOOS_KERNELSTACK_HPP
 
 
 #include <iostream>

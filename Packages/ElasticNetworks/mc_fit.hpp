@@ -1,5 +1,5 @@
-#if !defined(MC_FIT_HPP)
-#define MC_FIT_HPP
+#if !defined(LOOS_MC_FIT_HPP)
+#define LOOS_MC_FIT_HPP
 
 #include <iostream>
 #include <vector>

@@ -30,8 +30,8 @@
 // @cond PACKAGES_INTERNAL
 
 
-#if !defined(BCOMLIB_HPP)
-#define BCOMLIB_HPP
+#if !defined(LOOS_BCOMLIB_HPP)
+#define LOOS_BCOMLIB_HPP
 
 
 #include <loos.hpp>

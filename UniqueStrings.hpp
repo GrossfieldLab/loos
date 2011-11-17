@@ -21,8 +21,8 @@
 
 
 
-#if !defined(UNIQUESTRINGS_HPP)
-#define UNIQUESTRINGS_HPP
+#if !defined(LOOS_UNIQUESTRINGS_HPP)
+#define LOOS_UNIQUESTRINGS_HPP
 
 
 #include <string>

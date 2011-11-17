@@ -23,8 +23,8 @@
 
 
 
-#if !defined(ATOMICGROUP_HPP)
-#define ATOMICGROUP_HPP
+#if !defined(LOOS_ATOMICGROUP_HPP)
+#define LOOS_ATOMICGROUP_HPP
 
 #include <iostream>
 #include <string>

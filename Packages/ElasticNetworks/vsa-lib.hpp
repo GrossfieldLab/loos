@@ -27,8 +27,8 @@
  */
 
 
-#if !defined(VSA_LIB_HPP)
-#define VSA_LIB_HPP
+#if !defined(LOOS_VSA_LIB_HPP)
+#define LOOS_VSA_LIB_HPP
 
 #include <loos.hpp>
 #include "enm-lib.hpp"

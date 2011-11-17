@@ -26,8 +26,8 @@
 */
 
 
-#if !defined(LAB_MATRIX_HPP)
-#define LAB_MATRIX_HPP
+#if !defined(LOOS_MATRIX_HPP)
+#define LOOS_MATRIX_HPP
 
 #include <MatrixImpl.hpp>
 #include <MatrixIO.hpp>

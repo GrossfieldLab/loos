@@ -5,8 +5,8 @@
   Based loosely on the NRC implementation (Numerical Recipes in C (1996):411)
 */
 
-#if !defined(SIMPLEX_HPP)
-#define SIMPLEX_HPP
+#if !defined(LOOS_SIMPLEX_HPP)
+#define LOOS_SIMPLEX_HPP
 
 #include <iostream>
 #include <vector>

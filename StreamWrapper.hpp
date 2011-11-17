@@ -22,8 +22,8 @@
 
 
 
-#if !defined(STREAMWRAPPER_HPP)
-#define STREAMWRAPPER_HPP
+#if !defined(LOOS_STREAMWRAPPER_HPP)
+#define LOOS_STREAMWRAPPER_HPP
 
 #include <iostream>
 #include <fstream>

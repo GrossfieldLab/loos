@@ -22,8 +22,8 @@
 
 
 
-#if !defined(PDB_HPP)
-#define PDB_HPP
+#if !defined(LOOS_PDB_HPP)
+#define LOOS_PDB_HPP
 
 
 

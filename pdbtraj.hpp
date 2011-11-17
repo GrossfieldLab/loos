@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(PDBTRAJ_HPP)
-#define PDBTRAJ_HPP
+#if !defined(LOOS_PDBTRAJ_HPP)
+#define LOOS_PDBTRAJ_HPP
 
 
 #include <iostream>

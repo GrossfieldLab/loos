@@ -22,8 +22,8 @@
 
 
 
-#if !defined(UTILS_HPP)
-#define UTILS_HPP
+#if !defined(LOOS_UTILS_HPP)
+#define LOOS_UTILS_HPP
 
 #include <iostream>
 #include <sstream>

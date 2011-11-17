@@ -26,8 +26,8 @@
 
 
 
-#if !defined(SIMPLEMETA_HPP)
-#define SIMPLEMETA_HPP
+#if !defined(LOOS_SIMPLEMETA_HPP)
+#define LOOS_SIMPLEMETA_HPP
 
 
 #include <iostream>
