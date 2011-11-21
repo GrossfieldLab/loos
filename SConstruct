@@ -157,7 +157,7 @@ elif platform == 'linux2':
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
    if (re.search("[Ss][Uu][Ss][Ee]", f)):
       LIBS_LINKED_TO = 'lapack blas'
-      LIBS_PATHS_TO = "LAPACK"
+      LIBS_PATHS_TO = ""
 
       # Ubuntu MAY require gfortran...more recent builds seem not to
    #elif (re.search("[Uu]buntu", f)):
