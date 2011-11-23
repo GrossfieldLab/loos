@@ -231,6 +231,8 @@ namespace loos {
     // Should we do this? or separate them out?  Hmmm...
     for (int i=0; i<8; ++i) {
       int j = i * 5 + 11;
+      if (static_cast<uint>(j) >= s.length())
+        break;
       std::string t = s.substr(j, 5);
       if (emptyString(t))
         break;

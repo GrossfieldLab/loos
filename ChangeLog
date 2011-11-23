@@ -1,3 +1,8 @@
+2011-11-22  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed bug in PDB reading code affected DOS formatted PDB files
+	with CONECT records causing them not to load.
+
 2011-11-17  Tod Romo  <tromo@gorgoneion>
 
 	* Changed header file CPP guards to have "LOOS_" as a prefix
