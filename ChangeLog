@@ -3,6 +3,7 @@
 	* Fixed bug in XTC::updateGroupCoords() when passed a group
 	smaller than the trajectory frame (thanks to Ben Reynwar for
 	catching this one!)
+	* Fixed bug in subsetter where --verbose was ignored
 
 2011-11-22  Tod Romo  <tromo@gorgoneion>
 

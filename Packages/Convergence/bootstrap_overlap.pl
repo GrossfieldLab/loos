@@ -130,16 +130,16 @@ if (!$replot) {
 
   if ($parallel) {
     # Run the BCOM job in the background if in parallel mode...
-    my $child = &forkCommand("bcom --blocks $range $model $traj '$sel' >$prefix.bcom.asc");
-    &runCommand("boot_bcom --blocks $range --replicates $nreps $model $traj '$sel' >$prefix.boot_bcom.asc");
+    my $child = &forkCommand("bcom --blocks $range --selection '$sel' $model $traj  >$prefix.bcom.asc");
+    &runCommand("boot_bcom --blocks $range --reps $nreps --selection '$sel' $model $traj >$prefix.boot_bcom.asc");
 
     # Reap the forked proc...no zombies
     my $stat = waitpid $child, 0;
 
   } else {
     # Run jobs serially...
-    &runCommand("bcom  --blocks $range $model $traj '$sel' >$prefix.bcom.asc");
-    &runCommand("boot_bcom --blocks $range --replicates $nreps $model $traj '$sel' >$prefix.boot_bcom.asc");
+    &runCommand("bcom  --blocks $range --selection '$sel' $model $traj >$prefix.bcom.asc");
+    &runCommand("boot_bcom --blocks $range --reps $nreps --selection '$sel' $model $traj >$prefix.boot_bcom.asc");
   }
   
   # Combine the two separate output files from bcom and bootbcom into
@@ -332,7 +332,7 @@ sub getNumberOfFrames {
   my $model = shift;
   my $traj = shift;
 
-  my $fh = new FileHandle "trajinfo -b $model $traj 2>&1|";
+  my $fh = new FileHandle "trajinfo -B1 $model $traj 2>&1|";
   defined($fh) || die "Error- cannot open pipe from trajinfo command";
 
   my $dummy = <$fh>;

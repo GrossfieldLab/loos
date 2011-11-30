@@ -420,6 +420,7 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
   
+  verbose = bopts->verbosity;
 
   AtomicGroup model = createSystem(model_name);
   selection = sopts->selection;
