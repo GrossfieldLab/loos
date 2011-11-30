@@ -18,7 +18,6 @@
 # program in gnuplot...
 #
 #
-#
 
 
 #  This file is part of LOOS.
