@@ -201,7 +201,7 @@ sub gnuplot {
   defined($fh) || die 'Error- cannot open pipe to gnuplot';
   print $fh <<EOF;
 set out "$fno"
-set term post portrait enhanced color
+set term post portrait enhanced color "Helvetica" 12
 
 set title "$ti - $num $units"
 set xlabel "Block size ($units)"
