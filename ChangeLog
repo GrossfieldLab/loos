@@ -21,14 +21,6 @@
 	* Changed header output in tools so that it says "frame" rather
 	than "t".
 
-2011-11-09    <tromo@spade.biophysics.rochester.edu>
-
-	* Fixed "bug" interdist, rmsd2ref, and contact-time tools so that
-	the time field is actually the frame index.  Previously, if a
-	range or stride command-line option was used, the written "t"
-	would increase 0, 1, 2, ...   but now, it will reflect the stride,
-	i.e. 0, 10, 20, ...
-
 2011-11-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::splitByMolecule() so that missing bonds do

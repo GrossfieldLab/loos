@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
 
   
 
-  uint t=tropts->skip;
+  uint t=0;
   while (traj->readFrame()) {
     traj->updateGroupCoords(subset);
     if (zabs)

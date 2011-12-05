@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
   }
 
   traj->rewind();
-  uint t = tropts->skip;
+  uint t = 0;
   cout << "# frame\tArea\n";
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();

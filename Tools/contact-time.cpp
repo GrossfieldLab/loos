@@ -354,7 +354,7 @@ int main(int argc, char *argv[]) {
       exit(-1);
     }
 
-    M(t, 0) = *frame;
+    M(t, 0) = t;
     for (uint i=0; i<targets.size(); ++i) {
       double d;
       if (topts->fast_filter)

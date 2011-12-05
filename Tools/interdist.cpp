@@ -225,12 +225,11 @@ int main(int argc, char *argv[]) {
   }
   cout << endl;
 
-
   for (uint j=0; j<indices.size(); ++j) {
     traj->readFrame(indices[j]);
     traj->updateGroupCoords(model);
 
-    cout << indices[j] << " ";
+    cout << j << " ";
 
     for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i)
       cout << (*(topts->calc_type))(src, *i) << " ";
