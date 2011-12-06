@@ -14,6 +14,7 @@ School of Medicine & Dentistry, University of Rochester\n
 
 <h2>Quick Links</h2>
       -  <a href="http://sourceforge.net/projects/loos">Download LOOS at http://sourceforge.net/projects/loos</a>
+      -  <a href="https://lists.sourceforge.net/lists/listinfo/loos-announce">Subscribe to the mailing list</a>
       - \subpage building "Building LOOS"
       - \subpage tools "Tools included with LOOS"
       - \subpage citing "Citing LOOS in published work"
@@ -52,6 +53,12 @@ to offer positive feedback, email LOOS-maintainer [AT] urmc.rochester.edu.  The
 latest version of LOOS can be found at <A
 HREF="http://loos.sourceforge.net">
 http://loos.sourceforge.net</A>.
+
+We strongly suggest that you also subscribe to the <a
+href="https://lists.sourceforge.net/lists/listinfo/loos-announce">loos-announce</a>
+mailing list; it's a low-volume list used primarily to announce new releases.
+Since most releases contain bug-fixes, we always recommend using the most
+recent version of LOOS.
 
 \section Applications
 
