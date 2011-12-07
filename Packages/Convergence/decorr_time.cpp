@@ -47,8 +47,6 @@ namespace po = loos::OptionsFramework::po;
 const bool debugging = false;
 uint verbosity;
 
-string model_name, traj_name, selection;
-uint seed = 0;
 uint nreps = 5;
 double frac;
 
@@ -257,7 +255,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
   string trange_spec = ropts->value("trange");
-  vector<uint> trange = parseRangeList<uint>(trange_spec);
+  trange = parseRangeList<uint>(trange_spec);
 
   indices = assignTrajectoryFrames(traj, tropts->frame_index_spec, tropts->skip);
 
