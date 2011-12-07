@@ -1,3 +1,8 @@
+2011-12-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in decorr_time where the time-range wasn't properly
+	handled and it would not generate output
+
 2011-11-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in XTC::updateGroupCoords() when passed a group

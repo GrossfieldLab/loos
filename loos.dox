@@ -1374,6 +1374,7 @@ there is significant demand from users.
 \section release173 Version 1.7.3 (12-9-2011)
 \subsection r173_bugs Bug Fixes
 <UL>
+  <LI> Fixed bug in decorr_time causing it to not generate output
   <LI> Fixed bug in order_params where not spcifying the ba_last
   option caused it to be improperly set.
   <LI> Fixed bug in effsize.pl where the random number seed value was
