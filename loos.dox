@@ -1371,8 +1371,48 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
+\section release173 Version 1.7.3 (12-9-2011)
+\subsection r173_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in order_params where not spcifying the ba_last
+  option caused it to be improperly set.
+  <LI> Fixed bug in effsize.pl where the random number seed value was
+  not correctly used.
+  <LI> Fixed bug in density-dist where the time-series was always
+  written.
+  <LI> Fixed bug in PDB reader affecting DOS-formatted PDB files with
+  CONECT records.
+  <LI> Fixed bug in subsetter where the --verbose flag was ignored
+  <LI> Fixed bug in XTC::updateGroupCoords() when passed a group
+  smaller than the trajectory frame (found by Ben Reynwar).
+  <LI> Fixed bug where radial distribution tools would operate without
+  periodic box information.  Now, either the model or the trajectory
+  must have periodic box information to run.
+</UL>
+\subsection r173_added_changed Added, Changed, or Otherwise Notable
+<UL>
+  <LI> Added new option to merge-trj (selection-is-split) to more
+  robustly handle the case where the centering selection is split
+  across an image boundary.
+  <LI> Added an "--any" mode to hcorrelations to compute the
+  time-correlation for whether there is *any* hydrogen bound, rather
+  than a specific hydrogen.
+  <LI> Added Atom::atomType() to support tinkerXYZ atom type info
+  <LI> Default spring constant for exponential springs was changed to
+  -6
+  <LI> xy_rdf will write out 0's rather than NaN's if there are not
+  atoms in a leaflet.
+  <LI> AtomicGroup::splitByMolecule() will now skip over missing bonds
+  rather than throw an exception.
+  <LI> All header CPP guards now have "LOOS_" as a prefix,
+  i.e. "LOOS_ATOM_HPP" rather than "ATOM_HPP"
+  <LI> Changed the PDB reader so that reading large PDBs with CONECT
+  records is significantly faster.
+</UL>
+
+
 \section release172 Version 1.7.2 (8-5-2011)
-\subsection r170_bugs Bug Fixes
+\subsection r172_bugs Bug Fixes
 <UL>
   <LI> Fixed bug in xy_rdf causing "by-molecule" split-mode to fail in
   some cases.
