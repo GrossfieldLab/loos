@@ -64,7 +64,7 @@ bool use_zscore;
 uint ntries;
 vector<uint> blocksizes;
 uint seed;
-
+string gold_standard_trajectory_name;
 
 // @cond TOOLS_INTERAL
 class ToolOptions : public opts::OptionsPackage {
@@ -76,7 +76,8 @@ public:
       ("steps", po::value<uint>(&nsteps)->default_value(25), "Max number of blocks for auto-ranging")
       ("zscore,Z", po::value<bool>(&use_zscore)->default_value(false), "Use Z-score rather than covariance overlap")
       ("ntries,N", po::value<uint>(&ntries)->default_value(20), "Number of tries for Z-score")
-      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global")
+      ("gold", po::value<string>(&gold_standard_trajectory_name)->default_value(""), "Use this trajectory for the gold-standard instead");
 
   }
 
@@ -90,11 +91,12 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d")
+    oss << boost::format("blocks='%s', zscore=%d, ntries=%d, local=%d, gold='%s'")
       % blocks_spec
       % use_zscore
       % ntries
-      % local_average;
+      % local_average
+      % gold_standard_trajectory_name;
     return(oss.str());
   }
 
@@ -203,25 +205,52 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
-
   vector<AtomicGroup> ensemble;
   readTrajectory(ensemble, subset, traj);
  
-  // First, get the complete PCA result...
+  // First, align the input trajectory...
   boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble);
-  AtomicGroup avg = averageStructure(ensemble);
-  NoAlignPolicy policy(avg, local_average);
-  boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
-
-  RealMatrix Us = boost::get<0>(res);
-  RealMatrix UA = boost::get<1>(res);
-
-  if (length_normalize)
-    for (uint i=0; i<Us.rows(); ++i)
-      Us[i] /= traj->nframes();
-
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
   cout << "# n\t" << (use_zscore ? "Z-score" : "Coverlap") << "\tVariance\tN_blocks\n";
+
+  // Handle the gold-standard, either using the whole input traj, or the alternate traj...
+  NoAlignPolicy policy;
+  RealMatrix Us;
+  RealMatrix UA;
+
+  if (gold_standard_trajectory_name.empty()) {
+    AtomicGroup avg = averageStructure(ensemble);
+    policy = NoAlignPolicy(avg, local_average);
+    boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
+
+    Us = boost::get<0>(res);
+    UA = boost::get<1>(res);
+
+    if (length_normalize)
+      for (uint i=0; i<Us.rows(); ++i)
+        Us[i] /= traj->nframes();
+  } else {
+    // Must read in another trajectory, process it, and get the PCA
+    pTraj gold = createTrajectory(gold_standard_trajectory_name, model);
+    vector<AtomicGroup> gold_ensemble;
+    readTrajectory(gold_ensemble, subset, gold);
+    boost::tuple<vector<XForm>, greal, int> bres = iterativeAlignment(gold_ensemble);
+    cout << "# Gold Alignment converged to " << boost::get<1>(bres) << " in " << boost::get<2>(bres) << " iterations\n";
+
+    AtomicGroup avg = averageStructure(gold_ensemble);
+    policy = NoAlignPolicy(avg, local_average);
+    boost::tuple<RealMatrix, RealMatrix> res = pca(gold_ensemble, policy);
+
+    Us = boost::get<0>(res);
+    UA = boost::get<1>(res);
+
+
+    if (length_normalize)
+      for (uint i=0; i<Us.rows(); ++i)
+        Us[i] /= gold->nframes();
+  }
+
+
 
   // Now iterate over all requested block sizes
 
