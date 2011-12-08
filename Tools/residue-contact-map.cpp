@@ -44,8 +44,7 @@ typedef vector<AtomicGroup>   vGroup;
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() :
-    use_centers(false),
-    threshold(0.0)
+    use_centers(false)
   { }
 
   void addGeneric(po::options_description& o) {
@@ -57,7 +56,7 @@ public:
     ostringstream oss;
 
     oss << "centers=" << use_centers;
-    return(oss.cstr());
+    return(oss.str());
   }
 
   bool use_centers;
@@ -91,8 +90,8 @@ void accumulateFrameUsingAllAtoms(DoubleMatrix& M, const vGroup& residues, const
     for (uint i=0; i<j; ++i) {
       bool flag = false;
       for (AtomicGroup::const_iterator a = residues[j].begin(); a != residues[j].end() && !flag; ++a)
-        for (AtomicGroup::const_iteror b = residues[i].begin(); b != residues[i].end(); ++b)
-          if (a.distance2(b) <= threshold) {
+        for (AtomicGroup::const_iterator b = residues[i].begin(); b != residues[i].end(); ++b)
+          if ((*a)->coords().distance2((*b)->coords()) <= threshold) {
             flag = true;
             break;
           }
@@ -115,8 +114,8 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
-  ToolOptions* topts = new ToolOptions*;
-  opts::RequiredArguments* ropts = new RequiredArguments("threshold", "Distance threshold for contacts");
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments("threshold", "Distance threshold for contacts");
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(tropts).add(topts).add(ropts);
@@ -137,7 +136,7 @@ int main(int argc, char *argv[]) {
   for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
     traj->readFrame(*i);
     traj->updateGroupCoords(model);
-    if (mode)
+    if (topts->use_centers)
       accumulateFrameUsingCenters(M, residues, thresh);
     else
       accumulateFrameUsingAllAtoms(M, residues, thresh);
