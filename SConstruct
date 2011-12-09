@@ -145,7 +145,7 @@ elif platform == 'linux2':
    f = fv.read()
    
 
-   LIBS_LINKED_TO = 'atlas lapack'
+   LIBS_LINKED_TO = 'atlas lapack blas'
    LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    ### Note for OpenSUSE and Ubuntu...
@@ -159,13 +159,9 @@ elif platform == 'linux2':
       LIBS_LINKED_TO = 'lapack blas'
       LIBS_PATHS_TO = ""
 
-      # Ubuntu MAY require gfortran...more recent builds seem not to
    #elif (re.search("[Uu]buntu", f)):
-      # LIBS_LINKED_TO = 'lapack blas gfortran'
-
-      # Fedora & Similar
-   #else
-
+   #   LIBS_LINKED_TO = 'lapack blas gfortran'
+   
 
    if LIBS_OVERRIDE != '':
       LIBS_LINKED_TO = LIBS_OVERRIDE
