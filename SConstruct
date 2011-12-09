@@ -32,7 +32,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.7.2'
+loos_version = '1.7.3'
 
 
 # Principal options...
