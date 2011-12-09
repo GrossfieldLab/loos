@@ -88,14 +88,14 @@ void accumulateFrameUsingAllAtoms(DoubleMatrix& M, const vGroup& residues, const
   for (uint j=1; j<residues.size(); ++j) {
     
     for (uint i=0; i<j; ++i) {
-      bool flag = false;
-      for (AtomicGroup::const_iterator a = residues[j].begin(); a != residues[j].end() && !flag; ++a)
+      bool flag = true;
+      for (AtomicGroup::const_iterator a = residues[j].begin(); a != residues[j].end() && flag; ++a)
         for (AtomicGroup::const_iterator b = residues[i].begin(); b != residues[i].end(); ++b)
           if ((*a)->coords().distance2((*b)->coords()) <= threshold) {
-            flag = true;
+            flag = false;
             break;
           }
-      if (flag) {
+      if (!flag) {
         M(j, i) += 1;
         M(i, j) += 1;
       }
