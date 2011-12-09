@@ -145,7 +145,7 @@ elif platform == 'linux2':
    f = fv.read()
    
 
-   LIBS_LINKED_TO = 'atlas lapack blas'
+   LIBS_LINKED_TO = 'atlas lapack'
    LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    ### Note for OpenSUSE and Ubuntu...
