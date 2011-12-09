@@ -1,3 +1,8 @@
+2011-12-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Added residue-contact-map tool which generates a "heat map" of
+	contacts between residues over a trajectory.
+
 2011-12-07    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in decorr_time where the time-range wasn't properly

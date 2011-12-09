@@ -1371,7 +1371,7 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
-\section release173 Version 1.7.3 (12-9-2011)
+\section release173 Version 1.7.3 (12-12-2011)
 \subsection r173_bugs Bug Fixes
 <UL>
   <LI> Fixed bug in decorr_time causing it to not generate output
@@ -1392,6 +1392,7 @@ there is significant demand from users.
 </UL>
 \subsection r173_added_changed Added, Changed, or Otherwise Notable
 <UL>
+  <LI> Added a new tool to compute a residue-contact "heat map".
   <LI> Added new option to merge-trj (selection-is-split) to more
   robustly handle the case where the centering selection is split
   across an image boundary.
