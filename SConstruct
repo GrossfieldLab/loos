@@ -159,8 +159,8 @@ elif platform == 'linux2':
       LIBS_LINKED_TO = 'lapack blas'
       LIBS_PATHS_TO = ""
 
-   #elif (re.search("[Uu]buntu", f)):
-   #   LIBS_LINKED_TO = 'lapack blas gfortran'
+   elif (re.search("[Uu]buntu", f)):
+      LIBS_LINKED_TO = 'lapack_atlas lapack atlas blas'
    
 
    if LIBS_OVERRIDE != '':
