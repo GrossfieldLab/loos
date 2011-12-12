@@ -660,7 +660,7 @@ namespace loos {
 
     int max = atoms[0]->resid();
     for (i = atoms.begin()+1; i != atoms.end(); i++)
-      if ((*i)->resid() < max)
+      if ((*i)->resid() > max)
         max = (*i)->resid();
 
     return(max);

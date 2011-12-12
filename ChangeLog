@@ -1,3 +1,8 @@
+2011-12-12    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in AtomicGroup::maxResid() that gave erroneous results
+	(found by Ben Reynwar).
+
 2011-12-09    <tromo@spade.biophysics.rochester.edu>
 
 	* Added residue-contact-map tool which generates a "heat map" of
