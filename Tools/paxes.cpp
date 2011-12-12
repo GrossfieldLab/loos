@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(argv[2], model);
 
   cout << "# " << hdr << endl;
-  cout << "# t ";
+  cout << "# frame ";
 
   vector<AtomicGroup> subsets;
   for (int i=3; i < argc; ++i) {

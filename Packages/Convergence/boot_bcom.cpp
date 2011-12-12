@@ -50,13 +50,14 @@ typedef boost::tuple<RealMatrix, RealMatrix, RealMatrix>  SVDResult;
 // Configuration
 
 const bool length_normalize = true;
-const uint nsteps = 25;
+uint nsteps = 25;
 
 
 // Global options
 vector<uint> blocksizes;
 bool local_average;
 uint nreps;
+string gold_standard_trajectory_name;
 
 // @cond TOOLS_INTERAL
 class ToolOptions : public opts::OptionsPackage {
@@ -65,8 +66,11 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("blocks", po::value<string>(&blocks_spec), "Block sizes (MATLAB style range)")
+      ("steps", po::value<uint>(&nsteps)->default_value(25), "Max number of blocks for auto-ranging")
       ("reps", po::value<uint>(&nreps)->default_value(20), "Number of replicates for bootstrap")
-      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global");
+      ("local", po::value<bool>(&local_average)->default_value(true), "Use local avg in block PCA rather than global")
+      ("gold", po::value<string>(&gold_standard_trajectory_name)->default_value(""), "Use this trajectory for the gold-standard instead");
+
 
   }
 
@@ -79,10 +83,11 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("blocks='%s', local=%d, reps=%d")
+    oss << boost::format("blocks='%s', local=%d, reps=%d, gold='%s'")
       % blocks_spec
       % local_average
-      % nreps;
+      % nreps
+      % gold_standard_trajectory_name;
     return(oss.str());
   }
 
@@ -215,24 +220,48 @@ int main(int argc, char *argv[]) {
   vector<AtomicGroup> ensemble;
   readTrajectory(ensemble, subset, traj);
 
-  // First, get the complete PCA result...
+  // First, align the input trajectory...
   boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble);
-  AtomicGroup avg = averageStructure(ensemble);
-  NoAlignPolicy policy(avg, local_average);
-  boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
-
-  RealMatrix Us = boost::get<0>(res);
-  RealMatrix UA = boost::get<1>(res);
-
-
-  if (length_normalize)
-    for (uint i=0; i<Us.rows(); ++i)
-      Us[i] /= traj->nframes();
-
-
-  
   cout << "# Alignment converged to " << boost::get<1>(ares) << " in " << boost::get<2>(ares) << " iterations\n";
   cout << "# n\tCoverlap\tVariance\tN_blocks\n";
+
+  // Handle the gold-standard, either using the whole input traj, or the alternate traj...
+  NoAlignPolicy policy;
+  RealMatrix Us;
+  RealMatrix UA;
+
+  if (gold_standard_trajectory_name.empty()) {
+    AtomicGroup avg = averageStructure(ensemble);
+    policy = NoAlignPolicy(avg, local_average);
+    boost::tuple<RealMatrix, RealMatrix> res = pca(ensemble, policy);
+
+    Us = boost::get<0>(res);
+    UA = boost::get<1>(res);
+
+    if (length_normalize)
+      for (uint i=0; i<Us.rows(); ++i)
+        Us[i] /= traj->nframes();
+  } else {
+    // Must read in another trajectory, process it, and get the PCA
+    pTraj gold = createTrajectory(gold_standard_trajectory_name, model);
+    vector<AtomicGroup> gold_ensemble;
+    readTrajectory(gold_ensemble, subset, gold);
+    boost::tuple<vector<XForm>, greal, int> bres = iterativeAlignment(gold_ensemble);
+    cout << "# Gold Alignment converged to " << boost::get<1>(bres) << " in " << boost::get<2>(bres) << " iterations\n";
+
+    AtomicGroup avg = averageStructure(gold_ensemble);
+    policy = NoAlignPolicy(avg, local_average);
+    boost::tuple<RealMatrix, RealMatrix> res = pca(gold_ensemble, policy);
+
+    Us = boost::get<0>(res);
+    UA = boost::get<1>(res);
+
+
+    if (length_normalize)
+      for (uint i=0; i<Us.rows(); ++i)
+        Us[i] /= gold->nframes();
+  }
+
   // Now iterate over all requested block sizes...
 
   PercentProgress watcher;

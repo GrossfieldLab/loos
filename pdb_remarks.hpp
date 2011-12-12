@@ -21,8 +21,8 @@
 
 
 
-#if !defined(PDB_REMARKS_HPP)
-#define PDB_REMARKS_HPP
+#if !defined(LOOS_PDB_REMARKS_HPP)
+#define LOOS_PDB_REMARKS_HPP
 
 
 #include <iostream>

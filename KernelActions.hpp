@@ -23,8 +23,8 @@
 
 
 
-#if !defined(KERNELACTIONS_HPP)
-#define KERNELACTIONS_HPP
+#if !defined(LOOS_KERNELACTIONS_HPP)
+#define LOOS_KERNELACTIONS_HPP
 
 
 #include <iostream>

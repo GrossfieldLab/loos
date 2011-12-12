@@ -26,8 +26,8 @@
 */
 
 
-#if !defined(MATRIXIO_HPP)
-#define MATRIXIO_HPP
+#if !defined(LOOS_MATRIXIO_HPP)
+#define LOOS_MATRIXIO_HPP
 
 #include <iostream>
 #include <iomanip>

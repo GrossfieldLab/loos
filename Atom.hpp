@@ -20,8 +20,8 @@
 */
 
 
-#if !defined(ATOM_HPP)
-#define ATOM_HPP
+#if !defined(LOOS_ATOM_HPP)
+#define LOOS_ATOM_HPP
 
 #include <iostream>
 #include <string>
@@ -158,6 +158,9 @@ namespace loos {
     double mass(void) const;
     void mass(const double);
 
+    int atomType() const;
+    void atomType(const int);
+
     //! Recordname imported from the PDB for this Atom
     //! This is mainly for atoms that come from a PDB, i.e. whether or
     //! not they were an ATOM or a HETATM
@@ -241,6 +244,7 @@ namespace loos {
     std::string _icode;
     double _b, _q, _charge, _mass;
     std::string _segid, _pdbelement;
+    int _atom_type;
     GCoord _coords;
     unsigned long mask;
 

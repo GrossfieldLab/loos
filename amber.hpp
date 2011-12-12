@@ -22,8 +22,8 @@
 
 
 
-#if !defined(AMBER_HPP)
-#define AMBER_HPP
+#if !defined(LOOS_AMBER_HPP)
+#define LOOS_AMBER_HPP
 
 
 

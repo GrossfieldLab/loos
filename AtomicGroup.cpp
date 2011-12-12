@@ -146,12 +146,20 @@ namespace loos {
 
   // Removes all atoms contained in the passed group from this one...
   AtomicGroup& AtomicGroup::remove(const AtomicGroup& grp) {
-    std::vector<pAtom>::const_iterator i;
 
-    for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
-      deleteAtom(*i);
 
-    _sorted = false;
+    if (&grp == this)
+      atoms.clear();      // Assume caller meant to clean out AtomicGroup
+    else {
+      std::vector<pAtom>::const_iterator i;
+
+      for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
+        deleteAtom(*i);
+      
+      _sorted = false;
+      return(*this);
+    }
+
     return(*this);
   }
 
@@ -430,9 +438,8 @@ namespace loos {
     std::vector<int>::const_iterator citer;
     for (citer = bonds.begin(); citer != bonds.end(); citer++) {
       pAtom toi = working.findById(*citer);
-      if (toi == 0)
-        throw(std::runtime_error("Missing bonds while trying to walk the connectivity tree."));
-      walkBonds(current, seen, working, toi);
+      if (toi != 0)
+        walkBonds(current, seen, working, toi);
     }
   }
 
@@ -653,7 +660,7 @@ namespace loos {
 
     int max = atoms[0]->resid();
     for (i = atoms.begin()+1; i != atoms.end(); i++)
-      if ((*i)->resid() < max)
+      if ((*i)->resid() > max)
         max = (*i)->resid();
 
     return(max);

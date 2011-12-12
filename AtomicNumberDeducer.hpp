@@ -1,5 +1,5 @@
-#if !defined(ATOMIC_NUMBER_DEDUCER_HPP)
-#define ATOMIC_NUMBER_DEDUCER_HPP
+#if !defined(LOOS_ATOMIC_NUMBER_DEDUCER_HPP)
+#define LOOS_ATOMIC_NUMBER_DEDUCER_HPP
 
 #include <vector>
 

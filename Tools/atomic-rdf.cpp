@@ -73,6 +73,11 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 // Create the system and read the trajectory file
 AtomicGroup system = tropts->model;
 pTraj traj = tropts->trajectory;
+if (!(system.isPeriodic() || traj->hasPeriodicBox()))
+  {
+  cerr << "Error- Either the model or the trajectory must have periodic box information.\n";
+  exit(-1);
+  }
 
 // Extract our required command-line arguments
 string selection1 = ropts->value("selection1");  // String describing the first selection

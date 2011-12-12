@@ -165,6 +165,12 @@ cout << "# " << hdr << endl;
 //       to use pointer semantics to access it
 AtomicGroup system = tropts->model;
 pTraj traj = tropts->trajectory;
+if (!(system.isPeriodic() || traj->hasPeriodicBox()))
+  {
+  cerr << "Error- Either the model or the trajectory must have periodic box information.\n";
+  exit(-1);
+  }
+
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -257,6 +263,7 @@ while (traj->readFrame())
     {
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
+
     GCoord box = system.periodicBox(); 
     volume += box.x() * box.y() * box.z();
 

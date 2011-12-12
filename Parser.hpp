@@ -22,8 +22,8 @@
 
 
 
-#if !defined(PARSER_HPP)
-#define PARSER_HPP
+#if !defined(LOOS_PARSER_HPP)
+#define LOOS_PARSER_HPP
 
 #include <iostream>
 #include <sstream>

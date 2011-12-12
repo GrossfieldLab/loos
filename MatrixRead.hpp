@@ -28,8 +28,8 @@
 
 
 
-#if !defined(MATRIXREAD_HPP)
-#define MATRIXREAD_HPP
+#if !defined(LOOS_MATRIXREAD_HPP)
+#define LOOS_MATRIXREAD_HPP
 
 #include <iostream>
 #include <fstream>

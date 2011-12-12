@@ -1,3 +1,82 @@
+2011-12-12    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in AtomicGroup::maxResid() that gave erroneous results
+	(found by Ben Reynwar).
+
+2011-12-09    <tromo@spade.biophysics.rochester.edu>
+
+	* Added residue-contact-map tool which generates a "heat map" of
+	contacts between residues over a trajectory.
+
+2011-12-07    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in decorr_time where the time-range wasn't properly
+	handled and it would not generate output
+
+2011-11-30    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in XTC::updateGroupCoords() when passed a group
+	smaller than the trajectory frame (thanks to Ben Reynwar for
+	catching this one!)
+	* Fixed bug in subsetter where --verbose was ignored
+
+2011-11-22  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed bug in PDB reading code affected DOS formatted PDB files
+	with CONECT records causing them not to load.
+
+2011-11-17  Tod Romo  <tromo@gorgoneion>
+
+	* Changed header file CPP guards to have "LOOS_" as a prefix
+	(e.g. LOOS_ATOM_HPP rather than ATOM_HPP) to prevent potential
+	collisions with user code.
+	* Changed pdb reader to significantly speed up reading large PDBs
+	with CONECT records.
+
+2011-11-10    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed header output in tools so that it says "frame" rather
+	than "t".
+
+2011-11-02    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed AtomicGroup::splitByMolecule() so that missing bonds do
+	not throw an error.  Instead, they are ignored.
+	* Changed trajinfo to warn if there is a mismatch between the 
+	system size and the trajectory size
+	* Changed xy_rdf to emit 0's rather than NaN's if there are
+	missing atoms in a leaflet.
+
+2011-10-17    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed default spring constant for exponential springs to -6
+	(from -2).
+
+2011-09-29    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed XForm::rotate() so that the passed axis vector is
+	normalized internally.
+
+2011-09-15    <tromo@spade.biophysics.rochester.edu>
+
+	* Added Atom::atomType() to support tinkerXYZ atom type info
+
+	* Fixed bug in density-dist where the default window was not 0,
+	causing the time-series to always be written.
+
+2011-09-14    <tromo@spade.biophysics.rochester.edu>
+
+	* Added check in rdf-based tools to ensure either the model or the
+	trajectory has periodic box information.
+	* Added --any mode to hcorrelations.  This computes the
+	time-correlation for whether this is any hydrogen bound, rather
+	than a specific hydrogen.
+
+2011-09-08 <alan> 
+    * Added new option to merge-trj (selection-is-split) to handle the case 
+	where the centering selection is split across an image boundary more 
+	robustly.  This is basically the same algorithm that's in recenter-trj
+
 2011-08-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in effsize.pl where the seed value was not correctly

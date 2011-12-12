@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(AMBER_RST_HPP)
-#define AMBER_RST_HPP
+#if !defined(LOOS_AMBER_RST_HPP)
+#define LOOS_AMBER_RST_HPP
 
 
 #include <string>

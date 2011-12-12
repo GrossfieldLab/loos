@@ -27,8 +27,8 @@
 */
 
 
-#if !defined(MATRIXWRITE_HPP)
-#define MATRIXWRITE_HPP
+#if !defined(LOOS_MATRIXWRITE_HPP)
+#define LOOS_MATRIXWRITE_HPP
 
 #include <iostream>
 #include <fstream>

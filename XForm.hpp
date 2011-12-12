@@ -23,8 +23,8 @@
 
 
 
-#if !defined(XFORM_HPP)
-#define XFORM_HPP
+#if !defined(LOOS_XFORM_HPP)
+#define LOOS_XFORM_HPP
 
 
 #include <iostream>

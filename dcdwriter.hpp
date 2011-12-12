@@ -21,8 +21,8 @@
 
 
 
-#if !defined(DCDWRITER_HPP)
-#define DCDWRITER_HPP
+#if !defined(LOOS_DCDWRITER_HPP)
+#define LOOS_DCDWRITER_HPP
 
 #include <ios>
 #include <iostream>
@@ -232,7 +232,6 @@ namespace loos {
       _stream = new std::fstream(fname.c_str(), mode);
       if (!_stream->good())
         throw(std::runtime_error("Error while opening output DCD file"));
-      std::streampos p = _stream->tellg();
       nodelete = false;
     }
 

@@ -22,8 +22,8 @@
 
 
 
-#if !defined(DCD_UTILS_HPP)
-#define DCD_UTILS_HPP
+#if !defined(LOOS_DCD_UTILS_HPP)
+#define LOOS_DCD_UTILS_HPP
 
 #include <iostream>
 #include <vector>

@@ -33,7 +33,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.7.2'
+loos_version = '1.7.3'
 
 
 # Principal options...
@@ -136,6 +136,8 @@ env.Append(LEXFLAGS=['-s'])
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework vecLib')
+elif platform == 'freebsd8':
+   env.Append(LIBS=['lapack', 'blas'])
 elif platform == 'linux2':
    noatlas = 0
 
@@ -156,15 +158,11 @@ elif platform == 'linux2':
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
    if (re.search("[Ss][Uu][Ss][Ee]", f)):
       LIBS_LINKED_TO = 'lapack blas'
-      LIBS_PATHS_TO = "LAPACK"
+      LIBS_PATHS_TO = ""
 
-      # Ubuntu MAY require gfortran...more recent builds seem not to
-   #elif (re.search("[Uu]buntu", f)):
-      # LIBS_LINKED_TO = 'lapack blas gfortran'
-
-      # Fedora & Similar
-   #else
-
+   elif (re.search("[Uu]buntu", f)):
+      LIBS_LINKED_TO = 'lapack_atlas lapack atlas blas'
+   
 
    if LIBS_OVERRIDE != '':
       LIBS_LINKED_TO = LIBS_OVERRIDE

@@ -212,6 +212,9 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
 
+  if (model.size() != traj->natoms())
+    cerr << boost::format("WARNING- the trajectory has %d atoms but the system defines %d\n") % traj->natoms() % model.size();
+
   // Export names for subsequent functions
   model_name = tropts->model_name;
   traj_name = tropts->traj_name;

@@ -24,8 +24,8 @@
 
 
 
-#if !defined(SELECTORS_HPP)
-#define SELECTORS_HPP
+#if !defined(LOOS_SELECTORS_HPP)
+#define LOOS_SELECTORS_HPP
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>

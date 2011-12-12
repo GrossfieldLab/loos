@@ -127,7 +127,7 @@ namespace loos {
 
     // Multiply A*A'...
     double C[9];
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__CYGWIN__)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
     char ta = 'N';
     char tb = 'T';
     f77int three = 3;
@@ -204,7 +204,7 @@ namespace loos {
 
     // Compute correlation matrix...
     double R[9];
-#if defined(__linux__) || defined(__CYGWIN__)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
     char ta = 'N';
     char tb = 'T';
     f77int three = 3;
@@ -243,7 +243,7 @@ namespace loos {
     // Compute the rotation matrix...
     double M[9];
 
-#if defined(__linux__) || defined(__CYGWIN__)
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
 
     dgemm_(&ta, &ta, &three, &three, &three, &one, U, &three, Vt, &three, &zero, M, &three);
 

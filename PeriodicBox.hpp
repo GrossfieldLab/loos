@@ -23,8 +23,8 @@
 
 
 
-#if !defined(PERIODICBOX_HPP)
-#define PERIODICBOX_HPP
+#if !defined(LOOS_PERIODICBOX_HPP)
+#define LOOS_PERIODICBOX_HPP
 
 
 

@@ -133,6 +133,10 @@ namespace loos {
     t = parseStringAs<std::string>(s, 78, 2);
 
     append(pa);
+
+    // Record which pAtom belongs to this atomid.
+    // NOTE: duplicate atomid's are NOT checked for
+    _atomid_to_patom[pa->id()] = pa;
   }
 
 
@@ -187,6 +191,19 @@ namespace loos {
   }
 
 
+  // Private function to search the map of atomid's -> pAtoms
+  // Throws an error if the atom is not found
+  pAtom PDB::findAtom(const int id) {
+    std::map<int, pAtom>::iterator i = _atomid_to_patom.find(id);
+    if (i == _atomid_to_patom.end()) {
+      std::ostringstream oss;
+      oss << "Cannot find atom corresponding to atomid " << id;
+      throw(PDB::BadConnectivity(oss.str()));
+    }
+    return(i->second);
+  }
+
+
   // Parse CONECT records, updating the referenced atoms...
   // Couple of issues:
   //
@@ -195,10 +212,18 @@ namespace loos {
   // salt-bridged... 
   //
   //    No check is made for overflow of fields...
+  //
+  //    Adding a bond requires finding the bound atoms, which can
+  // be expensive, so we build-up a map of atomid to pAtoms as the
+  // ATOM records are being parsed.  This is then searched to find
+  // the pAtom that matches the CONECT atomid (rather than using
+  // findById()).
 
   void PDB::parseConectRecord(const std::string& s) {
     int bound_id = parseStringAs<int>(s, 6, 5);
-    pAtom bound = findById(bound_id);
+
+    
+    pAtom bound = findAtom(bound_id);
     if (bound == 0)
       throw(PDB::BadConnectivity("Cannot find primary atom " + s.substr(6, 5)));
 
@@ -206,11 +231,13 @@ namespace loos {
     // Should we do this? or separate them out?  Hmmm...
     for (int i=0; i<8; ++i) {
       int j = i * 5 + 11;
+      if (static_cast<uint>(j) >= s.length())
+        break;
       std::string t = s.substr(j, 5);
       if (emptyString(t))
         break;
       int id = parseStringAsHybrid36(t);
-      pAtom boundee = findById(id);
+      pAtom boundee = findAtom(id);
       if (boundee == 0)
         throw(PDB::BadConnectivity("Cannot find bound atom " + t));
       bound->addBond(boundee);
@@ -290,6 +317,9 @@ namespace loos {
         }
       }
     }
+
+    // Clean-up temporary storage...
+    _atomid_to_patom.clear();
 
     // Do some post-extraction...
     if (loos::remarksHasBox(_remarks)) {

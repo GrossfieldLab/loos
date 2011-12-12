@@ -28,8 +28,8 @@
 */
 
 
-#if !defined(TRR_HPP)
-#define TRR_HPP
+#if !defined(LOOS_TRR_HPP)
+#define LOOS_TRR_HPP
 #include <ios>
 #include <iostream>
 #include <string>

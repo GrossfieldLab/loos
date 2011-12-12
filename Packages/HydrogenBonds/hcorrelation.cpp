@@ -57,6 +57,7 @@ string model_name;
 vString traj_names;
 uint maxtime;
 uint skip;
+bool any_hydrogen;
 
 // ---------------
 
@@ -77,6 +78,7 @@ void parseArgs(int argc, char *argv[]) {
       ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
       ("maxtime,m", po::value<uint>(&maxtime)->default_value(0), "Max time for correlation (0 = auto-size)")
       ("skip,s", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of each trajectory")
+      ("any", po::value<bool>(&any_hydrogen)->default_value(false), "Correlation for ANY hydrogen bound")
       ("stderr,S", po::value<bool>(&use_stderr)->default_value(0), "Report standard error rather than standard deviation");
 
 
@@ -206,25 +208,43 @@ int main(int argc, char *argv[]) {
         traj->readFrame(skip-1);
 
       BondMatrix bonds = j->findHydrogenBondsMatrix(acceptors, traj, model);
-      
-      for (uint i=0; i<bonds.cols(); ++i) {
-        bool found = false;
-        for (uint j=0; j<bonds.rows(); ++j)
-          if (bonds(j, i) != 0) { 
-            found = true;
-            break;
-          }
-
-        if (found) {
-          TimeSeries<double> ts;
-          for (uint j=0; j<bonds.rows(); ++j)
-            ts.push_back(bonds(j, i));
-          TimeSeries<double> tcorr = ts.correl(maxtime);
-          vecDouble vtmp;
-          copy(tcorr.begin(), tcorr.end(), back_inserter(vtmp));
-          correlations.push_back(vtmp);
+      if (any_hydrogen) {
+        TimeSeries<double> ts;
+        for (uint j=0; j<bonds.rows(); ++j) {
+          double val = 0.0;
+          for (uint i=0; i<bonds.cols(); ++i)
+            if (bonds(j, i) != 0) {
+              val = 1.0;
+              break;
+            }
+          ts.push_back(val);
         }
-
+        TimeSeries<double> tcorr = ts.correl(maxtime);
+        vecDouble vtmp;
+        copy(tcorr.begin(), tcorr.end(), back_inserter(vtmp));
+        correlations.push_back(vtmp);
+            
+      } else {
+        for (uint i=0; i<bonds.cols(); ++i) {
+          bool found = false;
+          for (uint j=0; j<bonds.rows(); ++j)
+            if (bonds(j, i) != 0) { 
+              found = true;
+              break;
+            }
+          
+          if (found) {
+            TimeSeries<double> ts;
+            for (uint j=0; j<bonds.rows(); ++j)
+              ts.push_back(bonds(j, i));
+            TimeSeries<double> tcorr = ts.correl(maxtime);
+            vecDouble vtmp;
+            copy(tcorr.begin(), tcorr.end(), back_inserter(vtmp));
+            correlations.push_back(vtmp);
+          }
+          
+        }
+        
       }
 
     }

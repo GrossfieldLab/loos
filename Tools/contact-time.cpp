@@ -334,8 +334,8 @@ int main(int argc, char *argv[]) {
     myselves = probe.splitByUniqueSegid();
   }
 
-  DoubleMatrix M(rows, cols);
   uint t = 0;
+  DoubleMatrix M(rows, cols);
 
   // Setup our progress counter since this can be a time-consuming
   // program, but only if verbose output is requested.

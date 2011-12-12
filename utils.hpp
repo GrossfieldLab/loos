@@ -22,8 +22,8 @@
 
 
 
-#if !defined(UTILS_HPP)
-#define UTILS_HPP
+#if !defined(LOOS_UTILS_HPP)
+#define LOOS_UTILS_HPP
 
 #include <iostream>
 #include <sstream>
@@ -76,6 +76,24 @@ namespace loos {
     }
 
     return(data);
+  }
+
+  template<typename T>
+  std::vector< std::vector<T> > readTable(std::istream& is) {
+    std::vector< std::vector<T> > table;
+    for (;;) {
+      std::string s = getNextLine(is, 0);
+      if (s.empty())
+        break;
+
+      std::istringstream iss(s);
+      T datum;
+      std::vector<T> row;
+      while (iss >> datum)
+        row.push_back(datum);
+      table.push_back(row);
+    }
+    return(table);
   }
 
   //! Create an invocation header

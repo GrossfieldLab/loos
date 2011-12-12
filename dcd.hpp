@@ -21,8 +21,8 @@
 
 
 
-#if !defined(DCD_HPP)
-#define DCD_HPP
+#if !defined(LOOS_DCD_HPP)
+#define LOOS_DCD_HPP
 
 
 #include <iostream>

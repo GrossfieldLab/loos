@@ -47,8 +47,6 @@ namespace po = loos::OptionsFramework::po;
 const bool debugging = false;
 uint verbosity;
 
-string model_name, traj_name, selection;
-uint seed = 0;
 uint nreps = 5;
 double frac;
 
@@ -87,69 +85,6 @@ public:
 
 // @endcond
 
-
-
-void parseOptions(int argc, char *argv[]) {
-
-  string hdr = invocationHeader(argc, argv);
-
-
-  try {
-    po::options_description visible("Allowed options", 120);
-    visible.add_options()
-      ("help", "Produce this help message")
-      ("verbosity,v", po::value<uint>(&verbosity)->default_value(0), "Verbosity level")
-      ("seed,s", po::value<uint>(&seed)->default_value(0), "Random seed (0 = auto-initialize)")
-      ("nrange,n", po::value<string>()->default_value("2,4,10"), "Range of N to use")
-      ("range,r", po::value<string>(), "Range of frames from trajectory to use")
-      ("fraction,f", po::value<double>(&frac)->default_value(0.05), "Bin fraction")
-      ("repetitions,R", po::value<uint>(&nreps)->default_value(5), "# of repetitions to use for each N");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model")
-      ("traj", po::value<string>(&traj_name), "Trajectory")
-      ("sel", po::value<string>(&selection), "Selection")
-      ("trange", po::value<string>(), "T-range");
-    
-    po::options_description command_line;
-    command_line.add(visible).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("sel", 1);
-    p.add("trange", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("sel") && vm.count("trange"))) {
-      cerr << "Usage- " << argv[0] << " [options] model traj selection t-range\n";
-      cerr << visible;
-      exit(-1);
-    }
-
-    string s = vm["trange"].as<string>();
-    trange = parseRangeList<uint>(s);
-
-    s = vm["nrange"].as<string>();
-    nrange = parseRangeList<uint>(s);
-
-    if (vm.count("range")) {
-      s = vm["range"].as<string>();
-      indices = parseRangeList<uint>(s);
-    }
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-
-}
 
 
 
@@ -302,12 +237,14 @@ int main(int argc, char *argv[]) {
   opts::BasicConvergence *copts = new opts::BasicConvergence;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments("trange", "T-range");
-
+  
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(tropts).add(copts).add(topts).add(ropts);
 
   if (!options.parse(argc, argv))
     exit(-1);
+
+  verbosity = bopts->verbosity;
 
   cout << "# " << hdr << endl;
   cout << "# " << vectorAsStringWithCommas<string>(options.print()) << endl;
@@ -317,8 +254,10 @@ int main(int argc, char *argv[]) {
   pTraj traj = tropts->trajectory;
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
+  string trange_spec = ropts->value("trange");
+  trange = parseRangeList<uint>(trange_spec);
+
   indices = assignTrajectoryFrames(traj, tropts->frame_index_spec, tropts->skip);
-    
 
   vector<DoubleMatrix> results;
   for (uint k = 0; k<nreps; ++k) {

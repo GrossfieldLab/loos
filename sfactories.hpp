@@ -24,8 +24,8 @@
 
 
 
-#if !defined(SFACTORIES_HPP)
-#define SFACTORIES_HPP
+#if !defined(LOOS_SFACTORIES_HPP)
+#define LOOS_SFACTORIES_HPP
 
 
 

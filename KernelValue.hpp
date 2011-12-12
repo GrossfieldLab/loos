@@ -22,8 +22,8 @@
 
 
 
-#if !defined(KERNELVALUE_HPP)
-#define KERNELVALUE_HPP
+#if !defined(LOOS_KERNELVALUE_HPP)
+#define LOOS_KERNELVALUE_HPP
 
 #include <iostream>
 #include <string>

@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
   
 
   cout << "# " << hdr << endl;
-  cout << "# t n\n";
+  cout << "# frame n\n";
   DensityGrid<int> grid;
 
   string grid_name = ropts->value("grid");

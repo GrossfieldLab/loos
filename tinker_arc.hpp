@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(TINKER_ARC_HPP)
-#define TINKER_ARC_HPP
+#if !defined(LOOS_TINKER_ARC_HPP)
+#define LOOS_TINKER_ARC_HPP
 
 
 #include <iostream>

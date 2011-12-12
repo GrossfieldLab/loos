@@ -20,8 +20,8 @@
 */
 
 
-#if !defined(GRO_HPP)
-#define GRO_HPP
+#if !defined(LOOS_GRO_HPP)
+#define LOOS_GRO_HPP
 
 
 #include <iostream>

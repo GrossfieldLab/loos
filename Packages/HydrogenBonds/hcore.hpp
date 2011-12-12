@@ -28,8 +28,8 @@
 
 // @cond PACKAGES_INTERNAL
 
-#if !defined(HCORE_HPP)
-#define HCORE_HPP
+#if !defined(LOOS_HCORE_HPP)
+#define LOOS_HCORE_HPP
 
 #include <loos.hpp>
 

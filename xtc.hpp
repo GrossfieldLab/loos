@@ -28,8 +28,8 @@
 */
 
 
-#if !defined(XTC_HPP)
-#define XTC_HPP
+#if !defined(LOOS_XTC_HPP)
+#define LOOS_XTC_HPP
 #include <ios>
 #include <iostream>
 #include <string>

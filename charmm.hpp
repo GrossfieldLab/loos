@@ -21,8 +21,8 @@
 
 
 
-#if !(defined CHARMM_HPP)
-#define CHARMM_HPP
+#if !(defined LOOS_CHARMM_HPP)
+#define LOOS_CHARMM_HPP
 
 #include <ios>
 #include <fstream>

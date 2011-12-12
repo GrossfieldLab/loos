@@ -120,12 +120,12 @@ int main(int argc, char *argv[]) {
   else
     objects.push_back(subset);
 
-  cout << "# 1 2  3  4  5   6    7    8    9    10      11  12  13  14:16 17:19 20:22\n";
-  cout << "# t cX cY cZ Vol BoxX BoxY BoxZ rgyr pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
+  cout << "# 1     2  3  4  5   6    7    8    9    10      11  12  13  14:16 17:19 20:22\n";
+  cout << "# frame cX cY cZ Vol BoxX BoxY BoxZ rgyr pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
 
   
 
-  uint t=tropts->skip;
+  uint t=0;
   while (traj->readFrame()) {
     traj->updateGroupCoords(subset);
     if (zabs)

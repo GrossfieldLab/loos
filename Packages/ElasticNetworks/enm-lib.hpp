@@ -26,8 +26,8 @@
  *@{
  */
 
-#if !defined(ENMLIB_HPP)
-#define ENMLIB_HPP
+#if !defined(LOOS_ENMLIB_HPP)
+#define LOOS_ENMLIB_HPP
 
 #include <loos.hpp>
 #include "hessian.hpp"

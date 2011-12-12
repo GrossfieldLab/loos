@@ -24,8 +24,8 @@
 
 
 
-#if !defined(MATRIX44_HPP)
-#define MATRIX44_HPP
+#if !defined(LOOS_MATRIX44_HPP)
+#define LOOS_MATRIX44_HPP
 
 #include <iostream>
 #include <stdexcept>

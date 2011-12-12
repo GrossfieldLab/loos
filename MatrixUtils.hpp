@@ -26,8 +26,8 @@
 */
 
 
-#if !defined(LAB_MATRIX_UTILS_HPP)
-#define LAB_MATRIX_UTILS_HPP
+#if !defined(LOOS_MATRIX_UTILS_HPP)
+#define LOOS_MATRIX_UTILS_HPP
 
 #include <string>
 #include <vector>

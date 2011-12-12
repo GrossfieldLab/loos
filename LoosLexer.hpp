@@ -23,8 +23,8 @@
 
 
 
-#if !defined(LOOSLEXER_HPP)
-#define LOOSLEXER_HPP
+#if !defined(LOOS_LEXER_HPP)
+#define LOOS_LEXER_HPP
 
 #include <string>
 

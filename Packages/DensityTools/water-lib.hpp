@@ -27,8 +27,8 @@
 
 
 
-#if !defined(WATER_LIB_HPP)
-#define WATER_LIB_HPP
+#if !defined(LOOS_WATER_LIB_HPP)
+#define LOOS_WATER_LIB_HPP
 
 
 #include <loos.hpp>

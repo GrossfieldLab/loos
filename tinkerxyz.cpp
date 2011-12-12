@@ -67,7 +67,6 @@ namespace loos {
     //gint resid=1;             // Tinker doesn't have residues
     //std::string resname("");       // Tinker doesn't have residues
     std::string atomname;  
-    std::string atomtype;          // Tinker atom types are numbers -- crap!
     //greal charge=0.0;
     //greal mass=1.0;
     //gint atomic_number = 1;
@@ -88,7 +87,9 @@ namespace loos {
     ss >> z;
     pa->coords(GCoord(x,y,z));
 
+    int atomtype;
     ss >> atomtype;
+    pa->atomType(atomtype);
 
     // Now read in the atoms to which this atom is bonded
     int bonded_atom;

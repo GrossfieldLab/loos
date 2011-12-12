@@ -410,13 +410,14 @@ int main(int argc, char *argv[]) {
   }
   
   cout << "# " << hdr << endl;
-  cout << "# t\t";
+  cout << "# frame\t";
 
   // Construct the header of what torsions were computed...
   vector<string> torsion_names = extractor->names();
   copy(torsion_names.begin(), torsion_names.end(), ostream_iterator<string>(cout, "\t"));
   cout << endl;
 
+  uint t = 0;
   // Iterate over the requested frames from the trajectory...
   for (vector<uint>::iterator frameno = indices.begin(); frameno != indices.end(); ++frameno) {
     traj->readFrame(*frameno);
@@ -429,7 +430,7 @@ int main(int argc, char *argv[]) {
     // Iterate over each residue...
     vvGroup::iterator vvi;
     for (vvi = torsion_atoms.begin(); vvi != torsion_atoms.end(); ++vvi) {
-      cout << *frameno << " ";
+      cout << t << " ";
 
       // Iterate over each group of atoms to use for torsions within
       // the residue...
@@ -442,6 +443,8 @@ int main(int argc, char *argv[]) {
       }
       cout << endl;
     }
+
+    ++t;
   }
 
 }

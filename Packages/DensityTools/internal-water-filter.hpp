@@ -26,8 +26,8 @@
 
 
 
-#if !defined(INTERNAL_WATER_FILTER_HPP)
-#define INTERNAL_WATER_FILTER_HPP
+#if !defined(LOOS_INTERNAL_WATER_FILTER_HPP)
+#define LOOS_INTERNAL_WATER_FILTER_HPP
 
 #include <loos.hpp>
 #include <DensityGrid.hpp>

@@ -21,8 +21,8 @@
 
 
 
-#if !defined(ENSEMBLES_HPP)
-#define ENSEMBLES_HPP
+#if !defined(LOOS_ENSEMBLES_HPP)
+#define LOOS_ENSEMBLES_HPP
 
 #include <vector>
 #include <boost/tuple/tuple.hpp>

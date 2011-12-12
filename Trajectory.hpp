@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if !defined(TRAJECTORY_HPP)
-#define TRAJECTORY_HPP
+#if !defined(LOOS_TRAJECTORY_HPP)
+#define LOOS_TRAJECTORY_HPP
 
 #include <iostream>
 #include <string>

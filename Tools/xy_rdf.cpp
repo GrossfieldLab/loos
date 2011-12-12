@@ -167,6 +167,11 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 // copy the command line variables to real variable names
 AtomicGroup system = tropts->model;
 pTraj traj = tropts->trajectory;
+if (!(system.isPeriodic() || traj->hasPeriodicBox()))
+  {
+  cerr << "Error- Either the model or the trajectory must have periodic box information.\n";
+  exit(-1);
+  }
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -356,8 +361,18 @@ while (traj->readFrame())
             double d_outer = d_inner + bin_width;
             double norm = M_PI*(d_outer*d_outer - d_inner*d_inner);
 
-            double upper = hist_upper[m]/(norm*upper_expected);
-            double lower = hist_lower[m]/(norm*lower_expected);
+            double upper = 0.0;
+            if (num_upper > 0)
+            {
+              upper = hist_upper[m]/(norm*upper_expected);
+            }
+
+            double lower = 0.0;
+            if (num_lower > 0)
+            {
+              lower = hist_lower[m]/(norm*lower_expected);
+            }
+
             double total = (hist_upper[m] + hist_lower[m])/
                                 (norm*(upper_expected + lower_expected) );
             cum += (hist_upper[m] + hist_lower[m])/(group1.size()*timeseries_interval);
@@ -424,8 +439,18 @@ for (int i = 0; i < num_bins; i++)
     double d_outer = d_inner + bin_width;
     double norm = M_PI*(d_outer*d_outer - d_inner*d_inner);
 
-    double upper = hist_upper_total[i]/(norm*upper_expected);
-    double lower = hist_lower_total[i]/(norm*lower_expected);
+    double upper = 0.0;
+    if (num_upper > 0)
+    {
+      upper = hist_upper_total[i]/(norm*upper_expected);
+    }
+
+    double lower = 0.0;
+    if (num_lower > 0)
+    {
+      lower = hist_lower_total[i]/(norm*lower_expected);
+    }
+
     double total = (hist_upper_total[i] + hist_lower_total[i])/
                         (norm*(upper_expected + lower_expected));
     cum += (hist_upper_total[i] + hist_lower_total[i])

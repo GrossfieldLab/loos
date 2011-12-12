@@ -20,8 +20,8 @@
 */
 
 
-#if !defined(EXCEPTIONS_HPP)
-#define EXCEPTIONS_HPP
+#if !defined(LOOS_EXCEPTIONS_HPP)
+#define LOOS_EXCEPTIONS_HPP
 
 
 #include <sstream>

@@ -49,6 +49,7 @@ public:
   ToolOptions() :
     symmetrize(false),
     auto_all(true),
+    window(0),
     calc_type_desc("electron")
   { }
 
@@ -215,8 +216,11 @@ int main(int argc, char *argv[]) {
             }
 
         // write the header
-        outfile << "# Z\tAllAtoms";
-        for (uint i=1; i<subsets.size(); i++) {
+        outfile << "# Z\t";
+        if (topts->auto_all) {
+          outfile << "AllAtoms\t";
+        }
+        for (uint i=(topts->auto_all ? 1 : 0); i<subsets.size(); i++) {
           outfile << " Set(" << i <<") "; 
         }
         outfile << endl;
@@ -252,7 +256,7 @@ int main(int argc, char *argv[]) {
 
   // Normalize by the number of frames and output the average charge density
   cout << "# Z\t" << (topts->auto_all ? "AllAtoms" : "");
-  for (uint i=1; i<subsets.size(); i++) {
+  for (uint i=(topts->auto_all ? 1:0); i<subsets.size(); i++) {
     cout << " Set(" << i <<") "; 
   }
   cout << endl;

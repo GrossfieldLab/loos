@@ -61,7 +61,8 @@ namespace loos {
   }
 
 
-  void XForm::rotate(const GCoord& v, const greal angle) {
+  void XForm::rotate(const GCoord& ov, const greal angle) {
+    GCoord v = ov / ov.length();
     greal theta = PI * angle / 180.0;
     greal c = cos(theta);
     greal s = sin(theta);

@@ -22,8 +22,8 @@
 
 
 
-#if !defined(PDB_HPP)
-#define PDB_HPP
+#if !defined(LOOS_PDB_HPP)
+#define LOOS_PDB_HPP
 
 
 
@@ -32,6 +32,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <vector>
+#include <map>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
@@ -141,6 +142,10 @@ namespace loos {
     void read(std::istream& is);
 
   private:
+    class ComparePatoms {
+      bool operator()(const pAtom& a, const pAtom& b) { return(a->id() < b->id()); }
+    };
+
 
     //! Create a PDB from an AtomicGroup (i.e. upcast)
     PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
@@ -158,6 +163,8 @@ namespace loos {
 
     friend std::ostream& FormatConectRecords(std::ostream&, PDB&);
 
+    pAtom findAtom(const int i);
+
   private:
     bool _show_charge;
     bool _auto_ter;
@@ -165,7 +172,7 @@ namespace loos {
     bool strictness_policy;
     Remarks _remarks;
     UnitCell cell;
-
+    std::map<int, pAtom> _atomid_to_patom;
   };
 
 }

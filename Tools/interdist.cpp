@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup src = selectAtoms(model, topts->target_name);
 
-  cout << "# t ";
+  cout << "# frame ";
   
   vector<AtomicGroup> targets;
   for (uint i=0; i<topts->selection_names.size(); ++i) {
@@ -224,7 +224,6 @@ int main(int argc, char *argv[]) {
     cout << "d_0_" << i << " ";
   }
   cout << endl;
-
 
   for (uint j=0; j<indices.size(); ++j) {
     traj->readFrame(indices[j]);

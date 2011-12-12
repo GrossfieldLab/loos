@@ -23,8 +23,8 @@
 
 
 
-#if !defined(KERNEL_HPP)
-#define KERNEL_HPP
+#if !defined(LOOS_KERNEL_HPP)
+#define LOOS_KERNEL_HPP
 
 #include <vector>
 

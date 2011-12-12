@@ -196,6 +196,7 @@ int main(int argc, char *argv[]) {
   vector<SAGroup> acceptors;
   for (uint i=0; i<acceptor_selections.size(); ++i) {
     SAGroup acceptor = SimpleAtom::processSelection(acceptor_selections[i], model, use_periodicity);
+    cout << boost::format("# Group %d size is %d\n") % i % acceptor.size();
     acceptors.push_back(acceptor);
   }
   

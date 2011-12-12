@@ -25,8 +25,8 @@
  *@{
  */
 
-#if !defined(SPRING_FUNCTIONS_HPP)
-#define SPRING_FUNCTIONS_HPP
+#if !defined(LOOS_SPRING_FUNCTIONS_HPP)
+#define LOOS_SPRING_FUNCTIONS_HPP
 
 
 
@@ -237,7 +237,7 @@ namespace ENM {
   class ExponentialDistance : public UniformSpringFunction {
   public:
     ExponentialDistance(const double s) : scale(s) { }
-    ExponentialDistance() : scale(-2.0) { }
+    ExponentialDistance() : scale(-6.0) { }
 
     std::string name() const { return("ExponentialDistance"); }
 
