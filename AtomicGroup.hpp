@@ -278,7 +278,10 @@ namespace loos {
     std::vector<AtomicGroup> splitByUniqueSegid(void) const;
 
     //! Returns a vector of AtomicGroups split based on bond connectivity
-    std::vector<AtomicGroup> splitByMolecule(void);
+    std::vector<AtomicGroup> splitByMolecule(void) const {
+      AtomicGroup sortable = *this;
+      return(sortable.sortingSplitByMolecule());
+    }
 
     //! Returns a vector of AtomicGroups, each comprising a single residue
     std::vector<AtomicGroup> splitByResidue(void) const;
@@ -585,6 +588,8 @@ namespace loos {
     GMatrix alignOnto(const AtomicGroup&);
 
   private:
+
+    std::vector<AtomicGroup> sortingSplitByMolecule();
 
     // *** Internal routines ***  See the .cpp file for details...
     void sorted(bool b) { _sorted = b; }

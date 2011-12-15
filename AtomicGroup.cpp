@@ -374,9 +374,13 @@ namespace loos {
    *
    * If we find a bond that goes to an atom that does not exist in the
    * current group, a std::runtime_error is thrown.
+   *
+   * Note that for efficiency of atom lookup, the group gets sorted.
+   * This is why the public function splitByMolecule() makes a copy of
+   * itself and calls sortingSplitByMolecule() on that...
    */
 
-  std::vector<AtomicGroup> AtomicGroup::splitByMolecule(void) {
+  std::vector<AtomicGroup> AtomicGroup::sortingSplitByMolecule(void) {
     std::vector<AtomicGroup> molecules;
 
     // If no connectivity, just return the entire group...

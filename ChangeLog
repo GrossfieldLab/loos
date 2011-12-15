@@ -1,3 +1,8 @@
+2011-12-15    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed AtomicGroup::splitByMolecule() to be const.  A copy of
+	the AtomicGroup is made and then used to split into molecules.
+
 2011-12-12    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::maxResid() that gave erroneous results
