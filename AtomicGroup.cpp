@@ -470,9 +470,14 @@ namespace loos {
       } 
       residue.append(*ci);
     }
-    
+
     if (residue.size() != 0)
       residues.push_back(residue);
+
+
+    // Copy the box information
+    for (std::vector<AtomicGroup>::iterator i = residues.begin(); i != residues.end(); ++i)
+      i->box = box;
     
     return(residues);
   }

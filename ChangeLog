@@ -1,3 +1,8 @@
+2011-12-19    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed AtomicGroup::splitByResidue() to preserve the periodic box
+	information in the split residues
+
 2011-12-15    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed AtomicGroup::splitByMolecule() to be const.  A copy of
