@@ -79,6 +79,44 @@ namespace loos {
 
 
     // --------------------------------------------------------------------------------
+    string WaterFilterRadius::name(void) const {
+      stringstream s;
+      s << boost::format("WaterFilterRadius(radius=%f)") % radius_;
+      return(s.str());
+    }
+    
+
+    vector<int> WaterFilterRadius::filter(const AtomicGroup& solv, const AtomicGroup& prot) {
+      vector<int> result(solv.size());
+
+      double r2 = radius_ * radius_;
+      for (uint j=0; j<prot.size(); ++j)
+        for (uint i=0; i<solv.size(); ++i)
+          if (prot[j]->coords().distance2(solv[i]->coords()) <= r2) {
+            result[i] = 1;
+            break;
+          }
+
+      return(result);
+    }
+
+
+    double WaterFilterRadius::volume(void) {
+      GCoord v = bdd_[1] - bdd_[0];
+      return(v[0] * v[1] * v[2]);
+    }
+
+  
+    vector<GCoord> WaterFilterRadius::boundingBox(const AtomicGroup& grp) {
+      vector<GCoord> bdd = grp.boundingBox();
+      bdd[0] = bdd[0] - radius_;
+      bdd[1] = bdd[1] + radius_;
+
+      return(bdd);
+    }
+
+
+    // --------------------------------------------------------------------------------
 
 
     string WaterFilterAxis::name(void) const {
