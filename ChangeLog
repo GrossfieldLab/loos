@@ -1,3 +1,8 @@
+2011-12-20    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed subsetter so that connectivity is preserved when
+	extracting a subset
+
 2011-12-19    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed AtomicGroup::splitByResidue() to preserve the periodic box
