@@ -162,6 +162,16 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
   }
 
   //! Write an entire matrix to a stream
+  /**
+   * Primary front-end to writing an entire ASCII matrix to a stream.
+   * Will use the default C++ type-to-string conversion for the matrix
+   * data type (e.g. float).
+   * Example:
+\code
+Matrix<double> M;
+writeAsciiMatrix(cout, M, "Eigenvector matrix");
+\endcode
+   */
   template<class T, class P, template<typename> class S>
   std::ostream& writeAsciiMatrix(std::ostream& os, const Math::Matrix<T,P,S>& M,
                                  const std::string& meta, const bool trans = false) {
@@ -208,6 +218,12 @@ WriteAsciiMatrix(filename, M, meta, false, PreciseMatrixFormatter<double>(16,10)
 
 
   //! Write an entire matrix to a file
+  /**
+   * Principal front-end to writing out ASCII matrices.  Given a
+   * filename, matrix, metadata, and optional flag for whether or not
+   * the matrix is transposed interally, will write the entire matrix
+   * using the default C++ type-to-string conversion.
+   */
   template<class T, class P, template<typename> class S>
   void writeAsciiMatrix(const std::string& fname, const Math::Matrix<T,P,S>& M,
                         const std::string& meta, const bool trans = false) {

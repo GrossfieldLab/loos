@@ -1,3 +1,7 @@
+2011-12-21    <tromo@spade.biophysics.rochester.edu>
+
+	* Added dox for writeAsciiMatrix()
+
 2011-12-20    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed subsetter so that connectivity is preserved when
