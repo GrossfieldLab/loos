@@ -1371,6 +1371,26 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
+\section release174 Version 1.7.4 (12-23-2011)
+\subsection r174_bugs Bug Fixes
+<UL>
+  <LI> Fixed bug in AtomicGroup::maxResid() that gave erroneous
+  results (found by Ben Reynwar).
+  <LI> Fixed AtomicGroup::splitByResidue() so that it preserves the
+  periodic box information in the split residues.
+</UL>
+\subsection r174_added_changed Added, Changed, or Otherwise Notable
+<UL>
+  <LI> Changed AtomicGroup::splitByMolecule() to be a const function
+  (internally, it makes a copy of the current group prior to
+  splitting).
+  <LI> Changed subsetter so that connectivity is preserved (as best it
+  can be) when extracting a subset from a trajectory.
+  <LI> Added a "radius" water-filter for the density tools.  This
+  selects waters that are within a given radius of any specified
+  protein atom.
+</UL>
+
 \section release173 Version 1.7.3 (12-12-2011)
 \subsection r173_bugs Bug Fixes
 <UL>
