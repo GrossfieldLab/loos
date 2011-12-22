@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   // **EDIT***
   // Verify correct number of command-line arguments
   if (argc != 3) {
-    cerr << "Usage- simple_model_tool_template model-name selection\n";
+    cerr << "Usage- simple_model_transform model-name selection\n";
   }
 
   // Handle command-line arguments
