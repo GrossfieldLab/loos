@@ -1,3 +1,11 @@
+2011-12-22    <alan@membrane.urmc.rochester.edu>
+
+	* Changed AtomicGroup::radius() to accept an optional bool
+	argument.  If true, radius will compute the radius of the group
+	relative to the first atom rather than the centroid.  This is to
+	address a rare problem with reimaging.  The default is to preserve
+	the orginal behavior (i.e. radius is relative to the centroid)
+
 2011-12-21    <tromo@spade.biophysics.rochester.edu>
 
 	* Added dox for writeAsciiMatrix()
