@@ -159,8 +159,14 @@ namespace loos {
   }
 
   // Geometric max radius of the group (relative to the centroid)
-  greal AtomicGroup::radius(void) const {
-    GCoord c = centroid();
+  greal AtomicGroup::radius(const bool use_atom_as_reference) const {
+    GCoord c;
+    if (use_atom_as_reference) {
+      c = atoms[0]->coords();
+    }
+    else {
+      c = centroid();
+    }
     greal radius = 0.0;
     const_iterator i;
 

@@ -479,7 +479,11 @@ namespace loos {
     GCoord centroid(void) const;
 
     //! Maximum radius from centroid of all atoms (not gyration)
-    greal radius(void) const;
+    /**
+     *  If optional argument is true, uses coordinates of atom 0 instead of centroid.
+     *  Argument is false by default.
+     */
+    greal radius(const bool use_atom_as_reference=false) const;
 
     //! Center of mass of the group (in group coordinates)
     GCoord centerOfMass(void) const;
