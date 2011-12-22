@@ -1389,6 +1389,9 @@ there is significant demand from users.
   <LI> Added a "radius" water-filter for the density tools.  This
   selects waters that are within a given radius of any specified
   protein atom.
+  <LI> Added an optional bool argument to AtomicGroup::radius() that
+  tells radius to use the coordinates of the first atom rather than
+  the centroid of the group.
 </UL>
 
 \section release173 Version 1.7.3 (12-12-2011)
