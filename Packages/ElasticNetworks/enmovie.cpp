@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
 
   Matrix U;
   readAsciiMatrix(eigvec_name, U);
-  int m = U.rows();
+  uint m = U.rows();
   if (m != subset.size() * 3) {
     cerr << boost::format("ERROR- subset size (%d) does not match eigenvector matrix size (%d)\n")
       % (subset.size() * 3)

@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 
 
 
-  for (int i = 0; i < sizes.size(); ++i) {
+  for (uint i = 0; i < sizes.size(); ++i) {
     cout << boost::format("%6d %12d %12.6g\t") % i % sizes[i] % (sizes[i] * voxel_volume);
     cout << centers[i] << endl;
   }

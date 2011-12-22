@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
   PDB pdb;
   vector<GCoord> peaks = findPeaks(grid, Threshold<double>(thresh));
-  for (int i = 0; i < peaks.size(); ++i) {
+  for (uint i = 0; i < peaks.size(); ++i) {
     pAtom atom(new Atom(i+1, "UNK", peaks[i]));
     atom->resid(i+1);
     atom->resname("UNK");
