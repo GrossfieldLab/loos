@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
 
   // First, read in the LSVs
   Matrix U;
-  readAsciiMatrix(vec_name, U);
+  readAsciiMatrix(ropts->value("lsv"), U);
   uint m = U.rows();
 
   // Read in the average structure...
