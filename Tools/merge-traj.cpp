@@ -185,6 +185,8 @@ int main(int argc, char *argv[])
                 frames_to_skip = 0;
                 }
 
+            previous_frames += frames_to_skip;
+
             // if this is an xtc file, we need to skip 1 more frame
             if (skip_first_frame)
                 {
