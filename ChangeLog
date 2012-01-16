@@ -1,8 +1,17 @@
+2012-01-16    <tromo@spade.biophysics.rochester.edu>
+
+	* Added fullhelp to water-hist
+
+2012-01-13    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug involving density grid metadata when the tool options
+	included a newline (as can happen in selection strings).
+
 2012-01-04    <alan@membrane.urmc.rochester.edu>
 
     * Fixed a bug in merge-traj that sometimes caused it to not merge
 	all frames (found by Josh Horn)
-	
+
 2012-01-04    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in porcupine that prevented it from running (found by
