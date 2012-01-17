@@ -420,7 +420,7 @@ namespace loos {
 
       unsigned int skip, stride;
       std::string frame_index_spec;
-      std::string model_name, traj_name;
+      std::string model_name, model_type, traj_name, traj_type;
 
       //! Model that describes the trajectory
       AtomicGroup model;

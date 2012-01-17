@@ -130,7 +130,7 @@ namespace loos {
     std::string ModelWithCoords::print() const {
       std::ostringstream oss;
 
-      oss << boost::format("model='%s'") % model_name;
+      oss << boost::format("model='%s', modeltype='%s'") % model_name % model_type;
       if (!coords_name.empty())
         oss << boost::format(", coords='%s'") % coords_name;
 
@@ -248,7 +248,7 @@ namespace loos {
     std::string BasicTrajectory::help() const { return("model trajectory"); }
     std::string BasicTrajectory::print() const {
       std::ostringstream oss;
-      oss << boost::format("model='%s', traj='%s', skip=%d") % model_name % traj_name % skip;
+      oss << boost::format("model='%s', model_type='%s', traj='%s', traj_type='%s', skip=%d") % model_name % model_type % traj_name % traj_type % skip;
       return(oss.str());
     }
 
@@ -257,8 +257,13 @@ namespace loos {
 
 
     void TrajectoryWithFrameIndices::addGeneric(po::options_description& opts) {
+      std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
+      std::string trajtypes = "Trajectory types:\n" + availableTrajectoryFileTypes();
+
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), modeltypes.c_str())
+        ("trajtype", po::value<std::string>(&traj_type)->default_value(traj_type), trajtypes.c_str())
         ("stride,i", po::value<unsigned int>(&stride)->default_value(stride), "Take every ith frame")
         ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range, overrides stride and skip)");
     };
@@ -284,8 +289,15 @@ namespace loos {
         return(false);
       }
 
-      model = createSystem(model_name);
-      trajectory = createTrajectory(traj_name, model);
+      if (model_type.empty())
+        model = createSystem(model_name);
+      else
+        model = createSystem(model_name, model_type);
+
+      if (traj_type.empty())
+        trajectory = createTrajectory(traj_name, model);
+      else
+        trajectory = createTrajectory(traj_name, traj_type, model);
       
       return(true);
     }
@@ -293,7 +305,7 @@ namespace loos {
     std::string TrajectoryWithFrameIndices::help() const { return("model trajectory"); }
     std::string TrajectoryWithFrameIndices::print() const {
       std::ostringstream oss;
-      oss << boost::format("model='%s', traj='%s'") % model_name % traj_name;
+      oss << boost::format("model='%s', modeltype='%s', traj='%s', trajtype='%s'") % model_name % model_type % traj_name % traj_type;
       if (skip > 0)
         oss << ", skip=" << skip;
       else if (!frame_index_spec.empty())
