@@ -301,7 +301,7 @@ namespace loos {
     public:
       ModelWithCoords() : coords_name("") { }
 
-      std::string model_name, coords_name;
+      std::string model_name, coords_name, model_type;
 
       AtomicGroup model;
 
@@ -376,7 +376,7 @@ namespace loos {
 
 
       unsigned int skip;
-      std::string model_name, traj_name;
+      std::string model_name, model_type, traj_name, traj_type;
 
       //! Model that describes the trajectory
       AtomicGroup model;

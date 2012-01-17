@@ -92,8 +92,11 @@ namespace loos {
     // -------------------------------------------------------
 
     void ModelWithCoords::addGeneric(po::options_description& opts) {
+      std::string filetypes = "Model types:\n" + availableSystemFileTypes();
+
       opts.add_options()
-        ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates");
+        ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates")
+        ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), filetypes.c_str());
     }
 
     void ModelWithCoords::addHidden(po::options_description& opts) {
@@ -112,7 +115,12 @@ namespace loos {
     }
 
     bool ModelWithCoords::postConditions(po::variables_map& map) {
-      model = loadStructureWithCoords(model_name, coords_name);
+      if (map.count("modeltype")) {
+        model_type = map["modeltype"].as<std::string>();
+        model = loadStructureWithCoords(model_name, model_type, coords_name);
+      } else
+        model = loadStructureWithCoords(model_name, coords_name);
+
       return(true);
     }
 
@@ -196,8 +204,13 @@ namespace loos {
 
 
     void BasicTrajectory::addGeneric(po::options_description& opts) {
+      std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
+      std::string trajtypes = "Trajectory types:\n" + availableTrajectoryFileTypes();
+
       opts.add_options()
-        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip");
+        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), modeltypes.c_str())
+        ("trajtype", po::value<std::string>(&traj_type)->default_value(traj_type), trajtypes.c_str());
     };
 
     void BasicTrajectory::addHidden(po::options_description& opts) {
@@ -216,8 +229,16 @@ namespace loos {
     }
 
     bool BasicTrajectory::postConditions(po::variables_map& map) {
-      model = createSystem(model_name);
-      trajectory = createTrajectory(traj_name, model);
+      if (model_type.empty())
+        model = createSystem(model_name);
+      else
+        model = createSystem(model_name, model_type);
+
+      if (traj_type.empty())
+        trajectory = createTrajectory(traj_name, model);
+      else
+        trajectory = createTrajectory(traj_name, traj_type, model);
+
       if (skip > 0)
         trajectory->readFrame(skip-1);
 
