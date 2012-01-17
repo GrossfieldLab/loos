@@ -1,3 +1,12 @@
+2012-01-17    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed factory functions to allow specifying a file type in
+	addition to divining it from the filename extension.  Note that
+	for createSystem(), internally a shared pointer to an AtomicGroup
+	is created, and then dereferenced for the returned AtomicGroup
+	(i.e. there's a copy going on behind the scenes, although this
+	should be a fast [and infrequent] operation)
+
 2012-01-16    <tromo@spade.biophysics.rochester.edu>
 
 	* Added fullhelp to water-hist
