@@ -47,13 +47,7 @@
 namespace loos {
 
   std::string availableSystemFileTypes() {
-    std::string types =
-      "psf\tCHARMm/NAMD PSF\n"
-      "pdb\tCHARMm/NAMD PDB\n"
-      "crd\tCHARMm CRD\n"
-      "xyz\tTinker XYZ\n"
-      "prtmop\tAmber PRMTOP\n"
-      "gro\tGROMACS GRO\n";
+    std::string types = "crd (CHARMM), gro (GROMACS), pdb (CHARMM/NAMD), prmtop (Amber), psf (CHARMM/NAMD), xyz (Tinker)";
     return(types);
   }
 
@@ -110,15 +104,7 @@ namespace loos {
 
   std::string availableTrajectoryFileTypes() {
     std::string types =
-      "dcd\tCHARMm/NAMD DCD\n"
-      "mdcrd\tAmber MDCRD\n"
-      "rst\tAmber RST\n"
-      "rst7\tAmber RST\n"
-      "inpcrd\tAmber RST\n"
-      "pdb\tConcatenated CHARMm/NAMD PDB Trajectory\n"
-      "arc\tTinker ARC\n"
-      "xtc\tGROMACS XTC\n"
-      "trr\tGROMACS TRR\n";
+      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
     return(types);
   }
 
