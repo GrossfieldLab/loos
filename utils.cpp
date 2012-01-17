@@ -424,21 +424,35 @@ namespace loos {
     return(s);
   }
 
-
+  
   AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& coord_name) {
-      AtomicGroup model = createSystem(model_name);
-      if (!coord_name.empty()) {
-        AtomicGroup coords = createSystem(coord_name);
-        model.copyCoordinates(coords);
-      }
-
-      if (! model.hasCoords())
-        throw(LOOSError("Error- no coordinates found in specified model(s)"));
-      
-      return(model);
+    AtomicGroup model = createSystem(model_name);
+    if (!coord_name.empty()) {
+      AtomicGroup coords = createSystem(coord_name);
+      model.copyCoordinates(coords);
+    }
+    
+    if (! model.hasCoords())
+      throw(LOOSError("Error- no coordinates found in specified model(s)"));
+    
+    return(model);
   }
-
-
+  
+  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& type, const std::string& coord_name) {
+    AtomicGroup model = createSystem(model_name, type);
+    if (!coord_name.empty()) {
+      AtomicGroup coords = createSystem(coord_name);
+      model.copyCoordinates(coords);
+    }
+    
+    if (! model.hasCoords())
+      throw(LOOSError("Error- no coordinates found in specified model(s)"));
+    
+    return(model);
+  }
+  
+  
+  
   std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip, uint stride)  {
     std::vector<uint> frames;
     
