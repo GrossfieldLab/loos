@@ -338,8 +338,8 @@ namespace loos {
         coords2_name(""), desc2(d2)
       { }
 
-      std::string model1_name, coords1_name, desc1;
-      std::string model2_name, coords2_name, desc2;
+      std::string model1_name, model1_type, coords1_name, desc1;
+      std::string model2_name, model2_type, coords2_name, desc2;
 
       AtomicGroup model1;
       AtomicGroup model2;

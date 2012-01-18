@@ -144,13 +144,16 @@ namespace loos {
 
 
     void TwoModelsWithCoords::addGeneric(po::options_description& opts) {
+      std::string filetypes = "Model types:\n" + availableSystemFileTypes();
       std::string optdesc1 = std::string("File to use for coordinates for") + desc1;
       std::string optdesc2 = std::string("File to use for coordinates for") + desc2;
 
 
       opts.add_options()
         ("coord1,c", po::value<std::string>(&coords1_name)->default_value(coords1_name), optdesc1.c_str())
-        ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str());
+        ("model1type", po::value<std::string>(&model1_type)->default_value(model1_type), filetypes.c_str())
+        ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str())
+        ("model2type", po::value<std::string>(&model2_type)->default_value(model2_type), filetypes.c_str());
     }
 
     void TwoModelsWithCoords::addHidden(po::options_description& opts) {
@@ -171,8 +174,18 @@ namespace loos {
     }
 
     bool TwoModelsWithCoords::postConditions(po::variables_map& map) {
-      model1 = loadStructureWithCoords(model1_name, coords1_name);
-      model2 = loadStructureWithCoords(model2_name, coords2_name);
+      if (map.count("model1type")) {
+        model1_type = map["model1type"].as<std::string>();
+        model1 = loadStructureWithCoords(model1_name, model1_type, coords1_name);
+      } else
+        model1 = loadStructureWithCoords(model1_name, coords1_name);
+      
+      if (map.count("model2type")) {
+        model2_type = map["model2type"].as<std::string>();
+        model2 = loadStructureWithCoords(model2_name, model2_type, coords2_name);
+      } else
+        model2 = loadStructureWithCoords(model2_name, coords2_name);
+      
       return(true);
     }
 
@@ -185,11 +198,11 @@ namespace loos {
     std::string TwoModelsWithCoords::print() const {
       std::ostringstream oss;
 
-      oss << boost::format("model1='%s'") % model1_name;
+      oss << boost::format("model1='%s', model1type='%s'") % model1_name % model1_type;
       if (!coords1_name.empty())
         oss << boost::format(", coords1='%s'") % coords1_name;
 
-      oss << boost::format("model2='%s'") % model2_name;
+      oss << boost::format("model2='%s', model2type='%s'") % model2_name % model2_type;
       if (!coords2_name.empty())
         oss << boost::format(", coords2='%s'") % coords2_name;
 
