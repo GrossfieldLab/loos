@@ -96,7 +96,7 @@ namespace loos {
 
       opts.add_options()
         ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates")
-        ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), filetypes.c_str());
+        ("modeltype", po::value<std::string>(), filetypes.c_str());
     }
 
     void ModelWithCoords::addHidden(po::options_description& opts) {
@@ -151,9 +151,9 @@ namespace loos {
 
       opts.add_options()
         ("coord1,c", po::value<std::string>(&coords1_name)->default_value(coords1_name), optdesc1.c_str())
-        ("model1type", po::value<std::string>(&model1_type)->default_value(model1_type), filetypes.c_str())
+        ("model1type", po::value<std::string>(), filetypes.c_str())
         ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str())
-        ("model2type", po::value<std::string>(&model2_type)->default_value(model2_type), filetypes.c_str());
+        ("model2type", po::value<std::string>(), filetypes.c_str());
     }
 
     void TwoModelsWithCoords::addHidden(po::options_description& opts) {
@@ -222,8 +222,8 @@ namespace loos {
 
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
-        ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), modeltypes.c_str())
-        ("trajtype", po::value<std::string>(&traj_type)->default_value(traj_type), trajtypes.c_str());
+        ("modeltype", po::value<std::string>(), modeltypes.c_str())
+        ("trajtype", po::value<std::string>(), trajtypes.c_str());
     };
 
     void BasicTrajectory::addHidden(po::options_description& opts) {
@@ -242,15 +242,17 @@ namespace loos {
     }
 
     bool BasicTrajectory::postConditions(po::variables_map& map) {
-      if (model_type.empty())
-        model = createSystem(model_name);
-      else
+      if (map.count("modeltype")) {
+        model_type = map["modeltype"].as<std::string>();
         model = createSystem(model_name, model_type);
+      } else
+        model = createSystem(model_name);
 
-      if (traj_type.empty())
-        trajectory = createTrajectory(traj_name, model);
-      else
+      if (map.count("trajtype")) {
+        traj_type = map["trajtype"].as<std::string>();
         trajectory = createTrajectory(traj_name, traj_type, model);
+      } else
+        trajectory = createTrajectory(traj_name, model);
 
       if (skip > 0)
         trajectory->readFrame(skip-1);
