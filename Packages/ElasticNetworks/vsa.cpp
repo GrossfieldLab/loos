@@ -132,18 +132,18 @@ string fullHelpMessage() {
     "\n"
     "Compute the VSA for a transmembrane region based on segid with the\n"
     "masses stored in the occupancy field of the PDB,\n"
-    "\tvsa --occupancies 1 'segid == \"TRAN\" && name == \"CA\"' 'segid != \"TRAN\" && name == \"CA\"' foo.pdb foo_vsa\n"
+    "\tvsa --occupancies 1 foo.pdb 'segid == \"TRAN\" && name == \"CA\"' 'segid != \"TRAN\" && name == \"CA\"' foo_vsa\n"
     "\n"
     "Compute the VSA for a transmembrane region where the selection\n"
     "is stored in a file and masses taken from a PSF file,\n"
-    "\tvsa --psf foo.psf \"`cat selection` && name == 'CA'\" \"not (`cat selection`) && name == 'CA'\" foo.pdb foo_vsa\n"
+    "\tvsa --psf foo.psf foo.pdb \"`cat selection` && name == 'CA'\" \"not (`cat selection`) && name == 'CA'\" foo_vsa\n"
     "\n"
     "Compute the mass-less VSA with CAs as the subsystem and all other\n"
     "backbone atoms as the environment,\n"
-    "\tvsa --nomass 1 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n"
+    "\tvsa --nomass 1 foo.pdb 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo_vsa\n"
     "\n"
     "The same example as above, but using the HCA spring constants,\n"
-    "\tvsa --nomass 1 --spring hca 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo.pdb foo_vsa\n";
+    "\tvsa --nomass 1 --spring hca foo.pdb 'name == \"CA\"' 'name =~ \"^(C|O|N)$\"' foo_vsa\n";
 
   return(s);
     
