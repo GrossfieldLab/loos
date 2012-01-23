@@ -52,7 +52,7 @@ clone.Prepend(LIBPATH=['#/Packages/Convergence'])
 
 
 # Tools requiring the above library
-dependent = 'bcom boot_bcom ufidpick assign_frames decorr_time coscon qcoscon'
+dependent = 'bcom boot_bcom ufidpick assign_frames decorr_time coscon qcoscon rsv-coscon'
 for name in Split(dependent):
     fname = name + '.cpp'
     prog = clone.Program(fname)
