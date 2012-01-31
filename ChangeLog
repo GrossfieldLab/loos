@@ -1,3 +1,12 @@
+2012-01-31    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in molshape where tool-specific command-line options
+	were ignored.
+	* Changed rmsds (largely rewritten) to compare either a single
+	trajectory with itself or two different trajectories.  The
+	iteratively-aligned mode has been removed and every frame is
+	always aligned with every other frame.
+
 2012-01-17    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed factory functions to allow specifying a file type in
