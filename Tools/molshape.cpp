@@ -50,13 +50,11 @@ bool zabs;
 
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : split_by_mol(false), split_by_segid(false), zabs(false) { }
-
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("molecule", po::value<bool>(&split_by_mol)->default_value(split_by_mol), "Split by molecule")
-      ("segid", po::value<bool>(&split_by_segid)->default_value(split_by_segid), "Split by segid")
-      ("abs", po::value<bool>(&zabs)->default_value(zabs), "Use absolute Z-value");
+      ("molecule", po::value<bool>(&split_by_mol)->default_value(false), "Split by molecule")
+      ("segid", po::value<bool>(&split_by_segid)->default_value(false), "Split by segid")
+      ("abs", po::value<bool>(&zabs)->default_value(false), "Use absolute Z-value");
   }
 
   string print() const {
@@ -64,9 +62,6 @@ public:
     oss << boost::format("molecule=%d, segid=%d, zabs=%d") % split_by_mol % split_by_segid % zabs;
     return(oss.str());
   }
-
-
-  bool split_by_mol, split_by_segid, zabs;
 };
 
 // @endcond
@@ -120,6 +115,7 @@ int main(int argc, char *argv[]) {
   else
     objects.push_back(subset);
 
+  cout << boost::format("# Tracking %d object%s\n") % objects.size() % (objects.size() > 1 ? "s" : "");
   cout << "# 1     2  3  4  5   6    7    8    9    10      11  12  13  14:16 17:19 20:22\n";
   cout << "# frame cX cY cZ Vol BoxX BoxY BoxZ rgyr pA1/pA2 pA1 pA2 pA3 (pV1) (pV2) (pV3)\n";
 
