@@ -48,6 +48,28 @@ using namespace loos::DensityTools;
 double lower, upper;
 
 // @cond TOOLS_INTERNAL
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "blobid identifies blobs either in a range or above a threshold.\n"
+    "As input an edm grid (see for example water-hist) is expected.\n"
+    "Blobid then uses a flood-fill to determine how many separate blobs\n"
+    "meet the threshold/range criteria.  A new grid is then written out\n"
+    "which identifies the separate blobs.\n"
+    "\n\n*Example* \n\n"
+    "   blobid --threshold 1 < foo_grid > foo_id\n"
+    "Here we include all blobs above the threshold 1.  foo_grid is a density\n"
+    "grid that has been created previously.  For example a smoothed water \n"
+    "histogram grid may be used: \n"
+    "   water-hist --radius=15 --bulk=25 --scale=1 b2ar.pdb b2ar.dcd | grid2gauss 4 2 > foo_grid\n"
+    "The resulting blobs are then written to the grid \"foo_id\"\n"
+    "\n\n";
+
+  return(msg);
+}
+
 class ToolOptions : public opts::OptionsPackage {
 
   void addGeneric(po::options_description& o) {
@@ -124,7 +146,7 @@ boost::tuple<int, int, int, double> findBlobs(DensityGrid<double>& data_grid, De
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
