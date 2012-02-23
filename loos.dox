@@ -3,7 +3,7 @@
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
 
-Copyright &copy; 2008-2011, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2012, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -106,7 +106,7 @@ Email us directly (LOOS-maintainer [AT] urmc.rochester.edu) if you find a bug^H^
 
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2011, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2012, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -1371,6 +1371,27 @@ there is significant demand from users.
 
 
 /*! \page Changes Change Log
+\section release175 Version 1.7.5 (2-24-2012)
+\subsection r175_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in porcupine
+  <li> Fixed bug in merge-traj that sometimes caused it to not merge all frames
+  <li> Fixed bug affecting all grid tools (stored metadata in grid output) when
+       any tool option includes a newline.  This would typically occur in selection
+       strings.
+  <li> Fixed bug in molshape where some command line options were ignored
+</ul>
+\subsection r175_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added more help information for various density tools (see --fullhelp)
+  <li> Changed the system and trajectory factory functions to allow
+       an explicit file-type to be passed.  For many tools, you can now
+       explicitly set the file-type from the command-line as well.  See
+       the tool --help for more information.
+  <li> The rmsds tool was largely rewritten.  It can now compare either a
+       single trajectory with itself or another trajectory.  The iteratively-
+       aligned mode has been removed.
+</ul>
 \section release174 Version 1.7.4 (12-23-2011)
 \subsection r174_bugs Bug Fixes
 <UL>
