@@ -92,8 +92,11 @@ namespace loos {
     // -------------------------------------------------------
 
     void ModelWithCoords::addGeneric(po::options_description& opts) {
+      std::string filetypes = "Model types:\n" + availableSystemFileTypes();
+
       opts.add_options()
-        ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates");
+        ("coordinates,c", po::value<std::string>(&coords_name)->default_value(coords_name), "File to use for coordinates")
+        ("modeltype", po::value<std::string>(), filetypes.c_str());
     }
 
     void ModelWithCoords::addHidden(po::options_description& opts) {
@@ -112,7 +115,12 @@ namespace loos {
     }
 
     bool ModelWithCoords::postConditions(po::variables_map& map) {
-      model = loadStructureWithCoords(model_name, coords_name);
+      if (map.count("modeltype")) {
+        model_type = map["modeltype"].as<std::string>();
+        model = loadStructureWithCoords(model_name, model_type, coords_name);
+      } else
+        model = loadStructureWithCoords(model_name, coords_name);
+
       return(true);
     }
 
@@ -122,7 +130,7 @@ namespace loos {
     std::string ModelWithCoords::print() const {
       std::ostringstream oss;
 
-      oss << boost::format("model='%s'") % model_name;
+      oss << boost::format("model='%s', modeltype='%s'") % model_name % model_type;
       if (!coords_name.empty())
         oss << boost::format(", coords='%s'") % coords_name;
 
@@ -136,13 +144,16 @@ namespace loos {
 
 
     void TwoModelsWithCoords::addGeneric(po::options_description& opts) {
+      std::string filetypes = "Model types:\n" + availableSystemFileTypes();
       std::string optdesc1 = std::string("File to use for coordinates for") + desc1;
       std::string optdesc2 = std::string("File to use for coordinates for") + desc2;
 
 
       opts.add_options()
         ("coord1,c", po::value<std::string>(&coords1_name)->default_value(coords1_name), optdesc1.c_str())
-        ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str());
+        ("model1type", po::value<std::string>(), filetypes.c_str())
+        ("coord2,d", po::value<std::string>(&coords2_name)->default_value(coords2_name), optdesc2.c_str())
+        ("model2type", po::value<std::string>(), filetypes.c_str());
     }
 
     void TwoModelsWithCoords::addHidden(po::options_description& opts) {
@@ -163,8 +174,18 @@ namespace loos {
     }
 
     bool TwoModelsWithCoords::postConditions(po::variables_map& map) {
-      model1 = loadStructureWithCoords(model1_name, coords1_name);
-      model2 = loadStructureWithCoords(model2_name, coords2_name);
+      if (map.count("model1type")) {
+        model1_type = map["model1type"].as<std::string>();
+        model1 = loadStructureWithCoords(model1_name, model1_type, coords1_name);
+      } else
+        model1 = loadStructureWithCoords(model1_name, coords1_name);
+      
+      if (map.count("model2type")) {
+        model2_type = map["model2type"].as<std::string>();
+        model2 = loadStructureWithCoords(model2_name, model2_type, coords2_name);
+      } else
+        model2 = loadStructureWithCoords(model2_name, coords2_name);
+      
       return(true);
     }
 
@@ -177,11 +198,11 @@ namespace loos {
     std::string TwoModelsWithCoords::print() const {
       std::ostringstream oss;
 
-      oss << boost::format("model1='%s'") % model1_name;
+      oss << boost::format("model1='%s', model1type='%s'") % model1_name % model1_type;
       if (!coords1_name.empty())
         oss << boost::format(", coords1='%s'") % coords1_name;
 
-      oss << boost::format("model2='%s'") % model2_name;
+      oss << boost::format("model2='%s', model2type='%s'") % model2_name % model2_type;
       if (!coords2_name.empty())
         oss << boost::format(", coords2='%s'") % coords2_name;
 
@@ -196,8 +217,13 @@ namespace loos {
 
 
     void BasicTrajectory::addGeneric(po::options_description& opts) {
+      std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
+      std::string trajtypes = "Trajectory types:\n" + availableTrajectoryFileTypes();
+
       opts.add_options()
-        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip");
+        ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("modeltype", po::value<std::string>(), modeltypes.c_str())
+        ("trajtype", po::value<std::string>(), trajtypes.c_str());
     };
 
     void BasicTrajectory::addHidden(po::options_description& opts) {
@@ -216,8 +242,18 @@ namespace loos {
     }
 
     bool BasicTrajectory::postConditions(po::variables_map& map) {
-      model = createSystem(model_name);
-      trajectory = createTrajectory(traj_name, model);
+      if (map.count("modeltype")) {
+        model_type = map["modeltype"].as<std::string>();
+        model = createSystem(model_name, model_type);
+      } else
+        model = createSystem(model_name);
+
+      if (map.count("trajtype")) {
+        traj_type = map["trajtype"].as<std::string>();
+        trajectory = createTrajectory(traj_name, traj_type, model);
+      } else
+        trajectory = createTrajectory(traj_name, model);
+
       if (skip > 0)
         trajectory->readFrame(skip-1);
 
@@ -227,7 +263,7 @@ namespace loos {
     std::string BasicTrajectory::help() const { return("model trajectory"); }
     std::string BasicTrajectory::print() const {
       std::ostringstream oss;
-      oss << boost::format("model='%s', traj='%s', skip=%d") % model_name % traj_name % skip;
+      oss << boost::format("model='%s', model_type='%s', traj='%s', traj_type='%s', skip=%d") % model_name % model_type % traj_name % traj_type % skip;
       return(oss.str());
     }
 
@@ -236,8 +272,13 @@ namespace loos {
 
 
     void TrajectoryWithFrameIndices::addGeneric(po::options_description& opts) {
+      std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
+      std::string trajtypes = "Trajectory types:\n" + availableTrajectoryFileTypes();
+
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), modeltypes.c_str())
+        ("trajtype", po::value<std::string>(&traj_type)->default_value(traj_type), trajtypes.c_str())
         ("stride,i", po::value<unsigned int>(&stride)->default_value(stride), "Take every ith frame")
         ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use (matlab style range, overrides stride and skip)");
     };
@@ -263,8 +304,15 @@ namespace loos {
         return(false);
       }
 
-      model = createSystem(model_name);
-      trajectory = createTrajectory(traj_name, model);
+      if (model_type.empty())
+        model = createSystem(model_name);
+      else
+        model = createSystem(model_name, model_type);
+
+      if (traj_type.empty())
+        trajectory = createTrajectory(traj_name, model);
+      else
+        trajectory = createTrajectory(traj_name, traj_type, model);
       
       return(true);
     }
@@ -272,7 +320,7 @@ namespace loos {
     std::string TrajectoryWithFrameIndices::help() const { return("model trajectory"); }
     std::string TrajectoryWithFrameIndices::print() const {
       std::ostringstream oss;
-      oss << boost::format("model='%s', traj='%s'") % model_name % traj_name;
+      oss << boost::format("model='%s', modeltype='%s', traj='%s', trajtype='%s'") % model_name % model_type % traj_name % traj_type;
       if (skip > 0)
         oss << ", skip=" << skip;
       else if (!frame_index_spec.empty())

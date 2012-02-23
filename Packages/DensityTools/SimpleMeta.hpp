@@ -75,10 +75,10 @@ namespace loos {
       void clear() { data_.clear(); }
 
       //! Set metadata to string (deletes existing metadata)
-      void set(const std::string& s) { data_.clear(); data_.push_back(s); }
+      void set(const std::string& s) { data_.clear(); data_.push_back(sanitizeString(s)); }
     
       //! Append metadata
-      void add(const std::string& s) { data_.push_back(s); }
+      void add(const std::string& s) { data_.push_back(sanitizeString(s)); }
 
       friend std::ostream& operator<<(std::ostream& os, const SimpleMeta& m) {
         for (const_iterator i = m.data_.begin(); i != m.data_.end(); ++i)
@@ -104,6 +104,18 @@ namespace loos {
 
 
     private:
+
+      std::string sanitizeString(const std::string& s) {
+        std::string t;
+
+        for (std::string::const_iterator i = s.begin(); i != s.end(); ++i)
+          if (*i == '\n')
+            t.push_back(' ');
+          else
+            t.push_back(*i);
+
+        return(t);
+      }
 
       // Strip leading space (skipping meta-marker)
       std::string stripper(const std::string& s) {

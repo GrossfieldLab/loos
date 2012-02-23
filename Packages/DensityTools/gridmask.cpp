@@ -43,6 +43,22 @@ using namespace loos;
 using namespace DensityTools;
 
 
+/*
+ * Applies a mask to an edm grid.  This can select a particular
+ * region within the grid.  
+ * 
+ * Example:
+ *    gridmask < foo_grid foo_picked > masked_foo
+ * This will apply the mask called \"foo_picked\" to the grid
+ * \"foo_grid\" and write out a new grid, \"masked_foo\". This
+ * assumes foo_picked was created with the \"pick_blob\" tool.
+ *
+ * This output my be converted to an xplor map and then used for 
+ * visualization within pymol.
+ * 
+*/
+
+
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {

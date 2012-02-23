@@ -46,97 +46,118 @@
 
 namespace loos {
 
-  AtomicGroup createSystem(const std::string& s) {
-
-    if (boost::iends_with(s, ".pdb")) {
-      PDB pdb(s);
-      return(pdb);
-    } else if (boost::iends_with(s, ".psf")) {
-      PSF psf(s);
-      return(psf);
-    } else if (boost::iends_with(s, ".prmtop")) {
-      Amber amber(s);
-      return(amber);
-    } else if (boost::iends_with(s, ".xyz")) {
-      TinkerXYZ tinkerxyz(s);
-      return(tinkerxyz);
-    } else if (boost::iends_with(s, ".gro")) {
-      Gromacs gromacs(s);
-      return(gromacs);
-    } else if (boost::iends_with(s, ".crd")) {
-      CHARMM charmm(s);
-      return(charmm);
-
-    } else
-      throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
+  std::string availableSystemFileTypes() {
+    std::string types = "crd (CHARMM), gro (GROMACS), pdb (CHARMM/NAMD), prmtop (Amber), psf (CHARMM/NAMD), xyz (Tinker)";
+    return(types);
   }
 
 
-  pAtomicGroup createSystemPtr(const std::string& s) {
+  pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype) {
 
     pAtomicGroup pag;
 
-    if (boost::iends_with(s, ".pdb")) {
-      pPDB p(new PDB(s));
+    if (filetype == "pdb") {
+      pPDB p(new PDB(filename));
       pag = p;
-    } else if (boost::iends_with(s, ".psf")) {
-      pPSF p(new PSF(s));
+    } else if (filetype == "psf") {
+      pPSF p(new PSF(filename));
       pag = p;
-    } else if (boost::iends_with(s, ".prmtop")) {
-      pAmber p(new Amber(s));
+    } else if (filetype == "prmtop") { 
+      pAmber p(new Amber(filename));
       pag = p;
-    } else if (boost::iends_with(s, ".xyz")) {
-      pTinkerXYZ p(new TinkerXYZ(s));
+    } else if (filetype == "xyz") {
+      pTinkerXYZ p(new TinkerXYZ(filename));
       pag = p;
-    } else if (boost::iends_with(s, ".gro")) {
-      pGromacs p(new Gromacs(s));
+    } else if (filetype == "gro") {
+      pGromacs p(new Gromacs(filename));
       pag = p;
 
     } else
-      throw(std::runtime_error("Error- cannot divine system file type from name '" + s + "'"));
+      throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'"));
 
     return(pag);
   }
 
 
 
-  pTraj createTrajectory(const std::string& s, const AtomicGroup& g) {
+  pAtomicGroup createSystemPtr(const std::string& filename) {
 
-    if (boost::iends_with(s, ".dcd")) {
-      pDCD pd(new DCD(s));
+    size_t extension_pos = filename.rfind('.');
+    if (extension_pos == filename.npos)
+      throw(std::runtime_error("Error- system filename must end in an extension or the filetype must be explicitly specified"));
+
+    std::string filetype = filename.substr(extension_pos+1);
+    boost::to_lower(filetype);
+    return(createSystemPtr(filename, filetype));
+  }
+
+
+  AtomicGroup createSystem(const std::string& filename) {
+    return(*(createSystemPtr(filename)));
+  }
+
+  AtomicGroup createSystem(const std::string& filename, const std::string& filetype) {
+    return(*(createSystemPtr(filename, filetype)));
+  }
+
+
+
+  std::string availableTrajectoryFileTypes() {
+    std::string types =
+      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
+    return(types);
+  }
+
+
+  pTraj createTrajectory(const std::string& filename, const std::string& filetype, const AtomicGroup& g) {
+    
+    if (filetype == "dcd") {
+      pDCD pd(new DCD(filename));
       pTraj pt(pd);
       return(pt);
-    } else if (boost::iends_with(s, ".mdcrd")) {
-      pAmberTraj pat(new AmberTraj(s, g.size()));
+    } else if (filetype == "mdcrd") {
+      pAmberTraj pat(new AmberTraj(filename, g.size()));
       pTraj pt(pat);
       return(pt);
-    } else if (boost::iends_with(s, ".rst")
-               || boost::iends_with(s, ".rst7")
-               || boost::iends_with(s, ".inpcrd")) {
-      pAmberRst par(new AmberRst(s, g.size()));
+    } else if (filetype == "rst"
+               || filetype == "rst7"
+               || filetype == "inpcrd") {
+      pAmberRst par(new AmberRst(filename, g.size()));
       pTraj pt(par);
       return(pt);
-    } else if (boost::iends_with(s, ".pdb")) {
-      pCCPDB ppdb(new CCPDB(s));
+    } else if (filetype == "pdb") {
+      pCCPDB ppdb(new CCPDB(filename));
       pTraj pt(ppdb);
       return(pt);
-    } else if (boost::iends_with(s, ".arc")) {
-      pTinkerArc pta(new TinkerArc(s));
+    } else if (filetype == "arc") {
+      pTinkerArc pta(new TinkerArc(filename));
       pTraj pt(pta);
       return(pt);
-    } else if (boost::iends_with(s, ".xtc")) {
-      pXTC pxtc(new XTC(s));
+    } else if (filetype == "xtc") {
+      pXTC pxtc(new XTC(filename));
       pTraj pt(pxtc);
       return(pt);
-    } else if (boost::iends_with(s, ".trr")) {
-      pTRR ptrr(new TRR(s));
+    } else if (filetype == "trr") {
+      pTRR ptrr(new TRR(filename));
       pTraj pt(ptrr);
       return(pt);
 
     } else
-      throw(std::runtime_error("Error- cannot divine trajectory file type from name '" + s + "'"));
+      throw(std::runtime_error("Error- unknown trajectory file type '" + filetype + "' for file '" + filename + "'"));
   }
 
 
+  pTraj createTrajectory(const std::string& filename, const AtomicGroup& g) {
+    size_t extension_pos = filename.rfind('.');
+    if (extension_pos == filename.npos)
+      throw(std::runtime_error("Error- trajectory filename must end in an extension or the filetype must be explicitly specified"));
+
+    std::string filetype = filename.substr(extension_pos+1);
+    boost::to_lower(filetype);
+    return(createTrajectory(filename, filetype, g));
+  }
+
 }
+
+
 

@@ -162,10 +162,10 @@ namespace loos {
   bool XTC::readCompressedCoords(void)
   {
     int minint[3], maxint[3], *lip;
-    int smallidx, minidx, maxidx;
+    int smallidx, maxidx;
     uint sizeint[3], sizesmall[3], bitsizeint[3] = {0,0,0}, size3;
     int k, *buf1, *buf2, lsize, flag;
-    int smallnum, smaller, larger, i, is_smaller, run;
+    int smallnum, smaller, i, is_smaller, run;
     xtc_t precision, inv_precision;
     int tmp, *thiscoord,  prevcoord[3];
     unsigned int bitsize;
@@ -220,13 +220,11 @@ namespace loos {
 
     tmp=smallidx+8;
     maxidx = (lastidx<tmp) ? lastidx : tmp;
-    minidx = maxidx - 8; /* often this equal smallidx */
     tmp = smallidx-1;
     tmp = (firstidx>tmp) ? firstidx : tmp;
     smaller = magicints[tmp] / 2;
     smallnum = magicints[smallidx] / 2;
     sizesmall[0] = sizesmall[1] = sizesmall[2] = magicints[smallidx] ;
-    larger = magicints[maxidx];
 
     /* buf2[0] holds the length in bytes */
   

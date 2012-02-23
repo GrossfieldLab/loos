@@ -89,6 +89,30 @@ namespace loos {
     };
 
 
+
+    // --------------------------------------------------------------------------------
+
+    //! Pick waters within a given radius of a group of atoms
+    /**
+     * Important note: the volume returned is NOT the real molecular volume, but just
+     * the volume of the bounding box for the passed atoms
+     */
+    class WaterFilterRadius : public WaterFilterBase {
+    public:
+      WaterFilterRadius(const double radius) : radius_(radius) { }
+      virtual ~WaterFilterRadius() { }
+
+      virtual std::vector<int> filter(const loos::AtomicGroup&, const loos::AtomicGroup&);
+      virtual std::vector<loos::GCoord> boundingBox(const loos::AtomicGroup&);
+
+      virtual double volume(void);
+      virtual std::string name(void) const;
+
+    private:
+      double radius_;
+    };
+
+
     // --------------------------------------------------------------------------------
 
     //! Pick waters that are within a radius of the principal axis for a molecule

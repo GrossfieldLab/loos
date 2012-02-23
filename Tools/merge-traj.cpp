@@ -185,6 +185,8 @@ int main(int argc, char *argv[])
                 frames_to_skip = 0;
                 }
 
+            previous_frames += frames_to_skip;
+
             // if this is an xtc file, we need to skip 1 more frame
             if (skip_first_frame)
                 {
@@ -227,7 +229,11 @@ int main(int argc, char *argv[])
                         // This is relatively slow, so we'll skip the 
                         // cases we know we won't need this -- 1 particle
                         // molecules and molecules with small radii 
-                        if ( (m->size() > 1) && (m->radius() > smallest) )
+                        // Note: radius(true) computes the max distance between atom 0
+                        //       and all other atoms in the group.  In certain perverse
+                        //       cases the centroid can be closer than 1/2 box to all atoms
+                        //       even when the molecule is split.
+                        if ( (m->size() > 1) && (m->radius(true) > smallest) )
                             {
                             m->mergeImage();
                             m->reimage();

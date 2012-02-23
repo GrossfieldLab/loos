@@ -278,7 +278,10 @@ namespace loos {
     std::vector<AtomicGroup> splitByUniqueSegid(void) const;
 
     //! Returns a vector of AtomicGroups split based on bond connectivity
-    std::vector<AtomicGroup> splitByMolecule(void);
+    std::vector<AtomicGroup> splitByMolecule(void) const {
+      AtomicGroup sortable = *this;
+      return(sortable.sortingSplitByMolecule());
+    }
 
     //! Returns a vector of AtomicGroups, each comprising a single residue
     std::vector<AtomicGroup> splitByResidue(void) const;
@@ -476,7 +479,11 @@ namespace loos {
     GCoord centroid(void) const;
 
     //! Maximum radius from centroid of all atoms (not gyration)
-    greal radius(void) const;
+    /**
+     *  If optional argument is true, uses coordinates of atom 0 instead of centroid.
+     *  Argument is false by default.
+     */
+    greal radius(const bool use_atom_as_reference=false) const;
 
     //! Center of mass of the group (in group coordinates)
     GCoord centerOfMass(void) const;
@@ -585,6 +592,8 @@ namespace loos {
     GMatrix alignOnto(const AtomicGroup&);
 
   private:
+
+    std::vector<AtomicGroup> sortingSplitByMolecule();
 
     // *** Internal routines ***  See the .cpp file for details...
     void sorted(bool b) { _sorted = b; }

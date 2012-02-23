@@ -64,6 +64,28 @@ bool largest = false;
 double range = 0.0;
 
 // @cond TOOLS_INTERNAL
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "pick_blobs finds the blob closest to a user input.  Several methods\n"
+    "of input are supported.  For instance, given a pdb and selection string\n"
+    "the blob closest to the selection will be returned.  Additionally, a blob\n"
+    "may be selected using its ID (see blobid).  A point within the grid may\n"
+    "also be used.  Blobs within a specified range ..."
+
+    "\n\n*Examples* \n\n"
+    "   pick_blob --model b2ar.pdb --selection 'resid==286 && segid==\"BAR2\"' < foo_id > foo_picked\n"
+    "This method uses a structure file to pick out the blob of interest. \n"
+    "First foo_id was created using \"blobid\" Then, we pick out the blob\n"
+    "closest to residue 268 (Trp6.48) in b2ar.  This is written to foo_picked."
+    "\n\n";
+
+  return(msg);
+}
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   
@@ -203,7 +225,7 @@ vector<Blob> pickBlob(const DensityGrid<int>& grid, const vector<GCoord>& points
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;

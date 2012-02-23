@@ -116,11 +116,17 @@ int main(int argc, char *argv[]) {
   traj->rewind();
   uint t = 0;
   cout << "# frame\tArea\n";
+  double avg = 0;
+  uint n = 0;
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();
     double apl = box.x() * box.y() / n_lipids;
+    avg += apl;
+    ++n;
     cout << t++ << "\t" << apl << endl;
   }
+
+  cout << "# average = " << avg/n << endl;
 
 }
 

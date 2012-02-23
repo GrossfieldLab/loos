@@ -301,7 +301,7 @@ namespace loos {
     public:
       ModelWithCoords() : coords_name("") { }
 
-      std::string model_name, coords_name;
+      std::string model_name, coords_name, model_type;
 
       AtomicGroup model;
 
@@ -338,8 +338,8 @@ namespace loos {
         coords2_name(""), desc2(d2)
       { }
 
-      std::string model1_name, coords1_name, desc1;
-      std::string model2_name, coords2_name, desc2;
+      std::string model1_name, model1_type, coords1_name, desc1;
+      std::string model2_name, model2_type, coords2_name, desc2;
 
       AtomicGroup model1;
       AtomicGroup model2;
@@ -376,7 +376,7 @@ namespace loos {
 
 
       unsigned int skip;
-      std::string model_name, traj_name;
+      std::string model_name, model_type, traj_name, traj_type;
 
       //! Model that describes the trajectory
       AtomicGroup model;
@@ -420,7 +420,7 @@ namespace loos {
 
       unsigned int skip, stride;
       std::string frame_index_spec;
-      std::string model_name, traj_name;
+      std::string model_name, model_type, traj_name, traj_type;
 
       //! Model that describes the trajectory
       AtomicGroup model;

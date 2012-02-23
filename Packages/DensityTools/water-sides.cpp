@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
   opts::AggregateOptions options;
   options.add(basic_opts).add(basic_selection).add(basic_traj).add(my_opts);
   if (!options.parse(argc, argv)) {
-    options.showHelp();
+    //    options.showHelp();
     exit(0);
   }
 

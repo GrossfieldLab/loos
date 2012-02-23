@@ -74,8 +74,8 @@ int main(int argc, char *argv[]) {
 
   Matrix G;
   readAsciiMatrix(pseudo_name, G);
-  int m = G.rows();
-  int n = G.cols();
+  uint m = G.rows();
+  uint n = G.cols();
 
   if (m != n) {
       cerr << "ERROR - pseudoinverse matrix is non-square" << endl;
@@ -85,15 +85,15 @@ int main(int argc, char *argv[]) {
   if (m == subset.size()) {
 
     // Assign B-factor (see Atilgan et al, Biophysical J. 2001 80:505-515, eq 8
-    for (int i=0; i<subset.size(); ++i) {
+    for (uint i=0; i<subset.size(); ++i) {
       double d = scale * G(i,i);
       subset[i]->bfactor(d);
     }
 
   } else if (m == 3 * subset.size()) {  // This came from ANM...
 
-    for (int i=0; i<subset.size(); ++i) {
-      int j = i * 3;
+    for (uint i=0; i<subset.size(); ++i) {
+      uint j = i * 3;
       double d = scale * G(j,j) * G(j+1, j+1) * G(j+2, j+2);
       subset[i]->bfactor(d);
     }

@@ -34,6 +34,13 @@
 #include <loos_defs.hpp>
 
 namespace loos {
+
+  std::string availableSystemFileTypes();
+  std::string availableTrajectoryFileTypes();
+
+  pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype);
+  pAtomicGroup createSystemPtr(const std::string& filename);
+
   //! Factory function for reading in structure files.
   /*!
    * This function will try to determine the filetype for a structure
@@ -47,9 +54,8 @@ namespace loos {
    * returned.
    *
    */
-  AtomicGroup createSystem(const std::string&);
-
-  pAtomicGroup createSystemPtr(const std::string&);
+  AtomicGroup createSystem(const std::string& filename);
+  AtomicGroup createSystem(const std::string& filename, const std::string& filetype);
 
   //! Factory function for reading in a trajectory file.
   /*!
@@ -63,6 +69,7 @@ namespace loos {
    * try to deference it and assign it to a Trajectory object...
    */
   pTraj createTrajectory(const std::string&, const AtomicGroup&);
+  pTraj createTrajectory(const std::string&, const std::string&, const AtomicGroup&);
 };
 
 

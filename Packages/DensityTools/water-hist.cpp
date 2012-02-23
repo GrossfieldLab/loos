@@ -43,6 +43,83 @@ using namespace loos::DensityTools;
 
 // @cond TOOLS_INTERAL
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "water-hist generates a 3-dimensional histogram for a given selection\n"
+    "over the coarse of a trajectory.  This tool was originally designed\n"
+    "for tracking water internal to a membrane protein, however any group\n"
+    "of atoms can be substituted for \"water\" (e.g. ligand) and \"protein\".\n"
+    "\n"
+    "The tool first requires that you specify what atoms will be integrated.\n"
+    "This is the \"water\" selection.  Next, you need to define what is considered\n"
+    "\"internal\" to the protein, filtering which waters will be considered.\n"
+    "This is typically done by defining a \"protein\" selection and a mode for\n"
+    "filtering: axis, box, radius, or grid.  The axis mode takes the first\n"
+    "principal component for the protein and picks all waters that are within\n"
+    "a given radius of that axis.  The box mode uses the bounding box for the\n"
+    "protein selection (i.e. any water that is within this box).  The radius\n"
+    "mode picks waters that are within a given radius of any protein atom.\n"
+    "Finally, the grid mode takes a grid mask and picks any waters that are\n"
+    "within the masked gridpoints.\n"
+    "\n"
+    "The resultant density histogram can be scaled by an estimate of the\n"
+    "bulk solvent density by using the --scale option along with either\n"
+    "--bulk or --brange.  The former uses the average density for any Z-plane\n"
+    "that is sufficiently far from 0 (i.e. |Z| >= k) whereas the latter explicitly\n"
+    "takes a Z-range to average over.  Note that you must explicitly rescale\n"
+    "the density by using the --scale=1 option, otherwise the estimated bulk\n"
+    "solvent density will be printed only.\n"
+    "\n"
+    "*Visualization Notes*\n"
+    "\n"
+    "For visualization purposes, it you are using a membrane-protein system\n"
+    "and the axis mode for filtering out waters, you may end up with a plug\n"
+    "of bulk water at the protein/solvent interface.  To make it more clear\n"
+    "that there is a layer of bulk solvent, use the --bulked option.  This\n"
+    "adds water back into the histogram based on the Z-coordinate and the\n"
+    "bounding box of the protein (with an optional padding)\n"
+    "\n"
+    "Water-hist treats each atom as a single grid point (based on nearest)\n"
+    "grid-coordinate.  This means that even though a water should cover\n"
+    "multiple grid-points based on the grid resolution and water radius,\n"
+    "only one grid point will be used.  For visualization then, the\n"
+    "grid should be smoothed out.  This can be done via the \"gridgauss\"\n"
+    "tool which convolves the grid with a gaussian kernel.  Finally,\n"
+    "the grid needs to be converted to an X-Plor electron density format\n"
+    "using \"grid2xplor\".  This can then be read into PyMol, VMD, or other\n"
+    "visualization tools.\n"
+    "\n"
+    "These tools can be chained together via Unix pipes,\n"
+    "   water-hist model.pdb model.dcd | gridgauss 4 2 | grid2xplor >water.xplor\n"
+    "\n"
+    "For more details about available options, see the help information for the\n"
+    "respective tool.\n"
+    "\n"
+    "\n"
+    "*Examples*\n"
+    "\n"
+    "Internal water for a GPCR with a bulk estimate, converted to Xplor EDM:\n"
+    "  water-hist --radius=15 --bulk=25 --scale=1 b2ar.pdb b2ar.dcd | grid2gauss 4 2 | grid2xplor >b2ar_water.xplor\n"
+    "\n"
+    "Internal water for a GPCR with the bulk solvent layer added back, converted to Xplor EDM:\n"
+    "  water-hist --bulk=25 --scale=2 --bulked=20,25:50 b2ar.pdb b2ar.dcd | grid2gauss 4 2 | grid2xplor >b2ar_water.xplor\n"
+    "\n"
+    "All water within a given radius of a binding pocket, converted to Xplor EDM:\n"
+    "  water-hist --radius=20 --prot='resid > 10 && resid < 25' --mode=radius | grid2gauss 4 2 | grid2xplor >binding.xplor\n"
+    "\n"
+    "Higher resolution grid, converted to Xplor EDM:\n"
+    "  water-hist --gridres=0.5 b2ar.pdb b2ar.dcd | grid2gauss 8 4 | grid2xplor >b2ar_water.xplor\n"
+    "\n"
+    "All lipid head-group density, written as LOOS grid:\n"
+    "  water-hist --prot='resname == \"PEGL\"' --water='resname === \"PEGL\"' --mode=box membrane.pdb membrane.dcd >membrane.grid\n"
+    "\n"
+    "Ligand (carazolol) Density, written as LOOS grid:\n"
+    "  water-hist --water='resname == \"CAU\"' --mode=box b2ar.pdb b2ar.dcd >b2ar.grid\n";
+
+  return(msg);
+}
+
 class WaterHistogramOptions : public opts::OptionsPackage {
 public:
   WaterHistogramOptions() :
@@ -148,7 +225,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   // Build up possible options
-  opts::BasicOptions* basopts = new opts::BasicOptions;
+  opts::BasicOptions* basopts = new opts::BasicOptions(fullHelpMessage());
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   opts::BasicWater* watopts = new opts::BasicWater;
   WaterHistogramOptions *xopts = new WaterHistogramOptions;
