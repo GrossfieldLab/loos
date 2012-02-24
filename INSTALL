@@ -94,7 +94,7 @@ Using the synaptic manager (or apt-get), install the following packages:
 
 ------= openSUSE =------
 
-LOOS has been tested with: 11
+LOOS has been tested with: 11, 12
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
@@ -111,7 +111,7 @@ in order to build LOOS.
 
 -----= MACOS X =-----
 
-LOOS has been tested with MacOS 10.6, however, it *should* be
+LOOS has been tested with MacOS 10.7, however, it *should* be
 compatable with version 10.4-10.6.
 
 First, make sure you have the Developer's Tools (i.e. XCode)
