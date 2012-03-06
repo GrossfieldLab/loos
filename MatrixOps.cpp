@@ -348,39 +348,6 @@ namespace loos {
     }
   
 
-    // Create a square identity matrix
-
-    RealMatrix eye(const uint n) {
-      RealMatrix I(n, n);
-      for (uint i=0; i<n; ++i)
-        I(i,i) = 1.0;
-
-      return(I);
-    }
-
-    DoubleMatrix deye(const uint n) {
-      DoubleMatrix I(n, n);
-      for (uint i=0; i<n; ++i)
-        I(i, i) = 1.0;
-
-      return(I);
-    }
-
-
-
-    DoubleMatrix submatrix(const DoubleMatrix& M, const Range& rows, const Range& cols) {
-      uint m = rows.second - rows.first;
-      uint n = cols.second - cols.first;
-
-      DoubleMatrix A(m,n);
-      for (uint i=0; i < n; ++i)
-        for (uint j=0; j < m; ++j)
-          A(j,i) = M(j+rows.first, i+cols.first);
-
-      return(A);
-    }
-
-
 
 
 
@@ -403,6 +370,10 @@ namespace loos {
     }
 
 
+    // ***DEPRECATED***
+    DoubleMatrix deye(const uint n) {
+      return(eye<DoubleMatrix>(n));
+    }
 
 
   }

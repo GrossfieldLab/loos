@@ -73,13 +73,32 @@ namespace loos {
     DoubleMatrix invert(DoubleMatrix& A, const double eps = 1e-5);
 
     //! An identity matrix of size n
-    RealMatrix eye(const uint n);
+    template<typename T>
+    T eye(const uint n) {
+      T I(n, n);
+      for (uint i=0; i<n; ++i)
+        I(i, i) = 1.0;
+      return(I);
+    }
+
+    // ***DEPRECATED***
     DoubleMatrix deye(const uint n);
 
 
     //! Extracts a submatrix
-    loos::DoubleMatrix submatrix(const loos::DoubleMatrix& M, const Range& rows, const Range& cols);
+    template<typename T>
+    T submatrix(const T& M, const Range& rows, const Range& cols) {
+      uint m = rows.second - rows.first;
+      uint n = cols.second - cols.first;
 
+      T A(m,n);
+      for (uint i=0; i < n; ++i)
+        for (uint j=0; j < m; ++j)
+          A(j,i) = M(j+rows.first, i+cols.first);
+
+      return(A);
+    }
+    
     //! Normalizes each column as a column-vector
     void normalizeColumns(loos::DoubleMatrix& A);
 

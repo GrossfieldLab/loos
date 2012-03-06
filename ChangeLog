@@ -1,3 +1,10 @@
+2012-03-06    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed eye() and submatrix() to be templated functions
+	(i.e. they work with both RealMatrix and DoubleMatrix).
+	* Note the deye() function is now deprecated and will be removed
+	after the next release.
+
 2012-01-31    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in molshape where tool-specific command-line options
