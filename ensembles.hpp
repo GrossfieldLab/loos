@@ -75,6 +75,11 @@ namespace loos {
 
   void subtractAverage(RealMatrix& M);
 
+  //! Compute the SVD of an ensemble with optional alignment (note RSVs returned are transposed)
+  /**
+   * Returns the U, S, and V' of the SVD of the passed ensemble.  If align is true, then the ensemble
+   * is iteratively aligned prior to computing the SVD.
+   */
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, const bool align = true);
 
 };
