@@ -1,3 +1,9 @@
+2012-03-08    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed density-dist to restore original behavior.  The first
+	selection is always "all".  Zero or more selections are permitted
+	on the command line.
+
 2012-03-06    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed eye() and submatrix() to be templated functions

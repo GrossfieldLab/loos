@@ -48,21 +48,30 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() :
     symmetrize(false),
-    auto_all(true),
     window(0),
     calc_type_desc("electron")
   { }
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("auto", po::value<bool>(&auto_all)->default_value(auto_all), "Automatically compute system density")
       ("zsymmetry", po::value<bool>(&symmetrize)->default_value(symmetrize), "Symmetric with respect to Z")
       ("type", po::value<string>(&calc_type_desc)->default_value(calc_type_desc), "Calculation type (mass, charge, electron)")
       ("window", po::value<uint>(&window)->default_value(window), "Window size (in frames) for time series (0 = disabled)")
       ;
   }
 
+  void addHidden(po::options_description& o) {
+    o.add_options()
+      ("selections", po::value< vector<string> >(&selections), "selections");
+  }
+
+  void addPositional(po::positional_options_description& pos) {
+    pos.add("selections", -1);
+  }
+
   bool postConditions(po::variables_map& map) {
+    selections.insert(selections.begin(), "all");
+
     if (toupper(calc_type_desc[0]) == 'C')
       calc_type = CHARGE;
     else if (toupper(calc_type_desc[0]) == 'E')
@@ -76,19 +85,25 @@ public:
     return(true);
   }
 
+  string help() const {
+    return(string(" selection [selection ...]"));
+  }
+
   string print() const {
     ostringstream oss;
-    oss << boost::format("auto=%d, zsymmetry=%d, type='%s', window=%d") 
-      % auto_all
+    oss << boost::format("zsymmetry=%d, type='%s', window=%d, selections='") 
       % symmetrize
       % calc_type_desc
       % window;
+    for (vector<string>::const_iterator i = selections.begin(); i != selections.end(); ++i)
+      oss << *i << "'" << (i == selections.end()-1 ? "" : ",'");
     return(oss.str());
   }
 
-  bool symmetrize, auto_all;
+  bool symmetrize;
   uint window;
   string calc_type_desc;
+  vector<string> selections;
   CalculationType calc_type;
 };
 
@@ -114,18 +129,17 @@ int main(int argc, char *argv[]) {
   ropts->addArgument("minz", "min-z");
   ropts->addArgument("maxz", "max-z");
   ropts->addArgument("nbins", "number-of-bins");
-  ropts->addVariableArguments("selection", "selection");
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(popts).add(tropts).add(topts).add(ropts);
+  options.add(bopts).add(popts).add(tropts).add(ropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
   double min_z = parseStringAs<double>(ropts->value("minz"));
   double max_z = parseStringAs<double>(ropts->value("maxz"));
   uint nbins = parseStringAs<uint>(ropts->value("nbins"));
-  vector<string> selections = ropts->variableValues("selection");
+  vector<string> selections = topts->selections;
 
   AtomicGroup system = tropts->model;
   pTraj traj = tropts->trajectory;
@@ -133,10 +147,12 @@ int main(int argc, char *argv[]) {
 
   cout << "# " << hdr << endl;
 
+  cerr << "DEBUGGING:\n";
+  for (uint i=0; i<selections.size(); ++i)
+    cerr << i << "\t" << selections[i] << endl;
+
   // density from each selection
   vector<AtomicGroup> subsets;
-  if (topts->auto_all)
-    subsets.push_back(system);
   for (vector<string>::iterator i = selections.begin(); i != selections.end(); ++i)
     subsets.push_back(selectAtoms(system, *i));
 
@@ -217,10 +233,8 @@ int main(int argc, char *argv[]) {
 
         // write the header
         outfile << "# Z\t";
-        if (topts->auto_all) {
-          outfile << "AllAtoms\t";
-        }
-        for (uint i=(topts->auto_all ? 1 : 0); i<subsets.size(); i++) {
+        outfile << "AllAtoms\t";
+        for (uint i=1; i<subsets.size(); i++) {
           outfile << " Set(" << i <<") "; 
         }
         outfile << endl;
@@ -255,8 +269,8 @@ int main(int argc, char *argv[]) {
   }
 
   // Normalize by the number of frames and output the average charge density
-  cout << "# Z\t" << (topts->auto_all ? "AllAtoms" : "");
-  for (uint i=(topts->auto_all ? 1:0); i<subsets.size(); i++) {
+  cout << "# Z\tAllAtoms";
+  for (uint i=1; i<subsets.size(); i++) {
     cout << " Set(" << i <<") "; 
   }
   cout << endl;
