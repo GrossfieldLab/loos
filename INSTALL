@@ -1,6 +1,23 @@
 Building and Installing Loos
 ----------------------------
 
+***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE**
+*** 
+*** This version of LOOS includes the beta-release of a python interface
+*** to the core LOOS library.  The interface and subsequent functionality
+*** may change significantly in future releases.  This also requires a
+*** recent version of SWIG be installed.
+*** 
+*** To use, you must add the LOOS directory to the PYTHONPATH and
+*** LD_LIBRARY_PATH environment variables
+***
+***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE**
+
+
+
+
+
+
 *** FOR THE IMPATIENT ***
 
 
