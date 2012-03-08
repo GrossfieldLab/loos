@@ -252,7 +252,7 @@ Export('env')
 if int(env['shared']):
    env['LD_LIBRARY_PATH'] = "."
 
-loos = SConscript('SConscript')
+[loos,loos_swig] = SConscript('SConscript')
 
 
 
@@ -284,8 +284,9 @@ env.Alias('lib', loos)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
+env.Alias('pyloos', loos_swig)
 
-env.Alias('all', loos + tools + all_packages)
+env.Alias('all', loos + tools + all_packages + loos_swig)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs)
 env.Alias('user', user_package)
 

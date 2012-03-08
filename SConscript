@@ -76,7 +76,4 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 looslib_swig = env.SharedLibrary('_looslib.so', Split(apps))
 loos_swig = env.SharedLibrary('_loos.so', ['loos.i', looslib_swig])
 
-loos = [loos, loos_swig]
-
-
-Return('loos')
+Return('loos','loos_swig')
