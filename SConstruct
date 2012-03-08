@@ -286,7 +286,7 @@ env.Alias('tests', tests)
 env.Alias('tools', tools)
 env.Alias('pyloos', loos_swig)
 
-env.Alias('all', loos + tools + all_packages + loos_swig)
+env.Alias('all', loos + tools + all_packages)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs)
 env.Alias('user', user_package)
 
