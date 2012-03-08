@@ -1223,7 +1223,9 @@ there is significant demand from users.
        potential_profile.py charge-density.dat > potential.dat
 
        See the --fullhelp message for more details about the meaning of
-       specific columns in the output.
+       specific columns in the output.  
+
+       Note: this tool requires the python numpy extension in order to run.
 
        <DT><B>xy_rdf</B>
        <DD>Compute a two dimension radial distribution function in the xy plane,
