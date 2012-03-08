@@ -86,7 +86,7 @@ public:
   }
 
   string help() const {
-    return(string(" selection [selection ...]"));
+    return(string(" [selection [selection ...]]"));
   }
 
   string print() const {
@@ -133,8 +133,13 @@ int main(int argc, char *argv[]) {
 
   opts::AggregateOptions options;
   options.add(bopts).add(popts).add(tropts).add(ropts).add(topts);
-  if (!options.parse(argc, argv))
+  if (!options.parse(argc, argv)) {
+    cerr << endl;
+    cerr << "**Important note**\nYou must place '--' on the command line AFTER\n";
+    cerr << "the options if you are going to use a negative Z argument, i.e.\n";
+    cerr << "density-dist --type charge -- foo.pdb foo.dcd -40 40 40\n";
     exit(-1);
+  }
 
   double min_z = parseStringAs<double>(ropts->value("minz"));
   double max_z = parseStringAs<double>(ropts->value("maxz"));
@@ -146,10 +151,6 @@ int main(int argc, char *argv[]) {
   // End of options
 
   cout << "# " << hdr << endl;
-
-  cerr << "DEBUGGING:\n";
-  for (uint i=0; i<selections.size(); ++i)
-    cerr << i << "\t" << selections[i] << endl;
 
   // density from each selection
   vector<AtomicGroup> subsets;
