@@ -64,7 +64,7 @@ public:
       _data = inp; 
     }
 
-    TimeSeries(const int size, const T *array) {
+    TimeSeries(const uint size, const T *array) {
       _data.reserve(size);
       for (unsigned int i=0; i<size; i++) {
         _data.push_back(array[i]);
@@ -75,12 +75,16 @@ public:
       _data = inp._data;
     }
 
-    TimeSeries(const int n, const T val) {
+    TimeSeries(const uint n) {
+      _data = std::vector<T>(n, 0);
+    }
+
+    TimeSeries(const uint n, const T val) {
       _data.assign(n, (T) val);
     }
 
     //! Resize the TimeSeries by calling the underlying vector's resize
-    void resize(const int n, const T val= (T) 0.0) {
+    void resize(const uint n, const T val= (T) 0.0) {
         _data.resize(n, val);
     }
 
@@ -384,7 +388,7 @@ public:
     //! Return a new timeseries of the same size as the current one,
     //! containing the running average of the time series
     TimeSeries<T> running_average(void) const {
-      TimeSeries<T> result(_data.size() );
+      TimeSeries<T> result(_data.size());
       T sum = 0.0;
       for (unsigned int i=0; i<_data.size(); i++) {
         sum += _data[i];
@@ -398,14 +402,14 @@ public:
     //! ith value of the new time series =  1/window * sum(data[i:i+window]).
     //! NOTE: The present algorithm is relatively fast, but can be prone
     //! to roundoff.
-    TimeSeries<T> windowed_average(const int window) const {
+    TimeSeries<T> windowed_average(const uint window) const {
 
       if (window > _data.size() )
         throw(std::out_of_range("Error in windowed_average: window too large"));
 
-      TimeSeries result(_data.size() - window);
+      TimeSeries<T> result(_data.size() - window);
       T sum = 0;
-      for (int i=0; i<window; i++) {
+      for (uint i=0; i<window; i++) {
         sum += _data[i];
       }
       result[0] = sum / window;
@@ -415,6 +419,8 @@ public:
         sum = sum - _data[i-1] + _data[i+window-1];
         result[i] = sum / window;
       }
+
+      return(result);
     }
 
     //! Return the variance of the block average for the time series.

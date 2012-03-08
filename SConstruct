@@ -24,6 +24,7 @@ import re
 from subprocess import *
 from time import strftime
 import shutil
+import distutils.sysconfig
 
 
 
@@ -32,7 +33,7 @@ default_lib_path = '/usr/lib64'
 
 
 # This is the version-tag for LOOS output
-loos_version = '1.7.5'
+loos_version = '2.0.0'
 
 
 # Principal options...
@@ -66,7 +67,7 @@ clos.Add('REVISION', 'Add build information', loos_version)
 
 
 
-env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.')
+env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],CPPPATH=[distutils.sysconfig.get_python_inc()],SHLIBPREFIX="")
 Help(clos.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')

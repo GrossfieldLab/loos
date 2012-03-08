@@ -3,6 +3,7 @@
 	* Added potential_profile.py to Tools/.  This tool uses output from
 	density-dist run in "charge" mode to compute the electrostatic potential
 	profile.
+	* Added beta version of python interface
 
 2012-03-08    <tromo@spade.biophysics.rochester.edu>
 
