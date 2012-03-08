@@ -31,8 +31,6 @@
 
 namespace loos {
 
-  typedef double                greal;
-
   //! This class encapsulates crystallographic unit cell data
   class UnitCell {
   public:
