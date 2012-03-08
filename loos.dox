@@ -1177,7 +1177,9 @@ there is significant demand from users.
        trajectory has already been set up with the membrane center at z=0.  You
        can accomplish this using merge-traj, which can optionally recenter a
        selection at every frame.  The functionality from density-dist-windowed
-       has also been folded in, using the --window option.
+       has also been folded in, using the --window option.  Note: this tool can 
+       be used in combination with potential_profile.py to compute electrostatic
+       potentials along the membrane normal.
 
        <DT><B>density-dist-windowed</B>
        <DD>Compute the charge/electron/mass density distribution for the
@@ -1206,6 +1208,22 @@ there is significant demand from users.
        on block averaging, see the review by Grossfield and Zuckerman,
        "Quantifying uncertainty and sampling quality in biomolecular
        simulations", Annual Reports in Computational Chemistry, 2009, 5, 23-48.
+
+       <DT><B>potential_profile.py</B>
+       
+       <DD> Compute the electrostatic potential profile along the membrane
+       normal.  This program takes the output of the density-dist tool run in
+       "charge" mode and returns the electrostatic potential in Volts.  The
+       algorithm used here is described by Sachs, et al, J Chem Phys, 2004,
+       121, 10847, and includes a correction to ensure that the electrostatic
+       potential is continuous at the periodic boundary.  A typical command
+       line would look like: 
+       
+       density-dist --type=charge -- path/to/model-file path/to/trajectory -38 38 76 > charge-density.dat
+       potential_profile.py charge-density.dat > potential.dat
+
+       See the --fullhelp message for more details about the meaning of
+       specific columns in the output.
 
        <DT><B>xy_rdf</B>
        <DD>Compute a two dimension radial distribution function in the xy plane,
