@@ -83,6 +83,14 @@ must still install the packages above.  For example, on an i7 machine,
 install both atlas packages listed above as well as
 libatlas3gf-corei7sse3.
 
+* PyLOOS *
+
+PyLOOS requires a very recent version of SWIG.  While the synaptics
+package manager says the current version of SWIG is 2.0+, once
+installed, SWIG reports it's a pre-2.0 version and will not work with
+PyLOOS.  We recommend that you download and install the latest version
+of SWIG instead.  You will also need to install the libpcre-dev
+package for the perl compatible regular expression library.
 
 * Ubuntu 8.04 *
 
