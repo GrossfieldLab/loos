@@ -72,28 +72,21 @@ public:
     p.add("sel2", 1);
     p.add("hist-min", 1);
     p.add("hist-max", 1);
-    p.add("num-bins", 1);
-  }
-
+    p.add("num-bins", 1) ;
+  }                      
+                         
   bool check(po::variables_map& vm)
-  {
+  {                      
     return(!(vm.count("sel1") 
-             && vm.count("hist-min")
-             && vm.count("hist-max")
-             && vm.count("num-bins")));
-  }
-
-  bool postCondition(po::variables_map& vm)
-  {
-    if (vm.count("sel1") && !vm.count("sel2"))
-      selection2 = selection1;
-    return(true);
-  }
-
-  string help() const
-  {
-    return("first-selection second-selection histogrm-min histogram-min histogram-bins");
-  }
+             && vm.count ("hist-min")
+             && vm.count ("hist-max")
+             && vm.count ("num-bins")));
+  }                      
+                         
+  string help() const    
+  {                      
+    return("first-selection second-selection histogram-min histogram-min histogram-bins");
+  }                      
 
   string print() const
   {
@@ -107,9 +100,47 @@ public:
       % num_bins;
     return(oss.str());
   }
-
 };
 // @endcond
+
+
+string fullHelpMessage(void)
+{
+string s = 
+    "\n"
+    "The purpose of this program is to compute the radial distribution function, \n"
+    "treating the selections as groups as opposed to individual atoms.  There are \n"
+    "3 ways to group the atoms, controlled by the arguments to --split-mode: \n"
+    "    by-residue: the selection is split into unique residues\n"
+    "    by-molecule: the selection is split into unique molecules (only available\n"
+    "                if the system file contains connectivity information)\n"
+    "    by-segment: the selection is split using the segid (this is present in \n"
+    "                CHARMM/NAMD/XPLOR derived files, and some PDB files)\n"
+    "\n"
+    "The default mode if --split-mode isn't set is \"by-molecule\".\n"
+    "In each case, the splitting is performed _before_ the selection is performed.  \n"
+    "\n"
+    "The distance is then computed between the centers of mass of the grouped \n"
+    "objects.\n"
+    "\n"
+    "For example, if the selection string looked like \n"
+    "    'resname == \"TRP\" and name =~\"^C\"'\n"
+    "with \"by-residue\" splitting, then the full system would first be split \n"
+    "into separate residues, and then the selection string would be applied to \n"
+    "those individual residues, in this case returning the carbon atoms from \n"
+    "the tryptophan residues.  \n"
+    "\n"
+    "histogram-min, histogram-max, and histogram-bins specify the range over \n"
+    "which the radial distribution function is computed and the number of bins \n"
+    "used.\n"
+    "\n"
+    "If you want to consider individual atoms instead of the centers of mass (e.g. \n"
+    "if you want to consider all of the individual atoms in a residue), use the \n"
+    "tool atomic-rdf instead.\n"
+    ;
+
+    return(s);
+    }
 
 
 enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE };
@@ -145,7 +176,7 @@ int main (int argc, char *argv[])
 
 // parse the command line options
 string hdr = invocationHeader(argc, argv);
-opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
 opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
 ToolOptions* topts = new ToolOptions;
 
