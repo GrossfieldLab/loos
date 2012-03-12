@@ -143,13 +143,69 @@ split_mode parseSplit(const string &split_by)
     return (split);
     }
 
+string fullHelpMessage(void)
+{
+string s =
+    "\n"
+    "The purpose of this program is to compute a radial distribution function in\n"
+    "the x-y plane treating the selections as groups as opposed to individual\n"
+    "atoms.  This is intended primarily for analyzing lateral structure of\n"
+    "membrane systems. There are 3 ways to group the atoms, controlled by the\n"
+    "arguments to --split-mode: \n"
+    "\n"
+    "  by-residue:  the selection is split into unique residues\n"
+    "  by-molecule: the selection is split into unique molecules (only \n"
+    "               available if the system file contains connectivity \n"
+    "               information)\n"
+    "  by-segment:  the selection is split using the segid (this is present \n"
+    "               in CHARMM/NAMD/XPLOR derived files, and some PDB files)\n"
+    "\n"
+    "The default mode if --split-mode isn't set is \"by-molecule\".\n"
+    "In each case, the splitting is performed _before_ the selection is \n"
+    "performed.  \n"
+    "\n"
+    "The distance is then computed between the centers of mass of the grouped \n"
+    "objects, only considering the x and y coordinates.  The program treats\n"
+    "the two leaflets of the separately, based on the sign of the z-coordinate\n"
+    "of the center of mass of the selection in the first frame; this can \n"
+    "cause problems if the membrane has not already been centered at the \n"
+    "origin (the merge-traj tool can do this for you).\n"
+    "\n"
+    "For example, to look at the distribution of PE lipid headgroups in a lipid\n"
+    "bilayer, you might use a command line like\n"
+    "\n"
+    "xy_rdf model-file traj-file 'resname == \"PEGL\"' 'resname == \"PEGL\"' 0 40 40\n"
+    "    --split-mode=by-molecule\n"
+    "\n"
+    "Assuming the CHARMM27-style lipid naming, the headgroup would be its own\n"
+    "residue with name \"PEGL\", and the result would be the lateral RDF for \n"
+    "the headgroup centers of mass.  \n"
+    "\n"
+    "As with the other rdf tools (rdf, atomic-rdf), histogram-min,\n"
+    "histogram-max, and histogram-bins specify the range over which the\n"
+    "radial distribution function is computed and the number of bins used.  \n"
+    "\n"
+    "The --timeseries flag lets you track the evolution of the rdf over time, by\n"
+    "writing out a windowed average as it is accumulated.  So, the adding the \n"
+    "flags\n"
+    "\n"
+    "      --timeseries 100 --timeseries-directory \"foo\"\n"
+    "\n"
+    "would cause the program to write out a new running average every 100 \n"
+    "frames.  The files will appear in the directory \"foo\", with names\n"
+    "rdf_0.dat, rdf_1.dat, etc.  The program does not attempt to create \"foo\"\n"
+    "if it doesn't exist, and instead will simply exit.\n" ;
+
+    return (s);
+    }
+
 
 int main (int argc, char *argv[])
 {
 
 // parse the command line options
 string hdr = invocationHeader(argc, argv);
-opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
 opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
 ToolOptions* topts = new ToolOptions;
 
