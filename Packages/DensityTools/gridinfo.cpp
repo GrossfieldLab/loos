@@ -40,6 +40,12 @@ int main(int argc, char *argv[]) {
 
   DensityGrid<double> grid;
   if (argc == 2) {
+    string fname(argv[1]);
+    if (fname == "--help" || fname == "-h" || fname == "--fullhelp") {
+      cerr << "Usage- gridinfo <foo.grid\n\tgridinfo foo.grid\n";
+      cerr << "\nPrints out basic information about a grid\n";
+      exit(0);
+    }
     ifstream ifs(argv[1]);
     ifs >> grid;
   } else
