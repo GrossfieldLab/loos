@@ -37,10 +37,53 @@
 using namespace std;
 using namespace loos;
 
+string fullHelpMessage(void)
+    {
+    string s = 
+"\n"
+"SYNOPSIS\n"
+"\n"
+"Read a trajectory and produce a new trajectory with the selected set of\n"
+"atoms recentered.\n"
+"\n"
+"DESCRIPTION\n"
+"\n"
+"This program translates and reimages a trajectory such that the set of atoms\n"
+"selected is recentered.  Some of the capabilities are redundant with \n"
+"the merge-traj tool, and at some point they may be merged.  However, the\n"
+"main unique use of this tool is the ability to recenter just in the x-y\n"
+"plane, just along the z-axis, or in all 3 dimensions at once. No rotations\n"
+"are performed.\n"
+"\n"
+"Unlike merge-traj, recenter-trj always handles the case where the centering\n"
+"selection might be split across the periodic boundary, and so does not\n"
+"need a flag like --selection-is-split.  \n"
+"\n"
+"recenter-trj will only work when the system file specifies the system's \n"
+"connectivity, as with a CHARMM/NAMD psf file, or a PDB file with CONECT \n"
+"records.\n"
+"\n"
+"EXAMPLE\n"
+"\n"
+"recenter-trj model.psf traj.dcd 'segname == \"PROT\"' A output.dcd\n"
+"\n"
+"Here, model.psf is the system file, traj.dcd is the input trajectory file,\n"
+"and the selection string specifies a segment called PROT, presumably a \n"
+"protein molecule.  The \"A\" argument means that the selection\n"
+"is centered in all 3 dimensions.  \n"
+    ;
+    return(s);
+    }
+
 int main(int argc, char *argv[])
 {
 
-if (argc != 6)
+if ((argc > 1) && (string(argv[1]) == string("--fullhelp")))
+    {
+    cerr << fullHelpMessage() << endl;
+    exit(-1);
+    }
+else if (argc != 6)
     {
     cerr << "Usage: recenter-trj model-file trajectory-file selection-string [Z|XY|A] dcd-name" << endl;
     exit(-1);
