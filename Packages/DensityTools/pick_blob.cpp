@@ -68,19 +68,41 @@ double range = 0.0;
 
 string fullHelpMessage(void) {
   string msg =
+    "SYNOPSIS\n"
     "\n"
-    "pick_blobs finds the blob closest to a user input.  Several methods\n"
+    "\tIdentify the blob closest to a user-specified criterion\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tpick_blobs finds the blob closest to a user input.  Several methods\n"
     "of input are supported.  For instance, given a pdb and selection string\n"
     "the blob closest to the selection will be returned.  Additionally, a blob\n"
     "may be selected using its ID (see blobid).  A point within the grid may\n"
-    "also be used.  Blobs within a specified range ..."
-
-    "\n\n*Examples* \n\n"
-    "   pick_blob --model b2ar.pdb --selection 'resid==286 && segid==\"BAR2\"' < foo_id > foo_picked\n"
-    "This method uses a structure file to pick out the blob of interest. \n"
-    "First foo_id was created using \"blobid\" Then, we pick out the blob\n"
-    "closest to residue 268 (Trp6.48) in b2ar.  This is written to foo_picked."
-    "\n\n";
+    "also be used.  A range of distances and the largest blob within the range\n"
+    "are alternate criteria.\n"
+    "\n"
+    "The input is an integer grid (from blobid), and the output is another integer-grid\n"
+    "that can be used to mask a density grid.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\tblobid --threshold 1 <foo.grid >foo_id.grid\n"
+    "\tpick_blob --model foo.pdb --selection 'resid==65' < foo_id.grid > foo_picked.grid\n"
+    "This example first segments the density at 1.0, and then picks the blob closest to\n"
+    "any atom in residue 65 in the model.\n"
+    "\n"
+    "\tpick_blob --point '(13,7,3)' <foo.grid >foo_picked.grid\n"
+    "This example picks the blob nearest coordinates (13,7,3) in real-space (i.e.\n"
+    "Angstroms).\n"
+    "\n"
+    "\tpick_blob --model foo.pdb --selection 'resid==65' --range 15 <foo_id.grid >foo_picked.grid\n"
+    "This example finds ALL blobs that are within 15 Angstroms of any atom in residue 65.\n"
+    "\n"
+    "\tpick_blob --model foo.pdb --selection 'resid==64' --range 15 --largest 1 <foo_id.grid >foo_picked.grid\n"
+    "This example is as above, except that only the largest blob within 15 Angstroms is picked,\n"
+    "rather than ALL blobs within 15 Angstroms.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tblobid, gridmask\n";
 
   return(msg);
 }
