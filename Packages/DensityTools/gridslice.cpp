@@ -46,7 +46,16 @@ void invalidIndex(int i) {
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    cerr << "Usage - gridslice [i|j|k] index <grid >matrix\n";
+    cerr << "Usage- gridslice [i|j|k] index <grid >matrix\n";
+    cerr <<
+      "\n"
+      "Gridslice extracts a slice of the grid and writes it out\n"
+      "as a Matlab/Octave/Gnuplot compatible ASCII matrix.\n"
+      "The first option (i, j, or k) determines the orientation\n"
+      "of the slice.  The index represents the coordinate in the\n"
+      "direction.  For example, \"k 20\" means extract the plane\n"
+      "when k=20 (an i,j-plane).  Using "i 13" means extract the\n"
+      "plane when i=13 (a j,k-plane).\n";
     exit(-1);
   }
 
