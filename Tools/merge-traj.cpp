@@ -81,6 +81,98 @@ public:
 
 // @endcond
 
+string fullHelpMessage(void)
+    {
+    string s = 
+   "\n"
+   "SYNOPSIS\n"
+   "\n"
+   "Merge and downsample a set of trajectory files into a single file.\n"
+   "\n"
+   "DESCRIPTION\n"
+   "\n"
+"This program takes a set of trajectory files in any of the formats\n"
+"supported by LOOS and efficiently produces a merged trajectory in\n"
+"DCD format.  It can also produce a second, downsampled trajectory,\n"
+"and can recenter and reimage the coordinates at the same time.\n"
+"\n"
+"Unlike other tools, such as catdcd, merge-traj works by appending to\n"
+"existing trajectory files instead of rewriting them from scratch each\n"
+"time.  This can dramatically improve the performance in a common usage\n"
+"case, where a set of trajectories is generated over a period of days\n"
+"or weeks, and merge-traj is used to create a daily merge of the data\n"
+"available to date.  \n"
+"\n"
+"The user specifies the target for merged trajectory, and a list of\n"
+"trajectory files to be merged.  The program determines the number of \n"
+"frames in the current merged trajectory, and walks through the list\n"
+"of trajectories to be merged, skipping that number of frames and only\n"
+"then beginning to append new frames.  This means that a) the user\n"
+"must specify the trajectories in the correct order, and b) all \n"
+"trajectories must be specified each time (not just the newest files).\n"
+"merge-traj correctly handles the case where one of the trajectories \n"
+"to be merged has grown since the previous merge.\n"
+"\n"
+"Options related to downsampling\n"
+"\n"
+"--downsample-dcd     a second merged DCD file, with frames written at\n"
+"                     lower frequency\n"
+"--downsample-rate    integer specifying how often to write to the \n"
+"                     downsampled DCD file, e.g. 10 means write every\n"
+"                     10th frame\n"
+"Note: the downsampled DCD file must be synchronized with the fully sampled\n"
+"one.  This is the user's responsibility, as the code doesn't do any \n"
+"additional checking.  The easiest way is to put the command line into\n"
+"a script to ensure that both files are always used.\n"
+"\n"
+"Options related to recentering\n"
+"\n"
+"It is often convenient to clean up the trajectory at merge time, removing\n"
+"center of mass motion for some component of the system (e.g. the protein).\n"
+"Accordingly, merge-traj has the following options\n"
+"\n"
+" --centering-selection   the centroid of the atoms specificed by the \n"
+"                         selection string will be moved to the origin in\n"
+"                         each frame.  No rotations are performed.\n"
+" --selection-is-split    This flag indicates that the selection specified\n"
+"                         by --centering-selection may be split across image\n"
+"                         boundaries, in which case the centroid can be far\n"
+"                         from where the atoms are actually located.  In \n"
+"                         this case, the recentering is performed in 2 \n"
+"                         stages, first putting the selection into a \n"
+"                         single image, then recentering.\n"
+" --fix-imaging           Ensure that molecules are not broken across \n"
+"                         image boundaries.  This is generally necessary\n"
+"                         for simulations in GROMACS.\n"
+"\n"
+"\n"
+"In addition, for merging GROMACS XTC files there is an additional flag:\n"
+"\n"
+"--skip-first-frame       XTC files can contain the initial structure as\n"
+"                         the first frame.  In this case, use this flag to\n"
+"                         prevent duplication upon merging.\n"
+"\n"
+"\n"
+"EXAMPLE\n"
+"\n"
+"\n"
+"Here is an example command line:\n"
+"\n"
+"merge-traj --centering-selection 'segid==\"OPSN\"' --downsample-dcd merged_1ns.dcd --downsample-rate 10 start.pdb merged.dcd  traj.[0-9].dcd  traj.[1-9][0-9].dcd traj.[1-9][0-9][0-9].dcd\n"
+"\n"
+"This will merge a set of trajectory files named traj.0.dcd, traj.1.dcd, \n"
+"etc., going up to hundreds of trajectory files as necessary (this is \n"
+"tcsh, but bash would be similar).  It's necessary to specify the merge \n"
+"this way in order to get the files in the proper order on the command \n"
+"line.  start.pdb is the system file, merged.dcd is the target for the\n"
+"full-resolution merged trajectory.  A second merged trajectory, \n"
+"merged_1ns.dcd, will also be created, containing only every 10th frame.\n"
+"On each frame the full system will be translated and reimaged \n"
+"such that segid \"OPSN\" is at the origin.  \n"
+"\n";
+
+    return (s);
+    }
 
 
 
@@ -88,7 +180,7 @@ int main(int argc, char *argv[])
     {
 
     string hdr = invocationHeader(argc, argv);
-    opts::BasicOptions* bopts = new opts::BasicOptions;
+    opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
     ToolOptions* topts = new ToolOptions;
     opts::RequiredArguments* ropts = new opts::RequiredArguments;
     ropts->addArgument("model", "model-filename");
