@@ -141,12 +141,73 @@ class InternalWater
 
 // @endcond
 
+string fullHelpMessage(void)
+    {
+    string s =
+"\n"
+"SYNOPSIS\n"
+"\n"
+"Track the rate at which water molecules cross the membrane.\n"
+"\n"
+"DESCRIPTION\n"
+"\n"
+"This tool measures the rate at which water molecules cross the lipid membrane.  \n"
+"To simplify matters, the tool assumes that the membrane is centered at z=0, \n"
+"and keeps track of water molecules passing through z=0.  To differentiate \n"
+"between waters passing through the membrane and those that simply pass through \n"
+"the periodic boundary, the user specifies 2 values, inner_threshold and \n"
+"outer_threshold, which specify a distance from the membrane center at which \n"
+"the waters are determined to have entered and exited the membrane, \n"
+"respectively.  The rationale for using 2 thresholds is that we only want to \n"
+"track waters with a reasonable chance of crossing the membrane, so we use a \n"
+"restrictive threshold there (the water has to really be in the membrane before \n"
+"we pay attention), but on the other hand we don't want to say it's out until \n"
+"it's safely outside the membrane, so we use a larger threshold there.  The \n"
+"optimum choice for these values depends on the thickness of the membrane, but \n"
+"10 and 20 are a reasonable start.\n"
+"\n"
+"The output is a list of waters that crossed the membrane, how many frames \n"
+"each water spent inside the membrane, and the frames it entered and left.  The \n"
+"final column is either 1 or -1; the former indicated that the water exited on \n"
+"the +z side of the membrane, the latter the -z side.\n"
+"\n"
+"EXAMPLE\n"
+"\n"
+"crossing-waters system.psf traj.dcd 10.0 20.0\n"
+"\n"
+"This will read system.psf and the trajectory file traj.dcd, and use 10 and 20 \n"
+"angstroms as the inner and outer threshold.  The output will look like this:\n"
+"\n"
+"# crossing-waters 'system.psf' 'traj.dcd' '10' '20' - alan (Tue Mar 13 14:32:49 2012) {/directory/you/were/working/in} [2.0.0 120313]\n"
+"# Total frames = 719\n"
+"#AtomID	Lifetime	Entered	Exited	ExitedPositive\n"
+"38546	2	0	2	-1\n"
+"25136	2	4	6	1\n"
+"25856	1	5	6	-1\n"
+"35909	1	8	9	-1\n"
+"39665	1	8	9	-1\n"
+"\n"
+        ;
+    return(s);
+    }
+
+
 int main (int argc, char *argv[])
 {
-if ( (argc <= 1) ||
-     ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 5)
-   )
+if ( (argc >=2) )
+    {
+    if (string(argv[1]) == string("-h"))
+        {
+        Usage();
+        exit(-1);
+        }
+    else if (string(argv[1]) == string("--fullhelp"))
+        {
+        cerr << fullHelpMessage() << endl;
+        exit(-1);
+        }
+    }
+if (argc < 5)
     {
     Usage();
     exit(-1);
