@@ -62,6 +62,26 @@ using namespace DensityTools;
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
+    cerr <<
+      "SYNOPSIS\n\tExtracts a region of density given a mask grid\n"
+      "\nDESCRIPTION\n\tThis tool will zero out any unwanted density\n"
+      "given a density grid and a grid mask.  The grid mask is an integer\n"
+      "grid.  Any non-zero element of the grid mask means that the corresponding\n"
+      "density from the density grid will be copied to the output grid.\n"
+      "All other locations will have a zero density value.  (Think of an alpha-mask\n"
+      "in gimp or photoshop).\n"
+      "\nEXAMPLES\n\tgridmask <density.grid mask.grid >masked_density.grid\n"
+      "This will apply the mask.grid mask to the density.grid, writing the output\n"
+      "to masked_density.grid\n"
+      "\n"
+      "\tblobid --threshold 1 <foo.grid >foo_id.grid\n"
+      "\tpick_blob --model foo.pdb --selection 'resid == 65' <foo_id.grid >foo_picked.grid\n"
+      "\tgridmask <foo.grid foo_picked.grid >foo_masked.grid\n"
+      "This example will first threshold the density at 1.0, then it will find the blob\n"
+      "closest to residue 65.  This blob is then used as a mask for the original density\n"
+      "grid.  foo_picked.grid therefore contains the actual density values, but with\n"
+      "all extraneous density removed.\n";
+      
     cerr << "Usage- gridmask <edm_grid mask_grid >masked_edm_grid\n";
     exit(-1);
   }
