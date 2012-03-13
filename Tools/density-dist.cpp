@@ -109,7 +109,98 @@ public:
 
 // @endcond
 
-
+string fullHelpMessage(void)
+    {
+    string s =
+       "\n" 
+       " SYNOPSIS\n"
+       "\n"
+       " Compute the electron, mass, or charge density for the system and\n"
+       " its components along the z-axis.\n"
+       "\n"
+       " DESCRIPTION\n"
+       "\n"
+       " The purpose of this tool is to computed the distribution of a system\n"
+       " along the z-axis.  This is most useful for membrane systems, where \n"
+       " the data provided is analogous to that from x-ray or neutron \n"
+       " scattering.  By default the program computes the total distribution,\n"
+       " but if 1 or more selections are given on the command line, the \n"
+       " individual distributions for those selections are output as well.\n"
+       " In addition, the program can measure the time dependence of the\n"
+       " distribution, and can automatically symmetrize the distribution\n"
+       " around z=0.\n"
+       "\n"
+       " If the box size fluctuates (e.g. this is a constant pressure or \n"
+       " constant tension run), then the variation of the area in the x-y\n"
+       " plane is taken into account.  The output units are FOO/Ang^3, where\n"
+       " FOO is either mass in AMU or charge/electron density in electrons.\n"
+       "\n"
+       " Options\n"
+       " --type      Type of distribution (mass, electron, or charge).  If the\n"
+       "             system file provides this information, it is used.  If not,\n"
+       "             there's a warning message and reasonable guesses are \n"
+       "             provided.  Mass and electron densities are comparable to\n"
+       "             the results of neutron and x-ray scattering experiments,\n"
+       "             while charge densities can be used to compute the \n"
+       "             electrostatic potential profile (see below).\n"
+       " --zsymmetry symmetrize the distribution with respect to z=0.  This \n"
+       "             assumes the trajectory has already been recentered such\n"
+       "             that the membrane center is at z=0 (if not, you can do \n"
+       "             this with recenter-trj or merge-traj).\n"
+       " --skip      Number of frames to discard from the beginning of the\n"
+       "             trajectory\n"
+       "\n"
+       " Options for time-dependent output\n"
+       "\n"
+       " If you wish to track the change in the distribution over time, you\n"
+       " can specify the following options:\n"
+       "\n"
+       " --window    Integer specifying how often to output running averages, \n"
+       "             in frames.\n"
+       " --prefix    Name for the output files for windowed averages.  E.g. \n"
+       "             --prefix foo would give output files foo_1.dat, foo_2.dat,\n"
+       "             etc.  If prefix contains a directory name, the program\n"
+       "             does not check to ensure that the directory exists, and\n"
+       "             will fail with an error message if it doesn't.\n"
+       "\n"
+       " EXAMPLE\n"
+       "\n"
+       " density-dist --type=charge -- namd.psf merged_1ns.dcd -38 38 76 'resname ==\"PEGL\"' 'resname == \"PGGL\"' 'segid == \"BULK\"'\n"
+       "\n"
+       " This command line computes a charge density along the membrane normal,\n"
+       " running from -38 to 38 angstroms, with 1 angstrom bins.  In addition \n"
+       " to computing the full charge distribution, the charge distribution of\n"
+       " 3 components is also computed, corresponding to 2 difference lipid\n"
+       " headgroups and water. \n"
+       "\n"
+       " Note: the \"--\" after the --type argument is necessary to tell the\n"
+       "       code to stop processing arguments as if they were command-line\n"
+       "       flags.  If you don't include it, it will read the -38 as the\n"
+       "       flag -3 with a value 8, and will choke.  \n"
+       "\n"
+       " The first few lines of output from this command will look like:\n"
+       " # density-dist '--type=charge' '--' 'namd.psf' 'merged_1ns.dcd' '-38' '38' '76' 'resname ==\"PEGL\"' 'resname == \"PGGL\"' 'segid == \"BULK\"' - alan (Thu Mar  8 11:21:24 2012) {/home/alan/projects/analysis_tools/scripts} [1.7.5 120308]\n"
+       " # Z	AllAtoms Set(1)  Set(2)  Set(3) \n"
+       " -37.5	0.000144657	0	0	8.99952e-05	\n"
+       " -36.5	-4.88093e-05	0	0	-0.000136131	\n"
+       " -35.5	1.51166e-06	0	0	-7.14851e-05	\n"
+       " -34.5	-4.04959e-05	0	0	-0.00014739	\n"
+       " -33.5	-0.000119295	0	-1.66837e-08	-0.000223778	\n"
+       " -32.5	0.000201665	0	-4.33823e-07	8.88924e-05\n"
+       " (with more lines following)\n"
+       "\n"
+       " The first column is the center of the histogram in z, the second\n"
+       " is the distribution using all of the atoms, and the final three \n"
+       " columns correspond to the distribution of the three selections\n"
+       " specified on the command line.\n"
+       "\n"
+       " If you wish to use the charge density to compute the elecstrostatic\n"
+       " potential along the membrane normal, you can combine the output\n"
+       " from the above command with the tool potential_profile.py.  See \n"
+       " the fullhelp message for that tool for more details.\n"
+        ;
+    return(s);
+    }
 
 
 
@@ -118,7 +209,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   // Options handling...
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::OutputPrefix* popts = new opts::OutputPrefix;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
 
@@ -148,9 +239,7 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup system = tropts->model;
   pTraj traj = tropts->trajectory;
-  // End of options
-
-  cout << "# " << hdr << endl;
+  // End of options  cout << "# " << hdr << endl;
 
   // density from each selection
   vector<AtomicGroup> subsets;
