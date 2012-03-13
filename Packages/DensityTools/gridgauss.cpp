@@ -40,8 +40,14 @@ using namespace loos::DensityTools;
 int main(int argc, char *argv[]) {
 
   if (argc != 3) {
-    cerr << "Usage- gridgauss width sigma <grid >output\n";
-    exit(-1);
+    cerr << 
+      "DESCRIPTION\n\tApply a gaussian kernel convolution with a grid\n"
+      "\nUSAGE\n\tgridgauss width sigma <grid >output\n"
+      "Width controls the size of the kernel and sigma controls the shape\n"
+      "\nEXAMPLES\n\tgridgauss 4 2 <foo.grid >foo_smoothed.grid\n"
+      "This convolves the grid with a 4x4 kernel with sigma=2, and is a good\n"
+      "starting point for smoothing out water density grid.\n";
+    exit(0);
   }
   
   string hdr = invocationHeader(argc, argv);
