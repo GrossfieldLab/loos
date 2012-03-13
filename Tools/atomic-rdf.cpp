@@ -41,15 +41,54 @@ namespace po = loos::OptionsFramework::po;
 void Usage()
     {
     cerr << "Usage: atomic-rdf system trajectory selection1 selection2 "
-         << "min max num_bins skip" 
+         << "histogram-min histogram-max histogram-bins skip" 
          << endl;
+    }
+
+string fullHelpMessage(void)
+    {
+    string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Compute the radial distribution function for two selections of atoms\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "This tool computes the radial distribution function for two selections\n"
+    "of atoms, treating them as individual atoms rather than groups.  This is\n"
+    "in contrast to the tool rdf, which treats them as groups.\n"
+    "\n"
+    "The output columns have the following meaning:\n"
+    "    1: distance\n"
+    "    2: normalized RDF\n"
+    "    3: cumulative distribution function of selection-2 atoms around \n"
+    "       selection-1 atoms\n"
+    "    4: cumulative distribution function of selection-1 atoms around \n"
+    "       selection-2 atoms\n"
+    "\n"
+    "EXAMPLE\n"
+    "\n"
+    "The command line\n"
+    "    atomic-rdf model traj 'name =~ \"OP[1-4]\"' 'name =~ \"OH2\" && \n"
+    "           resname == \"TIP3\"' 0 20 40\n"
+    "would compute the radial distribution function for phosphate oxygens and\n"
+    "water oxygens, treating each phosphate oxygen independently.  Using the \n"
+    "same selections with the rdf tool would likely group the 4 phosphate \n"
+    "oxygens from each lipid into one unit and use their center of mass.\n"
+    "\n"
+    "As with the other rdf tools (rdf, xy_rdf), histogram-min, histogram-max,\n"
+    "and histogram-bins control the range over which the rdf is computed, and\n"
+    "the number of bins used, in this case from 0 to 20 Angstroms, with 0.5\n"
+    "angstrom bins.\n";
+    return(s);
     }
 
 int main (int argc, char *argv[])
 {
 
 // Build options
-opts::BasicOptions* bopts = new opts::BasicOptions;
+opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
 opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
 opts::RequiredArguments* ropts = new opts::RequiredArguments;
 
