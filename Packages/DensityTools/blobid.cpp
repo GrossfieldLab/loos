@@ -65,7 +65,7 @@ string fullHelpMessage(void) {
     "meet the threshold/range criteria.  A new grid is then written out\n"
     "which identifies the separate blobs.\n"
     "\nEXAMPLES\n"
-    "\tblobid --threshold 1 < foo_grid > foo_id\n"
+    "\tblobid --threshold 1 <foo.grid >foo_id.grid\n"
     "Here we include all blobs above the threshold 1.  foo_grid is a density\n"
     "grid that has been created previously.  For example a smoothed water \n"
     "histogram grid may be used: \n"
