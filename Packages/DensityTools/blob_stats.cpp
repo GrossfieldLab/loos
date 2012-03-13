@@ -99,9 +99,11 @@ int main(int argc, char *argv[]) {
 
   if (argc != 1) {
     cerr <<
-      "DESCRIPTION\n\n\tPrint out statistics about blobs in a grid\n"
-      "\nUSAGE\n\tblob_stats <foo.grid\n";
-    exit(0);
+      "Usage- blob_stats <foo.grid\n"
+      "\n"
+      "Print out basic information about blobs in a grid (requires an integer grid)\n"
+      "See also blobid, and pick_blob\n";
+    exit(-1);
   }
 
   cin >> grid;

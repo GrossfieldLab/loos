@@ -44,7 +44,8 @@ int main(int argc, char *argv[]) {
     if (fname == "--help" || fname == "-h" || fname == "--fullhelp") {
       cerr << "Usage- gridinfo <foo.grid\n\tgridinfo foo.grid\n";
       cerr << "\nPrints out basic information about a grid\n";
-      exit(0);
+      cerr << "Requires a double-precision floating point grid.\n";
+      exit(-1);
     }
     ifstream ifs(argv[1]);
     ifs >> grid;

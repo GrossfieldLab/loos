@@ -187,7 +187,14 @@ void zAverage(DensityGrid<double>& grid, const int nbins) {
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    cerr << "Usage- gridstat bins zbins <file.grid\n";
+    cerr <<
+      "Usage- gridstat bins zbins <file.grid\n"
+      "\n"
+      "Displays some basic statistics about the density in a grid.\n"
+      "Bins is the number of bins for histogramming the density values.\n"
+      "Zbins is the number of bins in Z (really, K) to calculate density\n"
+      "statistics (useful for membrane systems).\n"
+      "Requires a double-precision floating point grid\n";
     exit(-1);
   }
 

@@ -37,9 +37,9 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   if (argc != 2) {
     cerr << "Usage- gridscale scale-value <in-grid >out-grid\n";
-    cerr << "Description- scales the density values in the grid by the specified value.\n";
-    cerr << "Note- the grid must be a double-precision floating point grid.\n";
-    exit(0);
+    cerr << "\nScales the density values in the grid by the specified value.\n";
+    cerr << "Requires a double-precision floating point grid.\n";
+    exit(-1);
   }
 
   double konst = strtod(argv[1], 0);

@@ -40,12 +40,14 @@ using namespace loos;
 using namespace loos::DensityTools;
 
 int main(int argc, char *argv[]) {
-  DensityGrid<float> grid;
+  DensityGrid<double> grid;
 
   if (argc != 1) {
-    cerr << "Description: Convert a grid to an ASCII representation\n";
-    cerr << "Usage: grid2ascii <foo.grid >foo.asc\n";
-    exit(0);
+    cerr << "Usage- grid2ascii <foo.grid >foo.asc\n"
+      "\n"
+      "Converts a LOOS grid to an ASCII representation.  Requires a double precision\n"
+      "floating point grid.\n";
+    exit(-1);
   }
   
   cin >> grid;
