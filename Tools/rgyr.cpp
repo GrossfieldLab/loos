@@ -34,8 +34,46 @@ using namespace loos;
 
 
 
-void Usage()
+string fullHelpMessage()
     {
+string s =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Read a trajectory and return a histogram of the radius of gyration of\n"
+    "a selection.\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "This program computes the radius of gyration for a selection of atoms\n"
+    "for each frame of a trajectory. The default is to treat the selection\n"
+    "as one group, unless split-by-molecule is specified, which will split\n"
+    "the selection by connectivity.\n"
+    "\n"
+    "A minimum and maximum radius of gyration need to specified, as well as\n"
+    "the number of bins.\n"
+    "\n"
+    "EXAMPLE\n"
+    "\n"
+    "rgyr model-file traj.dcd 'resname==\"POPE\" 0 50 50 0 0\n"
+    "\n"
+    "In this instance, model-file is your input structure file and traj.dcd\n"
+    "is your trajectory. The selection string indicates that we are\n"
+    "computing the radius of gyration for all residues with the name POPE.\n"
+    "The minimum and maximum are set to 0 and 20, respectively, with bins of\n"
+    "one angstrom.\n"
+    "\n"
+    "Because split-by-molecule was not set, we are effectively computing\n"
+    "the radius of gyration of the entire set of POPE. This would\n"
+    "be useful if we were computing the radius of gyration of a micelle of\n"
+    "of POPE lipids. However, if we want the radius of gyration of individual\n"
+    "POPE lipids, we need to turn on split-by-molecule.\n"
+    "\n"
+    "rgyr model-file traj.dcd 'resname==\"POPE\" 0 20 20 0 1\n"
+    ;
+return(s);
+
+
     cerr << "Usage: rgyr SystemFile Trajectory selection "
          << "min max num_bins skip [by-molecule]" 
          << endl;
@@ -51,7 +89,7 @@ if ( (argc <= 1) ||
      (argc < 8)
    )
     {
-    Usage();
+    cerr << fullHelpMessage() << endl;
     exit(-1);
     }
 
