@@ -53,17 +53,23 @@ double lower, upper;
 string fullHelpMessage(void) {
   string msg =
     "\n"
-    "blobid identifies blobs either in a range or above a threshold.\n"
-    "As input an edm grid (see for example water-hist) is expected.\n"
+    "SYNOPSIS\n"
+    "\n"
+    "\tIdentify blobs in a density grid.\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tblobid identifies blobs by density values either in a range or above a threshold.\n"
+    "An edm grid (see for example water-hist) is expected for input.\n"
     "Blobid then uses a flood-fill to determine how many separate blobs\n"
     "meet the threshold/range criteria.  A new grid is then written out\n"
     "which identifies the separate blobs.\n"
-    "\n\n*Example* \n\n"
-    "   blobid --threshold 1 < foo_grid > foo_id\n"
+    "\nEXAMPLES\n"
+    "\tblobid --threshold 1 < foo_grid > foo_id\n"
     "Here we include all blobs above the threshold 1.  foo_grid is a density\n"
     "grid that has been created previously.  For example a smoothed water \n"
     "histogram grid may be used: \n"
-    "   water-hist --radius=15 --bulk=25 --scale=1 b2ar.pdb b2ar.dcd | grid2gauss 4 2 > foo_grid\n"
+    "\twater-hist --radius=15 --bulk=25 --scale=1 b2ar.pdb b2ar.dcd | grid2gauss 4 2 > foo_grid\n"
     "The resulting blobs are then written to the grid \"foo_id\"\n"
     "\n\n";
 
