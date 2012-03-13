@@ -70,11 +70,51 @@ public:
 // @endcond
 
 
+string fullHelpMessage(void)
+{
+string s =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Compute the area per lipid.\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "This tool is intended for computing the area per lipid of a membrane\n"
+    "system for each frame of a trajectory. To determine the number of lipids\n"
+    "in a given system, a selection string must be provided, which will be\n"
+    "split by residue. To override this functionality, you can specify the number\n"
+    "of lipids in one leaflet with the --nlipids option.\n"
+    "\n"
+    "EXAMPLE\n"
+    "\n"
+    "To calculate the area per lipid for a trajectory with PE lipid\n"
+    "headgroups, you would use a command line like\n"
+    "\n"
+    "area_per_lipid model-file traj-file --selection='resname =~\"PEGL\"'\n"
+    "\n"
+    "Assuming the CHARMM27-style lipid naming, the headgroup of PE lipids\n"
+    "would be its own residue with the name \"PEGL\". Using selections can be\n"
+    "problematic though, as it tries to guess how many are in each leaflet by\n"
+    "only counting the groups with a z>0. This assumes that you have a bilayer\n"
+    "and that it is centered at z=0.\n"
+    "\n"
+    "If you know the number of lipids in your bilayer, say 180 lipids (or 90\n"
+    "in each leaflet) you can avoid the program \"guessing\" your lipid number\n"
+    "and you can simplify your command line with\n"
+    "\n"
+    "area_per_lipid model-file traj-file --nlipids=90\n" ;
+
+return (s);
+
+
+}
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   
-  opts::BasicOptions* basic = new opts::BasicOptions;
+  opts::BasicOptions* basic = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* select = new opts::BasicSelection("resname =~ 'P.GL'");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
