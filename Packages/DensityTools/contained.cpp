@@ -46,6 +46,33 @@ using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "\tCount the number of atoms that are within density for an int-grid.\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool generates a time-series representing the number of atoms\n"
+    "that are within density for each frame in a trajectory.  Density is\n"
+    "defined as any non-zero grid element.\n"
+    "\nEXAMPLES\n"
+    "\tblobid --threshold 1 <foo.grid >foo_id.grid\n"
+    "\tpick_blob_blob --model foo.pdb --selection 'resid == 65' <foo_id.grid >foo_picked.grid\n"
+    "\tcontained --selection 'name == "OH2"' foo_picked.grid\n"
+    "\n"
+    "NOTES\n\n"
+    "\tThis tool only works with integer grids (i.e. a grid that has already been\n"
+    "segmented into blobs), NOT raw density.\n"
+    "SEE ALSO\n\n"
+    "\tblobid, pick_blob\n";
+
+  return(msg);
+}
+
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
