@@ -61,7 +61,7 @@ string fullHelpMessage(void) {
     "\nEXAMPLES\n"
     "\tblobid --threshold 1 <foo.grid >foo_id.grid\n"
     "\tpick_blob_blob --model foo.pdb --selection 'resid == 65' <foo_id.grid >foo_picked.grid\n"
-    "\tcontained --selection 'name == "OH2"' foo_picked.grid\n"
+    "\tcontained --selection 'name == \"OH2\"' foo_picked.grid\n"
     "\n"
     "NOTES\n\n"
     "\tThis tool only works with integer grids (i.e. a grid that has already been\n"
