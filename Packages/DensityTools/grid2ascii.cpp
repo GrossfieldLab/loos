@@ -42,6 +42,12 @@ using namespace loos::DensityTools;
 int main(int argc, char *argv[]) {
   DensityGrid<float> grid;
 
+  if (argc != 1) {
+    cerr << "Description: Convert a grid to an ASCII representation\n";
+    cerr << "Usage: grid2ascii <foo.grid >foo.asc\n";
+    exit(0);
+  }
+  
   cin >> grid;
   DensityGridpoint dim = grid.gridDims();
   GCoord min = grid.minCoord();
