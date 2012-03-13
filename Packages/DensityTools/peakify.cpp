@@ -40,7 +40,16 @@ using namespace loos::DensityTools;
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    cerr << "Usage- peakify threshold <grid >pdb\n";
+    cerr <<
+      "Usage- peakify threshold <foo.grid >peaks.pdb\n"
+      "\n"
+      "Given a double-precision floating point grid of density values\n"
+      "and a threshold, this tool writes out a PDB representing the density\n"
+      "peaks.  The algorithm for finding the peaks uses a flood-fill to find\n"
+      "unique blobs of density.  For each blob, the center of mass becomes a\n"
+      "pseudo-atom in the output PDB (with atom name \"UNK\" and residue name \"GRD\").\n"
+      "Note that these are really blob centers, as opposed to the point of maximum\n"
+      "density within a blob.\n";
     exit(-1);
   }
 
