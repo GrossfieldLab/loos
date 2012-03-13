@@ -98,8 +98,9 @@ int main(int argc, char *argv[]) {
   DensityGrid<int> grid;
 
   if (argc != 1) {
-    cerr << "Description: Print out statistics about blobs in a grid\n";
-    cerr << "Usage: blob_stats <foo.grid\n";
+    cerr <<
+      "DESCRIPTION\n\n\tPrint out statistics about blobs in a grid\n"
+      "\nUSAGE\n\tblob_stats <foo.grid\n";
     exit(0);
   }
 
