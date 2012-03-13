@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
       "The first option (i, j, or k) determines the orientation\n"
       "of the slice.  The index represents the coordinate in the\n"
       "direction.  For example, \"k 20\" means extract the plane\n"
-      "when k=20 (an i,j-plane).  Using "i 13" means extract the\n"
+      "when k=20 (an i,j-plane).  Using \"i 13\" means extract the\n"
       "plane when i=13 (a j,k-plane).\n";
     exit(-1);
   }
