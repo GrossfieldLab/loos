@@ -36,7 +36,7 @@
 #include <xplor-edm-writer.hpp>
 
 
-
+namespace opts = loos::OptionsFramework;
 namespace po = boost::program_options;
 
 using namespace std;
@@ -44,34 +44,48 @@ using namespace loos;
 using namespace loos::DensityTools;
 
 
+// @cond TOOLS_INTERNAL
 
 enum GridType { CHAR, INT, FLOAT, DOUBLE };
 
 GridType gtype;
 double scaling;
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "\tConvert a LOOS grid into an ASCII XPLOR/CNS electron density map\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool converts a LOOS density grid into an XPLOR/CNS formatted electron density map\n"
+    "that can be use for visualization in PyMol, VMD, Coot, etc.  By default, the grid is\n"
+    "assumed to contain double-precision floating point data (i.e. what is normally written\n"
+    "out by the various LOOS tools).  Different data types can be converted by specifying\n"
+    "what the grid contains on the command-line.\n"
+    "\nEXAMPLES\n"
+    "\tgrid2xplor <foo.grid >foo.xplor\n"
+    "This converts a typical LOOS grid into an XPLOR density map\n\n"
+    "\tgrid2xplor --type int <foo_id.grid >foo.xplor\n"
+    "This converts an int-grid (from blobid, for example) into a density map\n";
 
-void parseOptions(int argc, char *argv[]) {
-  string type;
+  return(msg);
+}
 
-  try {
-    po::options_description desc("Allowed options");
-    desc.add_options()
-      ("help", "Produce this help message")
+
+
+class ToolOptions : public opts::OptionsPackage {
+public:
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
       ("type", po::value<string>(&type)->default_value("double"), "Set the grid type (char, int, float, double)")
       ("scale", po::value<double>(&scaling)->default_value(1.0), "Scale the grid data");
+  }
 
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-	      options(desc).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help")) {
-      cout << desc << endl;
-      exit(-1);
-    }
-
+  bool postConditions(po::variables_map& map) {
     if (type == "double")
       gtype = DOUBLE;
     else if (type == "float")
@@ -82,19 +96,25 @@ void parseOptions(int argc, char *argv[]) {
       gtype = CHAR;
     else {
       cerr << "Error- unknown grid type " << type << endl;
-      exit(-1);
+      return(false);
     }
-  }
-    catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-  catch(...) {
-    cerr << "Error - exception of unknown type!\n";
+    return(true);
   }
 
+  string help() const {
+    return(" <foo.grid >foo.xplor");
+  }
 
-}
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("type='%s',scale='%f'") % type % scaling;
+    return(oss.str());
+  }
+
+private:
+  string type;
+
+};
 
 
 
@@ -114,7 +134,13 @@ DensityGrid<double> scaleGrid(DensityGrid<T>& g, const double scale) {
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  ToolOptions* topts = new ToolOptions();
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   DensityGrid<double> edm;
   if (gtype == CHAR) {
