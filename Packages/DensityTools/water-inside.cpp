@@ -40,6 +40,46 @@ using namespace loos::DensityTools;
 typedef Math::Matrix<int, Math::ColMajor>    Matrix;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "\tClassify waters as inside a protein or not in a trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\twater-inside applies a user-specified set of criteria to determine\n"
+    "whether or not water is inside a protein.  A matrix is constructed where\n"
+    "each column is a time-series for each water.  A 1 means the corresponding\n"
+    "water is inside the protein, and 0 means it's not. The volume of the probe region\n"
+    "is also tracked (if possible), and written out separately.  In addition, a file\n"
+    "is written that maps the water atomids to the columns of the matrix.\n"
+    "See water-hist for more information about internal-water criteria.\n"
+    "\n"
+    "\nEXAMPLES\n"
+    "\twater-inside --prefix water foo.pdb foo.dcd\n"
+    "This example will use the axis filter for water (i.e. water atoms within\n"
+    "the default radius of 10 Angstroms from the first principal axis of the protein\n"
+    "selection.  The default water selection (name == 'OH2') and protein selection\n"
+    "(name == 'CA') are used.  The output prefix is set to 'water', so 'water.asc',\n"
+    "'water.vol', and 'water.atoms' will be created containing the time-series matrix,\n"
+    "the internal water region volume, and the atom mapping respectively.\n\n"
+    "\twater-inside --mode radius --radius 5 --prot 'resid == 65' --prefix pocket foo.pdb foo.dcd\n"
+    "This example will find water atoms (using the default selection) that are within\n"
+    "5 Angstroms of any atom in residue 65, and use the output prefix 'pocket'.\n"
+    "\n"
+    "NOTES\n"
+    "\tLOOS does not care what is called a protein or water.  You can use any selection,\n"
+    "for example, to track ligands, or lipids, etc.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\twater-hist\n"
+    ;
+
+  return(msg);
+}
+
 
     
 
@@ -59,7 +99,7 @@ void writeAtomIds(const string& fname, const AtomicGroup& grp, const string& hdr
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* basopts = new opts::BasicOptions;
+  opts::BasicOptions* basopts = new opts::BasicOptions(fullHelpMessage());
   opts::OutputPrefix* prefopts = new opts::OutputPrefix;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   opts::BasicWater* watopts = new opts::BasicWater;
