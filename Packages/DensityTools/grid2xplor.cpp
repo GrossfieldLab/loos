@@ -132,6 +132,8 @@ DensityGrid<double> scaleGrid(DensityGrid<T>& g, const double scale) {
 }
 
 
+// @endcond
+
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
