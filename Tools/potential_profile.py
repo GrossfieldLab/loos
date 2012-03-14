@@ -51,28 +51,42 @@ if __name__ == '__main__':
 
     if (len(sys.argv)>1 and sys.argv[1] == "--fullhelp"):
         print """
+SYNOPSIS
+
+Compute electrostatic potential along membrane normal
+
+DESCRIPTION
+
 This program generates the electrostatic potential profile for a membrane
-systemgiven a data file containing the charge density as a function of position
-along the membrane normal.  It is intended to be used in combination with the LOOS tool density-dist.  For example:
-
-density-dist --type=charge -- path/to/model-file path/to/trajectory -38 38 76 > charge-density.dat
-potential_profile.py charge-density.dat > potential.dat
-
-The "--" in the first line tells LOOS to stop interpreting arguments with leading minus signs as flags; otherwise, it will choke on the "-38".
-
-The first column of the output is the z-value, the second is the periodicity
-correction (see below), and the subsequent columns are the electrostatic
-potentials for the full system and any individual components selected when
-density-dist was run.
-
-The output units are in Volts.
+system given a data file containing the charge density as a function of position
+along the membrane normal.  Intended to post-process the output of the 
+density-dist tool, it takes input in electrons/Ang^3 and outputs the potential
+in volts.
 
 The algorithm used here is described by Sachs, et al, J Chem Phys, 2004, 121,
 10847.  In particular, the periodicity correction is applied, such that the top
 and bottom of the periodic box must have the same electrostatic potential.
 However, this correction is applied _only_ to the full charge density, not the
 charge density of each individual component (assuming the user made selections
-when running density-dist).
+when running density-dist).  This is because only the total potential needs to
+be continuous at the potential, not that due to any given component.
+
+EXAMPLE
+
+potential_profile.py is intended to be used in combination with the LOOS 
+tool density-dist.  For example:
+
+density-dist --type=charge -- path/to/model-file path/to/trajectory -38 38 76 > charge-density.dat
+potential_profile.py charge-density.dat > potential.dat
+
+The "--" in the first line tells LOOS to stop interpreting arguments with
+leading minus signs as flags; otherwise, it will choke on the "-38" (run
+density-dist --fullhelp for more discussion).
+
+The first column of the output is the z-value, the second is the periodicity
+correction (see above), and the subsequent columns are the electrostatic
+potentials for the full system and any individual components selected when
+density-dist was run.
 
               """
         sys.exit(1)
