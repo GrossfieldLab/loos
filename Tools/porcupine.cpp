@@ -136,6 +136,42 @@ public:
 // @endcond
 
 
+string fullHelpMessage(void){
+  string msg =                                                                                  
+    "\n"                                                                                      
+    "SYNOPSIS\n"                                                                      
+    "\n"  
+    "Create a matchstick representation of eigenvectors/left singular vectors (LSV)\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "This program takes a model and a vector-matix and creates a pdb illustrating\n"
+    "the direction of those vectors starting from the model structure.  \n"
+    "\n"
+    "The typical use is for illustrating the direction of motion calculated from\n"
+    "a trajectory PCA or predicted from NMA of a network model.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "porcupine -s 'name==\"CA\"' -C1 -S2 --double_sided 1 model.pdb svd_U.asc > porky.pdb\n"
+    "\n"
+    "Here the CA's from model.pdb are used as the origin of the vector drawing.\n"
+    "svd_U.asc is an LSV file made in loos (see example X in svd --fullhelp)\n"
+    "These vectors are mapped to the CA's in model.pdb.  The C1 option signifies\n"
+    "use of the 1st column...in this case the most collective motion from the PCA.\n"
+    "The option -S2 implies an arbitrary scaling factor of 2 is applied to the LSVs\n"
+    "Double-sided vectors are turned on - this means the vectors will be drawn in\n"
+    "both directions from the CA origin.  Finally, a new pdb, porky.pdb is created.\n"
+    "This pdb contains only the vectors drawn by the porcupine program.\n"
+    "\t---You may wish to visualize the output of this tool with pymol.\n"
+    "\t   Try using the following options (within pymol):\n"
+    "\t\t load model.pdb; load porky.pdb\n"
+    "\t\t hide\n"
+    "\t\t show cartoon, model\n"
+    "\t\t show sticks, porky\n";
+
+  return(msg);
+}
 
 
 string generateSegid(const uint n) {
@@ -204,6 +240,7 @@ vector<int> inferMap(const AtomicGroup& g, const string& sel) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
+  opts::BasicOptions* basopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
@@ -212,7 +249,7 @@ int main(int argc, char *argv[]) {
   ropts->addArgument("lsv", "left-singular-vector-file");
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
+  options.add(basopts).add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
 
