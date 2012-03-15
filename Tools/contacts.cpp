@@ -31,6 +31,48 @@
 using namespace std;
 using namespace loos;
 
+string fullHelpMessage(void)
+    {
+    string s =
+   "\n"
+   "SYNOPSIS\n"
+   "\n"
+   "Count the number of contacts between the centers of mass of two sets\n"
+   "of selections.\n"
+   "\n"
+   "DESCRIPTION\n"
+   "\n"
+   "This tool counts the number of contacts between two selections.\n"
+   "Each selection is split by unique segment name, and the various \n"
+   "segments are treated separately, using their centers of mass.  \n"
+   "\n"
+   "This tool provides a subset of the functionality supplied by rdf;\n"
+   "if you need splitting by something other than segment, you're better off\n"
+   "using rdf and looking at the cumulative columns, which have equivalent \n"
+   "information.  The only advantage to using this tool is that it\n"
+   "avoids taking the square root in the distance calculation, so \n"
+   "it might be a little bit faster.\n"
+   "\n"
+   "EXAMPLE\n"
+   "\n"
+   "contacts model.pdb traj.dcd 'segname ==\"RHOD\"' 'segname =~\"^L[0-9]+\"' 18\n"
+   "\n"
+   "This command line reads model.pdb, loops over the trajectory traj.dcd, \n"
+   "and looks at 2 selections.  The first is segment RHOD, which is \n"
+   "the protein rhodopsin, while the second is a set of lipid molecules \n"
+   "with segment names L1, L2, etc.  It'll report the time series of the \n"
+   "number of lipids with centers of mass within 18 angstroms of the center \n"
+   "of mass of the protein.  It will also report the same data normalized \n"
+   "by the number of groups in the first and second selection, respectively.\n"
+   "In this case, that means that since there's 1 protein, the second and \n"
+   "third columns will be the same, while the fourth column will be the \n"
+   "second column divided by the number of lipids selected.\n"
+   "\n"
+        ;
+    return(s);
+    }
+
+
 
 void Usage()
     {
@@ -40,13 +82,23 @@ void Usage()
 
 int main (int argc, char *argv[])
 {
-  if ( (argc <= 1) || 
-       ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-       (argc < 6)
-       )
+if ( (argc >=2) )
     {
-      Usage();
-      exit(-1);
+    if (string(argv[1]) == string("-h"))
+        {
+        Usage();
+        exit(-1);
+        }
+    else if (string(argv[1]) == string("--fullhelp"))
+        {
+        cerr << fullHelpMessage() << endl;
+        exit(-1);
+        }
+    }
+if (argc < 6)
+    {
+    Usage();
+    exit(-1);
     }
 
   cout << "# " << invocationHeader(argc, argv) << endl;
@@ -106,7 +158,7 @@ int main (int argc, char *argv[])
           double d2 = com1.distance2(com2, model.periodicBox());
           if ( (d2 <= max2) )
                 {
-          count++;
+                count++;
                 }
             }
         }
