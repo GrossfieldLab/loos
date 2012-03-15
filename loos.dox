@@ -723,9 +723,13 @@ Below is a summary of the tools currently distributed with LOOS.  To get a
 detailed summary of the command line arguments, run the program without
 arguments or using "-h".  A growing number of tools also support the
 "--fullhelp" options, which will display more detailed help
-information including examples of how to use the tool.  All of the
+information, including examples of how to use the tool.  All of the
 tools are now package agnostic, in the sense that they will take any
-of the file formats supported by LOOS as input. 
+of the file formats supported by LOOS as input.  The only caveat is that not
+all files provide all of the needed information; for example, the 
+order_params tool requires connectivity information to function properly, so
+the user must run it with a system file type that has that information, such
+as a CHARMM/NAMD PSF file or a PDB with CONECT records.
 
 At present, LOOS assumes that all periodic boxes are rectangular, and
 will produce incorrect answers if trajectories using different box shapes
@@ -734,6 +738,21 @@ periodicity (eg rdf).  We have no immediate plans to generalize the
 code to handle other periodicities, but are willing to reconsider if
 there is significant demand from users. 
 
+LOOS uses angstroms as the output unit of distance, even when the input
+coordinates are in other units (e.g. nanometers for GROMACS files).  All output
+is in plain text format, and follows general unix/linux conventions.  Every
+program's output starts with a series of comment lines, marked by beginning
+with a "#", echoing the command line used to invoke the program, the user, the
+date teh program was run, the working directory, and the version of LOOS used.
+Any additional information, such as the meanings of various columns of output,
+is also provide on lines marked with "#".  
+
+LOOS tools are designed to make it easy to plot the results generated.  As a
+rule, files are formatted such that they can be cleanly plotted using the
+gnuplot plotting program, standard with most modern linux distributions.   In
+addition, if matrices or vectors are written out (e.g. from the svd tool or one
+of the tools from the ENM package), the format is consistent with that used by
+Matlab and Octave.  
 
 <HR>
 <B><I> Categories of Tools </I> </B>
