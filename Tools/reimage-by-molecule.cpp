@@ -35,6 +35,54 @@ const int update_frequency = 250;
 using namespace std;
 using namespace loos;
 
+string fullHelpMessage(void)
+    {
+    string s =
+"\n"
+"    SYNOPSIS\n"
+"\n"
+"    Read a trajectory and reimage it such that each molecule has its\n"
+"    centroid in the central box.\n"
+"\n"
+"    DESCRIPTION\n"
+"\n"
+"    This tool reads a trajectory and processes it to produce a new \n"
+"    trajectory in DCD format where each molecule has its centroid in\n"
+"    the central image.\n"
+"    \n"
+"    This operation does not make a lot of sense if the system file \n"
+"    does not contain connectivity information; it will warn you \n"
+"    if you invoke it without connectivity, but will run.\n"
+"\n"
+"    If the trajectory has information on box size built in to it, that\n"
+"    box data is used for the reimaging.  If not, the periodicity information\n"
+"    may be read from the model file (e.g. a CRYSTL line from a PDB file).\n"
+"    Alternatively, the user can provide box size information on the command \n"
+"    line by supplying 3 extra arguments.  If this is done, the information\n"
+"    overrides anything supplied in the trajectory or model file.\n"
+"\n"
+"    Note: this tool is largely redundant with merge-traj and recenter-traj \n"
+"          (which also have additional capabilities), and may at some point \n"
+"          be deprecated.\n"
+"\n"
+"    EXAMPLE\n"
+"\n"
+"    reimage-by-molecule model.psf input_traj.dcd output_traj.dcd \n"
+"\n"
+"    This reads the system information from model.psf, operates on \n"
+"    input_traj.dcd (which presumably has periodicity information), and \n"
+"    writes output_traj.dcd, which does have periodicity information.\n"
+"\n"
+"    reimage-by-molecule model.psf input_traj.dcd output_traj.dcd 55 77 100\n"
+"\n"
+"    This does essentially the same thing, but asserts that the periodic\n"
+"    box is constant with x-dimension 55 angstrom, y-dimension 77 angstroms,\n"
+"    and z-dimension 100 angstroms.\n"
+"\n"
+        ;
+    return(s);
+    }
+
 
 void Usage()
 {
@@ -44,13 +92,24 @@ void Usage()
 
 int main(int argc, char *argv[]) 
 {
-  if ( (argc <= 1) ||
-       ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-       (argc < 4)
-       )
+  if ( (argc >=2) )
     {
-      Usage();
-      exit(-1);
+    if (string(argv[1]) == string("-h"))
+        {
+        Usage();
+        exit(-1);
+        }
+    else if (string(argv[1]) == string("--fullhelp"))
+        {
+        cerr << fullHelpMessage() << endl;
+        Usage();
+        exit(-1);
+        }
+    }
+  if (argc < 4)
+    {
+    Usage();
+    exit(-1);
     }
 
   string hdr = invocationHeader(argc, argv);
