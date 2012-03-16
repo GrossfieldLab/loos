@@ -168,7 +168,13 @@ string fullHelpMessage(void){
     "\t\t load model.pdb; load porky.pdb\n"
     "\t\t hide\n"
     "\t\t show cartoon, model\n"
-    "\t\t show sticks, porky\n";
+    "\t\t show sticks, porky\n"
+    "\n"
+    "SEE ALSO: Packages/ElasticNetworks/enmovie \n"
+    "This tool will parse the same information - a model and eigenvector\n"
+    "matrix and instead of drawing splines will output a dcd where the\n"
+    "atoms are displaced along the vector.\n";
+
 
   return(msg);
 }

@@ -194,16 +194,64 @@ public:
 // @endcond
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Calculate the distance between two selections over a trajectory\n"   
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Given a model and a trajectory this tool will parse the simulation\n"
+    "and return the distance between a user supplied target selection and\n"
+    "any number of probe selections.\n"
+    "\n"
+    "There are several modes that can be selected for this tool. Each one\n"
+    "specifies a different way of determining the location within the\n"
+    "selection string to use in the distance calculation:\n"
+    "\t center - the geometric center\n"
+    "\t mass   - the center of mass\n"  
+    "\t min    - the minimum distance\n"
+    "\t max    - the maximum distance\n"
+    "\t zonly  - only the z-component\n"
+    "\n"
+    "\n"
+    "EXAMPLE\n"
+    "\n"
+    "interdist model.pdb traj.dcd 'name==\"CA\" && resid==133'  'name==\"CA\" && resid==234'\n"
+    "\n"
+    "Calculate the CA to CA distance between residues 133 and 234 over the\n"
+    "course of trajectory traj.dcd This will print a frame number and a \n"
+    "distance for each frame to stdout.\n"
+    "\n"
+    "interdist --mode min model.pdb traj.dcd 'name==\"NE\" && resid==135' 'name=~\"OE.\" && resid==247'\n"
+    "\n" 
+    "This example is similar to the first, but --mode min returns the\n" 
+    "minimum distance specifically.  Note the change in the second\n"
+    "selection string.  Here a regular expression was supplied which\n"
+    "will select either the OE1 or OE2 atom (charmm27).  The --mode min \n"
+    "option will only return the distance to the closer atom.\n"
+    "\n"
+    "interdist --mode zonly -r 50:250  model.pdb traj.dcd 'segid==\"PROT\"' 'name==\"P\" && segid==\"TPE\"'\n"
+    "\n"
+    "Here --mode z-only indicates thatwe are only taking the z-component\n"
+    "of the distance in this measurement.  the supplied range -r 50:250 \n"
+    "is used to specify frames 50 to 250 for output.\n"
+    "\n";
+  return(msg);
+    }
 
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
+  opts::BasicOptions* basopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(tropts).add(topts);
+  options.add(basopts).add(bopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
