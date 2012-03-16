@@ -1,3 +1,8 @@
+2012-03-16    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in subsetter when using a subset of the model.  The
+	connectivity written out is incorrect.
+
 2012-03-08    <alan@membrane.biophysics.rochester.edu>
 
 	* Added potential_profile.py to Tools/.  This tool uses output from

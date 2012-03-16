@@ -560,9 +560,11 @@ int main(int argc, char *argv[]) {
       PDB pdb = PDB::fromAtomicGroup(subset.copy());
       pdb.remarks().add(hdr);
 
-      if (selection != "all")
-        fixBonds(pdb, model);
-
+      if (selection != "all") {
+        pdb.pruneBonds();
+        pdb.renumber();
+      }
+      
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
       ofs << pdb;
