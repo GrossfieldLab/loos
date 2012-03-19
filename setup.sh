@@ -45,6 +45,13 @@ else
     TOOLPATH="$LOOSPATH/Tools:$LOOSPATH/Packages/Convergence:$LOOSPATH/Packages/DensityTools:$LOOSPATH/Packages/ElasticNetworks:$LOOSPATH/Packages/HydrogenBonds:$LOOSPATH/Packages/User"
 fi
 
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$LIBPATH"
 export PATH="$PATH:$TOOLPATH"
+
+# Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
+SYSTEM=`uname`
+if [ "$SYSTEM" = "Darwin" ] ; then
+    export DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$LIBPATH"
+else
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$LIBPATH"
+fi
 
