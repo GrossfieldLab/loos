@@ -39,6 +39,9 @@ using namespace std;
 using namespace loos;
 
 
+
+// @cond TOOLS_INTERNAL
+
 typedef std::pair<double,double> Range;
 typedef Math::Matrix<int, Math::ColMajor> Matrix;
 
@@ -47,7 +50,34 @@ string model_name, traj_name, selection_string;
 
 enum Location { UPPER = 1, MEMBRANE = 0, LOWER = -1 };
 
-// @cond TOOLS_INTERNAL
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "\tClassify waters as above, below, or inside a membrane (based on Z-coordinate)\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\twater-sides constructs a TxN matrix where T is the size of the trajectory (# of frames)\n"
+    "and N is the number of water molecules.  Each element has a value of 1 (above membrane),\n"
+    "0 (inside membrane), or -1 (below membrane).  The classification of the water is based\n"
+    "solely on it's z-coordinate and the range specified on the command line.\n"
+    "\n"
+    "\nEXAMPLES\n"
+    "\twater-sides foo.pdb foo.dcd -15 15\n"
+    "This example uses the default water selection (\"name == 'OH2'\") and places the\n"
+    "membrane at -15 <= Z <= 15\n"
+    "\n"
+    "\twater-sides --selection 'name == \"HOH\"' foo.pdb foo.dcd -25 20\n"
+    "This example picks all atoms called \"HOH\" as waters and places the membrane\n"
+    "at -25 <= Z <= 20\n"
+    ;
+
+  return(msg);
+}
+
 
 class WaterSidesOptions : public opts::OptionsPackage {
 public:
@@ -97,7 +127,7 @@ Range parseRange(const string& s) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions *basic_opts = new opts::BasicOptions;
+  opts::BasicOptions *basic_opts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection *basic_selection = new opts::BasicSelection("name == 'OH2'");
   opts::TrajectoryWithFrameIndices *basic_traj = new opts::TrajectoryWithFrameIndices;
   WaterSidesOptions *my_opts = new WaterSidesOptions;
@@ -105,7 +135,6 @@ int main(int argc, char *argv[]) {
   opts::AggregateOptions options;
   options.add(basic_opts).add(basic_selection).add(basic_traj).add(my_opts);
   if (!options.parse(argc, argv)) {
-    //    options.showHelp();
     exit(0);
   }
 
