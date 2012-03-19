@@ -23,9 +23,10 @@
 import sys
 
 Import('env')
+Import('loos')
 
 clone = env.Clone()
-clone.Prepend(LIBS = ['loos'])
+clone.Prepend(LIBS = [loos])
 
 PREFIX = env['PREFIX']
 

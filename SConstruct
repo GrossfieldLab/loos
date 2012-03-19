@@ -43,7 +43,7 @@ clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
 clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0)
+clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
 
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
@@ -249,12 +249,8 @@ Export('env')
 
 ###################################
 
-if int(env['shared']):
-   env['LD_LIBRARY_PATH'] = "."
-
 [loos,loos_swig] = SConscript('SConscript')
-
-
+Export('loos')
 
 docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')

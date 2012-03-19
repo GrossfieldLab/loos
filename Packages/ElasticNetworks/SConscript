@@ -23,9 +23,10 @@
 import sys
 
 Import('env')
+Import('loos')
 
 clone = env.Clone()
-clone.Prepend(LIBS = ['loos'])
+clone.Prepend(LIBS = [loos])
 
 apps = 'gnm enmovie flucc2b psf-masses heavy-ca eigenflucc two-body-traj'
 
