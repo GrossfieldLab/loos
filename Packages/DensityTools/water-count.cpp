@@ -48,6 +48,12 @@ int main(int argc, char *argv[]) {
 
   if (argc != 2) {
     cerr << "Usage - water-count prefix >output.asc\n";
+    cerr << "\nGiven a matrix of water classifications from water-inside,\n";
+    cerr << "counts the number of waters that are inside the\n";
+    cerr << "protein at each timepoint and writes this out as a 1-column\n";
+    cerr << "matrix.\n\n";
+    cerr << "See also water-inside.\n";
+      
     exit(-1);
   }
 
