@@ -32,6 +32,33 @@
 using namespace std;
 using namespace loos;
 
+string fullHelpMessage(void)
+    {
+    string s = 
+"\n"
+"    SYNOPSIS\n"
+"\n"
+"    Compute a time series of the torsion formed by 4 selections\n"
+"\n"
+"    DESCRIPTION\n"
+"\n"
+"    This tool loops over a trajectory, computing the torsion angle formed \n"
+"    by the centroids of four selections.  \n"
+"    \n"
+"    Note: the code does not make any attempt to ensure that the entirety \n"
+"    of a given selection is found within the same periodic image; if a \n"
+"    selection is split (e.g. some of it is at the +x edge of the box and \n"
+"    some at the -x edge), then the centroid is not a good description of the \n"
+"    position.  However, if you're working with pieces of a protein and\n"
+"    you've run the system through merge-traj with fix-imaging and centering,\n"
+"    you will probably be fine.\n"
+"\n"
+"    EXAMPLE\n"
+"\n"
+"    torsion model.psf trajectory.dcd 'resid == 5' 'resid == 6' 'resid == 7' 'resid == 8'\n"
+        ;
+    return(s);
+    }
 
 void Usage()
     {
@@ -42,6 +69,13 @@ void Usage()
 
 int main (int argc, char *argv[])
 {
+
+if ( (argc >= 2) && (string(argv[1]) == string("--fullhelp") ) )
+    {
+    cerr << fullHelpMessage() << endl;
+    exit(-1);
+    }
+
 if ( (argc <= 1) || 
      ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
      (argc < 7)
@@ -61,8 +95,8 @@ pTraj traj = createTrajectory(argv[2], system);
 
 char *selection1 = argv[3];  // String describing the first selection
 char *selection2 = argv[4];  // String describing the second selection
-char *selection3 = argv[5];  // String describing the first selection
-char *selection4 = argv[6];  // String describing the second selection
+char *selection3 = argv[5];  // String describing the third selection
+char *selection4 = argv[6];  // String describing the fourth selection
 
 
 AtomicGroup group1 = loos::selectAtoms(system, selection1);
