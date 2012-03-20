@@ -39,6 +39,45 @@ namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup>            vGroup;
 
+string fullHelpMessage(void) {
+    string s = 
+  "\n"
+  " SYNOPSIS\n"
+  "\n"
+  " Read a single structure and translate a specific selection to the origin\n"
+  "\n"
+  " DESCRIPTION\n"
+  "\n"
+  " This tool reads a file with coordinates and translates and reimages it\n"
+  " such that a selected set of atoms are at the origin.  The user can\n"
+  " specify a subset of atoms to be written out.  The resulting PDB file\n"
+  " is written to stdout.\n"
+  "\n"
+  " Options\n"
+  "\n"
+  " --center        Selection specifying the atoms that would be moved to the \n"
+  "                 origin by the translation.  Defaults to 'all'.\n"\n"
+  " --apply         Selection specifying the atoms to which the translation\n"
+  "                 is applied.  Defaults to 'all'.\n"
+  " --write         Selection specifying which atoms should be be written \n"
+  "                 out. Defaults to 'all'.\n"
+  " --reimage       If specified, the system will be reimaged, first by \n"
+  "                 segment, then by molecule.  If this flag is\n"
+  "                 specified, the system must contain connectivity and \n"
+  "                 periodicity information.\n"
+  " --center_xy     Apply the translation only in the x-y plane\n"
+  " --bonds         Specify a second file to use to find the connectivity \n"
+  "                 information, e.g. a PSF file to complement a PDB file \n"
+  "                 containing cooordinates.\n"
+  "\n"
+  " Note: this tool is largely redundant with other tools, such as \n"
+  "       reimage-by-molecule, recenter-trj, and merge-traj.\n"
+  "\n"
+  " EXAMPLE\n"
+  "\n"
+       ;
+    return(s);
+    }
 
 // @cond TOOL_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
