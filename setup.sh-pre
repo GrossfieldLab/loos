@@ -19,16 +19,11 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-###
-### Set this to where LOOS is installed, or where the uninstalled distribution is...
-###
-DEFAULT_PATH="PATH_TO_LOOS"
-###
-###
-###
 
-CWD=`pwd`
-LOOSPATH="${DEFAULT_PATH:-$CWD}"
+### This will be automatically set to where LOOS is built or installed.  If necessary,
+### change manually...
+LOOSPATH="PATH_TO_LOOS"
+
 
 
 # Find library
