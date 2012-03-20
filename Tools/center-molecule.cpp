@@ -56,7 +56,7 @@ string fullHelpMessage(void) {
   " Options\n"
   "\n"
   " --center        Selection specifying the atoms that would be moved to the \n"
-  "                 origin by the translation.  Defaults to 'all'.\n"\n"
+  "                 origin by the translation.  Defaults to 'all'.\n"
   " --apply         Selection specifying the atoms to which the translation\n"
   "                 is applied.  Defaults to 'all'.\n"
   " --write         Selection specifying which atoms should be be written \n"
