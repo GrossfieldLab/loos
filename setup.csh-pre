@@ -19,19 +19,9 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-###
-### Set this to where LOOS is installed, or where the uninstalled distribution is...
-###
-set DEFAULT_PATH=""
-###
-###
-###
-
-if ( $DEFAULT_PATH == "" ) then
-    set LOOSPATH="$cwd"
-else
-    set LOOSPATH="$DEFAULT_PATH"
-endif
+### This will be automatically set to where LOOS is built or installed.  If necessary,
+### change manually...
+set LOOSPATH="PATH_TO_LOOS"
 
 if ( -d $LOOSPATH/lib ) then
     set LIBPATH="$LOOSPATH/lib"
