@@ -40,11 +40,7 @@ apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 
 
-if int(env['shared']):
-   loos = env.SharedLibrary('loos', Split(apps))
-else:
-   loos = env.Library('loos', Split(apps))
-
+loos = env.SharedLibrary('loos', Split(apps))
 
 # Handle installation...
 PREFIX = env['PREFIX']
