@@ -84,9 +84,9 @@ loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
 
 
-looslib_swig = env.SharedLibrary('_looslib.so', Split(apps))
-loos_swig = env.SharedLibrary('_loos.so', ['loos.i', looslib_swig])
+# Python bindings
+loos_python = env.SharedLibrary('_loos.so', ['loos.i', loos])
 
 
 
-Return('loos','loos_swig', 'scripts')
+Return('loos','loos_python', 'scripts')

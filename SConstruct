@@ -272,7 +272,7 @@ Export('env')
 
 ###################################
 
-[loos, loos_swig, loos_scripts] = SConscript('SConscript')
+[loos, loos_python, loos_scripts] = SConscript('SConscript')
 Export('loos')
 
 docs = env.Doxygen('Doxyfile')
@@ -303,10 +303,10 @@ env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-env.Alias('pyloos', loos_swig)
+env.Alias('pyloos', loos_python)
 
-env.Alias('all', loos + tools + all_packages + loos_scripts + loos_swig)
-env.Alias('caboodle', loos + tools + all_packages + tests + docs)
+env.Alias('all', loos + tools + all_packages + loos_scripts)
+env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
 env.Alias('user', user_package)
 
 
