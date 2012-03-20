@@ -104,18 +104,25 @@ if ALTPATH != '':
 
 ### Builder for setup scripts
 
+# This copies the environment setup script while changing the directory
+# that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
+# is being built in a directory, the env script will be setup to use
+# the built-in-place distribution.  If LOOS is being installed, then
+# it will use the installation directory instead.
+
 def script_builder_python(target, source, env):
    first = target[0]
    target_path = first.get_abspath()
    dir_path = os.path.dirname(target_path)
-   
+
    command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
-   print command
+#   print command
    os.system(command)
    return None
 
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
+
 
 
 ### Autoconf
