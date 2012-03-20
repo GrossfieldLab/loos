@@ -76,4 +76,9 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
 looslib_swig = env.SharedLibrary('_looslib.so', Split(apps))
 loos_swig = env.SharedLibrary('_loos.so', ['loos.i', looslib_swig])
 
-Return('loos','loos_swig')
+
+# Setup environment script(s)
+
+scripts = env.Scripts('setup.sh', 'setup.sh-pre')
+
+Return('loos','loos_swig', 'scripts')

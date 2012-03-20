@@ -102,6 +102,22 @@ if ALTPATH != '':
 
 
 
+### Builder for setup scripts
+
+def script_builder_python(target, source, env):
+   first = target[0]
+   target_path = first.get_abspath()
+   dir_path = os.path.dirname(target_path)
+   
+   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
+   print command
+   os.system(command)
+   return None
+
+script_builder = Builder(action = script_builder_python)
+env.Append(BUILDERS = {'Scripts' : script_builder})
+
+
 ### Autoconf
 if not env.GetOption('clean'):
    conf = Configure(env)
@@ -249,7 +265,7 @@ Export('env')
 
 ###################################
 
-[loos,loos_swig] = SConscript('SConscript')
+[loos, loos_swig, loos_scripts] = SConscript('SConscript')
 Export('loos')
 
 docs = env.Doxygen('Doxyfile')
@@ -276,13 +292,13 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 # build targets...
 
-env.Alias('lib', loos)
+env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
 env.Alias('pyloos', loos_swig)
 
-env.Alias('all', loos + tools + all_packages)
+env.Alias('all', loos + tools + all_packages + loos_scripts + loos_swig)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs)
 env.Alias('user', user_package)
 
