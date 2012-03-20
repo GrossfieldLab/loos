@@ -22,7 +22,7 @@
 ###
 ### Set this to where LOOS is installed, or where the uninstalled distribution is...
 ###
-DEFAULT_PATH=""
+DEFAULT_PATH="PATH_TO_LOOS"
 ###
 ###
 ###
