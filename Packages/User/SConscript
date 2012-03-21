@@ -23,9 +23,10 @@
 import sys
 
 Import('env')
+Import('loos')
 
 clone = env.Clone()
-clone.Prepend(LIBS = ['loos'])
+clone.Prepend(LIBS = [loos])
 
 apps = 'model_calc traj_calc simple_model_calc simple_model_transform traj_transform'
 

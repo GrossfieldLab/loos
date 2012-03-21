@@ -20,6 +20,7 @@
 
 
 import sys
+import os
 
 Import('env')
 
@@ -39,19 +40,25 @@ apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 
 
-if int(env['shared']):
-   loos = env.SharedLibrary('loos', Split(apps))
-else:
-   loos = env.Library('loos', Split(apps))
-
+loos = env.SharedLibrary('loos', Split(apps))
 
 # Handle installation...
 PREFIX = env['PREFIX']
 
 # Library(ies)
-loos_lib_inst = env.Install(PREFIX + '/lib', loos)
+loos_lib_inst = env.Install(os.path.join(PREFIX, 'lib'), loos)
 
- 
+# Setup environment script(s)
+
+script_sh = env.Scripts('setup.sh', 'setup.sh-pre')
+script_csh = env.Scripts('setup.csh', 'setup.csh-pre')
+scripts = [ script_sh, script_csh ]
+
+script_sh_inst = env.Scripts(os.path.join(PREFIX, 'setup.sh'), 'setup.sh-pre')
+script_csh_inst = env.Scripts(os.path.join(PREFIX, 'setup.csh'), 'setup.csh-pre')
+scripts_inst = [ script_sh_inst, script_csh_inst ]
+
+
 # Header files...
 hdr = 'loos.hpp'
 hdr = 'amber.hpp amber_rst.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
@@ -68,12 +75,14 @@ hdr = hdr + ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
 hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 
-loos_hdr_inst = env.Install(PREFIX + '/include', Split(hdr))
+loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 
-env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst])
+env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
 
 
-looslib_swig = env.SharedLibrary('_looslib.so', Split(apps))
-loos_swig = env.SharedLibrary('_loos.so', ['loos.i', looslib_swig])
+# Python bindings
+loos_python = env.SharedLibrary('_loos.so', ['loos.i', loos])
 
-Return('loos','loos_swig')
+
+
+Return('loos','loos_python', 'scripts')

@@ -43,7 +43,7 @@ clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
 clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 0)
+clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
 
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
@@ -99,6 +99,29 @@ if ALTPATH != '':
    path = buildenv['PATH']
    path = ALTPATH + ':' + path
    buildenv['PATH'] = path
+
+
+
+### Builder for setup scripts
+
+# This copies the environment setup script while changing the directory
+# that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
+# is being built in a directory, the env script will be setup to use
+# the built-in-place distribution.  If LOOS is being installed, then
+# it will use the installation directory instead.
+
+def script_builder_python(target, source, env):
+   first = target[0]
+   target_path = first.get_abspath()
+   dir_path = os.path.dirname(target_path)
+
+   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
+#   print command
+   os.system(command)
+   return None
+
+script_builder = Builder(action = script_builder_python)
+env.Append(BUILDERS = {'Scripts' : script_builder})
 
 
 
@@ -249,12 +272,8 @@ Export('env')
 
 ###################################
 
-if int(env['shared']):
-   env['LD_LIBRARY_PATH'] = "."
-
-[loos,loos_swig] = SConscript('SConscript')
-
-
+[loos, loos_python, loos_scripts] = SConscript('SConscript')
+Export('loos')
 
 docs = env.Doxygen('Doxyfile')
 tests = SConscript('Tests/SConscript')
@@ -280,14 +299,14 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 # build targets...
 
-env.Alias('lib', loos)
+env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-env.Alias('pyloos', loos_swig)
+env.Alias('pyloos', loos_python)
 
-env.Alias('all', loos + tools + all_packages)
-env.Alias('caboodle', loos + tools + all_packages + tests + docs)
+env.Alias('all', loos + tools + all_packages + loos_scripts)
+env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
 env.Alias('user', user_package)
 
 
