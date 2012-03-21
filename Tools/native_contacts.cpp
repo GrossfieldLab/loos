@@ -32,7 +32,57 @@
 using namespace std;
 using namespace loos;
 
-
+string fullHelpMessage(void)
+    {
+    string s =
+"\n"
+"    SYNOPSIS\n"
+"\n"
+"    Report the fraction of native contacts found over the course of \n"
+"    a trajectory.\n"
+"\n"
+"    DESCRIPTION\n"
+"\n"
+"    The purpose of this tool is to compute the fraction of native contacts\n"
+"    found on average over the course of trajectory.  This is intended for\n"
+"    use in protein or RNA systems, as a way of tracking the degree to which\n"
+"    the molecule is folded.  \n"
+"\n"
+"    If the model file provided on the command line has coordinates, then \n"
+"    those coordinates are used to define \"native\" contacts.  \n"
+"    Specifically, the set of atoms to be analyzed is specified on the\n"
+"    command line, which is then split by residue.  If the centers of mass\n"
+"    of two residues are within the cutoff distance specified on the command\n"
+"    line, then those two residues are a native contact.  The same criterion\n"
+"    is applied at each successive frame.\n"
+"\n"
+"    Note: This code does not take periodicity into account.  Rather, it is\n"
+"    assumed that the selection (generally a biomolecule such as a protein)\n"
+"    is not split across a periodic boundary.  If your simulation code \n"
+"    doesn't do this for you, you can use merge-traj with the --fix-imaging\n"
+"    flag to set up your trajectory appropriately (although that only works\n"
+"    if the selection is a single molecule).\n"
+"\n"
+"    EXAMPLE\n"
+"\n"
+"    native_contacts model.psf traj.dcd 5 'segname == \"PROT\"'\n"
+"\n"
+"    This uses model.psf as the system file, traj.dcd as the trajectory,\n"
+"    sets the cutoff for a native contact at 5 angstroms, and operates on \n"
+"    the segment called PROT.  Since PSF files don't have coordinates, the \n"
+"    first frame of the trajectory will be used to define which contacts \n"
+"    are native.\n"
+"\n"
+"    The output is a time series of the fraction of native contacts present \n"
+"    in the trajectory.  At present, there is no option to track the \n"
+"    presence of specific contacts (other than using the selection string on\n"
+"    the command line to pick out just those contacts).  If you would find\n"
+"    this interesting, send email to loos-maintainer@urmc.rochester.edu\n"
+"    requesting the feature.\n"
+"\n"
+        ;
+    return(s);
+    }
 
 void Usage()
     {
@@ -42,6 +92,13 @@ void Usage()
 
 int main (int argc, char *argv[])
 {
+
+if ( (argc >= 2) && (string(argv[1]) == string("--fullhelp") ) )
+    {
+    cerr << fullHelpMessage() << endl;
+    exit(-1);
+    }
+
 if ( (argc <= 1) || 
      ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
      (argc < 5)
