@@ -1,6 +1,7 @@
 2012-03-22  Tod Romo  <tromo@gorgoneion>
 
 	* Removed octavex script (unused by recent versions of LOOS)
+	* Fixed bug in averager regarding the default selection to average over
 
 2012-03-16    <tromo@spade.biophysics.rochester.edu>
 

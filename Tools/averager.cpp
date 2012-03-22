@@ -60,16 +60,19 @@ string fullHelpMessage(void) {
     "\taverager writes out a PDB for the average structure from a trajectory.  If a selection\n"
     "is given (--selection), then the trajectory is first iteratively aligned to an optimal\n"
     "average structure (see aligner).  The '--average' option takes an optional selection that\n"
-    "defines what atoms are averaged and written out, otherwise all atoms are used.\n"
+    "defines what atoms are averaged and written out, otherwise all non-hydrogen and non-solvent\n"
+    "atoms are used.  Note that solvent is selected by a segid of either 'BULK' or 'SOLVENT'.\n"
+    "If your system uses a different identifier, you will want to explicitly give a selection\n"
+    "for the --average option\n"
     "\n"
     "EXAMPLES\n"
     "\n"
     "\taverager model.pdb traj.dcd >average.pdb\n"
-    "This assumes the trajectory is already aligned.  It averages all atoms and puts the average\n"
-    "structure in average.pdb\n"
+    "This assumes the trajectory is already aligned and puts the average structure in average.pdb\n"
+    "Hydrogens and solvent atoms are excluded.\n"
     "\n"
     "\taverager --selection 'name == \"CA\"' model.pdb traj.dcd >average.pdb\n"
-    "Aligns the trajectory first using all alpha-carbons, then averages over all atoms\n"
+    "Aligns the trajectory first using all alpha-carbons\n"
     "\n"
     "\taverager --selection 'name == \"CA\"' --average 'resid <= 20' model.pdb traj.dcd >average.pdb\n"
     "Aligns the trajectory using alpha-carbons, but only averages the first 20 residues and outputs\n"
@@ -114,7 +117,7 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("");
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
-  ToolOptions* toolopts = new ToolOptions("!hydrogen || segid == 'SOLV' || segid == 'BULK'");
+  ToolOptions* toolopts = new ToolOptions("!(hydrogen || segid == 'SOLV' || segid == 'BULK')");
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(tropts).add(toolopts);
