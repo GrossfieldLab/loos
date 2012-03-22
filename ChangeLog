@@ -1,3 +1,7 @@
+2012-03-22  Tod Romo  <tromo@gorgoneion>
+
+	* Removed octavex script (unused by recent versions of LOOS)
+
 2012-03-16    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in subsetter when using a subset of the model.  The
