@@ -36,4 +36,9 @@ else
 endif
 
 setenv PATH "$PATH":"$TOOLPATH"
-setenv LD_LIBRARY_PATH "$LD_LIBRARY_PATH":"$LIBPATH"
+
+if ($?LD_LIBRARY_PATH) then
+    setenv LD_LIBRARY_PATH "$LD_LIBRARY_PATH":"$LIBPATH"
+else
+    setenv LD_LIBRARY_PATH "$LIBPATH"
+endif
