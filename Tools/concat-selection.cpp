@@ -45,7 +45,11 @@ using namespace loos;
 
 int main(int argc, char *argv[]) {
   if (argc < 4) {
-    cerr << "Usage: " << argv[0] << " system trajectory selection [selection...] >output.pdb\n";
+    cerr << "Usage: concat-selection system trajectory selection [selection...] >output.pdb\n"
+      "\n"
+      "Extracts a set of atoms from each frame of a trajectory, writing them out to a single\n"
+      "PDB.  This can be useful to visualize ligand locations and paths, for example.  Care\n"
+      "should be exercised however since the resultant PDB may be larger.\n";
     exit(-1);
   }
 
