@@ -40,7 +40,11 @@ using namespace loos;
 
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    cerr << "Usage: " << argv[0] << " model-filename trajectory selection-string\n";
+    cerr << "Usage: " << argv[0] << " model-filename trajectory selection-string\n"
+      "\n"
+      "Prints out statistics for the bounding box of the selection over the whole\n"
+      "trajectory.  To get the bounding box of a single structure, a PDB may be used as both\n"
+      "model and trajectory, i.e. 'bounding foo.pdb foo.dcd all'\n";
     exit(-1);
   }
 
