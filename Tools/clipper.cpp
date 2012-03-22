@@ -100,7 +100,12 @@ public:
 string fullHelpMessage(void) {
   string msg = 
     "\n"
-    "Clipper implements a set of arbitrary clipping planes that can be\n"
+    "SYNOPSIS\n"
+    "\tApply arbitrary clipping planes to a model\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tClipper implements a set of arbitrary clipping planes that can be\n"
     "applied to a selection or to the entire model.  When a selection is\n"
     "used, only the selection is clipped--all other atoms are retained in\n"
     "the output.  Clipping planes are specified by providing three\n"
@@ -113,21 +118,21 @@ string fullHelpMessage(void) {
     "plane.  Finally, any number of clipping planes can be specified on the\n"
     "command line.\n"
     "\n"
-    "Examples:\n"
+    "EXAMPLES\n"
     "\n"
-    "  * clipper model.pdb '(0,0,0)' '(1,0,0)' '(0,1,0)'  >clipped.pdb\n"
-    "    This defines a clipping plane at z=0 with the normal pointing\n"
-    "    along the positive z-axis.\n"
+    "\tclipper model.pdb '(0,0,0)' '(1,0,0)' '(0,1,0)'  >clipped.pdb\n"
+    "This defines a clipping plane at z=0 with the normal pointing\n"
+    "along the positive z-axis.\n"
     "\n"
-    "  * clipper model.pdb '(0,4,0)' '(1,4,0)' '(0,4,1)'  >clipped.pdb\n"
-    "    This defines a clipping plane at y=4 with the normal pointing\n"
-    "    along the positive y-axis\n"
+    "\tclipper model.pdb '(0,4,0)' '(1,4,0)' '(0,4,1)'  >clipped.pdb\n"
+    "This defines a clipping plane at y=4 with the normal pointing\n"
+    "along the positive y-axis\n"
     "\n"
-    "  * clipper --byres --selection 'segid==\"BULK\"' model.pdb '(0,0,0)' '(1,0,0)' '(0,1,0)'  >clipped.pdb\n"
-    "    This defines a clipping plane at z=0 with the normal pointing\n"
-    "    along the positive z-axis, but only waters are clipped and if any\n"
-    "    water atom is clipped, then the entire water molecule is also\n"
-    "    clipped.\n";
+    "\tclipper --byres --selection 'segid==\"BULK\"' model.pdb '(0,0,0)' '(1,0,0)' '(0,1,0)'  >clipped.pdb\n"
+    "This defines a clipping plane at z=0 with the normal pointing\n"
+    "along the positive z-axis, but only waters are clipped and if any\n"
+    "water atom is clipped, then the entire water molecule is also\n"
+    "clipped.\n";
 
   return(msg);
 }
