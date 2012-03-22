@@ -59,7 +59,7 @@ string fullHelpMessage(void) {
     "DESCRIPTION\n"
     "\taverager writes out a PDB for the average structure from a trajectory.  If a selection\n"
     "is given (--selection), then the trajectory is first iteratively aligned to an optimal\n"
-    "average structure (see aligner).  The "--average" option takes an optional selection that\n"
+    "average structure (see aligner).  The '--average' option takes an optional selection that\n"
     "defines what atoms are averaged and written out, otherwise all atoms are used.\n"
     "\n"
     "EXAMPLES\n"
