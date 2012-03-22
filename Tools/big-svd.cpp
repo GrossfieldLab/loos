@@ -75,6 +75,7 @@ string fullHelpMessage(void) {
     "Computes an SVD using all non-hydrogen atoms.  The source matrix (trajectory)\n"
     "is written as b2ar_A.asc"
     "\n"
+    "\n"
     "SEE ALSO\n"
     "\tsvd, kurskew, phase-pdb\n";
 
