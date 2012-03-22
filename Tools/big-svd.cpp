@@ -47,6 +47,41 @@ const double GB = 1024 * MB;
 // Don't include these classes in Doxygen
 // @cond TOOLS_INTERNAL
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "Compute an SVD (PCA) of a large trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\tbig-svd calculates the singular value decomposition for trajectories that are too large\n"
+    "to use the svd tool on.  One important difference is that big-svd uses an alternative\n"
+    "algorithm that may produce slightly different results from svd.  Another difference is\n"
+    "that big-svd cannot align the trajectory prior to computing the SVD.  It assumes that\n"
+    "the input trajectory is already aligned.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tbig-svd --prefix b2ar b2ar.pdb b2ar.dcd\n"
+    "Computes an SVD using the default selection of all alpha-carbons.  Creates four files:\n"
+    "b2ar_U.asc (eigenvectors/left singular vectors), b2ar_s.asc (singular values),\n"
+    "b2ar_V.asc (right singular vectors), and b2ar.map (mapping of rows in eigenvectors\n"
+    "to atoms in b2ar.pdb)\n"
+    "\n"
+    "\tbig-svd --prefix b2ar --selection '!hydrogen' b2ar.pdb b2ar.dcd\n"
+    "Computes an SVD using all non-hydrogen atoms.\n"
+    "\n"
+    "\tbig-svd --prefix b2ar --source 1 --selection '!hydrogen' b2ar.pdb b2ar.dcd\n"
+    "Computes an SVD using all non-hydrogen atoms.  The source matrix (trajectory)\n"
+    "is written as b2ar_A.asc"
+    "\n"
+    "SEE ALSO\n"
+    "\tsvd, kurskew, phase-pdb\n";
+
+  return(msg);
+}
+
+
 struct TrackStorage {
   TrackStorage() : storage(0) { }
   
@@ -62,6 +97,7 @@ struct TrackStorage {
   void free(const ulong n) {
     storage -= n;
   }
+
 
 
   string memory(const ulong n) {
@@ -184,7 +220,7 @@ int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
   
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::OutputPrefix* popts = new opts::OutputPrefix;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;

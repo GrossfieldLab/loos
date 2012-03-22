@@ -78,8 +78,9 @@ string fullHelpMessage(void) {
     "Aligns the trajectory using alpha-carbons, but only averages the first 20 residues and outputs\n"
     "them to average.pdb\n"
     "\n"
+    "\n"
     "SEE ALSO\n"
-    "\taligner\n";
+    "\taligner\n\n";
 
   return(msg);
 }
