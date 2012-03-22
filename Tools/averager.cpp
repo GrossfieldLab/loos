@@ -50,6 +50,38 @@ namespace po = loos::OptionsFramework::po;
 
 
 // @cond TOOL_INTERNAL
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "Compute an average structure from a trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\taverager writes out a PDB for the average structure from a trajectory.  If a selection\n"
+    "is given (--selection), then the trajectory is first iteratively aligned to an optimal\n"
+    "average structure (see aligner).  The "--average" option takes an optional selection that\n"
+    "defines what atoms are averaged and written out, otherwise all atoms are used.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\taverager model.pdb traj.dcd >average.pdb\n"
+    "This assumes the trajectory is already aligned.  It averages all atoms and puts the average\n"
+    "structure in average.pdb\n"
+    "\n"
+    "\taverager --selection 'name == \"CA\"' model.pdb traj.dcd >average.pdb\n"
+    "Aligns the trajectory first using all alpha-carbons, then averages over all atoms\n"
+    "\n"
+    "\taverager --selection 'name == \"CA\"' --average 'resid <= 20' model.pdb traj.dcd >average.pdb\n"
+    "Aligns the trajectory using alpha-carbons, but only averages the first 20 residues and outputs\n"
+    "them to average.pdb\n"
+    "\n"
+    "SEE ALSO\n"
+    "\taligner\n";
+
+  return(msg);
+}
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions(const string& s) : avg_string(s) { }
@@ -79,7 +111,7 @@ public:
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("");
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* toolopts = new ToolOptions("!hydrogen || segid == 'SOLV' || segid == 'BULK'");
