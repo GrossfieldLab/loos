@@ -166,8 +166,9 @@ public:
       if (!(ss >> clamp_max)) {
         cerr << "Error- cannot parse upper bounds for box-clamp\n";
         return(false);
-        clamped_box.push_back(clamp_max);
       }
+      clamped_box.push_back(clamp_max);
+      cerr << "Warning- clamping grid to " << clamp_min << " -> " << clamp_max << endl;
     }
 
     if (map.count("brange")) {

@@ -38,8 +38,8 @@ clone.Prepend(LIBPATH=['#/Packages/DensityTools'])
 clone.Prepend(CPPPATH='#/Packages/DensityTools')
 
 
-apps = 'gridinfo grid2ascii grid2xplor gridgauss gridscale gridslice gridmask blobid contained gridstat peakify pick_blob blob_stats water-inside water-extract near_blob'
-apps += ' water-hist water-count water-sides'
+apps = 'gridinfo grid2ascii grid2xplor gridgauss gridscale gridslice gridmask blobid contained gridstat peakify pick_blob blob_stats water-inside water-extract'
+apps += ' water-hist water-count water-sides near_blob griddiff'
 
 list = []
 
