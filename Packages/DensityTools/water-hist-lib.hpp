@@ -145,7 +145,7 @@ namespace loos {
 
       void clear() { grid_.clear(); out_of_bounds = 0; }
 
-      void setGrid(GCoord min, GCoord max, const double resolution);
+      void setGrid(const GCoord& min, const GCoord& max, const double resolution);
       void setGrid(pTraj& traj, const std::vector<uint>& frames, const double resolution, const double pad = 0.0);
 
       void accumulate(const double density);

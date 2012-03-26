@@ -146,7 +146,7 @@ namespace loos {
     // ------------------------------------------------------------------------
 
 
-    void WaterHistogrammer::setGrid(GCoord min, GCoord max, const double resolution) {
+    void WaterHistogrammer::setGrid(const GCoord& min, const GCoord& max, const double resolution) {
       GCoord gridsize = max - min + 1;
       gridsize /= resolution;
       DensityGridpoint dims;
