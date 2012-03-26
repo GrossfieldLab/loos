@@ -62,6 +62,7 @@ int picked_id;
 bool use_spot = false;
 bool largest = false;
 double range = 0.0;
+bool query = false;
 
 // @cond TOOLS_INTERNAL
 
@@ -113,6 +114,7 @@ public:
   
   void addGeneric(po::options_description& o) {
     o.add_options()
+      ("query", po::value<bool>(&query)->default_value(false), "Query nearby blobs, do NOT write out a grid")
       ("model", po::value<string>(&model_name)->default_value(""), "Select using this model (must have coords)")
       ("selection", po::value<string>(&selection)->default_value(""), "Select atoms within the PDB to find nearest blob")
       ("id", po::value<int>(&picked_id)->default_value(-1), "Select blob with this ID")
@@ -295,12 +297,12 @@ int main(int argc, char *argv[]) {
       ids.push_back(ci->id);
     }
       
+    if (!query) {
+      zapGrid(grid, ids);
+      cout << grid;
+    }
 
-
-    zapGrid(grid, ids);
-    cout << grid;
-
-  } else {
+  } else if (!query) {
     vector<int> picks;
     picks.push_back(picked_id);
     zapGrid(grid, picks);
