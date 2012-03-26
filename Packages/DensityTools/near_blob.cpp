@@ -82,8 +82,8 @@ vector<int> findResiduesNearBlob(const vector<GCoord>& blob, const vector<Atomic
 
 
 int main(int argc, char *argv[]) {
-  if (argc != 6) {
-    cerr << "Usage- near_blob model traj selection blobid distance <grid >out.asc\n";
+  if (argc != 7) {
+    cerr << "Usage- near_blob model traj selection skip blobid distance <grid >out.asc\n";
     exit(-1);
   }
 
@@ -93,6 +93,7 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(argv[k++], model);
   AtomicGroup residue_subset = selectAtoms(model, argv[k++]);
   vector<AtomicGroup> residues = residue_subset.splitByResidue();
+  uint skip = strtoul(argv[k++], 0, 10);
   int blobid = strtol(argv[k++], 0, 10);
   double distance = strtod(argv[k++], 0);
 
@@ -111,11 +112,17 @@ int main(int argc, char *argv[]) {
       % residues[i][0]->resname()
       % residues[i][0]->segid();
   
-  RealMatrix M(traj->nframes(), residues.size()+1);
+  uint n = traj->nframes();
+  if (skip > 0) {
+    n -= skip;
+    traj->readFrame(skip-1);
+  }
+
+  RealMatrix M(n, residues.size()+1);
   uint t = 0;
     
   while (traj->readFrame()) {
-    M(t, 0) = t;
+    M(t, 0) = t + skip;
     vector<int> nearby = findResiduesNearBlob(blob, residues, distance);
     for (uint i=0; i<nearby.size(); ++i)
       M(t, i+1) = nearby[i];
