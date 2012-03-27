@@ -35,7 +35,30 @@
 
 */
 
+/*
 
+"\n"
+"SYNOPSIS\n"
+"\n"
+"Create a representation of motion along the mode(s) of an ENM\n"
+"\n"
+"DESCRIPTION\n"
+"\n"
+"It is often informative to visualize the modes of motion predicted\n"
+"by an ENM in addition to plotting eigenvectors.  This \n"
+"\n"
+"\n"
+"\n"
+"EXAMPLE\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n";
+
+
+*/
 
 
 #include <loos.hpp>
