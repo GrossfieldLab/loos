@@ -42,19 +42,29 @@ typedef vector<AtomicGroup> vGroup;
 
 
 
+// @cond TOOL_INTERNAL
 
 string fullHelpMessage() {
   string s = 
-    "* Normalization *\n"
-    "Normalization can be performed in two ways: row or column.\n"
+    "\n"
+    "SYNOPSIS\n"
+    "Determine the number of contacts between a probe selection and multiple targets\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\tcontact-time can be used to find the number of putative contacts between\n"
+    "a probe set of atoms and a number of different target sets of atoms.  contact-time\n"
+    "counts the number of times a target atom is within a given shell about any\n"
+    "probe atom.  A matrix is constructed where each target is a column and each row\n"
+    "represents a time point in the trajectory.\n"
+    "\n"
+    "\tThe matrix  can be normalized in two ways: row or column.\n"
     "Row normalization gives the percentage contact between the probe\n"
     "and each target relative to all contacts.  Column normalization\n"
     "gives the percentage contact between the probe and each target\n"
     "relative to the maximum number of contacts against the respective\n"
     "target.\n"
     "\n"
-    "* Autoself *\n"
-    "The autoself option splits the probe selection into a set of\n"
+    "\tThe autoself option splits the probe selection into a set of\n"
     "molecules based on segid.  It then computes the contacts between\n"
     "all of these molecules (excluding self-to-self) and includes this\n"
     "as an extra column in the output.  As an example, suppose\n"
@@ -72,8 +82,22 @@ string fullHelpMessage() {
     "contacts between each AMLP.  The total number of self-contacts\n"
     "is then included as an extra column in the output.\n"
     "\n"
-    "* Fast mode *\n"
-    "By default, contact-time uses a distance filter to eliminate\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tcontact-time --inner 0 --outer 4.5 model.psf traj.dcd 'segid == \"PEPT\"' 'resname == \"PEGL\"' 'segid == \"BULK\"'\n"
+    "This example counts the number of contacts within 4.5 angstroms of any\n"
+    "PEGL atom with PEPT atoms, and any BULK atom with PEPT atoms.  Row\n"
+    "normalization is used, so each row represents the percent contact of\n"
+    "each target, e.g.. 20% PEGL and 50% BULK at time 10ns\n"
+    "\n"
+    "\tcontact-time --inner 0 --outer 4.5 --rownorm 0 --colnorm 1 model.psf traj.dcd 'segid == \"PEPT\"' 'resname == \"PEGL\"' 'segid == \"BULK\"'\n"
+    "This example is as above, but the matrix is normalized down a column.\n"
+    "Here, the data would show that at time 10 ns, PEPT makes a 20% contact\n"
+    "with PEGL (relative to the maximum contact with PEGL), and likewise\n"
+    "for BULK\n"
+    "\n"
+    "NOTES\n"
+    "\tBy default, contact-time uses a distance filter to eliminate\n"
     "target atoms that are too far to be considered when looking\n"
     "at each probe atom.  The padding for the radius used to\n"
     "exclude target atoms can be adjusted with the '--fastpad' option.\n"
@@ -83,7 +107,8 @@ string fullHelpMessage() {
   return(s);
 }
 
-// @cond TOOL_INTERNAL
+
+
 class ToolOptions : public opts::OptionsPackage
 {
 public:
