@@ -1,5 +1,5 @@
 /*
-  near_blob.cpp
+  blob_contact.cpp
 
   Find residues within a given distance of a blob
 
@@ -83,7 +83,7 @@ vector<int> findResiduesNearBlob(const vector<GCoord>& blob, const vector<Atomic
 
 int main(int argc, char *argv[]) {
   if (argc != 7) {
-    cerr << "Usage- near_blob model traj selection skip blobid distance <grid >out.asc\n";
+    cerr << "Usage- blob_contact model traj selection skip blobid distance <grid >out.asc\n";
     exit(-1);
   }
 
