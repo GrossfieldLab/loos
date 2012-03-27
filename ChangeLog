@@ -1,3 +1,9 @@
+2012-03-27 Alan Grossfield <alan@membrane.biophysics.rochester.edu>
+
+	* Added --sel1-spans and --sel2-spans, to handle the case where a
+	selection should be treated as appearing in both leaflets (eg a 
+	transmembrane helix)
+
 2012-03-22  Tod Romo  <tromo@gorgoneion>
 
 	* Removed octavex script (unused by recent versions of LOOS)

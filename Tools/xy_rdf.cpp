@@ -41,6 +41,7 @@ double hist_min, hist_max;
 int num_bins;
 int timeseries_interval;
 string output_directory;
+bool sel1_spans, sel2_spans;
 
 // @cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage
@@ -52,7 +53,10 @@ public:
     o.add_options()
       ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment)")
       ("timeseries", po::value<int>(&timeseries_interval)->default_value(0), "Interval to write out timeseries, 0 means never")
-      ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("output")));
+      ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("output")))
+      ("sel1-spans", "Selection 1 appears in both leaflets")
+      ("sel2-spans", "Selection 2 appears in both leaflets")
+       ;
 
   }
 
@@ -86,6 +90,16 @@ public:
   {
     if (vm.count("sel1") && !vm.count("sel2"))
       selection2 = selection1;
+    sel1_spans = false;
+    sel2_spans = false;
+    if (vm.count("sel1_spans")) 
+        {
+        sel1_spans = true;
+        }
+    if (vm.count("sel2_spans")) 
+        {
+        sel2_spans = true;
+        }
     return(true);
   }
 
@@ -97,7 +111,7 @@ public:
   string print() const
   {
     ostringstream oss;
-    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f, timeseries=%d, timeseries-directory='%s'")
+    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f, timeseries=%d, timeseries-directory='%s', sel1-spans=%d, sel2-spans=%d")
       % split_by
       % selection1
       % selection2
@@ -105,7 +119,9 @@ public:
       % hist_max
       % num_bins
       % timeseries_interval
-      % output_directory;
+      % output_directory
+      % sel1_spans
+      % sel2_spans;
     return(oss.str());
   }
 
@@ -175,6 +191,14 @@ string s =
     "of the center of mass of the selection in the first frame; this can \n"
     "cause problems if the membrane has not already been centered at the \n"
     "origin (the merge-traj tool can do this for you).\n"
+    "\n"
+    "If one or both of the selections should be included in both leaflets\n"
+    "(e.g. a transmembrane helix or protein), the user should specify \n"
+    "the --sel1-spans or --sel2-spans flags (applying to the first and \n"
+    "second selections respectively).  Otherwise, the selection will \n"
+    "be included in only one leaflet, which could lead to non-sensical \n"
+    "results.  Note: this flag is applied to _all_ of the components \n"
+    "in the selection --- they are each assumed to span the membrane.\n"
     "\n"
     "The --timeseries flag lets you track the evolution of the RDF over time.\n"
     "\n"
@@ -275,29 +299,45 @@ traj->updateGroupCoords(system);
 vector<AtomicGroup> g1_upper, g1_lower;
 vector<AtomicGroup> g2_upper, g2_lower;
 
-for (unsigned int i = 0; i < g1_mols.size(); i++)
+if (sel1_spans)
     {
-    GCoord c = g1_mols[i].centerOfMass();
-    if (c.z() >=0.0)
+    g1_upper = g1_mols;
+    g1_lower = g1_mols;
+    }
+else
+    {
+    for (unsigned int i = 0; i < g1_mols.size(); i++)
         {
-        g1_upper.push_back(g1_mols[i]);
-        }
-    else
-        {
-        g1_lower.push_back(g1_mols[i]);
+        GCoord c = g1_mols[i].centerOfMass();
+        if (c.z() >=0.0)
+            {
+            g1_upper.push_back(g1_mols[i]);
+            }
+        else
+            {
+            g1_lower.push_back(g1_mols[i]);
+            }
         }
     }
 
-for (unsigned int i = 0; i < g2_mols.size(); i++)
+if (sel2_spans)
     {
-    GCoord c = g2_mols[i].centerOfMass();
-    if (c.z() >=0.0)
+    g2_upper = g2_mols;
+    g2_lower = g2_mols;
+    }
+else
+    {
+    for (unsigned int i = 0; i < g2_mols.size(); i++)
         {
-        g2_upper.push_back(g2_mols[i]);
-        }
-    else
-        {
-        g2_lower.push_back(g2_mols[i]);
+        GCoord c = g2_mols[i].centerOfMass();
+        if (c.z() >=0.0)
+            {
+            g2_upper.push_back(g2_mols[i]);
+            }
+        else
+            {
+            g2_lower.push_back(g2_mols[i]);
+            }
         }
     }
 
