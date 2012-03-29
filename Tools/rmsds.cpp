@@ -1,13 +1,7 @@
 /*
   rmsds.cpp
 
-  Computes inter-frame rmsds.  Can run in two modes:
-    o iterative
-    o pair-wise
-
-  Iterative computes an optimal global alignment through an interative
-  scheme (see aligner.cpp for more details).  Pair-wise will compute
-  the best pair-wise superposition prior to computing the RMSD.
+  Pair-wise RMSD
 */
 
 
