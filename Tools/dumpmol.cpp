@@ -33,8 +33,8 @@ using namespace loos;
 
 
 int main(int argc, char *argv[]) {
-  cerr << "WARNING- this tool is deprecated and will be removed in a future release\n";
-  cerr << "         Use the model-select tool instead.\n";
+  std::cerr << "WARNING- this tool is deprecated and will be removed in a future release\n";
+  std::cerr << "         Use the model-select tool instead.\n";
 
   if (argc != 2) {
     std::cerr << "Usage - dumpmol model\n";
