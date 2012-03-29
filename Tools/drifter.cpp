@@ -83,6 +83,38 @@ struct fixedPoint : public Base {
 };
 
 
+
+string fullHelpMessage(void) {
+  string msg = 
+    "\n"
+    "SYNOPSIS\n"
+    "\tCalculates the drift in the trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tdrifter calculates the distance between the centroid of a selection for each frame\n"
+    "in the trajectory and either the average centroid (optionally of a different selection)\n"
+    "or a fixed point."
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tdrifter --selection 'segid == \"RHOD\" && name == \"CA\"' rhod.pdb rhod.dcd\n"
+    "This calculates the distance between the centroid of the rhodopsin segment CA's and\n"
+    "the trajectory average.\n"
+    "\n"
+    "\tdrifter --selection 'segid == \"TM6\" && name == \"CA\"' --centroid 'name == \"CA\"' b2ar.pdb b2ar.dcd\n"
+    "This calculates the distance between the centroid of TM6 (using CA's) and\n"
+    "the trajectory average over all CA's\n"
+    "\n"
+    "\tdrifter --fixed '(4,2,2)' model.pdb model.dcd\n"
+    "This calculates the distance between the centroid of the model's CA's (the default\n"
+    "selection) and coordinates (4,2,2) [in Angstroms]\n";
+
+  return(msg);
+}
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
 
@@ -111,7 +143,7 @@ public:
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
