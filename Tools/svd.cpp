@@ -137,7 +137,7 @@ string s =
   "\toutput_U.asc   - left singular vectors (lsv, direction of each PC)\n"
   "\toutput_V.asc   - right singular vectors (rsv, motion of a frame \n"
   "\t                    projected onto the PC with the same index\n" 
-  "\toutput.map     - \n"
+  "\toutput.map     - mapping of selection onto rows of output matrices\n"
   "\toutput_avg.pdb - average structure across the trajectory\n"
   "\n"
   "\n"
@@ -175,17 +175,30 @@ string s =
   "SEE ALSO\n"
   "\n"
   "A number of LOOS analysis tools work on PCA results. Here is a partial list:\n"
-  "\tVisualization of PCs:\n"
-  "\tTools/porcupine\n"
+  "\Other programs in Tools:\n"
+  "\tporcupine - Vizualization tool: create a pdb with \"sticks\" that points\n"
+  "\t               in the direction of the PCs\n"
+  "\tphase-pdb - Vizualization tool: use 3 PCs for vizualization\n" 
+  "\tcoverlap  - calculate the covariance overlap between 2 PCA results\n"
+  "\tbig-svd   - calculates svd of a trajectory too big for svd (this tool)\n"
+  "\t               to handle.  Uses a slightly different algorithm\n"
+  "\tkurskew   - calculates the skew and kurtosis of each column in a matrix\n" 
+  "\t\n" 
+  "Use with Packages/ElasticNetworks:\n"
+  "\tenmovie - create a dcd of motion along a PC (for visualization)\n"
   "\t\n"
-  "\tUse with Elastic Network Models:\n"
+  "Also, some convergence tools make use of PCA:\n"
+  "In these tools PCA is performed within the program's execution:\n"
+  "\tbcom\n"
+  "\tboot-bcom\n"
+  "\n"
+  "These tools require input of file(s) from svd:\n"
+  "\trsv-coscon\n"
   "\t\n"
-  "\tUse in Convergence Analysis:\n"
-  "\t\n"
-  "\n"
-  "\n"
-  "\n"
-  "\n"
+
+
+
+
   "\n";
 
     return (s);
