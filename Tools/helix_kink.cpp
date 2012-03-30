@@ -58,6 +58,9 @@ int main(int argc, char *argv[]) {
 
   if (argc != 5) {
     cout << "Usage- helix_kink selection-1 selection-2 model trajectory\n";
+    cout << "\n"
+      "Calculates the angle (from linear) between the first principal component\n"
+      "of each selection (i.e. the kink-angle between two helices)\n";
     exit(-1);
   }
 
