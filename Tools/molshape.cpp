@@ -47,6 +47,47 @@ bool zabs;
 
 
 // @cond TOOLS_INTERNAL
+string fullHelpMessage(void) {
+  string msg = 
+    "\n"
+    "SYNOPSIS\n"
+    "\tReport shape information about a selection over time\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool will report information about the shape of the selection at each time-step\n"
+    "in a trajectory.  The selection can be split into contiguous molecules (given\n"
+    "connectivity) or by unique SEGID labels.  This results in multiple objects that are\n"
+    "reported on separately (as multiple lines in the output).\n"
+    "\n"
+    "\tThe shape information include (but is not limited to) the centroid, the volume\n"
+    "of the periodic box (and box size), radius of gyration, ratio of the magnitude of\n"
+    "the first two principal axes, the magnitudes of all 3 principal axes, and the\n"
+    "principal axes themselves.\n"
+    "\n"
+    "For membrane systems, the absolute value of the z-coordinate can be used instead by\n"
+    "using the --abs=1 flag.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tmolshape --selection 'name == \"CA\"' model.psf simulation.dcd >alphacarbons.asc\n"
+    "This calculates the shape information for all alpha-carbons.\n"
+    "\n"
+    "\tmolshape --abs 1 --selection 'segid == \"PE1\"' membrane.psf simulation.dcd >output.asc\n"
+    "This calculates the information for atoms with SEGID of PE1 (e.g. lipopeptide)\n"
+    "but using the absolute value of the Z-coordinate.\n"
+    "\n"
+    "\tmolshape --abs 1 --selection 'segid =~ \"PE.+\"' --segid 1 membrane.psf simulation.dcd >output.asc\n"
+    "This calculates the information for atoms with SEGIDs of PE1, PE2, PE3, ..., splitting\n"
+    "apart the selection by unique segid.  Each time-step then becomes a block of n-lines\n"
+    "giving the information for each PEx lipopeptide.  As above, the absolute value of the\n"
+    "Z-coordinate is used.\n";
+
+  return(msg);
+}
+
+
+
 
 class ToolOptions : public opts::OptionsPackage {
 public:
