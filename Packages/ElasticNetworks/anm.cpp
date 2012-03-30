@@ -87,7 +87,15 @@ string bound_spring_desc;
 string fullHelpMessage() {
 
   string s = 
+    "\n"                                                                                    
+    "SYNOPSIS\n"                                                                      
     "\n"
+    "Compute the anisotropic network model for a structure.\n"
+    "\n"                                                                                      
+    "DESCRIPTION\n"                                                                      
+    "\n"
+    "An anisotropic network model predicts the motions of a structure\n"
+    "using a harmonic contact potential. (See Atilgan et al. 2001)\n\n"
     "Computes the anisotropic network model for a structure.  It does\n"
     "this by building a hessian for the structure, then computing the SVD\n"
     "of it and the corresponding pseudo-inverse (ignoring the 6 lowest\n"
@@ -115,9 +123,15 @@ string fullHelpMessage() {
 
   s += 
     "\n\n"
-    "Examples:\n\n"
+    "EXAMPLES\n\n"
+    "\tanm 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n"
     "Compute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
-    "\tanm 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n";
+    "i.e. Construct contacts using only the CA's that are within 15 Angstroms.\n"
+    "\n"
+    "\tanm -S=exponential,-1.3 foo.pdb foo\n"
+    "Compute an ANM using an spring function that decays exponentially\n"
+    "with distance at a rate of exp(-1.3*r) where r is the distance\n"
+    "between contacts.\n";
 
   return(s);
 }
