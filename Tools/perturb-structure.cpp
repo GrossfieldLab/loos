@@ -41,6 +41,27 @@ namespace po = loos::OptionsFramework::po;
 
 // @cond TOOL_INTERNAL
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "Randomly perturb atom coordinates in a model\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool randomly perturbs the coordinates in a model.  A subset may be selected\n"
+    "and perturbed, in which case the entire model is still written out.\n"
+    "\n"
+    "NOTES\n"
+    "\tRequires a model with coordinates\n"
+    "\n";
+
+  return(msg);
+}
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : seed(0), magnitude(0.0) { }
