@@ -175,7 +175,7 @@ string s =
   "SEE ALSO\n"
   "\n"
   "A number of LOOS analysis tools work on PCA results. Here is a partial list:\n"
-  "\Other programs in Tools:\n"
+  "Other programs in Tools:\n"
   "\tporcupine - Vizualization tool: create a pdb with \"sticks\" that points\n"
   "\t               in the direction of the PCs\n"
   "\tphase-pdb - Vizualization tool: use 3 PCs for vizualization\n" 
@@ -195,10 +195,6 @@ string s =
   "These tools require input of file(s) from svd:\n"
   "\trsv-coscon\n"
   "\t\n"
-
-
-
-
   "\n";
 
     return (s);
