@@ -102,6 +102,7 @@ int main(int argc, char *argv[]) {
   
   if (argc != 4) {
     cerr << "Usage- near_blobs model selection distance <blobs.grid\n";
+    cerr << "NOTE: grid must have IDs (i.e. output from blobid)\n";
     exit(-1);
   }
 

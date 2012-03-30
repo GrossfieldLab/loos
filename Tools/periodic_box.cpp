@@ -39,6 +39,8 @@ int main(int argc, char *argv[]) {
   
   if (argc != 3) {
     cout << "Usage- " << argv[0] << " model trajectory\n";
+    cout << "\n"
+      "Writes out the periodic box from a trajectory as a time-series.\n";
     exit(0);
   }
 
