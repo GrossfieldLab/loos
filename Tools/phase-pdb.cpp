@@ -55,6 +55,46 @@ string matrix_name;
 
 // @cond TOOLS_INTERNAL
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCreates pseudoatoms representing the phase-space of a trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tphase-pdb takes right singular vectors (RSV) from an SVD of a trajectory and creates\n"
+    "pseudoatoms at each point in phase-space.  This PDB can be loaded into pymol or vmd\n"
+    "and used to visualize the phase-space projection of the trajectory.  In order to\n"
+    "show the time-evolution of the system, the pseudoatoms can be connected by bonds using\n"
+    "the --bonds=1 option.\n"
+    "\tThe elements of the RSV will need to be scaled up in order to be visualized.  This is\n"
+    "done with the --scales option.  Additionally, to visualize the true shape of the phase-\n"
+    "space, the RSV columns should be scaled by the corresponding singular values.  This must\n"
+    "be done manually, i.e. find the appropriate singular values, scale them by a constant,\n"
+    "and use this with the --scales option.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tphase-pdb b2ar_V.asc >b2ar_V.pdb\n"
+    "This uses the first 3 RSVs, scaling each with a default of 100.\n"
+    "\n"
+    "\tphase-pdb --scales=100 --scales=50 --scales=25 b2ar_V.asc >b2ar_V.pdb\n"
+    "This uses the first 3 RSVs, scaling the first by 100, the second by 50, and the third\n"
+    "by 25.\n"
+    "\n"
+    "\tphase-pdb --bonds=1 --scales=100 --scales=50 --scales=25 b2ar_V.asc >b2ar_V.pdb\n"
+    "This uses the first 3 RSVs, scaling them as above, but adds CONECT records at the\n"
+    "end of the PDB that connects sequential pseudoatoms.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tsvd, big-svd\n";
+
+  return(msg);
+}
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
 
