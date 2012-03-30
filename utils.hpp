@@ -137,8 +137,9 @@ namespace loos {
    * T's is created.  There is no checking to make sure that the
    * vector doesn't completely fill up memory.
    *
-   * Care should also be exercised when using unsigned types and
-   * reversed ranges, i.e. parseRange<unsigned int>("5:0")
+   * As with matlab/octave, to count down, the step must be negative
+   * and start > stop.
+   *
    */
   template<typename T>
   std::vector<T> parseRange(const std::string& text) {
@@ -155,32 +156,56 @@ namespace loos {
       return(indices);
     }
 
-    is >> sep >> b;
+    is >> sep;
+    bool is_negative = false;
+    if (is.peek() == '-') {
+      is_negative = true;
+      is.get();
+    }
+    is >> b;
     if (is.fail() || sep != ':')
       throw(ParseError("Could not parse range " + text));
     
-    if (is.eof())
+    if (is.eof()) {
       c = 1;
-    else {
+      if (is_negative)
+        b = -b;
+      
+      is_negative = a > b;
+        
+    } else {
       c = b;
         is >> sep >> b;
         if (is.fail() || sep != ':')
           throw(ParseError("Could not parse range " + text));
     }
 
-    // Catch a potentially sticky situation...
-    if (a < -a && b == 0)
-      throw(std::logic_error("Using an unsigned type with a reverse-range ending at zero."));
+    // Some input validation...
+    if (a > b && !is_negative)
+      throw(ParseError("You must use a negative step to count down: " + text));
+    if (a < b && is_negative)
+      throw(ParseError("You must use a postive step to count up: " + text));
+    if (c == 0)
+      throw(ParseError("Thou shalt only use non-zero step sizes: " + text));
 
-    if (b >= a)
-      for (T i=a; i <= b; i += c)
+    if (is_negative) {
+
+      T i;
+      for (i=a; i > b; i -= c)
         indices.push_back(i);
-    else
-      for (T i=a; i >= b; i -= c)
+      if (a < -a && b == 0)     // If unsigned type, cannot use >= 0 as test
+        indices.push_back(0);
+      else if (i >= b)
+        indices.push_back(i);
+
+    } else
+      for (T i=a; i <= b; i += c)
         indices.push_back(i);
 
     return(indices);
   }
+
+
 
 
   //! Parses a comma-separated list of Octave-style ranges

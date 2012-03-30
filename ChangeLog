@@ -1,3 +1,10 @@
+2012-03-30    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed parseRange<> implementation.  Added validation of input
+	ranges.  Counting down now requires a negative step size (like
+	octave).  Counting down to 0 with an unsigned type now works
+	correctly.
+
 2012-03-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Deprecated dumpmol
@@ -5,7 +12,7 @@
 2012-03-27 Alan Grossfield <alan@membrane.biophysics.rochester.edu>
 
 	* Added --sel1-spans and --sel2-spans, to handle the case where a
-	selection should be treated as appearing in both leaflets (eg a 
+	selection should be treated as appearing in both leaflets (eg a
 	transmembrane helix)
 
 2012-03-22  Tod Romo  <tromo@gorgoneion>
