@@ -106,6 +106,92 @@ public:
 
 
 
+string fullHelpMessage(void)
+{
+string s =
+  "\n"
+  "SYNOPSIS\n"
+  "\n"
+  "Calculate the principal components of a simulation using\n"
+  "the singular value decomposition\n"
+  "\n"
+  "DESCRIPTION\n"
+  "\n"
+  "This tool performs a principal component analysis (PCA)\n"
+  "on the trajectory.  This technique computes a new coordinate\n"
+  "system such that the largest concerted motions are on the 1st\n"
+  "axis (the 1st principal component).  This effectively reduces\n"
+  "relevant dimensionality of the system by resolving the most\n"
+  "collective motions (those with the largest covariance) followed\n"
+  "by those with the 2nd largest covariance, etc...\n"
+  "\n"
+  "This technique is also referred to in the literature as essential\n"
+  "dynamics.  This tool performs the PCA using a technique called the\n"
+  "singular value decomposition (SVD).  There are several output files\n"
+  "that can be used for  numerous analyses.  A list of the files and\n"
+  "their contents follows.  For these descriptions assume an SVD is\n"
+  "\t\t A = UsV*\n"
+  "where the matrix A contains the coordinates of the atoms for every\n"
+  "frame in the trajectory:\n"
+  "\toutput_s.asc   - singular values (square roots of eigenvalues)\n"
+  "\toutput_U.asc   - left singular vectors (lsv, direction of each PC)\n"
+  "\toutput_V.asc   - right singular vectors (rsv, motion of a frame \n"
+  "\t                    projected onto the PC with the same index\n" 
+  "\toutput.map     - \n"
+  "\toutput_avg.pdb - average structure across the trajectory\n"
+  "\n"
+  "\n"
+  //
+  "EXAMPLES\n"
+  "\n"
+  "svd -A 'name==\"CA\"' -S 'name==\"CA\"' model.pdb traj.dcd\n"
+  "\tComputes the PCA of the CA's in model.pdb across the entire trajectory\n"
+  "\ttraj.dcd.  The file output_U.asc contains the LSVs, which point in the\n"
+  "\tdirection of motion associated with each eigenvalue.  The square roots\n"
+  "\tof the eigenvalues are contained in output_s.asc.  The \"-A\" option says\n"
+  "\tthat the trajectory will be aligned using the CA's prior to the PCA. \n"
+  "\tSee \"aligner\" for more details on trajectory alignment.\n"
+  "\n"
+  "svd -k25 -A 'name==\"CA\"' -S 'name==\"CA\"' model.pdb traj.dcd\n"
+  "\tSame as the example above but here we are skipping the 1st 25 frames\n"
+  "\tof the trajectory.  A common reason for this might be allowing the \n"
+  "\tsystem additional sampling before data analysis.\n"
+  "\n"
+  "svd -r 25:5:250 -A 'name==\"CA\"' -S 'name==\"CA\"' model.pdb traj.dcd\n"
+  "\tThis example uses the octave-style range info to decide which frames of\n"
+  "\tthe simulation to use for the PCA. Similar to the case above we skip the\n"
+  "\t1st 25 frames.  We will calculate the PCA upto frame 250, while using\n"
+  "\tonly every 5th frame.  A common use for this option might be analyzing\n"
+  "\tonly a specific, large feature of the simulation.\n"
+  "\n"
+  "svd -p svd_model -N1 -S 'segid==\"PROT\" && !(hydrogen)' model.pdb traj.dcd\n"
+  "\tPerform the svd of the same simulation with a few changes.  First, the\n"
+  "\toutput files have the prefix \"svd_model\" (i.e. svd_model_u.asc).  Next,\n"
+  "\twe are not aligning the trajectory.  Finally, we are now computing the \n"
+  "\tPCs of all heavy atoms in the protein (segid PROT).\n"
+  "\t\n"
+  "\t\n"
+  //
+  "SEE ALSO\n"
+  "\n"
+  "A number of LOOS analysis tools work on PCA results. Here is a partial list:\n"
+  "\tVisualization of PCs:\n"
+  "\tTools/porcupine\n"
+  "\t\n"
+  "\tUse with Elastic Network Models:\n"
+  "\t\n"
+  "\tUse in Convergence Analysis:\n"
+  "\t\n"
+  "\n"
+  "\n"
+  "\n"
+  "\n"
+  "\n";
+
+    return (s);
+    }
+
+
 
 
 
@@ -190,14 +276,14 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 
 int main(int argc, char *argv[]) {
   header = invocationHeader(argc, argv);
-
+  opts::BasicOptions* bhopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::OutputPrefix* popts = new opts::OutputPrefix;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(popts).add(tropts).add(topts);
+  options.add(bhopts).add(bopts).add(popts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
