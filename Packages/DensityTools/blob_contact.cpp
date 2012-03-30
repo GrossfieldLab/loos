@@ -84,6 +84,7 @@ vector<int> findResiduesNearBlob(const vector<GCoord>& blob, const vector<Atomic
 int main(int argc, char *argv[]) {
   if (argc != 7) {
     cerr << "Usage- blob_contact model traj selection skip blobid distance <grid >out.asc\n";
+    cerr << "Note: requires an grid with blob ids (i.e. output from blobid)\n";
     exit(-1);
   }
 
