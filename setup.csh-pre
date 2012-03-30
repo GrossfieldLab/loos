@@ -26,7 +26,7 @@ set LOOSPATH="PATH_TO_LOOS"
 if ( -d $LOOSPATH/lib ) then
     set LIBPATH="$LOOSPATH/lib"
 else
-    set LIBPATH=$cwd
+    set LIBPATH="$LOOSPATH"
 endif
 
 if ( -d $LOOSPATH/bin ) then
