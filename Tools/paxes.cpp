@@ -41,6 +41,9 @@ using namespace loos;
 int main(int argc, char *argv[]) {
   if (argc < 4) {
     cerr << "Usage - paxes model trajectory sel1 [sel2 ...]\n";
+    cerr << "\n"
+      "Reports the magnitudes of the three principal axes for each selection.\n"
+      "This tool is a simpler version of molshape.\n";
     exit(-1);
   }
 
