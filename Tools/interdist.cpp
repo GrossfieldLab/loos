@@ -191,7 +191,6 @@ public:
   vector<string> selection_names;
   DistanceCalculation* calc_type;
 };
-// @endcond
 
 
 string fullHelpMessage(void) {
@@ -241,6 +240,9 @@ string fullHelpMessage(void) {
     "\n";
   return(msg);
     }
+
+// @endcond
+
 
 int main(int argc, char *argv[]) {
 
