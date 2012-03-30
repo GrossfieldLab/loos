@@ -38,13 +38,41 @@ using namespace loos;
 
 namespace opts = loos::OptionsFramework;
 
+// @cond TOOLS_INTERNAL
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Extract a frame from a trajectory, writing it out as a PDB\n"   
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Given a model, a trajectory, and a frame number, this tool will extract that frame\n"
+    "and write it out as a PDB.  Optionally, a subset of the model can be extracted.\n"
+    "Any LOOS supported model and trajectory type may be used.  Note that frame numbers\n"
+    "are zero-based.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tframe2pdb model.psf simulation.dcd 42 >frame_42.pdb\n"
+    "Extracts the 43rd frame from the simulation.\n"
+    "\n"
+    "\tframe2pdb --selection 'resid <= 100' model.psf simulation.dcd 13 >frame_13_first_hundred.pdb\n"
+    "Extracts the 14th frame, only writing out the first 100 residues.\n";
+  return(msg);
+}
+
+
+// @endcond
 
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   opts::RequiredArguments* ropts = new opts::RequiredArguments;
