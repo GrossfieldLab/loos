@@ -306,6 +306,44 @@ public:
 // ----------------------------------------------------------
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tComputes backbone torsion angles for a given set of residues\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tGiven a set of residues, ramachandran will compute the backbone\n"
+    "phi-psi angles.  The selection should include all atoms necessary to compute\n"
+    "a torsion for the region of interest, i.e. it's recommended that a range of\n"
+    "residues be selected by resid's and or segid's.  Not all torsions for a selection\n"
+    "can be computed.  These residues are skipped in the output.  They can be included\n"
+    "by using the --skipmissing=1 flag.  In this case, the missing torsions are replaced\n"
+    "with a special value (default of -9999).\n"
+    "\tramachandran also includes the pseudo-torsion algorithm for RNA as described\n"
+    "in Wadley, Keating, Duarte, and Pyle (2007) JMB 372:942-57.  This mode is enabled\n"
+    "via the --pseudo=1 option.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tramachandran --selection 'resid >= 1 && resid <= 100' model.psf simulation.dcd\n"
+    "This outputs the phi-psi torsions for the first 100 residues, skipping residues\n"
+    "with missing torsion.\n"
+    "\n"
+    "\tramachandran --selection 'resid <= 200' --pseudo=1 rna.psf simulations.dcd\n"
+    "This outputs the pseudo-torsions for the first 200 nucleic adics.\n"
+    "\n"
+    "\tramachandran --selection 'segid == \"PROT\"' --skipmissing=0 model.pdb simulation.dcd\n"
+    "This outputs the phi-psi torsions for all residues in the PROT segment.  Residues\n"
+    "missing torsions will have the corresponding torsion replaced with -9999 (default\n"
+    "special value).\n";
+
+  return(msg);
+}
+
+
+
 // Globals...yuck!
 
 Extractor *extractor;    // Extractor object that's used to specify
@@ -368,7 +406,7 @@ int main(int argc, char *argv[]) {
   
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
