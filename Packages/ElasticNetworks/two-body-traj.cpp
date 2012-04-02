@@ -39,6 +39,7 @@
 "The first bead is the CA which represents the backbone.  The second bead\n"
 "used is the center-of-mass of the side-chain.  The intended use is for\n"
 "creating a PCA of the simulation using this reduced representation.\n"
+"Additionally, ENMs of the two-body model can be used to predict motions.\n"
 "\n"
 "\n"
 "EXAMPLE\n"
