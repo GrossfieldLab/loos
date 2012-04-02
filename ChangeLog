@@ -1,3 +1,7 @@
+2012-04-02    <alan@membrane.urmc.rochester.edu>
+   * Added cross-dist tool to compute distribution of crossing angles
+   and torsions for chains.  
+
 2012-03-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed parseRange<> implementation.  Added validation of input
@@ -9,7 +13,7 @@
 
 	* Deprecated dumpmol
 
-2012-03-27 Alan Grossfield <alan@membrane.biophysics.rochester.edu>
+2012-03-27 Alan Grossfield <alan@membrane.urmc.rochester.edu>
 
 	* Added --sel1-spans and --sel2-spans, to handle the case where a
 	selection should be treated as appearing in both leaflets (eg a
