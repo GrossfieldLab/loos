@@ -1183,6 +1183,10 @@ Matlab and Octave.
    directory:
        <DL>
 
+       <DT><B>cross-dist</B>
+       <DD> Compute the probability distribution of crossing angles and
+       torsions for a set of chains.
+
        <DT><B>crossing-waters</B>
        <DD>Loop over a trajectory and compute the number waters crossing a 
        membrane.
