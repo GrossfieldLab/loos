@@ -136,7 +136,7 @@ string fullHelpMessage() {
     "EXAMPLES\n\n"
     "anm 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n"
     "\tCompute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
-    "\ti.e. Construct contacts using only the CA's that are within 15 Angstroms.\n"
+    "\ti.e. construct contacts using only the CA's that are within 15 Angstroms\n"
     "\n"
     "anm -S=exponential,-1.3 foo.pdb foo\n"
     "\tCompute an ANM using an spring function where the magnitude of\n"

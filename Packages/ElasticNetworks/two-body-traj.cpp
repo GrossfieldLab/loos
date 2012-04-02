@@ -26,31 +26,6 @@
 
 
 
-/*
-
-"\n"
-"SYNOPSIS\n"
-"\n"
-"Create a trajectory using only two course grain beads for each residue\n"
-"\n"
-"DESCRIPTION\n"
-"\n"
-"Given an input trajectory reduce the system to two beads per residue.\n"
-"The first bead is the CA which represents the backbone.  The second bead\n"
-"used is the center-of-mass of the side-chain.  The intended use is for\n"
-"creating a PCA of the simulation using this reduced representation.\n"
-"Additionally, ENMs of the two-body model can be used to predict motions.\n"
-"\n"
-"\n"
-"EXAMPLE\n"
-"\n"
-"two-body-traj model.pdb traj.dcd\n"
-"\t Create a trajectory using only the CA's and side-chain center-of-mass\n"
-"\t to represent the protein.  \n"
-"\n"
-"\n";
-
-*/
 #include <loos.hpp>
 
 using namespace std;
@@ -77,6 +52,34 @@ pAtom findMatch(const pAtom& probe, const AtomicGroup& grp) {
 
 
 string selection, psf_file;
+string fullHelpMessage() {
+  
+  string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Create a trajectory using only two coarse grain beads for each residue\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Given an input trajectory reduce the system to two beads per residue.\n"
+    "The first bead is the CA which represents the backbone.  The second bead\n"
+    "used is the center-of-mass of the side-chain.  The intended use is for\n"
+    "creating a PCA of the simulation using this reduced representation.\n"
+    "Additionally, ENMs of the two-body model can be used to predict motions.\n"
+    "\n"
+    "\n"
+    "EXAMPLE\n"
+    "\n"
+    "two-body-traj model.pdb traj.dcd\n"
+    "\t Create a trajectory using only the CA's and side-chain center-of-mass\n"
+    "\t to represent the protein.  \n"
+    "\n"
+    "\n";
+  
+  return(s);
+    }
+
 
 
 // @cond TOOLS_INTERNAL
@@ -102,7 +105,7 @@ int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;

@@ -35,36 +35,6 @@
 
 */
 
-/*
-
-"\n"
-"SYNOPSIS\n"
-"\n"
-"Create a representation of motion along the mode(s) of an ENM\n"
-"\n"
-"DESCRIPTION\n"
-"\n"
-"It is often informative to visualize the modes of motion predicted\n"
-"by an ENM in addition to plotting eigenvectors.  Enmovie create a dcd\n"
-"trajectory for this purpose.\n"
-"\n"
-"\n"
-"EXAMPLE\n"
-"enmovie -m6 -s 'name==\"CA\"' model.pdb anm_U.asc mode_1_movie\n"
-"\tHere we are making a movie of mode 6 (the lowest non-zero mode\n"
-"\tif the ANM were made using LOOS).  The ANM was previously run to\n"
-"\tpredict the motions of the system.  Now, the eigenvector file:\n"
-"\tanm_U.asc is used to obtain the \n"
-"\t\n"
-"\t\n"
-"\t\n"
-"\t\n"
-"\n"
-"\n"
-"\n";
-
-
-*/
 
 
 #include <loos.hpp>
@@ -96,6 +66,33 @@ vector<uint> modes;
 vector<double> scales;
 
 
+void fullHelp() {
+  //string msg = 
+  cout <<  "\n"
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Create a representation of motion along the mode(s) of an ENM\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "It is often informative to visualize the modes of motion predicted\n"
+    "by an ENM in addition to plotting eigenvectors.  Enmovie create a dcd\n"
+    "trajectory for this purpose.\n"
+    "\n"
+    "\n"
+    "EXAMPLE\n"
+    "enmovie -m6 -s 'name==\"CA\"' model.pdb anm_U.asc mode_1_movie\n"
+    "\tHere we are making a movie of mode 6 (the lowest non-zero mode\n"
+    "\tif the ANM were made using LOOS).  The ANM was previously run to\n"
+    "\tpredict the motions of the system.  Now, the eigenvector file:\n"
+    "\tanm_U.asc is used to obtain the \n"
+    "\t\n"
+    "\t\n"
+    "\n";
+}
+
+
 void parseOptions(int argc, char *argv[]) {
   string scale;
   string mode_string;
@@ -104,6 +101,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("fullhelp", "Get extended help")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection used in computing the ANM")
       ("nsteps,n", po::value<int>(&steps)->default_value(100), "Number of steps to use in generating the trajectory")
       ("modes,m", po::value<string>(&mode_string)->default_value("0"), "List of modes to use")
@@ -132,9 +130,11 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("eigvec") && vm.count("outprefix")) ) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("eigvec") && vm.count("outprefix")) ) {
       cerr << "Usage- enmovie [options] model-name eigenvector-filename output-prefix\n";
       cerr << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(-1);
     }
 
