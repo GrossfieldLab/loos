@@ -109,13 +109,14 @@ vector<int> findResiduesNearBlob(const vector<GCoord>& blob, const vector<Atomic
 vector<double> calculatePercentageContacts(const RealMatrix& M) {
   vector<long> sum(M.cols()-1, 0);
 
-  for (uint j=0; j<M.rows(); ++j)
-    for (uint i=1; i<M.cols(); ++i)
+  for (uint i=1; i<M.cols(); ++i)
+    for (uint j=0; j<M.rows(); ++j)
       sum[i-1] += M(j, i);
+  
 
   vector<double> occ(M.cols()-1, 0.0);
   for (uint i=0; i<M.cols()-1; ++i)
-    occ[i] = sum[i] / M.rows();
+    occ[i] = static_cast<double>(sum[i]) / M.rows();
 
   return(occ);
 }
@@ -187,11 +188,11 @@ int main(int argc, char *argv[]) {
 
 
   cerr << "# " << hdr << endl;
-  cerr << "# n\tresid\tatomid\tfractional contact\n";
+  cerr << "# gnuplot-col\tresid\tatomid\tfractional contact\n";
   vector<double> fraction = calculatePercentageContacts(M);
   for (uint i=0; i<residues.size(); ++i) {
     cerr << boost::format("%d\t%d\t%d\t%f\n")
-      % i
+      % (i+2)
       % residues[i][0]->resid()
       % residues[i][0]->id()
       % fraction[i];
