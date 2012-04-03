@@ -170,10 +170,12 @@ string fullHelpMessage(void){
     "\t\t show cartoon, model\n"
     "\t\t show sticks, porky\n"
     "\n"
-    "SEE ALSO: Packages/ElasticNetworks/enmovie \n"
-    "This tool will parse the same information - a model and eigenvector\n"
-    "matrix and instead of drawing splines will output a dcd where the\n"
-    "atoms are displaced along the vector.\n";
+    "SEE ALSO\n"
+    "\n"
+    "  Packages/ElasticNetworks/enmovie - \n"
+    "\tThis tool will parse the same information - a model and eigenvector\n"
+    "\tmatrix and instead of drawing splines will output a dcd where the\n"
+    "\tatoms are displaced along the vector.\n";
 
 
   return(msg);

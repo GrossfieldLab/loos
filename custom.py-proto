@@ -48,9 +48,9 @@
 ### Note: Depending on how your system is setup, you may need to add
 ### gfortran to the end of LIBS_OVERRIDE
 ## This is for Fedora
-# ATLAS='/usr/lib64/atlas'
-# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
-# LIBS_PATHS_OVERRIDE = ATLAS
+ATLAS='/usr/lib64/atlas'
+LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
+LIBS_PATHS_OVERRIDE = ATLAS
 ## Ubuntu
 # ATLAS='/usr/lib64/atlas-base'
 # LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
