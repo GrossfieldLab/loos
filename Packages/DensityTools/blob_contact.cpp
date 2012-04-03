@@ -142,6 +142,11 @@ int main(int argc, char *argv[]) {
   DensityGrid<int> grid;
   cin >> grid;
   vector<GCoord> blob = findBlobCoords(grid, blobid);
+  if (blob.empty()) {
+    cerr << boost::format("ERROR- no voxels found for blobid %d\n") % blobid;
+    exit(-10);
+  }
+
   GCoord blobmin = findMinCoord(blob);
   GCoord blobmax = findMaxCoord(blob);
 
