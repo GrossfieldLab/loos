@@ -37,6 +37,32 @@ using namespace std;
 using namespace loos;
 using namespace loos::DensityTools;
 
+GCoord findMinCoord(const vector<GCoord>& coords) {
+  GCoord min(numeric_limits<double>::max(),
+             numeric_limits<double>::max(),
+             numeric_limits<double>::max());
+
+  for (vector<GCoord>::const_iterator i = coords.begin(); i != coords.end(); ++i)
+    for (uint j=0; j<3; ++j)
+      if ((*i)[j] < min[j])
+        min[j] = (*i)[j];
+
+  return(min);
+}
+
+GCoord findMaxCoord(const vector<GCoord>& coords) {
+  GCoord max(numeric_limits<double>::min(),
+             numeric_limits<double>::min(),
+             numeric_limits<double>::min());
+
+  for (vector<GCoord>::const_iterator i = coords.begin(); i != coords.end(); ++i)
+    for (uint j=0; j<3; ++j)
+      if ((*i)[j] > max[j])
+        max[j] = (*i)[j];
+
+  return(max);
+}
+
 
 
 vector<GCoord> findBlobCoords(DensityGrid<int>& grid, const int blobid) {
@@ -80,10 +106,25 @@ vector<int> findResiduesNearBlob(const vector<GCoord>& blob, const vector<Atomic
 }
 
 
+vector<double> calculatePercentageContacts(const RealMatrix& M) {
+  vector<long> sum(M.cols()-1, 0);
+
+  for (uint j=0; j<M.rows(); ++j)
+    for (uint i=1; i<M.cols(); ++i)
+      sum[i-1] += M(j, i);
+
+  vector<double> occ(M.cols()-1, 0.0);
+  for (uint i=0; i<M.cols()-1; ++i)
+    occ[i] = sum[i] / M.rows();
+
+  return(occ);
+}
+
+
 
 int main(int argc, char *argv[]) {
   if (argc != 7) {
-    cerr << "Usage- blob_contact model traj selection skip blobid distance <grid >out.asc\n";
+    cerr << "Usage- blob_contact model traj selection skip blobid distance <grid >out.asc 2>report.txt\n";
     cerr << "Note: requires an grid with blob ids (i.e. output from blobid)\n";
     exit(-1);
   }
@@ -101,9 +142,13 @@ int main(int argc, char *argv[]) {
   DensityGrid<int> grid;
   cin >> grid;
   vector<GCoord> blob = findBlobCoords(grid, blobid);
+  GCoord blobmin = findMinCoord(blob);
+  GCoord blobmax = findMaxCoord(blob);
+
   
   ostringstream shdr;
   shdr << hdr << endl;
+  shdr << boost::format("# Blob bounding box is %s x %s\n") % blobmin % blobmax;
   shdr << "# Residue list...\n";
   for (uint i=0; i<residues.size(); ++i)
     shdr << boost::format("# %d : %d %d %s %s\n")
@@ -132,4 +177,16 @@ int main(int argc, char *argv[]) {
     
 
   writeAsciiMatrix(cout, M, shdr.str());
+
+
+  cerr << "# " << hdr << endl;
+  cerr << "# n\tresid\tatomid\tfractional contact\n";
+  vector<double> fraction = calculatePercentageContacts(M);
+  for (uint i=0; i<residues.size(); ++i) {
+    cerr << boost::format("%d\t%d\t%d\t%f\n")
+      % i
+      % residues[i][0]->resid()
+      % residues[i][0]->id()
+      % fraction[i];
+  }
 }
