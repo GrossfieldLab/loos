@@ -30,7 +30,35 @@
 
 
 
+/*
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Retrieve basic information about a trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Print to standard out - \n"
+    "\tNumber of atoms in the system\n"
+    "\tNumber of frames in the trajectory\n"
+    "\tActual frames ()\n"
+    "\tTimestep (in )\n"
+    "\tPeriodic box (yes/no)\n"
+    "\n"
+    "\n"
+    "USAGE\n"
+    "\n"
+    "trajinfo model.pdb traj.dcd\n"
+    "\tReturns the info listed above\n"
+    "\n"
+    "\n"
+    "trajinfo -B model.pdb traj.dcd\n"
+    "\tSame as above, but include box dimensions\n"
+    "\n"
+    "\n";
 
+
+*/
 #include <loos.hpp>
 #include <boost/format.hpp>
 #include <boost/tuple/tuple.hpp>
