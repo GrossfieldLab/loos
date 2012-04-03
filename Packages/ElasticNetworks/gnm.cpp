@@ -72,6 +72,53 @@ string model_name;
 string prefix;
 double cutoff;
 
+void fullHelp() {
+  //string msg = 
+  cout <<  "\n"
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Compute the normal modes of a guassian network model\n"
+    "\n"
+    "DESCRIPTION\n"
+    "Computes the gaussian normal mode analysis of an ENM\n"
+    "This is done by building the Kirchoff  matrix given a PDB\n"
+    "and a selection, then computing the SVD of the  matrix and\n"
+    "finally computing the pseudo-inverse.\n"
+    "See: Bahar, et al., Folding and Design 2, 173-181, (1997).\n"
+    "\n"
+    "This will create the following files:\n"
+    "\tfoo_K.asc  - Kirchoff matrix\n"
+    "\tfoo_U.asc  - Left singular vectors\n"
+    "\tfoo_s.asc  - singular values\n"
+    "\tfoo_V.asc  - Right singular vectors\n"
+    "\tfoo_Ki.asc - Pseudo-inverse of K\n"
+    "\n"
+    "Notes:\n"
+    "- The default selection (if none is specified) is to pick CA's\n"
+    "- The output is ASCII format suitable for use with Matlab/Octave/Gnuplot\n"
+    //
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "gnm -c8.2 -s 'resid >= 10 && resid <= 50 && name == \"CA\"' model.pdb foo\n"
+    "\tCompute the GNM of model.pdb for residues #10 through #50 with\n"
+    "\tan 8.2 Angstrom cutoff i.e. construct contacts using only the CA's\n"
+    "\tthat are within 8.2 Angstroms.  Write out the files to foo_X.asc\n"
+    "\t\n"
+    "SEE ALSO\n"
+    "\n"
+    "Packages/ElasticNetworks/anm - \n"
+    "The anisotropic version of this tool.  Here eigenvectors predicting\n"
+    "the direction of movements are written out as well.\n"
+    "\t\n"
+    "Packages/ElasticNetworks/vsa - \n"
+    "This is an extension of the ANM method mentioned above that splits\n"
+    "the calculation into two parts - a subsystem and an environment.\n"
+    "These eigendecompositions of these two parts are performed separately\n"
+    "and the environment can then be 'subtracted' off the subsystem.\n"
+    "\n";
+    }
 
 void parseOptions(int argc, char *argv[]) {
 
@@ -79,6 +126,7 @@ void parseOptions(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("fullhelp", "Get extended help")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Which atoms to use for the network")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(7.0), "Cutoff distance for node contact");
 
@@ -99,9 +147,11 @@ void parseOptions(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("model") && vm.count("prefix"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("prefix"))) {
       cerr << "Usage- gnm [options] model-name output-prefix\n";
       cerr << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(-1);
     }
   }
