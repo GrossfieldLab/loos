@@ -149,6 +149,7 @@ int main(int argc, char *argv[]) {
   ostringstream shdr;
   shdr << hdr << endl;
   shdr << boost::format("# Blob bounding box is %s x %s\n") % blobmin % blobmax;
+  shdr << boost::format("# Blob has %d voxels\n") % blob.size();
   shdr << "# Residue list...\n";
   for (uint i=0; i<residues.size(); ++i)
     shdr << boost::format("# %d : %d %d %s %s\n")
@@ -168,6 +169,7 @@ int main(int argc, char *argv[]) {
   uint t = 0;
     
   while (traj->readFrame()) {
+    traj->updateGroupCoords(model);
     M(t, 0) = t + skip;
     vector<int> nearby = findResiduesNearBlob(blob, residues, distance);
     for (uint i=0; i<nearby.size(); ++i)
