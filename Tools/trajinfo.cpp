@@ -28,37 +28,6 @@
 */
 
 
-
-
-/*
-    "\n"
-    "SYNOPSIS\n"
-    "\n"
-    "Retrieve basic information about a trajectory\n"
-    "\n"
-    "DESCRIPTION\n"
-    "\n"
-    "Print to standard out - \n"
-    "\tNumber of atoms in the system\n"
-    "\tNumber of frames in the trajectory\n"
-    "\tActual frames ()\n"
-    "\tTimestep (in )\n"
-    "\tPeriodic box (yes/no)\n"
-    "\n"
-    "\n"
-    "USAGE\n"
-    "\n"
-    "trajinfo model.pdb traj.dcd\n"
-    "\tReturns the info listed above\n"
-    "\n"
-    "\n"
-    "trajinfo -B model.pdb traj.dcd\n"
-    "\tSame as above, but include box dimensions\n"
-    "\n"
-    "\n";
-
-
-*/
 #include <loos.hpp>
 #include <boost/format.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -72,6 +41,47 @@ string model_name, traj_name;
 bool box_info = false;
 bool centroid = false;
 
+string fullHelpMessage(void)
+{
+string s =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Retrieve basic information about a trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Print to standard out - \n"
+    "\tNumber of atoms in the system\n"
+    "\tNumber of frames in the trajectory\n"
+    "\tActual frames (recheck # of frames)\n"
+    "\tTimestep (in microseconds)\n"
+    "\t         Note: This is per frame and\n"
+    "\t         NOT the integration timestep\n"
+    "\tPeriodic box (yes/no)\n"
+    "\n"
+    "The --box option also reports the box size\n"
+    "The --centroid option takes a selection string\n"
+    "and returns the average +- standard deviation \n"
+    "of this selection across the trajectory.\n"
+    "\n"
+    "USAGE\n"
+    "\n"
+    "trajinfo model.pdb traj.dcd\n"
+    "\tReturns the info listed above\n"
+    "\n"
+    "\n"
+    "trajinfo --box=1 model.pdb traj.dcd\n"
+    "\tSame as above, but include box dimensions\n"
+    "\t(Requires periodicity info)\n"
+    "\n"
+    "trajinfo --centroid 'name==\"CA\"'  model.pdb traj.dcd\n"
+    "\tCalculate the centroid of all \"CA\" atoms.\n"
+    "\n"
+    "\n";
+
+    return (s);
+    }
 
 
 // @cond TOOLS_INTERNAL
@@ -221,7 +231,7 @@ void briefInfo(pTraj& traj) {
 
 int main(int argc, char *argv[]) {
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
 
