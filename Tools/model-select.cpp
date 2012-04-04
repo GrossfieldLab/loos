@@ -42,6 +42,10 @@ int main(int argc, char *argv[]) {
 
   if (argc != 3) {
     cerr << "Usage- " << argv[0] << " <selection string> <pdb file>\n";
+    cerr << "\n"
+      "This tool is useful for diagnosing problems with selections and how LOOS reads\n"
+      "model files.  It will write out a pseudo-XML representation of the information\n"
+      "it has stored about the selected subset.\n";
     exit(-1);
   }
 

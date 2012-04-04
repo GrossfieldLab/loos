@@ -71,7 +71,10 @@ double moment(const DoubleMatrix& M, const uint i, const double m, const double 
 int main(int argc, char *argv[]) {
   
   if (argc == 1) {
-    cout << "Usage- kurskew matrix >output\n";
+    cerr << "Usage- kurskew matrix >output\n";
+    cerr << "\n"
+      "Given a matrix or right-singular-vectors (from svd or big-svd), calculate the kurtosis\n"
+      "and skew for each RSV.  Useful for identifying presence of conformational substates.\n";
     exit(0);
   }
 
