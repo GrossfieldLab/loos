@@ -66,6 +66,39 @@ vector<uint> blocksizes;
 uint seed;
 string gold_standard_trajectory_name;
 
+string fullHelpMessage() {
+
+  string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Perform a block-overlap in comparison to a full PCA\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Compute the covariance overlap between a full simulation PCA and the PCA\n"
+    "of increasingly long trajectory \"blocks\".  Output \n"
+    "See: Romo and Grossfield, J. Chem. Theor. Comput., 2011, 7, 2464-2472\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n";
+
+  return(s);
+}
+
+
 // @cond TOOLS_INTERAL
 class ToolOptions : public opts::OptionsPackage {
 public:
@@ -170,7 +203,7 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, vGroup& ensemble, const
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   opts::BasicConvergence* copts = new opts::BasicConvergence;
