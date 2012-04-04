@@ -41,6 +41,10 @@ typedef vector<AtomicGroup>  vGroup;
 
 void show_help(void) {
   cout << "Usage- renum-pdb model selection resid-start atomid-start [selection resid-start atomid-start ...]\n";
+  cout << "\n"
+    "This tool renumbers both atomids and residue ids for a set of selections (independently).\n"
+    "Note that atomids are important to LOOS when used with a trajectory.  If a model is\n"
+    "renumbered, then it will no longer match the corresponding trajectory.\n";
   exit(0);
 }
 
