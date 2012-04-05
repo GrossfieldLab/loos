@@ -44,10 +44,39 @@ using namespace std;
 using namespace loos;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tWrite frames of a trajectory into PDB files\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool converts a trajectory into a series of separate PDB files, one for\n"
+    "each frame in the trajectory.  The output name template is a printf-format string\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\ttraj2pdb model.psf simulation.dcd frame%03d.pdb\n"
+    "This creates frame000.pdb, frame001.pdb, frame002.pdb, etc\n"
+    "\n"
+    "\ttraj2pdb model.psf simulation.dcd sim%d.pdb\n"
+    "This creates sim0.pdb, sim1.pdb, ..., sim10.pdb, sim11.pdb ...\n"
+    "\n"
+    "NOTES\n"
+    "\tThere is no facility for extracting ranges of frames.  Use subsetter to pre-process\n"
+    "the trajectory, then use traj2pdb to convert to PDB files.\n"
+    "\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    cerr << "Usage - traj2pdb model trajectory pdb-corename\n";
-    exit(-1);
+    cerr << "Usage - traj2pdb model trajectory output-name-template\n";
+    cerr << fullHelpMessage();
   }
 
   AtomicGroup model = createSystem(argv[1]);
@@ -71,8 +100,9 @@ int main(int argc, char *argv[]) {
     traj->readFrame(i);
     traj->updateGroupCoords(model);
 
-    stringstream s;
-    s << pdb_core << "_" << i << ".pdb";
+    ostringstream s;
+    s << boost::format(pdb_core) % i;
+
     ofstream pdbout(s.str().c_str());
     if (pdbout.fail())
         {
