@@ -28,7 +28,7 @@ Import('loos')
 clone = env.Clone()
 clone.Prepend(LIBS = [loos])
 
-apps = 'gnm enmovie flucc2b psf-masses heavy-ca eigenflucc two-body-traj'
+apps = 'gnm enmovie psf-masses heavy-ca eigenflucc two-body-traj'
 
 list = []
 
