@@ -151,7 +151,7 @@ void accumulateFrameUsingAllAtoms(DoubleMatrix& M, const vGroup& residues, const
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
