@@ -42,9 +42,34 @@ using namespace std;
 using namespace loos;
 
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tConvert trajectory into DCD format\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tConvert any LOOS-supported trajectory format into a DCD trajectory.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\ttraj2dcd model.gro simulation.xtc simulation.dcd\n"
+    "Convert the GROMACS XTC trajectory into the DCD format.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tsubsetter, merge-traj, recenter-traj, reimage-by-molecule\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   if (argc != 4) {
     cerr << "Usage - traj2dcd model trajectory dcd\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
