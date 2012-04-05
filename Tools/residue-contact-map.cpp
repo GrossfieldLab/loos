@@ -41,6 +41,46 @@ namespace po = loos::OptionsFramework::po;
 typedef vector<AtomicGroup>   vGroup;
 
 // @cond TOOL_INTERNAL
+
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCalculate a contact \"heat-map\" between residues in a simulation.\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool will break apart the selection into residues.  At each time point\n"
+    "in the trajectory, it will determine if any residues are in contact with each\n"
+    "other.  This will be accumulated over the trajectory and a matrix representing\n"
+    "the fractional contacts will be written out.  This matrix can be visualized as\n"
+    "a \"heat-map\" using octave/matlab or gnuplot.\n"
+    "\tA contact can be defined in two different ways.  It can be defined as occuring when\n"
+    "the distance between any two atoms less than or equal to the\n"
+    "threshold given on the command line.  Alternatively, it can be defined as occuring when\n"
+    "the distance between the centers of mass of the two residues is less than or equal\n"
+    "to the threshold.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tresidue-contact-map --select 'segid == \"PROT\"' model.pdb simulation.dcd 4.0 >contacts.asc\n"
+    "This example defines a contact when any pair of atoms between a given two residues is\n"
+    "less than or equal to the 4.0 Angstroms.  Only residues with segid \"PROT\" are used.\n"
+    "\n"
+    "\tresidue-contact-map --select 'resid <= 100' --centers 1 model.pdb simulation.dcd 6.5 >contacts.asc\n"
+    "This example defines a contact when the centers of mass between two residues is less than\n"
+    "or equal two 6.5 Angstroms.  Only the first 100 residues are used.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\trmsds\n";
+
+  return(msg);
+}
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() :
