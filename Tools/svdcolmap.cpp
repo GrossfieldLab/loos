@@ -43,32 +43,6 @@ typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
 // @cond TOOL_INTERNAL
 
-
-string fullHelpMessage(void) {
-  string msg =
-    "\n"
-    "SYNOPSIS\n"
-    "\tMaps left singular vector magnitudes to B-values\n"
-    "\n"
-    "DESCRIPTION\n"
-    "\n"
-    "\tWrites the magnitude of the left singular vector (i.e. PCA eigenvector)\n"
-    "associated with an atom into the B-value of the output PDB file."
-    "\n"
-    "EXAMPLES\n"
-    "\n"
-    "\t\n"
-    "\n"
-    "NOTES\n"
-    "\n"
-    "SEE ALSO\n"
-    "\n";
-
-  return(msg);
-}
-
-
-
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() :
@@ -142,6 +116,10 @@ vector<pAtom> getAtoms(AtomicGroup& grp, const vector<int>& ids) {
 
 
 int main(int argc, char *argv[]) {
+
+
+  cerr << "WARNING- this tool is deprecated and will go away in a future release of LOOS.\n";
+  cerr << "         See the eigenflucc tool in the ElasticNetworks package instead.\n";
 
   string header = invocationHeader(argc, argv);
   
