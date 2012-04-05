@@ -42,6 +42,33 @@ namespace po = loos::OptionsFramework::po;
 typedef Math::Matrix<float, Math::ColMajor> Matrix;
 
 // @cond TOOL_INTERNAL
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tMaps left singular vector magnitudes to B-values\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tWrites the magnitude of the left singular vector (i.e. PCA eigenvector)\n"
+    "associated with an atom into the B-value of the output PDB file."
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\t\n"
+    "\n"
+    "NOTES\n"
+    "\n"
+    "SEE ALSO\n"
+    "\n";
+
+  return(msg);
+}
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() :
@@ -119,12 +146,14 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::OutputPrefix* popts = new opts::OutputPrefix;
+  opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ropts->addArgument("svd_prefix", "svd-filename-prefix");
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(popts).add(mopts).add(topts);
+  options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -133,28 +162,35 @@ int main(int argc, char *argv[]) {
 
   vector<pAtom> atoms;
   if (topts->mapname == "") {
-    for (uint i=0; i<model.size(); i++)
-      atoms.push_back(model[i]);
+    AtomicGroup subset = selectAtoms(model, sopts->selection);
+    copy(subset.begin(), subset.end(), back_inserter(atoms));
   } else {
     vector<int> indices = readMap(topts->mapname);
     atoms = getAtoms(model, indices);
   }
 
   Matrix U;
-  readAsciiMatrix(popts->prefix + "_U.asc", U);
+  readAsciiMatrix(ropts->value("svd_prefix") + "_U.asc", U);
   uint m = U.rows();
   uint n = U.cols();
 
-  cerr << "Read in " << m << " x " << n << " matrix from " << popts->prefix + "_U.asc" << endl;
+  cerr << "Read in " << m << " x " << n << " matrix from " << ropts->value("svd_prefix") + "_U.asc" << endl;
 
   if (m % 3 != 0) {
     cerr << "Error- dimensions of LSVs are bad.\n";
     exit(-11);
   }
 
+  if (m != atoms.size() * 3) {
+    cerr << boost::format("Error- the SVD was created with %d atoms, but the model/selection given has %d.\n")
+      % (m/3)
+      % atoms.size();
+    exit(-11);
+  }
+
   Matrix S;
-  readAsciiMatrix(popts->prefix + "_s.asc", S);
-  cerr << "Read in " << S.rows() << " singular values from " << popts->prefix + "_s.asc" << endl;
+  readAsciiMatrix(ropts->value("svd_prefix") + "_s.asc", S);
+  cerr << "Read in " << S.rows() << " singular values from " << ropts->value("svd_prefix") + "_s.asc" << endl;
 
   pAtom pa;
   AtomicGroup::Iterator iter(model);
