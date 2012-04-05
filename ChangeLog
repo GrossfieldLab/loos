@@ -1,3 +1,7 @@
+2012-04-05    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed rotamer to automatically split the selections into residues.
+
 2012-04-02    <alan@membrane.urmc.rochester.edu>
    * Added cross-dist tool to compute distribution of crossing angles
    and torsions for chains.  
