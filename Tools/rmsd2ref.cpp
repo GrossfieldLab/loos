@@ -40,13 +40,61 @@ namespace po = loos::OptionsFramework::po;
 
 // @cond TOOLS_INTERNAL
 
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCompute the RMSD between the simulation and its average or a reference structure\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool writes out a time-series of the RMSD between the simulation and either\n"
+    "the average structure or a reference structure.  The average structure is determined\n"
+    "by first using an iterative alignment algorithm described in Grossfield, et al.\n"
+    "Proteins 67, 31–40 (2007).  When using a reference structure, the trajectory is\n"
+    "superimposed using a Kabsch alignment algorithm.  In both cases, the subset of atoms\n"
+    "that the RMSD is calculated over can be different from the subset used in the alignment.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\trmsd2ref model.pdb simulation.dcd >rmsd.asc\n"
+    "Computes the RMSD to the average structure.  Alpha-carbons are used for the alignment\n"
+    "and the RMSD is calculated over all non-hydrogen and non-solvent atoms.\n"
+    "\n"
+    "\trmsd2ref --align 'name =~ \"^(C|O|N|CA)$\"' --rmsd 'segid == \"PROT\"' model.pdb simulation.dcd >rmsd.asc\n"
+    "Computes the RMSD to the average structure.  The trajectory is aligned using all backbone\n"
+    "atoms and the RMSD is calculated over all atoms in the \"PROT\" segment.\n"
+    "\n"
+    "\trmsd2ref --align \"`cat active-sel`\" --rmsd \"`cat active-sel`\" --target inactive.pdb --talign \"`cat inactive-sel`\" --trmsd \"`cat inactive-sel`\" active.pdb active.dcd >rmsd.asc\n"
+    "This complex example calculates the RMSD between a simulation of an \"active\" structure\n"
+    "and the \"inactive\" model.  The selection for the active atoms is taken from the file\n"
+    "'active-sel' and the selection for the inactive atoms is taken from the file 'inactive-sel'.\n"
+    "The same set of atoms is used for both aligning and calculating the structures.\n"
+    "As an example, 'active-sel' could contain:\n"
+    "\t\t(resid >= 35 && resid <= 45) && name == \"CA\"\n"
+    "while 'inactive-sel' could contain:\n"
+    "\t\t(resid >= 65 && resid <= 75) && name == \"CA\"\n"
+    "\n"
+    "NOTES\n"
+    "\tThe selections used for aligning and calculating RMSD must match both in number of atoms\n"
+    "selected and in the sequence of atoms (i.e. the first atom in the --align selection is\n"
+    "matched with the first atom in the --talign selection.)\n"
+    "\n"
+    "SEE ALSO\n"
+    "\trmsds\n";
+
+  return(msg);
+}
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("align", po::value<string>(&alignment)->default_value("name == 'CA'"), "Align using this selection")
       ("rmsd", po::value<string>(&selection)->default_value("!(hydrogen || segid =~ 'SOLV|BULK')"), "Compute the RMSD over this selection")
-      ("iterative", po::value<bool>(&iterate)->default_value(false),"Use iterative alignment method")
       ("target", po::value<string>(&target_name), "Compute RMSD against this reference target (must have coordinates)")
       ("talign", po::value<string>(&target_align)->default_value(""), "Selection for target to use to align (default is to use --align)")
       ("trmsd", po::value<string>(&target_selection)->default_value(""), "Compute the RMSD over this selection for the target (default is to use --rmsd)")
@@ -58,7 +106,6 @@ public:
     ostringstream oss;
     oss << boost::format("align='%s', iterative=%d, target='%s', talign='%s', trmsd='%s', tolerance=%f, rmsd='%s'")
       % alignment
-      % iterate
       % target_name
       % target_align
       % target_selection
@@ -85,7 +132,6 @@ public:
   }
 
   string alignment;
-  bool iterate;
   string target_name;
   string target_align, target_selection;
   double tol;
@@ -101,7 +147,7 @@ public:
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
