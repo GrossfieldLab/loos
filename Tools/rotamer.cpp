@@ -46,6 +46,38 @@ const double null_value = -9999.99;
 
 /// @cond TOOLS_INTERNAL
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCalculate the chi-1 and chi-2 angles for selected side chains\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool will calculate the chi-1 and chi-2 angles for the selected\n"
+    "side chains, writing them out as a time-series (matrix).  For residues\n"
+    "where an angle does not exist, -9999.99 is written as a marker.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\trotamer model.pdb simulation.dcd 'resid >= 50 && resid <= 59' >data.asc\n"
+    "This example calculates chi-1 and chi-2 for residues 50 through 59.\n"
+    "\n"
+    "\trotamer model.pdb simulation.dcd 'segid == \"BAR2\"' >data.asc\n"
+    "This example calculates chi-1 and chi-2 for all residues in the \"BAR2\" segment.\n"
+    "\n"
+    "NOTES\n"
+    "\tThe selection must include all atoms in each residue necessary for determining\n"
+    "chi-1 and chi-2.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tramachandran\n";
+
+  return(msg);
+}
+
+
 // Interface for torsion calculation class.
 
 class Torsion {
@@ -238,10 +270,12 @@ int main(int argc, char *argv[]) {
   
   if (argc < 4) {
     cerr << "Usage - rotamer model traj sel-1 [sel-2 ...] >output.asc\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
-  string hdr = invocationHeader(argc, argv);
+  ostringstream sshdr;
+  sshdr << invocationHeader(argc, argv) << endl;
   makeMaps();
 
   AtomicGroup model = loos::createSystem(argv[1]);
@@ -250,14 +284,26 @@ int main(int argc, char *argv[]) {
   // Build the list of atoms/torsion angles to calculate...
   vector<Torsion*> chi1;
   vector<Torsion*> chi2;
+  uint idx = 2;
   for (int i=3; i<argc; i++) {
     AtomicGroup subset = loos::selectAtoms(model, argv[i]);
+    vector<AtomicGroup> residues = subset.splitByResidue();
+    for (uint j=0; j<residues.size(); ++j, idx += 2) {
+      sshdr << boost::format("# %d = %d %s %s %d %s%s")
+        % idx
+        % residues[j][0]->id()
+        % residues[j][0]->name()
+        % residues[j][0]->resname()
+        % residues[j][0]->resid()
+        % residues[j][0]->segid()
+        % (i == argc-1 && j == residues.size()-1 ? "" : "\n");
 
-    Torsion *x1 = makeTorsion(subset, Chi1Atoms);
-    Torsion *x2 = makeTorsion(subset, Chi2Atoms);
+      Torsion *x1 = makeTorsion(residues[j], Chi1Atoms);
+      Torsion *x2 = makeTorsion(residues[j], Chi2Atoms);
     
-    chi1.push_back(x1);
-    chi2.push_back(x2);
+      chi1.push_back(x1);
+      chi2.push_back(x2);
+    }
   }
 
 
@@ -277,5 +323,6 @@ int main(int argc, char *argv[]) {
     }    
   }
 
+  string hdr = sshdr.str();
   writeAsciiMatrix(cout, M, hdr);
 }
