@@ -44,6 +44,46 @@ string source_selection, target_selection, apply_selection;
 
 
 // @cond TOOLS_INTERNAL
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tSuperposition of two structures using Kabsch fit\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool implements a Kabsch RMS fit between two structures.  The target is the structure\n"
+    "to align TO and the source is the structure that will be transformed so it best fits the\n"
+    "target.  Optionally, the transform can be applied to a subset of the source rather than the\n"
+    "entire structure.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\trmsfit new-model.pdb model.pdb >new-model-aligned.pdb\n"
+    "Here, new-model is superimposed upon model using all alpha-carbons as reference points\n"
+    "and all atoms in new-model are transformed.\n"
+    "\n"
+    "\trmsfit --source 'resid <= 100 && name == \"CA\"' --target 'resid >= 31 && resid <= 130 && name == \"CA\"' model-A.pdb model-B.pdb >model-A-aligned.pdb\n"
+    "This example aligns model-A onto model-B transforming all atoms in model-A.  The first\n"
+    "100 alpha-carbons of model-A and alpha-carbons 31 through 130 are used as reference points.\n"
+    "\n"
+    "\trmsfit --source 'segid == \"HEME\"' --target 'segid == \"HEME\"' --apply 'segid == \"PROT\" || segid == \"HEME\"' model-A.pdb model-B.pdb >model-aligned.pdb\n"
+    "This example uses all atoms with segid \"HEME\" as the reference points.  Only atoms with\n"
+    "segid \"PROT\" or \"HEME\" in model-A are transformed.\n"
+    "\n"
+    "NOTES\n"
+    "\tThere must be the same number of atoms selected in the source and target models.  Atoms\n"
+    "are matched in order, so the sequence of atoms must also match.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\taligner\n";
+
+  return(msg);
+}
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   
@@ -104,7 +144,7 @@ public:
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
