@@ -38,12 +38,39 @@ namespace po = loos::OptionsFramework::po;
 
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCalculate root mean squared fluctuations for a selection\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool calculates the root mean squared fluctuations for each atom in a selection.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\trmsf model.pdb simulation.dcd >rmsf.asc\n"
+    "This example calculates the RMSF for the default selection (all alpha-carbons)\n"
+    "\n"
+    "\trmsf --range 0:99 model.pdb simulation.dcd >rmsf.asc\n"
+    "This example calculates the RMSF for all alpha-carbons, using the first 100 frames\n"
+    "from the trajectory\n"
+    "\trmsf --range 0:2:999 --selection 'name =~ \"^(C|O|N|CA)$\"' model.pdb simulation.dcd >rmsf.asc\n"
+    "This example calculates the RMSF over backbone atoms using the first 1,000 frames and\n"
+    "skipping every other frame.\n"
+    "\n"
+    "\n";
+
+  return(msg);
+}
+
 
 int main(int argc, char *argv[]) {
   
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
 
