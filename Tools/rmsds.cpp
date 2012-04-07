@@ -48,6 +48,51 @@ int verbosity;
 
 
 // @cond TOOLS_INTERNAL
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "\tCalculate a pair-wise RMSD for a trajectory (or two trajectories)\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool calculates the pair-wise RMSD between each structure in a trajectory\n"
+    "or, alternatively, between each structure in two different trajectories.  In the single\n"
+    "trajectory case, the ith structure is aligned with the jth structure and the RMSD calculated.\n"
+    "This is stored in a matrix, i.e. R(j, i) = d(S_i, S_j).  The block-structure is indicative\n"
+    "of sets of similar conformations.  The presence (or lack thereof) of multiple cross-peaks\n"
+    "is diagnostic of the sampling quality of a simulation.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\trmsds model.pdb simulation.dcd >rmsd.asc\n"
+    "This example uses all alpha-carbons and every frame in the trajectory.\n"
+    "\n"
+    "\trmsds inactive.pdb inactive.dcd active.pdb active.dcd >rmsd.asc\n"
+    "This example uses all alpha-carbons and compares the \"inactive\" simulation\n"
+    "with the \"active\" one.\n"
+    "\n"
+    "\trmsds --sel1 'resid <= 100 && name == \"CA\"' model.pdb simulation.dcd >rmsds.asc\n"
+    "This example calculates the pair-wise RMSD using only the first 100 alpha-carbons\n"
+    "\n"
+    "\trmsds --sel1 'resid <= 50 && name == \"CA\"' --sel2 'resid >=20 && resid <= 69 && name == \"CA\"' inactive.pdb inactive.dcd active.pdb active.dcd >rmsd.asc\n"
+    "This example compares two trajectories, active and inactive, and uses different selections\n"
+    "for both: the first 50 residues from the inactive and residues 20-69 from the active.\n"
+    "\n"
+    "NOTES\n"
+    "\tWhen using two trajectories, the selections must match both in number of atoms selected\n"
+    "and in the sequence of atoms (i.e. the first atom in the --sel2 selection is\n" 
+    "matched with the first atom in the --sel2 selection.)\n"
+    "\n"
+    "SEE ALSO\n"
+    "\n";
+
+  return(msg);
+}
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() { }
