@@ -2,6 +2,7 @@
 
 	* Changed convert2pdb to use the options framework
 	* Fixed bug in blurrogram.pl where it incorrectly invoked trajinfo
+	* Deprecated model2matlab (use traj2matlab instead)
 
 2012-04-05    <tromo@spade.biophysics.rochester.edu>
 
