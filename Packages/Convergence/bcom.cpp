@@ -117,12 +117,19 @@ string fullHelpMessage() {
     "\t\tTo make such a concatoned trajectory see the tools\n"
     "\t\tmerge-traj and subsetter.\n"
     "\n"
+    "SEE ALSO\n"
+    "\n"
+    "  Packages/Convergence/boot_bcom - \n"
+    "\tThis tool performs a similar analysis, but pulls random frames\n"
+    "\tfrom the trajectory rather than contiguous ones.\n"
+    "\t\n"
     "* Visualization Notes *\n"
     "\tThe output should be plotted in the format X:Y:SQRT(Y-error)\n"
     "\twhere the colons separate the 1st 3 columns of the output.\n"
     "\tThis puts stdev error bars on the result\n"
     "\tIn GNUplot this would look like the following:\n"
     "\t   plot 'bcom_output' using 1:2:(sqrt(\\$3)) with errorlines\n"
+    "\n"
     "\n";
 
   return(s);
