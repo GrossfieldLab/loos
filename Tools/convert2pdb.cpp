@@ -41,21 +41,58 @@
 using namespace std;
 using namespace loos;
 
+namespace opts = loos::OptionsFramework;
+
+
+// @cond TOOLS_INTERNAL
+
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tConvert any LOOS model file to a PDB\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tReads in any LOOS model file and writes it to stdout as a PDB.  A subset\n"
+    "of the model may be selected.  As not all formats contain coordinates,\n"
+    "these may be taken from another source by using the --coordinates option.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tconvert2pdb model.gro >model.pdb\n"
+    "Converts a GROMACS .gro file to a PDB\n"
+    "\n"
+    "\tconvert2pdb --coordinates model.rst model.prmtop >model.pdb\n"
+    "Converts an AMBER PRMTOP file (taking coordinates from the RST file).\n"
+    "\n"
+    "\tconvert2pdb --selection 'name == \"CA\"' model.gro >model.pdb\n"
+    "Converts a GROMACS .gro file to a PDB, only writing out the alpha-carbons.\n"
+    "\n"
+    ;
+
+  return(msg);
+}
+
+// @endcond
+
 
 int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    cerr << "Usage- convert2pdb structure-file >output.pdb\n";
+  string hdr = invocationHeader(argc, argv);
+
+  opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::ModelWithCoords* mwcopts = new opts::ModelWithCoords;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(mwcopts);
+  if (!options.parse(argc, argv))
     exit(-1);
-  }
 
-  AtomicGroup model = createSystem(argv[1]);
-  if (! model.hasCoords()) {
-    cerr << "ERROR - the model does not have coordinates.\n";
-    exit(-10);
-  }
-
-  PDB pdb = PDB::fromAtomicGroup(model);
-  pdb.remarks().add(invocationHeader(argc, argv));
-
+  AtomicGroup subset = selectAtoms(mwcopts->model, sopts->selection);
+  PDB pdb = PDB::fromAtomicGroup(subset);
+  pdb.remarks().add(hdr);
   cout << pdb;
 }
