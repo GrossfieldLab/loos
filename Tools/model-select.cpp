@@ -36,16 +36,40 @@
 using namespace std;
 using namespace loos;
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tRaw dump of a model subset in LOOS\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool is useful for diagnosing problems with selections and how\n"
+    "LOOS reads model files.  It will write out a pseudo-XML representation\n"
+    "of the information it has stored about the selected subset.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tmodel-select all model.pdb >model.xml\n"
+    "This example writes out ALL atoms\n"
+    "\n"
+    "\tmodel-select 'name == \"CA\"' model.pdb >model-ca.xml\n"
+    "This example only writes out alpha-carbons.\n"
+    "\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
 
   if (argc != 3) {
     cerr << "Usage- " << argv[0] << " <selection string> <pdb file>\n";
-    cerr << "\n"
-      "This tool is useful for diagnosing problems with selections and how LOOS reads\n"
-      "model files.  It will write out a pseudo-XML representation of the information\n"
-      "it has stored about the selected subset.\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
