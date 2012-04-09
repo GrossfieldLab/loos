@@ -86,6 +86,7 @@ string fullHelpMessage(void) {
     "matched with the first atom in the --sel2 selection.)\n"
     "\n"
     "SEE ALSO\n"
+    "\trmsd2ref\n"
     "\n";
 
   return(msg);
