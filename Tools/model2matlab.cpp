@@ -39,6 +39,8 @@ using namespace loos;
 
 int main(int argc, char *argv[]) {
   
+  cerr << "WARNING- this tool is deprecated and will be removed in a future version of LOOS.\n";
+  
   if (argc  != 5) {
     cerr << "Usage: " << argv[0] << " model trajectory selection frame" << endl;
     exit(-1);
