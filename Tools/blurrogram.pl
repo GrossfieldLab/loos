@@ -169,7 +169,9 @@ $result = GetOptions("frames=i" => \$nframes,
 		     },
 		     "color=s" => \$color,
 		     "style=s" => \$style,
-		     "help" => \$helpflag);
+		     "help" => \$helpflag,
+		     'fullhelp' => sub { &showHelp; print "\n"; &fullHelpMessage; exit; }
+		    );
 
 if ($#ARGV != 1 || $helpflag) {
   &showHelp;
@@ -232,6 +234,7 @@ sub showHelp {
 Usage: blurrogram.pl [options] model trajectory
 Options:
    --help          This message
+   --fullhelp      More help
    --frames=i      # of frames to generate
    --script=s      Name of Pymol script to insert, otherwise use default script
    --preamble=s    Filename of the preamble for the generated script
@@ -287,4 +290,89 @@ sub generateScript {
     eval("\$line = \"$_\";");
     print "$line\n";
   }
+}
+
+
+sub fullHelpMessage {
+  print <<EOF;
+NAME
+    blurrogram - concatenates structures together from a trajectory to
+    create a composite figure
+
+SYNOPSIS
+    blurrogram.pl [options] modelname trajectoryname >script.pml
+
+DESCRIPTION
+    blurrogram extracts structures from a trajectory and writes them out as
+    a set of PDB files. It also generates a Pymol script that can be run
+    from within Pymol to load these structures and display them. This is
+    useful for showing the range of motion of a structure in a single
+    figure.
+
+    The Pymol script is composed of three parts: a preamble, the body, and a
+    postscript. Each part can be defined separately. The body of the script
+    is special in that certain variables are injected into it. These are
+    "pdbname" for the name of the PDB file, "name" for the basename (i.e.
+    pdbname without the ".pdb" suffix), iframe" for the integer frame number
+    from the trajectory and "cox" for the current output index.
+
+    If any component of the script is not specified, a default one will be
+    inserted. The default preamble is to turn orthscopic view on and set the
+    helix length to something small (if the "cartoon" style is used). The
+    default script body loads each structure and displays it as a cartoon.
+    It is then colored using a spectrum. There is no default postscript.
+
+  OPTIONS
+    --frames
+        Sets the number of structures generated
+
+    --script
+        Reads the script body from the specified filename or specifies
+        commands to use
+
+    --preamble
+        Reads the script preamble from the specified filename or specifies
+        commands to use
+
+    --postscript
+        Reads the script postscript from the specified filename or specifies
+        commands to use
+
+    --filespec
+        This is a printf-formatted string that gives the base frame filename
+
+    --selection
+        This is a LOOS-selection that is passed to the frame2pdb program to
+        generate the PDB frames
+
+    --range
+        A Matlab/Octave-style range of trajectory frames to operate over
+
+    --style
+        This sets the display style for the default Pymol script
+
+    -color
+        This sets the color for each structure in the default Pymol script
+
+EXAMPLES
+     blurrogram.pl --select='segid =~ "BAR."' b2ar.pdb b2ar.dcd >script.pml
+     This extracts 10 frames from b2ar.dcd only using the protein (via the --selection)
+
+     blurrogram.pl --style='ribbon' --color='red, $name', --select='segid =~ "BAR."' b2ar.pdb b2ar.dcd >script.pml
+     This is as above, but uses a ribbon style with each structure colored red.
+
+     blurrogram.pl --nframes=20 --script='myscript.pml' b2ar.pdb b2ar.dcd >script.pml
+     This extracts 20 frames using "myscript.pml" as the body script rather than the default.
+     With the following script, it will display each structure as a red ribbon:
+       load $pdbname
+       hide lines, $name
+       show ribbon, $name
+       spectrum count, rainbow, $name
+
+     blurrogram.pl --range=0:100:1000 b2ar.pdb b2ar.dcd >script.pml
+     This extracs 11 frames (0, 100, 200, ... 1000)
+
+
+EOF
+
 }
