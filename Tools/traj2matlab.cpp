@@ -43,12 +43,43 @@ using namespace loos;
 typedef Math::Matrix<double, Math::RowMajor>   Matrix;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tConvert a trajectory into an ASCII matrix representation\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool will extract a subset of atoms from a trajectory\n"
+    "and write it out as an ASCII matrix suitable for reading into\n"
+    "octave and matlab.  Each frame of the trajectory becomes a column\n"
+    "in the 3NxT matrix where T is the number of frames and N is the number\n"
+    "of atoms.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\ttraj2matlab model.pdb simulation.dcd 'segid == \"PROT\" && !hydrogen' >M.asc\n"
+    "This writes out all non-hydrogen atoms in the PROT segment to M.asc.\n"
+    "\n"
+    "NOTES\n"
+    "\tA PDB is both a model and a single-frame trajectory.  A single model can therefore\n"
+    "be converted by using the same file for both the model and the trajectory, i.e.\n"
+    "\t\ttraj2matlab model.pdb model.pdb 'all' >model.asc\n"
+    "SEE ALSO\n"
+    "\tsvd\n";
+
+  return(msg);
+}
+
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   if (argc  != 4) {
     cerr << "Usage: " << argv[0] << " model trajectory selection" << endl;
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
