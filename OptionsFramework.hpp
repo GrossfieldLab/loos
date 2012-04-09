@@ -562,7 +562,7 @@ namespace loos {
       //! Parses a command line, returning true if parsing was ok
       bool parse(int argc, char *argv[]);
 
-      //! Retyrns a string representing the option values in all
+      //! Returns a string representing the option values in all
       //! contained OptionPackage objects
       std::vector<std::string> print() const;
 
