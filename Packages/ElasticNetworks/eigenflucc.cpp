@@ -52,6 +52,57 @@ string selection;
 
 const double kB = 6.950356e-9;  // \AA^{-1} K
 
+void fullHelp() {
+  //string msg = 
+  cout <<  "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Predict isotropic B-factors from a set of eigenpairs\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Given the results of a network model or a simulation PCA\n"
+    "this tool will calculate the isotropic B-factors from the\n"
+    "eigenpairs.  \n"
+    "\n"
+    "There are two modes of output:\n"
+    "\t- A list of B-factors numbered sequentially\n"
+    "\t- An updated PDB file containing the B-factors\n"
+    "\t  NOTE: Make sure the same selection string used to\n"
+    "\t        compute the ENM is used to ensure the correct\n"
+    "\t        mapping of the B-factors.\n"
+    "\n"
+    //
+    "EXAMPLES\n"
+    "\n"
+    "eigenflucc anm_s.asc anm_U.asc > b_factors\n"
+    "\tCompute the B-factors of 'anm' and stream them to the\n"
+    "\tfile 'b_factors'.  This outputs a sequential list of\n"
+    "\tof the values (may be more convenient for plotting).\n"
+    "\n"
+    "eigenflucc -p1 model.pdb -s 'name==\"CA\"' anm_s.asc anm_U.asc > b_factors\n"
+    "\tSame as above, but in addition we make a new pdb\n"
+    "\twhere the B-factors are modified based on our result.\n"
+    "\tThe original model.pdb is unaltered, but model-ef.pdb\n"
+    "\twill contain our results.  In this case, the selection\n"
+    "\tstring includes all CA's, so they will be updated in\n"
+    "\tthe file output.  \n"
+    "\n"
+    "eigenflucc -p1 model.pdb -o1 model_new_b-factors.pdb -S2 -s 'name==\"CA\"' anm_s.asc anm_U.asc > b_factors\n"
+    "\tSame as previous, except the output pdb file is named\n"
+    "\tby the string \"model_new_b-factors.pdb\" and the\n"
+    "\tresults are scale by a factor of 2.\n"
+    "\n"
+    "eigenflucc -m1:3 -P1 pca_s.asc pca_U.asc > b_factors\n"
+    "\tComputes the B-factors from a PCA result.  In\n"
+    "\taddtion, only the first 3 modes (or principal\n"
+    "\tcomponents) are used for the calculation.  Only\n"
+    "\the sequential list is output (However a new PDB\n"
+    "\tfile can be written if desired).\n"
+    "\n"
+    "\n";
+}
+
 
 void parseArgs(int argc, char *argv[]) {
   
@@ -59,6 +110,7 @@ void parseArgs(int argc, char *argv[]) {
     po::options_description generic("Allowed options");
     generic.add_options()
       ("help", "Produce this help message")
+      ("fullhelp", "Get extended help")
       ("verbose,v", po::value<bool>(&verbose)->default_value(false), "Verbose output")
       ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection used to make the ENM (only when altering a PDB)")
       ("pdb,p", po::value<string>(&pdb_name), "Alter the B-factors in a PDB")
@@ -85,11 +137,13 @@ void parseArgs(int argc, char *argv[]) {
               options(command_line).positional(p).run(), vm);
     po::notify(vm);
 
-    if (vm.count("help") || !(vm.count("eigvals") && vm.count("eigvecs"))) {
+    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("eigvals") && vm.count("eigvecs"))) {
       cout << "Usage- " << argv[0] << " [options] eigenvalues eigenvectors\n";
       cout << generic;
+      if (vm.count("fullhelp"))
+        fullHelp();
       exit(0);
-    }
+      }
 
     if (vm.count("modes")) {
       vector<string> mode_list = vm["modes"].as< vector<string> >();
@@ -114,6 +168,7 @@ void parseArgs(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
+  cout << "# " << hdr << endl;
   parseArgs(argc, argv);
 
   DoubleMatrix eigvals;
