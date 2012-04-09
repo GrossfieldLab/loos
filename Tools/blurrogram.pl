@@ -250,7 +250,7 @@ sub getTrajInfo {
   my $mname = shift;
   my $tname = shift;
 
-  my $fh = new FileHandle "$trajinfo --brief $mname $tname|";
+  my $fh = new FileHandle "$trajinfo --brief 1 $mname $tname|";
   my $output = <$fh>;
   chomp($output);
   my @ary = split(/\s+/, $output);
