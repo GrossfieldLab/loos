@@ -93,8 +93,21 @@ Usage- mat2loos.pl [--replace|--stdout] matrix.asc
    --replace   Replaces the given file with the new LOOS-formatted matrix
    --stdout    Sends the new LOOS-formatted matrix to stdout
 
-NOTES:
- o Does not work on triangular or sparse matrices
+
+SYNOPSIS
+  Convert a plain ASCII matrix into a LOOS formatted matrix
+
+DESCRIPTION
+  Given a plain ASCII matrix (like the kind written by Octave/Matlab),
+this PERL program will convert it into a format that can be read
+by LOOS tools.  It does this by inserting a header that specifies the
+matrix size.
+
+EXAMPLES
+  mat2loos.pl data.asc >loos-data.asc
+
+NOTES
+ Does not work on triangular or sparse matrices
 EOF
 
   exit 0;
