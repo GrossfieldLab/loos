@@ -38,6 +38,7 @@
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
 
 
 typedef vector<string>    veString;
@@ -71,69 +72,74 @@ uint skip = 0;
 
 
 // ---------------
+// @cond TOOLS_INTERNAL
 
 
-void parseArgs(int argc, char *argv[]) {
-  
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("verbose,v", po::value<bool>(&verbose)->default_value(false), "Verbose output")
-      ("stderr,s", po::value<bool>(&use_stderr)->default_value(false), "Report stderr rather than stddev")
-      ("blow,d", po::value<double>(&length_low)->default_value(1.5), "Low cutoff for bond length")
-      ("bhi,D", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
-      ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
-      ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
-      ("acceptor_name,N", po::value< vector<string> >(&acceptor_names), "Name of an acceptor selection (required)")
-      ("acceptor,S", po::value< vector<string> >(&acceptor_selections), "Acceptor selection (required)")
-      ("skip,k", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of the trajectory");
+class ToolOptions : public opts::OptionsPackage {
+public:
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("skip,k", po::value<uint>(&skip)->default_value(0), "Number of frames to skip")
+      ("stderr", po::value<bool>(&use_stderr)->default_value(false), "Report stderr rather than stddev")
+      ("blow", po::value<double>(&length_low)->default_value(1.5), "Low cutoff for bond length")
+      ("bhi", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
+      ("angle", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
+      ("periodic", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
+      ("name,N", po::value< vector<string> >(&acceptor_names), "Name of an acceptor selection (required)")
+      ("acceptor,S", po::value< vector<string> >(&acceptor_selections), "Acceptor selection (required)");
+  }
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("donor", po::value<string>(&donor_selection), "Donor selection")
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("trajs", po::value< vector<string> >(&traj_names), "Traj filename");
+  void addHidden(po::options_description& o) {
+    o.add_options()
+      ("donor", po::value<string>(&donor_selection), "donor selection")
+      ("model", po::value<string>(&model_name), "model")
+      ("trajs", po::value< vector<string> >(&traj_names), "Trajectories");
+  }
 
+  void addPositional(po::positional_options_description& opts) {
+    opts.add("donor", 1);
+    opts.add("model", 1);
+    opts.add("trajs", -1);
+  }
 
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("donor", 1);
-    p.add("model", 1);
-    p.add("trajs", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("donor") && vm.count("model") && vm.count("trajs"))) {
-      cout << "Usage- " << argv[0] << " [options] donor model traj [traj...]\n";
-      cout << generic;
-      exit(0);
-    }
-
+  bool postConditions(po::variables_map& map) {
     if (acceptor_selections.empty()) {
       cerr << "Error- must provide at least one acceptor name and selection.\n";
-      exit(-1);
+      return(false);
     }
-    
     if (acceptor_selections.size() != acceptor_names.size()) {
       cerr << "Error- must provide one name for each acceptor selection.\n";
-      exit(-1);
+      return(false);
     }
-
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
   }
 
-}
+  string help() const {
+    return("donor model traj [traj ...]");
+  }
 
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("stderr=%d,blow=%f,bhi=%f,angle=%f,periodic=%d,names=\"%s\",acceptors=\"%s\",donor=\"%s\",model=\"%s\",trajs=\"%s\"")
+      % use_stderr
+      % length_low
+      % length_high
+      % max_angle
+      % use_periodicity
+      % vectorAsStringWithCommas(acceptor_names)
+      % vectorAsStringWithCommas(acceptor_selections)
+      % donor_selection
+      % model_name
+      % vectorAsStringWithCommas(traj_names);
+
+    return(oss.str());
+  }
+
+};
+
+
+
+
+// @endcond
 
 
 veDouble rowAverage(const Matrix& M) {
@@ -180,14 +186,20 @@ veDouble rowStd(const Matrix& M, const veDouble& avg) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  parseArgs(argc, argv);
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
 
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
   SimpleAtom::innerRadius(length_low);
   SimpleAtom::outerRadius(length_high);
   SimpleAtom::maxDeviation(max_angle);
 
   cout << "# " << hdr << endl;
+  cout << "# " << vectorAsStringWithCommas(options.print()) << endl;
 
   AtomicGroup model = createSystem(model_name);
 
