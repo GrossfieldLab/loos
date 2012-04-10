@@ -60,6 +60,12 @@ need to install scons, boost, and atlas:
 
 sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
+* PyLOOS *
+
+Fedora 12: Install libpcre-devel and download and build the latest swig
+(2.0.4 or later).
+
+
 ------= CentOS =------
 
 LOOS has been tested with CentOS 5 and 6.  Follow the instructions for
