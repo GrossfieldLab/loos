@@ -41,12 +41,37 @@ using namespace std;
 
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Store whole residue mass in CA occupancy field\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Given a PDB where masses are stored in the occupancy field, reduce\n"
+    "the structure to CA's only where the mass of the CA is the sum of"
+    "the mass of all atoms in the corresponding residue."
+    "\n"
+    //
+    "EXAMPLES\n"
+    "\n"
+    "heavy-ca 'name==\"CA\" model.pdb > newmodel.pdb'\n"
+    "\tThe occupancy masses from model.pdb are summed over\n"
+    "\teach residue and placed in on the CA.\n"
+    "\n"
+    "\n";
+
+  return(msg);
+}
 
 
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
     cerr << "Usage- heavy-ca selection pdb >output\n";
+    cerr << fullHelpMessage();
     exit(0);
   }
 

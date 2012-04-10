@@ -51,11 +51,37 @@ pAtom findMatch(const pAtom& probe, const AtomicGroup& grp) {
 }
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Places masses from a PSF file into the occupancy field of a PDB\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Places masses from a PSF file into a PDB file using the occupancy\n"
+    "column.  This is useful for ENMs like VSA, which can account for\n"
+    "varying masses on the beads.  The LOOS VSA tool can read masses from\n"
+    "the occupancy column with the -o1 option.\n"
+    "\n"
+    //
+    "EXAMPLES\n"
+    "\n"
+    "psf-masses model.psf model.pdb > newmodel.pdb \n"    
+    "\tGiven model.psf and model.pdb put the masses from the\n"
+    "\tpsf file in a PDB called newmodel.pdb.  The other info\n"
+    "\tis obtained from model.pdb\n"
+    "\n";
+
+  return(msg);
+}
 
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
     cerr << "Usage- psf-masses model.psf model.pdb >newmodel.pdb\n";
+    cerr << fullHelpMessage();
     exit(0);
   }
 
