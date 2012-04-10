@@ -62,8 +62,17 @@ sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
 * PyLOOS *
 
-Fedora 12: Install libpcre-devel and download and build the latest swig
+Fedora 12: Install pcre-devel and download and build the latest swig
 (2.0.4 or later).
+
+Fedora 13: Install pcre-devel, then download and install Python-2.7.2 and
+swig-2.0.4 (or later).  We have had difficulties getting the build to
+recognize python-2.7.2; a quick fix is to change the system python to
+the new version you just build, (as root) e.g.
+	cd /usr/bin
+	mv python python-orig
+	ln -s /usr/local/bin/python
+
 
 
 ------= CentOS =------
