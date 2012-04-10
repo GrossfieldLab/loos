@@ -65,6 +65,8 @@ string fullHelpMessage(void) {
     "varying masses on the beads.  The LOOS VSA tool can read masses from\n"
     "the occupancy column with the -o1 option.\n"
     "\n"
+    "Note: The psf and pdb must contain the same atoms.\n"
+    "\n"
     //
     "EXAMPLES\n"
     "\n"
@@ -72,6 +74,14 @@ string fullHelpMessage(void) {
     "\tGiven model.psf and model.pdb put the masses from the\n"
     "\tpsf file in a PDB called newmodel.pdb.  The other info\n"
     "\tis obtained from model.pdb\n"
+    "\n"
+    "SEE ALSO\n"
+    "\n"
+    "Packages/ElasticNetworks/heavy-ca - \n"
+    "\tThis tool will sum the masses of a residue using\n"
+    "\tthe value in the occupancy field and place the total\n"
+    "\tmass on the CA for use in an ENM.\n"
+    "\n"
     "\n";
 
   return(msg);
