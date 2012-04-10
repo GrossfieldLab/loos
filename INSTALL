@@ -92,13 +92,18 @@ PyLOOS.  We recommend that you download and install the latest version
 of SWIG instead.  You will also need to install the libpcre-dev
 package for the perl compatible regular expression library.
 
-* Ubuntu 8.04 *
+
+* Ubuntu 8.04 LTS *
 
 Do not install scons using the package manager--the available version
 is incompatable with LOOS.  Instead, download any version >= 1.0 and
 install that.  Also, there is no boost-all package, so you must
 install the components separately: libboost-dev, libboost-regex-dev,
 and libboost-program-options-dev
+
+To install PyLOOS in Ubunto 8.04 LTS, follow the general PyLOOS Ubuntu
+instructions above.  In addition, you may need to install a more
+recent version of Python (LOOS was tested with Python 2.7.2 and Swig 2.0.4).
 
 
 NOTE: Ubuntu 10.04 LTS x86_64 uses libboost1.40-all-dev instead of
