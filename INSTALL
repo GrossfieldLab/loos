@@ -1,28 +1,12 @@
-Building and Installing Loos
-----------------------------
+		     Building and Installing Loos
+		     ----------------------------
+				   
 
-***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE**
-*** 
-*** This version of LOOS includes the beta-release of a python interface
-*** to the core LOOS library.  The interface and subsequent functionality
-*** may change significantly in future releases.  This also requires a
-*** recent version of SWIG be installed.
-*** 
-*** To use, you must add the LOOS directory to the PYTHONPATH and
-*** LD_LIBRARY_PATH environment variables
-***
-***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE***IMPORTANT**NOTE**
+		      *** FOR THE IMPATIENT ***
 
 
 
-
-
-
-*** FOR THE IMPATIENT ***
-
-
-
-= Building and Installing =
+		     = Building and Installing =
 
 Please refer to the OS-specific instructions below in order to satisfy
 LOOS' dependencies....
@@ -38,8 +22,21 @@ To install in a user-specified location:
 
    scons release=1 PREFIX=/path/to/install install
 
+To use LOOS, your environment must be first setup:
+  (bash)   source /path/to/loos/setup.sh
+  (tcsh)   source /path/to/loos/setup.csh
 
-= Parallel (Multithreaded) ATLAS =
+
+			      * PyLOOS *
+
+The Python interface to LOOS is currently a beta-release.  It requires
+a recent version of SWIG (2.0+).  Not all operating systems are
+currently supported.  Additionally, the interface and subsequent
+functionality may change significantly in future releases.
+
+
+
+		  = Parallel (Multithreaded) ATLAS =
 
 If you have a full install of ATLAS including threaded versions of the
 BLAS and LAPACK, you can link against these to take advantage of
@@ -50,9 +47,10 @@ The MacOS version by default uses the vecLib framework which is
 already multithreaded.
 
 
+========================================================================
 
 
-------= Fedora =------
+			------= Fedora =------
 
 LOOS has been tested on Fedora (64-bit) 12-16.  We assume
 you already have the basic compiler tools installed (i.e. g++).  You will
@@ -65,23 +63,27 @@ sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 Fedora 12: Install pcre-devel and download and build the latest swig
 (2.0.4 or later).
 
-Fedora 13: Install pcre-devel, then download and install Python-2.7.2 and
-swig-2.0.4 (or later).  We have had difficulties getting the build to
-recognize python-2.7.2; a quick fix is to change the system python to
-the new version you just build, (as root) e.g.
-	cd /usr/bin
-	mv python python-orig
-	ln -s /usr/local/bin/python
+Fedora 13: Yum install pcre-devel and python-devel, then download and install
+swig-2.0.4 (or later).
+
+Fedora 15: Yum install python-devel and swig
 
 
 
-------= CentOS =------
+			------= CentOS =------
 
 LOOS has been tested with CentOS 5 and 6.  Follow the instructions for
 Fedora, however there is no scons package available via yum.  Instead,
 download and install any version of scons more recent than 1.0.
 
-------= Ubuntu =------
+
+
+* PyLOOS *
+
+Centos 6(.2): Yum install python-devel and pcre-devel, then download
+and install the latest swig.
+
+			------= Ubuntu =------
 
 LOOS has been tested on Ubuntu 8-11.  The following instructions have
 been used to install LOOS on a fresh 64-bit 11.04 installation.  Use
@@ -98,16 +100,6 @@ must still install the packages above.  For example, on an i7 machine,
 install both atlas packages listed above as well as
 libatlas3gf-corei7sse3.
 
-* PyLOOS *
-
-PyLOOS requires a very recent version of SWIG.  While the synaptics
-package manager says the current version of SWIG is 2.0+, once
-installed, SWIG reports it's a pre-2.0 version and will not work with
-PyLOOS.  We recommend that you download and install the latest version
-of SWIG instead.  You will also need to install the libpcre-dev
-package for the perl compatible regular expression library.
-
-
 * Ubuntu 8.04 LTS *
 
 Do not install scons using the package manager--the available version
@@ -116,16 +108,26 @@ install that.  Also, there is no boost-all package, so you must
 install the components separately: libboost-dev, libboost-regex-dev,
 and libboost-program-options-dev
 
-To install PyLOOS in Ubunto 8.04 LTS, follow the general PyLOOS Ubuntu
-instructions above.  In addition, you may need to install a more
-recent version of Python (LOOS was tested with Python 2.7.2 and Swig 2.0.4).
+* Ubuntu 10.04 LTS *
+
+Ubuntu 10.04 LTS uses libboost1.40-all-dev instead of
+libboost-all-devel for a package name.
 
 
-NOTE: Ubuntu 10.04 LTS x86_64 uses libboost1.40-all-dev instead of
-libboost-all-devel.
+
+* PyLOOS *
+
+PyLOOS requires a very recent version of SWIG.  While it may appear
+that the swig 2.0.4 is available through the synaptics package
+manager, it is really 1.3.40 and will not work with PyLOOS.  First
+install the libpcre-dev, then download, build, and install the latest
+version of swig.
 
 
-------= Debian =------
+Ubuntu 8.04 LTS: Install python-dev and follow the instructions above.
+
+
+			------= Debian =------
 
 Loos has been tested with: 5, 6
 
@@ -137,7 +139,7 @@ Using the synaptic manager (or apt-get), install the following packages:
       libatlas3gf-base (optional)
 
 
-------= openSUSE =------
+		       ------= openSUSE =------
 
 LOOS has been tested with: 11, 12
 
@@ -154,7 +156,7 @@ in order to build LOOS.
 
 
 
------= MACOS X =-----
+			-----= MACOS X =-----
 
 LOOS has been tested with MacOS 10.7, however, it *should* be
 compatable with version 10.4-10.6.
@@ -168,7 +170,7 @@ will need to install SCons (http://scons.org) and Boost
 software, and following their installation instructions.
 
 
------= CYGWIN =-----
+			 -----= CYGWIN =-----
 
 Tested versions: 1.7.7
 
@@ -189,16 +191,17 @@ to "custom.py".  Look for the BOOSTPO and BOOSTREGEX symbols and
 uncomment the appropriate lines.
 
 
------= FreeBSD =-----
+			-----= FreeBSD =-----
 
 LOOS has been tested with FreeBSD 8.  You will need to install the gcc
 suite, atlas, scons, and boost by whatever means you prefer (note:
 LOOS was tested using the versions installed via ports).
 
 
+========================================================================
 
 
-*** GENERAL NOTES ***
+			*** GENERAL NOTES ***
 
 There is some variability in the naming used for the Boost libraries.
 If your build fails even though you just installed the latest Boost,
