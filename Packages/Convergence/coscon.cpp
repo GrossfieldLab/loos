@@ -132,6 +132,11 @@ public:
   bool postConditions(po::variables_map& vm) {
     if (!blocks_spec.empty())
       blocksizes = parseRangeList<uint>(blocks_spec);
+    for (vector<uint>::iterator i = blocksizes.begin(); i != blocksizes.end(); ++i)
+      if (*i == 0) {
+        cerr << "Error- a block-size must be > 0\n";
+        return(false);
+      }
 
     return(true);
   }
