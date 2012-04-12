@@ -1,7 +1,51 @@
+		       LOOS COMPATIBILITY TABLE
+		       ------------------------
+
+------------------------------------------
+|    OS             | Core LOOS | PyLOOS |
+|-------------------|-----------|--------|
+| Fedora 12         |     +     |   !    |
+| Fedora 13         |     +     |   !    |
+| Fedora 14         |     +     |   +    |
+| Fedora 15         |     +     |   +    |
+| Fedora 16         |     +     |   +    |
+|-------------------|-----------|--------|
+| Ubuntu 8.04 LTS   |     !     |   !    |
+| Ubuntu 10.04 LTS  |     +     |   !    |
+| Ubuntu 11.10      |     +     |   !    |
+|-------------------|-----------|--------|
+| Debian 5          |     +     |   -    |
+| Debian 6          |     +     |   !    |
+|-------------------|-----------|--------|
+| CentOS 5.7        |     +     |   !    |
+| CentOS 6.2        |     +     |   !    |
+|-------------------|-----------|--------|
+| OpenSUSE 11.4     |     +     |   -    |
+| OpenSUSE 12       |     +     |   +    |
+|-------------------|-----------|--------|
+| FreeBSD 8         |     +     |   -    |
+|-------------------|-----------|--------|
+| Windows XP        |     +     |   -    |
+|  (Cygwin 1.7.7)   |           |        |
+|-------------------|-----------|--------|
+| MacOS 10.6        |     +     |   -    |
+| MacOS 10.7        |     +     |   -    |
+|-------------------|-----------|--------|
+
+
++ = supported
+    (dependencies easily available via package manager)
+
+! = supported with reservations
+    (may require manual installation of dependencies)
+
+- = not supported at this time
+
+
+
+				   
 		     Building and Installing Loos
 		     ----------------------------
-				   
-
 		      *** FOR THE IMPATIENT ***
 
 
@@ -27,13 +71,15 @@ To use LOOS, your environment must be first setup:
   (tcsh)   source /path/to/loos/setup.csh
 
 
-			      * PyLOOS *
+			     = PyLOOS =
 
-The Python interface to LOOS is currently a beta-release.  It requires
-a recent version of SWIG (2.0+).  Not all operating systems are
-currently supported.  Additionally, the interface and subsequent
-functionality may change significantly in future releases.
+The Python interface to LOOS is currently a beta-release.  To build
+it, use:
+    scons pyloos
 
+PyLOOS requires a recent version of SWIG (2.0+).  Not all operating
+systems are currently supported.  Additionally, the interface and
+subsequent functionality may change significantly in future releases.
 
 
 		  = Parallel (Multithreaded) ATLAS =
@@ -142,7 +188,8 @@ Using the synaptic manager (or apt-get), install the following packages:
 * PyLOOS *
 
 Debian 5: NOT SUPPORTED
-Debian 6: 
+Debian 6: Install libpcre-dev and python-dev, then download and
+  install the latest swig.
 
 		       ------= openSUSE =------
 
@@ -215,6 +262,9 @@ LOOS has been tested with FreeBSD 8.  You will need to install the gcc
 suite, atlas, scons, and boost by whatever means you prefer (note:
 LOOS was tested using the versions installed via ports).
 
+* PyLOOS *
+
+FreeBSD is NOT SUPPORTED
 
 ========================================================================
 
