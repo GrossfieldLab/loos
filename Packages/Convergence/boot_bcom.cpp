@@ -59,6 +59,88 @@ bool local_average;
 uint nreps;
 string gold_standard_trajectory_name;
 
+
+string fullHelpMessage() {
+
+  string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Perform a bootstrapped block-overlap comparison to a full PCA\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "This tool reports on how well a small \"block\" of a trajectory samples\n"
+    "the subspace explored by the full simulation using principal component\n"
+    "analysis.  Similar to bcom it does this by computing the covariance\n"
+    "overlap between a full simulation PCA and the PCA of increasingly \n"
+    "longer \"blocks\".  The DIFFERENCE is that the blocks in this version\n"
+    "are not contiguous, but rather pulled randomly from the trajectory.\n"
+    "\n"
+    "Where bcom shows how well a short subset of a trajectory samples the\n"
+    "conformational subspace present in the full simulation; boot_bcom shows\n"
+    "how well a given number of random frames sample the full subspace \n"
+    "explored in the simulation.  This bootstrap analysis can then be compared\n"
+    "to the bcom result.\n"
+    "\n"
+    "See: Romo and Grossfield, J. Chem. Theor. Comput., 2011, 7, 2464-2472\n"
+    "\t Specifically Figs 4, 6, and 9 for comparison to bcom results.\n"
+    "\n"
+    "\n"
+    "The output is a tab separated stream:\n"
+    "n\tCoverlap\tVariance\tN_blocks\n"
+    "\n"
+    "\t   n     - current block size (nanoseconds)\n"
+    "\tCoverlap - covariance overlap between block and full PCA\n"
+    "\tVariance - variance in coverlap across all (N_blocks)\n"
+    "\tN_blocks - number of blocks of a given length\n"
+    "\t             Note that this number is constant unlike\n"
+    "\t             the output of bcom\n"
+    "\n"
+    "USAGE NOTES\n"
+    "The --skip command is NOT used by this tool.\n"
+    "\n";
+    //
+    /*    "EXAMPLES\n"
+    "bcom -s 'name==\"CA\"' --blocks 25:25:500 model.pdb traj.dcd > bcom_output\n"
+    "\tCalculate the bcom of traj.dcd using a PCA of CA atoms. This\n"
+    "\tis done for blocks in a range of 25 ns to 500 ns, with 25 ns\n"
+    "\tintervals.  The result is written to the file bcom_output\n"
+    "\n"
+    "bcom -Z1 -s 'name==\"CA\"' --blocks 25:25:500 model.pdb traj.dcd > bcom_output\n"
+    "\tSame as the example above, but outputs the block-averaged \n"
+    "\tZ-score in the place of the block-averaged coverlap.\n"
+    "\n"
+    "bcom -s 'name==\"CA\"' --gold 'combined.dcd' model.pdb traj.dcd > bcom_output\n"
+    "\tHere we make two changes.  First don't specify block sizes\n"
+    "\tThis tells bcom to figure it out on its own.  In this case\n"
+    "\tthe tool will run a max block size equal to half the trajectory.\n"
+    "\tNext, we compare our block-averaged PCA results to a separate\n"
+    "\ttrajectory called combined.dcd instead of the PCA of the full\n"
+    "\ttraj.dcd.  As the name implies, combined.dcd may be a concatonation\n"
+    "\tof several trajectories.  \n"
+    "\t\tTo make such a concatoned trajectory see the tools\n"
+    "\t\tmerge-traj and subsetter.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\n"
+    "  Packages/Convergence/bcom - \n"
+    "\tThis tool performs a similar analysis, but pulls random frames\n"
+    "\tfrom the trajectory rather than contiguous ones.\n"
+    "\t\n"
+    "* Visualization Notes *\n"
+    "\tThe output should be plotted in the format X:Y:SQRT(Y-error)\n"
+    "\twhere the colons separate the 1st 3 columns of the output.\n"
+    "\tThis puts stdev error bars on the result\n"
+    "\tIn GNUplot this would look like the following:\n"
+    "\t   plot 'bcom_output' using 1:2:(sqrt(\\$3)) with errorlines\n"
+    "\n"
+    "\n";*/
+
+  return(s);
+}
+
+
 // @cond TOOLS_INTERAL
 class ToolOptions : public opts::OptionsPackage {
 public:
@@ -181,7 +263,7 @@ Datum blocker(const RealMatrix& Ua, const RealMatrix sa, const vGroup& ensemble,
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   opts::BasicConvergence* copts = new opts::BasicConvergence;
