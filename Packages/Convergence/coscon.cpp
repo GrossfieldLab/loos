@@ -64,6 +64,44 @@ struct Datum {
 };
 
 
+
+string fullHelpMessage() {
+
+  string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Calculate the cosine constent of a simulation\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Calculate the cos content in the ___ of a simulation\n"
+    "\n"
+    "See: Hess, B. \"Convergence of sampling in protein \n"
+    "      simulations.\" Phys Rev E (2002) 65(3):031910\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "SEE ALSO\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n";
+  
+  
+  return(s);
+  
+}
+
 // @endcond
 
 // Configuration
@@ -154,7 +192,7 @@ Datum blocker(const uint pc, vGroup& ensemble, const uint blocksize, ExtractPoli
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
