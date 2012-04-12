@@ -51,6 +51,51 @@ typedef vector<AtomicGroup>                               vGroup;
 uint nmodes;
 string rsv;
 
+
+string fullHelpMessage() {
+
+  string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Calculate the cosine constent of a right singular vector matrix\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "This tool calculates the cosine content of a matrix.\n"
+    "It is intended to be used on the right sinular vectors\n"
+    "from an SVD.  These are projections onto to principal\n"
+    "components of the simulation.\n"
+    "\n"
+    "See: Hess, B. \"Convergence of sampling in protein \n"
+    "      simulations.\" Phys Rev E (2002) 65(3):031910\n"
+    //Matrix cosine content.  Calculates the cosine content 
+    //of a matrix.  Expected input is the RSVs of a PCA...
+    "\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "\n"
+    "SEE ALSO\n"
+    "Packages/Convergence/coscon - \n"
+    "\tstuff\n"
+    "\n"
+    "Tools/svd - \n"
+    "\tDo a PCA via the SVD.  This results in several\n"
+    "\tmatrix files including the RSVs used as input \n"
+    "\tto the current tool.  The file [prefix]_V.asc\n"
+    "\tcontains the RSV matrix.\n"
+    "\n"
+    "\n";
+ 
+ return(s);
+}
+
+
 //@cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
@@ -71,7 +116,8 @@ public:
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  //  opts::BasicOptions* bopts = new opts::BasicOptions;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments("rsv", "right-singular-vectors");
 
