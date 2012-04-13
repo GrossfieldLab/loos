@@ -38,6 +38,7 @@
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
 
 
 // ---------------  GLOBALS
@@ -55,53 +56,57 @@ uint currentTimeStep = 0;
 // ---------------
 
 
-
-void parseArgs(int argc, char *argv[]) {
-  
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("blow,d", po::value<double>(&length_low)->default_value(1.5), "Low cutoff for bond length")
-      ("bhi,D", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
-      ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
-      ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary");
+// ---------------
+// @cond TOOLS_INTERNAL
 
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Traj filename")
-      ("donor", po::value<string>(&donor_selection), "Donor selection")
-      ("acceptor", po::value<string>(&acceptor_selection), "Acceptor selection");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("donor", 1);
-    p.add("acceptor", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("model") && vm.count("traj") && vm.count("donor") && vm.count("acceptor"))) {
-      cout << "Usage- " << argv[0] << " [options] model traj sel-1 sel-2\n";
-      cout << generic;
-      exit(0);
-    }
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+class ToolOptions : public opts::OptionsPackage {
+public:
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("blow", po::value<double>(&length_low)->default_value(1.5), "Low cutoff for bond length")
+      ("bhi", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
+      ("angle", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
+      ("periodic", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary");
   }
 
-}
+  void addHidden(po::options_description& o) {
+    o.add_options()
+      ("donor", po::value<string>(&donor_selection), "donor selection")
+      ("acceptor", po::value<string>(&acceptor_selection), "acceptor selection");
+
+  }
+
+  void addPositional(po::positional_options_description& opts) {
+    opts.add("donor", 1);
+    opts.add("acceptor", 1);
+  }
+
+
+  string help() const {
+    return("donor-selection acceptor-selection");
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("blow=%f,bhi=%f,angle=%f,periodic=%d,acceptor=\"%s\",donor=\"%s\"")
+      % length_low
+      % length_high
+      % max_angle
+      % use_periodicity
+      % acceptor_selection
+      % donor_selection;
+
+    return(oss.str());
+  }
+
+};
+
+
+
+
+// @endcond
+
 
 
 
@@ -109,16 +114,24 @@ void parseArgs(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  parseArgs(argc, argv);
+
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(tropts).add(topts);
+  if (! options.parse(argc, argv))
+    exit(-1);
 
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+
   if (use_periodicity && !traj->hasPeriodicBox()) {
     cerr << "Error- trajectory has no periodic box information\n";
     exit(-1);
   }
-
 
   SimpleAtom::innerRadius(length_low);
   SimpleAtom::outerRadius(length_high);
