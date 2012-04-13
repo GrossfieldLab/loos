@@ -53,8 +53,6 @@ string traj_name;
 uint currentTimeStep = 0;
 
 
-// ---------------
-
 
 // ---------------
 // @cond TOOLS_INTERNAL
