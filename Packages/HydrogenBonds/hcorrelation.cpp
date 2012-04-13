@@ -39,6 +39,7 @@
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
+namespace opts = loos::OptionsFramework;
 
 
 
@@ -64,58 +65,69 @@ bool any_hydrogen;
 
 
 
+// ---------------
+// @cond TOOLS_INTERNAL
 
 
-void parseArgs(int argc, char *argv[]) {
-  
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("blow,d", po::value<double>(&length_low)->default_value(1.5), "Low cutoff for bond length")
-      ("bhi,D", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
-      ("angle,a", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
-      ("periodic,p", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
-      ("maxtime,m", po::value<uint>(&maxtime)->default_value(0), "Max time for correlation (0 = auto-size)")
-      ("skip,s", po::value<uint>(&skip)->default_value(0), "# of frames to skip from the start of each trajectory")
+class ToolOptions : public opts::OptionsPackage {
+public:
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("blow", po::value<double>(&length_low)->default_value(1.5), "Low cutoff for bond length")
+      ("bhi", po::value<double>(&length_high)->default_value(3.0), "High cutoff for bond length")
+      ("angle", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
+      ("periodic", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
+      ("maxtime", po::value<uint>(&maxtime)->default_value(0), "Max time for correlation (0 = auto-size)")
       ("any", po::value<bool>(&any_hydrogen)->default_value(false), "Correlation for ANY hydrogen bound")
-      ("stderr,S", po::value<bool>(&use_stderr)->default_value(0), "Report standard error rather than standard deviation");
-
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<vString>(&traj_names), "Traj filename")
-      ("donor", po::value<string>(&donor_selection), "Donor selection")
-      ("acceptor", po::value<string>(&acceptor_selection), "Acceptor selection");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("donor", 1);
-    p.add("acceptor", 1);
-    p.add("model", 1);
-    p.add("traj", -1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || !(vm.count("donor") && vm.count("acceptor") && vm.count("model") && vm.count("traj"))) {
-      cout << "Usage- " << argv[0] << " [options] sel-1 sel-2 model traj-1 [traj-2 ...]\n";
-      cout << generic;
-      exit(0);
-    }
+      ("stderr", po::value<bool>(&use_stderr)->default_value(0), "Report standard error rather than standard deviation");
 
   }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
+
+  void addHidden(po::options_description& o) {
+    o.add_options()
+      ("donor", po::value<string>(&donor_selection), "donor selection")
+      ("acceptor", po::value<string>(&acceptor_selection), "acceptor selection")
+      ("model", po::value<string>(&model_name), "model")
+      ("trajs", po::value< vector<string> >(&traj_names), "Trajectories");
   }
 
-}
+  void addPositional(po::positional_options_description& opts) {
+    opts.add("donor", 1);
+    opts.add("acceptor", 1);
+    opts.add("model", 1);
+    opts.add("trajs", -1);
+  }
+
+  string help() const {
+    return("donor-selection acceptor-selection model traj [traj ...]");
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("skip=%d,stderr=%d,blow=%f,bhi=%f,angle=%f,periodic=%d,maxtime=%d,any=%d,acceptor=\"%s\",donor=\"%s\",model=\"%s\",trajs=\"%s\"")
+      % skip
+      % use_stderr
+      % length_low
+      % length_high
+      % max_angle
+      % use_periodicity
+      % maxtime
+      % any_hydrogen
+      % acceptor_selection
+      % donor_selection
+      % model_name
+      % vectorAsStringWithCommas(traj_names);
+
+    return(oss.str());
+  }
+
+};
+
+
+
+
+// @endcond
+
 
 
 
@@ -175,7 +187,14 @@ uint findMinSize(const AtomicGroup& model, const vString& names) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  parseArgs(argc, argv);
+
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions opts;
+  opts.add(bopts).add(topts);
+  if (! opts.parse(argc, argv))
+    exit(-1);
 
 
   AtomicGroup model = createSystem(model_name);
