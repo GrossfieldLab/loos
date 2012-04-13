@@ -111,6 +111,8 @@ public:
       cerr << "Error- must provide one name for each acceptor selection.\n";
       return(false);
     }
+    
+    return(true);
   }
 
   string help() const {
@@ -119,7 +121,8 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("stderr=%d,blow=%f,bhi=%f,angle=%f,periodic=%d,names=\"%s\",acceptors=\"%s\",donor=\"%s\",model=\"%s\",trajs=\"%s\"")
+    oss << boost::format("skip=%d,stderr=%d,blow=%f,bhi=%f,angle=%f,periodic=%d,names=\"%s\",acceptors=\"%s\",donor=\"%s\",model=\"%s\",trajs=\"%s\"")
+      % skip
       % use_stderr
       % length_low
       % length_high
