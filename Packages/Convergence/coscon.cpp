@@ -240,8 +240,6 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
-  if (tropts->skip)
-    cerr << "Warning: --skip option ignored\n";
 
 
   if (blocksizes.empty()) {
