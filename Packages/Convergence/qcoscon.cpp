@@ -51,6 +51,52 @@ typedef vector<AtomicGroup>                               vGroup;
 
 uint nmodes;
 
+string fullHelpMessage() {
+
+  string s = 
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "Calculate the cosine constent of a whole simulation\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "Quick version of the cosine content calculation.\n"
+    "This tool performs the same calculation as coscon, \n"
+    "but instead of varying the trajectory in a block\n"
+    "averaging approach only the full trajectory is used.\n"
+    "The results are printed for the first 10 modes.\n"
+    "\n"
+    //
+    "EXAMPLES\n"
+    "\n"
+    "qcoscon -s 'name==\"CA\"' model.pdb traj.dcd\n"
+    "\tCalculate the cos content of the first 10 modes\n"
+    "\tof traj.dcd using the PCA of the CA atoms.\n"
+    "\n"
+    "SEE ALSO\n"
+    "Packages/Convergence/coscon - \n"
+    "\tCompute the cosine content of a matrix.  This tool\n"
+    "\tperforms a similar analysis, but it uses a block\n"
+    "\taveraging approach where the cosine content is\n"
+    "\tcalculated for increasingly long trajectory blocks\n"
+    "\n"
+    "Packages/Convergence/rsv-coscon - \n"
+    "\tCalculate the cos content of the RSVs from a simulation\n"
+    "\tPCA.\n"
+    "\n"
+    "Tools/svd - \n"
+    "\tCompute the principal components via the SVD.\n"
+    "\tThis results in several matrix files including\n"
+    "\tthe RSVs used as input to the current tool. \n"
+    "\tThe file [prefix]_V.asc contains the RSV matrix.\n"
+    "\n"
+    "\n";
+
+  return(s);
+}
+
+
 //@cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
@@ -71,7 +117,7 @@ public:
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
