@@ -99,19 +99,20 @@ string fullHelpMessage() {
     "\n"
     "USAGE NOTES\n"
     "The --skip command is NOT used by this tool.\n"
-    "\n";
+    "\n"
     //
-    /*    "EXAMPLES\n"
-    "bcom -s 'name==\"CA\"' --blocks 25:25:500 model.pdb traj.dcd > bcom_output\n"
-    "\tCalculate the bcom of traj.dcd using a PCA of CA atoms. This\n"
-    "\tis done for blocks in a range of 25 ns to 500 ns, with 25 ns\n"
-    "\tintervals.  The result is written to the file bcom_output\n"
+    "EXAMPLES\n"
     "\n"
-    "bcom -Z1 -s 'name==\"CA\"' --blocks 25:25:500 model.pdb traj.dcd > bcom_output\n"
-    "\tSame as the example above, but outputs the block-averaged \n"
-    "\tZ-score in the place of the block-averaged coverlap.\n"
+    "boot_bcom -s 'name==\"CA\"' --blocks 25:25:500 model.pdb traj.dcd\n"
+    "\tCalculate the bootstrapped bcom of traj.dcd using a PCA of CA\n"
+    "\tatoms.  This is done for \"blocks\" in a range of 25 ns to 500 ns,\n"
+    "\twith 25 ns intervals.  However, the blocks are NOT contiguous, but\n"
+    "\tare pulled randomly from the trajectory.\n"
     "\n"
-    "bcom -s 'name==\"CA\"' --gold 'combined.dcd' model.pdb traj.dcd > bcom_output\n"
+    ////
+
+
+    "boot_bcom -s 'name==\"CA\"' --gold 'combined.dcd' model.pdb traj.dcd\n"
     "\tHere we make two changes.  First don't specify block sizes\n"
     "\tThis tells bcom to figure it out on its own.  In this case\n"
     "\tthe tool will run a max block size equal to half the trajectory.\n"
@@ -122,6 +123,8 @@ string fullHelpMessage() {
     "\t\tTo make such a concatoned trajectory see the tools\n"
     "\t\tmerge-traj and subsetter.\n"
     "\n"
+
+
     "SEE ALSO\n"
     "\n"
     "  Packages/Convergence/bcom - \n"
@@ -135,7 +138,7 @@ string fullHelpMessage() {
     "\tIn GNUplot this would look like the following:\n"
     "\t   plot 'bcom_output' using 1:2:(sqrt(\\$3)) with errorlines\n"
     "\n"
-    "\n";*/
+    "\n";
 
   return(s);
 }
