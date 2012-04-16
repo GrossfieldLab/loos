@@ -55,6 +55,58 @@ vecUint nrange;
 vecUint indices;
 
 // @cond TOOLS_INTERNAL
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCompute decorrelation times for a simulation\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool implements the decorrelation time method described in Lyman and Zuckerman,\n"
+    "J Phys Chem B (2007) 111:12876-12882.  Bins for the structural histogram used are selected\n"
+    "using a uniform probability, set with the --frac option (the default is 0.05 for 20 bins).\n"
+    "The range of sample sizes (n, in figure 2) is given by the --nrange option, which takes\n"
+    "either a comma-separated list of sizes or a matlab/octave-style range.  Finally, the\n"
+    "required t-range is also a matlab/octave-style range (or comma-separated list) that\n"
+    "gives the sample step-size (t in figure 2).  This is not to be confused with a range in\n"
+    "frames of the trajectory.  However, the notion of \"time\" is dictated by the sampling\n"
+    "rate of your trajectory, and is specified in terms of frames.  For example, if your\n"
+    "trajectory has 1 frame/ns, then the t-range is specified in ns.  If your trajectory\n"
+    "has one frame every 100 ps, then the t-range is specified in 100 ps units (i.e. frames).\n"
+    "This whole procedure is repeated multiple times for each sample size, n.  The number of\n"
+    "repeats is given by the --reps option (default of 5).\n"
+    "\tThe output is an ASCII matrix where the first column is the step-size t. Each subsequent\n"
+    "set of two-columns corresponds to a different sample size or n-value.  The first column\n"
+    "in each set is the scaled variance (eq 3), averaged over each replica.  The second column\n"
+    "is the standard error in the scaled variance.  This data can be plotted, e.g. figure 3.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tdecorr_time --selection '!hydrogen' model.pdb simulation.dcd 5:5:100 >decorr.asc\n"
+    "A decorrelation time calculation using the default sample sizes of 2, 4, and 10 and\n"
+    "the default bin-size of 20 (probability 0.05).  The calculation is repeated the default\n"
+    "of 5 times for each sample-size.  Only non-hydrogen atoms are used.  And the range in t\n"
+    "is 5 to 100 at every 5 frames (assuming a 1 frame/ns trajectory, then 5 to 100 ns every 5 ns).\n"
+    "\n"
+    "\tdecorr_time --selection 'name == \"CA\"' --nrange 2,3,4 --frac 0.1 model.pdb simulation.dcd >decorr.asc 10:10:250\n"
+    "Here, only alpha-carbons are used.  Sample sizes are 2, 3, and 4 and there are 10 bins.  The\n"
+    "t-range here is 10 to 250 at every 10 frames.\n"
+    "\n"
+    "NOTES\n"
+    "\tSimulations that are not well-converge may have difficulty with the default sample-size\n"
+    "range.  Try a smaller range (i.e. 2,3,4) as well as large bins.\n"
+    "SEE ALSO\n"
+    "\tufidpick, effsize.pl, neff, assign_frames, hierarchy\n";
+
+  return(msg);
+}
+
+
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
 
@@ -231,7 +283,7 @@ DoubleMatrix statistics(const vector<DoubleMatrix>& V) {
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions *bopts = new opts::BasicOptions;
+  opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection *sopts = new opts::BasicSelection;
   opts::TrajectoryWithFrameIndices *tropts = new opts::TrajectoryWithFrameIndices;
   opts::BasicConvergence *copts = new opts::BasicConvergence;
