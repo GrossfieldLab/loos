@@ -136,12 +136,41 @@ vector<double> rowStd(const DoubleMatrix& M, const vector<double>& means) {
 }
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tDetermine the effective sample size of a simulation\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool determines the effective sample size (Neff) as described in\n"
+    "Zhang, Batt, and Zuckerman, JCTC (2010) 6:3048-57.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tneff assignments.asc zuckerman.states 0.1\n"
+    "This example determines the Neff given the structural histogram assigments\n"
+    "in assignments.asc, the clustering in zuckerman.states, and a bin-probability of 0.1\n"
+    "\n"
+    "NOTES\n"
+    "\tThe partition_size should match the bin-probability used in generating the\n"
+    "structural histogram (i.e. ufidpick)\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tufidpick, assign_frames, hierarchy, effsize.pl\n";
+
+  return(msg);
+}
+
+
 
 int main(int argc, char *argv[]) {
   
   if (argc != 4) {
-    cout << "Usage- " << argv[0] << " assignments states partition_size\n";
-    exit(0);
+    cerr << "Usage- " << argv[0] << " assignments states partition_size\n";
+    cerr << fullHelpMessage();
+    exit(-1);
   }
 
   string hdr = invocationHeader(argc, argv);
