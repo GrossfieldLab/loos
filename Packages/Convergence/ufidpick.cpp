@@ -43,12 +43,39 @@ using namespace std;
 using namespace loos;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tPick fiducial structures for a structural histogram\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool picks structures from a trajectory for use as fiducials in a structural\n"
+    "histogram.  They are picked using bins with a uniform probability.  For more details,\n"
+    "see Lyman & Zuckerman, J Phys Chem B (2007) 111:12876-12882.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tufidpick model.pdb simulation.dcd all 'name == \"CA\"' zuckerman 0.1 >ufidpick.log\n"
+    "This example uses bins with a probability of 0.1 (i.e. 10 bins), using only\n"
+    "the alpha-carbons.  The output files include a log of what structures were picked,\n"
+    "stored in ufidpick.log, as well as a trajectory containing just the fiducial structures\n"
+    "in zuckerman.dcd and the corresponding model file in zuckerman.pdb\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tassign_frames, hierarchy, decorr_time, effsize.pl\n";
+
+  return(msg);
+}
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   if (argc < 7 || argc > 8) {
     cerr << "Usage - " << argv[0] << " model trajectory range|all selection output-name cutoff [seed]\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
