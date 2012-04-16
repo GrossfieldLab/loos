@@ -64,7 +64,7 @@ string fullHelpMessage(void) {
     "in zuckerman.dcd and the corresponding model file in zuckerman.pdb\n"
     "\n"
     "SEE ALSO\n"
-    "\tassign_frames, hierarchy, decorr_time, effsize.pl\n";
+    "\tassign_frames, hierarchy, effsize.pl\n";
 
   return(msg);
 }

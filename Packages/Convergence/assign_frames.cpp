@@ -36,11 +36,39 @@ using namespace std;
 using namespace loos;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tConstruct a structural histogram given a set of fiducial structures\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool assigns the frames of a trajectory to the closest bin based\n"
+    "on the fiducial structures given.  See Lyman & Zuckerman,\n"
+    "J Phys Chem B (2007) 111:12876-12882 for more details.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tassign_frames model.pdb simulation.dcd all 'name == \"CA\"' zuckerman.dcd >assignments.asc\n"
+    "This example assigns all frames in simulation.dcd using the fiducials stored in zuckerman.dcd,\n"
+    "writing the assignments to assignments.asc.\n"
+    "\n"
+    "NOTES\n"
+    "\tThe selection used here must match that given to ufidpick\n"
+    "SEE ALSO\n"
+    "\tufidpick, effsize.pl, hierarchy\n";
+
+  return(msg);
+}
+
+
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   if (argc != 6) {
     cerr << "Usage - " << argv[0] << " model trajectory range selection fiducials.dcd >assignments.asc\n";
+    fullHelpMessage();
     exit(-1);
   }
   
