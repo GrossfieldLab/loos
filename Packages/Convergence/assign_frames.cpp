@@ -57,7 +57,7 @@ string fullHelpMessage(void) {
     "NOTES\n"
     "\tThe selection used here must match that given to ufidpick\n"
     "SEE ALSO\n"
-    "\tufidpick, effsize.pl, hierarchy\n";
+    "\tufidpick, effsize.pl, hierarchy, neff\n";
 
   return(msg);
 }

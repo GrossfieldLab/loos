@@ -48,10 +48,12 @@ typedef pair<uint, uint>     uPair;
 typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
+
 // Debugging generates a lot of information about the internal state
 // of the code.  This was used to validate its operation with respect
 // to Dan's PERL code.
 const bool debugging = false;
+
 
 
 double mfpt(const vector<uint>& assign, const uint x, const uint y) {
@@ -335,6 +337,27 @@ void findOrphans(vvUint& states, const uint max_states) {
     states.push_back(unseen);
 }
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tPerform a hierarchical clustering needed to determine effective sample size\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool implements the hierarchical clustering algorithm as part of determining\n"
+    "effective sample size described in Zhang, Batt, and Zuckerman, JCTC (2010) 6:3048-57.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\thierarchy assignments.asc >zuckerman.states\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tufidpick, assign_frames, neff, effsize.pl\n";
+
+  return(msg);
+}
 
 
 
