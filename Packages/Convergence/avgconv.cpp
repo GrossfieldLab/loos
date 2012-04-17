@@ -42,6 +42,43 @@ using namespace loos;
 bool locally_optimal = false;
 
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tConvergence of the average structure\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThe convergence of the average structure from a trajectory is determined by first\n"
+    "dividing the trajectory into blocks.  An average structure is computed for the i'th and\n"
+    "the i+1'th block.  These two average structure are superimposed using a Kabsch alignment\n"
+    "algorithm.  The RMSD is calculated.  This is then repeated for all blocks.\n"
+    "\tInitially, the whole trajectory is optimally aligned first using an iterative alignment\n"
+    "process (described in Grossfield, et al. Proteins 67, 31–40 (2007)).  Optionally,\n"
+    "each block may be optimally aligned independently by using the 'locally optimal' flag.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tavgconv sim.psf traj.dcd 'segid == \"PE1\"' >avgconv.asc\n"
+    "This example uses automatic block-sizes for the subsamples and calculates the RMSD and\n"
+    "superpositions using all atoms from the PE1 segment.  The output is placed in avgconv.asc\n"
+    "\n"
+    "\tavgconv sim.psf traj.dcd 'name == \"CA\"' 10:10:500 >avgconv.asc\n"
+    "This example uses all alpha-carbons and explicitly sets the block sizes to 10,\n"
+    "20, ..., 100\n"
+    "\n"
+    "\tavgconv sim.psf traj.dcd '!hydrogen' 10:10:500 1 >avgconv.asc\n"
+    "This example uses all non-hydrogen atoms with block sizes of 10, 20, 30, ..., 5000,\n"
+    "and the blocks are all iteratively aligned prior to computing the average.\n"
+    "SEE ALSO\n"
+    "\tblock_average, block_avgconv\n";
+
+  return(msg);
+}
+
+
 AtomicGroup calcAverage(const vector<AtomicGroup>& ensemble, const uint size) {
 
   vector<AtomicGroup> subsample(size);
@@ -59,7 +96,8 @@ AtomicGroup calcAverage(const vector<AtomicGroup>& ensemble, const uint size) {
 
 int main(int argc, char *argv[]) {
   if (argc < 4 || argc > 6) {
-    cout << "Usage- avgconv model traj selection [range [1 = local optimal avg]]\n";
+    cerr << "Usage- avgconv model traj selection [range [1 = local optimal avg]]\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
@@ -86,8 +124,8 @@ int main(int argc, char *argv[]) {
   } else {
 
     blocks = parseRangeList<uint>(argv[k++]);
-    if (argc == 6)
-      locally_optimal = (argv[6][0] == '1');
+    if (argc == k+1)
+      locally_optimal = (argv[k][0] == '1');
   }
   
   AtomicGroup subset = selectAtoms(model, sel);
