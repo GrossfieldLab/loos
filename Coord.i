@@ -71,22 +71,22 @@ namespace loos {
 
 
 
-  %extend Coord<T> {
-    T __getitem__(const int i) {
-      if (i < 0 || i >= 3)
-        return(0);
-      return((*$self)[i]);
-    }
-    
-    void __setitem__(const int i, const T d) {
-      if (3 >= i && i >= 0)
-        (*$self)[i] = d;
-    }
-
-  };
 
 };
 
+%extend loos::Coord<double> {
+  double __getitem__(const int i) {
+    if (i < 0 || i >= 3)
+      return(0);
+    return((*$self)[i]);
+  }
+    
+  void __setitem__(const int i, const double d) {
+    if (3 >= i && i >= 0)
+      (*$self)[i] = d;
+  }
+
+ };
 
 %extend loos::Coord<double> {
   char* __str__() {
