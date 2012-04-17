@@ -132,7 +132,7 @@ void modifyZ(AtomicGroup& grp) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("!hydrogen || !(segid == 'BULK' || segid == 'SOLV')");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
