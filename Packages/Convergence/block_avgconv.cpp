@@ -103,7 +103,8 @@ int main(int argc, char *argv[]) {
   
   if (argc < 4 || argc > 6) {
     cerr << "Usage- block_avgconv model traj sel [range [1 = do not align trajectory]]\n";
-    exit(0);
+    cerr << fullHelpMessage();
+    exit(-1);
   }
 
   string hdr = invocationHeader(argc, argv);
