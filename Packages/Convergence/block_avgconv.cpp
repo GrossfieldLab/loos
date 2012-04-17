@@ -64,6 +64,40 @@ AtomicGroup averageSelectedSubset(const vector<AtomicGroup>& ensemble, const vec
 
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tBlock-average approach to average structure convergence\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThe trajectory is divided into n-blocks.  The average structure for each\n"
+    "block is computed.  The RMSD between all pairs of blocks is calculated and the\n"
+    "average, variance, and standard error are written out.  The block size is then\n"
+    "increased and the process repeated.\n"
+    "\tThe trajectory is first optimally aligned using an iterative method described in\n"
+    "in Grossfield, et al. Proteins 67, 31–40 (2007) unless the 'do not align' flag is given.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tblock_avgconv sim.psf traj.dcd '!hydrogen' >blocks.asc\n"
+    "This example uses all non-hydrogen atoms with automatically determined block sizes.\n"
+    "The trajectory is optimally aligned.\n"
+    "\n"
+    "\tblock_avgconv sim.psf traj.dcd 'name == \"CA\" 10:10:1000 >blocks.asc\n"
+    "This example uses all alpha-carbons and block sizes 10, 20, 30, ..., 1000.\n"
+    "\n"
+    "\tblock_avgconv sim.psf traj.dcd 'segid == \"PE1\"' 25:25:500 1 >blocks.asc\n"
+    "This example does NOT optimally align the trajectory first.  All atoms from segment\n"
+    "'PE1' are used.  Block sizes are 25, 50, 75, ..., 500\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tavgconv, block_average\n";
+
+  return(msg);
+}
+
 
 int main(int argc, char *argv[]) {
   
