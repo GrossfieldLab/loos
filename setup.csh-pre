@@ -42,3 +42,9 @@ if ($?LD_LIBRARY_PATH) then
 else
     setenv LD_LIBRARY_PATH "$LIBPATH"
 endif
+
+if ($?PYTHONPATH) then
+   setenv PYTHONPATH "$PYTHONPATH":"$LIBPATH"
+else
+   setenv PTYHONPATH "$LIBPATH"
+fi
