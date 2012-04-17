@@ -46,6 +46,33 @@ typedef vector<AtomicGroup>      vGroup;
 
 
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tPick fiducial structures for a structural histogram using a distance cutoff\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool implements the older method of constructing a structural histogram\n"
+    "where bins are defined in terms of the closest N structures to a randomly picked\n"
+    "fiducial.  See Lyman and Zuckerman, Biophys J (2006) 91:164-72 for more information.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tfidpick model.pdb simulation.dcd all 'name == \"CA\" fiducials 5.0 >>fiducials.asc\n"
+    "This example uses all alpha-carbons, assigns bins based on a distance cutoff of 5.0 angstroms\n"
+    "and writes the fiducials to fiducials.pdb and fiducials.dcd.  A log of the selections\n"
+    "is stored in fiducials.asc\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tsortfids\n";
+
+  return(msg);
+}
+
+
 vector<uint> findFreeFrames(const vector<int>& map) {
   vector<uint> indices;
 

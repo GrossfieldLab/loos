@@ -47,6 +47,27 @@ typedef Math::Matrix<double, Math::RowMajor>  Matrix;
 
 // @cond TOOLS_INTERNAL
 
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tSorts fiducial structures based on histogram bin population\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tGiven a set of fiducials for a structural histogram, sort them based\n"
+    "on bin population.  This can be useful when using fidpick, which selects\n"
+    "fiducials based on distance rather than bin probability.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tfidpick\n";
+
+  return(msg);
+}
+
+
 // Sorts based on 3rd col of a matrix
 
 struct Adapter {
@@ -68,6 +89,7 @@ int main(int argc, char *argv[]) {
   
   if (argc != 6) {
     cerr << "Usage- sortfids model sel fids hist newfids\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
