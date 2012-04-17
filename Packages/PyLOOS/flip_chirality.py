@@ -35,7 +35,12 @@ system = loos.createSystem(filename)
 system.centerAtOrigin()
 # loop over atoms and reverse the sign of the x coordinate
 for i in range(system.size()):
-    system[i].coords().x(-system[i].coords().x())
+    # 2 different ways to assign to coordinates
+    # SWIG won't let us do: coords.x() = new_x
+    # so we can do this:
+    #system[i].coords().x(-system[i].coords().x())
+    # or this:
+    system[i].coords()[0] *= -1.0
 
 system.centerAtOrigin()
 
