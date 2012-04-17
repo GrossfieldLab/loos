@@ -82,14 +82,14 @@ int main(int argc, char *argv[]) {
   vector<uint> sizes;
   bool do_align = true;
 
-  if (argc == 4) {
+  if (argc == k) {
     uint step = traj->nframes() / default_starting_number_of_blocks;
     for (uint i=step; i<traj->nframes() * default_fraction_of_trajectory; i += step)
       sizes.push_back(i);
   } else {
     sizes = parseRangeList<uint>(argv[k++]);
-    if (argc == 6)
-      do_align = (argv[6][0] != '1');
+    if (argc == k+1)
+      do_align = (argv[k][0] != '1');
   }
 
 
