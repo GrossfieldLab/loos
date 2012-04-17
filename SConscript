@@ -40,7 +40,7 @@ apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 
 
-loos = env.SharedLibrary('loos', Split(apps))
+loos = env.SharedLibrary('libloos', Split(apps))
 
 # Handle installation...
 PREFIX = env['PREFIX']
@@ -81,7 +81,8 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
 
 
 # Python bindings
-loos_python = env.SharedLibrary('_loos.so', ['loos.i', loos])
+#pyloos = env.SharedLibrary('_pyloos', Split(apps))
+loos_python = env.SharedLibrary('_loos', ['loos.i', loos])
 
 
 
