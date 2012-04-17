@@ -47,4 +47,4 @@ if ($?PYTHONPATH) then
    setenv PYTHONPATH "$PYTHONPATH":"$LIBPATH"
 else
    setenv PTYHONPATH "$LIBPATH"
-fi
+endif
