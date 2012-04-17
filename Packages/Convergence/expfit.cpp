@@ -1,3 +1,27 @@
+/*
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2011, Tod D. Romo
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+
 #include <loos.hpp>
 #include <Simplex.hpp>
 
@@ -44,9 +68,37 @@ vvecDouble readData(const string& fname) {
 
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tExponential fit for bootstrapped-bcom/bcom output\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool calculates a multi-exponential fit to the bootstrapped-bcom/bcom data.\n"
+    "A Nelder-Mead Simplex is used as the optimizer.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\texpfit bcom.asc boot_bcom.asc 5 3\n"
+    "This tries to fit bcom.asc and boot_bcom.asc using 5 replicas and using a 3-exponential\n"
+    "function.\n"
+    "SEE ALSO\n"
+    "\tbcom, boot_bcom, bootstrap_overlap.pl\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-
+  if (argc != 5) {
+    cerr << "Usage- expfit bcom.asc boot_bcom.asc nreps ndims\n";
+    cerr << fullHelpMessage();
+    exit(-1);
+  }
 
 
   int k = 1;
