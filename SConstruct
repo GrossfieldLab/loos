@@ -303,7 +303,7 @@ env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-env.Alias('pyloos', loos_python)
+env.Alias('pyloos', loos_python + loos_scripts + tools)
 
 env.Alias('all', loos + tools + all_packages + loos_scripts)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
