@@ -36,7 +36,6 @@
 #include <stdexcept>
 
 
-#include <boost/random.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/any.hpp>
 #include <boost/lexical_cast.hpp>
@@ -50,8 +49,6 @@
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
 
-#include <utils_random.hpp>
-#include <utils_structural.hpp>
 
 
 //! Namespace for most things not already encapsulated within a class.

@@ -23,6 +23,9 @@
 #if !defined(LOOS_UTILS_RANDOM_HPP)
 #define LOOS_UTILS_RANDOM_HPP
 
+#include <boost/random.hpp>
+
+
 namespace loos {
 
   typedef boost::mt19937 base_generator_type;

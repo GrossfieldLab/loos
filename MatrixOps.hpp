@@ -30,7 +30,7 @@
 #include <MatrixImpl.hpp>
 #include <exceptions.hpp>
 #include <sorting.hpp>
-#include <utils.hpp>
+#include <utils_random.hpp>
 #include <TimeSeries.hpp>
 #include <stdexcept>
 #include <cmath>

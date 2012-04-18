@@ -52,6 +52,8 @@
 #include <loos_defs.hpp>
 #include <exceptions.hpp>
 #include <utils.hpp>
+#include <utils_random.hpp>
+#include <utils_structural.hpp>
 
 #include <Kernel.hpp>
 #include <Parser.hpp>

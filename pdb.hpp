@@ -39,6 +39,7 @@
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
 #include <utils.hpp>
+#include <utils_structural.hpp>
 
 
 

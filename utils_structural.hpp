@@ -25,8 +25,9 @@
 #if !defined(LOOS_UTILS_STRUCTURAL_HPP)
 #define LOOS_UTILS_STRUCTURAL_HPP
 
-#include <loos_defs.hpp>
+#include <vector>
 
+#include <loos_defs.hpp>
 
 
 namespace loos {

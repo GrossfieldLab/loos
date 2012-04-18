@@ -20,7 +20,7 @@
 */
 
 
-
+#include <utils_structural.hpp>
 #include <OptionsFramework.hpp>
 
 
