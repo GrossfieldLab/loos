@@ -118,6 +118,16 @@ namespace loos {
   typedef boost::mt19937 base_generator_type;
 
   //! Suite-wide random number generator singleton
+  /**
+   * LOOS makes no assumptions about how the random number generator
+   * gets seeded.  It is up to the tool-writer to seed it with a known
+   * value,
+\code
+rng_singleton().seed(seed_value);
+\endcode
+   * or call randomSeedRNG() to randomly seed the random number
+   * generator...
+   */
   base_generator_type& rng_singleton(void);
 
   //! Randomly seeds the RNG
