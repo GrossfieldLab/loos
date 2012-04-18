@@ -42,8 +42,8 @@
 
 #include <Selectors.hpp>
 #include <Parser.hpp>
-#include <utils.hpp>
 
+#include <utils.hpp>
 
 
 extern std::string revision_label;
@@ -143,61 +143,11 @@ namespace loos {
 
 
 
-  GCoord boxFromRemarks(const Remarks& r) {
-    int n = r.size();
-    int i;
-
-    GCoord c(99999.99, 99999.99, 99999.99);
-
-    for (i=0; i<n; i++) {
-      std::string s = r[i];
-      if (s.substr(0, 6) == " XTAL ") {
-        std::stringstream is(s.substr(5));
-        if (!(is >> c.x()))
-          throw(ParseError("Unable to parse " + s));
-        if (!(is >> c.y()))
-          throw(ParseError("Unable to parse " + s));
-        if (!(is >> c.z()))
-          throw(ParseError("Unable to parse " + s));
-
-        break;
-      }
-    }
-
-    return(c);
-  }
 
 
 
-  bool remarksHasBox(const Remarks& r) {
-    int n = r.size();
-    for (int i = 0; i<n; i++) {
-      std::string s = r[i];
-      if (s.substr(0, 6) == " XTAL ")
-        return(true);
-    }
-    return(false);
-  }
 
 
-
-  base_generator_type& rng_singleton(void) {
-    static base_generator_type rng;
-
-    return(rng);
-  }
-
-
-  // Seeding based on the block is not the best method, but probably
-  // sufficient for our purposes...
-  uint randomSeedRNG(void) {
-    base_generator_type& rng = rng_singleton();
-
-    uint seedval = static_cast<uint>(time(0));
-
-    rng.seed(seedval);
-    return(seedval);
-  }
 
 
   std::vector<int> parseRangeList(const std::string& text) {
@@ -425,45 +375,6 @@ namespace loos {
   }
 
   
-  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& coord_name) {
-    AtomicGroup model = createSystem(model_name);
-    if (!coord_name.empty()) {
-      AtomicGroup coords = createSystem(coord_name);
-      model.copyCoordinates(coords);
-    }
-    
-    if (! model.hasCoords())
-      throw(LOOSError("Error- no coordinates found in specified model(s)"));
-    
-    return(model);
-  }
-  
-  AtomicGroup loadStructureWithCoords(const std::string& model_name, const std::string& type, const std::string& coord_name) {
-    AtomicGroup model = createSystem(model_name, type);
-    if (!coord_name.empty()) {
-      AtomicGroup coords = createSystem(coord_name);
-      model.copyCoordinates(coords);
-    }
-    
-    if (! model.hasCoords())
-      throw(LOOSError("Error- no coordinates found in specified model(s)"));
-    
-    return(model);
-  }
-  
-  
-  
-  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip, uint stride)  {
-    std::vector<uint> frames;
-    
-    if (frame_index_spec.empty())
-      for (uint i=skip; i<traj->nframes(); i += stride)
-        frames.push_back(i);
-    else
-      frames = parseRangeList<uint>(frame_index_spec);
-    
-    return(frames);
-  }
 
 
 }

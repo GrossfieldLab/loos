@@ -38,6 +38,7 @@ apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.c
 apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp amber_rst.cpp'
 apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
+apps = apps + ' utils_random.cpp utils_structural.cpp'
 
 
 loos = env.SharedLibrary('libloos', Split(apps))
@@ -74,6 +75,7 @@ hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp Progres
 hdr = hdr + ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
 hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
+hdr = hdr + ' utils_random.hpp utils_structural.hpp'
 
 loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 
@@ -81,7 +83,6 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
 
 
 # Python bindings
-#pyloos = env.SharedLibrary('_pyloos', Split(apps))
 loos_python = env.SharedLibrary('_loos', ['loos.i', loos])
 
 

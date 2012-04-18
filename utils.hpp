@@ -50,6 +50,9 @@
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
 
+#include <utils_random.hpp>
+#include <utils_structural.hpp>
+
 
 //! Namespace for most things not already encapsulated within a class.
 namespace loos {
@@ -103,38 +106,9 @@ namespace loos {
    */
   std::string invocationHeader(int, char *[]);
 
-  //! Extract the Alan-style box-size from a PDB Remarks block.
-  /** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
-   *  info found in the remarks block.
-   */
-  GCoord boxFromRemarks(const Remarks&);
 
-  //! Checks to see if a Remarks block has an Alan-style box size in it.
-  bool remarksHasBox(const Remarks&);
 
-  // The following are in LOOS namespace because they are either
-  // collisions waiting to or are too esoteric to warrant going into std
 
-  typedef boost::mt19937 base_generator_type;
-
-  //! Suite-wide random number generator singleton
-  /**
-   * LOOS makes no assumptions about how the random number generator
-   * gets seeded.  It is up to the tool-writer to seed it with a known
-   * value,
-\code
-rng_singleton().seed(seed_value);
-\endcode
-   * or call randomSeedRNG() to randomly seed the random number
-   * generator...
-   */
-  base_generator_type& rng_singleton(void);
-
-  //! Randomly seeds the RNG
-  /**Currently uses time(3) to seed the RNG obtained from the singleton...
-   * Returns the seed used.
-   */
-  uint randomSeedRNG(void);
 
   //! Parse an Octave/Matlab-style range
   /**
@@ -348,13 +322,7 @@ rng_singleton().seed(seed_value);
   //! Converts a vector of strings into a single string with newlines
   std::string stringsAsString(const std::vector<std::string>& v);
 
-  //! Loads a structure and optional coordinates
-  AtomicGroup loadStructureWithCoords(const std::string& model, const std::string& cooords);
 
-  AtomicGroup loadStructureWithCoords(const std::string& model, const std::string& type, const std::string& cooords);
-
-  //! Builds a list of trajectory indices (frame_index_spec supercedes skip)
-  std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0, uint stride = 1);
 
   //! Convert a vector of type T to a string-list with commas
   template<typename T> std::string vectorAsStringWithCommas(const std::vector<T>& v) {

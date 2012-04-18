@@ -124,7 +124,6 @@ namespace loos {
   class TinkerXYZ;
   class Gromacs;
 
-
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
   typedef boost::shared_ptr<PDB> pPDB;
   typedef boost::shared_ptr<PSF> pPSF;
@@ -133,6 +132,9 @@ namespace loos {
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
   typedef boost::shared_ptr<Gromacs> pGromacs;
 
+
+  // Misc
+  class Remarks;
 
   const uint kilobytes = 1024;
   const uint megabytes = 1024 * kilobytes;
