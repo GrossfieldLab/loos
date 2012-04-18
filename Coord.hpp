@@ -27,6 +27,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <utils_random.hpp>
 
 namespace loos {
 
@@ -424,6 +425,27 @@ namespace loos {
     double distance(const Coord<T>& o, const Coord<T>& box) const {
       return(sqrt(distance2(o, box)));
     }
+
+    //! Generate a random vector on a unit sphere
+    /**
+     *  Note: this method uses a singleton random number generator set up
+     *        by LOOS, but doesn't set the initial seed.  Instead, the calling
+     *        program needs to do that, either by calling randomSeedRNG()
+     *        (see utils_random.cpp), which seeds off the time, or by generating 
+     *        the seed another way.
+     */
+    void random(void) {
+        base_generator_type& rng = rng_singleton();
+        boost::uniform_on_sphere<> uni(3);
+        boost::variate_generator<base_generator_type&, 
+                                 boost::uniform_on_sphere<> > func(rng, uni);
+        std::vector<double> vec = func();
+        for (uint i=0; i<MAXCOORD; i++) {
+            v[i] = static_cast<T>(vec[i]);
+        }
+
+    }
+    
 
 
     //! Zero out the coordinates (while keeping it homogenous)

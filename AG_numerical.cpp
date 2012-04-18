@@ -314,13 +314,9 @@ namespace loos {
     int i, n = size();
     GCoord r;
 
-    loos::base_generator_type& rng = loos::rng_singleton();
-    boost::uniform_on_sphere<> uni(3);
-    boost::variate_generator<loos::base_generator_type&, boost::uniform_on_sphere<> > func(rng, uni);
-
     for (i=0; i<n; i++) {
-      std::vector<double> v = func();
-      GCoord r(rms * v[0], rms * v[1], rms * v[2]);
+      r.random();
+      r *= rms;
       atoms[i]->coords() += r;
     }
   }

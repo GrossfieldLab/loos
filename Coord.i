@@ -64,6 +64,7 @@ namespace loos {
     T distance2(const Coord<T>& o, const Coord<T>& box) const;
     T distance(const Coord<T>& o) const;
     T distance(const Coord<T>& o, const Coord<T>& box) const;
+    void random(void);
     void zero(void);
     bool operator==(const Coord<T>& rhs) const;
     bool operator!=(const Coord<T>& rhs) const;
