@@ -336,7 +336,7 @@ namespace loos {
     return(oss.str());
   }
 
-
+  template<> std::string vectorAsStringWithCommas(const std::vector<std::string>& v);
 
 };
 
