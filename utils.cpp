@@ -388,6 +388,18 @@ namespace loos {
   }
 
   
+  //! Specialization for strings that sanitizes the contained strings
+  template<> std::string vectorAsStringWithCommas(const std::vector<std::string>& v) {
+    std::string s;
+    for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i) {
+      s += sanitizeString(*i);
+      if (i != v.end() - 1)
+        s += ",";
+    }
+
+    return(s);
+  }
+
 
 
 }

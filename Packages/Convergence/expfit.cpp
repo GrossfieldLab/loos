@@ -94,8 +94,8 @@ string fullHelpMessage(void) {
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  if (argc != 5) {
-    cerr << "Usage- expfit bcom.asc boot_bcom.asc nreps ndims\n";
+  if (argc < 5) {
+    cerr << "Usage- expfit bcom.asc boot_bcom.asc nreps ndims constant-1 time-1 [constant-2 time-2 ...]\n";
     cerr << fullHelpMessage();
     exit(-1);
   }
@@ -109,6 +109,8 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Error- bcom has %d datapoints but bbcom has %d\n") % bcom.size() % bbcom.size();
     exit(-10);
   }
+
+  cerr << boost::format("Read in %d datapoints\n") % bcom.size();
   
   vector<Point> datapoints;
   for (uint i=0; i<bcom.size(); ++i)
@@ -119,7 +121,15 @@ int main(int argc, char *argv[]) {
   vector<double> seeds;
   vector<double> lens;
   ndims *= 2;
+  if (argc - 5 != ndims * 2) {
+    cerr << boost::format("Error- only %d seeds were specified, but require %d for %d dimensions\n")
+      % (argc - 5)
+      % (ndims * 2)
+      % ndims;
+    exit(-1);
+  }
   for (int i=0; i<ndims; ++i) {
+    cerr << boost::format("%d / %d\n") % argc % k;
     double d = strtod(argv[k++], 0);
     seeds.push_back(d);
     lens.push_back(d/2.0);
