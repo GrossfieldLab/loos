@@ -81,9 +81,11 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLES\n"
     "\n"
-    "\texpfit bcom.asc boot_bcom.asc 5 3\n"
-    "This tries to fit bcom.asc and boot_bcom.asc using 5 replicas and using a 3-exponential\n"
-    "function.\n"
+    "\texpfit bcom.asc boot_bcom.asc 5 2 0.7 10 0.3 100\n"
+    "This tries to fit bcom.asc and boot_bcom.asc using 5 replicas and using a 2-exponential\n"
+    "with inital coefficients of 0.7 and 0.3 and initial correlation times of 10 and 100\n"
+    "respectively.\n"
+    "\n"
     "SEE ALSO\n"
     "\tbcom, boot_bcom, bootstrap_overlap.pl\n";
 
@@ -121,15 +123,14 @@ int main(int argc, char *argv[]) {
   vector<double> seeds;
   vector<double> lens;
   ndims *= 2;
-  if (argc - 5 != ndims * 2) {
+  if (argc - 5 != ndims) {
     cerr << boost::format("Error- only %d seeds were specified, but require %d for %d dimensions\n")
       % (argc - 5)
-      % (ndims * 2)
-      % ndims;
+      % (ndims)
+      % (ndims/2);
     exit(-1);
   }
   for (int i=0; i<ndims; ++i) {
-    cerr << boost::format("%d / %d\n") % argc % k;
     double d = strtod(argv[k++], 0);
     seeds.push_back(d);
     lens.push_back(d/2.0);
