@@ -1,3 +1,9 @@
+2012-04-18    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed utils.hpp, moving random number code to utils_random,
+	and structural-related code into utils_structural.  loos.hpp now
+	includes all utils files, so tools do not require any changes.
+
 2012-04-09    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed convert2pdb to use the options framework
@@ -13,7 +19,7 @@
 
 2012-04-02    <alan@membrane.urmc.rochester.edu>
    * Added cross-dist tool to compute distribution of crossing angles
-   and torsions for chains.  
+   and torsions for chains.
 
 2012-03-30    <tromo@spade.biophysics.rochester.edu>
 
