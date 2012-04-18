@@ -35,6 +35,7 @@
 #include <vector>
 #include <stdexcept>
 
+#include <utils.hpp>
 
 namespace loos {
 
@@ -105,17 +106,6 @@ namespace loos {
 
     private:
 
-      std::string sanitizeString(const std::string& s) {
-        std::string t;
-
-        for (std::string::const_iterator i = s.begin(); i != s.end(); ++i)
-          if (*i == '\n')
-            t.push_back(' ');
-          else
-            t.push_back(*i);
-
-        return(t);
-      }
 
       // Strip leading space (skipping meta-marker)
       std::string stripper(const std::string& s) {

@@ -312,6 +312,10 @@ namespace loos {
     return(oss.str());
   }
 
+
+  //! Removes internal newlines from string
+  std::string sanitizeString(const std::string& s);
+
   //! Converts a vector of strings into a standard log format
   std::string stringsAsComments(const std::vector<std::string>& v);
 

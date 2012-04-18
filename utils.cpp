@@ -352,11 +352,24 @@ namespace loos {
 
 
 
+  std::string sanitizeString(const std::string& s) {
+    std::string t;
+
+    for (std::string::const_iterator i = s.begin(); i != s.end(); ++i)
+      if (*i == '\n')
+        t.push_back(' ');
+      else
+        t.push_back(*i);
+    
+    return(t);
+  }
+
+
   std::string stringsAsComments(const std::vector<std::string>& v) {
     std::string s;
 
     for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i)
-      s += "# " + *i + "\n";
+      s += "# " + sanitizeString(*i) + "\n";
 
     return(s);
   }
@@ -366,7 +379,7 @@ namespace loos {
     std::string s;
 
     for (std::vector<std::string>::const_iterator i = v.begin(); i != v.end(); ++i)
-      s += *i + "\n";
+      s += sanitizeString(*i) + "\n";
 
     // Remove the trailing newline...
     s.erase(s.end()-1);
