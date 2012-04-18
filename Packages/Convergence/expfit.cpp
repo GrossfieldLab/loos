@@ -24,6 +24,7 @@
 
 #include <loos.hpp>
 #include <Simplex.hpp>
+#include <limits>
 
 using namespace std;
 using namespace loos;
@@ -38,6 +39,10 @@ struct ExponentialFit {
 
   double operator()(const vector<double>& v) {
     double sum = 0.0;
+
+    for (vector<double>::const_iterator i = v.begin(); i != v.end(); ++i)
+      if (*i < 0.0)
+        return(numeric_limits<double>::max());
 
     for (vector<Point>::iterator j = _datapoints.begin(); j != _datapoints.end(); ++j) {
       double x = j->first;
