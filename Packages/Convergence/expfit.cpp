@@ -117,8 +117,6 @@ int main(int argc, char *argv[]) {
     exit(-10);
   }
 
-  cerr << boost::format("Read in %d datapoints\n") % bcom.size();
-  
   vector<Point> datapoints;
   for (uint i=0; i<bcom.size(); ++i)
     datapoints.push_back(Point(bcom[i][0], bbcom[i][1]/bcom[i][1]));
