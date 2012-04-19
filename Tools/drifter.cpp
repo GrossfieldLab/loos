@@ -94,7 +94,7 @@ string fullHelpMessage(void) {
     "\n"
     "\tdrifter calculates the distance between the centroid of a selection for each frame\n"
     "in the trajectory and either the average centroid (optionally of a different selection)\n"
-    "or a fixed point."
+    "or a fixed point.\n"
     "\n"
     "EXAMPLES\n"
     "\n"

@@ -88,7 +88,7 @@ string fullHelpMessage(void)
 "DESCRIPTION\n"
 "\n"
 "The purpose of this tool is to compute the distribution of crossing \n"
-"angles and torsios for a set of chains.  Specifically, it takes a selection of \n"
+"angles and torsions for a set of chains.  Specifically, it takes a selection of \n"
 "atoms, splits them into in individual chains based on connectivity,\n"
 "and at each time point computes their centroids and principle axes.\n"
 "If a pair of chains centroids are within a threshold distance, it \n"
