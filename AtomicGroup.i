@@ -51,8 +51,6 @@ typedef unsigned int   uint;
 typedef unsigned long  ulong;
  %}
 
-%template(AtomicGroupVector) std::vector<loos::AtomicGroup>;
-
 
 namespace loos {
 
@@ -100,7 +98,7 @@ namespace loos {
     AtomicGroup merge(const AtomicGroup& g);
     AtomicGroup select(const AtomSelector& sel) const;
     std::vector<AtomicGroup> splitByUniqueSegid(void) const;
-    std::vector<AtomicGroup> splitByMolecule(void);
+    std::vector<loos::AtomicGroup> splitByMolecule(void);
     std::vector<AtomicGroup> splitByResidue(void) const;
     std::map<std::string, AtomicGroup> splitByName(void) const;
     pAtom findById(const int id);
@@ -188,5 +186,11 @@ namespace loos {
 
   %rename(__add__)  loos::AtomicGroup::operator+;
 
+
+
+
 };
 
+
+
+%template(AtomicGroupVector) std::vector<loos::AtomicGroup>;
