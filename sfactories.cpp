@@ -71,6 +71,9 @@ namespace loos {
     } else if (filetype == "gro") {
       pGromacs p(new Gromacs(filename));
       pag = p;
+    } else if (filetype == "crd") {
+      pCHARMM p(new CHARMM(filename));
+      pag = p;
 
     } else
       throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'"));

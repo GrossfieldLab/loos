@@ -123,6 +123,7 @@ namespace loos {
   class AmberRst;
   class TinkerXYZ;
   class Gromacs;
+  class CHARMM;
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
   typedef boost::shared_ptr<PDB> pPDB;
@@ -131,6 +132,7 @@ namespace loos {
   typedef boost::shared_ptr<AmberRst> pAmberRst;
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
   typedef boost::shared_ptr<Gromacs> pGromacs;
+  typedef boost::shared_ptr<CHARMM> pCHARMM;
 
 
   // Misc
