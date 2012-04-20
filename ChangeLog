@@ -1,3 +1,8 @@
+2012-04-20    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in aligner when alignment and transformation subsets
+	were not the same and auto-centering was turned on.
+
 2012-04-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed utils.hpp, moving random number code to utils_random,

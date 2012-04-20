@@ -239,7 +239,7 @@ int main(int argc, char *argv[]) {
     for (unsigned int i = 0; i<nframes; i++) {
       traj->readFrame(i);
       traj->updateGroupCoords(model);
-      applyto_sub.applyTransform(xforms[i]);
+      model.applyTransform(xforms[i]);
       
       if (topts->center)
         centerFrame(align_sub, applyto_sub);
