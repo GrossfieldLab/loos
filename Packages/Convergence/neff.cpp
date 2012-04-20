@@ -154,8 +154,9 @@ string fullHelpMessage(void) {
     "in assignments.asc, the clustering in zuckerman.states, and a bin-probability of 0.1\n"
     "\n"
     "NOTES\n"
-    "\tThe partition_size should match the bin-probability used in generating the\n"
-    "structural histogram (i.e. ufidpick)\n"
+    "\n"
+    "\tThe partition_size should match the bin-probability used in\n"
+    "generating the structural histogram (i.e. ufidpick)\n"
     "\n"
     "SEE ALSO\n"
     "\tufidpick, assign_frames, hierarchy, effsize.pl\n";
