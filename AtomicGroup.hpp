@@ -647,9 +647,8 @@ namespace loos {
         if (indices.size() == 0)
           return(res);
 
-        for (std::set<int>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci) {
+        for (std::set<int>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci)
           res.addAtom(grp[*ci]);
-        }
 
         return(res);
       }
