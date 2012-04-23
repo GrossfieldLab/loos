@@ -385,7 +385,17 @@ namespace loos {
   
     //! Find atoms in \a grp that are within \a dist angstroms of atoms
     //! in the current group.
-    AtomicGroup within(const double dist, AtomicGroup& grp);
+    AtomicGroup within(const double dist, AtomicGroup& grp) const {
+      Distance2WithoutPeriodicity op;
+      return(within_private(dist, grp, op));
+    }
+
+    AtomicGroup within(const double dist, AtomicGroup& grp, const GCoord& box) const {
+      Distance2WithPeriodicity op(box);
+      return(within_private(dist, grp, op));
+    }
+    
+    
 
     //! Apply a functor or a function to each atom in the group.
     /** apply() let's you apply a functor or a function pointer to each
@@ -592,6 +602,70 @@ namespace loos {
     GMatrix alignOnto(const AtomicGroup&);
 
   private:
+
+    struct Distance2WithoutPeriodicity {
+      double operator()(const GCoord& a, const GCoord& b) const {
+        return(a.distance2(b));
+      }
+    };
+      
+    struct Distance2WithPeriodicity {
+      Distance2WithPeriodicity(const GCoord& box) : _box(box) { }
+      
+      double operator()(const GCoord& a, const GCoord& b) const {
+        return(a.distance2(b, _box));
+      }
+      
+      GCoord _box;
+    };
+
+    /** Uses a not-very-bright algorithm that compares all atoms against
+   * all atoms... 
+   */
+
+      template<typename DistanceCalc>
+      AtomicGroup within_private(const double dist, AtomicGroup& grp, const DistanceCalc& distance_functor) const {
+        int na = size();
+        int nb = grp.size();
+        AtomicGroup res;
+
+        res.box = box;
+        double dist2 = dist * dist;
+        std::vector<int> ids;
+
+        for (int j=0; j<nb; j++) {
+          for (int i=0; i<na; i++) {
+            if (distance_functor(atoms[i]->coords(), grp.atoms[j]->coords()) <= dist2)
+              ids.push_back(atoms[i]->id());
+          }
+        }
+
+        // Abort the rest if nothing was found...
+        if (ids.size() == 0)
+          return(res);
+
+        std::vector<int> unique_ids;
+        std::sort(ids.begin(), ids.end());
+        std::vector<int>::const_iterator ci;
+        int last_id = ids[0];
+        unique_ids.push_back(last_id);
+        for (ci = ids.begin()+1; ci != ids.end(); ci++)
+          if (*ci != last_id) {
+            last_id = *ci;
+            unique_ids.push_back(last_id);
+          }
+
+        for (ci = unique_ids.begin(); ci != unique_ids.end(); ci++) {
+          pAtom pa = findById(*ci);
+          if (pa == 0)
+            throw(std::logic_error("Cannot find a found atom in AtomicGroup::atomsWithin()"));
+
+          res.addAtom(pa);
+        }
+
+        return(res);
+      }
+
 
     std::vector<AtomicGroup> sortingSplitByMolecule();
 
