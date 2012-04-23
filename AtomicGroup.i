@@ -137,6 +137,9 @@ namespace loos {
     void mergeImage();
     void findBonds(const double dist = 1.65);
 
+    AtomicGroup within(const double dist, AtomicGroup& grp);
+    AtomicGroup within(const double dist, AtomicGroup& grp, const GCoord& box);
+
     std::vector<loos::Coord<double> > boundingBox(void) const;
     GCoord centerAtOrigin(void);
     GCoord centroid(void) const;
