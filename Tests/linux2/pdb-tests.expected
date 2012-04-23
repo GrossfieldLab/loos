@@ -2,7 +2,7 @@ Read in 525 atoms.
 minId = 1
 maxId = 525
 minResid = 1
-maxResid = 1
+maxResid = 49
 nresids = 49
 nsegids = 4
 Bounding box: min = (-30.599,-33.181,-38.314), max = (46.108,82.251,60.197)
