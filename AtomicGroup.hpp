@@ -390,6 +390,7 @@ namespace loos {
       return(within_private(dist, grp, op));
     }
 
+    //! Find atoms in \a grp that are within \a dist angstroms of atoms in the current group, considering periodicity
     AtomicGroup within(const double dist, AtomicGroup& grp, const GCoord& box) const {
       Distance2WithPeriodicity op(box);
       return(within_private(dist, grp, op));
@@ -625,42 +626,29 @@ namespace loos {
 
       template<typename DistanceCalc>
       AtomicGroup within_private(const double dist, AtomicGroup& grp, const DistanceCalc& distance_functor) const {
-        int na = size();
-        int nb = grp.size();
+
         AtomicGroup res;
-
         res.box = box;
-        double dist2 = dist * dist;
-        std::vector<int> ids;
 
-        for (int j=0; j<nb; j++) {
-          for (int i=0; i<na; i++) {
-            if (distance_functor(atoms[i]->coords(), grp.atoms[j]->coords()) <= dist2)
-              ids.push_back(atoms[i]->id());
+        double dist2 = dist * dist;
+        std::set<int> indices;
+
+        for (uint j=0; j<size(); j++) {
+          GCoord c = atoms[j]->coords();
+          for (uint i=0; i<grp.size(); i++) {
+            if (distance_functor(c, grp.atoms[i]->coords()) <= dist2) {
+              indices.insert(i);
+              break;
+            }
           }
         }
 
         // Abort the rest if nothing was found...
-        if (ids.size() == 0)
+        if (indices.size() == 0)
           return(res);
 
-        std::vector<int> unique_ids;
-        std::sort(ids.begin(), ids.end());
-        std::vector<int>::const_iterator ci;
-        int last_id = ids[0];
-        unique_ids.push_back(last_id);
-        for (ci = ids.begin()+1; ci != ids.end(); ci++)
-          if (*ci != last_id) {
-            last_id = *ci;
-            unique_ids.push_back(last_id);
-          }
-
-        for (ci = unique_ids.begin(); ci != unique_ids.end(); ci++) {
-          pAtom pa = findById(*ci);
-          if (pa == 0)
-            throw(std::logic_error("Cannot find a found atom in AtomicGroup::atomsWithin()"));
-
-          res.addAtom(pa);
+        for (std::set<int>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci) {
+          res.addAtom(grp[*ci]);
         }
 
         return(res);
