@@ -59,7 +59,7 @@ uint seed = 0;
 uint skip;
 
 
-void fullHelp() {
+void fullHelpMessage() {
   //string msg = 
   cout <<  "\n"
   "SYNOPSIS\n"
@@ -176,7 +176,7 @@ void parseArgs(int argc, char *argv[]) {
       cerr << "Usage- " << argv[0] << " [options] ls lU rs rU >output\n";
       cerr << generic;
       if (vm.count("fullhelp"))
-        fullHelp();
+        fullHelpMessage();
       exit(-1);
     }
 
