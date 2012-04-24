@@ -1,6 +1,21 @@
-/** @file */
+/*
 
-//28July10 - looks at side-nodes.cpp (unreleased loos tool made by Tod)
+(c) 2011 Nicholas Leioatts, Grossfield Lab 
+       with help from Tod D. Romo
+    Dept. of Biophysics
+    University of Rochster School of Medicine and Dentistry
+
+  Output a pdb and dcd using two beads for every residue.  The first
+  bead can be placed at the CA location or the CoM of the backbone.
+  The second bead is placed at the CoM of the side-chain.  GLY uses 
+  a single bead.
+
+  Usage:
+   two-body-traj [options] output-prefix model-name trajectory-name
+
+  Example:
+   two-body-traj coarse-grained-protein protein-struct.pdb protein-traj.dcd
+*/
 
 /*
   This file is part of LOOS.
@@ -166,12 +181,13 @@ int main(int argc, char *argv[]) {
       AtomicGroup CA = thisResidue.select(AtomNameSelector("CA"));
       AtomicGroup BB = thisResidue.select(BackboneSelector());
       if (CA.empty()) {
+	//ERROR CHECKING
 	//	cerr << "Error- cannot find CA.\n" << *vi;
 	//	exit(-10);
 	continue;
       }
       double massholder = 0.0;
-      for (int bbi = 0; bbi < BB.size(); ++bbi) {
+      for (uint bbi = 0; bbi < BB.size(); ++bbi) {
 	massholder += BB[bbi]->mass();      
       }
       //CA should be an AtomicGroup of only one atom, the CA of residue *vi
