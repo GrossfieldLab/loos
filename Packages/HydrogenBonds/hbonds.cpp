@@ -75,6 +75,46 @@ uint skip = 0;
 // @cond TOOLS_INTERNAL
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tHydrogen bond occupancy for a trajectory\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool computes the occupancy of putative hydrogen bonds (defined by\n"
+    "a simple distance and angle criteria).  The 'donor' selection must have one\n"
+    "hydrogen present and the 'acceptor' should have no hydrogens.  Multiple acceptors\n"
+    "may be given on the command line.  These are specified by using multiple sets of\n"
+    "options, i.e. -N name -S selection where name is the label for the acceptor and\n"
+    "selection is the corresponding LOOS selection string.  There must be at least\n"
+    "one name/selection pair.  The occupancy calculation can also be performed over\n"
+    "multiple trajectories by specifying more than one on the command line.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\thbonds -N 'Carbonyl' -S 'name == \"O1\" && resname == \"PALM\"' 'resid == 4 && name == \"HE1\"' model.psf traj.dcd\n"
+    "This example uses the palmitoyl carbonyl oxygen as the acceptor and the HE1 hydrogen from\n"
+    "residue 4 as the donor.\n"
+    "\n"
+    "\thbonds -N 'Carbonyl' -S 'name == \"O1\" && resname == \"PALM\"' -N 'Phosphate' -S 'name == \"OP1\" && resname == \"PEGL\"' 'resid == 4 && name == \"HE1\"' model.psf traj.dcd\n"
+    "This example uses the palmitoyl carbonyl oxygen as above, but also looks for hydrogen\n"
+    "bonds with the OP1 phosphate oxygen in residue PEGL.  The same donor as above is used.\n"
+    "\n"
+    "\thbonds --blow 2 --bhi 4 --angle 20 -N 'Carbonyl' -S 'name == \"O1\" && resname == \"PALM\"' 'resid == 4 && name == \"HE1\"' model.psf traj.dcd\n"
+    "This example is the same as the first, however the criteria for hydrogen bonds are now\n"
+    "that they cannot be shorter than 2 angstroms nor longer than 4 angstroms, and the angle\n"
+    "cannot be more than 20 degrees from linear.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\thmatrix, hcorrelation\n";
+
+  return(msg);
+}
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   void addGeneric(po::options_description& o) {
@@ -189,7 +229,7 @@ veDouble rowStd(const Matrix& M, const veDouble& avg) {
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
