@@ -69,6 +69,53 @@ bool any_hydrogen;
 // @cond TOOLS_INTERNAL
 
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tHydrogen bond correlation times\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool generates the auto-correlation of putative hydrogen bonds for a trajectory.\n"
+    "Given a donor (hydrogen atom) and a set of acceptors, a matrix is constructed for\n"
+    "the trajectory where each row corresponds to a frame in the trajectory and each column\n"
+    "corresponds to a potential acceptor.  If there is a hydrogen bond present, subject to\n"
+    "distance range and angle cutoff, then a 1 is placed in the matrix, otherwise a 0.\n"
+    "An auto-correlation is then calculated for each column.  Only columns where there is\n"
+    "at least one hydrogen-bond present are included.  If the any-hydrogen flag is set (--any=1),\n"
+    "then the state of the hydrogen bond at each time point is the union of all possible\n"
+    "acceptors.  This is useful for asking what the correlation is between a donor and -any-\n"
+    "possible acceptor.\n"
+    "\tThis process is repeated for all possible donors and over all trajectories.  The\n"
+    "correlation time-series is then averaged together, so what is written out is the average\n"
+    "correlation at a given time, over all donors and all trajectories.  The maximum correlation\n"
+    "time is set automatically based on the shortest trajectory.  However, it may be explicitly\n"
+    "set with the --maxtime T option.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\thcorrelation 'segid == \"PE1\" && resid == 4 && name == \"HE1\"' 'name == \"O1\" && (resname == \"PALM\"' model.psf sim.dcd\n"
+    "This example uses the HE1 hydrogen of residue 4 in segment PE1 as the donor, and the O1\n"
+    "palmitoyl carnonyl oxygen as the acceptor.  The average correlation over all carbonyl\n"
+    "oxygens is written out.\n"
+    "\n"
+    "\thcorrelation --any=1 'segid == \"PE1\" && resid == 4 && name == \"HE1\"' 'name == \"O1\" && (resname == \"PALM\"' model.psf sim.dcd\n"
+    "This example is the same as above, however the correlation is for the peptide hydrogen (HE1)\n"
+    "hydrogen bonding to -any- palmitoyl carbonyl.\n"
+    "\n"
+    "\thcorrelation --blow=2.0 --bhi=4.0 --angle=25.0 --any=1 'segid == \"PE1\" && resid == 4 && name == \"HE1\"' 'name == \"O1\" && (resname == \"PALM\"' model.psf sim.dcd\n"
+    "This example is the same as above, but with the hydrogen-bond criteria changed to be\n"
+    "2.0 <= distance <= 4.0 and the angle <= 25.0 degrees.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\thmatrix, hbonds\n";
+
+  return(msg);
+}
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   void addGeneric(po::options_description& o) {
@@ -188,7 +235,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions opts;
