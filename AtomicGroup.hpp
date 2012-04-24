@@ -632,22 +632,20 @@ namespace loos {
     // same code can be used for both periodic and non-periodic
     // coordinates.
 
-    template<typename DistanceCalc>
+    template <typename DistanceCalc>
     AtomicGroup within_private(const double dist, AtomicGroup& grp, const DistanceCalc& distance_functor) const {
 
       AtomicGroup res;
       res.box = box;
 
       double dist2 = dist * dist;
-      // Track the indices (not atomid's) of atoms in self that fit
-      // the criteria...  These are stored in a set
-      std::set<int> indices;
+      std::vector<uint> indices;
 
       for (uint j=0; j<size(); j++) {
         GCoord c = atoms[j]->coords();
         for (uint i=0; i<grp.size(); i++) {
           if (distance_functor(c, grp.atoms[i]->coords()) <= dist2) {
-            indices.insert(j);
+            indices.push_back(j);
             break;
           }
         }
@@ -656,7 +654,7 @@ namespace loos {
       if (indices.size() == 0)
         return(res);
 
-      for (std::set<int>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci)
+      for (std::vector<uint>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci)
         res.addAtom(atoms[*ci]);
 
       return(res);
