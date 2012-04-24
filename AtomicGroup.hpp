@@ -383,8 +383,7 @@ namespace loos {
     //! Takes a group that's split across a periodic boundary and reimages it so it's all together, using the first atom in the AtomicGroup as the reference
     void mergeImage();
   
-    //! Find atoms in \a grp that are within \a dist angstroms of atoms
-    //! in the current group.
+    //! Find atoms in the current group that are within \a dist angstroms of any atom in \a grp
     AtomicGroup within(const double dist, AtomicGroup& grp) const {
       Distance2WithoutPeriodicity op;
       return(within_private(dist, grp, op));
@@ -604,6 +603,11 @@ namespace loos {
 
   private:
 
+
+    // These are functors for calculating distance between two coords
+    // without and with periodicity.  These can be passed to functions
+    // that need to support both ways of calculating distances, such
+    // was within_private() below...
     struct Distance2WithoutPeriodicity {
       double operator()(const GCoord& a, const GCoord& b) const {
         return(a.distance2(b));
@@ -620,38 +624,43 @@ namespace loos {
       GCoord _box;
     };
 
-    /** Uses a not-very-bright algorithm that compares all atoms against
-   * all atoms... 
-   */
 
-      template<typename DistanceCalc>
-      AtomicGroup within_private(const double dist, AtomicGroup& grp, const DistanceCalc& distance_functor) const {
 
-        AtomicGroup res;
-        res.box = box;
+    // Find all atoms in the current group that are within dist
+    // angstroms of any atom in the passed group.  The distance
+    // calculation is determined by the passed functor so that the
+    // same code can be used for both periodic and non-periodic
+    // coordinates.
 
-        double dist2 = dist * dist;
-        std::set<int> indices;
+    template<typename DistanceCalc>
+    AtomicGroup within_private(const double dist, AtomicGroup& grp, const DistanceCalc& distance_functor) const {
 
-        for (uint j=0; j<size(); j++) {
-          GCoord c = atoms[j]->coords();
-          for (uint i=0; i<grp.size(); i++) {
-            if (distance_functor(c, grp.atoms[i]->coords()) <= dist2) {
-              indices.insert(i);
-              break;
-            }
+      AtomicGroup res;
+      res.box = box;
+
+      double dist2 = dist * dist;
+      // Track the indices (not atomid's) of atoms in self that fit
+      // the criteria...  These are stored in a set
+      std::set<int> indices;
+
+      for (uint j=0; j<size(); j++) {
+        GCoord c = atoms[j]->coords();
+        for (uint i=0; i<grp.size(); i++) {
+          if (distance_functor(c, grp.atoms[i]->coords()) <= dist2) {
+            indices.insert(j);
+            break;
           }
         }
-
-        // Abort the rest if nothing was found...
-        if (indices.size() == 0)
-          return(res);
-
-        for (std::set<int>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci)
-          res.addAtom(grp[*ci]);
-
-        return(res);
       }
+
+      if (indices.size() == 0)
+        return(res);
+
+      for (std::set<int>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci)
+        res.addAtom(atoms[*ci]);
+
+      return(res);
+    }
 
 
     std::vector<AtomicGroup> sortingSplitByMolecule();

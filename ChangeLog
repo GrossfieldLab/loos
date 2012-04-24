@@ -1,11 +1,11 @@
 2012-04-23    <tromo@spade.biophysics.rochester.edu>
 
-	* Fixed bug in AtomicGroup::within() where it was returning atoms
-	in the current group near atoms in the passed group, rather than
-	the other way around (as described in the documentation for
-	within()).  The algorithm has also been rewritten to be
-	substantially faster.
-	* Added support for considering periodicity in AtomicGroup::within()
+	* Fixed bug in AtomicGroup::within() documentation that
+	incorrectly stated that for A.within(X, B), what was returned was
+	atoms from B when in fact it was atoms from A, i.e. atoms in A
+	that are within X angstroms of any atom in B.
+	* Changed the algorithm in AtomicGroup::within() to support
+	periodicity and to be much faster.
 
 2012-04-20    <tromo@spade.biophysics.rochester.edu>
 
