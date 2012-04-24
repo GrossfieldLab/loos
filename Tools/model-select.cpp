@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
   if (argc != 3) {
-    cerr << "Usage- " << argv[0] << " <selection string> <pdb file>\n";
+    cerr << "Usage- " << argv[0] << " selection-string model\n";
     cerr << fullHelpMessage();
     exit(-1);
   }
