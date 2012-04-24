@@ -58,6 +58,41 @@ uint currentTimeStep = 0;
 // @cond TOOLS_INTERNAL
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tHydrogen bond state for a trajectory as a matrix\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool creates a matrix representing the state of putative hydrogen bonds\n"
+    "(1 = present, 0 = absent).  Each row of the matrix is one frame (time-point) of\n"
+    "the trajectory.  Each column corresponds to a possible h-bond acceptor.  Only\n"
+    "one donor may be specified.  Note that the donor is specified by selecting the\n"
+    "donated hydrogen.  Criteria for putative hydrogen-bonds are an inner and outer\n"
+    "distance cutoff and an angle deviation from linear (in degrees) cutoff.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\thmatrix model.psf sim.dcd 'segid == \"PE1\" && resid == 4 && name == \"HE1\"' 'name == \"O1\" && resname == \"PALM\"'\n"
+    "This example looks for hbonds between the HE1 hydrogen of residue 4 in the PE1 segment and\n"
+    "any palmitoyl carbonyl oxygen, O1.\n"
+    "\n"
+    "\thmatrix --blow 2.0 --bhi 4.0 --angle 25.0 model.psf sim.dcd 'segid == \"PE1\" && resid == 4 && name == \"HE1\"' 'name == \"O1\" && resname == \"PALM\"'\n"
+    "This example is the same as the above one, but with the hydrogen bond criteria changed\n"
+    "to greater than or equal to 2.0 angstroms and less than or equal to 4.0 angstroms, with\n"
+    "an angle of less than or equal to 25.0 degrees.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\thbonds, hcorrelation\n";
+
+  return(msg);
+}
+
+
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   void addGeneric(po::options_description& o) {
@@ -113,7 +148,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
 
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
   
