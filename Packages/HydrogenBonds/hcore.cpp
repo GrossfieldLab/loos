@@ -101,6 +101,7 @@ std::vector<SimpleAtom> SimpleAtom::processSelection(const std::string& selectio
   // We don't want to force model to be sorted (esp since it's const)
   // So, create a lightweight copy but use the same pAtoms...
   loos::AtomicGroup searchable(system);
+  searchable.sort();
 
   loos::AtomicGroup model = selectAtoms(system, selection);
 
