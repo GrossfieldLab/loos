@@ -43,13 +43,38 @@
 using namespace std;
 using namespace loos;
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tExtracts a selection from each frame of a trajectory into a PDB\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool will extract the atoms from a selection for each frame\n"
+    "of a trajectory and concatenate them into one giant PDB file.  This\n"
+    "can be useful for visualizing ligand locations and paths, for example.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tconcat-selection model.psf trajectory.dcd 'resname == \"CAU\"' >foo.pdb\n"
+    "This extracts the residue named CAU for each frame and concatenates them\n"
+    "into foo.pdb\n"
+    "\n"
+    "NOTES\n"
+    "\tCare should be taken since the resultant PDB may be large.\n"
+    ;
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   if (argc < 4) {
-    cerr << "Usage: concat-selection system trajectory selection [selection...] >output.pdb\n"
-      "\n"
-      "Extracts a set of atoms from each frame of a trajectory, writing them out to a single\n"
-      "PDB.  This can be useful to visualize ligand locations and paths, for example.  Care\n"
-      "should be exercised however since the resultant PDB may be larger.\n";
+    cerr << "Usage: concat-selection system trajectory selection [selection...] >output.pdb\n\n"
+         << fullHelpMessage();
+      
     exit(-1);
   }
 

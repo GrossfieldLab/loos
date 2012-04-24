@@ -75,11 +75,38 @@ void analyzeBoxes(DCD& dcd) {
 
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tDisplay information about a DCD file\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool displays the header data for a DCD file and optionally scans the periodic\n"
+    "box size data.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tdcdinfo -s model.pdb trajectory.dcd\n"
+    "This example displays the header data from trajectory.dcd along with statistics on the\n"
+    "periodic box.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\ttrajinfo\n";
+
+  return(msg);
+}
+
+
+
+
 int main(int argc, char *argv[]) {
   
   if (argc < 2 || argc > 3) {
     cerr << "Usage - dcdinfo [-s] trajectory.dcd\n";
     cerr << "    -s  scan the DCD for box information\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 

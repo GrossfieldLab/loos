@@ -68,13 +68,36 @@ double moment(const DoubleMatrix& M, const uint i, const double m, const double 
 }
 
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tKurtosis and skewness for SVD/PCA results\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tGiven a matrix of right singular vectors (RSV), calculate the kurtosis and skew for each\n"
+    "RSV.  This is usefl for identifying the presence of conformational substates.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tkurskew b2ar_V.asc\n"
+    "Report statistics for RSVs stored in b2ar_V.asc\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tsvd, big-svd\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   
   if (argc == 1) {
     cerr << "Usage- kurskew matrix >output\n";
-    cerr << "\n"
-      "Given a matrix or right-singular-vectors (from svd or big-svd), calculate the kurtosis\n"
-      "and skew for each RSV.  Useful for identifying presence of conformational substates.\n";
+    cerr << fullHelpMessage();
     exit(0);
   }
 

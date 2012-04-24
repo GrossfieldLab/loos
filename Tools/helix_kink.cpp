@@ -53,14 +53,37 @@ typedef vector<GCoord> Axes;
 const double RAD2DEG = 180.0 / PI;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tAngle deviation from linear between two selections\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tGiven two selections, the angle between the first principal components\n"
+    "of the two groups is calculated.  The deviation from linearity is printed\n"
+    "as a function of time.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\thelix_kink 'resid <= 20' 'resid >= 25 && resid <= 44' model.psf trajectory.dcd\n"
+    "Two groups are defined, the first 20 residues and residues 25 through 44.  The first\n"
+    "principal component is determined for each group and the angular deviation from linear\n"
+    "is printed out.\n"
+    "\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
   if (argc != 5) {
-    cout << "Usage- helix_kink selection-1 selection-2 model trajectory\n";
-    cout << "\n"
-      "Calculates the angle (from linear) between the first principal component\n"
-      "of each selection (i.e. the kink-angle between two helices)\n";
+    cerr << "Usage- helix_kink selection-1 selection-2 model trajectory\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 

@@ -38,13 +38,40 @@
 using namespace std;
 using namespace loos;
 
+
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tPrint statistics for bounding box of a selection\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tPrint out statistics for the bounding box of a selection over the whole\n"
+    "trajectory.  To get the bounding box of a single structure, a PDB may be used\n"
+    "as both model and trajectory.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tbounding model.psf simulation.dcd 'name == \"CA\"'\n"
+    "Bounding box for all alpha-carbons\n"
+    "\n"
+    "\tbounding model.pdb model.pdb 'name == \"CA\"'\n"
+    "Bounding box for a single structure.\n"
+    "\n"
+    "NOTES\n"
+    "\tThe bounding box of a model (no trajectory) ONLY works for PDB files\n"
+    "\n";
+
+  return(msg);
+}
+
+
 int main(int argc, char *argv[]) {
   if (argc != 4) {
-    cerr << "Usage: " << argv[0] << " model-filename trajectory selection-string\n"
-      "\n"
-      "Prints out statistics for the bounding box of the selection over the whole\n"
-      "trajectory.  To get the bounding box of a single structure, a PDB may be used as both\n"
-      "model and trajectory, i.e. 'bounding foo.pdb foo.dcd all'\n";
+    cerr << "Usage: " << argv[0] << " model-filename trajectory selection-string\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 

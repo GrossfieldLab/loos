@@ -39,26 +39,49 @@ using namespace loos;
 typedef vector<AtomicGroup>  vGroup;
 
 
-void show_help(void) {
-  cout << "Usage- renum-pdb model selection resid-start atomid-start [selection resid-start atomid-start ...]\n";
-  cout << "\n"
-    "This tool renumbers both atomids and residue ids for a set of selections (independently).\n"
-    "Note that atomids are important to LOOS when used with a trajectory.  If a model is\n"
-    "renumbered, then it will no longer match the corresponding trajectory.\n";
-  exit(0);
-}
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tRenumbers atoms and residues\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool renumbers sets of atoms and residues.  For each selection, the atomids and\n"
+    "resids are incremented.  The rest of the model is left unchanged.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\trenum-pdb model.pdb 'all' 1 1 >renumbered.pdb\n"
+    "This example renumbers everything, begin with resid 1 and atomid 1.\n"
+    "\n"
+    "\trenum-pdb model.pdb 'resid >= 100' 500 5000 >renumbered.pdb\n"
+    "This example renumbers residues higher than 100, shifting them to begin with 500.\n"
+    "The atomids for these residues are also renumbered, beginning with 5000.\n"
+    "\n";
+
+  return(msg);
+}
 
 
 int main(int argc, char *argv[]) {
 
   // lightweight args processing...
-  if (argc < 2 || (argc-2)%3)
-    show_help();
+  if (argc < 2 || (argc-2)%3) {
+    cerr << "Usage- renum-pdb model selection resid-start atomid-start [selection resid-start atomid-start ...]\n";
+    cerr << fullHelpMessage();
+    exit(-1);
+  }
   
   string name(argv[1]);
-  if (name == "-h" || name == "--help")
-    show_help();
+  if (name == "-h" || name == "--help") {
+    cerr << "Usage- renum-pdb model selection resid-start atomid-start [selection resid-start atomid-start ...]\n";
+    cerr << fullHelpMessage();
+    exit(-1);
+  }
+    
 
   AtomicGroup model = createSystem(name);
   for (int i=2; i<argc; i += 3) {

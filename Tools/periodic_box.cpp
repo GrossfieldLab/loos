@@ -35,13 +35,35 @@
 using namespace std;
 using namespace loos;
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tWrite out periodic box size as a time-series\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tGiven a trajectory, writes out the periodic box for each frame as a time-series.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tperiodic_box model.psf trajectory.dcd\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tdcdinfo, molshape\n";
+
+  return(msg);
+}
+
+
+
 int main(int argc, char *argv[]) {
   
   if (argc != 3) {
-    cout << "Usage- " << argv[0] << " model trajectory\n";
-    cout << "\n"
-      "Writes out the periodic box from a trajectory as a time-series.\n";
-    exit(0);
+    cerr << "Usage- " << argv[0] << " model trajectory\n";
+    cerr << fullHelpMessage();
+    exit(-1);
   }
 
   string hdr = invocationHeader(argc, argv);

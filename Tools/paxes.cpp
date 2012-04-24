@@ -37,13 +37,36 @@ using namespace std;
 using namespace loos;
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tMagnitudes of the principal axes for a selection over time\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tGiven a selection, the magnitudes of the three principal axes are\n"
+    "reported as a function of time.  This gives an idea of the shape of\n"
+    "the selection and is a simpler tool to use than molshape.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tpaxes model.psf trajectory.dcd 'name == \"CA\"' 'resname == \"CAU\"'\n"
+    "Reports the time in the first column, followed by the magnitudes of the principal\n"
+    "components for all alpha-carbons in the next three columns, followed by the\n"
+    "residue named CAU in the following 3 columns.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tmolshape\n";
+
+  return(msg);
+}
+
 
 int main(int argc, char *argv[]) {
   if (argc < 4) {
     cerr << "Usage - paxes model trajectory sel1 [sel2 ...]\n";
-    cerr << "\n"
-      "Reports the magnitudes of the three principal axes for each selection.\n"
-      "This tool is a simpler version of molshape.\n";
+    cerr << fullHelpMessage();
     exit(-1);
   }
 
