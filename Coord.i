@@ -102,15 +102,6 @@ namespace loos {
 
 %template(GCoord)  loos::Coord<double>;
 
-%rename(__add__)  loos::Coord<double>::operator+;
-%rename(__sub__) loos::Coord<double>::operator-;
-%rename(__mul__) loos::Coord<double>::operator*;
-%rename(__div__) loos::Coord<double>::operator/;
-%rename(__mod__) loos::Coord<double>::operator%;
-%rename(__pow__) loos::Coord<double>::operator^;
-%rename(__eq__) loos::Coord<double>::operator==;
-%rename(__ne__) loos::Coord<double>::operator!=;
-
 
 
 %template(GCoordVector)   std::vector<loos::Coord<double> >;
