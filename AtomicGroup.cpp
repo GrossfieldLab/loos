@@ -910,7 +910,8 @@ namespace loos {
 
 
   void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g, const uint offset, const uint length) {
-    uint n = (length == 0) ? g.size() : length;
+    uint n = (length == 0 || length > g.size()) ? g.size() : length;
+
     
     for (uint i=0; i<n && i+offset<atoms.size(); ++i)
       atoms[i+offset]->coords(g[i]->coords());
