@@ -55,4 +55,15 @@ namespace loos {
     bool readFrame(const int i);
   };
 
+
+  %extend Trajectory {
+
+    ulong __len__() const {
+      return($self->nframes());
+    }
+
+
+  };
+
 }
+
