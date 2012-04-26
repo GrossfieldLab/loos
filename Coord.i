@@ -11,6 +11,7 @@
 
   typedef loos::Coord<double>   GCoord;
 
+
   %}
 
 
@@ -43,8 +44,12 @@ namespace loos {
     void set(const T x, const T y, const T z);
     Coord<T>& operator+=(const Coord<T>& rhs);
     Coord<T> operator+(const Coord<T>& rhs) const;
+    Coord<T>& operator+=(const T rhs);
+    Coord<T> operator+(const T rhs) const;
     Coord<T>& operator-=(const Coord<T>& rhs);
     Coord<T> operator-(const Coord<T>& rhs) const;
+    Coord<T>& operator-=(const T rhs);
+    Coord<T> operator-(const T rhs) const;
     Coord<T> operator-();
     Coord<T>& operator*=(const T rhs);
     Coord<T> operator*(const T rhs) const;
@@ -105,6 +110,19 @@ namespace loos {
     strncpy(buf, oss.str().c_str(), sizeof(buf));
     return(buf);
   }
+
+  loos::Coord<double> __rmul__(const double d) {
+    return( *$self * d);
+  }
+
+  loos::Coord<double> __radd__(const double d) {
+    return( $self->operator+(d));
+  }
+
+  loos::Coord<double> __rsub__(const double d) {
+    return( d - *$self);
+  }
+    
 
  };
 
