@@ -4,6 +4,11 @@
 	optional offset into the current group and a number of coordinates
 	to copy.
 	* Deprecated AtomicGroup::copyCoordinates()
+	* Fixed bug in TRR where updateGroupCoords() would possibly fail
+	if updating a subset.
+	* Fixed bug in TRR where checking natoms() could return erroneous
+	sizes after instantiating the object, but before any frames had
+	been explicitly read.
 
 2012-04-23    <tromo@spade.biophysics.rochester.edu>
 
