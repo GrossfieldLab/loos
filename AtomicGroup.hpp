@@ -548,13 +548,7 @@ namespace loos {
      * order relative to the current group for the copy to make
      * sense.
      */
-    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset =0, const uint length=0) {
-      uint n = (length == 0) ? g.size() : length;
-      
-      for (uint i=0; i<n && i+offset<atoms.size(); ++i)
-        atoms[i+offset]->coords(g[i]->coords());
-    }
-
+    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset =0, const uint length=0);
 
     //! \b DEPRECATED : See copyCoordinatesFrom()
     void copyCoordinates(AtomicGroup& g) {

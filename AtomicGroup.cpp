@@ -909,6 +909,14 @@ namespace loos {
   }
 
 
+  void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g, const uint offset, const uint length) {
+    uint n = (length == 0) ? g.size() : length;
+    
+    for (uint i=0; i<n && i+offset<atoms.size(); ++i)
+      atoms[i+offset]->coords(g[i]->coords());
+  }
+
+
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {
     AtomicGroup::const_iterator i;
@@ -923,5 +931,7 @@ namespace loos {
     return(os);
   }
 
+
+  
 
 }
