@@ -1,5 +1,6 @@
 2012-04-26    <tromo@spade.biophysics.rochester.edu>
 
+	* Added addition and subtraction with constants for Coords
 	* Added AtomicGroup::copyCoordinatesFrom() which can now take an
 	optional offset into the current group and a number of coordinates
 	to copy.
