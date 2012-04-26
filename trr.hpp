@@ -192,10 +192,6 @@ namespace loos {
     template<typename T>
     bool readRawFrame() {
       
-      // Should it be an error/warning if the frame has different
-      // number of atoms from what was previously read?
-      natoms_ = hdr_.natoms;
-
       // Clear data first...
       box_.clear();
       vir_.clear();
@@ -248,7 +244,6 @@ namespace loos {
     internal::XDR xdr_file;
     std::vector<GCoord> coords_;
     GCoord box;
-    uint natoms_;
     std::vector<size_t> frame_indices;   // Index into file for start
                                          // of frame header
 

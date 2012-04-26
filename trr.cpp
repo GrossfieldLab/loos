@@ -113,6 +113,7 @@ namespace loos {
   // build the frame index, and finally caches the first frame.
   void TRR::init(void) {
     Header h;
+    h.natoms = 0;
 
     // Since the trajectory can have different number of atoms per
     // frame, we track the max and then reserve that space...
@@ -144,14 +145,14 @@ namespace loos {
     rewindImpl();
     parseFrame();
     cached_first = true;
+    hdr_ = h;
   }
 
   void TRR::updateGroupCoords(AtomicGroup& g) {
-    int natoms = g.size();
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int idx = (*i)->id()-1;
-      if (idx < 0 || idx > natoms)
+      if (idx < 0 || static_cast<uint>(idx) > natoms())
         throw(std::runtime_error("atom index into trajectory frame is out of range"));
       (*i)->coords(coords_[idx]);
     }
