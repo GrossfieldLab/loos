@@ -99,8 +99,8 @@ namespace loos {
     Coord(const Coord<T>& o) { copy(o); }
 
     Coord(const T x) {
-      int i;
-      for (i=0; i<MAXCOORD; i++)
+      uint i;
+      for (i=0; i<MAXCOORD; ++i)
         v[i] = x;
       v[i] = 1.0;
     }
@@ -150,8 +150,7 @@ namespace loos {
     //! Output the coordinate in pseudo-XML
     friend std::ostream& operator<<(std::ostream& os, const Coord<T>&o) { 
       os << "(";
-      int i;
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         os << o.v[i] << (i < MAXCOORD-1 ? "," : "");
       os << ")";
       return(os);
@@ -194,9 +193,7 @@ namespace loos {
 
     //! Handle addition
     Coord<T>& operator+=(const Coord<T>& rhs) {
-      int i;
-
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; i++)
         v[i] += rhs.v[i];
 
       return(*this);
@@ -206,6 +203,19 @@ namespace loos {
       Coord<T> res(*this);
       res += rhs;
       return(res);
+    }
+
+    Coord<T>& operator+=(const T rhs) {
+      for (uint i=0; i<MAXCOORD; ++i)
+        v[i] += rhs;
+
+      return(*this);
+    }
+
+    Coord<T> operator+(const T rhs) const {
+      Coord<T> res(*this);
+      res += rhs;
+      return(*this);
     }
 
     //! Handle the case of T + Coord<T>
@@ -218,9 +228,7 @@ namespace loos {
 
     //! Subtraction
     Coord<T>& operator-=(const Coord<T>& rhs) {
-      int i;
-
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         v[i] -= rhs.v[i];
 
       return(*this);
@@ -232,22 +240,34 @@ namespace loos {
       return(res);
     }
 
+    Coord<T>& operator-=(const T rhs) {
+      for (uint i=0; i<MAXCOORD; ++i)
+        v[i] -= rhs;
+      
+      return(*this);
+    }
+
+    Coord<T> operator-(const T rhs) const {
+      Coord<T> res(*this);
+
+      res -= rhs;
+      return(res);
+    }
+
     //! Unary negation
     Coord<T> operator-() {
       Coord<T> res(*this);
-      int i;
 
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         res.v[i] = -res.v[i];
       return(res);
     }
   
     //! Handle the case of T - Coord<T>
     friend Coord<T> operator-(const T lhs, const Coord<T>& rhs) {
-      int i;
       Coord<T> res;
 
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         res.v[i] = lhs - rhs.v[i];
 
       return(res);
@@ -260,9 +280,8 @@ namespace loos {
 
     //! Multiplication by a constant
     Coord<T>& operator*=(const T rhs) {
-      int i;
 
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         v[i] *= rhs;
 
       return(*this);
@@ -285,9 +304,7 @@ namespace loos {
 
     //! Division by a constant
     Coord<T>& operator/=(const T rhs) {
-      int i;
-
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         v[i] /= rhs;
 
       return(*this);
@@ -302,9 +319,8 @@ namespace loos {
     //!  T / Coord<T> case... This may not actually be a good idea? 
     friend Coord<T> operator/(const T lhs, const Coord<T>& rhs) {
       Coord<T> res;
-      int i;
 
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         res.v[i] = lhs / rhs.v[i];
 
       return(res);
@@ -313,10 +329,8 @@ namespace loos {
   
     //! Dot product
     T dot(const Coord<T>& rhs) const {
-      int i;
-
       T s = v[0] * rhs.v[0];
-      for (i=1; i<MAXCOORD; i++)
+      for (uint i=1; i<MAXCOORD; ++i)
         s += v[i] * rhs.v[i];
 
       return(s);
@@ -352,9 +366,8 @@ namespace loos {
 
     //! Modulo of each component of the Coord with a constant
     Coord<T>& operator%=(const Coord<T>& rhs) {
-      int i;
 
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         v[i] = fmod(v[i], rhs.v[i]);
 
       return(*this);
@@ -374,11 +387,8 @@ namespace loos {
 
     //! Handle coordinates with periodic boundary conditions.
     void reimage(const Coord<T>& box) {
-      int i;
-      int n;
-    
-      for (i=0; i<MAXCOORD; i++) {
-        n = (int)(fabs(v[i]) / box.v[i] + 0.5);
+      for (uint i=0; i<MAXCOORD; ++i) {
+        int n = (int)(fabs(v[i]) / box.v[i] + 0.5);
         v[i] = (v[i] >= 0) ? v[i] - n*(box.v[i]) : v[i] + n*(box.v[i]);
       }
     }
@@ -387,9 +397,8 @@ namespace loos {
     //! Length of the Coord (as a vector) squared
     double length2(void) const {
       double d = 0.0;
-      int i;
 
-      for (i=0; i<MAXCOORD; i++)
+      for (uint i=0; i<MAXCOORD; ++i)
         d += v[i]*v[i];
 
       return(d);
@@ -450,8 +459,8 @@ namespace loos {
 
     //! Zero out the coordinates (while keeping it homogenous)
     void zero(void) {
-      int i;
-      for (i=0; i<MAXCOORD; i++)
+      uint i;
+      for (i=0; i<MAXCOORD; ++i)
         v[i] = 0;
       v[i] = 1;
     }
@@ -477,8 +486,8 @@ namespace loos {
       if (&c == this)
         return;
 
-      int i;
-      for (i=0; i<MAXCOORD; i++)
+      uint i;
+      for (i=0; i<MAXCOORD; ++i)
         v[i] = c.v[i];
 
       v[i] = 1;
