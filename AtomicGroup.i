@@ -156,7 +156,7 @@ namespace loos {
     void translate(const GCoord & v);
     void rotate(const GCoord& axis, const greal angle_in_degrees);
     void applyTransform(const XForm&);
-    void copyCoordinates(AtomicGroup& g);
+    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset=0, const uint length=0);
     void perturbCoords(const greal);
     std::vector<loos::Coord<double> > principalAxes(void) const;
     std::vector<loos::Coord<double> > momentsOfInertia(void) const;
