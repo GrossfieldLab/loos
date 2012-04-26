@@ -184,6 +184,14 @@ namespace loos {
       char* buf = new char[n+1];
       strncpy(buf, oss.str().c_str(), n+1);
       return(buf);
+      }
+    char* __repr__() {
+      std::ostringstream oss;
+      oss << *$self;
+      size_t n = oss.str().size();
+      char* buf = new char[n+1];
+      strncpy(buf, oss.str().c_str(), n+1);
+      return(buf);
     }
   };
 

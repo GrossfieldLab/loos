@@ -120,6 +120,13 @@ namespace loos {
       strncpy(buf, oss.str().c_str(), sizeof(buf));
       return(buf);
     }
+    char* __repr__() {
+      static char buf[1024];
+      std::ostringstream oss;
+      oss << *$self;
+      strncpy(buf, oss.str().c_str(), sizeof(buf));
+      return(buf);
+    }
   };
 
 
