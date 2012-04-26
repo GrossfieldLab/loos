@@ -168,6 +168,11 @@ namespace loos {
   AtomicGroup operator+(const pAtom& lhs, const AtomicGroup& rhs);
 
   %extend AtomicGroup {
+    ulong __len__() const {
+      return($self->size());
+    }
+
+
     pAtom __getitem__(const int i) {
       return((*$self)[i]);
     }
