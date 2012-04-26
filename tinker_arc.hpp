@@ -70,7 +70,7 @@ namespace loos {
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
-    virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinates(frame); }
+    virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinatesFrom(frame); }
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
     virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }

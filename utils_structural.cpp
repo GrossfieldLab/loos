@@ -77,7 +77,7 @@ namespace loos {
     AtomicGroup model = createSystem(model_name);
     if (!coord_name.empty()) {
       AtomicGroup coords = createSystem(coord_name);
-      model.copyCoordinates(coords);
+      model.copyCoordinatesFrom(coords);
     }
     
     if (! model.hasCoords())
@@ -90,7 +90,7 @@ namespace loos {
     AtomicGroup model = createSystem(model_name, type);
     if (!coord_name.empty()) {
       AtomicGroup coords = createSystem(coord_name);
-      model.copyCoordinates(coords);
+      model.copyCoordinatesFrom(coords);
     }
     
     if (! model.hasCoords())

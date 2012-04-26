@@ -87,7 +87,7 @@ namespace loos {
   void CCPDB::updateGroupCoords(AtomicGroup& g) {
 
     if (g.size() == frame.size()) {
-      g.copyCoordinates(frame);
+      g.copyCoordinatesFrom(frame);
     } else {
       for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
         int idx = (*i)->id() - 1;
