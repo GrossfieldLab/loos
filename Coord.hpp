@@ -215,7 +215,7 @@ namespace loos {
     Coord<T> operator+(const T rhs) const {
       Coord<T> res(*this);
       res += rhs;
-      return(*this);
+      return(res);
     }
 
     //! Handle the case of T + Coord<T>
