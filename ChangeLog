@@ -1,3 +1,10 @@
+2012-04-26    <tromo@spade.biophysics.rochester.edu>
+
+	* Added AtomicGroup::copyCoordinatesFrom() which can now take an
+	optional offset into the current group and a number of coordinates
+	to copy.
+	* Deprecated AtomicGroup::copyCoordinates()
+
 2012-04-23    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::within() documentation that

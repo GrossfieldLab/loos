@@ -531,12 +531,32 @@ namespace loos {
     void applyTransform(const XForm&);
 
 
-
-    //! Copy coordinates from one group into another...
-    /** Requires that the groups be the same size and that the ith atom
-     * in group g matches the ith atom in the current group.
+    //! Copy coordinates from \arg g into current group
+    /**
+     * The \arg offset is relative to the start of the current group
+     * and \arg length is the number of coordinates to copy.  If
+     * \arg length + \arg offset is greater than the number of atoms
+     * in the current group, then the excess coordinates will not be
+     * copied.
+     *
+     * If not \arg length is given, then all coordinates in \arg g
+     * will be copied.  If neither \arg offset nor \arg length are
+     * given, then all coordinates from \arg g will be copied,
+     * starting with the first atom in the current group.
+     *
+     * It is assumed that the atoms in \arg g are in the appropriate
+     * order relative to the current group for the copy to make
+     * sense.
      */
-  
+    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset =0, const uint length=0) {
+      uint n = (length == 0) ? g.size() : length;
+      
+      for (uint i=0; i<n && i+offset<atoms.size(); ++i)
+        atoms[i+offset]->coords(g[i]->coords());
+    }
+
+
+    //! \b DEPRECATED : See copyCoordinatesFrom()
     void copyCoordinates(AtomicGroup& g) {
       iterator i, j;
 
