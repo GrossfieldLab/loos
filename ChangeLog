@@ -1,3 +1,12 @@
+2012-04-27    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in rmsds2ref where warnings would always be issued
+	about target selection regardless of whether a target was
+	specified.
+	* Fixed bug in PDB output affecting remarks records that contain
+	newlines.  Any newline in a remark record string is now removed
+	upon output.
+
 2012-04-26    <tromo@spade.biophysics.rochester.edu>
 
 	* Added addition and subtraction with constants for Coords
