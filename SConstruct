@@ -26,10 +26,18 @@ from time import strftime
 import shutil
 import distutils.sysconfig
 
-
-
-# This can be reset in custom.py
+# Set default path depending on platform...
+# Note: This can be reset in custom.py
 default_lib_path = '/usr/lib64'
+
+platform = sys.platform
+if platform == 'linux2':
+   # Determine linux variant...
+   fv = open('/proc/version', 'r')
+   linux_type = fv.read()
+
+   if (re.search("[Uu]buntu", linux_type)):
+      default_lib_path = '/usr/lib'
 
 
 # This is the version-tag for LOOS output
@@ -78,7 +86,7 @@ env['REGENERATE'] = regenerate
 
 reparse = env['reparse']
 
-platform = sys.platform
+# export platform to environment...
 env['platform'] = platform
 
 LAPACK = env['LAPACK']
@@ -164,10 +172,6 @@ elif platform == 'freebsd8':
 elif platform == 'linux2':
    noatlas = 0
 
-   # Determine linux variant
-   fv = open('/proc/version', 'r')
-   f = fv.read()
-   
 
    LIBS_LINKED_TO = 'atlas lapack'
    LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
@@ -179,11 +183,11 @@ elif platform == 'linux2':
    ### for your OS below...
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-   if (re.search("[Ss][Uu][Ss][Ee]", f)):
+   if (re.search("[Ss][Uu][Ss][Ee]", linux_type)):
       LIBS_LINKED_TO = 'lapack blas'
       LIBS_PATHS_TO = ""
 
-   elif (re.search("[Uu]buntu", f)):
+   elif (re.search("[Uu]buntu", linux_type)):
       LIBS_LINKED_TO = 'lapack_atlas lapack atlas blas'
    
 
