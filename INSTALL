@@ -13,6 +13,7 @@
 | Ubuntu 8.04 LTS   |     !     |   !    |
 | Ubuntu 10.04 LTS  |     +     |   !    |
 | Ubuntu 11.10      |     +     |   !    |
+| Ubuntu 12.04 LTS  |     +     |   +    |
 |-------------------|-----------|--------|
 | Debian 5          |     +     |   -    |
 | Debian 6          |     +     |   !    |
@@ -131,20 +132,16 @@ CentOS 5.7, 6.2: Yum install python-devel and pcre-devel, then download
 
 			------= Ubuntu =------
 
-LOOS has been tested on Ubuntu 8-11.  The following instructions have
+LOOS has been tested on Ubuntu 8-12.  The following instructions have
 been used to install LOOS on a fresh 64-bit 11.04 installation.  Use
 the Ubuntu software center (or apt-get) to install the following
 packages:
-	g++
-	scons
-	libboost-all-devel
-	libatlas-dev
-	libatlas-base-dev
+	g++ (GNU C++ compiler)
+	scons (replacement for make)
+	libboost-all-devel (Boost C++ Libraries development files (ALL))
+	libatlas-dev (Automatically Tunes Linear Algebra Software, C Header Files)
+	libatlas-base-dev (Automatically Tuned Linear Algebra Software)
 
-Optionally, you can install a machine-specific atlas, however, you
-must still install the packages above.  For example, on an i7 machine,
-install both atlas packages listed above as well as
-libatlas3gf-corei7sse3.
 
 * Ubuntu 8.04 LTS *
 
@@ -162,6 +159,8 @@ libboost-all-devel for a package name.
 
 
 * PyLOOS *
+
+Ubuntu 12.04 LTS: Install swig using software center or apt-get.
 
 Ubuntu 11.10 & 10.04 LTS: PyLOOS requires a very recent version of
   SWIG.  While it may appear that the swig 2.0.4 is available through
