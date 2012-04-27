@@ -23,7 +23,6 @@
 
 
 
-
 %header %{
 #include <AtomicGroup.hpp>
 #include <sfactories.hpp>
@@ -42,17 +41,67 @@
 #include <pdb_remarks.hpp>
 
 #include <sstream>
+
+
+
+
+
+ 
+ namespace loos {
+   
+   
+   // This gets translated into Python's StopIteration exception
+   struct StopIteration { };
+   
+
+   // Iterator class for AtomicGroup
+   class AtomicGroupPythonIterator {
+   public:
+   AtomicGroupPythonIterator(AtomicGroup* p) : _ag(p), _idx(0) { }
+     
+     pAtom next() throw (loos::StopIteration) {
+       if (_idx >= _ag->size())
+	 throw(loos::StopIteration());
+       return((*_ag)[_idx++]);
+     }
+   
+
+   private:
+     AtomicGroup* _ag;
+     uint _idx;
+   };
+ }
+
+
 %}
+
+
+// Translate C++ exception into Python's
+%typemap(throws) loos::StopIteration %{
+  PyErr_SetNone(PyExc_StopIteration);
+  SWIG_fail;
+  %}
+
+
 
 %wrapper %{
 typedef double    greal;
 typedef loos::Matrix44<double>   GMatrix;
 typedef unsigned int   uint;
 typedef unsigned long  ulong;
+
+
  %}
 
 
 namespace loos {
+
+
+  class AtomicGroupPythonIterator {
+  public:
+    AtomicGroupPythonIterator(loos::AtomicGroup*);
+    loos::pAtom next() throw (loos::StopIteration);
+  };
 
 
   struct AtomSelector {
@@ -197,6 +246,11 @@ namespace loos {
       char* buf = new char[n+1];
       strncpy(buf, oss.str().c_str(), n+1);
       return(buf);
+    }
+
+    // Bind the AtomicGroup Python iterator to the current group
+    loos::AtomicGroupPythonIterator __iter__() {
+      return(loos::AtomicGroupPythonIterator($self));
     }
   };
 
