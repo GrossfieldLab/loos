@@ -118,14 +118,16 @@ public:
 
   bool postConditions(po::variables_map& map) {
 
-    if (target_align.empty()) {
-      target_align = alignment;
-      cerr << "Warning: Using --align selection for target\n";
-    }
-
-    if (target_selection.empty()) {
-      target_selection = selection;
-      cerr << "Warning: Using --rmsd selectionh for target\n";
+    if (!target_name.empty()) {
+      if (target_align.empty()) {
+        target_align = alignment;
+        cerr << "Warning: Using --align selection for target\n";
+      }
+      
+      if (target_selection.empty()) {
+        target_selection = selection;
+        cerr << "Warning: Using --rmsd selection for target\n";
+      }
     }
       
     return(true);
