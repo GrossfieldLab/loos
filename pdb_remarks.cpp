@@ -28,6 +28,7 @@
 #include <iomanip>
 
 
+#include <utils.hpp>
 #include <pdb_remarks.hpp>
 
 
@@ -108,7 +109,7 @@ namespace loos {
 
       ss << std::setw(3) << std::setfill('0') << n++;
       s.replace(7,3, ss.str());
-      s.replace(11,58, *i);
+      s.replace(11,58, sanitizeString(*i));
       os << s;
     }
 
