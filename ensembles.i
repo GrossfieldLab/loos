@@ -90,7 +90,14 @@ namespace loos {
 
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
 
+  loos::AlignmentResult iterativeAlignmentPy(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter = 1000);
+
+
+  loos::AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, std::vector<uint>& frames, greal threshold = 1e-6, int maxiter = 1000);
+
   loos::AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter = 1000);
+
+
 
   void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
 
