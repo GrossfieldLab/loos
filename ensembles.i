@@ -25,22 +25,34 @@
 #include <ensembles.hpp>
 
   namespace loos {
-    typedef boost::tuple<std::vector<XForm>, greal, int>    AlignmentResult;
+    struct AlignmentResult {
+      std::vector<XForm> transforms;
+      double rmsd;
+      int iterations;
+    };
 
-    std::vector<XForm> getAlignmentTransforms(const AlignmentResult& result) { return(boost::get<0>(result)); }
-    double getAlignmentRMSD(const AlignmentResult& result) { return(boost::get<1>(result)); }
-    int getAlignmentIterations(const AlignmentResult& result) { return(boost::get<2>(result)); }
 
-  };
+    AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000) {
+      AlignmentResult res;
 
+      boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(g, traj, threshold, maxiter);
+      res.transforms = boost::get<0>(ares);
+      res.rmsd = boost::get<1>(ares);
+      res.iterations = boost::get<2>(ares);
+
+      return(res);
+    }
+  }
 
 %}
 
 namespace loos {
 
-  std::vector<XForm> getAlignmentTransforms(const loos::AlignmentResult& result);
-  double getAlignmentRMSD(const loos::AlignmentResult& result);
-  int getAlignmentIterations(const loos::AlignmentResult& result);
+  struct AlignmentResult {
+    std::vector<XForm> transforms;
+    double rmsd;
+    int iterations;
+  };
 
 
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble);
@@ -51,12 +63,7 @@ namespace loos {
 
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
 
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter=1000);
-
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, const std::vector<uint>& frame_indices, greal threshold = 1e-6, int maxiter=1000);
-
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000);
-
+  loos::AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter = 1000);
 
   void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
 
