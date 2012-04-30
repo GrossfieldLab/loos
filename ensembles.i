@@ -34,7 +34,7 @@
 
 
 
-    AlignmentResult iterativeAlignmentPy(std::vector<AtomicGroup>& ensemble, pTraj& traj, greal threshold = 1e-6, int maxiter=1000) {
+    AlignmentResult iterativeAlignmentPy(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter=1000) {
       AlignmentResult res;
 
       boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble, threshold, maxiter);
