@@ -23,9 +23,25 @@
 
 %header %{
 #include <ensembles.hpp>
+
+  namespace loos {
+    typedef boost::tuple<std::vector<XForm>, greal, int>    AlignmentResult;
+
+    std::vector<XForm> getAlignmentTransforms(const AlignmentResult& result) { return(boost::get<0>(result)); }
+    double getAlignmentRMSD(const AlignmentResult& result) { return(boost::get<1>(result)); }
+    int getAlignmentIterations(const AlignmentResult& result) { return(boost::get<2>(result)); }
+
+  };
+
+
 %}
 
 namespace loos {
+
+  std::vector<XForm> getAlignmentTransforms(const loos::AlignmentResult& result);
+  double getAlignmentRMSD(const loos::AlignmentResult& result);
+  int getAlignmentIterations(const loos::AlignmentResult& result);
+
 
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble);
 
@@ -48,3 +64,5 @@ namespace loos {
   void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory, std::vector<uint>& frames);
 };
 
+
+%template(XFormVector) std::vector<loos::XForm>;
