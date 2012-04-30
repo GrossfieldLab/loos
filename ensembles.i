@@ -32,6 +32,31 @@
     };
 
 
+
+
+    AlignmentResult iterativeAlignmentPy(std::vector<AtomicGroup>& ensemble, pTraj& traj, greal threshold = 1e-6, int maxiter=1000) {
+      AlignmentResult res;
+
+      boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble, threshold, maxiter);
+      res.transforms = boost::get<0>(ares);
+      res.rmsd = boost::get<1>(ares);
+      res.iterations = boost::get<2>(ares);
+
+      return(res);
+    }
+
+    AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, std::vector<uint>& frame_indices, greal threshold = 1e-6, int maxiter=1000) {
+      AlignmentResult res;
+
+      boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(g, traj, frame_indices, threshold, maxiter);
+      res.transforms = boost::get<0>(ares);
+      res.rmsd = boost::get<1>(ares);
+      res.iterations = boost::get<2>(ares);
+
+      return(res);
+    }
+
+
     AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000) {
       AlignmentResult res;
 
@@ -42,6 +67,8 @@
 
       return(res);
     }
+
+
   }
 
 %}
