@@ -1414,6 +1414,62 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release200 Version 2.0.0 (5-2-2012)
+\subsection r200_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in subsetter when using a subset of a model that
+  resulted in incorrect connectivity being written out.
+  <li> Fixed bug in averager regarding the default selection to
+  average over.
+  <li> Fixed bug in blurrogram.pl where it would incorrectly call
+  trajinfo.
+  <li> Fixed bug in aligner when alignment and transformation subsets
+  are not the same and auto-centering is turned on.
+  <li> Fixed documentation for AtomicGroup::within() to say that
+  A.within(x, B) returns atoms from A that are within x Angstroms of
+  any atom in B.
+  <li> Fixed bug in GROMACS TRR trajectories where natoms() could
+  return erroneous sizes (only after instantiating the object and
+  before any frames had been explicitly read).
+  <li> Fixed bug in GROMACS TRR trajectories where
+  TRR::updateGroupCoords() could possibly fail if updating a small
+  subset.
+  <li> Fixed bug in PDB output when the REMARKS lines contained
+  embedded newlines.  These are now stripped.
+  <li> Fixed bug in rmsd2ref where warnings would always be issued
+  regardless of whether a target was specified or not.
+</ul>
+\subsection r200_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Beta-release of the Python interface to the core LOOS
+  <li> Changed eye() and submatrix() to be templated functions
+  <li> Restored original behavior of density-dist tool (the first
+  selection is always "all") and zero or more selections are permitted
+  on the command-line
+  <li> Added potential_profile.py tool that uses the output from
+  density-dist, run in "charge" mode, to compute the electrostatic
+  potential profile
+  <li> Added flags to xy_rdf to handle the case where a selection
+  should be treated as appearing in both leaflets (e.g. a
+  transmembrane helix)
+  <li> Changed parseRange<> implementation to reflect how
+  Octave/Matlab handle negative step sizes for counting backwards.
+  Improved validation of inputs.
+  <li> Added cross-dist tool to compute distribution of crossing
+  angles and torsions for chains.
+  <li> Changed traj2pdb to use a printf-style output name template
+  <li> rotamer now automatically splits the selections into residues
+  <li> Refactored utils.hpp into utils_random, utils_structural, and
+  utils.  loos.hpp includes all utils headers, so no tools require
+  changes
+  <li> Improved AtomicGroup::within() performance and added support
+  for periodicity
+  <li> The following tools are deprecated: model2matlab, svdcolmap,
+  dumpmol, center-model, density-dist-windowed, xy_rdf_timeseries
+  <li> Added --fullhelp support in most tools and improved help output
+  for the rest
+</ul>
+
 \section release175 Version 1.7.5 (2-24-2012)
 \subsection r175_bugs Bug Fixes
 <ul>
