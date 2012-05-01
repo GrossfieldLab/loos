@@ -110,7 +110,9 @@ int main(int argc, char *argv[]) {
     GCoord u = preax[0];
     GCoord v = -postax[0];
     double angle = acos(u * v / (u.length() * v.length()) ) * RAD2DEG;
-    cout << boost::format("%6d %10lf     %10lf %10lf %10lf     %10lf %10lf %10lf\n") % (t++) % (180.0 - angle) % u[0] % u[1] % u[2] % v[0] % v[1] % v[2];
+    if (angle > 90)
+      angle = 180 - angle;
+    cout << boost::format("%6d %10lf     %10lf %10lf %10lf     %10lf %10lf %10lf\n") % (t++) % angle % u[0] % u[1] % u[2] % v[0] % v[1] % v[2];
   }
 
 }
