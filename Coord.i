@@ -5,11 +5,15 @@
 #include <string>
 #include <stdexcept>
 #include <Coord.hpp>
+
 %}
 
 %wrapper %{
 
   typedef loos::Coord<double>   GCoord;
+
+
+  
 
 
   %}
@@ -123,6 +127,10 @@ namespace loos {
     return( d - *$self);
   }
     
+  loos::Coord<double> __copy__() {
+    loos::Coord<double> d(*$self);
+    return(d);
+  }
 
  };
 
