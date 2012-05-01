@@ -248,6 +248,11 @@ namespace loos {
       return(buf);
     }
 
+    loos::AtomicGroup __copy__() {
+      loos::AtomicGroup group(*$self);
+      return(group);
+    }
+
     // Bind the AtomicGroup Python iterator to the current group
     loos::AtomicGroupPythonIterator __iter__() {
       return(loos::AtomicGroupPythonIterator($self));
