@@ -1,3 +1,8 @@
+2012-05-01    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed helix_kink to always report the smallest angle between
+	the two principal axes.
+
 2012-04-27    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in rmsds2ref where warnings would always be issued
