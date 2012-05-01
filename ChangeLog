@@ -5,7 +5,7 @@
 
 2012-04-27    <tromo@spade.biophysics.rochester.edu>
 
-	* Fixed bug in rmsds2ref where warnings would always be issued
+	* Fixed bug in rmsd2ref where warnings would always be issued
 	about target selection regardless of whether a target was
 	specified.
 	* Fixed bug in PDB output affecting remarks records that contain
@@ -75,9 +75,9 @@
 
 2012-03-27 Alan Grossfield <alan@membrane.urmc.rochester.edu>
 
-	* Added --sel1-spans and --sel2-spans, to handle the case where a
-	selection should be treated as appearing in both leaflets (eg a
-	transmembrane helix)
+	* Added --sel1-spans and --sel2-spans to xy_rdf, to handle the
+	case where a selection should be treated as appearing in both
+	leaflets (eg a transmembrane helix)
 
 2012-03-22  Tod Romo  <tromo@gorgoneion>
 
