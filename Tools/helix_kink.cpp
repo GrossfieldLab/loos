@@ -71,7 +71,11 @@ string fullHelpMessage(void) {
     "Two groups are defined, the first 20 residues and residues 25 through 44.  The first\n"
     "principal component is determined for each group and the angular deviation from linear\n"
     "is printed out.\n"
-    "\n";
+    "\n"
+    "NOTES\n"
+    "\n"
+    "\tThe angle is actually the smallest angle between the two axes.  If the helices do\n"
+    "not kink past 90 degrees, then this can be considered as the deviation from linearity.\n";
 
   return(msg);
 }
