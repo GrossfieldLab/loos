@@ -182,3 +182,7 @@ B.	* Programming with PyLOOS *
 7.	Are there any examples of using PyLOOS?
 	Yes.  Look in the Packages/PyLOOS directory.  We will be
 	adding more examples in future releases.
+
+8.	Where are the matrix operations?
+	We currently assume that matrix operations are better handled
+	by the appropriate Python package (e.g. numpy).
