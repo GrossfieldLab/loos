@@ -15,7 +15,8 @@ School of Medicine & Dentistry, University of Rochester\n
 <h2>Quick Links</h2>
       -  <a href="http://sourceforge.net/projects/loos">Download LOOS at http://sourceforge.net/projects/loos</a>
       -  <a href="https://lists.sourceforge.net/lists/listinfo/loos-announce">Subscribe to the mailing list</a>
-      - \subpage building "Building LOOS"
+      - \subpage building "Building LOOS, including PyLOOS (Beta
+      version of our Python-LOOS interface)"
       - \subpage tools "Tools included with LOOS"
       - \subpage citing "Citing LOOS in published work"
       - \subpage Changes
@@ -432,6 +433,18 @@ scons PREFIX=/opt/loos-1.6.0 install
 ln -s /opt/loos-1.6.0 /opt/loos-latest
 \endverbatim
 
+<H3> +=+=+=+=+=+=+=+ NEW BETA-RELEASE OF PYTHON INTERFACE +=+=+=+=+=+=+=+</H3>
+
+To build the beta-release of PyLOOS, the python interface to LOOS, use:
+
+\verbatim
+scons pyloos
+\endverbatim
+
+See the INSTALL file and PYLOOS-FAQ for more information about
+building and using PyLOOS.
+
+<H3> +=+=+=+=+=+=+=+ NEW BETA-RELEASE OF PYTHON INTERFACE +=+=+=+=+=+=+=+</H3>
 
 \subsection general General Notes
 
@@ -1441,7 +1454,7 @@ Matlab and Octave.
 </ul>
 \subsection r200_added_changed Added, Changed, or Otherwise Notable
 <ul>
-  <li> Beta-release of the Python interface to the core LOOS
+  <li> <B><I>Beta-release of the Python interface to the core LOOS</I></B>
   <li> Changed eye() and submatrix() to be templated functions
   <li> Restored original behavior of density-dist tool (the first
   selection is always "all") and zero or more selections are permitted
