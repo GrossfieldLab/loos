@@ -127,6 +127,16 @@ namespace loos {
       strncpy(buf, oss.str().c_str(), sizeof(buf));
       return(buf);
     }
+
+    loos::pAtom __copy__() {
+      return(loos::pAtom(new loos::Atom(*$self)));
+    }
+
+    loos::pAtom __deepcopy(void* p) {
+      return(loos::pAtom(new loos::Atom(*$self)));
+    }
+
+
   };
 
 
