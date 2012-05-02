@@ -252,9 +252,8 @@ namespace loos {
       return(loos::AtomicGroup(*$self));
     }
 
-    // We can get away with accepting a void* here since we do nothing
-    // with the passed dictionary...
-    loos::AtomicGroup __deepcopy__(void* p) {
+    // We ignore the passed dict...
+    loos::AtomicGroup __deepcopy__(PyObject* p) {
       return(loos::AtomicGroup($self->copy()));
     }
 

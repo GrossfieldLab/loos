@@ -132,7 +132,8 @@ namespace loos {
       return(loos::pAtom(new loos::Atom(*$self)));
     }
 
-    loos::pAtom __deepcopy(void* p) {
+    // Passed object is ignored...
+    loos::pAtom __deepcopy(PyObject* p) {
       return(loos::pAtom(new loos::Atom(*$self)));
     }
 

@@ -131,7 +131,8 @@ namespace loos {
     return(loos::Coord<double>(*$self));
   }
 
-  loos::Coord<double> __deepcopy__(void* p) {
+  // Passed PyObject is ignored
+  loos::Coord<double> __deepcopy__(PyObject* p) {
        return(loos::Coord<double>(*$self));
   }
 
