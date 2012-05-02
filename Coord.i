@@ -128,8 +128,11 @@ namespace loos {
   }
     
   loos::Coord<double> __copy__() {
-    loos::Coord<double> d(*$self);
-    return(d);
+    return(loos::Coord<double>(*$self));
+  }
+
+  loos::Coord<double> __deepcopy__(void* p) {
+       return(loos::Coord<double>(*$self));
   }
 
  };

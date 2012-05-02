@@ -249,15 +249,13 @@ namespace loos {
     }
 
     loos::AtomicGroup __copy__() {
-      loos::AtomicGroup mycopy(*$self);
-      return(mycopy);
+      return(loos::AtomicGroup(*$self));
     }
 
     // We can get away with accepting a void* here since we do nothing
     // with the passed dictionary...
     loos::AtomicGroup __deepcopy__(void* p) {
-      loos::AtomicGroup mycopy = $self->copy();
-      return(mycopy);
+      return(loos::AtomicGroup($self->copy()));
     }
 
     // Bind the AtomicGroup Python iterator to the current group
