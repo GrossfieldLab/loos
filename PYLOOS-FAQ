@@ -65,6 +65,11 @@ A.	* Building and Using *
 	the appropriate script, then execute Python and import from
 	loos.
 
+4.	Can I install PyLOOS?
+	We do not currently have an install mechanism for PyLOOS.
+	However, once the setup script has been sourced, python will
+	find it regardless of where you run Python.
+
 
 
 
