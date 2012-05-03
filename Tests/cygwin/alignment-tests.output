@@ -4,46 +4,49 @@
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.3013
-Aligned rmsd = 0.975447
-[0.829865 -0.00333348 -0.557954 -0.816296;-0.00911085 0.999768 -0.019524 0.912026;0.557889 0.0212857 0.829642 -0.858013;0 0 0 1;];
+Rotated rmsd = 36.2336
+Aligned rmsd = 0.942671
+[0.801764 0.00393839 -0.597628 1.26605;0.0130238 0.999626 0.02406 -1.09837;0.597499 -0.0270739 0.801412 0.978502;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 159 with rmsd of 2.00005
-WARNING - possible iterative failure at 280 with rmsd of 2.00902
-*** There were 2 possible errors detected.
+WARNING - possible iterative failure at 245 with rmsd of 2.00194
+WARNING - possible iterative failure at 390 with rmsd of 2.00154
+WARNING - possible iterative failure at 549 with rmsd of 2.00114
+WARNING - possible iterative failure at 689 with rmsd of 2.00077
+WARNING - possible iterative failure at 727 with rmsd of 2.00302
+WARNING - possible iterative failure at 831 with rmsd of 2.00149
+*** There were 6 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 25 atoms with selector 'resid == 5'.
 RMSD test = 1
-Rotated rmsd = 22.0491
-Aligned rmsd = 0.982821
-[0.809957 0.0109384 -0.586388 -0.743293;-0.0177038 0.999826 -0.0058031 -0.627915;0.586222 0.0150816 0.81001 0.178563;0 0 0 1;];
+Rotated rmsd = 22.0809
+Aligned rmsd = 0.856746
+[0.833129 0.128445 -0.537958 -2.44657;-0.000156661 0.972714 0.232006 1.86217;0.553079 -0.193206 0.810416 4.36095;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 6
-WARNING - possible iterative failure at 49 with rmsd of 2.00732
-*** There were 1 possible errors detected.
+WARNING - possible iterative failure at 319 with rmsd of 2.00585
+WARNING - possible iterative failure at 718 with rmsd of 2.00019
+*** There were 2 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 125 atoms with selector 'segid == 'L2''.
 RMSD test = 1
-Rotated rmsd = 17.3713
-Aligned rmsd = 0.988222
-[0.816016 0.00509634 -0.578006 -0.231732;-0.00831081 0.999961 -0.00291626 -0.342981;0.577969 0.00718342 0.816027 -0.134515;0 0 0 1;];
+Rotated rmsd = 17.4178
+Aligned rmsd = 0.990014
+[0.811883 -0.00177016 -0.583818 -0.072647;-0.00128186 0.999988 -0.00481461 -0.0798121;0.583819 0.00465727 0.811871 0.164459;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 290 with rmsd of 2.00056
-WARNING - possible iterative failure at 416 with rmsd of 2.00038
-WARNING - possible iterative failure at 684 with rmsd of 2.00027
-WARNING - possible iterative failure at 776 with rmsd of 2.0014
-WARNING - possible iterative failure at 804 with rmsd of 2.00125
-WARNING - possible iterative failure at 896 with rmsd of 2.00055
-*** There were 6 possible errors detected.
+WARNING - possible iterative failure at 561 with rmsd of 2.00167
+WARNING - possible iterative failure at 679 with rmsd of 2.00312
+WARNING - possible iterative failure at 891 with rmsd of 2.00063
+WARNING - possible iterative failure at 936 with rmsd of 2.00022
+*** There were 4 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 
@@ -52,45 +55,47 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.3393
-Aligned rmsd = 0.979355
-[0.816127 -0.0128346 -0.57773 1.08596;0.00799538 0.999908 -0.010919 -0.222239;0.577818 0.0042921 0.816155 -0.409091;0 0 0 1;];
+Rotated rmsd = 35.8753
+Aligned rmsd = 0.915275
+[0.820921 -0.0166791 -0.570797 1.35804;0.00968673 0.999836 -0.0152844 -0.0948567;0.570959 0.00701812 0.820949 -0.528579;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-All tests passed (threshold = 0.01 : 2)
+WARNING - possible iterative failure at 317 with rmsd of 2.00351
+WARNING - possible iterative failure at 958 with rmsd of 2.00147
+*** There were 2 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 25 atoms with selector 'resid == 5'.
 RMSD test = 1
-Rotated rmsd = 22.3215
-Aligned rmsd = 0.948189
-[0.773359 0.0478944 -0.632157 -3.0518;-0.0332916 0.998834 0.0349474 -0.885428;0.633094 -0.00598136 0.774052 1.98979;0 0 0 1;];
+Rotated rmsd = 22.1802
+Aligned rmsd = 0.91609
+[0.776867 -0.0865219 -0.623692 0.366318;0.0388701 0.995215 -0.0896453 0.728485;0.628464 0.0453995 0.776513 0.58165;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 6
-WARNING - possible iterative failure at 237 with rmsd of 2.00157
-*** There were 1 possible errors detected.
+WARNING - possible iterative failure at 147 with rmsd of 2.00169
+WARNING - possible iterative failure at 814 with rmsd of 2.00019
+WARNING - possible iterative failure at 899 with rmsd of 2.00152
+*** There were 3 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 125 atoms with selector 'segid == 'L2''.
 RMSD test = 1
-Rotated rmsd = 17.3555
-Aligned rmsd = 0.997971
-[0.817856 -0.0113101 -0.575312 0.271393;0.00812371 0.999934 -0.00810927 0.197811;0.575366 0.00195855 0.817894 -0.0355369;0 0 0 1;];
+Rotated rmsd = 17.2577
+Aligned rmsd = 0.994444
+[0.817325 -0.000168311 -0.576177 -0.110243;-0.0042518 0.999971 -0.00632341 -0.101071;0.576161 0.00761807 0.8173 -0.0789947;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 119 with rmsd of 2.00136
-WARNING - possible iterative failure at 337 with rmsd of 2.00373
-WARNING - possible iterative failure at 581 with rmsd of 2.00096
-WARNING - possible iterative failure at 676 with rmsd of 2.00002
-WARNING - possible iterative failure at 677 with rmsd of 2.00089
-WARNING - possible iterative failure at 691 with rmsd of 2.00206
-WARNING - possible iterative failure at 723 with rmsd of 2.00052
-*** There were 7 possible errors detected.
+WARNING - possible iterative failure at 10 with rmsd of 2.00099
+WARNING - possible iterative failure at 45 with rmsd of 2.00042
+WARNING - possible iterative failure at 268 with rmsd of 2.00227
+WARNING - possible iterative failure at 420 with rmsd of 2.00182
+WARNING - possible iterative failure at 431 with rmsd of 2.00061
+*** There were 5 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 
@@ -99,51 +104,61 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.2115
-Aligned rmsd = 0.979267
-[0.816411 -0.00886837 -0.577404 0.885106;0.0152327 0.999865 0.0061811 -1.13565;0.577271 -0.0138418 0.816435 0.837822;0 0 0 1;];
+Rotated rmsd = 36.1642
+Aligned rmsd = 0.977082
+[0.819476 -0.0104075 -0.573018 0.747067;0.00253513 0.999891 -0.0145351 0.208125;0.573107 0.0104585 0.819414 -0.88854;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-All tests passed (threshold = 0.01 : 2)
+WARNING - possible iterative failure at 689 with rmsd of 2.0044
+WARNING - possible iterative failure at 738 with rmsd of 2.00576
+WARNING - possible iterative failure at 769 with rmsd of 2.00378
+WARNING - possible iterative failure at 960 with rmsd of 2.00489
+*** There were 4 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 25 atoms with selector 'resid == 5'.
 RMSD test = 1
-Rotated rmsd = 22.3784
-Aligned rmsd = 0.949022
-[0.835912 0.0702561 -0.544349 -0.747798;-0.031939 0.99632 0.0795434 -0.769868;0.547934 -0.0491053 0.835079 0.384109;0 0 0 1;];
+Rotated rmsd = 22.2126
+Aligned rmsd = 0.97595
+[0.781216 -0.0347744 -0.623291 -0.754393;0.0337215 0.99934 -0.0134892 1.1142;0.623349 -0.0104804 0.781874 1.82634;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
-Total iterations = 6
-WARNING - possible iterative failure at 28 with rmsd of 2.00307
-WARNING - possible iterative failure at 483 with rmsd of 2.00464
-WARNING - possible iterative failure at 491 with rmsd of 2.00661
-WARNING - possible iterative failure at 600 with rmsd of 2.00064
-WARNING - possible iterative failure at 703 with rmsd of 2.00268
-WARNING - possible iterative failure at 821 with rmsd of 2.00095
-*** There were 6 possible errors detected.
+Total iterations = 5
+WARNING - possible iterative failure at 67 with rmsd of 2.00638
+*** There were 1 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 125 atoms with selector 'segid == 'L2''.
 RMSD test = 1
-Rotated rmsd = 17.3004
-Aligned rmsd = 0.994363
-[0.824525 -0.00479267 -0.565805 0.289809;0.00447157 0.999988 -0.00195419 0.0630819;0.565808 -0.000918763 0.824536 -0.153339;0 0 0 1;];
+Rotated rmsd = 17.3739
+Aligned rmsd = 0.994423
+[0.816435 -0.00251626 -0.577432 -0.0276081;0.00305574 0.999995 -3.71325e-05 0.103171;0.577429 -0.00173416 0.816439 0.0553112;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 4 with rmsd of 2.00199
-WARNING - possible iterative failure at 148 with rmsd of 2.00124
-WARNING - possible iterative failure at 310 with rmsd of 2.00198
-WARNING - possible iterative failure at 471 with rmsd of 2.00076
-WARNING - possible iterative failure at 489 with rmsd of 2.00116
-WARNING - possible iterative failure at 834 with rmsd of 2.00054
-WARNING - possible iterative failure at 850 with rmsd of 2.00002
-WARNING - possible iterative failure at 898 with rmsd of 2.00153
-*** There were 8 possible errors detected.
+WARNING - possible iterative failure at 15 with rmsd of 2.00142
+WARNING - possible iterative failure at 66 with rmsd of 2.00261
+WARNING - possible iterative failure at 108 with rmsd of 2.00281
+WARNING - possible iterative failure at 189 with rmsd of 2.00001
+WARNING - possible iterative failure at 272 with rmsd of 2.00179
+WARNING - possible iterative failure at 365 with rmsd of 2.00008
+WARNING - possible iterative failure at 405 with rmsd of 2.00636
+WARNING - possible iterative failure at 406 with rmsd of 2.00081
+WARNING - possible iterative failure at 409 with rmsd of 2.00418
+WARNING - possible iterative failure at 487 with rmsd of 2.00382
+WARNING - possible iterative failure at 488 with rmsd of 2.00083
+WARNING - possible iterative failure at 695 with rmsd of 2.00148
+WARNING - possible iterative failure at 810 with rmsd of 2.00007
+WARNING - possible iterative failure at 826 with rmsd of 2.0013
+WARNING - possible iterative failure at 832 with rmsd of 2.00119
+WARNING - possible iterative failure at 835 with rmsd of 2.00006
+WARNING - possible iterative failure at 909 with rmsd of 2.00041
+WARNING - possible iterative failure at 912 with rmsd of 2.00373
+WARNING - possible iterative failure at 981 with rmsd of 2.00328
+*** There were 19 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 
@@ -152,46 +167,50 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.2435
-Aligned rmsd = 0.953744
-[0.826399 -0.00892513 -0.563014 -0.0653625;-0.0208073 0.998707 -0.0463732 2.29056;0.562701 0.0500376 0.825145 -3.24716;0 0 0 1;];
+Rotated rmsd = 36.1813
+Aligned rmsd = 0.942025
+[0.825472 -0.0168498 -0.564191 0.64941;0.0343746 0.9992 0.0204522 -2.37659;0.563395 -0.0362766 0.825391 3.00995;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 370 with rmsd of 2.00008
-*** There were 1 possible errors detected.
+WARNING - possible iterative failure at 64 with rmsd of 2.00234
+WARNING - possible iterative failure at 395 with rmsd of 2.00054
+WARNING - possible iterative failure at 465 with rmsd of 2.00195
+*** There were 3 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 25 atoms with selector 'resid == 5'.
 RMSD test = 1
-Rotated rmsd = 22.1667
-Aligned rmsd = 0.9819
-[0.840057 0.0332238 -0.541481 0.111471;-0.0382095 0.999268 0.00203399 -1.45935;0.541152 0.018981 0.840711 -1.53685;0 0 0 1;];
+Rotated rmsd = 22.1325
+Aligned rmsd = 0.954096
+[0.819819 0.099482 -0.563915 -2.47165;-0.00567425 0.986156 0.165722 0.90101;0.572594 -0.132662 0.809034 3.25036;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 6
-WARNING - possible iterative failure at 228 with rmsd of 2.01266
-WARNING - possible iterative failure at 774 with rmsd of 2.0063
-WARNING - possible iterative failure at 842 with rmsd of 2.00158
+WARNING - possible iterative failure at 694 with rmsd of 2.01215
+WARNING - possible iterative failure at 903 with rmsd of 2.00008
+WARNING - possible iterative failure at 983 with rmsd of 2.00795
 *** There were 3 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 125 atoms with selector 'segid == 'L2''.
 RMSD test = 1
-Rotated rmsd = 17.256
-Aligned rmsd = 0.991809
-[0.817903 -0.014588 -0.575171 0.278167;0.00628017 0.999845 -0.0164285 0.103457;0.575322 0.00982477 0.817868 -0.185224;0 0 0 1;];
+Rotated rmsd = 17.3223
+Aligned rmsd = 0.994665
+[0.811897 -0.00867864 -0.583736 -0.00435822;0.00763907 0.999962 -0.00424193 0.223086;0.58375 -0.00101519 0.811933 0.335095;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 263 with rmsd of 2.00077
-WARNING - possible iterative failure at 412 with rmsd of 2.0015
-WARNING - possible iterative failure at 446 with rmsd of 2.0038
-WARNING - possible iterative failure at 786 with rmsd of 2.00096
-WARNING - possible iterative failure at 883 with rmsd of 2.00024
-*** There were 5 possible errors detected.
+WARNING - possible iterative failure at 56 with rmsd of 2.00257
+WARNING - possible iterative failure at 85 with rmsd of 2.00126
+WARNING - possible iterative failure at 191 with rmsd of 2.00133
+WARNING - possible iterative failure at 221 with rmsd of 2.00216
+WARNING - possible iterative failure at 254 with rmsd of 2.00138
+WARNING - possible iterative failure at 407 with rmsd of 2.0023
+WARNING - possible iterative failure at 581 with rmsd of 2.00192
+*** There were 7 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 
@@ -200,45 +219,45 @@ All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 Selected 28 atoms with selector 'name == 'CA''.
 RMSD test = 1
-Rotated rmsd = 36.329
-Aligned rmsd = 0.943436
-[0.818476 -0.017062 -0.574288 1.17034;0.0345878 0.999209 0.0196082 -2.45155;0.573499 -0.0359122 0.818419 2.70253;0 0 0 1;];
+Rotated rmsd = 36.3903
+Aligned rmsd = 0.956309
+[0.820947 -0.00720632 -0.570959 0.199285;-0.0197414 0.998964 -0.0409933 2.14853;0.570664 0.0449249 0.819954 -3.03994;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 674 with rmsd of 2.00229
-WARNING - possible iterative failure at 979 with rmsd of 2.00247
-WARNING - possible iterative failure at 996 with rmsd of 2.00639
-*** There were 3 possible errors detected.
+WARNING - possible iterative failure at 174 with rmsd of 2.00037
+*** There were 1 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 25 atoms with selector 'resid == 5'.
 RMSD test = 1
-Rotated rmsd = 22.0823
-Aligned rmsd = 0.987444
-[0.828393 0.0419179 -0.558577 -0.702659;-0.0102908 0.998167 0.0596447 -0.0850405;0.560053 -0.0436611 0.827305 0.703891;0 0 0 1;];
+Rotated rmsd = 21.9677
+Aligned rmsd = 0.921379
+[0.781423 -0.000660299 -0.624001 -1.91322;-0.00977393 0.999864 -0.0132977 -0.5538;0.623925 0.0164901 0.781311 1.10769;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 6
-WARNING - possible iterative failure at 382 with rmsd of 2.00671
-WARNING - possible iterative failure at 694 with rmsd of 2.00275
-*** There were 2 possible errors detected.
+WARNING - possible iterative failure at 247 with rmsd of 2.01963
+WARNING - possible iterative failure at 653 with rmsd of 2.00501
+WARNING - possible iterative failure at 737 with rmsd of 2.00001
+*** There were 3 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
 **************************************************
 Selected 125 atoms with selector 'segid == 'L2''.
 RMSD test = 1
-Rotated rmsd = 17.4037
-Aligned rmsd = 0.982243
-[0.816913 0.00954453 -0.576681 -0.196444;-0.00263654 0.999914 0.0128145 0.047971;0.576754 -0.0089479 0.816869 0.377722;0 0 0 1;];
+Rotated rmsd = 17.347
+Aligned rmsd = 0.992599
+[0.818593 0.00245938 -0.574368 -0.137206;-0.00377091 0.999992 -0.00109247 -0.0643601;0.574361 0.00306018 0.818596 -0.153972;0 0 0 1;];
 *** Single Alignment Tests ***
 All tests passed (threshold = 1e-06)
 Total iterations = 4
-WARNING - possible iterative failure at 503 with rmsd of 2.00117
-WARNING - possible iterative failure at 526 with rmsd of 2.00022
-WARNING - possible iterative failure at 734 with rmsd of 2.00019
-WARNING - possible iterative failure at 752 with rmsd of 2.00019
-*** There were 4 possible errors detected.
+WARNING - possible iterative failure at 187 with rmsd of 2.00293
+WARNING - possible iterative failure at 280 with rmsd of 2.00073
+WARNING - possible iterative failure at 653 with rmsd of 2.00218
+WARNING - possible iterative failure at 685 with rmsd of 2.00286
+WARNING - possible iterative failure at 821 with rmsd of 2.00123
+*** There were 5 possible errors detected.
 All composite iterative tests passed (threshold = 1e-06)
 **************************************************
