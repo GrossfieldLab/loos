@@ -98,7 +98,6 @@ Email us directly (LOOS-maintainer [AT] urmc.rochester.edu) if you find a bug^H^
 \section future Future Plans
 
 <ul>
-    <li> Python bindings for easier scripting support
     <li> More extensive manual, including developer's tutorial
     <li> More applications
 </ul>
