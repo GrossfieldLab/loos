@@ -1451,6 +1451,12 @@ Matlab and Octave.
   embedded newlines.  These are now stripped.
   <li> Fixed bug in rmsd2ref where warnings would always be issued
   regardless of whether a target was specified or not.
+  <li> rotamer now automatically splits the selections into residues.
+  There is a potential bug in rotamer if a selection contains multiple
+  residues and for some, a rotamer calculation is not possible.  The
+  tool will select atoms by name from the set of residues and use the
+  first one found to calculate the torsions.
+
 </ul>
 \subsection r200_added_changed Added, Changed, or Otherwise Notable
 <ul>
@@ -1471,7 +1477,6 @@ Matlab and Octave.
   <li> Added cross-dist tool to compute distribution of crossing
   angles and torsions for chains.
   <li> Changed traj2pdb to use a printf-style output name template
-  <li> rotamer now automatically splits the selections into residues
   <li> Refactored utils.hpp into utils_random, utils_structural, and
   utils.  loos.hpp includes all utils headers, so no tools require
   changes

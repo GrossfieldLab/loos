@@ -53,7 +53,10 @@
 
 2012-04-05    <tromo@spade.biophysics.rochester.edu>
 
-	* Changed rotamer to automatically split the selections into residues.
+	* Changed rotamer to automatically split the selections into
+	residues.  This also fixes a potential bug where, if a selection
+	encompasses multiple residues, the first atom with a matching name
+	was used to compute the torsion.
 	* Deprecated svdcolmap (see eigenflucc)
 	* Removed flucc2b
 	* Changed traj2pdb so that it now uses a printf-style output name template
