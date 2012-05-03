@@ -445,7 +445,7 @@ To build the beta-release of PyLOOS, the python interface to LOOS, use:
 scons pyloos
 \endverbatim
 
-See the INSTALL file and PYLOOS-FAQ for more information about
+See the INSTALL file and \ref faq_pyloos "the FAQ for PyLOOS" for more information about
 building and using PyLOOS.
 
 <hr>
