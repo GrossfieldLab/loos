@@ -26,6 +26,7 @@
 #include <string>
 
 #include <loos_defs.hpp>
+#include <Coord.hpp>
 #include <Trajectory.hpp>
 
 

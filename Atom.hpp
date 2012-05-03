@@ -30,6 +30,7 @@
 #include <functional>
 
 #include <loos_defs.hpp>
+#include <Coord.hpp>
 
 namespace loos {
 

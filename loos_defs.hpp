@@ -78,7 +78,6 @@ typedef __CLPK_integer f77int;
 
 
 
-#include <Coord.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
@@ -89,6 +88,9 @@ namespace loos {
 
   typedef float dcd_real;
   typedef double dcd_double;
+
+  template<typename T> class Coord;
+
 
   typedef Coord<double> GCoord;
   typedef boost::shared_ptr<GCoord> pGCoord;
