@@ -30,6 +30,7 @@ clone.Prepend(LIBS = ['loos'])
 
 import os
 import sys
+import subprocess
 def run(cmd, env):
     """Run a Unix command and return the exit code."""
     res = os.system(cmd)
@@ -101,12 +102,6 @@ bld = Builder(action = Action(UnitTest, varlist = ['REGENERATE']), emitter = uni
 env.Append(BUILDERS = {'UnitTest' :  bld})
 
 ### Ok, you can open 'em now...
-if env.has_key('LD_LIBRARY_PATH'):
-    if os.environ.has_key('LD_LIBRARY_PATH'):
-        ld_path = os.environ['LD_LIBRARY_PATH']
-        os.environ['LD_LIBRARY_PATH'] = env['LD_LIBRARY_PATH'] + ":" + ld_path
-    else:
-        os.environ['LD_LIBARY_PATH' ] = env['LD_LIBRARY_PATH']
 
 non_testable_tests = 'timeseries-test find_perf_test ccpdb_test pdbtraj_test tinker_arc_test'
 pdb_based_tests = 'pdb-tests alignment-tests parser-tests pdb-echo'
@@ -115,6 +110,13 @@ solo_tests = 'principal-axes-tests atomic-group-test timeseries-test matrix_test
 
 # This is the master list of dependencies to pass to our caller...
 list = []
+
+if sys.platform == 'darwin':
+    env.AppendENVPath('DYLD_LIBRARY_PATH', '#')
+    os.environ['DYLD_LIBRARY_PATH'] = env['ENV']['DYLD_LIBRARY_PATH']
+else:
+    env.AppendENVPath('LD_LIBRARY_PATH', '#')
+    os.environ['LD_LIBRARY_PATH'] = env['ENV']['LD_LIBRARY_PATH']
 
 # First, process non-testable tests...
 for name in Split(non_testable_tests):
