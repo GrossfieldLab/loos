@@ -26,8 +26,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// @cond PACKAGES_INTERNAL
-
 #if !defined(LOOS_HCORE_HPP)
 #define LOOS_HCORE_HPP
 

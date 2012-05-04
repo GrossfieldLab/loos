@@ -41,8 +41,6 @@
 */
 
 
-// @cond TOOLS_INTERNAL
-
 #include <loos.hpp>
 #include <boost/regex.hpp>
 #include <sstream>
@@ -54,6 +52,10 @@ using namespace loos;
 
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
+
+
+// @cond TOOLS_INTERNAL
+
 
 typedef vector<AtomicGroup>   vGroup;
 
@@ -275,7 +277,6 @@ string fullHelpMessage(void) {
 }
 
 
-// @cond TOOLS_INTERNAL
 // Note: We do not use the TrajectoryWithFrameIndices class here
 // because this tool supports a more complex arrangement of
 // trajectories with ranges and skips...
@@ -377,7 +378,6 @@ public:
   string box_spec;
 };
 
-// @endcond
 
 
 
@@ -417,6 +417,7 @@ uint bindFilesToIndices(AtomicGroup& model) {
   return(total_frames);
 }
 
+// @endcond
 
 
 
@@ -458,7 +459,6 @@ void fixBonds(AtomicGroup& subset, const AtomicGroup& superset) {
 
   subset.renumber();
 }
-
 
 
 

@@ -245,6 +245,8 @@ vector<Blob> pickBlob(const DensityGrid<int>& grid, const vector<GCoord>& points
   return(res);
 }
 
+// @endcond
+
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
