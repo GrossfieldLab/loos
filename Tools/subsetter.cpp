@@ -11,9 +11,6 @@
   selection used for centering comes from the specified subset...
 
   The output is always in DCD format.
-
-  Usage:
-    subsetter [options] output-prefix input-model input-trajectory [input-trajectory ...]
 */
 
 

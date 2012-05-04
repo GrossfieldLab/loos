@@ -5,8 +5,6 @@
    Reads a LOOS-supported trajectory format and a selection, writes a 
    dcd with the selection centered at the origin and the rest of the system
    recentered by molecule.
-
-   Usage: recenter-trj model-file trajectory-file selection-string dcd-name
  
 */
 

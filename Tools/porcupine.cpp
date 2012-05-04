@@ -141,20 +141,18 @@ string fullHelpMessage(void){
     "\n"                                                                                      
     "SYNOPSIS\n"                                                                      
     "\n"  
-    "Create a matchstick representation of eigenvectors/left singular vectors (LSV)\n"
+    "\tCreate a matchstick representation of eigenvectors/left singular vectors (LSV)\n"
     "\n"
     "DESCRIPTION\n"
     "\n"
-    "This program takes a model and a vector-matix and creates a pdb illustrating\n"
+    "\tThis program takes a model and a vector-matix and creates a pdb illustrating\n"
     "the direction of those vectors starting from the model structure.  \n"
-    "\n"
     "The typical use is for illustrating the direction of motion calculated from\n"
     "a trajectory PCA or predicted from NMA of a network model.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
-    "porcupine -s 'name==\"CA\"' -C1 -S2 --double_sided 1 model.pdb svd_U.asc > porky.pdb\n"
-    "\n"
+    "\tporcupine -s 'name==\"CA\"' -C1 -S2 --double_sided 1 model.pdb svd_U.asc > porky.pdb\n"
     "Here the CA's from model.pdb are used as the origin of the vector drawing.\n"
     "svd_U.asc is an LSV file made in loos (see example X in svd --fullhelp)\n"
     "These vectors are mapped to the CA's in model.pdb.  The C1 option signifies\n"
@@ -172,11 +170,8 @@ string fullHelpMessage(void){
     "\n"
     "SEE ALSO\n"
     "\n"
-    "  Packages/ElasticNetworks/enmovie - \n"
-    "\tThis tool will parse the same information - a model and eigenvector\n"
-    "\tmatrix and instead of drawing splines will output a dcd where the\n"
-    "\tatoms are displaced along the vector.\n";
-
+    "\tPackages/ElasticNetworks/enmovie\n"
+    ;
 
   return(msg);
 }

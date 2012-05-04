@@ -4,8 +4,6 @@
 
 
   Computes backbone torsion angles for a given set of residues...
-
-  Usage - ramachandran [options] model trajectory >output.asc
   
   Notes:
 

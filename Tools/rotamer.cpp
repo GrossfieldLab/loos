@@ -4,8 +4,6 @@
 
   Computes chi-1, chi-2 angles for selected side-chains.  If the
   requested angle doesn't exist, then -9999.99 is output as a marker.
-
-  Usage - rotamer model trajectory sel-1 [sel-2 ...] >output.asc
 */
 
 
