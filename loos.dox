@@ -2355,10 +2355,71 @@ torsion() are now in the \c loos::Math namespace.
 \section faq_loos LOOS
 \subsection faq_loos_using_tools Using LOOS Tools
 <DL>
+
 <DT> What units does LOOS use for coordinates?
-<DD> LOOS uses angstroms as the output unit of distance, even when the input 
-coordinates are in other units (e.g. nanometers for GROMACS files).  All output
-is in plain text format, and follows general unix/linux conventions.
+<DD> LOOS uses Angstroms as the output unit of distance, even when the input 
+coordinates are in other units (e.g. nanometers for GROMACS files).
+
+<DT> How does LOOS handle connectivity/bonds?
+<DD> Bonds are represented in LOOS by a list of atom id's that are
+bound to a given atom.  This means that connectivity can be maintained
+even when the bound atoms are no longer stored.  However, it also
+means that atom id's are assumed to be unique.  If you are having
+trouble with connectivity because of fragmenting groups of atoms, you
+can use AtomicGroup::clearBonds() to remove all connectivity in a
+group, or AtomicGroup::pruneBonds() to remove bonds to any atom not
+contained in the given group.
+
+<DT> How does LOOS write out the connectivity information?
+<DD> LOOS places the model's connectivity into the CONECT records of
+the output PDB.  Connectivity is written out for all atoms for which
+there is connectivity present.
+
+<DT> How do I make a copy of an AtomicGroup?  Why do changes in one
+group affect another?
+<DD> Atoms are typically shared between AtomicGroup's in LOOS.  For
+example, select just the alpha-carbons from a model,
+\code
+	AtomicGroup model = createSystem("protein.pdb");
+	AtomicGroup ca = selectAtoms(model, "name == 'CA'");
+\endcode
+	The atoms in ca will be shared with the corresponding atoms in
+model.  Changes to an atom in one group will result in changes to the
+other group because the atoms are shared.
+\code
+	ca[0]->coords(ca[0]->coords() + translation_vector);
+\endcode
+Will translate the first alpha-carbon in both ca and model.
+Making a copy of an AtomicGroup,
+\code
+	AtomicGroup duplicate = model;
+	AtomicGroup duplicate(model);
+\endcode
+results in the copy sharing the same atoms.  Also of note here are the
+two idioms for making a copy of a group.  Both result in what is
+called a "shallow copy" of model.  The atoms are shared, but the lists
+of atoms in the group are different.  For example,
+\code
+	duplicate.remove(ca);
+\endcode
+will remove all alpha-carbons from the list of atoms in duplicate, but
+they will still be present in model.<p>
+
+In order to make a copy of an AtomicGroup where the atoms are
+<i>not</i> shared, a "deep copy" must be made.  Here, each atom is
+copied into a new, separate atom, and then stored in the copy of the
+group.  The AtomicGroup::copy() function does this,
+\code
+	AtomicGroup duplicate = ca.copy();
+\endcode
+Now, not only are the lists of atoms distinct, but so are the atoms...
+\code
+	duplicate[0]->coords(duplicate[0]->coords() + translation_vector);
+\endcode
+Here, the changes to the first alpha-carbon in duplicate does
+<i>not</i> change the coordinates of the first alpha-carbon in ca
+since they are no longer shared.
+
 </DL>
 
 <hr><hr>
@@ -2433,7 +2494,7 @@ implementations.
 	Now B will have an extra atom that A will be lacking, but
 	existing atoms will still be shared between A and B.  In
 	contrast, in the PyLOOS equivalent,
-\code
+\code{.py}
 		  A = AtomicGroup()
 		  B = A
 		  B.append(another_atom)
@@ -2441,18 +2502,24 @@ implementations.
 	A and B are the same and now both have the extra atom.  To
 	make a copy of A that behaves like the C++ copy, use Python's
 	copy package to make a shallow copy,
-\code
+\code{.py}
 	          import copy
 		  A = AtomicGroup()
 		  B = copy.copy(A)
 		  B.append(another_atom)
 \endcode
-	Now, B has an extra atom and existing atoms are shared.
+	Now, B has an extra atom and existing atoms are shared.  Note
+	that the C++ idiom,
+\code{.py}
+		  A = AtomicGroup()
+	 	  B = AtomicGroup(A)
+\endcode
+	will also work for creating a shallow copy.
 
 	Since atoms are shared in a shallow copy of an AtomicGroup,
 	modifying the atom in one group will modify the atom in all
 	groups that contain that atom.
-\code
+\code{.py}
 	          import copy
 		  an_atom = Atom(1, "CA", GCoord(1,2,3))
 	          A = AtomicGroup()
@@ -2469,7 +2536,7 @@ implementations.
 	both groups see the change.  Sometimes, it is necessary to
 	have a separate copy of a group so that changes to the atom in
 	group B will not affect group A.  This requires a deep copy,
-\code
+\code{.py}
 	          import copy
 		  an_atom = Atom(1, "CA", GCoord(1,2,3))
 		  A = AtomicGroup()
@@ -2500,7 +2567,7 @@ implementations.
 	iterativeAlignment functions since they return a boost::tuple
 	object.  Instead, there are python-specific routines that
 	return an object containing the same information, i.e.
-\code	       
+\code{.py}
 	           result = iterativeAlignmentPy(model, traj)
 		   xforms = result.transforms
 		   final_rmsd = result.rmsd
