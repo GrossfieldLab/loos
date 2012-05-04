@@ -2472,7 +2472,7 @@ implementations.
 		  c.x(42);
 \endcode
 	In both cases, the X-coordinate is set to 42.  In Python,
-	however, you must use the second form, c.x(42).
+	however, you must use the second form, c.x(42) .
 
 <DT>	Making copies of LOOS objects
 <DD>	Remember that in Python, saying "a = b" does not actually copy
@@ -2494,7 +2494,7 @@ implementations.
 	Now B will have an extra atom that A will be lacking, but
 	existing atoms will still be shared between A and B.  In
 	contrast, in the PyLOOS equivalent,
-\code{.py}
+\code
 		  A = AtomicGroup()
 		  B = A
 		  B.append(another_atom)
@@ -2502,7 +2502,7 @@ implementations.
 	A and B are the same and now both have the extra atom.  To
 	make a copy of A that behaves like the C++ copy, use Python's
 	copy package to make a shallow copy,
-\code{.py}
+\code
 	          import copy
 		  A = AtomicGroup()
 		  B = copy.copy(A)
@@ -2510,7 +2510,7 @@ implementations.
 \endcode
 	Now, B has an extra atom and existing atoms are shared.  Note
 	that the C++ idiom,
-\code{.py}
+\code
 		  A = AtomicGroup()
 	 	  B = AtomicGroup(A)
 \endcode
@@ -2519,7 +2519,7 @@ implementations.
 	Since atoms are shared in a shallow copy of an AtomicGroup,
 	modifying the atom in one group will modify the atom in all
 	groups that contain that atom.
-\code{.py}
+\code
 	          import copy
 		  an_atom = Atom(1, "CA", GCoord(1,2,3))
 	          A = AtomicGroup()
@@ -2536,7 +2536,7 @@ implementations.
 	both groups see the change.  Sometimes, it is necessary to
 	have a separate copy of a group so that changes to the atom in
 	group B will not affect group A.  This requires a deep copy,
-\code{.py}
+\code
 	          import copy
 		  an_atom = Atom(1, "CA", GCoord(1,2,3))
 		  A = AtomicGroup()
@@ -2567,7 +2567,7 @@ implementations.
 	iterativeAlignment functions since they return a boost::tuple
 	object.  Instead, there are python-specific routines that
 	return an object containing the same information, i.e.
-\code{.py}
+\code
 	           result = iterativeAlignmentPy(model, traj)
 		   xforms = result.transforms
 		   final_rmsd = result.rmsd
