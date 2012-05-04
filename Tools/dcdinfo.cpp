@@ -2,10 +2,6 @@
   dcdinfo.cpp
 
   Dumps information about a DCD
-
-
-  Usage:
-     dcdinfo trajectory.dcd
 */
 
 

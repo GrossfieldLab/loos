@@ -1,7 +1,5 @@
 /*
   frame2pdb
-
-  frame2pdb model trajectory frameno >output
 */
 
 
@@ -57,10 +55,10 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLES\n"
     "\n"
-    "\tframe2pdb model.psf simulation.dcd 42 >frame_42.pdb\n"
+    "\tframe2pdb model.psf simulation.dcd 42 >frame.pdb\n"
     "Extracts the 43rd frame from the simulation.\n"
     "\n"
-    "\tframe2pdb --selection 'resid <= 100' model.psf simulation.dcd 13 >frame_13_first_hundred.pdb\n"
+    "\tframe2pdb --selection 'resid <= 100' model.psf simulation.dcd 13 >frame.pdb\n"
     "Extracts the 14th frame, only writing out the first 100 residues.\n";
   return(msg);
 }

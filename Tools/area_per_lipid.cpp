@@ -3,16 +3,6 @@
   area_per_lipid.cpp
 
   Calculates the area-per-lipid for a trajectory
-
-  Usage:
-    area_per_lipid [options] model traj
-
-
-  Requires periodic boundary information in the trajectory to
-  determine leaflet area.  The selection option determines what
-  residues are considered lipids (you only need to select the
-  head-group).  The number of lipids can be explicitly set via the
-  "--nlipids" option.
 */
 
 /*
@@ -86,12 +76,12 @@ string s =
     "split by residue. To override this functionality, you can specify the number\n"
     "of lipids in one leaflet with the --nlipids option.\n"
     "\n"
-    "EXAMPLE\n"
+    "EXAMPLES\n"
     "\n"
     "To calculate the area per lipid for a trajectory with PE lipid\n"
     "headgroups, you would use a command line like\n"
     "\n"
-    "area_per_lipid model-file traj-file --selection='resname =~\"PEGL\"'\n"
+    "\tarea_per_lipid model-file traj-file --selection='resname =~\"PEGL\"'\n"
     "\n"
     "Assuming the CHARMM27-style lipid naming, the headgroup of PE lipids\n"
     "would be its own residue with the name \"PEGL\". Using selections can be\n"

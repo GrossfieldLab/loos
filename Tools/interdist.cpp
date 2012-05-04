@@ -6,7 +6,6 @@
 
   Computes distances between two selections over a trajectory...
 
-  Usage:  interdist mode pdb dcd sel1 sel2 [sel3 ...]
 */
 
 /*
@@ -218,22 +217,21 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLE\n"
     "\n"
-    "interdist model.pdb traj.dcd 'name==\"CA\" && resid==133'  'name==\"CA\" && resid==234'\n"
-    "\n"
+    "\tinterdist model.pdb traj.dcd 'name==\"CA\" && resid==133'  'name==\"CA\" && resid==234'\n"
     "Calculate the CA to CA distance between residues 133 and 234 over the\n"
     "course of trajectory traj.dcd This will print a frame number and a \n"
     "distance for each frame to stdout.\n"
     "\n"
-    "interdist --mode min model.pdb traj.dcd 'name==\"NE\" && resid==135' 'name=~\"OE.\" && resid==247'\n"
-    "\n" 
+    "\tinterdist --mode min model.pdb traj.dcd 'name==\"NE\" && resid==135'\\\n"
+    "\t  'name=~\"OE.\" && resid==247'\n"
     "This example is similar to the first, but --mode min returns the\n" 
     "minimum distance specifically.  Note the change in the second\n"
     "selection string.  Here a regular expression was supplied which\n"
     "will select either the OE1 or OE2 atom (charmm27).  The --mode min \n"
     "option will only return the distance to the closer atom.\n"
     "\n"
-    "interdist --mode zonly -r 50:250  model.pdb traj.dcd 'segid==\"PROT\"' 'name==\"P\" && segid==\"TPE\"'\n"
-    "\n"
+    "\tinterdist --mode zonly -r 50:250  model.pdb traj.dcd 'segid==\"PROT\"' \\\n"
+    "\t  'name==\"P\" && segid==\"TPE\"'\n"
     "Here --mode z-only indicates thatwe are only taking the z-component\n"
     "of the distance in this measurement.  the supplied range -r 50:250 \n"
     "is used to specify frames 50 to 250 for output.\n"

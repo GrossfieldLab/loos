@@ -5,10 +5,6 @@
   Converts a LOOS-supported format to a PDB (so long as coordinates
   are present)
 
-  Usage:
-
-    convert2pdb structure-file >output.pdb
-
 */
 
 

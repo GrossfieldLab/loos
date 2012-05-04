@@ -3,14 +3,6 @@
 
   
   Bend angle calculation over time...
-
-  Usage:
-    helix_kink selection-1 selection-2 model trajectory
-
-  Notes:
-    o Returns the deviation from linearity of the helix kink
-      (i.e. pi - angle)
-    o Angles are actually in degrees, despite the above note
       
 */
 

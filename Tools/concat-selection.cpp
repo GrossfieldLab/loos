@@ -3,11 +3,6 @@
 
 
   Concatenates atoms from a trajectory into a single pdb
-
-  Usage:
-
-    concat-selection system trajectory selection [selection ...] >output.pdb
-
 */
 
 

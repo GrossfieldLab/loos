@@ -4,33 +4,6 @@
 
   Aligns structures in a trajectory...
 
-  Usage:
-
-    aligner [options] model trajectory
-
-  Notes:
-
-  Can take two selections.  The first is the subset of atoms that will
-  be used for the alignment.  The second is the subset of atoms that
-  will then be transformed by the alignment and written out.  The
-  alignment scheme is to calculate an average structure, align all
-  frames against this average, then compute a new average.  This is
-  iterated until the difference in average structures is below the
-  specified tolerance.
-
-  An alternative mode can be used to align a trajectory to a single
-  reference frame.
-
-  The output will ALWAYS be a DCD!
-
-
-
-
-  Notes:
-
-  o Aligner will cache the entire alignment selection in memory, so
-    beware potential memory issues...
-
 */
 
 
@@ -111,17 +84,25 @@ string fullHelpMessage(void) {
     "Aligns the trajectory based on the default selection (alpha-carbons).  Only backbone atoms are\n"
     "transformed.  Creates aligned.pdb and aligned.dcd\n"
     "\n"
-    "\taligner --prefix aligned --selection 'segid == \"HEME\"' --transform 'segid == \"PROT\" || segid == \"HEME\"' model.pdb traj.dcd\n"
+    "\taligner --prefix aligned --selection 'segid == \"HEME\"' \\\n"
+    "\t  --transform 'segid == \"PROT\" || segid == \"HEME\"' model.pdb traj.dcd\n"
     "Aligns the trajectory based on atoms with segid 'HEME'.  Only transforms protein and heme atoms\n"
     "\n"
     "\taligner --prefix aligned --reference xtal.pdb model.pdb traj.dcd\n"
     "Aligns using alpha-carbons, transforming all atoms, but align the trajectory to the structure\n"
     "in xtal.pdb\n"
     "\n"
-    "\taligner --prefix aligned --reference xtal.pdb --refsel 'resid >= 30 && resid <= 60 && name == \"CA\"' --selection 'resid >= 10 && resid <= 40 && name == \"CA\"' model.pdb traj.dcd\n"
+    "\taligner --prefix aligned --reference xtal.pdb \\\n"
+    "\t  --refsel 'resid >= 30 && resid <= 60 && name == \"CA\"' \\\n"
+    "\t  --selection 'resid >= 10 && resid <= 40 && name == \"CA\"' model.pdb traj.dcd\n"
     "Aligns against a reference structure.  Uses alpha-carbons from residues 30-60 in the reference\n"
     "structure, aligned against alpha-carbons from residues 10-40 from the trajectory.  All atoms\n"
-    "in the trajectory are transformed.\n";
+    "in the trajectory are transformed.\n"
+    "\n"
+    "NOTES\n"
+    "\n"
+    "\tAligner will cache all frames/alignment segments in memory to align,\n"
+    "so beware of swapping with big trajectories\n";
 
   return(msg);
 }
