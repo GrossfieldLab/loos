@@ -69,7 +69,8 @@ string fullHelpMessage(void) {
     "Here we include all blobs above the threshold 1.  foo_grid is a density\n"
     "grid that has been created previously.  For example a smoothed water \n"
     "histogram grid may be used: \n"
-    "\twater-hist --radius=15 --bulk=25 --scale=1 b2ar.pdb b2ar.dcd | grid2gauss 4 2 > foo_grid\n"
+    "\twater-hist --radius=15 --bulk=25 --scale=1 b2ar.pdb b2ar.dcd |\\\n"
+    "\t  grid2gauss 4 2 > foo_grid\n"
     "The resulting blobs are then written to the grid \"foo_id\"\n"
     "\n\n";
 
