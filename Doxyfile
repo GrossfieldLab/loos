@@ -131,7 +131,8 @@ EXCLUDE_PATTERNS       = *.cc \
                          *.hh \
                          foo* \
                          Tests* \
-                         Examples*
+                         Examples* \
+			 .sconf*
 EXCLUDE_SYMBOLS        = *_HPP
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
