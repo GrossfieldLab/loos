@@ -397,6 +397,16 @@ namespace loos {
     
     
 
+    //! Distance-based search for bonds
+    /** Searches for bonds within an AtomicGroup based on distance.
+     *  does NOT clear the existing bond list prior to building new
+     *  bonds.  The default distance cutoff is 1.25
+     */
+    // Larger distances cause problems with hydrogens...
+    void findBonds(const double dist = 1.65);
+
+
+
     //! Apply a functor or a function to each atom in the group.
     /** apply() let's you apply a functor or a function pointer to each
      * atom in the group.  The functor is passed a pAtom.  The functor
@@ -417,18 +427,6 @@ namespace loos {
      GCoord centroid = f.center();
      \endcode
     */
-
-
-    //! Distance-based search for bonds
-    /** Searches for bonds within an AtomicGroup based on distance.
-     *  does NOT clear the existing bond list prior to building new
-     *  bonds.  The default distance cutoff is 1.25
-     */
-
-    // Larger distances cause problems with hydrogens...
-    void findBonds(const double dist = 1.65);
-
-
     template<class T> T apply(T func) {
       for (iterator i = atoms.begin(); i != atoms.end(); ++i)
         func(*i);
@@ -531,20 +529,20 @@ namespace loos {
     void applyTransform(const XForm&);
 
 
-    //! Copy coordinates from \arg g into current group
+    //! Copy coordinates from g into current group
     /**
-     * The \arg offset is relative to the start of the current group
-     * and \arg length is the number of coordinates to copy.  If
-     * \arg length + \arg offset is greater than the number of atoms
+     * The offset is relative to the start of the current group
+     * and length is the number of coordinates to copy.  If
+     * length + offset is greater than the number of atoms
      * in the current group, then the excess coordinates will not be
      * copied.
      *
-     * If not \arg length is given, then all coordinates in \arg g
-     * will be copied.  If neither \arg offset nor \arg length are
-     * given, then all coordinates from \arg g will be copied,
+     * If not length is given, then all coordinates in g
+     * will be copied.  If neither offset nor length are
+     * given, then all coordinates from g will be copied,
      * starting with the first atom in the current group.
      *
-     * It is assumed that the atoms in \arg g are in the appropriate
+     * It is assumed that the atoms in g are in the appropriate
      * order relative to the current group for the copy to make
      * sense.
      */
