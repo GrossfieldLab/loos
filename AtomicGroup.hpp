@@ -89,6 +89,10 @@ namespace loos {
     typedef std::vector<pAtom>::iterator       iterator;
     typedef std::vector<pAtom>::const_iterator const_iterator;
 
+    // Threshold for catching effectively zero singular values in
+    // the superposition code...
+    static const double superposition_zero_singular_value  =  1e-10;
+
   public:
     AtomicGroup() : _sorted(false) { }
 
@@ -602,6 +606,12 @@ namespace loos {
      * Uses the Kabsch alignment method (via SVD) to calculate the
      * transformation matrix that superimposes the current group onto
      * the passed group.  Returns the matrix.
+     *
+     * If too few atoms are given for aligning, the correlation matrix
+     * may become singular and return fewer than three eigenpairs.  If
+     * this is detected, superposition() will throw a NumericalError.
+     * The threshold for a zero-eigenvalue (really, a zero singular value)
+     * is set in AtomicGroup::superposition_zero_singular_value
      */
     GMatrix superposition(const AtomicGroup&);
 

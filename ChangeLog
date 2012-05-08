@@ -1,3 +1,11 @@
+2012-05-08    <tromo@spade.biophysics.rochester.edu>
+
+	* Added a check in AtomicGroup::superposition() to verify that the
+	correlation matrix is non-singular.  This happens if too few atoms
+	are selected for an alignment and the solution becomes
+	indeterminate.  The threshold for singular values being zero is
+	defined in AtomicGroup::superposition_zero_singular_value.
+
 2012-05-01    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed helix_kink to always report the smallest angle between

@@ -44,6 +44,7 @@
 
 namespace loos {
 
+
   std::vector<GCoord> AtomicGroup::momentsOfInertia(void) const {
     Math::Matrix<double, Math::ColMajor> I(3, 3);  // This gets initialized to zero...
     GCoord c = centerOfMass();
@@ -232,6 +233,10 @@ namespace loos {
     dgesvd_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
     if (info != 0)
       throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
+
+
+    if (S[2] < superposition_zero_singular_value)
+      throw(NumericalError("Superposition is indeterminate...try using more atoms"));
 
     // Adjust U (if necessary)
     if (det < 0.0) {
