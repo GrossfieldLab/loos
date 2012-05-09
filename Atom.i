@@ -137,6 +137,16 @@ namespace loos {
       return(loos::pAtom(new loos::Atom(*$self)));
     }
 
+    // Only checks equality of principal meta-data, not the atom
+    // coordinates...
+    bool __eq__(const pAtom& p) {
+      return($self->id() == p->id() &&
+	     $self->resid() == p->resid() &&
+	     $self->resname() == p->resname() &&
+	     $self->name() == p->name() &&
+	     $self->segid() == p->segid());
+    }
+
 
   };
 
