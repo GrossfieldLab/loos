@@ -2588,6 +2588,39 @@ implementations.
 <DT>	Where are the matrix operations?
 <DD>	We currently assume that matrix operations are better handled
 	by the appropriate Python package (e.g. numpy).
+
+<DT>	Why is PyLOOS so slow?
+<DD>	A frequent problem with PyLOOS performance is a result of
+	looping using Python.  For example, to find an Atom in an
+	AtomicGroup, the following will be slow,
+\code
+	found = 0
+	for x in range(system.size()):
+	    if (system[x] == an_atom):
+	       found = 1
+	       break
+
+	if (found):
+	   do_something()
+\endcode
+
+	Instead of using loops, try first to get Python to do the
+	looping internally, i.e.
+\code
+	if (an_atom in system):
+	   do_something()
+\endcode
+
+	Alternatively, look for LOOS functions that will perform the
+	same operation, such as:
+\code
+	if (system.contains(an_atom)):
+	   do_something()
+\endcode
+
+	Finally, consider rewriting the loop in C++ and adding it to
+	AtomicGroup (remembering to update the SWIG interface file,
+	AtomicGroup.i).
 </DL>
 
 */
