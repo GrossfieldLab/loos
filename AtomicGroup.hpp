@@ -334,7 +334,7 @@ namespace loos {
     //! Does any atom in the group have bond information???
     bool hasBonds(void) const;
 
-    //! Does all the atoms in the group have coordinates?
+    //! Do all the atoms in the group have coordinates?
     bool hasCoords(void) const;
 
     //! Remove any bonding information present in contained atoms
