@@ -205,3 +205,12 @@ BondMatrix SimpleAtom::findHydrogenBondsMatrix(const std::vector<SimpleAtom>& gr
   return(bonds);
 }
 
+
+
+
+bool SimpleAtom::divineHydrogen(const std::string& name) {
+  if (name[0] == 'H')
+    return(true);
+
+  return(false);
+}

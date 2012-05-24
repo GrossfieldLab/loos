@@ -66,11 +66,13 @@ struct ErrorWithAtom : public std::exception {
 
 class SimpleAtom {
 public:
-  SimpleAtom(const loos::pAtom& a) : atom(a), isHydrogen(false), usePeriodicity(false) { }
-  SimpleAtom(const loos::pAtom& a, const loos::SharedPeriodicBox& b, const bool c = true) : atom(a), isHydrogen(false), usePeriodicity(c), sbox(b) { }
+  SimpleAtom(const loos::pAtom& a) : atom(a), isHydrogen(divineHydrogen(a->name())), usePeriodicity(false) { }
+  SimpleAtom(const loos::pAtom& a, const loos::SharedPeriodicBox& b, const bool c = true) : atom(a), isHydrogen(divineHydrogen(a->name())), usePeriodicity(c), sbox(b) { }
 
   void attach(const loos::pAtom&a) { attached_to = a; }
   loos::pAtom attachedTo() const { return(attached_to); }
+
+  loos::pAtom rawAtom() const { return(atom); }
 
   double distance2(const SimpleAtom& s) const;
   double angle(const SimpleAtom& s) const;
@@ -135,6 +137,10 @@ public:
 
 
 private:
+
+
+  bool divineHydrogen(const std::string& name);
+
 
   loos::pAtom atom;
   bool isHydrogen;
