@@ -266,11 +266,6 @@ int main(int argc, char *argv[]) {
   vGroup raw_donors = splitSelection(mols, donor_selection);
   vGroup raw_acceptors = splitSelection(mols, acceptor_selection);
 
-  if (raw_donors.size() != raw_acceptors.size()) {
-    cerr << boost::format("Error- donor size is %d but acceptor size is %d\n") % raw_donors.size() % raw_acceptors.size();
-    exit(-1);
-  }
-
   vBond bond_list;
 
   for (uint j=0; j<raw_donors.size(); ++j) {
@@ -293,7 +288,7 @@ int main(int argc, char *argv[]) {
   ostringstream oss;
   oss << hdr << endl;
   for (uint i=0; i<bond_list.size(); ++i) {
-    formatBond(oss, i, bond_list[i]);
+    formatBond(oss, i+1, bond_list[i]);
     if (i < bond_list.size()-1)
       oss << endl;
   }
@@ -307,6 +302,8 @@ int main(int argc, char *argv[]) {
     M(j, 0) = j + tropts->skip;
     for (uint i=0; i<bond_list.size(); ++i)
       M(j, i+1) = bond_list[i].first.hydrogenBond(bond_list[i].second);
+
+    ++j;
   }
 
   writeAsciiMatrix(cout, M, oss.str(), false, FormatCharAsInteger());
