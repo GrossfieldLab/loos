@@ -1,7 +1,7 @@
 /*
   hcontacts.cpp
 
-  Constructs a matrix representing time series for multiple for inter and/or intra-moelcular hbonds
+  Constructs a matrix representing time series for multiple for inter and/or intra-molecular hbonds
 */
 
 /*
