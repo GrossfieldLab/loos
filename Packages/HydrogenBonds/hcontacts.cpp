@@ -60,6 +60,17 @@ string model_name, traj_name;
 // @cond TOOLS_INTERNAL
 
 
+struct FormatCharAsInteger {
+
+  string operator()(const unsigned char& c) {
+    std::ostringstream oss;
+    oss << static_cast<unsigned int>(c);
+    return(oss.str());
+  }
+
+};
+
+
 class ToolOptions : public opts::OptionsPackage {
 public:
   void addGeneric(po::options_description& o) {
@@ -201,6 +212,19 @@ vBond findPotentialBonds(const AtomicGroup& donors, const AtomicGroup& acceptors
 
 
 
+ostringstream& formatBond(ostringstream& oss, const uint i, const Bond& bond) {
+  pAtom a = bond.first.rawAtom();
+  pAtom b = bond.second.rawAtom();
+
+  oss << boost::format("# %d : %d-%s-%s-%d-%s -> %d-%s-%s-%d-%s")
+    % i
+    % a->id() % a->name() % a->resname() % a->resid() % a->segid()
+    % b->id() % b->name() % b->resname() % b->resid() % b->segid();
+
+  return(oss);
+}
+
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
@@ -264,11 +288,27 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  cout << boost::format("Found %d total bond pairs...\n") % bond_list.size();
+
+  // Generate the metadata for the output...
+  ostringstream oss;
+  oss << hdr << endl;
   for (uint i=0; i<bond_list.size(); ++i) {
-    cout << boost::format("==========================\n==> # %d\n") % i;
-    cout << bond_list[i].first << endl;
-    cout << bond_list[i].second << endl;
+    formatBond(oss, i, bond_list[i]);
+    if (i < bond_list.size()-1)
+      oss << endl;
   }
+
+  loos::Math::Matrix<unsigned char> M(traj->nframes() - tropts->skip, bond_list.size()+1);
+
+  uint j = 0;
+  while (traj->readFrame()) {
+    traj->updateGroupCoords(model);
+
+    M(j, 0) = j + tropts->skip;
+    for (uint i=0; i<bond_list.size(); ++i)
+      M(j, i+1) = bond_list[i].first.hydrogenBond(bond_list[i].second);
+  }
+
+  writeAsciiMatrix(cout, M, oss.str(), false, FormatCharAsInteger());
 
 }
