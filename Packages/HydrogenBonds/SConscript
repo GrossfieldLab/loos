@@ -43,7 +43,11 @@ list.append(hbonds)
 hmatrix = clone.Program('hmatrix', ['hmatrix.cpp', hcore])
 list.append(hmatrix)
 
-install_apps = 'hbonds hcorrelation hmatrix'
+hcontacts = clone.Program('hcontacts', ['hcontacts.cpp', hcore])
+list.append(hcontacts)
+
+
+install_apps = 'hbonds hcorrelation hmatrix hcontacts'
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('h_tools_install', loos_tools)
