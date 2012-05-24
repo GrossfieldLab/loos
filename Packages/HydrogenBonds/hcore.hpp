@@ -124,8 +124,11 @@ public:
     os << "<usePeriodicity " << s.usePeriodicity << "/>\n";
     if (s.usePeriodicity)
       os << "<PeriodicBox>" << s.sbox.box() << "</PeriodicBox>\n";
-    if (s.attached_to != 0)
+    if (s.attached_to != 0) {
+      os << "<attached>\n";
       os << *(s.attached_to) << std::endl;
+      os << "</attached>\n";
+    }
     os << "</SimpleAtom>";
     return(os);
   }
