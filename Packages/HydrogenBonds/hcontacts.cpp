@@ -40,10 +40,6 @@ namespace opts = loos::OptionsFramework;
 
 
 typedef vector<AtomicGroup>          vGroup;
-typedef vector<vGroup>              vvGroup;
-
-typedef vector<SimpleAtom>      vSimpleAtom;
-typedef vector<vSimpleAtom>    vvSimpleAtom;
 
 typedef pair<SimpleAtom, SimpleAtom>   Bond;
 typedef vector<Bond>                  vBond;
@@ -60,6 +56,9 @@ string model_name, traj_name;
 // @cond TOOLS_INTERNAL
 
 
+
+// Force matrix elements to written out as unsigned ints...
+
 struct FormatCharAsInteger {
 
   string operator()(const unsigned char& c) {
@@ -69,6 +68,8 @@ struct FormatCharAsInteger {
   }
 
 };
+
+
 
 
 class ToolOptions : public opts::OptionsPackage {
@@ -132,6 +133,10 @@ public:
 // @endcond
 
 
+
+
+// Given a vector of molecules, apply selection to each return a vector of subsets
+
 vGroup splitSelection(const vGroup& molecules, const string& selection) {
   vGroup results;
  
@@ -140,7 +145,7 @@ vGroup splitSelection(const vGroup& molecules, const string& selection) {
     try {
       subset = selectAtoms(*i, selection);
     }
-    catch (...) {
+    catch (...) {     // Ignore exceptions
       ;
     }
     if (!subset.empty())
@@ -157,15 +162,11 @@ vGroup splitSelection(const vGroup& molecules, const string& selection) {
 }
 
 
-int findMoleculeContainingAtom(const vGroup& molecules, const pAtom& atom) {
-  for (int i=0; i<static_cast<int>(molecules.size()); ++i)
-    if (find(molecules[i].begin(), molecules[i].end(), atom) != molecules[i].end())
-      return(i);
-
-  return(-1);
-}
 
 
+
+// Build up a vector of Bonds by looking for any donor/acceptor pair that's within a threshold
+// distance
 
 vBond findPotentialBonds(const AtomicGroup& donors, const AtomicGroup& acceptors, const AtomicGroup& system) {
   vBond bonds;
@@ -216,7 +217,7 @@ ostringstream& formatBond(ostringstream& oss, const uint i, const Bond& bond) {
   pAtom a = bond.first.rawAtom();
   pAtom b = bond.second.rawAtom();
 
-  oss << boost::format("# %d : %d-%s-%s-%d-%s -> %d-%s-%s-%d-%s")
+  oss << boost::format("# %d : %d-%s-%s-%d-%s => %d-%s-%s-%d-%s")
     % i
     % a->id() % a->name() % a->resname() % a->resid() % a->segid()
     % b->id() % b->name() % b->resname() % b->resid() % b->segid();
@@ -269,10 +270,12 @@ int main(int argc, char *argv[]) {
   vBond bond_list;
 
   for (uint j=0; j<raw_donors.size(); ++j) {
+
     if (intra_bonds) {
       vBond bonds = findPotentialBonds(raw_donors[j], raw_acceptors[j], model);
       copy(bonds.begin(), bonds.end(), back_inserter(bond_list));
     }
+
     if (inter_bonds) {
       for (uint i=0; i<raw_acceptors.size(); ++i) {
         if (j == i)
@@ -281,6 +284,7 @@ int main(int argc, char *argv[]) {
         copy(bonds.begin(), bonds.end(), back_inserter(bond_list));
       }
     }
+
   }
 
 
@@ -292,6 +296,10 @@ int main(int argc, char *argv[]) {
     if (i < bond_list.size()-1)
       oss << endl;
   }
+
+
+  // Use unsigned chars in matrix for space savings, but necessitates using a formatter
+  // on output, otherwise we'll get the ASCII char, not the numerical value...
 
   loos::Math::Matrix<unsigned char> M(traj->nframes() - tropts->skip, bond_list.size()+1);
 
@@ -307,5 +315,4 @@ int main(int argc, char *argv[]) {
   }
 
   writeAsciiMatrix(cout, M, oss.str(), false, FormatCharAsInteger());
-
 }
