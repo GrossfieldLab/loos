@@ -70,6 +70,57 @@ struct FormatCharAsInteger {
 };
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tHydrogen bond contacts for a trajectory as a matrix\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool creates a matrix that represents a time series of the state of all\n"
+    "possible hydrogen bonds for a given set of donor/acceptor selections.  Each element\n"
+    "of the matrix is either a 1 (hydrogen bond present) or a 0 (hydrogen bond absent).\n"
+    "Each column of the matrix is a possible hydrogen bond and each row of the matrix\n"
+    "is a time-step (frame) from the trajectory.\n"
+    "\tThe donors and acceptors are determined by the selections given.  The donor selection\n"
+    "must select only hydrogen atoms (names beginning with an 'H').  A search for all possible\n"
+    "hydrogen bond pairs is conducted at the start of the program, where any acceptor atom\n"
+    "within a cutoff distance of any donor hydrogen is a pair that is tracked.  This search\n"
+    "is conducted on a per-molecule basis, as determined by the --inter and --intra flags.\n"
+    "If --inter=1, then intermolecular contacts are searched (i.e. any donor in one molecule\n"
+    "vs all possible acceptors in all other molecules).  If --intra=1, then intramolecular\n"
+    "contacts are searched (i.e. any donor/acceptor atom in the same molecule).  This search\n"
+    "requires both connectivity and coordinates to be present.  If the model does not provide\n"
+    "coordinates (e.g. a PSF file), then the coordinates will be taken from the first frame\n"
+    "of the trajectory.\n"
+    "\tThe metadata at the top of the ASCII matrix output lists all of the possible hydrogen-\n"
+    "bond pairs that are tracked.  The first number is the column (0-based index) in the\n"
+    "matrix representing that bond.  To plot the column in Octave/gnuplot, add 1 to the column\n"
+    "index.  The first column of the matrix is the frame number from the trajectory for the\n"
+    "corresponding row of the matrix.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\thcontacts model.pdb sim.dcd 'resname == \"ARG\" && name =~ \"^HH\" && segid =~ \"PE\\d+\"'\\\n"
+    "\t          'segid =~ \"PE\\d+\" && name =~ \"^O\"' >bonds.asc\n"
+    "This example searches for all contacts between any ARG atom beginnig with 'HH' in\n"
+    "any segment that is PE and a number (i.e. PE0, PE1, PE11, ...) and any atom in the\n"
+    "same set of segments that begins with an O.  By default, only intermolecular hydrogen-\n"
+    "bonds are considered.  The default bond constraints of angle <= 30 and 1.5 <= d <= 3.0 are\n"
+    "used.  The initial search distance cutoff is 10.0 Angstroms.\n"
+    "\n"
+    "\thcontacts --search=30 model.pdb sim.dcd \\\n"
+    "\t          'resname == \"ARG\" && name =~ \"^HH\" && segid =~ \"PE\\d+\"'\\\n"
+    "\t          'segid =~ \"PE\\d+\" && name =~ \"^O\"' >bonds.asc\n"
+    "This example is the same as above, but the initial search for possible bonds uses a\n"
+    "cutoff of 30 Angstroms.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\thbonds, hmatrix, hcorrelation\n";
+
+  return(msg);
+}
 
 
 class ToolOptions : public opts::OptionsPackage {
@@ -82,7 +133,7 @@ public:
       ("angle", po::value<double>(&max_angle)->default_value(30.0), "Max bond angle deviation from linear")
       ("periodic", po::value<bool>(&use_periodicity)->default_value(false), "Use periodic boundary")
       ("inter", po::value<bool>(&inter_bonds)->default_value(true), "Inter-molecular bonds")
-      ("intra", po::value<bool>(&intra_bonds)->default_value(true), "Intra-molecular bonds");
+      ("intra", po::value<bool>(&intra_bonds)->default_value(false), "Intra-molecular bonds");
   }
 
   void addHidden(po::options_description& o) {
@@ -231,7 +282,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
 
-  opts::BasicOptions* bopts = new opts::BasicOptions();
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
   
