@@ -337,7 +337,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  loos::Math::Matrix<unsigned short> M(traj->nframes() - tropts->skip, bond_list.size()+1);
+  loos::Math::Matrix<uint> M(traj->nframes() - tropts->skip, bond_list.size()+1);
 
   uint j = 0;
   while (traj->readFrame()) {
