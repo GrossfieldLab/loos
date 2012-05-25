@@ -47,7 +47,7 @@ hcontacts = clone.Program('hcontacts', ['hcontacts.cpp', hcore])
 list.append(hcontacts)
 
 
-install_apps = 'hbonds hcorrelation hmatrix hcontacts'
+install_apps = 'hbonds hcorrelation hmatrix hcontacts hoccupancies.pl'
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('h_tools_install', loos_tools)
