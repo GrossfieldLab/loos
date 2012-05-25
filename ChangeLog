@@ -1,3 +1,11 @@
+2012-05-25    <tromo@spade.biophysics.rochester.edu>
+
+	* Added tool for tracking intra- and inter-molecular hydrogen
+	bonds for a trajectory (hcontacts).
+	* Added tool for computing occupancies from hcontacts and hmatrix
+	output (hoccupancies.pl)
+	* Added basic atom equality in Python
+
 2012-05-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Added a check in AtomicGroup::superposition() to verify that the
