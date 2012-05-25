@@ -57,18 +57,6 @@ string model_name, traj_name;
 
 
 
-// Force matrix elements to written out as unsigned ints...
-
-struct FormatCharAsInteger {
-
-  string operator()(const unsigned char& c) {
-    std::ostringstream oss;
-    oss << static_cast<unsigned int>(c);
-    return(oss.str());
-  }
-
-};
-
 
 string fullHelpMessage(void) {
   string msg =
@@ -349,10 +337,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  // Use unsigned chars in matrix for space savings, but necessitates using a formatter
-  // on output, otherwise we'll get the ASCII char, not the numerical value...
-
-  loos::Math::Matrix<unsigned char> M(traj->nframes() - tropts->skip, bond_list.size()+1);
+  loos::Math::Matrix<unsigned short> M(traj->nframes() - tropts->skip, bond_list.size()+1);
 
   uint j = 0;
   while (traj->readFrame()) {
@@ -365,5 +350,5 @@ int main(int argc, char *argv[]) {
     ++j;
   }
 
-  writeAsciiMatrix(cout, M, oss.str(), false, FormatCharAsInteger());
+  writeAsciiMatrix(cout, M, oss.str());
 }
