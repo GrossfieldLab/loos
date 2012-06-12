@@ -280,11 +280,10 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::BasicSelection* sopts = new opts::BasicSelection;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(topts);
+  options.add(bopts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
