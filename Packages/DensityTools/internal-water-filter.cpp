@@ -87,6 +87,7 @@ namespace loos {
     
 
     vector<int> WaterFilterRadius::filter(const AtomicGroup& solv, const AtomicGroup& prot) {
+      bdd_ = boundingBox(prot);
       vector<int> result(solv.size());
 
       double r2 = radius_ * radius_;

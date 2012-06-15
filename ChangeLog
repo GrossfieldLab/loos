@@ -1,3 +1,8 @@
+2012-06-15    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed bug in water-inside (and also water-hist) affecting the
+	radius filter and causing a segfault.
+
 2012-05-25    <tromo@spade.biophysics.rochester.edu>
 
 	* Added tool for tracking intra- and inter-molecular hydrogen
