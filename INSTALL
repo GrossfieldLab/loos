@@ -27,7 +27,9 @@
 | FreeBSD 8         |     +     |   -    |
 |-------------------|-----------|--------|
 | Windows XP        |     +     |   -    |
-|  (Cygwin 1.7.7)   |           |        |
+|  +Cygwin 1.7.7    |           |        |
+| Windows 7 64-bit  |     +     |   -    |
+|  +Cygwin 1.7.15-1 |           |        |
 |-------------------|-----------|--------|
 | MacOS 10.6        |     +     |   -    |
 | MacOS 10.7        |     +     |   -    |
@@ -231,7 +233,7 @@ MacOS is NOT SUPPORTED
 
 			 -----= CYGWIN =-----
 
-Tested versions: 1.7.7
+Tested versions: 1.7.7, 1.7.15-1
 
 You will need to install libboost-devel and liblapack-devel along with
 the g++ compiler using the cygwin setup.exe program.  (Note: if loos
