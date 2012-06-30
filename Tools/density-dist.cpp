@@ -239,7 +239,8 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup system = tropts->model;
   pTraj traj = tropts->trajectory;
-  // End of options  cout << "# " << hdr << endl;
+  // End of options  
+  cout << "# " << hdr << endl;
 
   // density from each selection
   vector<AtomicGroup> subsets;
