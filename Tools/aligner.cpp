@@ -116,8 +116,8 @@ public:
                   reference_name(""),
                   reference_sel(""),
                   alignment_tol(1e-6),
-                  maxiter(5000),
-                  center(true) { }
+                  maxiter(5000)
+                  { }
 
   void addGeneric(po::options_description& o) {
     o.add_options()
@@ -125,16 +125,15 @@ public:
       ("transform", po::value<string>(&transform_string)->default_value(transform_string), "Transform using this selection")
       ("maxiter", po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
       ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
-      ("center", po::value<bool>(&center)->default_value(center), "Auto-center the trajectory using the alignment subset")
       ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
       ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)");
   }
+
 
   string alignment_string, transform_string;
   string reference_name, reference_sel;
   double alignment_tol;
   uint maxiter;
-  bool center;
 };
 
 
@@ -142,10 +141,6 @@ public:
 
 
 
-void centerFrame(AtomicGroup& src, AtomicGroup& trg) {
-  GCoord c = src.centroid();
-  trg.translate(-c);
-}
 
 void savePDB(const string& fname, const string& meta, const AtomicGroup& grp) {
   AtomicGroup dup = grp.copy();
@@ -222,8 +217,6 @@ int main(int argc, char *argv[]) {
       traj->updateGroupCoords(model);
       model.applyTransform(xforms[i]);
       
-      if (topts->center)
-        centerFrame(align_sub, applyto_sub);
       dcdout.writeFrame(applyto_sub);
       
       if (i == 0) 
@@ -256,8 +249,6 @@ int main(int argc, char *argv[]) {
       XForm W(M);
       applyto_sub.applyTransform(W);
 
-      if (topts->center)
-        centerFrame(align_sub, applyto_sub);
       dcdout.writeFrame(applyto_sub);
 
       if (first) {
