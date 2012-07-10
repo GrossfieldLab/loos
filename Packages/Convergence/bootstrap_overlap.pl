@@ -119,7 +119,7 @@ if (!defined($range)) {
 
 # If no seeds specified, use 1/2 and 1/20th of traj size
 if ($#seeds < 0) {
-  @seeds = ($half, $half/10.0);
+  @seeds = ($half, $half/2, $half/10.0);
 }
 
 
@@ -215,15 +215,17 @@ set style line 4 lc 2 lw 2 lt 1
 set style line 5 lc 3 lw 2 lt 1
 set style line 6 lc 4 lw 4 lt 2
 
-a=0.5
+a=1
 b=$$rseeds[0]
-c=0.5
+c=1
 d=$$rseeds[1]
+e=1
+f=$$rseeds[2]
 
 
-f(x) = a*exp(-x/b)+c*exp(-x/d)+e*exp(-x/f)+1
-a=1;b=10;c=1;d=100;e=1;f=1000
-fit f(x) "$fni" u (\$1/$scale):(\$5/\$2) via a,b,c,d,e,f
+g(x) = a*exp(-x/b)+c*exp(-x/d)+e*exp(-x/f)+1
+
+fit g(x) "$fni" u (\$1/$scale):(\$5/\$2) via a,b,c,d,e,f
 
 set multiplot layout 2,1
 set ylabel "Covariance Overlap"
@@ -245,7 +247,7 @@ set yrange [*:*]
 set key top right
 
 plot "$fni" u (\$1/$scale):(\$5/\$2) w l ls 5 ti 'Ratio',\\
-"" u (\$1/$scale):(f(\$1/$scale)) w l ls 6 ti sprintf('y=%.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + 1', a, b, c, d, e, f)
+"" u (\$1/$scale):(g(\$1/$scale)) w l ls 6 ti sprintf('y=%.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + %.3g exp(-t/%.3g) + 1', a, b, c, d, e, f)
 
 unset multiplot
 
@@ -254,7 +256,7 @@ set term post enhanced solid color landscape
 set xrange [*:*]
 set yrange [*:*]
 g(x) = 0
-plot "$fni" u (\$1/$scale):(\$5/\$2 - f(\$1/$scale)) w l ti 'Residual', g(x) w l not
+plot "$fni" u (\$1/$scale):(\$5/\$2 - g(\$1/$scale)) w l ti 'Residual', g(x) w l not
 quit
 
 EOF
