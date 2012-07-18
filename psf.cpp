@@ -128,6 +128,7 @@ namespace loos {
       throw(std::runtime_error("PSF number of bonds disagrees with number found"));
 
     deduceAtomicNumberFromMass();
+    setGroupConnectivity();
   }
 
 

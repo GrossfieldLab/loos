@@ -292,6 +292,7 @@ namespace loos {
   void PDB::read(std::istream& is) {
     std::string input;
     bool has_cryst = false;
+    bool has_bonds = false;
     std::tr1::unordered_set<std::string> seen;
 
     while (getline(is, input)) {
@@ -299,9 +300,10 @@ namespace loos {
         parseAtomRecord(input);
       else if (input.substr(0, 6) == "REMARK")
         parseRemark(input);
-      else if (input.substr(0,6) == "CONECT")
+      else if (input.substr(0,6) == "CONECT") {
+        has_bonds = true;
         parseConectRecord(input);
-      else if (input.substr(0, 6) == "CRYST1") {
+      } else if (input.substr(0, 6) == "CRYST1") {
         parseCryst1Record(input);
         has_cryst = true;
       } else if (input.substr(0,3) == "TER")
@@ -333,6 +335,10 @@ namespace loos {
     // Force atom id's to be monotonic if there was an overflow event...
     if (atoms.size() >= 100000)
       renumber();
+
+    // Set bonds state...
+    if (has_bonds)
+      setGroupConnectivity();
   }
 
 

@@ -1,3 +1,11 @@
+2012-07-18    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed how Atom::bondsbit is handled.  If a file is read that
+	has connectivity (or should have connectivity), then all atoms in
+	the group will have the bondsbit set.  Atoms that do not have
+	anything bound to them will have valid connectivity and
+	Atom::getBonds() will return an empty vector<int>.
+
 2012-07-10    <tromo@spade.biophysics.rochester.edu>
 
 	* Removed the --center option in aligner (it's not needed and can

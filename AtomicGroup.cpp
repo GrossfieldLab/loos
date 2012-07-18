@@ -933,6 +933,9 @@ namespace loos {
   }
 
 
-  
+  void AtomicGroup::setGroupConnectivity() {
+    for (AtomicGroup::iterator i = atoms.begin(); i != atoms.end(); ++i)
+      (*i)->setProperty(Atom::bondsbit);
+  }
 
 }

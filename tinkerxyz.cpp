@@ -55,6 +55,8 @@ namespace loos {
       parseAtomRecord(input);
     }
 
+    // Assume all XYZ files have connectivity
+    setGroupConnectivity();
   }
 
 

@@ -723,7 +723,12 @@ namespace loos {
 
     bool _sorted;
 
+
   protected:
+
+    void setGroupConnectivity();
+
+
     std::vector<pAtom> atoms;
     SharedPeriodicBox box;
 

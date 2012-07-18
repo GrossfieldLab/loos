@@ -268,6 +268,7 @@ namespace loos {
 
     assignResidues();
     deduceAtomicNumberFromMass();
+    setGroupConnectivity();
   }
 
 
