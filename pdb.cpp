@@ -368,6 +368,7 @@ namespace loos {
   std::ostream& FormatConectRecords(std::ostream& os, PDB& p) {
     AtomicGroup::iterator ci;
 
+
     // We first have to make sure that the base AtomicGroup is sorted
     // since we will be verifying bound atoms exist by searching for
     // their ID...this would force a sort while we have iterators
@@ -376,12 +377,20 @@ namespace loos {
   
     for (ci = p.atoms.begin(); ci != p.atoms.end(); ++ci) {
       if ((*ci)->checkProperty(Atom::bondsbit)) {
+
+        // Note that an atom may have the bondsbit set but have no
+        // bonds to it (meaning it has connectivity defined and that
+        // connectivity is null).  So, check before trying to generate
+        // CONECT records...
+        std::vector<int> bonds = (*ci)->getBonds();
+        if (bonds.empty())
+          continue;
+
         int donor = (*ci)->id();
 
         os << "CONECT" << hybrid36AsString(donor, 5);
         int i = 0;
 
-        std::vector<int> bonds = (*ci)->getBonds();
         std::vector<int>::const_iterator cj;
         for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
           if (++i > 4) {
