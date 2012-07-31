@@ -1358,6 +1358,11 @@ Matlab and Octave.
        tool can be used to determine how exposed to solvent a selection
        is, or alternatively how buried a selection is.
 
+       <DT><B>gmxdump2pdb.pl</B>
+       <DD>Converts a Gromacs/MARTINI system into a PDB and minimal
+       PSF with connectivity.  Constraints (and bonds to hydrogens)
+       can be added, and the connectivity for water can be inferred.
+
        <DT><B>helix_kink</B>
        <DD>Given two selections and a trajectory, compute the time series
        of the angle between their principal components.  Also useful for

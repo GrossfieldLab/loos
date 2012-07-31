@@ -1,5 +1,11 @@
-2012-07-31    <alan@membrane.urmc.rochester.edu>
-	* Fixed normalization bug in the "Cum" column of xy_rdf
+2012-07-31    <tromo@spade.biophysics.rochester.edu>
+
+	* Added gmxdump2pdb.pl, a PERL program to take the output of
+	gmxdump and create a PDB (and a minimal PSF) representing the
+	system and its connectivity.
+
+	* Fixed normalization bug in the "Cum" column of xy_rdf (Alan)
+
 2012-07-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed how Atom::bondsbit is handled.  If a file is read that
