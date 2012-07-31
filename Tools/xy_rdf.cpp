@@ -228,7 +228,12 @@ string s =
     "new average every 100 frames considering only the frames in that interval.\n"
     "The files will appear in the directory \"foo\", with names rdf_0.dat, \n"
     "rdf_1.dat, etc.  The program does not attempt to create \"foo\" if it \n"
-    "doesn't exist, and instead will simply exit.\n" ;
+    "doesn't exist, and instead will simply exit.\n" 
+    "\n"
+    "Note: the 5th column (\"Cum\") is not a density like the other values, \n"
+    "but rather the absolute number of molecules of the second selection \n"
+    "found around the first selection.\n"
+    ;
 
     return (s);
     }
@@ -560,7 +565,7 @@ for (int i = 0; i < num_bins; i++)
     double total = (hist_upper_total[i] + hist_lower_total[i])/
                         (norm*(upper_expected + lower_expected));
     cum += (hist_upper_total[i] + hist_lower_total[i])
-                    /(group1.size()*frame);
+                   /group1.size();
 
     cout << d     << "\t"
          << total << "\t"
