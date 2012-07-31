@@ -1,3 +1,5 @@
+2012-07-31    <alan@membrane.urmc.rochester.edu>
+	* Fixed normalization bug in the "Cum" column of xy_rdf
 2012-07-18    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed how Atom::bondsbit is handled.  If a file is read that
