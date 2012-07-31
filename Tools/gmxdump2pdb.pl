@@ -1,15 +1,40 @@
 #!/usr/bin/perl -w
 #
-# (c) 2010 Tod D. Romo, Grossfield Lab, URMC
+#  This file is part of LOOS.
+#
+#  LOOS (Lightweight Object-Oriented Structure library)
+#  Copyright (c) 2010 Tod D. Romo, Grossfield Lab
+#  Department of Biochemistry and Biophysics
+#  School of Medicine & Dentistry, University of Rochester
+#
+#  This package (LOOS) is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation under version 3 of the License.
+#
+#  This package is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+#############################################################################
 #
 # Translate a subset of a TPR file (via gmxdump) into a PDB file
-# complete with CONECT records.
+# complete with CONECT records and a fake-PSF
 #
 # Usage- gmxdump -s foo.tpr | gmxdump2pdb.pl prefix
 #
 #  This generates prefix.pdb and prefix.psf
 #
 # NOTES:
+#
+#  o This program was written by observing the output of gmxdump for
+#    our test-cases.  No guarantee is made that it will work for any
+#    specific Gromacs/MARTINI system.
 #
 #  o The PSF is a fake-PSF...it only contains atom types and
 #    bonds, but it will work with VMD and LOOS
@@ -31,8 +56,9 @@
 #    is treated differently and bonds will not be made with just --hydrogens
 #
 #  o Water h-bonds can be inferred using the --water option (requires
-#    water to consist of OW, HW1, and HW2 atoms in order
-
+#    water to consist of OW, HW1, and HW2 atoms in that order
+#
+#############################################################################
 
 
 use FileHandle;
@@ -107,6 +133,9 @@ my @bond_list = sort { $a <=> $b } keys %$rconn;
 my $total_bonds = 0;
 
 foreach my $atom (@bond_list) {
+  
+  # Bound atoms may appear multiple times, especially if adding in
+  # constraints.  Filter out the duplicates...
   my $rbound = &uniqueElements($$rconn{$atom});
   my $n = 0;
 
@@ -467,6 +496,7 @@ sub buildStructure {
       # Now add bonds...
       my $rbonds = $mol->{BONDS};
       if ($use_constraints && defined($mol->{CONSTRAINTS})) {
+	# Only create bonds to hydrogens...
 	if ($hydrogens_only) {
 	  foreach my $rpair (@{$mol->{CONSTRAINTS}}) {
 	    my($a, $b) = @$rpair;
