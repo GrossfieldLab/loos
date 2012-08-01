@@ -166,7 +166,7 @@ env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...
 if platform == 'darwin':
-   env.Append(LINKFLAGS = ' -framework vecLib')
+   env.Append(LINKFLAGS = ' -framework Accelerate')
 elif platform == 'freebsd8':
    env.Append(LIBS=['lapack', 'blas'])
 elif platform == 'linux2':

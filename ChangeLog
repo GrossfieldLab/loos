@@ -1,3 +1,8 @@
+2012-08-01  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Changed MacOS build to use the Accelerate framework rather than
+	vecLib directly (which is now deprecated under 10.8)
+
 2012-07-31    <tromo@spade.biophysics.rochester.edu>
 
 	* Added gmxdump2pdb.pl, a PERL program to take the output of

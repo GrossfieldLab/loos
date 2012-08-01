@@ -65,7 +65,7 @@ typedef int f77int;
 
 #elif defined(__APPLE__)
 
-#include <vecLib/vecLib.h>
+#include <Accelerate/Accelerate.h>
 
 typedef __CLPK_integer f77int;
 
