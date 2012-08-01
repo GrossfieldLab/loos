@@ -186,7 +186,7 @@ foreach my $atom (@$rstruct) {
 printf $psf "\n%8d !NBOND: bonds\n", $total_bonds;
 my $count = 0;
 foreach my $atom (@bond_list) {
-  my $rbound = $$rconn{$atom};
+  my $rbound = &uniqueElements($$rconn{$atom});
   foreach (@$rbound) {
     printf $psf "%8s%8s", $atom, $_;
     if (++$count >= 4) {
