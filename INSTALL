@@ -103,11 +103,17 @@ already multithreaded.
 
 			------= Fedora =------
 
-LOOS has been tested on Fedora (64-bit) 12-16.  We assume
+LOOS has been tested on Fedora (64-bit) 12-17.  We assume
 you already have the basic compiler tools installed (i.e. g++).  You will
 need to install scons, boost, and atlas:
 
 sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
+
+Notes for Fedora 17:
+      There may be a number of warnings issues by g++ in the
+      DensityTools package.  We believe these are spurious and can be safely
+      ignored.
+
 
 * PyLOOS *
 
@@ -117,7 +123,7 @@ Fedora 12: Install pcre-devel and download and build the latest swig
 Fedora 13: Yum install pcre-devel and python-devel, then download and install
   swig-2.0.4 (or later).
 
-Fedora 14, 15, 16: Yum install python-devel and swig
+Fedora 14-17: Yum install python-devel and swig
 
 
 
