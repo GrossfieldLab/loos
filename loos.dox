@@ -1435,6 +1435,34 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release201 Version 2.0.1 (8-6-2012)
+\subsection r201_bugs Bug Fixes
+<ul>
+  <li> AtomicGroup::superposition() will now throw an error if the
+  superposition is indeterminate.
+  <li> Fixed a bug in water-inside and water-hist that can cause the
+  radius filter to segfault
+  <li> Fixed normalization bug in the cumulative column of xy_rdf
+</ul>
+
+\subsection r201_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added "hcontacts", a tool for tracking intra- and
+  inter-molecular hydrogen bonds in a trajectory.
+  <li> Added "hoccupancies.pl", a tool for computing occupancies from
+  hcontacts and hmatrix output.
+  <li> Atoms can now be compared in PyLOOS
+  <li> Major change in how the Atom::bondsbit is handled.  If a file
+  is read that supports connectivity (e.g. a PSF or a PDB with CONECT
+  records), then the bondsbit will be set for all atoms, regardless of
+  whether or there are bonds actually present for a given atom.
+  Additionally, Atom::getBonds() will now return an empty vector in
+  this case rather than throwing an error.
+  <li> Added gmxdump2pdb.pl, a PERL program that takes the output from
+  gmxdump and creates a PDB and a "fake" PSF file representing the
+  structure and its connectivity.
+</ul>
+
 \section release200 Version 2.0.0 (5-2-2012)
 \subsection r200_bugs Bug Fixes
 <ul>
