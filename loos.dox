@@ -1443,6 +1443,8 @@ Matlab and Octave.
   <li> Fixed a bug in water-inside and water-hist that can cause the
   radius filter to segfault
   <li> Fixed normalization bug in the cumulative column of xy_rdf
+  <li> Removed --center option in aligner since it is no longer
+  necessary and it can lead to unintended translations in the output.
 </ul>
 
 \subsection r201_added_changed Added, Changed, or Otherwise Notable
