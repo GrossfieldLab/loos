@@ -886,27 +886,33 @@ namespace loos {
   }
 
 
+
+
+  /*
+   * The bonds list may not be symmetrical in a given file format, i.e. if A->B, then
+   * there may be no B->A.  This routine will search through all connected atoms and
+   * ensure that if there is A->B, then there is also B->A
+   */
+
   void AtomicGroup::symmetricalBonds() {
     if (!hasBonds())
       return;
 
-    for (iterator j = begin(); j != end(); ++j) {
-      std::vector<int> source_list = (*j)->getBonds();
-      for (std::vector<int>::const_iterator jb = source_list.begin(); jb != source_list.end(); ++jb) {
-        pAtom pa = findById(*jb);
-        if (pa == 0)
+    AtomicGroup sortable = *this;
+    if (!sortable.sorted())
+      sortable.sort();
+
+    for (iterator atom = sortable.begin(); atom != sortable.end(); ++atom) {
+      std::vector<int> source_bonds = (*atom)->getBonds();
+      for (std::vector<int>::const_iterator bound_ids = source_bonds.begin(); bound_ids != source_bonds.end(); ++bound_ids) {
+        pAtom bound_atom = sortable.findById(*bound_ids);
+        if (bound_atom == 0)
           throw(LOOSError("Unable to find a bound atom in AtomicGroup::symemtricalBonds()"));
-        std::vector<int> target_list = pa->getBonds();
+        std::vector<int> target_bonds = bound_atom->getBonds();
 
-        bool flag = false;
-        for (std::vector<int>::const_iterator ib = target_list.begin(); ib != target_list.end(); ++ib)
-          if (*ib == (*j)->id()) {
-            flag = true;
-            break;
-          }
-
-        if (!flag)
-          pa->addBond((*j)->id());
+        std::vector<int>::iterator reverse_bond = std::find(target_bonds.begin(), target_bonds.end(), (*atom)->id());
+        if (reverse_bond == target_bonds.end())
+          bound_atom->addBond((*atom)->id());
       }
     }
 
