@@ -343,9 +343,6 @@ namespace loos {
     //! Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)
     void pruneBonds();
 
-    //! Fix bond list so if A->B, then B->A
-    void symmetricalBonds();
-
     //! Deduce atomic number from mass (if present), returning number of atoms assigned
     uint deduceAtomicNumberFromMass(const double tol = 0.1);
 
