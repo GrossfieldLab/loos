@@ -2,7 +2,12 @@
 
 	* Fixed bug in PDB reader where bonds (via CONECT records) were
 	not expliticly made symmetrical.
-	
+	* Fixed a side-effect in the PDB writer where the underlying PDB
+	would be sorted
+	* Changed PDB writer to only write out a-directional bonds.  The
+	symmetrical bonds are not written (i.e. A->B will be written into
+	a CONECT record, but not B->A)
+
 2012-08-01  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Changed MacOS build to use the Accelerate framework rather than

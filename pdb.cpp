@@ -394,37 +394,38 @@ namespace loos {
   }
 
 
-  std::ostream& FormatConectRecords(std::ostream& os, PDB& p) {
+  std::ostream& FormatConectRecords(std::ostream& os, const PDB& p) {
     AtomicGroup::iterator ci;
 
+    // Copy and sort
+    PDB sorted = p;
+    sorted.sort();
 
-    // We first have to make sure that the base AtomicGroup is sorted
-    // since we will be verifying bound atoms exist by searching for
-    // their ID...this would force a sort while we have iterators
-    // pointing to the vector of atoms which would be bad...
-    p.sort();
-  
-    for (ci = p.atoms.begin(); ci != p.atoms.end(); ++ci) {
+    for (ci = sorted.begin(); ci != sorted.end(); ++ci) {
       if ((*ci)->checkProperty(Atom::bondsbit)) {
+        int id = (*ci)->id();
 
-        // Note that an atom may have the bondsbit set but have no
-        // bonds to it (meaning it has connectivity defined and that
-        // connectivity is null).  So, check before trying to generate
-        // CONECT records...
         std::vector<int> bonds = (*ci)->getBonds();
         if (bonds.empty())
           continue;
 
-        int donor = (*ci)->id();
+        std::sort(bonds.begin(), bonds.end());
+        std::vector<int> filtered_bonds;
+        for (std::vector<int>::const_iterator i = bonds.begin(); i != bonds.end(); ++i)
+          if (*i >= id)
+            filtered_bonds.push_back(*i);
 
-        os << "CONECT" << hybrid36AsString(donor, 5);
+        if (filtered_bonds.empty())
+          continue;
+
+        os << "CONECT" << hybrid36AsString(id, 5);
         int i = 0;
 
         std::vector<int>::const_iterator cj;
-        for (cj = bonds.begin(); cj != bonds.end(); ++cj) {
+        for (cj = filtered_bonds.begin(); cj != filtered_bonds.end(); ++cj) {
           if (++i > 4) {
             i = 1;
-            os << "\nCONECT" << hybrid36AsString(donor, 5);
+            os << "\nCONECT" << hybrid36AsString(id, 5);
           }
           int bound_id = *cj;
           pAtom pa = p.findById(bound_id);
@@ -448,8 +449,8 @@ namespace loos {
    * pymol...
    *
    */
-  std::ostream& operator<<(std::ostream& os, PDB& p) {
-    AtomicGroup::iterator i;
+  std::ostream& operator<<(std::ostream& os, const PDB& p) {
+    AtomicGroup::const_iterator i;
 
     os << p._remarks;
     if (p.isPeriodic()) 

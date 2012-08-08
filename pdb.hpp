@@ -137,7 +137,7 @@ namespace loos {
     void unitCell(const UnitCell&);
 
     //! Output as a PDB
-    friend std::ostream& operator<<(std::ostream&, PDB&);
+    friend std::ostream& operator<<(std::ostream&, const PDB&);
 
     //! Read in PDB from an ifstream
     void read(std::istream& is);
@@ -162,7 +162,7 @@ namespace loos {
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
-    friend std::ostream& FormatConectRecords(std::ostream&, PDB&);
+    friend std::ostream& FormatConectRecords(std::ostream&, const PDB&);
 
     pAtom findAtom(const int i);
     void uniqueBonds();
