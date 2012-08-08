@@ -165,7 +165,7 @@ namespace loos {
     friend std::ostream& FormatConectRecords(std::ostream&, PDB&);
 
     pAtom findAtom(const int i);
-    void fixBonds();
+    void uniqueBonds();
 
   private:
     bool _show_charge;
