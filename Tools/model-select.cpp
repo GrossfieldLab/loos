@@ -64,6 +64,10 @@ string fullHelpMessage(void) {
     "\n"
     "\tmodel-select --selection 'name == \"CA\"' model.pdb >model-ca.xml\n"
     "This example only writes out alpha-carbons.\n"
+    "\n"
+    "\tmodel-select --selection 'resid <= 100' --splitby molecule >model-mols.xml\n"
+    "This example splits the first 100 residues into molecules as determined\n"
+    "by the sytem's connectivity.  Each group is written out separately.\n"
     "\n";
 
   return(msg);
