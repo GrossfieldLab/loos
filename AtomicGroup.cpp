@@ -886,6 +886,33 @@ namespace loos {
   }
 
 
+  void AtomicGroup::symmetricalBonds() {
+    if (!hasBonds())
+      return;
+
+    for (iterator j = begin(); j != end(); ++j) {
+      std::vector<int> source_list = (*j)->getBonds();
+      for (std::vector<int>::const_iterator jb = source_list.begin(); jb != source_list.end(); ++jb) {
+        pAtom pa = findById(*jb);
+        if (pa == 0)
+          throw(LOOSError("Unable to find a bound atom in AtomicGroup::symemtricalBonds()"));
+        std::vector<int> target_list = pa->getBonds();
+
+        bool flag = false;
+        for (std::vector<int>::const_iterator ib = target_list.begin(); ib != target_list.end(); ++ib)
+          if (*ib == (*j)->id()) {
+            flag = true;
+            break;
+          }
+
+        if (!flag)
+          pa->addBond((*j)->id());
+      }
+    }
+
+  }
+
+
   /**
    * If an atom has a mass, then this is used to look up it's atomic
    * number.  Note that LOOS only has the first 96 elements in its
