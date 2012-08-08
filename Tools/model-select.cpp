@@ -35,6 +35,14 @@
 
 using namespace std;
 using namespace loos;
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
+
+enum SplitMode { NONE, RESIDUE, MOLECULE, SEGID, NAME };
+
+SplitMode mode;
+string model_name;
 
 
 string fullHelpMessage(void) {
@@ -51,10 +59,10 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLES\n"
     "\n"
-    "\tmodel-select all model.pdb >model.xml\n"
+    "\tmodel-select model.pdb >model.xml\n"
     "This example writes out ALL atoms\n"
     "\n"
-    "\tmodel-select 'name == \"CA\"' model.pdb >model-ca.xml\n"
+    "\tmodel-select --selection 'name == \"CA\"' model.pdb >model-ca.xml\n"
     "This example only writes out alpha-carbons.\n"
     "\n";
 
@@ -63,21 +71,114 @@ string fullHelpMessage(void) {
 
 
 
+class ToolOptions : public opts::OptionsPackage {
+public:
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name");
+  }
+
+  void addHidden(po::options_description& o) {
+    o.add_options()
+      ("model", po::value<string>(&model_name), "model");
+  }
+
+  void addPositional(po::positional_options_description& p) {
+    p.add("model", 1);
+  }
+
+  bool postConditions(po::variables_map& map) {
+    mode = NONE;
+
+    if (!mode_string.empty()) {
+      if (mode_string == "molecule")
+        mode = MOLECULE;
+      else if (mode_string == "residue")
+        mode = RESIDUE;
+      else if (mode_string == "segid")
+        mode = SEGID;
+      else if (mode_string == "name")
+        mode = NAME;
+      else
+        return(false);
+    }
+
+    return(true);
+  }
+
+  string help() const { return("model"); }
+
+  string print() const {
+    ostringstream oss;
+
+    oss << boost::format("mode='%s', model='%s'") % mode_string % model_name;
+    return(oss.str());
+  }
+
+
+private:
+  string mode_string;
+};
+
+
+void dumpChunks(const vector<AtomicGroup>& chunks) {
+  for (uint i=0; i<chunks.size(); ++i) {
+    cout << "<!-- *** Group #" << i << " -->\n";
+    cout << chunks[i] << endl << endl; 
+  }
+}
+
+
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
 
-  if (argc != 3) {
-    cerr << "Usage- " << argv[0] << " selection-string model\n";
-    cerr << fullHelpMessage();
-    exit(-1);
-  }
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection;
+  ToolOptions* topts = new ToolOptions();
 
-  AtomicGroup model = createSystem(argv[2]);
-  AtomicGroup subset = selectAtoms(model, argv[1]);
+  opts::AggregateOptions options;
+  options.add(bopts).add(sopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = createSystem(model_name);
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
 
   cerr << "You selected " << subset.size() << " atoms out of " << model.size() << endl;
-  
+
   cout << "<!-- " << header << " -->\n";
-  cout << subset << endl;
+  vector<AtomicGroup> chunks;
+  map<string, AtomicGroup> named_chunks;
+
+  switch(mode) {
+  case MOLECULE:
+    chunks = subset.splitByMolecule();
+    dumpChunks(chunks);
+    break;
+
+  case RESIDUE:
+    chunks = subset.splitByResidue();
+    dumpChunks(chunks);
+    break;
+
+  case SEGID:
+    chunks = subset.splitByUniqueSegid();
+    dumpChunks(chunks);
+    break;
+
+  case NAME:
+    named_chunks = subset.splitByName();
+    for (map<string, AtomicGroup>::const_iterator i = named_chunks.begin(); i != named_chunks.end(); ++i) {
+      cout << "<!-- Group for name '" << i->first << "' -->\n";
+      cout << i->second << endl << endl;;
+    }
+    break;
+
+  case NONE:
+    cout << subset << endl;
+    break;
+  }
+
 }

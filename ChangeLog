@@ -7,6 +7,12 @@
 	* Changed PDB writer to only write out a-directional bonds.  The
 	symmetrical bonds are not written (i.e. A->B will be written into
 	a CONECT record, but not B->A)
+	* Changed model-select to now require the '--selection' or '-s'
+	option to specify a subset selection.  Added '--splitby mode'
+	where mode is one of residue, segid, molecule, or name.  This
+	causes the subset to be split with the appropriate method and each
+	group is then written out.  This is useful for diagnosing
+	splitting and connectivity issues.
 
 2012-08-01  Tod Romo  <tromo@Gorgoneion.local>
 
