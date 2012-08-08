@@ -1,12 +1,8 @@
 2012-08-08    <tromo@spade.biophysics.rochester.edu>
 
-	* Added AtomicGroup::symmetricalBonds() to fix the bonds list.
-	Not all files will have symmetrical bonds (A->B and B->A).  This
-	function will make sure all bonded atoms have symmetrical bonds,
-	i.e. A->B and B->A.  Note that this is important for
-	AtomicGroup::splitByMolecule(), which may incorrectly split if the
-	bonds list is not symmetrical.
-
+	* Fixed bug in PDB reader where bonds (via CONECT records) were
+	not expliticly made symmetrical.
+	
 2012-08-01  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Changed MacOS build to use the Accelerate framework rather than

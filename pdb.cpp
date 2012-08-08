@@ -204,6 +204,31 @@ namespace loos {
   }
 
 
+
+
+  // If the PDB already had symmetrical CONECT records, then it will
+  // have duplicates thanks to how parseConectRecord works.  We sort
+  // and filter out repeated bonds to fix this.
+  void PDB::uniqueBonds() {
+
+    for (iterator atom = begin(); atom != end(); ++atom) {
+      std::vector<int> bonds = (*atom)->getBonds();
+      
+      if (!bonds.empty()) {
+        std::sort(bonds.begin(), bonds.end());
+        std::vector<int> unique_bonds;
+        
+        unique_bonds.push_back(bonds[0]);
+        for (std::vector<int>::const_iterator i = bonds.begin()+1; i != bonds.end(); ++i)
+          if (*i != *(i-1))
+            unique_bonds.push_back(*i);
+
+        (*atom)->setBonds(unique_bonds);
+      }
+    }
+  }
+
+
   // Parse CONECT records, updating the referenced atoms...
   // Couple of issues:
   //
@@ -241,6 +266,7 @@ namespace loos {
       if (boundee == 0)
         throw(PDB::BadConnectivity("Cannot find bound atom " + t));
       bound->addBond(boundee);
+      boundee->addBond(bound);
     }
   }
 
@@ -337,8 +363,11 @@ namespace loos {
       renumber();
 
     // Set bonds state...
-    if (has_bonds)
+    if (has_bonds) {
       setGroupConnectivity();
+      uniqueBonds();
+    }
+
   }
 
 
