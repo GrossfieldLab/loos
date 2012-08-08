@@ -245,13 +245,12 @@ string fullHelpMessage(void) {
 int main(int argc, char *argv[]) {
 
   string header = invocationHeader(argc, argv);
-  opts::BasicOptions* basopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(basopts).add(bopts).add(tropts).add(topts);
+  options.add(bopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
