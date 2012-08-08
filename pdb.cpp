@@ -409,6 +409,9 @@ namespace loos {
         if (bonds.empty())
           continue;
 
+
+        // Filter bonds...  Any bond to an atomid smaller than the current atom
+        // will have already been written, so omit.
         std::sort(bonds.begin(), bonds.end());
         std::vector<int> filtered_bonds;
         for (std::vector<int>::const_iterator i = bonds.begin(); i != bonds.end(); ++i)
