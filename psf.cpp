@@ -113,6 +113,9 @@ namespace loos {
         ind1 = parseStringAsHybrid36(sind1);
         ind2 = parseStringAsHybrid36(sind2);
 
+        if (ind1 > num_atoms || ind2 > num_atoms)
+          throw(LOOSError("PSF bond error: bound atomid exceeds number of atoms."));
+
         ind1--;  // our indices are 1 off from the numbering in the pdb/psf file
         ind2--;
         pAtom pa1 = getAtom(ind1);                
