@@ -92,6 +92,12 @@ public:
     p.add("model", 1);
   }
 
+  bool check(po::variables_map& map) {
+    if (!map.count("model"))
+      return(true);
+    return(false);
+  }
+
   bool postConditions(po::variables_map& map) {
     mode = NONE;
 
