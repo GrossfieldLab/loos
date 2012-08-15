@@ -1,3 +1,4 @@
+
 2012-08-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in PDB reader where bonds (via CONECT records) were
@@ -13,6 +14,10 @@
 	causes the subset to be split with the appropriate method and each
 	group is then written out.  This is useful for diagnosing
 	splitting and connectivity issues.
+
+2012-08-06   <tromo@spade.biophysics.rochester.edu>
+
+	* RELEASED version 2.0.1
 
 2012-08-01  Tod Romo  <tromo@Gorgoneion.local>
 
