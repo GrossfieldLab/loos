@@ -1436,6 +1436,29 @@ Matlab and Octave.
 
 /*! \page Changes Change Log
 \section release201 Version 2.0.1 (8-6-2012)
+\subsection r202_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in PDB reader where bonds were not made symmetrical
+  unless they were explicitly so in the PDB file (i.e. a bond from X
+  to Y did not imply Y bound to X).
+  <li> Fixed a bug when using << to write a PDB file with bonds.  The
+  underlying PDB would be sorted after it was written.  Now the PDB is
+  const and will not change.
+  <li> Fixed a bug when writing PDB files with bonds where every bond
+  was explicitly written into the CONECT records.  Now, only the
+  unique bonds are written (i.e. a bond from X to Y will appear in a
+  CONECT record, but not Y to X).
+</ul>
+
+\subsection r202_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Changed model-select to now require the "--selection" option to
+  specify a subset.  A "--splitby mode" option has been added where
+  mode can be residue, segid, molecule, or name.  This will split the
+  subset and each resulting AtomicGroup written out.
+</ul>
+
+\section release201 Version 2.0.1 (8-6-2012)
 \subsection r201_bugs Bug Fixes
 <ul>
   <li> AtomicGroup::superposition() will now throw an error if the
