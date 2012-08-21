@@ -1435,7 +1435,7 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release201 Version 2.0.1 (8-6-2012)
+\section release201 Version 2.0.2 (8-21-2012)
 \subsection r202_bugs Bug Fixes
 <ul>
   <li> Fixed bug in PDB reader where bonds were not made symmetrical
