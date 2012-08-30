@@ -21,6 +21,7 @@
 
 
 #include <amber.hpp>
+#include <exceptions.hpp>
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -29,24 +30,27 @@
 namespace loos {
 
 
-  void Amber::verifyFormat(std::istream& is, const std::string fmt) {
+  void Amber::verifyFormat(std::istream& is, const std::string& fmt, const std::string& where) {
 
+    std::streampos pos = is.tellg();
     std::string str;
     is >> str;
-  
+
     boost::char_separator<char> sep("()");
     tokenizer tokens(str, sep);
     tokenizer::iterator toks = tokens.begin();
 
     ++toks;
-    if (*toks != fmt)
-      throw(std::runtime_error("Bad format spec"));
+    if (*toks != fmt) {
+      is.seekg(pos);
+      throw(ParseError("Bad format spec while parsing amber file - " + where));
+    }
 
   }
 
 
   void Amber::parseCharges(std::istream& is) {
-    verifyFormat(is, "5E16.8");
+    verifyFormat(is, "5E16.8", "charges");
 
     uint n = atoms.size();
     greal m;
@@ -65,7 +69,7 @@ namespace loos {
 
 
   void Amber::parseMasses(std::istream& is) {
-    verifyFormat(is, "5E16.8");
+    verifyFormat(is, "5E16.8", "masses");
 
     uint n = atoms.size();
     greal m;
@@ -84,7 +88,7 @@ namespace loos {
 
 
   void Amber::parseResidueLabels(std::istream& is) {
-    verifyFormat(is, "20a4");
+    verifyFormat(is, "20a4", "residue labels");
 
     for (uint i=0; i<nres; i++) {
       std::string s;
@@ -100,7 +104,7 @@ namespace loos {
 
 
   void Amber::parseResiduePointers(std::istream& is) {
-    verifyFormat(is, "10I8");
+    verifyFormat(is, "10I8", "residue pointers");
 
     for (uint i=0; i<nres; i++) {
       int j;
@@ -144,7 +148,7 @@ namespace loos {
 
 
   void Amber::parseBonds(std::istream& is, const int n) {
-    verifyFormat(is, "10I8");
+    verifyFormat(is, "10I8", "bonds");
 
     int i, a, b, k;
 
@@ -169,7 +173,7 @@ namespace loos {
 
 
   void Amber::parsePointers(std::istream& is) {
-    verifyFormat(is, "10I8");
+    verifyFormat(is, "10I8", "pointers");
     uint dummy;
 
     is >> natoms;
@@ -180,8 +184,15 @@ namespace loos {
       is >> dummy;
     is >> nres;
 
-    for (int i=0; i<19; i++)
-      is >> dummy;
+    // Amber files may have different numbers of pointers...so we read everything
+    // up until the next %FLAG tag.
+    std::streampos pos;
+    std::string s;
+    do {
+      pos = is.tellg();       // Record position in case we've read a %FLAG
+      is >> s;
+    } while (s != "%FLAG");
+    is.seekg(pos);            // Go back to %FLAG location
 
     // Now build up the atomic-group...
     if (atoms.size() != 0)
@@ -198,15 +209,25 @@ namespace loos {
 
   // Simply slurp up the title (for now)
   void Amber::parseTitle(std::istream& is) {
-    verifyFormat(is, "20a4");
-    char buf[1024];
-  
-    is.getline(buf, 1024);
+
+
+    // The Amber spec says the title format should be 20a4, but at least one
+    // variant we've seen uses just a.  So we have to handle both...
+    try {
+      verifyFormat(is, "20a4", "title");
+    }
+    catch (ParseError& e) { verifyFormat(is, "a", "title"); }
+    catch (...) { throw; }
+
+    // This gets the newline, and anything after the FORMAT tag...
+    getline(is, _title);
+    // This reads the actual title...
+    getline(is, _title);
   }
 
 
   void Amber::parseAtomNames(std::istream& is) {
-    verifyFormat(is, "20a4");
+    verifyFormat(is, "20a4", "atom names");
 
     for (uint i=0; i<natoms; i++) {
       std::string s;
@@ -222,16 +243,17 @@ namespace loos {
   void Amber::read(std::istream& is) {
     char buf[1024];
 
+    // Skip the first line (presumably %VERSION tag
     is.getline(buf,1024);
-  
+
     bool flag = false;
     std::string s;
     is >> s;
 
-
     while (!(is.eof() || is.fail())) {
+
       if (s != "%FLAG")
-        throw(std::runtime_error("Parse error: " + s));
+        throw(std::runtime_error("Amber File Parse Error: " + s));
 
       is >> s;
       if (s == "TITLE")

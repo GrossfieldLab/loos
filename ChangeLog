@@ -1,3 +1,16 @@
+2012-08-30    <tromo@spade.biophysics.rochester.edu>
+
+	* Added better error messages for parse errors in Amber prmtop
+	files.
+	* Added Amber::title() to return the title string contained within
+	an Amber prmtop file
+	* Added support for AMOEBA variant of Amber prmtop files (this
+	includes supporting varying numbers of pointers)
+
+
+2012-08-21    <tromo@spade.biophysics.rochester.edu>
+
+	* RELEASED version 2.0.2
 
 2012-08-08    <tromo@spade.biophysics.rochester.edu>
 

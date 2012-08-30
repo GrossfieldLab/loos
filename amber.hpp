@@ -103,11 +103,14 @@ namespace loos {
     //! Parse the parmtop file
     void read(std::istream& is);
 
+    //! Return the title
+    std::string title() const { return(_title); }
+
   private:
 
     Amber(const AtomicGroup& grp) : AtomicGroup(grp), natoms(0), nres(0), nbonh(0), mbona(0) { }
 
-    void verifyFormat(std::istream&, const std::string);
+    void verifyFormat(std::istream&, const std::string&, const std::string&);
     void parseCharges(std::istream&);
     void parseMasses(std::istream&);
     void parseResidueLabels(std::istream&);
