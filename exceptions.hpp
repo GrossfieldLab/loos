@@ -57,6 +57,15 @@ namespace loos {
     explicit ParseError(const std::string& arg) : LOOSError(arg) { }
   };
 
+  class FileParseError : public LOOSError {
+  public:
+    explicit FileParseError(const std::string& arg, const uint lineno) {
+      std::stringstream ss;
+      ss << arg << " at line " << lineno;
+      _msg = ss.str();
+    }
+  };
+
   //! Exception cause by some operation failing (ie no atoms selected)
   class NullResult : public LOOSError {
   public:
