@@ -29,23 +29,33 @@
 
 namespace loos {
 
+  void Amber::getNextLine(std::istream& is) {
+
+    if (_unget) {
+      _unget = false;
+      return;
+    }
+
+    while (! getline(is, _current_line).eof() ) {
+      ++_lineno;
+
+      if (_current_line.compare(0, 8, "%COMMENT") != 0)
+        break;
+
+    }
+  }
+
 
   void Amber::verifyFormat(std::istream& is, const std::string& fmt, const std::string& where) {
 
-    std::streampos pos = is.tellg();
-    std::string str;
-    is >> str;
-
+    getNextLine(is);
     boost::char_separator<char> sep("()");
-    tokenizer tokens(str, sep);
+    tokenizer tokens(_current_line, sep);
     tokenizer::iterator toks = tokens.begin();
 
     ++toks;
-    if (*toks != fmt) {
-      is.seekg(pos);
-      throw(ParseError("Bad format spec while parsing amber file - " + where));
-    }
-
+    if (*toks != fmt)
+      throw(FileParseError("Bad format spec while parsing amber file - " + where, _lineno));
   }
 
 
@@ -55,15 +65,18 @@ namespace loos {
     uint n = atoms.size();
     greal m;
 
-    for (uint i=0; i<n; i++) {
-      if (! (is >> std::setw(16) >> m)) {
-        if (is.fail())
-          throw(std::runtime_error("IO error while reading amber charges"));
-        else
-          throw(std::runtime_error("Invalid conversion while reading amber charges"));
-      }
-      atoms[i]->charge(m);
+
+    uint i = 0;
+    while (i < n) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
+      
+      while (iss >> std::setw(16) >> m)
+        atoms[i++]->charge(m);
     }
+
+    if (i < n)
+      throw(FileParseError("Error parsing charges from amber file", _lineno));
   }
 
 
@@ -73,16 +86,18 @@ namespace loos {
 
     uint n = atoms.size();
     greal m;
-
-    for (uint i=0; i<n; i++) {
-      if (! (is >> std::setw(16) >> m)) {
-        if (is.fail())
-          throw(std::runtime_error("IO error while reading amber masses"));
-        else
-          throw(std::runtime_error("Invalid conversion while reading amber masses"));
-      }
-      atoms[i]->mass(m);
+    uint i;
+    while (i < n) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
+      
+      while (iss >> std::setw(16) >> m)
+        atoms[i++]->mass(m);
     }
+
+    if (i < n)
+      throw(FileParseError("Error parsing masses from amber file", _lineno));
+
   }
 
 
@@ -90,32 +105,36 @@ namespace loos {
   void Amber::parseResidueLabels(std::istream& is) {
     verifyFormat(is, "20a4", "residue labels");
 
-    for (uint i=0; i<nres; i++) {
-      std::string s;
-      if (!(is >> std::setw(4) >> s)) {
-        if (is.fail())
-          throw(std::runtime_error("IO error while reading residue labels"));
-        else
-          throw(std::runtime_error("Invalid conversion while reading residue labels"));
-      }
-      residue_labels.push_back(s);
+    std::string s;
+    while (residue_labels.size() < nres) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
+      
+      while (iss >> std::setw(4) >> s)
+        residue_labels.push_back(s);
+      
     }
+
+    if (residue_labels.size() != nres)
+      throw(FileParseError("Error parsing residue labels from amber file", _lineno));
+
   }
 
 
   void Amber::parseResiduePointers(std::istream& is) {
     verifyFormat(is, "10I8", "residue pointers");
 
-    for (uint i=0; i<nres; i++) {
-      int j;
-      if (!(is >> std::setw(8) >> j)) {
-        if (is.fail())
-          throw(std::runtime_error("IO error while reading residue pointers"));
-        else
-          throw(std::runtime_error("Invalid conversion while reading residue pointers"));
-      }
-      residue_pointers.push_back(j);
+    uint j;
+    while (residue_pointers.size() < nres) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
+      
+      while (iss >> std::setw(8) >> j)
+        residue_pointers.push_back(j);
     }
+
+    if (residue_pointers.size() != nres)
+      throw(FileParseError("Error parsing residue pointers from amber file", _lineno));
   }
 
 
@@ -147,52 +166,62 @@ namespace loos {
 
 
 
-  void Amber::parseBonds(std::istream& is, const int n) {
+
+  void Amber::parseBonds(std::istream& is, const uint n) {
     verifyFormat(is, "10I8", "bonds");
 
-    int i, a, b, k;
+  
+    std::vector<int> bond_list;
+    while (bond_list.size() < 3*n) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
+      int j;
+      while (iss >> std::setw(8) >> j)
+        bond_list.push_back(j);
+    }
 
-    for (i=0; i<n; i++) {
-      if (!(is >> a >> b >> k)) {
-        if (is.fail())
-          throw(std::runtime_error("IO error while reading bonds"));
-        else
-          throw(std::runtime_error("Invalid conversion while reading bonds"));
-      }
+    if (bond_list.size() != 3*n)
+      throw(FileParseError("Error parsing bonds in amber file", _lineno));
+    
+    for (uint i=0; i<bond_list.size(); i += 3) {
+      if (bond_list[i] == bond_list[i+1])
+        continue;
 
-      pAtom aatom = atoms[a/3];
-      pAtom batom = atoms[b/3];
-
+      pAtom aatom = atoms[bond_list[i]/3];
+      pAtom batom = atoms[bond_list[i+1]/3];
+    
       // Amber bond lists are not symmetric, so make sure we add both pairs...
       if (!(aatom->isBoundTo(batom)))
         aatom->addBond(batom);
       if (!(batom->isBoundTo(aatom)))
         batom->addBond(aatom);
+      
     }
+    
   }
 
 
   void Amber::parsePointers(std::istream& is) {
     verifyFormat(is, "10I8", "pointers");
-    uint dummy;
 
-    is >> natoms;
-    is >> dummy;
-    is >> nbonh;
-    is >> mbona;
-    for (int i=0; i<7; i++)
-      is >> dummy;
-    is >> nres;
+    std::vector<uint> pointers;
+    while (true) {
+      getNextLine(is);
+      if (_current_line.compare(0, 5, "%FLAG") == 0) {
+        _unget = true;
+        break;
+      }
 
-    // Amber files may have different numbers of pointers...so we read everything
-    // up until the next %FLAG tag.
-    std::streampos pos;
-    std::string s;
-    do {
-      pos = is.tellg();       // Record position in case we've read a %FLAG
-      is >> s;
-    } while (s != "%FLAG");
-    is.seekg(pos);            // Go back to %FLAG location
+      std::istringstream iss(_current_line);
+      uint p;
+      while (iss >> std::setw(8) >> p)
+        pointers.push_back(p);
+    }
+
+    natoms = pointers[0];
+    nbonh = pointers[2];
+    mbona = pointers[3];
+    nres = pointers[11];
 
     // Now build up the atomic-group...
     if (atoms.size() != 0)
@@ -216,11 +245,9 @@ namespace loos {
     try {
       verifyFormat(is, "20a4", "title");
     }
-    catch (ParseError& e) { verifyFormat(is, "a", "title"); }
+    catch (FileParseError& e) { _unget = true; verifyFormat(is, "a", "title"); }
     catch (...) { throw; }
 
-    // This gets the newline, and anything after the FORMAT tag...
-    getline(is, _title);
     // This reads the actual title...
     getline(is, _title);
   }
@@ -229,63 +256,104 @@ namespace loos {
   void Amber::parseAtomNames(std::istream& is) {
     verifyFormat(is, "20a4", "atom names");
 
-    for (uint i=0; i<natoms; i++) {
+    uint i = 0;
+    while (i < natoms) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
       std::string s;
-      is >> std::setw(4) >> s;
-      atoms[i]->name(s);
+      while (iss >> std::setw(4) >> s)
+        atoms[i++]->name(s);
+
     }
 
-    if (is.fail())
-      throw(std::runtime_error("IO error while reading atom names"));
+    if (i != natoms)
+      throw(FileParseError("Error parsing atom names", _lineno));
+  }
+
+  void Amber::parseAmoebaRegularBondNumList(std::istream& is) {
+    verifyFormat(is, "I8", "amoeba_regular_num_bond_list");
+    getNextLine(is);
+    std::istringstream iss(_current_line);
+
+    if (! (iss >> std::setw(8) >> _amoeba_regular_bond_num_list))
+      throw(FileParseError("Error parsing amoeba_regular_bond_num_list", _lineno));
+  }
+
+  void Amber::parseAmoebaRegularBondList(std::istream& is, const uint n) {
+    verifyFormat(is, "10I8", "amoeba_regular_bond_list");
+
+  
+    std::vector<int> bond_list;
+    while (bond_list.size() < 3*n) {
+      getNextLine(is);
+      std::istringstream iss(_current_line);
+      int j;
+      while (iss >> std::setw(8) >> j)
+        bond_list.push_back(j);
+    }
+
+    if (bond_list.size() != 3*n)
+      throw(FileParseError("Error parsing amoeba bonds in amber file", _lineno));
+    
+    for (uint i=0; i<bond_list.size(); i += 3) {
+      if (bond_list[i] == bond_list[i+1])
+        continue;
+
+      pAtom aatom = atoms[bond_list[i]-1];
+      pAtom batom = atoms[bond_list[i+1]-1];
+    
+      // Amber bond lists are not symmetric, so make sure we add both pairs...
+      if (!(aatom->isBoundTo(batom)))
+        aatom->addBond(batom);
+      if (!(batom->isBoundTo(aatom)))
+        batom->addBond(aatom);
+      
+    }
+    
   }
 
 
+
   void Amber::read(std::istream& is) {
-    char buf[1024];
 
-    // Skip the first line (presumably %VERSION tag
-    is.getline(buf,1024);
+    while (true) {
+      getNextLine(is);
+      if (is.eof())
+        break;
+      if (is.fail())
+        throw(FileParseError("Error reading amber file ", _lineno));
 
-    bool flag = false;
-    std::string s;
-    is >> s;
+      boost::char_separator<char> sep(" \t");
+      tokenizer tokens(_current_line, sep);
+      tokenizer::iterator toks = tokens.begin();
+      
+      if (*toks != "%FLAG")
+        continue;
 
-    while (!(is.eof() || is.fail())) {
-
-      if (s != "%FLAG")
-        throw(std::runtime_error("Amber File Parse Error: " + s));
-
-      is >> s;
-      if (s == "TITLE")
+      ++toks;
+      if (*toks == "TITLE")
         parseTitle(is);
-      else if (s == "POINTERS")
+      else if (*toks == "POINTERS")
         parsePointers(is);
-      else if (s == "ATOM_NAME")
+      else if (*toks == "ATOM_NAME")
         parseAtomNames(is);
-      else if (s == "CHARGE")
+      else if (*toks == "CHARGE")
         parseCharges(is);
-      else if (s == "MASS")
+      else if (*toks == "MASS")
         parseMasses(is);
-      else if (s == "RESIDUE_LABEL")
+      else if (*toks == "RESIDUE_LABEL")
         parseResidueLabels(is);
-      else if (s == "RESIDUE_POINTER")
+      else if (*toks == "RESIDUE_POINTER")
         parseResiduePointers(is);
-      else if (s == "BONDS_INC_HYDROGEN")
+      else if (*toks == "BONDS_INC_HYDROGEN")
         parseBonds(is, nbonh);
-      else if (s == "BONDS_WITHOUT_HYDROGEN")
+      else if (*toks == "BONDS_WITHOUT_HYDROGEN")
         parseBonds(is, mbona);
-      else {
-        while (is >> s)
-          if (s == "%FLAG")
-            break;
-        flag = true;
-      }
-
-      if (!flag)
-        is >> s;
-      else
-        flag = false;
-    
+      else if (*toks == "AMOEBA_REGULAR_BOND_NUM_LIST")
+        parseAmoebaRegularBondNumList(is);
+      else if (*toks == "AMOEBA_REGULAR_BOND_LIST")
+        parseAmoebaRegularBondList(is, _amoeba_regular_bond_num_list);
+      
     }
 
     assignResidues();

@@ -64,11 +64,13 @@ namespace loos {
 
   public:
 
-    Amber() : natoms(0), nres(0), nbonh(0), mbona(0) { }
+    Amber() : natoms(0), nres(0), nbonh(0), mbona(0),
+              _lineno(0), _unget(false) { }
     virtual ~Amber() { }
 
     //! Read in a parmtop file
-    explicit Amber(const std::string fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    explicit Amber(const std::string fname) : natoms(0), nres(0), nbonh(0), mbona(0),
+                                              _lineno(0), _unget(false) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(std::runtime_error("Cannot open Amber parmtop file " + fname));
@@ -76,14 +78,16 @@ namespace loos {
     }
 
     //! Read in a parmtop file
-    explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0),
+                                        _lineno(0), _unget(false) {
       std::ifstream ifs(fname);
       if (!ifs)
         throw(std::runtime_error("Cannot open Amber parmtop file " + std::string(fname)));
       read(ifs);
     }
 
-    explicit Amber(std::ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    explicit Amber(std::ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0),
+                                         _lineno(0), _unget(false) {
       read(ifs);
     }
 
@@ -110,16 +114,20 @@ namespace loos {
 
     Amber(const AtomicGroup& grp) : AtomicGroup(grp), natoms(0), nres(0), nbonh(0), mbona(0) { }
 
+    void getNextLine(std::istream& is);
+
     void verifyFormat(std::istream&, const std::string&, const std::string&);
     void parseCharges(std::istream&);
     void parseMasses(std::istream&);
     void parseResidueLabels(std::istream&);
     void parseResiduePointers(std::istream&);
     void assignResidues(void);
-    void parseBonds(std::istream&, const int);
+    void parseBonds(std::istream&, const uint);
     void parsePointers(std::istream&);
     void parseTitle(std::istream&);
     void parseAtomNames(std::istream&);
+    void parseAmoebaRegularBondNumList(std::istream&);
+    void parseAmoebaRegularBondList(std::istream&, const uint);
 
 
   private:
@@ -128,12 +136,15 @@ namespace loos {
     std::string _title;
 
     // These are internal and are used for parsing the parmtop info...
-    uint natoms, nres, nbonh, mbona;
+    uint natoms, nres, nbonh, mbona, _amoeba_regular_bond_num_list;
 
     std::vector<std::string> residue_labels;
     std::vector<uint> residue_pointers;
 
 
+    std::string _current_line;
+    uint _lineno;
+    bool _unget;
   };
 
 
