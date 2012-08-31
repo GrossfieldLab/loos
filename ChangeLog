@@ -1,5 +1,10 @@
-2012-08-31    <alan@membrane>
-	* Fixed silly bug in CHARMM crd reader where the segid wasn't set
+2012-08-31    <tromo@spade.biophysics.rochester.edu>
+
+	* Deprecated UniqueStrings class
+	* Changed AtomicGroup::splitByUniqueSegid() so that the
+	AtomicGroup's returned are in the order the segids appear in the
+	source AtomicGroup
+	* Fixed silly bug in CHARMM crd reader where the segid wasn't set (Alan)
 
 2012-08-30    <tromo@spade.biophysics.rochester.edu>
 
