@@ -62,41 +62,24 @@ namespace loos {
   void Amber::parseCharges(std::istream& is) {
     verifyFormat(is, "5E16.8", "charges");
 
-    uint n = atoms.size();
-    greal m;
-
-
-    uint i = 0;
-    while (i < n) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      
-      while (iss >> std::setw(16) >> m)
-        atoms[i++]->charge(m);
-    }
-
-    if (i < n)
+    std::vector<double> charges = readBlock<double>(is, 16);
+    if (charges.size() != atoms.size())
       throw(FileParseError("Error parsing charges from amber file", _lineno));
+    
+    for (uint i=0; i<charges.size(); ++i)
+      atoms[i]->charge(charges[i]);
   }
-
 
 
   void Amber::parseMasses(std::istream& is) {
     verifyFormat(is, "5E16.8", "masses");
 
-    uint n = atoms.size();
-    greal m;
-    uint i;
-    while (i < n) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      
-      while (iss >> std::setw(16) >> m)
-        atoms[i++]->mass(m);
-    }
-
-    if (i < n)
+    std::vector<double> masses = readBlock<double>(is, 16);
+    if (masses.size() != atoms.size())
       throw(FileParseError("Error parsing masses from amber file", _lineno));
+    
+    for (uint i=0; i<masses.size(); ++i)
+      atoms[i]->mass(masses[i]);
 
   }
 
@@ -105,16 +88,7 @@ namespace loos {
   void Amber::parseResidueLabels(std::istream& is) {
     verifyFormat(is, "20a4", "residue labels");
 
-    std::string s;
-    while (residue_labels.size() < nres) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      
-      while (iss >> std::setw(4) >> s)
-        residue_labels.push_back(s);
-      
-    }
-
+    residue_labels = readBlock<std::string>(is, 4);
     if (residue_labels.size() != nres)
       throw(FileParseError("Error parsing residue labels from amber file", _lineno));
 
@@ -124,15 +98,7 @@ namespace loos {
   void Amber::parseResiduePointers(std::istream& is) {
     verifyFormat(is, "10I8", "residue pointers");
 
-    uint j;
-    while (residue_pointers.size() < nres) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      
-      while (iss >> std::setw(8) >> j)
-        residue_pointers.push_back(j);
-    }
-
+    residue_pointers = readBlock<uint>(is, 8);
     if (residue_pointers.size() != nres)
       throw(FileParseError("Error parsing residue pointers from amber file", _lineno));
   }
@@ -171,14 +137,7 @@ namespace loos {
     verifyFormat(is, "10I8", "bonds");
 
   
-    std::vector<int> bond_list;
-    while (bond_list.size() < 3*n) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      int j;
-      while (iss >> std::setw(8) >> j)
-        bond_list.push_back(j);
-    }
+    std::vector<int> bond_list = readBlock<int>(is, 8);
 
     if (bond_list.size() != 3*n)
       throw(FileParseError("Error parsing bonds in amber file", _lineno));
@@ -204,19 +163,7 @@ namespace loos {
   void Amber::parsePointers(std::istream& is) {
     verifyFormat(is, "10I8", "pointers");
 
-    std::vector<uint> pointers;
-    while (true) {
-      getNextLine(is);
-      if (_current_line[0] == '%') {
-        _unget = true;
-        break;
-      }
-
-      std::istringstream iss(_current_line);
-      uint p;
-      while (iss >> std::setw(8) >> p)
-        pointers.push_back(p);
-    }
+    std::vector<uint> pointers = readBlock<uint>(is, 8);
 
     natoms = pointers[0];
     nbonh = pointers[2];
@@ -255,19 +202,12 @@ namespace loos {
 
   void Amber::parseAtomNames(std::istream& is) {
     verifyFormat(is, "20a4", "atom names");
-
-    uint i = 0;
-    while (i < natoms) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      std::string s;
-      while (iss >> std::setw(4) >> s)
-        atoms[i++]->name(s);
-
-    }
-
-    if (i != natoms)
+    
+    std::vector<std::string> names = readBlock<std::string>(is, 4);
+    if (names.size() != natoms)
       throw(FileParseError("Error parsing atom names", _lineno));
+    for (uint i=0; i<names.size(); ++i)
+      atoms[i]->name(names[i]);
   }
 
   void Amber::parseAmoebaRegularBondNumList(std::istream& is) {
@@ -283,14 +223,7 @@ namespace loos {
     verifyFormat(is, "10I8", "amoeba_regular_bond_list");
 
   
-    std::vector<int> bond_list;
-    while (bond_list.size() < 3*n) {
-      getNextLine(is);
-      std::istringstream iss(_current_line);
-      int j;
-      while (iss >> std::setw(8) >> j)
-        bond_list.push_back(j);
-    }
+    std::vector<int> bond_list = readBlock<int>(is, 8);
 
     if (bond_list.size() != 3*n)
       throw(FileParseError("Error parsing amoeba bonds in amber file", _lineno));

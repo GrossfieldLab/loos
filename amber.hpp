@@ -130,6 +130,28 @@ namespace loos {
     void parseAmoebaRegularBondList(std::istream&, const uint);
 
 
+    template<typename T>
+    std::vector<T> readBlock(std::istream& is, const int field_width) {
+      std::vector<T> data;
+      while (true) {
+        getNextLine(is);
+        if (is.eof())
+          break;
+        if (is.fail())
+          throw(FileParseError("Error while reading block of data from amber file", _lineno));
+        if (_current_line[0] == '%') {
+          _unget = true;
+          break;
+        }
+        std::istringstream iss(_current_line);
+        T d;
+        while (iss >> std::setw(field_width) >> d)
+          data.push_back(d);
+      }
+
+      return(data);
+    }
+
   private:
 
 
