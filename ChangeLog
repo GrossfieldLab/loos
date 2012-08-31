@@ -4,6 +4,9 @@
 	* Changed AtomicGroup::splitByUniqueSegid() so that the
 	AtomicGroup's returned are in the order the segids appear in the
 	source AtomicGroup
+	* Changed Amber prmtop reader so the format lines used for data is
+	no longer hard-coded, but read from the prmtop file itself.  Only
+	simple formats are supported.
 	* Fixed silly bug in CHARMM crd reader where the segid wasn't set (Alan)
 
 2012-08-30    <tromo@spade.biophysics.rochester.edu>
