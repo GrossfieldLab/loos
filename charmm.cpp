@@ -80,13 +80,13 @@ namespace loos {
         }
         if (num_atoms < 100000) {
             atom_num = parseStringAs<int>(input, 0, 5);
-            res_num = parseStringAs<int>(input,5,5);
             res_name = parseStringAs<std::string>(input,11,4);
             atom_name = parseStringAs<std::string>(input,16,4);
             x = parseStringAs<float>(input,20,10);
             y = parseStringAs<float>(input,30,10);
             z = parseStringAs<float>(input,40,10);
             segid = parseStringAs<std::string>(input,51,4);
+            res_num = parseStringAs<int>(input,56,4);
             weight = parseStringAs<float>(input,63,10);
         }
         else {
@@ -98,6 +98,7 @@ namespace loos {
             y = parseStringAs<float>(input,60,20);
             z = parseStringAs<float>(input,80,20);
             segid = parseStringAs<std::string>(input,82,8);
+            res_num = parseStringAs<int>(input,92,8);
             weight = parseStringAs<float>(input,100,20);
         }
 
