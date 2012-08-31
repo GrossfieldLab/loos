@@ -41,7 +41,6 @@
 
 #include <Atom.hpp>
 #include <XForm.hpp>
-#include <UniqueStrings.hpp>
 #include <PeriodicBox.hpp>
 #include <utils.hpp>
 #include <Matrix.hpp>
@@ -279,6 +278,10 @@ namespace loos {
     AtomicGroup select(const AtomSelector& sel) const;
 
     //! Returns a vector of AtomicGroups split from the current group based on segid
+    /**
+     * The groups that are returned will be in the same order that the segids appear
+     * in the source AtomicGroup
+     */
     std::vector<AtomicGroup> splitByUniqueSegid(void) const;
 
     //! Returns a vector of AtomicGroups split based on bond connectivity

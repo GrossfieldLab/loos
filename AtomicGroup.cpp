@@ -26,12 +26,15 @@
 #include <iomanip>
 
 #include <assert.h>
+#include <vector>
+#include <list>
 #include <algorithm>
 
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
 #include <AtomicNumberDeducer.hpp>
+#include <Selectors.hpp>
 
 
 namespace loos {
@@ -313,19 +316,20 @@ namespace loos {
   // Split up a group into a vector of groups based on unique segids...
   std::vector<AtomicGroup> AtomicGroup::splitByUniqueSegid(void) const {
     const_iterator i;
-    UniqueStrings unique;
+    std::list<std::string> segids;
 
     for (i = atoms.begin(); i != atoms.end(); i++)
-      unique.add((*i)->segid());
+      if (find(segids.begin(), segids.end(), (*i)->segid()) == segids.end())
+        segids.push_front((*i)->segid());
 
-    int n = unique.size();
-    int j;
+    // Reverse the order so that the chunks are in the same order they appear
+    // in the file...
+    uint n = segids.size();
     std::vector<AtomicGroup> results(n);
-    for (i = atoms.begin(); i != atoms.end(); i++) {
-      j = unique.find((*i)->segid());
-      if (j < 0)
-        throw(std::runtime_error("Could not find an atom we already found..."));
-      results[j].append(*i);
+    uint j = n-1;
+    for (std::list<std::string>::const_iterator i = segids.begin(); i != segids.end(); ++i) {
+      SegidSelector segid(*i);
+      results[j--] = select(segid);
     }
 
     std::vector<AtomicGroup>::iterator g;
