@@ -107,6 +107,7 @@ namespace loos {
         pa->resid(res_num);
         pa->name(atom_name);
         pa->resname(res_name);
+        pa->segid(segid);
         pa->coords().x() = x;
         pa->coords().y() = y;
         pa->coords().z() = z;

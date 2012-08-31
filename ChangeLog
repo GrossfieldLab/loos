@@ -1,3 +1,6 @@
+2012-08-31    <alan@membrane>
+	* Fixed silly bug in CHARMM crd reader where the segid wasn't set
+
 2012-08-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Added better error messages for parse errors in Amber prmtop
