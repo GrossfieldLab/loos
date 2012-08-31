@@ -207,7 +207,7 @@ namespace loos {
     std::vector<uint> pointers;
     while (true) {
       getNextLine(is);
-      if (_current_line.compare(0, 5, "%FLAG") == 0) {
+      if (_current_line[0] == '%') {
         _unget = true;
         break;
       }
