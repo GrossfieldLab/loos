@@ -62,6 +62,15 @@ namespace loos {
 
     typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
 
+
+    struct FormatSpec {
+      FormatSpec() : repeat(1), type('?'), width(0), precision(0) { }
+      int repeat;
+      char type;
+      int width;
+      int precision;
+    };
+
   public:
 
     Amber() : natoms(0), nres(0), nbonh(0), mbona(0),
@@ -115,8 +124,8 @@ namespace loos {
     Amber(const AtomicGroup& grp) : AtomicGroup(grp), natoms(0), nres(0), nbonh(0), mbona(0) { }
 
     void getNextLine(std::istream& is);
+    FormatSpec parseFormat(std::istream& is, const std::string& expected_types, const std::string& where);
 
-    void verifyFormat(std::istream&, const std::string&, const std::string&);
     void parseCharges(std::istream&);
     void parseMasses(std::istream&);
     void parseResidueLabels(std::istream&);
@@ -153,7 +162,6 @@ namespace loos {
     }
 
   private:
-
 
     std::string _title;
 
