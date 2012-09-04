@@ -139,6 +139,9 @@ namespace loos {
     void parseAmoebaRegularBondList(std::istream&, const uint);
 
 
+    // Reads in a "block" of data.  Reading terminates on the first
+    // line that begins with a '%'.
+
     template<typename T>
     std::vector<T> readBlock(std::istream& is, const int field_width) {
       std::vector<T> data;
@@ -172,9 +175,9 @@ namespace loos {
     std::vector<uint> residue_pointers;
 
 
-    std::string _current_line;
-    uint _lineno;
-    bool _unget;
+    std::string _current_line;   // Currently read line
+    uint _lineno;                // Current line # on input (for error messages)
+    bool _unget;                 // Flag that indicates no new line should be read
   };
 
 

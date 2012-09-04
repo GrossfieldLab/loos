@@ -29,6 +29,11 @@
 
 namespace loos {
 
+
+  // Reads the next line in.  If it's a comment, skips it.
+  // If _unget is true, then set to false and simply return
+  // the current line (whatever read the current line couldn't
+  // handle it, so it was deferred)
   void Amber::getNextLine(std::istream& is) {
 
     if (_unget) {
@@ -45,6 +50,14 @@ namespace loos {
     }
   }
 
+
+
+
+  // Parse simple Fortran format specifications, extracted from a %FORMAT tag...
+  // Takes a string of expected format types (characters) that the extracted format
+  // is compared against.  For example, to parse floats, expected could be any of "FEG".
+  // If the format type does not match (for example, say "%FORMAT (20I8)" when expected
+  // is "FEG"), then an error will be thrown.
 
   Amber::FormatSpec Amber::parseFormat(std::istream& is, const std::string& expected_types, const std::string& where) {
     getNextLine(is);
@@ -63,22 +76,26 @@ namespace loos {
     ++toks;
     std::istringstream iss(*toks);
 
-    // Attempt to parse...
+    // try nXw.d first
     if (! (iss >> fmt.repeat >> fmt.type >> fmt.width >> period >> fmt.precision) ) {
       iss.clear();
       iss.seekg(0);
+      // Now try nXw
       if (! (iss >> fmt.repeat >> fmt.type >> fmt.width) ) {
         iss.clear();
         iss.seekg(0);
+        // Now try Xw
         if (! (iss >> fmt.type >> fmt.width) ) {
           iss.clear();
           iss.seekg(0);
+          // And finally just try X
           if (! (iss >> fmt.type) )
             throw(FileParseError("Cannot parse format for " + where, _lineno));
         }
       }
     }
     
+    // Compare against expected types
     if (expected_types.find_first_of(fmt.type) == std::string::npos)
       throw(FileParseError("Invalid format type for " + where, _lineno));
 
@@ -240,6 +257,8 @@ namespace loos {
       throw(FileParseError("Error parsing amoeba_regular_bond_num_list", _lineno));
   }
 
+
+
   void Amber::parseAmoebaRegularBondList(std::istream& is, const uint n) {
     FormatSpec fmt = parseFormat(is, "I", "amoeba_regular_bond_list");
 
@@ -253,6 +272,8 @@ namespace loos {
       if (bond_list[i] == bond_list[i+1])
         continue;
 
+      // Amoeba bond indices appear not to be /3 as regular amber bonds are...
+      // Are we sure???
       pAtom aatom = atoms[bond_list[i]-1];
       pAtom batom = atoms[bond_list[i+1]-1];
     
