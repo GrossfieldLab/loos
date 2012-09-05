@@ -59,11 +59,6 @@ namespace loos {
     _lines.push_back(s);
   }
 
-
-   bool LineReader::eof() const { return(_is->eof()); }
-   bool LineReader::fail() const { return(_is->fail()); }
-   bool LineReader::good() const { return(_is->good()); }
-  
    std::string LineReader::line() const { return(_current_line); }
   
    unsigned int LineReader::lineNumber() const { return(_lineno); }

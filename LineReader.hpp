@@ -34,39 +34,58 @@
 namespace loos {
 
 
+  //! Class for reading line-by-line from a file while tracking line numbers and stripping comments
+
   class LineReader {
   public:
     LineReader() : _is(0), _lineno(1) { }
     LineReader(std::istream& is) : _is(&is), _lineno(1) { }
-    LineReader(std::istream& is, const std::string& name) : _is(&is), _name(name) { }
+    LineReader(std::istream& is, const std::string& name) : _is(&is), _lineno(1), _name(name) { }
 
 
+    //! Access the internal stream pointer
     virtual std::istream& stream() const;
+
+    //! Set the internal stream pointer
     virtual void stream(std::istream& is);
     
+    //! Access the name associated with the internal stream
     virtual std::string name() const;
+
+    //! Set the name associated with the internal stream
     virtual void name(const std::string& name);
 
+    //! Get the next line from the file, returning true if successful
     virtual bool getNext();
 
+    //! Put a line back onto the file (virtually)
     virtual void push_back(const std::string& s);
 
-    virtual bool eof() const;
-    virtual bool fail() const;
-    virtual bool good() const;
-    
+    //! The currently read line
     virtual std::string line() const;
     
+    //! The current line number into the file
     virtual uint lineNumber() const;
 
   protected:
 
+
+    /*
+      The following member functions are the ones that will most
+      likely need to be changed in derived classes to alter the
+      functionality of the reader...
+    */
+
+    // Verifies the state of the stream (throws if error)
     virtual void checkState() const;
 
+    // Remove comments from the string
     virtual void stripComment(std::string& s) const;
 
+    // Remove leading whitespace (space and tabs)
     virtual void stripLeadingWhitespace(std::string& s) const;
 
+    // True means to skip the current line (e.g. the line is empty)
     virtual bool skipLine(const std::string& s) const;
 
 
