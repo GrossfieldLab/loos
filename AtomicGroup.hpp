@@ -544,10 +544,8 @@ namespace loos {
      * in the current group, then the excess coordinates will not be
      * copied.
      *
-     * If not length is given, then all coordinates in g
-     * will be copied.  If neither offset nor length are
-     * given, then all coordinates from g will be copied,
-     * starting with the first atom in the current group.
+     * If not length is 0, then all coordinates in g
+     * will be copied.
      *
      * It is assumed that the atoms in g are in the appropriate
      * order relative to the current group for the copy to make
@@ -555,10 +553,25 @@ namespace loos {
      */
     void copyCoordinatesFrom(const AtomicGroup& g, const uint offset, const uint length);
 
+    //! Map the order of atoms in AtomicGroup g into the current group
+    /**
+     * Note that the order is only checked within a residue.  The residues
+     * must appear in the same order between the two groups.  This
+     * addresses issues such as when psfgen reorders the atoms within
+     * a residue...
+     */
     std::vector<uint> atomOrderFrom(const AtomicGroup& g);
 
+    //! Given a mapping of atom order, copy the coordinates into the current group
+    /*
+     * See AtomicGroup::atomOrderFrom(const AtomicGroup& g) for more information
+     */
     void copyCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
 
+    //! Copy the coordinates from the group mapping the atom order
+    /*
+     * See AtomicGroup::atomOrderFrom(const AtomicGroup& g) for more information
+     */
     void copyCoordinatesFrom(const AtomicGroup& g);
 
     //! Each atom is moved in a random direction by a vector of the passed size
