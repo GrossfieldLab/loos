@@ -19,19 +19,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <iostream>
+#include <fstream>
 
 #include <exceptions.hpp>
 #include <LineReader.hpp>
 
 namespace loos {
 
+  std::istream& LineReader::stream() const { return(*_is); }
+  void LineReader::stream(std::istream& is) { _is = &is; _lineno = 1; }
+    
+  std::string LineReader::name() const { return(_name); }
+  void LineReader::name(const std::string& name) { _name = name; }
+
+
 
    bool LineReader::getNext() {
     if (! _lines.empty()) {
       _current_line = _lines.back();
       _lines.pop_back();
-    } else {
-      while (getline(_is, _current_line).good() ) {
+    } else if (_is->eof())
+      return(false);
+    else {
+      while (getline(*_is, _current_line)) {
         ++_lineno;
         stripComment(_current_line);
         stripLeadingWhitespace(_current_line);
@@ -41,7 +52,7 @@ namespace loos {
     }
     
     checkState();
-    return( _is.good() );
+    return( _is->good() );
   }
 
    void LineReader::push_back(const std::string& s) {
@@ -49,16 +60,17 @@ namespace loos {
   }
 
 
-   bool LineReader::eof() const { return(_is.eof()); }
-   bool LineReader::fail() const { return(_is.fail()); }
-   bool LineReader::good() const { return(_is.good()); }
+   bool LineReader::eof() const { return(_is->eof()); }
+   bool LineReader::fail() const { return(_is->fail()); }
+   bool LineReader::good() const { return(_is->good()); }
   
    std::string LineReader::line() const { return(_current_line); }
   
    unsigned int LineReader::lineNumber() const { return(_lineno); }
 
    void LineReader::checkState() const {
-     if (_is.fail()) {
+     if (!(_is->good() || _is->eof())) {
+
        if (_name.empty())
          throw(FileParseError("Error while reading from " + _name, _lineno));
        else

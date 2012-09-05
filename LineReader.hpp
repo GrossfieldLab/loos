@@ -36,8 +36,16 @@ namespace loos {
 
   class LineReader {
   public:
-    LineReader(std::istream& is) : _is(is), _lineno(0) { }
-    LineReader(std::istream& is, std::string& name) : _is(is), _name(name) { }
+    LineReader() : _is(0), _lineno(1) { }
+    LineReader(std::istream& is) : _is(&is), _lineno(1) { }
+    LineReader(std::istream& is, const std::string& name) : _is(&is), _name(name) { }
+
+
+    virtual std::istream& stream() const;
+    virtual void stream(std::istream& is);
+    
+    virtual std::string name() const;
+    virtual void name(const std::string& name);
 
     virtual bool getNext();
 
@@ -63,7 +71,7 @@ namespace loos {
 
 
   protected:
-    std::istream& _is;
+    std::istream* _is;
     unsigned int _lineno;
     std::string _name;
     std::string _current_line;
