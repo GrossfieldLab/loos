@@ -38,6 +38,7 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <LineReader.hpp>
 
 
 namespace loos {
@@ -71,32 +72,43 @@ namespace loos {
       int precision;
     };
 
+    struct AmberLineReader : public LineReader {
+      AmberLineReader() : LineReader() { }
+      AmberLineReader(std::istream& is) : LineReader(is) { }
+      AmberLineReader(std::istream& is, std::string& s) : LineReader(is, s) { }
+
+      virtual void stripComment(std::string& s) const {
+        if (s.compare(0, 8, "%COMMENT") == 0)
+          s = "";
+      }
+    };
+
   public:
 
-    Amber() : natoms(0), nres(0), nbonh(0), mbona(0),
-              _lineno(0), _unget(false) { }
+    Amber() : natoms(0), nres(0), nbonh(0), mbona(0)  { }
     virtual ~Amber() { }
 
     //! Read in a parmtop file
-    explicit Amber(const std::string fname) : natoms(0), nres(0), nbonh(0), mbona(0),
-                                              _lineno(0), _unget(false) {
+    explicit Amber(const std::string fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(std::runtime_error("Cannot open Amber parmtop file " + fname));
+      reader.stream(ifs);
+      reader.name(fname);
       read(ifs);
     }
 
     //! Read in a parmtop file
-    explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0),
-                                        _lineno(0), _unget(false) {
+    explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname);
       if (!ifs)
         throw(std::runtime_error("Cannot open Amber parmtop file " + std::string(fname)));
+      reader.stream(ifs);
+      reader.name(fname);
       read(ifs);
     }
 
-    explicit Amber(std::ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0),
-                                         _lineno(0), _unget(false) {
+    explicit Amber(std::ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
       read(ifs);
     }
 
@@ -114,7 +126,7 @@ namespace loos {
     }
 
     //! Parse the parmtop file
-    void read(std::istream& is);
+    void read(std::istream& ifs);
 
     //! Return the title
     std::string title() const { return(_title); }
@@ -123,39 +135,34 @@ namespace loos {
 
     Amber(const AtomicGroup& grp) : AtomicGroup(grp), natoms(0), nres(0), nbonh(0), mbona(0) { }
 
-    void getNextLine(std::istream& is);
-    FormatSpec parseFormat(std::istream& is, const std::string& expected_types, const std::string& where);
+    FormatSpec parseFormat(const std::string& expected_types, const std::string& where);
 
-    void parseCharges(std::istream&);
-    void parseMasses(std::istream&);
-    void parseResidueLabels(std::istream&);
-    void parseResiduePointers(std::istream&);
+    void parseCharges();
+    void parseMasses();
+    void parseResidueLabels();
+    void parseResiduePointers();
     void assignResidues(void);
-    void parseBonds(std::istream&, const uint);
-    void parsePointers(std::istream&);
-    void parseTitle(std::istream&);
-    void parseAtomNames(std::istream&);
-    void parseAmoebaRegularBondNumList(std::istream&);
-    void parseAmoebaRegularBondList(std::istream&, const uint);
+    void parseBonds(const uint);
+    void parsePointers();
+    void parseTitle();
+    void parseAtomNames();
+    void parseAmoebaRegularBondNumList();
+    void parseAmoebaRegularBondList(const uint);
 
 
     // Reads in a "block" of data.  Reading terminates on the first
     // line that begins with a '%'.
 
     template<typename T>
-    std::vector<T> readBlock(std::istream& is, const int field_width) {
+    std::vector<T> readBlock(const int field_width) {
       std::vector<T> data;
-      while (true) {
-        getNextLine(is);
-        if (is.eof())
-          break;
-        if (is.fail())
-          throw(FileParseError("Error while reading block of data from amber file", _lineno));
-        if (_current_line[0] == '%') {
-          _unget = true;
+      while (reader.getNext()) {
+        std::string line = reader.line();
+        if (line[0] == '%') {
+          reader.push_back(line);
           break;
         }
-        std::istringstream iss(_current_line);
+        std::istringstream iss(line);
         T d;
         while (iss >> std::setw(field_width) >> d)
           data.push_back(d);
@@ -174,10 +181,8 @@ namespace loos {
     std::vector<std::string> residue_labels;
     std::vector<uint> residue_pointers;
 
+    AmberLineReader reader;
 
-    std::string _current_line;   // Currently read line
-    uint _lineno;                // Current line # on input (for error messages)
-    bool _unget;                 // Flag that indicates no new line should be read
   };
 
 

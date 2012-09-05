@@ -30,47 +30,25 @@
 namespace loos {
 
 
-  // Reads the next line in.  If it's a comment, skips it.
-  // If _unget is true, then set to false and simply return
-  // the current line (whatever read the current line couldn't
-  // handle it, so it was deferred)
-  void Amber::getNextLine(std::istream& is) {
-
-    if (_unget) {
-      _unget = false;
-      return;
-    }
-
-    while (! getline(is, _current_line).eof() ) {
-      ++_lineno;
-
-      if (_current_line.compare(0, 8, "%COMMENT") != 0)
-        break;
-
-    }
-  }
-
-
-
-
   // Parse simple Fortran format specifications, extracted from a %FORMAT tag...
   // Takes a string of expected format types (characters) that the extracted format
   // is compared against.  For example, to parse floats, expected could be any of "FEG".
   // If the format type does not match (for example, say "%FORMAT (20I8)" when expected
   // is "FEG"), then an error will be thrown.
 
-  Amber::FormatSpec Amber::parseFormat(std::istream& is, const std::string& expected_types, const std::string& where) {
-    getNextLine(is);
+  Amber::FormatSpec Amber::parseFormat(const std::string& expected_types, const std::string& where) {
+
+    reader.getNext();
     char period;
     FormatSpec fmt;
 
     // Verify line has a %FORMAT tag
-    if (_current_line.compare(0, 7, "%FORMAT") != 0)
-      throw(FileParseError("Expected format for " + where, _lineno));
+    if (reader.line().compare(0, 7, "%FORMAT") != 0)
+      throw(FileParseError("Expected format for " + where, reader.lineNumber()));
 
     // Extract format spec between parens...
     boost::char_separator<char> sep("()");
-    tokenizer tokens(_current_line, sep);
+    tokenizer tokens(reader.line(), sep);
     tokenizer::iterator toks = tokens.begin();
 
     ++toks;
@@ -90,38 +68,38 @@ namespace loos {
           iss.seekg(0);
           // And finally just try X
           if (! (iss >> fmt.type) )
-            throw(FileParseError("Cannot parse format for " + where, _lineno));
+            throw(FileParseError("Cannot parse format for " + where, reader.lineNumber()));
         }
       }
     }
     
     // Compare against expected types
     if (expected_types.find_first_of(fmt.type) == std::string::npos)
-      throw(FileParseError("Invalid format type for " + where, _lineno));
+      throw(FileParseError("Invalid format type for " + where, reader.lineNumber()));
 
     return(fmt);
 
   }
 
 
-  void Amber::parseCharges(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "EFG", "charges");
+  void Amber::parseCharges() {
+    FormatSpec fmt = parseFormat("EFG", "charges");
 
-    std::vector<double> charges = readBlock<double>(is, fmt.width);
+    std::vector<double> charges = readBlock<double>(fmt.width);
     if (charges.size() != atoms.size())
-      throw(FileParseError("Error parsing charges from amber file", _lineno));
+      throw(FileParseError("Error parsing charges from amber file", reader.lineNumber()));
     
     for (uint i=0; i<charges.size(); ++i)
       atoms[i]->charge(charges[i]);
   }
 
 
-  void Amber::parseMasses(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "EFG", "masses");
+  void Amber::parseMasses() {
+    FormatSpec fmt = parseFormat("EFG", "masses");
 
-    std::vector<double> masses = readBlock<double>(is, fmt.width);
+    std::vector<double> masses = readBlock<double>(fmt.width);
     if (masses.size() != atoms.size())
-      throw(FileParseError("Error parsing masses from amber file", _lineno));
+      throw(FileParseError("Error parsing masses from amber file", reader.lineNumber()));
     
     for (uint i=0; i<masses.size(); ++i)
       atoms[i]->mass(masses[i]);
@@ -130,22 +108,22 @@ namespace loos {
 
 
 
-  void Amber::parseResidueLabels(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "a", "residue labels");
+  void Amber::parseResidueLabels() {
+    FormatSpec fmt = parseFormat("a", "residue labels");
 
-    residue_labels = readBlock<std::string>(is, fmt.width);
+    residue_labels = readBlock<std::string>(fmt.width);
     if (residue_labels.size() != nres)
-      throw(FileParseError("Error parsing residue labels from amber file", _lineno));
+      throw(FileParseError("Error parsing residue labels from amber file", reader.lineNumber()));
 
   }
 
 
-  void Amber::parseResiduePointers(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "I", "residue pointers");
+  void Amber::parseResiduePointers() {
+    FormatSpec fmt = parseFormat("I", "residue pointers");
 
-    residue_pointers = readBlock<uint>(is, fmt.width);
+    residue_pointers = readBlock<uint>(fmt.width);
     if (residue_pointers.size() != nres)
-      throw(FileParseError("Error parsing residue pointers from amber file", _lineno));
+      throw(FileParseError("Error parsing residue pointers from amber file", reader.lineNumber()));
   }
 
 
@@ -178,14 +156,14 @@ namespace loos {
 
 
 
-  void Amber::parseBonds(std::istream& is, const uint n) {
-    FormatSpec fmt = parseFormat(is, "I", "bonds");
+  void Amber::parseBonds(const uint n) {
+    FormatSpec fmt = parseFormat("I", "bonds");
 
   
-    std::vector<int> bond_list = readBlock<int>(is, fmt.width);
+    std::vector<int> bond_list = readBlock<int>(fmt.width);
 
     if (bond_list.size() != 3*n)
-      throw(FileParseError("Error parsing bonds in amber file", _lineno));
+      throw(FileParseError("Error parsing bonds in amber file", reader.lineNumber()));
     
     for (uint i=0; i<bond_list.size(); i += 3) {
       if (bond_list[i] == bond_list[i+1])
@@ -205,10 +183,10 @@ namespace loos {
   }
 
 
-  void Amber::parsePointers(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "I", "pointers");
+  void Amber::parsePointers() {
+    FormatSpec fmt = parseFormat("I", "pointers");
 
-    std::vector<uint> pointers = readBlock<uint>(is, fmt.width);
+    std::vector<uint> pointers = readBlock<uint>(fmt.width);
 
     natoms = pointers[0];
     nbonh = pointers[2];
@@ -229,44 +207,44 @@ namespace loos {
 
 
   // Simply slurp up the title (for now)
-  void Amber::parseTitle(std::istream& is) {
+  void Amber::parseTitle() {
 
-    FormatSpec fmt = parseFormat(is, "a", "title");
-    std::vector<std::string> titles = readBlock<std::string>(is, fmt.width);
+    FormatSpec fmt = parseFormat("a", "title");
+    std::vector<std::string> titles = readBlock<std::string>(fmt.width);
     for (std::vector<std::string>::const_iterator i = titles.begin(); i != titles.end(); ++i)
       _title += *i;
   }
 
 
-  void Amber::parseAtomNames(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "a", "atom names");
+  void Amber::parseAtomNames() {
+    FormatSpec fmt = parseFormat("a", "atom names");
     
-    std::vector<std::string> names = readBlock<std::string>(is, fmt.width);
+    std::vector<std::string> names = readBlock<std::string>(fmt.width);
     if (names.size() != natoms)
-      throw(FileParseError("Error parsing atom names", _lineno));
+      throw(FileParseError("Error parsing atom names", reader.lineNumber()));
     for (uint i=0; i<names.size(); ++i)
       atoms[i]->name(names[i]);
   }
 
-  void Amber::parseAmoebaRegularBondNumList(std::istream& is) {
-    FormatSpec fmt = parseFormat(is, "I", "amoeba_regular_num_bond_list");
-    getNextLine(is);
-    std::istringstream iss(_current_line);
+  void Amber::parseAmoebaRegularBondNumList() {
+    FormatSpec fmt = parseFormat("I", "amoeba_regular_num_bond_list");
+    reader.getNext();
+    std::istringstream iss(reader.line());
 
     if (! (iss >> std::setw(fmt.width) >> _amoeba_regular_bond_num_list))
-      throw(FileParseError("Error parsing amoeba_regular_bond_num_list", _lineno));
+      throw(FileParseError("Error parsing amoeba_regular_bond_num_list", reader.lineNumber()));
   }
 
 
 
-  void Amber::parseAmoebaRegularBondList(std::istream& is, const uint n) {
-    FormatSpec fmt = parseFormat(is, "I", "amoeba_regular_bond_list");
+  void Amber::parseAmoebaRegularBondList(const uint n) {
+    FormatSpec fmt = parseFormat("I", "amoeba_regular_bond_list");
 
   
-    std::vector<int> bond_list = readBlock<int>(is, fmt.width);
+    std::vector<int> bond_list = readBlock<int>(fmt.width);
 
     if (bond_list.size() != 3*n)
-      throw(FileParseError("Error parsing amoeba bonds in amber file", _lineno));
+      throw(FileParseError("Error parsing amoeba bonds in amber file", reader.lineNumber()));
     
     for (uint i=0; i<bond_list.size(); i += 3) {
       if (bond_list[i] == bond_list[i+1])
@@ -289,17 +267,13 @@ namespace loos {
 
 
 
-  void Amber::read(std::istream& is) {
-
-    while (true) {
-      getNextLine(is);
-      if (is.eof())
-        break;
-      if (is.fail())
-        throw(FileParseError("Error reading amber file ", _lineno));
+  void Amber::read(std::istream& ifs) {
+    reader.stream(ifs);
+    
+    while (reader.getNext()) {
 
       boost::char_separator<char> sep(" \t");
-      tokenizer tokens(_current_line, sep);
+      tokenizer tokens(reader.line(), sep);
       tokenizer::iterator toks = tokens.begin();
       
       if (*toks != "%FLAG")
@@ -307,27 +281,27 @@ namespace loos {
 
       ++toks;
       if (*toks == "TITLE")
-        parseTitle(is);
+        parseTitle();
       else if (*toks == "POINTERS")
-        parsePointers(is);
+        parsePointers();
       else if (*toks == "ATOM_NAME")
-        parseAtomNames(is);
+        parseAtomNames();
       else if (*toks == "CHARGE")
-        parseCharges(is);
+        parseCharges();
       else if (*toks == "MASS")
-        parseMasses(is);
+        parseMasses();
       else if (*toks == "RESIDUE_LABEL")
-        parseResidueLabels(is);
+        parseResidueLabels();
       else if (*toks == "RESIDUE_POINTER")
-        parseResiduePointers(is);
+        parseResiduePointers();
       else if (*toks == "BONDS_INC_HYDROGEN")
-        parseBonds(is, nbonh);
+        parseBonds(nbonh);
       else if (*toks == "BONDS_WITHOUT_HYDROGEN")
-        parseBonds(is, mbona);
+        parseBonds( mbona);
       else if (*toks == "AMOEBA_REGULAR_BOND_NUM_LIST")
-        parseAmoebaRegularBondNumList(is);
+        parseAmoebaRegularBondNumList();
       else if (*toks == "AMOEBA_REGULAR_BOND_LIST")
-        parseAmoebaRegularBondList(is, _amoeba_regular_bond_num_list);
+        parseAmoebaRegularBondList(_amoeba_regular_bond_num_list);
       
     }
 
