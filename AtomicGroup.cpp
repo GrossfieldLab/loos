@@ -924,6 +924,50 @@ namespace loos {
   }
 
 
+  std::vector<uint> AtomicGroup::atomOrderFrom(const AtomicGroup& g) {
+    if (g.size() != size())
+      throw(LOOSError("Cannot map atom order between groups of different sizes"));
+
+    std::vector<AtomicGroup> other = g.splitByResidue();
+    std::vector<AtomicGroup> self = splitByResidue();
+
+    std::vector<uint> order;
+    uint idx = 0;
+    for (uint k=0; k<self.size(); ++k) {
+      if (self[k][0]->resname() != other[k][0]->resname())
+        throw(LOOSError("Mismatched residues while trying to map atom order between groups"));
+      for (uint j=0; j<self[k].size(); ++j) {
+        uint i;
+        for (i=0; i<other[k].size(); ++i)
+          if (self[k][j]->name() == other[k][i]->name())
+            break;
+        if (i < other[k].size())
+          order.push_back(idx + i);
+        else
+          throw(LOOSError(*(self[k][j]), "Cannot find match while constructing atom order map"));
+      }
+      idx += other[k].size();
+    }
+
+    return(order);
+  }
+
+  void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) {
+    if (g.size() != map.size())
+      throw(LOOSError("Atom order map is of incorrect size to copy coordinates"));
+    if (g.size() != size())
+      throw(LOOSError("Cannot copy coordinates (with atom ordering) from an AtomicGroup of a different size"));
+    
+    for (uint i=0; i<map.size(); ++i)
+      atoms[i]->coords(g[map[i]]->coords());
+  }
+
+  void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g) {
+    std::vector<uint> map = atomOrderFrom(g);
+    copyCoordinatesFrom(g, map);
+  }
+
+
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {
     AtomicGroup::const_iterator i;

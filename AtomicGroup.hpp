@@ -553,15 +553,13 @@ namespace loos {
      * order relative to the current group for the copy to make
      * sense.
      */
-    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset =0, const uint length=0);
+    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset, const uint length);
 
-    //! \b DEPRECATED : See copyCoordinatesFrom()
-    void copyCoordinates(AtomicGroup& g) {
-      iterator i, j;
+    std::vector<uint> atomOrderFrom(const AtomicGroup& g);
 
-      for (i = atoms.begin(), j = g.atoms.begin(); i != atoms.end(); i++, j++)
-        (*i)->coords((*j)->coords());
-    }
+    void copyCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
+
+    void copyCoordinatesFrom(const AtomicGroup& g);
 
     //! Each atom is moved in a random direction by a vector of the passed size
     void perturbCoords(const greal);
