@@ -924,7 +924,7 @@ namespace loos {
   }
 
 
-  std::vector<uint> AtomicGroup::atomOrderFrom(const AtomicGroup& g) {
+  std::vector<uint> AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) {
     if (g.size() != size())
       throw(LOOSError("Cannot map atom order between groups of different sizes"));
 
@@ -952,7 +952,7 @@ namespace loos {
     return(order);
   }
 
-  void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) {
+  void AtomicGroup::copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) {
     if (g.size() != map.size())
       throw(LOOSError("Atom order map is of incorrect size to copy coordinates"));
     if (g.size() != size())
@@ -962,9 +962,9 @@ namespace loos {
       atoms[i]->coords(g[map[i]]->coords());
   }
 
-  void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g) {
-    std::vector<uint> map = atomOrderFrom(g);
-    copyCoordinatesFrom(g, map);
+  void AtomicGroup::copyMappedCoordinatesFrom(const AtomicGroup& g) {
+    std::vector<uint> map = atomOrderMapFrom(g);
+    copyMappedCoordinatesFrom(g, map);
   }
 
 

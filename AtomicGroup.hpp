@@ -551,28 +551,36 @@ namespace loos {
      * order relative to the current group for the copy to make
      * sense.
      */
-    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset, const uint length);
+    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset = 0, const uint length = 0);
 
     //! Map the order of atoms in AtomicGroup g into the current group
     /**
      * Note that the order is only checked within a residue.  The residues
      * must appear in the same order between the two groups.  This
-     * addresses issues such as when psfgen reorders the atoms within
-     * a residue...
+     * addresses edge issues such as when psfgen reorders the atoms within
+     * a residue.  The map is an index into the AtomicGroup g that
+     * puts g into the same order as the current group.
      */
-    std::vector<uint> atomOrderFrom(const AtomicGroup& g);
+    std::vector<uint> atomOrderMapFrom(const AtomicGroup& g);
 
     //! Given a mapping of atom order, copy the coordinates into the current group
     /*
-     * See AtomicGroup::atomOrderFrom(const AtomicGroup& g) for more information
+     * See AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) for
+     * more information
+     * 
+     * If you know that the atoms are in the same order in both
+     * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
-    void copyCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
+    void copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
 
     //! Copy the coordinates from the group mapping the atom order
     /*
      * See AtomicGroup::atomOrderFrom(const AtomicGroup& g) for more information
+     * 
+     * If you know that the atoms are in the same order in both
+     * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
-    void copyCoordinatesFrom(const AtomicGroup& g);
+    void copyMappedCoordinatesFrom(const AtomicGroup& g);
 
     //! Each atom is moved in a random direction by a vector of the passed size
     void perturbCoords(const greal);
