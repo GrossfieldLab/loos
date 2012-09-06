@@ -564,7 +564,7 @@ namespace loos {
     std::vector<uint> atomOrderMapFrom(const AtomicGroup& g);
 
     //! Given a mapping of atom order, copy the coordinates into the current group
-    /*
+    /**
      * See AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) for
      * more information
      * 
@@ -574,7 +574,7 @@ namespace loos {
     void copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
 
     //! Copy the coordinates from the group mapping the atom order
-    /*
+    /**
      * See AtomicGroup::atomOrderFrom(const AtomicGroup& g) for more information
      * 
      * If you know that the atoms are in the same order in both
