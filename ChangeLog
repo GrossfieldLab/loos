@@ -1,3 +1,25 @@
+2012-09-06    <tromo@spade.biophysics.rochester.edu>
+
+	* Added LineReader base class for reading lines from a file.  Handles
+	removal of comments and tracking of line numbers for error
+	messages.  Derive from this class to alter behavior
+	(e.g. comments)
+	* Changed Amber prmtop reader to use the LineReader class
+	* Changed readVector<T>() to also use a LineReader object (either
+	passed or internally if using the old interface).  Can now also
+	take a string that gives the name of the file to read from.
+	* Added AtomicGroup::atomOrderMapFrom() to map the order of atoms
+	in one group into another.  This is for "edge" cases such as when
+	psfgen reorders the atoms within a residue.  Note that the groups
+	must match in that they must have the same number of atoms with
+	the same names, and the residues must be in the same sequence.
+	The search for matching atoms *only* occurs within a residue.
+	* Added AtomicGroup::copyMappedCoordinatesFrom().  This will find
+	the mapping of atoms from the other group into the current one and
+	use it to copy the other group's coordinates over.  Note that if
+	the atoms are already in the same order, then
+	AtomicGroup::copyCoordinatesFrom() will be faster.
+
 2012-08-31    <tromo@spade.biophysics.rochester.edu>
 
 	* Deprecated UniqueStrings class
