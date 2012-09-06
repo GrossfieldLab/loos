@@ -48,6 +48,7 @@
 #include <exceptions.hpp>
 #include <Coord.hpp>
 #include <pdb_remarks.hpp>
+#include <LineReader.hpp>
 
 
 
@@ -60,16 +61,20 @@ namespace loos {
   //! Get the next line of input, skipping blanks and stripping comments
   std::string getNextLine(std::istream& is, int* lineno);
 
-  //! Read a list of numbers from a stream
+  //! Read a list of numbers using a LineReader object
+  /**
+   * The readVector<T>() family of functions allows you to read in a list
+   * of numbers from a stream or a file.  When used with a LineReader
+   * object, you have control over how blank lines and comments are
+   * handled.  When used with either an istream or a string, the
+   * default behavior is to skip blank lines and comments will begin
+   * with the '#' character and are stripped.
+   */
   template<typename T>
-  std::vector<T> readVector(std::istream& is) {
+  std::vector<T> readVector(LineReader& reader) {
     std::vector<T> data;
-    for (;;) {
-      std::string s = getNextLine(is, 0);
-      if (s.length() == 0)
-        break;
-
-      std::istringstream iss(s);
+    while (reader.getNext()) {
+      std::istringstream iss(reader.line());
       T datum;
       iss >> datum;
       data.push_back(datum);
@@ -77,6 +82,22 @@ namespace loos {
 
     return(data);
   }
+
+  //! Read a list of numbers from a stream with default behavior
+  template<typename T>
+  std::vector<T> readVector(std::istream& is) {
+    LineReader lr(is);
+    return(readVector<T>(lr));
+  }
+
+  //! Read a list of numbers from a file with default behavior
+  template<typename T>
+  std::vector<T> readVector(std::string& fname) {
+    std::ifstream ifs(fname.c_str());
+    LineReader lr(ifs, fname);
+    return(readVector<T>(lr));
+  }
+
 
   template<typename T>
   std::vector< std::vector<T> > readTable(std::istream& is) {
