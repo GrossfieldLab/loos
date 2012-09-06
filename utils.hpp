@@ -61,10 +61,10 @@ namespace loos {
   //! Get the next line of input, skipping blanks and stripping comments
   std::string getNextLine(std::istream& is, int* lineno);
 
-  //! Read a list of numbers using a LineReader object
+  //! Read a list of items using a LineReader object
   /**
    * The readVector<T>() family of functions allows you to read in a list
-   * of numbers from a stream or a file.  When used with a LineReader
+   * of items (numbers) from a stream or a file.  When used with a LineReader
    * object, you have control over how blank lines and comments are
    * handled.  When used with either an istream or a string, the
    * default behavior is to skip blank lines and comments will begin
@@ -83,14 +83,14 @@ namespace loos {
     return(data);
   }
 
-  //! Read a list of numbers from a stream with default behavior
+  //! Read a list of items from a stream with default behavior
   template<typename T>
   std::vector<T> readVector(std::istream& is) {
     LineReader lr(is);
     return(readVector<T>(lr));
   }
 
-  //! Read a list of numbers from a file with default behavior
+  //! Read a list of items from a file with default behavior
   template<typename T>
   std::vector<T> readVector(std::string& fname) {
     std::ifstream ifs(fname.c_str());
@@ -99,15 +99,23 @@ namespace loos {
   }
 
 
+  
+
+  //! Read in a table of items using a LineReader object.
+  /**This is
+   * distinct from the Matrix class reader which requires a specific
+   * format.  Here, comments may be freely interspersed with the data
+   * and rows may contain different numbers of columns
+   */
   template<typename T>
-  std::vector< std::vector<T> > readTable(std::istream& is) {
+  std::vector< std::vector<T> > readTable(LineReader& reader) {
     std::vector< std::vector<T> > table;
-    for (;;) {
-      std::string s = getNextLine(is, 0);
-      if (s.empty())
+
+    while (reader.getNext()) {
+      if (reader.line().empty())
         break;
 
-      std::istringstream iss(s);
+      std::istringstream iss(reader.line());
       T datum;
       std::vector<T> row;
       while (iss >> datum)
@@ -115,6 +123,21 @@ namespace loos {
       table.push_back(row);
     }
     return(table);
+  }
+
+  //! Read in a table given a stream
+  template<typename T>
+  std::vector< std::vector<T> > readTable(std::istream& is) {
+    LineReader lr(is);
+    return(readTable<T>(lr));
+  }
+
+  //! Read in a table given a filename
+  template<typename T>
+  std::vector< std::vector<T> > readTable(std::string& fname) {
+    std::ifstream ifs(fname.c_str());
+    LineReader lr(ifs, fname);
+    return(readTable<T>(lr));
   }
 
   //! Create an invocation header
