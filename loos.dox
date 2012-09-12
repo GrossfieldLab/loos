@@ -631,19 +631,20 @@ in order to build LOOS.
 
 \subsection osx MacOS X
 
-First, make sure you have the Developer's Tools (i.e. XCode)
-installed.  You can find it on your MacOS X install disk or,
-alternatively, you can sign up for a free account with the Apple
-Developer's Connection and download the latest version.  Next, you
-will need to install SCons (http://scons.org) and Boost
-(http://boost.org) by visiting their websites, downloading the
-software, and following their installation instructions.  
-You will also need to create a \c custom.py file to tell LOOS where to
-find the libraries and headers that it needs.  Copy the \c
-custom.py-proto to \c custom.py and edit it.  In particular, look at
-the \c BOOSTREGEX and \c BOOSTPO variables for the boost regular
-expression library and program options libraries.  You will most
-likely need to change these names...
+First, make sure you have the Developer's Tools (i.e. XCode) installed.  You
+can find it on your MacOS X install disk or, alternatively, you can sign up for
+a free account with the Apple Developer's Connection and download the latest
+version.  In the most recent versions, the command line tools are a separate
+download, so you'll need to run XCode, open the Preferences window, and go to
+the Downloads panel; from there, you can select the option to download the
+command lline tools. Next, you will need to install SCons (http://scons.org)
+and Boost (http://boost.org) by visiting their websites, downloading the
+software, and following their installation instructions.  You will also need to
+create a \c custom.py file to tell LOOS where to find the libraries and headers
+that it needs.  Copy the \c custom.py-proto to \c custom.py and edit it.  In
+particular, look at the \c BOOSTREGEX and \c BOOSTPO variables for the boost
+regular expression library and program options libraries.  You will most likely
+need to change these names...
 
 \subsection cygwin
 Tested versions: 1.7.7
