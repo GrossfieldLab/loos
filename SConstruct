@@ -173,7 +173,7 @@ elif platform == 'linux2':
    noatlas = 0
 
 
-   LIBS_LINKED_TO = 'atlas lapack'
+   LIBS_LINKED_TO = 'atlas lapack netcdf'
    LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    ### Note for OpenSUSE and Ubuntu...

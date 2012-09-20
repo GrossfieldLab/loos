@@ -5,7 +5,7 @@
 
 namespace loos {
 
-  void AmberNetcdfTraj::init(const char* name, const int natoms) {
+  void AmberNetcdf::init(const char* name, const int natoms) {
     int retval;
 
     retval = nc_open(name, NC_NOWRITE, &_ncid);
@@ -23,7 +23,7 @@ namespace loos {
     if (retval)
       throw(AmberNetcdfError("Error reading atom length", retval));
     if (_natoms != natoms)
-      throw(LOOSError("AmberNetcdfTraj has different number of atoms than expected"));
+      throw(LOOSError("AmberNetcdf has different number of atoms than expected"));
 
 
     // Get nframes
@@ -41,7 +41,7 @@ namespace loos {
       if (retval)
         throw(AmberNetcdfError("Error reading periodic cell data type", retval));
       if (_box_data)
-        throw(LOOSError("AmberNetcdfTraj::init() internal error - box_data already exists"));
+        throw(LOOSError("AmberNetcdf::init() internal error - box_data already exists"));
       switch(_box_type) {
       case NC_FLOAT: _box_data = new float[3]; break;
       case NC_DOUBLE: _box_data = new double[3]; break;
@@ -49,7 +49,7 @@ namespace loos {
       }
     }
 
-    // Check angles
+    // Any additional validation should go here...
 
     // Get coord-id for later use...
     retval = nc_inq_varid(_ncid, "coordinates", &_coord_id);
@@ -67,9 +67,70 @@ namespace loos {
   }
 
 
+  void AmberNetcdf::readRawFrame(const uint frameno) {
+    size_t start[3] = { 0, 0, 0 };
+    size_t count[3] = {1, 1, 3};
 
 
-  void AmberNetcdfTraj::readGlobalAttributes() {
+    // Read coordinates first...
+    start[0] = frameno;
+    count[1] = _natoms * 3;
+
+    int retval;
+    switch(_coord_type) {
+    case NC_FLOAT: retval = nc_get_vara_float(_ncid, _coord_id, start, count, _coord_data); break;
+    case NC_DOUBLE: retval = nc_get_vara_double(_ncid, _coord_id, start, count, _coord_data); break;
+    default: throw(AmberNetcdfError("Only float and double data types supported for coordinates."));
+    }
+
+    if (retval)
+      throw(AmberNetcdfError("Error while reading Amber netcdf frame", retval));
+
+    // Now get box if present...
+    if (_periodic) {
+      count[1] = 3;
+      switch(_box_type) {
+      case NC_FLOAT: retval = nc_get_vara_float(_ncid, _cell_lengths_id, start, count, _box_data); break;
+      case NC_DOUBLE: retval = nc_get_vara_double(_ncid, _cell_lengths_id, start, count, _box_data); break;
+      default: throw(AmberNetcdfError("Only float and double data type supported for periodic boxes."));
+      }
+      ir (retval)
+        throw(AmberNetcdfError("Error while reading Amber netcdf periodic box", retval));
+      
+    }
+    
+  }
+
+
+  void AmberNetcdf::seekNextFrameImpl() {
+    ++_current_frame;
+  }
+
+  void AmberNetcdf::seekFrameImpl(const uint i) {
+    _current_frame = i;
+  }
+
+  bool AmberNetcdf::parseFrame() {
+    if (_current_frame >= _nframes)
+      return(false);
+
+    readRawFrame(_current_frame);
+  }
+
+  void AmberNetcdf::updateGroupCoords(AtomicGroup& g) {
+    if (g.size() != _natoms)
+      throw(AmberNetcdfError("Cannot use AmberNetcdf::updateGroupCoords() when passed group has different number of atoms"));
+
+    uint j=0;
+    for (uint i=0; i<_natoms; ++i, j += 3)
+      g[i]->coords(GCoord(_coord_data[j], _coord_data[j+1], _coord_data[j+2]));
+
+    if (_periodic)
+      g.periodicBox(GCoord(_box_data[0], _box_data[1], _box_data[2]));
+  }
+
+
+  void AmberNetcdf::readGlobalAttributes() {
     int retval;
 
     _title = readGlobalAttribute("title");
@@ -82,7 +143,7 @@ namespace loos {
 
 
   // Will return an emptry string if the attribute is not found
-  string AmberNetcdfTraj::readGlobalAttribute(const std::string& name) {
+  string AmberNetcdf::readGlobalAttribute(const std::string& name) {
     size_t len;
     
     retval = nc_inq_attname(_ncid, NC_GLOBAL, name.c_str(), &len);

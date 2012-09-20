@@ -78,6 +78,7 @@
 #include <dcdwriter.hpp>
 
 #include <amber_traj.hpp>
+#include <amber_netcdf.hpp>
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <pdbtraj.hpp>
