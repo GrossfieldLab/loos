@@ -28,9 +28,6 @@
 #define LOOSDEFS_HPP
 
 
-// Temporary..
-//#define HAS_NETCDF
-
 #if __GNUC__ < 4
 #error LOOS Requires GCC-4.0.1 or higher
 #endif
