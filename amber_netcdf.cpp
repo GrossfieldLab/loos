@@ -7,7 +7,7 @@ namespace loos {
 
 
   bool isFileNetCDF(const std::string& fname) {
-    ifstream ifs(fname.c_str());
+    std::ifstream ifs(fname.c_str());
 
     char buf[4];
     ifs.read(buf, 4);
@@ -17,7 +17,7 @@ namespace loos {
 
 
 
-  void AmberNetcdf::init(const char* name, const int natoms) {
+  void AmberNetcdf::init(const char* name, const uint natoms) {
     int retval;
 
     retval = nc_open(name, NC_NOWRITE, &_ncid);
@@ -40,7 +40,7 @@ namespace loos {
 
     // Get nframes
     int frame_id;
-    retval = nc_inq_dimid(_ncid, "frame", frame_id);
+    retval = nc_inq_dimid(_ncid, "frame", &frame_id);
     if (retval)
       throw(AmberNetcdfError("Error reading frame information", retval));
     retval = nc_inq_dimlen(_ncid, frame_id, &_nframes);
@@ -55,6 +55,10 @@ namespace loos {
     retval = nc_inq_varid(_ncid, "coordinates", &_coord_id);
     if (retval)
       throw(AmberNetcdfError("Error getting id for coordinates", retval));
+
+    // Now cache the first frame...
+    readRawFrame(0);
+    cached_first = true;
     
   }
 
@@ -78,7 +82,7 @@ namespace loos {
       start[1] = 0;
       count[1] = 3;
 
-      retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _cell_lengths_id, _box_data);
+      retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _cell_lengths_id, start, count, _box_data);
       if (retval)
         throw(AmberNetcdfError("Error while reading Amber netcdf periodic box", retval));
       
@@ -100,6 +104,7 @@ namespace loos {
       return(false);
 
     readRawFrame(_current_frame);
+    return(true);
   }
 
   void AmberNetcdf::updateGroupCoords(AtomicGroup& g) {
@@ -116,7 +121,6 @@ namespace loos {
 
 
   void AmberNetcdf::readGlobalAttributes() {
-    int retval;
 
     _title = readGlobalAttribute("title");
     _application = readGlobalAttribute("application");
@@ -128,12 +132,12 @@ namespace loos {
 
 
   // Will return an emptry string if the attribute is not found
-  string AmberNetcdf::readGlobalAttribute(const std::string& name) {
+  std::string AmberNetcdf::readGlobalAttribute(const std::string& name) {
     size_t len;
     
-    retval = nc_inq_attname(_ncid, NC_GLOBAL, name.c_str(), &len);
+    int retval = nc_inq_attlen(_ncid, NC_GLOBAL, name.c_str(), &len);
     if (retval)
-      return(string());
+      return(std::string());
 
     nc_type type;
     retval = nc_inq_atttype(_ncid, NC_GLOBAL, name.c_str(), &type);
@@ -148,7 +152,7 @@ namespace loos {
       throw(AmberNetcdfError("Error reading attribute " + name));
     }
 
-    return(string(buf));
+    return(std::string(buf));
   }
 
 

@@ -72,7 +72,7 @@ namespace loos {
   public:
 
     
-    explicit AmberNetcdf(const std::string& s, const int na) :
+    explicit AmberNetcdf(const std::string& s, const uint na) :
       _coord_data(new GCoord::element_type[na]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
@@ -82,7 +82,7 @@ namespace loos {
       init(s.c_str(), na);
     }
 
-    explicit AmberNetcdf(const char* p, const int na) :
+    explicit AmberNetcdf(const char* p, const uint na) :
       _coord_data(new GCoord::element_type[na]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
@@ -115,8 +115,17 @@ namespace loos {
       return(res);
     }
 
+    void updateGroupCoords(AtomicGroup& g);
+    bool parseFrame();
+    void seekNextFrameImpl();
+    void seekFrameImpl(const uint frame);
+    void rewindImpl() { _current_frame = 0; cached_first = false; }
+
   private:
-    void init(const char* name, const int natoms);
+    void init(const char* name, const uint natoms);
+    void readGlobalAttributes();
+    std::string readGlobalAttribute(const std::string& name);
+    void readRawFrame(const uint frameno);
 
 
   private:
