@@ -24,7 +24,16 @@ namespace loos {
     if (retval)
       throw(AmberNetcdfOpenError());
 
+    // Read and validate global attributes...
     readGlobalAttributes();
+    if (_conventions.empty() || _conventionVersion.empty())
+      throw(AmberNetcdfError("Unable to find convention global attributes.  Is this really an Amber NetCDF trajectory?"));
+
+    if (_conventions.find("AMBER") == std::string::npos)
+      throw(AmberNetcdfError("Cannot find AMBER tag in global attribues.  Is this really an Amber NetCDF trajectory?"));
+      
+    if (_conventionVersion != "1.0")
+      throw(AmberNetcdfError("Convention versions other than 1.0 not supported for Amber NetCDF trajectories."));
 
     // Verify # of atoms match...
     int atom_id;
@@ -35,7 +44,7 @@ namespace loos {
     if (retval)
       throw(AmberNetcdfError("Error reading atom length", retval));
     if (_natoms != natoms)
-      throw(LOOSError("AmberNetcdf has different number of atoms than expected"));
+      throw(AmberNetcdfError("AmberNetcdf has different number of atoms than expected"));
 
 
     // Get nframes
@@ -74,6 +83,7 @@ namespace loos {
         if (retval)
           throw(AmberNetcdfError("Error getting second time point", retval));
 
+        // Assume units are in picoseconds
         _timestep = (t1-t0)*1e-12;
       }
     }
@@ -86,6 +96,8 @@ namespace loos {
   }
 
 
+  // Given a frame number, read the coord data into the internal array
+  // and retrieve the corresponding periodic box (if present)
   void AmberNetcdf::readRawFrame(const uint frameno) {
     size_t start[3] = {0, 0, 0};
     size_t count[3] = {1, 1, 3};

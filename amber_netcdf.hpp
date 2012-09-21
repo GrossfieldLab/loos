@@ -16,9 +16,11 @@
 namespace loos {
 
 
+  //! Returns true if the file is a NetCDF file
   bool isFileNetCDF(const std::string& fname);
 
 
+  //! Exceptions for reading Amber NetCDF files
   struct AmberNetcdfError : public LOOSError {
     explicit AmberNetcdfError(const std::string& msg) : LOOSError(msg) { }
     explicit AmberNetcdfError(const std::string& msg, const int retval) {
@@ -40,10 +42,23 @@ namespace loos {
 
 
   namespace {
+
+
+    // These classes handle the template specialization for
+    // determining which nc_get_vara function to call depending on the
+    // desired output type.  NetCDF will handle any necessary
+    // conversion from the variable's native format.
     template<typename T>
     class VarTypeDecider {
+
+      // This is private to keep arbitrary types from compiling
       static int read(const int id, const int var, const size_t* st, const size_t *co, T* ip) { return(0); }
     };
+
+
+
+    // The following are the supported types (based on what GCoord
+    // typically holds...
 
     template<> class VarTypeDecider<float> {
     public:
@@ -62,15 +77,11 @@ namespace loos {
 
   }
 
-  
+
+
+  //! Class for reading Amber Trajectories in NetCDF format
   class AmberNetcdf : public Trajectory {
-
-
-
-
-
   public:
-
     
     explicit AmberNetcdf(const std::string& s, const uint na) :
       _coord_data(new GCoord::element_type[na*3]),
@@ -94,6 +105,7 @@ namespace loos {
       init(p, na);
     }
 
+
     ~AmberNetcdf() {
       int retval = nc_close(_ncid);
       if (retval)
@@ -105,7 +117,7 @@ namespace loos {
 
     uint natoms() const { return(_natoms); }
     uint nframes() const { return(_nframes); }
-    float timestep() const { return(0.0); }   // Fix!
+    float timestep() const { return(_timestep); }   
     
     bool hasPeriodicBox() const { return(_periodic); }
     GCoord periodicBox() const { return(GCoord(_box_data[0], _box_data[1], _box_data[2])); }
