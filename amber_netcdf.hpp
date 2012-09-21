@@ -35,10 +35,7 @@ namespace loos {
 
 
 
-
-  
-  class AmberNetcdf : public Trajectory {
-
+  namespace {
     template<typename T>
     class VarTypeDecider {
       static int read(const int id, const int var, const size_t* st, const size_t *co, T* ip) { return(0); }
@@ -49,14 +46,21 @@ namespace loos {
       static int read(const int id, const int var, const size_t* st, const size_t* co, float* ip) {
         return(nc_get_vara_float(id, var, st, co, ip));
       }
-    }
+    };
 
     template<> class VarTypeDecider<double> {
     public:
       static int read(const int id, const int var, const size_t* st, const size_t* co, double* ip) {
         return(nc_get_vara_double(id, var, st, co, ip));
       }
-    }
+    };
+
+
+  }
+
+  
+  class AmberNetcdf : public Trajectory {
+
 
 
 
