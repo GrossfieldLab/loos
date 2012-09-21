@@ -119,7 +119,7 @@ namespace loos {
     bool parseFrame();
     void seekNextFrameImpl();
     void seekFrameImpl(const uint frame);
-    void rewindImpl() { _current_frame = 0; cached_first = false; }
+    void rewindImpl();
 
   private:
     void init(const char* name, const uint natoms);
