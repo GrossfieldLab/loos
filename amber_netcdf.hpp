@@ -39,150 +39,25 @@ namespace loos {
   
   class AmberNetcdf : public Trajectory {
 
-
-    struct SetEdgesForCoords {
-      static const uint ndims = 3;
-
-      SetEdgesForCoords(const uint natoms) : _natoms(natoms) { }
-
-      void setStart(size_t s[], const uint frame) const {
-        s[0] = frame;
-        s[1] = 0;
-        s[2] = 0;
-      }
-
-      void setCount(size_t s[]) const {
-        s[0] = 1;
-        s[1] = _natoms;
-        s[2] = 3;
-      }
-
-      size_t size() const { return(_natoms * 3); }
-
-
-      uint _natoms;
+    template<typename T>
+    class VarTypeDecider {
+      static int read(const int id, const int var, const size_t* st, const size_t *co, T* ip) { return(0); }
     };
 
-
-    struct SetEdgesForBoxes {
-      static const uint ndims = 2;
-
-      void setStart(size_t s[], const uint frame) const {
-        s[0] = frame;
-        s[1] = 0;
+    template<> class VarTypeDecider<float> {
+    public:
+      static int read(const int id, const int var, const size_t* st, const size_t* co, float* ip) {
+        return(nc_get_vara_float(id, var, st, co, ip));
       }
+    }
 
-      void setCount(size_t s[]) const {
-        s[0] = 1;
-        s[1] = 3;
+    template<> class VarTypeDecider<double> {
+    public:
+      static int read(const int id, const int var, const size_t* st, const size_t* co, double* ip) {
+        return(nc_get_vara_double(id, var, st, co, ip));
       }
+    }
 
-      size_t size() const { return(3); }
-
-    };
-
-
-
-    template<class SETTER>
-    struct VariableWrapper {
-      VariableWrapper(const int ncid, const int varid, const SETTER& setter) :
-        _ncid(ncid),
-        _varid(varid),
-        _setter(setter),
-        _data(0)
-
-      {
-        init();
-      }
-
-      VariableWrapper(const SETTER& setter) :
-        _ncid(-1),
-        _varid(-1),
-        _setter(setter),
-        _data(0)
-      { }
-
-      void ncid(const int i) { _ncid = i; }
-      int ncid() const { return(_ncid); }
-      
-      void varid(const int i) { _varid = i; }
-      int varid() const { return(_varid); }
-
-
-      void freeSpace() {
-        if (data != 0)
-          switch(_type) {
-          case NC_BYTE: delete[] (static_cast<unsigned char*>(_data)); break;
-          case NC_CHAR: delete[] (static_cast<char*>(_data)); break;
-          case NC_SHORT: delete[] (static_cast<short*>(_data)); break;
-          case NC_INT: delete[] (static_cast<int*>(_data)); break;
-          case NC_FLOAT: delete[] (static_cast<float*>(_data)); break;
-          case NC_DOUBLE: delete[] (static_cast<double*>(_data)); break;
-          }
-      }
-
-
-      void init() {
-        if (data)
-          freeSpace();
-
-        // Get type...
-        int retval = nc_inq_vartype(_ncid, _varid, &_type);
-
-        // Allocate space
-        switch(_type) {
-        case NC_BYTE: _data = new unsigned char[_setter.size()]; break;
-        case NC_CHAR: _data = new char[_setter.size()]; break;
-        case NC_SHORT: _data = new short[_setter.size()]; break;
-        case NC_INT: _data=new int[_setter.size()]; break;
-        case NC_FLOAT: _data=new float[_setter.size()]; break;
-        case NC_DOUBLE: _data=new double[_setter.size()]; break;
-        }
-      }
-
-
-      ~VariableWrapper() {
-        freeSpace();
-      }
-
-
-      template<typename T>
-      T getValueAt(const uint i) {
-        T x;
-
-        switch(_type) {
-        case NC_BYTE: x = (static_cast<unsigned char*>(_data))[i]; break;
-        case NC_CHAR: x = (static_cast<char*>(_data))[i]; break;
-        case NC_SHORT: x = (static_cast<short*>(_data))[i]; break;
-        case NC_INT: x = (static_cast<int*>(_data))[i]; break;
-        case NC_FLOAT: x = (static_cast<float*>(_data))[i]; break;
-        case NC_DOUBLE: x = (static_cast<double*>(_data))[i]; break;
-        }
-        return(x);
-      }
-                        
-
-      nc_type type() const { return(_type); }
-
-
-      bool readFrame(const uint frame) {
-        _setter.setStart(_start, frame);
-        _setter.setCount(_count);
-
-        int retval = nc_get_vara(_ncid, _varid, _start, _count, _data);
-        if (retval)
-          cerr << "Internal error - " << retval << endl;
-        return(retval == 0);
-      }
-
-
-      int _ncid, _varid;
-      const SETTER _setter;
-      void* _data;
-      nc_type _type;
-      size_t _start[SETTER::ndims];
-      size_t _count[SETTER::ndims];
-    };
 
 
 
@@ -190,8 +65,8 @@ namespace loos {
 
     
     explicit AmberNetcdf(const std::string& s, const int na) :
-      _coord_wrapper(SetEdgesForCoords(na)),
-      _box_wrapper(SetEdgesForBoxes()),
+      _coord_data(new GCoord::element_type[na]),
+      _box_data(new GCoord::element_type[3]),
       _periodic(false),
       _current_frame(0)
     {
@@ -200,6 +75,8 @@ namespace loos {
     }
 
     explicit AmberNetcdf(const char* p, const int na) :
+      _coord_data(new GCoord::element_type[na]),
+      _box_data(new GCoord::element_type[3]),
       _periodic(false),
       _current_frame(0)
     {
@@ -212,6 +89,8 @@ namespace loos {
       if (retval)
         throw(AmberNetcdfError("Error while closing netcdf file", retval));
 
+      delete[] _coord_data;
+      delete[] _box_data;
     }
 
     uint natoms() const { return(_natoms); }
@@ -233,20 +112,17 @@ namespace loos {
 
 
   private:
-    VariableWrapper<SetEdgesForCoords> _coord_wrapper;
-    VariableWrapper<SetEdgesForBoxes> _box_wrapper;
+    GCoord::element_type* _coord_data;
+    GCoord::element_type* _box_data;
     bool _periodic;
     uint _current_frame;
     int _ncid;
     size_t _nframes;
     size_t _natoms;
     int _coord_id;
-    nc_type _coord_type, _box_type;
     size_t _coord_size;
     int _cell_lengths_id;
     std::string _title, _application, _program, _programVersion, _conventions, _conventionVersion;
-    std::vector<GCoord> _frame;
-    GCoord _box;
   };
 
 

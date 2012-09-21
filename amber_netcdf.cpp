@@ -35,19 +35,7 @@ namespace loos {
 
     // Check for periodic cells...
     retval = nc_inq_varid(_ncid, "cell_lengths", &_cell_lengths_id);
-    if (!retval) {
-      _periodic = true;
-      retval = nc_inq_vartype(_ncid, _cell_lengths_id, &_box_type);
-      if (retval)
-        throw(AmberNetcdfError("Error reading periodic cell data type", retval));
-      if (_box_data)
-        throw(LOOSError("AmberNetcdf::init() internal error - box_data already exists"));
-      switch(_box_type) {
-      case NC_FLOAT: _box_data = new float[3]; break;
-      case NC_DOUBLE: _box_data = new double[3]; break;
-      default: throw(AmberNetcdfError("Only float and double supported for cell_lengths variable"));
-      }
-    }
+    _periodic = !retval;
 
     // Any additional validation should go here...
 
@@ -55,14 +43,6 @@ namespace loos {
     retval = nc_inq_varid(_ncid, "coordinates", &_coord_id);
     if (retval)
       throw(AmberNetcdfError("Error getting id for coordinates", retval));
-    retval = nc_inq_vartype(_ncid, _coord_id, &_coord_type);
-    if (retval)
-      throw(AmberNetcdfError("Error getting data type for coordinates", retval));
-    switch(_coord_type) {
-    case NC_FLOAT: _coord_data = new float[_natoms * 3]; break;
-    case NC_DOUBLE: _coord_data = new double[_natoms * 3]; break;
-    default: throw(AmberNetcdfError("Only float and double supported for coordinates")); break;
-    }
     
   }
 
@@ -74,27 +54,20 @@ namespace loos {
 
     // Read coordinates first...
     start[0] = frameno;
-    count[1] = _natoms * 3;
+    count[1] = _natoms;
 
-    int retval;
-    switch(_coord_type) {
-    case NC_FLOAT: retval = nc_get_vara_float(_ncid, _coord_id, start, count, _coord_data); break;
-    case NC_DOUBLE: retval = nc_get_vara_double(_ncid, _coord_id, start, count, _coord_data); break;
-    default: throw(AmberNetcdfError("Only float and double data types supported for coordinates."));
-    }
 
+    int retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _coord_id, start, count, _coord_data);
     if (retval)
       throw(AmberNetcdfError("Error while reading Amber netcdf frame", retval));
 
     // Now get box if present...
     if (_periodic) {
+      start[1] = 0;
       count[1] = 3;
-      switch(_box_type) {
-      case NC_FLOAT: retval = nc_get_vara_float(_ncid, _cell_lengths_id, start, count, _box_data); break;
-      case NC_DOUBLE: retval = nc_get_vara_double(_ncid, _cell_lengths_id, start, count, _box_data); break;
-      default: throw(AmberNetcdfError("Only float and double data type supported for periodic boxes."));
-      }
-      ir (retval)
+
+      retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _cell_lengths_id, _box_data);
+      if (retval)
         throw(AmberNetcdfError("Error while reading Amber netcdf periodic box", retval));
       
     }
