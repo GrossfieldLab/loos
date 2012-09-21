@@ -73,7 +73,7 @@ namespace loos {
 
     
     explicit AmberNetcdf(const std::string& s, const uint na) :
-      _coord_data(new GCoord::element_type[na]),
+      _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
       _current_frame(0)
@@ -83,7 +83,7 @@ namespace loos {
     }
 
     explicit AmberNetcdf(const char* p, const uint na) :
-      _coord_data(new GCoord::element_type[na]),
+      _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
       _current_frame(0)
