@@ -5,6 +5,18 @@
 
 namespace loos {
 
+
+  bool isFileNetCDF(const std::string& fname) {
+    ifstream ifs(fname.c_str());
+
+    char buf[4];
+    ifs.read(buf, 4);
+    return (buf[0] == 'C' && buf[1] == 'D' && buf[2] == 'F' && (buf[3] = 0x01 || buf[3] == 0x02));
+  }
+
+
+
+
   void AmberNetcdf::init(const char* name, const int natoms) {
     int retval;
 

@@ -15,6 +15,10 @@
 
 namespace loos {
 
+
+  bool isFileNetCDF(const std::string& fname);
+
+
   struct AmberNetcdfError : public LOOSError {
     explicit AmberNetcdfError(const std::string& msg) : LOOSError(msg) { }
     explicit AmberNetcdfError(const std::string& msg, const int retval) {
