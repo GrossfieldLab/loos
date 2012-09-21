@@ -113,12 +113,7 @@ struct Wrapper {
     _setter.setStart(_start, frame);
     _setter.setCount(_count);
 
-    int retval;
-    switch(_type) {
-    case NC_INT: retval = nc_get_vara_int(_ncid, _varid, _start, _count, static_cast<int*>(_data)); break;
-    case NC_FLOAT: retval = nc_get_vara_float(_ncid, _varid, _start, _count, static_cast<float*>(_data)); break;
-    case NC_DOUBLE: retval = nc_get_vara_double(_ncid, _varid, _start, _count, static_cast<double*>(_data)); break;
-    }
+    int retval = nc_get_vara(_ncid, _varid, _start, _count, _data);
     if (retval)
       cerr << "Internal error - " << retval << endl;
     return(retval == 0);
