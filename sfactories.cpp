@@ -34,7 +34,11 @@
 #include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <amber_traj.hpp>
+
+#if defined(HAS_NETCDF)
 #include <amber_netcdf.hpp>
+#endif
+
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <charmm.hpp>
