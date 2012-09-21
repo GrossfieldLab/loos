@@ -56,6 +56,29 @@ namespace loos {
     if (retval)
       throw(AmberNetcdfError("Error getting id for coordinates", retval));
 
+    // Attempt to determine timestep by looking at dT between frames 1 & 2
+    if (_nframes >= 2) {
+      int time_id;
+      retval = nc_inq_varid(_ncid, "time", &time_id);
+      if (!retval) {
+        float t0, t1;
+        size_t idx[1];
+
+        idx[0] = 0;
+        retval = nc_get_var1_float(_ncid, time_id, idx, &t0);
+        if (retval)
+          throw(AmberNetcdfError("Error getting first time point", retval));
+
+        idx[0] = 1;
+        retval = nc_get_var1_float(_ncid, time_id, idx, &t1);
+        if (retval)
+          throw(AmberNetcdfError("Error getting second time point", retval));
+
+        _timestep = (t1-t0)*1e-12;
+      }
+    }
+
+
     // Now cache the first frame...
     readRawFrame(0);
     cached_first = true;
@@ -64,7 +87,7 @@ namespace loos {
 
 
   void AmberNetcdf::readRawFrame(const uint frameno) {
-    size_t start[3] = { 0, 0, 0 };
+    size_t start[3] = {0, 0, 0};
     size_t count[3] = {1, 1, 3};
 
 
