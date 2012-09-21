@@ -32,8 +32,8 @@ namespace loos {
     if (_conventions.find("AMBER") == std::string::npos)
       throw(AmberNetcdfError("Cannot find AMBER tag in global attribues.  Is this really an Amber NetCDF trajectory?"));
       
-    if (_conventionVersion != "1.0")
-      throw(AmberNetcdfError("Convention versions other than 1.0 not supported for Amber NetCDF trajectories."));
+    if (_conventionVersion != std::string("1.0"))
+      throw(AmberNetcdfError("Convention version is '" + _conventionVersion + "', but only 1.0 is supported for Amber NetCDF trajectories."));
 
     // Verify # of atoms match...
     int atom_id;
@@ -152,13 +152,15 @@ namespace loos {
   }
 
   void AmberNetcdf::updateGroupCoords(AtomicGroup& g) {
-    if (g.size() != _natoms)
-      throw(AmberNetcdfError("Cannot use AmberNetcdf::updateGroupCoords() when passed group has different number of atoms"));
 
-    uint j=0;
-    for (uint i=0; i<_natoms; ++i, j += 3)
-      g[i]->coords(GCoord(_coord_data[j], _coord_data[j+1], _coord_data[j+2]));
-
+    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+      uint idx = (*i)->id() - 1;
+      if (idx < 0 || idx >= _natoms)
+        throw(LOOSError(**i, "Atom index into trajectory frame is out of bounds"));
+      idx *= 3;
+      (*i)->coords(GCoord(_coord_data[idx], _coord_data[idx+1], _coord_data[idx+2]));
+    }
+    
     if (_periodic)
       g.periodicBox(GCoord(_box_data[0], _box_data[1], _box_data[2]));
   }
@@ -191,6 +193,7 @@ namespace loos {
 
     char* buf = new char[len+1];
     retval = nc_get_att_text(_ncid, NC_GLOBAL, name.c_str(), buf);
+    buf[len]='\0';
     if (retval) {
       delete[] buf;
       throw(AmberNetcdfError("Error reading attribute " + name));
