@@ -108,7 +108,11 @@ namespace loos {
 
   std::string availableTrajectoryFileTypes() {
     std::string types =
-      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber/NetCDF), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
+      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber" 
+#if defined(HAS_NETCDF)
+      "/NetCDF"
+#endif
+      "), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
     return(types);
   }
 
@@ -121,11 +125,13 @@ namespace loos {
       return(pt);
     } else if (filetype == "mdcrd") {
 
+#if defined(HAS_NETCDF)      
       if (isFileNetCDF(filename)) {
         pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
         pTraj pt(pat);
         return(pt);
       }
+#endif
 
       pAmberTraj pat(new AmberTraj(filename, g.size()));
       pTraj pt(pat);

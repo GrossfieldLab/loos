@@ -140,6 +140,10 @@ if not env.GetOption('clean'):
       conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
    if not conf.CheckType('uint','#include <sys/types.h>\n'):
       conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+   if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+      has_netcdf = 1
+   else:
+      has_netcdf = 0
    env = conf.Finish()
 
 
@@ -173,7 +177,10 @@ elif platform == 'linux2':
    noatlas = 0
 
 
-   LIBS_LINKED_TO = 'atlas lapack netcdf'
+   LIBS_LINKED_TO = 'atlas lapack'
+   if (has_netcdf):
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' netcdf'
+      env.Append(CPPFLAGS = ['-DHAS_NETCDF'])
    LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    ### Note for OpenSUSE and Ubuntu...

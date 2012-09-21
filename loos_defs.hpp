@@ -27,6 +27,10 @@
 #if !defined(LOOSDEFS_HPP)
 #define LOOSDEFS_HPP
 
+
+// Temporary..
+//#define HAS_NETCDF
+
 #if __GNUC__ < 4
 #error LOOS Requires GCC-4.0.1 or higher
 #endif
@@ -100,7 +104,9 @@ namespace loos {
   class Trajectory;
   class DCD;
   class AmberTraj;
+#if defined(HAS_NETCDF)
   class AmberNetcdf;
+#endif
   class CCPDB;
   class TinkerArc;
   class PDBTraj;
@@ -112,7 +118,9 @@ namespace loos {
   typedef boost::shared_ptr<Trajectory> pTraj;
   typedef boost::shared_ptr<DCD> pDCD;
   typedef boost::shared_ptr<AmberTraj> pAmberTraj;
+#if defined(HAS_NETCDF)
   typedef boost::shared_ptr<AmberNetcdf> pAmberNetcdf;
+#endif
   typedef boost::shared_ptr<CCPDB> pCCPDB;
   typedef boost::shared_ptr<TinkerArc> pTinkerArc;
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;
