@@ -134,18 +134,17 @@ env.Append(BUILDERS = {'Scripts' : script_builder})
 
 
 ### Autoconf
-if not env.GetOption('clean'):
-   conf = Configure(env)
-   if not conf.CheckType('ulong','#include <sys/types.h>\n'):
-      conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
-   if not conf.CheckType('uint','#include <sys/types.h>\n'):
-      conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-   if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
-      has_netcdf = 1
-      env['HAS_NETCDF'] = 1
-   else:
-      has_netcdf = 0
-   env = conf.Finish()
+conf = Configure(env)
+if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+   conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+if not conf.CheckType('uint','#include <sys/types.h>\n'):
+   conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+   has_netcdf = 1
+   env['HAS_NETCDF'] = 1
+else:
+   has_netcdf = 0
+env = conf.Finish()
 
 
 ### Compile-flags
