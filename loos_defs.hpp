@@ -100,6 +100,7 @@ namespace loos {
   class Trajectory;
   class DCD;
   class AmberTraj;
+  class AmberNetcdf;
   class CCPDB;
   class TinkerArc;
   class PDBTraj;
@@ -111,6 +112,7 @@ namespace loos {
   typedef boost::shared_ptr<Trajectory> pTraj;
   typedef boost::shared_ptr<DCD> pDCD;
   typedef boost::shared_ptr<AmberTraj> pAmberTraj;
+  typedef boost::shared_ptr<AmberNetcdf> pAmberNetcdf;
   typedef boost::shared_ptr<CCPDB> pCCPDB;
   typedef boost::shared_ptr<TinkerArc> pTinkerArc;
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;

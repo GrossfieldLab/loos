@@ -34,6 +34,7 @@
 #include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <amber_traj.hpp>
+#include <amber_netcdf.hpp>
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <charmm.hpp>
@@ -107,7 +108,7 @@ namespace loos {
 
   std::string availableTrajectoryFileTypes() {
     std::string types =
-      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
+      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber/NetCDF), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
     return(types);
   }
 
@@ -119,9 +120,17 @@ namespace loos {
       pTraj pt(pd);
       return(pt);
     } else if (filetype == "mdcrd") {
+
+      if (isFileNetCDF(filename)) {
+        pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
+        pTraj pt(pat);
+        return(pt);
+      }
+
       pAmberTraj pat(new AmberTraj(filename, g.size()));
       pTraj pt(pat);
       return(pt);
+
     } else if (filetype == "rst"
                || filetype == "rst7"
                || filetype == "inpcrd") {
