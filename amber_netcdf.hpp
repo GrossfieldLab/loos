@@ -82,7 +82,12 @@ namespace loos {
   //! Class for reading Amber Trajectories in NetCDF format
   class AmberNetcdf : public Trajectory {
   public:
-    
+
+
+    // Note: we don't call the base class constructor because we need
+    // to keep it from trying to use an istream (since the C netcdf API
+    // doesn't support this)
+
     explicit AmberNetcdf(const std::string& s, const uint na) :
       _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
