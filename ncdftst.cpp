@@ -78,6 +78,9 @@ struct Wrapper {
 
     // Allocate space
     switch(_type) {
+    case NC_BYTE: _data = new unsigned char[_setter.size()]; break;
+    case NC_CHAR: _data = new char[_setter.size()]; break;
+    case NC_SHORT: _data = new short[_setter.size()]; break;
     case NC_INT: _data=new int[_setter.size()]; break;
     case NC_FLOAT: _data=new float[_setter.size()]; break;
     case NC_DOUBLE: _data=new double[_setter.size()]; break;
@@ -90,6 +93,9 @@ struct Wrapper {
     T x;
 
     switch(_type) {
+    case NC_BYTE: x = (static_cast<unsigned char*>(_data))[i]; break;
+    case NC_CHAR: x = (static_cast<char*>(_data))[i]; break;
+    case NC_SHORT: x = (static_cast<short*>(_data))[i]; break;
     case NC_INT: x = (static_cast<int*>(_data))[i]; break;
     case NC_FLOAT: x = (static_cast<float*>(_data))[i]; break;
     case NC_DOUBLE: x = (static_cast<double*>(_data))[i]; break;
@@ -100,6 +106,9 @@ struct Wrapper {
   template<typename T>
   void set(const uint i, const T x) {
     switch(_type) {
+    case NC_BYTE: x = (static_cast<unsigned char*>(_data))[i] = x; break;
+    case NC_CHAR: x = (static_cast<char*>(_data))[i] = x; break;
+    case NC_SHORT: x = (static_cast<short*>(_data))[i] = x; break;
     case NC_INT: (static_cast<int*>(_data))[i] = x; break;
     case NC_FLOAT: (static_cast<float*>(_data))[i] = x; break;
     case NC_DOUBLE: (static_cast<double*>(_data))[i] = x; break;
