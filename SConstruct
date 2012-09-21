@@ -65,6 +65,8 @@ clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
                     PathVariable.PathAccept))
+clos.Add(PathVariable('NETCDFINC', 'Path to netcdf include files', '', PathVariable.PathAccept))
+clos.Add(PathVariable('NETCDFLIB', 'Path to netcdf library files', '', PathVariable.PathAccept))
 clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
 clos.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
 clos.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
@@ -101,6 +103,8 @@ PREFIX = env['PREFIX']
 ALTPATH = env['ALTPATH']
 LIBS_OVERRIDE = env['LIBS_OVERRIDE']
 LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
+NETCDFINC = env['NETCDFINC']
+NETCDFLIB = env['NETCDFLIB']
 
 if ALTPATH != '':
    buildenv = env['ENV']
@@ -146,6 +150,10 @@ else:
    has_netcdf = 0
 env = conf.Finish()
 
+if (NETCDFINC != '' or NETCDFLIB != ''):
+   env['HAS_NETCDF'] = 1
+   has_netcdf = 1
+
 
 ### Compile-flags
 
@@ -168,20 +176,25 @@ env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
 env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
 
+LIBS_LINKED_TO = ''
+LIBS_PATHS_TO = ''
+if (has_netcdf):
+   LIBS_LINKED_TO = LIBS_LINKED_TO + ' netcdf'
+   env.Append(CPPFLAGS = ['-DHAS_NETCDF'])
+   if (NETCDFINC != ''):
+      env.Append(CPPFLAGS = ['-I' + NETCDFINC])
+   if (NETCDFLIB != ''):
+      env.Append(LIBPATH = [NETCDFLIB])
+
+
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework Accelerate')
 elif platform == 'freebsd8':
-   env.Append(LIBS=['lapack', 'blas'])
+   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 elif platform == 'linux2':
    noatlas = 0
 
-
-   LIBS_LINKED_TO = 'atlas lapack'
-   if (has_netcdf):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' netcdf'
-      env.Append(CPPFLAGS = ['-DHAS_NETCDF'])
-   LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
@@ -191,27 +204,33 @@ elif platform == 'linux2':
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
    if (re.search("[Ss][Uu][Ss][Ee]", linux_type)):
-      LIBS_LINKED_TO = 'lapack blas'
-      LIBS_PATHS_TO = ""
+      LIBS_LINKED_TO = LIBS_LINKED_TO + 'lapack blas'
 
    elif (re.search("[Uu]buntu", linux_type)):
       LIBS_LINKED_TO = 'lapack_atlas lapack atlas blas'
+
+   else:
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack'
+      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
+
    
 
-   if LIBS_OVERRIDE != '':
-      LIBS_LINKED_TO = LIBS_OVERRIDE
-
-   if LIBS_PATHS_OVERRIDE != '':
-      LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
-
-   env.Append(LIBS = Split(LIBS_LINKED_TO))
-   env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 # CYGWIN does not have an atlas package, so use lapack/blas instead
 elif (platform == 'cygwin'):
-   env.Append(LIBS = ['lapack', 'blas'])
-   env.Append(LIBPATH = [LAPACK])
+   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
+   LIB_PATHS_TO = 'LAPACK'
+
+if LIBS_OVERRIDE != '':
+   LIBS_LINKED_TO = LIBS_OVERRIDE
+
+if LIBS_PATHS_OVERRIDE != '':
+   LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
+
+
+env.Append(LIBS = Split(LIBS_LINKED_TO))
+env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 
