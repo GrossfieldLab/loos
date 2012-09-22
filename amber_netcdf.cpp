@@ -136,6 +136,7 @@ namespace loos {
 
   void AmberNetcdf::rewindImpl() {
     _current_frame = 0;
+    readRawFrame(0);
 
     // This depends on Trajectory::rewind() setting cached_first prior
     // to calling rewindImpl().  This ensures that a readFrame()
