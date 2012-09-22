@@ -85,7 +85,7 @@ namespace loos {
 
   private:
     void init(void);
-    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; parseFrame(); cached_first = true; }
+    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
     virtual void seekNextFrameImpl(void);
     virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
