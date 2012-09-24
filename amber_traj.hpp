@@ -76,7 +76,7 @@ namespace loos {
 
   private:
     void init(void);
-    virtual void rewindImpl(void) { ifs()->seekg(frame_offset); }
+    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(frame_offset); }
     virtual void seekNextFrameImpl(void) { }
     virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);

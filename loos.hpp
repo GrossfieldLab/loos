@@ -78,6 +78,11 @@
 #include <dcdwriter.hpp>
 
 #include <amber_traj.hpp>
+
+#if defined(HAS_NETCDF)
+#include <amber_netcdf.hpp>
+#endif
+
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <pdbtraj.hpp>

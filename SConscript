@@ -40,6 +40,9 @@ apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp'
 
+if ('HAS_NETCDF' in env):
+   apps = apps + ' amber_netcdf.cpp'
+
 
 loos = env.SharedLibrary('libloos', Split(apps))
 

@@ -11,5 +11,3 @@ Radius = 11.4536
 Found 2 molecules.
 	0	60	(0.221595,-0.0157963,0.0173277)
 	1	60	(2.18682,10.0433,-2.8865)
-Found 100 non-hydrogen atoms via parser.
-Found 100 non-hydrogen atoms via HeavyAtomSelector.

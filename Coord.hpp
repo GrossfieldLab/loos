@@ -87,7 +87,7 @@ namespace loos {
 
   public:
 
-
+    typedef T      element_type;
 
     // Constructors
 

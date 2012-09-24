@@ -81,9 +81,10 @@ namespace loos {
     virtual uint nframes(void) const =0;
 
     //! Rewinds the readFrame() iterator
-    void rewind(void) {
-      cached_first = false;
+    bool rewind(void) {
+      cached_first = true;
       rewindImpl();
+      return(parseFrame());
     }
 
     //! Tests whether or not the given frame/trajectory has periodic
