@@ -245,7 +245,8 @@ OpenSUSE 11.4: NOT SUPPORTED
 
 			-----= MACOS X =-----
 
-***NOTE on MacOS 10.8 (Mountain Lion) compatability: only LOOS 2.0.1 (or more recent) is compatible***
+***NOTE on MacOS 10.8 (Mountain Lion) compatability***
+***only LOOS 2.0.1 (or more recent) is compatible***
 
 LOOS has been tested with MacOS 10.7 and 10.8, however, it *should* be
 compatable with version 10.4-10.6.
@@ -257,6 +258,12 @@ Developer's Connection and download the latest version.  Next, you
 will need to install SCons (http://scons.org) and Boost
 (http://boost.org) by visiting their websites, downloading the
 software, and following their installation instructions.
+
+* NetCDF *
+
+Download and install the latest hdf5 and netcdf libraries.  If
+necessary, set the NETCDFINC and NETCDFLIB variables in your custom.py
+file to point to where netcdf is installed.
 
 * PyLOOS *
 
