@@ -125,6 +125,12 @@ need to install scons, boost, and atlas:
 
 sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
 
+[optional]
+For Amber NetCDF support, also install the netcdf development package:
+
+sudo yum install netcdf-devel.x86_64
+
+
 Notes for Fedora 17:
       There may be a number of warnings issues by g++ in the
       DensityTools package.  We believe these are spurious and can be safely
