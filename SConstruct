@@ -208,6 +208,7 @@ elif platform == 'linux2':
 
    elif (re.search("[Uu]buntu", linux_type)):
       LIBS_LINKED_TO = 'lapack_atlas lapack atlas blas'
+      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    else:
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack'
