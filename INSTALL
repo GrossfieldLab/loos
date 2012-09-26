@@ -213,7 +213,8 @@ Using the synaptic manager (or apt-get), install the following packages:
       scons
       libatlas-base-dev
       libatlas-headers
-      libatlas3gf-base (optional)
+      libatlas3gf-base [optional]
+      libnetcdf-dev [optional]
 
 
 * PyLOOS *
