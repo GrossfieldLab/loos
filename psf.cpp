@@ -102,7 +102,8 @@ namespace loos {
 
     int bonds_found = 0;
     getline(is, input);
-    while (input.size() > 0) { // end of the block is marked by a blank line
+    while (input.size() > 1) { // end of the block is marked by a blank line
+                               // Note: >1 to handle \r in files that came from windows...
       int ind1, ind2;
       std::stringstream s(input);
       std::string sind1, sind2;   // Hold string representations of id's before we hybrid36 decode them...
@@ -122,7 +123,11 @@ namespace loos {
         pAtom pa2 = getAtom(ind2);                
         pa1->addBond(pa2);
         pa2->addBond(pa1);
-        bonds_found++; 
+        bonds_found++;
+
+        // Catch returns in files that came from windows...
+        if (s.peek() == '\r')
+          break;
       }
       getline(is, input);
     }
