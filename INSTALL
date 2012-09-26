@@ -87,6 +87,22 @@ systems are currently supported.  Additionally, the interface and
 subsequent functionality may change significantly in future releases.
 
 
+		    = NetCDF Amber Trajectories =
+
+LOOS now supports a subset of the Amber NetCDF convention 1.0-B.  Only
+coordinates are retrieved and are converted into the default LOOS data
+type (i.e. doubles).  Periodic boxes are assumed to be orthogonal and
+the angles are currently ignored.
+
+If the netcdf libraries are installed, these will be automatically
+detected by SCons and included in the build.  When opening an amber
+trajectory file, LOOS will determine if it is a NetCDF file or an
+ASCII MDCRD file and act appropriately.
+
+If the netcdf libraries and headers are installed in a non-standard
+location, edit the NETCDFINC and NETCDFLIB variables in your custom.py
+file to point to the appropriate locations.
+
 		  = Parallel (Multithreaded) ATLAS =
 
 If you have a full install of ATLAS including threaded versions of the
@@ -151,7 +167,7 @@ packages:
 	libboost-all-devel (Boost C++ Libraries development files (ALL))
 	libatlas-dev (Automatically Tunes Linear Algebra Software, C Header Files)
 	libatlas-base-dev (Automatically Tuned Linear Algebra Software)
-
+	libnetcdf-dev [optional] (Development kit for Netcdf)
 
 * Ubuntu 8.04 LTS *
 
