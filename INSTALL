@@ -238,6 +238,12 @@ You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
+
+[Optional]
+For Amber NetCDF trajectory support, install the netcdf development package,
+   zypper install libnetcdf-devel
+
+
 * PYLOOS *
 
 OpenSUSE 12.1: zypper install python-devel swig

@@ -204,10 +204,10 @@ elif platform == 'linux2':
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
    if (re.search("[Ss][Uu][Ss][Ee]", linux_type)):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + 'lapack blas'
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
    elif (re.search("[Uu]buntu", linux_type)):
-      LIBS_LINKED_TO = 'lapack_atlas lapack atlas blas'
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    else:
