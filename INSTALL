@@ -297,6 +297,10 @@ custom.py file.  Copy the "custom.py-proto" file in the loos directory
 to "custom.py".  Look for the BOOSTPO and BOOSTREGEX symbols and
 uncomment the appropriate lines.
 
+[Optional]
+To include support for Amber/NetCDF trajectory files, install the
+libnetcdf-devel library using the cygwin setup.exe installer.
+
 
 * PyLOOS *
 
