@@ -512,7 +512,7 @@ namespace loos {
       //! Retrieve the value for an argument
       std::string value(const std::string& s) const;
 
-      //! Retreive the variable-number argument
+      //! Retrieve the variable-number argument
       std::vector<std::string> variableValues(const std::string& s) const;
 
     private:
