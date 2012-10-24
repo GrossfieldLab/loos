@@ -256,6 +256,9 @@ int main(int argc, char *argv[]) {
   AtomicGroup protein = selectAtoms(model, watopts->prot_string);
   AtomicGroup water = selectAtoms(model, watopts->water_string);
 
+  if (basopts->verbosity >= 1)
+    cerr << "Filter(s): " << watopts->filter_func->name() << endl;
+
   // Handle rescaling density by using a bulk-water density estimator
   BulkEstimator* est;
   if (xopts->rescale_density) {
