@@ -1,3 +1,9 @@
+2012-10-24    <tromo@spade.biophysics.rochester.edu>
+
+	* Changed water-hist to now include the water-filter bounds when
+	calculating the grid size.
+	* Fixed errors in fullhelp for water-hist
+
 2012-09-06    <tromo@spade.biophysics.rochester.edu>
 
 	* Added LineReader base class for reading lines from a file.  Handles
