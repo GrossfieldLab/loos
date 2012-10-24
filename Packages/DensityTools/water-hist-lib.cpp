@@ -158,7 +158,21 @@ namespace loos {
 
 
     void WaterHistogrammer::setGrid(pTraj& traj, const std::vector<uint>& frames, const double resolution, const double pad) {
-      std::vector<GCoord> bdd = getBounds(traj, protein_, frames);
+
+      std::vector<GCoord> bdd(2);
+      for (uint i=0; i<frames.size(); ++i) {
+        traj->readFrame(i);
+        traj->updateGroupCoords(protein_);
+        std::vector<GCoord> fbdd = the_filter->boundingBox(protein_);
+        for (uint j=0; j<3; ++j) {
+          if (fbdd[0][j] < bdd[0][j])
+            bdd[0][j] = fbdd[0][j];
+          if (fbdd[1][j] > bdd[1][j])
+            bdd[1][j] = fbdd[1][j];
+        }
+      }
+
+
       setGrid(bdd[0] - pad, bdd[1] + pad, resolution);
     }
     
