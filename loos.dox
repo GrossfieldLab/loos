@@ -434,6 +434,15 @@ scons PREFIX=/opt/loos-1.6.0 install
 ln -s /opt/loos-1.6.0 /opt/loos-latest
 \endverbatim
 
+<H2>Important Note...</H2>
+
+
+To use LOOS, your environment must be first setup:
+\verbatim
+  (bash)   source /path/to/loos/setup.sh
+  (tcsh)   source /path/to/loos/setup.csh
+\endverbatim
+
 <hr>
 \subsection building_pyloos Building PyLOOS, the Python Interface to LOOS
 <H3> +=+=+=+=+=+=+=+ BETA-RELEASE +=+=+=+=+=+=+=+</H3>
