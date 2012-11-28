@@ -279,7 +279,7 @@ Matrix twoTrajectories(ToolOptions* topts) {
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
