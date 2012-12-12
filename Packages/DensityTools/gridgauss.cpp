@@ -39,12 +39,14 @@ using namespace loos::DensityTools;
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 4) {
+  if (argc != 5) {
     cerr << 
       "DESCRIPTION\n\tApply a gaussian kernel convolution with a grid\n"
-      "\nUSAGE\n\tgridgauss width scaling sigma <grid >output\n"
-      "Width controls the size of the kernel, scaling and sigma control the shape\n"
-      "\nEXAMPLES\n\tgridgauss 10 3 1 <foo.grid >foo_smoothed.grid\n"
+      "\nUSAGE\n\tgridgauss width scaling normalization sigma <grid >output\n"
+      "Width controls the size of the kernel, scaling, normalization, and\n"
+      "sigma control the shape.  The gaussian is f(x) = a*exp(-0.5*(x/sigma)^2)\n"
+      "where a = normalization/(sigma*sqrt(2*PI)) and -scaling <= x <= scaling\n"
+      "\nEXAMPLES\n\tgridgauss 10 3 1 1 <foo.grid >foo_smoothed.grid\n"
       "This convolves the grid with a 10x10 kernel with sigma=1, and is a good\n"
       "starting point for smoothing out water density grid.\n";
     exit(0);
@@ -55,11 +57,12 @@ int main(int argc, char *argv[]) {
   int k = 1;
   uint width = strtol(argv[k++], 0, 10);
   double scaling = strtod(argv[k++], 0);
+  double normalization = strtod(argv[k++], 0);
   double sigma = strtod(argv[k++], 0);
 
 
   vector<double> kernel;
-  double a = 1.0/(sigma * sqrt(2.0*M_PI));
+  double a = normalization/(sigma * sqrt(2.0*M_PI));
   double scaling2 = 2.0 * scaling;
 
   double sum = 0.0;
