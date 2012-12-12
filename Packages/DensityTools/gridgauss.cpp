@@ -39,25 +39,41 @@ using namespace loos::DensityTools;
 
 int main(int argc, char *argv[]) {
 
-  if (argc != 3) {
+  if (argc != 4) {
     cerr << 
       "DESCRIPTION\n\tApply a gaussian kernel convolution with a grid\n"
-      "\nUSAGE\n\tgridgauss width sigma <grid >output\n"
-      "Width controls the size of the kernel and sigma controls the shape\n"
-      "\nEXAMPLES\n\tgridgauss 4 2 <foo.grid >foo_smoothed.grid\n"
-      "This convolves the grid with a 4x4 kernel with sigma=2, and is a good\n"
+      "\nUSAGE\n\tgridgauss width scaling sigma <grid >output\n"
+      "Width controls the size of the kernel, scaling and sigma control the shape\n"
+      "\nEXAMPLES\n\tgridgauss 10 3 1 <foo.grid >foo_smoothed.grid\n"
+      "This convolves the grid with a 10x10 kernel with sigma=1, and is a good\n"
       "starting point for smoothing out water density grid.\n";
     exit(0);
   }
   
   string hdr = invocationHeader(argc, argv);
-  int width = atoi(argv[1]) - 1;
-  double sigma = strtod(argv[2], 0);
 
-  vector<double> kernel = gaussian1d(width, sigma);
+  int k = 1;
+  uint width = strtol(argv[k++], 0, 10);
+  double scaling = strtod(argv[k++], 0);
+  double sigma = strtod(argv[k++], 0);
+
+
+  vector<double> kernel;
+  double a = 1.0/(sigma * sqrt(2.0*M_PI));
+  double scaling2 = 2.0 * scaling;
+
+  double sum = 0.0;
+  for (uint i=0; i<width; ++i) {
+    double x = scaling2 * i / width - scaling;
+    double f = a * exp(-0.5*(x/sigma)*(x/sigma));
+    sum += f;
+    kernel.push_back(f);
+  }
+
   cerr << "Kernel (" << kernel.size() << "): ";
   copy(kernel.begin(), kernel.end(), ostream_iterator<double>(cerr, ","));
   cerr << endl;
+  cerr << "Sum = " << sum << endl;
 
   DensityGrid<double> grid;
   cin >> grid;
