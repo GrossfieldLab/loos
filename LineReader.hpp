@@ -41,7 +41,8 @@ namespace loos {
     LineReader() : _is(0), _lineno(1) { }
     LineReader(std::istream& is) : _is(&is), _lineno(1) { }
     LineReader(std::istream& is, const std::string& name) : _is(&is), _lineno(1), _name(name) { }
-
+    
+    virtual ~LineReader() { }
 
     //! Access the internal stream pointer
     virtual std::istream& stream() const;
