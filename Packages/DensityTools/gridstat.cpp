@@ -184,6 +184,18 @@ void zAverage(DensityGrid<double>& grid, const int nbins) {
 
 
 
+double rmsdDens(DensityGrid<double>& grid, const double avg) {
+  double rms = 0.0;
+
+  for (long i=0; i<grid.maxGridIndex(); ++i) {
+    double d = grid(i) - avg;
+    rms += d*d;
+  }
+
+  rms /= grid.maxGridIndex();
+  return(sqrt(rms));
+}
+
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -208,6 +220,7 @@ int main(int argc, char *argv[]) {
   cout << "Range is " << grid.minCoord() << " to " << grid.maxCoord() << endl;
   
   double gavg = avgDens(grid);
+  double grmsd = rmsdDens(grid, gavg);
   double gzavg = zavgDens(grid);
   double gstd = stdDens(grid, gavg);
   double gzstd = zstdDens(grid, gzavg);
@@ -215,6 +228,7 @@ int main(int argc, char *argv[]) {
 
   cout << "\n\n* Grid Density Statistics *\n";
   cout << "Grid density is " << gavg << " (" << gstd << ")\n";
+  cout << "Grid rmsd is " << grmsd << endl;
   cout << "Grid non-zero avg is " << gzavg << " (" << gzstd << ")\n";
   cout << "Max density is " << gmax << endl << endl;
   quickHist(grid, gmax, nbins);
