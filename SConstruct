@@ -190,8 +190,8 @@ if (has_netcdf):
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework Accelerate')
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' python2.7'
-   LIBS_PATHS_TO = LIBS_PATHS_TO + ' /Users/tromo/local/lib'
+   #   LIBS_LINKED_TO = LIBS_LINKED_TO + ' python2.7'
+   #   LIBS_PATHS_TO = LIBS_PATHS_TO + ' /Users/tromo/local/lib'
 elif platform == 'freebsd8':
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 elif platform == 'linux2':
