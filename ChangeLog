@@ -1,3 +1,13 @@
+2012-12-14    <tromo@spade.biophysics.rochester.edu>
+
+	* Fixed errors in help messages
+	* Fixed build for OpenSUSE and Ubuntu 8.04 LTS
+	* Added support for NetCDF formatted Amber Trajectories
+	* Fixed bug in PSF reader when reading a file that came from windows
+	* Changed gridgauss to permit more control over the smoothing kernel
+	* Added gridautoscale to normalize grid densities such that bulk
+	water is 1.0 (for membrane systems only)
+
 2012-10-24    <tromo@spade.biophysics.rochester.edu>
 
 	* Changed water-hist to now include the water-filter bounds when
