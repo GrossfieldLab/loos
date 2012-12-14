@@ -62,21 +62,24 @@ int main(int argc, char *argv[]) {
 
 
   vector<double> kernel;
-  double a = normalization/(sigma * sqrt(2.0*M_PI));
   double scaling2 = 2.0 * scaling;
 
   double sum = 0.0;
   for (uint i=0; i<width; ++i) {
     double x = scaling2 * i / width - scaling;
-    double f = a * exp(-0.5*(x/sigma)*(x/sigma));
+    double f = exp(-0.5*(x/sigma)*(x/sigma));
     sum += f;
     kernel.push_back(f);
   }
 
+  double a = normalization / sum;
+  for (uint i=0; i<kernel.size(); ++i)
+    kernel[i] *= a;
+
   cerr << "Kernel (" << kernel.size() << "): ";
   copy(kernel.begin(), kernel.end(), ostream_iterator<double>(cerr, ","));
   cerr << endl;
-  cerr << "Sum = " << sum << endl;
+  cerr << "normalization = " << sum << endl;
 
   DensityGrid<double> grid;
   cin >> grid;
