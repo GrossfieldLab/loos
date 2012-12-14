@@ -42,10 +42,12 @@ int main(int argc, char *argv[]) {
   if (argc != 5) {
     cerr << 
       "DESCRIPTION\n\tApply a gaussian kernel convolution with a grid\n"
-      "\nUSAGE\n\tgridgauss width scaling normalization sigma <grid >output\n"
-      "Width controls the size of the kernel, scaling, normalization, and\n"
-      "sigma control the shape.  The gaussian is f(x) = a*exp(-0.5*(x/sigma)^2)\n"
-      "where a = normalization/(sigma*sqrt(2*PI)) and -scaling <= x <= scaling\n"
+      "\nUSAGE\n\tgridgauss width size scaling sigma <grid >output\n"
+      "Width controls the size (in grid units) of the kernel.  Size\n"
+      "determines how the gaussian is mapped onto the kernel, i.e.\n"
+      "-size <= x < size.  The gaussian is f(x) = exp(-0.5*(x/sigma)^2)\n"
+      "and is normalized so the sum of f(x) is one, then multiplied by\n"
+      "the scaling factor.\n"
       "\nEXAMPLES\n\tgridgauss 10 3 1 1 <foo.grid >foo_smoothed.grid\n"
       "This convolves the grid with a 10x10 kernel with sigma=1, and is a good\n"
       "starting point for smoothing out water density grid.\n";

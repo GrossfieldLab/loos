@@ -92,6 +92,12 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
   if (argc != 1) {
     cerr << "Usage- gridautoscale <input.grid >output.grid\n";
+    cerr <<
+      "DESCRIPTION\n\tgridautoscale is used to normalize the density\n"
+      "values in a grid for solvated membrane systems.  It divides the system\n"
+      "into bins in Z (normal to the membrane) and looks for the bulk water peak.\n"
+      "The entire grid is then scaled so that the average density in the bulk\n"
+      "regions is 1.\n";
     exit(-1);
   }
 
@@ -103,7 +109,7 @@ int main(int argc, char *argv[]) {
   double best_avg = 0.0;
   uint best_bin = 0;
   cerr << "Autoscaling- ";
-  for (uint nbins = 5; nbins <= 100; ++nbins) {
+  for (uint nbins = 5; nbins <= dims[2]; ++nbins) {
     if (nbins % 10 == 0)
       cerr << '.';
     double avg = findPeakDensitySlice(grid, nbins);
