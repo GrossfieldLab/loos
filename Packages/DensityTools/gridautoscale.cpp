@@ -102,7 +102,10 @@ int main(int argc, char *argv[]) {
   DensityGridpoint dims = grid.gridDims();
   double best_avg = 0.0;
   uint best_bin = 0;
+  cerr << "Autoscaling- ";
   for (uint nbins = 5; nbins <= 100; ++nbins) {
+    if (nbins % 10 == 0)
+      cerr << '.';
     double avg = findPeakDensitySlice(grid, nbins);
     if (avg > best_avg) {
       best_avg = avg;
@@ -110,7 +113,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  cerr << "Scaling to 1/" << best_avg << " based on " << best_bin << " bins" << endl;
+  cerr << "\nScaling to 1/" << best_avg << " based on " << best_bin << " bins" << endl;
   double konst = 1.0 / best_avg;
   grid.scale(konst);
   grid.addMetadata(hdr);
