@@ -15,6 +15,7 @@
 | Ubuntu 10.04 LTS  |     +     |   !    |
 | Ubuntu 11.10      |     +     |   !    |
 | Ubuntu 12.04 LTS  |     +     |   +    |
+| Ubuntu 12.10      |     +     |   +    |
 |-------------------|-----------|--------|
 | Debian 5          |     +     |   -    |
 | Debian 6          |     +     |   !    |
@@ -165,7 +166,7 @@ CentOS 5.7, 6.2: Yum install python-devel and pcre-devel, then download
 			------= Ubuntu =------
 
 LOOS has been tested on Ubuntu 8-12.  The following instructions have
-been used to install LOOS on a fresh 64-bit 11.04 installation.  Use
+been used to install LOOS on a fresh 64-bit 12.04 installation.  Use
 the Ubuntu software center (or apt-get) to install the following
 packages:
 	g++ (GNU C++ compiler)
@@ -175,6 +176,17 @@ packages:
 	libatlas-base-dev (Automatically Tuned Linear Algebra Software)
 	libnetcdf-dev [optional] (Development kit for Netcdf)
 
+* Ubuntu 12.10 *
+
+On the test installation, there was a warning on installing boost.  It
+was necessary to click on "Repair" twice before boost was successfully
+installed.
+
+* Ubuntu 10.04 LTS *
+
+Ubuntu 10.04 LTS uses libboost1.40-all-dev instead of
+libboost-all-devel for a package name.
+
 * Ubuntu 8.04 LTS *
 
 Do not install scons using the package manager--the available version
@@ -183,16 +195,12 @@ install that.  Also, there is no boost-all package, so you must
 install the components separately: libboost-dev, libboost-regex-dev,
 and libboost-program-options-dev
 
-* Ubuntu 10.04 LTS *
-
-Ubuntu 10.04 LTS uses libboost1.40-all-dev instead of
-libboost-all-devel for a package name.
 
 
 
 * PyLOOS *
 
-Ubuntu 12.04 LTS: Install swig using software center or apt-get.
+Ubuntu 12.04 LTS & 12.10: Install swig using software center or apt-get.
 
 Ubuntu 11.10 & 10.04 LTS: PyLOOS requires a very recent version of
   SWIG.  While it may appear that the swig 2.0.4 is available through
