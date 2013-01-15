@@ -49,8 +49,6 @@ double findPeakDensitySlice(const Grid& grid, const int nbins) {
     DensityGridpoint bottom(0,0,k*chunk_size);
     DensityGridpoint top(0,0,chunk_size*(k+1));
     
-    GCoord wbottom = grid.gridToWorld(bottom);
-    GCoord wtop = grid.gridToWorld(top);
 
     double avg = 0.0;
 
@@ -65,8 +63,6 @@ double findPeakDensitySlice(const Grid& grid, const int nbins) {
   }
 
   if (kk < dims[2]) {
-    DensityGridpoint bottom(0,0,kk);
-    GCoord wbottom = grid.gridToWorld(bottom);
     double avg = 0.0;
 
     volume = 0;
@@ -76,7 +72,6 @@ double findPeakDensitySlice(const Grid& grid, const int nbins) {
 	  avg += grid(kk, j, i);
 
     DensityGridpoint top(0,0,kk);
-    GCoord wtop = grid.gridToWorld(top);
 
     avg /= volume;
     if (avg >= max_avg_density)
@@ -109,7 +104,7 @@ int main(int argc, char *argv[]) {
   double best_avg = 0.0;
   uint best_bin = 0;
   cerr << "Autoscaling- ";
-  for (uint nbins = 5; nbins <= dims[2]; ++nbins) {
+  for (int nbins = 5; nbins <= dims[2]; ++nbins) {
     if (nbins % 10 == 0)
       cerr << '.';
     double avg = findPeakDensitySlice(grid, nbins);
