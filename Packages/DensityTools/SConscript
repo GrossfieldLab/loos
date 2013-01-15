@@ -21,12 +21,18 @@
 
 
 import sys
+import re
 
 Import('env')
 Import('loos')
 
 clone = env.Clone()
 clone.Prepend(LIBS = [loos])
+
+# Disable warnings only for fedora...
+if (env['platform'] == 'linux2'):
+    if (re.search("Red Hat", env['linux_type'])):
+        clone.Append(CPPFLAGS = [ '-Wno-uninitialized' ])
 
 ### Library Generation
 library_sources = 'GridUtils.cpp internal-water-filter.cpp water-hist-lib.cpp water-lib.cpp'
