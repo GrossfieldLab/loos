@@ -90,6 +90,7 @@ reparse = env['reparse']
 
 # export platform to environment...
 env['platform'] = platform
+env['linux_type'] = linux_type
 
 LAPACK = env['LAPACK']
 ATLAS = env['ATLAS']
