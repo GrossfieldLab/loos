@@ -162,7 +162,7 @@ namespace loos {
   bool XTC::readCompressedCoords(void)
   {
     int minint[3], maxint[3], *lip;
-    int smallidx, maxidx;
+    int smallidx;
     uint sizeint[3], sizesmall[3], bitsizeint[3] = {0,0,0}, size3;
     int k, *buf1, *buf2, lsize, flag;
     int smallnum, smaller, i, is_smaller, run;
@@ -219,7 +219,6 @@ namespace loos {
     }
 
     tmp=smallidx+8;
-    maxidx = (lastidx<tmp) ? lastidx : tmp;
     tmp = smallidx-1;
     tmp = (firstidx>tmp) ? firstidx : tmp;
     smaller = magicints[tmp] / 2;
