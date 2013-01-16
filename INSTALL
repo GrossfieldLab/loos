@@ -10,6 +10,7 @@
 | Fedora 15         |     +     |   +    |
 | Fedora 16         |     +     |   +    |
 | Fedora 17         |     +     |   +    |
+| Fedora 18         |     +     |   +    |
 |-------------------|-----------|--------|
 | Ubuntu 8.04 LTS   |     !     |   !    |
 | Ubuntu 10.04 LTS  |     +     |   !    |
@@ -120,22 +121,16 @@ already multithreaded.
 
 			------= Fedora =------
 
-LOOS has been tested on Fedora (64-bit) 12-17.  We assume
+LOOS has been tested on Fedora (64-bit) 12-18.  We assume
 you already have the basic compiler tools installed (i.e. g++).  You will
 need to install scons, boost, and atlas:
 
-sudo yum install scons.noarch boost-devel.x86_64 atlas-devel.x86_64
+sudo yum install scons boost-devel atlas-devel
 
 [optional]
 For Amber NetCDF support, also install the netcdf development package:
 
-sudo yum install netcdf-devel.x86_64
-
-
-Notes for Fedora 17:
-      There may be a number of warnings issues by g++ in the
-      DensityTools package.  We believe these are spurious and can be safely
-      ignored.
+sudo yum install netcdf-devel
 
 
 * PyLOOS *
@@ -146,7 +141,7 @@ Fedora 12: Install pcre-devel and download and build the latest swig
 Fedora 13: Yum install pcre-devel and python-devel, then download and install
   swig-2.0.4 (or later).
 
-Fedora 14-17: Yum install python-devel and swig
+Fedora 14-18: Yum install python-devel and swig
 
 
 
