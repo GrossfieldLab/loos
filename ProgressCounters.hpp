@@ -176,7 +176,7 @@ namespace loos {
 
   // ------------------------------------------------------------------------------------------
 
-  //! A basic progrss update "watcher", outputting dots for each
+  //! A basic progress update "watcher", outputting dots for each
   //! update
   /**
    *
