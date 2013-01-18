@@ -103,7 +103,7 @@ class Simplex {
       simpsum[j] = sum;
     }
 
-    int n_evals = 0;
+    n_evals = 0;
 
     while (n_evals <= maxiters) {
       best = 1;
@@ -189,7 +189,7 @@ class Simplex {
 
 public:
 
-  Simplex(const int n) : tol(1e-3), ndim(n), maxiters(2000), best(-1), worst(-1) {
+  Simplex(const int n) : tol(1e-3), ndim(n), maxiters(2000), best(-1), worst(-1), n_evals(0) {
     allocateSpace(n);
   }
 
@@ -204,7 +204,12 @@ public:
 
   //! Limit on the number of function evaluations to perform
   void maximumIterations(const int n) { maxiters = n; }
-  
+
+  int maximumIterations() const { return maxiters; }
+ 
+  //! Return the number of iterations that it actually went through 
+  int numberOfIterations() const { return n_evals; }
+
   //! Retrieve the final (best fit) parameters
   std::vector<T> finalParameters(void) const {
     if (best < 0)
@@ -251,6 +256,7 @@ private:
   double tol;
   int ndim, maxiters, best, worst;
   double rtol;
+  int n_evals;
 
   std::vector<T> characteristics;
   std::vector<T> simpsum;
