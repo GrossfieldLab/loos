@@ -475,7 +475,7 @@ int main(int argc, char *argv[]) {
         double angle = missing_flag;
         if ((*vi).size() == 4)
           angle = Math::torsion((*vi)[0], (*vi)[1], (*vi)[2], (*vi)[3]);
-        cout << angle << "\t";
+        cout << angle << "     ";
       }
       cout << endl;
     }
