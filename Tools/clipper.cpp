@@ -67,6 +67,10 @@ public:
     pos.add("clip", -1);
   }
 
+  string help() const {
+    return("<clip-a> <clip-b> <clip-c> [<clip> <clip> <clip> ...]");
+  }
+
   bool check(po::variables_map& map) {
     return( (clips.empty() && auto_selection.empty()) ||
             (clips.size() % 3 != 0) );
