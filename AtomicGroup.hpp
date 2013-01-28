@@ -101,7 +101,7 @@ namespace loos {
      */
     AtomicGroup(const int n) : _sorted(true) {
       assert(n >= 1 && "Invalid size in AtomicGroup(n)");
-      for (int i=1; i<n; i++) {
+      for (int i=1; i<=n; i++) {
         pAtom pa(new Atom);
         pa->id(i);
         atoms.push_back(pa);
