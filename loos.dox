@@ -22,6 +22,8 @@ School of Medicine & Dentistry, University of Rochester\n
       - \subpage Changes
       - \subpage FAQ
           - \ref faq_pyloos "FAQ for PyLOOS"
+      - Posters and presentations on LOOS
+      	  - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2013/loos-0Bw.pdf">2013 Biophysical Society Poster</a>
 
 \section intro Introduction
 
@@ -1445,7 +1447,61 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release201 Version 2.0.2 (8-21-2012)
+\section release203 Version 2.0.3 (2-1-2013)
+\subsection r203_bugs Bug Fixes
+<ul>
+  <li> Fixed big in CHARMM CRD reader where the segid wasn't set
+  <li> Fixed errors in help messages
+  <li> Fixed bug in PSF reader when reading a file that came from windows
+  <li> Fixed bug in AtomicGroup::AtomicGroup(const int n) constructor
+       found by H. Elgabarty.
+  <li> Fixed build for OpenSUSE and Ubuntu 8.04 LTS
+</ul>
+
+\subsection r203_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added support for AMOEBA Amber prmtop files
+  <li> Added Amber::title()
+  <li> Added support for handling basic fortran formats within Amber
+       files (i.e. data format is no longer hard-coded)
+  <li> Improved error messages when parsing Amber prmtop files
+  <li> Added support for NetCDF formatted Amber trajectories
+  <li> Changed AtomicGroup::splitByUniqueSegid() so that the
+  AtomicGroup's returned are in the order the segids appear in the
+  source group.
+
+  <li> Added LineReader base class for reading lines from a file.
+  Handles removal of comments and tracking of line numbers for
+  errors.  Amber prmtop reader now uses this, as does readVector<T>().
+
+  <li> Added AtomicGroup::atomOrderMapFrom() to map the order of atoms
+  in one group into another.  This is for "edge" cases such as when
+  psfgen reorders the atoms within a residue.  See the full changelog
+  or source code for details.
+
+  <li> Added AtomicGroup::copyMappedCoordinatesFrom() to find the
+  mapping of atoms from one group into the current one and use this to
+  correctly copy the coordinates.  See AtomicGroup::atomOrderMapFrom()
+  for more information.
+
+  <li> Changed water-hist to now include the water-filter bounds when
+  calculating grid size.
+  
+  <li> Changed gridgauss options to permit more control over the
+  smoothing kernel (note: old invocation will no longer work)
+
+  <li> Added gridautoscale to normalize grid densities such that bulk
+  water is 1.0 (only for membrane systems with Z along the membrane
+  normal)
+
+  <li> Ramachandran tool only uses spaces in output, not tabs and
+  spaces
+
+  <li> Added some support functions to Simplex  
+</ul>
+
+
+\section release202 Version 2.0.2 (8-21-2012)
 \subsection r202_bugs Bug Fixes
 <ul>
   <li> Fixed bug in PDB reader where bonds were not made symmetrical

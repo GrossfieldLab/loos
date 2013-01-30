@@ -1,3 +1,14 @@
+2013-01-30    <tromo@spade.biophysics.rochester.edu>
+
+	* Added Simplex::maximumIterations() for returning the max [Dejun]
+	* Added Simplex::numberOfIterations() to return internal count of
+	function evaluations. [Dejun]
+	* Fixed incomplete help messages
+	* Changed ramachandran to not use tabs in output
+	* Fixed warnings in builds under Fedora
+	* Fixed bug in AtomicGroup::AtomicGroup(const int n) found by
+	H. Elgabarty.
+
 2012-12-14    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed errors in help messages
