@@ -30,6 +30,7 @@ import distutils.sysconfig
 # Note: This can be reset in custom.py
 default_lib_path = '/usr/lib64'
 
+linux_type = 'nonlinux'
 platform = sys.platform
 if platform == 'linux2':
    # Determine linux variant...
@@ -90,6 +91,7 @@ reparse = env['reparse']
 
 # export platform to environment...
 env['platform'] = platform
+
 env['linux_type'] = linux_type
 
 LAPACK = env['LAPACK']
