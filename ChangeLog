@@ -1,3 +1,7 @@
+2013-02-01    <tromo@spade.biophysics.rochester.edu>
+
+	* Released 2.0.3
+
 2013-01-30    <tromo@spade.biophysics.rochester.edu>
 
 	* Added Simplex::maximumIterations() for returning the max [Dejun]

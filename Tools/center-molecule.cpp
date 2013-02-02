@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
   for (AtomicGroup::iterator atom = apply_mol.begin(); atom != apply_mol.end(); ++atom)
     (*atom)->coords() -= center;
 
-  if (topts->reimage) {
+  if (topts->reimage && model.isPeriodic()) {
     vGroup molecules = model.splitByMolecule();
     vGroup segments = model.splitByUniqueSegid();
       
