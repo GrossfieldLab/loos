@@ -63,7 +63,11 @@ namespace loos {
 
       SharedArray(const ulong n) : dim_(n) { allocate(n); }
       SharedArray(T* p, const ulong n) : dim_(n), dptr(p) { }
-      SharedArray() : dim_(0), dptr(0) { }
+
+      // In some cases, BOOST makes dptr(0) a shared_array<int> which
+      // will cause subsequent type problems.  So, we force it to be a NULL
+      // pointer but with type T and wrap that...
+      SharedArray() : dim_(0), dptr(static_cast<T*>(0)) { }
 
       T* get(void) const { return(dptr.get()); }
 

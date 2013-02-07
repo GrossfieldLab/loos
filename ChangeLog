@@ -1,3 +1,8 @@
+2013-02-07  Tod Romo  <tromo@gorgoneion>
+
+	* Fixed build issue with MacOS 10.8 and BOOST 1.53.0 involving
+	MatrixStorage.hpp
+
 2013-02-01    <tromo@spade.biophysics.rochester.edu>
 
 	* Released 2.0.3
