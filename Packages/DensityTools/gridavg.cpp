@@ -68,25 +68,30 @@ int main(int argc, char *argv[]) {
     ifs.open(argv[k]);
     if (ifs.fail()) {
       cerr << "Error- cannot open " << argv[k] << endl;
-      DensityGrid<double> grid;
-      ifs >> grid;
-      if (grid.gridDims() != avg.gridDims()) {
-        cerr << "Error- grid in " << argv[k] << " has dimensions " << grid.gridDims() << ",\n"
-             << "but was expecting it to be " << avg.gridDims() << endl;
-        exit(-2);
-      }
-      if (grid.minCoord() != avg.minCoord() || grid.maxCoord() != avg.maxCoord())
-        cerr << "Warning- real world bounds for grid in " << argv[k] << " do not match.  Proceeding anyway...\n";
-      
-      for (long i=0; i<grid.size(); ++i)
-        avg(i) += grid(i);
-
-      ++n;
+      exit(-2);
     }
+    DensityGrid<double> grid;
+    ifs >> grid;
+    if (grid.gridDims() != avg.gridDims()) {
+      cerr << "Error- grid in " << argv[k] << " has dimensions " << grid.gridDims() << ",\n"
+           << "but was expecting it to be " << avg.gridDims() << endl;
+      exit(-3);
+    }
+    if (grid.minCoord() != avg.minCoord() || grid.maxCoord() != avg.maxCoord())
+      cerr << "Warning- real world bounds for grid in " << argv[k] << " do not match.  Proceeding anyway...\n";
+    
+    double mean = 0.0;
+    
+    for (long i=0; i<grid.size(); ++i) {
+      mean += grid(i);
+      avg(i) += grid(i);
+    }
+    
+    ++n;
   }
 
   for (long i=0; i<avg.size(); ++i)
     avg(i) /= n;
-  cout << avg;
 
+  cout << avg;
 }
