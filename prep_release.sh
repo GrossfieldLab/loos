@@ -15,6 +15,28 @@ export PROCS=4                   # Number of procs to use in scons build
 
 export SVN=svn                   # Change this to echo for debugging (disables checkins)
 
+######################################
+
+function AbortOrContinue {
+    local OK
+
+    echo $1
+    read -p 'Do you want to proceed?  [y/N] ' OK
+    if [ "$OK" = "N" -o "$OK" = "n" -o \( -z "$OK" \) ] ; then
+	echo "Release aborted!"
+	exit -1
+    fi
+}
+
+
+######################################
+
+WHAT=`pwd | sed 's@^.*LOOS/@@'`
+echo "Release base: $WHAT"
+VERS=`echo $WHAT | sed 's/^.*-//'`
+echo "Release version: $VERS"
+echo
+
 ### Small sanity check...
 OK=`pwd | egrep 'tags/release-[0-9.]+$'`
 if [ ! $OK ] ; then
@@ -22,13 +44,34 @@ if [ ! $OK ] ; then
     echo "You don't appear to be prepping a release in a release directory!"
     echo "Make sure you are in a properly tagged release from the SVN"
     echo "prior to running this script."
-
-    read -p 'Do you want to proceed anyway? [y/N] ' OK
-    if [ "$OK" = "N" -o "$OK" = "n" -o \( -z "$OK" \) ] ; then
-	echo "Release aborted"
-	exit -1
-    fi
+    
+    AbortOrContinue
 fi
+
+
+echo "Checking version ID..."
+DOXVERS=`grep 'PROJECT_NUMBER' Doxyfile | gawk '{print $3}' | sed 's/^v//'`
+FAILED=""
+if [ "$DOXVERS" != "$VERS" ] ; then
+    AbortOrContinue "Version mismatch in Doxyfile"
+    FAILED="yes"
+fi
+
+SCONSVERS=`egrep '^loos_version' SConstruct | gawk '{print $3}' | sed "s/'//g"`
+if [ "$SCONSVERS" != "$VERS" ] ; then
+    AbortOrContinue "Version mismatch in SConstruct"
+    FAILED="yes"
+fi
+
+echo
+
+if [ -z "$FAILED" ] ; then
+    echo "Everything appears ok."
+else
+    echo "WARNING- version mismatches found, but you decided to continue anyway..."
+    sleep 5
+fi
+
 
 
 echo "*** Building documentation"
@@ -50,11 +93,7 @@ if check_loos_install.pl --nofull --prep `pwd` $PREF ; then
       echo ;\
       check_loos_install.pl --full `pwd` $PREF ) | less
 
-    read -p 'Are you sure you want to proceed? [y/N] ' OK
-    if [ "$OK" = "N" -o "$OK" = "n" -o \( -z "$OK" \) ] ; then
-	echo "Release aborted"
-	exit -1
-    fi
+    AbortOrContinue
 
 else
     echo "***SUSPECTED ERRORS IN INSTALLATION***"
@@ -108,13 +147,6 @@ if [ "$OK" = "Y" -o "$OK" = "y" -o \( -z "$OK" \) ] ; then
     $SVN ci -m "Removed prep_release script from $RELEASE" prep_release.sh
 
     echo "*** Making Release Tarball"
-    WHAT=`pwd | sed 's@^.*LOOS/@@'`
-    echo "Release base: $WHAT"
-    VERS=`echo $WHAT | sed 's/^.*-//'`
-    echo "Release version: $VERS"
-
-
-
     pushd $RELDIR
 
     svn export svn+ssh://membrane.urmc.rochester.edu/home/svn/subversion/software/LOOS/$WHAT loos-$VERS
