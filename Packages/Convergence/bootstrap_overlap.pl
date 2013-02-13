@@ -61,6 +61,7 @@ my $replot = 0;        # 1 = only generate plot
 my $plot = 1;          # 0 = do not plot
 my $npts = 100;        # When range is auto, how many block sizes to use
 my $parallel = 0;      # 1 = run boot/bcom concurrently
+my $gold = '';         # Use an alternate trajectory as the "gold standard"
 
 my $hdr = &header($0, \@ARGV);
 
@@ -78,6 +79,7 @@ my %options = (
 	       'plot!' => \$plot,
 	       'npts=i' => \$npts,
 	       'parallel!' => \$parallel,
+	       'gold=s' => \$gold,
 	       "help" => sub { &showHelp; }
 	       
 	      );
@@ -123,22 +125,23 @@ if ($#seeds < 0) {
 }
 
 
+my $goldopts = ($gold ne '' ? "--gold $gold " : '');
 
 if (!$replot) {
 
 
   if ($parallel) {
     # Run the BCOM job in the background if in parallel mode...
-    my $child = &forkCommand("bcom --blocks $range --selection '$sel' $model $traj  >$prefix.bcom.asc");
-    &runCommand("boot_bcom --blocks $range --reps $nreps --selection '$sel' $model $traj >$prefix.boot_bcom.asc");
+    my $child = &forkCommand("bcom $goldopts --blocks $range --selection '$sel' $model $traj  >$prefix.bcom.asc");
+    &runCommand("boot_bcom $goldopts --blocks $range --reps $nreps --selection '$sel' $model $traj >$prefix.boot_bcom.asc");
 
     # Reap the forked proc...no zombies
     my $stat = waitpid $child, 0;
 
   } else {
     # Run jobs serially...
-    &runCommand("bcom  --blocks $range --selection '$sel' $model $traj >$prefix.bcom.asc");
-    &runCommand("boot_bcom --blocks $range --reps $nreps --selection '$sel' $model $traj >$prefix.boot_bcom.asc");
+    &runCommand("bcom  $goldopts --blocks $range --selection '$sel' $model $traj >$prefix.bcom.asc");
+    &runCommand("boot_bcom $goldopts --blocks $range --reps $nreps --selection '$sel' $model $traj >$prefix.boot_bcom.asc");
   }
   
   # Combine the two separate output files from bcom and bootbcom into
@@ -385,6 +388,7 @@ Options:
                      \t  this number of points in the range (i.e. how
                      \t  many block-sizes to use
   --[no]parallel ($parallel_string)\tRun BCOM/BOOTBCOM concurrently
+  --gold=s           \t Use another trajectory as the "gold standard"
   --help
 EOF
 
