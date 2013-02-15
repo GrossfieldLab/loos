@@ -4,6 +4,10 @@
 
 #define yyterminate()     return token::END
 
+
+class ParserDriver;
+
+
 #include "grammar.hh"
 #include "LoosLexer.hpp"
 

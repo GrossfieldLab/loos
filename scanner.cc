@@ -451,6 +451,10 @@ static yyconst flex_int16_t yy_chk[108] =
 
 #define yyterminate()     return token::END
 
+
+class ParserDriver;
+
+
 #include "grammar.hh"
 #include "LoosLexer.hpp"
 
@@ -459,7 +463,7 @@ typedef loos::parser::token_type token_type;
 
 #define YY_NO_UNISTD_H
 
-#line 463 "<stdout>"
+#line 467 "<stdout>"
 
 #define INITIAL 0
 
@@ -559,9 +563,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 24 "scanner.ll"
+#line 28 "scanner.ll"
 
-#line 565 "<stdout>"
+#line 569 "<stdout>"
 
 	if ( !(yy_init) )
 		{
@@ -647,107 +651,107 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 25 "scanner.ll"
+#line 29 "scanner.ll"
 /* Swallow newlines? */
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 27 "scanner.ll"
+#line 31 "scanner.ll"
 
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 28 "scanner.ll"
+#line 32 "scanner.ll"
 { yylval->ival = atoi(yytext); return(token::NUMBER); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 29 "scanner.ll"
+#line 33 "scanner.ll"
 { return(token::LT); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 30 "scanner.ll"
+#line 34 "scanner.ll"
 { return(token::LTE); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 31 "scanner.ll"
+#line 35 "scanner.ll"
 { return(token::GTE); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "scanner.ll"
+#line 36 "scanner.ll"
 { return(token::GT); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 33 "scanner.ll"
+#line 37 "scanner.ll"
 { return(token::EQ); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "scanner.ll"
+#line 38 "scanner.ll"
 { return(token::NE); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 35 "scanner.ll"
+#line 39 "scanner.ll"
 { return(token::NE); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 36 "scanner.ll"
+#line 40 "scanner.ll"
 { return(token::REGEX); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 38 "scanner.ll"
+#line 42 "scanner.ll"
 { return(token::AND); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 39 "scanner.ll"
+#line 43 "scanner.ll"
 { return(token::OR); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 41 "scanner.ll"
+#line 45 "scanner.ll"
 { return(token::NOT); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 42 "scanner.ll"
+#line 46 "scanner.ll"
 { return(token::NOT); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "scanner.ll"
+#line 47 "scanner.ll"
 { return(token::NEKEY); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 45 "scanner.ll"
+#line 49 "scanner.ll"
 { return(token::ALL); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 46 "scanner.ll"
+#line 50 "scanner.ll"
 { return(token::HYDROGEN); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 47 "scanner.ll"
+#line 51 "scanner.ll"
 { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 48 "scanner.ll"
+#line 52 "scanner.ll"
 { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 50 "scanner.ll"
+#line 54 "scanner.ll"
 {                /* Special handling for strings... */
  std::string delim(yytext, yyleng);
  int c;
@@ -767,20 +771,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 69 "scanner.ll"
+#line 73 "scanner.ll"
 /* Swallow up remaining white-space */
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 71 "scanner.ll"
+#line 75 "scanner.ll"
 { return(static_cast<token_type>(*yytext)); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 73 "scanner.ll"
+#line 77 "scanner.ll"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 784 "<stdout>"
+#line 788 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1680,7 +1684,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 73 "scanner.ll"
+#line 77 "scanner.ll"
 
 
 
