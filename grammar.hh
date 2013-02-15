@@ -1,23 +1,22 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
-
-   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,7 +27,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -37,40 +36,24 @@
 #ifndef PARSER_HEADER_H
 # define PARSER_HEADER_H
 
+
+
 #include <string>
 #include <iostream>
 #include "stack.hh"
 
-namespace loos
-{
-  class position;
-  class location;
-}
-
-/* First part of user declarations.  */
-#line 6 "grammar.yy"
-
-
-#include <ctype.h>
-#include <cstdlib>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <string.h>
-
 
 namespace loos {
-   class ParserDriver;
-}
 
+/* Line 35 of lalr1.cc  */
+#line 50 "grammar.hh"
+  class position;
+  class location;
 
-#define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
+} // loos
 
-
-
-
-/* Line 35 of lalr1.cc.  */
-#line 74 "grammar.hh"
+/* Line 35 of lalr1.cc  */
+#line 57 "grammar.hh"
 
 #include "location.hh"
 
@@ -111,8 +94,11 @@ do {							\
 } while (false)
 #endif
 
-namespace loos
-{
+
+namespace loos {
+
+/* Line 35 of lalr1.cc  */
+#line 102 "grammar.hh"
 
   /// A Bison parser.
   class parser
@@ -121,14 +107,19 @@ namespace loos
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
+    {
+
+/* Line 35 of lalr1.cc  */
 #line 29 "grammar.yy"
-{
+
 	std::string *sval;
 	int ival;
-}
-/* Line 35 of lalr1.cc.  */
-#line 131 "grammar.hh"
-	;
+
+
+
+/* Line 35 of lalr1.cc  */
+#line 122 "grammar.hh"
+    };
 #else
     typedef YYSTYPE semantic_type;
 #endif
@@ -171,6 +162,7 @@ namespace loos
     /// \returns  0 iff parsing succeeded.
     virtual int parse ();
 
+#if YYDEBUG
     /// The current debugging stream.
     std::ostream& debug_stream () const;
     /// Set the current debugging stream.
@@ -182,6 +174,7 @@ namespace loos
     debug_level_type debug_level () const;
     /// Set the current debugging level.
     void set_debug_level (debug_level_type l);
+#endif
 
   private:
     /// Report a syntax error.
@@ -191,7 +184,7 @@ namespace loos
 
     /// Generate an error message.
     /// \param state   the state where the error occurred.
-    /// \param tok     the look-ahead token.
+    /// \param tok     the lookahead token.
     virtual std::string yysyntax_error_ (int yystate);
 
 #if YYDEBUG
@@ -209,7 +202,7 @@ namespace loos
     virtual void yy_symbol_print_ (int yytype,
 				   const semantic_type* yyvaluep,
 				   const location_type* yylocationp);
-#endif /* ! YYDEBUG */
+#endif
 
 
     /// State numbers.
@@ -286,6 +279,10 @@ namespace loos
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
     virtual void yystack_print_ ();
+
+    /* Debugging.  */
+    int yydebug_;
+    std::ostream* yycdebug_;
 #endif
 
     /// Convert a scanner token number \a t to a symbol number.
@@ -317,15 +314,15 @@ namespace loos
     static const unsigned int yyuser_token_number_max_;
     static const token_number_type yyundef_token_;
 
-    /* Debugging.  */
-    int yydebug_;
-    std::ostream* yycdebug_;
-
-
     /* User arguments.  */
     ParserDriver& driver;
   };
-}
+
+} // loos
+
+/* Line 35 of lalr1.cc  */
+#line 325 "grammar.hh"
+
 
 
 #endif /* ! defined PARSER_HEADER_H */
