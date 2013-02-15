@@ -33,6 +33,8 @@
 #include "exceptions.hpp"
 #include "Kernel.hpp"
 
+namespace loos { struct ParserDriver; }
+
 #include "grammar.hh"
 #include "LoosLexer.hpp"
 

@@ -128,6 +128,8 @@ public:
 	virtual int yylex();
 	virtual void switch_streams( FLEX_STD istream* new_in, FLEX_STD ostream* new_out );
 
+  int yywrap();
+
 protected:
 	virtual int LexerInput( char* buf, int max_size );
 	virtual void LexerOutput( const char* buf, int size );
