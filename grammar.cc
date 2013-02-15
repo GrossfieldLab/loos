@@ -598,6 +598,8 @@ else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resname")
    driver.kern.push(new internal::pushAtomResname);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "segid" || *((yysemantic_stack_[(1) - (1)].sval)) == "segname")
    driver.kern.push(new internal::pushAtomSegid);
+else if (*((yysemantic_stack_[(1) - (1)].sval)) == "chainid")
+   driver.kern.push(new internal::pushAtomChainId);
 else
    loos::parse_error("Unknown string keyword " + *((yysemantic_stack_[(1) - (1)].sval)));
 }
@@ -606,7 +608,7 @@ else
   case 29:
 
 /* Line 678 of lalr1.cc  */
-#line 134 "grammar.yy"
+#line 136 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
    driver.kern.push(new internal::pushAtomId);
@@ -620,7 +622,7 @@ else
 
 
 /* Line 678 of lalr1.cc  */
-#line 624 "grammar.cc"
+#line 626 "grammar.cc"
 	default:
           break;
       }
@@ -980,7 +982,7 @@ else
   {
          0,    79,    79,    80,    81,    85,    86,    87,    88,    89,
       90,    91,    92,    93,    94,    95,    99,    99,    99,    99,
-     101,   101,   103,   105,   107,   107,   110,   112,   119,   134
+     101,   101,   103,   105,   107,   107,   110,   112,   119,   136
   };
 
   // Print the state stack on the debug stream.
@@ -1071,11 +1073,11 @@ else
 } // loos
 
 /* Line 1054 of lalr1.cc  */
-#line 1075 "grammar.cc"
+#line 1077 "grammar.cc"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 145 "grammar.yy"
+#line 147 "grammar.yy"
 
 
 
