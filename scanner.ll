@@ -5,7 +5,9 @@
 #define yyterminate()     return token::END
 
 
-class ParserDriver;
+namespace loos {
+	  class ParserDriver;
+}
 
 
 #include "grammar.hh"
@@ -15,6 +17,9 @@ typedef loos::parser::token token;
 typedef loos::parser::token_type token_type;
 
 #define YY_NO_UNISTD_H
+
+#define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
+
 
 %}
 

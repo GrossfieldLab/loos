@@ -110,7 +110,7 @@ namespace loos {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 29 "grammar.yy"
+#line 26 "grammar.yy"
 
 	std::string *sval;
 	int ival;

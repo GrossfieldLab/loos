@@ -18,9 +18,6 @@ namespace loos {
 }
 
 
-#define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
-
-
 %}
 
 %parse-param { ParserDriver& driver }
