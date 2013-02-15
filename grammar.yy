@@ -12,10 +12,9 @@
 #include <string>
 #include <string.h>
 
-
 namespace loos {
-   class ParserDriver;
-}
+	  struct ParserDriver;
+};
 
 
 %}

@@ -47,16 +47,15 @@
 #include <string>
 #include <string.h>
 
-
 namespace loos {
-   class ParserDriver;
-}
+	  struct ParserDriver;
+};
 
 
 
 
 /* Line 311 of lalr1.cc  */
-#line 60 "grammar.cc"
+#line 59 "grammar.cc"
 
 
 #include "grammar.hh"
@@ -64,7 +63,7 @@ namespace loos {
 /* User implementation prologue.  */
 
 /* Line 317 of lalr1.cc  */
-#line 31 "grammar.yy"
+#line 30 "grammar.yy"
 
 
 #include "ParserDriver.hpp"
@@ -83,7 +82,7 @@ namespace loos {
 
 
 /* Line 317 of lalr1.cc  */
-#line 87 "grammar.cc"
+#line 86 "grammar.cc"
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
@@ -149,7 +148,7 @@ do {					\
 namespace loos {
 
 /* Line 380 of lalr1.cc  */
-#line 153 "grammar.cc"
+#line 152 "grammar.cc"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -252,47 +251,47 @@ namespace loos {
         case 4: /* "STRING" */
 
 /* Line 480 of lalr1.cc  */
-#line 75 "grammar.yy"
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 
 /* Line 480 of lalr1.cc  */
-#line 260 "grammar.cc"
+#line 259 "grammar.cc"
 	break;
       case 5: /* "SKEY" */
 
 /* Line 480 of lalr1.cc  */
-#line 75 "grammar.yy"
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 
 /* Line 480 of lalr1.cc  */
-#line 269 "grammar.cc"
+#line 268 "grammar.cc"
 	break;
       case 6: /* "NKEY" */
 
 /* Line 480 of lalr1.cc  */
-#line 75 "grammar.yy"
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 
 /* Line 480 of lalr1.cc  */
-#line 278 "grammar.cc"
+#line 277 "grammar.cc"
 	break;
       case 30: /* "string" */
 
 /* Line 480 of lalr1.cc  */
-#line 75 "grammar.yy"
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 
 /* Line 480 of lalr1.cc  */
-#line 287 "grammar.cc"
+#line 286 "grammar.cc"
 	break;
       case 31: /* "strval" */
 
 /* Line 480 of lalr1.cc  */
-#line 75 "grammar.yy"
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
 
 /* Line 480 of lalr1.cc  */
-#line 296 "grammar.cc"
+#line 295 "grammar.cc"
 	break;
 
 	default:
@@ -485,112 +484,112 @@ namespace loos {
 	  case 3:
 
 /* Line 678 of lalr1.cc  */
-#line 81 "grammar.yy"
+#line 80 "grammar.yy"
     { driver.kern.push(new internal::logicalAnd); }
     break;
 
   case 4:
 
 /* Line 678 of lalr1.cc  */
-#line 82 "grammar.yy"
+#line 81 "grammar.yy"
     { driver.kern.push(new internal::logicalOr); }
     break;
 
   case 6:
 
 /* Line 678 of lalr1.cc  */
-#line 87 "grammar.yy"
+#line 86 "grammar.yy"
     { driver.kern.push(new internal::logicalNot); }
     break;
 
   case 7:
 
 /* Line 678 of lalr1.cc  */
-#line 88 "grammar.yy"
+#line 87 "grammar.yy"
     { driver.kern.push(new internal::lessThan); }
     break;
 
   case 8:
 
 /* Line 678 of lalr1.cc  */
-#line 89 "grammar.yy"
+#line 88 "grammar.yy"
     { driver.kern.push(new internal::lessThanEquals); }
     break;
 
   case 9:
 
 /* Line 678 of lalr1.cc  */
-#line 90 "grammar.yy"
+#line 89 "grammar.yy"
     { driver.kern.push(new internal::greaterThanEquals); }
     break;
 
   case 10:
 
 /* Line 678 of lalr1.cc  */
-#line 91 "grammar.yy"
+#line 90 "grammar.yy"
     { driver.kern.push(new internal::greaterThan); }
     break;
 
   case 11:
 
 /* Line 678 of lalr1.cc  */
-#line 92 "grammar.yy"
+#line 91 "grammar.yy"
     { driver.kern.push(new internal::equals); }
     break;
 
   case 12:
 
 /* Line 678 of lalr1.cc  */
-#line 93 "grammar.yy"
+#line 92 "grammar.yy"
     { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); }
     break;
 
   case 13:
 
 /* Line 678 of lalr1.cc  */
-#line 94 "grammar.yy"
+#line 93 "grammar.yy"
     { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 14:
 
 /* Line 678 of lalr1.cc  */
-#line 95 "grammar.yy"
+#line 94 "grammar.yy"
     { driver.kern.push(new internal::logicalTrue); }
     break;
 
   case 15:
 
 /* Line 678 of lalr1.cc  */
-#line 96 "grammar.yy"
+#line 95 "grammar.yy"
     { driver.kern.push(new internal::Hydrogen); }
     break;
 
   case 22:
 
 /* Line 678 of lalr1.cc  */
-#line 104 "grammar.yy"
+#line 103 "grammar.yy"
     { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 23:
 
 /* Line 678 of lalr1.cc  */
-#line 106 "grammar.yy"
+#line 105 "grammar.yy"
     { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); }
     break;
 
   case 26:
 
 /* Line 678 of lalr1.cc  */
-#line 111 "grammar.yy"
+#line 110 "grammar.yy"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); }
     break;
 
   case 28:
 
 /* Line 678 of lalr1.cc  */
-#line 120 "grammar.yy"
+#line 119 "grammar.yy"
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "name")
@@ -607,7 +606,7 @@ else
   case 29:
 
 /* Line 678 of lalr1.cc  */
-#line 135 "grammar.yy"
+#line 134 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
    driver.kern.push(new internal::pushAtomId);
@@ -621,7 +620,7 @@ else
 
 
 /* Line 678 of lalr1.cc  */
-#line 625 "grammar.cc"
+#line 624 "grammar.cc"
 	default:
           break;
       }
@@ -979,9 +978,9 @@ else
   const unsigned char
   parser::yyrline_[] =
   {
-         0,    80,    80,    81,    82,    86,    87,    88,    89,    90,
-      91,    92,    93,    94,    95,    96,   100,   100,   100,   100,
-     102,   102,   104,   106,   108,   108,   111,   113,   120,   135
+         0,    79,    79,    80,    81,    85,    86,    87,    88,    89,
+      90,    91,    92,    93,    94,    95,    99,    99,    99,    99,
+     101,   101,   103,   105,   107,   107,   110,   112,   119,   134
   };
 
   // Print the state stack on the debug stream.
@@ -1072,11 +1071,11 @@ else
 } // loos
 
 /* Line 1054 of lalr1.cc  */
-#line 1076 "grammar.cc"
+#line 1075 "grammar.cc"
 
 
 /* Line 1056 of lalr1.cc  */
-#line 146 "grammar.yy"
+#line 145 "grammar.yy"
 
 
 

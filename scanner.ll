@@ -6,7 +6,7 @@
 
 
 namespace loos {
-	  class ParserDriver;
+	  struct ParserDriver;
 }
 
 

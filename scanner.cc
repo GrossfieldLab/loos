@@ -453,7 +453,7 @@ static yyconst flex_int16_t yy_chk[108] =
 
 
 namespace loos {
-	  class ParserDriver;
+	  struct ParserDriver;
 }
 
 
