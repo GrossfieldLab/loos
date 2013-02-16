@@ -4,6 +4,12 @@
 
 #define yyterminate()     return token::END
 
+
+namespace loos {
+	  struct ParserDriver;
+}
+
+
 #include "grammar.hh"
 #include "LoosLexer.hpp"
 
@@ -11,6 +17,9 @@ typedef loos::parser::token token;
 typedef loos::parser::token_type token_type;
 
 #define YY_NO_UNISTD_H
+
+#define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
+
 
 %}
 
@@ -44,7 +53,7 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 
 all                  { return(token::ALL); }
 hydrogen             { return(token::HYDROGEN); }
-name|resname|segid|segname   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
+name|resname|segid|segname|chainid   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
 id|resid             { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 
 \"|\'                {                /* Special handling for strings... */

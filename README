@@ -1,0 +1,110 @@
+===============================================================================
+= Join the LOOS mailing list for news about new LOOS releases:                =
+=     https://lists.sourceforge.net/lists/listinfo/loos-announce              =
+===============================================================================
+
+***********************************************************************************
+
+   * RELEASE 2.0.3b *
+
+! IMPORTANT NOTICE ! ! IMPORTANT NOTICE ! ! IMPORTANT NOTICE ! ! IMPORTANT NOTICE !
+
+The previously posted 2.0.3 release was a binary version that was
+inadvertently released.  The current 2.0.3b release is the official
+source code release.  We sincerely apologize for any
+inconvenience/confusion this may have caused, and strongly recommend
+downloading and installing this version.
+
+***********************************************************************************
+
+
+This release includes a number of bug fixes and new features,
+including support for the AMOEBA variant of Amber prmtop files as well
+as NetCDF formatted Amber trajectories (if a suitable NetCDF library
+is installed prior to building LOOS).  The gridgauss tool has been
+changed to allow more control over the smoothing kernel.  The command
+line arguments have therefore changed and the old way of running it
+will no longer work.
+
+For more details, see the ChangeLog or the "Changes" section in the
+Doxygen-generated documentation.
+
+
+   * RELEASE 2.0.2 *
+
+This is a maintenance release of loos that addresses issues with
+reading and writing PDB files that contain CONECT records for bonds.
+Previously, if the PDB held a bond from A to B, the bond from B to A
+was not implicitly made.  When writing a PDB, both the A to B and B to
+A bonds would be written out.  Now, the implicit bonds are made when
+reading in a PDB and only the unique bonds are written out.
+
+There was also a side-effect in the PDB writing code where the
+underlying PDB object could end up being sorted when writing out a PDB
+that contained bonds.  This has been fixed.
+
+Finally, the model-select tool now uses command-line options, so a
+selection requires the "-s" or "--selection" option.  The tool also
+supports a "--splitby" option that can be used to diagnose
+connectivity and group-splitting disorders.
+
+   * RELEASE 2.0.1 *
+   
+This release of LOOS introduces support for Mac OS X 10.8 (Mountain
+Lion) and Fedora 17.  Note that the Python interface is still
+unsupported with MacOS.  A new tool, gmxdump2pdb.pl, has also been
+added.  This program creates a PDB and a minimal PSF for
+Gromacs/MARTINI systems by parsing the output of gmxdump.  Several
+minor bugs have also been addressed along with minor improvements in
+the python interface and the addition of two new hydrogen bonds
+analysis tools.
+
+An internal change has been made in how the Atom::bondsbit is
+handled.  Previously, it reflected whether or not an atom had any
+bonds to any other atoms.  Calling Atom::getBonds() on an atom that
+had no bonds would throw an exception.  Now, the bondsbit is set if
+the atom has valid connectivity, even if that includes not having any
+bonds to it.  Additionally, getBonds() will no longer throw an
+exception if the bonds list is empty and there is valid connectivity.
+Instead, it will return an empty vector.  Reading in a PSF or a PDB
+with CONECT records will result in atoms that have valid connectivity,
+for example.
+
+For more complete details, refer to the ChangeLog or the LOOS
+documentation.
+
+
+   * RELEASE 2.0.0 *
+
+This is a new major release of LOOS that includes the beta-release of
+PyLOOS--the Python bindings for LOOS.  PyLOOS is currently only
+supported under Linux and requires a recent version of SWIG.
+Additionally, the interface and subsequent functionality may change in
+future releases.  See the INSTALL file and/or the Doxygen
+documentation for LOOS to build PyLOOS and get started using it.
+PyLOOS support is not turned on by default and must be explicitly
+built by typing "scons pyloos".  There are also a few examples of
+using the Python interface in the Packages/PyLOOS.
+
+LOOS is now built using shared libraries.  The shell environment must
+be configured for the location of the shared LOOS library.  Upon
+building LOOS, setup scripts (setup.csh and setup.sh) will be
+created.  These must be sourced (i.e. "source setup.sh") prior to
+executing any LOOS tool.
+
+There are also a number of minor bugs addressed by this release,
+including bugs in subsetter, averager, blurrogram.pl, aligner, and
+potential bugs in the GROMACS trr file support and in PDB output
+files.  See the release notes in either ChangeLog or in the LOOS
+documentation for more details.
+
+Improvements to LOOS include a "--fullhelp" option added to most
+tools, describing in more detail the tool, the algorithms used, and
+typical use-cases.  The performance of AtomicGroup::within() has been
+improved and support for periodic boundaries added.  In addition, the
+density-dist tool's original behavior (the first selection is always
+"all") has been restored.  New tools include potential_profile.py to
+compute the electrostatic potential profile and a cross-dist tool to
+compute the distribution of crossing angles and torsions for chains.
+For more complete details, see either the ChangeLog or the LOOS
+documentation.

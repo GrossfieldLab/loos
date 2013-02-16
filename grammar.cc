@@ -1,23 +1,22 @@
-/* A Bison parser, made by GNU Bison 2.3.  */
+/* A Bison parser, made by GNU Bison 2.4.3.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
-
-   Copyright (C) 2002, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
-
-   This program is free software; you can redistribute it and/or modify
+   
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
+   Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2, or (at your option)
-   any later version.
-
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-
+   
    You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -28,17 +27,43 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-
+   
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
 // Take the name prefix into account.
 #define yylex   looslex
 
+/* First part of user declarations.  */
+
+/* Line 311 of lalr1.cc  */
+#line 6 "grammar.yy"
+
+
+#include <ctype.h>
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <string.h>
+
+namespace loos {
+	  struct ParserDriver;
+};
+
+
+
+
+/* Line 311 of lalr1.cc  */
+#line 59 "grammar.cc"
+
+
 #include "grammar.hh"
 
 /* User implementation prologue.  */
-#line 34 "grammar.yy"
+
+/* Line 317 of lalr1.cc  */
+#line 30 "grammar.yy"
 
 
 #include "ParserDriver.hpp"
@@ -56,11 +81,11 @@ namespace loos {
 
 
 
-/* Line 317 of lalr1.cc.  */
-#line 61 "grammar.cc"
+/* Line 317 of lalr1.cc  */
+#line 86 "grammar.cc"
 
 #ifndef YY_
-# if YYENABLE_NLS
+# if defined YYENABLE_NLS && YYENABLE_NLS
 #  if ENABLE_NLS
 #   include <libintl.h> /* FIXME: INFRINGES ON USER NAME SPACE */
 #   define YY_(msgid) dgettext ("bison-runtime", msgid)
@@ -74,13 +99,11 @@ namespace loos {
 /* Suppress unused-variable warnings by "using" E.  */
 #define YYUSE(e) ((void) (e))
 
-/* A pseudo ostream that takes yydebug_ into account.  */
-# define YYCDEBUG							\
-  for (bool yydebugcond_ = yydebug_; yydebugcond_; yydebugcond_ = false)	\
-    (*yycdebug_)
-
 /* Enable debugging if requested.  */
 #if YYDEBUG
+
+/* A pseudo ostream that takes yydebug_ into account.  */
+# define YYCDEBUG if (yydebug_) (*yycdebug_)
 
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)	\
 do {							\
@@ -106,18 +129,26 @@ do {					\
 
 #else /* !YYDEBUG */
 
+# define YYCDEBUG if (false) std::cerr
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_REDUCE_PRINT(Rule)
 # define YY_STACK_PRINT()
 
 #endif /* !YYDEBUG */
 
+#define yyerrok		(yyerrstatus_ = 0)
+#define yyclearin	(yychar = yyempty_)
+
 #define YYACCEPT	goto yyacceptlab
 #define YYABORT		goto yyabortlab
 #define YYERROR		goto yyerrorlab
+#define YYRECOVERING()  (!!yyerrstatus_)
 
-namespace loos
-{
+
+namespace loos {
+
+/* Line 380 of lalr1.cc  */
+#line 152 "grammar.cc"
 #if YYERROR_VERBOSE
 
   /* Return YYSTR after stripping away unnecessary quotes and
@@ -161,8 +192,11 @@ namespace loos
 
   /// Build a parser object.
   parser::parser (ParserDriver& driver_yyarg)
-    : yydebug_ (false),
+    :
+#if YYDEBUG
+      yydebug_ (false),
       yycdebug_ (&std::cerr),
+#endif
       driver (driver_yyarg)
   {
   }
@@ -200,7 +234,7 @@ namespace loos
     yy_symbol_value_print_ (yytype, yyvaluep, yylocationp);
     *yycdebug_ << ')';
   }
-#endif /* ! YYDEBUG */
+#endif
 
   void
   parser::yydestruct_ (const char* yymsg,
@@ -215,29 +249,49 @@ namespace loos
     switch (yytype)
       {
         case 4: /* "STRING" */
-#line 78 "grammar.yy"
+
+/* Line 480 of lalr1.cc  */
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
-#line 221 "grammar.cc"
+
+/* Line 480 of lalr1.cc  */
+#line 259 "grammar.cc"
 	break;
       case 5: /* "SKEY" */
-#line 78 "grammar.yy"
+
+/* Line 480 of lalr1.cc  */
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
-#line 226 "grammar.cc"
+
+/* Line 480 of lalr1.cc  */
+#line 268 "grammar.cc"
 	break;
       case 6: /* "NKEY" */
-#line 78 "grammar.yy"
+
+/* Line 480 of lalr1.cc  */
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
-#line 231 "grammar.cc"
+
+/* Line 480 of lalr1.cc  */
+#line 277 "grammar.cc"
 	break;
       case 30: /* "string" */
-#line 78 "grammar.yy"
+
+/* Line 480 of lalr1.cc  */
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
-#line 236 "grammar.cc"
+
+/* Line 480 of lalr1.cc  */
+#line 286 "grammar.cc"
 	break;
       case 31: /* "strval" */
-#line 78 "grammar.yy"
+
+/* Line 480 of lalr1.cc  */
+#line 74 "grammar.yy"
 	{ delete (yyvaluep->sval); };
-#line 241 "grammar.cc"
+
+/* Line 480 of lalr1.cc  */
+#line 295 "grammar.cc"
 	break;
 
 	default:
@@ -253,6 +307,7 @@ namespace loos
     yylocation_stack_.pop (n);
   }
 
+#if YYDEBUG
   std::ostream&
   parser::debug_stream () const
   {
@@ -277,12 +332,12 @@ namespace loos
   {
     yydebug_ = l;
   }
-
+#endif
 
   int
   parser::parse ()
   {
-    /// Look-ahead and look-ahead in internal form.
+    /// Lookahead and lookahead in internal form.
     int yychar = yyempty_;
     int yytoken = 0;
 
@@ -295,12 +350,12 @@ namespace loos
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
-    /// Semantic value of the look-ahead.
+    /// Semantic value of the lookahead.
     semantic_type yylval;
-    /// Location of the look-ahead.
+    /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
-    location yyerror_range[2];
+    location_type yyerror_range[3];
 
     /// $$.
     semantic_type yyval;
@@ -326,17 +381,22 @@ namespace loos
   yynewstate:
     yystate_stack_.push (yystate);
     YYCDEBUG << "Entering state " << yystate << std::endl;
+
+    /* Accept?  */
+    if (yystate == yyfinal_)
+      goto yyacceptlab;
+
     goto yybackup;
 
     /* Backup.  */
   yybackup:
 
-    /* Try to take a decision without look-ahead.  */
+    /* Try to take a decision without lookahead.  */
     yyn = yypact_[yystate];
     if (yyn == yypact_ninf_)
       goto yydefault;
 
-    /* Read a look-ahead token.  */
+    /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
 	YYCDEBUG << "Reading a token: ";
@@ -372,16 +432,11 @@ namespace loos
 	goto yyreduce;
       }
 
-    /* Accept?  */
-    if (yyn == yyfinal_)
-      goto yyacceptlab;
-
-    /* Shift the look-ahead token.  */
+    /* Shift the lookahead token.  */
     YY_SYMBOL_PRINT ("Shifting", yytoken, &yylval, &yylloc);
 
-    /* Discard the token being shifted unless it is eof.  */
-    if (yychar != yyeof_)
-      yychar = yyempty_;
+    /* Discard the token being shifted.  */
+    yychar = yyempty_;
 
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yylloc);
@@ -427,82 +482,114 @@ namespace loos
     switch (yyn)
       {
 	  case 3:
-#line 84 "grammar.yy"
-    { driver.kern.push(new internal::logicalAnd); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 80 "grammar.yy"
+    { driver.kern.push(new internal::logicalAnd); }
     break;
 
   case 4:
-#line 85 "grammar.yy"
-    { driver.kern.push(new internal::logicalOr); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 81 "grammar.yy"
+    { driver.kern.push(new internal::logicalOr); }
     break;
 
   case 6:
-#line 90 "grammar.yy"
-    { driver.kern.push(new internal::logicalNot); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 86 "grammar.yy"
+    { driver.kern.push(new internal::logicalNot); }
     break;
 
   case 7:
-#line 91 "grammar.yy"
-    { driver.kern.push(new internal::lessThan); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 87 "grammar.yy"
+    { driver.kern.push(new internal::lessThan); }
     break;
 
   case 8:
-#line 92 "grammar.yy"
-    { driver.kern.push(new internal::lessThanEquals); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 88 "grammar.yy"
+    { driver.kern.push(new internal::lessThanEquals); }
     break;
 
   case 9:
-#line 93 "grammar.yy"
-    { driver.kern.push(new internal::greaterThanEquals); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 89 "grammar.yy"
+    { driver.kern.push(new internal::greaterThanEquals); }
     break;
 
   case 10:
-#line 94 "grammar.yy"
-    { driver.kern.push(new internal::greaterThan); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 90 "grammar.yy"
+    { driver.kern.push(new internal::greaterThan); }
     break;
 
   case 11:
-#line 95 "grammar.yy"
-    { driver.kern.push(new internal::equals); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 91 "grammar.yy"
+    { driver.kern.push(new internal::equals); }
     break;
 
   case 12:
-#line 96 "grammar.yy"
-    { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 92 "grammar.yy"
+    { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); }
     break;
 
   case 13:
-#line 97 "grammar.yy"
-    { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 93 "grammar.yy"
+    { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 14:
-#line 98 "grammar.yy"
-    { driver.kern.push(new internal::logicalTrue); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 94 "grammar.yy"
+    { driver.kern.push(new internal::logicalTrue); }
     break;
 
   case 15:
-#line 99 "grammar.yy"
-    { driver.kern.push(new internal::Hydrogen); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 95 "grammar.yy"
+    { driver.kern.push(new internal::Hydrogen); }
     break;
 
   case 22:
-#line 107 "grammar.yy"
-    { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 103 "grammar.yy"
+    { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 23:
-#line 109 "grammar.yy"
-    { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 105 "grammar.yy"
+    { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); }
     break;
 
   case 26:
-#line 114 "grammar.yy"
-    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); ;}
+
+/* Line 678 of lalr1.cc  */
+#line 110 "grammar.yy"
+    { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); }
     break;
 
   case 28:
-#line 123 "grammar.yy"
+
+/* Line 678 of lalr1.cc  */
+#line 119 "grammar.yy"
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "name")
@@ -511,13 +598,17 @@ else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resname")
    driver.kern.push(new internal::pushAtomResname);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "segid" || *((yysemantic_stack_[(1) - (1)].sval)) == "segname")
    driver.kern.push(new internal::pushAtomSegid);
+else if (*((yysemantic_stack_[(1) - (1)].sval)) == "chainid")
+   driver.kern.push(new internal::pushAtomChainId);
 else
    loos::parse_error("Unknown string keyword " + *((yysemantic_stack_[(1) - (1)].sval)));
-;}
+}
     break;
 
   case 29:
-#line 138 "grammar.yy"
+
+/* Line 678 of lalr1.cc  */
+#line 136 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
    driver.kern.push(new internal::pushAtomId);
@@ -525,13 +616,15 @@ else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resid")
    driver.kern.push(new internal::pushAtomResid);
 else
    loos::parse_error("Unknown numeric keyword " + *((yysemantic_stack_[(1) - (1)].sval)));   
-;}
+}
     break;
 
 
-    /* Line 675 of lalr1.cc.  */
-#line 534 "grammar.cc"
-	default: break;
+
+/* Line 678 of lalr1.cc  */
+#line 626 "grammar.cc"
+	default:
+          break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
 
@@ -563,10 +656,10 @@ else
 	error (yylloc, yysyntax_error_ (yystate));
       }
 
-    yyerror_range[0] = yylloc;
+    yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse look-ahead token after an
+	/* If just tried and failed to reuse lookahead token after an
 	 error, discard it.  */
 
 	if (yychar <= yyeof_)
@@ -582,7 +675,7 @@ else
 	  }
       }
 
-    /* Else will try to reuse look-ahead token after shifting the error
+    /* Else will try to reuse lookahead token after shifting the error
        token.  */
     goto yyerrlab1;
 
@@ -598,7 +691,7 @@ else
     if (false)
       goto yyerrorlab;
 
-    yyerror_range[0] = yylocation_stack_[yylen - 1];
+    yyerror_range[1] = yylocation_stack_[yylen - 1];
     /* Do not reclaim the symbols of the rule which action triggered
        this YYERROR.  */
     yypop_ (yylen);
@@ -630,7 +723,7 @@ else
 	if (yystate_stack_.height () == 1)
 	YYABORT;
 
-	yyerror_range[0] = yylocation_stack_[0];
+	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
 		     yystos_[yystate],
 		     &yysemantic_stack_[0], &yylocation_stack_[0]);
@@ -639,19 +732,16 @@ else
 	YY_STACK_PRINT ();
       }
 
-    if (yyn == yyfinal_)
-      goto yyacceptlab;
-
-    yyerror_range[1] = yylloc;
+    yyerror_range[2] = yylloc;
     // Using YYLLOC is tempting, but would change the location of
-    // the look-ahead.  YYLOC is available though.
-    YYLLOC_DEFAULT (yyloc, (yyerror_range - 1), 2);
+    // the lookahead.  YYLOC is available though.
+    YYLLOC_DEFAULT (yyloc, yyerror_range, 2);
     yysemantic_stack_.push (yylval);
     yylocation_stack_.push (yyloc);
 
     /* Shift the error token.  */
     YY_SYMBOL_PRINT ("Shifting", yystos_[yyn],
-		   &yysemantic_stack_[0], &yylocation_stack_[0]);
+		     &yysemantic_stack_[0], &yylocation_stack_[0]);
 
     yystate = yyn;
     goto yynewstate;
@@ -667,7 +757,7 @@ else
     goto yyreturn;
 
   yyreturn:
-    if (yychar != yyeof_ && yychar != yyempty_)
+    if (yychar != yyempty_)
       yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval, &yylloc);
 
     /* Do not reclaim the symbols of the rule which action triggered
@@ -890,9 +980,9 @@ else
   const unsigned char
   parser::yyrline_[] =
   {
-         0,    83,    83,    84,    85,    89,    90,    91,    92,    93,
-      94,    95,    96,    97,    98,    99,   103,   103,   103,   103,
-     105,   105,   107,   109,   111,   111,   114,   116,   123,   138
+         0,    79,    79,    80,    81,    85,    86,    87,    88,    89,
+      90,    91,    92,    93,    94,    95,    99,    99,    99,    99,
+     101,   101,   103,   105,   107,   107,   110,   112,   119,   136
   };
 
   // Print the state stack on the debug stream.
@@ -914,7 +1004,7 @@ else
     int yynrhs = yyr2_[yyrule];
     /* Print the symbols being reduced, and their result.  */
     *yycdebug_ << "Reducing stack by rule " << yyrule - 1
-	       << " (line " << yylno << "), ";
+	       << " (line " << yylno << "):" << std::endl;
     /* The symbols being reduced.  */
     for (int yyi = 0; yyi < yynrhs; yyi++)
       YY_SYMBOL_PRINT ("   $" << yyi + 1 << " =",
@@ -979,9 +1069,15 @@ else
   const unsigned int parser::yyuser_token_number_max_ = 274;
   const parser::token_number_type parser::yyundef_token_ = 2;
 
-} // namespace loos
 
-#line 149 "grammar.yy"
+} // loos
+
+/* Line 1054 of lalr1.cc  */
+#line 1077 "grammar.cc"
+
+
+/* Line 1056 of lalr1.cc  */
+#line 147 "grammar.yy"
 
 
 

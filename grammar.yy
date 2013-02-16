@@ -12,13 +12,9 @@
 #include <string>
 #include <string.h>
 
-
 namespace loos {
-   class ParserDriver;
-}
-
-
-#define YY_DECL loos::parser::token_type LoosLexer::looslex(loos::parser::semantic_type* yylval)
+	  struct ParserDriver;
+};
 
 
 %}
@@ -128,6 +124,8 @@ else if (*($1) == "resname")
    driver.kern.push(new internal::pushAtomResname);
 else if (*($1) == "segid" || *($1) == "segname")
    driver.kern.push(new internal::pushAtomSegid);
+else if (*($1) == "chainid")
+   driver.kern.push(new internal::pushAtomChainId);
 else
    loos::parse_error("Unknown string keyword " + *($1));
 }

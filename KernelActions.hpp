@@ -263,6 +263,14 @@ namespace loos {
       void execute(void);
     };
 
+    //! Push atom's chain ID onto the stack
+    class pushAtomChainId : public Action {
+    public:
+      pushAtomChainId() : Action("pushAtomChainId") { }
+      void execute(void);
+    };
+
+
 
     // Logical operations...  Assumes stack args are ints...
 

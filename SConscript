@@ -80,6 +80,11 @@ hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorti
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp'
 
+if ('HAS_NETCDF' in env):
+   hdr = hdr + ' amber_netcdf.hpp'
+
+
+
 loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 
 env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])

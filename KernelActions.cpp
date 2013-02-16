@@ -211,6 +211,13 @@ namespace loos {
       stack->push(v);
     }
 
+    void pushAtomChainId::execute(void) {
+      hasAtom();
+      Value v(atom->chainId());
+      stack->push(v);
+    }
+
+
     void logicalAnd::execute(void) {
       Value v2 = stack->pop();
       Value v1 = stack->pop();

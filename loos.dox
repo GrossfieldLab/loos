@@ -170,7 +170,7 @@ you read about the magical operators below...
 The parser also recognizes a small set of keywords that evaluate to
 Atom properties.  These keywords fall into two types as well: those
 that evaluate to a number (id, resid) and those that evaluate to a
-string (name, resname, segname or segid).  Keep in mind that keywords
+string (name, resname, chainid, and segname or segid).  Keep in mind that keywords
 are not substitutions, but are more like a pre-defined function that
 returns that atom property.  So you cannot put a keyword in a string
 and expect it to be substituted with the appropriate value, for example.
@@ -212,6 +212,7 @@ and expect it to be substituted with the appropriate value, for example.
 <tr align="center"><td>resid</td><td>Residue ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
 <tr align="center"><td>segid</td><td>Atom segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
 <tr align="center"><td>segname</td><td>Synonym for segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center"><td>chainid</td><td>Chain ID</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
 <tr align="center"><td>all</td><td>Evaluates to true</td><td>number</td><td></td></tr>
 <tr align="center"><td>hydrogen</td><td>Evaluates to true if atom is a hydrogen</td><td>number</td><td></td></tr>
 </table>
