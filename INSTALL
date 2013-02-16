@@ -36,7 +36,7 @@
 |-------------------|-----------|--------|
 | MacOS 10.6        |     +     |   -    |
 | MacOS 10.7        |     +     |   -    |
-| MacOS 10.8        |     +     |   -    |
+| MacOS 10.8        |     +     |   !    |
 |-------------------|-----------|--------|
 
 
@@ -277,7 +277,10 @@ file to point to where netcdf is installed.
 
 * PyLOOS *
 
-MacOS is NOT SUPPORTED
+MacOS is supported for MacOS 10.8 (Mountain Lion).  You will need to download
+and install a recent version of SWIG first.  If you have installed Boost in a
+non-standard location, you will need to make sure that the boost libraries are
+in your DYLD_LIBRARY_PATH environment variable.
 
 
 			 -----= CYGWIN =-----

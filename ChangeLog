@@ -1,3 +1,8 @@
+2013-02-16  Tod Romo  <tromo@isteno>
+	* Added "chainid" keyword to selection language
+	* Fixed issues associated with regenerating the parser (bison/flex version problems)
+	* Added support for python in MacOS
+	
 2013-02-07  Tod Romo  <tromo@gorgoneion>
 
 	* Fixed build issue with MacOS 10.8 and BOOST 1.53.0 involving
