@@ -91,7 +91,7 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
 
 
 # Python bindings
-loos_python = env.SharedLibrary('_loos', ['loos.i', loos])
+loos_python = env.LoadableModule('_loos', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
 
 
 
