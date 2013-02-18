@@ -37,6 +37,10 @@ using namespace loos;
 string fullHelpMessage()
     {
 string s =
+    "Usage: rgyr SystemFile Trajectory selection min max num_bins skip [by-molecule]\n" 
+    "\tby-molecule should be one if you want the selection\n"
+    "\tbroken up based on connectivity, and 0 or absent otherwise.\n"
+    "\n"
     "\n"
     "SYNOPSIS\n"
     "\n"
@@ -72,14 +76,6 @@ string s =
     "rgyr model-file traj.dcd 'resname==\"POPE\" 0 20 20 0 1\n"
     ;
 return(s);
-
-
-    cerr << "Usage: rgyr SystemFile Trajectory selection "
-         << "min max num_bins skip [by-molecule]" 
-         << endl;
-    cerr << "by-molecule should be one if you want the selection "
-         << "broken up based on connectivity, and 0 or absent otherwise."
-         << endl;
     }
 
 int main (int argc, char *argv[])
