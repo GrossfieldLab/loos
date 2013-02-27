@@ -215,8 +215,7 @@ Using the synaptic manager (or apt-get), install the following packages:
       libboost-dev
       scons
       libatlas-base-dev
-      libatlas-headers
-      libatlas3gf-base [optional]
+      libatlas-headers [May be required for Debian 5]
       libnetcdf-dev [optional]
 
 
