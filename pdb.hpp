@@ -66,6 +66,8 @@ namespace loos {
    \endcode
   */
   class PDB : public AtomicGroup {
+    enum BigNumberFormatType { HYBRID36, HEX, NONE };
+
   public:
     class BadConnectivity : public std::runtime_error {
     public:
@@ -73,11 +75,13 @@ namespace loos {
     };
 
   public:
-    PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
+    PDB() : _show_charge(false), _auto_ter(true), _output_format(HEX),
+            _has_cryst(false), strictness_policy(false) { }
     virtual ~PDB() {}
 
     //! Read in PDB from a filename
     explicit PDB(const std::string fname) : _show_charge(false), _auto_ter(true),
+                                            _output_format(HEX),
                                             _has_cryst(false), strictness_policy(false) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
@@ -87,6 +91,7 @@ namespace loos {
 
     //! Read in a PDB from a filename
     explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true),
+                                      _output_format(HEX),
                                       _has_cryst(false), strictness_policy(false) {
       std::ifstream ifs(fname);
       if (!ifs)
@@ -96,6 +101,7 @@ namespace loos {
 
     //! Read in a PDB from an ifstream
     explicit PDB(std::ifstream& ifs) : _show_charge(false), _auto_ter(true),
+                                       _output_format(HEX),
                                        _has_cryst(false), strictness_policy(false) { read(ifs); }
 
 
@@ -139,6 +145,11 @@ namespace loos {
     //! Output as a PDB
     friend std::ostream& operator<<(std::ostream&, const PDB&);
 
+    //! Set how to handle large numbers...
+    void setOutputNumberFormatAsHybrid36() { _output_format = HYBRID36; }
+    void setOutputNumberFormatAsHex() { _output_format = HEX; }
+
+
     //! Read in PDB from an ifstream
     void read(std::istream& is);
 
@@ -149,7 +160,7 @@ namespace loos {
 
 
     //! Create a PDB from an AtomicGroup (i.e. upcast)
-    PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _has_cryst(false) { }
+    PDB(const AtomicGroup& grp) : AtomicGroup(grp), _show_charge(false), _auto_ter(true), _output_format(HEX), _has_cryst(false) { }
 
     bool emptyString(const std::string&);
 
@@ -162,6 +173,8 @@ namespace loos {
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
+    std::string numberToString(const int i, const int width) const;
+
     friend std::ostream& FormatConectRecords(std::ostream&, const PDB&);
 
     pAtom findAtom(const int i);
@@ -170,6 +183,7 @@ namespace loos {
   private:
     bool _show_charge;
     bool _auto_ter;
+    BigNumberFormatType _output_format;
     bool _has_cryst;
     bool strictness_policy;
     Remarks _remarks;

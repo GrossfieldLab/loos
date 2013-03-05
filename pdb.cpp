@@ -139,6 +139,21 @@ namespace loos {
     _atomid_to_patom[pa->id()] = pa;
   }
 
+  static int digits2size[] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 };
+
+  std::string PDB::numberToString(const int i, const int width) const {
+    std::ostringstream s;
+
+    if (_output_format == HYBRID36)
+      return(hybrid36AsString(i, width));
+
+    s << std::setw(width);
+    if (_output_format == HEX && i >= digits2size[width]) 
+      s << std::hex;
+
+    s << i;
+    return(s.str());
+  }
 
 
   // Convert an Atom to a string with a PDB format...
@@ -163,14 +178,14 @@ namespace loos {
     // We don't worry about strings exceeding field-widths (yet),
     // but do check for numeric overflows...
     s << std::setw(6) << std::left << p->recordName();
-    s << hybrid36AsString(p->id(), 5) << " ";
+    s << numberToString(p->id(), 5) << " ";
     s << std::setw(4) << std::left << p->name();
 
     s << std::setw(1) << p->altLoc();
     s << std::setw(4) << std::left << p->resname();
     
     s << std::setw(1) << std::right << p->chainId();
-    s << hybrid36AsString(p->resid(), 4);
+    s << numberToString(p->resid(), 4);
     s << std::setw(2) << p->iCode();
     s << "  ";
         
