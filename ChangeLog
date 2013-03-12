@@ -1,3 +1,9 @@
+2013-03-12    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added a --brief option to area_per_lipid
+	* Fixed bug in area_per_lipid where the --skip option was ignored
+	when generating the area timeseries
+
 2013-02-16  Tod Romo  <tromo@isteno>
 	* Added "chainid" keyword to selection language
 	* Fixed issues associated with regenerating the parser (bison/flex version problems)
