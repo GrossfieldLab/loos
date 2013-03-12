@@ -40,11 +40,12 @@ namespace po = loos::OptionsFramework::po;
 // @cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : n_lipids(0) { }
+  ToolOptions() : n_lipids(0), brief(false) { }
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("nlipids", po::value<uint>(&n_lipids)->default_value(n_lipids), "Explicitly set the number of lipids per leaflet");
+      ("nlipids", po::value<uint>(&n_lipids)->default_value(n_lipids), "Explicitly set the number of lipids per leaflet")
+      ("brief", po::value<bool>(&brief)->default_value(brief), "Brief output (no timeseries)");
   }
 
   string print() const {
@@ -54,6 +55,7 @@ public:
   }
 
   uint n_lipids;
+  bool brief;
 };
 
 
@@ -114,8 +116,6 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  cout << "# " << hdr << endl;
-
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
   if (!traj->hasPeriodicBox()) {
@@ -140,23 +140,39 @@ int main(int argc, char *argv[]) {
       if (c.z() > 0.0)
         ++n_lipids;
     }
-    cout << "# Automatically determined " << n_lipids << " lipids per leaflet\n";
   }
 
-  traj->rewind();
-  uint t = 0;
-  cout << "# frame\tArea\n";
-  double avg = 0;
-  uint n = 0;
+  if (tropts->skip > 0)
+    traj->readFrame(tropts->skip - 1);
+  else
+    traj->rewind();
+
+  vector<double> areas;
+  double avg = 0.0;
   while (traj->readFrame()) {
     GCoord box = traj->periodicBox();
     double apl = box.x() * box.y() / n_lipids;
     avg += apl;
-    ++n;
-    cout << t++ << "\t" << apl << endl;
+    areas.push_back(apl);
   }
+  avg /= areas.size();
 
-  cout << "# average = " << avg/n << endl;
+  double var = 0.0;
+  for (uint i=0; i<areas.size(); ++i) {
+    double d = areas[i] - avg;
+    var += d*d;
+  }
+  double stdev = sqrt(var/(areas.size()-1));
+
+  if (!topts->brief) {
+    cout << "# " << hdr << endl;
+    cout << "# Automatically determined " << n_lipids << " lipids per leaflet\n";
+    cout << "# average = " << avg << endl;
+    cout << "# stddev = " << stdev << endl;
+    for (uint i=0; i<areas.size(); ++i)
+      cout << i + tropts->skip << '\t' << areas[i] << endl;
+  } else
+    cout << n_lipids << ' ' << areas.size() << ' ' << avg << ' ' << stdev << endl;
 
 }
 
