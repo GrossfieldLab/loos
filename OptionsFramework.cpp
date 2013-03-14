@@ -443,7 +443,6 @@ namespace loos {
 
       command_line.add(generic).add(hidden);
 
-      pos = po::positional_options_description();
       for (vOpts::iterator i = options.begin(); i != options.end(); ++i)
         (*i)->addPositional(pos);
     }
