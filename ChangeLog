@@ -1,3 +1,7 @@
+2013-03-14  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Fixed bug in OptionsFramework with MacOS and Boost 1.52+.
+
 2013-03-12    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added a --brief option to area_per_lipid
