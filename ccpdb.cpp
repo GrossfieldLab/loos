@@ -94,6 +94,8 @@ namespace loos {
         (*i)->coords(frame[idx]->coords());
       }
     }
+
+    g.periodicBox(frame.periodicBox());
   }
 
 
