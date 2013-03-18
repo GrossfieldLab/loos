@@ -100,10 +100,14 @@ namespace loos {
             ifs >> the_grid;
             std::cerr << "Read in grid with size " << the_grid.gridDims() << std::endl;
             if (!validateGridMask(the_grid)) {
-              std::cerr << "ERROR- the grid '" << grid_name << "' does not appear to be a grid mask." << std::endl;
-              std::cerr << "       See the --fullhelp output for more information." << std::endl;
-              std::cerr << std::endl;
-              return(false);
+              std::cerr << "\n***WARNING***WARNING***WARNING***\n\n"
+                        << "The grid '" << grid_name
+                        << "' does not appear to be a grid mask.  Your output will be suspect!\n"
+                        << "Make sure the grid is an integer grid (e.g. from blobid or pick_block).\n"
+                        << "If there are many unique blobs in the grid, then you may see this warning\n"
+                        << "in which case you should reconsider how you ran blobid.\n"
+                        << "Use --fullhelp for more information.\n"
+                        << "\n***WARNING***WARNING***WARNING***\n\n";
             }
 
             
