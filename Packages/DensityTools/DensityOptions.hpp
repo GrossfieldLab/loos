@@ -53,6 +53,11 @@ namespace loos {
        * below a z-plane.
        **/
       class BasicWater : public OptionsPackage {
+        /*
+          Grids used as masks are integer grids.  They should only contain values from
+          [0,max_grid_mask_value].
+         */
+        static const int max_grid_mask_value = 0xff;
       public:
         BasicWater() :
           pad(1.0),
@@ -94,6 +99,14 @@ namespace loos {
             std::ifstream ifs(grid_name.c_str());
             ifs >> the_grid;
             std::cerr << "Read in grid with size " << the_grid.gridDims() << std::endl;
+            if (!validateGridMask(the_grid)) {
+              std::cerr << "ERROR- the grid '" << grid_name << "' does not appear to be a grid mask." << std::endl;
+              std::cerr << "       See the --fullhelp output for more information." << std::endl;
+              std::cerr << std::endl;
+              return(false);
+            }
+
+            
       
             filter_func = new DensityTools::WaterFilterBlob(the_grid);
 
@@ -166,6 +179,17 @@ namespace loos {
         DensityTools::WaterFilterBase* filter_func;
         //! Grid mask for internal waters
         DensityTools::DensityGrid<int> the_grid;
+
+      private:
+
+        bool validateGridMask(const DensityTools::DensityGrid<int>& grid) {
+          for (long i=0; i<grid.size(); ++i)
+            if (grid(i) < 0 || grid(i) > max_grid_mask_value)
+              return(false);
+
+          return(true);
+        }
+
       };
       
 
