@@ -202,7 +202,7 @@ string fullHelpMessage(void) {
     "them to out.dcd, centering so that the HEME segment is at the\n"
     "origin.\n"
     "\n"
-    "\tsubsetter -r 0:49 -r 150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd\n"
+    "\tsubsetter -r 0:49,150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd\n"
     "This concatenates the two trajectories together, then writes out\n"
     "the first 50 frames, then frames 150 through 300 stepping by 10\n"
     "frames.  The frame indices written are of the composite\n"

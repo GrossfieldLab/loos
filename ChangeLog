@@ -1,3 +1,8 @@
+2013-03-21    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed error in fullhelp for subsetter tool (cannot use multiple
+	--range options, must use a  comma-separated list instead)
+
 2013-03-14  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Fixed bug in OptionsFramework with MacOS and Boost 1.52+.
