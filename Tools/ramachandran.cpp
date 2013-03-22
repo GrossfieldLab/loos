@@ -360,7 +360,8 @@ public:
       ("missing", po::value<double>(&missing_flag)->default_value(-9999), "Value to use for missing torsions")
       ("warn", po::value<bool>(&warn_flag)->default_value(true), "Warn when atoms are missing a torsion")
       ("skipmissing", po::value<bool>(&skip_flag)->default_value(true), "Skip residues missing torsions")
-      ("show", po::value<bool>(&show_flag)->default_value(false), "Show atoms used for each torsion");
+      ("show", po::value<bool>(&show_flag)->default_value(false), "Show atoms used for each torsion")
+      ("assign", po::value<bool>(&ss_flag)->default_value(false), "Assign secondary structure based on clasically allowed regions");
   }
 
   bool postConditions(po::variables_map& vm) {
@@ -393,10 +394,34 @@ public:
   }
 
   bool pseudo_flag, warn_flag, skip_flag, show_flag;
+  bool ss_flag;
 
 };
 
 // @endcond
+
+
+
+
+// Eyeballing canonical ramachandran regions...
+
+char classifySecondaryStructure(double phi, double psi) {
+
+  if (phi == missing_flag || psi == missing_flag)
+    return('?');
+
+  if ( ( (psi < 0.0 && psi > -60) && phi <= -40 )
+       || ( (psi > 25 && psi <= 90) && (phi >= 45 && phi <= 65) ) )
+    return('H');
+
+  if ( psi >= 90 && phi <= -45 )
+    return('S');
+
+  return('O');
+}
+
+
+
 
 
 
@@ -471,11 +496,22 @@ int main(int argc, char *argv[]) {
       // Iterate over each group of atoms to use for torsions within
       // the residue...
       vGroup::iterator vi;
+      vector<double> torsions;
+
       for (vi = (*vvi).begin(); vi != (*vvi).end(); ++vi) {
         double angle = missing_flag;
         if ((*vi).size() == 4)
           angle = Math::torsion((*vi)[0], (*vi)[1], (*vi)[2], (*vi)[3]);
-        cout << angle << "     ";
+        cout << setw(10) << angle << "     ";
+        torsions.push_back(angle);
+      }
+      
+      if (topts->ss_flag) {
+        if (torsions.size() != 2) {
+          cerr << "Error- secondary structure requested but incorrect number of torsions found.\n";
+          exit(-10);
+        }
+        cout << classifySecondaryStructure(torsions[0], torsions[1]);
       }
       cout << endl;
     }
