@@ -469,13 +469,26 @@ int main(int argc, char *argv[]) {
         torsion_atoms.push_back(atoms);
     }
   }
+
+  // Verify SS option
+  vector<string> torsion_names = extractor->names();
+  if (torsion_names.size() != 2 ||
+      !(torsion_names[0] == "phi" && torsion_names[1] == "psi")) {
+    cerr << "Error- Secondary structure assignment can only be used with phi/psi torsions.\n";
+    exit(-10);
+  }
+
   
   cout << "# " << hdr << endl;
-  cout << "# frame\t";
+  if (topts->ss_flag)
+    cout << "# Secondary Structure Codes: H = Helix, S = Sheet, O = Other, ? = Undefined\n";
+
+  cout << "# frame\t" << setw(10);
 
   // Construct the header of what torsions were computed...
-  vector<string> torsion_names = extractor->names();
   copy(torsion_names.begin(), torsion_names.end(), ostream_iterator<string>(cout, "\t"));
+  if (topts->ss_flag)
+    cout << "SS";
   cout << endl;
 
   uint t = 0;
@@ -507,6 +520,7 @@ int main(int argc, char *argv[]) {
       }
       
       if (topts->ss_flag) {
+        // double-check
         if (torsions.size() != 2) {
           cerr << "Error- secondary structure requested but incorrect number of torsions found.\n";
           exit(-10);
