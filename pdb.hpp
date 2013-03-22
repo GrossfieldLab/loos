@@ -75,14 +75,17 @@ namespace loos {
     };
 
   public:
-    PDB() : _show_charge(false), _auto_ter(true), _output_format(HEX),
-            _has_cryst(false), strictness_policy(false) { }
+    PDB() : _show_charge(false), _auto_ter(true), _output_format(NONE), _input_format(HYBRID36),
+            _has_cryst(false), strictness_policy(false),
+            _format_warned(false) { }
     virtual ~PDB() {}
 
     //! Read in PDB from a filename
     explicit PDB(const std::string fname) : _show_charge(false), _auto_ter(true),
-                                            _output_format(HEX),
-                                            _has_cryst(false), strictness_policy(false) {
+                                            _output_format(NONE), _input_format(HYBRID36),
+                                            _has_cryst(false), strictness_policy(false),
+                                            _format_warned(false)
+    {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(std::runtime_error("Cannot open PDB file " + fname));
@@ -91,8 +94,10 @@ namespace loos {
 
     //! Read in a PDB from a filename
     explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true),
-                                      _output_format(HEX),
-                                      _has_cryst(false), strictness_policy(false) {
+                                      _output_format(NONE), _input_format(HYBRID36),
+                                      _has_cryst(false), strictness_policy(false),
+                                      _format_warned(false)
+    {
       std::ifstream ifs(fname);
       if (!ifs)
         throw(std::runtime_error("Cannot open PDB file " + std::string(fname)));
@@ -101,8 +106,10 @@ namespace loos {
 
     //! Read in a PDB from an ifstream
     explicit PDB(std::ifstream& ifs) : _show_charge(false), _auto_ter(true),
-                                       _output_format(HEX),
-                                       _has_cryst(false), strictness_policy(false) { read(ifs); }
+                                       _output_format(NONE), _input_format(HYBRID36),
+                                       _has_cryst(false), strictness_policy(false),
+                                       _format_warned(false)
+    { read(ifs); }
 
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
@@ -117,6 +124,10 @@ namespace loos {
      *  there are no such checks...
      */
     static PDB fromAtomicGroup(const AtomicGroup&);
+
+    BigNumberFormatType inputFormat() const { return(_input_format); }
+    void outputFormat(const BigNumberFormatType t) { _output_format = t; }
+    BigNumberFormatType outputFormat() const { return(_output_format); }
 
     bool showCharge(void) const;
     //! Special handling for charges since the PDB form is daft
@@ -179,13 +190,16 @@ namespace loos {
 
     pAtom findAtom(const int i);
     void uniqueBonds();
+    int stringToNumber(const std::string& s, const uint width);
 
   private:
     bool _show_charge;
     bool _auto_ter;
     BigNumberFormatType _output_format;
+    BigNumberFormatType _input_format;
     bool _has_cryst;
     bool strictness_policy;
+    bool _format_warned;
     Remarks _remarks;
     UnitCell cell;
     std::map<int, pAtom> _atomid_to_patom;

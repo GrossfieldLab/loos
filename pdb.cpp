@@ -139,6 +139,10 @@ namespace loos {
     _atomid_to_patom[pa->id()] = pa;
   }
 
+
+
+
+  // Handle output of large numbers...
   static int digits2size[] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000 };
 
   std::string PDB::numberToString(const int i, const int width) const {
@@ -153,6 +157,54 @@ namespace loos {
 
     s << i;
     return(s.str());
+  }
+
+  // Handle input of large numbers...
+  int PDB::stringToNumber(const std::string& s, const uint width) {
+    std::string despaced;
+
+    for (uint i=0; i<s.size(); ++i)
+      if (s[i] != ' ')
+        despaced += s[i];
+
+    if (despaced.size() != width) {
+      std::istringstream iss;
+      int x;
+
+      iss >> x;
+      return(x);
+    }
+
+    bool has_uc = false;
+    for (uint i=0; i<despaced.size(); ++i) {
+      if (isupper(despaced[i])) {
+        has_uc = true;
+        break;
+      }
+    }
+
+    if (_input_format == NONE) {
+
+      if (has_uc)
+        _input_format = HYBRID36;
+      else
+        _input_format = HEX;
+
+    } else if (_input_format == HEX) {
+      if (!_format_warned && has_uc) {
+        std::cerr << "Warning- PDB file was assumed to be in hex format, but may be in\n"
+                  << "         hybrid36 after all.  Atomids and resids will be suspect.\n";
+        _format_warned = true;
+      }
+
+      std::istringstream iss;
+      int x;
+      
+      iss >> std::hex >> x;
+      return(x);
+    }
+
+    return(parseStringAsHybrid36(despaced));
   }
 
 
