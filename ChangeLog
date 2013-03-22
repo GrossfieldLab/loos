@@ -1,3 +1,8 @@
+2013-03-22    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added --assign option to ramachandran for printing out a rough
+	secondary structure assignment
+
 2013-03-21    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed error in fullhelp for subsetter tool (cannot use multiple
