@@ -190,7 +190,7 @@ namespace loos {
 
     pAtom findAtom(const int i);
     void uniqueBonds();
-    int stringToNumber(const std::string& s, const uint width);
+    int stringToNumber(const std::string& s, const uint start, const uint width);
 
   private:
     bool _show_charge;

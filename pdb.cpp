@@ -160,10 +160,13 @@ namespace loos {
   }
 
   // Handle input of large numbers...
-  int PDB::stringToNumber(const std::string& s, const uint width) {
+  int PDB::stringToNumber(const std::string& s, const uint start, const uint width) {
     std::string despaced;
 
-    for (uint i=0; i<s.size(); ++i)
+    if (start + width >= s.size())
+      throw(ParseError("String size exceeded in PDB::stringToNumber"));
+
+    for (uint i=start; i<start+width; ++i)
       if (s[i] != ' ')
         despaced += s[i];
 
