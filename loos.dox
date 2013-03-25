@@ -1307,6 +1307,24 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release204 Version 2.0.4 (3-29-2013)
+\subsection r204_bugs Bug Fixes
+<ul>
+  <li> Fixed build issue with Boost 1.52+
+  <li> Fixed issue associated with regenerating the parser
+  <li> Fixed bug in area_per_lipid where it ignored the --skip option
+  <li> Fixed error in documentation for subsetter
+</ul>
+
+\subsection r204_added_changed ADded, Changed, or Otherwise Notable
+<ul>
+  <li> Added support for building PyLOOS in MacOS (note: still in beta-release)
+  <li> Added "chainid" keyword to selection language
+  <li> Added --assign option to ramachandran for a rough secondary structure assignment
+  <li> Added --brief option to area_per_lipid
+</ul>
+
+
 \section release203 Version 2.0.3 (2-1-2013)
 \subsection r203_bugs Bug Fixes
 <ul>
