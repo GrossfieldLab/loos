@@ -2455,6 +2455,14 @@ implementations.
 	PyLOOS is not part of the default build for LOOS.  You must
 	tell SCons to build it by saying "scons pyloos".
 
+<DT>	I'm getting errors from Swig (about missing files)
+<DD>	On a few test systems, we found that there is an older
+	version of swig present (e.g. /usr/bin) in addition
+	to a newer version (e.g. in /sw/bin).  Scons will use the one
+	in /usr/bin unless explicitly told not to.  Edit the custom.py
+	file and set the ALTPATH variable to point to where the most
+	recent version of Swig is installed.
+
 <DT>	How do I use PyLOOS?
 <DD>	Your environment needs to be setup to allow Python to locate
 	the PyLOOS libraries.  LOOS now provides two setup scripts,
