@@ -431,7 +431,7 @@ namespace loos {
             os << "\nCONECT" << hybrid36AsString(id, 5);
           }
           int bound_id = *cj;
-          pAtom pa = p.findById(bound_id);
+          pAtom pa = sorted.findById(bound_id);
           if (pa != 0)
             os << hybrid36AsString(bound_id, 5);
         }
@@ -469,8 +469,7 @@ namespace loos {
         if ((*i)->id() > maxid)
           maxid = (*i)->id();
 
-      if (maxid <= 99999)
-        FormatConectRecords(os, p);
+      FormatConectRecords(os, p);
     }
   
     if (p._auto_ter)
