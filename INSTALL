@@ -34,8 +34,8 @@
 | Windows 7 64-bit  |     +     |   -    |
 |  +Cygwin 1.7.15-1 |           |        |
 |-------------------|-----------|--------|
-| MacOS 10.6        |     +     |   -    |
-| MacOS 10.7        |     +     |   -    |
+| MacOS 10.6        |     +     |   !    |
+| MacOS 10.7        |     +     |   !    |
 | MacOS 10.8        |     +     |   !    |
 |-------------------|-----------|--------|
 
@@ -257,8 +257,8 @@ OpenSUSE 11.4: NOT SUPPORTED
 ***NOTE on MacOS 10.8 (Mountain Lion) compatability***
 ***only LOOS 2.0.1 (or more recent) is compatible***
 
-LOOS has been tested with MacOS 10.7 and 10.8, however, it *should* be
-compatable with version 10.4-10.6.
+LOOS has been tested with MacOS 10.6 and 10.8, however, it *should* be
+compatable with version 10.4 and later.
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  You can find it on your MacOS X install disk or,
@@ -276,10 +276,12 @@ file to point to where netcdf is installed.
 
 * PyLOOS *
 
-MacOS is supported for MacOS 10.8 (Mountain Lion).  You will need to download
+MacOS is supported for MacOS 10.6 and later.  You will need to download
 and install a recent version of SWIG first.  If you have installed Boost in a
 non-standard location, you will need to make sure that the boost libraries are
-in your DYLD_LIBRARY_PATH environment variable.
+in your DYLD_LIBRARY_PATH environment variable.  Note that we have not
+explicitly tested LOOS with 10.7, but expect that it will work minimal
+effort.
 
 
 			 -----= CYGWIN =-----
