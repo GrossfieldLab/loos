@@ -1,3 +1,8 @@
+2013-03-27    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed performance issue with writing PDB files containing bonds
+	and lots of atoms
+
 2013-03-22    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added --assign option to ramachandran for printing out a rough
