@@ -129,6 +129,15 @@ public:
       ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)");
   }
 
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("align='%s',transform='%s',maxiter=%d,tolerance=%f,reference='%s',refsel='%s'")
+      % alignment_string % transform_string
+      % maxiter % alignment_tol
+      % reference_name % reference_sel;
+    return(oss.str());
+  }
+
 
   string alignment_string, transform_string;
   string reference_name, reference_sel;
