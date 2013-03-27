@@ -2355,12 +2355,73 @@ torsion() are now in the \c loos::Math namespace.
 
 /*! \page FAQ Frequently Asked Questions
 \section faq_loos LOOS
+
+\subsection faq_loos_building Building LOOS
+<DL>
+
+<DT> I am having trouble building LOOS with Boost 1.52 (or later)
+<DD> There was a change in Boost at version 1.52 that breaks the build
+of LOOS.  We recommend upgrading to either LOOS 2.0.4 or downgrading
+your version of Boost to 1.51
+
+<DT> SCons is not finding the right compiler/swig/doxygen
+<DD> For better or worse, SCons uses a minimal "standard" path when
+searching for compilers and tools needed to build LOOS.  If you find
+the wrong g++ or swig being used, it's frequently because the new one
+is in a place SCons doesn't expect, such as /sw/bin, but there's also
+an older version someplace SCons does expect, such as /usr/bin.  LOOS
+has two variables in the custom.py file that can help with this.  To
+override only which g++ to use, set the CXX variable.  If you want to
+change the path for all tools, set the ALTPATH variable instead.  For
+example, Mac users installing with Fink will want to set ALTPATH to
+"/sw/bin".
+
+</DL>
+
 \subsection faq_loos_using_tools Using LOOS Tools
 <DL>
 
 <DT> What units does LOOS use for coordinates?
 <DD> LOOS uses Angstroms as the output unit of distance, even when the input 
-coordinates are in other units (e.g. nanometers for GROMACS files).
+coordinates are in other units (e.g. nanometers for GROMACS files are
+converted into Angstroms).
+
+<DT> How does LOOS write out the connectivity information?
+<DD> LOOS places the model's connectivity into the CONECT records of
+the output PDB.  Connectivity is written out for all atoms for which
+there is connectivity present.
+
+<DT> Using LOOS tools with large systems
+<DD> LOOS should have no problem with large systems, although some
+care is required when using PDB files.  There are several different
+approaches to reading and writing PDB files that contain more than
+100,000 atoms or 10,000 residues.  LOOS uses the Hybrid-36 scheme for
+encoding large numbers in the atom serial numbers (atomids) and
+residue id's (resids).  While LOOS can read PDB's written in other
+conventions, it is best to canonicalize them into LOOS's hybrid-36
+scheme.  One way to do this is to use the renum-pdb tool,
+\code
+renum-pdb bigmodel.pdb all 1 1 >loos_bigmodel.pdb
+\endcode
+
+Alternatively, stick with a PSF.  If you need
+coordinates in a model, you can extract the first frame of your
+trajectory using frame2pdb,
+\code
+frame2pdb bigmodel.psf bigmodel.dcd 0 >loos_bigmodel.pdb
+\endcode
+
+Alternatively, since PSF files are space delimited, field overflow is
+not an issue.  You can convert a PDB+PSF to a PDB without
+renumbering by using the convert2pdb tool, i.e.
+\code
+convert2pdb --coords bigmodel.pdb bigmodel.psf >loos_bigmodel.pdb
+\endcode
+
+</DL>
+
+\subsection faq_loos_library Using the LOOS Library
+<DL>
 
 <DT> How does LOOS handle connectivity/bonds?
 <DD> Bonds are represented in LOOS by a list of atom id's that are
@@ -2371,11 +2432,6 @@ trouble with connectivity because of fragmenting groups of atoms, you
 can use AtomicGroup::clearBonds() to remove all connectivity in a
 group, or AtomicGroup::pruneBonds() to remove bonds to any atom not
 contained in the given group.
-
-<DT> How does LOOS write out the connectivity information?
-<DD> LOOS places the model's connectivity into the CONECT records of
-the output PDB.  Connectivity is written out for all atoms for which
-there is connectivity present.
 
 <DT> How do I make a copy of an AtomicGroup?  Why do changes in one
 group affect another?
@@ -2422,10 +2478,6 @@ Here, the changes to the first alpha-carbon in duplicate does
 <i>not</i> change the coordinates of the first alpha-carbon in ca
 since they are no longer shared.
 
-<DT> I am having trouble building LOOS with Boost 1.52 (or later)
-<DD> There was a change in Boost at version 1.52 that breaks the build
-of LOOS.  We recommend upgrading to either LOOS 2.0.4 or downgrading
-your version of Boost to 1.51.
 
 </DL>
 
@@ -2446,8 +2498,8 @@ implementations.
 \subsection faq_pyloos_building Building PyLOOS
 <DL>
 <DT>	What operating systems support PyLOOS?
-<DD>	Only LINUX is supported at this time.  For specific versions,
-	see the start of the INSTALL file.
+<DD>	PyLOOS currently supports Linux and MacOS.  For specific
+	versions and installation instructions, see the INSTALL file.
 
 <DT>	How do I build PyLOOS?
 <DD>	You will need to install a recent version of Swig.  For
@@ -2458,7 +2510,7 @@ implementations.
 <DT>	I'm getting errors from Swig (about missing files)
 <DD>	On a few test systems, we found that there is an older
 	version of swig present (e.g. /usr/bin) in addition
-	to a newer version (e.g. in /sw/bin).  Scons will use the one
+	to a newer version (e.g. in /sw/bin).  SCons will use the one
 	in /usr/bin unless explicitly told not to.  Edit the custom.py
 	file and set the ALTPATH variable to point to where the most
 	recent version of Swig is installed.
