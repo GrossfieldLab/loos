@@ -38,6 +38,7 @@ using namespace std;
 using namespace loos;
 
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 // @cond TOOLS_INTERNAL
@@ -55,6 +56,8 @@ string fullHelpMessage(void) {
     "\tReads in any LOOS model file and writes it to stdout as a PDB.  A subset\n"
     "of the model may be selected.  As not all formats contain coordinates,\n"
     "these may be taken from another source by using the --coordinates option.\n"
+    "If the model includes connectivity, you can control whether CONECT records\n"
+    "are generated with the --bonds option.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
@@ -67,10 +70,38 @@ string fullHelpMessage(void) {
     "\tconvert2pdb --selection 'name == \"CA\"' model.gro >model.pdb\n"
     "Converts a GROMACS .gro file to a PDB, only writing out the alpha-carbons.\n"
     "\n"
+    "\tconvert2pdb --bonds=0 --coords big.pdb big.psf >model.pdb\n"
+    "Converts a big.psf into model.pdb, using coordinates from big.pdb\n"
+    "Bonds (i.e. CONECT records) are not written.  This invocation can\n"
+    "be useful when working with large systems (i.e. >100,000 atoms).\n"
+    "\n"
     ;
+      
 
   return(msg);
 }
+
+
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : usebonds(true) { }
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("bonds", po::value<bool>(&usebonds)->default_value(usebonds), "Include bonds in output (if available)");
+  }
+
+
+  string print() const {
+    ostringstream oss;
+    oss << "usebonds=" << usebonds;
+    return(oss.str());
+  }
+  
+
+  bool usebonds;
+};
+
 
 // @endcond
 
@@ -81,13 +112,17 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::ModelWithCoords* mwcopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(mwcopts);
+  options.add(bopts).add(sopts).add(mwcopts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
   AtomicGroup subset = selectAtoms(mwcopts->model, sopts->selection);
+  if (!topts->usebonds)
+    subset.clearBonds();
+
   PDB pdb = PDB::fromAtomicGroup(subset);
   pdb.remarks().add(hdr);
   cout << pdb;
