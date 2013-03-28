@@ -35,6 +35,7 @@ using namespace std;
 using namespace loos;
 
 namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 // @cond TOOLS_INTERNAL
 
@@ -64,6 +65,28 @@ string fullHelpMessage(void) {
 }
 
 
+class ToolOptions : public opts::OptionsPackage {
+public:
+  ToolOptions() : use_bonds(true) { }
+  
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("bonds", po::value<bool>(&use_bonds)->default_value(use_bonds), "Include bonds in output (if available)");
+  }
+
+
+  string print() const {
+    ostringstream oss;
+    oss << "use_bonds=" << use_bonds;
+    return(oss.str());
+  }
+  
+
+  bool use_bonds;
+};
+
+
+
 // @endcond
 
 
@@ -74,10 +97,11 @@ int main(int argc, char *argv[]) {
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   opts::RequiredArguments* ropts = new opts::RequiredArguments;
+  ToolOptions* topts = new ToolOptions;
   ropts->addArgument("frameno", "frame-number");
   
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(tropts).add(ropts);
+  options.add(bopts).add(sopts).add(tropts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -91,6 +115,8 @@ int main(int argc, char *argv[]) {
     exit(-2);
   }
   AtomicGroup subset = selectAtoms(tropts->model, sopts->selection);
+  if (!topts->use_bonds)
+    subset.clearBonds();
 
   tropts->trajectory->updateGroupCoords(subset);
   PDB pdb = PDB::fromAtomicGroup(subset);
