@@ -106,16 +106,13 @@ namespace loos {
                                // Note: >1 to handle \r in files that came from windows...
       int ind1, ind2;
       std::stringstream s(input);
-      std::string sind1, sind2;   // Hold string representations of id's before we hybrid36 decode them...
-      while (s.good()) {
-        s >> sind1;
-        s >> sind2;
 
-        ind1 = parseStringAsHybrid36(sind1);
-        ind2 = parseStringAsHybrid36(sind2);
+      while (s.good()) {
+        if (!(s >> ind1 >> ind2))
+          throw(LOOSError("PSF error parsing bonds.\n> " + input));
 
         if (ind1 > num_atoms || ind2 > num_atoms)
-          throw(LOOSError("PSF bond error: bound atomid exceeds number of atoms."));
+          throw(LOOSError("PSF bond error: bound atomid exceeds number of atoms.\n> " + input));
 
         ind1--;  // our indices are 1 off from the numbering in the pdb/psf file
         ind2--;
@@ -157,23 +154,25 @@ namespace loos {
     std::stringstream ss(s);
 
     // A hack to handle hybrid-36 resids & atomids
-    std::string buf;
-    ss >> buf;
-    index = parseStringAsHybrid36(buf);
+    if (!(ss >> index))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->id(index);
      
-    ss >> segname;
+    if (!(ss >> segname))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->segid(segname);
 
 
-    ss >> buf;
-    resid = parseStringAsHybrid36(buf);
+    if (!(ss >> resid))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->resid(resid);
 
-    ss >> resname;
+    if (!(ss >> resname))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->resname(resname);
 
-    ss >> atomname;
+    if (!(ss >> atomname))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->name(atomname);
 
     // If this is a charmm psf, the atomtype will be an integer.
@@ -182,12 +181,15 @@ namespace loos {
     // used in charmm and namd as a means to look up parameters), so we're going to
     // discard it.  However, if we ever decide we're going to use this, we'll need
     // to keep track of the distinction between charmm and namd usage.
-    ss >> atomtype;
+    if (!(ss >> atomtype))
+      throw(LOOSError("PSF parse error.\n> " + s));
 
-    ss >> charge;
+    if (!(ss >> charge))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->charge(charge);
 
-    ss >> mass;
+    if (!(ss >> mass))
+      throw(LOOSError("PSF parse error.\n> " + s));
     pa->mass(mass);
 
     // Is the atom fixed or mobile?
