@@ -84,22 +84,22 @@ string fullHelpMessage(void) {
 
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : usebonds(true) { }
+  ToolOptions() : use_bonds(true) { }
   
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("bonds", po::value<bool>(&usebonds)->default_value(usebonds), "Include bonds in output (if available)");
+      ("bonds", po::value<bool>(&use_bonds)->default_value(use_bonds), "Include bonds in output (if available)");
   }
 
 
   string print() const {
     ostringstream oss;
-    oss << "usebonds=" << usebonds;
+    oss << "use_bonds=" << use_bonds;
     return(oss.str());
   }
   
 
-  bool usebonds;
+  bool use_bonds;
 };
 
 
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
     exit(-1);
 
   AtomicGroup subset = selectAtoms(mwcopts->model, sopts->selection);
-  if (!topts->usebonds)
+  if (!topts->use_bonds)
     subset.clearBonds();
 
   PDB pdb = PDB::fromAtomicGroup(subset);
