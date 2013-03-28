@@ -3,6 +3,8 @@
 	* Changed PSF reader to NOT try to use hybrid-36 encoding.  This
 	affected large systems that should have been readable but
 	weren't.
+	* Added --bonds option to frame2pdb and convert2pdb that controls
+	whether CONECT records are written.
 
 2013-03-27    <tromo@hill.urmc-sh.rochester.edu>
 
