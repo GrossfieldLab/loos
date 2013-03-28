@@ -139,7 +139,7 @@ string fullHelpMessage(void) {
     "Be careful not to make the volume too large.\n"
     "\n"
     "SEE ALSO\n"
-    "\tgridgauss, grid2xplor, gridstat, gridslice, blobid, pick_blob\n";
+    "\tgridgauss, grid2xplor, gridstat, gridslice, blobid, pick_blob, gridautoscale\n";
 
   return(msg);
 }
