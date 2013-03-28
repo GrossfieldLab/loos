@@ -1314,6 +1314,10 @@ Matlab and Octave.
   <li> Fixed issue associated with regenerating the parser
   <li> Fixed bug in area_per_lipid where it ignored the --skip option
   <li> Fixed error in documentation for subsetter
+  <li> Fixed performance issue when writing PDB files with CONECT
+       records that contain a lot of atoms.
+  <li> Changed PSF reader to NOT use hybrid-36 encoding (would break
+       for large systems and is unnecessary for PSF files)
 </ul>
 
 \subsection r204_added_changed ADded, Changed, or Otherwise Notable
