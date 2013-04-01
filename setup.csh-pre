@@ -41,7 +41,7 @@ set SYSTEM=`uname`
 if ( "$SYSTEM" == "Darwin" ) then
 
    if ($?DYLD_LIBRARY_PATH) then
-      setenv DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH:$LIBPATH"
+      setenv DYLD_LIBRARY_PATH "${DYLD_LIBRARY_PATH}:$LIBPATH"
    else
       setenv DYLD_LIBRARY_PATH "$LIBPATH"
    endif
@@ -49,7 +49,7 @@ if ( "$SYSTEM" == "Darwin" ) then
 else
 
    if ($?LD_LIBRARY_PATH) then
-      setenv LD_LIBRARY_PATH "$LD_LIBRARY_PATH":"$LIBPATH"
+      setenv LD_LIBRARY_PATH "${LD_LIBRARY_PATH}":"$LIBPATH"
    else
       setenv LD_LIBRARY_PATH "$LIBPATH"
    endif
