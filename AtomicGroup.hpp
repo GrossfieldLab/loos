@@ -378,6 +378,9 @@ namespace loos {
     //! Provide access to the underlying shared periodic box...
     SharedPeriodicBox sharedPeriodicBox() const { return(box); }
 
+    //! Remove periodicity
+    void removePeriodicBox() { box = SharedPeriodicBox(); }
+
     //! Translate the entire group so that the centroid is in the 
     //! primary cell
     void reimage();
