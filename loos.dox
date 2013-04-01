@@ -442,8 +442,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-1.6.0 install
-ln -s /opt/loos-1.6.0 /opt/loos-latest
+scons PREFIX=/opt/loos-2.0 install
+ln -s /opt/loos-2.0 /opt/loos-latest
 \endverbatim
 
 <H2>Important Note...</H2>
@@ -462,7 +462,13 @@ To use LOOS, your environment must be first setup:
 To build the beta-release of PyLOOS, the python interface to LOOS, use:
 
 \verbatim
-scons pyloos
+scons pyloos=1
+\endverbatim
+
+You may install PyLOOS by using the following commnad:
+
+\verbatim
+scons pyloos=1 install
 \endverbatim
 
 See the INSTALL file and \ref faq_pyloos "the FAQ for PyLOOS" for more information about
