@@ -53,6 +53,7 @@ clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
+clos.Add('pyloos', 'Set to 1 to build the python interface to LOOS (requires SWIG).', 0)
 
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
@@ -337,9 +338,13 @@ env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-env.Alias('pyloos', loos_python + loos_scripts + tools)
+env.Alias('pyloos', loos_python + loos_scripts)
 
-env.Alias('all', loos + tools + all_packages + loos_scripts)
+all_target = loos + tools + all_packages + loos_scripts
+if env['pyloos'] == '1':
+   all_target = all_target + loos_python
+
+env.Alias('all', all_target)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
 env.Alias('user', user_package)
 
