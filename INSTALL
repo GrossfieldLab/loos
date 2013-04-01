@@ -94,6 +94,9 @@ PyLOOS requires a recent version of SWIG (2.0+).  Not all operating
 systems are currently supported.  Additionally, the interface and
 subsequent functionality may change significantly in future releases.
 
+Note that the python scripts in Packages/PyLOOS are not installed.
+These are currently only examples of how to use PyLOOS.
+
 
 		    = NetCDF Amber Trajectories =
 
