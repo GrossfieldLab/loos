@@ -82,7 +82,13 @@ To use LOOS, your environment must be first setup:
 
 The Python interface to LOOS is currently a beta-release.  To build
 it, use:
-    scons pyloos
+    scons pyloos=1
+
+The python interface may also be installed:
+    scons pyloos=1 install
+
+Finally, if you want to try out *only* PyLOOS and nothing else,
+    scons pyloos_only
 
 PyLOOS requires a recent version of SWIG (2.0+).  Not all operating
 systems are currently supported.  Additionally, the interface and
