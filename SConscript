@@ -96,6 +96,12 @@ if env['platform'] == 'darwin':
 else:
    loos_python = env.SharedLibrary('_loos', ['loos.i', loos])
 
+# Handle installing PyLOOS
+if env['pyloos'] == '1':
+   loos_py_file = File('loos.py')
+   loos_pyfile_inst = env.Install(os.path.join(PREFIX, 'lib'), loos_py_file)
 
+   loos_pylib_inst = env.Install(os.path.join(PREFIX, 'lib'), loos_python)
+   
 
 Return('loos','loos_python', 'scripts')
