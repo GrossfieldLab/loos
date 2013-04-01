@@ -1307,7 +1307,7 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release204 Version 2.0.4 (3-29-2013)
+\section release204 Version 2.0.4 (4-3-2013)
 \subsection r204_bugs Bug Fixes
 <ul>
   <li> Fixed build issue with Boost 1.52+
@@ -1320,7 +1320,7 @@ Matlab and Octave.
        for large systems and is unnecessary for PSF files)
 </ul>
 
-\subsection r204_added_changed ADded, Changed, or Otherwise Notable
+\subsection r204_added_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Added support for building PyLOOS in MacOS (note: still in beta-release)
   <li> Added "chainid" keyword to selection language
