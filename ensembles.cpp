@@ -51,6 +51,7 @@ namespace loos {
     for (i=0; i<n; i++)
       avg[i]->coords() /= ensemble.size();
 
+    avg.removePeriodicBox();
     return(avg);
   }
 
@@ -79,6 +80,7 @@ namespace loos {
     for (i=0; i<n; i++)
       avg[i]->coords() /= ensemble.size();
 
+    avg.removePeriodicBox();
     return(avg);
   }
 
@@ -112,7 +114,8 @@ namespace loos {
     
     for (int i=0; i<n; i++)
       avg[i]->coords() /= fn;
-    
+
+    avg.removePeriodicBox();
     return(avg);
   }
   
