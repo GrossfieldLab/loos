@@ -276,6 +276,7 @@ Developer's Connection and download the latest version.  Next, you
 will need to install SCons (http://scons.org) and Boost
 (http://boost.org) by visiting their websites, downloading the
 software, and following their installation instructions.
+Alternatively, use fink to install these packages.
 
 * NetCDF *
 
