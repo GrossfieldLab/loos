@@ -338,7 +338,7 @@ env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-env.Alias('pyloos', loos_python + loos_scripts)
+env.Alias('pyloos_only', loos_python + loos_scripts)
 
 all_target = loos + tools + all_packages + loos_scripts
 if env['pyloos'] == '1':
