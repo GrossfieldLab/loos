@@ -286,11 +286,11 @@ file to point to where netcdf is installed.
 
 * PyLOOS *
 
-MacOS is supported for MacOS 10.6 and later.  You will need to download
+PyLOOS is supported for MacOS 10.6 and later.  You will need to download
 and install a recent version of SWIG first.  If you have installed Boost in a
 non-standard location, you will need to make sure that the boost libraries are
 in your DYLD_LIBRARY_PATH environment variable.  Note that we have not
-explicitly tested LOOS with 10.7, but expect that it will work minimal
+explicitly tested LOOS with 10.7, but expect that it will work with minimal
 effort.
 
 
