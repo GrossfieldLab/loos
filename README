@@ -3,7 +3,19 @@
 =     https://lists.sourceforge.net/lists/listinfo/loos-announce              =
 ===============================================================================
 
-***********************************************************************************
+   * RELEASE 2.0.4 *
+
+This release includes a number of bug fixes and important changes.  An
+issue with building LOOS when using Boost 1.52+ has been addressed.
+MacOS is now supported by the beta version of PyLOOS.  PyLOOS may also
+be installed now.  Note, however, that how you build PyLOOS has
+changed: use "scons pyloos=1".  We have also added a "chainid" keyword
+to the selection language.
+
+For more details, please refer to the ChangeLog file or the "Changes"
+section in the documentation.
+
+
 
    * RELEASE 2.0.3b *
 
@@ -14,8 +26,6 @@ inadvertently released.  The current 2.0.3b release is the official
 source code release.  We sincerely apologize for any
 inconvenience/confusion this may have caused, and strongly recommend
 downloading and installing this version.
-
-***********************************************************************************
 
 
 This release includes a number of bug fixes and new features,
