@@ -1321,13 +1321,16 @@ Matlab and Octave.
   <li> Fixed bug in area_per_lipid where it ignored the --skip option
   <li> Fixed error in documentation for subsetter
   <li> Fixed performance issue when writing PDB files with CONECT
-       records that contain a lot of atoms.
+       records that contain a lot of atoms
   <li> Changed PSF reader to NOT use hybrid-36 encoding (would break
        for large systems and is unnecessary for PSF files)
 </ul>
 
 \subsection r204_added_changed Added, Changed, or Otherwise Notable
 <ul>
+  <li> Changed build protocol for PyLOOS.  To build PyLOOS along with
+       the rest of LOOS, use "scons pyloos=1".  To install everything
+       along with PyLOOS, use "scons pyloos=1 install"
   <li> Added support for building PyLOOS in MacOS (note: still in beta-release)
   <li> Added "chainid" keyword to selection language
   <li> Added --assign option to ramachandran for a rough secondary structure assignment
@@ -2515,7 +2518,7 @@ implementations.
 <DD>	You will need to install a recent version of Swig.  For
 	details specific to your OS, please see the INSTALL file.
 	PyLOOS is not part of the default build for LOOS.  You must
-	tell SCons to build it by saying "scons pyloos".
+	tell SCons to build it by saying "scons pyloos=1".
 
 <DT>	I'm getting errors from Swig (about missing files)
 <DD>	On a few test systems, we found that there is an older
@@ -2533,9 +2536,16 @@ implementations.
 	loos.
 
 <DT>	Can I install PyLOOS?
-<DD>	We do not currently have an install mechanism for PyLOOS.
-	However, once the setup script has been sourced, python will
-	find it regardless of where you run Python.
+<DD>	Yes.  PyLOOS can be installed alongside the rest of LOOS,
+\code
+	scons pyloos=1 install
+\endcode
+	or to install in a specific location,
+\code
+	scons pyloos=1 PREFIX=/home/user/MyLOOS
+\endcode
+	Be sure to source the appropriate setup.sh or setup.csh file
+	in the install directory prior to using LOOS/PyLOOS.
 </DL>
 
 \subsection faq_pyloos_using Using PyLOOS
