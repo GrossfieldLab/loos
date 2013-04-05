@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-  axis_with_membrane computes the cosine of the dot-product between the first
+  axis_with_membrane computes the cosine between the first
   principal axis of a selection and the Z-axis (i.e. the putative membrane
   normal).  This is written out for a trajectory as a time series...
 """
@@ -44,7 +44,7 @@ mol = createSystem(model_name)
 # Now define the trajectory
 traj = createTrajectory(traj_name, mol)
 
-# Select the backbone atoms coming from segment PE1
+# Select the atoms to be used for the principal axis calculation
 backbone = selectAtoms(mol, selection)
 
 # Iterate over all frames in the trajectory...
@@ -57,10 +57,10 @@ while (traj.readFrame()):
     # Compute the principal axes for the subset of atoms given above
     axes = backbone.principalAxes()
 
-    # Print out time, and the cosine of the dot-product between
-    # The Z-axes (i.e. membrane normal) and the first principal axes
+    # Print out time, and the dot-product between
+    # The Z-axis (i.e. membrane normal) and the first principal axes
     # of the subset of atoms
-    print t, "\t", cos(axes[0].z())
+    print t, "\t", axes[0].z()
     t += 1
 
 
