@@ -32,3 +32,4 @@ namespace loos {
 %include "ensembles.i"
 %include "Geometry.i"
 %include "TimeSeries.i"
+%include "exceptions.i"
