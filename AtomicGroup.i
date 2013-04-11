@@ -177,6 +177,8 @@ namespace loos {
     GCoord periodicBox(void) const { return(box.box()); }
     void periodicBox(const GCoord& c) { box.box(c); }
     void periodicBox(const greal x, const greal y, const greal z);
+    void removePeriodicBox(void);
+    
 
     //! Provide access to the underlying shared periodic box...
     //SharedPeriodicBox sharedPeriodicBox() const { return(box); }
