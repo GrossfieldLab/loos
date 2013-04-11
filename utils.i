@@ -58,7 +58,7 @@ namespace loos {
 
   std::string findBaseName(const std::string&);
   std::string getNextLine(std::istream& is, int* lineno);
-  AtomicGroup selectAtoms(const AtomicGroup&, const std::string);
+  AtomicGroup selectAtoms(const AtomicGroup&, const std::string) throw (loos::NullResult);
   AtomicGroup loadStructureWithCoords(const std::string& model, const std::string& cooords);
   std::vector<uint> assignTrajectoryFrames(const pTraj& traj, const std::string& frame_index_spec, uint skip = 0, uint stride = 1);
 };
