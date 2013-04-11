@@ -166,7 +166,7 @@ namespace loos {
    *  and null-selection, a runtime_error exception is thrown so the
    *  catcher cannot disambiguate between the two.
    */
-  AtomicGroup selectAtoms(const AtomicGroup& source, const std::string selection) {
+    AtomicGroup selectAtoms(const AtomicGroup& source, const std::string selection) throw(NullResult) {
   
     Parser parser;
 
