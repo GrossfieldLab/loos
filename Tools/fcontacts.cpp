@@ -121,7 +121,8 @@ public:
         probe_selection(""),
         symmetry(true),
         auto_split(true),
-        exclude_self(true)
+        exclude_self(true),
+        heavy(true)
         { }
 
 
@@ -132,6 +133,7 @@ public:
             ("reimage", po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
             ("split", po::value<bool>(&auto_split)->default_value(auto_split), "Automatically split probe selection")
             ("exclude", po::value<bool>(&exclude_self)->default_value(exclude_self), "Exclude self from contacts")
+            ("heavy", po::value<bool>(&heavy)->default_value(heavy), "Only consider heavy atoms")
             ("pad", po::value<double>(&pad)->default_value(pad), "Padding for filtering nearby atoms");
     }
 
@@ -180,7 +182,7 @@ public:
 
     double inner_cutoff, outer_cutoff, pad;
     string probe_selection, system_selection;
-    bool symmetry, auto_split, exclude_self;
+    bool symmetry, auto_split, exclude_self, heavy;
     vector<string> target_selections;
 };
 
@@ -343,6 +345,15 @@ int main(int argc, char *argv[]) {
         targets.push_back(selectAtoms(model, *i));
 
 
+    // Now strip hydrogens, if requested...
+    if (topts->heavy) {
+        probe = probe.select(HeavyAtomSelector());
+        system = system.select(HeavyAtomSelector());
+        for (uint i=0; i<targets.size(); ++i)
+            targets[i] = targets[i].select(HeavyAtomSelector());
+    }
+    
+    
     // If splitting, then split based on presence of connectivity...
     vGroup myselves;
     vGroup excludes;
