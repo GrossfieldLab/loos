@@ -57,7 +57,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit TinkerXYZ(std::ifstream &ifs) {
+    explicit TinkerXYZ(std::istream &ifs) {
       read(ifs);
     }
 

@@ -107,7 +107,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit Amber(std::ifstream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
+    explicit Amber(std::istream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
       read(ifs);
     }
 

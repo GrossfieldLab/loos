@@ -95,7 +95,7 @@ namespace loos {
     }
 
     //! Read in a PDB from an ifstream
-    explicit PDB(std::ifstream& ifs) : _show_charge(false), _auto_ter(true),
+    explicit PDB(std::istream& ifs) : _show_charge(false), _auto_ter(true),
                                        _has_cryst(false), strictness_policy(false) { read(ifs); }
 
 
