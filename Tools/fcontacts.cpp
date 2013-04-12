@@ -40,13 +40,12 @@ namespace po = loos::OptionsFramework::po;
 typedef vector<AtomicGroup> vGroup;
 
 
-
-
 // @cond TOOL_INTERNAL
 
 string fullHelpMessage() {
     string s = 
         "\n"
+        "***WARNING***  This help is out of date\n"
         "SYNOPSIS\n"
         "Determine the number of contacts between a probe selection and multiple targets\n"
         "\n"
@@ -121,7 +120,8 @@ public:
         pad(1.0),
         probe_selection(""),
         symmetry(true),
-        auto_split(true)
+        auto_split(true),
+        exclude_self(true)
         { }
 
 
@@ -131,6 +131,7 @@ public:
             ("outer", po::value<double>(&outer_cutoff)->default_value(outer_cutoff), "Outer cutoff (ignore atoms further away than this)")
             ("reimage", po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
             ("split", po::value<bool>(&auto_split)->default_value(auto_split), "Automatically split probe selection")
+            ("exclude", po::value<bool>(&exclude_self)->default_value(exclude_self), "Exclude self from contacts")
             ("pad", po::value<double>(&pad)->default_value(pad), "Padding for filtering nearby atoms");
     }
 
@@ -179,7 +180,7 @@ public:
 
     double inner_cutoff, outer_cutoff, pad;
     string probe_selection, system_selection;
-    bool symmetry, auto_split;
+    bool symmetry, auto_split, exclude_self;
     vector<string> target_selections;
 };
 
@@ -250,6 +251,7 @@ AtomicGroup pickNearbyAtoms(const AtomicGroup& probe, const AtomicGroup& target,
 
 
 vector<double> fractionContactsToProbe(const AtomicGroup& probe,
+                                       const AtomicGroup& exclude_self,
                                        const AtomicGroup& nearby,
                                        const vGroup& targets,
                                        const double inner_radius,
@@ -259,9 +261,14 @@ vector<double> fractionContactsToProbe(const AtomicGroup& probe,
 
     // First, find which nearby atoms are actually in contact...
     AtomicGroup nearby_contacts = contacts(probe, nearby, inner_radius, outer_radius, symmetry);
-    AtomicGroup myself = nearby_contacts.intersect(probe, IdEquals());
-    nearby_contacts.remove(myself);
+    AtomicGroup myself;
     
+    if (!exclude_self.empty())
+        myself = nearby_contacts.intersect(exclude_self, IdEquals());
+    else
+        myself = nearby_contacts.intersect(probe, IdEquals());
+    nearby_contacts.remove(myself);
+
     vector<double> fracts(targets.size(), 0.0);
     for (uint i=0; i<targets.size(); ++i) {
         AtomicGroup target_nearby = nearby_contacts.intersect(targets[i], IdEquals());
@@ -273,6 +280,7 @@ vector<double> fractionContactsToProbe(const AtomicGroup& probe,
         
 FContactsList fractionContacts(const AtomicGroup& system,
                                const vGroup& probes,
+                               const vGroup& excludes,
                                const vGroup& targets,
                                const double inner_radius,
                                const double outer_radius,
@@ -283,7 +291,8 @@ FContactsList fractionContacts(const AtomicGroup& system,
     
     for (uint j=0; j<probes.size(); ++j) {
         AtomicGroup nearby = pickNearbyAtoms(probes[j], system, outer_radius, symmetry);
-        vector<double> v = fractionContactsToProbe(probes[j], nearby, targets, inner_radius, outer_radius, symmetry);
+        vector<double> v = fractionContactsToProbe(probes[j], excludes[j], nearby, targets,
+                                                   inner_radius, outer_radius, symmetry);
         fclist.push_back(v);
     }
 
@@ -336,6 +345,8 @@ int main(int argc, char *argv[]) {
 
     // If splitting, then split based on presence of connectivity...
     vGroup myselves;
+    vGroup excludes;
+    
     if (topts->auto_split) {
         if (probe.hasBonds())
             myselves = probe.splitByMolecule();
@@ -345,6 +356,26 @@ int main(int argc, char *argv[]) {
     } else
         myselves.push_back(probe);
 
+
+    if (topts->exclude_self) {
+        vGroup molecules;
+        if (system.hasBonds())
+            molecules = system.splitByMolecule();
+        else
+            molecules = system.splitByUniqueSegid();
+
+        for (vGroup::iterator i = myselves.begin(); i != myselves.end(); ++i) {
+            AtomicGroup exclusive;
+            for (vGroup::iterator j = molecules.begin(); j != molecules.end(); ++j)
+                if (i->containsAny(*j, IdEquals()))
+                    exclusive.append(*j);
+            excludes.push_back(exclusive);
+        }
+    } else
+        excludes = vGroup(myselves.size());
+        
+    
+        
 
     // Size of the output matrix
     uint rows = indices.size();
@@ -372,7 +403,7 @@ int main(int argc, char *argv[]) {
 
         M(t, 0) = t;
 
-        FContactsList fcl = fractionContacts(system, myselves, targets, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
+        FContactsList fcl = fractionContacts(system, myselves, excludes, targets, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
         vector<double> avg = average(fcl);
         for (uint i=0; i<avg.size(); ++i)
             M(t, i+1) = avg[i];
