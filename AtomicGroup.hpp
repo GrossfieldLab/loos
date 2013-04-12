@@ -236,7 +236,21 @@ namespace loos {
     
     //! Determines if a group is a subset of the current group using the default AtomEquals policy
     bool contains(const AtomicGroup& g) { return(contains(g, AtomEquals())); }
-    
+
+
+      //! Determines if a group contains any atom
+      template<class EqualsOp> bool containsAny(const AtomicGroup& g, const EqualsOp& op) 
+          {
+              for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
+                  if (std::find_if(begin(), end(), bind2nd(op, *cj)) != end())
+                      return(true);
+              return(false);
+          }
+
+
+      //! Determines if a group contains any atom using the default AtomEquals policy
+      bool containsAny(const AtomicGroup& g) { return(containsAny(g, AtomEquals())); }
+      
     //! Computes the intersection of two groups using the EqualsOp atom-equality policy
     /**
      * See AtomicGroup::contains(const pAtom&, const EqualsOp&) for more details
