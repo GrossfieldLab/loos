@@ -115,7 +115,7 @@ namespace loos {
       cached_first = true;
     }      
 
-    internal::XDR xdr_file;
+    internal::XDRReader xdr_file;
     std::vector<size_t> frame_indices;
     uint natoms_;
     GCoord box;

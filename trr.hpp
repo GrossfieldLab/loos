@@ -241,7 +241,7 @@ namespace loos {
 
 
   private:
-    internal::XDR xdr_file;
+    internal::XDRReader xdr_file;
     std::vector<GCoord> coords_;
     GCoord box;
     std::vector<size_t> frame_indices;   // Index into file for start
