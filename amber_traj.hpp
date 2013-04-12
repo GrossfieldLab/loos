@@ -55,7 +55,7 @@ namespace loos {
                                                       frame_offset(0), frame_size(0),
                                                       periodic(false) { init(); }
 
-    explicit AmberTraj(std::iostream& is, const int na) : Trajectory(is), _natoms(na),
+    explicit AmberTraj(std::istream& is, const int na) : Trajectory(is), _natoms(na),
                                                      frame_offset(0), frame_size(0),
                                                      periodic(false) { init(); }
 

@@ -51,15 +51,15 @@ namespace loos {
     public:
 
       //! Constructor determines need to convert data at instantiation
-      XDR(std::iostream* s) : stream(s), need_to_swab(false) {
+      XDR(std::istream* s) : stream(s), need_to_swab(false) {
         int test = 0x1234;
         if (*(reinterpret_cast<char*>(&test)) == 0x34) {
           need_to_swab = true;
         }
       }
 
-      //! Returns the stored iostream pointer
-      std::iostream* get(void) { return(stream); }
+      //! Returns the stored istream pointer
+      std::istream* get(void) { return(stream); }
 
       //! Read a single datum
       template<typename T> uint read(T* p) {
@@ -135,6 +135,8 @@ namespace loos {
 
       // -----------------------------------------------------
 
+#if defined(XDR_WRITE)
+        
       //! Writes a single datum
       template<typename T> uint write(const T* p) {
 
@@ -193,8 +195,10 @@ namespace loos {
 
       uint write(const std::string& s) { return(write(s.c_str())); }
 
+#endif
+        
     private:
-      std::iostream* stream;
+      std::istream* stream;
       bool need_to_swab;
 
     };

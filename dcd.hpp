@@ -102,7 +102,7 @@ namespace loos {
                                    first_frame_pos(0), swabbing(false) { readHeader(); readFrame(0); cached_first = true; }
 
     //! Begin reading from the stream ifs
-    explicit DCD(std::iostream& fs) : Trajectory(fs), _natoms(0),
+    explicit DCD(std::istream& fs) : Trajectory(fs), _natoms(0),
                                      qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0),
                                      swabbing(false) { readHeader(); readFrame(0); cached_first = true; };
 

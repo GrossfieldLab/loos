@@ -86,7 +86,7 @@ namespace loos {
       init();
     }
 
-    explicit XTC(std::iostream& is) : Trajectory(is), xdr_file(ifs()), natoms_(0) {
+    explicit XTC(std::istream& is) : Trajectory(is), xdr_file(ifs()), natoms_(0) {
       init();
     }
 

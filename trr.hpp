@@ -111,7 +111,7 @@ namespace loos {
     explicit TRR(const char* p) : Trajectory(p), xdr_file(ifs()) {
       init();
     }
-    explicit TRR(std::iostream& is) : Trajectory(is), xdr_file(ifs()) {
+    explicit TRR(std::istream& is) : Trajectory(is), xdr_file(ifs()) {
       init();
     }
 

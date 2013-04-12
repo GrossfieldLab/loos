@@ -4,7 +4,7 @@
 #define LOOS_AMBER_TRAJ_HPP
 
 
-#include <iostream>
+#include <istream>
 #include <string>
 #include <netcdf.h>
 
