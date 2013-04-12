@@ -1,3 +1,14 @@
+2013-04-12    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed StreamWrapper to use an istream internally rather than
+	iostream.
+	* Changed Trajectory (& derived classes) to take an istream in
+	constructor rather than an ifstream
+	* Changed all structure classes (i.e. pdb, amber, tinkerxyz, etc)
+	to take an istream in the constructor rather than an ifstream
+	* Changed XDR class, refactoring it into XDRReader (which takes an
+	istream) and XDRWriter (which takes an ostream)
+
 2013-04-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed build procedure(s).  To build pyloos, use "scons
