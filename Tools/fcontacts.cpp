@@ -121,8 +121,7 @@ public:
         probe_selection(""),
         symmetry(true),
         auto_split(true),
-        exclude_self(true),
-        heavy(true)
+        exclude_self(true)
         { }
 
 
@@ -133,25 +132,22 @@ public:
             ("reimage", po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
             ("split", po::value<bool>(&auto_split)->default_value(auto_split), "Automatically split probe selection")
             ("exclude", po::value<bool>(&exclude_self)->default_value(exclude_self), "Exclude self from contacts")
-            ("heavy", po::value<bool>(&heavy)->default_value(heavy), "Only consider heavy atoms")
             ("pad", po::value<double>(&pad)->default_value(pad), "Padding for filtering nearby atoms");
     }
 
     void addHidden(po::options_description& o) {
         o.add_options()
-            ("system", po::value<string>(&system_selection), "System selection")
             ("probe", po::value<string>(&probe_selection), "Probe selection")
             ("target", po::value< vector<string> >(&target_selections), "Target selections");
     }
 
     void addPositional(po::positional_options_description& p) {
-        p.add("system", 1);
         p.add("probe", 1);
         p.add("target", -1);
     }
 
     bool check(po::variables_map& map) {
-        if (target_selections.empty() || probe_selection.empty() || system_selection.empty())
+        if (target_selections.empty() || probe_selection.empty())
             return(true);
 
         return(false);
@@ -164,13 +160,12 @@ public:
 
     string print() const {
         ostringstream oss;
-        oss << boost::format("inner=%f,outer=%f,reimage=%d,autosplit=%d,pad=%f,system='%s',probe='%s',targets=")
+        oss << boost::format("inner=%f,outer=%f,reimage=%d,autosplit=%d,pad=%f,probe='%s',targets=")
             % inner_cutoff
             % outer_cutoff
             % symmetry
             % auto_split
             % pad
-            % system_selection
             % probe_selection;
 
         for (uint i=0; i<target_selections.size(); ++i)
@@ -181,8 +176,8 @@ public:
 
 
     double inner_cutoff, outer_cutoff, pad;
-    string probe_selection, system_selection;
-    bool symmetry, auto_split, exclude_self, heavy;
+    string probe_selection;
+    bool symmetry, auto_split, exclude_self;
     vector<string> target_selections;
 };
 
@@ -322,11 +317,12 @@ int main(int argc, char *argv[]) {
     string hdr = invocationHeader(argc, argv);
 
     opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+    opts::BasicSelection* sopts = new opts::BasicSelection();
     opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices();
     ToolOptions* topts = new ToolOptions;
 
     opts::AggregateOptions options;
-    options.add(bopts).add(tropts).add(topts);
+    options.add(bopts).add(sopts).add(tropts).add(topts);
 
     if (!options.parse(argc, argv))
         exit(-1);
@@ -335,25 +331,16 @@ int main(int argc, char *argv[]) {
     pTraj traj = tropts->trajectory;
     vector<uint> indices = tropts->frameList();
 
-    AtomicGroup probe = selectAtoms(model, topts->probe_selection);
-    AtomicGroup system = selectAtoms(model, topts->system_selection);
+    AtomicGroup system = selectAtoms(model, sopts->selection);
+    AtomicGroup probe = selectAtoms(system, topts->probe_selection);
     
 
     // Build each of the requested targets...
     vGroup targets;
     for (vector<string>::iterator i = topts->target_selections.begin(); i != topts->target_selections.end(); ++i)
-        targets.push_back(selectAtoms(model, *i));
+        targets.push_back(selectAtoms(system, *i));
 
 
-    // Now strip hydrogens, if requested...
-    if (topts->heavy) {
-        probe = probe.select(HeavyAtomSelector());
-        system = system.select(HeavyAtomSelector());
-        for (uint i=0; i<targets.size(); ++i)
-            targets[i] = targets[i].select(HeavyAtomSelector());
-    }
-    
-    
     // If splitting, then split based on presence of connectivity...
     vGroup myselves;
     vGroup excludes;
