@@ -8,6 +8,11 @@
 	* Fixed selectAtoms() in PyLOOS to throw LOOS exceptions (i.e. it
 	will no longer crash python)
 
+2013-04-12 <alan@membrane.urmc.rochester.edu>
+	
+	* Added HBondDetector class: given a triple of atoms, will
+	efficiently apply angle and distance criteria
+
 2013-04-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed build procedure(s).  To build pyloos, use "scons
