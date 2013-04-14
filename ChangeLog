@@ -4,6 +4,9 @@
 	contact-time tool.  It calculates the contacts made
 	between a probe and a set of target selections as a fraction of
 	all contacts with the probe.
+	* Added LOOS exceptions to PyLOOS
+	* Fixed selectAtoms() in PyLOOS to throw LOOS exceptions (i.e. it
+	will no longer crash python)
 
 2013-04-01    <tromo@hill.urmc-sh.rochester.edu>
 
