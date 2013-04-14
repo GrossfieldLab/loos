@@ -234,7 +234,6 @@ AtomicGroup pickNearbyAtoms(const AtomicGroup& probe, const AtomicGroup& target,
 
 
 vector<double> fractionContactsToProbe(const AtomicGroup& probe,
-                                       const AtomicGroup& exclude_self,
                                        const AtomicGroup& nearby,
                                        const vGroup& targets,
                                        const double inner_radius,
@@ -244,13 +243,6 @@ vector<double> fractionContactsToProbe(const AtomicGroup& probe,
 
     // First, find which nearby atoms are actually in contact...
     AtomicGroup nearby_contacts = contacts(probe, nearby, inner_radius, outer_radius, symmetry);
-    AtomicGroup myself;
-    
-    if (!exclude_self.empty())
-        myself = nearby_contacts.intersect(exclude_self, IdEquals());
-    else
-        myself = nearby_contacts.intersect(probe, IdEquals());
-    nearby_contacts.remove(myself);
 
     vector<double> fracts(targets.size(), 0.0);
     for (uint i=0; i<targets.size(); ++i) {
@@ -263,7 +255,7 @@ vector<double> fractionContactsToProbe(const AtomicGroup& probe,
         
 FContactsList fractionContacts(const AtomicGroup& system,
                                const vGroup& probes,
-                               const vGroup& excludes,
+                               const vGroup& excludeds,
                                const vGroup& targets,
                                const double inner_radius,
                                const double outer_radius,
@@ -273,8 +265,8 @@ FContactsList fractionContacts(const AtomicGroup& system,
     FContactsList fclist;
     
     for (uint j=0; j<probes.size(); ++j) {
-        AtomicGroup nearby = pickNearbyAtoms(probes[j], system, outer_radius, symmetry);
-        vector<double> v = fractionContactsToProbe(probes[j], excludes[j], nearby, targets,
+        AtomicGroup nearby = pickNearbyAtoms(probes[j], excludeds[j], outer_radius, symmetry);
+        vector<double> v = fractionContactsToProbe(probes[j], nearby, targets,
                                                    inner_radius, outer_radius, symmetry);
         fclist.push_back(v);
     }
@@ -356,11 +348,17 @@ int main(int argc, char *argv[]) {
             excludes.push_back(exclusive);
         }
     } else
-        excludes = vGroup(myselves.size());
-        
-    
-        
+        excludes = myselves;
 
+    // This is system excluding requested probe atoms...
+    vGroup excludeds;
+    for (vGroup::iterator i = excludes.begin(); i != excludes.end(); ++i) {
+        AtomicGroup pruned = system;
+        pruned.remove(*i);
+        excludeds.push_back(pruned);
+    }
+    
+    
     // Size of the output matrix
     uint rows = indices.size();
     uint cols = targets.size() + 1;
@@ -387,7 +385,7 @@ int main(int argc, char *argv[]) {
 
         M(t, 0) = t;
 
-        FContactsList fcl = fractionContacts(system, myselves, excludes, targets, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
+        FContactsList fcl = fractionContacts(system, myselves, excludeds, targets, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
         vector<double> avg = average(fcl);
         for (uint i=0; i<avg.size(); ++i)
             M(t, i+1) = avg[i];
