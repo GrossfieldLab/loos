@@ -1,3 +1,10 @@
+2013-04-14  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Added fcontacts tool that should, in most cases, supercede the
+	contact-time tool.  It calculates the contacts made
+	between a probe and a set of target selections as a fraction of
+	all contacts with the probe.
+
 2013-04-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed build procedure(s).  To build pyloos, use "scons
