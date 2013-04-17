@@ -34,175 +34,197 @@
 
 namespace loos {
 
-  namespace internal {
+    namespace internal {
 
-    //! This class provides some facility for handling XDR data
-    /**
-     * The read and write functions use templates to read the
-     * appropriate raw data.  Beware of unexpected type
-     * conversions...  All functions also return a 0 for error, or a 1
-     * for success (or the number of elements actually read/written).
-     */
-    class XDR {
-    public:
-      //! Type (and hence size) of the external block
-      typedef unsigned int           block_type;
+        //! This class provides some facility for handling XDR data
+        /**
+         * The read and write functions use templates to read the
+         * appropriate raw data.  Beware of unexpected type
+         * conversions...  All functions also return a 0 for error, or a 1
+         * for success (or the number of elements actually read/written).
+         */
+        class XDRReader {
+        public:
+            //! Type (and hence size) of the external block
+            typedef unsigned int           block_type;
 
-    public:
+        public:
 
-      //! Constructor determines need to convert data at instantiation
-      XDR(std::iostream* s) : stream(s), need_to_swab(false) {
-        int test = 0x1234;
-        if (*(reinterpret_cast<char*>(&test)) == 0x34) {
-          need_to_swab = true;
-        }
-      }
+            //! Constructor determines need to convert data at instantiation
+            XDRReader(std::istream* s) : stream(s), need_to_swab(false) {
+                int test = 0x1234;
+                if (*(reinterpret_cast<char*>(&test)) == 0x34) {
+                    need_to_swab = true;
+                }
+            }
 
-      //! Returns the stored iostream pointer
-      std::iostream* get(void) { return(stream); }
+            //! Returns the stored istream pointer
+            std::istream* get(void) { return(stream); }
 
-      //! Read a single datum
-      template<typename T> uint read(T* p) {
+            //! Read a single datum
+            template<typename T> uint read(T* p) {
 
-        if (sizeof(T) > sizeof(block_type))
-          throw(std::logic_error("Attempting to read a POD that is too large"));
+                if (sizeof(T) > sizeof(block_type))
+                    throw(std::logic_error("Attempting to read a POD that is too large"));
 
-        T result;
-        stream->read(reinterpret_cast<char*>(&result), sizeof(block_type));
-        if (sizeof(T) > 1 && need_to_swab)
-          result = swab(result);
+                T result;
+                stream->read(reinterpret_cast<char*>(&result), sizeof(block_type));
+                if (sizeof(T) > 1 && need_to_swab)
+                    result = swab(result);
 
-        *p = result;
-        return(!stream->fail());
-      }
+                *p = result;
+                return(!stream->fail());
+            }
 
-      template<typename T> uint read(T& t) { return(read(&t)); }
+            template<typename T> uint read(T& t) { return(read(&t)); }
 
-      //! Read an n-array of data
-      template<typename T> uint read(T* ary, const uint n) {
-        uint i;
-        for (i=0; i<n && read(ary+i); ++i) ;
-        return(i);
-      }
-
-
-      //! Read in an opaque array of n-bytes (same as xdr_opaque)
-      uint read(char* p, uint n) {
-        uint rndup;
-        static char buf[sizeof(block_type)];
-
-        if (n == 0)
-          return(1);
-
-        rndup = n % sizeof(block_type);
-        if (rndup > 0)
-          rndup = sizeof(block_type) - rndup;
-
-        stream->read(p, n);
-        if (stream->fail())
-          return(0);
-        if (rndup)
-          stream->read(buf, rndup);
-
-        return(n);
-      }
-
-      //! Same as xdr_string.
-
-      uint read(boost::shared_ptr<char>& p) {
-        uint n;
-
-        if (!read(n))
-          return(0);
-        char* s = new char[n+1];
-        uint i = read(s, n);
-        s[n] = '\0';
-        p = boost::shared_ptr<char>(s);
-        return(i);
-      }
-
-      uint read(std::string& s) {
-        boost::shared_ptr<char> p;
-        int i = read(p);
-        if (!i)
-          return(0);
-
-        s = std::string(p.get());
-
-        return(i);
-      }
+            //! Read an n-array of data
+            template<typename T> uint read(T* ary, const uint n) {
+                uint i;
+                for (i=0; i<n && read(ary+i); ++i) ;
+                return(i);
+            }
 
 
-      // -----------------------------------------------------
+            //! Read in an opaque array of n-bytes (same as xdr_opaque)
+            uint read(char* p, uint n) {
+                uint rndup;
+                static char buf[sizeof(block_type)];
 
-      //! Writes a single datum
-      template<typename T> uint write(const T* p) {
+                if (n == 0)
+                    return(1);
 
-        if (sizeof(T) > sizeof(block_type))
-          throw(std::logic_error("Attempting to write a POD that is too large"));
+                rndup = n % sizeof(block_type);
+                if (rndup > 0)
+                    rndup = sizeof(block_type) - rndup;
 
-        uint u;
-        T* up = reinterpret_cast<T*>(&u);
-        *up = *p;
+                stream->read(p, n);
+                if (stream->fail())
+                    return(0);
+                if (rndup)
+                    stream->read(buf, rndup);
 
-        if (sizeof(T) > 1 && need_to_swab)
-          u = swab(u);
+                return(n);
+            }
+
+            //! Same as xdr_string.
+
+            uint read(boost::shared_ptr<char>& p) {
+                uint n;
+
+                if (!read(n))
+                    return(0);
+                char* s = new char[n+1];
+                uint i = read(s, n);
+                s[n] = '\0';
+                p = boost::shared_ptr<char>(s);
+                return(i);
+            }
+
+            uint read(std::string& s) {
+                boost::shared_ptr<char> p;
+                int i = read(p);
+                if (!i)
+                    return(0);
+
+                s = std::string(p.get());
+
+                return(i);
+            }
+
+        private:
+            std::istream* stream;
+            bool need_to_swab;
+        };
+    
+      
+        class XDRWriter 
+        {
+        public:
+            //! Type (and hence size) of the external block
+            typedef unsigned int           block_type;
+
+        public:
+
+            //! Constructor determines need to convert data at instantiation
+            XDRWriter(std::ostream* s) : stream(s) { 
+                int test = 0x1234;
+                if (*(reinterpret_cast<char*>(&test)) == 0x34) {
+                    need_to_swab = true;
+                }
+            }
+
+            //! Returns the stored istream pointer
+            std::ostream* get(void) { return(stream); }
+          
+            //! Writes a single datum
+            template<typename T> uint write(const T* p) {
+
+                if (sizeof(T) > sizeof(block_type))
+                    throw(std::logic_error("Attempting to write a POD that is too large"));
+
+                uint u;
+                T* up = reinterpret_cast<T*>(&u);
+                *up = *p;
+
+                if (sizeof(T) > 1 && need_to_swab)
+                    u = swab(u);
 
     
-        stream->write(reinterpret_cast<char*>(&u), sizeof(block_type));
+                stream->write(reinterpret_cast<char*>(&u), sizeof(block_type));
 
-        return(!stream->fail());
-      }
+                return(!stream->fail());
+            }
 
-      template<typename T> uint write(const T& t) { return(write(&t)); }
+            template<typename T> uint write(const T& t) { return(write(&t)); }
 
-      //! Writes an n-array of data
-      template<typename T> uint write(const T* ary, const uint n) {
-        uint i;
-        for (i=0; i<n && write(&(ary[i])); ++i) ;
-        return(i);
-      }
+            //! Writes an n-array of data
+            template<typename T> uint write(const T* ary, const uint n) {
+                uint i;
+                for (i=0; i<n && write(&(ary[i])); ++i) ;
+                return(i);
+            }
 
-      //! Writes an opaque array of n-bytes
-      uint write(const char* p, const uint n) {
-        uint rndup;
-        static char buf[sizeof(block_type)];
-        static bool init(false);
+            //! Writes an opaque array of n-bytes
+            uint write(const char* p, const uint n) {
+                uint rndup;
+                static char buf[sizeof(block_type)];
+                static bool init(false);
 
-        if (!init)
-          for (uint i=0; i<sizeof(block_type); ++i)
-            buf[i] = '\0';
+                if (!init)
+                    for (uint i=0; i<sizeof(block_type); ++i)
+                        buf[i] = '\0';
 
-        rndup = n % sizeof(block_type);
-        if (rndup > 0)
-          rndup = sizeof(block_type) - rndup;
+                rndup = n % sizeof(block_type);
+                if (rndup > 0)
+                    rndup = sizeof(block_type) - rndup;
 
-        stream->write(p, n);
-        if (!stream->fail())
-          stream->write(buf, rndup);
+                stream->write(p, n);
+                if (!stream->fail())
+                    stream->write(buf, rndup);
 
-        return(stream->fail() ? 0 : n);
-      }
+                return(stream->fail() ? 0 : n);
+            }
 
-      //! Writes a C-string (ie xdr_string)
-      uint write(const char* p) {
-        uint n = strlen(p);
-        write(n);
-        return(write(p, n));
-      }
+            //! Writes a C-string (ie xdr_string)
+            uint write(const char* p) {
+                uint n = strlen(p);
+                write(n);
+                return(write(p, n));
+            }
 
-      uint write(const std::string& s) { return(write(s.c_str())); }
+            uint write(const std::string& s) { return(write(s.c_str())); }
+        
+        private:
+            std::ostream* stream;
+            bool need_to_swab;
 
-    private:
-      std::iostream* stream;
-      bool need_to_swab;
-
-    };
-
-
+        };
 
 
-  } /* internal */
+    } /* internal */
+
+
 } /* loos */
 
 

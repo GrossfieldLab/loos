@@ -59,7 +59,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit CHARMM(std::ifstream &ifs) {
+    explicit CHARMM(std::istream &ifs) {
       read(ifs);
     }
 

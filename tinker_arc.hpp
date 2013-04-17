@@ -64,7 +64,7 @@ namespace loos {
     explicit TinkerArc(const char *p) : Trajectory(p), _natoms(0),
                                         _nframes(0), current_index(0), at_end(false) { init(); }
 
-    explicit TinkerArc(std::iostream& is) : Trajectory(is), _natoms(0),
+    explicit TinkerArc(std::istream& is) : Trajectory(is), _natoms(0),
                                         _nframes(0), current_index(0), at_end(false) { init(); }
 
     virtual uint nframes(void) const { return(_nframes); }

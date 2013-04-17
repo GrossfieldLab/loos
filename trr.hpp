@@ -111,7 +111,7 @@ namespace loos {
     explicit TRR(const char* p) : Trajectory(p), xdr_file(ifs()) {
       init();
     }
-    explicit TRR(std::iostream& is) : Trajectory(is), xdr_file(ifs()) {
+    explicit TRR(std::istream& is) : Trajectory(is), xdr_file(ifs()) {
       init();
     }
 
@@ -241,7 +241,7 @@ namespace loos {
 
 
   private:
-    internal::XDR xdr_file;
+    internal::XDRReader xdr_file;
     std::vector<GCoord> coords_;
     GCoord box;
     std::vector<size_t> frame_indices;   // Index into file for start

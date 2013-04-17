@@ -52,7 +52,7 @@ namespace loos {
   public:
     explicit CCPDB(const std::string& s) : Trajectory(s), _natoms(0), _nframes(0) { init(); }
     explicit CCPDB(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
-    explicit CCPDB(std::iostream& is) : Trajectory(is), _natoms(0), _nframes(0) { init(); }
+    explicit CCPDB(std::istream& is) : Trajectory(is), _natoms(0), _nframes(0) { init(); }
 
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }

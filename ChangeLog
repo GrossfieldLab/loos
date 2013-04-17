@@ -8,10 +8,18 @@
 	* Fixed selectAtoms() in PyLOOS to throw LOOS exceptions (i.e. it
 	will no longer crash python)
 
-2013-04-12 <alan@membrane.urmc.rochester.edu>
+2013-04-12 <tromo@hill.urmc-sh.rochester.edu>
 	
 	* Added HBondDetector class: given a triple of atoms, will
-	efficiently apply angle and distance criteria
+	efficiently apply angle and distance criteria (Alan)
+	* Changed StreamWrapper to use an istream internally rather than
+	iostream.
+	* Changed Trajectory (& derived classes) to take an istream in
+	constructor rather than an ifstream
+	* Changed all structure classes (i.e. pdb, amber, tinkerxyz, etc)
+	to take an istream in the constructor rather than an ifstream
+	* Changed XDR class, refactoring it into XDRReader (which takes an
+	istream) and XDRWriter (which takes an ostream)
 
 2013-04-01    <tromo@hill.urmc-sh.rochester.edu>
 

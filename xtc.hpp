@@ -86,7 +86,7 @@ namespace loos {
       init();
     }
 
-    explicit XTC(std::iostream& is) : Trajectory(is), xdr_file(ifs()), natoms_(0) {
+    explicit XTC(std::istream& is) : Trajectory(is), xdr_file(ifs()), natoms_(0) {
       init();
     }
 
@@ -115,7 +115,7 @@ namespace loos {
       cached_first = true;
     }      
 
-    internal::XDR xdr_file;
+    internal::XDRReader xdr_file;
     std::vector<size_t> frame_indices;
     uint natoms_;
     GCoord box;

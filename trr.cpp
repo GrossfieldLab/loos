@@ -128,7 +128,7 @@ namespace loos {
       if (h.natoms > maxatoms)
         maxatoms = h.natoms;
 
-      uint b = sizeof(internal::XDR::block_type);
+      uint b = sizeof(internal::XDRReader::block_type);
 
       size_t offset = (h.box_size ? DIM*DIM*b : 0) + (h.vir_size ? DIM*DIM*b : 0)
         + (h.pres_size ? DIM*DIM*b : 0) + (h.x_size ? h.natoms*DIM*b : 0)

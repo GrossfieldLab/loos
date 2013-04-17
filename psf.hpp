@@ -70,7 +70,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit PSF(std::ifstream &ifs) {
+    explicit PSF(std::fstream &ifs) {
       read(ifs);
     }
 

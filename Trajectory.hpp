@@ -22,7 +22,7 @@
 #if !defined(LOOS_TRAJECTORY_HPP)
 #define LOOS_TRAJECTORY_HPP
 
-#include <iostream>
+#include <istream>
 #include <string>
 #include <stdexcept>
 #include <vector>
@@ -69,7 +69,7 @@ namespace loos {
     Trajectory(const char* s) : ifs(s), cached_first(false) { }
 
     //! Open using the given stream...
-    Trajectory(std::iostream& fs) : ifs(fs), cached_first(false) { }
+    Trajectory(std::istream& fs) : ifs(fs), cached_first(false) { }
 
     virtual ~Trajectory() { }
 

@@ -405,7 +405,7 @@ namespace loos {
       else if (natoms_ != h.natoms)
         throw(std::runtime_error("XTC frames have differing numbers of atoms"));
 
-      uint block_size = sizeof(internal::XDR::block_type);
+      uint block_size = sizeof(internal::XDRReader::block_type);
       size_t offset = 9 * block_size;
       ifs()->seekg(offset, std::ios_base::cur);
       uint nbytes;
