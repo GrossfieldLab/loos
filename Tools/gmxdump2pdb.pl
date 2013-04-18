@@ -447,7 +447,7 @@ sub buildStructure {
 	my %atom;
 
 	# If atomid overflows, use hybrid-36
-	$atom{ATOMID} = $atomid >= 100000 ? &toHybrid36($atomid) : $atomid;
+	$atom{ATOMID} = $atomid >= 100000 ? &toHybrid36($atomid, 5) : $atomid;
 	
 	$atom{ATOMNAME} = $mol->{ATOMS}->[$i];
 	$atom{SEGID} = $segid;
@@ -516,10 +516,10 @@ sub buildStructure {
 	$b = $localids[$b];
 
 	if ($a >= 100000) {
-	  $a = &toHybrid36($a);
+	  $a = &toHybrid36($a, 5);
 	}
 	if ($b >= 100000) {
-	  $b = &toHybrid36($b);
+	  $b = &toHybrid36($b, 5);
 	}
 
 	if (!exists($bonds{$a})) {
