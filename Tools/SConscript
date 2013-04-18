@@ -34,7 +34,7 @@ apps = apps + ' dcdinfo recenter-trj concat-selection trajinfo rmsf interdist pa
 apps = apps + ' drifter porcupine ramachandran renum-pdb exposure clipper rebond molshape native_contacts traj2matlab'
 apps = apps + ' traj2pdb merge-traj center-molecule contact-time perturb-structure coverlap phase-pdb'
 apps = apps + ' big-svd kurskew periodic_box area_per_lipid residue-contact-map'
-apps = apps + ' cross-dist fcontacts'
+apps = apps + ' cross-dist fcontacts serialize-selection'
 
 list = []
 
