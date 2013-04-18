@@ -32,11 +32,6 @@ int main(int argc, char *argv[])
     AtomicGroup outgroup = molecules[0].copy();
     DCDWriter dcd(prefix + ".dcd");
 
-    PercentProgressWithTime watcher;
-    ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(traj->nframes() * molecules.size()));
-    slayer.attach(&watcher);
-    slayer.start();
-    
     while (traj->readFrame()) {
         traj->updateGroupCoords(model);
 
@@ -55,9 +50,6 @@ int main(int argc, char *argv[])
             }
 
             dcd.writeFrame(outgroup);
-            slayer.update();
         }
     }
-
-    slayer.finish();
 }
