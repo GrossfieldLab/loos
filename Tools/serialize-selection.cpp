@@ -28,6 +28,14 @@ int main(int argc, char *argv[])
     else
         molecules = subset.splitByUniqueSegid();
 
+    for (uint i=1; i<molecules.size(); ++i)
+        if (molecules[i].size() != molecules[0].size()) {
+            cerr << "Error- molecule #" << i << " has a different size than the first one.\n";
+            cerr << "       Check your selection and try again.\n";
+            exit(-10);
+        }
+    
+
     bool structure_written = false;
     AtomicGroup outgroup = molecules[0].copy();
     DCDWriter dcd(prefix + ".dcd");
