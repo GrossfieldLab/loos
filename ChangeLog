@@ -1,3 +1,8 @@
+2013-04-18    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in gmxdump2pdb.pl that affected systems with 100,000
+	atoms or more.
+
 2013-04-14  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Added fcontacts tool that should, in most cases, supercede the
