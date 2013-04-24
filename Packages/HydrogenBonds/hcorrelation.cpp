@@ -149,6 +149,17 @@ public:
     opts.add("trajs", -1);
   }
 
+    bool check(po::variables_map& vm) 
+        {
+            return(
+                donor_selection.empty()
+                || acceptor_selection.empty()
+                || model_name.empty()
+                || traj_names.empty()
+                   );
+        }
+    
+    
   string help() const {
     return("donor-selection acceptor-selection model traj [traj ...]");
   }
