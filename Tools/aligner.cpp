@@ -194,25 +194,12 @@ int main(int argc, char *argv[]) {
   
   if (topts->reference_name.empty()) {
 
-    // Read in the trajectory frames and extract the coordinates for the
-    // aligning subset...
-    vector<AtomicGroup> frames;
-    for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
-      traj->readFrame(*i);
-      traj->updateGroupCoords(align_sub);
-      AtomicGroup subcopy = align_sub.copy();
-      frames.push_back(subcopy);
-    }
-    
-    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(frames, topts->alignment_tol, topts->maxiter);
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(align_sub, traj, indices, topts->alignment_tol, topts->maxiter);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
     
     vector<XForm> xforms = boost::get<0>(res);
-    
-    // Zzzzap our stored groups...
-    frames.clear();
     
     // Setup for writing DCD...
     DCDWriter dcdout(prefopts->prefix + ".dcd");
