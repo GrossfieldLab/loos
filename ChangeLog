@@ -1,3 +1,12 @@
+2013-04-25    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed how some version of averageStructure() and
+	iterativeAlignment() work.  The versions that take an AtomicGroup
+	and a pTraj as arguments no longer cache the trajectory in
+	memory.  Instead, they will read through the trajectory as
+	necessary, only operating on a frame at a time.  In the case of
+	aligning, this may involve multiple reads through the trajectory.
+
 2013-04-18    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in gmxdump2pdb.pl that affected systems with 100,000
