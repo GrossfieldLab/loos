@@ -45,23 +45,36 @@ namespace loos {
   AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
 
   //! Compute the average structure from a trajectory reading only certain frames
+  /**
+   * Note that the trajectory is NOT stored in memory.  Frames will be read as needed.
+   * The trajectory "iterator" will be left pointing to the next frame after the last
+   * frame index passed.
+  */
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj, const std::vector<uint>& indices);
 
   //! Compute the average structure using all frames in a trajectory
+    /**
+     * This version only reads a frame at a time from the trajectory.  The trajectory
+     * iterator will be left pointing to the end of the trajectory.
+    */
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
 
   //! Compute an iterative superposition (a la Alan)
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter=1000);
 
   //! Compute an iterative superposition by reading in frames from the Trajectory.
-  /*!
-   * This function will internally cache an AtomicGroup copy for each
-   * frame of the trajectory.  This could chew up a lot of memory, but
-   * we make the assumption that you will usually be aligning against
-   * a fairly small subset of each frame...
+  /**
+   * The iterativeAlignment() functions that take a trajectory as an argument do
+   * NOT cache frames of the trajectory internally.  This means that the trajectory
+   * will be read as many times as is necessary for the alignment to
+   * converge.  In practice, the OS-specific caching will likely result
+   * in decent performance.  If speed is essential, then consider
+   * using the iterativeAlignment() version that takes a
+   * \p std::vector<AtomicGroup>& as argument instead.
    */
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, const std::vector<uint>& frame_indices, greal threshold = 1e-6, int maxiter=1000);
 
+    //! Compute an iterative superposition for an entire trajectory
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000);
 
 
