@@ -105,7 +105,7 @@ public:
 
   string help() const
   {
-    return("first-selection second-selection histogram-min histogram-min histogram-bins");
+    return("first-selection second-selection histogram-min histogram-max histogram-bins");
   }
 
   string print() const
