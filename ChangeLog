@@ -1,3 +1,12 @@
+2013-05-01    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added serialize-selection tool.  Given a trajectory with T
+	frames and a selection consisting of N molecules (by connectivity
+	of segid), this tool will create a new trajectory that consists of
+	only one molecule but is N*T frames long.  Each chunk of T-frames
+	consists of one of the molecules.
+
+	
 2013-04-25    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed how some version of averageStructure() and
