@@ -1,6 +1,3 @@
-// (c) 2013 Tod D. Romo, Grossfield Lab, URMC
-
-
 /*
 
   This file is part of LOOS.
