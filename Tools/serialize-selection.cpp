@@ -58,20 +58,36 @@ public:
     void addGeneric(po::options_description& o) {
         o.add_options()
             ("pdbout", po::value<bool>(&pdb_output)->default_value(false), "Output is a library of PDBs (prefix must be a printf-style pattern)")
-            ("center", po::value<bool>(&center_selection)->default_value(false), "Center the selection");
-        
+            ("center", po::value<string>(&center_selection)->default_value(""), "Selection to use for centering (empty selection does no centering)")
+            ("canon", po::value<bool>(&canonicalize)->default_value(false), "Canonicalize orientation (for membrane peptides, flip orientation about X-axis if in lower leaflet.  Implies centering)");
     }
 
+
+    bool postConditions(po::variables_map& vm) 
+        {
+            if (canonicalize && center_selection.empty()) {
+                cerr << "Warning- canonicalization is turned on, but no centering selection provided.\n";
+                cerr << "         Centering entire molecule by default.\n";
+                
+                center_selection = string("all");
+            }
+            
+
+            return(true);
+        }
+    
+    
     string print() const {
         ostringstream oss;
 
-        oss << boost::format("pdbout=%d,center=%d") % pdb_output % center_selection;
+        oss << boost::format("pdbout=%d,center='%s',canon=%d") % pdb_output % center_selection % canonicalize;
         return(oss.str());
     }
 
     
-    bool pdb_output, center_selection;
-    
+    bool pdb_output;
+    string center_selection;
+    bool canonicalize;
 };
 
 
@@ -209,7 +225,7 @@ int main(int argc, char *argv[])
         exit(-1);
     
     AtomicGroup subset = selectAtoms(tropts->model, sopts->selection);
-    
+            
     vector<AtomicGroup> molecules;
     if (tropts->model.hasBonds())
         molecules = subset.splitByMolecule();
@@ -226,6 +242,12 @@ int main(int argc, char *argv[])
     
     AtomicGroup outgroup = molecules[0].copy();
 
+    // Figure out how to center
+    bool do_center = !topts->center_selection.empty();
+    AtomicGroup centering_subset = outgroup;
+    if (do_center)
+        centering_subset = selectAtoms(outgroup, topts->center_selection);
+    
     // Set output type
     Outputter* output = 0;
     if (topts->pdb_output)
@@ -243,8 +265,21 @@ int main(int argc, char *argv[])
             for (uint i=0; i<outgroup.size(); ++i)
                 outgroup[i]->coords(molecules[j][i]->coords());
 
-            if (topts->center_selection)
-                outgroup.centerAtOrigin();
+
+            if (topts->canonicalize) {
+                GCoord c = outgroup.centroid();
+                if (c.z() < 0.0) {
+                    outgroup.translate(-c);
+                    outgroup.rotate(GCoord(1,0,0), 180.0);
+                }
+            }
+            
+            if (do_center) {
+                GCoord c = centering_subset.centroid();
+                outgroup.translate(-c);
+            }
+            
+            
             
             output->writeFrame(outgroup);
         }
