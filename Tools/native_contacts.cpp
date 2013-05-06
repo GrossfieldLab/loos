@@ -69,13 +69,16 @@ string fullHelpMessage(void)
 "\n"
 "    EXAMPLE\n"
 "\n"
-"    native_contacts model.psf traj.dcd 5 'segname == \"PROT\"'\n"
+"    native_contacts model.psf traj.dcd 5 --selection 'segname == \"PROT\"'\n"
 "\n"
 "    This uses model.psf as the system file, traj.dcd as the trajectory,\n"
 "    sets the cutoff for a native contact at 5 angstroms, and operates on \n"
 "    the segment called PROT.  Since PSF files don't have coordinates, the \n"
 "    first frame of the trajectory will be used to define which contacts \n"
 "    are native.\n"
+"\n"
+"    If no selection string is provided, then the default is to use "
+"    'name == \"CA\"'."
 "\n"
 "    The output is a time series of the fraction of native contacts present \n"
 "    in the trajectory.  At present, there is no option to track the \n"
@@ -88,35 +91,8 @@ string fullHelpMessage(void)
     return(s);
     }
 
-#if 0
-void Usage()
-    {
-    cerr << "Usage: native_contacts system traj cutoff selection "
-         << endl;
-    }
-#endif
-
-string selection;
-
 int main (int argc, char *argv[])
 {
-
-#if 0
-if ( (argc >= 2) && (string(argv[1]) == string("--fullhelp") ) )
-    {
-    cerr << fullHelpMessage() << endl;
-    exit(-1);
-    }
-
-if ( (argc <= 1) || 
-     ( (argc >= 2) && (strncmp(argv[1], "-h", 2) == 0) ) ||
-     (argc < 5)
-   )
-    {
-    Usage();
-    exit(-1);
-    }
-#endif
 
 string header = invocationHeader(argc, argv);
 
