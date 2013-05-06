@@ -1,7 +1,7 @@
 /*
   native_contacts: compute the fraction of native contacts in a trajectory,
                    based on an initial structure.
-
+r
   Alan Grossfield
   Grossfield Lab
   Department of Biochemistry and Biophysics
@@ -31,6 +31,10 @@
 
 using namespace std;
 using namespace loos;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
 
 string fullHelpMessage(void)
     {
@@ -84,15 +88,20 @@ string fullHelpMessage(void)
     return(s);
     }
 
+#if 0
 void Usage()
     {
     cerr << "Usage: native_contacts system traj cutoff selection "
          << endl;
     }
+#endif
+
+string selection;
 
 int main (int argc, char *argv[])
 {
 
+#if 0
 if ( (argc >= 2) && (string(argv[1]) == string("--fullhelp") ) )
     {
     cerr << fullHelpMessage() << endl;
@@ -107,19 +116,35 @@ if ( (argc <= 1) ||
     Usage();
     exit(-1);
     }
+#endif
 
-cout << "# " << invocationHeader(argc, argv) << endl;
+string header = invocationHeader(argc, argv);
 
-// copy the command line variables to real variable names
-AtomicGroup system = createSystem(argv[1]);
-pTraj traj = createTrajectory(argv[2], system);
-double cutoff = atof(argv[3]);
-char *selection = argv[4];
+opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::BasicSelection* sopts = new opts::BasicSelection("name == \"CA\"");
+opts::RequiredArguments* ropts = new opts::RequiredArguments;
+ropts->addArgument("cut", "cutoff");
 
+opts::AggregateOptions options;
+options.add(bopts).add(tropts).add(ropts).add(sopts);
+
+if (!options.parse(argc, argv)) 
+    {
+    exit(-1);
+    }
+
+cout << "# " << header << endl;
+
+AtomicGroup system = tropts->model;
+pTraj traj = tropts->trajectory;
+
+double cutoff = parseStringAs<double>(ropts->value("cut"));
 double cut2 = cutoff*cutoff;
 
 
-AtomicGroup sel = selectAtoms(system, selection);
+cerr << ropts->value("sel") << endl;
+AtomicGroup sel = selectAtoms(system,  sopts->selection);
 vector<AtomicGroup> residues = sel.splitByResidue();
 
 // Check to see if the system has coordinates -- we'll use them if it does,
@@ -145,6 +170,7 @@ for (uint i=0; i<num_residues-1; i++)
     {
     for (uint j=i+1; j< num_residues; j++)
         {
+
         GCoord diff = centers_of_mass[j] - centers_of_mass[i]; 
         if (diff.length2() <= cut2)
             {
