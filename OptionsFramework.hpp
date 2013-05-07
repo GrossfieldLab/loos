@@ -46,6 +46,32 @@ namespace loos {
    * write the support-code that using boost::program_options
    * requires.
    *
+   * The basic pattern for using OptionsFramework is to create a new
+   * object that represents the options required by the tool.  Once
+   * all objects are created, they are added to an AggregateOptions
+   * object that is responbile for parsing and validating the
+   * command-line as well as generating help messages and serializing
+   * the options' state for inclusion in the tool's output.  For
+   * example, a tool that requires a model (with coordinates) and an
+   * output prefix would setup its options as follows:
+   * \code
+   * BasicOptions* bopts = new BasicOptions;        // Create basic option (i.e. verbosity & help)
+   * OutputPrefix* popts = new OutputPrefix;        // Allow --prefix
+   * ModelWithCoords* mopts = new ModelWithCoords;  // Add a model (and ensure coordinates are present)
+   *
+   * AggregateOptions options;
+   * options.add(bopts).add(popts).add(mopts);      // Combine all options
+   * if (!options.parse(argc, argv))                // If an error occurs, the help message
+   *                                                // will already be printed
+   *    exit(-1);
+   * \endcode
+   *
+   * The values of the options are generally stored in the member
+   * variables of the appropriate object.  Simply use these, or copy
+   * them out into the tool.  For example, to find the verbosity level
+   * in the above example, check \c bopts->verbosity, and to access
+   * the model read in, use \c mopts->model.
+   *
    * One feature of boost::program_options is that the long-name
    * options may have a single letter short-cut.  Since
    * OptionsFramework integrates options from many different sources,
@@ -124,6 +150,68 @@ namespace loos {
    *    processTrajectoryFrame(traj->readFrame(*i));
    * \endcode
    *
+   * <b>Writing a ToolOption class</b>
+   *
+   * The common idiom to add tool-specific options \e not covered by
+   * the existing objects is to subclass \c OptionsPackage.  The
+   * virtual memberfunctions (e.g. \c addGeneric(), \c addHidden(),
+   * etc) mimic the steps you would normally take to use \c
+   * boost::program_options.  It is only necessary to override the
+   * functions required speficially for the tool.
+   *
+   * As a trivial example, here is a class that will add a bool option
+   * to the command line,
+   *
+   * \code
+   * namespace opts = loos::OptionsFramework;
+   * namespace po = loos::OptionsFramewokr::po;
+   * 
+   * class ToolOptions : public opts::OptionsPackage {
+   * public:
+   *
+   *   void addGeneric(po::options_description& o) {
+   *      o.add_options()
+   *         ("flag", po::value<bool>(&flag)->default_value(false), "Set a flag");
+   *   }
+   *
+   *   // print() included for completeness.  It's not necessary, but good form to
+   *   // include...
+   *   string print() const {
+   *      std::ostringstream oss;
+   *
+   *      oss << boost::format("flag=%d") % flag;
+   *      return(oss.str());
+   *   }
+   *
+   *   bool flag;
+   * };
+   * \endcode
+   *
+   * This class can then be used as follows,
+   * \code
+   *
+   * BasicOptions* bopts = new BasicOptions;
+   * ModelWithCoords* mopts = new ModelWithCoords;
+   * ToolOptions* topts = new ToolOptions;
+   *
+   * AggregateOptions options;
+   * options.add(bopts).add(mopts).add(topts);
+   *
+   * if (!options.parse(argc, argv))
+   *    exit(-1);
+   * \endcode
+   *
+   * In more complex cases, \c check() can be used to validate the
+   * command-line and \c postConditions() can be used to implement any
+   * necessary post-processing of command-line options but still
+   * within the context of the parser.  This means that an error will
+   * result in a help message being printed.  For example, if a file
+   * is required for input, the \c ifstream can be opened here.  If it
+   * fails, then \c postConditions() will report the error and a help
+   * message will be printed out.
+   *
+   * <hr>
+   * 
    * Notes:
    *   - Model and Trajectory options classes will create the
    *     appropriate model and trajectory objects which can be copied out
