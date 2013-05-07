@@ -35,6 +35,35 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage
+    {
+    public:
+        string outfile;
+        bool do_output;
+
+        void addGeneric(po::options_description& o) 
+            {
+            o.add_options()
+     ("outfile", po::value<string>(&outfile), "File for timeseries of individual contacts");
+            }
+
+        bool postConditions(po::variables_map& vm)
+            {
+            if (vm.count("outfile"))
+                {
+                do_output=true;
+                }
+            else
+                {
+                do_output=false;
+                }
+            return(true);
+            }
+
+    };
+// @endcond
+
 
 string fullHelpMessage(void)
     {
@@ -102,8 +131,10 @@ opts::BasicSelection* sopts = new opts::BasicSelection("name == \"CA\"");
 opts::RequiredArguments* ropts = new opts::RequiredArguments;
 ropts->addArgument("cut", "cutoff");
 
+ToolOptions* topts = new ToolOptions;
+
 opts::AggregateOptions options;
-options.add(bopts).add(tropts).add(ropts).add(sopts);
+options.add(bopts).add(tropts).add(ropts).add(sopts).add(topts);
 
 if (!options.parse(argc, argv)) 
     {
@@ -121,6 +152,17 @@ double cut2 = cutoff*cutoff;
 
 AtomicGroup sel = selectAtoms(system,  sopts->selection);
 vector<AtomicGroup> residues = sel.splitByResidue();
+
+// If they asked for output of individual contacts, set it up
+ofstream output;
+if (topts->do_output)
+    {
+    output.open(topts->outfile.c_str());
+    if (!output.is_open() ) 
+        {
+        throw(runtime_error("couldn't open output file"));
+        }  
+    }
 
 // Check to see if the system has coordinates -- we'll use them if it does,
 // otherwise we'll use the first frame of the trajectory as the reference 
@@ -154,6 +196,12 @@ for (uint i=0; i<num_residues-1; i++)
             contacts.push_back(v);
             cout << "# " << (residues[i][0])->resid() << "\t" 
                          << (residues[j][0])->resid() << endl;
+            if (topts->do_output)
+                {
+                output << "# " << (residues[i][0])->resid() << "\t"
+                               << (residues[j][0])->resid() << endl;
+
+                }
             }
         }
     }
@@ -182,10 +230,16 @@ while (traj->readFrame())
         if (diff.length2() <= cut2)
             {
             num_contacts++;
+            if (topts->do_output) output << "1\t";
+            }
+        else
+            {
+            if (topts->do_output) output << "0\t";
             }
         }
     float fraction = num_contacts / num_native_contacts;
     cout << frame << "\t" << fraction << endl;
+    if (topts->do_output) output << endl;
     frame++;
     }
 

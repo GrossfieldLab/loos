@@ -1,3 +1,10 @@
+2013-05-07    <alan@membrane.urmc.rochester.edu>
+	* Updated native_contacts tool.  Fixed an off-by-one bug that
+	caused the last residue in the selection to be handled wrong. Switched
+	to using the standard program options, so now the selection defaults to 
+	name == "CA", and is prefixed by --sel.  Added new option to output the 
+	timeseries of individual contacts to a separate file.
+
 2013-05-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added serialize-selection tool.  Given a trajectory with T
