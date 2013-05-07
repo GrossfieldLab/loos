@@ -513,8 +513,13 @@ need to do to build against LOOS (other than write your application, of
 course) is edit the SConscript file in that directory, adding your program
 to the build list.  Specifically, you edit the line that creates a variable
 "apps", appending your program's name to the end of the string.  Then, run
-scons from the main LOOS directory, and your program will be built.  We
-have included a number of trivial programs in the User directory; they
+scons from the main LOOS directory, and your program will be built.
+Note that the use package is not built by default.  You will need to
+build it with by using the "user" target, i.e.
+\verbatim
+	scons user
+\endverbatim
+We have included a number of trivial programs in the User directory; they
 don't actually do anything useful, but they provide basic templates for how
 to use the command line options, and get the basic setup you'll need.
 
