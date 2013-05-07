@@ -119,7 +119,6 @@ double cutoff = parseStringAs<double>(ropts->value("cut"));
 double cut2 = cutoff*cutoff;
 
 
-cerr << ropts->value("sel") << endl;
 AtomicGroup sel = selectAtoms(system,  sopts->selection);
 vector<AtomicGroup> residues = sel.splitByResidue();
 
@@ -135,7 +134,7 @@ if ( !(sel[0]->checkProperty(Atom::coordsbit)) )
 // Compute the centers of mass of the selections
 uint num_residues = residues.size();
 vector<GCoord> centers_of_mass(num_residues);
-for (uint i=0; i<num_residues-1; i++)
+for (uint i=0; i<num_residues; i++)
     {
     centers_of_mass[i] = residues[i].centerOfMass();
     }
@@ -146,7 +145,6 @@ for (uint i=0; i<num_residues-1; i++)
     {
     for (uint j=i+1; j< num_residues; j++)
         {
-
         GCoord diff = centers_of_mass[j] - centers_of_mass[i]; 
         if (diff.length2() <= cut2)
             {
@@ -154,8 +152,8 @@ for (uint i=0; i<num_residues-1; i++)
             v[0] = i;
             v[1] = j;
             contacts.push_back(v);
-            // Print out the contacts as we go
-            cout << "# " << i << "\t" << j << endl;
+            cout << "# " << (residues[i][0])->resid() << "\t" 
+                         << (residues[j][0])->resid() << endl;
             }
         }
     }
