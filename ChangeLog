@@ -3,7 +3,8 @@
 	caused the last residue in the selection to be handled wrong. Switched
 	to using the standard program options, so now the selection defaults to 
 	name == "CA", and is prefixed by --sel.  Added new option to output the 
-	timeseries of individual contacts to a separate file.
+	timeseries of individual contacts to a separate file.  Added new option to 
+	exclude the backbone atoms.
 
 2013-05-01    <tromo@hill.urmc-sh.rochester.edu>
 
