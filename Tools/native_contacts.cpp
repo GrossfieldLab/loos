@@ -41,11 +41,14 @@ class ToolOptions : public opts::OptionsPackage
     public:
         string outfile;
         bool do_output;
+        bool exclude_backbone;
 
         void addGeneric(po::options_description& o) 
             {
             o.add_options()
-     ("outfile", po::value<string>(&outfile), "File for timeseries of individual contacts");
+     ("outfile", po::value<string>(&outfile), "File for timeseries of individual contacts")
+     ("exclude-backbone",po::value<bool>(&exclude_backbone)->default_value(false), "Exclude the backbone from contact calculations")
+            ;
             }
 
         bool postConditions(po::variables_map& vm)
@@ -151,6 +154,14 @@ double cut2 = cutoff*cutoff;
 
 
 AtomicGroup sel = selectAtoms(system,  sopts->selection);
+
+if (topts->exclude_backbone)
+    {
+    BackboneSelector backbone;
+    NotSelector sidechains(backbone);
+    sel = sel.select(sidechains);
+    }
+
 vector<AtomicGroup> residues = sel.splitByResidue();
 
 // If they asked for output of individual contacts, set it up
