@@ -107,7 +107,8 @@ public:
         probe_selection(""),
         symmetry(true),
         auto_split(true),
-        exclude_self(true)
+        exclude_self(true),
+        report_stddev(false)
         { }
 
 
@@ -118,7 +119,8 @@ public:
             ("reimage", po::value<bool>(&symmetry)->default_value(symmetry), "Consider symmetry when computing distances")
             ("split", po::value<bool>(&auto_split)->default_value(auto_split), "Automatically split probe selection")
             ("exclude", po::value<bool>(&exclude_self)->default_value(exclude_self), "Exclude self from contacts")
-            ("pad", po::value<double>(&pad)->default_value(pad), "Padding for filtering nearby atoms");
+            ("pad", po::value<double>(&pad)->default_value(pad), "Padding for filtering nearby atoms")
+            ("stddev", po::value<bool>(&report_stddev)->default_value(report_stddev), "Include stddev in output");
     }
 
     void addHidden(po::options_description& o) {
@@ -146,12 +148,13 @@ public:
 
     string print() const {
         ostringstream oss;
-        oss << boost::format("inner=%f,outer=%f,reimage=%d,autosplit=%d,pad=%f,probe='%s',targets=")
+        oss << boost::format("inner=%f,outer=%f,reimage=%d,autosplit=%d,pad=%f,stddev=%d,probe='%s',targets=")
             % inner_cutoff
             % outer_cutoff
             % symmetry
             % auto_split
             % pad
+            % report_stddev
             % probe_selection;
 
         for (uint i=0; i<target_selections.size(); ++i)
@@ -163,7 +166,7 @@ public:
 
     double inner_cutoff, outer_cutoff, pad;
     string probe_selection;
-    bool symmetry, auto_split, exclude_self;
+    bool symmetry, auto_split, exclude_self, report_stddev;
     vector<string> target_selections;
 };
 
@@ -289,7 +292,21 @@ vector<double> average(const FContactsList& f)
 }
 
 
+vector<double> stddevs(const FContactsList& f, const vector<double>& avgs) 
+{
+    vector<double> stds(f[0].size(), 0.0);
+    for (uint i=0; i<stds.size(); ++i) {
+        for (uint j=0; j<f.size(); ++j) {
+            double d = f[j][i] - avgs[i];
+            stds[i] += d*d;
+        }
+        stds[i] /= (f.size()-1);
+    }
 
+    return(stds);
+}
+
+        
 
 int main(int argc, char *argv[]) {
     string hdr = invocationHeader(argc, argv);
@@ -361,7 +378,11 @@ int main(int argc, char *argv[]) {
     
     // Size of the output matrix
     uint rows = indices.size();
-    uint cols = targets.size() + 1;
+    uint cols = targets.size();
+    if (topts->report_stddev)
+        cols *= 2;
+    ++cols;
+    
 
     uint t = 0;
     DoubleMatrix M(rows, cols);
@@ -387,8 +408,20 @@ int main(int argc, char *argv[]) {
 
         FContactsList fcl = fractionContacts(system, myselves, excludeds, targets, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
         vector<double> avg = average(fcl);
-        for (uint i=0; i<avg.size(); ++i)
-            M(t, i+1) = avg[i];
+        if (topts->report_stddev) {
+            vector<double> stds = stddevs(fcl, avg);
+            uint k = 0;
+            for (uint i=0; i<avg.size(); ++i) {
+                M(t, ++k) = avg[i];
+                M(t, ++k) = stds[i];
+            }
+
+        } else {
+
+            for (uint i=0; i<avg.size(); ++i)
+                M(t, i+1) = avg[i];
+
+        }
         
         ++t;
         if (bopts->verbosity)
