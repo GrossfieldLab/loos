@@ -294,7 +294,9 @@ namespace loos {
     return(swabbed);
   }
 
-  std::string timeAsString(const double t);
+
+  //! Convert t (seconds) into a string, converting to hours and minutes as necessary
+  std::string timeAsString(const double t, const uint precision = 0);
 
   //! Extracts a field from a string
   template<typename T>

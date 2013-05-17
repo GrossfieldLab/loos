@@ -186,10 +186,10 @@ namespace loos {
     return(subset);
   }
 
-  std::string timeAsString(const double t) {
+  std::string timeAsString(const double t, const uint precision) {
     if (t < 90.0) {
       std::stringstream s;
-      s << std::fixed << std::setprecision(3) << t << "s";
+      s << std::fixed << std::setprecision(precision) << t << "s";
       return(s.str());
     }
   
@@ -197,14 +197,14 @@ namespace loos {
     double secs = t - mins * 60.0;
     if (mins < 90.0) {
       std::stringstream s;
-      s << std::fixed << std::setprecision(0) << mins << "m" << std::setprecision(3) << secs << "s";
+      s << std::fixed << std::setprecision(0) << mins << "m" << std::setprecision(precision) << secs << "s";
       return(s.str());
     }
   
     double hrs = floor(mins / 60.0);
     mins -= hrs * 60.0;
     std::stringstream s;
-    s << std::fixed << std::setprecision(0) << hrs << "h" << mins << "m" << std::setprecision(3) << secs << "s";
+    s << std::fixed << std::setprecision(0) << hrs << "h" << mins << "m" << std::setprecision(precision) << secs << "s";
     return(s.str());
   }
 
