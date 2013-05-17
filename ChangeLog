@@ -1,3 +1,8 @@
+2013-05-17  Tod Romo  <tromo@gorgoneion>
+
+	* Changed timeAsString() to accept an optional precision parameter
+	for the seconds field.
+
 2013-05-07    <alan@membrane.urmc.rochester.edu>
 	* Updated native_contacts tool.  Fixed an off-by-one bug that
 	caused the last residue in the selection to be handled wrong. Switched
