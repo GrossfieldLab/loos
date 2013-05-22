@@ -1,3 +1,7 @@
+2013-05-22  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Changed renum-pdb so that connectivity is preserved
+
 2013-05-17  Tod Romo  <tromo@gorgoneion>
 
 	* Changed timeAsString() to accept an optional precision parameter
