@@ -90,14 +90,17 @@ int main(int argc, char *argv[]) {
     int resid = strtol(argv[i+1], (char **)NULL, 10);
     int atomid = strtol(argv[i+2], (char **)NULL, 10);
 
-    vGroup::iterator vi;
-    for (vi = residues.begin(); vi != residues.end(); ++vi, ++resid) {
-      AtomicGroup::iterator gi;
-      for (gi = (*vi).begin(); gi != (*vi).end(); ++gi, ++atomid) {
-        (**gi).id(atomid);
-        (**gi).resid(resid);
-      }
+    // Use AtomicGroup::renumber() to renumber the atomid's since this
+    // will preserve the connectivity.
+    subset.renumber(atomid);
+
+    // Must manually update the resid's however...
+    for (vGroup::iterator residue = residues.begin(); residue != residues.end(); ++residue) {
+        for (AtomicGroup::iterator atom = residue->begin(); atom != residue->end(); ++atom)
+            (*atom)->resid(resid);
+        ++resid;
     }
+    
   }
 
   PDB pdb = PDB::fromAtomicGroup(model);
