@@ -404,7 +404,7 @@ int main(int argc, char *argv[]) {
             exit(-1);
         }
 
-        M(t, 0) = t;
+        M(t, 0) = *frame;
 
         FContactsList fcl = fractionContacts(system, myselves, excludeds, targets, topts->inner_cutoff, topts->outer_cutoff, topts->symmetry);
         vector<double> avg = average(fcl);
