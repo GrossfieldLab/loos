@@ -47,6 +47,18 @@ bool z_only;
 struct DistanceCalculation {
   virtual double operator()(const AtomicGroup&, const AtomicGroup&) = 0;
   virtual ~DistanceCalculation() { }
+  
+  void usePeriodicity(const bool flag) { _use_periodicity = flag; }
+  double distance(const GCoord& u, const GCoord& v) {
+  	if (_use_periodicity)
+  		return(u.distance(v, _box));
+  	return(u.distance(v));
+  }
+  
+  void setBox(const GCoord& v) { _box = v; }
+  
+  bool _use_periodicity;
+  GCoord _box;
 };
 
 
@@ -56,7 +68,7 @@ struct CenterDistance : public DistanceCalculation {
     GCoord cu = u.centroid();
     GCoord cv = v.centroid();
 
-    return(cu.distance(cv));
+    return(distance(cu, cv));
   
   }
 };
@@ -66,7 +78,7 @@ struct CenterOfMassDistance : public DistanceCalculation {
     GCoord cu = u.centerOfMass();
     GCoord cv = v.centerOfMass();
 
-    return(cu.distance(cv));
+    return(distance(cu, cv));
   
   }
 };
@@ -77,10 +89,10 @@ struct CenterDistanceZ : public DistanceCalculation {
   double operator()(const AtomicGroup& u, const AtomicGroup& v) {
     GCoord cu = u.centroid();
     GCoord cv = v.centroid();
-
-    GCoord temp = cu - cv;
-    return (abs(temp.z()));
-
+    
+    cu.x() = cu.y() = 0.0;
+    cv.x() = cv.y() = 0.0;
+    return(distance(cu, cv));
   }
 };
 
@@ -96,13 +108,13 @@ struct MinDistance : public DistanceCalculation {
       GCoord y = (*aj)->coords();
       
       for (AtomicGroup::const_iterator ai = u.begin(); ai != u.end(); ++ai) {
-        double d = y.distance2((*ai)->coords());
+        double d = distance(y, (*ai)->coords());
         if (d < mind)
           mind = d;
       }
     }
     
-    return(sqrt(mind));
+    return(mind);
   }
 };
 
@@ -118,13 +130,13 @@ struct MaxDistance : public DistanceCalculation {
       GCoord y = (*aj)->coords();
       
       for (AtomicGroup::const_iterator ai = u.begin(); ai != u.end(); ++ai) {
-        double d = y.distance2((*ai)->coords());
+        double d = distance(y, (*ai)->coords());
         if (d > maxd)
           maxd = d;
       }
     }
     
-    return(sqrt(maxd));
+    return(maxd);
   }
 };
 
@@ -137,7 +149,8 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("mode", po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|mass|min|max|zonly)");
+      ("mode", po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|mass|min|max|zonly)")
+      ("periodic", po::value<bool>(&periodic)->default_value(true), "Use periodicity in distance calculations");
   }
 
   void addHidden(po::options_description& o) {
@@ -171,16 +184,18 @@ public:
       return(false);
     }
 
+    calc_type->usePeriodicity(periodic);
     return(true);
   }
 
   string help() const { return("target selection [selection ...]"); }
   string print() const {
     ostringstream oss;
-    oss << boost::format("mode='%s', target='%s', selections=(%s)") 
+    oss << boost::format("mode='%s', target='%s', selections=(%s), periodic=%d") 
       % mode_name
       % target_name
-      % vectorAsStringWithCommas<string>(selection_names);
+      % vectorAsStringWithCommas<string>(selection_names)
+      % periodic;
 
     return(oss.str());
   }
@@ -188,6 +203,7 @@ public:
   string mode_name;
   string target_name;
   vector<string> selection_names;
+  bool periodic;
   DistanceCalculation* calc_type;
 };
 
@@ -277,6 +293,8 @@ int main(int argc, char *argv[]) {
     traj->updateGroupCoords(model);
 
     cout << j << " ";
+    
+    topts->calc_type->setBox(model.periodicBox());
 
     for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i)
       cout << (*(topts->calc_type))(src, *i) << " ";
