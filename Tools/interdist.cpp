@@ -270,14 +270,20 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  cout << "# " << header << endl;
 
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
+
+  if (tropts->periodic && !traj->hasPeriodicBox()) {
+    cerr << "Error- periodicity requested but trajectory is not periodic\n";
+    exit(-10);
+  }
+
   vector<uint> indices = tropts->frameList();
 
   AtomicGroup src = selectAtoms(model, topts->target_name);
 
+  cout << "# " << header << endl;
   cout << "# frame ";
   
   vector<AtomicGroup> targets;
