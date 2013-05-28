@@ -314,9 +314,13 @@ public:
   bool postConditions(po::variables_map& vm) {
     if (!box_spec.empty()) {
       istringstream is(box_spec);
-      if (!(is >> box)) {
-        cerr << "ERROR - unable to convert " << box_spec << ".  It must be in (a,b,c) format.\n";
-        return(false);
+      try {
+          is >> box;
+      }
+      catch (const std::exception& e) {
+          cerr << e.what() << std::endl;
+          cerr << "ERROR: unable to convert " << box_spec << ".  It must be in '(a,b,c)' format.\n";
+          return(false);
       }
       box_override = 1;
     }
