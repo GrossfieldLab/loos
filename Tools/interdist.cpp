@@ -272,7 +272,7 @@ int main(int argc, char *argv[]) {
 
 
   AtomicGroup model = tropts->model;
-  pTraj traj = tropts->trajectory;
+  pTraj traj = topts->trajectory;
 
   if (tropts->periodic && !traj->hasPeriodicBox()) {
     cerr << "Error- periodicity requested but trajectory is not periodic\n";
