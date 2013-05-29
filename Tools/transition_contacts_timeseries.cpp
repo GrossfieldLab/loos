@@ -340,9 +340,8 @@ int main (int argc, char *argv[]){
     for (uint i = 0; i < formed_connection_list.size(); ++i){
       GCoord first_current  = centers[formed_connection_list[i].first];
       GCoord second_current = centers[formed_connection_list[i].second]; 
-      GCoord current_dist   = second_current - first_current;
-
       bool formed = first_current.distance2(second_current) < cut2;
+
       if (formed)
           ++number_formed;
       if (!timeseries_outfile.empty())
