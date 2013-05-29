@@ -235,8 +235,8 @@ namespace loos {
       throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
 
 
-    if (S[2] < superposition_zero_singular_value)
-      throw(NumericalError("Superposition is indeterminate...try using more atoms"));
+    // if (S[2] < superposition_zero_singular_value)
+    //   throw(NumericalError("Superposition is indeterminate...try using more atoms"));
 
     // Adjust U (if necessary)
     if (det < 0.0) {

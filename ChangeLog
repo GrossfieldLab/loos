@@ -1,3 +1,14 @@
+2013-05-29    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added --xyonly option to aligner so that alignment (rotations)
+	only occur in the x,y plane.  Note that all systems are translated
+	so their centroids are coincident, so there may be a
+	Z-translation.
+	* Changed AtomicGroup::superposition() to not throw if the
+	alignment matrix is singular.  Instead, aligner will warn if too few
+	atoms are selected instead.
+	* Changed setup scripts to prepend paths rather than append
+
 2013-05-22  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Changed renum-pdb so that connectivity is preserved

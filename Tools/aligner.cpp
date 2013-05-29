@@ -40,7 +40,9 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-
+const uint min_align_selection_warning = 7;   // Warn user when selecting fewer than this # of atoms
+                                              // This number has not been rigorously determined...
+   
 
 
 
@@ -101,8 +103,7 @@ string fullHelpMessage(void) {
     "\n"
     "NOTES\n"
     "\n"
-    "\tAligner will cache all frames/alignment segments in memory to align,\n"
-    "so beware of swapping with big trajectories\n";
+    "\tSelecting too few atoms to align my result in a poor alignment.\n";
 
   return(msg);
 }
@@ -116,7 +117,8 @@ public:
                   reference_name(""),
                   reference_sel(""),
                   alignment_tol(1e-6),
-                  maxiter(5000)
+                  maxiter(5000),
+                  xy_only(false)
                   { }
 
   void addGeneric(po::options_description& o) {
@@ -126,7 +128,9 @@ public:
       ("maxiter", po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
       ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
       ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
-      ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)");
+      ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)")
+      ("xyonly", po::value<bool>(&xy_only)->default_value(xy_only), "Only align in x and y");
+    
   }
 
   string print() const {
@@ -143,10 +147,105 @@ public:
   string reference_name, reference_sel;
   double alignment_tol;
   uint maxiter;
+  bool xy_only;
+};
+
+
+class ReadFrame 
+{
+public:
+    
+    ReadFrame(const pTraj& trj) 
+        : _traj(trj)
+        {}
+
+
+    virtual void read(const uint i, AtomicGroup& grp) 
+        {
+            _traj->readFrame(i);
+            _traj->updateGroupCoords(grp);
+        }
+
+protected:
+    pTraj _traj;
+};
+
+
+class XYReadFrame : public ReadFrame 
+{
+public:
+    XYReadFrame(const pTraj& trj)
+        : ReadFrame(trj)
+        {}
+
+
+    virtual void read(const uint i, AtomicGroup& grp) 
+        {
+            ReadFrame::read(i, grp);
+            for (AtomicGroup::iterator j = grp.begin(); j != grp.end(); ++j)
+                (*j)->coords().z() = 0.0;
+        }
+
 };
 
 
 // @endcond
+
+
+
+boost::tuple<vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
+                                                           pTraj& traj,
+                                                           const std::vector<uint>& frame_indices,
+                                                           greal threshold,
+                                                           int maxiter,
+                                                           ReadFrame* rfop) {
+
+    // Must first prime the loop...
+    AtomicGroup frame = g.copy();
+    rfop->read(frame_indices[0], frame);
+      
+    uint nf = frame_indices.size();
+
+    int iter = 0;
+    greal rms;
+    std::vector<XForm> xforms(nf);
+    AtomicGroup avg = frame.copy();
+
+    AtomicGroup target = frame.copy();
+    target.centerAtOrigin();
+
+    do {
+        // Compute avg internally so we don't have to read traj twice...
+        for (uint j=0; j<avg.size(); ++j)
+            avg[j]->coords() = GCoord(0,0,0);
+        
+        for (uint i=0; i<nf; ++i) {
+
+            rfop->read(frame_indices[i], frame);
+
+            GMatrix M = frame.alignOnto(target);
+            xforms[i].load(M);
+
+            for (uint j=0; j<avg.size(); ++j)
+                avg[j]->coords() += frame[j]->coords();
+        }
+
+        for (uint j=0; j<avg.size(); ++j)
+            avg[j]->coords() /= nf;
+
+        rms = avg.rmsd(target);
+        target = avg.copy();
+        ++iter;
+    } while (rms > threshold && iter <= maxiter);
+
+    boost::tuple<vector<XForm>, greal, int> res(xforms, rms, iter);
+    return(res);
+    
+}
+
+
+
+
 
 
 
@@ -184,17 +283,26 @@ int main(int argc, char *argv[]) {
 
   // Get the selections (subsets) to operate over
   AtomicGroup align_sub = selectAtoms(model, topts->alignment_string);
+  if (align_sub.size() < min_align_selection_warning)
+      cerr << "Warning- selecting fewer than " << min_align_selection_warning << " atoms with --align may result in a poor quality alignment.\n";
 
+  
   AtomicGroup applyto_sub = selectAtoms(model, topts->transform_string);
+
+
+  ReadFrame* reader;
+  if (topts->xy_only)
+      reader = new XYReadFrame(traj);
+  else
+      reader = new ReadFrame(traj);
 
   // Now do the alignin'...
   vector<uint> indices = tropts->frameList();
   unsigned int nframes = indices.size();
 
-  
   if (topts->reference_name.empty()) {
 
-    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(align_sub, traj, indices, topts->alignment_tol, topts->maxiter);
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(align_sub, traj, indices, topts->alignment_tol, topts->maxiter, reader);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
