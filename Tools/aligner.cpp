@@ -40,7 +40,9 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-
+const uint min_align_selection_warning = 7;   // Warn user when selecting fewer than this # of atoms
+                                              // This number has not been rigorously determined...
+   
 
 
 
@@ -101,8 +103,7 @@ string fullHelpMessage(void) {
     "\n"
     "NOTES\n"
     "\n"
-    "\tAligner will cache all frames/alignment segments in memory to align,\n"
-    "so beware of swapping with big trajectories\n";
+    "\tSelecting too few atoms to align my result in a poor alignment.\n";
 
   return(msg);
 }
@@ -282,7 +283,10 @@ int main(int argc, char *argv[]) {
 
   // Get the selections (subsets) to operate over
   AtomicGroup align_sub = selectAtoms(model, topts->alignment_string);
+  if (align_sub.size() < min_align_selection_warning)
+      cerr << "Warning- selecting fewer than " << min_align_selection_warning << " atoms with --align may result in a poor quality alignment.\n";
 
+  
   AtomicGroup applyto_sub = selectAtoms(model, topts->transform_string);
 
 
