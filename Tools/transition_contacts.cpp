@@ -40,11 +40,11 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("selection", po::value<string>(&selection)->default_value(selection), "Selection for calculation")
-      ("cutoff", po::value<double>(&cutoff)->default_value(8.0), "Cutoff to use for defining bonds")
+      ("cutoff", po::value<double>(&cutoff)->default_value(8.0), "Cutoff to use for defining contacts")
       ("source-selection", po::value<string>(&source_sel)->default_value(""), "Selection specific to source model")
       ("sink-selection", po::value<string>(&sink_sel)->default_value(""), "Selection specific to sink model")
       ("timeseries", po::value<string>(&timeseries)->default_value(""), "Report contacts as a timeseries")
-      ("leave-heavy", po::value<bool>(&leave_heavy)->default_value(false), "Leave in backbone and hydrogen atoms");
+      ("include-heavy", po::value<bool>(&leave_heavy)->default_value(false), "Include backbone and hydrogen atoms");
   }
 
   void addHidden(po::options_description& o) {
