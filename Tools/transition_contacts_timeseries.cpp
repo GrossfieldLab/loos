@@ -326,13 +326,6 @@ int main (int argc, char *argv[]){
     // Do the actual calculation
     // For broken list
     for (uint i = 0; i < broken_connection_list.size(); ++i){
-      GCoord first_current  = centers[broken_connection_list[i].first];
-      GCoord second_current = centers[broken_connection_list[i].second]; 
-      GCoord current_dist   = second_current - first_current;
-
-#if defined(TDR)
-      // TDR - I disagree with Alan.  I think the ternary is appropriate here
-      //       and easier to understand.  I'd use the following...
 
       GCoord first_current  = centers[broken_connection_list[i].first];
       GCoord second_current = centers[broken_connection_list[i].second]; 
@@ -341,18 +334,6 @@ int main (int argc, char *argv[]){
           ++number_broken;
       if (!timeseries_outfile.empty())
           ofs << (broken ? '0' : '1') << '\t';
-#endif
-      
-      if  (current_dist.length2() > cut2){
-        number_broken++;
-        if (!timeseries_outfile.empty()){
-          ofs << "0\t";
-        }
-      }else{
-        if (!timeseries_outfile.empty()){
-          ofs << "1\t";
-        }
-      }
     }
 
     // For formed list
@@ -361,17 +342,11 @@ int main (int argc, char *argv[]){
       GCoord second_current = centers[formed_connection_list[i].second]; 
       GCoord current_dist   = second_current - first_current;
 
-      // TDR - see above
-      if  (current_dist.length2() < cut2){
-        number_formed++;
-        if (!timeseries_outfile.empty()){
-          ofs << "1\t";
-        }
-      }else{
-        if (!timeseries_outfile.empty()){
-          ofs << "0\t";
-        }
-      }
+      bool formed = first_current.distance2(second_current) < cut2;
+      if (formed)
+          ++number_formed;
+      if (!timeseries_outfile.empty())
+          ofs << (formed ? '1' : '0') << '\t';
     }
 
     if (!timeseries_outfile.empty())
