@@ -4,7 +4,7 @@
  
   This file is part of LOOS.
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008, Alan Grossfield
+  Copyright (c) 2013, Nick Leioats, Alan Grossfield
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
