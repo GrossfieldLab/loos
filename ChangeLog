@@ -8,6 +8,7 @@
 	alignment matrix is singular.  Instead, aligner will warn if too few
 	atoms are selected instead.
 	* Changed setup scripts to prepend paths rather than append
+	* Added transition_contacts_timeseries tool from N. Leioatts
 
 2013-05-22  Tod Romo  <tromo@Gorgoneion.local>
 
