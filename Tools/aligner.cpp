@@ -118,20 +118,21 @@ public:
                   reference_sel(""),
                   alignment_tol(1e-6),
                   maxiter(5000),
-                  xy_only(false)
+                  xy_only(false),
+                  no_ztrans(false)
                   { }
 
-  void addGeneric(po::options_description& o) {
-    o.add_options()
-      ("align", po::value<string>(&alignment_string)->default_value(alignment_string), "Align using this selection")
-      ("transform", po::value<string>(&transform_string)->default_value(transform_string), "Transform using this selection")
-      ("maxiter", po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
-      ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
-      ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
-      ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)")
-      ("xyonly", po::value<bool>(&xy_only)->default_value(xy_only), "Only align in x and y");
-    
-  }
+    void addGeneric(po::options_description& o) {
+        o.add_options()
+            ("align", po::value<string>(&alignment_string)->default_value(alignment_string), "Align using this selection")
+            ("transform", po::value<string>(&transform_string)->default_value(transform_string), "Transform using this selection")
+            ("maxiter", po::value<uint>(&maxiter)->default_value(maxiter), "Maximum number of iterations for alignment algorith")
+            ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
+            ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
+            ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)")
+            ("xyonly", po::value<bool>(&xy_only)->default_value(xy_only), "Only align in x and y")
+            ("noztrans", po::value<bool>(&no_ztrans)->default_value(no_ztrans), "Do not translate selection in Z");
+    }
 
   string print() const {
     ostringstream oss;
@@ -143,11 +144,11 @@ public:
   }
 
 
-  string alignment_string, transform_string;
-  string reference_name, reference_sel;
-  double alignment_tol;
-  uint maxiter;
-  bool xy_only;
+    string alignment_string, transform_string;
+    string reference_name, reference_sel;
+    double alignment_tol;
+    uint maxiter;
+    bool xy_only, no_ztrans;
 };
 
 
@@ -319,7 +320,17 @@ int main(int argc, char *argv[]) {
     for (unsigned int i = 0; i<nframes; i++) {
       traj->readFrame(i);
       traj->updateGroupCoords(model);
+      GCoord original_center;
+      if (topts->no_ztrans)
+          original_center = applyto_sub.centroid();
+      
       model.applyTransform(xforms[i]);
+      if (topts->no_ztrans) {
+          GCoord new_center = applyto_sub.centroid();
+          double dz = original_center.z() - new_center.z();
+          GCoord shift(0.0, 0.0, dz);
+          applyto_sub.translate(shift);
+      }
       
       dcdout.writeFrame(applyto_sub);
       
@@ -349,9 +360,21 @@ int main(int argc, char *argv[]) {
     for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
       traj->readFrame(*i);
       traj->updateGroupCoords(model);
+
+      GCoord original_center;
+      if (topts->no_ztrans)
+          original_center = applyto_sub.centroid();
+
       GMatrix M = align_sub.superposition(refsub);
       XForm W(M);
       applyto_sub.applyTransform(W);
+
+      if (topts->no_ztrans) {
+          GCoord new_center = applyto_sub.centroid();
+          double dz = original_center.z() - new_center.z();
+          GCoord shift(0.0, 0.0, dz);
+          applyto_sub.translate(shift);
+      }
 
       dcdout.writeFrame(applyto_sub);
 
