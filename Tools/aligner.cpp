@@ -73,6 +73,14 @@ string fullHelpMessage(void) {
     "expression for the reference structure.  Note that the atoms must be in the same order as\n"
     "the ones picked by the trajectory --align (i.e. the first atom from the reference subset\n"
     "must match the first atom in the trajectory subset, etc).\n"
+    "\tThe --xyonly and --noztrans options may be of interest for membrane systems.\n"
+    "The --xyonly option will translate the alignment subset, but will only rotate about\n"
+    "the Z-axis (i.e. within the x,y-plane).  The --noztrans option will remove any Z-translation\n"
+    "in the subset after alignment.  For example, aligning with --xyonly turned on will orient\n"
+    "the subset such that it is aligned within the x,y-plane, but the tilt relative to the x,y-plane\n"
+    "is preserved.  However, the centroid of the selection will always be centered.  If the --noztrans\n"
+    "option is turned on, then the selection will be centered in x and y, but the z-coordinates\n"
+    "will be preserved.\n"
     "\n"
     "\n"
     "EXAMPLES\n"
@@ -130,7 +138,7 @@ public:
             ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for alignment convergence")
             ("reference", po::value<string>(&reference_name), "Align to a reference structure (non-iterative")
             ("refsel", po::value<string>(&reference_sel), "Selection to align against in reference (default is same as --align)")
-            ("xyonly", po::value<bool>(&xy_only)->default_value(xy_only), "Only align in x and y")
+            ("xyonly", po::value<bool>(&xy_only)->default_value(xy_only), "Only align in x and y (i.e. rotations about Z, but translated in x,y,z)")
             ("noztrans", po::value<bool>(&no_ztrans)->default_value(no_ztrans), "Do not translate selection in Z");
     }
 
