@@ -181,7 +181,6 @@ int main (int argc, char *argv[]){
   AtomicGroup init = selectAtoms(init_model, topts->source_sel);
   AtomicGroup final_model = createSystem(topts->sink_model);
   AtomicGroup final = selectAtoms(final_model, topts->sink_sel);
-  //IS A CHECK NEEDED TO MAKE SURE THE SELECTIONS GRAB THE SAME ATOMS??
 
   double cutoff = topts->cutoff;
   pTraj traj = tropts->trajectory;
@@ -207,6 +206,7 @@ int main (int argc, char *argv[]){
       % residues.size() 
       % start_residues.size() 
       % final_residues.size();
+    cerr << "\tThe source and sink selections must have the same number of residues.\n";
     exit(-1);
   }
   
