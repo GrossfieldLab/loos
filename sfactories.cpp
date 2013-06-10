@@ -81,7 +81,7 @@ namespace loos {
       pag = p;
 
     } else
-      throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'"));
+      throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'. Try --help to see available types."));
 
     return(pag);
   }
@@ -165,7 +165,7 @@ namespace loos {
       return(pt);
 
     } else
-      throw(std::runtime_error("Error- unknown trajectory file type '" + filetype + "' for file '" + filename + "'"));
+      throw(std::runtime_error("Error- unknown trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }
 
 
