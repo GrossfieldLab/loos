@@ -234,7 +234,7 @@ int main (int argc, char *argv[]){
     }
     ofs << "# " << hdr << endl;
     ofs << "# Changed contacts list:\n";
-    ofs << "#------------------------------\n";
+    ofs << "# ------------------------------\n";
   }
 
 
