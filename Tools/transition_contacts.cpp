@@ -233,6 +233,8 @@ int main (int argc, char *argv[]){
       exit(-11);
     }
     ofs << "# " << hdr << endl;
+    ofs << "# Changed contacts list:\n";
+    ofs << "#------------------------------\n";
   }
 
 
@@ -272,7 +274,7 @@ int main (int argc, char *argv[]){
           // Add these to the broken pair list
           broken_connection_list.push_back(conn_ptr);
           // Document the residues in the broken list
-          ofs << "# " << final_residues[j].getAtom(0)->resid() << " "   
+          ofs << "# broken: " << final_residues[j].getAtom(0)->resid() << " "   
               << final_residues[i].getAtom(0)->resid() << endl;
         }
       }
@@ -296,7 +298,7 @@ int main (int argc, char *argv[]){
           // Add to the formed pair master list
           formed_connection_list.push_back(conn_ptr);
           // Document the residues in the formed list
-          ofs << "# " << final_residues[j].getAtom(0)->resid() << " "   
+          ofs << "# formed: " << final_residues[j].getAtom(0)->resid() << " "   
               << final_residues[i].getAtom(0)->resid() << endl;
         }
       }
