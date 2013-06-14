@@ -1323,6 +1323,37 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release205 Version 2.0.5 (6-19-2013)
+\subsection r205_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in gmxdump2pdb.pl affecting systems with >= 100k atoms
+  <li> Fixed bug in native_contacts causing the last residue in
+  selection to be handled incorrectly.
+  <li> Fixed bug in pyloos.selectAtoms() so that it throws a LOOS
+  exception on error.
+</ul>
+
+\subsection r204_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Changed StreamWrapper, Trajectory (and derived classes), and
+  all structure classes to take an istream object in the constructor rather
+  than an ifstream.
+  <li> Added HBondDetector class as part of core LOOS
+  <li> Added LOOS exceptions to PyLOOS
+  <li> Added fcontacts tool that, in most cases, should replace
+  contact-time.
+  <li> Added/changed options to native_contacts
+  <li> Changed renum-pdb so connectivity is preserved
+  <li> Changed setup scripts to prepend paths rather than append
+  <li> Changed averageStructure() and iterativeAlignment() functions
+  that take a Trajectory object so that they do not cache frames
+  <li> Changed aligner tool so that it does not cache frames
+  <li> Added --xyonly option to aligner
+  <li> Added serialize-selection tool
+  <li> Added transition_contacts tool
+</ul>
+
+
 \section release204 Version 2.0.4 (4-3-2013)
 \subsection r204_bugs Bug Fixes
 <ul>
