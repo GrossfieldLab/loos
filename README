@@ -25,7 +25,9 @@ transition between two structures) and serialize-selection tool
 (transforms a trajectory containing multiple molecules into a longer
 trajectory with a single molecule).  We have also added fcontacts,
 which should replace contact-time.  Bug fixes include gmxdump2pdb,
-native_contacts, and renum-pdb.
+native_contacts, and renum-pdb.  We have added LOOS exceptions to
+PyLOOS, so functions like selectAtoms() can throw without crashing
+python.
 
 The principal internal changes affect the iterative alignment and
 averaging functions (these no longer cache the trajectory), and the
