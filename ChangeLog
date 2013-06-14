@@ -38,7 +38,7 @@
 	
 2013-04-25    <tromo@hill.urmc-sh.rochester.edu>
 
-	* Changed how some version of averageStructure() and
+	* Changed how some versions of averageStructure() and
 	iterativeAlignment() work.  The versions that take an AtomicGroup
 	and a pTraj as arguments no longer cache the trajectory in
 	memory.  Instead, they will read through the trajectory as
