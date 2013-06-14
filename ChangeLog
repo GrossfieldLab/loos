@@ -73,6 +73,9 @@
 	* Changed XDR class, refactoring it into XDRReader (which takes an
 	istream) and XDRWriter (which takes an ostream)
 
+2013-04-03 <tromo@hill.urmc-sh.rochester.edu>
+	* Released 2.0.4
+
 2013-04-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed build procedure(s).  To build pyloos, use "scons
