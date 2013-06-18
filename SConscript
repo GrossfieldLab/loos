@@ -24,7 +24,6 @@ import os
 
 Import('env')
 
-
 reparse = env['reparse']
 if int(reparse):
    apps = 'grammar.yy scanner.ll '
@@ -41,7 +40,7 @@ apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp'
 
-if ('HAS_NETCDF' in env):
+if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
 
 
@@ -82,7 +81,7 @@ hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorti
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp'
 
-if ('HAS_NETCDF' in env):
+if (env['HAS_NETCDF']):
    hdr = hdr + ' amber_netcdf.hpp'
 
 

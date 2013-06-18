@@ -149,14 +149,14 @@ if not conf.CheckType('uint','#include <sys/types.h>\n'):
    conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
 if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
    has_netcdf = 1
-   env['HAS_NETCDF'] = 1
 else:
    has_netcdf = 0
 env = conf.Finish()
 
 if (NETCDFINC != '' or NETCDFLIB != ''):
-   env['HAS_NETCDF'] = 1
    has_netcdf = 1
+
+env['HAS_NETCDF'] = has_netcdf
 
 
 ### Compile-flags
