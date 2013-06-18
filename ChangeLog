@@ -1,3 +1,7 @@
+2013-06-18    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed rmsd2ref so that it no longer caches trajectory frames
+
 2013-05-29    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added --xyonly option to aligner so that alignment (rotations)
