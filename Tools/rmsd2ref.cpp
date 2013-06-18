@@ -183,7 +183,10 @@ int main(int argc, char *argv[]) {
     cerr << boost::format("Computing RMSD vs target %s using %d atoms from \"%s\".\n") % topts->target_name % subset.size() % topts->selection;
   }
 
-  vector<AtomicGroup> frames;
+
+  vector<XForm> transforms;
+    
+
 
   // handle aligning, if requested...
   if (! topts->alignment.empty()) {
@@ -197,15 +200,7 @@ int main(int argc, char *argv[]) {
       cerr << boost::format("Aligning using %d atoms from \"%s\".\n") % align_subset.size() % topts->alignment;
       
       boost::tuple<vector<XForm>, greal, int> res = iterativeAlignment(align_subset, ptraj, indices, topts->tol);
-      vector<XForm> xforms = boost::get<0>(res);
-      
-      for (uint i = 0; i < indices.size(); ++i) {
-        ptraj->readFrame(indices[i]);
-        ptraj->updateGroupCoords(subset);
-        subset.applyTransform(xforms[i]);
-        AtomicGroup frame = subset.copy();
-        frames.push_back(frame);
-      }
+      transforms = boost::get<0>(res);
 
     } else {   // A target was provided and aligning was requested...
       
@@ -217,48 +212,39 @@ int main(int argc, char *argv[]) {
         ptraj->updateGroupCoords(molecule);
         GMatrix M = align_subset.superposition(target_align);
         XForm W(M);
-        subset.applyTransform(W);
-        AtomicGroup frame = subset.copy();
-        frames.push_back(frame);
+        transforms.push_back(W);
       }
-
       
     }
     
-  } else {  // No aligning was requested, so simply slurp up the trajectory...
-
-    for (uint i=0; i<indices.size(); i++) {
-      ptraj->readFrame(indices[i]);
-      ptraj->updateGroupCoords(subset);
-      AtomicGroup frame = subset.copy();
-      frames.push_back(frame);
-    }
-
   }
 
   // If no external reference structure was specified, set the target
   // to the average of the trajectory...
   if (topts->target_name.empty()) {
     cerr << "Computing using average structure...\n";
-    target = averageStructure(frames);
+    target = averageStructure(subset, transforms, ptraj, indices);
   } else
-    target = target_subset;  // Hack!
+    target = target_subset;
 
   vector<double> rmsds;
   double avg_rmsd = 0.0;
 
-  if (frames[0].size() != target.size()) {
+  if (subset.size() != target.size()) {
     cerr << "Error - trajectory selection and target selection have differing numbers of atoms.\n";
     exit(-10);
   }
 
-  for (uint i=0; i<frames.size(); i++) {
-    double d = target.rmsd(frames[i]);
-    rmsds.push_back(d);
-    avg_rmsd += d;
+  for (uint i=0; i<indices.size(); i++) {
+      ptraj->readFrame(indices[i]);
+      ptraj->updateGroupCoords(subset);
+      subset.applyTransform(transforms[i]);
+      double d = target.rmsd(subset);
+      rmsds.push_back(d);
+      avg_rmsd += d;
   }
 
-  avg_rmsd /= frames.size();
+  avg_rmsd /= indices.size();
   double std_rmsd = 0.0;
   for (uint i=0; i<rmsds.size(); i++) {
     double d = rmsds[i] - avg_rmsd;
