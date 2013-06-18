@@ -20,6 +20,7 @@
 |-------------------|-----------|--------|
 | Debian 5          |     +     |   -    |
 | Debian 6          |     +     |   !    |
+| Debian 7.1        |     +     |   +    |
 |-------------------|-----------|--------|
 | CentOS 5.9        |     +     |   !    |
 | CentOS 6.4        |     +     |   !    |
@@ -218,10 +219,10 @@ Ubuntu 8.04 LTS: Install python-dev and follow the instructions above.
 
 			------= Debian =------
 
-Loos has been tested with: 5, 6
+Loos has been tested with: 5, 6, 7
 
 Using the synaptic manager (or apt-get), install the following packages:
-      libboost-dev
+      libboost-dev [may be called libbost-all-dev]
       scons
       libatlas-base-dev
       libatlas-headers [May be required for Debian 5]
@@ -231,8 +232,9 @@ Using the synaptic manager (or apt-get), install the following packages:
 * PyLOOS *
 
 Debian 5: NOT SUPPORTED
-Debian 6: Install libpcre-dev and python-dev, then download and
+Debian 6: Install libpcre-dev and python-dev, then *download* and
   install the latest swig.
+Debian 7: Install libpcre-dev, python-dev, and swig
 
 		       ------= openSUSE =------
 
