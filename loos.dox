@@ -1333,7 +1333,7 @@ Matlab and Octave.
   exception on error.
 </ul>
 
-\subsection r204_added_changed Added, Changed, or Otherwise Notable
+\subsection r205_added_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Changed StreamWrapper, Trajectory (and derived classes), and
   all structure classes to take an istream object in the constructor rather
@@ -1347,7 +1347,7 @@ Matlab and Octave.
   <li> Changed setup scripts to prepend paths rather than append
   <li> Changed averageStructure() and iterativeAlignment() functions
   that take a Trajectory object so that they do not cache frames
-  <li> Changed aligner tool so that it does not cache frames
+  <li> Changed aligner and rmsd2ref tools so that they do not cache frames
   <li> Added --xyonly option to aligner
   <li> Added serialize-selection tool
   <li> Added transition_contacts tool
