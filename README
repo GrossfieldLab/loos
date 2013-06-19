@@ -8,33 +8,35 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
-+++NOTICE+++
-
 
    * RELEASE 2.0.5 *
 
-This release is primarily a maintenance release consisting of internal
-changes, a few bug fixes, and a few added or changed tools.  There is
-one major change, however, in the setup scripts (setup.sh and
-setup.csh).  Previously LOOS directories were appended to the
-appropriate environment variables (e.g. PATH, LD_LIBRARY_PATH, etc).
-Now, these directories are prepended.
+This release consists of some minor internal changes, a few bug fixes,
+and a few added or changed tools.  There is one major change, however,
+in the setup scripts (setup.sh and setup.csh).  Previously, LOOS
+directories were *appended* to the appropriate environment variables
+(e.g. PATH, LD_LIBRARY_PATH, etc).  Now, these directories are
+*prepended*.
 
 New tools include the transition_contacts tool (time series of
 transition between two structures) and serialize-selection tool
 (transforms a trajectory containing multiple molecules into a longer
-trajectory with a single molecule).  We have also added fcontacts,
-which should replace contact-time.  Bug fixes include gmxdump2pdb,
+trajectory with a single molecule).  We have also added fcontacts
+an an alternative to contact-time.  Bug fixes include gmxdump2pdb,
 native_contacts, and renum-pdb.  We have added LOOS exceptions to
-PyLOOS, so functions like selectAtoms() can throw without crashing
+PyLOOS, so functions such as selectAtoms() can throw without crashing
 python.
 
-The principal internal changes affect the iterative alignment and
-averaging functions (these no longer cache the trajectory), and the
-API for both trajectories and structures has changed slightly, taking
-an istream rather than an ifstream object.
+The principal internal change involves the iterative alignment and
+averaging functions so that the versions that take a pTraj no longer
+cache trajectory frames.  This change also affects the aligner and
+rmsd2ref tools.  In addition, the API for both trajectory and
+structure classes has changed slightly, taking an istream object
+rather than an ifstream object.
 
 For more details, see the ChangeLog file included with LOOS.
+
+
 
 
    * RELEASE 2.0.4 *
