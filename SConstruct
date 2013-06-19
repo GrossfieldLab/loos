@@ -42,7 +42,7 @@ if platform == 'linux2':
 
 
 # This is the version-tag for LOOS output
-loos_version = '2.0.5'
+loos_version = '2.0.6'
 
 
 # Principal options...
