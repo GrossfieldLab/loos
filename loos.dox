@@ -815,7 +815,7 @@ Matlab and Octave.
   can be used for building the histogram (e.g. ligand density in a
   binding simulation).
 
-       <DL>
+   <DL>
        <DT> <B> blobid </B>
        <DD> Identifies "blobs" in a grid using a flood-fill algorithm
 
@@ -1054,6 +1054,11 @@ Matlab and Octave.
        <DT><B>rmsfit</B>
        <DD>Superimpose two structures using Kabsch RMS alignment.
 
+       <DT><B>serialize-selection</B>
+       <DD>Takes a trajectory consisting of N copies of a selection
+       and turns it into a trajectory that is N times as long, but with
+       only one copy of the selection.
+
        <DT><B>subsetter</B>
        <DD>Subsets a trajectory (stripping out any atoms that don't match the
        given selection), and writes a new DCD file.  Can be used to
@@ -1175,7 +1180,7 @@ Matlab and Octave.
    <DD> Tools for performing PCA, found in Tools/.  Note: some related
    tools are also found in the network models section (\subpage enm).
 
-       <DL>
+    <DL>
        <DT><B>coverlap</B>
        <DD>Compute the covariance and subspace overlaps between either ENM
        results or PCA results (or any combination).  The covariance overlap
@@ -1205,7 +1210,7 @@ Matlab and Octave.
    <DT> <B><I> General purpose tools</I> </B>
    <DD> 
 
-       <DL>
+   <DL>
 
        <DT><B>averager</B>
        <DD>Compute the average structure for a set of molecules from a 
@@ -1309,6 +1314,10 @@ Matlab and Octave.
        <DD>Given 4 selections, compute the torsion angle for their centroids.  
        This program loops over a trajectory and writes the torsion angle time 
        series.
+
+       <DT><B>transition_contacts</B>
+       <DD>Calculate the normalized transition between two structures over
+       a trajectory.
     </DL>
 
     \page user
