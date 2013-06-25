@@ -387,4 +387,15 @@ namespace loos {
   }
 
 
+
+    void DCD::initTrajectory() 
+    {
+        readHeader();
+        bool b = parseFrame();
+        if (!b)
+            throw(GeneralError("Cannot read first frame of DCD during initialization"));
+        cached_first = true;
+    }
+    
+
 }
