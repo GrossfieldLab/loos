@@ -236,9 +236,9 @@ namespace loos {
 
     if (len != 48)
       throw(GeneralError("Error while reading crystal parameters"));
-    double *dp = (double *)o;  // The values are actually doubles, so we
-    // have to use a little trickery... 
 
+    double* dp = reinterpret_cast<double*>(o);
+    
     qcrys[0] = dp[0];
     qcrys[1] = dp[2];
     qcrys[2] = dp[5];
@@ -247,8 +247,8 @@ namespace loos {
     qcrys[5] = dp[4];
     
     if (swabbing)
-      for (int i=0; i<6; ++i)
-        qcrys[i] = swab(qcrys[i]);
+        for (int i=0; i<6; ++i)
+            qcrys[i] = swab(qcrys[i]);
 
     delete[] o;
   }
