@@ -223,15 +223,6 @@ namespace loos {
   }
 
 
-#if defined(LOOS_LEGACY)
-
-  void DCD::readHeader(std::fstream& fs) {
-    ifs.setStream(fs);
-    readHeader();
-  }
-#endif
-
-
 
   // Read in and reorder the crystal parameters...
   // NOTE: This is already double!
