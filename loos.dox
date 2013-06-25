@@ -2481,6 +2481,22 @@ renumbering by using the convert2pdb tool, i.e.
 convert2pdb --coords bigmodel.pdb bigmodel.psf >loos_bigmodel.pdb
 \endcode
 
+<DT> My DCD says it has 0 frames (or too many frames)
+<DD> LOOS relies on the DCD header to know how may frames
+are in a trajectory, but sometimes the header may be incorrect.
+For example, a ptraj conversion my result in a 0 frame count in
+the header, or if a write to a trajectory was interrupted, the
+header may list more frames than were actually written.  Two tools can
+be used to check the integrity of a trajectory: trajinfo and dcdinfo.
+Both tools will scan the trajectory and count the number of frames
+actually present.  The latter will also dump the inctrl block from the
+DCD header.  If there is a problem with the frame count in the DCD
+header, use the fixdcd tool to correct it.
+\code
+fixdcd simulation.dcd
+\endcode
+
+
 </DL>
 
 \subsection faq_loos_library Using the LOOS Library
