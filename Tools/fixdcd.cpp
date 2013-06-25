@@ -38,33 +38,36 @@ int scanTrajectory(const char* fname, bool* swabbing)
     DCD dcd(fname);
     *swabbing = !dcd.nativeFormat();
     
-    cout << boost::format("DCD claims to have %d frames.\n") % dcd.nframes();
 
     int n = 0;
     while (dcd.readFrame())
         ++n;
 
-    cout << boost::format("Scanning the DCD found %d frames.\n") % n;
+    if (n != static_cast<int>(dcd.nframes())) {
+        cout << boost::format("%s claims to have %d frames.\n") % fname % dcd.nframes();
+        cout << boost::format("--> Scanning found %d frames.\n") % n;
+    } else
+        n = -1;   // Signal no-update
+    
     return(n);
 }
 
 
 
-int main(int argc, char *argv[]) 
+void fixDCD(const char* fname) 
 {
-
-    if (argc != 2) {
-        cerr << "Usage- fixdcd dcdfile\n";
-        exit(-1);
-    }
-
     bool swabbing;
-    int nframes = scanTrajectory(argv[1], &swabbing);
+
+    int nframes = scanTrajectory(fname, &swabbing);
+    if (nframes < 0)
+        return;
     
-    fstream file(argv[1], ios_base::in | ios_base::out);
+
+    
+    fstream file(fname, ios_base::in | ios_base::out);
 
     if (file.fail()) {
-        cerr << "Error- cannot open " << argv[1] << endl;
+        cerr << "Error- cannot open " << fname << endl;
         exit(-2);
     }
 
@@ -77,7 +80,21 @@ int main(int argc, char *argv[])
     file.seekp(20);
     file.write(reinterpret_cast<char*>(&nframes), sizeof(nframes));
 
-    cout << "DCD has been fixed.\n";
+}
+
+
+
+int main(int argc, char *argv[]) 
+{
+
+    if (argc < 2) {
+        cerr << "Usage- fixdcd dcdfile [dcdfile ...]\n";
+        exit(-1);
+    }
+
+    for (int k=1; k<argc; ++k)
+        fixDCD(argv[k]);
+
 }
 
         
