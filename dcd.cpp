@@ -286,7 +286,7 @@ namespace loos {
     if (first_frame_pos == 0)
       throw(GeneralError("Trying to seek to a DCD frame without having first read the header"));
 
-    if (i >= nsteps())
+    if (i >= nframes())
       throw(GeneralError("Requested DCD frame is out of range"));
 
     ifs()->clear();
