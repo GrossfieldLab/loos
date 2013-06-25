@@ -223,15 +223,6 @@ namespace loos {
   }
 
 
-#if defined(LOOS_LEGACY)
-
-  void DCD::readHeader(std::fstream& fs) {
-    ifs.setStream(fs);
-    readHeader();
-  }
-#endif
-
-
 
   // Read in and reorder the crystal parameters...
   // NOTE: This is already double!
@@ -245,9 +236,9 @@ namespace loos {
 
     if (len != 48)
       throw(GeneralError("Error while reading crystal parameters"));
-    double *dp = (double *)o;  // The values are actually doubles, so we
-    // have to use a little trickery... 
 
+    double* dp = reinterpret_cast<double*>(o);
+    
     qcrys[0] = dp[0];
     qcrys[1] = dp[2];
     qcrys[2] = dp[5];
@@ -256,8 +247,8 @@ namespace loos {
     qcrys[5] = dp[4];
     
     if (swabbing)
-      for (int i=0; i<6; ++i)
-        qcrys[i] = swab(qcrys[i]);
+        for (int i=0; i<6; ++i)
+            qcrys[i] = swab(qcrys[i]);
 
     delete[] o;
   }
@@ -295,7 +286,7 @@ namespace loos {
     if (first_frame_pos == 0)
       throw(GeneralError("Trying to seek to a DCD frame without having first read the header"));
 
-    if (i >= nsteps())
+    if (i >= nframes())
       throw(GeneralError("Requested DCD frame is out of range"));
 
     ifs()->clear();
@@ -395,5 +386,16 @@ namespace loos {
     }
   }
 
+
+
+    void DCD::initTrajectory() 
+    {
+        readHeader();
+        bool b = parseFrame();
+        if (!b)
+            throw(GeneralError("Cannot read first frame of DCD during initialization"));
+        cached_first = true;
+    }
+    
 
 }

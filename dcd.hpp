@@ -86,33 +86,26 @@ namespace loos {
     };
 
 
-#if defined(LOOS_LEGACY)
-    explicit DCD() : Trajectory(), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0), swabbing(false) { }
-#endif
 
     //! Begin reading from the file named s
     explicit DCD(const std::string s) :  Trajectory(s), _natoms(0),
                                          qcrys(std::vector<double>(6)),
                                          frame_size(0), first_frame_pos(0),
-                                         swabbing(false) { readHeader(); readFrame(0); cached_first = true; }
+                                         swabbing(false) { initTrajectory(); }
 
     //! Begin reading from the file named s
     explicit DCD(const char* s) :  Trajectory(s), _natoms(0),
                                    qcrys(std::vector<double>(6)), frame_size(0),
-                                   first_frame_pos(0), swabbing(false) { readHeader(); readFrame(0); cached_first = true; }
+                                   first_frame_pos(0), swabbing(false) { initTrajectory(); }
 
     //! Begin reading from the stream ifs
     explicit DCD(std::istream& fs) : Trajectory(fs), _natoms(0),
                                      qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0),
-                                     swabbing(false) { readHeader(); readFrame(0); cached_first = true; };
+                                     swabbing(false) { initTrajectory(); };
 
     //! Read in the header from the stored stream
     void readHeader(void);
 
-#if defined(LOOS_LEGACY)
-    //! Read in the header from the specified stream
-    void readHeader(std::fstream& ifs);
-#endif
 
     // Accessor methods...
 
@@ -171,6 +164,8 @@ namespace loos {
 
   private:
 
+    void initTrajectory();
+      
     // Trajectory member functions we must provide...
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
