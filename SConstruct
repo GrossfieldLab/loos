@@ -25,6 +25,7 @@ from subprocess import *
 from time import strftime
 import shutil
 import distutils.sysconfig
+import distutils.spawn
 
 # Set default path depending on platform...
 # Note: This can be reset in custom.py
@@ -110,12 +111,12 @@ LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
 NETCDFINC = env['NETCDFINC']
 NETCDFLIB = env['NETCDFLIB']
 
+
 if ALTPATH != '':
    buildenv = env['ENV']
    path = buildenv['PATH']
    path = ALTPATH + ':' + path
    buildenv['PATH'] = path
-
 
 
 ### Builder for setup scripts
@@ -138,6 +139,10 @@ def script_builder_python(target, source, env):
 
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
+
+
+### Check for swig
+swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
 
 
 
@@ -342,6 +347,9 @@ env.Alias('pyloos_only', loos_python + loos_scripts)
 
 all_target = loos + tools + all_packages + loos_scripts
 if env['pyloos'] == '1':
+   if swig_location == None:
+      print 'Error- Swig (v2.0+) is required to build PyLOOS'
+      sys.exit(-1)
    all_target = all_target + loos_python
 
 env.Alias('all', all_target)
