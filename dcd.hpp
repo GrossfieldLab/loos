@@ -86,9 +86,6 @@ namespace loos {
     };
 
 
-#if defined(LOOS_LEGACY)
-    explicit DCD() : Trajectory(), _natoms(0), qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0), swabbing(false) { }
-#endif
 
     //! Begin reading from the file named s
     explicit DCD(const std::string s) :  Trajectory(s), _natoms(0),
@@ -109,10 +106,6 @@ namespace loos {
     //! Read in the header from the stored stream
     void readHeader(void);
 
-#if defined(LOOS_LEGACY)
-    //! Read in the header from the specified stream
-    void readHeader(std::fstream& ifs);
-#endif
 
     // Accessor methods...
 
