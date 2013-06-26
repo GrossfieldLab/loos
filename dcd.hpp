@@ -63,6 +63,9 @@ namespace loos {
    */
   class DCD : public Trajectory {
 
+    static bool suppress_warnings;
+
+    
     // Use a union to convert data to appropriate type...
     typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay;
 
@@ -162,6 +165,8 @@ namespace loos {
      */
     virtual void updateGroupCoords(AtomicGroup& g);
 
+    static void setSuppression(const bool b) { suppress_warnings = b; }
+    
   private:
 
     void initTrajectory();

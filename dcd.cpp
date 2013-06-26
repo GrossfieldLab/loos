@@ -43,6 +43,10 @@ namespace loos {
   bool DCD::hasPeriodicBox(void) const { return(_icntrl[10] == 1); }
   GCoord DCD::periodicBox(void) const { return(GCoord(qcrys[0], qcrys[1], qcrys[2])); }
 
+
+  bool DCD::suppress_warnings = false;
+  
+  
   std::vector<std::string> DCD::titles(void) const { return(_titles); }
 
   int DCD::icntrl(const int i) const { assert(i>=0 && i<20); return(_icntrl[i]); }
@@ -222,7 +226,7 @@ namespace loos {
     allocateSpace(_natoms);
 
     // Issue warnings
-    if (nframes() == 0)
+    if (nframes() == 0 && !suppress_warnings)
         std::cerr << "Warning- DCD '" << _filename << "' appears empty; verify with trajinfo and fix with fixdcd" << std::endl;
   }
 
