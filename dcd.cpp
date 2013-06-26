@@ -227,7 +227,7 @@ namespace loos {
 
     // Issue warnings
     if (nframes() == 0 && !suppress_warnings)
-        std::cerr << "Warning- DCD '" << _filename << "' appears empty; verify with trajinfo and fix with fixdcd" << std::endl;
+        std::cerr << "Warning- DCD '" << _filename << "' appears empty; verify with dcdinfo and fix with fixdcd" << std::endl;
   }
 
 
