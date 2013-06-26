@@ -63,13 +63,13 @@ namespace loos {
     Trajectory() : cached_first(false) { }
 
     //! Automatically open the file named \a s
-    Trajectory(const std::string& s) : ifs(s), cached_first(false) { }
+    Trajectory(const std::string& s) : ifs(s), cached_first(false), _filename(s) { }
 
     //! Automatically open the file named \a s
-    Trajectory(const char* s) : ifs(s), cached_first(false) { }
+    Trajectory(const char* s) : ifs(s), cached_first(false), _filename(s) { }
 
     //! Open using the given stream...
-    Trajectory(std::istream& fs) : ifs(fs), cached_first(false) { }
+    Trajectory(std::istream& fs) : ifs(fs), cached_first(false), _filename("istream") { }
 
     virtual ~Trajectory() { }
 
@@ -176,6 +176,8 @@ namespace loos {
     bool cached_first;    // Indicates that the first frame is cached by
                           // the subclass...
 
+    std::string _filename;   // Remember filename (if passed)
+    
   private:
     
     //! NVI implementation for seeking next frame
