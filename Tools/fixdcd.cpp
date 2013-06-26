@@ -35,6 +35,7 @@ using namespace std;
 
 int scanTrajectory(const char* fname, bool* swabbing)
 {
+
     DCD dcd(fname);
     *swabbing = !dcd.nativeFormat();
     
@@ -92,6 +93,8 @@ int main(int argc, char *argv[])
         exit(-1);
     }
 
+    DCD::setSuppression(true);
+    
     for (int k=1; k<argc; ++k)
         fixDCD(argv[k]);
 
