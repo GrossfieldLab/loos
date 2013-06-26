@@ -220,6 +220,10 @@ namespace loos {
       frame_size += 56;
 
     allocateSpace(_natoms);
+
+    // Issue warnings
+    if (nframes() == 0)
+        std::cerr << "Warning- DCD '" << _filename << "' appears empty; verify with trajinfo and fix with fixdcd" << std::endl;
   }
 
 
