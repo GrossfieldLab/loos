@@ -113,6 +113,7 @@ int main(int argc, char *argv[]) {
     ++opt;
   }
 
+  DCD::setSuppression(true);
   DCD dcd(argv[opt]);
 
   if (!dcd.nativeFormat())
@@ -121,7 +122,9 @@ int main(int argc, char *argv[]) {
   cout << boost::format("* DCD has %u atoms in %u frames with a timestep of %f.\n") % dcd.natoms() % dcd.nframes() % dcd.timestep();
   uint n = countFrames(dcd);
   if (n != dcd.nframes())
-    cout << boost::format("***WARNING***  Trajectory actually has %d rather than what is given in the header!\n") % n;
+      cout << "WARNING- Trajectory actually has " << n << " rather than what is given in the header!\n"
+           << "         You can fix this using the fixdcd tool on the trajectory.\n";
+  
   if (dcd.hasCrystalParams()) {
     cout << "* DCD HAS box/crystal information.\n";
     dcd.readFrame();
