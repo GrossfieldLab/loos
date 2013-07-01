@@ -112,11 +112,11 @@ foreach my $atom (@$rstruct) {
   defined($$atom{ATOMID}) || die;
   my $line = sprintf("%-6s%5s %4s %4s%1s%4s    %8.3f%8.3f%8.3f%6.2f%6.2f      %4s\n",
 		     'ATOM',
-		     $$atom{ATOMID},
+		     $$atom{ATOMID} >= 100000 ? &toHybrid36($$atom{ATOMID}, 5) : $$atom{ATOMID},
 		     $$atom{ATOMNAME},
 		     $$atom{RESNAME},
 		     ' ',
-		     $$atom{RESID},
+		     $$atom{RESID} >= 10000 ? &toHybrid36($$atom{RESID}, 4) : $$atom{RESID}, 
 		     $$atom{X},
 		     $$atom{Y},
 		     $$atom{Z},
@@ -142,8 +142,8 @@ foreach my $atom (@bond_list) {
   foreach my $bound (@$rbound) {
     ++$total_bonds;
     
-    printf $pdb "CONECT%5s", $atom if ($n == 0);
-    printf $pdb '%5s', $bound;
+    printf $pdb "CONECT%5s", ($atom >= 100000 ? &toHybrid36($atom, 5) : $atom) if ($n == 0);
+    printf $pdb '%5s', $bound >= 100000 ? &toHybrid36($bound, 5) : $bound;
     if (++$n > 5) {
       print $pdb "\n";
       $n = 0;
@@ -446,8 +446,7 @@ sub buildStructure {
       
 	my %atom;
 
-	# If atomid overflows, use hybrid-36
-	$atom{ATOMID} = $atomid >= 100000 ? &toHybrid36($atomid, 5) : $atomid;
+	$atom{ATOMID} = $atomid;
 	
 	$atom{ATOMNAME} = $mol->{ATOMS}->[$i];
 	$atom{SEGID} = $segid;
@@ -467,12 +466,9 @@ sub buildStructure {
 
 
 	
-	# Apply a global resid, switching to hybrid-36 if the resid field overflows...
+	# Apply a global resid
 
 	my $local_resid = $resids_local ? $residx+1 : $resid + $residx;
-	if ($local_resid >= 10000) {
-	  $local_resid = &toHybrid36($local_resid, 4);
-	}
 	$atom{RESID} = $local_resid;
 
 	my $c = $rcoords->[$atomid-1];
@@ -514,13 +510,6 @@ sub buildStructure {
 	my($a, $b) = @{$$rbonds[$i]};
 	$a = $localids[$a];
 	$b = $localids[$b];
-
-	if ($a >= 100000) {
-	  $a = &toHybrid36($a, 5);
-	}
-	if ($b >= 100000) {
-	  $b = &toHybrid36($b, 5);
-	}
 
 	if (!exists($bonds{$a})) {
 	  $bonds{$a} = [ $b ];
