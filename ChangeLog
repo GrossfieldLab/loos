@@ -1,3 +1,8 @@
+2013-07-01    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed gmxdump2pdb.pl to NOT use hybrid-36 encoding for the
+	PSF file.
+
 2013-06-25    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed potential bug in DCD reader nstep was used internally in
