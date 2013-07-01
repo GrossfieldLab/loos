@@ -153,7 +153,6 @@ namespace loos {
          
     std::stringstream ss(s);
 
-    // A hack to handle hybrid-36 resids & atomids
     if (!(ss >> index))
       throw(LOOSError("PSF parse error.\n> " + s));
     pa->id(index);
