@@ -7,8 +7,6 @@
 
     Tool to compute the distribution of crossing angles between chains
 
-TODO: add torsion
-
 */
 
 
@@ -90,7 +88,7 @@ string fullHelpMessage(void)
 "The purpose of this tool is to compute the distribution of crossing \n"
 "angles and torsions for a set of chains.  Specifically, it takes a selection of \n"
 "atoms, splits them into in individual chains based on connectivity,\n"
-"and at each time point computes their centroids and principle axes.\n"
+"and at each time point computes their centroids and principal axes.\n"
 "If a pair of chains centroids are within a threshold distance, it \n"
 "computes the angle between their first principle axes and histograms\n"
 "it.  The absolute value of the angle is used, because the principal axis\n"
@@ -99,7 +97,7 @@ string fullHelpMessage(void)
 "\n"
 "It also computes the torsion angle between the two chains, by generating\n"
 "an extra point for each chain by stepping away from the centroid along\n"
-"the principle axis.  In this case, the angle is mapped into the range\n"
+"the principal axis.  In this case, the angle is mapped into the range\n"
 "0-90 degrees, again because the principal axis calculation doesn't \n"
 "determine sign.  As a result, the column with the torsion values will\n" 
 "will always be zeroes above 90 degrees.\n"
@@ -221,6 +219,14 @@ int main(int argc, char *argv[]) {
         // principalAxes returns a vector of GCoord, the first one
         // is the most significant vector
         paxes[i] = chains[i].principalAxes()[0];
+
+        // JH 07-2013
+        // Make sign of paxes vector significant by matching end-to-end vector
+        GCoord end_to_end = (chains[i].getAtom(chains[i].size() - 1))->coords() - (chains[i].getAtom(0))->coords();
+        if (end_to_end * paxes[i] < 0.0)
+          paxes[i] *= -1.0;
+        // end JH 07-2013
+
         points[i] = centers[i] + paxes[i];
         }
 
@@ -251,7 +257,12 @@ int main(int argc, char *argv[]) {
                 // the only meaningful range
                 // Yes, I know this is the slow way, but it's idiot 
                 // proof...
-                ang = acos( fabs(cos(t*M_PI/180.0)) ) * 180.0/M_PI;
+
+                // JH 07-2013
+                // now torsion can be between 0 and 180
+                // ang = acos( fabs(cos(t*M_PI/180.0)) ) * 180.0/M_PI;
+                ang = fabs(t);
+
                 if (!( (ang <= hist_min) || (ang >= hist_max) ))
                     {
                     uint bin = (uint)((ang-hist_min)/bin_size);
