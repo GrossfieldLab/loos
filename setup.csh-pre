@@ -32,7 +32,7 @@ endif
 if ( -d $LOOSPATH/bin ) then
     set TOOLPATH="$LOOSPATH/bin"
 else
-    set TOOLPATH="$LOOSPATH/Tools:$LOOSPATH/Packages/Convergence:$LOOSPATH/Packages/DensityTools:$LOOSPATH/Packages/ElasticNetworks:$LOOSPATH/Packages/HydrogenBonds:$LOOSPATH/Packages/Users"
+    set TOOLPATH="$LOOSPATH/Tools:$LOOSPATH/Packages/Convergence:$LOOSPATH/Packages/DensityTools:$LOOSPATH/Packages/ElasticNetworks:$LOOSPATH/Packages/HydrogenBonds:$LOOSPATH/Packages/User"
 endif
 
 setenv PATH "$TOOLPATH":"$PATH"
