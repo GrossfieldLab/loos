@@ -66,6 +66,8 @@ use Carp;
 use Getopt::Long;
 use strict;
 
+my $debug = 0;    # Enable copious output for debugging...
+
 my $resids_local = 0;
 my $coord_scale = 10.0;   # Convert NM into Angstroms for PDBs
 my $use_constraints = 0;
@@ -279,6 +281,8 @@ sub processMolecules {
   my $rcons = undef;    # Constraints
 
   while (<>) {
+    print "[$state] $_" if ($debug);
+
     if ($state == 0) {
       
       if (/moltype \((\d+)\)/) {
@@ -350,6 +354,10 @@ sub processMolecules {
       } elsif (/moltype \((\d+)\)/)  {
 	$molidx = $1;
 	$state = 1;
+      } elsif ($use_constraints && /Constraint/) {
+	$rcons = [];
+	$$rmols[$molidx]->{CONSTRAINTS} = $rcons;
+	$state = 5;
       } elsif (/groupnr\[/) {
 	last;
       }
