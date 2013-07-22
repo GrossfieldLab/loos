@@ -92,11 +92,11 @@ my $psf = new FileHandle "$output_prefix.psf", 'w'; defined($psf) || die "Error-
 # overall structure is parsed.  Then the detailed information about
 # each molecule is filled in.  Finally, the coordintes are read in.
 
-my $rmolecules = &processTopology;
-print STDERR "Found ", $#$rmolecules+1, " molecules\n";
+my $rtopo = &processTopology;
+print STDERR "Found ", $#$rtopo+1, " molecules in topology\n";
 
-&processMolecules($rmolecules);
-print STDERR "Updated ", $#$rmolecules+1, " molecules\n";
+my $rmolecules = &processMolecules;
+print STDERR "Found ", $#$rmolecules+1, " molecules defined\n";
 
 my $rcoords = &readCoords;
 print STDERR "Found ", $#$rcoords+1, " coordinates.\n";
@@ -104,14 +104,22 @@ print STDERR "Found ", $#$rcoords+1, " coordinates.\n";
 # Here, we build up an array of ATOMs roughly with PDB fields, along
 # with the appropriate connectivity information.
 
-my($rstruct, $rconn) = &buildStructure($rmolecules, $rcoords);
+my($rstruct, $rconn) = &buildStructure($rtopo, $rmolecules, $rcoords);
 &inferWater($rstruct, $rconn) if ($infer_water);
 
 # Write out the PDB.  Uses hybrid-36 format if resid or atomid overflows...
 print $pdb "REMARK    MADE BY GMXDUMP2PDB.PL\n";
 my $natoms = 0;
+
 foreach my $atom (@$rstruct) {
+  # Try to catch missing information...
   defined($$atom{ATOMID}) || die;
+  defined($$atom{ATOMNAME}) || die;
+  defined($$atom{X}) || die;
+  defined($$atom{RESNAME}) || die;
+  defined($$atom{RESID}) || die;
+  defined($$atom{SEGID}) || die;
+
   my $line = sprintf("%-6s%5s %4s %4s%1s%4s    %8.3f%8.3f%8.3f%6.2f%6.2f      %4s\n",
 		     'ATOM',
 		     $$atom{ATOMID} >= 100000 ? &toHybrid36($$atom{ATOMID}, 5) : $$atom{ATOMID},
@@ -130,6 +138,8 @@ foreach my $atom (@$rstruct) {
 
 }
 
+my $expected_natoms = $#$rstruct + 1;
+$natoms == $expected_natoms || warn "Warning- wrote $natoms, but expected $expected_natoms\n";
 
 my @bond_list = sort { $a <=> $b } keys %$rconn;
 my $total_bonds = 0;
@@ -207,6 +217,7 @@ print $psf "\n";
 #
 # Tags:
 #   NAME -> name of the molecule (i.e. segid)
+#   TYPE -> moltype
 #   NMOLS -> Number of molecules present (for this molecule)
 #   NATOMS -> Number of atoms in each molecule
 
@@ -226,14 +237,15 @@ sub processTopology {
 
     } elsif ($state == 1) {
 
-      if (/moltype\s+= \d+ \"(.+)\"/) {
+      if (/moltype\s+= (\d+) \"(.+)\"/) {
 	if (defined($curmol)) {
 	  push(@molecules, $curmol);
 	  $curmol = {};
 	}
 
-	$curmol->{NAME} = $1;
-	print STDERR "Found molecule '$1' (", $#molecules+1, ")\n";
+	$curmol->{NAME} = $2;
+	$curmol->{TYPE} = $1;
+	print STDERR "Found segment '$2' [type=$1] (", $#molecules+1, ")\n";
       } elsif (/molecules\s+= (\d+)/) {
 	$curmol->{NMOLS} = $1;
 	print STDERR "\tMolecules: $1\n";
@@ -270,18 +282,20 @@ sub processTopology {
 
 
 sub processMolecules {
-  my $rmols = shift;    # Already parsed molecules we'll be filling in
+  my $rmols = [];       # Molecules we'll be filling in info for...
                         # the details for...
   my $state = 0;        # Initial state for our state machine
   
-  my $molidx = undef;   # Index into rmols for what we're processing
+  my $molidx = -1;   # Index into rmols for what we're processing
   my $ratoms = undef;   # Anon-array of atom names for each molecule
                         # as we're processing it
   my $rbonds = undef;   # Same, but for connectivity
   my $rcons = undef;    # Constraints
 
+
+
   while (<>) {
-    print "[$state] $_" if ($debug);
+    print "[$state : $molidx] $_" if ($debug);
 
     if ($state == 0) {
       
@@ -393,7 +407,7 @@ sub processMolecules {
     }
   }
 
-  return;
+  return($rmols);
 }
 
 
@@ -423,6 +437,7 @@ sub readCoords {
 ## an anon-array that contains the atomid's of bound atoms.
 
 sub buildStructure {
+  my $rtopo = shift;
   my $rmolecules = shift;
   my $rcoords = shift;
 
@@ -433,24 +448,29 @@ sub buildStructure {
   my $resid = 1;   # Global (within the PDB)  This means that the output resids do not
                    # match what GROMACS was using
 
-  foreach my $mol (@$rmolecules) {
+  foreach my $segment (@$rtopo) {
+    my $name = $$segment{NAME};
+    my $type = $$segment{TYPE};
+
+    my $mol = $$rmolecules[$type];
 
     my $x = $mol->{ATOMS};
     if ($#$x < 0) {
-      croak "$$mol{NAME} has no atoms";
+      croak "$name [$type] has no atoms";
     }
 
     my $residues = $mol->{RESIDUES};
     my $charges = $mol->{CHARGES};
+
     my $masses = $mol->{MASSES};
     my $atomtypes = $mol->{TYPES};
     my $atom_to_residue = $mol->{ATOM_TO_RESIDUE};
-    my $segid = $$mol{NAME};
+    my $segid = $$segment{NAME};
 
-    for (my $j=0; $j<$mol->{NMOLS}; ++$j) {
+    for (my $j=0; $j<$segment->{NMOLS}; ++$j) {
       my @localids;     # Track atomids within a molecule for creating
                         # the connectivity info...
-      for (my $i=0; $i<$mol->{NATOMS}; ++$i) {
+      for (my $i=0; $i<$segment->{NATOMS}; ++$i) {
       
 	my %atom;
 
