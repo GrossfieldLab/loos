@@ -266,7 +266,6 @@ sub processTopology {
 
 
 # Process the rest of the gmxdump output, adding the appropriate atoms, coords, and bonds.
-# Updates the passed ref to molecules
 #
 # We assume "grp[" denotes the end of the metadata block (at least as
 # much of it as we care about).
@@ -431,7 +430,7 @@ sub readCoords {
 
 
 
-## Builds up the structure based on the molecule and coord info.
+## Builds up the structure based on the topology, molecule, and coord info.
 ## Returns a ref to an array of atoms (anon-hashes) and a ref to a
 ## hash of bonds.  Bonds are keyed by atomid and each entry points to
 ## an anon-array that contains the atomid's of bound atoms.
