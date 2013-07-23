@@ -28,6 +28,11 @@
 	* Added fixdcd tool to update a DCD header (in-place) with the
 	correct # of frames.
 
+2013-06-19    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Released 2.0.5
+
+
 2013-06-18    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed rmsd2ref so that it no longer caches trajectory frames
