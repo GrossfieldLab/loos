@@ -187,12 +187,12 @@ void parseArgs(int argc, char *argv[]) {
   }
 }
 
-typedef boost::tuple<RealMatrix, RealMatrix>   RMDuple;
+typedef boost::tuple<DoubleMatrix, DoubleMatrix>   DMDuple;
 
 
-RMDuple transformENM(const RealMatrix& S, const RealMatrix& U, const uint nmodes) {
-  RealMatrix SS(nmodes, 1);
-  RealMatrix UU(U.rows(), nmodes);
+DMDuple transformENM(const DoubleMatrix& S, const DoubleMatrix& U, const uint nmodes) {
+  DoubleMatrix SS(nmodes, 1);
+  DoubleMatrix UU(U.rows(), nmodes);
 
   for (uint i=skip; i<nmodes+skip; ++i) {
     SS[i-skip] = 1.0 / S[i];
@@ -200,13 +200,13 @@ RMDuple transformENM(const RealMatrix& S, const RealMatrix& U, const uint nmodes
       UU(j,i-skip) = U(j,i);
   }
 
-  return(RMDuple(SS,UU));
+  return(DMDuple(SS,UU));
 }
 
 
-RMDuple firstColumns(const RealMatrix& S, const RealMatrix& U, const uint nmodes) {
-  RealMatrix SS(nmodes, 1);
-  RealMatrix UU(U.rows(), nmodes);
+DMDuple firstColumns(const DoubleMatrix& S, const DoubleMatrix& U, const uint nmodes) {
+  DoubleMatrix SS(nmodes, 1);
+  DoubleMatrix UU(U.rows(), nmodes);
 
   for (uint i=0; i<nmodes; ++i) {
     SS[i] = i < S.rows() ? S[i] : 0.0;
@@ -215,12 +215,12 @@ RMDuple firstColumns(const RealMatrix& S, const RealMatrix& U, const uint nmodes
       UU(j, i) = U(j, i);
   }
 
-  return(RMDuple(SS,UU));
+  return(DMDuple(SS,UU));
 }
 
 
 
-RealMatrix scalePower(const RealMatrix& A, const RealMatrix& B) {
+DoubleMatrix scalePower(const DoubleMatrix& A, const DoubleMatrix& B) {
 
   double sumB = 0.0;
   double sumA = 0.0; 
@@ -231,7 +231,7 @@ RealMatrix scalePower(const RealMatrix& A, const RealMatrix& B) {
 
   double scale = sumA / sumB;
   cerr << "Scale factor = " << scale << endl;
-  RealMatrix E(B.rows(), 1);
+  DoubleMatrix E(B.rows(), 1);
   for (uint j=0; j<B.rows(); ++j)
     E[j] = B[j] * scale;
 
@@ -246,17 +246,17 @@ int main(int argc, char *argv[]) {
   parseArgs(argc, argv);
 
   cerr << "Reading left side matrices...\n";
-  RealMatrix lS;
+  DoubleMatrix lS;
   readAsciiMatrix(lefts_name, lS);
-  RealMatrix lU;
+  DoubleMatrix lU;
   readAsciiMatrix(leftU_name, lU);
   cerr << boost::format("Read in %d x %d eigenvectors...\n") % lU.rows() % lU.cols();
   cerr << boost::format("Read in %d eigenvalues...\n") % lS.rows();
 
   cerr << "Reading in right side matrices...\n";
-  RealMatrix rS;
+  DoubleMatrix rS;
   readAsciiMatrix(rights_name, rS);
-  RealMatrix rU;
+  DoubleMatrix rU;
   readAsciiMatrix(rightU_name, rU);
   cerr << boost::format("Read in %d x %d eigenvectors...\n") % rU.rows() % rU.cols();
   cerr << boost::format("Read in %d eigenvalues...\n") % rS.rows();
@@ -273,27 +273,27 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  RealMatrix lSS;
-  RealMatrix lUU;
+  DoubleMatrix lSS;
+  DoubleMatrix lUU;
   if (left_is_enm) {
-    RMDuple res = transformENM(lS, lU, number_of_modes);
+    DMDuple res = transformENM(lS, lU, number_of_modes);
     lSS = boost::get<0>(res);
     lUU = boost::get<1>(res);
   } else {
-    RMDuple res = firstColumns(lS, lU, number_of_modes);
+    DMDuple res = firstColumns(lS, lU, number_of_modes);
     lSS = boost::get<0>(res);
     lUU = boost::get<1>(res);
   }
 
-  RealMatrix rSS;
-  RealMatrix rUU;
+  DoubleMatrix rSS;
+  DoubleMatrix rUU;
   if (right_is_enm) {
-    RMDuple res = transformENM(rS, rU, number_of_modes);
+    DMDuple res = transformENM(rS, rU, number_of_modes);
     rSS = boost::get<0>(res);
     rUU = boost::get<1>(res);
   } else {
 
-    RMDuple res = firstColumns(rS, rU, number_of_modes);
+    DMDuple res = firstColumns(rS, rU, number_of_modes);
     rSS = boost::get<0>(res);
     rUU = boost::get<1>(res);
   }
