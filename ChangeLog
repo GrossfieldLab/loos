@@ -1,3 +1,10 @@
+2013-07-23    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed coverlap tool to internally use double-precision for
+	eigenpair matrices.  This resolves a fringe-case where coverlap
+	would fail with a conversion error when using eigenpairs from the
+	ENM suite.
+
 2013-07-23  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Fixed gmxdump2pdb.pl so that it can handle cases where there are
