@@ -1,3 +1,9 @@
+2013-07-23  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Fixed gmxdump2pdb.pl so that it can handle cases where there are
+	more topology segments than molecular segments (as can happen with
+	bilayer systems)
+
 2013-07-19    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added link to tutorial on LOOS in documentation
