@@ -204,7 +204,6 @@ elif platform == 'freebsd8':
 elif platform == 'linux2':
    noatlas = 0
 
-
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
    ### package be linked in.  If you see strange link errors for
@@ -217,6 +216,10 @@ elif platform == 'linux2':
 
    elif (re.search("[Uu]buntu", linux_type)):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
+      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
+
+   elif (re.search("[Dd]ebian", linux_type)):
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    else:
