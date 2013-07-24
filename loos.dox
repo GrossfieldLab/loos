@@ -1333,6 +1333,34 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release206 Version 2.0.6 (X-XX-XXXX)
+\subsection r206_bugs Bug Fixes
+<ul>
+  <li> Fixed bugs in DCD reading code affecting trajectories that have
+  a zero frame-count.
+  <li> Fixed bug in setup.csh script affecting path to user package
+  tools.
+  <li> Fixed bugs in gmxdump2pdb.pl:
+    <ul>
+      <li> No longer users hybrid-36 encoding for PSF file
+      <li> Correctly handles moltype in topology (systems where
+	molecule segments were repeated in the topology would cause
+	errors, e.g. bilayers where each leaflet is a separate
+	segment).
+    </ul>
+  <li> Fixed fringe bug in coverlap tool where ENM-generated
+  eigenpairs would not load in older RedHat Enterprise installs.
+</ul>
+
+\subsection r206_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added fixdcd tool to fix the DCD header (in-place) with the
+  correct number of frames in the trajectory.
+  <li> Added support for disambiguating sign of PCA vectors in
+  cross-dist.
+  <li> Added link to tutorial on LOOS
+</ul>
+
 \section release205 Version 2.0.5 (6-19-2013)
 \subsection r205_bugs Bug Fixes
 <ul>
