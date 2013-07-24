@@ -17,9 +17,11 @@
 
 2013-07-03    <alan@membrane.urmc.rochester.edu>
 
-    * Added change to cross-dist.  Disambiguate sign of PCA vectors
+	* Added change to cross-dist.  Disambiguate sign of PCA vectors
 	  by checking against end-to-end vector.  Code (and idea) courtesy of 
 	  Jerome Henin.
+
+	* Fixed bug in setup.csh (user package directory was mispelled).
 
 2013-07-01    <tromo@hill.urmc-sh.rochester.edu>
 
