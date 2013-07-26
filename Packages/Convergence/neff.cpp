@@ -54,6 +54,11 @@ const double stddev_tol = 1e-6;
 vvUint readStates(const string& fname) {
   
   ifstream ifs(fname.c_str());
+  if (ifs.fail()) {
+      cerr << "Error- cannot open " << fname << endl;
+      exit(-1);
+  }
+  
   vvUint states;
 
   int n;
@@ -87,6 +92,11 @@ vvUint readStates(const string& fname) {
 
 vector<uint> readAssignments(const string& fname) {
   ifstream ifs(fname.c_str());
+  if (ifs.fail()) {
+      cerr << "Error- cannot open " << fname << endl;
+      exit(-1);
+  }
+  
   return(readVector<uint>(ifs));
 }
 
