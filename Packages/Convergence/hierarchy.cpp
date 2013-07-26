@@ -85,6 +85,11 @@ double mfpt(const vector<uint>& assign, const uint x, const uint y) {
 
 DoubleMatrix computeRates(const string& fname) {
   ifstream ifs(fname.c_str());
+  if (!ifs) {
+      cerr << "Error- unable to open " << fname << endl;
+      exit(-1);
+  }
+  
 
   vector<uint> assignments = readVector<uint>(ifs);
   uint nbins = 0;

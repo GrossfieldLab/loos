@@ -68,6 +68,11 @@ struct ExponentialFit {
 
 vvecDouble readData(const string& fname) {
   ifstream ifs(fname.c_str());
+  if (!ifs) {
+      cerr << "Error- unable to open " << fname << endl;
+      exit(-1);
+  }
+  
   return(readTable<double>(ifs));
 }
 

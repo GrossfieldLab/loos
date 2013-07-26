@@ -191,6 +191,12 @@ string generateSegid(const uint n) {
 
 vector<int> readMap(const string& name) {
   ifstream ifs(name.c_str());
+  if (!ifs) {
+      cerr << "Error- cannot open " << name << endl;
+      exit(-1);
+  }
+  
+      
   string line;
   uint lineno = 0;
   vector<int> atomids;
