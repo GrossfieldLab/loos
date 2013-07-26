@@ -1,3 +1,8 @@
+2013-07-26    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed hierarchy so that it now catches bad input and generates a
+	useful erorr message rather than segfaulting...
+
 2013-07-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed coverlap tool to internally use double-precision for
