@@ -371,6 +371,14 @@ int main(int argc, char *argv[]) {
   int k = 1;
   DoubleMatrix M = computeRates(argv[k++]);
   vector<uPair> pairs = sortRates(M);
+  if (pairs.empty()) {
+      cerr << "Error- hierarchy failed to compute rates.  Double-check how the assignments\n"
+	   << "       file was generated.  Did you use ufidpick to pick the fiducials?\n"
+	   << "       Is the cutoff reasonable?  Is the selection correct (use model-select\n"
+	   << "       to confirm)?\n";
+      exit(-10);
+  }
+  
   vvUint states = cluster(pairs);
 
   // Not all states will get clustered, so manually search for
