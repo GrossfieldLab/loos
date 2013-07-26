@@ -48,6 +48,11 @@ int main(int argc, char *argv[]) {
       exit(-1);
     }
     ifstream ifs(argv[1]);
+    if (!ifs) {
+	cerr << "Error- cannot open " << argv[1] << endl;
+	exit(-1);
+    }
+	
     ifs >> grid;
   } else
     cin >> grid;

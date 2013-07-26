@@ -97,6 +97,11 @@ namespace loos {
             }
 
             std::ifstream ifs(grid_name.c_str());
+	    if (!ifs) {
+		std::cerr << "Error- cannot open grid file '" << grid_name << "' for reading." << std::endl;
+		return(false);
+	    }
+	    
             ifs >> the_grid;
             std::cerr << "Read in grid with size " << the_grid.gridDims() << std::endl;
             if (!validateGridMask(the_grid)) {
