@@ -1,3 +1,9 @@
+2013-08-01    <alan_grossfield@membrane.urmc.rochester.edu>
+
+    * Added a new tool to Packages/PyLOOS: protein_tilt.py computes the time
+	  series of the tilt angle for a transmembrane protein by averaging the 
+	  tilt vectors of individual selects (e.g. individual helices)
+
 2013-07-26    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed hierarchy so that it now catches bad input and generates a
