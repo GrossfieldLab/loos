@@ -489,7 +489,7 @@ namespace loos {
       //! radius of a real-space coord
       /**
        * This first converts the real-space coords into grid-space, then
-       * finds the bounding box for the sphere with radius \r.  It then
+       * finds the bounding box for the sphere with radius \a r.  It then
        * checks each grid-point to see if it actually lies on the
        * surface or within the sphere and returns a vector of
        * DensityGridPoints that do.
