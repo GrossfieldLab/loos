@@ -962,7 +962,7 @@ Matlab and Octave.
    <h2> Trajectory manipulation tools </h2>
    A set of tools for manipulating structure and trajectory
    files, found in the Tools/ directory:
-       <DL>
+   <DL>
        <DT> <B>aligner</B>
        <DD> Align structures in a trajectory against the average using an
        iterative refinement scheme.  Can read any LOOS trajectory format, but
@@ -1081,8 +1081,8 @@ Matlab and Octave.
        <DD>Similar to dcdinfo, but works with generic trajectories.  Can report
        box information and the centroid of a selection.  Useful for verifying
        trajectory header information and extracting the number of frames and
-       atoms in a trajectory.
-       </DL>
+	 atoms in a trajectory.
+   </DL>
         
 
    \page Membranes "Membrane systems"
@@ -1090,8 +1090,9 @@ Matlab and Octave.
    Tools specifically intended for analyzing lipid bilayers and
    related systems, found in the Tools/
    directory:
-       <DL>
 
+
+   <DL>
        <DT><B>cross-dist</B>
        <DD> Compute the probability distribution of crossing angles and
        torsions for a set of chains.
@@ -1173,7 +1174,7 @@ Matlab and Octave.
        than averaging over the whole trajectory.  This program is
        deprecated, because its functionality has been merged into xy_rdf.
 
-       </DL>
+   </DL>
 
     \page PCA
    <h2> Principal component analysis </h2>
@@ -1203,7 +1204,7 @@ Matlab and Octave.
        <DD>Map the magnitude of a left singular vector onto a PDB file's B-value
        column.  Useful for visualizing which portions of a molecule are mobile 
        for a given SVD mode.
-       </DL>
+    </DL>
 
 
     \page other
@@ -1211,8 +1212,7 @@ Matlab and Octave.
    <h2> General purpose tools</h2>
 
    <DL>
-
-       <DT><B>averager</B>
+     <DT><B>averager</B>
        <DD>Compute the average structure for a set of molecules from a 
        trajectory, using an iterative scheme.
 
