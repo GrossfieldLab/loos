@@ -33,7 +33,7 @@ function AbortOrContinue {
 
 WHAT=`pwd | sed 's@^.*LOOS/@@'`
 echo "Release base: $WHAT"
-VERS=`echo $WHAT | sed 's/^.*-//'`
+VERS=`echo $WHAT | sed 's/^.*release-//'`
 echo "Release version: $VERS"
 echo
 
@@ -76,8 +76,8 @@ fi
 
 echo "*** Building documentation"
 echo "+ Cleaning..."
-#rm -rf Doc                # Manually remove since scons wont
-#scons -cs caboodle        # Clean everything (to be safe)
+rm -rf Doc                # Manually remove since scons wont
+scons -cs caboodle        # Clean everything (to be safe)
 echo "+ Building..."
 scons -sj$PROCS docs      # Rebuild docs explicitly
 
