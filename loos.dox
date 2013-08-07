@@ -671,10 +671,9 @@ Matlab and Octave.
       - \subpage other "General purpose tools"
       - \subpage user "User-created tools"
 
-<DL>
   \page Convergence
-  <DT> <B><I> Convergence Analysis Tools</I></B>
-  <DD> A collection of tools for assessing statistical error and
+  <h2>Convergence Analysis Tools</h2>
+  A collection of tools for assessing statistical error and
   convergence, found in the Packages/Convergence/ directory:
 
     <DL>
@@ -797,8 +796,8 @@ Matlab and Octave.
     </DL>
 
   \page density
-  <DT> <B><I>Density Tools</I></B>
-  <DD> A collection of tools for working with 3D density distributions,
+  <h2>Density Tools</h2>
+  A collection of tools for working with 3D density distributions,
   found in Packages/DensityTools.  This includes new classes such as
   loos::DensityTools::DensityGrid and loos::DensityTools::SimpleMeta.
   Some of the grid tools read and write to stdout so they can be
@@ -901,8 +900,8 @@ Matlab and Octave.
        </DL>
 
   \page enm 
-  <DT> <B><I>Elastic Network Models</I></B>
-  <DD> A collection of tools for working with ENMs, found in the
+  <h2>Elastic Network Models</h2>
+  A collection of tools for working with ENMs, found in the
   Packages/ElasticNetworks/ directory:
     <DL>
       <DT> <B>anm</B>
@@ -944,8 +943,8 @@ Matlab and Octave.
    (i.e. add 6 to the mode requested).
 
     \page hbond 
-   <DT> <B><I>Hydrogen Bonding Tools</I></B>
-   <DD> A set of tools for analyzing hydrogen bonding, found in
+   <h2>Hydrogen Bonding Tools</h2>
+   A set of tools for analyzing hydrogen bonding, found in
    Packages/HydrogenBonds/ directory:
       <DL>
         <DT><B>hbonds</B>
@@ -960,8 +959,8 @@ Matlab and Octave.
       </DL>
 	    
     \page manipulation Trajectory manipulation
-   <DT> <B><I> Trajectory manipulation tools </I></B>
-   <DD> A set of tools for manipulating structure and trajectory
+   <h2> Trajectory manipulation tools </h2>
+   A set of tools for manipulating structure and trajectory
    files, found in the Tools/ directory:
        <DL>
        <DT> <B>aligner</B>
@@ -1087,8 +1086,8 @@ Matlab and Octave.
         
 
    \page Membranes "Membrane systems"
-   <DT> <B><I> Tools for membrane systems</I></B>
-   <DD> Tools specifically intended for analyzing lipid bilayers and
+   <h2> Tools for membrane systems</h2>
+   Tools specifically intended for analyzing lipid bilayers and
    related systems, found in the Tools/
    directory:
        <DL>
@@ -1177,8 +1176,8 @@ Matlab and Octave.
        </DL>
 
     \page PCA
-   <DT> <B><I> Principal component analysis </I> </B>
-   <DD> Tools for performing PCA, found in Tools/.  Note: some related
+   <h2> Principal component analysis </h2>
+   Tools for performing PCA, found in Tools/.  Note: some related
    tools are also found in the network models section (\subpage enm).
 
     <DL>
@@ -1208,8 +1207,8 @@ Matlab and Octave.
 
 
     \page other
-   <DT> <B><I> General purpose tools</I> </B>
-   <DD> 
+    
+   <h2> General purpose tools</h2>
 
    <DL>
 
@@ -1322,18 +1321,16 @@ Matlab and Octave.
     </DL>
 
     \page user
-     <DT> <B><I> User-created tools</I> </B>
-   <DD>  Create your own tools in Packages/User/.  Currently contains 
+     <h2> User-created tools</h2>
+   Create your own tools in Packages/User/.  Currently contains 
    a number of templates for different kinds of apps.
-
-
 
 */
 
 
 
 /*! \page Changes Change Log
-\section release206 Version 2.0.6 (X-XX-XXXX)
+\section release206 Version 2.0.6 (BETA-RELEASE)
 \subsection r206_bugs Bug Fixes
 <ul>
   <li> Fixed bugs in DCD reading code affecting trajectories that have
@@ -1350,6 +1347,9 @@ Matlab and Octave.
     </ul>
   <li> Fixed fringe bug in coverlap tool where ENM-generated
   eigenpairs would not load in older RedHat Enterprise installs.
+  <li> Fixed hierarchy so that it catches bad input and issues an
+  error rather than segfaults.
+  <li> Fixed several tools to catch errors when opening files.
 </ul>
 
 \subsection r206_added_changed Added, Changed, or Otherwise Notable
@@ -1359,6 +1359,7 @@ Matlab and Octave.
   <li> Added support for disambiguating sign of PCA vectors in
   cross-dist.
   <li> Added link to tutorial on LOOS
+  <li> Added protein_tilt.py tool to PyLOOS.
 </ul>
 
 \section release205 Version 2.0.5 (6-19-2013)
