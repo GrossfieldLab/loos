@@ -38,7 +38,7 @@ echo "Release version: $VERS"
 echo
 
 ### Small sanity check...
-OK=`pwd | egrep 'tags/release-[0-9.]+$'`
+OK=`pwd | egrep 'tags/release-[0-9.]+(-(alpha|beta))?$'`
 if [ ! $OK ] ; then
     echo "WARNING!!!"
     echo "You don't appear to be prepping a release in a release directory!"
