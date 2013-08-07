@@ -8,6 +8,8 @@
 
 	* Fixed hierarchy so that it now catches bad input and generates a
 	useful erorr message rather than segfaulting...
+	* Fixed multiple tools to more gracefully handle problems when
+	opening files.
 
 2013-07-23    <tromo@hill.urmc-sh.rochester.edu>
 
