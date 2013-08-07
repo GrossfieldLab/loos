@@ -161,7 +161,7 @@ namespace loos {
      *
      *There is support for pediodic boundary conditions.  If the DCD has
      *xtal data, then the a, b, and c values are used to update the
-     *AtomicGroup::periodicBox().
+     *periodicBox() .
      */
     virtual void updateGroupCoords(AtomicGroup& g);
 

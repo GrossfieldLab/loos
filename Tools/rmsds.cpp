@@ -165,6 +165,9 @@ public:
 };
 
 
+// @endcond TOOLS_INTERNAL
+
+
 Matrix singleTrajectory(ToolOptions* topts) {
   AtomicGroup model = createSystem(topts->model1);
   pTraj traj = createTrajectory(topts->traj1, model);

@@ -124,6 +124,7 @@ public:
 
 };
 
+// @endcond TOOLS_INTERNAL
 
 int main(int argc, char *argv[]) {
 

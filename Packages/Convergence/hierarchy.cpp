@@ -48,6 +48,7 @@ typedef pair<uint, uint>     uPair;
 typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
+// @endcond TOOLS_INTERNAL
 
 // Debugging generates a lot of information about the internal state
 // of the code.  This was used to validate its operation with respect

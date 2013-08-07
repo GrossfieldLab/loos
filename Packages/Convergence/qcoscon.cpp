@@ -114,6 +114,8 @@ public:
 };
 
 
+// @endcond TOOLS_INTERNAL
+
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);

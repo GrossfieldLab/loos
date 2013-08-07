@@ -64,6 +64,6 @@ int findMaxBin(const vecInt& assignments);
 // Simple histogram of bin assignments
 vecUint histogramBins(const vecInt& assignments);
 
-
+// @endcond TOOLS_INTERNAL
 
 #endif
