@@ -250,3 +250,6 @@ namespace Convergence {
 }
 
 #endif
+
+
+// @endcond PACKAGES_INTERNAL
