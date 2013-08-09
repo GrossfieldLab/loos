@@ -78,6 +78,7 @@ public:
 
     void addGeneric(po::options_description& o) {
         o.add_options()
+	    ("renum", po::value<bool>(&renum)->default_value(true), "Renumber atomids in output PDB")
             ("pdbout", po::value<bool>(&pdb_output)->default_value(false), "Output is a library of PDBs (prefix must be a printf-style pattern)")
             ("center", po::value<string>(&center_selection)->default_value(""), "Selection to use for centering (empty selection does no centering)")
             ("canon", po::value<bool>(&canonicalize)->default_value(false), "Canonicalize orientation (for membrane peptides, flip orientation about X-axis if in lower leaflet.  Implies centering)");
@@ -109,6 +110,7 @@ public:
     bool pdb_output;
     string center_selection;
     bool canonicalize;
+    bool renum;
 };
 
 
@@ -196,14 +198,19 @@ class DCDOutput : public Outputter
 {
 public:
     
-    DCDOutput(const string& prefix, const string& hdr) 
-        : Outputter(prefix, hdr), _first_frame(true), _dcd(prefix + ".dcd") 
+    DCDOutput(const string& prefix, const string& hdr, const bool renum) 
+        : Outputter(prefix, hdr), _first_frame(true), _dcd(prefix + ".dcd"),
+	  _renum(renum)
         {}
 
     void writeFrame(const AtomicGroup& structure) 
         {
             if (_first_frame) {
-                PDB pdb = PDB::fromAtomicGroup(structure);
+		AtomicGroup output_model = structure.copy();
+		if (_renum)
+		    output_model.renumber();
+		
+                PDB pdb = PDB::fromAtomicGroup(output_model);
                 pdb.remarks().add(_hdr);
                 string pdbname = _prefix + ".pdb";
                 ofstream ofs(pdbname.c_str());
@@ -221,6 +228,7 @@ public:
 private:
     bool _first_frame;
     DCDWriter _dcd;
+    bool _renum;
 };
 
 
@@ -274,7 +282,7 @@ int main(int argc, char *argv[])
     if (topts->pdb_output)
         output = new PDBOutput(popts->prefix, hdr);
     else
-        output = new DCDOutput(popts->prefix, hdr);
+        output = new DCDOutput(popts->prefix, hdr, topts->renum);
     
     vector<uint> frames = tropts->frameList();
         
