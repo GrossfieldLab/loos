@@ -167,7 +167,7 @@ public:
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments;
   ropts->addArgument("matrix", "matrix-file");
@@ -223,14 +223,14 @@ int main(int argc, char *argv[]) {
 
     model.append(pa);
   }
-
+  
   if (bonds) {
-    if (chunksize && resid > chunksize)
-      for (uint i=rows.size() - chunksize; i<rows.size()-1; ++i)
-        model[i]->addBond(model[i+1]);
-    else
-      for (uint i=0; i<rows.size()-1; ++i)
-        model[i]->addBond(model[i+1]);
+      if (chunksize && resid > 1)
+	  for (uint i=rows.size() - chunksize; i<rows.size()-1; ++i)
+	      model[i]->addBond(model[i+1]);
+      else if (!chunksize)
+	  for (uint i=0; i<rows.size()-1; ++i)
+	      model[i]->addBond(model[i+1]);
   }
   
   PDB pdb = PDB::fromAtomicGroup(model);
