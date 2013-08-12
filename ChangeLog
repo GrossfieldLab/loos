@@ -1,3 +1,10 @@
+2013-08-12    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in serialize-selection where the output molecules were
+	interleaved rather than each chunk of T-frames consisting of a
+	single molecule (e.g. it would have been mol 1, mol 2, mol 1, mol
+	2 instead of mol 1, mol 1, mol 2, mol 2)
+
 2013-08-01    <alan_grossfield@membrane.urmc.rochester.edu>
 
     * Added a new tool to Packages/PyLOOS: protein_tilt.py computes the time
