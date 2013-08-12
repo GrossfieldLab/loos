@@ -285,16 +285,16 @@ int main(int argc, char *argv[])
         output = new DCDOutput(popts->prefix, hdr, topts->renum);
     
     vector<uint> frames = tropts->frameList();
-        
-    for (uint k=0; k<frames.size(); ++k) {
-        tropts->trajectory->readFrame(frames[k]);
-        tropts->trajectory->updateGroupCoords(tropts->model);
-
-        for (uint j=0; j<molecules.size(); ++j) {
-            for (uint i=0; i<outgroup.size(); ++i)
-                outgroup[i]->coords(molecules[j][i]->coords());
 
 
+    for (uint k=0; k<molecules.size(); ++k) {
+	for (uint j=0; j<frames.size(); ++j) {
+	    tropts->trajectory->readFrame(frames[j]);
+	    tropts->trajectory->updateGroupCoords(tropts->model);
+	    
+	    for (uint i=0; i<outgroup.size(); ++i)
+		outgroup[i]->coords(molecules[k][i]->coords());
+	    
             if (topts->canonicalize) {
                 GCoord c = outgroup.centroid();
                 if (c.z() < 0.0) {
@@ -308,9 +308,8 @@ int main(int argc, char *argv[])
                 outgroup.translate(-c);
             }
             
-            
-            
-            output->writeFrame(outgroup);
-        }
+	    output->writeFrame(outgroup);
+	}
     }
+    
 }
