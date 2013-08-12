@@ -4,6 +4,9 @@
 	interleaved rather than each chunk of T-frames consisting of a
 	single molecule (e.g. it would have been mol 1, mol 2, mol 1, mol
 	2 instead of mol 1, mol 1, mol 2, mol 2)
+	* Added --fullhelp output to phase-pdb
+	* Fixed bug in phase-pdb where a duplicate (and incorrect) set of
+	bonds could be added when using --chunk and --rows options
 
 2013-08-01    <alan_grossfield@membrane.urmc.rochester.edu>
 
