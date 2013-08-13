@@ -327,6 +327,7 @@ h_tools = SConscript('Packages/HydrogenBonds/SConscript')
 convergence_package = SConscript('Packages/Convergence/SConscript')
 density_package = SConscript('Packages/DensityTools/SConscript')
 user_package = SConscript('Packages/User/SConscript')
+python_package = SConscript('Packages/PyLOOS/SConscript')
 
 
 all_packages = elastic_networks_package + h_tools + convergence_package + density_package
