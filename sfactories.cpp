@@ -114,7 +114,7 @@ namespace loos {
     std::string types =
       "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber" 
 #if defined(HAS_NETCDF)
-      "/NetCDF"
+      "/NetCDF), nc (Amber NetCDF"
 #endif
       "), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
     return(types);
@@ -127,7 +127,16 @@ namespace loos {
       pDCD pd(new DCD(filename));
       pTraj pt(pd);
       return(pt);
-    } else if (filetype == "mdcrd") {
+    } else if (filetype == "nc") {
+#if defined(HAS_NETCDF)
+	pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
+	pTraj pt(pat);
+	return(pt);
+#else
+	throw(std::runtime_error("Error- trajectory type is an Amber Netcdf file but LOOS was built without netcdf support."));
+#endif
+    } else if (filetype == "mdcrd"
+	       || filetype == "crd") {
 
 #if defined(HAS_NETCDF)      
       if (isFileNetCDF(filename)) {
