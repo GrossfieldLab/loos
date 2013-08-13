@@ -45,9 +45,19 @@ for name in Split(apps):
 
 PREFIX = env['PREFIX']
 
-apps = apps + ' blurrogram.pl potential_profile.py gmxdump2pdb.pl mat2loos.pl'
-
 loos_tools = env.Install(PREFIX + '/bin', Split(apps))
+
+# Special handlign for scripts...
+scripts = 'blurrogram.pl potential_profile.py gmxdump2pdb.pl mat2loos.pl'
+
+for file in Split(scripts):
+    PREFIX_BIN = PREFIX + '/bin/'
+    Command(PREFIX_BIN + file, file,
+            [
+            Copy("$TARGET", "$SOURCE"),
+            Chmod("$TARGET", 0755)
+            ])
+
 env.Alias('tools_install', loos_tools)
 
 Return('list')
