@@ -23,7 +23,7 @@ import sys
 import os
 
 Import('env')
-PREFIX = env['PREFIX'] + '/bin'
+PREFIX = env['PREFIX'] + '/bin/'
 
 apps = 'axis_with_membrane center_molecule flip_chirality protein_tilt rmsd_to_average'
 
@@ -33,6 +33,11 @@ python_package = []
 if env['pyloos'] == '1':
     for file in Split(apps):
         pyapp = file + '.py'
-        python_package.append(env.Scripts(os.path.join(PREFIX, pyapp), pyapp))
+        Command(PREFIX + pyapp, pyapp,
+                [
+                  Copy("$TARGET", "$SOURCE"),
+                  Chmod("$TARGET", 0755)
+                ]
+               )
 
 Return('python_package')
