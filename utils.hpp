@@ -92,7 +92,7 @@ namespace loos {
 
   //! Read a list of items from a file with default behavior
   template<typename T>
-  std::vector<T> readVector(std::string& fname) {
+  std::vector<T> readVector(const std::string& fname) {
     std::ifstream ifs(fname.c_str());
     LineReader lr(ifs, fname);
     return(readVector<T>(lr));
@@ -134,7 +134,7 @@ namespace loos {
 
   //! Read in a table given a filename
   template<typename T>
-  std::vector< std::vector<T> > readTable(std::string& fname) {
+  std::vector< std::vector<T> > readTable(const std::string& fname) {
     std::ifstream ifs(fname.c_str());
     LineReader lr(ifs, fname);
     return(readTable<T>(lr));
