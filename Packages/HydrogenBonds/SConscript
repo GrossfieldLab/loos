@@ -47,7 +47,17 @@ hcontacts = clone.Program('hcontacts', ['hcontacts.cpp', hcore])
 list.append(hcontacts)
 
 
-install_apps = 'hbonds hcorrelation hmatrix hcontacts hoccupancies.pl'
+install_apps = 'hbonds hcorrelation hmatrix hcontacts'
+
+scripts = 'hoccupancies.pl'
+for file in Split(scripts):
+    PREFIX_BIN = PREFIX + '/bin/'
+    Command(PREFIX_BIN + file, file,
+            [
+            Copy("$TARGET", "$SOURCE"),
+            Chmod("$TARGET", 0755)
+            ])
+
 
 loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('h_tools_install', loos_tools)

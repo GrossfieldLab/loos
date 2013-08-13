@@ -65,7 +65,15 @@ for name in Split(dependent):
 PREFIX = env['PREFIX']
 
 
-conv_tools = env.Install(PREFIX + '/bin', list + Split(scripts))
+conv_tools = env.Install(PREFIX + '/bin', list)
+for file in Split(scripts):
+    PREFIX_BIN = PREFIX + '/bin/'
+    Command(PREFIX_BIN + file, file,
+            [
+            Copy("$TARGET", "$SOURCE"),
+            Chmod("$TARGET", 0755)
+            ])
+
 env.Alias('convergence_package', conv_tools)
 
 
