@@ -112,9 +112,9 @@ namespace loos {
 
   std::string availableTrajectoryFileTypes() {
     std::string types =
-      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd (Amber" 
+      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd/crd (Amber" 
 #if defined(HAS_NETCDF)
-      "/NetCDF), nc (Amber NetCDF"
+      " and NetCDF), nc (Amber NetCDF"
 #endif
       "), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
     return(types);
