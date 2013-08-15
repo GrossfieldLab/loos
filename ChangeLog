@@ -1,3 +1,11 @@
+2013-08-15    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed installation to now include python scripts if pyloos is
+	being built.
+	* Added .nc and .crd as Amber trajectory extensions.  Note that
+	.crd for a structure is still interpreted as a CHARMM coordinate
+	file.
+
 2013-08-12    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in serialize-selection where the output molecules were
