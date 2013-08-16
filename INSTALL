@@ -234,7 +234,7 @@ Using the synaptic manager (or apt-get), install the following packages:
 Debian 5: NOT SUPPORTED
 Debian 6: Install libpcre-dev and python-dev, then *download* and
   install the latest swig.
-Debian 7: Install libpcre-dev, python-dev, and swig
+Debian 7: Install python-dev, and swig
 
 		       ------= openSUSE =------
 
