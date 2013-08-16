@@ -2642,6 +2642,16 @@ implementations.
 \endcode
 	Be sure to source the appropriate setup.sh or setup.csh file
 	in the install directory prior to using LOOS/PyLOOS.
+
+<DT>	I get an error about a missing init function when I try to import PyLOOS...
+<DD>	If you built LOOS and <em>then</em> built PyLOOS, the old LOOS
+  shared library may still be around and this can confuse Python.
+  Look for <tt>loos.so</tt> and remove it, or try a clean rebuild,
+\code
+        scons -c
+        scons pyloos=1
+\endcode
+
 </DL>
 
 \subsection faq_pyloos_using Using PyLOOS
