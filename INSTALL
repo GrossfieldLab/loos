@@ -176,7 +176,7 @@ the Ubuntu software center (or apt-get) to install the following
 packages:
 	g++ (GNU C++ compiler)
 	scons (replacement for make)
-	libboost-all-devel (Boost C++ Libraries development files (ALL))
+	libboost-all-dev [or libboost-all-devel] (Boost C++ Libraries development files (ALL))
 	libatlas-dev (Automatically Tunes Linear Algebra Software, C Header Files)
 	libatlas-base-dev (Automatically Tuned Linear Algebra Software)
 	libnetcdf-dev [optional] (Development kit for Netcdf)
