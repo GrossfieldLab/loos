@@ -44,7 +44,8 @@ public:
       ("source-selection", po::value<string>(&source_sel)->default_value(""), "Selection specific to source model")
       ("sink-selection", po::value<string>(&sink_sel)->default_value(""), "Selection specific to sink model")
       ("timeseries", po::value<string>(&timeseries)->default_value(""), "Report contacts as a timeseries")
-      ("include-heavy", po::value<bool>(&leave_heavy)->default_value(false), "Include backbone and hydrogen atoms");
+      ("include-heavy", po::value<bool>(&leave_heavy)->default_value(false), "Include backbone and hydrogen atoms")
+      ("smoothed-transition", po::value<bool>(&smoothed_transition)->default_value(true), "Use tanh smoothing of the transition ");
   }
 
   void addHidden(po::options_description& o) {
@@ -63,6 +64,7 @@ public:
     ostringstream oss;
     oss << boost::format("sink-sel='%s', source-sel='%s', timeseries=%s")
       % cutoff
+      % smoothed_transition
       % sink_sel
       % source_sel
       % timeseries
@@ -88,7 +90,7 @@ public:
   string selection;
   string sink_sel, source_sel;
   string timeseries;
-  bool leave_heavy;
+  bool leave_heavy, smoothed_transition;
 };
 
 // @endcond
@@ -123,9 +125,15 @@ string fullHelpMessage(void) {
     "\tTransition      - Normalized sum of broken and formed\n"
     "\n"
     "Optionally, a timeseries of each contact's state may be\n"
-    "written out.  In this case 1's are written for formed\n"
-    "contacts and 0's for broken contacts.  Additionally, a\n"
-    "list of the contacts is output for reference.\n"
+    "written out.  By default, these values are scaled by a \n"
+    "tanh function centered at the cutoff.  This effectively\n"
+    "smooths the transition matrix so contacts near the cutoff\n"
+    "have less \"flicker\" between broken and formed.  This can\n"
+    "be changed to a step function by using the option\n"
+    "\t \"--smoothed-transition=false\"\n"
+    "In that case 1's are written for formed contacts and 0's\n"
+    "for broken contacts.  Additionally, a list of all changed\n"
+    "contacts is output for reference.\n"
     "\n"
     "\n"
     "\n"
@@ -197,6 +205,7 @@ int main (int argc, char *argv[]){
 
   double cutoff = topts->cutoff;
   pTraj traj = tropts->trajectory;
+  bool smoothed_transition = topts->smoothed_transition;
 
   // Check to see if user requested to leave these atoms...
   if (!topts->leave_heavy){
@@ -345,10 +354,18 @@ int main (int argc, char *argv[]){
       GCoord first_current  = centers[broken_connection_list[i].first];
       GCoord second_current = centers[broken_connection_list[i].second]; 
       bool broken = first_current.distance2(second_current) > cut2;
+      double current_dist = sqrt(first_current.distance2(second_current));
+      
       if (broken)
           ++number_broken;
-      if (!timeseries_outfile.empty())
+      if (!timeseries_outfile.empty()){
+        if (smoothed_transition){
+          double value = 0.5 * tanh(current_dist-cutoff)+0.5;
+          ofs << value << '\t';
+        }else{
           ofs << (broken ? '0' : '1') << '\t';
+        }
+      }
     }
 
     // For formed list
@@ -356,11 +373,18 @@ int main (int argc, char *argv[]){
       GCoord first_current  = centers[formed_connection_list[i].first];
       GCoord second_current = centers[formed_connection_list[i].second]; 
       bool formed = first_current.distance2(second_current) < cut2;
-
+      double current_dist = sqrt(first_current.distance2(second_current));
+    
       if (formed)
           ++number_formed;
-      if (!timeseries_outfile.empty())
+      if (!timeseries_outfile.empty()){
+        if (smoothed_transition){
+          double value = 0.5 * tanh(current_dist-cutoff)+0.5;
+          ofs << value << '\t';
+        }else{
           ofs << (formed ? '1' : '0') << '\t';
+        }
+      }
     }
 
     if (!timeseries_outfile.empty())
