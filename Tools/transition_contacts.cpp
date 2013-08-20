@@ -336,8 +336,8 @@ int main (int argc, char *argv[]){
   int frame = tropts->skip;
   while (traj->readFrame()){
     traj->updateGroupCoords(system);
-    uint number_broken = 0;
-    uint number_formed = 0;
+    double number_broken = 0.0;
+    double number_formed = 0.0;
     
     // Build a GCoord vector of CoM's 
     // with indices corresponding to reslist
@@ -356,16 +356,17 @@ int main (int argc, char *argv[]){
       bool broken = first_current.distance2(second_current) > cut2;
       double current_dist = sqrt(first_current.distance2(second_current));
       
-      if (broken)
-          ++number_broken;
-      if (!timeseries_outfile.empty()){
-        if (smoothed_transition){
-          double value = 0.5 * tanh(current_dist-cutoff)+0.5;
+      if (smoothed_transition){
+        double value = 0.5 * tanh(current_dist-cutoff)+0.5;
+        number_broken += value;
+        if (!timeseries_outfile.empty())
           ofs << value << '\t';
-        }else{
+      }else{
+        if (broken)
+          ++number_broken;
+        if (!timeseries_outfile.empty())
           ofs << (broken ? '0' : '1') << '\t';
-        }
-      }
+      }          
     }
 
     // For formed list
@@ -375,16 +376,17 @@ int main (int argc, char *argv[]){
       bool formed = first_current.distance2(second_current) < cut2;
       double current_dist = sqrt(first_current.distance2(second_current));
     
-      if (formed)
-          ++number_formed;
-      if (!timeseries_outfile.empty()){
-        if (smoothed_transition){
-          double value = 0.5 * tanh(current_dist-cutoff)+0.5;
+      if (smoothed_transition){
+        double value = 0.5 * tanh(current_dist-cutoff)+0.5;
+        number_formed += value;
+        if (!timeseries_outfile.empty())
           ofs << value << '\t';
-        }else{
+      }else{
+        if (formed)
+          ++number_formed;
+        if (!timeseries_outfile.empty())
           ofs << (formed ? '1' : '0') << '\t';
-        }
-      }
+      }          
     }
 
     if (!timeseries_outfile.empty())
@@ -392,10 +394,9 @@ int main (int argc, char *argv[]){
 
   
     // Format and output the data
-    float num_transition = (static_cast<float>(number_broken) + number_formed) 
-        / (total_broken_contacts + total_formed_contacts);
-    float percent_broken = static_cast<float>(number_broken) / total_broken_contacts;
-    float percent_formed = static_cast<float>(number_formed) / total_formed_contacts;
+    float num_transition = (number_broken + number_formed) / (total_broken_contacts + total_formed_contacts);
+    float percent_broken = number_broken / total_broken_contacts;
+    float percent_formed = number_formed / total_formed_contacts;
     cout << frame << "\t" << percent_broken << "\t" << percent_formed << "\t" << num_transition << endl;
     frame++;
   }
