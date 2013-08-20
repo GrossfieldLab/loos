@@ -3,6 +3,10 @@
 	* Fixed bug with XTC trajectories when the system contains too
 	few atoms (<= 9).  Gromacs does not compress the coordinates, but
 	LOOS expected all system sizes to have compression.
+	* Changed transition_contacts to add a --smoothed-transition
+	option to use a tanh() function to effectively smooth the contacts
+	matrix when a contact is near the cutoff.  This is now the default
+	behavior.  (Nick)
 
 2013-08-15    <tromo@hill.urmc-sh.rochester.edu>
 
