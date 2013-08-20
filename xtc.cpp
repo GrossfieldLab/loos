@@ -390,14 +390,22 @@ namespace loos {
     rewindImpl();
 
     Header h;
-
+    
+    uint t = 0;
+    
     while (! ifs()->eof()) {
       size_t pos = ifs()->tellg();
+      std::cerr << boost::format("Scanning frame #%d at position %d\n") % t++ % pos;
+      
       bool ok = readFrameHeader(h);
       if (!ok) {
         rewindImpl();
         return;
       }
+
+      size_t end_of_header = ifs()->tellg();
+      std::cerr << boost::format("\tEnd of header at %d\n") % end_of_header;
+      
 
       frame_indices.push_back(pos);
       if (natoms_ == 0)
@@ -406,14 +414,33 @@ namespace loos {
         throw(std::runtime_error("XTC frames have differing numbers of atoms"));
 
       uint block_size = sizeof(internal::XDRReader::block_type);
-      size_t offset = 9 * block_size;
-      ifs()->seekg(offset, std::ios_base::cur);
-      uint nbytes;
-      xdr_file.read(nbytes);
+
+      
+
+      size_t offset = 0;
+      uint nbytes = 0;
+
+      if (natoms_ <= 9) {
+	  nbytes = natoms_ * 3 * sizeof(float);
+	  uint dummy;
+	  xdr_file.read(dummy);
+	  if (dummy != natoms_)
+	      throw(std::runtime_error("XTC small system vector size is not what was expected"));
+      } else {
+	  offset = 9 * block_size;
+	  ifs()->seekg(offset, std::ios_base::cur);
+	  xdr_file.read(nbytes);
+      }
+      
       uint nblocks = nbytes / block_size;
+      std::cerr << boost::format("\tblock_size=%d, offset=%d, nbytes=%d, nblocks=%d\n")
+	  % block_size % offset % nbytes % nblocks;
+      
       if (nbytes % block_size != 0)
         ++nblocks;   // round up
       offset = nblocks * block_size;
+      std::cerr << boost::format("\t\tnblocks=%d, offset=%d\n") % nblocks % offset;
+      
       ifs()->seekg(offset, std::ios_base::cur);
     }
   }
