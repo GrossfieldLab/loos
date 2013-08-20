@@ -51,6 +51,9 @@ namespace loos {
 
   const int XTC::magic = 1995;
 
+  const uint XTC::min_compressed_system_size = 9;
+    
+
 
   // The following are largely from the xdrlib...
   int XTC::sizeofint(int size) {
@@ -381,7 +384,7 @@ namespace loos {
       return(false);
     
     box = GCoord(h.box[0], h.box[4], h.box[8]) * 10.0; // Convert to Angstroms
-    if (natoms_ <= 9)
+    if (natoms_ <= min_compressed_system_size)
 	return(readUncompressedCoords());
     else
 	return(readCompressedCoords());
@@ -441,7 +444,7 @@ namespace loos {
       size_t offset = 0;
       uint nbytes = 0;
 
-      if (natoms_ <= 9) {
+      if (natoms_ <= min_compressed_system_size) {
 	  nbytes = natoms_ * 3 * sizeof(float);
 	  uint dummy;
 	  xdr_file.read(dummy);

@@ -60,6 +60,10 @@ namespace loos {
    */
   class XTC : public Trajectory {
 
+    // Systems with this size or smaller will not be compressed.
+    static const uint min_compressed_system_size;
+      
+
     // The frame header
     struct Header {
       uint magic;
