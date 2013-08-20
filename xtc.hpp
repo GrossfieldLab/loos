@@ -137,7 +137,7 @@ namespace loos {
     void seekFrameImpl(uint);
     void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
     bool readCompressedCoords(void);
-
+    bool readUncompressedCoords(void);
   };
 
 }

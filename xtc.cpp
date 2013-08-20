@@ -329,6 +329,31 @@ namespace loos {
   }
 
 
+
+  bool XTC::readUncompressedCoords(void) 
+  {
+      uint lsize;
+      
+      if (!xdr_file.read(lsize))
+	  return(false);
+      
+      uint size3 = lsize * 3;
+      coords_ = std::vector<GCoord>(lsize);
+      float* tmp_coords = new float[size3];
+      uint n = xdr_file.read(tmp_coords, size3);
+      if (n != size3)
+	  throw(std::runtime_error("XTC Error: number of uncompressed coords read did not match number expected"));
+      
+      uint i = 0;
+      for (uint j=0; j<lsize; ++j, i += 3)
+	  coords_[j] = GCoord(tmp_coords[i], tmp_coords[i+1], tmp_coords[i+2]);
+      
+      delete[] tmp_coords;
+      return(true);
+  }
+    
+	      
+
   void XTC::updateGroupCoords(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
@@ -356,7 +381,10 @@ namespace loos {
       return(false);
     
     box = GCoord(h.box[0], h.box[4], h.box[8]) * 10.0; // Convert to Angstroms
-    return(readCompressedCoords());
+    if (natoms_ <= 9)
+	return(readUncompressedCoords());
+    else
+	return(readCompressedCoords());
   }
 
 
@@ -391,21 +419,14 @@ namespace loos {
 
     Header h;
     
-    uint t = 0;
-    
     while (! ifs()->eof()) {
       size_t pos = ifs()->tellg();
-      std::cerr << boost::format("Scanning frame #%d at position %d\n") % t++ % pos;
-      
+
       bool ok = readFrameHeader(h);
       if (!ok) {
         rewindImpl();
         return;
       }
-
-      size_t end_of_header = ifs()->tellg();
-      std::cerr << boost::format("\tEnd of header at %d\n") % end_of_header;
-      
 
       frame_indices.push_back(pos);
       if (natoms_ == 0)
@@ -433,16 +454,14 @@ namespace loos {
       }
       
       uint nblocks = nbytes / block_size;
-      std::cerr << boost::format("\tblock_size=%d, offset=%d, nbytes=%d, nblocks=%d\n")
-	  % block_size % offset % nbytes % nblocks;
-      
+
       if (nbytes % block_size != 0)
         ++nblocks;   // round up
       offset = nblocks * block_size;
-      std::cerr << boost::format("\t\tnblocks=%d, offset=%d\n") % nblocks % offset;
-      
       ifs()->seekg(offset, std::ios_base::cur);
     }
+
+    
   }
 
 
