@@ -51,6 +51,9 @@ namespace loos {
 
   const int XTC::magic = 1995;
 
+  const uint XTC::min_compressed_system_size = 9;
+    
+
 
   // The following are largely from the xdrlib...
   int XTC::sizeofint(int size) {
@@ -329,6 +332,31 @@ namespace loos {
   }
 
 
+
+  bool XTC::readUncompressedCoords(void) 
+  {
+      uint lsize;
+      
+      if (!xdr_file.read(lsize))
+	  return(false);
+      
+      uint size3 = lsize * 3;
+      coords_ = std::vector<GCoord>(lsize);
+      float* tmp_coords = new float[size3];
+      uint n = xdr_file.read(tmp_coords, size3);
+      if (n != size3)
+	  throw(std::runtime_error("XTC Error: number of uncompressed coords read did not match number expected"));
+      
+      uint i = 0;
+      for (uint j=0; j<lsize; ++j, i += 3)
+	  coords_[j] = GCoord(tmp_coords[i], tmp_coords[i+1], tmp_coords[i+2]);
+      
+      delete[] tmp_coords;
+      return(true);
+  }
+    
+	      
+
   void XTC::updateGroupCoords(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
@@ -356,7 +384,10 @@ namespace loos {
       return(false);
     
     box = GCoord(h.box[0], h.box[4], h.box[8]) * 10.0; // Convert to Angstroms
-    return(readCompressedCoords());
+    if (natoms_ <= min_compressed_system_size)
+	return(readUncompressedCoords());
+    else
+	return(readCompressedCoords());
   }
 
 
@@ -390,9 +421,10 @@ namespace loos {
     rewindImpl();
 
     Header h;
-
+    
     while (! ifs()->eof()) {
       size_t pos = ifs()->tellg();
+
       bool ok = readFrameHeader(h);
       if (!ok) {
         rewindImpl();
@@ -406,16 +438,33 @@ namespace loos {
         throw(std::runtime_error("XTC frames have differing numbers of atoms"));
 
       uint block_size = sizeof(internal::XDRReader::block_type);
-      size_t offset = 9 * block_size;
-      ifs()->seekg(offset, std::ios_base::cur);
-      uint nbytes;
-      xdr_file.read(nbytes);
+
+      
+
+      size_t offset = 0;
+      uint nbytes = 0;
+
+      if (natoms_ <= min_compressed_system_size) {
+	  nbytes = natoms_ * 3 * sizeof(float);
+	  uint dummy;
+	  xdr_file.read(dummy);
+	  if (dummy != natoms_)
+	      throw(std::runtime_error("XTC small system vector size is not what was expected"));
+      } else {
+	  offset = 9 * block_size;
+	  ifs()->seekg(offset, std::ios_base::cur);
+	  xdr_file.read(nbytes);
+      }
+      
       uint nblocks = nbytes / block_size;
+
       if (nbytes % block_size != 0)
         ++nblocks;   // round up
       offset = nblocks * block_size;
       ifs()->seekg(offset, std::ios_base::cur);
     }
+
+    
   }
 
 
