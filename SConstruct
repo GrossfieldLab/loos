@@ -223,7 +223,7 @@ elif platform == 'linux2':
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    else:
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack'
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack f77blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
    
