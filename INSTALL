@@ -11,6 +11,7 @@
 | Fedora 16         |     +     |   +    |
 | Fedora 17         |     +     |   +    |
 | Fedora 18         |     +     |   +    |
+| Fedora 19         |     +     |   +    |
 |-------------------|-----------|--------|
 | Ubuntu 8.04 LTS   |     !     |   !    |
 | Ubuntu 10.04 LTS  |     +     |   !    |
@@ -131,7 +132,7 @@ already multithreaded.
 
 			------= Fedora =------
 
-LOOS has been tested on Fedora (64-bit) 12-18.  We assume
+LOOS has been tested on Fedora (64-bit) 12-19.  We assume
 you already have the basic compiler tools installed (i.e. g++).  You will
 need to install scons, boost, and atlas:
 
@@ -151,7 +152,7 @@ Fedora 12: Install pcre-devel and download and build the latest swig
 Fedora 13: Yum install pcre-devel and python-devel, then download and install
   swig-2.0.4 (or later).
 
-Fedora 14-18: Yum install python-devel and swig
+Fedora 14-19: Yum install python-devel and swig
 
 
 
