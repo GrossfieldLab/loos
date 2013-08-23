@@ -41,7 +41,7 @@ namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 string selection1, selection2;
-string split_by;
+string split_by, split_by2;
 double hist_min, hist_max;
 int num_bins;
 int skip;
@@ -54,7 +54,9 @@ public:
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment)");
+      ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment, none)")
+      ("split-mode2",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the second selection (by-residue, molecule, segment, none)")
+      ;
   }
 
   void addHidden(po::options_description& o)
@@ -91,13 +93,14 @@ public:
   string print() const
   {
     ostringstream oss;
-    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f")
+    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f, split-mode2='%'")
       % split_by
       % selection1
       % selection2
       % hist_min
       % hist_max
-      % num_bins;
+      % num_bins
+      % split_by2;
     return(oss.str());
   }
 };
@@ -116,16 +119,18 @@ string s =
     "DESCRIPTION\n"
     "\n"
     "This tool computes the radial distribution function for 2 selections,\n"
-    "treating the selections as groups.  There are 3 ways to group the atoms,\n"
-    "controlled by the arguments to --split-mode: \n"
+    "treating the selections as groups.  There are 4 ways to group the atoms,\n"
+    "controlled by the arguments to --split-mode and --split-mode2: \n"
     "    by-residue: the selection is split into unique residues\n"
     "    by-molecule: the selection is split into unique molecules (only available\n"
     "                if the system file contains connectivity information)\n"
     "    by-segment: the selection is split using the segid (this is present in \n"
     "                CHARMM/NAMD/XPLOR derived files, and some PDB files)\n"
+    "    none: treat the entire selection as a single unit\n"
     "\n"
-    "The default mode if --split-mode isn't set is \"by-molecule\".\n"
-    "In each case, the splitting is performed _before_ the selection is performed.  \n"
+    "The default mode if --split-mode and --split-mode2 aren't set is \"by-molecule\".\n"
+    "In all cases, the splitting is performed _before_ the selection is \n"
+    "performed, because by-molecule requires the whole system to work correctly.  \n"
     "\n"
     "The distance is then computed between the centers of mass of the grouped \n"
     "objects.\n"
@@ -154,7 +159,7 @@ string s =
     }
 
 
-enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE };
+enum split_mode { BY_RESIDUE, BY_SEGMENT, BY_MOLECULE, NONE };
 
 split_mode parseSplit(const string &split_by)
     {
@@ -172,13 +177,57 @@ split_mode parseSplit(const string &split_by)
         {
         split = BY_MOLECULE;
         }
+    else if (!split_by.compare("none"))
+        {
+        split = NONE;
+        }
     else
         {
-        cerr << "--split-mode must be: by-residue|by-segment|by-molecule"
+        cerr << "--split-mode(2) must be: by-residue|by-segment|by-molecule|none"
              << endl;
         exit(-1);
         }
     return (split);
+    }
+
+uint doSplit(const AtomicGroup &system, const string selection, 
+             const split_mode split,                                                                                vector<AtomicGroup> &grouping)
+    {
+
+    // make sure the "result" vector<AG> is empty to start
+    grouping.clear();
+
+    vector<AtomicGroup> tmp;
+    if (split == BY_MOLECULE)
+        {
+        tmp = system.splitByMolecule();
+        }
+    if (split == BY_RESIDUE)
+        {
+        tmp = system.splitByResidue();
+        }
+    else if (split == BY_SEGMENT)
+        {
+        tmp = system.splitByUniqueSegid();
+        }
+    else if (split == NONE)
+        {
+        tmp.push_back(system);
+        }
+
+    Parser parser(selection);
+    KernelSelector parsed_sel(parser.kernel());
+    
+    vector<AtomicGroup>::iterator t;
+    for (t=tmp.begin(); t!=tmp.end(); ++t)
+        {
+        AtomicGroup newgroup = t->select(parsed_sel);
+        if (newgroup.size() > 0)
+            {
+            grouping.push_back(newgroup);
+            }
+        }
+    return grouping.size();
     }
 
 
@@ -198,6 +247,7 @@ if (!options.parse(argc, argv))
 
 // parse the split mode, barf if you can't do it
 split_mode split=parseSplit(split_by);
+split_mode split2=parseSplit(split_by2);
 
 // Print the command line arguments
 cout << "# " << hdr << endl;
@@ -216,6 +266,7 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
+#if 0 
 // The groups may describe a set of individual atoms (eg water oxygens) 
 // or chunks (eg lipid headgroups).  What we're doing here is dividing up
 // each group by molecule, so that (for example) if selection1 was all of the 
@@ -264,6 +315,23 @@ for (g=grouping.begin(); g!=grouping.end(); g++)
         g2_mols.push_back(tmp2);
         }
     }
+#endif
+
+// Select the 2 groups, then split them appropriately
+vector<AtomicGroup> g1_mols, g2_mols;
+uint numgroups = doSplit(system, selection1, split, g1_mols);
+if (numgroups == 0)
+    {
+    cerr << "No groups created by selection1" << endl;
+    exit(1);
+    }
+numgroups = doSplit(system, selection2, split2, g2_mols);
+if (numgroups == 0)
+    {
+    cerr << "No groups created by selection2" << endl;
+    exit(1);
+    }
+
 
 
 // read the initial coordinates into the system
