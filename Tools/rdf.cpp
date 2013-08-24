@@ -55,7 +55,7 @@ public:
   {
     o.add_options()
       ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment, none)")
-      ("split-mode2",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the second selection (by-residue, molecule, segment, none)")
+      ("split-mode2",po::value<string>(&split_by2)->default_value("by-molecule"), "how to split the second selection (by-residue, molecule, segment, none)")
       ;
   }
 
