@@ -349,7 +349,7 @@ namespace loos {
       
       uint i = 0;
       for (uint j=0; j<lsize; ++j, i += 3)
-	  coords_[j] = GCoord(tmp_coords[i], tmp_coords[i+1], tmp_coords[i+2]);
+	  coords_[j] = GCoord(tmp_coords[i], tmp_coords[i+1], tmp_coords[i+2]) * 10.0;
       
       delete[] tmp_coords;
       return(true);
