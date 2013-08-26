@@ -1,3 +1,7 @@
+2013-08-26    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed default exponential spring constant to -0.5
+
 2013-08-22    <alan_grossfield@membrane.urmc.rochester.edu>
     * Added new flag to rdf to allow the two selections to be split using
 	  different methods.
