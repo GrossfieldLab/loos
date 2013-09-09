@@ -1330,7 +1330,7 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release206 Version 2.0.6 (BETA-RELEASE)
+\section release206 Version 2.0.6 (9-13-2013)
 \subsection r206_bugs Bug Fixes
 <ul>
   <li> Fixed bugs in DCD reading code affecting trajectories that have
@@ -1350,6 +1350,12 @@ Matlab and Octave.
   <li> Fixed hierarchy so that it catches bad input and issues an
   error rather than segfaults.
   <li> Fixed several tools to catch errors when opening files.
+  <li> Fixed bug in serialize-selection where the output molecules
+  were interleaved rather than being in a contiguous block (see
+  ChangeLog for more details)
+  <li> Fixed bug affecting XTC trajectories with 9 or fewer atoms
+  <li> Fixd bug in phase-pdb causing incorrect bonds when using
+  --chunk and --row options
 </ul>
 
 \subsection r206_added_changed Added, Changed, or Otherwise Notable
@@ -1360,6 +1366,14 @@ Matlab and Octave.
   cross-dist.
   <li> Added link to tutorial on LOOS
   <li> Added protein_tilt.py tool to PyLOOS.
+  <li> Added .nc and .crd as Amber format for trajectory files
+  <li> Changed installation to include python scripts if pyloos is
+  being built
+  <li> Changed transition_contacts to add a --smoothed-transition
+  option, smoothing the contact matrix when a contact is near the
+  cutoff.  This is now the default behavior.  See the associated
+  --fullhelp for more details
+  <li> Changed default exponential spring constant in ENMs to -0.5
 </ul>
 
 \section release205 Version 2.0.5 (6-19-2013)
