@@ -60,7 +60,7 @@ LOOS has several major features:
       multiple linux versions, Mac OSX, and cygwin.
 
 For assistance using LOOS, to suggest a patch, to request a feature, or simply
-to offer positive feedback, email LOOS-maintainer [AT] urmc.rochester.edu.  The
+to offer positive feedback, email loos.maintainer [AT] gmail.com.  The
 latest version of LOOS can be found at <A
 HREF="http://loos.sourceforge.net">
 http://loos.sourceforge.net</A>.
@@ -2612,7 +2612,7 @@ since they are no longer shared.
 NOTE: This FAQ is specific to the Python interface to LOOS (PyLOOS).
 This interface is begin released as a beta-version and, as such, it
 may change significantly in future releases.  Please report any bugs
-found to "loos-maintainer [at] urmc.rochester.edu".  Similarly, please feel
+found to "loos.maintainer [at] gmail.com".  Similarly, please feel
 free to contact us regarding new functionality or better
 implementations.
 </B>
