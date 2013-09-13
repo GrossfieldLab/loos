@@ -1,3 +1,7 @@
+2013-09-13  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Released 2.0.6
+
 2013-08-26    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed default exponential spring constant to -0.5
@@ -43,7 +47,7 @@
 2013-07-26    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed hierarchy so that it now catches bad input and generates a
-	useful erorr message rather than segfaulting...
+	useful error message rather than segfaulting...
 	* Fixed multiple tools to more gracefully handle problems when
 	opening files.
 
