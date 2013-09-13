@@ -8,6 +8,39 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.0.6 *
+
+This release addresses a number of bugs and includes a few improvements
+and new tools.  The bugs include ones in gmxdump2pdb.pl where
+hybrid-36 encoding was used where it shouldn't have been, and problems
+handling cases with more topology segments than molecular segments (as
+can happen with bilayer systems).  A bug in serial-selection was
+addressed that caused the output to be interleaved by molecule rather
+than contiguous.
+
+We have seen some cases where DCD trajectories could have 0 frames
+listed in the DCD header, yet the trajectory has many frames.
+Instantiating the DCD (or pTraj) for these trajectories would cause
+LOOS to throw an exception.  This behavior has been fixed.  However,
+these trajectories will not be read correctly, i.e. LOOS will think
+they have no frames in them.  We have included a special fixdcd tool
+that will update the header (in-place) with the correct number of
+frames found by manually scanning the trajectory.
+
+Finally, a bug in the setup.csh script causing the user package
+directory to not be inserted into the $PATH has been fixed.
+
+Improvements we have made include a change to cross-dist to
+disambiguate the sign of PCA vectors (courtesy of Jerome Henin),
+better handling of file I/O errors, a change of the default
+exponential spring constant in the ENM suite (to -0.5), and
+transition_contacts can now smooth the contacts matrix when the
+contact is near the cutoff (this is the default behavior now).  When
+installing with the PyLOOS option (pyloos=1 on the command line), the
+PyLOOS-based tools are now installed as well as everything else.  And
+finally, a new tool, protein_tilt.py, is available for PyLOOS.
+
+For more details, see the ChangeLog file included with LOOS.
 
    * RELEASE 2.0.5 *
 
