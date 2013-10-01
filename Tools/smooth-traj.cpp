@@ -26,6 +26,12 @@ using namespace std;
 using namespace loos;
 
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
+// @cond TOOLS_INTERNAL
+
+
 // Base class for handling different windowing functions
 struct Window {
     Window(const uint window_size) : _window_size(window_size) { }
@@ -61,6 +67,80 @@ struct CosineWindow : public Window {
 };
 
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\n"
+    "NOTES\n"
+      "\n";
+  
+
+  return(msg);
+}
+
+
+
+class ToolOptions : public opts::OptionsPackage {
+public:
+    ToolOptions() : window_name("cos"),
+		    window_size(10),
+		    stride(1)
+	{ }
+
+    void addGeneric(po::options_description& o) {
+        o.add_options()
+            ("kernel", po::value<string>(&window_name)->default_value(window_name), "Kernel to use (cos|uniform)")
+            ("size", po::value<uint>(&window_size)->default_value(window_size), "Size of window to average over")
+            ("stride", po::value<uint>(&stride)->default_value(stride), "How may frames to skip per step");
+	
+    }
+
+
+    bool postConditions(po::variables_map& map) 
+	{
+	    if (window_name == "cos")
+		window = new CosineWindow(window_size);
+	    else if (window_name == "uniform")
+		window = new UniformWindow(window_size);
+	    else {
+		cerr << "Error- unknown smoothing kernel '" << window_name << "'.\n"
+		     << "Must be: cos, uniform\n";
+		return(false);
+	    }
+	    
+
+	    return(true);
+	}
+    
+		
+    string print() const {
+	ostringstream oss;
+	oss << boost::format("kernel='%s',size=%d,stride=%d")
+	    % window_name
+	    % window_size
+	    % stride;
+	
+	return(oss.str());
+    }
+
+    string window_name;
+    uint window_size, stride;
+    Window* window;
+};
+
+
+
+// @endcond
+
+
 // ----------------------------------------------------------------------------------
 
 
@@ -84,44 +164,42 @@ void divideCoords(AtomicGroup& avg, const double d) {
 
 
 int main(int argc, char *argv[]) {
-  if (argc != 8) {
-    cerr << "Usage- simple-smoother output.dcd model traj selection window stride cosine|uniform\n";
-    exit(0);
-  }
 
   string hdr = invocationHeader(argc, argv);
-
-  int k = 1;
-  string output_name(argv[k++]);
-  AtomicGroup model = createSystem(argv[k++]);
-  pTraj traj = createTrajectory(argv[k++], model);
-  AtomicGroup subset = selectAtoms(model, argv[k++]);
-  int window_size = strtoul(argv[k++], 0, 10);
-  uint stride = strtoul(argv[k++], 0, 10);
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::OutputPrefix* prefopts = new opts::OutputPrefix("smoothed");
+  opts::BasicSelection* sopts = new opts::BasicSelection("!hydrogen");
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  ToolOptions* topts = new ToolOptions;
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(prefopts).add(sopts).add(tropts).add(topts);
+  if (!options.parse(argc, argv))
+      exit(-1);
+  
+  string output_name = prefopts->prefix;
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+  AtomicGroup subset = selectAtoms(model, sopts->selection);
+  int window_size = topts->window_size;
+  uint stride = topts->stride;
 
   uint starting_frame = window_size/2;
   uint ending_frame = traj->nframes() - window_size;
   uint n = (ending_frame - starting_frame) / stride;
 
-  string kernel(argv[k++]);
-  Window* window;
-  if (kernel == "cosine")
-    window = new CosineWindow(window_size);
-  else if (kernel == "uniform")
-    window = new UniformWindow(window_size);
-  else {
-      cerr << "Error- unknown kernel type.  Must be cosine or uniform.\n";
-      exit(-1);
-  }
-  
+  Window* window = topts->window;
       
 
   PDB pdb = PDB::fromAtomicGroup(subset);
   pdb.remarks().add(hdr);
-  cout << pdb;
+  string pdb_name = output_name + ".pdb";
+  ofstream ofs(pdb_name.c_str());
+  ofs << pdb;
 
 
-  DCDWriter dcd(output_name);
+  string dcd_name = output_name + ".dcd";
+  DCDWriter dcd(dcd_name);
   dcd.setHeader(subset.size(), n, 1e-3, false);
   dcd.writeHeader();
 
