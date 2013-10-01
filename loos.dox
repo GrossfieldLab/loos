@@ -1059,6 +1059,10 @@ Matlab and Octave.
        and turns it into a trajectory that is N times as long, but with
        only one copy of the selection.
 
+       <DT><B>smooth-traj</B>
+       <DD>Smooths a trajectory by computing a windowed-average structure.
+       Weighting within the window can either be uniform or cosine-weighted.
+
        <DT><B>subsetter</B>
        <DD>Subsets a trajectory (stripping out any atoms that don't match the
        given selection), and writes a new DCD file.  Can be used to
