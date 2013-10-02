@@ -90,14 +90,14 @@ string fullHelpMessage(void) {
 
 class ToolOptions : public opts::OptionsPackage {
 public:
-    ToolOptions() : window_name("cos"),
+    ToolOptions() : weight_name("cos"),
 		    window_size(10),
 		    stride(1)
 	{ }
 
     void addGeneric(po::options_description& o) {
         o.add_options()
-            ("kernel", po::value<string>(&window_name)->default_value(window_name), "Kernel to use (cos|uniform)")
+            ("weighting", po::value<string>(&weight_name)->default_value(weight_name), "Weighting method to use (cos|uniform)")
             ("size", po::value<uint>(&window_size)->default_value(window_size), "Size of window to average over")
             ("stride", po::value<uint>(&stride)->default_value(stride), "How may frames to skip per step");
 	
@@ -106,12 +106,12 @@ public:
 
     bool postConditions(po::variables_map& map) 
 	{
-	    if (window_name == "cos")
+	    if (weight_name == "cos")
 		window = new CosineWindow(window_size);
-	    else if (window_name == "uniform")
+	    else if (weight_name == "uniform")
 		window = new UniformWindow(window_size);
 	    else {
-		cerr << "Error- unknown smoothing kernel '" << window_name << "'.\n"
+		cerr << "Error- unknown weighting method '" << weight_name << "'.\n"
 		     << "Must be: cos, uniform\n";
 		return(false);
 	    }
@@ -123,15 +123,15 @@ public:
 		
     string print() const {
 	ostringstream oss;
-	oss << boost::format("kernel='%s',size=%d,stride=%d")
-	    % window_name
+	oss << boost::format("weighting='%s',size=%d,stride=%d")
+	    % weight_name
 	    % window_size
 	    % stride;
 	
 	return(oss.str());
     }
 
-    string window_name;
+    string weight_name;
     uint window_size, stride;
     Window* window;
 };
