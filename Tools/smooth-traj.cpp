@@ -70,16 +70,29 @@ struct CosineWindow : public Window {
 
 string fullHelpMessage(void) {
   string msg =
-    "\n"
-    "SYNOPSIS\n"
-    "\n"
-    "DESCRIPTION\n"
-    "\n"
-    "\n"
-    "EXAMPLES\n"
-    "\n"
-    "\n"
-    "NOTES\n"
+      "\n"
+      "SYNOPSIS\n"
+      "\tSmooths a trajectory by using a windowed-average\n"
+      "DESCRIPTION\n"
+      "\tsmooth-traj can reduce high-frequency motion in a trajectory by averaging together\n"
+      "frames of the trajectory within a sliding window.  The weighting within the window is\n"
+      "determined by the weighting function.  The window size determines how many frames are\n"
+      "included in the window (centered at a given frame) and the stride determines how far\n"
+      "the window is slid for each frame of the output trajectory.  These options allow not\n"
+      "only smoothing, but also subsampling of the trajectory.\n"
+      "\n"
+      "EXAMPLES\n"
+      "\n"
+      "\tsmooth-traj model.pdb simulation.dcd\n"
+      "Smooths the trajectory \"simulation.dcd\" using the default window size of 10 frames\n"
+      "and a cosine-weighted window.  The output has the default prefix \"smoothed\" and the\n"
+      "output trajectory has the same timestep as the original trajectory.\n"
+      "\n"
+      "\tsmooth-traj --window=100 --stride=100 model.pdb simulation.dcd\n"
+      "This smooths the trajectory using a window size of 100 frames.  The window is moved\n"
+      "100 frames for each output timepoint.  If the input trajectory has a timestep of 10ps,\n"
+      "then the output trajectory will have a timestep of 1ns and each output frame will have\n"
+      "been averaged over a window 1ns long, centered at the given frame's time.\n"
       "\n";
   
 
@@ -98,7 +111,7 @@ public:
     void addGeneric(po::options_description& o) {
         o.add_options()
             ("weighting", po::value<string>(&weight_name)->default_value(weight_name), "Weighting method to use (cos|uniform)")
-            ("size", po::value<uint>(&window_size)->default_value(window_size), "Size of window to average over")
+            ("window", po::value<uint>(&window_size)->default_value(window_size), "Size of window to average over")
             ("stride", po::value<uint>(&stride)->default_value(stride), "How may frames to skip per step");
 	
     }
