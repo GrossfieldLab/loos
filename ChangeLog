@@ -1,3 +1,13 @@
+2013-10-04    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed Trajectory::updateGroupCoords() to be non-virtual and
+	use the NVI idiom (calling updateGroupCoordsImpl() in derived
+	classes).
+	* Changed AtomicGroup::operator[] to throw an
+	AtomIndexOutOfRangeError if the index is out of bounds
+	* Changed Trajectory::updateGroupCoords() to catch bad atom
+	indices and give a more helpful error message
+
 2013-10-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added smooth-traj tool for smoothing trajectories
