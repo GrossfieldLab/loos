@@ -148,7 +148,7 @@ namespace loos {
     hdr_ = h;
   }
 
-  void TRR::updateGroupCoords(AtomicGroup& g) {
+  void TRR::updateGroupCoordsImpl(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int idx = (*i)->id()-1;

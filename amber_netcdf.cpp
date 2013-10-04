@@ -146,7 +146,7 @@ namespace loos {
     return(true);
   }
 
-  void AmberNetcdf::updateGroupCoords(AtomicGroup& g) {
+  void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->id() - 1;

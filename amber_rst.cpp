@@ -105,7 +105,7 @@ namespace loos {
 
 
 
-  void AmberRst::updateGroupCoords(AtomicGroup& g) {
+  void AmberRst::updateGroupCoordsImpl(AtomicGroup& g) {
     AtomicGroup::iterator gi;
     pAtom pa;
 

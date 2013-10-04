@@ -62,7 +62,6 @@ namespace loos {
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void) { return(frame); }
-    virtual void updateGroupCoords(AtomicGroup&);
 
     virtual bool hasPeriodicBox(void) const { return(periodic); }
     virtual GCoord periodicBox(void) const { return(box); }
@@ -80,6 +79,7 @@ namespace loos {
     virtual void seekNextFrameImpl(void) { }
     virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
+    virtual void updateGroupCoordsImpl(AtomicGroup&);
 
 
   private:

@@ -119,7 +119,12 @@ namespace loos {
      * If the trajectory has periodic boundary information, then the
      * group's periodicBox will also be updated.
      */
-    virtual void updateGroupCoords(AtomicGroup& g) =0;
+      void updateGroupCoords(AtomicGroup& g) 
+	  {
+	      updateGroupCoordsImpl(g);
+	  }
+      
+      
 
     //! Seek to the next frame in the sequence (used by readFrame() when
     //! operating as an iterator).
@@ -188,6 +193,10 @@ namespace loos {
 
     //! NVI implementation of rewind
     virtual void rewindImpl(void) =0;
+
+      //! NVI implementation of updating coordinates
+      virtual void updateGroupCoordsImpl(AtomicGroup& g) =0;
+      
 
   };
 

@@ -380,7 +380,7 @@ namespace loos {
   }
 
 
-  void DCD::updateGroupCoords(AtomicGroup& g) {
+  void DCD::updateGroupCoordsImpl(AtomicGroup& g) {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int idx = (*i)->id()-1;
       if (idx < 0 || idx >= _natoms)

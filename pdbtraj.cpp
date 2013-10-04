@@ -29,7 +29,7 @@ namespace loos {
   uint PDBTraj::natoms(void) const { return(_natoms); }
 
 
-  void PDBTraj::updateGroupCoords(AtomicGroup& g) {
+  void PDBTraj::updateGroupCoordsImpl(AtomicGroup& g) {
 
     if (g.size() == frame.size()) {
       g.copyCoordinatesFrom(frame);

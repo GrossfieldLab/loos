@@ -154,6 +154,13 @@ namespace loos {
     std::vector<GCoord> mappedCoords(const std::vector<int>& map);
 
 
+
+    static void setSuppression(const bool b) { suppress_warnings = b; }
+    
+  private:
+
+    void initTrajectory();
+
     //! Update an AtomicGroup coordinates with the currently-read frame.
     /** This assumes that that atomid's of the
      *AtomicGroup are indices into the DCD frame and are indexed +1,
@@ -163,13 +170,8 @@ namespace loos {
      *xtal data, then the a, b, and c values are used to update the
      *periodicBox() .
      */
-    virtual void updateGroupCoords(AtomicGroup& g);
+    virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
-    static void setSuppression(const bool b) { suppress_warnings = b; }
-    
-  private:
-
-    void initTrajectory();
       
     // Trajectory member functions we must provide...
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...

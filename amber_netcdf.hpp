@@ -134,13 +134,15 @@ namespace loos {
       return(res);
     }
 
-    void updateGroupCoords(AtomicGroup& g);
     bool parseFrame();
     void seekNextFrameImpl();
     void seekFrameImpl(const uint frame);
     void rewindImpl();
 
   private:
+    void updateGroupCoordsImpl(AtomicGroup& g);
+
+
     void init(const char* name, const uint natoms);
     void readGlobalAttributes();
     std::string readGlobalAttribute(const std::string& name);

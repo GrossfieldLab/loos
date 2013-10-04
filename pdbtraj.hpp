@@ -80,14 +80,6 @@ namespace loos {
     virtual uint natoms(void) const;
     virtual std::vector<GCoord> coords(void);
 
-    /**
-     * If the passed group to update is the same size as the
-     * trajectory frame, then the coordinates a copied straight out of
-     * the frame and into the group.  If the sizes do not match, then
-     * the atomid's of the passed group are assumed to be indices (+1)
-     * into the frame.
-     */
-    virtual void updateGroupCoords(AtomicGroup& g);
 
     virtual bool hasPeriodicBox(void) const;
     virtual GCoord periodicBox(void) const;
@@ -106,6 +98,14 @@ namespace loos {
     virtual void seekNextFrameImpl(void);
     virtual void seekFrameImpl(const uint);
     virtual bool parseFrame(void);
+    /**
+     * If the passed group to update is the same size as the
+     * trajectory frame, then the coordinates a copied straight out of
+     * the frame and into the group.  If the sizes do not match, then
+     * the atomid's of the passed group are assumed to be indices (+1)
+     * into the frame.
+     */
+    virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
 
 

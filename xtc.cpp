@@ -357,7 +357,7 @@ namespace loos {
     
 	      
 
-  void XTC::updateGroupCoords(AtomicGroup& g) {
+  void XTC::updateGroupCoordsImpl(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int idx = (*i)->id()-1;
