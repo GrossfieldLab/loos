@@ -120,19 +120,19 @@ namespace loos {
      * If the trajectory has periodic boundary information, then the
      * group's periodicBox will also be updated.
      */
-      void updateGroupCoords(AtomicGroup& g) 
-	  {
-	      try {
-		  updateGroupCoordsImpl(g);
-	      }
-	      catch (AtomIndexOutOfRangeError& e) {
-		  std::cerr << "***ERROR***\n";
-		  std::cerr << "Atom index out of range caught in Trajectory::updateGroupCoords()\n";
-		  std::cerr << "Make sure your model file matches the trajectory, selections are\n";
-		  std::cerr << "correct, and atomids must be contiguous and start at 1.\n\n";
-		  throw(e);
-	      }
-	  }
+    void updateGroupCoords(AtomicGroup& g) 
+    {
+      try {
+	updateGroupCoordsImpl(g);
+      }
+      catch (AtomIndexOutOfRangeError& e) {
+	std::cerr << "***ERROR***\n";
+	std::cerr << "Atom index out of range caught in Trajectory::updateGroupCoords()\n";
+	std::cerr << "Make sure your model file matches the trajectory, selections are\n";
+	std::cerr << "correct, and atomids must be contiguous and start at 1.\n\n";
+	throw(e);
+      }
+    }
       
       
 
