@@ -31,6 +31,7 @@
 
 #include <loos_defs.hpp>
 #include <StreamWrapper.hpp>
+#include <exceptions.hpp>
 
 namespace loos {
 
@@ -124,7 +125,7 @@ namespace loos {
 	      try {
 		  updateGroupCoordsImpl(g);
 	      }
-	      catch (std::out_of_range& e) {
+	      catch (AtomIndexOutOfRangeError& e) {
 		  std::cerr << "***ERROR***\n";
 		  std::cerr << "Atom index out of range caught in Trajectory::updateGroupCoords()\n";
 		  std::cerr << "Make sure your model file matches the trajectory, selections are\n";
