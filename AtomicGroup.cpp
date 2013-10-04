@@ -73,7 +73,7 @@ namespace loos {
     if (i < 0)
       i = atoms.size() + i;
     if ((unsigned int)i >= atoms.size())
-      throw(std::out_of_range("Bad index for an atom"));
+      throw(AtomIndexOutOfRangeError("Index into AtomicGroup for Atom is out of range"));
 
     return(i);
   }
