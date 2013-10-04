@@ -121,7 +121,16 @@ namespace loos {
      */
       void updateGroupCoords(AtomicGroup& g) 
 	  {
-	      updateGroupCoordsImpl(g);
+	      try {
+		  updateGroupCoordsImpl(g);
+	      }
+	      catch (std::out_of_range& e) {
+		  std::cerr << "***ERROR***\n";
+		  std::cerr << "Atom index out of range caught in Trajectory::updateGroupCoords()\n";
+		  std::cerr << "Make sure your model file matches the trajectory, selections are\n";
+		  std::cerr << "correct, and atomids must be contiguous and start at 1.\n\n";
+		  throw(e);
+	      }
 	  }
       
       
