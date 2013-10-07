@@ -360,6 +360,9 @@ namespace loos {
     //! Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)
     void pruneBonds();
 
+    //! Reset the atom indices (used for interfacing with trajectories)
+    void resetAtomIndices();
+
     //! Deduce atomic number from mass (if present), returning number of atoms assigned
     uint deduceAtomicNumberFromMass(const double tol = 0.1);
 
