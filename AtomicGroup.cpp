@@ -890,7 +890,21 @@ namespace loos {
   }
 
 
-
+  /**
+   * The Atom index is the original ordering of atoms from whatever
+   * file format the model came from.  This is used as an index
+   * into each frame of the trajectory for corresponding atom
+   * properties (such as coordinates).  If an AtomicGroup is a subset,
+   * then it may be necessary to reset the indices when working with
+   * a subsetted trajectory as well.  This function will reset the
+   * atom indices to be sequential, beginning with 0.
+   */
+  void resetAtomIndices() 
+  {
+    for (uint i=0; i<size(); ++i)
+      atoms[i]->index(i);
+  }
+  
 
   /**
    * If an atom has a mass, then this is used to look up it's atomic
