@@ -263,7 +263,6 @@ void savePDB(const string& fname, const string& meta, const AtomicGroup& grp) {
   AtomicGroup dup = grp.copy();
   PDB pdb = PDB::fromAtomicGroup(dup);
   pdb.pruneBonds();
-  pdb.renumber();
   pdb.remarks().add(meta);
   ofstream ofs(fname.c_str());
   ofs << pdb;
