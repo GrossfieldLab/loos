@@ -86,13 +86,9 @@ namespace loos {
 
   void CCPDB::updateGroupCoords(AtomicGroup& g) {
 
-    if (g.size() == frame.size()) {
-      g.copyCoordinatesFrom(frame);
-    } else {
-      for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-        int idx = (*i)->id() - 1;
-        (*i)->coords(frame[idx]->coords());
-      }
+    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+      int idx = (*i)->index();
+      (*i)->coords(frame[idx]->coords());
     }
 
     g.periodicBox(frame.periodicBox());
