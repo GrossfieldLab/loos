@@ -421,7 +421,7 @@ uint bindFilesToIndices(AtomicGroup& model) {
 // @endcond
 
 
-
+// ***UNUSED***
 // If a subset of the model has been used, the atomids must be renumbered
 // so they match the DCD.  This means that the atomids in the bonds must be
 // translated to the new numbering scheme
@@ -575,7 +575,7 @@ int main(int argc, char *argv[]) {
 
       if (selection != "all") {
         pdb.pruneBonds();
-        pdb.renumber();
+//        pdb.renumber();
       }
       
       string out_pdb_name = out_name + ".pdb";
