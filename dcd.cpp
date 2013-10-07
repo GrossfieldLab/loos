@@ -382,8 +382,8 @@ namespace loos {
 
   void DCD::updateGroupCoords(AtomicGroup& g) {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-      int idx = (*i)->index();
-      if (idx < 0 || idx >= _natoms)
+      uint idx = (*i)->index();
+      if (idx >= _natoms)
         throw(LOOSError(**i, "Atom index into the trajectory frame is out of bounds"));
       (*i)->coords(GCoord(xcrds[idx], ycrds[idx], zcrds[idx]));
     }
