@@ -277,7 +277,7 @@ namespace loos {
       throw(GeneralError("Error while reading coordinates"));
 
     // Recast the values as floats and store them...
-    int i;
+    uint i;
     for (i=0; i<_natoms; i++)
       if (swabbing)
         v[i] = swab(op[i].f);
@@ -353,9 +353,8 @@ namespace loos {
 
   std::vector<GCoord> DCD::coords(void) {
     std::vector<GCoord> crds(_natoms);
-    int i;
 
-    for (i=0; i<_natoms; i++) {
+    for (uint i=0; i<_natoms; i++) {
       crds[i].x(xcrds[i]);
       crds[i].y(ycrds[i]);
       crds[i].z(zcrds[i]);
