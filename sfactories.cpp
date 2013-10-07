@@ -123,6 +123,10 @@ namespace loos {
 
   pTraj createTrajectory(const std::string& filename, const std::string& filetype, const AtomicGroup& g) {
     
+    // First, check to make sure AtomicGroup has index information...
+    if (!g.allHaveProperty(Atom::indexbit))
+      throw(LOOSError("Model passed to createTrajectory() does not have atom index information."));
+
     if (filetype == "dcd") {
       pDCD pd(new DCD(filename));
       pTraj pt(pd);
