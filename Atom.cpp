@@ -27,6 +27,19 @@ namespace loos {
 
   int Atom::id(void) const { return(_id); }
   void Atom::id(const int i) { _id = i; }
+
+  uint Atom::index(void) const 
+  {
+    return(_index);
+  }
+  
+
+  void Atom::index(const uint i) 
+  {
+    _index = i;
+    setPropertyBit(indexbit);
+  }
+  
   
   int Atom::resid(void) const { return(_resid); }
   void Atom::resid(const int i) { _resid = i; }
