@@ -899,7 +899,7 @@ namespace loos {
    * a subsetted trajectory as well.  This function will reset the
    * atom indices to be sequential, beginning with 0.
    */
-  void resetAtomIndices() 
+  void AtomicGroup::resetAtomIndices() 
   {
     for (uint i=0; i<size(); ++i)
       atoms[i]->index(i);
