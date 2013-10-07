@@ -197,7 +197,7 @@ namespace loos {
 
   private:
     int _icntrl[20];          // DCD header data
-    int _natoms;              // # of atoms
+    uint _natoms;              // # of atoms
     std::vector<std::string> _titles;   // Vector of title lines from DCD
     std::vector<double> qcrys;     // Crystal params
     float _delta;             // Timestep (extracted from _icntrl)
