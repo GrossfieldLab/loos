@@ -151,8 +151,8 @@ namespace loos {
   void TRR::updateGroupCoords(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-      int idx = (*i)->id()-1;
-      if (idx < 0 || static_cast<uint>(idx) > natoms())
+      uint idx = (*i)->index();
+      if (static_cast<uint>(idx) >= natoms())
         throw(std::runtime_error("atom index into trajectory frame is out of range"));
       (*i)->coords(coords_[idx]);
     }
