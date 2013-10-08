@@ -109,6 +109,11 @@ namespace loos {
     //! Update the coordinates in an AtomicGroup with the current frame.
     void updateGroupCoords(AtomicGroup& g) 
     {
+#if defined(DEBUG)
+      if (! g.allHaveProperty(Atom::indexbit))
+	throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
+#endif
+
       updateGroupCoordsImpl(g);
     }
     
