@@ -81,7 +81,8 @@ int main(int argc, char *argv[]) {
   
   AtomicGroup subset = selectAtoms(model, selection);
   AtomicGroup ref_model = subset.copy();
-  ref_model.renumber();
+  ref_model.resetAtomIndices();
+  
   pTraj fiducials = createTrajectory(argv[k++], ref_model);
 
   vecUint frames;

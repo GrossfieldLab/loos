@@ -47,10 +47,10 @@ namespace loos {
   */
   class CHARMM : public AtomicGroup {
   public:
-    CHARMM() { }
+    CHARMM() : _max_index(0) { }
     virtual ~CHARMM() {}
 
-    explicit CHARMM(const std::string fname) {
+    explicit CHARMM(const std::string fname) : _max_index(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
         throw(std::runtime_error("Cannot open CHARMM coordinate file " + 
@@ -59,7 +59,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit CHARMM(std::istream &ifs) {
+    explicit CHARMM(std::istream &ifs) : _max_index(0) {
       read(ifs);
     }
 
@@ -76,8 +76,7 @@ namespace loos {
 
     CHARMM(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
-    //void parseAtomRecord(const std::string s);  
-  
+    uint _max_index;
 
   };
 

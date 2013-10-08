@@ -126,7 +126,6 @@ namespace loos {
     bool hasPeriodicBox(void) const { return(hdr_.box_size != 0); }
     GCoord periodicBox(void) const { return(box); }
     
-    void updateGroupCoords(AtomicGroup& g);
     
     std::vector<GCoord> coords(void) { return(coords_); }
 
@@ -147,6 +146,16 @@ namespace loos {
     double lambda(void) const { return( hdr_.bDouble ? hdr_.lambdad : hdr_.lambdaf); }
 
     int step(void) const { return(hdr_.step); }
+
+    bool parseFrame(void) {
+      if (!readHeader(hdr_))  // Catch EOF
+        return(false);
+
+      if (hdr_.bDouble)
+        return(readRawFrame<double>());
+
+      return(readRawFrame<float>());
+    }
 
 
   private:
@@ -227,17 +236,8 @@ namespace loos {
     void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0, std::ios_base::beg); }
     void seekNextFrameImpl(void) { }
     void seekFrameImpl(uint);
+    void updateGroupCoordsImpl(AtomicGroup& g);
 
-
-    bool parseFrame(void) {
-      if (!readHeader(hdr_))  // Catch EOF
-        return(false);
-
-      if (hdr_.bDouble)
-        return(readRawFrame<double>());
-
-      return(readRawFrame<float>());
-    }
 
 
   private:

@@ -61,7 +61,8 @@ namespace loos {
       flagbit = anumbit << 1,
       usr1bit = flagbit << 1,
       usr2bit = usr1bit << 1,
-      usr3bit = usr2bit << 1
+      usr3bit = usr2bit << 1,
+      indexbit = usr3bit << 1
     };
 
     // Exception classes
@@ -89,6 +90,7 @@ namespace loos {
 
     Atom(const int i, const std::string s, const GCoord& c) {
       init();
+      _index = 0;
       _id = i;
       _name = s;
       _coords = c;
@@ -100,6 +102,9 @@ namespace loos {
     // Accessors...
     int id(void) const;
     void id(const int);
+
+    uint index(void) const;
+    void index(const uint i);
   
     int resid(void) const;
     void resid(const int);
@@ -239,6 +244,7 @@ namespace loos {
 
   private:
     int _id;
+    uint _index;
     std::string _record, _name, _altloc, _resname, _chainid;
     int _resid;
     int _atomic_number;

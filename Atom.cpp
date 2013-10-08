@@ -27,6 +27,19 @@ namespace loos {
 
   int Atom::id(void) const { return(_id); }
   void Atom::id(const int i) { _id = i; }
+
+  uint Atom::index(void) const 
+  {
+    return(_index);
+  }
+  
+
+  void Atom::index(const uint i) 
+  {
+    _index = i;
+    setPropertyBit(indexbit);
+  }
+  
   
   int Atom::resid(void) const { return(_resid); }
   void Atom::resid(const int i) { _resid = i; }
@@ -195,7 +208,7 @@ namespace loos {
 
 
   std::ostream& operator<<(std::ostream& os, const loos::Atom& a) {
-    os << "<ATOM ID='" << a._id << "' NAME='" << a._name << "' ";
+    os << "<ATOM INDEX='" << a._index << "' ID='" << a._id << "' NAME='" << a._name << "' ";
     os << "RESID='" << a._resid << "' RESNAME='" << a._resname << "' ";
     os << "COORDS='" << a._coords << "' ";
     os << "ALTLOC='" << a._altloc << "' CHAINID='" << a._chainid << "' ICODE='" << a._icode << "' SEGID='" << a._segid << "' ";

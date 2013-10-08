@@ -73,11 +73,11 @@ namespace loos {
     };
 
   public:
-    PDB() : _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
+    PDB() : _max_index(0), _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
     virtual ~PDB() {}
 
     //! Read in PDB from a filename
-    explicit PDB(const std::string fname) : _show_charge(false), _auto_ter(true),
+    explicit PDB(const std::string fname) : _max_index(0), _show_charge(false), _auto_ter(true),
                                             _has_cryst(false), strictness_policy(false) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
@@ -86,7 +86,7 @@ namespace loos {
     }
 
     //! Read in a PDB from a filename
-    explicit PDB(const char* fname) : _show_charge(false), _auto_ter(true),
+    explicit PDB(const char* fname) : _max_index(0), _show_charge(false), _auto_ter(true),
                                       _has_cryst(false), strictness_policy(false) {
       std::ifstream ifs(fname);
       if (!ifs)
@@ -95,7 +95,7 @@ namespace loos {
     }
 
     //! Read in a PDB from an ifstream
-    explicit PDB(std::istream& ifs) : _show_charge(false), _auto_ter(true),
+    explicit PDB(std::istream& ifs) : _max_index(0), _show_charge(false), _auto_ter(true),
                                        _has_cryst(false), strictness_policy(false) { read(ifs); }
 
 
@@ -168,6 +168,7 @@ namespace loos {
     void uniqueBonds();
 
   private:
+    uint _max_index;
     bool _show_charge;
     bool _auto_ter;
     bool _has_cryst;

@@ -58,14 +58,6 @@ namespace loos {
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
 
-    /**
-     * If the passed group to update is the same size as the
-     * trajectory frame, then the coordinates a copied straight out of
-     * the frame and into the group.  If the sizes do not match, then
-     * the atomid's of the passed group are assumed to be indices (+1)
-     * into the frame.
-     */
-    virtual void updateGroupCoords(AtomicGroup& g);
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
     virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
@@ -89,12 +81,14 @@ namespace loos {
      */
     PDB currentFrame(void) const { return(frame); }
 
+    virtual bool parseFrame(void);
+
   private:
     void init(void);
     virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
     virtual void seekNextFrameImpl(void) { }
     virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
+    virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
   private:
     uint _natoms, _nframes;

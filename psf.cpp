@@ -150,6 +150,7 @@ namespace loos {
     gint fixed;
 
     pAtom pa(new Atom);
+    pa->index(_max_index++);
          
     std::stringstream ss(s);
 

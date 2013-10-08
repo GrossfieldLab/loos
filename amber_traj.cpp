@@ -131,20 +131,17 @@ namespace loos {
   }
 
 
-  void AmberTraj::updateGroupCoords(AtomicGroup& g) {
-    AtomicGroup::Iterator iter(g);
+  void AmberTraj::updateGroupCoordsImpl(AtomicGroup& g) {
     pAtom pa;
 
-    while (pa = iter()) {
-      uint i = pa->id() - 1;
-      if (i >= _natoms)
+    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+      uint idx = pa->index();
+      if (idx >= _natoms)
         throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
-      pa->coords(frame[i]);
+      (*i)->coords(frame[idx]);
     }
-
+    
     if (periodic)
       g.periodicBox(box);
   }
-
-
 }

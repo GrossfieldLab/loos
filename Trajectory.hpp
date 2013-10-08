@@ -107,19 +107,31 @@ namespace loos {
     virtual std::vector<GCoord> coords(void) =0;
   
     //! Update the coordinates in an AtomicGroup with the current frame.
-    /** As with the coords() member function, some formats may have
-     * non-interleaved coordinate data making the copying of coordinates
-     * that much more expensive.
+    /** The Atom::index() property is used as an index into the
+     * current frame for retrieving coordinates.  The index property
+     * is typically set when a model is read in by the corresponding
+     * class (e.g. PDB, Amber, etc) and is determined by the ordering
+     * of the atoms in that file.  This is not the same as an atomid.
+     * For example, the first atom in a structure could have an atomid
+     * of 1000, but its index would be 0.
      *
-     * In the case that the group is smaller than the trajectory frame,
-     * it is assumed that the atomic-id's of the group are indices into
-     * the frame's coordinates...  Since atom-id's usually begin with 1
-     * and not 0, the indices are necessarily shifted by -1.
-     *
-     * If the trajectory has periodic boundary information, then the
-     * group's periodicBox will also be updated.
+     * updateGroupCoords() normally assumes that the passed
+     * AtomicGroup has valid indices.  As a safety check, the
+     * createTrajectory() function will check that the AtomicGroup
+     * passed to it has indices.  Additionally, turning on debugging
+     * (i.e. the DEBUG compile-flag) will force updateGroupCoords() to
+     * validate the passed AtomicGroup every time.
      */
-    virtual void updateGroupCoords(AtomicGroup& g) =0;
+    void updateGroupCoords(AtomicGroup& g) 
+    {
+#if defined(DEBUG)
+      if (! g.allHaveProperty(Atom::indexbit))
+	throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
+#endif
+
+      updateGroupCoordsImpl(g);
+    }
+    
 
     //! Seek to the next frame in the sequence (used by readFrame() when
     //! operating as an iterator).
@@ -188,6 +200,9 @@ namespace loos {
 
     //! NVI implementation of rewind
     virtual void rewindImpl(void) =0;
+
+    //! NVI implementation of updateGroupCoords
+    virtual void updateGroupCoordsImpl(AtomicGroup& g) =0;
 
   };
 

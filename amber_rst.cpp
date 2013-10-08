@@ -105,13 +105,13 @@ namespace loos {
 
 
 
-  void AmberRst::updateGroupCoords(AtomicGroup& g) {
+  void AmberRst::updateGroupCoordsImpl(AtomicGroup& g) {
     AtomicGroup::iterator gi;
     pAtom pa;
 
 
     for (gi = g.begin(); gi != g.end(); ++gi) {
-      uint i = (*gi)->id() - 1;
+      uint i = (*gi)->index();
       if (i >= _natoms)
         throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
       (*gi)->coords(frame[i]);

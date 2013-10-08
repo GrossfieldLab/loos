@@ -70,7 +70,6 @@ namespace loos {
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void);
-    virtual void updateGroupCoords(AtomicGroup& g) { g.copyCoordinatesFrom(frame); }
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }
     virtual GCoord periodicBox(void) const { return(frame.periodicBox()); }
@@ -83,12 +82,15 @@ namespace loos {
      */
     TinkerXYZ currentFrame(void) const { return(frame); }
 
+    virtual bool parseFrame(void);
+
+
   private:
     void init(void);
     virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); current_index = 0; at_end = false; }
     virtual void seekNextFrameImpl(void);
     virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
+    virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
 
   private:

@@ -68,6 +68,8 @@ namespace loos {
     GCoord c;
     pAtom pa(new Atom);
   
+    pa->index(_max_index++);
+    
     t = parseStringAs<std::string>(s, 0, 6);
     pa->recordName(t);
 

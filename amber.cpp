@@ -200,6 +200,7 @@ namespace loos {
     for (uint i=0; i<natoms; i++) {
       pAtom pa(new Atom);
       pa->id(i+1);
+      pa->index(i);
       atoms.push_back(pa);
     }
 

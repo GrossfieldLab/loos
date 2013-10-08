@@ -100,12 +100,13 @@ namespace loos {
     //! See CCPDB::currentFrame() for important notes
     PDB currentFrame(void) const;
 
+    virtual bool parseFrame(void);
+
   private:
     void init(void);
     virtual void rewindImpl(void);
     virtual void seekNextFrameImpl(void);
     virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
 
 
 

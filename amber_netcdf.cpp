@@ -146,11 +146,11 @@ namespace loos {
     return(true);
   }
 
-  void AmberNetcdf::updateGroupCoords(AtomicGroup& g) {
+  void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-      uint idx = (*i)->id() - 1;
-      if (idx < 0 || idx >= _natoms)
+      uint idx = (*i)->index();
+      if (idx >= _natoms)
         throw(LOOSError(**i, "Atom index into trajectory frame is out of bounds"));
       idx *= 3;
       (*i)->coords(GCoord(_coord_data[idx], _coord_data[idx+1], _coord_data[idx+2]));

@@ -46,10 +46,10 @@ namespace loos {
   */
   class TinkerXYZ : public AtomicGroup {
   public:
-    TinkerXYZ() { }
+    TinkerXYZ() : _max_index(0) { }
     virtual ~TinkerXYZ() {}
 
-    explicit TinkerXYZ(const std::string& fname) {
+    explicit TinkerXYZ(const std::string& fname) : _max_index(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
         throw(std::runtime_error("Cannot open TinkerXYZ file " + std::string(fname)));
@@ -57,7 +57,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit TinkerXYZ(std::istream &ifs) {
+    explicit TinkerXYZ(std::istream &ifs) : _max_index(0) {
       read(ifs);
     }
 
@@ -76,7 +76,8 @@ namespace loos {
 
 
     void parseAtomRecord(const std::string&);  
-  
+
+    uint _max_index;
   
   };
 

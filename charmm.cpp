@@ -104,6 +104,7 @@ namespace loos {
 
         // Create a new atom and fill in the values
         pAtom pa(new Atom);
+	pa->index(_max_index++);
         pa->id(atom_num);
         pa->resid(res_num);
         pa->name(atom_name);
