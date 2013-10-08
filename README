@@ -28,6 +28,16 @@ the coordinates in order while ignoring the atomid's.  Now, *all*
 trajectory classes will honor the atom index information regardless of
 the size of the passed AtomicGroup.
 
+The Trajectory::updateGroupCoords() function has also been changed.  It
+now uses the non-virtual interface idiom, meaning that derived classes
+should override the private updateGroupCoordsImpl() member function.
+
+Also note that updateGroupCoords() does not typically check that the
+passed AtomicGroup has valid atom index information.  This is checked
+by createTrajectory().  If LOOS is compiled with debugging, however,
+then updateGroupCoords() will validate the passed AtomicGroup at each
+call.
+
 For more details on these changes, see the ChangeLog, or the FAQ in
 the documentation, or refer to the documentation for the Trajectory
 class.
