@@ -2605,6 +2605,35 @@ Here, the changes to the first alpha-carbon in duplicate does
 <i>not</i> change the coordinates of the first alpha-carbon in ca
 since they are no longer shared.
 
+<DT> What's the difference between an atom index and an atom id?
+<DD> When working with a
+trajectory, the ordering of the atoms in the corresponding model is
+important.  The ith coordinate in a frame of the trajectory belongs to
+the ith atom in the model.  When a model is read in by LOOS, the
+associated atoms are assigned an index based on their position within
+the file/model.  In general, this approach should just work and you
+will not need to worry about atom indices.<P>
+
+In contrast, LOOS treats the atom id (atomid) as an atom identifier
+(metadata) and assumes that atomid's are unique.  They are important
+for connectivity since bonds are stored as a list of atomid's that are
+connected to a given atom.  Also, atomid's can be con-contiguous to
+indicate logical groupings, for example, nor are they required to
+begin with 1.
+
+<DT> How have atomid's changed in LOOS since release 2.0.7?
+<DD> Previously, LOOS treated atomid's as special when reading a
+trajectory.  The atomid was the index into the trajectory frame for
+the corresponding atom.  This required models to have contiguous
+atomid's that began with 1.  This is no longer the case.  Atomid's
+should still be unique, otherwise features like searching for atoms
+and following bonds may give erroneous results.
+
+<DT> What if I need to renumber the atom indices?
+<DD> This should rarely happen.  If it does, you can set the indices
+directly by using Atom::index(), or use AtomicGroup::resetAtomIndices()
+which will make all indices in a given group sequential and beginning
+with 0.
 
 </DL>
 
