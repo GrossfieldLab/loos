@@ -48,6 +48,7 @@ namespace loos {
       
       // We ignore velocities...
       pAtom pa(new Atom);
+      pa->index(_max_index++);
       pa->resid(resid);
       pa->id(atomid);
       pa->resname(resname);
