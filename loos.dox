@@ -2617,17 +2617,26 @@ will not need to worry about atom indices.<P>
 In contrast, LOOS treats the atom id (atomid) as an atom identifier
 (metadata) and assumes that atomid's are unique.  They are important
 for connectivity since bonds are stored as a list of atomid's that are
-connected to a given atom.  Also, atomid's can be con-contiguous to
+connected to a given atom.  Also, atomid's can be non-contiguous to
 indicate logical groupings, for example, nor are they required to
 begin with 1.
 
-<DT> How have atomid's changed in LOOS since release 2.0.7?
+<DT> How have atomid's changed in LOOS since release 2.0.6?
 <DD> Previously, LOOS treated atomid's as special when reading a
 trajectory.  The atomid was the index into the trajectory frame for
 the corresponding atom.  This required models to have contiguous
 atomid's that began with 1.  This is no longer the case.  Atomid's
 should still be unique, otherwise features like searching for atoms
-and following bonds may give erroneous results.
+and following bonds may give erroneous results.<P>
+
+Additionally, some trajectory format classes have special cases of
+\code
+Trajectory::updateGroupCoords(AtomicGroup& g)
+\endcode
+If the number of atoms in g is the
+same as the trajectory frame, then the coordinates are copied <i>in
+order</i> into g, irrespective of the atomid's.  This is no longer the
+case.  Atom indices will always be honored.
 
 <DT> What if I need to renumber the atom indices?
 <DD> This should rarely happen.  If it does, you can set the indices
