@@ -156,6 +156,9 @@ namespace loos {
 
 
     static void setSuppression(const bool b) { suppress_warnings = b; }
+
+    //! Parse a frame of the DCD
+    virtual bool parseFrame(void);
     
   private:
 
@@ -165,8 +168,6 @@ namespace loos {
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
     virtual void seekFrameImpl(const uint);
-    //! Parse a frame of the DCD
-    virtual bool parseFrame(void);
 
     //! Rewind the file to the first DCD frame.
     virtual void rewindImpl(void);

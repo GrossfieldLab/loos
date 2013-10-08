@@ -147,6 +147,16 @@ namespace loos {
 
     int step(void) const { return(hdr_.step); }
 
+    bool parseFrame(void) {
+      if (!readHeader(hdr_))  // Catch EOF
+        return(false);
+
+      if (hdr_.bDouble)
+        return(readRawFrame<double>());
+
+      return(readRawFrame<float>());
+    }
+
 
   private:
     void init(void);
@@ -228,16 +238,6 @@ namespace loos {
     void seekFrameImpl(uint);
     void updateGroupCoordsImpl(AtomicGroup& g);
 
-
-    bool parseFrame(void) {
-      if (!readHeader(hdr_))  // Catch EOF
-        return(false);
-
-      if (hdr_.bDouble)
-        return(readRawFrame<double>());
-
-      return(readRawFrame<float>());
-    }
 
 
   private:

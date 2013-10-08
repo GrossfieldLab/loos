@@ -64,12 +64,13 @@ namespace loos {
     virtual float timestep(void) const { return(0.0); }  // Dummy routine...
     greal currentTime(void) const { return(current_time); }
 
+    virtual bool parseFrame(void);
+
   private:
     virtual void updateGroupCoordsImpl(AtomicGroup&);
     virtual void rewindImpl(void) { seek_flag = false; cached_first = true; }
     virtual void seekNextFrameImpl(void);
     virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
 
     
 

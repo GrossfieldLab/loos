@@ -126,9 +126,10 @@ namespace loos {
     std::vector<GCoord> coords_;
 
 
+    bool parseFrame(void);
+
   private:
 
-    bool parseFrame(void);
     int sizeofint(int);
     int sizeofints(uint*, const uint);
     int decodebits(int*, uint);
