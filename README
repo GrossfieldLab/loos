@@ -8,6 +8,31 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.1.0 *
+
+This release contains a major revision to how Trajectory classes
+work that includes changes to the Atom and AtomicGroup classes as
+well.  Atoms are assigned an "index" that corresponds to their
+original ordering in the model file that they are read from.  This
+index is used to retrieve coordinates from each frame of a
+trajectory.  Previously, LOOS used the atomid's as the indices,
+requiring them to be contiguous and to begin with 1.  
+
+One consequence of this change is that PDB's written by LOOS tools
+no longer need to be automatically renumbered.  The renum-pdb tool can
+be used to renumber the PDB if desired.  Another consequence is that
+the behavior of some trajectory classes have changed when calling
+updateGroupCoords() with an AtomicGroup having the same number of
+atoms as the trajectory frame.  Prior to 2.1.0, LOOS would simply copy
+the coordinates in order while ignoring the atomid's.  Now, *all*
+trajectory classes will honor the atom index information regardless of
+the size of the passed AtomicGroup.
+
+For more details on these changes, see the ChangeLog, or the FAQ in
+the documentation, or refer to the documentation for the Trajectory
+class.
+
+
    * RELEASE 2.0.6 *
 
 This release addresses a number of bugs and includes a few improvements
