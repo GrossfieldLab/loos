@@ -107,6 +107,21 @@ namespace loos {
     virtual std::vector<GCoord> coords(void) =0;
   
     //! Update the coordinates in an AtomicGroup with the current frame.
+    /** The Atom::index() property is used as an index into the
+     * current frame for retrieving coordinates.  The index property
+     * is typically set when a model is read in by the corresponding
+     * class (e.g. PDB, Amber, etc) and is determined by the ordering
+     * of the atoms in that file.  This is not the same as an atomid.
+     * For example, the first atom in a structure could have an atomid
+     * of 1000, but its index would be 0.
+     *
+     * updateGroupCoords() normally assumes that the passed
+     * AtomicGroup has valid indices.  As a safety check, the
+     * createTrajectory() function will check that the AtomicGroup
+     * passed to it has indices.  Additionally, turning on debugging
+     * (i.e. the DEBUG compile-flag) will force updateGroupCoords() to
+     * validate the passed AtomicGroup every time.
+     */
     void updateGroupCoords(AtomicGroup& g) 
     {
 #if defined(DEBUG)
