@@ -421,49 +421,6 @@ uint bindFilesToIndices(AtomicGroup& model) {
 // @endcond
 
 
-// ***UNUSED***
-// If a subset of the model has been used, the atomids must be renumbered
-// so they match the DCD.  This means that the atomids in the bonds must be
-// translated to the new numbering scheme
-void fixBonds(AtomicGroup& subset, const AtomicGroup& superset) {
-
-  vector<int> oldIds(subset.size(), -1);
-
-  subset.pruneBonds();
-  for (uint i=0; i<subset.size(); ++i)
-    oldIds[i] = subset[i]->id();
-
-  // Translate ID's by linear searching...  Should be ok since
-  // this operation only happens once
-  for (uint i=0; i<subset.size(); ++i) {
-    if (!subset[i]->hasBonds())
-      continue;
-    vector<int> bonds = subset[i]->getBonds();
-
-
-    for (vector<int>::iterator bi = bonds.begin(); bi != bonds.end(); ++bi) {
-      uint j;
-      for (j=0; j<subset.size(); ++j)
-        if (oldIds[j] == *bi) {
-          *bi = j+1;
-          break;
-        }
-
-      if (j >= subset.size()) {
-        cerr << boost::format("Error- fixBonds could not find atom %d in the subset\n") % *bi;
-        exit(-10);
-      }
-    }
-
-    subset[i]->setBonds(bonds);
-  }
-
-  subset.renumber();
-}
-
-
-
-
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
@@ -573,10 +530,8 @@ int main(int argc, char *argv[]) {
       PDB pdb = PDB::fromAtomicGroup(subset.copy());
       pdb.remarks().add(hdr);
 
-      if (selection != "all") {
+      if (selection != "all")
         pdb.pruneBonds();
-//        pdb.renumber();
-      }
       
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());

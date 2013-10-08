@@ -125,7 +125,6 @@ int main(int argc, char *argv[]) {
   DCDWriter dcd(outname + ".dcd", fiducials, hdr);
 
   PDB pdb = PDB::fromAtomicGroup(fiducials[0]);
-  pdb.renumber();
   pdb.remarks().add(hdr);
   string fname = outname + ".pdb";
   ofstream ofs(fname.c_str());
