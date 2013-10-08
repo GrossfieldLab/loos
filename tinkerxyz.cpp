@@ -74,6 +74,7 @@ namespace loos {
     //gint atomic_number = 1;
 
     pAtom pa(new Atom);
+    pa->index(_max_index++);
          
     std::stringstream ss(s);
 
