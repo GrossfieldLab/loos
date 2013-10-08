@@ -10,8 +10,11 @@
 	Amber, etc).  This index tells LOOS which slot to use with a
 	trajectory, rather than the atomid.  In general, this should just
 	work.  For more information, see the Doxygen documentation for
-	Trajectory.
-
+	Trajectory or the LOOS FAQ.
+	* Changed all Trajectory-derived updateGroupCoords() to honor the
+	atom index information.  This affects primarily the PDB-based
+	trajectory classes which used to ignore atom metadata if the
+	passed AtomicGroup was the same size as the trajectory frame.
 
 2013-10-01    <tromo@hill.urmc-sh.rochester.edu>
 
