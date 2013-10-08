@@ -1,3 +1,18 @@
+2013-10-08    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed how atomid's are handled in LOOS.  Previously in LOOS,
+	atomid's had special meaning.  Not only should they be unique, but
+	they also identify which "slot" in a trajectory frame that a
+	specific atom was located.  This meant that if a model's atomid's
+	didn't begin at 1 were not contiguous, then bad things could
+	happen.  Now, LOOS assigns and atom "index" to every atom as it is
+	being read in by the appropriate model format class (e.g. PDB,
+	Amber, etc).  This index tells LOOS which slot to use with a
+	trajectory, rather than the atomid.  In general, this should just
+	work.  For more information, see the Doxygen documentation for
+	Trajectory.
+
+
 2013-10-01    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added smooth-traj tool for smoothing trajectories
