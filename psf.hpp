@@ -62,7 +62,7 @@ namespace loos {
     PSF() { }
     virtual ~PSF() {}
 
-    explicit PSF(const std::string fname) {
+    explicit PSF(const std::string fname) : _max_index(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
         throw(std::runtime_error("Cannot open PSF file " + std::string(fname)));
@@ -70,7 +70,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit PSF(std::fstream &ifs) {
+    explicit PSF(std::fstream &ifs) : _max_index(0) {
       read(ifs);
     }
 
@@ -89,6 +89,8 @@ namespace loos {
 
 
     void parseAtomRecord(const std::string s);  
+
+    uint _max_index;
 
   };
 
