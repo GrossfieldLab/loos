@@ -102,7 +102,6 @@ namespace loos {
     bool hasPeriodicBox(void) const { return(true); }
     GCoord periodicBox(void) const { return(box); }
 
-    void updateGroupCoords(AtomicGroup& g);
 
     std::vector<GCoord> coords(void) { return(coords_); }
 
@@ -140,6 +139,7 @@ namespace loos {
     void seekNextFrameImpl(void) { }
     void seekFrameImpl(uint);
     void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
+    void updateGroupCoordsImpl(AtomicGroup& g);
     bool readCompressedCoords(void);
     bool readUncompressedCoords(void);
   };

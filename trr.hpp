@@ -126,7 +126,6 @@ namespace loos {
     bool hasPeriodicBox(void) const { return(hdr_.box_size != 0); }
     GCoord periodicBox(void) const { return(box); }
     
-    void updateGroupCoords(AtomicGroup& g);
     
     std::vector<GCoord> coords(void) { return(coords_); }
 
@@ -227,6 +226,7 @@ namespace loos {
     void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0, std::ios_base::beg); }
     void seekNextFrameImpl(void) { }
     void seekFrameImpl(uint);
+    void updateGroupCoordsImpl(AtomicGroup& g);
 
 
     bool parseFrame(void) {

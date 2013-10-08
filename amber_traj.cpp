@@ -131,8 +131,7 @@ namespace loos {
   }
 
 
-  void AmberTraj::updateGroupCoords(AtomicGroup& g) {
-    AtomicGroup::Iterator iter(g);
+  void AmberTraj::updateGroupCoordsImpl(AtomicGroup& g) {
     pAtom pa;
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {

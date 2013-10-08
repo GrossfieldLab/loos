@@ -84,7 +84,7 @@ namespace loos {
     return(result);
   }
 
-  void CCPDB::updateGroupCoords(AtomicGroup& g) {
+  void CCPDB::updateGroupCoordsImpl(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       int idx = (*i)->index();

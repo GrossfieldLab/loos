@@ -94,7 +94,7 @@ namespace loos {
   }
 
 
-  void TinkerArc::updateGroupCoords(AtomicGroup& g) 
+  void TinkerArc::updateGroupCoordsImpl(AtomicGroup& g) 
   {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();

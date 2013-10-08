@@ -357,11 +357,11 @@ namespace loos {
     
 	      
 
-  void XTC::updateGroupCoords(AtomicGroup& g) {
+  void XTC::updateGroupCoordsImpl(AtomicGroup& g) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
-      if (idx > static_cast<int>(natoms_))
+      if (idx > natoms_)
         throw(std::runtime_error("atom index into trajectory frame is out of range"));
       (*i)->coords(coords_[idx]);
     }

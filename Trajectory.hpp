@@ -107,19 +107,11 @@ namespace loos {
     virtual std::vector<GCoord> coords(void) =0;
   
     //! Update the coordinates in an AtomicGroup with the current frame.
-    /** As with the coords() member function, some formats may have
-     * non-interleaved coordinate data making the copying of coordinates
-     * that much more expensive.
-     *
-     * In the case that the group is smaller than the trajectory frame,
-     * it is assumed that the atomic-id's of the group are indices into
-     * the frame's coordinates...  Since atom-id's usually begin with 1
-     * and not 0, the indices are necessarily shifted by -1.
-     *
-     * If the trajectory has periodic boundary information, then the
-     * group's periodicBox will also be updated.
-     */
-    virtual void updateGroupCoords(AtomicGroup& g) =0;
+    void updateGroupCoords(AtomicGroup& g) 
+    {
+      updateGroupCoordsImpl(g);
+    }
+    
 
     //! Seek to the next frame in the sequence (used by readFrame() when
     //! operating as an iterator).
@@ -188,6 +180,9 @@ namespace loos {
 
     //! NVI implementation of rewind
     virtual void rewindImpl(void) =0;
+
+    //! NVI implementation of updateGroupCoords
+    virtual void updateGroupCoordsImpl(AtomicGroup& g) =0;
 
   };
 

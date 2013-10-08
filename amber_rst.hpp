@@ -54,21 +54,23 @@ namespace loos {
     }
 
 
-    virtual void rewindImpl(void) { seek_flag = false; cached_first = true; }
     virtual uint nframes(void) const { return(1); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void) { return(frame); }
-    virtual void updateGroupCoords(AtomicGroup&);
-
-    virtual void seekNextFrameImpl(void);
-    virtual void seekFrameImpl(const uint);
-    virtual bool parseFrame(void);
 
     virtual bool hasPeriodicBox(void) const { return(periodic); }
     virtual GCoord periodicBox(void) const { return(box); }
 
     virtual float timestep(void) const { return(0.0); }  // Dummy routine...
     greal currentTime(void) const { return(current_time); }
+
+  private:
+    virtual void updateGroupCoordsImpl(AtomicGroup&);
+    virtual void rewindImpl(void) { seek_flag = false; cached_first = true; }
+    virtual void seekNextFrameImpl(void);
+    virtual void seekFrameImpl(const uint);
+    virtual bool parseFrame(void);
+
     
 
   private:

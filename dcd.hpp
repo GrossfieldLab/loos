@@ -154,16 +154,6 @@ namespace loos {
     std::vector<GCoord> mappedCoords(const std::vector<int>& map);
 
 
-    //! Update an AtomicGroup coordinates with the currently-read frame.
-    /** This assumes that that atomid's of the
-     *AtomicGroup are indices into the DCD frame and are indexed +1,
-     *i.e. atomid 7 refers to DCD coords at index 6...
-     *
-     *There is support for pediodic boundary conditions.  If the DCD has
-     *xtal data, then the a, b, and c values are used to update the
-     *periodicBox() .
-     */
-    virtual void updateGroupCoords(AtomicGroup& g);
 
     static void setSuppression(const bool b) { suppress_warnings = b; }
     
@@ -180,6 +170,9 @@ namespace loos {
 
     //! Rewind the file to the first DCD frame.
     virtual void rewindImpl(void);
+
+    //! Update an AtomicGroup coordinates with the currently-read frame.
+    virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
 
 
