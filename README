@@ -10,23 +10,26 @@ to contact us regarding LOOS.
 
    * RELEASE 2.1.0 *
 
-This release contains a major revision to how Trajectory classes
-work that includes changes to the Atom and AtomicGroup classes as
-well.  Atoms are assigned an "index" that corresponds to their
-original ordering in the model file that they are read from.  This
-index is used to retrieve coordinates from each frame of a
+This release contains a major revision to how Trajectory classes work
+and includes changes to the Atom and AtomicGroup classes as well.
+When an AtomicGroup is read in from a model file, the atoms are
+assigned an "index" that corresponds to their order in the model file.
+This index is used to retrieve coordinates from each frame of a
 trajectory.  Previously, LOOS used the atomid's as the indices,
-requiring them to be contiguous and to begin with 1.  
+requiring them to be contiguous and to begin with 1.
 
-One consequence of this change is that PDB's written by LOOS tools
-no longer need to be automatically renumbered.  The renum-pdb tool can
-be used to renumber the PDB if desired.  Another consequence is that
-the behavior of some trajectory classes have changed when calling
-updateGroupCoords() with an AtomicGroup having the same number of
-atoms as the trajectory frame.  Prior to 2.1.0, LOOS would simply copy
-the coordinates in order while ignoring the atomid's.  Now, *all*
-trajectory classes will honor the atom index information regardless of
-the size of the passed AtomicGroup.
+One consequence of this change is that PDB's written by LOOS tools,
+such as aligner and subsetter, are no longer automatically renumbered
+when using a selection.  That is, the atomid's will be the same as in
+the original model file.  The renum-pdb tool can be used to renumber
+the PDB if desired.
+
+Another consequence is that the behavior of some trajectory classes
+have changed when calling updateGroupCoords() with an AtomicGroup
+having the same number of atoms as the trajectory frame.  Prior to
+2.1.0, LOOS would simply copy the coordinates in order while ignoring
+the atomid's.  Now, *all* trajectory classes will honor the atom index
+information regardless of the size of the passed AtomicGroup.
 
 The Trajectory::updateGroupCoords() function has also been changed.  It
 now uses the non-virtual interface idiom, meaning that derived classes
@@ -36,9 +39,9 @@ Also note that updateGroupCoords() does not typically check that the
 passed AtomicGroup has valid atom index information.  This is checked
 by createTrajectory().  If LOOS is compiled with debugging, however,
 then updateGroupCoords() will validate the passed AtomicGroup at each
-call.
+call, at the expense of performance.
 
-For more details on these changes, see the ChangeLog, or the FAQ in
+For more details on these changes, see the ChangeLog, the FAQ in
 the documentation, or refer to the documentation for the Trajectory
 class.
 
