@@ -118,9 +118,15 @@ namespace loos {
      * updateGroupCoords() normally assumes that the passed
      * AtomicGroup has valid indices.  As a safety check, the
      * createTrajectory() function will check that the AtomicGroup
-     * passed to it has indices.  Additionally, turning on debugging
+     * passed to it has indices.  Turning on debugging
      * (i.e. the DEBUG compile-flag) will force updateGroupCoords() to
-     * validate the passed AtomicGroup every time.
+     * validate the passed AtomicGroup every time, with
+     * correspondingly poorer performance.
+     *
+     * Also note that the declaration of this function has changed in
+     * release 2.1.0.  It is no longer virtual, using the NVI-idiom
+     * instead.  Derived classes should override the
+     * updateGroupCoordsImpl() function.
      */
     void updateGroupCoords(AtomicGroup& g) 
     {
@@ -201,7 +207,7 @@ namespace loos {
     //! NVI implementation of rewind
     virtual void rewindImpl(void) =0;
 
-    //! NVI implementation of updateGroupCoords
+    //! NVI implementation of updateGroupCoords() for derived classes to override
     virtual void updateGroupCoordsImpl(AtomicGroup& g) =0;
 
   };
