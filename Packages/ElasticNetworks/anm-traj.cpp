@@ -1,7 +1,7 @@
 /*
   anm
 
-  (c) 2008 Tod D. Romo, Grossfield Lab
+  (c) 2008,2013 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
@@ -14,14 +14,9 @@
     anm [selection string] radius model-name output-prefix
 
   Examples:
-    anm 'resid >= 10 && resid <= 50 && name == "CA"' 15.0 foo.pdb foo
+    anm 'resid >= 10 && resid <= 50 && name == "CA"' 15.0 foo.pdb foo.dcd
 
     This creates the following files:
-      foo_H.asc      == The hessian
-      foo_U.asc      == Left singular vectors
-      foo_s.asc      == Singular values
-      foo_V.asc      == Right singular vectors
-      foo_Hi.asc     == Pseudo-inverse of H
 
   Notes:
     o The default selection (if none is specified) is to pick CA's
@@ -35,7 +30,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2008,2009 Tod D. Romo
+  Copyright (c) 2008,2013 Tod D. Romo
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -87,6 +82,7 @@ string bound_spring_desc;
 string fullHelpMessage() {
 
   string s = 
+    "*WARNING*\nThis is outdated.\n\n"
     "\n"                                                                                    
     "SYNOPSIS\n"                                                                      
     "\n"
@@ -201,25 +197,26 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelection* sopts = new opts::BasicSelection;
-  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments("prefix", "output-prefix");
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
+  options.add(bopts).add(sopts).add(tropts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
 
-  AtomicGroup model = mopts->model;
+  AtomicGroup model = tropts->model;
   AtomicGroup subset = selectAtoms(model, sopts->selection);
+  pTraj traj = tropts->trajectory;
 
   verbosity = bopts->verbosity;
   prefix = ropts->value("prefix");
 
 
   if (verbosity > 0)
-    cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % mopts->model_name;
+    cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % tropts->model_name;
 
   // Determine which kind of scaling to apply to the Hessian...
   vector<SpringFunction*> springs;
@@ -255,14 +252,35 @@ int main(int argc, char *argv[]) {
   anm.meta(header);
   anm.verbosity(verbosity);
 
-  anm.solve();
+  uint nframes = traj->nframes() - tropts->skip;
+  uint natoms = subset.size();
+  DoubleMatrix singvals(nframes, 2);
+  DoubleMatrix singvecs(natoms, nframes);
 
+  uint t = tropts->skip;
+  uint k = 0;
 
-  // Write out the LSVs (or eigenvectors)
-  writeAsciiMatrix(prefix + "_U.asc", anm.eigenvectors(), header, false);
-  writeAsciiMatrix(prefix + "_s.asc", anm.eigenvalues(), header, false);
+  cerr << "Frames: ";
+  while (traj->readFrame()) {
+    if (t % 20 == 0)
+      cerr << t << ' ';
 
-  writeAsciiMatrix(prefix + "_Hi.asc", anm.inverseHessian(), header, false);
+    traj->updateGroupCoords(subset);
+    anm.solve();
+
+    DoubleMatrix s = anm.eigenvalues();
+    singvals(k, 0) = t++;
+    singvals(k, 1) = s[natoms - 2];
+    
+    DoubleMatrix U = anm.eigenvectors();
+    for (uint i=0; i<natoms; ++i)
+      singvecs(i, k) = U(i, natoms-2);
+    
+    ++k;
+  }
+
+  writeAsciiMatrix(prefix + "_s.asc", singvals, header);
+  writeAsciiMatrix(prefix + "_U.asc", singvecs, header);
 
   for (vector<SuperBlock*>::iterator i = blocks.begin(); i != blocks.end(); ++i)
     delete *i;
