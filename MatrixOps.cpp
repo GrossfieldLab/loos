@@ -33,6 +33,39 @@
 namespace loos {
   namespace Math {
 
+    DoubleMatrix eigenDecomp(DoubleMatrix& M) 
+    {
+      // Compute [U,D] = eig(M)
+
+      f77int n = M.rows();
+      char jobz = 'V';
+      char uplo = 'L';
+      f77int lda = n;
+      double dummy;
+      DoubleMatrix W(n, 1);
+      f77int lwork = -1;
+      f77int info;
+
+      dsyev_(&jobz, &uplo, &n, M.get(), &lda, W.get(), &dummy, &lwork, &info);
+      if (info != 0)
+	throw(NumericalError("Failure in eigenDecomp estimate"));
+      
+      lwork = static_cast<f77int>(dummy);
+      double* work = new double[lwork+1];
+
+      dsyev_(&jobz, &uplo, &n, M.get(), &lda, W.get(), work, &lwork, &info);
+      if (info != 0)
+	throw(NumericalError("Failure in eigenDecomp"));
+      
+      reverseColumns(M);
+      reverseRows(W);
+      
+      return(W);
+    }
+    
+
+  
+
     boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(RealMatrix& M) {
       f77int m = M.rows();
       f77int n = M.cols();

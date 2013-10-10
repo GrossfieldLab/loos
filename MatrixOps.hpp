@@ -64,6 +64,8 @@ namespace loos {
      */
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M);
 
+    DoubleMatrix eigenDecomp(DoubleMatrix& M);
+
     //! Matrix-matrix multiply (using BLAS)
     RealMatrix MMMultiply(const RealMatrix& A, const RealMatrix& B, const bool transa = false, const bool transb = false);
     DoubleMatrix MMMultiply(const DoubleMatrix& A, const DoubleMatrix& B, const bool transa = false, const bool transb = false);
