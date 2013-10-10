@@ -152,6 +152,9 @@ string fullHelpMessage() {
   return(s);
 }
 
+
+
+
 // @cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
@@ -169,6 +172,40 @@ public:
     return(oss.str());
   }
 };
+
+
+class FastANM : public ElasticNetworkModel {
+public:
+  FastANM(SuperBlock* b) : ElasticNetworkModel(b) { prefix_ = "anm"; }
+
+  void solve() {
+
+    if (verbosity_ > 1)
+      std::cerr << "Building hessian...\n";
+    buildHessian();
+    if (debugging_)
+      loos::writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
+
+    loos::Timer<> t;
+    if (verbosity_ > 0)
+      std::cerr << "Computing Decomp of hessian...\n";
+    t.start();
+
+    eigenvals_ = eigenDecomp(hessian_);
+    eigenvecs_ = hessian_;
+    
+    t.stop();
+    if (verbosity_ > 0)
+      std::cerr << "Decomp took " << loos::timeAsString(t.elapsed()) << std::endl;
+
+  }
+
+
+private:
+
+};
+
+
 
 // @endcond
 
@@ -189,6 +226,9 @@ loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
   
   return(M);
 }
+
+
+
 
 
 
@@ -246,7 +286,7 @@ int main(int argc, char *argv[]) {
   }
 
 
-  ANM anm(blocker);
+  FastANM anm(blocker);
   anm.debugging(debug);
   anm.prefix(prefix);
   anm.meta(header);
@@ -270,11 +310,11 @@ int main(int argc, char *argv[]) {
 
     DoubleMatrix s = anm.eigenvalues();
     singvals(k, 0) = t++;
-    singvals(k, 1) = s[natoms - 2];
+    singvals(k, 1) = s[6];
     
     DoubleMatrix U = anm.eigenvectors();
     for (uint i=0; i<natoms; ++i)
-      singvecs(i, k) = U(i, natoms-2);
+      singvecs(i, k) = U(i, 6);
     
     ++k;
   }
