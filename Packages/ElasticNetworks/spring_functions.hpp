@@ -62,7 +62,7 @@ namespace ENM {
    *
    *The SpringFunction::constant() function takes the coords of the two
    *nodes plus their difference vector (since it'll almost always be
-   *computed prior to calling SpringFunction, no since in recomputing
+   *computed prior to calling SpringFunction, no sense in recomputing
    *it).
    *
    *
