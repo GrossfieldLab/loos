@@ -57,9 +57,6 @@ namespace loos {
       if (info != 0)
 	throw(NumericalError("Failure in eigenDecomp"));
       
-      reverseColumns(M);
-      reverseRows(W);
-      
       return(W);
     }
     
