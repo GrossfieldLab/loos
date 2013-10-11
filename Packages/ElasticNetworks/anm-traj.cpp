@@ -136,6 +136,8 @@ string fullHelpMessage() {
     "NOTES\n"
     "- The default selection (if none is specified) is to pick CA's\n"
     "- The output is ASCII format suitable for use with Matlab/Octave/Gnuplot\n"
+    "- Verbsity setting of 1 will give progress updates\n"
+    "\n"
     "SEE ALSO\n"
     "\n"
     "gnm, gnm-traj, anm\n"
