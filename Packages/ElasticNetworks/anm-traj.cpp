@@ -237,13 +237,13 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::OutputPrefix* propts = new opts::OutputPrefix("anm_traj");
   opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
-  opts::RequiredArguments* ropts = new opts::RequiredArguments("prefix", "output-prefix");
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(tropts).add(topts).add(ropts);
+  options.add(bopts).add(propts).add(sopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -252,7 +252,7 @@ int main(int argc, char *argv[]) {
   pTraj traj = tropts->trajectory;
 
   verbosity = bopts->verbosity;
-  prefix = ropts->value("prefix");
+  prefix = propts->prefix;
 
 
   if (verbosity > 0)
