@@ -180,14 +180,14 @@ public:
 
   void solve() {
 
-    if (verbosity_ > 1)
+    if (verbosity_ > 2)
       std::cerr << "Building hessian...\n";
     buildHessian();
     if (debugging_)
       loos::writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
 
     loos::Timer<> t;
-    if (verbosity_ > 0)
+    if (verbosity_ > 1)
       std::cerr << "Computing Decomp of hessian...\n";
     t.start();
 
@@ -195,7 +195,7 @@ public:
     eigenvecs_ = hessian_;
     
     t.stop();
-    if (verbosity_ > 0)
+    if (verbosity_ > 1)
       std::cerr << "Decomp took " << loos::timeAsString(t.elapsed()) << std::endl;
 
   }
@@ -300,10 +300,14 @@ int main(int argc, char *argv[]) {
   uint t = tropts->skip;
   uint k = 0;
 
-  cerr << "Frames: ";
+  PercentProgressWithTime watcher;
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(nframes - tropts->skip));
+  slayer.attach(&watcher);
+  if (verbosity)
+    slayer.start();
+
+
   while (traj->readFrame()) {
-    if (t % 20 == 0)
-      cerr << t << ' ';
 
     traj->updateGroupCoords(subset);
     anm.solve();
@@ -315,12 +319,18 @@ int main(int argc, char *argv[]) {
     DoubleMatrix U = anm.eigenvectors();
     for (uint i=0; i<natoms; ++i)
       singvecs(i, k) = U(i, 6);
+
+    if (verbosity)
+      slayer.update();
     
     ++k;
   }
 
   writeAsciiMatrix(prefix + "_s.asc", singvals, header);
   writeAsciiMatrix(prefix + "_U.asc", singvecs, header);
+
+  if (verbosity)
+    slayer.finish();
 
   for (vector<SuperBlock*>::iterator i = blocks.begin(); i != blocks.end(); ++i)
     delete *i;
