@@ -1,3 +1,10 @@
+2013-10-11    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added Math::eigenDecomp() that calculates the eigenpairs for
+	the passed DoubleMatrix (using DSYEV).
+	* Added gnm-traj and anm-traj tools for analyzing trajectories
+	using elastic network models.
+
 2013-10-08    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed how atomid's are handled in LOOS.  Previously in LOOS,
