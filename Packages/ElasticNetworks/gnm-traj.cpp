@@ -185,16 +185,13 @@ int main(int argc, char *argv[])
     
     traj->updateGroupCoords(subset);
     DoubleMatrix K = kirchoff(subset, cutoff);
-    boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> result = svd(K);
-
-    DoubleMatrix U = boost::get<0>(result);
-    DoubleMatrix S = boost::get<1>(result);
+    DoubleMatrix S = eigenDecomp(K);
     
     svals(k, 0) = t++;
-    svals(k, 1) = S[n - 2];
+    svals(k, 1) = S[1];
 
     for (uint i=0; i<n; ++i)
-      vecs(i, k) = U(i, n-2);
+      vecs(i, k) = K(i, 1);
     
     ++k;
 
