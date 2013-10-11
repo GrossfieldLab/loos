@@ -1,28 +1,10 @@
 /*
-  anm
+  anm-traj
 
   (c) 2008,2013 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
       University of Rochster School of Medicine and Dentistry
 
-  Computes the anisotropic network model for a structure.  It does
-  this by building a hessian for the structure, then computing the SVD
-  of it and the corresponding pseudo-inverse (ignoring the 6 lowest
-  modes).
-
-  Usage:
-    anm [selection string] radius model-name output-prefix
-
-  Examples:
-    anm 'resid >= 10 && resid <= 50 && name == "CA"' 15.0 foo.pdb foo.dcd
-
-    This creates the following files:
-
-  Notes:
-    o The default selection (if none is specified) is to pick CA's
-    o The output is in ASCII format suitable for use with Matlab/Octave/Gnuplot
-      
-  
 */
 
 
@@ -82,26 +64,23 @@ string bound_spring_desc;
 string fullHelpMessage() {
 
   string s = 
-    "*WARNING*\nThis is outdated.\n\n"
     "\n"                                                                                    
     "SYNOPSIS\n"                                                                      
     "\n"
-    "Compute the anisotropic network model for a structure.\n"
+    "ANM-based trajectory analysis (modeled after Hall, et al, JACS 129:11394 (2007))\n"
     "\n"                                                                                      
     "DESCRIPTION\n"                                                                      
     "\n"
-    "An anisotropic network model predicts the motions of a structure\n"
-    "using a harmonic contact (spring) potential. (See Atilgan et al. 2001)\n"
-    "It does this by building a hessian for the structure, then computing\n"
-    "the SVD of it and the corresponding pseudo-inverse (ignoring the 6\n"
-    "lowest modes).\n"
+    "Computes the anisotropic network model for each frame in a trajectory.\n"
+    "The smallest non-zero eigenvalue is written to a matrix.  The corresponding\n"
+    "eigenvector is also written as a column in another matrix.\n"
     "\n"
-    "This creates the following files:\n"
-    "\tfoo_H.asc   - The hessian\n"
-    "\tfoo_U.asc   - Left singular vectors\n"
-    "\tfoo_s.asc   - Singular values\n"
-    "\tfoo_V.asc   - Right singular vectors\n"
-    "\tfoo_Hi.asc  - Pseudo-inverse of H\n"
+    "The following output files are created (using the optional prefix):\n"
+    "\tgnm_traj_s.asc  - Smallest eigenvalue (magnitude of lowest frequency mode)\n"
+    "\t                  First column is timestep, second column is the magnitude.\n"
+    "\tgnm_traj_U.asc  - Corresponding eigenvectors.  Each column is an eigenvector\n"
+    "\t                  and is paired with the corresponding row in the eigenvalue\n"
+    "\t                  matrix file.\n"
     "\n"
     "\n"
     "* Spring Constant Control *\n"
@@ -118,7 +97,7 @@ string fullHelpMessage() {
   vector<string> names = springNames();
   for (vector<string>::const_iterator i = names.begin(); i != names.end(); ++i)
     s = s + "\t" + *i + "\n";
-
+  
   s += 
     "\n\n"
     "* Adding \"Connectivity\" *\n"
@@ -130,23 +109,36 @@ string fullHelpMessage() {
     "\n"
     "\n\n"
     "EXAMPLES\n\n"
-    "anm --selection 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n"
+    "anm-traj --prefix b2ar b2ar.pdb b2ar.dcd\n"
+    "\tCompute the ANM for all alpha-carbons in b2ar.  The output files are\n"
+    "\tb2ar_s.asc (eigenvalues) and b2ar_U.asc (eigenvectors).\n"
+    "\n"
+    "anm-traj --selection 'resid >= 10 && resid <= 50 && name == \"CA\"' foo.pdb foo.dcd\n"
     "\tCompute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
     "\ti.e. construct contacts using only the CA's that are within 15 Angstroms\n"
+    "\tThe model is in foo.pdb and the trajectory is stored in foo.dcd.  Output files\n"
+    "\tcreated are anm_traj_s.asc (eigenvalues) and anm_traj_U.asc (eigenvectors).\n"
     "\n"
-    "anm -S=exponential,-1.3 foo.pdb foo\n"
+    "anm -S=exponential,-1.3 foo.pdb foo.dcd\n"
     "\tCompute an ANM using an spring function where the magnitude of\n"
     "\tthe connection decays exponentially with distance at a rate of\n"
     "\texp(-1.3*r) where r is the distance between contacts.  Note:\n"
     "\tin this case all beads are connected - which can eliminate\n"
     "\tan error in the numeric eigendecomposition.\n"
     "\n"
-    "anm -b=constant,100 -S=exponential,-1.3 foo.pdb foo\n"
+    "anm -b=constant,100 -S=exponential,-1.3 foo.pdb foo.dcd\n"
     "\tSimilar to the example above, but using connectivity.  Here\n"
     "\tresidues that are adjacent in sequence are connected by\n"
     "\tsprings with a constant stiffness of \"100\" and all other\n"
     "\tresidues are connected by springs that decay exponentially\n"
     "\twith distance\n"
+    "\n"
+    "NOTES\n"
+    "- The default selection (if none is specified) is to pick CA's\n"
+    "- The output is ASCII format suitable for use with Matlab/Octave/Gnuplot\n"
+    "SEE ALSO\n"
+    "\n"
+    "gnm, gnm-traj, anm\n"
     "\n";
 
   return(s);
