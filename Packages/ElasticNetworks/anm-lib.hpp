@@ -38,21 +38,21 @@ namespace ENM {
 
     void solve() {
 
-      if (verbosity_ > 1)
+      if (verbosity_ > 2)
         std::cerr << "Building hessian...\n";
       buildHessian();
       if (debugging_)
         loos::writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
 
       loos::Timer<> t;
-      if (verbosity_ > 0)
+      if (verbosity_ > 1)
         std::cerr << "Computing SVD of hessian...\n";
       t.start();
 
       boost::tuple<loos::DoubleMatrix, loos::DoubleMatrix, loos::DoubleMatrix> result = svd(hessian_);
     
       t.stop();
-      if (verbosity_ > 0)
+      if (verbosity_ > 1)
         std::cerr << "SVD took " << loos::timeAsString(t.elapsed()) << std::endl;
 
 
