@@ -48,14 +48,14 @@ namespace loos {
 
       dsyev_(&jobz, &uplo, &n, M.get(), &lda, W.get(), &dummy, &lwork, &info);
       if (info != 0)
-	throw(NumericalError("Failure in eigenDecomp estimate"));
+	throw(NumericalError("DSYEV failed to give an estimate of space required"), info);
       
       lwork = static_cast<f77int>(dummy);
       double* work = new double[lwork+1];
 
       dsyev_(&jobz, &uplo, &n, M.get(), &lda, W.get(), work, &lwork, &info);
       if (info != 0)
-	throw(NumericalError("Failure in eigenDecomp"));
+	throw(NumericalError("DSYEV reported an error"), info);
       
       return(W);
     }
@@ -84,13 +84,16 @@ namespace loos {
 
       sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
       if (info != 0)
-        throw(NumericalError("Failure in SVD"));
+        throw(NumericalError("SGESVD estimate reported an error"), info);
 
       lwork = (f77int)prework[0];
       estimate += lwork * sizeof(double);
       work = new float[lwork];
 
       sgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
+      if (info != 0)
+	throw(NumericalError("SGESVD reported an error"), info);
+      
 
       delete[] work;
 
@@ -117,7 +120,7 @@ namespace loos {
 
       dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, prework, &lwork, &info);
       if (info != 0)
-        throw(NumericalError("Failure in SVD"));
+        throw(NumericalError("DGESVD estimate reported an error", info));
 
 
       lwork = (f77int)prework[0];
@@ -125,6 +128,8 @@ namespace loos {
       work = new double[lwork];
 
       dgesvd_(&jobu, &jobvt, &m, &n, M.get(), &lda, S.get(), U.get(), &ldu, Vt.get(), &ldvt, work, &lwork, &info);
+      if (info != 0)
+	throw(NumericalError("DGESVD reported an error", info));
 
       delete[] work;
 
