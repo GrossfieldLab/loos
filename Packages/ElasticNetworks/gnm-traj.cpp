@@ -164,10 +164,9 @@ int main(int argc, char *argv[])
   AtomicGroup model = tropts->model;
   AtomicGroup subset = selectAtoms(model, sopts->selection);
   pTraj traj = tropts->trajectory;
-
   string prefix = propts->prefix;
-
   double cutoff = topts->cutoff;
+  uint verbosity = bopts->verbosity;
   
   uint t = tropts->skip;
   uint k = 0;
@@ -175,11 +174,14 @@ int main(int argc, char *argv[])
   DoubleMatrix svals(traj->nframes(), 2);
   DoubleMatrix vecs(n, traj->nframes());
 
-  cerr << "Progress- ";
-  
+  PercentProgressWithTime watcher;
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(traj->nframes() - tropts->skip));
+  slayer.attach(&watcher);
+  if (verbosity)
+    slayer.start();
+
+
   while (traj->readFrame()) {
-    if (t % 100 == 0)
-      cerr << '.';
     
     traj->updateGroupCoords(subset);
     DoubleMatrix K = kirchoff(subset, cutoff);
@@ -195,12 +197,16 @@ int main(int argc, char *argv[])
       vecs(i, k) = U(i, n-2);
     
     ++k;
+
+    if (verbosity)
+      slayer.update();
   }
 
-  cerr << endl;
-  
   writeAsciiMatrix(prefix + "_s.asc", svals, hdr);
   writeAsciiMatrix(prefix + "_U.asc", vecs, hdr);
+
+  if (verbosity)
+    slayer.finish();
 
 }
 
