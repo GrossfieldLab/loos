@@ -64,6 +64,12 @@ namespace loos {
      */
     boost::tuple<DoubleMatrix, DoubleMatrix, DoubleMatrix> svd(DoubleMatrix& M);
 
+    //! Compute eigendecomposition of M
+    /**
+     * Internally, this function uses dsyev from ATLAS/LAPACK.  The passed matrix, M,
+     * will be overwritten by the eigenvectors.  The ordering of eigenpairs is from
+     * smallest magnitude to largest.
+     */
     DoubleMatrix eigenDecomp(DoubleMatrix& M);
 
     //! Matrix-matrix multiply (using BLAS)
