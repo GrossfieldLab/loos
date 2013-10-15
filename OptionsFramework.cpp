@@ -90,6 +90,82 @@ namespace loos {
     }
 
     // -------------------------------------------------------
+    void BasicSplitBy::addGeneric(po::options_description& opts) {
+      opts.add_options()
+        ("splitby", po::value<std::string>(&split_method)->default_value(split_method), label.c_str());
+    }
+
+    std::string BasicSplitBy::print() const {
+      std::ostringstream oss;
+      oss << "splitby='" << split_method << "'";
+      return(oss.str());
+    }
+
+    BasicSplitBy::SplitType BasicSplitBy::methodToType(const std::string& name) 
+    {
+      std::string canonical_name(name);
+      boost::to_upper(canonical_name);
+      
+      if (canonical_name == "NONE")
+	return(NONE);
+      else if (canonical_name == "MOL")
+	return(MOLECULE);
+      else if (canonical_name == "SEGID")
+	return(SEGID);
+      else if (canonical_name == "RES")
+	return(RESIDUE);
+
+
+      throw(OptionsError("Invalid split-by method in options"));
+    }
+
+    bool BasicSplitBy::postConditions(po::variables_map& map) 
+    {
+      try {
+	split_type = methodToType(split_method);
+      }
+      catch (OptionsError& e) {
+	return(false);
+      }
+      catch (...) {
+	throw;
+      }
+      
+      
+      return(true);
+    }
+    
+    std::vector<AtomicGroup> BasicSplitBy::split(const AtomicGroup& grp) 
+    {
+      std::vector<AtomicGroup> result;
+      
+      switch(split_type) {
+      case NONE:
+	result.push_back(grp);
+	break;
+	
+      case MOLECULE:
+	result = grp.splitByMolecule();
+	break;
+	
+      case SEGID:
+	result = grp.splitByUniqueSegid();
+	break;
+	
+      case RESIDUE:
+	result = grp.splitByResidue();
+	break;
+	
+      default:
+	throw(LOOSError("Unknown split method"));
+      }
+      
+      return(result);
+    }
+    
+
+
+    // -------------------------------------------------------
 
     void ModelWithCoords::addGeneric(po::options_description& opts) {
       std::string filetypes = "Model types:\n" + availableSystemFileTypes();

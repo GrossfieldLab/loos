@@ -50,6 +50,12 @@ namespace loos {
     virtual const char* what(void) const throw() { return(_msg.c_str()); }
   };
 
+  //! Exception in options
+  class OptionsError : public LOOSError 
+  {
+  public:
+    explicit OptionsError(const std::string& arg) : LOOSError(arg) { }
+  };
   
   //! Exception when parsing input data
   class ParseError : public LOOSError {

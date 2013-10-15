@@ -29,6 +29,8 @@
 #include <AtomicGroup.hpp>
 #include <Trajectory.hpp>
 #include <sfactories.hpp>
+#include <boost/algorithm/string.hpp>
+#include <exceptions.hpp>
 
 
 
@@ -373,6 +375,36 @@ namespace loos {
 
     private:
       void addGeneric(po::options_description& opts);
+      std::string print() const;
+    };
+
+
+    // -------------------------------------------------
+
+    //! Provides a mechanism for controlling how to split an AtomicGroup
+    class BasicSplitBy : public OptionsPackage {
+    public:
+      enum SplitType { NONE, MOLECULE, SEGID, RESIDUE };
+	
+
+      BasicSplitBy() : split_method("mol"), label("Split selection by (none, mol, segid, res)"), split_type(MOLECULE) { }
+      BasicSplitBy(const std::string& method) : split_method(method), label("Split selection by (none, mol, segid, res)"), split_type(methodToType(method)) { }
+      BasicSplitBy(const std::string& method, const std::string& lbl) :
+        split_method(method),
+        label(lbl),
+	split_type(methodToType(method))
+      { }
+
+      std::string split_method;
+      std::string label;
+      SplitType split_type;
+
+      std::vector<AtomicGroup> split(const AtomicGroup& grp);
+
+    private:
+      SplitType methodToType(const std::string& name);
+      void addGeneric(po::options_description& opts);
+      bool postConditions(po::variables_map& map);
       std::string print() const;
     };
 
