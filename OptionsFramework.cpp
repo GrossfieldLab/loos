@@ -125,6 +125,7 @@ namespace loos {
 	split_type = methodToType(split_method);
       }
       catch (OptionsError& e) {
+	std::cerr << "Error- '" << split_method << "' is an invalid method for splitting a selection.\n";
 	return(false);
       }
       catch (...) {
