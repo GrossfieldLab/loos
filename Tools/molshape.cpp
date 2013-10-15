@@ -93,14 +93,12 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("molecule", po::value<bool>(&split_by_mol)->default_value(false), "Split by molecule")
-      ("segid", po::value<bool>(&split_by_segid)->default_value(false), "Split by segid")
       ("abs", po::value<bool>(&zabs)->default_value(false), "Use absolute Z-value");
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("molecule=%d, segid=%d, zabs=%d") % split_by_mol % split_by_segid % zabs;
+    oss << boost::format("zabs=%d") % zabs;
     return(oss.str());
   }
 };
@@ -134,11 +132,12 @@ int main(int argc, char *argv[]) {
   
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("!hydrogen || !(segid == 'BULK' || segid == 'SOLV')");
+  opts::BasicSplitBy* bsopts = new opts::BasicSplitBy("none");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(sopts).add(tropts).add(topts);
+  options.add(bopts).add(sopts).add(bsopts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -148,13 +147,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, sopts->selection);
   pTraj traj = tropts->trajectory;
 
-  vector<AtomicGroup> objects;
-  if (split_by_mol)
-    objects = subset.splitByMolecule();
-  else if (split_by_segid)
-    objects = subset.splitByUniqueSegid();
-  else
-    objects.push_back(subset);
+  vector<AtomicGroup> objects = bsopts->split(subset);
 
   cout << boost::format("# Tracking %d object%s\n") % objects.size() % (objects.size() > 1 ? "s" : "");
   cout << "# 1     2  3  4  5   6    7    8    9    10      11  12  13  14:16 17:19 20:22\n";
