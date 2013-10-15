@@ -1,3 +1,9 @@
+2013-10-15    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added BasicSplitBy option to the options framework.  Use the
+	BasicSplitBy::split() member function to split an AtomicGroup
+	based on a user-specified method.
+
 2013-10-08    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed how atomid's are handled in LOOS.  Previously in LOOS,
