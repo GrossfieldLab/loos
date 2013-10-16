@@ -1334,6 +1334,27 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release210 Version 2.1.0 (X-XX-XXXX)
+\subsection r210_bugs Bug Fixes
+\subsection r210_add_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Changed how atomid's are handled in LOOS.  They are no longer
+  indices into the trajectory frame for atom coordinates.  Atoms now
+  have an "index" property for that purpose.  The index is
+  automatically set when reading a model from a file.
+  <li> Changed all Trajectory::updateGroupCoords() implementations to
+  honor the atom index property.
+  <li> Changed Trajectory::updateGroupCoords() to use the NVI idiom.
+  Derived classes should override the updateGroupCoordsImpl()
+  function.
+  <li> Added Math::eigenDecomp() that calculates eigenpairs (using
+  ssyev/dsyev)
+  <li> Added gnm-traj and anm-traj tools in the ENM Package for
+  analyzing trajectories using ENM's
+  <li> Added BasicSplitBy option.  Use BasicSplitBy::split() to split
+  an AtomicGroup based on a user-specified method
+</ul>
+
 \section release206 Version 2.0.6 (9-13-2013)
 \subsection r206_bugs Bug Fixes
 <ul>
