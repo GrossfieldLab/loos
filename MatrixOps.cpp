@@ -59,6 +59,34 @@ namespace loos {
       
       return(W);
     }
+
+
+    RealMatrix eigenDecomp(RealMatrix& M) 
+    {
+      // Compute [U,D] = eig(M)
+
+      f77int n = M.rows();
+      char jobz = 'V';
+      char uplo = 'L';
+      f77int lda = n;
+      float dummy;
+      RealMatrix W(n, 1);
+      f77int lwork = -1;
+      f77int info;
+
+      ssyev_(&jobz, &uplo, &n, M.get(), &lda, W.get(), &dummy, &lwork, &info);
+      if (info != 0)
+	throw(NumericalError("SSYEV failed to give an estimate of space required"), info);
+      
+      lwork = static_cast<f77int>(dummy);
+      float* work = new float[lwork+1];
+
+      ssyev_(&jobz, &uplo, &n, M.get(), &lda, W.get(), work, &lwork, &info);
+      if (info != 0)
+	throw(NumericalError("SSYEV reported an error"), info);
+      
+      return(W);
+    }
     
 
   
