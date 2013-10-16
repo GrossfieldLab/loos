@@ -158,17 +158,18 @@ public:
       ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
-      ("vectors", po::value<bool>(&vectors)->default_value(false), "Write out matrix of first eigenvectors");
+      ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product");
+    
     
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("debug=%d, spring='%s', bound='%s', vectors=%d") % debug % spring_desc % bound_spring_desc % vectors;
+    oss << boost::format("debug=%d, spring='%s', bound='%s', coverla=%d") % debug % spring_desc % bound_spring_desc % coverlap;
     return(oss.str());
   }
 
-  bool vectors;
+  bool coverlap;
 };
 
 
@@ -204,6 +205,66 @@ private:
 };
 
 
+struct Analyzer 
+{
+  Analyzer() : _k(0) 
+  {
+  }
+  
+
+  virtual ~Analyzer() 
+  {
+  }
+  
+
+  virtual void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) =0;
+  virtual void analyze(const string& prefix, const string& header) =0;
+
+  uint _k;
+};
+
+
+struct DotAnalyze : public Analyzer 
+{
+  DotAnalyze(const uint natoms, const uint nframes) :
+    _natoms(natoms), _nframes(nframes),
+    _eigvals(DoubleMatrix(nframes, 3)),
+    _eigvecs(DoubleMatrix(natoms*3, nframes))
+  {
+  }
+
+  void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
+  {
+    _eigvals(_k, 0) = t;
+    _eigvals(_k, 1) = eigvals[6];
+    _eigvals(_k, 2) = eigvals[7];
+    
+    for (uint i=0; i<_natoms*3; ++i)
+      _eigvecs(i, _k) = eigvecs(i, 6);
+
+    ++_k;
+  }
+  
+  void analyze(const string& prefix, const string& header) 
+  {
+    writeAsciiMatrix(prefix + "_s.asc", _eigvals, header);
+
+    DoubleMatrix D = MMMultiply(_eigvecs, _eigvecs, true, false);
+    for (ulong i=0; i<D.size(); ++i)
+      D[i] = abs(D[i]);
+    
+    writeAsciiMatrix(prefix + "_D.asc", D, header);
+  }
+  
+
+  uint _natoms, _nframes;
+  DoubleMatrix _eigvals;
+  DoubleMatrix _eigvecs;
+};
+
+
+
+
 
 // @endcond
 
@@ -224,17 +285,6 @@ loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
   
   return(M);
 }
-
-
-DoubleMatrix dotProduct(const DoubleMatrix& A) 
-{
-  DoubleMatrix D = MMMultiply(A, A, true, false);
-  for (ulong i=0; i<D.size(); ++i)
-    D[i] = abs(D[i]);
-
-  return(D);
-}
-
 
 
 
@@ -300,11 +350,10 @@ int main(int argc, char *argv[]) {
 
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
-  DoubleMatrix singvals(nframes, 3);
-  DoubleMatrix singvecs(natoms*3, nframes);
 
+  Analyzer* analyzer = new DotAnalyze(natoms, nframes);
+    
   uint t = tropts->skip;
-  uint k = 0;
 
   PercentProgressWithTime watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(nframes - tropts->skip));
@@ -317,31 +366,17 @@ int main(int argc, char *argv[]) {
 
     traj->updateGroupCoords(subset);
     anm.solve();
-
-    DoubleMatrix s = anm.eigenvalues();
-    singvals(k, 0) = t++;
-    singvals(k, 1) = s[6];
-    singvals(k, 2) = s[7];
-    
-    DoubleMatrix U = anm.eigenvectors();
-    for (uint i=0; i<natoms*3; ++i)
-      singvecs(i, k) = U(i, 6);
+    analyzer->accumulate(t, anm.eigenvalues(), anm.eigenvectors());
 
     if (verbosity)
       slayer.update();
     
-    ++k;
   }
-
-  writeAsciiMatrix(prefix + "_s.asc", singvals, header);
-  if (topts->vectors)
-    writeAsciiMatrix(prefix + "_U.asc", singvecs, header);
-
-  DoubleMatrix D = dotProduct(singvecs);
-  writeAsciiMatrix(prefix + "_D.asc", D, header);
 
   if (verbosity)
     slayer.finish();
+
+  analyzer->analyze(prefix, header);
 
   for (vector<SuperBlock*>::iterator i = blocks.begin(); i != blocks.end(); ++i)
     delete *i;
