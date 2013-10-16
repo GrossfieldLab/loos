@@ -314,7 +314,7 @@ int main(int argc, char *argv[]) {
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
   DoubleMatrix singvals(nframes, 3);
-  DoubleMatrix singvecs(natoms, nframes);
+  DoubleMatrix singvecs(natoms*3, nframes);
 
   uint t = tropts->skip;
   uint k = 0;
@@ -337,7 +337,7 @@ int main(int argc, char *argv[]) {
     singvals(k, 2) = s[7];
     
     DoubleMatrix U = anm.eigenvectors();
-    for (uint i=0; i<natoms; ++i)
+    for (uint i=0; i<natoms*3; ++i)
       singvecs(i, k) = U(i, 6);
 
     if (verbosity)
