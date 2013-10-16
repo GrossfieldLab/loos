@@ -157,8 +157,7 @@ public:
     o.add_options()
       ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
-      ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
-      ("ratio", po::value<bool>(&ratio)->default_value(false), "Use ratio of 1st eigenvalue to 2nd");
+      ("bound", po::value<string>(&bound_spring_desc), "Bound spring");
   }
 
   string print() const {
@@ -167,7 +166,6 @@ public:
     return(oss.str());
   }
 
-  bool ratio;
 };
 
 
@@ -291,7 +289,7 @@ int main(int argc, char *argv[]) {
 
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
-  DoubleMatrix singvals(nframes, 2);
+  DoubleMatrix singvals(nframes, 3);
   DoubleMatrix singvecs(natoms, nframes);
 
   uint t = tropts->skip;
@@ -311,7 +309,8 @@ int main(int argc, char *argv[]) {
 
     DoubleMatrix s = anm.eigenvalues();
     singvals(k, 0) = t++;
-    singvals(k, 1) = topts->ratio ? (s[6] / s[7]) : s[6];
+    singvals(k, 1) = s[6];
+    singvals(k, 2) = s[7];
     
     DoubleMatrix U = anm.eigenvectors();
     for (uint i=0; i<natoms; ++i)
