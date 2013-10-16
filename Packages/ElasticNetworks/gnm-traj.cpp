@@ -52,15 +52,14 @@ string fullHelpMessage() {
     "DESCRIPTION\n"
     "\n"
     "Computes the gaussian network model for each frame in a trajectory.\n"
-    "The smallest non-zero eigenvalue is written to a matrix.  The corresponding\n"
-    "eigenvector is also written as a column in another matrix.\n"
+    "The smallest non-zero eigenvalue is written to a matrix.  The dot product\n"
+    "of the corresponding eigenvector for each frame against every other frame\n"
+    "is also written out.  The original eigenvectors may be optionally written as well.\n"
     "\n"
     "The following output files are created (using the optional prefix):\n"
     "\tgnm_traj_s.asc  - Smallest eigenvalue (magnitude of lowest frequency mode)\n"
     "\t                  First column is timestep, second column is the magnitude.\n"
-    "\tgnm_traj_U.asc  - Corresponding eigenvectors.  Each column is an eigenvector\n"
-    "\t                  and is paired with the corresponding row in the eigenvalue\n"
-    "\t                  matrix file.\n"
+    "\tgnm_traj_D.asc  - Matrix of dot products of corresponding eigenvectors.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
@@ -91,16 +90,19 @@ public:
   
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("cutoff", po::value<double>(&cutoff)->default_value(7.0), "Distance cutoff");
+      ("cutoff", po::value<double>(&cutoff)->default_value(7.0), "Distance cutoff")
+      ("vectors", po::value<bool>(&vectors)->default_value(false), "Write out matrix of first eigenvectors");
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("cutoff='%f'") % cutoff;
+    oss << boost::format("cutoff='%f',vectors=%d") % cutoff % vectors;
     return(oss.str());
   }
 
   double cutoff;
+  bool vectors;
+  
 };
 
 
@@ -134,6 +136,17 @@ DoubleMatrix kirchoff(AtomicGroup& group, const double cutoff) {
   }
 
   return(M);
+}
+
+
+
+DoubleMatrix dotProduct(const DoubleMatrix& A) 
+{
+  DoubleMatrix D = MMMultiply(A, A, true, false);
+  for (ulong i=0; i<D.size(); ++i)
+    D[i] = abs(D[i]);
+
+  return(D);
 }
 
 
@@ -193,7 +206,11 @@ int main(int argc, char *argv[])
   }
 
   writeAsciiMatrix(prefix + "_s.asc", svals, hdr);
-  writeAsciiMatrix(prefix + "_U.asc", vecs, hdr);
+  if (topts->vectors)
+    writeAsciiMatrix(prefix + "_U.asc", vecs, hdr);
+
+  DoubleMatrix D = dotProduct(vecs);
+  writeAsciiMatrix(prefix + "_D.asc", D, hdr);
 
   if (verbosity)
     slayer.finish();
