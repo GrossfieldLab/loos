@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
   uint t = tropts->skip;
   uint k = 0;
   uint n = subset.size();
-  DoubleMatrix svals(traj->nframes(), 2);
+  DoubleMatrix svals(traj->nframes(), 3);
   DoubleMatrix vecs(n, traj->nframes());
 
   PercentProgressWithTime watcher;
@@ -181,6 +181,7 @@ int main(int argc, char *argv[])
     
     svals(k, 0) = t++;
     svals(k, 1) = S[1];
+    svals(k, 2) = S[2];
 
     for (uint i=0; i<n; ++i)
       vecs(i, k) = K(i, 1);
