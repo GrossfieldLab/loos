@@ -55,8 +55,11 @@ list.append(vsa)
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
+anm_traj = clone.Program('anm-traj.cpp')
+list.append(anm_traj)
+
 # Update to include the above apps
-apps = apps + ' vsa anm'
+apps = apps + ' vsa anm anm_traj'
 
 
 
