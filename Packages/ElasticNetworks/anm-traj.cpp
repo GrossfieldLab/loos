@@ -228,22 +228,9 @@ loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
 
 DoubleMatrix dotProduct(const DoubleMatrix& A) 
 {
-  uint m = A.rows();
-  uint n = A.cols();
-  
-  DoubleMatrix D(n, n);
-
-  for (uint j=0; j<n-1; ++j)
-    for (uint i=j+1; i<n; ++i) {
-      double s = 0.0;
-      for (uint k=0; k<m; ++k)
-  	s += A(k, j) * A(k, i);
-      D(j, i) = D(i, j) = abs(s);
-    }
-  
-
-  for (uint i=0; i<n; ++i)
-    D(i, i) = 1.0;
+  DoubleMatrix D = MMMultiply(A, A, true, false);
+  for (ulong i=0; i<D.size(); ++i)
+    D[i] = abs(D[i]);
 
   return(D);
 }
