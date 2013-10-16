@@ -157,15 +157,18 @@ public:
     o.add_options()
       ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
-      ("bound", po::value<string>(&bound_spring_desc), "Bound spring");
+      ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
+      ("vectors", po::value<bool>(&vectors)->default_value(false), "Write out matrix of first eigenvectors");
+    
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("debug=%d, spring='%s', bound='%s'") % debug % spring_desc % bound_spring_desc;
+    oss << boost::format("debug=%d, spring='%s', bound='%s', vectors=%d") % debug % spring_desc % bound_spring_desc % vectors;
     return(oss.str());
   }
 
+  bool vectors;
 };
 
 
@@ -223,6 +226,27 @@ loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
 }
 
 
+DoubleMatrix dotProduct(const DoubleMatrix& A) 
+{
+  uint m = A.rows();
+  uint n = A.cols();
+  
+  DoubleMatrix D(n, n);
+
+  for (uint j=0; j<n-1; ++j)
+    for (uint i=j+1; i<n; ++i) {
+      double s = 0.0;
+      for (uint k=0; k<m; ++k)
+  	s += A(k, j) * A(k, i);
+      D(j, i) = D(i, j) = abs(s);
+    }
+  
+
+  for (uint i=0; i<n; ++i)
+    D(i, i) = 1.0;
+
+  return(D);
+}
 
 
 
@@ -323,7 +347,11 @@ int main(int argc, char *argv[]) {
   }
 
   writeAsciiMatrix(prefix + "_s.asc", singvals, header);
-  writeAsciiMatrix(prefix + "_U.asc", singvecs, header);
+  if (topts->vectors)
+    writeAsciiMatrix(prefix + "_U.asc", singvecs, header);
+
+  DoubleMatrix D = dotProduct(singvecs);
+  writeAsciiMatrix(prefix + "_D.asc", D, header);
 
   if (verbosity)
     slayer.finish();
