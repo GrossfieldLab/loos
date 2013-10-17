@@ -407,6 +407,8 @@ struct CoverlapAnalyze : public Analyzer
   void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
   {
     DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, eigvals.rows()), loos::Math::Range(0, eigvals.cols()));
+    for (ulong i=0; i<e.rows(); ++i)
+      e[i] = 1.0 / e[i];
     _eigvals.push_back(e);
     
     e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, eigvecs.cols()));
@@ -422,7 +424,7 @@ struct CoverlapAnalyze : public Analyzer
     DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
 
     if (_verbosity)
-      cerr << "Computing coverlap matrix.\n";
+      cerr << "Computing coverlap matrix using " << _nprocs << " threads.\n";
 
     ConcreteMaster master(O.rows());
     Worker worker(&O, &_eigvals, &_eigvecs, &master);
