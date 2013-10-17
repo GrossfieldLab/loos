@@ -32,6 +32,8 @@
 #include <loos_defs.hpp>
 #include <StreamWrapper.hpp>
 
+#include <AtomicGroup.hpp>
+
 namespace loos {
 
 
