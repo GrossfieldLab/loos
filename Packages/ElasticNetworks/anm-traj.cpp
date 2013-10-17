@@ -265,6 +265,60 @@ struct DotAnalyze : public Analyzer
 
 
 
+struct CoverlapAnalyze : public Analyzer 
+{
+  CoverlapAnalyze(const bool v) : _verbosity(v) 
+  {
+  }
+  
+
+  void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
+  {
+    DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, eigvals.rows()), loos::Math::Range(0, eigvals.cols()));
+    _eigvals.push_back(e);
+    
+    e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, eigvecs.cols()));
+    _eigvecs.push_back(e);
+  }
+  
+  void analyze(const string& prefix, const string& header) 
+  {
+    DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
+
+    PercentProgressWithTime watcher;
+    ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(_eigvecs.size() * (_eigvecs.size()-1) / 2));
+    slayer.attach(&watcher);
+    if (_verbosity) {
+      cerr << "Computing coverlap matrix.\n";
+      slayer.start();
+    }
+
+    
+    for (uint j=0; j<_eigvecs.size()-1; ++j)
+      for (uint i=j+1; i<_eigvecs.size(); ++i) {
+	O(j, i) = O(i, j) = covarianceOverlap(_eigvals[i], _eigvecs[j], _eigvals[i], _eigvecs[i]);
+	if (_verbosity)
+	  slayer.update();
+      }
+    
+
+    for (uint i=0; i<_eigvecs.size(); ++i)
+      O(i, i) = 1.0;
+
+    if (_verbosity)
+      slayer.finish();
+    
+    writeAsciiMatrix(prefix + "_O.asc", O, header);
+  }
+
+    
+  bool _verbosity;
+  vector<DoubleMatrix> _eigvals;
+  vector<DoubleMatrix> _eigvecs;
+  
+};
+
+
 
 // @endcond
 
@@ -351,7 +405,11 @@ int main(int argc, char *argv[]) {
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
 
-  Analyzer* analyzer = new DotAnalyze(natoms, nframes);
+  Analyzer* analyzer;
+  if (topts->coverlap)
+    analyzer = new CoverlapAnalyze(verbosity);
+  else
+    analyzer = new DotAnalyze(natoms, nframes);
     
   uint t = tropts->skip;
 
