@@ -1,3 +1,8 @@
+2013-10-17    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed Matrix operator[] to only check for out of bounds index
+	when debugging (i.e. -DDEBUG)
+
 2013-10-11    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added Math::eigenDecomp() that calculates the eigenpairs for
