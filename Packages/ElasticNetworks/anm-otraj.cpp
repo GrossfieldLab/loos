@@ -281,6 +281,41 @@ struct CoverlapAnalyze : public Analyzer
     _eigvecs.push_back(e);
   }
   
+
+  double coverlap(const DoubleMatrix& lamA,
+		  const DoubleMatrix& UA,
+		  const DoubleMatrix& lamB,
+		  const DoubleMatrix& UB)
+  {
+    uint m = UA.rows();
+    uint n = UA.cols();
+
+    double trA = 0.0;
+    for (ulong i=0; i<n; ++i)
+      trA += lamA[i];
+
+    double trB = 0.0;
+    for (ulong i=0; i<n; ++i)
+      trB += lamB[i];
+    
+    double dsum = 0.0;
+    for (uint i=0; i<n; ++i)
+      for (uint j=0; j<n; ++j) {
+	double d = 0.0;
+	for (uint k=0; k<m; ++k)
+	  d += UA(k, i) * UB(k, j);
+	dsum += d * d * sqrt(lamA[i] * lamB[j]);
+      }
+    
+    
+    double dAB = sqrt(trA + trB - 2.0 * dsum);
+
+    double o = 1.0 - dAB/(sqrt(trA + trB));
+    return(o);
+  }
+  
+
+
   void analyze(const string& prefix, const string& header) 
   {
     DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
@@ -296,7 +331,7 @@ struct CoverlapAnalyze : public Analyzer
     
     for (uint j=0; j<_eigvecs.size()-1; ++j)
       for (uint i=j+1; i<_eigvecs.size(); ++i) {
-	O(j, i) = O(i, j) = covarianceOverlap(_eigvals[i], _eigvecs[j], _eigvals[i], _eigvecs[i]);
+	O(j, i) = O(i, j) = coverlap(_eigvals[i], _eigvecs[j], _eigvals[i], _eigvecs[i]);
 	if (_verbosity)
 	  slayer.update();
       }
