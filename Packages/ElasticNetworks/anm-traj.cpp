@@ -276,7 +276,7 @@ struct CoverlapAnalyze : public Analyzer
   {
     DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, eigvals.rows()), loos::Math::Range(0, eigvals.cols()));
     for (ulong i=0; i<e.rows(); ++i)
-      e[i] = 1.0 / e;
+      e[i] = 1.0 / e[i];
     _eigvals.push_back(e);
     
     e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, eigvecs.cols()));
