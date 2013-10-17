@@ -161,18 +161,21 @@ public:
       ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
-      ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product");
+      ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product")
+      ("threads", po::value<uint>(&nthreads)->default_value(2), "Number of threads to use for covariance overlap calculation");
+    
     
     
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("debug=%d, spring='%s', bound='%s', coverla=%d") % debug % spring_desc % bound_spring_desc % coverlap;
+    oss << boost::format("debug=%d, spring='%s', bound='%s', coverlap=%d, nthreads=%d") % debug % spring_desc % bound_spring_desc % coverlap % nthreads;
     return(oss.str());
   }
 
   bool coverlap;
+  uint nthreads;
 };
 
 
@@ -271,40 +274,6 @@ struct DotAnalyze : public Analyzer
 typedef vector<DoubleMatrix> VDMat;
 
 
-double coverlap(const DoubleMatrix& lamA,
-		const DoubleMatrix& UA,
-		const DoubleMatrix& lamB,
-		const DoubleMatrix& UB)
-{
-  uint m = UA.rows();
-  uint n = UA.cols();
-
-  double trA = 0.0;
-  for (ulong i=0; i<n; ++i)
-    trA += lamA[i];
-
-  double trB = 0.0;
-  for (ulong i=0; i<n; ++i)
-    trB += lamB[i];
-    
-  double dsum = 0.0;
-  for (uint i=0; i<n; ++i)
-    for (uint j=0; j<n; ++j) {
-      double d = 0.0;
-      for (uint k=0; k<m; ++k)
-	d += UA(k, i) * UB(k, j);
-      dsum += d * d * sqrt(lamA[i] * lamB[j]);
-    }
-    
-    
-  double dAB = sqrt(trA + trB - 2.0 * dsum);
-
-  double o = 1.0 - dAB/(sqrt(trA + trB));
-  return(o);
-}
-
-
-
 class Master 
 {
 public:
@@ -332,7 +301,7 @@ public:
   void calc(const uint i) 
   {
     for (uint j=0; j<i; ++j) {
-      double d = coverlap((*eigvals)[i], (*eigvecs)[i], (*eigvals)[j], (*eigvecs)[j]);
+      double d = covarianceOverlap((*eigvals)[i], (*eigvecs)[i], (*eigvals)[j], (*eigvecs)[j]);
       (*O)(j, i) = (*O)(i, j) = d;
     }
     
@@ -567,7 +536,7 @@ int main(int argc, char *argv[]) {
 
   Analyzer* analyzer;
   if (topts->coverlap)
-    analyzer = new CoverlapAnalyze(verbosity, 8);
+    analyzer = new CoverlapAnalyze(verbosity, topts->nthreads);
   else
     analyzer = new DotAnalyze(natoms, nframes);
     
