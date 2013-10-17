@@ -33,6 +33,9 @@
 
 
 #include <loos.hpp>
+#include <boost/thread/thread.hpp>
+
+typedef boost::thread* Bthread;
 
 #include <limits>
 
@@ -263,11 +266,171 @@ struct DotAnalyze : public Analyzer
 };
 
 
+// ---------------------------------------------------------
+
+typedef vector<DoubleMatrix> VDMat;
+
+
+double coverlap(const DoubleMatrix& lamA,
+		const DoubleMatrix& UA,
+		const DoubleMatrix& lamB,
+		const DoubleMatrix& UB)
+{
+  uint m = UA.rows();
+  uint n = UA.cols();
+
+  double trA = 0.0;
+  for (ulong i=0; i<n; ++i)
+    trA += lamA[i];
+
+  double trB = 0.0;
+  for (ulong i=0; i<n; ++i)
+    trB += lamB[i];
+    
+  double dsum = 0.0;
+  for (uint i=0; i<n; ++i)
+    for (uint j=0; j<n; ++j) {
+      double d = 0.0;
+      for (uint k=0; k<m; ++k)
+	d += UA(k, i) * UB(k, j);
+      dsum += d * d * sqrt(lamA[i] * lamB[j]);
+    }
+    
+    
+  double dAB = sqrt(trA + trB - 2.0 * dsum);
+
+  double o = 1.0 - dAB/(sqrt(trA + trB));
+  return(o);
+}
+
+
+
+class Master 
+{
+public:
+  virtual bool workAvailable(uint*) =0;
+};
+
+
+
+class Worker 
+{
+public:
+  Worker(DoubleMatrix* over, VDMat* vals, VDMat* vecs, Master* pmaster) : O(over), eigvals(vals), eigvecs(vecs), master(pmaster)
+  {
+  }
+
+  Worker(const Worker& w) 
+  {
+    O = w.O;
+    eigvals = w.eigvals;
+    eigvecs = w.eigvecs;
+    master = w.master;
+  }
+  
+
+  void calc(const uint i) 
+  {
+    for (uint j=0; j<i; ++j) {
+      double d = coverlap((*eigvals)[i], (*eigvecs)[i], (*eigvals)[j], (*eigvecs)[j]);
+      (*O)(j, i) = (*O)(i, j) = d;
+    }
+    
+  }
+
+  void operator()() 
+  {
+    uint i;
+    
+    while (master->workAvailable(&i))
+      calc(i);
+  }
+  
+
+private:
+  DoubleMatrix* O;
+  VDMat* eigvals;
+  VDMat* eigvecs;
+  Master* master;
+};
+
+
+
+
+class ConcreteMaster  : public Master
+{
+public:
+  ConcreteMaster(const uint nr) :
+    toprow(0),
+    maxrows(nr)
+  {
+  }
+
+  
+
+  virtual bool workAvailable(uint* ip) 
+  {
+    mtx.lock();
+    if (toprow >= maxrows) {
+      mtx.unlock();
+      return(false);
+    }
+    *ip = toprow++;
+    mtx.unlock();
+    return(true);
+  }
+  
+
+private:
+  uint toprow, maxrows, maxprocs;
+  boost::mutex mtx;
+};
+
+
+template<class W>
+class Threader 
+{
+public:
+  Threader(W* wrkr, const uint np) :
+    worker(wrkr),
+    threads(vector<Bthread>(np))
+  {
+
+    for (uint i=0; i<np; ++i) {
+      Worker w(*worker);
+      threads[i] = new boost::thread(w);
+    }
+    
+  }
+
+
+  void join() 
+  {
+    for (uint i=0; i<threads.size(); ++i)
+      threads[i]->join();
+  }
+  
+
+  ~Threader() 
+  {
+    for (uint i=0; i<threads.size(); ++i)
+      delete threads[i];
+  }
+
+  W* worker;
+  vector<Bthread> threads;
+};
+
+
+// ---------------------------------------------------------
+  
+
+
 
 
 struct CoverlapAnalyze : public Analyzer 
 {
-  CoverlapAnalyze(const bool v) : _verbosity(v) 
+  CoverlapAnalyze(const bool v, const uint n) : _verbosity(v), _nprocs(n)
   {
   }
   
@@ -282,37 +445,6 @@ struct CoverlapAnalyze : public Analyzer
   }
   
 
-  double coverlap(const DoubleMatrix& lamA,
-		  const DoubleMatrix& UA,
-		  const DoubleMatrix& lamB,
-		  const DoubleMatrix& UB)
-  {
-    uint m = UA.rows();
-    uint n = UA.cols();
-
-    double trA = 0.0;
-    for (ulong i=0; i<n; ++i)
-      trA += lamA[i];
-
-    double trB = 0.0;
-    for (ulong i=0; i<n; ++i)
-      trB += lamB[i];
-    
-    double dsum = 0.0;
-    for (uint i=0; i<n; ++i)
-      for (uint j=0; j<n; ++j) {
-	double d = 0.0;
-	for (uint k=0; k<m; ++k)
-	  d += UA(k, i) * UB(k, j);
-	dsum += d * d * sqrt(lamA[i] * lamB[j]);
-      }
-    
-    
-    double dAB = sqrt(trA + trB - 2.0 * dsum);
-
-    double o = 1.0 - dAB/(sqrt(trA + trB));
-    return(o);
-  }
   
 
 
@@ -320,34 +452,27 @@ struct CoverlapAnalyze : public Analyzer
   {
     DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
 
-    PercentProgressWithTime watcher;
-    ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(_eigvecs.size() * (_eigvecs.size()-1) / 2));
-    slayer.attach(&watcher);
-    if (_verbosity) {
+    if (_verbosity)
       cerr << "Computing coverlap matrix.\n";
-      slayer.start();
-    }
 
+    ConcreteMaster master(O.rows());
+    Worker worker(&O, &_eigvals, &_eigvecs, &master);
+    Threader<Worker> threads(&worker, _nprocs);
     
-    for (uint j=0; j<_eigvecs.size()-1; ++j)
-      for (uint i=j+1; i<_eigvecs.size(); ++i) {
-	O(j, i) = O(i, j) = coverlap(_eigvals[i], _eigvecs[j], _eigvals[i], _eigvecs[i]);
-	if (_verbosity)
-	  slayer.update();
-      }
-    
+    threads.join();
 
     for (uint i=0; i<_eigvecs.size(); ++i)
       O(i, i) = 1.0;
 
     if (_verbosity)
-      slayer.finish();
-    
+      cerr << "Done!\n";
+
     writeAsciiMatrix(prefix + "_O.asc", O, header);
   }
 
     
   bool _verbosity;
+  uint _nprocs;
   vector<DoubleMatrix> _eigvals;
   vector<DoubleMatrix> _eigvecs;
   
@@ -442,7 +567,7 @@ int main(int argc, char *argv[]) {
 
   Analyzer* analyzer;
   if (topts->coverlap)
-    analyzer = new CoverlapAnalyze(verbosity);
+    analyzer = new CoverlapAnalyze(verbosity, 8);
   else
     analyzer = new DotAnalyze(natoms, nframes);
     
