@@ -162,7 +162,7 @@ public:
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
       ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product")
       ("threads", po::value<uint>(&nthreads)->default_value(2), "Number of threads to use for covariance overlap calculation")
-      ("partial", po::value<double>(&partial)->default_value(0.0), "Fraction of modes to use in coverlap (0 = all)");
+      ("partial", po::value<uint>(&partial)->default_value(0), "Number of modes to use in coverlap (0 = all)");
     
     
     
@@ -170,13 +170,13 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("spring='%s',bound='%s',coverlap=%d,nthreads=%d,partial=%f") % spring_desc % bound_spring_desc % coverlap % nthreads % partial;
+    oss << boost::format("spring='%s',bound='%s',coverlap=%d,nthreads=%d,partial=%d") % spring_desc % bound_spring_desc % coverlap % nthreads % partial;
     return(oss.str());
   }
 
   bool coverlap;
   uint nthreads;
-  double partial;
+  uint partial;
 };
 
 
@@ -634,9 +634,7 @@ int main(int argc, char *argv[]) {
 
   Analyzer* analyzer;
   if (topts->coverlap) {
-    uint nmodes = 3 * natoms - 6;
-    if (topts->partial != 0.0)
-      nmodes *= topts->partial;
+    uint nmodes = topts->partial ? topts->partial : 3 * natoms - 6;
     cerr << boost::format("Using %d modes in coverlap\n") % nmodes;
     analyzer = new CoverlapAnalyze(verbosity, topts->nthreads, nmodes, nframes);
   } else
