@@ -1,5 +1,5 @@
 /*
-  anm-traj
+  anmo-traj
 
   (c) 2008,2013 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
@@ -33,9 +33,12 @@
 
 
 #include <loos.hpp>
+#include <boost/thread/thread.hpp>
+
+typedef boost::thread* Bthread;
 
 #include <limits>
-
+#include <time.h>
 
 #include "hessian.hpp"
 #include "enm-lib.hpp"
@@ -56,7 +59,6 @@ namespace po = loos::OptionsFramework::po;
 string prefix;
 
 int verbosity;
-bool debug;
 
 string spring_desc;
 string bound_spring_desc;
@@ -64,6 +66,7 @@ string bound_spring_desc;
 string fullHelpMessage() {
 
   string s = 
+    "***CAUTION***OUT*OF*DATE***\n"
     "\n"                                                                                    
     "SYNOPSIS\n"                                                                      
     "\n"
@@ -155,22 +158,36 @@ public:
   
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
-      ("vectors", po::value<bool>(&vectors)->default_value(false), "Write out matrix of first eigenvectors");
+      ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product")
+      ("threads", po::value<uint>(&nthreads)->default_value(2), "Number of threads to use for covariance overlap calculation")
+      ("partial", po::value<double>(&partial)->default_value(0.0), "Fraction of modes to use in coverlap (0 = all)");
+    
+    
     
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("debug=%d, spring='%s', bound='%s', vectors=%d") % debug % spring_desc % bound_spring_desc % vectors;
+    oss << boost::format("spring='%s',bound='%s',coverlap=%d,nthreads=%d,partial=%f") % spring_desc % bound_spring_desc % coverlap % nthreads % partial;
     return(oss.str());
   }
 
-  bool vectors;
+  bool coverlap;
+  uint nthreads;
+  double partial;
 };
 
+
+
+/*
+ A local "fast" version of ANM.  The standard ANM
+ uses the SVD to diagonalize the Hessian matrix.  This
+ is slow and computes RSV's, which are not necessary here.
+ So, we use LOOS' eigenDecomp() function (that uses
+ DSYEV for the diagonalizaiton)
+*/
 
 class FastANM : public ElasticNetworkModel {
 public:
@@ -181,8 +198,6 @@ public:
     if (verbosity_ > 2)
       std::cerr << "Building hessian...\n";
     buildHessian();
-    if (debugging_)
-      loos::writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
 
     loos::Timer<> t;
     if (verbosity_ > 1)
@@ -201,6 +216,321 @@ public:
 
 private:
 
+};
+
+
+
+/*
+  This tool can use either dot products or covariance overlaps to
+  analyze the fluctuation space for each ANM.  The Analyzer class
+  provides the interface to abstract which method is used.
+*/
+
+struct Analyzer 
+{
+  Analyzer() : _k(0) 
+  {
+  }
+  
+
+  virtual ~Analyzer() 
+  {
+  }
+  
+
+  // Store a new set of eigenpairs, t is the corresponding timestep
+  virtual void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) =0;
+
+  // Perform the analysis.  Prefix is the output matrix prefix and header is the associated metadata
+  virtual void analyze(const string& prefix, const string& header) =0;
+
+  // Used by derived classes that need an index for the passed ANM
+  uint _k;
+};
+
+
+
+
+// Only retain the dominant eigenvector for dot product, and the first two eigenvalues
+// Note: actually writes out the absolute value of the dot product
+
+struct DotAnalyze : public Analyzer 
+{
+  DotAnalyze(const uint natoms, const uint nframes) :
+    _natoms(natoms), _nframes(nframes),
+    _eigvals(DoubleMatrix(nframes, 3)),
+    _eigvecs(DoubleMatrix(natoms*3, nframes))
+  {
+  }
+
+  void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
+  {
+    _eigvals(_k, 0) = t;
+    _eigvals(_k, 1) = eigvals[6];
+    _eigvals(_k, 2) = eigvals[7];
+    
+    for (uint i=0; i<_natoms*3; ++i)
+      _eigvecs(i, _k) = eigvecs(i, 6);
+
+    ++_k;
+  }
+  
+  void analyze(const string& prefix, const string& header) 
+  {
+    writeAsciiMatrix(prefix + "_s.asc", _eigvals, header);
+
+    DoubleMatrix D = MMMultiply(_eigvecs, _eigvecs, true, false);
+    for (ulong i=0; i<D.size(); ++i)
+      D[i] = abs(D[i]);
+    
+    writeAsciiMatrix(prefix + "_D.asc", D, header);
+  }
+  
+
+  uint _natoms, _nframes;
+  DoubleMatrix _eigvals;
+  DoubleMatrix _eigvecs;
+};
+
+
+// ---------------------------------------------------------
+
+/*
+ For performance reasons, the covariance overlap code is multi-threaded
+ Initial testing suggests best performance is to NOT use the threaded
+ ATLAS and use only as many threads as physical cores.
+
+ As always, YMMV...
+*/
+
+
+
+typedef vector<DoubleMatrix> VDMat;
+
+
+// Worker threads coordinate on which column of the all-to-all covariance overlap
+// matrix to compute via the Master object.
+
+class Master
+{
+public:
+  Master(const uint nr) :
+    toprow(0),
+    maxrows(nr),
+    verbose(false),
+    start_time(time(0))
+  {
+  }
+
+  Master(const uint nr, const bool b) :
+    toprow(0),
+    maxrows(nr),
+    verbose(b)
+  {
+  }
+  
+
+  void setVerbose(const bool b) 
+  {
+    verbose = b;
+  }
+  
+  
+  // Checks whether there are any columns left to work on
+  // and places the column index into the passed pointer.
+
+  bool workAvailable(uint* ip) 
+  {
+
+    mtx.lock();
+    if (toprow >= maxrows) {
+      mtx.unlock();
+      return(false);
+    }
+    *ip = toprow++;
+
+    if (verbose) {
+      if (toprow % 100 == 0) {
+	time_t dt = time(0) - start_time;
+	cerr << '\t' << toprow << "\t( " << dt << " s)\n";
+      }
+    }
+    
+    mtx.unlock();
+    return(true);
+  }
+  
+
+private:
+  uint toprow, maxrows;
+  bool verbose;
+  time_t start_time;
+  boost::mutex mtx;
+};
+
+
+
+/*
+  Worker thread processes a column of the all-to-all matrix.  Gets which
+  column to work on from the associated Master object.
+
+  Will store pointers to the vector of matrices representing eigenpairs
+*/
+
+class Worker 
+{
+public:
+  Worker(DoubleMatrix* over, VDMat* vals, VDMat* vecs, Master* pmaster) : O(over), eigvals(vals), eigvecs(vecs), master(pmaster)
+  {
+  }
+
+  Worker(const Worker& w) 
+  {
+    O = w.O;
+    eigvals = w.eigvals;
+    eigvecs = w.eigvecs;
+    master = w.master;
+  }
+  
+
+  void calc(const uint i) 
+  {
+    for (uint j=0; j<i; ++j) {
+      double d = covarianceOverlap((*eigvals)[i], (*eigvecs)[i], (*eigvals)[j], (*eigvecs)[j]);
+      (*O)(j, i) = (*O)(i, j) = d;
+    }
+    
+  }
+
+  void operator()() 
+  {
+    uint i;
+    
+    while (master->workAvailable(&i))
+      calc(i);
+  }
+  
+
+private:
+  DoubleMatrix* O;
+  VDMat* eigvals;
+  VDMat* eigvecs;
+  Master* master;
+};
+
+
+
+
+// Top level object/interface.  Will create np Worker threads, cloned from the
+// one passed into the constructor.
+
+template<class W>
+class Threader 
+{
+public:
+  Threader(W* wrkr, const uint np) :
+    worker(wrkr),
+    threads(vector<Bthread>(np))
+  {
+
+    for (uint i=0; i<np; ++i) {
+      Worker w(*worker);
+      threads[i] = new boost::thread(w);
+    }
+    
+  }
+
+
+  void join() 
+  {
+    for (uint i=0; i<threads.size(); ++i)
+      threads[i]->join();
+  }
+  
+
+  ~Threader() 
+  {
+    for (uint i=0; i<threads.size(); ++i)
+      delete threads[i];
+  }
+
+  W* worker;
+  vector<Bthread> threads;
+};
+
+
+// ---------------------------------------------------------
+  
+
+
+// Analyze ANM results using covariance overlap
+// Can use a partial-coverlap (i.e. subset of modes)
+
+struct CoverlapAnalyze : public Analyzer 
+{
+  CoverlapAnalyze(const bool v, const uint n, const uint nmodes, const uint nframes) :
+    _verbosity(v),
+    _nprocs(n),
+    _nmodes(nmodes),
+    _dom_eigvals(DoubleMatrix(nframes, 3))
+  {
+  }
+  
+
+  void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
+  {
+
+    uint idx = _eigvals.size();
+    _dom_eigvals(idx, 0) = t;
+    _dom_eigvals(idx, 1) = eigvals[6];
+    _dom_eigvals(idx, 2) = eigvals[7];
+
+    DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, _nmodes+6), loos::Math::Range(0, eigvals.cols()));
+    for (ulong i=0; i<e.rows(); ++i)
+      e[i] = 1.0 / e[i];
+    _eigvals.push_back(e);
+    
+    e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, _nmodes + 6));
+    _eigvecs.push_back(e);
+  }
+  
+
+  
+
+
+  void analyze(const string& prefix, const string& header) 
+  {
+    DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
+
+    writeAsciiMatrix(prefix + "_s.asc", _dom_eigvals, header);
+
+    if (_verbosity)
+      cerr << boost::format("Computing coverlaps for %d frames using %d threads.\n")
+	% _eigvecs.size() % _nprocs;
+    
+    Master master(O.rows(), _verbosity);
+    Worker worker(&O, &_eigvals, &_eigvecs, &master);
+    Threader<Worker> threads(&worker, _nprocs);
+    
+    threads.join();
+
+    for (uint i=0; i<_eigvecs.size(); ++i)
+      O(i, i) = 1.0;
+
+    if (_verbosity)
+      cerr << "Done!\n";
+
+    writeAsciiMatrix(prefix + "_O.asc", O, header);
+  }
+
+    
+  bool _verbosity;
+  uint _nprocs;
+  uint _nmodes;
+  DoubleMatrix _dom_eigvals;
+
+  vector<DoubleMatrix> _eigvals;
+  vector<DoubleMatrix> _eigvecs;
 };
 
 
@@ -224,17 +554,6 @@ loos::Math::Matrix<int> buildConnectivity(const AtomicGroup& model) {
   
   return(M);
 }
-
-
-DoubleMatrix dotProduct(const DoubleMatrix& A) 
-{
-  DoubleMatrix D = MMMultiply(A, A, true, false);
-  for (ulong i=0; i<D.size(); ++i)
-    D[i] = abs(D[i]);
-
-  return(D);
-}
-
 
 
 
@@ -292,20 +611,31 @@ int main(int argc, char *argv[]) {
   }
 
 
+  // Setup the ANM calculation object
   FastANM anm(blocker);
-  anm.debugging(debug);
   anm.prefix(prefix);
   anm.meta(header);
   anm.verbosity(verbosity);
 
+
+  // Now configure the analyzer
+    
+  uint t = tropts->skip;
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
-  DoubleMatrix singvals(nframes, 3);
-  DoubleMatrix singvecs(natoms*3, nframes);
 
-  uint t = tropts->skip;
-  uint k = 0;
+  Analyzer* analyzer;
+  if (topts->coverlap) {
+    uint nmodes = 3 * natoms - 6;
+    if (topts->partial != 0.0)
+      nmodes *= topts->partial;
+    cerr << boost::format("Using %d modes in coverlap\n") % nmodes;
+    analyzer = new CoverlapAnalyze(verbosity, topts->nthreads, nmodes, nframes);
+  } else
+    analyzer = new DotAnalyze(natoms, nframes);
 
+
+  // Setup progress counter
   PercentProgressWithTime watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(nframes - tropts->skip));
   slayer.attach(&watcher);
@@ -314,38 +644,21 @@ int main(int argc, char *argv[]) {
 
 
   while (traj->readFrame()) {
-
     traj->updateGroupCoords(subset);
     anm.solve();
-
-    DoubleMatrix s = anm.eigenvalues();
-    singvals(k, 0) = t++;
-    singvals(k, 1) = s[6];
-    singvals(k, 2) = s[7];
-    
-    DoubleMatrix U = anm.eigenvectors();
-    for (uint i=0; i<natoms*3; ++i)
-      singvecs(i, k) = U(i, 6);
+    analyzer->accumulate(t, anm.eigenvalues(), anm.eigenvectors());
 
     if (verbosity)
       slayer.update();
-    
-    ++k;
   }
-
-  writeAsciiMatrix(prefix + "_s.asc", singvals, header);
-  if (topts->vectors)
-    writeAsciiMatrix(prefix + "_U.asc", singvecs, header);
-
-  DoubleMatrix D = dotProduct(singvecs);
-  writeAsciiMatrix(prefix + "_D.asc", D, header);
 
   if (verbosity)
     slayer.finish();
+
+  analyzer->analyze(prefix, header);
 
   for (vector<SuperBlock*>::iterator i = blocks.begin(); i != blocks.end(); ++i)
     delete *i;
   for (vector<SpringFunction*>::iterator i = springs.begin(); i != springs.end(); ++i)
     delete *i;
-  
 }

@@ -33,6 +33,8 @@
 #include <StreamWrapper.hpp>
 #include <AtomicGroup.hpp>
 
+#include <AtomicGroup.hpp>
+
 namespace loos {
 
 

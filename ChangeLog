@@ -1,18 +1,24 @@
 2013-10-18    <alan@membrane.urmc.rochester.edu>
 	* Added new tool membrane_map, which computes the 2D distribution of
 	a variety of physical properties around a membrane protein
+	* Fixed bug in svd tool where basic options (such as -v1) would
+	fail with an options error.
+
+2013-10-17    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed Matrix operator[] to only check for out of bounds index
+	when debugging (i.e. -DDEBUG)
 
 2013-10-15    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added BasicSplitBy option to the options framework.  Use the
 	BasicSplitBy::split() member function to split an AtomicGroup
 	based on a user-specified method.
-
 2013-10-11    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added Math::eigenDecomp() that calculates the eigenpairs for
 	the passed DoubleMatrix (using DSYEV).
-	* Added gnm-traj and anm-traj tools for analyzing trajectories
+	* Added gnm-traj and anmo-traj tools for analyzing trajectories
 	using elastic network models.
 
 2013-10-08    <tromo@hill.urmc-sh.rochester.edu>

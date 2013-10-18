@@ -73,14 +73,18 @@ namespace loos {
 
 
       T& operator[](const ulong i) {
+#if defined(DEBUG)
         if (i >= dim_)
           throw(std::out_of_range("Matrix index out of range"));
+#endif
         return(dptr[i]);
       }
 
       const T& operator[](const ulong i) const {
+#if defined(DEBUG)
         if (i >= dim_)
           throw(std::out_of_range("Matrix index out of range"));
+#endif
         return(dptr[i]);
       }
 
