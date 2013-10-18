@@ -189,20 +189,21 @@ Matrix singleTrajectory(ToolOptions* topts) {
   }
 
   AtomicGroup duplicate = subset.copy();
-  for (uint j=1; j<indices.size(); ++j)
+  for (uint j=1; j<indices.size(); ++j) {
+    traj->readFrame(indices[j]);
+    traj->updateGroupCoords(subset);
+
     for (uint i=0; i<j; ++i) {
 
       if (verbosity > 0)
         slayer.update();
 
-      traj->readFrame(indices[j]);
-      traj->updateGroupCoords(subset);
 
       traj->readFrame(indices[i]);
       traj->updateGroupCoords(duplicate);
 
-      subset.alignOnto(duplicate);
-      double r = subset.rmsd(duplicate);
+      duplicate.alignOnto(subset);
+      double r = duplicate.rmsd(subset);
       
       M(j, i) = r;
       M(i, j) = r;
@@ -211,6 +212,8 @@ Matrix singleTrajectory(ToolOptions* topts) {
         max_rmsd = r;
       mean_rmsd += r;
     }
+  }
+  
 
   if (verbosity > 0)
     slayer.finish();
