@@ -55,14 +55,11 @@ list.append(vsa)
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
-anm_traj = clone.Program('anm-traj.cpp')
-list.append(anm_traj)
-
 anmo_traj = clone.Program('anmo-traj.cpp', LIBS=[clone['LIBS'], 'boost_thread'])
 list.append(anmo_traj)
 
 # Update to include the above apps
-apps = apps + ' vsa anm anm_traj anmo_traj'
+apps = apps + ' vsa anm anmo_traj'
 
 
 
