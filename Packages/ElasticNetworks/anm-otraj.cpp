@@ -162,7 +162,8 @@ public:
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
       ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product")
-      ("threads", po::value<uint>(&nthreads)->default_value(2), "Number of threads to use for covariance overlap calculation");
+      ("threads", po::value<uint>(&nthreads)->default_value(2), "Number of threads to use for covariance overlap calculation")
+      ("partial", po::value<double>(&partial)->default_value(0.0), "Fraction of modes to use in coverlap (0 = all)");
     
     
     
@@ -170,12 +171,13 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("debug=%d, spring='%s', bound='%s', coverlap=%d, nthreads=%d") % debug % spring_desc % bound_spring_desc % coverlap % nthreads;
+    oss << boost::format("debug=%d, spring='%s', bound='%s', coverlap=%d, nthreads=%d, partial=%f") % debug % spring_desc % bound_spring_desc % coverlap % nthreads % partial;
     return(oss.str());
   }
 
   bool coverlap;
   uint nthreads;
+  double partial;
 };
 
 
@@ -399,7 +401,11 @@ public:
 
 struct CoverlapAnalyze : public Analyzer 
 {
-  CoverlapAnalyze(const bool v, const uint n, const uint nframes) : _verbosity(v), _nprocs(n), _dom_eigvals(DoubleMatrix(nframes, 3))
+  CoverlapAnalyze(const bool v, const uint n, const uint nmodes, const uint nframes) :
+    _verbosity(v),
+    _nprocs(n),
+    _nmodes(nmodes),
+    _dom_eigvals(DoubleMatrix(nframes, 3))
   {
   }
   
@@ -407,17 +413,17 @@ struct CoverlapAnalyze : public Analyzer
   void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
   {
 
-    DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, eigvals.rows()), loos::Math::Range(0, eigvals.cols()));
     uint idx = _eigvals.size();
     _dom_eigvals(idx, 0) = t;
     _dom_eigvals(idx, 1) = eigvals[6];
     _dom_eigvals(idx, 2) = eigvals[7];
 
+    DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, _nmodes+6), loos::Math::Range(0, eigvals.cols()));
     for (ulong i=0; i<e.rows(); ++i)
       e[i] = 1.0 / e[i];
     _eigvals.push_back(e);
     
-    e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, eigvecs.cols()));
+    e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, _nmodes + 6));
     _eigvecs.push_back(e);
   }
   
@@ -452,10 +458,11 @@ struct CoverlapAnalyze : public Analyzer
     
   bool _verbosity;
   uint _nprocs;
+  uint _nmodes;
+  DoubleMatrix _dom_eigvals;
+
   vector<DoubleMatrix> _eigvals;
   vector<DoubleMatrix> _eigvecs;
-  DoubleMatrix _dom_eigvals;
-  
 };
 
 
@@ -546,9 +553,13 @@ int main(int argc, char *argv[]) {
   uint natoms = subset.size();
 
   Analyzer* analyzer;
-  if (topts->coverlap)
-    analyzer = new CoverlapAnalyze(verbosity, topts->nthreads, nframes);
-  else
+  if (topts->coverlap) {
+    uint nmodes = 3 * natoms - 6;
+    if (topts->partial != 0.0)
+      nmodes *= topts->partial;
+    cerr << boost::format("Using %d modes in coverlap\n") % nmodes;
+    analyzer = new CoverlapAnalyze(verbosity, topts->nthreads, nmodes, nframes);
+  } else
     analyzer = new DotAnalyze(natoms, nframes);
     
   uint t = tropts->skip;
