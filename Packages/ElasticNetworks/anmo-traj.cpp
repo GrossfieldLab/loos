@@ -325,7 +325,8 @@ public:
   Master(const uint nr, const bool b) :
     toprow(0),
     maxrows(nr),
-    verbose(b)
+    verbose(b),
+    start_time(time(0))
   {
   }
   
@@ -351,13 +352,17 @@ public:
 
     if (verbose) {
       if (toprow % 100 == 0) {
-	time_t dt = time(0) - start_time;
-	cerr << '\t' << toprow << "\t( " << dt << " s)\n";
+	cerr << '\t' << toprow << "\t( " << elapsedTime() << " s)\n";
       }
     }
     
     mtx.unlock();
     return(true);
+  }
+
+  time_t elapsedTime() const 
+  {
+    return (time(0) - start_time);
   }
   
 
@@ -517,8 +522,11 @@ struct CoverlapAnalyze : public Analyzer
     for (uint i=0; i<_eigvecs.size(); ++i)
       O(i, i) = 1.0;
 
-    if (_verbosity)
+    if (_verbosity) {
       cerr << "Done!\n";
+      cerr << "Time to calculate coverlap matrix was " << master.elapsedTime() << " seconds\n";
+    }
+    
 
     writeAsciiMatrix(prefix + "_O.asc", O, header);
   }
