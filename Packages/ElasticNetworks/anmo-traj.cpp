@@ -1,5 +1,5 @@
 /*
-  anm-traj
+  anmo-traj
 
   (c) 2008,2013 Tod D. Romo, Grossfield Lab
       Department of Biochemistry
@@ -59,7 +59,6 @@ namespace po = loos::OptionsFramework::po;
 string prefix;
 
 int verbosity;
-bool debug;
 
 string spring_desc;
 string bound_spring_desc;
@@ -67,6 +66,7 @@ string bound_spring_desc;
 string fullHelpMessage() {
 
   string s = 
+    "***CAUTION***OUT*OF*DATE***\n"
     "\n"                                                                                    
     "SYNOPSIS\n"                                                                      
     "\n"
@@ -158,7 +158,6 @@ public:
   
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring")
       ("coverlap", po::value<bool>(&coverlap)->default_value(false), "Use covariance overlap rather than dot-product")
@@ -171,7 +170,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("debug=%d, spring='%s', bound='%s', coverlap=%d, nthreads=%d, partial=%f") % debug % spring_desc % bound_spring_desc % coverlap % nthreads % partial;
+    oss << boost::format("spring='%s',bound='%s',coverlap=%d,nthreads=%d,partial=%f") % spring_desc % bound_spring_desc % coverlap % nthreads % partial;
     return(oss.str());
   }
 
@@ -190,8 +189,6 @@ public:
     if (verbosity_ > 2)
       std::cerr << "Building hessian...\n";
     buildHessian();
-    if (debugging_)
-      loos::writeAsciiMatrix(prefix_ + "_H.asc", hessian_, meta_, false);
 
     loos::Timer<> t;
     if (verbosity_ > 1)
@@ -567,7 +564,6 @@ int main(int argc, char *argv[]) {
 
 
   FastANM anm(blocker);
-  anm.debugging(debug);
   anm.prefix(prefix);
   anm.meta(header);
   anm.verbosity(verbosity);
