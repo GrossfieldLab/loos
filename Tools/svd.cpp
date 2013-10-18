@@ -286,13 +286,12 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 int main(int argc, char *argv[]) {
   header = invocationHeader(argc, argv);
   opts::BasicOptions* bhopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicOptions* bopts = new opts::BasicOptions;
   opts::OutputPrefix* popts = new opts::OutputPrefix;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bhopts).add(bopts).add(popts).add(tropts).add(topts);
+  options.add(bhopts).add(popts).add(tropts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
