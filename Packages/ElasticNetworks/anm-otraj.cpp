@@ -399,14 +399,20 @@ public:
 
 struct CoverlapAnalyze : public Analyzer 
 {
-  CoverlapAnalyze(const bool v, const uint n) : _verbosity(v), _nprocs(n)
+  CoverlapAnalyze(const bool v, const uint n, const uint nframes) : _verbosity(v), _nprocs(n), _dom_eigvals(DoubleMatrix(nframes, 3))
   {
   }
   
 
   void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
   {
+
     DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, eigvals.rows()), loos::Math::Range(0, eigvals.cols()));
+    uint idx = _eigvals.size();
+    _dom_eigvals(idx, 0) = t;
+    _dom_eigvals(idx, 1) = eigvals[6];
+    _dom_eigvals(idx, 2) = eigvals[7];
+
     for (ulong i=0; i<e.rows(); ++i)
       e[i] = 1.0 / e[i];
     _eigvals.push_back(e);
@@ -422,6 +428,8 @@ struct CoverlapAnalyze : public Analyzer
   void analyze(const string& prefix, const string& header) 
   {
     DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
+
+    writeAsciiMatrix(prefix + "_s.asc", _dom_eigvals, header);
 
     if (_verbosity)
       cerr << "Computing coverlap matrix using " << _nprocs << " threads.\n";
@@ -446,6 +454,7 @@ struct CoverlapAnalyze : public Analyzer
   uint _nprocs;
   vector<DoubleMatrix> _eigvals;
   vector<DoubleMatrix> _eigvecs;
+  DoubleMatrix _dom_eigvals;
   
 };
 
@@ -538,7 +547,7 @@ int main(int argc, char *argv[]) {
 
   Analyzer* analyzer;
   if (topts->coverlap)
-    analyzer = new CoverlapAnalyze(verbosity, topts->nthreads);
+    analyzer = new CoverlapAnalyze(verbosity, topts->nthreads, nframes);
   else
     analyzer = new DotAnalyze(natoms, nframes);
     
