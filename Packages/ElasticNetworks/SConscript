@@ -55,6 +55,7 @@ list.append(vsa)
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
+# Special handling to include boost threads
 anmo_traj = clone.Program('anmo-traj.cpp', LIBS=[clone['LIBS'], 'boost_thread'])
 list.append(anmo_traj)
 
