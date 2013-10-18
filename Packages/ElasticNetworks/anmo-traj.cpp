@@ -180,6 +180,15 @@ public:
 };
 
 
+
+/*
+ A local "fast" version of ANM.  The standard ANM
+ uses the SVD to diagonalize the Hessian matrix.  This
+ is slow and computes RSV's, which are not necessary here.
+ So, we use LOOS' eigenDecomp() function (that uses
+ DSYEV for the diagonalizaiton)
+*/
+
 class FastANM : public ElasticNetworkModel {
 public:
   FastANM(SuperBlock* b) : ElasticNetworkModel(b) { prefix_ = "anm"; }
@@ -210,6 +219,13 @@ private:
 };
 
 
+
+/*
+  This tool can use either dot products or covariance overlaps to
+  analyze the fluctuation space for each ANM.  The Analyzer class
+  provides the interface to abstract which method is used.
+*/
+
 struct Analyzer 
 {
   Analyzer() : _k(0) 
@@ -222,12 +238,21 @@ struct Analyzer
   }
   
 
+  // Store a new set of eigenpairs, t is the corresponding timestep
   virtual void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) =0;
+
+  // Perform the analysis.  Prefix is the output matrix prefix and header is the associated metadata
   virtual void analyze(const string& prefix, const string& header) =0;
 
+  // Used by derived classes that need an index for the passed ANM
   uint _k;
 };
 
+
+
+
+// Only retain the dominant eigenvector for dot product, and the first two eigenvalues
+// Note: actually writes out the absolute value of the dot product
 
 struct DotAnalyze : public Analyzer 
 {
@@ -270,8 +295,21 @@ struct DotAnalyze : public Analyzer
 
 // ---------------------------------------------------------
 
+/*
+ For performance reasons, the covariance overlap code is multi-threaded
+ Initial testing suggests best performance is to NOT use the threaded
+ ATLAS and use only as many threads as physical cores.
+
+ As always, YMMV...
+*/
+
+
+
 typedef vector<DoubleMatrix> VDMat;
 
+
+// Worker threads coordinate on which column of the all-to-all covariance overlap
+// matrix to compute via the Master object.
 
 class Master
 {
@@ -298,9 +336,12 @@ public:
   }
   
   
+  // Checks whether there are any columns left to work on
+  // and places the column index into the passed pointer.
 
   bool workAvailable(uint* ip) 
   {
+
     mtx.lock();
     if (toprow >= maxrows) {
       mtx.unlock();
@@ -315,8 +356,6 @@ public:
       }
     }
     
-    
-
     mtx.unlock();
     return(true);
   }
@@ -330,6 +369,13 @@ private:
 };
 
 
+
+/*
+  Worker thread processes a column of the all-to-all matrix.  Gets which
+  column to work on from the associated Master object.
+
+  Will store pointers to the vector of matrices representing eigenpairs
+*/
 
 class Worker 
 {
@@ -375,7 +421,8 @@ private:
 
 
 
-
+// Top level object/interface.  Will create np Worker threads, cloned from the
+// one passed into the constructor.
 
 template<class W>
 class Threader 
@@ -416,7 +463,8 @@ public:
   
 
 
-
+// Analyze ANM results using covariance overlap
+// Can use a partial-coverlap (i.e. subset of modes)
 
 struct CoverlapAnalyze : public Analyzer 
 {
@@ -563,16 +611,19 @@ int main(int argc, char *argv[]) {
   }
 
 
+  // Setup the ANM calculation object
   FastANM anm(blocker);
   anm.prefix(prefix);
   anm.meta(header);
   anm.verbosity(verbosity);
 
+
+  // Now configure the analyzer
+    
+  uint t = tropts->skip;
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
 
-
-  // Config analyzer
   Analyzer* analyzer;
   if (topts->coverlap) {
     uint nmodes = 3 * natoms - 6;
@@ -582,9 +633,9 @@ int main(int argc, char *argv[]) {
     analyzer = new CoverlapAnalyze(verbosity, topts->nthreads, nmodes, nframes);
   } else
     analyzer = new DotAnalyze(natoms, nframes);
-    
-  uint t = tropts->skip;
 
+
+  // Setup progress counter
   PercentProgressWithTime watcher;
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(PercentTrigger(0.1), EstimatingCounter(nframes - tropts->skip));
   slayer.attach(&watcher);
@@ -593,14 +644,12 @@ int main(int argc, char *argv[]) {
 
 
   while (traj->readFrame()) {
-
     traj->updateGroupCoords(subset);
     anm.solve();
     analyzer->accumulate(t, anm.eigenvalues(), anm.eigenvectors());
 
     if (verbosity)
       slayer.update();
-    
   }
 
   if (verbosity)
@@ -612,5 +661,4 @@ int main(int argc, char *argv[]) {
     delete *i;
   for (vector<SpringFunction*>::iterator i = springs.begin(); i != springs.end(); ++i)
     delete *i;
-  
 }
