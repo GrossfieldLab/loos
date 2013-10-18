@@ -276,10 +276,37 @@ struct DotAnalyze : public Analyzer
 typedef vector<DoubleMatrix> VDMat;
 
 
-class Master 
+class Master
 {
 public:
-  virtual bool workAvailable(uint*) =0;
+  Master(const uint nr) :
+    toprow(0),
+    maxrows(nr)
+  {
+  }
+
+  
+
+  bool workAvailable(uint* ip) 
+  {
+    mtx.lock();
+    if (toprow >= maxrows) {
+      mtx.unlock();
+      return(false);
+    }
+    *ip = toprow++;
+
+    if (toprow % 100 == 0)
+      cerr << '\t' << toprow << endl;
+
+    mtx.unlock();
+    return(true);
+  }
+  
+
+private:
+  uint toprow, maxrows, maxprocs;
+  boost::mutex mtx;
 };
 
 
@@ -328,34 +355,6 @@ private:
 
 
 
-class ConcreteMaster  : public Master
-{
-public:
-  ConcreteMaster(const uint nr) :
-    toprow(0),
-    maxrows(nr)
-  {
-  }
-
-  
-
-  virtual bool workAvailable(uint* ip) 
-  {
-    mtx.lock();
-    if (toprow >= maxrows) {
-      mtx.unlock();
-      return(false);
-    }
-    *ip = toprow++;
-    mtx.unlock();
-    return(true);
-  }
-  
-
-private:
-  uint toprow, maxrows, maxprocs;
-  boost::mutex mtx;
-};
 
 
 template<class W>
@@ -438,9 +437,10 @@ struct CoverlapAnalyze : public Analyzer
     writeAsciiMatrix(prefix + "_s.asc", _dom_eigvals, header);
 
     if (_verbosity)
-      cerr << "Computing coverlap matrix using " << _nprocs << " threads.\n";
-
-    ConcreteMaster master(O.rows());
+      cerr << boost::format("Computing coverlaps for %d frames using %d threads.\n")
+	% _eigvecs.size() % _nprocs;
+    
+    Master master(O.rows());
     Worker worker(&O, &_eigvals, &_eigvecs, &master);
     Threader<Worker> threads(&worker, _nprocs);
     
