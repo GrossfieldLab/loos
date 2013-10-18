@@ -1,3 +1,7 @@
+2013-10-18    <alan@membrane.urmc.rochester.edu>
+	* Added new tool membrane_map, which computes the 2D distribution of
+	a variety of physical properties around a membrane protein
+
 2013-10-15    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added BasicSplitBy option to the options framework.  Use the

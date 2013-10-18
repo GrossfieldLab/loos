@@ -1124,6 +1124,12 @@ Matlab and Octave.
        producing a density distribution time series.  This is deprecated,
        since the functionality has been merged into density-dist.
 
+       <DT><B>membrane_map</B>
+       <DD>Compute the distribution of a variety of membrane properties 
+       about a membrane properties.  Properties currently implemented include
+       height, density, molecular order parameter, and average vector 
+       orientation.
+
        <DT><B>order_params</B>
        <DD>Compute the deuterium quadrupolar splitting order parameters for
        lipid molecules.  The model file must have connectivity information.
