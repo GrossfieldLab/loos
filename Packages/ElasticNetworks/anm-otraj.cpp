@@ -38,7 +38,7 @@
 typedef boost::thread* Bthread;
 
 #include <limits>
-
+#include <time.h>
 
 #include "hessian.hpp"
 #include "enm-lib.hpp"
@@ -281,10 +281,25 @@ class Master
 public:
   Master(const uint nr) :
     toprow(0),
-    maxrows(nr)
+    maxrows(nr),
+    verbose(false),
+    start_time(time(0))
   {
   }
 
+  Master(const uint nr, const bool b) :
+    toprow(0),
+    maxrows(nr),
+    verbose(b)
+  {
+  }
+  
+
+  void setVerbose(const bool b) 
+  {
+    verbose = b;
+  }
+  
   
 
   bool workAvailable(uint* ip) 
@@ -296,8 +311,14 @@ public:
     }
     *ip = toprow++;
 
-    if (toprow % 100 == 0)
-      cerr << '\t' << toprow << endl;
+    if (verbose) {
+      if (toprow % 100 == 0) {
+	time_t dt = time(0) - start_time;
+	cerr << '\t' << toprow << "\t( " << dt << " s)\n";
+      }
+    }
+    
+    
 
     mtx.unlock();
     return(true);
@@ -305,7 +326,9 @@ public:
   
 
 private:
-  uint toprow, maxrows, maxprocs;
+  uint toprow, maxrows;
+  bool verbose;
+  time_t start_time;
   boost::mutex mtx;
 };
 
@@ -440,7 +463,7 @@ struct CoverlapAnalyze : public Analyzer
       cerr << boost::format("Computing coverlaps for %d frames using %d threads.\n")
 	% _eigvecs.size() % _nprocs;
     
-    Master master(O.rows());
+    Master master(O.rows(), _verbosity);
     Worker worker(&O, &_eigvals, &_eigvecs, &master);
     Threader<Worker> threads(&worker, _nprocs);
     
@@ -552,6 +575,8 @@ int main(int argc, char *argv[]) {
   uint nframes = traj->nframes() - tropts->skip;
   uint natoms = subset.size();
 
+
+  // Config analyzer
   Analyzer* analyzer;
   if (topts->coverlap) {
     uint nmodes = 3 * natoms - 6;
