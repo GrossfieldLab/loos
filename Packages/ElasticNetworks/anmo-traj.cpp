@@ -326,7 +326,8 @@ public:
     toprow(0),
     maxrows(nr),
     verbose(b),
-    start_time(time(0))
+    start_time(time(0)),
+    total_elements(nr*(nr-1)/2)
   {
   }
   
@@ -352,7 +353,19 @@ public:
 
     if (verbose) {
       if (toprow % 100 == 0) {
-	cerr << '\t' << toprow << "\t( " << elapsedTime() << " s)\n";
+	time_t dt = elapsedTime();
+	uint n = (toprow - 2) * (toprow-1) / 2;
+	uint d = dt * total_elements / n - dt;
+
+	uint hrs = d / 3600;
+	uint remain = d % 3600;
+	uint mins = remain / 60;
+	uint secs = remain % 60;
+	
+	cerr << "Row = " << toprow << "\tElapsed = " << dt << " s\tEstimated Remain = ";
+	if (hrs)
+	  cerr << hrs << "h ";
+	cerr << mins << "m " << secs << "s\n";
       }
     }
     
@@ -370,6 +383,7 @@ private:
   uint toprow, maxrows;
   bool verbose;
   time_t start_time;
+  uint total_elements;
   boost::mutex mtx;
 };
 
