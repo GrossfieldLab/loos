@@ -652,7 +652,7 @@ int main(int argc, char *argv[]) {
   while (traj->readFrame()) {
     traj->updateGroupCoords(subset);
     anm.solve();
-    analyzer->accumulate(t, anm.eigenvalues(), anm.eigenvectors());
+    analyzer->accumulate(t++, anm.eigenvalues(), anm.eigenvectors());
 
     if (verbosity)
       slayer.update();
