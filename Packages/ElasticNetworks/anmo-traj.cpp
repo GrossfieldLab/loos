@@ -362,10 +362,10 @@ public:
 	uint mins = remain / 60;
 	uint secs = remain % 60;
 	
-	cerr << "Row = " << toprow << "\tElapsed = " << dt << " s\tEstimated Remain = ";
+	cerr << "Row = " << setw(8) << toprow << "\tElapsed = " << setw(10) << dt << " s\tEstimated Remain = ";
 	if (hrs)
-	  cerr << hrs << "h ";
-	cerr << mins << "m " << secs << "s\n";
+	  cerr << setw(3) << hrs << "h ";
+	cerr << setw(2) << mins << "m " << secs << "s\n";
       }
     }
     
