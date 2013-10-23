@@ -56,7 +56,13 @@ anm = clone.Program('anm.cpp')
 list.append(anm)
 
 # Special handling to include boost threads
-anmo_traj = clone.Program('anmo-traj.cpp', LIBS=[clone['LIBS'], 'boost_thread', 'boost_system'])
+if (env['platform'] == 'cygwin'):
+    thread_libs = 'boost_thread-mt boost_system-mt'
+else:
+    thread_libs = 'boost_thread boost_system'
+
+    
+anmo_traj = clone.Program('anmo-traj.cpp', LIBS=[clone['LIBS'], Split(thread_libs)])
 list.append(anmo_traj)
 
 # Update to include the above apps
