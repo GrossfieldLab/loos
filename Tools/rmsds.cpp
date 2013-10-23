@@ -102,6 +102,7 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
+      ("cache,C", po::value<bool>(&cache)->default_value(true), "Cache frames from the trajectory for speed")
       ("noout,N", po::value<bool>(&noop)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)")
       ("sel1", po::value<string>(&sel1)->default_value("name == 'CA'"), "Atom selection for first system")
       ("skip1", po::value<uint>(&skip1)->default_value(0), "Skip n-frames of first trajectory")
@@ -140,7 +141,8 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("noout=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
+    oss << boost::format("cached=%d,noout=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
+      % cache
       % noop
       % sel1
       % skip1
@@ -157,12 +159,101 @@ public:
   }
 
 
+  bool cache;
   bool noop;
   uint skip1, skip2;
   string range1, range2;
   string model1, traj1, model2, traj2;
   string sel1, sel2;
 };
+
+
+
+// This is the top-level interface for getting frames from the trajectory.
+// It allows the user to select whether the frames will be cached in memory
+// or always read from disk
+
+class TrajInterface 
+{
+public:
+  TrajInterface(const AtomicGroup& model, pTraj& traj) : _model(model.copy()), _traj(traj) 
+  {
+  }
+  
+
+  virtual ~TrajInterface() 
+  {
+  }
+  
+
+  virtual AtomicGroup getStructure(const uint i) =0;
+  virtual uint size() const =0;
+
+protected:
+  AtomicGroup _model;
+  pTraj _traj;
+};
+
+
+class CachedTraj : public TrajInterface 
+{
+public:
+  CachedTraj(const AtomicGroup& model, pTraj& traj, const vector<uint>& frames) :
+    TrajInterface(model, traj)
+  {
+    _model.clearBonds();    // Save a little space
+    readTrajectory(_ensemble, model, traj);
+  }
+
+  
+  // Each AtomicGroup in the vector is a copy, so we can get away with just
+  // returning the element itself
+  AtomicGroup getStructure(const uint i) 
+  {
+    return(_ensemble[i]);
+  }
+  
+  uint size() const 
+  {
+    return(_ensemble.size());
+  }
+  
+private:
+  vector<AtomicGroup> _ensemble;
+};
+
+
+
+class NonCachedTraj : public TrajInterface 
+{
+public:
+  NonCachedTraj(const AtomicGroup& model, pTraj& traj, const vector<uint>& frames) :
+    TrajInterface(model, traj),
+    _frames(frames)
+  {
+  }
+  
+
+  // Must return a copy here so that the atoms are not shared...
+  AtomicGroup getStructure(const uint i) 
+  {
+    AtomicGroup frame = _model.copy();
+    
+    _traj->readFrame(_frames[i]);
+    _traj->updateGroupCoords(frame);
+    return(frame);
+  }
+  
+  uint size() const 
+  {
+    return(_frames.size());
+  }
+  
+private:
+  vector<uint> _frames;
+};
+
+
 
 
 // @endcond TOOLS_INTERNAL
@@ -174,13 +265,20 @@ Matrix singleTrajectory(ToolOptions* topts) {
   AtomicGroup subset = selectAtoms(model, topts->sel1);
   vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
 
+  TrajInterface *traji;
+  if (topts->cache)
+    traji = new CachedTraj(subset, traj, indices);
+  else
+    traji = new NonCachedTraj(subset, traj, indices);
+  
+
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
 
-  Matrix M(indices.size(), indices.size());
+  Matrix M(traji->size(), traji->size());
   double mean_rmsd = 0;
   double max_rmsd = 0;
-  uint total = floor(indices.size()*indices.size()/2.0);
+  uint total = floor(traji->size()*traji->size()/2.0);
 
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
   if (verbosity > 0) {
@@ -189,9 +287,9 @@ Matrix singleTrajectory(ToolOptions* topts) {
   }
 
   AtomicGroup duplicate = subset.copy();
-  for (uint j=1; j<indices.size(); ++j) {
-    traj->readFrame(indices[j]);
-    traj->updateGroupCoords(subset);
+  for (uint j=1; j<traji->size(); ++j) {
+
+    AtomicGroup model_j = traji->getStructure(j);
 
     for (uint i=0; i<j; ++i) {
 
@@ -199,11 +297,10 @@ Matrix singleTrajectory(ToolOptions* topts) {
         slayer.update();
 
 
-      traj->readFrame(indices[i]);
-      traj->updateGroupCoords(duplicate);
+      AtomicGroup model_i = traji->getStructure(i);
 
-      duplicate.alignOnto(subset);
-      double r = duplicate.rmsd(subset);
+      model_i.alignOnto(model_j);
+      double r = model_j.rmsd(model_i);
       
       M(j, i) = r;
       M(i, j) = r;
@@ -220,6 +317,8 @@ Matrix singleTrajectory(ToolOptions* topts) {
 
   mean_rmsd /= total;
   cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max_rmsd % mean_rmsd;
+
+  delete traji;
 
   return(M);
 }
