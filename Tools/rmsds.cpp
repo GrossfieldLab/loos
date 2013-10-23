@@ -41,8 +41,9 @@ namespace po = loos::OptionsFramework::po;
 
 typedef RealMatrix              Matrix;
 
-
+#if defined(__linux__) || defined(__APPLE__)
 const int matrix_precision = 2;    // Controls precision in output matrix
+#endif
 
 int verbosity;
 
@@ -209,6 +210,7 @@ public:
   {
     _model.clearBonds();    // Save a little space
 
+#if defined(__linux__) || defined(__APPLE__)
     // Estimate spaced consumed by cache and warn if it's large (and potentially swapping)
     long ms = estimateModelSize(_model);
     long ts = estimateEnsembleSize(frames.size());
@@ -223,10 +225,14 @@ public:
 
       cerr << "If your machine starts swapping, try using the --cache=0 option on the command line\n";
     }
+#endif
     
     readTrajectory(_ensemble, model, traj);
     
   }
+
+
+#if defined(__linux__) || defined(__APPLE__)
 
   // Should consider using _SC_AVPHYS_PAGES instead?
   long availMemory() const
@@ -270,7 +276,7 @@ public:
     return(actual);
   }
   
-
+#endif
   
   // Each AtomicGroup in the vector is a copy, so we can get away with just
   // returning the element itself
