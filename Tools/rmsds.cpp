@@ -30,6 +30,7 @@
 
 
 #include <loos.hpp>
+#include <unistd.h>
 
 using namespace std;
 using namespace loos;
@@ -46,7 +47,10 @@ const int matrix_precision = 2;    // Controls precision in output matrix
 int verbosity;
 
 
-const uint cached_memory_warning_size = 3072;   // Warn if cache is larger than this (in megabytes)
+// If the estimated cache memory is more than this fraction of physical memory,
+// issue a warning to the user to consider turning off the cache
+const double cache_memory_fraction_warning = 0.66;
+
 
 
 // @cond TOOLS_INTERNAL
@@ -206,23 +210,38 @@ public:
     _model.clearBonds();    // Save a little space
 
     // Estimate spaced consumed by cache and warn if it's large (and potentially swapping)
-    uint ms = estimateModelSize(_model);
-    uint ts = estimateEnsembleSize(frames.size());
-    uint mb = (ms * ts) >> 20;
-    if (mb >= cached_memory_warning_size) {
-      cerr << "Warning- the estimated size of the trajectory cache is " << mb << " MB\n";
-      cerr << "         If your machine starts swapping, try using the --cache=0 option\n";
-      cerr << "         on the command line.\n";
+    long ms = estimateModelSize(_model);
+    long ts = estimateEnsembleSize(frames.size());
+    long mem = availMemory();
+    double used = static_cast<double>(ms * ts) / mem;
+    if (used >= cache_memory_fraction_warning) {
+      long mb = (ms * ts) >> 20;
+
+      cerr << boost::format("***WARNING***\nThe estimated trajectory cache size is %.1f%% of your memory (%d MB)\n")
+	% (used * 100.0)
+	% mb;
+
+      cerr << "If your machine starts swapping, try using the --cache=0 option on the command line\n";
     }
     
     readTrajectory(_ensemble, model, traj);
     
   }
 
-  // Manually count size of a model (including contained strings)
-  uint estimateModelSize(const AtomicGroup& model) 
+  // Should consider using _SC_AVPHYS_PAGES instead?
+  long availMemory() const
   {
-    uint s = sizeof(model);
+    long pagesize = sysconf(_SC_PAGESIZE);
+    long pages = sysconf(_SC_PHYS_PAGES);
+
+    return(pagesize * pages);
+  }
+  
+
+  // Manually count size of a model (including contained strings)
+  long estimateModelSize(const AtomicGroup& model) const
+  {
+    long s = sizeof(model);
     for (uint i=0; i<model.size(); ++i) {
       s += sizeof(Atom);
       s += model[i]->name().size();
@@ -241,9 +260,9 @@ public:
     
 
   // Assume vector capacity will always be a power of 2
-  uint estimateEnsembleSize(const uint n) 
+  long estimateEnsembleSize(const uint n) const
   {
-    uint actual = 2;
+    long actual = 2;
 
     while (actual < n)
       actual <<= 1;
