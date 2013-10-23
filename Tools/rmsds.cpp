@@ -46,6 +46,8 @@ const int matrix_precision = 2;    // Controls precision in output matrix
 int verbosity;
 
 
+const uint cached_memory_warning_size = 3072;   // Warn if cache is larger than this (in megabytes)
+
 
 // @cond TOOLS_INTERNAL
 
@@ -202,8 +204,53 @@ public:
     TrajInterface(model, traj)
   {
     _model.clearBonds();    // Save a little space
+
+    // Estimate spaced consumed by cache and warn if it's large (and potentially swapping)
+    uint ms = estimateModelSize(_model);
+    uint ts = estimateEnsembleSize(frames.size());
+    uint mb = (ms * ts) >> 20;
+    if (mb >= cached_memory_warning_size) {
+      cerr << "Warning- the estimated size of the trajectory cache is " << mb << " MB\n";
+      cerr << "         If your machine starts swapping, try using the --cache=0 option\n";
+      cerr << "         on the command line.\n";
+    }
+    
     readTrajectory(_ensemble, model, traj);
+    
   }
+
+  // Manually count size of a model (including contained strings)
+  uint estimateModelSize(const AtomicGroup& model) 
+  {
+    uint s = sizeof(model);
+    for (uint i=0; i<model.size(); ++i) {
+      s += sizeof(Atom);
+      s += model[i]->name().size();
+      s += model[i]->altLoc().size();
+      s += model[i]->chainId().size();
+      s += model[i]->resname().size();
+      s += model[i]->segid().size();
+      s += model[i]->iCode().size();
+      s += model[i]->PDBelement().size();
+      s += model[i]->recordName().size();
+      s += 8;
+    }
+    
+    return(s);
+    }
+    
+
+  // Assume vector capacity will always be a power of 2
+  uint estimateEnsembleSize(const uint n) 
+  {
+    uint actual = 2;
+
+    while (actual < n)
+      actual <<= 1;
+    
+    return(actual);
+  }
+  
 
   
   // Each AtomicGroup in the vector is a copy, so we can get away with just
