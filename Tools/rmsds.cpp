@@ -216,6 +216,7 @@ public:
     long ts = estimateEnsembleSize(frames.size());
     long mem = availMemory();
     double used = static_cast<double>(ms * ts) / mem;
+    
     if (used >= cache_memory_fraction_warning) {
       long mb = (ms * ts) >> 20;
 
