@@ -223,7 +223,7 @@ public:
     if (used >= cache_memory_fraction_warning) {
       long mb = (ms * ts) >> 20;
 
-      cerr << boost::format("***WARNING***\nThe estimated trajectory cache size is %.1f%% of your memory (%d MB)\n")
+      cerr << boost::format("***WARNING***\nThe estimated trajectory cache size is %.1f%% of your total memory (%d MB)\n")
 	% (used * 100.0)
 	% mb;
 
