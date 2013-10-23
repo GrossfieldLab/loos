@@ -193,7 +193,10 @@ public:
   }
   
 
+  // Return the ith structure
   virtual AtomicGroup getStructure(const uint i) =0;
+
+  // Return the total number of structures
   virtual uint size() const =0;
 
 protected:
