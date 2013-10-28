@@ -73,14 +73,10 @@
 # BOOSTLIB='/usr/lib64'
 # BOOSTLIB='/usr/local/lib'
 
-### This is the name of the boost-regex library
-## Uncomment the following for Ubuntu
-# BOOSTREGEX='boost_regex-mt'
-
-
-### This is the name of the boost-program-options Library
-## Uncomment the following for Ubuntu
-# BOOSTPO='boost_program_options-mt'
+### Some BOOST installs will have a -mt suffix to the library names, while
+### others will have nothing.  Uncomment the following to add a suffix
+### when linking with BOOST
+# BOOSTSUFFIX='-mt'
 
 ### Edit the following to change which C++ compiler to use
 # CXX='/usr/local/gcc-4.3.2/bin/g++'

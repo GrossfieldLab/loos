@@ -62,8 +62,7 @@ clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', Pat
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
-clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex')
-clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options')
+clos.Add('BOOSTSUFFIX', 'Boost Library Name Suffix', '')
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
@@ -101,8 +100,7 @@ ATLAS = env['ATLAS']
 ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
-BOOSTREGEX = env['BOOSTREGEX']
-BOOSTPO = env['BOOSTPO']
+BOOSTSUFFIX = env['BOOSTSUFFIX']
 LIBXTRA = env['LIBXTRA']
 PREFIX = env['PREFIX']
 ALTPATH = env['ALTPATH']
@@ -182,7 +180,6 @@ env.Append(CPPPATH = ['#'])
 if BOOSTINC != '':
    env.Append(CPPFLAGS = ['-I' + BOOSTINC])
 env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
-env.Append(LIBS = [BOOSTREGEX, BOOSTPO])
 env.Append(LEXFLAGS=['-s'])
 
 LIBS_LINKED_TO = ''
@@ -234,12 +231,22 @@ elif platform == 'linux2':
 elif (platform == 'cygwin'):
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
    LIB_PATHS_TO = 'LAPACK'
+   if (BOOSTSUFFIX == ''):
+      BOOSTSUFFIX='-mt'
 
 if LIBS_OVERRIDE != '':
    LIBS_LINKED_TO = LIBS_OVERRIDE
 
 if LIBS_PATHS_OVERRIDE != '':
    LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
+
+
+# Handle boost after OS-specific options so suffix will be correct
+env.Append(LIBS = ['boost_regex' + BOOSTSUFFIX,
+                   'boost_program_options' + BOOSTSUFFIX,
+                   'boost_thread' + BOOSTSUFFIX,
+                   'boost_system' + BOOSTSUFFIX
+                   ])
 
 
 env.Append(LIBS = Split(LIBS_LINKED_TO))
