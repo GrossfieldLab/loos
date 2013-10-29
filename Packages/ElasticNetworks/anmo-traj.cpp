@@ -79,8 +79,7 @@ string fullHelpMessage() {
     "computed for each frame.\n"
     "\n"
     "The following output files are created (using the optional prefix):\n"
-    "\tanmo_traj_s.asc  - Smallest eigenvalue (magnitude of lowest frequency mode)\n"
-    "\t                  First column is timestep, second column is the magnitude.\n"
+    "\tanmo_traj_S.asc  - Matrix of eigenvalues (time along rows, eigenvalue along columns)\n"
     "\tanmo_traj_D.asc  - Matrix of dot products between corresponding eigenvectors (default)\n"
     "\tanmo_traj_O.asc  - Matrix of covariance overlaps (if requested).\n"
     "\n"
@@ -120,13 +119,13 @@ string fullHelpMessage() {
     "EXAMPLES\n\n"
     "anmo-traj --prefix b2ar b2ar.pdb b2ar.dcd\n"
     "\tCompute the ANM for all alpha-carbons in b2ar.  The output files are\n"
-    "\tb2ar_s.asc (eigenvalues) and b2ar_U.asc (eigenvectors).\n"
+    "\tb2ar_S.asc (eigenvalues) and b2ar_U.asc (eigenvectors).\n"
     "\n"
     "anmo-traj --selection 'resid >= 10 && resid <= 50 && name == \"CA\"' foo.pdb foo.dcd\n"
     "\tCompute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
     "\ti.e. construct contacts using only the CA's that are within 15 Angstroms\n"
     "\tThe model is in foo.pdb and the trajectory is stored in foo.dcd.  Output files\n"
-    "\tcreated are anm_traj_s.asc (eigenvalues) and anm_traj_U.asc (eigenvectors).\n"
+    "\tcreated are anm_traj_S.asc (eigenvalues) and anm_traj_U.asc (eigenvectors).\n"
     "\n"
     "anmo-traj -S=exponential,-1.3 foo.pdb foo.dcd\n"
     "\tCompute an ANM using an spring function where the magnitude of\n"
@@ -497,7 +496,7 @@ struct CoverlapAnalyze : public Analyzer
     _verbosity(v),
     _nprocs(n),
     _nmodes(nmodes),
-    _dom_eigvals(DoubleMatrix(nframes, 3))
+    _dom_eigvals(DoubleMatrix(nframes, nmodes))
   {
   }
   
@@ -506,9 +505,8 @@ struct CoverlapAnalyze : public Analyzer
   {
 
     uint idx = _eigvals.size();
-    _dom_eigvals(idx, 0) = t;
-    _dom_eigvals(idx, 1) = eigvals[6];
-    _dom_eigvals(idx, 2) = eigvals[7];
+    for (uint i=0; i<_nmodes; ++i)
+      _dom_eigvals(idx, i) = eigvals[6 + i];
 
     DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, _nmodes+6), loos::Math::Range(0, eigvals.cols()));
     for (ulong i=0; i<e.rows(); ++i)
@@ -527,7 +525,7 @@ struct CoverlapAnalyze : public Analyzer
   {
     DoubleMatrix O(_eigvecs.size(), _eigvecs.size());
 
-    writeAsciiMatrix(prefix + "_s.asc", _dom_eigvals, header);
+    writeAsciiMatrix(prefix + "_S.asc", _dom_eigvals, header);
 
     if (_verbosity)
       cerr << boost::format("Computing coverlaps for %d frames using %d threads.\n")
