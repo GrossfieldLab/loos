@@ -273,8 +273,8 @@ struct DotAnalyze : public Analyzer
   void accumulate(const uint t, const DoubleMatrix& eigvals, const DoubleMatrix& eigvecs) 
   {
     _eigvals(_k, 0) = t;
-    _eigvals(_k, 1) = eigvals[6];
-    _eigvals(_k, 2) = eigvals[7];
+    _eigvals(_k, 1) = 1.0 / eigvals[6];
+    _eigvals(_k, 2) = 1.0 / eigvals[7];
     
     for (uint i=0; i<_natoms*3; ++i)
       _eigvecs(i, _k) = eigvecs(i, 6);
