@@ -54,6 +54,8 @@ namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 
+const double very_small_value = 1e-10;
+
 // Globals...  Icky poo!
 
 string prefix;
@@ -493,6 +495,7 @@ public:
 struct CoverlapAnalyze : public Analyzer 
 {
   CoverlapAnalyze(const bool v, const uint n, const uint nmodes, const uint nframes) :
+    _warned(false),
     _verbosity(v),
     _nprocs(n),
     _nmodes(nmodes),
@@ -505,12 +508,20 @@ struct CoverlapAnalyze : public Analyzer
   {
 
     uint idx = _eigvals.size();
-    for (uint i=0; i<_nmodes; ++i)
-      _dom_eigvals(idx, i) = eigvals[6 + i];
+    DoubleMatrix e(_nmodes, 1);
+    
+    for (uint i=0; i<_nmodes; ++i) {
+      double d = eigvals[6 + i];
+      if (abs(d) <= very_small_value) {
+	if (!_warned) {
+	cerr << "\n***WARNING***\nThere are unexpected zeros in the eigenvalues.\n";
+	_warned = true;
+	}
+	e[i] = _dom_eigvals(idx, i) = 0.0;
+      } else
+	e[i] = _dom_eigvals(idx, i) = 1.0 / d;
+    }
 
-    DoubleMatrix e = submatrix(eigvals, loos::Math::Range(6, _nmodes+6), loos::Math::Range(0, eigvals.cols()));
-    for (ulong i=0; i<e.rows(); ++i)
-      e[i] = 1.0 / e[i];
     _eigvals.push_back(e);
     
     e = submatrix(eigvecs, loos::Math::Range(0, eigvecs.rows()), loos::Math::Range(6, _nmodes + 6));
@@ -549,7 +560,7 @@ struct CoverlapAnalyze : public Analyzer
     writeAsciiMatrix(prefix + "_O.asc", O, header);
   }
 
-    
+  bool _warned;
   bool _verbosity;
   uint _nprocs;
   uint _nmodes;
