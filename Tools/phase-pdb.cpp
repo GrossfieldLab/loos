@@ -49,6 +49,7 @@ string residue_name;
 string atom_name;
 
 bool bonds;
+bool chunkb;
 
 string matrix_name;
 
@@ -107,7 +108,8 @@ public:
       ("column,C", po::value< vector<uint> >(&columns), "Columns to use (default are first 3)")
       ("scales,S", po::value< vector<double> >(&scales), "Scale columns (default is 100,100,100)")
       ("chunk", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows")
-      ("bonds", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds");
+      ("bonds", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds")
+      ("chunkb", po::value<bool>(&chunkb)->default_value(false), "B-factor is set to chunk #");
   }
 
   bool postConditions(po::variables_map& vm) {
@@ -141,7 +143,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("segid='%s', atom='%s', residue='%s', rows='%s', chunk=%d, bonds=%d, columns=(%s), scales=(%f)")
+    oss << boost::format("segid='%s', atom='%s', residue='%s', rows='%s', chunk=%d, bonds=%d, columns=(%s), scales=(%f), chunkb=%d")
       % segid_fmt
       % atom_name
       % residue_name
@@ -150,7 +152,8 @@ public:
       % chunksize
       % bonds
       % vectorAsStringWithCommas<uint>(columns)
-      % vectorAsStringWithCommas<double>(scales);
+      % vectorAsStringWithCommas<double>(scales)
+      % chunkb;
 
     return(oss.str());
   }
@@ -215,7 +218,7 @@ int main(int argc, char *argv[]) {
 
     double b;
     if (chunksize)
-      b = (100.0 * (resid-1)) / chunksize;
+      b = chunkb ? chunk : (100.0 * (resid-1)) / chunksize;
     else
       b = 100.0 * atomid / rows.size();
 
