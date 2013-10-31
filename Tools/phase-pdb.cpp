@@ -49,7 +49,6 @@ string residue_name;
 string atom_name;
 
 bool bonds;
-bool chunkb;
 
 string matrix_name;
 
@@ -108,8 +107,8 @@ public:
       ("column,C", po::value< vector<uint> >(&columns), "Columns to use (default are first 3)")
       ("scales,S", po::value< vector<double> >(&scales), "Scale columns (default is 100,100,100)")
       ("chunk", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows")
-      ("bonds", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds")
-      ("chunkb", po::value<bool>(&chunkb)->default_value(false), "B-factor is set to chunk #");
+      ("bonds", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds");
+    
   }
 
   bool postConditions(po::variables_map& vm) {
@@ -143,7 +142,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("segid='%s', atom='%s', residue='%s', rows='%s', chunk=%d, bonds=%d, columns=(%s), scales=(%f), chunkb=%d")
+    oss << boost::format("segid='%s', atom='%s', residue='%s', rows='%s', chunk=%d, bonds=%d, columns=(%s), scales=(%f)")
       % segid_fmt
       % atom_name
       % residue_name
@@ -152,8 +151,7 @@ public:
       % chunksize
       % bonds
       % vectorAsStringWithCommas<uint>(columns)
-      % vectorAsStringWithCommas<double>(scales)
-      % chunkb;
+      % vectorAsStringWithCommas<double>(scales);
 
     return(oss.str());
   }
@@ -191,6 +189,7 @@ int main(int argc, char *argv[]) {
       rows.push_back(i);
 
   uint resid = 1;
+  uint total_chunks = rows.size() / chunksize;
   uint chunk = 1;
   AtomicGroup model;
 
@@ -217,12 +216,16 @@ int main(int argc, char *argv[]) {
     pa->segid(segstream.str());
 
     double b;
-    if (chunksize)
-      b = chunkb ? chunk : (100.0 * (resid-1)) / chunksize;
-    else
+    double q = 0.0;
+    
+    if (chunksize) {
+      b = (100.0 * (resid-1)) / chunksize;
+      q = static_cast<double>(chunk-1) / total_chunks;
+    } else
       b = 100.0 * atomid / rows.size();
 
     pa->bfactor(b);
+    pa->occupancy(q);
 
     model.append(pa);
   }
