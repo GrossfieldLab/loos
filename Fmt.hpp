@@ -19,7 +19,7 @@
 
 namespace loos {
 
-  class BoundFmt;
+  struct BoundFmt;
 
   //! Output formatter class, adapted from Stroustrup's book
   class Fmt {
