@@ -289,7 +289,9 @@ int main(int argc, char *argv[]) {
   cerr << "Finished!\n";
   
   reverseColumns(C);
+  cerr << "Writing LSVs...";
   writeAsciiMatrix(prefix + "_U.asc", C, hdr);
+  cerr << "done.\n";
 
   // D = sqrt(D);  Scale eigenvalues...
   for (uint j=0; j<W.rows(); ++j)
@@ -316,6 +318,9 @@ int main(int argc, char *argv[]) {
   C.reset();
   A.reset();
 
+  cerr << "Writing RSVs...";
   writeAsciiMatrix(prefix + "_V.asc", Vt, hdr, true);
+  cerr << "done.\n";
+  
 
 }
