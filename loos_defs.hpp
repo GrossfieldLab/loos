@@ -35,6 +35,7 @@
 #include <sys/types.h>
 
 
+
 #if defined(REQUIRES_UINT)
 typedef unsigned int     uint;
 #endif
@@ -67,7 +68,12 @@ typedef int f77int;
 
 #elif defined(__APPLE__)
 
+
+// MacOS 10.9 requires this to appear before Accelerate
+#include <boost/random.hpp>
+
 #include <Accelerate/Accelerate.h>
+
 
 typedef __CLPK_integer f77int;
 
@@ -80,8 +86,12 @@ typedef __CLPK_integer f77int;
 
 
 
+
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
+
+
+
 
 namespace loos {
 
