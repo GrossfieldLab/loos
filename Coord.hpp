@@ -83,7 +83,7 @@ namespace loos {
     enum { X=0, Y=1, Z=2, MAXCOORD } CoordIndex;
 
     //! The threshold for vector equality
-    static const double epsilon = 1e-16;
+    static const double epsilon;
 
   public:
 
@@ -496,6 +496,9 @@ namespace loos {
 
     T v[MAXCOORD+1];
   };
+
+  template<typename T>
+  const double Coord<T>::epsilon = 1e-15;
 
 }
 
