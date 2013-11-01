@@ -31,7 +31,7 @@
 
 #include <loos.hpp>
 #include <boost/format.hpp>
-#include <tr1/unordered_map>
+#include <boost/unordered_map.hpp>
 #include <boost/algorithm/string.hpp>
 #include <cmath>
 #include <sstream>
@@ -210,7 +210,7 @@ struct DihedralAtoms {
 // Mapping of residue names to the appropriate atoms for calculating
 // torsion angles...
 
-typedef std::tr1::unordered_map<string, DihedralAtoms> ResidueDihedralAtoms;
+typedef boost::unordered_map<string, DihedralAtoms> ResidueDihedralAtoms;
 
 ResidueDihedralAtoms Chi1Atoms;
 ResidueDihedralAtoms Chi2Atoms;
