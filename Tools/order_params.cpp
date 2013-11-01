@@ -493,7 +493,7 @@ for (unsigned int i=0; i<selections.size(); i++)
     AtomicGroup *s = &(selections[i]);
     AtomicGroup::Iterator iter(*s);
     pAtom p;
-    while (p = iter()) 
+    while ((p = iter())) 
         {
         vector<int> atom_ids = p->getBonds();
         AtomicGroup bonded = system.groupFromID(atom_ids);
@@ -581,7 +581,7 @@ while (traj->readFrame())
             
             AtomicGroup::Iterator iter(*hyds);
             pAtom h;
-            while (h = iter() )
+            while ( (h = iter()) )
                 {
                 GCoord v = carbon->coords() - h->coords();
                 double length = v.length();

@@ -43,7 +43,7 @@ namespace loos {
 #include <ext/hash_map>
   typedef __gnu_cxx::hash_map<int,int>   IMap;
 #else
-#include <boost/unordered_map>
+#include <boost/unordered_map.hpp>
   typedef boost::unordered_map<int,int>    IMap;
 #endif
 
