@@ -132,7 +132,8 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("source", po::value<bool>(&write_source_matrix)->default_value(write_source_matrix), "Write out source matrix");
+      ("source", po::value<bool>(&write_source_matrix)->default_value(write_source_matrix), "Write out source matrix")
+      ("rsv", po::value<uint>(&subset_rsv)->default_value(0), "Only write out n-columns or RSV (0 = all)");
   }
 
   string print() const {
@@ -142,6 +143,8 @@ public:
   }
 
   bool write_source_matrix;
+  uint subset_rsv;
+  
 };
 // @endcond
 
@@ -319,6 +322,11 @@ int main(int argc, char *argv[]) {
   A.reset();
 
   cerr << "Writing RSVs...";
+  if (topts->subset_rsv) {
+    RealMatrix Vts = submatrix(Vt, loos::Math::Range(0, Vt.rows()), loos::Math::Range(0, topts->subset_rsv));
+    Vt=Vts;
+  }
+  
   writeAsciiMatrix(prefix + "_V.asc", Vt, hdr, true);
   cerr << "done.\n";
   
