@@ -323,7 +323,7 @@ int main(int argc, char *argv[]) {
 
   cerr << "Writing RSVs...";
   if (topts->subset_rsv) {
-    RealMatrix Vts = submatrix(Vt, loos::Math::Range(0, Vt.rows()), loos::Math::Range(0, topts->subset_rsv));
+    RealMatrix Vts = submatrix(Vt, loos::Math::Range(0, topts->subset_rsv), loos::Math::Range(0, Vt.cols()));
     Vt=Vts;
   }
   
