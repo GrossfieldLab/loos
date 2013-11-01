@@ -43,9 +43,12 @@ namespace loos {
 #include <ext/hash_map>
   typedef __gnu_cxx::hash_map<int,int>   IMap;
 #else
-#include <tr1/unordered_map>
-  typedef std::tr1::unordered_map<int,int>    IMap;
+#include <boost/unordered_map>
+  typedef boost::unordered_map<int,int>    IMap;
 #endif
+
+
+  const double AtomicGroup::superposition_zero_singular_value  =  1e-10;
 
 
   AtomicGroup* AtomicGroup::clone(void) const {
