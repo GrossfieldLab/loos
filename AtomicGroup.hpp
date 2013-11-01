@@ -33,7 +33,7 @@
 #include <map>
 #include <algorithm>
 
-#include <tr1/unordered_set>
+#include <boost/unordered_set.hpp>
 
 
 #include <loos_defs.hpp>
