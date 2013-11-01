@@ -186,7 +186,7 @@ writeAsciiMatrix(cout, M, "Eigenvector matrix");
                                  const std::string& meta, const Math::Range& start,
                         const Math::Range& end, const bool trans = false, F fmt = F()) {
     std::ofstream ofs(fname.c_str());
-    if (ofs == 0)
+    if (!ofs.is_open())
       throw(std::runtime_error("Cannot open " + fname + " for writing."));
     MatrixWriteImpl<T,P,S,F>::write(ofs, M, meta, start, end, trans, fmt);
   }
@@ -197,7 +197,7 @@ writeAsciiMatrix(cout, M, "Eigenvector matrix");
                                  const std::string& meta, const Math::Range& start,
                         const Math::Range& end, const bool trans = false) {
     std::ofstream ofs(fname.c_str());
-    if (ofs == 0)
+    if (!ofs.is_open())
       throw(std::runtime_error("Cannot open " + fname + " for writing."));
     MatrixWriteImpl<T,P,S,internal::BasicMatrixFormatter<T> >::write(ofs, M, meta, start, end, trans);
   }
@@ -211,7 +211,7 @@ writeAsciiMatrix(cout, M, "Eigenvector matrix");
     Math::Range end(M.rows(), M.cols());
 
     std::ofstream ofs(fname.c_str());
-    if (ofs == 0)
+    if (!ofs.is_open())
       throw(std::runtime_error("Cannot open " + fname + " for writing."));
     MatrixWriteImpl<T,P,S,F>::write(ofs, M, meta, start, end, trans, fmt);
   }
@@ -231,7 +231,7 @@ writeAsciiMatrix(cout, M, "Eigenvector matrix");
     Math::Range end(M.rows(), M.cols());
 
     std::ofstream ofs(fname.c_str());
-    if (ofs == 0)
+    if (!ofs.is_open())
       throw(std::runtime_error("Cannot open " + fname + " for writing."));
     MatrixWriteImpl<T,P,S,internal::BasicMatrixFormatter<T> >::write(ofs, M, meta, start, end, trans);
   }
