@@ -196,6 +196,7 @@ if (has_netcdf):
 # Platform specific build options...
 if platform == 'darwin':
    env.Append(LINKFLAGS = ' -framework Accelerate')
+   env.Append(CCFLAGS = '--std=c++0x')
 elif platform == 'freebsd8':
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 elif platform == 'linux2':
