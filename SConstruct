@@ -32,27 +32,94 @@ import distutils.spawn
 # Note: This can be reset in custom.py
 default_lib_path = '/usr/lib64'
 
-linux_type = 'nonlinux'
-host_type = platform.system()
+
+def canonicalizeSystem():
+    linux_type = 'nonlinux'
+    host_type = platform.system()
 # Detect CYGWIN & canonicalize linux type, setting defaults...
-if (re.search("(?i)cygwin", host_type)):
-    host_type = 'Cygwin'
-elif (host_type == 'Linux'):
-   # Determine linux variant...
-   linux_type = platform.platform()
+    if (re.search("(?i)cygwin", host_type)):
+        host_type = 'Cygwin'
+    elif (host_type == 'Linux'):
+        # Determine linux variant...
+        linux_type = platform.platform()
+        
+        if (re.search("(?i)ubuntu", linux_type)):
+            linux_type = 'ubuntu'
+            default_lib_path = '/usr/lib'
+        elif (re.search("(?i)suse", linux_type)):
+            linux_type = 'suse'
+        elif (re.search("(?i)debian", linux_type)):
+            linux_type = 'debian'
+    return(host_type, linux_type)
 
-   if (re.search("(?i)ubuntu", linux_type)):
-       linux_type = 'ubuntu'
-       default_lib_path = '/usr/lib'
-   elif (re.search("(?i)suse", linux_type)):
-       linux_type = 'suse'
-   elif (re.search("(?i)debian", linux_type)):
-       linux_type = 'debian'
 
+
+def setupRevision(env):
+    # Divine the current revision...
+    revision = ''
+    if env['REVISION'] == '':
+        revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
+        revision = revision.rstrip("\n")
+    else:
+        revision = env['REVISION']
+        
+        revision = revision + " " + strftime("%y%m%d")
+
+    # Now, write this out to a cpp file that can be linked in...this avoids having
+    # to recompile everything when building on a new date.  We also rely on SCons
+    # using the MD5 checksum to detect changes in the file (even though it's always
+    # rewritten)
+    revfile = open('revision.cpp', 'w')
+    revfile.write('#include <string>\n')
+    revfile.write('std::string revision_label = "')
+    revfile.write(revision)
+    revfile.write('";\n')
+    revfile.close()
+
+
+def environOverride(env):
+    # Allow overrides from environment...
+    if os.environ.has_key('CXX'):
+        CXX = os.environ['CXX']
+        print "Changing default compiler to ", CXX
+        env['CXX'] = CXX
+        
+    if os.environ.has_key('CCFLAGS'):
+        CCFLAGS = os.environ['CCFLAGS']
+        print "Changing CCFLAGS to ", CCFLAGS
+        env['CCFLAGS'] = CCFLAGS
+
+
+### Builder for setup scripts
+
+# This copies the environment setup script while changing the directory
+# that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
+# is being built in a directory, the env script will be setup to use
+# the built-in-place distribution.  If LOOS is being installed, then
+# it will use the installation directory instead.
+
+def script_builder_python(target, source, env):
+   first = target[0]
+   target_path = first.get_abspath()
+   dir_path = os.path.dirname(target_path)
+
+   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
+#   print command
+   os.system(command)
+   return None
+
+
+
+# ----------------------------------------------------------------------------------
+
+
+(host_type, linux_type) = canonicalizeSystem()
 
 # This is the version-tag for LOOS output
 loos_version = '2.1.0'
 
+
+canonicalizeSystem()
 
 # Principal options...
 clos = Variables('custom.py')
@@ -124,24 +191,7 @@ if ALTPATH != '':
    buildenv['PATH'] = path
 
 
-### Builder for setup scripts
-
-# This copies the environment setup script while changing the directory
-# that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
-# is being built in a directory, the env script will be setup to use
-# the built-in-place distribution.  If LOOS is being installed, then
-# it will use the installation directory instead.
-
-def script_builder_python(target, source, env):
-   first = target[0]
-   target_path = first.get_abspath()
-   dir_path = os.path.dirname(target_path)
-
-   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
-#   print command
-   os.system(command)
-   return None
-
+# Setup script-builder
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
@@ -234,9 +284,6 @@ elif host_type == 'Linux':
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack f77blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
-   
-
-
 
 # CYGWIN does not have an atlas package, so use lapack/blas instead
 elif (host_type == 'Cygwin'):
@@ -293,37 +340,8 @@ if int(profile):
    env.Append(LINKFLAGS=profile_opts)
 
 
-# Allow overrides from environment...
-if os.environ.has_key('CXX'):
-   CXX = os.environ['CXX']
-   print "Changing default compiler to ", CXX
-   env['CXX'] = CXX
-
-if os.environ.has_key('CCFLAGS'):
-   CCFLAGS = os.environ['CCFLAGS']
-   print "Changing CCFLAGS to ", CCFLAGS
-   env['CCFLAGS'] = CCFLAGS
-
-# Divine the current revision...
-revision = ''
-if env['REVISION'] == '':
-   revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
-   revision = revision.rstrip("\n")
-else:
-   revision = env['REVISION']
-      
-revision = revision + " " + strftime("%y%m%d")
-
-# Now, write this out to a cpp file that can be linked in...this avoids having
-# to recompile everything when building on a new date.  We also rely on SCons
-# using the MD5 checksum to detect changes in the file (even though it's always
-# rewritten)
-revfile = open('revision.cpp', 'w')
-revfile.write('#include <string>\n')
-revfile.write('std::string revision_label = "')
-revfile.write(revision)
-revfile.write('";\n')
-revfile.close()
+environOverride(env)
+setupRevision(env)
 
 # Export for subsidiary SConscripts
 
