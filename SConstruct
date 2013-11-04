@@ -34,7 +34,10 @@ default_lib_path = '/usr/lib64'
 
 linux_type = 'nonlinux'
 host_type = platform.system()
-if host_type == 'Linux':
+# Detect CYGWIN
+if (re.search("CYGWIN", host_type)):
+    host_type = 'Cygwin'
+elif (host_type == 'Linux'):
    # Determine linux variant...
    linux_type = platform.platform()
 
