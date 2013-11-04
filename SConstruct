@@ -20,6 +20,7 @@
 
 import sys
 import os
+import platform
 import re
 from subprocess import *
 from time import strftime
@@ -32,11 +33,10 @@ import distutils.spawn
 default_lib_path = '/usr/lib64'
 
 linux_type = 'nonlinux'
-platform = sys.platform
-if platform == 'linux2':
+host_type = platform.system()
+if host_type == 'Linux':
    # Determine linux variant...
-   fv = open('/proc/version', 'r')
-   linux_type = fv.read()
+   linux_type = platform.platform()
 
    if (re.search("[Uu]buntu", linux_type)):
       default_lib_path = '/usr/lib'
@@ -91,7 +91,7 @@ env['REGENERATE'] = regenerate
 reparse = env['reparse']
 
 # export platform to environment...
-env['platform'] = platform
+env['host_type'] = host_type
 
 env['linux_type'] = linux_type
 
@@ -194,12 +194,16 @@ if (has_netcdf):
 
 
 # Platform specific build options...
-if platform == 'darwin':
-   env.Append(LINKFLAGS = ' -framework Accelerate')
-   env.Append(CCFLAGS = '--std=c++0x')
-elif platform == 'freebsd8':
+if host_type == 'Darwin':
+    release = platform.release().split('.')
+    if int(release[0]) >= 13:
+        env.Append(CCFLAGS = '--std=c++0x')
+    env.Append(LINKFLAGS = ' -framework Accelerate')
+
+elif host_type == 'Freebsd':
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-elif platform == 'linux2':
+
+elif host_type == 'Linux':
    noatlas = 0
 
    ### Note for OpenSUSE and Ubuntu...
@@ -229,7 +233,7 @@ elif platform == 'linux2':
 
 
 # CYGWIN does not have an atlas package, so use lapack/blas instead
-elif (platform == 'cygwin'):
+elif (host_type == 'Cygwin'):
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
    LIB_PATHS_TO = 'LAPACK'
    if (BOOSTSUFFIX == ''):
