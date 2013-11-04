@@ -11,12 +11,13 @@
 
 import sys
 import os
+import platform
 import re
+from subprocess import *
+from time import strftime
 import shutil
-
-# This can be reset in custom.py or here...
-
-default_lib_path = '/usr/lib64'
+import distutils.sysconfig
+import distutils.spawn
 
 ### Tell SCons where to find LOOS
 ### This assumes you have installed LOOS.  If you have not,
@@ -24,47 +25,98 @@ default_lib_path = '/usr/lib64'
 ### change the default path...
 default_path_to_loos = '/opt/loos'
 
+
+# Set default path depending on platform...
+# Note: This can be reset in custom.py
+default_lib_path = '/usr/lib64'
+
+linux_type = 'nonlinux'
+host_type = platform.system()
+# Detect CYGWIN & canonicalize linux type, setting defaults...
+if (re.search("(?i)cygwin", host_type)):
+    host_type = 'Cygwin'
+elif (host_type == 'Linux'):
+   # Determine linux variant...
+   linux_type = platform.platform()
+
+   if (re.search("(?i)ubuntu", linux_type)):
+       linux_type = 'ubuntu'
+       default_lib_path = '/usr/lib'
+   elif (re.search("(?i)suse", linux_type)):
+       linux_type = 'suse'
+   elif (re.search("(?i)debian", linux_type)):
+       linux_type = 'debian'
+
+
+# This is the version-tag for LOOS output
+loos_version = '2.1.0'
+
+
 # Principal options...
 clos = Variables('custom.py')
+clos.Add('regenerate', 'Set to 1 to regenerate test outputs', 0)
 clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
-clos.Add('release', 'Set to 1 to build with optimization on', 0)
-clos.Add('profile', 'Set to 1 to build with profiling on', 0)
-
+clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
+clos.Add('release', 'Set to 1 to configure for release.', 1)
+clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
+clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
+clos.Add('pyloos', 'Set to 1 to build the python interface to LOOS (requires SWIG).', 0)
 
 clos.Add(PathVariable('LOOS', 'Path to LOOS', default_path_to_loos, PathVariable.PathAccept))
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', default_lib_path, PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '/usr/include', PathVariable.PathAccept))
-clos.Add('BOOSTREGEX', 'Boost regex library name', 'boost_regex', PathVariable.PathAccept)
-clos.Add('BOOSTPO', 'Boost program options library name', 'boost_program_options', PathVariable.PathAccept)
+clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
+clos.Add('BOOSTSUFFIX', 'Boost Library Name Suffix', '')
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
+clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
+                    PathVariable.PathAccept))
+clos.Add(PathVariable('NETCDFINC', 'Path to netcdf include files', '', PathVariable.PathAccept))
+clos.Add(PathVariable('NETCDFLIB', 'Path to netcdf library files', '', PathVariable.PathAccept))
 clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
 clos.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
 clos.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
 clos.Add(PathVariable('LOOSINC', 'Directory for LOOS include files (relative to LOOS)', 'include', PathVariable.PathAccept))
 clos.Add(PathVariable('LOOSLIB', 'Directory for LOOS library files (relative to LOOS)', 'lib', PathVariable.PathAccept))
 
+
+# This is a developer setting...  Do not set unless you know what you
+# are doing...
+clos.Add('REVISION', 'Add build information', loos_version)
+
+
+
 env = Environment(options = clos)
 Help(clos.GenerateHelpText(env))
 
-platform = sys.platform
-env['platform'] = platform
+env.Decider('MD5-timestamp')
+
+# vestigial...
+regenerate = env['regenerate']
+env['REGENERATE'] = regenerate
+
+reparse = env['reparse']
+
+# export platform to environment...
+env['host_type'] = host_type
+env['linux_type'] = linux_type
 
 LAPACK = env['LAPACK']
 ATLAS = env['ATLAS']
 ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
-BOOSTREGEX = env['BOOSTREGEX']
-BOOSTPO = env['BOOSTPO']
-LOOS = env['LOOS']
+BOOSTSUFFIX = env['BOOSTSUFFIX']
 LIBXTRA = env['LIBXTRA']
+PREFIX = env['PREFIX']
 ALTPATH = env['ALTPATH']
 LIBS_OVERRIDE = env['LIBS_OVERRIDE']
 LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
+NETCDFINC = env['NETCDFINC']
+NETCDFLIB = env['NETCDFLIB']
+LOOS = env['LOOS']
 LOOSINC = env['LOOSINC']
 LOOSLIB = env['LOOSLIB']
 
@@ -72,6 +124,7 @@ LOOSLIB = env['LOOSLIB']
 # Fix include/lib locations...
 LOOSINC = LOOS + '/' + LOOSINC
 LOOSLIB = LOOS + '/' + LOOSLIB
+
 
 
 if ALTPATH != '':
@@ -82,14 +135,21 @@ if ALTPATH != '':
 
 
 ### Autoconf
-if not env.GetOption('clean'):
-   conf = Configure(env)
-   if not conf.CheckType('ulong','#include <sys/types.h>\n'):
-      conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
-   if not conf.CheckType('uint','#include <sys/types.h>\n'):
-      conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-   env = conf.Finish()
+conf = Configure(env)
+if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+   conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+if not conf.CheckType('uint','#include <sys/types.h>\n'):
+   conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+   has_netcdf = 1
+else:
+   has_netcdf = 0
+env = conf.Finish()
 
+if (NETCDFINC != '' or NETCDFLIB != ''):
+   has_netcdf = 1
+
+env['HAS_NETCDF'] = has_netcdf
 
 
 ### Compile-flags
@@ -110,22 +170,31 @@ env.Append(CPPPATH = ['#', LOOSINC])
 if BOOSTINC != '':
    env.Append(CPPFLAGS = ['-I' + BOOSTINC])
 env.Append(LIBPATH = ['#', LOOSLIB, BOOSTLIB, LIBXTRA])
-env.Append(LIBS = ['loos', BOOSTREGEX, BOOSTPO])
+env.Append(LIBS = ['loos'])
 env.Append(LEXFLAGS=['-s'])
 
+LIBS_LINKED_TO = ''
+LIBS_PATHS_TO = ''
+if (has_netcdf):
+   LIBS_LINKED_TO = LIBS_LINKED_TO + ' netcdf'
+   env.Append(CPPFLAGS = ['-DHAS_NETCDF'])
+   if (NETCDFINC != ''):
+      env.Append(CPPFLAGS = ['-I' + NETCDFINC])
+   if (NETCDFLIB != ''):
+      env.Append(LIBPATH = [NETCDFLIB])
+
+
 # Platform specific build options...
-if platform == 'darwin':
-   env.Append(LINKFLAGS = ' -framework vecLib')
-elif platform == 'linux2':
-   noatlas = 0
+if host_type == 'Darwin':
+    release = platform.release().split('.')
+    if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
+        env.Append(CCFLAGS = '--std=c++0x')
+    env.Append(LINKFLAGS = ' -framework Accelerate')
 
-   # Determine linux variant
-   fv = open('/proc/version', 'r')
-   f = fv.read()
-   
+elif host_type == 'Freebsd':
+   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
-   LIBS_LINKED_TO = 'atlas lapack'
-   LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
+elif host_type == 'Linux':
 
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
@@ -134,32 +203,49 @@ elif platform == 'linux2':
    ### for your OS below...
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-   if (re.search("[Ss][Uu][Ss][Ee]", f)):
-      LIBS_LINKED_TO = 'lapack blas'
-      LIBS_PATHS_TO = "LAPACK"
+   if (linux_type == 'suse'):
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
-      # Ubuntu MAY require gfortran...more recent builds seem not to
-   #elif (re.search("[Uu]buntu", f)):
-      # LIBS_LINKED_TO = 'lapack blas gfortran'
+   elif (linux_type == 'ubuntu'):
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
+      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
-      # Fedora & Similar
-   #else
+   elif (linux_type == 'debian'):
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack blas'
+      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
+   else:
+      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack f77blas'
+      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
-   if LIBS_OVERRIDE != '':
-      LIBS_LINKED_TO = LIBS_OVERRIDE
+   
 
-   if LIBS_PATHS_OVERRIDE != '':
-      LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
-
-   env.Append(LIBS = Split(LIBS_LINKED_TO))
-   env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 # CYGWIN does not have an atlas package, so use lapack/blas instead
-elif (platform == 'cygwin'):
-   env.Append(LIBS = ['lapack', 'blas'])
-   env.Append(LIBPATH = [LAPACK])
+elif (host_type == 'Cygwin'):
+   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
+   LIB_PATHS_TO = 'LAPACK'
+   if (BOOSTSUFFIX == ''):
+      BOOSTSUFFIX='-mt'
+
+if LIBS_OVERRIDE != '':
+   LIBS_LINKED_TO = LIBS_OVERRIDE
+
+if LIBS_PATHS_OVERRIDE != '':
+   LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
+
+
+# Handle boost after OS-specific options so suffix will be correct
+env.Append(LIBS = ['boost_regex' + BOOSTSUFFIX,
+                   'boost_program_options' + BOOSTSUFFIX,
+                   'boost_thread' + BOOSTSUFFIX,
+                   'boost_system' + BOOSTSUFFIX
+                   ])
+
+
+env.Append(LIBS = Split(LIBS_LINKED_TO))
+env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 
