@@ -1,3 +1,11 @@
+2013-11-04  Tod Romo  <tromo@ubuntu-mac-12>
+
+	* Added MacOS 10.9 (Mavericks) compatibility
+	* Added support for writing truncated SVD in big-svd
+	* Changed rmsds to optionally cache the trajectory for improved
+	performance
+	* Changed build scripts (refactoring and various improvements)
+
 2013-10-18    <alan@membrane.urmc.rochester.edu>
 	* Added new tool membrane_map, which computes the 2D distribution of
 	a variety of physical properties around a membrane protein
