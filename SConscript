@@ -92,7 +92,7 @@ env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
 
 
 # Python bindings
-if env['host_type'] == 'darwin':
+if env['host_type'] == 'Darwin':
    loos_python = env.LoadableModule('_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
 else:
    loos_python = env.SharedLibrary('_loos', ['loos.i', loos])
