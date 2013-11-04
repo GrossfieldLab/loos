@@ -34,15 +34,20 @@ default_lib_path = '/usr/lib64'
 
 linux_type = 'nonlinux'
 host_type = platform.system()
-# Detect CYGWIN
-if (re.search("CYGWIN", host_type)):
+# Detect CYGWIN & canonicalize linux type, setting defaults...
+if (re.search("(?i)cygwin", host_type)):
     host_type = 'Cygwin'
 elif (host_type == 'Linux'):
    # Determine linux variant...
    linux_type = platform.platform()
 
-   if (re.search("[Uu]buntu", linux_type)):
-      default_lib_path = '/usr/lib'
+   if (re.search("(?i)ubuntu", linux_type)):
+       linux_type = 'ubuntu'
+       default_lib_path = '/usr/lib'
+   elif (re.search("(?i)suse", linux_type)):
+       linux_type = 'suse'
+   elif (re.search("(?i)debian", linux_type)):
+       linux_type = 'debian'
 
 
 # This is the version-tag for LOOS output
@@ -95,7 +100,6 @@ reparse = env['reparse']
 
 # export platform to environment...
 env['host_type'] = host_type
-
 env['linux_type'] = linux_type
 
 LAPACK = env['LAPACK']
@@ -199,7 +203,7 @@ if (has_netcdf):
 # Platform specific build options...
 if host_type == 'Darwin':
     release = platform.release().split('.')
-    if int(release[0]) >= 13:
+    if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
         env.Append(CCFLAGS = '--std=c++0x')
     env.Append(LINKFLAGS = ' -framework Accelerate')
 
@@ -207,7 +211,6 @@ elif host_type == 'Freebsd':
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
 elif host_type == 'Linux':
-   noatlas = 0
 
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
@@ -216,14 +219,14 @@ elif host_type == 'Linux':
    ### for your OS below...
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-   if (re.search("[Ss][Uu][Ss][Ee]", linux_type)):
+   if (linux_type == 'suse'):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
-   elif (re.search("[Uu]buntu", linux_type)):
+   elif (linux_type == 'ubuntu'):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
-   elif (re.search("[Dd]ebian", linux_type)):
+   elif (linux_type == 'debian'):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
