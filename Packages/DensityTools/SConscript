@@ -30,7 +30,7 @@ clone = env.Clone()
 clone.Prepend(LIBS = [loos])
 
 # Disable warnings only for fedora...
-if (env['platform'] == 'linux2'):
+if (env['host_type'] == 'Linux'):
     if (re.search("Red Hat", env['linux_type'])):
         clone.Append(CPPFLAGS = [ '-Wno-uninitialized' ])
 

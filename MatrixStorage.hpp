@@ -38,7 +38,7 @@
 #if __GNUC__ == 4 && __GNUC_MINOR__ < 1
 #include <ext/hash_map>
 #else
-#include <tr1/unordered_map>
+#include <boost/unordered_map.hpp>
 #endif
 
 #include <loos_defs.hpp>
@@ -153,8 +153,8 @@ namespace loos {
       typedef typename __gnu_cxx::hash_map<ulong, T>::const_iterator const_iterator;
       typedef typename __gnu_cxx::hash_map<ulong, T>::iterator iterator;
 #else
-      typedef typename std::tr1::unordered_map<ulong, T>::const_iterator const_iterator;
-      typedef typename std::tr1::unordered_map<ulong, T>::iterator iterator;
+      typedef typename boost::unordered_map<ulong, T>::const_iterator const_iterator;
+      typedef typename boost::unordered_map<ulong, T>::iterator iterator;
 #endif
 
       SparseArray(const ulong n) : dim_(n) { }
@@ -183,7 +183,7 @@ namespace loos {
 #if __GNUC__ == 4 && __GNUC_MINOR__ < 1
         typename __gnu_cxx::hash_map<ulong, T>::const_iterator ci;
 #else
-        typename std::tr1::unordered_map<ulong, T>::const_iterator ci;
+        typename boost::unordered_map<ulong, T>::const_iterator ci;
 #endif
         
         ci = dmap.find(i);
@@ -237,7 +237,7 @@ namespace loos {
 #if __GNUC__ == 4 && __GNUC_MINOR__ < 1
       __gnu_cxx::hash_map<ulong, T> dmap;
 #else
-      std::tr1::unordered_map<ulong, T> dmap;
+      boost::unordered_map<ulong, T> dmap;
 #endif
 
 

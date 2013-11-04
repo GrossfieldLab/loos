@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <iterator>
 #include <algorithm>
 #include <string>

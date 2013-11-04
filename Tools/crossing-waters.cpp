@@ -239,7 +239,7 @@ while (traj->readFrame())
     // loop over water oxygens
     pAtom w;
     AtomicGroup::Iterator iter(water);
-    while (w=iter())
+    while ( (w=iter()) )
         {
         double z = w->coords().z();
         if (fabs(z) < inner_threshold)

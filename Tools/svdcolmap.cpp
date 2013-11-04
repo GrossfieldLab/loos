@@ -172,7 +172,7 @@ int main(int argc, char *argv[]) {
 
   pAtom pa;
   AtomicGroup::Iterator iter(model);
-  while (pa = iter())
+  while ( (pa = iter()) )
     pa->bfactor(0.0);
 
   double sval = S[topts->index];

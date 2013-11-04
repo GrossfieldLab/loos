@@ -20,6 +20,7 @@
 
 import sys
 import os
+import platform
 import re
 from subprocess import *
 from time import strftime
@@ -31,20 +32,94 @@ import distutils.spawn
 # Note: This can be reset in custom.py
 default_lib_path = '/usr/lib64'
 
-linux_type = 'nonlinux'
-platform = sys.platform
-if platform == 'linux2':
-   # Determine linux variant...
-   fv = open('/proc/version', 'r')
-   linux_type = fv.read()
 
-   if (re.search("[Uu]buntu", linux_type)):
-      default_lib_path = '/usr/lib'
+def canonicalizeSystem():
+    linux_type = 'nonlinux'
+    host_type = platform.system()
+# Detect CYGWIN & canonicalize linux type, setting defaults...
+    if (re.search("(?i)cygwin", host_type)):
+        host_type = 'Cygwin'
+    elif (host_type == 'Linux'):
+        # Determine linux variant...
+        linux_type = platform.platform()
+        
+        if (re.search("(?i)ubuntu", linux_type)):
+            linux_type = 'ubuntu'
+            default_lib_path = '/usr/lib'
+        elif (re.search("(?i)suse", linux_type)):
+            linux_type = 'suse'
+        elif (re.search("(?i)debian", linux_type)):
+            linux_type = 'debian'
+    return(host_type, linux_type)
 
+
+
+def setupRevision(env):
+    # Divine the current revision...
+    revision = ''
+    if env['REVISION'] == '':
+        revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
+        revision = revision.rstrip("\n")
+    else:
+        revision = env['REVISION']
+        
+        revision = revision + " " + strftime("%y%m%d")
+
+    # Now, write this out to a cpp file that can be linked in...this avoids having
+    # to recompile everything when building on a new date.  We also rely on SCons
+    # using the MD5 checksum to detect changes in the file (even though it's always
+    # rewritten)
+    revfile = open('revision.cpp', 'w')
+    revfile.write('#include <string>\n')
+    revfile.write('std::string revision_label = "')
+    revfile.write(revision)
+    revfile.write('";\n')
+    revfile.close()
+
+
+def environOverride(env):
+    # Allow overrides from environment...
+    if os.environ.has_key('CXX'):
+        CXX = os.environ['CXX']
+        print "Changing default compiler to ", CXX
+        env['CXX'] = CXX
+        
+    if os.environ.has_key('CCFLAGS'):
+        CCFLAGS = os.environ['CCFLAGS']
+        print "Changing CCFLAGS to ", CCFLAGS
+        env['CCFLAGS'] = CCFLAGS
+
+
+### Builder for setup scripts
+
+# This copies the environment setup script while changing the directory
+# that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
+# is being built in a directory, the env script will be setup to use
+# the built-in-place distribution.  If LOOS is being installed, then
+# it will use the installation directory instead.
+
+def script_builder_python(target, source, env):
+   first = target[0]
+   target_path = first.get_abspath()
+   dir_path = os.path.dirname(target_path)
+
+   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
+#   print command
+   os.system(command)
+   return None
+
+
+
+# ----------------------------------------------------------------------------------
+
+
+(host_type, linux_type) = canonicalizeSystem()
 
 # This is the version-tag for LOOS output
 loos_version = '2.1.0'
 
+
+canonicalizeSystem()
 
 # Principal options...
 clos = Variables('custom.py')
@@ -91,8 +166,7 @@ env['REGENERATE'] = regenerate
 reparse = env['reparse']
 
 # export platform to environment...
-env['platform'] = platform
-
+env['host_type'] = host_type
 env['linux_type'] = linux_type
 
 LAPACK = env['LAPACK']
@@ -117,24 +191,7 @@ if ALTPATH != '':
    buildenv['PATH'] = path
 
 
-### Builder for setup scripts
-
-# This copies the environment setup script while changing the directory
-# that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
-# is being built in a directory, the env script will be setup to use
-# the built-in-place distribution.  If LOOS is being installed, then
-# it will use the installation directory instead.
-
-def script_builder_python(target, source, env):
-   first = target[0]
-   target_path = first.get_abspath()
-   dir_path = os.path.dirname(target_path)
-
-   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
-#   print command
-   os.system(command)
-   return None
-
+# Setup script-builder
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
@@ -194,12 +251,16 @@ if (has_netcdf):
 
 
 # Platform specific build options...
-if platform == 'darwin':
-   env.Append(LINKFLAGS = ' -framework Accelerate')
-elif platform == 'freebsd8':
+if host_type == 'Darwin':
+    release = platform.release().split('.')
+    if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
+        env.Append(CCFLAGS = '--std=c++0x')
+    env.Append(LINKFLAGS = ' -framework Accelerate')
+
+elif host_type == 'Freebsd':
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-elif platform == 'linux2':
-   noatlas = 0
+
+elif host_type == 'Linux':
 
    ### Note for OpenSUSE and Ubuntu...
    ### Older versions of those distros may require the gfortran
@@ -208,14 +269,14 @@ elif platform == 'linux2':
    ### for your OS below...
 
    # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-   if (re.search("[Ss][Uu][Ss][Ee]", linux_type)):
+   if (linux_type == 'suse'):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
-   elif (re.search("[Uu]buntu", linux_type)):
+   elif (linux_type == 'ubuntu'):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
-   elif (re.search("[Dd]ebian", linux_type)):
+   elif (linux_type == 'debian'):
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
@@ -223,12 +284,9 @@ elif platform == 'linux2':
       LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack f77blas'
       LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
 
-   
-
-
 
 # CYGWIN does not have an atlas package, so use lapack/blas instead
-elif (platform == 'cygwin'):
+elif (host_type == 'Cygwin'):
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
    LIB_PATHS_TO = 'LAPACK'
    if (BOOSTSUFFIX == ''):
@@ -282,37 +340,8 @@ if int(profile):
    env.Append(LINKFLAGS=profile_opts)
 
 
-# Allow overrides from environment...
-if os.environ.has_key('CXX'):
-   CXX = os.environ['CXX']
-   print "Changing default compiler to ", CXX
-   env['CXX'] = CXX
-
-if os.environ.has_key('CCFLAGS'):
-   CCFLAGS = os.environ['CCFLAGS']
-   print "Changing CCFLAGS to ", CCFLAGS
-   env['CCFLAGS'] = CCFLAGS
-
-# Divine the current revision...
-revision = ''
-if env['REVISION'] == '':
-   revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
-   revision = revision.rstrip("\n")
-else:
-   revision = env['REVISION']
-      
-revision = revision + " " + strftime("%y%m%d")
-
-# Now, write this out to a cpp file that can be linked in...this avoids having
-# to recompile everything when building on a new date.  We also rely on SCons
-# using the MD5 checksum to detect changes in the file (even though it's always
-# rewritten)
-revfile = open('revision.cpp', 'w')
-revfile.write('#include <string>\n')
-revfile.write('std::string revision_label = "')
-revfile.write(revision)
-revfile.write('";\n')
-revfile.close()
+environOverride(env)
+setupRevision(env)
 
 # Export for subsidiary SConscripts
 

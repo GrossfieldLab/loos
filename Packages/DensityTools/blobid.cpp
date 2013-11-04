@@ -32,7 +32,6 @@
 
 #include <loos.hpp>
 #include <limits>
-#include <ext/slist>
 
 #include <DensityTools.hpp>
 #include <DensityGrid.hpp>

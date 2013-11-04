@@ -227,7 +227,7 @@ while (traj->readFrame())
         ofstream out(outfilename.str().c_str());
         if (out.fail())
             {
-            cerr << "couldn't open " << outfilename << " ... exiting" << endl;
+	    cerr << "couldn't open " << outfilename.str() << " ... exiting" << endl;
             exit(-1);
             }
         out << "# Dist\tTotal\tUpper\tLower" << endl;

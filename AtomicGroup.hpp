@@ -33,7 +33,7 @@
 #include <map>
 #include <algorithm>
 
-#include <tr1/unordered_set>
+#include <boost/unordered_set.hpp>
 
 
 #include <loos_defs.hpp>
@@ -90,7 +90,7 @@ namespace loos {
 
     // Threshold for catching effectively zero singular values in
     // the superposition code...
-    static const double superposition_zero_singular_value  =  1e-10;
+    static const double superposition_zero_singular_value;
 
   public:
     AtomicGroup() : _sorted(false) { }
@@ -755,7 +755,7 @@ namespace loos {
       int id;
     };
     
-    typedef std::tr1::unordered_set<int> HashInt;
+    typedef boost::unordered_set<int> HashInt;
 
     void walkBonds(AtomicGroup& mygroup, HashInt& seen, AtomicGroup& working, pAtom& moi);
 

@@ -25,7 +25,7 @@
 #include <Fmt.hpp>
 
 #include <iomanip>
-#include <tr1/unordered_set>
+#include <boost/unordered_set.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -321,7 +321,7 @@ namespace loos {
     std::string input;
     bool has_cryst = false;
     bool has_bonds = false;
-    std::tr1::unordered_set<std::string> seen;
+    boost::unordered_set<std::string> seen;
 
     while (getline(is, input)) {
       if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")

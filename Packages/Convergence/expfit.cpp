@@ -30,12 +30,12 @@ using namespace std;
 using namespace loos;
 
 
-typedef pair<double, double>     Point;
+typedef pair<double, double>     LPoint;
 typedef vector<double>           vecDouble;
 typedef vector<vecDouble>        vvecDouble;
 
 struct ExponentialFit {
-  ExponentialFit(const vector<Point>& datapoints) : _datapoints(datapoints) { }
+  ExponentialFit(const vector<LPoint>& datapoints) : _datapoints(datapoints) { }
 
   double operator()(const vector<double>& v) {
     double sum = 0.0;
@@ -44,7 +44,7 @@ struct ExponentialFit {
       if (*i < 0.0)
         return(numeric_limits<double>::max());
 
-    for (vector<Point>::iterator j = _datapoints.begin(); j != _datapoints.end(); ++j) {
+    for (vector<LPoint>::iterator j = _datapoints.begin(); j != _datapoints.end(); ++j) {
       double x = j->first;
       double y = j->second;
 
@@ -62,7 +62,7 @@ struct ExponentialFit {
   }
 
 
-  vector<Point> _datapoints;
+  vector<LPoint> _datapoints;
 };
 
 
@@ -122,9 +122,9 @@ int main(int argc, char *argv[]) {
     exit(-10);
   }
 
-  vector<Point> datapoints;
+  vector<LPoint> datapoints;
   for (uint i=0; i<bcom.size(); ++i)
-    datapoints.push_back(Point(bcom[i][0], bbcom[i][1]/bcom[i][1]));
+    datapoints.push_back(LPoint(bcom[i][0], bbcom[i][1]/bcom[i][1]));
 
   int nreps = atoi(argv[k++]);
   int ndims = atoi(argv[k++]);

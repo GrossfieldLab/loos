@@ -45,6 +45,12 @@ typedef RealMatrix              Matrix;
 const int matrix_precision = 2;    // Controls precision in output matrix
 #endif
 
+#if defined(__APPLE__)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <errno.h>
+#endif
+
 int verbosity;
 
 
@@ -244,6 +250,8 @@ public:
 
 #if defined(__linux__) || defined(__APPLE__)
 
+
+#if defined(__linux__)
   // Should consider using _SC_AVPHYS_PAGES instead?
   long availMemory() const
   {
@@ -252,6 +260,22 @@ public:
 
     return(pagesize * pages);
   }
+#else
+  long availMemory() const 
+  {
+    unsigned long memory;
+    size_t size = sizeof(memory);
+    
+    int ok = sysctlbyname("hw.memsize", &memory, &size, 0, 0);
+    if (ok < 0) {
+      cerr << "Error in determining available memory.  Try turning off cache to run.\n";
+      perror("rmsds: ");
+      exit(-10);
+    }
+
+    return(memory);
+  }
+#endif   // defined(__linux__)
   
 
   // Manually count size of a model (including contained strings)
@@ -286,7 +310,7 @@ public:
     return(actual);
   }
   
-#endif
+#endif // defined(__linux__) || defined(__APPLE__)
   
   // Each AtomicGroup in the vector is a copy, so we can get away with just
   // returning the element itself
