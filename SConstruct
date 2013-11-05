@@ -145,7 +145,7 @@ def CheckForBoost(conf, libname, path, suffix):
     files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (libname, suffix)))
     if files:
         conf.Result('yes')
-        libname = os.path.basename(files[0])[3:-len(suffix)]
+        libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
         return(libname)
 
     conf.Result('no')
