@@ -122,6 +122,17 @@ def script_builder_python(target, source, env):
 
 
 
+
+
+def checkSwig(env):
+    swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
+    if swig_location == None:
+        print 'Error- Cannot find swig.  Swig v2.0+ is required to build PyLOOS'
+        Exit(1)
+
+    
+
+
 # ----------------------------------------------------------------------------------
 
 
@@ -205,9 +216,6 @@ if ALTPATH != '':
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
-
-### Check for swig
-swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
 
 
 
@@ -401,10 +409,8 @@ all_target = loos + tools + all_packages + loos_scripts
 
 # Verify Swig
 if env['pyloos'] == '1':
-   if swig_location == None:
-      print 'Error- Swig (v2.0+) is required to build PyLOOS'
-      sys.exit(-1)
-   all_target = all_target + loos_python
+    swig_location = checkSwig(env)
+    all_target = all_target + loos_python
 
 env.Alias('all', all_target)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
