@@ -140,6 +140,12 @@ def CheckForBoost(conf, libname, path, suffix):
         conf.Result('yes')
         return(libname + '-mt')
 
+    # Now check for names lib libboost_regex-gcc43-mt.so ...
+    files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (libname, suffix)))
+    if files:
+        conf.Result('yes')
+        libname = os.path.basename(files[0])[3:-len(suffix)]
+
     conf.Result('no')
     return('')
 
