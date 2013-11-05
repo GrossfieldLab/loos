@@ -212,19 +212,21 @@ swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
 
 
 ### Autoconf
-conf = Configure(env)
-if not conf.CheckType('ulong','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
-if not conf.CheckType('uint','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
-   has_netcdf = 1
-else:
-   has_netcdf = 0
-env = conf.Finish()
+# (don't bother when cleaning)
+has_netcdf = 0
+if not env.GetOption('clean'):
+    conf = Configure(env)
+    if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+        conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+    if not conf.CheckType('uint','#include <sys/types.h>\n'):
+        conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+    if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+        has_netcdf = 1
 
-if (NETCDFINC != '' or NETCDFLIB != ''):
-   has_netcdf = 1
+    env = conf.Finish()
+
+    if (NETCDFINC != '' or NETCDFLIB != ''):
+        has_netcdf = 1
 
 env['HAS_NETCDF'] = has_netcdf
 
@@ -310,12 +312,13 @@ env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 ### Configure BOOST.  Do this after lib paths have been set to get desired versions...
-boost_regex = divineBoostLib(env, 'boost_regex')
-boost_program_options = divineBoostLib(env, 'boost_program_options')
-boost_thread = divineBoostLib(env, 'boost_thread')
-boost_system = divineBoostLib(env, 'boost_system')
+if not env.GetOption('clean'):
+    boost_regex = divineBoostLib(env, 'boost_regex')
+    boost_program_options = divineBoostLib(env, 'boost_program_options')
+    boost_thread = divineBoostLib(env, 'boost_thread')
+    boost_system = divineBoostLib(env, 'boost_system')
 
-env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
+    env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
 
 
 env.Append(LIBS = Split(LIBS_LINKED_TO))
@@ -369,7 +372,6 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
-#g_tools = SConscript('Packages/DensityTools/SConscript')
 convergence_package = SConscript('Packages/Convergence/SConscript')
 density_package = SConscript('Packages/DensityTools/SConscript')
 user_package = SConscript('Packages/User/SConscript')
@@ -396,6 +398,8 @@ env.Alias('tools', tools)
 env.Alias('pyloos_only', loos_python + loos_scripts)
 
 all_target = loos + tools + all_packages + loos_scripts
+
+# Verify Swig
 if env['pyloos'] == '1':
    if swig_location == None:
       print 'Error- Swig (v2.0+) is required to build PyLOOS'
