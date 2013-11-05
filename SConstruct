@@ -129,10 +129,12 @@ def checkForSwig(conf):
         conf.Result('no')
     else:
         swig_check = Popen([swig_location, "-version"], stdout=PIPE).communicate()[0]
-        swig_version = swig_check.split('\n')[1].split(' ')[2].split('.')[0]
-        if (swig_version < 2):
-            conf.result('no')
-            conf.Message('PyLOOS requires Swig version 2.0 or better')
+        swig_version = swig_check.split('\n')[1].split(' ')[2]
+        swig_major = swig_version.split('.')[0]
+        if int(swig_major) < 2:
+            conf.Result('no')
+            print 'Swig %s found.  PyLOOS requires Swig 2.0+' % swig_version
+            swig_location = None
         else:
             conf.Result('yes')
     return(swig_location)
@@ -239,8 +241,7 @@ if not env.GetOption('clean'):
     if conf.CheckForSwig():
         pyloos = 1
     else:
-        print '***Warning***'
-        print 'PyLOOS will not be built.  No suitable swig found.'
+        print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
 
     env = conf.Finish()
 
