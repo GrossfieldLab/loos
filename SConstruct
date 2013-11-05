@@ -226,6 +226,8 @@ env.Append(BUILDERS = {'Scripts' : script_builder})
 ### Autoconf
 # (don't bother when cleaning)
 has_netcdf = 0
+pyloos = 0
+
 if not env.GetOption('clean'):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : checkForSwig })
     if not conf.CheckType('ulong','#include <sys/types.h>\n'):
