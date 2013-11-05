@@ -308,6 +308,8 @@ if LIBS_PATHS_OVERRIDE != '':
 
 env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
+
+### Configure BOOST.  Do this after lib paths have been set to get desired versions...
 boost_regex = divineBoostLib(env, 'boost_regex')
 boost_program_options = divineBoostLib(env, 'boost_program_options')
 boost_thread = divineBoostLib(env, 'boost_thread')
