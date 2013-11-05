@@ -19,7 +19,7 @@
 | Ubuntu 12.04 LTS  |     +     |   +    |
 | Ubuntu 12.10      |     +     |   +    |
 |-------------------|-----------|--------|
-| Debian 5          |     +     |   -    |
+| Debian 5          |     !     |   -    |
 | Debian 6          |     +     |   !    |
 | Debian 7.1        |     +     |   +    |
 |-------------------|-----------|--------|
@@ -229,6 +229,11 @@ Using the synaptic manager (or apt-get), install the following packages:
       libatlas-headers [May be required for Debian 5]
       libnetcdf-dev [optional]
 
+Debian 5: LOOS requires boost 1.36 or higher, but the default version
+          for Debian 5 is 1.34.  You will need to manuall download and
+	  install a recent version of BOOST prior to building LOOS.
+	  A custom.py file will also be necessary to point the build
+	  to the alternate version of BOOST.
 
 * PyLOOS *
 
