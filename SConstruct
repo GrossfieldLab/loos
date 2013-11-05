@@ -133,7 +133,6 @@ def checkForSwig(conf):
         if (swig_version < 2):
             conf.result('no')
             conf.Message('PyLOOS requires Swig version 2.0 or better')
-            Exit(1)
         else:
             conf.Result('yes')
     return(swig_location)
@@ -240,7 +239,7 @@ if not env.GetOption('clean'):
     if conf.CheckForSwig():
         pyloos = 1
     else:
-        print 'Warning- PyLOOS will not be built.  Cannot find swig'
+        print '***Warning*** PyLOOS will not be built.  No suitable swig found.'
 
     env = conf.Finish()
 
