@@ -122,15 +122,20 @@ def script_builder_python(target, source, env):
 
 
 
-
-
-def checkSwig(env):
+def checkForSwig(conf):
+    conf.Message('Checking for Swig...')
     swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
     if swig_location == None:
-        print 'Error- Cannot find swig.  Swig v2.0+ is required to build PyLOOS'
-        Exit(1)
-
-    
+        conf.Result('no')
+    else:
+        swig_check = Popen([swig_location, "-version"], stdout=PIPE).communicate()[0]
+        swig_version = swig_check.split('\n')[1].split(' ')[2].split('.')[0]
+        if (swig_version < 2):
+            conf.result('no')
+            conf.Message('PyLOOS requires Swig version 2.0 or better')
+        else:
+            conf.Result('yes')
+    return(swig_location)
 
 
 # ----------------------------------------------------------------------------------
@@ -223,7 +228,7 @@ env.Append(BUILDERS = {'Scripts' : script_builder})
 # (don't bother when cleaning)
 has_netcdf = 0
 if not env.GetOption('clean'):
-    conf = Configure(env)
+    conf = Configure(env, custom_tests = { 'CheckForSwig' : checkForSwig })
     if not conf.CheckType('ulong','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
     if not conf.CheckType('uint','#include <sys/types.h>\n'):
@@ -231,7 +236,11 @@ if not env.GetOption('clean'):
     if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
         has_netcdf = 1
 
+    if env['pyloos'] == '1' and not conf.CheckForSwig():
+        print 'Error- you must have swig (2.0+) installed for PyLOOS'
+
     env = conf.Finish()
+
 
     if (NETCDFINC != '' or NETCDFLIB != ''):
         has_netcdf = 1
@@ -409,7 +418,6 @@ all_target = loos + tools + all_packages + loos_scripts
 
 # Verify Swig
 if env['pyloos'] == '1':
-    swig_location = checkSwig(env)
     all_target = all_target + loos_python
 
 env.Alias('all', all_target)
