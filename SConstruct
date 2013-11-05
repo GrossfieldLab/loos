@@ -180,7 +180,7 @@ clos.Add('REVISION', 'Add build information', loos_version)
 
 
 
-env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],CPPPATH=[distutils.sysconfig.get_python_inc()],SHLIBPREFIX="")
+env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 Help(clos.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')
@@ -239,16 +239,16 @@ if not env.GetOption('clean'):
 
     if conf.CheckForSwig():
         pyloos = 1
+    else:
+        print 'Warning- PyLOOS will not be built.  Cannot find swig'
 
     env = conf.Finish()
-
 
     if (NETCDFINC != '' or NETCDFLIB != ''):
         has_netcdf = 1
 
 env['HAS_NETCDF'] = has_netcdf
 env['pyloos'] = pyloos
-
 
 ### Compile-flags
 
@@ -258,6 +258,9 @@ profile_opts='-pg'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#'])
+
+if pyloos:
+    env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
 
 # Ideally, what's below should be added to the CPPPATH above, but
 # doing so causes SCons to scan headers from that directory generating
