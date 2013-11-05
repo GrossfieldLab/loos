@@ -413,7 +413,7 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 # build targets...
 
-loos_core = loos + scripts
+loos_core = loos + loos_scripts
 if pyloos:
     loos_core = loos_core + loos_python
     loos_tools = tools + loos_python
