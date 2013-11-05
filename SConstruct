@@ -146,6 +146,7 @@ def CheckForBoost(conf, libname, path, suffix):
     if files:
         conf.Result('yes')
         libname = os.path.basename(files[0])[3:-len(suffix)]
+        return(libname)
 
     conf.Result('no')
     return('')
