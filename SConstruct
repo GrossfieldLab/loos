@@ -239,7 +239,8 @@ if not env.GetOption('clean'):
     if conf.CheckForSwig():
         pyloos = 1
     else:
-        print '***Warning*** PyLOOS will not be built.  No suitable swig found.'
+        print '***Warning***'
+        print 'PyLOOS will not be built.  No suitable swig found.'
 
     env = conf.Finish()
 
