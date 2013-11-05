@@ -91,15 +91,15 @@ def environOverride(env):
 
 def divineBoostLib(env, libname):
     conf = Configure(env)
-    if (not conf.CheckLib(libname)):
-        altname = libname + '-mt'
-        if (not conf.CheckLib(altname)):
+    altname = libname + '-mt'
+    if (not conf.CheckLib(altname)):
+        if (not conf.CheckLib(libname)):
             print 'Could not find %s library.' % libname
             print 'Check your BOOST installation and your custom.py file.'
             Exit(1)
-        libname = altname
+        altname = libname
     env = conf.Finish()
-    return(libname)
+    return(altname)
 
 
 ### Builder for setup scripts
@@ -306,7 +306,8 @@ if LIBS_OVERRIDE != '':
 if LIBS_PATHS_OVERRIDE != '':
    LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
 
-# Handle boost after OS-specific options so suffix will be correct
+env.Append(LIBPATH = Split(LIBS_PATHS_TO))
+
 boost_regex = divineBoostLib(env, 'boost_regex')
 boost_program_options = divineBoostLib(env, 'boost_program_options')
 boost_thread = divineBoostLib(env, 'boost_thread')
@@ -316,7 +317,6 @@ env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_syste
 
 
 env.Append(LIBS = Split(LIBS_LINKED_TO))
-env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 
