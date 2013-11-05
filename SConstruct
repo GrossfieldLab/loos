@@ -89,6 +89,18 @@ def environOverride(env):
         print "Changing CCFLAGS to ", CCFLAGS
         env['CCFLAGS'] = CCFLAGS
 
+def divineBoostLib(env, libname):
+    conf = Configure(env)
+    if (not conf.CheckLib(libname)):
+        altname = libname + '-mt'
+        if (not conf.CheckLib(altname)):
+            print 'Could not find %s library.' % libname
+            print 'Check your BOOST installation and your custom.py file.'
+            Exit(1)
+        libname = altname
+    env = conf.Finish()
+    return(libname)
+
 
 ### Builder for setup scripts
 
@@ -137,7 +149,6 @@ clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', Pat
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
-clos.Add('BOOSTSUFFIX', 'Boost Library Name Suffix', '')
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
@@ -174,7 +185,6 @@ ATLAS = env['ATLAS']
 ATLASINC = env['ATLASINC']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
-BOOSTSUFFIX = env['BOOSTSUFFIX']
 LIBXTRA = env['LIBXTRA']
 PREFIX = env['PREFIX']
 ALTPATH = env['ALTPATH']
@@ -289,8 +299,6 @@ elif host_type == 'Linux':
 elif (host_type == 'Cygwin'):
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
    LIB_PATHS_TO = 'LAPACK'
-   if (BOOSTSUFFIX == ''):
-      BOOSTSUFFIX='-mt'
 
 if LIBS_OVERRIDE != '':
    LIBS_LINKED_TO = LIBS_OVERRIDE
@@ -298,13 +306,13 @@ if LIBS_OVERRIDE != '':
 if LIBS_PATHS_OVERRIDE != '':
    LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
 
-
 # Handle boost after OS-specific options so suffix will be correct
-env.Append(LIBS = ['boost_regex' + BOOSTSUFFIX,
-                   'boost_program_options' + BOOSTSUFFIX,
-                   'boost_thread' + BOOSTSUFFIX,
-                   'boost_system' + BOOSTSUFFIX
-                   ])
+boost_regex = divineBoostLib(env, 'boost_regex')
+boost_program_options = divineBoostLib(env, 'boost_program_options')
+boost_thread = divineBoostLib(env, 'boost_thread')
+boost_system = divineBoostLib(env, 'boost_system')
+
+env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
 
 
 env.Append(LIBS = Split(LIBS_LINKED_TO))
