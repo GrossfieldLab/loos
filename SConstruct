@@ -133,6 +133,7 @@ def checkForSwig(conf):
         if (swig_version < 2):
             conf.result('no')
             conf.Message('PyLOOS requires Swig version 2.0 or better')
+            Exit(1)
         else:
             conf.Result('yes')
     return(swig_location)
@@ -157,8 +158,6 @@ clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
-clos.Add('pyloos', 'Set to 1 to build the python interface to LOOS (requires SWIG).', 0)
-
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
@@ -236,8 +235,8 @@ if not env.GetOption('clean'):
     if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
         has_netcdf = 1
 
-    if env['pyloos'] == '1' and not conf.CheckForSwig():
-        print 'Error- you must have swig (2.0+) installed for PyLOOS'
+    if conf.CheckForSwig():
+        pyloos = 1
 
     env = conf.Finish()
 
@@ -246,6 +245,7 @@ if not env.GetOption('clean'):
         has_netcdf = 1
 
 env['HAS_NETCDF'] = has_netcdf
+env['pyloos'] = pyloos
 
 
 ### Compile-flags
@@ -412,12 +412,11 @@ env.Alias('lib', loos + loos_scripts)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
 env.Alias('tools', tools)
-env.Alias('pyloos_only', loos_python + loos_scripts)
 
 all_target = loos + tools + all_packages + loos_scripts
 
 # Verify Swig
-if env['pyloos'] == '1':
+if pyloos:
     all_target = all_target + loos_python
 
 env.Alias('all', all_target)
