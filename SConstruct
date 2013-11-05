@@ -413,14 +413,17 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 # build targets...
 
-env.Alias('lib', loos + loos_scripts)
+loos_core = loos + scripts
+if pyloos:
+    loos_core = loos_core + loos_python
+    loos_tools = tools + loos_python
+
+env.Alias('core', loos_core)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools)
+env.Alias('tools', loos_tools)
 
 all_target = loos + tools + all_packages + loos_scripts
-
-# Verify Swig
 if pyloos:
     all_target = all_target + loos_python
 
