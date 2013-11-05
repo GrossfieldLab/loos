@@ -61,8 +61,8 @@
 
 		     = Building and Installing =
 
-Please refer to the OS-specific instructions below in order to satisfy
-LOOS' dependencies....
+LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
+refer to the OS-specific instructions below for more details.
 
 LOOS can then be built using the following command:
 
