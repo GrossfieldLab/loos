@@ -28,8 +28,19 @@
 #define LOOSDEFS_HPP
 
 
+// Requirements check
 #if __GNUC__ < 4
 #error LOOS Requires GCC-4.0.1 or higher
+#endif
+
+
+
+#if !defined(BOOST_VERSION)
+#include <boost/version.hpp>
+#endif
+
+#if (((BOOST_VERSION / 100) % 1000) < 36)
+#error LOOS require Boost 1.36 or higher
 #endif
 
 #include <sys/types.h>
