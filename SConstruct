@@ -130,13 +130,13 @@ def CheckForSwig(conf):
     return(swig_location)
 
 
-def CheckForBoost(conf, libname, path):
+def CheckForBoost(conf, libname, path, suffix):
     conf.Message('Checking for boost library %s...' % libname)
 
-    if (os.path.isfile(os.path.join(path, 'lib%s.so' % libname))):
+    if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (libname , suffix)))):
         conf.Result('yes')
         return(libname)
-    if (os.path.isfile(os.path.join(path, 'lib%s-mt.so' % libname))):
+    if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (libname , suffix)))):
         conf.Result('yes')
         return(libname + '-mt')
 
@@ -154,7 +154,12 @@ def CheckForBoost(conf, libname, path):
 
 def DivineBoost(conf, libname):
     if BOOSTLIB:
-        name = conf.CheckForBoost(libname, BOOSTLIB)
+        if host_type == 'Darwin':
+            suffix = 'dylib'
+        else:
+            suffix = 'so'
+
+        name = conf.CheckForBoost(libname, BOOSTLIB, suffix)
         if not name:
             print '***ERROR***'
             print 'Could not find required BOOST library %s.' % libname
