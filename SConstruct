@@ -28,6 +28,8 @@ import shutil
 import distutils.sysconfig
 import distutils.spawn
 
+import SCons
+
 # Set default path depending on platform...
 # Note: This can be reset in custom.py
 default_lib_path = '/usr/lib64'
@@ -89,18 +91,6 @@ def environOverride(env):
         print "Changing CCFLAGS to ", CCFLAGS
         env['CCFLAGS'] = CCFLAGS
 
-def divineBoostLib(env, libname):
-    conf = Configure(env)
-    altname = libname + '-mt'
-    if (not conf.CheckLib(altname)):
-        if (not conf.CheckLib(libname)):
-            print 'Could not find %s library.' % libname
-            print 'Check your BOOST installation and your custom.py file.'
-            Exit(1)
-        altname = libname
-    env = conf.Finish()
-    return(altname)
-
 
 ### Builder for setup scripts
 
@@ -122,7 +112,7 @@ def script_builder_python(target, source, env):
 
 
 
-def checkForSwig(conf):
+def CheckForSwig(conf):
     conf.Message('Checking for Swig...')
     swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
     if swig_location == None:
@@ -139,6 +129,52 @@ def checkForSwig(conf):
             conf.Result('yes')
     return(swig_location)
 
+
+def CheckForBoost(conf, libname, path):
+    conf.Message('Checking for boost library %s...' % libname)
+
+    if (os.path.isfile(os.path.join(path, 'lib%s.so' % libname))):
+        conf.Result('yes')
+        return(libname)
+    if (os.path.isfile(os.path.join(path, 'lib%s-mt.so' % libname))):
+        conf.Result('yes')
+        return(libname + '-mt')
+
+    conf.Result('no')
+    return('')
+
+
+
+
+# We want to figure out what the name of the BOOST libraries will be.
+# If BOOSTLIB is set, however, we can't just use CheckLib otherwise we
+# may also see the standard install versions.  This could result in a mix
+# of names.  So, if BOOSTLIB is set, only check in that directory, otherwise
+# call the regular CheckLib and take our chances...
+
+def DivineBoost(conf, libname):
+    if BOOSTLIB:
+        name = conf.CheckForBoost(libname, BOOSTLIB)
+        if not name:
+            print '***ERROR***'
+            print 'Could not find required BOOST library %s.' % libname
+            print 'Check your BOOST installation and your custom.py file.'
+            Exit(1)
+
+        return(name)
+
+    if not conf.CheckLib(libname + '-mt'):
+        if not conf.CheckLib(libname):
+            print '***ERROR***'
+            print 'Could not find required BOOST library %s.' % libname
+            print 'Check your BOOST installation and your custom.py file.'
+            Exit(1)
+        else:
+            return(libname)
+    else:
+        return(libname + '-mt')
+    
+            
 
 # ----------------------------------------------------------------------------------
 
@@ -222,15 +258,14 @@ script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
 
-
-
 ### Autoconf
 # (don't bother when cleaning)
 has_netcdf = 0
 pyloos = 0
 
 if not env.GetOption('clean'):
-    conf = Configure(env, custom_tests = { 'CheckForSwig' : checkForSwig })
+    conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
+                                           'CheckForBoost' : CheckForBoost })
     if not conf.CheckType('ulong','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
     if not conf.CheckType('uint','#include <sys/types.h>\n'):
@@ -242,6 +277,11 @@ if not env.GetOption('clean'):
         pyloos = 1
     else:
         print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
+
+    boost_regex = DivineBoost(conf, 'boost_regex')
+    boost_program_options = DivineBoost(conf, 'boost_program_options')
+    boost_thread = DivineBoost(conf, 'boost_thread')
+    boost_system = DivineBoost(conf, 'boost_system')
 
     env = conf.Finish()
 
@@ -334,16 +374,7 @@ if LIBS_PATHS_OVERRIDE != '':
 env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
-### Configure BOOST.  Do this after lib paths have been set to get desired versions...
-if not env.GetOption('clean'):
-    boost_regex = divineBoostLib(env, 'boost_regex')
-    boost_program_options = divineBoostLib(env, 'boost_program_options')
-    boost_thread = divineBoostLib(env, 'boost_thread')
-    boost_system = divineBoostLib(env, 'boost_system')
-
-    env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
-
-
+env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
 env.Append(LIBS = Split(LIBS_LINKED_TO))
 
 
