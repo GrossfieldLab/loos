@@ -2,7 +2,7 @@
 		       ------------------------
 
 ------------------------------------------
-|    OS             | Core LOOS | PyLOOS |
+|    OS             |   LOOS    | PyLOOS |
 |-------------------|-----------|--------|
 | Fedora 12         |     +     |   !    |
 | Fedora 13         |     +     |   !    |
@@ -66,38 +66,48 @@ refer to the OS-specific instructions below for more details.
 
 LOOS can then be built using the following command:
 
-   scons release=1
+   scons
 
 Or installed (to /opt as a default):
-   sudo scons release=1 install
+   sudo scons install
 
 To install in a user-specified location:
 
-   scons release=1 PREFIX=/path/to/install install
+   scons PREFIX=/path/to/install install
 
 To use LOOS, your environment must be first setup:
   (bash)   source /path/to/loos/setup.sh
   (tcsh)   source /path/to/loos/setup.csh
 
 
+
+* Build Targets *
+
+      core	LOOS Library and PyLOOS
+      docs	Rebuild documentation
+      tests	Internal tests (deprecated)
+      tools	LOOS Library, Tools, and PyLOOS
+      all	LOOS Library, Tools, PyLOOS, and all Packages (default)
+      caboodle	Rebuild everything
+      user	LOOS Library and User package only
+      install	Install library, tools, PyLOOS, and all Packages
+      		(except user)
+
 			     = PyLOOS =
 
-The Python interface to LOOS is currently a beta-release.  To build
-it, use:
-    scons pyloos=1
+The Python interface to LOOS is currently a beta-release.  It will be
+included in the build if you have a recent SWIG (version 2.0 or
+better) in your standard path.  Not all operating systems and versions
+are supported.  If you need to disable the automatic building of
+PyLOOS, use the pyloos flag to scons:
 
-The python interface may also be installed:
-    scons pyloos=1 install
+	scons pyloos=0
 
-Finally, if you want to try out *only* PyLOOS and nothing else,
-    scons pyloos_only
+To build only the core LOOS libraries and PyLOOS, use the following
+command:
 
-PyLOOS requires a recent version of SWIG (2.0+).  Not all operating
-systems are currently supported.  Additionally, the interface and
-subsequent functionality may change significantly in future releases.
+	scons core
 
-Note that the python scripts in Packages/PyLOOS are not installed.
-These are currently only examples of how to use PyLOOS.
 
 
 		    = NetCDF Amber Trajectories =
@@ -115,6 +125,22 @@ ASCII MDCRD file and act appropriately.
 If the netcdf libraries and headers are installed in a non-standard
 location, edit the NETCDFINC and NETCDFLIB variables in your custom.py
 file to point to the appropriate locations.
+
+
+
+			      = Boost =
+
+LOOS should work with most versions of Boost installed by package
+managers.  To explicitly specify an install location, set the BOOST
+variable in your custom.py file or on the command line:
+
+	 scons BOOST=/usr/local/boost_1_54_0
+
+In some cases, you may need to override either the include directory
+or the library directory.  The BOOSTINC and BOOSTLIB variables
+will specify the corresponding directories for the LOOS build.
+
+
 
 		  = Parallel (Multithreaded) ATLAS =
 

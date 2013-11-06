@@ -63,15 +63,17 @@
 # LIBS_PATHS_OVERRIDE = ATLAS
 
 
+### This points to where BOOST is installed.  Set this if you do not want
+### to use the standard system BOOST (if applicable)
+# BOOST='/usr/local'
+
 ### This is where the parent directory of where BOOST include files
 ### are installed... 
-# BOOSTINC='/usr/include'
-# BOOSTINC='/usr/local/include'
+# BOOSTINC='/usr/local/include/boost-1_36'
 
 ### This is where the BOOST libs (i.e. libboost_regex.a) are
 ### installed...
-# BOOSTLIB='/usr/lib64'
-# BOOSTLIB='/usr/local/lib'
+# BOOSTLIB='/usr/local/boost-1_36/lib'
 
 ### Some BOOST installs will have a -mt suffix to the library names, while
 ### others will have nothing.  Uncomment the following to add a suffix

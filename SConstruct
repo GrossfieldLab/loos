@@ -20,6 +20,7 @@
 
 import sys
 import os
+import glob
 import platform
 import re
 from subprocess import *
@@ -27,6 +28,8 @@ from time import strftime
 import shutil
 import distutils.sysconfig
 import distutils.spawn
+
+import SCons
 
 # Set default path depending on platform...
 # Note: This can be reset in custom.py
@@ -110,6 +113,94 @@ def script_builder_python(target, source, env):
 
 
 
+def CheckForSwig(conf):
+    conf.Message('Checking for Swig...')
+    swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
+    if swig_location == None:
+        conf.Result('no')
+    else:
+        swig_check = Popen([swig_location, "-version"], stdout=PIPE).communicate()[0]
+        swig_version = swig_check.split('\n')[1].split(' ')[2]
+        swig_major = swig_version.split('.')[0]
+        if int(swig_major) < 2:
+            conf.Result('no')
+            print 'Swig %s found.  PyLOOS requires Swig 2.0+' % swig_version
+            swig_location = None
+        else:
+            conf.Result('yes')
+    return(swig_location)
+
+
+def CheckForBoost(conf, libname, path, suffix):
+    conf.Message('Checking for boost library %s...' % libname)
+
+    if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (libname , suffix)))):
+        conf.Result('yes')
+        return(libname)
+    if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (libname , suffix)))):
+        conf.Result('yes')
+        return(libname + '-mt')
+
+    def sortByLength(w1,w2):
+        return len(w1)-len(w2)
+
+    # Now check for names lib libboost_regex-gcc43-mt.so ...
+    files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (libname, suffix)))
+    files.sort(cmp=sortByLength)
+    if files:
+        conf.Result('yes')
+        libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
+        return(libname)
+
+    files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (libname, suffix)))
+    files.sort(cmp=sortByLength)
+    if files:
+        conf.Result('yes')
+        libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
+        return(libname)
+
+
+    conf.Result('no')
+    return('')
+
+
+
+
+# We want to figure out what the name of the BOOST libraries will be.
+# If BOOSTLIB is set, however, we can't just use CheckLib otherwise we
+# may also see the standard install versions.  This could result in a mix
+# of names.  So, if BOOSTLIB is set, only check in that directory, otherwise
+# call the regular CheckLib and take our chances...
+
+def DivineBoost(conf, libname):
+    if BOOSTLIB:
+        if host_type == 'Darwin':
+            suffix = 'dylib'
+        else:
+            suffix = 'so'
+
+        name = conf.CheckForBoost(libname, BOOSTLIB, suffix)
+        if not name:
+            print '***ERROR***'
+            print 'Could not find required BOOST library %s.' % libname
+            print 'Check your BOOST installation and your custom.py file.'
+            Exit(1)
+
+        return(name)
+
+    if not conf.CheckLib(libname + '-mt'):
+        if not conf.CheckLib(libname):
+            print '***ERROR***'
+            print 'Could not find required BOOST library %s.' % libname
+            print 'Check your BOOST installation and your custom.py file.'
+            Exit(1)
+        else:
+            return(libname)
+    else:
+        return(libname + '-mt')
+    
+            
+
 # ----------------------------------------------------------------------------------
 
 
@@ -128,16 +219,14 @@ clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
 clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
-clos.Add('pyloos', 'Set to 1 to build the python interface to LOOS (requires SWIG).', 0)
-
+clos.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
-clos.Add('BOOSTSUFFIX', 'Boost Library Name Suffix', '')
+clos.Add(PathVariable('BOOST', 'Path to BOOST Installation', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries (deprecated)', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes (deprecated)', '', PathVariable.PathAccept))
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
@@ -154,7 +243,7 @@ clos.Add('REVISION', 'Add build information', loos_version)
 
 
 
-env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],CPPPATH=[distutils.sysconfig.get_python_inc()],SHLIBPREFIX="")
+env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 Help(clos.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')
@@ -172,9 +261,9 @@ env['linux_type'] = linux_type
 LAPACK = env['LAPACK']
 ATLAS = env['ATLAS']
 ATLASINC = env['ATLASINC']
+BOOST = env['BOOST']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
-BOOSTSUFFIX = env['BOOSTSUFFIX']
 LIBXTRA = env['LIBXTRA']
 PREFIX = env['PREFIX']
 ALTPATH = env['ALTPATH']
@@ -182,6 +271,7 @@ LIBS_OVERRIDE = env['LIBS_OVERRIDE']
 LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
 NETCDFINC = env['NETCDFINC']
 NETCDFLIB = env['NETCDFLIB']
+pyloos = int(env['pyloos'])
 
 
 if ALTPATH != '':
@@ -190,34 +280,61 @@ if ALTPATH != '':
    path = ALTPATH + ':' + path
    buildenv['PATH'] = path
 
+# Handle BOOST path so we still support old-style configs
+
+if BOOST:
+    if not BOOSTINC:
+        BOOSTINC = BOOST + '/include'
+    else:
+        print '***Warning***  BOOSTINC will override BOOST'
+
+    if not BOOSTLIB:
+        BOOSTLIB = BOOST + '/lib'
+    else:
+        print '***Warning***  BOOSTLIB will override BOOST'
+    
+
 
 # Setup script-builder
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
 
-### Check for swig
-swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
-
-
-
 ### Autoconf
-conf = Configure(env)
-if not conf.CheckType('ulong','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
-if not conf.CheckType('uint','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
-   has_netcdf = 1
-else:
-   has_netcdf = 0
-env = conf.Finish()
+# (don't bother when cleaning)
+has_netcdf = 0
 
-if (NETCDFINC != '' or NETCDFLIB != ''):
-   has_netcdf = 1
+if not env.GetOption('clean'):
+    conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
+                                           'CheckForBoost' : CheckForBoost })
+    if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+        conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+    if not conf.CheckType('uint','#include <sys/types.h>\n'):
+        conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+    if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+        has_netcdf = 1
+
+    if pyloos:
+        if conf.CheckForSwig():
+            pyloos = 1
+        else:
+            print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
+            pyloos = 0
+
+    boost_regex = DivineBoost(conf, 'boost_regex')
+    boost_program_options = DivineBoost(conf, 'boost_program_options')
+    boost_thread = DivineBoost(conf, 'boost_thread')
+    boost_system = DivineBoost(conf, 'boost_system')
+
+    env = conf.Finish()
+
+    env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
+
+    if (NETCDFINC != '' or NETCDFLIB != ''):
+        has_netcdf = 1
 
 env['HAS_NETCDF'] = has_netcdf
-
+env['pyloos'] = pyloos
 
 ### Compile-flags
 
@@ -227,6 +344,9 @@ profile_opts='-pg'
 
 # Setup the general environment...
 env.Append(CPPPATH = ['#'])
+
+if pyloos:
+    env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
 
 # Ideally, what's below should be added to the CPPPATH above, but
 # doing so causes SCons to scan headers from that directory generating
@@ -289,8 +409,6 @@ elif host_type == 'Linux':
 elif (host_type == 'Cygwin'):
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
    LIB_PATHS_TO = 'LAPACK'
-   if (BOOSTSUFFIX == ''):
-      BOOSTSUFFIX='-mt'
 
 if LIBS_OVERRIDE != '':
    LIBS_LINKED_TO = LIBS_OVERRIDE
@@ -298,17 +416,10 @@ if LIBS_OVERRIDE != '':
 if LIBS_PATHS_OVERRIDE != '':
    LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
 
-
-# Handle boost after OS-specific options so suffix will be correct
-env.Append(LIBS = ['boost_regex' + BOOSTSUFFIX,
-                   'boost_program_options' + BOOSTSUFFIX,
-                   'boost_thread' + BOOSTSUFFIX,
-                   'boost_system' + BOOSTSUFFIX
-                   ])
+env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 env.Append(LIBS = Split(LIBS_LINKED_TO))
-env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
 
@@ -359,7 +470,6 @@ tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
-#g_tools = SConscript('Packages/DensityTools/SConscript')
 convergence_package = SConscript('Packages/Convergence/SConscript')
 density_package = SConscript('Packages/DensityTools/SConscript')
 user_package = SConscript('Packages/User/SConscript')
@@ -379,18 +489,20 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 # build targets...
 
-env.Alias('lib', loos + loos_scripts)
+loos_core = loos + loos_scripts
+loos_tools = tools
+if pyloos:
+    loos_core = loos_core + loos_python
+    loos_tools = loos_tools + loos_python
+
+env.Alias('core', loos_core)
 env.Alias('docs', docs)
 env.Alias('tests', tests)
-env.Alias('tools', tools)
-env.Alias('pyloos_only', loos_python + loos_scripts)
+env.Alias('tools', loos_tools)
 
 all_target = loos + tools + all_packages + loos_scripts
-if env['pyloos'] == '1':
-   if swig_location == None:
-      print 'Error- Swig (v2.0+) is required to build PyLOOS'
-      sys.exit(-1)
-   all_target = all_target + loos_python
+if pyloos:
+    all_target = all_target + loos_python
 
 env.Alias('all', all_target)
 env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
