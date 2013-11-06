@@ -575,7 +575,7 @@ flag to SCons.  The following table lists the principal build options:
 <table align="center">
 <tr align="left"><th>Option</th><th>Default</th><th>Description</th></tr>
 <tr align="left"><td>debug</td><td>0</td><td>Adds "-DDEBUG" to build</td></tr>
-<tr align="left"><td>release</td><td>0</td><td>Turns on aggressive optimization (-O3)</td></tr>
+<tr align="left"><td>release</td><td>1</td><td>Turns on aggressive optimization (-O3)</td></tr>
 <tr align="left"><td>regenerate</td><td>0</td><td>Regenerates the test verification data</td></tr>
 <tr align="left"><td>reparse</td><td>0</td><td>Runs bison/flex to create the C++ files for parsing selections</td></tr>
 </table>
@@ -2510,6 +2510,21 @@ change the path for all tools, set the ALTPATH variable instead.  For
 example, Mac users installing with Fink will want to set ALTPATH to
 "/sw/bin".
 
+<DT> SCons is not finding my installation of Boost.
+<DD> If you need to point SCons to a non-standard location of Boost,
+use the BOOST variable on the command-line or within your custom.py
+file.  If you need to override either the include directory or the
+library directory, use the BOOSTINC and BOOSTLIB variables
+respectively.
+
+<DT> SCons cannot find a Boost library.
+<DD> SCons will try to determine the correct naming variant
+for your Boost install.  It will start by looking for "libboost_foo-mt.suff",
+followed by "libboost_foo.suff" where suff is either "dylib"
+(MacOS/Darwin) or "so" (Linux/Cygwin).  Failing that, it will look for
+any file matching "libboost_foo-*-mt.suff" followed by the non-threaded
+version.  Of the list of filenames found, SCons will take the shortest
+one.
 </DL>
 
 \subsection faq_loos_using_tools Using LOOS Tools
@@ -2692,8 +2707,6 @@ implementations.
 <DT>	How do I build PyLOOS?
 <DD>	You will need to install a recent version of Swig.  For
 	details specific to your OS, please see the INSTALL file.
-	PyLOOS is not part of the default build for LOOS.  You must
-	tell SCons to build it by saying "scons pyloos=1".
 
 <DT>	I'm getting errors from Swig (about missing files)
 <DD>	On a few test systems, we found that there is an older
@@ -2702,6 +2715,15 @@ implementations.
 	in /usr/bin unless explicitly told not to.  Edit the custom.py
 	file and set the ALTPATH variable to point to where the most
 	recent version of Swig is installed.
+
+<DT>	I'm seeing a lot of warnings messages from the PyLOOS build
+<DD>	We have seen this in some instances (MacOS 10.9, for example),
+	and believe they can be safely ignored.
+
+<DT>	SCons is trying to build PyLOOS even though it's unsupported,
+	or the build is breaking with PyLOOS
+<DD>	You can disable the auto-build of PyLOOS by using the pyloos
+	command-line flag with scons:  scons pyloos=0
 
 <DT>	How do I use PyLOOS?
 <DD>	Your environment needs to be setup to allow Python to locate
@@ -2713,11 +2735,11 @@ implementations.
 <DT>	Can I install PyLOOS?
 <DD>	Yes.  PyLOOS can be installed alongside the rest of LOOS,
 \code
-	scons pyloos=1 install
+	scons install
 \endcode
 	or to install in a specific location,
 \code
-	scons pyloos=1 PREFIX=/home/user/MyLOOS
+	scons PREFIX=/home/user/MyLOOS
 \endcode
 	Be sure to source the appropriate setup.sh or setup.csh file
 	in the install directory prior to using LOOS/PyLOOS.
@@ -2728,7 +2750,7 @@ implementations.
   Look for <tt>loos.so</tt> and remove it, or try a clean rebuild,
 \code
         scons -c
-        scons pyloos=1
+        scons
 \endcode
 
 </DL>
