@@ -37,7 +37,7 @@ namespace loos {
   class AmberRst : public Trajectory {
   public:
     explicit AmberRst(const std::string& s, const int na) : Trajectory(s), _natoms(na),
-                                                            frame_offset(0), frame_size(0), current_time(0.0),
+                                                             current_time(0.0),
                                                             periodic(false), seek_flag(false) {
 
       parseFrame();
@@ -47,7 +47,7 @@ namespace loos {
 
 
     explicit AmberRst(const char* p, const int na) : Trajectory(p), _natoms(na),
-                                                     frame_offset(0), frame_size(0), current_time(0.0),
+                                                     current_time(0.0),
                                                      periodic(false), seek_flag(false) {
       parseFrame();
       cached_first = true;
@@ -75,8 +75,7 @@ namespace loos {
     
 
   private:
-    uint _natoms, _nframes;
-    unsigned long frame_offset, frame_size;
+    uint _natoms;
     greal current_time;
     bool periodic;
     GCoord box;
