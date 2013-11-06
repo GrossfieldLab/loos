@@ -1,54 +1,63 @@
 		       LOOS COMPATIBILITY TABLE
 		       ------------------------
 
-------------------------------------------
-|    OS             |   LOOS    | PyLOOS |
-|-------------------|-----------|--------|
-| Fedora 12         |     +     |   !    |
-| Fedora 13         |     +     |   !    |
-| Fedora 14         |     +     |   +    |
-| Fedora 15         |     +     |   +    |
-| Fedora 16         |     +     |   +    |
-| Fedora 17         |     +     |   +    |
-| Fedora 18         |     +     |   +    |
-| Fedora 19         |     +     |   +    |
-|-------------------|-----------|--------|
-| Ubuntu 8.04 LTS   |     !     |   !    |
-| Ubuntu 10.04 LTS  |     +     |   !    |
-| Ubuntu 11.10      |     +     |   !    |
-| Ubuntu 12.04 LTS  |     +     |   +    |
-| Ubuntu 12.10      |     +     |   +    |
-|-------------------|-----------|--------|
-| Debian 5          |     !     |   -    |
-| Debian 6          |     +     |   !    |
-| Debian 7.1        |     +     |   +    |
-|-------------------|-----------|--------|
-| CentOS 5.9        |     +     |   !    |
-| CentOS 6.4        |     +     |   !    |
-|-------------------|-----------|--------|
-| OpenSUSE 11.4     |     +     |   -    |
-| OpenSUSE 12       |     +     |   +    |
-|-------------------|-----------|--------|
-| FreeBSD 8         |     +     |   -    |
-|-------------------|-----------|--------|
-| Windows XP        |     +     |   -    |
-|  +Cygwin 1.7.7    |           |        |
-| Windows 7 64-bit  |     +     |   -    |
-|  +Cygwin 1.7.15-1 |           |        |
-|-------------------|-----------|--------|
-| MacOS 10.6        |     +     |   !    |
-| MacOS 10.7        |     +     |   !    |
-| MacOS 10.8        |     +     |   !    |
-|-------------------|-----------|--------|
+--------------------------------------------------
+|    OS             |   LOOS    | PyLOOS | Notes |
+|-------------------|-----------|--------|--------
+| Fedora 12         |     +     |   !    | S     |
+| Fedora 13         |     +     |   !    | S     |
+| Fedora 14         |     +     |   +    |       |
+| Fedora 15         |     +     |   +    |       |
+| Fedora 16         |     +     |   +    |       |
+| Fedora 17         |     +     |   +    |       |
+| Fedora 18         |     +     |   +    |       |
+| Fedora 19         |     +     |   +    |       |
+|-------------------|-----------|--------|-------|
+| Ubuntu 8.04 LTS   |     !     |   !    | BCDS  |
+| Ubuntu 10.04 LTS  |     +     |   !    | S     |
+| Ubuntu 11.10      |     +     |   !    | S     |
+| Ubuntu 12.04 LTS  |     +     |   +    |       |
+| Ubuntu 12.10      |     +     |   +    |       |
+|-------------------|-----------|--------|-------|
+| Debian 5          |     !     |   -    | BD    |
+| Debian 6          |     +     |   !    | S     |
+| Debian 7.1        |     +     |   +    |       |
+|-------------------|-----------|--------|-------|
+| CentOS 5.9        |     !     |   !    | BCDS  |
+| CentOS 6.4        |     +     |   !    | CS    |
+|-------------------|-----------|--------|-------|
+| OpenSUSE 11.4     |     +     |   -    |       |
+| OpenSUSE 12       |     +     |   +    |       |
+|-------------------|-----------|--------|-------|
+| FreeBSD 8         |     +     |   -    |       |
+|-------------------|-----------|--------|-------|
+| Windows XP        |     +     |   -    | U     |
+|  +Cygwin 1.7.7    |           |        |       |
+| Windows 7 64-bit  |     +     |   -    |       |
+|  +Cygwin 1.7.15-1 |           |        |       |
+|-------------------|-----------|--------|-------|
+| MacOS 10.6        |     +     |   !    | D     |
+| MacOS 10.7        |     +     |   !    | U     |
+| MacOS 10.8        |     +     |   !    | U     |
+| MacOS 10.9        |     +     |   !    |       |
+|-------------------|-----------|--------|-------|
 
 
 + = supported
     (dependencies easily available via package manager)
 
 ! = supported with reservations
-    (may require manual installation of dependencies)
+    (may require manual installation of dependencies
+    or updates)
 
 - = not supported at this time
+
+B = Requires manual update/install to Boost
+C = Requires manual update/install of SCons
+S = Require manual update/install of Swig
+D = Deprecated, and will not be tested in the future
+U = Untested.  We are no longer testing these configurations, but
+    they may still work.
 
 
 
@@ -192,7 +201,7 @@ download and install any version of scons more recent than 1.0.
 
 * PyLOOS *
 
-CentOS 5.7, 6.2: Yum install python-devel and pcre-devel, then download
+CentOS 5, 6: Yum install python-devel and pcre-devel, then download
   and install the latest swig.
 
 			------= Ubuntu =------
@@ -297,17 +306,16 @@ OpenSUSE 11.4: NOT SUPPORTED
 
 			-----= MACOS X =-----
 
-***NOTE on MacOS 10.8 (Mountain Lion) compatability***
+***NOTE on MacOS 10.8+ (Mountain Lion) compatability***
 ***only LOOS 2.0.1 (or more recent) is compatible***
 
-LOOS has been tested with MacOS 10.6 and 10.8, however, it *should* be
-compatable with version 10.4 and later.
+We only test LOOS against the most current available vesion of MacOS.
+However, LOOS should be compatible with MacOS 10.4 and later with
+modest effort.
 
 First, make sure you have the Developer's Tools (i.e. XCode)
-installed.  You can find it on your MacOS X install disk or,
-alternatively, you can sign up for a free account with the Apple
-Developer's Connection and download the latest version.  Next, you
-will need to install SCons (http://scons.org) and Boost
+installed.  XCode is available for free through the Mac App store.
+Next, you will need to install SCons (http://scons.org) and Boost
 (http://boost.org) by visiting their websites, downloading the
 software, and following their installation instructions.
 Alternatively, use fink to install these packages.
@@ -320,13 +328,10 @@ file to point to where netcdf is installed.
 
 * PyLOOS *
 
-PyLOOS is supported for MacOS 10.6 and later.  You will need to download
-and install a recent version of SWIG first.  If you have installed Boost in a
-non-standard location, you will need to make sure that the boost libraries are
-in your DYLD_LIBRARY_PATH environment variable.  Note that we have not
-explicitly tested LOOS with 10.7, but expect that it will work with minimal
-effort.
-
+You will need to download and install a recent version of SWIG first.
+If you have installed Boost in a non-standard location, you will need
+to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
+environment variable.
 
 			 -----= CYGWIN =-----
 
