@@ -377,7 +377,7 @@ if host_type == 'Darwin':
         env.Append(CCFLAGS = '--std=c++0x')
     env.Append(LINKFLAGS = ' -framework Accelerate')
 
-elif host_type == 'Freebsd':
+elif host_type == 'FreeBSD':
    LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
 
 elif host_type == 'Linux':
