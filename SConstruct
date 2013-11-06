@@ -145,13 +145,15 @@ def CheckForBoost(conf, libname, path, suffix):
         return len(w1)-len(w2)
 
     # Now check for names lib libboost_regex-gcc43-mt.so ...
-    files = glob.glob(os.path.join(path, 'lib%s-*mt.%s' % (libname, suffix))).sort(cmp=sortByLength)
+    files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (libname, suffix)))
+    files.sort(cmp=sortByLength)
     if files:
         conf.Result('yes')
         libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
         return(libname)
 
-    files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (libname, suffix))).sort(cmp=sortByLength)
+    files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (libname, suffix)))
+    files.sort(cmp=sortByLength)
     if files:
         conf.Result('yes')
         libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
