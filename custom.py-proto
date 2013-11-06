@@ -63,15 +63,9 @@
 # LIBS_PATHS_OVERRIDE = ATLAS
 
 
-### This is where the parent directory of where BOOST include files
-### are installed... 
-# BOOSTINC='/usr/include'
-# BOOSTINC='/usr/local/include'
-
-### This is where the BOOST libs (i.e. libboost_regex.a) are
-### installed...
-# BOOSTLIB='/usr/lib64'
-# BOOSTLIB='/usr/local/lib'
+### This points to where BOOST is installed.  Set this if you do not want
+### to use the standard system BOOST (if applicable)
+# BOOST='/usr/local'
 
 ### Edit the following to change which C++ compiler to use
 # CXX='/usr/local/gcc-4.3.2/bin/g++'
