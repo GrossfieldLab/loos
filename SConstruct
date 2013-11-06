@@ -224,8 +224,9 @@ clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
 clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOST', 'Path to BOOST Installation', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries (deprecated)', '', PathVariable.PathAccept))
+clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes (deprecated)', '', PathVariable.PathAccept))
 clos.Add('CXX', 'C++ Compiler', 'g++')
 clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
 clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
@@ -260,6 +261,7 @@ env['linux_type'] = linux_type
 LAPACK = env['LAPACK']
 ATLAS = env['ATLAS']
 ATLASINC = env['ATLASINC']
+BOOST = env['BOOST']
 BOOSTLIB = env['BOOSTLIB']
 BOOSTINC = env['BOOSTINC']
 LIBXTRA = env['LIBXTRA']
@@ -276,6 +278,19 @@ if ALTPATH != '':
    path = buildenv['PATH']
    path = ALTPATH + ':' + path
    buildenv['PATH'] = path
+
+# Handle BOOST path so we still support old-style configs
+if BOOSTINC or BOOSTLIB:
+    if BOOST:
+        print '***Warning*** BOOST is set and will override BOOSTINC and BOOSTLIB'        
+    else:
+        print '***Warning*** BOOSTINC and BOOSTLIB are deprecated.  Please use BOOST instead.'
+
+
+if BOOST:
+    BOOSTINC = BOOST + '/include'
+    BOOSTLIB = BOOST + '/lib'
+    
 
 
 # Setup script-builder
