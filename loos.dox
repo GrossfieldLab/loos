@@ -419,16 +419,10 @@ You can temporarily override the defaults (and what's
 set in your \c custom.py file by specifying the appropriate variables
 on the command-line (run \c scons \c -h for more information)
 
-To build just the library, cd to the top-level directory and run
-SCons:
+The basic build is to just run scons in the top-level directory,
+
 \verbatim
 cd /path/to/LOOS
-scons lib
-\endverbatim
-
-To build the library and tools as well, use:
-
-\verbatim
 scons
 \endverbatim
 
@@ -465,20 +459,17 @@ To use LOOS, your environment must be first setup:
 \subsection building_pyloos Building PyLOOS, the Python Interface to LOOS
 <H3> +=+=+=+=+=+=+=+ BETA-RELEASE +=+=+=+=+=+=+=+</H3>
 
-To build the beta-release of PyLOOS, the python interface to LOOS, use:
+The beta-release of PyLOOS will be automatically built if you have a
+recent swig (2.0+) installed.  Note that not all operating systems nor
+releases are supported.  See the top of the INSTALL and \ref
+faq_pyloos "the FAQ for PyLOOS" for more information about building
+and using PyLOOS.
 
+In some cases, scons may try to build PyLOOS when it isn't appropriate
+(i.e. supported).  To disable PyLOOS, use the pyloos flag,
 \verbatim
-scons pyloos=1
+scons pyloos=0
 \endverbatim
-
-You may install PyLOOS by using the following commnad:
-
-\verbatim
-scons pyloos=1 install
-\endverbatim
-
-See the INSTALL file and \ref faq_pyloos "the FAQ for PyLOOS" for more information about
-building and using PyLOOS.
 
 <hr>
 
@@ -486,9 +477,12 @@ building and using PyLOOS.
 
 
 There is some variability in the naming used for the Boost libraries.
-If your build fails even though you just installed the latest Boost,
-check the names of the regex and program_options libraries and set
-these in your "custom.py" file.
+SCons will try to locate the common variants automatically, and will
+try to prefer the threaded versions over non-threaded.  Should this
+fail, you will need to edit the SConstruct and override the
+DivineBoost() function calls.  Also, please notify us
+(loos.maintainer@gmail.com) so that we can improve the handling of
+Boost in future releases of LOOS.
 
 If you're using a compiler in a non-standard location (e.g. you have
 your own build of the latest and greatest gcc), SCons may not be using
@@ -563,11 +557,13 @@ There are several build targets available:
 
 <table align="center">
 <tr align="left"><th>Target</th><th>Description</th></tr>
-<tr align="left"><td>(default)</td><td>Build the library and the tools</td></tr>
-<tr align="left"><td>lib</td><td>Builds the library only</td></tr>
-<tr align="left"><td>tests</td><td>Builds and runs the verification tests</td></tr>
-<tr align="left"><td>docs</td><td>Uses Doxygen to generate new docs.</td></tr>
+<tr align="left"><td>(default)</td><td>Build the library, tools, packages, and PyLOOS</td></tr>
+<tr align="left"><td>core</td><td>Builds the library and PyLOOS only</td></tr>
+<tr align="left"><td>docs</td><td>Rebuilds the documentation</td></tr>
+<tr align="left"><td>tests</td><td>Builds LOOS library and runs internal tests (deprecated)</td></tr>
 <tr align="left"><td>caboodle</td><td>Builds everything, including docs and tests</td></tr>
+<tr align="left"><td>user</td><td>Builds library and user package only</td></tr>
+<tr align="left"><td>install</td><td>Installs library, toosl, PyLOOS, and all packages (except user)</td></tr>
 </table>
 
 There are several different build options that are available for
@@ -618,7 +614,7 @@ scons -c tests
 
 As a side-note, regenerating the verification data is potentially
 hazardous if you have not been making sure your builds already pass,
-so caveat bugger...
+so caveat programmer...
 
 */
 
