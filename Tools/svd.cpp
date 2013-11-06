@@ -276,7 +276,7 @@ void write_map(const string& fname, const AtomicGroup& grp) {
   pAtom pa;
   AtomicGroup::Iterator iter(grp);
   int i = 0;
-  while (pa = iter())
+  while ( (pa = iter()) )
     fout << i++ << "\t" << pa->id() << "\t" << pa->resid() << endl;
 
 }
