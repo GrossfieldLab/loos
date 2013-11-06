@@ -149,7 +149,7 @@ string fullHelpMessage(void) {
     "\tAn 8 angstrom cutoff is used to define connectivity.\n"
     "\t\n"
     "\t\n"
-    "transition_contacts --sink_sel 'resid==\"PROT\"' --source_sel 'resid==\"PROT\"' --cutoff 8 --selection \'segid==\"PROT\"\' model.pdb traj.dcd source.pdb sink.pdb\n"
+    "transition_contacts --sink_sel 'resid >=0 && resid <= 10' --source_sel 'resid >= 100 && resid <= 110' --cutoff 8 --selection \'segid==\"PROT\"\' model.pdb traj.dcd source.pdb sink.pdb\n"
     "\tSame as the above command, but now the selections\n"
     "\tfor the source and sink models are separately specified.\n"
     "\tIMPORTANT: It is your responsibility to ensure that\n"
