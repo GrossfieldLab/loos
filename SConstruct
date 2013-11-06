@@ -219,7 +219,7 @@ clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
 clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
 clos.Add('release', 'Set to 1 to configure for release.', 1)
 clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
+clos.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 
 clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
 clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
@@ -271,6 +271,7 @@ LIBS_OVERRIDE = env['LIBS_OVERRIDE']
 LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
 NETCDFINC = env['NETCDFINC']
 NETCDFLIB = env['NETCDFLIB']
+pyloos = int(env['pyloos'])
 
 
 if ALTPATH != '':
@@ -302,7 +303,6 @@ env.Append(BUILDERS = {'Scripts' : script_builder})
 ### Autoconf
 # (don't bother when cleaning)
 has_netcdf = 0
-pyloos = 0
 
 if not env.GetOption('clean'):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
@@ -314,10 +314,12 @@ if not env.GetOption('clean'):
     if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
         has_netcdf = 1
 
-    if conf.CheckForSwig():
-        pyloos = 1
-    else:
-        print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
+    if pyloos:
+        if conf.CheckForSwig():
+            pyloos = 1
+        else:
+            print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
+            pyloos = 0
 
     boost_regex = DivineBoost(conf, 'boost_regex')
     boost_program_options = DivineBoost(conf, 'boost_program_options')
@@ -325,6 +327,8 @@ if not env.GetOption('clean'):
     boost_system = DivineBoost(conf, 'boost_system')
 
     env = conf.Finish()
+
+    env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
 
     if (NETCDFINC != '' or NETCDFLIB != ''):
         has_netcdf = 1
@@ -415,7 +419,6 @@ if LIBS_PATHS_OVERRIDE != '':
 env.Append(LIBPATH = Split(LIBS_PATHS_TO))
 
 
-env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
 env.Append(LIBS = Split(LIBS_LINKED_TO))
 
 
