@@ -280,16 +280,17 @@ if ALTPATH != '':
    buildenv['PATH'] = path
 
 # Handle BOOST path so we still support old-style configs
-if BOOSTINC or BOOSTLIB:
-    if BOOST:
-        print '***Warning*** BOOST is set and will override BOOSTINC and BOOSTLIB'        
-    else:
-        print '***Warning*** BOOSTINC and BOOSTLIB are deprecated.  Please use BOOST instead.'
-
 
 if BOOST:
-    BOOSTINC = BOOST + '/include'
-    BOOSTLIB = BOOST + '/lib'
+    if not BOOSTINC:
+        BOOSTINC = BOOST + '/include'
+    else:
+        print '***Warning***  BOOSTINC will override BOOST'
+
+    if not BOOSTLIB:
+        BOOSTLIB = BOOST + '/lib'
+    else:
+        print '***Warning***  BOOSTLIB will override BOOST'
     
 
 
