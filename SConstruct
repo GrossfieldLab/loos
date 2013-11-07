@@ -211,8 +211,6 @@ def SetupBoostPaths(env):
     BOOST_INCLUDE=env['BOOST_INCLUDE']
     BOOST_LIBPATH=env['BOOST_LIBPATH']
     BOOST_LIBS = env['BOOST_LIBS']
-    
-    
 
     if BOOST == '':
         boost = '/usr'
@@ -223,12 +221,12 @@ def SetupBoostPaths(env):
         boost_include = boost + '/include'
         boost_libpath = boost + '/lib'
         
-        if not BOOST_INCLUDE:
-            boost_include = BOOST_INCLUDE
-        if not BOOST_LIBPATH:
-            boost_libpath= BOOST_LIBPATH
-                
-                
+    if BOOST_INCLUDE:
+        boost_include = BOOST_INCLUDE
+    if BOOST_LIBPATH:
+        boost_libpath= BOOST_LIBPATH
+       
+
     env.MergeFlags({ 'LIBPATH': [boost_libpath]})
     env.MergeFlags({ 'CPPPATH' : [boost_include] })
 
@@ -255,9 +253,9 @@ def SetupNetCDFPaths(env):
         netcdf_include = netcdf + '/include'
         netcdf_libpath = netcdf + '/lib'
 
-    if not NETCDF_INCLUDE:
+    if NETCDF_INCLUDE:
         netcdf_include = NETCDF_INCLUDE
-    if not NETCDF_LIBPATH:
+    if NETCDF_LIBPATH:
         netcdf_libpath= NETCDF_LIBPATH
 
 
@@ -313,6 +311,9 @@ env['linux_type'] = linux_type
 #--- First, Boost
 SetupBoostPaths(env)
 
+#--- And now NETCDF
+SetupNetCDFPaths(env)
+
 #--- Now, ATLAS
 
 ATLAS_LIBPATH = env['ATLAS_LIBPATH']
@@ -324,8 +325,6 @@ else:
 
 env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 
-#--- And now NETCDF
-SetupNetCDFPaths(env)
 
 ### Get more info from environment
 PREFIX = env['PREFIX']
