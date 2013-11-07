@@ -226,7 +226,7 @@ def SetupBoostPaths():
         if not BOOST_INCLUDE:
             boost_include = BOOST_INCLUDE
         if not BOOST_LIBPATH:
-            boost_include = BOOST_LIBPATH
+            boost_libpath= BOOST_LIBPATH
                 
                 
     env.MergeFlags({ 'LIBPATH': [boost_libpath]})
@@ -258,7 +258,7 @@ def SetupNetCDFPaths():
     if not NETCDF_INCLUDE:
         netcdf_include = NETCDF_INCLUDE
     if not NETCDF_LIBPATH:
-        netcdf_include = NETCDF_LIBPATH
+        netcdf_libpath= NETCDF_LIBPATH
 
 
     env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
