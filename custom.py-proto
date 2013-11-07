@@ -31,70 +31,57 @@
 # debug=1
 # release=1
 
-### These specify an explicit location for netcdf include and lib
-### files.  If NetCDF is not found, support for it will NOT be
-### built into LOOS.
-# NETCDFINC='/usr/local/include'
-# NETCDFLIB='/usr/local/lib'
+# Disable automatic building of PyLOOS
+# pyloos=0
 
-### This is where the LAPACK library is installed...
-# LAPACK='/usr/lib64'
-# LAPACK='/usr/local/lib'
-
-### This is where the ATLAS libraries are installed
-# ATLAS='/usr/lib64/atlas'
-# ATLAS='/usr/local/lib/atlas'
-
-### This is where the ATLAS include files are installed
-# ATLASINC='/usr/include/atlas'
-# ATLASINC='/usr/include'
-
-
-### The following -may- enable a parallel ATLAS/LAPACK version of LOOS
-### Note: Depending on how your system is setup, you may need to add
-### gfortran to the end of LIBS_OVERRIDE
-## This is for Fedora
-# ATLAS='/usr/lib64/atlas'
-# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
-# LIBS_PATHS_OVERRIDE = ATLAS
-## Ubuntu
-# ATLAS='/usr/lib64/atlas-base'
-# LIBS_OVERRIDE = 'lapack ptcblas ptf77blas atlas'
-# LIBS_PATHS_OVERRIDE = ATLAS
-
-
-### This points to where BOOST is installed.  Set this if you do not want
-### to use the standard system BOOST (if applicable)
-# BOOST='/usr/local'
-
-### This is where the parent directory of where BOOST include files
-### are installed... 
-# BOOSTINC='/usr/local/include/boost-1_36'
-
-### This is where the BOOST libs (i.e. libboost_regex.a) are
-### installed...
-# BOOSTLIB='/usr/local/boost-1_36/lib'
-
-### Some BOOST installs will have a -mt suffix to the library names, while
-### others will have nothing.  Uncomment the following to add a suffix
-### when linking with BOOST
-# BOOSTSUFFIX='-mt'
-
-### Edit the following to change which C++ compiler to use
-# CXX='/usr/local/gcc-4.3.2/bin/g++'
-
-### Edit the following to add additional search paths for libraries
-### (this may be necessary if you're using a compiler in a non-standard
-### location)
-# LIBXTRA='/usr/local/gcc-4.3.2/lib64'
-
-### If REVISION is set to a null string, then the SConstruct will use
-# svnversion to figure out what the SVN revision number is for the
-# source tree...
-# REVISION=''
 
 ### Uncomment the following to alter the PATH SCons uses to find
 ### programs (e.g. if you have TeX in a nonstandard location, or use Fink
 ### on a Mac)
 # ALTPATH='/usr/local/texlive/2007/bin/i386-darwin'
 # ALTPATH='/sw/bin'
+
+
+
+#### The following can be used to control where SCons looks for libraries
+#### and include files for LOOS, and what libraries are used...
+
+############# BOOST Configuration
+## Uncomment the following line to set where BOOST is installed
+# BOOST='/usr/local/boost_1_54_0'
+# BOOST='/usr/local'
+
+## Uncomment the following to override the boost include files location
+# BOOST_INCLUDE='/usr/local/include/boost_1_36_0'
+
+## Uncomment the following to override where the boost libraries are found
+# BOOST_LIBPATH='/usr/local/lib64'
+
+## Uncomment the following to explicitly set the BOOST libraries linked against
+## (This is in the event that SCons incorrectly determines the library names)
+# BOOST_LIBS='boost_regex-gcc42-mt boost_program_options-gcc42-mt boost_thread-gcc42-mt boost_system-gcc42-mt'
+
+############# NetCDF Configuration
+## Uncomment the following line to set where NetCDF is installed
+# NETCDF='/usr/local/netcdf'
+# NETCDF='/usr/local'
+
+## Uncomment the following to override the NetCDF include files location
+# NETCDF_INCLUDE='/usr/local/include/netcdf'
+
+## Uncomment the following to override where the NetCDF libraries are found
+# NETCDF_LIBPATH='/usr/local/lib64'
+
+## Uncomment the following to explicitly set the NetCDF libraries linked against
+# NETCDF_LIBS='netcdf-4.3.0'
+
+############# ATLAS/LAPACK Configuration
+## Uncomment the following to set the path to the atlas/lapack libraries
+# ATLAS_LIBPATH='/usr/local/lib64/atlas'
+
+## Uncomment the following to explicitly name the atlas libraries linked with
+# ATLAS_LIBS='lapack f77blas cblas atlas'
+## Uncomment the following to explicitly link with the parallel/threaded ATLAS libraries
+# ATLAS_LIBS='ptlapack ptf77blas ptcblas atlas'
+
+
