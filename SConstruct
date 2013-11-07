@@ -381,7 +381,7 @@ if not env.GetOption('clean'):
         boost_threaded = -1
         boost_libs = []
         for libname in ['boost_regex', 'boost_thread', 'boost_system', 'boost_program_options']:
-            result = conf.CheckForBoostLibrary(libname, boost_libpath, 'so')
+            result = conf.CheckForBoostLibrary(libname, boost_libpath, library_suffix)
             if not result[0]:
                 print 'Error- missing Boost library %s' % libname
                 Exit(1)
