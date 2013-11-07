@@ -79,18 +79,19 @@ def setupRevision(env):
     revfile.close()
 
 
-def environOverride(env):
+def environOverride(conf):
     # Allow overrides from environment...
-    if os.environ.has_key('CXX'):
-        CXX = os.environ['CXX']
-        print "Changing default compiler to ", CXX
-        env['CXX'] = CXX
+    if 'CXX' in os.environ:
+        conf.env.Replace(CXX = os.environ['CXX'])
+        print '*** Using compiler ' + os.environ['CXX']
+    
+    if 'CCFLAGS' in os.environ:
+        conf.env.Append(CCFLAGS = os.environ['CCFLAGS'])
+        print '*** Appending custom build flags: ' + os.environ['CCFLAGS']
         
-    if os.environ.has_key('CCFLAGS'):
-        CCFLAGS = os.environ['CCFLAGS']
-        print "Changing CCFLAGS to ", CCFLAGS
-        env['CCFLAGS'] = CCFLAGS
-
+    if 'LDFLAGS' in os.environ:
+        conf.env.Append(LINKFLAGS = os.environ['LDFLAGS'])
+        print '*** Appending custom link flag: ' + os.environ['LDFLAGS']
 
 ### Builder for setup scripts
 
@@ -426,6 +427,7 @@ if not env.GetOption('clean'):
             Exit(1)
 
 
+    environOverride(conf)
 
     env = conf.Finish()
 
@@ -483,7 +485,6 @@ if int(profile):
    env.Append(LINKFLAGS=profile_opts)
 
 
-environOverride(env)
 setupRevision(env)
 
 # Export for subsidiary SConscripts
