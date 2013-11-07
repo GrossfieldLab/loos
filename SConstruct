@@ -325,14 +325,15 @@ SetupNetCDFPaths(env)
 
 #--- Now, ATLAS
 
-ATLAS_LIBPATH = env['ATLAS_LIBPATH']
-ATLAS_LIBS = env['ATLAS_LIBS']
-if not ATLAS_LIBPATH:
-    atlas_libpath = '/usr/lib64/atlas'
-else:
-    atlas_libpath = ATLAS_LIBPATH
+if host_type != 'Darwin':
+    ATLAS_LIBPATH = env['ATLAS_LIBPATH']
+    ATLAS_LIBS = env['ATLAS_LIBS']
+    if not ATLAS_LIBPATH:
+        atlas_libpath = '/usr/lib64/atlas'
+    else:
+        atlas_libpath = ATLAS_LIBPATH
 
-env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
+    env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 
 
 ### Get more info from environment
@@ -396,43 +397,44 @@ if not env.GetOption('clean'):
             boost_libs.append(result[0])
 
 # --- ATLAS
-    if ATLAS_LIBS:
-        atlas_libs = Split(ATLAS_LIBS)
-    else:
-        numerics = { 'atlas' : 0,
-                     'lapack' : 0,
-                     'f77blas' : 0,
-                     'cblas' : 0,
-                     'blas' : 0 }
-        
-        
-        for libname in numerics.keys():
-            if conf.CheckLib(libname, autoadd = 0):
-                numerics[libname] = 1
-
-        atlas_libs = []
-        if (numerics['lapack']):
-            atlas_libs.append('lapack')
-            
-        if (numerics['f77blas'] and numerics['cblas']):
-            atlas_libs.extend(['f77blas', 'cblas'])
-        elif (numerics['blas']):
-            atlas_libs.append('blas')
+    if host_type != 'Darwin':
+        if ATLAS_LIBS:
+            atlas_libs = Split(ATLAS_LIBS)
         else:
-            print 'Error- you must have some kind of blas installed'
-            Exit(1)
+            numerics = { 'atlas' : 0,
+                         'lapack' : 0,
+                         'f77blas' : 0,
+                         'cblas' : 0,
+                         'blas' : 0 }
+            
+        
+            for libname in numerics.keys():
+                if conf.CheckLib(libname, autoadd = 0):
+                    numerics[libname] = 1
 
-        if (numerics['atlas']):
-            atlas_libs.append('atlas')
+                atlas_libs = []
+                if (numerics['lapack']):
+                    atlas_libs.append('lapack')
+            
+                if (numerics['f77blas'] and numerics['cblas']):
+                    atlas_libs.extend(['f77blas', 'cblas'])
+                elif (numerics['blas']):
+                    atlas_libs.append('blas')
+                else:
+                    print 'Error- you must have some kind of blas installed'
+                    Exit(1)
+                    
+                if (numerics['atlas']):
+                    atlas_libs.append('atlas')
 
-        if not numerics['lapack'] and not numerics['atlas']:
-            print 'Error- you must have either LAPACK or Atlas installed'
-            Exit(1)
+                if not numerics['lapack'] and not numerics['atlas']:
+                    print 'Error- you must have either LAPACK or Atlas installed'
+                    Exit(1)
 
-        atlas_libs = conf.CheckAtlasBuild(atlas_libs)
-        if not atlas_libs:
-            print 'Error- could not figure out how to build.'
-            Exit(1)
+                atlas_libs = conf.CheckAtlasBuild(atlas_libs)
+                if not atlas_libs:
+                    print 'Error- could not figure out how to build.'
+                    Exit(1)
 
 
     environOverride(conf)
@@ -440,7 +442,8 @@ if not env.GetOption('clean'):
     env = conf.Finish()
 
     env.Append(LIBS = boost_libs)
-    env.Append(LIBS = atlas_libs)
+    if host_type != 'Darwin':
+        env.Append(LIBS = atlas_libs)
     
 
 
