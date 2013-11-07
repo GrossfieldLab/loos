@@ -346,6 +346,7 @@ if not env.GetOption('clean'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
 
 # --- NetCDF
+    env['HAS_NETCDF'] = 0
     if NETCDF_LIBS:
         netcdf_libs = NETCDF_LIBS
         env.Append(CCFLAGS=['-DHAS_NETCDF'])
@@ -361,7 +362,6 @@ if not env.GetOption('clean'):
         if conf.CheckForSwig():
             pyloos = 1
         else:
-            print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
             pyloos = 0
 
     env['pyloos'] = pyloos
