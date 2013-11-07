@@ -200,7 +200,7 @@ def CheckForBoostLibrary(conf, name, path, suffix):
 # ----------------------------------------------------------------------------------
 
 
-def SetupBoostPaths():
+def SetupBoostPaths(env):
 
     global BOOST_LIBS
     global boost
@@ -236,7 +236,7 @@ def SetupBoostPaths():
 ########################3
 
 
-def SetupNetCDFPaths():
+def SetupNetCDFPaths(env):
     global NETCDF_LIBS
     global netcdf_include
     global netcdf_libpath
@@ -311,7 +311,7 @@ env['linux_type'] = linux_type
 ### Setup paths...
 
 #--- First, Boost
-SetupBoostPaths()
+SetupBoostPaths(env)
 
 #--- Now, ATLAS
 
@@ -325,7 +325,7 @@ else:
 env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 
 #--- And now NETCDF
-SetupNetCDFPaths()
+SetupNetCDFPaths(env)
 
 ### Get more info from environment
 PREFIX = env['PREFIX']
@@ -374,7 +374,7 @@ if not env.GetOption('clean'):
         boost_libs = []
         for libname in ['boost_regex', 'boost_thread', 'boost_system', 'boost_program_options']:
             result = conf.CheckForBoostLibrary(libname, boost_libpath, 'so')
-            if not result:
+            if not result[0]:
                 print 'Error- missing Boost library %s' % libname
                 Exit(1)
             if boost_threaded < 0:
