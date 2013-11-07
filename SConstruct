@@ -277,6 +277,7 @@ opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 
 opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
+opts.Add('ALTPATH', 'Additional path to commands', '')
 
 opts.Add('BOOST', 'Path to BOOST', '')
 opts.Add('BOOST_INCLUDE', 'Path to BOOST Includes', '')
@@ -305,6 +306,13 @@ env.Append(BUILDERS = {'Scripts' : script_builder})
 (host_type, linux_type, library_suffix) = canonicalizeSystem()
 env['host_type'] = host_type
 env['linux_type'] = linux_type
+
+
+if env['ALTPATH']:
+   buildenv = env['ENV']
+   path = buildenv['PATH']
+   path = ALTPATH + ':' + path
+   buildenv['PATH'] = path
 
 
 ### Setup paths...
