@@ -260,8 +260,6 @@ def SetupNetCDFPaths(env):
         netcdf_libpath= NETCDF_LIBPATH
 
 
-    env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
-    env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
 
 
 # This is the version-tag for LOOS output
@@ -355,16 +353,22 @@ if not env.GetOption('clean'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
 
 # --- NetCDF
-    env['HAS_NETCDF'] = 0
+    has_netcdf = 0
     if NETCDF_LIBS:
         netcdf_libs = NETCDF_LIBS
         env.Append(CCFLAGS=['-DHAS_NETCDF'])
-        env['HAS_NETCDF'] = 1
+        has_netcdf = 1
     else:
         if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
             netcdf_libs = 'netcdf'
             env.Append(CCFLAGS=['-DHAS_NETCDF'])
-            env['HAS_NETCDF'] = 1
+            has_netcdf = 1
+
+    env['HAS_NETCDF'] = has_netcdf
+    if has_netcdf:
+        env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
+        env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
+
 
 # --- SWIG
     if pyloos:
