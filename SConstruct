@@ -28,17 +28,21 @@ from time import strftime
 import shutil
 import distutils.sysconfig
 import distutils.spawn
+from string import Template
 
 import SCons
 
-# Set default path depending on platform...
-# Note: This can be reset in custom.py
+loos_version = '2.1.0'   # Set to null string to use SVN revision
+
 default_lib_path = '/usr/lib64'
 
 
+
 def canonicalizeSystem():
+    global default_lib_path
     linux_type = 'nonlinux'
     host_type = platform.system()
+    suffix = 'so'
 # Detect CYGWIN & canonicalize linux type, setting defaults...
     if (re.search("(?i)cygwin", host_type)):
         host_type = 'Cygwin'
@@ -53,20 +57,16 @@ def canonicalizeSystem():
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
-    return(host_type, linux_type)
+    elif (host_type == 'Darwin'):
+        default_lib_path = '/usr/bin'
+        suffix = 'dylib'
+    return(host_type, linux_type, suffix)
 
 
 
 def setupRevision(env):
     # Divine the current revision...
-    revision = ''
-    if env['REVISION'] == '':
-        revision = Popen(["svnversion"], stdout=PIPE).communicate()[0]
-        revision = revision.rstrip("\n")
-    else:
-        revision = env['REVISION']
-        
-        revision = revision + " " + strftime("%y%m%d")
+    revision = loos_version + " " + strftime("%y%m%d")
 
     # Now, write this out to a cpp file that can be linked in...this avoids having
     # to recompile everything when building on a new date.  We also rely on SCons
@@ -80,18 +80,19 @@ def setupRevision(env):
     revfile.close()
 
 
-def environOverride(env):
+def environOverride(conf):
     # Allow overrides from environment...
-    if os.environ.has_key('CXX'):
-        CXX = os.environ['CXX']
-        print "Changing default compiler to ", CXX
-        env['CXX'] = CXX
+    if 'CXX' in os.environ:
+        conf.env.Replace(CXX = os.environ['CXX'])
+        print '*** Using compiler ' + os.environ['CXX']
+    
+    if 'CCFLAGS' in os.environ:
+        conf.env.Append(CCFLAGS = os.environ['CCFLAGS'])
+        print '*** Appending custom build flags: ' + os.environ['CCFLAGS']
         
-    if os.environ.has_key('CCFLAGS'):
-        CCFLAGS = os.environ['CCFLAGS']
-        print "Changing CCFLAGS to ", CCFLAGS
-        env['CCFLAGS'] = CCFLAGS
-
+    if 'LDFLAGS' in os.environ:
+        conf.env.Append(LINKFLAGS = os.environ['LDFLAGS'])
+        print '*** Appending custom link flag: ' + os.environ['LDFLAGS']
 
 ### Builder for setup scripts
 
@@ -102,19 +103,28 @@ def environOverride(env):
 # it will use the installation directory instead.
 
 def script_builder_python(target, source, env):
-   first = target[0]
-   target_path = first.get_abspath()
-   dir_path = os.path.dirname(target_path)
 
-   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
-#   print command
-   os.system(command)
+    
+   if 'LOOS_PATH' in env:
+       dir_path = env['LOOS_PATH']
+   else:
+       # Cheat...use the path to the template script as the location of the distribution
+       dir_path = os.path.dirname(target[0].get_abspath())
+
+   file = open(str(source[0]), 'r')
+   script = file.read()
+   script_template = Template(script)
+   script = script_template.substitute(loos_path = dir_path)
+
+   outfile = open(str(target[0]), 'w')
+   outfile.write(script)
+
    return None
 
 
 
 def CheckForSwig(conf):
-    conf.Message('Checking for Swig...')
+    conf.Message('Checking for Swig v2.0+ ...')
     swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
     if swig_location == None:
         conf.Result('no')
@@ -124,217 +134,333 @@ def CheckForSwig(conf):
         swig_major = swig_version.split('.')[0]
         if int(swig_major) < 2:
             conf.Result('no')
-            print 'Swig %s found.  PyLOOS requires Swig 2.0+' % swig_version
             swig_location = None
         else:
             conf.Result('yes')
     return(swig_location)
 
 
-def CheckForBoost(conf, libname, path, suffix):
-    conf.Message('Checking for boost library %s...' % libname)
 
-    if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (libname , suffix)))):
-        conf.Result('yes')
-        return(libname)
-    if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (libname , suffix)))):
-        conf.Result('yes')
-        return(libname + '-mt')
+# See if we need gfortran in order to build code with atlas/lapack
+# Returns the full list of libraries used...
 
-    def sortByLength(w1,w2):
-        return len(w1)-len(w2)
+def CheckAtlasBuild(conf, libs):
+   test_code = """
+extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
+int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, D, I, D, I, I); }
+"""
+
+   conf.Message('Checking if ATLAS/LAPACK needs gfortran...')
+   
+   lastLIBS = conf.env['LIBS']
+   conf.env.Append(LIBS = libs)
+   result = conf.TryLink(test_code, '.cpp')
+   if not result:
+      conf.env.Append(LIBS = option_libs)
+      result = conf.TryLink(test_code)
+      if not result:
+         conf.Result('error')
+         return([])
+      conf.Result('yes')
+      conf.env.Replace(LIBS = lastLIBS)
+      return(libs + 'gfortran')
+   conf.Result('no')
+   conf.env.Replace(LIBS = lastLIBS)
+   return(libs)
+
+
+# Check for existince of boost library with various naming variants
+# Will return a tuple containing the correct name and a flag indicating
+# whether this is the threaded or non-threaded version.
+
+def CheckForBoostLibrary(conf, name, path, suffix):
+   conf.Message('Checking for Boost library %s...' % name)
+
+   if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (name , suffix)))):
+      conf.Result('yes')
+      return(name + '-mt', 1)
+
+   if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (name , suffix)))):
+      conf.Result('yes')
+      return(name, 0)
+
+   def sortByLength(w1,w2):
+      return len(w1)-len(w2)
 
     # Now check for names lib libboost_regex-gcc43-mt.so ...
-    files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (libname, suffix)))
-    files.sort(cmp=sortByLength)
-    if files:
-        conf.Result('yes')
-        libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
-        return(libname)
+   files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (name, suffix)))
+   files.sort(cmp=sortByLength)
+   if files:
+      conf.Result('yes')
+      name = os.path.basename(files[0])[3:-(len(suffix)+1)]
+      return(name, 1)
 
-    files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (libname, suffix)))
-    files.sort(cmp=sortByLength)
-    if files:
-        conf.Result('yes')
-        libname = os.path.basename(files[0])[3:-(len(suffix)+1)]
-        return(libname)
-
-
-    conf.Result('no')
-    return('')
+   files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (name, suffix)))
+   files.sort(cmp=sortByLength)
+   if files:
+      conf.Result('yes')
+      name = os.path.basename(files[0])[3:-(len(suffix)+1)]
+      return(name, 0)
 
 
+   conf.Result('no')
+   return('', -1)
 
-
-# We want to figure out what the name of the BOOST libraries will be.
-# If BOOSTLIB is set, however, we can't just use CheckLib otherwise we
-# may also see the standard install versions.  This could result in a mix
-# of names.  So, if BOOSTLIB is set, only check in that directory, otherwise
-# call the regular CheckLib and take our chances...
-
-def DivineBoost(conf, libname):
-    if BOOSTLIB:
-        if host_type == 'Darwin':
-            suffix = 'dylib'
-        else:
-            suffix = 'so'
-
-        name = conf.CheckForBoost(libname, BOOSTLIB, suffix)
-        if not name:
-            print '***ERROR***'
-            print 'Could not find required BOOST library %s.' % libname
-            print 'Check your BOOST installation and your custom.py file.'
-            Exit(1)
-
-        return(name)
-
-    if not conf.CheckLib(libname + '-mt'):
-        if not conf.CheckLib(libname):
-            print '***ERROR***'
-            print 'Could not find required BOOST library %s.' % libname
-            print 'Check your BOOST installation and your custom.py file.'
-            Exit(1)
-        else:
-            return(libname)
-    else:
-        return(libname + '-mt')
-    
             
 
 # ----------------------------------------------------------------------------------
 
 
-(host_type, linux_type) = canonicalizeSystem()
+def SetupBoostPaths(env):
+
+    global BOOST_LIBS
+    global boost
+    global boost_include
+    global boost_libpath
+
+    BOOST=env['BOOST']
+    BOOST_INCLUDE=env['BOOST_INCLUDE']
+    BOOST_LIBPATH=env['BOOST_LIBPATH']
+    BOOST_LIBS = env['BOOST_LIBS']
+
+    if BOOST == '':
+        boost = '/usr'
+        boost_include = '/usr/include'
+        boost_libpath = default_lib_path
+    else:
+        boost = BOOST
+        boost_include = boost + '/include'
+        boost_libpath = boost + '/lib'
+        
+    if BOOST_INCLUDE:
+        boost_include = BOOST_INCLUDE
+    if BOOST_LIBPATH:
+        boost_libpath= BOOST_LIBPATH
+       
+
+    env.MergeFlags({ 'LIBPATH': [boost_libpath]})
+    env.MergeFlags({ 'CPPPATH' : [boost_include] })
+
+
+########################3
+
+
+def SetupNetCDFPaths(env):
+    global NETCDF_LIBS
+    global netcdf_include
+    global netcdf_libpath
+
+    NETCDF=env['NETCDF']
+    NETCDF_INCLUDE=env['NETCDF_INCLUDE']
+    NETCDF_LIBPATH=env['NETCDF_LIBPATH']
+    NETCDF_LIBS = env['NETCDF_LIBS']
+    
+    if NETCDF == '':
+        netcdf = '/usr'
+        netcdf_include = '/usr/include'
+        netcdf_libpath = default_lib_path
+    else:
+        netcdf = NETCDF
+        netcdf_include = netcdf + '/include'
+        netcdf_libpath = netcdf + '/lib'
+
+    if NETCDF_INCLUDE:
+        netcdf_include = NETCDF_INCLUDE
+    if NETCDF_LIBPATH:
+        netcdf_libpath= NETCDF_LIBPATH
+
+
+
 
 # This is the version-tag for LOOS output
 loos_version = '2.1.0'
 
 
-canonicalizeSystem()
-
 # Principal options...
-clos = Variables('custom.py')
-clos.Add('regenerate', 'Set to 1 to regenerate test outputs', 0)
-clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
-clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
-clos.Add('release', 'Set to 1 to configure for release.', 1)
-clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
+opts = Variables('custom.py')
+opts.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
+opts.Add('profile', 'Set to 1 to build the code for profiling', 0)
+opts.Add('release', 'Set to 1 to configure for release.', 1)
+opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
+opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 
-clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
-clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOST', 'Path to BOOST Installation', '', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries (deprecated)', '', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes (deprecated)', '', PathVariable.PathAccept))
-clos.Add('CXX', 'C++ Compiler', 'g++')
-clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
-clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
-                    PathVariable.PathAccept))
-clos.Add(PathVariable('NETCDFINC', 'Path to netcdf include files', '', PathVariable.PathAccept))
-clos.Add(PathVariable('NETCDFLIB', 'Path to netcdf library files', '', PathVariable.PathAccept))
-clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
-clos.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
-clos.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
+opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
+opts.Add('ALTPATH', 'Additional path to commands', '')
 
-# This is a developer setting...  Do not set unless you know what you
-# are doing...
-clos.Add('REVISION', 'Add build information', loos_version)
+opts.Add('BOOST', 'Path to BOOST', '')
+opts.Add('BOOST_INCLUDE', 'Path to BOOST Includes', '')
+opts.Add('BOOST_LIBPATH', 'Path to BOOST Libraries', '')
+opts.Add('BOOST_LIBS', 'Boost libraries to link with', '')
+
+opts.Add('ATLAS_LIBPATH', 'Path to ATLAS Libraries', '')
+opts.Add('ATLAS_LIBS', 'Atlas libraries to link with', '')
+
+opts.Add('NETCDF', 'Path to NetCDF', '')
+opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
+opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
+opts.Add('NETCDF_LIBS', 'NetCDF Libraries to link with', '')
 
 
-
-env = Environment(options = clos, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
-Help(clos.GenerateHelpText(env))
+env = Environment(options = opts, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+Help(opts.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')
-
-# vestigial...
-regenerate = env['regenerate']
-env['REGENERATE'] = regenerate
-
-reparse = env['reparse']
-
-# export platform to environment...
-env['host_type'] = host_type
-env['linux_type'] = linux_type
-
-LAPACK = env['LAPACK']
-ATLAS = env['ATLAS']
-ATLASINC = env['ATLASINC']
-BOOST = env['BOOST']
-BOOSTLIB = env['BOOSTLIB']
-BOOSTINC = env['BOOSTINC']
-LIBXTRA = env['LIBXTRA']
-PREFIX = env['PREFIX']
-ALTPATH = env['ALTPATH']
-LIBS_OVERRIDE = env['LIBS_OVERRIDE']
-LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
-NETCDFINC = env['NETCDFINC']
-NETCDFLIB = env['NETCDFLIB']
-pyloos = int(env['pyloos'])
-
-
-if ALTPATH != '':
-   buildenv = env['ENV']
-   path = buildenv['PATH']
-   path = ALTPATH + ':' + path
-   buildenv['PATH'] = path
-
-# Handle BOOST path so we still support old-style configs
-
-if BOOST:
-    if not BOOSTINC:
-        BOOSTINC = BOOST + '/include'
-    else:
-        print '***Warning***  BOOSTINC will override BOOST'
-
-    if not BOOSTLIB:
-        BOOSTLIB = BOOST + '/lib'
-    else:
-        print '***Warning***  BOOSTLIB will override BOOST'
-    
-
 
 # Setup script-builder
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
+# Get system information
+(host_type, linux_type, library_suffix) = canonicalizeSystem()
+env['host_type'] = host_type
+env['linux_type'] = linux_type
+
+
+if env['ALTPATH']:
+   buildenv = env['ENV']
+   path = buildenv['PATH']
+   path = ALTPATH + ':' + path
+   buildenv['PATH'] = path
+
+
+### Setup paths...
+
+#--- First, Boost
+SetupBoostPaths(env)
+
+#--- And now NETCDF
+SetupNetCDFPaths(env)
+
+#--- Now, ATLAS
+
+if host_type != 'Darwin':
+    ATLAS_LIBPATH = env['ATLAS_LIBPATH']
+    ATLAS_LIBS = env['ATLAS_LIBS']
+    if not ATLAS_LIBPATH:
+        atlas_libpath = '/usr/lib64/atlas'
+    else:
+        atlas_libpath = ATLAS_LIBPATH
+
+    env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
+
+
+### Get more info from environment
+PREFIX = env['PREFIX']
 
 ### Autoconf
 # (don't bother when cleaning)
 has_netcdf = 0
+pyloos = int(env['pyloos'])
+env['HAS_NETCDF'] = 0
 
 if not env.GetOption('clean'):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
-                                           'CheckForBoost' : CheckForBoost })
+                                           'CheckAtlasBuild' : CheckAtlasBuild,
+                                           'CheckForBoostLibrary' : CheckForBoostLibrary })
+
     if not conf.CheckType('ulong','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
     if not conf.CheckType('uint','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-    if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
-        has_netcdf = 1
 
+# --- NetCDF
+    has_netcdf = 0
+    if NETCDF_LIBS:
+        netcdf_libs = NETCDF_LIBS
+        env.Append(CCFLAGS=['-DHAS_NETCDF'])
+        has_netcdf = 1
+    else:
+        if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+            netcdf_libs = 'netcdf'
+            env.Append(CCFLAGS=['-DHAS_NETCDF'])
+            has_netcdf = 1
+
+    env['HAS_NETCDF'] = has_netcdf
+    if has_netcdf:
+        env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
+        env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
+
+
+# --- SWIG
     if pyloos:
         if conf.CheckForSwig():
             pyloos = 1
         else:
-            print '***Warning***\tPyLOOS will not be built.  No suitable swig found.'
             pyloos = 0
 
-    boost_regex = DivineBoost(conf, 'boost_regex')
-    boost_program_options = DivineBoost(conf, 'boost_program_options')
-    boost_thread = DivineBoost(conf, 'boost_thread')
-    boost_system = DivineBoost(conf, 'boost_system')
+    env['pyloos'] = pyloos
+
+# --- BOOST
+    if BOOST_LIBS:
+        boost_libs = Split(BOOST_LIBS)
+    else:
+        boost_threaded = -1
+        boost_libs = []
+        for libname in ['boost_regex', 'boost_thread', 'boost_system', 'boost_program_options']:
+            result = conf.CheckForBoostLibrary(libname, boost_libpath, library_suffix)
+            if not result[0]:
+                print 'Error- missing Boost library %s' % libname
+                Exit(1)
+            if boost_threaded < 0:
+                boost_threaded = result[1]
+            elif boost_threaded and not result[1]:
+                print 'Error- Expected threaded boost libraries, but %s is not threaded.' % libname
+                Exit(1)
+            elif not boost_threaded and result[1]:
+                print 'Error- Expected non-threaded boost libraries, but %s is threaded.' % libname
+                Exit(1)
+            boost_libs.append(result[0])
+
+# --- ATLAS
+    if host_type != 'Darwin':
+        if ATLAS_LIBS:
+            atlas_libs = Split(ATLAS_LIBS)
+        else:
+            numerics = { 'atlas' : 0,
+                         'lapack' : 0,
+                         'f77blas' : 0,
+                         'cblas' : 0,
+                         'blas' : 0 }
+            
+        
+            for libname in numerics.keys():
+                if conf.CheckLib(libname, autoadd = 0):
+                    numerics[libname] = 1
+
+            atlas_libs = []
+            if (numerics['lapack']):
+                atlas_libs.append('lapack')
+            
+            if (numerics['f77blas'] and numerics['cblas']):
+                atlas_libs.extend(['f77blas', 'cblas'])
+            elif (numerics['blas']):
+                atlas_libs.append('blas')
+            else:
+                print 'Error- you must have some kind of blas installed'
+                Exit(1)
+                    
+            if (numerics['atlas']):
+                atlas_libs.append('atlas')
+
+            if not numerics['lapack'] and not numerics['atlas']:
+                print 'Error- you must have either LAPACK or Atlas installed'
+                Exit(1)
+
+            atlas_libs = conf.CheckAtlasBuild(atlas_libs)
+            if not atlas_libs:
+                print 'Error- could not figure out how to build.'
+                Exit(1)
+
+
+    environOverride(conf)
 
     env = conf.Finish()
 
-    env.Append(LIBS = [boost_regex, boost_program_options, boost_thread, boost_system])
+    env.Append(LIBS = boost_libs)
+    if host_type != 'Darwin':
+        env.Append(LIBS = atlas_libs)
+    
 
-    if (NETCDFINC != '' or NETCDFLIB != ''):
-        has_netcdf = 1
-
-env['HAS_NETCDF'] = has_netcdf
-env['pyloos'] = pyloos
 
 ### Compile-flags
 
@@ -343,32 +469,12 @@ release_opts='-O3 -DNDEBUG -Wall'
 profile_opts='-pg'
 
 # Setup the general environment...
-env.Append(CPPPATH = ['#'])
+env.Prepend(CPPPATH = ['#'])
+env.Prepend(LIBPATH = ['#'])
+env.Append(LEXFLAGS=['-s'])
 
 if pyloos:
     env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
-
-# Ideally, what's below should be added to the CPPPATH above, but
-# doing so causes SCons to scan headers from that directory generating
-# implicit dependencies.  SCons seems to mangle these so changing one
-# file ends up forcing a complete rebuild.  Setting the include dirs
-# directly solves this problem, but it does mean that changes to the
-# include files in BOOST and ATLAS will not be picked up by SCons...
-if BOOSTINC != '':
-   env.Append(CPPFLAGS = ['-I' + BOOSTINC])
-env.Append(LIBPATH = ['#', BOOSTLIB, LIBXTRA])
-env.Append(LEXFLAGS=['-s'])
-
-LIBS_LINKED_TO = ''
-LIBS_PATHS_TO = ''
-if (has_netcdf):
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' netcdf'
-   env.Append(CPPFLAGS = ['-DHAS_NETCDF'])
-   if (NETCDFINC != ''):
-      env.Append(CPPFLAGS = ['-I' + NETCDFINC])
-   if (NETCDFLIB != ''):
-      env.Append(LIBPATH = [NETCDFLIB])
-
 
 # Platform specific build options...
 if host_type == 'Darwin':
@@ -376,52 +482,6 @@ if host_type == 'Darwin':
     if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
         env.Append(CCFLAGS = '--std=c++0x')
     env.Append(LINKFLAGS = ' -framework Accelerate')
-
-elif host_type == 'FreeBSD':
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-
-elif host_type == 'Linux':
-
-   ### Note for OpenSUSE and Ubuntu...
-   ### Older versions of those distros may require the gfortran
-   ### package be linked in.  If you see strange link errors for
-   ### unresolved symbols, try adding "gfortran" to the LIBS list
-   ### for your OS below...
-
-   # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-   if (linux_type == 'suse'):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-
-   elif (linux_type == 'ubuntu'):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
-      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
-
-   elif (linux_type == 'debian'):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack blas'
-      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
-
-   else:
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack f77blas'
-      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
-
-
-# CYGWIN does not have an atlas package, so use lapack/blas instead
-elif (host_type == 'Cygwin'):
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-   LIB_PATHS_TO = 'LAPACK'
-
-if LIBS_OVERRIDE != '':
-   LIBS_LINKED_TO = LIBS_OVERRIDE
-
-if LIBS_PATHS_OVERRIDE != '':
-   LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
-
-env.Append(LIBPATH = Split(LIBS_PATHS_TO))
-
-
-env.Append(LIBS = Split(LIBS_LINKED_TO))
-
-
 
 # Determine what kind of build...
 # No option implies debugging, but only an explicit debug defines
@@ -451,7 +511,6 @@ if int(profile):
    env.Append(LINKFLAGS=profile_opts)
 
 
-environOverride(env)
 setupRevision(env)
 
 # Export for subsidiary SConscripts
@@ -466,7 +525,7 @@ Export('env')
 Export('loos')
 
 docs = env.Doxygen('Doxyfile')
-tests = SConscript('Tests/SConscript')
+#tests = SConscript('Tests/SConscript')
 tools = SConscript('Tools/SConscript')
 elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
 h_tools = SConscript('Packages/HydrogenBonds/SConscript')
@@ -497,7 +556,7 @@ if pyloos:
 
 env.Alias('core', loos_core)
 env.Alias('docs', docs)
-env.Alias('tests', tests)
+#env.Alias('tests', tests)
 env.Alias('tools', loos_tools)
 
 all_target = loos + tools + all_packages + loos_scripts
@@ -505,13 +564,10 @@ if pyloos:
     all_target = all_target + loos_python
 
 env.Alias('all', all_target)
-env.Alias('caboodle', loos + tools + all_packages + tests + docs + loos_scripts + loos_python)
+env.Alias('caboodle', loos + tools + all_packages + docs + loos_scripts + loos_python)
 env.Alias('user', user_package)
 
 
 env.Alias('install', PREFIX)
 
-if int(regenerate):
-   env.Default('caboodle')
-else:
-   env.Default('all')
+env.Default('all')
