@@ -33,13 +33,12 @@ import SCons
 
 loos_version = '2.1.0'   # Set to null string to use SVN revision
 
-# Set default path depending on platform...
-# Note: This can be reset in custom.py
 default_lib_path = '/usr/lib64'
 
 
 
 def canonicalizeSystem():
+    global default_lib_path
     linux_type = 'nonlinux'
     host_type = platform.system()
     suffix = 'so'
@@ -58,6 +57,7 @@ def canonicalizeSystem():
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
     elif (host_type == 'Darwin'):
+        default_lib_path = '/usr/bin'
         suffix = 'dylib'
     return(host_type, linux_type, suffix)
 
@@ -216,7 +216,7 @@ def SetupBoostPaths(env):
     if BOOST == '':
         boost = '/usr'
         boost_include = '/usr/include'
-        boost_libpath = '/usr/lib64'
+        boost_libpath = default_lib_path
     else:
         boost = BOOST
         boost_include = boost + '/include'
@@ -248,7 +248,7 @@ def SetupNetCDFPaths(env):
     if NETCDF == '':
         netcdf = '/usr'
         netcdf_include = '/usr/include'
-        netcdf_libpath = '/usr/lib64'
+        netcdf_libpath = default_lib_path
     else:
         netcdf = NETCDF
         netcdf_include = netcdf + '/include'
