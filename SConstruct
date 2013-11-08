@@ -117,11 +117,11 @@ def script_builder_python(target, source, env):
 
    libpaths = env['LIBPATH']
    libpaths.pop(0)
-   libpaths.append(Dir('.').abspath)
+   libpaths.insert(0, Dir('.').abspath)
 
    cpppaths = env['CPPPATH']
    cpppaths.pop(0)
-   cpppaths.append(Dir('.').abspath)
+   cpppaths.insert(0, Dir('.').abspath)
 
    if not 'install' in COMMAND_LINE_TARGETS:
        toolpath = ':'.join(['$LOOS/Packages/' + s for s in [package_list[i] for i in package_list]])
