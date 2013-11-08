@@ -391,7 +391,7 @@ has_netcdf = 0
 pyloos = int(env['pyloos'])
 env['HAS_NETCDF'] = 0
 
-if not env.GetOption('clean'):
+if not (env.GetOption('clean') or env.GetOption('help')):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
                                            'CheckAtlasBuild' : CheckAtlasBuild,
                                            'CheckForBoostLibrary' : CheckForBoostLibrary })
