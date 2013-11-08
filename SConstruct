@@ -416,29 +416,29 @@ if not env.GetOption('clean'):
                 if conf.CheckLib(libname, autoadd = 0):
                     numerics[libname] = 1
 
-                atlas_libs = []
-                if (numerics['lapack']):
-                    atlas_libs.append('lapack')
+            atlas_libs = []
+            if (numerics['lapack']):
+                atlas_libs.append('lapack')
             
-                if (numerics['f77blas'] and numerics['cblas']):
-                    atlas_libs.extend(['f77blas', 'cblas'])
-                elif (numerics['blas']):
-                    atlas_libs.append('blas')
-                else:
-                    print 'Error- you must have some kind of blas installed'
-                    Exit(1)
+            if (numerics['f77blas'] and numerics['cblas']):
+                atlas_libs.extend(['f77blas', 'cblas'])
+            elif (numerics['blas']):
+                atlas_libs.append('blas')
+            else:
+                print 'Error- you must have some kind of blas installed'
+                Exit(1)
                     
-                if (numerics['atlas']):
-                    atlas_libs.append('atlas')
+            if (numerics['atlas']):
+                atlas_libs.append('atlas')
 
-                if not numerics['lapack'] and not numerics['atlas']:
-                    print 'Error- you must have either LAPACK or Atlas installed'
-                    Exit(1)
+            if not numerics['lapack'] and not numerics['atlas']:
+                print 'Error- you must have either LAPACK or Atlas installed'
+                Exit(1)
 
-                atlas_libs = conf.CheckAtlasBuild(atlas_libs)
-                if not atlas_libs:
-                    print 'Error- could not figure out how to build.'
-                    Exit(1)
+            atlas_libs = conf.CheckAtlasBuild(atlas_libs)
+            if not atlas_libs:
+                print 'Error- could not figure out how to build.'
+                Exit(1)
 
 
     environOverride(conf)
