@@ -32,9 +32,11 @@ from string import Template
 
 import SCons
 
-loos_version = '2.1.0'   # Set to null string to use SVN revision
 
-default_lib_path = '/usr/lib64'
+### BASIC DISTRIBUTION CONFIGURATION
+
+loos_version = '2.1.0'
+
 package_list = { 'ENM': 'ElasticNetworks',
                  'HBonds' : 'HydrogenBonds',
                  'Conv' : 'Convergence',
@@ -43,7 +45,13 @@ package_list = { 'ENM': 'ElasticNetworks',
                  'Python': 'PyLOOS' }
 
 
+### SUPPORT ROUTINES
 
+# This may be overridden by canonicalizeSystem()
+default_lib_path = '/usr/lib64'
+
+
+# Attempt to canonicalize system name, type and other related info...
 def canonicalizeSystem():
     global default_lib_path
     linux_type = 'nonlinux'
@@ -71,6 +79,8 @@ def canonicalizeSystem():
 
 
 
+
+### Create a revision file for linking against.
 def setupRevision(env):
     # Divine the current revision...
     revision = loos_version + " " + strftime("%y%m%d")
@@ -87,6 +97,7 @@ def setupRevision(env):
     revfile.close()
 
 
+### Let environment variables override or modify some build paramaters...
 def environOverride(conf):
     # Allow overrides from environment...
     if 'CXX' in os.environ:
@@ -100,6 +111,8 @@ def environOverride(conf):
     if 'LDFLAGS' in os.environ:
         conf.env.Append(LINKFLAGS = os.environ['LDFLAGS'])
         print '*** Appending custom link flag: ' + os.environ['LDFLAGS']
+
+
 
 ### Builder for setup scripts
 
@@ -297,9 +310,7 @@ def SetupNetCDFPaths(env):
 
 ############################################################################################
 
-
-# This is the version-tag for LOOS output
-loos_version = '2.1.0'
+### Main sconstruct
 
 
 # Principal options...
@@ -342,6 +353,7 @@ env['host_type'] = host_type
 env['linux_type'] = linux_type
 
 
+# Setup alternate path to tools
 if env['ALTPATH']:
    buildenv = env['ENV']
    path = buildenv['PATH']
@@ -437,7 +449,9 @@ if not env.GetOption('clean'):
                 Exit(1)
             boost_libs.append(result[0])
 
-# --- ATLAS
+# --- ATLAS/LAPACK
+
+    # MacOS will use accelerate framework, so skip all of this...
     if host_type != 'Darwin':
         if ATLAS_LIBS:
             atlas_libs = Split(ATLAS_LIBS)
@@ -499,6 +513,7 @@ env.Prepend(CPPPATH = ['#'])
 env.Prepend(LIBPATH = ['#'])
 env.Append(LEXFLAGS=['-s'])
 
+# Include Python if building PyLOOS
 if pyloos:
     env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
 
@@ -510,10 +525,6 @@ if host_type == 'Darwin':
     env.Append(LINKFLAGS = ' -framework Accelerate')
 
 # Determine what kind of build...
-# No option implies debugging, but only an explicit debug defines
-# the DEBUG symbol...  Yes, it's a bit obtuse, but it allows
-# you to control the level of debugging output through the
-# DEBUG definition...
 
 release = int(env['release'])
 debug = int(env['debug'])
@@ -543,7 +554,9 @@ setupRevision(env)
 
 Export('env')
 
-###################################
+###########################################################################################
+
+### Handle SConscripts and build targets
 
 [loos, loos_python, loos_scripts] = SConscript('SConscript')
 Export('loos')
@@ -574,30 +587,11 @@ if pyloos:
     loos_tools = loos_tools + loos_python
 
 all = loos_tools + loos_scripts + loos_packages
+
+env.Alias('tools', loos_tools)
+env.Alias('core', loos_core)
+env.Alias('docs', docs)
 env.Alias('all', all)
-
-# build targets...
-
-#loos_core = loos + loos_scripts
-#loos_tools = tools
-#if pyloos:
-#    loos_core = loos_core + loos_python
-#    loos_tools = loos_tools + loos_python
-
-#env.Alias('core', loos_core)
-#env.Alias('docs', docs)
-#env.Alias('tests', tests)
-#env.Alias('tools', loos_tools)
-
-#all_target = loos + tools + all_packages + loos_scripts
-#if pyloos:
-#    all_target = all_target + loos_python
-
-#env.Alias('all', all_target)
-#env.Alias('caboodle', loos + tools + all_packages + docs + loos_scripts + loos_python)
-#env.Alias('user', user_package)
-
-
 env.Alias('install', PREFIX)
 
 env.Default('all')
