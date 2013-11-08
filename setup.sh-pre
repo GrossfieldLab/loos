@@ -46,6 +46,9 @@ export PATH="$$TOOLPATH:$$PATH"
 SYSTEM=`uname`
 if [ "$$SYSTEM" = "Darwin" ] ; then
     export DYLD_LIBRARY_PATH="$$LIBPATH:$$DYLD_LIBRARY_PATH"
+elif `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
+    export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
+    export PATH="$$LOOSPATH:$$PATH"
 else
     export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
 fi
