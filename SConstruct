@@ -35,6 +35,12 @@ import SCons
 loos_version = '2.1.0'   # Set to null string to use SVN revision
 
 default_lib_path = '/usr/lib64'
+package_list = { 'ENM': 'ElasticNetworks',
+                 'HBonds' : 'HydrogenBonds',
+                 'Conv' : 'Convergence',
+                 'Density' : 'DensityTools',
+                 'User': 'User',
+                 'Python': 'PyLOOS' }
 
 
 
@@ -525,17 +531,15 @@ Export('env')
 Export('loos')
 
 docs = env.Doxygen('Doxyfile')
-#tests = SConscript('Tests/SConscript')
-tools = SConscript('Tools/SConscript')
-elastic_networks_package = SConscript('Packages/ElasticNetworks/SConscript')
-h_tools = SConscript('Packages/HydrogenBonds/SConscript')
-convergence_package = SConscript('Packages/Convergence/SConscript')
-density_package = SConscript('Packages/DensityTools/SConscript')
-user_package = SConscript('Packages/User/SConscript')
-python_package = SConscript('Packages/PyLOOS/SConscript')
+loos_tools = SConscript('Tools/SConscript')
 
-
-all_packages = elastic_networks_package + h_tools + convergence_package + density_package
+loos_packages = []
+for name in package_list:
+    if name == 'Python' and not pyloos:
+        continue
+    pkg_sc = SConscript('Packages/' + package_list[name] + '/SConscript')
+    env.Alias(name, pkg_sc)
+    loos_packages = loos_packages + pkg_sc
 
 ### Special handling for pre-packaged documentation...
 
@@ -545,27 +549,35 @@ env.Command(PREFIX + '/docs/main.html', [], [
       ])
 env.AlwaysBuild(PREFIX + '/docs/main.html')
 
-
-# build targets...
-
 loos_core = loos + loos_scripts
-loos_tools = tools
+
 if pyloos:
     loos_core = loos_core + loos_python
     loos_tools = loos_tools + loos_python
 
-env.Alias('core', loos_core)
-env.Alias('docs', docs)
+all = loos_tools + loos_scripts + loos_packages
+env.Alias('all', all)
+
+# build targets...
+
+#loos_core = loos + loos_scripts
+#loos_tools = tools
+#if pyloos:
+#    loos_core = loos_core + loos_python
+#    loos_tools = loos_tools + loos_python
+
+#env.Alias('core', loos_core)
+#env.Alias('docs', docs)
 #env.Alias('tests', tests)
-env.Alias('tools', loos_tools)
+#env.Alias('tools', loos_tools)
 
-all_target = loos + tools + all_packages + loos_scripts
-if pyloos:
-    all_target = all_target + loos_python
+#all_target = loos + tools + all_packages + loos_scripts
+#if pyloos:
+#    all_target = all_target + loos_python
 
-env.Alias('all', all_target)
-env.Alias('caboodle', loos + tools + all_packages + docs + loos_scripts + loos_python)
-env.Alias('user', user_package)
+#env.Alias('all', all_target)
+#env.Alias('caboodle', loos + tools + all_packages + docs + loos_scripts + loos_python)
+#env.Alias('user', user_package)
 
 
 env.Alias('install', PREFIX)
