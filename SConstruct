@@ -63,6 +63,7 @@ def canonicalizeSystem():
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
+    # MacOS is special (of course...)
     elif (host_type == 'Darwin'):
         default_lib_path = '/usr/bin'
         suffix = 'dylib'
@@ -109,13 +110,10 @@ def environOverride(conf):
 # it will use the installation directory instead.
 
 def script_builder_python(target, source, env):
-
-    
    if 'LOOS_PATH' in env:
        dir_path = env['LOOS_PATH']
    else:
-       # Cheat...use the path to the template script as the location of the distribution
-       dir_path = os.path.dirname(target[0].get_abspath())
+       dir_path = Dir('.').abspath
 
    file = open(str(source[0]), 'r')
    script = file.read()
@@ -129,6 +127,8 @@ def script_builder_python(target, source, env):
 
 
 
+# Verify that we have swig and it's v2.0+
+# Returns the path to swig
 def CheckForSwig(conf):
     conf.Message('Checking for Swig v2.0+ ...')
     swig_location = distutils.spawn.find_executable('swig', env['ENV']['PATH'])
@@ -149,7 +149,6 @@ def CheckForSwig(conf):
 
 # See if we need gfortran in order to build code with atlas/lapack
 # Returns the full list of libraries used...
-
 def CheckAtlasBuild(conf, libs):
    test_code = """
 extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
@@ -178,7 +177,6 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
 # Check for existince of boost library with various naming variants
 # Will return a tuple containing the correct name and a flag indicating
 # whether this is the threaded or non-threaded version.
-
 def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Message('Checking for Boost library %s...' % name)
 
@@ -216,6 +214,7 @@ def CheckForBoostLibrary(conf, name, path, suffix):
 
 # ----------------------------------------------------------------------------------
 
+### Some convenience functions so the body of the SConstruct is easier to read...
 
 def SetupBoostPaths(env):
 
@@ -248,7 +247,6 @@ def SetupBoostPaths(env):
     env.MergeFlags({ 'CPPPATH' : [boost_include] })
 
 
-########################3
 
 
 def SetupNetCDFPaths(env):
@@ -276,6 +274,7 @@ def SetupNetCDFPaths(env):
         netcdf_libpath= NETCDF_LIBPATH
 
 
+############################################################################################
 
 
 # This is the version-tag for LOOS output
@@ -522,7 +521,6 @@ setupRevision(env)
 # Export for subsidiary SConscripts
 
 Export('env')
-
 
 
 ###################################
