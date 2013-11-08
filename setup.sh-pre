@@ -22,34 +22,34 @@
 
 ### This will be automatically set to where LOOS is built or installed.  If necessary,
 ### change manually...
-LOOSPATH="PATH_TO_LOOS"
+LOOSPATH="$loos_path"
 
 
 
 # Find library
-if [ -d $LOOSPATH/lib ] ; then
-    LIBPATH="$LOOSPATH/lib"
+if [ -d $$LOOSPATH/lib ] ; then
+    LIBPATH="$$LOOSPATH/lib"
 else
-    LIBPATH="$LOOSPATH"
+    LIBPATH="$$LOOSPATH"
 fi
 
 # Find tools
-if [ -d $LOOSPATH/bin ] ; then
-    TOOLPATH="$LOOSPATH/bin"
+if [ -d $$LOOSPATH/bin ] ; then
+    TOOLPATH="$$LOOSPATH/bin"
 else
-    TOOLPATH="$LOOSPATH/Tools:$LOOSPATH/Packages/Convergence:$LOOSPATH/Packages/DensityTools:$LOOSPATH/Packages/ElasticNetworks:$LOOSPATH/Packages/HydrogenBonds:$LOOSPATH/Packages/User"
+    TOOLPATH="$$LOOSPATH/Tools:$$LOOSPATH/Packages/Convergence:$$LOOSPATH/Packages/DensityTools:$$LOOSPATH/Packages/ElasticNetworks:$$LOOSPATH/Packages/HydrogenBonds:$$LOOSPATH/Packages/User"
 fi
 
-export PATH="$TOOLPATH:$PATH"
+export PATH="$$TOOLPATH:$$PATH"
 
 # Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
 SYSTEM=`uname`
-if [ "$SYSTEM" = "Darwin" ] ; then
-    export DYLD_LIBRARY_PATH="$LIBPATH:$DYLD_LIBRARY_PATH"
+if [ "$$SYSTEM" = "Darwin" ] ; then
+    export DYLD_LIBRARY_PATH="$$LIBPATH:$$DYLD_LIBRARY_PATH"
 else
-    export LD_LIBRARY_PATH="$LIBPATH:$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
 fi
 
-export PYTHONPATH="$LIBPATH:$PYTHONPATH"
+export PYTHONPATH="$$LIBPATH:$$PYTHONPATH"
 
 

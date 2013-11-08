@@ -28,6 +28,7 @@ from time import strftime
 import shutil
 import distutils.sysconfig
 import distutils.spawn
+from string import Template
 
 import SCons
 
@@ -102,13 +103,22 @@ def environOverride(conf):
 # it will use the installation directory instead.
 
 def script_builder_python(target, source, env):
-   first = target[0]
-   target_path = first.get_abspath()
-   dir_path = os.path.dirname(target_path)
 
-   command = "sed s@PATH_TO_LOOS@" + dir_path + "@ <" + str(source[0]) + " >" + str(first)
-#   print command
-   os.system(command)
+    
+   if 'LOOS_PATH' in env:
+       dir_path = env['LOOS_PATH']
+   else:
+       # Cheat...use the path to the template script as the location of the distribution
+       dir_path = os.path.dirname(target[0].get_abspath())
+
+   file = open(str(source[0]), 'r')
+   script = file.read()
+   script_template = Template(script)
+   script = script_template.substitute(loos_path = dir_path)
+
+   outfile = open(str(target[0]), 'w')
+   outfile.write(script)
+
    return None
 
 
