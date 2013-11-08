@@ -21,21 +21,22 @@
 
 ### This will be automatically set to where LOOS is built or installed.  If necessary,
 ### change manually...
-set LOOSPATH="$loos_path"
+setenv LOOS "$loos_path"
 
-if ( -d $$LOOSPATH/lib ) then
-    set LIBPATH="$$LOOSPATH/lib"
+if ( -d $$LOOS/lib ) then
+    set LIBPATH="$$LOOS/lib"
 else
-    set LIBPATH="$$LOOSPATH"
+    set LIBPATH="$$LOOS"
 endif
 
-if ( -d $$LOOSPATH/bin ) then
-    set TOOLPATH="$$LOOSPATH/bin"
-else
-    set TOOLPATH="$$LOOSPATH/Tools:$$LOOSPATH/Packages/Convergence:$$LOOSPATH/Packages/DensityTools:$$LOOSPATH/Packages/ElasticNetworks:$$LOOSPATH/Packages/HydrogenBonds:$$LOOSPATH/Packages/User"
-endif
+setenv LOOS_LIBPATH "$libpath"
+setenv LOOS_CPPPATH "$cpppath"
+setenv LOOS_LINKFLAGS "$linkflags"
+setenv LOOS_LIBS "$libs"
+setenv LOOS_CCFLAGS "$ccflags"
 
-setenv PATH "$$TOOLPATH":"$$PATH"
+
+setenv PATH "$tool_path":"$$PATH"
 
 set SYSTEM=`uname`
 if ( "$$SYSTEM" == "Darwin" ) then
