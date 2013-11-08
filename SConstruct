@@ -115,10 +115,30 @@ def script_builder_python(target, source, env):
    else:
        dir_path = Dir('.').abspath
 
+   libpaths = env['LIBPATH']
+   libpaths.pop(0)
+   libpaths.append(Dir('.').abspath)
+
+   cpppaths = env['CPPPATH']
+   cpppaths.pop(0)
+   cpppaths.append(Dir('.').abspath)
+
+   if not 'install' in COMMAND_LINE_TARGETS:
+       toolpath = ':'.join(['$LOOS/Packages/' + s for s in [package_list[i] for i in package_list]])
+   else:
+       toolpath = dir_path + '/' + 'bin'
+       
+
    file = open(str(source[0]), 'r')
    script = file.read()
    script_template = Template(script)
-   script = script_template.substitute(loos_path = dir_path)
+   script = script_template.substitute(loos_path = dir_path,
+                                       tool_path = toolpath,
+                                       libpath = ':'.join(libpaths),
+                                       cpppath = ':'.join(cpppaths),
+                                       linkflags = env['LINKFLAGS'],
+                                       libs = ':'.join(env['LIBS']),
+                                       ccflags = env['CCFLAGS'])
 
    outfile = open(str(target[0]), 'w')
    outfile.write(script)
@@ -521,7 +541,6 @@ setupRevision(env)
 # Export for subsidiary SConscripts
 
 Export('env')
-
 
 ###################################
 

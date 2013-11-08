@@ -22,25 +22,23 @@
 
 ### This will be automatically set to where LOOS is built or installed.  If necessary,
 ### change manually...
-LOOSPATH="$loos_path"
-
+export LOOS="$loos_path"
+export LOOS_LIBPATH="$libpath"
+export LOOS_CPPPATH="$cpppath"
+export LOOS_LINKFLAGS="$linkflags"
+export LOOS_LIBS="$libs"
+export LOOS_CCFLAGS="$ccflags"
 
 
 # Find library
-if [ -d $$LOOSPATH/lib ] ; then
-    LIBPATH="$$LOOSPATH/lib"
+if [ -d $$LOOS/lib ] ; then
+    LIBPATH="$$LOOS/lib"
 else
-    LIBPATH="$$LOOSPATH"
+    LIBPATH="$$LOOS"
 fi
 
-# Find tools
-if [ -d $$LOOSPATH/bin ] ; then
-    TOOLPATH="$$LOOSPATH/bin"
-else
-    TOOLPATH="$$LOOSPATH/Tools:$$LOOSPATH/Packages/Convergence:$$LOOSPATH/Packages/DensityTools:$$LOOSPATH/Packages/ElasticNetworks:$$LOOSPATH/Packages/HydrogenBonds:$$LOOSPATH/Packages/User"
-fi
+export PATH="$tool_path:$$PATH"
 
-export PATH="$$TOOLPATH:$$PATH"
 
 # Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
 SYSTEM=`uname`
