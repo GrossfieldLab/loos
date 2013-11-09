@@ -88,36 +88,38 @@ def environOverride(conf):
 # it will use the installation directory instead.
 
 def script_builder_python(target, source, env):
-   if 'LOOS_PATH' in env:
-       dir_path = env['LOOS_PATH']
-   else:
-       dir_path = env.Dir('.').abspath
 
    libpaths = env['LIBPATH']
    libpaths.pop(0)
-   libpaths.insert(0, env.Dir('.').abspath)
 
    cpppaths = env['CPPPATH']
    cpppaths.pop(0)
-   cpppaths.insert(0, env.Dir('.').abspath)
 
    if not 'install' in SCons.Script.COMMAND_LINE_TARGETS:
        toolpath = '$LOOS/Tools:' + ':'.join(['$LOOS/Packages/' + s for s in [loos_globals.package_list[i] for i in loos_globals.package_list]])
+       loos_dir = env.Dir('.').abspath
+       libpaths.insert(0, loos_dir)
+       cpppaths.insert(0, loos_dir)
+       loos_pythonpath = loos_dir
 
    else:
-       toolpath = dir_path + '/' + 'bin'
+       loos_dir = env['PREFIX']
+       toolpath = loos_dir + '/bin'
+       libpaths.insert(0, loos_dir + '/lib')
+       loos_pythonpath = loos_dir + '/lib'
        
 
    file = open(str(source[0]), 'r')
    script = file.read()
    script_template = Template(script)
-   script = script_template.substitute(loos_path = dir_path,
+   script = script_template.substitute(loos_path = loos_dir,
                                        tool_path = toolpath,
                                        libpath = ':'.join(libpaths),
                                        cpppath = ':'.join(cpppaths),
                                        linkflags = env['LINKFLAGS'],
                                        libs = ':'.join(env['LIBS']),
-                                       ccflags = env['CCFLAGS'])
+                                       ccflags = env['CCFLAGS'],
+                                       loos_pythonpath = loos_pythonpath)
 
    outfile = open(str(target[0]), 'w')
    outfile.write(script)

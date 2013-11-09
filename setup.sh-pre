@@ -30,12 +30,6 @@ export LOOS_LIBS="$libs"
 export LOOS_CCFLAGS="$ccflags"
 
 
-# Find library
-if [ -d $$LOOS/lib ] ; then
-    LIBPATH="$$LOOS/lib"
-else
-    LIBPATH="$$LOOS"
-fi
 
 export PATH="$tool_path:$$PATH"
 
@@ -43,11 +37,11 @@ export PATH="$tool_path:$$PATH"
 # Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
 SYSTEM=`uname`
 if [ "$$SYSTEM" = "Darwin" ] ; then
-    export DYLD_LIBRARY_PATH="$$LIBPATH:$$DYLD_LIBRARY_PATH"
+    export DYLD_LIBRARY_PATH="$$LOOS_LIBPATH:$$DYLD_LIBRARY_PATH"
 else
-    export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="$$LOOS_LIBPATH:$$LD_LIBRARY_PATH"
 fi
 
-export PYTHONPATH="$$LIBPATH:$$PYTHONPATH"
+export PYTHONPATH="$loos_pythonpath:$$PYTHONPATH"
 
 
