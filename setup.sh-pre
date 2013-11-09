@@ -28,6 +28,7 @@ export LOOS_CPPPATH="$cpppath"
 export LOOS_LINKFLAGS="$linkflags"
 export LOOS_LIBS="$libs"
 export LOOS_CCFLAGS="$ccflags"
+export LOOS_CXX="$loos_cxx"
 
 
 

@@ -119,6 +119,7 @@ def script_builder_python(target, source, env):
                                        linkflags = env['LINKFLAGS'],
                                        libs = ':'.join(env['LIBS']),
                                        ccflags = env['CCFLAGS'],
+                                       loos_cxx = env['CXX'],
                                        loos_pythonpath = loos_pythonpath)
 
    outfile = open(str(target[0]), 'w')
