@@ -24,6 +24,8 @@ default_lib_path = '/usr/lib64'
 min_boost_version = 36    # 1.xx
 
 
+# List of packages to build and install
+# The keywords become build targets for SCons
 package_list = { 'ENM': 'ElasticNetworks',
                  'HBonds' : 'HydrogenBonds',
                  'Conv' : 'Convergence',

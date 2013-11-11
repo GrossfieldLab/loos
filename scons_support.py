@@ -19,6 +19,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+# This file contains support code for SCons for building LOOS
+
 import sys
 import os
 import glob

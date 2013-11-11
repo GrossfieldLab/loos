@@ -35,21 +35,8 @@ import loos_build_config
 
 from scons_support import *
 
-### BASIC DISTRIBUTION CONFIGURATION
 
-
-### SUPPORT ROUTINES
-
-
-# ----------------------------------------------------------------------------------
-
-### Some convenience functions so the body of the SConstruct is easier to read...
-
-
-
-############################################################################################
-
-### Main sconstruct
+# ----------------------------------------------------------------------------------------------
 
 
 # Principal options...
@@ -124,6 +111,8 @@ if host_type != 'Darwin':
 ### Get more info from environment
 PREFIX = env['PREFIX']
 
+# ----------------------------------------------------------------------------------------------
+
 ### Autoconf
 # (don't bother when cleaning)
 has_netcdf = 0
@@ -157,7 +146,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
     env['HAS_NETCDF'] = has_netcdf
 
 
-# --- SWIG
+# --- Check for SWIG
     if pyloos:
         if conf.CheckForSwig():
             pyloos = 1
@@ -166,7 +155,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
 
     env['pyloos'] = pyloos
 
-# --- BOOST
+# --- Check for Boost and Boost version
     if env['BOOST_LIBS']:
         boost_libs = Split(BOOST_LIBS)
     else:
@@ -192,7 +181,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
     if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
         Exit(1)
 
-# --- ATLAS/LAPACK
+# --- Check for ATLAS/LAPACK and how to build
 
     # MacOS will use accelerate framework, so skip all of this...
     if host_type != 'Darwin':
@@ -288,13 +277,16 @@ if int(profile):
    env.Append(LINKFLAGS=profile_opts)
 
 
+# Build a revision file to include with LOOS so all tools know what version
+# of LOOS they were built with...
+
 setupRevision(env)
 
 # Export for subsidiary SConscripts
 
 Export('env')
 
-###########################################################################################
+# ---------------------------------------------------------------------------------------------
 
 ### Handle SConscripts and build targets
 
@@ -304,6 +296,10 @@ Export('loos')
 docs = env.Doxygen('Doxyfile')
 loos_tools = SConscript('Tools/SConscript')
 
+
+# Automatically setup build targets based on package_list
+# Note: excludes Python PyLOOS was not built...
+
 loos_packages = []
 for name in loos_build_config.package_list:
     if name == 'Python' and not pyloos:
@@ -312,6 +308,7 @@ for name in loos_build_config.package_list:
     env.Alias(name, pkg_sc)
     loos_packages = loos_packages + pkg_sc
 
+
 ### Special handling for pre-packaged documentation...
 
 env.Command(PREFIX + '/docs/main.html', [], [
@@ -319,6 +316,7 @@ env.Command(PREFIX + '/docs/main.html', [], [
       Copy(PREFIX + '/docs', 'Docs'),
       ])
 env.AlwaysBuild(PREFIX + '/docs/main.html')
+
 
 loos_core = loos + loos_scripts
 
