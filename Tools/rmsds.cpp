@@ -41,9 +41,7 @@ namespace po = loos::OptionsFramework::po;
 
 typedef RealMatrix              Matrix;
 
-#if defined(__linux__) || defined(__APPLE__)
 const int matrix_precision = 2;    // Controls precision in output matrix
-#endif
 
 #if defined(__APPLE__)
 #include <sys/types.h>
