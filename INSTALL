@@ -378,16 +378,28 @@ FreeBSD is NOT SUPPORTED
 
 			*** GENERAL NOTES ***
 
-There is some variability in the naming used for the Boost libraries.
-If your build fails even though you just installed the latest Boost,
-check the names of the regex and program_options libraries and set
-these in your "custom.py" file.
+* Customizing the Build *
+
+You can override the paths SCons will use for both libraries and
+include files by setting the appropriate variables in a "custom.py"
+file.  For example, to control where the Boost include files are
+located, set the BOOST_INCLUDE variable.
+
+You can also control what libraries are linked against by setting the
+appropriate _LIBS variable in your custom.py file.  For example, if
+your Boost libraries have a naming convention that the LOOS SConstruct
+cannot figure out, you can explicitly set the libraries using the
+BOOST_LIBS variable.  These variables take a space-separated list of
+library names.  It is important to have *all* required libraries
+included in this list.  So for Boost, this would include the regex,
+program_options, thread, and system libraries.
+
 
 If you're using a compiler in a non-standard location (e.g. you have
 your own build of the latest and greatest gcc), SCons may not be using
 it even though your $PATH is set correctly.  You can force which
 compiler is used to build LOOS by setting the CXX variable in your
-"custom.py" file.  You may also need to specify the "LIBXTRA" path...
+"custom.py" file.
 
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
