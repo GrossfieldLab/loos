@@ -243,6 +243,9 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                 print 'Error- Expected non-threaded boost libraries, but %s is threaded.' % libname
                 Exit(1)
             boost_libs.append(result[0])
+    
+    env.Append(LIBS = boost_libs)
+
 
 # --- ATLAS/LAPACK
 
@@ -286,14 +289,11 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                 print 'Error- could not figure out how to build.'
                 Exit(1)
 
+        env.Append(LIBS = atlas_libs)
+
 
     environOverride(conf)
-
     env = conf.Finish()
-
-    env.Append(LIBS = boost_libs)
-    if host_type != 'Darwin':
-        env.Append(LIBS = atlas_libs)
     
 
 
