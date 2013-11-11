@@ -102,6 +102,11 @@ def SetupNetCDFPaths(env):
     if NETCDF_LIBPATH:
         netcdf_libpath= NETCDF_LIBPATH
 
+    env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
+    env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
+
+
+
 
 ############################################################################################
 
@@ -200,8 +205,8 @@ if not (env.GetOption('clean') or env.GetOption('help')):
 
 # --- NetCDF
     has_netcdf = 0
-    if NETCDF_LIBS:
-        netcdf_libs = NETCDF_LIBS
+    if env['NETCDF_LIBS']:
+        netcdf_libs = env['NETCDF_LIBS']
         env.Append(CCFLAGS=['-DHAS_NETCDF'])
         has_netcdf = 1
     else:
@@ -211,9 +216,6 @@ if not (env.GetOption('clean') or env.GetOption('help')):
             has_netcdf = 1
 
     env['HAS_NETCDF'] = has_netcdf
-    if has_netcdf:
-        env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
-        env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
 
 
 # --- SWIG
@@ -226,7 +228,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
     env['pyloos'] = pyloos
 
 # --- BOOST
-    if BOOST_LIBS:
+    if env['BOOST_LIBS']:
         boost_libs = Split(BOOST_LIBS)
     else:
         boost_threaded = -1
@@ -255,8 +257,8 @@ if not (env.GetOption('clean') or env.GetOption('help')):
 
     # MacOS will use accelerate framework, so skip all of this...
     if host_type != 'Darwin':
-        if ATLAS_LIBS:
-            atlas_libs = Split(ATLAS_LIBS)
+        if env['ATLAS_LIBS']:
+            atlas_libs = Split(env['ATLAS_LIBS'])
         else:
             numerics = { 'atlas' : 0,
                          'lapack' : 0,
