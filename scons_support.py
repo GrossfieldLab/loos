@@ -226,7 +226,7 @@ int main(int argc, char *argv[]) { return(0); }
     st = Template(source_code)
     test_code = st.substitute(version = min_boost_version)
 
-    conf.Message('Checking Boost header files version... ')
+    conf.Message('Checking Boost version (from header files) ... ')
     result = conf.TryLink(test_code, '.cpp')
     if not result:
         conf.Result('too old (use Boost 1.%d+)' % min_boost_version)
