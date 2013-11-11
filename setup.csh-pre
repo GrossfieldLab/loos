@@ -23,18 +23,12 @@
 ### change manually...
 setenv LOOS "$loos_path"
 
-if ( -d $$LOOS/lib ) then
-    set LIBPATH="$$LOOS/lib"
-else
-    set LIBPATH="$$LOOS"
-endif
-
 setenv LOOS_LIBPATH "$libpath"
 setenv LOOS_CPPPATH "$cpppath"
 setenv LOOS_LINKFLAGS "$linkflags"
 setenv LOOS_LIBS "$libs"
 setenv LOOS_CCFLAGS "$ccflags"
-
+setenv LOOS_CXX "$loos_cxx"
 
 setenv PATH "$tool_path":"$$PATH"
 
@@ -57,6 +51,10 @@ else
 
 endif
 
+set CYGWIN=`uname | grep -q '^CYGWIN'`
+if ($$?CYGWIN) then
+    setenv PATH "$$LOOS_LIBPATH":"$${PATH}"
+endif
 
 
 if ($$?PYTHONPATH) then
