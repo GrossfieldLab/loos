@@ -82,6 +82,7 @@
 ## Uncomment the following to explicitly name the atlas libraries linked with
 # ATLAS_LIBS='lapack f77blas cblas atlas'
 ## Uncomment the following to explicitly link with the parallel/threaded ATLAS libraries
+# ATLAS_LIBS='lapack ptf77blas ptcblas atlas'
 # ATLAS_LIBS='ptlapack ptf77blas ptcblas atlas'
 
 
