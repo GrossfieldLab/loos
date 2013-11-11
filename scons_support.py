@@ -164,7 +164,7 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
    result = conf.TryLink(test_code, '.cpp')
    if not result:
       conf.env.Append(LIBS = 'gfortran')
-      result = conf.TryLink(test_code)
+      result = conf.TryLink(test_code, '.cpp')
       if not result:
          conf.Result('error')
          return([])
