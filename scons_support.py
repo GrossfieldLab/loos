@@ -24,6 +24,8 @@ def canonicalizeSystem():
 # Detect CYGWIN & canonicalize linux type, setting defaults...
     if (re.search("(?i)cygwin", host_type)):
         host_type = 'Cygwin'
+        loos_build_config.default_lib_path = '/usr/lib'
+        suffix = 'dll.a'
     elif (host_type == 'Linux'):
         # Determine linux variant...
         linux_type = platform.platform()
