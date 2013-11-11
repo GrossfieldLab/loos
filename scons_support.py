@@ -13,7 +13,7 @@ from string import Template
 
 import SCons
 
-import loos_globals
+import loos_build_config
 
 
 # Attempt to canonicalize system name, type and other related info...
@@ -30,14 +30,14 @@ def canonicalizeSystem():
         
         if (re.search("(?i)ubuntu", linux_type)):
             linux_type = 'ubuntu'
-            loos_globals.default_lib_path = '/usr/lib'
+            loos_build_config.default_lib_path = '/usr/lib'
         elif (re.search("(?i)suse", linux_type)):
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
     # MacOS is special (of course...)
     elif (host_type == 'Darwin'):
-        loos_globals.default_lib_path = '/usr/bin'
+        loos_build_config.default_lib_path = '/usr/bin'
         suffix = 'dylib'
     return(host_type, linux_type, suffix)
 
@@ -48,7 +48,7 @@ def canonicalizeSystem():
 def setupRevision(env):
 
     # Divine the current revision...
-    revision = loos_globals.loos_version + " " + strftime("%y%m%d")
+    revision = loos_build_config.loos_version + " " + strftime("%y%m%d")
 
     # Now, write this out to a cpp file that can be linked in...this avoids having
     # to recompile everything when building on a new date.  We also rely on SCons
@@ -96,7 +96,7 @@ def script_builder_python(target, source, env):
    cpppaths.pop(0)
 
    if not 'install' in SCons.Script.COMMAND_LINE_TARGETS:
-       toolpath = '$LOOS/Tools:' + ':'.join(['$LOOS/Packages/' + s for s in [loos_globals.package_list[i] for i in loos_globals.package_list]])
+       toolpath = '$LOOS/Tools:' + ':'.join(['$LOOS/Packages/' + s for s in [loos_build_config.package_list[i] for i in loos_build_config.package_list]])
        loos_dir = env.Dir('.').abspath
        libpaths.insert(0, loos_dir)
        cpppaths.insert(0, loos_dir)

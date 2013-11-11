@@ -31,7 +31,7 @@ import distutils.spawn
 from string import Template
 
 import SCons
-import loos_globals
+import loos_build_config
 
 from scons_support import *
 
@@ -60,7 +60,7 @@ def SetupBoostPaths(env):
     if BOOST == '':
         boost = '/usr'
         boost_include = '/usr/include'
-        boost_libpath = loos_globals.default_lib_path
+        boost_libpath = loos_build_config.default_lib_path
     else:
         boost = BOOST
         boost_include = boost + '/include'
@@ -91,7 +91,7 @@ def SetupNetCDFPaths(env):
     if NETCDF == '':
         netcdf = '/usr'
         netcdf_include = '/usr/include'
-        netcdf_libpath = loos_globals.default_lib_path
+        netcdf_libpath = loos_build_config.default_lib_path
     else:
         netcdf = NETCDF
         netcdf_include = netcdf + '/include'
@@ -248,7 +248,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
     
     env.Append(LIBS = boost_libs)
 
-    if not conf.CheckBoostHeaderVersion(loos_globals.min_boost_version):
+    if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
         Exit(1)
 
 # --- ATLAS/LAPACK
@@ -364,10 +364,10 @@ docs = env.Doxygen('Doxyfile')
 loos_tools = SConscript('Tools/SConscript')
 
 loos_packages = []
-for name in loos_globals.package_list:
+for name in loos_build_config.package_list:
     if name == 'Python' and not pyloos:
         continue
-    pkg_sc = SConscript('Packages/' + loos_globals.package_list[name] + '/SConscript')
+    pkg_sc = SConscript('Packages/' + loos_build_config.package_list[name] + '/SConscript')
     env.Alias(name, pkg_sc)
     loos_packages = loos_packages + pkg_sc
 
