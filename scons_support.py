@@ -213,3 +213,24 @@ def CheckForBoostLibrary(conf, name, path, suffix):
    return('', -1)
 
             
+# Check for version of Boost includes
+def CheckBoostHeaderVersion(conf, min_boost_version):
+    source_code = """
+#include <boost/version.hpp>
+#if (((BOOST_VERSION / 100) % 1000) < $version)
+#error LOOS require Boost 1.$version or higher
+#endif
+int main(int argc, char *argv[]) { return(0); }
+"""
+
+    st = Template(source_code)
+    test_code = st.substitute(version = min_boost_version)
+
+    conf.Message('Checking Boost header files version... ')
+    result = conf.TryLink(test_code, '.cpp')
+    if not result:
+        conf.Result('too old (use Boost 1.%d+)' % min_boost_version)
+        return(0)
+
+    conf.Result('ok')
+    return(1)

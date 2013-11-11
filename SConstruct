@@ -186,10 +186,12 @@ has_netcdf = 0
 pyloos = int(env['pyloos'])
 env['HAS_NETCDF'] = 0
 
+
 if not (env.GetOption('clean') or env.GetOption('help')):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
                                            'CheckAtlasBuild' : CheckAtlasBuild,
-                                           'CheckForBoostLibrary' : CheckForBoostLibrary })
+                                           'CheckForBoostLibrary' : CheckForBoostLibrary,
+                                           'CheckBoostHeaderVersion' : CheckBoostHeaderVersion })
 
     if not conf.CheckType('ulong','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
@@ -246,6 +248,8 @@ if not (env.GetOption('clean') or env.GetOption('help')):
     
     env.Append(LIBS = boost_libs)
 
+    if not conf.CheckBoostHeaderVersion(loos_globals.min_boost_version):
+        Exit(1)
 
 # --- ATLAS/LAPACK
 
