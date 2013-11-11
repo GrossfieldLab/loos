@@ -43,6 +43,11 @@ else
     export LD_LIBRARY_PATH="$$LOOS_LIBPATH:$$LD_LIBRARY_PATH"
 fi
 
+# Cygwin requires libs in PATH
+if `echo $$SYSTEM || grep -q '^CYGWIN'` ; then
+    export PATH="$$LOOS_LIBPATH:$$PATH"
+fi
+
 export PYTHONPATH="$loos_pythonpath:$$PYTHONPATH"
 
 
