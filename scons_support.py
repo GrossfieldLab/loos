@@ -236,3 +236,68 @@ int main(int argc, char *argv[]) { return(0); }
 
     conf.Result('ok')
     return(1)
+
+
+
+def SetupBoostPaths(env):
+
+    global BOOST_LIBS
+    global boost
+    global boost_include
+    global boost_libpath
+
+    BOOST=env['BOOST']
+    BOOST_INCLUDE=env['BOOST_INCLUDE']
+    BOOST_LIBPATH=env['BOOST_LIBPATH']
+    BOOST_LIBS = env['BOOST_LIBS']
+
+    if BOOST == '':
+        boost = '/usr'
+        boost_include = '/usr/include'
+        boost_libpath = loos_build_config.default_lib_path
+    else:
+        boost = BOOST
+        boost_include = boost + '/include'
+        boost_libpath = boost + '/lib'
+        
+    if BOOST_INCLUDE:
+        boost_include = BOOST_INCLUDE
+    if BOOST_LIBPATH:
+        boost_libpath= BOOST_LIBPATH
+       
+
+    env.MergeFlags({ 'LIBPATH': [boost_libpath]})
+    env.MergeFlags({ 'CPPPATH' : [boost_include] })
+
+    # The main SConstruct will need to know what this path is for autoconf testing...
+    env['BOOST_LIBPATH'] = boost_libpath
+
+
+
+def SetupNetCDFPaths(env):
+    global NETCDF_LIBS
+    global netcdf_include
+    global netcdf_libpath
+
+    NETCDF=env['NETCDF']
+    NETCDF_INCLUDE=env['NETCDF_INCLUDE']
+    NETCDF_LIBPATH=env['NETCDF_LIBPATH']
+    NETCDF_LIBS = env['NETCDF_LIBS']
+    
+    if NETCDF == '':
+        netcdf = '/usr'
+        netcdf_include = '/usr/include'
+        netcdf_libpath = loos_build_config.default_lib_path
+    else:
+        netcdf = NETCDF
+        netcdf_include = netcdf + '/include'
+        netcdf_libpath = netcdf + '/lib'
+
+    if NETCDF_INCLUDE:
+        netcdf_include = NETCDF_INCLUDE
+    if NETCDF_LIBPATH:
+        netcdf_libpath= NETCDF_LIBPATH
+
+    env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
+    env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
+
