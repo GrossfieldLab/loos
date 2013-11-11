@@ -44,7 +44,7 @@ else
 fi
 
 # Cygwin requires libs in PATH
-if `echo $$SYSTEM || grep -q '^CYGWIN'` ; then
+if `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
     export PATH="$$LOOS_LIBPATH:$$PATH"
 fi
 
