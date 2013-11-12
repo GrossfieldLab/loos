@@ -196,13 +196,13 @@ def CheckAtlasRequires(conf, name, lib, required):
         conf.env.Replace(LIBS=lastLIBS)
         if not result:
             conf.Result('fail')
-            return([])
+            return()
         conf.Result('yes')
-        return([lib, required])
+        return(lib, required)
 
     conf.env.Replace(LIBS=lastLIBS)
     conf.Result('no')
-    return([lib])
+    return(lib)
 
     
 

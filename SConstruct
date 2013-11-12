@@ -227,6 +227,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                     
             if (numerics['atlas']):
                 atlas_libs.append('atlas')
+
             if not (numerics['lapack'] or numerics['atlas']):
                # Check to see if lapack required blas...
                if numerics['blas']:
@@ -245,13 +246,12 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                 print 'Error- could not figure out how to build with Atlas/Lapack'
                 Exit(1)
 
-        env.Append(LIBS = atlas_libs)
-
+            # Hack to extend list rather than append a list into a list
+            for lib in atlas_libs:
+               env.Append(LIBS=lib)
 
     environOverride(conf)
     env = conf.Finish()
-    
-
 
 ### Compile-flags
 
