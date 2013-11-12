@@ -2540,6 +2540,28 @@ appear in the BOOST_LIBS variable.
   installed.  SCons may use include files from one version, but link
   with the libraries from another.  Check the path to BOOST and the
   name of the libraries linked against.
+
+<DT> I get a build error that says expected threaded libraries or
+  non-threaded libraries, but some library is the opposite?
+<DD> This is probably a failure of SCons to figure out the appropriate
+  library name.  Use the BOOST_LIBS variable (described above) to
+  manually set the libraries used.
+
+<DT> I get an error that says I must have some kind of blas installed
+<DD> This means that SCons could find neither the versions of blas
+  included with Atlas nor the typical system blas.  You will need to
+  make sure one or the other is installed.  Double check your
+  ATLAS_LIBPATH.  In a worst case, you may need to explicitly list the
+  libraries to use by setting the ATLAS_LIBS variable.
+
+<DT> I get an error that says SCons could not figure out how to build
+<DD> As part of the build, SCons will try to compile and link a test
+  program to see whether ATLAS/LAPACK works and if there are any
+  additional libraries needed.  For some reason, this step failed.
+  Double-check your Atlas/lapack installation.  You may want to try
+  building a small test program with Atlas, and use that to set
+  ATLAS_LIBS or CCFLAGS appropriately.
+
 </DL>
 
 \subsection faq_loos_using_tools Using LOOS Tools
