@@ -44,7 +44,7 @@ def canonicalizeSystem():
     host_type = platform.system()
     suffix = 'so'
 
-    if os.direxists('/usr/lib64'):
+    if os.path.isdir('/usr/lib64'):
         loos_build_config.default_lib_path = '/usr/lib64'
     else:
         loos_build_config.default_lib_path = '/usr/lib'
