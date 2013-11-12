@@ -386,7 +386,7 @@ segid == "BULK")    # or named BULK
 /*! \page building Building LOOS
 \section basicbuild Building Basics
 LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> and 
-the <A href="http://boost.org" target="_blank">Boost</A> libraries.
+the <A href="http://boost.org" target="_blank">Boost (1.36+)</A> libraries.
 For macs, it also requires 
 <A href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12"
 target="_blank">XCode</A> be installed (free download from the Mac App
@@ -396,18 +396,54 @@ On Linux,
 href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> 
 is <em>strongly</em> recommended, although standard LAPACK and BLAS
 should work.
-If you plan to modify the parser (you probably don't), you'll need the
+If you plan to modify the parser (you probably shouldn't), then you'll need the
 GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
 <A href="http://www.gnu.org/software/bison/">bison</A>.  Similarly, if
 you want to rebuild the documentation, you'll need to install Doxygen.
 
 If your libraries are installed in non-standard locations, you may need to 
-tell LOOS where its required components are.  To do this, do the following:
+tell LOOS where its required components are.  To do this, there are
+two ways you can tell SCons where to look for those libraries.  The
+first is to specify it on the command-line.  For example, if you have
+Boost installed in <TT>/usr/local/boost_1_54_0</TT>, build LOOS using:
 \verbatim
-cp custom.py-proto custom.py
+scons BOOST=/usr/local/boost_1_54_0
 \endverbatim
-Then edit your \c custom.py file to tell SCons and LOOS where your
-libraries are.
+
+This will tell SCons to look
+in <TT>/usr/local/boost_1_54_0/include</TT> for header files
+and <TT>/usr/local/boost_1_54_0/lib</TT> for libraries.  In some
+cases, the directories may not follow this convention, so you may need
+to specify the individual directories explicitly:
+\verbatim
+scons BOOST_INCLUDE=/usr/local/boost_1_36_0 BOOST_LIBPATH=/usr/local/lib
+\endverbatim
+
+SCons will, by default, try to figure out the appropriate threaded
+Boost libraries to use and, if it cannot find those, it will use the
+non-threaded versions.  While the build system can handle most
+variants of the Boost library names, it may not catch all.  To
+explicitly set the libraries LOOS is linked with, set the BOOST_LIBS
+variable to a space-separated list of libraries.  Note that
+you <B>must</B> include all libraries required by LOOS.  For example:
+\verbatim
+scons BOOST_LIBS="boost_regex-gcc43-mt boost_program_options-gcc43-mt
+boost_thread-gcc43-mt boost_system-gcc43-mt"
+\endverbatim
+
+Similar configuration options are available for NetCDF and
+ATLAS/LAPACK.  NetCDF support is only included if the NetCDF library
+is found.  SCons will also prefer to use ATLAS if it's available, but
+will revert to LAPACK/BLAS if necessary.  For Mac's, the Accelerate
+FrameWork is used rather than ATLAS.
+
+It is not necessary to always set these build options on the
+command-line.  If a <TT>custom.py</TT> file exists, SCons will read it
+and set the variables appropriately.  We provide an examples of how it
+can be used in <TT>custom.py-proto</TT>.  Simply copy this file
+to <TT>custom.py</TT> and then uncomment and edit the appropriate
+lines.
+
 
 <B>NOTE</B><br>
 More complete build information, along with platform specific notes,
@@ -442,8 +478,8 @@ This will cause SCons to copy the headers, tools, and library into
  then set up a symlink from \c loos-latest to the most recent
  installed version:
 \verbatim
-scons PREFIX=/opt/loos-2.0 install
-ln -s /opt/loos-2.0 /opt/loos-latest
+scons PREFIX=/opt/loos-2.1 install
+ln -s /opt/loos-2.1 /opt/loos-latest
 \endverbatim
 
 <H2>Important Note...</H2>
@@ -475,20 +511,14 @@ scons pyloos=0
 
 \subsection general General Notes
 
-
-There is some variability in the naming used for the Boost libraries.
-SCons will try to locate the common variants automatically, and will
-try to prefer the threaded versions over non-threaded.  Should this
-fail, you will need to edit the SConstruct and override the
-DivineBoost() function calls.  Also, please notify us
-(loos.maintainer@gmail.com) so that we can improve the handling of
-Boost in future releases of LOOS.
-
 If you're using a compiler in a non-standard location (e.g. you have
 your own build of the latest and greatest gcc), SCons may not be using
 it even though your $PATH is set correctly.  You can force which
 compiler is used to build LOOS by setting the CXX variable in your
-"custom.py" file.  You may also need to specify the "LIBXTRA" path...
+"custom.py" file.
+
+Note: Settings in the custom.py file can be overridden using the
+command-line and the shell environment.  
 
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
@@ -513,39 +543,22 @@ course) is edit the SConscript file in that directory, adding your program
 to the build list.  Specifically, you edit the line that creates a variable
 "apps", appending your program's name to the end of the string.  Then, run
 scons from the main LOOS directory, and your program will be built.
-Note that the use package is not built by default.  You will need to
-build it with by using the "user" target, i.e.
-\verbatim
-	scons user
-\endverbatim
 We have included a number of trivial programs in the User directory; they
 don't actually do anything useful, but they provide basic templates for how
 to use the command line options, and get the basic setup you'll need.
+Note that tools in the User package will be installed if you choose to
+install LOOS.
 
-
-If you wish to work outside the LOOS directory structure, you'll need set up 
-your build environment to include the top-level LOOS directory in
-both your include path and your library paths.  For example, under linux 
-you'd want something like 
-
-\verbatim
-g++ -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex -llapack -latlas
-\endverbatim
-or the following for OS X
-\verbatim
-g++ -framework vecLib -o mytool mytool.cpp -I/opt/loos/include -L/opt/loos/lib -lloos -lboost_regex
-\endverbatim
-
-Keep in mind that the above lines may be greatly oversimplified...
-You will almost certainly need to change the names of the libraries to
-reflect the versions you have installed, as well as the directories
-for the header files.  This can get quite messy.  As such, we strongly
-recommend you use either the \c SConstruct/SConscript or the \c
-Makefile in the <I>Examples</I> directory as a template for building
-your own tools.
-
-
-<hr>
+If you wish to work outside the LOOS directory structure, copy the
+SConstruct and SConscript files from the Examples directory and edit
+them as needed.  You can probably get by with just editing the
+SConscript file.  To build, you will need to have sourced one of the
+LOOS setup scripts (e.g. <TT>setup.sh</TT>).  This will set several
+environment variables that will tell your SConstruct where LOOS is and
+how it was built.  If all goes well, running <TT>scons</TT> in your
+directory will build your tools.  If not, you can change your
+environment variables or alternatively, <I>not</I> source the LOOS
+setup script and use a <TT>custom.py</TT> file.
 
 
 <hr>
@@ -557,13 +570,23 @@ There are several build targets available:
 
 <table align="center">
 <tr align="left"><th>Target</th><th>Description</th></tr>
-<tr align="left"><td>(default)</td><td>Build the library, tools, packages, and PyLOOS</td></tr>
+<tr align="left"><td>all (default)</td><td>Build the library, tools, packages, and PyLOOS</td></tr>
 <tr align="left"><td>core</td><td>Builds the library and PyLOOS only</td></tr>
 <tr align="left"><td>docs</td><td>Rebuilds the documentation</td></tr>
 <tr align="left"><td>tests</td><td>Builds LOOS library and runs internal tests (deprecated)</td></tr>
-<tr align="left"><td>caboodle</td><td>Builds everything, including docs and tests</td></tr>
-<tr align="left"><td>user</td><td>Builds library and user package only</td></tr>
 <tr align="left"><td>install</td><td>Installs library, toosl, PyLOOS, and all packages (except user)</td></tr>
+</table>
+
+Each package in LOOS is also a build target.  The LOOS library and
+only that package will be built.  The current set of packages are:
+
+<table align="center">
+<tr align="left"><td>ENM</td><td>Elastic Network Models</td></tr>
+<tr align="left"><td>HBonds</td><td>Hydrogen bonds analysis</td></tr>
+<tr align="left"><td>Conv</td><td>Simulation convergence analysis</td></tr>
+<tr align="left"><td>Density</td><td>Density/3D histogram tools</td></tr>
+<tr align="left"><td>User</td><td>User created tools</td></tr>
+<tr align="left"><td>Python</td><td>PyLOOS-based scripts</td></tr>
 </table>
 
 There are several different build options that are available for
@@ -580,17 +603,6 @@ flag to SCons.  The following table lists the principal build options:
 <tr align="left"><td>reparse</td><td>0</td><td>Runs bison/flex to create the C++ files for parsing selections</td></tr>
 </table>
 
-\subsection Regeneration
-The verification tests include sample output that is compared against
-the current build.  If differences are found, they are flagged as
-potential problems with the library.  If you update a test, change
-systems (such as running on OS X as opposed to Linux), or perhaps
-didn't get the test data from the SVN, then you will need to 
-generate new test data and verify it manually.  To do so, use the
-SCons command:
-\verbatim
-scons regenerate=1 tests
-\endverbatim
 
 \subsection Reparsing
 To remove the dependency on Bison/Flex, the output from these tools
@@ -602,19 +614,6 @@ file.  If you see odd compiler errors, try removing that file and
 rebuilding.  Alternatively, forcibly remove all generated files by
 doing "rm *.cc *.hh" (assuming you've added no files with those
 suffixes), then rebuild.
-
-\subsection Distro Building a distribution
-To build a distribution that doesn't require Doxygen and Bison/Flex,
-the following is recommended:
-\verbatim
-scons regenerate=1 tests
-scons docs
-scons -c tests
-\endverbatim
-
-As a side-note, regenerating the verification data is potentially
-hazardous if you have not been making sure your builds already pass,
-so caveat programmer...
 
 */
 
