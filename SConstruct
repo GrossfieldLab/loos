@@ -107,7 +107,6 @@ default_lib_path = '/usr/lib64'
 
 if not (env.GetOption('clean') or env.GetOption('help')):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
-                                           'CheckAtlasBuild' : CheckAtlasBuild,
                                            'CheckForBoostLibrary' : CheckForBoostLibrary,
                                            'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
                                            'CheckDirectory' : CheckDirectory,

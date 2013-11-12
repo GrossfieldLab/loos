@@ -176,32 +176,6 @@ def CheckForSwig(conf):
 
 
 
-# See if we need gfortran in order to build code with atlas/lapack
-# Returns the full list of libraries used...
-def CheckAtlasBuild(conf, libs):
-
-   test_code = """
-extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
-int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, D, I, D, I, I); }
-"""
-   conf.Message('Checking if ATLAS/LAPACK needs gfortran...')
-   
-   lastLIBS = conf.env['LIBS']
-   conf.env.Append(LIBS = libs)
-   result = conf.TryLink(test_code, '.cpp')
-   if not result:
-      conf.env.Append(LIBS = 'gfortran')
-      result = conf.TryLink(test_code, '.cpp')
-      if not result:
-         conf.Result('error')
-         return([])
-      conf.Result('yes')
-      conf.env.Replace(LIBS = lastLIBS)
-      return(libs + 'gfortran')
-   conf.Result('no')
-   conf.env.Replace(LIBS = lastLIBS)
-   return(libs)
-
 # See if a library requires another to link...
 def CheckAtlasRequires(conf, name, lib, required):
 
