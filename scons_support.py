@@ -207,7 +207,10 @@ def CheckLibraryRequires(conf, lib, required):
 
     conf.Message('Checking if %s requires %s ...' % (lib, required))
     lastLIBS = conf.env['LIBS']
-    test_code = "int main() {return(0);}"
+   test_code = """
+extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
+int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, D, I, D, I, I); }
+"""
     result = conf.TryLink(test_code, '.cpp')
     if not result:
         conf.env.Append(LIBS=required)
