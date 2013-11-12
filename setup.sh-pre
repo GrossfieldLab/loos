@@ -22,37 +22,35 @@
 
 ### This will be automatically set to where LOOS is built or installed.  If necessary,
 ### change manually...
-LOOSPATH="$loos_path"
+export LOOS="$loos_path"
+export LOOS_LIBPATH="$libpath"
+export LOOS_CPPPATH="$cpppath"
+export LOOS_LINKFLAGS="$linkflags"
+export LOOS_LIBS="$libs"
+export LOOS_CCFLAGS="$ccflags"
+export LOOS_CXX="$loos_cxx"
 
 
 
-# Find library
-if [ -d $$LOOSPATH/lib ] ; then
-    LIBPATH="$$LOOSPATH/lib"
-else
-    LIBPATH="$$LOOSPATH"
-fi
+export PATH="$tool_path:$$PATH"
 
-# Find tools
-if [ -d $$LOOSPATH/bin ] ; then
-    TOOLPATH="$$LOOSPATH/bin"
-else
-    TOOLPATH="$$LOOSPATH/Tools:$$LOOSPATH/Packages/Convergence:$$LOOSPATH/Packages/DensityTools:$$LOOSPATH/Packages/ElasticNetworks:$$LOOSPATH/Packages/HydrogenBonds:$$LOOSPATH/Packages/User"
-fi
-
-export PATH="$$TOOLPATH:$$PATH"
 
 # Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
 SYSTEM=`uname`
 if [ "$$SYSTEM" = "Darwin" ] ; then
-    export DYLD_LIBRARY_PATH="$$LIBPATH:$$DYLD_LIBRARY_PATH"
+    export DYLD_LIBRARY_PATH="$$LOOS_LIBPATH:$$DYLD_LIBRARY_PATH"
 elif `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
     export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
     export PATH="$$LOOSPATH:$$PATH"
 else
-    export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="$$LOOS_LIBPATH:$$LD_LIBRARY_PATH"
 fi
 
-export PYTHONPATH="$$LIBPATH:$$PYTHONPATH"
+# Cygwin requires libs in PATH
+if `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
+    export PATH="$$LOOS_LIBPATH:$$PATH"
+fi
+
+export PYTHONPATH="$loos_pythonpath:$$PYTHONPATH"
 
 

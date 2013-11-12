@@ -19,113 +19,49 @@ import shutil
 import distutils.sysconfig
 import distutils.spawn
 
-### Tell SCons where to find LOOS
-### This assumes you have installed LOOS.  If you have not,
-### you will need to change the LOOSINC and LOOSLIB variables below and
-### change the default path...
-default_path_to_loos = '/opt/loos'
-
-
-# Set default path depending on platform...
-# Note: This can be reset in custom.py
-default_lib_path = '/usr/lib64'
-
-linux_type = 'nonlinux'
-host_type = platform.system()
-# Detect CYGWIN & canonicalize linux type, setting defaults...
-if (re.search("(?i)cygwin", host_type)):
-    host_type = 'Cygwin'
-elif (host_type == 'Linux'):
-   # Determine linux variant...
-   linux_type = platform.platform()
-
-   if (re.search("(?i)ubuntu", linux_type)):
-       linux_type = 'ubuntu'
-       default_lib_path = '/usr/lib'
-   elif (re.search("(?i)suse", linux_type)):
-       linux_type = 'suse'
-   elif (re.search("(?i)debian", linux_type)):
-       linux_type = 'debian'
-
-
-# This is the version-tag for LOOS output
-loos_version = '2.1.0'
 
 
 # Principal options...
-clos = Variables('custom.py')
-clos.Add('regenerate', 'Set to 1 to regenerate test outputs', 0)
-clos.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
-clos.Add('profile', 'Set to 1 to build the code for profiling', 0)
-clos.Add('release', 'Set to 1 to configure for release.', 1)
-clos.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
-clos.Add('shared', 'Set to 1 to build a shared LOOS library.', 1)
-clos.Add('pyloos', 'Set to 1 to build the python interface to LOOS (requires SWIG).', 0)
+opts = Variables('custom.py')
+#opts.Add('LOOS', 'Where LOOS is installed', '/opt/LOOS')
+opts.Add('LOOS_LIBPATH', 'Path to libraries LOOS was linked with', '/opt/LOOS/lib:/usr/lib64')
+opts.Add('LOOS_CPPPATH', 'Path to include files', '/opt/LOOS/include')
+opts.Add('LOOS_LIBS', 'Libraries LOOS was linked with', 'netcdf:boost_regex:boost_thread:boost_system:boost_program_options:lapack:f77blas:cblas:atlas')
+opts.Add('LOOS_CCFLAGS', 'Compiler flags used to build LOOS', '-DHAS_NETCDF -O3 -NDEBUG -Wall')
+opts.Add('ALTPATH', 'Alternative PATH for executables', '')
 
-clos.Add(PathVariable('LOOS', 'Path to LOOS', default_path_to_loos, PathVariable.PathAccept))
-clos.Add(PathVariable('LAPACK', 'Path to LAPACK', default_lib_path, PathVariable.PathAccept))
-clos.Add(PathVariable('ATLAS', 'Path to ATLAS', default_lib_path + '/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '/usr/include/atlas', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
-clos.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
-clos.Add('BOOSTSUFFIX', 'Boost Library Name Suffix', '')
-clos.Add('CXX', 'C++ Compiler', 'g++')
-clos.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
-clos.Add(PathVariable('PREFIX', 'Path to install LOOS as', '/opt',
-                    PathVariable.PathAccept))
-clos.Add(PathVariable('NETCDFINC', 'Path to netcdf include files', '', PathVariable.PathAccept))
-clos.Add(PathVariable('NETCDFLIB', 'Path to netcdf library files', '', PathVariable.PathAccept))
-clos.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
-clos.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
-clos.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
-clos.Add(PathVariable('LOOSINC', 'Directory for LOOS include files (relative to LOOS)', 'include', PathVariable.PathAccept))
-clos.Add(PathVariable('LOOSLIB', 'Directory for LOOS library files (relative to LOOS)', 'lib', PathVariable.PathAccept))
-
-
-# This is a developer setting...  Do not set unless you know what you
-# are doing...
-clos.Add('REVISION', 'Add build information', loos_version)
-
-
-
-env = Environment(options = clos)
-Help(clos.GenerateHelpText(env))
-
+env = Environment(options = opts)
+Help(opts.GenerateHelpText(env))
 env.Decider('MD5-timestamp')
 
-# vestigial...
-regenerate = env['regenerate']
-env['REGENERATE'] = regenerate
-
-reparse = env['reparse']
-
-# export platform to environment...
-env['host_type'] = host_type
-env['linux_type'] = linux_type
-
-LAPACK = env['LAPACK']
-ATLAS = env['ATLAS']
-ATLASINC = env['ATLASINC']
-BOOSTLIB = env['BOOSTLIB']
-BOOSTINC = env['BOOSTINC']
-BOOSTSUFFIX = env['BOOSTSUFFIX']
-LIBXTRA = env['LIBXTRA']
-PREFIX = env['PREFIX']
+   
+#LOOS = env['LOOS']
+LOOS_LIBPATH = env['LOOS_LIBPATH']
+LOOS_CPPATH = env['LOOS_CPPPATH']
+LOOS_LIBS = env['LOOS_LIBS']
+LOOS_CCFLAGS = env['LOOS_CCFLAGS']
 ALTPATH = env['ALTPATH']
-LIBS_OVERRIDE = env['LIBS_OVERRIDE']
-LIBS_PATHS_OVERRIDE = env['LIBS_PATHS_OVERRIDE']
-NETCDFINC = env['NETCDFINC']
-NETCDFLIB = env['NETCDFLIB']
-LOOS = env['LOOS']
-LOOSINC = env['LOOSINC']
-LOOSLIB = env['LOOSLIB']
 
 
-# Fix include/lib locations...
-LOOSINC = LOOS + '/' + LOOSINC
-LOOSLIB = LOOS + '/' + LOOSLIB
+# Let environment override...
+if 'LOOS_LIBPATH' in os.environ:
+   LOOS_LIBPATH = os.environ['LOOS_LIBPATH']
+if 'LOOS_CPPPATH' in os.environ:
+   LOOS_CPPPATH = os.environ['LOOS_CPPPATH']
+if 'LOOS_LIBS' in os.environ:
+   LOOS_LIBS = os.environ['LOOS_LIBS']
+if 'LOOS_CCFLAGS' in os.environ:
+   LOOS_CCFLAGS = os.environ['LOOS_CCFLAGS']
 
 
+LOOS_LIBPATH = LOOS_LIBPATH.split(':')
+LOOS_CPPPATH = LOOS_CPPPATH.split(':')
+LOOS_LIBS = LOOS_LIBS.split(':')
+
+env.Replace(CCFLAGS = LOOS_CCFLAGS)
+env.Replace(LIBPATH = LOOS_LIBPATH)
+env.Replace(CPPPATH = LOOS_CPPPATH)
+env.Replace(LIBS = LOOS_LIBS)
 
 if ALTPATH != '':
    buildenv = env['ENV']
@@ -133,163 +69,9 @@ if ALTPATH != '':
    path = ALTPATH + ':' + path
    buildenv['PATH'] = path
 
-
-### Autoconf
-conf = Configure(env)
-if not conf.CheckType('ulong','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
-if not conf.CheckType('uint','#include <sys/types.h>\n'):
-   conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
-if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
-   has_netcdf = 1
-else:
-   has_netcdf = 0
-env = conf.Finish()
-
-if (NETCDFINC != '' or NETCDFLIB != ''):
-   has_netcdf = 1
-
-env['HAS_NETCDF'] = has_netcdf
-
-
-### Compile-flags
-
-debug_opts='-g -Wall -Wextra -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall'
-profile_opts='-pg'
-
-# Setup the general environment...
-env.Append(CPPPATH = ['#', LOOSINC])
-
-# Ideally, what's below should be added to the CPPPATH above, but
-# doing so causes SCons to scan headers from that directory generating
-# implicit dependencies.  SCons seems to mangle these so changing one
-# file ends up forcing a complete rebuild.  Setting the include dirs
-# directly solves this problem, but it does mean that changes to the
-# include files in BOOST and ATLAS will not be picked up by SCons...
-if BOOSTINC != '':
-   env.Append(CPPFLAGS = ['-I' + BOOSTINC])
-env.Append(LIBPATH = ['#', LOOSLIB, BOOSTLIB, LIBXTRA])
-env.Append(LIBS = ['loos'])
-env.Append(LEXFLAGS=['-s'])
-
-LIBS_LINKED_TO = ''
-LIBS_PATHS_TO = ''
-if (has_netcdf):
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' netcdf'
-   env.Append(CPPFLAGS = ['-DHAS_NETCDF'])
-   if (NETCDFINC != ''):
-      env.Append(CPPFLAGS = ['-I' + NETCDFINC])
-   if (NETCDFLIB != ''):
-      env.Append(LIBPATH = [NETCDFLIB])
-
-
-# Platform specific build options...
-if host_type == 'Darwin':
-    release = platform.release().split('.')
-    if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
-        env.Append(CCFLAGS = '--std=c++0x')
-    env.Append(LINKFLAGS = ' -framework Accelerate')
-
-elif host_type == 'Freebsd':
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-
-elif host_type == 'Linux':
-
-   ### Note for OpenSUSE and Ubuntu...
-   ### Older versions of those distros may require the gfortran
-   ### package be linked in.  If you see strange link errors for
-   ### unresolved symbols, try adding "gfortran" to the LIBS list
-   ### for your OS below...
-
-   # OpenSUSE doesn't have an atlas package, so use native lapack/blas
-   if (linux_type == 'suse'):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-
-   elif (linux_type == 'ubuntu'):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack_atlas lapack atlas blas'
-      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
-
-   elif (linux_type == 'debian'):
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack blas'
-      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
-
-   else:
-      LIBS_LINKED_TO = LIBS_LINKED_TO + ' atlas lapack f77blas'
-      LIBS_PATHS_TO = ATLAS + ' ' + LAPACK
-
-   
-
-
-
-# CYGWIN does not have an atlas package, so use lapack/blas instead
-elif (host_type == 'Cygwin'):
-   LIBS_LINKED_TO = LIBS_LINKED_TO + ' lapack blas'
-   LIB_PATHS_TO = 'LAPACK'
-   if (BOOSTSUFFIX == ''):
-      BOOSTSUFFIX='-mt'
-
-if LIBS_OVERRIDE != '':
-   LIBS_LINKED_TO = LIBS_OVERRIDE
-
-if LIBS_PATHS_OVERRIDE != '':
-   LIBS_PATHS_TO = LIBS_PATHS_OVERRIDE
-
-
-# Handle boost after OS-specific options so suffix will be correct
-env.Append(LIBS = ['boost_regex' + BOOSTSUFFIX,
-                   'boost_program_options' + BOOSTSUFFIX,
-                   'boost_thread' + BOOSTSUFFIX,
-                   'boost_system' + BOOSTSUFFIX
-                   ])
-
-
-env.Append(LIBS = Split(LIBS_LINKED_TO))
-env.Append(LIBPATH = Split(LIBS_PATHS_TO))
-
-
-
-# Determine what kind of build...
-# No option implies debugging, but only an explicit debug defines
-# the DEBUG symbol...  Yes, it's a bit obtuse, but it allows
-# you to control the level of debugging output through the
-# DEBUG definition...
-
-release = int(env['release'])
-debug = int(env['debug'])
-profile = int(env['profile'])
-
-# If debug is requested, make sure there is no optimization...
-if (debug > 0):
-   release=0
-
-if int(release):
-    env.Append(CCFLAGS=release_opts)
-else:
-   env.Append(CCFLAGS=debug_opts)
-
-if (debug > 0):
-   env.Append(CCFLAGS=" -DDEBUG=$debug")
-
-# Profiling is independent of release/debug status...
-if int(profile):
-   env.Append(CCFLAGS=profile_opts)
-   env.Append(LINKFLAGS=profile_opts)
-
-
-# Allow overrides from environment...
-if os.environ.has_key('CXX'):
-   CXX = os.environ['CXX']
-   print "Changing default compiler to ", CXX
-   env['CXX'] = CXX
-
-if os.environ.has_key('CCFLAGS'):
-   CCFLAGS = os.environ['CCFLAGS']
-   print "Changing CCFLAGS to ", CCFLAGS
-   env['CCFLAGS'] = CCFLAGS
-
-
-# Export for subsidiary SConscripts
+env.Prepend(CPPPATH = ['#'])
+env.Prepend(LIBPATH = ['#'])
+env.Prepend(LIBS = ['loos'])
 
 Export('env')
 
