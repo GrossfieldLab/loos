@@ -23,7 +23,7 @@ import distutils.spawn
 
 # Principal options...
 opts = Variables('custom.py')
-#opts.Add('LOOS', 'Where LOOS is installed', '/opt/LOOS')
+opts.Add('LOOS', 'Where LOOS is installed', '/opt/LOOS')
 opts.Add('LOOS_LIBPATH', 'Path to libraries LOOS was linked with', '/opt/LOOS/lib:/usr/lib64')
 opts.Add('LOOS_CPPPATH', 'Path to include files', '/opt/LOOS/include')
 opts.Add('LOOS_LIBS', 'Libraries LOOS was linked with', 'netcdf:boost_regex:boost_thread:boost_system:boost_program_options:lapack:f77blas:cblas:atlas')
@@ -35,7 +35,7 @@ Help(opts.GenerateHelpText(env))
 env.Decider('MD5-timestamp')
 
    
-#LOOS = env['LOOS']
+LOOS = env['LOOS']
 LOOS_LIBPATH = env['LOOS_LIBPATH']
 LOOS_CPPATH = env['LOOS_CPPPATH']
 LOOS_LIBS = env['LOOS_LIBS']
@@ -44,6 +44,10 @@ ALTPATH = env['ALTPATH']
 
 
 # Let environment override...
+if 'LOOS' in os.environ:
+   LOOS = os.environ['LOOS']
+   env['LOOS'] = LOOS
+
 if 'LOOS_LIBPATH' in os.environ:
    LOOS_LIBPATH = os.environ['LOOS_LIBPATH']
 if 'LOOS_CPPPATH' in os.environ:
@@ -72,6 +76,23 @@ if ALTPATH != '':
 env.Prepend(CPPPATH = ['#'])
 env.Prepend(LIBPATH = ['#'])
 env.Prepend(LIBS = ['loos'])
+
+
+#####  Modify your build environment below...
+# Note: You can chose to Prepend rather than Append
+
+### Add extra flags here...
+#env.Append(CCFLAGS=' -DSOMETHING')
+
+### Modify the search paths for include files here
+#env.Append(CPPPATH='/usr/local/Foobar')
+
+### Modify the search paths for libraries here
+#env.Append(LIBPATH='/usr/local/Foobar/lib')
+
+### Add extra libraries here...
+#env.Append(LIBS=['foo', 'bar'])
+
 
 Export('env')
 
