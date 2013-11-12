@@ -43,10 +43,15 @@ def canonicalizeSystem():
     linux_type = 'nonlinux'
     host_type = platform.system()
     suffix = 'so'
+
+    if os.direxists('/usr/lib64'):
+        loos_build_config.default_lib_path = '/usr/lib64'
+    else:
+        loos_build_config.default_lib_path = '/usr/lib'
+
 # Detect CYGWIN & canonicalize linux type, setting defaults...
     if (re.search("(?i)cygwin", host_type)):
         host_type = 'Cygwin'
-        loos_build_config.default_lib_path = '/usr/lib'
         suffix = 'dll.a'
     elif (host_type == 'Linux'):
         # Determine linux variant...
@@ -54,14 +59,12 @@ def canonicalizeSystem():
         
         if (re.search("(?i)ubuntu", linux_type)):
             linux_type = 'ubuntu'
-            loos_build_config.default_lib_path = '/usr/lib'
         elif (re.search("(?i)suse", linux_type)):
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
     # MacOS is special (of course...)
     elif (host_type == 'Darwin'):
-        loos_build_config.default_lib_path = '/usr/bin'
         suffix = 'dylib'
     return(host_type, linux_type, suffix)
 
