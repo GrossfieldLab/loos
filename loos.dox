@@ -2513,17 +2513,33 @@ example, Mac users installing with Fink will want to set ALTPATH to
 <DD> If you need to point SCons to a non-standard location of Boost,
 use the BOOST variable on the command-line or within your custom.py
 file.  If you need to override either the include directory or the
-library directory, use the BOOSTINC and BOOSTLIB variables
+library directory, use the BOOST_INCLUDE and BOOST_LIBPATH variables
 respectively.
 
 <DT> SCons cannot find a Boost library.
-<DD> SCons will try to determine the correct naming variant
-for your Boost install.  It will start by looking for "libboost_foo-mt.suff",
+<DD> SCons will try to determine the correct naming variant for your
+Boost install.  It will start by looking for "libboost_foo-mt.suff",
 followed by "libboost_foo.suff" where suff is either "dylib"
-(MacOS/Darwin) or "so" (Linux/Cygwin).  Failing that, it will look for
-any file matching "libboost_foo-*-mt.suff" followed by the non-threaded
-version.  Of the list of filenames found, SCons will take the shortest
-one.
+(MacOS/Darwin), "so" (Linux), and "dll.a" (Cygwin).  Failing that, it
+will look for any file matching "libboost_foo-*-mt.suff" followed by
+the non-threaded version.  Of the list of filenames found, SCons will
+take the shortest one.<p>
+If necessary, override the libraries linked to for Boost by setting
+the BOOST_LIBS variable to a space-separated list of libraries.  Note
+that you will need to include all of the ones required by LOOS, at a
+minimum,
+/verbatin
+BOOST_LIBS="boost_regex boost_program_options boost_system boost_thread"
+\endverbatim
+Note that the libraries will be linked in with the same order they
+appear in the BOOST_LIBS variable.
+
+<DT> I'm getting undefined reference or other link errors that appear
+  to be related to Boost
+<DD> This can happen if you have multiple versions of Boost
+  installed.  SCons may use include files from one version, but link
+  with the libraries from another.  Check the path to BOOST and the
+  name of the libraries linked against.
 </DL>
 
 \subsection faq_loos_using_tools Using LOOS Tools
