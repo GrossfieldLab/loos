@@ -207,11 +207,11 @@ def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Message('Checking for Boost library %s...' % name)
 
    if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (name , suffix)))):
-      conf.Result('yes')
+      conf.Result(name + '-mt')
       return(name + '-mt', 1)
 
    if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (name , suffix)))):
-      conf.Result('yes')
+      conf.Result(name)
       return(name, 0)
 
    def sortByLength(w1,w2):
@@ -221,19 +221,19 @@ def CheckForBoostLibrary(conf, name, path, suffix):
    files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (name, suffix)))
    files.sort(cmp=sortByLength)
    if files:
-      conf.Result('yes')
+      conf.Result(name + '-mt')
       name = os.path.basename(files[0])[3:-(len(suffix)+1)]
       return(name, 1)
 
    files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (name, suffix)))
    files.sort(cmp=sortByLength)
    if files:
-      conf.Result('yes')
+      conf.Result(name)
       name = os.path.basename(files[0])[3:-(len(suffix)+1)]
       return(name, 0)
 
 
-   conf.Result('no')
+   conf.Result('missing')
    return('', -1)
 
             
@@ -250,7 +250,7 @@ int main(int argc, char *argv[]) { return(0); }
     st = Template(source_code)
     test_code = st.substitute(version = min_boost_version)
 
-    conf.Message('Checking Boost version (from header files) ... ')
+    conf.Message('Checking Boost version... ')
     result = conf.TryLink(test_code, '.cpp')
     if not result:
         conf.Result('too old (use Boost 1.%d+)' % min_boost_version)
