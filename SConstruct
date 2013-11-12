@@ -111,7 +111,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                                            'CheckForBoostLibrary' : CheckForBoostLibrary,
                                            'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
                                            'CheckDirectory' : CheckDirectory,
-                                           'CheckLibraryRequires' : CheckLibraryRequires})
+                                           'CheckAtlasRequires' : CheckAtlasRequires})
 
     
     # Some distros use /usr/lib, others have /usr/lib64.
@@ -231,7 +231,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
             if not (numerics['lapack'] or numerics['atlas']):
                # Check to see if lapack required blas...
                if numerics['blas']:
-                  result = conf.CheckLibraryRequires('lapack', 'blas')
+                  result = conf.CheckAtlasRequires('lapack', 'lapack', 'blas')
                   if result:
                      atlas_libs.append('lapack')
                   else:
@@ -241,7 +241,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                   print 'Error- you must have either Lapack or Atlas installed'
                   Exit(1)
 
-            atlas_libs = conf.CheckAtlasBuild(atlas_libs)
+            atlas_libs = conf.CheckAtlasRequires('atlas', atlas_libs, 'gfortran')
             if not atlas_libs:
                 print 'Error- could not figure out how to build with Atlas/Lapack'
                 Exit(1)
