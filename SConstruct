@@ -233,9 +233,10 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                if numerics['blas']:
                   result = conf.CheckLibraryRequires('lapack', 'blas')
                   if result:
-                     atlas_libs.append(lapack)
+                     atlas_libs.append('lapack')
                   else:
                      print 'Error- you must have either Lapack or Atlas installed'
+		     Exit(1)
                else:
                   print 'Error- you must have either Lapack or Atlas installed'
                   Exit(1)

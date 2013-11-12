@@ -179,11 +179,11 @@ def CheckForSwig(conf):
 # See if we need gfortran in order to build code with atlas/lapack
 # Returns the full list of libraries used...
 def CheckAtlasBuild(conf, libs):
+
    test_code = """
 extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
 int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, D, I, D, I, I); }
 """
-
    conf.Message('Checking if ATLAS/LAPACK needs gfortran...')
    
    lastLIBS = conf.env['LIBS']
@@ -205,9 +205,10 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
 # See if a library requires another to link...
 def CheckLibraryRequires(conf, lib, required):
 
-    conf.Message('Checking if %s requires %s ...' % (lib, required))
+    conf.Message('Checking if %s requires %s ... ' % (lib, required))
     lastLIBS = conf.env['LIBS']
-   test_code = """
+
+    test_code = """
 extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
 int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, D, I, D, I, I); }
 """
@@ -217,13 +218,13 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
         result = conf.TryLink(test_code, '.cpp')
         conf.env.Replace(LIBS=lastLIBS)
         if not result:
-            conf.Message('error')
+            conf.Result('fail')
             return([])
-        conf.Message('yes')
+        conf.Result('yes')
         return([lib, required])
 
     conf.env.Replace(LIBS=lastLIBS)
-    conf.Message('no')
+    conf.Result('no')
     return([lib])
 
     
