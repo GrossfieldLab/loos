@@ -205,6 +205,7 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
 # whether this is the threaded or non-threaded version.
 def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Message('Checking for Boost library %s...' % name)
+   name = 'boost_' + name
 
    if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (name , suffix)))):
       conf.Result(name + '-mt')
