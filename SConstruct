@@ -157,7 +157,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
 
 # --- Check for Boost and Boost version
     if env['BOOST_LIBS']:
-        boost_libs = Split(BOOST_LIBS)
+        boost_libs = Split(env['BOOST_LIBS'])
     else:
         boost_threaded = -1
         boost_libs = []
