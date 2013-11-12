@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
 # See if a library requires another to link...
 def CheckLibraryRequires(conf, lib, required):
 
-    conf.Message('Checking if %s requires %s ...') % lib % required
+    conf.Message('Checking if %s requires %s ...') % (lib, required)
     lastLIBS = conf.env['LIBS']
     test_code = "int main() {return(0);}"
     result = conf.TryLink(test_code, '.cpp')
