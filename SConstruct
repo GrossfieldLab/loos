@@ -110,7 +110,8 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                                            'CheckAtlasBuild' : CheckAtlasBuild,
                                            'CheckForBoostLibrary' : CheckForBoostLibrary,
                                            'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
-                                           'CheckDirectory' : CheckDirectory })
+                                           'CheckDirectory' : CheckDirectory,
+                                           'CheckLibraryRequires' : CheckLibraryRequires})
 
     
     # Some distros use /usr/lib, others have /usr/lib64.
@@ -230,22 +231,18 @@ if not (env.GetOption('clean') or env.GetOption('help')):
             if not (numerics['lapack'] or numerics['atlas']):
                # Check to see if lapack required blas...
                if numerics['blas']:
-                  oldLibs = conf.env['LIBS']
-                  conf.env.Append(LIBS='blas')
-                  result = conf.CheckLib('lapack', autoadd = 0)
+                  result = conf.CheckLibraryRequires('lapack', 'blas')
                   if result:
-                     conf.env.Replace(LIBS = oldLibs)
-                     atlas_libs.append('lapack')
+                     atlas_libs.append(lapack)
                   else:
-                     print 'Error- you must have either LAPACK or Atlas installed'
-                     Exit(1)
+                     print 'Error- you must have either Lapack or Atlas installed'
                else:
-                  print 'Error- you must have either LAPACK or Atlas installed'
+                  print 'Error- you must have either Lapack or Atlas installed'
                   Exit(1)
 
             atlas_libs = conf.CheckAtlasBuild(atlas_libs)
             if not atlas_libs:
-                print 'Error- could not figure out how to build.'
+                print 'Error- could not figure out how to build with Atlas/Lapack'
                 Exit(1)
 
         env.Append(LIBS = atlas_libs)

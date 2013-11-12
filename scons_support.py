@@ -202,6 +202,28 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
    conf.env.Replace(LIBS = lastLIBS)
    return(libs)
 
+# See if a library requires another to link...
+def CheckLibraryRequires(conf, lib, required):
+
+    conf.Message('Checking if %s requires %s ...') % lib % required
+    lastLIBS = conf.env['LIBS']
+    test_code = "int main() {return(0);}"
+    result = conf.TryLink(test_code, '.cpp')
+    if not result:
+        conf.env.Append(LIBS=required)
+        result = conf.TryLink(test_code, '.cpp')
+        conf.env.Replace(LIBS=lastLIBS)
+        if not result:
+            conf.Message('error')
+            return([])
+        conf.Message('yes')
+        return([lib, required])
+
+    conf.env.Replace(LIBS=lastLIBS)
+    conf.Message('no')
+    return([lib])
+
+    
 
 # Check for existince of boost library with various naming variants
 # Will return a tuple containing the correct name and a flag indicating
