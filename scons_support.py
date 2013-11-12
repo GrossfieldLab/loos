@@ -268,9 +268,9 @@ def CheckDirectory(conf, dirname):
 
     conf.Message('Checking for directory %s...' % dirname)
     if os.path.isdir(dirname):
-        conf.Result('found')
+        conf.Result('yes')
         return(1)
-    conf.Result('not found')
+    conf.Result('no')
     return(0)
 
 
