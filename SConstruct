@@ -231,10 +231,10 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                # Check to see if lapack required blas...
                if numerics['blas']:
                   oldLibs = conf.env['LIBS']
-                  conv.env.Append(LIBS='blas')
+                  conf.env.Append(LIBS='blas')
                   result = conf.CheckLib('lapack', autoadd = 0)
                   if result:
-                     conv.env.Replace(LIBS = oldLibs)
+                     conf.env.Replace(LIBS = oldLibs)
                      atlas_libs.append('lapack')
                   else:
                      print 'Error- you must have either LAPACK or Atlas installed'
