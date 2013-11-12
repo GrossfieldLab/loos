@@ -19,6 +19,19 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#   _____  ______ _____  _____  ______ _____       _______ ______ _____  
+#  |  __ \|  ____|  __ \|  __ \|  ____/ ____|   /\|__   __|  ____|  __ \ 
+#  | |  | | |__  | |__) | |__) | |__ | |       /  \  | |  | |__  | |  | |
+#  | |  | |  __| |  ___/|  _  /|  __|| |      / /\ \ | |  |  __| | |  | |
+#  | |__| | |____| |    | | \ \| |___| |____ / ____ \| |  | |____| |__| |
+#  |_____/|______|_|    |_|  \_\______\_____/_/    \_\_|  |______|_____/ 
+#
+#
+# This directory is deprecated and may be removed in future versions of LOOS
+#
+
+                                                                      
+
 Import('env')
 clone = env.Clone()
 clone.Prepend(LIBS = ['loos'])
