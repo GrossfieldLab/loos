@@ -263,6 +263,15 @@ int main(int argc, char *argv[]) { return(0); }
     conf.Result('ok')
     return(1)
 
+# Check for presence of a directory
+def CheckDirectory(conf, dirname):
+
+    conf.Message('Checking for directory %s...' % dirname)
+    if os.path.isdir(dirname):
+        conf.Result('found')
+        return(1)
+    conf.Result('not found')
+    return(0)
 
 
 def SetupBoostPaths(env):

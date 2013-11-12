@@ -89,23 +89,8 @@ if env['ALTPATH']:
 
 ### Setup paths...
 
-#--- First, Boost
-SetupBoostPaths(env)
-
-#--- And now NETCDF
-SetupNetCDFPaths(env)
-
 #--- Now, ATLAS
 
-if host_type != 'Darwin':
-    ATLAS_LIBPATH = env['ATLAS_LIBPATH']
-    ATLAS_LIBS = env['ATLAS_LIBS']
-    if not ATLAS_LIBPATH:
-        atlas_libpath = '/usr/lib64/atlas'
-    else:
-        atlas_libpath = ATLAS_LIBPATH
-
-    env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 
 
 ### Get more info from environment
@@ -118,20 +103,49 @@ PREFIX = env['PREFIX']
 has_netcdf = 0
 pyloos = int(env['pyloos'])
 env['HAS_NETCDF'] = 0
-
+default_lib_path = '/usr/lib64'
 
 if not (env.GetOption('clean') or env.GetOption('help')):
     conf = Configure(env, custom_tests = { 'CheckForSwig' : CheckForSwig,
                                            'CheckAtlasBuild' : CheckAtlasBuild,
                                            'CheckForBoostLibrary' : CheckForBoostLibrary,
-                                           'CheckBoostHeaderVersion' : CheckBoostHeaderVersion })
+                                           'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
+                                           'CheckDirectory' : CheckDirectory })
 
+    
+    # Some distros use /usr/lib, others have /usr/lib64.
+    # Check to see what's here and prefer lib64 to lib
+    if not conf.CheckDirectory('/usr/lib64'):
+       if not conf.CheckDirectory('/usr/lib'):
+          print 'Fatal error- cannot find your system library directory'
+          Exit(1)
+       default_lib_path = '/usr/lib'
+
+    # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
+    # based on the environment or custom.py file
+    SetupBoostPaths(env)
+    SetupNetCDFPaths(env)
+
+    # Only setup ATLAS if we're not on a Mac...
+    if host_type != 'Darwin':
+       ATLAS_LIBPATH = env['ATLAS_LIBPATH']
+       ATLAS_LIBS = env['ATLAS_LIBS']
+       if not ATLAS_LIBPATH:
+          atlas_libpath = loos_build_config.default_lib_path + '/atlas'
+       else:
+          atlas_libpath = ATLAS_LIBPATH
+
+       env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
+
+
+    # Check for standard typedefs...
     if not conf.CheckType('ulong','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
     if not conf.CheckType('uint','#include <sys/types.h>\n'):
         conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
 
-# --- NetCDF
+
+# --- NetCDF Autoconf
     has_netcdf = 0
     if env['NETCDF_LIBS']:
         netcdf_libs = env['NETCDF_LIBS']
@@ -146,7 +160,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
     env['HAS_NETCDF'] = has_netcdf
 
 
-# --- Check for SWIG
+# --- Swig Autoconf (unless user requested NO PyLOOS)
     if pyloos:
         if conf.CheckForSwig():
             pyloos = 1
@@ -155,7 +169,7 @@ if not (env.GetOption('clean') or env.GetOption('help')):
 
     env['pyloos'] = pyloos
 
-# --- Check for Boost and Boost version
+# --- Boost Autoconf
     if env['BOOST_LIBS']:
         boost_libs = Split(env['BOOST_LIBS'])
     else:
