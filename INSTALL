@@ -94,13 +94,18 @@ To use LOOS, your environment must be first setup:
 
       core	LOOS Library and PyLOOS
       docs	Rebuild documentation
-      tests	Internal tests (deprecated)
       tools	LOOS Library, Tools, and PyLOOS
       all	LOOS Library, Tools, PyLOOS, and all Packages (default)
-      caboodle	Rebuild everything
-      user	LOOS Library and User package only
       install	Install library, tools, PyLOOS, and all Packages
-      		(except user)
+
+* Available Packages (also build targets) *
+ 
+      ENM	Elastic Network Models
+      HBonds	Hydrogen Bonds Analysis
+      Conv	Convergence Analysis
+      Density	Density/3D Histogram Tools
+      User	User-created tools
+      Python	PyLOOS scripts
 
 			     = PyLOOS =
 
@@ -132,9 +137,11 @@ trajectory file, LOOS will determine if it is a NetCDF file or an
 ASCII MDCRD file and act appropriately.
 
 If the netcdf libraries and headers are installed in a non-standard
-location, edit the NETCDFINC and NETCDFLIB variables in your custom.py
-file to point to the appropriate locations.
-
+location, set the NETCDF variable in your custom.py file to point to
+the installation.  The specific include and library directories can be
+set using the NETCDF_INCLUDE and NETCDF_LIBPATH variables
+respectively, and the libraries linked against can be specified using
+the NETCDF_LIBS variable.
 
 
 			      = Boost =
@@ -146,8 +153,10 @@ variable in your custom.py file or on the command line:
 	 scons BOOST=/usr/local/boost_1_54_0
 
 In some cases, you may need to override either the include directory
-or the library directory.  The BOOSTINC and BOOSTLIB variables
-will specify the corresponding directories for the LOOS build.
+or the library directory.  The BOOST_INCLUDE and BOOST_LIBPATH variables
+will specify the corresponding directories for the LOOS build.  You
+may also explicitly specify which libraries to link against with the
+BOOST_LIBS variable.  See custom.py-proto for examples.
 
 
 
@@ -400,6 +409,9 @@ your own build of the latest and greatest gcc), SCons may not be using
 it even though your $PATH is set correctly.  You can force which
 compiler is used to build LOOS by setting the CXX variable in your
 "custom.py" file.
+
+Note: Settings in the custom.py file can be overridden using the
+command-line and the shell environment.  
 
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
