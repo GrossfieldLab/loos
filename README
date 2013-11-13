@@ -10,6 +10,17 @@ to contact us regarding LOOS.
 
    * RELEASE 2.1.0 *
 
+This release contains several major changes to LOOS.  We
+have rewritten the build system so that it will try to configure the
+LOOS build based on your installation (i.e. using the Autoconf
+functionality of SCons) rather than pre-set build configurations for
+common distributions.  We are also introducing a major change in how
+Trajectory classes work, including changes to the Atom and AtomicGroup
+classes.  Briefly, LOOS now uses an atom index, assigned when a model
+is read, for updating from a trajectory rather than the atomid's.
+Finally, we are now deprecating a few older distributions that we once
+officially supported.
+
 This release contains a major revision to how Trajectory classes work
 and includes changes to the Atom and AtomicGroup classes as well.
 When an AtomicGroup is read in from a model file, the atoms are
