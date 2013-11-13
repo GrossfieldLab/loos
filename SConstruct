@@ -229,8 +229,15 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                 atlas_libs.append('atlas')
 
             if not (numerics['lapack'] or numerics['atlas']):
-               # Check to see if lapack required blas...
-               if numerics['blas']:
+               # Did we miss atlas above because it requires gfortran?
+               if not numerics['atlas'] and (numerics['f77blas'] and numerics['cblas']):
+                  atlas_libs = conf.CheckAtlasRequires('atlas', 'atlas' + atlas_libs, 'gfortran')
+                  if not atlas_libs:
+                     print 'Error- could not figure out how to build with Atlas/lapack'
+
+               # In some cases, lapack requires blas to link so the above
+               # check will find blas but not lapack
+               elif numerics['blas']:
                   result = conf.CheckAtlasRequires('lapack', 'lapack', 'blas')
                   if result:
                      atlas_libs.append('lapack')
@@ -241,10 +248,9 @@ if not (env.GetOption('clean') or env.GetOption('help')):
                   print 'Error- you must have either Lapack or Atlas installed'
                   Exit(1)
 
-            atlas_libs = conf.CheckAtlasRequires('atlas', atlas_libs, 'gfortran')
-            if not atlas_libs:
-                print 'Error- could not figure out how to build with Atlas/Lapack'
-                Exit(1)
+               if not atlas_libs:
+                  print 'Error- could not figure out how to build with Atlas/Lapack'
+                  Exit(1)
 
             # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
