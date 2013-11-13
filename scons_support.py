@@ -40,9 +40,7 @@ import loos_build_config
 
 # Attempt to canonicalize system name, type and other related info...
 def canonicalizeSystem():
-    linux_type = 'nonlinux'
-    host_type = platform.system()
-    suffix = 'so'
+    loos_build_config.host_type = platform.system()
 
     if os.path.isdir('/usr/lib64'):
         loos_build_config.default_lib_path = '/usr/lib64'
@@ -50,10 +48,10 @@ def canonicalizeSystem():
         loos_build_config.default_lib_path = '/usr/lib'
 
 # Detect CYGWIN & canonicalize linux type, setting defaults...
-    if (re.search("(?i)cygwin", host_type)):
-        host_type = 'Cygwin'
-        suffix = 'dll.a'
-    elif (host_type == 'Linux'):
+    if (re.search("(?i)cygwin", loos_build_config.host_type)):
+        loos_build_config.host_type = 'Cygwin'
+        loos_build_config.suffix = 'dll.a'
+    elif (loos_build_config.host_type == 'Linux'):
         # Determine linux variant...
         linux_type = platform.platform()
         
@@ -63,10 +61,12 @@ def canonicalizeSystem():
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
+
+        loos_build_config.linux_type = linux_type
+
     # MacOS is special (of course...)
-    elif (host_type == 'Darwin'):
-        suffix = 'dylib'
-    return(host_type, linux_type, suffix)
+    elif (loos_build_config.host_type == 'Darwin'):
+        loos_build_config.suffix = 'dylib'
 
 
 
@@ -339,3 +339,157 @@ def SetupNetCDFPaths(env):
     env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
     env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
 
+
+def AutoConfiguration(env):
+    if not (env.GetOption('clean') or env.GetOption('help')):
+        has_netcdf = 0
+        conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
+                                               'CheckForBoostLibrary' : CheckForBoostLibrary,
+                                               'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
+                                               'CheckDirectory' : CheckDirectory,
+                                               'CheckAtlasRequires' : CheckAtlasRequires})
+        
+    
+        # Some distros use /usr/lib, others have /usr/lib64.
+        # Check to see what's here and prefer lib64 to lib
+        if not conf.CheckDirectory('/usr/lib64'):
+            if not conf.CheckDirectory('/usr/lib'):
+                print 'Fatal error- cannot find your system library directory'
+                Exit(1)
+            default_lib_path = '/usr/lib'
+       
+        # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
+        # based on the environment or custom.py file
+        SetupBoostPaths(env)
+        SetupNetCDFPaths(env)
+
+        # Only setup ATLAS if we're not on a Mac...
+        if loos_build_config.host_type != 'Darwin':
+            ATLAS_LIBPATH = env['ATLAS_LIBPATH']
+            ATLAS_LIBS = env['ATLAS_LIBS']
+            if not ATLAS_LIBPATH:
+                atlas_libpath = loos_build_config.default_lib_path + '/atlas'
+            else:
+                atlas_libpath = ATLAS_LIBPATH
+
+        env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
+
+
+        # Check for standard typedefs...
+        if not conf.CheckType('ulong','#include <sys/types.h>\n'):
+            conf.env.Append(CCFLAGS = '-DREQUIRES_ULONG')
+        if not conf.CheckType('uint','#include <sys/types.h>\n'):
+            conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
+
+
+        # --- NetCDF Autoconf
+        has_netcdf = 0
+        if env['NETCDF_LIBS']:
+            netcdf_libs = env['NETCDF_LIBS']
+            env.Append(CCFLAGS=['-DHAS_NETCDF'])
+            has_netcdf = 1
+        else:
+            if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
+                netcdf_libs = 'netcdf'
+                env.Append(CCFLAGS=['-DHAS_NETCDF'])
+                has_netcdf = 1
+
+        env['HAS_NETCDF'] = has_netcdf
+
+
+        # --- Swig Autoconf (unless user requested NO PyLOOS)
+        if int(env['pyloos']):
+            if conf.CheckForSwig():
+                env['pyloos'] = 1
+            else:
+                env['pyloos'] = 0
+
+        # --- Boost Autoconf
+        if env['BOOST_LIBS']:
+            boost_libs = Split(env['BOOST_LIBS'])
+        else:
+            boost_threaded = -1
+            boost_libs = []
+            for libname in ['regex', 'thread', 'system', 'program_options']:
+                result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
+                if not result[0]:
+                    print 'Error- missing Boost library %s' % libname
+                    Exit(1)
+                if boost_threaded < 0:
+                    boost_threaded = result[1]
+                elif boost_threaded and not result[1]:
+                    print 'Error- Expected threaded boost libraries, but %s is not threaded.' % libname
+                    Exit(1)
+                elif not boost_threaded and result[1]:
+                    print 'Error- Expected non-threaded boost libraries, but %s is threaded.' % libname
+                    Exit(1)
+                boost_libs.append(result[0])
+    
+            env.Append(LIBS = boost_libs)
+
+        if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
+            Exit(1)
+
+        # --- Check for ATLAS/LAPACK and how to build
+
+        # MacOS will use accelerate framework, so skip all of this...
+        if loos_build_config.host_type != 'Darwin':
+            if env['ATLAS_LIBS']:
+                atlas_libs = Split(env['ATLAS_LIBS'])
+            else:
+                numerics = { 'atlas' : 0,
+                             'lapack' : 0,
+                             'f77blas' : 0,
+                             'cblas' : 0,
+                             'blas' : 0 }
+                
+        
+                for libname in numerics.keys():
+                    if conf.CheckLib(libname, autoadd = 0):
+                        numerics[libname] = 1
+
+                atlas_libs = []
+                if (numerics['lapack']):
+                    atlas_libs.append('lapack')
+            
+                if (numerics['f77blas'] and numerics['cblas']):
+                    atlas_libs.extend(['f77blas', 'cblas'])
+                elif (numerics['blas']):
+                    atlas_libs.append('blas')
+                else:
+                    print 'Error- you must have some kind of blas installed'
+                    Exit(1)
+                    
+                if (numerics['atlas']):
+                    atlas_libs.append('atlas')
+
+                if not (numerics['lapack'] or numerics['atlas']):
+                    # Did we miss atlas above because it requires gfortran?
+                    if not numerics['atlas'] and (numerics['f77blas'] and numerics['cblas']):
+                        atlas_libs = conf.CheckAtlasRequires('atlas', 'atlas' + atlas_libs, 'gfortran')
+                        if not atlas_libs:
+                            print 'Error- could not figure out how to build with Atlas/lapack'
+
+                    # In some cases, lapack requires blas to link so the above
+                    # check will find blas but not lapack
+                    elif numerics['blas']:
+                        result = conf.CheckAtlasRequires('lapack', 'lapack', 'blas')
+                        if result:
+                            atlas_libs.append('lapack')
+                        else:
+                            print 'Error- you must have either Lapack or Atlas installed'
+                            Exit(1)
+                    else:
+                        print 'Error- you must have either Lapack or Atlas installed'
+                        Exit(1)
+
+                if not atlas_libs:
+                    print 'Error- could not figure out how to build with Atlas/Lapack'
+                    Exit(1)
+
+                # Hack to extend list rather than append a list into a list
+                for lib in atlas_libs:
+                    env.Append(LIBS=lib)
+
+        environOverride(conf)
+        env = conf.Finish()

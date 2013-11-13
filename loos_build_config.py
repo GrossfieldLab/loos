@@ -23,6 +23,9 @@ loos_version = '2.1.0'
 default_lib_path = '/usr/lib64'
 min_boost_version = 36    # 1.xx
 
+host_type = 'unknown'
+linux_type = 'unknown'
+suffix = 'so'
 
 # List of packages to build and install
 # The keywords become build targets for SCons
