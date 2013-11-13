@@ -93,8 +93,6 @@ PREFIX = env['PREFIX']
 # ----------------------------------------------------------------------------------------------
 
 ### Autoconf
-env['HAS_NETCDF'] = 0
-
 AutoConfiguration(env)
 pyloos = int(env['pyloos'])
 
