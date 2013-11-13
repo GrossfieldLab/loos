@@ -341,7 +341,9 @@ def SetupNetCDFPaths(env):
 
 
 def AutoConfiguration(env):
-    if not (env.GetOption('clean') or env.GetOption('help')):
+    if env.GetOption('clean') or env.GetOption('help'):
+        env['HAS_NETCDF'] = 1
+    else:
         has_netcdf = 0
         conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
                                                'CheckForBoostLibrary' : CheckForBoostLibrary,
@@ -384,7 +386,7 @@ def AutoConfiguration(env):
 
         # --- NetCDF Autoconf
         has_netcdf = 0
-        if env['NETCDF_LIBS']:
+        if conf.env['NETCDF_LIBS']:
             netcdf_libs = env['NETCDF_LIBS']
             env.Append(CCFLAGS=['-DHAS_NETCDF'])
             has_netcdf = 1
@@ -394,18 +396,18 @@ def AutoConfiguration(env):
                 env.Append(CCFLAGS=['-DHAS_NETCDF'])
                 has_netcdf = 1
 
-        env['HAS_NETCDF'] = has_netcdf
+        conf.env['HAS_NETCDF'] = has_netcdf
 
 
         # --- Swig Autoconf (unless user requested NO PyLOOS)
         if int(env['pyloos']):
             if conf.CheckForSwig():
-                env['pyloos'] = 1
+                conf.env['pyloos'] = 1
             else:
-                env['pyloos'] = 0
+                conf.env['pyloos'] = 0
 
         # --- Boost Autoconf
-        if env['BOOST_LIBS']:
+        if conf.env['BOOST_LIBS']:
             boost_libs = Split(env['BOOST_LIBS'])
         else:
             boost_threaded = -1
