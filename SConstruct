@@ -83,7 +83,7 @@ env['linux_type'] = loos_build_config.linux_type
 if env['ALTPATH']:
    buildenv = env['ENV']
    path = buildenv['PATH']
-   path = ALTPATH + ':' + path
+   path = env['ALTPATH'] + ':' + path
    buildenv['PATH'] = path
 
 
