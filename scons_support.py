@@ -374,7 +374,7 @@ def AutoConfiguration(env):
             else:
                 atlas_libpath = ATLAS_LIBPATH
 
-        env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
+            env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 
 
         # Check for standard typedefs...
