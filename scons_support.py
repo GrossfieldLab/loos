@@ -357,7 +357,7 @@ def AutoConfiguration(env):
         if not conf.CheckDirectory('/usr/lib64'):
             if not conf.CheckDirectory('/usr/lib'):
                 print 'Fatal error- cannot find your system library directory'
-                Exit(1)
+                env.Exit(1)
             default_lib_path = '/usr/lib'
        
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
@@ -416,21 +416,21 @@ def AutoConfiguration(env):
                 result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
                 if not result[0]:
                     print 'Error- missing Boost library %s' % libname
-                    Exit(1)
+                    env.Exit(1)
                 if boost_threaded < 0:
                     boost_threaded = result[1]
                 elif boost_threaded and not result[1]:
                     print 'Error- Expected threaded boost libraries, but %s is not threaded.' % libname
-                    Exit(1)
+                    env.Exit(1)
                 elif not boost_threaded and result[1]:
                     print 'Error- Expected non-threaded boost libraries, but %s is threaded.' % libname
-                    Exit(1)
+                    env.Exit(1)
                 boost_libs.append(result[0])
     
             env.Append(LIBS = boost_libs)
 
         if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
-            Exit(1)
+            env.Exit(1)
 
         # --- Check for ATLAS/LAPACK and how to build
 
@@ -460,7 +460,7 @@ def AutoConfiguration(env):
                     atlas_libs.append('blas')
                 else:
                     print 'Error- you must have some kind of blas installed'
-                    Exit(1)
+                    env.Exit(1)
                     
                 if (numerics['atlas']):
                     atlas_libs.append('atlas')
@@ -480,14 +480,14 @@ def AutoConfiguration(env):
                             atlas_libs.append('lapack')
                         else:
                             print 'Error- you must have either Lapack or Atlas installed'
-                            Exit(1)
+                            env.Exit(1)
                     else:
                         print 'Error- you must have either Lapack or Atlas installed'
-                        Exit(1)
+                        env.Exit(1)
 
                 if not atlas_libs:
                     print 'Error- could not figure out how to build with Atlas/Lapack'
-                    Exit(1)
+                    env.Exit(1)
 
                 # Hack to extend list rather than append a list into a list
                 for lib in atlas_libs:
