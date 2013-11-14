@@ -10,16 +10,43 @@ to contact us regarding LOOS.
 
    * RELEASE 2.1.0 *
 
-This release contains several major changes to LOOS.  We
-have rewritten the build system so that it will try to configure the
-LOOS build based on your installation (i.e. using the Autoconf
-functionality of SCons) rather than pre-set build configurations for
-common distributions.  We are also introducing a major change in how
-Trajectory classes work, including changes to the Atom and AtomicGroup
-classes.  Briefly, LOOS now uses an atom index, assigned when a model
-is read, for updating from a trajectory rather than the atomid's.
-Finally, we are now deprecating a few older distributions that we once
-officially supported.
+This release contains several major changes to LOOS.  We have
+rewritten the build system so that it will configure LOOS based on
+your system (i.e. using the Autoconf functionality of SCons) rather
+than pre-set build configurations for common distributions.  We are
+now deprecating a few older Linux distributions, however we have added
+support for MacOS 10.9 (Mavericks).  Along with this, LOOS now also
+requires that you have at least Boost version 1.36 or more recent.
+This will require manually installing a more recent Boost for some
+older Linux distributions.  We are also introducing a major change in
+how Trajectory classes work, including changes to the Atom and
+AtomicGroup classes.  Briefly, LOOS now uses an atom index, assigned
+when a model is read, for updating from a trajectory rather than the
+atomid's.
+
++ The Build System
+
+The new SCons build system for LOOS will try to figure out what are
+the correct Boost libraries to use and also how to correctly build
+with Atlas/Lapack.  As before, NetCDF support for Amber will be
+automatically included if the NetCDF library is found on your system.
+PyLOOS is now built by default, if a suitable version of Swig is
+found.  If you want to disable building PyLOOS, use "pyloos=0" on the
+command line with SCons.  The generated setup scripts now also include
+environment variables that capture the build configuration.  These can
+be used by external SCons builds, making building your own tools
+outside of LOOS far easier.  See the Examples directory for a sample
+SConstruct/SConscript.
+
+We have extensively tested this new build system on many different
+distributions and versions without problem, however it may choose
+incorrectly.  Many of these decisions can be overridden either on the
+command line or with a "custom.py" file.  See the INSTALL file and the
+LOOS documentation/FAQ for more information.  If you run into trouble
+building LOOS that is not already addressed there, do not hesitate to
+contact us for help.
+
++ Trajectory Changes
 
 This release contains a major revision to how Trajectory classes work
 and includes changes to the Atom and AtomicGroup classes as well.
