@@ -407,6 +407,9 @@ def AutoConfiguration(env):
                 conf.env['pyloos'] = 0
 
         # --- Boost Autoconf
+        if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
+            env.Exit(1)
+
         if conf.env['BOOST_LIBS']:
             boost_libs = Split(env['BOOST_LIBS'])
         else:
@@ -429,8 +432,6 @@ def AutoConfiguration(env):
     
             env.Append(LIBS = boost_libs)
 
-        if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
-            env.Exit(1)
 
         # --- Check for ATLAS/LAPACK and how to build
 
