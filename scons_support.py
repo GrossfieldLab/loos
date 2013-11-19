@@ -438,7 +438,7 @@ def AutoConfiguration(env):
         # MacOS will use accelerate framework, so skip all of this...
         if loos_build_config.host_type != 'Darwin':
             if env['ATLAS_LIBS']:
-                atlas_libs = Split(env['ATLAS_LIBS'])
+                atlas_libs = env.Split(env['ATLAS_LIBS'])
             else:
                 numerics = { 'atlas' : 0,
                              'lapack' : 0,
@@ -491,8 +491,8 @@ def AutoConfiguration(env):
                     env.Exit(1)
 
                 # Hack to extend list rather than append a list into a list
-                for lib in atlas_libs:
-                    env.Append(LIBS=lib)
+            for lib in atlas_libs:
+                env.Append(LIBS=lib)
 
         environOverride(conf)
         env = conf.Finish()
