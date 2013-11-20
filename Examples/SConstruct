@@ -28,6 +28,7 @@ opts.Add('LOOS_LIBPATH', 'Path to libraries LOOS was linked with', '/opt/LOOS/li
 opts.Add('LOOS_CPPPATH', 'Path to include files', '/opt/LOOS/include')
 opts.Add('LOOS_LIBS', 'Libraries LOOS was linked with', 'netcdf:boost_regex:boost_thread:boost_system:boost_program_options:lapack:f77blas:cblas:atlas')
 opts.Add('LOOS_CCFLAGS', 'Compiler flags used to build LOOS', '-DHAS_NETCDF -O3 -NDEBUG -Wall')
+opts.Add('LOOS_LINKFLAGS', 'Flags to pass to the linker', '')
 opts.Add('ALTPATH', 'Alternative PATH for executables', '')
 
 env = Environment(options = opts)
@@ -56,6 +57,8 @@ if 'LOOS_LIBS' in os.environ:
    LOOS_LIBS = os.environ['LOOS_LIBS']
 if 'LOOS_CCFLAGS' in os.environ:
    LOOS_CCFLAGS = os.environ['LOOS_CCFLAGS']
+if 'LOOS_LINKFLAGS' in os.environ:
+   LOOS_LINKFLAGS = os.environ['LOOS_LINKFLAGS']
 
 
 LOOS_LIBPATH = LOOS_LIBPATH.split(':')
@@ -63,6 +66,7 @@ LOOS_CPPPATH = LOOS_CPPPATH.split(':')
 LOOS_LIBS = LOOS_LIBS.split(':')
 
 env.Replace(CCFLAGS = LOOS_CCFLAGS)
+env.Replace(LINKFLAGS = LOOS_LINKFLAGS)
 env.Replace(LIBPATH = LOOS_LIBPATH)
 env.Replace(CPPPATH = LOOS_CPPPATH)
 env.Replace(LIBS = LOOS_LIBS)
