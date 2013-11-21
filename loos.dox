@@ -385,27 +385,29 @@ segid == "BULK")    # or named BULK
 
 /*! \page building Building LOOS
 \section basicbuild Building Basics
-LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A> and 
-the <A href="http://boost.org" target="_blank">Boost (1.36+)</A> libraries.
-For macs, it also requires 
-<A href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12"
+LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A>
+and the <A href="http://boost.org" target="_blank">Boost (1.36+)</A>
+libraries.  For macs, it also requires <A
+href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12"
 target="_blank">XCode</A> be installed (free download from the Mac App
-Store).
-On Linux, 
-<A
-href="http://math-atlas.sourceforge.net" target="_blank">Atlas</A> 
-is <em>strongly</em> recommended, although standard LAPACK and BLAS
-should work.
-If you plan to modify the parser (you probably shouldn't), then you'll need the
-GNU utilities <A href="http://www.gnu.org/software/flex/">flex</A> and
-<A href="http://www.gnu.org/software/bison/">bison</A>.  Similarly, if
-you want to rebuild the documentation, you'll need to install Doxygen.
+Store).  On Linux, <A href="http://math-atlas.sourceforge.net"
+target="_blank">Atlas</A> is <em>strongly</em> recommended, although
+the standard LAPACK and BLAS should work.  If you plan to modify the
+parser (and you probably shouldn't), then you'll need the GNU
+utilities <A href="http://www.gnu.org/software/flex/">flex</A> and <A
+href="http://www.gnu.org/software/bison/">bison</A>.  Although LOOS
+comes bundled with pre-built documentation, you can regenerate it.
+Doing so requires doxygen and "dot" (from graphviz) be installed.
 
-If your libraries are installed in non-standard locations, you may need to 
-tell LOOS where its required components are.  To do this, there are
-two ways you can tell SCons where to look for those libraries.  The
-first is to specify it on the command-line.  For example, if you have
-Boost installed in <TT>/usr/local/boost_1_54_0</TT>, build LOOS using:
+To build LOOS, go into the LOOS distribution directory and run scons.
+If your libraries are installed in non-standard locations, you may
+need to tell LOOS where its required components are.  There are two
+ways you can tell SCons where to look for those libraries.  The first
+is to specify it on the command-line.  The second, described later, is
+to use a <TT>custom.py</TT> file.  
+
+Using the command line, if you have Boost
+installed in <TT>/usr/local/boost_1_54_0</TT>, build LOOS using:
 \verbatim
 scons BOOST=/usr/local/boost_1_54_0
 \endverbatim
@@ -413,7 +415,7 @@ scons BOOST=/usr/local/boost_1_54_0
 This will tell SCons to look
 in <TT>/usr/local/boost_1_54_0/include</TT> for header files
 and <TT>/usr/local/boost_1_54_0/lib</TT> for libraries.  In some
-cases, the directories may not follow this convention, so you may need
+cases, the directories may not follow this convention, so you will need
 to specify the individual directories explicitly:
 \verbatim
 scons BOOST_INCLUDE=/usr/local/boost_1_36_0 BOOST_LIBPATH=/usr/local/lib
@@ -434,7 +436,7 @@ boost_thread-gcc43-mt boost_system-gcc43-mt"
 Similar configuration options are available for NetCDF and
 ATLAS/LAPACK.  NetCDF support is only included if the NetCDF library
 is found.  SCons will also prefer to use ATLAS if it's available, but
-will revert to LAPACK/BLAS if necessary.  For Mac's, the Accelerate
+will revert to LAPACK/BLAS if necessary.  For Macs, the Accelerate
 FrameWork is used rather than ATLAS.
 
 It is not necessary to always set these build options on the
@@ -449,18 +451,7 @@ lines.
 More complete build information, along with platform specific notes,
 can be found in the INSTALL file included with LOOS.
 
-\subsection compiling Compiling
-
-You can temporarily override the defaults (and what's
-set in your \c custom.py file by specifying the appropriate variables
-on the command-line (run \c scons \c -h for more information)
-
-The basic build is to just run scons in the top-level directory,
-
-\verbatim
-cd /path/to/LOOS
-scons
-\endverbatim
+\subsection install Installing
 
 
 To install LOOS, use the "install" target:
@@ -530,7 +521,7 @@ documentation, Doxygen is required.  Moreover, due to an issue we ran
 into with SCons, documentation building and installation are
 decoupled.  What this means is that you must explicitly build the docs
 (i.e. "scons docs") and -then- install, "scons install".  Running
-"scons install" will -not- rebuild the documentation, even if it out
+"scons install" will -not- rebuild the documentation, even if it is out
 of date (or nonexistent).
 
 
@@ -560,6 +551,12 @@ directory will build your tools.  If not, you can change your
 environment variables or alternatively, <I>not</I> source the LOOS
 setup script and use a <TT>custom.py</TT> file.
 
+<h3>Important Note</h3>
+The environment <i>always</i> overrides what's in the SConstruct and
+in the <tt>custom.py</tt> file.  If you create a <tt>custom.py</tt>
+file and change the <tt>LOOS_CCFLAGS</tt> variable, it will be ignored
+in favor of what <tt>LOOS_CCFLAGS</tt> was set to when you sourced the
+<tt>setup.sh</tt> script.
 
 <hr>
 
@@ -573,7 +570,6 @@ There are several build targets available:
 <tr align="left"><td>all (default)</td><td>Build the library, tools, packages, and PyLOOS</td></tr>
 <tr align="left"><td>core</td><td>Builds the library and PyLOOS only</td></tr>
 <tr align="left"><td>docs</td><td>Rebuilds the documentation</td></tr>
-<tr align="left"><td>tests</td><td>Builds LOOS library and runs internal tests (deprecated)</td></tr>
 <tr align="left"><td>install</td><td>Installs library, toosl, PyLOOS, and all packages (except user)</td></tr>
 </table>
 
