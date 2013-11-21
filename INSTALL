@@ -1,63 +1,46 @@
 		       LOOS COMPATIBILITY TABLE
 		       ------------------------
 
---------------------------------------------------
-|    OS             |   LOOS    | PyLOOS | Notes |
-|-------------------|-----------|--------|--------
-| Fedora 12         |     +     |   !    | S     |
-| Fedora 13         |     +     |   !    | S     |
-| Fedora 14         |     +     |   +    |       |
-| Fedora 15         |     +     |   +    |       |
-| Fedora 16         |     +     |   +    |       |
-| Fedora 17         |     +     |   +    |       |
-| Fedora 18         |     +     |   +    |       |
-| Fedora 19         |     +     |   +    |       |
-|-------------------|-----------|--------|-------|
-| Ubuntu 8.04 LTS   |     !     |   !    | BCDS  |
-| Ubuntu 10.04 LTS  |     +     |   !    | S     |
-| Ubuntu 11.10      |     +     |   !    | S     |
-| Ubuntu 12.04 LTS  |     +     |   +    |       |
-| Ubuntu 12.10      |     +     |   +    |       |
-|-------------------|-----------|--------|-------|
-| Debian 5          |     !     |   -    | BD    |
-| Debian 6          |     +     |   !    | S     |
-| Debian 7.1        |     +     |   +    |       |
-|-------------------|-----------|--------|-------|
-| CentOS 5.9        |     !     |   !    | BCDS  |
-| CentOS 6.4        |     +     |   !    | CS    |
-|-------------------|-----------|--------|-------|
-| OpenSUSE 11.4     |     +     |   -    |       |
-| OpenSUSE 12       |     +     |   +    |       |
-|-------------------|-----------|--------|-------|
-| FreeBSD 8         |     +     |   -    |       |
-|-------------------|-----------|--------|-------|
-| Windows XP        |     +     |   -    | U     |
-|  +Cygwin 1.7.7    |           |        |       |
-| Windows 7 64-bit  |     +     |   -    |       |
-|  +Cygwin 1.7.15-1 |           |        |       |
-|-------------------|-----------|--------|-------|
-| MacOS 10.6        |     +     |   !    | D     |
-| MacOS 10.7        |     +     |   !    | U     |
-| MacOS 10.8        |     +     |   !    | U     |
-| MacOS 10.9        |     +     |   !    |       |
-|-------------------|-----------|--------|-------|
-
-
-+ = supported
-    (dependencies easily available via package manager)
-
-! = supported with reservations
-    (may require manual installation of dependencies
-    or updates)
-
-- = not supported at this time
-
-B = Requires manual update/install to Boost
-C = Requires manual update/install of SCons
-S = Require manual update/install of Swig
-D = Deprecated, and will not be tested in the future
-U = Untested.  We are no longer testing these configurations, but
-    they may still work.
+--------------------------------------------------                             
+|    OS             |   LOOS    | PyLOOS | Notes |     ************** Symbols *****************
+|-------------------|-----------|--------|--------                             
+| Fedora 12         |     +     |   !    | DS    |     + = Supported (dependencies easily
+| Fedora 13         |     +     |   !    | DS    |         available via package manager)
+| Fedora 14         |     +     |   +    |       |                             
+| Fedora 15         |     +     |   +    |       |     ! = Supported with reservations
+| Fedora 16         |     +     |   +    |       |         (may require manual installations)
+| Fedora 17         |     +     |   +    |       |    
+| Fedora 18         |     +     |   +    |       |     - = Unsupported
+| Fedora 19         |     +     |   +    |       |                             
+|-------------------|-----------|--------|-------|     B = Requires manual install of Boost
+| Ubuntu 8.04 LTS   |     !     |   !    | BCDS  |                             
+| Ubuntu 10.04 LTS  |     +     |   !    | S     |     C = Requires manual install of SCons
+| Ubuntu 11.10      |     +     |   !    | S     |     
+| Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
+| Ubuntu 12.10      |     +     |   +    |       |     
+|-------------------|-----------|--------|-------|     D = Deprecated platform        
+| Debian 5          |     !     |   -    | BD    |         We are no longer testing these
+| Debian 6          |     +     |   !    | S     |         configurations, however, they may
+| Debian 7.1        |     +     |   +    |       |         still work...       
+|-------------------|-----------|--------|-------|                             
+| CentOS 5.9        |     !     |   !    | BCDS  |                             
+| CentOS 6.4        |     +     |   !    | CS    |                             
+|-------------------|-----------|--------|-------|                             
+| OpenSUSE 11.4     |     +     |   -    |       |                             
+| OpenSUSE 12       |     +     |   +    |       |                             
+|-------------------|-----------|--------|-------|                             
+| FreeBSD 8         |     +     |   -    | D     |                             
+|-------------------|-----------|--------|-------|                             
+| Windows XP        |     +     |   -    | D     |                             
+|  +Cygwin 1.7.7    |           |        |       |                             
+| Windows 7 64-bit  |     +     |   -    |       |                             
+|  +Cygwin 1.7.15-1 |           |        |       |                             
+|-------------------|-----------|--------|-------|                             
+| MacOS 10.6        |     +     |   !    | D     |                             
+| MacOS 10.7        |     +     |   !    | D     |                             
+| MacOS 10.8        |     +     |   !    | D     |                             
+| MacOS 10.9        |     +     |   !    |       |                             
+|-------------------|-----------|--------|-------|                             
 
 
 
@@ -315,12 +298,14 @@ OpenSUSE 11.4: NOT SUPPORTED
 
 			-----= MACOS X =-----
 
-***NOTE on MacOS 10.8+ (Mountain Lion) compatability***
-***only LOOS 2.0.1 (or more recent) is compatible***
+***IMPORTANT NOTE REGARDING MACOS 10.9***
 
-We only test LOOS against the most current available vesion of MacOS.
-However, LOOS should be compatible with MacOS 10.4 and later with
-modest effort.
+MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
+an incompatibility with Boost installed via Fink in MacOS 10.9.  You
+will need to manually download and build a recent version of Boost.
+
+----------------------------------------
+
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  XCode is available for free through the Mac App store.
