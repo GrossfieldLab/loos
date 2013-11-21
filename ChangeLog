@@ -4,7 +4,9 @@
 	* Added support for writing truncated SVD in big-svd
 	* Changed rmsds to optionally cache the trajectory for improved
 	performance
-	* Changed build scripts (refactoring and various improvements)
+	* Changed build system (refactoring and various improvements, see
+	INSTALL or Doxygen docs for more information)
+	* Deprecated tests build target
 
 2013-10-18    <alan@membrane.urmc.rochester.edu>
 	* Added new tool membrane_map, which computes the 2D distribution of
