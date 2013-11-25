@@ -13,10 +13,10 @@ to contact us regarding LOOS.
 This release contains several major changes to LOOS.  We have
 rewritten the build system so that it will configure LOOS based on
 your system (i.e. using the Autoconf functionality of SCons) rather
-than pre-set build configurations for common distributions.  We are
+than use pre-set build configurations for common distributions.  We are
 now deprecating a few older Linux distributions, however we have added
 support for MacOS 10.9 (Mavericks).  Along with this, LOOS now also
-requires that you have at least Boost version 1.36 or more recent.
+requires that you have at least Boost version 1.36 installed.
 This will require manually installing a more recent Boost for some
 older Linux distributions.  We are also introducing a major change in
 how Trajectory classes work, including changes to the Atom and
@@ -30,12 +30,12 @@ The new SCons build system for LOOS will try to figure out what are
 the correct Boost libraries to use and also how to correctly build
 with Atlas/Lapack.  As before, NetCDF support for Amber will be
 automatically included if the NetCDF library is found on your system.
-PyLOOS is now built by default, if a suitable version of Swig is
-found.  If you want to disable building PyLOOS, use "pyloos=0" on the
-command line with SCons.  The generated setup scripts now also include
-environment variables that capture the build configuration.  These can
-be used by external SCons builds, making building your own tools
-outside of LOOS far easier.  See the Examples directory for a sample
+PyLOOS is now built by default if a suitable version of Swig is found.
+To disable building PyLOOS, use "pyloos=0" on the command line with
+SCons.  The generated setup scripts now include environment variables
+that capture the build configuration.  These can be used by external
+SCons builds, making building your own tools outside of LOOS far
+easier.  See the Examples directory for a sample
 SConstruct/SConscript.
 
 We have extensively tested this new build system on many different
@@ -69,9 +69,9 @@ having the same number of atoms as the trajectory frame.  Prior to
 the atomid's.  Now, *all* trajectory classes will honor the atom index
 information regardless of the size of the passed AtomicGroup.
 
-The Trajectory::updateGroupCoords() function has also been changed.  It
-now uses the non-virtual interface idiom, meaning that derived classes
-should override the private updateGroupCoordsImpl() member function.
+The Trajectory::updateGroupCoords() function now uses the non-virtual
+interface idiom, meaning that derived classes should override the
+private updateGroupCoordsImpl() member function.
 
 Also note that updateGroupCoords() does not typically check that the
 passed AtomicGroup has valid atom index information.  This is checked
