@@ -1,5 +1,5 @@
-		       LOOS COMPATIBILITY TABLE
-		       ------------------------
+                                       LOOS COMPATIBILITY TABLE
+                                       ------------------------
 
 --------------------------------------------------                             
 |    OS             |   LOOS    | PyLOOS | Notes |     ************** Symbols *****************
@@ -13,17 +13,17 @@
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
 | Fedora 19         |     +     |   +    |       |                             
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
-| Ubuntu 8.04 LTS   |     !     |   !    | BCDS  |                             
+| Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
 | Ubuntu 10.04 LTS  |     +     |   !    | S     |     C = Requires manual install of SCons
 | Ubuntu 11.10      |     +     |   !    | S     |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    |       |     
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
-| Debian 5          |     !     |   -    | BD    |         We are no longer testing these
+| Debian 5          |     !     |   -    | DB    |         We are no longer testing these
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
 | Debian 7.1        |     +     |   +    |       |         still work...       
 |-------------------|-----------|--------|-------|                             
-| CentOS 5.9        |     !     |   !    | BCDS  |                             
+| CentOS 5.9        |     !     |   !    | DBCS  |                             
 | CentOS 6.4        |     +     |   !    | CS    |                             
 |-------------------|-----------|--------|-------|                             
 | OpenSUSE 11.4     |     +     |   -    |       |                             
@@ -129,9 +129,9 @@ the NETCDF_LIBS variable.
 
 			      = Boost =
 
-LOOS should work with most versions of Boost installed by package
-managers.  To explicitly specify an install location, set the BOOST
-variable in your custom.py file or on the command line:
+LOOS requires Boost version 1.36 or more recent.  To explicitly
+specify an install location, set the BOOST variable in your custom.py
+file or on the command line:
 
 	 scons BOOST=/usr/local/boost_1_54_0
 
@@ -159,9 +159,9 @@ already multithreaded.
 
 			------= Fedora =------
 
-LOOS has been tested on Fedora (64-bit) 12-19.  We assume
-you already have the basic compiler tools installed (i.e. g++).  You will
-need to install scons, boost, and atlas:
+LOOS has been tested on Fedora (64-bit).  We assume you already have
+the basic compiler tools installed (i.e. g++).  You will need to
+install scons, boost, and atlas:
 
 sudo yum install scons boost-devel atlas-devel
 
@@ -185,16 +185,18 @@ Fedora 14-19: Yum install python-devel and swig
 
 			------= CentOS =------
 
-LOOS has been tested with CentOS 5 and 6.  Follow the instructions for
-Fedora, however there is no scons package available via yum.  Instead,
-download and install any version of scons more recent than 1.0.
-
+LOOS has been tested with CentOS (64 bit).  Follow the instructions
+for Fedora, however there is no scons package available via yum.
+Instead, download and install any version of scons more recent than
+1.0.
 
 
 * PyLOOS *
 
 CentOS 5, 6: Yum install python-devel and pcre-devel, then download
   and install the latest swig.
+
+
 
 			------= Ubuntu =------
 
@@ -247,8 +249,6 @@ Ubuntu 8.04 LTS: Install python-dev and follow the instructions above.
 
 			------= Debian =------
 
-Loos has been tested with: 5, 6, 7
-
 Using the synaptic manager (or apt-get), install the following packages:
       libboost-dev [may be called libbost-all-dev]
       scons
@@ -270,8 +270,6 @@ Debian 6: Install libpcre-dev and python-dev, then *download* and
 Debian 7: Install python-dev, and swig
 
 		       ------= openSUSE =------
-
-LOOS has been tested with: 11, 12
 
 There is no pre-built ATLAS package (that we could find) for
 openSUSE.  LOOS will use the blas packages instead.  You will need to
@@ -302,7 +300,8 @@ OpenSUSE 11.4: NOT SUPPORTED
 
 MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
 an incompatibility with Boost installed via Fink in MacOS 10.9.  You
-will need to manually download and build a recent version of Boost.
+will need to manually download and build a recent version of Boost and
+*NOT* use the Fink version.
 
 ----------------------------------------
 
@@ -317,8 +316,8 @@ Alternatively, use fink to install these packages.
 * NetCDF *
 
 Download and install the latest hdf5 and netcdf libraries.  If
-necessary, set the NETCDFINC and NETCDFLIB variables in your custom.py
-file to point to where netcdf is installed.
+necessary, set the NETCDF_INCLUDE and NETCDF_LIBPATH variables in your
+custom.py file to point to where netcdf is installed.
 
 * PyLOOS *
 
@@ -327,9 +326,8 @@ If you have installed Boost in a non-standard location, you will need
 to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
 environment variable.
 
-			 -----= CYGWIN =-----
 
-Tested versions: 1.7.7, 1.7.15-1
+			 -----= CYGWIN =-----
 
 You will need to install libboost-devel and liblapack-devel along with
 the g++ compiler using the cygwin setup.exe program.  (Note: if loos
