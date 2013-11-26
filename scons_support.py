@@ -209,6 +209,8 @@ def CheckAtlasRequires(conf, name, lib, required):
 # Check for existince of boost library with various naming variants
 # Will return a tuple containing the correct name and a flag indicating
 # whether this is the threaded or non-threaded version.
+# This will only search specified paths, not the built-in paths for g++,
+# so some libraries may be missed...
 def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Message('Checking for Boost library %s...' % name)
    name = 'boost_' + name
