@@ -55,20 +55,11 @@ list.append(vsa)
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
-## Special handling to include boost threads
-#if (env['platform'] == 'cygwin'):
-#    thread_libs = 'boost_thread-mt boost_system-mt'
-#else:
-#    thread_libs = 'boost_thread boost_system'
-
-    
 anmo_traj = clone.Program('anmo-traj.cpp')
 list.append(anmo_traj)
 
 # Update to include the above apps
-apps = apps + ' vsa anm anmo_traj'
-
-
+apps = apps + ' vsa anm anmo-traj'
 
 
 ### Installation specific
