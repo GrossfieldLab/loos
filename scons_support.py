@@ -224,14 +224,14 @@ def CheckForBoostLibrary(conf, name, path, suffix):
       return len(w1)-len(w2)
 
     # Now check for names lib libboost_regex-gcc43-mt.so ...
-   files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (name, suffix)))
+   files = glob.glob(os.path.join(path, 'lib%s*-mt.%s' % (name, suffix)))
    files.sort(cmp=sortByLength)
    if files:
       conf.Result(name + '-mt')
       name = os.path.basename(files[0])[3:-(len(suffix)+1)]
       return(name, 1)
 
-   files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (name, suffix)))
+   files = glob.glob(os.path.join(path, 'lib%s*.%s' % (name, suffix)))
    files.sort(cmp=sortByLength)
    if files:
       conf.Result(name)
@@ -297,12 +297,14 @@ def SetupBoostPaths(env):
         boost_include = boost + '/include'
         boost_libpath = boost + '/lib'
         loos_build_config.user_libdirs['BOOST'] = boost_libpath
+        loos_build_config.user_boost_flag = 1
         
     if BOOST_INCLUDE:
         boost_include = BOOST_INCLUDE
     if BOOST_LIBPATH:
         boost_libpath= BOOST_LIBPATH
         loos_build_config.user_libdirs['BOOST'] = boost_libpath
+        loos_build_config.user_boost_flag = 1
        
 
     env.MergeFlags({ 'LIBPATH': [boost_libpath]})
@@ -420,24 +422,25 @@ def AutoConfiguration(env):
             boost_threaded = -1
             boost_libs = []
             for libname in ['regex', 'thread', 'system', 'program_options']:
-                # First, check using standard SCons check...
-                old_libpath = env['LIBPATH']
-                conf.env.Append(LIBPATH = [env['BOOST_LIBPATH']])
-                full_libname = 'boost_' + libname + '-mt'
-                result = conf.CheckLib(full_libname, autoadd = 0)
-                if result:
-                    boost_libs.append(full_libname)
-                    conf.env.Replace(LIBPATH = old_libpath)
-                    continue
+                if not loos_build_config.user_boost_flag:
+                    old_libpath = env['LIBPATH']
+                    conf.env.Append(LIBPATH = [env['BOOST_LIBPATH']])
+                    full_libname = 'boost_' + libname + '-mt'
+                    result = conf.CheckLib(full_libname, autoadd = 0)
+                    if result:
+                        boost_libs.append(full_libname)
+                        conf.env.Replace(LIBPATH = old_libpath)
+                        continue
 
-                full_libname = 'boost_' + libname
-                result = conf.CheckLib(full_libname, autoadd = 0)
-                if result:
-                    conf.env.Replace(LIBPATH = old_libpath)
-                    boost_libs.append(full_libname)
-                    continue
+                    full_libname = 'boost_' + libname
+                    result = conf.CheckLib(full_libname, autoadd = 0)
+                    if result:
+                        conf.env.Replace(LIBPATH = old_libpath)
+                        boost_libs.append(full_libname)
+                        continue
 
-                conf.env().Replace(LIBPATH = old_libpath)
+                    conf.env().Replace(LIBPATH = old_libpath)
+
                 result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
                 if not result[0]:
                     print 'Error- missing Boost library %s' % libname
