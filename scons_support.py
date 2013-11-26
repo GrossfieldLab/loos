@@ -122,17 +122,21 @@ def script_builder_python(target, source, env):
    cpppaths = env['CPPPATH']
    cpppaths.pop(0)
 
+   ldlibrary = loos_build_config.user_libdirs.values()
+
    if not 'install' in SCons.Script.COMMAND_LINE_TARGETS:
        toolpath = '$LOOS/Tools:' + ':'.join(['$LOOS/Packages/' + s for s in [loos_build_config.package_list[i] for i in loos_build_config.package_list]])
        loos_dir = env.Dir('.').abspath
        libpaths.insert(0, loos_dir)
        cpppaths.insert(0, loos_dir)
+       ldlibrary.insert(0, loos_dir)
        loos_pythonpath = loos_dir
 
    else:
        loos_dir = env['PREFIX']
        toolpath = loos_dir + '/bin'
        libpaths.insert(0, loos_dir + '/lib')
+       ldlibrary.insert(0, loos_dir + '/lib')
        loos_pythonpath = loos_dir + '/lib'
        
 
@@ -147,7 +151,8 @@ def script_builder_python(target, source, env):
                                        libs = ':'.join(env['LIBS']),
                                        ccflags = env['CCFLAGS'],
                                        loos_cxx = env['CXX'],
-                                       loos_pythonpath = loos_pythonpath)
+                                       loos_pythonpath = loos_pythonpath,
+                                       ldlibrary = ':'.join(ldlibrary))
 
    outfile = open(str(target[0]), 'w')
    outfile.write(script)
@@ -291,11 +296,13 @@ def SetupBoostPaths(env):
         boost = BOOST
         boost_include = boost + '/include'
         boost_libpath = boost + '/lib'
+        loos_build_config.user_libdirs['BOOST'] = boost_libpath
         
     if BOOST_INCLUDE:
         boost_include = BOOST_INCLUDE
     if BOOST_LIBPATH:
         boost_libpath= BOOST_LIBPATH
+        loos_build_config.user_libdirs['BOOST'] = boost_libpath
        
 
     env.MergeFlags({ 'LIBPATH': [boost_libpath]})
@@ -324,11 +331,13 @@ def SetupNetCDFPaths(env):
         netcdf = NETCDF
         netcdf_include = netcdf + '/include'
         netcdf_libpath = netcdf + '/lib'
+        loos_build_config.user_libdirs['NETCDF'] = netcdf_libpath
 
     if NETCDF_INCLUDE:
         netcdf_include = NETCDF_INCLUDE
     if NETCDF_LIBPATH:
         netcdf_libpath= NETCDF_LIBPATH
+        loos_build_config.user_libdirs['NETCDF'] = netcdf_libpath
 
     env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
     env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
@@ -367,6 +376,7 @@ def AutoConfiguration(env):
                 atlas_libpath = loos_build_config.default_lib_path + '/atlas'
             else:
                 atlas_libpath = ATLAS_LIBPATH
+                loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
             env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 

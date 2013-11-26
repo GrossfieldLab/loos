@@ -37,4 +37,4 @@ package_list = { 'ENM': 'ElasticNetworks',
                  'Python': 'PyLOOS' }
 
 
-
+user_libdirs = {}
