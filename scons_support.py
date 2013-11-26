@@ -213,14 +213,6 @@ def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Message('Checking for Boost library %s...' % name)
    name = 'boost_' + name
 
-   if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (name , suffix)))):
-      conf.Result(name + '-mt')
-      return(name + '-mt', 1)
-
-   if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (name , suffix)))):
-      conf.Result(name)
-      return(name, 0)
-
    def sortByLength(w1,w2):
       return len(w1)-len(w2)
 
@@ -416,6 +408,24 @@ def AutoConfiguration(env):
             boost_threaded = -1
             boost_libs = []
             for libname in ['regex', 'thread', 'system', 'program_options']:
+                # First, check using standard SCons check...
+                old_libpath = env['LIBPATH']
+                conf.env.Append(LIBPATH = [env['BOOST_LIBPATH']])
+                full_libname = 'boost_' + libname + '-mt'
+                result = conf.CheckLib(full_libname, autoadd = 0)
+                if result:
+                    boost_libs.append(full_libname)
+                    conf.env.Replace(LIBPATH = old_libpath)
+                    continue
+
+                full_libname = 'boost_' + libname
+                result = conf.CheckLib(full_libname, autoadd = 0)
+                if result:
+                    conf.env.Replace(LIBPATH = old_libpath)
+                    boost_libs.append(full_libname)
+                    continue
+
+                conf.env().Replace(LIBPATH = old_libpath)
                 result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
                 if not result[0]:
                     print 'Error- missing Boost library %s' % libname
