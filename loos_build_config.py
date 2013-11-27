@@ -38,3 +38,4 @@ package_list = { 'ENM': 'ElasticNetworks',
 
 
 user_libdirs = {}
+user_boost_flag = 0     # 1 = user has overridden boost location
