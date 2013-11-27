@@ -197,4 +197,12 @@ env.Alias('docs', docs)
 env.Alias('all', all)
 env.Alias('install', PREFIX)
 
+env.Clean("distclean",
+          [
+              ".sconsign.dblite",
+              ".sconf_temp",
+              "config.log"
+              ])
+           
+
 env.Default('all')
