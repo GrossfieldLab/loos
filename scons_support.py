@@ -70,6 +70,10 @@ def CheckSystemType(conf):
     elif (loos_build_config.host_type == 'Darwin'):
         loos_build_config.suffix = 'dylib'
 
+    typemsg = loos_build_config.host_type
+    if (typemsg == 'Linux'):
+        typemsg = typemsg + ' [' + loos_build_config.linux_type + ']'
+        
     conf.Result(loos_build_config.host_type)
 
 
