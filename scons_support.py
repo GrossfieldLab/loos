@@ -63,6 +63,8 @@ def CheckSystemType(conf):
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
+        elif (re.search("(?i)centos", linux_type)):
+            linux_type = 'centos'
 
         loos_build_config.linux_type = linux_type
 
@@ -74,7 +76,7 @@ def CheckSystemType(conf):
     if (typemsg == 'Linux'):
         typemsg = typemsg + ' [' + loos_build_config.linux_type + ']'
         
-    conf.Result(loos_build_config.host_type)
+    conf.Result(typemsg)
 
 
 
