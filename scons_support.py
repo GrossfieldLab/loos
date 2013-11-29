@@ -39,7 +39,9 @@ import loos_build_config
 
 
 # Attempt to canonicalize system name, type and other related info...
-def canonicalizeSystem():
+# Note: this exports to globals rather than being contained within the check framework.
+def CheckSystemType(conf):
+    conf.Message('Determining platform ...')
     loos_build_config.host_type = platform.system()
 
     if os.path.isdir('/usr/lib64'):
@@ -67,6 +69,8 @@ def canonicalizeSystem():
     # MacOS is special (of course...)
     elif (loos_build_config.host_type == 'Darwin'):
         loos_build_config.suffix = 'dylib'
+
+    conf.Result(loos_build_config.host_type)
 
 
 
@@ -346,15 +350,26 @@ def SetupNetCDFPaths(env):
 
 
 def AutoConfiguration(env):
+    conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
+                                          'CheckForBoostLibrary' : CheckForBoostLibrary,
+                                          'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
+                                          'CheckDirectory' : CheckDirectory,
+                                          'CheckAtlasRequires' : CheckAtlasRequires,
+                                          'CheckSystemType' : CheckSystemType
+                                          })
+    
+
+    # Get system information
+    conf.CheckSystemType()
+
+    conf.env['host_type'] = loos_build_config.host_type
+    conf.env['linux_type'] = loos_build_config.linux_type
+
+    
     if env.GetOption('clean') or env.GetOption('help'):
         env['HAS_NETCDF'] = 1
     else:
         has_netcdf = 0
-        conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
-                                               'CheckForBoostLibrary' : CheckForBoostLibrary,
-                                               'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
-                                               'CheckDirectory' : CheckDirectory,
-                                               'CheckAtlasRequires' : CheckAtlasRequires})
         
     
         # Some distros use /usr/lib, others have /usr/lib64.
