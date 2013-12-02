@@ -290,21 +290,15 @@ def CheckDirectory(conf, dirname):
 
 def SetupBoostPaths(env):
 
-    global BOOST_LIBS
-    global boost
-    global boost_include
-    global boost_libpath
-
     BOOST=env['BOOST']
     BOOST_INCLUDE=env['BOOST_INCLUDE']
     BOOST_LIBPATH=env['BOOST_LIBPATH']
     BOOST_LIBS = env['BOOST_LIBS']
 
-    if BOOST == '':
-        boost = '/usr'
-        boost_include = '/usr/include'
-        boost_libpath = loos_build_config.default_lib_path
-    else:
+    boost_libpath = ''
+    boost_include = ''
+
+    if BOOST != '':
         boost = BOOST
         boost_include = boost + '/include'
         boost_libpath = boost + '/lib'
@@ -318,30 +312,25 @@ def SetupBoostPaths(env):
         loos_build_config.user_libdirs['BOOST'] = boost_libpath
         loos_build_config.user_boost_flag = 1
        
+    if boost_libpath:
+        env.MergeFlags({ 'LIBPATH': [boost_libpath]})
+        env['BOOST_LIBPATH'] = boost_libpath
+    if boost_include:
+        env.MergeFlags({ 'CPPPATH' : [boost_include] })
 
-    env.MergeFlags({ 'LIBPATH': [boost_libpath]})
-    env.MergeFlags({ 'CPPPATH' : [boost_include] })
-
-    # The main SConstruct will need to know what this path is for autoconf testing...
-    env['BOOST_LIBPATH'] = boost_libpath
 
 
 
 def SetupNetCDFPaths(env):
-    global NETCDF_LIBS
-    global netcdf_include
-    global netcdf_libpath
-
     NETCDF=env['NETCDF']
     NETCDF_INCLUDE=env['NETCDF_INCLUDE']
     NETCDF_LIBPATH=env['NETCDF_LIBPATH']
     NETCDF_LIBS = env['NETCDF_LIBS']
     
-    if NETCDF == '':
-        netcdf = '/usr'
-        netcdf_include = '/usr/include'
-        netcdf_libpath = loos_build_config.default_lib_path
-    else:
+    netcdf_libpath = ''
+    netcdf_include = ''
+
+    if NETCDF != '':
         netcdf = NETCDF
         netcdf_include = netcdf + '/include'
         netcdf_libpath = netcdf + '/lib'
@@ -353,8 +342,10 @@ def SetupNetCDFPaths(env):
         netcdf_libpath= NETCDF_LIBPATH
         loos_build_config.user_libdirs['NETCDF'] = netcdf_libpath
 
-    env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
-    env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
+    if netcdf_libpath:
+        env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
+    if netcdf_include:
+        env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
 
 
 def AutoConfiguration(env):
@@ -387,6 +378,9 @@ def AutoConfiguration(env):
                 print 'Fatal error- cannot find your system library directory'
                 env.Exit(1)
             default_lib_path = '/usr/lib'
+        else:
+            default_lib_path = '/usr/lib64'
+            conf.env.Append(LIBPATH = '/usr/lib64')
        
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
         # based on the environment or custom.py file
@@ -417,12 +411,12 @@ def AutoConfiguration(env):
         has_netcdf = 0
         if conf.env['NETCDF_LIBS']:
             netcdf_libs = env['NETCDF_LIBS']
-            env.Append(CCFLAGS=['-DHAS_NETCDF'])
+            conf.env.Append(CCFLAGS=['-DHAS_NETCDF'])
             has_netcdf = 1
         else:
             if conf.CheckLibWithHeader('netcdf', 'netcdf.h', 'c'):    # Should we check C or C++?
                 netcdf_libs = 'netcdf'
-                env.Append(CCFLAGS=['-DHAS_NETCDF'])
+                conf.env.Append(CCFLAGS=['-DHAS_NETCDF'])
                 has_netcdf = 1
 
         conf.env['HAS_NETCDF'] = has_netcdf
