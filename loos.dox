@@ -1336,6 +1336,7 @@ Matlab and Octave.
 <ul>
   <li> Substantial change to build system.  See INSTALL file or
   \subpage building
+  <li> Test suite is now deprecated
   <li> Changed how atomid's are handled in LOOS.  They are no longer
   indices into the trajectory frame for atom coordinates.  Atoms now
   have an "index" property for that purpose.  The index is
@@ -1351,6 +1352,18 @@ Matlab and Octave.
   analyzing trajectories using ENM's
   <li> Added BasicSplitBy option.  Use BasicSplitBy::split() to split
   an AtomicGroup based on a user-specified method
+  <li> The rmsds tool will now cache the trajectory for improved
+  performance.  Caching can be disabled for large systems
+  <li> Added smooth-traj tool
+  <li> Added new membrane_map tool to compute the 2D distribution of
+  various physical properties around a membrane protein
+  <li> The Matrix bracket operators '[]' will only check for out of
+  bounds indices if debugging is turned on while compiling LOOS.
+</ul>
+\subsection r210_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in SVD tool where some command line options would
+  incorrectly fail with an options error.
 </ul>
 
 \section release206 Version 2.0.6 (9-13-2013)
