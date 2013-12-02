@@ -13,27 +13,21 @@ alongside LOOS.
 
 * Using SCons
 
-To use SCons, you need to tell SCons where to find LOOS.  One way to
-do this is to copy the 'custom-proto.py' to 'custom.py' and set the
-LOOS variable.  You can also specify the location the command line,
-i.e.
-	scons LOOS=/the/path/to/LOOS
+Be sure you have sourced the LOOS setup script appropriate to your
+shell.  Now, edit the SConscript file and add the name of your tool to
+the apps list.  For example, if your tool is named 'solve-phases.cpp',
+then you will change the line,
 
-If you built LOOS using SCons and had to edit LOOS' custom.py, then
-you will need to make similar edits here as well (telling SCons where
-things like ATLAS and BOOST are installed).
+apps = 'center-pdb'
 
-With that out of the way, to add new programs to build, simply edit
-the SConscript file and run "scons".
+to,
 
-* Using Make
+apps = 'center-pdb solve-phases'
 
-To use make with LOOS, you will need to edit the Makefile.  First off,
-tell the compiler where LOOS is by changing the LOOS variable.  You
-will need to edit the next couple of lines to specify the compiler and
-what release or debugging options to use.  If you're building under
-Linux, use the next block of lines.  If you're using MacOS X, then
-comment out the Linux lines and uncomment the OS X lines.  In either
-case, you may need to adjust the locations those variables point to...
+
+Now run "scons" in that directory.
+
+For more information about building your own code with LOOS, refer to
+the LOOS Doxygen documentation...
 
 

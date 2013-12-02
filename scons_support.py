@@ -39,7 +39,9 @@ import loos_build_config
 
 
 # Attempt to canonicalize system name, type and other related info...
-def canonicalizeSystem():
+# Note: this exports to globals rather than being contained within the check framework.
+def CheckSystemType(conf):
+    conf.Message('Determining platform ...')
     loos_build_config.host_type = platform.system()
 
     if os.path.isdir('/usr/lib64'):
@@ -61,12 +63,22 @@ def canonicalizeSystem():
             linux_type = 'suse'
         elif (re.search("(?i)debian", linux_type)):
             linux_type = 'debian'
+        elif (re.search("(?i)centos", linux_type)):
+            linux_type = 'centos'
+        elif (re.search("(?i)fedora", linux_type)):
+            linux_type = 'fedora'
 
         loos_build_config.linux_type = linux_type
 
     # MacOS is special (of course...)
     elif (loos_build_config.host_type == 'Darwin'):
         loos_build_config.suffix = 'dylib'
+
+    typemsg = loos_build_config.host_type
+    if (typemsg == 'Linux'):
+        typemsg = typemsg + ' [' + loos_build_config.linux_type + ']'
+        
+    conf.Result(typemsg)
 
 
 
@@ -122,17 +134,21 @@ def script_builder_python(target, source, env):
    cpppaths = env['CPPPATH']
    cpppaths.pop(0)
 
+   ldlibrary = loos_build_config.user_libdirs.values()
+
    if not 'install' in SCons.Script.COMMAND_LINE_TARGETS:
        toolpath = '$LOOS/Tools:' + ':'.join(['$LOOS/Packages/' + s for s in [loos_build_config.package_list[i] for i in loos_build_config.package_list]])
        loos_dir = env.Dir('.').abspath
        libpaths.insert(0, loos_dir)
        cpppaths.insert(0, loos_dir)
+       ldlibrary.insert(0, loos_dir)
        loos_pythonpath = loos_dir
 
    else:
        loos_dir = env['PREFIX']
        toolpath = loos_dir + '/bin'
        libpaths.insert(0, loos_dir + '/lib')
+       ldlibrary.insert(0, loos_dir + '/lib')
        loos_pythonpath = loos_dir + '/lib'
        
 
@@ -147,7 +163,8 @@ def script_builder_python(target, source, env):
                                        libs = ':'.join(env['LIBS']),
                                        ccflags = env['CCFLAGS'],
                                        loos_cxx = env['CXX'],
-                                       loos_pythonpath = loos_pythonpath)
+                                       loos_pythonpath = loos_pythonpath,
+                                       ldlibrary = ':'.join(ldlibrary))
 
    outfile = open(str(target[0]), 'w')
    outfile.write(script)
@@ -209,30 +226,24 @@ def CheckAtlasRequires(conf, name, lib, required):
 # Check for existince of boost library with various naming variants
 # Will return a tuple containing the correct name and a flag indicating
 # whether this is the threaded or non-threaded version.
+# This will only search specified paths, not the built-in paths for g++,
+# so some libraries may be missed...
 def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Message('Checking for Boost library %s...' % name)
    name = 'boost_' + name
-
-   if (os.path.isfile(os.path.join(path, 'lib%s-mt.%s' % (name , suffix)))):
-      conf.Result(name + '-mt')
-      return(name + '-mt', 1)
-
-   if (os.path.isfile(os.path.join(path, 'lib%s.%s' % (name , suffix)))):
-      conf.Result(name)
-      return(name, 0)
 
    def sortByLength(w1,w2):
       return len(w1)-len(w2)
 
     # Now check for names lib libboost_regex-gcc43-mt.so ...
-   files = glob.glob(os.path.join(path, 'lib%s-*-mt.%s' % (name, suffix)))
+   files = glob.glob(os.path.join(path, 'lib%s*-mt.%s' % (name, suffix)))
    files.sort(cmp=sortByLength)
    if files:
       conf.Result(name + '-mt')
       name = os.path.basename(files[0])[3:-(len(suffix)+1)]
       return(name, 1)
 
-   files = glob.glob(os.path.join(path, 'lib%s-*.%s' % (name, suffix)))
+   files = glob.glob(os.path.join(path, 'lib%s*.%s' % (name, suffix)))
    files.sort(cmp=sortByLength)
    if files:
       conf.Result(name)
@@ -297,11 +308,15 @@ def SetupBoostPaths(env):
         boost = BOOST
         boost_include = boost + '/include'
         boost_libpath = boost + '/lib'
+        loos_build_config.user_libdirs['BOOST'] = boost_libpath
+        loos_build_config.user_boost_flag = 1
         
     if BOOST_INCLUDE:
         boost_include = BOOST_INCLUDE
     if BOOST_LIBPATH:
         boost_libpath= BOOST_LIBPATH
+        loos_build_config.user_libdirs['BOOST'] = boost_libpath
+        loos_build_config.user_boost_flag = 1
        
 
     env.MergeFlags({ 'LIBPATH': [boost_libpath]})
@@ -330,26 +345,39 @@ def SetupNetCDFPaths(env):
         netcdf = NETCDF
         netcdf_include = netcdf + '/include'
         netcdf_libpath = netcdf + '/lib'
+        loos_build_config.user_libdirs['NETCDF'] = netcdf_libpath
 
     if NETCDF_INCLUDE:
         netcdf_include = NETCDF_INCLUDE
     if NETCDF_LIBPATH:
         netcdf_libpath= NETCDF_LIBPATH
+        loos_build_config.user_libdirs['NETCDF'] = netcdf_libpath
 
     env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
     env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
 
 
 def AutoConfiguration(env):
+    conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
+                                          'CheckForBoostLibrary' : CheckForBoostLibrary,
+                                          'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
+                                          'CheckDirectory' : CheckDirectory,
+                                          'CheckAtlasRequires' : CheckAtlasRequires,
+                                          'CheckSystemType' : CheckSystemType
+                                          })
+    
+
+    # Get system information
+    conf.CheckSystemType()
+
+    conf.env['host_type'] = loos_build_config.host_type
+    conf.env['linux_type'] = loos_build_config.linux_type
+
+    
     if env.GetOption('clean') or env.GetOption('help'):
         env['HAS_NETCDF'] = 1
     else:
         has_netcdf = 0
-        conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
-                                               'CheckForBoostLibrary' : CheckForBoostLibrary,
-                                               'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
-                                               'CheckDirectory' : CheckDirectory,
-                                               'CheckAtlasRequires' : CheckAtlasRequires})
         
     
         # Some distros use /usr/lib, others have /usr/lib64.
@@ -373,6 +401,7 @@ def AutoConfiguration(env):
                 atlas_libpath = loos_build_config.default_lib_path + '/atlas'
             else:
                 atlas_libpath = ATLAS_LIBPATH
+                loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
             env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
 
@@ -416,6 +445,25 @@ def AutoConfiguration(env):
             boost_threaded = -1
             boost_libs = []
             for libname in ['regex', 'thread', 'system', 'program_options']:
+                if not loos_build_config.user_boost_flag:
+                    old_libpath = env['LIBPATH']
+                    conf.env.Append(LIBPATH = [env['BOOST_LIBPATH']])
+                    full_libname = 'boost_' + libname + '-mt'
+                    result = conf.CheckLib(full_libname, autoadd = 0)
+                    if result:
+                        boost_libs.append(full_libname)
+                        conf.env.Replace(LIBPATH = old_libpath)
+                        continue
+
+                    full_libname = 'boost_' + libname
+                    result = conf.CheckLib(full_libname, autoadd = 0)
+                    if result:
+                        conf.env.Replace(LIBPATH = old_libpath)
+                        boost_libs.append(full_libname)
+                        continue
+
+                    conf.env().Replace(LIBPATH = old_libpath)
+
                 result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
                 if not result[0]:
                     print 'Error- missing Boost library %s' % libname

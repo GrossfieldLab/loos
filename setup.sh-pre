@@ -38,17 +38,17 @@ export PATH="$tool_path:$$PATH"
 # Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
 SYSTEM=`uname`
 if [ "$$SYSTEM" = "Darwin" ] ; then
-    export DYLD_LIBRARY_PATH="$$LOOS_LIBPATH:$$DYLD_LIBRARY_PATH"
+    export DYLD_LIBRARY_PATH="$ldlibrary:$$DYLD_LIBRARY_PATH"
 elif `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
-    export LD_LIBRARY_PATH="$$LIBPATH:$$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="$ldlibrary:$$LD_LIBRARY_PATH"
     export PATH="$$LOOSPATH:$$PATH"
 else
-    export LD_LIBRARY_PATH="$$LOOS_LIBPATH:$$LD_LIBRARY_PATH"
+    export LD_LIBRARY_PATH="$ldlibrary:$$LD_LIBRARY_PATH"
 fi
 
 # Cygwin requires libs in PATH
 if `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
-    export PATH="$$LOOS_LIBPATH:$$PATH"
+    export PATH="$ldlibrary:$$PATH"
 fi
 
 export PYTHONPATH="$loos_pythonpath:$$PYTHONPATH"

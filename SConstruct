@@ -73,10 +73,6 @@ env.Decider('MD5-timestamp')
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
-# Get system information
-canonicalizeSystem()
-env['host_type'] = loos_build_config.host_type
-env['linux_type'] = loos_build_config.linux_type
 
 
 # Setup alternate path to tools
@@ -196,5 +192,13 @@ env.Alias('core', loos_core)
 env.Alias('docs', docs)
 env.Alias('all', all)
 env.Alias('install', PREFIX)
+
+env.Clean("distclean",
+          [
+              ".sconsign.dblite",
+              ".sconf_temp",
+              "config.log"
+              ])
+           
 
 env.Default('all')

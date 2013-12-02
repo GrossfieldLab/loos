@@ -54,6 +54,9 @@ int verbosity;
 
 // If the estimated cache memory is more than this fraction of physical memory,
 // issue a warning to the user to consider turning off the cache
+// Note: the total app size may be 20-30% larger than the cache estimate, so
+//       take that into consideration when setting the warning threshold
+
 const double cache_memory_fraction_warning = 0.66;
 
 
@@ -85,6 +88,10 @@ string fullHelpMessage(void) {
     "\n"
     "\trmsds model.pdb simulation.dcd >rmsd.asc\n"
     "This example uses all alpha-carbons and every frame in the trajectory.\n"
+    "\n"
+    "\trmsds --cache=0 model.pdb simulation.dcd >rmsd.asc\n"
+    "This example uses all alpha-carbons and every frame in the trajectory, but the\n"
+    "trajectory is not cached in memory.\n"
     "\n"
     "\trmsds inactive.pdb inactive.dcd active.pdb active.dcd >rmsd.asc\n"
     "This example uses all alpha-carbons and compares the \"inactive\" simulation\n"
@@ -228,17 +235,22 @@ public:
     long ms = estimateModelSize(_model);
     long ts = estimateEnsembleSize(frames.size());
     long mem = availMemory();
-    double used = static_cast<double>(ms * ts) / mem;
     
-    if (used >= cache_memory_fraction_warning) {
-      long mb = (ms * ts) >> 20;
-
-      cerr << boost::format("***WARNING***\nThe estimated trajectory cache size is %.1f%% of your total memory (%d MB)\n")
-	% (used * 100.0)
-	% mb;
-
-      cerr << "If your machine starts swapping, try using the --cache=0 option on the command line\n";
+    if (mem > 0) {
+      double used = static_cast<double>(ms * ts) / mem;
+      
+      if (used >= cache_memory_fraction_warning) {
+	long mb = (ms * ts) >> 20;
+	
+	cerr << boost::format("***WARNING***\nThe estimated trajectory cache size is %.1f%% (%d MB) of your total memory (%d MB).\n")
+	  % (used * 100.0)
+	  % mb
+	  % (mem >> 20);
+	
+	cerr << "If your machine starts swapping, try using the --cache=0 option on the command line\n";
+      }
     }
+    
 #endif
     
     readTrajectory(_ensemble, model, traj);
@@ -266,9 +278,9 @@ public:
     
     int ok = sysctlbyname("hw.memsize", &memory, &size, 0, 0);
     if (ok < 0) {
-      cerr << "Error in determining available memory.  Try turning off cache to run.\n";
+      cerr << "Warning- could not determine available memory size.  Use --cache=0 if swapping occurs.\n";
       perror("rmsds: ");
-      exit(-10);
+      memory = 0;
     }
 
     return(memory);
