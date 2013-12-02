@@ -44,11 +44,6 @@ def CheckSystemType(conf):
     conf.Message('Determining platform ...')
     loos_build_config.host_type = platform.system()
 
-    if os.path.isdir('/usr/lib64'):
-        loos_build_config.default_lib_path = '/usr/lib64'
-    else:
-        loos_build_config.default_lib_path = '/usr/lib'
-
 # Detect CYGWIN & canonicalize linux type, setting defaults...
     if (re.search("(?i)cygwin", loos_build_config.host_type)):
         loos_build_config.host_type = 'Cygwin'
@@ -379,6 +374,7 @@ def AutoConfiguration(env):
                 env.Exit(1)
             default_lib_path = '/usr/lib'
         else:
+            # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
             default_lib_path = '/usr/lib64'
             conf.env.Append(LIBPATH = '/usr/lib64')
        
@@ -392,7 +388,7 @@ def AutoConfiguration(env):
             ATLAS_LIBPATH = env['ATLAS_LIBPATH']
             ATLAS_LIBS = env['ATLAS_LIBS']
             if not ATLAS_LIBPATH:
-                atlas_libpath = loos_build_config.default_lib_path + '/atlas'
+                atlas_libpath = default_lib_path + '/atlas'
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
