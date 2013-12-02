@@ -1331,7 +1331,7 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release210 Version 2.1.0 (11-26-2013)
+\section release210 Version 2.1.0 (12-3-2013)
 \subsection r210_add_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Substantial change to build system.  See INSTALL file or
