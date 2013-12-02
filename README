@@ -48,8 +48,6 @@ contact us for help.
 
 + Trajectory Changes
 
-This release contains a major revision to how Trajectory classes work
-and includes changes to the Atom and AtomicGroup classes as well.
 When an AtomicGroup is read in from a model file, the atoms are
 assigned an "index" that corresponds to their order in the model file.
 This index is used to retrieve coordinates from each frame of a
