@@ -65,6 +65,8 @@ def CheckSystemType(conf):
             linux_type = 'debian'
         elif (re.search("(?i)centos", linux_type)):
             linux_type = 'centos'
+        elif (re.search("(?i)fedora", linux_type)):
+            linux_type = 'fedora'
 
         loos_build_config.linux_type = linux_type
 
