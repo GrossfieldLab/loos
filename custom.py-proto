@@ -35,14 +35,6 @@
 # pyloos=0
 
 
-### Uncomment the following to alter the PATH SCons uses to find
-### programs (e.g. if you have TeX in a nonstandard location, or use Fink
-### on a Mac)
-# ALTPATH='/usr/local/texlive/2007/bin/i386-darwin'
-# ALTPATH='/sw/bin'
-
-
-
 #### The following can be used to control where SCons looks for libraries
 #### and include files for LOOS, and what libraries are used...
 

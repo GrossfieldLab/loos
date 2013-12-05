@@ -1331,7 +1331,7 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release210 Version 2.1.0 (12-3-2013)
+\section release210 Version 2.1.0 (12-6-2013)
 \subsection r210_add_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Substantial change to build system.  See INSTALL file or
@@ -2508,16 +2508,13 @@ of LOOS.  We recommend upgrading to either LOOS 2.0.4 or downgrading
 your version of Boost to 1.51
 
 <DT> SCons is not finding the right compiler/swig/doxygen
-<DD> For better or worse, SCons uses a minimal "standard" path when
-searching for compilers and tools needed to build LOOS.  If you find
-the wrong g++ or swig being used, it's frequently because the new one
-is in a place SCons doesn't expect, such as /sw/bin, but there's also
-an older version someplace SCons does expect, such as /usr/bin.  LOOS
-has two variables in the custom.py file that can help with this.  To
-override only which g++ to use, set the CXX variable.  If you want to
-change the path for all tools, set the ALTPATH variable instead.  For
-example, Mac users installing with Fink will want to set ALTPATH to
-"/sw/bin".
+<DD> For LOOS, SCons will use your shell's $PATH veriable to look
+for tools.  You will need to make sure the missing tool is in your 
+path.  Some care may be necessary in the order directories appear
+in your path to make sure you are finding the intended version of
+the tool.  You can explicitly specify a C++ compiler to use
+with the CXX variable (either in your environment or from a 
+custom.py file).  This will take precedence over your path.
 
 <DT> SCons is not finding my installation of Boost.
 <DD> If you need to point SCons to a non-standard location of Boost,
@@ -2758,10 +2755,9 @@ implementations.
 <DT>	I'm getting errors from Swig (about missing files)
 <DD>	On a few test systems, we found that there is an older
 	version of swig present (e.g. /usr/bin) in addition
-	to a newer version (e.g. in /sw/bin).  SCons will use the one
-	in /usr/bin unless explicitly told not to.  Edit the custom.py
-	file and set the ALTPATH variable to point to where the most
-	recent version of Swig is installed.
+	to a newer version (e.g. in /sw/bin).  Make sure that your
+	shell's path has the newever location first, i.e. /sw/bin
+	appears to the left of /usr/bin
 
 <DT>	I'm seeing a lot of warnings messages from the PyLOOS build
 <DD>	We have seen this in some instances (MacOS 10.9, for example),

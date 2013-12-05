@@ -57,7 +57,7 @@ if [ "$DOXVERS" != "$VERS" ] ; then
     FAILED="yes"
 fi
 
-SCONSVERS=`egrep '^loos_version' SConstruct | gawk '{print $3}' | sed "s/'//g"`
+SCONSVERS=`egrep '^loos_version' loos_build_config.py | gawk '{print $3}' | sed "s/'//g"`
 if [ "$SCONSVERS" != "$VERS" ] ; then
     AbortOrContinue "Version mismatch in SConstruct"
     FAILED="yes"
@@ -86,7 +86,7 @@ scons -sj$PROCS docs      # Rebuild docs explicitly
 echo "*** Checking install target"
 scons -sj$PROCS install PREFIX=$PREF
 CWD=`pwd`
-if check_loos_install.pl --nofull --prep `pwd` $PREF ; then
+if check_loos_install.pl --nofull --exclude='membrane_map.hpp' --prep `pwd` $PREF ; then
     echo "Install appears ok.  Generating full report..."
     ( echo "***INSTALL APPEARS OK***" ;\
       echo "Please check the diff list below for any errors..." ;\

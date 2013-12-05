@@ -48,7 +48,6 @@ opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 
 opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
-opts.Add('ALTPATH', 'Additional path to commands', '')
 
 opts.Add('BOOST', 'Path to BOOST', '')
 opts.Add('BOOST_INCLUDE', 'Path to BOOST Includes', '')
@@ -64,7 +63,7 @@ opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
 opts.Add('NETCDF_LIBS', 'NetCDF Libraries to link with', '')
 
 
-env = Environment(options = opts, tools = ["default", "doxygen"], toolpath = '.',SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 Help(opts.GenerateHelpText(env))
 
 env.Decider('MD5-timestamp')
@@ -73,14 +72,6 @@ env.Decider('MD5-timestamp')
 script_builder = Builder(action = script_builder_python)
 env.Append(BUILDERS = {'Scripts' : script_builder})
 
-
-
-# Setup alternate path to tools
-if env['ALTPATH']:
-   buildenv = env['ENV']
-   path = buildenv['PATH']
-   path = env['ALTPATH'] + ':' + path
-   buildenv['PATH'] = path
 
 
 ### Get more info from environment
@@ -180,12 +171,11 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 
 loos_core = loos + loos_scripts
-
-if pyloos:
-    loos_core = loos_core + loos_python
-    loos_tools = loos_tools + loos_python
-
 all = loos_tools + loos_scripts + loos_packages
+
+if env['pyloos']:
+    loos_core = loos_core + loos_python
+    all = all + loos_python
 
 env.Alias('tools', loos_tools)
 env.Alias('core', loos_core)
@@ -193,12 +183,12 @@ env.Alias('docs', docs)
 env.Alias('all', all)
 env.Alias('install', PREFIX)
 
-env.Clean("distclean",
+# To get a real "distclean", run "scons -c" and then "scons -c config"
+env.Clean('config',
           [
               ".sconsign.dblite",
               ".sconf_temp",
               "config.log"
               ])
-           
 
 env.Default('all')

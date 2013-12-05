@@ -88,21 +88,23 @@ if (env['HAS_NETCDF']):
 
 loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 
-env.Alias('lib_install', [loos_lib_inst, loos_hdr_inst, scripts_inst])
-
-
 # Python bindings
-if env['host_type'] == 'Darwin':
-   loos_python = env.LoadableModule('_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
-else:
-   loos_python = env.SharedLibrary('_loos', ['loos.i', loos])
+loos_python = ''
+if env['pyloos']:
+
+   if env['host_type'] == 'Darwin':
+      loos_python = env.LoadableModule('_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
+   else:
+
+      # This is a hack to get pyloos shared libraries to build when installing in linux
+      pynv = env.Clone()
+      loos_python = pynv.SharedLibrary('_loos', ['loos.i', loos])
+
+
 
 # Handle installing PyLOOS
-if env['pyloos'] == '1':
-   loos_py_file = File('loos.py')
-   loos_pyfile_inst = env.Install(os.path.join(PREFIX, 'lib'), loos_py_file)
-
-   loos_pylib_inst = env.Install(os.path.join(PREFIX, 'lib'), loos_python)
+   env.Install(os.path.join(PREFIX, 'lib'), File('loos.py'))
+   env.Install(os.path.join(PREFIX, 'lib'), loos_python)
    
 
-Return('loos','loos_python', 'scripts')
+Return('loos', 'loos_python', 'scripts')

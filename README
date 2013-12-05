@@ -38,6 +38,18 @@ SCons builds, making building your own tools outside of LOOS far
 easier.  See the Examples directory for a sample
 SConstruct/SConscript.
 
+SCons typically uses a sanitized PATH to find compilers and tools,
+but this can cause difficulties if tools are installed in non-standard
+locations.  Previously, we used an ALTPATH build variable to point to
+these locations.  Now, SCons will use your shell's PATH as its own.
+We believe this will make building LOOS with non-standard
+configurations much easier.  The catch, however, is that if you have
+overridden a system tool (e.g. g++) by altering your shell PATH, then
+SCons will do the same and, although this is often the intended
+consequence, it isn't always...  As before, the C++ compiler can be
+explicitly set with the CXX variable, regardless of what your PATH
+is.
+
 We have extensively tested this new build system on many different
 distributions and versions without problem, however it may choose
 incorrectly.  Many of these decisions can be overridden either on the

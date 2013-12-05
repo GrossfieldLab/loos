@@ -32,6 +32,7 @@ import shutil
 import distutils.sysconfig
 import distutils.spawn
 from string import Template
+from distutils.version import LooseVersion
 
 import SCons
 
@@ -143,6 +144,7 @@ def script_builder_python(target, source, env):
        loos_dir = env['PREFIX']
        toolpath = loos_dir + '/bin'
        libpaths.insert(0, loos_dir + '/lib')
+       cpppaths.insert(0, loos_dir + '/include')
        ldlibrary.insert(0, loos_dir + '/lib')
        loos_pythonpath = loos_dir + '/lib'
        
@@ -170,22 +172,19 @@ def script_builder_python(target, source, env):
 
 # Verify that we have swig and it's v2.0+
 # Returns the path to swig
-def CheckForSwig(conf):
-    conf.Message('Checking for Swig v2.0+ ...')
-    swig_location = distutils.spawn.find_executable('swig', conf.env['ENV']['PATH'])
-    if swig_location == None:
-        conf.Result('no')
-    else:
-        swig_check = Popen([swig_location, "-version"], stdout=PIPE).communicate()[0]
-        swig_version = swig_check.split('\n')[1].split(' ')[2]
-        swig_major = swig_version.split('.')[0]
-        if int(swig_major) < 2:
-            conf.Result('no')
-            swig_location = None
-        else:
+def CheckForSwig(conf, min_version):
+    conf.Message('Checking for Swig ...')
+    # Need to use has_key() for older distros...
+    if conf.env.has_key('SWIGVERSION'):
+        if LooseVersion(conf.env['SWIGVERSION']) >= LooseVersion(min_version):
             conf.Result('yes')
-    return(swig_location)
+            return(1)
+        else:
+            conf.Result('too old [%s, requires at least %s; pyloos disabled]' % (conf.env['SWIGVERSION'], min_version))
+            return(0)
 
+    conf.Result('no [pyloos disabled]')
+    return(0)
 
 
 # See if a library requires another to link...
@@ -249,27 +248,44 @@ def CheckForBoostLibrary(conf, name, path, suffix):
    conf.Result('missing')
    return('', -1)
 
+
+# Check for Boost include files...
+def CheckBoostHeaders(conf):
+    test_code = """
+#include <boost/version.hpp>
+int main(int argc, char *argv[]) { return(0); }
+"""
+
+    conf.Message('Checking for Boost... ')
+    result = conf.TryLink(test_code, '.cpp')
+    if not result:
+        conf.Result('no')
+        return(0)
+
+    conf.Result('yes')
+    return(1)
+
             
 # Check for version of Boost includes
 def CheckBoostHeaderVersion(conf, min_boost_version):
     source_code = """
+#include <iostream>
 #include <boost/version.hpp>
-#if (((BOOST_VERSION / 100) % 1000) < $version)
-#error LOOS require Boost 1.$version or higher
-#endif
-int main(int argc, char *argv[]) { return(0); }
+int main(int argc, char *argv[]) { std::cout << BOOST_LIB_VERSION; return(0); }
 """
 
-    st = Template(source_code)
-    test_code = st.substitute(version = min_boost_version)
-
     conf.Message('Checking Boost version... ')
-    result = conf.TryLink(test_code, '.cpp')
-    if not result:
-        conf.Result('too old (use Boost 1.%d+)' % min_boost_version)
+    result = conf.TryRun(source_code, '.cpp')
+    if not result[0]:
+        conf.Result('boost missing or incomplete?')
+        return(0)
+    version = result[1]
+
+    if LooseVersion(version) < LooseVersion(min_boost_version):
+        conf.Result('%s [too old, LOOS requires at least %s]' % (version, min_boost_version))
         return(0)
 
-    conf.Result('ok')
+    conf.Result('%s [ok]' % version)
     return(1)
 
 # Check for presence of a directory
@@ -345,6 +361,7 @@ def SetupNetCDFPaths(env):
 
 def AutoConfiguration(env):
     conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
+                                          'CheckBoostHeaders' : CheckBoostHeaders,
                                           'CheckForBoostLibrary' : CheckForBoostLibrary,
                                           'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
                                           'CheckDirectory' : CheckDirectory,
@@ -371,7 +388,7 @@ def AutoConfiguration(env):
         if not conf.CheckDirectory('/usr/lib64'):
             if not conf.CheckDirectory('/usr/lib'):
                 print 'Fatal error- cannot find your system library directory'
-                env.Exit(1)
+                conf.env.Exit(1)
             default_lib_path = '/usr/lib'
         else:
             # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
@@ -420,14 +437,17 @@ def AutoConfiguration(env):
 
         # --- Swig Autoconf (unless user requested NO PyLOOS)
         if int(env['pyloos']):
-            if conf.CheckForSwig():
+            if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env['pyloos'] = 1
             else:
                 conf.env['pyloos'] = 0
 
         # --- Boost Autoconf
+        if not conf.CheckBoostHeaders():
+            conf.env.Exit(1)
+
         if not conf.CheckBoostHeaderVersion(loos_build_config.min_boost_version):
-            env.Exit(1)
+            conf.env.Exit(1)
 
         if conf.env['BOOST_LIBS']:
             boost_libs = Split(env['BOOST_LIBS'])
@@ -457,15 +477,15 @@ def AutoConfiguration(env):
                 result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
                 if not result[0]:
                     print 'Error- missing Boost library %s' % libname
-                    env.Exit(1)
+                    conf.env.Exit(1)
                 if boost_threaded < 0:
                     boost_threaded = result[1]
                 elif boost_threaded and not result[1]:
                     print 'Error- Expected threaded boost libraries, but %s is not threaded.' % libname
-                    env.Exit(1)
+                    conf.env.Exit(1)
                 elif not boost_threaded and result[1]:
                     print 'Error- Expected non-threaded boost libraries, but %s is threaded.' % libname
-                    env.Exit(1)
+                    conf.env.Exit(1)
                 boost_libs.append(result[0])
     
             env.Append(LIBS = boost_libs)
@@ -499,7 +519,7 @@ def AutoConfiguration(env):
                     atlas_libs.append('blas')
                 else:
                     print 'Error- you must have some kind of blas installed'
-                    env.Exit(1)
+                    conf.env.Exit(1)
                     
                 if (numerics['atlas']):
                     atlas_libs.append('atlas')
@@ -519,14 +539,14 @@ def AutoConfiguration(env):
                             atlas_libs.append('lapack')
                         else:
                             print 'Error- you must have either Lapack or Atlas installed'
-                            env.Exit(1)
+                            conf.env.Exit(1)
                     else:
                         print 'Error- you must have either Lapack or Atlas installed'
-                        env.Exit(1)
+                        conf.env.Exit(1)
 
                 if not atlas_libs:
                     print 'Error- could not figure out how to build with Atlas/Lapack'
-                    env.Exit(1)
+                    conf.env.Exit(1)
 
                 # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
