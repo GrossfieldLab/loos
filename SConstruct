@@ -36,6 +36,8 @@ import loos_build_config
 from scons_support import *
 
 
+EnsureSConsVersion(2,0)
+
 # ----------------------------------------------------------------------------------------------
 
 
