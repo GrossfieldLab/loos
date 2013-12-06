@@ -21,6 +21,8 @@
 
 loos_version = '2.1.0'
 min_boost_version = '1_36'
+required_boost_libraries = ('regex', 'thread', 'system', 'program_options')
+
 min_swig_version = '2.0'
 
 host_type = 'unknown'
