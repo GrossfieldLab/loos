@@ -373,23 +373,21 @@ def AutoConfigSystemBoost(conf):
             if result:
                 boost_libs.append(full_libname)
                 thread_suffix = 1
-                continue
             else:
                 full_libname = 'boost_' + libname
                 result = conf.CheckLib(full_libname, autoadd = 0)
                 if result:
                     boost_libs.append(full_libname)
-                    continue
         else:
             full_libname = 'boost_' + libname
             if thread_suffix:
                 full_libname += '-mt'
-                result = conf.CheckLib(full_libname, autoadd = 0)
-                if result:
-                    boost_libs.append(full_libname)
-                else:
-                    print 'Error- missing Boost library %s' % libname
-                    conf.env.Exit(1)
+            result = conf.CheckLib(full_libname, autoadd = 0)
+            if result:
+                boost_libs.append(full_libname)
+            else:
+                print 'Error- missing Boost library %s' % libname
+                conf.env.Exit(1)
 
 
     return boost_libs
