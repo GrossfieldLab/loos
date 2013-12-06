@@ -309,7 +309,7 @@ def SetupBoostPaths(env):
     boost_libpath = ''
     boost_include = ''
 
-    if BOOST != '':
+    if BOOST:
         boost = BOOST
         boost_include = boost + '/include'
         boost_libpath = boost + '/lib'
@@ -324,10 +324,10 @@ def SetupBoostPaths(env):
         loos_build_config.user_boost_flag = 1
        
     if boost_libpath:
-        env.MergeFlags({ 'LIBPATH': [boost_libpath]})
+        env.Prepend(LIBPATH=[boost_libpath])
         env['BOOST_LIBPATH'] = boost_libpath
     if boost_include:
-        env.MergeFlags({ 'CPPPATH' : [boost_include] })
+        env.Prepend(CPPPATH=[boost_include] )
 
 
 
@@ -341,7 +341,7 @@ def SetupNetCDFPaths(env):
     netcdf_libpath = ''
     netcdf_include = ''
 
-    if NETCDF != '':
+    if NETCDF:
         netcdf = NETCDF
         netcdf_include = netcdf + '/include'
         netcdf_libpath = netcdf + '/lib'
@@ -354,9 +354,75 @@ def SetupNetCDFPaths(env):
         loos_build_config.user_libdirs['NETCDF'] = netcdf_libpath
 
     if netcdf_libpath:
-        env.MergeFlags({ 'LIBPATH': [netcdf_libpath]})
+        env.Prepend(LIBPATH=[netcdf_libpath])
     if netcdf_include:
-        env.MergeFlags({ 'CPPPATH' : [netcdf_include] })
+        env.Prepend(CPPPATH=[netcdf_include])
+
+
+
+def AutoConfigSystemBoost(conf):
+    boost_libs = []
+    first = 1
+    thread_suffix = 0
+
+    for libname in loos_build_config.required_boost_libraries:
+        if first:
+            first = 0
+            full_libname = 'boost_' + libname + '-mt'
+            result = conf.CheckLib(full_libname, autoadd = 0)
+            if result:
+                boost_libs.append(full_libname)
+                thread_suffix = 1
+                continue
+            else:
+                full_libname = 'boost_' + libname
+                result = conf.CheckLib(full_libname, autoadd = 0)
+                if result:
+                    boost_libs.append(full_libname)
+                    continue
+        else:
+            full_libname = 'boost_' + libname
+            if thread_suffix:
+                full_libname += '-mt'
+                result = conf.CheckLib(full_libname, autoadd = 0)
+                if result:
+                    boost_libs.append(full_libname)
+                else:
+                    print 'Error- missing Boost library %s' % libname
+                    conf.env.Exit(1)
+
+
+    return boost_libs
+
+
+
+def AutoConfigUserBoost(conf):
+    boost_libs = []
+    first = 1
+    thread_suffix = 0
+
+    for libname in loos_build_config.required_boost_libraries:
+        result = conf.CheckForBoostLibrary(libname, conf.env['BOOST_LIBPATH'], loos_build_config.suffix)
+        if not result[0]:
+            print 'Error- missing Boost library %s' % libname
+            conf.env.Exit(1)
+        if first:
+            thread_suffix = result[1]
+        else:
+            if thread_suffix and not result[1]:
+                print 'Error- expected %s-mt but found %s' % (libname, libname)
+                conf.env.Exit(1)
+            elif not thread_suffix and result[1]:
+                print 'Error- expected %s but found %s-mt' % (libname, libname)
+                conf.env.Exit(1)
+        boost_libs.append(result[0])
+
+    return boost_libs
+
+
+
+
+
 
 
 def AutoConfiguration(env):
@@ -395,11 +461,6 @@ def AutoConfiguration(env):
             default_lib_path = '/usr/lib64'
             conf.env.Append(LIBPATH = '/usr/lib64')
        
-        # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
-        # based on the environment or custom.py file
-        SetupBoostPaths(env)
-        SetupNetCDFPaths(env)
-
         # Only setup ATLAS if we're not on a Mac...
         if loos_build_config.host_type != 'Darwin':
             ATLAS_LIBPATH = env['ATLAS_LIBPATH']
@@ -410,7 +471,13 @@ def AutoConfiguration(env):
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
-            env.MergeFlags({ 'LIBPATH': [atlas_libpath] })
+            conf.env.Prepend(LIBPATH = [atlas_libpath])
+
+        # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
+        # based on the environment or custom.py file
+        SetupBoostPaths(conf.env)
+        SetupNetCDFPaths(conf.env)
+
 
 
         # Check for standard typedefs...
@@ -452,42 +519,11 @@ def AutoConfiguration(env):
         if conf.env['BOOST_LIBS']:
             boost_libs = Split(env['BOOST_LIBS'])
         else:
-            boost_threaded = -1
-            boost_libs = []
-            for libname in ['regex', 'thread', 'system', 'program_options']:
-                if not loos_build_config.user_boost_flag:
-                    old_libpath = env['LIBPATH']
-                    conf.env.Append(LIBPATH = [env['BOOST_LIBPATH']])
-                    full_libname = 'boost_' + libname + '-mt'
-                    result = conf.CheckLib(full_libname, autoadd = 0)
-                    if result:
-                        boost_libs.append(full_libname)
-                        conf.env.Replace(LIBPATH = old_libpath)
-                        continue
+            if not loos_build_config.user_boost_flag:
+                boost_libs = AutoConfigSystemBoost(conf)
+            else:
+                boost_libs = AutoConfigUserBoost(conf)
 
-                    full_libname = 'boost_' + libname
-                    result = conf.CheckLib(full_libname, autoadd = 0)
-                    if result:
-                        conf.env.Replace(LIBPATH = old_libpath)
-                        boost_libs.append(full_libname)
-                        continue
-
-                    conf.env().Replace(LIBPATH = old_libpath)
-
-                result = conf.CheckForBoostLibrary(libname, env['BOOST_LIBPATH'], loos_build_config.suffix)
-                if not result[0]:
-                    print 'Error- missing Boost library %s' % libname
-                    conf.env.Exit(1)
-                if boost_threaded < 0:
-                    boost_threaded = result[1]
-                elif boost_threaded and not result[1]:
-                    print 'Error- Expected threaded boost libraries, but %s is not threaded.' % libname
-                    conf.env.Exit(1)
-                elif not boost_threaded and result[1]:
-                    print 'Error- Expected non-threaded boost libraries, but %s is threaded.' % libname
-                    conf.env.Exit(1)
-                boost_libs.append(result[0])
-    
             env.Append(LIBS = boost_libs)
 
 
@@ -554,3 +590,63 @@ def AutoConfiguration(env):
 
         environOverride(conf)
         env = conf.Finish()
+
+
+#########################################################################################3
+
+def addDeprecatedOptions(opt):
+    from SCons.Variables import PathVariable
+
+    opt.Add(PathVariable('LAPACK', 'Path to LAPACK', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('ATLAS', 'Path to ATLAS', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('ATLASINC', 'Path to ATLAS includes', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('BOOSTLIB', 'Path to BOOST libraries', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('BOOSTINC', 'Path to BOOST includes', '', PathVariable.PathAccept))
+    opt.Add('BOOSTREGEX', 'Boost regex library name', '')
+    opt.Add('BOOSTPO', 'Boost program options library name', '')
+    opt.Add(PathVariable('LIBXTRA', 'Path to additional libraries', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('NETCDFINC', 'Path to netcdf include files', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('NETCDFLIB', 'Path to netcdf library files', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('ALTPATH', 'Additional path to commands', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('LIBS_OVERRIDE', 'Override linked libs', '', PathVariable.PathAccept))
+    opt.Add(PathVariable('LIBS_PATHS_OVERRIDE', 'Override paths to libs', '', PathVariable.PathAccept))
+
+def makeDeprecatedVariableWarning():
+    state = { 'warned' : 0 }
+
+    def warning(what, mapto):
+        if not state['warned']:
+            state['warned'] = 1
+            print """
+***WARNING***
+You are using old-style (deprecated) variables either
+on the command line or in your custom.py file.  These
+will be ignored.  The following deprecated variables
+are set,
+"""
+        print '\t%s: %s' % (what, mapto)
+    return warning
+
+
+def checkForDeprecatedOptions(env):
+    mapping = {
+        'LAPACK' : 'use ATLAS_LIBPATH',
+        'ATLAS' : 'use ATLAS_LIBPATH',
+        'ATLASINC' : 'no replacement',
+        'BOOSTLIB' : 'use BOOST_LIBPATH or BOOST',
+        'BOOSTINC' : 'use BOOST_INCLUDE or BOOST',
+        'BOOSTREGEX' : 'use BOOST_LIBS',
+        'BOOSTPO' : 'use BOOST_LIBS',
+        'LIBXTRA' : 'use ATLAS_LIBS, BOOST_LIBS, or NETCDF_LIBS',
+        'NETCDFINC' : 'use NETCDF_INCLUDE or NETCDF',
+        'NETCDFLIB' : 'use NETCDF_LIBPATH or NETCDF',
+        'ALTPATH' : 'Set your shell PATH instead',
+        'LIBS_OVERRIDE' : 'use ATLAS_LIBS, BOOST_LIBS, or NETCDF_LIBS',
+        'LIBS_PATHS_OVERRIDE' : 'use ATLAS_LIBPATH, BOOST_LIBPATH, or NETCDF_LIBPATH'
+        }
+    
+    warner = makeDeprecatedVariableWarning()
+    for name in mapping:
+        if env.has_key(name):
+            if env[name]:
+                warner(name, mapping[name])
