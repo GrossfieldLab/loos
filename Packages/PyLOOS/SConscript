@@ -30,7 +30,7 @@ apps = 'axis_with_membrane center_molecule flip_chirality protein_tilt rmsd_to_a
 python_package = []
 
 # Only install if pyloos is being built (i.e. pyloos=1 on command line)
-if env['pyloos'] == '1':
+if env['pyloos']:
     for file in Split(apps):
         pyapp = file + '.py'
         Command(PREFIX + pyapp, pyapp,
