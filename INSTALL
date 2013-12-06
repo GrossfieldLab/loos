@@ -39,7 +39,7 @@
 | MacOS 10.6        |     +     |   !    | D     |                             
 | MacOS 10.7        |     +     |   !    | D     |                             
 | MacOS 10.8        |     +     |   !    | D     |                             
-| MacOS 10.9        |     +     |   !    |       |                             
+| MacOS 10.9        |     +     |   !    | BCS   |                             
 |-------------------|-----------|--------|-------|                             
 
 
@@ -339,11 +339,10 @@ There is no scons install option from setup.exe, so you need to
 manually download the latest scons distribution from
 http://www.scons.org/download.php (the gzip tar file) and install it.
 
-The boost libraries cygwin uses have different names than what the
-default build of LOOS expects.  You will need to set up a new
-custom.py file.  Copy the "custom.py-proto" file in the loos directory
-to "custom.py".  Look for the BOOSTPO and BOOSTREGEX symbols and
-uncomment the appropriate lines.
+There is an issue with SCons under cygwin where you must first build
+LOOS and -then- install it, i.e.
+     scons
+     scons PREFIX=/path/to/install/loos install
 
 [Optional]
 To include support for Amber/NetCDF trajectory files, install the
