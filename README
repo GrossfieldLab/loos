@@ -50,6 +50,11 @@ consequence, it isn't always...  As before, the C++ compiler can be
 explicitly set with the CXX variable, regardless of what your PATH
 is.
 
+Finally, many of the variables that appeared in custom.py files have
+changed or have been removed, such as BOOSTREGEX and BOOSTPO.  If you
+were using a custom.py file, you will need to use the new
+custom.py-proto and make the appropriate changes.
+
 We have extensively tested this new build system on many different
 distributions and versions without problem, however it may choose
 incorrectly.  Many of these decisions can be overridden either on the

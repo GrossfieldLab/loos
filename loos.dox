@@ -397,7 +397,7 @@ parser (and you probably shouldn't), then you'll need the GNU
 utilities <A href="http://www.gnu.org/software/flex/">flex</A> and <A
 href="http://www.gnu.org/software/bison/">bison</A>.  Although LOOS
 comes bundled with pre-built documentation, you can regenerate it.
-Doing so requires doxygen and "dot" (from graphviz) be installed.
+Doing so requires doxygen and graphviz be installed.
 
 To build LOOS, go into the LOOS distribution directory and run scons.
 If your libraries are installed in non-standard locations, you may
@@ -418,7 +418,7 @@ and <TT>/usr/local/boost_1_54_0/lib</TT> for libraries.  In some
 cases, the directories may not follow this convention, so you will need
 to specify the individual directories explicitly:
 \verbatim
-scons BOOST_INCLUDE=/usr/local/boost_1_36_0 BOOST_LIBPATH=/usr/local/lib
+scons BOOST_INCLUDE=/usr/local/include/boost BOOST_LIBPATH=/usr/local/lib
 \endverbatim
 
 SCons will, by default, try to figure out the appropriate threaded
@@ -444,10 +444,10 @@ command-line.  If a <TT>custom.py</TT> file exists, SCons will read it
 and set the variables appropriately.  We provide an examples of how it
 can be used in <TT>custom.py-proto</TT>.  Simply copy this file
 to <TT>custom.py</TT> and then uncomment and edit the appropriate
-lines.
+lines.  Note that variables set on the command-line or environment
+will have priority over what's in your <TT>custom.py</TT> file.
 
 
-<B>NOTE</B><br>
 More complete build information, along with platform specific notes,
 can be found in the INSTALL file included with LOOS.
 
@@ -461,7 +461,7 @@ scons install
 \endverbatim
 
 This will cause SCons to copy the headers, tools, and library into
- /opt/loos.  You can change where LOOS is installed by changing the
+ /opt/loos.  You can change where LOOS is installed by setting the
  PREFIX variable in either your custom.py file or on the command
  line.  LOOS will create a /bin, /include, /lib, and /docs directory
  and copy the appropriate files.  The recommended installation
@@ -1336,7 +1336,7 @@ Matlab and Octave.
 <ul>
   <li> Substantial change to build system.  See INSTALL file or
   \subpage building
-  <li> Test suite is now deprecated
+  <li> Test suite is now deprecated and has been removed
   <li> Changed how atomid's are handled in LOOS.  They are no longer
   indices into the trajectory frame for atom coordinates.  Atoms now
   have an "index" property for that purpose.  The index is
