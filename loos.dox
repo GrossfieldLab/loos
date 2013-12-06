@@ -2766,7 +2766,7 @@ implementations.
 <DT>	SCons is trying to build PyLOOS even though it's unsupported,
 	or the build is breaking with PyLOOS
 <DD>	You can disable the auto-build of PyLOOS by using the pyloos
-	command-line flag with scons:  scons pyloos=0
+	command-line flag with scons:  <TT>scons pyloos=0</TT>
 
 <DT>	How do I use PyLOOS?
 <DD>	Your environment needs to be setup to allow Python to locate
