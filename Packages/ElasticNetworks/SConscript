@@ -28,7 +28,7 @@ Import('loos')
 clone = env.Clone()
 clone.Prepend(LIBS = [loos])
 
-apps = 'gnm enmovie psf-masses heavy-ca eigenflucc gnm-traj'
+apps = 'gnm enmovie psf-masses heavy-ca eigenflucc'
 
 list = []
 
@@ -55,11 +55,9 @@ list.append(vsa)
 anm = clone.Program('anm.cpp')
 list.append(anm)
 
-anmo_traj = clone.Program('anmo-traj.cpp')
-list.append(anmo_traj)
 
 # Update to include the above apps
-apps = apps + ' vsa anm anmo-traj'
+apps = apps + ' vsa anm'
 
 
 ### Installation specific
