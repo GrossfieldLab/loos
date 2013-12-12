@@ -29,9 +29,8 @@ opts.Add('LOOS_CPPPATH', 'Path to include files', '/opt/LOOS/include')
 opts.Add('LOOS_LIBS', 'Libraries LOOS was linked with', 'netcdf:boost_regex:boost_thread:boost_system:boost_program_options:lapack:f77blas:cblas:atlas')
 opts.Add('LOOS_CCFLAGS', 'Compiler flags used to build LOOS', '-DHAS_NETCDF -O3 -NDEBUG -Wall')
 opts.Add('LOOS_LINKFLAGS', 'Flags to pass to the linker', '')
-opts.Add('ALTPATH', 'Alternative PATH for executables', '')
 
-env = Environment(options = opts)
+env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts)
 Help(opts.GenerateHelpText(env))
 env.Decider('MD5-timestamp')
 
@@ -41,7 +40,6 @@ LOOS_LIBPATH = env['LOOS_LIBPATH']
 LOOS_CPPATH = env['LOOS_CPPPATH']
 LOOS_LIBS = env['LOOS_LIBS']
 LOOS_CCFLAGS = env['LOOS_CCFLAGS']
-ALTPATH = env['ALTPATH']
 
 
 # Let environment override...
@@ -71,11 +69,6 @@ env.Replace(LIBPATH = LOOS_LIBPATH)
 env.Replace(CPPPATH = LOOS_CPPPATH)
 env.Replace(LIBS = LOOS_LIBS)
 
-if ALTPATH != '':
-   buildenv = env['ENV']
-   path = buildenv['PATH']
-   path = ALTPATH + ':' + path
-   buildenv['PATH'] = path
 
 env.Prepend(CPPPATH = ['#'])
 env.Prepend(LIBPATH = ['#'])
