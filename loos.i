@@ -1,5 +1,8 @@
 %module loos
 
+
+%feature("autodoc", "1");
+
 %include <std_string.i>
 %include <std_vector.i>
 %include <boost_shared_ptr.i>
