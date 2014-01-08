@@ -1,3 +1,8 @@
+2014-01-08  Alan Grossfield <alan@membrane.urmc.rochester.edu>
+
+    * Added new tool packing_score, to quantify the packing between 
+	  to selections over the course of a trajectory
+
 2013-11-04  Tod Romo  <tromo@ubuntu-mac-12>
 
 	* Added MacOS 10.9 (Mavericks) compatibility

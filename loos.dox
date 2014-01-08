@@ -1280,6 +1280,11 @@ Matlab and Octave.
        over the trajectory.  This can be used to analyze shape changes over
        time.
 
+       <DT><B>packing_score</B>
+       <DD>Computes the packing score, a measure of the contact between two 
+       selections, over the course of a trajectory.  Originally defined in 
+       Grossfield et al, PNAS, 2006, 103, 4888-4893 
+
        <DT><B>ramachandran</B>
        <DD>Computes a ramachandran map for a given selection of a specified
        range of frames in a trajectory (or all frames).  Note that some
