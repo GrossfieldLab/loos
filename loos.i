@@ -1,5 +1,5 @@
 %module loos
-
+%include <exception.i>
 
 %feature("autodoc", "1");
 

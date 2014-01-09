@@ -84,10 +84,25 @@ namespace loos {
 
 };
 
+
+%exception __getitem__ 
+{
+  try {
+    $action
+      }
+  catch (std::out_of_range& e) {
+    PyErr_SetString(PyExc_IndexError, const_cast<char*>(e.what()));
+    return(NULL);
+  }
+}
+
+
+
 %extend loos::Coord<double> {
   double __getitem__(const int i) {
     if (i < 0 || i >= 3)
-      return(0);
+      throw(std::out_of_range("Bad index into Coord"));
+    
     return((*$self)[i]);
   }
     
