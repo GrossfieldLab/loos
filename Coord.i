@@ -85,18 +85,6 @@ namespace loos {
 };
 
 
-%exception __getitem__ 
-{
-  try {
-    $action
-      }
-  catch (std::out_of_range& e) {
-    PyErr_SetString(PyExc_IndexError, const_cast<char*>(e.what()));
-    return(NULL);
-  }
-}
-
-
 
 %extend loos::Coord<double> {
   double __getitem__(const int i) {

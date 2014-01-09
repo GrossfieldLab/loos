@@ -60,6 +60,9 @@ namespace loos {
 
   %extend Matrix44<double> {
     double __getitem__(const int i) {
+      if (i < 0 || i > 15)
+	throw(std::out_of_range("Index into Matrix44 is out of bounds"));
+      
       return((*$self)[i]);
     }
 
