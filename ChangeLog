@@ -1,3 +1,10 @@
+2014-01-10  Tod Romo  <tromo@gorgoneion>
+
+	* Changed [PyLOOS] GCoord, AtomicGroup, TimeSeries, and Matrix44
+	to be iterable
+	* Added [PyLOOS] TrajectoryIterator for Python iteration through a
+	Trajectory
+
 2014-01-08  Alan Grossfield <alan@membrane.urmc.rochester.edu>
 
     * Added new tool packing_score, to quantify the packing between 

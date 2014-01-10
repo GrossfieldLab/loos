@@ -1,5 +1,5 @@
 %module loos
-
+%include <exception.i>
 
 %feature("autodoc", "1");
 
@@ -19,6 +19,23 @@ namespace loos {
 
   typedef Coord<double> GCoord;
 }
+
+
+
+# Generic exception wrapper for anything in loos that can look like a list...
+
+%exception __getitem__ 
+{
+  try {
+    $action
+      }
+  catch (std::out_of_range& e) {
+    PyErr_SetString(PyExc_IndexError, const_cast<char*>(e.what()));
+    return(NULL);
+  }
+}
+
+
 
 %include "Coord.i"
 %include "Atom.i"

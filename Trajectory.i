@@ -65,5 +65,64 @@ namespace loos {
 
   };
 
+
+  %pythoncode %{
+    
+class TrajectoryIterator:
+    """
+    This class wraps a LOOS Trajectory and an AtomicGroup so
+    that the trajectory can be used as a Python iterator.  A
+    range of frames to iterate over can be set, as well as a
+    stride (step).  Any AtomicGroup that shares atoms with
+    the one bound into the Iterator will be updated at each
+    iteration.
+
+    Basic usage:
+      model = loos.createSystem(model_name)
+      calphas = selectAtoms(model, 'name == "CA"')
+      traj = loos.createTrajectory(traj_name, model)
+
+      itraj = TrajectoryIterator(traj, model)
+      itraj.setStride(10)    # Use only every 10th frame
+      for frame in itraj:
+         computeSomething(frame)
+         computeSomethingElse(calphas)
+    """
+    def __init__(self, traj, frame):
+        self.traj = traj
+        self.frame = frame
+        self.stride = 1
+        self.start = 0
+        self.end = traj.nframes()
+        self.index = 0
+
+    def __iter__(self):
+        return(self)
+
+    def setStride(self, n):
+        self.stride = n
+
+    def setRange(self, start, end):
+        self.start = start
+        self.end = end
+        self.index = start
+
+    def setFrame(self, frame):
+        self.frame = frame
+
+    def rewind(self):
+        self.index = self.start
+
+    def next(self):
+        if self.index >= self.end:
+            raise StopIteration
+        self.traj.readFrame(self.index)
+        self.traj.updateGroupCoords(self.frame)
+        self.index += self.stride
+        return(self.frame)
+
+	      %}
+  
+
 }
 

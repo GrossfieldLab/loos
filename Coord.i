@@ -84,10 +84,13 @@ namespace loos {
 
 };
 
+
+
 %extend loos::Coord<double> {
   double __getitem__(const int i) {
     if (i < 0 || i >= 3)
-      return(0);
+      throw(std::out_of_range("Bad index into Coord"));
+    
     return((*$self)[i]);
   }
     
