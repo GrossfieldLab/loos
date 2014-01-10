@@ -65,5 +65,45 @@ namespace loos {
 
   };
 
+
+  %pythoncode %{
+    
+class TrajectoryIterator:
+    def __init__(self, traj, frame):
+        self.traj = traj
+        self.frame = frame
+        self.stride = 1
+        self.start = 0
+        self.end = traj.nframes()
+        self.index = 0
+
+    def __iter__(self):
+        return(self)
+
+    def setStride(self, n):
+        self.stride = n
+
+    def setRange(self, start, end):
+        self.start = start
+        self.end = end
+        self.index = start
+
+    def setFrame(self, frame):
+        self.frame = frame
+
+    def rewind(self):
+        self.index = self.start
+
+    def next(self):
+        if self.index >= self.end:
+            raise StopIteration
+        self.traj.readFrame(self.index)
+        self.traj.updateGroupCoords(self.frame)
+        self.index += self.stride
+        return(self.frame)
+
+	      %}
+  
+
 }
 
