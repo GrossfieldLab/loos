@@ -107,3 +107,4 @@ namespace loos {
 
 
 %template(XFormVector) std::vector<loos::XForm>;
+%template(UIntVector) std::vector<uint>;
