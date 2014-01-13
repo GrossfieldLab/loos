@@ -88,37 +88,37 @@ class TrajectoryIterator:
          computeSomething(frame)
          computeSomethingElse(calphas)
     """
-    def __init__(self, traj, frame):
+    def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
         self.traj = traj
         self.frame = frame
-        self.stride = 1
-        self.start = 0
-        self.end = traj.nframes()
-        self.index = 0
+        if (iterator is None):
+            self.iterator = iter(range(skip, traj.nframes(), stride))
+        else: 
+            self.iterator = iter(iterator)
+
 
     def __iter__(self):
         return(self)
 
-    def setStride(self, n):
-        self.stride = n
+    def setIterator(self, it):
+        self.iterator = iter(it)
 
-    def setRange(self, start, end):
-        self.start = start
-        self.end = end
-        self.index = start
+    def setRange(self, start, stop, stride = 1):
+        self.iterator = iter(xrange(start, stop, stride))
+
+    def setSkip(self, skip): 
+        self.iterator = iter(xrange(skip, self.traj.nframes()))  
+
+    def setStride(self, stride): 
+        self.iterator = iter(xrange(0, self.traj.nframes(), stride))
 
     def setFrame(self, frame):
         self.frame = frame
 
-    def rewind(self):
-        self.index = self.start
-
     def next(self):
-        if self.index >= self.end:
-            raise StopIteration
-        self.traj.readFrame(self.index)
+        i = next(self.iterator)
+        self.traj.readFrame(i)
         self.traj.updateGroupCoords(self.frame)
-        self.index += self.stride
         return(self.frame)
 
 	      %}
