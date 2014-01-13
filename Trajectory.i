@@ -88,13 +88,13 @@ class TrajectoryIterator:
          computeSomething(frame)
          computeSomethingElse(calphas)
     """
-    def __init__(self, traj, frame, it = None):
+    def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
         self.traj = traj
         self.frame = frame
-        if (it is None):
-            self.iterator = iter(xrange(0, traj.nframes()))
+        if (iterator is None):
+            self.iterator = iter(range(skip, traj.nframes(), stride))
         else: 
-            self.iterator = iter(it)
+            self.iterator = iter(iterator)
 
 
     def __iter__(self):
