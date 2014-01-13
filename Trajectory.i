@@ -77,6 +77,14 @@ class TrajectoryIterator:
     the one bound into the Iterator will be updated at each
     iteration.
 
+    There are several options for creating a new TrajectoryIterator.
+    The first frames of a trajectory can be skipped by using
+    the skip parameter.  The number of frames skipped when
+    iterating can be set with the stride parameter.  For
+    complete control over what frames are read and in what
+    order, an iterable object can be passed in using the
+    iterator parameter.
+
     Basic usage:
       model = loos.createSystem(model_name)
       calphas = selectAtoms(model, 'name == "CA"')
@@ -87,6 +95,18 @@ class TrajectoryIterator:
       for frame in itraj:
          computeSomething(frame)
          computeSomethingElse(calphas)
+
+      # This iterates the same as the previous example
+      itraj = TrajectoryIterator(traj, model, stride = 10)
+
+      # This skips the first 100 frames, then takes evey fifth one
+      traj = TrajectoryIterator(traj, model, skip = 100, stride = 5)
+
+      # This one takes every other frame from frame 101 to 200
+      # (Remember, frames are indexed beginning with 0)
+      traj = TrajectoryIterator(traj, model, xrange(100, 200, 2))
+
+
     """
     def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
         self.traj = traj
