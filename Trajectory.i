@@ -80,7 +80,6 @@ class TrajectoryIterator:
     Basic usage:
       model = loos.createSystem(model_name)
       calphas = selectAtoms(model, 'name == "CA"')
-      traj = loos.createTrajectory(traj_name, model)
 
       # Take every tenth frame...
       itraj = TrajectoryIterator(traj, model, stride = 10)
@@ -96,25 +95,49 @@ class TrajectoryIterator:
 
     """
     def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
-        self.traj = traj
         self.frame = frame
-        self.index = None  
+        self.traj = traj
 
         if (iterator is None):
-            self.iterator = iter(range(skip, traj.nframes(), stride))
-        else: 
-            self.iterator = iter(iterator)
+            it = iter(range(skip, traj.nframes(), stride))
+        else:
+            it = iter(iterator)
+
+        self.framelist = UIntVector()
+        for i in it:
+            self.framelist.push_back(i)
+
+        self.index = 0
+ 
 
 
     def __iter__(self):
         return(self)
 
-    def currentIndex(self):
-        return(self.index)
+    def __len__(self):
+        return(len(self.framelist))
 
     def next(self):
-        self.index = next(self.iterator)
-        self.traj.readFrame(self.index)
+        if (self.index >= len(self.framelist)):
+            raise StopIteration
+        frame = self.__getitem__(self.index)
+
+        self.index += 1
+        return(self.frame)
+
+    def currentIndex(self):
+        return(self.framelist[self.index-1])
+
+    def averageStructure(self):
+        return(averageStructure(self.frame, self.traj, self.framelist))
+
+
+    def __getitem__(self, i):
+        if (i < 0):
+            i += len(self.framelist)
+        if (i >= len(self.framelist) or i < 0):
+            raise IndexError
+        self.traj.readFrame(self.framelist[i])
         self.traj.updateGroupCoords(self.frame)
         return(self.frame)
 
@@ -123,7 +146,7 @@ class TrajectoryIterator:
 
 
 
-class AlignedTrajectory:
+class AlignedTrajectoryIterator:
     """
     This class provides an iterator over a trajectory that has
     been iteratively aligned (see loos::iterativeAlignment()
@@ -135,68 +158,56 @@ class AlignedTrajectory:
       calphas = selectAtoms(model, 'name == "CA"')
 
       # Align and iterate over same set of atoms
-      atraj = AlignedTrajectory(traj, calphas)
+      atraj = AlignedTrajectoryIterator(traj, calphas)
       for frame in atraj:
          ...
 
       # Align using C-alphas but iterate over all atoms
-      atraj = AlignedTrajectory(traj, model, alignwith = calphas)
+      atraj = AlignedTrajectoryIterator(traj, model, alignwith = calphas)
       for frame in atraj:
          ...
 
       # Align using C-alphas but iterate over all atoms, skipping
       # every other frame and the first 100 frames
-      atraj = AlignedTrajectory(traj, model, alignwith = calphas, skip = 100, stride = 2)
+      atraj = AlignedTrajectoryIterator(traj, model, alignwith = calphas, skip = 100, stride = 2)
       for frame in atraj:
          ...
 
 
     """
-
-
-class AlignedTrajectory:
+class AlignedTrajectoryIterator(TrajectoryIterator):
 
     def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None, alignwith = None):
-        self.frame = frame
-        self.traj = traj
+        TrajectoryIterator.__init__(self, traj, frame, skip, stride, iterator)
 
         if (alignwith is None):
             alignwith = self.frame
-        
-        if (iterator is None):
-            it = iter(range(skip, traj.nframes(), stride))
-        else:
-            it = iter(iterator)
 
-        self.framelist = UIntVector()
-        for i in it:
-            self.framelist.push_back(i)
-        
         res = iterativeAlignmentPy(alignwith, traj, self.framelist)
-        # Must copy out of tuple, otherwise will lose them...
-        self.xforms = []
+        self.xforms = XFormVector()
         for x in res.transforms:
-            self.xforms.append(x)
-
-        self.index = 0
- 
+            self.xforms.push_back(x)
 
 
-    def __iter__(self):
-        return(self)
+    def __getitem__(self, i):
+        f = TrajectoryIterator.__getitem__(self, i)
+        f.applyTransform(self.xforms[i])
+        return(f)
 
-    def next(self):
-        if (self.index >= len(self.framelist)):
-            raise StopIteration
-        self.traj.readFrame(self.framelist[self.index])
-        self.traj.updateGroupCoords(self.frame)
-        self.frame.applyTransform(self.xforms[self.index])
+    def transform(self, i):
+        if (i < 0):
+            i += len(self.framelist)
+        if (i >= len(self.framelist) or i < 0):
+            raise IndexError
+        return(self.xforms[i])
 
-        self.index += 1
-        return(self.frame)
 
-    def currentIndex(self):
-        return(self.framelist[self.index-1])
+    def averageStructure(self):
+        return(averageStructure(self.frame, self.xforms, self.traj, self.framelist))
+
+    def currentTransform(self):
+        return(self.xforms[self.index-1])
+
 
 
 
