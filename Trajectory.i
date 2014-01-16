@@ -82,11 +82,18 @@ class TrajectoryIterator:
       calphas = selectAtoms(model, 'name == "CA"')
       traj = loos.createTrajectory(traj_name, model)
 
-      itraj = TrajectoryIterator(traj, model)
-      itraj.setStride(10)    # Use only every 10th frame
+      # Take every tenth frame...
+      itraj = TrajectoryIterator(traj, model, stride = 10)
       for frame in itraj:
          computeSomething(frame)
          computeSomethingElse(calphas)
+
+      # Take every other frame, skipping the first 100
+      itraj = TrajectoryIterator(traj, model, stride = 2, skip = 100)
+      for frame in itraj:
+         computeSomething(frame)
+         computeSomethingElse(calphas)
+
     """
     def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
         self.traj = traj
@@ -102,24 +109,8 @@ class TrajectoryIterator:
     def __iter__(self):
         return(self)
 
-    def setIterator(self, it):
-        self.iterator = iter(it)
-
-    def setRange(self, start, stop, stride = 1):
-        self.iterator = iter(xrange(start, stop, stride))
-
-    def setSkip(self, skip): 
-        self.iterator = iter(xrange(skip, self.traj.nframes()))  
-
-    def setStride(self, stride): 
-        self.iterator = iter(xrange(0, self.traj.nframes(), stride))
-
-    def setFrame(self, frame):
-        self.frame = frame
-
     def currentIndex(self):
         return(self.index)
-
 
     def next(self):
         self.index = next(self.iterator)
@@ -136,47 +127,53 @@ class AlignedTrajectory:
     """
     This class provides an iterator over a trajectory that has
     been iteratively aligned (see loos::iterativeAlignment()
-    in the C++ LOOS documentation).  Pass a TrajectoryIterator
-    to the constructor, along with an optional set of atoms to
-    use for the alignment.  Note that all of the structures used
-    to align will be held in memory briefly during construction.
-    If no alignment subset is given, then the atoms specified in
-    the TrajectoryIterator will be used.
+    in the C++ LOOS documentation).
+
 
     Basic usage:
 
-      # Align and iterate over same set of atoms
+      calphas = selectAtoms(model, 'name == "CA"')
 
-      atraj = AlignedTrajectory(TrajectoryIterator(traj, subset))
+      # Align and iterate over same set of atoms
+      atraj = AlignedTrajectory(traj, calphas)
       for frame in atraj:
          ...
 
       # Align using C-alphas but iterate over all atoms
-      alignset = selectAtoms("name == 'CA'")
-      atraj = AlignedTrajectory(TrajectoryIterator(traj, model), alignset)
+      atraj = AlignedTrajectory(traj, model, alignwith = calphas)
       for frame in atraj:
          ...
+
+      # Align using C-alphas but iterate over all atoms, skipping
+      # every other frame and the first 100 frames
+      atraj = AlignedTrajectory(traj, model, alignwith = calphas, skip = 100, stride = 2)
+      for frame in atraj:
+         ...
+
 
     """
 
 
-    def __init__(self, trajiter, alignwith = None):
-        self.frame = trajiter.frame
-        self.traj = trajiter.traj
-        self.framelist = []
-        ensemble = AtomicGroupVector()
+class AlignedTrajectory:
+
+    def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None, alignwith = None):
+        self.frame = frame
+        self.traj = traj
 
         if (alignwith is None):
             alignwith = self.frame
+        
+        if (iterator is None):
+            it = iter(range(skip, traj.nframes(), stride))
+        else:
+            it = iter(iterator)
 
-        trajiter.setFrame(alignwith)
-        for f in trajiter:
-            subset = alignwith.copy()
-            ensemble.push_back(subset)
-            self.framelist.append(trajiter.currentIndex())
-        trajiter.setFrame(self.frame) 
-
-        res = iterativeAlignmentPy(ensemble)
+        self.framelist = UIntVector()
+        for i in it:
+            self.framelist.push_back(i)
+        
+        res = iterativeAlignmentPy(alignwith, traj, self.framelist)
+        # Must copy out of tuple, otherwise will lose them...
         self.xforms = []
         for x in res.transforms:
             self.xforms.append(x)
@@ -200,7 +197,6 @@ class AlignedTrajectory:
 
     def currentIndex(self):
         return(self.framelist[self.index-1])
-
 
 
 
