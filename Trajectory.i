@@ -127,6 +127,55 @@ class TrajectoryIterator:
         self.traj.updateGroupCoords(self.frame)
         return(self.frame)
 
+
+
+
+
+
+class AlignedTrajectory:
+
+    def __init__(self, trajiter, alignwith = None):
+        self.frame = trajiter.frame
+        self.traj = trajiter.traj
+        self.framelist = []
+        ensemble = AtomicGroupVector()
+
+        if (alignwith is None):
+            alignwith = self.frame
+
+        for f in trajiter:
+            subset = alignwith.copy()
+            ensemble.push_back(subset)
+            self.framelist.append(trajiter.currentIndex())
+
+        res = iterativeAlignmentPy(ensemble)
+        self.xforms = []
+        for x in res.transforms:
+            self.xforms.append(x)
+
+        self.index = 0
+ 
+
+
+    def __iter__(self):
+        return(self)
+
+    def next(self):
+        if (self.index >= len(self.framelist)):
+            raise StopIteration
+        self.traj.readFrame(self.framelist[self.index])
+        self.traj.updateGroupCoords(self.frame)
+        self.frame.applyTransform(self.xforms[self.index])
+
+        self.index += 1
+        return(self.frame)
+
+    def currentIndex(self):
+        return(self.framelist[self.index-1])
+
+
+
+
 	      %}
   
 
