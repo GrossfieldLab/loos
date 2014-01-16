@@ -91,6 +91,8 @@ class TrajectoryIterator:
     def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
         self.traj = traj
         self.frame = frame
+        self.index = None  
+
         if (iterator is None):
             self.iterator = iter(range(skip, traj.nframes(), stride))
         else: 
@@ -115,9 +117,13 @@ class TrajectoryIterator:
     def setFrame(self, frame):
         self.frame = frame
 
+    def currentIndex(self):
+        return(self.index)
+
+
     def next(self):
-        i = next(self.iterator)
-        self.traj.readFrame(i)
+        self.index = next(self.iterator)
+        self.traj.readFrame(self.index)
         self.traj.updateGroupCoords(self.frame)
         return(self.frame)
 
