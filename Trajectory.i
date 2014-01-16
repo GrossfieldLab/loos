@@ -133,6 +133,32 @@ class TrajectoryIterator:
 
 
 class AlignedTrajectory:
+    """
+    This class provides an iterator over a trajectory that has
+    been iteratively aligned (see loos::iterativeAlignment()
+    in the C++ LOOS documentation).  Pass a TrajectoryIterator
+    to the constructor, along with an optional set of atoms to
+    use for the alignment.  Note that all of the structures used
+    to align will be held in memory briefly during construction.
+    If no alignment subset is given, then the atoms specified in
+    the TrajectoryIterator will be used.
+
+    Basic usage:
+
+      # Align and iterate over same set of atoms
+
+      atraj = AlignedTrajectory(TrajectoryIterator(traj, subset))
+      for frame in atraj:
+         ...
+
+      # Align using C-alphas but iterate over all atoms
+      alignset = selectAtoms("name == 'CA'")
+      atraj = AlignedTrajectory(TrajectoryIterator(traj, model), alignset)
+      for frame in atraj:
+         ...
+
+    """
+
 
     def __init__(self, trajiter, alignwith = None):
         self.frame = trajiter.frame
@@ -143,10 +169,12 @@ class AlignedTrajectory:
         if (alignwith is None):
             alignwith = self.frame
 
+        trajiter.setFrame(alignwith)
         for f in trajiter:
             subset = alignwith.copy()
             ensemble.push_back(subset)
             self.framelist.append(trajiter.currentIndex())
+        trajiter.setFrame(self.frame) 
 
         res = iterativeAlignmentPy(ensemble)
         self.xforms = []
