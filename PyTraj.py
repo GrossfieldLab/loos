@@ -65,7 +65,23 @@ class PyTraj:
         return(averageStructure(self.frame, self.traj, self.framelist))
 
 
+
+    def getSlice(self, s):
+        indices = list(range(*s.indices(self.__len__())))
+        ensemble = []
+        for i in indices:
+            self.traj.readFrame(self.framelist[i])
+            self.traj.updateGroupCoords(self.frame)
+            dup = self.frame.copy()
+            ensemble.append(dup)
+        return(ensemble)
+
+
     def __getitem__(self, i):
+
+        if isinstance(i, slice):
+            return(self.getSlice(i))
+
         if (i < 0):
             i += len(self.framelist)
         if (i >= len(self.framelist) or i < 0):
@@ -122,7 +138,22 @@ class PyAlignedTraj(PyTraj):
             self.xforms.push_back(x)
 
 
+    def getSlice(self, s):
+        indices = list(range(*s.indices(self.__len__())))
+        ensemble = []
+        for i in indices:
+            self.traj.readFrame(self.framelist[i])
+            self.traj.updateGroupCoords(self.frame)
+            dup = self.frame.copy()
+            dup.applyTransform(self.xforms[i])
+            ensemble.append(dup)
+        return(ensemble)
+
+
     def __getitem__(self, i):
+        if isinstance(i, slice):
+            return(self.getSlice(i))
+
         f = PyTraj.__getitem__(self, i)
         f.applyTransform(self.xforms[i])
         return(f)
