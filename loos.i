@@ -54,3 +54,8 @@ namespace loos {
 %include "TimeSeries.i"
 %include "HBondDetector.i"
 %include "exceptions.i"
+
+
+  %pythoncode %{
+from PyTraj import *
+	      %}
