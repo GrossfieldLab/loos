@@ -68,7 +68,7 @@ namespace loos {
 
   %pythoncode %{
     
-class TrajectoryIterator:
+class PyTraj:
     """
     This class wraps a LOOS Trajectory and an AtomicGroup so
     that the trajectory can be used as a Python iterator.  A
@@ -82,13 +82,13 @@ class TrajectoryIterator:
       calphas = selectAtoms(model, 'name == "CA"')
 
       # Take every tenth frame...
-      itraj = TrajectoryIterator(traj, model, stride = 10)
+      itraj = PyTraj(traj, model, stride = 10)
       for frame in itraj:
          computeSomething(frame)
          computeSomethingElse(calphas)
 
       # Take every other frame, skipping the first 100
-      itraj = TrajectoryIterator(traj, model, stride = 2, skip = 100)
+      itraj = PyTraj(traj, model, stride = 2, skip = 100)
       for frame in itraj:
          computeSomething(frame)
          computeSomethingElse(calphas)
@@ -146,7 +146,7 @@ class TrajectoryIterator:
 
 
 
-class AlignedTrajectoryIterator:
+class PyAlignedTraj:
     """
     This class provides an iterator over a trajectory that has
     been iteratively aligned (see loos::iterativeAlignment()
@@ -158,27 +158,27 @@ class AlignedTrajectoryIterator:
       calphas = selectAtoms(model, 'name == "CA"')
 
       # Align and iterate over same set of atoms
-      atraj = AlignedTrajectoryIterator(traj, calphas)
+      atraj = PyAlignedTraj(traj, calphas)
       for frame in atraj:
          ...
 
       # Align using C-alphas but iterate over all atoms
-      atraj = AlignedTrajectoryIterator(traj, model, alignwith = calphas)
+      atraj = PyAlignedTraj(traj, model, alignwith = calphas)
       for frame in atraj:
          ...
 
       # Align using C-alphas but iterate over all atoms, skipping
       # every other frame and the first 100 frames
-      atraj = AlignedTrajectoryIterator(traj, model, alignwith = calphas, skip = 100, stride = 2)
+      atraj = PyAlignedTraj(traj, model, alignwith = calphas, skip = 100, stride = 2)
       for frame in atraj:
          ...
 
 
     """
-class AlignedTrajectoryIterator(TrajectoryIterator):
+class PyAlignedTraj(PyTraj):
 
     def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None, alignwith = None):
-        TrajectoryIterator.__init__(self, traj, frame, skip, stride, iterator)
+        PyTraj.__init__(self, traj, frame, skip, stride, iterator)
 
         if (alignwith is None):
             alignwith = self.frame
@@ -190,7 +190,7 @@ class AlignedTrajectoryIterator(TrajectoryIterator):
 
 
     def __getitem__(self, i):
-        f = TrajectoryIterator.__getitem__(self, i)
+        f = PyTraj.__getitem__(self, i)
         f.applyTransform(self.xforms[i])
         return(f)
 
