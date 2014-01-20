@@ -28,12 +28,10 @@ for s in selections:
 
 vec = loos.GCoord(0.,0.,0.)
 
-frame = 0
-
 print "#Frame\tAngle\tCosine"
 
-while (traj.readFrame()):
-    traj.updateGroupCoords(system)
+ptraj = PyTraj(traj, system)
+for frame in ptraj:
 
     for h in helices:
         pca = h.principalAxes()
@@ -48,8 +46,6 @@ while (traj.readFrame()):
     cosine = min(1.0, cosine)
     ang = math.acos(cosine) * 180./math.pi
     
-    print frame, ang, cosine
-
-    frame += 1
+    print ptraj.currentIndex(), ang, cosine
 
     
