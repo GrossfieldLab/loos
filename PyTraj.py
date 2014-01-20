@@ -62,7 +62,7 @@ class PyTraj:
         return(self.framelist[self.index-1])
 
     def averageStructure(self):
-        return(averageStructure(self.frame, self.traj, self.framelist))
+        return(loos.averageStructure(self.frame, self.traj, self.framelist))
 
 
 
@@ -167,7 +167,7 @@ class PyAlignedTraj(PyTraj):
 
 
     def averageStructure(self):
-        return(averageStructure(self.frame, self.xforms, self.traj, self.framelist))
+        return(loos.averageStructure(self.frame, self.xforms, self.traj, self.framelist))
 
     def currentTransform(self):
         return(self.xforms[self.index-1])
