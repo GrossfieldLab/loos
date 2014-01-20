@@ -31,12 +31,23 @@
 from loos import *
 import sys
 
+if len(sys.argv) < 3 or sys.argv[1] == '-h' or sys.argv[1] == '--help':
+   print 'Usage: rmsd_to_average.py model traj align_selection [rmsd_selection [skip]]'
+   sys.exit()
+
+
 ## Command line arguments
 model_name = sys.argv[1]
 traj_name = sys.argv[2]
 align_with = sys.argv[3]
-rmsd_with = sys.argv[4]
-skip = int(sys.argv[5])
+
+skip = 0
+rmsd_with = align_with
+
+if len(sys.argv) > 4:
+   rmsd_with = sys.argv[4]
+   if len(sys.argv) > 5:
+      skip = int(sys.argv[5])
 
 # Create the model & read in the trajectory
 model = createSystem(model_name)
