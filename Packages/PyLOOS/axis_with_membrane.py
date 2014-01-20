@@ -50,7 +50,7 @@ backbone = selectAtoms(mol, selection)
 # Iterate over all frames in the trajectory...
 ptraj = PyTraj(traj, mol)
 
-for frame in pytraj:
+for frame in ptraj:
 
     # Compute the principal axes for the subset of atoms given above
     axes = backbone.principalAxes()
@@ -58,6 +58,6 @@ for frame in pytraj:
     # Print out time, and the dot-product between
     # The Z-axis (i.e. membrane normal) and the first principal axes
     # of the subset of atoms
-    print pytraj.currentIndex(), "\t", axes[0].z()
+    print ptraj.currentIndex(), "\t", axes[0].z()
 
 
