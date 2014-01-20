@@ -30,7 +30,7 @@ vec = loos.GCoord(0.,0.,0.)
 
 print "#Frame\tAngle\tCosine"
 
-ptraj = PyTraj(traj, system)
+ptraj = loos.PyTraj(traj, system)
 for frame in ptraj:
 
     for h in helices:
