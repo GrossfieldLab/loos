@@ -56,7 +56,7 @@ traj = createTrajectory(traj_name, model)
 align_subset = selectAtoms(model, align_with)
 rmsd_subset = selectAtoms(model, rmsd_with)
 
-print "# Alignment ubset has %d atoms." % (len(align_subset))
+print "# Alignment subset has %d atoms." % (len(align_subset))
 
 patraj = PyAlignedTraj(traj, rmsd_subset, skip = skip, alignwith = align_subset)
 average = patraj.averageStructure()
