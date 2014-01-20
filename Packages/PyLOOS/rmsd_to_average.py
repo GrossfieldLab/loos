@@ -36,6 +36,7 @@ model_name = sys.argv[1]
 traj_name = sys.argv[2]
 align_with = sys.argv[3]
 rmsd_with = sys.argv[4]
+skip = int(sys.argv[5])
 
 # Create the model & read in the trajectory
 model = createSystem(model_name)
@@ -46,7 +47,7 @@ rmsd_subset = selectAtoms(model, rmsd_with)
 
 print "# Alignment ubset has %d atoms." % (len(align_subset))
 
-patraj = PyAlignedTraj(traj, rmsd_subset, alignwith = align_subset)
+patraj = PyAlignedTraj(traj, rmsd_subset, skip = skip, alignwith = align_subset)
 average = patraj.averageStructure()
 
 t = 0
