@@ -25,9 +25,8 @@ traj = loos.createTrajectory(traj_file, system)
 sel1 = loos.selectAtoms(system, sel_string1)
 sel2 = loos.selectAtoms(system, sel_string2)
 
-frame = 0
-while traj.readFrame():
-    traj.updateGroupCoords(system)
+ptraj = PyTraj(traj, system)
+for frame in ptraj:
 
     # compute distance
     centroid1 = sel1.centroid()
@@ -51,8 +50,7 @@ while traj.readFrame():
     tors = loos.torsion(p1, centroid1, centroid2, p2)
 
     # write output
-    print frame, distance, angle, tors
-    frame += 1
+    print ptraj.currentIndex(), distance, angle, tors
 
 
 

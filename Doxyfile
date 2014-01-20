@@ -283,4 +283,3 @@ DOT_CLEANUP            = YES
 # Configuration::additions related to the search engine   
 #---------------------------------------------------------------------------
 SEARCHENGINE           = YES
-SERVER_BASED_SEARCH    = NO
