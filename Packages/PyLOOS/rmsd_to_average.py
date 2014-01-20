@@ -34,28 +34,24 @@ import sys
 ## Command line arguments
 model_name = sys.argv[1]
 traj_name = sys.argv[2]
-selection = sys.argv[3]
+align_with = sys.argv[3]
+rmsd_with = sys.argv[4]
 
 # Create the model & read in the trajectory
 model = createSystem(model_name)
 traj = createTrajectory(traj_name, model)
 
-subset = selectAtoms(model, selection)
+align_subset = selectAtoms(model, align_with)
+rmsd_subset = selectAtoms(model, rmsd_with)
 
-print "# Subset has %d atoms." % (len(subset))
+print "# Alignment ubset has %d atoms." % (len(align_subset))
 
-ensemble = AtomicGroupVector()
-readTrajectory(ensemble, subset, traj)
-
-
-# Align and get average...
-alignment = iterativeAlignmentPy(ensemble)
-print "# Alignment took %d iterations with final rmsd %f" % (alignment.iterations, alignment.rmsd)
-average = averageStructure(ensemble)
+patraj = PyAlignedTraj(traj, rmsd_subset, alignwith = align_subset)
+average = patraj.averageStructure()
 
 t = 0
 avg_rmsd = 0
-for structure in ensemble:
+for structure in patraj:
    rmsd = average.rmsd(structure)
    avg_rmsd = avg_rmsd + rmsd
    print "%d\t%f" % (t, rmsd)
