@@ -394,7 +394,7 @@ Matrix singleTrajectory(ToolOptions* topts) {
   Matrix M(traji->size(), traji->size());
   double mean_rmsd = 0;
   double max_rmsd = 0;
-  uint total = floor(traji->size()*traji->size()/2.0);
+  uint total = floor(traji->size()*(traji->size()-1)/2.0);
 
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
   if (verbosity > 0) {
@@ -458,7 +458,8 @@ Matrix twoTrajectories(ToolOptions* topts) {
   Matrix M(indices1.size(), indices2.size());
   double mean_rmsd = 0;
   double max_rmsd = 0;
-  uint total = floor(M.rows() * M.cols());
+  uint total = 0;
+  
 
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
   if (verbosity > 0) {
@@ -485,6 +486,7 @@ Matrix twoTrajectories(ToolOptions* topts) {
       if (r > max_rmsd)
         max_rmsd = r;
       mean_rmsd += r;
+      ++total;
     }
 
   if (verbosity > 0)
