@@ -26,13 +26,13 @@ for s in selections:
     helices.append(loos.selectAtoms(system, s))
 
 
-vec = loos.GCoord(0.,0.,0.)
 
 print "#Frame\tAngle\tCosine"
 
 ptraj = loos.PyTraj(traj, system)
 for frame in ptraj:
 
+    vec = loos.GCoord(0.,0.,0.)
     for h in helices:
         pca = h.principalAxes()
         v = pca[0]
