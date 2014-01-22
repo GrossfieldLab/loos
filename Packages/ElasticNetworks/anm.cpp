@@ -14,7 +14,7 @@
     anm [selection string] radius model-name output-prefix
 
   Examples:
-    anm 'resid >= 10 && resid <= 50 && name == "CA"' 15.0 foo.pdb foo
+    anm 'resid >= 10 && resid <= 50 && name == "CA"' foo.pdb foo
 
     This creates the following files:
       foo_H.asc      == The hessian
@@ -134,7 +134,7 @@ string fullHelpMessage() {
     "\n"
     "\n\n"
     "EXAMPLES\n\n"
-    "anm --selection 'resid >= 10 && resid <= 50 && name == \"CA\"' 15.0 foo.pdb foo\n"
+    "anm --selection 'resid >= 10 && resid <= 50 && name == \"CA\"' foo.pdb foo\n"
     "\tCompute the ANM for residues #10 through #50 with a 15 Angstrom cutoff\n"
     "\ti.e. construct contacts using only the CA's that are within 15 Angstroms\n"
     "\n"
