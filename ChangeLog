@@ -1,3 +1,8 @@
+2014-01-21    <alan@membrane.urmc.rochester.edu>
+
+	* Fixed a bug in protein_tilt.py, where the average vector wasn't reset 
+	upon successive frames in the trajectory.
+
 2014-01-21    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in rmsds tool where the average RMSD reported
