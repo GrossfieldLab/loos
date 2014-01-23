@@ -12,6 +12,7 @@
 | Fedora 17         |     +     |   +    |       |    
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
 | Fedora 19         |     +     |   +    |       |                             
+| Fedora 20         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
 | Ubuntu 10.04 LTS  |     +     |   !    | S     |     C = Requires manual install of SCons
@@ -179,7 +180,7 @@ Fedora 12: Install pcre-devel and download and build the latest swig
 Fedora 13: Yum install pcre-devel and python-devel, then download and install
   swig-2.0.4 (or later).
 
-Fedora 14-19: Yum install python-devel and swig
+Fedora 14-20: Yum install python-devel and swig
 
 
 
