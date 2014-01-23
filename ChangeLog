@@ -1,13 +1,14 @@
+2014-01-23    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in drifter that prevented it from running
+
 2014-01-21    <alan@membrane.urmc.rochester.edu>
 
 	* Fixed a bug in protein_tilt.py, where the average vector wasn't reset 
 	upon successive frames in the trajectory.
-
-2014-01-21    <tromo@hill.urmc-sh.rochester.edu>
-
 	* Fixed bug in rmsds tool where the average RMSD reported
 	was incorrect (sligthly under when using one trajectory,
-	with large error when using two trajectories)
+	with large error when using two trajectories) [Tod]
 
 2014-01-10  Tod Romo  <tromo@gorgoneion>
 
