@@ -1,6 +1,8 @@
 2014-01-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in drifter that prevented it from running
+	* Fixed bug in parseStringAs<> that can affect shortened fields
+	at the end of a line causing it to return a default value.
 
 2014-01-21    <alan@membrane.urmc.rochester.edu>
 
