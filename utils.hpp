@@ -304,10 +304,7 @@ namespace loos {
   T parseStringAs(const std::string& source, const uint pos =0, const uint nelem =0) {
     T val(0);
 
-    uint n = !nelem ? source.size() - pos : nelem;
-    if (pos + n > source.size())
-      n = source.size() - pos + 1;
-    if (n == 0) {
+    if (pos >= source.size()) {
       std::stringstream msg;
       msg << "Missing Field\n" << source << std::endl;
       for (uint i=0; i<source.size(); ++i)
@@ -316,6 +313,10 @@ namespace loos {
       msg << std::endl;
       throw(ParseError(msg.str()));
     }
+
+    uint n = !nelem ? source.size() - pos : nelem;
+    if (pos + n > source.size())
+      n = source.size() - pos + 1;
     
     
     
