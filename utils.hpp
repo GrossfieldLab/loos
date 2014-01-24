@@ -306,7 +306,18 @@ namespace loos {
 
     uint n = !nelem ? source.size() - pos : nelem;
     if (pos + n > source.size())
-      return(val);
+      n = source.size() - pos + 1;
+    if (n == 0) {
+      std::stringstream msg;
+      msg << "Missing Field\n" << source << std::endl;
+      for (uint i=0; i<source.size(); ++i)
+        msg << ' ';
+      msg << '^';
+      msg << std::endl;
+      throw(ParseError(msg.str()));
+    }
+    
+    
     
     std::string element(source.substr(pos, n));
     std::istringstream iss(element);
