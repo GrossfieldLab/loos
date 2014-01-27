@@ -603,12 +603,21 @@ def AutoConfiguration(env):
                     conf.env.Exit(1)
 
 
-                # Hack to extend list rather than append a list into a list
+            # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
                 conf.env.Append(LIBS=lib)
 
+            # In some cases (OpenSUSE 13, for one), the system atlas includes
+            # a lapack, but it's not a complete lapack and is missing some
+            # functions LOOS requires (such as SVD).  Typically, ATLAS
+            # is in its own directory and the regular LAPACK is in the
+            # system library (e.g. /usr/lib64).  Here, we attempt to 
+            # detect this and deal with it...
+
             if numerics['atlas'] and not conf.CheckForSVD('atlas'):
                 if numerics['lapack']:
+                    # Linking code with dgesvd failed, but we have a lapack lib detected...
+                    # Try linking using the system lib dir first, ignoring atlas...
                     conf.env.Prepend(LIBPATH=[default_lib_path])
                     if not conf.CheckForSVD('lapack'):
                         print 'Error- missing SVD function.  Check your ATLAS/LAPACK installation'
