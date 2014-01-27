@@ -229,7 +229,7 @@ namespace loos {
 
 
     pAtom __getitem__(const int i) {
-      if (i < 0 || i >= $self->size())
+      if (i < 0 || static_cast<uint>(i) >= $self->size())
 	throw(std::out_of_range("Bad index into AtomicGroup"));
       
       return((*$self)[i]);
