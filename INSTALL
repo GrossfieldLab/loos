@@ -27,8 +27,9 @@
 | CentOS 5.9        |     !     |   !    | DBCS  |                             
 | CentOS 6.4        |     +     |   !    | CS    |                             
 |-------------------|-----------|--------|-------|                             
-| OpenSUSE 11.4     |     +     |   -    |       |                             
-| OpenSUSE 12       |     +     |   +    |       |                             
+| OpenSUSE 11.4     |     !     |   -    | C     |                             
+| OpenSUSE 12       |     !     |   +    | C     |                             
+| OpenSUSE 13       |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
 | FreeBSD 8         |     +     |   -    | D     |                             
 |-------------------|-----------|--------|-------|                             
@@ -272,17 +273,23 @@ Debian 7: Install python-dev, and swig
 
 		       ------= openSUSE =------
 
-There is no pre-built ATLAS package (that we could find) for
-openSUSE.  LOOS will use the blas packages instead.  You will need to
-install lapack, blas, boost, and SCons.  Using zypper (or your
-favorite package manager), install the following:
+As of OpenSUSE 13, there is a pre-build ATLAS package available.  However,
+it does not include all of the LAPACK functions LOOS requires.  At this time,
+we recommend only installing lapack and blas.  If you install ATLAS, it will
+be ignored by the LOOS build.
 
-   zypper install scons boost-devel lapack lapack3
+Using zypper (or your favorite package manager), install the following:
+
+   zypper install scons boost-devel lapack-devel blas-devel
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
+* OpenSUSE 11 & 12 *
+
+The package-manager installed scons is too old.  Download and install SCons
+2.0 or better.
 
 [Optional]
 For Amber NetCDF trajectory support, install the netcdf development package,
