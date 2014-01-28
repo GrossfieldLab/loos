@@ -15,7 +15,7 @@
 | Fedora 20         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
-| Ubuntu 10.04 LTS  |     +     |   !    | S     |     C = Requires manual install of SCons
+| Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
 | Ubuntu 11.10      |     +     |   !    | S     |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    |       |     
@@ -222,7 +222,9 @@ installed.
 * Ubuntu 10.04 LTS *
 
 Ubuntu 10.04 LTS uses libboost1.40-all-dev instead of
-libboost-all-devel for a package name.
+libboost-all-devel for a package name.  The version of scons available
+through the package manager is too old.  Download and install a recent
+scons (2.0 or better)
 
 * Ubuntu 8.04 LTS *
 
