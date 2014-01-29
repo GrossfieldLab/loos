@@ -1,3 +1,7 @@
+2014-01-29    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added support for OpenSUSE 13 and Fedora 20
+	
 2014-01-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in drifter that prevented it from running
