@@ -1339,6 +1339,28 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release211 Version 2.1.1 (1-31-2014)
+\subsection r211_add_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added new packing_score tool to quantify the packing between
+       two selections over the course of a trajectory
+  <li> Added PyTraj and PyAlignedTraj for Python iteration through
+       a Trajectory in PyLOOS
+  <li> Added support for OpenSUSE 13 and Fedora 20
+  <li> Changed GCoord, AtomicGroup, TimeSeries, and Matrix44 to
+       be iterable in Python
+</ul>
+\subsection r211_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in drifter preventing it from running
+  <li> Fixed bug in parseStringAs<> that can affect shortened
+       fields at the end of a line.
+  <li> Fixed bug in protein_tilt.py where the average vector
+       wasn't reset upon successive frames
+  <li> Fixed bug in rmsds tool there the average RMSD reported
+       was under-valued
+</ul>
+
 \section release210 Version 2.1.0 (12-6-2013)
 \subsection r210_add_changed Added, Changed, or Otherwise Notable
 <ul>
