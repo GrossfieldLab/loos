@@ -11,9 +11,12 @@ School of Medicine & Dentistry, University of Rochester\n
 \image html gplv3.png
 
 <hr>
-
 <h2>Important News</h2>
-Our email address has changed.  Please use loos.maintainer@gmail.com to contact us regarding LOOS.
+Our email address has changed.  Please use loos.maintainer@gmail.com to contact us regarding LOOS.  We now have two mailing lists available,
+   - <a href="https://lists.sourceforge.net/lists/listinfo/loos-users">LOOS Users</a>
+   - <a href="https://lists.sourceforge.net/lists/listinfo/loos-devel">LOOS Developers</a>
+
+
 <hr>
 
 <h2>Quick Links</h2>
@@ -1277,6 +1280,11 @@ Matlab and Octave.
        over the trajectory.  This can be used to analyze shape changes over
        time.
 
+       <DT><B>packing_score</B>
+       <DD>Computes the packing score, a measure of the contact between two 
+       selections, over the course of a trajectory.  Originally defined in 
+       Grossfield et al, PNAS, 2006, 103, 4888-4893 
+
        <DT><B>ramachandran</B>
        <DD>Computes a ramachandran map for a given selection of a specified
        range of frames in a trajectory (or all frames).  Note that some
@@ -1331,6 +1339,28 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release211 Version 2.1.1 (1-31-2014)
+\subsection r211_add_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added new packing_score tool to quantify the packing between
+       two selections over the course of a trajectory
+  <li> Added PyTraj and PyAlignedTraj for Python iteration through
+       a Trajectory in PyLOOS
+  <li> Added support for OpenSUSE 13 and Fedora 20
+  <li> Changed GCoord, AtomicGroup, TimeSeries, and Matrix44 to
+       be iterable in Python
+</ul>
+\subsection r211_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in drifter preventing it from running
+  <li> Fixed bug in parseStringAs<> that can affect shortened
+       fields at the end of a line.
+  <li> Fixed bug in protein_tilt.py where the average vector
+       wasn't reset upon successive frames
+  <li> Fixed bug in rmsds tool there the average RMSD reported
+       was under-valued
+</ul>
+
 \section release210 Version 2.1.0 (12-6-2013)
 \subsection r210_add_changed Added, Changed, or Otherwise Notable
 <ul>
@@ -2921,6 +2951,65 @@ implementations.
 <DT>	Are there any examples of using PyLOOS?
 <DD>	Yes.  Look in the Packages/PyLOOS directory.  We will be
 	adding more examples in future releases.
+
+<DT>    Using trajectories in PyLOOS
+<DD>    While the standard C++ mechanisms and idioms for working with
+        trajectories in PyLOOS, there are more python-like ways of
+ 	interacting with trajectories.  The first is the PyTraj class,
+	which wraps a Trajectory and makes it appear like a python
+	sequence and iterator.  Which frames are actually used can
+	be set at instantiatior, either by specifying a skip and
+	stride, or by providing an iterator to pick the frames.
+	The second way is to use the PyAlignedTraj, which behaves
+	very similarly to PyTraj, but where the entire trajectory
+	has been optimally aligned using an iterative procedure.
+
+	A simple example of using PyTraj is,
+\code
+	model = createSystem('foo.pdb')
+	traj = createTrajectory('foo.dcd', model)
+	ptraj = PyTraj(traj, model, skip = 50)
+	
+	for frame in ptraj:
+	   doSomething(frame)
+\endcode
+	Here, a PyTraj is created where the first 50 frames of
+	the trajectory are skipped.  The frame returned at each
+	iteration is the entire model.
+
+	For more details, see the class documentation and the
+	FAQ entries below...
+
+<DT>    How do shared atoms and PyTraj work?
+<DD>	When you instantiate a PyTraj object, you associate it
+	with an AtomicGroup.  At each iteration, the coordinates
+	of atoms in this group will be updated from the trajectory.
+	Any other group that shares atoms with the group used
+	at instantiation will also be updated as well.  For example,
+	imagine you want to work with both the whole model and C-alpha
+	atoms...
+\code
+	model = createSystem('foo.pdb')
+	calphas = selectAtoms(model, 'name == "CA"')
+	traj = createTrajectory('foo.dcd', model)
+	ptraj = PyTraj(traj, model, skip = 50)
+	
+	for frame in ptraj:
+	   doSomething(frame)
+	   doSomethingElse(calphas)
+\endcode
+	In general, pass a superset of all atoms of interest to
+	the PyTraj constructor.
+
+
+<DT>	Can you slice a PyTraj?
+<DD>    Yes, but there is a catch...  When slicing a PyTraj,
+	a list of AtomicGroup objects are returned.  Each element is
+	a "deep" copy of the AtomicGroup given in the constructor.  That
+	is, atoms are no longer shared.  The rest of the core PyLOOS does
+	not take a list of AtomicGroups as a parameter (at least not
+	at this time).
+
 
 <DT>	Where are the matrix operations?
 <DD>	We currently assume that matrix operations are better handled

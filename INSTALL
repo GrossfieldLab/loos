@@ -12,9 +12,10 @@
 | Fedora 17         |     +     |   +    |       |    
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
 | Fedora 19         |     +     |   +    |       |                             
+| Fedora 20         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
-| Ubuntu 10.04 LTS  |     +     |   !    | S     |     C = Requires manual install of SCons
+| Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
 | Ubuntu 11.10      |     +     |   !    | S     |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    |       |     
@@ -26,8 +27,9 @@
 | CentOS 5.9        |     !     |   !    | DBCS  |                             
 | CentOS 6.4        |     +     |   !    | CS    |                             
 |-------------------|-----------|--------|-------|                             
-| OpenSUSE 11.4     |     +     |   -    |       |                             
-| OpenSUSE 12       |     +     |   +    |       |                             
+| OpenSUSE 11.4     |     !     |   -    | C     |                             
+| OpenSUSE 12       |     !     |   +    | C     |                             
+| OpenSUSE 13       |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
 | FreeBSD 8         |     +     |   -    | D     |                             
 |-------------------|-----------|--------|-------|                             
@@ -179,7 +181,7 @@ Fedora 12: Install pcre-devel and download and build the latest swig
 Fedora 13: Yum install pcre-devel and python-devel, then download and install
   swig-2.0.4 (or later).
 
-Fedora 14-19: Yum install python-devel and swig
+Fedora 14-20: Yum install python-devel and swig
 
 
 
@@ -220,7 +222,9 @@ installed.
 * Ubuntu 10.04 LTS *
 
 Ubuntu 10.04 LTS uses libboost1.40-all-dev instead of
-libboost-all-devel for a package name.
+libboost-all-devel for a package name.  The version of scons available
+through the package manager is too old.  Download and install a recent
+scons (2.0 or better)
 
 * Ubuntu 8.04 LTS *
 
@@ -271,17 +275,23 @@ Debian 7: Install python-dev, and swig
 
 		       ------= openSUSE =------
 
-There is no pre-built ATLAS package (that we could find) for
-openSUSE.  LOOS will use the blas packages instead.  You will need to
-install lapack, blas, boost, and SCons.  Using zypper (or your
-favorite package manager), install the following:
+As of OpenSUSE 13, there is a pre-build ATLAS package available.  However,
+it does not include all of the LAPACK functions LOOS requires.  At this time,
+we recommend only installing lapack and blas.  If you install ATLAS, it will
+be ignored by the LOOS build.
 
-   zypper install scons boost-devel lapack lapack3
+Using zypper (or your favorite package manager), install the following:
+
+   zypper install scons boost-devel lapack-devel blas-devel
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
+* OpenSUSE 11 & 12 *
+
+The package-manager installed scons is too old.  Download and install SCons
+2.0 or better.
 
 [Optional]
 For Amber NetCDF trajectory support, install the netcdf development package,
@@ -296,12 +306,18 @@ OpenSUSE 11.4: NOT SUPPORTED
 
 			-----= MACOS X =-----
 
-***IMPORTANT NOTE REGARDING MACOS 10.9***
+***IMPORTANT NOTES REGARDING MACOS 10.9***
 
 MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
 an incompatibility with Boost installed via Fink in MacOS 10.9.  You
 will need to manually download and build a recent version of Boost and
 *NOT* use the Fink version.
+
+There is an issue with using Swig and a recent version of MacOS 10.9 that
+affects how STL containers are wrapped.  We have disabled the wrapping of
+iterator methods for MacOS 10.9 only in order to build PyLOOS.  This means
+functions such as begin() and erase() will be unavailable in PyLOOS for
+the vectors used in LOOS.
 
 ----------------------------------------
 

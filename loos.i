@@ -1,4 +1,7 @@
 %module loos
+%include <exception.i>
+
+%feature("autodoc", "1");
 
 %include <std_string.i>
 %include <std_vector.i>
@@ -17,6 +20,23 @@ namespace loos {
   typedef Coord<double> GCoord;
 }
 
+
+
+# Generic exception wrapper for anything in loos that can look like a list...
+
+%exception __getitem__ 
+{
+  try {
+    $action
+      }
+  catch (std::out_of_range& e) {
+    PyErr_SetString(PyExc_IndexError, const_cast<char*>(e.what()));
+    return(NULL);
+  }
+}
+
+
+
 %include "Coord.i"
 %include "Atom.i"
 %include "Matrix44.i"
@@ -34,3 +54,8 @@ namespace loos {
 %include "TimeSeries.i"
 %include "HBondDetector.i"
 %include "exceptions.i"
+
+
+  %pythoncode %{
+from PyTraj import *
+	      %}

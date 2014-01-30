@@ -169,7 +169,12 @@ foreach my $atom (@bond_list) {
 ######## Build a fake PSF
 ########
 
-print $psf "PSF\n\n       2 !NTITLE\nREMARKS THIS IS NOT A REAL PSF, USE CAREFULLY\nMADE BY GMXDUMP2PDB.PL\n\n";
+# Note: This is the charmm extended PSF format.  There is an issue with VMD
+#       where some fields are truncated by 1 char (i.e. resname is 7 chars rather than
+#       8).  We get around this by left-justifying all fields.  But the field is still
+#       smaller than expected...
+
+print $psf "PSF EXT\n\n       2 !NTITLE\nREMARKS THIS IS NOT A REAL PSF, USE CAREFULLY\nMADE BY GMXDUMP2PDB.PL\n\n";
 printf $psf "%8d !NATOM\n", $natoms;
 foreach my $atom (@$rstruct) {
   defined($$atom{ATOMID}) || die "Undefined atomid";
@@ -182,7 +187,7 @@ foreach my $atom (@$rstruct) {
 
 
 
-  printf $psf "%8s %4s %-4s %4s %-4s %-4s  %9f       %9f          0\n",
+  printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-8d%-14.6g\n",
     $$atom{ATOMID},
       $$atom{SEGID},
 	$$atom{RESID},
@@ -190,7 +195,8 @@ foreach my $atom (@$rstruct) {
 	    $$atom{ATOMNAME},
 	      $$atom{ATOMTYPE},
 		$$atom{CHARGE},
-		  $$atom{MASS};
+		  0,
+		    $$atom{MASS};
 	    
 }
 
@@ -200,7 +206,7 @@ my $count = 0;
 foreach my $atom (@bond_list) {
   my $rbound = &uniqueElements($$rconn{$atom});
   foreach (@$rbound) {
-    printf $psf "%8s%8s", $atom, $_;
+    printf $psf "%10s%10s", $atom, $_;
     if (++$count >= 4) {
       $count = 0;
       print $psf "\n";

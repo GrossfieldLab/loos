@@ -31,31 +31,39 @@
 from loos import *
 import sys
 
+if len(sys.argv) < 3 or sys.argv[1] == '-h' or sys.argv[1] == '--help':
+   print 'Usage: rmsd_to_average.py model traj align_selection [rmsd_selection [skip]]'
+   sys.exit()
+
+
 ## Command line arguments
 model_name = sys.argv[1]
 traj_name = sys.argv[2]
-selection = sys.argv[3]
+align_with = sys.argv[3]
+
+skip = 0
+rmsd_with = align_with
+
+if len(sys.argv) > 4:
+   rmsd_with = sys.argv[4]
+   if len(sys.argv) > 5:
+      skip = int(sys.argv[5])
 
 # Create the model & read in the trajectory
 model = createSystem(model_name)
 traj = createTrajectory(traj_name, model)
 
-subset = selectAtoms(model, selection)
+align_subset = selectAtoms(model, align_with)
+rmsd_subset = selectAtoms(model, rmsd_with)
 
-print "# Subset has %d atoms." % (len(subset))
+print "# Alignment subset has %d atoms." % (len(align_subset))
 
-ensemble = AtomicGroupVector()
-readTrajectory(ensemble, subset, traj)
-
-
-# Align and get average...
-alignment = iterativeAlignmentPy(ensemble)
-print "# Alignment took %d iterations with final rmsd %f" % (alignment.iterations, alignment.rmsd)
-average = averageStructure(ensemble)
+patraj = PyAlignedTraj(traj, rmsd_subset, skip = skip, alignwith = align_subset)
+average = patraj.averageStructure()
 
 t = 0
 avg_rmsd = 0
-for structure in ensemble:
+for structure in patraj:
    rmsd = average.rmsd(structure)
    avg_rmsd = avg_rmsd + rmsd
    print "%d\t%f" % (t, rmsd)

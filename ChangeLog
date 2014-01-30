@@ -1,3 +1,33 @@
+2014-01-29    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added support for OpenSUSE 13 and Fedora 20
+	
+2014-01-23    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in drifter that prevented it from running
+	* Fixed bug in parseStringAs<> that can affect shortened fields
+	at the end of a line causing it to return a default value.
+
+2014-01-21    <alan@membrane.urmc.rochester.edu>
+
+	* Fixed a bug in protein_tilt.py, where the average vector wasn't reset 
+	upon successive frames in the trajectory.
+	* Fixed bug in rmsds tool where the average RMSD reported
+	was incorrect (sligthly under when using one trajectory,
+	with large error when using two trajectories) [Tod]
+
+2014-01-10  Tod Romo  <tromo@gorgoneion>
+
+	* Changed [PyLOOS] GCoord, AtomicGroup, TimeSeries, and Matrix44
+	to be iterable
+	* Added [PyLOOS] PyTraj and PyAlignedTraj for Python iteration through a
+	Trajectory
+
+2014-01-08  Alan Grossfield <alan@membrane.urmc.rochester.edu>
+
+    * Added new tool packing_score, to quantify the packing between 
+	  to selections over the course of a trajectory
+
 2013-11-04  Tod Romo  <tromo@ubuntu-mac-12>
 
 	* Added MacOS 10.9 (Mavericks) compatibility

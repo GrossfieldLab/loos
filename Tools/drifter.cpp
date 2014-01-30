@@ -177,7 +177,12 @@ int main(int argc, char *argv[]) {
 
   cout << "# " << hdr << endl;
   cout << "# frame d\n";
-  uint t = 0;
+  uint t = tropts->skip;
+  if (t > 0)
+    tropts->trajectory->readFrame(t-1);
+  else
+    tropts->trajectory->rewind();
+  
   while (tropts->trajectory->readFrame()) {
     tropts->trajectory->updateGroupCoords(subset);
     GCoord c = subset.centroid();
