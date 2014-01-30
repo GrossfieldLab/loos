@@ -306,12 +306,18 @@ OpenSUSE 11.4: NOT SUPPORTED
 
 			-----= MACOS X =-----
 
-***IMPORTANT NOTE REGARDING MACOS 10.9***
+***IMPORTANT NOTES REGARDING MACOS 10.9***
 
 MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
 an incompatibility with Boost installed via Fink in MacOS 10.9.  You
 will need to manually download and build a recent version of Boost and
 *NOT* use the Fink version.
+
+There is an issue with using Swig and a recent version of MacOS 10.9 that
+affects how STL containers are wrapped.  We have disabled the wrapping of
+iterator methods for MacOS 10.9 only in order to build PyLOOS.  This means
+functions such as begin() and erase() will be unavailable in PyLOOS for
+the vectors used in LOOS.
 
 ----------------------------------------
 
