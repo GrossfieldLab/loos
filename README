@@ -10,13 +10,12 @@ to contact us regarding LOOS.
 
    * RELEASE 2.1.1 *
 
-This release includes a few bug fixes, including an inconsistency in
+This release includes a few bug fixes, addresses an inconsistency in
 the build script for the examples, and a few improvements to PyLOOS.
-Some inconsistencies in the Example SConstruct have been corrected.
-In PyLOOS, some sequence like objects (e.g. GCoord, AtomicGroup,
+In PyLOOS, some sequence-like objects (e.g. GCoord, AtomicGroup,
 TimeSeries, and Matrix44) were not iterable Python objects and trying
 to use them as such would fill memory.  These objects will now raise a
-Python expections and can be used as an iterable object.  In addition,
+Python exception and can be used as an iterable object.  In addition,
 we have added two new Python-only trajectory classes: PyTraj and
 PyAlignedTraj.  These wrap a LOOS Trajectory (and AtomicGroup) and
 make it into an iterable Python object.  You can also specify a skip

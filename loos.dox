@@ -22,7 +22,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
 <h2>Quick Links</h2>
       -  <a href="http://sourceforge.net/projects/loos">Download LOOS at http://sourceforge.net/projects/loos</a>
       -  <a href="https://lists.sourceforge.net/lists/listinfo/loos-announce">Subscribe to the mailing list</a>
-      -  <a href="http://sourceforge.net/projects/loos/files/loos%20material/loos_talk_2013.pdf/download">Download a tutorial (pdf) on using LOOS</a>
+      -  <a href="http://sourceforge.net/projects/loos/files/loos%20material/loos_talk_2013_2.pdf/download">Download a tutorial (pdf) on using LOOS</a>
       -  Ask the developers a question at loos.maintainer@gmail.com
       - \subpage building "Building LOOS"
           - \ref building_pyloos "Building PyLOOS, the Python Interface to LOOS"
@@ -1359,6 +1359,7 @@ Matlab and Octave.
        wasn't reset upon successive frames
   <li> Fixed bug in rmsds tool there the average RMSD reported
        was under-valued
+  <li> Fixed build issue with MacOS 10.9
 </ul>
 
 \section release210 Version 2.1.0 (12-6-2013)
@@ -2954,15 +2955,13 @@ implementations.
 
 <DT>    Using trajectories in PyLOOS
 <DD>    While the standard C++ mechanisms and idioms for working with
-        trajectories in PyLOOS, there are more python-like ways of
+        trajectories are in PyLOOS, there are more python-like ways of
  	interacting with trajectories.  The first is the PyTraj class,
 	which wraps a Trajectory and makes it appear like a python
-	sequence and iterator.  Which frames are actually used can
-	be set at instantiatior, either by specifying a skip and
+	sequence.  Which frames are actually used can
+	be set at instantiation, either by specifying a skip and
 	stride, or by providing an iterator to pick the frames.
-	The second way is to use the PyAlignedTraj, which behaves
-	very similarly to PyTraj, but where the entire trajectory
-	has been optimally aligned using an iterative procedure.
+	Note that frames are only read from the trajectory as needed.
 
 	A simple example of using PyTraj is,
 \code
@@ -2976,6 +2975,15 @@ implementations.
 	Here, a PyTraj is created where the first 50 frames of
 	the trajectory are skipped.  The frame returned at each
 	iteration is the entire model.
+
+	The second way is to use the PyAlignedTraj, which behaves
+	very similarly to PyTraj, but where the entire trajectory
+	has been optimally aligned using an iterative procedure.
+	In this case, the alignment subset for the entire trajectory
+	will be stored in memory while the alignment is determined
+	(during initialization).  Afterwards, that memory is freed and
+	frames are read as needed.
+
 
 	For more details, see the class documentation and the
 	FAQ entries below...
