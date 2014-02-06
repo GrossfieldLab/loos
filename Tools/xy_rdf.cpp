@@ -238,6 +238,34 @@ string s =
     return (s);
     }
 
+void assign_leaflet(vector<AtomicGroup> &molecules,
+                    vector<AtomicGroup> &upper,
+                    vector<AtomicGroup> &lower,
+                    const bool spans
+                    )
+    {
+    upper.clear();
+    lower.clear();
+    if (spans)
+        {
+        upper = molecules;
+        lower = molecules;
+        return;
+        }
+
+    for (unsigned int i = 0; i < molecules.size(); i++)
+        {
+        GCoord c = molecules[i].centerOfMass();
+        if (c.z() >=0.0)
+            {
+            upper.push_back(molecules[i]);
+            }
+        else
+            {
+            lower.push_back(molecules[i]);
+            }
+        }
+    }
 
 int main (int argc, char *argv[])
 {
@@ -361,6 +389,7 @@ hist_lower_total.insert(hist_lower_total.begin(), num_bins, 0.0);
 hist_upper_total.insert(hist_upper_total.begin(), num_bins, 0.0);
 
 
+#if 0
 // Figure out the number of unique pairs -- if the groups are the same,
 // we skip self pairs, so the normalization is different
 uint num_upper, num_lower;
@@ -376,6 +405,7 @@ else
     num_upper = g1_upper.size() * g2_upper.size();
     num_lower = g1_lower.size() * g2_lower.size();
     }
+#endif 
 
 
 double min2 = hist_min*hist_min;
@@ -385,6 +415,10 @@ double max2 = hist_max*hist_max;
 int frame = 0;
 double area = 0.0;
 double interval_area = 0.0;
+uint cum_upper_pairs = 0;
+uint cum_lower_pairs = 0;
+uint interval_upper_pairs = 0;
+uint interval_lower_pairs = 0;
 
 
 while (traj->readFrame())
@@ -406,6 +440,10 @@ while (traj->readFrame())
                 {
                 continue;
                 }
+
+            cum_lower_pairs++;
+            interval_lower_pairs++;
+
             GCoord p2 = g2_lower[k].centerOfMass();
             GCoord displ = (p2 - p1);
             displ.reimage(box);
@@ -430,6 +468,10 @@ while (traj->readFrame())
                 {
                 continue;
                 }
+
+            cum_upper_pairs++;
+            interval_lower_pairs++;
+
             GCoord p2 = g2_upper[k].centerOfMass();
             GCoord displ = (p2 - p1);
             displ.reimage(box);
@@ -449,8 +491,8 @@ while (traj->readFrame())
     if (timeseries_interval && (frame % timeseries_interval == 0))
         {
         interval_area /= timeseries_interval;
-        double upper_expected = timeseries_interval * num_upper / interval_area;
-        double lower_expected = timeseries_interval * num_lower / interval_area;
+        double upper_expected = interval_upper_pairs / interval_area;
+        double lower_expected = interval_lower_pairs / interval_area;
 
 
         // create the output file
@@ -473,13 +515,13 @@ while (traj->readFrame())
             double norm = M_PI*(d_outer*d_outer - d_inner*d_inner);
 
             double upper = 0.0;
-            if (num_upper > 0)
+            if (interval_upper_pairs > 0)
             {
               upper = hist_upper[m]/(norm*upper_expected);
             }
 
             double lower = 0.0;
-            if (num_lower > 0)
+            if (interval_lower_pairs > 0)
             {
               lower = hist_lower[m]/(norm*lower_expected);
             }
@@ -512,6 +554,8 @@ while (traj->readFrame())
 
         // zero out the area
         interval_area = 0.0;
+        interval_upper_pairs = 0;
+        interval_lower_pairs = 0;
         }
 
     }
@@ -536,8 +580,8 @@ else if (frame % timeseries_interval != 0)
         }
     }
 
-double upper_expected = frame * num_upper / area;
-double lower_expected = frame * num_lower / area;
+double upper_expected = cum_upper_pairs / area;
+double lower_expected = cum_lower_pairs / area;
 
 // Output the results
 cout << "# Dist\tTotal\tUpper\tLower\tCum" << endl;
@@ -551,13 +595,13 @@ for (int i = 0; i < num_bins; i++)
     double norm = M_PI*(d_outer*d_outer - d_inner*d_inner);
 
     double upper = 0.0;
-    if (num_upper > 0)
+    if (cum_upper_pairs > 0)
     {
       upper = hist_upper_total[i]/(norm*upper_expected);
     }
 
     double lower = 0.0;
-    if (num_lower > 0)
+    if (cum_lower_pairs > 0)
     {
       lower = hist_lower_total[i]/(norm*lower_expected);
     }
