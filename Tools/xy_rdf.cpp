@@ -42,6 +42,8 @@ int num_bins;
 int timeseries_interval;
 string output_directory;
 bool sel1_spans, sel2_spans;
+bool reselect_leaflet = false;
+
 
 // @cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage
@@ -56,6 +58,7 @@ public:
       ("timeseries-directory", po::value<string>(&output_directory)->default_value(string("output")))
       ("sel1-spans", "Selection 1 appears in both leaflets")
       ("sel2-spans", "Selection 2 appears in both leaflets")
+      ("reselect", "Recompute leaflet location for each frame")
        ;
 
   }
@@ -100,6 +103,11 @@ public:
         {
         sel2_spans = true;
         }
+
+    if (vm.count("reselect"))
+        {
+        reselect_leaflet = true;
+        }
     return(true);
   }
 
@@ -111,7 +119,7 @@ public:
   string print() const
   {
     ostringstream oss;
-    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f, timeseries=%d, timeseries-directory='%s', sel1-spans=%d, sel2-spans=%d")
+    oss << boost::format("split-mode='%s', sel1='%s', sel2='%s', hist-min=%f, hist-max=%f, num-bins=%f, timeseries=%d, timeseries-directory='%s', sel1-spans=%d, sel2-spans=%d reselect=%d")
       % split_by
       % selection1
       % selection2
@@ -121,7 +129,8 @@ public:
       % timeseries_interval
       % output_directory
       % sel1_spans
-      % sel2_spans;
+      % sel2_spans
+      % reselect_leaflet;
     return(oss.str());
   }
 
@@ -201,6 +210,11 @@ string s =
     "in the selection --- they are each assumed to span the membrane.\n"
     "\n"
     "The --timeseries flag lets you track the evolution of the RDF over time.\n"
+    "\n"
+    "The --reselect flag causes the program to recompute which leaflet\n"
+    "each molecule is in at each time step. This will impose a small \n"
+    "overhead, but is necessary if you're dealing with molecules that \n"
+    "can flip from one leaflet to the other.\n"
     "\n"
     "EXAMPLE\n"
     "\n"
@@ -332,47 +346,8 @@ traj->updateGroupCoords(system);
 vector<AtomicGroup> g1_upper, g1_lower;
 vector<AtomicGroup> g2_upper, g2_lower;
 
-if (sel1_spans)
-    {
-    g1_upper = g1_mols;
-    g1_lower = g1_mols;
-    }
-else
-    {
-    for (unsigned int i = 0; i < g1_mols.size(); i++)
-        {
-        GCoord c = g1_mols[i].centerOfMass();
-        if (c.z() >=0.0)
-            {
-            g1_upper.push_back(g1_mols[i]);
-            }
-        else
-            {
-            g1_lower.push_back(g1_mols[i]);
-            }
-        }
-    }
-
-if (sel2_spans)
-    {
-    g2_upper = g2_mols;
-    g2_lower = g2_mols;
-    }
-else
-    {
-    for (unsigned int i = 0; i < g2_mols.size(); i++)
-        {
-        GCoord c = g2_mols[i].centerOfMass();
-        if (c.z() >=0.0)
-            {
-            g2_upper.push_back(g2_mols[i]);
-            }
-        else
-            {
-            g2_lower.push_back(g2_mols[i]);
-            }
-        }
-    }
+assign_leaflet(g1_mols, g1_upper, g1_lower, sel1_spans);
+assign_leaflet(g2_mols, g2_upper, g2_lower, sel2_spans);
 
 
 // Create 2 histograms -- one for top, one for bottom
@@ -387,25 +362,6 @@ hist_lower.insert(hist_lower.begin(), num_bins, 0.0);
 hist_upper.insert(hist_upper.begin(), num_bins, 0.0);
 hist_lower_total.insert(hist_lower_total.begin(), num_bins, 0.0);
 hist_upper_total.insert(hist_upper_total.begin(), num_bins, 0.0);
-
-
-#if 0
-// Figure out the number of unique pairs -- if the groups are the same,
-// we skip self pairs, so the normalization is different
-uint num_upper, num_lower;
-if (group1 == group2)
-    {
-    // the two selection groups are the same
-    num_upper = g1_upper.size()*(g1_upper.size()-1);
-    num_lower = g1_lower.size()*(g1_lower.size()-1);
-    }
-else
-    {
-    // the two selection groups are different
-    num_upper = g1_upper.size() * g2_upper.size();
-    num_lower = g1_lower.size() * g2_lower.size();
-    }
-#endif 
 
 
 double min2 = hist_min*hist_min;
@@ -428,6 +384,12 @@ while (traj->readFrame())
     GCoord box = system.periodicBox(); 
     area += box.x() * box.y();
     interval_area += box.x() * box.y();
+
+    if (reselect_leaflet)
+        {
+        assign_leaflet(g1_mols, g1_upper, g1_lower, sel1_spans);
+        assign_leaflet(g2_mols, g2_upper, g2_lower, sel2_spans);
+        }
 
     // compute the distribution of g2 around g1 for the lower leaflet
     for (unsigned int j = 0; j < g1_lower.size(); j++)
