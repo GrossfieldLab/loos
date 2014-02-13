@@ -3,6 +3,28 @@
   (c) 2011 Tod D. Romo, Grossfield Lab, URMC
 */
 
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2011, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 
 #include <loos.hpp>
 
@@ -106,7 +128,7 @@ vGroup extractSelections(const AtomicGroup& model, const string& selection) {
 
 int main(int argc, char *argv[]) {
   if (argc < 5) {
-    cerr << "Usage- moops skip palm-selection model traj [traj ...] >output.asc\n";
+    cerr << "Usage- moops skip selection model traj [traj ...] >output.asc\n";
     exit(EXIT_FAILURE);
   }
 
@@ -115,9 +137,9 @@ int main(int argc, char *argv[]) {
 
 
   uint skip = strtoul(argv[k++], 0, 10);
-  string palm_selection = string(argv[k++]);
+  string selection = string(argv[k++]);
   AtomicGroup model = createSystem(argv[k++]);
-  vGroup palms = extractSelections(model, palm_selection);
+  vGroup subset = extractSelections(model, selection);
 
   vString traj_names;
   while (k < argc)
@@ -143,7 +165,7 @@ int main(int argc, char *argv[]) {
     
     while (traj->readFrame()) {
       traj->updateGroupCoords(model);
-      principalComponentsOrder(suborder, palms);
+      principalComponentsOrder(suborder, subset);
     }
     order.push_back(suborder.average());
   }
