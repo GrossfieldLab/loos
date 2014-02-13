@@ -1,6 +1,8 @@
 2014-02-13    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug where PyTraj was not installed
+	* Fixed bug affecting AmberTraj::updateGroupCoords() [mdcrd files] 
+	resulting in a segfault.
 
 2014-02-07    <alan@membrane.urmc.rochester.edu>
 
