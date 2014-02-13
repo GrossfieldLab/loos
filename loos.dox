@@ -1339,6 +1339,18 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release212 Version 2.1.2 (2-14-2014)
+\subsection r212_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added new feature to xy_rdf (--reselect) to handle case where
+       molecules move back and forth between leaflets
+<\ul>
+
+\subsection r212_bugs Bug Fixes
+<ul>
+  <li> Fixed bug where PyTraj.py was not installed
+</ul>
+
 \section release211 Version 2.1.1 (1-31-2014)
 \subsection r211_add_changed Added, Changed, or Otherwise Notable
 <ul>
