@@ -1349,6 +1349,8 @@ Matlab and Octave.
 \subsection r212_bugs Bug Fixes
 <ul>
   <li> Fixed bug where PyTraj.py was not installed
+  <li> Fixed bug affecting AmberTraj::updateGroupCoords() [mdcrd files]
+       resulting in a segfault.
 </ul>
 
 \section release211 Version 2.1.1 (1-31-2014)
