@@ -8,6 +8,14 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.1.2 *
+
+This release is only a bug fix release for PyLOOS.  The new
+PyTraj module was left off the install list.  This only affects
+you if you use "scons install" and want to use the PyTraj or
+PyAlignedTraj classes.
+
+
    * RELEASE 2.1.1 *
 
 This release includes a few bug fixes, addresses an inconsistency in
