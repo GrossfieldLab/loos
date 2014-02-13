@@ -104,6 +104,7 @@ if env['pyloos']:
 
 # Handle installing PyLOOS
    env.Install(os.path.join(PREFIX, 'lib'), File('loos.py'))
+   env.Install(os.path.join(PREFIX, 'lib'), File('PyTraj.py'))
    env.Install(os.path.join(PREFIX, 'lib'), loos_python)
    
 
