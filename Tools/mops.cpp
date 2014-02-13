@@ -31,6 +31,9 @@
 using namespace std;
 using namespace loos;
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
 
 typedef vector<string>      vString;
 typedef vector<double>      vecDbl;
@@ -42,6 +45,68 @@ const double minp = 1e-3;
 const double maxp = 100;
 ulong nplanar = 0;
 ulong ntotal = 0;
+
+
+// @cond TOOLS_INTERNAL
+
+struct ToolOptions : public opts::OptionsPackage 
+{
+ 
+  void addGeneric(po::options_description& o) 
+  {
+    o.add_options()
+      ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at the start of each trajectory");
+  }
+
+  void addHidden(po::options_description& o) 
+  {
+    o.add_options()
+      ("selection", po::value<string>(&selection), "Atoms to use")
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames");
+  }
+
+  void addPositional(po::positional_options_description& o) 
+  {
+    o.add("selection", 1);
+    o.add("model", 1);
+    o.add("traj", -1);
+  }
+  
+
+  bool check(po::variables_map& vm) 
+  {
+    return( selection.empty() || model_name.empty() || traj_names.empty() );
+  }
+
+  string help() const 
+  {
+    return("selection model trajectory [trajectory ...]");
+  }
+  
+
+  string print() const 
+  {
+    ostringstream oss;
+    oss << boost::format("skip=%d, selection='%s', model='%s', traj='%s'")
+      % skip
+      % selection
+      % model_name
+      % vectorAsStringWithCommas(traj_names);
+    
+
+    return(oss.str());
+  }
+
+  uint skip;
+  string selection;
+  string model_name;
+  vector<string> traj_names;
+};
+
+
+// @endcond
+
 
 
 double rowStats(const RealMatrix& M, const uint row, double *std) {
@@ -127,23 +192,23 @@ vGroup extractSelections(const AtomicGroup& model, const string& selection) {
 
 
 int main(int argc, char *argv[]) {
-  if (argc < 5) {
-    cerr << "Usage- moops skip selection model traj [traj ...] >output.asc\n";
-    exit(EXIT_FAILURE);
-  }
+  
 
   string hdr = invocationHeader(argc, argv);
-  int k = 1;
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
 
 
-  uint skip = strtoul(argv[k++], 0, 10);
-  string selection = string(argv[k++]);
-  AtomicGroup model = createSystem(argv[k++]);
+  uint skip = topts->skip;
+  string selection = topts->selection;
+  AtomicGroup model = createSystem(topts->model_name);
   vGroup subset = extractSelections(model, selection);
-
-  vString traj_names;
-  while (k < argc)
-    traj_names.push_back(string(argv[k++]));
+  vString traj_names = topts->traj_names;
 
   cout << "# " << hdr << endl;
 
