@@ -132,10 +132,9 @@ namespace loos {
 
 
   void AmberTraj::updateGroupCoordsImpl(AtomicGroup& g) {
-    pAtom pa;
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
-      uint idx = pa->index();
+      uint idx = (*i)->index();
       if (idx >= _natoms)
         throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
       (*i)->coords(frame[idx]);
