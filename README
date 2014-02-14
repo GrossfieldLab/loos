@@ -10,10 +10,11 @@ to contact us regarding LOOS.
 
    * RELEASE 2.1.2 *
 
-This release is primarily a bug fix release for PyLOOS.  The new
-PyTraj module was left off the install list.  This only affects
-you if you use "scons install" and want to use the PyTraj or
-PyAlignedTraj classes.
+This release is primarily a bug fix release.  There was a critical bug
+affecting reading Amber mdcrd files, resulting in a segfault.  This
+has been fixed.  In addition, the new PyTraj module was left off the
+install list.  This only affects you if you use "scons install" and
+want to use the PyTraj or PyAlignedTraj classes.
 
 A new feature has been added to xy_rdf (--reselect) to handle cases
 where molecules move back and forth between leaflets.
