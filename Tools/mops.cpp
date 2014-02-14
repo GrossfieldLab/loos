@@ -1,13 +1,12 @@
 /*
   Simple molecular-order parameters for comparing CG to AA MD
-  (c) 2011 Tod D. Romo, Grossfield Lab, URMC
 */
 
 /*
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2011, Alan Grossfield
+  Copyright (c) 2011, Tod D. Romo and Alan Grossfield
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
