@@ -19,7 +19,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-loos_version = '2.1.2'
+loos_version = '2.1.3'
 min_boost_version = '1_36'
 required_boost_libraries = ('regex', 'thread', 'system', 'program_options')
 
