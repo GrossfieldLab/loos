@@ -32,6 +32,74 @@ using namespace std;
 using namespace loos;
 
 
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
+
+struct ToolOptions : public opts::OptionsPackage 
+{
+ 
+  void addGeneric(po::options_description& o) 
+  {
+    o.add_options()
+      ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at the start of each trajectory")
+      ("maxrad,R", po::value<double>(&maxrad)->default_value(30.0), "Maximum radius in membrane plane from lipopeptide")
+      ("nbins,N", po::value<uint>(&nbins)->default_value(30), "Number of bins in histogram");
+  
+  }
+
+  void addHidden(po::options_description& o) 
+  {
+    o.add_options()
+      ("liposelection", po::value<string>(&liposelection), "Lipopeptide")
+      ("lipidselection", po::value<string>(&lipidselection), "Membrane Lipid")
+      ("model", po::value<string>(&model_name), "Model filename")
+      ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames");
+  }
+
+  void addPositional(po::positional_options_description& o) 
+  {
+    o.add("liposelection", 1);
+    o.add("lipidselection", 1);
+    o.add("model", 1);
+    o.add("traj", -1);
+  }
+  
+
+  bool check(po::variables_map& vm) 
+  {
+    return( liposelection.empty() || lipidselection.empty() || model_name.empty() || traj_names.empty() );
+  }
+
+  string help() const 
+  {
+    return("lipopeptide-selection membrane-lipid-selection model trajectory [trajectory ...]");
+  }
+  
+
+  string print() const 
+  {
+    ostringstream oss;
+    oss << boost::format("skip=%d, lipo='%s', lipid='%s', model='%s', traj='%s'")
+      % skip
+      % liposelection
+      % lipidselection
+      % model_name
+      % vectorAsStringWithCommas(traj_names);
+    
+
+    return(oss.str());
+  }
+
+  uint skip;
+  string lipidselection;
+  string liposelection;
+  string model_name;
+  vector<string> traj_names;
+  double maxrad;
+  uint nbins;
+};
+
+
 // @cond TOOLS_INTERNAL
 
 typedef vector<AtomicGroup>   vecGroup;
@@ -230,35 +298,37 @@ vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
 
 int main(int argc, char *argv[]) {
 
-  if (argc < 8) {
-    cerr << "Usage- dibaprop skip lipid-selection lipopeptide-selection xmax xbins  model traj [traj...]\n";
-    exit(EXIT_FAILURE);
-  }
-
-
   string hdr = invocationHeader(argc, argv);
-  int k = 1;
+  opts::BasicOptions* bopts = new opts::BasicOptions;
+  ToolOptions* topts = new ToolOptions;
+  
+  opts::AggregateOptions options;
+  options.add(bopts).add(topts);
+  if (!options.parse(argc, argv))
+    exit(-1);
+  
+  uint skip = topts->skip;
+  string lipid_selection = topts->lipidselection;
+  string lipopeptide_selection = topts->liposelection;
+  double rmax = topts->maxrad;
+  uint nbins = topts->nbins;
 
-  uint skip = strtoul(argv[k++], 0, 10);
-  string lipid_selection = string(argv[k++]);
-  string lipopeptide_selection = string(argv[k++]);
-  double xmax = strtod(argv[k++], 0);
-  uint xbins = strtoul(argv[k++], 0, 10);
-
-  AtomicGroup model = createSystem(argv[k++]);
+  AtomicGroup model = createSystem(topts->model_name);
   vecGroup lipids = extractSelections(model, lipid_selection);
   vecGroup lipopeps = extractSelections(model, lipopeptide_selection);
 
   cerr << boost::format("Lipid selection has %d atoms per residue and %d residues.\n") % lipids[0].size() % lipids.size();
   cerr << boost::format("Lipopeptide selection has %d atoms per residue and %d residues.\n") % lipopeps[0].size() % lipopeps.size();
 
-  BinnedStatistics lipid_phist(0.0, xmax, xbins);
-  BinnedStatistics lipid_hist(0.0, xmax, xbins);
+  BinnedStatistics lipid_phist(0.0, rmax, nbins);  // Track the dot product of the first PC with membrane
+                                                   // normal (z-axis)
+
+  BinnedStatistics lipid_hist(0.0, rmax, nbins);   // Track the fake hydrogen order parameters...
 
 
-  while (k < argc) {
-    pTraj traj = createTrajectory(argv[k++], model);
-    cerr << boost::format("Processing %s ...") % argv[k-1];
+  for (vector<string>::const_iterator ci = topts->traj_names.begin(); ci != topts->traj_names.end(); ++ci) {
+    pTraj traj = createTrajectory(*ci, model);
+    cerr << boost::format("Processing %s ...") % *ci;
     cerr.flush();
     if (skip > 0)
       traj->readFrame(skip-1);
@@ -292,7 +362,7 @@ int main(int argc, char *argv[]) {
   cout << "# d\tLipid-n\tLipid-avg\tLipid-stderr\tLipid-1stPC\n";
 
 
-  for (uint i=0; i<xbins; ++i) {
+  for (uint i=0; i<nbins; ++i) {
     BinnedStatistics::BinStatsType stats = lipid_hist.statisticsForBin(i);
     cout << lipid_hist.binCoordinate(i) << "\t" << lipid_hist.numberOfPointsForBin(i) << "\t" << stats.first << "\t" << stats.second << "\t";
 
