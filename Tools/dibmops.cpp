@@ -49,6 +49,9 @@ ulong nplanar = 0;
 
 
 
+
+
+
 class BinnedStatistics {
 public:
   typedef vector< vector<double> >      BinType;
@@ -227,8 +230,8 @@ vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
 
 int main(int argc, char *argv[]) {
 
-  if (argc < 9) {
-    cerr << "Usage- dibaprop skip palm-selection oleo-selection lipopeptide-selection xmax xbins  model traj [traj...]\n";
+  if (argc < 8) {
+    cerr << "Usage- dibaprop skip lipid-selection lipopeptide-selection xmax xbins  model traj [traj...]\n";
     exit(EXIT_FAILURE);
   }
 
@@ -237,26 +240,21 @@ int main(int argc, char *argv[]) {
   int k = 1;
 
   uint skip = strtoul(argv[k++], 0, 10);
-  string palm_selection = string(argv[k++]);
-  string oleo_selection = string(argv[k++]);
+  string lipid_selection = string(argv[k++]);
   string lipopeptide_selection = string(argv[k++]);
   double xmax = strtod(argv[k++], 0);
   uint xbins = strtoul(argv[k++], 0, 10);
 
   AtomicGroup model = createSystem(argv[k++]);
-  vecGroup palms = extractSelections(model, palm_selection);
-  vecGroup oleos = extractSelections(model, oleo_selection);
+  vecGroup lipids = extractSelections(model, lipid_selection);
   vecGroup lipopeps = extractSelections(model, lipopeptide_selection);
 
-  cerr << boost::format("Palm selection has %d atoms per residue and %d residues.\n") % palms[0].size() % palms.size();
-  cerr << boost::format("Oleo selection has %d atoms per residue and %d residues.\n") % oleos[0].size() % oleos.size();
+  cerr << boost::format("Lipid selection has %d atoms per residue and %d residues.\n") % lipids[0].size() % lipids.size();
   cerr << boost::format("Lipopeptide selection has %d atoms per residue and %d residues.\n") % lipopeps[0].size() % lipopeps.size();
 
-  BinnedStatistics palm_phist(0.0, xmax, xbins);
-  BinnedStatistics palm_hist(0.0, xmax, xbins);
+  BinnedStatistics lipid_phist(0.0, xmax, xbins);
+  BinnedStatistics lipid_hist(0.0, xmax, xbins);
 
-  BinnedStatistics oleo_phist(0.0, xmax, xbins);
-  BinnedStatistics oleo_hist(0.0, xmax, xbins);
 
   while (k < argc) {
     pTraj traj = createTrajectory(argv[k++], model);
@@ -271,18 +269,14 @@ int main(int argc, char *argv[]) {
 
       vecGroup lip_leaf = filterByLeaflet(lipopeps, UPPER);
       if (!lip_leaf.empty()) {
-          vecGroup palm_leaf = filterByLeaflet(palms, UPPER);
-          vecGroup oleo_leaf = filterByLeaflet(oleos, UPPER);
-          principalComponentsOrder(palm_phist, palm_hist, palm_leaf, lip_leaf);
-          principalComponentsOrder(oleo_phist, oleo_hist, oleo_leaf, lip_leaf);
+          vecGroup lipid_leaf = filterByLeaflet(lipids, UPPER);
+          principalComponentsOrder(lipid_phist, lipid_hist, lipid_leaf, lip_leaf);
       }
 
       lip_leaf = filterByLeaflet(lipopeps, LOWER);
       if (!lip_leaf.empty()) {
-          vecGroup palm_leaf = filterByLeaflet(palms, LOWER);
-          vecGroup oleo_leaf = filterByLeaflet(oleos, LOWER);
-          principalComponentsOrder(palm_phist, palm_hist, palm_leaf, lip_leaf);
-          principalComponentsOrder(oleo_phist, oleo_hist, oleo_leaf, lip_leaf);
+          vecGroup lipid_leaf = filterByLeaflet(lipids, LOWER);
+          principalComponentsOrder(lipid_phist, lipid_hist, lipid_leaf, lip_leaf);
       }
     }
 
@@ -291,26 +285,19 @@ int main(int argc, char *argv[]) {
 
 
 
-  cerr << boost::format("Palm histogram had %d points with %d out-of-bounds\n") % palm_hist.numberOfDataPoints() % palm_hist.numberOutOfBounds();
-  cerr << boost::format("Oleo histogram had %d points with %d out-of-bounds\n") % oleo_hist.numberOfDataPoints() % oleo_hist.numberOutOfBounds();
+  cerr << boost::format("Lipid histogram had %d points with %d out-of-bounds\n") % lipid_hist.numberOfDataPoints() % lipid_hist.numberOutOfBounds();
 
   cout << "# " << hdr << endl;
-  cout << "# Palm total = " << palm_hist.numberOfDataPoints() << endl;
-  cout << "# Oleo total = " << oleo_hist.numberOfDataPoints() << endl;
-  cout << "# d\tPalm-n\tPalm-avg\tPalm-stderr\tOleo-n\tOleo-avg\tOleo-stderr\tPalm-1stPC\tOloe-1stPC\n";
+  cout << "# Lipid total = " << lipid_hist.numberOfDataPoints() << endl;
+  cout << "# d\tLipid-n\tLipid-avg\tLipid-stderr\tLipid-1stPC\n";
 
 
   for (uint i=0; i<xbins; ++i) {
-    BinnedStatistics::BinStatsType stats = palm_hist.statisticsForBin(i);
-    cout << palm_hist.binCoordinate(i) << "\t" << palm_hist.numberOfPointsForBin(i) << "\t" << stats.first << "\t" << stats.second << "\t";
+    BinnedStatistics::BinStatsType stats = lipid_hist.statisticsForBin(i);
+    cout << lipid_hist.binCoordinate(i) << "\t" << lipid_hist.numberOfPointsForBin(i) << "\t" << stats.first << "\t" << stats.second << "\t";
 
-    stats = oleo_hist.statisticsForBin(i);
-    cout << "\t" << oleo_hist.numberOfPointsForBin(i) << "\t" << stats.first << "\t" << stats.second << "\t";
-
-    stats = palm_phist.statisticsForBin(i);
+    stats = lipid_phist.statisticsForBin(i);
     cout << stats.first << "\t";
-    stats = oleo_phist.statisticsForBin(i);
-    cout << stats.first << endl;
   }
 
   if (nplanar != 0)
