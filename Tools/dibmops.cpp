@@ -26,11 +26,13 @@
 
 
 #include <loos.hpp>
-#include <shist.hpp>
 
 
 using namespace std;
 using namespace loos;
+
+
+// @cond TOOLS_INTERNAL
 
 typedef vector<AtomicGroup>   vecGroup;
 typedef vector<double>        vecDouble;
@@ -43,6 +45,81 @@ enum LeafletType { UPPER, LOWER };
 const double minp = 0.001;
 const double maxp = 100;
 ulong nplanar = 0;
+
+
+
+
+class BinnedStatistics {
+public:
+  typedef vector< vector<double> >      BinType;
+  typedef pair<double,double>           BinStatsType;
+  
+  
+
+  BinnedStatistics(const double minval, const double maxval, const uint nbins) :
+    _minval(minval),
+    _maxval(maxval),
+    _nbins(nbins),
+    _delta( (maxval - minval) / nbins ),
+    _obdata(0),
+    _npts(0),
+    _bins(BinType(nbins))
+  { }
+
+  void accumulate(const double coord, const double val) {
+    uint bin = (coord - _minval) / _delta;
+    if (bin >= _nbins) {
+      ++_obdata;
+      return;
+    }
+
+    ++_npts;
+    _bins[bin].push_back(val);
+  }
+
+  BinStatsType statisticsForBin(const uint bin) const {
+    uint n = _bins[bin].size();
+    if (n < 3)
+      return(BinStatsType(-1.0, 0.0));
+
+    double mean = 0.0;
+    for (uint i=0; i<n; ++i)
+      mean += _bins[bin][i];
+    mean /= n;
+
+    double var = 0.0;
+    for (uint i=0; i<n; ++i) {
+      double d = _bins[bin][i] - mean;
+      var += d*d;
+    }
+
+    return( BinStatsType(mean, sqrt(var/(n-1))/sqrt(n)) );
+  }
+
+  uint numberOfPointsForBin(const uint bin) const { return(_bins[bin].size()); }
+  ulong numberOfDataPoints() const { return(_npts); }
+
+
+  double binCoordinate(const uint bin) const {
+    return(bin * _delta + _minval + _delta/2.0);
+  }
+
+  ulong numberOutOfBounds() const { return(_obdata); }
+  uint numberOfBins() const { return(_nbins); }
+
+private:
+  double _minval, _maxval;
+  uint _nbins;
+  double _delta;
+  ulong _obdata, _npts;
+  BinType _bins;
+};
+
+
+
+
+
+// @endcond 
 
 // Only look at x,y-plane distance
 double centroidDistance(const AtomicGroup& a, const AtomicGroup& b) {
@@ -71,8 +148,8 @@ double minDistanceToSet(const AtomicGroup& a, const vecGroup& set) {
 
 
 // Note: hist is really an average binned on distance
-void principalComponentsOrder(BinnedStatistics<double>& phist,
-                              BinnedStatistics<double>& hist,
+void principalComponentsOrder(BinnedStatistics& phist,
+                              BinnedStatistics& hist,
                               const vecGroup& residues,
                               const vecGroup& lipopeptides) {
   vecDouble orders;
@@ -175,11 +252,11 @@ int main(int argc, char *argv[]) {
   cerr << boost::format("Oleo selection has %d atoms per residue and %d residues.\n") % oleos[0].size() % oleos.size();
   cerr << boost::format("Lipopeptide selection has %d atoms per residue and %d residues.\n") % lipopeps[0].size() % lipopeps.size();
 
-  BinnedStatistics<double> palm_phist(0.0, xmax, xbins);
-  BinnedStatistics<double> palm_hist(0.0, xmax, xbins);
+  BinnedStatistics palm_phist(0.0, xmax, xbins);
+  BinnedStatistics palm_hist(0.0, xmax, xbins);
 
-  BinnedStatistics<double> oleo_phist(0.0, xmax, xbins);
-  BinnedStatistics<double> oleo_hist(0.0, xmax, xbins);
+  BinnedStatistics oleo_phist(0.0, xmax, xbins);
+  BinnedStatistics oleo_hist(0.0, xmax, xbins);
 
   while (k < argc) {
     pTraj traj = createTrajectory(argv[k++], model);
@@ -224,7 +301,7 @@ int main(int argc, char *argv[]) {
 
 
   for (uint i=0; i<xbins; ++i) {
-    BinnedStatistics<double>::BinStatsType stats = palm_hist.statisticsForBin(i);
+    BinnedStatistics::BinStatsType stats = palm_hist.statisticsForBin(i);
     cout << palm_hist.binCoordinate(i) << "\t" << palm_hist.numberOfPointsForBin(i) << "\t" << stats.first << "\t" << stats.second << "\t";
 
     stats = oleo_hist.statisticsForBin(i);
