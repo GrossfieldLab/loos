@@ -1,3 +1,7 @@
+2014-02-14    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Released version 2.1.2
+
 2014-02-13    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug where PyTraj was not installed
