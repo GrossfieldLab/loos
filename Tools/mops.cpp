@@ -73,6 +73,11 @@ string fullHelpMessage(void) {
     "averaging over all 4 trajectories.  The first 50 frames of each trajectory are\n"
     "skipped.\n"
     "\n"
+    "NOTES\n"
+    "\tThe entire selected molecule is used for the order parameter.  You will\n"
+    "probably want to restrict it to a single chain for comparison with order_params,\n"
+    "e.g. select only a palmitoyl or oleoyl chain...\n"
+    "\n"
     "SEE ALSO\n"
     "\torder_params\n";
   
