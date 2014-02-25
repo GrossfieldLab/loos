@@ -1,3 +1,8 @@
+2014-02-25    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added mops and dibmops for molecular order parameters and
+	distance-based molecular order parameters respectively
+
 2014-02-14    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Released version 2.1.2
