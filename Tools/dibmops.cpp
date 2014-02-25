@@ -35,6 +35,42 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
+
+// @cond TOOLS_INTERNAL
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "Calculate a histogram of molecular order parameters based on distance from a target\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\tDibmops is used to elucidate local effects on molecular order parameters.\n" 
+    "Dibmops takes two selections, a lipopeptide (target) selection and a membrane\n"
+    "lipid selection.  For each molecule in the membrane selection, the principal\n"
+    "axes are determined and order parameters calculated for the 2nd and 3rd axes (as\n"
+    "faux-hydrogens).  The distance to the nearest lipopeptide in the same leaflet\n"
+    "is found and use to bin the order parameters.  Multiple trajectories may be\n"
+    "used, in which case all trajectories are combined for binning.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\tdibmops 'resname == \"LFB\"' 'resname == \"POPC\" && name =~ \"^C\\dA$\"' model.gro sim.xtc\n"
+    "This computes a molecular order parameter for one chain from all POPC residues, relative\n"
+    "to the LFB lipopeptides.  The default range of the histogram is [0,30) with 30 bins.\n"
+    "\n"
+    "\tdibmops --skip 50 --maxrad 15 --nbins 15 'resname == \"LFB\"' 'resname == \"POPC\" && name =~ \"^C\\dA$\"' namd.psf sim1.dcd sim2.dcd\n"
+    "This is the same as before, but two trajectories are used and the first 50 frames from\n"
+    "each are skipped.  Additionally, the histogram range is [0,15) with 15 bins.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\tmops, order_params\n";
+  
+
+  return(msg);
+}
+
+
+
 struct ToolOptions : public opts::OptionsPackage 
 {
  
@@ -99,8 +135,6 @@ struct ToolOptions : public opts::OptionsPackage
   uint nbins;
 };
 
-
-// @cond TOOLS_INTERNAL
 
 typedef vector<AtomicGroup>   vecGroup;
 typedef vector<double>        vecDouble;
@@ -299,7 +333,7 @@ vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
 int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
   
   opts::AggregateOptions options;
