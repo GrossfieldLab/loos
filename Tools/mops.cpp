@@ -48,6 +48,40 @@ ulong ntotal = 0;
 
 // @cond TOOLS_INTERNAL
 
+
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "Mops calculates a molecular-order parameter for a selection\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\tMops is used to calculate an order parameter using a whole molecule.\n"
+    "This is used in cases such as coarse-grained simulations where there are\n"
+    "no hydrogens.  For each molecule in the selection, the principal axes are\n"
+    "found.  The 2nd and 3rd axes are treated as faux-hydrogens and their angle\n"
+    "with the z-axis is used to calculate an order parameter (as in order_params).\n"
+    "Multiple trajectories can be given and the result will be the average\n"
+    "over all of them.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\tmops 'resname == \"POPC\"' model.gro simulation.xtc\n"
+    "This computes a molecular order parameter for all POPC residues.\n"
+    "\n"
+    "\tmops --skip=50 'segid == \"LIPID\"' namd.psf sim1.dcd sim2.dcd sim3.dcd sim4.dcd\n"
+    "This computes a molecular order parameter for all molecules with a LIPID segid,\n"
+    "averaging over all 4 trajectories.  The first 50 frames of each trajectory are\n"
+    "skipped.\n"
+    "\n"
+    "SEE ALSO\n"
+    "\torder_params\n";
+  
+
+  return(msg);
+}
+
+
+
 struct ToolOptions : public opts::OptionsPackage 
 {
  
@@ -194,7 +228,7 @@ int main(int argc, char *argv[]) {
   
 
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
