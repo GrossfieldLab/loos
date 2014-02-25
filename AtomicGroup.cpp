@@ -36,16 +36,13 @@
 #include <AtomicNumberDeducer.hpp>
 #include <Selectors.hpp>
 
+#include <boost/unordered_map.hpp>
 
 namespace loos {
 
-#if __GNUC__ == 4 && __GNUC_MINOR__ < 1
-#include <ext/hash_map>
-  typedef __gnu_cxx::hash_map<int,int>   IMap;
-#else
-#include <boost/unordered_map.hpp>
+
   typedef boost::unordered_map<int,int>    IMap;
-#endif
+
 
 
   const double AtomicGroup::superposition_zero_singular_value  =  1e-10;
