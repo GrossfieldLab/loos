@@ -401,7 +401,7 @@ int main(int argc, char *argv[]) {
     cout << lipid_hist.binCoordinate(i) << "\t" << lipid_hist.numberOfPointsForBin(i) << "\t" << stats.first << "\t" << stats.second << "\t";
 
     stats = lipid_phist.statisticsForBin(i);
-    cout << stats.first << "\t";
+    cout << stats.first << "\n";
   }
 
   if (nplanar != 0)
