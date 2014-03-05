@@ -106,7 +106,7 @@ public:
       ("rows", po::value<string>(&rowdesc)->default_value("all"), "Rows to use")
       ("column,C", po::value< vector<uint> >(&columns), "Columns to use (default are first 3)")
       ("scales,S", po::value< vector<double> >(&scales), "Scale columns (default is 100,100,100)")
-      ("chunk", po::value<uint>(&chunksize)->default_value(1), "Divide vector into chunks by these number of rows")
+      ("chunk", po::value<uint>(&chunksize)->default_value(0), "Divide vector into chunks by these number of rows")
       ("bonds", po::value<bool>(&bonds)->default_value(false), "Connect sequential atoms by bonds");
     
   }
@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
       rows.push_back(i);
 
   uint resid = 1;
-  uint total_chunks = rows.size() / chunksize;
+  uint total_chunks = rows.size() / (chunksize ? chunksize : rows.size());
   uint chunk = 1;
   AtomicGroup model;
 
