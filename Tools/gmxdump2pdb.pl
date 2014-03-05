@@ -98,6 +98,8 @@ print STDERR "Found ", $#$rtopo+1, " molecules in topology\n";
 my $rmolecules = &processMolecules;
 print STDERR "Found ", $#$rmolecules+1, " molecules defined\n";
 
+my $rbox = &processBox;
+
 my $rcoords = &readCoords;
 print STDERR "Found ", $#$rcoords+1, " coordinates.\n";
 
@@ -109,6 +111,10 @@ my($rstruct, $rconn) = &buildStructure($rtopo, $rmolecules, $rcoords);
 
 # Write out the PDB.  Uses hybrid-36 format if resid or atomid overflows...
 print $pdb "REMARK    MADE BY GMXDUMP2PDB.PL\n";
+printf $pdb "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f%11s%4d\n",
+  $rbox->[0]->[0], $rbox->[1]->[1], $rbox->[2]->[2],
+  90.0, 90.0, 90.0, 'P1', 1;
+
 my $natoms = 0;
 
 foreach my $atom (@$rstruct) {
@@ -216,6 +222,7 @@ foreach my $atom (@bond_list) {
 print $psf "\n";
 
 
+
 # Returns a reference to an array containing references to hashes that
 # represent each molecule contained in the TPR.  It is assumed that
 # "ffparams:" in the output denotes the likely end of this block of
@@ -236,7 +243,7 @@ sub processTopology {
 
   while (<>) {
     if ($state == 0) {
-
+      
       if (/^topology:/) {
 	$state = 1
       }
@@ -413,6 +420,32 @@ sub processMolecules {
   }
 
   return($rmols);
+}
+
+
+sub processBox {  
+  my @box;
+
+  while (<>) {
+    if (/^box\s+\((\d+)x(\d+)\):/) {
+      if ($1 ne '3' || $2 ne '3') {
+	warn 'Warning- only box size handled is 3x3.  Current box will be ignored.';
+      } else {
+	for (my $i = 0; $i < 3; ++$i) {
+	  $_ = <>;
+	  chomp;
+	  if (/box\[\s*(\d+)]={(.+)}/) {
+	    my $idx = $1;
+	    ($idx >= 0 && $idx <= 2) || die "Error- bad index ($idx) for periodic box vector";
+	    my @ary = split(/,/, $2);
+	    $box[$idx] = \@ary;
+	  }
+	}
+	last;
+      }
+    }
+  }
+  return(\@box);
 }
 
 
