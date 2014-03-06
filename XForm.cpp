@@ -62,6 +62,10 @@ namespace loos {
 
 
   void XForm::rotate(const GCoord& ov, const greal angle) {
+    double l = ov.length();
+    if (l < very_small)
+      throw(std::invalid_argument("Axis of rotation vector must have non-zero length"));
+
     GCoord v = ov / ov.length();
     greal theta = PI * angle / 180.0;
     greal c = cos(theta);

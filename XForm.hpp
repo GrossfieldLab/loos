@@ -46,7 +46,7 @@ namespace loos {
   namespace {
 
     const double PI = 4.0*atan(1.0);
-
+    const double very_small = 1e-15;
   }
 
 
