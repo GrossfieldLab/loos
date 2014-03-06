@@ -52,7 +52,7 @@ string fullHelpMessage() {
         "\tfcontacts can be used to classify the fraction of contacts made with\n"
         "a probe selection as belonging to different target selections.\n"
         "For each atom in the probe selection, all atoms that are within outer radius\n"
-        "but further than inner radius are counted as contacts.  The number of contacting\n"
+        "but farther than inner radius are counted as contacts.  The number of contacting\n"
         "atoms that belong to each target selection are then counted and the corresponding\n"
         "fraction is written out.  This is repeated for each time step, so the final\n"
         "output is a matrix with time increasing along the rows and each column is the\n"
@@ -143,7 +143,7 @@ public:
 
 
     string help() const {
-        return("system probe target [target ...]");
+        return("probe target [target ...]");
     }
 
     string print() const {
