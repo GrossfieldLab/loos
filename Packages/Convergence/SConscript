@@ -35,7 +35,7 @@ scripts = 'bootstrap_overlap.pl effsize.pl'
 
 list = []
 apps = 'fidpick sortfids hierarchy neff block_average avgconv block_avgconv expfit'
-apps += ' histsweep'
+apps += ' windowhist'
 
 for name in Split(apps):
     fname = name + '.cpp'
