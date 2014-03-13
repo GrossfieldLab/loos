@@ -1,3 +1,11 @@
+2014-03-13    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed help info for dcdinfo 
+	* Added windowed histogram tool (histsweep)
+	* Changed XForm::rotate(const GCoord&, const greal)
+	to throw an invalid_argument exception if the
+	rotation axis does not have some minimal length. 
+	
 2014-03-06    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bad HTML tag in dox
