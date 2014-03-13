@@ -84,7 +84,7 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLES\n"
     "\n"
-    "\tdcdinfo -s model.pdb trajectory.dcd\n"
+    "\tdcdinfo -s trajectory.dcd\n"
     "This example displays the header data from trajectory.dcd along with statistics on the\n"
     "periodic box.\n"
     "\n"
