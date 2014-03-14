@@ -42,6 +42,7 @@ namespace po = loos::OptionsFramework::po;
 enum SplitMode { NONE, RESIDUE, MOLECULE, SEGID, NAME };
 
 SplitMode mode;
+bool deduce;
 string model_name;
 
 
@@ -80,7 +81,9 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name");
+      ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name") 
+      ("deduce", po::value<bool>(&deduce)->default_value(true), "Deduce atomic number from mass");
+    
   }
 
   void addHidden(po::options_description& o) {
@@ -122,7 +125,7 @@ public:
   string print() const {
     ostringstream oss;
 
-    oss << boost::format("mode='%s', model='%s'") % mode_string % model_name;
+    oss << boost::format("mode='%s', deduce=%d, model='%s'") % mode_string % deduce % model_name;
     return(oss.str());
   }
 
@@ -155,6 +158,9 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup model = createSystem(model_name);
   AtomicGroup subset = selectAtoms(model, sopts->selection);
+
+  if (deduce)
+    subset.deduceAtomicNumberFromMass();
 
   cerr << "You selected " << subset.size() << " atoms out of " << model.size() << endl;
 
