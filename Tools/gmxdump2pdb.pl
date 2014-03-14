@@ -193,7 +193,7 @@ foreach my $atom (@$rstruct) {
 
 
 
-  printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-8d%-14.6g\n",
+  printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-14.6g%8d\n",
     $$atom{ATOMID},
       $$atom{SEGID},
 	$$atom{RESID},
@@ -201,8 +201,8 @@ foreach my $atom (@$rstruct) {
 	    $$atom{ATOMNAME},
 	      $$atom{ATOMTYPE},
 		$$atom{CHARGE},
-		  0,
-		    $$atom{MASS};
+		  $$atom{MASS},
+		    0;
 	    
 }
 
