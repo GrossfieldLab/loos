@@ -43,7 +43,9 @@ enum SplitMode { NONE, RESIDUE, MOLECULE, SEGID, NAME };
 
 SplitMode mode;
 bool deduce;
+bool pdb_output;
 string model_name;
+string hdr;
 
 
 string fullHelpMessage(void) {
@@ -82,8 +84,8 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name") 
-      ("deduce", po::value<bool>(&deduce)->default_value(true), "Deduce atomic number from mass");
-    
+      ("deduce", po::value<bool>(&deduce)->default_value(true), "Deduce atomic number from mass")
+      ("pdb", po::value<bool>(&pdb_output)->default_value(false), "Write out PDBs");
   }
 
   void addHidden(po::options_description& o) {
@@ -125,7 +127,7 @@ public:
   string print() const {
     ostringstream oss;
 
-    oss << boost::format("mode='%s', deduce=%d, model='%s'") % mode_string % deduce % model_name;
+    oss << boost::format("mode='%s', deduce=%d, model='%s', pdb=%d") % mode_string % deduce % model_name % pdb_output;
     return(oss.str());
   }
 
@@ -136,16 +138,23 @@ private:
 
 
 void dumpChunks(const vector<AtomicGroup>& chunks) {
+
   for (uint i=0; i<chunks.size(); ++i) {
-    cout << "<!-- *** Group #" << i << " -->\n";
-    cout << chunks[i] << endl << endl; 
+    if (pdb_output) {
+      PDB pdb = PDB::fromAtomicGroup(chunks[i]);
+      pdb.remarks().add(hdr);
+      cout << pdb;
+    } else {
+      cout << "<!-- *** Group #" << i << " -->\n";
+      cout << chunks[i] << endl << endl; 
+    }
   }
 }
 
 
 int main(int argc, char *argv[]) {
 
-  string header = invocationHeader(argc, argv);
+  hdr = invocationHeader(argc, argv);
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection;
@@ -164,7 +173,8 @@ int main(int argc, char *argv[]) {
 
   cerr << "You selected " << subset.size() << " atoms out of " << model.size() << endl;
 
-  cout << "<!-- " << header << " -->\n";
+  if (!pdb_output)
+    cout << "<!-- " << hdr << " -->\n";
   vector<AtomicGroup> chunks;
   map<string, AtomicGroup> named_chunks;
 
@@ -187,13 +197,26 @@ int main(int argc, char *argv[]) {
   case NAME:
     named_chunks = subset.splitByName();
     for (map<string, AtomicGroup>::const_iterator i = named_chunks.begin(); i != named_chunks.end(); ++i) {
-      cout << "<!-- Group for name '" << i->first << "' -->\n";
-      cout << i->second << endl << endl;;
+      if (pdb_output) {
+	PDB pdb = PDB::fromAtomicGroup(i->second);
+	pdb.remarks().add(hdr);
+	pdb.remarks().add(i->first);
+	cout << pdb;
+      } else {
+	cout << "<!-- Group for name '" << i->first << "' -->\n";
+	cout << i->second << endl << endl;;
+      }
     }
+    
     break;
 
   case NONE:
-    cout << subset << endl;
+    if (pdb_output) {
+      PDB pdb = PDB::fromAtomicGroup(subset);
+      pdb.remarks().add(hdr);
+      cout << pdb;
+    } else
+      cout << subset << endl;
     break;
   }
 
