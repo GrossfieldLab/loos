@@ -87,7 +87,7 @@ struct ToolOptions : public opts::OptionsPackage
   {
     o.add_options()
       ("liposelection", po::value<string>(&liposelection), "Lipopeptide")
-      ("lipidselection", po::value<string>(&lipidselection), "Membrane Lipid")
+      ("membraneselection", po::value<string>(&membraneselection), "Membrane Lipid")
       ("model", po::value<string>(&model_name), "Model filename")
       ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames");
   }
@@ -95,7 +95,7 @@ struct ToolOptions : public opts::OptionsPackage
   void addPositional(po::positional_options_description& o) 
   {
     o.add("liposelection", 1);
-    o.add("lipidselection", 1);
+    o.add("membraneselection", 1);
     o.add("model", 1);
     o.add("traj", -1);
   }
@@ -103,7 +103,7 @@ struct ToolOptions : public opts::OptionsPackage
 
   bool check(po::variables_map& vm) 
   {
-    return( liposelection.empty() || lipidselection.empty() || model_name.empty() || traj_names.empty() );
+    return( liposelection.empty() || membraneselection.empty() || model_name.empty() || traj_names.empty() );
   }
 
   string help() const 
@@ -118,7 +118,7 @@ struct ToolOptions : public opts::OptionsPackage
     oss << boost::format("skip=%d, lipo='%s', lipid='%s', model='%s', traj='%s'")
       % skip
       % liposelection
-      % lipidselection
+      % membraneselection
       % model_name
       % vectorAsStringWithCommas(traj_names);
     
@@ -127,7 +127,7 @@ struct ToolOptions : public opts::OptionsPackage
   }
 
   uint skip;
-  string lipidselection;
+  string membraneselection;
   string liposelection;
   string model_name;
   vector<string> traj_names;
@@ -342,16 +342,16 @@ int main(int argc, char *argv[]) {
     exit(-1);
   
   uint skip = topts->skip;
-  string lipid_selection = topts->lipidselection;
+  string membrane_selection = topts->membraneselection;
   string lipopeptide_selection = topts->liposelection;
   double rmax = topts->maxrad;
   uint nbins = topts->nbins;
 
   AtomicGroup model = createSystem(topts->model_name);
-  vecGroup lipids = extractSelections(model, lipid_selection);
+  vecGroup membrane = extractSelections(model, membrane_selection);
   vecGroup lipopeps = extractSelections(model, lipopeptide_selection);
 
-  cerr << boost::format("Lipid selection has %d atoms per residue and %d residues.\n") % lipids[0].size() % lipids.size();
+  cerr << boost::format("Lipid selection has %d atoms per residue and %d residues.\n") % membrane[0].size() % membrane.size();
   cerr << boost::format("Lipopeptide selection has %d atoms per residue and %d residues.\n") % lipopeps[0].size() % lipopeps.size();
 
   BinnedStatistics lipid_phist(0.0, rmax, nbins);  // Track the dot product of the first PC with membrane
@@ -373,13 +373,13 @@ int main(int argc, char *argv[]) {
 
       vecGroup lip_leaf = filterByLeaflet(lipopeps, UPPER);
       if (!lip_leaf.empty()) {
-          vecGroup lipid_leaf = filterByLeaflet(lipids, UPPER);
+          vecGroup lipid_leaf = filterByLeaflet(membrane, UPPER);
           principalComponentsOrder(lipid_phist, lipid_hist, lipid_leaf, lip_leaf);
       }
 
       lip_leaf = filterByLeaflet(lipopeps, LOWER);
       if (!lip_leaf.empty()) {
-          vecGroup lipid_leaf = filterByLeaflet(lipids, LOWER);
+          vecGroup lipid_leaf = filterByLeaflet(membrane, LOWER);
           principalComponentsOrder(lipid_phist, lipid_hist, lipid_leaf, lip_leaf);
       }
     }
