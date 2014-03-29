@@ -535,7 +535,7 @@ def AutoConfiguration(env):
             conf.env.Exit(1)
 
         if conf.env['BOOST_LIBS']:
-            boost_libs = Split(env['BOOST_LIBS'])
+            boost_libs = env.Split(env['BOOST_LIBS'])
         else:
             if not loos_build_config.user_boost_flag:
                 boost_libs = AutoConfigSystemBoost(conf)
