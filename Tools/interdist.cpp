@@ -43,6 +43,9 @@ namespace po = loos::OptionsFramework::po;
 
 // @cond TOOLS_INTERNAL
 bool z_only;
+bool segment_output = false;
+double threshold = 0.0;
+
 
 struct DistanceCalculation {
   virtual double operator()(const AtomicGroup&, const AtomicGroup&) = 0;
@@ -150,7 +153,8 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("mode", po::value<string>(&mode_name)->default_value(mode_name), "Calculation type (center|mass|min|max|zonly)")
-      ("periodic", po::value<bool>(&periodic)->default_value(true), "Use periodicity in distance calculations");
+      ("periodic", po::value<bool>(&periodic)->default_value(true), "Use periodicity in distance calculations")
+      ("threshold", po::value<double>(), "Segment output using threshold distance");
   }
 
   void addHidden(po::options_description& o) {
@@ -185,6 +189,12 @@ public:
     }
 
     calc_type->usePeriodicity(periodic);
+
+    if (map.count("threshold")) {
+      threshold = map["threshold"].as<double>();
+      segment_output = true;
+    }
+    
     return(true);
   }
 
@@ -196,6 +206,9 @@ public:
       % target_name
       % vectorAsStringWithCommas<string>(selection_names)
       % periodic;
+    
+    if (segment_output)
+      oss << boost::format("threshold=%f") % threshold;
 
     return(oss.str());
   }
@@ -302,8 +315,17 @@ int main(int argc, char *argv[]) {
     
     topts->calc_type->setBox(model.periodicBox());
 
-    for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i)
-      cout << (*(topts->calc_type))(src, *i) << " ";
+    for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i) {
+      double d = (*(topts->calc_type))(src, *i);
+      if (segment_output)
+	cout << (d <= threshold);
+      else
+	cout << d;
+
+      if (i < targets.end()-1)
+	cout << '\t';
+    }
+    
     cout << endl;
   }
 
