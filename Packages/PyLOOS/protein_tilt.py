@@ -11,7 +11,7 @@ if len(sys.argv) < 4 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
     print "       points in the +z direction"
     sys.exit()
 
-print len(sys.argv)
+#print len(sys.argv)
 print "#", " ".join(sys.argv)
 system_filename = sys.argv[1]
 traj_filename = sys.argv[2]
