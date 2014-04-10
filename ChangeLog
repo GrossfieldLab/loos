@@ -1,3 +1,8 @@
+2014-04-10    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added --threshold=f to interdist that will segment the output
+	based on the given cutoff/threshold
+
 2014-03-13    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed help info for dcdinfo 
