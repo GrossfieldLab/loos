@@ -326,10 +326,10 @@ int main(int argc, char *argv[]) {
   if (topts->include_source)
     writeAsciiMatrix(prefix + "_A.asc", A, header);
 
-  double estimate = m*m*sizeof(svdreal) + n*n*sizeof(svdreal) + m*n*sizeof(svdreal) + sn*sizeof(svdreal);
-  cerr << boost::format("%s: Allocating estimated %.2f MB for %d x %d SVD\n")
+  double estimate = static_cast<double>(m)*m*sizeof(svdreal) + static_cast<double>(n)*n*sizeof(svdreal) + static_cast<double>(m)*n*sizeof(svdreal) + sn*sizeof(svdreal);
+  cerr << boost::format("%s: Allocating estimated %.3f GB for %d x %d SVD\n")
     % argv[0]
-    % (estimate / megabytes)
+    % (estimate / gigabytes)
     % m
     % n;
 
@@ -350,7 +350,7 @@ int main(int argc, char *argv[]) {
 
   lwork = (f77int)prework[0];
   estimate += lwork * sizeof(svdreal);
-  cerr << argv[0] << ": SVD requests " << lwork << " extra space for a grand total of " << estimate / megabytes << "Mb\n";
+  cerr << argv[0] << ": SVD requests " << lwork << " extra space for a grand total of " << estimate / gigabytes << "Mb\n";
   work = new svdreal[lwork];
 
   cerr << argv[0] << ": Calculating SVD...\n";
