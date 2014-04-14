@@ -1116,6 +1116,15 @@ Matlab and Octave.
        producing a density distribution time series.  This is deprecated,
        since the functionality has been merged into density-dist.
 
+       <DT><B>dibmops</B>
+       <DD>Calculates molecular order parameters, binned by lateral distance
+       from a target.
+       
+       <DT><B>mops</B>
+       <DD>Calculates a molecular order parameter (using the principal axes
+       of a selection).  Used for comparing order between coarse grained and all
+       atom MD.
+
        <DT><B>membrane_map</B>
        <DD>Compute the distribution of a variety of membrane properties 
        about a membrane properties.  Properties currently implemented include
