@@ -487,9 +487,7 @@ To use LOOS, your environment must be first setup:
 
 <hr>
 \subsection building_pyloos Building PyLOOS, the Python Interface to LOOS
-<H3> +=+=+=+=+=+=+=+ BETA-RELEASE +=+=+=+=+=+=+=+</H3>
-
-The beta-release of PyLOOS will be automatically built if you have a
+PyLOOS will be automatically built if you have a
 recent swig (2.0+) installed.  Note that not all operating systems nor
 releases are supported.  See the top of the INSTALL and \ref
 faq_pyloos "the FAQ for PyLOOS" for more information about building
@@ -2563,7 +2561,7 @@ torsion() are now in the \c loos::Math namespace.
 /*! \page FAQ Frequently Asked Questions
 \section faq_loos LOOS
 
-\subsection faq_loos_building Building LOOS
+\subsection faq_loos_building Building LOOS (and building with LOOS)
 <DL>
 
 <DT> I am having trouble building LOOS with Boost 1.52 (or later)
@@ -2632,6 +2630,10 @@ appear in the BOOST_LIBS variable.
   Double-check your Atlas/lapack installation.  You may want to try
   building a small test program with Atlas, and use that to set
   ATLAS_LIBS or CCFLAGS appropriately.
+
+<DT> How do I compile my own, separate tool with debugging?
+<DD> If you copied the example SConstruct/SConscript, then change the
+     LOOS_CCFLAGS environment variable before building your tool(s).
 
 </DL>
 
@@ -2798,11 +2800,9 @@ with 0.
 <hr>
 <B>
 NOTE: This FAQ is specific to the Python interface to LOOS (PyLOOS).
-This interface is begin released as a beta-version and, as such, it
-may change significantly in future releases.  Please report any bugs
-found to "loos.maintainer [at] gmail.com".  Similarly, please feel
-free to contact us regarding new functionality or better
-implementations.
+Please report any bugs found to "loos.maintainer [at] gmail.com".
+Similarly, please feel free to contact us regarding new functionality
+or better implementations.
 </B>
 <hr>
 
