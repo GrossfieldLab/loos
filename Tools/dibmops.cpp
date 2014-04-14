@@ -42,7 +42,7 @@ string fullHelpMessage(void) {
   string msg =
     "\n"
     "SYNOPSIS\n"
-    "Calculate a histogram of molecular order parameters based on distance from a target\n"
+    "Calculate molecular order parameters based on distance from a target\n"
     "\n"
     "DESCRIPTION\n"
     "\tDibmops is used to elucidate local effects on molecular order parameters.\n" 
