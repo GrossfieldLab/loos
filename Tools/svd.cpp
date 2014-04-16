@@ -350,7 +350,7 @@ int main(int argc, char *argv[]) {
 
   lwork = (f77int)prework[0];
   estimate += lwork * sizeof(svdreal);
-  cerr << argv[0] << ": SVD requests " << lwork << " extra space for a grand total of " << estimate / gigabytes << "Mb\n";
+  cerr << argv[0] << ": SVD requests " << lwork << " extra space for a grand total of " << estimate / gigabytes << " GB\n";
   work = new svdreal[lwork];
 
   cerr << argv[0] << ": Calculating SVD...\n";
