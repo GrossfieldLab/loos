@@ -140,6 +140,29 @@ namespace loos {
       double radius_;
     };
 
+    // --------------------------------------------------------------------------------
+
+    //! Pick waters that are within a radius of the core axis for a molecule
+
+    class WaterFilterCore : public WaterFilterBase {
+    public:
+      WaterFilterCore(const double radius) : radius_(radius*radius) { }
+      virtual ~WaterFilterCore() { }
+
+      virtual std::string name(void) const;
+      virtual double volume(void);
+
+      virtual std::vector<int> filter(const loos::AtomicGroup&, const loos::AtomicGroup&);
+      std::vector<loos::GCoord> boundingBox(const loos::AtomicGroup&);
+
+    private:
+      loos::GCoord calculateAxis(const loos::AtomicGroup& grp);
+      
+
+      loos::GCoord axis_, orig_;
+      double radius_;
+    };
+
 
 
     // --------------------------------------------------------------------------------

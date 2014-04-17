@@ -189,6 +189,98 @@ namespace loos {
     // --------------------------------------------------------------------------------
 
 
+    string WaterFilterCore::name(void) const {
+      stringstream s;
+      s << boost::format("WaterFilterCore(radius=%f)") % sqrt(radius_);
+      return(s.str());
+    }
+
+
+    GCoord WaterFilterCore::calculateAxis(const AtomicGroup& bundle) 
+    {
+      if (!bundle.hasBonds())
+	throw(runtime_error("WaterFilterCore requires model connectivity (bonds)"));
+      
+      vector<AtomicGroup> segments = bundle.splitByMolecule();
+      GCoord axis(0,0,0);
+      
+      for (vector<AtomicGroup>::iterator i = segments.begin(); i != segments.end(); ++i) {
+	vector<GCoord> axes = (*i).principalAxes();
+	if (axes[0].z() < 0.0)
+	  axis -= axes[0];
+	else
+	  axis += axes[0];
+      }
+      
+      axis /= axis.length();
+      return(axis);
+    }
+    
+
+
+    vector<int> WaterFilterCore::filter(const AtomicGroup& solv, const AtomicGroup& prot) {
+      bdd_ = boundingBox(prot);
+
+      vector<int> result(solv.size());
+      AtomicGroup::const_iterator ai;
+      uint j = 0;
+
+      for (ai = solv.begin(); ai != solv.end(); ++ai) {
+        GCoord a = (*ai)->coords();
+        if (a.z() < bdd_[0][2] || a.z() > bdd_[1][2]) {
+          result[j++] = 0;
+          continue;
+        }
+
+        // Find the nearest point on the axis to the atom...
+        a -= orig_;
+        double k = (axis_ * a) / axis_.length2();
+        GCoord ah = orig_ + k * axis_;
+        GCoord v = (*ai)->coords() - ah;
+
+        // Are we within the radius cutoff?
+        double d = v.length2();
+        if (d <= radius_)
+          result[j++] = true;
+        else
+          result[j++] = false;
+      }
+      return(result);
+    }
+
+    // TODO: Fix!
+    double WaterFilterCore::volume(void) {
+      return((bdd_[1][2] - bdd_[0][2]) * PI * radius_);
+    }
+
+
+    vector<GCoord> WaterFilterCore::boundingBox(const AtomicGroup& grp) {
+
+      // Set the principal axis...
+      orig_ = grp.centroid();
+      axis_ = calculateAxis(grp);
+      vector<GCoord> bdd = grp.boundingBox();
+  
+      // Calculate the extents of the box containing the principal axis cylinder...
+      double r = sqrt(radius_);
+      GCoord lbd = orig_ - axis_ - GCoord(r,r,0.0);
+      GCoord ubd = orig_ + axis_ + GCoord(r,r,0.0);
+
+      // Set the z-bounds to the protein bounding box...
+      lbd[2] = bdd[0][2];
+      ubd[2] = bdd[1][2];
+
+      // Replace...
+      bdd[0] = lbd;
+      bdd[1] = ubd;
+
+      return(bdd);
+    }
+
+
+    // --------------------------------------------------------------------------------
+
+
     string WaterFilterBlob::name(void) const {
       stringstream s;
       GCoord min = blob_.minCoord();
