@@ -127,7 +127,7 @@ string fullHelpMessage(void) {
     "\twater-hist --water='resname == \"CAU\"' --mode=box b2ar.pdb b2ar.dcd >b2ar.grid\n"
     "Ligand (carazolol) Density, written as LOOS grid.\n"
     "\n"
-    "\twater-hist b2ar.pdb b2ar.dcd | gridgauss 10 3 1 1 | gridautoscale | grid2xplor >b2ar.grid\n"
+    "\twater-hist b2ar.pdb b2ar.dcd | gridgauss 10 3 1 1 | gridautoscale | grid2xplor >b2ar.xplor\n"
     "Smoothed grid, automatically scaled so that a density of 1.0 is bulk water.\n"
     "This is specific to membrane systems where the membrane normal is parallel to\n"
     "the Z-axis.\n"
