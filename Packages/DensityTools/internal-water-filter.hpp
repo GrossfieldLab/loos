@@ -141,6 +141,14 @@ namespace loos {
     };
 
 
+    /**
+     * This filter is similar to WaterFilterAxis, but the axis is determined differently.
+     * The protein selection is assumed to consist of non-contiguous helices.  The principal
+     * axis for each helix is calculated.  These axes are averaged together to get the
+     * protein axis.  Any water within a given radius of this axis, and within the vertical
+     * bounds of the protein selection, is considered internal.  This filter works best
+     * for proteins like GPCRs.
+     */
 
     // --------------------------------------------------------------------------------
 
