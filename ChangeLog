@@ -1,3 +1,9 @@
+2014-04-18    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added "core" water filter for DensityTools.  An alternative
+	method for finding the protein axis.  See protein_tilt.py or the
+	Doxygen docs for WaterFilterCore for more details.
+
 2014-04-14    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed build issue when specifying ATLAS_LIBS
