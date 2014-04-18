@@ -91,7 +91,7 @@ pyloos = int(env['pyloos'])
 ### Compile-flags
 
 debug_opts='-g -Wall -Wextra -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall'
+release_opts='-O3 -DNDEBUG -Wall -Wno-deprecated-register'
 profile_opts='-pg'
 
 # Setup the general environment...
@@ -107,7 +107,7 @@ if pyloos:
 if loos_build_config.host_type == 'Darwin':
     release = platform.release().split('.')
     if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
-        env.Append(CCFLAGS = '--std=c++0x')
+        env.Append(CCFLAGS = '--std=c++0x -Wno-deprecated-register')
         # Hack to get swig to work with latest 10.9
         env.Append(SWIGFLAGS = '-DSWIG_NO_EXPORT_ITERATOR_METHODS')
     env.Append(LINKFLAGS = ' -framework Accelerate')
