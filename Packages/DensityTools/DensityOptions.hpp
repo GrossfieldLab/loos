@@ -80,7 +80,7 @@ namespace loos {
             ("radius,R", po::value<double>(&radius)->default_value(radius), "Radius (for principal axis filter and radius filter)")
             ("zrange", po::value<std::string>(&zrange_spec)->default_value(zrange_spec), "Clamp the volume to integrate over in Z (min:max)")
             ("grid,G", po::value<std::string>(&grid_name)->default_value(grid_name), "Name of grid to use in grid-mode (for internal waters)")
-            ("mode,M", po::value<std::string>(&filter_mode)->default_value(filter_mode), "Mode (axis|box|radius|grid)");
+            ("mode,M", po::value<std::string>(&filter_mode)->default_value(filter_mode), "Mode (axis|box|radius|core|grid)");
         }
 
         bool postConditions(po::variables_map& map) {
@@ -90,6 +90,8 @@ namespace loos {
             filter_func = new DensityTools::WaterFilterBox(pad);
           } else if (filter_mode == "radius") {
             filter_func = new DensityTools::WaterFilterRadius(radius);
+	  } else if (filter_mode == "core") {
+	    filter_func = new DensityTools::WaterFilterCore(radius);
           } else if (filter_mode == "grid") {
             if (grid_name.empty()) {
               std::cerr << "ERROR - you must specify a grid to use when using grid-mode\n";

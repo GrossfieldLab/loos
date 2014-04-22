@@ -140,7 +140,9 @@ namespace loos {
       double radius_;
     };
 
+    // --------------------------------------------------------------------------------
 
+    //! Pick waters that are within a radius of the core axis for a molecule
     /**
      * This filter is similar to WaterFilterAxis, but the axis is determined differently.
      * The protein selection is assumed to consist of non-contiguous helices.  The principal
@@ -149,6 +151,27 @@ namespace loos {
      * bounds of the protein selection, is considered internal.  This filter works best
      * for proteins like GPCRs.
      */
+
+    class WaterFilterCore : public WaterFilterBase {
+    public:
+      WaterFilterCore(const double radius) : radius_(radius*radius) { }
+      virtual ~WaterFilterCore() { }
+
+      virtual std::string name(void) const;
+      virtual double volume(void);
+
+      virtual std::vector<int> filter(const loos::AtomicGroup&, const loos::AtomicGroup&);
+      std::vector<loos::GCoord> boundingBox(const loos::AtomicGroup&);
+
+    private:
+      loos::GCoord calculateAxis(const loos::AtomicGroup& grp);
+      
+
+      loos::GCoord axis_, orig_;
+      double radius_;
+    };
+
+
 
     // --------------------------------------------------------------------------------
 
