@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
   int k = 1;
   string matname(argv[k++]);
   uint max_t = 0;
-  if (k != argv)
+  if (k != argc)
     max_t = strtoul(argv[k++], 0, 10);
   
   Math::Matrix<int> M;
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
       waters.push_back(wtmp.correl(max_t));
     }
   }
-  cerr << " done\nFound %d unique waters inside\n" % waters.size();
+  cerr << boost::format(" done\nFound %d unique waters inside\n") % waters.size();
   cout << "# " << hdr << endl;
   for (uint j=0; j<max_t; ++j) {
     vector<double> tmp(m, 0);
