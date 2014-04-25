@@ -52,9 +52,6 @@ int main(int argc, char *argv[]) {
     for (uint i=0; i<m; ++i)
       tmp[i] = waters[i][j];
     dTimeSeries dtmp(tmp);
-    cout << j << '\t' << dtmp.average() << '\t' << dtmp.stdev() << '\t' << dtmp.sterr();
-    for (uint i=0; i<m; ++i)
-      cout << '\t' << waters[i][j];
-    cout << endl;
+    cout << j << '\t' << dtmp.average() << '\t' << dtmp.stdev() << '\t' << dtmp.sterr() << endl;
   }
 }
