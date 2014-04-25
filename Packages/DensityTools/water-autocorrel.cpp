@@ -18,18 +18,19 @@ int main(int argc, char *argv[]) {
     max_t = strtoul(argv[k++], 0, 10);
   
   Math::Matrix<int> M;
+  cerr << "Reading matrix...\n";
   readAsciiMatrix(matname, M);
   uint m = M.rows();
   uint n = M.cols();
 
   if (max_t == 0)
-    max_t = n/2;
+    max_t = n/10;
 
   cerr << boost::format("Water matrix is %d x %d\n") % m % n;
   cerr << "Processing- ";
   vector< TimeSeries<double> > waters;
   for (uint j=0; j<m; ++j) {
-    if (j % 50 == 0)
+    if (j % 250 == 0)
       cerr << '.';
 
     vector<double> tmp(n, 0);
