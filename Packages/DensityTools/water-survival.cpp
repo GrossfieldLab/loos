@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
   
 
   for (uint tau=1; tau<max_t; ++tau) {
-    vector<double> survivals(m, 0.0);
+    vector<double> survivals;
     if (tau % 100 == 0)
       cerr << '.';
     
@@ -56,7 +56,8 @@ int main(int argc, char *argv[]) {
 	  if (M(j, t+tau))
 	    ++inside;
 	}
-      survivals[j] = static_cast<double>(inside) / (pairs);
+      if (pairs)
+	survivals.push_back(static_cast<double>(inside) / (pairs));
     }
     dTimeSeries ts(survivals);
     cout << tau << '\t' << ts.average() << '\t' << ts.stdev() << '\t' << ts.sterr() << endl;
