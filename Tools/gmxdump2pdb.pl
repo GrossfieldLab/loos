@@ -79,7 +79,7 @@ my $ok = GetOptions('local!' => \$resids_local,
 		    'constraints!' => \$use_constraints,
 		    'hydrogens' => sub { $use_constraints = $hydrogens_only = 1; },
 		    'water!' => \$infer_water,
-		    'mass=d' => \$force_mass,
+		    'mass=f' => \$force_mass,
 		    'help' => sub { &showHelp; });
 
 $ok || &showHelp;
@@ -702,6 +702,7 @@ Options:
    --constraints Add constraints as bonds
    --hydrogens   Only add constaints where the 2nd atom begins with an H
    --water       Infer water connectivity (requires OW, HW1, and HW2 atoms in order)
+   --mass=x      Set all atom masses to x
 EOF
 
   exit 0;
