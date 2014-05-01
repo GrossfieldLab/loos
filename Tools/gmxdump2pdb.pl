@@ -73,11 +73,13 @@ my $coord_scale = 10.0;   # Convert NM into Angstroms for PDBs
 my $use_constraints = 0;
 my $hydrogens_only = 0;
 my $infer_water = 0;
+my $force_mass = 0;
 
 my $ok = GetOptions('local!' => \$resids_local,
 		    'constraints!' => \$use_constraints,
 		    'hydrogens' => sub { $use_constraints = $hydrogens_only = 1; },
 		    'water!' => \$infer_water,
+		    'mass=d' => \$force_mass,
 		    'help' => sub { &showHelp; });
 
 $ok || &showHelp;
@@ -191,7 +193,7 @@ foreach my $atom (@$rstruct) {
   defined($$atom{CHARGE}) || die "Undefined charge for $$atom{ATOMID}";
   defined($$atom{MASS}) || die "Undefined mass";
 
-
+  my $mass = $forcemass>0.0 ? $forcemass : $$atom{MASS};
 
   printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-14.6g%8d\n",
     $$atom{ATOMID},
@@ -201,7 +203,7 @@ foreach my $atom (@$rstruct) {
 	    $$atom{ATOMNAME},
 	      $$atom{ATOMTYPE},
 		$$atom{CHARGE},
-		  $$atom{MASS},
+		  $mass,
 		    0;
 	    
 }
