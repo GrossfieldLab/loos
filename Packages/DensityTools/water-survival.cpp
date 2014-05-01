@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   if (argc == 1) {
-    cerr << "Usage- water-autocorrel water_matrix [max-t] >output.asc\n";
+    cerr << "Usage- " << argv[0] << " water_matrix [max-t] >output.asc\n";
     exit(-1);
   }
 
@@ -47,10 +47,16 @@ int main(int argc, char *argv[]) {
     
     for (uint j=0; j<m; ++j) {
       uint inside = 0;
+      uint pairs = 0;
+      
       for (uint t=0; t<n-tau-1; ++t)
-	if (M(j, t) && M(j, t+tau))
-	  ++inside;
-      survivals[j] = static_cast<double>(inside) / (n-tau-1);
+	if (M(j, t))
+	{
+	  ++pairs;
+	  if (M(j, t+tau))
+	    ++inside;
+	}
+      survivals[j] = static_cast<double>(inside) / (pairs);
     }
     dTimeSeries ts(survivals);
     cout << tau << '\t' << ts.average() << '\t' << ts.stdev() << '\t' << ts.sterr() << endl;
