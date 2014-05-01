@@ -193,7 +193,7 @@ foreach my $atom (@$rstruct) {
   defined($$atom{CHARGE}) || die "Undefined charge for $$atom{ATOMID}";
   defined($$atom{MASS}) || die "Undefined mass";
 
-  my $mass = $forcemass>0.0 ? $forcemass : $$atom{MASS};
+  my $mass = $force_mass>0.0 ? $force_mass : $$atom{MASS};
 
   printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-14.6g%8d\n",
     $$atom{ATOMID},
