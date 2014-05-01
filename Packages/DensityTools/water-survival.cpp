@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   cerr << "Processing- ";
   
 
-  for (uint tau=1; tau<max_t; ++tau) {
+  for (uint tau=0; tau<max_t; ++tau) {
     vector<double> survivals;
     if (tau % 100 == 0)
       cerr << '.';
