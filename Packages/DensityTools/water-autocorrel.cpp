@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
   if (argc == 1) {
-    cerr << "Usage- water-autocorrel water_matrix [max-t] >output.asc\n";
+    cerr << "Usage- " << argv[0] << " water_matrix [max-t] >output.asc\n";
     exit(-1);
   }
 
