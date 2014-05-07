@@ -221,6 +221,19 @@ class Region:
     def atomId(self):
         return self.atom.id()
 
+    def coords(self):
+        return self.atom.coords()
+
+    def __str__(self):
+        string = ""
+        for i in range(self.num_indices()):
+            g = self.vertices[self.indices[i]]
+            string += "%f\t%f\n" % (g.x(), g.y())
+        g = self.vertices[self.indices[0]]
+        string += "%f\t%f\n" % (g.x(), g.y())
+        return string
+
+
 class SuperRegion:
 
     def __init__(self, regions=None):
@@ -314,6 +327,8 @@ if __name__ == '__main__':
     total = 0.0
     for r in v.regions:
         total += r.area()
+        print r.coords()
+        print r
     print total
         
 
