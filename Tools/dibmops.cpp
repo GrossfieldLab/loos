@@ -255,11 +255,11 @@ double minDistanceToSet(const AtomicGroup& a, const vecGroup& set) {
 // Note: hist is really an average binned on distance
 void principalComponentsOrder(BinnedStatistics& phist,
                               BinnedStatistics& hist,
-                              const vecGroup& residues,
+                              const vecGroup& molecules,
                               const vecGroup& lipopeptides) {
   vecDouble orders;
 
-  for (vecGroup::const_iterator i = residues.begin(); i != residues.end(); ++i) {
+  for (vecGroup::const_iterator i = molecules.begin(); i != molecules.end(); ++i) {
     vector<GCoord> axes = i->principalAxes();
     bool planar = false;
 
@@ -312,19 +312,23 @@ vecGroup filterByLeaflet(const vecGroup& ensemble, const LeafletType leaflet = U
 
 vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
   AtomicGroup subset = selectAtoms(model, selection);
-  vecGroup residues = subset.splitByUniqueSegid();
+  vecGroup molecules;
+  if (model.hasBonds())
+    molecules = subset.splitByMolecule();
+  else
+    molecules = subset.splitByUniqueSegid();
 
-  if (residues.empty()) {
+  if (molecules.empty()) {
     cerr << boost::format("ERROR- could not split group using selection '%s'\n") % selection;
     exit(EXIT_FAILURE);
   }
   
   // Autodetect whether we should use segid or residue to split...
-  if (residues[0].size() == subset.size()) {
-    cerr << "WARNING- apparent GROMACS source data...switching to splitByResidue() mode\n";
-    residues = subset.splitByResidue();
+  if (molecules[0].size() == subset.size()) {
+    cerr << "WARNING- apparent GROMACS source data...switching splitByResidue() mode\n";
+    molecules = subset.splitByResidue();
   }
-  return(residues);
+  return(molecules);
 }
 
 
@@ -351,8 +355,8 @@ int main(int argc, char *argv[]) {
   vecGroup membrane = extractSelections(model, membrane_selection);
   vecGroup lipopeps = extractSelections(model, lipopeptide_selection);
 
-  cerr << boost::format("Lipid selection has %d atoms per residue and %d residues.\n") % membrane[0].size() % membrane.size();
-  cerr << boost::format("Lipopeptide selection has %d atoms per residue and %d residues.\n") % lipopeps[0].size() % lipopeps.size();
+  cerr << boost::format("Lipid selection has %d atoms per molecule and %d molecules.\n") % membrane[0].size() % membrane.size();
+  cerr << boost::format("Lipopeptide selection has %d atoms per molecule and %d molecules.\n") % lipopeps[0].size() % lipopeps.size();
 
   BinnedStatistics lipid_phist(0.0, rmax, nbins);  // Track the dot product of the first PC with membrane
                                                    // normal (z-axis)
