@@ -314,7 +314,7 @@ vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
   AtomicGroup subset = selectAtoms(model, selection);
   vecGroup molecules;
   if (model.hasBonds())
-    molecules = subset.splitByMolecule();
+    return(subset.splitByMolecule());
   else
     molecules = subset.splitByUniqueSegid();
 
