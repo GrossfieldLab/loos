@@ -149,7 +149,7 @@ class VoronoiWrapper:
         for i in range(self.num_atoms()):
             index = self.voronoi.point_region[i]
             if index == -1:
-                raise ValueError, "point %d from voronoi decomposition isn't associated with a voronoi region" % i
+                raise ValueError, "point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i, self.atoms[i].id()
             r = self.voronoi.regions[index]
             self.regions.append(Region(v, r, self.atoms[i]))
             self.atoms_to_regions[self.atoms[i].id()] = self.regions[i]
@@ -220,6 +220,19 @@ class Region:
             
     def atomId(self):
         return self.atom.id()
+
+    def coords(self):
+        return self.atom.coords()
+
+    def __str__(self):
+        string = ""
+        for i in range(self.num_indices()):
+            g = self.vertices[self.indices[i]]
+            string += "%f\t%f\n" % (g.x(), g.y())
+        g = self.vertices[self.indices[0]]
+        string += "%f\t%f\n" % (g.x(), g.y())
+        return string
+
 
 class SuperRegion:
 
@@ -314,6 +327,8 @@ if __name__ == '__main__':
     total = 0.0
     for r in v.regions:
         total += r.area()
+        print r.coords()
+        print r
     print total
         
 
