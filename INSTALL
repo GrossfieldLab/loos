@@ -19,6 +19,7 @@
 | Ubuntu 11.10      |     +     |   !    | S     |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    |       |     
+| Ubuntu 14.04 LTS  |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
 | Debian 5          |     !     |   -    | DB    |         We are no longer testing these
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
@@ -202,8 +203,8 @@ CentOS 5, 6: Yum install python-devel and pcre-devel, then download
 
 			------= Ubuntu =------
 
-LOOS has been tested on Ubuntu 8-12.  The following instructions have
-been used to install LOOS on a fresh 64-bit 12.04 installation.  Use
+LOOS has been tested on Ubuntu 8-14.  The following instructions have
+been used to install LOOS on a fresh 64-bit 14.04 installation.  Use
 the Ubuntu software center (or apt-get) to install the following
 packages:
 	g++ (GNU C++ compiler)
