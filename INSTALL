@@ -19,6 +19,7 @@
 | Ubuntu 11.10      |     +     |   !    | S     |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    |       |     
+| Ubuntu 13.04      |     +     |   +    |       |
 | Ubuntu 14.04 LTS  |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
 | Debian 5          |     !     |   -    | DB    |         We are no longer testing these
