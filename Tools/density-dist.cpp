@@ -40,7 +40,7 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-enum CalculationType { ELECTRON, CHARGE, MASS };
+enum CalculationType { ELECTRON, CHARGE, MASS, NUMBER };
 
 
 // @cond TOOLS_INTERNAL
@@ -78,8 +78,10 @@ public:
       calc_type = ELECTRON;
     else if (toupper(calc_type_desc[0]) == 'M')
       calc_type = MASS;
+    else if (toupper(calc_type_desc[0]) == 'N')
+      calc_type = NUMBER;
     else {
-      cerr << "Error- unknown calculation type '" << calc_type_desc << "' (should be either charge, mass or electron)\n";
+      cerr << "Error- unknown calculation type '" << calc_type_desc << "' (should be either charge, mass, electron, or number)\n";
       return(false);
     }
     return(true);
@@ -136,8 +138,8 @@ string fullHelpMessage(void)
        " FOO is either mass in AMU or charge/electron density in electrons.\n"
        "\n"
        " Options\n"
-       " --type      Type of distribution (mass, electron, or charge).  If the\n"
-       "             system file provides this information, it is used.  If not,\n"
+       " --type      Type of distribution (mass, electron, charge, or number).  If \n"
+       "             the system file provides this information, it is used. If not,\n"
        "             there's a warning message and reasonable guesses are \n"
        "             provided.  Mass and electron densities are comparable to\n"
        "             the results of neutron and x-ray scattering experiments,\n"
@@ -296,6 +298,7 @@ int main(int argc, char *argv[]) {
         case CHARGE: weight = (*atom)->charge(); break;
         case MASS: weight = (*atom)->mass(); break;
         case ELECTRON: weight = (*atom)->atomic_number() - (*atom)->charge(); break;
+        case NUMBER: weight = 1.0; break;
         default:
           cerr << "ERROR- unknown calculation type\n";
           exit(-1);
