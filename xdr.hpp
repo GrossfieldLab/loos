@@ -63,7 +63,6 @@ namespace loos {
 
             //! Read a single datum
             template<typename T> uint read(T* p) {
-
                 if (sizeof(T) > sizeof(block_type))
                     throw(std::logic_error("Attempting to read a POD that is too large"));
 
@@ -76,7 +75,10 @@ namespace loos {
                 return(!stream->fail());
             }
 
-            template<typename T> uint read(T& t) { return(read(&t)); }
+
+	  template<typename T> uint read(T& t) { return(read(&t)); }
+
+
 
             //! Read an n-array of data
             template<typename T> uint read(T* ary, const uint n) {
@@ -136,7 +138,11 @@ namespace loos {
             std::istream* stream;
             bool need_to_swab;
         };
-    
+
+
+      //! Specialization for reading double-precision floats
+      template<> uint XDRReader::read<double>(double* p);
+      
       
         class XDRWriter 
         {
@@ -221,6 +227,8 @@ namespace loos {
 
         };
 
+      //! Specialization for writing double-precision floating point
+      template<> uint XDRWriter::write<double>(const double* p);
 
     } /* internal */
 
