@@ -1,3 +1,8 @@
+2014-06-03    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed problems with TRR/XDR support for double precision
+	data (found by Pin-Kuang Lai)
+
 2014-06-02    <alan@membrane.urmc.rochester.edu>
     * Added number density option to density-dist
 
