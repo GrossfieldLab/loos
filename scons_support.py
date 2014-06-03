@@ -234,6 +234,37 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
     conf.Result('yes')
     return(1)
 
+
+# Check for IEC-559 compliance
+def CheckForIEC559(conf):
+
+    conf.Message('Checking for IEC-559/IEE-754 support... ')
+
+    test_code = """
+#include <iostream>
+#include <limits>
+
+int main(int argc, char *argv[]) {
+  if (std::numeric_limits<double>::is_iec559 && std::numeric_limits<float>::is_iec559)
+     std::cout << "yes";
+  else
+     std::cout << "no";
+}
+"""
+
+    result = conf.TryRun(test_code, '.cpp')
+    if not result[0]:
+        conf.Result('unable to check')
+        return(0)
+
+    if (result[1] != 'yes'):
+        conf.Result('no')
+        return(0)
+
+    conf.Result('yes')
+
+    return(1)
+
     
 
 # Check for existince of boost library with various naming variants
@@ -450,6 +481,7 @@ def AutoConfiguration(env):
                                           'CheckDirectory' : CheckDirectory,
                                           'CheckAtlasRequires' : CheckAtlasRequires,
                                           'CheckForSVD' : CheckForSVD,
+                                          'CheckForIEC559' : CheckForIEC559,
                                           'CheckSystemType' : CheckSystemType
                                           })
     
@@ -504,6 +536,13 @@ def AutoConfiguration(env):
         if not conf.CheckType('uint','#include <sys/types.h>\n'):
             conf.env.Append(CCFLAGS = '-DREQUIRES_UINT')
 
+
+        # Check for floating point format...
+        if not conf.CheckForIEC559():
+            print 'Error- your system must use the IEC559/IEEE754 floating point'
+            print '       format for Gromacs support in LOOS.  Check your compiler'
+            print '       options.'
+            conf.env.Exit(1)
 
         # --- NetCDF Autoconf
         has_netcdf = 0
