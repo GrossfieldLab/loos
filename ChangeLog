@@ -1,3 +1,7 @@
+2014-06-03    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in in TRR/XDR affecting double precision data (found by Pin-Kuang Lai)
+
 2014-02-13    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug where PyTraj was not installed

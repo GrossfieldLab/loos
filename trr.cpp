@@ -61,14 +61,19 @@ namespace loos {
 
 
   bool TRR::readHeader(Header& hdr) {
-    int magic_no;
+    uint magic_no;
 
     xdr_file.read(magic_no);
     if ((xdr_file.get())->eof())
       return(false);
 
-    if (magic_no != magic)
-      throw(std::runtime_error("Invalid TRR magic number"));
+    if (magic_no != magic) {
+      std::ostringstream oss;
+      oss << "Invalid magic number in TRR file...expected " << magic << ", but found " << magic_no;
+      
+      throw(std::runtime_error(oss.str().c_str()));
+    }
+    
 
     std::string version;
     xdr_file.read(version);
@@ -129,7 +134,10 @@ namespace loos {
         maxatoms = h.natoms;
 
       uint b = sizeof(internal::XDRReader::block_type);
-
+      // Correct if double-precision TRR file...
+      if (h.bDouble)
+	b = sizeof(double);
+      
       size_t offset = (h.box_size ? DIM*DIM*b : 0) + (h.vir_size ? DIM*DIM*b : 0)
         + (h.pres_size ? DIM*DIM*b : 0) + (h.x_size ? h.natoms*DIM*b : 0)
         + (h.v_size ? h.natoms*DIM*b : 0) + (h.f_size ? h.natoms*DIM*b : 0);
@@ -143,9 +151,11 @@ namespace loos {
     forc_.reserve(maxatoms);
 
     rewindImpl();
+
     parseFrame();
     cached_first = true;
     hdr_ = h;
+
   }
 
   void TRR::updateGroupCoordsImpl(AtomicGroup& g) {
