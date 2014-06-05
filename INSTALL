@@ -26,14 +26,18 @@
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
 | Debian 7.1        |     +     |   +    |       |         still work...       
 |-------------------|-----------|--------|-------|                             
-| CentOS 5.9        |     !     |   !    | DBCS  |                             
-| CentOS 6.4        |     +     |   !    | CS    |                             
-|-------------------|-----------|--------|-------|                             
+| CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported                        
+| CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
+|-------------------|-----------|--------|-------|         installing required packages)
 | OpenSUSE 11.4     |     !     |   -    | C     |                             
 | OpenSUSE 12       |     !     |   +    | C     |                             
 | OpenSUSE 13       |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
 | FreeBSD 8         |     +     |   -    | D     |                             
+|-------------------|-----------|--------|-------|                             
+| Manjaro 0.8       |     +     |   +    | T     |                             
+|-------------------|-----------|--------|-------|                             
+| Slackware 14.1    |     +     |   +    | T     |                             
 |-------------------|-----------|--------|-------|                             
 | Windows XP        |     +     |   -    | D     |                             
 |  +Cygwin 1.7.7    |           |        |       |                             
@@ -185,6 +189,8 @@ Fedora 13: Yum install pcre-devel and python-devel, then download and install
 
 Fedora 14-20: Yum install python-devel and swig
 
+=======================================================================
+
 
 
 			------= CentOS =------
@@ -200,6 +206,7 @@ Instead, download and install any version of scons more recent than
 CentOS 5, 6: Yum install python-devel and pcre-devel, then download
   and install the latest swig.
 
+=======================================================================
 
 
 			------= Ubuntu =------
@@ -252,6 +259,8 @@ Ubuntu 11.10 & 10.04 LTS: PyLOOS requires a very recent version of
 
 Ubuntu 8.04 LTS: Install python-dev and follow the instructions above.
 
+=======================================================================
+
 
 			------= Debian =------
 
@@ -274,6 +283,8 @@ Debian 5: NOT SUPPORTED
 Debian 6: Install libpcre-dev and python-dev, then *download* and
   install the latest swig.
 Debian 7: Install python-dev, and swig
+
+=======================================================================
 
 		       ------= openSUSE =------
 
@@ -305,6 +316,7 @@ For Amber NetCDF trajectory support, install the netcdf development package,
 OpenSUSE 12.1: zypper install python-devel swig
 OpenSUSE 11.4: NOT SUPPORTED
 
+=======================================================================
 
 			-----= MACOS X =-----
 
@@ -344,6 +356,8 @@ If you have installed Boost in a non-standard location, you will need
 to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
 environment variable.
 
+=======================================================================
+
 
 			 -----= CYGWIN =-----
 
@@ -371,6 +385,8 @@ libnetcdf-devel library using the cygwin setup.exe installer.
 
 Cygwin is NOT SUPPORTED
 
+=======================================================================
+
 
 			-----= FreeBSD =-----
 
@@ -381,6 +397,24 @@ LOOS was tested using the versions installed via ports).
 * PyLOOS *
 
 FreeBSD is NOT SUPPORTED
+
+=======================================================================
+
+			-----= Manjaro =-----
+
+LOOS has been tested with Manjaro 0.8.10.  
+Make sure scons, boost, lapack, python, and swig are installed.  Also
+install NetCDF, if you want NetCDF support.  LOOS and PyLOOS should build.
+
+========================================================================
+
+			-----= Slackware =-----
+
+LOOS has been tested with Slackware 14.1.  You will need to install,
+by whatever means you prefer, lapack, blas, and scons.  LOOS and PyLOOS
+should then build.
+
+
 
 ========================================================================
 
