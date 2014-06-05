@@ -7,7 +7,7 @@
 	* Fixed bug in in TRR/XDR affecting double precision data (found by Pin-Kuang Lai)
 
 2014-06-02    <alan@membrane.urmc.rochester.edu>
-    * Added number density option to density-dist
+	* Added number density option to density-dist
 
 2014-05-06    <alan@membrane.urmc.rochester.edu>
 	* Added new package Voronoi.  Requires numpy and scipy in addition
