@@ -1,3 +1,7 @@
+2014-06-05    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added note about testing with Manjaro and Slackware
+
 2014-06-03    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in in TRR/XDR affecting double precision data (found by Pin-Kuang Lai)
