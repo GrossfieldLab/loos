@@ -541,7 +541,8 @@ def AutoConfiguration(env):
         if not conf.CheckForIEC559():
             print 'Error- your system must use the IEC559/IEEE754 floating point'
             print '       format for Gromacs support in LOOS.  Check your compiler'
-            print '       options.'
+            print '       options or contact the LOOS developers at'
+            print '       loos.maintainer@gmail.com'
             conf.env.Exit(1)
 
         # --- NetCDF Autoconf
