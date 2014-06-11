@@ -1,3 +1,8 @@
+2014-06-11    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in rmsds when using 2 trajectories causing progress
+	updates to have absurdly long run-time estimates
+
 2014-06-05    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added note about testing with Manjaro and Slackware
