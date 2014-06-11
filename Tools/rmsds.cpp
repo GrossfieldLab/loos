@@ -458,7 +458,7 @@ Matrix twoTrajectories(ToolOptions* topts) {
   Matrix M(indices1.size(), indices2.size());
   double mean_rmsd = 0;
   double max_rmsd = 0;
-  uint total = 0;
+  uint total = indices1.size() * indices2.size();
   
 
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
@@ -486,7 +486,6 @@ Matrix twoTrajectories(ToolOptions* topts) {
       if (r > max_rmsd)
         max_rmsd = r;
       mean_rmsd += r;
-      ++total;
     }
 
   if (verbosity > 0)
