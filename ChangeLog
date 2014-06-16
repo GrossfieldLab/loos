@@ -1,3 +1,7 @@
+2014-06-16    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Removed center-model (this had been deprecated back in 2011)
+
 2014-06-11    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in rmsds when using 2 trajectories causing progress
