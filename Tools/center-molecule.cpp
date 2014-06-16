@@ -88,6 +88,7 @@ string fullHelpMessage(void) {
     "\n"
     "\tThis tool is largely redundant with other tools, such as \n"
     "\treimage-by-molecule, recenter-trj, and merge-traj.\n"
+    "\tUse quotes around the coordinates if you want to translate\n"
     "\n"
     ;
   return(s);
