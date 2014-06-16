@@ -55,20 +55,21 @@ string fullHelpMessage(void) {
     "\n"
     " Options\n"
     "\n"
-    " --center        Selection specifying the atoms that would be moved to the \n"
-    "                 origin by the translation.  Defaults to 'all'.\n"
-    " --apply         Selection specifying the atoms to which the translation\n"
-    "                 is applied.  Defaults to 'all'.\n"
-    " --write         Selection specifying which atoms should be be written \n"
-    "                 out. Defaults to 'all'.\n"
-    " --reimage       If specified, the system will be reimaged, first by \n"
-    "                 segment, then by molecule.  If this flag is\n"
-    "                 specified, the system must contain connectivity and \n"
-    "                 periodicity information.\n"
-    " --center_xy     Apply the translation only in the x-y plane\n"
-    " --bonds         Specify a second file to use to find the connectivity \n"
-    "                 information, e.g. a PSF file to complement a PDB file \n"
-    "                 containing cooordinates.\n"
+    " --center            Selection specifying the atoms that would be moved to the \n"
+    "                     origin by the translation.  Defaults to 'all'.\n"
+    " --apply             Selection specifying the atoms to which the translation\n"
+    "                     is applied.  Defaults to 'all'.\n"
+    " --write             Selection specifying which atoms should be be written \n"
+    "                     out. Defaults to 'all'.\n"
+    " --reimage           If specified, the system will be reimaged, first by \n"
+    "                     segment, then by molecule.  If this flag is\n"
+    "                     specified, the system must contain connectivity and \n"
+    "                     periodicity information.\n"
+    " --center_xy         Apply the translation only in the x-y plane\n"
+    " --bonds             Specify a second file to use to find the connectivity \n"
+    "                     information, e.g. a PSF file to complement a PDB file \n"
+    "                     containing cooordinates.\n"
+    " --translate=(x,y,z) Translate center to this coordinate\n"
     "\n"
     "\n"
     " EXAMPLES\n"
@@ -111,25 +112,29 @@ public:
       ("write", po::value<string>(&write_sel)->default_value(write_sel), "Selection to write to stdout")
       ("reimage", po::value<bool>(&reimage)->default_value(reimage), "Reimage by molecule after")
       ("center_xy", po::value<bool>(&center_xy)->default_value(center_xy), "Center only x&y dimensions")
-      ("bonds", po::value<string>(&bonds_name), "Use this model for connectivity");
+      ("bonds", po::value<string>(&bonds_name), "Use this model for connectivity")
+      ("translate", po::value<GCoord>(&translate)->default_value(GCoord(0.0,0.0,0.0)), "Translate center to this location");
+    
   }
 
   string print() const {
     ostringstream oss;
 
-    oss << boost::format("center='%s',apply='%s',write='%s',reimage=%d,center_xy=%d,bonds='%s'")
+    oss << boost::format("center='%s',apply='%s',write='%s',reimage=%d,center_xy=%d,bonds='%s',translate=%s")
       % center_sel
       % apply_sel
       % write_sel
       % reimage
       % center_xy
-      % bonds_name;
+      % bonds_name
+      % translate;
 
     return(oss.str());
   }
 
 
   string center_sel, apply_sel, write_sel, bonds_name;
+  GCoord translate;
   bool reimage, center_xy;
 };
 // @endcond
@@ -185,8 +190,10 @@ int main(int argc, char *argv[]) {
   if (topts->center_xy) center.z() = 0.0;
 
   AtomicGroup apply_mol = selectAtoms(model, topts->apply_sel);
+  GCoord offset = topts->translate - center;
+  
   for (AtomicGroup::iterator atom = apply_mol.begin(); atom != apply_mol.end(); ++atom)
-    (*atom)->coords() -= center;
+    (*atom)->coords() += offset;
 
   if (topts->reimage && model.isPeriodic()) {
     vGroup molecules = model.splitByMolecule();
