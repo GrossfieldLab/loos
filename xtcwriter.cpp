@@ -476,11 +476,9 @@ namespace loos
 
 
 
-    int
-						 xdrfile_compress_coord_double(double   *ptr,
-									       int      size,
-									       double    precision,
-									       XDRFILE* xfp)
+    int XTCWriter::xdrfile_compress_coord_double(double   *ptr,
+						 int      size,
+						 double    precision)
     {
       int minint[3], maxint[3], mindiff, *lip, diff;
       int lint1, lint2, lint3, oldlint1, oldlint2, oldlint3, smallidx;
@@ -517,6 +515,7 @@ namespace loos
       if(xdrfile_write_int(&size,1,xfp)==0)
 	return -1; /* return if we could not write size */
       /* Dont bother with compression for three atoms or less */
+      // TDR - this is one diff with float...copy doubles into float and then write out...
       if(size<=9) {
 	for(i=0;i<9*3;i++)
 	  tmpdata[i]=ptr[i];
@@ -526,6 +525,8 @@ namespace loos
       /* Compression-time if we got here. Write precision first */
       if (precision <= 0)
 	precision = 1000;
+
+      // TDR - another diff with float...precision is always written as floating
       float_prec=precision;
       xdrfile_write_float(&float_prec,1,xfp);
       /* avoid repeated pointer dereferencing. */
