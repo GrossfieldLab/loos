@@ -199,8 +199,6 @@ namespace loos
       int errval=1;
       unsigned int bitsize;
   
-      if(xfp==NULL)
-	return -1;
       size3=3*size;
     
       bitsizeint[0] = 0;
