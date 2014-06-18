@@ -1,3 +1,7 @@
+2014-06-18    <alan@membrane.urmc.rochester.edu>
+    * in merge-traj, added support for separate selections to recenter
+	  in xy and z
+
 2014-06-16    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Removed center-model (this had been deprecated back in 2011)

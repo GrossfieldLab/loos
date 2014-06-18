@@ -1,6 +1,6 @@
 /*
-  merge-dcd: combine multiple trajectories into a single long trajectory.  If the target
-             trajectory exists, append to it.
+  merge-traj: combine multiple trajectories into a single long trajectory.  
+  If the target trajectory exists, append to it.
 
   Alan Grossfield
   Grossfield Lab
@@ -39,6 +39,8 @@ namespace po = loos::OptionsFramework::po;
 // global for parsing program options
 string model_name, output_traj, output_traj_downsample;
 string center_selection;
+string xy_center_selection;
+string z_center_selection;
 vector<string> input_dcd_list;
 int downsample_rate;
 bool skip_first_frame=false;
@@ -59,11 +61,29 @@ public:
       ("downsample-rate", po::value<int>(&downsample_rate)->default_value(10),
        "Write every nth frame to downsampled DCD")
       ("centering-selection", po::value<string>(&center_selection)->default_value(""), "Selection for centering")
+      ("xy-centering-selection", po::value<string>(&xy_center_selection)->default_value(""), "Selection for centering in xy-plane")
+      ("z-centering-selection", po::value<string>(&z_center_selection)->default_value(""), "Selection for centering along z")
       ("selection-is-split", po::value<bool>(&selection_split)->default_value(false), "Selection is split across image boundaries")
       ("skip-first-frame", po::value<bool>(&skip_first_frame)->default_value(false), "Skip first frame of each trajectory (for xtc files)")
       ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
       ;
   }
+
+  bool postConditions(po::variables_map& map)
+      {
+      cerr << "center: " << center_selection
+           << " xy: " << xy_center_selection
+           << " z: " << z_center_selection
+           << endl;
+      if ( (center_selection.length() != 0) &&
+           ( (xy_center_selection.length() !=0) || (z_center_selection.length() !=0)) )
+          {
+          cerr << "Can't specify both centering-selection and either xy-centering-selection or z-centering-selection" 
+              << endl;
+          return(false);
+          }
+      return(true);
+      }
 
   string print() const {
     ostringstream oss;
@@ -81,6 +101,7 @@ public:
 
 // @endcond
 
+// TODO: need to fix the docs to reflect xy-centering and z-centering
 string fullHelpMessage(void)
     {
     string s = 
@@ -131,26 +152,33 @@ string fullHelpMessage(void)
 "center of mass motion for some component of the system (e.g. the protein).\n"
 "Accordingly, merge-traj has the following options\n"
 "\n"
-" --centering-selection   the centroid of the atoms specificed by the \n"
-"                         selection string will be moved to the origin in\n"
-"                         each frame.  No rotations are performed.\n"
-" --selection-is-split    This flag indicates that the selection specified\n"
-"                         by --centering-selection may be split across image\n"
-"                         boundaries, in which case the centroid can be far\n"
-"                         from where the atoms are actually located.  In \n"
-"                         this case, the recentering is performed in 2 \n"
-"                         stages, first putting the selection into a \n"
-"                         single image, then recentering.\n"
-" --fix-imaging           Ensure that molecules are not broken across \n"
-"                         image boundaries.  This is generally necessary\n"
-"                         for simulations in GROMACS.\n"
+" --centering-selection     the centroid of the atoms specificed by the \n"
+"                           selection string will be moved to the origin in\n"
+"                           each frame.  No rotations are performed.\n"
+" --xy-centering-selection  same as --centering-selection, except only move in\n"
+"                           the xy plane.  Can't be used with --centering-selection\n"
+"                           but can be combined with --z-centering-selection\n"
+" --z-centering-selection   same as --centering-selection, except only move in\n"
+"                           the z direction.  Can't be used with --centering-selection\n"
+"                           but can be combined with --xy-centering-selection\n"
+" --selection-is-split      This flag indicates that the selection specified\n"
+"                           by --centering-selection may be split across image\n"
+"                           boundaries, in which case the centroid can be far\n"
+"                           from where the atoms are actually located.  In \n"
+"                           this case, the recentering is performed in 2 \n"
+"                           stages, first putting the selection into a \n"
+"                           single image, then recentering.  Works correctly with\n"
+"                           all 3 centering variants\n"
+" --fix-imaging             Ensure that molecules are not broken across \n"
+"                           image boundaries.  This is generally necessary\n"
+"                           for simulations in GROMACS.\n"
 "\n"
 "\n"
 "In addition, for merging GROMACS XTC files there is an additional flag:\n"
 "\n"
-"--skip-first-frame       XTC files can contain the initial structure as\n"
-"                         the first frame.  In this case, use this flag to\n"
-"                         prevent duplication upon merging.\n"
+"--skip-first-frame         XTC files can contain the initial structure as\n"
+"                           the first frame.  In this case, use this flag to\n"
+"                           prevent duplication upon merging.\n"
 "\n"
 "\n"
 "EXAMPLE\n"
@@ -208,10 +236,24 @@ int main(int argc, char *argv[])
 
     cout << hdr << endl;
     AtomicGroup system = createSystem(model_name);
-    bool do_recenter = true;
-    if ( center_selection.length() == 0 )
+
+    // We check for specifying both xy/z and full in the code
+    // that processes the command line options, so we don't
+    // have to do it here
+    bool full_recenter = false;
+    bool xy_recenter = false;
+    bool z_recenter = false;
+    if ( center_selection.length() != 0 )
         {
-        do_recenter = false;
+        full_recenter = true;
+        }
+    if ( xy_center_selection.length() != 0 )
+        {
+        xy_recenter = true;
+        }
+    if ( z_center_selection.length() != 0 )
+        {
+        z_recenter = true;
         }
 
     DCDWriter output(output_traj, true);
@@ -225,14 +267,25 @@ int main(int argc, char *argv[])
 
     // Set up to do the recentering
     vector<AtomicGroup> molecules;
-    AtomicGroup center;
+    AtomicGroup center, xy_center, z_center;
     vector<AtomicGroup>::iterator m;
-    if ( do_recenter )
+    if ( full_recenter )
         {
         center = selectAtoms(system, center_selection);
         }
+    else
+        {
+        if ( xy_recenter )
+            {
+            xy_center = selectAtoms(system, xy_center_selection);
+            }
+        if ( z_recenter )
+            {
+            z_center = selectAtoms(system, z_center_selection);
+            }
+        }
 
-    if ( do_recenter || reimage_by_molecule)
+    if ( full_recenter || xy_recenter || z_recenter || reimage_by_molecule )
         {
         if ( system.hasBonds() )
             {
@@ -344,7 +397,7 @@ int main(int argc, char *argv[])
                     }
 
 
-                if ( do_recenter )
+                if ( full_recenter || xy_recenter || z_recenter)
                     {
                     // If the selection is split, then we effectively need to 
                     // do the centering twice.  First, we pick one atom from the
@@ -354,8 +407,26 @@ int main(int argc, char *argv[])
                     // point, we can just do regular imaging.
                     if (selection_split)
                         {
-                        GCoord centroid = center[0]->coords();
+                        GCoord centroid;
+                        if (full_recenter)
+                            {
+                            centroid = center[0]->coords();
+                            }
+                        else
+                            {
+                            if (xy_recenter)
+                                {
+                                centroid.x() = xy_center[0]->coords().x();
+                                centroid.y() = xy_center[0]->coords().y();
+                                }
+                            if (z_recenter)
+                                {
+                                centroid.z() = z_center[0]->coords().z();
+                                }
+                            }
+
                         system.translate(-centroid);
+
                         for (m=molecules.begin(); m!=molecules.end(); m++)
                             {
                             m->reimage();
@@ -363,7 +434,23 @@ int main(int argc, char *argv[])
                         }
                     // Now, do the regular imaging.  Put the system centroid 
                     // at the origin, and reimage by molecule
-                    GCoord centroid = center.centroid();
+                    GCoord centroid;
+                    if (full_recenter)
+                        {
+                        centroid = center.centroid();
+                        }
+                    else
+                        {
+                        if (xy_recenter)
+                            {
+                            centroid = xy_center.centroid();
+                            centroid.z() = 0.0;
+                            }
+                        if (z_recenter)
+                            {
+                            centroid.z() = z_center.centroid().z();
+                            }
+                        }
                     system.translate(-centroid);
 
                     for (m=molecules.begin(); m != molecules.end(); ++m )
@@ -374,19 +461,39 @@ int main(int argc, char *argv[])
                     // Sometimes if the box has drifted enough, reimaging by molecule
                     // will significantly alter the centroid of the selected system, so
                     // we need to center a second time, which perversely means we'll need
-                    // to reimage again. In my tests, this second go around is necessary and
-                    // sufficient to fix everything, but I'm willing to be proved wrong.
+                    // to reimage again. In my tests, this second go around is 
+                    // necessary and sufficient to fix everything, but I'm willing 
+                    // to be proved wrong.
 
-                    centroid = center.centroid();
-#if DEBUG
-                    cerr << "centroid after reimaging: " << centroid << endl;
-#endif
+                    centroid.zero();
+                    if (full_recenter)
+                        {
+                        centroid = center.centroid();
+                        }
+                    else
+                        {
+                        if (xy_recenter)
+                            {
+                            centroid = xy_center.centroid();
+                            centroid.z() = 0.0;
+                            }
+                        if (z_recenter)
+                            {
+                            centroid.z() = z_center.centroid().z();
+                            }
+                        }
                     system.translate(-centroid);
 
                     for (m=molecules.begin(); m != molecules.end(); ++m )
                         {
                         m->reimage();
                         }
+#if DEBUG
+                    cerr << "centroid after reimaging: " << centroid << endl;
+#endif
+
+                    system.translate(-centroid);
+
 #if DEBUG
                     centroid = center.centroid();
                     cerr << "centroid after second reimaging: " << centroid << endl;
