@@ -16,19 +16,22 @@ namespace loos {
 
   class XTCWriter {
     static const int magicints[];
-    static const int firstidx, lastidx;
+    static const int firstidx;
+    
+    static const int lastidx;
     
 
   public:
 
 
   private:
+    int sizeofint(const int size) const;
     int sizeofints(const int num_of_bits, const unsigned int sizes[]) const;
-    void encodebits(int* buf, const int num_of_bits, const int num) const;
+    void encodebits(int* buf, int num_of_bits, const int num) const;
     void encodeints(int* buf, const int num_of_ints, const int num_of_bits,
 		    const unsigned int* sizes, const unsigned int* nums) const;
     int writeCompressedCoordsFloat(float* ptr, int size, float precision);
-    int writeCompressedCoordsDouble(double* ptr, int size, float precision);
+    int writeCompressedCoordsDouble(double* ptr, int size, double precision);
     
 
   private:
