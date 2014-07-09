@@ -63,14 +63,14 @@ public:
       ("column,C", po::value<uint>(&col)->default_value(col), "Data column to use")
       ("nbins,N", po::value<uint>(&nbins)->default_value(nbins), "Number of bins in histogram")
       ("window", po::value<uint>(&window)->default_value(window), "Histogram window size")
-      ("stride", po::value<uint>(&window)->default_value(stride), "Stride through trajectory for cumulative histogram mode")
+      ("stride", po::value<uint>(&stride)->default_value(stride), "Stride through trajectory for cumulative histogram mode")
       ("mode", po::value<string>(&mode_string)->default_value(mode_string), "Histogram mode: cume or window")
       ("min", po::value<double>(), "Set min value for histogram range")
       ("max", po::value<double>(), "Set max value for histogram range");
   }
 
   bool postConditions(po::variables_map& map) {
-    if (mode_string == "cum")
+    if (mode_string == "cume")
       mode = CUMULATIVE;
     else if (mode_string == "window")
       mode = WINDOW;
