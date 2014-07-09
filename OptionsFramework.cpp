@@ -489,8 +489,11 @@ namespace loos {
 
     std::string RequiredArguments::print() const {
       std::ostringstream oss;
-      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
-        oss << i->first << "='" << held_map[i->first].as<std::string>() << "',";
+      for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i) {
+           oss << i->first << "='" << held_map[i->first].as<std::string>() << "'";
+           if (i != arguments.end() - 1)
+                oss << ',';
+      }
       
       if (vargs_set) {
         std::vector<std::string> v = variableValues(variable_arguments.first);
