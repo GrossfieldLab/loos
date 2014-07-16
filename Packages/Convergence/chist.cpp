@@ -135,7 +135,7 @@ vector<double> histogram(const vector<double>& data,
   }
   
   vector<double> h(nbins);
-  uint nelems = end - start + 1;
+  uint nelems = end - start;
   for (uint i=0; i<nbins; ++i)
     h[i] = static_cast<double>(hist[i]) / nelems;
 
