@@ -1390,7 +1390,7 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
-\section release213 Version 2.1.3 (X-YY-2014)
+\section release213 Version 2.1.3 (7-18-2014)
 \subsection r213_added_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Added two new tool for molecular order parameters: mops and
@@ -1398,12 +1398,25 @@ Matlab and Octave.
        parameter for a set of trajectories, while the latter bins
        the order parameter based on lateral distance to the nearest
        target (e.g. lipopeptide)
+  <li> Added chist tool for calculating cumulative or windowed histograms
+  <li> Added support in merge-traj for separate selections to recenter in xy and z
+  <li> Added number density option to density-dist
+  <li> Added "core" water filter for density tools
+  <li> Added --threshold option to interdist that will segment the output based
+       on the given cutoff
+  <li> XForm::rotate() will throw an exception now if the rotation
+  axis has zero length 
 </ul>
 
 \subsection r213_bugs Bugs Fixed
 <ul>
   <li> Bad HTML code in docs fixed
   <li> Fixed crashing of phasepdb with default settings
+  <li> Fixed bad execution time estimate when using rmsds to compare two different trajecties
+  <li> Fixed bug in TRR/XDR support affecting double precision data (found by Pin-Kuang Lai)
+  <li> Fixed build issue when ATLAS_LIBS is specified  
+  <li> Fixed help in dcdinfo
+  <li> Fixed crash in phasepdb caused by using default chunk-size setting
 </ul>
 
 
