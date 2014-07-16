@@ -1,6 +1,12 @@
+2014-07-16    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed chist tool to operate in either cumulative or windowed
+	mode... 
+	
+
 2014-06-18    <alan@membrane.urmc.rochester.edu>
-    * in merge-traj, added support for separate selections to recenter
-	  in xy and z
+	* in merge-traj, added support for separate selections to recenter
+	in xy and z
 
 2014-06-16    <tromo@hill.urmc-sh.rochester.edu>
 
@@ -43,7 +49,7 @@
 2014-03-13    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed help info for dcdinfo 
-	* Added cumulative histogram tool (histsweep)
+	* Added cumulative histogram tool (chist) in Convergence package
 	* Changed XForm::rotate(const GCoord&, const greal)
 	to throw an invalid_argument exception if the
 	rotation axis does not have some minimal length. 
