@@ -36,6 +36,39 @@ namespace po = loos::OptionsFramework::po;
 // @cond TOOLS_INTERNAL 
 
 
+string fullHelpMessage(void) {
+  string msg =
+    "\n"
+    "SYNOPSIS\n"
+    "\tCumulative or windowed histogram\n"
+    "\n"
+    "DESCRIPTION\n"
+    "\n"
+    "\tThis tool can calculate either a cumulative or a windowed histogram.  The former is\n"
+    "made by calculating the histogram of the input data up to time t.  This is written out\n"
+    "as a row of data suitable for plotting with gnuplot using the splot command.  Each row\n"
+    "then corresponds to calculating the histogram with more points.  The alternative, is\n"
+    "to only calculate the histogram over a window that is slid along the data.\n"
+    "\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tchist torsion_data >torsion_hist.asc\n"
+    "This example uses the defaults, which assumes the column to histogram is column 1\n"
+    "(i.e. the second column, since colunm indices are 0-based), wich 20 bins, a stride\n"
+    "through the data of 10 (every 10th datapoint is used in the histogram), the range\n"
+    "of the histogram is automatically determined from the data, and the histogram type\n"
+    "is cumulative.\n"
+    "\n"
+    "\tchist --min -180 --max 180 --nbins 50 --stride 2 torsion_data >torsion_hist.asc\n"
+    "This example is similar to the previous, except that the histogram range is explicitly\n"
+    "set to -180 to 180, 50 bins are used, and every other datapoint is taken.\n"
+    "\n"
+    "\tchist --mode window --window 250 torsion_data.asc >torsion_hist.asc\n"
+    "This example calculates a windowed histogram using 250 datapoints per histogram,\n"
+    "each window is slid 10 points down (the default for --stride)";
+
+  return(msg);
+}
 
 
 struct ToolOptions : public opts::OptionsPackage {
@@ -115,7 +148,7 @@ public:
   ToolMode mode;
 };
 
-
+// @endcond
 
 
 vector<double> histogram(const vector<double>& data,
@@ -175,7 +208,7 @@ int main(int argc, char *argv[]) {
 
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* bopts = new opts::BasicOptions();
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments("datafile", "Name of file to histogram");
 
@@ -215,7 +248,7 @@ int main(int argc, char *argv[]) {
 
   } else {
 
-    for (uint y = 0; y<data.size() + topts->window; y += topts->window) {
+    for (uint y = 0; y<data.size() + topts->window; y += topts->stride) {
       vector<double> h = histogram(data, y, y+topts->window, topts->nbins, minval, maxval);
       for (uint n=0; n<topts->nbins; ++n) {
         double x = (n + 0.5) * factor + minval;
