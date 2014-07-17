@@ -1,3 +1,7 @@
+2014-07-17    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in rebond that created bonds from subset atoms to themselves
+
 2014-07-16    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed chist tool to operate in either cumulative or windowed
