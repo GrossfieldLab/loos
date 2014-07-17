@@ -124,6 +124,7 @@ public:
   bool append_bonds, full_model_output;
   string super, segid;
   double radius;
+     
 };
 
 // @endcond
@@ -155,10 +156,18 @@ int main(int argc, char *argv[]) {
       (*j)->segid(topts->segid);
 
     for (AtomicGroup::iterator i = superset.begin(); i != superset.end(); ++i) {
-      double d = c.distance((*i)->coords());
-      if (d <= topts->radius) {
-        (*j)->addBond(*i);
-      }
+         if ((*i)->checkProperty(Atom::indexbit)) {
+              if ((*i)->index() == (*j)->index())
+                   continue;
+         } else {
+              if ((*i)->id() == (*j)->id())
+                   continue;
+         }
+              
+         double d = c.distance((*i)->coords());
+         if (d <= topts->radius) {
+              (*j)->addBond(*i);
+         }
 
     }
   }
