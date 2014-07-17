@@ -1421,7 +1421,9 @@ Matlab and Octave.
   <li> Fixed bug in TRR/XDR support affecting double precision data (found by Pin-Kuang Lai)
   <li> Fixed build issue when ATLAS_LIBS is specified  
   <li> Fixed help in dcdinfo
-  <li> Fixed crash in phasepdb caused by using default chunk-size setting
+  <li> Fixed crash in phasepdb caused by using default chunk-size
+  setting
+  <li> Fixed bug in rebond where atoms would end up bound to themselves
 </ul>
 
 
