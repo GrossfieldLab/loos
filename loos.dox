@@ -726,6 +726,11 @@ Matlab and Octave.
       clock).  The --replicates option determines how many blocks are
       generated for a given size.
 
+      <DT> <B> chist </B>
+      <DD> Calculates either a cumulative histogram (where each output
+      row is the histogram up to that point), or a windowed histogram.
+
+
       <DT> <B> coscon </B>
       <DD> Computes the cosine content for varying windows of a
       trajectory, based on Hess, B.  "Convergence of sampling in
