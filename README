@@ -8,6 +8,16 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.1.3 *
+
+This release includes a number of minor improvements and bug fixes.
+These include a new windowed and cumulative histogram tool along with
+two tools for calculating "molecular order parameters".  New options
+were added to merge-traj, density-dist, and interdist.  A bug in
+phasepdb and a bug affecting double precision XTC files have also been
+fixed.  For more detail, see the included ChangeLog.
+
+
    * RELEASE 2.1.2 *
 
 This release is primarily a bug fix release.  There was a critical bug
