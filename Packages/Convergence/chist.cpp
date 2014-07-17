@@ -65,7 +65,7 @@ string fullHelpMessage(void) {
     "\n"
     "\tchist --mode window --window 250 torsion_data.asc >torsion_hist.asc\n"
     "This example calculates a windowed histogram using 250 datapoints per histogram,\n"
-    "each window is slid 10 points down (the default for --stride)";
+    "each window is slid 10 points down (the default for --stride)\n\n";
 
   return(msg);
 }
@@ -96,7 +96,7 @@ public:
       ("column,C", po::value<uint>(&col)->default_value(col), "Data column to use")
       ("nbins,N", po::value<uint>(&nbins)->default_value(nbins), "Number of bins in histogram")
       ("window", po::value<uint>(&window)->default_value(window), "Histogram window size")
-      ("stride", po::value<uint>(&stride)->default_value(stride), "Stride through trajectory for cumulative histogram mode")
+      ("stride", po::value<uint>(&stride)->default_value(stride), "Stride through trajectory for cumulative histogram mode, or how far to slide the window")
       ("mode", po::value<string>(&mode_string)->default_value(mode_string), "Histogram mode: cume or window")
       ("min", po::value<double>(), "Set min value for histogram range")
       ("max", po::value<double>(), "Set max value for histogram range");
