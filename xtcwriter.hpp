@@ -23,6 +23,21 @@ namespace loos {
 
   public:
 
+    XTCWriter() :
+      buf1size(0), buf2size(0),
+      buf1(0), buf2(0)
+    {
+      
+    }
+    
+
+    ~XTCWriter() {
+      if (buf1)
+	delete[] buf1;
+      if (buf2)
+	delete[] buf2;
+    }
+
 
   private:
     int sizeofint(const int size) const;
