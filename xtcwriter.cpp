@@ -739,4 +739,21 @@ namespace loos
 
 
 
+  void allocateBuffers(const size_t size) {
+    size_t size3 = size * 3;
+    if (size3 > buf1size) {
+      if (buf1)
+	delete[] buf1;
+      if (buf2)
+	delete[] buf2;
+
+      buf1 = new int[size3];
+      buf2 = new int[size3 * 1.2];
+
+      buf1size = size3;
+      buf2size = size3 * 1.2;
+    }
+  }
+
+
 };
