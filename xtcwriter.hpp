@@ -48,7 +48,7 @@ namespace loos {
     int writeCompressedCoordsFloat(float* ptr, int size, float precision);
     int writeCompressedCoordsDouble(double* ptr, int size, double precision);
        
-    void allocateBuffers(const size_t size1, const size_t size2);
+    void allocateBuffers(const size_t size);
     
 
   private:
