@@ -162,6 +162,13 @@ namespace loos {
 
     public:
 
+      XDRWriter() : stream(0) {
+	int test = 0x1234;
+	if (*(reinterpret_cast<char*>(&test)) == 0x34) {
+	  need_to_swab = true;
+	}
+      }
+
       //! Constructor determines need to convert data at instantiation
       XDRWriter(std::ostream* s) : stream(s) { 
 	int test = 0x1234;
@@ -172,6 +179,8 @@ namespace loos {
 
       //! Returns the stored istream pointer
       std::ostream* get(void) { return(stream); }
+
+      void setStream(std::ostream* o) { stream = o; }
           
       //! Writes a single datum
       template<typename T> uint write(const T* p) {
