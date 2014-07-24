@@ -50,6 +50,7 @@ namespace loos {
     int writeCompressedCoordsDouble(double* ptr, int size, double precision);
        
     void allocateBuffers(const size_t size);
+    void writeHeader(const int natoms, const int step, const float time);
 
   private:
     uint buf1size, buf2size;

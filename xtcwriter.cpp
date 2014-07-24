@@ -747,4 +747,15 @@ namespace loos
   }
 
 
+
+  void writeHeader(const int natoms, const int step, const float time) {
+    int magic = 1995;
+
+    xdr.write(&magic);
+    xdr.write(&natoms);
+    xdr.write(&step);
+    xdr.write(&time);
+  }
+
+
 };
