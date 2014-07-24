@@ -198,28 +198,14 @@ namespace loos
     unsigned int tmpcoord[30];
     int errval=1;
     unsigned int bitsize;
+
+    int size3 = size * 3;
   
-    size3=3*size;
-    
     bitsizeint[0] = 0;
     bitsizeint[1] = 0;
     bitsizeint[2] = 0;
 
-    if(size3>xfp->buf1size)
-    {
-      if((xfp->buf1=(int *)malloc(sizeof(int)*size3))==NULL) 
-      {
-	fprintf(stderr,"Cannot allocate memory for compressing coordinates.\n");
-	return -1;
-      }
-      xfp->buf1size=size3;
-      xfp->buf2size=size3*1.2;
-      if((xfp->buf2=(int *)malloc(sizeof(int)*xfp->buf2size))==NULL)
-      {
-	fprintf(stderr,"Cannot allocate memory for compressing coordinates.\n");
-	return -1;
-      }
-    }
+    allocateBuffers(size);
     if(xdrfile_write_int(&size,1,xfp)==0)
       return -1; /* return if we could not write size */
     /* Dont bother with compression for three atoms or less */
