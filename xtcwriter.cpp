@@ -192,8 +192,8 @@ namespace loos
     int minint[3], maxint[3], mindiff, *lip, diff;
     int lint1, lint2, lint3, oldlint1, oldlint2, oldlint3, smallidx;
     int minidx, maxidx;
-    unsigned sizeint[3], sizesmall[3], bitsizeint[3], size3, *luip;
-    int k, *buf1, *buf2;
+    unsigned sizeint[3], sizesmall[3], bitsizeint[3], *luip;
+    int k;
     int smallnum, smaller, larger, i, j, is_small, is_smaller, run, prevrun;
     float *lfp, lf;
     int tmp, tmpsum, *thiscoord,  prevcoord[3];
@@ -221,9 +221,6 @@ namespace loos
       precision = 1000;
 
     xdr.write(&precision);
-    /* avoid repeated pointer dereferencing. */
-    buf1=xfp->buf1; 
-    buf2=xfp->buf2;
     /* buf2[0-2] are special and do not contain actual data */
     buf2[0] = buf2[1] = buf2[2] = 0;
     minint[0] = minint[1] = minint[2] = INT_MAX;
@@ -454,7 +451,7 @@ namespace loos
     }
     if (buf2[1] != 0) buf2[0]++;
     xdr.write(buf2);
-    tmp=xdrfile_write_opaque((char *)&(buf2[3]),(unsigned int)buf2[0],xfp);
+    tmp=xdr.write((char *)&(buf2[3]),(unsigned int)buf2[0]);
     if(tmp==(unsigned int)buf2[0])
       return size;
     else
@@ -462,6 +459,9 @@ namespace loos
   }
 
 
+
+
+#if defined(FOOBARFLUBBER)
 
   int XTCWriter::writeCompressedCoordsDouble(double   *ptr,
 					     int      size,
@@ -726,9 +726,10 @@ namespace loos
       return -1; 
   }
 
+#endif
 
 
-  void allocateBuffers(const size_t size) {
+  void XTCWriter::allocateBuffers(const size_t size) {
     size_t size3 = size * 3;
     if (size3 > buf1size) {
       if (buf1)
@@ -737,7 +738,8 @@ namespace loos
 	delete[] buf2;
 
       buf1 = new int[size3];
-      buf2 = new int[size3 * 1.2];
+      size_t size3plus = size3 * 1.2;
+      buf2 = new int[size3plus];
 
       buf1size = size3;
       buf2size = size3 * 1.2;

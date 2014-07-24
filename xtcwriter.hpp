@@ -53,8 +53,8 @@ namespace loos {
 
   private:
     uint buf1size, buf2size;
-    float* buf1;
-    float* buf2;
+    int* buf1;
+    int* buf2;
 
     internal::XDRWriter xdr;
   };
