@@ -183,7 +183,9 @@ namespace loos
     }
   }
 
-    
+
+
+
 
   int XTCWriter::writeCompressedCoordsFloat(float* ptr, int size, float precision) 
   {
@@ -199,25 +201,26 @@ namespace loos
     int errval=1;
     unsigned int bitsize;
 
-    int size3 = size * 3;
+    uint size3 = size * 3;
   
     bitsizeint[0] = 0;
     bitsizeint[1] = 0;
     bitsizeint[2] = 0;
 
     allocateBuffers(size);
-    if(xdrfile_write_int(&size,1,xfp)==0)
+    if (!xdr.write(&size))
       return -1; /* return if we could not write size */
     /* Dont bother with compression for three atoms or less */
     if(size<=9) 
     {
-      return xdrfile_write_float(ptr,size3,xfp)/3;
+      return(xdr.write(ptr, size3));
       /* return number of coords, not floats */
     }
     /* Compression-time if we got here. Write precision first */
     if (precision <= 0)
       precision = 1000;
-    xdrfile_write_float(&precision,1,xfp);
+
+    xdr.write(&precision);
     /* avoid repeated pointer dereferencing. */
     buf1=xfp->buf1; 
     buf2=xfp->buf2;
@@ -283,8 +286,8 @@ namespace loos
       oldlint2 = lint2;
       oldlint3 = lint3;
     }  
-    xdrfile_write_int(minint,3,xfp);
-    xdrfile_write_int(maxint,3,xfp);
+    xdr.write(minint, 3);
+    xdr.write(maxint, 3);
   
     if ((float)maxint[0] - (float)minint[0] >= INT_MAX-2 ||
 	(float)maxint[1] - (float)minint[1] >= INT_MAX-2 ||
@@ -318,7 +321,7 @@ namespace loos
     {
       smallidx++;
     }
-    xdrfile_write_int(&smallidx,1,xfp);
+    xdr.write(&smallidx);
     tmp=smallidx+8;
     maxidx = (lastidx<tmp) ? lastidx : tmp;
     minidx = maxidx - 8; /* often this equal smallidx */
@@ -450,7 +453,7 @@ namespace loos
       }   
     }
     if (buf2[1] != 0) buf2[0]++;
-    xdrfile_write_int(buf2,1,xfp); /* buf2[0] holds the length in bytes */
+    xdr.write(buf2);
     tmp=xdrfile_write_opaque((char *)&(buf2[3]),(unsigned int)buf2[0],xfp);
     if(tmp==(unsigned int)buf2[0])
       return size;

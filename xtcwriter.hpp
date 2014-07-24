@@ -1,7 +1,7 @@
 // (c) 2014 Tod D. Romo, Grossfield Lab, URMC
 
 #if !defined(LOOS_XTCWRITER_HPP)
-#define LOOS_XTC_WRITER_HPP
+#define LOOS_XTCWRITER_HPP
 
 #include <fstream>
 #include <string>
@@ -23,11 +23,12 @@ namespace loos {
 
   public:
 
-    XTCWriter() :
+    XTCWriter(const std::string fname) :
       buf1size(0), buf2size(0),
       buf1(0), buf2(0)
     {
-      
+      std::ofstream ofs(fname.c_str());
+      xdr = internal::XDRWriter(&ofs);
     }
     
 
@@ -49,12 +50,13 @@ namespace loos {
     int writeCompressedCoordsDouble(double* ptr, int size, double precision);
        
     void allocateBuffers(const size_t size);
-    
 
   private:
     uint buf1size, buf2size;
     float* buf1;
     float* buf2;
+
+    internal::XDRWriter xdr;
   };
 
 
