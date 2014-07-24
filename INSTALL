@@ -356,6 +356,16 @@ If you have installed Boost in a non-standard location, you will need
 to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
 environment variable.
 
+***MACOS BUILD PROBLEMS***
+
+We have seen several instances where LOOS would not build due to
+multiple versions of BOOST being installed.  The configuration part of
+the build seems to mix components from the different versions
+installed.  If your build exits due to errors, verify that you are in
+fact using only the BOOST install and libraries you intend (or removed
+the excess versions)
+
+
 =======================================================================
 
 
