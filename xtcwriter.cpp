@@ -27,7 +27,7 @@ namespace loos
    * to represent a certain integer.
    */
   int XTCWriter::sizeofint(const int size) const {
-    unsigned int num = 1;
+    uint num = 1;
     int num_of_bits = 0;
     
     while (size >= num && num_of_bits < 32) {
@@ -748,7 +748,7 @@ namespace loos
 
 
 
-  void writeHeader(const int natoms, const int step, const float time) {
+  void XTCWriter::writeHeader(const int natoms, const int step, const float time) {
     int magic = 1995;
 
     xdr.write(&magic);
