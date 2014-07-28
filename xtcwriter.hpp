@@ -20,6 +20,7 @@ namespace loos {
     
     static const int lastidx;
     
+    static const int DIM;
 
   public:
 
@@ -39,6 +40,8 @@ namespace loos {
 	delete[] buf2;
     }
 
+
+    void writeFrame(const AtomicGroup& model);
 
   private:
     int sizeofint(const int size) const;

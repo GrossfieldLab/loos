@@ -21,6 +21,7 @@ namespace loos
   const int XTCWriter::firstidx = 9;
   const int XTCWriter::lastidx = sizeof(magicints) / sizeof(*magicints);
 
+  const int XTCWriter::DIM = 3;
 
   /* Internal support routines for reading/writing compressed coordinates 
    * sizeofint - calculate smallest number of bits necessary
@@ -755,6 +756,29 @@ namespace loos
     xdr.write(&natoms);
     xdr.write(&step);
     xdr.write(&time);
+  }
+
+
+  void XTCWriter::writeFrame(const AtomicGroup& model) {
+    float box[DIM*DIM];
+    for (uint i=0; i < DIM*DIM; ++i)
+      box[i] = 0.0;
+    GCoord pbox = model.periodicBox();
+    box[0] = pbox[0];
+    box[4] = pbox[1];
+    box[8] = pbox[2];
+
+    xdr.write(box, DIM*DIM);
+
+    uint n = model.size();
+    float* crds = new float[n * 3];
+    for (uint i=0,k=0; i<n; ++i) {
+      GCoord c = model[i]->coords();
+      crds[k++] = c.x();
+      crds[k++] = c.y();
+      crds[k++] = c.z();
+    }
+    writeCompressedCoordsFloat(crds, n, 1000.0);
   }
 
 
