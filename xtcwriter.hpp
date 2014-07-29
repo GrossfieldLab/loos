@@ -26,12 +26,31 @@ namespace loos {
 
     XTCWriter(const std::string fname) :
       buf1size(0), buf2size(0),
-      buf1(0), buf2(0)
+      buf1(0), buf2(0),
+      natoms_(0),
+      dt_(0.0),
+      step_(0),
+      steps_per_frame_(0)
+    {
+      ofs.open(fname.c_str(), std::ios::out);
+      xdr.setStream(&ofs);
+    }
+
+
+    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame) :
+      buf1size(0), buf2size(0),
+      buf1(0), buf2(0),
+      natoms_(0),
+      dt_(dt),
+      step_(0),
+      steps_per_frame_(steps_per_frame)
     {
       ofs.open(fname.c_str(), std::ios::out);
       xdr.setStream(&ofs);
     }
     
+
+
 
     ~XTCWriter() {
       if (buf1)
@@ -41,7 +60,6 @@ namespace loos {
     }
 
 
-    void writeHeader(const int natoms, const int step, const float time);
     void writeFrame(const AtomicGroup& model);
 
   private:
@@ -55,10 +73,18 @@ namespace loos {
        
     void allocateBuffers(const size_t size);
 
+    void writeHeader(const int natoms, const int step, const float time);
+    void writeBox(const GCoord& box);
+
+    
   private:
     uint buf1size, buf2size;
     int* buf1;
     int* buf2;
+    uint natoms_;
+    double dt_;
+    uint step_;
+    uint steps_per_frame_;
 
     std::ofstream ofs;
     internal::XDRWriter xdr;
