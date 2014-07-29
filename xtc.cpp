@@ -396,8 +396,12 @@ namespace loos {
     int ok = xdr_file.read(magic_no);
     if (!ok)
       return(false);
-    if (magic_no != magic)
-      throw(std::runtime_error("Invalid XTC magic number"));
+    if (magic_no != magic) {
+      std::ostringstream oss;
+      oss << "Invalid XTC magic number (got " << magic_no << " but expected " << magic << ")";
+      throw(std::runtime_error(oss.str()));
+      //      throw(std::runtime_error("Invalid XTC magic number"));
+    }
 
     // Defer error-checks until the end...
     xdr_file.read(hdr.natoms);

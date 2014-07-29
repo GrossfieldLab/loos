@@ -181,16 +181,23 @@ namespace loos {
       std::ostream* get(void) { return(stream); }
 
       void setStream(std::ostream* o) { stream = o; }
+
+
+
+
           
       //! Writes a single datum
-      template<typename T> uint write(const T* p) {
+      template<typename T> uint write(const T p) {
 
-	if (sizeof(T) > sizeof(block_type))
-	  throw(std::logic_error("Attempting to write a POD that is too large"));
+	if (sizeof(T) > sizeof(block_type)) {
+	  std::ostringstream oss;
+	  oss << "Attempting to write a POD that is too large (" << sizeof(T) << " > " << sizeof(block_type) << ")";
+	  throw(std::logic_error(oss.str()));
+	}
 
-	uint u;
+        block_type u;
 	T* up = reinterpret_cast<T*>(&u);
-	*up = *p;
+	*up = p;
 
 	if (sizeof(T) > 1 && need_to_swab)
 	  u = swab(u);
@@ -198,16 +205,18 @@ namespace loos {
     
 	stream->write(reinterpret_cast<char*>(&u), sizeof(block_type));
 
-	return(!stream->fail());
+	return(!(stream->bad()));
       }
 
 
+
+
       //! Overload for double-precision
-      uint write(const double* p) 
+      uint write(const double p) 
       {
 	unsigned long u;
 	double* up = reinterpret_cast<double*>(&u);
-	*up = *p;
+	*up = p;
 	
 	if (need_to_swab)
 	  u = swab(u);
@@ -218,12 +227,10 @@ namespace loos {
       }
       
 
-      template<typename T> uint write(const T& t) { return(write(&t)); }
-
       //! Writes an n-array of data
       template<typename T> uint write(const T* ary, const uint n) {
 	uint i;
-	for (i=0; i<n && write(&(ary[i])); ++i) ;
+	for (i=0; i<n && write(ary[i]); ++i) ;
 	return(i);
       }
 

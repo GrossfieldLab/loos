@@ -209,7 +209,7 @@ namespace loos
     bitsizeint[2] = 0;
 
     allocateBuffers(size);
-    if (!xdr.write(&size))
+    if (!xdr.write(size))
       return -1; /* return if we could not write size */
     /* Dont bother with compression for three atoms or less */
     if(size<=9) 
@@ -221,7 +221,8 @@ namespace loos
     if (precision <= 0)
       precision = 1000;
 
-    xdr.write(&precision);
+    std::cerr << "probe-0\n";
+    xdr.write(precision);
     /* buf2[0-2] are special and do not contain actual data */
     buf2[0] = buf2[1] = buf2[2] = 0;
     minint[0] = minint[1] = minint[2] = INT_MAX;
@@ -284,6 +285,7 @@ namespace loos
       oldlint2 = lint2;
       oldlint3 = lint3;
     }  
+    std::cerr << "probe-1\n";
     xdr.write(minint, 3);
     xdr.write(maxint, 3);
   
@@ -319,7 +321,8 @@ namespace loos
     {
       smallidx++;
     }
-    xdr.write(&smallidx);
+    std::cerr << "probe-2\n";
+    xdr.write(smallidx);
     tmp=smallidx+8;
     maxidx = (lastidx<tmp) ? lastidx : tmp;
     minidx = maxidx - 8; /* often this equal smallidx */
@@ -451,7 +454,9 @@ namespace loos
       }   
     }
     if (buf2[1] != 0) buf2[0]++;
-    xdr.write(buf2);
+    std::cerr << "probe-3\n";
+    xdr.write(buf2[0]);
+    std::cerr << "Probe-4 n=" << static_cast<uint>(buf2[0]) << "\n";
     tmp=xdr.write((char *)&(buf2[3]),(unsigned int)buf2[0]);
     if(tmp==(unsigned int)buf2[0])
       return size;
@@ -752,10 +757,10 @@ namespace loos
   void XTCWriter::writeHeader(const int natoms, const int step, const float time) {
     int magic = 1995;
 
-    xdr.write(&magic);
-    xdr.write(&natoms);
-    xdr.write(&step);
-    xdr.write(&time);
+    xdr.write(magic);
+    xdr.write(natoms);
+    xdr.write(step);
+    xdr.write(time);
   }
 
 
@@ -778,6 +783,7 @@ namespace loos
       crds[k++] = c.y();
       crds[k++] = c.z();
     }
+    std::cerr << "Writing " << n << " coords.\n";
     writeCompressedCoordsFloat(crds, n, 1000.0);
   }
 

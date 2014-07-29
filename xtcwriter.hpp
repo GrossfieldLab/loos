@@ -28,8 +28,8 @@ namespace loos {
       buf1size(0), buf2size(0),
       buf1(0), buf2(0)
     {
-      std::ofstream ofs(fname.c_str());
-      xdr = internal::XDRWriter(&ofs);
+      ofs.open(fname.c_str(), std::ios::out);
+      xdr.setStream(&ofs);
     }
     
 
@@ -41,6 +41,7 @@ namespace loos {
     }
 
 
+    void writeHeader(const int natoms, const int step, const float time);
     void writeFrame(const AtomicGroup& model);
 
   private:
@@ -53,13 +54,13 @@ namespace loos {
     int writeCompressedCoordsDouble(double* ptr, int size, double precision);
        
     void allocateBuffers(const size_t size);
-    void writeHeader(const int natoms, const int step, const float time);
 
   private:
     uint buf1size, buf2size;
     int* buf1;
     int* buf2;
 
+    std::ofstream ofs;
     internal::XDRWriter xdr;
   };
 
