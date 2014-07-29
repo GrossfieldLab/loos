@@ -187,7 +187,7 @@ namespace loos {
 
           
       //! Writes a single datum
-      template<typename T> uint write(const T p) {
+      template<typename T> uint write(const T& p) {
 
 	if (sizeof(T) > sizeof(block_type)) {
 	  std::ostringstream oss;
@@ -212,7 +212,7 @@ namespace loos {
 
 
       //! Overload for double-precision
-      uint write(const double p) 
+      uint write(const double& p) 
       {
 	unsigned long u;
 	double* up = reinterpret_cast<double*>(&u);

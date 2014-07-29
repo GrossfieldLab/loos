@@ -773,6 +773,8 @@ namespace loos
     box[4] = pbox[1];
     box[8] = pbox[2];
 
+    writeHeader(model.size(), 1, 1);
+
     xdr.write(box, DIM*DIM);
 
     uint n = model.size();

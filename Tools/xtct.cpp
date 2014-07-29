@@ -14,7 +14,6 @@ int main(int argc, char* argv[]) {
   
   XTCWriter xtc("foo.xtc");
   
-  xtc.writeHeader(model.size(), 1, 1);
   for (uint i=0; i<10; ++i) {
     traj->readFrame();
     traj->updateGroupCoords(model);
