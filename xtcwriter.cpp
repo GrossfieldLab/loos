@@ -28,7 +28,7 @@ namespace loos
    * to represent a certain integer.
    */
   int XTCWriter::sizeofint(const int size) const {
-    uint num = 1;
+    int num = 1;
     int num_of_bits = 0;
     
     while (size >= num && num_of_bits < 32) {
@@ -199,7 +199,6 @@ namespace loos
     float *lfp, lf;
     int tmp, tmpsum, *thiscoord,  prevcoord[3];
     unsigned int tmpcoord[30];
-    int errval=1;
     unsigned int bitsize;
 
     uint size3 = size * 3;
@@ -241,8 +240,7 @@ namespace loos
       if (fabs(lf) > INT_MAX-2) 
       {
 	/* scaling would cause overflow */
-	fprintf(stderr,"Internal overflow compressing coordinates.\n");
-	errval=0;
+	throw(std::runtime_error("Internal overflow compressing coordinates"));
       }
       lint1 = lf;
       if (lint1 < minint[0]) minint[0] = lint1;
@@ -256,8 +254,7 @@ namespace loos
       if (fabs(lf) > INT_MAX-2)
       {
 	/* scaling would cause overflow */
-	fprintf(stderr,"Internal overflow compressing coordinates.\n");
-	errval=0;
+	throw(std::runtime_error("Internal overflow compressing coordinates"));
       }
       lint2 = lf;
       if (lint2 < minint[1]) minint[1] = lint2;
@@ -268,10 +265,12 @@ namespace loos
 	lf = *lfp * precision + 0.5;
       else
 	lf = *lfp * precision - 0.5;
-      if (fabs(lf) > INT_MAX-2) 
-      {
-	errval=0;      
-      }
+
+      // *** TDR - This is not actually used
+      // if (fabs(lf) > INT_MAX-2) 
+      // {
+      // 	errval=0;      
+      // }
       lint3 = lf;
       if (lint3 < minint[2]) minint[2] = lint3;
       if (lint3 > maxint[2]) maxint[2] = lint3;
@@ -293,8 +292,7 @@ namespace loos
       /* turning value in unsigned by subtracting minint
        * would cause overflow
        */
-      fprintf(stderr,"Internal overflow compressing coordinates.\n");
-      errval=0;
+      throw(std::runtime_error("Internal overflow compressing coordinates"));
     }
     sizeint[0] = maxint[0] - minint[0]+1;
     sizeint[1] = maxint[1] - minint[1]+1;
