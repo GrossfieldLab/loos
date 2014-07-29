@@ -768,9 +768,9 @@ namespace loos
     xdr.write(outbox, DIM*DIM);
   }
 
-  void XTCWriter::writeFrame(const AtomicGroup& model) {
+  void XTCWriter::writeFrame(const AtomicGroup& model, const uint step, const double time) {
 
-    writeHeader(model.size(), step_, dt_ * step_);
+    writeHeader(model.size(), step, time);
     writeBox(model.periodicBox());
     uint n = model.size();
     float* crds = new float[n * 3];
@@ -781,8 +781,13 @@ namespace loos
       crds[k++] = c.z();
     }
     writeCompressedCoordsFloat(crds, n, 1000.0);
-    step_ += steps_per_frame_;
   }
 
+
+
+  void XTCWriter::writeFrame(const AtomicGroup& model) {
+    writeFrame(model, step_, dt_ * step_);
+    step_ += steps_per_frame_;
+  }
 
 };

@@ -59,8 +59,11 @@ namespace loos {
 	delete[] buf2;
     }
 
+    
+
 
     void writeFrame(const AtomicGroup& model);
+    void writeFrame(const AtomicGroup& model, const uint step, const double time);
 
   private:
     int sizeofint(const int size) const;
