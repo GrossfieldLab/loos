@@ -24,6 +24,18 @@ namespace loos {
 
   public:
 
+    struct InternalOverflow : public std::exception { virtual cont char* what() const throw() { return("Internal overflow compressing coordinates"); } }
+    
+    struct WriteError : public std:exception {
+      WriteError() : text("Error while writing XTC") {}
+      WriteError(const char* message) : text(message) {}
+
+      virtual const char* what() const throw() { return(text); }
+
+      char* text;
+    }
+
+
     XTCWriter(const std::string fname) :
       buf1size(0), buf2size(0),
       buf1(0), buf2(0),
@@ -80,8 +92,7 @@ namespace loos {
     void encodebits(int* buf, int num_of_bits, const int num) const;
     void encodeints(int* buf, const int num_of_ints, const int num_of_bits,
 		    const unsigned int* sizes, const unsigned int* nums) const;
-    int writeCompressedCoordsFloat(float* ptr, int size, float precision);
-    int writeCompressedCoordsDouble(double* ptr, int size, double precision);
+    void writeCompressedCoordsFloat(float* ptr, int size, float precision);
        
     void allocateBuffers(const size_t size);
 

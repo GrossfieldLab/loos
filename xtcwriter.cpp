@@ -188,7 +188,7 @@ namespace loos
 
 
 
-  int XTCWriter::writeCompressedCoordsFloat(float* ptr, int size, float precision) 
+  void XTCWriter::writeCompressedCoordsFloat(float* ptr, int size, float precision) 
   {
     int minint[3], maxint[3], mindiff, *lip, diff;
     int lint1, lint2, lint3, oldlint1, oldlint2, oldlint3, smallidx;
@@ -209,12 +209,13 @@ namespace loos
 
     allocateBuffers(size);
     if (!xdr.write(size))
-      return -1; /* return if we could not write size */
+      throw(WriteError("Could not write size to XTC file"));
+
     /* Dont bother with compression for three atoms or less */
     if(size<=9) 
     {
-      return(xdr.write(ptr, size3));
-      /* return number of coords, not floats */
+      xdr.write(ptr, size3);
+      return;
     }
     /* Compression-time if we got here. Write precision first */
     if (precision <= 0)
@@ -240,7 +241,7 @@ namespace loos
       if (fabs(lf) > INT_MAX-2) 
       {
 	/* scaling would cause overflow */
-	throw(std::runtime_error("Internal overflow compressing coordinates"));
+	throw(InternalOverflow());
       }
       lint1 = lf;
       if (lint1 < minint[0]) minint[0] = lint1;
@@ -254,7 +255,7 @@ namespace loos
       if (fabs(lf) > INT_MAX-2)
       {
 	/* scaling would cause overflow */
-	throw(std::runtime_error("Internal overflow compressing coordinates"));
+	throw(InternalOverflow();)
       }
       lint2 = lf;
       if (lint2 < minint[1]) minint[1] = lint2;
@@ -292,7 +293,7 @@ namespace loos
       /* turning value in unsigned by subtracting minint
        * would cause overflow
        */
-      throw(std::runtime_error("Internal overflow compressing coordinates"));
+      throw(InternalOverflow());
     }
     sizeint[0] = maxint[0] - minint[0]+1;
     sizeint[1] = maxint[1] - minint[1]+1;
@@ -451,10 +452,8 @@ namespace loos
     if (buf2[1] != 0) buf2[0]++;
     xdr.write(buf2[0]);
     tmp=xdr.write((char *)&(buf2[3]),(unsigned int)buf2[0]);
-    if(tmp==(unsigned int)buf2[0])
-      return size;
-    else
-      return -1;
+    if(tmp!=(unsigned int)buf2[0])
+      throw(WriteError("Error while writing compressed coordinates to XTC file"));
   }
 
 
