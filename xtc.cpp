@@ -379,8 +379,7 @@ namespace loos {
     // point will invalidate the current object's coord state
 
     coords_.clear();
-    Header h;
-    if (!readFrameHeader(h))
+    if (!readFrameHeader(current_header_))
       return(false);
     
     box = GCoord(h.box[0], h.box[4], h.box[8]) * 10.0; // Convert to Angstroms
@@ -444,6 +443,7 @@ namespace loos {
       uint block_size = sizeof(internal::XDRReader::block_type);
 
       // Always update estimated timestep...
+      std::cerr << h.step << "\t" << h.time << "\n";
       timestep_ = h.time / h.step;
 
       size_t offset = 0;

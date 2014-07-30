@@ -125,7 +125,8 @@ namespace loos {
     double precision_;
     std::vector<GCoord> coords_;
     double timestep_;
-
+    Header current_header_;
+    
     bool parseFrame(void);
 
   private:
