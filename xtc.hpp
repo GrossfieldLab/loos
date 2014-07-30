@@ -102,6 +102,9 @@ namespace loos {
     bool hasPeriodicBox(void) const { return(true); }
     GCoord periodicBox(void) const { return(box); }
 
+    uint currentStep(void) const { return(current_header_.step); }
+    double currentTime(void) const { return(current_header_.time); }
+
 
     std::vector<GCoord> coords(void) { return(coords_); }
 
