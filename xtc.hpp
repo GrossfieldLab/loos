@@ -97,7 +97,7 @@ namespace loos {
 
 
     uint natoms(void) const { return(natoms_); }
-    float timestep(void) const { return(0); }
+    float timestep(void) const { return(timestep_); }
     uint nframes(void) const { return(frame_indices.size()); }
     bool hasPeriodicBox(void) const { return(true); }
     GCoord periodicBox(void) const { return(box); }
@@ -124,7 +124,7 @@ namespace loos {
     GCoord box;
     double precision_;
     std::vector<GCoord> coords_;
-
+    double timestep_;
 
     bool parseFrame(void);
 

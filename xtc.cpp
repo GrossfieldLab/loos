@@ -443,7 +443,8 @@ namespace loos {
 
       uint block_size = sizeof(internal::XDRReader::block_type);
 
-      
+      // Always update estimated timestep...
+      timestep_ = h.time / h.step;
 
       size_t offset = 0;
       uint nbytes = 0;
