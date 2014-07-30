@@ -24,16 +24,16 @@ namespace loos {
 
   public:
 
-    struct InternalOverflow : public std::exception { virtual cont char* what() const throw() { return("Internal overflow compressing coordinates"); } }
+    struct InternalOverflow : public std::exception { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
     
-    struct WriteError : public std:exception {
+    struct WriteError : public std::exception {
       WriteError() : text("Error while writing XTC") {}
       WriteError(const char* message) : text(message) {}
 
       virtual const char* what() const throw() { return(text); }
 
-      char* text;
-    }
+      const char* text;
+    };
 
 
     XTCWriter(const std::string fname) :

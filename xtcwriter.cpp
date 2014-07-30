@@ -255,7 +255,7 @@ namespace loos
       if (fabs(lf) > INT_MAX-2)
       {
 	/* scaling would cause overflow */
-	throw(InternalOverflow();)
+	throw(InternalOverflow());
       }
       lint2 = lf;
       if (lint2 < minint[1]) minint[1] = lint2;
