@@ -60,6 +60,15 @@ namespace loos {
     }
 
     
+    double timePerStep() const { return(dt_); }
+    void timePerStep(const double dt) { dt_ = dt; }
+
+    uint stepsPerFrame() const { return(steps_per_frame_); }
+    void stepsPerFrame(const uint s) { steps_per_frame_ = s; }
+
+    uint currentStep() const { return(step_); }
+    void currentStep(const uint s) { step_ = s; }
+
 
 
     void writeFrame(const AtomicGroup& model);
