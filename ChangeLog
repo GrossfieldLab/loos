@@ -1,3 +1,10 @@
+2014-07-30    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added support for getting the step and time for the currently
+	read XTC frame.
+	* Added support for calculating the timestep (time per step) from
+	an XTC trajectory
+
 2014-06-16    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Removed center-model (this had been deprecated back in 2011)
