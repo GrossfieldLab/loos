@@ -35,7 +35,6 @@ namespace loos {
 
       if (append && !stat(fname.c_str(), &statbuf)) {
 	openStream(fname, true);
-	prepareToAppend();
 	appending_ = true;
       } else
 	openStream(fname);
@@ -57,8 +56,6 @@ namespace loos {
 
   private:
 
-    virtual void prepareToAppend() {}
-    
     void openStream(const std::string& fname, const bool append = false) {
       std::ios_base::openmode mode = std::ios_base::out | std::ios_base::binary;
       if (append)

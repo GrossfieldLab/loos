@@ -161,7 +161,9 @@ namespace loos {
       writeFrame(*i);
   }
 
-  void DCDWriter::readExistingHeader() {
+  void DCDWriter::prepareToAppend() {
+
+    stream_->seekg(0);
 
     DCD dcd(*stream_);
     _natoms = dcd.natoms();
