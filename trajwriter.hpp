@@ -24,6 +24,8 @@ namespace loos {
     };
     
     virtual void writeFrame(const AtomicGroup& model) =0;
+
+    virtual ~TrajectoryWriter() {}
   };
 
 
