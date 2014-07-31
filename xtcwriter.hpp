@@ -29,8 +29,8 @@ namespace loos {
     
 
 
-    XTCWriter(const std::string fname) :
-      TrajectoryWriter(fname),
+    XTCWriter(const std::string fname, const bool append = false) :
+      TrajectoryWriter(fname, append),
       buf1size(0), buf2size(0),
       buf1(0), buf2(0),
       natoms_(0),
@@ -42,8 +42,8 @@ namespace loos {
     }
 
 
-    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame) :
-      TrajectoryWriter(fname),
+    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame, const bool append = false) :
+      TrajectoryWriter(fname, append),
       buf1size(0), buf2size(0),
       buf1(0), buf2(0),
       natoms_(0),
