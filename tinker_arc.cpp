@@ -102,6 +102,11 @@ namespace loos {
 	throw(LOOSError(**i, "Atom index into the trajectory frame is out of bounds"));
       (*i)->coords(frame[idx]->coords());
     }
+    
+    // Handle periodic boundary conditions (if present)
+    if (hasPeriodicBox()) {
+      g.periodicBox(periodicBox());
+    }
   }
   
 }

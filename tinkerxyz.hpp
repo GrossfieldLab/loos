@@ -77,6 +77,12 @@ namespace loos {
 
     void parseAtomRecord(const std::string&);  
 
+    //! parse the optional tinker box record
+    /**
+     *  Explicitly ignores the angles, assumes rectangular box
+     */
+    bool parseBoxRecord(const std::string& s);
+
     uint _max_index;
   
   };

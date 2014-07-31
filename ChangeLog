@@ -1,3 +1,6 @@
+2014-07-31    <alan@membrane.urmc.rochster.edu>
+    * Added support for periodic boxes in Tinker XYZ and arc files
+
 2014-07-18    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Released 2.1.3

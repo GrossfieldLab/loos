@@ -48,17 +48,46 @@ namespace loos {
     if (!(std::stringstream(input) >> num_atoms))
       throw(std::runtime_error("TinkerXYZ has malformed header"));
 
+    if (!getline(is, input)) 
+      throw(std::runtime_error("Failed reading 2nd line of Tinker file"));
+    if (parseBoxRecord(input)) {
+      if (!getline(is, input)) {
+        throw(std::runtime_error("Failed reading first atom line of TinkerXYZ"));
+      }
+    }
+
+
+
     // Read the lines
     for (int i=0; i<num_atoms; i++) {
-      if (!getline(is, input))
-        throw(std::runtime_error("Failed reading TinkerXYZ atom line "));
       parseAtomRecord(input);
+      if ((i < (num_atoms-1)) && (!getline(is, input)))
+        throw(std::runtime_error("Failed reading TinkerXYZ atom line "));
     }
 
     // Assume all XYZ files have connectivity
     setGroupConnectivity();
   }
 
+
+  bool TinkerXYZ::parseBoxRecord(const std::string& s) {
+     greal x,y,z;
+     std::string tmp;
+     std::stringstream ss(s);
+     ss >> x;
+     ss >> tmp;
+     if (isalpha(tmp[0])) {
+       // this is an atom record, not a box record
+       return false;
+     }
+     else {
+       y = atof(tmp.c_str());
+     }
+     ss >> z;
+
+     periodicBox(x,y,z);
+     return true;
+  }
 
 
   void TinkerXYZ::parseAtomRecord(const std::string& s) {
