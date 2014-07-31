@@ -40,11 +40,12 @@
 
 #include <AtomicGroup.hpp>
 #include <dcd.hpp>
+#include <trajwriter.hpp>
 
 namespace loos {
 
   //! A <I>very</I> lightweight class for writing simple DCDs
-  class DCDWriter : public boost::noncopyable {
+  class DCDWriter : public TrajectoryWriter {
 
     // Use a union to convert data to appropriate type...
     typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay; 
