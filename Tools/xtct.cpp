@@ -6,6 +6,15 @@ using namespace loos;
 
 #include <xtcwriter.hpp>
 
+void copyTraj(AtomicGroup& model, pTraj& in, TrajectoryWriter& out) {
+  while (in->readFrame()) {
+    in->updateGroupCoords(model);
+    out.writeFrame(model);
+  }
+}
+
+
+
 int main(int argc, char* argv[]) {
 
   int k = 1;
@@ -14,10 +23,5 @@ int main(int argc, char* argv[]) {
   
   XTCWriter xtc("foo.xtc");
   
-  for (uint i=0; i<10; ++i) {
-    traj->readFrame();
-    traj->updateGroupCoords(model);
-    xtc.writeFrame(model);
-  }
-
+  copyTraj(model, traj, xtc);
 }
