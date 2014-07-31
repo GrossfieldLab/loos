@@ -11,10 +11,11 @@
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
 #include <xdr.hpp>
+#include <trajwriter.hpp>
 
 namespace loos {
 
-  class XTCWriter {
+  class XTCWriter : public TrajectoryWriter {
     static const int magicints[];
     static const int firstidx;
     
@@ -24,16 +25,8 @@ namespace loos {
 
   public:
 
-    struct InternalOverflow : public std::exception { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
+    struct InternalOverflow : public WriteError { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
     
-    struct WriteError : public std::exception {
-      WriteError() : text("Error while writing XTC") {}
-      WriteError(const char* message) : text(message) {}
-
-      virtual const char* what() const throw() { return(text); }
-
-      const char* text;
-    };
 
 
     XTCWriter(const std::string fname) :
