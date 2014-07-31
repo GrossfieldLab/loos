@@ -67,8 +67,11 @@ namespace loos {
         mode |= std::ios_base::trunc;
 
       stream_ = new std::fstream(fname.c_str(), mode);
+      if (append)
+	stream_->seekp(0, std::ios_base::end);
       if (!stream_->good())
         throw(std::runtime_error("Error while opening output trajectory file"));
+
 
       delete_ = true;
     }
