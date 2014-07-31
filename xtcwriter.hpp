@@ -30,6 +30,7 @@ namespace loos {
 
 
     XTCWriter(const std::string fname) :
+      TrajectoryWriter(fname),
       buf1size(0), buf2size(0),
       buf1(0), buf2(0),
       natoms_(0),
@@ -37,12 +38,12 @@ namespace loos {
       step_(0),
       steps_per_frame_(0)
     {
-      ofs.open(fname.c_str(), std::ios::out);
-      xdr.setStream(&ofs);
+      xdr.setStream(stream_);
     }
 
 
     XTCWriter(const std::string fname, const double dt, const uint steps_per_frame) :
+      TrajectoryWriter(fname),
       buf1size(0), buf2size(0),
       buf1(0), buf2(0),
       natoms_(0),
@@ -50,8 +51,7 @@ namespace loos {
       step_(0),
       steps_per_frame_(steps_per_frame)
     {
-      ofs.open(fname.c_str(), std::ios::out);
-      xdr.setStream(&ofs);
+      xdr.setStream(stream_);
     }
     
 
@@ -102,7 +102,6 @@ namespace loos {
     uint step_;
     uint steps_per_frame_;
 
-    std::ofstream ofs;
     internal::XDRWriter xdr;
   };
 
