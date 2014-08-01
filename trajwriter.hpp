@@ -41,6 +41,13 @@ namespace loos {
     }
 
 
+    //! Write a trajectory to a stream
+    /**
+     * Note that this constructor assumes that the stream is correctly
+     * prepped by the caller...if you need to seekp() to the end of the
+     * stream for appending, then this must be done before instantiating
+     * the TrajectoryWriter object.
+     */
     TrajectoryWriter(std::iostream* s, const bool append = false)
       : appending_(append), delete_(false) {}
 
