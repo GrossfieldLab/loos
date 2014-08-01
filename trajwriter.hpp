@@ -41,6 +41,9 @@ namespace loos {
     }
 
 
+    TrajectoryWriter(std::iostream* s, const bool append = false)
+      : appending_(append), delete_(false) {}
+
     virtual void writeFrame(const AtomicGroup& model) =0;
 
     virtual ~TrajectoryWriter() {
