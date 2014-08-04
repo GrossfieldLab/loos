@@ -61,11 +61,12 @@ namespace loos {
 
     virtual void writeFrame(const AtomicGroup& model) =0;
 
-    virtual void setCurrentStep(const uint s) { }
-    virutal void setCurrentTime(const double t) { }
+    virtual void writeFrame(const AtomicGroup& model, const uint step, const double time) {
+      writeFrame(model);
+    }
 
     virtual bool hasFrameStep() const { return(false); }
-    virtual bool hasTime() const { return(false); }
+    virtual bool hasFrameTime() const { return(false); }
 
 
   protected:
