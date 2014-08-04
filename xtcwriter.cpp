@@ -509,9 +509,9 @@ namespace loos
     float* crds = new float[n * 3];
     for (uint i=0,k=0; i<n; ++i) {
       GCoord c = model[i]->coords();
-      crds[k++] = c.x();
-      crds[k++] = c.y();
-      crds[k++] = c.z();
+      crds[k++] = c.x() / 10.0;       // Convert to nm
+      crds[k++] = c.y() / 10.0;
+      crds[k++] = c.z() / 10.0;
     }
     writeCompressedCoordsFloat(crds, n, 1000.0);
   }
