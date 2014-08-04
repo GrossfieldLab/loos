@@ -34,9 +34,9 @@ namespace loos {
       buf1size(0), buf2size(0),
       buf1(0), buf2(0),
       natoms_(0),
-      dt_(0.0),
+      dt_(1.0),
       step_(0),
-      steps_per_frame_(0)
+      steps_per_frame_(1)
     {
       xdr.setStream(stream_);
     }
