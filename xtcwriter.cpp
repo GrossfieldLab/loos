@@ -494,9 +494,9 @@ namespace loos
     float outbox[DIM*DIM];
     for (uint i=0; i < DIM*DIM; ++i)
       outbox[i] = 0.0;
-    outbox[0] = box[0];
-    outbox[4] = box[1];
-    outbox[8] = box[2];
+    outbox[0] = box[0] / 10.0;
+    outbox[4] = box[1] / 10.0;
+    outbox[8] = box[2] / 10.0; 
 
     xdr.write(outbox, DIM*DIM);
   }
