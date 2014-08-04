@@ -51,12 +51,21 @@ namespace loos {
     TrajectoryWriter(std::iostream* s, const bool append = false)
       : appending_(append), delete_(false) {}
 
-    virtual void writeFrame(const AtomicGroup& model) =0;
 
     virtual ~TrajectoryWriter() {
       if (delete_)
 	delete stream_;
     }
+
+
+
+    virtual void writeFrame(const AtomicGroup& model) =0;
+
+    virtual void setCurrentStep(const uint s) { }
+    virutal void setCurrentTime(const double t) { }
+
+    virtual bool hasFrameStep() const { return(false); }
+    virtual bool hasTime() const { return(false); }
 
 
   protected:
