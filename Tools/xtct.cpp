@@ -21,8 +21,8 @@ int main(int argc, char* argv[]) {
   AtomicGroup model = createSystem(argv[k++]);
   pTraj traj = createTrajectory(argv[k++], model);
   
-  //  XTCWriter out("bar.xtc", true);
-  DCDWriter out("bar.dcd", true);
+  XTCWriter out("bar.xtc", true);
+  //DCDWriter out("bar.dcd", true);
   
   copyTraj(model, traj, &out);
 }
