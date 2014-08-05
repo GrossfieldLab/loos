@@ -52,6 +52,10 @@ namespace loos {
 
   public:
 
+    static TrajectoryWriter* create(const std::string& s, const bool append = false) {
+      return(new DCDWriter(s, append));
+    }
+
     //! Setup for writing to a file named by \a s
     /** You can opt to write the header explicitly, i.e.
      * \code
@@ -187,7 +191,7 @@ namespace loos {
     }
 
     void setComments(const std::vector<std::string>& comments) { setTitles(comments); }
-    boos hasComments() const { return(true); }
+    bool hasComments() const { return(true); }
     
     //! Writes a frame or a group of frames to a growing DCD
     /** writeFrame() will automatically extend the DCD for you if you

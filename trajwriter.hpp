@@ -58,7 +58,7 @@ namespace loos {
     }
 
 
-    virtual bool setComments(const std::vector<std::string>& comments) { }
+    virtual void setComments(const std::vector<std::string>& comments) { }
 
 
     virtual void writeFrame(const AtomicGroup& model) =0;
