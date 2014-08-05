@@ -59,6 +59,8 @@ namespace loos {
   //! Pull off the file name extension (if present)
   std::string findBaseName(const std::string&);
 
+  boost::tuple<std::string, std::string> splitFilename(const std::string& filename);
+
   //! Get the next line of input, skipping blanks and stripping comments
   std::string getNextLine(std::istream& is, int* lineno);
 
