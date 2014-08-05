@@ -58,6 +58,8 @@ namespace loos {
     }
 
 
+    virtual bool setComments(const std::vector<std::string>& comments) { }
+
 
     virtual void writeFrame(const AtomicGroup& model) =0;
 
@@ -67,7 +69,7 @@ namespace loos {
 
     virtual bool hasFrameStep() const { return(false); }
     virtual bool hasFrameTime() const { return(false); }
-
+    virtual bool hasComments() const { return(false); }
 
   protected:
     std::iostream* stream_;
