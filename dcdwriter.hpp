@@ -186,6 +186,9 @@ namespace loos {
       _titles.push_back(s);
     }
 
+    void setComments(const std::vector<std::string>& comments) { setTitles(comments); }
+    boos hasComments() const { return(true); }
+    
     //! Writes a frame or a group of frames to a growing DCD
     /** writeFrame() will automatically extend the DCD for you if you
      *  write past the initially specified number of frames.
