@@ -90,11 +90,11 @@ namespace loos {
 
   pAtomicGroup createSystemPtr(const std::string& filename) {
 
-    size_t extension_pos = filename.rfind('.');
-    if (extension_pos == filename.npos)
+    boost::tuple<std::string, std::string> names = splitFilename(filename);
+    if (boost::get<1>(names).empty())
       throw(std::runtime_error("Error- system filename must end in an extension or the filetype must be explicitly specified"));
 
-    std::string filetype = filename.substr(extension_pos+1);
+    std::string filetype = boost::get<1>(names);
     boost::to_lower(filetype);
     return(createSystemPtr(filename, filetype));
   }
@@ -183,11 +183,12 @@ namespace loos {
 
 
   pTraj createTrajectory(const std::string& filename, const AtomicGroup& g) {
-    size_t extension_pos = filename.rfind('.');
-    if (extension_pos == filename.npos)
+    boost::tuple<std::string, std::string> names = splitFilename(filename);
+
+    if (boost::get<1>(names).empty())
       throw(std::runtime_error("Error- trajectory filename must end in an extension or the filetype must be explicitly specified"));
 
-    std::string filetype = filename.substr(extension_pos+1);
+    std::string filetype = boost::get<1>(names);
     boost::to_lower(filetype);
     return(createTrajectory(filename, filetype, g));
   }
