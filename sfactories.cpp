@@ -123,22 +123,22 @@ namespace loos {
     };
 
     TrajectoryNameBindingType trajectory_name_bindings[] = {
-      { "dcd", "CHARMM/NAMD DCD", &DCD::create},
 #if defined(HAS_NETCDF)
-      { "nc", "Amber Trajectory (NetCDF format)", &AmberNetcdf::create},
-      { "mdcrd", "Amber Trajectory (NetCDF or Amber format)", &AmberNetcdf::create},
-      { "crd", "Amber Trajectory (NetCDF or Amber format)", &AmberNetcdf::create},
+      { "crd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
+      { "mdcrd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
+      { "nc", "Amber Traj (NetCDF)", &AmberNetcdf::create},
 #else
-      { "mdcrd", "Amber Trajectory", &AmberTraj::create},
-      { "crd", "Amber Trajectory", &AmberTraj::create},
+      { "crd", "Amber Traj", &AmberTraj::create},
+      { "mdcrd", "Amber Traj", &AmberTraj::create},
 #endif
+      { "impcrd", "Amber Restart", &AmberRst::create},
       { "rst", "Amber Restart", &AmberRst::create},
       { "rst7", "Amber Restart", &AmberRst::create},
-      { "impcrd", "Amber Restart", &AmberRst::create},
+      { "dcd", "CHARMM/NAMD DCD", &DCD::create},
       { "pdb", "Concatenated PDB", &CCPDB::create},
-      { "arc", "Tinker ARC", &TinkerArc::create},
-      { "xtc", "Gromacs XTC", &XTC::create},
       { "trr", "Gromacs TRR", &TRR::create},
+      { "xtc", "Gromacs XTC", &XTC::create},
+      { "arc", "Tinker ARC", &TinkerArc::create},
       { "", "", 0}
     };
       
@@ -164,70 +164,25 @@ namespace loos {
     if (!g.allHaveProperty(Atom::indexbit))
       throw(LOOSError("Model passed to createTrajectory() does not have atom index information."));
 
-    if (filetype == "dcd") {
-      pDCD pd(new DCD(filename));
-      pTraj pt(pd);
-      return(pt);
-    } else if (filetype == "nc") {
-#if defined(HAS_NETCDF)
-	pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
-	pTraj pt(pat);
-	return(pt);
-#else
-	throw(std::runtime_error("Error- trajectory type is an Amber Netcdf file but LOOS was built without netcdf support."));
-#endif
-    } else if (filetype == "mdcrd"
-	       || filetype == "crd") {
-
-#if defined(HAS_NETCDF)      
-      if (isFileNetCDF(filename)) {
-        pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
-        pTraj pt(pat);
-        return(pt);
+    for (internal::TrajectoryNameBindingType* p = internal::trajectory_name_bindings; p->creator != 0; ++p) {
+      if (p->suffix == filetype) {
+        return(pTraj( (*(p->creator))(filename, g)) );
       }
-#endif
+    }
+    throw(std::runtime_error("Error- unknown output trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
 
-      pAmberTraj pat(new AmberTraj(filename, g.size()));
-      pTraj pt(pat);
-      return(pt);
-
-    } else if (filetype == "rst"
-               || filetype == "rst7"
-               || filetype == "inpcrd") {
-      pAmberRst par(new AmberRst(filename, g.size()));
-      pTraj pt(par);
-      return(pt);
-    } else if (filetype == "pdb") {
-      pCCPDB ppdb(new CCPDB(filename));
-      pTraj pt(ppdb);
-      return(pt);
-    } else if (filetype == "arc") {
-      pTinkerArc pta(new TinkerArc(filename));
-      pTraj pt(pta);
-      return(pt);
-    } else if (filetype == "xtc") {
-      pXTC pxtc(new XTC(filename));
-      pTraj pt(pxtc);
-      return(pt);
-    } else if (filetype == "trr") {
-      pTRR ptrr(new TRR(filename));
-      pTraj pt(ptrr);
-      return(pt);
-
-    } else
-      throw(std::runtime_error("Error- unknown trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }
 
 
   pTraj createTrajectory(const std::string& filename, const AtomicGroup& g) {
     boost::tuple<std::string, std::string> names = splitFilename(filename);
+    std::string suffix = boost::get<1>(names);
 
-    if (boost::get<1>(names).empty())
+    if (suffix.empty())
       throw(std::runtime_error("Error- trajectory filename must end in an extension or the filetype must be explicitly specified"));
 
-    std::string filetype = boost::get<1>(names);
-    boost::to_lower(filetype);
-    return(createTrajectory(filename, filetype, g));
+    boost::to_lower(suffix);
+    return(createTrajectory(filename, suffix, g));
   }
 
 
