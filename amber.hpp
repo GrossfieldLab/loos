@@ -111,6 +111,11 @@ namespace loos {
       read(ifs);
     }
 
+    static AtomicGroup* create(const std::string& fname) {
+      return(new Amber(fname));
+    }
+
+
     //! Clones an object for polymorphism...
     virtual Amber* clone(void) const {
       return(new Amber(*this));

@@ -57,39 +57,47 @@
 
 namespace loos {
 
+
+  namespace internal {
+    struct SystemNameBindingType {
+      std::string suffix;
+      std::string type;
+      AtomicGroup* (*creator)(const std::string& fname);
+    };
+
+    SystemNameBindingType system_name_bindings[] = {
+      { "prmtop", "Amber", &Amber::create },
+      { "crd", "CHARMM CRD", &CHARMM::create },
+      { "pdb", "CHARMM/NAMD PDB", &PDB::create },
+      { "psf", "CHARMM/NAMD PSF", &PSF::create },
+      { "gro", "Gromacs", &Gromacs::create },
+      { "xyz", "Tinker", &TinkerXYZ::create },
+      { "", "", 0}
+    };
+  }
+
+
+
+
   std::string availableSystemFileTypes() {
-    std::string types = "crd (CHARMM), gro (GROMACS), pdb (CHARMM/NAMD), prmtop (Amber), psf (CHARMM/NAMD), xyz (Tinker)";
+    std::string types;
+    for (internal::SystemNameBindingType* p = internal::system_name_bindings; p->creator != 0; ++p) {
+      types += p->suffix + " = " + p->type + "\n";
+    }
+
     return(types);
   }
 
 
   pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype) {
 
-    pAtomicGroup pag;
+    for (internal::SystemNameBindingType* p = internal::system_name_bindings; p->creator != 0; ++p)
+      if (p->suffix == filetype) {
+        AtomicGroup* sys = (*(p->creator))(filename);
+        return(pAtomicGroup(sys));
+      }
 
-    if (filetype == "pdb") {
-      pPDB p(new PDB(filename));
-      pag = p;
-    } else if (filetype == "psf") {
-      pPSF p(new PSF(filename));
-      pag = p;
-    } else if (filetype == "prmtop") { 
-      pAmber p(new Amber(filename));
-      pag = p;
-    } else if (filetype == "xyz") {
-      pTinkerXYZ p(new TinkerXYZ(filename));
-      pag = p;
-    } else if (filetype == "gro") {
-      pGromacs p(new Gromacs(filename));
-      pag = p;
-    } else if (filetype == "crd") {
-      pCHARMM p(new CHARMM(filename));
-      pag = p;
-
-    } else
-      throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'. Try --help to see available types."));
-
-    return(pag);
+    throw(std::runtime_error("Error- unknown output system file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }
 
 
@@ -97,12 +105,12 @@ namespace loos {
   pAtomicGroup createSystemPtr(const std::string& filename) {
 
     boost::tuple<std::string, std::string> names = splitFilename(filename);
-    if (boost::get<1>(names).empty())
+    std::string suffix = boost::get<1>(names);
+    if (suffix.empty())
       throw(std::runtime_error("Error- system filename must end in an extension or the filetype must be explicitly specified"));
 
-    std::string filetype = boost::get<1>(names);
-    boost::to_lower(filetype);
-    return(createSystemPtr(filename, filetype));
+    boost::to_lower(suffix);
+    return(createSystemPtr(filename, suffix));
   }
 
 
@@ -226,7 +234,7 @@ namespace loos {
     throw(std::runtime_error("Error- unknown output trajectory file type '" + suffix + "' for file '" + filename + "'.  Try --help to see available types."));
     return(0);
   }
-
+    
 }
 
 

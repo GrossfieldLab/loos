@@ -57,6 +57,10 @@ namespace loos {
 
     explicit Gromacs(std::istream& ifs) : _max_index(0) { read(ifs); }
 
+    static AtomicGroup* create(const std::string& fname) {
+      return(new Gromacs(fname));
+    }
+
 
     std::string title(void) const { return(title_); }
 
