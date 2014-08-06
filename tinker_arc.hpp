@@ -68,7 +68,8 @@ namespace loos {
 					   _nframes(0), current_index(0), at_end(false) { init(); }
 
     std::string description() const { return("Tinker Archive"); }
-    Trajectory* create(std::string& fname, const AtomicGroup& model) {
+
+    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
       return(new TinkerArc(fname));
     }
 

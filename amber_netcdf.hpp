@@ -121,7 +121,7 @@ namespace loos {
     }
 
     std::string description() const { return("Amber trajectory (netCDF)"); }
-    Trajectory* create(const std::string& fname, const AtomicGroup& model) {
+    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
       return(new AmberNetcdf(fname, model.size()));
     }
 

@@ -115,15 +115,46 @@ namespace loos {
   }
 
 
+  namespace internal {
+    struct TrajectoryNameBindingType {
+      std::string suffix;
+      std::string type;
+      Trajectory* (*creator)(const std::string& fname, const AtomicGroup& model);
+    };
+
+    TrajectoryNameBindingType trajectory_name_bindings[] = {
+      { "dcd", "CHARMM/NAMD DCD", &DCD::create},
+#if defined(HAS_NETCDF)
+      { "nc", "Amber Trajectory (NetCDF format)", &AmberNetcdf::create},
+      { "mdcrd", "Amber Trajectory (NetCDF or Amber format)", &AmberNetcdf::create},
+      { "crd", "Amber Trajectory (NetCDF or Amber format)", &AmberNetcdf::create},
+#else
+      { "mdcrd", "Amber Trajectory", &AmberTraj::create},
+      { "crd", "Amber Trajectory", &AmberTraj::create},
+#endif
+      { "rst", "Amber Restart", &AmberRst::create},
+      { "rst7", "Amber Restart", &AmberRst::create},
+      { "impcrd", "Amber Restart", &AmberRst::create},
+      { "pdb", "Concatenated PDB", &CCPDB::create},
+      { "arc", "Tinker ARC", &TinkerArc::create},
+      { "xtc", "Gromacs XTC", &XTC::create},
+      { "trr", "Gromacs TRR", &TRR::create},
+      { "", "", 0}
+    };
+      
+    
+
+  }
+
 
   std::string availableTrajectoryFileTypes() {
-    std::string types =
-      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd/crd (Amber" 
-#if defined(HAS_NETCDF)
-      " and NetCDF), nc (Amber NetCDF"
-#endif
-      "), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
+    std::string types;
+    for (internal::TrajectoryNameBindingType* p = internal::trajectory_name_bindings; p->creator != 0; ++p) {
+      types += p->suffix + " = " + p->type + "\n";
+    }
+
     return(types);
+
   }
 
 

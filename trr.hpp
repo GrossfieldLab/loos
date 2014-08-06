@@ -116,7 +116,7 @@ namespace loos {
     }
 
     std::string description() const { return("Gromacs TRR"); }
-    Trajectory* create(const std::string& fname, const AtomicGroup& model) {
+    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
       return(new TRR(fname));
     }
 
