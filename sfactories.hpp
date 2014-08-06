@@ -37,6 +37,7 @@ namespace loos {
 
   std::string availableSystemFileTypes();
   std::string availableTrajectoryFileTypes();
+  std::string availableOutputTrajectoryFileTypes();
 
   pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype);
   pAtomicGroup createSystemPtr(const std::string& filename);
@@ -70,6 +71,10 @@ namespace loos {
    */
   pTraj createTrajectory(const std::string&, const AtomicGroup&);
   pTraj createTrajectory(const std::string&, const std::string&, const AtomicGroup&);
+
+
+  TrajectoryWriter* createOutputTrajectory(const std::string& filename, const bool append);
+
 };
 
 

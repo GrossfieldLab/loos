@@ -20,6 +20,8 @@
 */
 
 
+#include <string>
+
 #include <sfactories.hpp>
 #include <sys/stat.h>
 
@@ -48,6 +50,10 @@
 #include <xtc.hpp>
 #include <trr.hpp>
 
+
+#include <trajwriter.hpp>
+#include <dcdwriter.hpp>
+#include <xtcwriter.hpp>
 
 namespace loos {
 
@@ -191,6 +197,48 @@ namespace loos {
     std::string filetype = boost::get<1>(names);
     boost::to_lower(filetype);
     return(createTrajectory(filename, filetype, g));
+  }
+
+
+  namespace internal {
+    struct OutputTrajectoryNameBindingType {
+      std::string suffix;
+      std::string type;
+      TrajectoryWriter* (*creator)(const std::string& fname, const bool append);
+    };
+
+    OutputTrajectoryNameBindingType output_trajectory_name_bindings[] = {
+      { "dcd", "NAMD DCD", &DCDWriter::create},
+      { "xtc", "Gromacs XTC (compressed trajectory)", &XTCWriter::create},
+      { "", "", 0}
+    };
+      
+  }
+
+
+  std::string availableOutputTrajectoryFileTypes() {
+    std::string types;
+    for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
+      types += p->suffix + "\t" + p->type + "\n";
+    }
+
+    return(types);
+  }
+
+
+  TrajectoryWriter* createOutputTrajectory(const std::string& filename, const bool append) {
+    boost::tuple<std::string, std::string> names = splitFilename(filename);
+    std::string suffix = boost::get<1>(names);
+    if (suffix.empty())
+      throw(std::runtime_error("Error- output trajectory filename must end in an extension or the filetype must be explicitly specified"));
+
+    for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
+      if (p->suffix == suffix) {
+        return((*(p->creator))(filename, append));
+      }
+    }
+    throw(std::runtime_error("Error- unknown output trajectory file type '" + suffix + "' for file '" + filename + "'.  Try --help to see available types."));
+    return(0);
   }
 
 }
