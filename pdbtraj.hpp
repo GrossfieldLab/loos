@@ -76,6 +76,8 @@ namespace loos {
                                                                     _nframes(0), current_index(0), at_end(false) { init(); readFrame(0); cached_first = true; }
 
 
+    std::string description() const { return("Trajectory from set of PDB files"); }
+
     virtual uint nframes(void) const;
     virtual uint natoms(void) const;
     virtual std::vector<GCoord> coords(void);

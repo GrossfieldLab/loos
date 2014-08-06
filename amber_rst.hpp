@@ -53,7 +53,12 @@ namespace loos {
       cached_first = true;
     }
 
-
+    std::string description() const { return("Amber restart (single frame trajectory)"); }
+    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
+      return(new AmberRst(fname, model.size()));
+    }
+ 
+    
     virtual uint nframes(void) const { return(1); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void) { return(frame); }

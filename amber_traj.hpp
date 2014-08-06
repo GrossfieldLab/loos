@@ -59,6 +59,12 @@ namespace loos {
                                                      frame_offset(0), frame_size(0),
                                                      periodic(false) { init(); }
 
+    std::string description() const { return("Amber trajectory"); }
+    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
+      return(new AmberTraj(fname, model.size()));
+    }
+
+
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
     virtual std::vector<GCoord> coords(void) { return(frame); }

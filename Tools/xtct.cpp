@@ -20,9 +20,8 @@ int main(int argc, char* argv[]) {
   int k = 1;
   AtomicGroup model = createSystem(argv[k++]);
   pTraj traj = createTrajectory(argv[k++], model);
+
+  TrajectoryWriter* out = createOutputTrajectory(argv[k++]);
   
-  XTCWriter out("bar.xtc", true);
-  //DCDWriter out("bar.dcd", true);
-  
-  copyTraj(model, traj, &out);
+  copyTraj(model, traj, out);
 }
