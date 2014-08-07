@@ -62,8 +62,8 @@ namespace loos {
     }
 
 
-    static AtomicGroup* create(const std::string& fname) {
-      return(new TinkerXYZ(fname));
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new TinkerXYZ(fname)));
     } 
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)

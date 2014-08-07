@@ -63,8 +63,8 @@ namespace loos {
       read(ifs);
     }
 
-    static AtomicGroup* create(const std::string& fname) {
-      return(new CHARMM(fname));
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new CHARMM(fname)));
     }
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)

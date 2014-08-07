@@ -62,7 +62,7 @@ namespace loos {
     struct SystemNameBindingType {
       std::string suffix;
       std::string type;
-      AtomicGroup* (*creator)(const std::string& fname);
+      pAtomicGroup (*creator)(const std::string& fname);
     };
 
     SystemNameBindingType system_name_bindings[] = {
@@ -92,10 +92,8 @@ namespace loos {
   pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype) {
 
     for (internal::SystemNameBindingType* p = internal::system_name_bindings; p->creator != 0; ++p)
-      if (p->suffix == filetype) {
-        AtomicGroup* sys = (*(p->creator))(filename);
-        return(pAtomicGroup(sys));
-      }
+      if (p->suffix == filetype)
+        return(*(p->creator))(filename);
 
     throw(std::runtime_error("Error- unknown output system file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }

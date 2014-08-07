@@ -74,8 +74,8 @@ namespace loos {
       read(ifs);
     }
 
-    static AtomicGroup* create(const std::string& fname) {
-      return(new PSF(fname));
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new PSF(fname)));
     }
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)

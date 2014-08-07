@@ -98,8 +98,8 @@ namespace loos {
     explicit PDB(std::istream& ifs) : _max_index(0), _show_charge(false), _auto_ter(true),
                                        _has_cryst(false), strictness_policy(false) { read(ifs); }
 
-    static AtomicGroup* create(const std::string& fname) {
-      return(new PDB(fname));
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new PDB(fname)));
     }
 
 

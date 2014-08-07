@@ -111,8 +111,8 @@ namespace loos {
       read(ifs);
     }
 
-    static AtomicGroup* create(const std::string& fname) {
-      return(new Amber(fname));
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new Amber(fname)));
     }
 
 
