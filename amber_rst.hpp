@@ -54,8 +54,8 @@ namespace loos {
     }
 
     std::string description() const { return("Amber restart (single frame trajectory)"); }
-    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
-      return(new AmberRst(fname, model.size()));
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new AmberRst(fname, model.size())));
     }
  
     

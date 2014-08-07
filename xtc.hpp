@@ -95,8 +95,8 @@ namespace loos {
     }
 
     std::string description() const { return("Gromacs XTC (compressed trajectory)"); }
-    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
-      return(new XTC(fname));
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new XTC(fname)));
     }
 
     uint natoms(void) const { return(natoms_); }

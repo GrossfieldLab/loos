@@ -54,8 +54,8 @@ namespace loos {
     explicit CCPDB(const char *p) : Trajectory(p), _natoms(0), _nframes(0) { init(); }
     explicit CCPDB(std::istream& is) : Trajectory(is), _natoms(0), _nframes(0) { init(); }
 
-    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
-      return(new CCPDB(fname));
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new CCPDB(fname)));
     }
 
     virtual std::string description() const { return("Concatenated PDB"); }

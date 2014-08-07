@@ -125,7 +125,7 @@ namespace loos {
     struct TrajectoryNameBindingType {
       std::string suffix;
       std::string type;
-      Trajectory* (*creator)(const std::string& fname, const AtomicGroup& model);
+      pTraj (*creator)(const std::string& fname, const AtomicGroup& model);
     };
 
     TrajectoryNameBindingType trajectory_name_bindings[] = {
@@ -172,7 +172,7 @@ namespace loos {
 
     for (internal::TrajectoryNameBindingType* p = internal::trajectory_name_bindings; p->creator != 0; ++p) {
       if (p->suffix == filetype) {
-        return(pTraj( (*(p->creator))(filename, g)) );
+        return((*(p->creator))(filename, g) );
       }
     }
     throw(std::runtime_error("Error- unknown output trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));

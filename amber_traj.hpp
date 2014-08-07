@@ -60,8 +60,8 @@ namespace loos {
                                                      periodic(false) { init(); }
 
     std::string description() const { return("Amber trajectory"); }
-    static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
-      return(new AmberTraj(fname, model.size()));
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new AmberTraj(fname, model.size())));
     }
 
 

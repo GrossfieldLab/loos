@@ -108,8 +108,8 @@ namespace loos {
 
       std::string description() const { return("CHARMM/NAMD DCD"); }
 
-      static Trajectory* create(const std::string& fname, const AtomicGroup& model) {
-          return(new DCD(fname));
+      static pTraj create(const std::string& fname, const AtomicGroup& model) {
+	return(pTraj(new DCD(fname)));
       }
 
     //! Read in the header from the stored stream
