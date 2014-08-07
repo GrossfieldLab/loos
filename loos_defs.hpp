@@ -150,6 +150,7 @@ namespace loos {
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;
   typedef boost::shared_ptr<XTC> pXTC;
   typedef boost::shared_ptr<TRR> pTRR;
+  typedef boost::shared_ptr<TrajectoryWriter> pTrajectoryWriter;
 
   // AtomicGroup and subclasses (i.e. systems formats)
   class AtomicGroup;

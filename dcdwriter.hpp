@@ -52,8 +52,8 @@ namespace loos {
 
   public:
 
-    static TrajectoryWriter* create(const std::string& s, const bool append = false) {
-      return(new DCDWriter(s, append));
+    static pTrajectoryWriter create(const std::string& s, const bool append = false) {
+      return(pTrajectoryWriter(new DCDWriter(s, append)));
     }
 
     //! Setup for writing to a file named by \a s

@@ -29,8 +29,8 @@ namespace loos {
     
 
 
-    static TrajectoryWriter* create(const std::string& s, const bool append = false) {
-      return(new XTCWriter(s, append));
+    static pTrajectoryWriter create(const std::string& s, const bool append = false) {
+      return(pTrajectoryWriter(new XTCWriter(s, append)));
     }
 
 

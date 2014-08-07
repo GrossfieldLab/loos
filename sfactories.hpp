@@ -73,7 +73,7 @@ namespace loos {
   pTraj createTrajectory(const std::string&, const std::string&, const AtomicGroup&);
 
 
-  TrajectoryWriter* createOutputTrajectory(const std::string& filename, const bool append = false);
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const bool append = false);
 
 };
 

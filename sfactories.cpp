@@ -198,7 +198,7 @@ namespace loos {
     struct OutputTrajectoryNameBindingType {
       std::string suffix;
       std::string type;
-      TrajectoryWriter* (*creator)(const std::string& fname, const bool append);
+      pTrajectoryWriter (*creator)(const std::string& fname, const bool append);
     };
 
     OutputTrajectoryNameBindingType output_trajectory_name_bindings[] = {
@@ -220,7 +220,7 @@ namespace loos {
   }
 
 
-  TrajectoryWriter* createOutputTrajectory(const std::string& filename, const bool append) {
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const bool append) {
     boost::tuple<std::string, std::string> names = splitFilename(filename);
     std::string suffix = boost::get<1>(names);
     if (suffix.empty())
@@ -231,8 +231,8 @@ namespace loos {
         return((*(p->creator))(filename, append));
       }
     }
+
     throw(std::runtime_error("Error- unknown output trajectory file type '" + suffix + "' for file '" + filename + "'.  Try --help to see available types."));
-    return(0);
   }
     
 }
