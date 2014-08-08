@@ -139,6 +139,15 @@ int main(int argc, char *argv[]) {
   } else
     cout << "* DCD has no box/crystal information.\n";
 
+  vector<string> titles = dcd.titles();
+  if (titles.empty())
+    cout << "* DCD has no titles\n";
+  else {
+    cout << "* DCD Titles (" << titles.size() << "):\n";
+    for (uint i=0; i<titles.size(); ++i)
+      cout << "[" << i << "] : " << titles[i] << endl;
+  }
+
   cout << "icntrl dump:\n";
   for (int i=0; i<20; ++i)
     cout << boost::format("\ticntrl[%d]\t= %d\n") % i % dcd.icntrl(i);
