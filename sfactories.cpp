@@ -218,20 +218,27 @@ namespace loos {
   }
 
 
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const std::string& type, const bool append) {
+
+    for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
+      if (p->suffix == type) {
+        return((*(p->creator))(filename, append));
+      }
+    }
+
+    throw(std::runtime_error("Error- unknown output trajectory file type '" + type + "' for file '" + filename + "'.  Try --help to see available types."));
+  }
+
+
   pTrajectoryWriter createOutputTrajectory(const std::string& filename, const bool append) {
     boost::tuple<std::string, std::string> names = splitFilename(filename);
     std::string suffix = boost::get<1>(names);
     if (suffix.empty())
       throw(std::runtime_error("Error- output trajectory filename must end in an extension or the filetype must be explicitly specified"));
 
-    for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
-      if (p->suffix == suffix) {
-        return((*(p->creator))(filename, append));
-      }
-    }
-
-    throw(std::runtime_error("Error- unknown output trajectory file type '" + suffix + "' for file '" + filename + "'.  Try --help to see available types."));
+    return(createOutputTrajectory(filename, suffix, append));
   }
+
     
 }
 
