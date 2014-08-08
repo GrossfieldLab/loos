@@ -59,7 +59,10 @@ namespace loos {
 
 
     virtual void setComments(const std::vector<std::string>& comments) { }
-
+    virtual void setComments(const std::string& s) {
+      std::vector<std::string> c(1, s);
+      setComments(c);
+    }
 
     virtual void writeFrame(const AtomicGroup& model) =0;
 
