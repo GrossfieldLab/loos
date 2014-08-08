@@ -663,6 +663,7 @@ namespace loos {
       std::string label;
       bool append;
       std::string type;
+      std::string basename;
       pTrajectoryWriter outraj;
 
 

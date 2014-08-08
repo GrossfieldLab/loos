@@ -437,12 +437,14 @@ namespace loos {
     }
 
     bool OutputTrajectoryOptions::postConditions(po::variables_map& map) {
-      if (type.empty()) {
-	boost::tuple<std::string, std::string> names = splitFilename(name);
+      boost::tuple<std::string, std::string> names = splitFilename(name);
+      basename = boost::get<0>(names);
+
+      if (type.empty())
 	type = boost::get<1>(names);
-      }
+
       outraj = createOutputTrajectory(name, type, append);
-      return(false);
+      return(true);
     }
 
 
