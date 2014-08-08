@@ -652,6 +652,38 @@ namespace loos {
 
 
     // ----------------------------------------------------------------------
+    class OutputTrajectoryOptions : public OptionsPackage {
+    public:
+      OutputTrajectoryOptions() : name("output.dcd"), label("Output Trajectory"), append(false) {}
+      OutputTrajectoryOptions(const std::string& s) : name(s), label("Output Trajectory"), append(false) {}
+      OutputTrajectoryOptions(const std::string& s, const bool appending) : name(s), label("Output Trajectory"), append(appending) {}  
+
+
+      std::string name;
+      std::string label;
+      bool append;
+      std::string type;
+      pTrajectoryWriter outraj;
+
+
+    private:
+      void addGeneric(po::options_description& opts);
+      void addHidden(po::options_description& opts);
+      
+      void addPositional(po::positional_options_description& map);
+
+      bool check(po::variables_map& map);
+      
+      bool postConditions(po::variables_map& map);
+      
+      std::string help() const;
+      std::string print() const;
+
+    };
+
+
+
+    // ----------------------------------------------------------------------
 
     typedef std::vector<OptionsPackage *> vOpts;
 
