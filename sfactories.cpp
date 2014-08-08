@@ -211,7 +211,7 @@ namespace loos {
   std::string availableOutputTrajectoryFileTypes() {
     std::string types;
     for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
-      types += p->suffix + "\t" + p->type + "\n";
+      types += p->suffix + " = " + p->type + "\n";
     }
 
     return(types);
