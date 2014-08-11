@@ -40,7 +40,7 @@ namespace loos {
     void setTitle(const std::string& s);
     void addTitle(const std::string& s);
     void writeFrame(const AtomicGroup& grp);
-    void writeFrame(const std::vector<AtomicGroup>& grps);
+    void writeFrames(const std::vector<AtomicGroup>& grps);
     void writeHeader(void);
     int framesWritten(void) const { return(_current); }
   };

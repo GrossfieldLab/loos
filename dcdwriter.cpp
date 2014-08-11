@@ -154,7 +154,7 @@ namespace loos {
   }
 
 
-  void DCDWriter::writeFrame(const std::vector<AtomicGroup>& grps) {
+  void DCDWriter::writeFrames(const std::vector<AtomicGroup>& grps) {
     std::vector<AtomicGroup>::const_iterator i;
 
     for (i= grps.begin(); i != grps.end(); i++)
