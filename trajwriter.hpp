@@ -74,6 +74,8 @@ namespace loos {
     virtual bool hasFrameTime() const { return(false); }
     virtual bool hasComments() const { return(false); }
 
+    virtual uint framesWritten() const =0;
+
   protected:
     std::iostream* stream_;
     bool appending_;
