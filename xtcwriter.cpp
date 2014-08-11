@@ -1,6 +1,7 @@
 // Nascent xtc writer class
 
 #include <xtcwriter.hpp>
+#include <xtc.hpp>
 
 namespace loos 
 {
@@ -514,6 +515,8 @@ namespace loos
       crds[k++] = c.z() / 10.0;
     }
     writeCompressedCoordsFloat(crds, n, 1000.0);
+
+    ++current_;
   }
 
 
@@ -521,6 +524,13 @@ namespace loos
   void XTCWriter::writeFrame(const AtomicGroup& model) {
     writeFrame(model, step_, dt_ * step_);
     step_ += steps_per_frame_;
+  }
+
+
+  void XTCWriter::prepareToAppend() {
+    stream_->seekg(0);
+    XTC xtc(*stream_);
+    current_ = xtc.nframes();
   }
 
 };

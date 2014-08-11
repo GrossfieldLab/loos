@@ -41,9 +41,12 @@ namespace loos {
       natoms_(0),
       dt_(1.0),
       step_(0),
-      steps_per_frame_(1)
+      steps_per_frame_(1),
+      current_(0)
     {
       xdr.setStream(stream_);
+      if (appending_)
+	prepareToAppend();
     }
 
 
@@ -54,9 +57,12 @@ namespace loos {
       natoms_(0),
       dt_(dt),
       step_(0),
-      steps_per_frame_(steps_per_frame)
+      steps_per_frame_(steps_per_frame),
+      current_(0)
     {
       xdr.setStream(stream_);
+      if (appending_)
+	prepareToAppend();
     }
     
 
@@ -84,6 +90,8 @@ namespace loos {
     void writeFrame(const AtomicGroup& model);
     void writeFrame(const AtomicGroup& model, const uint step, const double time);
 
+    uint framesWritten() const { return(current_); }
+
   private:
     int sizeofint(const int size) const;
     int sizeofints(const int num_of_bits, const unsigned int sizes[]) const;
@@ -97,6 +105,7 @@ namespace loos {
     void writeHeader(const int natoms, const int step, const float time);
     void writeBox(const GCoord& box);
 
+    void prepareToAppend();
     
   private:
     uint buf1size, buf2size;
@@ -106,6 +115,7 @@ namespace loos {
     double dt_;
     uint step_;
     uint steps_per_frame_;
+    uint current_;
 
     internal::XDRWriter xdr;
   };
