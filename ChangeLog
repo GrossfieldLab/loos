@@ -1,3 +1,31 @@
+2014-08-11  Tod Romo  <tromo@gorgoneion>
+
+	* Changed DCDWriter::framesWritten() to return an unsigned int
+	* Added TrajectoryWriter base class to provide a simple interface
+	to writing trajectories
+	* Added XTCWriter class for writing GROMACS XTC files (single
+	precision only...based heavily on the xdrfile library provided by
+	GROMACS)
+	* Changed DCDWriter to derive from TrajectoryWriter
+	* Added createOutputTrajectory() factory function to determine
+	output trajectory format and return a pTrajectoryWriter (boost
+	shared pointer to a TrajectoryWriter object).
+	* Added a static class function to all trajectories and systems
+	(e.g. pPDB PDB::create(const string &fname)).
+	* Changed how all of the createXXXX() factory functions work...
+	They use a table binding filename extension to the appropriate
+	object create() function.
+	* Added Trajectory::description() to return a string describing
+	the trajectory format.
+	* Changed trajinfo to report the trajectory file's format
+	* Changed subsetter and mergetraj to use TrajectoryWriter.  For
+	subsetter, this means you now must specify the trajectory name
+	rather than a prefix (so subsetter can determine the output
+	trajectory type).
+	* Added splitFilename() utility function to break a filename into
+	the basename and a dotted suffix.
+	* Added OutputTrajectoryOptions class.
+
 2014-07-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added support for getting the step and time for the currently
