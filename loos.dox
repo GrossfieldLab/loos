@@ -1395,6 +1395,40 @@ Matlab and Octave.
 
 
 /*! \page Changes Change Log
+\section release214 Version 2.1.4 (X-YY-2014)
+\subsection r214_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added support for retrieving time and step from frames of XTC files
+  <li> Added support for estimating DCD-style timestep for XTC files
+  <li> Added spliteFilename() utility
+  <li> Added Trajectory::description(), returning a string describing the format
+  <li> Added TrajectoryWriter base class to support writing multiple
+  trajectory formats.  The interface is intentially simple.  For more
+  control, explicitly use a supported format.
+  <li> Added XTCWriter class for writing Gromacs XTC files (based on
+  xdrfile-lib from Gromacs).
+  <li> Added createOutputTrajectory() factory function
+  <li> Added OutputTrajectoryOptions class
+  <li> Added a static create() function to all trajectory and system
+  classes (returns a boost shared pointer to a new instance of the
+  appropriate class)
+  <li> Changed DCDWriter to inherit from TrajectoryWriter
+  <li> Changed how the system and trajectory factory functions work.
+  They are now table driven and utilize the static create() function.
+  <li> Changed how available file formats are listed (as a
+  newline-delimited list for use in ProgramOptions, rather than a more
+  compact comma-delimited list)
+  <li> Changed subsetter to use new OutputTrajectory class.  The
+  output filename must now be the trajectory name, not a prefix.  The
+  model file created uses the base filename + ".pdb" suffix.
+  <li> Changed mergetraj to use the TrajectoryWriter class.  No change
+  in command-line was made.
+  <li> Changed DCDWriter::framesWritten() to return an unsigned int
+  instead of a signed int.
+</ul>
+
+
+
 \section release213 Version 2.1.3 (7-18-2014)
 \subsection r213_added_changed Added, Changed, or Otherwise Notable
 <ul>
