@@ -76,6 +76,8 @@ namespace loos {
 
     virtual ~Trajectory() { }
 
+    virtual std::string description() const { return("No Description"); }
+
     //! # of atoms per frame
     virtual uint natoms(void) const =0;
     //! Timestep per frame

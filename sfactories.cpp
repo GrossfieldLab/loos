@@ -20,6 +20,8 @@
 */
 
 
+#include <string>
+
 #include <sfactories.hpp>
 #include <sys/stat.h>
 
@@ -49,54 +51,64 @@
 #include <trr.hpp>
 
 
+#include <trajwriter.hpp>
+#include <dcdwriter.hpp>
+#include <xtcwriter.hpp>
+
 namespace loos {
 
+
+  namespace internal {
+    struct SystemNameBindingType {
+      std::string suffix;
+      std::string type;
+      pAtomicGroup (*creator)(const std::string& fname);
+    };
+
+    SystemNameBindingType system_name_bindings[] = {
+      { "prmtop", "Amber", &Amber::create },
+      { "crd", "CHARMM CRD", &CHARMM::create },
+      { "pdb", "CHARMM/NAMD PDB", &PDB::create },
+      { "psf", "CHARMM/NAMD PSF", &PSF::create },
+      { "gro", "Gromacs", &Gromacs::create },
+      { "xyz", "Tinker", &TinkerXYZ::create },
+      { "", "", 0}
+    };
+  }
+
+
+
+
   std::string availableSystemFileTypes() {
-    std::string types = "crd (CHARMM), gro (GROMACS), pdb (CHARMM/NAMD), prmtop (Amber), psf (CHARMM/NAMD), xyz (Tinker)";
+    std::string types;
+    for (internal::SystemNameBindingType* p = internal::system_name_bindings; p->creator != 0; ++p) {
+      types += p->suffix + " = " + p->type + "\n";
+    }
+
     return(types);
   }
 
 
   pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype) {
 
-    pAtomicGroup pag;
+    for (internal::SystemNameBindingType* p = internal::system_name_bindings; p->creator != 0; ++p)
+      if (p->suffix == filetype)
+        return(*(p->creator))(filename);
 
-    if (filetype == "pdb") {
-      pPDB p(new PDB(filename));
-      pag = p;
-    } else if (filetype == "psf") {
-      pPSF p(new PSF(filename));
-      pag = p;
-    } else if (filetype == "prmtop") { 
-      pAmber p(new Amber(filename));
-      pag = p;
-    } else if (filetype == "xyz") {
-      pTinkerXYZ p(new TinkerXYZ(filename));
-      pag = p;
-    } else if (filetype == "gro") {
-      pGromacs p(new Gromacs(filename));
-      pag = p;
-    } else if (filetype == "crd") {
-      pCHARMM p(new CHARMM(filename));
-      pag = p;
-
-    } else
-      throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'. Try --help to see available types."));
-
-    return(pag);
+    throw(std::runtime_error("Error- unknown output system file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }
 
 
 
   pAtomicGroup createSystemPtr(const std::string& filename) {
 
-    size_t extension_pos = filename.rfind('.');
-    if (extension_pos == filename.npos)
+    boost::tuple<std::string, std::string> names = splitFilename(filename);
+    std::string suffix = boost::get<1>(names);
+    if (suffix.empty())
       throw(std::runtime_error("Error- system filename must end in an extension or the filetype must be explicitly specified"));
 
-    std::string filetype = filename.substr(extension_pos+1);
-    boost::to_lower(filetype);
-    return(createSystemPtr(filename, filetype));
+    boost::to_lower(suffix);
+    return(createSystemPtr(filename, suffix));
   }
 
 
@@ -109,15 +121,46 @@ namespace loos {
   }
 
 
+  namespace internal {
+    struct TrajectoryNameBindingType {
+      std::string suffix;
+      std::string type;
+      pTraj (*creator)(const std::string& fname, const AtomicGroup& model);
+    };
+
+    TrajectoryNameBindingType trajectory_name_bindings[] = {
+#if defined(HAS_NETCDF)
+      { "crd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
+      { "mdcrd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
+      { "nc", "Amber Traj (NetCDF)", &AmberNetcdf::create},
+#else
+      { "crd", "Amber Traj", &AmberTraj::create},
+      { "mdcrd", "Amber Traj", &AmberTraj::create},
+#endif
+      { "impcrd", "Amber Restart", &AmberRst::create},
+      { "rst", "Amber Restart", &AmberRst::create},
+      { "rst7", "Amber Restart", &AmberRst::create},
+      { "dcd", "CHARMM/NAMD DCD", &DCD::create},
+      { "pdb", "Concatenated PDB", &CCPDB::create},
+      { "trr", "Gromacs TRR", &TRR::create},
+      { "xtc", "Gromacs XTC", &XTC::create},
+      { "arc", "Tinker ARC", &TinkerArc::create},
+      { "", "", 0}
+    };
+      
+    
+
+  }
+
 
   std::string availableTrajectoryFileTypes() {
-    std::string types =
-      "arc (Tinker), dcd (CHARMM/NAMD), inpcrd (Amber), mdcrd/crd (Amber" 
-#if defined(HAS_NETCDF)
-      " and NetCDF), nc (Amber NetCDF"
-#endif
-      "), pdb (concatenated PDB), rst (Amber), rst7 (Amber), trr (GROMACS), xtc (GROMACS)";
+    std::string types;
+    for (internal::TrajectoryNameBindingType* p = internal::trajectory_name_bindings; p->creator != 0; ++p) {
+      types += p->suffix + " = " + p->type + "\n";
+    }
+
     return(types);
+
   }
 
 
@@ -127,71 +170,76 @@ namespace loos {
     if (!g.allHaveProperty(Atom::indexbit))
       throw(LOOSError("Model passed to createTrajectory() does not have atom index information."));
 
-    if (filetype == "dcd") {
-      pDCD pd(new DCD(filename));
-      pTraj pt(pd);
-      return(pt);
-    } else if (filetype == "nc") {
-#if defined(HAS_NETCDF)
-	pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
-	pTraj pt(pat);
-	return(pt);
-#else
-	throw(std::runtime_error("Error- trajectory type is an Amber Netcdf file but LOOS was built without netcdf support."));
-#endif
-    } else if (filetype == "mdcrd"
-	       || filetype == "crd") {
-
-#if defined(HAS_NETCDF)      
-      if (isFileNetCDF(filename)) {
-        pAmberNetcdf pat(new AmberNetcdf(filename, g.size()));
-        pTraj pt(pat);
-        return(pt);
+    for (internal::TrajectoryNameBindingType* p = internal::trajectory_name_bindings; p->creator != 0; ++p) {
+      if (p->suffix == filetype) {
+        return((*(p->creator))(filename, g) );
       }
-#endif
+    }
+    throw(std::runtime_error("Error- unknown output trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
 
-      pAmberTraj pat(new AmberTraj(filename, g.size()));
-      pTraj pt(pat);
-      return(pt);
-
-    } else if (filetype == "rst"
-               || filetype == "rst7"
-               || filetype == "inpcrd") {
-      pAmberRst par(new AmberRst(filename, g.size()));
-      pTraj pt(par);
-      return(pt);
-    } else if (filetype == "pdb") {
-      pCCPDB ppdb(new CCPDB(filename));
-      pTraj pt(ppdb);
-      return(pt);
-    } else if (filetype == "arc") {
-      pTinkerArc pta(new TinkerArc(filename));
-      pTraj pt(pta);
-      return(pt);
-    } else if (filetype == "xtc") {
-      pXTC pxtc(new XTC(filename));
-      pTraj pt(pxtc);
-      return(pt);
-    } else if (filetype == "trr") {
-      pTRR ptrr(new TRR(filename));
-      pTraj pt(ptrr);
-      return(pt);
-
-    } else
-      throw(std::runtime_error("Error- unknown trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }
 
 
   pTraj createTrajectory(const std::string& filename, const AtomicGroup& g) {
-    size_t extension_pos = filename.rfind('.');
-    if (extension_pos == filename.npos)
+    boost::tuple<std::string, std::string> names = splitFilename(filename);
+    std::string suffix = boost::get<1>(names);
+
+    if (suffix.empty())
       throw(std::runtime_error("Error- trajectory filename must end in an extension or the filetype must be explicitly specified"));
 
-    std::string filetype = filename.substr(extension_pos+1);
-    boost::to_lower(filetype);
-    return(createTrajectory(filename, filetype, g));
+    boost::to_lower(suffix);
+    return(createTrajectory(filename, suffix, g));
   }
 
+
+  namespace internal {
+    struct OutputTrajectoryNameBindingType {
+      std::string suffix;
+      std::string type;
+      pTrajectoryWriter (*creator)(const std::string& fname, const bool append);
+    };
+
+    OutputTrajectoryNameBindingType output_trajectory_name_bindings[] = {
+      { "dcd", "NAMD DCD", &DCDWriter::create},
+      { "xtc", "Gromacs XTC (compressed trajectory)", &XTCWriter::create},
+      { "", "", 0}
+    };
+      
+  }
+
+
+  std::string availableOutputTrajectoryFileTypes() {
+    std::string types;
+    for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
+      types += p->suffix + " = " + p->type + "\n";
+    }
+
+    return(types);
+  }
+
+
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const std::string& type, const bool append) {
+
+    for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
+      if (p->suffix == type) {
+        return((*(p->creator))(filename, append));
+      }
+    }
+
+    throw(std::runtime_error("Error- unknown output trajectory file type '" + type + "' for file '" + filename + "'.  Try --help to see available types."));
+  }
+
+
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const bool append) {
+    boost::tuple<std::string, std::string> names = splitFilename(filename);
+    std::string suffix = boost::get<1>(names);
+    if (suffix.empty())
+      throw(std::runtime_error("Error- output trajectory filename must end in an extension or the filetype must be explicitly specified"));
+
+    return(createOutputTrajectory(filename, suffix, append));
+  }
+
+    
 }
 
 

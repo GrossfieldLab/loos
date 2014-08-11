@@ -196,6 +196,7 @@ const string fldpre("%20s: ");
 void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool centroid = false) {
   cout << boost::format(fldpre + "%s\n") % "Model name" % model_name;
   cout << boost::format(fldpre + "%s\n") % "Trajectory name" % traj_name;
+  cout << boost::format(fldpre + "%s\n") % "Format" % traj->description();
   cout << boost::format(fldpre + "%d\n") % "Number of atoms" % traj->natoms();
   cout << boost::format(fldpre + "%d\n") % "Number of frames" % traj->nframes();
   uint n = verifyFrames(traj);

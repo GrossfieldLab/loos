@@ -65,7 +65,13 @@ namespace loos {
                                         _nframes(0), current_index(0), at_end(false) { init(); }
 
     explicit TinkerArc(std::istream& is) : Trajectory(is), _natoms(0),
-                                        _nframes(0), current_index(0), at_end(false) { init(); }
+					   _nframes(0), current_index(0), at_end(false) { init(); }
+
+    std::string description() const { return("Tinker Archive"); }
+
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new TinkerArc(fname)));
+    }
 
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }

@@ -38,9 +38,9 @@ namespace loos {
 
     d.ui = len;
 
-    _stream->write((char *)&d, sizeof(len));
-    _stream->write(data, len);
-    _stream->write((char *)&d, sizeof(len));
+    stream_->write((char *)&d, sizeof(len));
+    stream_->write(data, len);
+    stream_->write((char *)&d, sizeof(len));
   }
 
 
@@ -123,11 +123,11 @@ namespace loos {
     }
 
     if (_current >= _nsteps) {
-      _stream->seekp(0);
+      stream_->seekp(0);
       ++_nsteps;
       writeHeader();
-      _stream->seekp(0, std::ios_base::end);
-      if (_stream->fail())
+      stream_->seekp(0, std::ios_base::end);
+      if (stream_->fail())
         throw(std::runtime_error("Error while re-writing DCD header"));
     }
 
@@ -149,21 +149,23 @@ namespace loos {
 
     delete[] data;
 
-    _stream->flush();
+    stream_->flush();
     ++_current;
   }
 
 
-  void DCDWriter::writeFrame(const std::vector<AtomicGroup>& grps) {
+  void DCDWriter::writeFrames(const std::vector<AtomicGroup>& grps) {
     std::vector<AtomicGroup>::const_iterator i;
 
     for (i= grps.begin(); i != grps.end(); i++)
       writeFrame(*i);
   }
 
-  void DCDWriter::readExistingHeader(const std::string& fname) {
+  void DCDWriter::prepareToAppend() {
 
-    DCD dcd(fname);
+    stream_->seekg(0);
+
+    DCD dcd(*stream_);
     _natoms = dcd.natoms();
     _has_box = dcd.hasPeriodicBox();
     _timestep = dcd.timestep();

@@ -120,6 +120,11 @@ namespace loos {
       delete[] _box_data;
     }
 
+    std::string description() const { return("Amber trajectory (netCDF)"); }
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new AmberNetcdf(fname, model.size())));
+    }
+
     uint natoms() const { return(_natoms); }
     uint nframes() const { return(_nframes); }
     float timestep() const { return(_timestep); }   

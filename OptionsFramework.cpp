@@ -414,6 +414,54 @@ namespace loos {
 
 
     // -------------------------------------------------------
+    
+    void OutputTrajectoryOptions::addGeneric(po::options_description& opts) {
+      std::string types = availableOutputTrajectoryFileTypes();
+
+      opts.add_options()
+	("outrajtype", po::value<std::string>(&type), types.c_str())
+	("append", po::value<bool>(&append)->default_value(append), "Append if trajectory exists, otherwise overwrite");
+    }
+
+    void OutputTrajectoryOptions::addHidden(po::options_description& opts) {
+      opts.add_options()
+	("outraj", po::value<std::string>(&name), "Output trajectory name");
+    }
+
+    void OutputTrajectoryOptions::addPositional(po::positional_options_description& pos) {
+      pos.add("outraj", 1);
+    }
+
+    bool OutputTrajectoryOptions::check(po::variables_map& map) {
+      return(! map.count("outraj"));
+    }
+
+    bool OutputTrajectoryOptions::postConditions(po::variables_map& map) {
+      boost::tuple<std::string, std::string> names = splitFilename(name);
+      basename = boost::get<0>(names);
+
+      if (type.empty())
+	type = boost::get<1>(names);
+
+      outraj = createOutputTrajectory(name, type, append);
+      return(true);
+    }
+
+
+    std::string OutputTrajectoryOptions::help() const {
+      return("output-trajectory");
+    }
+
+    std::string OutputTrajectoryOptions::print() const {
+      std::ostringstream oss;
+      oss << boost::format("outraj='%s',outraj_type='%s',append=%d")
+	% name
+	% type
+	% append;
+      return(oss.str());
+    }
+    
+    // -------------------------------------------------------
 
     void RequiredArguments::addArgument(const std::string& name, const std::string& description) {
       StringPair arg(name, description);

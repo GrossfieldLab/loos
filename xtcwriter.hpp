@@ -1,0 +1,128 @@
+// (c) 2014 Tod D. Romo, Grossfield Lab, URMC
+
+#if !defined(LOOS_XTCWRITER_HPP)
+#define LOOS_XTCWRITER_HPP
+
+#include <fstream>
+#include <string>
+#include <stdexcept>
+#include <vector>
+
+#include <loos_defs.hpp>
+#include <AtomicGroup.hpp>
+#include <xdr.hpp>
+#include <trajwriter.hpp>
+
+namespace loos {
+
+  class XTCWriter : public TrajectoryWriter {
+    static const int magicints[];
+    static const int firstidx;
+    
+    static const int lastidx;
+    
+    static const int DIM;
+
+  public:
+
+    struct InternalOverflow : public WriteError { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
+    
+
+
+    static pTrajectoryWriter create(const std::string& s, const bool append = false) {
+      return(pTrajectoryWriter(new XTCWriter(s, append)));
+    }
+
+
+    XTCWriter(const std::string fname, const bool append = false) :
+      TrajectoryWriter(fname, append),
+      buf1size(0), buf2size(0),
+      buf1(0), buf2(0),
+      natoms_(0),
+      dt_(1.0),
+      step_(0),
+      steps_per_frame_(1),
+      current_(0)
+    {
+      xdr.setStream(stream_);
+      if (appending_)
+	prepareToAppend();
+    }
+
+
+    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame, const bool append = false) :
+      TrajectoryWriter(fname, append),
+      buf1size(0), buf2size(0),
+      buf1(0), buf2(0),
+      natoms_(0),
+      dt_(dt),
+      step_(0),
+      steps_per_frame_(steps_per_frame),
+      current_(0)
+    {
+      xdr.setStream(stream_);
+      if (appending_)
+	prepareToAppend();
+    }
+    
+
+
+
+    ~XTCWriter() {
+      if (buf1)
+	delete[] buf1;
+      if (buf2)
+	delete[] buf2;
+    }
+
+    
+    double timePerStep() const { return(dt_); }
+    void timePerStep(const double dt) { dt_ = dt; }
+
+    uint stepsPerFrame() const { return(steps_per_frame_); }
+    void stepsPerFrame(const uint s) { steps_per_frame_ = s; }
+
+    uint currentStep() const { return(step_); }
+    void currentStep(const uint s) { step_ = s; }
+
+
+
+    void writeFrame(const AtomicGroup& model);
+    void writeFrame(const AtomicGroup& model, const uint step, const double time);
+
+    uint framesWritten() const { return(current_); }
+
+  private:
+    int sizeofint(const int size) const;
+    int sizeofints(const int num_of_bits, const unsigned int sizes[]) const;
+    void encodebits(int* buf, int num_of_bits, const int num) const;
+    void encodeints(int* buf, const int num_of_ints, const int num_of_bits,
+		    const unsigned int* sizes, const unsigned int* nums) const;
+    void writeCompressedCoordsFloat(float* ptr, int size, float precision);
+       
+    void allocateBuffers(const size_t size);
+
+    void writeHeader(const int natoms, const int step, const float time);
+    void writeBox(const GCoord& box);
+
+    void prepareToAppend();
+    
+  private:
+    uint buf1size, buf2size;
+    int* buf1;
+    int* buf2;
+    uint natoms_;
+    double dt_;
+    uint step_;
+    uint steps_per_frame_;
+    uint current_;
+
+    internal::XDRWriter xdr;
+  };
+
+
+};
+
+
+
+#endif

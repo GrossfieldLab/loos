@@ -118,6 +118,11 @@ namespace loos {
   typedef Coord<double> GCoord;
   typedef boost::shared_ptr<GCoord> pGCoord;
 
+  // Writers
+  class TrajectoryWriter;
+  class DCDWriter;
+  class XTCWriter;
+
   // Trajectory and subclasses...
   class Atom;
   class Trajectory;
@@ -145,6 +150,7 @@ namespace loos {
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;
   typedef boost::shared_ptr<XTC> pXTC;
   typedef boost::shared_ptr<TRR> pTRR;
+  typedef boost::shared_ptr<TrajectoryWriter> pTrajectoryWriter;
 
   // AtomicGroup and subclasses (i.e. systems formats)
   class AtomicGroup;

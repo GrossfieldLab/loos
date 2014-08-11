@@ -75,7 +75,10 @@
 #include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <dcd_utils.hpp>
+
+#include <trajwriter.hpp>
 #include <dcdwriter.hpp>
+#include <xtcwriter.hpp>
 
 #include <amber_traj.hpp>
 
@@ -90,6 +93,8 @@
 #include <xtc.hpp>
 #include <gro.hpp>
 #include <trr.hpp>
+
+
 
 #include <Geometry.hpp>
 #include <ensembles.hpp>

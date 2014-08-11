@@ -38,7 +38,7 @@ apps = apps + ' HBondDetector.cpp'
 apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp amber_rst.cpp'
 apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
-apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp'
+apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'

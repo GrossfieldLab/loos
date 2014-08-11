@@ -61,6 +61,11 @@ namespace loos {
       read(ifs);
     }
 
+
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new TinkerXYZ(fname)));
+    } 
+
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
     virtual TinkerXYZ* clone(void) const;
 

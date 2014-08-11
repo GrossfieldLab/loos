@@ -115,6 +115,12 @@ namespace loos {
       init();
     }
 
+    std::string description() const { return("Gromacs TRR"); }
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new TRR(fname)));
+    }
+
+
     uint natoms(void) const { return(hdr_.natoms); }
 
     /**

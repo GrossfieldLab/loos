@@ -106,6 +106,12 @@ namespace loos {
                                      qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0),
                                      swabbing(false) { initTrajectory(); };
 
+      std::string description() const { return("CHARMM/NAMD DCD"); }
+
+      static pTraj create(const std::string& fname, const AtomicGroup& model) {
+	return(pTraj(new DCD(fname)));
+      }
+
     //! Read in the header from the stored stream
     void readHeader(void);
 

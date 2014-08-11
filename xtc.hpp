@@ -94,13 +94,19 @@ namespace loos {
       init();
     }
 
-
+    std::string description() const { return("Gromacs XTC (compressed trajectory)"); }
+    static pTraj create(const std::string& fname, const AtomicGroup& model) {
+      return(pTraj(new XTC(fname)));
+    }
 
     uint natoms(void) const { return(natoms_); }
-    float timestep(void) const { return(0); }
+    float timestep(void) const { return(timestep_); }
     uint nframes(void) const { return(frame_indices.size()); }
     bool hasPeriodicBox(void) const { return(true); }
     GCoord periodicBox(void) const { return(box); }
+
+    uint currentStep(void) const { return(current_header_.step); }
+    double currentTime(void) const { return(current_header_.time); }
 
 
     std::vector<GCoord> coords(void) { return(coords_); }
@@ -124,8 +130,9 @@ namespace loos {
     GCoord box;
     double precision_;
     std::vector<GCoord> coords_;
-
-
+    double timestep_;
+    Header current_header_;
+    
     bool parseFrame(void);
 
   private:

@@ -379,11 +379,12 @@ namespace loos {
     // point will invalidate the current object's coord state
 
     coords_.clear();
-    Header h;
-    if (!readFrameHeader(h))
+    if (!readFrameHeader(current_header_))
       return(false);
     
-    box = GCoord(h.box[0], h.box[4], h.box[8]) * 10.0; // Convert to Angstroms
+    box = GCoord(current_header_.box[0], 
+		 current_header_.box[4], 
+		 current_header_.box[8]) * 10.0; // Convert to Angstroms
     if (natoms_ <= min_compressed_system_size)
 	return(readUncompressedCoords());
     else
@@ -396,8 +397,12 @@ namespace loos {
     int ok = xdr_file.read(magic_no);
     if (!ok)
       return(false);
-    if (magic_no != magic)
-      throw(std::runtime_error("Invalid XTC magic number"));
+    if (magic_no != magic) {
+      std::ostringstream oss;
+      oss << "Invalid XTC magic number (got " << magic_no << " but expected " << magic << ")";
+      throw(std::runtime_error(oss.str()));
+      //      throw(std::runtime_error("Invalid XTC magic number"));
+    }
 
     // Defer error-checks until the end...
     xdr_file.read(hdr.natoms);
@@ -439,7 +444,9 @@ namespace loos {
 
       uint block_size = sizeof(internal::XDRReader::block_type);
 
-      
+      // Always update estimated timestep...
+      if (h.step != 0)
+	timestep_ = h.time / h.step;
 
       size_t offset = 0;
       uint nbytes = 0;

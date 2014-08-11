@@ -64,6 +64,21 @@ namespace loos {
   }
 
 
+  boost::tuple<std::string, std::string> splitFilename(const std::string& filename) {
+    std::string basename;
+    std::string extension;
+    
+    size_t extension_pos = filename.rfind('.');
+    if (extension_pos != filename.npos) {
+      extension = filename.substr(extension_pos+1);
+      basename = filename.substr(0, extension_pos);
+    } else
+      basename = filename;
+
+    return(boost::tuple<std::string, std::string>(basename, extension));
+  }
+
+
   std::string getNextLine(std::istream& is, int *lineno = 0) {
     std::string s;
     std::string::size_type i;

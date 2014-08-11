@@ -98,6 +98,10 @@ namespace loos {
     explicit PDB(std::istream& ifs) : _max_index(0), _show_charge(false), _auto_ter(true),
                                        _has_cryst(false), strictness_policy(false) { read(ifs); }
 
+    static pAtomicGroup create(const std::string& fname) {
+      return(pAtomicGroup(new PDB(fname)));
+    }
+
 
     //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
     virtual PDB* clone(void) const;
