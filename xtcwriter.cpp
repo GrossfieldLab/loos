@@ -28,6 +28,9 @@ namespace loos
   
 
   // -- The following is adapted from xdrfile-1.1b --
+  // Copyright (c) Erik Lindahl, David van der Spoel 2003,2004.
+  // Coordinate compression (c) by Frans van Hoesel. 
+
   // http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 
   /******************************************************************
