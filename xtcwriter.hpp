@@ -15,6 +15,20 @@
 
 namespace loos {
 
+  //! Class for writing Gromacs XTC trajectories
+  /**
+   * This code borrows heavily from the xdrfile-1.1b library provided
+   * by Gromacs.  By default, the writer will assume that the frames
+   * are evenly spaced and will use the dt and steps_per_frame
+   * variables to determine the step and timepoint for each frame.
+   * For non-uniform frame intervals, explicitly pass a step and time
+   * to writeFrame().  Note that this will NOT modify the internal
+   * counters, so you should use on form of writeFrame() or the other
+   * and not mix them.  If you must, use currentStep() to update the
+   * internal step counter (and possibly timePerStep()).
+   */
+
+
   class XTCWriter : public TrajectoryWriter {
     static const int magicints[];
     static const int firstidx;
@@ -25,10 +39,11 @@ namespace loos {
 
   public:
 
+
     struct InternalOverflow : public WriteError { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
     
 
-
+    //! Class factory function
     static pTrajectoryWriter create(const std::string& s, const bool append = false) {
       return(pTrajectoryWriter(new XTCWriter(s, append)));
     }
@@ -75,19 +90,30 @@ namespace loos {
 	delete[] buf2;
     }
 
-    
+
+    //! Get the time per step
     double timePerStep() const { return(dt_); }
+
+    //! Set the time per step
     void timePerStep(const double dt) { dt_ = dt; }
 
+    //! How many steps per frame written
     uint stepsPerFrame() const { return(steps_per_frame_); }
+
+    //! Set how many steps pass per frame written
     void stepsPerFrame(const uint s) { steps_per_frame_ = s; }
 
+    //! What the current output step is
     uint currentStep() const { return(step_); }
+
+    //! Sets the current output step
     void currentStep(const uint s) { step_ = s; }
 
 
-
+    //! Write a frame to the trajectory
     void writeFrame(const AtomicGroup& model);
+
+    //! Write a frame to the trajectory with explicit step and time metadata
     void writeFrame(const AtomicGroup& model, const uint step, const double time);
 
     uint framesWritten() const { return(current_); }

@@ -7,6 +7,8 @@ namespace loos
 {
   
 
+  // -- The following is adapted from xdrfile-1.1b --
+
   // TDR - This needs to move
   const int XTCWriter::magicints[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
@@ -459,9 +461,10 @@ namespace loos
 
 
 
+  // -- End of code from xdrfile library --
 
 
-
+  // Handle allocation of buffers (would be handle by system xdr lib)
   void XTCWriter::allocateBuffers(const size_t size) {
     size_t size3 = size * 3;
     if (size3 > buf1size) {
@@ -480,7 +483,7 @@ namespace loos
   }
 
 
-
+  // Write a frame header
   void XTCWriter::writeHeader(const int natoms, const int step, const float time) {
     int magic = 1995;
 
@@ -491,6 +494,7 @@ namespace loos
   }
 
 
+  // Write a periodic box, translating from A to nm
   void XTCWriter::writeBox(const GCoord& box) {
     float outbox[DIM*DIM];
     for (uint i=0; i < DIM*DIM; ++i)
@@ -502,6 +506,9 @@ namespace loos
     xdr.write(outbox, DIM*DIM);
   }
 
+  
+
+  // Write a frame, converting units from A to nm.  Will allocate a temp array to hold coords...
   void XTCWriter::writeFrame(const AtomicGroup& model, const uint step, const double time) {
 
     writeHeader(model.size(), step, time);
@@ -515,6 +522,7 @@ namespace loos
       crds[k++] = c.z() / 10.0;
     }
     writeCompressedCoordsFloat(crds, n, 1000.0);
+    delete[] crds;
 
     ++current_;
   }
@@ -527,6 +535,7 @@ namespace loos
   }
 
 
+  // Read existing XTC to get frame count...
   void XTCWriter::prepareToAppend() {
     stream_->seekg(0);
     XTC xtc(*stream_);
