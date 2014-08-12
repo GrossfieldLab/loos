@@ -16,9 +16,21 @@
 
 namespace loos {
 
+
+  //! Base class for writing trajectories
+  /**
+   * This is the interface for creating and writing to trajectories.
+   * The interface is kept simple on purpose to make it easy to work
+   * with multiple formats.  This means that trajectory and frame
+   * metadata may be set to default values.  If you need more control
+   * over how the trajectory is written, then use the derived classes
+   * explicitly.
+   */
+
   class TrajectoryWriter {
   public:
 
+    //! Exception while writing
     struct WriteError : public std::exception {
       WriteError() : text("Error while writing trajectory") {}
       WriteError(const char* message) : text(message) {}
@@ -29,6 +41,7 @@ namespace loos {
     };
     
 
+    //! Write a trajectory to a file, optionally appending
     TrajectoryWriter(const std::string& fname, const bool append = false)
       : appending_(false) {
       struct stat statbuf;
@@ -58,22 +71,41 @@ namespace loos {
     }
 
 
+    //! Set comments in metadata (not all formats support)
     virtual void setComments(const std::vector<std::string>& comments) { }
+
+    //! Set comment in metadata (not all formats support)
     virtual void setComments(const std::string& s) {
       std::vector<std::string> c(1, s);
       setComments(c);
     }
 
+    //! Wirte a single frame
     virtual void writeFrame(const AtomicGroup& model) =0;
 
+    //! Write a single frame specifying the step and timepoint
+    /**
+     * Not all formats support this.  By default, it will drop the
+     * extra data and call writeFrame()
+     */
     virtual void writeFrame(const AtomicGroup& model, const uint step, const double time) {
       writeFrame(model);
     }
 
+    //! Can format write step on a per-frame basis?
     virtual bool hasFrameStep() const { return(false); }
+
+    //! Can format write time on a per-frame basis?
     virtual bool hasFrameTime() const { return(false); }
+
+    //! Does format support comments in metadata?
     virtual bool hasComments() const { return(false); }
 
+    //! Total frames in output file
+    /**
+     * For files being appended too, this includes the frames already
+     * written...
+     */
     virtual uint framesWritten() const =0;
 
   protected:
@@ -83,6 +115,10 @@ namespace loos {
 
   private:
 
+
+    // Handle opening up a stream to a file...  If it exists and we
+    // are asked to append, seek to the end of the file.
+    
     void openStream(const std::string& fname, const bool append = false) {
       std::ios_base::openmode mode = std::ios_base::out | std::ios_base::binary;
       if (append)
@@ -97,7 +133,7 @@ namespace loos {
         throw(std::runtime_error("Error while opening output trajectory file"));
 
 
-      delete_ = true;
+      delete_ = true;    // Delete the stream pointer when dtor called
     }
     
 

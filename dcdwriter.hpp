@@ -190,7 +190,7 @@ namespace loos {
     void setComments(const std::vector<std::string>& comments) { setTitles(comments); }
     bool hasComments() const { return(true); }
     
-    //! Writes a frame or a group of frames to a growing DCD
+    //! Writes a frame to a growing DCD
     /** writeFrame() will automatically extend the DCD for you if you
      *  write past the initially specified number of frames.
      *  Alternatively, you can just begin writing frames without
@@ -199,6 +199,9 @@ namespace loos {
      *  the header information for you.
      */
     void writeFrame(const AtomicGroup& grp);
+
+
+    //! Same as writeFrame(), but writes out the vector of frames...
     void writeFrames(const std::vector<AtomicGroup>& grps);
 
     void writeHeader(void);
