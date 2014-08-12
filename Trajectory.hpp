@@ -76,7 +76,9 @@ namespace loos {
 
     virtual ~Trajectory() { }
 
-    virtual std::string description() const { return("No Description"); }
+
+    //! Return a string describing trajectory format
+    virtual std::string description() const { return("No Description Available"); }
 
     //! # of atoms per frame
     virtual uint natoms(void) const =0;
