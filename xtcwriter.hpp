@@ -57,7 +57,9 @@ namespace loos {
       dt_(1.0),
       step_(0),
       steps_per_frame_(1),
-      current_(0)
+      current_(0),
+      crds_size_(0),
+      crds_(0)
     {
       xdr.setStream(stream_);
       if (appending_)
@@ -73,7 +75,9 @@ namespace loos {
       dt_(dt),
       step_(0),
       steps_per_frame_(steps_per_frame),
-      current_(0)
+      current_(0),
+      crds_size_(0),
+      crds_(0)
     {
       xdr.setStream(stream_);
       if (appending_)
@@ -84,10 +88,9 @@ namespace loos {
 
 
     ~XTCWriter() {
-      if (buf1)
-	delete[] buf1;
-      if (buf2)
-	delete[] buf2;
+      delete[] buf1;
+      delete[] buf2;
+      delete[] crds_;
     }
 
 
@@ -142,6 +145,8 @@ namespace loos {
     uint step_;
     uint steps_per_frame_;
     uint current_;
+    uint crds_size_;
+    float* crds_;
 
     internal::XDRWriter xdr;
   };

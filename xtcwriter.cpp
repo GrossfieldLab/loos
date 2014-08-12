@@ -514,6 +514,13 @@ namespace loos
     writeHeader(model.size(), step, time);
     writeBox(model.periodicBox());
     uint n = model.size();
+
+    if (n > crds_size_) {
+      delete[] crds_;
+      crds_ = new float[n * 3];
+      crds_size_ = n;
+    }
+
     float* crds = new float[n * 3];
     for (uint i=0,k=0; i<n; ++i) {
       GCoord c = model[i]->coords();
@@ -522,7 +529,6 @@ namespace loos
       crds[k++] = c.z() / 10.0;
     }
     writeCompressedCoordsFloat(crds, n, 1000.0);
-    delete[] crds;
 
     ++current_;
   }
