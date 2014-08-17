@@ -310,6 +310,13 @@ namespace loos {
       Hydrogen() : Action("Hydrogen") { }
       void execute(void);
     };
+
+    //! Shortcut for checking for backbone atoms...
+    class Backbone : public Action {
+    public:
+      Backbone() : Action("Backbone") { }
+      void execute(void);
+    };
   
 
   }

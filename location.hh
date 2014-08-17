@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+/* A Bison parser, made by GNU Bison 2.6.1.  */
 
 /* Locations for Bison parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2009, 2010 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2007, 2009-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -36,8 +35,8 @@
  ** Define the loos::location class.
  */
 
-#ifndef BISON_LOCATION_HH
-# define BISON_LOCATION_HH
+#ifndef LOOS_LOCATION_HH
+# define LOOS_LOCATION_HH
 
 # include <iostream>
 # include <string>
@@ -45,26 +44,44 @@
 
 
 namespace loos {
-
-/* Line 163 of location.cc  */
-#line 51 "location.hh"
+/* Line 166 of location.cc  */
+#line 49 "location.hh"
 
   /// Abstract a location.
   class location
   {
   public:
 
-    /// Construct a location.
-    location ()
-      : begin (), end ()
+    /// Construct a location from \a b to \a e.
+    location (const position& b, const position& e)
+      : begin (b)
+      , end (e)
+    {
+    }
+
+    /// Construct a 0-width location in \a p.
+    explicit location (const position& p = position ())
+      : begin (p)
+      , end (p)
+    {
+    }
+
+    /// Construct a 0-width location in \a f, \a l, \a c.
+    explicit location (std::string* f,
+                       unsigned int l = 1u,
+                       unsigned int c = 1u)
+      : begin (f, l, c)
+      , end (f, l, c)
     {
     }
 
 
     /// Initialization.
-    inline void initialize (std::string* fn)
+    void initialize (std::string* f = YY_NULL,
+                     unsigned int l = 1u,
+                     unsigned int c = 1u)
     {
-      begin.initialize (fn);
+      begin.initialize (f, l, c);
       end = begin;
     }
 
@@ -72,19 +89,19 @@ namespace loos {
      ** \{ */
   public:
     /// Reset initial location to final location.
-    inline void step ()
+    void step ()
     {
       begin = end;
     }
 
     /// Extend the current location to the COUNT next columns.
-    inline void columns (unsigned int count = 1)
+    void columns (unsigned int count = 1)
     {
       end += count;
     }
 
     /// Extend the current location to the COUNT next lines.
-    inline void lines (unsigned int count = 1)
+    void lines (unsigned int count = 1)
     {
       end.lines (count);
     }
@@ -158,8 +175,7 @@ namespace loos {
 
 
 } // loos
+/* Line 294 of location.cc  */
+#line 180 "location.hh"
 
-/* Line 272 of location.cc  */
-#line 164 "location.hh"
-
-#endif // not BISON_LOCATION_HH
+#endif /* !LOOS_LOCATION_HH  */

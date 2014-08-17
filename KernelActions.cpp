@@ -271,6 +271,17 @@ namespace loos {
       stack->push(v);
     }
 
+
+    void Backbone::execute(void) {
+      hasAtom();
+      
+      std::string n = atom->name();
+      Value v;
+      v.setInt( n == "C" || n == "CA" || n == "O" || n == "N" );
+      stack->push(v);
+    }
+
+
   }
 
 }
