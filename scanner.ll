@@ -53,6 +53,7 @@ ID       [a-zA-Z][a-zA-Z0-9]+
 
 all                  { return(token::ALL); }
 hydrogen             { return(token::HYDROGEN); }
+backbone	     { return(token::BACKBONE); }
 name|resname|segid|segname|chainid   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
 id|resid             { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 

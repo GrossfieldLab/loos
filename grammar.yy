@@ -52,6 +52,7 @@ namespace loos {
 %token <sval>   NKEY
 %token <sval>   ALL
 %token <sval>   HYDROGEN
+%token <sval>   BACKBONE
 
 
 %token AND "&&"
@@ -93,6 +94,7 @@ rexpr : '(' expr ')'
       | alphid "=~" strval { driver.kern.push(new internal::matchRegex(*($3))); }
       | ALL { driver.kern.push(new internal::logicalTrue); }
       | HYDROGEN { driver.kern.push(new internal::Hydrogen); }
+      | BACKBONE { driver.kern.push(new internal::Backbone); }
       ;
 
 
