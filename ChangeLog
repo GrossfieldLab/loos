@@ -1,3 +1,7 @@
+2014-08-17    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added backbone keyword to selection language (selects protein backbone)
+
 2014-08-11  Tod Romo  <tromo@gorgoneion>
 
 	* Changed DCDWriter::framesWritten() to return an unsigned int
