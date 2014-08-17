@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
     ToolOptions* topts = new ToolOptions;
     opts::RequiredArguments* ropts = new opts::RequiredArguments;
     ropts->addArgument("model", "model-filename");
-    ropts->addArgument("output_traj", "output-dcd");
+    ropts->addArgument("output_traj", "output-trajectory");
     ropts->addVariableArguments("input_traj", "trajectory");
 
     opts::AggregateOptions options;
@@ -214,13 +214,13 @@ int main(int argc, char *argv[])
         do_recenter = false;
         }
 
-    DCDWriter output(output_traj, true);
+    pTrajectoryWriter output = createOutputTrajectory(output_traj, true);
 
-    DCDWriter *output_downsample = 0;
+    pTrajectoryWriter output_downsample;
     bool do_downsample = (output_traj_downsample.length() > 0);
     if (do_downsample)
         {
-        output_downsample = new DCDWriter(output_traj_downsample, true);
+        output_downsample = createOutputTrajectory(output_traj_downsample, true);
         }
 
     // Set up to do the recentering
@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
             }
         }
 
-    uint original_num_frames = output.framesWritten();
+    uint original_num_frames = output->framesWritten();
     cout << "Target trajectory " 
          << output_traj
          << " has " 
@@ -393,7 +393,7 @@ int main(int argc, char *argv[])
 #endif 
                     }
 
-                output.writeFrame(system);
+                output->writeFrame(system);
                 if ( do_downsample && (previous_frames % downsample_rate == 0) )
                     {
                     output_downsample->writeFrame(system);
