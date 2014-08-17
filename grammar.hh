@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+/* A Bison parser, made by GNU Bison 2.6.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-   Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -31,30 +30,21 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file grammar.hh
+ ** Define the loos::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef LOOS_GRAMMAR_HH
+# define LOOS_GRAMMAR_HH
 
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-namespace loos {
-
-/* Line 35 of lalr1.cc  */
-#line 50 "grammar.hh"
-  class position;
-  class location;
-
-} // loos
-
-/* Line 35 of lalr1.cc  */
-#line 57 "grammar.hh"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -62,43 +52,10 @@ namespace loos {
 # define YYDEBUG 0
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 0
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
 
 namespace loos {
-
-/* Line 35 of lalr1.cc  */
-#line 102 "grammar.hh"
+/* Line 36 of lalr1.cc  */
+#line 59 "grammar.hh"
 
   /// A Bison parser.
   class parser
@@ -108,17 +65,15 @@ namespace loos {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
+/* Line 36 of lalr1.cc  */
 #line 25 "grammar.yy"
 
 	std::string *sval;
 	int ival;
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 122 "grammar.hh"
+/* Line 36 of lalr1.cc  */
+#line 77 "grammar.hh"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -137,17 +92,18 @@ namespace loos {
      NKEY = 261,
      ALL = 262,
      HYDROGEN = 263,
-     AND = 264,
-     OR = 265,
-     LT = 266,
-     LTE = 267,
-     GTE = 268,
-     GT = 269,
-     EQ = 270,
-     NE = 271,
-     REGEX = 272,
-     NEKEY = 273,
-     NOT = 274
+     BACKBONE = 264,
+     AND = 265,
+     OR = 266,
+     LT = 267,
+     LTE = 268,
+     GTE = 269,
+     GT = 270,
+     EQ = 271,
+     NE = 272,
+     REGEX = 273,
+     NEKEY = 274,
+     NOT = 275
    };
 
     };
@@ -185,7 +141,7 @@ namespace loos {
     /// Generate an error message.
     /// \param state   the state where the error occurred.
     /// \param tok     the lookahead token.
-    virtual std::string yysyntax_error_ (int yystate);
+    virtual std::string yysyntax_error_ (int yystate, int tok);
 
 #if YYDEBUG
     /// \brief Report a symbol value on the debug stream.
@@ -221,6 +177,14 @@ namespace loos {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned char token_number_type;
     /* Tables.  */
@@ -228,7 +192,7 @@ namespace loos {
     static const signed char yypact_[];
     static const signed char yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned char yydefact_[];
@@ -252,19 +216,12 @@ namespace loos {
     /// For a rule, its LHS.
     static const unsigned char yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
-
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
-#endif
-
-#if YYERROR_VERBOSE
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static const unsigned char yyr2_[]; 
 
 #if YYDEBUG
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+
     /// A type to store symbol numbers and -1.
     typedef signed char rhs_number_type;
     /// A `-1'-separated list of the rules' RHS.
@@ -319,10 +276,9 @@ namespace loos {
   };
 
 } // loos
-
-/* Line 35 of lalr1.cc  */
-#line 325 "grammar.hh"
-
+/* Line 36 of lalr1.cc  */
+#line 281 "grammar.hh"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !LOOS_GRAMMAR_HH  */

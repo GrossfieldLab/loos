@@ -1,9 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.4.3.  */
+/* A Bison parser, made by GNU Bison 2.6.1.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free
-   Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -35,8 +34,7 @@
 #define yylex   looslex
 
 /* First part of user declarations.  */
-
-/* Line 311 of lalr1.cc  */
+/* Line 278 of lalr1.cc  */
 #line 6 "grammar.yy"
 
 
@@ -53,16 +51,14 @@ namespace loos {
 
 
 
-
-/* Line 311 of lalr1.cc  */
-#line 59 "grammar.cc"
+/* Line 278 of lalr1.cc  */
+#line 56 "grammar.cc"
 
 
 #include "grammar.hh"
 
 /* User implementation prologue.  */
-
-/* Line 317 of lalr1.cc  */
+/* Line 284 of lalr1.cc  */
 #line 30 "grammar.yy"
 
 
@@ -80,9 +76,17 @@ namespace loos {
 };
 
 
+/* Line 284 of lalr1.cc  */
+#line 81 "grammar.cc"
 
-/* Line 317 of lalr1.cc  */
-#line 86 "grammar.cc"
+
+# ifndef YY_NULL
+#  if defined __cplusplus && 201103L <= __cplusplus
+#   define YY_NULL nullptr
+#  else
+#   define YY_NULL 0
+#  endif
+# endif
 
 #ifndef YY_
 # if defined YYENABLE_NLS && YYENABLE_NLS
@@ -95,6 +99,27 @@ namespace loos {
 #  define YY_(msgid) msgid
 # endif
 #endif
+
+#define YYRHSLOC(Rhs, K) ((Rhs)[K])
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (/*CONSTCOND*/ false)
+# endif
+
 
 /* Suppress unused-variable warnings by "using" E.  */
 #define YYUSE(e) ((void) (e))
@@ -146,49 +171,8 @@ do {					\
 
 
 namespace loos {
-
-/* Line 380 of lalr1.cc  */
-#line 152 "grammar.cc"
-#if YYERROR_VERBOSE
-
-  /* Return YYSTR after stripping away unnecessary quotes and
-     backslashes, so that it's suitable for yyerror.  The heuristic is
-     that double-quoting is unnecessary unless the string contains an
-     apostrophe, a comma, or backslash (other than backslash-backslash).
-     YYSTR is taken from yytname.  */
-  std::string
-  parser::yytnamerr_ (const char *yystr)
-  {
-    if (*yystr == '"')
-      {
-        std::string yyr = "";
-        char const *yyp = yystr;
-
-        for (;;)
-          switch (*++yyp)
-            {
-            case '\'':
-            case ',':
-              goto do_not_strip_quotes;
-
-            case '\\':
-              if (*++yyp != '\\')
-                goto do_not_strip_quotes;
-              /* Fall through.  */
-            default:
-              yyr += *yyp;
-              break;
-
-            case '"':
-              return yyr;
-            }
-      do_not_strip_quotes: ;
-      }
-
-    return yystr;
-  }
-
-#endif
+/* Line 352 of lalr1.cc  */
+#line 176 "grammar.cc"
 
   /// Build a parser object.
   parser::parser (ParserDriver& driver_yyarg)
@@ -216,6 +200,9 @@ namespace loos {
   {
     YYUSE (yylocationp);
     YYUSE (yyvaluep);
+    std::ostream& yyo = debug_stream ();
+    std::ostream& yyoutput = yyo;
+    YYUSE (yyoutput);
     switch (yytype)
       {
          default:
@@ -248,50 +235,40 @@ namespace loos {
 
     switch (yytype)
       {
-        case 4: /* "STRING" */
-
-/* Line 480 of lalr1.cc  */
-#line 74 "grammar.yy"
-	{ delete (yyvaluep->sval); };
-
-/* Line 480 of lalr1.cc  */
-#line 259 "grammar.cc"
+        case 4: /* STRING */
+/* Line 453 of lalr1.cc  */
+#line 75 "grammar.yy"
+	{ delete ((*yyvaluep).sval); };
+/* Line 453 of lalr1.cc  */
+#line 244 "grammar.cc"
 	break;
-      case 5: /* "SKEY" */
-
-/* Line 480 of lalr1.cc  */
-#line 74 "grammar.yy"
-	{ delete (yyvaluep->sval); };
-
-/* Line 480 of lalr1.cc  */
-#line 268 "grammar.cc"
+      case 5: /* SKEY */
+/* Line 453 of lalr1.cc  */
+#line 75 "grammar.yy"
+	{ delete ((*yyvaluep).sval); };
+/* Line 453 of lalr1.cc  */
+#line 251 "grammar.cc"
 	break;
-      case 6: /* "NKEY" */
-
-/* Line 480 of lalr1.cc  */
-#line 74 "grammar.yy"
-	{ delete (yyvaluep->sval); };
-
-/* Line 480 of lalr1.cc  */
-#line 277 "grammar.cc"
+      case 6: /* NKEY */
+/* Line 453 of lalr1.cc  */
+#line 75 "grammar.yy"
+	{ delete ((*yyvaluep).sval); };
+/* Line 453 of lalr1.cc  */
+#line 258 "grammar.cc"
 	break;
-      case 30: /* "string" */
-
-/* Line 480 of lalr1.cc  */
-#line 74 "grammar.yy"
-	{ delete (yyvaluep->sval); };
-
-/* Line 480 of lalr1.cc  */
-#line 286 "grammar.cc"
+      case 31: /* string */
+/* Line 453 of lalr1.cc  */
+#line 75 "grammar.yy"
+	{ delete ((*yyvaluep).sval); };
+/* Line 453 of lalr1.cc  */
+#line 265 "grammar.cc"
 	break;
-      case 31: /* "strval" */
-
-/* Line 480 of lalr1.cc  */
-#line 74 "grammar.yy"
-	{ delete (yyvaluep->sval); };
-
-/* Line 480 of lalr1.cc  */
-#line 295 "grammar.cc"
+      case 32: /* strval */
+/* Line 453 of lalr1.cc  */
+#line 75 "grammar.yy"
+	{ delete ((*yyvaluep).sval); };
+/* Line 453 of lalr1.cc  */
+#line 272 "grammar.cc"
 	break;
 
 	default:
@@ -333,6 +310,18 @@ namespace loos {
     yydebug_ = l;
   }
 #endif
+
+  inline bool
+  parser::yy_pact_value_is_default_ (int yyvalue)
+  {
+    return yyvalue == yypact_ninf_;
+  }
+
+  inline bool
+  parser::yy_table_value_is_error_ (int yyvalue)
+  {
+    return yyvalue == yytable_ninf_;
+  }
 
   int
   parser::parse ()
@@ -393,7 +382,7 @@ namespace loos {
 
     /* Try to take a decision without lookahead.  */
     yyn = yypact_[yystate];
-    if (yyn == yypact_ninf_)
+    if (yy_pact_value_is_default_ (yyn))
       goto yydefault;
 
     /* Read a lookahead token.  */
@@ -426,8 +415,8 @@ namespace loos {
     yyn = yytable_[yyn];
     if (yyn <= 0)
       {
-	if (yyn == 0 || yyn == yytable_ninf_)
-	goto yyerrlab;
+	if (yy_table_value_is_error_ (yyn))
+	  goto yyerrlab;
 	yyn = -yyn;
 	goto yyreduce;
       }
@@ -482,114 +471,104 @@ namespace loos {
     switch (yyn)
       {
 	  case 3:
-
-/* Line 678 of lalr1.cc  */
-#line 80 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 81 "grammar.yy"
     { driver.kern.push(new internal::logicalAnd); }
     break;
 
   case 4:
-
-/* Line 678 of lalr1.cc  */
-#line 81 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 82 "grammar.yy"
     { driver.kern.push(new internal::logicalOr); }
     break;
 
   case 6:
-
-/* Line 678 of lalr1.cc  */
-#line 86 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 87 "grammar.yy"
     { driver.kern.push(new internal::logicalNot); }
     break;
 
   case 7:
-
-/* Line 678 of lalr1.cc  */
-#line 87 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 88 "grammar.yy"
     { driver.kern.push(new internal::lessThan); }
     break;
 
   case 8:
-
-/* Line 678 of lalr1.cc  */
-#line 88 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 89 "grammar.yy"
     { driver.kern.push(new internal::lessThanEquals); }
     break;
 
   case 9:
-
-/* Line 678 of lalr1.cc  */
-#line 89 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 90 "grammar.yy"
     { driver.kern.push(new internal::greaterThanEquals); }
     break;
 
   case 10:
-
-/* Line 678 of lalr1.cc  */
-#line 90 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 91 "grammar.yy"
     { driver.kern.push(new internal::greaterThan); }
     break;
 
   case 11:
-
-/* Line 678 of lalr1.cc  */
-#line 91 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 92 "grammar.yy"
     { driver.kern.push(new internal::equals); }
     break;
 
   case 12:
-
-/* Line 678 of lalr1.cc  */
-#line 92 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 93 "grammar.yy"
     { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); }
     break;
 
   case 13:
-
-/* Line 678 of lalr1.cc  */
-#line 93 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 94 "grammar.yy"
     { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 14:
-
-/* Line 678 of lalr1.cc  */
-#line 94 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 95 "grammar.yy"
     { driver.kern.push(new internal::logicalTrue); }
     break;
 
   case 15:
-
-/* Line 678 of lalr1.cc  */
-#line 95 "grammar.yy"
+/* Line 661 of lalr1.cc  */
+#line 96 "grammar.yy"
     { driver.kern.push(new internal::Hydrogen); }
     break;
 
-  case 22:
-
-/* Line 678 of lalr1.cc  */
-#line 103 "grammar.yy"
-    { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); }
+  case 16:
+/* Line 661 of lalr1.cc  */
+#line 97 "grammar.yy"
+    { driver.kern.push(new internal::Backbone); }
     break;
 
   case 23:
-
-/* Line 678 of lalr1.cc  */
+/* Line 661 of lalr1.cc  */
 #line 105 "grammar.yy"
+    { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); }
+    break;
+
+  case 24:
+/* Line 661 of lalr1.cc  */
+#line 107 "grammar.yy"
     { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); }
     break;
 
-  case 26:
-
-/* Line 678 of lalr1.cc  */
-#line 110 "grammar.yy"
+  case 27:
+/* Line 661 of lalr1.cc  */
+#line 112 "grammar.yy"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); }
     break;
 
-  case 28:
-
-/* Line 678 of lalr1.cc  */
-#line 119 "grammar.yy"
+  case 29:
+/* Line 661 of lalr1.cc  */
+#line 121 "grammar.yy"
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "name")
@@ -605,10 +584,9 @@ else
 }
     break;
 
-  case 29:
-
-/* Line 678 of lalr1.cc  */
-#line 136 "grammar.yy"
+  case 30:
+/* Line 661 of lalr1.cc  */
+#line 138 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
    driver.kern.push(new internal::pushAtomId);
@@ -620,12 +598,22 @@ else
     break;
 
 
-
-/* Line 678 of lalr1.cc  */
-#line 626 "grammar.cc"
+/* Line 661 of lalr1.cc  */
+#line 603 "grammar.cc"
 	default:
           break;
       }
+    /* User semantic actions sometimes alter yychar, and that requires
+       that yytoken be updated with the new translation.  We take the
+       approach of translating immediately before every use of yytoken.
+       One alternative is translating here after every semantic action,
+       but that translation would be missed if the semantic action
+       invokes YYABORT, YYACCEPT, or YYERROR immediately after altering
+       yychar.  In the case of YYABORT or YYACCEPT, an incorrect
+       destructor might then be invoked immediately.  In the case of
+       YYERROR, subsequent parser actions might lead to an incorrect
+       destructor call or verbose syntax error message before the
+       lookahead is translated.  */
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
 
     yypop_ (yylen);
@@ -649,11 +637,17 @@ else
   | yyerrlab -- here on detecting error |
   `------------------------------------*/
   yyerrlab:
+    /* Make sure we have latest lookahead translation.  See comments at
+       user semantic actions for why this is necessary.  */
+    yytoken = yytranslate_ (yychar);
+
     /* If not already recovering from an error, report this error.  */
     if (!yyerrstatus_)
       {
 	++yynerrs_;
-	error (yylloc, yysyntax_error_ (yystate));
+	if (yychar == yyempty_)
+	  yytoken = yyempty_;
+	error (yylloc, yysyntax_error_ (yystate, yytoken));
       }
 
     yyerror_range[1] = yylloc;
@@ -708,7 +702,7 @@ else
     for (;;)
       {
 	yyn = yypact_[yystate];
-	if (yyn != yypact_ninf_)
+	if (!yy_pact_value_is_default_ (yyn))
 	{
 	  yyn += yyterror_;
 	  if (0 <= yyn && yyn <= yylast_ && yycheck_[yyn] == yyterror_)
@@ -758,7 +752,13 @@ else
 
   yyreturn:
     if (yychar != yyempty_)
-      yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval, &yylloc);
+      {
+        /* Make sure we have latest lookahead translation.  See comments
+           at user semantic actions for why this is necessary.  */
+        yytoken = yytranslate_ (yychar);
+        yydestruct_ ("Cleanup: discarding lookahead", yytoken, &yylval,
+                     &yylloc);
+      }
 
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
@@ -777,121 +777,79 @@ else
 
   // Generate an error message.
   std::string
-  parser::yysyntax_error_ (int yystate)
+  parser::yysyntax_error_ (int, int)
   {
-    std::string res;
-    YYUSE (yystate);
-#if YYERROR_VERBOSE
-    int yyn = yypact_[yystate];
-    if (yypact_ninf_ < yyn && yyn <= yylast_)
-      {
-	/* Start YYX at -YYN if negative to avoid negative indexes in
-	   YYCHECK.  */
-	int yyxbegin = yyn < 0 ? -yyn : 0;
-
-	/* Stay within bounds of both yycheck and yytname.  */
-	int yychecklim = yylast_ - yyn + 1;
-	int yyxend = yychecklim < yyntokens_ ? yychecklim : yyntokens_;
-	int count = 0;
-	for (int x = yyxbegin; x < yyxend; ++x)
-	  if (yycheck_[x + yyn] == x && x != yyterror_)
-	    ++count;
-
-	// FIXME: This method of building the message is not compatible
-	// with internationalization.  It should work like yacc.c does it.
-	// That is, first build a string that looks like this:
-	// "syntax error, unexpected %s or %s or %s"
-	// Then, invoke YY_ on this string.
-	// Finally, use the string as a format to output
-	// yytname_[tok], etc.
-	// Until this gets fixed, this message appears in English only.
-	res = "syntax error, unexpected ";
-	res += yytnamerr_ (yytname_[tok]);
-	if (count < 5)
-	  {
-	    count = 0;
-	    for (int x = yyxbegin; x < yyxend; ++x)
-	      if (yycheck_[x + yyn] == x && x != yyterror_)
-		{
-		  res += (!count++) ? ", expecting " : " or ";
-		  res += yytnamerr_ (yytname_[x]);
-		}
-	  }
-      }
-    else
-#endif
-      res = YY_("syntax error");
-    return res;
+    return YY_("syntax error");
   }
 
 
   /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
      STATE-NUM.  */
-  const signed char parser::yypact_ninf_ = -16;
+  const signed char parser::yypact_ninf_ = -10;
   const signed char
   parser::yypact_[] =
   {
-         7,   -16,   -16,   -16,   -16,   -16,   -16,     7,     7,    28,
-     -16,    41,   -16,   -16,   -16,   -16,   -16,   -15,   -16,   -16,
-      -5,    30,   -16,     7,     7,    27,    27,    27,    27,    27,
-      27,     2,     2,   -16,   -16,   -16,   -16,    27,   -16,   -11,
-     -16,   -16,   -16,   -16,   -16,   -16,   -16,   -16,    13
+        27,   -10,   -10,   -10,   -10,   -10,   -10,   -10,    27,    27,
+      39,   -10,    40,   -10,   -10,   -10,   -10,   -10,    -6,   -10,
+     -10,    -8,    29,   -10,    27,    27,     2,     2,     2,     2,
+       2,     2,     0,     0,   -10,   -10,   -10,   -10,     2,   -10,
+      -4,   -10,   -10,   -10,   -10,   -10,   -10,   -10,   -10,    15
   };
 
-  /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
-     doesn't specify something else to do.  Zero means the default is an
-     error.  */
+  /* YYDEFACT[S] -- default reduction number in state S.  Performed when
+     YYTABLE doesn't specify something else to do.  Zero means the
+     default is an error.  */
   const unsigned char
   parser::yydefact_[] =
   {
-         0,    23,    26,    28,    29,    14,    15,     0,     0,     0,
-       2,     0,    17,    19,    20,    18,    24,    25,    21,     6,
-       0,     0,     1,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     5,    16,     3,     4,     0,     7,    25,
-       8,     9,    10,    11,    12,    27,    13,    22,     0
+         0,    24,    27,    29,    30,    14,    15,    16,     0,     0,
+       0,     2,     0,    18,    20,    21,    19,    25,    26,    22,
+       6,     0,     0,     1,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     5,    17,     3,     4,     0,     7,
+      26,     8,     9,    10,    11,    12,    28,    13,    23,     0
   };
 
   /* YYPGOTO[NTERM-NUM].  */
   const signed char
   parser::yypgoto_[] =
   {
-       -16,    40,    16,    -8,   -16,   -16,   -16,   -16,   -16,     3,
-       1,   -16
+       -10,     7,     3,    -9,   -10,   -10,   -10,   -10,   -10,     5,
+       1,   -10
   };
 
   /* YYDEFGOTO[NTERM-NUM].  */
   const signed char
   parser::yydefgoto_[] =
   {
-        -1,     9,    10,    11,    12,    13,    14,    15,    16,    46,
-      39,    18
+        -1,    10,    11,    12,    13,    14,    15,    16,    17,    47,
+      40,    19
   };
 
   /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule which
-     number is the opposite.  If zero, do what YYDEFACT says.  */
+     number is the opposite.  If YYTABLE_NINF_, syntax error.  */
   const signed char parser::yytable_ninf_ = -1;
   const unsigned char
   parser::yytable_[] =
   {
-        21,    17,    31,    32,    23,    24,    45,    32,    17,    17,
-       1,     2,     3,     4,     5,     6,    33,    38,    40,    41,
-      42,    43,    44,    19,    17,    17,     7,     8,    22,    48,
-       1,     2,     3,     4,    34,    47,     0,    23,    24,    35,
-      36,    25,    26,    27,    28,    29,    30,    37,    20,     0,
-       0,    34,    25,    26,    27,    28,    29,    30
+        22,    18,    24,    25,    46,     1,     2,     3,     4,    18,
+      18,    20,    32,    33,    34,    33,    21,    39,    41,    42,
+      43,    44,    45,    38,     0,    18,    18,    36,    37,    49,
+       1,     2,     3,     4,     5,     6,     7,    35,    48,    23,
+       0,    26,    27,    28,    29,    30,    31,     8,     9,    24,
+      25,    35,    26,    27,    28,    29,    30,    31
   };
 
   /* YYCHECK.  */
   const signed char
   parser::yycheck_[] =
   {
-         8,     0,    17,    18,     9,    10,     4,    18,     7,     8,
-       3,     4,     5,     6,     7,     8,    21,    25,    26,    27,
-      28,    29,    30,     7,    23,    24,    19,    20,     0,    37,
-       3,     4,     5,     6,    21,    32,    -1,     9,    10,    23,
-      24,    11,    12,    13,    14,    15,    16,    20,     8,    -1,
-      -1,    21,    11,    12,    13,    14,    15,    16
+         9,     0,    10,    11,     4,     3,     4,     5,     6,     8,
+       9,     8,    18,    19,    22,    19,     9,    26,    27,    28,
+      29,    30,    31,    21,    -1,    24,    25,    24,    25,    38,
+       3,     4,     5,     6,     7,     8,     9,    22,    33,     0,
+      -1,    12,    13,    14,    15,    16,    17,    20,    21,    10,
+      11,    22,    12,    13,    14,    15,    16,    17
   };
 
   /* STOS_[STATE-NUM] -- The (internal number of the) accessing
@@ -899,11 +857,11 @@ else
   const unsigned char
   parser::yystos_[] =
   {
-         0,     3,     4,     5,     6,     7,     8,    19,    20,    23,
-      24,    25,    26,    27,    28,    29,    30,    32,    33,    24,
-      23,    25,     0,     9,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    21,    21,    24,    24,    20,    25,    32,
-      25,    25,    25,    25,    25,     4,    31,    31,    25
+         0,     3,     4,     5,     6,     7,     8,     9,    20,    21,
+      24,    25,    26,    27,    28,    29,    30,    31,    33,    34,
+      25,    24,    26,     0,    10,    11,    12,    13,    14,    15,
+      16,    17,    18,    19,    22,    22,    25,    25,    21,    26,
+      33,    26,    26,    26,    26,    26,     4,    32,    32,    26
   };
 
 #if YYDEBUG
@@ -914,7 +872,7 @@ else
   {
          0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-      40,    41
+     275,    40,    41
   };
 #endif
 
@@ -922,9 +880,10 @@ else
   const unsigned char
   parser::yyr1_[] =
   {
-         0,    22,    23,    23,    23,    24,    24,    24,    24,    24,
-      24,    24,    24,    24,    24,    24,    25,    25,    25,    25,
-      26,    26,    27,    28,    29,    29,    30,    31,    32,    33
+         0,    23,    24,    24,    24,    25,    25,    25,    25,    25,
+      25,    25,    25,    25,    25,    25,    25,    26,    26,    26,
+      26,    27,    27,    28,    29,    30,    30,    31,    32,    33,
+      34
   };
 
   /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -932,38 +891,38 @@ else
   parser::yyr2_[] =
   {
          0,     2,     1,     3,     3,     3,     2,     3,     3,     3,
-       3,     3,     3,     3,     1,     1,     3,     1,     1,     1,
-       1,     1,     3,     1,     1,     1,     1,     1,     1,     1
+       3,     3,     3,     3,     1,     1,     1,     3,     1,     1,
+       1,     1,     1,     3,     1,     1,     1,     1,     1,     1,
+       1
   };
 
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+#if YYDEBUG
   /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
      First, the terminals, then, starting at \a yyntokens_, nonterminals.  */
   const char*
   const parser::yytname_[] =
   {
     "END", "error", "$undefined", "NUMBER", "STRING", "SKEY", "NKEY", "ALL",
-  "HYDROGEN", "\"&&\"", "\"||\"", "\"<\"", "\"<=\"", "\">=\"", "\">\"",
-  "\"==\"", "\"!=\"", "\"=~\"", "\"->\"", "\"!\"", "'('", "')'", "$accept",
-  "expr", "rexpr", "value", "numeric", "numex", "number", "alpha",
-  "string", "strval", "alphid", "numid", 0
+  "HYDROGEN", "BACKBONE", "\"&&\"", "\"||\"", "\"<\"", "\"<=\"", "\">=\"",
+  "\">\"", "\"==\"", "\"!=\"", "\"=~\"", "\"->\"", "\"!\"", "'('", "')'",
+  "$accept", "expr", "rexpr", "value", "numeric", "numex", "number",
+  "alpha", "string", "strval", "alphid", "numid", YY_NULL
   };
-#endif
 
-#if YYDEBUG
+
   /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
   const parser::rhs_number_type
   parser::yyrhs_[] =
   {
-        23,     0,    -1,    24,    -1,    23,     9,    24,    -1,    23,
-      10,    24,    -1,    20,    23,    21,    -1,    19,    24,    -1,
-      25,    11,    25,    -1,    25,    12,    25,    -1,    25,    13,
-      25,    -1,    25,    14,    25,    -1,    25,    15,    25,    -1,
-      25,    16,    25,    -1,    32,    17,    31,    -1,     7,    -1,
-       8,    -1,    20,    25,    21,    -1,    26,    -1,    29,    -1,
-      27,    -1,    28,    -1,    33,    -1,    32,    18,    31,    -1,
-       3,    -1,    30,    -1,    32,    -1,     4,    -1,     4,    -1,
-       5,    -1,     6,    -1
+        24,     0,    -1,    25,    -1,    24,    10,    25,    -1,    24,
+      11,    25,    -1,    21,    24,    22,    -1,    20,    25,    -1,
+      26,    12,    26,    -1,    26,    13,    26,    -1,    26,    14,
+      26,    -1,    26,    15,    26,    -1,    26,    16,    26,    -1,
+      26,    17,    26,    -1,    33,    18,    32,    -1,     7,    -1,
+       8,    -1,     9,    -1,    21,    26,    22,    -1,    27,    -1,
+      30,    -1,    28,    -1,    29,    -1,    34,    -1,    33,    19,
+      32,    -1,     3,    -1,    31,    -1,    33,    -1,     4,    -1,
+       4,    -1,     5,    -1,     6,    -1
   };
 
   /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -972,17 +931,19 @@ else
   parser::yyprhs_[] =
   {
          0,     0,     3,     5,     9,    13,    17,    20,    24,    28,
-      32,    36,    40,    44,    48,    50,    52,    56,    58,    60,
-      62,    64,    66,    70,    72,    74,    76,    78,    80,    82
+      32,    36,    40,    44,    48,    50,    52,    54,    58,    60,
+      62,    64,    66,    68,    72,    74,    76,    78,    80,    82,
+      84
   };
 
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
   const unsigned char
   parser::yyrline_[] =
   {
-         0,    79,    79,    80,    81,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,    94,    95,    99,    99,    99,    99,
-     101,   101,   103,   105,   107,   107,   110,   112,   119,   136
+         0,    80,    80,    81,    82,    86,    87,    88,    89,    90,
+      91,    92,    93,    94,    95,    96,    97,   101,   101,   101,
+     101,   103,   103,   105,   107,   109,   109,   112,   114,   121,
+     138
   };
 
   // Print the state stack on the debug stream.
@@ -1026,7 +987,7 @@ else
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-      20,    21,     2,     2,     2,     2,     2,     2,     2,     2,
+      21,    22,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1049,7 +1010,7 @@ else
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19
+      15,    16,    17,    18,    19,    20
     };
     if ((unsigned int) t <= yyuser_token_number_max_)
       return translate_table[t];
@@ -1061,23 +1022,20 @@ else
   const int parser::yylast_ = 57;
   const int parser::yynnts_ = 12;
   const int parser::yyempty_ = -2;
-  const int parser::yyfinal_ = 22;
+  const int parser::yyfinal_ = 23;
   const int parser::yyterror_ = 1;
   const int parser::yyerrcode_ = 256;
-  const int parser::yyntokens_ = 22;
+  const int parser::yyntokens_ = 23;
 
-  const unsigned int parser::yyuser_token_number_max_ = 274;
+  const unsigned int parser::yyuser_token_number_max_ = 275;
   const parser::token_number_type parser::yyundef_token_ = 2;
 
 
 } // loos
-
-/* Line 1054 of lalr1.cc  */
-#line 1077 "grammar.cc"
-
-
-/* Line 1056 of lalr1.cc  */
-#line 147 "grammar.yy"
+/* Line 1106 of lalr1.cc  */
+#line 1037 "grammar.cc"
+/* Line 1107 of lalr1.cc  */
+#line 149 "grammar.yy"
 
 
 
