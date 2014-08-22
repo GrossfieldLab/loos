@@ -1,3 +1,11 @@
+2014-08-22    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed BackboneSelector to select backbone atoms for protein
+	and nucleic acids.  Will only work for known residue names and
+	atom names (see Selector.cpp for the list)
+	* Changed backbone keyword action to be a wrapper around the
+	BackboneSelector 
+
 2014-08-17    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added backbone keyword to selection language (selects protein backbone)
