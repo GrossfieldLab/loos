@@ -313,6 +313,12 @@ namespace loos {
 
     //! Shortcut for checking for backbone atoms...
     class Backbone : public Action {
+      static const uint nresnames = 35;
+      static std::string residue_names[nresnames];
+
+      static const uint natomnames = 18;
+      static std::string atom_names[natomnames];
+
     public:
       Backbone() : Action("Backbone") { }
       void execute(void);

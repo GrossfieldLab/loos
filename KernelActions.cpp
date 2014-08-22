@@ -272,12 +272,73 @@ namespace loos {
     }
 
 
+    std::string Backbone::residue_names[Backbone::nresnames] = {
+      "A",
+      "ALA",
+      "ARG",
+      "ASP",
+      "ASN",
+      "C",
+      "CYS",
+      "CYX",
+      "DG",
+      "DC",
+      "DT",
+      "DA",
+      "G",
+      "GLN",
+      "GLU",
+      "GLY",
+      "HIS",
+      "HID",
+      "HIE",
+      "HIP",
+      "ILE",
+      "LEU",
+      "LYS",
+      "MET",
+      "MSE",
+      "PHE",
+      "PRO",
+      "PTR",
+      "SER",
+      "T",
+      "THR",
+      "TRP",
+      "TYR",
+      "U",
+      "VAL"
+    };
+
+    std::string Backbone::atom_names[Backbone::natomnames] = {
+      "C",
+      "C1'",
+      "C2'",
+      "C3'",
+      "C4'",
+      "C5'",
+      "CA",
+      "N",
+      "O",
+      "O2'",
+      "O3'",
+      "O4'",
+      "O5'",
+      "OP1",
+      "OP2",
+      "OP3",
+      "OXT",
+      "P"
+    };
+
     void Backbone::execute(void) {
       hasAtom();
       
-      std::string n = atom->name();
-      Value v;
-      v.setInt( n == "C" || n == "CA" || n == "O" || n == "N" );
+      Value v = false;
+      if (std::binary_search(residue_names, residue_names + nresnames, atom->resname()))
+	if (std::binary_search(atom_names, atom_names + natomnames, atom->name()))
+	  v = true;
+
       stack->push(v);
     }
 
