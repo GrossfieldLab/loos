@@ -175,7 +175,7 @@ namespace loos {
         return((*(p->creator))(filename, g) );
       }
     }
-    throw(std::runtime_error("Error- unknown output trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
+    throw(std::runtime_error("Error- unknown input trajectory file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
 
   }
 
