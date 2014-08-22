@@ -137,7 +137,7 @@ namespace loos {
       { "crd", "Amber Traj", &AmberTraj::create},
       { "mdcrd", "Amber Traj", &AmberTraj::create},
 #endif
-      { "impcrd", "Amber Restart", &AmberRst::create},
+      { "inpcrd", "Amber Restart", &AmberRst::create},
       { "rst", "Amber Restart", &AmberRst::create},
       { "rst7", "Amber Restart", &AmberRst::create},
       { "dcd", "CHARMM/NAMD DCD", &DCD::create},
