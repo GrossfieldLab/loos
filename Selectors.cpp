@@ -27,9 +27,74 @@ namespace loos {
     return(pa->name() == "CA");
   }
 
+
+    std::string BackboneSelector::residue_names[BackboneSelector::nresnames] = {
+      "A",
+      "ALA",
+      "ARG",
+      "ASP",
+      "ASN",
+      "C",
+      "CYS",
+      "CYX",
+      "DG",
+      "DC",
+      "DT",
+      "DA",
+      "G",
+      "GLN",
+      "GLU",
+      "GLY",
+      "HIS",
+      "HID",
+      "HIE",
+      "HIP",
+      "ILE",
+      "LEU",
+      "LYS",
+      "MET",
+      "MSE",
+      "PHE",
+      "PRO",
+      "PTR",
+      "SER",
+      "T",
+      "THR",
+      "TRP",
+      "TYR",
+      "U",
+      "VAL"
+    };
+
+    std::string BackboneSelector::atom_names[BackboneSelector::natomnames] = {
+      "C",
+      "C1'",
+      "C2'",
+      "C3'",
+      "C4'",
+      "C5'",
+      "CA",
+      "N",
+      "O",
+      "O2'",
+      "O3'",
+      "O4'",
+      "O5'",
+      "OP1",
+      "OP2",
+      "OP3",
+      "OXT",
+      "P"
+    };
+
+
+
   bool BackboneSelector::operator()(const pAtom& pa) const {
-    std::string s = pa->name();
-    return(s == "C" || s == "CA" || s == "O" || s == "N");
+    if (std::binary_search(residue_names, residue_names + nresnames, pa->resname()))
+      if (std::binary_search(atom_names, atom_names + natomnames, pa->name()))
+        return(true);
+
+    return(false);
   }
 
   bool SegidSelector::operator()(const pAtom& pa) const {

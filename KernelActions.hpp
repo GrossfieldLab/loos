@@ -36,11 +36,15 @@
 #include <loos_defs.hpp>
 #include <boost/regex.hpp>
 
+
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 
 
+
 namespace loos {
+
+  class BackboneSelector;
 
   //! Loos esoterica.
   /** You probably don't want to look in here unless you want to
@@ -313,12 +317,7 @@ namespace loos {
 
     //! Shortcut for checking for backbone atoms...
     class Backbone : public Action {
-      static const uint nresnames = 35;
-      static std::string residue_names[nresnames];
-
-      static const uint natomnames = 18;
-      static std::string atom_names[natomnames];
-
+      static BackboneSelector bbsel;    // Make this class-level since we only need one to wrap
     public:
       Backbone() : Action("Backbone") { }
       void execute(void);

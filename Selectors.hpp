@@ -40,7 +40,14 @@ namespace loos {
   };
 
   //! Predicate for selecting backbone
-  struct BackboneSelector : public AtomSelector {
+  class BackboneSelector : public AtomSelector {
+    static const uint nresnames = 35;
+    static std::string residue_names[nresnames];
+
+    static const uint natomnames = 18;
+    static std::string atom_names[natomnames];
+
+  public:
     bool operator()(const pAtom&) const;
   };
 
