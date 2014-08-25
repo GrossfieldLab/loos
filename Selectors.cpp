@@ -32,23 +32,23 @@ namespace loos {
       "A",
       "ALA",
       "ARG",
-      "ASP",
       "ASN",
+      "ASP",
       "C",
       "CYS",
       "CYX",
-      "DG",
-      "DC",
-      "DT",
       "DA",
+      "DC",
+      "DG",
+      "DT",
       "G",
       "GLN",
       "GLU",
       "GLY",
-      "HIS",
       "HID",
       "HIE",
       "HIP",
+      "HIS",
       "ILE",
       "LEU",
       "LYS",
@@ -90,8 +90,8 @@ namespace loos {
 
 
   bool BackboneSelector::operator()(const pAtom& pa) const {
-    if (std::find(residue_names, residue_names + nresnames, pa->resname()) != residue_names + nresnames)
-      if (std::find(atom_names, atom_names + natomnames, pa->name()) != atom_names + natomnames)
+    if (std::binary_search(residue_names, residue_names + nresnames, pa->resname()))
+      if (std::binary_search(atom_names, atom_names + natomnames, pa->name()))
         return(true);
 
     return(false);
