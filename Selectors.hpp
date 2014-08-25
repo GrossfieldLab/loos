@@ -44,7 +44,7 @@ namespace loos {
     static const uint nresnames = 35;
     static std::string residue_names[nresnames];
 
-    static const uint natomnames = 18;
+    static const uint natomnames = 33;
     static std::string atom_names[natomnames];
 
   public:
