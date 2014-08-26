@@ -215,17 +215,17 @@ and expect it to be substituted with the appropriate value, for example.
 
 \subsection keywords Keywords
 <table align="center">
-<tr align="center"><th>Keyword</th><th>Atom Property</th><th>Evaluates to...</th><th>Operators</th></tr>
-<tr align="center"><td>name</td><td>Atom name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center"><td>id</td><td>Atom ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
-<tr align="center"><td>resname</td><td>Residue name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center"><td>resid</td><td>Residue ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
-<tr align="center"><td>segid</td><td>Atom segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center"><td>segname</td><td>Synonym for segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center"><td>chainid</td><td>Chain ID</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center"><td>all</td><td>Evaluates to true</td><td>number</td><td></td></tr>
-<tr align="center"><td>hydrogen</td><td>Evaluates to true if atom is a hydrogen</td><td>number</td><td></td></tr>
-<tr align="center"><td>backbone</td><td>Evaluates to true if atom is a backbone atom (nucleic acids and proteins, and includes hydrogens)</td><td>number</td><td></td></tr>
+<tr align="center" valign="top"><th>Keyword</th><th>Atom Property</th><th>Evaluates to...</th><th>Operators</th></tr>
+<tr align="center" valign="top"><td>name</td><td>Atom name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center" valign="top"><td>id</td><td>Atom ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="center" valign="top"><td>resname</td><td>Residue name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center" valign="top"><td>resid</td><td>Residue ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="center" valign="top"><td>segid</td><td>Atom segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center" valign="top"><td>segname</td><td>Synonym for segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center" valign="top"><td>chainid</td><td>Chain ID</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="center" valign="top"><td>all</td><td>Evaluates to true</td><td>number</td><td></td></tr>
+<tr align="center" valign="top"><td>hydrogen</td><td>Evaluates to true if atom is a hydrogen</td><td>number</td><td></td></tr>
+<tr align="center" valign="top"><td>backbone</td><td>Evaluates to true if atom is a backbone atom (nucleic acids and proteins, and includes hydrogens)</td><td>number</td><td></td></tr>
 </table>
 
 Notes:\n
