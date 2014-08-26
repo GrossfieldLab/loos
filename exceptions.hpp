@@ -102,6 +102,14 @@ namespace loos {
   public:
     explicit UnknownAtomicMass(const std::string& arg) : LOOSError(arg) { }
   };
+
+  //! Exception for writing trajectories
+  class TrajectoryWriteError : public LOOSError {
+  public:
+    TrajectoryWriteError() : LOOSError("Error while writing trajectory") {}
+    TrajectoryWriteError(const std::string& arg) : LOOSError(arg) {}
+  };
+
 };
 
 

@@ -52,17 +52,6 @@ namespace loos {
   class TrajectoryWriter {
   public:
 
-    //! Exception while writing
-    struct WriteError : public std::exception {
-      WriteError() : text("Error while writing trajectory") {}
-      WriteError(const char* message) : text(message) {}
-      
-      virtual const char* what() const throw() { return(text); }
-      
-      const char* text;
-    };
-    
-
     //! Write a trajectory to a file, optionally appending
     TrajectoryWriter(const std::string& fname, const bool append = false)
       : appending_(false) {

@@ -60,8 +60,6 @@ namespace loos {
   public:
 
 
-    struct InternalOverflow : public WriteError { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
-    
 
     //! Class factory function
     static pTrajectoryWriter create(const std::string& s, const bool append = false) {
