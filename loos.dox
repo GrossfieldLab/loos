@@ -27,6 +27,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
       - \subpage building "Building LOOS"
           - \ref building_pyloos "Building PyLOOS, the Python Interface to LOOS"
       - \subpage tools "Tools included with LOOS"
+      - \subpage selections "Selection Language"
       - \subpage citing "Citing LOOS in published work"
       - \subpage Changes
       - \subpage FAQ
