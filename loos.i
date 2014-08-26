@@ -47,13 +47,14 @@ namespace loos {
 %include "utils.i"
 %include "cryst.i"
 %include "pdb.i"
-%include "sfactories.i"
-%include "dcdwriter.i"
 %include "ensembles.i"
 %include "Geometry.i"
 %include "TimeSeries.i"
 %include "HBondDetector.i"
 %include "exceptions.i"
+%include "trajwriter.i"
+%include "dcdwriter.i"
+%include "sfactories.i"
 
 
   %pythoncode %{

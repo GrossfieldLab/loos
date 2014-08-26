@@ -19,12 +19,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+%header %{
+  #include <loos_defs.hpp>
+ %}
 
 
 
 namespace loos {
-  AtomicGroup createSystem(const std::string&);
-  pTraj createTrajectory(const std::string&, const AtomicGroup&);
+  std::string availableSystemFileTypes();
+  std::string availableTrajectoryFileTypes();
+  std::string availableOutputTrajectoryFileTypes();
+
+  AtomicGroup createSystem(const std::string& filename);
+  AtomicGroup createSystem(const std::string& filename, const std::string& filetype);
+  pTraj createTrajectory(const std::string& filename, const AtomicGroup& model);
+  pTraj createTrajectory(const std::string& filename, const std::string& filetype, const AtomicGroup& model);
+
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const std::string& filetype, const bool append);
+  pTrajectoryWriter createOutputTrajectory(const std::string& filename, const bool append = false);
 };
 

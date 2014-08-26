@@ -19,6 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+%shared_ptr(loos::DCDWriter)
+
 
 %header %{
 #include <dcdwriter.hpp>
@@ -27,7 +29,7 @@
 namespace loos {
 
   // Note, this is actually derived from boost::noncopyable
-  class DCDWriter {
+  class DCDWriter : public TrajectoryWriter {
   public:
     explicit DCDWriter(const std::string& s, const bool append = false);
     DCDWriter(const std::string& s, const std::vector<AtomicGroup>& grps, const bool append = false);
@@ -39,10 +41,12 @@ namespace loos {
     void setTitles(const std::vector<std::string>& titles);
     void setTitle(const std::string& s);
     void addTitle(const std::string& s);
+    void setComments(const std::vector<std::string>& comments);
+    bool hasComments() const;
     void writeFrame(const AtomicGroup& grp);
     void writeFrames(const std::vector<AtomicGroup>& grps);
     void writeHeader(void);
-    int framesWritten(void) const { return(_current); }
+    uint framesWritten(void) const { return(_current); }
   };
 
 }
