@@ -1,3 +1,7 @@
+2014-08-26    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed BackboneSelector to now include backbone hydrogens
+
 2014-08-22    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed BackboneSelector to select backbone atoms for protein
