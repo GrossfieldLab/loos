@@ -54,6 +54,7 @@ namespace loos {
 %include "exceptions.i"
 %include "trajwriter.i"
 %include "dcdwriter.i"
+%include "xtcwriter.i"
 %include "sfactories.i"
 
 
