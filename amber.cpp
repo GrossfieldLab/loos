@@ -36,7 +36,7 @@ namespace loos {
   // If the format type does not match (for example, say "%FORMAT (20I8)" when expected
   // is "FEG"), then an error will be thrown.
 
-  Amber::FormatSpec Amber::parseFormat(const std::string& expected_types, const std::string& where) {
+  Amber::FormatSpec Amber::parseFormat(const std::string& expected_types, const std::string& where)  throw(FileParseError) {
 
     reader.getNext();
     char period;
@@ -82,7 +82,7 @@ namespace loos {
   }
 
 
-  void Amber::parseCharges() {
+  void Amber::parseCharges()  throw(FileParseError) {
     FormatSpec fmt = parseFormat("EFG", "charges");
 
     std::vector<double> charges = readBlock<double>(fmt.width);
@@ -94,7 +94,7 @@ namespace loos {
   }
 
 
-  void Amber::parseMasses() {
+  void Amber::parseMasses()  throw(FileParseError) {
     FormatSpec fmt = parseFormat("EFG", "masses");
 
     std::vector<double> masses = readBlock<double>(fmt.width);
@@ -108,7 +108,7 @@ namespace loos {
 
 
 
-  void Amber::parseResidueLabels() {
+  void Amber::parseResidueLabels()  throw(FileParseError) {
     FormatSpec fmt = parseFormat("a", "residue labels");
 
     residue_labels = readBlock<std::string>(fmt.width);
@@ -118,7 +118,7 @@ namespace loos {
   }
 
 
-  void Amber::parseResiduePointers() {
+  void Amber::parseResiduePointers() throw(FileParseError) {
     FormatSpec fmt = parseFormat("I", "residue pointers");
 
     residue_pointers = readBlock<uint>(fmt.width);
@@ -127,7 +127,7 @@ namespace loos {
   }
 
 
-  void Amber::assignResidues(void) {
+  void Amber::assignResidues(void) throw(std::runtime_error){
     if (!(residue_pointers.size() == nres && residue_labels.size() == nres))
       throw(std::runtime_error("Unable to assign residues."));
 
@@ -156,7 +156,7 @@ namespace loos {
 
 
 
-  void Amber::parseBonds(const uint n) {
+  void Amber::parseBonds(const uint n)  throw(FileParseError) {
     FormatSpec fmt = parseFormat("I", "bonds");
 
   
@@ -183,7 +183,7 @@ namespace loos {
   }
 
 
-  void Amber::parsePointers() {
+  void Amber::parsePointers() throw(std::logic_error) {
     FormatSpec fmt = parseFormat("I", "pointers");
 
     std::vector<uint> pointers = readBlock<uint>(fmt.width);
@@ -217,7 +217,7 @@ namespace loos {
   }
 
 
-  void Amber::parseAtomNames() {
+  void Amber::parseAtomNames()  throw(FileParseError) {
     FormatSpec fmt = parseFormat("a", "atom names");
     
     std::vector<std::string> names = readBlock<std::string>(fmt.width);
@@ -227,7 +227,7 @@ namespace loos {
       atoms[i]->name(names[i]);
   }
 
-  void Amber::parseAmoebaRegularBondNumList() {
+  void Amber::parseAmoebaRegularBondNumList()  throw(FileParseError) {
     FormatSpec fmt = parseFormat("I", "amoeba_regular_num_bond_list");
     reader.getNext();
     std::istringstream iss(reader.line());
@@ -238,7 +238,7 @@ namespace loos {
 
 
 
-  void Amber::parseAmoebaRegularBondList(const uint n) {
+  void Amber::parseAmoebaRegularBondList(const uint n)  throw(FileParseError) {
     FormatSpec fmt = parseFormat("I", "amoeba_regular_bond_list");
 
   

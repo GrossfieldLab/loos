@@ -139,19 +139,19 @@ namespace loos {
 
     Amber(const AtomicGroup& grp) : AtomicGroup(grp), natoms(0), nres(0), nbonh(0), mbona(0) { }
 
-    FormatSpec parseFormat(const std::string& expected_types, const std::string& where);
+    FormatSpec parseFormat(const std::string& expected_types, const std::string& where) throw(FileParseError);
 
-    void parseCharges();
-    void parseMasses();
-    void parseResidueLabels();
-    void parseResiduePointers();
-    void assignResidues(void);
-    void parseBonds(const uint);
-    void parsePointers();
+    void parseCharges() throw(FileParseError);
+    void parseMasses() throw(FileParseError);
+    void parseResidueLabels() throw(FileParseError);
+    void parseResiduePointers() throw(FileParseError);
+    void assignResidues(void) throw(std::runtime_error);
+    void parseBonds(const uint) throw(FileParseError);
+    void parsePointers() throw(std::logic_error);
     void parseTitle();
-    void parseAtomNames();
-    void parseAmoebaRegularBondNumList();
-    void parseAmoebaRegularBondList(const uint);
+    void parseAtomNames() throw(FileParseError);
+    void parseAmoebaRegularBondNumList() throw(FileParseError);
+    void parseAmoebaRegularBondList(const uint) throw(FileParseError);
 
 
     // Reads in a "block" of data.  Reading terminates on the first
