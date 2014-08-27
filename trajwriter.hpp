@@ -34,6 +34,7 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <exceptions.hpp>
 
 
 namespace loos {
