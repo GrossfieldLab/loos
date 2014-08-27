@@ -38,8 +38,6 @@ namespace loos {
 
   public:
 
-    struct WriteError : public std::exception {};
-
     TrajectoryWriter(const std::string& fname, const bool append = false);
     virtual ~TrajectoryWriter();
     virtual void setComments(const std::vector<std::string>& comments);
