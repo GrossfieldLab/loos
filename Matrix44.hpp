@@ -76,7 +76,7 @@ namespace loos {
       return(matrix[j*4+i]);
     }
 
-
+#if !defined(SWIG)
     //! Allow access to the linear array of matrix elements
     T& operator[](const int i) {
       if (i < 0 || i > 15)
@@ -90,6 +90,8 @@ namespace loos {
         throw(std::range_error("Index into matrix is out of range"));
       return(matrix[i]);
     }
+
+#endif // !defined(SWIG)
 
     //! Returns the array pointer
     T* data(void) { return(matrix); }
@@ -145,9 +147,10 @@ namespace loos {
     }
 
 
-
+#if !defined(SWIG)
     //! Friend declaration for matrix-vector multiply...
     friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+#endif
 
     //! Matrix-matrix multiply...
     Matrix44<T>& operator*=(const Matrix44<T>& rhs) {

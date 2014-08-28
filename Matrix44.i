@@ -25,37 +25,10 @@
 %}
 
 
-
+%include "Matrix44.hpp"
 
 
 namespace loos {
-
-  // Forward declaration for matrix-vector multiply
-  template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
-
-
-  //! Specialized 4x4 Matrix class for handling coordinate transforms.
-  template<class T>
-  class Matrix44 {
-  public:
-    Matrix44();
-    explicit Matrix44(const T v);
-    void zero(void);
-    void identity(void);
-    T& operator()(const int j, const int i);
-    T* data(void);
-    Matrix44<T>& operator+=(const Matrix44<T>& rhs);
-    Matrix44<T> operator+(const Matrix44<T>& rhs);
-    Matrix44<T>& operator-=(const Matrix44<T>& rhs);
-    Matrix44<T> operator-(const Matrix44<T>& rhs);
-    Matrix44<T>& operator*=(const Matrix44<T>& rhs);
-    Matrix44<T> operator*(const Matrix44<T>& rhs) const;
-    Matrix44<T>& operator*=(const T x);
-    Matrix44<T> operator*(const T x);
-
-
-
-  };
 
 
   %extend Matrix44<double> {
