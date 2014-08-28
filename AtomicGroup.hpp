@@ -135,9 +135,11 @@ namespace loos {
     //! Get the ith atom from this group.
     pAtom getAtom(const int i) const;
 
+#if !defined(SWIG)
     //! Same as getAtom(i)
     pAtom& operator[](const int i);
     const pAtom& operator[](const int i) const;
+#endif
 
     //! Append the atom onto the group
     AtomicGroup& append(pAtom pa) { atoms.push_back(pa); _sorted = false; return(*this); }
@@ -166,6 +168,14 @@ namespace loos {
      */
     bool operator==(AtomicGroup& rhs);
 
+    //! Inequality test for two groups
+    bool operator!=(AtomicGroup& rhs) {
+      return(!(operator==(rhs)));
+    }
+
+
+#if !defined(SWIG)
+
     //! Equality test for const groups
     /**Similar to the non-const version, but it will sort <I>copies</I>
      *of the atom lists if they are not already sorted...
@@ -173,14 +183,13 @@ namespace loos {
     bool operator==(const AtomicGroup& rhs) const;
 
     //! Inequality test for two groups
-    bool operator!=(AtomicGroup& rhs) {
-      return(!(operator==(rhs)));
-    }
-
-    //! Inequality test for two groups
     bool operator!=(const AtomicGroup& rhs) const {
       return(!(operator==(rhs)));
     }
+
+#endif // !defined(SWIG)
+
+
 
     //! subset() and excise() args are patterned after perl's substr...
     /** If offset is negative, then it's relative to the end of the
@@ -327,8 +336,10 @@ namespace loos {
     //! containing residue 
     AtomicGroup getResidue(pAtom res);
 
+#if !defined(SWIG)
     //! Output the group in pseudo-XML format...
     friend std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp);
+#endif
   
     // Some misc support routines...
 
@@ -393,7 +404,7 @@ namespace loos {
     }
 
     //! Provide access to the underlying shared periodic box...
-    SharedPeriodicBox sharedPeriodicBox() const { return(box); }
+    loos::SharedPeriodicBox sharedPeriodicBox() const { return(box); }
 
     //! Remove periodicity
     void removePeriodicBox() { box = SharedPeriodicBox(); }
@@ -494,11 +505,12 @@ namespace loos {
     // STL-iterator access
     // Should these reset sort status?
     iterator begin(void) { return(atoms.begin()); }
-    const_iterator begin(void) const { return(atoms.begin()); }
-
     iterator end(void) { return(atoms.end()); }
-    const_iterator end(void) const { return(atoms.end()); }
 
+#if !defined(SWIG)
+    const_iterator begin(void) const { return(atoms.begin()); }
+    const_iterator end(void) const { return(atoms.end()); }
+#endif
 
     // Statistical routines...
     //! Bounding box for the group...
@@ -772,7 +784,7 @@ namespace loos {
 
 
     std::vector<pAtom> atoms;
-    SharedPeriodicBox box;
+    loos::SharedPeriodicBox box;
 
   };
 
