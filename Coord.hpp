@@ -122,7 +122,6 @@ namespace loos {
     const T& x(void) const { return(v[X]); }
     const T& y(void) const { return(v[Y]); }
     const T& z(void) const { return(v[Z]); }
-#endif
 
     //! Retrieve an element from the Coord with range-checking
     T& operator[](const unsigned int i) {
@@ -137,6 +136,7 @@ namespace loos {
         throw std::out_of_range("Index into Coord<T> is out of range.");
       return(v[i]);
     }
+#endif // !defined(SWIG)
 
     //! Short-cut to set the cartesian coordinates...
     void set(const T x, const T y, const T z) {
