@@ -230,8 +230,10 @@ namespace loos {
     //! Clears user-defined bits...
     void clearProperty(const bits bitmask);
 
+#if !defined(SWIG)
     //! Outputs an atom in pseudo-XML
     friend std::ostream& operator<<(std::ostream&, const Atom&);
+#endif
 
   private:
     void init(void);
@@ -259,7 +261,7 @@ namespace loos {
   };
 
 
-
+#if !defined(SWIG)
   //! Compares two atoms based solely on name, id, resid, resname, and segid
   struct AtomEquals : public std::binary_function<pAtom, pAtom, bool> {
     bool operator()(const pAtom& a, const pAtom& b) const;
@@ -278,6 +280,7 @@ namespace loos {
     double threshold;
   };
 
+#endif // !defined(SWIG)
 }
 
 #endif
