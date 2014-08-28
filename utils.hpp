@@ -276,7 +276,7 @@ namespace loos {
   }
 
   //! Applies a string-based selection to an atomic group...
-  AtomicGroup selectAtoms(const AtomicGroup&, const std::string) throw (NullResult);
+  AtomicGroup selectAtoms(const AtomicGroup&, const std::string) throw (loos::NullResult);
 
 
   //! Returns a byte-swapped copy of an arbitrary type
