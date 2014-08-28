@@ -25,35 +25,20 @@
 %}
 
 
+%include "pdb.hpp"
+
 namespace loos {
-  class PDB : public AtomicGroup {
-  public:
-    PDB();
-    virtual ~PDB();
-    explicit PDB(const std::string fname);
-    explicit PDB(const char* fname);
-    virtual PDB* clone(void) const;
-    PDB copy(void) const;
-    static PDB fromAtomicGroup(const AtomicGroup&);
-    void showCharge(bool b = true);
-    void strict(const bool b);
-    void autoTerminate(bool b = true);
-    Remarks& remarks(void);
-    void remarks(const Remarks&);
-    const UnitCell& unitCell(void);
-    void unitCell(const UnitCell&);
 
-    %extend {
-      char* __str__() {
-        std::ostringstream oss;
-        oss << *$self;
-        size_t n = oss.str().size();
-        char* buf = new char[n+1];
-        strncpy(buf, oss.str().c_str(), n+1);
-        return(buf);
-      }
+    %extend PDB {
+        char* __str__() {
+            std::ostringstream oss;
+            oss << *$self;
+            size_t n = oss.str().size();
+            char* buf = new char[n+1];
+            strncpy(buf, oss.str().c_str(), n+1);
+            return(buf);
+        }
     }
-
-  };
-
+    
+    
 }

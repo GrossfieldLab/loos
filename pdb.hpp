@@ -116,15 +116,17 @@ namespace loos {
      */
     static PDB fromAtomicGroup(const AtomicGroup&);
 
-    bool showCharge(void) const;
     //! Special handling for charges since the PDB form is daft
     void showCharge(bool b = true);
 
+#if !defined(SWIG)
+    bool showCharge(void) const;
     bool strict(void) const;
+    bool autoTerminate(void) const;
+#endif // !defined(SWIG)
+
     //! Determins how strict the input parser is to the '96 PDB standard.
     void strict(const bool b);
-
-    bool autoTerminate(void) const;
 
     //! Automatically insert TER record at end of output.
     /*! Controls whether or not a "TER" record is automatically added
@@ -140,8 +142,10 @@ namespace loos {
     const UnitCell& unitCell(void);
     void unitCell(const UnitCell&);
 
+#if !defined(SWIG)
     //! Output as a PDB
     friend std::ostream& operator<<(std::ostream&, const PDB&);
+#endif
 
     //! Read in PDB from an ifstream
     void read(std::istream& is);
@@ -166,7 +170,9 @@ namespace loos {
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
+#if !defined(SWIG)
     friend std::ostream& FormatConectRecords(std::ostream&, const PDB&);
+#endif
 
     pAtom findAtom(const int i);
     void uniqueBonds();

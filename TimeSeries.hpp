@@ -132,6 +132,8 @@ public:
       _data.assign(_data.size(), (T)0.0);
     }
 
+
+#if !defined(SWIG)
     T& operator[](const unsigned int i) {
       return (_data.at(i)); // this way we get range checking
     }
@@ -139,6 +141,8 @@ public:
     const T& operator[](const unsigned int i) const  {
       return (_data.at(i)); // this way we get range checking
     }
+#endif // !defined(SWIG)
+
 
     unsigned int size(void) const {
       return (_data.size());
@@ -169,7 +173,7 @@ public:
       return(res);
     }
 
-
+#if !defined(SWIG)
     friend TimeSeries<T> operator+(const T lhs, const TimeSeries<T> &rhs) {
       TimeSeries<T> res( rhs.size(), (T) 0.0 );
       for (unsigned int i=0; i<rhs.size(); i++) {
@@ -177,6 +181,7 @@ public:
       }
       return(res);
     }
+#endif
 
     TimeSeries<T> operator+(const TimeSeries<T> &rhs) const {
       if (_data.size() != rhs.size())
@@ -234,6 +239,7 @@ public:
       return(res);
     }
 
+#if !defined(SWIG)
     friend TimeSeries<T> operator-(const T lhs, const TimeSeries<T> &rhs) {
       TimeSeries<T> res( rhs.size() );
       for (unsigned int i=0; i<rhs.size(); i++) {
@@ -241,6 +247,7 @@ public:
       }
       return(res);
     }
+#endif
 
     TimeSeries<T> operator*=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
@@ -277,6 +284,7 @@ public:
       return(res);
     }
 
+#if !defined(SWIG)
     friend TimeSeries<T> operator*(const T lhs, const TimeSeries<T> &rhs) {
       TimeSeries<T> res( rhs.size(), (T) 0.0 );
       for (unsigned int i=0; i<rhs.size(); i++) {
@@ -284,7 +292,7 @@ public:
       }
       return(res);
     }
-
+#endif
 
     TimeSeries<T> operator/=(const T val) {
       for (unsigned int i=0; i<_data.size(); i++) {
@@ -321,6 +329,7 @@ public:
       return(res);
     }
 
+#if !defined(SWIG)
     friend TimeSeries<T> operator/(const T lhs, const TimeSeries<T> &rhs) {
       TimeSeries<T> res( rhs.size() );
       for (unsigned int i=0; i<rhs.size(); i++) {
@@ -328,6 +337,7 @@ public:
       }
       return(res);
     }
+#endif
 
     TimeSeries<T> copy(void) const {
       TimeSeries<T> result(_data.size(), 0.0);
@@ -507,10 +517,12 @@ public:
   void push_back(const T& x) { _data.push_back(x); }
 
   iterator begin() { return(_data.begin()); }
-  const_iterator begin() const { return(_data.begin()); }
-  
   iterator end() { return(_data.end()); }
+
+#if !defined(SWIG)
+  const_iterator begin() const { return(_data.begin()); }
   const_iterator end() const { return(_data.end()); }
+#endif
 
 
 private:

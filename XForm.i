@@ -31,32 +31,9 @@
 %}
 
 
+%include "XForm.hpp"
+
 namespace loos {
 
-  typedef Matrix44<greal> GMatrix;
-
-  class XForm {
-  public:
-    XForm();
-    explicit XForm(const GMatrix& m);
-    void push(void);
-    void pop(void);
-    void load(const GMatrix&);
-    void concat(const GMatrix&);
-    void premult(const GMatrix&);
-    void identity(void);
-    bool unset(void) const;
-    void translate(const greal, const greal, const greal);
-    void translate(const GCoord&);
-    void scale(const greal, const greal, const greal);
-    void scale(const GCoord&);
-    void rotate(const GCoord&, const greal);
-    void rotate(const char, const greal);
-    GCoord transform(const GCoord&);
-    GMatrix current(void) const;
-
-  };
-
-  %rename(XFormVector)    std::vector<XForm>;
-
+   %rename(XFormVector)    std::vector<XForm>;
 };

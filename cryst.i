@@ -26,53 +26,23 @@
 #include <cryst.hpp>
 %}
 
+%include "cryst.hpp"
 
 
 
 namespace loos {
 
-  //! This class encapsulates crystallographic unit cell data
-  class UnitCell {
-  public:
-    UnitCell();
-    UnitCell(const GCoord& v);
-    greal a(void) const;
-    void a(const greal x);
 
-    greal b(void) const;
-    void b(const greal x);
+    %extend UnitCell {
+         char* __str__() {
+             std::ostringstream oss;
+             oss << *$self;
+             size_t n = oss.str().size();
+             char* buf = new char[n+1];
+             strncpy(buf, oss.str().c_str(), n+1);
+             return(buf);
+         }
 
-    greal c(void) const;
-    void c(const greal x);
+     }
 
-    greal alpha(void) const;
-    void alpha(const greal x);
-
-    greal beta(void) const;
-    void beta(const greal x);
-
-    greal gamma(void) const;
-    void gamma(const greal x);
-
-    std::string spaceGroup(void) const;
-    void spaceGroup(const std::string s);
-
-    int z(void) const;
-    void z(const int i);
-
-    %extend {
-      char* __str__() {
-        std::ostringstream oss;
-        oss << *$self;
-        size_t n = oss.str().size();
-        char* buf = new char[n+1];
-        strncpy(buf, oss.str().c_str(), n+1);
-        return(buf);
-      }
-
-    }
-
-  };
-
-
-}
+ }
