@@ -133,10 +133,12 @@ namespace loos {
     std::string PDBelement(void) const;
     void PDBelement(const std::string);
 
+#if !defined(SWIG)
     //! Returns a const ref to internally stored coordinates.
     //! This returns a const ref mainly for efficiency, rather than
     //! copying the coords...
     const GCoord& coords(void) const;
+#endif // !defined(SWIG)
 
     //! Returns a writable ref to the internally stored coords.
     /** This can cause problems since we track whether the coords are
