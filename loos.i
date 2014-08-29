@@ -37,6 +37,7 @@ namespace loos {
 
 
 
+%include "exceptions.i"
 %include "Coord.i"
 %include "Atom.i"
 %include "Matrix44.i"
@@ -51,7 +52,6 @@ namespace loos {
 %include "Geometry.i"
 %include "TimeSeries.i"
 %include "HBondDetector.i"
-%include "exceptions.i"
 %include "trajwriter.i"
 %include "dcdwriter.i"
 %include "xtcwriter.i"
