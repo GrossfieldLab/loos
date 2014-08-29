@@ -45,6 +45,7 @@
 #include <utils.hpp>
 #include <Matrix.hpp>
 
+#include <exceptions.hpp>
 
 
 namespace loos {
@@ -330,7 +331,7 @@ namespace loos {
     pAtom findById(const int id) const;
 
     //! Create a new group from a vector of atomids
-    AtomicGroup groupFromID(const std::vector<int> &id_list) const;
+    AtomicGroup groupFromID(const std::vector<int> &id_list) const throw(std::out_of_range);
 
     //! Given an Atom, return a group of all the atoms contained by its
     //! containing residue 
@@ -411,10 +412,10 @@ namespace loos {
 
     //! Translate the entire group so that the centroid is in the 
     //! primary cell
-    void reimage();
+    void reimage() throw(std::runtime_error);
   
     //! Reimage atoms individually into the primary cell
-    void reimageByAtom();
+    void reimageByAtom() throw(std::runtime_error);
 
     //! Takes a group that's split across a periodic boundary and reimages it so it's all together.  
     void mergeImage(pAtom &p);
@@ -548,7 +549,7 @@ namespace loos {
     /**Sorts both groups (if necessary), then assumes a 1:1
      *correspondence between ith atoms.
      */
-    greal rmsd(const AtomicGroup&);
+    greal rmsd(const AtomicGroup&) throw(std::runtime_error);
 
     // Geometric transformations...
   
@@ -593,7 +594,7 @@ namespace loos {
      * a residue.  The map is an index into the AtomicGroup g that
      * puts g into the same order as the current group.
      */
-    std::vector<uint> atomOrderMapFrom(const AtomicGroup& g);
+    std::vector<uint> atomOrderMapFrom(const AtomicGroup& g) throw(loos::LOOSError);
 
     //! Given a mapping of atom order, copy the coordinates into the current group
     /**
@@ -603,7 +604,7 @@ namespace loos {
      * If you know that the atoms are in the same order in both
      * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
-    void copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
+    void copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order) throw(loos::LOOSError);
 
     //! Copy the coordinates from the group mapping the atom order
     /**
@@ -643,8 +644,7 @@ namespace loos {
      *  - Potential issue with f77int under linux when not on a 64-bit
      *    architecture. 
      */
-    std::vector<GCoord> principalAxes(void) const;
-
+    std::vector<GCoord> principalAxes(void) const throw(loos::NumericalError);
 
     //! Computes the moments of inertia for a group
     /**
@@ -653,7 +653,7 @@ namespace loos {
      * function which calculates the distribution of points about the
      * centroid.
      */
-    std::vector<GCoord> momentsOfInertia(void) const;
+    std::vector<GCoord> momentsOfInertia(void) const throw(loos::NumericalError);
 
     //! Calculates the transformation matrix for superposition of groups.
     /**
@@ -667,7 +667,7 @@ namespace loos {
      * The threshold for a zero-eigenvalue (really, a zero singular value)
      * is set in AtomicGroup::superposition_zero_singular_value
      */
-    GMatrix superposition(const AtomicGroup&);
+    GMatrix superposition(const AtomicGroup&) throw(loos::NumericalError);
 
     //! Superimposes the current group onto the passed group.
     /**
@@ -745,12 +745,12 @@ namespace loos {
     pAtom findById_linearSearch(const int id) const;
     pAtom findById_binarySearch(const int id) const;
 
-    int rangeCheck(int) const;
+    int rangeCheck(int) const throw(std::out_of_range);
 
     void addAtom(pAtom pa) { atoms.push_back(pa); _sorted = false; }
-    void deleteAtom(pAtom pa);
+    void deleteAtom(pAtom pa) throw(std::runtime_error);
 
-    boost::tuple<iterator, iterator> calcSubsetIterators(const int offset, const int len = 0);
+    boost::tuple<iterator, iterator> calcSubsetIterators(const int offset, const int len = 0) throw(std::range_error);
 
     void copyCoordinatesById(AtomicGroup& g);
 

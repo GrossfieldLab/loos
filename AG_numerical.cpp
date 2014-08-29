@@ -195,7 +195,7 @@ namespace loos {
   }
 
 
-  greal AtomicGroup::rmsd(const AtomicGroup& v) {
+  greal AtomicGroup::rmsd(const AtomicGroup& v) throw(std::runtime_error) {
   
     if (size() != v.size())
       throw(std::runtime_error("Cannot compute RMSD between groups with different sizes"));

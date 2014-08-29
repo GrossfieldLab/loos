@@ -69,7 +69,7 @@ namespace loos {
 
 
   // Internal: verify the index into the atom array...
-  int AtomicGroup::rangeCheck(int i) const {
+  int AtomicGroup::rangeCheck(int i) const throw(std::out_of_range) {
     if (i < 0)
       i = atoms.size() + i;
     if ((unsigned int)i >= atoms.size())
@@ -99,7 +99,7 @@ namespace loos {
   }
 
   // Internal: removes an atom from this group based on the address of the shared pointer...
-  void AtomicGroup::deleteAtom(pAtom pa) {
+  void AtomicGroup::deleteAtom(pAtom pa) throw(std::runtime_error) {
     std::vector<pAtom>::iterator iter;
 
     iter = find(atoms.begin(), atoms.end(), pa);
@@ -251,7 +251,7 @@ namespace loos {
   // Internal: calculates the start and stop iterators given offset and len args
   // as in PERL's substr()...
 
-  boost::tuple<AtomicGroup::iterator, AtomicGroup::iterator> AtomicGroup::calcSubsetIterators(const int offset, const int len) {
+  boost::tuple<AtomicGroup::iterator, AtomicGroup::iterator> AtomicGroup::calcSubsetIterators(const int offset, const int len) throw(std::range_error) {
     unsigned int a, b;
 
     if (offset < 0) {
@@ -529,7 +529,7 @@ namespace loos {
   //! using a subselection, unless you're sure the subsection contains these
   //! atoms as well.  The main use of this routine is to create a group of atoms
   //! bound to another atom.
-  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) const {
+  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) const throw(std::out_of_range) {
     AtomicGroup result;
 
     result.box = box;
@@ -793,7 +793,7 @@ namespace loos {
   }
 
 
-  void AtomicGroup::reimage() {
+  void AtomicGroup::reimage() throw(std::runtime_error) {
     if (!(isPeriodic()))
       throw(std::runtime_error("trying to reimage a non-periodic group"));
     GCoord com = centroid();
@@ -806,7 +806,7 @@ namespace loos {
     }
   }
 
-  void AtomicGroup::reimageByAtom () {
+  void AtomicGroup::reimageByAtom () throw(std::runtime_error) {
     if (!(isPeriodic()))
       throw(std::runtime_error("trying to reimage a non-periodic group"));
     const_iterator a;
@@ -938,7 +938,7 @@ namespace loos {
   }
 
 
-  std::vector<uint> AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) {
+  std::vector<uint> AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) throw(loos::LOOSError) {
     if (g.size() != size())
       throw(LOOSError("Cannot map atom order between groups of different sizes"));
 
@@ -966,7 +966,7 @@ namespace loos {
     return(order);
   }
 
-  void AtomicGroup::copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) {
+  void AtomicGroup::copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) throw(loos::LOOSError){
     if (g.size() != map.size())
       throw(LOOSError("Atom order map is of incorrect size to copy coordinates"));
     if (g.size() != size())

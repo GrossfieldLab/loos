@@ -38,14 +38,13 @@
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
-#include <exceptions.hpp>
 
 
 
 namespace loos {
 
 
-  std::vector<GCoord> AtomicGroup::momentsOfInertia(void) const {
+  std::vector<GCoord> AtomicGroup::momentsOfInertia(void) const throw(loos::NumericalError) {
     Math::Matrix<double, Math::ColMajor> I(3, 3);  // This gets initialized to zero...
     GCoord c = centerOfMass();
 
@@ -77,10 +76,10 @@ namespace loos {
 
     dsyev_(&jobz, &uplo, &nn, I.get(), &lda, W, work, &lwork, &info);
     if (info < 0)
-      throw(std::runtime_error("dsyev_ reported an argument error..."));
+      throw(NumericalError("dsyev_ reported an argument error.", info));
 
     if (info > 0)
-      throw(std::runtime_error("dsyev_ failed to converge..."));
+      throw(NumericalError("dsyev_ failed to converge.", info));
 
     std::vector<GCoord> results(4);
 
@@ -101,7 +100,7 @@ namespace loos {
   }
 
 
-  std::vector<GCoord> AtomicGroup::principalAxes(void) const {
+  std::vector<GCoord> AtomicGroup::principalAxes(void) const throw(loos::NumericalError) {
     // Extract out the group's coordinates...
     int i;
     int n = size();
@@ -156,10 +155,10 @@ namespace loos {
 
     dsyev_(&jobz, &uplo, &nn, C, &lda, W, work, &lwork, &info);
     if (info < 0)
-      throw(std::runtime_error("dsyev_ reported an argument error..."));
+      throw(NumericalError("dsyev_ reported an argument error.", info));
 
     if (info > 0)
-      throw(std::runtime_error("dsyev_ failed to converge..."));
+      throw(NumericalError("dsyev_ failed to converge.", info));
 
     std::vector<GCoord> results(4);
     GCoord c;
@@ -186,7 +185,7 @@ namespace loos {
 
 
 
-  GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
+  GMatrix AtomicGroup::superposition(const AtomicGroup& grp) throw(loos::NumericalError){
     int i, j;
     XForm W;
 
