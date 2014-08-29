@@ -7,17 +7,4 @@
 #include <HBondDetector.hpp>
 %}
 
-namespace loos {
-    class HBondDetector {
-    public:
-    HBondDetector(const double distance, const double angle, 
-                  const AtomicGroup &group);
-        
-    HBondDetector(const AtomicGroup &group);
-    
-    HBondDetector();
-        
-    bool hBonded(const pAtom donor, const pAtom hydrogen, 
-                 const pAtom acceptor);
-    };
-};
+%include "HBondDetector.hpp"

@@ -59,6 +59,7 @@ namespace loos {
     */
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
 
+#if !defined(SWIG)
   //! Compute an iterative superposition (a la Alan)
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter=1000);
 
@@ -76,13 +77,16 @@ namespace loos {
 
     //! Compute an iterative superposition for an entire trajectory
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000);
-
+#endif // !defined(SWIG)
 
   void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
 
   void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory);
   void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory, std::vector<uint>& frames);
 
+
+
+#if !defined(SWIG)
   RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble);
   RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
 
@@ -94,7 +98,7 @@ namespace loos {
    * is iteratively aligned prior to computing the SVD.
    */
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, const bool align = true);
-
+#endif   // !defined(SWIG)
 };
 
 

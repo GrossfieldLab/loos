@@ -26,24 +26,4 @@
 #include <xtcwriter.hpp>
 %}
 
-
-namespace loos {
-  class XTCWriter : public TrajectoryWriter {
-  public:
-
-
-    XTCWriter(const std::string fname, const bool append = false);
-    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame, const bool append = false);
-    ~XTCWriter();
-
-    double timePerStep() const;
-    void timePerStep(const double dt);
-    uint stepsPerFrame() const;
-    void stepsPerFrame(const uint s);
-    uint currentStep() const;
-    void currentStep(const uint s);
-    void writeFrame(const AtomicGroup& model);
-    void writeFrame(const AtomicGroup& model, const uint step, const double time);
-    uint framesWritten() const;
-  };
-}
+#include "xtcwriter.hpp"

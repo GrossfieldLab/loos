@@ -73,6 +73,9 @@
 
 %}
 
+%include "ensembles.hpp"
+
+
 namespace loos {
 
   struct AlignmentResult {
@@ -82,13 +85,6 @@ namespace loos {
   };
 
 
-  AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble);
-
-  AtomicGroup averageStructure(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
-
-  AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj, const std::vector<uint>& indices);
-
-  AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
 
   loos::AlignmentResult iterativeAlignmentPy(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter = 1000);
 
@@ -97,12 +93,6 @@ namespace loos {
 
   loos::AlignmentResult iterativeAlignmentPy(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter = 1000);
 
-
-
-  void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
-
-  void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory);
-  void readTrajectory(std::vector<AtomicGroup>& ensemble, const AtomicGroup& model, pTraj trajectory, std::vector<uint>& frames);
 };
 
 
