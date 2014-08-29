@@ -157,7 +157,7 @@ namespace loos {
     double occupancy(void) const;
     void occupancy(const double);
 
-    double charge(void) const;
+    double charge(void) const  throw(UnsetProperty);
 
     //! Sets the charge of the atom as a double.  This is NOT the PDB spec...
 
@@ -183,13 +183,13 @@ namespace loos {
     void addBond(const int);
 
     //! Deletes the specified bond.
-    void deleteBond(const int);
+    void deleteBond(const int) throw(std::runtime_error);
 
     //! Deletes a bond by extracting the atom-id from the passed pAtom
     void deleteBond(const pAtom&);
 
     //! Returns a copy of the bond list.
-    std::vector<int> getBonds(void) const;
+    std::vector<int> getBonds(void) const throw(UnsetProperty);
 
     //! Sets the bonds list
     void setBonds(const std::vector<int>& list);
@@ -244,7 +244,7 @@ namespace loos {
     //! Internal function for clearing a bitflag
     void clearPropertyBit(const bits);
 
-    void checkUserBits(const bits bitmask);
+    void checkUserBits(const bits bitmask) throw(std::logic_error);
 
   private:
     int _id;
