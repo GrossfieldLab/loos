@@ -83,9 +83,9 @@ namespace loos {
   double Atom::occupancy(void) const { return(_q); }
   void Atom::occupancy(const double d) { _q = d ; }
 
-  double Atom::charge(void) const throw(UnsetProperty) {
+  double Atom::charge(void) const throw(loos::UnsetProperty) {
     if (!(mask & chargebit))
-      throw(UnsetProperty("Atom has no charge set"));
+      throw(loos::UnsetProperty("Atom has no charge set"));
     return(_charge);
   }
 
@@ -123,9 +123,9 @@ namespace loos {
   void Atom::deleteBond(const pAtom& p) { deleteBond(p->id()); }
 
     //! Returns a copy of the bond list.
-  std::vector<int> Atom::getBonds(void) const throw(UnsetProperty) {
+  std::vector<int> Atom::getBonds(void) const throw(loos::UnsetProperty) {
     if (!(mask & bondsbit))
-      throw(UnsetProperty("Atom has no connectivity"));
+      throw(loos::UnsetProperty("Atom has no connectivity"));
     return(bonds);
   }
 

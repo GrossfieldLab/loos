@@ -50,6 +50,16 @@ namespace loos {
   class Atom {
   public:
 
+    //! DEPRECATED exception class...use loos::UnsetProperty instead
+    class UnsetProperty : public LOOSError {
+    public:
+      UnsetProperty() : LOOSError("Attempting to access an unset atom property") {}
+      UnsetProperty(const std::string& p) : LOOSError(p) {}
+      UnsetProperty(const Atom& a, const std::string& p) : LOOSError(a, p) {}
+    };
+
+
+
     // Be careful that we don't overflow an unsigned long!
     //! Bits in the bitmask that flag what properties have actually been set.
     enum bits {
