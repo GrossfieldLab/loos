@@ -27,11 +27,14 @@
 #include <sstream>
 #include <exception>
 #include <string>
-
-#include <Atom.hpp>
+#include <loos_defs.hpp>
 
 namespace loos {
 
+
+  // Forward decl's
+  class Atom;
+  std::ostream& operator<<(std::ostream&, const Atom&);
 
   //! Generic LOOS exception
   class LOOSError : public std::exception {
@@ -78,12 +81,20 @@ namespace loos {
     explicit NullResult(const std::string& arg) : LOOSError(arg) { }
   };
 
-  //! Exception caused by insufficient atom properties..
+  //! Exception caused by insufficient atom properties.. (DEPRECATED)
   class MissingProperty : public LOOSError {
   public:
     explicit MissingProperty(const std::string& arg) : LOOSError(arg) { }
     explicit MissingProperty(const Atom& a, const std::string& arg) : LOOSError(a, arg) { }
   };
+
+  class UnsetProperty : public LOOSError {
+  public:
+    UnsetProperty() : LOOSError("Attempting to access an unset atom property") {}
+    UnsetProperty(const std::string& p) : LOOSError(p) {}
+    UnsetProperty(const Atom& a, const std::string& p) : LOOSError(a, p) {}
+  };
+
 
   //! Exception caused by a blas/atlas error
   class NumericalError : public LOOSError {

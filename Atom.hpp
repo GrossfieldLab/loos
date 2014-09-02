@@ -30,6 +30,7 @@
 #include <functional>
 
 #include <loos_defs.hpp>
+#include <exceptions.hpp>
 #include <Coord.hpp>
 
 namespace loos {
@@ -64,19 +65,6 @@ namespace loos {
       usr3bit = usr2bit << 1,
       indexbit = usr3bit << 1
     };
-
-    // Exception classes
-    struct UnsetProperty : public std::exception {
-      UnsetProperty() { message = "Attempting to access an unset atom property"; }
-      UnsetProperty(const char* p) : message(p) { }
-
-      virtual const char *what() const throw() {
-        return(message);
-      }
-
-      const char* message;
-    };
-
 
     Atom() { init(); }
 
@@ -157,7 +145,8 @@ namespace loos {
     double occupancy(void) const;
     void occupancy(const double);
 
-    double charge(void) const  throw(UnsetProperty);
+    // Note: swig requires explicit namespace on exception objects
+    double charge(void) const  throw(loos::UnsetProperty);
 
     //! Sets the charge of the atom as a double.  This is NOT the PDB spec...
 
@@ -189,7 +178,7 @@ namespace loos {
     void deleteBond(const pAtom&);
 
     //! Returns a copy of the bond list.
-    std::vector<int> getBonds(void) const throw(UnsetProperty);
+    std::vector<int> getBonds(void) const throw(loos::UnsetProperty);
 
     //! Sets the bonds list
     void setBonds(const std::vector<int>& list);
