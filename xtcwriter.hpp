@@ -59,7 +59,7 @@ namespace loos {
 
   public:
 
-    static const float default_precision = 1e3;
+    static const float default_precision;
 
 
     struct InternalOverflow : public WriteError { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
