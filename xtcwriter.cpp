@@ -721,7 +721,7 @@ Library.
       crds[k++] = c.y() / 10.0;
       crds[k++] = c.z() / 10.0;
     }
-    writeCompressedCoordsFloat(crds, n, 1000.0);
+    writeCompressedCoordsFloat(crds, n, precision_);
 
     ++current_;
   }
