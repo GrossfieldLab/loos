@@ -59,9 +59,6 @@ namespace loos {
 
   public:
 
-    static const float default_precision;
-
-
     struct InternalOverflow : public WriteError { virtual const char* what() const throw() { return("Internal overflow compressing coordinates"); } };
     
 
@@ -82,7 +79,7 @@ namespace loos {
       current_(0),
       crds_size_(0),
       crds_(0),
-      precision_(default_precision)
+      precision_(1e3)
     {
       xdr.setStream(stream_);
       if (appending_)
@@ -101,7 +98,7 @@ namespace loos {
       current_(0),
       crds_size_(0),
       crds_(0),
-      precision_(default_precision)
+      precision_(1e3)
     {
       xdr.setStream(stream_);
       if (appending_)

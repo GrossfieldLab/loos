@@ -202,8 +202,6 @@ Library.
 
 ******************************************************************/
 
-  const float XTCWriter::default_precision = 1e3;
-
   // TDR - This needs to move?
   const int XTCWriter::magicints[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 10, 12, 16, 20, 25, 32, 40, 50, 64,
