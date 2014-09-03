@@ -104,6 +104,28 @@ namespace loos {
       if (appending_)
 	prepareToAppend();
     }
+
+
+    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame, const float precision, const bool append = false) :
+      TrajectoryWriter(fname, append),
+      buf1size(0), buf2size(0),
+      buf1(0), buf2(0),
+      natoms_(0),
+      dt_(dt),
+      step_(0),
+      steps_per_frame_(steps_per_frame),
+      current_(0),
+      crds_size_(0),
+      crds_(0),
+      precision_(precision)
+    {
+      xdr.setStream(stream_);
+      if (appending_)
+	prepareToAppend();
+    }
+
+
+
     
 
 

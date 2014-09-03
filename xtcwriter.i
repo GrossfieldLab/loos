@@ -34,6 +34,7 @@ namespace loos {
 
     XTCWriter(const std::string fname, const bool append = false);
     XTCWriter(const std::string fname, const double dt, const uint steps_per_frame, const bool append = false);
+    XTCWriter(const std::string fname, const double dt, const uint steps_per_frame, const float precision, const bool append = false);
     ~XTCWriter();
 
     double timePerStep() const;
