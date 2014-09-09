@@ -50,6 +50,9 @@ class PyTraj:
     def __len__(self):
         return(len(self.framelist))
 
+    def reset(self):
+        self.index = 0
+
     def next(self):
         if (self.index >= len(self.framelist)):
             raise StopIteration
