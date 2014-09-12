@@ -73,15 +73,19 @@ namespace loos {
 
     // Error classes that we may or may not return...
 
-    //! Error while reading the F77 guard data
+    //! Error while reading the F77 guard data (DEPRECATED)
+    /**
+     * These exceptions are now deprecated.  Instead, use LOOSError, EndOfFile, and
+     * TrajectoryReadError
+     */
     struct RecordError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 record"); }; } record_error;
-    //! General error while parsing the DCD header
+    //! General error while parsing the DCD header (DEPRECATED)
     struct HeaderError : public std::exception { virtual const char *what() const throw() { return("Error while reading DCD header"); }; } header_error;
-    //! General error while reading an F77 data record
+    //! General error while reading an F77 data record (DEPRECATED)
     struct LineError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
-    //! Unexpected EOF
+    //! Unexpected EOF (DEPRECATED)
     struct EndOfFile : public std::exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
-    //! General error...
+    //! General error... (DEPRECATED)
     struct GeneralError : public std::exception {
       GeneralError(const char *s) : msg(s) { };
       virtual const char *what() const throw() { return(msg); };
@@ -113,7 +117,7 @@ namespace loos {
       }
 
     //! Read in the header from the stored stream
-    void readHeader(void);
+    void readHeader(void) throw (loos::LOOSError, loos::TrajectoryReadError);
 
 
     // Accessor methods...
@@ -164,34 +168,34 @@ namespace loos {
     static void setSuppression(const bool b) { suppress_warnings = b; }
 
     //! Parse a frame of the DCD
-    virtual bool parseFrame(void);
+    virtual bool parseFrame(void) throw (loos::TrajectoryReadError, loos::EndOfFile);
     
   private:
 
-    void initTrajectory();
+    void initTrajectory() throw (loos::LOOSError);
       
     // Trajectory member functions we must provide...
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
-    virtual void seekFrameImpl(const uint);
+    virtual void seekFrameImpl(const uint) throw (loos::LOOSError);
 
     //! Rewind the file to the first DCD frame.
-    virtual void rewindImpl(void);
+    virtual void rewindImpl(void) throw (loos::LOOSError);
 
     //! Update an AtomicGroup coordinates with the currently-read frame.
-    virtual void updateGroupCoordsImpl(AtomicGroup& g);
+    virtual void updateGroupCoordsImpl(AtomicGroup& g) throw (loos::LOOSError);
 
 
 
     void allocateSpace(const int n);
-    void readCrystalParams(void);
-    void readCoordLine(std::vector<float>& v);
+    void readCrystalParams(void) throw (loos::TrajectoryReadError);
+    void readCoordLine(std::vector<float>& v) throw (loos::LOOSError);
 
-    void endianMatch(StreamWrapper& fsw);
+    void endianMatch(StreamWrapper& fsw) throw(loos::TrajectoryReadError);
 
     // For reading F77 I/O
-    unsigned int readRecordLen(void);
-    DataOverlay* readF77Line(unsigned int *len);
+    unsigned int readRecordLen(void) throw(loos::EndOfFile, loos::TrajectoryReadError);
+    DataOverlay* readF77Line(unsigned int *len) throw (loos::TrajectoryReadError);
 
 
 

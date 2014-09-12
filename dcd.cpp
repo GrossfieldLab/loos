@@ -86,15 +86,15 @@ namespace loos {
 
   // Read the F77 record length from the file stream
 
-  unsigned int DCD::readRecordLen(void) {
+  unsigned int DCD::readRecordLen(void) throw (loos::EndOfFile, loos::TrajectoryReadError) {
     DataOverlay o;
   
     ifs()->read(o.c, 4);
 
     if (ifs()->eof())
-      throw(end_of_file);
+      throw(EndOfFile());
     if (ifs()->fail())
-      throw(record_error);
+      throw(TrajectoryReadError("Unable to read DCD record length"));
 
     uint data = o.ui;
     if (swabbing)
@@ -105,19 +105,19 @@ namespace loos {
 
 
   // Check for endian-ness
-  void DCD::endianMatch(StreamWrapper& fsw) {
+  void DCD::endianMatch(StreamWrapper& fsw) throw (loos::TrajectoryReadError) {
     unsigned long curpos = fsw()->tellg();
     unsigned int datum;
     ifs()->read((char *)(&datum), sizeof(datum));
     fsw()->seekg(curpos);
 
     if (ifs()->eof() || ifs()->fail())
-      throw(GeneralError("Unable to read first datum from DCD file"));
+      throw(TrajectoryReadError("Unable to read first datum from DCD file"));
 
     if (datum != 0x54) {
       datum = swab(datum);
       if (datum != 0x54)
-        throw(GeneralError("Unable to determine endian-ness of DCD file"));
+        throw(TrajectoryReadError("Unable to determine endian-ness of DCD file"));
       swabbing = true;
     } else
       swabbing = false;
@@ -128,7 +128,7 @@ namespace loos {
   // Returns a pointer to the read data and puts the # of bytes read into *len
   // Note:  It is up to the caller to swab individual elements...
 
-  DCD::DataOverlay* DCD::readF77Line(unsigned int *len) {
+  DCD::DataOverlay* DCD::readF77Line(unsigned int *len) throw (loos::TrajectoryReadError) {
     DataOverlay* ptr;
     unsigned int n, n2;
 
@@ -138,11 +138,11 @@ namespace loos {
 
     ifs()->read((char *)ptr, n);
     if (ifs()->fail())
-      throw(line_error);
+      throw(TrajectoryReadError("Error reading data record from DCD"));
 
     n2 = readRecordLen();
     if (n != n2)
-      throw(line_error);
+      throw(TrajectoryReadError("Mismatch in record length while reading from DCD"));
 
     *len = n;
     return(ptr);
@@ -152,7 +152,7 @@ namespace loos {
 
   // Read in the DCD header...
 
-  void DCD::readHeader(void) {
+  void DCD::readHeader(void) throw (loos::LOOSError, loos::TrajectoryReadError) { 
     DataOverlay *ptr;
     unsigned int len;
     char *cp;
@@ -161,12 +161,12 @@ namespace loos {
     endianMatch(ifs);
     ptr = readF77Line(&len);
     if (len != 84)
-      throw(header_error);
+      throw(TrajectoryReadError("Error while reading DCD header"));
 
     // Check for the magic name.  Ignore swabbing for now...
     DataOverlay o = ptr[0];
     if (!(o.c[0] == 'C' && o.c[1] == 'O' && o.c[2] == 'R' && o.c[3] == 'D'))
-      throw(header_error);
+      throw(TrajectoryReadError("DCD is missing CORD magic marker"));
 
     // Copy in the ICNTRL data...
     for (i=0; i<20; i++) {
@@ -183,7 +183,7 @@ namespace loos {
       _delta = ptr[10].f;
 
     if (nfixed() != 0)
-      throw(GeneralError("Fixed atoms not yet supported"));
+      throw(LOOSError("Fixed atoms not yet supported by LOOS DCD reader"));
 
     delete[] ptr;
 
@@ -208,7 +208,7 @@ namespace loos {
     // get the NATOMS...
     ptr = readF77Line(&len);
     if (len != 4)
-      throw(header_error);
+      throw(TrajectoryReadError("Error reading number of atoms from DCD"));
     if (swabbing)
       _natoms = swab(ptr->i);
     else
@@ -236,14 +236,14 @@ namespace loos {
   // NOTE: This is already double!
 
 
-  void DCD::readCrystalParams(void) {
+  void DCD::readCrystalParams(void) throw (loos::TrajectoryReadError) {
     unsigned int len;
     DataOverlay* o;
 
     o = readF77Line(&len);
 
     if (len != 48)
-      throw(GeneralError("Error while reading crystal parameters"));
+      throw(TrajectoryReadError("Error while reading crystal parameters"));
 
     double* dp = reinterpret_cast<double*>(o);
     
@@ -265,7 +265,7 @@ namespace loos {
 
   // Read a line of coordinates into the specified vector.
 
-  void DCD::readCoordLine(std::vector<dcd_real>& v) {
+  void DCD::readCoordLine(std::vector<dcd_real>& v) throw (loos::LOOSError) {
     DataOverlay *op;
     int n = _natoms * sizeof(dcd_real);
     unsigned int len;
@@ -274,7 +274,7 @@ namespace loos {
     op = readF77Line(&len);
 
     if (len != (unsigned int)n)
-      throw(GeneralError("Error while reading coordinates"));
+      throw(LOOSError("Error while reading coordinates"));
 
     // Recast the values as floats and store them...
     uint i;
@@ -289,20 +289,20 @@ namespace loos {
   }
 
 
-  void DCD::seekFrameImpl(const uint i) {
+  void DCD::seekFrameImpl(const uint i) throw (loos::LOOSError) {
   
     if (first_frame_pos == 0)
-      throw(GeneralError("Trying to seek to a DCD frame without having first read the header"));
+      throw(LOOSError("Trying to seek to a DCD frame without having first read the header"));
 
     if (i >= nframes())
-      throw(GeneralError("Requested DCD frame is out of range"));
+      throw(LOOSError("Requested DCD frame is out of range"));
 
     ifs()->clear();
     ifs()->seekg(first_frame_pos + i * frame_size);
     if (ifs()->fail() || ifs()->bad()) {
       std::ostringstream s;
       s << "Cannot seek to frame " << i;
-      throw(GeneralError(s.str().c_str()));
+      throw(LOOSError(s.str().c_str()));
     }
   }
 
@@ -312,10 +312,10 @@ namespace loos {
   // Throws an exception if there was an error...  (Should we throw EOF
   // instead?) 
 
-  bool DCD::parseFrame(void) {
+  bool DCD::parseFrame(void) throw(loos::TrajectoryReadError, loos::EndOfFile) {
 
     if (first_frame_pos == 0)
-      throw(GeneralError("Trying to read a DCD frame without first having read the header."));
+      throw(TrajectoryReadError("Trying to read a DCD frame without first having read the header."));
 
     if (ifs()->eof())
       return(false);
@@ -340,11 +340,11 @@ namespace loos {
   }
 
 
-  void DCD::rewindImpl(void) {
+  void DCD::rewindImpl(void) throw (loos::LOOSError) {
     ifs()->clear();
     ifs()->seekg(first_frame_pos);
     if (ifs()->fail() || ifs()->bad())
-      throw(GeneralError("Error rewinding file"));
+      throw(LOOSError("Error rewinding DCD file"));
   }
 
 
@@ -379,7 +379,7 @@ namespace loos {
   }
 
 
-  void DCD::updateGroupCoordsImpl(AtomicGroup& g) {
+  void DCD::updateGroupCoordsImpl(AtomicGroup& g) throw (loos::LOOSError) {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
@@ -395,12 +395,12 @@ namespace loos {
 
 
 
-    void DCD::initTrajectory() 
+  void DCD::initTrajectory() throw (loos::LOOSError)
     {
         readHeader();
         bool b = parseFrame();
         if (!b)
-            throw(GeneralError("Cannot read first frame of DCD during initialization"));
+            throw(LOOSError("Cannot read first frame of DCD during initialization"));
         cached_first = true;
     }
     

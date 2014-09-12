@@ -121,6 +121,23 @@ namespace loos {
     TrajectoryWriteError(const std::string& arg) : LOOSError(arg) {}
   };
 
+  //! Exception for writing trajectories
+  class TrajectoryReadError : public LOOSError {
+  public:
+    TrajectoryReadError() : LOOSError("Error while reading from trajectory") {}
+    TrajectoryReadError(const std::string& arg) : LOOSError(arg) {}
+  };
+
+
+  class EndOfFile : public LOOSError {
+  public:
+    EndOfFile() : LOOSError("Attempting to read past end of file") {}
+    EndOfFile(const std::string& arg) : LOOSError(arg) {}
+  };
+
+  
+
+
 };
 
 
