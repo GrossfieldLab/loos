@@ -9,4 +9,4 @@
 
 %}
 
-%include "exceptions.i"
+%include "exceptions.hpp"
