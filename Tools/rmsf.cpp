@@ -61,6 +61,10 @@ string fullHelpMessage(void) {
     "This example calculates the RMSF over backbone atoms using the first 1,000 frames and\n"
     "skipping every other frame.\n"
     "\n"
+    "POTENTIAL COMPLICATIONS\n"
+    "\n"
+    "This tool assumes that you have already aligned the trajectory.  If you\n"
+    "haven't done so, you will need to use the aligner tool to do so.\n"
     "\n";
 
   return(msg);
