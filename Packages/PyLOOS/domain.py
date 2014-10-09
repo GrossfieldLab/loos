@@ -25,7 +25,7 @@ traj = loos.createTrajectory(traj_file, system)
 sel1 = loos.selectAtoms(system, sel_string1)
 sel2 = loos.selectAtoms(system, sel_string2)
 
-ptraj = PyTraj(traj, system)
+ptraj = loos.PyTraj(traj, system)
 for frame in ptraj:
 
     # compute distance
