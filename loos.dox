@@ -142,7 +142,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-/*! \page citing "Citing LOOS in published work"
+/*! \page citing Citing LOOS in published work
 If you use LOOS in your work, please reference the following
 publication:
 
@@ -1089,7 +1089,7 @@ Matlab and Octave.
    </DL>
         
 
-   \page Membranes "Membrane systems"
+   \page Membranes Membrane systems
    <h2> Tools for membrane systems</h2>
    Tools specifically intended for analyzing lipid bilayers and
    related systems, found in the Tools/
