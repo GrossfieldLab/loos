@@ -1,0 +1,534 @@
+* Toppar stream file for retinal parameters
+* M. Lu, S. Zhu, S.E. Feller, June 2011
+* A. Loccisano, A.M.W., J. Evanseck and A.D. MacKerell, Jr.
+* April, 2005
+* 
+
+!use with c22 protein force fields
+
+read rtf card append
+* retinal/retinol and related model compounds
+*
+32  1
+
+RESI RTNH       1.00 ! protonated all-trans retinilidene
+
+GROUP
+ATOM C1   CT    0.00
+ATOM C2   CT2  -0.18
+ATOM H21  HA    0.09
+ATOM H22  HA    0.09
+GROUP
+ATOM C3   CT2  -0.18
+ATOM H31  HA    0.09
+ATOM H32  HA    0.09
+GROUP
+ATOM C4   CT2  -0.18
+ATOM H41  HA    0.09
+ATOM H42  HA    0.09
+ATOM C5   CC1A  0.00
+ATOM C6   CC1A  0.00
+GROUP
+ATOM C7   CC1B -0.15
+ATOM H71  HE1   0.15
+ATOM C8   CC1B -0.15
+ATOM H81  HE1   0.15
+GROUP
+ATOM C9   CC1A  0.00
+ATOM C10  CR10 -0.15
+ATOM H101 HE1   0.15
+GROUP
+ATOM C11  CR11 -0.15
+ATOM H111 HE1   0.15
+GROUP
+ATOM C12  CR12 -0.15
+ATOM H121 HE1   0.15
+GROUP
+ATOM C13  CR13  0.00
+ATOM C14  CR14 -0.15 !
+ATOM H141 HE1   0.15 !H162 H163  H171 H172
+GROUP                !    \  |    |  /
+ATOM C15  CR15  0.37 !H161-C16    C17-H173            H191 H192
+ATOM H151 HR1   0.20 !        \  /                      \   /
+Group                !  H21    C1        H71    H81      C19
+ATOM NZ   NS2  -0.40 !     \  /  \        |      |       /  \
+ATOM HZ   HC    0.38 !  H22-C2    C6------C7=====C8----C9    H193
+GROUP                !      |     ||                   ||
+ATOM C16  CT3  -0.27 !  H31-C3    C5   H181            C10-H101
+ATOM H161 HA    0.09 !     /  \  /  \  /               |
+ATOM H162 HA    0.09 !  H32    C4    C18-H182          C11-H111
+ATOM H163 HA    0.09 !        /  \     \               ||
+GROUP                !      H41  H42   H183            C12-H121 H201
+ATOM C17  CT3  -0.27 !                                 |       /
+ATOM H171 HA    0.09 !                                 C13---C20-H202
+ATOM H172 HA    0.09 !                                 ||      \
+ATOM H173 HA    0.09 !                                 C14-H141 H203
+GROUP                !                                 |
+ATOM C18  CT3  -0.27 !                                 C15-H151
+ATOM H181 HA    0.09 !                                 ||
+ATOM H182 HA    0.09 !                                 NZ-HZ
+ATOM H183 HA    0.09 !                                 |
+GROUP                !                            H211-C21-H213
+ATOM C19  CT3  -0.27 !                                 |
+ATOM H191 HA    0.09 !                                 H212
+ATOM H192 HA    0.09 !
+ATOM H193 HA    0.09 !
+GROUP                !
+ATOM C20  CT3  -0.27 !
+ATOM H201 HA    0.09 !
+ATOM H202 HA    0.09 !
+ATOM H203 HA    0.09 !
+GROUP
+ATOM C21  CT3   0.18
+ATOM H211 HA    0.09
+ATOM H212 HA    0.09
+ATOM H213 HA    0.09
+
+BOND C1   C2   C2   C3   C3   C4   C4   C5   C5   C6   C6   C1
+BOND C6   C7   C7   C8   C8   C9   C9   C10  C10  C11  C11  C12
+BOND C12  C13  C13  C14  C14  C15  C15  NZ   NZ   HZ
+BOND C1   C16  C1   C17  C5   C18  C9   C19  C13  C20
+BOND C2   H21  C2   H22  C3   H31  C3   H32  C4   H41  C4   H42
+BOND C7   H71  C8   H81  C10  H101 C11  H111 C12  H121 C14  H141
+BOND C15  H151 NZ   C21  C21  H211 C21  H212 C21  H213
+BOND C16  H161 C16  H162 C16  H163 C17  H171 C17  H172 C17  H173
+BOND C18  H181 C18  H182 C18  H183 C19  H191 C19  H192 C19  H193
+BOND C20  H201 C20  H202 C20  H203
+
+IMPR C6   C5  C7  C1
+IMPR C5   C6  C4  C18
+IMPR C9   C10 C8  C19
+IMPR C13  C14 C12 C20
+IMPR C7   C6  C8  H71
+IMPR C8   C7  C9  H81
+IMPR C10  C9  C11 H101
+IMPR C11  C10 C12 H111
+IMPR C12  C11 C13 H121
+IMPR C14  C13 C15 H141
+IMPR C15  C14 NZ  H151
+IMPR NZ   C21 C15 HZ
+
+IC C1    C2    C3    C4     0.0000    0.00    0.00    0.00   0.0000
+IC C6    C1    C2    C3     0.0000    0.00    0.00    0.00   0.0000
+IC C2    C3    C4    C5     0.0000    0.00    0.00    0.00   0.0000
+IC C3    C4    C5    C6     0.0000    0.00    0.00    0.00   0.0000
+IC C1    C6    C7    C8     0.0000    0.00  180.00    0.00   0.0000
+IC C6    C7    C8    C9     0.0000    0.00  180.00    0.00   0.0000
+IC C7    C8    C9    C10    0.0000    0.00  180.00    0.00   0.0000
+IC C2    C6    *C1   C16    0.0000    0.00  120.00    0.00   0.0000
+IC C2    C6    *C1   C17    0.0000    0.00 -120.00    0.00   0.0000
+IC C3    C1    *C2   H21    0.0000    0.00  120.00    0.00   0.0000
+IC C3    C1    *C2   H22    0.0000    0.00 -120.00    0.00   0.0000
+IC C4    C2    *C3   H31    0.0000    0.00  120.00    0.00   0.0000
+IC C4    C2    *C3   H32    0.0000    0.00 -120.00    0.00   0.0000
+IC C5    C3    *C4   H41    0.0000    0.00  120.00    0.00   0.0000
+IC C5    C3    *C4   H42    0.0000    0.00 -120.00    0.00   0.0000
+IC C5    C1    *C6   C7     0.0000    0.00  180.00    0.00   0.0000
+IC C8    C6    *C7   H71    0.0000    0.00  180.00    0.00   0.0000
+IC C9    C7    *C8   H81    0.0000    0.00  180.00    0.00   0.0000
+IC C10   C8    *C9   C19    0.0000    0.00  180.00    0.00   0.0000
+IC C8    C9    C10   C11    0.0000    0.00  180.00    0.00   0.0000
+IC C11   C9    *C10  H101   0.0000    0.00  180.00    0.00   0.0000
+IC C9    C10   C11   C12    0.0000    0.00  180.00    0.00   0.0000
+IC C12   C10   *C11  H111   0.0000    0.00  180.00    0.00   0.0000
+IC C10   C11   C12   C13    0.0000    0.00  180.00    0.00   0.0000
+IC C13   C11   *C12  H121   0.0000    0.00  180.00    0.00   0.0000
+IC C11   C12   C13   C14    0.0000    0.00  180.00    0.00   0.0000
+IC C14   C12   *C13  C20    0.0000    0.00  180.00    0.00   0.0000
+IC C12   C13   C14   C15    0.0000    0.00  180.00    0.00   0.0000
+IC C15   C13   *C14  H141   0.0000    0.00  180.00    0.00   0.0000
+IC C13   C14   C15   NZ     0.0000    0.00  180.00    0.00   0.0000
+IC NZ    C14   *C15  H151   0.0000    0.00  180.00    0.00   0.0000
+IC C14   C15   NZ    C21    0.0000    0.00  180.00    0.00   0.0000
+IC C15   NZ    C21   H211   0.0000    0.00    0.00    0.00   0.0000
+IC NZ    H211  *C21  H212   0.0000    0.00  120.00    0.00   0.0000
+IC NZ    H211  *C21  H213   0.0000    0.00 -120.00    0.00   0.0000
+IC C6    C1    C16   H161   0.0000    0.00  180.00    0.00   0.0000
+IC H161  C1    *C16  H162   0.0000    0.00  120.00    0.00   0.0000
+IC H161  C1    *C16  H163   0.0000    0.00 -120.00    0.00   0.0000
+IC C6    C1    C17   H171   0.0000    0.00  180.00    0.00   0.0000
+IC H171  C1    *C17  H172   0.0000    0.00  120.00    0.00   0.0000
+IC H171  C1    *C17  H173   0.0000    0.00 -120.00    0.00   0.0000
+IC C6    C4    *C5   C18    0.0000    0.00  180.00    0.00   0.0000
+IC C4    C5    C18   H181   0.0000    0.00    0.00    0.00   0.0000
+IC H181  C5    *C18  H182   0.0000    0.00  120.00    0.00   0.0000
+IC H181  C5    *C18  H183   0.0000    0.00 -120.00    0.00   0.0000
+IC C8    C9    C19   H191   0.0000    0.00  180.00    0.00   0.0000
+IC H191  C9    *C19  H192   0.0000    0.00  120.00    0.00   0.0000
+IC H191  C9    *C19  H193   0.0000    0.00 -120.00    0.00   0.0000
+IC C12   C13   C20   H201   0.0000    0.00    0.00    0.00   0.0000
+IC H201  C13   *C20  H202   0.0000    0.00  120.00    0.00   0.0000
+IC H201  C13   *C20  H203   0.0000    0.00 -120.00    0.00   0.0000
+IC C21   C15   *NZ   HZ    0.0000    0.00  180.00    0.00   0.0000
+
+PATCH FIRST NONE LAST NONE
+
+PRES SCK1       0.00 ! patch to link lysine with retinal to form a
+                     ! protonated schiff's base
+                     ! follow with AUTOgenerate ANGLes DIHEdrals command
+! residue 1: lysine
+! residue 2: retinal
+!
+DELETE ATOM 1NZ
+DELETE ATOM 1HZ1
+DELETE ATOM 1HZ2
+DELETE ATOM 1HZ3
+!
+DELETE ATOM 2C21
+DELETE ATOM 2H211
+DELETE ATOM 2H212
+DELETE ATOM 2H213
+!
+GROUP                !  HE1 HE2
+ATOM 1CE  CT2   0.27 !    \ /
+ATOM 1HE1 HA    0.09 !  --1CE       2H151
+ATOM 1HE2 HA    0.09 !        \       /
+!                             2NZ=2C15
+!                            /        \
+!                          2HZ
+BOND 1CE 2NZ
+IMPR 2NZ 1CE 2C15 2HZ
+
+IC 1CG    1CD    1CE    2NZ     0.0000    0.00  180.00    0.00   0.0000
+IC 1CD    1CE    2NZ    2C15    0.0000    0.00  180.00    0.00   0.0000
+IC 1CE    2NZ    2C15   2C14    0.0000    0.00  180.00    0.00   0.0000
+IC 2HZ    2NZ    2C15   2C14    0.0000    0.00    0.00    0.00   0.0000
+IC 2NZ    1CD   *1CE    1HE1   1.4604 110.4600  119.9100 110.5100  1.1128
+IC 2NZ    1CD   *1CE    1HE2   1.4604 110.4600 -120.0200 110.5700  1.1123
+! next 4 lines just needed for testing retinal-lys linkage for single AA
+IC 1N     1CB   *1CA    1HA     0.0000    0.00  120.00    0.00   0.0000
+IC 1N     1CB   *1CA    1C      0.0000    0.00 -120.00    0.00   0.0000
+IC 1HA    1CA    1C     1O      0.0000    0.00    0.00    0.00   0.0000
+IC 1HA    1CA    1N     1HN     0.0000    0.00    0.00    0.00   0.0000
+end
+
+read parameter card append
+
+BONDS
+!
+!atom types  Kb          b0
+HE1   CC1A  360.500     1.100
+HE1   CC1B  360.500     1.100
+CC1A  CC1A  440.000     1.340
+CC1B  CC1B  440.000     1.340
+CC1A  CC1B  300.000     1.430
+!CC1A  CC1B  300.000     1.470 original from neutral retinal
+CC1A  CT2   365.000     1.502
+CC1A  CT    365.000     1.502
+CC1A  CT3   383.000     1.504
+CT    CT2   222.500     1.538   
+CT    CT3   222.500     1.538
+CT3   NS2   300.000     1.453
+NS2   HC    455.000     1.000  
+CT2   NS2   300.000     1.453
+! polyene chain bond lengths - protonated - taken from Tajkhroshid et al, JPCB
+CR10  HE1   370.000     1.07
+CR11  HE1   370.000     1.07
+CR12  HE1   370.000     1.07
+CR14  HE1   370.000     1.07
+CR15  HR1   370.000     1.07
+CR10  CC1A  550.000     1.37
+CR10  CR11  430.000     1.41
+CR11  CR12  550.000     1.37
+CR12  CR13  430.000     1.40
+CR13  CT3   320.000     1.52
+CR13  CR14  550.000     1.40
+CR14  CR15  430.000     1.37
+CR15  NS2   490.000     1.32
+
+ANGLES
+!
+!atom types     Ktheta    Theta0   Kub     S0
+!BTE2, 2-butene
+CC1A CC1A CT     48.00     123.50
+CC1B CC1A CT     48.00     123.50
+CC1A CC1A CT3    48.00     123.50
+HA   CT2  CC1A   45.00     111.50
+HA   CT3  CC1A   42.00     111.50
+HE1  CC1A CC1A   42.00     119.00
+HE1  CC1B CC1B   42.00     119.00
+HE1  CC1A CT3    42.00     117.50
+HE1  CC1B CC1A   42.00     118.00 
+HE1  CC1A CC1B   42.00     118.00 
+CC1A CC1B CC1B   48.00     123.50 
+CC1A CT   CT3    32.00     112.20 
+CC1A CT   CT2    32.00     112.20 
+CC1A CT2  CT2    32.00     112.20 
+CC1A CC1A CC1B   48.00     123.50 
+CC1A CC1A CT2    48.00     123.50 
+CT2  CC1A CT3    48.00     123.50 
+CC1B CC1A CT3    48.00     116.80
+CT2  CT   CT3    58.35     113.50   11.16   2.561
+CT3  CT   CT3    58.35     113.50   11.16   2.561
+CT   CT2  CT2    58.35     113.50   11.16   2.561
+CT   CT2  HA     26.50     110.10   22.53   2.179
+CT   CT3  HA     33.43     110.10   22.53   2.179
+CT   CC1A CT3    48.00     123.50
+CT3  CC1A CT3    47.00     125.20
+HE1  CC1A CT2    40.00     116.00 
+CT3  NS2  HC     38.00     117.40
+HA   CT3  NS2    42.00     110.10
+CT2  NS2  HC     38.00     117.40
+CT2  CT2  NS2    67.70     110.00 !from lysine
+HA   CT2  NS2    42.00     110.10
+! polyene chain angles - protonated - taken from Tajkhroshid et al, JPCB
+CC1A CR10 HE1    35.0     119.7
+CR10 CR11 HE1    35.0     119.7
+CR11 CR12 HE1    35.0     119.7
+CR13 CR14 HE1    35.0     119.7
+CR14 CR15 HR1    35.0     119.7
+HE1  CR10 CR11   35.0     119.0
+HE1  CR11 CR12   35.0     119.7
+HE1  CR12 CR13   35.0     119.7
+HE1  CR14 CR15   35.0     119.7
+HR1  CR15 NS2    35.0     119.7
+CR15 NS2  HC     35.0     119.7
+CR13 CT3  HA     50.0     109.5
+CR10 CC1A CC1B   95.0     119.1 ! C8-C9-C10 angle
+CC1A CR10 CR11   95.0     122.9 ! C9-C10-C11 angle
+CR10 CR11 CR12   95.0     122.9
+CR11 CR12 CR13   95.0     122.9 
+CR12 CR13 CR14   95.0     120.3
+CR13 CR14 CR15   95.0     122.9
+CR14 CR15 NS2    40.0     125.6
+CR12 CR13 CT3    70.0     119.7
+CR10 CC1A CT3    70.0     115.9 ! C10-C9-C19 angle
+!CR10 CC1A CT3    70.0     119.7 ! C10-C9-C19 angle
+CR15 NS2  CT3    67.0     123.6
+CR15 NS2  CT2    67.0     123.6
+CR14 CR13 CT3    70.0     122.3
+
+DIHEDRALS
+!
+!atom types             Kchi    n   delta
+!
+! rotation of c18 (methyl group at c5) 
+CC1A CC1A CT3  HA       0.0000  3   180.00 
+CT2  CC1A CT3  HA       0.3920  3     0.00 
+! rotation of c19 (methyl group at c9)
+HE1  CC1A CT3  HA       0.3000  3     0.00  
+CC1B CC1A CT3  HA       0.1230  3     0.00
+CC1B CC1A CT3  HA       0.1290  2   180.00 
+CR10 CC1A CT3  HA       0.0640  3   180.00
+! rotation of c20 (methyl group at c13)
+CR12 CR13 CT3  HA       0.0640  3     0.00
+HA   CT3  CR13 CR14     0.0880  3   180.00
+HA   CT3  CR13 CR14     0.1500  6   180.00
+! rotation of c16 & c17 (di-methyl groups at c1)
+CC1A CT   CT3  HA       0.1600  3     0.00
+CT3  CT   CT3  HA       0.1600  3     0.00
+CT2  CT   CT3  HA       0.1600  3     0.00
+!
+! rotation about c1-c6 bond in ring
+CC1A CC1A CT   CT2      0.5000  2     0.00 ! c2-c1-c6=c5
+CC1A CC1A CT   CT2      0.3000  3     0.00 ! c2-c1-c6=c5
+CC1A CC1A CT   CT3      0.5000  2     0.00 ! c16/c17-c1-c6=c5
+CC1A CC1A CT   CT3      0.4000  3     0.00 ! c16/c17-c1-c6=c5
+CC1B CC1A CT   CT2      0.3000  3     0.00
+CC1B CC1A CT   CT3      0.3000  3     0.00
+!
+! rotation about c4-c5 bond in ring
+CC1A CC1A CT2  CT2      0.5000  2     0.00 ! c3-c4-c5=c6
+CC1A CC1A CT2  CT2      0.3000  3     0.00 ! c3-c4-c5=c6
+CT2  CT2  CC1A CT3      0.1900  3     0.00 ! c3-c4-c5-c18
+CT3  CC1A CT2  HA       0.1900  3     0.00
+CC1A CC1A CT2  HA       0.0300  3     0.00
+!
+! rotation about c3-c4 bond in ring
+CC1A CT2  CT2  CT2      0.1900  3     0.00 !
+CC1A CT2  CT2  HA       0.1900  3     0.00
+!
+! rotation about c1-c2 bond in ring
+CT2  CT2  CT   CC1A     0.2000  3     0.00 !
+CT2  CT2  CT   CT3      0.2000  3     0.00 !
+CC1A CT   CT2  HA       0.1900  3     0.00
+CT3  CT   CT2  HA       0.1900  3     0.00
+!
+! rotation about c5=c6 bond in ring
+CC1B CC1A CC1A CT2      0.5600  1   180.00 
+CC1B CC1A CC1A CT2      7.0000  2   180.00 
+CT   CC1A CC1A CT2     10.0000  2   180.00 
+CT   CC1A CC1A CT3     10.0000  2   180.00 
+!
+! rotation around C6-C7 bond that defines ring orientation w.r.t. polyene chain
+CC1A CC1A CC1B CC1B     0.4850  1   180.00
+CC1A CC1A CC1B CC1B     1.5790  2   180.00
+CC1A CC1A CC1B CC1B     0.9060  3     0.00
+CC1A CC1A CC1B CC1B     0.2030  4     0.00
+CT   CC1A CC1B CC1B     0.5840  1      0.0
+CT   CC1A CC1B CC1B     3.394   2   180.00
+CT   CC1A CC1B CC1B     0.186   3      0.0
+CT   CC1A CC1B CC1B     0.3330  4    180.0
+CT   CC1A CC1B CC1B     0.1850  5    180.00
+CT   CC1A CC1B CC1B     0.0790  6    180.0
+CT   CC1A CC1B HE1      0.1600  1     90.0
+CT   CC1A CC1B HE1      0.4510  2     90.0
+CT   CC1A CC1B HE1      0.0830  3     90.00
+CT   CC1A CC1B HE1      0.1690  4     90.0
+CT   CC1A CC1B HE1      0.119   5    90.00
+CT   CC1A CC1B HE1      0.136  6    90.00
+!
+! double bond rotation in polyene chain w/o methyl substituents: c7=c8 
+CC1A CC1B CC1B CC1A       1.1000  1     180.00
+CC1A CC1B CC1B CC1A      14.460  2     180.00
+CC1A CC1B CC1B CC1A      0.0900  3     180.00
+CC1A CC1B CC1B CC1A      2.8000  4       0.00!
+CC1A CC1B CC1B CC1A      0.0950  5     180.00
+CC1A CC1B CC1B CC1A      0.9790  6     180.00
+
+HE1  CC1B CC1B HE1      0.6920   1      90.00
+HE1  CC1B CC1B HE1      1.4020   2      90.00
+HE1  CC1B CC1B HE1      0.6380   3      90.00
+HE1  CC1B CC1B HE1      0.4520   4      90.00
+HE1  CC1B CC1B HE1      0.074    5       90.00
+HE1  CC1B CC1B HE1      0.316    6      -90.00
+HE1  CC1B CC1B CC1A     0.0000   1      90.00 !double bond
+!
+! rotation about single bonds in polyene chain
+HE1  CC1B CC1A HE1      0.0000  2   180.00
+HE1  CC1A CC1B CC1B     0.0000  2   180.00
+CT3  CC1A CC1B HE1      1.0000  2   180.00
+CT3  CC1A CC1B CC1B     0.9700  1   180.00
+CT3  CC1A CC1B CC1B     0.5440  2   180.00
+CT3  CC1A CC1B CC1B     0.5750  3   180.00
+CT3  CC1A CC1B CC1B     0.3170  4    90.00
+CC1A CC1A CC1B HE1      0.0000  2   180.00
+!
+! rotation about double bonds w methyl substiuents: c9=c10 & c13=c14 
+CT3  CC1A CC1A HE1      0.2000  2   180.00
+CC1B CC1A CC1A CT3      0.0000  1   180.00 
+CC1B CC1A CC1A CT3      7.0000  2   180.00 
+HE1  CC1A CC1A CC1B     0.0000  2   180.00 
+!
+! rotation of c8-c9 bond
+CR10 CC1A CC1B HE1      0.0000  1     0.00
+CR10 CC1A CC1B CC1B      0.7670  1   180.00
+CR10 CC1A CC1B CC1B      3.5150  2   180.00
+CR10 CC1A CC1B CC1B      0.5600  3     0.00
+CR10 CC1A CC1B CC1B      0.535   4     0.00
+!
+! rotation of c9=c10 bond
+HE1  CR10 CC1A CT3      0.000   2   180.00
+HE1  CR10 CC1A CC1B     0.0000  1   180.00
+CR11 CR10 CC1A CC1B     0.2980   1   180.00 !(Not Rright)
+CR11 CR10 CC1A CC1B     14.168   2    180.00
+CR11 CR10 CC1A CC1B     0.6010   3     0.00
+CR11 CR10 CC1A CC1B     3.4640  4      0.00
+CR11 CR10 CC1A CC1B     0.1590  5     180.00
+CR11 CR10 CC1A CC1B     1.5240  6    180.00
+CR11 CR10 CC1A CT3      0.0000  1   180.00 
+CR11 CR10 CC1A CT3      0.0000  2   180.00
+!
+! rotation of c10-c11 bond
+HE1  CR10 CR11 HE1      0.0000  2   180.00
+HE1  CR10 CR11 CR12     0.0000  2   180.00
+HE1  CR11 CR10 CC1A     0.0000  2   180.00
+CR12 CR11 CR10 CC1A     1.1350  1   180.00
+CR12 CR11 CR10 CC1A     8.0240  2   180.00
+CR12 CR11 CR10 CC1A     0.4250  3     0.00
+CR12 CR11 CR10 CC1A     0.6470  4     0.00
+CR12 CR11 CR10 CC1A     0.3080  5    180.00
+CR12 CR11 CR10 CC1A     0.3120  6    180.00
+!
+! rotation of c11=c12 bond
+CR10 CR11 CR12 CR13     1.6900  1   180.00
+CR10 CR11 CR12 CR13     13.093  2   180.00
+CR10 CR11 CR12 CR13     0.4680  3     0.00
+CR10 CR11 CR12 CR13     2.7660  4     0.00
+CR10 CR11 CR12 CR13     0.4800  5   180.00
+CR10 CR11 CR12 CR13     1.1900  6   180.00
+CR10 CR11 CR12 HE1       0.2000  2   180.00
+HE1  CR11 CR12 HE1      0.0000  2   180.00
+HE1  CR11 CR12 CR13     0.2000  2   180.00
+!
+! rotation of c12-c13 bond
+CR11 CR12 CR13 CT3      1.4000  1   180.00
+CR11 CR12 CR13 CT3      2.8000  2   180.00
+CR11 CR12 CR13 CR14     1.3810  1   180.00
+CR11 CR12 CR13 CR14     5.5040  2   180.00
+CR11 CR12 CR13 CR14     0.8030  3     0.00
+CR11 CR12 CR13 CR14     1.3460  4     0.00
+CR11 CR12 CR13 CR14     0.2030  5   180.00
+CR11 CR12 CR13 CR14     0.3130  6   180.00
+HE1  CR12 CR13 CT3      0.0000  2   180.00
+HE1  CR12 CR13 CR14     0.0000  2   180.00
+!
+! rotation of c13=c14 bond
+CR12 CR13 CR14 CR15     1.4650  1    180.00
+CR12 CR13 CR14 CR15     5.1460  2    180.00
+CR12 CR13 CR14 CR15     0.7940  3      0.00
+CR12 CR13 CR14 CR15     2.0720  4      0.00 
+CR12 CR13 CR14 CR15     0.2500  5    180.00
+CR12 CR13 CR14 CR15     0.8100  6    180.00
+CR12 CR13 CR14 HE1      0.0     1     0.00
+CT3  CR13 CR14 HE1      0.000  2   180.00
+CT3  CR13 CR14 CR15     0.5600  1   180.00
+CT3  CR13 CR14 CR15     7.0000  2   180.00
+!
+! rotation of c14-c15 bond
+CR13 CR14 CR15 HR1      0.0000  2   180.00
+CR13 CR14 CR15 NS2      1.0320  1   180.00 
+CR13 CR14 CR15 NS2      10.032  2   180.00
+CR13 CR14 CR15 NS2      0.3460  3     0.00
+CR13 CR14 CR15 NS2      1.4510  4     0.00
+CR13 CR14 CR15 NS2      0.3860  5   180.00
+CR13 CR14 CR15 NS2      0.6200  6   180.00
+HE1  CR14 CR15 HR1      0.0000  2   180.00
+HE1  CR14 CR15 NS2      0.0000  2   180.00
+!
+! rotation of c15=N bond
+CR14 CR15 NS2  CT3      0.848  1   180.00
+CR14 CR15 NS2  CT3      6.713  2   180.00
+CR14 CR15 NS2  CT3      0.114  3   180.00
+CR14 CR15 NS2  CT3      0.8220 4     0.00
+CR14 CR15 NS2  CT3      0.077  5   180.00
+CR14 CR15 NS2  CT3      0.350  6   180.00
+HR1  CR15 NS2  CT3      0.000  2   180.00
+CR14 CR15 NS2  HC       5.0000  2   180.00
+HR1  CR15 NS2  HC       0.0000  2   180.00
+! rotation of c15=N bond in rhodopsin
+CT2  CT2  NS2  HC       0.1000  3     0.00
+HA   CT2  NS2  HC       0.1000  3     0.00
+! not used in model compound but needed for rhodopsin
+CT2  CT2  NS2  CR15     0.1000  3     0.00
+CR14 CR15 NS2  CT2      0.848  1   180.00
+CR14 CR15 NS2  CT2      6.713  2   180.00
+CR14 CR15 NS2  CT2      0.114  3   180.00
+CR14 CR15 NS2  CT2      0.8220 4     0.00
+CR14 CR15 NS2  CT2      0.077  5   180.00
+CR14 CR15 NS2  CT2      0.350  6   180.00
+CT2  NS2  CR15 HR1      0.0000  2   180.00 !from CT3  NS1  CC1B HE1
+HA   CT2  NS2  CR15     0.1000  3     0.00
+!
+! rotation of methyl terminal group - only needed for model compound, not for rhodopsin
+CR15 NS2  CT3  HA       0.1500  3   180.00
+HA   CT3  NS2  HC       0.1100  3     0.00
+
+IMPROPER ! add more impropers for polyene chain
+!atom types              Kpsi        psi0
+CC1A X    X    CT3      100.0   0      0.0
+CC1A X    X    CT       100.0   0      0.0
+CC1B X    X    HE1      100.0   0      0.0
+CC1A X    X    HE1      100.0   0      0.0
+CR12 X    X    CT3      100.0   0      0.0
+CR10 X    X    HE1      100.0   0      0.0
+CR11 X    X    HE1      100.0   0      0.0
+CR12 X    X    HE1      100.0   0      0.0
+CR13 X    X    CT3      100.0   0      0.0
+CR14 X    X    HE1      100.0   0      0.0
+CR15 X    X    HE1      100.0   0      0.0
+CR15 X    X    HR1      100.0   0      0.0
+NS2  X    X    HC       100.0   0      0.0
+
+NONBONDED nbxmod  5 atom cdiel shift vatom vdistance vswitch -
+cutnb 14.0 ctofnb 12.0 ctonnb 10.0 eps 1.0 e14fac 1.0 wmin 1.5 
+                !adm jr., 5/08/91, suggested cutoff scheme
+!
+!atom  ignored    epsilon      Rmin/2   ignored   eps,1-4       Rmin/2,1-4
+!
+!CC1A   0.0   -0.0680     2.0900 !
+!CC1B   0.0   -0.0680     2.0900 !
+!NS2    0.0   -0.2000     1.8500 !N for protonated Schiff's base
+
+end
+
