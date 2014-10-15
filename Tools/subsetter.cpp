@@ -340,7 +340,7 @@ public:
   }
 
   string help() const { 
-    return("output-name model trajectory [trajectory ...]");
+    return("model trajectory [trajectory ...]");
   }
 
   string print() const {
