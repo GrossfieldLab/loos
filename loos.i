@@ -59,7 +59,6 @@ namespace loos {
 %include "dcdwriter.i"
 %include "xtcwriter.i"
 %include "sfactories.i"
-%include "Dummy.i"
 
   %pythoncode %{
 from PyTraj import *
