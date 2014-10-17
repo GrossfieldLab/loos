@@ -38,6 +38,9 @@ namespace loos {
 
 
 %include "exceptions.i"
+
+%include "catches_list.i"
+
 %include "Coord.i"
 %include "Atom.i"
 %include "Matrix44.i"
@@ -56,6 +59,7 @@ namespace loos {
 %include "dcdwriter.i"
 %include "xtcwriter.i"
 %include "sfactories.i"
+%include "Dummy.i"
 
   %pythoncode %{
 from PyTraj import *
