@@ -135,6 +135,24 @@ namespace loos {
     EndOfFile(const std::string& arg) : LOOSError(arg) {}
   };
 
+  //! Exceptions for reading Amber NetCDF files
+  struct AmberNetcdfError : public LOOSError {
+    explicit AmberNetcdfError(const std::string& msg) : LOOSError(msg) { }
+    explicit AmberNetcdfError(const std::string& msg, const int retval) {
+      std::stringstream ss;
+      ss << msg << " with error #" << retval;
+      _msg = ss.str();
+    }
+
+  };
+
+  struct AmberNetcdfOpenError : public AmberNetcdfError {
+    explicit AmberNetcdfOpenError() : AmberNetcdfError("Error opening Amber NetCDF file") { }
+  };
+
+  struct AmberNetcdfTypeError : public AmberNetcdfError {
+    explicit AmberNetcdfTypeError(const std::string msg) : AmberNetcdfError(msg) { }
+  };
   
 
 
