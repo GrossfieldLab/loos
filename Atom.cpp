@@ -188,7 +188,8 @@ namespace loos {
     _id = 1;
     _resid = 1;
     _atomic_number = -1;
-    _b = _q = 0.0;
+    _b = 0.0;
+    _q = 1.0;
     _charge = 0.0;
     _mass = 1.0;
     _name = "    ";
