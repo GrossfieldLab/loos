@@ -73,12 +73,28 @@ namespace loos {
     };
 
   public:
-    PDB() : _max_index(0), _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
+    PDB() : _max_index(0),
+	    _show_charge(false),
+	    _auto_ter(true),
+	    _has_cryst(false), 
+	    strictness_policy(false),
+	    _missing_q(false),
+	    _missing_b(false),
+	    _missing_segid(false)
+    { }
     virtual ~PDB() {}
 
     //! Read in PDB from a filename
-    explicit PDB(const std::string fname) : _max_index(0), _show_charge(false), _auto_ter(true),
-                                            _has_cryst(false), strictness_policy(false) {
+    explicit PDB(const std::string fname) : _max_index(0),
+					    _show_charge(false),
+					    _auto_ter(true),
+                                            _has_cryst(false), 
+					    strictness_policy(false),
+					    	    _missing_q(false),
+	    _missing_b(false),
+	    _missing_segid(false)
+
+    {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(std::runtime_error("Cannot open PDB file " + fname));
@@ -86,8 +102,15 @@ namespace loos {
     }
 
     //! Read in a PDB from a filename
-    explicit PDB(const char* fname) : _max_index(0), _show_charge(false), _auto_ter(true),
-                                      _has_cryst(false), strictness_policy(false) {
+    explicit PDB(const char* fname) : _max_index(0), 
+				      _show_charge(false),
+				      _auto_ter(true),
+                                      _has_cryst(false),
+				      strictness_policy(false),
+				      _missing_q(false),
+				      _missing_b(false),
+				      _missing_segid(false)
+    {
       std::ifstream ifs(fname);
       if (!ifs)
         throw(std::runtime_error("Cannot open PDB file " + std::string(fname)));
@@ -95,8 +118,20 @@ namespace loos {
     }
 
     //! Read in a PDB from an ifstream
-    explicit PDB(std::istream& ifs) : _max_index(0), _show_charge(false), _auto_ter(true),
-                                       _has_cryst(false), strictness_policy(false) { read(ifs); }
+    explicit PDB(std::istream& ifs) : _max_index(0),
+				      _show_charge(false),
+				      _auto_ter(true),
+				      _has_cryst(false), 
+				      strictness_policy(false),
+				      _missing_q(false),
+				      _missing_b(false),
+				      _missing_segid(false)
+				      
+    { 
+      read(ifs);
+    }
+
+
 
     static pAtomicGroup create(const std::string& fname) {
       return(pAtomicGroup(new PDB(fname)));
@@ -146,6 +181,12 @@ namespace loos {
     //! Read in PDB from an ifstream
     void read(std::istream& is);
 
+    bool isMissingOccupancies() const { return(_missing_q); }
+    bool isMissingBFactors() const { return(_missing_b); }
+    bool isMissingSegids() const { return(_missing_segid); }
+    bool isMissingFields() const { return(_missing_q || _missing_b || _missing_segid); }
+
+
   private:
     class ComparePatoms {
       bool operator()(const pAtom& a, const pAtom& b) { return(a->id() < b->id()); }
@@ -177,6 +218,7 @@ namespace loos {
     bool _auto_ter;
     bool _has_cryst;
     bool strictness_policy;
+    bool _missing_q, _missing_b, _missing_segid;
     Remarks _remarks;
     UnitCell cell;
     std::map<int, pAtom> _atomid_to_patom;

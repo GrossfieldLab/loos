@@ -117,23 +117,35 @@ namespace loos {
     c[1] = parseStringAs<float>(s, 38, 8);
     c[2] = parseStringAs<float>(s, 46, 8);
     pa->coords(c);
-  
-    r = parseStringAs<float>(s, 54, 6);
-    pa->occupancy(r);
 
-    r = parseStringAs<float>(s, 60, 6);
-    pa->bfactor(r);
+    if (s.size() > 54) {
+      r = parseStringAs<float>(s, 54, 6);
+      pa->occupancy(r);
 
-    t = parseStringAs<std::string>(s, 72, 4);
-    pa->segid(t);
+      if (s.size() > 60) {
+	r = parseStringAs<float>(s, 60, 6);
+	pa->bfactor(r);
 
-    t = parseStringAs<std::string>(s, 76, 2);
-    pa->PDBelement(t);
+	if (s.size() > 72) {
+	  t = parseStringAs<std::string>(s, 72, 4);
+	  pa->segid(t);
 
+	  if (s.size() > 76) {
+	    t = parseStringAs<std::string>(s, 76, 2);
+	    pa->PDBelement(t);
 
-    // Charge is not currently handled...
-    t = parseStringAs<std::string>(s, 78, 2);
-
+	    // Charge is not currently handled...
+	    // t = parseStringAs<std::string>(s, 78, 2);
+	  }
+	} else { // segid
+	  _missing_segid = true;
+	}
+      } else { // b-factor
+	_missing_b = _missing_segid = true;
+      }
+    } else { // occupancies
+      _missing_q = _missing_b = _missing_segid = true;
+    }
     append(pa);
 
     // Record which pAtom belongs to this atomid.
@@ -347,6 +359,9 @@ namespace loos {
         }
       }
     }
+
+    if (isMissingFields())
+      std::cerr << "Warning- PDB is missing fields.  Default values will be used.\n";
 
     // Clean-up temporary storage...
     _atomid_to_patom.clear();
