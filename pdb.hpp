@@ -74,8 +74,9 @@ namespace loos {
     virtual ~PDB() {}
 
     //! Read in PDB from a filename
-    explicit PDB(const std::string fname) : _max_index(0), _show_charge(false), _auto_ter(true),
-                                            _has_cryst(false), strictness_policy(false) {
+    explicit PDB(const std::string& fname) throw(std::runtime_error, ParseError, BadConnectivityError)
+      : _max_index(0), _show_charge(false), _auto_ter(true),
+	_has_cryst(false), strictness_policy(false) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(std::runtime_error("Cannot open PDB file " + fname));
@@ -83,8 +84,9 @@ namespace loos {
     }
 
     //! Read in a PDB from a filename
-    explicit PDB(const char* fname) : _max_index(0), _show_charge(false), _auto_ter(true),
-                                      _has_cryst(false), strictness_policy(false) {
+    explicit PDB(const char* fname) throw(std::runtime_error, ParseError, BadConnectivityError)
+      : _max_index(0), _show_charge(false), _auto_ter(true),
+	_has_cryst(false), strictness_policy(false) {
       std::ifstream ifs(fname);
       if (!ifs)
         throw(std::runtime_error("Cannot open PDB file " + std::string(fname)));
@@ -92,8 +94,9 @@ namespace loos {
     }
 
     //! Read in a PDB from an ifstream
-    explicit PDB(std::istream& ifs) : _max_index(0), _show_charge(false), _auto_ter(true),
-                                       _has_cryst(false), strictness_policy(false) { read(ifs); }
+    explicit PDB(std::istream& ifs) throw(ParseError, BadConnectivityError)
+      : _max_index(0), _show_charge(false), _auto_ter(true),
+	_has_cryst(false), strictness_policy(false) { read(ifs); }
 
     static pAtomicGroup create(const std::string& fname) {
       return(pAtomicGroup(new PDB(fname)));
@@ -145,7 +148,7 @@ namespace loos {
 #endif
 
     //! Read in PDB from an ifstream
-    void read(std::istream& is);
+    void read(std::istream& is) throw(ParseError, BadConnectivityError);
 
   private:
     class ComparePatoms {
@@ -160,9 +163,9 @@ namespace loos {
 
     // These will modify the PDB upon a successful parse...
     void parseRemark(const std::string&);
-    void parseAtomRecord(const std::string&);
-    void parseConectRecord(const std::string&) throw(BadConnectivityError);
-    void parseCryst1Record(const std::string&);
+    void parseAtomRecord(const std::string&) throw(ParseError);
+    void parseConectRecord(const std::string&) throw(BadConnectivityError, ParseError);
+    void parseCryst1Record(const std::string&) throw(ParseError);
 
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;

@@ -61,7 +61,7 @@ namespace loos {
 
   // Parse an ATOM or HETATM record...
 
-  void PDB::parseAtomRecord(const std::string& s) {
+  void PDB::parseAtomRecord(const std::string& s) throw(ParseError) {
     greal r;
     gint i;
     std::string t;
@@ -246,7 +246,7 @@ namespace loos {
   // the pAtom that matches the CONECT atomid (rather than using
   // findById()).
 
-  void PDB::parseConectRecord(const std::string& s) throw(BadConnectivityError) {
+  void PDB::parseConectRecord(const std::string& s) throw(BadConnectivityError, ParseError) {
     int bound_id = parseStringAs<int>(s, 6, 5);
 
     
@@ -273,7 +273,7 @@ namespace loos {
   }
 
 
-  void PDB::parseCryst1Record(const std::string& s) {
+  void PDB::parseCryst1Record(const std::string& s) throw(ParseError) {
     greal r;
     gint i;
     std::string t;
@@ -311,7 +311,7 @@ namespace loos {
 
   //! Top level parser...
   //! Reads a PDB from an input stream
-  void PDB::read(std::istream& is) {
+  void PDB::read(std::istream& is) throw(ParseError, BadConnectivityError) {
     std::string input;
     bool has_cryst = false;
     bool has_bonds = false;
