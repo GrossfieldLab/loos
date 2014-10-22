@@ -36,6 +36,7 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <exceptions.hpp>
 #include <pdb_remarks.hpp>
 #include <cryst.hpp>
 #include <utils.hpp>
@@ -67,10 +68,6 @@ namespace loos {
   */
   class PDB : public AtomicGroup {
   public:
-    class BadConnectivity : public std::runtime_error {
-    public:
-      explicit BadConnectivity(const std::string& msg) : runtime_error(msg) { };
-    };
 
   public:
     PDB() : _max_index(0), _show_charge(false), _auto_ter(true), _has_cryst(false), strictness_policy(false) { }
@@ -164,7 +161,7 @@ namespace loos {
     // These will modify the PDB upon a successful parse...
     void parseRemark(const std::string&);
     void parseAtomRecord(const std::string&);
-    void parseConectRecord(const std::string&);
+    void parseConectRecord(const std::string&) throw(BadConnectivityError);
     void parseCryst1Record(const std::string&);
 
     // Convert an Atom to a string representation in PDB format...
@@ -174,7 +171,7 @@ namespace loos {
     friend std::ostream& FormatConectRecords(std::ostream&, const PDB&);
 #endif
 
-    pAtom findAtom(const int i);
+    pAtom findAtom(const int i) throw(BadConnectivityError);
     void uniqueBonds();
 
   private:

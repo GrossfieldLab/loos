@@ -99,7 +99,7 @@ namespace loos {
       char c = t[0];
     
       if (c != ' ' && !isalpha(c))
-        throw(std::runtime_error("Non-alpha character in iCode column of PDB"));
+        throw(ParseError("Non-alpha character in iCode column of PDB"));
     } else {
       char c = t[0];
 
@@ -195,12 +195,12 @@ namespace loos {
 
   // Private function to search the map of atomid's -> pAtoms
   // Throws an error if the atom is not found
-  pAtom PDB::findAtom(const int id) {
+  pAtom PDB::findAtom(const int id) throw(loos::BadConnectivityError) {
     std::map<int, pAtom>::iterator i = _atomid_to_patom.find(id);
     if (i == _atomid_to_patom.end()) {
       std::ostringstream oss;
       oss << "Cannot find atom corresponding to atomid " << id;
-      throw(PDB::BadConnectivity(oss.str()));
+      throw(BadConnectivityError(oss.str()));
     }
     return(i->second);
   }
@@ -246,13 +246,13 @@ namespace loos {
   // the pAtom that matches the CONECT atomid (rather than using
   // findById()).
 
-  void PDB::parseConectRecord(const std::string& s) {
+  void PDB::parseConectRecord(const std::string& s) throw(BadConnectivityError) {
     int bound_id = parseStringAs<int>(s, 6, 5);
 
     
     pAtom bound = findAtom(bound_id);
     if (bound == 0)
-      throw(PDB::BadConnectivity("Cannot find primary atom " + s.substr(6, 5)));
+      throw(BadConnectivityError("Cannot find primary atom " + s.substr(6, 5)));
 
     // This currently includes fields designated as H-bond indices...
     // Should we do this? or separate them out?  Hmmm...
@@ -266,7 +266,7 @@ namespace loos {
       int id = parseStringAsHybrid36(t);
       pAtom boundee = findAtom(id);
       if (boundee == 0)
-        throw(PDB::BadConnectivity("Cannot find bound atom " + t));
+        throw(BadConnectivityError("Cannot find bound atom " + t));
       bound->addBond(boundee);
       boundee->addBond(bound);
     }
@@ -292,25 +292,19 @@ namespace loos {
     r = parseStringAs<float>(s, 47, 7);
     cell.gamma(r);
     
-    try {
-      // Special handling in case of mangled CRYST1 record...
-      if (s.length() < 66) {
-        t = s.substr(55);
+    // Special handling in case of mangled CRYST1 record...
+    if (s.length() < 66) {
+      t = s.substr(55);
         
-        cell.spaceGroup(t);
-        cell.z(-1);   // ??? 
-      } else {
-        t = parseStringAs<std::string>(s, 55, 11);
-        cell.spaceGroup(t);
-        i = parseStringAs<int>(s, 66, 4);
-        cell.z(i);
-      }
+      cell.spaceGroup(t);
+      cell.z(-1);   // ??? 
+    } else {
+      t = parseStringAs<std::string>(s, 55, 11);
+      cell.spaceGroup(t);
+      i = parseStringAs<int>(s, 66, 4);
+      cell.z(i);
     }
-    catch (...) {
-      std::cerr << "Error while parsing space group in CRYST1 record." << std::endl;
-      throw;
-    }
-      
+
     _has_cryst = true;
   }
 

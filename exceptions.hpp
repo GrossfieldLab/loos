@@ -155,6 +155,9 @@ namespace loos {
   };
   
 
+  struct BadConnectivityError : public LOOSError {
+    explicit BadConnectivityError(const std::string& msg) : LOOSError(msg) {}
+  };
 
 };
 
