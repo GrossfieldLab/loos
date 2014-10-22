@@ -62,7 +62,7 @@ namespace loos {
     PSF() { }
     virtual ~PSF() {}
 
-    explicit PSF(const std::string fname) throw(std::runtime_error, loos::ParseError): _max_index(0) {
+    explicit PSF(const std::string& fname) throw(std::runtime_error, loos::ParseError): _max_index(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
         throw(std::runtime_error("Cannot open PSF file " + std::string(fname)));
