@@ -39,7 +39,7 @@ namespace loos {
 
 %include "exceptions.i"
 
-%include "catches_list.i"
+%include "catch_it.i"
 
 %include "Coord.i"
 %include "Atom.i"
