@@ -40,24 +40,24 @@ namespace loos {
 
 
 
-  void PSF::read(std::istream& is) {
+  void PSF::read(std::istream& is) throw(loos::ParseError){
     std::string input;
 
     // first line is the PSF header
     if (!getline(is, input))
-      throw(std::runtime_error("Failed reading first line of psf"));
+      throw(ParseError("Failed reading first line of psf"));
     if (input.substr(0,3) != "PSF")
-      throw(std::runtime_error("PSF detected a non-PSF file"));
+      throw(ParseError("PSF detected a non-PSF file"));
 
     // second line is blank
     if (!getline(is, input))
-      throw(std::runtime_error("PSF failed reading first header blank"));
+      throw(ParseError("PSF failed reading first header blank"));
 
     // third line is title header
     getline(is, input);
     int num_title_lines;
     if (!(std::stringstream(input) >> num_title_lines)) 
-      throw(std::runtime_error("PSF has malformed title header"));
+      throw(ParseError("PSF has malformed title header"));
         
     // skip the rest of the title
     for (int i=0; i<num_title_lines; i++) 
@@ -67,38 +67,38 @@ namespace loos {
     if (!(is.good()))
       // Yes, I know, I should figure out what went wrong instead
       // of running home crying.  Sorry, Tod...
-      throw(std::runtime_error("PSF choked reading the header"));
+      throw(ParseError("PSF choked reading the header"));
 
     // next line is blank 
     if (!getline(is, input))
-      throw(std::runtime_error("PSF failed reading second header blank"));
+      throw(ParseError("PSF failed reading second header blank"));
 
     // next line is the number of atoms
     
     if (!getline(is, input))
-      throw(std::runtime_error("PSF failed reading natom line"));
+      throw(ParseError("PSF failed reading natom line"));
     int num_atoms;
     if (!(std::stringstream(input) >> num_atoms))
-      throw(std::runtime_error("PSF has malformed natom line"));
+      throw(ParseError("PSF has malformed natom line"));
 
     for (int i=0; i<num_atoms; i++) {
       if (!getline(is, input))
-        throw(std::runtime_error("Failed reading PSF atom line "));
-      //throw(std::runtime_error("Failed reading PSF atom line " + std::string(i)));
+        throw(ParseError("Failed reading PSF atom line "));
+      //throw(ParseError("Failed reading PSF atom line " + std::string(i)));
       parseAtomRecord(input);
     }
 
     // next line is blank 
     if (!getline(is, input))
-      throw(std::runtime_error("PSF failed reading blank after atom lines"));
+      throw(ParseError("PSF failed reading blank after atom lines"));
 
     // next block of lines is the list of bonds
     // Bond title line
     if (!getline(is, input))
-      throw(std::runtime_error("PSF failed reading nbond line"));
+      throw(ParseError("PSF failed reading nbond line"));
     int num_bonds;
     if (!(std::stringstream(input) >> num_bonds))
-      throw(std::runtime_error("PSF has malformed nbond line"));
+      throw(ParseError("PSF has malformed nbond line"));
 
     int bonds_found = 0;
     getline(is, input);
@@ -130,7 +130,7 @@ namespace loos {
     }
     // sanity check
     if (bonds_found != num_bonds) 
-      throw(std::runtime_error("PSF number of bonds disagrees with number found"));
+      throw(ParseError("PSF number of bonds disagrees with number found"));
 
     deduceAtomicNumberFromMass();
     setGroupConnectivity();
@@ -138,7 +138,7 @@ namespace loos {
 
 
 
-  void PSF::parseAtomRecord(const std::string s) {
+  void PSF::parseAtomRecord(const std::string s) throw(loos::ParseError) {
     gint index;
     std::string segname;
     gint resid;

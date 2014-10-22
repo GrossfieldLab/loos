@@ -62,7 +62,7 @@ namespace loos {
     PSF() { }
     virtual ~PSF() {}
 
-    explicit PSF(const std::string fname) : _max_index(0) {
+    explicit PSF(const std::string fname) throw(std::runtime_error, loos::ParseError): _max_index(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
         throw(std::runtime_error("Cannot open PSF file " + std::string(fname)));
@@ -70,11 +70,11 @@ namespace loos {
       read(ifs);
     }
 
-    explicit PSF(std::fstream &ifs) : _max_index(0) {
+    explicit PSF(std::fstream &ifs) throw(loos::ParseError): _max_index(0) {
       read(ifs);
     }
 
-    static pAtomicGroup create(const std::string& fname) {
+    static pAtomicGroup create(const std::string& fname) throw(std::runtime_error, loos::ParseError){
       return(pAtomicGroup(new PSF(fname)));
     }
 
@@ -84,7 +84,7 @@ namespace loos {
     //! Creates a deep copy (see AtomicGroup::copy() for more info)
     PSF copy(void) const;
 
-    void read(std::istream& is);  
+    void read(std::istream& is) throw(loos::ParseError);  
 
 
   private:
@@ -92,7 +92,7 @@ namespace loos {
     PSF(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
 
-    void parseAtomRecord(const std::string s);  
+    void parseAtomRecord(const std::string s) throw(loos::ParseError);  
 
     uint _max_index;
 
