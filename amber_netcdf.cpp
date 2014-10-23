@@ -17,7 +17,7 @@ namespace loos {
 
 
 
-  void AmberNetcdf::init(const char* name, const uint natoms) {
+  void AmberNetcdf::init(const char* name, const uint natoms) throw(AmberNetcdfError){
     int retval;
 
     retval = nc_open(name, NC_NOWRITE, &_ncid);
@@ -98,7 +98,7 @@ namespace loos {
 
   // Given a frame number, read the coord data into the internal array
   // and retrieve the corresponding periodic box (if present)
-  void AmberNetcdf::readRawFrame(const uint frameno) {
+  void AmberNetcdf::readRawFrame(const uint frameno) throw(AmberNetcdfError) {
     size_t start[3] = {0, 0, 0};
     size_t count[3] = {1, 1, 3};
 
@@ -138,7 +138,7 @@ namespace loos {
     _current_frame = 0;
   }
 
-  bool AmberNetcdf::parseFrame() {
+  bool AmberNetcdf::parseFrame() throw(AmberNetcdfError) {
     if (_current_frame >= _nframes)
       return(false);
 
@@ -146,7 +146,7 @@ namespace loos {
     return(true);
   }
 
-  void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) {
+  void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) throw(LOOSError) {
 
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
@@ -161,7 +161,7 @@ namespace loos {
   }
 
 
-  void AmberNetcdf::readGlobalAttributes() {
+  void AmberNetcdf::readGlobalAttributes() throw(amberNetcdfError) {
 
     _title = readGlobalAttribute("title");
     _application = readGlobalAttribute("application");
@@ -173,7 +173,7 @@ namespace loos {
 
 
   // Will return an emptry string if the attribute is not found
-  std::string AmberNetcdf::readGlobalAttribute(const std::string& name) {
+  std::string AmberNetcdf::readGlobalAttribute(const std::string& name) throw(AmberNetcdfError) {
     size_t len;
     
     int retval = nc_inq_attlen(_ncid, NC_GLOBAL, name.c_str(), &len);

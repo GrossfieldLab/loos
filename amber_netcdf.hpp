@@ -70,8 +70,8 @@ namespace loos {
     // to keep it from trying to use an istream (since the C netcdf API
     // doesn't support this)
 
-    explicit AmberNetcdf(const std::string& s, const uint na) :
-      _coord_data(new GCoord::element_type[na*3]),
+    explicit AmberNetcdf(const std::string& s, const uint na) throw(AmberNetcdfError)
+      : _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
       _timestep(1e-12),
@@ -81,8 +81,8 @@ namespace loos {
       init(s.c_str(), na);
     }
 
-    explicit AmberNetcdf(const char* p, const uint na) :
-      _coord_data(new GCoord::element_type[na*3]),
+    explicit AmberNetcdf(const char* p, const uint na) throw(AmberNetcdfError)
+      : _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
       _timestep(1e-12),
@@ -93,7 +93,7 @@ namespace loos {
     }
 
 
-    ~AmberNetcdf() {
+    ~AmberNetcdf() throw(AmberNetcdfError) {
       int retval = nc_close(_ncid);
       if (retval)
         throw(AmberNetcdfError("Error while closing netcdf file", retval));
@@ -122,13 +122,13 @@ namespace loos {
     }
 
   private:
-    void init(const char* name, const uint natoms);
-    void readGlobalAttributes();
-    std::string readGlobalAttribute(const std::string& name);
-    void readRawFrame(const uint frameno);
+    void init(const char* name, const uint natoms) throw(AmberNetcdfError);
+    void readGlobalAttributes() throw(AmberNetcdfError);
+    std::string readGlobalAttribute(const std::string& name) throw(AmberNetcdfError);
+    void readRawFrame(const uint frameno) throw(AmberNetcdfError);
 
-    void updateGroupCoordsImpl(AtomicGroup& g);
-    bool parseFrame();
+    void updateGroupCoordsImpl(AtomicGroup& g) throw(LOOSError);
+    bool parseFrame() throw(AmberNetcdfError);
     void seekNextFrameImpl();
     void seekFrameImpl(const uint frame);
     void rewindImpl();
