@@ -2,6 +2,7 @@
 
 
 %catches(loos::FileParseError,\
+	 loos::BadConnectivityError,\
 	 loos::LOOSError,     \
 	 std::runtime_error,\
 	 std::logic_error) \

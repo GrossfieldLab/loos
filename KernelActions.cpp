@@ -57,9 +57,9 @@ namespace loos {
     }
     
 
-    void Action::hasAtom(void) {
+    void Action::hasAtom(void) throw (loos::LOOSError) {
       if (atom == 0)
-        throw(std::runtime_error("No atom set"));
+        throw(LOOSError("No atom set"));
     }
     
 
@@ -220,35 +220,35 @@ namespace loos {
     }
 
 
-    void logicalAnd::execute(void) {
+    void logicalAnd::execute(void)  throw (loos::LOOSError)  {
       Value v2 = stack->pop();
       Value v1 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-        throw(std::runtime_error("Invalid operands to logicalAnd"));
+        throw(LOOSError("Invalid operands to logicalAnd"));
       
       Value u(v1.itg && v2.itg);
       stack->push(u);
     }
 
 
-    void logicalOr::execute(void) {
+    void logicalOr::execute(void)  throw (loos::LOOSError)  {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
       
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-        throw(std::runtime_error("Invalid operands to logicalOr"));
+        throw(LOOSError("Invalid operands to logicalOr"));
       
       Value u(v1.itg || v2.itg);
       stack->push(u);
     }
 
 
-    void logicalNot::execute(void) {
+    void logicalNot::execute(void)  throw (loos::LOOSError)  {
       Value v1 = stack->pop();
 
       if (v1.type != Value::INT)
-        throw(std::runtime_error("Invalid operand to logicalNot"));
+        throw(LOOSError("Invalid operand to logicalNot"));
       
       Value u(!v1.itg);
       stack->push(u);

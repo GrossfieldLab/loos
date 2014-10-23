@@ -88,7 +88,8 @@ namespace loos {
     virtual ~Amber() { }
 
     //! Read in a parmtop file
-    explicit Amber(const std::string fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    explicit Amber(const std::string& fname)  throw(FileParseError, std::logic_error)
+      : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(std::runtime_error("Cannot open Amber parmtop file " + fname));
@@ -98,7 +99,8 @@ namespace loos {
     }
 
     //! Read in a parmtop file
-    explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    explicit Amber(const char* fname) throw(FileParseError, std::logic_error)
+      : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname);
       if (!ifs)
         throw(std::runtime_error("Cannot open Amber parmtop file " + std::string(fname)));
@@ -107,7 +109,8 @@ namespace loos {
       read(ifs);
     }
 
-    explicit Amber(std::istream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
+    explicit Amber(std::istream& ifs) throw(FileParseError, std::logic_error)
+      : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
       read(ifs);
     }
 
@@ -130,7 +133,7 @@ namespace loos {
     }
 
     //! Parse the parmtop file
-    void read(std::istream& ifs);
+    void read(std::istream& ifs) throw(FileParseError, std::logic_error);
 
     //! Return the title
     std::string title() const { return(_title); }
@@ -148,7 +151,7 @@ namespace loos {
     void assignResidues(void) throw(std::runtime_error);
     void parseBonds(const uint) throw(FileParseError);
     void parsePointers() throw(std::logic_error);
-    void parseTitle();
+    void parseTitle() throw(FileParseError);
     void parseAtomNames() throw(FileParseError);
     void parseAmoebaRegularBondNumList() throw(FileParseError);
     void parseAmoebaRegularBondList(const uint) throw(FileParseError);

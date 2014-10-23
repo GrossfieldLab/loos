@@ -208,7 +208,7 @@ namespace loos {
 
 
   // Simply slurp up the title (for now)
-  void Amber::parseTitle() {
+  void Amber::parseTitle() throw(FileParseError) {
 
     FormatSpec fmt = parseFormat("a", "title");
     std::vector<std::string> titles = readBlock<std::string>(fmt.width);
@@ -268,7 +268,7 @@ namespace loos {
 
 
 
-  void Amber::read(std::istream& ifs) {
+  void Amber::read(std::istream& ifs) throw(FileParseError, std::logic_error) {
     reader.stream(ifs);
     
     while (reader.getNext()) {
