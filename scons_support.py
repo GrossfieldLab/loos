@@ -177,7 +177,7 @@ def CheckForSwig(conf, min_version):
     # Need to use has_key() for older distros...
     if conf.env.has_key('SWIGVERSION'):
         if LooseVersion(conf.env['SWIGVERSION']) >= LooseVersion(min_version):
-            conf.Result('yes')
+            conf.Result('yes [%s]' % (conf.env['SWIGVERSION']))
             return(1)
         else:
             conf.Result('too old [%s, requires at least %s; pyloos disabled]' % (conf.env['SWIGVERSION'], min_version))
