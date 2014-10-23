@@ -17,7 +17,7 @@ namespace loos {
 
 
 
-  void AmberNetcdf::init(const char* name, const uint natoms) throw(AmberNetcdfError){
+  void AmberNetcdf::init(const char* name, const uint natoms) throw(AmberNetcdfOpenError, AmberNetcdfError){
     int retval;
 
     retval = nc_open(name, NC_NOWRITE, &_ncid);

@@ -70,7 +70,7 @@ namespace loos {
     // to keep it from trying to use an istream (since the C netcdf API
     // doesn't support this)
 
-    explicit AmberNetcdf(const std::string& s, const uint na) throw(AmberNetcdfError)
+    explicit AmberNetcdf(const std::string& s, const uint na) throw(AmberNetcdfError, AmberNetcdfOpenError)
       : _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
@@ -81,7 +81,7 @@ namespace loos {
       init(s.c_str(), na);
     }
 
-    explicit AmberNetcdf(const char* p, const uint na) throw(AmberNetcdfError)
+    explicit AmberNetcdf(const char* p, const uint na) throw(AmberNetcdfError, AmberNetcdfOpenError)
       : _coord_data(new GCoord::element_type[na*3]),
       _box_data(new GCoord::element_type[3]),
       _periodic(false),
