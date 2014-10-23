@@ -66,14 +66,6 @@ namespace loos {
     explicit ParseError(const std::string& arg) : LOOSError(arg) { }
   };
 
-  class FileParseError : public LOOSError {
-  public:
-    explicit FileParseError(const std::string& arg, const uint lineno) {
-      std::stringstream ss;
-      ss << arg << " at line " << lineno;
-      _msg = ss.str();
-    }
-  };
 
   //! Exception cause by some operation failing (ie no atoms selected)
   class NullResult : public LOOSError {
@@ -115,35 +107,68 @@ namespace loos {
   };
 
   class FileError : public LOOSError {
+  protected:
+    std::string _operation;
+    std::string _filename;
   public:
-    FileError() : LOOSError("File IO Error") {}
-    FileError(const std::string& filename) : LOOSError("File IO Error with file " + filename) {}
-    FileError(const std::string& filename, const std::string& message) :
-      LOOSError("File IO Error with file " + filename + " - " + message) {}
+    FileError(const std::string& operation) : _operation(operation) {}
+
+    FileError(const std::string& operation,
+              const std::string& filename) : _operation(operation), _filename(filename) {}
+
+    FileError(const std::string& operation,
+              const std::string& filename,
+              const std::string& message) : LOOSError(message), _operation(operation), _filename(filename) {}
+
+    virtual const char* what() const throw() {
+      std::string t = "Error while " + _operation + " file " + _filename;
+      if (!_msg.empty())
+        t += " - _msg";
+      return(t.c_str());
+    }
   };
 
   class FileOpenError : public FileError {
   public:
-    FileOpenError() : FileError() { }
-    FileOpenError(const std::string& fname) : FileError(fname) {}
-    FileOpenError(const std::string& fname, const std::string& msg) : FileError(fname, msg) {}
+    FileOpenError() : FileError("opening") { }
+    FileOpenError(const std::string& fname) : FileError("opening", fname) {}
+    FileOpenError(const std::string& fname, const std::string& msg) : FileError("opening", fname, msg) {}
   };
 
 
   class FileReadError : public FileError {
   public:
-    FileReadError() : FileError() { }
-    FileReadError(const std::string& fname) : FileError(fname) {}
-    FileReadError(const std::string& fname, const std::string& msg) : FileError(fname, msg) {}
+    FileReadError() : FileError("reading from") { }
+    FileReadError(const std::string& fname) : FileError("reading from", fname) {}
+    FileReadError(const std::string& fname, const std::string& msg) : FileError("reading from", fname, msg) {}
   };
 
 
   class FileWriteError : public FileError {
   public:
-    FileWriteError() : FileError() { }
-    FileWriteError(const std::string& fname) : FileError(fname) {}
-    FileWriteError(const std::string& fname, const std::string& msg) : FileError(fname, msg) {}
+    FileWriteError() : FileError("writing to") { }
+    FileWriteError(const std::string& fname) : FileError("writing to", fname) {}
+    FileWriteError(const std::string& fname, const std::string& msg) : FileError("writing to", fname, msg) {}
   };
+
+
+  class FileParseError : public FileError {
+    uint _lineno;
+  public:
+    FileParseError(const std::string& fname, const uint lineno) : FileError("parsing", fname), _lineno(lineno) { }
+    FileParseError(const std::string& fname, const std::string& msg, const uint lineno)
+      : FileError("parsing", fname, msg), _lineno(lineno) { }
+
+    const char* what() const throw() {
+
+      std::stringstream ss;
+      ss << "Error while parsing file " << _filename << " at line #" << _lineno;
+      if (! _msg.empty())
+        ss << " - " << _msg;
+      return(ss.str().c_str());
+    }
+  };
+
 
   //! Exception for writing trajectories
   class TrajectoryWriteError : public LOOSError {
