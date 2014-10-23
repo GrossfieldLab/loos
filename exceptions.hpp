@@ -114,6 +114,37 @@ namespace loos {
     explicit UnknownAtomicMass(const std::string& arg) : LOOSError(arg) { }
   };
 
+  class FileError : public LOOSError {
+  public:
+    FileError() : LOOSError("File IO Error") {}
+    FileError(const std::string& filename) : LOOSError("File IO Error with file " + filename) {}
+    FileError(const std::string& filename, const std::string& message) :
+      LOOSError("File IO Error with file " + filename + " - " + message) {}
+  };
+
+  class FileOpenError : public FileError {
+  public:
+    FileOpenError() : FileError() { }
+    FileOpenError(const std::string& fname) : FileError(fname) {}
+    FileOpenError(const std::string& fname, const std::string& msg) : FileError(fname, msg) {}
+  };
+
+
+  class FileReadError : public FileError {
+  public:
+    FileReadError() : FileError() { }
+    FileReadError(const std::string& fname) : FileError(fname) {}
+    FileReadError(const std::string& fname, const std::string& msg) : FileError(fname, msg) {}
+  };
+
+
+  class FileWriteError : public FileError {
+  public:
+    FileWriteError() : FileError() { }
+    FileWriteError(const std::string& fname) : FileError(fname) {}
+    FileWriteError(const std::string& fname, const std::string& msg) : FileError(fname, msg) {}
+  };
+
   //! Exception for writing trajectories
   class TrajectoryWriteError : public LOOSError {
   public:
