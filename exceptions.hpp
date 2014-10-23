@@ -121,7 +121,7 @@ namespace loos {
     TrajectoryWriteError(const std::string& arg) : LOOSError(arg) {}
   };
 
-  //! Exception for writing trajectories
+  //! Exception for Reading trajectories
   class TrajectoryReadError : public LOOSError {
   public:
     TrajectoryReadError() : LOOSError("Error while reading from trajectory") {}
