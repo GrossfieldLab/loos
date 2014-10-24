@@ -122,7 +122,7 @@ namespace loos {
     }
 
   private:
-    void init(const char* name, const uint natoms) throw(AmberNetcdfError);
+    void init(const char* name, const uint natoms) throw(AmberNetcdfError, AmberNetcdfOpenError);
     void readGlobalAttributes() throw(AmberNetcdfError);
     std::string readGlobalAttribute(const std::string& name) throw(AmberNetcdfError);
     void readRawFrame(const uint frameno) throw(AmberNetcdfError);

@@ -161,7 +161,7 @@ namespace loos {
   }
 
 
-  void AmberNetcdf::readGlobalAttributes() throw(amberNetcdfError) {
+  void AmberNetcdf::readGlobalAttributes() throw(AmberNetcdfError) {
 
     _title = readGlobalAttribute("title");
     _application = readGlobalAttribute("application");
