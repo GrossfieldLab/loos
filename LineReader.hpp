@@ -89,6 +89,10 @@ namespace loos {
         //! The current line number into the file
         virtual uint lineNumber() const;
 
+        virtual void resetLineNumber() {
+            _lineno = 1;
+        }
+
     protected:
 
 
