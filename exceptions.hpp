@@ -125,6 +125,9 @@ namespace loos {
         _filename(fname)
     {}
 
+    std::string operation() const throw() { return(_operation); }
+    std::string filename() const throw() { return(_filename); }
+
 
     ~FileError() throw() {}
   };
@@ -171,6 +174,8 @@ namespace loos {
     FileReadErrorWithLine(const std::string& fname, const std::string& msg, const uint ln)
       : FileReadError("reading ", fname), _lineno(ln), _msg(msg)
     { init(); }
+
+    uint lineNumber() const throw() { return(_lineno); }
 
     ~FileReadErrorWithLine() throw() {}
 
