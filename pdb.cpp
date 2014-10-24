@@ -311,37 +311,44 @@ namespace loos {
 
   //! Top level parser...
   //! Reads a PDB from an input stream
-  void PDB::read(std::istream& is) throw(ParseError, BadConnectivityError) {
+  void PDB::read(std::istream& is) throw(FileReadError, BadConnectivityError) {
     std::string input;
     bool has_cryst = false;
     bool has_bonds = false;
     boost::unordered_set<std::string> seen;
 
     while (getline(is, input)) {
-      if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
-        parseAtomRecord(input);
-      else if (input.substr(0, 6) == "REMARK")
-        parseRemark(input);
-      else if (input.substr(0,6) == "CONECT") {
-        has_bonds = true;
-        parseConectRecord(input);
-      } else if (input.substr(0, 6) == "CRYST1") {
-        parseCryst1Record(input);
-        has_cryst = true;
-      } else if (input.substr(0,3) == "TER")
-        ;
-      else if (input.substr(0,3) == "END")
-        break;
-      else {
-        int space = input.find_first_of(' ');
-        std::string record = input.substr(0, space);
-        if (seen.find(record) == seen.end()) {
-          std::cerr << "Warning - unknown PDB record '" << record << "'" << std::endl;
-          seen.insert(record);
-        }
+      try {
+	if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
+	  parseAtomRecord(input);
+	else if (input.substr(0, 6) == "REMARK")
+	  parseRemark(input);
+	else if (input.substr(0,6) == "CONECT") {
+	  has_bonds = true;
+	  parseConectRecord(input);
+	} else if (input.substr(0, 6) == "CRYST1") {
+	  parseCryst1Record(input);
+	  has_cryst = true;
+	} else if (input.substr(0,3) == "TER")
+	  ;
+	else if (input.substr(0,3) == "END")
+	  break;
+	else {
+	  int space = input.find_first_of(' ');
+	  std::string record = input.substr(0, space);
+	  if (seen.find(record) == seen.end()) {
+	    std::cerr << "Warning - unknown PDB record '" << record << "'" << std::endl;
+	    seen.insert(record);
+	  }
+	}
+      }
+      catch(LOOSError e) {
+	throw(FileReadError(_fname, e.what()));
+      }
+      catch(...) {
+	throw(FileReadError(_fname, "Unknown exception"));
       }
     }
-
     // Clean-up temporary storage...
     _atomid_to_patom.clear();
 
