@@ -255,7 +255,7 @@ namespace loos {
 
 
   
-  int parseStringAsHybrid36(const std::string& source, const uint pos, const uint nelem) {
+  int parseStringAsHybrid36(const std::string& source, const uint pos, const uint nelem) throw(std::logic_error) {
     uint n = !nelem ? source.size() - pos : nelem;
     if (pos + n > source.size())
       return(0);
@@ -311,7 +311,7 @@ namespace loos {
 
   // Note: this currently will overflow if sufficiently negative
   // to overflow the base-10 part...
-  std::string hybrid36AsString(int d, uint n) {
+  std::string hybrid36AsString(int d, uint n) throw(std::logic_error, std::runtime_error){
 
     if (n > 6)
       throw(std::logic_error("Requested size exceeds max"));
