@@ -74,15 +74,19 @@ namespace loos {
    }
 
   void LineReader::stripComment(std::string& s) const {
-    std::string::size_type i = s.find('#');
-    if (i != std::string::npos)
-      s.erase(i, s.length() - i);
+    if (_comment_char != '\0') {
+      std::string::size_type i = s.find('#');
+      if (i != std::string::npos)
+	s.erase(i, s.length() - i); 
+    }
   }
   
   void LineReader::stripLeadingWhitespace(std::string& s) const {
-    std::string::size_type i = s.find_first_not_of(" \t");
-    if (i > 0)
-      s.erase(0, i);
+    if (! _leading_chars.empty()) {
+      std::string::size_type i = s.find_first_not_of(" \t");
+      if (i > 0)
+	s.erase(0, i);
+    }
   }
   
   bool LineReader::skipLine(const std::string& s) const {
