@@ -108,12 +108,6 @@ namespace loos {
     //! Returns true if the internal stream pointer is unset
     bool isUnset(void) const { return(stream == 0); }
 
-    //! Checks to see if the stream pointer is set and throws an exception if not.
-    void checkSet(void) const {
-      if (stream == 0)
-        throw(std::logic_error("Attempting to use an unset stream"));
-    }
-    
     ~StreamWrapper() { if (new_stream) delete stream; }
 
 
