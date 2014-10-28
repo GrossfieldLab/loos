@@ -311,7 +311,7 @@ namespace loos {
 
   // Note: this currently will overflow if sufficiently negative
   // to overflow the base-10 part...
-  std::string hybrid36AsString(int d, uint n) throw(std::logic_error, std::runtime_error){
+  std::string hybrid36AsString(int d, uint n) throw(std::logic_error, LOOSError){
 
     if (n > 6)
       throw(std::logic_error("Requested size exceeds max"));
@@ -328,7 +328,7 @@ namespace loos {
     }
 
     if (d >= n10 + 52 * n36)
-      throw(std::runtime_error("Number out of range"));
+      throw(LOOSError("Number out of range for hybrid36 notation"));
 
     unsigned char coffset = '0';   // Digits offset for output
     int ibase = 10;                // Numeric base (i.e. 10 or 36)

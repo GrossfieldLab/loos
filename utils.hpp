@@ -359,7 +359,7 @@ namespace loos {
   int parseStringAsHybrid36(const std::string& source, const uint pos =0, const uint nelem =0) throw(std::logic_error);
 
   //! Convert an int into a hybrid-36 encoded string
-  std::string hybrid36AsString(int value, uint fieldsize) throw(std::logic_error, std::runtime_error);
+  std::string hybrid36AsString(int value, uint fieldsize) throw(std::logic_error, LOOSError);
 
   // The following are for support of boost::program_options
 
