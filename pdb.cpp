@@ -145,7 +145,7 @@ namespace loos {
 
   // Convert an Atom to a string with a PDB format...
 
-  std::string PDB::atomAsString(const pAtom p) const {
+  std::string PDB::atomAsString(const pAtom p) const throw(LOOSError) {
     std::ostringstream s;
 
     // Float formatter for coords
@@ -311,7 +311,7 @@ namespace loos {
 
   //! Top level parser...
   //! Reads a PDB from an input stream
-  void PDB::read(std::istream& is) throw(FileReadError, BadConnectivityError) {
+  void PDB::read(std::istream& is) throw(FileReadError, BadConnectivityError, ParseError) {
     std::string input;
     bool has_cryst = false;
     bool has_bonds = false;
@@ -397,7 +397,7 @@ namespace loos {
   }
 
 
-  std::ostream& FormatConectRecords(std::ostream& os, const PDB& p) {
+  std::ostream& FormatConectRecords(std::ostream& os, const PDB& p) throw(LOOSError) {
     AtomicGroup::iterator ci;
 
     // Copy and sort

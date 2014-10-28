@@ -74,7 +74,7 @@ namespace loos {
     virtual ~PDB() {}
 
     //! Read in PDB from a filename
-    explicit PDB(const std::string& fname) throw(FileOpenError, FileReadError, BadConnectivityError)
+    explicit PDB(const std::string& fname) throw(FileOpenError, FileReadError, BadConnectivityError, ParseError)
       : _max_index(0), _show_charge(false), _auto_ter(true),
 	_has_cryst(false), strictness_policy(false), _fname(fname) {
       std::ifstream ifs(fname.c_str());
@@ -84,7 +84,7 @@ namespace loos {
     }
 
     //! Read in a PDB from an ifstream
-    explicit PDB(std::istream& ifs) throw(FileReadError, BadConnectivityError)
+    explicit PDB(std::istream& ifs) throw(FileReadError, BadConnectivityError, ParseError)
       : _max_index(0), _show_charge(false), _auto_ter(true),
 	_has_cryst(false), strictness_policy(false), _fname("stream") { read(ifs); }
 
@@ -137,7 +137,7 @@ namespace loos {
 #endif
 
     //! Read in PDB from an ifstream
-    void read(std::istream& is) throw(FileReadError, BadConnectivityError);
+    void read(std::istream& is) throw(FileReadError, BadConnectivityError, ParseError);
 
   private:
     class ComparePatoms {
@@ -157,10 +157,10 @@ namespace loos {
     void parseCryst1Record(const std::string&) throw(ParseError);
 
     // Convert an Atom to a string representation in PDB format...
-    std::string atomAsString(const pAtom p) const;
+    std::string atomAsString(const pAtom p) const throw(LOOSError);
 
 #if !defined(SWIG)
-    friend std::ostream& FormatConectRecords(std::ostream&, const PDB&);
+    friend std::ostream& FormatConectRecords(std::ostream&, const PDB&) throw(LOOSError);
 #endif
 
     pAtom findAtom(const int i) throw(BadConnectivityError);
