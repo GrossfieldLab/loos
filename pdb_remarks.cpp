@@ -43,7 +43,7 @@ namespace loos {
   }
 
 
-  std::string Remarks::get(const int i) const {
+  std::string Remarks::get(const int i) const throw(std::range_error) {
     rangeCheck(i);
     return(remarks[i]);
   }
@@ -66,19 +66,19 @@ namespace loos {
   }
 
 
-  void Remarks::erase(const int i) {
+  void Remarks::erase(const int i) throw(std::range_error) {
     rangeCheck(i);
     remarks.erase(remarks.begin() + i);
   }
 
 
-  std::string& Remarks::operator[](const int i) {
+  std::string& Remarks::operator[](const int i) throw(std::range_error) {
     rangeCheck(i);
     return(remarks[i]);
   }
 
 
-  const std::string& Remarks::operator[](const int i) const {
+  const std::string& Remarks::operator[](const int i) const throw(std::range_error) {
     rangeCheck(i);
     return(remarks[i]);
   }

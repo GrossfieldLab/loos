@@ -43,19 +43,19 @@ namespace loos {
     int numberOf(void) const;
     int size(void) const;
     //! Access the ith remark
-    std::string get(const int i) const;
+    std::string get(const int i) const throw(std::range_error);
     //! Add a remark
     void add(const std::string s);
     //! Add multiple remarks
     void add(const std::vector<std::string>& s);
     //! Erase the ith remark
-    void erase(const int i);
+    void erase(const int i) throw(std::range_error);
 
 #if !defined(SWIG)
     //! Access the ith remark
-    std::string& operator[](const int i);
+    std::string& operator[](const int i) throw(std::range_error);
     //! Access the ith remark
-    const std::string& operator[](const int i) const;
+    const std::string& operator[](const int i) const throw(std::range_error);
 
     //! Output the Remark(s) in PDB format
     friend std::ostream& operator<<(std::ostream& os, const Remarks& r);
