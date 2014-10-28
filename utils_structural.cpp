@@ -35,7 +35,7 @@
 
 namespace loos {
 
-  GCoord boxFromRemarks(const Remarks& r) {
+  GCoord boxFromRemarks(const Remarks& r) throw(ParseError) {
     int n = r.size();
     int i;
 
@@ -65,6 +65,8 @@ namespace loos {
     int n = r.size();
     for (int i = 0; i<n; i++) {
       std::string s = r[i];
+      if (s.size() < 6)
+	continue;
       if (s.substr(0, 6) == " XTAL ")
         return(true);
     }

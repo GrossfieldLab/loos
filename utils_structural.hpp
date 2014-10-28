@@ -35,7 +35,7 @@ namespace loos {
   /** Returns a GCoord(99999.99, 99999.99, 99999.99) if there is no box
    *  info found in the remarks block.
    */
-  GCoord boxFromRemarks(const Remarks&);
+  GCoord boxFromRemarks(const Remarks&) throw(ParseError);
 
   //! Checks to see if a Remarks block has an Alan-style box size in it.
   bool remarksHasBox(const Remarks&);
