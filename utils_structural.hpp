@@ -28,7 +28,7 @@
 #include <vector>
 
 #include <loos_defs.hpp>
-
+#include <exceptions.hpp>
 
 namespace loos {
   //! Extract the Alan-style box-size from a PDB Remarks block.
