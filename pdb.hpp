@@ -107,13 +107,12 @@ namespace loos {
     static PDB fromAtomicGroup(const AtomicGroup&);
 
     //! Special handling for charges since the PDB form is daft
-    void showCharge(bool b = true);
+    void showCharge(bool b);
 
-#if !defined(SWIG)
+
     bool showCharge(void) const;
     bool strict(void) const;
     bool autoTerminate(void) const;
-#endif // !defined(SWIG)
 
     //! Determins how strict the input parser is to the '96 PDB standard.
     void strict(const bool b);
@@ -122,7 +121,7 @@ namespace loos {
     /*! Controls whether or not a "TER" record is automatically added
       when printing out the group/PDB
     */
-    void autoTerminate(bool b = true);
+    void autoTerminate(bool b);
 
     //! Accessor for the remarks object...
     Remarks& remarks(void);
