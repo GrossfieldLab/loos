@@ -66,7 +66,7 @@ namespace loos {
 
 
   private:
-    void rangeCheck(const unsigned int i) const;
+    void rangeCheck(const unsigned int i) const throw(std::range_error);
     std::string sanitize(const std::string s) const;
 
   private:
