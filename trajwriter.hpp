@@ -68,10 +68,9 @@ namespace loos {
       : appending_(false) {
       struct stat statbuf;
 
-      if (append && !stat(fname.c_str(), &statbuf)) {
+      if (append && !stat(fname.c_str(), &statbuf))
 	openStream(fname, true);
-	appending_ = true;
-      } else
+      else
 	openStream(fname);
     }
 
@@ -145,6 +144,9 @@ namespace loos {
     // are asked to append, seek to the end of the file.
     
     void openStream(const std::string& fname, const bool append = false) {
+
+      
+
       std::ios_base::openmode mode = std::ios_base::out | std::ios_base::binary;
       if (append)
         mode |= std::ios_base::in;
@@ -152,8 +154,15 @@ namespace loos {
         mode |= std::ios_base::trunc;
 
       stream_ = new std::fstream(fname.c_str(), mode);
-      if (append)
+      if (append) {
 	stream_->seekp(0, std::ios_base::end);
+	// Check to see if file is empty...
+	if (stream_->tellp() == 0)
+	  appending_ = false;
+	else
+	  appending_ = true;
+      }
+
       if (!stream_->good())
         throw(std::runtime_error("Error while opening output trajectory file"));
 
