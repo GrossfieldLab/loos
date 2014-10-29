@@ -130,6 +130,8 @@ namespace loos {
      */
     virtual uint framesWritten() const =0;
 
+    bool isAppending() const { return(appending_); }
+
   protected:
     std::iostream* stream_;
     bool appending_;

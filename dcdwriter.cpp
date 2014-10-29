@@ -171,6 +171,8 @@ namespace loos {
     _timestep = dcd.timestep();
     _current = _nsteps = dcd.nframes();
     _titles = dcd.titles();
+
+    stream_->seekp(0, std::ios_base::end);
   }
 
 }
