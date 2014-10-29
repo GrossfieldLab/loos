@@ -739,6 +739,7 @@ Library.
     stream_->seekg(0);
     XTC xtc(*stream_);
     current_ = xtc.nframes();
+    stream_->seekp(0, std::ios_base::end);
   }
 
 };
