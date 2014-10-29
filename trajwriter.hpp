@@ -130,6 +130,7 @@ namespace loos {
      */
     virtual uint framesWritten() const =0;
 
+    //! Returns true if appending to an existing trajectory
     bool isAppending() const { return(appending_); }
 
   protected:
