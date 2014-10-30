@@ -103,7 +103,7 @@ namespace loos {
         */
 
         // Verifies the state of the stream (throws if error)
-        virtual void checkState() const throw(FileParseError);
+        virtual void checkState() const throw(FileReadErrorWithLine);
 
         // Remove comments from the string
         virtual void stripComment(std::string& s) const;

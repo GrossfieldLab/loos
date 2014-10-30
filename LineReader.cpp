@@ -63,13 +63,13 @@ namespace loos {
   
    unsigned int LineReader::lineNumber() const { return(_lineno); }
 
-  void LineReader::checkState() const throw(FileParseError) {
+  void LineReader::checkState() const throw(FileReadErrorWithLine) {
      if (!(_is->good() || _is->eof())) {
 
        if (_name.empty())
-         throw(FileParseError("Error while reading from " + _name, _lineno));
+         throw(FileReadErrorWithLine(_name, _lineno));
        else
-         throw(FileParseError("Error while reading file", _lineno));
+         throw(FileReadErrorWithLine(_lineno));
      }
    }
 
