@@ -36,7 +36,7 @@ namespace loos {
   // If the format type does not match (for example, say "%FORMAT (20I8)" when expected
   // is "FEG"), then an error will be thrown.
 
-  Amber::FormatSpec Amber::parseFormat(const std::string& expected_types, const std::string& where)  throw(FileParseError) {
+  Amber::FormatSpec Amber::parseFormat(const std::string& expected_types, const std::string& where)  throw(FileReadErrorWithLine) {
 
     reader.getNext();
     char period;
@@ -44,7 +44,7 @@ namespace loos {
 
     // Verify line has a %FORMAT tag
     if (reader.line().compare(0, 7, "%FORMAT") != 0)
-      throw(FileParseError("Expected format for " + where, reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Expected format for " + where, reader.lineNumber()));
 
     // Extract format spec between parens...
     boost::char_separator<char> sep("()");
@@ -68,38 +68,38 @@ namespace loos {
           iss.seekg(0);
           // And finally just try X
           if (! (iss >> fmt.type) )
-            throw(FileParseError("Cannot parse format for " + where, reader.lineNumber()));
+            throw(FileReadErrorWithLine(reader.name(), "Cannot parse format for " + where, reader.lineNumber()));
         }
       }
     }
     
     // Compare against expected types
     if (expected_types.find_first_of(fmt.type) == std::string::npos)
-      throw(FileParseError("Invalid format type for " + where, reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Invalid format type for " + where, reader.lineNumber()));
 
     return(fmt);
 
   }
 
 
-  void Amber::parseCharges()  throw(FileParseError) {
+  void Amber::parseCharges()  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("EFG", "charges");
 
     std::vector<double> charges = readBlock<double>(fmt.width);
     if (charges.size() != atoms.size())
-      throw(FileParseError("Error parsing charges from amber file", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing charges from amber file", reader.lineNumber()));
     
     for (uint i=0; i<charges.size(); ++i)
       atoms[i]->charge(charges[i]);
   }
 
 
-  void Amber::parseMasses()  throw(FileParseError) {
+  void Amber::parseMasses()  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("EFG", "masses");
 
     std::vector<double> masses = readBlock<double>(fmt.width);
     if (masses.size() != atoms.size())
-      throw(FileParseError("Error parsing masses from amber file", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing masses from amber file", reader.lineNumber()));
     
     for (uint i=0; i<masses.size(); ++i)
       atoms[i]->mass(masses[i]);
@@ -108,22 +108,22 @@ namespace loos {
 
 
 
-  void Amber::parseResidueLabels()  throw(FileParseError) {
+  void Amber::parseResidueLabels()  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("a", "residue labels");
 
     residue_labels = readBlock<std::string>(fmt.width);
     if (residue_labels.size() != nres)
-      throw(FileParseError("Error parsing residue labels from amber file", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing residue labels from amber file", reader.lineNumber()));
 
   }
 
 
-  void Amber::parseResiduePointers() throw(FileParseError) {
+  void Amber::parseResiduePointers() throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("I", "residue pointers");
 
     residue_pointers = readBlock<uint>(fmt.width);
     if (residue_pointers.size() != nres)
-      throw(FileParseError("Error parsing residue pointers from amber file", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing residue pointers from amber file", reader.lineNumber()));
   }
 
 
@@ -156,14 +156,14 @@ namespace loos {
 
 
 
-  void Amber::parseBonds(const uint n)  throw(FileParseError) {
+  void Amber::parseBonds(const uint n)  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("I", "bonds");
 
   
     std::vector<int> bond_list = readBlock<int>(fmt.width);
 
     if (bond_list.size() != 3*n)
-      throw(FileParseError("Error parsing bonds in amber file", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing bonds in amber file", reader.lineNumber()));
     
     for (uint i=0; i<bond_list.size(); i += 3) {
       if (bond_list[i] == bond_list[i+1])
@@ -208,7 +208,7 @@ namespace loos {
 
 
   // Simply slurp up the title (for now)
-  void Amber::parseTitle() throw(FileParseError) {
+  void Amber::parseTitle() throw(FileReadErrorWithLine) {
 
     FormatSpec fmt = parseFormat("a", "title");
     std::vector<std::string> titles = readBlock<std::string>(fmt.width);
@@ -217,35 +217,35 @@ namespace loos {
   }
 
 
-  void Amber::parseAtomNames()  throw(FileParseError) {
+  void Amber::parseAtomNames()  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("a", "atom names");
     
     std::vector<std::string> names = readBlock<std::string>(fmt.width);
     if (names.size() != natoms)
-      throw(FileParseError("Error parsing atom names", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing atom names", reader.lineNumber()));
     for (uint i=0; i<names.size(); ++i)
       atoms[i]->name(names[i]);
   }
 
-  void Amber::parseAmoebaRegularBondNumList()  throw(FileParseError) {
+  void Amber::parseAmoebaRegularBondNumList()  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("I", "amoeba_regular_num_bond_list");
     reader.getNext();
     std::istringstream iss(reader.line());
 
     if (! (iss >> std::setw(fmt.width) >> _amoeba_regular_bond_num_list))
-      throw(FileParseError("Error parsing amoeba_regular_bond_num_list", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing amoeba_regular_bond_num_list", reader.lineNumber()));
   }
 
 
 
-  void Amber::parseAmoebaRegularBondList(const uint n)  throw(FileParseError) {
+  void Amber::parseAmoebaRegularBondList(const uint n)  throw(FileReadErrorWithLine) {
     FormatSpec fmt = parseFormat("I", "amoeba_regular_bond_list");
 
   
     std::vector<int> bond_list = readBlock<int>(fmt.width);
 
     if (bond_list.size() != 3*n)
-      throw(FileParseError("Error parsing amoeba bonds in amber file", reader.lineNumber()));
+      throw(FileReadErrorWithLine(reader.name(), "Error parsing amoeba bonds in amber file", reader.lineNumber()));
     
     for (uint i=0; i<bond_list.size(); i += 3) {
       if (bond_list[i] == bond_list[i+1])
@@ -268,7 +268,7 @@ namespace loos {
 
 
 
-  void Amber::read(std::istream& ifs) throw(FileParseError, std::logic_error) {
+  void Amber::read(std::istream& ifs) throw(FileReadErrorWithLine, std::logic_error) {
     reader.stream(ifs);
     
     while (reader.getNext()) {

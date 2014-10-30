@@ -88,7 +88,7 @@ namespace loos {
     virtual ~Amber() { }
 
     //! Read in a parmtop file
-    explicit Amber(const std::string& fname)  throw(FileParseError, std::logic_error)
+    explicit Amber(const std::string& fname)  throw(FileReadErrorWithLine, std::logic_error)
       : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
@@ -99,7 +99,7 @@ namespace loos {
     }
 
     //! Read in a parmtop file
-    explicit Amber(const char* fname) throw(FileParseError, std::logic_error)
+    explicit Amber(const char* fname) throw(FileReadErrorWithLine, std::logic_error)
       : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname);
       if (!ifs)
@@ -109,7 +109,7 @@ namespace loos {
       read(ifs);
     }
 
-    explicit Amber(std::istream& ifs) throw(FileParseError, std::logic_error)
+    explicit Amber(std::istream& ifs) throw(FileReadErrorWithLine, std::logic_error)
       : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
       read(ifs);
     }
@@ -133,7 +133,7 @@ namespace loos {
     }
 
     //! Parse the parmtop file
-    void read(std::istream& ifs) throw(FileParseError, std::logic_error);
+    void read(std::istream& ifs) throw(FileReadErrorWithLine, std::logic_error);
 
     //! Return the title
     std::string title() const { return(_title); }
@@ -142,19 +142,19 @@ namespace loos {
 
     Amber(const AtomicGroup& grp) : AtomicGroup(grp), natoms(0), nres(0), nbonh(0), mbona(0) { }
 
-    FormatSpec parseFormat(const std::string& expected_types, const std::string& where) throw(FileParseError);
+    FormatSpec parseFormat(const std::string& expected_types, const std::string& where) throw(FileReadErrorWithLine);
 
-    void parseCharges() throw(FileParseError);
-    void parseMasses() throw(FileParseError);
-    void parseResidueLabels() throw(FileParseError);
-    void parseResiduePointers() throw(FileParseError);
+    void parseCharges() throw(FileReadErrorWithLine);
+    void parseMasses() throw(FileReadErrorWithLine);
+    void parseResidueLabels() throw(FileReadErrorWithLine);
+    void parseResiduePointers() throw(FileReadErrorWithLine);
     void assignResidues(void) throw(std::runtime_error);
-    void parseBonds(const uint) throw(FileParseError);
+    void parseBonds(const uint) throw(FileReadErrorWithLine);
     void parsePointers() throw(std::logic_error);
-    void parseTitle() throw(FileParseError);
-    void parseAtomNames() throw(FileParseError);
-    void parseAmoebaRegularBondNumList() throw(FileParseError);
-    void parseAmoebaRegularBondList(const uint) throw(FileParseError);
+    void parseTitle() throw(FileReadErrorWithLine);
+    void parseAtomNames() throw(FileReadErrorWithLine);
+    void parseAmoebaRegularBondNumList() throw(FileReadErrorWithLine);
+    void parseAmoebaRegularBondList(const uint) throw(FileReadErrorWithLine);
 
 
     // Reads in a "block" of data.  Reading terminates on the first
