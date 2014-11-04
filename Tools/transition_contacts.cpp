@@ -215,9 +215,20 @@ int main (int argc, char *argv[]){
     init.remove(init.select(HydrogenSelector()));
     final.remove(final.select(BackboneSelector()));
     final.remove(final.select(HydrogenSelector()));
+
+    if (system.empty() || init.empty() || final.empty()) {
+      cerr << "Error: The source, sink, or system is empty after post-processing.\n";
+      cerr << "       Check your selections or use --include-heavy=1\n";
+      exit(-1);
+    }
+
+
   }else{
     cerr << "WARNING: Leaving backbone and hydrogen atoms!\n";
   }
+
+
+
   // Split into residues
   vector<AtomicGroup> start_residues = init.splitByResidue();
   vector<AtomicGroup> final_residues = final.splitByResidue();
