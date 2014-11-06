@@ -65,6 +65,7 @@ use FileHandle;
 use Carp;
 use Getopt::Long;
 use strict;
+use POSIX qw(ceil);
 
 my $debug = 0;    # Enable copious output for debugging...
 
@@ -140,7 +141,7 @@ foreach my $atom (@$rstruct) {
 		     $$atom{Z},
 		     1.0,
 		     1.0,
-		     $$atom{SEGID});
+		     &sanitizeSegid($$atom{SEGID}));
   print $pdb $line;
   ++$natoms;
 
@@ -197,7 +198,7 @@ foreach my $atom (@$rstruct) {
 
   printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-14.6g%8d\n",
     $$atom{ATOMID},
-      $$atom{SEGID},
+      &sanitizeSegid($$atom{SEGID}),
 	$$atom{RESID},
 	  $$atom{RESNAME},
 	    $$atom{ATOMNAME},
@@ -375,7 +376,7 @@ sub processMolecules {
       } elsif (/type\[(\d+)\]={name="([^"]+)",/) {
 	push(@{$$rmols[$molidx]->{TYPES}}, $2);
 
-      } elsif (/Bond:/) {
+      } elsif (/Bonds?:/) {
 	$state = 4;
 	$rbonds = [];
 	$$rmols[$molidx]->{BONDS} = $rbonds;
@@ -391,8 +392,8 @@ sub processMolecules {
       }
 
     } elsif ($state == 4) {
-      if (/\(BONDS\) (\d+) (\d+)/) {
-	my $rpair = [$1, $2];
+      if (/\((CONN)?BONDS\) (\d+) (\d+)/) {
+	my $rpair = [$2, $3];
 	push(@$rbonds, $rpair);
       } elsif ($use_constraints && /Constraint/) {
 	$rcons = [];
@@ -407,6 +408,20 @@ sub processMolecules {
 
     } elsif ($state == 5) {
       if (/\(CONSTR\) (\d+) (\d+)/) {
+	my $rpair = [$1, $2];
+	push(@$rcons, $rpair);
+      } elsif (/moltype \((\d+)\)/) {
+	$molidx = $1;
+	$state = 1;
+      } elsif (/groupnr\[/) {
+	last;
+      } elsif (/Constr. No Conn./) {
+#	$state = 6;
+      }
+
+    ### Disabled for now...
+    } elsif ($state == 6) {
+      if (/\(CONSTRNC\) (\d+) (\d+)/) {
 	my $rpair = [$1, $2];
 	push(@$rcons, $rpair);
       } elsif (/moltype \((\d+)\)/) {
@@ -691,6 +706,74 @@ sub inferWater {
   }
 }
 
+
+my %seen_segids;
+
+sub sanitizeSegid {
+  my $seg = shift;
+
+  if (exists($seen_segids{$seg})) {
+    return($seen_segids{$seg});
+  }
+
+  my $oseg = $seg;
+  if (length($seg) > 4) {
+    $seg =~ s/[aeiouy]//gi;
+  }
+  if (length($seg) > 4) {
+    $seg =~ s/_//g;
+  }
+  if (length($seg) > 4) {
+    $seg = $oseg;
+    $seg =~ s/_//g;
+    if (length($seg) < 12) {
+      my $s = '';
+      my $step = ceil(length($seg)/4);
+      for (my $i = 0; $i<length($seg); $i += $step) {
+	$s .= substr($seg, $i, 1);
+      }
+      $seg = $s;
+    }
+  }
+  if (length($seg)>4) {
+    $seg = $oseg;
+    if ($seg =~ /_/) {
+      my @words = split(/_/, $seg);
+      if ($#words < 4) {
+	$seg = '';
+	foreach (@words) {
+	  $seg .= substr($_, 0, 1);
+	}
+      }
+    }
+  }
+  if (length($seg) > 4) {
+    $seg = substr($seg, -4);
+  }
+
+  if ($seg ne $oseg && exists($seen_segids{$seg})) {
+    my $i;
+    $seg = substr($seg, 0, 3);
+    for ($i = 0; $i <= 9; ++$i) {
+      my $s = $seg . $i;
+      if (!exists($seen_segids{$s})) {
+	$seg = $s;
+	last;
+      }
+    }
+    if ($i >= 10) {
+      warn "Warning- some long segids could not be mapped to short equivalents...";
+      $seg = substr($oseg, -4);
+    }
+  }
+
+  $seen_segids{$oseg} = $seg;
+
+  if ($oseg ne $seg) {
+    print STDERR "Warning- segid '$oseg' is now '$seg'\n";
+  }
+  return($seg);
+}
 
 sub showHelp {
   print <<'EOF';
