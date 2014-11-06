@@ -720,30 +720,43 @@ sub sanitizeSegid {
 
   my $oseg = $seg;
 
+  # Try squeezing out underscores
   if (length($seg) > 4) {
     $seg =~ s/_//g;
   }
+
+
+  # Preserve first and last letters, try to find suitable middle 2 chars...
 
   if (length($seg)>4) {
-    $seg = $oseg;
-    if ($seg =~ /_/) {
-      my @words = split(/_/, $seg);
-      if ($#words < 4) {
-	$seg = '';
-	foreach (@words) {
-	  $seg .= substr($_, 0, 1);
-	}
-      }
-    }
-  }
+    # letter frequency for English text
+    my @letfreqs = qw/E I A N S O R T L C U D P M H G Y B F V K W Z X J Q/;
 
-  if (length($seg) > 4) {
-    $seg = $oseg;
-    $seg =~ s/_//g;
-    while (length($seg) > 4) {
-      my $midpoint = length($seg)/2;
-      $seg = substr($seg, 0, $midpoint) . substr($seg, $midpoint+1);
+    my @arg = split(//, $seg);
+
+
+    my $first = shift(@arg);
+    my $lastl = pop(@arg);
+
+
+    while ($#arg > 1) {
+      my $l = shift(@letfreqs);
+      defined($l) || die;
+      
+      my $flag;
+      do {
+	$flag = 0;
+	for (my $i=0; $i<=$#arg; ++$i) {
+	  if ($arg[$i] eq $l) {
+	    splice(@arg, $i, 1);
+	    $flag = 1;
+	    last;
+	  }
+	}
+      } while ($flag && $#arg > 1);
     }
+    
+    $seg = $first . join('', @arg) . $lastl;
   }
 
   if ($seg ne $oseg && exists($seen_segids{$seg})) {
