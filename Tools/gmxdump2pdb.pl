@@ -712,29 +712,18 @@ my %seen_segids;
 sub sanitizeSegid {
   my $seg = shift;
 
+  $seg =~ y/a-z/A-Z/;
+
   if (exists($seen_segids{$seg})) {
     return($seen_segids{$seg});
   }
 
   my $oseg = $seg;
-  if (length($seg) > 4) {
-    $seg =~ s/[aeiouy]//gi;
-  }
+
   if (length($seg) > 4) {
     $seg =~ s/_//g;
   }
-  if (length($seg) > 4) {
-    $seg = $oseg;
-    $seg =~ s/_//g;
-    if (length($seg) < 12) {
-      my $s = '';
-      my $step = ceil(length($seg)/4);
-      for (my $i = 0; $i<length($seg); $i += $step) {
-	$s .= substr($seg, $i, 1);
-      }
-      $seg = $s;
-    }
-  }
+
   if (length($seg)>4) {
     $seg = $oseg;
     if ($seg =~ /_/) {
@@ -747,8 +736,14 @@ sub sanitizeSegid {
       }
     }
   }
+
   if (length($seg) > 4) {
-    $seg = substr($seg, -4);
+    $seg = $oseg;
+    $seg =~ s/_//g;
+    while (length($seg) > 4) {
+      my $midpoint = length($seg)/2;
+      $seg = substr($seg, 0, $midpoint) . substr($seg, $midpoint+1);
+    }
   }
 
   if ($seg ne $oseg && exists($seen_segids{$seg})) {
