@@ -148,15 +148,38 @@ namespace loos {
   };
 
 
-
-
-  class FileWriteError : public FileError {
+  class FileReadErrorWithCode : public FileReadError {
+  protected:
+    uint _error_code;
+    std::string _msg;
   public:
-    FileWriteError() : FileError("writing to") { }
-    FileWriteError(const std::string& fname) : FileError("writing to", fname) {}
-    FileWriteError(const std::string& fname, const std::string& msg) : FileError("writing to", fname, '\n' + msg) {}
+    FileReadErrorWithCode(const uint n)
+      : FileReadError("reading"), _error_code(n)
+    { init(); }
+
+    FileReadErrorWithCode(const std::string& fname, const uint n)
+      : FileReadError("reading", fname), _error_code(n)
+    { init(); }
+
+    FileReadErrorWithCode(const std::string& fname, const std::string& msg, const uint n)
+      : FileReadError("reading", fname), _error_code(n), _msg(msg)
+    { init(); }
+
+    uint errorCode() const { return(_error_code); }
+    
+    ~FileReadErrorWithCode() throw() {}
+
+  private:
+    void init() {
+      std::ostringstream oss;
+
+      oss << FileReadError::_msg << ", error code " << _error_code << std::endl << _msg;
+      FileReadError::_msg = oss.str();
+    }
+
   };
-  
+
+
   class FileReadErrorWithLine : public FileReadError {
   protected:
     uint _lineno;
@@ -189,6 +212,16 @@ namespace loos {
 
   };
 
+
+
+
+  class FileWriteError : public FileError {
+  public:
+    FileWriteError() : FileError("writing to") { }
+    FileWriteError(const std::string& fname) : FileError("writing to", fname) {}
+    FileWriteError(const std::string& fname, const std::string& msg) : FileError("writing to", fname, '\n' + msg) {}
+  };
+  
 
 
   //! Exception for writing trajectories
