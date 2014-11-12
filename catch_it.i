@@ -28,6 +28,23 @@ createTrajectory;
 selectAtoms;
 
 
+// amber
+%catches(loos::FileOpenError, loos::FileReadErrorWithLine) Amber::Amber;
+%catches(loos::FileReadErrorWithLine) Amber::parseFormat;
+%catches(loos::FileReadErrorWithLine) Amber::parseCharges;
+%catches(loos::FileReadErrorWithLine) Amber::parseMasses;
+%catches(loos::FileReadErrorWithLine) Amber::parseResidueLabels;
+%catches(loos::FileReadErrorWithLine) Amber::parseResiduePointers;
+%catches(std::runtime_error) Amber::assignResidues;
+%catches(loos::FileReadErrorWithLine) Amber::parseBonds;
+%catches(std::logic_error) Amber::parsePointers;
+%catches(loos::FileReadErrorWithLine) Amber::parseTitle;
+%catches(loos::FileReadErrorWithLine) Amber::parseAtomNames;
+%catches(loos::FileReadErrorWithLine) Amber::parseAmoebaRegularBondNumList;
+%catches(loos::FileReadErrorWithLine) Amber::parseAmoebaRegularBondList;
+%catches(loos::FileReadErrorWithLine, std::logic_error) Amber::read;
+
+
 // amber_netcdf
 %catches(loos::FileOpenError) AmberNetcdf::init;
 %catches(loos::FileReadError) AmberNetcdf::readRawFrame;
