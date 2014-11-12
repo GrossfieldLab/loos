@@ -71,12 +71,12 @@ namespace loos {
     // doesn't support this)
 
     explicit AmberNetcdf(const std::string& s, const uint na)
-      : _coord_data(new GCoord::element_type[na*3]),
+      : Trajectory(s), 
+	_coord_data(new GCoord::element_type[na*3]),
 	_box_data(new GCoord::element_type[3]),
 	_periodic(false),
-	_timestep(1e-12),
-	_current_frame(0),
-	_name(s)
+	_timestep(1e-12)
+	_current_frame(0)
     {
       cached_first = false;
       init(s.c_str(), na);
@@ -137,7 +137,6 @@ namespace loos {
     int _coord_id;
     size_t _coord_size;
     int _cell_lengths_id;
-    std::string _name;
     std::string _title, _application, _program, _programVersion, _conventions, _conventionVersion;
   };
 

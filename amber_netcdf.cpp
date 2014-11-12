@@ -111,7 +111,7 @@ namespace loos {
 
     int retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _coord_id, start, count, _coord_data);
     if (retval)
-      throw(FileReadError(_name, "Cannot read Amber netcdf frame", retval));
+      throw(FileReadError(_filename, "Cannot read Amber netcdf frame", retval));
 
     // Now get box if present...
     if (_periodic) {
@@ -120,7 +120,7 @@ namespace loos {
 
       retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _cell_lengths_id, start, count, _box_data);
       if (retval)
-        throw(FileReadError(_name, "Cannot read Amber netcdf periodic box", retval));
+        throw(FileReadError(_filename, "Cannot read Amber netcdf periodic box", retval));
     }
     
   }
@@ -184,13 +184,13 @@ void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) {
     nc_type type;
     retval = nc_inq_atttype(_ncid, NC_GLOBAL, name.c_str(), &type);
     if (type != NC_CHAR)
-      throw(FileOpenError(_name, "Only character data is supported for global attributes", retval));
+      throw(FileOpenError(_filename, "Only character data is supported for global attributes", retval));
 
     char* buf = new char[len+1];
     retval = nc_get_att_text(_ncid, NC_GLOBAL, name.c_str(), buf);
     if (retval) {
       delete[] buf;
-      throw(FileOpenError(_name, "Cannot read attribute " + name, retval));
+      throw(FileOpenError(_filename, "Cannot read attribute " + name, retval));
     }
     buf[len]='\0';
 
