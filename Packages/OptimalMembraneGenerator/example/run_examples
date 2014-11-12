@@ -1,0 +1,9 @@
+#!/bin/tcsh
+
+foreach dir (popc pope-popg rhodopsin)
+    echo $dir
+    cd $dir
+    rm -rf out test.out
+    ../../OptimalMembraneGenerator.py $dir.cfg > test.out
+    cd ../
+end
