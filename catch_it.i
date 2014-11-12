@@ -28,6 +28,13 @@ createTrajectory;
 selectAtoms;
 
 
+// amber_netcdf
+%catches(loos::FileOpenError) AmberNetcdf::init;
+%catches(loos::FileReadError) AmberNetcdf::readRawFrame;
+%catches(loos::FileReadError) AmberNetcdf::parseFrame();
+%catches(loos::LOOSError) AmberNetcdf::updateGroupCoordsImpl;
+%catches(loos::FileOpenError) AmberNetcdf::readGlobalAttribute;
+%catches(loos::FileOpenError) Ambernetcdf::readGlobalAttributes;
 
 // utils.cpp
 

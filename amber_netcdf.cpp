@@ -17,41 +17,42 @@ namespace loos {
 
 
 
-  void AmberNetcdf::init(const char* name, const uint natoms) throw(AmberNetcdfOpenError, AmberNetcdfError){
+  void AmberNetcdf::init(const char* name, const uint natoms) {
     int retval;
 
+   
     retval = nc_open(name, NC_NOWRITE, &_ncid);
     if (retval)
-      throw(AmberNetcdfOpenError());
+      throw(FileOpenError(name, "", retval));    // May want to preserve code here in the future...
 
     // Read and validate global attributes...
     readGlobalAttributes();
     if (_conventions.empty() || _conventionVersion.empty())
-      throw(AmberNetcdfError("Unable to find convention global attributes.  Is this really an Amber NetCDF trajectory?"));
+      throw(FileOpenError(name, "Unable to find convention global attributes.  Is this really an Amber NetCDF trajectory?"));
 
     if (_conventions.find("AMBER") == std::string::npos)
-      throw(AmberNetcdfError("Cannot find AMBER tag in global attribues.  Is this really an Amber NetCDF trajectory?"));
+      throw(FileOpenError(name, "Cannot find AMBER tag in global attribues.  Is this really an Amber NetCDF trajectory?"));
       
     if (_conventionVersion != std::string("1.0"))
-      throw(AmberNetcdfError("Convention version is '" + _conventionVersion + "', but only 1.0 is supported for Amber NetCDF trajectories."));
+      throw(FileOpenError(name, "Convention version is '" + _conventionVersion + "', but only 1.0 is supported for Amber NetCDF trajectories."));
 
     // Verify # of atoms match...
     int atom_id;
     retval = nc_inq_dimid(_ncid, "atom", &atom_id);
     if (retval)
-      throw(AmberNetcdfError("Error reading atom id", retval));
+      throw(FileOpenError(name, "Cannot read atom id"), retval);
     retval = nc_inq_dimlen(_ncid, atom_id, &_natoms);
     if (retval)
-      throw(AmberNetcdfError("Error reading atom length", retval));
+      throw(FileOpenError(name, "Cannot read atom length", retval));
     if (_natoms != natoms)
-      throw(AmberNetcdfError("AmberNetcdf has different number of atoms than expected"));
+      throw(FileOpenError(name, "AmberNetcdf has different number of atoms than expected"));
 
 
     // Get nframes
     int frame_id;
     retval = nc_inq_dimid(_ncid, "frame", &frame_id);
     if (retval)
-      throw(AmberNetcdfError("Error reading frame information", retval));
+      throw(FileOpenError(name, "Cannot read frame information", retval));
     retval = nc_inq_dimlen(_ncid, frame_id, &_nframes);
 
     // Check for periodic cells...
@@ -63,7 +64,7 @@ namespace loos {
     // Get coord-id for later use...
     retval = nc_inq_varid(_ncid, "coordinates", &_coord_id);
     if (retval)
-      throw(AmberNetcdfError("Error getting id for coordinates", retval));
+      throw(FileOpenError(name, "Cannot get id for coordinates", retval));
 
     // Attempt to determine timestep by looking at dT between frames 1 & 2
     if (_nframes >= 2) {
@@ -76,12 +77,12 @@ namespace loos {
         idx[0] = 0;
         retval = nc_get_var1_float(_ncid, time_id, idx, &t0);
         if (retval)
-          throw(AmberNetcdfError("Error getting first time point", retval));
+          throw(FileOpenError(name, "Cannot get first time point", retval));
 
         idx[0] = 1;
         retval = nc_get_var1_float(_ncid, time_id, idx, &t1);
         if (retval)
-          throw(AmberNetcdfError("Error getting second time point", retval));
+          throw(FileOpenError(name, "Cannot get second time point", retval));
 
         // Assume units are in picoseconds
         _timestep = (t1-t0)*1e-12;
@@ -98,7 +99,7 @@ namespace loos {
 
   // Given a frame number, read the coord data into the internal array
   // and retrieve the corresponding periodic box (if present)
-  void AmberNetcdf::readRawFrame(const uint frameno) throw(AmberNetcdfError) {
+  void AmberNetcdf::readRawFrame(const uint frameno)  {
     size_t start[3] = {0, 0, 0};
     size_t count[3] = {1, 1, 3};
 
@@ -110,7 +111,7 @@ namespace loos {
 
     int retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _coord_id, start, count, _coord_data);
     if (retval)
-      throw(AmberNetcdfError("Error while reading Amber netcdf frame", retval));
+      throw(FileReadError(_name, "Cannot read Amber netcdf frame", retval));
 
     // Now get box if present...
     if (_periodic) {
@@ -119,8 +120,7 @@ namespace loos {
 
       retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _cell_lengths_id, start, count, _box_data);
       if (retval)
-        throw(AmberNetcdfError("Error while reading Amber netcdf periodic box", retval));
-      
+        throw(FileReadError(_name, "Cannot read Amber netcdf periodic box", retval));
     }
     
   }
@@ -138,7 +138,7 @@ namespace loos {
     _current_frame = 0;
   }
 
-  bool AmberNetcdf::parseFrame() throw(AmberNetcdfError) {
+  bool AmberNetcdf::parseFrame() {
     if (_current_frame >= _nframes)
       return(false);
 
@@ -146,9 +146,9 @@ namespace loos {
     return(true);
   }
 
-  void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) throw(LOOSError) {
+void AmberNetcdf::updateGroupCoordsImpl(AtomicGroup& g) {
 
-    for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
+  for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
         throw(LOOSError(**i, "Atom index into trajectory frame is out of bounds"));
@@ -161,7 +161,7 @@ namespace loos {
   }
 
 
-  void AmberNetcdf::readGlobalAttributes() throw(AmberNetcdfError) {
+  void AmberNetcdf::readGlobalAttributes()  {
 
     _title = readGlobalAttribute("title");
     _application = readGlobalAttribute("application");
@@ -173,7 +173,8 @@ namespace loos {
 
 
   // Will return an emptry string if the attribute is not found
-  std::string AmberNetcdf::readGlobalAttribute(const std::string& name) throw(AmberNetcdfError) {
+  // May want to consider special exception for type errors...
+  std::string AmberNetcdf::readGlobalAttribute(const std::string& name) {
     size_t len;
     
     int retval = nc_inq_attlen(_ncid, NC_GLOBAL, name.c_str(), &len);
@@ -183,16 +184,15 @@ namespace loos {
     nc_type type;
     retval = nc_inq_atttype(_ncid, NC_GLOBAL, name.c_str(), &type);
     if (type != NC_CHAR)
-      throw(AmberNetcdfTypeError("Only character data is supported for global attributes"));
-    
+      throw(FileOpenError(_name, "Only character data is supported for global attributes", retval));
 
     char* buf = new char[len+1];
     retval = nc_get_att_text(_ncid, NC_GLOBAL, name.c_str(), buf);
-    buf[len]='\0';
     if (retval) {
       delete[] buf;
-      throw(AmberNetcdfError("Error reading attribute " + name));
+      throw(FileOpenError(_name, "Cannot read attribute " + name, retval));
     }
+    buf[len]='\0';
 
     return(std::string(buf));
   }

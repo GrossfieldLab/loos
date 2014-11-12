@@ -70,33 +70,24 @@ namespace loos {
     // to keep it from trying to use an istream (since the C netcdf API
     // doesn't support this)
 
-    explicit AmberNetcdf(const std::string& s, const uint na) throw(AmberNetcdfError, AmberNetcdfOpenError)
+    explicit AmberNetcdf(const std::string& s, const uint na)
       : _coord_data(new GCoord::element_type[na*3]),
-      _box_data(new GCoord::element_type[3]),
-      _periodic(false),
-      _timestep(1e-12),
-      _current_frame(0)
+	_box_data(new GCoord::element_type[3]),
+	_periodic(false),
+	_timestep(1e-12),
+	_current_frame(0),
+	_name(s)
     {
       cached_first = false;
       init(s.c_str(), na);
     }
 
-    explicit AmberNetcdf(const char* p, const uint na) throw(AmberNetcdfError, AmberNetcdfOpenError)
-      : _coord_data(new GCoord::element_type[na*3]),
-      _box_data(new GCoord::element_type[3]),
-      _periodic(false),
-      _timestep(1e-12),
-      _current_frame(0)
-    {
-      cached_first = false;
-      init(p, na);
-    }
 
-
-    ~AmberNetcdf() throw(AmberNetcdfError) {
+    // Throwing in dtors is bad...we ignore the close error for now...
+    ~AmberNetcdf() {
       int retval = nc_close(_ncid);
-      if (retval)
-        throw(AmberNetcdfError("Error while closing netcdf file", retval));
+      //      if (retval)
+      //        throw(AmberNetcdfError("Error while closing netcdf file", retval));
 
       delete[] _coord_data;
       delete[] _box_data;
@@ -122,13 +113,13 @@ namespace loos {
     }
 
   private:
-    void init(const char* name, const uint natoms) throw(AmberNetcdfError, AmberNetcdfOpenError);
-    void readGlobalAttributes() throw(AmberNetcdfError);
-    std::string readGlobalAttribute(const std::string& name) throw(AmberNetcdfError);
-    void readRawFrame(const uint frameno) throw(AmberNetcdfError);
+    void init(const char* name, const uint natoms);
+    void readGlobalAttributes();
+    std::string readGlobalAttribute(const std::string& name);
+    void readRawFrame(const uint frameno);
 
-    void updateGroupCoordsImpl(AtomicGroup& g) throw(LOOSError);
-    bool parseFrame() throw(AmberNetcdfError);
+    void updateGroupCoordsImpl(AtomicGroup& g);
+    bool parseFrame();
     void seekNextFrameImpl();
     void seekFrameImpl(const uint frame);
     void rewindImpl();
@@ -146,6 +137,7 @@ namespace loos {
     int _coord_id;
     size_t _coord_size;
     int _cell_lengths_id;
+    std::string _name;
     std::string _title, _application, _program, _programVersion, _conventions, _conventionVersion;
   };
 
