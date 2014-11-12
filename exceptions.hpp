@@ -163,6 +163,7 @@ namespace loos {
     FileReadError() : FileError("reading from") { }
     FileReadError(const std::string& fname) : FileError("reading from", fname) {}
     FileReadError(const std::string& fname, const std::string& msg) : FileError("reading from", fname, '\n' + msg) {}
+    FileReadError(const std::string& fname, const std::string& msg, const int err) : FileError("reading from", fname, '\n' + msg, err) {}
   };
 
 
