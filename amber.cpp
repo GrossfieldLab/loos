@@ -111,19 +111,21 @@ namespace loos {
   void Amber::parseResidueLabels() {
     FormatSpec fmt = parseFormat("a", "residue labels");
 
-    residue_labels = readBlock<std::string>(fmt.width);
+    std::vector<std::string> labels = readBlock<std::string>(fmt.width);
     if (residue_labels.size() != nres)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing residue labels from amber file", reader.lineNumber()));
 
+    residue_labels = labels;
   }
 
 
   void Amber::parseResiduePointers() {
     FormatSpec fmt = parseFormat("I", "residue pointers");
 
-    residue_pointers = readBlock<uint>(fmt.width);
+    std::vector<uint> pointers = readBlock<uint>(fmt.width);
     if (residue_pointers.size() != nres)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing residue pointers from amber file", reader.lineNumber()));
+    residue_pointers = pointers;
   }
 
 
@@ -188,14 +190,15 @@ namespace loos {
 
     std::vector<uint> pointers = readBlock<uint>(fmt.width);
 
+    // Now build up the atomic-group...
+    if (atoms.size() != 0)
+      throw(std::logic_error("Internal error: trying to read in an amber parmtop into a non-empty group!"));
+
+
     natoms = pointers[0];
     nbonh = pointers[2];
     mbona = pointers[3];
     nres = pointers[11];
-
-    // Now build up the atomic-group...
-    if (atoms.size() != 0)
-      throw(std::logic_error("Internal error: trying to read in an amber parmtop into a non-empty group!"));
 
     for (uint i=0; i<natoms; i++) {
       pAtom pa(new Atom);
