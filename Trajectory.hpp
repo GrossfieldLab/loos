@@ -68,9 +68,6 @@ namespace loos {
     //! Automatically open the file named \a s
     Trajectory(const std::string& s) : ifs(s), cached_first(false), _filename(s) { }
 
-    //! Automatically open the file named \a s
-    Trajectory(const char* s) : ifs(s), cached_first(false), _filename(s) { }
-
     //! Open using the given stream...
     Trajectory(std::istream& fs) : ifs(fs), cached_first(false), _filename("istream") { }
 
