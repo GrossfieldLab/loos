@@ -110,8 +110,11 @@ namespace loos {
   protected:
     std::string _operation;
     std::string _filename;
+    int _errcode;
+
   public:
     FileError(const std::string& op) : LOOSError("Error while " + op), _operation(op) {}
+
     FileError(const std::string& op, const std::string& fname)
       : LOOSError("Error while " + op + " from " + fname),
         _operation(op), _filename(fname)
@@ -128,6 +131,8 @@ namespace loos {
     std::string operation() const throw() { return(_operation); }
     std::string filename() const throw() { return(_filename); }
 
+    int errorCode() const { return(_errcode); }
+    void errorCode(const int i) { _errcode = i; }
 
     ~FileError() throw() {}
   };
@@ -145,38 +150,6 @@ namespace loos {
     FileReadError() : FileError("reading from") { }
     FileReadError(const std::string& fname) : FileError("reading from", fname) {}
     FileReadError(const std::string& fname, const std::string& msg) : FileError("reading from", fname, '\n' + msg) {}
-  };
-
-
-  class FileReadErrorWithCode : public FileReadError {
-  protected:
-    uint _error_code;
-    std::string _msg;
-  public:
-    FileReadErrorWithCode(const uint n)
-      : FileReadError("reading"), _error_code(n)
-    { init(); }
-
-    FileReadErrorWithCode(const std::string& fname, const uint n)
-      : FileReadError("reading", fname), _error_code(n)
-    { init(); }
-
-    FileReadErrorWithCode(const std::string& fname, const std::string& msg, const uint n)
-      : FileReadError("reading", fname), _error_code(n), _msg(msg)
-    { init(); }
-
-    uint errorCode() const { return(_error_code); }
-    
-    ~FileReadErrorWithCode() throw() {}
-
-  private:
-    void init() {
-      std::ostringstream oss;
-
-      oss << FileReadError::_msg << ", error code " << _error_code << std::endl << _msg;
-      FileReadError::_msg = oss.str();
-    }
-
   };
 
 
