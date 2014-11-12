@@ -75,7 +75,7 @@ namespace loos {
 	_coord_data(new GCoord::element_type[na*3]),
 	_box_data(new GCoord::element_type[3]),
 	_periodic(false),
-	_timestep(1e-12)
+	_timestep(1e-12),
 	_current_frame(0)
     {
       cached_first = false;

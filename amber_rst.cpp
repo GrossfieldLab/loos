@@ -113,7 +113,7 @@ namespace loos {
     for (gi = g.begin(); gi != g.end(); ++gi) {
       uint i = (*gi)->index();
       if (i >= _natoms)
-        throw(LOOSError(**i, "Atom index into trajectory is out of bounds"));
+        throw(LOOSError(**gi, "Atom index into trajectory is out of bounds"));
       (*gi)->coords(frame[i]);
     }
 
@@ -131,3 +131,5 @@ namespace loos {
 
   void AmberRst::seekFrameImpl(const uint i) {
   }
+
+}

@@ -52,11 +52,18 @@ selectAtoms;
 %catches(loos::LOOSError) AmberNetcdf::updateGroupCoordsImpl;
 %catches(loos::FileOpenError) AmberNetcdf::readGlobalAttribute;
 %catches(loos::FileOpenError) Ambernetcdf::readGlobalAttributes;
+%catches(loos::FileError) Ambernetcdf::seekFrameImpl;
 
 // amber_rst
 %catches(loos::FileOpenError) AmberRst::AmberRst;
 %catches(loos::FileReadError) AmberRst::parseFrame;
 %catches(loos::LOOSError) AmberRst::updateGroupCoordsImpl;
+
+// amber_traj
+%catches(loos::FileOpenError) AmberTraj::AmberTraj;
+%catches(loos::FileError) AmberTraj::parseFrame;
+%catches(loos::FileError) AmberTraj::seekFrameImpl;
+%catches(loos::LOOSError) AmberTraj::updateGroupCoordsImpl;
 
 
 // utils.cpp

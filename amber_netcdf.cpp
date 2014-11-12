@@ -131,6 +131,8 @@ namespace loos {
   }
 
   void AmberNetcdf::seekFrameImpl(const uint i) {
+    if (i >= _nframes)
+      throw(FileError(_filename, "Attempting seek frame beyond end of trajectory"));
     _current_frame = i;
   }
 

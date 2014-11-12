@@ -48,7 +48,7 @@ namespace loos {
 
     ifs()->getline(buf, 1024);
     if (ifs()->fail())
-      throw(std::runtime_error("Error- cannot scan the amber trajectory"));
+      throw(FileOpenError(_filename, "Problem scanning Amber Trajectory"));
 
     std::stringstream ss(buf);
     double a= -1, b= -1, c= -1;
@@ -77,7 +77,7 @@ namespace loos {
 
     // Punt our failure check to the end...for now...
     if (ifs()->fail())
-      throw(std::runtime_error("Unable to divine frame information from amber trajectory"));
+      throw(FileOpenError(_filename, "Cannot determine frame information for Amber trajectory"));
 
     cached_first = true;
   }
@@ -111,7 +111,7 @@ namespace loos {
     }
 
     if (ifs()->fail())
-      throw(std::runtime_error("Error- IO error while reading Amber trajectory frame"));
+      throw(FileReadError(_filename, "Problem reading from Amber trajectory"));
 
     return(true);
   }
@@ -122,12 +122,12 @@ namespace loos {
     cached_first = false;
     unsigned long fpos = i * frame_size + frame_offset;
     if (i >= _nframes)
-      throw(std::runtime_error("Error- attempting to read an invalid frame from an Amber trajectory"));
+      throw(FileError(_filename, "Attempting seek frame beyond end of trajectory"));
 
 
     ifs()->seekg(fpos);
     if (ifs()->fail())
-      throw(std::runtime_error("Error- cannot seek to the requested frame in an Amber trajectory"));
+      throw(FileError(_filename, "Cannot seek to frame"));
   }
 
 
@@ -136,7 +136,7 @@ namespace loos {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
-        throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
+        throw(LOOSError(**i, "Atom index into trajectory is out of bounds"));
       (*i)->coords(frame[idx]);
     }
     
