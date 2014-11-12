@@ -48,7 +48,7 @@ namespace loos {
     uint na;
     iss >> na;
     if (na != _natoms)
-      throw(LOOSError("Number of atoms mismatch in Amber restart file"));
+      throw(FileReadError(_filename, "Number of atoms mismatch in Amber restart file"));
 
     iss >> current_time;
 
@@ -63,7 +63,7 @@ namespace loos {
     }
 
     if (i != _natoms)
-      throw(LOOSError("Number of atoms read is not what was expected"));
+      throw(FileReadError(_filename, "Number of atoms read is not what was expected"));
 
     // Probe for velocities or periodic box...
     greal a, b, c;
@@ -113,7 +113,7 @@ namespace loos {
     for (gi = g.begin(); gi != g.end(); ++gi) {
       uint i = (*gi)->index();
       if (i >= _natoms)
-        throw(std::runtime_error("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
+        throw(LOOSError("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
       (*gi)->coords(frame[i]);
     }
 
@@ -127,12 +127,7 @@ namespace loos {
       seek_flag = true;
       return;
     }
-
-    throw(std::logic_error("Amber RST files cannot be seeked beyond the first frame"));
   }
 
   void AmberRst::seekFrameImpl(const uint i) {
-    if (i != 0)
-      throw(std::logic_error("Amber RST files cannot be seeked beyond the first frame"));
   }
-}

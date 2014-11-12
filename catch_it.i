@@ -53,6 +53,12 @@ selectAtoms;
 %catches(loos::FileOpenError) AmberNetcdf::readGlobalAttribute;
 %catches(loos::FileOpenError) Ambernetcdf::readGlobalAttributes;
 
+// amber_rst
+%catches(loos::FileOpenError) AmberRst::AmberRst;
+%catches(loos::FileReadError) AmberRst::parseFrame;
+%catches(loos::LOOSError) AmberRst::updateGroupCoordsImpl;
+
+
 // utils.cpp
 
 %catches(loos::ParseError) selectAtoms;
