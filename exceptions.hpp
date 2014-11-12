@@ -128,6 +128,18 @@ namespace loos {
         _filename(fname)
     {}
 
+    FileError(const std::string& op,
+              const std::string& fname,
+              const std::string& msg,
+              const int err)
+      : LOOSError("Error while " + op + " from " + fname + msg),
+        _operation(op),
+        _filename(fname),
+        _errcode(err)
+    {}
+
+
+
     std::string operation() const throw() { return(_operation); }
     std::string filename() const throw() { return(_filename); }
 
@@ -142,6 +154,7 @@ namespace loos {
     FileOpenError() : FileError("opening") { }
     FileOpenError(const std::string& fname) : FileError("opening", fname) {}
     FileOpenError(const std::string& fname, const std::string& msg) : FileError("opening", fname, '\n' + msg) {}
+    FileOpenError(const std::string& fname, const std::string& msg, const int err) : FileError("opening", fname, '\n' + msg, err) {}
   };
 
 
