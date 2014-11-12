@@ -276,7 +276,7 @@ namespace loos {
   }
 
   //! Applies a string-based selection to an atomic group...
-  AtomicGroup selectAtoms(const AtomicGroup&, const std::string) throw (loos::NullResult, loos::ParseError);
+  AtomicGroup selectAtoms(const AtomicGroup&, const std::string);
 
 
   //! Returns a byte-swapped copy of an arbitrary type
@@ -356,10 +356,10 @@ namespace loos {
   template<> std::string fixedSizeFormat(const std::string& s, const uint n);
 
   //! Convert a hybrid-36 encoded string into an int
-  int parseStringAsHybrid36(const std::string& source, const uint pos =0, const uint nelem =0) throw(std::logic_error);
+  int parseStringAsHybrid36(const std::string& source, const uint pos =0, const uint nelem =0);
 
   //! Convert an int into a hybrid-36 encoded string
-  std::string hybrid36AsString(int value, uint fieldsize) throw(std::logic_error, LOOSError);
+  std::string hybrid36AsString(int value, uint fieldsize);
 
   // The following are for support of boost::program_options
 

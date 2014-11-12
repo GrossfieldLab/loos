@@ -181,7 +181,7 @@ namespace loos {
    *  and null-selection, a runtime_error exception is thrown so the
    *  catcher cannot disambiguate between the two.
    */
-  AtomicGroup selectAtoms(const AtomicGroup& source, const std::string selection) throw(loos::NullResult, loos::ParseError) {
+  AtomicGroup selectAtoms(const AtomicGroup& source, const std::string selection) {
   
     Parser parser;
 
@@ -194,9 +194,6 @@ namespace loos {
 
     KernelSelector selector(parser.kernel());
     AtomicGroup subset = source.select(selector);
-
-    if (subset.size() == 0)
-      throw(NullResult("No atoms were selected using '" + selection + "'"));
 
     return(subset);
   }
@@ -255,7 +252,7 @@ namespace loos {
 
 
   
-  int parseStringAsHybrid36(const std::string& source, const uint pos, const uint nelem) throw(std::logic_error) {
+  int parseStringAsHybrid36(const std::string& source, const uint pos, const uint nelem) {
     uint n = !nelem ? source.size() - pos : nelem;
     if (pos + n > source.size())
       return(0);
@@ -311,7 +308,7 @@ namespace loos {
 
   // Note: this currently will overflow if sufficiently negative
   // to overflow the base-10 part...
-  std::string hybrid36AsString(int d, uint n) throw(std::logic_error, LOOSError){
+  std::string hybrid36AsString(int d, uint n) {
 
     if (n > 6)
       throw(std::logic_error("Requested size exceeds max"));

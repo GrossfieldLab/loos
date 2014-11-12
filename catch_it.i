@@ -29,3 +29,8 @@ selectAtoms;
 
 
 
+// utils.cpp
+
+%catches(loos::ParseError) selectAtoms;
+%catches(std::logic_error) parseStringAsHybrid36;
+%catches(std::logic_error, loos::LOOSError) hybrid36AsString;
