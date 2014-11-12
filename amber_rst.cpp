@@ -113,7 +113,7 @@ namespace loos {
     for (gi = g.begin(); gi != g.end(); ++gi) {
       uint i = (*gi)->index();
       if (i >= _natoms)
-        throw(LOOSError("Attempting to index a nonexistent atom in AmberTraj::updateGroupCoords()"));
+        throw(LOOSError(**i, "Atom index into trajectory is out of bounds"));
       (*gi)->coords(frame[i]);
     }
 
