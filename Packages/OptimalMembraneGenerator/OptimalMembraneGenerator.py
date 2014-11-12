@@ -84,6 +84,13 @@ if __name__ == '__main__':
     segments = []
     for segment in config.segments:
         s = loos.selectAtoms(system, 'segname == "' + segment.segname + '"')
+        if (len(s) == 0): 
+            sys.stderr.write("Selection failed assembling system: segment %s doesn't exist\n" %
+                              (segment.segname)
+                            )
+            sys.stderr.write("Exiting...\n")
+            sys.exit(0)
+
         segments.append(s)
 
     x_axis = loos.GCoord(1,0,0)
@@ -97,7 +104,14 @@ if __name__ == '__main__':
 
         while i < seg_conf.numres:
             lipid =  seg_conf.library.pick_structure()
-            phos = loos.selectAtoms(lipid, 'name == "' + seg_conf.phos_atom + '"')
+            phos = loos.selectAtoms(lipid, 'name == "' + seg_conf.phos_atom + 
+                                    '"')
+            if (len(phos) == 0):
+                sys.stderr.write("Selection failed: \"phos\" atom %s doesn't exist in lipid %s\n" 
+                                % (seg_conf.phos_atom, seg_conf.resname))
+                sys.stderr.write("Exiting...\n")
+                sys.exit(0)
+
 
             # put the molecule at the origin
             lipid.centerAtOrigin()
@@ -164,7 +178,8 @@ if __name__ == '__main__':
     if config.protein is not None:
         for s in config.protein.segments:
             current_seg = s[0].segid()
-            #if not config.protein.is_water(current_seg):
+            # Don't need to trap failed selection here, because we 
+            # already know this segment exists
             seg = loos.selectAtoms(system, 'segname == "' + current_seg + '"')
             seg.copyMappedCoordinatesFrom(s)
 
@@ -288,6 +303,8 @@ if __name__ == '__main__':
     sys.stderr.write("Beginning bump-checking water against lipid\n")
     # bump-check the water against the lipids
     # First step is selecting water and lipid heavy atoms
+    # These selections can't fail, so we won't trap for zero selection
+    # size.
     water_oxygens = loos.selectAtoms(water.full_system, 'name =~ "^O"')
     lipid_heavy = loos.selectAtoms(system, '!(name =~ "^H")')
 
