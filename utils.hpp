@@ -308,11 +308,8 @@ namespace loos {
 
     if (pos >= source.size()) {
       std::stringstream msg;
-      msg << "Missing Field\n" << source << std::endl;
-      for (uint i=0; i<source.size(); ++i)
-        msg << ' ';
-      msg << '^';
-      msg << std::endl;
+      msg << "Missing Field at position " << pos << std::endl;
+      msg << "> " << source << std::endl;
       throw(ParseError(msg.str()));
     }
 
