@@ -75,16 +75,21 @@ my $use_constraints = 0;
 my $hydrogens_only = 0;
 my $infer_water = 0;
 my $force_mass = 0;
+my $tabbonds = 1;
+my $conbonds = 1;
 
 my $ok = GetOptions('local!' => \$resids_local,
 		    'constraints!' => \$use_constraints,
 		    'hydrogens' => sub { $use_constraints = $hydrogens_only = 1; },
 		    'water!' => \$infer_water,
 		    'mass=f' => \$force_mass,
+		    'tabbonds!' => \$tabbonds,
+		    'conbonds!' => \$conbonds,
 		    'help' => sub { &showHelp; });
 
 $ok || &showHelp;
 
+my $bondprefix_regex = &build_bond_prefix_regex($tabbonds, $conbonds);
 
 my $output_prefix = shift(@ARGV);
 
@@ -392,7 +397,7 @@ sub processMolecules {
       }
 
     } elsif ($state == 4) {
-      if (/\((CONN)?BONDS\) (\d+) (\d+)/) {
+      if (/\(($bondprefix_regex)?BONDS\) (\d+) (\d+)/) {
 	my $rpair = [$2, $3];
 	push(@$rbonds, $rpair);
       } elsif ($use_constraints && /Constraint/) {
@@ -783,17 +788,37 @@ sub sanitizeSegid {
   return($seg);
 }
 
+
+sub build_bond_prefix_regex {
+  my($tabbond, $conbond) = @_;
+  my @tags;
+  
+  if ($tabbond) {
+    push(@tags, 'TAB');
+  }
+  if ($conbond) {
+    push(@tags, 'CONN');
+  }
+
+  my $reg = join('|', @tags);
+
+  return($reg);
+}
+
+
 sub showHelp {
   print <<'EOF';
-Usage- gmxdump -s foo.tpr | gmxdump2.pl [--local] [--constraints] [--hydrogens] [--water] output-file-prefix
+Usage- gmxdump -s foo.tpr | gmxdump2.pl [options] output-file-prefix
 
 Options:
-   --local       Resids are local to each molecule
-                 (i.e. reset based on GROMACS' notion of a molecule)
-   --constraints Add constraints as bonds
-   --hydrogens   Only add constaints where the 2nd atom begins with an H
-   --water       Infer water connectivity (requires OW, HW1, and HW2 atoms in order)
-   --mass=x      Set all atom masses to x
+   --[no]local       Resids are local to each molecule (default is off)
+                     (i.e. reset based on GROMACS' notion of a molecule)
+   --[no]constraints Add constraints as bonds (default)
+   --hydrogens       Only add constaints where the 2nd atom begins with an H
+   --water           Infer water connectivity (requires OW, HW1, and HW2 atoms in order)
+   --mass=x          Set all atom masses to x
+   --[no]tabbonds    Include TABBONDS in bonds list (default is on)
+   --[no]conbonds    Include CONNBONDS in bonds list (Gromacs 5+, default is on)
 EOF
 
   exit 0;
