@@ -37,13 +37,13 @@ namespace loos {
   int Remarks::numberOf(void) const { return(remarks.size()); }   // Compat with PERL
   int Remarks::size(void) const { return(remarks.size()); }
 
-  void Remarks::rangeCheck(const unsigned int i) const throw(std::range_error) {
+  void Remarks::rangeCheck(const unsigned int i) const {
     if (i >= remarks.size())
       throw(std::range_error("Bad indices into remarks"));
   }
 
 
-  std::string Remarks::get(const int i) const throw(std::range_error) {
+  std::string Remarks::get(const int i) const {
     rangeCheck(i);
     return(remarks[i]);
   }
@@ -66,19 +66,19 @@ namespace loos {
   }
 
 
-  void Remarks::erase(const int i) throw(std::range_error) {
+  void Remarks::erase(const int i) {
     rangeCheck(i);
     remarks.erase(remarks.begin() + i);
   }
 
 
-  std::string& Remarks::operator[](const int i) throw(std::range_error) {
+  std::string& Remarks::operator[](const int i) {
     rangeCheck(i);
     return(remarks[i]);
   }
 
 
-  const std::string& Remarks::operator[](const int i) const throw(std::range_error) {
+  const std::string& Remarks::operator[](const int i) const {
     rangeCheck(i);
     return(remarks[i]);
   }

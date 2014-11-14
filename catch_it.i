@@ -65,6 +65,16 @@ selectAtoms;
 %catches(loos::FileError) AmberTraj::seekFrameImpl;
 %catches(loos::LOOSError) AmberTraj::updateGroupCoordsImpl;
 
+// pdb_remarks
+
+%catches(std::range_error) Remarks::get;
+%catches(std::range_error) Remarks::erase;
+%catches(std::range_error) Remarks::rangeCheck;
+
+
+// pdb
+
+
 
 // utils.cpp
 
