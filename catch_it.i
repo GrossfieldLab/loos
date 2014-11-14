@@ -74,7 +74,14 @@ selectAtoms;
 
 // pdb
 
-
+%catches(loos::ParseError) PDB::parseAtomRecord;
+%catches(loos::LOOSError, std::logic_error) PDB::atomAsString;
+%catches(loos::LOOSError) PDB::findAtom;
+%catches(loos::LOOSError, loos::ParseError) PDB::parseConectRecord;
+%catches(loos::ParseError) PDB::parseCryst1Record;
+%catches(loos::FileReadError) PDB::read;
+%catches(loos::LOOSError) PDB::FormatConctRecords;
+%catches(loos::FileOpenError, loos::FileReadError) PDB::PDB;
 
 // utils.cpp
 

@@ -60,8 +60,9 @@ namespace loos {
 
 
   // Parse an ATOM or HETATM record...
+  // Note: ParseErrors can come from parseStringAs
 
-  void PDB::parseAtomRecord(const std::string& s) throw(ParseError) {
+  void PDB::parseAtomRecord(const std::string& s) {
     greal r;
     gint i;
     std::string t;
@@ -145,7 +146,7 @@ namespace loos {
 
   // Convert an Atom to a string with a PDB format...
 
-  std::string PDB::atomAsString(const pAtom p) const throw(LOOSError) {
+  std::string PDB::atomAsString(const pAtom p) const {
     std::ostringstream s;
 
     // Float formatter for coords
@@ -195,12 +196,12 @@ namespace loos {
 
   // Private function to search the map of atomid's -> pAtoms
   // Throws an error if the atom is not found
-  pAtom PDB::findAtom(const int id) throw(loos::BadConnectivityError) {
+  pAtom PDB::findAtom(const int id) {
     std::map<int, pAtom>::iterator i = _atomid_to_patom.find(id);
     if (i == _atomid_to_patom.end()) {
       std::ostringstream oss;
-      oss << "Cannot find atom corresponding to atomid " << id;
-      throw(BadConnectivityError(oss.str()));
+      oss << "Cannot find atom corresponding to atomid " << id << " for making a bond.";
+      throw(LOOSError(oss.str()));
     }
     return(i->second);
   }
@@ -246,13 +247,12 @@ namespace loos {
   // the pAtom that matches the CONECT atomid (rather than using
   // findById()).
 
-  void PDB::parseConectRecord(const std::string& s) throw(BadConnectivityError, ParseError) {
+  void PDB::parseConectRecord(const std::string& s) {
     int bound_id = parseStringAs<int>(s, 6, 5);
 
-    
+
+    // Rely on findAtom to throw if bound_id not found...
     pAtom bound = findAtom(bound_id);
-    if (bound == 0)
-      throw(BadConnectivityError("Cannot find primary atom " + s.substr(6, 5)));
 
     // This currently includes fields designated as H-bond indices...
     // Should we do this? or separate them out?  Hmmm...
@@ -264,54 +264,60 @@ namespace loos {
       if (emptyString(t))
         break;
       int id = parseStringAsHybrid36(t);
+
+      // findAtom will throw if id is not found
       pAtom boundee = findAtom(id);
-      if (boundee == 0)
-        throw(BadConnectivityError("Cannot find bound atom " + t));
       bound->addBond(boundee);
       boundee->addBond(bound);
     }
   }
 
 
-  void PDB::parseCryst1Record(const std::string& s) throw(ParseError) {
+  void PDB::parseCryst1Record(const std::string& s) {
     greal r;
     gint i;
     std::string t;
 
+    UnitCell newcell;
+
     r = parseStringAs<float>(s, 6, 9);
-    cell.a(r);
+    newcell.a(r);
     r = parseStringAs<float>(s, 15, 9);
-    cell.b(r);
+    newcell.b(r);
     r = parseStringAs<float>(s, 24, 9);
-    cell.c(r);
+    newcell.c(r);
     
     r = parseStringAs<float>(s, 33, 7);
-    cell.alpha(r);
+    newcell.alpha(r);
     r = parseStringAs<float>(s, 40, 7);
-    cell.beta(r);
+    newcell.beta(r);
     r = parseStringAs<float>(s, 47, 7);
-    cell.gamma(r);
+    newcell.gamma(r);
     
     // Special handling in case of mangled CRYST1 record...
     if (s.length() < 66) {
       t = s.substr(55);
         
-      cell.spaceGroup(t);
-      cell.z(-1);   // ??? 
+      newcell.spaceGroup(t);
+      newcell.z(-1);   // ??? 
     } else {
       t = parseStringAs<std::string>(s, 55, 11);
-      cell.spaceGroup(t);
+      newcell.spaceGroup(t);
       i = parseStringAs<int>(s, 66, 4);
-      cell.z(i);
+      newcell.z(i);
     }
 
+    cell = newcell;
     _has_cryst = true;
   }
 
 
   //! Top level parser...
   //! Reads a PDB from an input stream
-  void PDB::read(std::istream& is) throw(FileReadError, BadConnectivityError, ParseError) {
+  /*
+   * Will transform any caught exceptions into a FileReadError
+   */
+  void PDB::read(std::istream& is) {
     std::string input;
     bool has_cryst = false;
     bool has_bonds = false;
@@ -342,7 +348,7 @@ namespace loos {
 	  }
 	}
       }
-      catch(LOOSError e) {
+      catch(LOOSError& e) {
 	throw(FileReadError(_fname, e.what()));
       }
       catch(...) {
@@ -354,7 +360,13 @@ namespace loos {
 
     // Do some post-extraction...
     if (loos::remarksHasBox(_remarks)) {
-      GCoord c = loos::boxFromRemarks(_remarks);
+      GCoord c;
+      try {
+	c = loos::boxFromRemarks(_remarks);
+      }
+      catch(ParseError& e) {
+	throw(FileReadError(_fname, e.what()));
+      }
       periodicBox(c);
     } else if (has_cryst) {
       GCoord c(cell.a(), cell.b(), cell.c());
@@ -397,7 +409,7 @@ namespace loos {
   }
 
 
-  std::ostream& FormatConectRecords(std::ostream& os, const PDB& p) throw(LOOSError) {
+  std::ostream& FormatConectRecords(std::ostream& os, const PDB& p) {
     AtomicGroup::iterator ci;
 
     // Copy and sort
