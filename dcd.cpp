@@ -86,15 +86,15 @@ namespace loos {
 
   // Read the F77 record length from the file stream
 
-  unsigned int DCD::readRecordLen(void) throw (loos::EndOfFile, loos::TrajectoryReadError) {
+  unsigned int DCD::readRecordLen(void) {
     DataOverlay o;
   
     ifs()->read(o.c, 4);
 
     if (ifs()->eof())
-      throw(EndOfFile());
+      throw(FileReadError(_filename, "Unexpected EOF while reading DCD record length"));
     if (ifs()->fail())
-      throw(TrajectoryReadError("Unable to read DCD record length"));
+      throw(FileReadError(_filename, "Unable to read DCD record length"));
 
     uint data = o.ui;
     if (swabbing)
@@ -105,19 +105,19 @@ namespace loos {
 
 
   // Check for endian-ness
-  void DCD::endianMatch(StreamWrapper& fsw) throw (loos::TrajectoryReadError) {
+  void DCD::endianMatch(StreamWrapper& fsw) {
     unsigned long curpos = fsw()->tellg();
     unsigned int datum;
     ifs()->read((char *)(&datum), sizeof(datum));
     fsw()->seekg(curpos);
 
     if (ifs()->eof() || ifs()->fail())
-      throw(TrajectoryReadError("Unable to read first datum from DCD file"));
+      throw(FileReadError(_filename, "Unable to read first datum from DCD file"));
 
     if (datum != 0x54) {
       datum = swab(datum);
       if (datum != 0x54)
-        throw(TrajectoryReadError("Unable to determine endian-ness of DCD file"));
+        throw(FileReadError(_filename, "Unable to determine endian-ness of DCD file"));
       swabbing = true;
     } else
       swabbing = false;
@@ -128,7 +128,7 @@ namespace loos {
   // Returns a pointer to the read data and puts the # of bytes read into *len
   // Note:  It is up to the caller to swab individual elements...
 
-  DCD::DataOverlay* DCD::readF77Line(unsigned int *len) throw (loos::TrajectoryReadError) {
+  DCD::DataOverlay* DCD::readF77Line(unsigned int *len) {
     DataOverlay* ptr;
     unsigned int n, n2;
 
@@ -138,11 +138,11 @@ namespace loos {
 
     ifs()->read((char *)ptr, n);
     if (ifs()->fail())
-      throw(TrajectoryReadError("Error reading data record from DCD"));
+      throw(FileReadError(_filename, "Error reading data record from DCD"));
 
     n2 = readRecordLen();
     if (n != n2)
-      throw(TrajectoryReadError("Mismatch in record length while reading from DCD"));
+      throw(FileReadError(_filename, "Mismatch in record length while reading from DCD"));
 
     *len = n;
     return(ptr);
@@ -152,7 +152,7 @@ namespace loos {
 
   // Read in the DCD header...
 
-  void DCD::readHeader(void) throw (loos::LOOSError, loos::TrajectoryReadError) { 
+  void DCD::readHeader(void) {
     DataOverlay *ptr;
     unsigned int len;
     char *cp;
@@ -161,12 +161,12 @@ namespace loos {
     endianMatch(ifs);
     ptr = readF77Line(&len);
     if (len != 84)
-      throw(TrajectoryReadError("Error while reading DCD header"));
+      throw(FileReadError(_filename, "Error while reading DCD header"));
 
     // Check for the magic name.  Ignore swabbing for now...
     DataOverlay o = ptr[0];
     if (!(o.c[0] == 'C' && o.c[1] == 'O' && o.c[2] == 'R' && o.c[3] == 'D'))
-      throw(TrajectoryReadError("DCD is missing CORD magic marker"));
+      throw(FileReadError(_filename, "DCD is missing CORD magic marker"));
 
     // Copy in the ICNTRL data...
     for (i=0; i<20; i++) {
@@ -208,7 +208,7 @@ namespace loos {
     // get the NATOMS...
     ptr = readF77Line(&len);
     if (len != 4)
-      throw(TrajectoryReadError("Error reading number of atoms from DCD"));
+      throw(FileReadError(_filename, "Error reading number of atoms from DCD"));
     if (swabbing)
       _natoms = swab(ptr->i);
     else
