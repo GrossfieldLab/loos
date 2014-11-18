@@ -35,7 +35,7 @@
 
 namespace loos {
 
-  GCoord boxFromRemarks(const Remarks& r) throw(ParseError) {
+  GCoord boxFromRemarks(const Remarks& r) {
     int n = r.size();
     int i;
 
