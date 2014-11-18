@@ -80,7 +80,7 @@ selectAtoms;
 %catches(loos::LOOSError, loos::ParseError) PDB::parseConectRecord;
 %catches(loos::ParseError) PDB::parseCryst1Record;
 %catches(loos::FileReadError) PDB::read;
-%catches(loos::LOOSError) PDB::FormatConctRecords;
+%catches(loos::LOOSError) PDB::FormatConectRecords;
 %catches(loos::FileOpenError, loos::FileReadError) PDB::PDB;
 
 // utils.cpp
