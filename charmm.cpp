@@ -56,7 +56,7 @@ namespace loos {
     while (input[0] == '*') {
         getline(is, input);
         if (!is.good()) {
-            throw(std::runtime_error("Failed reading CHARMM header"));
+            throw(FileReadError(_filename, "Cannot read CHARMM header"));
         }
     }
 
@@ -76,7 +76,7 @@ namespace loos {
     for (unsigned int i=1; i<= num_atoms; ++i)  {
         getline(is, input);
         if (!is.good()) {
-            throw(std::runtime_error("Failed reading CHARMM coordinates"));
+            throw(FileReadError(_filename, "Cannot read CHARMM coordinates"));
         }
         if (num_atoms < 100000) {
             atom_num = parseStringAs<int>(input, 0, 5);

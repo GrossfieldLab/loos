@@ -50,16 +50,15 @@ namespace loos {
     CHARMM() : _max_index(0) { }
     virtual ~CHARMM() {}
 
-    explicit CHARMM(const std::string fname) : _max_index(0) {
+    explicit CHARMM(const std::string fname) : _max_index(0), _filename(fname) {
       std::ifstream ifs(fname.c_str());
       if (!ifs) {
-        throw(std::runtime_error("Cannot open CHARMM coordinate file " + 
-                                 std::string(fname)));
+        throw(FileOpenError(fname));
       }
       read(ifs);
     }
 
-    explicit CHARMM(std::istream &ifs) : _max_index(0) {
+    explicit CHARMM(std::istream &ifs) : _max_index(0), _filename("stream") {
       read(ifs);
     }
 
@@ -81,6 +80,7 @@ namespace loos {
     CHARMM(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
     uint _max_index;
+    std::string _filename;
 
   };
 
