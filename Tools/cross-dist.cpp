@@ -46,6 +46,7 @@ namespace po = loos::OptionsFramework::po;
 
 double cutoff;
 unsigned int num_bins;
+bool use_cosine;
 
 
 // The following conditional prevents this class from appearing in the
@@ -60,6 +61,7 @@ public:
     o.add_options()
       ("num_bins", po::value<unsigned int>(&num_bins)->default_value(20), "Number of histogram bins")
       ("cutoff", po::value<double>(&cutoff)->default_value(10.0), "Distance cutoff for neighboring chains")
+      ("use-cosine", po::value<bool>(&use_cosine)->default_value(false), "Histogram the cosine instead of the angle")
       ;
   }
 
@@ -109,6 +111,8 @@ string fullHelpMessage(void)
 "                    0-180 deg, default = 20\n"
 "    --cutoff        distance below which two chains are considered \n"
 "                    neighbors, default = 10 ang\n"
+"    --use-cosine    histogram the cosine of the angle instead of the angle,\n"
+"                    which changes the histogram bounds to -1:1.\n"
 "\n"
 "EXAMPLE\n"
 "\n"
@@ -190,8 +194,18 @@ int main(int argc, char *argv[]) {
   // Allocate space to store the histogram of angles
   vector<uint> ang_hist(num_bins);
   vector<uint> tors_hist(num_bins);
-  double hist_min = 0.0;
-  double hist_max = 180.0;
+  double hist_min, hist_max;
+  if (use_cosine)
+      {
+      hist_min = 0.0;
+      hist_max = 1.0;
+      }
+  else
+      {
+      hist_min = 0.0;
+      hist_max = 180.0;
+      }
+
   double bin_size = (hist_max - hist_min) / num_bins;
   uint ang_total = 0;
   uint tors_total = 0;
@@ -230,6 +244,7 @@ int main(int argc, char *argv[]) {
         points[i] = centers[i] + paxes[i];
         }
 
+    double ang = 0.0;
     for (uint i = 0; i < chains.size()-1; i++)
         {
         for (uint j =i+1; j < chains.size(); j++)
@@ -242,7 +257,14 @@ int main(int argc, char *argv[]) {
                 double c = paxes[i] * paxes[j]; 
                 // make sure roundoff didn't put cos out of range
                 c = min(max(-1.0, c),1.0); 
-                double ang = fabs(acos(c) * 180.0/M_PI);
+                if (use_cosine)
+                    {
+                    ang = c;
+                    }
+                else
+                    {
+                    ang = fabs(acos(c) * 180.0/M_PI);
+                    }
                 if (!( (ang <= hist_min) || (ang >= hist_max) ))
                     { 
                     uint bin = (uint)((ang-hist_min)/bin_size);
@@ -262,6 +284,10 @@ int main(int argc, char *argv[]) {
                 // now torsion can be between 0 and 180
                 // ang = acos( fabs(cos(t*M_PI/180.0)) ) * 180.0/M_PI;
                 ang = fabs(t);
+                if (use_cosine)
+                    {
+                    ang = cos(ang*M_PI/180.0);
+                    }
 
                 if (!( (ang <= hist_min) || (ang >= hist_max) ))
                     {
