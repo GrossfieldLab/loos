@@ -116,14 +116,14 @@ namespace loos {
     FileError(const std::string& op) : LOOSError("Error while " + op), _operation(op) {}
 
     FileError(const std::string& op, const std::string& fname)
-      : LOOSError("Error while " + op + " from " + fname),
+      : LOOSError("Error while " + op + " " + fname),
         _operation(op), _filename(fname)
     {}
 
     FileError(const std::string& op,
               const std::string& fname,
               const std::string& msg)
-      : LOOSError("Error while " + op + " from " + fname + msg),
+      : LOOSError("Error while " + op + " " + fname + msg),
         _operation(op),
         _filename(fname)
     {}
@@ -132,7 +132,7 @@ namespace loos {
               const std::string& fname,
               const std::string& msg,
               const int err)
-      : LOOSError("Error while " + op + " from " + fname + msg),
+      : LOOSError("Error while " + op + " " + fname + msg),
         _operation(op),
         _filename(fname),
         _errcode(err)

@@ -49,7 +49,7 @@ namespace loos {
 
   void CCPDB::seekFrameImpl(const uint i) {
     if (i >= _nframes)
-      throw(FileError(_filename, "Attempting to seek to frame beyond the end of the trajectory".));
+      throw(FileError(_filename, "Attempting to seek to frame beyond the end of the trajectory"));
 
     ifs()->clear();
     ifs()->seekg(indices[i]);
