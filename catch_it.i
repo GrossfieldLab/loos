@@ -88,6 +88,11 @@ selectAtoms;
 %catches(loos::LOOSError) PDB::FormatConectRecords;
 %catches(loos::FileOpenError, loos::FileReadError) PDB::PDB;
 
+
+// pdbtraj
+%catches(loos::LOOSError, loos::FileReadError) PDBTraj::parseFrame;
+%catches(loos::FileOpenError) PDBTraj::PDBTraj;
+
 // utils.cpp
 
 %catches(loos::ParseError) selectAtoms;
