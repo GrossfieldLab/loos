@@ -61,6 +61,9 @@ namespace loos {
 
 
 
+  // Note: This *should* not throw, although in principal,
+  //       the Remarks::operator[] does a range check and could...
+
   bool remarksHasBox(const Remarks& r) {
     int n = r.size();
     for (int i = 0; i<n; i++) {
