@@ -35,6 +35,9 @@
 
 namespace loos {
 
+  // Note: This *should* not throw a range_error, although in principal,
+  //       the Remarks::operator[] does a range check and could...
+
   GCoord boxFromRemarks(const Remarks& r) {
     int n = r.size();
     int i;
