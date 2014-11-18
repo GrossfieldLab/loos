@@ -65,6 +65,11 @@ selectAtoms;
 %catches(loos::FileError) AmberTraj::seekFrameImpl;
 %catches(loos::LOOSError) AmberTraj::updateGroupCoordsImpl;
 
+// ccpdb
+%catches(loos:LOOSError, loos::FileReadError) CCPDB::parseFrame;
+%catches(loos::FileOpenError) CCPDB::CCPDB;
+
+
 // pdb_remarks
 
 %catches(std::range_error) Remarks::get;
