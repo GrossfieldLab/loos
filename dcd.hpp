@@ -117,7 +117,7 @@ namespace loos {
       }
 
     //! Read in the header from the stored stream
-    void readHeader(void) throw (loos::LOOSError, loos::TrajectoryReadError);
+      void readHeader(void);
 
 
     // Accessor methods...
@@ -168,34 +168,34 @@ namespace loos {
     static void setSuppression(const bool b) { suppress_warnings = b; }
 
     //! Parse a frame of the DCD
-    virtual bool parseFrame(void) throw (loos::TrajectoryReadError, loos::EndOfFile);
+      virtual bool parseFrame(void);
     
   private:
 
-    void initTrajectory() throw (loos::LOOSError);
+      void initTrajectory();
       
     // Trajectory member functions we must provide...
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
-    virtual void seekFrameImpl(const uint) throw (loos::LOOSError);
+      virtual void seekFrameImpl(const uint);
 
     //! Rewind the file to the first DCD frame.
-    virtual void rewindImpl(void) throw (loos::LOOSError);
+      virtual void rewindImpl(void);
 
     //! Update an AtomicGroup coordinates with the currently-read frame.
-    virtual void updateGroupCoordsImpl(AtomicGroup& g) throw (loos::LOOSError);
+      virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
 
 
     void allocateSpace(const int n);
-    void readCrystalParams(void) throw (loos::TrajectoryReadError);
-    void readCoordLine(std::vector<float>& v) throw (loos::LOOSError);
+      void readCrystalParams(void);
+      void readCoordLine(std::vector<float>& v);
 
-    void endianMatch(StreamWrapper& fsw) throw(loos::TrajectoryReadError);
+      void endianMatch(StreamWrapper& fsw);
 
     // For reading F77 I/O
-    unsigned int readRecordLen(void) throw(loos::EndOfFile, loos::TrajectoryReadError);
-    DataOverlay* readF77Line(unsigned int *len) throw (loos::TrajectoryReadError);
+      unsigned int readRecordLen(void);
+      DataOverlay* readF77Line(unsigned int *len);
 
 
 

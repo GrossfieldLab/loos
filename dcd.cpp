@@ -236,14 +236,14 @@ namespace loos {
   // NOTE: This is already double!
 
 
-  void DCD::readCrystalParams(void) throw (loos::TrajectoryReadError) {
+  void DCD::readCrystalParams(void) {
     unsigned int len;
     DataOverlay* o;
 
     o = readF77Line(&len);
 
     if (len != 48)
-      throw(TrajectoryReadError("Error while reading crystal parameters"));
+      throw(FileReadError(_filename, "Cannot read crystal parameters"));
 
     double* dp = reinterpret_cast<double*>(o);
     
@@ -265,7 +265,7 @@ namespace loos {
 
   // Read a line of coordinates into the specified vector.
 
-  void DCD::readCoordLine(std::vector<dcd_real>& v) throw (loos::LOOSError) {
+  void DCD::readCoordLine(std::vector<dcd_real>& v) {
     DataOverlay *op;
     int n = _natoms * sizeof(dcd_real);
     unsigned int len;
@@ -274,7 +274,7 @@ namespace loos {
     op = readF77Line(&len);
 
     if (len != (unsigned int)n)
-      throw(LOOSError("Error while reading coordinates"));
+      throw(FileReadError(_filename, "Size of coords stored in frame does not match model size"));
 
     // Recast the values as floats and store them...
     uint i;
@@ -289,21 +289,18 @@ namespace loos {
   }
 
 
-  void DCD::seekFrameImpl(const uint i) throw (loos::LOOSError) {
+  void DCD::seekFrameImpl(const uint i) {
   
     if (first_frame_pos == 0)
-      throw(LOOSError("Trying to seek to a DCD frame without having first read the header"));
+      throw(FileError(_filename, "Trying to seek to a DCD frame without having first read the header"));
 
     if (i >= nframes())
-      throw(LOOSError("Requested DCD frame is out of range"));
+      throw(FileError(_filename, "Requested DCD frame is out of range"));
 
     ifs()->clear();
     ifs()->seekg(first_frame_pos + i * frame_size);
-    if (ifs()->fail() || ifs()->bad()) {
-      std::ostringstream s;
-      s << "Cannot seek to frame " << i;
-      throw(LOOSError(s.str().c_str()));
-    }
+    if (ifs()->fail() || ifs()->bad())
+      throw(FileError(_filename, "Cannot seek to requested frame"));
   }
 
 
@@ -312,27 +309,18 @@ namespace loos {
   // Throws an exception if there was an error...  (Should we throw EOF
   // instead?) 
 
-  bool DCD::parseFrame(void) throw(loos::TrajectoryReadError, loos::EndOfFile) {
+  bool DCD::parseFrame(void)  {
 
     if (first_frame_pos == 0)
-      throw(TrajectoryReadError("Trying to read a DCD frame without first having read the header."));
+      throw(FileReadError(_filename, "Trying to read a DCD frame without first having read the header."));
 
     if (ifs()->eof())
       return(false);
 
-    try {
-      if (hasCrystalParams())
-        readCrystalParams();
-    }
-    catch (EndOfFile& e) { return(false); }
-    catch (...) { throw; }
+    if (hasCrystalParams())
+      readCrystalParams();
 
-    // Only check for EOF for the first line (in case we didn't try to
-    // read crystal params first...
-    try { readCoordLine(xcrds); }
-    catch (EndOfFile& e) { return(false); }
-    catch (...) { throw; }
-
+    readCoordLine(xcrds);
     readCoordLine(ycrds);
     readCoordLine(zcrds);
   
@@ -340,11 +328,11 @@ namespace loos {
   }
 
 
-  void DCD::rewindImpl(void) throw (loos::LOOSError) {
+  void DCD::rewindImpl(void) {
     ifs()->clear();
     ifs()->seekg(first_frame_pos);
     if (ifs()->fail() || ifs()->bad())
-      throw(LOOSError("Error rewinding DCD file"));
+      throw(FileError(_filename, "Cannot rewind DCD trajectory"));
   }
 
 
@@ -379,7 +367,7 @@ namespace loos {
   }
 
 
-  void DCD::updateGroupCoordsImpl(AtomicGroup& g) throw (loos::LOOSError) {
+  void DCD::updateGroupCoordsImpl(AtomicGroup& g) {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
@@ -395,8 +383,7 @@ namespace loos {
 
 
 
-  void DCD::initTrajectory() throw (loos::LOOSError)
-    {
+  void DCD::initTrajectory() {
         readHeader();
         bool b = parseFrame();
         if (!b)
