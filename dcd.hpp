@@ -71,29 +71,6 @@ namespace loos {
 
   public:
 
-    // Error classes that we may or may not return...
-
-    //! Error while reading the F77 guard data (DEPRECATED)
-    /**
-     * These exceptions are now deprecated.  Instead, use LOOSError, EndOfFile, and
-     * TrajectoryReadError
-     */
-    struct RecordError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 record"); }; } record_error;
-    //! General error while parsing the DCD header (DEPRECATED)
-    struct HeaderError : public std::exception { virtual const char *what() const throw() { return("Error while reading DCD header"); }; } header_error;
-    //! General error while reading an F77 data record (DEPRECATED)
-    struct LineError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
-    //! Unexpected EOF (DEPRECATED)
-    struct EndOfFile : public std::exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
-    //! General error... (DEPRECATED)
-    struct GeneralError : public std::exception {
-      GeneralError(const char *s) : msg(s) { };
-      virtual const char *what() const throw() { return(msg); };
-      const char *msg;
-    };
-
-
-
     //! Begin reading from the file named s
     explicit DCD(const std::string s) :  Trajectory(s), _natoms(0),
                                          qcrys(std::vector<double>(6)),
