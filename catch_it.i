@@ -66,12 +66,16 @@ selectAtoms;
 %catches(loos::LOOSError) AmberTraj::updateGroupCoordsImpl;
 
 // ccpdb
-%catches(loos:LOOSError, loos::FileReadError) CCPDB::parseFrame;
+%catches(loos::FileReadError, loos::LOOSError) CCPDB::parseFrame;
 %catches(loos::FileOpenError) CCPDB::CCPDB;
 
 // charmm
 %catches(loos::FileOpenError, loos::FileReadError) CHARMM::CHARMM;
 %catches(loos::FileReadError) CHARMM::read;
+
+// dcd
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) DCD::DCD;
+%catches(loos::FileReadError, loos::LOOSError) DCD::parseFrame;
 
 // pdb_remarks
 
