@@ -36,6 +36,11 @@
 #include <utils.hpp>
 #include <dcd_utils.hpp>
 
+#warning "gridify() is deprecated and will be removed in the next release"
+
+
+
+
 
 namespace loos {
 
