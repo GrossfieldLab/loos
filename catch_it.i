@@ -77,6 +77,17 @@ selectAtoms;
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) DCD::DCD;
 %catches(loos::FileReadError, loos::LOOSError) DCD::parseFrame;
 
+// dcdwriter
+%catches(std::logic_error) DCDWriter::setHeader;
+%catches(std::logic_error) DCDWriter::setTitles;
+%catches(std::logic_error) DCDWriter::setTitle;
+%catches(std::logic_error) DCDWriter::addTitle;
+%catches(std::logic_error) DCDWriter::setComments;
+%catches(loos::FileWriteError, loos::LOOSError) DCDWriter::writeFrame;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) DCDWriter::prepareToAppend;
+
+
+
 // pdb_remarks
 
 %catches(std::range_error) Remarks::get;
