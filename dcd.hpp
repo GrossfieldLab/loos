@@ -93,8 +93,6 @@ namespace loos {
 	return(pTraj(new DCD(fname)));
       }
 
-    //! Read in the header from the stored stream
-      void readHeader(void);
 
 
     // Accessor methods...
@@ -148,6 +146,9 @@ namespace loos {
       virtual bool parseFrame(void);
     
   private:
+
+    //! Read in the header from the stored stream
+    void readHeader(void);
 
       void initTrajectory();
       
