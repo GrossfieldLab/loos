@@ -55,7 +55,7 @@ namespace loos {
 
     //! Write a trajectory to a file, optionally appending
     TrajectoryWriter(const std::string& fname, const bool append = false)
-      : appending_(false) {
+      : _filename(fname), appending_(false) {
       struct stat statbuf;
 
       if (append && !stat(fname.c_str(), &statbuf)) {
@@ -74,7 +74,7 @@ namespace loos {
      * the TrajectoryWriter object.
      */
     TrajectoryWriter(std::iostream* s, const bool append = false)
-      : appending_(append), delete_(false) {}
+      : _filename("stream"), appending_(append), delete_(false) {}
 
 
     virtual ~TrajectoryWriter() {
@@ -122,6 +122,7 @@ namespace loos {
 
   protected:
     std::iostream* stream_;
+    std::string _filename;
     bool appending_;
     bool delete_;
 
