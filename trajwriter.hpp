@@ -143,7 +143,7 @@ namespace loos {
       if (append)
 	stream_->seekp(0, std::ios_base::end);
       if (!stream_->good())
-        throw(std::runtime_error("Error while opening output trajectory file"));
+        throw(FileOpenError(fname, "Error while opening output trajectory file"));
 
 
       delete_ = true;    // Delete the stream pointer when dtor called

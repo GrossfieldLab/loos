@@ -111,6 +111,11 @@ selectAtoms;
 %catches(loos::LOOSError, loos::FileReadError) PDBTraj::parseFrame;
 %catches(loos::FileOpenError) PDBTraj::PDBTraj;
 
+// trajwriter
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) TrajectoryWriter::TrajectoryWriter;
+%catches(loos::FileWriteError, loos::FileError, loos::LOOSError) TrajectoryWriter::writeFrame;
+%catches(std::logic_error) TrajectoryWriter::setComments;
+
 // utils.cpp
 
 %catches(loos::ParseError) selectAtoms;
