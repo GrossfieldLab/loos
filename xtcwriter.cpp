@@ -351,7 +351,7 @@ Library.
 	oss << boost::format("Major breakdown in XTCWriter::encodeints() - num %u doesn't match size %u")
 	  % nums[i]
 	  % sizes[i];
-	throw(std::runtime_error(oss.str()));
+	throw(LOOSError(oss.str()));
       }
       /* use one step multiply */    
       tmp = nums[i];
@@ -405,7 +405,7 @@ Library.
 
     allocateBuffers(size);
     if (!xdr.write(size))
-      throw(TrajectoryWriteError("Could not write size to XTC file"));
+      throw(FileWriteError(_filename, "Could not write size to XTC file"));
 
     /* Dont bother with compression for three atoms or less */
     if(size<=9) 
@@ -437,7 +437,7 @@ Library.
       if (fabs(lf) > INT_MAX-2) 
       {
 	/* scaling would cause overflow */
-	throw(TrajectoryWriteError("Internal overflow compressing coordinates"));
+	throw(LOOSError("Internal overflow compressing coordinates"));
       }
       lint1 = lf;
       if (lint1 < minint[0]) minint[0] = lint1;
@@ -451,7 +451,7 @@ Library.
       if (fabs(lf) > INT_MAX-2)
       {
 	/* scaling would cause overflow */
-	throw(TrajectoryWriteError("Internal overflow compressing coordinates"));
+	throw(LOOSError("Internal overflow compressing coordinates"));
       }
       lint2 = lf;
       if (lint2 < minint[1]) minint[1] = lint2;
@@ -489,7 +489,7 @@ Library.
       /* turning value in unsigned by subtracting minint
        * would cause overflow
        */
-      throw(TrajectoryWriteError("Internal overflow compressing internal coordinates"));
+      throw(LOOSError("Internal overflow compressing internal coordinates"));
     }
     sizeint[0] = maxint[0] - minint[0]+1;
     sizeint[1] = maxint[1] - minint[1]+1;
@@ -649,7 +649,7 @@ Library.
     xdr.write(buf2[0]);
     tmp=xdr.write((char *)&(buf2[3]),(unsigned int)buf2[0]);
     if(tmp!=(unsigned int)buf2[0])
-      throw(TrajectoryWriteError("Error while writing compressed coordinates to XTC file"));
+      throw(FileWriteError(_filename, "Error while writing compressed coordinates to XTC file"));
   }
 
 
