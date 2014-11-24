@@ -63,10 +63,10 @@ namespace loos {
   
    unsigned int LineReader::lineNumber() const { return(_lineno); }
 
-  void LineReader::checkState() const throw(FileReadErrorWithLine) {
+  void LineReader::checkState() const;
      if (!(_is->good() || _is->eof())) {
 
-       if (_name.empty())
+       if (! _name.empty())
          throw(FileReadErrorWithLine(_name, _lineno));
        else
          throw(FileReadErrorWithLine(_lineno));
