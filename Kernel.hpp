@@ -28,6 +28,9 @@
 
 #include <vector>
 
+#include <loos_defs.hpp>
+#include <exceptions.hpp>
+
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
 #include "KernelActions.hpp"
@@ -51,7 +54,15 @@ namespace loos {
     void pop(void);
 
     //! Execute the stored commands for a specific atom.
-    //! This does not clear the command stack/list
+    /**
+     * If an exception occurs during processing, then the value stack
+     * will be cleared before the error is rethrown.  However, it is
+     * probably unwise to try to use the Kernel object again.
+     *
+     * If the value stack is not empty after executing, then a LOOSError
+     * will be thrown.
+     */
+    
     void execute(pAtom pa = pAtom());
     
     void clearActions(void);

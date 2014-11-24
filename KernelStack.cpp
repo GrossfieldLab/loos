@@ -26,15 +26,15 @@
 namespace loos {
   namespace internal {
 
-    void ValueStack::notEmpty(void) const {
+    void ValueStack::requireNotEmpty(void) const {
       if (values.size() == 0)
-        throw(std::logic_error("Operation requested on an empty stack."));
+        throw(LOOSError("Operation requested on an empty stack."));
     }
 
     void ValueStack::push(const Value& val) { values.push_back(val); };
 
     Value ValueStack::pop(void) {
-      notEmpty();
+      requireNotEmpty();
       Value val = values.back();
       values.pop_back();
       return(val); 
@@ -42,14 +42,14 @@ namespace loos {
 
     // Duplicate the top entry...
     void ValueStack::dup(void) {
-      notEmpty();
+      requireNotEmpty();
       Value val = values.back();
       push(val);
     }
 
     // Just drop the top entry, i.e. (void)pop()
     void ValueStack::drop(void) {
-      notEmpty();
+      requireNotEmpty();
       values.pop_back();
     }
 
@@ -58,7 +58,7 @@ namespace loos {
       if (i < 0)
         i += values.size();
       if ((unsigned int)i >= values.size())
-        throw(std::logic_error("Peeking beyond the stack!"));
+        throw(LOOSError("Peeking beyond the stack!"));
       
       return(values[i]);
     }

@@ -83,7 +83,7 @@ namespace loos {
       void binaryFalseResult(void);
 
       //! Check to make sure an atom has been set...
-      void hasAtom(void)  throw (loos::LOOSError);
+      void requireAtom(void);
 
     public:
       Action(const std::string s) : stack(0), atom(pAtom()), my_name(s) { }
@@ -283,14 +283,14 @@ namespace loos {
     class logicalAnd : public Action{
     public:
       logicalAnd() : Action("&&") { }
-      void execute(void) throw (loos::LOOSError);
+      void execute(void);
     };
 
     //! ARG1 ARG2 ||
     class logicalOr : public Action {
     public:
       logicalOr() : Action("||") { }
-      void execute(void) throw (loos::LOOSError);
+      void execute(void);
     };
 
 
@@ -298,7 +298,7 @@ namespace loos {
     class logicalNot : public Action {
     public:
       logicalNot() : Action("!") { }
-      void execute(void) throw (loos::LOOSError);
+      void execute(void);
     };
 
     //! Always returns true...

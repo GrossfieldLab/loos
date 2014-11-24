@@ -57,7 +57,7 @@ namespace loos {
     }
     
 
-    void Action::hasAtom(void) throw (loos::LOOSError) {
+    void Action::requireAtom(void) {
       if (atom == 0)
         throw(LOOSError("No atom set"));
     }
@@ -183,44 +183,44 @@ namespace loos {
 
 
     void pushAtomName::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->name());
       stack->push(v);
     }
 
     void pushAtomId::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->id());
       stack->push(v);
     }
 
     void pushAtomResname::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->resname());
       stack->push(v);
     }
 
     void pushAtomResid::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->resid());
       stack->push(v);
     }
 
 
     void pushAtomSegid::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->segid());
       stack->push(v);
     }
 
     void pushAtomChainId::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->chainId());
       stack->push(v);
     }
 
 
-    void logicalAnd::execute(void)  throw (loos::LOOSError)  {
+    void logicalAnd::execute(void) {
       Value v2 = stack->pop();
       Value v1 = stack->pop();
 
@@ -232,7 +232,7 @@ namespace loos {
     }
 
 
-    void logicalOr::execute(void)  throw (loos::LOOSError)  {
+    void logicalOr::execute(void) {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
       
@@ -244,7 +244,7 @@ namespace loos {
     }
 
 
-    void logicalNot::execute(void)  throw (loos::LOOSError)  {
+    void logicalNot::execute(void) {
       Value v1 = stack->pop();
 
       if (v1.type != Value::INT)
@@ -261,7 +261,7 @@ namespace loos {
 
 
     void Hydrogen::execute(void) {
-      hasAtom();
+      requireAtom();
       
       bool masscheck = true;
       if (atom->checkProperty(Atom::massbit))
@@ -280,7 +280,7 @@ namespace loos {
 
 
     void Backbone::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(bbsel(atom));
       
       stack->push(v);
