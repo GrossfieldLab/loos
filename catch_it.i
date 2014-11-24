@@ -68,7 +68,7 @@ selectAtoms;
 
 // ccpdb
 %catches(loos::FileReadError, loos::LOOSError) CCPDB::parseFrame;
-%catches(loos::FileOpenError, loos::LOOSError) CCPDB::CCPDB;
+%catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) CCPDB::CCPDB;
 %catches(loos::FileOpenError, loos::LOOSError) CCPDB::create;
 
 // charmm
