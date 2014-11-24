@@ -41,21 +41,14 @@ namespace loos {
 
     Gromacs() { }
     
-    explicit Gromacs(const char* fname) : _max_index(0) {
-      std::ifstream ifs(fname);
-      if (!ifs)
-        throw(std::runtime_error("Cannot open Gromacs file " + std::string(fname)));
-      read(ifs);
-    }
-
-    explicit Gromacs(const std::string& fname) : _max_index(0) {
+    explicit Gromacs(const std::string& fname) : _filename(fname), _max_index(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
-        throw(std::runtime_error("Cannot open Gromacs file " + fname));
+        throw(FileOpenError(fname));
       read(ifs);
     }
 
-    explicit Gromacs(std::istream& ifs) : _max_index(0) { read(ifs); }
+    explicit Gromacs(std::istream& ifs) : _filename("stream"), _max_index(0) { read(ifs); }
 
     static pAtomicGroup create(const std::string& fname) {
       return(pAtomicGroup(new Gromacs(fname)));
@@ -65,6 +58,7 @@ namespace loos {
     std::string title(void) const { return(title_); }
 
   private:
+    std::string _filename;
     std::string title_;
     uint _max_index;
 

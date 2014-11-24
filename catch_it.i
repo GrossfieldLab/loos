@@ -29,7 +29,8 @@ selectAtoms;
 
 
 // amber
-%catches(loos::FileOpenError, loos::FileReadErrorWithLine) Amber::Amber;
+%catches(loos::FileOpenError, loos::FileReadErrorWithLine, loos::LOOSError) Amber::Amber;
+%catches(loos::FileOpenError, loos::FileReadErrorWithLine, loos::LOOSError) Amber::create;
 %catches(loos::FileReadErrorWithLine) Amber::parseFormat;
 %catches(loos::FileReadErrorWithLine) Amber::parseCharges;
 %catches(loos::FileReadErrorWithLine) Amber::parseMasses;
@@ -67,7 +68,8 @@ selectAtoms;
 
 // ccpdb
 %catches(loos::FileReadError, loos::LOOSError) CCPDB::parseFrame;
-%catches(loos::FileOpenError) CCPDB::CCPDB;
+%catches(loos::FileOpenError, loos::LOOSError) CCPDB::CCPDB;
+%catches(loos::FileOpenError, loos::LOOSError) CCPDB::create;
 
 // charmm
 %catches(loos::FileOpenError, loos::FileReadError) CHARMM::CHARMM;
@@ -86,7 +88,11 @@ selectAtoms;
 %catches(loos::FileWriteError, loos::LOOSError) DCDWriter::writeFrame;
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) DCDWriter::prepareToAppend;
 
+// gro
 
+%catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::Gromacs;
+%catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::create;
+%catches(loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::Gromacs;
 
 // pdb_remarks
 
@@ -104,7 +110,8 @@ selectAtoms;
 %catches(loos::ParseError) PDB::parseCryst1Record;
 %catches(loos::FileReadError) PDB::read;
 %catches(loos::LOOSError) PDB::FormatConectRecords;
-%catches(loos::FileOpenError, loos::FileReadError) PDB::PDB;
+%catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) PDB::PDB;
+%catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) PDB::create;
 
 
 // pdbtraj
