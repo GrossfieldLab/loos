@@ -5,7 +5,8 @@
 	 loos::BadConnectivityError,\
 	 loos::FileOpenError,\
 	 loos::FileReadError,\
-	 loos::LOOSError,     \
+	 loos::FileError,\
+	 loos::LOOSError,\
 	 std::runtime_error,\
 	 std::logic_error) \
 createSystem;
@@ -14,8 +15,8 @@ createSystem;
 	 loos::AmberNetcdfError,\
 	 loos::FileOpenError,\
 	 loos::FileReadError,\
+	 loos::FileError,\
 	 loos::LOOSError,\
-	 loos::TrajectoryReadError,\
 	 std::logic_error,\
 	 std::runtime_error) \
 createTrajectory;
