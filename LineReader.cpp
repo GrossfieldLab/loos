@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include <exceptions.hpp>
-#include <LineReader.hpp>
+#include "LineReader.hpp"
 
 namespace loos {
 
@@ -59,11 +59,11 @@ namespace loos {
     _lines.push_back(s);
   }
 
-   std::string LineReader::line() const { return(_current_line); }
+  std::string LineReader::line() const { return(_current_line); }
   
-   unsigned int LineReader::lineNumber() const { return(_lineno); }
+  unsigned int LineReader::lineNumber() const { return(_lineno); }
 
-  void LineReader::checkState() const;
+  void LineReader::checkState() const {
      if (!(_is->good() || _is->eof())) {
 
        if (! _name.empty())
