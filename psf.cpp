@@ -40,25 +40,25 @@ namespace loos {
 
 
 
-  void PSF::read(std::istream& is) throw(loos::ParseError){
+  void PSF::read(std::istream& is) {
     std::string input;
 
     // first line is the PSF header
     if (!getline(is, input))
-      throw(ParseError("Failed reading first line of psf"));
+      throw(FileReadError(_filename, "Failed reading first line of psf"));
     if (input.substr(0,3) != "PSF")
-      throw(ParseError("PSF detected a non-PSF file"));
+      throw(FileReadError(_filename, "PSF detected a non-PSF file"));
 
     // second line is blank
     if (!getline(is, input))
-      throw(ParseError("PSF failed reading first header blank"));
+      throw(FileReadError(_filename, "PSF failed reading first header blank"));
 
     // third line is title header
     getline(is, input);
     int num_title_lines;
     if (!(std::stringstream(input) >> num_title_lines)) 
-      throw(ParseError("PSF has malformed title header"));
-        
+      throw(FileReadError(_filename, "PSF has malformed title header"));        
+
     // skip the rest of the title
     for (int i=0; i<num_title_lines; i++) 
       getline(is, input);
@@ -67,38 +67,40 @@ namespace loos {
     if (!(is.good()))
       // Yes, I know, I should figure out what went wrong instead
       // of running home crying.  Sorry, Tod...
-      throw(ParseError("PSF choked reading the header"));
+      throw(FileReadError(_filename, "PSF choked reading the header"));
 
     // next line is blank 
     if (!getline(is, input))
-      throw(ParseError("PSF failed reading second header blank"));
+      throw(FileReadError(_filename, "PSF failed reading second header blank"));
 
     // next line is the number of atoms
     
     if (!getline(is, input))
-      throw(ParseError("PSF failed reading natom line"));
+      throw(FileReadError(_filename, "PSF failed reading natom line"));
     int num_atoms;
     if (!(std::stringstream(input) >> num_atoms))
-      throw(ParseError("PSF has malformed natom line"));
+      throw(FileReadError(_filename, "PSF has malformed natom line"));
 
     for (int i=0; i<num_atoms; i++) {
-      if (!getline(is, input))
-        throw(ParseError("Failed reading PSF atom line "));
-      //throw(ParseError("Failed reading PSF atom line " + std::string(i)));
+      if (!getline(is, input)) {
+	std::ostringstream oss;
+	oss << "Failed reading PSF atom line for atom #" << (i+1);
+        throw(FileReadError(_filename, oss.str()));
+      }
       parseAtomRecord(input);
     }
 
     // next line is blank 
     if (!getline(is, input))
-      throw(ParseError("PSF failed reading blank after atom lines"));
+      throw(FileReadError(_filename, "PSF failed reading blank after atom lines"));
 
     // next block of lines is the list of bonds
     // Bond title line
     if (!getline(is, input))
-      throw(ParseError("PSF failed reading nbond line"));
+      throw(FileReadError(_filename, "PSF failed reading nbond line"));
     int num_bonds;
     if (!(std::stringstream(input) >> num_bonds))
-      throw(ParseError("PSF has malformed nbond line"));
+      throw(FileReadError(_filename, "PSF has malformed nbond line"));
 
     int bonds_found = 0;
     getline(is, input);
@@ -109,10 +111,10 @@ namespace loos {
 
       while (s.good()) {
         if (!(s >> ind1 >> ind2))
-          throw(LOOSError("PSF error parsing bonds.\n> " + input));
+          throw(FileReadError(_filename, "PSF error parsing bonds.\n> " + input));
 
         if (ind1 > num_atoms || ind2 > num_atoms)
-          throw(LOOSError("PSF bond error: bound atomid exceeds number of atoms.\n> " + input));
+          throw(FileReadError(_filename, "PSF bond error: bound atomid exceeds number of atoms.\n> " + input));
 
         ind1--;  // our indices are 1 off from the numbering in the pdb/psf file
         ind2--;
@@ -130,7 +132,7 @@ namespace loos {
     }
     // sanity check
     if (bonds_found != num_bonds) 
-      throw(ParseError("PSF number of bonds disagrees with number found"));
+      throw(FileReadError(_filename, "PSF number of bonds disagrees with number found"));
 
     deduceAtomicNumberFromMass();
     setGroupConnectivity();
@@ -138,7 +140,7 @@ namespace loos {
 
 
 
-  void PSF::parseAtomRecord(const std::string s) throw(loos::ParseError) {
+  void PSF::parseAtomRecord(const std::string s) {
     gint index;
     std::string segname;
     gint resid;
@@ -155,24 +157,24 @@ namespace loos {
     std::stringstream ss(s);
 
     if (!(ss >> index))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->id(index);
      
     if (!(ss >> segname))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->segid(segname);
 
 
     if (!(ss >> resid))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->resid(resid);
 
     if (!(ss >> resname))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->resname(resname);
 
     if (!(ss >> atomname))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->name(atomname);
 
     // If this is a charmm psf, the atomtype will be an integer.
@@ -182,14 +184,14 @@ namespace loos {
     // discard it.  However, if we ever decide we're going to use this, we'll need
     // to keep track of the distinction between charmm and namd usage.
     if (!(ss >> atomtype))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
 
     if (!(ss >> charge))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->charge(charge);
 
     if (!(ss >> mass))
-      throw(LOOSError("PSF parse error.\n> " + s));
+      throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->mass(mass);
 
     // Is the atom fixed or mobile?

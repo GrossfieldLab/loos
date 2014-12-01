@@ -116,8 +116,13 @@ selectAtoms;
 
 
 // pdbtraj
-%catches(loos::LOOSError, loos::FileReadError) PDBTraj::parseFrame;
+%catches(loos::FileReadError, loos::LOOSError) PDBTraj::parseFrame;
 %catches(loos::FileOpenError) PDBTraj::PDBTraj;
+
+// psf
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) PSF::PSF;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) PSF::create;
+%catches(loos::FileReadError, loos::FileError, loos::LOOSError) PSF::read;
 
 // trajwriter
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) TrajectoryWriter::TrajectoryWriter;
