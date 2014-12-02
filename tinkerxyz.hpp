@@ -49,15 +49,14 @@ namespace loos {
     TinkerXYZ() : _max_index(0) { }
     virtual ~TinkerXYZ() {}
 
-    explicit TinkerXYZ(const std::string& fname) : _max_index(0) {
+    explicit TinkerXYZ(const std::string& fname) : _max_index(0), _filename(fname) {
       std::ifstream ifs(fname.c_str());
-      if (!ifs) {
-        throw(std::runtime_error("Cannot open TinkerXYZ file " + std::string(fname)));
-      }
+      if (!ifs)
+	throw(FileOpenError(fname));
       read(ifs);
     }
 
-    explicit TinkerXYZ(std::istream &ifs) : _max_index(0) {
+    explicit TinkerXYZ(std::istream &ifs) : _max_index(0), _filename("stream") {
       read(ifs);
     }
 
@@ -89,7 +88,7 @@ namespace loos {
     bool parseBoxRecord(const std::string& s);
 
     uint _max_index;
-  
+    std::string _filename;
   };
 
 
