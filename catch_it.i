@@ -1,9 +1,9 @@
 // Exception handling...
 
 
-%catches(loos::FileParseError,\
-	 loos::BadConnectivityError,\
+%catches(loos::ParseError,\
 	 loos::FileOpenError,\
+	 loos::FileReadErrorWithLine,\
 	 loos::FileReadError,\
 	 loos::FileError,\
 	 loos::LOOSError,\
@@ -11,9 +11,10 @@
 	 std::logic_error) \
 createSystem;
 
-%catches(loos::AmberNetcdfOpenError,\
-	 loos::AmberNetcdfError,\
-	 loos::FileOpenError,\
+%catches(loos::FileParse,\
+	 loos::BadConnectivityError,\
+	 loos::FileOpenError,	    \
+	 loos::FileReadErrorWithLine,\
 	 loos::FileReadError,\
 	 loos::FileError,\
 	 loos::LOOSError,\
