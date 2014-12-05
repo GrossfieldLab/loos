@@ -78,6 +78,7 @@ selectAtoms;
 
 // dcd
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) DCD::DCD;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) DCD::create;
 %catches(loos::FileReadError, loos::LOOSError) DCD::parseFrame;
 
 // dcdwriter
@@ -93,7 +94,7 @@ selectAtoms;
 
 %catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::Gromacs;
 %catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::create;
-%catches(loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::Gromacs;
+
 
 // pdb_remarks
 
@@ -123,6 +124,17 @@ selectAtoms;
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) PSF::PSF;
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) PSF::create;
 %catches(loos::FileReadError, loos::FileError, loos::LOOSError) PSF::read;
+
+// TinkerArc
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) TinkerArc::TinkerArc;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) TinkerArc::create;
+%catches(loos::FileReadError, loos::LOOSError) TinkerArc::parseFrame;
+
+// tinkerxyz
+%catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) TinkerXYZ::TinkerXYZ;
+%catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) TinkerXYZ::create;
+%catches(loos::FileReadError, loos::FileError, loos::LOOSError) TinkerXYZ::read;
+
 
 // trajwriter
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) TrajectoryWriter::TrajectoryWriter;
