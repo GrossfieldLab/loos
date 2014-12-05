@@ -147,6 +147,10 @@ selectAtoms;
 %catches(std::logic_error) parseStringAsHybrid36;
 %catches(std::logic_error, loos::LOOSError) hybrid36AsString;
 
+// xtc
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) XTC::XTC;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) XTC::create;
+
 // xtcwrite
 
 %catches(loos::FileReadError, loos::FileOpenError, loos::FileError, loos::LOOSError) XTCWriter::XTCWriter;

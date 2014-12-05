@@ -345,7 +345,7 @@ namespace loos {
       float* tmp_coords = new float[size3];
       uint n = xdr_file.read(tmp_coords, size3);
       if (n != size3)
-	  throw(std::runtime_error("XTC Error: number of uncompressed coords read did not match number expected"));
+	throw(FileReadError(_filename, "XTC Error: number of uncompressed coords read did not match number expected"));
       
       uint i = 0;
       for (uint j=0; j<lsize; ++j, i += 3)
@@ -362,7 +362,7 @@ namespace loos {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx > natoms_)
-        throw(std::runtime_error("atom index into trajectory frame is out of range"));
+        throw(LOOSError(**i, "atom index into trajectory frame is out of range"));
       (*i)->coords(coords_[idx]);
     }
     
@@ -400,8 +400,7 @@ namespace loos {
     if (magic_no != magic) {
       std::ostringstream oss;
       oss << "Invalid XTC magic number (got " << magic_no << " but expected " << magic << ")";
-      throw(std::runtime_error(oss.str()));
-      //      throw(std::runtime_error("Invalid XTC magic number"));
+      throw(FileReadError(_filename, oss.str()));
     }
 
     // Defer error-checks until the end...
@@ -411,7 +410,7 @@ namespace loos {
     xdr_file.read(hdr.time);
     ok = xdr_file.read(hdr.box, 9);
     if (!ok)
-      throw(std::runtime_error("Error while reading XTC frame header"));
+      throw(FileReadError(_filename, "Problem reading XTC header"));
 
     return(true);
   }
@@ -440,7 +439,7 @@ namespace loos {
       if (natoms_ == 0)
         natoms_ = h.natoms;
       else if (natoms_ != h.natoms)
-        throw(std::runtime_error("XTC frames have differing numbers of atoms"));
+        throw(FileError(_filename, "XTC frames have differing numbers of atoms"));
 
       uint block_size = sizeof(internal::XDRReader::block_type);
 
@@ -456,7 +455,7 @@ namespace loos {
 	  uint dummy;
 	  xdr_file.read(dummy);
 	  if (dummy != natoms_)
-	      throw(std::runtime_error("XTC small system vector size is not what was expected"));
+	    throw(FileError(_filename, "XTC small system vector size is not what was expected"));
       } else {
 	  offset = 9 * block_size;
 	  ifs()->seekg(offset, std::ios_base::cur);
@@ -477,7 +476,7 @@ namespace loos {
 
   void XTC::seekFrameImpl(const uint i) {
     if (i >= frame_indices.size())
-      throw(std::runtime_error("Trying to seek past the end of the file"));
+      throw(FileError(_filename, "Requested XTC frame is out of range"));
     
     ifs()->clear();
     ifs()->seekg(frame_indices[i], std::ios_base::beg);
