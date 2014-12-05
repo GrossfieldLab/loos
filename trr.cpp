@@ -51,10 +51,10 @@ namespace loos {
     else if (hdr.f_size)
       i = hdr.f_size/(hdr.natoms * DIM);
     else
-      throw(std::runtime_error("Cannot determine float size"));
+      throw(FileReadError(_filename, "Cannot determine float size"));
 
     if (i != sizeof(float) && i != sizeof(double))
-      throw(std::runtime_error("Float size does not match native sizes"));
+      throw(FileReadError(_filename, "Float size does not match native sizes"));
 
     return(i);
   }
@@ -71,7 +71,7 @@ namespace loos {
       std::ostringstream oss;
       oss << "Invalid magic number in TRR file...expected " << magic << ", but found " << magic_no;
       
-      throw(std::runtime_error(oss.str().c_str()));
+      throw(FileReadError(_filename, oss.str()));
     }
     
 
@@ -108,7 +108,7 @@ namespace loos {
     }
 
     if ((xdr_file.get())->fail())
-      throw(std::runtime_error("Error reading TRR header"));
+      throw(FileReadError(_filename, "Cannot read TRR header"));
 
     return(true);
   }
@@ -163,7 +163,7 @@ namespace loos {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (static_cast<uint>(idx) >= natoms())
-        throw(std::runtime_error("atom index into trajectory frame is out of range"));
+        throw(LOOSError(**i, "atom index into trajectory frame is out of range"));
       (*i)->coords(coords_[idx]);
     }
 
@@ -173,7 +173,7 @@ namespace loos {
 
   void TRR::seekFrameImpl(uint i) {
     if (i >= frame_indices.size())
-      throw(std::runtime_error("Trying to seek past the end of the file"));
+      throw(FileError(_filename, "Requested TRR frame is out of range"));
     
     ifs()->clear();
     ifs()->seekg(frame_indices[i], std::ios_base::beg);
