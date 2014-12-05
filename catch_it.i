@@ -11,7 +11,7 @@
 	 std::logic_error) \
 createSystem;
 
-%catches(loos::FileParse,\
+%catches(loos::ParseError,\
 	 loos::BadConnectivityError,\
 	 loos::FileOpenError,	    \
 	 loos::FileReadErrorWithLine,\
