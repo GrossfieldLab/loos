@@ -83,11 +83,9 @@ namespace loos {
     }
 
 
-    // Throwing in dtors is bad...we ignore the close error for now...
     ~AmberNetcdf() {
-      int retval = nc_close(_ncid);
-      //      if (retval)
-      //        throw(AmberNetcdfError("Error while closing netcdf file", retval));
+      // ignore the return code since throwing in destructors is bad...
+      nc_close(_ncid);
 
       delete[] _coord_data;
       delete[] _box_data;
