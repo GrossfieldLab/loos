@@ -85,6 +85,7 @@ namespace loos {
 
 
   // Read the F77 record length from the file stream
+  // Returns 0 at EOF
 
   unsigned int DCD::readRecordLen(void) {
     DataOverlay o;
@@ -92,7 +93,7 @@ namespace loos {
     ifs()->read(o.c, 4);
 
     if (ifs()->eof())
-      throw(FileReadError(_filename, "Unexpected EOF while reading DCD record length"));
+      return(0);
     if (ifs()->fail())
       throw(FileReadError(_filename, "Unable to read DCD record length"));
 
@@ -126,14 +127,18 @@ namespace loos {
 
   // Read a full line of F77-formatted data.
   // Returns a pointer to the read data and puts the # of bytes read into *len
+  // Returns a null pointer and 0 length at EOF
   // Note:  It is up to the caller to swab individual elements...
 
   DCD::DataOverlay* DCD::readF77Line(unsigned int *len) {
     DataOverlay* ptr;
     unsigned int n, n2;
 
+    *len = 0;
     n = readRecordLen();
-
+    if (n == 0)
+      return(0);
+    
     ptr = new DataOverlay[n];
 
     ifs()->read((char *)ptr, n);
@@ -190,6 +195,8 @@ namespace loos {
     // Now read in the TITLE info...
 
     ptr = readF77Line(&len);
+    if (!ptr)
+      throw(FileReadError(_filename, "Unexpected EOF reading DCD TITLE"));
     char sbuff[81];
     int ntitle = ptr[0].i;
     if (swabbing)
@@ -236,11 +243,13 @@ namespace loos {
   // NOTE: This is already double!
 
 
-  void DCD::readCrystalParams(void) {
+  bool DCD::readCrystalParams(void) {
     unsigned int len;
     DataOverlay* o;
 
     o = readF77Line(&len);
+    if (!o)
+      return(false);
 
     if (len != 48)
       throw(FileReadError(_filename, "Cannot read crystal parameters"));
@@ -259,20 +268,24 @@ namespace loos {
             qcrys[i] = swab(qcrys[i]);
 
     delete[] o;
+
+    return(true);
   }
 
 
 
   // Read a line of coordinates into the specified vector.
 
-  void DCD::readCoordLine(std::vector<dcd_real>& v) {
+  bool DCD::readCoordLine(std::vector<dcd_real>& v) {
     DataOverlay *op;
     int n = _natoms * sizeof(dcd_real);
     unsigned int len;
 
 
     op = readF77Line(&len);
-
+    if (!op)
+      return(false);
+    
     if (len != (unsigned int)n)
       throw(FileReadError(_filename, "Size of coords stored in frame does not match model size"));
 
@@ -286,6 +299,7 @@ namespace loos {
 
     delete[] op;
 
+    return(true);
   }
 
 
@@ -314,15 +328,21 @@ namespace loos {
     if (first_frame_pos == 0)
       throw(FileReadError(_filename, "Trying to read a DCD frame without first having read the header."));
 
+    // This will not catch most cases of reading to the end of the file...
     if (ifs()->eof())
       return(false);
 
     if (hasCrystalParams())
-      readCrystalParams();
+      if (!readCrystalParams())
+	return(false);
 
-    readCoordLine(xcrds);
-    readCoordLine(ycrds);
-    readCoordLine(zcrds);
+    if (!readCoordLine(xcrds))
+      return(false);
+    
+    if (!readCoordLine(ycrds))
+      throw(FileReadError(_filename, "Unexpected EOF reading Y-coordinates from DCD"));
+    if (!readCoordLine(zcrds))
+      throw(FileReadError(_filename, "Unexepcted EOF reading Z-coordinates from DCD"));
   
     return(true);
   }

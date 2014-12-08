@@ -62,7 +62,6 @@ namespace loos {
    *  - Endian detection is based on the expected size of the header
    */
   class DCD : public Trajectory {
-
     static bool suppress_warnings;
 
     
@@ -70,6 +69,10 @@ namespace loos {
     typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay;
 
   public:
+    class EndOfFile : public LOOSError {
+    public:
+      EndOfFile() : LOOSError("unexpected end of file while reading DCD") { }
+    };
 
     //! Begin reading from the file named s
     explicit DCD(const std::string s) :  Trajectory(s), _natoms(0),
@@ -166,14 +169,14 @@ namespace loos {
 
 
     void allocateSpace(const int n);
-      void readCrystalParams(void);
-      void readCoordLine(std::vector<float>& v);
+    bool readCrystalParams(void);
+    bool readCoordLine(std::vector<float>& v);
 
-      void endianMatch(StreamWrapper& fsw);
+    void endianMatch(StreamWrapper& fsw);
 
     // For reading F77 I/O
-      unsigned int readRecordLen(void);
-      DataOverlay* readF77Line(unsigned int *len);
+    unsigned int readRecordLen(void);
+    DataOverlay* readF77Line(unsigned int *len);
 
 
 
