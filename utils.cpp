@@ -129,7 +129,7 @@ namespace loos {
     char* current_dir = 0;
     char* cwdbuf = new char[cwdbufsiz];
     if (cwdbuf == 0)
-      std::cerr << "WARNING- cannot allocate space for determining current working directory\n";
+      throw(LOOSError("Cannot allocate space for determining current working directory"));
     else
       current_dir = getcwd(cwdbuf, cwdbufsiz);
 

@@ -144,9 +144,13 @@ selectAtoms;
 
 // utils.cpp
 
-%catches(loos::ParseError) selectAtoms;
+%catches(loos::ParseError, loos::LOOSError) selectAtoms;
 %catches(std::logic_error) parseStringAsHybrid36;
 %catches(std::logic_error, loos::LOOSError) hybrid36AsString;
+
+%catches(std::ios_base::failure) getNextLine;
+%catches(loos::LOOSError) invocationHeader;
+
 
 // xtc
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) XTC::XTC;
