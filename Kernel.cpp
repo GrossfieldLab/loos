@@ -58,8 +58,6 @@ namespace loos {
       }
     }
     
-    if (stack().size() != 0)
-      throw(LOOSError("Non-empty value stack at the end of Kernel::execute()."));
   }
 
     

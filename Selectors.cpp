@@ -170,12 +170,12 @@ namespace loos {
   bool KernelSelector::operator()(const pAtom& pa) const {
     krnl.execute(pa);
     if (krnl.stack().size() != 1) {
-      throw(std::runtime_error("Execution error - unexpected values on stack"));
+      throw(LOOSError("Execution error - unexpected values on stack"));
     }
     
     internal::Value results = krnl.stack().pop();
     if (results.type != internal::Value::INT)
-      throw(std::runtime_error("Execution error - unexpected value on top of stack"));
+      throw(LOOSError("Execution error - unexpected value on top of stack"));
     
     return(results.itg);
   }
