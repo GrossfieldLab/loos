@@ -68,6 +68,16 @@ selectAtoms;
 %catches(loos::FileError) AmberTraj::seekFrameImpl;
 %catches(loos::LOOSError) AmberTraj::updateGroupCoordsImpl;
 
+// Atom
+%catches(loos::LOOSError) Atom::checkUserBits;
+%catches(loos::LOOSError) Atom::setProperty;
+%catches(loos::LOOSError) Atom::clearProperty;
+%catches(loos::UnsetProperty) Atom::charge;
+%catches(loos::LOOSError) Atom::deleteBond;
+%catches(loos::UnsetProperty) Atom::getBonds;
+
+
+
 // AtomicGroup
 %catches(std::out_of_range) AtomicGroup::rangeCheck;
 %catches(std::out_of_range) AtomicGroup::getAtom;

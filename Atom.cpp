@@ -83,7 +83,7 @@ namespace loos {
   double Atom::occupancy(void) const { return(_q); }
   void Atom::occupancy(const double d) { _q = d ; }
 
-  double Atom::charge(void) const throw(loos::UnsetProperty) {
+  double Atom::charge(void) const {
     if (!(mask & chargebit))
       throw(loos::UnsetProperty("Atom has no charge set"));
     return(_charge);
@@ -110,10 +110,10 @@ namespace loos {
   void Atom::addBond(const int i) { bonds.push_back(i); setPropertyBit(bondsbit); }
 
     //! Deletes the specified bond.
-  void Atom::deleteBond(const int b) throw(std::runtime_error) {
+  void Atom::deleteBond(const int b) {
     std::vector<int>::iterator i = find(bonds.begin(), bonds.end(), b);
     if (i == bonds.end())
-      throw(std::runtime_error("Attempting to delete a non-existent bond"));
+      throw(LOOSError(*self, "Attempting to delete a non-existent bond"));
     bonds.erase(i);
     if (bonds.size() == 0)
       clearPropertyBit(bondsbit);
@@ -123,7 +123,7 @@ namespace loos {
   void Atom::deleteBond(const pAtom& p) { deleteBond(p->id()); }
 
     //! Returns a copy of the bond list.
-  std::vector<int> Atom::getBonds(void) const throw(loos::UnsetProperty) {
+  std::vector<int> Atom::getBonds(void) const {
     if (!(mask & bondsbit))
       throw(loos::UnsetProperty("Atom has no connectivity"));
     return(bonds);
@@ -160,9 +160,9 @@ namespace loos {
   bool Atom::checkProperty(const bits bitmask) { return((mask & bitmask) != 0); }
 
 
-  void Atom::checkUserBits(const bits bitmask) throw(std::logic_error) {
+  void Atom::checkUserBits(const bits bitmask) {
     if (! bitmask & (flagbit|usr1bit|usr2bit|usr3bit) )
-      throw(std::logic_error("Attempting to set a non-user property bit in an Atom"));
+      throw(LOOSError("Attempting to set a non-user property bit in an Atom"));
   }
 
   void Atom::setProperty(const bits bitmask) {
