@@ -69,7 +69,7 @@ namespace loos {
 
 
   // Internal: verify the index into the atom array...
-  int AtomicGroup::rangeCheck(int i) const throw(std::out_of_range) {
+  int AtomicGroup::rangeCheck(int i) {
     if (i < 0)
       i = atoms.size() + i;
     if ((unsigned int)i >= atoms.size())
@@ -99,12 +99,12 @@ namespace loos {
   }
 
   // Internal: removes an atom from this group based on the address of the shared pointer...
-  void AtomicGroup::deleteAtom(pAtom pa) throw(std::runtime_error) {
+  void AtomicGroup::deleteAtom(pAtom pa) {
     std::vector<pAtom>::iterator iter;
 
     iter = find(atoms.begin(), atoms.end(), pa);
     if (iter == atoms.end())
-      throw(std::runtime_error("Attempting to delete a non-existent atom"));
+      throw(LOOSError(pa, "Attempting to delete an atom that is not in the passed AtomicGroup"));
 
     atoms.erase(iter);
     _sorted = false;
@@ -251,7 +251,7 @@ namespace loos {
   // Internal: calculates the start and stop iterators given offset and len args
   // as in PERL's substr()...
 
-  boost::tuple<AtomicGroup::iterator, AtomicGroup::iterator> AtomicGroup::calcSubsetIterators(const int offset, const int len) throw(std::range_error) {
+  boost::tuple<AtomicGroup::iterator, AtomicGroup::iterator> AtomicGroup::calcSubsetIterators(const int offset, const int len) {
     unsigned int a, b;
 
     if (offset < 0) {
@@ -524,20 +524,26 @@ namespace loos {
   }
 
 
-  //! Note: when calling this, you'll want to make sure you use the 
-  //! outermost group (eg the psf or pdb you used to create things, rather than
-  //! using a subselection, unless you're sure the subsection contains these
-  //! atoms as well.  The main use of this routine is to create a group of atoms
-  //! bound to another atom.
-  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) const throw(std::out_of_range) {
+  /**
+   * Note: when calling this, you'll want to make sure you use the 
+   * outermost group (eg the psf or pdb you used to create things, rather than
+   * using a subselection, unless you're sure the subsection contains these
+   * atoms as well.  The main use of this routine is to create a group of atoms
+   * bound to another atom.
+   *
+   * Any missing atoms are ignored...  This is in contrast with the previous
+   * behavior where missing atoms would throw an exception
+   */
+
+  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) {
     AtomicGroup result;
 
     result.box = box;
 
     for (unsigned int i=0; i<id_list.size(); i++) {
       pAtom pa = findById(id_list[i]);
-      if (!pa) throw(std::out_of_range("Atom id doesn't exist"));
-      result.addAtom(pa);
+      if (pa)
+	result.addAtom(pa);
     }
     return(result);
   }
@@ -793,9 +799,9 @@ namespace loos {
   }
 
 
-  void AtomicGroup::reimage() throw(std::runtime_error) {
+  void AtomicGroup::reimage() {
     if (!(isPeriodic()))
-      throw(std::runtime_error("trying to reimage a non-periodic group"));
+      throw(LOOSError("trying to reimage a non-periodic group"));
     GCoord com = centroid();
     GCoord reimaged = com;
     reimaged.reimage(periodicBox());
@@ -806,9 +812,9 @@ namespace loos {
     }
   }
 
-  void AtomicGroup::reimageByAtom () throw(std::runtime_error) {
+  void AtomicGroup::reimageByAtom () {
     if (!(isPeriodic()))
-      throw(std::runtime_error("trying to reimage a non-periodic group"));
+      throw(LOOSError("trying to reimage a non-periodic group"));
     const_iterator a;
     GCoord box = periodicBox();
     for (a=atoms.begin(); a!=atoms.end(); a++) {
@@ -938,7 +944,7 @@ namespace loos {
   }
 
 
-  std::vector<uint> AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) throw(loos::LOOSError) {
+  std::vector<uint> AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) {
     if (g.size() != size())
       throw(LOOSError("Cannot map atom order between groups of different sizes"));
 
@@ -966,7 +972,7 @@ namespace loos {
     return(order);
   }
 
-  void AtomicGroup::copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) throw(loos::LOOSError){
+  void AtomicGroup::copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& map) {
     if (g.size() != map.size())
       throw(LOOSError("Atom order map is of incorrect size to copy coordinates"));
     if (g.size() != size())

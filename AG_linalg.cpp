@@ -44,7 +44,7 @@
 namespace loos {
 
 
-  std::vector<GCoord> AtomicGroup::momentsOfInertia(void) const throw(loos::NumericalError) {
+  std::vector<GCoord> AtomicGroup::momentsOfInertia(void) const {
     Math::Matrix<double, Math::ColMajor> I(3, 3);  // This gets initialized to zero...
     GCoord c = centerOfMass();
 
@@ -100,7 +100,7 @@ namespace loos {
   }
 
 
-  std::vector<GCoord> AtomicGroup::principalAxes(void) const throw(loos::NumericalError) {
+  std::vector<GCoord> AtomicGroup::principalAxes(void) const {
     // Extract out the group's coordinates...
     int i;
     int n = size();
@@ -185,7 +185,7 @@ namespace loos {
 
 
 
-  GMatrix AtomicGroup::superposition(const AtomicGroup& grp) throw(loos::NumericalError){
+  GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
     int i, j;
     XForm W;
 

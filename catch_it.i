@@ -68,6 +68,27 @@ selectAtoms;
 %catches(loos::FileError) AmberTraj::seekFrameImpl;
 %catches(loos::LOOSError) AmberTraj::updateGroupCoordsImpl;
 
+// AtomicGroup
+%catches(std::out_of_range) AtomicGroup::rangeCheck;
+%catches(std::out_of_range) AtomicGroup::getAtom;
+%catches(std::out_of_range) AtomicGroup::operator[];
+%catches(loos::LOOSError) AtomicGroup::deleteAtom;
+%catches(std::out_of_range) AtomicGroup::subset;
+%catches(std::out_of_range) AtomicGroup::excise;
+%catches(loos::LOOSError) AtomicGroup::reimage;
+%catches(loos::LOOSError) AtomicGroup::reimageByAtom;
+%catches(loos::LOOSError) AtomicGroup::mergeImage;
+%catches(loos::LOOSError) AtomicGroup::atomOrderMapFrom;
+%catches(loos::LOOSError) AtomicGroup::copyMappedCoordinatesFrom;
+
+%catches(loos::LOOSError) AtomicGroup::rmsd;
+
+%catches(loos::NumericalError) AtomicGroup::momentsOfInertia;
+%catches(loos::NumericalError) AtomicGroup::principalAxes;
+%catches(loos::NumericalError) AtomicGroup::superposition;
+%catches(loos::NumericalError) AtomicGroup::alignOnto;
+
+
 // ccpdb
 %catches(loos::FileReadError, loos::LOOSError) CCPDB::parseFrame;
 %catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) CCPDB::CCPDB;
