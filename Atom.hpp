@@ -188,7 +188,7 @@ namespace loos {
     void deleteBond(const pAtom&);
 
     //! Returns a copy of the bond list.
-    std::vector<int> getBonds(void);
+    std::vector<int> getBonds(void) const;
 
     //! Sets the bonds list
     void setBonds(const std::vector<int>& list);

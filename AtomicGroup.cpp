@@ -69,7 +69,7 @@ namespace loos {
 
 
   // Internal: verify the index into the atom array...
-  int AtomicGroup::rangeCheck(int i) {
+  int AtomicGroup::rangeCheck(int i) const {
     if (i < 0)
       i = atoms.size() + i;
     if ((unsigned int)i >= atoms.size())
@@ -104,7 +104,7 @@ namespace loos {
 
     iter = find(atoms.begin(), atoms.end(), pa);
     if (iter == atoms.end())
-      throw(LOOSError(pa, "Attempting to delete an atom that is not in the passed AtomicGroup"));
+      throw(LOOSError(*pa, "Attempting to delete an atom that is not in the passed AtomicGroup"));
 
     atoms.erase(iter);
     _sorted = false;
@@ -535,7 +535,7 @@ namespace loos {
    * behavior where missing atoms would throw an exception
    */
 
-  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) {
+  AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) const {
     AtomicGroup result;
 
     result.box = box;

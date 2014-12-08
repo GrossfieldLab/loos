@@ -113,7 +113,7 @@ namespace loos {
   void Atom::deleteBond(const int b) {
     std::vector<int>::iterator i = find(bonds.begin(), bonds.end(), b);
     if (i == bonds.end())
-      throw(LOOSError(*self, "Attempting to delete a non-existent bond"));
+      throw(LOOSError(*this, "Attempting to delete a non-existent bond"));
     bonds.erase(i);
     if (bonds.size() == 0)
       clearPropertyBit(bondsbit);
