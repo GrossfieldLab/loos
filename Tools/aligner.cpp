@@ -325,7 +325,7 @@ int main(int argc, char *argv[]) {
     
     // Now apply the alignment transformations to the requested subsets
     for (unsigned int i = 0; i<nframes; i++) {
-      traj->readFrame(i);
+      traj->readFrame(indices[i]);
       traj->updateGroupCoords(model);
       GCoord original_center;
       if (topts->no_ztrans)

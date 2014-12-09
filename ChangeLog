@@ -1,5 +1,8 @@
 2014-12-09    <tromo@hill.urmc-sh.rochester.edu>
 
+	* Fixed bug in aligner that caused incorrect output when using subset of
+	the trajectory (i.e. giving a stride, a skip, or some ranges on the
+	command line)
 	* Changed entire exception framework.  Almost all exceptions thrown
 	by LOOS now derive from LOOSError.  Most exceptions are now global
 	as well.
