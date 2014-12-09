@@ -397,23 +397,8 @@ if ( !one_res_lipid && !three_res_lipid)
     // won't work, and I don't have access to anything else (eg AMBER GAFF).
     string sel1 = string("name =~ \"^C[1-9]$\"");
     string sel3 = string("name =~ \"^C[1-9][0-9][0-9]$\"");
-    AtomicGroup a1, a3;
-    try 
-        {
-        a1 = selectAtoms(main_selection, sel1.c_str());
-        }
-    catch (loos::NullResult e)
-        {
-        // discard this error, it just means nothing matched
-        }
-    try 
-        {
-        a3 = selectAtoms(main_selection, sel3.c_str());
-        }
-    catch (loos::NullResult e)
-        {
-        // discard this error, it just means nothing matched
-        }
+    AtomicGroup a1 = selectAtoms(main_selection, sel1.c_str());
+    AtomicGroup a3 = selectAtoms(main_selection, sel3.c_str());
 
     if ( (a1.size() > 0) && (a3.size() == 0) )
         {
