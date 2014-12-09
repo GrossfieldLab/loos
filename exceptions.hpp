@@ -67,19 +67,6 @@ namespace loos {
   };
 
 
-  //! Exception cause by some operation failing (ie no atoms selected)
-  class NullResult : public LOOSError {
-  public:
-    explicit NullResult(const std::string& arg) : LOOSError(arg) { }
-  };
-
-  //! Exception caused by insufficient atom properties.. (DEPRECATED)
-  class MissingProperty : public LOOSError {
-  public:
-    explicit MissingProperty(const std::string& arg) : LOOSError(arg) { }
-    explicit MissingProperty(const Atom& a, const std::string& arg) : LOOSError(a, arg) { }
-  };
-
   class UnsetProperty : public LOOSError {
   public:
     UnsetProperty() : LOOSError("Attempting to access an unset atom property") {}
@@ -99,12 +86,6 @@ namespace loos {
     explicit NumericalError(const std::string& arg) : LOOSError(arg) { }
   };
 
-
-  //! Exception caused by inability to assign atomic numbers
-  class UnknownAtomicMass : public LOOSError {
-  public:
-    explicit UnknownAtomicMass(const std::string& arg) : LOOSError(arg) { }
-  };
 
   class FileError : public LOOSError {
   protected:
@@ -211,61 +192,6 @@ namespace loos {
   
 
 
-  //! Exception for writing trajectories
-  class TrajectoryWriteError : public LOOSError {
-  public:
-    TrajectoryWriteError() : LOOSError("Error while writing trajectory") {}
-    TrajectoryWriteError(const std::string& arg) : LOOSError(arg) {}
-  };
-
-  //! Exception for Reading trajectories
-  class TrajectoryReadError : public LOOSError {
-  public:
-    TrajectoryReadError() : LOOSError("Error while reading from trajectory") {}
-    TrajectoryReadError(const std::string& arg) : LOOSError(arg) {}
-  };
-
-
-  class EndOfFile : public LOOSError {
-  public:
-    EndOfFile() : LOOSError("Attempting to read past end of file") {}
-    EndOfFile(const std::string& arg) : LOOSError(arg) {}
-  };
-
-  //! Exceptions for reading Amber NetCDF files
-  struct AmberNetcdfError : public LOOSError {
-    explicit AmberNetcdfError(const std::string& msg) : LOOSError(msg) { }
-    explicit AmberNetcdfError(const std::string& msg, const int retval) {
-      std::stringstream ss;
-      ss << msg << " with error #" << retval;
-      _msg = ss.str();
-    }
-
-  };
-
-  struct AmberNetcdfOpenError : public AmberNetcdfError {
-    explicit AmberNetcdfOpenError() : AmberNetcdfError("Error opening Amber NetCDF file") { }
-  };
-
-  struct AmberNetcdfTypeError : public AmberNetcdfError {
-    explicit AmberNetcdfTypeError(const std::string msg) : AmberNetcdfError(msg) { }
-  };
-  
-
-  struct BadConnectivityError : public LOOSError {
-    explicit BadConnectivityError(const std::string& msg) : LOOSError(msg) {}
-  };
-
-
-
-  class FileParseError : public LOOSError {
-  public:
-    explicit FileParseError(const std::string& arg, const uint lineno) {
-      std::stringstream ss;
-      ss << arg << " at line " << lineno;
-      _msg = ss.str();
-    }
-  };
 
 };
 

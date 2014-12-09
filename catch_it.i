@@ -12,7 +12,6 @@
 createSystem;
 
 %catches(loos::ParseError,\
-	 loos::BadConnectivityError,\
 	 loos::FileOpenError,	    \
 	 loos::FileReadErrorWithLine,\
 	 loos::FileReadError,\
