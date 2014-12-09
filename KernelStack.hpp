@@ -34,6 +34,8 @@
 
 
 #include <loos_defs.hpp>
+#include <exceptions.hpp>
+
 #include "KernelValue.hpp"
 
 
@@ -44,7 +46,7 @@ namespace loos {
     class ValueStack {
       std::vector<Value> values;
 
-      void notEmpty(void) const;
+      void requireNotEmpty(void) const;
 
     public:
       void push(const Value&);

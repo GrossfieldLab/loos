@@ -46,13 +46,6 @@ namespace loos {
 
 
 
-    explicit AmberRst(const char* p, const int na) : Trajectory(p), _natoms(na),
-                                                     current_time(0.0),
-                                                     periodic(false), seek_flag(false) {
-      parseFrame();
-      cached_first = true;
-    }
-
     std::string description() const { return("Amber restart (single frame trajectory)"); }
     static pTraj create(const std::string& fname, const AtomicGroup& model) {
       return(pTraj(new AmberRst(fname, model.size())));

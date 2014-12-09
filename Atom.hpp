@@ -30,6 +30,7 @@
 #include <functional>
 
 #include <loos_defs.hpp>
+#include <exceptions.hpp>
 #include <Coord.hpp>
 
 namespace loos {
@@ -49,6 +50,16 @@ namespace loos {
   class Atom {
   public:
 
+    //! DEPRECATED exception class...use loos::UnsetProperty instead
+    class UnsetProperty : public LOOSError {
+    public:
+      UnsetProperty() : LOOSError("Attempting to access an unset atom property") {}
+      UnsetProperty(const std::string& p) : LOOSError(p) {}
+      UnsetProperty(const Atom& a, const std::string& p) : LOOSError(a, p) {}
+    };
+
+
+
     // Be careful that we don't overflow an unsigned long!
     //! Bits in the bitmask that flag what properties have actually been set.
     enum bits {
@@ -64,19 +75,6 @@ namespace loos {
       usr3bit = usr2bit << 1,
       indexbit = usr3bit << 1
     };
-
-    // Exception classes
-    struct UnsetProperty : public std::exception {
-      UnsetProperty() { message = "Attempting to access an unset atom property"; }
-      UnsetProperty(const char* p) : message(p) { }
-
-      virtual const char *what() const throw() {
-        return(message);
-      }
-
-      const char* message;
-    };
-
 
     Atom() { init(); }
 
@@ -133,10 +131,12 @@ namespace loos {
     std::string PDBelement(void) const;
     void PDBelement(const std::string);
 
+#if !defined(SWIG)
     //! Returns a const ref to internally stored coordinates.
     //! This returns a const ref mainly for efficiency, rather than
     //! copying the coords...
     const GCoord& coords(void) const;
+#endif // !defined(SWIG)
 
     //! Returns a writable ref to the internally stored coords.
     /** This can cause problems since we track whether the coords are
@@ -155,6 +155,7 @@ namespace loos {
     double occupancy(void) const;
     void occupancy(const double);
 
+    // Note: swig requires explicit namespace on exception objects
     double charge(void) const;
 
     //! Sets the charge of the atom as a double.  This is NOT the PDB spec...
@@ -230,8 +231,10 @@ namespace loos {
     //! Clears user-defined bits...
     void clearProperty(const bits bitmask);
 
+#if !defined(SWIG)
     //! Outputs an atom in pseudo-XML
     friend std::ostream& operator<<(std::ostream&, const Atom&);
+#endif
 
   private:
     void init(void);
@@ -259,7 +262,7 @@ namespace loos {
   };
 
 
-
+#if !defined(SWIG)
   //! Compares two atoms based solely on name, id, resid, resname, and segid
   struct AtomEquals : public std::binary_function<pAtom, pAtom, bool> {
     bool operator()(const pAtom& a, const pAtom& b) const;
@@ -278,6 +281,7 @@ namespace loos {
     double threshold;
   };
 
+#endif // !defined(SWIG)
 }
 
 #endif

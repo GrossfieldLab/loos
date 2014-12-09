@@ -43,16 +43,16 @@ namespace loos {
 
     // first line is the header, first field is number of atoms
     if (!getline(is, input))
-      throw(std::runtime_error("Failed reading first line of xyz"));
+      throw(FileReadError(_filename, "Failed reading first line of xyz"));
     int num_atoms = 0;
     if (!(std::stringstream(input) >> num_atoms))
-      throw(std::runtime_error("TinkerXYZ has malformed header"));
+      throw(FileReadError(_filename, "TinkerXYZ has malformed header"));
 
     if (!getline(is, input)) 
-      throw(std::runtime_error("Failed reading 2nd line of Tinker file"));
+      throw(FileReadError(_filename, "Failed reading 2nd line of Tinker file"));
     if (parseBoxRecord(input)) {
       if (!getline(is, input)) {
-        throw(std::runtime_error("Failed reading first atom line of TinkerXYZ"));
+        throw(FileReadError(_filename, "Failed reading first atom line of TinkerXYZ"));
       }
     }
 
@@ -62,7 +62,7 @@ namespace loos {
     for (int i=0; i<num_atoms; i++) {
       parseAtomRecord(input);
       if ((i < (num_atoms-1)) && (!getline(is, input)))
-        throw(std::runtime_error("Failed reading TinkerXYZ atom line "));
+        throw(FileReadError(_filename, "Failed reading TinkerXYZ atom line "));
     }
 
     // Assume all XYZ files have connectivity

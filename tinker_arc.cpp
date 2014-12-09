@@ -56,12 +56,12 @@ namespace loos {
 
   void TinkerArc::seekFrameImpl(const uint i) {
     if (i >= _nframes)
-      throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+      throw(FileError(_filename, "Requested trajectory frame is out of range"));
 
     ifs()->clear();
     ifs()->seekg(indices[i]);
     if (ifs()->fail())
-      throw(std::runtime_error("Error- cannot seek to the requested frame in trajectory."));
+      throw(FileError(_filename, "Cannot seek to the requested frame"));
 
     current_index = i;
     at_end = false;

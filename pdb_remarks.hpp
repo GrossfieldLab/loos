@@ -51,16 +51,19 @@ namespace loos {
     //! Erase the ith remark
     void erase(const int i);
 
+#if !defined(SWIG)
     //! Access the ith remark
     std::string& operator[](const int i);
     //! Access the ith remark
     const std::string& operator[](const int i) const;
 
+    //! Output the Remark(s) in PDB format
+    friend std::ostream& operator<<(std::ostream& os, const Remarks& r);
+#endif // !defined(SWIG)
+
     //! Returns a copy of the remarks vector
     std::vector<std::string> allRemarks(void) const { return(remarks); }
 
-    //! Output the Remark(s) in PDB format
-    friend std::ostream& operator<<(std::ostream& os, const Remarks& r);
 
   private:
     void rangeCheck(const unsigned int i) const;

@@ -62,15 +62,14 @@ namespace loos {
     PSF() { }
     virtual ~PSF() {}
 
-    explicit PSF(const std::string fname) : _max_index(0) {
+    explicit PSF(const std::string& fname) : _max_index(0), _filename(fname) {
       std::ifstream ifs(fname.c_str());
-      if (!ifs) {
-        throw(std::runtime_error("Cannot open PSF file " + std::string(fname)));
-      }
+      if (!ifs)
+        throw(FileOpenError(fname));
       read(ifs);
     }
 
-    explicit PSF(std::fstream &ifs) : _max_index(0) {
+    explicit PSF(std::fstream &ifs) : _max_index(0), _filename("stream") {
       read(ifs);
     }
 
@@ -90,12 +89,10 @@ namespace loos {
   private:
 
     PSF(const AtomicGroup& grp) : AtomicGroup(grp) { }
-
-
     void parseAtomRecord(const std::string s);  
 
     uint _max_index;
-
+    std::string _filename;
   };
 
 

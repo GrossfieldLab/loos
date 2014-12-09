@@ -38,9 +38,10 @@
 
 namespace loos {
 
+#if !defined(SWIG)
   // Forward declaration for matrix-vector multiply
   template<class T> Coord<T> operator*(const Matrix44<T>&, const Coord<T>&);
-
+#endif
 
   //! Specialized 4x4 Matrix class for handling coordinate transforms.
   template<class T>
@@ -69,13 +70,13 @@ namespace loos {
       return(matrix[j*4+i]);
     }
 
+#if !defined(SWIG)
     //! Index the matrix element at row j and col i
     const T& operator()(const int j, const int i) const {
       if (j < 0 || i < 0 || i > 3 || j > 3)
         throw(std::range_error("Indices into matrix are out of range"));
       return(matrix[j*4+i]);
     }
-
 
     //! Allow access to the linear array of matrix elements
     T& operator[](const int i) {
@@ -90,6 +91,30 @@ namespace loos {
         throw(std::range_error("Index into matrix is out of range"));
       return(matrix[i]);
     }
+
+
+    //! Addition of a matrix and a constant.
+    //! Each element in the matrix is added with the constant...
+    //! Relies on the constructor from a constant to handle the case where
+    //! you have a matrix + a constant...
+
+    friend Matrix44<T> operator+(const T lhs, const Matrix44<T>& rhs) {
+      Matrix44<T> res(rhs);
+      res += lhs;
+      return(res);
+    }
+
+    //! Subtraction of a constant from a matrix
+    friend Matrix44<T> operator-(const T lhs, const Matrix44<T>& rhs) {
+      Matrix44<T> res(rhs);
+      res -= lhs;
+      return(res);
+    }
+
+    //! Friend declaration for matrix-vector multiply...
+    friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+
+#endif // !defined(SWIG)
 
     //! Returns the array pointer
     T* data(void) { return(matrix); }
@@ -110,18 +135,6 @@ namespace loos {
       return(res);
     }
 
-
-    //! Addition of a matrix and a constant.
-    //! Each element in the matrix is added with the constant...
-    //! Relies on the constructor from a constant to handle the case where
-    //! you have a matrix + a constant...
-
-    friend Matrix44<T> operator+(const T lhs, const Matrix44<T>& rhs) {
-      Matrix44<T> res(rhs);
-      res += lhs;
-      return(res);
-    }
-
     //! Subtracting matrices
     Matrix44<T>& operator-=(const Matrix44<T>& rhs) {
       int i;
@@ -137,17 +150,6 @@ namespace loos {
       return(res);
     }
 
-    //! Subtraction of a constant from a matrix
-    friend Matrix44<T> operator-(const T lhs, const Matrix44<T>& rhs) {
-      Matrix44<T> res(rhs);
-      res -= lhs;
-      return(res);
-    }
-
-
-
-    //! Friend declaration for matrix-vector multiply...
-    friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
     //! Matrix-matrix multiply...
     Matrix44<T>& operator*=(const Matrix44<T>& rhs) {
@@ -203,6 +205,8 @@ namespace loos {
       return(res);
     }
 
+
+#if !defined(SWIG)
     //! Handle the constant * matrix case
     friend Matrix44<T> operator*(const T x, const Matrix44<T>& rhs) {
       Matrix44<T> res(rhs);
@@ -227,11 +231,13 @@ namespace loos {
       return(os);
     }
 
+#endif // !defined(SWIG)
 
 
   };
 
 
+#if !defined(SWIG)
   //! Matrix-vector multiply
   //! This has to be a friend outside the class for GCC to be happy...
   template<class T> Coord<T> operator*(const Matrix44<T>& M, const Coord<T>& v) {
@@ -244,7 +250,7 @@ namespace loos {
 
     return(result);
   }
-
+#endif // !defined(SWIG)
 
 }
 

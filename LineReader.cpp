@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include <exceptions.hpp>
-#include <LineReader.hpp>
+#include "LineReader.hpp"
 
 namespace loos {
 
@@ -59,30 +59,34 @@ namespace loos {
     _lines.push_back(s);
   }
 
-   std::string LineReader::line() const { return(_current_line); }
+  std::string LineReader::line() const { return(_current_line); }
   
-   unsigned int LineReader::lineNumber() const { return(_lineno); }
+  unsigned int LineReader::lineNumber() const { return(_lineno); }
 
-   void LineReader::checkState() const {
+  void LineReader::checkState() const {
      if (!(_is->good() || _is->eof())) {
 
-       if (_name.empty())
-         throw(FileParseError("Error while reading from " + _name, _lineno));
+       if (! _name.empty())
+         throw(FileReadErrorWithLine(_name, _lineno));
        else
-         throw(FileParseError("Error while reading file", _lineno));
+         throw(FileReadErrorWithLine(_lineno));
      }
    }
 
   void LineReader::stripComment(std::string& s) const {
-    std::string::size_type i = s.find('#');
-    if (i != std::string::npos)
-      s.erase(i, s.length() - i);
+    if (_comment_char != '\0') {
+      std::string::size_type i = s.find('#');
+      if (i != std::string::npos)
+	s.erase(i, s.length() - i); 
+    }
   }
   
   void LineReader::stripLeadingWhitespace(std::string& s) const {
-    std::string::size_type i = s.find_first_not_of(" \t");
-    if (i > 0)
-      s.erase(0, i);
+    if (! _leading_chars.empty()) {
+      std::string::size_type i = s.find_first_not_of(" \t");
+      if (i > 0)
+	s.erase(0, i);
+    }
   }
   
   bool LineReader::skipLine(const std::string& s) const {

@@ -1,6 +1,26 @@
+2014-12-09    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed entire exception framework.  Almost all exceptions thrown
+	by LOOS now derive from LOOSError.  Most exceptions are now global
+	as well.
+	* Changed how Swig interface is generated (from the LOOS header
+	files directly)
+	* Removed char* based constructors in favor of const string&
+	* Added filename tracking within I/O classes for better error messages
+	* Changed DCD::readHeader() to be private
+	* Changed selectAtoms() to ONLY throw in the event of an error in parsing
+	the selection string.  If no atoms are selected, then an empty AtomicGroup
+	is returned.
+	* Changed AtomicGroup::groupFromID() so that missing atoms are ignored
+	rather than cause an exception to be thrown
+
+
+2014-11-20    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Deprecated gridify() in dcd_utils.cpp
+
 2014-10-21    <tromo@hill.urmc-sh.rochester.edu>
 
-	* Changed default occupancy in atoms to be 1.0
 	* Changed PDB reader so missing fields (to the right of
 	coordinates) will be tolerated and default values used.
 	See new functions to test for presence of missing data.

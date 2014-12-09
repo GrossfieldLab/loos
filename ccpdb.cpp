@@ -49,12 +49,12 @@ namespace loos {
 
   void CCPDB::seekFrameImpl(const uint i) {
     if (i >= _nframes)
-      throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+      throw(FileError(_filename, "Attempting to seek to frame beyond the end of the trajectory"));
 
     ifs()->clear();
     ifs()->seekg(indices[i]);
     if (ifs()->fail())
-      throw(std::runtime_error("Error- cannot seek to the requested frame in trajectory."));
+      throw(FileError(_filename, "Cannot seek to requested trajectory"));
   }
 
 

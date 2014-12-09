@@ -129,7 +129,7 @@ namespace loos {
     char* current_dir = 0;
     char* cwdbuf = new char[cwdbufsiz];
     if (cwdbuf == 0)
-      std::cerr << "WARNING- cannot allocate space for determining current working directory\n";
+      throw(LOOSError("Cannot allocate space for determining current working directory"));
     else
       current_dir = getcwd(cwdbuf, cwdbufsiz);
 
@@ -181,7 +181,7 @@ namespace loos {
    *  and null-selection, a runtime_error exception is thrown so the
    *  catcher cannot disambiguate between the two.
    */
-    AtomicGroup selectAtoms(const AtomicGroup& source, const std::string selection) throw(NullResult) {
+  AtomicGroup selectAtoms(const AtomicGroup& source, const std::string selection) {
   
     Parser parser;
 
@@ -194,9 +194,6 @@ namespace loos {
 
     KernelSelector selector(parser.kernel());
     AtomicGroup subset = source.select(selector);
-
-    if (subset.size() == 0)
-      throw(NullResult("No atoms were selected using '" + selection + "'"));
 
     return(subset);
   }
@@ -328,7 +325,7 @@ namespace loos {
     }
 
     if (d >= n10 + 52 * n36)
-      throw(std::runtime_error("Number out of range"));
+      throw(LOOSError("Number out of range for hybrid36 notation"));
 
     unsigned char coffset = '0';   // Digits offset for output
     int ibase = 10;                // Numeric base (i.e. 10 or 36)

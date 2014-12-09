@@ -26,28 +26,4 @@
 #include <dcdwriter.hpp>
 %}
 
-namespace loos {
-
-  // Note, this is actually derived from boost::noncopyable
-  class DCDWriter : public TrajectoryWriter {
-  public:
-    explicit DCDWriter(const std::string& s, const bool append = false);
-    DCDWriter(const std::string& s, const std::vector<AtomicGroup>& grps, const bool append = false);
-
-    DCDWriter(const std::string& s, const std::vector<AtomicGroup>& grps, const std::string& comment, const bool append = false);
-    DCDWriter(const std::string& s, const std::vector<AtomicGroup>& grps, const std::vector<std::string>& comments, const bool append = false);
-    ~DCDWriter();
-    void setHeader(const int na, const int ns, const greal ts, const bool bf);
-    void setTitles(const std::vector<std::string>& titles);
-    void setTitle(const std::string& s);
-    void addTitle(const std::string& s);
-    void setComments(const std::vector<std::string>& comments);
-    bool hasComments() const;
-    void writeFrame(const AtomicGroup& grp);
-    void writeFrames(const std::vector<AtomicGroup>& grps);
-    void writeHeader(void);
-    uint framesWritten(void) const { return(_current); }
-  };
-
-}
-
+%include "dcdwriter.hpp"

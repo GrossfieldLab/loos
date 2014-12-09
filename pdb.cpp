@@ -60,6 +60,7 @@ namespace loos {
 
 
   // Parse an ATOM or HETATM record...
+  // Note: ParseErrors can come from parseStringAs
 
   void PDB::parseAtomRecord(const std::string& s) {
     greal r;
@@ -99,7 +100,7 @@ namespace loos {
       char c = t[0];
     
       if (c != ' ' && !isalpha(c))
-        throw(std::runtime_error("Non-alpha character in iCode column of PDB"));
+        throw(ParseError("Non-alpha character in iCode column of PDB"));
     } else {
       char c = t[0];
 
@@ -211,8 +212,8 @@ namespace loos {
     std::map<int, pAtom>::iterator i = _atomid_to_patom.find(id);
     if (i == _atomid_to_patom.end()) {
       std::ostringstream oss;
-      oss << "Cannot find atom corresponding to atomid " << id;
-      throw(PDB::BadConnectivity(oss.str()));
+      oss << "Cannot find atom corresponding to atomid " << id << " for making a bond.";
+      throw(LOOSError(oss.str()));
     }
     return(i->second);
   }
@@ -261,10 +262,9 @@ namespace loos {
   void PDB::parseConectRecord(const std::string& s) {
     int bound_id = parseStringAs<int>(s, 6, 5);
 
-    
+
+    // Rely on findAtom to throw if bound_id not found...
     pAtom bound = findAtom(bound_id);
-    if (bound == 0)
-      throw(PDB::BadConnectivity("Cannot find primary atom " + s.substr(6, 5)));
 
     // This currently includes fields designated as H-bond indices...
     // Should we do this? or separate them out?  Hmmm...
@@ -276,9 +276,9 @@ namespace loos {
       if (emptyString(t))
         break;
       int id = parseStringAsHybrid36(t);
+
+      // findAtom will throw if id is not found
       pAtom boundee = findAtom(id);
-      if (boundee == 0)
-        throw(PDB::BadConnectivity("Cannot find bound atom " + t));
       bound->addBond(boundee);
       boundee->addBond(bound);
     }
@@ -290,45 +290,45 @@ namespace loos {
     gint i;
     std::string t;
 
+    UnitCell newcell;
+
     r = parseStringAs<float>(s, 6, 9);
-    cell.a(r);
+    newcell.a(r);
     r = parseStringAs<float>(s, 15, 9);
-    cell.b(r);
+    newcell.b(r);
     r = parseStringAs<float>(s, 24, 9);
-    cell.c(r);
+    newcell.c(r);
     
     r = parseStringAs<float>(s, 33, 7);
-    cell.alpha(r);
+    newcell.alpha(r);
     r = parseStringAs<float>(s, 40, 7);
-    cell.beta(r);
+    newcell.beta(r);
     r = parseStringAs<float>(s, 47, 7);
-    cell.gamma(r);
+    newcell.gamma(r);
     
-    try {
-      // Special handling in case of mangled CRYST1 record...
-      if (s.length() < 66) {
-        t = s.substr(55);
+    // Special handling in case of mangled CRYST1 record...
+    if (s.length() < 66) {
+      t = s.substr(55);
         
-        cell.spaceGroup(t);
-        cell.z(-1);   // ??? 
-      } else {
-        t = parseStringAs<std::string>(s, 55, 11);
-        cell.spaceGroup(t);
-        i = parseStringAs<int>(s, 66, 4);
-        cell.z(i);
-      }
+      newcell.spaceGroup(t);
+      newcell.z(-1);   // ??? 
+    } else {
+      t = parseStringAs<std::string>(s, 55, 11);
+      newcell.spaceGroup(t);
+      i = parseStringAs<int>(s, 66, 4);
+      newcell.z(i);
     }
-    catch (...) {
-      std::cerr << "Error while parsing space group in CRYST1 record." << std::endl;
-      throw;
-    }
-      
+
+    cell = newcell;
     _has_cryst = true;
   }
 
 
   //! Top level parser...
   //! Reads a PDB from an input stream
+  /*
+   * Will transform any caught exceptions into a FileReadError
+   */
   void PDB::read(std::istream& is) {
     std::string input;
     bool has_cryst = false;
@@ -336,30 +336,37 @@ namespace loos {
     boost::unordered_set<std::string> seen;
 
     while (getline(is, input)) {
-      if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
-        parseAtomRecord(input);
-      else if (input.substr(0, 6) == "REMARK")
-        parseRemark(input);
-      else if (input.substr(0,6) == "CONECT") {
-        has_bonds = true;
-        parseConectRecord(input);
-      } else if (input.substr(0, 6) == "CRYST1") {
-        parseCryst1Record(input);
-        has_cryst = true;
-      } else if (input.substr(0,3) == "TER")
-        ;
-      else if (input.substr(0,3) == "END")
-        break;
-      else {
-        int space = input.find_first_of(' ');
-        std::string record = input.substr(0, space);
-        if (seen.find(record) == seen.end()) {
-          std::cerr << "Warning - unknown PDB record '" << record << "'" << std::endl;
-          seen.insert(record);
-        }
+      try {
+	if (input.substr(0, 4) == "ATOM" || input.substr(0,6) == "HETATM")
+	  parseAtomRecord(input);
+	else if (input.substr(0, 6) == "REMARK")
+	  parseRemark(input);
+	else if (input.substr(0,6) == "CONECT") {
+	  has_bonds = true;
+	  parseConectRecord(input);
+	} else if (input.substr(0, 6) == "CRYST1") {
+	  parseCryst1Record(input);
+	  has_cryst = true;
+	} else if (input.substr(0,3) == "TER")
+	  ;
+	else if (input.substr(0,3) == "END")
+	  break;
+	else {
+	  int space = input.find_first_of(' ');
+	  std::string record = input.substr(0, space);
+	  if (seen.find(record) == seen.end()) {
+	    std::cerr << "Warning - unknown PDB record '" << record << "'" << std::endl;
+	    seen.insert(record);
+	  }
+	}
+      }
+      catch(LOOSError& e) {
+	throw(FileReadError(_fname, e.what()));
+      }
+      catch(...) {
+	throw(FileReadError(_fname, "Unknown exception"));
       }
     }
-
     if (isMissingFields())
       std::cerr << "Warning- PDB is missing fields.  Default values will be used.\n";
 
@@ -368,7 +375,13 @@ namespace loos {
 
     // Do some post-extraction...
     if (loos::remarksHasBox(_remarks)) {
-      GCoord c = loos::boxFromRemarks(_remarks);
+      GCoord c;
+      try {
+	c = loos::boxFromRemarks(_remarks);
+      }
+      catch(ParseError& e) {
+	throw(FileReadError(_fname, e.what()));
+      }
       periodicBox(c);
     } else if (has_cryst) {
       GCoord c(cell.a(), cell.b(), cell.c());

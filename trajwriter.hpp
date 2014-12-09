@@ -34,6 +34,7 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <exceptions.hpp>
 
 
 namespace loos {
@@ -52,20 +53,9 @@ namespace loos {
   class TrajectoryWriter {
   public:
 
-    //! Exception while writing
-    struct WriteError : public std::exception {
-      WriteError() : text("Error while writing trajectory") {}
-      WriteError(const char* message) : text(message) {}
-      
-      virtual const char* what() const throw() { return(text); }
-      
-      const char* text;
-    };
-    
-
     //! Write a trajectory to a file, optionally appending
     TrajectoryWriter(const std::string& fname, const bool append = false)
-      : appending_(false) {
+      : _filename(fname), appending_(false) {
       struct stat statbuf;
 
       if (append && !stat(fname.c_str(), &statbuf))
@@ -83,7 +73,7 @@ namespace loos {
      * the TrajectoryWriter object.
      */
     TrajectoryWriter(std::iostream* s, const bool append = false)
-      : appending_(append), delete_(false) {}
+      : _filename("stream"), appending_(append), delete_(false) {}
 
 
     virtual ~TrajectoryWriter() {
@@ -134,6 +124,7 @@ namespace loos {
 
   protected:
     std::iostream* stream_;
+    std::string _filename;
     bool appending_;
     bool delete_;
 
@@ -164,7 +155,7 @@ namespace loos {
       }
 
       if (!stream_->good())
-        throw(std::runtime_error("Error while opening output trajectory file"));
+        throw(FileOpenError(fname, "Error while opening output trajectory file"));
 
 
       delete_ = true;    // Delete the stream pointer when dtor called

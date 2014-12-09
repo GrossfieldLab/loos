@@ -27,34 +27,11 @@
 %}
 
 
+%include "Trajectory.hpp"
 
 namespace loos {
 
-  // Note, this is actually derived from boost::noncopyable
-  class Trajectory;
-  typedef boost::shared_ptr<Trajectory> pTraj;
-  class Trajectory {
-  public:
-    Trajectory();
-    Trajectory(const std::string& s);
-    Trajectory(const char* s);
-    virtual ~Trajectory();
-
-    virtual uint natoms(void) const =0;
-    virtual float timestep(void) const =0;
-    virtual uint nframes(void) const =0;
-    void rewind(void);
-    virtual bool hasPeriodicBox(void) const =0;
-    virtual GCoord periodicBox(void) const =0;
-    virtual std::vector<GCoord> coords(void) =0;
-    virtual void updateGroupCoords(AtomicGroup& g) =0;
-    void seekNextFrame(void);
-    void seekFrame(const uint i);
-    virtual bool parseFrame(void) =0;
-    bool readFrame(void);
-    bool readFrame(const int i);
-  };
-
+  typedef boost::shared_ptr<Trajectory>   pTraj;
 
   %extend Trajectory {
 

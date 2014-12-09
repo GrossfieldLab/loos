@@ -32,6 +32,7 @@
 #include <cmath>
 
 
+#include <exceptions.hpp>
 #include <loos_defs.hpp>
 
 
@@ -94,21 +95,21 @@ namespace loos {
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
       std::string getString(void) const {
         if (type != STRING)
-          throw(std::runtime_error("Expected a string value..."));
+          throw(LOOSError("Expected a string value..."));
         return(*str);
       }
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
       float getFloat(void) const {
         if (type != FLOAT)
-          throw(std::runtime_error("Expected a float value..."));
+          throw(LOOSError("Expected a float value..."));
         return(flt);
       }
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
       int getInt(void) const {
         if (type != INT)
-          throw(std::runtime_error("Expected an int value..."));
+          throw(LOOSError("Expected an int value..."));
         return(itg);
       }
 

@@ -110,30 +110,33 @@ namespace loos {
     // Accessors
 
     T& x(void) { return(v[X]); }
-    const T& x(void) const { return(v[X]); }
     void x(const T ax) { v[X] = ax; }
 
     T& y(void) { return(v[Y]); }
-    const T& y(void) const { return(v[Y]); }
     void y(const T ay) { v[Y] = ay; }
 
     T& z(void) { return(v[Z]); }
-    const T& z(void) const { return(v[Z]); }
     void z(const T az) { v[Z] = az; }
 
+#if !defined(SWIG)
+    const T& x(void) const { return(v[X]); }
+    const T& y(void) const { return(v[Y]); }
+    const T& z(void) const { return(v[Z]); }
+
     //! Retrieve an element from the Coord with range-checking
-    T& operator[](const unsigned int i) {
+    T& operator[](const unsigned int i) throw(std::out_of_range) {
       if (i>=MAXCOORD)
         throw std::out_of_range("Index into Coord<T> is out of range.");
       return(v[i]);
     }
 
     //! Retrieve an element from a const Coord with range-checking 
-    const T& operator[](const unsigned int i) const {
+    const T& operator[](const unsigned int i) const throw(std::out_of_range) {
       if (i>=MAXCOORD)
         throw std::out_of_range("Index into Coord<T> is out of range.");
       return(v[i]);
     }
+#endif // !defined(SWIG)
 
     //! Short-cut to set the cartesian coordinates...
     void set(const T x, const T y, const T z) {
@@ -147,6 +150,7 @@ namespace loos {
     // ---------------------------------------
     // I/O
 
+#if !defined(SWIG)
     //! Output the coordinate in pseudo-XML
     friend std::ostream& operator<<(std::ostream& os, const Coord<T>&o) { 
       os << "(";
@@ -156,7 +160,7 @@ namespace loos {
       return(os);
     }
 
-    friend std::istream& operator>>(std::istream& is, Coord<T>& i) {
+    friend std::istream& operator>>(std::istream& is, Coord<T>& i) throw(std::runtime_error){
       char c;
       is >> c;
       if (c != '(')
@@ -187,23 +191,70 @@ namespace loos {
 
 
 
-
     const Coord<T>& operator=(const Coord<T>& c) { copy(c); return(*this); }
 
 
-    //! Handle addition
-    Coord<T>& operator+=(const Coord<T>& rhs) {
-      for (uint i=0; i<MAXCOORD; i++)
-        v[i] += rhs.v[i];
+    //! Handle the case of T + Coord<T>
+    friend Coord<T> operator+(const T lhs, const Coord<T>& rhs) {
+      Coord<T> res(rhs);
+      res += lhs;
+      return(res);
+    }
+
+
+  
+    //! Handle the case of T - Coord<T>
+    friend Coord<T> operator-(const T lhs, const Coord<T>& rhs) {
+      Coord<T> res;
+
+      for (uint i=0; i<MAXCOORD; ++i)
+        res.v[i] = lhs - rhs.v[i];
+
+      return(res);
+    }
+
+
+    //! For matrix-vector multiply
+    friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
+
+
+    //! Handle T * Coord<T>
+    friend Coord<T> operator*(const T lhs, const Coord<T>& rhs) {
+      Coord<T> res(rhs);
+      res *= lhs;
+      return(res);
+    }
+
+
+
+    //! Division by a constant
+    Coord<T>& operator/=(const T rhs) {
+      for (uint i=0; i<MAXCOORD; ++i)
+        v[i] /= rhs;
 
       return(*this);
     }
 
-    Coord<T> operator+(const Coord<T>& rhs) const {
+    Coord<T> operator/(const T rhs) const {
       Coord<T> res(*this);
-      res += rhs;
+      res /= rhs;
       return(res);
     }
+
+    //!  T / Coord<T> case... This may not actually be a good idea? 
+    friend Coord<T> operator/(const T lhs, const Coord<T>& rhs) {
+      Coord<T> res;
+
+      for (uint i=0; i<MAXCOORD; ++i)
+        res.v[i] = lhs / rhs.v[i];
+
+      return(res);
+    }
+
+
+
+#endif // !defined(SWIG)
+
 
     Coord<T>& operator+=(const T rhs) {
       for (uint i=0; i<MAXCOORD; ++i)
@@ -218,13 +269,19 @@ namespace loos {
       return(res);
     }
 
-    //! Handle the case of T + Coord<T>
-    friend Coord<T> operator+(const T lhs, const Coord<T>& rhs) {
-      Coord<T> res(rhs);
-      res += lhs;
-      return(res);
+    //! Handle addition
+    Coord<T>& operator+=(const Coord<T>& rhs) {
+      for (uint i=0; i<MAXCOORD; i++)
+        v[i] += rhs.v[i];
+
+      return(*this);
     }
 
+    Coord<T> operator+(const Coord<T>& rhs) const {
+      Coord<T> res(*this);
+      res += rhs;
+      return(res);
+    }
 
     //! Subtraction
     Coord<T>& operator-=(const Coord<T>& rhs) {
@@ -262,20 +319,7 @@ namespace loos {
         res.v[i] = -res.v[i];
       return(res);
     }
-  
-    //! Handle the case of T - Coord<T>
-    friend Coord<T> operator-(const T lhs, const Coord<T>& rhs) {
-      Coord<T> res;
 
-      for (uint i=0; i<MAXCOORD; ++i)
-        res.v[i] = lhs - rhs.v[i];
-
-      return(res);
-    }
-
-
-    //! For matrix-vector multiply
-    friend Coord<T> operator*<>(const Matrix44<T>&, const Coord<T>&);
 
 
     //! Multiplication by a constant
@@ -293,39 +337,6 @@ namespace loos {
       return(res);
     }
 
-    //! Handle T * Coord<T>
-    friend Coord<T> operator*(const T lhs, const Coord<T>& rhs) {
-      Coord<T> res(rhs);
-      res *= lhs;
-      return(res);
-    }
-
-
-
-    //! Division by a constant
-    Coord<T>& operator/=(const T rhs) {
-      for (uint i=0; i<MAXCOORD; ++i)
-        v[i] /= rhs;
-
-      return(*this);
-    }
-
-    Coord<T> operator/(const T rhs) const {
-      Coord<T> res(*this);
-      res /= rhs;
-      return(res);
-    }
-
-    //!  T / Coord<T> case... This may not actually be a good idea? 
-    friend Coord<T> operator/(const T lhs, const Coord<T>& rhs) {
-      Coord<T> res;
-
-      for (uint i=0; i<MAXCOORD; ++i)
-        res.v[i] = lhs / rhs.v[i];
-
-      return(res);
-    }
-
   
     //! Dot product
     T dot(const Coord<T>& rhs) const {
@@ -337,9 +348,11 @@ namespace loos {
     }
 
 
+
     T operator*(const Coord<T>rhs) const {
       return(dot(rhs));
     }
+
 
     //! Cross-product.  Returns a new Coord<T>
     Coord<T> cross(const Coord<T>& rhs) const {

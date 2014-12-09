@@ -104,7 +104,7 @@ namespace loos {
 
     iter = find(atoms.begin(), atoms.end(), pa);
     if (iter == atoms.end())
-      throw(std::runtime_error("Attempting to delete a non-existent atom"));
+      throw(LOOSError(*pa, "Attempting to delete an atom that is not in the passed AtomicGroup"));
 
     atoms.erase(iter);
     _sorted = false;
@@ -524,11 +524,17 @@ namespace loos {
   }
 
 
-  //! Note: when calling this, you'll want to make sure you use the 
-  //! outermost group (eg the psf or pdb you used to create things, rather than
-  //! using a subselection, unless you're sure the subsection contains these
-  //! atoms as well.  The main use of this routine is to create a group of atoms
-  //! bound to another atom.
+  /**
+   * Note: when calling this, you'll want to make sure you use the 
+   * outermost group (eg the psf or pdb you used to create things, rather than
+   * using a subselection, unless you're sure the subsection contains these
+   * atoms as well.  The main use of this routine is to create a group of atoms
+   * bound to another atom.
+   *
+   * Any missing atoms are ignored...  This is in contrast with the previous
+   * behavior where missing atoms would throw an exception
+   */
+
   AtomicGroup AtomicGroup::groupFromID(const std::vector<int> &id_list) const {
     AtomicGroup result;
 
@@ -536,8 +542,8 @@ namespace loos {
 
     for (unsigned int i=0; i<id_list.size(); i++) {
       pAtom pa = findById(id_list[i]);
-      if (!pa) throw(std::out_of_range("Atom id doesn't exist"));
-      result.addAtom(pa);
+      if (pa)
+	result.addAtom(pa);
     }
     return(result);
   }
@@ -795,7 +801,7 @@ namespace loos {
 
   void AtomicGroup::reimage() {
     if (!(isPeriodic()))
-      throw(std::runtime_error("trying to reimage a non-periodic group"));
+      throw(LOOSError("trying to reimage a non-periodic group"));
     GCoord com = centroid();
     GCoord reimaged = com;
     reimaged.reimage(periodicBox());
@@ -808,7 +814,7 @@ namespace loos {
 
   void AtomicGroup::reimageByAtom () {
     if (!(isPeriodic()))
-      throw(std::runtime_error("trying to reimage a non-periodic group"));
+      throw(LOOSError("trying to reimage a non-periodic group"));
     const_iterator a;
     GCoord box = periodicBox();
     for (a=atoms.begin(); a!=atoms.end(); a++) {

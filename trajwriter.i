@@ -27,30 +27,10 @@
 %}
 
 
+%include "trajwriter.hpp"
+
 namespace loos {
-
-
-
-  class TrajectoryWriter;
   typedef boost::shared_ptr<TrajectoryWriter> pTrajectoryWriter;
-
-  class TrajectoryWriter {
-
-  public:
-
-    struct WriteError : public std::exception {};
-
-    TrajectoryWriter(const std::string& fname, const bool append = false);
-    virtual ~TrajectoryWriter();
-    virtual void setComments(const std::vector<std::string>& comments);
-    virtual void setComments(const std::string& s);
-    virtual void writeFrame(const AtomicGroup& model) =0;
-    virtual void writeFrame(const AtomicGroup& model, const uint step, const double time);
-    virtual bool hasFrameStep() const;
-    virtual bool hasFrameTime() const;
-    virtual bool hasComments() const;
-    virtual uint framesWritten() const =0;
-  };
 }
 
 

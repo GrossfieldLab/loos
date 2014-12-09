@@ -57,9 +57,9 @@ namespace loos {
     }
     
 
-    void Action::hasAtom(void) {
+    void Action::requireAtom(void) {
       if (atom == 0)
-        throw(std::runtime_error("No atom set"));
+        throw(LOOSError("No atom set"));
     }
     
 
@@ -183,38 +183,38 @@ namespace loos {
 
 
     void pushAtomName::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->name());
       stack->push(v);
     }
 
     void pushAtomId::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->id());
       stack->push(v);
     }
 
     void pushAtomResname::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->resname());
       stack->push(v);
     }
 
     void pushAtomResid::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->resid());
       stack->push(v);
     }
 
 
     void pushAtomSegid::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->segid());
       stack->push(v);
     }
 
     void pushAtomChainId::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(atom->chainId());
       stack->push(v);
     }
@@ -225,7 +225,7 @@ namespace loos {
       Value v1 = stack->pop();
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-        throw(std::runtime_error("Invalid operands to logicalAnd"));
+        throw(LOOSError("Invalid operands to logicalAnd"));
       
       Value u(v1.itg && v2.itg);
       stack->push(u);
@@ -237,7 +237,7 @@ namespace loos {
       Value v2 = stack->pop();
       
       if (!(v1.type == Value::INT && v2.type == Value::INT))
-        throw(std::runtime_error("Invalid operands to logicalOr"));
+        throw(LOOSError("Invalid operands to logicalOr"));
       
       Value u(v1.itg || v2.itg);
       stack->push(u);
@@ -248,7 +248,7 @@ namespace loos {
       Value v1 = stack->pop();
 
       if (v1.type != Value::INT)
-        throw(std::runtime_error("Invalid operand to logicalNot"));
+        throw(LOOSError("Invalid operand to logicalNot"));
       
       Value u(!v1.itg);
       stack->push(u);
@@ -261,7 +261,7 @@ namespace loos {
 
 
     void Hydrogen::execute(void) {
-      hasAtom();
+      requireAtom();
       
       bool masscheck = true;
       if (atom->checkProperty(Atom::massbit))
@@ -280,7 +280,7 @@ namespace loos {
 
 
     void Backbone::execute(void) {
-      hasAtom();
+      requireAtom();
       Value v(bbsel(atom));
       
       stack->push(v);

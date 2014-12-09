@@ -62,7 +62,6 @@ namespace loos {
    *  - Endian detection is based on the expected size of the header
    */
   class DCD : public Trajectory {
-
     static bool suppress_warnings;
 
     
@@ -70,25 +69,10 @@ namespace loos {
     typedef union { unsigned int ui; int i; char c[4]; float f; } DataOverlay;
 
   public:
-
-    // Error classes that we may or may not return...
-
-    //! Error while reading the F77 guard data
-    struct RecordError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 record"); }; } record_error;
-    //! General error while parsing the DCD header
-    struct HeaderError : public std::exception { virtual const char *what() const throw() { return("Error while reading DCD header"); }; } header_error;
-    //! General error while reading an F77 data record
-    struct LineError : public std::exception { virtual const char *what() const throw() { return("Error while reading F77 data line"); }; } line_error;
-    //! Unexpected EOF
-    struct EndOfFile : public std::exception { virtual const char *what() const throw() { return("Unexpected end of file"); }; } end_of_file;
-    //! General error...
-    struct GeneralError : public std::exception {
-      GeneralError(const char *s) : msg(s) { };
-      virtual const char *what() const throw() { return(msg); };
-      const char *msg;
+    class EndOfFile : public LOOSError {
+    public:
+      EndOfFile() : LOOSError("unexpected end of file while reading DCD") { }
     };
-
-
 
     //! Begin reading from the file named s
     explicit DCD(const std::string s) :  Trajectory(s), _natoms(0),
@@ -112,8 +96,6 @@ namespace loos {
 	return(pTraj(new DCD(fname)));
       }
 
-    //! Read in the header from the stored stream
-    void readHeader(void);
 
 
     // Accessor methods...
@@ -164,28 +146,31 @@ namespace loos {
     static void setSuppression(const bool b) { suppress_warnings = b; }
 
     //! Parse a frame of the DCD
-    virtual bool parseFrame(void);
+      virtual bool parseFrame(void);
     
   private:
 
-    void initTrajectory();
+    //! Read in the header from the stored stream
+    void readHeader(void);
+
+      void initTrajectory();
       
     // Trajectory member functions we must provide...
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
-    virtual void seekFrameImpl(const uint);
+      virtual void seekFrameImpl(const uint);
 
     //! Rewind the file to the first DCD frame.
-    virtual void rewindImpl(void);
+      virtual void rewindImpl(void);
 
     //! Update an AtomicGroup coordinates with the currently-read frame.
-    virtual void updateGroupCoordsImpl(AtomicGroup& g);
+      virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
 
 
     void allocateSpace(const int n);
-    void readCrystalParams(void);
-    void readCoordLine(std::vector<float>& v);
+    bool readCrystalParams(void);
+    bool readCoordLine(std::vector<float>& v);
 
     void endianMatch(StreamWrapper& fsw);
 

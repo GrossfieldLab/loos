@@ -88,26 +88,18 @@ namespace loos {
     virtual ~Amber() { }
 
     //! Read in a parmtop file
-    explicit Amber(const std::string fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
+    explicit Amber(const std::string& fname)
+      : natoms(0), nres(0), nbonh(0), mbona(0) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
-        throw(std::runtime_error("Cannot open Amber parmtop file " + fname));
+	throw(FileOpenError(fname));
       reader.stream(ifs);
       reader.name(fname);
       read(ifs);
     }
 
-    //! Read in a parmtop file
-    explicit Amber(const char* fname) : natoms(0), nres(0), nbonh(0), mbona(0) {
-      std::ifstream ifs(fname);
-      if (!ifs)
-        throw(std::runtime_error("Cannot open Amber parmtop file " + std::string(fname)));
-      reader.stream(ifs);
-      reader.name(fname);
-      read(ifs);
-    }
-
-    explicit Amber(std::istream& ifs) : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
+    explicit Amber(std::istream& ifs)
+      : natoms(0), nres(0), nbonh(0), mbona(0), reader(ifs) {
       read(ifs);
     }
 

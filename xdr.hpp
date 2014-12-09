@@ -36,6 +36,12 @@ namespace loos {
 
   namespace internal {
 
+
+    struct XDRDataSizeError : public LOOSError {
+      XDRDataSizeError() : LOOSError("XDR data size error") {}
+      XDRDataSizeError(const std::string& s) : LOOSError(s) {}
+    };
+
     //! This class provides some facility for handling XDR data
     /**
      * The read and write functions use templates to read the
@@ -64,7 +70,7 @@ namespace loos {
       //! Read a single datum
       template<typename T> uint read(T* p) {
 	if (sizeof(T) > sizeof(block_type))
-	  throw(std::logic_error("Attempting to read a POD that is too large"));
+	  throw(XDRDataSizeError());
 
 	T result;
 	stream->read(reinterpret_cast<char*>(&result), sizeof(block_type));
@@ -189,11 +195,8 @@ namespace loos {
       //! Writes a single datum
       template<typename T> uint write(const T& p) {
 
-	if (sizeof(T) > sizeof(block_type)) {
-	  std::ostringstream oss;
-	  oss << "Attempting to write a POD that is too large (" << sizeof(T) << " > " << sizeof(block_type) << ")";
-	  throw(std::logic_error(oss.str()));
-	}
+	if (sizeof(T) > sizeof(block_type))
+	  throw(XDRDataSizeError());
 
         block_type u;
 	T* up = reinterpret_cast<T*>(&u);

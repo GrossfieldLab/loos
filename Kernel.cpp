@@ -36,15 +36,28 @@ namespace loos {
     actions.push_back(act); 
   }
   
-  void Kernel::pop(void) { actions.pop_back(); }
+  void Kernel::pop(void) {
+    if (actions.empty())
+      throw(LOOSError("Attempting to pop from an empty action stack"));
+    actions.pop_back();
+  }
+  
+
   
   void Kernel::execute(pAtom pa) {
 
     std::vector<internal::Action*>::iterator i;
     for (i=actions.begin(); i != actions.end(); i++) {
       (*i)->setAtom(pa);
-      (*i)->execute();
+      try {
+        (*i)->execute();
+      }
+      catch (LOOSError& e) {
+        stack().clear();
+        throw(e);
+      }
     }
+    
   }
 
     

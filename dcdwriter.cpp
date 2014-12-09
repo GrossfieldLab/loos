@@ -115,10 +115,10 @@ namespace loos {
     } else {
 
       if (grp.size() != _natoms)
-        throw(std::runtime_error("Frame group atom count mismatch"));
+        throw(LOOSError("Frame group atom count mismatch"));
 
       if (_has_box && !grp.isPeriodic())
-        throw(std::runtime_error("Periodic box data was requested for the DCD but the passed frame is missing it"));
+        throw(LOOSError("Periodic box data was requested for the DCD but the passed frame is missing it"));
 
     }
 
@@ -128,7 +128,7 @@ namespace loos {
       writeHeader();
       stream_->seekp(0, std::ios_base::end);
       if (stream_->fail())
-        throw(std::runtime_error("Error while re-writing DCD header"));
+        throw(FileWriteError(_filename, "Error while re-writing DCD header"));
     }
 
     if (_has_box)

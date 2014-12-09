@@ -27,11 +27,14 @@
 #include <sstream>
 #include <exception>
 #include <string>
-
-#include <Atom.hpp>
+#include <loos_defs.hpp>
 
 namespace loos {
 
+
+  // Forward decl's
+  class Atom;
+  std::ostream& operator<<(std::ostream&, const Atom&);
 
   //! Generic LOOS exception
   class LOOSError : public std::exception {
@@ -63,14 +66,6 @@ namespace loos {
     explicit ParseError(const std::string& arg) : LOOSError(arg) { }
   };
 
-  class FileParseError : public LOOSError {
-  public:
-    explicit FileParseError(const std::string& arg, const uint lineno) {
-      std::stringstream ss;
-      ss << arg << " at line " << lineno;
-      _msg = ss.str();
-    }
-  };
 
   //! Exception cause by some operation failing (ie no atoms selected)
   class NullResult : public LOOSError {
@@ -78,12 +73,20 @@ namespace loos {
     explicit NullResult(const std::string& arg) : LOOSError(arg) { }
   };
 
-  //! Exception caused by insufficient atom properties..
+  //! Exception caused by insufficient atom properties.. (DEPRECATED)
   class MissingProperty : public LOOSError {
   public:
     explicit MissingProperty(const std::string& arg) : LOOSError(arg) { }
     explicit MissingProperty(const Atom& a, const std::string& arg) : LOOSError(a, arg) { }
   };
+
+  class UnsetProperty : public LOOSError {
+  public:
+    UnsetProperty() : LOOSError("Attempting to access an unset atom property") {}
+    UnsetProperty(const std::string& p) : LOOSError(p) {}
+    UnsetProperty(const Atom& a, const std::string& p) : LOOSError(a, p) {}
+  };
+
 
   //! Exception caused by a blas/atlas error
   class NumericalError : public LOOSError {
@@ -102,7 +105,168 @@ namespace loos {
   public:
     explicit UnknownAtomicMass(const std::string& arg) : LOOSError(arg) { }
   };
-};
 
+  class FileError : public LOOSError {
+  protected:
+    std::string _operation;
+    std::string _filename;
+    int _errcode;
+
+  public:
+    FileError(const std::string& op) : LOOSError("Error while " + op), _operation(op) {}
+
+    FileError(const std::string& op, const std::string& fname)
+      : LOOSError("Error while " + op + " " + fname),
+        _operation(op), _filename(fname)
+    {}
+
+    FileError(const std::string& op,
+              const std::string& fname,
+              const std::string& msg)
+      : LOOSError("Error while " + op + " " + fname + msg),
+        _operation(op),
+        _filename(fname)
+    {}
+
+    FileError(const std::string& op,
+              const std::string& fname,
+              const std::string& msg,
+              const int err)
+      : LOOSError("Error while " + op + " " + fname + msg),
+        _operation(op),
+        _filename(fname),
+        _errcode(err)
+    {}
+
+
+
+    std::string operation() const throw() { return(_operation); }
+    std::string filename() const throw() { return(_filename); }
+
+    int errorCode() const { return(_errcode); }
+    void errorCode(const int i) { _errcode = i; }
+
+    ~FileError() throw() {}
+  };
+
+  class FileOpenError : public FileError {
+  public:
+    FileOpenError() : FileError("opening") { }
+    FileOpenError(const std::string& fname) : FileError("opening", fname) {}
+    FileOpenError(const std::string& fname, const std::string& msg) : FileError("opening", fname, '\n' + msg) {}
+    FileOpenError(const std::string& fname, const std::string& msg, const int err) : FileError("opening", fname, '\n' + msg, err) {}
+  };
+
+
+  class FileReadError : public FileError {
+  public:
+    FileReadError() : FileError("reading from") { }
+    FileReadError(const std::string& fname) : FileError("reading from", fname) {}
+    FileReadError(const std::string& fname, const std::string& msg) : FileError("reading from", fname, '\n' + msg) {}
+    FileReadError(const std::string& fname, const std::string& msg, const int err) : FileError("reading from", fname, '\n' + msg, err) {}
+  };
+
+
+  class FileReadErrorWithLine : public FileReadError {
+  protected:
+    uint _lineno;
+    std::string _msg;
+  public:
+    FileReadErrorWithLine(const uint ln)
+      : FileReadError("reading"), _lineno(ln)
+    { init(); }
+
+    FileReadErrorWithLine(const std::string& fname, const uint ln)
+      : FileReadError("reading ", fname), _lineno(ln)
+    { init(); }
+    
+
+    FileReadErrorWithLine(const std::string& fname, const std::string& msg, const uint ln)
+      : FileReadError("reading ", fname), _lineno(ln), _msg(msg)
+    { init(); }
+
+    uint lineNumber() const throw() { return(_lineno); }
+
+    ~FileReadErrorWithLine() throw() {}
+
+  private:
+    void init() {
+      std::ostringstream oss;
+      
+      oss << FileReadError::_msg << " at line " << _lineno << std::endl << _msg;
+      FileReadError::_msg = oss.str();
+    }
+
+  };
+
+
+
+
+  class FileWriteError : public FileError {
+  public:
+    FileWriteError() : FileError("writing to") { }
+    FileWriteError(const std::string& fname) : FileError("writing to", fname) {}
+    FileWriteError(const std::string& fname, const std::string& msg) : FileError("writing to", fname, '\n' + msg) {}
+  };
+  
+
+
+  //! Exception for writing trajectories
+  class TrajectoryWriteError : public LOOSError {
+  public:
+    TrajectoryWriteError() : LOOSError("Error while writing trajectory") {}
+    TrajectoryWriteError(const std::string& arg) : LOOSError(arg) {}
+  };
+
+  //! Exception for Reading trajectories
+  class TrajectoryReadError : public LOOSError {
+  public:
+    TrajectoryReadError() : LOOSError("Error while reading from trajectory") {}
+    TrajectoryReadError(const std::string& arg) : LOOSError(arg) {}
+  };
+
+
+  class EndOfFile : public LOOSError {
+  public:
+    EndOfFile() : LOOSError("Attempting to read past end of file") {}
+    EndOfFile(const std::string& arg) : LOOSError(arg) {}
+  };
+
+  //! Exceptions for reading Amber NetCDF files
+  struct AmberNetcdfError : public LOOSError {
+    explicit AmberNetcdfError(const std::string& msg) : LOOSError(msg) { }
+    explicit AmberNetcdfError(const std::string& msg, const int retval) {
+      std::stringstream ss;
+      ss << msg << " with error #" << retval;
+      _msg = ss.str();
+    }
+
+  };
+
+  struct AmberNetcdfOpenError : public AmberNetcdfError {
+    explicit AmberNetcdfOpenError() : AmberNetcdfError("Error opening Amber NetCDF file") { }
+  };
+
+  struct AmberNetcdfTypeError : public AmberNetcdfError {
+    explicit AmberNetcdfTypeError(const std::string msg) : AmberNetcdfError(msg) { }
+  };
+  
+
+  struct BadConnectivityError : public LOOSError {
+    explicit BadConnectivityError(const std::string& msg) : LOOSError(msg) {}
+  };
+
+
+
+  class FileParseError : public LOOSError {
+  public:
+    explicit FileParseError(const std::string& arg, const uint lineno) {
+      std::stringstream ss;
+      ss << arg << " at line " << lineno;
+      _msg = ss.str();
+    }
+  };
+
+};
 
 #endif

@@ -25,16 +25,4 @@
 #include <Geometry.hpp>
 %}
 
-namespace loos {
-  //! Namespace for math and math-related things in loos
-  namespace Math {
-
-    greal angle(const GCoord&, const GCoord&, const GCoord&, const GCoord* =NULL);
-    greal angle(const pAtom& a, const pAtom& b, const pAtom& c, const GCoord * =NULL);
-    greal torsion(const GCoord& a, const GCoord& b, const GCoord& c, 
-                  const GCoord& d, const GCoord* =NULL);
-    greal torsion(const pAtom& a, const pAtom& b, const pAtom& c, 
-                  const pAtom& d, const GCoord* =NULL);
-
-  }
-}
+%include "Geometry.hpp"

@@ -56,7 +56,7 @@ namespace loos {
 
     uint idx = i * stride + start;
     if (idx < start || i > end)
-      throw(std::runtime_error("Error- Attempting to access more frames than are in the trajectory."));
+      throw(FileError(_filename, "Attempting to seek to frame beyond the end of the trajectory"));
 
     std::stringstream s;
     s << boost::format(pattern) % idx;

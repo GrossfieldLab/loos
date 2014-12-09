@@ -178,7 +178,8 @@ namespace loos {
       T buf[n];
       uint i = xdr_file.read(buf, n);
       if (i != n)
-        throw(std::runtime_error("Unable to read TRR " + msg));
+	throw(FileReadError(_filename, "Unable to read " + msg));
+
       for (i=0; i<n; ++i)
         v.push_back(buf[i]);
     }
@@ -194,7 +195,7 @@ namespace loos {
 
       if (xdr_file.read(buf, n) != n) {
         delete[] buf;
-        throw(std::runtime_error("Unable to read TRR " + msg));
+	throw(FileReadError(_filename, "Unable to read " + msg));
       }
       for (uint i=0; i<n; i += DIM)
         v.push_back(GCoord(buf[i], buf[i+1], buf[i+2]) * 10.0);

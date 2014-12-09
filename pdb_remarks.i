@@ -25,18 +25,12 @@
 #include "pdb_remarks.hpp"
 %}
 
-namespace loos {
-  class Remarks {
-  public:
-    int numberOf(void) const;
-    int size(void) const;
-    std::string get(const int i) const;
-    void add(const std::string s);
-    void add(const std::vector<std::string>& s);
-    void erase(const int i);
-    std::vector<std::string> allRemarks(void) const;
 
-    %extend {
+%include "pdb_remarks.hpp"
+
+namespace loos {
+
+    %extend Remarks {
       std::string __getitiem__(const int i) {
         return((*$self)[i]);
       }
@@ -53,9 +47,6 @@ namespace loos {
         strncpy(buf, oss.str().c_str(), n+1);
         return(buf);
       }
-    }
+   }
 
-  };
-
-
-}
+ }

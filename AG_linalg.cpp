@@ -38,7 +38,6 @@
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
-#include <exceptions.hpp>
 
 
 
@@ -77,10 +76,10 @@ namespace loos {
 
     dsyev_(&jobz, &uplo, &nn, I.get(), &lda, W, work, &lwork, &info);
     if (info < 0)
-      throw(std::runtime_error("dsyev_ reported an argument error..."));
+      throw(NumericalError("dsyev_ reported an argument error.", info));
 
     if (info > 0)
-      throw(std::runtime_error("dsyev_ failed to converge..."));
+      throw(NumericalError("dsyev_ failed to converge.", info));
 
     std::vector<GCoord> results(4);
 
@@ -156,10 +155,10 @@ namespace loos {
 
     dsyev_(&jobz, &uplo, &nn, C, &lda, W, work, &lwork, &info);
     if (info < 0)
-      throw(std::runtime_error("dsyev_ reported an argument error..."));
+      throw(NumericalError("dsyev_ reported an argument error.", info));
 
     if (info > 0)
-      throw(std::runtime_error("dsyev_ failed to converge..."));
+      throw(NumericalError("dsyev_ failed to converge.", info));
 
     std::vector<GCoord> results(4);
     GCoord c;

@@ -36,6 +36,7 @@
 #include <loos_defs.hpp>
 #include <boost/regex.hpp>
 
+#include <exceptions.hpp>
 
 #include "KernelValue.hpp"
 #include "KernelStack.hpp"
@@ -82,7 +83,7 @@ namespace loos {
       void binaryFalseResult(void);
 
       //! Check to make sure an atom has been set...
-      void hasAtom(void);
+      void requireAtom(void);
 
     public:
       Action(const std::string s) : stack(0), atom(pAtom()), my_name(s) { }
@@ -279,7 +280,7 @@ namespace loos {
     // Logical operations...  Assumes stack args are ints...
 
     //! ARG1 ARG2 &&
-    class logicalAnd : public Action {
+    class logicalAnd : public Action{
     public:
       logicalAnd() : Action("&&") { }
       void execute(void);

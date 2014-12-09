@@ -86,10 +86,6 @@ namespace loos {
       init();
     }
 
-    explicit XTC(const char* p) : Trajectory(p), xdr_file(ifs()),natoms_(0) {
-      init();
-    }
-
     explicit XTC(std::istream& is) : Trajectory(is), xdr_file(ifs()), natoms_(0) {
       init();
     }
@@ -120,7 +116,7 @@ namespace loos {
       scanFrames();
       coords_.reserve(natoms_);
       if (!parseFrame())
-        throw(std::logic_error("Unable to read in the first frame"));
+        throw(FileReadError(_filename, "Unable to read in the first frame"));
       cached_first = true;
     }      
 

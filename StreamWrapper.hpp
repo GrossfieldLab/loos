@@ -31,7 +31,7 @@
 #include <stdexcept>
 
 #include <boost/utility.hpp>
-
+#include <exceptions.hpp>
 
 
 namespace loos {
@@ -60,26 +60,18 @@ namespace loos {
     //! Opens a new stream with file named 's'
     StreamWrapper(const std::string& s,
                   const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+      throw(FileOpenError)
       : new_stream(true)
     {
       stream = new std::fstream(s.c_str(), mode);
       if (!stream->good())
-        throw(std::runtime_error("Cannot open file " + s));
-    }
-
-    //! Opens a new stream with file named 's'
-    StreamWrapper(const char* const s,
-                  const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
-      : new_stream(true)
-    {
-      stream = new std::fstream(s, mode);
-      if (!stream->good())
-        throw(std::runtime_error("Cannot open file " + std::string(s)));
+        throw(FileOpenError(s));
     }
 
     //! Sets the internal stream to point to a newly opened filed...
     void setStream(const std::string& s,
                    const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
+      throw(FileOpenError)
     {
       if (new_stream)
         delete stream;
@@ -87,7 +79,7 @@ namespace loos {
       new_stream = true;
       stream = new std::fstream(s.c_str(), mode);
       if (!stream->good())
-        throw(std::runtime_error("Cannot open file " + std::string(s)));
+        throw(FileOpenError(s));
     }
 
     //! Sets the internal stream to the passed fstream.
@@ -98,22 +90,16 @@ namespace loos {
       stream = &fs;
     }
 
-    //! Returns the internal fstream pointer
-    std::istream* operator()(void) {
+    //! Returns the internal istream pointer
+    std::istream* operator()(void) throw(LOOSError) {
       if (stream == 0)
-        throw(std::logic_error("Attempting to access an unset stream"));
+        throw(LOOSError("Attempting to access an unset stream"));
       return(stream);
     }
 
     //! Returns true if the internal stream pointer is unset
     bool isUnset(void) const { return(stream == 0); }
 
-    //! Checks to see if the stream pointer is set and throws an exception if not.
-    void checkSet(void) const {
-      if (stream == 0)
-        throw(std::logic_error("Attempting to use an unset stream"));
-    }
-    
     ~StreamWrapper() { if (new_stream) delete stream; }
 
 

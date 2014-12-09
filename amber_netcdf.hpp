@@ -20,24 +20,6 @@ namespace loos {
   bool isFileNetCDF(const std::string& fname);
 
 
-  //! Exceptions for reading Amber NetCDF files
-  struct AmberNetcdfError : public LOOSError {
-    explicit AmberNetcdfError(const std::string& msg) : LOOSError(msg) { }
-    explicit AmberNetcdfError(const std::string& msg, const int retval) {
-      std::stringstream ss;
-      ss << msg << " with error #" << retval;
-      _msg = ss.str();
-    }
-
-  };
-
-  struct AmberNetcdfOpenError : public AmberNetcdfError {
-    explicit AmberNetcdfOpenError() : AmberNetcdfError("Error opening Amber NetCDF file") { }
-  };
-
-  struct AmberNetcdfTypeError : public AmberNetcdfError {
-    explicit AmberNetcdfTypeError(const std::string msg) : AmberNetcdfError(msg) { }
-  };
 
 
 
@@ -88,33 +70,22 @@ namespace loos {
     // to keep it from trying to use an istream (since the C netcdf API
     // doesn't support this)
 
-    explicit AmberNetcdf(const std::string& s, const uint na) :
-      _coord_data(new GCoord::element_type[na*3]),
-      _box_data(new GCoord::element_type[3]),
-      _periodic(false),
-      _timestep(1e-12),
-      _current_frame(0)
+    explicit AmberNetcdf(const std::string& s, const uint na)
+      : Trajectory(s), 
+	_coord_data(new GCoord::element_type[na*3]),
+	_box_data(new GCoord::element_type[3]),
+	_periodic(false),
+	_timestep(1e-12),
+	_current_frame(0)
     {
       cached_first = false;
       init(s.c_str(), na);
     }
 
-    explicit AmberNetcdf(const char* p, const uint na) :
-      _coord_data(new GCoord::element_type[na*3]),
-      _box_data(new GCoord::element_type[3]),
-      _periodic(false),
-      _timestep(1e-12),
-      _current_frame(0)
-    {
-      cached_first = false;
-      init(p, na);
-    }
-
 
     ~AmberNetcdf() {
-      int retval = nc_close(_ncid);
-      if (retval)
-        throw(AmberNetcdfError("Error while closing netcdf file", retval));
+      // ignore the return code since throwing in destructors is bad...
+      nc_close(_ncid);
 
       delete[] _coord_data;
       delete[] _box_data;
