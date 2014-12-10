@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
 import sys
+import os
+import random
+import stat
+import shutil
 import loos
 import PSFGen
 import WaterBox
@@ -64,7 +68,7 @@ sys.stderr.write("Beginning water box construction\n")
 water_template = loos.GCoord(1.0, 1.0, 1.0)
 water_template *= config.water.box_size
 water_target = loos.GCoord(config.box.x(), config.box.y(), 
-                           water_width)
+                           config.box.z())
 water = WaterBox.WaterBox(config.water.coords_filename, 
                           water_template, water_target, 
                           config.water.segname)

@@ -203,9 +203,9 @@ class ReadConfig:
             sys.stderr.write("No output psf file specified... exiting\n")
             sys.exit(1)
 
+        # Warn but don't exit if there are no lipids
         if len(self.segments) == 0:
-            sys.stderr.write("No segments specified... exiting\n")
-            sys.exit(2)
+            sys.stderr.write("No segments specified... your system has no lipids\n")
 
         # TODO: may want to add similar checks for the other keys
 

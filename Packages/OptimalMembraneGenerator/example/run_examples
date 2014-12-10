@@ -7,3 +7,7 @@ foreach dir (popc pope-popg rhodopsin)
     ../../OptimalMembraneGenerator.py $dir.cfg > test.out
     cd ../
 end
+
+cd rhod-water
+../../solvate.py rhodopsin.cfg > test.out
+cd ../
