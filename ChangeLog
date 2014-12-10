@@ -1,3 +1,8 @@
+2014-12-10    <alan@membrane.urmc.rochester.edu>
+
+	* Added solvate.py to OptimalMembraneGenerator, to build 
+	protein in water systems without lipids
+
 2014-12-09    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in aligner that caused incorrect output when using subset of
