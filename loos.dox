@@ -1,3 +1,4 @@
+
 /*!
 
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
@@ -29,6 +30,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
       - \subpage tools "Tools included with LOOS"
       - \subpage selections "Selection Language"
       - \subpage citing "Citing LOOS in published work"
+      - \subpage exceptions "Exceptions in LOOS and PyLOOS"
       - \subpage Changes
       - \subpage FAQ
           - \ref faq_pyloos "FAQ for PyLOOS"
@@ -1384,7 +1386,7 @@ Matlab and Octave.
         <DT> <B> area_per_molecule.py </B>
         <DD> Compute distribution of areas/molecule for a z-slice.  Note: this program
         requires a system file that contains connectivity information (e.g. a PSF file).
-        
+   </DL>        
 
 
     \page user
@@ -1394,7 +1396,23 @@ Matlab and Octave.
 
 */
 
+namespace loos {
 
+/*! \page exceptions Exceptions in LOOS and PyLOOS
+
+As of LOOS 2.2.0, how LOOS uses exceptions has changed significantly.
+In general, this will probably not affect user code that relies on
+uncaught exceptions to terminate with an error, with a few exception
+(no pun intended).  The main end-user change is that the selectAtoms()
+function will no longer throw if no atoms are selected.  Instead, it
+will return an empty AtomicGroup.
+
+
+*/
+};
+
+
+namespace loos {
 
 /*! \page Changes Change Log
 \section release214 Version 2.1.4 (X-YY-2014)
@@ -2666,6 +2684,10 @@ torsion() are now in the \c loos::Math namespace.
 
 */
 
+}
+
+namespace loos {
+
 
 /*! \page FAQ Frequently Asked Questions
 \section faq_loos LOOS
@@ -2706,7 +2728,7 @@ If necessary, override the libraries linked to for Boost by setting
 the BOOST_LIBS variable to a space-separated list of libraries.  Note
 that you will need to include all of the ones required by LOOS, at a
 minimum,
-/verbatin
+\verbatim
 BOOST_LIBS="boost_regex boost_program_options boost_system boost_thread"
 \endverbatim
 Note that the libraries will be linked in with the same order they
@@ -3200,3 +3222,5 @@ or better implementations.
 </DL>
 
 */
+
+}
