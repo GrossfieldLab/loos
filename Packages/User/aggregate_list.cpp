@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
 
       }
 
-      cout << frame << "\tSize:" << clustMol.size() << "\t";
+      cout << frame << "\t" << clustMol.size() << "\t" << clusters.size() <<"\t";
       cout << ends << "\t" << cluster.substr(0, cluster.size()-1) << "\t";
       cout << endl;
 
