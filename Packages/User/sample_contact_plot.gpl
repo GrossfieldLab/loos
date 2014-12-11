@@ -1,8 +1,0 @@
-
-set out 'foo.ps'
-set term post enhanced solid landscape color
-
-set pm3d map
-set xtics rotate
-
-splot 'data.asc' u 1:2:5:xtic(3):ytic(4) w image notitle
