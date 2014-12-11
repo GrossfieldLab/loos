@@ -1401,7 +1401,7 @@ namespace loos {
 /*! \page exceptions Exceptions in LOOS and PyLOOS
 
 As of LOOS 2.2.0, how LOOS uses exceptions has changed significantly.
-In general, this will probably not affect user code that relies on
+This will probably not affect user code that relies on
 uncaught exceptions to terminate with an error, with a few exceptions
 (no pun intended).  The main end-user change is that the selectAtoms()
 function will no longer throw if no atoms are selected.  Instead, it
@@ -1424,6 +1424,30 @@ exception comes from classes that track the lines read and will report
 where in the file the error occured.  Finally, the FileWriteError
 covers any error while writing to a file.
 
+Once an exception has been thrown, expecially for the model and
+trajectory classes, the internal state of the object that threw is
+undefined.  For example, suppose you are reading from a DCD and a
+FileReadError occurs.  That DCD object should not be used again after
+the exception occured.
+
+
+Changes Compared to pre-2.2.0 LOOS
+----------------------------------
+
+There are two major internal changes to how exceptions are handled
+compared to earlier versions of LOOS.  Previously, the standard
+exceptions were more liberally used (e.g. std::runtime_error,
+std::logic_error, etc).  Most exceptions that come from LOOS are now
+derived from LOOSError.  Related to this, the exceptions that LOOS can
+throw have been streamlined.
+
+The second major change is that the set of exceptions in LOOS have
+been flattened.  Some classes defined exceptions that were specific to
+that class.  These have either been flattened (e.g. are now in the
+loos namespace) or have been replaced with more general LOOS
+exceptions.
+
+
 Translating Exceptions to PyLOOS
 --------------------------------
 
@@ -1432,6 +1456,25 @@ the Python equivalent, or into the wrapped version of the LOOS
 exception.  You can call the LOOSError::what() function to get the
 error string.  Alternatively, the __str__() method is defined for all
 LOOS exceptions that are translated into Python.
+
+The following illustrates catching PyLOOS exceptions...
+\code
+try:
+     model = createSystem(filename)
+except loos.LOOSError as e:
+     print 'HELP!  There was a problem reading the model...'
+     print e.what()
+\endcode
+
+
+
+While we have tried to ensure that exceptions that can be thrown by
+LOOS will be caught and translated for Python, it's possible that a
+few have been missed.  Any exceptions not properly caught before they
+reach Python will result in the Python interpreter exiting.  If you
+find this happening, please file a bug report or email the developers
+at loos.maintainer [at] gmail.com
+
 
 */
 };
