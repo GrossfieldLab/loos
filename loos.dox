@@ -1402,11 +1402,36 @@ namespace loos {
 
 As of LOOS 2.2.0, how LOOS uses exceptions has changed significantly.
 In general, this will probably not affect user code that relies on
-uncaught exceptions to terminate with an error, with a few exception
+uncaught exceptions to terminate with an error, with a few exceptions
 (no pun intended).  The main end-user change is that the selectAtoms()
 function will no longer throw if no atoms are selected.  Instead, it
 will return an empty AtomicGroup.
 
+In general, exceptions thrown by LOOS will derive from the LOOSError
+class, which in turn derives from std::exception.  In cases where it
+would be more appropriate to return a standard exception, such as
+std::range_error from the operator[], LOOS will throw that instead.
+
+The most common exceptions you are likely to encounter are FileError
+and derived classes.  These cover errors while reading and writing the
+various model and trajectory classes.  The FileOpenError is associated
+with a problem opening the file (e.g. missing file or incorrect
+permissions).  The FileReadError covers any number of errors while
+reading from a file.  Since some classes (such as trajectory classes)
+read the first frame as part of instantiation, this exception may
+occur during the "opening" process.  The FileReadErrorWithLine
+exception comes from classes that track the lines read and will report
+where in the file the error occured.  Finally, the FileWriteError
+covers any error while writing to a file.
+
+Translating Exceptions to PyLOOS
+--------------------------------
+
+In most cases, Swig will convert the exceptions thrown by LOOS into
+the Python equivalent, or into the wrapped version of the LOOS
+exception.  You can call the LOOSError::what() function to get the
+error string.  Alternatively, the __str__() method is defined for all
+LOOS exceptions that are translated into Python.
 
 */
 };
