@@ -714,14 +714,13 @@ Library.
       crds_size_ = n;
     }
 
-    float* crds = new float[n * 3];
     for (uint i=0,k=0; i<n; ++i) {
       GCoord c = model[i]->coords();
-      crds[k++] = c.x() / 10.0;       // Convert to nm
-      crds[k++] = c.y() / 10.0;
-      crds[k++] = c.z() / 10.0;
+      crds_[k++] = c.x() / 10.0;       // Convert to nm
+      crds_[k++] = c.y() / 10.0;
+      crds_[k++] = c.z() / 10.0;
     }
-    writeCompressedCoordsFloat(crds, n, precision_);
+    writeCompressedCoordsFloat(crds_, n, precision_);
 
     ++current_;
   }
