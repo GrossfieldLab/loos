@@ -16,6 +16,7 @@ createSystem;
 	 loos::FileReadErrorWithLine,\
 	 loos::FileReadError,\
 	 loos::FileError,\
+	 loos::XDRDataSizeError,\
 	 loos::LOOSError,\
 	 std::logic_error,\
 	 std::runtime_error) \
@@ -166,6 +167,46 @@ selectAtoms;
 %catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) TinkerXYZ::create;
 %catches(loos::FileReadError, loos::FileError, loos::LOOSError) TinkerXYZ::read;
 
+// trajectory
+%catches(loos::ParseError,\
+	 loos::FileOpenError,	    \
+	 loos::FileReadErrorWithLine,\
+	 loos::FileReadError,\
+	 loos::FileError,\
+	 loos::XDRDataSizeError,\
+	 loos::LOOSError,\
+	 std::logic_error,\
+	 std::runtime_error) \
+Trajectory::Trajectory;
+
+%catches(loos::ParseError,\
+	 loos::FileOpenError,	    \
+	 loos::FileReadErrorWithLine,\
+	 loos::FileReadError,\
+	 loos::FileError,\
+	 loos::XDRDataSizeError,\
+	 loos::LOOSError,\
+	 std::logic_error,\
+	 std::runtime_error) \
+Trajectory::readFrame;
+
+%catches(loos::ParseError,\
+	 loos::FileOpenError,	    \
+	 loos::FileReadErrorWithLine,\
+	 loos::FileReadError,\
+	 loos::FileError,\
+	 loos::XDRDataSizeError,\
+	 loos::LOOSError,\
+	 std::logic_error,\
+	 std::runtime_error) \
+Trajectory::parseFrame;
+
+%catches(loos::FileError, std::range_error) Trajectory::seekNextFrame;
+%catches(loos::FileError, std::range_error) Trajectory::seekFrame;
+%catches(loos::FileError) Trajectory::rewind;
+%catches(loos::LOOSError, std::range_error) Trajectory::updateGroupCoords;
+
+
 
 // trajwriter
 %catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) TrajectoryWriter::TrajectoryWriter;
@@ -183,8 +224,8 @@ selectAtoms;
 
 
 // xtc
-%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) XTC::XTC;
-%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::LOOSError) XTC::create;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::XDRDataSizeError, loos::LOOSError) XTC::XTC;
+%catches(loos::FileOpenError, loos::FileReadError, loos::FileError, loos::XDRDataSizeError, loos::LOOSError) XTC::create;
 
 // xtcwrite
 
