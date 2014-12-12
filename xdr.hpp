@@ -37,10 +37,6 @@ namespace loos {
   namespace internal {
 
 
-    struct XDRDataSizeError : public LOOSError {
-      XDRDataSizeError() : LOOSError("XDR data size error") {}
-      XDRDataSizeError(const std::string& s) : LOOSError(s) {}
-    };
 
     //! This class provides some facility for handling XDR data
     /**

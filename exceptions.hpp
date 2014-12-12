@@ -75,6 +75,12 @@ namespace loos {
   };
 
 
+  struct XDRDataSizeError : public LOOSError {
+    XDRDataSizeError() : LOOSError("XDR data size error") {}
+    XDRDataSizeError(const std::string& s) : LOOSError(s) {}
+  };
+
+
   //! Exception caused by a blas/atlas error
   class NumericalError : public LOOSError {
   public:
