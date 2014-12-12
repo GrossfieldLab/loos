@@ -15,19 +15,11 @@
   const char* __str__() { std::string s = self->what(); return(s.c_str()); }
 }
 
-%extend loos::MissingProperty {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
-}
-
 %extend loos::UnsetProperty {
   const char* __str__() { std::string s = self->what(); return(s.c_str()); }
 }
 
 %extend loos::NumericalError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
-}
-
-%extend loos::UnknownAtomicMass {
   const char* __str__() { std::string s = self->what(); return(s.c_str()); }
 }
 
