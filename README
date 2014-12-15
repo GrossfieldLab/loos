@@ -8,6 +8,24 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.2.0 *
+
+This loos includes a number of significant improvements and changes.
+The first is the introduction of the TrajectoryWriter class for
+writing trajectories.  Two formats are currently supported,
+CHARMM/NAMD DCD format (DCDWriter) and Gromacs XTC (XTCWriter).  To
+support this change, we have added a createOutputTrajectory() factory
+function analogous to createTrajectory() and createSystem(), along
+with an OutputTrajectoryOption class for use with our
+OptionsFramework.  The subsetter tool has a slightly different
+command-line usage now because of this change: specify the output
+trajectory with an extension (e.g. foo.dcd) and the prefix will be
+inferred.
+
+
+
+
+
    * RELEASE 2.1.3 *
 
 This release includes a number of minor improvements and bug fixes.
