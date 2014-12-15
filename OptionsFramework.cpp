@@ -462,6 +462,32 @@ namespace loos {
     }
     
     // -------------------------------------------------------
+    
+    void OutputTrajectoryTypeOptions::addGeneric(po::options_description& opts) {
+      std::string types = availableOutputTrajectoryFileTypes();
+
+      opts.add_options()
+	("outrajtype", po::value<std::string>(&type)->default_value("dcd"), types.c_str())
+	("append", po::value<bool>(&append)->default_value(append), "Append if trajectory exists, otherwise overwrite");
+    }
+
+
+    std::string OutputTrajectoryTypeOptions::print() const {
+      std::ostringstream oss;
+      oss << boost::format("outraj_type='%s',append=%d")
+	% type
+	% append;
+      return(oss.str());
+    }
+
+
+    pTrajectoryWriter OutputTrajectoryTypeOptions::createTrajectory(const std::string& prefix) {
+
+      std::string fname = prefix + "." + type;
+      return(createOutputTrajectory(fname, type, append));
+    }
+    
+    // -------------------------------------------------------
 
     void RequiredArguments::addArgument(const std::string& name, const std::string& description) {
       StringPair arg(name, description);

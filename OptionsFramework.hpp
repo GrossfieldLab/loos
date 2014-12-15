@@ -682,6 +682,36 @@ namespace loos {
 
     };
 
+    // ----------------------------------------------------------------------
+
+    class OutputTrajectoryTypeOptions : public OptionsPackage {
+    public:
+      OutputTrajectoryTypeOptions() : 
+	label("Output Trajectory Type"), 
+	append(false), 
+	type("dcd") {}
+
+      OutputTrajectoryTypeOptions(const std::string& s) : 
+	label("Output Trajectory Type"),
+	append(false),
+	type(s) {}
+
+      OutputTrajectoryTypeOptions(const std::string& s, const bool appending) : 
+	label("Output Trajectory Type"), 
+	append(appending), type(s) {}  
+
+      pTrajectoryWriter createTrajectory(const std::string& prefix);
+
+
+      std::string label;
+      bool append;
+      std::string type;
+
+    private:
+      void addGeneric(po::options_description& opts);
+      std::string print() const;
+    };
+
 
 
     // ----------------------------------------------------------------------
