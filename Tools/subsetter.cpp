@@ -64,7 +64,7 @@ vector<uint> local_indices;      // Maps global frame numbers into local frame n
 uint stride = 0;                 // Step through frames by this amount
                                  // (unless ranges were specified)
 uint skip = 0;
-string model_name;
+string model_name, out_name;
 vector<string> traj_names;
 string selection;
 int verbose = 0;
@@ -297,16 +297,18 @@ public:
   void addHidden(po::options_description& o) {
     o.add_options()
       ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames");
+      ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames")
+      ("out", po::value<string>(&out_name), "Output prefix");
   }
 
   void addPositional(po::positional_options_description& o) {
+    o.add("out", 1);
     o.add("model", 1);
     o.add("traj", -1);
   }
 
   bool check(po::variables_map& vm) {
-    return ( model_name.empty() || traj_names.empty());
+    return ( model_name.empty() || out_name.empty() || traj_names.empty());
   }
 
   bool postConditions(po::variables_map& vm) {
@@ -340,7 +342,7 @@ public:
   }
 
   string help() const { 
-    return("model trajectory [trajectory ...]");
+    return("output-prefix model trajectory [trajectory ...]");
   }
 
   string print() const {
@@ -361,7 +363,8 @@ public:
         oss << boost::format("regex='%s'") % regex_spec;
     }
 
-    oss << boost::format("model='%s', traj='%s'")
+    oss << boost::format("out='%s', model='%s', traj='%s'")
+      % out_name
       % model_name
       % vectorAsStringWithCommas(traj_names);
 
@@ -424,7 +427,7 @@ int main(int argc, char *argv[]) {
 
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::BasicSelection* sopts = new opts::BasicSelection("all");
-  opts::OutputTrajectoryOptions* otopts = new opts::OutputTrajectoryOptions();
+  opts::OutputTrajectoryTypeOptions* otopts = new opts::OutputTrajectoryTypeOptions();
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
@@ -452,7 +455,7 @@ int main(int argc, char *argv[]) {
       indices.push_back(i);
   }
 
-  pTrajectoryWriter trajout = otopts->outraj;
+  pTrajectoryWriter trajout = otopts->createTrajectory(out_name);
   if (trajout->hasComments())
     trajout->setComments(hdr);
 
@@ -532,7 +535,7 @@ int main(int argc, char *argv[]) {
       if (selection != "all")
         pdb.pruneBonds();
       
-      string out_pdb_name = otopts->basename + ".pdb";
+      string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
       ofs << pdb;
       ofs.close();
