@@ -111,7 +111,7 @@ string fullHelpMessage(void) {
     "\n"
     "NOTES\n"
     "\n"
-    "\tSelecting too few atoms to align my result in a poor alignment.\n";
+    "\tSelecting too few atoms to align may result in a poor alignment.\n";
 
   return(msg);
 }
