@@ -419,7 +419,7 @@ namespace loos {
       std::string types = availableOutputTrajectoryFileTypes();
 
       opts.add_options()
-	("outrajtype", po::value<std::string>(&type), types.c_str())
+	("outtrajtype,t", po::value<std::string>(&type), types.c_str())
 	("append", po::value<bool>(&append)->default_value(append), "Append if trajectory exists, otherwise overwrite");
     }
 
@@ -467,7 +467,7 @@ namespace loos {
       std::string types = availableOutputTrajectoryFileTypes();
 
       opts.add_options()
-	("outrajtype", po::value<std::string>(&type)->default_value("dcd"), types.c_str())
+	("outtrajtype,t", po::value<std::string>(&type)->default_value("dcd"), types.c_str())
 	("append", po::value<bool>(&append)->default_value(append), "Append if trajectory exists, otherwise overwrite");
     }
 
