@@ -1403,9 +1403,7 @@ namespace loos {
 As of LOOS 2.2.0, how LOOS uses exceptions has changed significantly.
 This will probably not affect user code that relies on
 uncaught exceptions to terminate with an error, with a few exceptions
-(no pun intended).  The main end-user change is that the selectAtoms()
-function will no longer throw if no atoms are selected.  Instead, it
-will return an empty AtomicGroup.
+(no pun intended).
 
 In general, exceptions thrown by LOOS will derive from the LOOSError
 class, which in turn derives from std::exception.  In cases where it
@@ -1433,6 +1431,10 @@ the exception occured.
 
 Changes Compared to pre-2.2.0 LOOS
 ----------------------------------
+
+The primary external change in LOOS-2.2 is that selectAtoms() will no
+longer throw an exception if no atoms are selected.  Instead, it well
+return an empty AtomicGroup.
 
 There are two major internal changes to how exceptions are handled
 compared to earlier versions of LOOS.  Previously, the standard
@@ -1468,6 +1470,7 @@ except loos.LOOSError as e:
 
 
 
+
 While we have tried to ensure that exceptions that can be thrown by
 LOOS will be caught and translated for Python, it's possible that a
 few have been missed.  Any exceptions not properly caught before they
@@ -1483,8 +1486,8 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
-\section release214 Version 2.1.4 (X-YY-2014)
-\subsection r214_added_changed Added, Changed, or Otherwise Notable
+\section release220 Version 2.2.0 (X-YY-2014)
+\subsection r220_added_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Added support for retrieving time and step from frames of XTC files
   <li> Added support for estimating DCD-style timestep for XTC files
@@ -1513,6 +1516,28 @@ namespace loos {
   in command-line was made.
   <li> Changed DCDWriter::framesWritten() to return an unsigned int
   instead of a signed int.
+  <li> Added BackboneSelector for proteins and nucleic acids.  Note that
+  this will only work for known residue and atom names (see Selector.cpp).
+  Will also select hydrogens attached to backbone atoms.
+  <li> Added "backbone" keyword to selection language
+  <li> Changed PDB reader so that missing fields (to the right of coordinates) 
+  will issue a warning and then be ignored.
+  <li> Added functions to PDB to report whether fields are missing or not
+  <li> Added OMG (the Optimal Membrane Generator)
+  <li> Changed/Added exception classes and handling, particularly for PyLOOS
+  (see \ref exceptions) for more details.
+  <li> Changed selectAtoms() to return an empty AtomicGroup when no atoms are
+  selected, rather than throw an exception.
+  <li> Changed AtomicGroup::groupFromID() so that missing atoms are ignored,
+  rather than throw an exception.
+  <li> Removed all char* based constructors in favor of string& 
+  <li> Changed how the Swig interface is generated (from the CPP header files directly)
+  <li> Deprecated gridify() in dcd_utils.cpp
+</ul>
+\subsection r220_bugs Bugs Fixed
+<ul>
+  <li> Fixed bug in aligner causing incorrect output when using a skip, stride, or
+some ranges of frames.
 </ul>
 
 
