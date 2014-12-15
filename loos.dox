@@ -1509,11 +1509,7 @@ namespace loos {
   <li> Changed how available file formats are listed (as a
   newline-delimited list for use in ProgramOptions, rather than a more
   compact comma-delimited list)
-  <li> Changed subsetter to use new OutputTrajectory class.  The
-  output filename must now be the trajectory name, not a prefix.  The
-  model file created uses the base filename + ".pdb" suffix.
-  <li> Changed mergetraj to use the TrajectoryWriter class.  No change
-  in command-line was made.
+  <li> Changed subsetter and merge-traj to use new OutputTrajectory class.
   <li> Changed DCDWriter::framesWritten() to return an unsigned int
   instead of a signed int.
   <li> Added BackboneSelector for proteins and nucleic acids.  Note that

@@ -75,10 +75,7 @@
 	* Added Trajectory::description() to return a string describing
 	the trajectory format.
 	* Changed trajinfo to report the trajectory file's format
-	* Changed subsetter and mergetraj to use TrajectoryWriter.  For
-	subsetter, this means you now must specify the trajectory name
-	rather than a prefix (so subsetter can determine the output
-	trajectory type).
+	* Changed subsetter and mergetraj to use TrajectoryWriter.
 	* Added splitFilename() utility function to break a filename into
 	the basename and a dotted suffix.
 	* Added OutputTrajectoryOptions class.
