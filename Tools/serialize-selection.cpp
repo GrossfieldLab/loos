@@ -189,19 +189,21 @@ private:
 
 
 /*
- * Writes the output as a DCD.  The first frame that is passed is used
+ * Writes the output as a Trajectory.  The first frame that is passed is used
  * to generate a PDB model.  The prefix name is used to name the
- * output files, i.e. prefix.pdb and prefix.dcd
+ * output files.
  */
 
-class DCDOutput : public Outputter 
+class TrajOutput : public Outputter 
 {
 public:
     
-    DCDOutput(const string& prefix, const string& hdr, const bool renum) 
-        : Outputter(prefix, hdr), _first_frame(true), _dcd(prefix + ".dcd"),
-	  _renum(renum)
-        {}
+    TrajOutput(const string& prefix, const string& type, const bool append, const string& hdr, const bool renum) 
+        : Outputter(prefix, hdr), _first_frame(true), _renum(renum)
+        {
+            _traj = createOutputTrajectory(prefix + "." + type, append);
+            _traj->setComments(hdr);
+        }
 
     void writeFrame(const AtomicGroup& structure) 
         {
@@ -223,12 +225,13 @@ public:
 
                 _first_frame = false;
             }
-            _dcd.writeFrame(structure);
+            _traj->writeFrame(structure);
         }
+
 private:
     bool _first_frame;
-    DCDWriter _dcd;
     bool _renum;
+    pTrajectoryWriter _traj;
 };
 
 
@@ -244,12 +247,13 @@ int main(int argc, char *argv[])
 
     opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
     opts::OutputPrefix* popts = new opts::OutputPrefix;
-        opts::BasicSelection* sopts = new opts::BasicSelection("all");
+    opts::BasicSelection* sopts = new opts::BasicSelection("all");
     opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+    opts::OutputTrajectoryTypeOptions* otopts = new opts::OutputTrajectoryTypeOptions;
     ToolOptions* topts = new ToolOptions;
 
     opts::AggregateOptions options;
-    options.add(bopts).add(popts).add(sopts).add(tropts).add(topts);
+    options.add(bopts).add(popts).add(sopts).add(tropts).add(otopts).add(topts);
     if (!options.parse(argc, argv))
         exit(-1);
     
@@ -282,7 +286,7 @@ int main(int argc, char *argv[])
     if (topts->pdb_output)
         output = new PDBOutput(popts->prefix, hdr);
     else
-        output = new DCDOutput(popts->prefix, hdr, topts->renum);
+        output = new TrajOutput(popts->prefix, otopts->type, otopts->append, hdr, topts->renum);
     
     vector<uint> frames = tropts->frameList();
 
