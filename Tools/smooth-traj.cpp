@@ -183,10 +183,11 @@ int main(int argc, char *argv[]) {
   opts::OutputPrefix* prefopts = new opts::OutputPrefix("smoothed");
   opts::BasicSelection* sopts = new opts::BasicSelection("!hydrogen");
   opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+  opts::OutputTrajectoryTypeOptions* otopts = new opts::OutputTrajectoryTypeOptions;
   ToolOptions* topts = new ToolOptions;
   
   opts::AggregateOptions options;
-  options.add(bopts).add(prefopts).add(sopts).add(tropts).add(topts);
+  options.add(bopts).add(prefopts).add(sopts).add(tropts).add(topts).add(otopts);
   if (!options.parse(argc, argv))
       exit(-1);
   
@@ -210,11 +211,8 @@ int main(int argc, char *argv[]) {
   ofstream ofs(pdb_name.c_str());
   ofs << pdb;
 
-
-  string dcd_name = output_name + ".dcd";
-  DCDWriter dcd(dcd_name);
-  dcd.setHeader(subset.size(), n, 1e-3, false);
-  dcd.writeHeader();
+  pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
+  outtraj->setComments(hdr);
 
   AtomicGroup frame = subset.copy();
   double scaling = window->sum();
@@ -231,7 +229,7 @@ int main(int argc, char *argv[]) {
       addCoords(frame, subset, scale);
     }
     divideCoords(frame, scaling);
-    dcd.writeFrame(frame);
+    outtraj->writeFrame(frame);
 
   }
 }
