@@ -73,11 +73,12 @@ string fullHelpMessage(void)
 "    input_traj.dcd (which presumably has periodicity information), and \n"
 "    writes output_traj.dcd, which does have periodicity information.\n"
 "\n"
-"    reimage-by-molecule model.psf input_traj.dcd output_traj.dcd 55 77 100\n"
+"    reimage-by-molecule model.psf input_traj.dcd output_traj.xtc 55 77 100\n"
 "\n"
 "    This does essentially the same thing, but asserts that the periodic\n"
 "    box is constant with x-dimension 55 angstrom, y-dimension 77 angstroms,\n"
-"    and z-dimension 100 angstroms.\n"
+"    and z-dimension 100 angstroms.  The trajectory is also converted to\n"
+"    the GROMACS XTC format."
 "\n"
         ;
     return(s);
@@ -86,7 +87,7 @@ string fullHelpMessage(void)
 
 void Usage()
 {
-  cerr << "Usage: reimage-by-molecule model trajectory outdcd [xbox ybox zbox]"
+  cerr << "Usage: reimage-by-molecule model trajectory output-trajectory [xbox ybox zbox]"
        << endl;
 } 
 
@@ -121,7 +122,7 @@ int main(int argc, char *argv[])
     }
 
   pTraj traj = createTrajectory(argv[2], model);
-  DCDWriter dcd_out(argv[3]);
+  pTrajectoryWriter traj_out = createOutputTrajectory(argv[3]);
 
   bool box_override = false;
   GCoord newbox;
@@ -153,10 +154,7 @@ int main(int argc, char *argv[])
     }
 
   // duplicate the info from dcd in dcd_out
-  dcd_out.setHeader(traj->natoms(), traj->nframes(), traj->timestep(), 
-                    true );
-  dcd_out.setTitle(hdr);
-  dcd_out.writeHeader();
+  traj_out->setComments(hdr);
 
   // split the system by molecule
   vector<AtomicGroup> molecules = model.splitByMolecule();
@@ -194,7 +192,7 @@ int main(int argc, char *argv[])
           m->reimage();
         }
 
-      dcd_out.writeFrame(model);
+      traj_out->writeFrame(model);
     }
 
   cerr << " - done\n";
