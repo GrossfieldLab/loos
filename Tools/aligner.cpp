@@ -278,10 +278,11 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   opts::OutputPrefix* prefopts = new opts::OutputPrefix;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  opts::OutputTrajectoryTypeOptions *otopts = new opts::OutputTrajectoryTypeOptions;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
-  options.add(bopts).add(prefopts).add(tropts).add(topts);
+  options.add(bopts).add(prefopts).add(tropts).add(otopts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
 
@@ -317,11 +318,9 @@ int main(int argc, char *argv[]) {
     
     vector<XForm> xforms = boost::get<0>(res);
     
-    // Setup for writing DCD...
-    DCDWriter dcdout(prefopts->prefix + ".dcd");
-    dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, traj->hasPeriodicBox());
-    dcdout.setTitle(header);
-    dcdout.writeHeader();
+    // Setup for writing Trajectory
+    pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
+    outtraj->setComments(header);
     
     // Now apply the alignment transformations to the requested subsets
     for (unsigned int i = 0; i<nframes; i++) {
@@ -339,7 +338,7 @@ int main(int argc, char *argv[]) {
           applyto_sub.translate(shift);
       }
       
-      dcdout.writeFrame(applyto_sub);
+      outtraj->writeFrame(applyto_sub);
       
       if (i == 0) 
         savePDB(prefopts->prefix + ".pdb", header, applyto_sub);
@@ -357,11 +356,8 @@ int main(int argc, char *argv[]) {
       exit(-10);
     }
 
-    DCDWriter dcdout(prefopts->prefix + ".dcd");
-    dcdout.setHeader(applyto_sub.size(), nframes, 1e-3, traj->hasPeriodicBox());
-    dcdout.setTitle(header);
-    dcdout.writeHeader();
-
+    pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
+    outtraj->setComments(header);
 
     bool first = true;
     for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
@@ -383,7 +379,7 @@ int main(int argc, char *argv[]) {
           applyto_sub.translate(shift);
       }
 
-      dcdout.writeFrame(applyto_sub);
+      outtraj->writeFrame(applyto_sub);
 
       if (first) {
         savePDB(prefopts->prefix + ".pdb", header, applyto_sub);
