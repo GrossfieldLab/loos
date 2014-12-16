@@ -187,7 +187,7 @@ int main(int argc, char *argv[]) {
   ToolOptions* topts = new ToolOptions;
   
   opts::AggregateOptions options;
-  options.add(bopts).add(prefopts).add(sopts).add(tropts).add(topts).add(otopts);
+  options.add(bopts).add(prefopts).add(sopts).add(tropts).add(otopts).add(topts);
   if (!options.parse(argc, argv))
       exit(-1);
   
@@ -200,7 +200,6 @@ int main(int argc, char *argv[]) {
 
   uint starting_frame = window_size/2;
   uint ending_frame = traj->nframes() - window_size;
-  uint n = (ending_frame - starting_frame) / stride;
 
   Window* window = topts->window;
       
