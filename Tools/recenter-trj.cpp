@@ -102,8 +102,9 @@ else if ( (flag == "XY") || (flag == "xy"))
     just_xy = true;
     }
 
-DCDWriter dcd(argv[5]);
-dcd.setTitle(invocationHeader(argc, argv));
+
+pTrajectoryWriter traj_out = createOutputTrajectory(argv[5]);
+traj_out->setComments(invocationHeader(argc, argv));
 
 if (!model.hasBonds())
     {
@@ -166,7 +167,7 @@ while (traj->readFrame())
         m->reimage();
         }
     
-    dcd.writeFrame(model);
+    traj_out->writeFrame(model);
     }
 
 }
