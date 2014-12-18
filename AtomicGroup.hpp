@@ -433,7 +433,19 @@ namespace loos {
       Distance2WithPeriodicity op(box);
       return(within_private(dist, grp, op));
     }
-    
+
+
+    //! Returns true if any atom of current grout is within \a dist angstroms of \a grp
+    bool contactWith(const double dist, const AtomicGroup& grp) const {
+      Distance2WithoutPeriodicity op;
+      return(contactwith_private(dist, grp, op));
+    }
+
+    //! Returns true if any atom of current grout is within \a dist angstroms of \a grp
+    bool contactWith(const double dist, const AtomicGroup& grp, const GCoord& box) const {
+      Distance2WithPeriodicity op(box);
+      return(contactwith_private(dist, grp, op));
+    }
     
 
     //! Distance-based search for bonds
@@ -734,6 +746,20 @@ namespace loos {
         res.addAtom(atoms[*ci]);
 
       return(res);
+    }
+
+
+    template<typename DistanceCalc>
+    bool contactwith_private(const double dist, const AtomicGroup& grp, const DistanceCalc& distance_function) const {
+      double dist2 = dist * dist;
+
+      for (uint j = 0; j<size(); ++j) {
+	GCoord c = atoms[j]->coords();
+	for (uint i = 0; i<grp.size(); ++i)
+	  if (distance_function(c, grp.atoms[i]->coords()) <= dist2)
+	    return(true);
+      }
+      return(false);
     }
 
 
