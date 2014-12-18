@@ -436,17 +436,25 @@ namespace loos {
 
 
     //! Returns true if any atom of current grout is within \a dist angstroms of \a grp
-    bool contactWith(const double dist, const AtomicGroup& grp) const {
+    /**
+     * \a min is the minimum number of pair-wise contacts required to be considered
+     * in contact
+     */
+    bool contactWith(const double dist, const AtomicGroup& grp, const uint min=1) const {
       Distance2WithoutPeriodicity op;
-      return(contactwith_private(dist, grp, op));
+      return(contactwith_private(dist, grp, min, op));
     }
 
     //! Returns true if any atom of current grout is within \a dist angstroms of \a grp
-    bool contactWith(const double dist, const AtomicGroup& grp, const GCoord& box) const {
+    /**
+     * \a min is the minimum number of pair-wise contacts required to be considered
+     * in contact
+     */
+    bool contactWith(const double dist, const AtomicGroup& grp, const GCoord& box, const uint min=1) const {
       Distance2WithPeriodicity op(box);
-      return(contactwith_private(dist, grp, op));
+      return(contactwith_private(dist, grp, min, op));
     }
-    
+
 
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
@@ -750,14 +758,16 @@ namespace loos {
 
 
     template<typename DistanceCalc>
-    bool contactwith_private(const double dist, const AtomicGroup& grp, const DistanceCalc& distance_function) const {
+    bool contactwith_private(const double dist, const AtomicGroup& grp, const uint min_contacts, const DistanceCalc& distance_function) const {
       double dist2 = dist * dist;
+      uint ncontacts = 0;
 
       for (uint j = 0; j<size(); ++j) {
 	GCoord c = atoms[j]->coords();
 	for (uint i = 0; i<grp.size(); ++i)
 	  if (distance_function(c, grp.atoms[i]->coords()) <= dist2)
-	    return(true);
+	    if (++ncontacts >= min_contacts)
+	      return(true);
       }
       return(false);
     }
