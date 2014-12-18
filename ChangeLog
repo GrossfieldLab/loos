@@ -1,3 +1,8 @@
+2014-12-18    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added AtomicGroup::contactWith() which returns true or false if 
+	two groups have a pair of atoms within a threshold distance
+
 2014-12-16    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed aligner, smooth-traj, reimage-by-molecule, and

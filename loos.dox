@@ -1489,6 +1489,8 @@ namespace loos {
 \section release220 Version 2.2.0 (X-YY-2014)
 \subsection r220_added_changed Added, Changed, or Otherwise Notable
 <ul>
+  <li> Added AtomicGroup::contactWith() that returns true or false if
+       two AtomicGroups have any contacts between them.
   <li> Added support for retrieving time and step from frames of XTC files
   <li> Added support for estimating DCD-style timestep for XTC files
   <li> Added spliteFilename() utility
