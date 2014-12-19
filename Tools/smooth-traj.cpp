@@ -112,7 +112,8 @@ public:
         o.add_options()
             ("weighting", po::value<string>(&weight_name)->default_value(weight_name), "Weighting method to use (cos|uniform)")
             ("window", po::value<uint>(&window_size)->default_value(window_size), "Size of window to average over")
-            ("stride", po::value<uint>(&stride)->default_value(stride), "How may frames to skip per step");
+            ("stride", po::value<uint>(&stride)->default_value(stride), "How may frames to skip per step")
+            ("clip", po::value<bool>(&clip)->default_value(true), "Clip the ends of the trajectory ");
 	
     }
 
@@ -136,16 +137,18 @@ public:
 		
     string print() const {
 	ostringstream oss;
-	oss << boost::format("weighting='%s',size=%d,stride=%d")
+	oss << boost::format("weighting='%s',size=%d,stride=%d,clip=%d")
 	    % weight_name
 	    % window_size
-	    % stride;
+	    % stride
+            % clip;
 	
 	return(oss.str());
     }
 
     string weight_name;
     uint window_size, stride;
+    bool clip;
     Window* window;
 };
 
@@ -197,9 +200,10 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, sopts->selection);
   int window_size = topts->window_size;
   uint stride = topts->stride;
+  bool clip = topts->clip;
 
-  uint starting_frame = window_size/2;
-  uint ending_frame = traj->nframes() - window_size;
+  uint starting_frame = clip ? window_size/2 : 0;
+  uint ending_frame = traj->nframes() - (clip ? window_size/2 : 0);
 
   Window* window = topts->window;
       
@@ -214,18 +218,22 @@ int main(int argc, char *argv[]) {
   outtraj->setComments(hdr);
 
   AtomicGroup frame = subset.copy();
-  double scaling = window->sum();
 
   for (uint j=starting_frame; j<ending_frame; j += stride) {
 
     zeroCoords(frame);
+    double scaling = 0.0;
 
     // Now average...
     for (int wi = 0; wi < window_size; ++wi) {
       double scale = window->weight(wi);
-      traj->readFrame(j + wi - wi/2);
+      int t = j + wi - wi/2;
+      if (t < 0 || t >= traj->nframes())
+        continue;
+      traj->readFrame(t);
       traj->updateGroupCoords(subset);
       addCoords(frame, subset, scale);
+      scaling += window->weight(wi);
     }
     divideCoords(frame, scaling);
     outtraj->writeFrame(frame);
