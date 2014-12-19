@@ -435,7 +435,7 @@ namespace loos {
     }
 
 
-    //! Returns true if any atom of current grout is within \a dist angstroms of \a grp
+    //! Returns true if any atom of current group is within \a dist angstroms of \a grp
     /**
      * \a min is the minimum number of pair-wise contacts required to be considered
      * in contact
@@ -445,7 +445,7 @@ namespace loos {
       return(contactwith_private(dist, grp, min, op));
     }
 
-    //! Returns true if any atom of current grout is within \a dist angstroms of \a grp
+    //! Returns true if any atom of current group is within \a dist angstroms of \a grp
     /**
      * \a min is the minimum number of pair-wise contacts required to be considered
      * in contact
