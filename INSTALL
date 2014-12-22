@@ -26,7 +26,7 @@
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
 | Debian 7.1        |     +     |   +    |       |         still work...       
 |-------------------|-----------|--------|-------|                             
-| CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported                        
+| CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported
 | CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
 |-------------------|-----------|--------|-------|         installing required packages)
 | OpenSUSE 11.4     |     !     |   -    | DC    |                             
