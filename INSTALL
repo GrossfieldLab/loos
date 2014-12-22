@@ -6,8 +6,8 @@
 |-------------------|-----------|--------|--------                             
 | Fedora 12         |     +     |   !    | DS    |     + = Supported (dependencies easily
 | Fedora 13         |     +     |   !    | DS    |         available via package manager)
-| Fedora 14         |     +     |   +    |       |                             
-| Fedora 15         |     +     |   +    |       |     ! = Supported with reservations
+| Fedora 14         |     +     |   +    | D     |                             
+| Fedora 15         |     +     |   +    | D     |     ! = Supported with reservations
 | Fedora 16         |     +     |   +    |       |         (may require manual installations)
 | Fedora 17         |     +     |   +    |       |    
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
@@ -16,10 +16,10 @@
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
 | Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
-| Ubuntu 11.10      |     +     |   !    | S     |     
+| Ubuntu 11.10      |     +     |   !    | DS    |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
-| Ubuntu 12.10      |     +     |   +    |       |     
-| Ubuntu 13.04      |     +     |   +    |       |
+| Ubuntu 12.10      |     +     |   +    | D     |     
+| Ubuntu 13.04      |     +     |   +    | D     |
 | Ubuntu 14.04 LTS  |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
 | Debian 5          |     !     |   -    | DB    |         We are no longer testing these
@@ -29,7 +29,7 @@
 | CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported                        
 | CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
 |-------------------|-----------|--------|-------|         installing required packages)
-| OpenSUSE 11.4     |     !     |   -    | C     |                             
+| OpenSUSE 11.4     |     !     |   -    | DC    |                             
 | OpenSUSE 12       |     !     |   +    | C     |                             
 | OpenSUSE 13       |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
@@ -41,7 +41,7 @@
 |-------------------|-----------|--------|-------|                             
 | Windows XP        |     +     |   -    | D     |                             
 |  +Cygwin 1.7.7    |           |        |       |                             
-| Windows 7 64-bit  |     +     |   -    |       |                             
+| Windows 7 64-bit  |     +     |   -    | D     |                             
 |  +Cygwin 1.7.15-1 |           |        |       |                             
 |-------------------|-----------|--------|-------|                             
 | MacOS 10.6        |     +     |   !    | D     |                             
