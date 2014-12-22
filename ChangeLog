@@ -1,3 +1,12 @@
+2014-12-22    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in smooth-traj where a half-window's worth of frames
+	at the end of the trajectory would be excluded.
+	* Added --clip flag to smooth-traj to control whether output
+	trajectory has clipped ends, or is the same size as the input
+	trajectory. 
+	
+
 2014-12-18    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added AtomicGroup::contactWith() which returns true or false if 
