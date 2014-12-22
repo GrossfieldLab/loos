@@ -21,15 +21,14 @@ OutputTrajectoryOption class for use with our OptionsFramework.
 Another major change is a complete overhaul of exceptions in LOOS and
 PyLOOS.  For the tool-user, there should be no change other than some
 error messages may have a different format or wording.  For Python
-users/developers, the exceptions thrown by the C++ side of PyLOOS should now be
-correctly caught and translated into a Python equivalent or a wrapped
-LOOS exception object.  This means
-that the Python interpreter will no longer crash when an exception
-occurs and that you can now use try/except in your Python code.
-For C++ developers, the majority of these changes are internal.  The
-one exception is selectAtoms(), which previously would throw an
-exception if no atoms were selected.  Now, it returns an empty
-AtomicGroup.
+users/developers, the exceptions thrown by the C++ side of PyLOOS
+should now be correctly caught and translated into a Python equivalent
+or a wrapped LOOS exception object.  This means that the Python
+interpreter will no longer crash when an exception occurs and that you
+can now use try/except in your Python code.  For C++ developers, the
+majority of these changes are internal.  The one exception is
+selectAtoms(), which previously would throw an exception if no atoms
+were selected.  Now, it returns an empty AtomicGroup.
 
 Other changes to LOOS include a new "Optimal Membrane Generator"
 PyLOOS package, support for periodic boxes in Tinker XYZ and ARC
