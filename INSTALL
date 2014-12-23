@@ -13,6 +13,7 @@
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
 | Fedora 19         |     +     |   +    |       |                             
 | Fedora 20         |     +     |   +    |       |
+| Fedora 21         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
 | Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
@@ -28,7 +29,8 @@
 |-------------------|-----------|--------|-------|                             
 | CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported
 | CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
-|-------------------|-----------|--------|-------|         installing required packages)
+| CentOS 7          |     +     |   !    | C     |         installing required packages)
+|-------------------|-----------|--------|-------|
 | OpenSUSE 11.4     |     !     |   -    | DC    |                             
 | OpenSUSE 12       |     !     |   +    | C     |                             
 | OpenSUSE 13       |     +     |   +    |       |
@@ -178,6 +180,11 @@ For Amber NetCDF support, also install the netcdf development package:
 
 sudo yum install netcdf-devel
 
+Fedora 21: Atlas has been split into satlas (serial) and tatlas
+(threaded).  To build, you will need to copy the custom.py-proto to
+custom.py and set ATLAS_LIBS to whichever version of atlas you prefer.
+
+
 
 * PyLOOS *
 
@@ -199,6 +206,10 @@ LOOS has been tested with CentOS (64 bit).  Follow the instructions
 for Fedora, however there is no scons package available via yum.
 Instead, download and install any version of scons more recent than
 1.0.
+
+CentOS 7: Atlas has been split into satlas (serial) and tatlas
+(threaded).  To build, you will need to copy the custom.py-proto to
+custom.py and set ATLAS_LIBS to whichever version of atlas you prefer.
 
 
 * PyLOOS *
