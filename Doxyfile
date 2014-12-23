@@ -836,6 +836,7 @@ EXCLUDE_SYMLINKS       = NO
 
 EXCLUDE_PATTERNS       = *.cc \
                          *.hh \
+			 *.h \
                          foo* \
                          Tests* \
                          Examples* \
