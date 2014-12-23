@@ -8,6 +8,8 @@
 #include <boost/random/uniform_real.hpp>
 #include <boost/random/variate_generator.hpp>
 
+// @cond TOOLS_INTERNAL
+
 typedef boost::minstd_rand rand_num;
 
 struct ConstantAcceptor {
@@ -337,6 +339,6 @@ private:
 };
 
 
-
+// @endcond
 
 #endif
