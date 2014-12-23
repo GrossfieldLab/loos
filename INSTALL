@@ -24,7 +24,7 @@
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
 | Debian 5          |     !     |   -    | DB    |         We are no longer testing these
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
-| Debian 7.1        |     +     |   +    |       |         still work...       
+| Debian 7.7        |     +     |   +    |       |         still work...       
 |-------------------|-----------|--------|-------|                             
 | CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported
 | CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
