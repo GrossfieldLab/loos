@@ -35,6 +35,7 @@
 
 typedef loos::Math::Matrix<int, loos::Math::RowMajor>   BondMatrix;
 
+namespace HBonds {
 
 // Our own exception so we can provide a little more helpful
 // information when we throw-up...
@@ -161,5 +162,6 @@ private:
 typedef SimpleAtom    SAtom;
 typedef std::vector<SAtom> SAGroup;
 
+}
 
 #endif

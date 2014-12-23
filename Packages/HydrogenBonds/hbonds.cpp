@@ -35,6 +35,7 @@
 
 #include "hcore.hpp"
 
+using namespace HBonds;
 using namespace std;
 using namespace loos;
 namespace po = boost::program_options;
