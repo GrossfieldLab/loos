@@ -470,6 +470,9 @@ namespace loos {
       ifs()->seekg(offset, std::ios_base::cur);
     }
 
+    // Catch-all for I/O errors
+    if (ifs()->fail())
+      throw(FileOpenError(_filename, "Problem scanning XTC trajectory to build frame indices"));
     
   }
 
