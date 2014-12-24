@@ -665,7 +665,6 @@ Matlab and Octave.
       - \subpage Membranes "Membrane systems"
       - \subpage enm "Elastic network models"
       - \subpage other "General purpose tools"
-      - \subpage voronoi "Voronoi decomposition"
       - \subpage user "User-created tools"
 
   \page Convergence
@@ -1345,48 +1344,6 @@ Matlab and Octave.
        <DD>Calculate the normalized transition between two structures over
        a trajectory.
     </DL>
-
-    \page voronoi
-    <h2> Voronoi decomposition </h2>
-    A collection of tools for 2D Voronoi decomposition of slabs, presumably from a 
-    membrane simulation.  This package is a wrapper around the scipy (www.scipy.org) 
-    Voronoi class, which is itself a wrapper around QHull (www.qhull.org).  As a result, 
-    this package is dependent having a working install of numpy and scipy (instructions 
-    for installing them can be found at www.scipy.org).
-
-    All tools assume work with a slab-like geometry oriented along the z-axis.  Within a 
-    slab, the system is treated as 2-dimensional.  
-
-    All tools take at least 2 selections of atoms.  The first is the set of atoms used
-    to compute the Voronoi decomposition, while any other selections are subsets of those
-    atoms for which areas are desired.  In all cases, these selections are application 
-    <B> after </B> the original selection.
-
-    Padding: all of the tools listed have a required option called "padding".  The 
-    purpose of this option is to ensure that periodic boundaries are handled correctly.  
-    Since the underlying engine (qhull) has no knowledge of periodicity, we do this by
-    replicating dummy atoms in the 8 surrounding periodic images, such that no "true"
-    atoms are at the "edge".  The padding option controls how far out these padding atoms
-    are generated.  If your selection for the Voronoi decomposition is all-atom or all 
-    heavy-atom, 15 angstroms is a good choice for the padding value.  However, if you're 
-    using a sparser selection (e.g. just lipid phosphates), you will probably need to 
-    make the padding value significantly larger, e.g. 30 ang or more.  If your padding 
-    value is too small, you will occasionally see absurdly large areas for individual 
-    atom, or the program can fail outright.  
-
-    <DL>
-        <DT> <B> run_areas.py </B>
-        <DD> Compute areas for different sets of atoms within a particular slice along 
-        the membrane normal.  Typical slice widths are 2-4 ang.  
-        
-        <DT> <B> area_profile.py </B>
-        <DD> Compute the voronoi cross-sectional area for something (e.g. a protein) 
-        through the membrane.
-        
-        <DT> <B> area_per_molecule.py </B>
-        <DD> Compute distribution of areas/molecule for a z-slice.  Note: this program
-        requires a system file that contains connectivity information (e.g. a PSF file).
-   </DL>        
 
 
     \page user
