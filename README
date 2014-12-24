@@ -10,46 +10,44 @@ to contact us regarding LOOS.
 
    * RELEASE 2.2.0 *
 
-This loos includes a number of significant improvements and changes.
-We are introducing the TrajectoryWriter class for writing
-trajectories.  Two formats are currently supported, CHARMM/NAMD DCD
+This release of LOOS includes a number of significant improvements and
+changes.  We are introducing the TrajectoryWriter class for writing
+trajectories.  Two formats are currently supported: CHARMM/NAMD DCD
 format (DCDWriter) and Gromacs XTC (XTCWriter).  To support this
-change, we have added a createOutputTrajectory() factory function
+change, we have added the createOutputTrajectory() factory function,
 analogous to createTrajectory() and createSystem(), along with an
 OutputTrajectoryOption class for use with our OptionsFramework.
 
 Another major change is a complete overhaul of exceptions in LOOS and
 PyLOOS.  For the tool-user, there should be no change other than some
 error messages may have a different format or wording.  For Python
-users/developers, the exceptions thrown by the C++ side of PyLOOS should now be
-correctly caught and translated into a Python equivalent or a wrapped
-LOOS exception object.  This means
-that the Python interpreter will no longer crash when an exception
-occurs and that you can now use try/except in your Python code.
-For C++ developers, the majority of these changes are internal.  The
-one exception is selectAtoms(), which previously would throw an
-exception if no atoms were selected.  Now, it returns an empty
-AtomicGroup.
+users/developers, the exceptions thrown by the C++ side of PyLOOS
+should now be correctly caught and translated into a Python equivalent
+or a wrapped LOOS exception object.  This means that the Python
+interpreter will no longer crash when an exception occurs, and that you
+can use try/except in your Python code.  For all developers, the
+majority of these changes are internal.  The one exception is
+selectAtoms(), which previously would throw an exception if no atoms
+were selected.  Now, it returns an empty AtomicGroup.
 
 Other changes to LOOS include a new "Optimal Membrane Generator"
 PyLOOS package, support for periodic boxes in Tinker XYZ and ARC
 files, and the ability to handle PDB files that are missing some
 fields (to the right of the coordinates).  A backbone keyword has been
 added to the selection language.  Finally, a bug affecting aligner
-when NOT using the entire trajectory has been fixed.
+when NOT using the entire trajectory has been fixed, along with a
+couple of other bugs.
 
 For more information about these changes, see the included Doxygen
 documentation or the code.
 
 
-
 +++SPECIAL NOTE FOR PYLOOS USERS+++
 
 While we believe we have accounted for all possible C++ exceptions
-that may occur, a few may have been missed.  If you find an untranslated
-exception, please let us know by emailing loos.maintainer@gmail.com. 
-
-
+that may occur while using PyLOOS, a few may have been missed.  If you
+find an untranslated exception, please let us know by emailing
+loos.maintainer@gmail.com.
 
 
 

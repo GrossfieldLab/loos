@@ -29,6 +29,7 @@
 using namespace std;
 using namespace loos;
 
+// @cond TOOLS_INTERNAL
 
 typedef pair<double, double>     LPoint;
 typedef vector<double>           vecDouble;
@@ -65,6 +66,7 @@ struct ExponentialFit {
   vector<LPoint> _datapoints;
 };
 
+// @endcond
 
 vvecDouble readData(const string& fname) {
   ifstream ifs(fname.c_str());

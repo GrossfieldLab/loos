@@ -42,6 +42,7 @@
 
 #include "grammar.hh"
 
+// @cond TOOLS_INTERNAL
 
 //! Extension of the Flex yyFlexLexer class.
 class LoosLexer : public LoosFlexLexer {
@@ -53,5 +54,6 @@ public:
   
 };
 
+// @endcond
 
 #endif

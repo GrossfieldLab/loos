@@ -32,6 +32,8 @@
 
 #include "hcore.hpp"
 
+using namespace loos;
+using namespace HBonds;
 
 double SimpleAtom::inner = 0.0;
 double SimpleAtom::outer = 3.5;

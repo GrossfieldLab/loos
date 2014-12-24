@@ -48,6 +48,23 @@ typedef pair<uint, uint>     uPair;
 typedef vector<uint>         vUint;
 typedef vector<vUint>        vvUint;
 
+
+
+// Simple class to sort pairs of numbers based on a third (the rate)
+struct RatePair {
+  RatePair(const double d, const uint a, const uint b) :
+    rate(d), pair(a,b) { }
+
+  bool operator<(const RatePair& x) const {
+    return(rate > x.rate);
+  }
+
+  double rate;
+  uPair pair;
+};
+
+
+
 // @endcond TOOLS_INTERNAL
 
 // Debugging generates a lot of information about the internal state
@@ -119,20 +136,6 @@ DoubleMatrix computeRates(const string& fname) {
   return(M);
 }
 
-
-
-// Simple class to sort pairs of numbers based on a third (the rate)
-struct RatePair {
-  RatePair(const double d, const uint a, const uint b) :
-    rate(d), pair(a,b) { }
-
-  bool operator<(const RatePair& x) const {
-    return(rate > x.rate);
-  }
-
-  double rate;
-  uPair pair;
-};
 
 
 

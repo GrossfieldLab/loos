@@ -6,30 +6,32 @@
 |-------------------|-----------|--------|--------                             
 | Fedora 12         |     +     |   !    | DS    |     + = Supported (dependencies easily
 | Fedora 13         |     +     |   !    | DS    |         available via package manager)
-| Fedora 14         |     +     |   +    |       |                             
-| Fedora 15         |     +     |   +    |       |     ! = Supported with reservations
+| Fedora 14         |     +     |   +    | D     |                             
+| Fedora 15         |     +     |   +    | D     |     ! = Supported with reservations
 | Fedora 16         |     +     |   +    |       |         (may require manual installations)
 | Fedora 17         |     +     |   +    |       |    
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
 | Fedora 19         |     +     |   +    |       |                             
 | Fedora 20         |     +     |   +    |       |
+| Fedora 21         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
 | Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
-| Ubuntu 11.10      |     +     |   !    | S     |     
+| Ubuntu 11.10      |     +     |   !    | DS    |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
-| Ubuntu 12.10      |     +     |   +    |       |     
-| Ubuntu 13.04      |     +     |   +    |       |
+| Ubuntu 12.10      |     +     |   +    | D     |     
+| Ubuntu 13.04      |     +     |   +    | D     |
 | Ubuntu 14.04 LTS  |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
 | Debian 5          |     !     |   -    | DB    |         We are no longer testing these
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
-| Debian 7.1        |     +     |   +    |       |         still work...       
+| Debian 7.7        |     +     |   +    |       |         still work...       
 |-------------------|-----------|--------|-------|                             
-| CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported                        
+| CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported
 | CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
-|-------------------|-----------|--------|-------|         installing required packages)
-| OpenSUSE 11.4     |     !     |   -    | C     |                             
+| CentOS 7          |     +     |   !    | C     |         installing required packages)
+|-------------------|-----------|--------|-------|
+| OpenSUSE 11.4     |     !     |   -    | DC    |                             
 | OpenSUSE 12       |     !     |   +    | C     |                             
 | OpenSUSE 13       |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
@@ -41,7 +43,7 @@
 |-------------------|-----------|--------|-------|                             
 | Windows XP        |     +     |   -    | D     |                             
 |  +Cygwin 1.7.7    |           |        |       |                             
-| Windows 7 64-bit  |     +     |   -    |       |                             
+| Windows 7 64-bit  |     +     |   -    | D     |                             
 |  +Cygwin 1.7.15-1 |           |        |       |                             
 |-------------------|-----------|--------|-------|                             
 | MacOS 10.6        |     +     |   !    | D     |                             
@@ -178,6 +180,13 @@ For Amber NetCDF support, also install the netcdf development package:
 
 sudo yum install netcdf-devel
 
+* Fedora 21*
+
+Atlas has been split into satlas (serial) and tatlas (threaded).  To
+build, you will need to copy the custom.py-proto to custom.py and set
+ATLAS_LIBS to whichever version of atlas you prefer.
+
+
 
 * PyLOOS *
 
@@ -199,6 +208,11 @@ LOOS has been tested with CentOS (64 bit).  Follow the instructions
 for Fedora, however there is no scons package available via yum.
 Instead, download and install any version of scons more recent than
 1.0.
+
+* CentOS 7*
+Atlas has been split into satlas (serial) and tatlas (threaded).  To
+build, you will need to copy the custom.py-proto to custom.py and set
+ATLAS_LIBS to whichever version of atlas you prefer.
 
 
 * PyLOOS *
@@ -370,6 +384,7 @@ the excess versions)
 
 
 			 -----= CYGWIN =-----
+			    (UNSUPPORTED)
 
 You will need to install libboost-devel and liblapack-devel along with
 the g++ compiler using the cygwin setup.exe program.  (Note: if loos
@@ -399,6 +414,7 @@ Cygwin is NOT SUPPORTED
 
 
 			-----= FreeBSD =-----
+			    (UNSUPPORTED)
 
 LOOS has been tested with FreeBSD 8.  You will need to install the gcc
 suite, atlas, scons, and boost by whatever means you prefer (note:
@@ -411,6 +427,7 @@ FreeBSD is NOT SUPPORTED
 =======================================================================
 
 			-----= Manjaro =-----
+			    (UNSUPPORTED)
 
 LOOS has been tested with Manjaro 0.8.10.  
 Make sure scons, boost, lapack, python, and swig are installed.  Also
@@ -419,6 +436,7 @@ install NetCDF, if you want NetCDF support.  LOOS and PyLOOS should build.
 ========================================================================
 
 			-----= Slackware =-----
+			    (UNSUPPORTED)
 
 LOOS has been tested with Slackware 14.1.  You will need to install,
 by whatever means you prefer, lapack, blas, and scons.  LOOS and PyLOOS

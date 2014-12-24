@@ -35,6 +35,7 @@
 
 using namespace std;
 using namespace loos;
+using namespace HBonds;
 namespace po = boost::program_options;
 namespace opts = loos::OptionsFramework;
 

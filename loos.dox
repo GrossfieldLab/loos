@@ -1410,17 +1410,17 @@ class, which in turn derives from std::exception.  In cases where it
 would be more appropriate to return a standard exception, such as
 std::range_error from the operator[], LOOS will throw that instead.
 
-The most common exceptions you are likely to encounter are FileError
-and derived classes.  These cover errors while reading and writing the
-various model and trajectory classes.  The FileOpenError is associated
+The exceptions you are most likely to encounter are FileError and
+derived classes.  These cover errors while reading and writing the
+various model and trajectory formats.  The FileOpenError is associated
 with a problem opening the file (e.g. missing file or incorrect
 permissions).  The FileReadError covers any number of errors while
-reading from a file.  Since some classes (such as trajectory classes)
-read the first frame as part of instantiation, this exception may
-occur during the "opening" process.  The FileReadErrorWithLine
-exception comes from classes that track the lines read and will report
-where in the file the error occured.  Finally, the FileWriteError
-covers any error while writing to a file.
+reading from a file.  Since some classes (such as trajectory classes
+and most model classes) read from the file as part of instantiation,
+this exception may occur during the "opening" process.  The
+FileReadErrorWithLine exception comes from classes that track the
+lines read and will report where in the file the error occured.
+Finally, the FileWriteError covers any error while writing to a file.
 
 Once an exception has been thrown, expecially for the model and
 trajectory classes, the internal state of the object that threw is
@@ -1433,7 +1433,7 @@ Changes Compared to pre-2.2.0 LOOS
 ----------------------------------
 
 The primary external change in LOOS-2.2 is that selectAtoms() will no
-longer throw an exception if no atoms are selected.  Instead, it well
+longer throw an exception if no atoms are selected.  Instead, it will
 return an empty AtomicGroup.
 
 There are two major internal changes to how exceptions are handled
@@ -1444,10 +1444,10 @@ derived from LOOSError.  Related to this, the exceptions that LOOS can
 throw have been streamlined.
 
 The second major change is that the set of exceptions in LOOS have
-been flattened.  Some classes defined exceptions that were specific to
-that class.  These have either been flattened (e.g. are now in the
-loos namespace) or have been replaced with more general LOOS
-exceptions.
+been flattened and placed in the loos namespace.  Some classes defined
+exceptions that were specific to that class.  These have either been
+flattened (e.g. are now in the loos namespace) or have been replaced
+with more general LOOS exceptions.
 
 
 Translating Exceptions to PyLOOS
@@ -1473,8 +1473,8 @@ except loos.LOOSError as e:
 
 While we have tried to ensure that exceptions that can be thrown by
 LOOS will be caught and translated for Python, it's possible that a
-few have been missed.  Any exceptions not properly caught before they
-reach Python will result in the Python interpreter exiting.  If you
+few have been missed.  Any exception not properly caught before it
+reaches Python will result in the Python interpreter exiting.  If you
 find this happening, please file a bug report or email the developers
 at loos.maintainer [at] gmail.com
 
@@ -1486,7 +1486,7 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
-\section release220 Version 2.2.0 (X-YY-2014)
+\section release220 Version 2.2.0 (12-24-2014)
 \subsection r220_added_changed Added, Changed, or Otherwise Notable
 <ul>
   <li> Added AtomicGroup::contactWith() that returns true or false if
@@ -1531,11 +1531,14 @@ namespace loos {
   <li> Removed all char* based constructors in favor of string& 
   <li> Changed how the Swig interface is generated (from the CPP header files directly)
   <li> Deprecated gridify() in dcd_utils.cpp
+  <li> Added --clip flag to smooth-traj to control whether the ends of the trajectory
+  are clipped or not
 </ul>
 \subsection r220_bugs Bugs Fixed
 <ul>
   <li> Fixed bug in aligner causing incorrect output when using a skip, stride, or
 some ranges of frames.
+  <li> Fixed bug in smooth-traj that dropped frames at the end of the trajectory
 </ul>
 
 

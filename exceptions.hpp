@@ -67,6 +67,7 @@ namespace loos {
   };
 
 
+  //! Exception when trying to use an unset Atom property
   class UnsetProperty : public LOOSError {
   public:
     UnsetProperty() : LOOSError("Attempting to access an unset atom property") {}
@@ -75,6 +76,11 @@ namespace loos {
   };
 
 
+  //! Exception indicating internal XDR error
+  /**
+   * This most likely means that the word-size of your data
+   * exceeds what the LOOS XDR lib was built to handle
+   */
   struct XDRDataSizeError : public LOOSError {
     XDRDataSizeError() : LOOSError("XDR data size error") {}
     XDRDataSizeError(const std::string& s) : LOOSError(s) {}
@@ -93,6 +99,14 @@ namespace loos {
   };
 
 
+  //! Errors related to File I/O
+  /**
+   * Most file I/O exceptions derive from this class.
+   *
+   * Note that most I/O classes currently do not guarantee 
+   * that they will be in a safe/usable state once an 
+   * exception occurs
+   */
   class FileError : public LOOSError {
   protected:
     std::string _operation;
@@ -127,15 +141,32 @@ namespace loos {
 
 
 
+    //! What operation was involved (e.g. reading, writing. etc)
     std::string operation() const throw() { return(_operation); }
+
+    //! File that had the problem (or "stream" if not a file)
     std::string filename() const throw() { return(_filename); }
 
+    //! The error code that may have been generated
     int errorCode() const { return(_errcode); }
+
+    //! Sets the error code
     void errorCode(const int i) { _errcode = i; }
 
     ~FileError() throw() {}
   };
 
+  //! Error while opening a file
+  /**
+   * This mostly represents issues with actually opening the file, such as
+   * a bad filename, permissions, as well as scanning the file as part of
+   * instantiation.
+   *
+   * Some classes will automatically read either the whole file or, in the
+   * case of trajectories, the first frame.  This can result in a FileReadError
+   * exception being thrown, despite being part of a logical "open" operation.
+   *
+   */
   class FileOpenError : public FileError {
   public:
     FileOpenError() : FileError("opening") { }
@@ -145,6 +176,7 @@ namespace loos {
   };
 
 
+  //! Errors that occur while reading a file
   class FileReadError : public FileError {
   public:
     FileReadError() : FileError("reading from") { }
@@ -154,6 +186,7 @@ namespace loos {
   };
 
 
+  //! Errors that occur while reading a text file (where lines are tracked)
   class FileReadErrorWithLine : public FileReadError {
   protected:
     uint _lineno;
@@ -172,6 +205,7 @@ namespace loos {
       : FileReadError("reading ", fname), _lineno(ln), _msg(msg)
     { init(); }
 
+    //! The line number that caused the problem
     uint lineNumber() const throw() { return(_lineno); }
 
     ~FileReadErrorWithLine() throw() {}
@@ -188,7 +222,7 @@ namespace loos {
 
 
 
-
+  //! Errors while writing to files
   class FileWriteError : public FileError {
   public:
     FileWriteError() : FileError("writing to") { }

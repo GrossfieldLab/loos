@@ -439,7 +439,7 @@ namespace loos {
       if (natoms_ == 0)
         natoms_ = h.natoms;
       else if (natoms_ != h.natoms)
-        throw(FileError(_filename, "XTC frames have differing numbers of atoms"));
+        throw(FileOpenError(_filename, "XTC frames have differing numbers of atoms"));
 
       uint block_size = sizeof(internal::XDRReader::block_type);
 
@@ -455,7 +455,7 @@ namespace loos {
 	  uint dummy;
 	  xdr_file.read(dummy);
 	  if (dummy != natoms_)
-	    throw(FileError(_filename, "XTC small system vector size is not what was expected"));
+	    throw(FileOpenError(_filename, "XTC small system vector size is not what was expected"));
       } else {
 	  offset = 9 * block_size;
 	  ifs()->seekg(offset, std::ios_base::cur);
@@ -470,6 +470,9 @@ namespace loos {
       ifs()->seekg(offset, std::ios_base::cur);
     }
 
+    // Catch-all for I/O errors
+    if (ifs()->fail())
+      throw(FileOpenError(_filename, "Problem scanning XTC trajectory to build frame indices"));
     
   }
 
