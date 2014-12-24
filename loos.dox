@@ -1410,17 +1410,17 @@ class, which in turn derives from std::exception.  In cases where it
 would be more appropriate to return a standard exception, such as
 std::range_error from the operator[], LOOS will throw that instead.
 
-The exceptions you are most likely to encounter are FileError
-and derived classes.  These cover errors while reading and writing the
+The exceptions you are most likely to encounter are FileError and
+derived classes.  These cover errors while reading and writing the
 various model and trajectory formats.  The FileOpenError is associated
 with a problem opening the file (e.g. missing file or incorrect
 permissions).  The FileReadError covers any number of errors while
-reading from a file.  Since some classes (such as trajectory classes)
-read the first frame as part of instantiation, this exception may
-occur during the "opening" process.  The FileReadErrorWithLine
-exception comes from classes that track the lines read and will report
-where in the file the error occured.  Finally, the FileWriteError
-covers any error while writing to a file.
+reading from a file.  Since some classes (such as trajectory classes
+and most model classes) read from the file as part of instantiation,
+this exception may occur during the "opening" process.  The
+FileReadErrorWithLine exception comes from classes that track the
+lines read and will report where in the file the error occured.
+Finally, the FileWriteError covers any error while writing to a file.
 
 Once an exception has been thrown, expecially for the model and
 trajectory classes, the internal state of the object that threw is
