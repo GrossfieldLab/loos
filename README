@@ -24,7 +24,7 @@ error messages may have a different format or wording.  For Python
 users/developers, the exceptions thrown by the C++ side of PyLOOS
 should now be correctly caught and translated into a Python equivalent
 or a wrapped LOOS exception object.  This means that the Python
-interpreter will no longer crash when an exception occurs and that you
+interpreter will no longer crash when an exception occurs, and that you
 can use try/except in your Python code.  For all developers, the
 majority of these changes are internal.  The one exception is
 selectAtoms(), which previously would throw an exception if no atoms
