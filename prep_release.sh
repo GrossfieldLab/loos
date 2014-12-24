@@ -50,9 +50,11 @@ fi
 
 
 echo "Checking version ID..."
-DOXVERS=`grep 'PROJECT_NUMBER' Doxyfile | gawk '{print $3}' | sed 's/^v//'`
+DOXVERS=`grep '^PROJECT_NUMBER' Doxyfile | gawk '{print $3}' | sed 's/^v//'`
 FAILED=""
 if [ "$DOXVERS" != "$VERS" ] ; then
+    echo "Doxygen version: $DOXVERS"
+    echo "SVN version: $VERS"
     AbortOrContinue "Version mismatch in Doxyfile"
     FAILED="yes"
 fi

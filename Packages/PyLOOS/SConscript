@@ -25,7 +25,7 @@ import os
 Import('env')
 PREFIX = env['PREFIX'] + '/bin/'
 
-apps = 'axis_with_membrane center_molecule flip_chirality protein_tilt rmsd_to_average'
+apps = 'axis_with_membrane center_molecule flip_chirality protein_tilt rmsd_to_average domain'
 
 python_package = []
 

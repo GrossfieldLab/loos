@@ -37,6 +37,7 @@ package_list = { 'ENM': 'ElasticNetworks',
                  'HBonds' : 'HydrogenBonds',
                  'Conv' : 'Convergence',
                  'Density' : 'DensityTools',
+                 'OMG' : 'OptimalMembraneGenerator',
                  'User': 'User',
                  'Python': 'PyLOOS' }
 
