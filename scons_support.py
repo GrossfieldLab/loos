@@ -191,7 +191,7 @@ def CheckForSwig(conf, min_version):
 def CheckAtlasRequires(conf, name, lib, required):
 
     conf.Message('Checking if %s requires %s ... ' % (name, required))
-    lastLIBS = conf.env['LIBS']
+    lastLIBS = list(conf.env['LIBS'])
     conf.env.Append(LIBS=lib)
 
 #    test_code = """
@@ -527,7 +527,7 @@ def AutoConfiguration(env):
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
-            conf.env.Prepend(LIBPATH = [atlas_libpath])
+            conf.env.Append(LIBPATH = [atlas_libpath])
 
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
         # based on the environment or custom.py file
@@ -613,7 +613,7 @@ def AutoConfiguration(env):
                     numerics['ptcblas'] = 0
                     numerics['ptf77blas'] = 0
 
-                for libname in numerics.keys():
+                for libname in numerics:
                     if conf.CheckLib(libname, autoadd = 0):
                         numerics[libname] = 1
 
@@ -644,55 +644,33 @@ def AutoConfiguration(env):
                         atlas_libs.append('atlas')
                         atlas_name = 'atlas'
 
-                    if not (numerics['lapack'] or numerics['atlas']):
-                        # Did we miss atlas above because it requires gfortran?
-                        if not numerics['atlas'] and (numerics['f77blas'] and numerics['cblas']):
-                            atlas_libs = conf.CheckAtlasRequires('atlas', 'atlas' + atlas_libs, 'gfortran')
-                            if not atlas_libs:
-                                print 'Error- could not figure out how to build with Atlas/lapack'
+                for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
+                    found = 0
+                    for linked_lib in atlas_libs:
+                        if conf.CheckLib(linked_lib, symbol=funcname, autoadd=0):
+                            found = 1
+                            break
 
-                        # In some cases, lapack requires blas to link so the above
-                        # check will find blas but not lapack
-                        elif numerics['blas']:
-                            result = conf.CheckAtlasRequires('lapack', 'lapack', 'blas')
-                            if result:
-                                atlas_libs.append('lapack')
-                            else:
-                                print 'Error- you must have either Lapack or Atlas installed'
-                                conf.env.Exit(1)
-                        else:
-                            print 'Error- you must have either Lapack or Atlas installed'
+                    if not found:
+                        notfound = 1
+                        for lib in numerics:
+                            if (lib in atlas_libs) or (lib in ('atlas', 'satlas', 'tatlas')):
+                                continue
+                            if conf.CheckLib(lib, symbol=funcname, autoadd=0):
+                                atlas_libs.insert(0, lib)
+                                notfound = 0
+                                break
+                        if notfound:
+                            print 'Error- could not figure out where ', funcname, ' is located.'
                             conf.env.Exit(1)
-
-            if not atlas_libs:
-                print 'Error- could not figure out how to build with Atlas/Lapack'
-                conf.env.Exit(1)
-
+                        
+                
+                    
 
             # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
                 conf.env.Append(LIBS=lib)
 
-            # In some cases (OpenSUSE 13, for one), the system atlas includes
-            # a lapack, but it's not a complete lapack and is missing some
-            # functions LOOS requires (such as SVD).  Typically, ATLAS
-            # is in its own directory and the regular LAPACK is in the
-            # system library (e.g. /usr/lib64).  Here, we attempt to 
-            # detect this and deal with it...
-
-            if not env['ATLAS_LIBS'] and (numerics[atlas_name] and not conf.CheckForSVD(atlas_name)):
-                if numerics['lapack']:
-                    # Linking code with dgesvd failed, but we have a lapack lib detected...
-                    # Try linking using the system lib dir first, ignoring atlas...
-                    conf.env.Prepend(LIBPATH=[default_lib_path])
-                    if not conf.CheckForSVD('lapack'):
-                        print 'Error- missing SVD function.  Check your ATLAS/LAPACK installation'
-                        conf.env.Exit(1)
-                    print 'Warning- adding LAPACK to library list for SVD.'
-                    conf.env.Append(LIBS='lapack')
-                else:
-                    print 'Error- missing SVD function.  Build a full ATLAS with LAPACK or install LAPACK'
-                    conf.env.Exit(1)
 
         environOverride(conf)
         print '* Autoconfigure will use these libraries to build LOOS*\n\t', conf.env['LIBS']
