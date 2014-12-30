@@ -91,7 +91,7 @@ pyloos = int(env['pyloos'])
 ### Compile-flags
 
 debug_opts='-g -Wall -Wextra -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall'
+release_opts='-O3 -DNDEBUG -Wall -Wno-maybe-uninitialized'
 profile_opts='-pg'
 
 # Setup the general environment...
