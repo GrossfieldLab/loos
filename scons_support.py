@@ -485,6 +485,8 @@ def AutoConfiguration(env):
                                           'CheckSystemType' : CheckSystemType
                                           })
     
+    use_threads = int(env['threads'])
+
 
     # Get system information
     conf.CheckSystemType()
@@ -596,6 +598,10 @@ def AutoConfiguration(env):
             else:
 
                 # Catch the more recent shared/complete builds
+                atlas_complete = ['satlas']
+                if use_threads:
+                    atlas_complete.insert(0, 'tatlas')
+
                 for lib in ('tatlas', 'satlas'):
                     if conf.CheckLib(lib, autoadd = 0):
                         atlas_libs = [lib]
@@ -608,6 +614,9 @@ def AutoConfiguration(env):
                                  'cblas' : 0,
                                  'blas' : 0 }
 
+                    if use_threads:
+                        numerics['ptcblas'] = 0
+                        numerics['ptf77blas'] = 0
 
                     for libname in numerics.keys():
                         if conf.CheckLib(libname, autoadd = 0):
@@ -617,7 +626,9 @@ def AutoConfiguration(env):
                     if (numerics['lapack']):
                         atlas_libs.append('lapack')
 
-                    if (numerics['f77blas'] and numerics['cblas']):
+                    if (use_threads and (numerics['ptf77blas'] and numerics['ptcblas'])):
+                        atlas_libs.extend(['ptf77blas', 'ptcblas'])
+                    elif (numerics['f77blas'] and numerics['cblas']):
                         atlas_libs.extend(['f77blas', 'cblas'])
                     elif (numerics['blas']):
                         atlas_libs.append('blas')
