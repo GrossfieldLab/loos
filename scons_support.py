@@ -615,9 +615,9 @@ def AutoConfiguration(env):
 
                 atlas_libs = []
                 if use_threads and numerics['tatlas']:
-                    atlas_libs.extend('tatlas')
+                    atlas_libs.append('tatlas')
                 elif numerics['satlas']:
-                    atlas_libs.extend('satlas')
+                    atlas_libs.append('satlas')
                 else:
 
                     if (numerics['lapack']):
