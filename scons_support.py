@@ -597,32 +597,29 @@ def AutoConfiguration(env):
                 atlas_libs = env.Split(env['ATLAS_LIBS'])
             else:
 
-                # Catch the more recent shared/complete builds
-                atlas_complete = ['satlas']
+                numerics = { 'satlas' : 0,
+                             'atlas' : 0,
+                             'lapack' : 0,
+                             'f77blas' : 0,
+                             'cblas' : 0,
+                             'blas' : 0 }
+
                 if use_threads:
-                    atlas_complete.insert(0, 'tatlas')
+                    numerics['tatlas'] = 0
+                    numerics['ptcblas'] = 0
+                    numerics['ptf77blas'] = 0
 
-                for lib in ('tatlas', 'satlas'):
-                    if conf.CheckLib(lib, autoadd = 0):
-                        atlas_libs = [lib]
-                        break
-                
-                if atlas_libs == '':
-                    numerics = { 'atlas' : 0,
-                                 'lapack' : 0,
-                                 'f77blas' : 0,
-                                 'cblas' : 0,
-                                 'blas' : 0 }
+                for libname in numerics.keys():
+                    if conf.CheckLib(libname, autoadd = 0):
+                        numerics[libname] = 1
 
-                    if use_threads:
-                        numerics['ptcblas'] = 0
-                        numerics['ptf77blas'] = 0
+                atlas_libs = []
+                if use_threads and numerics['tatlas']:
+                    atlas_libs.extend('tatlas')
+                elif numerics['satlas']:
+                    atlas_libs.extend('satlas')
+                else:
 
-                    for libname in numerics.keys():
-                        if conf.CheckLib(libname, autoadd = 0):
-                            numerics[libname] = 1
-
-                    atlas_libs = []
                     if (numerics['lapack']):
                         atlas_libs.append('lapack')
 
@@ -659,9 +656,9 @@ def AutoConfiguration(env):
                             print 'Error- you must have either Lapack or Atlas installed'
                             conf.env.Exit(1)
 
-                if not atlas_libs:
-                    print 'Error- could not figure out how to build with Atlas/Lapack'
-                    conf.env.Exit(1)
+            if not atlas_libs:
+                print 'Error- could not figure out how to build with Atlas/Lapack'
+                conf.env.Exit(1)
 
 
             # Hack to extend list rather than append a list into a list
