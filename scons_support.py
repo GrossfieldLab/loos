@@ -589,54 +589,64 @@ def AutoConfiguration(env):
 
         # MacOS will use accelerate framework, so skip all of this...
         if loos_build_config.host_type != 'Darwin':
+            atlas_libs = ''    # List of numerics libs required for LOOS
+
             if env['ATLAS_LIBS']:
                 atlas_libs = env.Split(env['ATLAS_LIBS'])
             else:
-                numerics = { 'atlas' : 0,
-                             'lapack' : 0,
-                             'f77blas' : 0,
-                             'cblas' : 0,
-                             'blas' : 0 }
+
+                # Catch the more recent shared/complete builds
+                for lib in ('tatlas', 'satlas'):
+                    if conf.CheckLib(lib, autoadd = 0):
+                        atlas_libs = [lib]
+                        break
                 
-        
-                for libname in numerics.keys():
-                    if conf.CheckLib(libname, autoadd = 0):
-                        numerics[libname] = 1
+                if atlas_libs == '':
+                    numerics = { 'atlas' : 0,
+                                 'lapack' : 0,
+                                 'f77blas' : 0,
+                                 'cblas' : 0,
+                                 'blas' : 0 }
 
-                atlas_libs = []
-                if (numerics['lapack']):
-                    atlas_libs.append('lapack')
-            
-                if (numerics['f77blas'] and numerics['cblas']):
-                    atlas_libs.extend(['f77blas', 'cblas'])
-                elif (numerics['blas']):
-                    atlas_libs.append('blas')
-                else:
-                    print 'Error- you must have some kind of blas installed'
-                    conf.env.Exit(1)
-                    
-                if (numerics['atlas']):
-                    atlas_libs.append('atlas')
 
-                if not (numerics['lapack'] or numerics['atlas']):
-                    # Did we miss atlas above because it requires gfortran?
-                    if not numerics['atlas'] and (numerics['f77blas'] and numerics['cblas']):
-                        atlas_libs = conf.CheckAtlasRequires('atlas', 'atlas' + atlas_libs, 'gfortran')
-                        if not atlas_libs:
-                            print 'Error- could not figure out how to build with Atlas/lapack'
+                    for libname in numerics.keys():
+                        if conf.CheckLib(libname, autoadd = 0):
+                            numerics[libname] = 1
 
-                    # In some cases, lapack requires blas to link so the above
-                    # check will find blas but not lapack
-                    elif numerics['blas']:
-                        result = conf.CheckAtlasRequires('lapack', 'lapack', 'blas')
-                        if result:
-                            atlas_libs.append('lapack')
+                    atlas_libs = []
+                    if (numerics['lapack']):
+                        atlas_libs.append('lapack')
+
+                    if (numerics['f77blas'] and numerics['cblas']):
+                        atlas_libs.extend(['f77blas', 'cblas'])
+                    elif (numerics['blas']):
+                        atlas_libs.append('blas')
+                    else:
+                        print 'Error- you must have some kind of blas installed'
+                        conf.env.Exit(1)
+
+                    if (numerics['atlas']):
+                        atlas_libs.append('atlas')
+
+                    if not (numerics['lapack'] or numerics['atlas']):
+                        # Did we miss atlas above because it requires gfortran?
+                        if not numerics['atlas'] and (numerics['f77blas'] and numerics['cblas']):
+                            atlas_libs = conf.CheckAtlasRequires('atlas', 'atlas' + atlas_libs, 'gfortran')
+                            if not atlas_libs:
+                                print 'Error- could not figure out how to build with Atlas/lapack'
+
+                        # In some cases, lapack requires blas to link so the above
+                        # check will find blas but not lapack
+                        elif numerics['blas']:
+                            result = conf.CheckAtlasRequires('lapack', 'lapack', 'blas')
+                            if result:
+                                atlas_libs.append('lapack')
+                            else:
+                                print 'Error- you must have either Lapack or Atlas installed'
+                                conf.env.Exit(1)
                         else:
                             print 'Error- you must have either Lapack or Atlas installed'
                             conf.env.Exit(1)
-                    else:
-                        print 'Error- you must have either Lapack or Atlas installed'
-                        conf.env.Exit(1)
 
                 if not atlas_libs:
                     print 'Error- could not figure out how to build with Atlas/Lapack'
@@ -644,6 +654,7 @@ def AutoConfiguration(env):
 
 
             # Hack to extend list rather than append a list into a list
+            print 'Using the following libraries for numerical routines: ', atlas_libs
             for lib in atlas_libs:
                 conf.env.Append(LIBS=lib)
 
