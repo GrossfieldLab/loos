@@ -220,6 +220,8 @@ def CheckAtlasRequires(conf, name, lib, required):
 def CheckForSVD(conf, name):
 
     conf.Message('Checking for SVD in %s ... ' % (name))
+    lastLIBS = list(conf.env['LIBS'])
+    conf.env.Append(LIBS=name)
 
     test_code = """
 extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
@@ -227,6 +229,8 @@ int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C,
 """
 
     result = conf.TryLink(test_code, '.cpp')
+    conf.env.Replace(LIBS=lastLIBS)
+
     if not result:
         conf.Result('no')
         return(0)
@@ -614,10 +618,13 @@ def AutoConfiguration(env):
                         numerics[libname] = 1
 
                 atlas_libs = []
+                atlas_name = ''
                 if use_threads and numerics['tatlas']:
                     atlas_libs.append('tatlas')
+                    atlas_name = 'tatlas'
                 elif numerics['satlas']:
                     atlas_libs.append('satlas')
+                    atlas_name = 'satlas'
                 else:
 
                     if (numerics['lapack']):
@@ -635,6 +642,7 @@ def AutoConfiguration(env):
 
                     if (numerics['atlas']):
                         atlas_libs.append('atlas')
+                        atlas_name = 'atlas'
 
                     if not (numerics['lapack'] or numerics['atlas']):
                         # Did we miss atlas above because it requires gfortran?
@@ -662,7 +670,6 @@ def AutoConfiguration(env):
 
 
             # Hack to extend list rather than append a list into a list
-            print 'Using the following libraries for numerical routines: ', atlas_libs
             for lib in atlas_libs:
                 conf.env.Append(LIBS=lib)
 
@@ -673,20 +680,22 @@ def AutoConfiguration(env):
             # system library (e.g. /usr/lib64).  Here, we attempt to 
             # detect this and deal with it...
 
-            if not env['ATLAS_LIBS'] and (numerics['atlas'] and not conf.CheckForSVD('atlas')):
+            if not env['ATLAS_LIBS'] and (numerics[atlas_name] and not conf.CheckForSVD(atlas_name)):
                 if numerics['lapack']:
                     # Linking code with dgesvd failed, but we have a lapack lib detected...
                     # Try linking using the system lib dir first, ignoring atlas...
                     conf.env.Prepend(LIBPATH=[default_lib_path])
                     if not conf.CheckForSVD('lapack'):
                         print 'Error- missing SVD function.  Check your ATLAS/LAPACK installation'
-                        conv.env.Exit(1)
-                    print 'Warning- ATLAS is missing some LAPACK functions.  Using LAPACK instead.'
+                        conf.env.Exit(1)
+                    print 'Warning- adding LAPACK to library list for SVD.'
+                    conf.env.Append(LIBS='lapack')
                 else:
                     print 'Error- missing SVD function.  Build a full ATLAS with LAPACK or install LAPACK'
                     conf.env.Exit(1)
 
         environOverride(conf)
+        print '* Autoconfigure will use these libraries to build LOOS*\n\t', conf.env['LIBS']
         env = conf.Finish()
 
 #########################################################################################3
