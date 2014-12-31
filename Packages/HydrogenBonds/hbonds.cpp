@@ -48,10 +48,6 @@ typedef vector<veDouble>  veveDouble;
 typedef vector<uint>      veUint;
 typedef vector<veUint>    veveUint;
 
-typedef SimpleAtom        SAtom;
-typedef vector<SAtom>     SAGroup;
-
-
 
 typedef Math::Matrix<double, Math::RowMajor>    Matrix;
 
