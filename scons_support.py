@@ -216,29 +216,6 @@ def CheckAtlasRequires(conf, name, lib, required):
     return(lib)
 
 
-# See if a library requires another to link...
-def CheckForSVD(conf, name):
-
-    conf.Message('Checking for SVD in %s ... ' % (name))
-    lastLIBS = list(conf.env['LIBS'])
-    conf.env.Append(LIBS=name)
-
-    test_code = """
-extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);}
-int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, D, I, D, I, I); }
-"""
-
-    result = conf.TryLink(test_code, '.cpp')
-    conf.env.Replace(LIBS=lastLIBS)
-
-    if not result:
-        conf.Result('no')
-        return(0)
-
-    conf.Result('yes')
-    return(1)
-
-
 # Check for IEC-559 compliance
 def CheckForIEC559(conf):
 
@@ -484,7 +461,6 @@ def AutoConfiguration(env):
                                           'CheckBoostHeaderVersion' : CheckBoostHeaderVersion,
                                           'CheckDirectory' : CheckDirectory,
                                           'CheckAtlasRequires' : CheckAtlasRequires,
-                                          'CheckForSVD' : CheckForSVD,
                                           'CheckForIEC559' : CheckForIEC559,
                                           'CheckSystemType' : CheckSystemType
                                           })
