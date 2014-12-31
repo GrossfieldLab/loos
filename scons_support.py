@@ -648,6 +648,14 @@ def AutoConfiguration(env):
                 conf.env.Append(LIBS=lib)
 
 
+        # Suppress those annoying maybe used unitialized warnings that -Wall gives us...
+        ccflags = conf.env['CCFLAGS']
+        conf.env.Append(CCFLAGS=['-Wno-maybe-uninitialized', '-Werror'])    # Try suppressing, make bad flags an error
+        ok = conf.TryCompile('', '.c')
+        conf.env['CCFLAGS'] = ccflags
+        if ok:
+            conf.env.Append(CCFLAGS=['-Wno-maybe-uninitialized'])
+                
         environOverride(conf)
         print '* Autoconfigure will use these libraries to build LOOS*\n\t', conf.env['LIBS']
         env = conf.Finish()
