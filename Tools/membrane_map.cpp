@@ -54,10 +54,12 @@ public:
             ("ymax",  po::value<double>(&ymax)->default_value(50), "y histogram range")
             ("ybins",  po::value<uint>(&ybins)->default_value(50), "y histogram bins")
             ("calc", po::value<string>(&calc_type)->default_value(string("density")), "property to calculate (density, height, order, vector)")
+            ("upper-only", "Map only the upper leaflet")
+            ("lower-only", "Map only the lower leaflet")
             ;
         }
 
-    bool postConditions(po::variables_map& map) 
+    bool postConditions(po::variables_map& vm) 
         {
         if (calc_type.compare(string("density"))==0)
             {
@@ -82,6 +84,23 @@ public:
                  << endl;
             return(false);
             }
+
+        upper_only = false;
+        lower_only = false;
+        if (vm.count("upper-only"))
+            {
+            upper_only = true;
+            }
+        if (vm.count("lower-only"))
+            {
+            lower_only = true;
+            }
+        if (upper_only && lower_only)
+            {
+            cerr << "Can't specify --upper-only and --lower-only at the same time"
+                 << endl;
+            exit(-1);
+            }
         return(true);
         }
 
@@ -89,6 +108,8 @@ public:
     uint xbins, ybins;
     string calc_type;
     CalcType type;
+    bool upper_only;
+    bool lower_only;
 };
 
 
@@ -160,6 +181,16 @@ string fullHelpMessage(void)
 "doing a density calculation, in which case there's no divide by zero\n"
 "and sanity reigns everywhere.\n"
 "\n"
+"The options --upper-only and --lower-only let you calculate properties\n"
+"using only the upper and lower leaflets respectively.  The check is done\n"
+"for each frame, so these options will handle the case where a component\n"
+"is capable of flipping between leaflets on the MD timescale.  However,\n"
+"the implementation assumes that the membrane has been previously centered\n"
+"at z=0.  For obvious reasons, you can't specify both --upper-only and \n"
+"--lower-only at the same time.  Note: the stated number of matching target\n"
+"molecules output at the beginning of the run does not take this restriction\n"
+"into account.\n"
+"\n"
 "IMPLEMENTING NEW QUANTITIES\n"
 "\n"
 "Implementing new quantities is quite easy as long as they return either\n"
@@ -223,8 +254,6 @@ int main(int argc, char *argv[])
 
     AtomicGroup apply_to = selectAtoms(system, ropts->value("target-selection"));
 
-    // TODO : make this user-settable
-    //vector<AtomicGroup> targets = apply_to.splitByMolecule();
     vector<AtomicGroup> targets = sopts->split(apply_to);
     cout << "# Found " << targets.size() << " matching molecules" << endl;
 
@@ -299,9 +328,21 @@ int main(int argc, char *argv[])
                                            ++j)
             {
             GCoord centroid = j->centroid();
+            // Skip molecules outside the xy range of interest
             if ( (centroid.x() < xmin) || (centroid.x() > xmax) ||
                  (centroid.y() < ymin) || (centroid.y() > ymax) 
                )
+                {
+                continue;
+                }
+            // If the user chose to look at only one leaflet, 
+            // skip molecules in the opposite leaflet.
+            // Note: this assumes that the membrane is centered at z=0
+            else if ((centroid.z() > 0) && topts->lower_only)
+                {
+                continue;
+                }
+            else if ((centroid.z() < 0) && topts->upper_only) 
                 {
                 continue;
                 }

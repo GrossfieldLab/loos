@@ -1,3 +1,8 @@
+2015-01-06    <alan@membrane.urmc.rochester.edu>
+
+    * Added --upper-only and --lower-only options to membrane_map to
+	easily allow the user to specify one leaflet to look at
+
 2014-12-24    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Released loos 2.2.0
