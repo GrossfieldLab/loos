@@ -509,7 +509,7 @@ def AutoConfiguration(env):
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
-            conf.env.Append(LIBPATH = [atlas_libpath])
+            conf.env.Prepend(LIBPATH = [atlas_libpath])
 
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
         # based on the environment or custom.py file
@@ -663,7 +663,8 @@ def AutoConfiguration(env):
             conf.env.Append(CCFLAGS=['-Wno-maybe-uninitialized'])
                 
         environOverride(conf)
-        print '* Autoconfigure will use these libraries to build LOOS*\n\t', conf.env['LIBS']
+        print 'Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS']
+        print 'Autoconfigure will use the following directories to find libs:\n\t', conf.env['LIBPATH']
         env = conf.Finish()
 
 #########################################################################################3
