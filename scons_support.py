@@ -498,7 +498,13 @@ def AutoConfiguration(env):
             ATLAS_LIBPATH = env['ATLAS_LIBPATH']
             ATLAS_LIBS = env['ATLAS_LIBS']
             if not ATLAS_LIBPATH:
-                atlas_libpath = default_lib_path + '/atlas'
+                # Some distros may have atlas in /atlas-base, so must check for that...
+                if conf.CheckDirectory(default_lib_path + '/atlas-base'):
+                    atlas_libpath = default_lib_path + '/atlas-base'
+                elif conf.CheckDirectory(default_lib_path + '/atlas'):
+                    atlas_libpath = default_lib_path + '/atlas'
+                else:
+                    print 'Warning: Could not find atlas directory!  Is it installed?'
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
