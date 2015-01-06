@@ -509,7 +509,10 @@ def AutoConfiguration(env):
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
-            conf.env.Prepend(LIBPATH = [atlas_libpath])
+            if loos_build_config.linux_type == 'suse':
+                conf.env.Append(LIBPATH = [atlas_libpath])
+            else:
+                conf.env.Prepend(LIBPATH = [atlas_libpath])
 
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
         # based on the environment or custom.py file
