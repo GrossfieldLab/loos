@@ -237,7 +237,7 @@ namespace ENM {
   class ExponentialDistance : public UniformSpringFunction {
   public:
     ExponentialDistance(const double s) : scale(s) { }
-    ExponentialDistance() : scale(-0.5) { }
+    ExponentialDistance() : scale(-1.5) { }
 
     std::string name() const { return("ExponentialDistance"); }
 
