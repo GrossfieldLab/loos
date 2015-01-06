@@ -664,7 +664,7 @@ def AutoConfiguration(env):
                 
         environOverride(conf)
         print 'Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS']
-        print 'Autoconfigure will use the following directories to find libs:\n\t', conf.env['LIBPATH']
+        print 'Autoconfigure will add the following directories to find libs:\n\t', conf.env['LIBPATH']
         env = conf.Finish()
 
 #########################################################################################3
