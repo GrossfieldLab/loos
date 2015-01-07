@@ -640,9 +640,15 @@ def AutoConfiguration(env):
                             atlas_libs.insert(0, lib)
                         else:
                             # Try putting scanning default_lib_path first...
-                            conf.Append(LIBPATH, default_lib_path)
+                            print 'Trying again with ', default_lib_path, ' searched first...'
+                            # Remove the default_lib_path from the list and prepend...
+                            libpaths = list(conf.env['LIBPATH'])
+                            libpaths.remove(default_lib_path)
+                            libpaths.insert(0, default_lib_path)
+                            conf.env['LIBPATH'] = libpaths
                             if not checkLibsForFunction(conf, funcname, atlas_libs, ()):
-                                if checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs):
+                                lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
+                                if lib:
                                     atlas_libs.insert(0, lib)
                                 else:
                                     print 'Error- could not figure out where ', funcname, ' is located.'
