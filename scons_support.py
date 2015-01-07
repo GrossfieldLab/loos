@@ -450,6 +450,14 @@ def AutoConfigUserBoost(conf):
 
 
 
+def checkLibsForFunction(context, funcname, liblist, excludelist):
+    for lib in liblist:
+#        if (lib in excludelist) or (lib in ('atlas', 'satlas', 'tatlas')):
+        if (lib in excludelist):
+            continue
+        if context.CheckLib(lib, symbol=funcname, autoadd = 0):
+            return(lib)
+    return('')
 
 
 
@@ -504,15 +512,12 @@ def AutoConfiguration(env):
                 elif conf.CheckDirectory(default_lib_path + '/atlas'):
                     atlas_libpath = default_lib_path + '/atlas'
                 else:
-                    print 'Warning: Could not find atlas directory!  Is it installed?'
+                    print 'Warning: Could not find an atlas directory!'
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
-            if loos_build_config.linux_type == 'suse':
-                conf.env.Append(LIBPATH = [atlas_libpath])
-            else:
-                conf.env.Prepend(LIBPATH = [atlas_libpath])
+            conf.env.Prepend(LIBPATH = [atlas_libpath])
 
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
         # based on the environment or custom.py file
@@ -630,24 +635,18 @@ def AutoConfiguration(env):
                         atlas_name = 'atlas'
 
                 for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
-                    found = 0
-                    for linked_lib in atlas_libs:
-                        if conf.CheckLib(linked_lib, symbol=funcname, autoadd=0):
-                            found = 1
-                            break
-
-                    if not found:
-                        notfound = 1
-                        for lib in numerics:
-                            if (lib in atlas_libs) or (lib in ('atlas', 'satlas', 'tatlas')):
-                                continue
-                            if conf.CheckLib(lib, symbol=funcname, autoadd=0):
-                                atlas_libs.insert(0, lib)
-                                notfound = 0
-                                break
-                        if notfound:
-                            print 'Error- could not figure out where ', funcname, ' is located.'
-                            conf.env.Exit(1)
+                    if not checkLibsForFunction(conf, funcname, atlas_libs, ()):
+                        if checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs):
+                            atlas_libs.insert(0, lib)
+                        else:
+                            # Try putting scanning default_lib_path first...
+                            conf.Append(LIBPATH, default_lib_path)
+                            if not checkLibsForFunction(conf, funcname, atlas_libs, ()):
+                                if checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs):
+                                    atlas_libs.insert(0, lib)
+                                else:
+                                    print 'Error- could not figure out where ', funcname, ' is located.'
+                                    conf.env.Exit(1)
                         
                 
                     
