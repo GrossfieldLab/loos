@@ -636,11 +636,12 @@ def AutoConfiguration(env):
 
                 for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
                     if not checkLibsForFunction(conf, funcname, atlas_libs, ()):
-                        if checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs):
+                        lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
+                        if lib:
                             atlas_libs.insert(0, lib)
                         else:
                             # Try putting scanning default_lib_path first...
-                            print 'Trying again with ', default_lib_path, ' searched first...'
+                            print '* Trying again with ', default_lib_path, ' searched first *'
                             # Remove the default_lib_path from the list and prepend...
                             libpaths = list(conf.env['LIBPATH'])
                             libpaths.remove(default_lib_path)
