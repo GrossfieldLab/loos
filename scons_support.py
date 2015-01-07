@@ -503,6 +503,7 @@ def AutoConfiguration(env):
        
         # Only setup ATLAS if we're not on a Mac...
         if loos_build_config.host_type != 'Darwin':
+            atlas_libpath = ''
             ATLAS_LIBPATH = env['ATLAS_LIBPATH']
             ATLAS_LIBS = env['ATLAS_LIBS']
             if not ATLAS_LIBPATH:
@@ -512,12 +513,13 @@ def AutoConfiguration(env):
                 elif conf.CheckDirectory(default_lib_path + '/atlas'):
                     atlas_libpath = default_lib_path + '/atlas'
                 else:
-                    print 'Warning: Could not find an atlas directory!'
+                    print 'Warning: Could not find an atlas directory!  Winging it...'
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
 
-            conf.env.Prepend(LIBPATH = [atlas_libpath])
+            if atlas_libpath:
+                conf.env.Prepend(LIBPATH = [atlas_libpath])
 
         # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
         # based on the environment or custom.py file
