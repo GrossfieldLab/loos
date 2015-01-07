@@ -1,3 +1,7 @@
+2015-01-07    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Removed dcd_utils.cpp and gridify()
+
 2015-01-06    <alan@membrane.urmc.rochester.edu>
 
     * Added --upper-only and --lower-only options to membrane_map to
