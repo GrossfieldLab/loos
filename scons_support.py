@@ -450,6 +450,10 @@ def AutoConfigUserBoost(conf):
 
 
 
+# Check to see if a function exists with current libs
+# If gfortran is present and function is not found, then
+# try appending gfortran to lib list...
+
 def checkForFunction(context, funcname, libs, has_gfortran):
     old_libs = list(context.env['LIBS'])
     context.env.Append(LIBS=libs)
@@ -466,6 +470,12 @@ def checkForFunction(context, funcname, libs, has_gfortran):
     context.env['LIBS'] = old_libs
     return (ok, requires_gf)
 
+
+
+
+# Tries adding each library from list to the build lib list
+# and sees if funcname is present.  Any lib in the excludelist
+# is ignored.  No special handling for gfortran...
 
 def checkLibsForFunction(context, funcname, liblist, excludelist):
     for lib in liblist:
@@ -663,6 +673,9 @@ def AutoConfiguration(env):
                         atlas_libs.append('atlas')
                         atlas_name = 'atlas'
 
+                # Try to figure out how to build with ATLAS...
+                # We need these functions, so find a combination of libs and
+                # libpaths will work...
                 for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
                     (ok, requires_gfortran) = checkForFunction(conf, funcname, atlas_libs, has_gfortran)
                     if requires_gfortran:
@@ -674,7 +687,8 @@ def AutoConfiguration(env):
                         if lib:
                             atlas_libs.insert(0, lib)
                         else:
-                            # Try putting scanning default_lib_path first...
+                            # Try putting scanning default_lib_path first...SUSE requires
+                            # the lapack in /usr/lib first...
                             print 'Searching %s first for libraries...' % default_lib_path
                             # Remove the default_lib_path from the list and prepend...
                             libpaths = list(conf.env['LIBPATH'])
