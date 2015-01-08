@@ -450,12 +450,24 @@ def AutoConfigUserBoost(conf):
 
 
 
-def checkLibsForFunction(context, funcname, liblist, excludelist):
+def checkForFunction(context, funcname, libs):
+    old_libs = list(context.env['LIBS'])
+    context.env.Append(LIBS=libs)
+    ok = context.CheckFunc(funcname)
+    context.env['LIBS'] = old_libs
+    return ok
+
+
+def checkLibsForFunction(context, funcname, liblist, required, excludelist):
     for lib in liblist:
-#        if (lib in excludelist) or (lib in ('atlas', 'satlas', 'tatlas')):
-        if (lib in excludelist):
+        if lib in excludelist:
             continue
-        if context.CheckLib(lib, symbol=funcname, autoadd = 0):
+        old_libs = list(context.env['LIBS'])
+        context.env.Append(LIBS=required)
+        context.Display("Adding %s to library list..." % lib)
+        ok = CheckFunc(funcname)
+        context.env['LIBS'] = old_libs
+        if ok:
             return(lib)
     return('')
 
@@ -600,6 +612,8 @@ def AutoConfiguration(env):
                              'cblas' : 0,
                              'blas' : 0 }
 
+
+
                 if use_threads:
                     numerics['tatlas'] = 0
                     numerics['ptcblas'] = 0
@@ -608,6 +622,10 @@ def AutoConfiguration(env):
                 for libname in numerics:
                     if conf.CheckLib(libname, autoadd = 0):
                         numerics[libname] = 1
+
+                has_gfortran = 0
+                if conf.CheckLib('gfortran', autoadd = 0):
+                    has_gfortran = 1
 
                 atlas_libs = []
                 atlas_name = ''
@@ -637,25 +655,44 @@ def AutoConfiguration(env):
                         atlas_name = 'atlas'
 
                 for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
-                    if not checkLibsForFunction(conf, funcname, atlas_libs, ()):
+                    if not checkForFunction(conf, funcname, atlas_libs):
                         lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
                         if lib:
                             atlas_libs.insert(0, lib)
                         else:
-                            # Try putting scanning default_lib_path first...
-                            print '* Trying again with ', default_lib_path, ' searched first *'
-                            # Remove the default_lib_path from the list and prepend...
-                            libpaths = list(conf.env['LIBPATH'])
-                            libpaths.remove(default_lib_path)
-                            libpaths.insert(0, default_lib_path)
-                            conf.env['LIBPATH'] = libpaths
-                            if not checkLibsForFunction(conf, funcname, atlas_libs, ()):
-                                lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
-                                if lib:
-                                    atlas_libs.insert(0, lib)
+                            
+                            success = 0
+
+                            # Try adding gfortran...
+                            if has_gfortran:
+                                conf.Display('Trying again linking with gfortran...')
+                                old_libs = list(conf.env['LIBS'])
+                                conf.env.Append(LIBS=['gfortran'])
+                                if not checkForFunction(conf, funcname, atlas_libs):
+                                    lib = checkLibsForFunction(conf, funcname, numeric.keys(), atlas_libs)
+                                    if lib:
+                                        atlas_libs.insert(0, lib)
+                                        success = 1
                                 else:
-                                    print 'Error- could not figure out where ', funcname, ' is located.'
-                                    conf.env.Exit(1)
+                                    success = 1
+
+                                if not success:
+                                    conf.env['LIBS'] = old_libs
+                                
+                                    # Try putting scanning default_lib_path first...
+                                    conf.Display('Searching %s first for libraries...' % default_lib)
+                                    # Remove the default_lib_path from the list and prepend...
+                                    libpaths = list(conf.env['LIBPATH'])
+                                    libpaths.remove(default_lib_path)
+                                    libpaths.insert(0, default_lib_path)
+                                    conf.env['LIBPATH'] = libpaths
+                                    if not checkLibsForFunction(conf, funcname, atlas_libs, []):
+                                        lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
+                                        if lib:
+                                            atlas_libs.insert(0, lib)
+                                        else:
+                                            print 'Error- could not figure out where ', funcname, ' is located.'
+                                            conf.env.Exit(1)
                         
                 
                     
