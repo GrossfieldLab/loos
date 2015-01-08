@@ -16,7 +16,7 @@
 | Fedora 21         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
-| Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
+| Ubuntu 10.04 LTS  |     +     |   !    | DCS   |     C = Requires manual install of SCons
 | Ubuntu 11.10      |     +     |   !    | DS    |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    | D     |     
