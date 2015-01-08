@@ -450,12 +450,21 @@ def AutoConfigUserBoost(conf):
 
 
 
-def checkForFunction(context, funcname, libs):
+def checkForFunction(context, funcname, libs, has_gfortran):
     old_libs = list(context.env['LIBS'])
     context.env.Append(LIBS=libs)
+    requires_gf = 0
+
     ok = context.CheckFunc(funcname)
+    if not ok and has_gfortran:
+        print 'Trying again with gfortran...'
+        context.env.Append(LIBS=['gfortran'])
+        ok = context.CheckFunc(funcname)
+        if ok:
+            requires_gf = 1
+
     context.env['LIBS'] = old_libs
-    return ok
+    return (ok, requires_gf)
 
 
 def checkLibsForFunction(context, funcname, liblist, excludelist):
@@ -464,7 +473,7 @@ def checkLibsForFunction(context, funcname, liblist, excludelist):
             continue
         old_libs = list(context.env['LIBS'])
         context.env.Append(LIBS=lib)
-        print "* Adding %s to library list..." % lib
+        print "> Adding %s to library list..." % lib
         ok = context.CheckFunc(funcname)
         context.env['LIBS'] = old_libs
         if ok:
@@ -654,11 +663,13 @@ def AutoConfiguration(env):
                         atlas_libs.append('atlas')
                         atlas_name = 'atlas'
 
-                if has_gfortran:
-                    atlas_libs.append('gfortran')
-
                 for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
-                    if not checkForFunction(conf, funcname, atlas_libs):
+                    (ok, requires_gfortran) = checkForFunction(conf, funcname, atlas_libs, has_gfortran)
+                    if requires_gfortran:
+                        print 'Build Requires gfortran'
+                        atlas_libs.append('gfortran')
+
+                    if not ok:
                         lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
                         if lib:
                             atlas_libs.insert(0, lib)
@@ -670,7 +681,12 @@ def AutoConfiguration(env):
                             libpaths.remove(default_lib_path)
                             libpaths.insert(0, default_lib_path)
                             conf.env['LIBPATH'] = libpaths
-                            if not checkLibsForFunction(conf, funcname, atlas_libs, []):
+                            (ok, requires_gfortran) = checkForFunction(conf, funcname, atlas_libs, has_gfortran)
+                            if requires_gfortran:
+                                print 'Build requires gfortran'
+                                atlas_libs.append('gfortran')
+
+                            if not ok:
                                 lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
                                 if lib:
                                     atlas_libs.insert(0, lib)
