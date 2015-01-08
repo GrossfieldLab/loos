@@ -464,7 +464,7 @@ def checkLibsForFunction(context, funcname, liblist, required, excludelist):
             continue
         old_libs = list(context.env['LIBS'])
         context.env.Append(LIBS=required)
-        context.Display("Adding %s to library list..." % lib)
+        context.Message("Adding %s to library list..." % lib)
         ok = CheckFunc(funcname)
         context.env['LIBS'] = old_libs
         if ok:
@@ -486,7 +486,6 @@ def AutoConfiguration(env):
                                           })
     
     use_threads = int(env['threads'])
-
 
     # Get system information
     conf.CheckSystemType()
@@ -665,7 +664,7 @@ def AutoConfiguration(env):
 
                             # Try adding gfortran...
                             if has_gfortran:
-                                conf.Display('Trying again linking with gfortran...')
+                                conf.Message('Trying again linking with gfortran...')
                                 old_libs = list(conf.env['LIBS'])
                                 conf.env.Append(LIBS=['gfortran'])
                                 if not checkForFunction(conf, funcname, atlas_libs):
@@ -680,7 +679,7 @@ def AutoConfiguration(env):
                                     conf.env['LIBS'] = old_libs
                                 
                                     # Try putting scanning default_lib_path first...
-                                    conf.Display('Searching %s first for libraries...' % default_lib)
+                                    conf.Message('Searching %s first for libraries...' % default_lib)
                                     # Remove the default_lib_path from the list and prepend...
                                     libpaths = list(conf.env['LIBPATH'])
                                     libpaths.remove(default_lib_path)
