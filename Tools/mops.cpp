@@ -61,14 +61,17 @@ string fullHelpMessage(void) {
     "no hydrogens.  For each molecule in the selection, the principal axes are\n"
     "found.  The 2nd and 3rd axes are treated as faux-hydrogens and their angle\n"
     "with the z-axis is used to calculate an order parameter (as in order_params).\n"
-    "Multiple trajectories can be given and the result will be the average\n"
-    "over all of them.\n"
+    "The order parameters are written out as a time-series.  If multiple trajectories\n"
+    "are given, then there will be extra spaces between each trajectory in the output.\n"
+    "Individual trajectories can be plotted with gnuplot by using the 'index' keyword.\n"
+    "The last 3 lines of the output contain the aggregate statistics, which can be read\n"
+    "using tail (tail -3 x.asc).\n"
     "\n"
     "EXAMPLES\n"
-    "\tmops 'resname == \"POPC\"' model.gro simulation.xtc\n"
+    "\tmops 'resname == \"POPC\"' model.gro simulation.xtc >order.asc\n"
     "This computes a molecular order parameter for all POPC residues.\n"
     "\n"
-    "\tmops --skip=50 'segid == \"LIPID\"' namd.psf sim1.dcd sim2.dcd sim3.dcd sim4.dcd\n"
+    "\tmops --skip=50 'segid == \"LIPID\"' namd.psf sim1.dcd sim2.dcd sim3.dcd sim4.dcd >order.asc\n"
     "This computes a molecular order parameter for all molecules with a LIPID segid,\n"
     "averaging over all 4 trajectories.  The first 50 frames of each trajectory are\n"
     "skipped.\n"
@@ -259,25 +262,33 @@ int main(int argc, char *argv[]) {
 
   dTimeSeries order;
 
+  uint file = 0;
+
   for (vString::const_iterator i = traj_names.begin(); i != traj_names.end(); ++i) {
     dTimeSeries suborder;
 
     pTraj traj = createTrajectory(*i, model);
     if (skip != 0)
       traj->readFrame(skip-1);
-    
+
+    uint t = skip;
     while (traj->readFrame()) {
+      dTimeSeries frameorder;
       traj->updateGroupCoords(model);
-      principalComponentsOrder(suborder, subset);
+      principalComponentsOrder(frameorder, subset);
+      copy(frameorder.begin(), frameorder.end(), back_inserter(suborder));
+      cout << file << '\t' << t++ << '\t' << frameorder.average() << '\t' << '\t' << frameorder.stdev() << endl;
     }
+    cout << endl << endl;;
     order.push_back(suborder.average());
+    ++file;
   }
 
   
 
-  cout << "Avg = " << order.average() << endl;
-  cout << "Std = " << order.stdev() << endl;
-  cout << boost::format("OB Data = %d out of %d (%.2f%%)\n") % nplanar % ntotal % (nplanar * 100.0 / ntotal);
+  cout << "# Avg = " << order.average() << endl;
+  cout << "# Std = " << order.stdev() << endl;
+  cout << boost::format("# OB Data = %d out of %d (%.2f%%)\n") % nplanar % ntotal % (nplanar * 100.0 / ntotal);
 
   exit(EXIT_SUCCESS);
 }
