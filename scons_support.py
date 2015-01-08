@@ -675,7 +675,7 @@ def AutoConfiguration(env):
                             atlas_libs.insert(0, lib)
                         else:
                             # Try putting scanning default_lib_path first...
-                            print 'Searching %s first for libraries...' % default_lib
+                            print 'Searching %s first for libraries...' % default_lib_path
                             # Remove the default_lib_path from the list and prepend...
                             libpaths = list(conf.env['LIBPATH'])
                             libpaths.remove(default_lib_path)
