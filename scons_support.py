@@ -458,12 +458,12 @@ def checkForFunction(context, funcname, libs):
     return ok
 
 
-def checkLibsForFunction(context, funcname, liblist, required, excludelist):
+def checkLibsForFunction(context, funcname, liblist, excludelist):
     for lib in liblist:
         if lib in excludelist:
             continue
         old_libs = list(context.env['LIBS'])
-        context.env.Append(LIBS=required)
+        context.env.Append(LIBS=lib)
         context.Message("Adding %s to library list..." % lib)
         ok = CheckFunc(funcname)
         context.env['LIBS'] = old_libs
