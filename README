@@ -8,6 +8,25 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.2.1 *
+
+This is a maintenance release of LOOS.  It primarily involves a
+revamped build system that addresses some changes in how Atlas is
+installed in recent Linux releases (such as Fedora 21 and OpenSUSE
+13).  It also corrects some linkage inconsistencies that were found
+such as using a system lapack rather than the ATLAS provided version.
+While the build system should be more intelligent about finding and
+correctly linking in the numeric libraries, there are many
+permutations what we've seen in our testing and it may choose
+incorrectly.  You can override which libraries are used and what
+the search path will be by creating a custom.py file and setting
+ATLAS_LIBS and/or ATLAS_LIBPATH.  See the INSTALL file or the
+"Building LOOS" section of the documentation.
+
+Two additional changes to LOOS are the addition of -upper-only and
+--lower-only flags to membrane_map and mops will now write out the
+average molecular order parameter as a time-series.
+
    * RELEASE 2.2.0 *
 
 This release of LOOS includes a number of significant improvements and
@@ -186,182 +205,3 @@ the documentation, or refer to the documentation for the Trajectory
 class.
 
 
-   * RELEASE 2.0.6 *
-
-This release addresses a number of bugs and includes a few improvements
-and new tools.  The bugs include ones in gmxdump2pdb.pl where
-hybrid-36 encoding was used where it shouldn't have been, and problems
-handling cases with more topology segments than molecular segments (as
-can happen with bilayer systems).  A bug in serial-selection was
-addressed that caused the output to be interleaved by molecule rather
-than contiguous.
-
-We have seen some cases where DCD trajectories could have 0 frames
-listed in the DCD header, yet the trajectory has many frames.
-Instantiating the DCD (or pTraj) for these trajectories would cause
-LOOS to throw an exception.  This behavior has been fixed.  However,
-these trajectories will not be read correctly, i.e. LOOS will think
-they have no frames in them.  We have included a special fixdcd tool
-that will update the header (in-place) with the correct number of
-frames found by manually scanning the trajectory.
-
-Finally, a bug in the setup.csh script causing the user package
-directory to not be inserted into the $PATH has been fixed.
-
-Improvements we have made include a change to cross-dist to
-disambiguate the sign of PCA vectors (courtesy of Jerome Henin),
-better handling of file I/O errors, a change of the default
-exponential spring constant in the ENM suite (to -0.5), and
-transition_contacts can now smooth the contacts matrix when the
-contact is near the cutoff (this is the default behavior now).  When
-installing with the PyLOOS option (pyloos=1 on the command line), the
-PyLOOS-based tools are now installed as well as everything else.  And
-finally, a new tool, protein_tilt.py, is available for PyLOOS.
-
-For more details, see the ChangeLog file included with LOOS.
-
-   * RELEASE 2.0.5 *
-
-This release consists of some minor internal changes, a few bug fixes,
-and a few added or changed tools.  There is one major change, however,
-in the setup scripts (setup.sh and setup.csh).  Previously, LOOS
-directories were *appended* to the appropriate environment variables
-(e.g. PATH, LD_LIBRARY_PATH, etc).  Now, these directories are
-*prepended*.
-
-New tools include the transition_contacts tool (time series of
-transition between two structures) and serialize-selection tool
-(transforms a trajectory containing multiple molecules into a longer
-trajectory with a single molecule).  We have also added fcontacts
-an an alternative to contact-time.  Bug fixes include gmxdump2pdb,
-native_contacts, and renum-pdb.  We have added LOOS exceptions to
-PyLOOS, so functions such as selectAtoms() can throw without crashing
-python.
-
-The principal internal change involves the iterative alignment and
-averaging functions so that the versions that take a pTraj no longer
-cache trajectory frames.  This change also affects the aligner and
-rmsd2ref tools.  In addition, the API for both trajectory and
-structure classes has changed slightly, taking an istream object
-rather than an ifstream object.
-
-For more details, see the ChangeLog file included with LOOS.
-
-
-
-
-   * RELEASE 2.0.4 *
-
-This release includes a number of bug fixes and important changes.  An
-issue with building LOOS when using Boost 1.52+ has been addressed.
-MacOS is now supported by the beta version of PyLOOS.  PyLOOS may also
-be installed now.  Note, however, that how you build PyLOOS has
-changed: use "scons pyloos=1".  We have also added a "chainid" keyword
-to the selection language.
-
-For more details, please refer to the ChangeLog file or the "Changes"
-section in the documentation.
-
-
-
-   * RELEASE 2.0.3b *
-
-! IMPORTANT NOTICE ! ! IMPORTANT NOTICE ! ! IMPORTANT NOTICE ! ! IMPORTANT NOTICE !
-
-The previously posted 2.0.3 release was a binary version that was
-inadvertently released.  The current 2.0.3b release is the official
-source code release.  We sincerely apologize for any
-inconvenience/confusion this may have caused, and strongly recommend
-downloading and installing this version.
-
-
-This release includes a number of bug fixes and new features,
-including support for the AMOEBA variant of Amber prmtop files as well
-as NetCDF formatted Amber trajectories (if a suitable NetCDF library
-is installed prior to building LOOS).  The gridgauss tool has been
-changed to allow more control over the smoothing kernel.  The command
-line arguments have therefore changed and the old way of running it
-will no longer work.
-
-For more details, see the ChangeLog or the "Changes" section in the
-Doxygen-generated documentation.
-
-
-   * RELEASE 2.0.2 *
-
-This is a maintenance release of loos that addresses issues with
-reading and writing PDB files that contain CONECT records for bonds.
-Previously, if the PDB held a bond from A to B, the bond from B to A
-was not implicitly made.  When writing a PDB, both the A to B and B to
-A bonds would be written out.  Now, the implicit bonds are made when
-reading in a PDB and only the unique bonds are written out.
-
-There was also a side-effect in the PDB writing code where the
-underlying PDB object could end up being sorted when writing out a PDB
-that contained bonds.  This has been fixed.
-
-Finally, the model-select tool now uses command-line options, so a
-selection requires the "-s" or "--selection" option.  The tool also
-supports a "--splitby" option that can be used to diagnose
-connectivity and group-splitting disorders.
-
-   * RELEASE 2.0.1 *
-   
-This release of LOOS introduces support for Mac OS X 10.8 (Mountain
-Lion) and Fedora 17.  Note that the Python interface is still
-unsupported with MacOS.  A new tool, gmxdump2pdb.pl, has also been
-added.  This program creates a PDB and a minimal PSF for
-Gromacs/MARTINI systems by parsing the output of gmxdump.  Several
-minor bugs have also been addressed along with minor improvements in
-the python interface and the addition of two new hydrogen bonds
-analysis tools.
-
-An internal change has been made in how the Atom::bondsbit is
-handled.  Previously, it reflected whether or not an atom had any
-bonds to any other atoms.  Calling Atom::getBonds() on an atom that
-had no bonds would throw an exception.  Now, the bondsbit is set if
-the atom has valid connectivity, even if that includes not having any
-bonds to it.  Additionally, getBonds() will no longer throw an
-exception if the bonds list is empty and there is valid connectivity.
-Instead, it will return an empty vector.  Reading in a PSF or a PDB
-with CONECT records will result in atoms that have valid connectivity,
-for example.
-
-For more complete details, refer to the ChangeLog or the LOOS
-documentation.
-
-
-   * RELEASE 2.0.0 *
-
-This is a new major release of LOOS that includes the beta-release of
-PyLOOS--the Python bindings for LOOS.  PyLOOS is currently only
-supported under Linux and requires a recent version of SWIG.
-Additionally, the interface and subsequent functionality may change in
-future releases.  See the INSTALL file and/or the Doxygen
-documentation for LOOS to build PyLOOS and get started using it.
-PyLOOS support is not turned on by default and must be explicitly
-built by typing "scons pyloos".  There are also a few examples of
-using the Python interface in the Packages/PyLOOS.
-
-LOOS is now built using shared libraries.  The shell environment must
-be configured for the location of the shared LOOS library.  Upon
-building LOOS, setup scripts (setup.csh and setup.sh) will be
-created.  These must be sourced (i.e. "source setup.sh") prior to
-executing any LOOS tool.
-
-There are also a number of minor bugs addressed by this release,
-including bugs in subsetter, averager, blurrogram.pl, aligner, and
-potential bugs in the GROMACS trr file support and in PDB output
-files.  See the release notes in either ChangeLog or in the LOOS
-documentation for more details.
-
-Improvements to LOOS include a "--fullhelp" option added to most
-tools, describing in more detail the tool, the algorithms used, and
-typical use-cases.  The performance of AtomicGroup::within() has been
-improved and support for periodic boundaries added.  In addition, the
-density-dist tool's original behavior (the first selection is always
-"all") has been restored.  New tools include potential_profile.py to
-compute the electrostatic potential profile and a cross-dist tool to
-compute the distribution of crossing angles and torsions for chains.
-For more complete details, see either the ChangeLog or the LOOS
-documentation.
