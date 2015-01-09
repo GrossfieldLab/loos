@@ -1,3 +1,8 @@
+2015-01-09    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed the build system
+	* Changed mops to write out a time-series of molecular order parameters
+
 2015-01-07    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Removed dcd_utils.cpp and gridify()
