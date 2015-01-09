@@ -182,13 +182,6 @@ For Amber NetCDF support, also install the netcdf development package:
 
 sudo yum install netcdf-devel
 
-* Fedora 21*
-
-Atlas has been split into satlas (serial) and tatlas (threaded).  To
-build, you will need to copy the custom.py-proto to custom.py and set
-ATLAS_LIBS to whichever version of atlas you prefer.
-
-
 
 * PyLOOS *
 
@@ -210,11 +203,6 @@ LOOS has been tested with CentOS (64 bit).  Follow the instructions
 for Fedora, however there is no scons package available via yum.
 Instead, download and install any version of scons more recent than
 1.0.
-
-* CentOS 7*
-Atlas has been split into satlas (serial) and tatlas (threaded).  To
-build, you will need to copy the custom.py-proto to custom.py and set
-ATLAS_LIBS to whichever version of atlas you prefer.
 
 
 * PyLOOS *
