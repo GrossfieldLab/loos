@@ -39,7 +39,7 @@ public:
       ("id,I", po::value<bool>(&id)->default_value(false), "Atom ID")
       ("name,T", po::value<bool>(&name)->default_value(false), "Atom name")
       ("resid,R", po::value<bool>(&resid)->default_value(false), "Residue ID")
-      ("resname,N", po::value<bool>(&resname)->default_value(false), "Residue namej")
+      ("resname,N", po::value<bool>(&resname)->default_value(false), "Residue name")
       ("segid,S", po::value<bool>(&segid)->default_value(true), "Segid or Segname")
       ("all,A", "Use all metadata");
   }
