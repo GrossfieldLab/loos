@@ -36,6 +36,8 @@ namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
 
+string progname;
+
 // @cond TOOLS_INTERNAL
 
 string fullHelpMessage(void) {
@@ -79,7 +81,8 @@ struct ToolOptions : public opts::OptionsPackage
     o.add_options()
       ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at the start of each trajectory")
       ("maxrad,R", po::value<double>(&maxrad)->default_value(30.0), "Maximum radius in membrane plane from lipopeptide")
-      ("nbins,N", po::value<uint>(&nbins)->default_value(30), "Number of bins in histogram");
+      ("nbins,N", po::value<uint>(&nbins)->default_value(30), "Number of bins in histogram")
+      ("residue", po::value<bool>(&residue_split)->default_value(false), "Force split by residue");
   
   }
 
@@ -115,8 +118,9 @@ struct ToolOptions : public opts::OptionsPackage
   string print() const 
   {
     ostringstream oss;
-    oss << boost::format("skip=%d, lipo='%s', lipid='%s', model='%s', traj='%s'")
+    oss << boost::format("skip=%d, residue=%d, lipo='%s', lipid='%s', model='%s', traj='%s'")
       % skip
+      % residue_split
       % liposelection
       % membraneselection
       % model_name
@@ -127,6 +131,7 @@ struct ToolOptions : public opts::OptionsPackage
   }
 
   uint skip;
+  bool residue_split;
   string membraneselection;
   string liposelection;
   string model_name;
@@ -310,25 +315,34 @@ vecGroup filterByLeaflet(const vecGroup& ensemble, const LeafletType leaflet = U
 }
 
 
-vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
+vecGroup extractSelections(const AtomicGroup& model, const string& selection, const bool force_residues) {
   AtomicGroup subset = selectAtoms(model, selection);
-  vecGroup molecules;
-  if (model.hasBonds())
-    return(subset.splitByMolecule());
-  else
-    molecules = subset.splitByUniqueSegid();
-
-  if (molecules.empty()) {
-    cerr << boost::format("ERROR- could not split group using selection '%s'\n") % selection;
+  
+  if (subset.empty()) {
+    cerr << "Error- no atoms were selected.\n";
     exit(EXIT_FAILURE);
   }
-  
-  // Autodetect whether we should use segid or residue to split...
-  if (molecules[0].size() == subset.size()) {
-    cerr << "WARNING- apparent GROMACS source data...switching splitByResidue() mode\n";
-    molecules = subset.splitByResidue();
+
+  vecGroup residues;
+  if (force_residues) {
+    cerr << progname << ": Forcing split by residue\n";
+    residues = subset.splitByResidue();
+  } else {
+    if (subset.hasBonds()) {
+      cerr << progname << ": Model has connectivity.  Using this to split selection.\n";
+      residues = subset.splitByMolecule();
+    } else {
+      residues = subset.splitByUniqueSegid();
+    }
   }
-  return(molecules);
+
+  if (!force_residues && residues[0].size() == subset.size()) {
+    cerr << progname << ": GROMACS model suspected... Splitting by residue.\n";
+    residues = subset.splitByResidue();
+  }
+
+  cerr << boost::format("%s: Extracted %d molecules from selection.\n") % progname % residues.size();
+  return(residues);
 }
 
 
@@ -336,6 +350,7 @@ vecGroup extractSelections(const AtomicGroup& model, const string& selection) {
 
 int main(int argc, char *argv[]) {
 
+  progname = string(argv[0]);
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
   ToolOptions* topts = new ToolOptions;
@@ -352,8 +367,8 @@ int main(int argc, char *argv[]) {
   uint nbins = topts->nbins;
 
   AtomicGroup model = createSystem(topts->model_name);
-  vecGroup membrane = extractSelections(model, membrane_selection);
-  vecGroup lipopeps = extractSelections(model, lipopeptide_selection);
+  vecGroup membrane = extractSelections(model, membrane_selection, topts->residue_split);
+  vecGroup lipopeps = extractSelections(model, lipopeptide_selection, topts->residue_split);
 
   cerr << boost::format("Lipid selection has %d atoms per molecule and %d molecules.\n") % membrane[0].size() % membrane.size();
   cerr << boost::format("Lipopeptide selection has %d atoms per molecule and %d molecules.\n") % lipopeps[0].size() % lipopeps.size();
