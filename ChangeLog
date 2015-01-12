@@ -1,7 +1,12 @@
+2015-01-12    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed mops and dibmops to split using connectivity (if available)
+	or force splitting by residue (--residue=1)
+
 2015-01-09    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed the build system
-	* Changed mops to write out a time-series of molecular order parameters
+	* Changed mops to optionally write out a time-series of molecular order parameters
 
 2015-01-07    <tromo@hill.urmc-sh.rochester.edu>
 
