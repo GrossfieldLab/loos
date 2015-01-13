@@ -45,6 +45,7 @@
 
 	* Added solvate.py to OptimalMembraneGenerator, to build 
 	protein in water systems without lipids
+	* Added model-meta-stats to give on overview of metadata in a model
 
 2014-12-09    <tromo@hill.urmc-sh.rochester.edu>
 
