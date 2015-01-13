@@ -40,11 +40,12 @@ typedef vector<AtomicGroup> vGroup;
 typedef vector<vGroup>      vvGroup;
 
 
-const double minp = 1e-3;
+const double minp = 1e-30;
 const double maxp = 100;
 ulong nplanar = 0;
 ulong ntotal = 0;
 
+string progname("unknown");
 
 // @cond TOOLS_INTERNAL
 
@@ -61,14 +62,19 @@ string fullHelpMessage(void) {
     "no hydrogens.  For each molecule in the selection, the principal axes are\n"
     "found.  The 2nd and 3rd axes are treated as faux-hydrogens and their angle\n"
     "with the z-axis is used to calculate an order parameter (as in order_params).\n"
-    "Multiple trajectories can be given and the result will be the average\n"
-    "over all of them.\n"
+    "\n"
+    "The order parameters can be written out as a time-series.  If multiple trajectories\n"
+    "are given, then there will be extra spaces between each trajectory in the output.\n"
+    "Individual trajectories can be plotted with gnuplot by using the 'index' keyword.\n"
+    "\n"
+    "Use the --residues=1 option to force splitting the selection by residue rather than\n"
+    "connectivity or unique segid.\n"
     "\n"
     "EXAMPLES\n"
-    "\tmops 'resname == \"POPC\"' model.gro simulation.xtc\n"
+    "\tmops 'resname == \"POPC\"' model.gro simulation.xtc >order.asc\n"
     "This computes a molecular order parameter for all POPC residues.\n"
     "\n"
-    "\tmops --skip=50 'segid == \"LIPID\"' namd.psf sim1.dcd sim2.dcd sim3.dcd sim4.dcd\n"
+    "\tmops --skip=50 'segid == \"LIPID\"' namd.psf sim1.dcd sim2.dcd sim3.dcd sim4.dcd >order.asc\n"
     "This computes a molecular order parameter for all molecules with a LIPID segid,\n"
     "averaging over all 4 trajectories.  The first 50 frames of each trajectory are\n"
     "skipped.\n"
@@ -93,7 +99,10 @@ struct ToolOptions : public opts::OptionsPackage
   void addGeneric(po::options_description& o) 
   {
     o.add_options()
-      ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at the start of each trajectory");
+      ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at the start of each trajectory")
+      ("residue", po::value<bool>(&residue_split)->default_value(false), "Force split by residue")
+      ("timeseries", po::value<bool>(&timeseries)->default_value(false), "Write out time-series of MOPS");
+
   }
 
   void addHidden(po::options_description& o) 
@@ -102,6 +111,7 @@ struct ToolOptions : public opts::OptionsPackage
       ("selection", po::value<string>(&selection), "Atoms to use")
       ("model", po::value<string>(&model_name), "Model filename")
       ("traj", po::value< vector<string> >(&traj_names), "Trajectory filenames");
+    
   }
 
   void addPositional(po::positional_options_description& o) 
@@ -126,9 +136,11 @@ struct ToolOptions : public opts::OptionsPackage
   string print() const 
   {
     ostringstream oss;
-    oss << boost::format("skip=%d, selection='%s', model='%s', traj='%s'")
+    oss << boost::format("skip=%d, selection='%s', residue=%d, timeseries=%d, model='%s', traj='%s'")
       % skip
       % selection
+      % residue_split
+      % timeseries
       % model_name
       % vectorAsStringWithCommas(traj_names);
     
@@ -137,6 +149,8 @@ struct ToolOptions : public opts::OptionsPackage
   }
 
   uint skip;
+  bool residue_split;
+  bool timeseries;
   string selection;
   string model_name;
   vector<string> traj_names;
@@ -186,10 +200,10 @@ void principalComponentsOrder(dTimeSeries& order_parameters,
     vector<GCoord> axes = residue.principalAxes();
     bool planar = false;
 
-    if (axes[3].z() < minp) {
+    if (abs(axes[3].z()) < minp) {
       if (nplanar == 0) {
         PDB pdb = PDB::fromAtomicGroup(residue);
-        cerr << "Warning- PCA magnitudes out of bounds " << axes[3] << endl;
+        cerr << progname << ": Warning- PCA magnitudes out of bounds " << axes[3] << endl;
         cerr << pdb;
       }
       planar = true;
@@ -210,20 +224,33 @@ void principalComponentsOrder(dTimeSeries& order_parameters,
 
 
 
-vGroup extractSelections(const AtomicGroup& model, const string& selection) {
+vGroup extractSelections(const AtomicGroup& model, const string& selection, const bool force_residues) {
   AtomicGroup subset = selectAtoms(model, selection);
-  vGroup residues = subset.splitByUniqueSegid();
-
-  if (residues.empty()) {
-    cerr << boost::format("ERROR- could not split group using selection '%s'\n") % selection;
+  
+  if (subset.empty()) {
+    cerr << "Error- no atoms were selected.\n";
     exit(EXIT_FAILURE);
   }
-  
-  // Autodetect whether we should use segid or residue to split...
-  if (residues[0].size() == subset.size()) {
-    cerr << "WARNING- apparent GROMACS source data...switching to splitByResidue() mode\n";
+
+  vGroup residues;
+  if (force_residues) {
+    cerr << progname << ": Forcing split by residue\n";
+    residues = subset.splitByResidue();
+  } else {
+    if (subset.hasBonds()) {
+      cerr << progname << ": Model has connectivity.  Using this to split selection.\n";
+      residues = subset.splitByMolecule();
+    } else {
+      residues = subset.splitByUniqueSegid();
+    }
+  }
+
+  if (!force_residues && residues[0].size() == subset.size()) {
+    cerr << progname << ": GROMACS model suspected... Splitting by residue.\n";
     residues = subset.splitByResidue();
   }
+
+  cerr << boost::format("%s: Extracted %d molecules from selection.\n") % progname % residues.size();
   return(residues);
 }
 
@@ -231,6 +258,8 @@ vGroup extractSelections(const AtomicGroup& model, const string& selection) {
 
 int main(int argc, char *argv[]) {
   
+
+  progname = string(argv[0]);
 
   string hdr = invocationHeader(argc, argv);
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
@@ -245,7 +274,7 @@ int main(int argc, char *argv[]) {
   uint skip = topts->skip;
   string selection = topts->selection;
   AtomicGroup model = createSystem(topts->model_name);
-  vGroup subset = extractSelections(model, selection);
+  vGroup subset = extractSelections(model, selection, topts->residue_split);
   vString traj_names = topts->traj_names;
 
   cout << "# " << hdr << endl;
@@ -259,25 +288,40 @@ int main(int argc, char *argv[]) {
 
   dTimeSeries order;
 
+  uint file = 0;
+
   for (vString::const_iterator i = traj_names.begin(); i != traj_names.end(); ++i) {
     dTimeSeries suborder;
 
     pTraj traj = createTrajectory(*i, model);
     if (skip != 0)
       traj->readFrame(skip-1);
-    
+
+    uint t = skip;
     while (traj->readFrame()) {
+      dTimeSeries frameorder;
       traj->updateGroupCoords(model);
-      principalComponentsOrder(suborder, subset);
+      principalComponentsOrder(frameorder, subset);
+      copy(frameorder.begin(), frameorder.end(), back_inserter(suborder));
+      if (topts->timeseries)
+        cout << file << '\t' << t++ << '\t' << frameorder.average() << '\t' << '\t' << frameorder.stdev() << endl;
     }
+    if (topts->timeseries)
+      cout << endl << endl;
     order.push_back(suborder.average());
+    ++file;
   }
 
   
-
-  cout << "Avg = " << order.average() << endl;
-  cout << "Std = " << order.stdev() << endl;
-  cout << boost::format("OB Data = %d out of %d (%.2f%%)\n") % nplanar % ntotal % (nplanar * 100.0 / ntotal);
-
+  if (topts->timeseries) {
+    cerr << boost::format("%s: Average MOP = %f\n") % progname % order.average();
+    cout << "# Avg = " << order.average() << endl;
+    cout << "# Std = " << order.stdev() << endl;
+    cerr << boost::format("%s: OB Data = %d out of %d (%.2f%%)\n") % progname % nplanar % ntotal % (nplanar * 100.0 / ntotal);
+  } else {
+    cout << "Avg = " << order.average() << endl;
+    cout << "Std = " << order.stdev() << endl;
+    cout << boost::format("OB Data = %d out of %d (%.2f%%)\n") % nplanar % ntotal % (nplanar * 100.0 / ntotal);
+  }
   exit(EXIT_SUCCESS);
 }

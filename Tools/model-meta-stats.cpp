@@ -13,19 +13,21 @@ string fullHelpMessage(void) {
   string msg =
     "\n"
     "SYNOPSIS\n"
+    "Display information about the metadata for a model\n"
     "\n"
     "DESCRIPTION\n"
-    "\taverager writes out a PDB for the average structure from a trajectory.  If a selection\n"
-    "is given (--selection), then the trajectory is first iteratively aligned to an optimal\n"
-    "average structure (see aligner).  The '--average' option takes an optional selection that\n"
-    "defines what atoms are averaged and written out, otherwise all non-hydrogen and non-solvent\n"
-    "atoms are used.  Note that solvent is selected by a segid of either 'BULK' or 'SOLVENT'.\n"
-    "If your system uses a different identifier, you will want to explicitly give a selection\n"
-    "for the --average option\n"
+    "\tThis tool will display information about the metadata for a model, such as\n"
+    "the range of resids, number of residues, what different segids are used, etc.\n"
+    "\n"
     "EXAMPLES\n"
+    "\tmodel-meta-stats model.pdb\n"
+    "This example will show the different segids in model.pdb\n"
     "\n"
+    "\tmodel-meta-stats -A model.pdb\n"
+    "This example will show all tracked metadata for model.pdb\n"
     "\n"
-    "SEE ALSO\n";
+    "SEE ALSO\n"
+    "\tmodel-select\n";
 
   return(msg);
 }
@@ -39,7 +41,7 @@ public:
       ("id,I", po::value<bool>(&id)->default_value(false), "Atom ID")
       ("name,T", po::value<bool>(&name)->default_value(false), "Atom name")
       ("resid,R", po::value<bool>(&resid)->default_value(false), "Residue ID")
-      ("resname,N", po::value<bool>(&resname)->default_value(false), "Residue namej")
+      ("resname,N", po::value<bool>(&resname)->default_value(false), "Residue name")
       ("segid,S", po::value<bool>(&segid)->default_value(true), "Segid or Segname")
       ("all,A", "Use all metadata");
   }

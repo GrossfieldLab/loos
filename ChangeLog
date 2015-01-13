@@ -1,3 +1,26 @@
+2015-01-12    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed mops and dibmops to split using connectivity (if available)
+	or force splitting by residue (--residue=1)
+
+2015-01-09    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed the build system
+	* Changed mops to optionally write out a time-series of molecular order parameters
+
+2015-01-07    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Removed dcd_utils.cpp and gridify()
+
+2015-01-06    <alan@membrane.urmc.rochester.edu>
+
+    * Added --upper-only and --lower-only options to membrane_map to
+	easily allow the user to specify one leaflet to look at
+
+2014-12-24    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Released loos 2.2.0
+
 2014-12-22    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in smooth-traj where a half-window's worth of frames
@@ -22,6 +45,7 @@
 
 	* Added solvate.py to OptimalMembraneGenerator, to build 
 	protein in water systems without lipids
+	* Added model-meta-stats to give on overview of metadata in a model
 
 2014-12-09    <tromo@hill.urmc-sh.rochester.edu>
 

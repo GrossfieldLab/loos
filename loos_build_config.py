@@ -19,7 +19,7 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-loos_version = '2.1.4'
+loos_version = '2.2.1'
 min_boost_version = '1_36'
 required_boost_libraries = ('regex', 'system', 'program_options')
 
@@ -37,6 +37,7 @@ package_list = { 'ENM': 'ElasticNetworks',
                  'HBonds' : 'HydrogenBonds',
                  'Conv' : 'Convergence',
                  'Density' : 'DensityTools',
+                 'OMG' : 'OptimalMembraneGenerator',
                  'User': 'User',
                  'Python': 'PyLOOS' }
 

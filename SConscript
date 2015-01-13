@@ -31,7 +31,7 @@ else:
    apps = 'scanner.cc grammar.cc '
 
 
-apps = apps + 'dcd.cpp utils.cpp dcd_utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
+apps = apps + 'dcd.cpp utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
 apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp'
 apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
 apps = apps + ' HBondDetector.cpp'
@@ -79,7 +79,8 @@ hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp Progres
 hdr = hdr + ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
 hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
-hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp'
+hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
+hdr = hdr + ' trajwriter.hpp'
 
 if (env['HAS_NETCDF']):
    hdr = hdr + ' amber_netcdf.hpp'

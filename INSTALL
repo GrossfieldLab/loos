@@ -16,7 +16,7 @@
 | Fedora 21         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
-| Ubuntu 10.04 LTS  |     +     |   !    | CS    |     C = Requires manual install of SCons
+| Ubuntu 10.04 LTS  |     +     |   !    | DCS   |     C = Requires manual install of SCons
 | Ubuntu 11.10      |     +     |   !    | DS    |     
 | Ubuntu 12.04 LTS  |     +     |   +    |       |     S = Requires manual install of Swig
 | Ubuntu 12.10      |     +     |   +    | D     |     
@@ -38,6 +38,8 @@
 | FreeBSD 8         |     +     |   -    | D     |                             
 |-------------------|-----------|--------|-------|                             
 | Manjaro 0.8       |     +     |   +    | T     |                             
+|-------------------|-----------|--------|-------|                             
+| Mint 17           |     +     |   +    | T     |                             
 |-------------------|-----------|--------|-------|                             
 | Slackware 14.1    |     +     |   +    | T     |                             
 |-------------------|-----------|--------|-------|                             
@@ -180,13 +182,6 @@ For Amber NetCDF support, also install the netcdf development package:
 
 sudo yum install netcdf-devel
 
-* Fedora 21*
-
-Atlas has been split into satlas (serial) and tatlas (threaded).  To
-build, you will need to copy the custom.py-proto to custom.py and set
-ATLAS_LIBS to whichever version of atlas you prefer.
-
-
 
 * PyLOOS *
 
@@ -208,11 +203,6 @@ LOOS has been tested with CentOS (64 bit).  Follow the instructions
 for Fedora, however there is no scons package available via yum.
 Instead, download and install any version of scons more recent than
 1.0.
-
-* CentOS 7*
-Atlas has been split into satlas (serial) and tatlas (threaded).  To
-build, you will need to copy the custom.py-proto to custom.py and set
-ATLAS_LIBS to whichever version of atlas you prefer.
 
 
 * PyLOOS *
