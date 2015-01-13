@@ -14,18 +14,21 @@ This is a maintenance release of LOOS.  It primarily involves a
 revamped build system that addresses some changes in how Atlas is
 installed in recent Linux releases (such as Fedora 21 and OpenSUSE
 13).  It also corrects some linkage inconsistencies that were found
-such as using a system lapack rather than the ATLAS provided version.
-While the build system should be more intelligent about finding and
-correctly linking in the numeric libraries, there are many
-permutations what we've seen in our testing and it may choose
-incorrectly.  You can override which libraries are used and what
-the search path will be by creating a custom.py file and setting
-ATLAS_LIBS and/or ATLAS_LIBPATH.  See the INSTALL file or the
+such as using a system lapack rather than the ATLAS provided version
+(mixing the two libraries).  While the build system should be more
+intelligent about finding and correctly linking in the numeric
+libraries, there are many permutations what we've seen in our testing
+and it may choose incorrectly.  You can override which libraries are
+used and what the search path will be by creating a custom.py file and
+setting ATLAS_LIBS and/or ATLAS_LIBPATH.  See the INSTALL file or the
 "Building LOOS" section of the documentation.
 
-Two additional changes to LOOS are the addition of -upper-only and
---lower-only flags to membrane_map and mops will now write out the
-average molecular order parameter as a time-series.
+Other changes to LOOS include the addition of -upper-only and
+--lower-only flags to membrane_map and how dibmops and mops split the
+selection has been changed.  Additionally, mops can now write out the
+average molecular order parameter as a time-series.  A new tool in
+version 2.2.0 was also not noted: model-meta-stats.  This tool gives
+you an overview of the metadata in your model.
 
    * RELEASE 2.2.0 *
 
