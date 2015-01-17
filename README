@@ -8,6 +8,15 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.2.2 *
+
+This is a maintenance release of LOOS.  There was a bug affecting
+version 2.2.0 and 2.2.1 that prevented LOOS from reading Amber parmtop
+files.  There was also a bug preventing building in MacOS with the
+latest version of XCode and LOOS 2.2.1.  We strongly encourage
+everyone to update to this release.
+
+
    * RELEASE 2.2.1 *
 
 This is a maintenance release of LOOS.  It primarily involves a
