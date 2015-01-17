@@ -1496,6 +1496,13 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
+\section release222 Version 2.2.2 (1-17-2015)
+\subsection r222_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in Amber parmtop reader
+  <li> Fixed problem building with MacOS
+</ul>
+
 \section release221 Version 2.2.1 (1-13-2015)
 \subsection r221_added_changed Added, Changed, or Otherwise Notable
 <ul>
