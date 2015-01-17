@@ -150,7 +150,6 @@ enum LeafletType { UPPER, LOWER };
 
 
 const double minp = 0.001;
-const double maxp = 100;
 ulong nplanar = 0;
 
 
@@ -168,7 +167,6 @@ public:
 
   BinnedStatistics(const double minval, const double maxval, const uint nbins) :
     _minval(minval),
-    _maxval(maxval),
     _nbins(nbins),
     _delta( (maxval - minval) / nbins ),
     _obdata(0),
@@ -218,7 +216,7 @@ public:
   uint numberOfBins() const { return(_nbins); }
 
 private:
-  double _minval, _maxval;
+  double _minval;
   uint _nbins;
   double _delta;
   ulong _obdata, _npts;
