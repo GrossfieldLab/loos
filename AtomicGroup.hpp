@@ -88,6 +88,7 @@ namespace loos {
   public:
     typedef std::vector<pAtom>::iterator       iterator;
     typedef std::vector<pAtom>::const_iterator const_iterator;
+    typedef pAtom                              value_type;
 
     // Threshold for catching effectively zero singular values in
     // the superposition code...
