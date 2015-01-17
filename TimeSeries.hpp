@@ -54,6 +54,7 @@ public:
   typedef typename std::vector<T>::const_iterator const_iterator;
   typedef const T&  const_reference;
   typedef T&        reference;
+  typedef T         value_type;
 
 
     TimeSeries() {

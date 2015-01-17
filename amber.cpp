@@ -112,7 +112,7 @@ namespace loos {
     FormatSpec fmt = parseFormat("a", "residue labels");
 
     std::vector<std::string> labels = readBlock<std::string>(fmt.width);
-    if (residue_labels.size() != nres)
+    if (labels.size() != nres)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing residue labels from amber file", reader.lineNumber()));
 
     residue_labels = labels;
@@ -123,7 +123,7 @@ namespace loos {
     FormatSpec fmt = parseFormat("I", "residue pointers");
 
     std::vector<uint> pointers = readBlock<uint>(fmt.width);
-    if (residue_pointers.size() != nres)
+    if (pointers.size() != nres)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing residue pointers from amber file", reader.lineNumber()));
     residue_pointers = pointers;
   }

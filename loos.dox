@@ -441,10 +441,18 @@ boost_thread-gcc43-mt boost_system-gcc43-mt"
 \endverbatim
 
 Similar configuration options are available for NetCDF and
-ATLAS/LAPACK.  NetCDF support is only included if the NetCDF library
-is found.  SCons will also prefer to use ATLAS if it's available, but
+ATLAS/LAPACK.  If threaded versions of ATLAS are found, these will be used by
+default.  If you intend to run multiple LOOS tools concurrently, then
+you may get better performance by using the serial ATLAS libraries.
+You can force LOOS to build with the serial ATLAS libraries by using
+the threads option with scons,
+\verbatim
+scons threads=0
+\endverbatim
+SCons will also prefer to use ATLAS if it's available, but
 will revert to LAPACK/BLAS if necessary.  For Macs, the Accelerate
-FrameWork is used rather than ATLAS.
+FrameWork is used rather than ATLAS.  NetCDF support is only included
+if the NetCDF library is found.
 
 It is not necessary to always set these build options on the
 command-line.  If a <TT>custom.py</TT> file exists, SCons will read it
@@ -479,6 +487,8 @@ This will cause SCons to copy the headers, tools, and library into
 scons PREFIX=/opt/loos-2.1 install
 ln -s /opt/loos-2.1 /opt/loos-latest
 \endverbatim
+Remember that any options you have previously provided to scons should
+ be specified again when installing.
 
 <H2>Important Note...</H2>
 
@@ -1443,6 +1453,25 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
+\section release222 Version 2.2.2 (1-17-2015)
+\subsection r222_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in Amber parmtop reader
+  <li> Fixed problem building with MacOS
+</ul>
+
+\section release221 Version 2.2.1 (1-13-2015)
+\subsection r221_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Added --upper-only and --lower-only options to membrane_map
+  <li> Changed how mops and dibmops split the selection to get molecules
+       (and added an option to force splitting by residue)
+  <li> Added support to mops for writing the average molecular order parameter
+       as a time-series
+  <li> Removed gridify() and dcd_utils.cpp
+  <li> Changed the build system
+</ul>
+
 \section release220 Version 2.2.0 (12-24-2014)
 \subsection r220_added_changed Added, Changed, or Otherwise Notable
 <ul>

@@ -41,7 +41,6 @@ typedef vector<vGroup>      vvGroup;
 
 
 const double minp = 1e-30;
-const double maxp = 100;
 ulong nplanar = 0;
 ulong ntotal = 0;
 

@@ -1,3 +1,12 @@
+2015-01-16  Tod Romo  <tromo@Gorgoneion>
+
+	* Fixed bug in reading amber parmtop files
+	* Fixed bug when building with latest MacOS and XCode
+
+2015-01-13    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Released loos 2.2.1
+
 2015-01-12    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed mops and dibmops to split using connectivity (if available)
