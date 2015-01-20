@@ -529,7 +529,7 @@ def AutoConfiguration(env):
         else:
             # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
             default_lib_path = '/usr/lib64'
-            conf.env.Append(LIBPATH = '/usr/lib64')
+        conf.env.Append(LIBPATH = '/usr/lib64')
        
         # Only setup ATLAS if we're not on a Mac...
         if loos_build_config.host_type != 'Darwin':
@@ -692,7 +692,11 @@ def AutoConfiguration(env):
                             print 'Searching %s first for libraries...' % default_lib_path
                             # Remove the default_lib_path from the list and prepend...
                             libpaths = list(conf.env['LIBPATH'])
-                            libpaths.remove(default_lib_path)
+                            if not default_lib_path in libpaths:
+                                print '***WARNING***'
+                                print 'default_lib_path = ', default_lib_path, ' and was not in env'
+                            else:
+                                libpaths.remove(default_lib_path)
                             libpaths.insert(0, default_lib_path)
                             conf.env['LIBPATH'] = libpaths
                             (ok, requires_gfortran) = checkForFunction(conf, funcname, atlas_libs, has_gfortran)
