@@ -457,6 +457,7 @@ def AutoConfigUserBoost(conf):
 def checkForFunction(context, funcname, libs, has_gfortran):
     old_libs = list(context.env['LIBS'])
     context.env.Append(LIBS=libs)
+    print 'checkForFunction(LIBS="%s", LIBPATH="%s", funcname=%s, libs=%s, has_gfortran=%d)' % (old_libs, context.env['LIBPATH'], funcname, libs, has_gfortran)
     requires_gf = 0
 
     ok = context.CheckFunc(funcname)
@@ -478,6 +479,7 @@ def checkForFunction(context, funcname, libs, has_gfortran):
 # is ignored.  No special handling for gfortran...
 
 def checkLibsForFunction(context, funcname, liblist, excludelist):
+    print 'checkLibsForFunction(LIBS="%s", LIBPATH="%s", funcname=%s, liblist=%s, excludelist=%s)' % (context.env['LIBS'], context.env['LIBPATH'], funcname, liblist, excludelist)
     for lib in liblist:
         if lib in excludelist:
             continue
