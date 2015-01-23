@@ -1,3 +1,13 @@
+2015-01-23    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bugs affecting functins in atoms, coords, and matrix44 that return
+	a ref in PyLOOS.  These are now const refs and should no longer be wrapped
+	by swig (instead, the value will be returned)
+	
+2015-01-17    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Released 2.2.0
+
 2015-01-16  Tod Romo  <tromo@Gorgoneion>
 
 	* Fixed bug in reading amber parmtop files
@@ -23,7 +33,7 @@
 
 2015-01-06    <alan@membrane.urmc.rochester.edu>
 
-    * Added --upper-only and --lower-only options to membrane_map to
+	* Added --upper-only and --lower-only options to membrane_map to
 	easily allow the user to specify one leaflet to look at
 
 2014-12-24    <tromo@hill.urmc-sh.rochester.edu>
