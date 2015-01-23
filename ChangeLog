@@ -3,6 +3,7 @@
 	* Fixed bugs affecting functins in atoms, coords, and matrix44 that return
 	a ref in PyLOOS.  These are now const refs and should no longer be wrapped
 	by swig (instead, the value will be returned)
+	* Added improved error handling in the build system
 	
 2015-01-17    <tromo@hill.urmc-sh.rochester.edu>
 
