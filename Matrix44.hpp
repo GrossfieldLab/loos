@@ -64,15 +64,16 @@ namespace loos {
     void identity(void) { zero(); matrix[0] = 1; matrix[5] = 1; matrix[10] = 1; matrix[15] = 1; }
 
     //! Index the matrix element at row j and col i
-    T& operator()(const int j, const int i) {
+    const T& operator()(const int j, const int i) const {
       if (j < 0 || i < 0 || i > 3 || j > 3)
         throw(std::range_error("Indices into matrix are out of range"));
       return(matrix[j*4+i]);
     }
 
+
 #if !defined(SWIG)
     //! Index the matrix element at row j and col i
-    const T& operator()(const int j, const int i) const {
+    T& operator()(const int j, const int i) {
       if (j < 0 || i < 0 || i > 3 || j > 3)
         throw(std::range_error("Indices into matrix are out of range"));
       return(matrix[j*4+i]);

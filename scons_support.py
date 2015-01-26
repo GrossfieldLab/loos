@@ -483,7 +483,7 @@ def checkLibsForFunction(context, funcname, liblist, excludelist):
             continue
         old_libs = list(context.env['LIBS'])
         context.env.Append(LIBS=lib)
-        print "> Adding %s to library list..." % lib
+        print "> Checking in %s ..." % lib
         ok = context.CheckFunc(funcname)
         context.env['LIBS'] = old_libs
         if ok:
@@ -503,7 +503,7 @@ def AutoConfiguration(env):
                                           'CheckForIEC559' : CheckForIEC559,
                                           'CheckSystemType' : CheckSystemType
                                           })
-    
+
     use_threads = int(env['threads'])
 
     # Get system information
@@ -529,7 +529,7 @@ def AutoConfiguration(env):
         else:
             # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
             default_lib_path = '/usr/lib64'
-            conf.env.Append(LIBPATH = '/usr/lib64')
+        conf.env.Append(LIBPATH = '/usr/lib64')
        
         # Only setup ATLAS if we're not on a Mac...
         if loos_build_config.host_type != 'Darwin':
@@ -706,6 +706,7 @@ def AutoConfiguration(env):
                                     atlas_libs.insert(0, lib)
                                 else:
                                     print 'Error- could not figure out where ', funcname, ' is located.'
+                                    print 'Try manually specifying ATLAS_LIBS and ATLAS_LIBPATH'
                                     conf.env.Exit(1)
 
                 
@@ -725,8 +726,10 @@ def AutoConfiguration(env):
             conf.env.Append(CCFLAGS=['-Wno-maybe-uninitialized'])
                 
         environOverride(conf)
-        print 'Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS']
-        print 'Autoconfigure will add the following directories to find libs:\n\t', conf.env['LIBPATH']
+        if 'LIBS' in conf.env:
+            print 'Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS']
+        if 'LIBPATH' in conf.env:
+            print 'Autoconfigure will add the following directories to find libs:\n\t', conf.env['LIBPATH']
         env = conf.Finish()
 
 #########################################################################################3

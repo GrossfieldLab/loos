@@ -28,6 +28,7 @@
 %include "Matrix44.hpp"
 
 
+
 namespace loos {
 
 
@@ -48,7 +49,8 @@ namespace loos {
 };
 
 
-
-
 %template(GMatrix)   loos::Matrix44<double>;
+
+
+
 

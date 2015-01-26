@@ -109,19 +109,21 @@ namespace loos {
     // ---------------------------------------
     // Accessors
 
-    T& x(void) { return(v[X]); }
     void x(const T ax) { v[X] = ax; }
-
-    T& y(void) { return(v[Y]); }
     void y(const T ay) { v[Y] = ay; }
-
-    T& z(void) { return(v[Z]); }
     void z(const T az) { v[Z] = az; }
 
-#if !defined(SWIG)
+
     const T& x(void) const { return(v[X]); }
     const T& y(void) const { return(v[Y]); }
     const T& z(void) const { return(v[Z]); }
+
+
+#if !defined(SWIG)
+    T& x(void) { return(v[X]); }
+    T& y(void) { return(v[Y]); }
+    T& z(void) { return(v[Z]); }
+
 
     //! Retrieve an element from the Coord with range-checking
     T& operator[](const unsigned int i) throw(std::out_of_range) {
