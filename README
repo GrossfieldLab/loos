@@ -8,6 +8,16 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.2.3 *
+
+This is another maintenance release of LOOS.  It addresses a PyLOOS
+bug that caused some values to be wrapped by SWIG that should not
+have been (e.g. coord.x() would return a wrapped float rather than the
+float value).  This bug likely affects most PyLOOS programs and tools
+(including the OptimalMembraneGenerator Package).  In addition, the
+error handling in the build system has been improved.  We strongly
+encourage all users to update to this release.
+
    * RELEASE 2.2.2 *
 
 This is a maintenance release of LOOS.  There was a bug affecting
