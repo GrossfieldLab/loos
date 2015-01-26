@@ -483,7 +483,7 @@ def checkLibsForFunction(context, funcname, liblist, excludelist):
             continue
         old_libs = list(context.env['LIBS'])
         context.env.Append(LIBS=lib)
-        print "> Adding %s to library list..." % lib
+        print "> Checking in %s ..." % lib
         ok = context.CheckFunc(funcname)
         context.env['LIBS'] = old_libs
         if ok:
