@@ -83,7 +83,7 @@ namespace loos {
 
 
   void Amber::parseCharges() {
-    FormatSpec fmt = parseFormat("EFG", "charges");
+    FormatSpec fmt = parseFormat("EeFfGg", "charges");
 
     std::vector<double> charges = readBlock<double>(fmt.width);
     if (charges.size() != atoms.size())
@@ -95,7 +95,7 @@ namespace loos {
 
 
   void Amber::parseMasses()  {
-    FormatSpec fmt = parseFormat("EFG", "masses");
+    FormatSpec fmt = parseFormat("EeFfGg", "masses");
 
     std::vector<double> masses = readBlock<double>(fmt.width);
     if (masses.size() != atoms.size())
@@ -120,7 +120,7 @@ namespace loos {
 
 
   void Amber::parseResiduePointers() {
-    FormatSpec fmt = parseFormat("I", "residue pointers");
+    FormatSpec fmt = parseFormat("Ii", "residue pointers");
 
     std::vector<uint> pointers = readBlock<uint>(fmt.width);
     if (pointers.size() != nres)
@@ -159,7 +159,7 @@ namespace loos {
 
 
   void Amber::parseBonds(const uint n) {
-    FormatSpec fmt = parseFormat("I", "bonds");
+    FormatSpec fmt = parseFormat("Ii", "bonds");
 
   
     std::vector<int> bond_list = readBlock<int>(fmt.width);
@@ -186,7 +186,7 @@ namespace loos {
 
 
   void Amber::parsePointers() {
-    FormatSpec fmt = parseFormat("I", "pointers");
+    FormatSpec fmt = parseFormat("Ii", "pointers");
 
     std::vector<uint> pointers = readBlock<uint>(fmt.width);
 
@@ -231,7 +231,7 @@ namespace loos {
   }
 
   void Amber::parseAmoebaRegularBondNumList() {
-    FormatSpec fmt = parseFormat("I", "amoeba_regular_num_bond_list");
+    FormatSpec fmt = parseFormat("Ii", "amoeba_regular_num_bond_list");
     reader.getNext();
     std::istringstream iss(reader.line());
 
@@ -242,7 +242,7 @@ namespace loos {
 
 
   void Amber::parseAmoebaRegularBondList(const uint n) {
-    FormatSpec fmt = parseFormat("I", "amoeba_regular_bond_list");
+    FormatSpec fmt = parseFormat("Ii", "amoeba_regular_bond_list");
 
   
     std::vector<int> bond_list = readBlock<int>(fmt.width);
