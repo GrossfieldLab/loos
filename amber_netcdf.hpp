@@ -1,7 +1,7 @@
 // (c) 2012 Tod D. Romo, Grossfield Lab, URMC
 
 #if !defined(LOOS_AMBER_NETCDF_HPP)
-#define LOOS_AMBER_TRAJ_HPP
+#define LOOS_AMBER_NETCDF_HPP
 
 
 #include <istream>
@@ -12,6 +12,8 @@
 #include <Coord.hpp>
 #include <Trajectory.hpp>
 #include <exceptions.hpp>
+
+#include <amber_traj.hpp>
 
 namespace loos {
 
@@ -93,7 +95,10 @@ namespace loos {
 
     std::string description() const { return("Amber trajectory (netCDF)"); }
     static pTraj create(const std::string& fname, const AtomicGroup& model) {
-      return(pTraj(new AmberNetcdf(fname, model.size())));
+      if (isFileNetCDF(fname))
+	return(pTraj(new AmberNetcdf(fname, model.size())));
+
+      return(pTraj(new AmberTraj(fname, model.size())));
     }
 
     uint natoms() const { return(_natoms); }
