@@ -1453,6 +1453,14 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
+\section release224 Version 2.2.4 (2-6-2015)
+\subsection r224_bugs Bug Fixes
+<ul>
+  <li> Fixed reading of Amber prmtop files that use mixed case for format specs
+  <li> Fixed handling of non-NetCDF Amber files when built with NetCDF support
+</ul>
+
+
 \section release223 Version 2.2.3 (1-26-2015)
 \subsection r223_bugs Bug Fixes
 <ul>
