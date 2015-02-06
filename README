@@ -8,6 +8,18 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.2.4 *
+
+Just in time for the Biophysical Society meeting, we are releasing
+another maintenance release of LOOS.  This release addresses two
+issues with reading Amber files.  The first involves reading prmtop
+files where the format specification was not in caps.  The second
+issue fixed involves the detection of NetCDF vs plain ASCII trajectory
+files (mdcrd) when LOOS is built with NetCDF support.  For versions
+2.2.0 through 2.2.3, only NetCDF trajectories could be read if LOOS
+had been built with NetCDF support.  As of version 2.2.4, LOOS will
+correctly read either type of Amber trajectory.
+
    * RELEASE 2.2.3 *
 
 This is another maintenance release of LOOS.  It addresses a PyLOOS
