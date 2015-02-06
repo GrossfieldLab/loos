@@ -35,6 +35,8 @@ namespace loos {
   // is compared against.  For example, to parse floats, expected could be any of "FEG".
   // If the format type does not match (for example, say "%FORMAT (20I8)" when expected
   // is "FEG"), then an error will be thrown.
+  //
+  // Format specs are converted to upper-case for validation
 
   Amber::FormatSpec Amber::parseFormat(const std::string& expected_types, const std::string& where) {
 
@@ -74,7 +76,9 @@ namespace loos {
     }
     
     // Compare against expected types
-    if (expected_types.find_first_of(fmt.type) == std::string::npos)
+    std::string expected_types_UC = boost::to_upper_copy(expected_types);
+    
+    if (expected_types_UC.find_first_of(toupper(fmt.type)) == std::string::npos)
       throw(FileReadErrorWithLine(reader.name(), "Invalid format type for " + where, reader.lineNumber()));
 
     return(fmt);

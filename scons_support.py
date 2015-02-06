@@ -521,15 +521,15 @@ def AutoConfiguration(env):
     
         # Some distros use /usr/lib, others have /usr/lib64.
         # Check to see what's here and prefer lib64 to lib
+        default_lib_path = '/usr/lib'
         if not conf.CheckDirectory('/usr/lib64'):
             if not conf.CheckDirectory('/usr/lib'):
                 print 'Fatal error- cannot find your system library directory'
                 conf.env.Exit(1)
-            default_lib_path = '/usr/lib'
         else:
             # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
             default_lib_path = '/usr/lib64'
-        conf.env.Append(LIBPATH = '/usr/lib64')
+        conf.env.Append(LIBPATH = default_lib_path)
        
         # Only setup ATLAS if we're not on a Mac...
         if loos_build_config.host_type != 'Darwin':

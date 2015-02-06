@@ -1,3 +1,13 @@
+2015-01-27    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed reading of Amber prmtop files that use mixed case for
+	format specs
+	* Fixed handling of non-netCDF Amber files when built with NetCDF support
+
+2015-01-26    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Released 2.2.3
+
 2015-01-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bugs affecting functins in atoms, coords, and matrix44 that return
