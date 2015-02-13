@@ -1,3 +1,8 @@
+2015-02-13    <alan@membrane.urmc.rochester.edu>
+
+    * Added new option --ref-structure to membrane_map, to facilitate combing
+	  results from multiple trajectories
+
 2015-01-27    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed reading of Amber prmtop files that use mixed case for
