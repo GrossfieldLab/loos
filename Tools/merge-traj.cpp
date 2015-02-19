@@ -82,15 +82,6 @@ public:
               << endl;
           return(false);
           }
-      if ( (map.count("downsample-dcd") && !map.count("downsample-rate")) ||
-           (!map.count("downsample-dcd") && map.count("downsample-rate")) )
-          {
-          cerr << "ERROR WITH OPTIONS --downsample-dcd and --downsample-rate: "
-               << endl
-               << "Must specify either both options or neither option"
-               << endl;
-          return(false);
-          }
       return(true);
       }
 
