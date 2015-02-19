@@ -148,6 +148,10 @@ if [ "$OK" = "Y" -o "$OK" = "y" -o \( -z "$OK" \) ] ; then
     $SVN rm prep_release.sh
     $SVN ci -m "Removed prep_release script from $RELEASE" prep_release.sh
 
+    echo "+ Removing make_macos_tarball script"
+    $SVN rm make_macos_tarball.sh
+    $SVN ci -m "Removed make_macos_tarball script from $RELEASE" make_macos_tarball.sh
+
     echo "*** Making Release Tarball"
     pushd $RELDIR
 
