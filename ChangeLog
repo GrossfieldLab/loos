@@ -1,6 +1,11 @@
+2015-02-19    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in merge-traj that required downsampled dcd filename to operate
+	* Added support for sorting trajectory files numerically (as subsetter does)
+
 2015-02-13    <alan@membrane.urmc.rochester.edu>
 
-    * Added new option --ref-structure to membrane_map, to facilitate combing
+    * Added new option --ref-structure to membrane_map, to facilitate combining
 	  results from multiple trajectories
 
 2015-01-27    <tromo@hill.urmc-sh.rochester.edu>
