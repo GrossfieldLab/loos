@@ -66,6 +66,10 @@ public:
       ("selection-is-split", po::value<bool>(&selection_split)->default_value(false), "Selection is split across image boundaries")
       ("skip-first-frame", po::value<bool>(&skip_first_frame)->default_value(false), "Skip first frame of each trajectory (for xtc files)")
       ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
+      ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
+      ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
+      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)"), "Sort using a regular expression")
+
       ;
   }
 
@@ -85,7 +89,8 @@ public:
       return(true);
       }
 
-  string print() const {
+  string print() const
+    {
     ostringstream oss;
 
     oss << boost::format("downsample-dcd='%s', downsample-rate=%d, centering-selection='%s', skip-first-frame=%d, fix-imaging=%d")
@@ -96,7 +101,10 @@ public:
       % reimage_by_molecule;
 
     return(oss.str());
-  }
+    }
+
+  bool sort_flag;
+  string scanf_spec, regex_spec;
 };
 
 // @endcond
@@ -214,9 +222,112 @@ string fullHelpMessage(void)
 
 
 
-int main(int argc, char *argv[])
-    {
 
+
+// Code required for parsing trajectory filenames... (liberated from subsetter)
+
+struct ScanfFmt
+{
+  ScanfFmt(const string& s) : fmt(s) { }
+
+  uint operator()(const string& s) const
+    {
+    uint d;
+    if (sscanf(s.c_str(), fmt.c_str(), &d) != 1)
+        {
+        cerr << boost::format("Bad conversion of '%s' using format '%s'\n") % s % fmt;
+        exit(-20);
+        }
+
+    return(d);
+    }
+
+  string fmt;
+};
+
+
+
+struct RegexFmt
+{
+    RegexFmt(const string& s) : fmt(s)
+    {
+    regexp = boost::regex(s, boost::regex::perl);
+    }
+  
+    uint operator()(const string& s) const
+    {
+        boost::smatch what;
+        if (boost::regex_search(s, what, regexp))
+            {
+            for (uint i=0; i<what.size(); ++i)
+                    {
+                    string submatch(what.str(i));
+                    char *p;
+                    if (submatch.empty())    // Should never happen?
+                        continue;
+
+                    uint val = strtoul(submatch.c_str(), &p, 10);
+                    if (*p == '\0')
+                        return(val);
+                    }
+            }
+    
+        cerr << boost::format("Bad conversion of '%s' using regexp '%s'\n") % s % fmt;
+        exit(-20);
+    }
+
+  string fmt;
+  boost::regex regexp;
+};
+
+
+
+// Binding of trajectory name to the file # for sorting...
+struct SortDatum 
+{
+    SortDatum(const string& s_, const uint n_) : s(s_), n(n_) { }
+    SortDatum() : s(""), n(0) { }
+
+    string s;
+    uint n;
+};
+
+
+// Define comparison function for sort
+bool operator<(const SortDatum& a, const SortDatum& b)
+{
+    return(a.n < b.n);
+}
+
+
+
+// Given a vector of trajectory filenames, along with a functor for
+// extracting the frame index from the filename, sorts it in numeric
+// ascending order...
+
+template<class FmtOp>
+vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op)
+{
+    uint n = names.size();
+    vector<SortDatum> bound(n);
+    for (uint i=0; i<n; ++i)
+        {
+        bound[i] = SortDatum(names[i], op(names[i]));
+        }
+  
+    sort(bound.begin(), bound.end());
+
+    vector<string> sorted(n);
+    for (uint i=0; i<n; ++i)
+        sorted[i] = bound[i].s;
+
+    return(sorted);
+}
+
+
+
+int main(int argc, char *argv[])
+{
     string hdr = invocationHeader(argc, argv);
     opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
     ToolOptions* topts = new ToolOptions;
@@ -234,6 +345,18 @@ int main(int argc, char *argv[])
     output_traj = ropts->value("output_traj");
     input_dcd_list = ropts->variableValues("input_traj");
 
+    if (topts->sort_flag)
+        {
+        if (!topts->scanf_spec.empty())
+            {
+            input_dcd_list = sortNamesByFormat(input_dcd_list, ScanfFmt(topts->scanf_spec));
+            } 
+        else
+            {
+            input_dcd_list = sortNamesByFormat(input_dcd_list, RegexFmt(topts->regex_spec));
+            }
+        }
+    
     cout << hdr << endl;
     AtomicGroup system = createSystem(model_name);
 
