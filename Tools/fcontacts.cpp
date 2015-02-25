@@ -235,7 +235,6 @@ AtomicGroup pickNearbyAtoms(const AtomicGroup& probe, const AtomicGroup& target,
 }
 
 
-
 vector<double> fractionContactsToProbe(const AtomicGroup& probe,
                                        const AtomicGroup& nearby,
                                        const vGroup& targets,
@@ -250,7 +249,10 @@ vector<double> fractionContactsToProbe(const AtomicGroup& probe,
     vector<double> fracts(targets.size(), 0.0);
     for (uint i=0; i<targets.size(); ++i) {
         AtomicGroup target_nearby = nearby_contacts.intersect(targets[i], IdEquals());
-        fracts[i] = static_cast<double>(target_nearby.size()) / nearby_contacts.size();
+        if (nearby_contacts.empty())
+            fracts[i] = 0.0;
+        else 
+            fracts[i] = static_cast<double>(target_nearby.size()) / nearby_contacts.size();
     }
     return(fracts);
 }
