@@ -2,6 +2,7 @@
 
 	* Fixed bug in fcontacts resulting in NaN's in output if there
 	are no target atoms near the probe.
+	* Added NAMD tag (optional) to PSF files created by gmxdump2pdb 
 
 2015-02-19    <tromo@hill.urmc-sh.rochester.edu>
 
