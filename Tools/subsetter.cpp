@@ -75,6 +75,7 @@ bool box_override = false;
 GCoord box;
 
 bool reimage = false;
+bool voodoo = false;
 
 string center_selection;
 bool center_flag = false;
@@ -288,6 +289,7 @@ public:
       ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
       ("reimage", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule")
+      ("voodoo", po::value<bool>(&voodoo)->default_value(false), "Apply reimaging voodoo for fringe systems")	      
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
@@ -335,6 +337,11 @@ public:
 
     center_flag = !center_selection.empty();
 
+    if (voodoo && !center_flag) {
+      cerr << "Warning- voodoo is only applicable when centering and will be ignored.\n";
+      voodoo = false;
+    }
+
     if (!range_spec.empty())
       indices = parseRangeList<uint>(range_spec);
 
@@ -347,13 +354,14 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, center='%s', sort=%d")
+    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, center='%s', sort=%d")
       % verbose_updates
       % stride
       % skip
       % range_spec
       % box_spec
       % reimage
+      % voodoo
       % center_selection
       % sort_flag;
     if (sort_flag) {
@@ -467,16 +475,19 @@ int main(int argc, char *argv[]) {
 
   // If reimaging, break out the subsets to iterate over...
   vector<AtomicGroup> molecules;
-  vector<AtomicGroup> segments;
   if (reimage) {
     if (!model.hasBonds()) {
       cerr << "WARNING- the model has no connectivity.  Assigning bonds based on distance.\n";
       model.findBonds();
     }
-    molecules = model.splitByMolecule();
-    segments = model.splitByUniqueSegid();
+
+    if (model.hasBonds())
+      molecules = model.splitByMolecule();
+    else
+      molecules = model.splitByUniqueSegid();
+
     if (verbose)
-      cout << boost::format("Reimaging %d segments and %d molecules\n") % segments.size() % molecules.size();
+      cout << boost::format("Reimaging %d molecules\n") % molecules.size();
   }
 
   // Setup for progress output...
@@ -519,10 +530,26 @@ int main(int argc, char *argv[]) {
 
 
     if (reimage) {
-      for (vGroup::iterator seg = segments.begin(); seg != segments.end(); ++seg)
-        seg->reimage();
-      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
+	mol->mergeImage();
         mol->reimage();
+      }
+
+      if (voodoo && center_flag) {
+	GCoord centroid = centered[0]->coords();
+	model.translate(-centroid);
+	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	  mol->reimage();
+	
+	for (uint i=0; i<2; ++i) {
+	  centroid = centered.centroid();
+	  model.translate(-centroid);
+	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	    mol->reimage();
+	}
+	
+      }
+
     }
 
     trajout->writeFrame(subset);
