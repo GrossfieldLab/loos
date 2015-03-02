@@ -293,7 +293,7 @@ public:
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
-      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)"), "Sort using a regular expression");
+      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)\\D*$"), "Sort using a regular expression");
   }
 
   void addHidden(po::options_description& o) {
