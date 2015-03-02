@@ -1,3 +1,9 @@
+2015-03-02    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added --sort option to merge-traj
+	* Changed the default sort regex for subsetter and merge-traj to 
+	sort on the *LAST* number in the filename
+
 2015-02-25    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in fcontacts resulting in NaN's in output if there
