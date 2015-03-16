@@ -33,8 +33,9 @@
 #include <ostream>
 #include <string>
 
+#include <boost/format.hpp>
+
 #include <loos/loos_defs.hpp>
-#include <loos/boost/format.hpp>
 #include <loos/MatrixOrder.hpp>           // Order (layout) policies
 #include <loos/MatrixStorage.hpp>         // Storage (physical) policies
 
