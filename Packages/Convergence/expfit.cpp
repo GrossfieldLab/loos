@@ -23,7 +23,7 @@
 
 
 #include <loos.hpp>
-#include <Simplex.hpp>
+#include <loos/Simplex.hpp>
 #include <limits>
 
 using namespace std;

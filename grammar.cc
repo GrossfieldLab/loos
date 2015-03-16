@@ -55,17 +55,17 @@ namespace loos {
 #line 56 "grammar.cc"
 
 
-#include "grammar.hh"
+#include "loos/grammar.hh"
 
 /* User implementation prologue.  */
 /* Line 284 of lalr1.cc  */
 #line 30 "grammar.yy"
 
 
-#include "ParserDriver.hpp"
-#include "LoosLexer.hpp"
+#include "loos/ParserDriver.hpp"
+#include "loos/LoosLexer.hpp"
 
-#include "Kernel.hpp"
+#include "loos/Kernel.hpp"
 
 #undef yylex
 #define yylex driver.lexer->looslex

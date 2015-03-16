@@ -92,7 +92,7 @@
 #include <loos/tinker_arc.hpp>
 #include <loos/xtc.hpp>
 #include <loos/gro.hpp>
-#include <loos/trr.loos/hpp>
+#include <loos/trr.hpp>
 
 
 

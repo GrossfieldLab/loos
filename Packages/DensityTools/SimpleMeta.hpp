@@ -35,7 +35,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include <utils.hpp>
+#include <loos/utils.hpp>
 
 namespace loos {
 

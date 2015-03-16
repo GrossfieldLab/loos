@@ -38,7 +38,6 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #include <loos.hpp>
-#include <Coord.hpp>
 
 #include <SimpleMeta.hpp>
 

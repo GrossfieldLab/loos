@@ -23,7 +23,7 @@
 
 %header %{
 #include <loos/trajwriter.hpp>
-#include <loos/exception>
+#include <exception>
 %}
 
 

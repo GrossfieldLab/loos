@@ -10,7 +10,7 @@ namespace loos {
 }
 
 
-#include "grammar.hh"
+#include "loos/grammar.hh"
 #include "loos/LoosLexer.hpp"
 
 typedef loos::parser::token token;

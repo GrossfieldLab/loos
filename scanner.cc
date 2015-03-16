@@ -8,7 +8,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 36
+#define YY_FLEX_SUBMINOR_VERSION 37
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -466,8 +466,8 @@ namespace loos {
 }
 
 
-#include "grammar.hh"
-#include "LoosLexer.hpp"
+#include "loos/grammar.hh"
+#include "loos/LoosLexer.hpp"
 
 typedef loos::parser::token token;
 typedef loos::parser::token_type token_type;

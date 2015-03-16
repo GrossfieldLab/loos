@@ -32,8 +32,8 @@
 
 #include <vector>
 
-#include <loos_defs.hpp>
-#include <timer.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/timer.hpp>
 
 namespace loos {
 
