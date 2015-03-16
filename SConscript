@@ -23,15 +23,23 @@ import sys
 import os
 
 Import('env')
+reparse = int(env['reparse'])
 
-reparse = env['reparse']
-if int(reparse):
-   apps = 'grammar.yy scanner.ll '
-else:
-   apps = 'scanner.cc grammar.cc '
+parser=['grammar.cc', 'scanner.cc']
 
+if reparse:
+   scanner=env.CXXFile(target='scanner.cc', source = 'scanner.ll')
+   grammar=env.CXXFile(target='grammar.cc', source = 'grammar.yy')
 
-apps = apps + 'dcd.cpp utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
+   # Need to move generated header files...
+   parser_hdrs = Split('grammar.hh location.hh position.hh stack.hh')
+
+   for hdr in parser_hdrs:
+      Command(target='loos/'+hdr,
+              source=grammar,                # Make SCons understand the dependencies here...
+              action=Copy("$TARGET", hdr))
+
+apps = 'dcd.cpp utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
 apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp'
 apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
 apps = apps + ' HBondDetector.cpp'
@@ -43,8 +51,7 @@ apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.c
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
 
-
-loos = env.SharedLibrary('libloos', Split(apps))
+loos = env.SharedLibrary('libloos', Split(apps) + parser)
 
 # Handle installation...
 PREFIX = env['PREFIX']

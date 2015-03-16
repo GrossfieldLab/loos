@@ -46,9 +46,9 @@ opts = Variables('custom.py')
 opts.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
 opts.Add('profile', 'Set to 1 to build the code for profiling', 0)
 opts.Add('release', 'Set to 1 to configure for release.', 1)
-opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 opts.Add('threads', 'Set to 0 to disable using multithreaded libraries and code', 1)
+opts.Add('reparse', 'Set to 1 to regenerate parser files', 0)
 
 opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
 

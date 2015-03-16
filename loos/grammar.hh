@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.1.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -37,8 +37,8 @@
 
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef LOOS_GRAMMAR_HH
-# define LOOS_GRAMMAR_HH
+#ifndef YY_LOOS_GRAMMAR_HH_INCLUDED
+# define YY_LOOS_GRAMMAR_HH_INCLUDED
 
 
 
@@ -54,7 +54,7 @@
 
 
 namespace loos {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 59 "grammar.hh"
 
   /// A Bison parser.
@@ -65,14 +65,14 @@ namespace loos {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 25 "grammar.yy"
 
 	std::string *sval;
 	int ival;
 
 
-/* Line 36 of lalr1.cc  */
+/* Line 33 of lalr1.cc  */
 #line 77 "grammar.hh"
     };
 #else
@@ -247,6 +247,7 @@ namespace loos {
 
     /// \brief Reclaim the memory associated to a symbol.
     /// \param yymsg        Why this token is reclaimed.
+    ///                     If null, do not display the symbol, just free it.
     /// \param yytype       The symbol type.
     /// \param yyvaluep     Its semantic value.
     /// \param yylocationp  Its location.
@@ -276,9 +277,9 @@ namespace loos {
   };
 
 } // loos
-/* Line 36 of lalr1.cc  */
-#line 281 "grammar.hh"
+/* Line 33 of lalr1.cc  */
+#line 282 "grammar.hh"
 
 
 
-#endif /* !LOOS_GRAMMAR_HH  */
+#endif /* !YY_LOOS_GRAMMAR_HH_INCLUDED  */
