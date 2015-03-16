@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <psf.hpp>
-#include <exceptions.hpp>
+#include <loos/psf.hpp>
+#include <loos/exceptions.hpp>
 
 
 namespace loos {

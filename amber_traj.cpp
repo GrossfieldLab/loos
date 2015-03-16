@@ -21,8 +21,8 @@
 
 
 
-#include <amber_traj.hpp>
-#include <AtomicGroup.hpp>
+#include <loos/amber_traj.hpp>
+#include <loos/AtomicGroup.hpp>
 #include <iomanip>
 #include <sstream>
 

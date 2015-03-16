@@ -28,8 +28,8 @@
 #include <iomanip>
 
 
-#include <utils.hpp>
-#include <pdb_remarks.hpp>
+#include <loos/utils.hpp>
+#include <loos/pdb_remarks.hpp>
 
 
 namespace loos {

@@ -24,21 +24,21 @@
 
 
 %header %{
-#include <AtomicGroup.hpp>
-#include <sfactories.hpp>
-#include <Trajectory.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/sfactories.hpp>
+#include <loos/Trajectory.hpp>
 
-#include <Selectors.hpp>
-#include <Parser.hpp>
-#include <utils.hpp>
+#include <loos/Selectors.hpp>
+#include <loos/Parser.hpp>
+#include <loos/utils.hpp>
 
-#include <Kernel.hpp>
-#include <KernelValue.hpp>
-#include <KernelActions.hpp>
-#include <KernelStack.hpp>
-#include <Selectors.hpp>
+#include <loos/Kernel.hpp>
+#include <loos/KernelValue.hpp>
+#include <loos/KernelActions.hpp>
+#include <loos/KernelStack.hpp>
+#include <loos/Selectors.hpp>
 
-#include <pdb_remarks.hpp>
+#include <loos/pdb_remarks.hpp>
 
 #include <sstream>
 
@@ -104,7 +104,7 @@ namespace loos {
   };
 }
 
-%include "AtomicGroup.hpp"
+%include "loos/AtomicGroup.hpp"
 
 namespace loos {
 

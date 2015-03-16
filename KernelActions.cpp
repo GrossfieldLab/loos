@@ -19,10 +19,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <KernelActions.hpp>
-#include <Atom.hpp>
-#include <sstream>
-#include <Selectors.hpp>
+#include <loos/KernelActions.hpp>
+#include <loos/Atom.hpp>
+#include <loos/sstream>
+#include <loos/Selectors.hpp>
 
 
 namespace loos {

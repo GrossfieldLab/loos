@@ -11,8 +11,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/tuple/tuple.hpp>
 
-#include <loos_defs.hpp>
-#include "Atom.hpp"
+#include <loos/loos_defs.hpp>
+#include "loos/Atom.hpp"
 
 #include <sstream>
 
@@ -24,7 +24,7 @@ namespace loos {
 }
 
 
-%include "Atom.hpp"
+%include "loos/Atom.hpp"
 
 
 namespace loos {

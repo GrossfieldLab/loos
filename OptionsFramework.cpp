@@ -20,8 +20,8 @@
 */
 
 
-#include <utils_structural.hpp>
-#include <OptionsFramework.hpp>
+#include <loos/utils_structural.hpp>
+#include <loos/OptionsFramework.hpp>
 
 
 namespace loos {

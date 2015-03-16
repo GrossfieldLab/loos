@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Selectors.hpp>
+#include <loos/Selectors.hpp>
 
 namespace loos {
 

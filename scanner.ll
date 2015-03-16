@@ -11,7 +11,7 @@ namespace loos {
 
 
 #include "grammar.hh"
-#include "LoosLexer.hpp"
+#include "loos/LoosLexer.hpp"
 
 typedef loos::parser::token token;
 typedef loos::parser::token_type token_type;

@@ -1,10 +1,10 @@
 
 %header %{
-#include <loos_defs.hpp>
-#include <Coord.hpp>
-#include <AtomicGroup.hpp>
-#include <PeriodicBox.hpp>
-#include <HBondDetector.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Coord.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/PeriodicBox.hpp>
+#include <loos/HBondDetector.hpp>
 %}
 
-%include "HBondDetector.hpp"
+%include "loos/HBondDetector.hpp"

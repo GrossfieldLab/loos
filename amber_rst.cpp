@@ -21,8 +21,8 @@
 
 
 
-#include <amber_rst.hpp>
-#include <AtomicGroup.hpp>
+#include <loos/amber_rst.hpp>
+#include <loos/AtomicGroup.hpp>
 #include <iomanip>
 #include <sstream>
 

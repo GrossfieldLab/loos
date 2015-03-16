@@ -20,8 +20,8 @@
 */
 
 %header %{
-  #include <loos_defs.hpp>
+  #include <loos/loos_defs.hpp>
  %}
 
 
-%include "sfactories.hpp"
+%include "loos/sfactories.hpp"

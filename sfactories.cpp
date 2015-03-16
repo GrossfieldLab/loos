@@ -22,38 +22,38 @@
 
 #include <string>
 
-#include <sfactories.hpp>
+#include <loos/sfactories.hpp>
 #include <sys/stat.h>
 
 
 #include <boost/algorithm/string.hpp>
 
-#include <AtomicGroup.hpp>
-#include <pdb.hpp>
-#include <psf.hpp>
-#include <amber.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/pdb.hpp>
+#include <loos/psf.hpp>
+#include <loos/amber.hpp>
 
-#include <Trajectory.hpp>
-#include <dcd.hpp>
-#include <amber_traj.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/dcd.hpp>
+#include <loos/amber_traj.hpp>
 
 #if defined(HAS_NETCDF)
-#include <amber_netcdf.hpp>
+#include <loos/amber_netcdf.hpp>
 #endif
 
-#include <amber_rst.hpp>
-#include <ccpdb.hpp>
-#include <charmm.hpp>
-#include <tinkerxyz.hpp>
-#include <tinker_arc.hpp>
-#include <gro.hpp>
-#include <xtc.hpp>
-#include <trr.hpp>
+#include <loos/amber_rst.hpp>
+#include <loos/ccpdb.hpp>
+#include <loos/charmm.hpp>
+#include <loos/tinkerxyz.hpp>
+#include <loos/tinker_arc.hpp>
+#include <loos/gro.hpp>
+#include <loos/xtc.hpp>
+#include <loos/trr.hpp>
 
 
-#include <trajwriter.hpp>
-#include <dcdwriter.hpp>
-#include <xtcwriter.hpp>
+#include <loos/trajwriter.hpp>
+#include <loos/dcdwriter.hpp>
+#include <loos/xtcwriter.hpp>
 
 namespace loos {
 

@@ -1,7 +1,7 @@
 // (c) 2012 Tod D. Romo, Grossfield Lab, URMC
 
-#include <amber_netcdf.hpp>
-#include <AtomicGroup.hpp>
+#include <loos/amber_netcdf.hpp>
+#include <loos/AtomicGroup.hpp>
 
 namespace loos {
 

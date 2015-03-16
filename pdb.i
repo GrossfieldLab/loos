@@ -21,11 +21,11 @@
 
 
 %header %{
-#include <pdb.hpp>
+#include <loos/pdb.hpp>
 %}
 
 
-%include "pdb.hpp"
+%include "loos/pdb.hpp"
 
 namespace loos {
 

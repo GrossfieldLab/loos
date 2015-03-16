@@ -22,8 +22,8 @@
 #include <iostream>
 #include <fstream>
 
-#include <exceptions.hpp>
-#include "LineReader.hpp"
+#include <loos/exceptions.hpp>
+#include <loos/LineReader.hpp>
 
 namespace loos {
 

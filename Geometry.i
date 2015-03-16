@@ -22,7 +22,7 @@
 
 
 %header %{
-#include <Geometry.hpp>
+#include <loos/Geometry.hpp>
 %}
 
-%include "Geometry.hpp"
+%include "loos/Geometry.hpp"

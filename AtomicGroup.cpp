@@ -32,9 +32,9 @@
 
 #include <boost/random.hpp>
 
-#include <AtomicGroup.hpp>
-#include <AtomicNumberDeducer.hpp>
-#include <Selectors.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/AtomicNumberDeducer.hpp>
+#include <loos/Selectors.hpp>
 
 #include <boost/unordered_map.hpp>
 

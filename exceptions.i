@@ -5,11 +5,11 @@
 #include <exception>
 #include <string>
 
-#include <Atom.hpp>
+#include <loos/Atom.hpp>
 
 %}
 
-%include "exceptions.hpp"
+%include "loos/exceptions.hpp"
 
 %extend loos::LOOSError {
   const char* __str__() { std::string s = self->what(); return(s.c_str()); }

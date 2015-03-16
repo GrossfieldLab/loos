@@ -22,7 +22,7 @@
 
 
 %header %{
-#include <ensembles.hpp>
+#include <loos/ensembles.hpp>
 
   namespace loos {
     struct AlignmentResult {
@@ -73,7 +73,7 @@
 
 %}
 
-%include "ensembles.hpp"
+%include "loos/ensembles.hpp"
 
 
 namespace loos {

@@ -22,11 +22,11 @@
 
 %header %{
 #include <sstream>
-#include "pdb_remarks.hpp"
+#include "loos/pdb_remarks.hpp"
 %}
 
 
-%include "pdb_remarks.hpp"
+%include "loos/pdb_remarks.hpp"
 
 namespace loos {
 

@@ -23,7 +23,7 @@
 
 
 %header %{
-#include <dcdwriter.hpp>
+#include <loos/dcdwriter.hpp>
 %}
 
-%include "dcdwriter.hpp"
+%include "loos/dcdwriter.hpp"

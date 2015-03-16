@@ -29,10 +29,10 @@ namespace loos {
 
 %{
 
-#include "ParserDriver.hpp"
-#include "LoosLexer.hpp"
+#include "loos/ParserDriver.hpp"
+#include "loos/LoosLexer.hpp"
 
-#include "Kernel.hpp"
+#include "loos/Kernel.hpp"
 
 #undef yylex
 #define yylex driver.lexer->looslex

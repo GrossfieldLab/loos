@@ -27,7 +27,7 @@
 
 
 
-#include <MatrixOps.hpp>
+#include <loos/MatrixOps.hpp>
 
 
 namespace loos {

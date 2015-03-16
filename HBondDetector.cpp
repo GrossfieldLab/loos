@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */    
 
-#include <HBondDetector.hpp>
+#include <loos/HBondDetector.hpp>
 
 namespace loos {
     HBondDetector::HBondDetector(const double distance, const double angle, 

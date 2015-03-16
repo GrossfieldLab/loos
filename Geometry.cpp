@@ -21,8 +21,8 @@
 
 
 
-#include <Geometry.hpp>
-#include <Atom.hpp>
+#include <loos/Geometry.hpp>
+#include <loos/Atom.hpp>
 
 
 namespace loos {

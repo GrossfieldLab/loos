@@ -20,7 +20,7 @@
 */
 
 
-#include <pdbtraj.hpp>
+#include <loos/pdbtraj.hpp>
 #include <boost/format.hpp>
 
 namespace loos {

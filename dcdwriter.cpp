@@ -22,7 +22,7 @@
 
 
 
-#include <dcdwriter.hpp>
+#include <loos/dcdwriter.hpp>
 
 
 namespace loos {

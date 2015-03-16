@@ -33,8 +33,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include <dcd.hpp>
-#include <AtomicGroup.hpp>
+#include <loos/dcd.hpp>
+#include <loos/AtomicGroup.hpp>
 
 
 namespace loos {

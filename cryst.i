@@ -23,10 +23,10 @@
 
 
 %header %{
-#include <cryst.hpp>
+#include <loos/cryst.hpp>
 %}
 
-%include "cryst.hpp"
+%include "loos/cryst.hpp"
 
 
 

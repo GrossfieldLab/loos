@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <charmm.hpp>
-#include <utils.hpp>
+#include <loos/charmm.hpp>
+#include <loos/utils.hpp>
 #include <boost/algorithm/string.hpp>
 
 

@@ -1,4 +1,4 @@
-#include <AtomicNumberDeducer.hpp>
+#include <loos/AtomicNumberDeducer.hpp>
 #include <cmath>
 
 

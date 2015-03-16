@@ -37,7 +37,7 @@
 
 #include <boost/random.hpp>
 
-#include <AtomicGroup.hpp>
+#include <loos/AtomicGroup.hpp>
 
 
 

@@ -20,7 +20,7 @@
 */
 
 
-#include <KernelStack.hpp>
+#include <loos/KernelStack.hpp>
 
 
 namespace loos {

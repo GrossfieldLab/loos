@@ -20,8 +20,8 @@
 */
 
 
-#include <ProgressCounters.hpp>
-#include <utils.hpp>
+#include <loos/ProgressCounters.hpp>
+#include <loos/utils.hpp>
 #include <cmath>
 
 

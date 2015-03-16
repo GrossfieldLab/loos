@@ -20,8 +20,8 @@
 */
 
 
-#include <amber.hpp>
-#include <exceptions.hpp>
+#include <loos/amber.hpp>
+#include <loos/exceptions.hpp>
 #include <stdlib.h>
 #include <ctype.h>
 

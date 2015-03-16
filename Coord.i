@@ -4,12 +4,12 @@
 #include <sstream>
 #include <string>
 #include <stdexcept>
-#include <Coord.hpp>
+#include <loos/Coord.hpp>
 
 %}
 
 
-%include "Coord.hpp"
+%include "loos/Coord.hpp"
 
 
 %extend loos::Coord<double> {

@@ -20,8 +20,8 @@
 */
 
 
-#include <Kernel.hpp>
-#include <Atom.hpp>
+#include <loos/Kernel.hpp>
+#include <loos/Atom.hpp>
 
 namespace loos {
 

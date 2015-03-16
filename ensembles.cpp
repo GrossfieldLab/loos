@@ -23,10 +23,10 @@
 
 
 
-#include <ensembles.hpp>
-#include <XForm.hpp>
-#include <AtomicGroup.hpp>
-#include <Trajectory.hpp>
+#include <loos/ensembles.hpp>
+#include <loos/XForm.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/Trajectory.hpp>
 
 namespace loos {
 

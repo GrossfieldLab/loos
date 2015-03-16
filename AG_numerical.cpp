@@ -38,8 +38,8 @@
 
 #include <boost/random.hpp>
 
-#include <AtomicGroup.hpp>
-#include <utils.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/utils.hpp>
 
 
 namespace loos {

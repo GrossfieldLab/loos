@@ -21,11 +21,11 @@
 
 
 %header %{
-#include <Matrix44.hpp>
+#include <loos/Matrix44.hpp>
 %}
 
 
-%include "Matrix44.hpp"
+%include <loos/Matrix44.hpp>
 
 
 

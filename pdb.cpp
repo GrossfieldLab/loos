@@ -20,9 +20,9 @@
 */
 
 
-#include <pdb.hpp>
-#include <utils.hpp>
-#include <Fmt.hpp>
+#include <loos/pdb.hpp>
+#include <loos/utils.hpp>
+#include <loos/Fmt.hpp>
 
 #include <iomanip>
 #include <boost/unordered_set.hpp>

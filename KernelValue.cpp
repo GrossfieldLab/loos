@@ -22,7 +22,7 @@
 
 
 
-#include "KernelValue.hpp"
+#include "loos/KernelValue.hpp"
 
 namespace loos {
 

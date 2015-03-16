@@ -20,7 +20,7 @@
 */
 
 
-#include <ccpdb.hpp>
+#include <loos/ccpdb.hpp>
 
 namespace loos {
 

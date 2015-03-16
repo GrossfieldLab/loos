@@ -20,7 +20,7 @@
 */
 
 
-#include <ProgressTriggers.hpp>
+#include <loos/ProgressTriggers.hpp>
 
 
 namespace loos {
