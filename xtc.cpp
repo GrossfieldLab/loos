@@ -28,7 +28,7 @@
 */
 
 
-#include <xtc.hpp>
+#include <loos/xtc.hpp>
 
 
 namespace loos {

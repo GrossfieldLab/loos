@@ -36,14 +36,14 @@
 #include <iomanip>
 
 #include <boost/algorithm/string.hpp>
-#include <AtomicGroup.hpp>
-#include <sfactories.hpp>
-#include <Trajectory.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/sfactories.hpp>
+#include <loos/Trajectory.hpp>
 
-#include <Selectors.hpp>
-#include <Parser.hpp>
+#include <loos/Selectors.hpp>
+#include <loos/Parser.hpp>
 
-#include <utils.hpp>
+#include <loos/utils.hpp>
 
 
 extern std::string revision_label;

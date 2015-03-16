@@ -23,7 +23,7 @@
 
 
 %header %{
-#include <xtcwriter.hpp>
+#include <loos/xtcwriter.hpp>
 %}
 
-#include "xtcwriter.hpp"
+#include "loos/xtcwriter.hpp"

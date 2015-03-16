@@ -26,12 +26,12 @@
 #include <vector>
 
 
-#include <utils_structural.hpp>
-#include <Coord.hpp>
-#include <pdb.hpp>
-#include <dcd.hpp>
-#include <pdb_remarks.hpp>
-#include <sfactories.hpp>
+#include <loos/utils_structural.hpp>
+#include <loos/Coord.hpp>
+#include <loos/pdb.hpp>
+#include <loos/dcd.hpp>
+#include <loos/pdb_remarks.hpp>
+#include <loos/sfactories.hpp>
 
 namespace loos {
 

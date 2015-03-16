@@ -20,8 +20,8 @@
 */
 
 
-#include <xtcwriter.hpp>
-#include <xtc.hpp>
+#include <loos/xtcwriter.hpp>
+#include <loos/xtc.hpp>
 
 namespace loos 
 {

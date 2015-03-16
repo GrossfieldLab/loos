@@ -21,7 +21,7 @@
 
 
 #include <boost/random.hpp>
-#include <utils_random.hpp>
+#include <loos/utils_random.hpp>
 
 namespace loos {
   base_generator_type& rng_singleton(void) {

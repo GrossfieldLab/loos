@@ -44,12 +44,12 @@
 #include <ctime>
 
 
-#include <loos_defs.hpp>
-#include <exceptions.hpp>
-#include <Coord.hpp>
-#include <pdb_remarks.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/Coord.hpp>
+#include <loos/pdb_remarks.hpp>
 
-#include <utils.hpp>
+#include <loos/utils.hpp>
 %}
 
-%include "utils.hpp"
+%include "loos/utils.hpp"

@@ -22,12 +22,12 @@
 %shared_ptr(loos::TrajectoryWriter)
 
 %header %{
-#include <trajwriter.hpp>
-#include <exception>
+#include <loos/trajwriter.hpp>
+#include <loos/exception>
 %}
 
 
-%include "trajwriter.hpp"
+%include "loos/trajwriter.hpp"
 
 namespace loos {
   typedef boost::shared_ptr<TrajectoryWriter> pTrajectoryWriter;

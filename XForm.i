@@ -22,7 +22,7 @@
 
 
 %header %{
-#include <XForm.hpp>
+#include <loos/XForm.hpp>
 
   typedef double                   greal;
   typedef loos::Matrix44<double>   GMatrix;
@@ -31,7 +31,7 @@
 %}
 
 
-%include "XForm.hpp"
+%include "loos/XForm.hpp"
 
 namespace loos {
 

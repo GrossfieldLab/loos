@@ -22,12 +22,12 @@
 %shared_ptr(loos::Trajectory)
 
 %header %{
-#include <Trajectory.hpp>
-#include <StreamWrapper.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/StreamWrapper.hpp>
 %}
 
 
-%include "Trajectory.hpp"
+%include "loos/Trajectory.hpp"
 
 namespace loos {
 

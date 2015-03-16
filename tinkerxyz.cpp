@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <tinkerxyz.hpp>
-#include <Atom.hpp>
+#include <loos/tinkerxyz.hpp>
+#include <loos/Atom.hpp>
 
 namespace loos {
 

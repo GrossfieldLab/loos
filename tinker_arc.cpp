@@ -19,8 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <tinker_arc.hpp>
-#include <AtomicGroup.hpp>
+#include <loos/tinker_arc.hpp>
+#include <loos/AtomicGroup.hpp>
 
 namespace loos {
 

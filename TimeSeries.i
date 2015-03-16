@@ -21,10 +21,10 @@
 
 
 %header %{
-#include <TimeSeries.hpp>
+#include <loos/TimeSeries.hpp>
 %}
 
-%include "TimeSeries.hpp"
+%include "loos/TimeSeries.hpp"
 
 namespace loos {
 
