@@ -30,11 +30,10 @@
 #include <stdexcept>
 
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <Trajectory.hpp>
-
-#include <pdb.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/pdb.hpp>
 
 
 namespace loos {

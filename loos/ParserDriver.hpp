@@ -28,15 +28,15 @@
 #include <string>
 #include <vector>
 
-#include <FlexLexer.h>
+#include <loos/FlexLexer.h>
 
-#include "exceptions.hpp"
-#include "Kernel.hpp"
+#include <loos/exceptions.hpp>
+#include <loos/Kernel.hpp>
 
 namespace loos { struct ParserDriver; }
 
-#include "grammar.hh"
-#include "LoosLexer.hpp"
+#include <loos/grammar.hh>
+#include <loos/LoosLexer.hpp>
 
 
 namespace loos {

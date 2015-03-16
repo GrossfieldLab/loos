@@ -32,9 +32,9 @@
 #include <unistd.h>
 
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <exceptions.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/exceptions.hpp>
 
 
 namespace loos {

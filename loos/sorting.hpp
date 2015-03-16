@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 
 namespace loos {
 

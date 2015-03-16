@@ -36,16 +36,16 @@
 #include <boost/unordered_set.hpp>
 
 
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 
 
-#include <Atom.hpp>
-#include <XForm.hpp>
-#include <PeriodicBox.hpp>
-#include <utils.hpp>
-#include <Matrix.hpp>
+#include <loos/Atom.hpp>
+#include <loos/XForm.hpp>
+#include <loos/PeriodicBox.hpp>
+#include <loos/utils.hpp>
+#include <loos/Matrix.hpp>
 
-#include <exceptions.hpp>
+#include <loos/exceptions.hpp>
 
 
 namespace loos {

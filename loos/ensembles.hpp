@@ -27,9 +27,9 @@
 #include <vector>
 #include <boost/tuple/tuple.hpp>
 
-#include <loos_defs.hpp>
-#include <MatrixImpl.hpp>
-#include <MatrixOps.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/MatrixImpl.hpp>
+#include <loos/MatrixOps.hpp>
 
 
 namespace loos {

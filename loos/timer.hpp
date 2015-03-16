@@ -33,7 +33,7 @@
 #include <sys/resource.h>
 #include <boost/format.hpp>
 
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 
 
 namespace loos {

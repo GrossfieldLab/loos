@@ -27,9 +27,9 @@
 #if !defined(LOOS_SELECTORS_HPP)
 #define LOOS_SELECTORS_HPP
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <Kernel.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/Kernel.hpp>
 
 
 namespace loos {

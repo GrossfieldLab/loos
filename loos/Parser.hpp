@@ -29,9 +29,9 @@
 #include <sstream>
 #include <stdexcept>
 
-#include <AtomicGroup.hpp>
-#include <Kernel.hpp>
-#include <ParserDriver.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/Kernel.hpp>
+#include <loos/ParserDriver.hpp>
 
 
 namespace loos {

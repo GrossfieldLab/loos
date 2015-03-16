@@ -32,8 +32,8 @@
 #include <iostream>
 #include <iomanip>
 
-#include <Matrix.hpp>
-#include <MatrixWrite.hpp>
-#include <MatrixRead.hpp>
+#include <loos/Matrix.hpp>
+#include <loos/MatrixWrite.hpp>
+#include <loos/MatrixRead.hpp>
 
 #endif

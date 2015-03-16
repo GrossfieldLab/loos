@@ -36,12 +36,11 @@
 #include <stdexcept>
 #include <vector>
 
-#include <loos_defs.hpp>
-
-#include <Coord.hpp>
-#include <xdr.hpp>
-#include <AtomicGroup.hpp>
-#include <Trajectory.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Coord.hpp>
+#include <loos/xdr.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/Trajectory.hpp>
 
 #include <boost/format.hpp>
 

@@ -31,8 +31,8 @@
 
 #include <stdexcept>
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
 
 
 namespace loos {

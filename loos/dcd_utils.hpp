@@ -28,8 +28,8 @@
 #include <iostream>
 #include <vector>
 
-#include <loos_defs.hpp>
-#include <dcd.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/dcd.hpp>
 
 namespace loos {
   double *gridify(DCD&, double*, double*, int[], const std::vector<int>, int, int, double);

@@ -24,7 +24,7 @@
 #define LOOS_UTILS_RANDOM_HPP
 
 #include <boost/random.hpp>
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 
 namespace loos {
 

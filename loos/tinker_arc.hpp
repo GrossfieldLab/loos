@@ -27,10 +27,9 @@
 #include <string>
 #include <stdexcept>
 
-#include <loos_defs.hpp>
-#include <Trajectory.hpp>
-
-#include <tinkerxyz.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/tinkerxyz.hpp>
 
 
 namespace loos {

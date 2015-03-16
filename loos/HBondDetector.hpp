@@ -22,10 +22,10 @@
 #if !defined(LOOS_HBONDDETECTOR_HPP)
 #define LOOS_HBONDDETECTOR_HPP
 
-#include <loos_defs.hpp>
-#include <Coord.hpp>
-#include <AtomicGroup.hpp>
-#include <PeriodicBox.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Coord.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/PeriodicBox.hpp>
 
 namespace loos {
 

@@ -34,9 +34,9 @@
 
 #include <cmath>
 
-#include <loos_defs.hpp>
-#include <Coord.hpp>
-#include <Matrix44.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Coord.hpp>
+#include <loos/Matrix44.hpp>
 
 namespace loos {
 

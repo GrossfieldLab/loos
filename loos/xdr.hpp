@@ -28,8 +28,8 @@
 #include <stdexcept>
 #include <vector>
 
-#include <loos_defs.hpp>
-#include <utils.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/utils.hpp>
 
 
 namespace loos {

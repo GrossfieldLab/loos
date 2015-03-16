@@ -44,9 +44,8 @@
 #include <utility>
 #include <boost/format.hpp>
 
-#include <loos_defs.hpp>
-
-#include <Matrix.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Matrix.hpp>
 
 
 namespace loos {

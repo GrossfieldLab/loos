@@ -29,11 +29,10 @@
 
 #include <boost/utility.hpp>
 
-#include <loos_defs.hpp>
-#include <StreamWrapper.hpp>
-#include <AtomicGroup.hpp>
-
-#include <AtomicGroup.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/StreamWrapper.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/AtomicGroup.hpp>
 
 namespace loos {
 

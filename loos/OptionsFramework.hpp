@@ -23,14 +23,14 @@
 
 #if !defined(LOOS_OPTIONS_FRAMEWORK_HPP)
 #define LOOS_OPTIONS_FRAMEWORK_HPP
-
-#include <loos_defs.hpp>
 #include <boost/program_options.hpp>
-#include <AtomicGroup.hpp>
-#include <Trajectory.hpp>
-#include <sfactories.hpp>
 #include <boost/algorithm/string.hpp>
-#include <exceptions.hpp>
+
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/sfactories.hpp>
+#include <loos/exceptions.hpp>
 
 
 

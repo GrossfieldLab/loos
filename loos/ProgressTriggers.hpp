@@ -22,8 +22,8 @@
 #if !defined(LOOS_PROGRESSTRIGGERS_HPP)
 #define LOOS_PROGRESSTRIGGERS_HPP
 
-#include <loos_defs.hpp>
-#include <ProgressCounters.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/ProgressCounters.hpp>
 
 
 namespace loos {

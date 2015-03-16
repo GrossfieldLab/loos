@@ -33,10 +33,9 @@
 #include <vector>
 
 
-#include <loos_defs.hpp>
-#include <exceptions.hpp>
-
-#include "KernelValue.hpp"
+#include <loos/loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/KernelValue.hpp>
 
 
 namespace loos {

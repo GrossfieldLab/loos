@@ -30,10 +30,9 @@
 #include <stdexcept>
 #include <exception>
 
-#include <loos_defs.hpp>
-
-#include <StreamWrapper.hpp>
-#include <Trajectory.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/StreamWrapper.hpp>
+#include <loos/Trajectory.hpp>
 
 
 namespace loos {

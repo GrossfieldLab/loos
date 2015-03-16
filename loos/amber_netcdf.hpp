@@ -8,12 +8,12 @@
 #include <string>
 #include <netcdf.h>
 
-#include <loos_defs.hpp>
-#include <Coord.hpp>
-#include <Trajectory.hpp>
-#include <exceptions.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Coord.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/exceptions.hpp>
 
-#include <amber_traj.hpp>
+#include <loos/amber_traj.hpp>
 
 namespace loos {
 

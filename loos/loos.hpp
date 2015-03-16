@@ -49,68 +49,68 @@
 
 // These are the LOOS-specific includes...
 
-#include <loos_defs.hpp>
-#include <exceptions.hpp>
-#include <utils.hpp>
-#include <utils_random.hpp>
-#include <utils_structural.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/utils.hpp>
+#include <loos/utils_random.hpp>
+#include <loos/utils_structural.hpp>
 
-#include <Kernel.hpp>
-#include <Parser.hpp>
-#include <Selectors.hpp>
+#include <loos/Kernel.hpp>
+#include <loos/Parser.hpp>
+#include <loos/Selectors.hpp>
 
 
-#include <Matrix44.hpp>
-#include <XForm.hpp>
-#include <Matrix.hpp>
+#include <loos/Matrix44.hpp>
+#include <loos/XForm.hpp>
+#include <loos/Matrix.hpp>
 
-#include <AtomicNumberDeducer.hpp>
-#include <Atom.hpp>
-#include <AtomicGroup.hpp>
-#include <pdb.hpp>
-#include <psf.hpp>
-#include <amber.hpp>
-#include <tinkerxyz.hpp>
+#include <loos/AtomicNumberDeducer.hpp>
+#include <loos/Atom.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/pdb.hpp>
+#include <loos/psf.hpp>
+#include <loos/amber.hpp>
+#include <loos/tinkerxyz.hpp>
 
-#include <Trajectory.hpp>
-#include <dcd.hpp>
-#include <dcd_utils.hpp>
+#include <loos/Trajectory.hpp>
+#include <loos/dcd.hpp>
+#include <loos/dcd_utils.hpp>
 
-#include <trajwriter.hpp>
-#include <dcdwriter.hpp>
-#include <xtcwriter.hpp>
+#include <loos/trajwriter.hpp>
+#include <loos/dcdwriter.hpp>
+#include <loos/xtcwriter.hpp>
 
-#include <amber_traj.hpp>
+#include <loos/amber_traj.hpp>
 
 #if defined(HAS_NETCDF)
-#include <amber_netcdf.hpp>
+#include <loos/amber_netcdf.hpp>
 #endif
 
-#include <amber_rst.hpp>
-#include <ccpdb.hpp>
-#include <pdbtraj.hpp>
-#include <tinker_arc.hpp>
-#include <xtc.hpp>
-#include <gro.hpp>
-#include <trr.hpp>
+#include <loos/amber_rst.hpp>
+#include <loos/ccpdb.hpp>
+#include <loos/pdbtraj.hpp>
+#include <loos/tinker_arc.hpp>
+#include <loos/xtc.hpp>
+#include <loos/gro.hpp>
+#include <loos/trr.loos/hpp>
 
 
 
-#include <Geometry.hpp>
-#include <ensembles.hpp>
-#include <TimeSeries.hpp>
+#include <loos/Geometry.hpp>
+#include <loos/ensembles.hpp>
+#include <loos/TimeSeries.hpp>
 
-#include <Fmt.hpp>
+#include <loos/Fmt.hpp>
 
-#include <sfactories.hpp>
+#include <loos/sfactories.hpp>
 
-#include <timer.hpp>
-#include <ProgressCounters.hpp>
-#include <ProgressTriggers.hpp>
+#include <loos/timer.hpp>
+#include <loos/ProgressCounters.hpp>
+#include <loos/ProgressTriggers.hpp>
 
-#include <sorting.hpp>
+#include <loos/sorting.hpp>
 
-#include <OptionsFramework.hpp>
+#include <loos/OptionsFramework.hpp>
 
 #endif
 

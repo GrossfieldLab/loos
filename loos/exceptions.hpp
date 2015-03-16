@@ -27,7 +27,7 @@
 #include <sstream>
 #include <exception>
 #include <string>
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 
 namespace loos {
 

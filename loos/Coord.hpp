@@ -27,7 +27,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include <utils_random.hpp>
+#include <loos/utils_random.hpp>
 
 namespace loos {
 

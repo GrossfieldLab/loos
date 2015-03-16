@@ -33,13 +33,12 @@
 #include <string.h>
 
 
-#include <loos_defs.hpp>
 #include <boost/regex.hpp>
 
-#include <exceptions.hpp>
-
-#include "KernelValue.hpp"
-#include "KernelStack.hpp"
+#include <loos/loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/KernelValue.hpp>
+#include <loos/KernelStack.hpp>
 
 
 

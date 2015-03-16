@@ -35,9 +35,9 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <LineReader.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/LineReader.hpp>
 
 
 namespace loos {

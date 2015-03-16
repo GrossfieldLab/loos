@@ -25,7 +25,7 @@
 #if !defined(LOOS_GEOM_HPP)
 #define LOOS_GEOM_HPP
 
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 #include <cmath>
 
 namespace loos {

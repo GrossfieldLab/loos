@@ -29,9 +29,9 @@
 #if !defined(LOOS_MATRIX_HPP)
 #define LOOS_MATRIX_HPP
 
-#include <MatrixImpl.hpp>
-#include <MatrixIO.hpp>
-#include <MatrixUtils.hpp>
-#include <MatrixOps.hpp>
+#include <loos/MatrixImpl.hpp>
+#include <loos/MatrixIO.hpp>
+#include <loos/MatrixUtils.hpp>
+#include <loos/MatrixOps.hpp>
 
 #endif

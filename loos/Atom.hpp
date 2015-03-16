@@ -29,9 +29,9 @@
 #include <vector>
 #include <functional>
 
-#include <loos_defs.hpp>
-#include <exceptions.hpp>
-#include <Coord.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/Coord.hpp>
 
 namespace loos {
 

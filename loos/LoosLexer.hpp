@@ -36,11 +36,11 @@
 // Flex's c++ support is daft...
 #undef yyFlexLexer
 #define yyFlexLexer LoosFlexLexer
-#include <FlexLexer.h>
+#include <loos/FlexLexer.h>
 
 
 
-#include "grammar.hh"
+#include "loos/grammar.hh"
 
 // @cond TOOLS_INTERNAL
 

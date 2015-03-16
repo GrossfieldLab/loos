@@ -28,12 +28,11 @@
 
 #include <vector>
 
-#include <loos_defs.hpp>
-#include <exceptions.hpp>
-
-#include "KernelValue.hpp"
-#include "KernelStack.hpp"
-#include "KernelActions.hpp"
+#include <loos/loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/KernelValue.hpp>
+#include <loos/KernelStack.hpp>
+#include <loos/KernelActions.hpp>
 
 namespace loos {
 

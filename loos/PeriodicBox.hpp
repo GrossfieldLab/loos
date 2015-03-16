@@ -30,7 +30,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <loos_defs.hpp>
+#include <loos/loos_defs.hpp>
 
 
 

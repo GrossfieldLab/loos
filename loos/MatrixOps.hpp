@@ -26,12 +26,13 @@
 #if !defined LOOS_MATRIXOPS_HPP
 #define LOOS_MATRIXOPS_HPP
 
-#include <loos_defs.hpp>
-#include <MatrixImpl.hpp>
-#include <exceptions.hpp>
-#include <sorting.hpp>
-#include <utils_random.hpp>
-#include <TimeSeries.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/MatrixImpl.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/sorting.hpp>
+#include <loos/utils_random.hpp>
+#include <loos/TimeSeries.hpp>
+
 #include <stdexcept>
 #include <cmath>
 

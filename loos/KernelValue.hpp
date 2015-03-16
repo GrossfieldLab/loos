@@ -32,8 +32,8 @@
 #include <cmath>
 
 
-#include <exceptions.hpp>
-#include <loos_defs.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/loos_defs.hpp>
 
 
 namespace loos {

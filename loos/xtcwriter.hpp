@@ -28,10 +28,10 @@
 #include <stdexcept>
 #include <vector>
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <xdr.hpp>
-#include <trajwriter.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/xdr.hpp>
+#include <loos/trajwriter.hpp>
 
 namespace loos {
 

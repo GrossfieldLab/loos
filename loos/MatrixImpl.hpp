@@ -33,13 +33,10 @@
 #include <ostream>
 #include <string>
 
-#include <loos_defs.hpp>
-
-#include <boost/format.hpp>
-
-
-#include <MatrixOrder.hpp>           // Order (layout) policies
-#include <MatrixStorage.hpp>         // Storage (physical) policies
+#include <loos/loos_defs.hpp>
+#include <loos/boost/format.hpp>
+#include <loos/MatrixOrder.hpp>           // Order (layout) policies
+#include <loos/MatrixStorage.hpp>         // Storage (physical) policies
 
 namespace loos {
 

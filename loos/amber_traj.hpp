@@ -25,9 +25,9 @@
 
 #include <string>
 
-#include <loos_defs.hpp>
-#include <Coord.hpp>
-#include <Trajectory.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/Coord.hpp>
+#include <loos/Trajectory.hpp>
 
 
 namespace loos {

@@ -34,13 +34,13 @@
 #include <vector>
 #include <map>
 
-#include <loos_defs.hpp>
-#include <AtomicGroup.hpp>
-#include <exceptions.hpp>
-#include <pdb_remarks.hpp>
-#include <cryst.hpp>
-#include <utils.hpp>
-#include <utils_structural.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/exceptions.hpp>
+#include <loos/pdb_remarks.hpp>
+#include <loos/cryst.hpp>
+#include <loos/utils.hpp>
+#include <loos/utils_structural.hpp>
 
 
 

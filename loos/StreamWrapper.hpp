@@ -31,7 +31,7 @@
 #include <stdexcept>
 
 #include <boost/utility.hpp>
-#include <exceptions.hpp>
+#include <loos/exceptions.hpp>
 
 
 namespace loos {

@@ -32,15 +32,10 @@
 #include <exception>
 #include <vector>
 
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include <unistd.h>
-
-#include <loos_defs.hpp>
-
-#include <AtomicGroup.hpp>
-#include <dcd.hpp>
-#include <trajwriter.hpp>
+#include <loos/loos_defs.hpp>
+#include <loos/AtomicGroup.hpp>
+#include <loos/dcd.hpp>
+#include <loos/trajwriter.hpp>
 
 namespace loos {
 
