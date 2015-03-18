@@ -172,7 +172,7 @@ public:
       ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
       ("occupancies", po::value<bool>(&occupancies_are_masses)->default_value(false), "Atom masses are stored in the PDB occupancy field")
       ("nomass", po::value<bool>(&nomass)->default_value(false), "Disable mass as part of the VSA solution")
-      ("spring", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments");
+      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"), "Spring method and arguments");
   }
 
   string print() const {
