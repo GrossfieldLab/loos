@@ -185,8 +185,65 @@ string fullHelpMessage(void){
     "The typical use is for illustrating the direction of motion calculated from\n"
     "a trajectory PCA or predicted from NMA of a network model.\n"
     "\n"
+    "* PCA vs ENM *\n"
+    "Porcupine should use different options depending on whether the eigenvectors come\n"
+    "from a PCA or an ENM.  The --enm and --pca flags configure porcupine to expect\n"
+    "the appropriate input.  If neither flag is given, then PCA is assumed.\n"
+    "For PCA results, the first mode is in the first column.  LOOS\n"
+    "calculates a PCA using the singular value decomposition, so the 'eigenvalues' are\n"
+    "actually singular values and need to be squared.  For typical ENMs, the first 6\n"
+    "eigenvectors correspond to rigid-body motion and are zero, and hence skipped.\n"
+    "In addition, the magnitude of the fluctuations are the inverse of the eigenvalues.\n"
+    "\n"
+    "* Scaling and Autoscaling *\n"
+    "There are several different ways the individual vectors can be scaled.  The default\n"
+    "is to automatically determine a scaling such that the largest average drawn vector\n"
+    "is 2 Angstroms.  If multiple modes are being used, then the corresponding eigenvector\n"
+    "can be used so the relative lengths are correct.  When used with autoscaling, the\n"
+    "the relative lengths are maintained.  In addition, an explicit scaling can be used\n"
+    "for each mode.  If autoscaling or eigenvectors are used, then this is applied -after-\n"
+    "both of those.  Finally, a global scaling can be applied.  To see the scaling used\n"
+    "turn on verbose output (-v1).  For more details about exactly what scaling is used,\n"
+    "set verbosity greater than 1 (-v2).\n"
+    "\n"
+    "In general, the default options should be fine for visualization.  If you are using\n"
+    "more than one mode, then include the eigenvectors to preserve the relative scalings\n"
+    "between the modes.\n"
+    "\n"
+    "* The Model *\n"
+    "The resulting PDB has the following properties...  Each mode has its own segid\n"
+    "in the form 'Pnnn' there nnn is a zero-padded mode number.  Each vector has\n"
+    "an atom name of 'POR' and residue name of 'POR'.  The vectors have increasing\n"
+    "resids that reset for each mode.  If tips are used, then the tip atoms will\n"
+    "have an atom name of 'POT'.\n"
+    "\n"
     "EXAMPLES\n"
     "\n"
+    "\tporcupine model.pdb pca_U.asc >porcupine.pdb\n"
+    "This example uses the first mode, assumes a PCA result,\n"
+    "and autoscales the vectors.\n"
+    "\n"
+    "\tporcupine --pca -S pca_s.asc -M 0:3 model.pdb pca_U.asc >porcupine.pdb\n"
+    "This example again uses the first three modes, autoscales, and also\n"
+    "scales each mode by the corresponding singular value.  It explicitly uses\n"
+    "a PCA result.\n"
+    "\n"
+    "\tporcupine --enm -S enm_s.asc -M 0:3 model.pdb enm_U.asc >porcupine.pdb\n"
+    "This example is the same as above, but expects an ENM result (inverting the\n"
+    "eigenvalues, and skipping the first 6 eigenpairs.\n"
+    "\n"
+    "\tporcupine -S pca_s.asc -M 0:3 -T 0.5 model.pdb pca_U.asc >porcupine.pdb\n"
+    "Here, a PCA result is assumed, the first 3 modes are used, autoscaling is on,\n"
+    "and a 'tip' for the PCA vectors with length 0.5 Angstroms is created.\n"
+    "\n"
+    "\tporcupine -S pca_s.asc -M 0,3,7 -L 3 model.pdb pca_U.asc >porcupine.pdb\n"
+    "A PCA result is assumed, the first, fourth, and eighth mode are used, autoscaling\n"
+    "is turned on with a length of 3 Angstroms.  The singular values are also included.\n"
+    "\n"
+    "\tporcupine --enm -S enm_s.asc -M 0,1 -A 0 --global 50 model.pdb enm_U.asc >porcupine.pdb\n"
+    "An ENM result is expected and the first two modes are used.  Autoscaling is disabled.\n"
+    "Each mode is scaled by the corresponding eigenvalue (inverted, since this is an ENM).\n"
+    "A global scaling of 50 is applied to all modes.\n"
     "\n"
     "SEE ALSO\n"
     "\n"
@@ -385,14 +442,14 @@ int main(int argc, char *argv[]) {
   }
 
   int atomid = 1;
-  int resid = 1;
   AtomicGroup spines;
 
   for (uint j=0; j<cols.size(); ++j) {
+    int resid = 1;
     double k = scalings[j];
     uint col = cols[j];
 
-    string segid = generateSegid(col);
+    string segid = generateSegid(col - offset);
 
     for (uint i=0; i<m; i += 3) {
       GCoord v(U(i,col), U(i+1,col), U(i+2,col));
@@ -409,7 +466,7 @@ int main(int argc, char *argv[]) {
       else
         atom2 = pAtom(new Atom(atomid++, porcupine_tag, c));
 
-      atom2->resid(resid++);
+      atom2->resid(resid);
       atom2->resname(porcupine_tag);
       atom2->segid(segid);
 
@@ -450,6 +507,7 @@ int main(int argc, char *argv[]) {
         spines.append(atom1);
         spines.append(atom0);
       }
+      ++resid;
     }
 
   }
