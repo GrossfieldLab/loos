@@ -68,15 +68,21 @@ typedef Math::Matrix<float, Math::ColMajor>   Matrix;
 
 
 string vec_name;
-vector<uint> cols;
+vector<int> cols;
 vector<double> scales;
-double global_scale;
+double global_scale = 1.0;
 bool uniform;
+bool invert = false;
 bool double_sided;
 string model_name;
 string map_name;
 double tip_size;
 string selection;
+bool autoscale, square;
+double autolength;
+string svals_file;
+int verbosity = 0;
+int offset = 0;
 
 const string porcupine_tag("POR");
 const string tip_tag("POT");
@@ -87,20 +93,42 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("columns,C", po::value< vector<string> >(&strings), "Columns to use")
-      ("scale,S", po::value< vector<double> >(&scales), "Scale the requested columns")
+      ("mode,M", po::value< vector<string> >(&strings), "Modes to use")
+      ("autoscale,A", po::value<bool>(&autoscale)->default_value(true), "Automatically scale vectors")
+      ("autolength,L", po::value<double>(&autolength)->default_value(2.0), "Length of average vector in Angstroms")
+      ("svals,S", po::value<string>(&svals_file), "Scale columns by singular values from file")
+      ("pca", "Vectors are from PCA (sets square=1, invert=0, offset=0)")
+      ("enm", "Vectors are from ENM (sets square=0, invert=1, offset=6)")
+      ("tips,T", po::value<double>(&tip_size)->default_value(0.0), "Length (in Angstroms) to make the tip (for single-sided only)")
+      ("double_sided", po::value<bool>(&double_sided)->default_value(false), "Use double-sided vectors")
+      ("square", po::value<bool>(&square)->default_value(true), "square the singular values")
+      ("invert", po::value<bool>(&invert)->default_value(false), "Invert singular values (ENM)")
+      ("scale", po::value< vector<double> >(&scales), "Scale the requested columns")
       ("global", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
       ("uniform", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
       ("map", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
-      ("tips,T", po::value<double>(&tip_size)->default_value(0.0), "Length (in Angstroms) to make the tip (for single-sided only)")
-      ("double_sided", po::value<bool>(&double_sided)->default_value(false), "Use double-sided vectors");
+      ("offset", po::value<int>(&offset), "Added to mode indices to select columns in eigenvector matrix");
   }
 
   bool postConditions(po::variables_map& vm) {
+
+    if (vm.count("enm")) {
+      square = false;
+      invert = true;
+      offset = 6;
+    } else if (vm.count("pca")) {
+      square = true;
+      invert = false;
+      offset = 0;
+    }
+
     if (strings.empty())
       cols.push_back(0);
     else
-      cols = parseRangeList<uint>(strings);
+      cols = parseRangeList<int>(strings);
+
+    for (uint i=0; i<cols.size(); ++i)
+      cols[i] += offset;
 
     if (!scales.empty()) {
       if (scales.size() != cols.size()) {
@@ -118,13 +146,20 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', tips=%f, double_sided=%d")
+    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', tips=%f, double_sided=%d, autoscale=%d, autolength=%f, svals='%s', square=%d, invert=%d, offset=%d")
       % vectorAsStringWithCommas<string>(strings)
       % global_scale
       % uniform
       % map_name
       % tip_size
-      % double_sided;
+      % double_sided
+      % autoscale
+      % autolength
+      % svals_file 
+      % square
+      % invert
+      % offset;
+    
     oss << "scale='";
     copy(scales.begin(), scales.end(), ostream_iterator<double>(oss, ","));
     oss << "'";
@@ -152,21 +187,6 @@ string fullHelpMessage(void){
     "\n"
     "EXAMPLES\n"
     "\n"
-    "\tporcupine -s 'name==\"CA\"' -C0 -S2 --double_sided 1 model.pdb svd_U.asc > porky.pdb\n"
-    "Here the CA's from model.pdb are used as the origin of the vector drawing.\n"
-    "svd_U.asc is an LSV file made in loos (see example X in svd --fullhelp)\n"
-    "These vectors are mapped to the CA's in model.pdb.  The C0 option signifies\n"
-    "use of the 1st column...in this case the most collective motion from the PCA.\n"
-    "The option -S2 implies an arbitrary scaling factor of 2 is applied to the LSVs\n"
-    "Double-sided vectors are turned on - this means the vectors will be drawn in\n"
-    "both directions from the CA origin.  Finally, a new pdb, porky.pdb is created.\n"
-    "This pdb contains only the vectors drawn by the porcupine program.\n"
-    "\t---You may wish to visualize the output of this tool with pymol.\n"
-    "\t   Try using the following options (within pymol):\n"
-    "\t\t load model.pdb; load porky.pdb\n"
-    "\t\t hide\n"
-    "\t\t show cartoon, model\n"
-    "\t\t show sticks, porky\n"
     "\n"
     "SEE ALSO\n"
     "\n"
@@ -245,27 +265,104 @@ vector<int> inferMap(const AtomicGroup& g, const string& sel) {
 }
 
 
+double averageSubvectorLength(const Matrix& U, const uint col) {
+  double avg = 0.0;
+
+  for (uint i=0; i<U.rows(); i += 3) {
+    double l = 0.0;
+    for (uint j=0; j<3; ++j)
+      l += U(i+j, col) * U(i+j, col);
+    avg += sqrt(l);
+  }
+
+  return(avg / (U.rows()/3));
+}
+
+
+vector<double> determineScaling(const Matrix& U) {
+  
+  uint n = cols.size();
+  vector<double> scaling(n, 1.0);
+  vector<double> svals(n, 1.0);
+  vector<double> avgs(n, 0.0);
+
+  // First, handle singular values, if given
+  if (!svals_file.empty()) {
+    Matrix S;
+    readAsciiMatrix(svals_file, S);
+    if (verbosity > 1)
+      cerr << "Read singular values from file " << svals_file << endl;
+    if (S.cols() != 1) {
+      cerr << boost::format("Error- singular value file is %d x %d, but it should be a %d x 1\n") % S.rows() % S.cols() % U.rows();
+      exit(-2);
+    }
+    for (uint i = 0; i<n; ++i) {
+      scaling[i] = S[cols[i]];
+      if (square)
+        scaling[i] *= scaling[i];
+      if (invert && scaling[i] != 0.0)
+        scaling[i] = 1.0 / scaling[i];
+      svals[i] = scaling[i];
+    }
+  }
+
+  if (autoscale) {
+    // Find the largest avg subvector size...
+    double maxscale = 0.0;
+    for (uint i=0; i<n; ++i) {
+      double avg = averageSubvectorLength(U, cols[i]);
+      avgs[i] = avg;
+      double scale = avg * scaling[i];
+      if (scale > maxscale)
+        maxscale = scale;
+    }
+
+    for (uint i=0; i<n; ++i)
+      scaling[i] *= autolength / maxscale;
+  }
+
+  // Incorporate additional scaling...
+  if (verbosity > 1) {
+    cerr << boost::format("%4s %4s %15s %15s %15s\n") % "col" % "mode" % "sval" % "avg" % "scale";
+    cerr << boost::format("%4s %4s %15s %15s %15s\n") % "----" % "----" % "---------------" % "---------------" % "---------------";
+  }
+  for (uint i=0; i<n; ++i) {
+    scaling[i] *= scales[i] * global_scale;
+    if (verbosity > 1)
+      cerr << boost::format("%4d %4d %15.5f %15.5f %15.5f\n") % cols[i] % (cols[i]-offset) % svals[i] % avgs[i] % scaling[i];
+    else if (verbosity > 0)
+      cerr << boost::format("Scaling column %d by %f\n") % cols[i] % scaling[i];
+  }
+
+  return(scaling);
+}
+
+
+
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
 
-  opts::BasicOptions* basopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicOptions* bopts = new opts::BasicOptions;
-  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments *ropts = new opts::RequiredArguments;
   ropts->addArgument("lsv", "left-singular-vector-file");
 
   opts::AggregateOptions options;
-  options.add(basopts).add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
+  options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
     exit(-1);
+
+  verbosity = bopts->verbosity;
 
   // First, read in the LSVs
   Matrix U;
   readAsciiMatrix(ropts->value("lsv"), U);
   uint m = U.rows();
+
+  vector<double> scalings = determineScaling(U);
 
   // Read in the average structure...
   AtomicGroup avg = mopts->model;
@@ -292,7 +389,7 @@ int main(int argc, char *argv[]) {
   AtomicGroup spines;
 
   for (uint j=0; j<cols.size(); ++j) {
-    double k = global_scale * scales[j];
+    double k = scalings[j];
     uint col = cols[j];
 
     string segid = generateSegid(col);
