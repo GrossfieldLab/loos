@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments("prefix", "output-prefix");
