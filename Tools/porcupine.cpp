@@ -247,7 +247,7 @@ string fullHelpMessage(void){
     "\n"
     "SEE ALSO\n"
     "\n"
-    "\tPackages/ElasticNetworks/enmovie, svd, big-svd, svdcolmap, anm, gnm, vsa\n"
+    "\tsvd, big-svd, svdcolmap, anm, gnm, vsa, enmovie\n"
     ;
 
   return(msg);
