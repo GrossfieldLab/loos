@@ -247,7 +247,7 @@ string fullHelpMessage(void){
     "\n"
     "SEE ALSO\n"
     "\n"
-    "\tPackages/ElasticNetworks/enmovie\n"
+    "\tPackages/ElasticNetworks/enmovie, svd, big-svd, svdcolmap, anm, gnm, vsa\n"
     ;
 
   return(msg);
@@ -409,8 +409,13 @@ int main(int argc, char *argv[]) {
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(mopts).add(topts).add(ropts);
-  if (!options.parse(argc, argv))
+  if (!options.parse(argc, argv)) {
+    cerr << "***WARNING***\n";
+    cerr << "The interface to porcupine has changed significantly\n";
+    cerr << "and is not compatible with previous versions.  See the\n";
+    cerr << "help info above, or the --fullhelp guide.\n";
     exit(-1);
+  }
 
   verbosity = bopts->verbosity;
 
