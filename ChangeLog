@@ -1,3 +1,9 @@
+2015-03-30    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added ".netcdf" as a recognized file suffix for Amber NetCDF
+	Trajectories.
+	* Fixed help and fullhelp in subsetter
+
 2015-03-02    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added --sort option to merge-traj
