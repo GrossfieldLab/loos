@@ -35,9 +35,9 @@
 
 namespace loos {
 
-  std::string availableSystemFileTypes();
-  std::string availableTrajectoryFileTypes();
-  std::string availableOutputTrajectoryFileTypes();
+  std::string availableSystemFileTypes(const std::string& prefix = "");
+  std::string availableTrajectoryFileTypes(const std::string& prefix = "");
+  std::string availableOutputTrajectoryFileTypes(const std::string& prefix = "");
 
   pAtomicGroup createSystemPtr(const std::string& filename, const std::string& filetype);
   pAtomicGroup createSystemPtr(const std::string& filename);

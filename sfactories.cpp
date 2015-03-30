@@ -79,10 +79,10 @@ namespace loos {
 
 
 
-  std::string availableSystemFileTypes() {
+  std::string availableSystemFileTypes(const std::string& prefix) {
     std::string types;
     for (internal::SystemNameBindingType* p = internal::system_name_bindings; p->creator != 0; ++p) {
-      types += p->suffix + " = " + p->type + "\n";
+      types += prefix + p->suffix + " = " + p->type + "\n";
     }
 
     return(types);
@@ -154,10 +154,10 @@ namespace loos {
   }
 
 
-  std::string availableTrajectoryFileTypes() {
+  std::string availableTrajectoryFileTypes(const std::string& prefix) {
     std::string types;
     for (internal::TrajectoryNameBindingType* p = internal::trajectory_name_bindings; p->creator != 0; ++p) {
-      types += p->suffix + " = " + p->type + "\n";
+      types += prefix + p->suffix + " = " + p->type + "\n";
     }
 
     return(types);
@@ -209,10 +209,10 @@ namespace loos {
   }
 
 
-  std::string availableOutputTrajectoryFileTypes() {
+  std::string availableOutputTrajectoryFileTypes(const std::string& prefix) {
     std::string types;
     for (internal::OutputTrajectoryNameBindingType* p = internal::output_trajectory_name_bindings; p->creator != 0; ++p) {
-      types += p->suffix + " = " + p->type + "\n";
+      types += prefix + p->suffix + " = " + p->type + "\n";
     }
 
     return(types);
