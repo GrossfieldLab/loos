@@ -133,6 +133,7 @@ namespace loos {
       { "crd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
       { "mdcrd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
       { "nc", "Amber Traj (NetCDF)", &AmberNetcdf::create},
+      { "netcdf", "Amber Traj (NetCDF)", &AmberNetcdf::create},
 #else
       { "crd", "Amber Traj", &AmberTraj::create},
       { "mdcrd", "Amber Traj", &AmberTraj::create},
