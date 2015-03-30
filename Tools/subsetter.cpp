@@ -444,8 +444,14 @@ int main(int argc, char *argv[]) {
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(otopts).add(topts);
-  if (!options.parse(argc, argv))
+  if (!options.parse(argc, argv)) {
+    cerr << "Note- available model file formats (filename suffix) are:\n";
+    cerr << availableSystemFileTypes("\t");
+    cerr << "Note- available trajectory file formats (filename suffix) are:\n";
+    cerr << availableTrajectoryFileTypes("\t");
     exit(-1);
+  }
+
   
   verbose = bopts->verbosity;
 
