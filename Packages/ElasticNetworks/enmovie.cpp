@@ -528,7 +528,6 @@ int main(int argc, char *argv[]) {
 
       pdb = PDB::fromAtomicGroup(structure);
       pdb.remarks().add(hdr);
-      pdb.renumber();
       ofs << pdb;
     }
 
