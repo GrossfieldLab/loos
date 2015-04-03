@@ -67,6 +67,7 @@ bool invert = false;
 string model_name;
 string map_name;
 string selection;
+string avgname;
 bool autoscale, square;
 double autolength;
 string svals_file;
@@ -92,6 +93,7 @@ public:
       ("enm", "Vectors are from ENM (sets square=0, invert=1, offset=6)")
       ("superset,U", po::value<string>(&supersel)->default_value("all"), "Superset to use for frames in the output")
       ("tag,T", po::value<bool>(&tag)->default_value(false), "Tag ENM atoms with 'E' alt-loc")
+      ("avg", po::value<string>(&avgname), "Use this model for average structure coordinates")
       ("square", po::value<bool>(&square)->default_value(true), "square the singular values")
       ("invert", po::value<bool>(&invert)->default_value(false), "Invert singular values (ENM)")
       ("scale", po::value< vector<double> >(&scales), "Scale the requested columns")
@@ -137,7 +139,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', autoscale=%d, autolength=%f, svals='%s', square=%d, invert=%d, offset=%d, tag=%d, superset='%s'")
+    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', autoscale=%d, autolength=%f, svals='%s', square=%d, invert=%d, offset=%d, tag=%d, superset='%s', avg='%s'")
       % vectorAsStringWithCommas<string>(strings)
       % global_scale
       % uniform
@@ -149,7 +151,8 @@ public:
       % invert
       % offset
       % tag
-      % supersel;
+      % supersel
+      % avgname;
     
     oss << "scale='";
     copy(scales.begin(), scales.end(), ostream_iterator<double>(oss, ","));
@@ -393,6 +396,22 @@ vector<double> determineScaling(const Matrix& U) {
 }
 
 
+
+
+void copyCoordinates(AtomicGroup& target, const AtomicGroup& source) {
+  for (uint i=0; i<source.size(); ++i) {
+    pAtom atom = target.findById(source[i]->id());
+    if (atom == 0) {
+      cerr << "Error- could not find atomid " << source[i]->id() << " in the superset.\n";
+      cerr << source[i] << endl;
+      exit(-10);
+    }
+    atom->coords(source[i]->coords());
+  }
+}
+
+
+
 AtomicGroup renumberAndMapBonds(const AtomicGroup& model, const AtomicGroup& subset) {
 
   AtomicGroup renumbered = subset.copy();
@@ -463,6 +482,13 @@ int main(int argc, char *argv[]) {
 
   // Read in the average structure...
   AtomicGroup avg = mopts->model;
+  if (! avgname.empty()) {
+    AtomicGroup avgcoords = createSystem(avgname);
+    copyCoordinates(avg, avgcoords);
+  }
+
+
+
   AtomicGroup superset = selectAtoms(mopts->model, supersel);
 
   vector<int> atomids;
