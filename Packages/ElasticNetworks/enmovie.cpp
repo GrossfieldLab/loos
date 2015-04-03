@@ -393,7 +393,41 @@ vector<double> determineScaling(const Matrix& U) {
 }
 
 
+AtomicGroup renumberAndMapBonds(const AtomicGroup& model, const AtomicGroup& subset) {
 
+  AtomicGroup renumbered = subset.copy();
+
+  if (!renumbered.hasBonds()) {
+    renumbered.renumber();
+    return(renumbered);
+  }
+
+  AtomicGroup sorted = model.copy();
+  sorted.sort();
+
+  vector<int> idmap(model.size());
+  for (uint i=0; i<renumbered.size(); ++i)
+    idmap[renumbered[i]->index()] = i;
+  
+  renumbered.pruneBonds();
+  for (uint i=0; i<renumbered.size(); ++i) {
+    if (! renumbered[i]->hasBonds())
+      continue;
+    vector<int> bondlist = renumbered[i]->getBonds();
+    vector<int> newbonds(bondlist.size());
+    for (uint j=0; j<bondlist.size(); ++j) {
+      pAtom a = sorted.findById(bondlist[j]);
+      if (a == 0) {
+	cerr << "Error- could not find atom id " << bondlist[j] << " in model\n";
+	exit(-2);
+      }
+      newbonds[j] = idmap[a->index()]+1;
+    }
+    renumbered[i]->setBonds(newbonds); 
+  }
+  renumbered.renumber();
+  return(renumbered);
+}
 
 
 int main(int argc, char *argv[]) {
@@ -490,10 +524,11 @@ int main(int argc, char *argv[]) {
       string outpdb(popts->prefix + ".pdb");
       ofstream ofs(outpdb.c_str());
       PDB pdb;
-      pdb = PDB::fromAtomicGroup(frame);
+      AtomicGroup structure = renumberAndMapBonds(avg, frame);
+
+      pdb = PDB::fromAtomicGroup(structure);
       pdb.remarks().add(hdr);
       pdb.renumber();
-      pdb.clearBonds();
       ofs << pdb;
     }
 
