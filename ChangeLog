@@ -1,3 +1,9 @@
+2015-04-10    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in operator overloadings for GCoords in PyLOOS
+	* Changed options and behavior of porcupine and enmovie.  See their
+	fullhelp for more information.
+
 2015-03-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added ".netcdf" as a recognized file suffix for Amber NetCDF
