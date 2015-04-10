@@ -45,7 +45,7 @@
   }
 
   loos::Coord<double> __div__(const double d) {
-    return( *$self * d);
+    return( *$self / d);
   }
 
   loos::Coord<double> __mul__(const double d) {
@@ -57,6 +57,23 @@
   }
 
   loos::Coord<double> __sub__(const double d) {
+    return( *$self - d);
+  }
+
+
+  loos::Coord<double> __rdiv__(const double d) {
+    return( d / *$self );
+  }
+
+  loos::Coord<double> __rmul__(const double d) {
+    return( *$self * d);
+  }
+
+  loos::Coord<double> __radd__(const double d) {
+    return( $self->operator+(d));
+  }
+
+  loos::Coord<double> __rsub__(const double d) {
     return( d - *$self);
   }
     
