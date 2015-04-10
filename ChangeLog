@@ -3,7 +3,10 @@
 	* Fixed bug in operator overloadings for GCoords in PyLOOS
 	* Changed options and behavior of porcupine and enmovie.  See their
 	fullhelp for more information.
-
+	* Changed default selection for ENM tools to alpha-carbons rather than all.
+	* Changed default selection for SVD to alpha-carbons
+	* Added -S as a spring function option shortcut for ENM tools
+	
 2015-03-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added ".netcdf" as a recognized file suffix for Amber NetCDF
