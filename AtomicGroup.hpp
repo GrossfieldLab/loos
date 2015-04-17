@@ -536,6 +536,10 @@ namespace loos {
 
     // Statistical routines...
     //! Bounding box for the group...
+    /**
+     * Returns a vector containing 2 GCoords, one containing
+     * (minx, miny, minz) and the other (maxx, maxy, maxz)
+     */
     std::vector<GCoord> boundingBox(void) const;
 
     //! Translates the group so that the centroid is at the origin.
