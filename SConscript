@@ -91,7 +91,7 @@ loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 
 # Python bindings
 loos_python = ''
-if env['pyloos']:
+if int(env['pyloos']):
 
    if env['host_type'] == 'Darwin':
       loos_python = env.LoadableModule('_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')

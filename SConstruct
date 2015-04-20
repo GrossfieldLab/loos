@@ -89,6 +89,11 @@ PREFIX = env['PREFIX']
 AutoConfiguration(env)
 pyloos = int(env['pyloos'])
 
+if not pyloos:
+    print '***Warning***'
+    print 'PyLOOS will not be built.  The OMG will not be installed.'
+
+
 ### Compile-flags
 
 debug_opts='-g -Wall -Wextra -fno-inline'
@@ -181,7 +186,7 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 loos_core = loos + loos_scripts
 all = loos_tools + loos_scripts + loos_packages
 
-if env['pyloos']:
+if int(env['pyloos']):
     loos_core = loos_core + loos_python
     all = all + loos_python
 
