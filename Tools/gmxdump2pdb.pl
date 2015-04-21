@@ -77,6 +77,7 @@ my $infer_water = 0;
 my $force_mass = 0;
 my $tabbonds = 1;
 my $conbonds = 1;
+my $namd = 1;
 
 my $ok = GetOptions('local!' => \$resids_local,
 		    'constraints!' => \$use_constraints,
@@ -85,6 +86,7 @@ my $ok = GetOptions('local!' => \$resids_local,
 		    'mass=f' => \$force_mass,
 		    'tabbonds!' => \$tabbonds,
 		    'conbonds!' => \$conbonds,
+		    'namd!' => \$namd,
 		    'help' => sub { &showHelp; });
 
 $ok || &showHelp;
@@ -188,7 +190,8 @@ foreach my $atom (@bond_list) {
 #       8).  We get around this by left-justifying all fields.  But the field is still
 #       smaller than expected...
 
-print $psf "PSF EXT\n\n       2 !NTITLE\nREMARKS THIS IS NOT A REAL PSF, USE CAREFULLY\nMADE BY GMXDUMP2PDB.PL\n\n";
+print $psf "PSF EXT", ($namd ? ' NAMD' : ''), "\n\n";
+print $psf "       2 !NTITLE\nREMARKS THIS IS NOT A REAL PSF, USE CAREFULLY\nMADE BY GMXDUMP2PDB.PL\n\n";
 printf $psf "%8d !NATOM\n", $natoms;
 foreach my $atom (@$rstruct) {
   defined($$atom{ATOMID}) || die "Undefined atomid";
@@ -819,6 +822,7 @@ Options:
    --mass=x          Set all atom masses to x
    --[no]tabbonds    Include TABBONDS in bonds list (default is on)
    --[no]conbonds    Include CONNBONDS in bonds list (Gromacs 5+, default is on)
+   --[no]namd        Add NAMD tag to PSF (may help with VMD)
 EOF
 
   exit 0;

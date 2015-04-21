@@ -75,6 +75,7 @@ bool box_override = false;
 GCoord box;
 
 bool reimage = false;
+bool voodoo = false;
 
 string center_selection;
 bool center_flag = false;
@@ -189,37 +190,41 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLES\n"
     "\n"
-    "\tsubsetter -S10 out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd\n"
+    "\tsubsetter -S10 out model.pdb traj1.dcd traj2.dcd traj3.dcd\n"
     "This concatenates the 3 trajectories together and outputs every\n"
     "10th frame to out.dcd\n"
     "\n"
-    "\tsubsetter -c 'name == \"CA\"' out.dcd model.pdb traj1.dcd traj2.dcd traj3.dcd\n"
+    "\tsubsetter -c 'name == \"CA\"' out model.pdb traj1.dcd traj2.dcd traj3.dcd\n"
     "This concatenates the 3 trajectories together centering the output\n"
     "using the centroid of all c-alphas.\n"
     "\n"
-    "\tsubsetter -c 'segid == \"HEME\"' -s '!hydrogen' out.dcd model.pdb traj.dcd\n"
+    "\tsubsetter -c 'segid == \"HEME\"' -s '!hydrogen' out model.pdb traj.dcd\n"
     "This pulls all non-hydrogen atoms out of the trajectory and writes\n"
     "them to out.dcd, centering so that the HEME segment is at the\n"
     "origin.\n"
     "\n"
-    "\tsubsetter -r 0:49,150:10:300 out.dcd model.pdb traj1.dcd traj2.dcd\n"
+    "\tsubsetter -r 0:49,150:10:300 out model.pdb traj1.dcd traj2.dcd\n"
     "This concatenates the two trajectories together, then writes out\n"
     "the first 50 frames, then frames 150 through 300 stepping by 10\n"
     "frames.  The frame indices written are of the composite\n"
     "trajectory.\n"
     "\n"
-    "\tsubsetter --sort out.dcd model.pdb frames_*.dcd\n"
+    "\tsubsetter --sort out model.pdb frames_*.dcd\n"
     "This will concatenate all frames together, sorting them\n"
     "numerically so that frames_0.dcd is first, followed by\n"
     "frames_1.dcd, frames_2.dcd, etc.\n"
     "\n"
-    "\tsubsetter --sort --scanf 'run_13_%u.dcd' out.dcd model.pdb *.dcd\n"
+    "\tsubsetter --sort --scanf 'run_13_%u.dcd' out model.pdb *.dcd\n"
     "This will concatenate all frames together, sorting them\n"
     "numerically as above, but will extract the second number from the\n"
     "filename as the trajectory file index.  Alternatively, the\n"
     "following option could be used in lieu of the --scanf option:\n"
     " --regex 'run_\\d+_(\\d+).dcd'\n"
     "\n"
+    "\tsubsetter -t xtc out model.pdb *.dcd\n"
+    "Writes out an XTC formatted trajectory to out.xtc and model to\n"
+    "out.pdb.  Concatenates all DCD trajectories in the current\n"
+    "directory."
     "\n"
     "NOTES\n"
     "\n"
@@ -288,10 +293,11 @@ public:
       ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
       ("reimage", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule")
+      ("voodoo", po::value<bool>(&voodoo)->default_value(false), "Apply reimaging voodoo for fringe systems")	      
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
-      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)"), "Sort using a regular expression");
+      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)\\D*$"), "Sort using a regular expression");
   }
 
   void addHidden(po::options_description& o) {
@@ -335,6 +341,11 @@ public:
 
     center_flag = !center_selection.empty();
 
+    if (voodoo && !center_flag) {
+      cerr << "Warning- voodoo is only applicable when centering and will be ignored.\n";
+      voodoo = false;
+    }
+
     if (!range_spec.empty())
       indices = parseRangeList<uint>(range_spec);
 
@@ -347,13 +358,14 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, center='%s', sort=%d")
+    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, center='%s', sort=%d")
       % verbose_updates
       % stride
       % skip
       % range_spec
       % box_spec
       % reimage
+      % voodoo
       % center_selection
       % sort_flag;
     if (sort_flag) {
@@ -432,8 +444,14 @@ int main(int argc, char *argv[]) {
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(otopts).add(topts);
-  if (!options.parse(argc, argv))
+  if (!options.parse(argc, argv)) {
+    cerr << "Note- available model file formats (filename suffix) are:\n";
+    cerr << availableSystemFileTypes("\t");
+    cerr << "Note- available trajectory file formats (filename suffix) are:\n";
+    cerr << availableTrajectoryFileTypes("\t");
     exit(-1);
+  }
+
   
   verbose = bopts->verbosity;
 
@@ -467,16 +485,19 @@ int main(int argc, char *argv[]) {
 
   // If reimaging, break out the subsets to iterate over...
   vector<AtomicGroup> molecules;
-  vector<AtomicGroup> segments;
   if (reimage) {
     if (!model.hasBonds()) {
       cerr << "WARNING- the model has no connectivity.  Assigning bonds based on distance.\n";
       model.findBonds();
     }
-    molecules = model.splitByMolecule();
-    segments = model.splitByUniqueSegid();
+
+    if (model.hasBonds())
+      molecules = model.splitByMolecule();
+    else
+      molecules = model.splitByUniqueSegid();
+
     if (verbose)
-      cout << boost::format("Reimaging %d segments and %d molecules\n") % segments.size() % molecules.size();
+      cout << boost::format("Reimaging %d molecules\n") % molecules.size();
   }
 
   // Setup for progress output...
@@ -519,10 +540,26 @@ int main(int argc, char *argv[]) {
 
 
     if (reimage) {
-      for (vGroup::iterator seg = segments.begin(); seg != segments.end(); ++seg)
-        seg->reimage();
-      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
+	mol->mergeImage();
         mol->reimage();
+      }
+
+      if (voodoo && center_flag) {
+	GCoord centroid = centered[0]->coords();
+	model.translate(-centroid);
+	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	  mol->reimage();
+	
+	for (uint i=0; i<2; ++i) {
+	  centroid = centered.centroid();
+	  model.translate(-centroid);
+	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	    mol->reimage();
+	}
+	
+      }
+
     }
 
     trajout->writeFrame(subset);

@@ -145,7 +145,7 @@ string fullHelpMessage() {
     "\tin this case all beads are connected - which can eliminate\n"
     "\tan error in the numeric eigendecomposition.\n"
     "\n"
-    "anm -b=constant,100 -S=exponential,-1.3 foo.pdb foo\n"
+    "anm --bound=constant,100 --spring=exponential,-1.3 foo.pdb foo\n"
     "\tSimilar to the example above, but using connectivity.  Here\n"
     "\tresidues that are adjacent in sequence are connected by\n"
     "\tsprings with a constant stiffness of \"100\" and all other\n"
@@ -163,7 +163,7 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("debug", po::value<bool>(&debug)->default_value(false), "Turn on debugging (output intermediate matrices)")
-      ("spring", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
+      ("spring,S", po::value<string>(&spring_desc)->default_value("distance"),"Spring function to use")
       ("bound", po::value<string>(&bound_spring_desc), "Bound spring");
   }
 
@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelection* sopts = new opts::BasicSelection;
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
   opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
   ToolOptions* topts = new ToolOptions;
   opts::RequiredArguments* ropts = new opts::RequiredArguments("prefix", "output-prefix");

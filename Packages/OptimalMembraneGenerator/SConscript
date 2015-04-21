@@ -32,7 +32,7 @@ dirs = 'doc example'
 omg_package = []
 # Only install if pyloos is being built (i.e. pyloos=1 on command line)
 
-if env['pyloos']:
+if int(env['pyloos']):
     # Executables and dir have same perms, so group together...
 
     for f in Split(executables + ' ' + dirs):

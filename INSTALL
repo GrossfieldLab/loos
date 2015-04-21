@@ -118,6 +118,10 @@ command:
 	scons core
 
 
+Note that the Optimal Membrane Generator requires PyLOOS.  If you
+do not have SWIG installed or disable PyLOOS support, then the OMG
+will not be installed.
+
 
 		    = NetCDF Amber Trajectories =
 

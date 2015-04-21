@@ -45,6 +45,8 @@
 namespace loos {
 
   // Bounding box for all atoms in this group
+  // Returns a vector containing 2 GCoords, one containing
+  // (minx,miny,minz) and the other (maxx,maxy,maxz)
   std::vector<GCoord> AtomicGroup::boundingBox(void) const {
     greal min[3] = {0,0,0}, max[3] = {0,0,0};
     const_iterator i;

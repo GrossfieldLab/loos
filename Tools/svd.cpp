@@ -64,7 +64,7 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() :
     alignment_string("name == 'CA'"),
-    svd_string("!(segid == 'BULK' || segid == 'SOLV' || hydrogen)"),
+    svd_string("name == 'CA'"),
     noalign(false),
     include_source(false),
     alignment_tol(1e-6),

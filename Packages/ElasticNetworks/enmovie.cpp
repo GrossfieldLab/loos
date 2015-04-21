@@ -46,33 +46,131 @@
 
 using namespace std;
 using namespace loos;
-namespace po = boost::program_options;
+
+namespace opts = loos::OptionsFramework;
+namespace po = loos::OptionsFramework::po;
 
 
 typedef Math::Matrix<double> Matrix;
 
 
-// Globals, yuck!
-string selection;
-string supersel;
-string eigvec_name, eigval_name;
-string output_name;
-string model_name;
-bool invert_eigvals;
-bool tag;
-int steps;
 
-vector<uint> modes;
+
+// --------------------------------------------------------------------------------
+
+string vec_name;
+vector<int> cols;
 vector<double> scales;
+double global_scale = 1.0;
+bool uniform;
+bool invert = false;
+string model_name;
+string map_name;
+string selection;
+string avgname;
+bool autoscale, square;
+double autolength;
+string svals_file;
+int verbosity = 0;
+int offset = 0;
+int nsteps = 100;
+string supersel;
+bool tag = false;
 
 
-void fullHelp() {
-  //string msg = 
-  cout <<  "\n"
-    "\n"
-    "SYNOPSIS\n"
-    "\n"
-    "Create a representation of motion along the mode(s) of an ENM\n"
+
+// @cond TOOLS_INTERNAL
+class ToolOptions : public opts::OptionsPackage {
+public:
+
+  void addGeneric(po::options_description& o) {
+    o.add_options()
+      ("mode,M", po::value< vector<string> >(&strings), "Modes to use")
+      ("autoscale,A", po::value<bool>(&autoscale)->default_value(true), "Automatically scale vectors")
+      ("autolength,L", po::value<double>(&autolength)->default_value(2.0), "Length of average vector in Angstroms")
+      ("svals,S", po::value<string>(&svals_file), "Scale columns by singular values from file")
+      ("pca", "Vectors are from PCA (sets square=1, invert=0, offset=0)")
+      ("enm", "Vectors are from ENM (sets square=0, invert=1, offset=6)")
+      ("superset,U", po::value<string>(&supersel)->default_value("all"), "Superset to use for frames in the output")
+      ("tag,T", po::value<bool>(&tag)->default_value(false), "Tag ENM atoms with 'E' alt-loc")
+      ("avg", po::value<string>(&avgname), "Use this model for average structure coordinates")
+      ("square", po::value<bool>(&square)->default_value(true), "square the singular values")
+      ("invert", po::value<bool>(&invert)->default_value(false), "Invert singular values (ENM)")
+      ("scale", po::value< vector<double> >(&scales), "Scale the requested columns")
+      ("global", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
+      ("uniform", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
+      ("map", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
+      ("offset", po::value<int>(&offset), "Added to mode indices to select columns in eigenvector matrix");
+  }
+
+  bool postConditions(po::variables_map& vm) {
+
+    if (vm.count("enm")) {
+      square = false;
+      invert = true;
+      offset = 6;
+    } else if (vm.count("pca")) {
+      square = true;
+      invert = false;
+      offset = 0;
+    }
+
+    if (strings.empty())
+      cols.push_back(0);
+    else
+      cols = parseRangeList<int>(strings);
+
+    for (uint i=0; i<cols.size(); ++i)
+      cols[i] += offset;
+
+    if (!scales.empty()) {
+      if (scales.size() != cols.size()) {
+        cerr << "ERROR - You must have the same number of scalings as columns or rely on the global scaling\n";
+        return(false);
+      }
+    } else {
+      for (uint i=0; i<cols.size(); ++i)
+        scales.push_back(1.0);
+    }
+
+
+    return(true);
+  }
+
+  string print() const {
+    ostringstream oss;
+    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', autoscale=%d, autolength=%f, svals='%s', square=%d, invert=%d, offset=%d, tag=%d, superset='%s', avg='%s'")
+      % vectorAsStringWithCommas<string>(strings)
+      % global_scale
+      % uniform
+      % map_name
+      % autoscale
+      % autolength
+      % svals_file 
+      % square
+      % invert
+      % offset
+      % tag
+      % supersel
+      % avgname;
+    
+    oss << "scale='";
+    copy(scales.begin(), scales.end(), ostream_iterator<double>(oss, ","));
+    oss << "'";
+    return(oss.str());
+  }
+
+  vector<string> strings;
+};
+// @endcond
+
+
+string fullHelpMessage(void){
+  string msg =                                                                                  
+    "\n"                                                                                      
+    "SYNOPSIS\n"                                                                      
+    "\n"  
+    "\tCreate a representation of motion along the mode(s) of an ENM\n"
     "\n"
     "DESCRIPTION\n"
     "\n"
@@ -80,184 +178,365 @@ void fullHelp() {
     "by an ENM in addition to plotting eigenvectors.  enmovie creates a dcd\n"
     "and an accompanying pdb for this purpose.  A 100 frame trajectory is \n"
     "made and the beads follow a given eigenvector(s).\n"
+     "\n"
+    "* PCA vs ENM *\n"
+    "Enmovie should use different options depending on whether the eigenvectors come\n"
+    "from a PCA or an ENM.  The --enm and --pca flags configure porcupine to expect\n"
+    "the appropriate input.  If neither flag is given, then PCA is assumed.\n"
+    "For PCA results, the first mode is in the first column.  LOOS\n"
+    "calculates a PCA using the singular value decomposition, so the 'eigenvalues' are\n"
+    "actually singular values and need to be squared.  For typical ENMs, the first 6\n"
+    "eigenvectors correspond to rigid-body motion and are zero, and hence skipped.\n"
+    "In addition, the magnitude of the fluctuations are the inverse of the eigenvalues.\n"
     "\n"
+    "* Scaling and Autoscaling *\n"
+    "There are several different ways the individual vectors can be scaled.  The default\n"
+    "is to automatically determine a scaling such that the largest average displacement\n"
+    "is 2 Angstroms.  If multiple modes are being used, then the corresponding eigenvector\n"
+    "can be used so the relative lengths are correct.  When used with autoscaling, the\n"
+    "the relative lengths are maintained.  In addition, an explicit scaling can be used\n"
+    "for each mode.  If autoscaling or eigenvectors are used, then this is applied -after-\n"
+    "both of those.  Finally, a global scaling can be applied.  To see the scaling used\n"
+    "turn on verbose output (-v1).  For more details about exactly what scaling is used,\n"
+    "set verbosity greater than 1 (-v2).\n"
     "\n"
-    //
-    "EXAMPLE\n"
-    "enmovie -m6 -s 'name==\"CA\"' model.pdb anm_U.asc mode_1_movie\n"
-    "\tHere we are making a movie of mode 6 (the lowest non-zero mode\n"
-    "\tif the ANM were made using LOOS).  The ANM was previously run to\n"
-    "\tpredict the motions of the system.  Now, the eigenvector file:\n"
-    "\tanm_U.asc is used to obtain the directions of the motion.  Finally,\n"
-    "\ta trajectory is created where the atoms in the ENM \"walk\" along\n"
-    "\tthe indicated mode.  \n"
+    "In general, the default options should be fine for visualization.  If you are using\n"
+    "more than one mode, then include the eigenvectors to preserve the relative scalings\n"
+    "between the modes.\n"
     "\n"
-    "enmovie -S10 -m6 -s 'name==\"CA\"' model.pdb anm_U.asc mode_1_movie\n"
-    "\tSame as above, but here an arbitary scalling of 10x is applied. \n"
-    "\tSometimes scalling is necessary for visualization of the mode - \n"
-    "\tthis option scales each eigenvector uniformly.\n"
-    "\t\n"
+    "* Supersets *\n"
+    "Some visualization programs require more atoms than what the PCA/ENM used in order\n"
+    "to get the structure correct (such as ribbons representations).  Including all atoms\n"
+    "can solve this problem.  Alternatively, sometimes extra atoms are required to provide\n"
+    "context to the region of interest, such as the extracellular loops in GPCRs.  You can\n"
+    "control what atoms are written to the trajectory with the superset selection.  This\n"
+    "lets you add back in atoms that were excluded by the PCA/ENM.  The catch is that they\n"
+    "will not move in the trajectory, resulting in distorted bonds/connections.  The default\n"
+    "is to include all atoms in the output.  If you want only the PCA/ENM region, then use\n"
+    "the same selection for the superset as the vector selection.\n"
     "\n"
-    "enmovie -S5 -e 'anm_s.asc' -i1  -m6:8 -s 'name==\"CA\"' model.pdb anm_U.asc mode_1_movie\n"
-    "\tDraw the motions from several modes (eigenvectors) at once. The 3\n"
-    "\tlowest modes are used (6 to 8) for an eigendecomposition done in LOOS.\n"
-    "\tThis time the motion has been scaled 5x, but we also scale each\n"
-    "\teigenvector by its eigenvalue using the file (anm_s.asc) Since this\n"
-    "\tis an ENM the eigenvalues are actually frequencies, so the -i1 option\n"
-    "\tis used to invert the values. \n"
-    "\tNOTE:  this physical scaling doesn't make much sense for an ENM solution\n"
-    "\tas ENMs DO NOT describe physical magnitudes of motion.  Therefore this\n"
-    "\ttool is NOT intended to for evaluating distances of fluctuations. \n"
-    "\t\n"
+    "EXAMPLES\n"
+    "\n"
+    "\tenmovie model.pdb pca_U.asc\n"
+    "This example uses the first mode, assumes a PCA result,\n"
+    "and autoscales the vectors.  Creates output.pdb and output.dcd and\n"
+    "the trajectory has 100 frames.\n"
+    "\n"
+    "\tenmovie --pca -S pca_s.asc -M 0:3 -p modes model.pdb pca_U.asc\n"
+    "This example again uses the first three modes, autoscales, and also\n"
+    "scales each mode by the corresponding singular value.  It explicitly uses\n"
+    "a PCA result.  It creates modes.pdb and modes.dcd with 100 frames.\n"
+    "\n"
+    "\tenmovie --enm -S enm_s.asc -M 0:3 -p modes model.pdb enm_U.asc\n"
+    "This example is the same as above, but expects an ENM result (inverting the\n"
+    "eigenvalues, and skipping the first 6 eigenpairs.\n"
+    "\n"
+    "\tenmovie -S pca_s.asc -M 0,3,7 -L 3 -p modes model.pdb pca_U.asc\n"
+    "A PCA result is assumed, the first, fourth, and eighth mode are used, autoscaling\n"
+    "is turned on with a length of 3 Angstroms.  The singular values are also included.\n"
+    "The output prefix is modes."
+    "\n"
+    "\tenmovie --enm -S enm_s.asc -M 0,1 -A 0 -p modes --global 50 model.pdb enm_U.asc\n"
+    "An ENM result is expected and the first two modes are used.  Autoscaling is disabled.\n"
+    "Each mode is scaled by the corresponding eigenvalue (inverted, since this is an ENM).\n"
+    "A global scaling of 50 is applied to all modes.\n"
+    "\n"
+    "\tenmovie --pca -S pca_s.asc -M 0:3 -p modes -U 'name == \"CA\"' model.pdb pca_U.asc\n"
+    "This example again uses the first three modes, autoscales, and also\n"
+    "scales each mode by the corresponding singular value.  It explicitly uses\n"
+    "a PCA result.  It creates modes.pdb and modes.dcd with 100 frames.\n"
+    "The default selection is to use CAs for the eigenvectors, and the -U option\n"
+    "causes the output trajectory to only include CAs.\n"
+    "\n"
+    "\tenmovie -p pca_mode1 -t xtc model.pdb pca_U.asc\n"
+    "This example uses the first mode, assumes a PCA result,\n"
+    "and autoscales the vectors.  Creates pca_mode1.pdb and pca_mode1.xtc and\n"
+    "the trajectory has 100 frames.\n"
     "\n"
     "SEE ALSO\n"
     "\n"
-    "  Tools/porcupine - \n"
-    "\tThis tool parses the same information, but instead of a dcd\n"
-    "\tit creates a pdb to represent the eigenvectors.\n"
-    "\n"
-    "\n"
-    "\n"
-    "\n"
-    "\n"
-    "\n";
+    "\tsvd, big-svd, svdcolmap, anm, gnm, vsa, porcupine\n"
+    ;
+
+  return(msg);
 }
 
 
-void parseOptions(int argc, char *argv[]) {
-  string scale;
-  string mode_string;
+string generateSegid(const uint n) {
+  stringstream s;
 
-  try {
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("fullhelp", "Get extended help")
-      ("selection,s", po::value<string>(&selection)->default_value("name == 'CA'"), "Selection used in computing the ANM")
-      ("nsteps,n", po::value<int>(&steps)->default_value(100), "Number of steps to use in generating the trajectory")
-      ("modes,m", po::value<string>(&mode_string)->default_value("0"), "List of modes to use")
-      ("scales,S", po::value<string>(&scale)->default_value("1.0"), "Scale the displacements by this factor")
-      ("invert,i", po::value<bool>(&invert_eigvals)->default_value(true), "Invert the eigenvalues for scaling")
-      ("eigs,e", po::value<string>(&eigval_name), "Scale using corresponding eigenvalues from this file")
-      ("superset,u", po::value<string>(&supersel)->default_value("all"), "Superset to use for frames in the output")
-      ("tag,t", po::value<bool>(&tag)->default_value(false), "Tag ENM atoms with 'E' alt-loc");
-
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("eigvec", po::value<string>(&eigvec_name), "Eigenvector name")
-      ("outprefix", po::value<string>(&output_name), "Prefix for output filenames");
-
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("eigvec", 1);
-    p.add("outprefix", 1);
-
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("eigvec") && vm.count("outprefix")) ) {
-      cerr << "Usage- enmovie [options] model-name eigenvector-filename output-prefix\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
-    modes = parseRangeList<uint>(mode_string);
-    if (modes.empty()) {
-      cerr << "Error- invalid mode list.\n";
-      exit(-1);
-    }
-
-    scales = parseRangeList<double>(scale);
-    if (scales.size() == 1)
-      for (vector<uint>::iterator i = modes.begin() + 1; i != modes.end(); ++i)
-        scales.push_back(scales[0]);
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
+  s << boost::format("P%03d") % n;
+  return(s.str());
 }
 
 
 
+// Accept a map file mapping the vectors (3-tuples in the rows) back
+// onto the appropriate atoms
 
-// Assume the scales.size() == modes.sizes()
-void scaleByEigenvalues(vector<double>& scales, const vector<uint>& modes, const string& fname) {
-  DoubleMatrix M;
-  readAsciiMatrix(fname, M);
+vector<int> readMap(const string& name) {
+  ifstream ifs(name.c_str());
+  if (!ifs) {
+      cerr << "Error- cannot open " << name << endl;
+      exit(-1);
+  }
+  
+      
+  string line;
+  uint lineno = 0;
+  vector<int> atomids;
 
-  for (uint i=0; i<modes.size(); ++i) {
-    if (modes[i] >= M.rows()) {
-      cerr << "ERROR- mode index " << modes[i] << " exceeds eigenvalue matrix dimensions.\n";
+  while (!getline(ifs, line).eof()) {
+    stringstream ss(line);
+    int a, b;
+    if (!(ss >> a >> b)) {
+      cerr << "ERROR - cannot parse map at line " << lineno << " of file " << name << endl;
       exit(-10);
     }
-    scales[i] *= (invert_eigvals ? 1./M[modes[i]] : M[modes[i]]);
+    atomids.push_back(b);
+  }
+
+  return(atomids);
+}
+
+
+// Fake the mapping, i.e. each vector corresponds to each atom...
+
+vector<int> fakeMap(const AtomicGroup& g) {
+  AtomicGroup::const_iterator ci;
+  vector<int> atomids;
+
+  for (ci = g.begin(); ci != g.end(); ++ci)
+    atomids.push_back((*ci)->id());
+
+  return(atomids);
+}
+
+
+// Record the atomid's for each atom in the selected subset.  This
+// allows use to map vectors back onto the correct atoms when they
+// were computed from a subset...
+
+vector<int> inferMap(const AtomicGroup& g, const string& sel) {
+  AtomicGroup subset = selectAtoms(g, sel);
+  vector<int> atomids;
+
+  AtomicGroup::iterator ci;
+  for (ci = subset.begin(); ci != subset.end(); ++ci)
+    atomids.push_back((*ci)->id());
+
+  
+  return(atomids);
+}
+
+
+double subvectorSize(const Matrix& U, const vector<double>& scaling, const uint j) {
+  
+  GCoord c;
+  for (uint i=0; i<cols.size(); ++i) {
+    GCoord v(U(j, i), U(j+1, i), U(j+2, i));
+    c += scaling[i] * v;
+  }
+
+  return(c.length());
+}
+
+
+vector<double> determineScaling(const Matrix& U) {
+  
+  uint n = cols.size();
+  vector<double> scaling(n, 1.0);
+  vector<double> svals(n, 1.0);
+
+  // First, handle singular values, if given
+  if (!svals_file.empty()) {
+    Matrix S;
+    readAsciiMatrix(svals_file, S);
+    if (verbosity > 1)
+      cerr << "Read singular values from file " << svals_file << endl;
+    if (S.cols() != 1) {
+      cerr << boost::format("Error- singular value file is %d x %d, but it should be a %d x 1\n") % S.rows() % S.cols() % U.rows();
+      exit(-2);
+    }
+    for (uint i = 0; i<n; ++i) {
+      scaling[i] = S[cols[i]];
+      if (square)
+        scaling[i] *= scaling[i];
+      if (invert && scaling[i] != 0.0)
+        scaling[i] = 1.0 / scaling[i];
+      svals[i] = scaling[i];
+    }
+  }
+
+  double avg = 0.0;
+  if (autoscale) {
+    for (uint i=0; i<U.rows(); i += 3)
+      avg += subvectorSize(U, scaling, i);
+    avg /= U.rows()/3.0;
+
+    for (uint i=0; i<n; ++i)
+      scaling[i] *= autolength / avg;
+  }
+
+  // Incorporate additional scaling...
+  if (verbosity > 1) {
+    cerr << "Average subvector size was " << avg << endl;
+    cerr << boost::format("%4s %4s %15s %15s\n") % "col" % "mode" % "sval" % "scale";
+    cerr << boost::format("%4s %4s %15s %15s\n") % "----" % "----" % "---------------" % "---------------";
+  }
+  for (uint i=0; i<n; ++i) {
+    scaling[i] *= scales[i] * global_scale;
+    if (verbosity > 1)
+      cerr << boost::format("%4d %4d %15.5f %15.5f\n") % cols[i] % (cols[i]-offset) % svals[i] % scaling[i];
+    else if (verbosity > 0)
+      cerr << boost::format("Scaling column %d by %f\n") % cols[i] % scaling[i];
+  }
+
+  return(scaling);
+}
+
+
+
+
+void copyCoordinates(AtomicGroup& target, const AtomicGroup& source) {
+  for (uint i=0; i<source.size(); ++i) {
+    pAtom atom = target.findById(source[i]->id());
+    if (atom == 0) {
+      cerr << "Error- could not find atomid " << source[i]->id() << " in the superset.\n";
+      cerr << source[i] << endl;
+      exit(-10);
+    }
+    atom->coords(source[i]->coords());
   }
 }
 
+
+
+AtomicGroup renumberAndMapBonds(const AtomicGroup& model, const AtomicGroup& subset) {
+
+  AtomicGroup renumbered = subset.copy();
+
+  if (!renumbered.hasBonds()) {
+    renumbered.renumber();
+    return(renumbered);
+  }
+
+  AtomicGroup sorted = model.copy();
+  sorted.sort();
+
+  vector<int> idmap(model.size());
+  for (uint i=0; i<renumbered.size(); ++i)
+    idmap[renumbered[i]->index()] = i;
+  
+  renumbered.pruneBonds();
+  for (uint i=0; i<renumbered.size(); ++i) {
+    if (! renumbered[i]->hasBonds())
+      continue;
+    vector<int> bondlist = renumbered[i]->getBonds();
+    vector<int> newbonds(bondlist.size());
+    for (uint j=0; j<bondlist.size(); ++j) {
+      pAtom a = sorted.findById(bondlist[j]);
+      if (a == 0) {
+	cerr << "Error- could not find atom id " << bondlist[j] << " in model\n";
+	exit(-2);
+      }
+      newbonds[j] = idmap[a->index()]+1;
+    }
+    renumbered[i]->setBonds(newbonds); 
+  }
+  renumbered.renumber();
+  return(renumbered);
+}
 
 
 int main(int argc, char *argv[]) {
-  // Get our invocation header for future metadata and parse
-  // command-line args...
-  string header = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
+  string hdr = invocationHeader(argc, argv);
 
-  // Get the structure and select out the appropriate atoms...
-  AtomicGroup model = createSystem(model_name);
-  AtomicGroup superset = selectAtoms(model, supersel);
-  AtomicGroup subset = selectAtoms(superset, selection);
-  uint natoms = subset.size();
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::OutputPrefix* popts = new opts::OutputPrefix("output");
+  opts::OutputTrajectoryTypeOptions* otopts = new opts::OutputTrajectoryTypeOptions;
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
+  opts::ModelWithCoords* mopts = new opts::ModelWithCoords;
+  ToolOptions* topts = new ToolOptions;
+  opts::RequiredArguments *ropts = new opts::RequiredArguments;
+  ropts->addArgument("lsv", "left-singular-vector-file");
 
-  Matrix U;
-  readAsciiMatrix(eigvec_name, U);
-  uint m = U.rows();
-  if (m != subset.size() * 3) {
-    cerr << boost::format("ERROR- subset size (%d) does not match eigenvector matrix size (%d)\n")
-      % (subset.size() * 3)
-      % m;
-    exit(-10);
+  opts::AggregateOptions options;
+  options.add(bopts).add(popts).add(otopts).add(sopts).add(mopts).add(topts).add(ropts);
+  if (!options.parse(argc, argv)) {
+    cerr << "***WARNING***\n";
+    cerr << "The interface to enmovie has changed significantly\n";
+    cerr << "and is not compatible with previous versions.  See the\n";
+    cerr << "help info above, or the --fullhelp guide.\n";
+    exit(-1);
   }
 
-  if (!eigval_name.empty())
-    scaleByEigenvalues(scales, modes, eigval_name);
+  verbosity = bopts->verbosity;
+
+  // First, read in the LSVs
+  Matrix U;
+  readAsciiMatrix(ropts->value("lsv"), U);
+  uint m = U.rows();
+
+  vector<double> scalings = determineScaling(U);
+
+  // Read in the average structure...
+  AtomicGroup avg = mopts->model;
+  if (! avgname.empty()) {
+    AtomicGroup avgcoords = createSystem(avgname);
+    copyCoordinates(avg, avgcoords);
+  }
+
+
+
+  AtomicGroup superset = selectAtoms(mopts->model, supersel);
+
+  vector<int> atomids;
+  if (map_name.empty()) {
+    if (sopts->selection.empty())
+      atomids = fakeMap(avg);
+    else
+      atomids = inferMap(avg, sopts->selection);
+
+  } else
+    atomids = readMap(map_name);
+  
+  // Double check size of atomid map
+  if (atomids.size() * 3 != m) {
+    cerr << boost::format("Error - The vector-to-atom map (provided or inferred) has %d atoms, but expected %d.\n") %
+      atomids.size() % (m / 3);
+    exit(-1);
+  }
+
   
 
-  // Instantiate a DCD writer...
-  DCDWriter dcd(output_name + ".dcd");
+  pTrajectoryWriter traj = otopts->createTrajectory(popts->prefix);
 
   // We'll step along the Eigenvectors using a sin wave as a final scaling...
-  double delta = 2*PI/steps;
+  double delta = 2*PI/nsteps;
 
   // Loop over requested number of frames...
-  for (int frameno=0; frameno<steps; frameno++) {
+  for (int frameno=0; frameno<nsteps; frameno++) {
     double k = sin(delta * frameno);
 
     // Have to make a copy of the atoms since we're computing a
     // displacement from the model structure...
     AtomicGroup frame = superset.copy();
-    AtomicGroup frame_subset = selectAtoms(frame, selection);
+    AtomicGroup frame_subset = selectAtoms(frame, sopts->selection);
 
     // Loop over all requested modes...
-    for (uint j = 0; j<modes.size(); ++j) {
+    for (uint j = 0; j<cols.size(); ++j) {
       // Loop over all atoms...
-      for (uint i=0; i<natoms; i++) {
+      for (uint i=0; i<frame_subset.size(); i++) {
 	GCoord c = frame_subset[i]->coords();
 
 	// This gets the displacement vector for the ith atom of the
 	// ci'th mode...
-        GCoord d( U(i*3, modes[j]), U(i*3+1, modes[j]), U(i*3+2, modes[j]) );
-
-	c += k * scales[j] * d;
+        GCoord d( U(i*3, cols[j]), U(i*3+1, cols[j]), U(i*3+2, cols[j]) );
+	if (uniform)
+	  d /= d.length();
+	
+	c += k * scalings[j] * d;
 
 	// Stuff those coords back into the Atom object...
 	frame_subset[i]->coords(c);
@@ -268,18 +547,18 @@ int main(int argc, char *argv[]) {
 
     if (k == 0) {
       // Write out the selection, converting it to a PDB
-      string outpdb(output_name + ".pdb");
+      string outpdb(popts->prefix + ".pdb");
       ofstream ofs(outpdb.c_str());
       PDB pdb;
-      pdb = PDB::fromAtomicGroup(frame);
-      pdb.remarks().add(header);
-      pdb.renumber();
-      pdb.clearBonds();
+      AtomicGroup structure = renumberAndMapBonds(avg, frame);
+
+      pdb = PDB::fromAtomicGroup(structure);
+      pdb.remarks().add(hdr);
       ofs << pdb;
     }
 
 
-    // Now that we've displaced the frame, add it to the growing DCD trajectory...
-    dcd.writeFrame(frame);
+    // Now that we've displaced the frame, add it to the growing trajectory...
+    traj->writeFrame(frame);
   }
 }

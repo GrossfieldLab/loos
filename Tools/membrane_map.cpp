@@ -56,6 +56,7 @@ public:
             ("calc", po::value<string>(&calc_type)->default_value(string("density")), "property to calculate (density, height, order, vector)")
             ("upper-only", "Map only the upper leaflet")
             ("lower-only", "Map only the lower leaflet")
+            ("ref-structure", po::value<string>(&reference_filename), "Align to an external structure instead of the first frame")
             ;
         }
 
@@ -107,6 +108,7 @@ public:
     double xmin, xmax, ymin, ymax;
     uint xbins, ybins;
     string calc_type;
+    string reference_filename;
     CalcType type;
     bool upper_only;
     bool lower_only;
@@ -129,7 +131,9 @@ string fullHelpMessage(void)
 "although the code is written to make it easy to add other quantities (see \n"
 "below).  The system is aligned against the coordinates of the selection \n"
 "specified with --align-selection using the first unskipped frame as \n"
-"reference. The alignment is performed in two dimensions, so that the \n"
+"reference, unless the --ref-structure option is given, in which case \n"
+"the file specified there is used (--align-selection is still applied)\n"
+"The alignment is performed in two dimensions, so that the \n"
 "lipid bilayer is not tilted or shifted; it is assumed that the bilayer\n"
 "normal is the z-axis, and that the bilayer center is at z=0\n"
 "\n"
@@ -247,7 +251,16 @@ int main(int argc, char *argv[])
     traj->readFrame(frames[0]);
     traj->updateGroupCoords(system);
 
-    AtomicGroup align_to = selectAtoms(system, ropts->value("align-selection"));
+    AtomicGroup align_to; 
+    if ((topts->reference_filename).length() > 0)
+        {
+        AtomicGroup reference_system = createSystem(topts->reference_filename);
+        align_to = selectAtoms(reference_system, ropts->value("align-selection"));
+        }
+    else
+        {
+        align_to = selectAtoms(system, ropts->value("align-selection"));
+        }
     // deep copy, this is the reference structure
     // TODO: give the user the option of supplying an outside structure
     AtomicGroup reference = align_to.copy();  
