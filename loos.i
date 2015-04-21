@@ -21,8 +21,9 @@ namespace loos {
 }
 
 
-
-# Generic exception wrapper for anything in loos that can look like a list...
+/*
+ Generic exception wrapper for anything in loos that can look like a list...
+*/
 
 %exception __getitem__ 
 {
