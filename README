@@ -8,6 +8,27 @@
 Our email address has changed.  Please use <loos.maintainer@gmail.com>
 to contact us regarding LOOS.
 
+   * RELEASE 2.2.5 *
+
+This release of LOOS includes several important bug fixes and new
+functionality.  Several issues involving Amber files have been
+addressed, including not correctly handling non-netCDF files when
+building with netCDF support.  In addition, ".netcdf" is now a
+recognized file suffix for Amber trajectories.  In PyLOOS only, a bug
+affecting operator overloads for GCoords has been fixed.
+
+Added functionality includes the ability to sort the input trajectory
+list numerically in merge-traj (the number used to sort is extracted
+from the filename using a regular expression).  The default selection
+for SVD and ENM tools has changed to alpha-carbons.  The tools
+"porcupine" and "enmovie" have been changed to make scaling the
+vectors and motion easier, along with selecting what modes to use.
+Note that the command line options and usage have changed and are not
+compatible with previous versions.
+
+For more details about these and other changes, see the ChangeLog or
+the documentation.
+
    * RELEASE 2.2.4 *
 
 Just in time for the Biophysical Society meeting, we are releasing
