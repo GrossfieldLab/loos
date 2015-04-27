@@ -88,7 +88,7 @@ scons -sj$PROCS docs      # Rebuild docs explicitly
 echo "*** Checking install target"
 scons -sj$PROCS install PREFIX=$PREF
 CWD=`pwd`
-if check_loos_install.pl --nofull --exclude='membrane_map.hpp' --prep `pwd` $PREF ; then
+if check_loos_install.pl --nofull --exclude 'prep_release.sh' --exclude 'membrane_map.hpp' --exclude 'make_macos_tarball.sh' --prep `pwd` $PREF ; then
     echo "Install appears ok.  Generating full report..."
     ( echo "***INSTALL APPEARS OK***" ;\
       echo "Please check the diff list below for any errors..." ;\
