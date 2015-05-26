@@ -352,7 +352,7 @@ int main (int argc, char *argv[])
 // parse the command line options
 string hdr = invocationHeader(argc, argv);
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
 ToolOptions* topts = new ToolOptions;
 
 opts::AggregateOptions options;
@@ -365,6 +365,7 @@ if (!options.parse(argc, argv))
 skip = tropts->skip;
 system_filename = tropts->model_name;
 traj_filename = tropts->traj_name;
+vector<uint> framelist = tropts->frameList();
 
 // Create the data structures for the system and trajectory
 // (just copied from the BasicTrajectory object)
@@ -506,7 +507,7 @@ for (unsigned int i=0; i<selections.size(); i++)
 
 
 
-const int num_frames = traj->nframes() - skip;
+const int num_frames = framelist.size();
 
 // We're going to accumulate the time series of average values for each
 // carbon position, and turn this into an average at the end.
@@ -548,8 +549,10 @@ if (dump_timeseries)
 
 // loop over frames in the trajectory
 int frame_index = 0;
-while (traj->readFrame())
+
+for (uint i=0; i<framelist.size(); ++i)
     {
+    traj->readFrame(framelist[i]);
     traj->updateGroupCoords(system);
 
     
