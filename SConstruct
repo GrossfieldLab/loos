@@ -134,7 +134,7 @@ else:
    env.Append(CCFLAGS=debug_opts)
 
 if (debug > 0):
-   env.Append(CCFLAGS=" -DDEBUG=$debug")
+   env.Append(CCFLAGS=(" -DDEBUG=%d" % (debug)))
 
 # Profiling is independent of release/debug status...
 if int(profile):
