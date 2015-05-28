@@ -1,3 +1,8 @@
+2015-05-28    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed handling of DEBUG in setup scripts
+	* Changed order_params tool to support ranges for what frames to use
+
 2015-04-10    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in operator overloadings for GCoords in PyLOOS
