@@ -22,10 +22,12 @@
 | Ubuntu 12.10      |     +     |   +    | D     |     
 | Ubuntu 13.04      |     +     |   +    | D     |
 | Ubuntu 14.04 LTS  |     +     |   +    |       |
+| Ubuntu 15.04      |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     D = Deprecated platform        
 | Debian 5          |     !     |   -    | DB    |         We are no longer testing these
 | Debian 6          |     +     |   !    | S     |         configurations, however, they may
-| Debian 7.7        |     +     |   +    |       |         still work...       
+| Debian 7.7        |     +     |   +    |       |         still work...
+| Debian 8          |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
 | CentOS 5.9        |     !     |   !    | DBCS  |     T = Tested, but not directly supported
 | CentOS 6.4        |     +     |   !    | CS    |         (i.e. you're own your own for
@@ -219,7 +221,7 @@ CentOS 5, 6: Yum install python-devel and pcre-devel, then download
 
 			------= Ubuntu =------
 
-LOOS has been tested on Ubuntu 8-14.  The following instructions have
+LOOS has been tested on Ubuntu 8-15.  The following instructions have
 been used to install LOOS on a fresh 64-bit 14.04 installation.  Use
 the Ubuntu software center (or apt-get) to install the following
 packages:
@@ -273,7 +275,7 @@ Ubuntu 8.04 LTS: Install python-dev and follow the instructions above.
 			------= Debian =------
 
 Using the synaptic manager (or apt-get), install the following packages:
-      libboost-dev [may be called libbost-all-dev]
+      libboost-all-dev [or libboost-dev for some older debians]
       scons
       libatlas-base-dev
       libatlas-headers [May be required for Debian 5]
