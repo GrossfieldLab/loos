@@ -8,12 +8,13 @@
 | Fedora 13         |     +     |   !    | DS    |         available via package manager)
 | Fedora 14         |     +     |   +    | D     |                             
 | Fedora 15         |     +     |   +    | D     |     ! = Supported with reservations
-| Fedora 16         |     +     |   +    |       |         (may require manual installations)
+| Fedora 16         |     +     |   +    | D     |         (may require manual installations)
 | Fedora 17         |     +     |   +    |       |    
 | Fedora 18         |     +     |   +    |       |     - = Unsupported
 | Fedora 19         |     +     |   +    |       |                             
 | Fedora 20         |     +     |   +    |       |
 | Fedora 21         |     +     |   +    |       |
+| Fedora 22         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|     B = Requires manual install of Boost
 | Ubuntu 8.04 LTS   |     !     |   !    | DBCS  |                             
 | Ubuntu 10.04 LTS  |     +     |   !    | DCS   |     C = Requires manual install of SCons
@@ -191,13 +192,16 @@ sudo yum install netcdf-devel
 
 * PyLOOS *
 
-Fedora 12: Install pcre-devel and download and build the latest swig
-  (2.0.4 or later).
+Fedora 14-22: Yum install python-devel and swig
 
 Fedora 13: Yum install pcre-devel and python-devel, then download and install
   swig-2.0.4 (or later).
 
-Fedora 14-20: Yum install python-devel and swig
+Fedora 12: Install pcre-devel and download and build the latest swig
+  (2.0.4 or later).
+
+
+
 
 =======================================================================
 
