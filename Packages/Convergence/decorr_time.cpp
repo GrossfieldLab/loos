@@ -91,7 +91,7 @@ string fullHelpMessage(void) {
     "is 5 to 100 at every 5 frames (assuming a 1 frame/ns trajectory, then 5 to 100 ns every 5 ns).\n"
     "\n"
     "\tdecorr_time --selection 'name == \"CA\"' --nrange 2,3,4 --frac 0.1 \\\n"
-    "\t  model.pdb simulation.dcd >decorr.asc 10:10:250\n"
+    "\t  model.pdb simulation.dcd 10:10:250 >decorr.asc\n"
     "Here, only alpha-carbons are used.  Sample sizes are 2, 3, and 4 and there are 10 bins.  The\n"
     "t-range here is 10 to 250 at every 10 frames.\n"
     "\n"
