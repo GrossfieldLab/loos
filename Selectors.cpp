@@ -23,6 +23,12 @@
 
 namespace loos {
 
+
+  bool IndexSelector::operator()(const pAtom& pa) const {
+    return(pa->index() == _index);
+  }
+
+
   bool CAlphaSelector::operator()(const pAtom& pa) const {
     return(pa->name() == "CA");
   }

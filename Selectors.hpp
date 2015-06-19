@@ -34,6 +34,16 @@
 
 namespace loos {
 
+  //! Predicate for selecting atoms based on index
+  struct IndexSelector : public AtomSelector {
+    IndexSelector(const uint index) : _index(index) { }
+
+    bool operator()(const pAtom& pa) const;
+
+    uint _index;
+  };
+  
+
   //! Predicate for selecting CA atoms
   struct CAlphaSelector : public AtomSelector {
     bool operator()(const pAtom&) const;
