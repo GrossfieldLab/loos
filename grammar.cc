@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.1.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Skeleton implementation for Bison LALR(1) parsers in C++
    
@@ -34,7 +34,7 @@
 #define yylex   looslex
 
 /* First part of user declarations.  */
-/* Line 278 of lalr1.cc  */
+/* Line 279 of lalr1.cc  */
 #line 6 "grammar.yy"
 
 
@@ -51,14 +51,14 @@ namespace loos {
 
 
 
-/* Line 278 of lalr1.cc  */
+/* Line 279 of lalr1.cc  */
 #line 56 "grammar.cc"
 
 
 #include "grammar.hh"
 
 /* User implementation prologue.  */
-/* Line 284 of lalr1.cc  */
+/* Line 285 of lalr1.cc  */
 #line 30 "grammar.yy"
 
 
@@ -76,7 +76,7 @@ namespace loos {
 };
 
 
-/* Line 284 of lalr1.cc  */
+/* Line 285 of lalr1.cc  */
 #line 81 "grammar.cc"
 
 
@@ -155,9 +155,9 @@ do {					\
 #else /* !YYDEBUG */
 
 # define YYCDEBUG if (false) std::cerr
-# define YY_SYMBOL_PRINT(Title, Type, Value, Location)
-# define YY_REDUCE_PRINT(Rule)
-# define YY_STACK_PRINT()
+# define YY_SYMBOL_PRINT(Title, Type, Value, Location) YYUSE(Type)
+# define YY_REDUCE_PRINT(Rule)        static_cast<void>(0)
+# define YY_STACK_PRINT()             static_cast<void>(0)
 
 #endif /* !YYDEBUG */
 
@@ -171,7 +171,7 @@ do {					\
 
 
 namespace loos {
-/* Line 352 of lalr1.cc  */
+/* Line 353 of lalr1.cc  */
 #line 176 "grammar.cc"
 
   /// Build a parser object.
@@ -231,45 +231,46 @@ namespace loos {
     YYUSE (yymsg);
     YYUSE (yyvaluep);
 
-    YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
+    if (yymsg)
+      YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
 
     switch (yytype)
       {
         case 4: /* STRING */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 75 "grammar.yy"
-	{ delete ((*yyvaluep).sval); };
-/* Line 453 of lalr1.cc  */
-#line 244 "grammar.cc"
-	break;
+        { delete ((*yyvaluep).sval); };
+/* Line 455 of lalr1.cc  */
+#line 245 "grammar.cc"
+        break;
       case 5: /* SKEY */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 75 "grammar.yy"
-	{ delete ((*yyvaluep).sval); };
-/* Line 453 of lalr1.cc  */
-#line 251 "grammar.cc"
-	break;
+        { delete ((*yyvaluep).sval); };
+/* Line 455 of lalr1.cc  */
+#line 252 "grammar.cc"
+        break;
       case 6: /* NKEY */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 75 "grammar.yy"
-	{ delete ((*yyvaluep).sval); };
-/* Line 453 of lalr1.cc  */
-#line 258 "grammar.cc"
-	break;
+        { delete ((*yyvaluep).sval); };
+/* Line 455 of lalr1.cc  */
+#line 259 "grammar.cc"
+        break;
       case 31: /* string */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 75 "grammar.yy"
-	{ delete ((*yyvaluep).sval); };
-/* Line 453 of lalr1.cc  */
-#line 265 "grammar.cc"
-	break;
+        { delete ((*yyvaluep).sval); };
+/* Line 455 of lalr1.cc  */
+#line 266 "grammar.cc"
+        break;
       case 32: /* strval */
-/* Line 453 of lalr1.cc  */
+/* Line 455 of lalr1.cc  */
 #line 75 "grammar.yy"
-	{ delete ((*yyvaluep).sval); };
-/* Line 453 of lalr1.cc  */
-#line 272 "grammar.cc"
-	break;
+        { delete ((*yyvaluep).sval); };
+/* Line 455 of lalr1.cc  */
+#line 273 "grammar.cc"
+        break;
 
 	default:
 	  break;
@@ -330,17 +331,18 @@ namespace loos {
     int yychar = yyempty_;
     int yytoken = 0;
 
-    /* State.  */
+    // State.
     int yyn;
     int yylen = 0;
     int yystate = 0;
 
-    /* Error handling.  */
+    // Error handling.
     int yynerrs_ = 0;
     int yyerrstatus_ = 0;
 
     /// Semantic value of the lookahead.
-    semantic_type yylval;
+    static semantic_type yyval_default;
+    semantic_type yylval = yyval_default;
     /// Location of the lookahead.
     location_type yylloc;
     /// The locations where the error started and ended.
@@ -353,6 +355,10 @@ namespace loos {
 
     int yyresult;
 
+    // FIXME: This shoud be completely indented.  It is not yet to
+    // avoid gratuitous conflicts when merging into the master branch.
+    try
+      {
     YYCDEBUG << "Starting parse" << std::endl;
 
 
@@ -388,10 +394,9 @@ namespace loos {
     /* Read a lookahead token.  */
     if (yychar == yyempty_)
       {
-	YYCDEBUG << "Reading a token: ";
-	yychar = yylex (&yylval);
+        YYCDEBUG << "Reading a token: ";
+        yychar = yylex (&yylval);
       }
-
 
     /* Convert token to internal form.  */
     if (yychar <= yyeof_)
@@ -463,111 +468,114 @@ namespace loos {
     else
       yyval = yysemantic_stack_[0];
 
+    // Compute the default @$.
     {
       slice<location_type, location_stack_type> slice (yylocation_stack_, yylen);
       YYLLOC_DEFAULT (yyloc, slice, yylen);
     }
+
+    // Perform the reduction.
     YY_REDUCE_PRINT (yyn);
     switch (yyn)
       {
-	  case 3:
-/* Line 661 of lalr1.cc  */
+          case 3:
+/* Line 670 of lalr1.cc  */
 #line 81 "grammar.yy"
     { driver.kern.push(new internal::logicalAnd); }
     break;
 
   case 4:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 82 "grammar.yy"
     { driver.kern.push(new internal::logicalOr); }
     break;
 
   case 6:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 87 "grammar.yy"
     { driver.kern.push(new internal::logicalNot); }
     break;
 
   case 7:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 88 "grammar.yy"
     { driver.kern.push(new internal::lessThan); }
     break;
 
   case 8:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 89 "grammar.yy"
     { driver.kern.push(new internal::lessThanEquals); }
     break;
 
   case 9:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 90 "grammar.yy"
     { driver.kern.push(new internal::greaterThanEquals); }
     break;
 
   case 10:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 91 "grammar.yy"
     { driver.kern.push(new internal::greaterThan); }
     break;
 
   case 11:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 92 "grammar.yy"
     { driver.kern.push(new internal::equals); }
     break;
 
   case 12:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 93 "grammar.yy"
     { driver.kern.push(new internal::equals); driver.kern.push(new internal::logicalNot); }
     break;
 
   case 13:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 94 "grammar.yy"
     { driver.kern.push(new internal::matchRegex(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 14:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 95 "grammar.yy"
     { driver.kern.push(new internal::logicalTrue); }
     break;
 
   case 15:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 96 "grammar.yy"
     { driver.kern.push(new internal::Hydrogen); }
     break;
 
   case 16:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 97 "grammar.yy"
     { driver.kern.push(new internal::Backbone); }
     break;
 
   case 23:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 105 "grammar.yy"
     { driver.kern.push(new internal::extractNumber(*((yysemantic_stack_[(3) - (3)].sval)))); }
     break;
 
   case 24:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 107 "grammar.yy"
     { driver.kern.push(new internal::pushInt((yysemantic_stack_[(1) - (1)].ival))); }
     break;
 
   case 27:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 112 "grammar.yy"
     { (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval); driver.kern.push(new internal::pushString(*((yysemantic_stack_[(1) - (1)].sval)))); }
     break;
 
   case 29:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 121 "grammar.yy"
     {
 (yyval.sval) = (yysemantic_stack_[(1) - (1)].sval);
@@ -585,24 +593,27 @@ else
     break;
 
   case 30:
-/* Line 661 of lalr1.cc  */
+/* Line 670 of lalr1.cc  */
 #line 138 "grammar.yy"
     {
 if (*((yysemantic_stack_[(1) - (1)].sval)) == "id")
    driver.kern.push(new internal::pushAtomId);
 else if (*((yysemantic_stack_[(1) - (1)].sval)) == "resid")
    driver.kern.push(new internal::pushAtomResid);
+else if (*((yysemantic_stack_[(1) - (1)].sval)) == "index")
+   driver.kern.push(new internal::pushAtomIndex);	
 else
    loos::parse_error("Unknown numeric keyword " + *((yysemantic_stack_[(1) - (1)].sval)));   
 }
     break;
 
 
-/* Line 661 of lalr1.cc  */
-#line 603 "grammar.cc"
-	default:
-          break;
+/* Line 670 of lalr1.cc  */
+#line 613 "grammar.cc"
+      default:
+        break;
       }
+
     /* User semantic actions sometimes alter yychar, and that requires
        that yytoken be updated with the new translation.  We take the
        approach of translating immediately before every use of yytoken.
@@ -653,20 +664,19 @@ else
     yyerror_range[1] = yylloc;
     if (yyerrstatus_ == 3)
       {
-	/* If just tried and failed to reuse lookahead token after an
-	 error, discard it.  */
-
-	if (yychar <= yyeof_)
-	  {
-	  /* Return failure if at end of input.  */
-	  if (yychar == yyeof_)
-	    YYABORT;
-	  }
-	else
-	  {
-	    yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
-	    yychar = yyempty_;
-	  }
+        /* If just tried and failed to reuse lookahead token after an
+           error, discard it.  */
+        if (yychar <= yyeof_)
+          {
+            /* Return failure if at end of input.  */
+            if (yychar == yyeof_)
+              YYABORT;
+          }
+        else
+          {
+            yydestruct_ ("Error: discarding", yytoken, &yylval, &yylloc);
+            yychar = yyempty_;
+          }
       }
 
     /* Else will try to reuse lookahead token after shifting the error
@@ -715,7 +725,7 @@ else
 
 	/* Pop the current state because it cannot handle the error token.  */
 	if (yystate_stack_.height () == 1)
-	YYABORT;
+	  YYABORT;
 
 	yyerror_range[1] = yylocation_stack_[0];
 	yydestruct_ ("Error: popping",
@@ -763,16 +773,42 @@ else
     /* Do not reclaim the symbols of the rule which action triggered
        this YYABORT or YYACCEPT.  */
     yypop_ (yylen);
-    while (yystate_stack_.height () != 1)
+    while (1 < yystate_stack_.height ())
       {
-	yydestruct_ ("Cleanup: popping",
-		   yystos_[yystate_stack_[0]],
-		   &yysemantic_stack_[0],
-		   &yylocation_stack_[0]);
-	yypop_ ();
+        yydestruct_ ("Cleanup: popping",
+                     yystos_[yystate_stack_[0]],
+                     &yysemantic_stack_[0],
+                     &yylocation_stack_[0]);
+        yypop_ ();
       }
 
     return yyresult;
+    }
+    catch (...)
+      {
+        YYCDEBUG << "Exception caught: cleaning lookahead and stack"
+                 << std::endl;
+        // Do not try to display the values of the reclaimed symbols,
+        // as their printer might throw an exception.
+        if (yychar != yyempty_)
+          {
+            /* Make sure we have latest lookahead translation.  See
+               comments at user semantic actions for why this is
+               necessary.  */
+            yytoken = yytranslate_ (yychar);
+            yydestruct_ (YY_NULL, yytoken, &yylval, &yylloc);
+          }
+
+        while (1 < yystate_stack_.height ())
+          {
+            yydestruct_ (YY_NULL,
+                         yystos_[yystate_stack_[0]],
+                         &yysemantic_stack_[0],
+                         &yylocation_stack_[0]);
+            yypop_ ();
+          }
+        throw;
+      }
   }
 
   // Generate an error message.
@@ -1032,10 +1068,10 @@ else
 
 
 } // loos
-/* Line 1106 of lalr1.cc  */
-#line 1037 "grammar.cc"
-/* Line 1107 of lalr1.cc  */
-#line 149 "grammar.yy"
+/* Line 1141 of lalr1.cc  */
+#line 1073 "grammar.cc"
+/* Line 1142 of lalr1.cc  */
+#line 151 "grammar.yy"
 
 
 
@@ -1046,4 +1082,3 @@ void loos::parser::error(const loos::location& loc, const std::string& s = "unkn
 void loos::parse_error(const std::string& s = "unknown error") {
   std::cerr << "***ERROR***  Bad selection syntax - " << s << std::endl;
 }
-

@@ -1,4 +1,4 @@
-/* A Bison parser, made by GNU Bison 2.6.1.  */
+/* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Stack handling for Bison parsers in C++
    
@@ -35,14 +35,14 @@
  ** Define the loos::stack class.
  */
 
-#ifndef LOOS_STACK_HH
-# define LOOS_STACK_HH
+#ifndef YY_LOOS_STACK_HH_INCLUDED
+# define YY_LOOS_STACK_HH_INCLUDED
 
 # include <deque>
 
 
 namespace loos {
-/* Line 37 of stack.hh  */
+/* Line 34 of stack.hh  */
 #line 47 "stack.hh"
   template <class T, class S = std::deque<T> >
   class stack
@@ -127,7 +127,7 @@ namespace loos {
   };
 
 } // loos
-/* Line 119 of stack.hh  */
+/* Line 116 of stack.hh  */
 #line 132 "stack.hh"
 
-#endif /* !LOOS_STACK_HH  */
+#endif /* !YY_LOOS_STACK_HH_INCLUDED  */

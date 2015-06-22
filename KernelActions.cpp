@@ -194,6 +194,13 @@ namespace loos {
       stack->push(v);
     }
 
+    // Beware of overflows here!!!
+    void pushAtomIndex::execute(void) {
+      requireAtom();
+      Value v(static_cast<long>(atom->index()));
+      stack->push(v);
+    }
+
     void pushAtomResname::execute(void) {
       requireAtom();
       Value v(atom->resname());

@@ -57,7 +57,7 @@ namespace loos {
       union {
         std::string *str;
         float flt;
-        int itg;
+        long itg;
       };
 
       //! Make a copy (clone) of a Value.
@@ -86,11 +86,12 @@ namespace loos {
 
       Value(const std::string s) { setString(s); }
       Value(const float f) { setFloat(f); }
+      Value(const long i) { setInt(i); }
       Value(const int i) { setInt(i); }
 
       void setString(const std::string s) { str = new std::string(s); type = STRING; }
       void setFloat(const float f) { flt = f; type = FLOAT; }
-      void setInt(const int i) { itg = i; type = INT; }
+      void setInt(const long i) { itg = i; type = INT; }
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
       std::string getString(void) const {
@@ -107,7 +108,7 @@ namespace loos {
       }
 
       //! Retrieve data, throwing an error if the Value is of the incorrect type.
-      int getInt(void) const {
+      long getInt(void) const {
         if (type != INT)
           throw(LOOSError("Expected an int value..."));
         return(itg);

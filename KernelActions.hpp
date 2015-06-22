@@ -113,7 +113,7 @@ namespace loos {
     class pushInt : public Action {
       Value val;
     public:
-      explicit pushInt(const int i) : Action("pushInt"), val(i) { }
+      explicit pushInt(const long i) : Action("pushInt"), val(i) { }
       void execute(void);
       std::string name(void) const;
     };
@@ -244,6 +244,13 @@ namespace loos {
     class pushAtomId : public Action {
     public:
       pushAtomId() : Action("pushAtomId") { }
+      void execute(void);
+    };
+
+    //! Push atom index onto the stack
+    class pushAtomIndex : public Action {
+    public:
+      pushAtomIndex() : Action("pushAtomIndex") { }
       void execute(void);
     };
 
