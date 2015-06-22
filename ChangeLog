@@ -1,3 +1,10 @@
+2015-06-22    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added IndexSelector to pick atoms based on their index within the model
+	file (not the same as atom id)
+	* Added "index" keyword to selection language
+	* Changed integers in selection language to long ints (to avoid overflow problems)
+
 2015-05-28    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed handling of DEBUG in setup scripts
