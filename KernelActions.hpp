@@ -113,7 +113,7 @@ namespace loos {
     class pushInt : public Action {
       Value val;
     public:
-      explicit pushInt(const int i) : Action("pushInt"), val(i) { }
+      explicit pushInt(const long i) : Action("pushInt"), val(i) { }
       void execute(void);
       std::string name(void) const;
     };
