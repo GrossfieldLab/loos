@@ -247,6 +247,13 @@ namespace loos {
       void execute(void);
     };
 
+    //! Push atom index onto the stack
+    class pushAtomIndex : public Action {
+    public:
+      pushAtomIndex() : Action("pushAtomIndex") { }
+      void execute(void);
+    };
+
     //! Push atom'ss residue name onto the stack
     class pushAtomResname : public Action {
     public:
