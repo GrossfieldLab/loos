@@ -188,46 +188,47 @@ returns that atom property.  So you cannot put a keyword in a string
 and expect it to be substituted with the appropriate value, for example.
 
 \subsection relops Relational Operators
-<table align="center">
-<tr align="center"><th>Operator</th><th>Operation</th> <th>Strings</th><th>Numbers</th><th>Example</th></tr>
-<tr align="center"><td>&gt;</td><td>Greater than</td><td>yes</td><td>yes</td><td>resid &gt; 10</td></td>
-<tr align="center"><td>&gt;=</td><td>Greater than or equals</td><td>yes</td><td>yes</td><td>resid &gt;= 10</td></td>
-<tr align="center"><td>&lt;=</td><td>Less than or equals</td><td>yes</td><td>yes</td><td>resid &lt;= 50</td></td>
-<tr align="center"><td>&lt;</td><td>Less than</td><td>yes</td><td>yes</td><td>resid &lt; 50</td></td>
-<tr align="center"><td>==</td><td>Exactly equals</td><td>yes</td><td>yes</td><td>name == "CA"</td></td>
-<tr align="center"><td>!=</td><td>Doesn't equals exactly</td><td>yes</td><td>yes</td><td>segname != "SOLV"</td></td>
-<tr align="center"><td>=~</td><td>Regular expression match</td><td>yes</td><td>no</td><td>name =~ "^(C[A]?|N|O)$"</td></td>
+<table align="center" border="1" style="width:80%">
+<tr align="left"><th>Operator</th><th>Operation</th> <th>Strings</th><th>Numbers</th><th>Example</th></tr>
+<tr align="left"><td>&gt;</td><td>Greater than</td><td>yes</td><td>yes</td><td>resid &gt; 10</td></td>
+<tr align="left"><td>&gt;=</td><td>Greater than or equals</td><td>yes</td><td>yes</td><td>resid &gt;= 10</td></td>
+<tr align="left"><td>&lt;=</td><td>Less than or equals</td><td>yes</td><td>yes</td><td>resid &lt;= 50</td></td>
+<tr align="left"><td>&lt;</td><td>Less than</td><td>yes</td><td>yes</td><td>resid &lt; 50</td></td>
+<tr align="left"><td>==</td><td>Exactly equals</td><td>yes</td><td>yes</td><td>name == "CA"</td></td>
+<tr align="left"><td>!=</td><td>Doesn't equals exactly</td><td>yes</td><td>yes</td><td>segname != "SOLV"</td></td>
+<tr align="left"><td>=~</td><td>Regular expression match</td><td>yes</td><td>no</td><td>name =~ "^(C[A]?|N|O)$"</td></td>
 </table>
 
 \subsection logops Logical Operators
-<table align="center">
-<tr align="center"><th>Operator</th><th>Operation</th><th>Example</th></tr>
-<tr align="center"><td>&&</td><td>Logical And</td><td>name == "CA" && segid == "PROT"</td></tr>
-<tr align="center"><td>||</td><td>Logical Or</td><td>segid == "SOLV" || segid == "BULK"</td></tr>
-<tr align="center"><td>!</td><td>Not (Negate)</td><td>!(segid == "SOLV")</td></tr>
+<table align="center" border="1" style="width:80%">
+<tr align="left"><th>Operator</th><th>Operation</th><th>Example</th></tr>
+<tr align="left"><td>&&</td><td>Logical And</td><td>name == "CA" && segid == "PROT"</td></tr>
+<tr align="left"><td>||</td><td>Logical Or</td><td>segid == "SOLV" || segid == "BULK"</td></tr>
+<tr align="left"><td>!</td><td>Not (Negate)</td><td>!(segid == "SOLV")</td></tr>
 </table>
 
 
 \subsection magops Magical Operators
-<table align="center">
-<tr align="center"><th>Operator</th><th>Operation</th><th>Example</th></tr>
-<tr align="center"><td>-></td><td>Extracts a number from a string</td><td>segid -> "L(\d+)"</td></tr>
+<table align="center" border="1" style="width:80%">
+<tr align="left"><th>Operator</th><th>Operation</th><th>Example</th></tr>
+<tr align="left"><td>-></td><td>Extracts a number from a string</td><td>segid -> "L(\d+)"</td></tr>
 </table>
 
 
 \subsection keywords Keywords
-<table align="center">
-<tr align="center" valign="top"><th>Keyword</th><th>Atom Property</th><th>Evaluates to...</th><th>Operators</th></tr>
-<tr align="center" valign="top"><td>name</td><td>Atom name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center" valign="top"><td>id</td><td>Atom ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
-<tr align="center" valign="top"><td>resname</td><td>Residue name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center" valign="top"><td>resid</td><td>Residue ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
-<tr align="center" valign="top"><td>segid</td><td>Atom segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center" valign="top"><td>segname</td><td>Synonym for segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center" valign="top"><td>chainid</td><td>Chain ID</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
-<tr align="center" valign="top"><td>all</td><td>Evaluates to true</td><td>number</td><td></td></tr>
-<tr align="center" valign="top"><td>hydrogen</td><td>Evaluates to true if atom is a hydrogen</td><td>number</td><td></td></tr>
-<tr align="center" valign="top"><td>backbone</td><td>Evaluates to true if atom is a backbone atom (nucleic acids and proteins, and includes hydrogens)</td><td>number</td><td></td></tr>
+<table align="center" border="1" style="width:80%">
+<tr align="left" valign="top"><th>Keyword</th><th>Atom Property</th><th>Evaluates to...</th><th>Operators</th></tr>
+<tr align="left" valign="top"><td>name</td><td>Atom name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="left" valign="top"><td>id</td><td>Atom ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="left" valign="top"><td>index</td><td>Atom index in model file (0=based)</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="left" valign="top"><td>resname</td><td>Residue name</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="left" valign="top"><td>resid</td><td>Residue ID</td><td>number</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=</td></tr>
+<tr align="left" valign="top"><td>segid</td><td>Atom segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="left" valign="top"><td>segname</td><td>Synonym for segid</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="left" valign="top"><td>chainid</td><td>Chain ID</td><td>string</td><td>&gt;, &gt;=, &lt;=, &lt;, ==, !=, =~</td></tr>
+<tr align="left" valign="top"><td>all</td><td>Evaluates to true</td><td>number</td><td></td></tr>
+<tr align="left" valign="top"><td>hydrogen</td><td>Evaluates to true if atom is a hydrogen</td><td>number</td><td></td></tr>
+<tr align="left" valign="top"><td>backbone</td><td>Evaluates to true if atom is a backbone atom (nucleic acids and proteins, and includes hydrogens)</td><td>number</td><td></td></tr>
 </table>
 
 Notes:\n
