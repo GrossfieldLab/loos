@@ -140,6 +140,8 @@ if (*($1) == "id")
    driver.kern.push(new internal::pushAtomId);
 else if (*($1) == "resid")
    driver.kern.push(new internal::pushAtomResid);
+else if (*($1) == "index")
+   driver.kern.push(new internal::pushAtomIndex);	
 else
    loos::parse_error("Unknown numeric keyword " + *($1));   
 }

@@ -55,7 +55,7 @@ all                  { return(token::ALL); }
 hydrogen             { return(token::HYDROGEN); }
 backbone	     { return(token::BACKBONE); }
 name|resname|segid|segname|chainid   { yylval->sval = new std::string(yytext, yyleng); return(token::SKEY); }
-id|resid             { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
+id|resid|index       { yylval->sval = new std::string(yytext, yyleng); return(token::NKEY); }
 
 \"|\'                {                /* Special handling for strings... */
  std::string delim(yytext, yyleng);
