@@ -89,17 +89,17 @@ public:
              && vm.count("num-bins")));
   }
 
-  bool postCondition(po::variables_map& vm)
+  bool postConditions(po::variables_map& vm)
   {
     if (vm.count("sel1") && !vm.count("sel2"))
       selection2 = selection1;
     sel1_spans = false;
     sel2_spans = false;
-    if (vm.count("sel1_spans")) 
+    if (vm.count("sel1-spans")) 
         {
         sel1_spans = true;
         }
-    if (vm.count("sel2_spans")) 
+    if (vm.count("sel2-spans")) 
         {
         sel2_spans = true;
         }
