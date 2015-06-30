@@ -1,3 +1,8 @@
+2015-06-30    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in xy_rdf where --sel1-spans, --sel2-spans, and --reselect were ignored
+	
+
 2015-06-22    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added IndexSelector to pick atoms based on their index within the model
