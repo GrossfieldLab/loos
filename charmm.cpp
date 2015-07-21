@@ -60,8 +60,13 @@ namespace loos {
         }
     }
 
-    // next line is just the number of atoms, by itself
-    unsigned int num_atoms = atoi(input.c_str());
+    // Next line is the number of atoms, and maybe the flag "EXT"
+    unsigned int num_atoms = parseStringAs<unsigned int>(input.c_str(), 0, 10);
+    bool is_ext = false;
+    if (input.substr(12,3) == std::string("EXT")) {
+        is_ext = true;
+    }
+
 
     // now loop and read the coordinates
     // Note: there are two different formats, depending on the number of atoms
@@ -78,7 +83,7 @@ namespace loos {
         if (!is.good()) {
             throw(FileReadError(_filename, "Cannot read CHARMM coordinates"));
         }
-        if (num_atoms < 100000) {
+        if ((num_atoms < 100000) && !is_ext) {
             atom_num = parseStringAs<int>(input, 0, 5);
             res_name = parseStringAs<std::string>(input,11,4);
             atom_name = parseStringAs<std::string>(input,16,4);
@@ -97,14 +102,20 @@ namespace loos {
             x = parseStringAs<float>(input,40,20);
             y = parseStringAs<float>(input,60,20);
             z = parseStringAs<float>(input,80,20);
+            segid = parseStringAs<std::string>(input,100,8);
+            res_num = parseStringAs<int>(input,108,8);
+            weight = parseStringAs<float>(input,116,20);
+            
+            /*
             segid = parseStringAs<std::string>(input,82,8);
             res_num = parseStringAs<int>(input,92,8);
             weight = parseStringAs<float>(input,100,20);
+            */
         }
 
         // Create a new atom and fill in the values
         pAtom pa(new Atom);
-	pa->index(_max_index++);
+        pa->index(_max_index++);
         pa->id(atom_num);
         pa->resid(res_num);
         pa->name(atom_name);

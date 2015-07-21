@@ -1,3 +1,7 @@
+2015-07-21    <alan_grossfield@urmc.rochester.edu>
+	* Fixed bug in handling of extended format charmm coordinates, including
+	  actually parsing the "EXT" flag
+
 2015-06-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in xy_rdf where --sel1-spans, --sel2-spans, and --reselect were ignored
