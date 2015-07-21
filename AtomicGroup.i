@@ -20,7 +20,9 @@
 */
 
 
-
+%rename(cpp_splitByMolecule)       loos::AtomicGroup::splitByMolecule;
+%rename(cpp_splitByResidue)        loos::AtomicGroup::splitByResidue;
+%rename(cpp_splitByUniqueSegid)    loos::AtomicGroup::splitByUniqueSegid;
 
 
 %header %{
@@ -156,6 +158,32 @@ namespace loos {
     loos::AtomicGroupPythonIterator __iter__() {
       return(loos::AtomicGroupPythonIterator($self));
     }
+
+%pythoncode %{
+      def splitByMolecule(self):
+          l = []
+          v = self.cpp_splitByMolecule()
+          for i in v:
+              l.append(AtomicGroup(i))
+          return(l)
+
+      def splitByResidue(self):
+          l = []
+          v = self.cpp_splitByResidue()
+          for i in v:
+              l.append(AtomicGroup(i))
+          return(l)
+
+      def splitByUniqueSegid(self):
+          l = []
+          v = self.cpp_splitByUniqueSegid()
+          for i in v:
+              l.append(AtomicGroup(i))
+          return(l)
+
+
+
+%}
   };
 
   %rename(__add__)  loos::AtomicGroup::operator+;
