@@ -457,7 +457,12 @@ namespace loos {
    * boundary is marked by either a change in the resid or in the
    * segid.
    */
+#if !defined(SWIG)
   std::vector<AtomicGroup> AtomicGroup::splitByResidue(void) const {
+#else
+  std::vector<AtomicGroup> AtomicGroup::cpp_splitByResidue(void) const {
+#endif
+    std::cerr << "AtomicGroup::splitByResidue()\n";
     std::vector<AtomicGroup> residues;
 
     int curr_resid = atoms[0]->resid();
@@ -468,6 +473,7 @@ namespace loos {
     for (ci = atoms.begin(); ci != atoms.end(); ++ci) {
       if (curr_resid != (*ci)->resid() || (*ci)->segid() != curr_segid) {
         residues.push_back(residue);
+	std::cerr << "AtomicGroup::splitByResidue() -- push_back inside main loop\n";
         residue = AtomicGroup();
         curr_resid = (*ci)->resid();
         curr_segid = (*ci)->segid();
@@ -475,9 +481,10 @@ namespace loos {
       residue.append(*ci);
     }
 
-    if (residue.size() != 0)
+    if (residue.size() != 0) {
       residues.push_back(residue);
-
+      std::cerr << "AtomicGroup::splitByResidue() -- push_back at end\n";
+    }
 
     // Copy the box information
     for (std::vector<AtomicGroup>::iterator i = residues.begin(); i != residues.end(); ++i)

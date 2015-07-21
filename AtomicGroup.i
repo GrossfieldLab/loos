@@ -82,6 +82,7 @@
   SWIG_fail;
   %}
 
+%template(AtomVector) std::vector<loos::pAtom>;
 
 
 %wrapper %{
@@ -104,11 +105,15 @@ namespace loos {
   };
 }
 
+
+
+
 %include "AtomicGroup.hpp"
 
 namespace loos {
 
   %extend AtomicGroup {
+
     ulong __len__() const {
       return($self->size());
     }
@@ -156,13 +161,27 @@ namespace loos {
     loos::AtomicGroupPythonIterator __iter__() {
       return(loos::AtomicGroupPythonIterator($self));
     }
+
+
+%pythoncode %{
+    def splitByResidue(group):
+      print 'DEBUG'
+      print type(group)
+      print 'calling original splitByResidue()'
+      vec = []
+      tmplist = []
+      for mol in vec:
+          tmplist.append(loos.AtomicGroup(mol))
+      return(tmplist)
+%}
+
+
+
   };
 
   %rename(__add__)  loos::AtomicGroup::operator+;
 
-
-
-
+ 
 };
 
 

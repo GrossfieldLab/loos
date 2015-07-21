@@ -76,7 +76,33 @@ namespace loos {
       indexbit = usr3bit << 1
     };
 
-    Atom() { init(); }
+    Atom() { init(); std::cerr << "Created atom at $" << std::hex << this << std::endl; std::cout.flush(); }
+
+    Atom(const Atom& a) :
+      _id(a._id),
+      _index(a._index),
+      _record(a._record),
+      _name(a._name),
+      _altloc(a._altloc),
+      _resname(a._resname),
+      _chainid(a._chainid),
+      _resid(a._resid),
+      _atomic_number(a._atomic_number),
+      _icode(a._icode),
+      _b(a._b),
+      _q(a._q),
+      _charge(a._charge),
+      _mass(a._mass),
+      _segid(a._segid),
+      _pdbelement(a._pdbelement),
+      _atom_type(a._atom_type),
+      _coords(a._coords),
+      mask(a.mask),
+      bonds(a.bonds)
+    {
+      std::cerr << "CCtor atom at $" << std::hex << this << " from $" << &a << std::endl;
+    }
+    
 
     //! Constructs an atom with the atomid i, atomname s, and coordinates c.
     /**
@@ -95,7 +121,7 @@ namespace loos {
     }
 
 
-    ~Atom() { }
+    ~Atom() { std::cerr << "Destroying atom at $" << std::hex << this << std::endl; }
 
     // Accessors...
     int id(void) const;

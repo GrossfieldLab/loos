@@ -95,7 +95,9 @@ namespace loos {
     static const double superposition_zero_singular_value;
 
   public:
-    AtomicGroup() : _sorted(false) { }
+    AtomicGroup() : _sorted(false) { 
+      std::cerr << "Created new empty AtomicGroup at " << std::hex << this << std::endl;
+    }
 
     //! Creates a new AtomicGroup with \a n un-initialized atoms.
     /** The atoms will all have ascending atomid's beginning with 1, but
@@ -110,7 +112,36 @@ namespace loos {
       }
     }
 
-    virtual ~AtomicGroup() { }
+    AtomicGroup(const AtomicGroup& other) {
+      std::cerr << "CCtor new AtomicGroup at " << std::hex << this << " from " << &other << std::endl;
+      box = other.box;
+      _sorted = other._sorted;
+      atoms = other.atoms;
+    }
+
+
+    virtual ~AtomicGroup() {
+      std::cerr << "Destroyed AtomicGroup at $" << std::hex << this << std::endl;
+    }
+
+    unsigned long address() const {
+      return(reinterpret_cast<unsigned long>(this));
+    }
+
+
+    void checkAtoms() const {
+      std::cerr << "Checking AtomicGroup at " << std::hex << this << " with " << std::dec << atoms.size() << " atoms." << std::endl;
+      if (atoms.empty()) {
+	std::cerr << "\t The group is empty!\n";
+	return;
+      }
+      for (uint i=0; i<atoms.size(); ++i) {
+	pAtom pa = atoms[i];
+	std::cerr << '\t' << std::dec << i << '\t' << pa.use_count() << '\t' << std::hex << pa.get() << std::endl;
+      }
+      std::cerr << "End check\n\n";
+    }
+
 
     //! Creates a deep copy of this group
     /** This creates a non-polymorphic deep copy of an AtomicGroup.  The
@@ -316,7 +347,11 @@ namespace loos {
     }
 
     //! Returns a vector of AtomicGroups, each comprising a single residue
+#if !defined(SWIG)
     std::vector<AtomicGroup> splitByResidue(void) const;
+#else
+    std::vector<AtomicGroup> cpp_splitByResidue() const;
+#endif
 
     //! Returns a vector of AtomicGroups, each containing atoms with the same name
     std::map<std::string, AtomicGroup> splitByName(void) const;
