@@ -24,6 +24,9 @@
 %header %{
 #include <ensembles.hpp>
 
+
+#if defined(SWIGPYTHON)
+
   namespace loos {
     struct AlignmentResult {
       std::vector<XForm> transforms;
@@ -71,12 +74,16 @@
 
   }
 
+#endif
+
 %}
 
 %include "ensembles.hpp"
 
 
 namespace loos {
+
+#if defined(SWIGPYTHON)
 
   struct AlignmentResult {
     std::vector<XForm> transforms;
@@ -95,6 +102,8 @@ namespace loos {
 
 };
 
+
+#endif
 
 %template(XFormVector) std::vector<loos::XForm>;
 %template(UIntVector) std::vector<uint>;
