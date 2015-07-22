@@ -19,10 +19,13 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
+%rename(cpp_iterativeAlignment)    loos::iterativeAlignment;
 
 %header %{
 #include <ensembles.hpp>
+
+
+
 
 
 #if defined(SWIGPYTHON)
@@ -102,6 +105,20 @@ namespace loos {
 
 };
 
+
+%pythoncode %{
+def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
+    result = iterativeAlignmentPy(ensemble, threshold, maxiter)
+    return(result.transforms, result.rmsd, result.iterations)
+
+def iterativeAlignment(model, traj, frames, threshold=1e-8, maxiter=1000):
+    result = iterativeAlignmentPy(model, traj, frames, threshold, maxiter)
+    return(result.transforms, result.rmsd, result.iterations)
+
+def iterativeAlignment(model, traj, threshold=1e-8, maxiter=1000):
+    result = iterativeAlignmentPy(model, traj, threshold, maxiter)
+    return(result.transforms, result.rmsd, result.iterations)
+%}
 
 #endif
 
