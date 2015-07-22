@@ -98,6 +98,8 @@ namespace loos {
     //! Initialize an XForm with an existing matrix.
     explicit XForm(const GMatrix& m) { stack.push_back(m); }
 
+      XForm(const XForm& x) : stack(x.stack), _unset(x._unset) { }
+
     //! Push the current matrix onto the stack
     void push(void);
     //! Pop the top matrix off the stack
