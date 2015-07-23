@@ -40,6 +40,7 @@ namespace opts = loos::OptionsFramework;
 string model_name, traj_name;
 bool box_info = false;
 bool centroid = false;
+bool file_is_corrupt = false;
 
 string fullHelpMessage(void)
 {
@@ -93,7 +94,7 @@ public:
   void addGeneric(opts::po::options_description& o) {
     o.add_options()
       ("brief,B", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
-      ("centroid", opts::po::value<string>(&centroid_selection), "Report average centroid")
+      ("centroid", opts::po::value<string>(&centroid_selection), "Report average centroid of selection")
       ("box", opts::po::value<bool>(&box_info)->default_value(box_info), "Report periodic box info");
   }
 
@@ -112,7 +113,7 @@ public:
 
 typedef boost::tuple<GCoord, GCoord, GCoord, GCoord, GCoord> BoxInfo;
 
-BoxInfo scanBoxes(pTraj& traj) {
+BoxInfo scanBoxes(pTraj& traj, const uint maxframe) {
   GCoord min, max, avg;
   GCoord mine, maxe;
 
@@ -122,7 +123,8 @@ BoxInfo scanBoxes(pTraj& traj) {
   double minsize = min[0] * min[1] * min[2];
   double maxsize = max[0] * max[1] * max[2];
 
-  while (traj->readFrame()) {
+  for (uint t = 1; t<maxframe; ++t) {
+    traj->readFrame();
     GCoord box = traj->periodicBox();
     avg += box;
     double size = box[0] * box[1] * box[2];
@@ -149,27 +151,28 @@ BoxInfo scanBoxes(pTraj& traj) {
 
 
 
-boost::tuple<GCoord, GCoord> scanCentroid(AtomicGroup& model, pTraj& traj) {
+boost::tuple<GCoord, GCoord> scanCentroid(AtomicGroup& model, pTraj& traj, const uint maxframe) {
   vector<GCoord> centers;
   GCoord avg;
 
   traj->rewind();
-  while (traj->readFrame()) {
+  for (uint t=0; t<maxframe; ++t) {
+    traj->readFrame();
     traj->updateGroupCoords(model);
     GCoord c = model.centroid();
     centers.push_back(c);
     avg += c;
   }
 
-  avg /= traj->nframes();
+  avg /= maxframe;
 
   GCoord std;
-  for (uint i=0; i<traj->nframes(); ++i) {
+  for (uint i=0; i<maxframe; ++i) {
     GCoord c = centers[i] - avg;
     std += c*c;
   }
 
-  std /= (traj->nframes() - 1);
+  std /= (maxframe - 1);
   for (uint i=0; i<3; i++)
     std[i] = sqrt(std[i]);
 
@@ -182,8 +185,26 @@ uint verifyFrames(pTraj& traj) {
   uint n = 0;
   
   traj->rewind();
-  while (traj->readFrame())
-    ++n;
+  bool flag = true;
+  while (flag) {
+    try {
+      flag = traj->readFrame();
+    }
+    catch (LOOSError& e) {
+      cerr << "*****************************************" << endl;
+      cerr << "At frame " << n << "...\n";
+      cerr << e.what() << endl;
+      cerr << "*****************************************" << endl;
+      return(n);
+    }
+    catch (exception& e) {
+      cerr << "An errror occured while reading frame " << n << endl;
+      cerr << e.what() << endl;
+      exit(-10);
+    }
+    if (flag)
+      ++n;
+  }
 
   return(n);
 }
@@ -201,12 +222,19 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
   cout << boost::format(fldpre + "%d\n") % "Number of frames" % traj->nframes();
   uint n = verifyFrames(traj);
   cout << boost::format(fldpre + "%d\n") % "Actual frames" % n;
+  if (n != traj->nframes()) {
+    cerr << "***Warning*** box and centroid information will use the actual frames\n";
+    if (traj->description() == "CHARMM/NAMD DCD") {
+      cerr << "***Warning*** frame count mismatch between file and header in DCD.\n";
+      cerr << "***Warning*** If the file is not corrupted, try fixdcd to correct the header.\n";
+    }
+  }
 
   cout << boost::format(fldpre + "%f\n") % "Timestep" % traj->timestep();
   if (traj->hasPeriodicBox()) {
     cout << boost::format(fldpre + "%s\n") % "Periodic box" % "yes";
     if (box_info) {
-      BoxInfo box = scanBoxes(traj);
+      BoxInfo box = scanBoxes(traj, n);
       cout << boost::format(fldpre + "%s\n") % "Average box" % boost::get<0>(box);
       cout << boost::format(fldpre + "%s\n") % "Smallest box" % boost::get<1>(box);
       cout << boost::format(fldpre + "%s\n") % "Largest box" % boost::get<2>(box);
@@ -216,7 +244,7 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
     cout << boost::format(fldpre + "%s\n") % "Periodic box" % "no";
 
   if (centroid) {
-    boost::tuple<GCoord, GCoord> res = scanCentroid(center, traj);
+    boost::tuple<GCoord, GCoord> res = scanCentroid(center, traj, n);
     cout << boost::format(fldpre + "%s +- %s\n") % "Average Centroid" % boost::get<0>(res) % boost::get<1>(res);
   }
 }
@@ -224,6 +252,7 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
 
 void briefInfo(pTraj& traj) {
   cout << traj->natoms() << " " << traj->nframes() << " " << traj->timestep() << " " << traj->hasPeriodicBox() << endl;
+  verifyFrames(traj);
 }
 
 
