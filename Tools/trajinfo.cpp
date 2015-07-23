@@ -222,13 +222,6 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
   cout << boost::format(fldpre + "%d\n") % "Number of frames" % traj->nframes();
   uint n = verifyFrames(traj);
   cout << boost::format(fldpre + "%d\n") % "Actual frames" % n;
-  if (n != traj->nframes()) {
-    cerr << "***Warning*** box and centroid information will use the actual frames\n";
-    if (traj->description() == "CHARMM/NAMD DCD") {
-      cerr << "***Warning*** frame count mismatch between file and header in DCD.\n";
-      cerr << "***Warning*** If the file is not corrupted, try fixdcd to correct the header.\n";
-    }
-  }
 
   cout << boost::format(fldpre + "%f\n") % "Timestep" % traj->timestep();
   if (traj->hasPeriodicBox()) {
@@ -246,6 +239,21 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
   if (centroid) {
     boost::tuple<GCoord, GCoord> res = scanCentroid(center, traj, n);
     cout << boost::format(fldpre + "%s +- %s\n") % "Average Centroid" % boost::get<0>(res) % boost::get<1>(res);
+  }
+
+  if (n != traj->nframes()) {
+    cout << endl;
+    cout << "***WARNINGS***\n";
+    cout << "* Frame count mismatch between header and trajectory.\n";
+    if (box_info || centroid)
+      cout << "* Centroid and box information uses actual frames (may be fewer than listed in header)\n";
+    if (n < traj->nframes()) {
+      cout << "* The trajectory has fewer frames than expected.\n";
+      cout << "* Try using subsetter to extract the first " << n << " valid frames.\n";
+    }
+
+    if (traj->description() == "CHARMM/NAMD DCD")
+      cout << "* If the trajectory is not corrupted, try fixdcd to correct the header.\n";
   }
 }
 
