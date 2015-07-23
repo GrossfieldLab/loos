@@ -1,6 +1,14 @@
+
+2015-07-23    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed trajinfo to handle read errors and only use first set of valid frames
+	* Changed trajinfo to ALWAYS scan trajectory frames
+
+
 2015-07-21    <alan_grossfield@urmc.rochester.edu>
 	* Fixed bug in handling of extended format charmm coordinates, including
 	  actually parsing the "EXT" flag
+
 
 2015-06-30    <tromo@hill.urmc-sh.rochester.edu>
 
