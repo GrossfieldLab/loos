@@ -1,3 +1,15 @@
+2015-07-23    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added [PYLOOS] iterativeAlignment functions that will return a
+	Python tuple (list of transforms, final rmsd, # of iterations)
+	* Deprecated [PYLOOS] iterativeAlignmentPy() functions
+	* Changed [PYLOOS] AtomicGroup::splitByMolecule() to return a
+	Python list of AtomicGroups rather than an AtomicGroupVector
+	* Changed [PYLOOS] AtomicGroup::splitByUniqueSegid() to return a
+	Python list of AtomicGroups rather than an AtomicGroupVector
+	* Changed [PYLOOS] AtomicGroup::splitByResidue() to return a
+	Python list of AtomicGroups rather than an AtomicGroupVector
+
 2015-06-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in xy_rdf where --sel1-spans, --sel2-spans, and --reselect were ignored
