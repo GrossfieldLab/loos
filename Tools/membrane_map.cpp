@@ -262,7 +262,6 @@ int main(int argc, char *argv[])
         align_to = selectAtoms(system, ropts->value("align-selection"));
         }
     // deep copy, this is the reference structure
-    // TODO: give the user the option of supplying an outside structure
     AtomicGroup reference = align_to.copy();  
 
     AtomicGroup apply_to = selectAtoms(system, ropts->value("target-selection"));
