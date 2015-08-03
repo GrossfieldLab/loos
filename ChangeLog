@@ -1,14 +1,21 @@
-
 2015-07-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed trajinfo to handle read errors and only use first set of valid frames
 	* Changed trajinfo to ALWAYS scan trajectory frames
+	* Added [PYLOOS] iterativeAlignment functions that will return a
+	Python tuple (list of transforms, final rmsd, # of iterations)
+	* Deprecated [PYLOOS] iterativeAlignmentPy() functions
+	* Changed [PYLOOS] AtomicGroup::splitByMolecule() to return a
+	Python list of AtomicGroups rather than an AtomicGroupVector
+	* Changed [PYLOOS] AtomicGroup::splitByUniqueSegid() to return a
+	Python list of AtomicGroups rather than an AtomicGroupVector
+	* Changed [PYLOOS] AtomicGroup::splitByResidue() to return a
+	Python list of AtomicGroups rather than an AtomicGroupVector
 
 
 2015-07-21    <alan_grossfield@urmc.rochester.edu>
 	* Fixed bug in handling of extended format charmm coordinates, including
 	  actually parsing the "EXT" flag
-
 
 2015-06-30    <tromo@hill.urmc-sh.rochester.edu>
 

@@ -110,6 +110,14 @@ namespace loos {
       }
     }
 
+    //! Copy constructor (atoms and box shared)
+    AtomicGroup(const AtomicGroup& g) :
+      _sorted(g._sorted),
+      atoms(g.atoms),
+      box(g.box)
+      { }
+    
+
     virtual ~AtomicGroup() { }
 
     //! Creates a deep copy of this group
