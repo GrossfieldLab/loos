@@ -85,27 +85,56 @@ int main(int argc, char *argv[]) {
   double maxval = numeric_limits<double>::max();
   GCoord max(-maxval, -maxval, -maxval);
   GCoord min(maxval, maxval, maxval);
+  vector<GCoord> boxes;
+  GCoord avgbox;
 
   while (traj->readFrame()) {
     traj->updateGroupCoords(subset);
+
     GCoord center(0,0,0);
+    GCoord submin(maxval, maxval, maxval);
+    GCoord submax(-maxval, -maxval, -maxval);
+
     for (AtomicGroup::iterator i = subset.begin(); i != subset.end(); ++i) {
       GCoord c = (*i)->coords();
       for (int j = 0; j<3; ++j) {
-        if (max[j] < c[j])
-          max[j] = c[j];
-        if (min[j] > c[j])
-          min[j] = c[j];
+        if (submax[j] < c[j])
+          submax[j] = c[j];
+        if (submin[j] > c[j])
+          submin[j] = c[j];
       }
       center += c;
     }
     center /= subset.size();
     centroid += center;
+
+    GCoord box = submax - submin;
+    boxes.push_back(box);
+    avgbox += box;
+
+    for (uint i=0; i<3; ++i) {
+      if (submax[i] > max[i])
+	max[i] = submax[i];
+      if (submin[i] < min[i])
+	min[i] = submin[i];
+    }
   }
 
   centroid /= traj->nframes();
+  avgbox /= traj->nframes();
+
+  GCoord boxdev;
+  for (vector<GCoord>::const_iterator i = boxes.begin(); i != boxes.end(); ++i) {
+    GCoord d = *i - avgbox;
+    for (uint j=0; j<3; ++j)
+      d[j] *= d[j];
+    boxdev += d;
+  }
+  for (uint j=0; j<3; ++j)
+    boxdev[j] = sqrt(boxdev[j]/(boxes.size()-1));
 
   cout << "Bounds: " << min << " to " << max << endl;
-  cout << "Box: " << max - min << endl;
+  cout << "Average Box: " << avgbox << endl;
+  cout << "Stddev Box: " << boxdev << endl;
   cout << "Center: " << centroid << endl;
 }
