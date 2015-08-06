@@ -79,6 +79,7 @@ bool voodoo = false;
 
 string center_selection;
 bool center_flag = false;
+string post_center_selection;
 
 
 
@@ -295,6 +296,7 @@ public:
       ("reimage", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule")
       ("voodoo", po::value<bool>(&voodoo)->default_value(false), "Apply reimaging voodoo for fringe systems")	      
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
+      ("postcenter,P", po::value<string>(&post_center_selection)->default_value(""), "Recenter using this selection after reimaging")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
       ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)\\D*$"), "Sort using a regular expression");
@@ -358,7 +360,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, center='%s', sort=%d")
+    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, center='%s', sort=%d, postcenter='%s'")
       % verbose_updates
       % stride
       % skip
@@ -367,7 +369,8 @@ public:
       % reimage
       % voodoo
       % center_selection
-      % sort_flag;
+      % sort_flag
+      % post_center_selection;
     if (sort_flag) {
       if (!scanf_spec.empty())
         oss << boost::format("scanf='%s'") % scanf_spec;
@@ -463,6 +466,10 @@ int main(int argc, char *argv[]) {
   if (!center_selection.empty())
     centered = selectAtoms(subset, center_selection);
 
+  AtomicGroup postcentered;
+  if (!post_center_selection.empty())
+    postcentered = selectAtoms(subset, post_center_selection);
+
   uint total_frames = bindFilesToIndices(model);
 
   // If no frame ranges were specified, fill in all possible frames,
@@ -540,12 +547,10 @@ int main(int argc, char *argv[]) {
 
 
     if (reimage) {
-      for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
-	mol->mergeImage();
-        mol->reimage();
-      }
-
-      if (voodoo && center_flag) {
+      if (!voodoo) {
+	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	  mol->mergeImage();
+      } else if (voodoo && center_flag) {
 	GCoord centroid = centered[0]->coords();
 	model.translate(-centroid);
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
@@ -556,6 +561,11 @@ int main(int argc, char *argv[]) {
 	  model.translate(-centroid);
 	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
 	    mol->reimage();
+	}
+
+	if (!post_center_selection.empty()) {
+	  GCoord postcenter = postcentered.centroid();
+	  model.translate(-postcenter);
 	}
 	
       }
