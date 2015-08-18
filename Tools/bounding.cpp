@@ -124,17 +124,21 @@ int main(int argc, char *argv[]) {
   avgbox /= traj->nframes();
 
   GCoord boxdev;
-  for (vector<GCoord>::const_iterator i = boxes.begin(); i != boxes.end(); ++i) {
-    GCoord d = *i - avgbox;
+  if (traj->nframes() > 2) {
+    for (vector<GCoord>::const_iterator i = boxes.begin(); i != boxes.end(); ++i) {
+      GCoord d = *i - avgbox;
+      for (uint j=0; j<3; ++j)
+	d[j] *= d[j];
+      boxdev += d;
+    }
     for (uint j=0; j<3; ++j)
-      d[j] *= d[j];
-    boxdev += d;
+      boxdev[j] = sqrt(boxdev[j]/(boxes.size()-1));
   }
-  for (uint j=0; j<3; ++j)
-    boxdev[j] = sqrt(boxdev[j]/(boxes.size()-1));
 
+  cout << "Number of frames: " << traj->nframes() << endl;
   cout << "Bounds: " << min << " to " << max << endl;
   cout << "Average Box: " << avgbox << endl;
-  cout << "Stddev Box: " << boxdev << endl;
+  if (traj->nframes() > 2) 
+    cout << "Stddev Box: " << boxdev << endl;
   cout << "Center: " << centroid << endl;
 }
