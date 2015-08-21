@@ -7,7 +7,7 @@ Cluster structures based from a simulation
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2012 Tod Romo, Grossfield Lab
+  Copyright (c) 2013 Tod Romo, Grossfield Lab
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -84,7 +84,7 @@ dataStack = vstack((fullArray))
 # Do the clustering...
 # Computing K-Means with K = num_means clusters
 centroids,distortion = kmeans(dataStack, int(num_means))
-# centroids  - the codebook of centriods 
+# centroids  - the codebook of centroids 
 # distortion - total distortion
 
 # Assign each sample to a cluster
