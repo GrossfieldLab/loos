@@ -30,10 +30,13 @@ from scipy.cluster.vq import kmeans,vq
 from itertools import chain
 
 
+verbose = 0
+
 if (len(sys.argv) <= 5) or (sys.argv[1] == "-h"):
     print "Usage: cluster-structures.py model selection num_means prefix traj [traj...] > output-for-metadata"
     sys.exit(1)
-verbose = 0
+
+
 
 ## Command line arguments
 model_name = sys.argv[1]
@@ -47,6 +50,7 @@ print cmd_string
 trajList = []
 for myargs in range(5, len(sys.argv)):
     trajList.append(sys.argv[myargs])
+
 
 # Create the model & read in the trajectories
 model = createSystem(model_name)
@@ -108,18 +112,24 @@ for item in range(5, len(sys.argv)):
     print "#", item-5,"\t ", sys.argv[item]
 
 # Output centroids
-centroid_out = outfile+".centroids"
-filewr = open(centroid_out, 'w')
-filewr.write(cmd_string)
-filewr.write( "\n# Means:\t"+num_means)
-filewr.write( "\n# Distortion:\t"+str(distortion))
-filewr.write( "\n# Centroids:\n")
 cen_list = centroids.tolist()
-for cen in cen_list:
-    troid = cen
-    filewr.write(  str(troid).strip("[]")  )
-    filewr.write("\n")
+for j in range(len(cen_list)):
+    troid = cen_list[j]
+    centroid_structure = subset.copy()
+    for i in range(0, len(troid), 3):
+        centroid_structure[i/3].coords(GCoord(troid[i], troid[i+1], troid[i+2]))
+    pdb = PDB.fromAtomicGroup(centroid_structure)
+    pdb.remarks().add(cmd_string)
+    pdb.remarks().add("Means = %s, Distortion = %f" % (num_means, distortion))
 
+    filename = "%s-centroid-%d.pdb" % (outfile, j)
+    print 'Writing centroid ', j
+    file = open(filename, 'w')
+    file.write(str(pdb))
+    file.close()
+
+
+    
 # Output data to files named prefix.[traj-index]
 currentTraj = 0;
 counter = 0
