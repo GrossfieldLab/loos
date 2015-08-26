@@ -27,6 +27,7 @@ import sys
 from loos import *
 from numpy import vstack,array
 from scipy.cluster.vq import kmeans,vq
+from itertools import chain
 
 
 if (len(sys.argv) <= 5) or (sys.argv[1] == "-h"):
@@ -39,7 +40,9 @@ model_name = sys.argv[1]
 selection = sys.argv[2]
 num_means = sys.argv[3]
 outfile =  sys.argv[4]
-print "#"," ".join(sys.argv) 
+cmd_string =  "# "+" ".join(sys.argv) 
+print cmd_string
+
 
 trajList = []
 for myargs in range(5, len(sys.argv)):
@@ -104,7 +107,18 @@ print "# index\t trajectory"
 for item in range(5, len(sys.argv)):
     print "#", item-5,"\t ", sys.argv[item]
 
-
+# Output centroids
+centroid_out = outfile+".centroids"
+filewr = open(centroid_out, 'w')
+filewr.write(cmd_string)
+filewr.write( "\n# Means:\t"+num_means)
+filewr.write( "\n# Distortion:\t"+str(distortion))
+filewr.write( "\n# Centroids:\n")
+cen_list = centroids.tolist()
+for cen in cen_list:
+    troid = cen
+    filewr.write(  str(troid).strip("[]")  )
+    filewr.write("\n")
 
 # Output data to files named prefix.[traj-index]
 currentTraj = 0;
