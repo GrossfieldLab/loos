@@ -28,6 +28,7 @@ from loos import *
 from numpy import vstack,array
 from scipy.cluster.vq import kmeans,vq
 from itertools import chain
+import copy
 
 
 verbose = 0
@@ -43,8 +44,11 @@ model_name = sys.argv[1]
 selection = sys.argv[2]
 num_means = sys.argv[3]
 outfile =  sys.argv[4]
-cmd_string =  "# "+" ".join(sys.argv) 
-print cmd_string
+cmd_string = sys.argv[0] 
+for i in range(1, len(sys.argv)):
+    arg = sys.argv[i].replace('\n', '\\n')
+    cmd_string += " '" + arg + "'"
+print '# ', cmd_string
 
 
 trajList = []
@@ -120,10 +124,9 @@ for j in range(len(cen_list)):
         centroid_structure[i/3].coords(GCoord(troid[i], troid[i+1], troid[i+2]))
     pdb = PDB.fromAtomicGroup(centroid_structure)
     pdb.remarks().add(cmd_string)
-    pdb.remarks().add("Means = %s, Distortion = %f" % (num_means, distortion))
+    pdb.remarks().add(">>> Means = %s, Distortion = %f" % (num_means, distortion))
 
     filename = "%s-centroid-%d.pdb" % (outfile, j)
-    print 'Writing centroid ', j
     file = open(filename, 'w')
     file.write(str(pdb))
     file.close()
