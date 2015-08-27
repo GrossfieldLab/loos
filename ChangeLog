@@ -1,3 +1,7 @@
+2015-08-27    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added k-means clustering PyLOOS program (cluster-structures.py)
+
 2015-07-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed trajinfo to handle read errors and only use first set of valid frames
