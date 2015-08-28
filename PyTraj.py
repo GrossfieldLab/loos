@@ -42,7 +42,8 @@ class PyTraj:
 
         self.index = 0
  
-
+    def getFrame(self):
+        return(self.frame)
 
     def __iter__(self):
         return(self)
@@ -177,3 +178,58 @@ class PyAlignedTraj(PyTraj):
 
 
 
+class VirtualTrajectory:
+
+    def __init__(self, skip=0, stride=1, iterator=None, *trajs):
+
+        self.nframes = 0
+        self.iterator = iterator
+        self.skip = skip
+        self.stride = stride
+        self.trajectories = list(trajs)
+
+        self.index = 0
+        self.framelist = []
+        self.trajlist = [] 
+        self.stale = 1
+
+    def addTrajectory(self, traj):
+        self.trajectories.append(traj)
+        self.stale = 1
+
+    def countTrajectoryFrames(self):
+        n = 0
+        for t in self.trajectories:
+            n += len(t)
+        return(n)
+
+    def verifyModels(self):
+        if not self.trajectories:
+            return
+        n = 0
+        for t in self.trajectories:
+            if n == 0:
+                n = len(t.frame)
+            elif n != len(t.frame):
+                raise RuntimeError('Inconsistant models or subsets inside a virtual trajectory')
+
+    def initFrameList(self):
+        n = self.countTrajectoryFrames()
+        if (self.iterator is None):
+            it = iter(range(self.skip, n, self.stride))
+        else:
+            it = iter(iterator)
+
+        frames = []
+        trajs = []
+        for t in trajectories:
+            for i in range(len(t)):
+                frames.append(i)
+                trajs.append(t)
+            
+    def __len__(self):
+        if self.stale:
+            self.initFrameList()
+        return(len(self.framelist))
+
+                
