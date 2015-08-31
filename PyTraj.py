@@ -13,29 +13,34 @@ class PyTraj:
 
     """
 
-    def __init__(self, fname, model, skip=None, stride=None):
-        if skip is None:
-            skip = 0
-        if stride is None:
-            stride = 1
-            
+    def __init__(self, fname, model, **dict):
+
+        skip = 0
+        stride = 1
+        iterator = None
+        
+        if 'skip' in dict:
+            skip = dict['skip']
+        if 'stride' in dict:
+            stride = dict['stride']
+        if 'iterator' in dict:
+            iterator = dict['iterator']
+        
         self.frame = model
         self.fname = fname
         self.traj = loos.createTrajectory(fname, model)
 
         self.framelist = []
-        for i in range(skip, self.traj.nframes(), stride):
+        if iterator is None:
+            it = range(skip, self.traj.nframes(), stride)
+        else:
+            it = iter(iterator)
+        
+        for i in it:
             self.framelist.append(i)
 
         self.index = 0
 
-    @classmethod
-    def initWithIterator(cls, fname, model, iterator):
-        obj = cls(fname, model)
-        obj.framelist = []
-        for i in iter(iterator):
-            obj.framelist.append(i)
-        return(obj)
 
     def __iter__(self):
         return(self)
@@ -186,7 +191,7 @@ class PyAlignedTraj(PyTraj):
 
 class VirtualTrajectory:
 
-    def __init__(self, *trajs):
+    def __init__(self, *trajs, **dict):
         self.skip = 0
         self.stride = 1
         self.nframes = 0
@@ -198,19 +203,12 @@ class VirtualTrajectory:
         self.trajlist = [] 
         self.stale = 1
 
-    @classmethod
-    def initWithStriding(cls, skip, stride, *trajs):
-        obj = cls(trajs)
-        obj.skip = skip
-        obj.stride = stride
-        return(obj)
-        
-    @classmethod
-    def initWithIterator(cls, iterator, *trajs):
-        obj = cls(trajs)
-        obj.iterator = iterator
-        return(obj)
-
+        if 'skip' in dict:
+            self.skip = dict['skip']
+        if 'stride' in dict:
+            self.stride = dict['stride']
+        if 'iterator' in dict:
+            self.iterator = dict['iterator']
         
     def addTrajectory(self, traj):
         self.trajectories.append(traj)
