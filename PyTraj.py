@@ -10,40 +10,38 @@ class PyTraj:
     the one bound into the Iterator will be updated at each
     iteration.
 
-    Basic usage:
-      model = loos.createSystem(model_name)
-      calphas = selectAtoms(model, 'name == "CA"')
-
-      # Take every tenth frame...
-      itraj = PyTraj(traj, model, stride = 10)
-      for frame in itraj:
-         computeSomething(frame)
-         computeSomethingElse(calphas)
-
-      # Take every other frame, skipping the first 100
-      itraj = PyTraj(traj, model, stride = 2, skip = 100)
-      for frame in itraj:
-         computeSomething(frame)
-         computeSomethingElse(calphas)
 
     """
-    def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None):
-        self.frame = frame
-        self.traj = traj
+    def __init__(self, fname, model, iterator = None):
+        self.frame = model
+        self.fname = fname
+        self.traj = loos.createTrajectory(fname, model)
 
         if (iterator is None):
-            it = iter(range(skip, traj.nframes(), stride))
+            it = iter(range(traj.nframes()))
         else:
             it = iter(iterator)
 
-        self.framelist = loos.UIntVector()
+        self.framelist = []
         for i in it:
-            self.framelist.push_back(i)
+            self.framelist.append(i)
 
         self.index = 0
+
+
+        
+    def __init__(self, fname, model, skip=0, stride=1):
+        self.frame = model
+        self.fname = fname
+        self.traj = loos.createTrajectory(fname, model)
+        self.framelist = []
+        for i in range(skip, self.traj.nframes(), stride):
+            self.framelist.append(i)
+
+        self.index = 0
+
+        
  
-    def getFrame(self):
-        return(self.frame)
 
     def __iter__(self):
         return(self)
@@ -62,11 +60,25 @@ class PyTraj:
         self.index += 1
         return(self.frame)
 
-    def currentIndex(self):
+
+    def readFrame(self, i):
+        if (i < 0 or i >= len(self.framelist)):
+            raise IndexError
+        self.traj.readFrame(i)
+        return(self.frame)
+
+    def currentFrame(self):
+        return(self.frame)
+    
+    def currentIndexInTrajectory(self):
         return(self.framelist[self.index-1])
 
+    def currentIndexInFramelist(self):
+        return(self.index-1)
+
     def averageStructure(self):
-        return(loos.averageStructure(self.frame, self.traj, self.framelist))
+        flist = loos.UIntVector(self.framelist)
+        return(loos.averageStructure(self.frame, self.traj, flist))
 
 
 
