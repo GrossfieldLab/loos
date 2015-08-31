@@ -12,36 +12,25 @@ class PyTraj:
 
 
     """
-    def __init__(self, fname, model, iterator = None):
-        self.frame = model
-        self.fname = fname
-        self.traj = loos.createTrajectory(fname, model)
 
-        if (iterator is None):
-            it = iter(range(traj.nframes()))
-        else:
-            it = iter(iterator)
-
-        self.framelist = []
-        for i in it:
-            self.framelist.append(i)
-
-        self.index = 0
-
-
-        
     def __init__(self, fname, model, skip=0, stride=1):
         self.frame = model
         self.fname = fname
         self.traj = loos.createTrajectory(fname, model)
+
         self.framelist = []
         for i in range(skip, self.traj.nframes(), stride):
             self.framelist.append(i)
 
         self.index = 0
 
-        
- 
+    @classmethod
+    def initWithIterator(cls, fname, model, iterator):
+        obj = cls(fname, model)
+        obj.framelist = []
+        for i in iter(iterator):
+            obj.framelist.append(i)
+        return(obj)
 
     def __iter__(self):
         return(self)
@@ -192,10 +181,10 @@ class PyAlignedTraj(PyTraj):
 
 class VirtualTrajectory:
 
-    def __init__(self, skip=0, stride=1, iterator=None, *trajs):
+    def __init__(self, skip, stride, *trajs):
 
         self.nframes = 0
-        self.iterator = iterator
+        self.iterator = None
         self.skip = skip
         self.stride = stride
         self.trajectories = list(trajs)
@@ -205,6 +194,8 @@ class VirtualTrajectory:
         self.trajlist = [] 
         self.stale = 1
 
+
+        
     def addTrajectory(self, traj):
         self.trajectories.append(traj)
         self.stale = 1
