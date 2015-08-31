@@ -13,7 +13,12 @@ class PyTraj:
 
     """
 
-    def __init__(self, fname, model, skip=0, stride=1):
+    def __init__(self, fname, model, skip=None, stride=None):
+        if skip is None:
+            skip = 0
+        if stride is None:
+            stride = 1
+            
         self.frame = model
         self.fname = fname
         self.traj = loos.createTrajectory(fname, model)
@@ -181,12 +186,11 @@ class PyAlignedTraj(PyTraj):
 
 class VirtualTrajectory:
 
-    def __init__(self, skip, stride, *trajs):
-
+    def __init__(self, *trajs):
+        self.skip = 0
+        self.stride = 1
         self.nframes = 0
         self.iterator = None
-        self.skip = skip
-        self.stride = stride
         self.trajectories = list(trajs)
 
         self.index = 0
@@ -194,6 +198,18 @@ class VirtualTrajectory:
         self.trajlist = [] 
         self.stale = 1
 
+    @classmethod
+    def initWithStriding(cls, skip, stride, *trajs):
+        obj = cls(trajs)
+        obj.skip = skip
+        obj.stride = stride
+        return(obj)
+        
+    @classmethod
+    def initWithIterator(cls, iterator, *trajs):
+        obj = cls(trajs)
+        obj.iterator = iterator
+        return(obj)
 
         
     def addTrajectory(self, traj):
