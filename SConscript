@@ -101,12 +101,15 @@ if int(env['pyloos']):
       pynv = env.Clone()
       loos_python = pynv.SharedLibrary('_loos', ['loos.i', loos])
 
+# Handle installing PyLOOS
+   env.Install(os.path.join(PREFIX, 'lib'), File('loos.py'))      # Deprecated
+   env.Install(os.path.join(PREFIX, 'lib'), File('PyTraj.py'))    # Deprecated
+   env.Install(os.path.join(PREFIX, 'lib'), loos_python)
+
+   env.Install(os.path.join(PREFIX, 'lib'), 'loos')
+
    loos_python += Command("loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
 
-# Handle installing PyLOOS
-   env.Install(os.path.join(PREFIX, 'lib'), File('loos.py'))
-   env.Install(os.path.join(PREFIX, 'lib'), File('PyTraj.py'))
-   env.Install(os.path.join(PREFIX, 'lib'), loos_python)
-   
+
 
 Return('loos', 'loos_python', 'scripts')
