@@ -57,7 +57,7 @@ class Trajectory:
         frame = self.__getitem__(self.index)
 
         self.index += 1
-        return(self.frame)
+        return(frame)
 
 
     def readFrame(self, i):
@@ -171,8 +171,8 @@ class VirtualTrajectory:
             self.framelist.append(frames[i])
             self.trajlist.append(trajs[i])
 
-        stale = 0
-        
+        self.index = 0
+        self.stale = 0
             
     def __len__(self):
         if self.stale:
@@ -181,6 +181,12 @@ class VirtualTrajectory:
 
                 
     def __getitem__(self, i):
+        if self.stale:
+            self.initFrameList()
+
+        if isinstance(i, slice):
+            return(self.getSlice(i))
+
         if (i < 0):
             i += len(self)
         if (i >= len(self)):
@@ -188,3 +194,28 @@ class VirtualTrajectory:
 
         return(self.trajlist[i][self.framelist[i]])
 
+
+    def __iter__(self):
+        if self.stale:
+            self.initFrameList()
+        return(self)
+
+    def reset(self):
+        self.index = 0
+
+    def next(self):
+        if self.stale:
+            self.initFrameList()
+        if (self.index >= len(self.framelist)):
+            raise StopIteration
+        frame = self.__getitem__(self.index)
+        self.index += 1
+        return(frame)
+
+    def getSlice(self, s):
+        indices = list(range(*s.indices(self.__len__())))
+        ensemble = []
+        for i in indices:
+            frame = self.trajlist[i][self.framelist[i]].copy()
+            ensemble.append(frame)
+        return(ensemble)
