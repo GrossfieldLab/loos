@@ -64,7 +64,6 @@ class Trajectory:
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
         self.traj.readFrame(i)
-        return(self.frame)
 
     def currentFrame(self):
         return(self.frame)
@@ -154,12 +153,6 @@ class VirtualTrajectory:
                 raise RuntimeError('Inconsistant models or subsets inside a virtual trajectory')
 
     def initFrameList(self):
-        n = self.countTrajectoryFrames()
-        if (self.iterator is None):
-            it = iter(range(self.skip, n, self.stride))
-        else:
-            it = iter(iterator)
-
         frames = []
         trajs = []
         for t in self.trajectories:
@@ -167,8 +160,19 @@ class VirtualTrajectory:
                 frames.append(i)
                 trajs.append(t)
 
-        self.framelist = frames
-        self.trajlist = trajs
+        self.framelist = []
+        self.trajlist = []
+        n = len(frames)
+        if (self.iterator is None):
+            it = iter(range(self.skip, n, self.stride))
+        else:
+            it = iter(iterator)
+        for i in it:
+            self.framelist.append(frames[i])
+            self.trajlist.append(trajs[i])
+
+        stale = 0
+        
             
     def __len__(self):
         if self.stale:
@@ -176,3 +180,11 @@ class VirtualTrajectory:
         return(len(self.framelist))
 
                 
+    def __getitem__(self, i):
+        if (i < 0):
+            i += len(self)
+        if (i >= len(self)):
+            raise IndexError
+
+        return(self.trajlist[i][self.framelist[i]])
+
