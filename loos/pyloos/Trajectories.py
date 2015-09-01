@@ -1,3 +1,4 @@
+# (c) 2015 Tod D. Romo, Grossfield Lab, URMC
 import loos
 
 class Trajectory:
