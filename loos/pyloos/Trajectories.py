@@ -1,7 +1,6 @@
-import loos    
+import loos
 
-
-class PyTraj:
+class Trajectory:
     """
     This class wraps a LOOS Trajectory and an AtomicGroup so
     that the trajectory can be used as a Python iterator.  A
@@ -109,83 +108,6 @@ class PyTraj:
 
 
 
-
-class PyAlignedTraj:
-    """
-    This class provides an iterator over a trajectory that has
-    been iteratively aligned (see loos::iterativeAlignment()
-    in the C++ LOOS documentation).
-
-
-    Basic usage:
-
-      calphas = selectAtoms(model, 'name == "CA"')
-
-      # Align and iterate over same set of atoms
-      atraj = PyAlignedTraj(traj, calphas)
-      for frame in atraj:
-         ...
-
-      # Align using C-alphas but iterate over all atoms
-      atraj = PyAlignedTraj(traj, model, alignwith = calphas)
-      for frame in atraj:
-         ...
-
-      # Align using C-alphas but iterate over all atoms, skipping
-      # every other frame and the first 100 frames
-      atraj = PyAlignedTraj(traj, model, alignwith = calphas, skip = 100, stride = 2)
-      for frame in atraj:
-         ...
-
-
-    """
-class PyAlignedTraj(PyTraj):
-
-    def __init__(self, traj, frame, skip = 0, stride = 1, iterator = None, alignwith = None):
-        PyTraj.__init__(self, traj, frame, skip, stride, iterator)
-
-        if (alignwith is None):
-            alignwith = self.frame
-
-        res = loos.iterativeAlignmentPy(alignwith, traj, self.framelist)
-        self.xforms = loos.XFormVector()
-        for x in res.transforms:
-            self.xforms.push_back(x)
-
-
-    def getSlice(self, s):
-        indices = list(range(*s.indices(self.__len__())))
-        ensemble = []
-        for i in indices:
-            self.traj.readFrame(self.framelist[i])
-            self.traj.updateGroupCoords(self.frame)
-            dup = self.frame.copy()
-            dup.applyTransform(self.xforms[i])
-            ensemble.append(dup)
-        return(ensemble)
-
-
-    def __getitem__(self, i):
-        if isinstance(i, slice):
-            return(self.getSlice(i))
-
-        f = PyTraj.__getitem__(self, i)
-        f.applyTransform(self.xforms[i])
-        return(f)
-
-    def transform(self, i):
-        if (i < 0):
-            i += len(self.framelist)
-        if (i >= len(self.framelist) or i < 0):
-            raise IndexError
-        return(self.xforms[i])
-
-
-    def averageStructure(self):
-        return(loos.averageStructure(self.frame, self.xforms, self.traj, self.framelist))
-
-    def currentTransform(self):
-        return(self.xforms[self.index-1])
 
 
 
