@@ -61,6 +61,7 @@ namespace loos {
 %include "xtcwriter.i"
 %include "sfactories.i"
 
+ /* The following is deprecated */
   %pythoncode %{
 from PyTraj import *
 	      %}
