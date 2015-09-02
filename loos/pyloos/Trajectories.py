@@ -43,6 +43,7 @@ class Trajectory:
 
 
     def __iter__(self):
+        self.index = 0
         return(self)
 
     def __len__(self):
@@ -60,10 +61,14 @@ class Trajectory:
         return(frame)
 
 
+    def trajectory(self):
+        return(self.traj)
+
     def readFrame(self, i):
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
         self.traj.readFrame(i)
+        self.traj.updateGroupCoords(self.frame)     # ???
 
     def currentFrame(self):
         return(self.frame)
@@ -113,7 +118,7 @@ class Trajectory:
 
 class VirtualTrajectory:
 
-    def __init__(self, *trajs, **dict):
+    def __init__(self, *trajs, **kwargs):
         self.skip = 0
         self.stride = 1
         self.nframes = 0
@@ -125,12 +130,12 @@ class VirtualTrajectory:
         self.trajlist = [] 
         self.stale = 1
 
-        if 'skip' in dict:
-            self.skip = dict['skip']
-        if 'stride' in dict:
-            self.stride = dict['stride']
-        if 'iterator' in dict:
-            self.iterator = dict['iterator']
+        if 'skip' in kwargs:
+            self.skip = kwargs['skip']
+        if 'stride' in kwargs:
+            self.stride = kwargs['stride']
+        if 'iterator' in kwargs:
+            self.iterator = kwargs['iterator']
         
     def addTrajectory(self, traj):
         self.trajectories.append(traj)
@@ -198,6 +203,7 @@ class VirtualTrajectory:
     def __iter__(self):
         if self.stale:
             self.initFrameList()
+        self.index = 0
         return(self)
 
     def reset(self):
@@ -219,3 +225,30 @@ class VirtualTrajectory:
             frame = self.trajlist[i][self.framelist[i]].copy()
             ensemble.append(frame)
         return(ensemble)
+
+
+
+
+class AlignedVirtualTrajectory(VirtualTrajectory):
+
+    def __init__(self, *trajs, **kwargs):
+        VirtualTrajectory.__init__(self, *trajs, **kwargs)
+        self.alignwith = 'name == "CA"'
+        self.aligned = False
+        self.xformlist = []
+
+    def align(self):
+        current_traj = None
+        current_subset = None
+        self.xformlist = []
+        ensemble = loos.AtomicGroupVector()
+        for i in range(len(self.framelist)):
+            t = self.trajlist[i]
+            if t != current_traj:
+                current_traj = t
+                current_subset = loos.selectAtoms(t.currentFrame(), self.alignwith)
+            t.readFrame(self.framelist[i])
+            ensemble.push_back(current_subset.copy())
+
+        (xforms, rmsd, iters) = loos.iterativeAlignment(ensemble)
+        return(rmsd)
