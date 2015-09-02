@@ -114,16 +114,38 @@ def xformVectorToList(v):
     return(l)
 
 
-def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
-    result = iterativeAlignmentPy(ensemble, threshold, maxiter)
-    return(result.transforms, result.rmsd, result.iterations)
+def iterativeAlignEnsemble(ensemble, threshold=1e-8, maxiter=1000):
+    # Convert to vector<AtomicGroup>...smart pointers should make overhead ok...
+    enlist = loos.AtomicGroupVector()
+    for e in ensemble:
+         enlist.push_back(e)
+    result = iterativeAlignmentPy(enlist, threshold, maxiter)
+    return(xformVectorToList(result.transforms), result.rmsd, result.iterations)
 
-def iterativeAlignment(model, traj, frames, threshold=1e-8, maxiter=1000):
-    result = iterativeAlignmentPy(model, traj, frames, threshold, maxiter)
-    return(result.transforms, result.rmsd, result.iterations)
 
-def iterativeAlignment(model, traj, threshold=1e-8, maxiter=1000):
-    result = iterativeAlignmentPy(model, traj, threshold, maxiter)
+
+# Optional 'framelist' argument specifies indices of frames to use
+def iterativeAlignment(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
+    # If traj is not a loos.Trajectory, assume it supports the trajectory()
+    # method to access the underlying loos one
+    if not isinstance(traj, loos.Trajectory):
+        traj = traj.trajectory()
+
+    # Handle framelist request
+    if 'framelist' in kwargs:
+        framelist = kwargs['framelist']
+        # If it's not a vector<uint>, assume it's iterable
+        if not isinstance(framelist, loos.UIntVector):
+           flist = loos.UIntVector()
+           for i in kwargs['frames']:
+             flist.push_back(i)
+        else:
+           flist = framelist
+        result = iterativeAlignmentPy(model, traj, flist, threshold, maxiter)
+
+    else:
+        result = iterativeAlignmentPy(model, traj, threshold, maxiter)
+
     return(xformVectorToList(result.transforms), result.rmsd, result.iterations)
 
 %}
