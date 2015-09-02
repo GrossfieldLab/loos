@@ -1,7 +1,7 @@
 # (c) 2015 Tod D. Romo, Grossfield Lab, URMC
 import loos
 
-class Trajectory:
+class Trajectory(object):
     """
     This class wraps a LOOS Trajectory and an AtomicGroup so
     that the trajectory can be used as a Python iterator.  A
@@ -116,7 +116,7 @@ class Trajectory:
 
 
 
-class VirtualTrajectory:
+class VirtualTrajectory(object):
 
     def __init__(self, *trajs, **kwargs):
         self.skip = 0
@@ -232,23 +232,49 @@ class VirtualTrajectory:
 class AlignedVirtualTrajectory(VirtualTrajectory):
 
     def __init__(self, *trajs, **kwargs):
-        VirtualTrajectory.__init__(self, *trajs, **kwargs)
-        self.alignwith = 'name == "CA"'
+        super(AlignedVirtualTrajectory, self).__init__(*trajs, **kwargs)
         self.aligned = False
         self.xformlist = []
+        self.rmsd = 0
+        self.iters = 0
+        if ('alignwith' in kwargs):
+            self.alignwith = kwargs['alignwith']
+        else:
+            self.alignwith = 'name == "CA"'
 
+        
     def align(self):
         current_traj = None
         current_subset = None
-        self.xformlist = []
-        ensemble = loos.AtomicGroupVector()
+        ensemble = []
+
+        print '***ALIGNING***'
+        if self.stale:
+            self.initFrameList()
+
         for i in range(len(self.framelist)):
             t = self.trajlist[i]
             if t != current_traj:
                 current_traj = t
                 current_subset = loos.selectAtoms(t.currentFrame(), self.alignwith)
+                print '***DEBUG*** i=%d, t=%s, len=%d' % (i, t, len(current_subset))
             t.readFrame(self.framelist[i])
-            ensemble.push_back(current_subset.copy())
+            ensemble.append(current_subset.copy())
 
-        (xforms, rmsd, iters) = loos.iterativeAlignment(ensemble)
-        return(rmsd)
+        (self.xformlist, self.rmsd, self.iters) = loos.iterativeAlignEnsemble(ensemble)
+        self.aligned = True
+
+
+        
+    def __getitem__(self, i):
+        if not self.aligned:
+            self.align()
+
+        if (i < 0):
+            i += len(self.framelist)
+        if (i >= len(self.framelist)):
+            raise IndexError
+
+        frame = super(AlignedVirtualTrajectory, self).__getitem__(i)
+        frame.applyTransform(self.xformlist[i])
+        return(frame)
