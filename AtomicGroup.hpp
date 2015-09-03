@@ -610,7 +610,7 @@ namespace loos {
      * in the current group, then the excess coordinates will not be
      * copied.
      *
-     * If not length is 0, then all coordinates in g
+     * If length is 0, then all coordinates in g
      * will be copied.
      *
      * It is assumed that the atoms in g are in the appropriate
