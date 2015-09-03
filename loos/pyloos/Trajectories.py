@@ -13,18 +13,18 @@ class Trajectory(object):
 
     """
 
-    def __init__(self, fname, model, **dict):
+    def __init__(self, fname, model, **kwargs):
 
         skip = 0
         stride = 1
         iterator = None
         
-        if 'skip' in dict:
-            skip = dict['skip']
-        if 'stride' in dict:
-            stride = dict['stride']
-        if 'iterator' in dict:
-            iterator = dict['iterator']
+        if 'skip' in kwargs:
+            skip = kwargs['skip']
+        if 'stride' in kwargs:
+            stride = kwargs['stride']
+        if 'iterator' in kwargs:
+            iterator = kwargs['iterator']
         
         self.frame = model
         self.fname = fname
