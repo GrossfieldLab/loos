@@ -115,11 +115,11 @@ class Trajectory(object):
         """Return the current frame (wrapped loos.AtomicGroup)"""
         return(self.subset)
     
-    def currentIndexInTrajectory(self):
+    def currentRealIndex(self):
         """The 'real' frame in the trajectory for this index"""
         return(self.framelist[self.index-1])
 
-    def currentIndexInFramelist(self):
+    def currentIndex(self):
         """The state of the iterator"""
         return(self.index-1)
 
