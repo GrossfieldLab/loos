@@ -3,18 +3,23 @@ import loos
 
 class Trajectory(object):
     """
-    This class wraps a LOOS Trajectory and an AtomicGroup so
-    that the trajectory can be used as a Python iterator.  A
-    range of frames to iterate over can be set, as well as a
-    stride (step).  Any AtomicGroup that shares atoms with
-    the one bound into the Iterator will be updated at each
-    iteration.
-
+    This class turns a loos Trajectory into something more
+    python-like.  Behind the scenes, it wraps a loos::AtomicGroup and
+    a loos::Trajectory.
 
     """
 
     def __init__(self, fname, model, **kwargs):
+        """
+        Instantiate a Trajectory object.  Takes a filename and an
+        AtomicGroup model.
 
+        keyword arguments:
+        skip -- # of frames to skip from the start
+        stride -- # of frames to step through by
+        iterator -- Python iterator used to pick frames
+                    (overrides skip and stride)
+        """
         skip = 0
         stride = 1
         iterator = None
@@ -137,8 +142,8 @@ class VirtualTrajectory(object):
         if 'iterator' in kwargs:
             self.iterator = kwargs['iterator']
         
-    def addTrajectory(self, traj):
-        self.trajectories.append(traj)
+    def addTrajectory(self, *traj):
+        self.trajectories.extend(traj)
         self.stale = 1
 
     def countTrajectoryFrames(self):
@@ -242,7 +247,11 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         else:
             self.alignwith = 'name == "CA"'
 
-        
+    def addTrajectory(self, *traj):
+        self.trajectories.extend(traj)
+        self.stale = True
+        self.aligned = False
+            
     def align(self):
         current_traj = None
         current_subset = None
