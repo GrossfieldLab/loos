@@ -5,7 +5,24 @@ class Trajectory(object):
     """
     This class turns a loos Trajectory into something more
     python-like.  Behind the scenes, it wraps a loos::AtomicGroup and
-    a loos::Trajectory.
+    a loos::Trajectory.  Remember that all atoms are shared.
+
+
+    Examples:
+        model = loos.createSystem('foo.pdb')
+        traj = loos.pyloos.Trajectory('foo.dcd', model)
+        calphas = loos.selectAtoms(model, 'name == "CA"')
+        for frame in traj:
+            print calphas.centroid()
+
+
+
+        # The same thing but skipping the first 50 frames
+        # and taking every other frame
+        traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50, stride=2)
+
+        # Only use frames 19-39 (i.e. the 20th through 40th frames)
+        traj = loos.pyloos.Trajectory('foo.dcd', model, iterator=range(19,40))
 
     """
 
@@ -54,7 +71,9 @@ class Trajectory(object):
     def __len__(self):
         return(len(self.framelist))
 
+
     def reset(self):
+        """Reset the iterator"""
         self.index = 0
 
     def next(self):
@@ -67,26 +86,35 @@ class Trajectory(object):
 
 
     def trajectory(self):
+        """Access the wrapped loos.Trajectory"""
         return(self.traj)
 
+    
     def readFrame(self, i):
+        """Read a frame and update the model"""
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.frame)     # ???
+        self.traj.updateGroupCoords(self.frame)
 
     def currentFrame(self):
+        """Return the current frame (wrapped loos.AtomicGroup)"""
         return(self.frame)
     
     def currentIndexInTrajectory(self):
+        """The 'real' frame in the trajectory for this index"""
         return(self.framelist[self.index-1])
 
     def currentIndexInFramelist(self):
+        """The state of the iterator"""
         return(self.index-1)
 
     def averageStructure(self):
+        """Return the average structure (shared atoms)"""
         flist = loos.UIntVector(self.framelist)
-        return(loos.averageStructure(self.frame, self.traj, flist))
+        avg = loos.averageStructure(self.frame, self,traj, flist)
+        self.frame.copyCoordinatesFrom(avg)
+        return(self.frame)
 
 
 
@@ -102,7 +130,8 @@ class Trajectory(object):
 
 
     def __getitem__(self, i):
-
+        """Handle array indexing and slicing.  Negative indices are
+        relative to the end of the trajectory"""
         if isinstance(i, slice):
             return(self.getSlice(i))
 
@@ -271,12 +300,23 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         (self.xformlist, self.rmsd, self.iters) = loos.iterativeAlignEnsemble(ensemble)
         self.aligned = True
 
+    def getSlice(self, s):
+        indices = list(range(*s.indices(self.__len__())))
+        ensemble = []
+        for i in indices:
+            frame = self.trajlist[i][self.framelist[i]].copy()
+            frame.applyTransform(self.xformlist[i])
+            ensemble.append(frame)
+        return(ensemble)
 
         
     def __getitem__(self, i):
         if not self.aligned:
             self.align()
 
+        if isinstance(i, slice):
+            return(self.getSlice(i))
+        
         if (i < 0):
             i += len(self.framelist)
         if (i >= len(self.framelist)):
