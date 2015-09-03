@@ -136,9 +136,7 @@ def iterativeAlignment(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
         framelist = kwargs['framelist']
         # If it's not a vector<uint>, assume it's iterable
         if not isinstance(framelist, loos.UIntVector):
-           flist = loos.UIntVector()
-           for i in kwargs['frames']:
-             flist.push_back(i)
+           flist = loos.UIntVector(kwargs['framelist'])
         else:
            flist = framelist
         result = iterativeAlignmentPy(model, traj, flist, threshold, maxiter)
