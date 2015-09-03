@@ -67,7 +67,7 @@ class Trajectory(object):
     def readFrame(self, i):
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
-        self.traj.readFrame(i)
+        self.traj.readFrame(self.framelist[i])
         self.traj.updateGroupCoords(self.frame)     # ???
 
     def currentFrame(self):
@@ -248,7 +248,6 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         current_subset = None
         ensemble = []
 
-        print '***ALIGNING***'
         if self.stale:
             self.initFrameList()
 
@@ -257,7 +256,6 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             if t != current_traj:
                 current_traj = t
                 current_subset = loos.selectAtoms(t.currentFrame(), self.alignwith)
-                print '***DEBUG*** i=%d, t=%s, len=%d' % (i, t, len(current_subset))
             t.readFrame(self.framelist[i])
             ensemble.append(current_subset.copy())
 
