@@ -273,6 +273,6 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         if (i >= len(self.framelist)):
             raise IndexError
 
-        frame = super(AlignedVirtualTrajectory, self).__getitem__(i)
+        frame = self.trajlist[i][self.framelist[i]]
         frame.applyTransform(self.xformlist[i])
         return(frame)
