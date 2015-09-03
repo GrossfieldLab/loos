@@ -24,6 +24,11 @@ class Trajectory(object):
         # Only use frames 19-39 (i.e. the 20th through 40th frames)
         traj = loos.pyloos.Trajectory('foo.dcd', model, iterator=range(19,40))
 
+        # An alternative way of only iterating over a subset...
+        model = loos.createSystem('foo.pdb')
+        traj = loos.pyloos.Trajectory('foo.dcd', model, subset='name == "CA"')
+
+
     """
 
     def __init__(self, fname, model, **kwargs):
@@ -36,6 +41,7 @@ class Trajectory(object):
         stride -- # of frames to step through by
         iterator -- Python iterator used to pick frames
                     (overrides skip and stride)
+        subset -- Use this selection as the subset to return for frames...
         """
         skip = 0
         stride = 1
@@ -47,7 +53,11 @@ class Trajectory(object):
             stride = kwargs['stride']
         if 'iterator' in kwargs:
             iterator = kwargs['iterator']
-        
+        if 'subset' in kwargs:
+            self.subset = loos.selectAtoms(model, kwargs['subset'])
+        else:
+            self.subset = model
+            
         self.frame = model
         self.fname = fname
         self.traj = loos.createTrajectory(fname, model)
@@ -63,7 +73,10 @@ class Trajectory(object):
 
         self.index = 0
 
+    def setSubset(self, selection):
+        self.subset = loos.selectAtoms(self.frame, selection)
 
+        
     def __iter__(self):
         self.index = 0
         return(self)
@@ -95,11 +108,12 @@ class Trajectory(object):
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.frame)
+        self.traj.updateGroupCoords(self.subset)
+        return(self.subset)
 
     def currentFrame(self):
         """Return the current frame (wrapped loos.AtomicGroup)"""
-        return(self.frame)
+        return(self.subset)
     
     def currentIndexInTrajectory(self):
         """The 'real' frame in the trajectory for this index"""
@@ -109,22 +123,14 @@ class Trajectory(object):
         """The state of the iterator"""
         return(self.index-1)
 
-    def averageStructure(self):
-        """Return the average structure (shared atoms)"""
-        flist = loos.UIntVector(self.framelist)
-        avg = loos.averageStructure(self.frame, self,traj, flist)
-        self.frame.copyCoordinatesFrom(avg)
-        return(self.frame)
-
-
 
     def getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
             self.traj.readFrame(self.framelist[i])
-            self.traj.updateGroupCoords(self.frame)
-            dup = self.frame.copy()
+            self.traj.updateGroupCoords(self.subset)
+            dup = self.subset.copy()
             ensemble.append(dup)
         return(ensemble)
 
@@ -140,18 +146,12 @@ class Trajectory(object):
         if (i >= len(self.framelist) or i < 0):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.frame)
-        return(self.frame)
-
-
-
-
-
+        self.traj.updateGroupCoords(self.subset)
+        return(self.subset)
 
 
 
 class VirtualTrajectory(object):
-
     def __init__(self, *trajs, **kwargs):
         self.skip = 0
         self.stride = 1
@@ -181,6 +181,7 @@ class VirtualTrajectory(object):
             n += len(t)
         return(n)
 
+    # Currently unused...
     def verifyModels(self):
         if not self.trajectories:
             return
@@ -280,6 +281,9 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self.trajectories.extend(traj)
         self.stale = True
         self.aligned = False
+
+    def alignWith(self, selection):
+        self.alignwith = selection
             
     def align(self):
         current_traj = None
