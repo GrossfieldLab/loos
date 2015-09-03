@@ -38,6 +38,11 @@
 	* Fixed handling of DEBUG in setup scripts
 	* Changed order_params tool to support ranges for what frames to use
 
+2015-04-22    <tromo@membrane.urmc.rochester.edu>
+
+	* Released 2.2.5
+
+	
 2015-04-10    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in operator overloadings for GCoords in PyLOOS
@@ -72,9 +77,12 @@
 
 2015-02-13    <alan@membrane.urmc.rochester.edu>
 
-    * Added new option --ref-structure to membrane_map, to facilitate combining
+	* Added new option --ref-structure to membrane_map, to facilitate combining
 	  results from multiple trajectories
 
+2015-02-06    <tromo@hill.urmc-sh.rochester.edu
+	* released 2.2.4
+	
 2015-01-27    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed reading of Amber prmtop files that use mixed case for
@@ -88,8 +96,8 @@
 2015-01-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bugs affecting functins in atoms, coords, and matrix44 that return
-	a ref in PyLOOS.  These are now const refs and should no longer be wrapped
-	by swig (instead, the value will be returned)
+		a ref in PyLOOS.  These are now const refs and should no longer be wrapped
+		by swig (instead, the value will be returned)
 	* Added improved error handling in the build system
 	
 2015-01-17    <tromo@hill.urmc-sh.rochester.edu>
