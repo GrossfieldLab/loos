@@ -175,6 +175,13 @@ class VirtualTrajectory(object):
         self.trajectories.extend(traj)
         self.stale = 1
 
+
+    def currentFrame(self):
+        if self.stale:
+            self.initFrameList()
+        return(self.trajlist[self.framelist[self.index]].currentFrame())
+
+
     def countTrajectoryFrames(self):
         n = 0
         for t in self.trajectories:
