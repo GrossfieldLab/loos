@@ -26,6 +26,7 @@
 
 
 %header %{
+
 #include <AtomicGroup.hpp>
 #include <sfactories.hpp>
 #include <Trajectory.hpp>
@@ -106,11 +107,17 @@ namespace loos {
   };
 }
 
+
+%apply (double* IN_ARRAY2, int DIM1, int DIM2) {(double* seq, int m, int n)};
+%apply (double** ARGOUTVIEWM_ARRAY2, int* DIM1, int* DIM2) {(double** outseq, int* m, int* n)};
+
 %include "AtomicGroup.hpp"
 
 namespace loos {
 
   %extend AtomicGroup {
+
+
     ulong __len__() const {
       return($self->size());
     }

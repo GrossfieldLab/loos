@@ -710,6 +710,10 @@ namespace loos {
      */
     GMatrix alignOnto(const AtomicGroup&);
 
+
+    void setCoords(double* seq, int m, int n);
+    void getCoords(double** outseq, int* m, int* n);
+    
   private:
 
 

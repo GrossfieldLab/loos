@@ -1,11 +1,23 @@
 %module loos
+
 %include <exception.i>
 
 %feature("autodoc", "1");
 
+%{
+#define SWIG_FILE_WITH_INIT
+%}
+
 %include <std_string.i>
 %include <std_vector.i>
 %include <boost_shared_ptr.i>
+
+
+%include "numpy.i"
+%init %{
+  import_array();
+%}
+
 
 typedef unsigned int    uint;
 typedef unsigned long     ulong;
