@@ -710,8 +710,19 @@ namespace loos {
      */
     GMatrix alignOnto(const AtomicGroup&);
 
-
+    // Set coordinates to an array
+    /**
+     * This function is meant for Numpy/swig use in setting the model's
+     * coordinates.  The passed array is row-major.
+     */
     void setCoords(double* seq, int m, int n);
+
+    // Return a newly allocated array containing the current group's coordinates
+    /**
+     * This function is meant for Numpy/swig use.  It will store the current
+     * model's coordinates into a newly allocated array (using malloc).
+     * The caller is expected to manage the memory.
+     */
     void getCoords(double** outseq, int* m, int* n);
     
   private:
