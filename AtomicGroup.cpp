@@ -1011,8 +1011,6 @@ namespace loos {
 
 
   void AtomicGroup::setCoords(double* seq, int m, int n) {
-    std::cout << boost::format("setCoords(%d,%d)\n") % m % n;
-
     if (n != 3 || m != size())
       throw(LOOSError("Invalid dimensions in AtomicGroup::setCoords()"));
 
