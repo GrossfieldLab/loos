@@ -176,10 +176,20 @@ class VirtualTrajectory(object):
         self.stale = 1
 
 
+    def setSubset(self, selection):
+        for t in self.trajectories:
+            t.setSubset(selection)
+
     def currentFrame(self):
         if self.stale:
             self.initFrameList()
-        return(self.trajlist[self.framelist[self.index]].currentFrame())
+
+        if self.index >= len(self.framelist):
+            i = len(self.framelist) - 1
+        else:
+            i = self.index
+            
+        return(self.trajlist[self.framelist[i]].currentFrame())
 
 
     def countTrajectoryFrames(self):
