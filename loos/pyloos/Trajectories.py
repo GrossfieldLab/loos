@@ -231,8 +231,14 @@ class VirtualTrajectory(object):
         else:
             i = self.index
             
-        return(self.trajlist[self.framelist[i]].currentFrame())
+        return(self.trajectories[self.trajlist[i]].currentFrame())
 
+
+    def currentTrajectoryIndex(self):
+        return(self.trajlist[self.index])
+
+    def currentTrajectory(self):
+        return(self.trajectories[self.trajlist[self.index]])
 
     def countTrajectoryFrames(self):
         n = 0
@@ -254,10 +260,11 @@ class VirtualTrajectory(object):
     def initFrameList(self):
         frames = []
         trajs = []
-        for t in self.trajectories:
+        for j in range(len(self.trajectories)):
+            t = self.trajectories[j]
             for i in range(len(t)):
                 frames.append(i)
-                trajs.append(t)
+                trajs.append(j)
 
         self.framelist = []
         self.trajlist = []
@@ -291,7 +298,7 @@ class VirtualTrajectory(object):
         if (i >= len(self)):
             raise IndexError
 
-        return(self.trajlist[i][self.framelist[i]])
+        return(self.trajectories[self.trajlist[i]][self.framelist[i]])
 
 
     def __iter__(self):
@@ -316,7 +323,7 @@ class VirtualTrajectory(object):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
-            frame = self.trajlist[i][self.framelist[i]].copy()
+            frame = self.trajectories[self.trajlist[i]][self.framelist[i]].copy()
             ensemble.append(frame)
         return(ensemble)
 
@@ -353,7 +360,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             self.initFrameList()
 
         for i in range(len(self.framelist)):
-            t = self.trajlist[i]
+            t = self.trajectories[self.trajlist[i]]
             if t != current_traj:
                 current_traj = t
                 current_subset = loos.selectAtoms(t.currentFrame(), self.alignwith)
@@ -367,7 +374,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
-            frame = self.trajlist[i][self.framelist[i]].copy()
+            frame = self.trajectories[self.trajlist[i]][self.framelist[i]].copy()
             frame.applyTransform(self.xformlist[i])
             ensemble.append(frame)
         return(ensemble)
@@ -385,6 +392,6 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         if (i >= len(self.framelist)):
             raise IndexError
 
-        frame = self.trajlist[i][self.framelist[i]]
+        frame = self.trajectories[self.trajlist[i]][self.framelist[i]]
         frame.applyTransform(self.xformlist[i])
         return(frame)
