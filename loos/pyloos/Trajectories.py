@@ -74,6 +74,10 @@ class Trajectory(object):
         self.index = 0
 
     def setSubset(self, selection):
+        """
+        Set the subset used when iterating over a trajectory.
+        The selection is a LOOS selection string.
+        """
         self.subset = loos.selectAtoms(self.frame, selection)
 
         
@@ -152,6 +156,44 @@ class Trajectory(object):
 
 
 class VirtualTrajectory(object):
+    """
+    This class can combine multiple loos.pyloos.Trajectory objects
+    into one big "virtual" trajectory.  Any skips or strides set in
+    the contained trajectories will be honored.  In addition, a skip
+    and a stride for the whole meta-trajectory are available.
+
+    There is no requirement that the subsets used for all trajectories
+    must be the same.  Ideally, the frame (subset) that is returned
+    should be compatible (e.g. same atoms in the same order), but the
+    models used for each trajectory (and the corresponding subset
+    selection) can vary.  Why would you want to do this?  Imagine
+    combining three different GPCRs where the subsets are the common
+    trans-membrane C-alphas.  This makes processing all of the
+    ensembles together easier.
+
+    Since each contained trajectory can have a different set of shared
+    atoms it updates, care must be taken when pre-selecting atoms.
+
+    Examples:
+      model = loos.createSystem('foo.pdb')
+      traj1 = loos.pyloos.Trajectory('foo-1.dcd', model)
+      traj2 = loos.pyloos.Trajectory('foo-2.dcd', model)
+      vtraj = loos.pyloos.VirtualTrajectory(traj1, traj2)
+
+      for frame in vtraj:
+          print frame.centroid()
+
+
+      # Adding another trajectory in with its own stride and skip
+      traj3 = loos.pyloos.Trajectory('foo-3.dcd', skip=50, stride=2)
+      vtraj.append(traj3)
+
+      # Same as above but stride through the combined trajectory
+      vtraj10 = loos.pyloos.VirtualTrajectory(traj1, traj2, stride=10)
+
+    
+
+    """
     def __init__(self, *trajs, **kwargs):
         self.skip = 0
         self.stride = 1
@@ -171,7 +213,7 @@ class VirtualTrajectory(object):
         if 'iterator' in kwargs:
             self.iterator = kwargs['iterator']
         
-    def addTrajectory(self, *traj):
+    def append(self, *traj):
         self.trajectories.extend(traj)
         self.stale = 1
 
@@ -294,7 +336,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         else:
             self.alignwith = 'name == "CA"'
 
-    def addTrajectory(self, *traj):
+    def append(self, *traj):
         self.trajectories.extend(traj)
         self.stale = True
         self.aligned = False
