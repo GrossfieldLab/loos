@@ -261,6 +261,12 @@ class VirtualTrajectory(object):
             
         return(self.trajectories[self.trajlist[i]].currentFrame())
 
+    def currentIndex(self):
+        """
+        Return index into composite trajectory for current frame
+        """
+        return(self.index)
+    
 
     def currentTrajectoryIndex(self):
         """
