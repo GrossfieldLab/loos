@@ -411,8 +411,16 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self.alignwith = selection
         self.aligned = False
 
+
+    def __iter__(self):
+        self.align()
+        self.index = 0
+        return(self)
         
     def align(self):
+        """
+        Align the frames (called implicitly on iterator or array access)
+        """
         current_traj = None
         current_subset = None
         ensemble = []
