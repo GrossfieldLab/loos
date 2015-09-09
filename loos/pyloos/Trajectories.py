@@ -119,8 +119,12 @@ class Trajectory(object):
         return(self.subset)
 
     def currentFrame(self):
-        """Return the current frame (wrapped loos.AtomicGroup)"""
+        """Return the current frame (subset)"""
         return(self.subset)
+
+    def currentModel(self):
+        """Return the current model"""
+        return(self.frame)
     
     def currentRealIndex(self):
         """The 'real' frame in the trajectory for this index"""
@@ -420,7 +424,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             t = self.trajectories[self.trajlist[i]]
             if t != current_traj:
                 current_traj = t
-                current_subset = loos.selectAtoms(t.currentFrame(), self.alignwith)
+                current_subset = loos.selectAtoms(t.currentModel(), self.alignwith)
             t.readFrame(self.framelist[i])
             ensemble.append(current_subset.copy())
 
