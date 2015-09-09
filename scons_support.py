@@ -322,7 +322,7 @@ int main(int argc, char *argv[]) { std::cout << BOOST_LIB_VERSION; return(0); }
 # Check for presence of a directory
 def CheckDirectory(conf, dirname):
 
-    conf.Message('Checking for directory %s...' % dirname)
+    conf.Message('Checking for directory %s... ' % dirname)
     if os.path.isdir(dirname):
         conf.Result('yes')
         return(1)
@@ -332,7 +332,7 @@ def CheckDirectory(conf, dirname):
 
 
 def CheckNumpy(conf, pythonpath):
-    conf.Message('Checking for numpy...')
+    conf.Message('Checking for numpy... ')
     ok = checkForPythonHeader(conf, 'numpy/arrayobject.h')
     if ok:
         conf.Result('yes')
