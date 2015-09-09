@@ -265,7 +265,7 @@ class VirtualTrajectory(object):
         """
         Return index into composite trajectory for current frame
         """
-        return(self.index)
+        return(self.index-1)
     
 
     def currentTrajectoryIndex(self):
@@ -273,14 +273,14 @@ class VirtualTrajectory(object):
         Returns the index into the list of trajectories that the
         current frame is from
         """
-        return(self.trajlist[self.index])
+        return(self.trajlist[self.index-1])
 
     def currentTrajectory(self):
         """
         Returns the loos.pyloos.Trajectory object that the current
         frame is from
         """
-        return(self.trajectories[self.trajlist[self.index]])
+        return(self.trajectories[self.trajlist[self.index-1]])
 
     def initFrameList(self):
         frames = []
