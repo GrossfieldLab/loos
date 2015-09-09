@@ -37,11 +37,11 @@ class Trajectory(object):
         AtomicGroup model.
 
         keyword arguments:
-        skip -- # of frames to skip from the start
-        stride -- # of frames to step through by
+            skip -- # of frames to skip from the start
+          stride -- # of frames to step through by
         iterator -- Python iterator used to pick frames
                     (overrides skip and stride)
-        subset -- Use this selection as the subset to return for frames...
+          subset -- Use this selection as the subset to return for frames...
         """
         skip = 0
         stride = 1
@@ -86,6 +86,9 @@ class Trajectory(object):
         return(self)
 
     def __len__(self):
+        """
+        Number of frames in the trajectory
+        """
         return(len(self.framelist))
 
 
@@ -195,6 +198,16 @@ class VirtualTrajectory(object):
 
     """
     def __init__(self, *trajs, **kwargs):
+        """
+        Instantiate a VirtualTrajectory object.
+
+        Keyword arguments:
+            skip -- # of frames to skip at start of composite traj
+          stride -- # of frames to step through in the composite traj
+        iterator -- Python iterator used to pick frames from the composite traj
+
+        """
+
         self.skip = 0
         self.stride = 1
         self.nframes = 0
@@ -259,23 +272,6 @@ class VirtualTrajectory(object):
         """
         return(self.trajectories[self.trajlist[self.index]])
 
-    def countTrajectoryFrames(self):
-        n = 0
-        for t in self.trajectories:
-            n += len(t)
-        return(n)
-
-    # Currently unused...
-    def verifyModels(self):
-        if not self.trajectories:
-            return
-        n = 0
-        for t in self.trajectories:
-            if n == 0:
-                n = len(t.frame)
-            elif n != len(t.frame):
-                raise RuntimeError('Inconsistant models or subsets inside a virtual trajectory')
-
     def initFrameList(self):
         frames = []
         trajs = []
@@ -300,12 +296,20 @@ class VirtualTrajectory(object):
         self.stale = 0
             
     def __len__(self):
+        """
+        Total number of frames
+        """
         if self.stale:
             self.initFrameList()
         return(len(self.framelist))
 
                 
     def __getitem__(self, i):
+        """
+        Return the ith frame in the composite trajectory.  Supports
+        Python slicing.  Negative indices are relative to the end of
+        the composite trajectory.
+        """
         if self.stale:
             self.initFrameList()
 
@@ -350,6 +354,32 @@ class VirtualTrajectory(object):
 
 
 class AlignedVirtualTrajectory(VirtualTrajectory):
+    """
+    A virtual trajectory that supports iterative alignment.  Only the
+    transformation needed to align each frame is stored.  When a frame
+    is accessed, it is automatically transformed into the aligned
+    orientation.  The selection used for aligning can be set with the
+    'alignwith' argument to the constructor (or the alignWith()
+    method).
+
+    In order to do the alignment, the alignwith subset must be read
+    into memory and temporarily stored.  This can potentially use a
+    lot of memory and create delays in execution.  Once the alignment
+    is complete, however, those cached frames are released and
+    subsequent frame accesses will be quick.
+
+    See VirtualTrajectory for some basic examples in addition to
+    below:
+
+    # Align using only C-alphas (the default)
+    vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2)
+
+    # Align using only backbone atoms
+    vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, alignwith='name =~ "^(C|N|O|CA)$"')
+
+    # Add another trajectory
+    vtraj.append(traj3)
+    """
 
     def __init__(self, *trajs, **kwargs):
         super(AlignedVirtualTrajectory, self).__init__(*trajs, **kwargs)
@@ -363,13 +393,21 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             self.alignwith = 'name == "CA"'
 
     def append(self, *traj):
+        """
+        Add another trajectory at the end.  Requires re-aligning
+        """
         self.trajectories.extend(traj)
         self.stale = True
         self.aligned = False
 
     def alignWith(self, selection):
+        """
+        Change the selection used to align with.  Requires re-aligning
+        """
         self.alignwith = selection
-            
+        self.aligned = False
+
+        
     def align(self):
         current_traj = None
         current_subset = None
@@ -389,6 +427,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         (self.xformlist, self.rmsd, self.iters) = loos.iterativeAlignEnsemble(ensemble)
         self.aligned = True
 
+        
     def getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
@@ -400,6 +439,10 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
         
     def __getitem__(self, i):
+        """
+        Returns the ith frame aligned.  Supports Python slices.  Negative indices are relative
+        to the end of the composite trajectory.
+        """
         if not self.aligned:
             self.align()
 
