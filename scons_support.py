@@ -333,10 +333,19 @@ def CheckDirectory(conf, dirname):
 
 def CheckNumpy(conf, pythonpath):
     conf.Message('Checking for numpy... ')
+
     ok = checkForPythonHeader(conf, 'numpy/arrayobject.h')
     if ok:
         conf.Result('yes')
         return(1)
+    pythonpaths = [s + '/site-packages/numpy/core/include' for s in conf.env['PYTHON_PATH'].split(':')]
+
+    if pythonpaths:
+        ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', pythonpaths)
+        if ok:
+            conf.Result('yes')
+            return(1)
+        
 
     conf.Result('no')
     return(0)
@@ -517,7 +526,7 @@ def checkForPythonHeader(context, header):
             context.env.Append(CPPFLAGS="-I%s " % dir)
     ok = context.TryCompile(test_code, '.cpp')
 
-    if not oldcpp is None:
+    if oldcpp:
         context.env['CPPFLAGS'] = oldcpp
 
     return(ok)
@@ -530,13 +539,11 @@ def checkForPythonHeaderInPath(context, header, pathlist):
         if 'CPPPATH' in context.env:
             oldcpp = context.env['CPPPATH']
         context.env.Append(CPPPATH=[path])
-        print "> Checking in %s ..." % path
         ok = checkForPythonHeader(context, header)
         if (ok):
             return(True)
-        if not oldcpp is None:
+        if oldcpp:
             context.env['CPPPATH'] = oldcpp
-
     return(False)
 
 

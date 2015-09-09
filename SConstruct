@@ -65,6 +65,8 @@ opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
 opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
 opts.Add('NETCDF_LIBS', 'NetCDF Libraries to link with', '')
 
+opts.Add('PYTHON_PATH', 'Path to Python Modules', '')
+
 addDeprecatedOptions(opts)
 
 env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
