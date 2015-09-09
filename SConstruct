@@ -105,10 +105,6 @@ env.Prepend(CPPPATH = ['#'])
 env.Prepend(LIBPATH = ['#'])
 env.Append(LEXFLAGS=['-s'])
 
-# Include Python if building PyLOOS
-if pyloos:
-    env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
-
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':
     release = platform.release().split('.')

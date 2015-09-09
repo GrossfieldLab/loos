@@ -214,15 +214,26 @@ class VirtualTrajectory(object):
             self.iterator = kwargs['iterator']
         
     def append(self, *traj):
+        """
+        Add a trajectory to the end of the virtual trajectory.  Resets
+        the iterator state
+        """
         self.trajectories.extend(traj)
         self.stale = 1
 
 
     def setSubset(self, selection):
+        """
+        Set the subset selection for all managed trajectories
+        """
         for t in self.trajectories:
             t.setSubset(selection)
 
     def currentFrame(self):
+        """
+        Return the current frame/model.  If the iterator is past the
+        end of the trajectory list, return the last valid frame.
+        """
         if self.stale:
             self.initFrameList()
 
@@ -235,9 +246,17 @@ class VirtualTrajectory(object):
 
 
     def currentTrajectoryIndex(self):
+        """
+        Returns the index into the list of trajectories that the
+        current frame is from
+        """
         return(self.trajlist[self.index])
 
     def currentTrajectory(self):
+        """
+        Returns the loos.pyloos.Trajectory object that the current
+        frame is from
+        """
         return(self.trajectories[self.trajlist[self.index]])
 
     def countTrajectoryFrames(self):
