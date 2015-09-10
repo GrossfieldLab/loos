@@ -141,6 +141,27 @@ class Trajectory(object):
         return(self.index-1)
 
 
+    def frameNumber(self, i):
+        """
+        Returns the real frame numbers corresponding to the passed indices.  Can accept
+        either an integer or a list of integers.
+
+        For example,
+            t = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
+
+            t.frameNumber(0)           == 50
+            t.frameNumber(range(0,2))  == [50,51]
+        """
+        if type(i) is int:
+            if (i < 0):
+                i += len(self.framelist)
+            return(self.framelist[i])
+        
+        indices = [x if x >=0 else len(self.framelist)+x for x in i]
+        framenos = [self.framelist[x] for x in indices]
+        return(framenos)
+
+
     def getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
@@ -288,6 +309,43 @@ class VirtualTrajectory(object):
         """
         return(self.trajectories[self.trajlist[self.index-1]])
 
+    def frameLocation(self, i):
+        """
+        Returns a tuple containing information about where a frame in the virtual trajectory 
+        comes from.
+
+        (frame-index, traj-index, trajectory, real-frame-within-trajectory)
+
+        Consider the following:
+          t1 = loos.pyloos.Trajectory('foo.dcd', model)   # 50 frames
+          t2 = loos.pyloos.Trajectory('bar.dcd', model)   # 25 frames
+          vt = loos.pyloos.VirtualTrajectory(t1, t2)
+
+        The frame-index is the index into the corresponding trajectory object.  For example,
+        frameLocation(50) would have a frame-index of 0 because vt[50] would return the first
+        frame from t2.
+
+        The traj-index is the index into the list of managed trajectories for the frame.
+        In the above example, the traj-index will be 1.
+
+        The trajectory is the actual loos.pyloos.Trajectory object that contains the frame.
+
+        The real-frame-within-trajectory is the same as calling trajectory.frameNumber(frame-index).
+        Instead of the t1 above, imagine it was setup this way,
+          t1 = loos.pyloos.Trajectory('foo.dcd', model, skip=25)
+        Now, vt.frameLocation(0) will return (0, 0, t1, 25),
+        and vt.frameLocation(25) will return (25, 1, t2, 0)
+        
+        """
+        if (self.stale):
+            self.initFrameList()
+            
+        if (i < 0):
+            i += len(self.framelist)
+
+        t = self.trajectories[self.trajlist[i]]
+        return( self.framelist[i], self.trajlist[i], t, t.frameNumber(self.framelist[i]))
+    
     def initFrameList(self):
         frames = []
         trajs = []
