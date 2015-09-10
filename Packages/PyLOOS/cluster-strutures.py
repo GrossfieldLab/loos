@@ -24,8 +24,9 @@ Cluster structures based from a simulation
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
-from loos import *
-from numpy import vstack,array
+import loos
+import loos.pyloos
+import numpy
 from scipy.cluster.vq import kmeans,vq
 from itertools import chain
 import copy
@@ -51,55 +52,33 @@ for i in range(1, len(sys.argv)):
 print '# ', cmd_string
 
 
-trajList = []
-for myargs in range(5, len(sys.argv)):
-    trajList.append(sys.argv[myargs])
-
+trajList = sys.argv[5:len(sys.argv)]
 
 # Create the model & read in the trajectories
-model = createSystem(model_name)
-allTrajs = []
-for trajs in range( len(trajList) ):
-    allTrajs.append( createTrajectory(trajList[trajs], model) )
-    if (verbose):
-        print "# Trajectory", trajs, "contains", allTrajs[trajs].nframes(), "frames"
+model = loos.createSystem(model_name)
+allTrajs = loos.pyloos.VirtualTrajectory()
+for trajname in trajList:
+    allTrajs.append(loos.pyloos.Trajectory(trajname, model, subset=selection))
 
-# Create a list of coords from each frame
-fullTrajs = []
-subset = selectAtoms(model, selection)
-ensemble = AtomicGroupVector()
-dataSet = 0 
-for trajs in allTrajs:
-    fullTrajs.append(readTrajectory(ensemble, subset, trajs))
-
-print "# Subset has %d atoms." % (len(subset))
-print "# Total of", len(ensemble), "structures."
 
 # Set up lists to hold the coordinates...
-thisElement = []
-allElements = []
 
-# Extract coords 
-for eachElement in ensemble:
-    for everyAtom in eachElement:
-        thisElement.append(everyAtom.coords().x())
-        thisElement.append(everyAtom.coords().y())
-        thisElement.append(everyAtom.coords().z())
-    allElements.append(thisElement)
-    thisElement = []
+n = len(allTrajs.currentFrame()) * 3
+data = numpy.zeros( (len(allTrajs), n) )
+for frame in allTrajs:
+    coords = frame.getCoords()
+    obs = numpy.reshape(coords, (1, n))
+    data[allTrajs.currentIndex()] = obs
 
-# Format for numpy and scipy
-fullArray = array(allElements)
-dataStack = vstack((fullArray))
 
 # Do the clustering...
 # Computing K-Means with K = num_means clusters
-centroids,distortion = kmeans(dataStack, int(num_means))
+centroids,distortion = kmeans(data, int(num_means))
 # centroids  - the codebook of centroids 
 # distortion - total distortion
 
 # Assign each sample to a cluster
-idx,dists = vq(dataStack, centroids)
+idx,dists = vq(data, centroids)
 # idx   - code (which cluster a point belongs to)
 # dists - distance of each point from cluster 
 #         used for the distortion calculation
@@ -111,18 +90,27 @@ idx,dists = vq(dataStack, centroids)
 print "# Means\tDistortion: "
 print num_means," \t",distortion
 print "# -------------------------------"
-print "# index\t trajectory"
-for item in range(5, len(sys.argv)):
-    print "#", item-5,"\t ", sys.argv[item]
+print "# Trajectory list:"
+for i in range(len(trajList)):
+    print '# %5d = "%s"' % (i, trajList[i])
 
+print '#\n# %8s %16s %8s %8s' % ('Index', 'Trajectory', 'Frame', 'Cluster')
+print '# %8s %16s %8s %8s' % ('--------', '----------------', '--------', '--------')
+
+for i in range(len(idx)):
+    loc = allTrajs.frameLocation(i)
+    print '%10d %16d %8d %8d' % (i, loc[1], loc[3], idx[i])
+
+    
 # Output centroids
 cen_list = centroids.tolist()
+subset = allTrajs.currentFrame()
 for j in range(len(cen_list)):
     troid = cen_list[j]
     centroid_structure = subset.copy()
     for i in range(0, len(troid), 3):
-        centroid_structure[i/3].coords(GCoord(troid[i], troid[i+1], troid[i+2]))
-    pdb = PDB.fromAtomicGroup(centroid_structure)
+        centroid_structure[i/3].coords(loos.GCoord(troid[i], troid[i+1], troid[i+2]))
+    pdb = loos.PDB.fromAtomicGroup(centroid_structure)
     pdb.remarks().add(cmd_string)
     pdb.remarks().add(">>> Means = %s, Distortion = %f" % (num_means, distortion))
 
@@ -130,33 +118,3 @@ for j in range(len(cen_list)):
     file = open(filename, 'w')
     file.write(str(pdb))
     file.close()
-
-
-    
-# Output data to files named prefix.[traj-index]
-currentTraj = 0;
-counter = 0
-current_outfile = outfile+"."+str(currentTraj)
-filewr = open(current_outfile, 'w')
-filewr.write("#Index Frame Cluster Trajectory\n")
-filewr.write("#------------------------------\n")
-
-for index in range(0, len(idx)):
-    if (counter >= allTrajs[currentTraj].nframes() ):
-        dataSet += 1
-        currentTraj += 1
-        counter = 0
-        current_outfile = outfile+"."+str(currentTraj)
-        filewr = open(current_outfile, 'w')
-        filewr.write("#Index Frame Cluster Trajectory\n")
-        filewr.write("#------------------------------\n")
-    filewr.write( str(index) )
-    filewr.write(" ")
-    filewr.write( str(counter) )
-    filewr.write(" ")
-    filewr.write( str(idx[index]) )
-    filewr.write(" ")
-    filewr.write(str(dataSet))
-    filewr.write("\n")
-    counter += 1
-
