@@ -73,6 +73,12 @@ class Trajectory(object):
 
         self.index = 0
 
+    def fileName(self):
+        """
+        Return the filename that this Trajectory represents
+        """
+        return(self.fname)
+        
     def setSubset(self, selection):
         """
         Set the subset used when iterating over a trajectory.
