@@ -440,11 +440,23 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
     'alignwith' argument to the constructor (or the alignWith()
     method).
 
-    In order to do the alignment, the alignwith subset must be read
-    into memory and temporarily stored.  This can potentially use a
-    lot of memory and create delays in execution.  Once the alignment
-    is complete, however, those cached frames are released and
-    subsequent frame accesses will be quick.
+
+    There are two ways that a trajectory can be aligned.  The first
+    uses in iterative alignment method (the same used in LOOS).  This
+    is the default method.  In order to do the alignment, the
+    alignwith subset must be read into memory and temporarily stored.
+    This can potentially use a lot of memory and create delays in
+    execution.  Once the alignment is complete, however, those cached
+    frames are released and subsequent frame accesses will be quick.
+
+    The second method is to align each frame to a reference
+    structure.  This method is selected when a reference structure is
+    passed to the constructor (with the 'reference' keyword), or when
+    setReference() is called.  Note that you can pass None to
+    setReference() which will return the AlignedVirtualTrajectory to
+    the iterative method.  Also note that the reference structure is
+    copied into the AVT object as a deep copy (i.e. it does not share
+    any atoms).
 
     See VirtualTrajectory for some basic examples in addition to
     below:
@@ -457,6 +469,12 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
     # Add another trajectory
     vtraj.append(traj3)
+
+    # Align using only C-alphas and a reference structure
+    refmodel = loos.createSystem('foo-ref.pdb')
+    refsubset = loos.selectAtoms(refmodel, 'name == "CA"')
+    vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, reference = refsubset)
+
     """
 
     def __init__(self, *trajs, **kwargs):
