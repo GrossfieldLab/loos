@@ -61,7 +61,7 @@ class Trajectory(object):
         else:
             self.subset = model
             
-        self.frame = model
+        self.model = model
         self.fname = fname
         self.traj = loos.createTrajectory(fname, model)
 
@@ -87,7 +87,7 @@ class Trajectory(object):
         Set the subset used when iterating over a trajectory.
         The selection is a LOOS selection string.
         """
-        self.subset = loos.selectAtoms(self.frame, selection)
+        self.subset = loos.selectAtoms(self.model, selection)
 
         
     def __iter__(self):
@@ -124,7 +124,7 @@ class Trajectory(object):
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.frame)
+        self.traj.updateGroupCoords(self.model)
         return(self.subset)
 
     def currentFrame(self):
@@ -133,7 +133,7 @@ class Trajectory(object):
 
     def currentModel(self):
         """Return the current model"""
-        return(self.frame)
+        return(self.model)
     
     def currentRealIndex(self):
         """The 'real' frame in the trajectory for this index"""
@@ -170,7 +170,7 @@ class Trajectory(object):
         ensemble = []
         for i in indices:
             self.traj.readFrame(self.framelist[i])
-            self.traj.updateGroupCoords(self.frame)
+            self.traj.updateGroupCoords(self.model)
             dup = self.subset.copy()
             ensemble.append(dup)
         return(ensemble)
@@ -187,7 +187,7 @@ class Trajectory(object):
         if (i >= len(self.framelist) or i < 0):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.frame)
+        self.traj.updateGroupCoords(self.model)
         return(self.subset)
 
 
