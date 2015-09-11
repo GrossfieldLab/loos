@@ -1,5 +1,6 @@
 # (c) 2015 Tod D. Romo, Grossfield Lab, URMC
 import loos
+import copy
 
 class Trajectory(object):
     """
@@ -46,6 +47,8 @@ class Trajectory(object):
         skip = 0
         stride = 1
         iterator = None
+
+        model = copy.deepcopy(model)
         
         if 'skip' in kwargs:
             skip = kwargs['skip']
@@ -121,7 +124,7 @@ class Trajectory(object):
         if (i < 0 or i >= len(self.framelist)):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.subset)
+        self.traj.updateGroupCoords(self.frame)
         return(self.subset)
 
     def currentFrame(self):
@@ -167,7 +170,7 @@ class Trajectory(object):
         ensemble = []
         for i in indices:
             self.traj.readFrame(self.framelist[i])
-            self.traj.updateGroupCoords(self.subset)
+            self.traj.updateGroupCoords(self.frame)
             dup = self.subset.copy()
             ensemble.append(dup)
         return(ensemble)
@@ -184,7 +187,7 @@ class Trajectory(object):
         if (i >= len(self.framelist) or i < 0):
             raise IndexError
         self.traj.readFrame(self.framelist[i])
-        self.traj.updateGroupCoords(self.subset)
+        self.traj.updateGroupCoords(self.frame)
         return(self.subset)
 
 
@@ -256,6 +259,9 @@ class VirtualTrajectory(object):
             self.stride = kwargs['stride']
         if 'iterator' in kwargs:
             self.iterator = kwargs['iterator']
+        if 'subset' in kwargs:
+            self.setSubset(kwargs['subset'])
+
         
     def append(self, *traj):
         """
@@ -461,10 +467,16 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self.xformlist = []
         self.rmsd = 0
         self.iters = 0
-        if ('alignwith' in kwargs):
+        if 'alignwith' in kwargs:
             self.alignwith = kwargs['alignwith']
         else:
             self.alignwith = 'name == "CA"'
+
+        if 'reference' in kwargs:
+            self.reference = copy.deepcopy(kwargs['reference'])
+        else:
+            self.reference = None
+
 
     def append(self, *traj):
         """
@@ -486,7 +498,12 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self.align()
         self.index = 0
         return(self)
-        
+
+
+    def setReference(self, reference):
+        self.reference = copy.deepcopy(reference)
+        self.aligned = False
+    
     def align(self):
         """
         Align the frames (called implicitly on iterator or array access)
@@ -498,15 +515,34 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         if self.stale:
             self.initFrameList()
 
-        for i in range(len(self.framelist)):
-            t = self.trajectories[self.trajlist[i]]
-            if t != current_traj:
-                current_traj = t
-                current_subset = loos.selectAtoms(t.currentModel(), self.alignwith)
-            t.readFrame(self.framelist[i])
-            ensemble.append(current_subset.copy())
+        if self.reference:
+            self.xformlist = []
+            for i in range(len(self.framelist)):
+                t = self.trajectories[self.trajlist[i]]
+                if t != current_traj:
+                    current_traj = t
+                    current_subset = loos.selectAtoms(t.currentModel(), self.alignwith)
+                t.readFrame(self.framelist[i])
+                m = current_subset.superposition(self.reference)
+                x = loos.XForm()
+                x.load(m)
+                self.xformlist.append(x)
 
-        (self.xformlist, self.rmsd, self.iters) = loos.iterativeAlignEnsemble(ensemble)
+            self.rmsd = 0.0
+            self.iters = 0
+
+        else:
+            
+            for i in range(len(self.framelist)):
+                t = self.trajectories[self.trajlist[i]]
+                if t != current_traj:
+                    current_traj = t
+                    current_subset = loos.selectAtoms(t.currentModel(), self.alignwith)
+                t.readFrame(self.framelist[i])
+                ensemble.append(current_subset.copy())
+
+            (self.xformlist, self.rmsd, self.iters) = loos.iterativeAlignEnsemble(ensemble)
+
         self.aligned = True
 
         
