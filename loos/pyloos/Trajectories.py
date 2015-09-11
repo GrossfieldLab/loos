@@ -48,8 +48,6 @@ class Trajectory(object):
         stride = 1
         iterator = None
 
-        model = copy.deepcopy(model)
-        
         if 'skip' in kwargs:
             skip = kwargs['skip']
         if 'stride' in kwargs:
