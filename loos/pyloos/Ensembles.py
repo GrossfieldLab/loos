@@ -58,6 +58,6 @@ def svd(traj):
 
     structure = traj.currentFrame().copy()
     for i in range(len(structure)):
-        structure[i].coords(loos.GCoord(avg[i*3], avg[i*3+1], avg[i*3+2))
+        structure[i].coords(loos.GCoord(avg[i*3], avg[i*3+1], avg[i*3+2]))
 
     return(U,s,V,structure)
