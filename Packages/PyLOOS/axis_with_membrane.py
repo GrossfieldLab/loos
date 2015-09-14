@@ -28,10 +28,10 @@
 
 
 
-# Import LOOS 
-from loos import *
 from math import *
 import sys
+import loos
+import loos.pyloos
 
 ## Command line arguments
 model_name = sys.argv[1]
@@ -39,25 +39,17 @@ traj_name = sys.argv[2]
 selection = sys.argv[3]
 
 # Define the system first
-mol = createSystem(model_name)
+mol = loos.createSystem(model_name)
+traj = loos.pyloos.Trajectory(traj_name, mol, subset=selection)
 
-# Now define the trajectory
-traj = createTrajectory(traj_name, mol)
-
-# Select the atoms to be used for the principal axis calculation
-backbone = selectAtoms(mol, selection)
-
-# Iterate over all frames in the trajectory...
-ptraj = PyTraj(traj, mol)
-
-for frame in ptraj:
+for frame in traj:
 
     # Compute the principal axes for the subset of atoms given above
-    axes = backbone.principalAxes()
+    axes = frame.principalAxes()
 
     # Print out time, and the dot-product between
     # The Z-axis (i.e. membrane normal) and the first principal axes
     # of the subset of atoms
-    print ptraj.currentIndex(), "\t", axes[0].z()
+    print traj.currentIndex(), "\t", axes[0].z()
 
 

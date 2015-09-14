@@ -1008,4 +1008,28 @@ namespace loos {
       (*i)->setProperty(Atom::bondsbit);
   }
 
+
+
+  void AtomicGroup::setCoords(double* seq, int m, int n) {
+    if (n != 3 || m != size())
+      throw(LOOSError("Invalid dimensions in AtomicGroup::setCoords()"));
+
+    for (int j=0; j<m; ++j)
+      for (int i=0; i<n; ++i)
+	atoms[j]->coords()[i] = seq[j*n+i];
+  }
+  
+
+  void AtomicGroup::getCoords(double** outseq, int* m, int* n) {
+    double* dp = static_cast<double*>(malloc(size() * 3 * sizeof(double)));
+    for (int j=0; j<size(); ++j)
+      for (int i=0; i<3; ++i)
+	dp[j*3+i] = atoms[j]->coords()[i];
+
+    *m = size();
+    *n = 3;
+
+    *outseq = dp;
+  }
+
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import loos
+import loos.pyloos
 import sys
 import math
 
@@ -19,7 +20,7 @@ selections = sys.argv[3:]
 
 
 system = loos.createSystem(system_filename)
-traj = loos.createTrajectory(traj_filename, system)
+traj = loos.pyloos.Trajectory(traj_filename, system)
 
 helices = []
 for s in selections:
@@ -29,8 +30,7 @@ for s in selections:
 
 print "#Frame\tAngle\tCosine"
 
-ptraj = loos.PyTraj(traj, system)
-for frame in ptraj:
+for frame in traj:
 
     vec = loos.GCoord(0.,0.,0.)
     for h in helices:
@@ -46,6 +46,6 @@ for frame in ptraj:
     cosine = min(1.0, cosine)
     ang = math.acos(cosine) * 180./math.pi
     
-    print ptraj.currentIndex(), ang, cosine
+    print traj.currentIndex(), ang, cosine
 
     

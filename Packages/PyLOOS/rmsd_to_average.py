@@ -41,33 +41,33 @@ model_name = sys.argv[1]
 traj_name = sys.argv[2]
 align_with = sys.argv[3]
 
-skip = 0
+skip_frames = 0
 rmsd_with = align_with
 
 if len(sys.argv) > 4:
    rmsd_with = sys.argv[4]
    if len(sys.argv) > 5:
-      skip = int(sys.argv[5])
+      skip_frames = int(sys.argv[5])
 
 # Create the model & read in the trajectory
 model = createSystem(model_name)
-traj = createTrajectory(traj_name, model)
+traj = loos.pyloos.Trajectory(traj_name, model, skip = skip_frames)
 
 align_subset = selectAtoms(model, align_with)
 rmsd_subset = selectAtoms(model, rmsd_with)
 
 print "# Alignment subset has %d atoms." % (len(align_subset))
 
-patraj = PyAlignedTraj(traj, rmsd_subset, skip = skip, alignwith = align_subset)
-average = patraj.averageStructure()
+patraj = loos.pyloos.AlignedVirtualTrajectory(traj, alignwith = align_subset)
+patraj.setSubset(rmsd)
+average = averageStructure(traj)
 
-t = 0
+
 avg_rmsd = 0
 for structure in patraj:
    rmsd = average.rmsd(structure)
    avg_rmsd = avg_rmsd + rmsd
-   print "%d\t%f" % (t, rmsd)
-   t = t + 1
+   print "%d\t%f" % (patraj.currentIndex(), rmsd)
 
 print "# Average rmsd = %f" % (avg_rmsd/t)
 

@@ -9,6 +9,7 @@
 
 import sys
 import loos
+import loos.pyloos
 import math
 
 header = " ".join(sys.argv)
@@ -20,13 +21,12 @@ sel_string1 = sys.argv[3]
 sel_string2 = sys.argv[4]
 
 system = loos.createSystem(system_file)
-traj = loos.createTrajectory(traj_file, system)
+traj = loos.pyloos.Trajectory(traj_file, system)
 
 sel1 = loos.selectAtoms(system, sel_string1)
 sel2 = loos.selectAtoms(system, sel_string2)
 
-ptraj = loos.PyTraj(traj, system)
-for frame in ptraj:
+for frame in traj:
 
     # compute distance
     centroid1 = sel1.centroid()
@@ -50,7 +50,7 @@ for frame in ptraj:
     tors = loos.torsion(p1, centroid1, centroid2, p2)
 
     # write output
-    print ptraj.currentIndex(), distance, angle, tors
+    print traj.currentIndex(), distance, angle, tors
 
 
 

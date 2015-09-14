@@ -173,7 +173,7 @@ def script_builder_python(target, source, env):
 # Verify that we have swig and it's v2.0+
 # Returns the path to swig
 def CheckForSwig(conf, min_version):
-    conf.Message('Checking for Swig ...')
+    conf.Message('Checking for Swig...')
     # Need to use has_key() for older distros...
     if conf.env.has_key('SWIGVERSION'):
         if LooseVersion(conf.env['SWIGVERSION']) >= LooseVersion(min_version):
@@ -322,7 +322,7 @@ int main(int argc, char *argv[]) { std::cout << BOOST_LIB_VERSION; return(0); }
 # Check for presence of a directory
 def CheckDirectory(conf, dirname):
 
-    conf.Message('Checking for directory %s...' % dirname)
+    conf.Message('Checking for directory %s... ' % dirname)
     if os.path.isdir(dirname):
         conf.Result('yes')
         return(1)
@@ -330,6 +330,27 @@ def CheckDirectory(conf, dirname):
     return(0)
 
 
+
+def CheckNumpy(conf, pythonpath):
+    conf.Message('Checking for numpy... ')
+
+    ok = checkForPythonHeader(conf, 'numpy/arrayobject.h')
+    if ok:
+        conf.Result('yes')
+        return(1)
+    pythonpaths = [s + '/site-packages/numpy/core/include' for s in conf.env['PYTHON_PATH'].split(':')]
+
+    if pythonpaths:
+        ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', pythonpaths)
+        if ok:
+            conf.Result('yes')
+            return(1)
+        
+
+    conf.Result('no')
+    return(0)
+
+    
 def SetupBoostPaths(env):
 
     BOOST=env['BOOST']
@@ -491,6 +512,40 @@ def checkLibsForFunction(context, funcname, liblist, excludelist):
     return('')
 
 
+def checkForPythonHeader(context, header):
+    test_code = """
+#include <Python.h>
+#include <%s>
+""" % header
+
+    oldcpp = None
+    if 'CPPFLAGS' in context.env:
+        oldcpp = context.env['CPPFLAGS']
+    if 'CPPPATH' in context.env:
+        for dir in context.env['CPPPATH']:
+            context.env.Append(CPPFLAGS="-I%s " % dir)
+    ok = context.TryCompile(test_code, '.cpp')
+
+    if oldcpp:
+        context.env['CPPFLAGS'] = oldcpp
+
+    return(ok)
+        
+
+def checkForPythonHeaderInPath(context, header, pathlist):
+
+    for path in pathlist:
+        oldcpp = None
+        if 'CPPPATH' in context.env:
+            oldcpp = context.env['CPPPATH']
+        context.env.Append(CPPPATH=[path])
+        ok = checkForPythonHeader(context, header)
+        if (ok):
+            return(True)
+        if oldcpp:
+            context.env['CPPPATH'] = oldcpp
+    return(False)
+
 
 
 def AutoConfiguration(env):
@@ -501,7 +556,8 @@ def AutoConfiguration(env):
                                           'CheckDirectory' : CheckDirectory,
                                           'CheckAtlasRequires' : CheckAtlasRequires,
                                           'CheckForIEC559' : CheckForIEC559,
-                                          'CheckSystemType' : CheckSystemType
+                                          'CheckSystemType' : CheckSystemType,
+                                          'CheckNumpy' : CheckNumpy
                                           })
 
     use_threads = int(env['threads'])
@@ -592,6 +648,11 @@ def AutoConfiguration(env):
         if int(env['pyloos']):
             if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env['pyloos'] = 1
+                pythonpath = distutils.sysconfig.get_python_inc()
+                conf.env.Append(CPPPATH=[pythonpath])
+                if not conf.CheckNumpy(pythonpath):
+                    print 'ERROR- PyLOOS build requires NumPy'
+                    conf.env.Exit(1)
             else:
                 conf.env['pyloos'] = 0
 
@@ -724,7 +785,7 @@ def AutoConfiguration(env):
         conf.env['CCFLAGS'] = ccflags
         if ok:
             conf.env.Append(CCFLAGS=['-Wno-maybe-uninitialized'])
-                
+
         environOverride(conf)
         if 'LIBS' in conf.env:
             print 'Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS']

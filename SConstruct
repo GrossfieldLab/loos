@@ -65,6 +65,8 @@ opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
 opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
 opts.Add('NETCDF_LIBS', 'NetCDF Libraries to link with', '')
 
+opts.Add('PYTHON_PATH', 'Path to Python Modules', '')
+
 addDeprecatedOptions(opts)
 
 env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
@@ -104,10 +106,6 @@ profile_opts='-pg'
 env.Prepend(CPPPATH = ['#'])
 env.Prepend(LIBPATH = ['#'])
 env.Append(LEXFLAGS=['-s'])
-
-# Include Python if building PyLOOS
-if pyloos:
-    env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
 
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':
