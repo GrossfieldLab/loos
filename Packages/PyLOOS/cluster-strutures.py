@@ -27,22 +27,21 @@ import sys
 import loos
 import loos.pyloos
 import numpy
+import argparse
 from scipy.cluster.vq import kmeans,vq
 
 
-verbose = 0
+parser = argparse.ArgumentParser()
+parser.add_argument('model', help='Structure to use')
+parser.add_argument('selection', help='LOOS selection for subset of structure to use for clustering')
+parser.add_argument('num_means', help='# of clusters to make', type = int)
+parser.add_argument('prefix', help='Prefix output files with this')
+parser.add_argument('traj', help='Trajectory to use', nargs='+')
+parser.add_argument('--align', help='Align trajectory using this LOOS selection')
+parser.add_argument('--skip', help='Skip this amount from the start of each trajectory', type = int, default = 0)
+parser.add_argument('--stride', help='Step through each trajectory by this many frames', type = int, default = 1)
 
-if (len(sys.argv) <= 5) or (sys.argv[1] == "-h"):
-    print "Usage: cluster-structures.py model selection num_means prefix traj [traj...] > output-for-metadata"
-    sys.exit(1)
-
-
-
-## Command line arguments
-model_name = sys.argv[1]
-selection = sys.argv[2]
-num_means = sys.argv[3]
-outfile =  sys.argv[4]
+args = parser.parse_args()
 cmd_string = sys.argv[0] 
 for i in range(1, len(sys.argv)):
     arg = sys.argv[i].replace('\n', '\\n')
@@ -50,13 +49,13 @@ for i in range(1, len(sys.argv)):
 print '# ', cmd_string
 
 
-trajList = sys.argv[5:len(sys.argv)]
-
 # Create the model & read in the trajectories
-model = loos.createSystem(model_name)
+model = loos.createSystem(args.model)
 allTrajs = loos.pyloos.VirtualTrajectory()
-for trajname in trajList:
-    allTrajs.append(loos.pyloos.Trajectory(trajname, model, subset=selection))
+if args.align:
+    allTrajs = loos.pyloos.AlignedVirtualTrajectory(alignwith = args.align)
+for trajname in args.traj:
+    allTrajs.append(loos.pyloos.Trajectory(trajname, model, subset=args.selection, skip=args.skip, stride=args.stride))
 
 
 # Set up lists to hold the coordinates...
@@ -69,10 +68,13 @@ for frame in allTrajs:
     data[allTrajs.index()] = obs
 
 
+if args.align:
+    print '# Iteratively aligned with %d iterations and final RMSD %g.' % (allTrajs._iters, allTrajs._rmsd)
+
 
 # Do the clustering...
 # Computing K-Means with K = num_means clusters
-centroids,distortion = kmeans(data, int(num_means))
+centroids,distortion = kmeans(data, args.num_means)
 # centroids  - the codebook of centroids 
 # distortion - total distortion
 
@@ -87,11 +89,11 @@ idx,dists = vq(data, centroids)
 
 # Write out the meta-data file
 print "# Means\tDistortion: "
-print num_means," \t",distortion
+print '# ', args.num_means," \t",distortion
 print "# -------------------------------"
 print "# Trajectory list:"
-for i in range(len(trajList)):
-    print '# %5d = "%s"' % (i, trajList[i])
+for i in range(len(args.traj)):
+    print '# %5d = "%s"' % (i, args.traj[i])
 
 print '#\n# %8s %16s %8s %8s' % ('Index', 'Trajectory', 'Frame', 'Cluster')
 print '# %8s %16s %8s %8s' % ('--------', '----------------', '--------', '--------')
@@ -111,9 +113,9 @@ for j in range(len(cen_list)):
         centroid_structure[i/3].coords(loos.GCoord(troid[i], troid[i+1], troid[i+2]))
     pdb = loos.PDB.fromAtomicGroup(centroid_structure)
     pdb.remarks().add(cmd_string)
-    pdb.remarks().add(">>> Means = %s, Distortion = %f" % (num_means, distortion))
+    pdb.remarks().add(">>> Means = %s, Distortion = %f" % (args.num_means, distortion))
 
-    filename = "%s-centroid-%d.pdb" % (outfile, j)
+    filename = "%s-centroid-%d.pdb" % (args.prefix, j)
     file = open(filename, 'w')
     file.write(str(pdb))
     file.close()
