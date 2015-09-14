@@ -1,27 +1,29 @@
+## @package loos.pyloos
+# Foobar
+
+import loos
 import numpy
 import numpy.linalg
-import loos
 
 
-
+## Python version of averageStructure (using loos.pyloos.Trajectory-like objects)
+# The subset defined in the trajectory controls what is averaged over.  The trajectory
+# may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
+#
+#avg = numpy.zeros((len(traj.frame()), 3))
+#for frame in traj:
+#    coords = frame.getCoords()
+#    avg += coords
+#avg /= len(traj)
+#
+#structure = traj.frame().copy()
+#for i in range(len(structure)):
+#    structure[i].coords(loos.GCoord(avg[i][0], avg[i][1], avg[i][2]))
+#    
+#return(structure)
 def averageStructure(traj):
+    """Returns the average structure for a trajectory.
     """
-    Returns the average structure for a trajectory.  The subset defined
-    in the trajectory controls what is averaged over.  The trajectory
-    may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
-    """
-    avg = numpy.zeros((len(traj.frame()), 3))
-    for frame in traj:
-        coords = frame.getCoords()
-        avg += coords
-    avg /= len(traj)
-
-    structure = traj.frame().copy()
-    for i in range(len(structure)):
-        structure[i].coords(loos.GCoord(avg[i][0], avg[i][1], avg[i][2]))
-        
-    return(structure)
-
 
 def extractCoords(traj):
     """
