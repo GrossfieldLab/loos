@@ -131,15 +131,15 @@ class Trajectory(object):
         self._traj.updateGroupCoords(self._model)
         return(self._subset)
 
-    def currentFrame(self):
+    def frame(self):
         """Return the current frame (subset)"""
         return(self._subset)
 
-    def currentRealIndex(self):
+    def realIndex(self):
         """The 'real' frame in the trajectory for this index"""
         return(self._framelist[self._index-1])
 
-    def currentIndex(self):
+    def index(self):
         """The state of the iterator"""
         return(self._index-1)
 
@@ -281,7 +281,7 @@ class VirtualTrajectory(object):
         for t in self._trajectories:
             t.setSubset(selection)
 
-    def currentFrame(self):
+    def frame(self):
         """
         Return the current frame/model.  If the iterator is past the
         end of the trajectory list, return the last valid frame.
@@ -294,28 +294,14 @@ class VirtualTrajectory(object):
         else:
             i = self._index
             
-        return(self._trajectories[self._trajlist[i]].currentFrame())
+        return(self._trajectories[self._trajlist[i]].frame())
 
-    def currentIndex(self):
+    def index(self):
         """
         Return index into composite trajectory for current frame
         """
         return(self._index-1)
     
-
-    def currentTrajectoryIndex(self):
-        """
-        Returns the index into the list of trajectories that the
-        current frame is from
-        """
-        return(self._trajlist[self._index-1])
-
-    def currentTrajectory(self):
-        """
-        Returns the loos.pyloos.Trajectory object that the current
-        frame is from
-        """
-        return(self._trajectories[self._trajlist[self._index-1]])
 
     def frameLocation(self, i):
         """
