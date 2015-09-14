@@ -39,6 +39,8 @@ import SCons
 import loos_build_config
 
 
+default_lib_path = 'crap'
+
 # Attempt to canonicalize system name, type and other related info...
 # Note: this exports to globals rather than being contained within the check framework.
 def CheckSystemType(conf):
@@ -332,14 +334,21 @@ def CheckDirectory(conf, dirname):
 
 
 def CheckNumpy(conf, pythonpath):
+    global default_lib_path
     conf.Message('Checking for numpy... ')
 
     ok = checkForPythonHeader(conf, 'numpy/arrayobject.h')
     if ok:
         conf.Result('yes')
         return(1)
-    pythonpaths = [s + '/site-packages/numpy/core/include' for s in conf.env['PYTHON_PATH'].split(':')]
+    newpaths = []
+    if 'PYTHON_PATH' in conf.env:
+        envpath = conf.env['PYTHON_PATH']
+        if len(envpath) > 1:    # Catches cases where PYTHON_PATH is present but null...
+            newpaths.extend(envpath.split(':'))
 
+    newpaths.append(default_lib_path + '/python2.7')
+    pythonpaths = [s + '/site-packages/numpy/core/include' for s in newpaths]
     if pythonpaths:
         ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', pythonpaths)
         if ok:
@@ -549,6 +558,8 @@ def checkForPythonHeaderInPath(context, header, pathlist):
 
 
 def AutoConfiguration(env):
+    global default_lib_path 
+
     conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
                                           'CheckBoostHeaders' : CheckBoostHeaders,
                                           'CheckForBoostLibrary' : CheckForBoostLibrary,
@@ -586,7 +597,6 @@ def AutoConfiguration(env):
             # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
             default_lib_path = '/usr/lib64'
         conf.env.Append(LIBPATH = default_lib_path)
-       
         # Only setup ATLAS if we're not on a Mac...
         if loos_build_config.host_type != 'Darwin':
             atlas_libpath = ''
