@@ -47,16 +47,16 @@ class Trajectory(object):
                     (overrides skip and stride)
           subset -- Use this selection as the subset to return for frames...
         """
-        skip = 0
-        stride = 1
-        iterator = None
+        self._skip = 0
+        self._stride = 1
+        self._iterator = None
 
         if 'skip' in kwargs:
-            skip = kwargs['skip']
+            self._skip = kwargs['skip']
         if 'stride' in kwargs:
-            stride = kwargs['stride']
+            self._stride = kwargs['stride']
         if 'iterator' in kwargs:
-            iterator = kwargs['iterator']
+            self._iterator = kwargs['iterator']
         if 'subset' in kwargs:
             self._subset = loos.selectAtoms(model, kwargs['subset'])
         else:
@@ -66,17 +66,35 @@ class Trajectory(object):
         self._fname = fname
         self._traj = loos.createTrajectory(fname, model)
 
+        self._stale = 1
+        self._initFrameList()
+
+
+    def _initFrameList(self):
         self._framelist = []
-        if iterator is None:
-            it = range(skip, self._traj.nframes(), stride)
+        if self._iterator is None:
+            it = range(self._skip, self._traj.nframes(), self._stride)
         else:
-            it = iter(iterator)
+            it = iter(self._iterator)
         
         for i in it:
             self._framelist.append(i)
 
         self._index = 0
+        self._stale = 0
 
+    def stride(self, n):
+        """
+        Step through the trajectory by this number of frames
+        """
+        self._stride = n
+
+    def skip(self, n):
+        """
+        Skip this number of frames at the start of the trajectory
+        """
+        self._skip = n
+        
     def fileName(self):
         """
         Return the filename that this Trajectory represents
@@ -92,6 +110,8 @@ class Trajectory(object):
 
         
     def __iter__(self):
+        if self._stale:
+            self._initFrameList()
         self._index = 0
         return(self)
 
@@ -99,6 +119,8 @@ class Trajectory(object):
         """
         Number of frames in the trajectory
         """
+        if self._stale:
+            self._initFrameList()
         return(len(self._framelist))
 
 
@@ -125,6 +147,8 @@ class Trajectory(object):
     
     def readFrame(self, i):
         """Read a frame and update the model"""
+        if self._stale:
+            self._initFrameList()
         if (i < 0 or i >= len(self._framelist)):
             raise IndexError
         self._traj.readFrame(self._framelist[i])
@@ -137,6 +161,8 @@ class Trajectory(object):
 
     def realIndex(self):
         """The 'real' frame in the trajectory for this index"""
+        if self._stale:
+            self._initFrameList()
         return(self._framelist[self._index-1])
 
     def index(self):
@@ -155,6 +181,9 @@ class Trajectory(object):
             t.frameNumber(0)           == 50
             t.frameNumber(range(0,2))  == [50,51]
         """
+
+        if self._stale:
+            self._initFrameList()
         if type(i) is int:
             if (i < 0):
                 i += len(self._framelist)
@@ -166,6 +195,8 @@ class Trajectory(object):
 
 
     def _getSlice(self, s):
+        if self._stale:
+            self._initFrameList()
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
@@ -179,6 +210,8 @@ class Trajectory(object):
     def __getitem__(self, i):
         """Handle array indexing and slicing.  Negative indices are
         relative to the end of the trajectory"""
+        if self._stale:
+            self._initFrameList()
         if isinstance(i, slice):
             return(self._getSlice(i))
 
@@ -273,6 +306,35 @@ class VirtualTrajectory(object):
         self._trajectories.extend(traj)
         self._stale = 1
 
+    def stride(self, n):
+        """
+        Set the stride of the combined trajectory
+        """
+        self._stride = n
+        self._stale = 1
+
+    def skip(self, n):
+        """
+        Set the skip of the combined trajectory
+        """
+        self._skip = n
+        self._stale = 1
+
+    def allStride(self, n):
+        """
+        Sets the stride of all contained trajectories
+        """
+        self._stale = 1
+        for t in self._trajectories:
+            t.stride(n)
+
+    def allSkip(self, n):
+        """
+        Sets the skip of all contained trajectories
+        """
+        self._stale = 1
+        for t in self._trajectories:
+            t.skip(n)
 
     def setSubset(self, selection):
         """
