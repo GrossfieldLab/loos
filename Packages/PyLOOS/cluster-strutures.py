@@ -28,8 +28,6 @@ import loos
 import loos.pyloos
 import numpy
 from scipy.cluster.vq import kmeans,vq
-from itertools import chain
-import copy
 
 
 verbose = 0

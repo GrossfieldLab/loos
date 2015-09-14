@@ -1,3 +1,9 @@
+2015-09-14    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed pyloos organization
+	* Added numpy support in PyLOOS
+	* Added ensembles and SVD support in PyLOOS
+
 2015-08-27    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added k-means clustering PyLOOS program (cluster-structures.py)
