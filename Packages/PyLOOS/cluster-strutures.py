@@ -38,8 +38,10 @@ parser.add_argument('num_means', help='# of clusters to make', type = int)
 parser.add_argument('prefix', help='Prefix output files with this')
 parser.add_argument('traj', help='Trajectory to use', nargs='+')
 parser.add_argument('--align', help='Align trajectory using this LOOS selection')
-parser.add_argument('--skip', help='Skip this amount from the start of each trajectory', type = int, default = 0)
-parser.add_argument('--stride', help='Step through each trajectory by this many frames', type = int, default = 1)
+parser.add_argument('--allskip', help='Skip this amount from the start of each trajectory', type = int, default = 0)
+parser.add_argument('--allstride', help='Step through each trajectory by this many frames', type = int, default = 1)
+parser.add_argument('--skip', help='Skip this amount from the start of the combined trajectory', type = int, default = 0)
+parser.add_argument('--stride', help='Step through the combined trajectory by this many frames', type = int, default = 1)
 
 args = parser.parse_args()
 cmd_string = sys.argv[0] 
@@ -51,11 +53,11 @@ print '# ', cmd_string
 
 # Create the model & read in the trajectories
 model = loos.createSystem(args.model)
-allTrajs = loos.pyloos.VirtualTrajectory()
+allTrajs = loos.pyloos.VirtualTrajectory(skip=args.skip, stride=args.stride)
 if args.align:
-    allTrajs = loos.pyloos.AlignedVirtualTrajectory(alignwith = args.align)
+    allTrajs = loos.pyloos.AlignedVirtualTrajectory(alignwith = args.align, skip=args.skip, stride=args.stride)
 for trajname in args.traj:
-    allTrajs.append(loos.pyloos.Trajectory(trajname, model, subset=args.selection, skip=args.skip, stride=args.stride))
+    allTrajs.append(loos.pyloos.Trajectory(trajname, model, subset=args.selection, skip=args.allskip, stride=args.allstride))
 
 
 # Set up lists to hold the coordinates...
