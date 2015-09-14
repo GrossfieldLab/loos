@@ -1,5 +1,3 @@
-## @package loos.pyloos
-# Foobar
 
 import loos
 import numpy
@@ -10,27 +8,29 @@ import numpy.linalg
 # The subset defined in the trajectory controls what is averaged over.  The trajectory
 # may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
 #
-#avg = numpy.zeros((len(traj.frame()), 3))
-#for frame in traj:
-#    coords = frame.getCoords()
-#    avg += coords
-#avg /= len(traj)
-#
-#structure = traj.frame().copy()
-#for i in range(len(structure)):
-#    structure[i].coords(loos.GCoord(avg[i][0], avg[i][1], avg[i][2]))
-#    
-#return(structure)
 def averageStructure(traj):
     """Returns the average structure for a trajectory.
     """
+    avg = numpy.zeros((len(traj.frame()), 3))
+    for frame in traj:
+        coords = frame.getCoords()
+        avg += coords
+    avg /= len(traj)
+
+    structure = traj.frame().copy()
+    for i in range(len(structure)):
+        structure[i].coords(loos.GCoord(avg[i][0], avg[i][1], avg[i][2]))
+        
+    return(structure)
+
+## Returns the coordinates for an entire trajectory as an MxN numpy matrix
+# where M is 3*natoms and N is the length of the trajectory.  The subset
+# in the trajectory controls what is extracted.  The trajectory
+# may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
 
 def extractCoords(traj):
     """
-    Returns the coordinates for an entire trajectory as an MxN numpy matrix,
-    where M is 3*natoms and N is the length of the trajectory.  The subset
-    in the trajectory controls what is extracted.  The trajectory
-    may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
+    Extracts coords from a trajectory as a NumPy matrix
     """
     m = len(traj.frame()) * 3
     n = len(traj)
