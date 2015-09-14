@@ -226,7 +226,8 @@ be ignored by the LOOS build.
 
 Using zypper (or your favorite package manager), install the following:
 
-   zypper install scons boost-devel lapack-devel blas-devel python-devel swig libnetcdf-devel
+sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig \
+     netcdf-devel python-numpy
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
