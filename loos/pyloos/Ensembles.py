@@ -10,13 +10,13 @@ def averageStructure(traj):
     in the trajectory controls what is averaged over.  The trajectory
     may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
     """
-    avg = numpy.zeros((len(traj.currentFrame()), 3))
+    avg = numpy.zeros((len(traj.frame()), 3))
     for frame in traj:
         coords = frame.getCoords()
         avg += coords
     avg /= len(traj)
 
-    structure = traj.currentFrame().copy()
+    structure = traj.frame().copy()
     for i in range(len(structure)):
         structure[i].coords(loos.GCoord(avg[i][0], avg[i][1], avg[i][2]))
         
@@ -30,7 +30,7 @@ def extractCoords(traj):
     in the trajectory controls what is extracted.  The trajectory
     may actually be a VirtualTrajectory or an AlignedVirtualTrajectory.
     """
-    m = len(traj.currentFrame()) * 3
+    m = len(traj.frame()) * 3
     n = len(traj)
 
     A = numpy.zeros((m, n))
@@ -56,7 +56,7 @@ def svd(traj):
     A -= avg
     (U,s,V) = numpy.linalg.svd(A)
 
-    structure = traj.currentFrame().copy()
+    structure = traj.frame().copy()
     for i in range(len(structure)):
         structure[i].coords(loos.GCoord(avg[i*3], avg[i*3+1], avg[i*3+2]))
 
