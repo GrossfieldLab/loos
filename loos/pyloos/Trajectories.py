@@ -2,50 +2,51 @@
 import loos
 import copy
 
+## Python-based wrapper for LOOS Trajectories
+# This class turns a loos Trajectory into something more
+# python-like.  Behind the scenes, it wraps a loos::AtomicGroup and
+# a loos::Trajectory.
+#
+# Remember that all atoms are shared.  If you want to decouple the
+# trajectory from other groups, pass it a copy of the model.
+#
+#
+# examples:
+# \code
+#  model = loos.createSystem('foo.pdb')
+#  traj = loos.pyloos.Trajectory('foo.dcd', model)
+#  calphas = loos.selectAtoms(model, 'name == "CA"')
+#  for frame in traj:
+#      print calphas.centroid()
+# \endcode
+#
+# The same thing but skipping the first 50 frames and taking every other frame
+# \code
+# traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50, stride=2)
+# \endcode
+#
+# Only use frames 19-39 (i.e. the 20th through 40th frames)
+# \code
+# traj = loos.pyloos.Trajectory('foo.dcd', model, iterator=range(19,40))
+# \endcode
+# 
+# An alternative way of only iterating over a subset...
+# \code
+# model = loos.createSystem('foo.pdb')
+# traj = loos.pyloos.Trajectory('foo.dcd', model, subset='name == "CA"')
+# \endcode
 class Trajectory(object):
-    """
-    This class turns a loos Trajectory into something more
-    python-like.  Behind the scenes, it wraps a loos::AtomicGroup and
-    a loos::Trajectory.
 
-    Remember that all atoms are shared.  If you want to decouple the
-    trajectory from other groups, pass it a copy of the model.
-
-
-    Examples:
-        model = loos.createSystem('foo.pdb')
-        traj = loos.pyloos.Trajectory('foo.dcd', model)
-        calphas = loos.selectAtoms(model, 'name == "CA"')
-        for frame in traj:
-            print calphas.centroid()
-
-
-
-        # The same thing but skipping the first 50 frames
-        # and taking every other frame
-        traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50, stride=2)
-
-        # Only use frames 19-39 (i.e. the 20th through 40th frames)
-        traj = loos.pyloos.Trajectory('foo.dcd', model, iterator=range(19,40))
-
-        # An alternative way of only iterating over a subset...
-        model = loos.createSystem('foo.pdb')
-        traj = loos.pyloos.Trajectory('foo.dcd', model, subset='name == "CA"')
-
-
-    """
-
+    ## Instantiate a Trajectory object.
     def __init__(self, fname, model, **kwargs):
         """
-        Instantiate a Trajectory object.  Takes a filename and an
-        AtomicGroup model.
-
-        keyword arguments:
-            skip -- # of frames to skip from the start
-          stride -- # of frames to step through by
-        iterator -- Python iterator used to pick frames
-                    (overrides skip and stride)
-          subset -- Use this selection as the subset to return for frames...
+        fname = name of trajectory file
+        model = AtomicGroup matching the trajectory
+        keyword args:
+               skip = # of frames to skip from start
+             stride = # of frames to step through
+           iterator = Python iterator used to pick frame (overrides skip and stride)
+             subset = Selection used to pick subset for each frame
         """
         self._skip = 0
         self._stride = 1
@@ -225,55 +226,59 @@ class Trajectory(object):
 
 
 
+## Virtual trajectory composed of multiple Trajectory objects
+# This class can combine multiple loos.pyloos.Trajectory objects
+# into one big "virtual" trajectory.  Any skips or strides set in
+# the contained trajectories will be honored.  In addition, a skip
+# and a stride for the whole meta-trajectory are available.
+#
+# There is no requirement that the subsets used for all trajectories
+# must be the same.  Ideally, the frame (subset) that is returned
+# should be compatible (e.g. same atoms in the same order), but the
+# models used for each trajectory (and the corresponding subset
+# selection) can vary.  Why would you want to do this?  Imagine
+# combining three different GPCRs where the subsets are the common
+# trans-membrane C-alphas.  This makes processing all of the
+# ensembles together easier.
+# 
+# <h2>WARNING</h2>
+# Since each contained trajectory can have a different set of shared
+# atoms it updates, care must be taken when pre-selecting atoms.
+# 
+# 
+# Examples:
+# \code
+# model = loos.createSystem('foo.pdb')
+# Takes a filename (\a fname) and an AtomicGroup model (\a model).
+# Takes a filename (\a fname) and an AtomicGroup model (\a model).
+# Takes a filename (\a fname) and an AtomicGroup model (\a model).
+# traj1 = loos.pyloos.Trajectory('foo-1.dcd', model)
+# traj2 = loos.pyloos.Trajectory('foo-2.dcd', model)
+# vtraj = loos.pyloos.VirtualTrajectory(traj1, traj2)
+#
+# for frame in vtraj:
+#   print frame.centroid()
+# \endcode
+#
+# Adding another trajectory in with its own stride and skip
+# \code
+# traj3 = loos.pyloos.Trajectory('foo-3.dcd', skip=50, stride=2)
+# vtraj.append(traj3)
+# \endcode
+#
+# Same as above but stride through the combined trajectory
+# \code
+# vtraj10 = loos.pyloos.VirtualTrajectory(traj1, traj2, stride=10)
+# \endcode
+
 class VirtualTrajectory(object):
-    """
-    This class can combine multiple loos.pyloos.Trajectory objects
-    into one big "virtual" trajectory.  Any skips or strides set in
-    the contained trajectories will be honored.  In addition, a skip
-    and a stride for the whole meta-trajectory are available.
-
-    There is no requirement that the subsets used for all trajectories
-    must be the same.  Ideally, the frame (subset) that is returned
-    should be compatible (e.g. same atoms in the same order), but the
-    models used for each trajectory (and the corresponding subset
-    selection) can vary.  Why would you want to do this?  Imagine
-    combining three different GPCRs where the subsets are the common
-    trans-membrane C-alphas.  This makes processing all of the
-    ensembles together easier.
-
-    WARNING...
-    Since each contained trajectory can have a different set of shared
-    atoms it updates, care must be taken when pre-selecting atoms.
-
-
-    Examples:
-      model = loos.createSystem('foo.pdb')
-      traj1 = loos.pyloos.Trajectory('foo-1.dcd', model)
-      traj2 = loos.pyloos.Trajectory('foo-2.dcd', model)
-      vtraj = loos.pyloos.VirtualTrajectory(traj1, traj2)
-
-      for frame in vtraj:
-          print frame.centroid()
-
-
-      # Adding another trajectory in with its own stride and skip
-      traj3 = loos.pyloos.Trajectory('foo-3.dcd', skip=50, stride=2)
-      vtraj.append(traj3)
-
-      # Same as above but stride through the combined trajectory
-      vtraj10 = loos.pyloos.VirtualTrajectory(traj1, traj2, stride=10)
-
-    
-
-    """
     def __init__(self, *trajs, **kwargs):
-        """
-        Instantiate a VirtualTrajectory object.
+        """Instantiate a VirtualTrajectory object.
 
         Keyword arguments:
-            skip -- # of frames to skip at start of composite traj
-          stride -- # of frames to step through in the composite traj
-        iterator -- Python iterator used to pick frames from the composite traj
+            skip = # of frames to skip at start of composite traj
+          stride = # of frames to step through in the composite traj
+        iterator = Python iterator used to pick frames from the composite traj
 
         """
 
@@ -365,33 +370,44 @@ class VirtualTrajectory(object):
         return(self._index-1)
     
 
+
+    ## Returns information about the ith frame in the VirtualTrajectory
+    # The tuple returned has the following format:
+    # \code
+    # (frame-index, traj-index, trajectory, real-frame-within-trajectory)
+    # \endcode
+    #
+    # Consider the following,
+    # \code
+    # t1 = loos.pyloos.Trajectory('foo.dcd', model)   # 50 frames
+    # t2 = loos.pyloos.Trajectory('bar.dcd', model)   # 25 frames
+    # vt = loos.pyloos.VirtualTrajectory(t1, t2)
+    # \endcode
+    #
+    # * \c frame-index is the index into the corresponding trajectory object.  For example,
+    # frameLocation(50) would have a frame-index of 0 because vt[50] would return the first
+    # frame from t2.
+    #
+    # * \c traj-index is the index into the list of managed trajectories for the frame.
+    # In the above example, the traj-index will be 1.
+    # * \c trajectory is the actual loos.pyloos.Trajectory object that contains the frame.
+    # * \c real-frame-within-trajectory is the same as calling trajectory.frameNumber(frame-index).
+    # 
+    # Instead of the \c t1 above, imagine it was setup this way,
+    # \code
+    # t1 = loos.pyloos.Trajectory('foo.dcd', model, skip=25)
+    # \endcode
+    # Now, <tt>vt.frameLocation(0)</tt> will return <tt>(0, 0, t1, 25)</tt>,
+    # and <tt>vt.frameLocation(25)</tt> will return <tt>(25, 1, t2, 0)</tt>
+    #
+    # Python documentation:
+    
     def frameLocation(self, i):
         """
         Returns a tuple containing information about where a frame in the virtual trajectory 
         comes from.
 
         (frame-index, traj-index, trajectory, real-frame-within-trajectory)
-
-        Consider the following:
-          t1 = loos.pyloos.Trajectory('foo.dcd', model)   # 50 frames
-          t2 = loos.pyloos.Trajectory('bar.dcd', model)   # 25 frames
-          vt = loos.pyloos.VirtualTrajectory(t1, t2)
-
-        The frame-index is the index into the corresponding trajectory object.  For example,
-        frameLocation(50) would have a frame-index of 0 because vt[50] would return the first
-        frame from t2.
-
-        The traj-index is the index into the list of managed trajectories for the frame.
-        In the above example, the traj-index will be 1.
-
-        The trajectory is the actual loos.pyloos.Trajectory object that contains the frame.
-
-        The real-frame-within-trajectory is the same as calling trajectory.frameNumber(frame-index).
-        Instead of the t1 above, imagine it was setup this way,
-          t1 = loos.pyloos.Trajectory('foo.dcd', model, skip=25)
-        Now, vt.frameLocation(0) will return (0, 0, t1, 25),
-        and vt.frameLocation(25) will return (25, 1, t2, 0)
-        
         """
         if (self._stale):
             self._initFrameList()
@@ -482,54 +498,65 @@ class VirtualTrajectory(object):
 
 
 
+## A virtual trajectory that supports iterative alignment.
+# Only the
+# transformation needed to align each frame is stored.  When a frame
+# is accessed, it is automatically transformed into the aligned
+# orientation.  The selection used for aligning can be set with the
+# 'alignwith' argument to the constructor (or the alignWith()
+# method).
+# 
+# There are two ways that a trajectory can be aligned.  The first
+# uses in iterative alignment method (the same used in LOOS).  This
+# is the default method.  In order to do the alignment, the
+# alignwith subset must be read into memory and temporarily stored.
+# This can potentially use a lot of memory and create delays in
+# execution.  Once the alignment is complete, however, those cached
+# frames are released and subsequent frame accesses will be quick.
+# 
+# The second method is to align each frame to a reference
+# structure.  This method is selected when a reference structure is
+# passed to the constructor (with the 'reference' keyword), or when
+# setReference() is called.  Note that you can pass None to
+# setReference() which will return the AlignedVirtualTrajectory to
+# the iterative method.  Also note that the reference structure is
+# copied into the AVT object as a deep copy (i.e. it does not share
+# any atoms).
+# 
+# See VirtualTrajectory for some basic examples in addition to
+# below...
+#
+# Align using only C-alphas (the default)
+# \code
+# vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2)
+# \endcode
+# 
+# Align using only backbone atoms
+# \code
+# vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, alignwith='name =~ "^(C|N|O|CA)$"')
+# \endcode
+# 
+# Add another trajectory
+# \code
+# vtraj.append(traj3)
+# \endcode
+# 
+# Align using only C-alphas and a reference structure
+# \code
+# refmodel = loos.createSystem('foo-ref.pdb')
+# refsubset = loos.selectAtoms(refmodel, 'name == "CA"')
+# vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, reference = refsubset)
+# \endcode
 
 class AlignedVirtualTrajectory(VirtualTrajectory):
-    """
-    A virtual trajectory that supports iterative alignment.  Only the
-    transformation needed to align each frame is stored.  When a frame
-    is accessed, it is automatically transformed into the aligned
-    orientation.  The selection used for aligning can be set with the
-    'alignwith' argument to the constructor (or the alignWith()
-    method).
-
-
-    There are two ways that a trajectory can be aligned.  The first
-    uses in iterative alignment method (the same used in LOOS).  This
-    is the default method.  In order to do the alignment, the
-    alignwith subset must be read into memory and temporarily stored.
-    This can potentially use a lot of memory and create delays in
-    execution.  Once the alignment is complete, however, those cached
-    frames are released and subsequent frame accesses will be quick.
-
-    The second method is to align each frame to a reference
-    structure.  This method is selected when a reference structure is
-    passed to the constructor (with the 'reference' keyword), or when
-    setReference() is called.  Note that you can pass None to
-    setReference() which will return the AlignedVirtualTrajectory to
-    the iterative method.  Also note that the reference structure is
-    copied into the AVT object as a deep copy (i.e. it does not share
-    any atoms).
-
-    See VirtualTrajectory for some basic examples in addition to
-    below:
-
-    # Align using only C-alphas (the default)
-    vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2)
-
-    # Align using only backbone atoms
-    vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, alignwith='name =~ "^(C|N|O|CA)$"')
-
-    # Add another trajectory
-    vtraj.append(traj3)
-
-    # Align using only C-alphas and a reference structure
-    refmodel = loos.createSystem('foo-ref.pdb')
-    refsubset = loos.selectAtoms(refmodel, 'name == "CA"')
-    vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, reference = refsubset)
-
-    """
 
     def __init__(self, *trajs, **kwargs):
+        """
+        Supports the same keywords as VirtualTrajectory.
+        New keywords:
+           alignwith = Selection used for alignment (default is all C-alphas)
+           reference = AtomicGroup that all frames are aligned to (disables iterative alignment)
+        """
         super(AlignedVirtualTrajectory, self).__init__(*trajs, **kwargs)
         self._aligned = False
         self._xformlist = []
