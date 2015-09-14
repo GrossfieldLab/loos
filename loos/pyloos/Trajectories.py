@@ -165,7 +165,7 @@ class Trajectory(object):
         return(framenos)
 
 
-    def getSlice(self, s):
+    def _getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
@@ -180,7 +180,7 @@ class Trajectory(object):
         """Handle array indexing and slicing.  Negative indices are
         relative to the end of the trajectory"""
         if isinstance(i, slice):
-            return(self.getSlice(i))
+            return(self._getSlice(i))
 
         if (i < 0):
             i += len(self._framelist)
@@ -287,7 +287,7 @@ class VirtualTrajectory(object):
         end of the trajectory list, return the last valid frame.
         """
         if self._stale:
-            self.initFrameList()
+            self._initFrameList()
 
         if self._index >= len(self._framelist):
             i = len(self._framelist) - 1
@@ -332,7 +332,7 @@ class VirtualTrajectory(object):
         
         """
         if (self._stale):
-            self.initFrameList()
+            self._initFrameList()
             
         if (i < 0):
             i += len(self._framelist)
@@ -340,7 +340,7 @@ class VirtualTrajectory(object):
         t = self._trajectories[self._trajlist[i]]
         return( self._framelist[i], self._trajlist[i], t, t.frameNumber(self._framelist[i]))
     
-    def initFrameList(self):
+    def _initFrameList(self):
         frames = []
         trajs = []
         for j in range(len(self._trajectories)):
@@ -368,7 +368,7 @@ class VirtualTrajectory(object):
         Total number of frames
         """
         if self._stale:
-            self.initFrameList()
+            self._initFrameList()
         return(len(self._framelist))
 
                 
@@ -379,10 +379,10 @@ class VirtualTrajectory(object):
         the composite trajectory.
         """
         if self._stale:
-            self.initFrameList()
+            self._initFrameList()
 
         if isinstance(i, slice):
-            return(self.getSlice(i))
+            return(self._getSlice(i))
 
         if (i < 0):
             i += len(self)
@@ -394,7 +394,7 @@ class VirtualTrajectory(object):
 
     def __iter__(self):
         if self._stale:
-            self.initFrameList()
+            self._initFrameList()
         self._index = 0
         return(self)
 
@@ -403,14 +403,14 @@ class VirtualTrajectory(object):
 
     def next(self):
         if self._stale:
-            self.initFrameList()
+            self._initFrameList()
         if (self._index >= len(self._framelist)):
             raise StopIteration
         frame = self.__getitem__(self._index)
         self._index += 1
         return(frame)
 
-    def getSlice(self, s):
+    def _getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
@@ -501,7 +501,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
 
     def __iter__(self):
-        self.align()
+        self._align()
         self._index = 0
         return(self)
 
@@ -510,7 +510,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self._reference = copy.deepcopy(reference)
         self._aligned = False
     
-    def align(self):
+    def _align(self):
         """
         Align the frames (called implicitly on iterator or array access)
         """
@@ -519,7 +519,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         ensemble = []
 
         if self._stale:
-            self.initFrameList()
+            self._initFrameList()
 
         if self._reference:
             self._xformlist = []
@@ -552,7 +552,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self._aligned = True
 
         
-    def getSlice(self, s):
+    def _getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
         for i in indices:
@@ -568,10 +568,10 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         to the end of the composite trajectory.
         """
         if not self._aligned:
-            self.align()
+            self._align()
 
         if isinstance(i, slice):
-            return(self.getSlice(i))
+            return(self._getSlice(i))
         
         if (i < 0):
             i += len(self._framelist)
