@@ -6,7 +6,10 @@ class Trajectory(object):
     """
     This class turns a loos Trajectory into something more
     python-like.  Behind the scenes, it wraps a loos::AtomicGroup and
-    a loos::Trajectory.  Remember that all atoms are shared.
+    a loos::Trajectory.
+
+    Remember that all atoms are shared.  If you want to decouple the
+    trajectory from other groups, pass it a copy of the model.
 
 
     Examples:
@@ -116,6 +119,9 @@ class Trajectory(object):
         """Access the wrapped loos.Trajectory"""
         return(self.traj)
 
+    def model(self):
+        """Return the current model"""
+        return(self.model)
     
     def readFrame(self, i):
         """Read a frame and update the model"""
@@ -129,10 +135,6 @@ class Trajectory(object):
         """Return the current frame (subset)"""
         return(self.subset)
 
-    def currentModel(self):
-        """Return the current model"""
-        return(self.model)
-    
     def currentRealIndex(self):
         """The 'real' frame in the trajectory for this index"""
         return(self.framelist[self.index-1])
@@ -206,8 +208,10 @@ class VirtualTrajectory(object):
     trans-membrane C-alphas.  This makes processing all of the
     ensembles together easier.
 
+    WARNING...
     Since each contained trajectory can have a different set of shared
     atoms it updates, care must be taken when pre-selecting atoms.
+
 
     Examples:
       model = loos.createSystem('foo.pdb')
