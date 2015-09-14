@@ -2113,7 +2113,7 @@ some ranges of frames.
 
 
 \section release171 Version 1.7.1 (7-26-2011)
-\subsection r170_bugs Bug Fixes
+\subsection r171_bugs Bug Fixes
 <UL>
   <LI> Fixed bug in the rdf tool that incorrectly processed the
   command-line arguments, preventing it from running.
