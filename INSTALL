@@ -33,7 +33,7 @@ D = Deprecated (we are no longer testing these configurations, however,
 | Ubuntu 14.04 LTS  |     +     |   +    |       |
 | Ubuntu 15.04      |     +     |   +    |       |
 |-------------------|-----------|--------|-------|
-| Debian 7.7        |     +     |   +    |       |
+| Debian 7.8        |     +     |   +    |       |
 | Debian 8.1        |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
 | CentOS 6.7        |     +     |   !    | CS    | 
