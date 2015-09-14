@@ -61,16 +61,15 @@ for trajname in trajList:
 
 # Set up lists to hold the coordinates...
 
-n = len(allTrajs.currentFrame()) * 3
+n = len(allTrajs.frame()) * 3
 data = numpy.zeros( (len(allTrajs), n) )
 for frame in allTrajs:
     coords = frame.getCoords()
     obs = numpy.reshape(coords, (1, n))
-    data[allTrajs.currentIndex()] = obs
+    data[allTrajs.index()] = obs
 
 
 
-print 'SHAPE: ', dataStack.shape
 # Do the clustering...
 # Computing K-Means with K = num_means clusters
 centroids,distortion = kmeans(data, int(num_means))
@@ -104,7 +103,7 @@ for i in range(len(idx)):
     
 # Output centroids
 cen_list = centroids.tolist()
-subset = allTrajs.currentFrame()
+subset = allTrajs.frame()
 for j in range(len(cen_list)):
     troid = cen_list[j]
     centroid_structure = subset.copy()
