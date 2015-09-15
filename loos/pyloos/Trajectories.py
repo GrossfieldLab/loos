@@ -1,4 +1,7 @@
-# (c) 2015 Tod D. Romo, Grossfield Lab, URMC
+"""
+Python-based trajectory classes that wrap loos.Trajectory objects
+
+"""
 import loos
 import copy
 
@@ -36,18 +39,23 @@ import copy
 # traj = loos.pyloos.Trajectory('foo.dcd', model, subset='name == "CA"')
 # \endcode
 class Trajectory(object):
+    """
+    Python-based wrapper for LOOS Trajectories
+    >>> model = loos.createSystem('foo.pdb')
+    >>> traj = loos.pyloos.Trajectory('foo.dcd', model)
+
+    keyword args:
+        skip = # of frames to skip from start
+      stride = # of frames to step through
+    iterator = Python iterator used to pick frame (overrides skip and stride)
+      subset = Selection used to pick subset for each frame
+
+    See the Doxygen documentation for more details.
+    """
 
     ## Instantiate a Trajectory object.
     def __init__(self, fname, model, **kwargs):
-        """
-        fname = name of trajectory file
-        model = AtomicGroup matching the trajectory
-        keyword args:
-               skip = # of frames to skip from start
-             stride = # of frames to step through
-           iterator = Python iterator used to pick frame (overrides skip and stride)
-             subset = Selection used to pick subset for each frame
-        """
+
         self._skip = 0
         self._stride = 1
         self._iterator = None
@@ -176,11 +184,12 @@ class Trajectory(object):
         Returns the real frame numbers corresponding to the passed indices.  Can accept
         either an integer or a list of integers.
 
-        For example,
-            t = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
-
-            t.frameNumber(0)           == 50
-            t.frameNumber(range(0,2))  == [50,51]
+        For example:
+        >>> t = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
+        >>> t.frameNumber(0)
+        50
+        >>> t.frameNumber(range(0,2))
+        [50, 51]
         """
 
         if self._stale:
@@ -272,16 +281,19 @@ class Trajectory(object):
 # \endcode
 
 class VirtualTrajectory(object):
-    def __init__(self, *trajs, **kwargs):
-        """Instantiate a VirtualTrajectory object.
-
+    """
+    Combines multiple loos.pyloos.Trajectory objects into one big virtual trajectory
+    >>> vtraj = loos.pyloos.VirtualTrajectory(traj1, traj2, traj3)
         Keyword arguments:
             skip = # of frames to skip at start of composite traj
           stride = # of frames to step through in the composite traj
         iterator = Python iterator used to pick frames from the composite traj
 
-        """
+    See the Doxygen documentation for more details.
+    """
 
+    
+    def __init__(self, *trajs, **kwargs):
         self._skip = 0
         self._stride = 1
         self._nframes = 0
@@ -404,10 +416,8 @@ class VirtualTrajectory(object):
     
     def frameLocation(self, i):
         """
-        Returns a tuple containing information about where a frame in the virtual trajectory 
-        comes from.
-
-        (frame-index, traj-index, trajectory, real-frame-within-trajectory)
+        Return info about where a frame comes from.
+        >>> (frame-index, traj-index, trajectory, real-frame-within-trajectory) = vtraj.frameLocation(i)
         """
         if (self._stale):
             self._initFrameList()
@@ -549,14 +559,19 @@ class VirtualTrajectory(object):
 # \endcode
 
 class AlignedVirtualTrajectory(VirtualTrajectory):
+    """
+    Combine loos.pyloos.Trajectory objects and align them
+
+    >>> aligned = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, alignwith = 'backbone')
+    Supports the same keywords as VirtualTrajectory.
+    New keywords:
+      alignwith = Selection used for alignment (default is all C-alphas)
+      reference = AtomicGroup that all frames are aligned to (disables iterative alignment)
+
+    See the Doxygen documentation for more details.
+    """
 
     def __init__(self, *trajs, **kwargs):
-        """
-        Supports the same keywords as VirtualTrajectory.
-        New keywords:
-           alignwith = Selection used for alignment (default is all C-alphas)
-           reference = AtomicGroup that all frames are aligned to (disables iterative alignment)
-        """
         super(AlignedVirtualTrajectory, self).__init__(*trajs, **kwargs)
         self._aligned = False
         self._xformlist = []
