@@ -59,7 +59,7 @@ LOOKUP_CACHE_SIZE      = 0
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 EXTRACT_PRIVATE        = NO
 EXTRACT_PACKAGE        = NO
 EXTRACT_STATIC         = NO
@@ -153,10 +153,8 @@ EXCLUDE_PATTERNS       = *.cc \
                          Examples* \
                          .sconf* \
                          Tools* \
-			 __init__.py \
-			loos.py \
-			*/Packages/PyLOOS/* \
-			*/Voronoi/*							
+			*/loos.py \
+			*/loos/__init__.py
 EXCLUDE_SYMBOLS        = *_HPP
 EXAMPLE_PATH           =
 EXAMPLE_PATTERNS       = *
