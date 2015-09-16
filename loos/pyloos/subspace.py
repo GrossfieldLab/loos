@@ -8,6 +8,15 @@ import math
 
 
 def subspaceOverlap(A, B, nmodes=0):
+    """
+    Compute the subspace overlap between two sets of eigenvectors.
+    If the # of modes is left at 0, then the first 25% of modes are used.
+    A and B are numpy matrices with the eigenvectors stored in columns.
+    
+    >>> subspaceOverlap(b2ar_U, rhod_U, 50)
+    """
+
+    
     (am, an) = A.shape
     (bm, bn) = B.shape
     if am != bm:
@@ -25,7 +34,19 @@ def subspaceOverlap(A, B, nmodes=0):
 
 
 def covarianceOverlap(ls, lU, rs, rU, nmodes = 0):
+    """
+    Computes the covariance overlap between two subspaces.
+    Requires two sets of eigenvalues and corresponding
+    eigenvector matrices (eigenvectors in the columns).
+    
+    Be sure that the eigenvalues are scaled appropriately
+    and that any zero modes are removed, such as when comparing
+    an ENM result with a PCA result.
 
+    Leaving nmodes as 0 will use ALL modes in the overlap.
+
+    >>> covarianceOverlap(b2ar_s, b2ar_U, rhod_s, rhod_U)
+    """
     (lm, ln) = lU.shape
     (rm, rn) = rU.shape
 
