@@ -278,6 +278,16 @@ If you have installed Boost in a non-standard location, you will need
 to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
 environment variable.
 
+Any non-standard locations for python modules can be specified using
+the PYTHON_PATH option to scons.  This is required for Numpy if it
+is installed separately from your Python.  For example, you could
+install Numpy into ~/local.  To do this, download numpy
+and install it like this,
+    python setup.py install --prefix=$HOME/local
+and then in LOOS:
+    scons PYTHON_PATH=$HOME/local/lib/python2.7
+
+
 ***MACOS BUILD PROBLEMS***
 
 We have seen several instances where LOOS would not build due to
