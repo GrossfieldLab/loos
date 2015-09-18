@@ -28,46 +28,35 @@
 
 
 # Import LOOS 
-from loos import *
+import loos
+import loos.pyloos
+import argparse
 import sys
 
-if len(sys.argv) < 3 or sys.argv[1] == '-h' or sys.argv[1] == '--help':
-   print 'Usage: rmsd_to_average.py model traj align_selection [rmsd_selection [skip]]'
-   sys.exit()
 
-
-## Command line arguments
-model_name = sys.argv[1]
-traj_name = sys.argv[2]
-align_with = sys.argv[3]
-
-skip_frames = 0
-rmsd_with = align_with
-
-if len(sys.argv) > 4:
-   rmsd_with = sys.argv[4]
-   if len(sys.argv) > 5:
-      skip_frames = int(sys.argv[5])
+parser = argparse.ArgumentParser()
+parser.add_argument('model', help='Structure to use')
+parser.add_argument('traj', help='Trajectory')
+parser.add_argument('align', help='Selection to use for aligning')
+parser.add_argument('--skip', help='Skip this amount from the start of the trajectory', type=int, default=0)
+parser.add_argument('--stride', help='Step through the trajectory by this many frames', type=int, default=1)
+parser.add_argument('--rmsd', help='Use this selection for computing the RMSD', default='all')
+args = parser.parse_args()
 
 # Create the model & read in the trajectory
-model = createSystem(model_name)
-traj = loos.pyloos.Trajectory(traj_name, model, skip = skip_frames)
+model = loos.createSystem(args.model)
+traj = loos.pyloos.Trajectory(args.traj, model, skip = args.skip, stride = args.stride)
 
-align_subset = selectAtoms(model, align_with)
-rmsd_subset = selectAtoms(model, rmsd_with)
-
-print "# Alignment subset has %d atoms." % (len(align_subset))
-
-patraj = loos.pyloos.AlignedVirtualTrajectory(traj, alignwith = align_subset)
-patraj.setSubset(rmsd)
-average = averageStructure(traj)
+patraj = loos.pyloos.AlignedVirtualTrajectory(traj, alignwith = args.align)
+patraj.setSubset(args.rmsd)
+average = loos.pyloos.averageStructure(traj)
 
 
 avg_rmsd = 0
 for structure in patraj:
    rmsd = average.rmsd(structure)
    avg_rmsd = avg_rmsd + rmsd
-   print "%d\t%f" % (patraj.currentIndex(), rmsd)
+   print "%d\t%f" % (patraj.index(), rmsd)
 
 print "# Average rmsd = %f" % (avg_rmsd/t)
 
