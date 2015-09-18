@@ -50,6 +50,6 @@ for frame in traj:
     # Print out time, and the dot-product between
     # The Z-axis (i.e. membrane normal) and the first principal axes
     # of the subset of atoms
-    print traj.currentIndex(), "\t", axes[0].z()
+    print traj.index(), "\t", axes[0].z()
 
 

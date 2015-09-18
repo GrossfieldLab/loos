@@ -46,6 +46,6 @@ for frame in traj:
     cosine = min(1.0, cosine)
     ang = math.acos(cosine) * 180./math.pi
     
-    print traj.currentIndex(), ang, cosine
+    print traj.index(), ang, cosine
 
     

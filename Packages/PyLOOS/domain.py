@@ -50,7 +50,7 @@ for frame in traj:
     tors = loos.torsion(p1, centroid1, centroid2, p2)
 
     # write output
-    print traj.currentIndex(), distance, angle, tors
+    print traj.index(), distance, angle, tors
 
 
 
