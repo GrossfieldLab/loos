@@ -8,11 +8,18 @@ import copy
 ## Python-based wrapper for LOOS Trajectories
 # This class turns a loos Trajectory into something more
 # python-like.  Behind the scenes, it wraps a loos::AtomicGroup and
-# a loos::Trajectory.
+# a loos::Trajectory.  The behavior of the trajectory can be controlled
+# through passed keywords,
+#
+# Keyword    | Description
+# -----------|------------------------------------------------------------------------------
+# skip=n     | Skip the first n-frames of the wrapped trajectory
+# stride=n   | Step through the wrapped trajectory n-frames at a time
+# iterator=i | Use the python iterator object i to select frames from the wrapped trajectory
+# subset=s   | Use 's' to select a subset of the model to use for each frame
 #
 # Remember that all atoms are shared.  If you want to decouple the
 # trajectory from other groups, pass it a copy of the model.
-#
 #
 # examples:
 # \code
@@ -38,6 +45,13 @@ import copy
 # model = loos.createSystem('foo.pdb')
 # traj = loos.pyloos.Trajectory('foo.dcd', model, subset='name == "CA"')
 # \endcode
+#
+# Decouple the model stored in the trajectory,
+# \code
+# traj = loos.pyloos.Trajectory('foo.dcd', model.copy())
+# \endcode
+#
+
 class Trajectory(object):
     """
     Python-based wrapper for LOOS Trajectories
@@ -239,7 +253,14 @@ class Trajectory(object):
 # This class can combine multiple loos.pyloos.Trajectory objects
 # into one big "virtual" trajectory.  Any skips or strides set in
 # the contained trajectories will be honored.  In addition, a skip
-# and a stride for the whole meta-trajectory are available.
+# and a stride for the whole meta-trajectory are available.  These
+# can be set via keyword arguments when creating a VirtualTrajectory,
+#
+# Keyword    | Description
+# -----------|------------------------------------------------------------------------------
+# skip=n     | Skip the first n-frames of the virtual trajectory
+# stride=n   | Step through the virtual trajectory n frames at a time
+# iterator=i | Use the python iterator object i to select frames from the virtual trajectory
 #
 # There is no requirement that the subsets used for all trajectories
 # must be the same.  Ideally, the frame (subset) that is returned
@@ -512,9 +533,13 @@ class VirtualTrajectory(object):
 # Only the
 # transformation needed to align each frame is stored.  When a frame
 # is accessed, it is automatically transformed into the aligned
-# orientation.  The selection used for aligning can be set with the
-# 'alignwith' argument to the constructor (or the alignWith()
-# method).
+# orientation.  All keywords from VirtualTrajectory are supported,
+# along with the following new ones,
+#
+# Keyword     | Description
+# ------------|------------------------------------------------------------------------------
+# alignwith=s | Use 's' to select what part of the model is used for aligning.
+# reference=g | Use the AtomicGroup g as a reference structure.  All frames will be aligned to it.
 # 
 # There are two ways that a trajectory can be aligned.  The first
 # uses in iterative alignment method (the same used in LOOS).  This
