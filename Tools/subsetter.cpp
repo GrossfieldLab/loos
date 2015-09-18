@@ -76,6 +76,7 @@ GCoord box;
 
 bool reimage = false;
 bool voodoo = false;
+bool santeria = false;
 
 string center_selection;
 bool center_flag = false;
@@ -294,7 +295,8 @@ public:
       ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
       ("reimage", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule")
-      ("voodoo", po::value<bool>(&voodoo)->default_value(false), "Apply reimaging voodoo for fringe systems")	      
+      ("voodoo", po::value<bool>(&voodoo)->default_value(false), "Apply reimaging voodoo for fringe systems")
+      ("santeria", po::value<bool>(&santeria)->default_value(false), "Apply reimaging magic")
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
       ("postcenter,P", po::value<string>(&post_center_selection)->default_value(""), "Recenter using this selection after reimaging")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
@@ -344,8 +346,13 @@ public:
     center_flag = !center_selection.empty();
 
     if (voodoo && !center_flag) {
-      cerr << "Warning- voodoo is only applicable when centering and will be ignored.\n";
-      voodoo = false;
+      cerr << "Warning- voodoo is only applicable when centering.\n";
+      return(false);
+    }
+
+    if (santeria && !center_flag) {
+      cerr << "Warning- santeria is only applicable when centering.\n";
+      return(false);
     }
 
     if (!range_spec.empty())
@@ -360,7 +367,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, center='%s', sort=%d, postcenter='%s'")
+    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, santeria=%d, center='%s', sort=%d, postcenter='%s'")
       % verbose_updates
       % stride
       % skip
@@ -368,6 +375,7 @@ public:
       % box_spec
       % reimage
       % voodoo
+      % santeria
       % center_selection
       % sort_flag
       % post_center_selection;
@@ -547,10 +555,7 @@ int main(int argc, char *argv[]) {
 
 
     if (reimage) {
-      if (!voodoo) {
-	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-	  mol->mergeImage();
-      } else if (voodoo && center_flag) {
+      if (voodoo) {
 	GCoord centroid = centered[0]->coords();
 	model.translate(-centroid);
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
@@ -567,9 +572,34 @@ int main(int argc, char *argv[]) {
 	  GCoord postcenter = postcentered.centroid();
 	  model.translate(-postcenter);
 	}
-	
-      }
 
+      } else if (santeria) {
+	
+	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
+	  GCoord c = (*mol)[0]->coords();
+	  mol->translate(-c);
+	  mol->reimageByAtom();
+	  mol->translate(c);
+	}
+
+	GCoord last_c = centered.centroid();
+	bool first = true;
+	for (uint i = 0; i<10; ++i) {
+	  GCoord c = centered.centroid();
+	  if (!first) {
+	    if (c.distance(last_c) < 1e-3)
+	      break;
+	  } else
+	    first = false;
+	  model.translate(-c);
+	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	    mol->reimage();
+	}
+
+      } else {
+	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+	  mol->mergeImage();
+      }
     }
 
     trajout->writeFrame(subset);
