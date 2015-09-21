@@ -76,7 +76,12 @@ GCoord box;
 
 bool reimage = false;
 bool voodoo = false;
+
 bool santeria = false;
+ulong santeria_iters = 0;
+double santeria_delta = 0.0;
+const uint santeria_max_iters = 50;
+const double santeria_threshold = 1e-1;
 
 string center_selection;
 bool center_flag = false;
@@ -568,11 +573,6 @@ int main(int argc, char *argv[]) {
 	    mol->reimage();
 	}
 
-	if (!post_center_selection.empty()) {
-	  GCoord postcenter = postcentered.centroid();
-	  model.translate(-postcenter);
-	}
-
       } else if (santeria) {
 	
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
@@ -582,24 +582,37 @@ int main(int argc, char *argv[]) {
 	  mol->translate(c);
 	}
 
-	GCoord last_c = centered.centroid();
+	GCoord last_c = centered.centerOfMass();
 	bool first = true;
-	for (uint i = 0; i<10; ++i) {
-	  GCoord c = centered.centroid();
+	uint si;
+	for (si = 0; si<santeria_max_iters; ++si) {
+	  GCoord c = centered.centerOfMass();
 	  if (!first) {
-	    if (c.distance(last_c) < 1e-3)
+	    if (c.distance(last_c) < santeria_threshold)
 	      break;
 	  } else
 	    first = false;
+	  last_c = c;
 	  model.translate(-c);
 	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
 	    mol->reimage();
 	}
 
+	santeria_delta += (last_c.distance(centered.centerOfMass()));
+	GCoord c = centered.centroid();
+	model.translate(-c);
+	santeria_iters += si;
+
       } else {
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
 	  mol->mergeImage();
       }
+
+      if (!post_center_selection.empty()) {
+	GCoord postcenter = postcentered.centroid();
+	model.translate(-postcenter);
+      }
+
     }
 
     trajout->writeFrame(subset);
@@ -625,4 +638,11 @@ int main(int argc, char *argv[]) {
 
   if (verbose)
     slayer.finish();
+
+  if (santeria && verbose > 2) {
+    double avg = static_cast<double>(santeria_iters) / indices.size();
+    cerr << boost::format("Average santeria iters = %f\n") % avg;
+    cerr << boost::format("Average santeria delta = %f\n") % (santeria_delta / indices.size());
+    
+  }
 }
