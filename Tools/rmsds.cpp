@@ -247,7 +247,7 @@ double calcRMSD(vDouble& u, vDouble& v) {
   double ssu[3] = {0.0, 0.0, 0.0};
   double ssv[3] = {0.0, 0.0, 0.0};
 
-  for (uint j=0; j<n; j += 3) {
+  for (int j=0; j<n; j += 3) {
     for (uint i=0; i<3; ++i) {
       ssu[i] += u[j+i] * u[j+i];
       ssv[i] += v[j+i] * v[j+i];
@@ -276,19 +276,15 @@ double calcRMSD(vDouble& u, vDouble& v) {
 
 #endif
 
-  double det = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
-    R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
-
   // Now compute the SVD of R...
   char joba='G';
   char jobu = 'U', jobv = 'V';
   int mv = 0;
-  f77int m = 3, lda = 3, ldu = 3, ldv = 3, lwork=100, info;
+  f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
   double work[lwork];
   f77int nn = 3;
-  double S[3], U[9], V[9];
+  double S[3], V[9];
   
-  //   dgesvj_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
   dgesvj_(&joba, &jobu, &jobv, &m, &nn, R, &lda, S, &mv, V, &ldv, work, &lwork, &info);
     
   if (info != 0)
