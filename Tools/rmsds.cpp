@@ -320,6 +320,50 @@ RealMatrix rmsds(vMatrix& M) {
 }
 
 
+RealMatrix rmsds(vMatrix& M, vMatrix& N) {
+  uint m = M.size();
+  uint n = N.size();
+
+  vMatrix* pM = &M;
+  vMatrix* pN = &N;
+
+  if (m > n) {
+    uint k = m;
+    m = n;
+    n = k;
+
+    pM = &N;
+    pN = &M;
+  }
+
+  RealMatrix R(m, n);
+
+  uint total = floor( m*(2*n - m + 1.0) / 2.0 );
+
+  PercentProgressWithTime watcher;
+  PercentTrigger trigger(0.1);
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
+  slayer.attach(&watcher);
+  slayer.start();
+
+  for (uint j=1; j<m; ++j)
+    for (uint i=0; i<j; ++i) {
+      R(j, i) = calcRMSD((*pM)[j], (*pN)[i]);
+      R(i, j) = R(j, i);
+      slayer.update();
+    }
+
+  for (uint j=0; j<m; ++j)
+    for (uint i=m; i<n; ++i) {
+      R(j, i) = calcRMSD((*pM)[j], (*pN)[i]);
+      slayer.update();
+    }
+
+  slayer.finish();
+  return(R);
+}
+
+
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
@@ -340,7 +384,18 @@ int main(int argc, char *argv[]) {
   vMatrix T = readCoords(subset, traj);
   centerTrajectory(T);
 
-  RealMatrix M = rmsds(T);
+  RealMatrix M;
+  if (topts->model2.empty())
+    M = rmsds(T);
+  else {
+    AtomicGroup model2 = createSystem(topts->model2);
+    pTraj traj2 = createTrajectory(topts->traj2, model2);
+    AtomicGroup subset2 = selectAtoms(model2, topts->sel2);
+
+    vMatrix T2 = readCoords(subset2, traj2);
+    centerTrajectory(T2);
+    M = rmsds(T, T2);
+  }
 
   if (!topts->noop) {
     cout << "# " << header << endl;
