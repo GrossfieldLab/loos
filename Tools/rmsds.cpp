@@ -324,21 +324,13 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   uint m = M.size();
   uint n = N.size();
 
-  vMatrix* pM = &M;
-  vMatrix* pN = &N;
-
-  if (m > n) {
-    uint k = m;
-    m = n;
-    n = k;
-
-    pM = &N;
-    pN = &M;
-  }
+  uint total = 0;
+  if (m < n)
+    total = floor( m*(2*n - m + 1.0) / 2.0 );
+  else
+    total = floor( n*(2*m - n + 1.0) / 2.0 );
 
   RealMatrix R(m, n);
-
-  uint total = floor( m*(2*n - m + 1.0) / 2.0 );
 
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
@@ -346,19 +338,37 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   slayer.attach(&watcher);
   slayer.start();
 
-  for (uint j=1; j<m; ++j)
-    for (uint i=0; i<j; ++i) {
-      R(j, i) = calcRMSD((*pM)[j], (*pN)[i]);
-      R(i, j) = R(j, i);
-      slayer.update();
-    }
+  if (m < n) {
 
-  for (uint j=0; j<m; ++j)
-    for (uint i=m; i<n; ++i) {
-      R(j, i) = calcRMSD((*pM)[j], (*pN)[i]);
-      slayer.update();
-    }
+    for (uint j=0; j<m; ++j)
+      for (uint i=0; i<=j; ++i) {
+	R(j, i) = calcRMSD(M[j], N[i]);
+	R(i, j) = R(j, i);
+	slayer.update();
+      }
 
+    for (uint j=0; j<m; ++j)
+      for (uint i=m; i<n; ++i) {
+	R(j, i) = calcRMSD(M[j], N[i]);
+	slayer.update();
+      }
+
+  } else {   // m > n
+
+    for (uint j=1; j<n; ++j)
+      for (uint i=0; i<j; ++i) {
+	R(j, i) = calcRMSD(M[j], N[i]);
+	R(i, j) = R(j, i);
+	slayer.update();
+      }
+
+    for (uint j=n; j<m; ++j)
+      for (uint i=0; i<n; ++i) {
+	R(j, i) = calcRMSD(M[j], N[i]);
+	slayer.update();
+      }
+
+  }
   slayer.finish();
   return(R);
 }
