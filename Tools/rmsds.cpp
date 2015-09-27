@@ -324,51 +324,21 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   uint m = M.size();
   uint n = N.size();
 
-  uint total = 0;
-  if (m < n)
-    total = floor( m*(2*n - m + 1.0) / 2.0 );
-  else
-    total = floor( n*(2*m - n + 1.0) / 2.0 );
-
   RealMatrix R(m, n);
-
+  uint total = m*n;
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
   slayer.attach(&watcher);
   slayer.start();
 
-  if (m < n) {
+  for (uint j=0; j<m; ++j)
+    for (uint i=0; i<n; ++i) {
+      R(j, i) = calcRMSD(M[j], N[i]);
+      slayer.update();
+    }
 
-    for (uint j=0; j<m; ++j)
-      for (uint i=0; i<=j; ++i) {
-	R(j, i) = calcRMSD(M[j], N[i]);
-	R(i, j) = R(j, i);
-	slayer.update();
-      }
 
-    for (uint j=0; j<m; ++j)
-      for (uint i=m; i<n; ++i) {
-	R(j, i) = calcRMSD(M[j], N[i]);
-	slayer.update();
-      }
-
-  } else {   // m > n
-
-    for (uint j=1; j<n; ++j)
-      for (uint i=0; i<j; ++i) {
-	R(j, i) = calcRMSD(M[j], N[i]);
-	R(i, j) = R(j, i);
-	slayer.update();
-      }
-
-    for (uint j=n; j<m; ++j)
-      for (uint i=0; i<n; ++i) {
-	R(j, i) = calcRMSD(M[j], N[i]);
-	slayer.update();
-      }
-
-  }
   slayer.finish();
   return(R);
 }
@@ -411,6 +381,19 @@ int main(int argc, char *argv[]) {
     cout << "# " << header << endl;
     cout << setprecision(matrix_precision) << M;
   }
+
+  ulong n = M.rows() * M.cols();
+  double avg = 0.0;
+  double max = 0.0;
+  for (ulong i=0; i<n; ++i) {
+    avg += M[i];
+    if (M[i] > max)
+      max = M[i];
+  }
+
+  avg /= n;
+
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 
 }
 
