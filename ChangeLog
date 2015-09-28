@@ -1,3 +1,11 @@
+2015-09-28    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Changed AtomicGroup::superposition() to use the faster dgesvj().
+	* Changed the rmsds tool to use a much faster algorithm (up to an
+	order of magnitude faster).  There is no option to disable caching
+	now--if the cached subsets do not fit in memory, you will want to
+	subsample the trajectories.
+
 2015-09-14    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed pyloos organization
