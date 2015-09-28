@@ -182,13 +182,14 @@ env.AlwaysBuild(PREFIX + '/docs/main.html')
 
 
 loos_core = loos + loos_scripts
-loos_tools += loos_core
 all = loos_tools + loos_scripts + loos_packages
 
 if int(env['pyloos']):
     loos_core = loos_core + loos_python
     all = all + loos_python
 
+loos_tools += loos_core
+    
 env.Alias('tools', loos_tools)
 env.Alias('core', loos_core)
 env.Alias('docs', docs)
