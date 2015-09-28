@@ -193,13 +193,13 @@ typedef vector<vDouble>   vMatrix;
 // @endcond TOOLS_INTERNAL
 
 
-vMatrix readCoords(AtomicGroup& model, pTraj& traj) {
-  uint l = traj->nframes();
+vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
+  uint l = indices.size();
   uint n = model.size();
   vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
   
   for (uint j=0; j<l; ++j) {
-    traj->readFrame(j);
+    traj->readFrame(indices[j]);
     traj->updateGroupCoords(model);
     for (uint i=0; i<n; ++i) {
       GCoord c = model[i]->coords();
@@ -400,8 +400,9 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(topts->model1);
   pTraj traj = createTrajectory(topts->traj1, model);
   AtomicGroup subset = selectAtoms(model, topts->sel1);
-
-  vMatrix T = readCoords(subset, traj);
+  vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
+  
+  vMatrix T = readCoords(subset, traj, indices);
   centerTrajectory(T);
 
   RealMatrix M;
@@ -411,8 +412,9 @@ int main(int argc, char *argv[]) {
     AtomicGroup model2 = createSystem(topts->model2);
     pTraj traj2 = createTrajectory(topts->traj2, model2);
     AtomicGroup subset2 = selectAtoms(model2, topts->sel2);
+    vector<uint> indices2 = assignTrajectoryFrames(traj2, topts->range2, topts->skip2);
 
-    vMatrix T2 = readCoords(subset2, traj2);
+    vMatrix T2 = readCoords(subset2, traj2, indices2);
     centerTrajectory(T2);
     M = rmsds(T, T2);
   }
