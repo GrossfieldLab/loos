@@ -225,10 +225,10 @@ namespace loos {
     char joba='G';
     char jobu = 'U', jobv = 'V';
     int mv = 0;
-    f77int m = 3, lda = 3, ldu = 3, ldv = 3, lwork=100, info;
+    f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
     double work[lwork];
     f77int nn = 3;
-    double S[3], U[9], V[9];
+    double S[3], V[9];
   
     //   dgesvj_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
     dgesvj_(&joba, &jobu, &jobv, &m, &nn, R, &lda, S, &mv, V, &ldv, work, &lwork, &info);
