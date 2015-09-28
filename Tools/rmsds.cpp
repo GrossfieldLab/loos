@@ -186,8 +186,8 @@ public:
   string sel1, sel2;
 };
 
-typedef vector<double>    vDouble;
-typedef vector<vDouble>   vMatrix;
+typedef vector<double>    vecDouble;
+typedef vector<vecDouble>   vMatrix;
 
 
 // @endcond TOOLS_INTERNAL
@@ -254,7 +254,7 @@ vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices)
 }
 
 
-void centerAtOrigin(vDouble& v) {
+void centerAtOrigin(vecDouble& v) {
   double c[3] = {0.0, 0.0, 0.0};
 
   for (uint i=0; i<v.size(); i += 3) {
@@ -282,7 +282,7 @@ void centerTrajectory(vMatrix& M) {
 
 
 
-double calcRMSD(vDouble& u, vDouble& v) {
+double calcRMSD(vecDouble& u, vecDouble& v) {
   int n = u.size();
 
   double ssu[3] = {0.0, 0.0, 0.0};
