@@ -193,9 +193,50 @@ typedef vector<vDouble>   vMatrix;
 // @endcond TOOLS_INTERNAL
 
 
+
+#if defined(__linux__)
+  // Should consider using _SC_AVPHYS_PAGES instead?
+  long availMemory() 
+  {
+    long pagesize = sysconf(_SC_PAGESIZE);
+    long pages = sysconf(_SC_PHYS_PAGES);
+
+    return(pagesize * pages);
+  }
+
+#elif defined(__APPLE__)
+
+long availMemory() 
+  {
+    unsigned long memory;
+    size_t size = sizeof(memory);
+    
+    int ok = sysctlbyname("hw.memsize", &memory, &size, 0, 0);
+    if (ok < 0) {
+      cerr << "Warning- could not determine available memory size.  Use --cache=0 if swapping occurs.\n";
+      perror("rmsds: ");
+      memory = 0;
+    }
+
+    return(memory);
+  }
+
+#else
+
+  long availMemory() {
+    return(0);
+  }
+
+#endif   // defined(__linux__)
+
+long used_memory = 0;
+
 vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
   uint l = indices.size();
   uint n = model.size();
+
+  used_memory += 3 * n * l * sizeof(double);
+
   vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
   
   for (uint j=0; j<l; ++j) {
@@ -385,6 +426,29 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
 
 
 
+void checkMemoryUsage(long mem) {
+  if (!mem)
+    return;
+
+  double used = static_cast<double>(used_memory) / mem;
+
+  if (verbosity)
+    cerr << boost::format("Memory: available=%d GB, estimated used=%.2f MB\n")
+      % (mem >> 30) % (static_cast<double>(used_memory) / (1lu<<20) );
+    
+  if (used >= cache_memory_fraction_warning) {
+    cerr << boost::format("***WARNING***\nThe estimated memory used is %.1f%% (%d MB) of your total memory (%d GB).\n")
+      % (used * 100.0)
+      % (used_memory >> 20)
+      % (mem >> 30);
+    
+    cerr << "If your machine starts swapping, try subsampling the trajectories\n";
+  }
+}
+
+
+
+
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
@@ -401,8 +465,11 @@ int main(int argc, char *argv[]) {
   pTraj traj = createTrajectory(topts->traj1, model);
   AtomicGroup subset = selectAtoms(model, topts->sel1);
   vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
+
+  long mem = availMemory();
   
   vMatrix T = readCoords(subset, traj, indices);
+  checkMemoryUsage(mem);
   centerTrajectory(T);
 
   RealMatrix M;
@@ -415,6 +482,7 @@ int main(int argc, char *argv[]) {
     vector<uint> indices2 = assignTrajectoryFrames(traj2, topts->range2, topts->skip2);
 
     vMatrix T2 = readCoords(subset2, traj2, indices2);
+    checkMemoryUsage(mem);
     centerTrajectory(T2);
     M = rmsds(T, T2);
   }
