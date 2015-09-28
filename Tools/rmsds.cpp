@@ -39,8 +39,6 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-typedef RealMatrix              Matrix;
-
 const int matrix_precision = 2;    // Controls precision in output matrix
 
 #if defined(__APPLE__)
@@ -126,7 +124,6 @@ public:
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("cache,C", po::value<bool>(&cache)->default_value(true), "Cache frames from the trajectory for speed")
       ("noout,N", po::value<bool>(&noop)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)")
       ("sel1", po::value<string>(&sel1)->default_value("name == 'CA'"), "Atom selection for first system")
       ("skip1", po::value<uint>(&skip1)->default_value(0), "Skip n-frames of first trajectory")
@@ -165,8 +162,7 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("cached=%d,noout=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
-      % cache
+    oss << boost::format("noout=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
       % noop
       % sel1
       % skip1
@@ -183,7 +179,6 @@ public:
   }
 
 
-  bool cache;
   bool noop;
   uint skip1, skip2;
   string range1, range2;
@@ -191,87 +186,27 @@ public:
   string sel1, sel2;
 };
 
+typedef vector<double>    vDouble;
+typedef vector<vDouble>   vMatrix;
 
 
-// This is the top-level interface for getting frames from the trajectory.
-// It allows the user to select whether the frames will be cached in memory
-// or always read from disk
+// @endcond TOOLS_INTERNAL
 
-class TrajInterface 
-{
-public:
-  TrajInterface(const AtomicGroup& model, pTraj& traj) : _model(model.copy()), _traj(traj) 
-  {
-  }
-  
-
-  virtual ~TrajInterface() 
-  {
-  }
-  
-
-  // Return the ith structure
-  virtual AtomicGroup getStructure(const uint i) =0;
-
-  // Return the total number of structures
-  virtual uint size() const =0;
-
-protected:
-  AtomicGroup _model;
-  pTraj _traj;
-};
-
-
-class CachedTraj : public TrajInterface 
-{
-public:
-  CachedTraj(const AtomicGroup& model, pTraj& traj, const vector<uint>& frames) :
-    TrajInterface(model, traj)
-  {
-    _model.clearBonds();    // Save a little space
-
-#if defined(__linux__) || defined(__APPLE__)
-    // Estimate spaced consumed by cache and warn if it's large (and potentially swapping)
-    long ms = estimateModelSize(_model);
-    long ts = estimateEnsembleSize(frames.size());
-    long mem = availMemory();
-    
-    if (mem > 0) {
-      double used = static_cast<double>(ms * ts) / mem;
-      
-      if (used >= cache_memory_fraction_warning) {
-	long mb = (ms * ts) >> 20;
-	
-	cerr << boost::format("***WARNING***\nThe estimated trajectory cache size is %.1f%% (%d MB) of your total memory (%d MB).\n")
-	  % (used * 100.0)
-	  % mb
-	  % (mem >> 20);
-	
-	cerr << "If your machine starts swapping, try using the --cache=0 option on the command line\n";
-      }
-    }
-    
-#endif
-    
-    readTrajectory(_ensemble, model, traj);
-    
-  }
-
-
-#if defined(__linux__) || defined(__APPLE__)
 
 
 #if defined(__linux__)
   // Should consider using _SC_AVPHYS_PAGES instead?
-  long availMemory() const
+  long availMemory() 
   {
     long pagesize = sysconf(_SC_PAGESIZE);
     long pages = sysconf(_SC_PHYS_PAGES);
 
     return(pagesize * pages);
   }
-#else
-  long availMemory() const 
+
+#elif defined(__APPLE__)
+
+long availMemory() 
   {
     unsigned long memory;
     size_t size = sizeof(memory);
@@ -285,217 +220,233 @@ public:
 
     return(memory);
   }
+
+#else
+
+  long availMemory() {
+    return(0);
+  }
+
 #endif   // defined(__linux__)
-  
 
-  // Manually count size of a model (including contained strings)
-  long estimateModelSize(const AtomicGroup& model) const
-  {
-    long s = sizeof(model);
-    for (uint i=0; i<model.size(); ++i) {
-      s += sizeof(Atom);
-      s += model[i]->name().size();
-      s += model[i]->altLoc().size();
-      s += model[i]->chainId().size();
-      s += model[i]->resname().size();
-      s += model[i]->segid().size();
-      s += model[i]->iCode().size();
-      s += model[i]->PDBelement().size();
-      s += model[i]->recordName().size();
-      s += 8;
+long used_memory = 0;
+
+vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
+  uint l = indices.size();
+  uint n = model.size();
+
+  used_memory += 3 * n * l * sizeof(double);
+
+  vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
+  
+  for (uint j=0; j<l; ++j) {
+    traj->readFrame(indices[j]);
+    traj->updateGroupCoords(model);
+    for (uint i=0; i<n; ++i) {
+      GCoord c = model[i]->coords();
+      M[j][i*3] = c.x();
+      M[j][i*3+1] = c.y();
+      M[j][i*3+2] = c.z();
     }
-    
-    return(s);
+  }
+
+  return(M);
+}
+
+
+void centerAtOrigin(vDouble& v) {
+  double c[3] = {0.0, 0.0, 0.0};
+
+  for (uint i=0; i<v.size(); i += 3) {
+    c[0] += v[i];
+    c[1] += v[i+1];
+    c[2] += v[i+2];
+  }
+
+  for (uint i=0; i<3; ++i)
+    c[i] = 3*c[i]/v.size();
+
+  for (uint i=0; i<v.size(); i += 3) {
+    v[i] -= c[0];
+    v[i+1] -= c[1];
+    v[i+2] -= c[2];
+  }
+}
+
+
+
+void centerTrajectory(vMatrix& M) {
+  for (uint i=0; i<M.size(); ++i)
+    centerAtOrigin(M[i]);
+}
+
+
+
+double calcRMSD(vDouble& u, vDouble& v) {
+  int n = u.size();
+
+  double ssu[3] = {0.0, 0.0, 0.0};
+  double ssv[3] = {0.0, 0.0, 0.0};
+
+  for (int j=0; j<n; j += 3) {
+    for (uint i=0; i<3; ++i) {
+      ssu[i] += u[j+i] * u[j+i];
+      ssv[i] += v[j+i] * v[j+i];
     }
+  }
+
+  n /= 3;
+
+  double E0 = ssu[0] + ssu[1] + ssu[2] + ssv[0] + ssv[1] + ssv[2];
+
+  // Compute correlation matrix...
+  double R[9];
+
+#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
+  char ta = 'N';
+  char tb = 'T';
+  f77int three = 3;
+  double one = 1.0;
+  double zero = 0.0;
     
+  dgemm_(&ta, &tb, &three, &three, &n, &one, u.data(), &three, v.data(), &three, &zero, R, &three);
 
-  // Assume vector capacity will always be a power of 2
-  long estimateEnsembleSize(const uint n) const
-  {
-    long actual = 2;
+#else
 
-    while (actual < n)
-      actual <<= 1;
+  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u.data(), 3, v.data(), 3, 0.0, R, 3);
+
+#endif
+
+  
+  
+  // Now compute the SVD of R...
+  char joba='G';
+  char jobu = 'U', jobv = 'V';
+  int mv = 0;
+  f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
+  double work[lwork];
+  f77int nn = 3;
+  double S[3], V[9];
+  
+  dgesvj_(&joba, &jobu, &jobv, &m, &nn, R, &lda, S, &mv, V, &ldv, work, &lwork, &info);
     
-    return(actual);
-  }
+  if (info != 0)
+    throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
+
+
   
-#endif // defined(__linux__) || defined(__APPLE__)
+  double dR = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
+    R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
+
   
-  // Each AtomicGroup in the vector is a copy, so we can get away with just
-  // returning the element itself
-  AtomicGroup getStructure(const uint i) 
-  {
-    return(_ensemble[i]);
-  }
+  double dV = V[0]*V[4]*V[8] + V[3]*V[7]*V[2] + V[6]*V[1]*V[5] -
+    V[0]*V[7]*V[5] - V[3]*V[1]*V[8] - V[6]*V[4]*V[2];
+
   
-  uint size() const 
-  {
-    return(_ensemble.size());
-  }
+  if (dR * dV < 0.0)
+    S[2] = -S[2];
   
-private:
-  vector<AtomicGroup> _ensemble;
-};
+  double ss = S[0] + S[1] + S[2];
+  double rmsd = sqrt(abs(E0-2.0*ss)/n);
+  return(rmsd);
+}
 
 
 
-class NonCachedTraj : public TrajInterface 
-{
-public:
-  NonCachedTraj(const AtomicGroup& model, pTraj& traj, const vector<uint>& frames) :
-    TrajInterface(model, traj),
-    _frames(frames)
-  {
-  }
-  
+RealMatrix rmsds(vMatrix& M) {
+  uint n = M.size();
+  RealMatrix R(n, n);
 
-  // Must return a copy here so that the atoms are not shared...
-  AtomicGroup getStructure(const uint i) 
-  {
-    AtomicGroup frame = _model.copy();
-    
-    _traj->readFrame(_frames[i]);
-    _traj->updateGroupCoords(frame);
-    return(frame);
-  }
-  
-  uint size() const 
-  {
-    return(_frames.size());
-  }
-  
-private:
-  vector<uint> _frames;
-};
-
-
-
-
-// @endcond TOOLS_INTERNAL
-
-
-Matrix singleTrajectory(ToolOptions* topts) {
-  AtomicGroup model = createSystem(topts->model1);
-  pTraj traj = createTrajectory(topts->traj1, model);
-  AtomicGroup subset = selectAtoms(model, topts->sel1);
-  vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
-
-  TrajInterface *traji;
-  if (topts->cache)
-    traji = new CachedTraj(subset, traj, indices);
-  else
-    traji = new NonCachedTraj(subset, traj, indices);
-  
-
+  ulong total = floor(n * (n-1) / 2.0);
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
-
-  Matrix M(traji->size(), traji->size());
-  double mean_rmsd = 0;
-  double max_rmsd = 0;
-  uint total = floor(traji->size()*(traji->size()-1)/2.0);
-
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  if (verbosity > 0) {
-    slayer.attach(&watcher);
-    slayer.start();
-  }
+  slayer.attach(&watcher);
+  slayer.start();
 
-  AtomicGroup duplicate = subset.copy();
-  for (uint j=1; j<traji->size(); ++j) {
-
-    AtomicGroup model_j = traji->getStructure(j);
-
+  for (uint j=1; j<n; ++j)
     for (uint i=0; i<j; ++i) {
-
-      if (verbosity > 0)
-        slayer.update();
-
-
-      AtomicGroup model_i = traji->getStructure(i);
-
-      model_i.alignOnto(model_j);
-      double r = model_j.rmsd(model_i);
-      
-      M(j, i) = r;
-      M(i, j) = r;
-
-      if (r > max_rmsd)
-        max_rmsd = r;
-      mean_rmsd += r;
+      R(j, i) = calcRMSD(M[j], M[i]);
+      R(i, j) = R(j, i);
+      slayer.update();
     }
-  }
-  
 
-  if (verbosity > 0)
-    slayer.finish();
+  slayer.finish();
 
-  mean_rmsd /= total;
-  cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max_rmsd % mean_rmsd;
+  double avg = 0.0;
+  double max = 0.0;
+  for (uint j=1; j<R.rows(); ++j)
+    for (uint i=0; i<j; ++i) {
+      avg += R(j, i);
+      if (R(j, i) > max)
+        max = R(j, i);
+    }
 
-  delete traji;
+  avg /= total;
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 
-  return(M);
+  return(R);
 }
 
 
-Matrix twoTrajectories(ToolOptions* topts) {
-  AtomicGroup model1 = createSystem(topts->model1);
-  pTraj traj1 = createTrajectory(topts->traj1, model1);
-  AtomicGroup subset1 = selectAtoms(model1, topts->sel1);
-  vector<uint> indices1 = assignTrajectoryFrames(traj1, topts->range1, topts->skip1);
+RealMatrix rmsds(vMatrix& M, vMatrix& N) {
+  uint m = M.size();
+  uint n = N.size();
 
-  AtomicGroup model2 = createSystem(topts->model2);
-  pTraj traj2 = createTrajectory(topts->traj2, model2);
-  AtomicGroup subset2 = selectAtoms(model2, topts->sel2);
-  vector<uint> indices2 = assignTrajectoryFrames(traj2, topts->range2, topts->skip2);
-
-
+  RealMatrix R(m, n);
+  ulong total = static_cast<ulong>(m)*n;
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
-
-  Matrix M(indices1.size(), indices2.size());
-  double mean_rmsd = 0;
-  double max_rmsd = 0;
-  uint total = indices1.size() * indices2.size();
-  
-
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  if (verbosity > 0) {
-    slayer.attach(&watcher);
-    slayer.start();
-  }
+  slayer.attach(&watcher);
+  slayer.start();
 
-  for (uint j=0; j<indices1.size(); ++j)
-    for (uint i=0; i<indices2.size(); ++i) {
-
-      if (verbosity > 0)
-        slayer.update();
-
-      traj1->readFrame(indices1[j]);
-      traj1->updateGroupCoords(model1);
-
-      traj2->readFrame(indices2[i]);
-      traj2->updateGroupCoords(model2);
-
-      subset1.alignOnto(subset2);
-      double r = subset1.rmsd(subset2);
-      
-      M(j, i) = r;
-      if (r > max_rmsd)
-        max_rmsd = r;
-      mean_rmsd += r;
+  for (uint j=0; j<m; ++j)
+    for (uint i=0; i<n; ++i) {
+      R(j, i) = calcRMSD(M[j], N[i]);
+      slayer.update();
     }
 
-  if (verbosity > 0)
-    slayer.finish();
 
-  mean_rmsd /= total;
-  cerr << boost::format("Max rmsd = %f, mean rmsd = %f\n") % max_rmsd % mean_rmsd;
+  slayer.finish();
 
-  return(M);
+  double avg = 0.0;
+  double max = 0.0;
+  for (ulong i=0; i<total; ++i) {
+    avg += R[i];
+    if (R[i] > max)
+      max = R[i];
+  }
+
+  avg /= total;
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
+  
+  return(R);
 }
+
+
+
+void checkMemoryUsage(long mem) {
+  if (!mem)
+    return;
+
+  double used = static_cast<double>(used_memory) / mem;
+
+  if (verbosity)
+    cerr << boost::format("Memory: available=%d GB, estimated used=%.2f MB\n")
+      % (mem >> 30) % (static_cast<double>(used_memory) / (1lu<<20) );
+    
+  if (used >= cache_memory_fraction_warning) {
+    cerr << boost::format("***WARNING***\nThe estimated memory used is %.1f%% (%d MB) of your total memory (%d GB).\n")
+      % (used * 100.0)
+      % (used_memory >> 20)
+      % (mem >> 30);
+    
+    cerr << "If your machine starts swapping, try subsampling the trajectories\n";
+  }
+}
+
+
 
 
 int main(int argc, char *argv[]) {
@@ -510,17 +461,37 @@ int main(int argc, char *argv[]) {
     exit(-1);
 
   verbosity = bopts->verbosity;
-  Matrix M;
+  AtomicGroup model = createSystem(topts->model1);
+  pTraj traj = createTrajectory(topts->traj1, model);
+  AtomicGroup subset = selectAtoms(model, topts->sel1);
+  vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
 
-  if (topts->model2.empty() && topts->traj2.empty())
-    M = singleTrajectory(topts);
-  else
-    M = twoTrajectories(topts);
+  long mem = availMemory();
+  
+  vMatrix T = readCoords(subset, traj, indices);
+  checkMemoryUsage(mem);
+  centerTrajectory(T);
+
+  RealMatrix M;
+  if (topts->model2.empty())
+    M = rmsds(T);
+  else {
+    AtomicGroup model2 = createSystem(topts->model2);
+    pTraj traj2 = createTrajectory(topts->traj2, model2);
+    AtomicGroup subset2 = selectAtoms(model2, topts->sel2);
+    vector<uint> indices2 = assignTrajectoryFrames(traj2, topts->range2, topts->skip2);
+
+    vMatrix T2 = readCoords(subset2, traj2, indices2);
+    checkMemoryUsage(mem);
+    centerTrajectory(T2);
+    M = rmsds(T, T2);
+  }
 
   if (!topts->noop) {
     cout << "# " << header << endl;
     cout << setprecision(matrix_precision) << M;
   }
+
 }
 
 
