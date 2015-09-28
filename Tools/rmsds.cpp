@@ -276,6 +276,8 @@ double calcRMSD(vDouble& u, vDouble& v) {
 
 #endif
 
+  
+  
   // Now compute the SVD of R...
   char joba='G';
   char jobu = 'U', jobv = 'V';
@@ -290,6 +292,19 @@ double calcRMSD(vDouble& u, vDouble& v) {
   if (info != 0)
     throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
 
+
+  
+  double dR = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
+    R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
+
+  
+  double dV = V[0]*V[4]*V[8] + V[3]*V[7]*V[2] + V[6]*V[1]*V[5] -
+    V[0]*V[7]*V[5] - V[3]*V[1]*V[8] - V[6]*V[4]*V[2];
+
+  
+  if (dR * dV < 0.0)
+    S[2] = -S[2];
+  
   double ss = S[0] + S[1] + S[2];
   double rmsd = sqrt(abs(E0-2.0*ss)/n);
   return(rmsd);
