@@ -363,7 +363,7 @@ RealMatrix rmsds(vMatrix& M) {
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  if (verbosity){
+  if (verbosity > 1){
     slayer.attach(&watcher);
     slayer.start();
   }
@@ -372,11 +372,11 @@ RealMatrix rmsds(vMatrix& M) {
     for (uint i=0; i<j; ++i) {
       R(j, i) = calcRMSD(M[j], M[i]);
       R(i, j) = R(j, i);
-      if (verbosity)
+      if (verbosity > 1)
         slayer.update();
     }
 
-  if (verbosity)
+  if (verbosity > 1)
     slayer.finish();
 
   if (report_stats) {
@@ -407,7 +407,7 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   PercentTrigger trigger(0.1);
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
 
-  if (verbosity) {
+  if (verbosity > 1) {
     slayer.attach(&watcher);
     slayer.start();
   }
@@ -415,13 +415,13 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   for (uint j=0; j<m; ++j)
     for (uint i=0; i<n; ++i) {
       R(j, i) = calcRMSD(M[j], N[i]);
-      if (verbosity)
+      if (verbosity > 1)
         slayer.update();
     }
 
 
 
-  if (verbosity)
+  if (verbosity > 1)
     slayer.finish();
 
   if (report_stats) {
@@ -448,7 +448,7 @@ void checkMemoryUsage(long mem) {
 
   double used = static_cast<double>(used_memory) / mem;
 
-  if (verbosity > 1)
+  if (verbosity > 2)
     cerr << boost::format("Memory: available=%d GB, estimated used=%.2f MB\n")
       % (mem >> 30) % (static_cast<double>(used_memory) / (1lu<<20) );
     
