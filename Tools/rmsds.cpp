@@ -57,6 +57,9 @@ int verbosity;
 
 const double cache_memory_fraction_warning = 0.66;
 
+long used_memory = 0;
+bool report_stats = false;
+
 
 
 // @cond TOOLS_INTERNAL
@@ -229,7 +232,6 @@ long availMemory()
 
 #endif   // defined(__linux__)
 
-long used_memory = 0;
 
 vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
   uint l = indices.size();
@@ -374,9 +376,10 @@ RealMatrix rmsds(vMatrix& M) {
         slayer.update();
     }
 
-  if (verbosity) {
+  if (verbosity)
     slayer.finish();
 
+  if (report_stats) {
     double avg = 0.0;
     double max = 0.0;
     for (uint j=1; j<R.rows(); ++j)
@@ -418,9 +421,10 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
 
 
 
-  if (verbosity) {
+  if (verbosity)
     slayer.finish();
 
+  if (report_stats) {
     double avg = 0.0;
     double max = 0.0;
     for (ulong i=0; i<total; ++i) {
@@ -473,6 +477,7 @@ int main(int argc, char *argv[]) {
     exit(-1);
 
   verbosity = bopts->verbosity;
+  report_stats = (verbosity || topts->noop);
   AtomicGroup model = createSystem(topts->model1);
   pTraj traj = createTrajectory(topts->traj1, model);
   AtomicGroup subset = selectAtoms(model, topts->sel1);
