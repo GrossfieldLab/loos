@@ -361,30 +361,35 @@ RealMatrix rmsds(vMatrix& M) {
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  slayer.attach(&watcher);
-  slayer.start();
+  if (verbosity){
+    slayer.attach(&watcher);
+    slayer.start();
+  }
 
   for (uint j=1; j<n; ++j)
     for (uint i=0; i<j; ++i) {
       R(j, i) = calcRMSD(M[j], M[i]);
       R(i, j) = R(j, i);
-      slayer.update();
+      if (verbosity)
+        slayer.update();
     }
 
-  slayer.finish();
+  if (verbosity) {
+    slayer.finish();
 
-  double avg = 0.0;
-  double max = 0.0;
-  for (uint j=1; j<R.rows(); ++j)
-    for (uint i=0; i<j; ++i) {
-      avg += R(j, i);
-      if (R(j, i) > max)
-        max = R(j, i);
-    }
-
-  avg /= total;
-  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
-
+    double avg = 0.0;
+    double max = 0.0;
+    for (uint j=1; j<R.rows(); ++j)
+      for (uint i=0; i<j; ++i) {
+        avg += R(j, i);
+        if (R(j, i) > max)
+          max = R(j, i);
+      }
+    
+    avg /= total;
+    cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
+  }
+  
   return(R);
 }
 
@@ -398,28 +403,35 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   PercentProgressWithTime watcher;
   PercentTrigger trigger(0.1);
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  slayer.attach(&watcher);
-  slayer.start();
+
+  if (verbosity) {
+    slayer.attach(&watcher);
+    slayer.start();
+  }
 
   for (uint j=0; j<m; ++j)
     for (uint i=0; i<n; ++i) {
       R(j, i) = calcRMSD(M[j], N[i]);
-      slayer.update();
+      if (verbosity)
+        slayer.update();
     }
 
 
-  slayer.finish();
 
-  double avg = 0.0;
-  double max = 0.0;
-  for (ulong i=0; i<total; ++i) {
-    avg += R[i];
-    if (R[i] > max)
-      max = R[i];
+  if (verbosity) {
+    slayer.finish();
+
+    double avg = 0.0;
+    double max = 0.0;
+    for (ulong i=0; i<total; ++i) {
+      avg += R[i];
+      if (R[i] > max)
+        max = R[i];
+    }
+    
+    avg /= total;
+    cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
   }
-
-  avg /= total;
-  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
   
   return(R);
 }
