@@ -237,13 +237,28 @@ vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices)
   uint l = indices.size();
   uint n = model.size();
 
+  if (verbosity > 1)
+    cerr << boost::format("Coordinate matrix size is %d x %d\n") % (3*n) % l;
+  PercentProgressWithTime watcher;
+  PercentTrigger trigger(0.1);
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(l));
+  bool updates = false;
+  
+  
   used_memory += 3 * n * l * sizeof(double);
+  if (verbosity > 1 && used_memory > 1<<30) {
+    updates = true;
+    slayer.attach(&watcher);
+    slayer.start();
+  }
 
   vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
   
   for (uint j=0; j<l; ++j) {
     traj->readFrame(indices[j]);
     traj->updateGroupCoords(model);
+    if (updates)
+      slayer.update();
     for (uint i=0; i<n; ++i) {
       GCoord c = model[i]->coords();
       M[j][i*3] = c.x();
@@ -252,6 +267,8 @@ vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices)
     }
   }
 
+  if (updates)
+    slayer.finish();
   return(M);
 }
 
@@ -364,6 +381,7 @@ RealMatrix rmsds(vMatrix& M) {
   PercentTrigger trigger(0.1);
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
   if (verbosity > 1){
+    cerr << "Computing RMSD matrix...\n";
     slayer.attach(&watcher);
     slayer.start();
   }
@@ -408,6 +426,7 @@ RealMatrix rmsds(vMatrix& M, vMatrix& N) {
   ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
 
   if (verbosity > 1) {
+    cerr << "Computing RMSD matrix...\n";
     slayer.attach(&watcher);
     slayer.start();
   }
@@ -484,7 +503,9 @@ int main(int argc, char *argv[]) {
   vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
 
   long mem = availMemory();
-  
+
+  if (verbosity > 1)
+    cerr << "Reading trajectory - " << topts->traj1 << endl;
   vMatrix T = readCoords(subset, traj, indices);
   checkMemoryUsage(mem);
   centerTrajectory(T);
@@ -498,6 +519,8 @@ int main(int argc, char *argv[]) {
     AtomicGroup subset2 = selectAtoms(model2, topts->sel2);
     vector<uint> indices2 = assignTrajectoryFrames(traj2, topts->range2, topts->skip2);
 
+    if (verbosity > 1)
+      cerr << "Reading trajectory - " << topts->traj2 << endl;
     vMatrix T2 = readCoords(subset2, traj2, indices2);
     checkMemoryUsage(mem);
     centerTrajectory(T2);
