@@ -56,6 +56,7 @@ namespace po = loos::OptionsFramework::po;
 
 typedef vector<AtomicGroup>   vGroup;
 
+
 // Globals...yuck...
 
 vector<uint> indices;            // Global indices of frames to extract
@@ -74,14 +75,13 @@ uint verbose_updates;            // Frequency of writing updates with
 bool box_override = false;
 GCoord box;
 
-bool reimage = false;
-bool voodoo = false;
 
-bool santeria = false;
-ulong santeria_iters = 0;
-double santeria_delta = 0.0;
-const uint santeria_max_iters = 50;
-const double santeria_threshold = 1e-1;
+enum ReimageMode { NONE, NORMAL, AGGRESSIVE, EXTREME } reimage_mode;
+
+ulong extreme_iters = 0;
+double extreme_delta = 0.0;
+const uint extreme_max_iters = 50;
+const double extreme_threshold = 1e-1;
 
 string center_selection;
 bool center_flag = false;
@@ -196,17 +196,17 @@ string fullHelpMessage(void) {
     "and center the system, among others.\n"
     "\n"
     "\tReimaging can be handled several different ways.  The simplest is to turn on reimaging\n"
-    "with --reimage=1.  This reimages by molecule.  In some cases, this is insufficient to\n"
-    "reimage the system so that all molecules are 'together'.  The second method is to add\n"
-    "--voodoo=1.  This employs a more aggressive reimaging that attempts to keep all parts of\n"
-    "a molecule together (the method used is similar to the --fix-imaging optien).  The third,\n"
-    "even more aggressive method, is to turn to --santeria=1.  Here, an iterative reimaging\n"
-    "procedure is used.  This may slow down subsetter.  In both voodoo and santeria, a centering\n"
-    "selection is used.  For voodoo, you should center on whatever you want the system to be centered\n"
-    "on (e.g. a protein or a membrane).  Santeria can work with 'all' as a selection.  If that fails,\n"
+    "with --reimage=normal.  This reimages by molecule.  In some cases, this is insufficient to\n"
+    "reimage the system so that all molecules are 'together'.  The second method is invoked with\n"
+    "--reimage=aggressive.  This employs a more aggressive reimaging that attempts to keep all parts of\n"
+    "a molecule together (the method used is similar to the --fix-imaging option).  The third,\n"
+    "even more aggressive method, is to use --reimage=extreme.  Here, an iterative reimaging\n"
+    "procedure is used.  This may slow down subsetter.  In both aggressive and extreme, a centering\n"
+    "selection is used.  For aggressive, you should center on whatever you want the system to be centered\n"
+    "on (e.g. a protein or a membrane).  Extreme can work with 'all' as a selection.  If that fails,\n"
     "try selecting either a central protein or a membrane.  Since these reimaging methods can\n"
     "affect the centering, a post-reimaging centering is available using the --postcenter option.\n"
-    "Finally, these imaging methods require connectivity and, in the case of santeria, masses are\n"
+    "Finally, these imaging methods require connectivity and, in the case of extreme, masses are\n"
     "helpful.\n"
     "\n"
     "EXAMPLES\n"
@@ -247,8 +247,8 @@ string fullHelpMessage(void) {
     "out.pdb.  Concatenates all DCD trajectories in the current\n"
     "directory."
     "\n"
-    "\tsubsetter --reimage=1 --santeria=1 --center='all' --postcenter='segid == \"POPC\" out.dcd model.psf *.dcd\n"
-    "Writes out a DCD reimaging the system using santeria and centering\n"
+    "\tsubsetter --reimage=extreme --center='all' --postcenter='segid == \"POPC\" out.dcd model.psf *.dcd\n"
+    "Writes out a DCD reimaging the system using the extreme method and centering\n"
     "(after reimaging) on the POPC membrane\n"
     "\n"
     "NOTES\n"
@@ -318,9 +318,7 @@ public:
       ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at start of each trajectory")
       ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
-      ("reimage", po::value<bool>(&reimage)->default_value(false), "Reimage by molecule")
-      ("voodoo", po::value<bool>(&voodoo)->default_value(false), "Apply reimaging voodoo for fringe systems")
-      ("santeria", po::value<bool>(&santeria)->default_value(false), "Apply reimaging magic")
+      ("reimage", po::value<string>(&reimage)->default_value("none"), "Reimage mode (none, normal, aggressive, extreme)")
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
       ("postcenter,P", po::value<string>(&post_center_selection)->default_value(""), "Recenter using this selection after reimaging")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
@@ -369,18 +367,28 @@ public:
 
     center_flag = !center_selection.empty();
 
-    if (voodoo && !center_flag) {
-      cerr << "Warning- voodoo is only applicable when centering.\n";
-      return(false);
-    }
-
-    if (santeria && !center_flag) {
-      cerr << "Warning- santeria is only applicable when centering.\n";
-      return(false);
-    }
 
     if (!range_spec.empty())
       indices = parseRangeList<uint>(range_spec);
+
+    if (boost::iequals(reimage, "none"))
+      reimage_mode = NONE;
+    else if (boost::iequals(reimage, "normal"))
+      reimage_mode = NORMAL;
+    else if (boost::iequals(reimage, "aggressive"))
+      reimage_mode = AGGRESSIVE;
+    else if (boost::iequals(reimage, "extreme"))
+      reimage_mode = EXTREME;
+    else {
+      cerr << "Error- '" << reimage << "' is an unknown reimaging mode.\n";
+      cerr << "       Must be: none, normal, aggressive, extreme.\n";
+      return(false);
+    }
+
+    if ((reimage_mode == AGGRESSIVE || reimage_mode == EXTREME) && !center_flag) {
+      cerr << "Error- aggressive and extreme reimaging modes require a centering selection.\n";
+      return(false);
+    }
 
     return(true);
   }
@@ -391,15 +399,13 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage=%d, voodoo=%d, santeria=%d, center='%s', sort=%d, postcenter='%s'")
+    oss << boost::format("updates=%d, stride=%s, skip=%d, range='%s', box='%s', reimage='%s', center='%s', sort=%d, postcenter='%s'")
       % verbose_updates
       % stride
       % skip
       % range_spec
       % box_spec
       % reimage
-      % voodoo
-      % santeria
       % center_selection
       % sort_flag
       % post_center_selection;
@@ -424,6 +430,7 @@ public:
   string scanf_spec;
   string range_spec;
   string box_spec;
+  string reimage;
 };
 
 
@@ -524,7 +531,7 @@ int main(int argc, char *argv[]) {
 
   // If reimaging, break out the subsets to iterate over...
   vector<AtomicGroup> molecules;
-  if (reimage) {
+  if (reimage_mode != NONE ) {
     if (!model.hasBonds()) {
       cerr << "WARNING- the model has no connectivity.  Assigning bonds based on distance.\n";
       model.findBonds();
@@ -578,8 +585,8 @@ int main(int argc, char *argv[]) {
     }
 
 
-    if (reimage) {
-      if (voodoo) {
+    if (reimage_mode != NONE) {
+      if (reimage_mode == AGGRESSIVE) {
 	GCoord centroid = centered[0]->coords();
 	model.translate(-centroid);
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
@@ -592,7 +599,7 @@ int main(int argc, char *argv[]) {
 	    mol->reimage();
 	}
 
-      } else if (santeria) {
+      } else if (reimage_mode == EXTREME) {
 	
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
 	  GCoord c = (*mol)[0]->coords();
@@ -604,10 +611,10 @@ int main(int argc, char *argv[]) {
 	GCoord last_c = centered.centerOfMass();
 	bool first = true;
 	uint si;
-	for (si = 0; si<santeria_max_iters; ++si) {
+	for (si = 0; si<extreme_max_iters; ++si) {
 	  GCoord c = centered.centerOfMass();
 	  if (!first) {
-	    if (c.distance(last_c) < santeria_threshold)
+	    if (c.distance(last_c) < extreme_threshold)
 	      break;
 	  } else
 	    first = false;
@@ -617,14 +624,17 @@ int main(int argc, char *argv[]) {
 	    mol->reimage();
 	}
 
-	santeria_delta += (last_c.distance(centered.centerOfMass()));
+	extreme_delta += (last_c.distance(centered.centerOfMass()));
 	GCoord c = centered.centroid();
 	model.translate(-c);
-	santeria_iters += si;
+	extreme_iters += si;
 
-      } else {
+      } else if (reimage_mode == NORMAL){
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
 	  mol->mergeImage();
+      } else {
+	cerr << "Error- unknown reimage mode (" << reimage_mode << ") encountered.\n";
+	exit(-10);
       }
 
       if (!post_center_selection.empty()) {
@@ -658,10 +668,10 @@ int main(int argc, char *argv[]) {
   if (verbose)
     slayer.finish();
 
-  if (santeria && verbose > 2) {
-    double avg = static_cast<double>(santeria_iters) / indices.size();
-    cerr << boost::format("Average santeria iters = %f\n") % avg;
-    cerr << boost::format("Average santeria delta = %f\n") % (santeria_delta / indices.size());
+  if (reimage_mode == EXTREME && verbose > 2) {
+    double avg = static_cast<double>(extreme_iters) / indices.size();
+    cerr << boost::format("Average extreme reimage iters = %f\n") % avg;
+    cerr << boost::format("Average extreme reimage delta = %f\n") % (extreme_delta / indices.size());
     
   }
 }
