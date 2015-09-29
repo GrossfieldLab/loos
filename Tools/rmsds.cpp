@@ -448,7 +448,7 @@ void checkMemoryUsage(long mem) {
 
   double used = static_cast<double>(used_memory) / mem;
 
-  if (verbosity)
+  if (verbosity > 1)
     cerr << boost::format("Memory: available=%d GB, estimated used=%.2f MB\n")
       % (mem >> 30) % (static_cast<double>(used_memory) / (1lu<<20) );
     
