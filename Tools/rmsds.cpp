@@ -387,11 +387,11 @@ double calcRMSD(vecDouble& u, vecDouble& v) {
 class Master {
 public:
 
-  Master(const uint nr) : _toprow(1), _maxrow(nr), _updatefreq(nr/20),
+  Master(const uint nr) : _toprow(1), _maxrow(nr), _updatefreq(500),
                           _verbose(false), _start_time(time(0)),
                           _total(nr*(nr-1)/2) { }
 
-  Master(const uint nr, const bool b) : _toprow(1), _maxrow(nr), _updatefreq(nr/20),
+  Master(const uint nr, const bool b) : _toprow(1), _maxrow(nr), _updatefreq(500),
                                         _verbose(b), _start_time(time(0)),
                                         _total(nr*(nr-1)/2) { }
 
@@ -411,15 +411,16 @@ public:
     if (_verbose) {
       if (_toprow % _updatefreq == 0) {
 	time_t dt = elapsedTime();
-	uint n = (_toprow - 2) * (_toprow-1) / 2;
-	uint d = dt * _total / n - dt;
+        uint work_done = _toprow * (_toprow-1) / 2;
+        uint work_left = _total - work_done;
+        uint d = work_left * dt / work_done;    // rate = work_done / dt;  d = work_left / rate;
 
 	uint hrs = d / 3600;
 	uint remain = d % 3600;
 	uint mins = remain / 60;
 	uint secs = remain % 60;
 
-        cerr << boost::format("Row %5d/%5d, Elapsed = %5d s, Estimated remaining = %02d:%02d:%02d\n")
+        cerr << boost::format("Row %5d /%5d, Elapsed = %5d s, Remaining = %02d:%02d:%02d\n")
           % _toprow % _maxrow % dt % hrs % mins % secs;
       }
     }
