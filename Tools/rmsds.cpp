@@ -387,7 +387,7 @@ double calcRMSD(vecDouble& u, vecDouble& v) {
 class Master {
 public:
 
-  Master(const uint nr, const bool tr, const bool b) : _toprow(1), _maxrow(nr), _updatefreq(500), _triangle(tr),
+  Master(const uint nr, const bool tr, const bool b) : _toprow(0), _maxrow(nr), _updatefreq(500), _triangle(tr),
                                                        _verbose(b), _start_time(time(0))
   {
     if (_triangle)
@@ -461,7 +461,7 @@ private:
 class DualWorker 
 {
 public:
-  DualWorker(RealMatrix* R, vMatrix* T1, vMatrix* T2, Master* M, const uint maxcol) : _R(R), _T1(T1), _T2(T2), _M(M), _maxcol(maxcol) { }
+  DualWorker(RealMatrix* R, vMatrix* T1, vMatrix* T2, Master* M) : _R(R), _T1(T1), _T2(T2), _M(M), _maxcol(T2->size()) { }
 
 
   DualWorker(const DualWorker& w) 
@@ -611,6 +611,7 @@ void showStatsWhole(const RealMatrix& R) {
   }
     
   avg /= total;
+
   cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 }
 
@@ -695,7 +696,7 @@ int main(int argc, char *argv[]) {
       cerr << "Calculating RMSD...\n";
     M = RealMatrix(T.size(), T2.size());
     Master master(T.size(), false, verbosity);
-    DualWorker worker(&M, &T, &T2, &master, T2.size());
+    DualWorker worker(&M, &T, &T2, &master);
     Threader<DualWorker> threads(&worker, topts->nthreads);
     threads.join();
 
