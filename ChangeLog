@@ -1,3 +1,8 @@
+2015-09-30    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Change RMSD to optionally use multiple threads
+	* Added boost threads as a build requirement
+
 2015-09-28    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed AtomicGroup::superposition() to use the faster dgesvj().

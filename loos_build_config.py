@@ -21,7 +21,7 @@
 
 loos_version = '2.3.0'
 min_boost_version = '1_36'
-required_boost_libraries = ('regex', 'system', 'program_options')
+required_boost_libraries = ('regex', 'system', 'program_options', 'thread')
 
 min_swig_version = '2.0'
 

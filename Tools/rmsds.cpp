@@ -31,13 +31,19 @@
 
 #include <loos.hpp>
 #include <unistd.h>
+#include <boost/thread/thread.hpp>
+
 
 using namespace std;
 using namespace loos;
 
 
+typedef boost::thread*   Thread;
+
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
+
+
 
 const int matrix_precision = 2;    // Controls precision in output matrix
 
@@ -128,6 +134,7 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("noout,N", po::value<bool>(&noop)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)")
+      ("threads", po::value<uint>(&nthreads)->default_value(1), "Number of threads to use")
       ("sel1", po::value<string>(&sel1)->default_value("name == 'CA'"), "Atom selection for first system")
       ("skip1", po::value<uint>(&skip1)->default_value(0), "Skip n-frames of first trajectory")
       ("range1", po::value<string>(&range1), "Matlab-style range of frames to use from first trajectory")
@@ -165,8 +172,9 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("noout=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
+    oss << boost::format("noout=%d,nthreads=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
       % noop
+      % nthreads
       % sel1
       % skip1
       % range1
@@ -184,6 +192,7 @@ public:
 
   bool noop;
   uint skip1, skip2;
+  uint nthreads;
   string range1, range2;
   string model1, traj1, model2, traj2;
   string sel1, sel2;
@@ -371,92 +380,239 @@ double calcRMSD(vecDouble& u, vecDouble& v) {
 }
 
 
+// --------------------------------------------------------------------------------------
 
-RealMatrix rmsds(vMatrix& M) {
-  uint n = M.size();
-  RealMatrix R(n, n);
 
-  ulong total = floor(n * (n-1) / 2.0);
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  if (verbosity > 1){
-    cerr << "Computing RMSD matrix...\n";
-    slayer.attach(&watcher);
-    slayer.start();
+
+class Master {
+public:
+
+  Master(const uint nr, const bool tr, const bool b) : _toprow(0), _maxrow(nr), _updatefreq(500), _triangle(tr),
+                                                       _verbose(b), _start_time(time(0))
+  {
+    if (_triangle)
+      _total = _maxrow*(_maxrow-1) / 2;
+    else
+      _total = _maxrow;
   }
 
-  for (uint j=1; j<n; ++j)
-    for (uint i=0; i<j; ++i) {
-      R(j, i) = calcRMSD(M[j], M[i]);
-      R(i, j) = R(j, i);
-      if (verbosity > 1)
-        slayer.update();
+    // Checks whether there are any columns left to work on
+  // and places the column index into the passed pointer.
+
+  bool workAvailable(uint* ip) 
+  {
+
+    _mtx.lock();
+    if (_toprow >= _maxrow) {
+      _mtx.unlock();
+      return(false);
     }
+    *ip = _toprow++;
 
-  if (verbosity > 1)
-    slayer.finish();
+    if (_verbose) {
+      if (_toprow % _updatefreq == 0) {
+	time_t dt = elapsedTime();
+        uint work_done = _triangle ? (_toprow * (_toprow-1) / 2) : (_toprow);
+        uint work_left = _total - work_done;
+        uint d = work_left * dt / work_done;    // rate = work_done / dt;  d = work_left / rate;
 
-  if (report_stats) {
-    double avg = 0.0;
-    double max = 0.0;
-    for (uint j=1; j<R.rows(); ++j)
-      for (uint i=0; i<j; ++i) {
-        avg += R(j, i);
-        if (R(j, i) > max)
-          max = R(j, i);
+	uint hrs = d / 3600;
+	uint remain = d % 3600;
+	uint mins = remain / 60;
+	uint secs = remain % 60;
+
+        cerr << boost::format("Row %5d /%5d, Elapsed = %5d s, Remaining = %02d:%02d:%02d\n")
+          % _toprow % _maxrow % dt % hrs % mins % secs;
       }
+    }
     
-    avg /= total;
-    cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
+    _mtx.unlock();
+    return(true);
+  }
+
+  
+  time_t elapsedTime() const 
+  {
+    return (time(0) - _start_time);
+  }
+
+
+private:
+  uint _toprow, _maxrow;
+  uint _updatefreq;
+  bool _triangle;
+  bool _verbose;
+  time_t _start_time;
+  uint _total;
+  boost::mutex _mtx;
+
+};
+
+
+
+
+
+
+/*
+  Worker thread processes a column of the all-to-all matrix.  Gets which
+  column to work on from the associated Master object.
+*/
+
+class DualWorker 
+{
+public:
+  DualWorker(RealMatrix* R, vMatrix* T1, vMatrix* T2, Master* M) : _R(R), _T1(T1), _T2(T2), _M(M), _maxcol(T2->size()) { }
+
+
+  DualWorker(const DualWorker& w) 
+  {
+    _R = w._R;
+    _T1 = w._T1;
+    _T2 = w._T2;
+    _M = w._M;
+    _maxcol = w._maxcol;
   }
   
-  return(R);
+
+  void calc(const uint i) 
+  {
+    for (uint j=0; j<_maxcol; ++j) {
+      double d = calcRMSD((*_T1)[i], (*_T2)[j]);
+      (*_R)(i, j) = d;
+    }
+  }
+
+  void operator()() 
+  {
+    uint i;
+    
+    while (_M->workAvailable(&i))
+      calc(i);
+  }
+  
+
+private:
+  RealMatrix* _R;
+  vMatrix* _T1;
+  vMatrix* _T2;
+  Master* _M;
+  uint _maxcol;
+};
+
+
+
+
+class SingleWorker 
+{
+public:
+  SingleWorker(RealMatrix* R, vMatrix* T, Master* M) : _R(R), _T(T), _M(M) { }
+
+
+  SingleWorker(const SingleWorker& w) 
+  {
+    _R = w._R;
+    _T = w._T;
+    _M = w._M;
+  }
+  
+
+  void calc(const uint i) 
+  {
+    for (uint j=0; j<i; ++j) {
+      double d = calcRMSD((*_T)[i], (*_T)[j]);
+      (*_R)(j, i) = (*_R)(i, j) = d;
+    }
+  }
+
+  void operator()() 
+  {
+    uint i;
+    
+    while (_M->workAvailable(&i))
+      calc(i);
+  }
+  
+
+private:
+  RealMatrix* _R;
+  vMatrix* _T;
+  Master* _M;
+};
+
+
+
+// Top level object/interface.  Will create np Worker threads, cloned from the
+// one passed into the constructor.
+
+template<class W>
+class Threader 
+{
+public:
+  Threader(W* wrkr, const uint np) :
+    worker(wrkr),
+    threads(vector<Thread>(np))
+  {
+
+    for (uint i=0; i<np; ++i) {
+      W w(*worker);
+      threads[i] = new boost::thread(w);
+    }
+    
+  }
+
+
+  void join() 
+  {
+    for (uint i=0; i<threads.size(); ++i)
+      threads[i]->join();
+  }
+  
+
+  ~Threader() 
+  {
+    for (uint i=0; i<threads.size(); ++i)
+      delete threads[i];
+  }
+
+  W* worker;
+  vector<Thread> threads;
+};
+
+
+// --------------------------------------------------------------------------------------
+
+
+void showStatsHalf(const RealMatrix& R) {
+  uint total = R.rows() * R.cols();
+
+  double avg = 0.0;
+  double max = 0.0;
+  for (uint j=1; j<R.rows(); ++j)
+    for (uint i=0; i<j; ++i) {
+      avg += R(j, i);
+      if (R(j, i) > max)
+        max = R(j, i);
+    }
+    
+  avg /= total;
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 }
 
 
-RealMatrix rmsds(vMatrix& M, vMatrix& N) {
-  uint m = M.size();
-  uint n = N.size();
+void showStatsWhole(const RealMatrix& R) {
+  uint total = R.rows() * R.cols();
 
-  RealMatrix R(m, n);
-  ulong total = static_cast<ulong>(m)*n;
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-
-  if (verbosity > 1) {
-    cerr << "Computing RMSD matrix...\n";
-    slayer.attach(&watcher);
-    slayer.start();
+  double avg = 0.0;
+  double max = 0.0;
+  for (ulong i=0; i<total; ++i) {
+    avg += R[i];
+    if (R[i] > max)
+      max = R[i];
   }
-
-  for (uint j=0; j<m; ++j)
-    for (uint i=0; i<n; ++i) {
-      R(j, i) = calcRMSD(M[j], N[i]);
-      if (verbosity > 1)
-        slayer.update();
-    }
-
-
-
-  if (verbosity > 1)
-    slayer.finish();
-
-  if (report_stats) {
-    double avg = 0.0;
-    double max = 0.0;
-    for (ulong i=0; i<total; ++i) {
-      avg += R[i];
-      if (R[i] > max)
-        max = R[i];
-    }
     
-    avg /= total;
-    cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
-  }
-  
-  return(R);
+  avg /= total;
+
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 }
 
 
@@ -511,9 +667,20 @@ int main(int argc, char *argv[]) {
   centerTrajectory(T);
 
   RealMatrix M;
-  if (topts->model2.empty())
-    M = rmsds(T);
-  else {
+  if (topts->model2.empty()) {
+
+    if (verbosity)
+      cerr << "Calculating RMSD...\n";
+    M = RealMatrix(T.size(), T.size());
+    Master master(T.size(), true, verbosity);
+    SingleWorker worker(&M, &T, &master);
+    Threader<SingleWorker> threads(&worker, topts->nthreads);
+    threads.join();
+
+    if (verbosity || topts->noop)
+      showStatsHalf(M);
+    
+  } else {
     AtomicGroup model2 = createSystem(topts->model2);
     pTraj traj2 = createTrajectory(topts->traj2, model2);
     AtomicGroup subset2 = selectAtoms(model2, topts->sel2);
@@ -524,7 +691,18 @@ int main(int argc, char *argv[]) {
     vMatrix T2 = readCoords(subset2, traj2, indices2);
     checkMemoryUsage(mem);
     centerTrajectory(T2);
-    M = rmsds(T, T2);
+
+    if (verbosity)
+      cerr << "Calculating RMSD...\n";
+    M = RealMatrix(T.size(), T2.size());
+    Master master(T.size(), false, verbosity);
+    DualWorker worker(&M, &T, &T2, &master);
+    Threader<DualWorker> threads(&worker, topts->nthreads);
+    threads.join();
+
+
+    if (verbosity || topts->noop)
+      showStatsWhole(M);
   }
 
   if (!topts->noop) {
