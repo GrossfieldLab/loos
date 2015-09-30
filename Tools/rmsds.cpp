@@ -387,13 +387,14 @@ double calcRMSD(vecDouble& u, vecDouble& v) {
 class Master {
 public:
 
-  Master(const uint nr) : _toprow(1), _maxrow(nr), _updatefreq(500),
-                          _verbose(false), _start_time(time(0)),
-                          _total(nr*(nr-1)/2) { }
-
-  Master(const uint nr, const bool b) : _toprow(1), _maxrow(nr), _updatefreq(500),
-                                        _verbose(b), _start_time(time(0)),
-                                        _total(nr*(nr-1)/2) { }
+  Master(const uint nr, const bool tr, const bool b) : _toprow(1), _maxrow(nr), _updatefreq(500), _triangle(tr),
+                                                       _verbose(b), _start_time(time(0))
+  {
+    if (_triangle)
+      _total = _maxrow*(_maxrow-1) / 2;
+    else
+      _total = _maxrow;
+  }
 
     // Checks whether there are any columns left to work on
   // and places the column index into the passed pointer.
@@ -411,7 +412,7 @@ public:
     if (_verbose) {
       if (_toprow % _updatefreq == 0) {
 	time_t dt = elapsedTime();
-        uint work_done = _toprow * (_toprow-1) / 2;
+        uint work_done = _triangle ? (_toprow * (_toprow-1) / 2) : (_toprow);
         uint work_left = _total - work_done;
         uint d = work_left * dt / work_done;    // rate = work_done / dt;  d = work_left / rate;
 
@@ -439,6 +440,7 @@ public:
 private:
   uint _toprow, _maxrow;
   uint _updatefreq;
+  bool _triangle;
   bool _verbose;
   time_t _start_time;
   uint _total;
@@ -456,13 +458,57 @@ private:
   column to work on from the associated Master object.
 */
 
-class Worker 
+class DualWorker 
 {
 public:
-  Worker(RealMatrix* R, vMatrix* T, Master* M) : _R(R), _T(T), _M(M) { }
+  DualWorker(RealMatrix* R, vMatrix* T1, vMatrix* T2, Master* M, const uint maxcol) : _R(R), _T1(T1), _T2(T2), _M(M), _maxcol(maxcol) { }
 
 
-  Worker(const Worker& w) 
+  DualWorker(const DualWorker& w) 
+  {
+    _R = w._R;
+    _T1 = w._T1;
+    _T2 = w._T2;
+    _M = w._M;
+    _maxcol = w._maxcol;
+  }
+  
+
+  void calc(const uint i) 
+  {
+    for (uint j=0; j<_maxcol; ++j) {
+      double d = calcRMSD((*_T1)[i], (*_T2)[j]);
+      (*_R)(i, j) = d;
+    }
+  }
+
+  void operator()() 
+  {
+    uint i;
+    
+    while (_M->workAvailable(&i))
+      calc(i);
+  }
+  
+
+private:
+  RealMatrix* _R;
+  vMatrix* _T1;
+  vMatrix* _T2;
+  Master* _M;
+  uint _maxcol;
+};
+
+
+
+
+class SingleWorker 
+{
+public:
+  SingleWorker(RealMatrix* R, vMatrix* T, Master* M) : _R(R), _T(T), _M(M) { }
+
+
+  SingleWorker(const SingleWorker& w) 
   {
     _R = w._R;
     _T = w._T;
@@ -492,6 +538,7 @@ private:
   vMatrix* _T;
   Master* _M;
 };
+
 
 
 // Top level object/interface.  Will create np Worker threads, cloned from the
@@ -535,107 +582,36 @@ public:
 // --------------------------------------------------------------------------------------
 
 
+void showStatsHalf(const RealMatrix& R) {
+  uint total = R.rows() * R.cols();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-RealMatrix rmsds(vMatrix& M) {
-  uint n = M.size();
-  RealMatrix R(n, n);
-
-  ulong total = floor(n * (n-1) / 2.0);
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-  if (verbosity > 1){
-    cerr << "Computing RMSD matrix...\n";
-    slayer.attach(&watcher);
-    slayer.start();
-  }
-
-  for (uint j=1; j<n; ++j)
+  double avg = 0.0;
+  double max = 0.0;
+  for (uint j=1; j<R.rows(); ++j)
     for (uint i=0; i<j; ++i) {
-      R(j, i) = calcRMSD(M[j], M[i]);
-      R(i, j) = R(j, i);
-      if (verbosity > 1)
-        slayer.update();
+      avg += R(j, i);
+      if (R(j, i) > max)
+        max = R(j, i);
     }
-
-  if (verbosity > 1)
-    slayer.finish();
-
-  if (report_stats) {
-    double avg = 0.0;
-    double max = 0.0;
-    for (uint j=1; j<R.rows(); ++j)
-      for (uint i=0; i<j; ++i) {
-        avg += R(j, i);
-        if (R(j, i) > max)
-          max = R(j, i);
-      }
     
-    avg /= total;
-    cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
-  }
-  
-  return(R);
+  avg /= total;
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 }
 
 
-RealMatrix rmsds(vMatrix& M, vMatrix& N) {
-  uint m = M.size();
-  uint n = N.size();
+void showStatsWhole(const RealMatrix& R) {
+  uint total = R.rows() * R.cols();
 
-  RealMatrix R(m, n);
-  ulong total = static_cast<ulong>(m)*n;
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(total));
-
-  if (verbosity > 1) {
-    cerr << "Computing RMSD matrix...\n";
-    slayer.attach(&watcher);
-    slayer.start();
+  double avg = 0.0;
+  double max = 0.0;
+  for (ulong i=0; i<total; ++i) {
+    avg += R[i];
+    if (R[i] > max)
+      max = R[i];
   }
-
-  for (uint j=0; j<m; ++j)
-    for (uint i=0; i<n; ++i) {
-      R(j, i) = calcRMSD(M[j], N[i]);
-      if (verbosity > 1)
-        slayer.update();
-    }
-
-
-
-  if (verbosity > 1)
-    slayer.finish();
-
-  if (report_stats) {
-    double avg = 0.0;
-    double max = 0.0;
-    for (ulong i=0; i<total; ++i) {
-      avg += R[i];
-      if (R[i] > max)
-        max = R[i];
-    }
     
-    avg /= total;
-    cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
-  }
-  
-  return(R);
+  avg /= total;
+  cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
 }
 
 
@@ -691,12 +667,18 @@ int main(int argc, char *argv[]) {
 
   RealMatrix M;
   if (topts->model2.empty()) {
-    //    M = rmsds(T);
+
+    if (verbosity)
+      cerr << "Calculating RMSD...\n";
     M = RealMatrix(T.size(), T.size());
-    Master master(T.size(), verbosity);
-    Worker worker(&M, &T, &master);
-    Threader<Worker> threads(&worker, topts->nthreads);
+    Master master(T.size(), true, verbosity);
+    SingleWorker worker(&M, &T, &master);
+    Threader<SingleWorker> threads(&worker, topts->nthreads);
     threads.join();
+
+    if (verbosity || topts->noop)
+      showStatsHalf(M);
+    
   } else {
     AtomicGroup model2 = createSystem(topts->model2);
     pTraj traj2 = createTrajectory(topts->traj2, model2);
@@ -708,7 +690,18 @@ int main(int argc, char *argv[]) {
     vMatrix T2 = readCoords(subset2, traj2, indices2);
     checkMemoryUsage(mem);
     centerTrajectory(T2);
-    M = rmsds(T, T2);
+
+    if (verbosity)
+      cerr << "Calculating RMSD...\n";
+    M = RealMatrix(T.size(), T2.size());
+    Master master(T.size(), false, verbosity);
+    DualWorker worker(&M, &T, &T2, &master, T2.size());
+    Threader<DualWorker> threads(&worker, topts->nthreads);
+    threads.join();
+
+
+    if (verbosity || topts->noop)
+      showStatsWhole(M);
   }
 
   if (!topts->noop) {
