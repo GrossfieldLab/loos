@@ -669,7 +669,7 @@ int main(int argc, char *argv[]) {
   RealMatrix M;
   if (topts->model2.empty()) {
 
-    if (verbosity)
+    if (verbosity > 1)
       cerr << "Calculating RMSD...\n";
     M = RealMatrix(T.size(), T.size());
     Master master(T.size(), true, verbosity);
@@ -692,7 +692,7 @@ int main(int argc, char *argv[]) {
     checkMemoryUsage(mem);
     centerTrajectory(T2);
 
-    if (verbosity)
+    if (verbosity > 1)
       cerr << "Calculating RMSD...\n";
     M = RealMatrix(T.size(), T2.size());
     Master master(T.size(), false, verbosity);
