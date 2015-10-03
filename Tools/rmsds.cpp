@@ -583,7 +583,7 @@ public:
 
 
 void showStatsHalf(const RealMatrix& R) {
-  uint total = R.rows() * R.cols();
+  uint total = (R.rows() * (R.rows()-1)) / 2; 
 
   double avg = 0.0;
   double max = 0.0;
