@@ -7,10 +7,8 @@ namespace loos {
 
   namespace alignment {
 
-    SVDTupleVec kabschCore(const vecDouble& u, const vecDouble& v) {
-      int n = u.size();
-
-      n /= 3;
+    SVDTupleVec kabschCore(double* u, double* v, const uint ndim) {
+      int n = ndim / 3;
 
       // Compute correlation matrix...
       vecDouble R(9);
@@ -22,11 +20,11 @@ namespace loos {
       double one = 1.0;
       double zero = 0.0;
     
-      dgemm_(&ta, &tb, &three, &three, &n, &one, u.data(), &three, v.data(), &three, &zero, R.data(), &three);
+      dgemm_(&ta, &tb, &three, &three, &n, &one, u, &three, v, &three, &zero, R.data(), &three);
 
 #else
 
-      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u.data(), 3, v.data(), 3, 0.0, R.data(), 3);
+      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u, 3, v, 3, 0.0, R.data(), 3);
 
 #endif
 
@@ -67,19 +65,19 @@ namespace loos {
     }
 
 
-    GCoord centerAtOrigin(vecDouble& v) {
+    GCoord centerAtOrigin(double* v, const uint ndim) {
       GCoord c;
 
-      for (uint i=0; i<v.size(); i += 3) {
+      for (uint i=0; i<ndim; i += 3) {
 	c.x() += v[i];
 	c.y() += v[i+1];
 	c.z() += v[i+2];
       }
 
       for (uint i=0; i<3; ++i)
-	c[i] = 3*c[i]/v.size();
+	c[i] = 3*c[i]/ndim;
 
-      for (uint i=0; i<v.size(); i += 3) {
+      for (uint i=0; i<ndim; i += 3) {
 	v[i] -= c.x();
 	v[i+1] -= c.y();
 	v[i+2] -= c.z();
@@ -92,16 +90,16 @@ namespace loos {
 
     double alignedRMSD(const vecDouble& U, const vecDouble& V) {
 
-      int n = U.size() / 3;
+      int n = U.size()/3;
 
       vecDouble cU(U);
       vecDouble cV(V);
 
-      centerAtOrigin(cU);
-      centerAtOrigin(cV);
-
-      SVDTupleVec svd = kabschCore(U, V);
-
+      centerAtOrigin(cU.data(), U.size());
+      centerAtOrigin(cV.data(), V.size());
+      
+      SVDTupleVec svd = kabschCore(cU.data(), cV.data());
+    
       double ssu[3] = {0.0, 0.0, 0.0};
       double ssv[3] = {0.0, 0.0, 0.0};
 
@@ -126,16 +124,16 @@ namespace loos {
   
   
 
-    XForm kabsch(const vecDouble& U, const vecDouble& V) {
+    XForm kabsch(const double* U, const double* V, const uint ndim) {
     
-      vecDouble cU(U);
-      vecDouble cV(V);
+      vecDouble cU(U, U + ndim);
+      vecDouble cV(V, V + ndim);
 
       GCoord U_center = centerAtOrigin(cU);
       GCoord V_center = centerAtOrigin(cV);
 
 
-      SVDTupleVec svd = kabschCore(U, V);
+      SVDTupleVec svd = kabschCore(cU.data(), cV.data(), ndim);
 
       vecDouble R(boost::get<0>(svd));
       vecDouble VV(boost::get<2>(svd));
