@@ -124,7 +124,7 @@ namespace loos {
   
   
 
-    XForm kabsch(const vecDouble& U, const vecDouble& V) {
+    GMatrix kabsch(const vecDouble& U, const vecDouble& V) {
     
       vecDouble cU(U);
       vecDouble cV(V);
@@ -168,7 +168,7 @@ namespace loos {
       W.concat(Z);
       W.translate(-U_center);
 
-      return W;
+      return W.current();
     }
 
 
@@ -226,7 +226,7 @@ namespace loos {
       vecDouble target(ensemble[0]);
       centerAtOrigin(target);
       for (uint i=1; i<n; ++i) {
-	XForm M = kabsch(ensemble[i], target);
+	XForm M(kabsch(ensemble[i], target));
 	applyTransform(M.current(), ensemble[i]);
 	xforms[i].premult(M.current());
       }
@@ -237,7 +237,7 @@ namespace loos {
     
       do {
 	for (int i = 0; i<n; i++) {
-	  XForm M = kabsch(ensemble[i], target);
+	  XForm M(kabsch(ensemble[i], target));
 	  applyTransform(M.current(), ensemble[i]);
 	  xforms[i].premult(M.current());
 	}

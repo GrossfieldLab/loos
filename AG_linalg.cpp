@@ -38,6 +38,7 @@
 #include <boost/random.hpp>
 
 #include <AtomicGroup.hpp>
+#include <alignment.hpp>
 
 
 
@@ -185,101 +186,10 @@ namespace loos {
 
 
   GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
-    int i, j;
-    XForm W;
+    alignment::vecDouble u = coordsAsVector();
+    alignment::vecDouble v = grp.coordsAsVector();
 
-    int n = size();
-    // Center both groups at the origin...
-
-    GCoord xc = centroid();
-    W.translate(-xc);
-    double *X = transformedCoordsAsArray(W);
-  
-
-    GCoord yc = grp.centroid();
-    W.identity();
-    W.translate(-yc);
-    double *Y = grp.transformedCoordsAsArray(W);
-
-    // Compute correlation matrix...
-    double R[9];
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
-    char ta = 'N';
-    char tb = 'T';
-    f77int three = 3;
-    double one = 1.0;
-    double zero = 0.0;
-    
-    dgemm_(&ta, &tb, &three, &three, &n, &one, X, &three, Y, &three, &zero, R, &three);
-
-#else
-
-    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, X, 3, Y, 3, 0.0, R, 3);
-
-#endif
-
-    double det = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
-      R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
-
-    // Now compute the SVD of R...
-    char joba='G';
-    char jobu = 'U', jobv = 'V';
-    int mv = 0;
-    f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
-    double work[lwork];
-    f77int nn = 3;
-    double S[3], V[9];
-  
-    //   dgesvj_(&jobu, &jobvt, &m, &nn, R, &lda, S, U, &ldu, Vt, &ldvt, work, &lwork, &info);
-    dgesvj_(&joba, &jobu, &jobv, &m, &nn, R, &lda, S, &mv, V, &ldv, work, &lwork, &info);
-    
-    if (info != 0)
-      throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
-
-    // if (S[2] < superposition_zero_singular_value)
-    //   throw(NumericalError("Superposition is indeterminate...try using more atoms"));
-
-    // Adjust U (if necessary)
-    if (det < 0.0) {
-      R[6] = -R[6];
-      R[7] = -R[7];
-      R[8] = -R[8];
-    }
-
-    // Compute the rotation matrix...
-    double M[9];
-
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
-
-    dgemm_(&ta, &tb, &three, &three, &three, &one, R, &three, V, &three, &zero, M, &three);
-
-#else
-
-    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, R, 3, V, 3, 0.0, M, 3);
-
-#endif
-
-    // Construct the new transformation matrix...  (W = M')
-    GMatrix Z;
-    for (i=0; i<3; i++)
-      for (j=0; j<3; j++)
-        Z(i,j) = M[i*3+j];
-
-    //W(0,3) = yc.x();
-    //W(1,3) = yc.y();
-    //W(2,3) = yc.z();
-
-
-    W.identity();
-    W.translate(yc);
-    W.concat(Z);
-    W.translate(-xc);
-
-    delete[] X;
-    delete[] Y;
-
-
-    return(W.current());
+    return(alignment::kabsch(u, v));
   }
 
 
