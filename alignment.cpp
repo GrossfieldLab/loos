@@ -121,23 +121,12 @@ namespace loos {
     }
 
 
-  
-  
 
-    GMatrix kabsch(const vecDouble& U, const vecDouble& V) {
-    
-      vecDouble cU(U);
-      vecDouble cV(V);
-
-      GCoord U_center = centerAtOrigin(cU);
-      GCoord V_center = centerAtOrigin(cV);
-
-
-      SVDTupleVec svd = kabschCore(cU, cV);
+    GMatrix kabschCentered(const vecDouble& U, const vecDouble& V) {
+      SVDTupleVec svd = kabschCore(U, V);
 
       vecDouble R(boost::get<0>(svd));
       vecDouble VV(boost::get<2>(svd));
-
       
       double M[9];
 
@@ -162,10 +151,24 @@ namespace loos {
 	for (uint j=0; j<3; j++)
 	  Z(i,j) = M[i*3+j];
 
+      return Z;
+
+    }
+  
+
+    GMatrix kabsch(const vecDouble& U, const vecDouble& V) {
+    
+      vecDouble cU(U);
+      vecDouble cV(V);
+
+      GCoord U_center = centerAtOrigin(cU);
+      GCoord V_center = centerAtOrigin(cV);
+      GMatrix M = kabschCentered(cU, cV);
+
       XForm W;
       W.identity();
       W.translate(V_center);
-      W.concat(Z);
+      W.concat(M);
       W.translate(-U_center);
 
       return W.current();
@@ -251,12 +254,5 @@ namespace loos {
       boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
       return(res);
     }
-
-
-
   }
-
-
-
-  
 }
