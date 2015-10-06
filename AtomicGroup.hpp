@@ -838,7 +838,8 @@ namespace loos {
 
     double *coordsAsArray(void) const;
     double *transformedCoordsAsArray(const XForm&) const;
-
+    std::vector<double> coordsAsVector() const;
+    
     bool _sorted;
 
 

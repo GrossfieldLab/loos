@@ -259,6 +259,21 @@ namespace loos {
     applyTransform(M);
   }
 
+
+  std::vector<double> AtomicGroup::coordsAsVector() const {
+    std::vector<double> v(size() * 3);
+
+    uint k = 0;
+    for (uint i=0; i<size(); ++i) {
+      v[k++] = atoms[i]->coords().x();
+      v[k++] = atoms[i]->coords().y();
+      v[k++] = atoms[i]->coords().z();
+    }
+
+    return(v);
+  }
+
+  
   // Returns a newly allocated array of double coords in row-major
   // order...
   double* AtomicGroup::coordsAsArray(void) const {
