@@ -7,8 +7,8 @@ namespace loos {
 
   namespace alignment {
 
-    SVDTupleVec kabschCore(double* u, double* v, const uint ndim) {
-      int n = ndim / 3;
+    SVDTupleVec kabschCore(const vecDouble& u, const vecDouble& v) {
+      int n = u.size() / 3;
 
       // Compute correlation matrix...
       vecDouble R(9);
@@ -20,11 +20,11 @@ namespace loos {
       double one = 1.0;
       double zero = 0.0;
     
-      dgemm_(&ta, &tb, &three, &three, &n, &one, u, &three, v, &three, &zero, R.data(), &three);
+      dgemm_(&ta, &tb, &three, &three, &n, &one, u.data(), &three, v.data(), &three, &zero, R.data(), &three);
 
 #else
 
-      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u, 3, v, 3, 0.0, R.data(), 3);
+      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u.data(), 3, v.data(), 3, 0.0, R.data(), 3);
 
 #endif
 
@@ -65,19 +65,19 @@ namespace loos {
     }
 
 
-    GCoord centerAtOrigin(double* v, const uint ndim) {
+    GCoord centerAtOrigin(vecDouble& v) {
       GCoord c;
 
-      for (uint i=0; i<ndim; i += 3) {
+      for (uint i=0; i<v.size(); i += 3) {
 	c.x() += v[i];
 	c.y() += v[i+1];
 	c.z() += v[i+2];
       }
 
       for (uint i=0; i<3; ++i)
-	c[i] = 3*c[i]/ndim;
+	c[i] = 3*c[i]/v.size();
 
-      for (uint i=0; i<ndim; i += 3) {
+      for (uint i=0; i<v.size(); i += 3) {
 	v[i] -= c.x();
 	v[i+1] -= c.y();
 	v[i+2] -= c.z();
@@ -95,10 +95,10 @@ namespace loos {
       vecDouble cU(U);
       vecDouble cV(V);
 
-      centerAtOrigin(cU.data(), U.size());
-      centerAtOrigin(cV.data(), V.size());
+      centerAtOrigin(cU);
+      centerAtOrigin(cV);
       
-      SVDTupleVec svd = kabschCore(cU.data(), cV.data());
+      SVDTupleVec svd = kabschCore(cU, cV);
     
       double ssu[3] = {0.0, 0.0, 0.0};
       double ssv[3] = {0.0, 0.0, 0.0};
@@ -124,16 +124,16 @@ namespace loos {
   
   
 
-    XForm kabsch(const double* U, const double* V, const uint ndim) {
+    XForm kabsch(const vecDouble& U, const vecDouble& V) {
     
-      vecDouble cU(U, U + ndim);
-      vecDouble cV(V, V + ndim);
+      vecDouble cU(U);
+      vecDouble cV(V);
 
       GCoord U_center = centerAtOrigin(cU);
       GCoord V_center = centerAtOrigin(cV);
 
 
-      SVDTupleVec svd = kabschCore(cU.data(), cV.data(), ndim);
+      SVDTupleVec svd = kabschCore(cU, cV);
 
       vecDouble R(boost::get<0>(svd));
       vecDouble VV(boost::get<2>(svd));
@@ -152,7 +152,7 @@ namespace loos {
 
 #else
 
-      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, R.data(), 3, V.data(), 3, 0.0, M, 3);
+      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, R.data(), 3, VV.data(), 3, 0.0, M, 3);
 
 #endif
 
