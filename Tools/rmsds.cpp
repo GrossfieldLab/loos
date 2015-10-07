@@ -227,74 +227,6 @@ void centerTrajectory(vMatrix& M) {
 
 
 
-double calcRMSD(vecDouble& u, vecDouble& v) {
-  int n = u.size();
-
-  double ssu[3] = {0.0, 0.0, 0.0};
-  double ssv[3] = {0.0, 0.0, 0.0};
-
-  for (int j=0; j<n; j += 3) {
-    for (uint i=0; i<3; ++i) {
-      ssu[i] += u[j+i] * u[j+i];
-      ssv[i] += v[j+i] * v[j+i];
-    }
-  }
-
-  n /= 3;
-
-  double E0 = ssu[0] + ssu[1] + ssu[2] + ssv[0] + ssv[1] + ssv[2];
-
-  // Compute correlation matrix...
-  double R[9];
-
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
-  char ta = 'N';
-  char tb = 'T';
-  f77int three = 3;
-  double one = 1.0;
-  double zero = 0.0;
-    
-  dgemm_(&ta, &tb, &three, &three, &n, &one, u.data(), &three, v.data(), &three, &zero, R, &three);
-
-#else
-
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u.data(), 3, v.data(), 3, 0.0, R, 3);
-
-#endif
-
-  
-  
-  // Now compute the SVD of R...
-  char joba='G';
-  char jobu = 'U', jobv = 'V';
-  int mv = 0;
-  f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
-  double work[lwork];
-  f77int nn = 3;
-  double S[3], V[9];
-  
-  dgesvj_(&joba, &jobu, &jobv, &m, &nn, R, &lda, S, &mv, V, &ldv, work, &lwork, &info);
-    
-  if (info != 0)
-    throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
-
-
-  
-  double dR = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
-    R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
-
-  
-  double dV = V[0]*V[4]*V[8] + V[3]*V[7]*V[2] + V[6]*V[1]*V[5] -
-    V[0]*V[7]*V[5] - V[3]*V[1]*V[8] - V[6]*V[4]*V[2];
-
-  
-  if (dR * dV < 0.0)
-    S[2] = -S[2];
-  
-  double ss = S[0] + S[1] + S[2];
-  double rmsd = sqrt(abs(E0-2.0*ss)/n);
-  return(rmsd);
-}
 
 
 // --------------------------------------------------------------------------------------
@@ -394,7 +326,7 @@ public:
   void calc(const uint i) 
   {
     for (uint j=0; j<_maxcol; ++j) {
-      double d = calcRMSD((*_T1)[i], (*_T2)[j]);
+      double d = loos::alignment::centeredRMSD((*_T1)[i], (*_T2)[j]);
       (*_R)(i, j) = d;
     }
   }
@@ -436,7 +368,7 @@ public:
   void calc(const uint i) 
   {
     for (uint j=0; j<i; ++j) {
-      double d = calcRMSD((*_T)[i], (*_T)[j]);
+      double d = loos::alignment::centeredRMSD((*_T)[i], (*_T)[j]);
       (*_R)(j, i) = (*_R)(i, j) = d;
     }
   }
