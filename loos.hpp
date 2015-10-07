@@ -112,6 +112,7 @@
 
 #include <OptionsFramework.hpp>
 
+#include <alignment.hpp>
 #endif
 
 
