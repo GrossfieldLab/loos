@@ -264,6 +264,9 @@ int main(int argc, char *argv[]) {
   if (topts->reference_name.empty()) {
 
     vMatrix coords = readCoords(align_sub, traj, indices);
+    if (topts->xy_only)
+      zapZ(coords);
+    
     boost::tuple<vector<XForm>,greal, int> res = loos::alignment::iterativeAlignment(coords);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
