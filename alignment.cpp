@@ -1,4 +1,8 @@
 #include <loos_defs.hpp>
+
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
+
 #include <alignment.hpp>
 
 namespace loos {
@@ -254,5 +258,57 @@ namespace loos {
       boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
       return(res);
     }
+
+
+
+    boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
+								    pTraj& traj,
+								    const std::vector<uint>& frame_indices,
+								    greal threshold, int maxiter) {
+
+      // Must first prime the loop...
+      AtomicGroup frame = g.copy();
+      traj->readFrame(frame_indices[0]);
+      traj->updateGroupCoords(frame);
+      
+      uint nf = frame_indices.size();
+
+      int iter = 0;
+      greal rms;
+      std::vector<XForm> xforms(nf);
+      AtomicGroup avg = frame.copy();
+
+      AtomicGroup target = frame.copy();
+      target.centerAtOrigin();
+
+      do {
+	// Compute avg internally so we don't have to read traj twice...
+	for (uint j=0; j<avg.size(); ++j)
+	  avg[j]->coords() = GCoord(0,0,0);
+        
+	for (uint i=0; i<nf; ++i) {
+            
+	  traj->readFrame(frame_indices[i]);
+	  traj->updateGroupCoords(frame);
+
+	  GMatrix M = frame.alignOnto(target);
+	  xforms[i].load(M);
+
+	  for (uint j=0; j<avg.size(); ++j)
+	    avg[j]->coords() += frame[j]->coords();
+	}
+
+	for (uint j=0; j<avg.size(); ++j)
+	  avg[j]->coords() /= nf;
+
+	rms = avg.rmsd(target);
+	target = avg.copy();
+	++iter;
+      } while (rms > threshold && iter <= maxiter);
+    
+      boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
+      return(res);
+    }
+
   }
 }
