@@ -724,6 +724,9 @@ namespace loos {
      * The caller is expected to manage the memory.
      */
     void getCoords(double** outseq, int* m, int* n);
+
+    std::vector<double> coordsAsVector() const;
+
     
   private:
 
@@ -838,7 +841,6 @@ namespace loos {
 
     double *coordsAsArray(void) const;
     double *transformedCoordsAsArray(const XForm&) const;
-    std::vector<double> coordsAsVector() const;
     
     bool _sorted;
 
