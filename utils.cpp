@@ -413,5 +413,39 @@ namespace loos {
   }
 
 
+#if defined(__linux__)
+  // Should consider using _SC_AVPHYS_PAGES instead?
+  long availableMemory() 
+  {
+    long pagesize = sysconf(_SC_PAGESIZE);
+    long pages = sysconf(_SC_PHYS_PAGES);
+
+    return(pagesize * pages);
+  }
+
+#elif defined(__APPLE__)
+
+  long availableMemory() 
+  {
+    unsigned long memory;
+    size_t size = sizeof(memory);
+    
+    int ok = sysctlbyname("hw.memsize", &memory, &size, 0, 0);
+    if (ok < 0)
+      memory = 0;
+
+    return(memory);
+  }
+
+#else
+
+  long availableMemory() {
+    return(0);
+  }
+
+#endif   // defined(__linux__)
+
+
+  
 
 }
