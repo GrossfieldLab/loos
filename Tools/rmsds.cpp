@@ -47,12 +47,6 @@ namespace po = loos::OptionsFramework::po;
 
 const int matrix_precision = 2;    // Controls precision in output matrix
 
-#if defined(__APPLE__)
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <errno.h>
-#endif
-
 int verbosity;
 
 
@@ -203,83 +197,6 @@ typedef vector<vecDouble>   vMatrix;
 
 
 // @endcond TOOLS_INTERNAL
-
-
-
-#if defined(__linux__)
-  // Should consider using _SC_AVPHYS_PAGES instead?
-  long availMemory() 
-  {
-    long pagesize = sysconf(_SC_PAGESIZE);
-    long pages = sysconf(_SC_PHYS_PAGES);
-
-    return(pagesize * pages);
-  }
-
-#elif defined(__APPLE__)
-
-long availMemory() 
-  {
-    unsigned long memory;
-    size_t size = sizeof(memory);
-    
-    int ok = sysctlbyname("hw.memsize", &memory, &size, 0, 0);
-    if (ok < 0) {
-      cerr << "Warning- could not determine available memory size.  Use --cache=0 if swapping occurs.\n";
-      perror("rmsds: ");
-      memory = 0;
-    }
-
-    return(memory);
-  }
-
-#else
-
-  long availMemory() {
-    return(0);
-  }
-
-#endif   // defined(__linux__)
-
-
-vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
-  uint l = indices.size();
-  uint n = model.size();
-
-  if (verbosity > 1)
-    cerr << boost::format("Coordinate matrix size is %d x %d\n") % (3*n) % l;
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(l));
-  bool updates = false;
-  
-  
-  used_memory += 3 * n * l * sizeof(double);
-  if (verbosity > 1 && used_memory > 1<<30) {
-    updates = true;
-    slayer.attach(&watcher);
-    slayer.start();
-  }
-
-  vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
-  
-  for (uint j=0; j<l; ++j) {
-    traj->readFrame(indices[j]);
-    traj->updateGroupCoords(model);
-    if (updates)
-      slayer.update();
-    for (uint i=0; i<n; ++i) {
-      GCoord c = model[i]->coords();
-      M[j][i*3] = c.x();
-      M[j][i*3+1] = c.y();
-      M[j][i*3+2] = c.z();
-    }
-  }
-
-  if (updates)
-    slayer.finish();
-  return(M);
-}
 
 
 void centerAtOrigin(vecDouble& v) {
@@ -583,7 +500,7 @@ public:
 
 
 void showStatsHalf(const RealMatrix& R) {
-  uint total = R.rows() * R.cols();
+  uint total = (R.rows() * (R.cols() - 1)) / 2.0;
 
   double avg = 0.0;
   double max = 0.0;
@@ -658,11 +575,12 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, topts->sel1);
   vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
 
-  long mem = availMemory();
+  long mem = availableMemory();
 
   if (verbosity > 1)
     cerr << "Reading trajectory - " << topts->traj1 << endl;
-  vMatrix T = readCoords(subset, traj, indices);
+  vMatrix T = readCoords(subset, traj, indices, verbosity > 1);
+  used_memory += T.size() * T[0].size() * sizeof(double);
   checkMemoryUsage(mem);
   centerTrajectory(T);
 
@@ -688,7 +606,8 @@ int main(int argc, char *argv[]) {
 
     if (verbosity > 1)
       cerr << "Reading trajectory - " << topts->traj2 << endl;
-    vMatrix T2 = readCoords(subset2, traj2, indices2);
+    vMatrix T2 = readCoords(subset2, traj2, indices2, verbosity > 1);
+    used_memory += T2.size() * T2[0].size() * sizeof(double);
     checkMemoryUsage(mem);
     centerTrajectory(T2);
 
