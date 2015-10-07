@@ -23,6 +23,7 @@ namespace loos {
         SVDTupleVec kabschCore(const vecDouble& u, const vecDouble& v);
         GCoord centerAtOrigin(vecDouble& v);
         double alignedRMSD(const vecDouble& U, const vecDouble& V);
+        double centeredRMSD(const vecDouble& U, const vecDouble& V);
         GMatrix kabsch(const vecDouble& U, const vecDouble& V);
         void applyTransform(const GMatrix& M, vecDouble& v);
         vecDouble averageCoords(const vecMatrix& ensemble);

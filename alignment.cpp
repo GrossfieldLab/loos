@@ -6,6 +6,8 @@
 #include <ensembles.hpp>
 #include <alignment.hpp>
 
+#include <cmath>
+
 namespace loos {
 
 
@@ -93,9 +95,38 @@ namespace loos {
 
 
 
+    double centeredRMSD(const vecDouble& U, const vecDouble& V) {
+
+      int n = U.size();
+
+      double ssu[3] = {0.0, 0.0, 0.0};
+      double ssv[3] = {0.0, 0.0, 0.0};
+
+      for (int j=0; j<n; j += 3) {
+	for (uint i=0; i<3; ++i) {
+	  ssu[i] += U[j+i] * U[j+i];
+	  ssv[i] += V[j+i] * V[j+i];
+	}
+      }
+
+      n /= 3;
+      
+      double E0 = ssu[0] + ssu[1] + ssu[2] + ssv[0] + ssv[1] + ssv[2];
+
+      SVDTupleVec svd = kabschCore(U, V);
+    
+      vecDouble S(boost::get<1>(svd));
+      double ss = S[0] + S[1] + S[2];
+      double rmsd = std::sqrt(std::abs(E0-2.0*ss)/n);
+
+      return(rmsd);
+    }
+
+    
+
     double alignedRMSD(const vecDouble& U, const vecDouble& V) {
 
-      int n = U.size()/3;
+      int n = U.size();
 
       vecDouble cU(U);
       vecDouble cV(V);
@@ -121,7 +152,7 @@ namespace loos {
 
       vecDouble S(boost::get<1>(svd));
       double ss = S[0] + S[1] + S[2];
-      double rmsd = sqrt(abs(E0-2.0*ss)/n);
+      double rmsd = std::sqrt(std::abs(E0-2.0*ss)/n);
       return(rmsd);
     }
 
@@ -219,7 +250,7 @@ namespace loos {
 	}
 	rms += l;
       }
-      rms = sqrt(3.0 * rms / u.size());
+      rms = std::sqrt(3.0 * rms / u.size());
 
       return rms;
     }
