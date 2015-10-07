@@ -28,7 +28,7 @@ namespace loos {
     vecDouble averageCoords(const vecMatrix& ensemble);
     double rmsd(const vecDouble& u, const vecDouble& v);
     
-    boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(vecMatrix& ensemble, greal threshold, int maxiter);
+    boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(vecMatrix& ensemble, greal threshold=1e-6, int maxiter=1000);
 
   }
 
