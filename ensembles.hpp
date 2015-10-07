@@ -31,6 +31,11 @@
 #include <MatrixImpl.hpp>
 #include <MatrixOps.hpp>
 
+#include <ProgressCounters.hpp>
+#include <ProgressTriggers.hpp>
+
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
 
 namespace loos {
   class XForm;
@@ -86,6 +91,8 @@ namespace loos {
 
 
 
+
+  
 #if !defined(SWIG)
   RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble);
   RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
@@ -98,7 +105,16 @@ namespace loos {
    * is iteratively aligned prior to computing the SVD.
    */
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, const bool align = true);
+
+
+
 #endif   // !defined(SWIG)
+
+
+
+  std::vector< std::vector<double> > readCoords(AtomicGroup& model, pTraj& traj,
+                                                const std::vector<uint>& indices,
+                                                const bool updates);
 };
 
 

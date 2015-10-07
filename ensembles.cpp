@@ -343,4 +343,40 @@ namespace loos {
 
 
 
+
+  std::vector< std::vector<double> > readCoords(AtomicGroup& model, pTraj& traj, const std::vector<uint>& indices, const bool updates = false) {
+    
+    uint l = indices.size();
+    uint n = model.size();
+    
+    PercentProgressWithTime watcher;
+    PercentTrigger trigger(0.1);
+    ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(l));
+    
+    if (updates) {
+      slayer.attach(&watcher);
+      slayer.start();
+    }
+  
+    std::vector< std::vector<double> > M = std::vector< std::vector<double> >(l, std::vector<double>(3*n, 0));
+    
+    for (uint j=0; j<l; ++j) {
+      traj->readFrame(indices[j]);
+      traj->updateGroupCoords(model);
+      if (updates)
+        slayer.update();
+      for (uint i=0; i<n; ++i) {
+        GCoord c = model[i]->coords();
+        M[j][i*3] = c.x();
+        M[j][i*3+1] = c.y();
+        M[j][i*3+2] = c.z();
+      }
+    }
+    
+    if (updates)
+      slayer.finish();
+    return(M);
+  }
+
+
 }
