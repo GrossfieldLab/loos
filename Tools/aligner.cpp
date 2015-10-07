@@ -273,6 +273,15 @@ int main(int argc, char *argv[]) {
     cerr << "Total iters = " << boost::get<2>(res) << endl;
     
     vector<XForm> xforms = boost::get<0>(res);
+
+    // Zapping z-coords will leave Z part of xform 0, so must fix...
+    if (topts->xy_only) {
+      for (vector<XForm>::iterator i = xforms.begin(); i != xforms.end(); ++i) {
+	GMatrix M = i->current();
+	M(2,2) = 1.0;
+	i->load(M);
+      }
+    }
     
     // Setup for writing Trajectory
     pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
