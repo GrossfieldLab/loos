@@ -3,6 +3,7 @@
 #include <AtomicGroup.hpp>
 #include <Trajectory.hpp>
 
+#include <ensembles.hpp>
 #include <alignment.hpp>
 
 namespace loos {
@@ -259,6 +260,45 @@ namespace loos {
       return(res);
     }
 
+
+    boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(std::vector<AtomicGroup>& ensemble,
+								  greal threshold, int maxiter) {
+      int n = ensemble.size();
+      std::vector<XForm> xforms(n);
+
+      // Start by aligning against the first structure in the ensemble
+      vecDouble target(ensemble[0].coordsAsVector());
+      centerAtOrigin(target);
+      for (uint i=1; i<n; ++i) {
+	XForm M(kabsch(ensemble[i].coordsAsVector(), target));
+	ensemble[i].applyTransform(M);
+	xforms[i].premult(M.current());
+      }
+      AtomicGroup avg_structure = averageStructure(ensemble);
+      target = avg_structure.coordsAsVector();
+
+      double rms;
+      uint iter = 0;
+    
+      do {
+	for (int i = 0; i<n; i++) {
+	  XForm M(kabsch(ensemble[i].coordsAsVector(), target));
+	  ensemble[i].applyTransform(M);
+	  xforms[i].premult(M.current());
+	}
+
+	avg_structure = averageStructure(ensemble);
+	vecDouble avg = avg_structure.coordsAsVector();
+	rms = rmsd(target, avg);
+	target = avg;
+	++iter;
+      } while (rms > threshold && iter <= maxiter );
+    
+      boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
+      return(res);
+    }
+
+    
 
 
     boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,

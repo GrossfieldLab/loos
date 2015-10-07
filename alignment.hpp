@@ -32,6 +32,10 @@ namespace loos {
                                                                       greal threshold=1e-6,
                                                                       int maxiter=1000);
         
+        boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(std::vector<AtomicGroup>& ensemble,
+                                                                      greal threshold=1e-6,
+                                                                      int maxiter=1000);
+        
         boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(const AtomicGroup& model,
                                                                       pTraj& traj,
                                                                       const std::vector<uint>& frame_indices,
