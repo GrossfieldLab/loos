@@ -409,26 +409,30 @@ public:
     }
     *ip = _toprow++;
 
-    if (_verbose) {
-      if (_toprow % _updatefreq == 0) {
-	time_t dt = elapsedTime();
-        uint work_done = _triangle ? (_toprow * (_toprow-1) / 2) : (_toprow);
-        uint work_left = _total - work_done;
-        uint d = work_left * dt / work_done;    // rate = work_done / dt;  d = work_left / rate;
-
-	uint hrs = d / 3600;
-	uint remain = d % 3600;
-	uint mins = remain / 60;
-	uint secs = remain % 60;
-
-        cerr << boost::format("Row %5d /%5d, Elapsed = %5d s, Remaining = %02d:%02d:%02d\n")
-          % _toprow % _maxrow % dt % hrs % mins % secs;
-      }
-    }
+    if (_verbose)
+      if (_toprow % _updatefreq == 0)
+        updateStatus();
     
     _mtx.unlock();
     return(true);
   }
+
+
+  void updateStatus() {
+    time_t dt = elapsedTime();
+    uint work_done = _triangle ? (_toprow * (_toprow-1) / 2) : (_toprow);
+    uint work_left = _total - work_done;
+    uint d = work_left * dt / work_done;    // rate = work_done / dt;  d = work_left / rate;
+    
+    uint hrs = d / 3600;
+    uint remain = d % 3600;
+    uint mins = remain / 60;
+    uint secs = remain % 60;
+    
+    cerr << boost::format("Row %5d /%5d, Elapsed = %5d s, Remaining = %02d:%02d:%02d\n")
+      % _toprow % _maxrow % dt % hrs % mins % secs;
+  }
+
 
   
   time_t elapsedTime() const 
@@ -676,7 +680,8 @@ int main(int argc, char *argv[]) {
     SingleWorker worker(&M, &T, &master);
     Threader<SingleWorker> threads(&worker, topts->nthreads);
     threads.join();
-
+    master.updateStatus();
+    
     if (verbosity || topts->noop)
       showStatsHalf(M);
     
@@ -699,6 +704,7 @@ int main(int argc, char *argv[]) {
     DualWorker worker(&M, &T, &T2, &master);
     Threader<DualWorker> threads(&worker, topts->nthreads);
     threads.join();
+    master.updateStatus();
 
 
     if (verbosity || topts->noop)
