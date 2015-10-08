@@ -151,4 +151,3 @@ def iterativeAlignment(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
 #endif
 
 %template(XFormVector) std::vector<loos::XForm>;
-%template(UIntVector) std::vector<uint>;
