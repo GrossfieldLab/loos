@@ -46,6 +46,17 @@
 #include <utils.hpp>
 
 
+
+
+#if defined(__APPLE__)
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <errno.h>
+#endif
+
+
+
+
 extern std::string revision_label;
 
 
