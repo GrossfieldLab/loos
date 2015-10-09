@@ -267,7 +267,7 @@ int main(int argc, char *argv[]) {
     if (topts->xy_only)
       zapZ(coords);
     
-    boost::tuple<vector<XForm>,greal, int> res = loos::alignment::iterativeAlignment(coords);
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(coords);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
