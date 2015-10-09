@@ -111,8 +111,15 @@ namespace loos {
 #endif   // !defined(SWIG)
 
 
+  void appendCoords(std::vector< std::vector<double> >& ensemble,
+                    AtomicGroup& model,
+                    pTraj& traj,
+                    const std::vector<uint>& indices,
+                    const bool updates);
 
-  std::vector< std::vector<double> > readCoords(AtomicGroup& model, pTraj& traj,
+
+  std::vector< std::vector<double> > readCoords(AtomicGroup& model,
+                                                pTraj& traj,
                                                 const std::vector<uint>& indices,
                                                 const bool updates);
 };
