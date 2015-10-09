@@ -680,7 +680,8 @@ int main(int argc, char *argv[]) {
     SingleWorker worker(&M, &T, &master);
     Threader<SingleWorker> threads(&worker, topts->nthreads);
     threads.join();
-    master.updateStatus();
+    if (verbosity) 
+      master.updateStatus();
     
     if (verbosity || topts->noop)
       showStatsHalf(M);
@@ -704,8 +705,9 @@ int main(int argc, char *argv[]) {
     DualWorker worker(&M, &T, &T2, &master);
     Threader<DualWorker> threads(&worker, topts->nthreads);
     threads.join();
-    master.updateStatus();
 
+    if (verbosity)
+      master.updateStatus();
 
     if (verbosity || topts->noop)
       showStatsWhole(M);
