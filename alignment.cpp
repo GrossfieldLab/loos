@@ -256,130 +256,138 @@ namespace loos {
     }
 
 
-    boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(vecMatrix& ensemble,
-								  greal threshold, int maxiter) {
-      int n = ensemble.size();
-      std::vector<XForm> xforms(n);
 
-      // Start by aligning against the first structure in the ensemble
-      vecDouble target(ensemble[0]);
-      centerAtOrigin(target);
-      for (uint i=1; i<n; ++i) {
+  }
+
+  boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(alignment::vecMatrix& ensemble,
+								greal threshold, int maxiter) {
+    using namespace alignment;
+    
+    int n = ensemble.size();
+    std::vector<XForm> xforms(n);
+
+    // Start by aligning against the first structure in the ensemble
+    vecDouble target(ensemble[0]);
+    centerAtOrigin(target);
+    for (uint i=1; i<n; ++i) {
+      XForm M(kabsch(ensemble[i], target));
+      applyTransform(M.current(), ensemble[i]);
+      xforms[i].premult(M.current());
+    }
+    target = averageCoords(ensemble);
+
+    double rms;
+    uint iter = 0;
+    
+    do {
+      for (int i = 0; i<n; i++) {
 	XForm M(kabsch(ensemble[i], target));
 	applyTransform(M.current(), ensemble[i]);
 	xforms[i].premult(M.current());
       }
-      target = averageCoords(ensemble);
 
-      double rms;
-      uint iter = 0;
+      vecDouble avg = averageCoords(ensemble);
+      rms = rmsd(target, avg);
+      target = avg;
+      ++iter;
+    } while (rms > threshold && iter <= maxiter );
     
-      do {
-	for (int i = 0; i<n; i++) {
-	  XForm M(kabsch(ensemble[i], target));
-	  applyTransform(M.current(), ensemble[i]);
-	  xforms[i].premult(M.current());
-	}
+    boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
+    return(res);
+  }
 
-	vecDouble avg = averageCoords(ensemble);
-	rms = rmsd(target, avg);
-	target = avg;
-	++iter;
-      } while (rms > threshold && iter <= maxiter );
-    
-      boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
-      return(res);
+
+  boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(std::vector<AtomicGroup>& ensemble,
+								greal threshold, int maxiter) {
+    using namespace alignment;
+
+    int n = ensemble.size();
+    std::vector<XForm> xforms(n);
+
+    // Start by aligning against the first structure in the ensemble
+    vecDouble target(ensemble[0].coordsAsVector());
+    centerAtOrigin(target);
+    for (uint i=1; i<n; ++i) {
+      XForm M(kabsch(ensemble[i].coordsAsVector(), target));
+      ensemble[i].applyTransform(M);
+      xforms[i].premult(M.current());
     }
+    AtomicGroup avg_structure = averageStructure(ensemble);
+    target = avg_structure.coordsAsVector();
 
-
-    boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(std::vector<AtomicGroup>& ensemble,
-								  greal threshold, int maxiter) {
-      int n = ensemble.size();
-      std::vector<XForm> xforms(n);
-
-      // Start by aligning against the first structure in the ensemble
-      vecDouble target(ensemble[0].coordsAsVector());
-      centerAtOrigin(target);
-      for (uint i=1; i<n; ++i) {
+    double rms;
+    uint iter = 0;
+    
+    do {
+      for (int i = 0; i<n; i++) {
 	XForm M(kabsch(ensemble[i].coordsAsVector(), target));
 	ensemble[i].applyTransform(M);
 	xforms[i].premult(M.current());
       }
-      AtomicGroup avg_structure = averageStructure(ensemble);
-      target = avg_structure.coordsAsVector();
 
-      double rms;
-      uint iter = 0;
+      avg_structure = averageStructure(ensemble);
+      vecDouble avg = avg_structure.coordsAsVector();
+      rms = rmsd(target, avg);
+      target = avg;
+      ++iter;
+    } while (rms > threshold && iter <= maxiter );
     
-      do {
-	for (int i = 0; i<n; i++) {
-	  XForm M(kabsch(ensemble[i].coordsAsVector(), target));
-	  ensemble[i].applyTransform(M);
-	  xforms[i].premult(M.current());
-	}
-
-	avg_structure = averageStructure(ensemble);
-	vecDouble avg = avg_structure.coordsAsVector();
-	rms = rmsd(target, avg);
-	target = avg;
-	++iter;
-      } while (rms > threshold && iter <= maxiter );
-    
-      boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
-      return(res);
-    }
-
-    
-
-
-    boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
-								    pTraj& traj,
-								    const std::vector<uint>& frame_indices,
-								    greal threshold, int maxiter) {
-
-      // Must first prime the loop...
-      AtomicGroup frame = g.copy();
-      traj->readFrame(frame_indices[0]);
-      traj->updateGroupCoords(frame);
-      
-      uint nf = frame_indices.size();
-
-      int iter = 0;
-      greal rms;
-      std::vector<XForm> xforms(nf);
-      AtomicGroup avg = frame.copy();
-
-      AtomicGroup target = frame.copy();
-      target.centerAtOrigin();
-
-      do {
-	// Compute avg internally so we don't have to read traj twice...
-	for (uint j=0; j<avg.size(); ++j)
-	  avg[j]->coords() = GCoord(0,0,0);
-        
-	for (uint i=0; i<nf; ++i) {
-            
-	  traj->readFrame(frame_indices[i]);
-	  traj->updateGroupCoords(frame);
-
-	  GMatrix M = frame.alignOnto(target);
-	  xforms[i].load(M);
-
-	  for (uint j=0; j<avg.size(); ++j)
-	    avg[j]->coords() += frame[j]->coords();
-	}
-
-	for (uint j=0; j<avg.size(); ++j)
-	  avg[j]->coords() /= nf;
-
-	rms = avg.rmsd(target);
-	target = avg.copy();
-	++iter;
-      } while (rms > threshold && iter <= maxiter);
-    
-      boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
-      return(res);
-    }
-
+    boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
+    return(res);
   }
+
+    
+
+
+  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
+								  pTraj& traj,
+								  const std::vector<uint>& frame_indices,
+								  greal threshold, int maxiter) {
+
+    using namespace alignment;
+    
+    // Must first prime the loop...
+    AtomicGroup frame = g.copy();
+    traj->readFrame(frame_indices[0]);
+    traj->updateGroupCoords(frame);
+      
+    uint nf = frame_indices.size();
+
+    int iter = 0;
+    greal rms;
+    std::vector<XForm> xforms(nf);
+    AtomicGroup avg = frame.copy();
+
+    AtomicGroup target = frame.copy();
+    target.centerAtOrigin();
+
+    do {
+      // Compute avg internally so we don't have to read traj twice...
+      for (uint j=0; j<avg.size(); ++j)
+	avg[j]->coords() = GCoord(0,0,0);
+        
+      for (uint i=0; i<nf; ++i) {
+            
+	traj->readFrame(frame_indices[i]);
+	traj->updateGroupCoords(frame);
+
+	GMatrix M = frame.alignOnto(target);
+	xforms[i].load(M);
+
+	for (uint j=0; j<avg.size(); ++j)
+	  avg[j]->coords() += frame[j]->coords();
+      }
+
+      for (uint j=0; j<avg.size(); ++j)
+	avg[j]->coords() /= nf;
+
+      rms = avg.rmsd(target);
+      target = avg.copy();
+      ++iter;
+    } while (rms > threshold && iter <= maxiter);
+    
+    boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
+    return(res);
+  }
+
 }
