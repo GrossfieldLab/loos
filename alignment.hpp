@@ -57,6 +57,13 @@ namespace loos {
                                                                       greal threshold=1e-6,
                                                                       int maxiter=1000);
 
+
+        boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(const AtomicGroup& model,
+                                                                      pTraj& traj,
+                                                                      greal threshold=1e-6,
+                                                                      int maxiter=1000);
+
+        
 #endif // !defined(SWIG)
 }
 

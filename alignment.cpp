@@ -390,4 +390,19 @@ namespace loos {
     return(res);
   }
 
+
+  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
+								  pTraj& traj,
+								  greal threshold, int maxiter) {
+
+    std::vector<uint> framelist(traj->nframes());
+    for (uint i=0; i<traj->nframes(); ++i)
+      framelist[i] = i;
+
+    return(iterativeAlignment(g, traj, framelist, threshold, maxiter));
+
+  
+  }
+
 }
+
