@@ -678,7 +678,8 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
                 t.readFrame(self._framelist[i])
                 ensemble.push_back(current_subset.coordsAsVector())
 
-            (self._xformlist, self._rmsd, self._iters) = loos.iterativeAlignEnsemble(ensemble)
+            result = loos.iterativeAlignmentPy(ensemble)
+            (self._xformlist, self._rmsd, self._iters) = (loos.xformVectorToList(result.transforms), result.rmsd, result.iterations)
 
         self._aligned = True
 
