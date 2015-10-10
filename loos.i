@@ -77,6 +77,7 @@ namespace loos {
 %include "dcdwriter.i"
 %include "xtcwriter.i"
 %include "sfactories.i"
+%include "alignment.i"
 
  /* The following is deprecated */
   %pythoncode %{
