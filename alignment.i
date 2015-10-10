@@ -38,7 +38,7 @@
     };
 
 
-    AlignmentResult iterativeAlignmentPy(std::vector< std::vector<double> >>& ensemble, greal threshold = 1e-6, int maxiter=1000) {
+    AlignmentResult iterativeAlignmentPy(std::vector< std::vector<double> >& ensemble, greal threshold = 1e-6, int maxiter=1000) {
       AlignmentResult res;
 
       boost::tuple<std::vector<XForm>, greal, int> ares = iterativeAlignment(ensemble, threshold, maxiter);
@@ -128,9 +128,9 @@ def xformVectorToList(v):
 
 def iterativeAlignEnsemble(ensemble, threshold=1e-8, maxiter=1000):
     # Convert to vector<AtomicGroup>...smart pointers should make overhead ok...
-    enlist = loos.AtomicGroupVector()
+    enlist = loos.DoubleVector()
     for e in ensemble:
-         enlist.push_back(e)
+       enlist.push_back(e.coordsAsVector())
     result = iterativeAlignmentPy(enlist, threshold, maxiter)
     return(xformVectorToList(result.transforms), result.rmsd, result.iterations)
 
