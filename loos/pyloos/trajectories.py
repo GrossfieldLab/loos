@@ -667,6 +667,8 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             self._iters = 0
 
         else:
+
+            ensemble = loos.DoubleMatrix()
             
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
@@ -674,7 +676,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
                     current_traj = t
                     current_subset = loos.selectAtoms(t.model(), self._alignwith)
                 t.readFrame(self._framelist[i])
-                ensemble.append(current_subset.copy())
+                ensemble.push_back(current_subset.coordsAsVector())
 
             (self._xformlist, self._rmsd, self._iters) = loos.iterativeAlignEnsemble(ensemble)
 
