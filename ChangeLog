@@ -1,3 +1,7 @@
+2015-10-12    <alan_grossfield@membrane.urmc.rochester.edu>
+
+	* Added new tool cylindrical-density.py to PyLOOS package
+
 2015-09-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Change RMSD to optionally use multiple threads
