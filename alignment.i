@@ -126,8 +126,7 @@ def xformVectorToList(v):
     return(l)
 
 
-def iterativeAlignEnsemble(ensemble, threshold=1e-8, maxiter=1000):
-    # Convert to vector<AtomicGroup>...smart pointers should make overhead ok...
+def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
     enlist = loos.DoubleMatrix()
     for e in ensemble:
        enlist.push_back(e.coordsAsVector())
@@ -137,7 +136,7 @@ def iterativeAlignEnsemble(ensemble, threshold=1e-8, maxiter=1000):
 
 
 # Optional 'framelist' argument specifies indices of frames to use
-def iterativeAlignment(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
+def iterativeAlignTrajectory(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
     # If traj is not a loos.Trajectory, assume it supports the trajectory()
     # method to access the underlying loos one
     if not isinstance(traj, loos.Trajectory):
