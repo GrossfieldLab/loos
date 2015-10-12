@@ -600,8 +600,8 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         super(AlignedVirtualTrajectory, self).__init__(*trajs, **kwargs)
         self._aligned = False
         self._xformlist = []
-        self._rmsd = 0
-        self._iters = 0
+        self._rmsd = -1
+        self._iters = -1
         if 'alignwith' in kwargs:
             self._alignwith = kwargs['alignwith']
         else:
@@ -683,6 +683,13 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
         self._aligned = True
 
+
+    def rmsd(self):
+        return(self._rmsd)
+
+    def iters(self):
+        return(self._iters)
+        
         
     def _getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
