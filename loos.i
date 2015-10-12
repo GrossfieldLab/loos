@@ -48,10 +48,10 @@ namespace loos {
   }
 }
 
-%template(DoubleVector)   std::vector<double>;
-%template(DoubleMatrix)   std::vector< std::vector<double> >;
-%template(IntVector)      std::vector<int>;
-%template(UIntVector)     std::vector<uint>;
+%template(DoubleVector)         std::vector<double>;
+%template(DoubleVectorMatrix)   std::vector< std::vector<double> >;
+%template(IntVector)            std::vector<int>;
+%template(UIntVector)           std::vector<uint>;
 
 
 
