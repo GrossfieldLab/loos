@@ -128,7 +128,7 @@ def xformVectorToList(v):
 
 def iterativeAlignEnsemble(ensemble, threshold=1e-8, maxiter=1000):
     # Convert to vector<AtomicGroup>...smart pointers should make overhead ok...
-    enlist = loos.DoubleVector()
+    enlist = loos.DoubleMatrix()
     for e in ensemble:
        enlist.push_back(e.coordsAsVector())
     result = iterativeAlignmentPy(enlist, threshold, maxiter)
