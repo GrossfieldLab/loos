@@ -650,7 +650,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         if self._stale:
             self._initFrameList()
 
-        if self._reference:
+        if self._reference:       # Align to a reference structure
             self._xformlist = []
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
@@ -666,7 +666,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             self._rmsd = 0.0
             self._iters = 0
 
-        else:
+        else:                      # Iterative alignment
 
             ensemble = loos.DoubleMatrix()
             
