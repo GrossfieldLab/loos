@@ -283,7 +283,7 @@ namespace loos {
     // Start by aligning against the first structure in the ensemble
     vecDouble target(ensemble[0]);
     centerAtOrigin(target);
-    for (uint i=1; i<n; ++i) {
+    for (int i=1; i<n; ++i) {
       XForm M(kabsch(ensemble[i], target));
       applyTransform(M.current(), ensemble[i]);
       xforms[i].premult(M.current());
@@ -291,7 +291,7 @@ namespace loos {
     target = averageCoords(ensemble);
 
     double rms;
-    uint iter = 0;
+    int iter = 0;
     
     do {
       for (int i = 0; i<n; i++) {
@@ -321,7 +321,7 @@ namespace loos {
     // Start by aligning against the first structure in the ensemble
     vecDouble target(ensemble[0].coordsAsVector());
     centerAtOrigin(target);
-    for (uint i=1; i<n; ++i) {
+    for (int i=1; i<n; ++i) {
       XForm M(kabsch(ensemble[i].coordsAsVector(), target));
       ensemble[i].applyTransform(M);
       xforms[i].premult(M.current());
@@ -330,7 +330,7 @@ namespace loos {
     target = avg_structure.coordsAsVector();
 
     double rms;
-    uint iter = 0;
+    int iter = 0;
     
     do {
       for (int i = 0; i<n; i++) {
@@ -365,7 +365,7 @@ namespace loos {
     traj->readFrame(frame_indices[0]);
     traj->updateGroupCoords(frame);
       
-    uint nf = frame_indices.size();
+    int nf = frame_indices.size();
 
     int iter = 0;
     greal rms;
@@ -380,7 +380,7 @@ namespace loos {
       for (uint j=0; j<avg.size(); ++j)
 	avg[j]->coords() = GCoord(0,0,0);
         
-      for (uint i=0; i<nf; ++i) {
+      for (int i=0; i<nf; ++i) {
             
 	traj->readFrame(frame_indices[i]);
 	traj->updateGroupCoords(frame);
