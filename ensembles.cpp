@@ -293,7 +293,7 @@ namespace loos {
     uint l = indices.size();
     uint n = model.size();
     
-    std::vector< std::vector<double> > M = std::vector< std::vector<double> >(l, std::vector<double>(3*n));
+    std::vector< std::vector<double> > M;
     appendCoords(M, model, traj, indices, updates);
     return M;
   }
