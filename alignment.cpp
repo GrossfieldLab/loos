@@ -14,6 +14,9 @@ namespace loos {
 
   namespace alignment {
 
+
+    // Core aligmnent routine.  Assumes input coord vectors are already centered.
+    // Returns the SVD results as a tuple
     SVDTupleVec kabschCore(const vecDouble& u, const vecDouble& v) {
       int n = u.size() / 3;
 
@@ -95,6 +98,8 @@ namespace loos {
 
 
 
+    // Return the RMSD only for a kabsch alignment between U and V assuming
+    // both are centered
     double centeredRMSD(const vecDouble& U, const vecDouble& V) {
 
       int n = U.size();
@@ -124,6 +129,8 @@ namespace loos {
 
     
 
+    // Return the RMSD only for a kabsch alignment between U and V
+    // Both will be centered first.
     double alignedRMSD(const vecDouble& U, const vecDouble& V) {
 
       int n = U.size();
@@ -158,6 +165,9 @@ namespace loos {
 
 
 
+
+    // Kabsch alignment between U and V, assuming both are centered.
+    // Returns the tranformation matrix to align U onto V.
     GMatrix kabschCentered(const vecDouble& U, const vecDouble& V) {
       SVDTupleVec svd = kabschCore(U, V);
 
@@ -211,7 +221,6 @@ namespace loos {
     }
 
 
-    // hack for now...
     void applyTransform(const GMatrix& M, vecDouble& v) {
       for (uint i=0; i<v.size(); i += 3) {
 	GCoord c(v[i],v[i+1],v[i+2]);
@@ -258,6 +267,11 @@ namespace loos {
 
 
   }
+
+
+  // The following are the routines most should use...  They behave the same way as the old
+  // ones from ensembles.cpp
+
 
   boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(alignment::vecMatrix& ensemble,
 								greal threshold, int maxiter) {
