@@ -127,7 +127,7 @@ def xformVectorToList(v):
 
 
 def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
-    enlist = loos.DoubleMatrix()
+    enlist = loos.DoubleVectorMatrix()
     for e in ensemble:
        enlist.push_back(e.coordsAsVector())
     result = iterativeAlignmentPy(enlist, threshold, maxiter)
