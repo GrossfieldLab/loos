@@ -668,7 +668,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
         else:                      # Iterative alignment
 
-            ensemble = loos.DoubleMatrix()
+            ensemble = loos.DoubleVectorMatrix()
             
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
