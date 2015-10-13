@@ -87,18 +87,23 @@ string fullHelpMessage(void) {
     "\n"
     "\tThe requested subset for each frame is cached in memory for better performance.\n"
     "If the memory used by the cache gets too large, your machine may swap and dramatically slow\n"
-    "down.  The tool will try to warn you if this is a possibility.  To use less memory, disable\n"
-    "the cache with --cache=0 on the command line.  This will impact performance, but it will\n"
-    "likely be a smaller impact than running out of memory.\n"
+    "down.  The tool will try to warn you if this is a possibility.  To use less memory, subsample\n"
+    "the trajectory either by using the --range1 and --range2 options, or use subsetter to pre-process\n"
+    "the trajectory.\n"
+    "\n"
+    "\tThis tool can be run in parallel with multiple threads for performance.  The --threads option\n"
+    "controls how many threads are used.  The default is 1 (non-parallel).  If LOOS was built using\n"
+    "a multi-threaded math library, then some care should be taken in how many threads to use for\n"
+    "this tool.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
     "\trmsds model.pdb simulation.dcd >rmsd.asc\n"
     "This example uses all alpha-carbons and every frame in the trajectory.\n"
     "\n"
-    "\trmsds --cache=0 model.pdb simulation.dcd >rmsd.asc\n"
-    "This example uses all alpha-carbons and every frame in the trajectory, but the\n"
-    "trajectory is not cached in memory.\n"
+    "\trmsds --threads=8 model.pdb simulation.dcd >rmsd.asc\n"
+    "This example uses all alpha-carbons and every frame in the trajectory, run\n"
+    "in parallel with 8 threads of execution.\n"
     "\n"
     "\trmsds inactive.pdb inactive.dcd active.pdb active.dcd >rmsd.asc\n"
     "This example uses all alpha-carbons and compares the \"inactive\" simulation\n"
@@ -140,7 +145,8 @@ public:
       ("range1", po::value<string>(&range1), "Matlab-style range of frames to use from first trajectory")
       ("sel2", po::value<string>(&sel2)->default_value("name == 'CA'"), "Atom selection for second system")
       ("skip2", po::value<uint>(&skip2)->default_value(0), "Skip n-frames of second trajectory")
-      ("range2", po::value<string>(&range2), "Matlab-style range of frames to use from second trajectory");
+      ("range2", po::value<string>(&range2), "Matlab-style range of frames to use from second trajectory")
+      ("stats", po::value<bool>(&stats))->default_value(false), "Show some statistics for matrix");
 
   }
 
@@ -172,7 +178,8 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("noout=%d,nthreads=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
+    oss << boost::format("stats=%d,noout=%d,nthreads=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
+      % stats
       % noop
       % nthreads
       % sel1
@@ -190,6 +197,7 @@ public:
   }
 
 
+  bool stats;
   bool noop;
   uint skip1, skip2;
   uint nthreads;
@@ -683,7 +691,7 @@ int main(int argc, char *argv[]) {
     if (verbosity) 
       master.updateStatus();
     
-    if (verbosity || topts->noop)
+    if (verbosity || topts->noop || topts->stats)
       showStatsHalf(M);
     
   } else {
@@ -709,7 +717,7 @@ int main(int argc, char *argv[]) {
     if (verbosity)
       master.updateStatus();
 
-    if (verbosity || topts->noop)
+    if (verbosity || topts->noop || topts->stats)
       showStatsWhole(M);
   }
 
