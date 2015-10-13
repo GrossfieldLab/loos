@@ -241,9 +241,10 @@ namespace loos {
   void AtomicGroup::sort(void) {
     CmpById comp;
 
-    std::sort(atoms.begin(), atoms.end(), comp);
+    if (! _sorted)
+      std::sort(atoms.begin(), atoms.end(), comp);
 
-    sorted(true);
+    _sorted = true;
   }
 
 
