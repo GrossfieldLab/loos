@@ -600,8 +600,8 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         super(AlignedVirtualTrajectory, self).__init__(*trajs, **kwargs)
         self._aligned = False
         self._xformlist = []
-        self._rmsd = 0
-        self._iters = 0
+        self._rmsd = -1
+        self._iters = -1
         if 'alignwith' in kwargs:
             self._alignwith = kwargs['alignwith']
         else:
@@ -650,7 +650,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         if self._stale:
             self._initFrameList()
 
-        if self._reference:
+        if self._reference:       # Align to a reference structure
             self._xformlist = []
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
@@ -666,7 +666,9 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             self._rmsd = 0.0
             self._iters = 0
 
-        else:
+        else:                      # Iterative alignment
+
+            ensemble = loos.DoubleVectorMatrix()
             
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
@@ -674,12 +676,20 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
                     current_traj = t
                     current_subset = loos.selectAtoms(t.model(), self._alignwith)
                 t.readFrame(self._framelist[i])
-                ensemble.append(current_subset.copy())
+                ensemble.push_back(current_subset.coordsAsVector())
 
-            (self._xformlist, self._rmsd, self._iters) = loos.iterativeAlignEnsemble(ensemble)
+            result = loos.iterativeAlignmentPy(ensemble)
+            (self._xformlist, self._rmsd, self._iters) = (loos.xformVectorToList(result.transforms), result.rmsd, result.iterations)
 
         self._aligned = True
 
+
+    def rmsd(self):
+        return(self._rmsd)
+
+    def iters(self):
+        return(self._iters)
+        
         
     def _getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))

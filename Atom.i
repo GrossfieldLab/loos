@@ -3,7 +3,6 @@
 %include <std_vector.i>
 %include <boost_shared_ptr.i>
 
-%template(IntVector) std::vector<int>;
 %shared_ptr(loos::Atom)
 
 

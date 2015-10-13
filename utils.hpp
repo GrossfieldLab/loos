@@ -396,6 +396,9 @@ namespace loos {
 
   template<> std::string vectorAsStringWithCommas(const std::vector<std::string>& v);
 
+
+  long availableMemory();
+  
 };
 
 #endif

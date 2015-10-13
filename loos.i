@@ -48,6 +48,11 @@ namespace loos {
   }
 }
 
+%template(DoubleVector)         std::vector<double>;
+%template(DoubleVectorMatrix)   std::vector< std::vector<double> >;
+%template(IntVector)            std::vector<int>;
+%template(UIntVector)           std::vector<uint>;
+
 
 
 %include "exceptions.i"
@@ -72,6 +77,7 @@ namespace loos {
 %include "dcdwriter.i"
 %include "xtcwriter.i"
 %include "sfactories.i"
+%include "alignment.i"
 
  /* The following is deprecated */
   %pythoncode %{

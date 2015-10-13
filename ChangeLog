@@ -1,6 +1,12 @@
-2015-10-12    <alan_grossfield@membrane.urmc.rochester.edu>
+2015-10-12    <tromo@hill.urmc-sh.rochester.edu>
 
-	* Added new tool cylindrical-density.py to PyLOOS package
+	* Reorganized superposition and iterative alignment code into
+	alignment module.  AtomicGroup methods call these functions now.
+	* Reorganized pyloos iterative alignment routines:
+	iterativeAlignment() will align anything that iterates over
+	AtomicGroups (e.g. pyloos.Trajectory()), while
+	iterativeAlignTrajectory() is a front-end to the standard LOOS functions.
+	* Added new tool cylindrical-density.py to PyLOOS package (Alan)
 
 2015-09-30    <tromo@hill.urmc-sh.rochester.edu>
 

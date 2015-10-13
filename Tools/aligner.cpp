@@ -43,7 +43,10 @@ namespace po = loos::OptionsFramework::po;
 const uint min_align_selection_warning = 7;   // Warn user when selecting fewer than this # of atoms
                                               // This number has not been rigorously determined...
    
+typedef loos::alignment::vecMatrix   vMatrix;
 
+
+uint verbosity = 5;
 
 
 // @cond TOOLS_INTERNAL
@@ -160,101 +163,55 @@ public:
 };
 
 
-class ReadFrame 
-{
-public:
-    
-    ReadFrame(const pTraj& trj) 
-        : _traj(trj)
-        {}
+long used_memory = 0;
 
 
-    virtual void read(const uint i, AtomicGroup& grp) 
-        {
-            _traj->readFrame(i);
-            _traj->updateGroupCoords(grp);
-        }
+vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
+  uint l = indices.size();
+  uint n = model.size();
 
-protected:
-    pTraj _traj;
-};
+  if (verbosity > 1)
+    cerr << boost::format("Coordinate matrix size is %d x %d\n") % (3*n) % l;
+  PercentProgressWithTime watcher;
+  PercentTrigger trigger(0.1);
+  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(l));
+  bool updates = false;
+  
+  
+  used_memory += 3 * n * l * sizeof(double);
+  if (verbosity > 1 && used_memory > 1<<30) {
+    updates = true;
+    slayer.attach(&watcher);
+    slayer.start();
+  }
 
+  vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
+  
+  for (uint j=0; j<l; ++j) {
+    traj->readFrame(indices[j]);
+    traj->updateGroupCoords(model);
+    if (updates)
+      slayer.update();
+    for (uint i=0; i<n; ++i) {
+      GCoord c = model[i]->coords();
+      M[j][i*3] = c.x();
+      M[j][i*3+1] = c.y();
+      M[j][i*3+2] = c.z();
+    }
+  }
 
-class XYReadFrame : public ReadFrame 
-{
-public:
-    XYReadFrame(const pTraj& trj)
-        : ReadFrame(trj)
-        {}
-
-
-    virtual void read(const uint i, AtomicGroup& grp) 
-        {
-            ReadFrame::read(i, grp);
-            for (AtomicGroup::iterator j = grp.begin(); j != grp.end(); ++j)
-                (*j)->coords().z() = 0.0;
-        }
-
-};
-
-
-// @endcond
-
-
-
-boost::tuple<vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
-                                                           pTraj& traj,
-                                                           const std::vector<uint>& frame_indices,
-                                                           greal threshold,
-                                                           int maxiter,
-                                                           ReadFrame* rfop) {
-
-    // Must first prime the loop...
-    AtomicGroup frame = g.copy();
-    rfop->read(frame_indices[0], frame);
-      
-    uint nf = frame_indices.size();
-
-    int iter = 0;
-    greal rms;
-    std::vector<XForm> xforms(nf);
-    AtomicGroup avg = frame.copy();
-
-    AtomicGroup target = frame.copy();
-    target.centerAtOrigin();
-
-    do {
-        // Compute avg internally so we don't have to read traj twice...
-        for (uint j=0; j<avg.size(); ++j)
-            avg[j]->coords() = GCoord(0,0,0);
-        
-        for (uint i=0; i<nf; ++i) {
-
-            rfop->read(frame_indices[i], frame);
-
-            GMatrix M = frame.alignOnto(target);
-            xforms[i].load(M);
-
-            for (uint j=0; j<avg.size(); ++j)
-                avg[j]->coords() += frame[j]->coords();
-        }
-
-        for (uint j=0; j<avg.size(); ++j)
-            avg[j]->coords() /= nf;
-
-        rms = avg.rmsd(target);
-        target = avg.copy();
-        ++iter;
-    } while (rms > threshold && iter <= maxiter);
-
-    boost::tuple<vector<XForm>, greal, int> res(xforms, rms, iter);
-    return(res);
-    
+  if (updates)
+    slayer.finish();
+  return(M);
 }
 
 
-
-
+void zapZ(vMatrix& M) {
+  uint n = M[0].size();
+  for (uint i=0; i<M.size(); ++i)
+    for (uint j=2; j<n; j += 3)
+      M[i][j] = 0.0;
+}
 
 
 
@@ -299,11 +256,6 @@ int main(int argc, char *argv[]) {
   AtomicGroup applyto_sub = selectAtoms(model, topts->transform_string);
 
 
-  ReadFrame* reader;
-  if (topts->xy_only)
-      reader = new XYReadFrame(traj);
-  else
-      reader = new ReadFrame(traj);
 
   // Now do the alignin'...
   vector<uint> indices = tropts->frameList();
@@ -311,12 +263,25 @@ int main(int argc, char *argv[]) {
 
   if (topts->reference_name.empty()) {
 
-    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(align_sub, traj, indices, topts->alignment_tol, topts->maxiter, reader);
+    vMatrix coords = readCoords(align_sub, traj, indices);
+    if (topts->xy_only)
+      zapZ(coords);
+    
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(coords);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
     
     vector<XForm> xforms = boost::get<0>(res);
+
+    // Zapping z-coords will leave Z part of xform 0, so must fix...
+    if (topts->xy_only) {
+      for (vector<XForm>::iterator i = xforms.begin(); i != xforms.end(); ++i) {
+	GMatrix M = i->current();
+	M(2,2) = 1.0;
+	i->load(M);
+      }
+    }
     
     // Setup for writing Trajectory
     pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);

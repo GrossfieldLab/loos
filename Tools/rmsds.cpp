@@ -47,12 +47,6 @@ namespace po = loos::OptionsFramework::po;
 
 const int matrix_precision = 2;    // Controls precision in output matrix
 
-#if defined(__APPLE__)
-#include <sys/types.h>
-#include <sys/sysctl.h>
-#include <errno.h>
-#endif
-
 int verbosity;
 
 
@@ -213,83 +207,6 @@ typedef vector<vecDouble>   vMatrix;
 // @endcond TOOLS_INTERNAL
 
 
-
-#if defined(__linux__)
-  // Should consider using _SC_AVPHYS_PAGES instead?
-  long availMemory() 
-  {
-    long pagesize = sysconf(_SC_PAGESIZE);
-    long pages = sysconf(_SC_PHYS_PAGES);
-
-    return(pagesize * pages);
-  }
-
-#elif defined(__APPLE__)
-
-long availMemory() 
-  {
-    unsigned long memory;
-    size_t size = sizeof(memory);
-    
-    int ok = sysctlbyname("hw.memsize", &memory, &size, 0, 0);
-    if (ok < 0) {
-      cerr << "Warning- could not determine available memory size.  Use --cache=0 if swapping occurs.\n";
-      perror("rmsds: ");
-      memory = 0;
-    }
-
-    return(memory);
-  }
-
-#else
-
-  long availMemory() {
-    return(0);
-  }
-
-#endif   // defined(__linux__)
-
-
-vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
-  uint l = indices.size();
-  uint n = model.size();
-
-  if (verbosity > 1)
-    cerr << boost::format("Coordinate matrix size is %d x %d\n") % (3*n) % l;
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(l));
-  bool updates = false;
-  
-  
-  used_memory += 3 * n * l * sizeof(double);
-  if (verbosity > 1 && used_memory > 1<<30) {
-    updates = true;
-    slayer.attach(&watcher);
-    slayer.start();
-  }
-
-  vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
-  
-  for (uint j=0; j<l; ++j) {
-    traj->readFrame(indices[j]);
-    traj->updateGroupCoords(model);
-    if (updates)
-      slayer.update();
-    for (uint i=0; i<n; ++i) {
-      GCoord c = model[i]->coords();
-      M[j][i*3] = c.x();
-      M[j][i*3+1] = c.y();
-      M[j][i*3+2] = c.z();
-    }
-  }
-
-  if (updates)
-    slayer.finish();
-  return(M);
-}
-
-
 void centerAtOrigin(vecDouble& v) {
   double c[3] = {0.0, 0.0, 0.0};
 
@@ -318,74 +235,6 @@ void centerTrajectory(vMatrix& M) {
 
 
 
-double calcRMSD(vecDouble& u, vecDouble& v) {
-  int n = u.size();
-
-  double ssu[3] = {0.0, 0.0, 0.0};
-  double ssv[3] = {0.0, 0.0, 0.0};
-
-  for (int j=0; j<n; j += 3) {
-    for (uint i=0; i<3; ++i) {
-      ssu[i] += u[j+i] * u[j+i];
-      ssv[i] += v[j+i] * v[j+i];
-    }
-  }
-
-  n /= 3;
-
-  double E0 = ssu[0] + ssu[1] + ssu[2] + ssv[0] + ssv[1] + ssv[2];
-
-  // Compute correlation matrix...
-  double R[9];
-
-#if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
-  char ta = 'N';
-  char tb = 'T';
-  f77int three = 3;
-  double one = 1.0;
-  double zero = 0.0;
-    
-  dgemm_(&ta, &tb, &three, &three, &n, &one, u.data(), &three, v.data(), &three, &zero, R, &three);
-
-#else
-
-  cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, n, 1.0, u.data(), 3, v.data(), 3, 0.0, R, 3);
-
-#endif
-
-  
-  
-  // Now compute the SVD of R...
-  char joba='G';
-  char jobu = 'U', jobv = 'V';
-  int mv = 0;
-  f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
-  double work[lwork];
-  f77int nn = 3;
-  double S[3], V[9];
-  
-  dgesvj_(&joba, &jobu, &jobv, &m, &nn, R, &lda, S, &mv, V, &ldv, work, &lwork, &info);
-    
-  if (info != 0)
-    throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
-
-
-  
-  double dR = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
-    R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
-
-  
-  double dV = V[0]*V[4]*V[8] + V[3]*V[7]*V[2] + V[6]*V[1]*V[5] -
-    V[0]*V[7]*V[5] - V[3]*V[1]*V[8] - V[6]*V[4]*V[2];
-
-  
-  if (dR * dV < 0.0)
-    S[2] = -S[2];
-  
-  double ss = S[0] + S[1] + S[2];
-  double rmsd = sqrt(abs(E0-2.0*ss)/n);
-  return(rmsd);
-}
 
 
 // --------------------------------------------------------------------------------------
@@ -489,7 +338,7 @@ public:
   void calc(const uint i) 
   {
     for (uint j=0; j<_maxcol; ++j) {
-      double d = calcRMSD((*_T1)[i], (*_T2)[j]);
+      double d = loos::alignment::centeredRMSD((*_T1)[i], (*_T2)[j]);
       (*_R)(i, j) = d;
     }
   }
@@ -531,7 +380,7 @@ public:
   void calc(const uint i) 
   {
     for (uint j=0; j<i; ++j) {
-      double d = calcRMSD((*_T)[i], (*_T)[j]);
+      double d = loos::alignment::centeredRMSD((*_T)[i], (*_T)[j]);
       (*_R)(j, i) = (*_R)(i, j) = d;
     }
   }
@@ -670,14 +519,15 @@ int main(int argc, char *argv[]) {
   AtomicGroup subset = selectAtoms(model, topts->sel1);
   vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
 
-  long mem = availMemory();
+  long mem = availableMemory();
   uint nthreads = topts->nthreads ? topts->nthreads : boost::thread::hardware_concurrency();
   
   if (verbosity > 1) {
     cerr << "Using " << nthreads << " threads\n";
     cerr << "Reading trajectory - " << topts->traj1 << endl;
   }
-  vMatrix T = readCoords(subset, traj, indices);
+  vMatrix T = readCoords(subset, traj, indices, verbosity > 1);
+  used_memory += T.size() * T[0].size() * sizeof(double);
   checkMemoryUsage(mem);
   centerTrajectory(T);
 
@@ -705,7 +555,8 @@ int main(int argc, char *argv[]) {
 
     if (verbosity > 1)
       cerr << "Reading trajectory - " << topts->traj2 << endl;
-    vMatrix T2 = readCoords(subset2, traj2, indices2);
+    vMatrix T2 = readCoords(subset2, traj2, indices2, verbosity > 1);
+    used_memory += T2.size() * T2[0].size() * sizeof(double);
     checkMemoryUsage(mem);
     centerTrajectory(T2);
 

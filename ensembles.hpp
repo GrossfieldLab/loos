@@ -31,6 +31,11 @@
 #include <MatrixImpl.hpp>
 #include <MatrixOps.hpp>
 
+#include <ProgressCounters.hpp>
+#include <ProgressTriggers.hpp>
+
+#include <AtomicGroup.hpp>
+#include <Trajectory.hpp>
 
 namespace loos {
   class XForm;
@@ -59,25 +64,6 @@ namespace loos {
     */
   AtomicGroup averageStructure(const AtomicGroup&, const std::vector<XForm>&, pTraj& traj);
 
-#if !defined(SWIG)
-  //! Compute an iterative superposition (a la Alan)
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(std::vector<AtomicGroup>& ensemble, greal threshold = 1e-6, int maxiter=1000);
-
-  //! Compute an iterative superposition by reading in frames from the Trajectory.
-  /**
-   * The iterativeAlignment() functions that take a trajectory as an argument do
-   * NOT cache frames of the trajectory internally.  This means that the trajectory
-   * will be read as many times as is necessary for the alignment to
-   * converge.  In practice, the OS-specific caching will likely result
-   * in decent performance.  If speed is essential, then consider
-   * using the iterativeAlignment() version that takes a
-   * \p std::vector<AtomicGroup>& as argument instead.
-   */
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, const std::vector<uint>& frame_indices, greal threshold = 1e-6, int maxiter=1000);
-
-    //! Compute an iterative superposition for an entire trajectory
-  boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g, pTraj& traj, greal threshold = 1e-6, int maxiter=1000);
-#endif // !defined(SWIG)
 
   void applyTransforms(std::vector<AtomicGroup>& ensemble, std::vector<XForm>& xforms);
 
@@ -86,6 +72,8 @@ namespace loos {
 
 
 
+
+  
 #if !defined(SWIG)
   RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble);
   RealMatrix extractCoords(const std::vector<AtomicGroup>& ensemble, const std::vector<XForm>& xforms);
@@ -98,7 +86,23 @@ namespace loos {
    * is iteratively aligned prior to computing the SVD.
    */
   boost::tuple<RealMatrix, RealMatrix, RealMatrix> svd(std::vector<AtomicGroup>& ensemble, const bool align = true);
+
+
+
 #endif   // !defined(SWIG)
+
+
+  void appendCoords(std::vector< std::vector<double> >& ensemble,
+                    AtomicGroup& model,
+                    pTraj& traj,
+                    const std::vector<uint>& indices,
+                    const bool updates);
+
+
+  std::vector< std::vector<double> > readCoords(AtomicGroup& model,
+                                                pTraj& traj,
+                                                const std::vector<uint>& indices,
+                                                const bool updates);
 };
 
 
