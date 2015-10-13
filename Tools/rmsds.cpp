@@ -92,9 +92,9 @@ string fullHelpMessage(void) {
     "the trajectory.\n"
     "\n"
     "\tThis tool can be run in parallel with multiple threads for performance.  The --threads option\n"
-    "controls how many threads are used.  The default is 1 (non-parallel).  If LOOS was built using\n"
-    "a multi-threaded math library, then some care should be taken in how many threads to use for\n"
-    "this tool.\n"
+    "controls how many threads are used.  The default is 1 (non-parallel).  Setting it to 0 will use\n"
+    "as many threads as possible.  Note that if LOOS was built using a multi-threaded math library,\n"
+    "then some care should be taken in how many threads are used for this tool.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
@@ -146,7 +146,7 @@ public:
       ("sel2", po::value<string>(&sel2)->default_value("name == 'CA'"), "Atom selection for second system")
       ("skip2", po::value<uint>(&skip2)->default_value(0), "Skip n-frames of second trajectory")
       ("range2", po::value<string>(&range2), "Matlab-style range of frames to use from second trajectory")
-      ("stats", po::value<bool>(&stats))->default_value(false), "Show some statistics for matrix");
+      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix");
 
   }
 
@@ -671,9 +671,12 @@ int main(int argc, char *argv[]) {
   vector<uint> indices = assignTrajectoryFrames(traj, topts->range1, topts->skip1);
 
   long mem = availMemory();
-
-  if (verbosity > 1)
+  uint nthreads = topts->nthreads ? topts->nthreads : boost::thread::hardware_concurrency();
+  
+  if (verbosity > 1) {
+    cerr << "Using " << nthreads << " threads\n";
     cerr << "Reading trajectory - " << topts->traj1 << endl;
+  }
   vMatrix T = readCoords(subset, traj, indices);
   checkMemoryUsage(mem);
   centerTrajectory(T);
@@ -686,7 +689,7 @@ int main(int argc, char *argv[]) {
     M = RealMatrix(T.size(), T.size());
     Master master(T.size(), true, verbosity);
     SingleWorker worker(&M, &T, &master);
-    Threader<SingleWorker> threads(&worker, topts->nthreads);
+    Threader<SingleWorker> threads(&worker, nthreads);
     threads.join();
     if (verbosity) 
       master.updateStatus();
@@ -711,7 +714,7 @@ int main(int argc, char *argv[]) {
     M = RealMatrix(T.size(), T2.size());
     Master master(T.size(), false, verbosity);
     DualWorker worker(&M, &T, &T2, &master);
-    Threader<DualWorker> threads(&worker, topts->nthreads);
+    Threader<DualWorker> threads(&worker, nthreads);
     threads.join();
 
     if (verbosity)
