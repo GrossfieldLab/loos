@@ -42,11 +42,15 @@ namespace po = loos::OptionsFramework::po;
 
 const uint min_align_selection_warning = 7;   // Warn user when selecting fewer than this # of atoms
                                               // This number has not been rigorously determined...
-   
+
+
+const long memory_threshold = 75;             // Using more than this percentage of main memory to store
+                                              // the coordinates for aligning generates a warning
+
 typedef loos::alignment::vecMatrix   vMatrix;
 
 
-uint verbosity = 5;
+uint verbosity = 0;
 
 
 // @cond TOOLS_INTERNAL
@@ -163,48 +167,6 @@ public:
 };
 
 
-long used_memory = 0;
-
-
-vMatrix readCoords(AtomicGroup& model, pTraj& traj, const vector<uint>& indices) {
-  uint l = indices.size();
-  uint n = model.size();
-
-  if (verbosity > 1)
-    cerr << boost::format("Coordinate matrix size is %d x %d\n") % (3*n) % l;
-  PercentProgressWithTime watcher;
-  PercentTrigger trigger(0.1);
-  ProgressCounter<PercentTrigger, EstimatingCounter> slayer(trigger, EstimatingCounter(l));
-  bool updates = false;
-  
-  
-  used_memory += 3 * n * l * sizeof(double);
-  if (verbosity > 1 && used_memory > 1<<30) {
-    updates = true;
-    slayer.attach(&watcher);
-    slayer.start();
-  }
-
-  vMatrix M = vector< vector<double> >(l, vector<double>(3*n, 0.0));
-  
-  for (uint j=0; j<l; ++j) {
-    traj->readFrame(indices[j]);
-    traj->updateGroupCoords(model);
-    if (updates)
-      slayer.update();
-    for (uint i=0; i<n; ++i) {
-      GCoord c = model[i]->coords();
-      M[j][i*3] = c.x();
-      M[j][i*3+1] = c.y();
-      M[j][i*3+2] = c.z();
-    }
-  }
-
-  if (updates)
-    slayer.finish();
-  return(M);
-}
-
 
 void zapZ(vMatrix& M) {
   uint n = M[0].size();
@@ -243,6 +205,8 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
+  verbosity = bopts->verbosity;
+  
   // Read the inputs...
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
@@ -263,11 +227,20 @@ int main(int argc, char *argv[]) {
 
   if (topts->reference_name.empty()) {
 
-    vMatrix coords = readCoords(align_sub, traj, indices);
+    // estimate memory requirements...
+    long used_memory = 3 * align_sub.size() * indices.size() * sizeof(double);
+    if (used_memory * 100l / availableMemory() > memory_threshold) {
+      cerr << boost::format("Warning- estimating that memory used for aligning is greater than %d%% of system memory.\n") % memory_threshold;
+      cerr << "         Consider subsampling the trajectory or using a smaller alignment selection.\n";
+    }
+
+    if (verbosity)
+      cerr << "Reading coordinates...\n";
+    vMatrix coords = readCoords(align_sub, traj, indices, verbosity);
     if (topts->xy_only)
       zapZ(coords);
     
-    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(coords);
+    boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(coords, topts->alignment_tol, topts->maxiter);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
