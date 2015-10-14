@@ -160,6 +160,7 @@ namespace loos {
   bool Atom::checkProperty(const bits bitmask) { return((mask & bitmask) != 0); }
 
 
+  // DEPRECATED: will likely be removed in future versions of LOOS
   void Atom::checkUserBits(const bits bitmask) {
     if (! (bitmask & (flagbit|usr1bit|usr2bit|usr3bit)) )
       throw(LOOSError("Attempting to set a non-user property bit in an Atom"));
