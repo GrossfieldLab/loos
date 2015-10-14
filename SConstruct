@@ -100,7 +100,7 @@ if not pyloos:
 
 debug_opts='-g -Wall -Wextra -fno-inline'
 release_opts='-O3 -DNDEBUG -Wall'
-profile_opts='-pg'
+profile_opts='-O3 -DNDEBUG -Wall -g'
 
 # Setup the general environment...
 env.Prepend(CPPPATH = ['#'])
