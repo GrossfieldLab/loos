@@ -290,9 +290,6 @@ namespace loos {
 
   std::vector< std::vector<double> > readCoords(AtomicGroup& model, pTraj& traj, const std::vector<uint>& indices, const bool updates = false) {
     
-    uint l = indices.size();
-    uint n = model.size();
-    
     std::vector< std::vector<double> > M;
     appendCoords(M, model, traj, indices, updates);
     return M;
