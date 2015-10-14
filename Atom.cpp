@@ -166,12 +166,10 @@ namespace loos {
   }
 
   void Atom::setProperty(const bits bitmask) {
-    checkUserBits(bitmask);
     setPropertyBit(bitmask);
   }
 
   void Atom::clearProperty(const bits bitmask) {
-    checkUserBits(bitmask);
     clearPropertyBit(bitmask);
   }
 
