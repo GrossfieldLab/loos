@@ -207,36 +207,6 @@ typedef vector<vecDouble>   vMatrix;
 // @endcond TOOLS_INTERNAL
 
 
-void centerAtOrigin(vecDouble& v) {
-  double c[3] = {0.0, 0.0, 0.0};
-
-  for (uint i=0; i<v.size(); i += 3) {
-    c[0] += v[i];
-    c[1] += v[i+1];
-    c[2] += v[i+2];
-  }
-
-  for (uint i=0; i<3; ++i)
-    c[i] = 3*c[i]/v.size();
-
-  for (uint i=0; i<v.size(); i += 3) {
-    v[i] -= c[0];
-    v[i+1] -= c[1];
-    v[i+2] -= c[2];
-  }
-}
-
-
-
-void centerTrajectory(vMatrix& M) {
-  for (uint i=0; i<M.size(); ++i)
-    centerAtOrigin(M[i]);
-}
-
-
-
-
-
 // --------------------------------------------------------------------------------------
 
 // Parcels out work to the compute threads...  Work is given to the threads
@@ -479,6 +449,13 @@ void showStatsWhole(const RealMatrix& R) {
   avg /= total;
 
   cerr << boost::format("Max rmsd = %.4f, avg rmsd = %.4f\n") % max % avg;
+}
+
+
+
+void centerTrajectory(alignment::vecMatrix& U) {
+  for (uint i=0; i<U.size(); ++i)
+    alignment::centerAtOrigin(U[i]);
 }
 
 
