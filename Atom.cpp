@@ -161,7 +161,7 @@ namespace loos {
 
 
   void Atom::checkUserBits(const bits bitmask) {
-    if (! bitmask & (flagbit|usr1bit|usr2bit|usr3bit) )
+    if (! (bitmask & (flagbit|usr1bit|usr2bit|usr3bit)) )
       throw(LOOSError("Attempting to set a non-user property bit in an Atom"));
   }
 
