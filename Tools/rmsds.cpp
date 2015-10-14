@@ -239,7 +239,8 @@ void centerTrajectory(vMatrix& M) {
 
 // --------------------------------------------------------------------------------------
 
-
+// Parcels out work to the compute threads...  Work is given to the threads
+// one row at a time.
 
 class Master {
 public:
@@ -253,7 +254,7 @@ public:
       _total = _maxrow;
   }
 
-    // Checks whether there are any columns left to work on
+  // Checks whether there are any columns left to work on
   // and places the column index into the passed pointer.
 
   bool workAvailable(uint* ip) 
@@ -319,6 +320,9 @@ private:
   column to work on from the associated Master object.
 */
 
+
+// Worker for two different trajectories
+
 class DualWorker 
 {
 public:
@@ -362,6 +366,7 @@ private:
 
 
 
+// Worker for self all-to-all
 
 class SingleWorker 
 {
