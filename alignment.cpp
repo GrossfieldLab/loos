@@ -8,6 +8,7 @@
 
 #include <cmath>
 
+
 namespace loos {
 
 
@@ -50,9 +51,14 @@ namespace loos {
   
       dgesvj_(&joba, &jobu, &jobv, &m, &nn, R.data(), &lda, S.data(), &mv, V.data(), &ldv, work, &lwork, &info);
     
-      if (info != 0)
+      if (info > 0) {
+	char op = 'E';
+	double eps = dlamch_(&op);
+	std::cerr << boost::format("Warning- SVD in kabschCore() failed to converge with info=%d and TOL=%e\n") %
+	  info % (eps * sqrt(3.0));
+	//	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
+      } else if (info < 0) 
 	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
-
 
   
       double dR = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
