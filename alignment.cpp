@@ -51,7 +51,7 @@ namespace loos {
       dgesvj_(&joba, &jobu, &jobv, &m, &nn, R.data(), &lda, S.data(), &mv, V.data(), &ldv, work, &lwork, &info);
     
       if (info != 0)
-	throw(NumericalError("SVD in AtomicGroup::superposition returned an error", info));
+	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
 
 
   
