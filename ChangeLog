@@ -16,6 +16,10 @@
 2015-09-28    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed AtomicGroup::superposition() to use the faster dgesvj().
+	Note: this is an iterative method that may not converge.  In
+	practice, the residual will be small if it does not.  LOOS will
+	print out a warning in such cases.  If you find many warnings
+	being issued, contact the LOOS developers.
 	* Changed the rmsds tool to use a much faster algorithm (up to an
 	order of magnitude faster).  There is no option to disable caching
 	now--if the cached subsets do not fit in memory, you will want to
