@@ -56,6 +56,10 @@ namespace loos {
 	double eps = dlamch_(&op);
 	std::cerr << boost::format("Warning- SVD in kabschCore() failed to converge with info=%d and TOL=%e\n") %
 	  info % (eps * sqrt(3.0));
+	std::cerr << "\tThis may happen periodically, causing the output to be 'mostly' orthogonal.\n";
+	std::cerr << "\tThe residual is typically small and should not appreciably affect the resulting\n";
+	std::cerr << "\tsuperposition.  If this warning appears frequently, then please notify the LOOS\n";
+	std::cerr << "\tdevelopers at loos.maintainer@gmail.com\n";
 	//	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
       } else if (info < 0) 
 	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
