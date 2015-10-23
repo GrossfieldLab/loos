@@ -205,7 +205,7 @@ if __name__ == '__main__':
         # scale the centers of mass of individual molecules
         # TODO: this will have to change to handle "fixed" molecules
         scale_factor = dim/old_dim
-        for j in range(molecules.size()):
+        for j in range(len(molecules)):
             centroid = molecules[j].centroid()
             centroid.z(0.0) # only scale in plane of membrane
             new_centroid = centroid * scale_factor
