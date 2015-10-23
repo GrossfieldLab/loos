@@ -1,0 +1,25 @@
+Each subdirectory here contains a separate example membrane system. In order
+of increasing complexity, they are:
+
+popc: a POPC bilayer in water
+pope-popg: a mixture of 2 lipids in water
+rhodopsin: a protein embedded in lipids
+rhod-water: a protein without a membrane (because sometimes the Optimal 
+           membrane is none at all)
+
+We highly suggest that you base your own config files on one of these
+files, as that will generally be simpler than composing a config file from
+scratch. 
+
+Note: the config files almost certainly will _not_ run on your system
+unchanged, because they contain absolute pathnames.  In each directory, there
+is a file ending with the extension ".cfg" -- edit these files so that the
+various paths match where you installed OMG, the lipid libraries, and NAMD.
+You'll need to change the lines labelled "parameters", "topology", "segment",
+and "water", and depending on where you installed namd and psfgen you may
+need to add lines specifying their location (see the OMG manual for the syntax).
+
+Once you've done that, you can test your OMG install by running the script 
+'run_examples' in this directory.  
+
+
