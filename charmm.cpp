@@ -63,10 +63,11 @@ namespace loos {
     // Next line is the number of atoms, and maybe the flag "EXT"
     unsigned int num_atoms = parseStringAs<unsigned int>(input.c_str(), 0, 10);
     bool is_ext = false;
-    if (input.substr(12,3) == std::string("EXT")) {
-        is_ext = true;
+    if (input.size() > 10) {
+        if (input.substr(12,3) == std::string("EXT")) {
+            is_ext = true;
+        }
     }
-
 
     // now loop and read the coordinates
     // Note: there are two different formats, depending on the number of atoms
