@@ -320,7 +320,7 @@ string fullHelpMessage(void)
 "\n"
 "    If you're using 1-residue-per-lipid format (as in the new C36 force \n"
 "    field), the selection string would look a bit more complicated.  For\n"
-"    example, to select the stearate chain of an SDPE lipid, the string would\n"
+"    example, to select the docosahexaenoyl chain of an SDPE lipid, the string would\n"
 "    be \n"
 "    'resname == \"SDPE\" && name =~ \"^C2[1-9][0-9]?\"'\n"
 "    This selects from residues named \"SDPE\" those atoms with names beginning\n"
