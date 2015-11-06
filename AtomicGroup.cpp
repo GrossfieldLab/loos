@@ -1033,4 +1033,34 @@ namespace loos {
     *outseq = dp;
   }
 
+  AtomicGroup AtomicGroup::centrifyByMolecule() const {
+    std::vector<AtomicGroup> mols = splitByMolecule();
+    AtomicGroup centers;
+    for (std::vector<AtomicGroup>::const_iterator i = mols.begin(); i != mols.end(); ++i) {
+      pAtom orig = (*i)[0];
+      pAtom atom(new Atom(*orig));
+      atom->name("CEN");
+      atom->coords((*i).centerOfMass());
+      centers.append(atom);
+    }
+    centers.box = box;
+    return(centers);
+  }
+
+  AtomicGroup AtomicGroup::centrifyByResidue() const {
+    std::vector<AtomicGroup> residues = splitByResidue();
+    AtomicGroup centers;
+    for (std::vector<AtomicGroup>::const_iterator i = residues.begin(); i != residues.end(); ++i) {
+      pAtom orig = (*i)[0];
+      pAtom atom(new Atom(*orig));
+      atom->name("CEN");
+      atom->coords((*i).centerOfMass());
+      centers.append(atom);
+    }
+    centers.box = box;
+    return(centers);
+  }
+
+
+  
 }

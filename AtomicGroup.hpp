@@ -329,6 +329,20 @@ namespace loos {
     //! Returns a vector of AtomicGroups, each containing atoms with the same name
     std::map<std::string, AtomicGroup> splitByName(void) const;
 
+
+    //! Replace a group with the center of masses of contained molecules
+    /**
+     * The AtomicGroup is split into molecules.  A new group is constructed
+     * where each atom is the center of mass of one molecule.  The atom
+     * metadata is taken from the first atom of the associated molecule,
+     * but with the atom name "CEN".
+     */
+    AtomicGroup centrifyByMolecule() const;
+
+    //! Replace a group with the cente of masses of contained residues (see centrifyByMolecule())
+    AtomicGroup centrifyByResidue() const;
+
+    
     //! Find a contained atom by its atomid
     /**
      * The default behavior is to assume that the atoms in the
