@@ -50,7 +50,16 @@ namespace loos {
     explicit PeriodicBox(const GCoord& c) : thebox(c), box_set(true) { }
 
     GCoord box(void) const { return(thebox); }
-    void box(const GCoord& c) { thebox = c; box_set = true; }
+    void box(const GCoord& c) {
+      thebox = c;
+
+      // Because of the way boxes are handled elsewhere, setting an
+      // unset box in AtomicGroup can leave PeriodicBox thinking it
+      // has been set, when it's really just the default value.  So,
+      // check on set for the magic value and if we find it, then
+      // assume we're being set by an unset box.
+      box_set = (c.x() != 99999 || c.y() != 99999 || c.z() != 99999);
+    }
 
     bool isPeriodic(void) const { return(box_set); }
     void setPeriodic(const bool b) { box_set = b; }
