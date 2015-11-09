@@ -5,7 +5,7 @@
 	a group without periodicity).
 	* Added AtomicGroup::centrifyByMolecule() and AtomicGroup::centrifyByResidue() to
 	replace an AtomicGroup with the center of masses of molecule/residues.
-	
+	* Added voronoi PyLoos package
 
 2015-10-23    <tromo@hill.urmc-sh.rochester.edu>
 
