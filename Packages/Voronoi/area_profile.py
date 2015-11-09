@@ -19,7 +19,7 @@ Usage:
 area_profile.py system trajectory skip stride zmin zmax num_slices padding all-selection-string target-selection-string
 
 system: system file (e.g. pdb, psf, parmtop, gro)
-trajectory: trajectory file
+trajectory: trajectory file (periodic boundary information required)
 skip, stride: how to move through the trajectory, skipping the first "skip" values and stepping by 
         "stride"
 zmin, zmax: range of z-values to consider for area calculation
