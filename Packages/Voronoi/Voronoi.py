@@ -34,6 +34,16 @@ class ZSliceSelector:
         return ag
 
 
+class VoronoiError(Exception):
+    """Base class for Voronoi package exceptions"""
+
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return(repr(self.msg))
+
+
 class VoronoiWrapper:
     """
     Wrap the scipy Voronoi class, which in turn is a wrapper around QHull.
@@ -78,7 +88,7 @@ class VoronoiWrapper:
         areas for atoms near the edge of the box
         """ 
         if not self.isPeriodic():
-            return 0
+            raise VoronoiError("Periodic boundaries are required")
 
         box = self.atoms.periodicBox()
         half_box = 0.5 * box
