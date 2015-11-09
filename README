@@ -36,7 +36,8 @@ PyAlignedTraj, and iterativeAlignmentPy.
 
 In LOOS, an "index" keyword has been added to pick atoms based on
 their position in a model (rather than atom id).  A k-means clustering
-program (using PyLOOS) has been added.  Finally, a number of
+program (using PyLOOS) has been added.  A PyLOOS package that uses
+scipy for Voronoi decompositions has been added.  Finally, a number of
 minor bug fixes are included.
 
 
