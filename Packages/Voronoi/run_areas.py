@@ -21,7 +21,7 @@ Usage:
 program system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]
 
 system: system file (e.g. pdb, psf, parmtop, gro)
-trajectory: trajectory file
+trajectory: trajectory file (Periodic boundary information required)
 zmin, zmax: floating point numbers used to select a particular slice of the system
 padding: floating point number specifying how many extra layers of atoms are generated
          (see below)
