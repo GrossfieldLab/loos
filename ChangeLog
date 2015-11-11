@@ -1,11 +1,6 @@
-2015-11-09    <tromo@hill.urmc-sh.rochester.edu>
+2015-11-11    <alan@membrane.urmc.rochester.edu>
 
-	* Fixed bug in periodicity handling in AtomicGroup where periodicity
-	could appear set but with default values (caused by copying in a box from
-	a group without periodicity).
-	* Added AtomicGroup::centrifyByMolecule() and AtomicGroup::centrifyByResidue() to
-	replace an AtomicGroup with the center of masses of molecule/residues.
-	* Added voronoi PyLoos package
+	* Added lipid_lifetime.py tool to the Voronoi package
 
 2015-10-23    <tromo@hill.urmc-sh.rochester.edu>
 
