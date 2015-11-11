@@ -5,7 +5,6 @@
 
 + = Fully supported (dependencies easily available via package manager)
 ! = Supported with reservation (may require manual installation)
-~ = Tested, but not directly supported (i.e. you're own your own for installing packages)
 - = Not supported
 
 C = Requires manual install of SCons
@@ -13,6 +12,10 @@ S = Requires manual install of Swig
 
 D = Deprecated (we are no longer testing these configurations, however,
     they may still work)
+
+U = This is an unsupported configuration.  We have successfully built
+    LOOS/PyLOOS, but do not regularly test against this configuration.
+    A minimal build guide may be present.
 
 * = See OS-specific installation section
 
@@ -42,11 +45,11 @@ D = Deprecated (we are no longer testing these configurations, however,
 | OpenSUSE 12       |     !     |   +    | C     |                             
 | OpenSUSE 13       |     +     |   +    |       |
 |-------------------|-----------|--------|-------|                             
-| Manjaro 0.8       |     +     |   +    | T     |                             
+| Manjaro 0.8       |     +     |   +    | U     |                             
 |-------------------|-----------|--------|-------|                             
-| Mint 17           |     +     |   +    | T     |                             
+| Mint 17           |     +     |   +    | U     |                             
 |-------------------|-----------|--------|-------|                             
-| Slackware 14.1    |     +     |   +    | T     |                             
+| Slackware 14.1    |     +     |   +    | U     |                             
 |-------------------|-----------|--------|-------|                             
 | Windows 7 64-bit  |     +     |   -    | D     |                             
 |  +Cygwin 1.7.15-1 |           |        |       |                             
