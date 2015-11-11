@@ -1498,6 +1498,55 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
+\section release230 Version 2.3.0 (11-16-2015)
+\subsection r230_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in periodicity handling where it could appear to be
+       set but have default values.
+  <li> Fixed bug affecting reading of Charmm CRD files
+  <li> Fixed bug in xf_rdf where the sel1-spans, sel2-spans, and reselect flags
+       were ignored
+  <li> Fixed handling of DEBUG in setup scripts
+</ul>
+\subsection r230_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Changed: BOOST threads is now required for build
+  <li> Changed: NumPy now required for PyLOOS build
+  
+  <li> Added 'index' keyword to selection language to use an atom's
+       position in a model (different from atom id)
+
+<li> (PyLOOS) Changed splitByMolecule(), splitByUniqueSegid(), and SplitByResidue()
+       to return a python list of AtomicGroup rather than an AtomicGroupVector
+  <li> (PyLOOS) Changed iterativeAlignment() function to now return a Python tuple
+       and works with new loos.pyloos trajectories
+  <li> (PyLOOS) Added iterativeAlignTrajectory() to align with plain LOOS trajectory
+       objects (as well as loos.pyloos), and accepts an optional list of frames to use.
+  <li> (PyLOOS) Added 
+  <li> (PyLOOS) Deprecated iterativeAlignmentPy()
+  <li> (PyLOOS) Added k-means clustering tool (cluster-structures.py)
+  <li> (PyLOOS) Added ensemble and SVD support
+  <li> (PyLOOS) Reorganized PyLOOS (into loos and loos.pyloos)
+  <li> (PyLOOS) Added support for NumPy
+  <li> (PyLOOS) Added voronoi package
+  <li> (PyLOOS) Added new cylindrical-density.py tool
+
+  <li> Changed trajinfo so that it ALWAYS scans frames and can handle read errors (using
+       only the first set of valid frames)
+  <li> Changed order_params tool to support ranges for frames to use
+  <li> Changed AtomicGroup::superposition() to use the faster dgesvj().
+	Note: this is an iterative method that may not converge.  In
+	practice, the residual will be small if it does not.  LOOS will
+	print out a warning in such cases.  If you find many warnings
+	being issued, contact the LOOS developers.
+  <li>  Changed RMSD to use a much faster method (and removed option to disable caching).
+        In addition, can now run in a multithreaded mode
+  <li>  Moved alignment-related code to its own source module
+  <li>  Added AtomicGroup::centrifyByMolecule() and AtomicGroup::centrifyByResidue()
+
+
+</ul>
+
 \section release225 Version 2.2.5 (4-22-2015)
 \subsection r225_bugs Bug Fixes
 <ul>
