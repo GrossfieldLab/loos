@@ -22,7 +22,7 @@ the old PyTraj classes.  In addition, you can combine multiple
 trajectories into a large "virtual" trajectory.  The frames of the
 composite trajectory can be iteratively aligned (a la aligner) or
 aligned to a reference structure.  See the documentation for
-loos.pyloos (under Classes/Class List) for more details.
+pyloos under the Namespace tab.
 
 Additional PyLOOS changes include bug fixes for the iterativeAlignment
 function.  The splitting functions in AtomicGroup now return a Python
