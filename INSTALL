@@ -22,7 +22,6 @@ D = Deprecated (we are no longer testing these configurations, however,
 |    OS             |   LOOS    | PyLOOS | Notes |
 |-------------------|-----------|--------|--------                             
 | Fedora 17         |     +     |   +    |       |    
-| Fedora 17         |     +     |   +    |       |    
 | Fedora 18         |     +     |   +    |       |
 | Fedora 19         |     +     |   +    |       |                             
 | Fedora 20         |     +     |   +    |       |
