@@ -1422,11 +1422,12 @@ trajectories classes.
 One of the biggest changes in PyLOOS is the introduction of three new
 trajectory classes.  These classes ultimately wrap loos Trajectory
 objects but provide more python-like interfaces.  The first class is
-loos.pyloos.Trajectory.  You can specify a stride and the number of
+\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory".
+You can specify a stride and the number of
 frames to skip from the start of the trajectory.  The trajectory
 object can then be used like a python iterator,
 \code{.py}
-model = loos::createSystem('foo.pdb')
+model = loos.createSystem('foo.pdb')
 traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
 
 for frame in traj:
@@ -1441,7 +1442,9 @@ last_frame = traj[-1]
 
 There is often a need to know what frame number a frame corresponds
 to.  There are two ways to do this.  If you are using the trajectory
-as in iterator, then the realIndex() function will return the frame
+as in iterator, then the
+\ref loos::pyloos::trajectories::Trajectory::realIndex "realIndex()"
+function will return the frame
 number,
 \code{.py}
 for frame in traj:
@@ -1466,15 +1469,22 @@ constructor,
 traj = loos.pyloos.Trajectory('foo.dcd', model.copy())
 \endcode
 
-The other two trajectory classes, VirtualTrajectory() and
-AlignedVirtualTrajectory() let you combine multiple pyloos trajectory
+The other two trajectory classes,
+\ref loos::pyloos::trajectories::VirtualTrajectory "VirtualTrajectory"
+and
+\ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
+let you combine multiple pyloos trajectory
 objects to make one big "virtual" trajectory.  The latter supports the
 LOOS iterative alignment method and will return the aligned frames.
 Note that this does require reading in the alignment subset and
 aligning it at the first access to a frame, so there may be memory and
 performance penalties.  The cached frames are discarded after the
-alignment however.  Also, the AlignedVirtualTrajectory() can be used
-with a single Trajectory() to align it.
+alignment however.  Also, the
+\ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
+can be used
+with a single
+\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory".
+to align it.
 
 All of these classes have rich support for accessing the underlying
 components and getting information about what frame is being used,
@@ -1482,11 +1492,16 @@ among others.  For more information, see the documentation for pyloos
 under the Namespace tab.
 
 In addition to the new trajectories, pyloos now sports several utility
-functions related to ensembles: loos.pyloos.averageStructure(),
-loos.pyloos.extractCoords(),
-and loos.pyloos.svd(), all of which use the new Trajectory classes.  We have also
-added subspaceOverlap() and covarianceOverlap() functions.
-
+functions related to ensembles:
+\ref loos::pyloos::ensembles::averageStructure "loos.pyloos.averageStructure()",
+\ref loos::pyloos::ensembles::exctractCoords "loos.pyloos.extractCoords()", 
+and
+\ref loos::pyloos::ensembles::svd "loos.pyloos.svd()",
+all of which use the new Trajectory classes.  We have also
+added
+\ref loos::pyloos::subspace::subspaceOverlap "loos.pyloos.subspaceOverlap()",
+and
+\ref loos::pyloos::subspace::covarianceOverlap "loos.pyloos.covarianceOverlap()",
 The iterative alignment functions have also changed.  There is now a
 loos.pyloos.iterativeAlignment() function that will take a pyloos
 trajectory and align it (or a list or vector of AtomicGroups).  The
