@@ -31,6 +31,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
       - \subpage tools "Tools included with LOOS"
       - \subpage selections "Selection Language"
       - \subpage citing "Citing LOOS in published work"
+      - \subpage new_pyloos "What's new in PyLOOS"
       - \subpage exceptions "Exceptions in LOOS and PyLOOS"
       - \subpage Changes
       - \subpage FAQ
@@ -503,11 +504,10 @@ To use LOOS, your environment must be first setup:
 
 <hr>
 \subsection building_pyloos Building PyLOOS, the Python Interface to LOOS
-PyLOOS will be automatically built if you have a
-recent swig (2.0+) installed.  Note that not all operating systems nor
-releases are supported.  See the top of the INSTALL and \ref
-faq_pyloos "the FAQ for PyLOOS" for more information about building
-and using PyLOOS.
+PyLOOS will be automatically built if you have a recent swig (2.0+)
+installed.  PyLOOS now (as of LOOS 2.3.0) also requires NumPy.  See
+the top of the INSTALL and \ref faq_pyloos "the FAQ for PyLOOS" for
+more information about building and using PyLOOS.
 
 In some cases, scons may try to build PyLOOS when it isn't appropriate
 (i.e. supported).  To disable PyLOOS, use the pyloos flag,
@@ -1407,6 +1407,109 @@ Matlab and Octave.
    a number of templates for different kinds of apps.
 
 */
+
+
+namespace loos {
+
+/*! \page new_pyloos What's new in PyLOOS
+
+PyLOOS has undergone some substantial changes in LOOS 2.3.0.  The
+top-level module/namespace remains "loos", and it includes everything
+imported from the core of LOOS.  We have added a new "pyloos" module
+under "loos" that now holds Python-specific code, such as the new
+trajectories classes.
+
+One of the biggest changes in PyLOOS is the introduction of three new
+trajectory classes.  These classes ultimately wrap loos Trajectory
+objects but provide more python-like interfaces.  The first class is
+loos.pyloos.Trajectory.  You can specify a stride and the number of
+frames to skip from the start of the trajectory.  The trajectory
+object can then be used like a python iterator,
+\code
+model = loos.createSystem('foo.pdb')
+traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
+
+for frame in traj:
+    print frame.centroid()
+\endcode
+
+You can also use the trajectory like an array,
+\code
+first_frame = traj[0]
+last_frame = traj[-1]
+\endcode
+
+There is often a need to know what frame number a frame corresponds
+to.  There are two ways to do this.  If you are using the trajectory
+as in iterator, then the realIndex() function will return the frame
+number,
+\code
+for frame in traj:
+    print traj.realIndex(), frame.centroid()
+\endcode
+
+Since you can specify a skip and a stride, an array index does not
+give you the real frame number.  For example,
+\code
+frame = traj[0]    # This is actually frame index 50 in the
+                   # trajectory because of the skip
+
+print traj.frameNumber(0)  # This prints out 50
+\endcode
+
+Another thing to be careful of is the linkage between groups through
+the shared atoms.  By default, the frame returned will share atoms
+with whatever group you used to instantiate the trajectory.  If you
+need to decouple the trajectory from the model, pass a copy to the
+constructor,
+\code
+traj = loos.pyloos.Trajectory('foo.dcd', model.copy())
+\endcode
+
+The other two trajectory classes, VirtualTrajectory() and
+AlignedVirtualTrajectory() let you combine multiple pyloos trajectory
+objects to make one big "virtual" trajectory.  The latter supports the
+LOOS iterative alignment method and will return the aligned frames.
+Note that this does require reading in the alignment subset and
+aligning it at the first access to a frame, so there may be memory and
+performance penalties.  The cached frames are discarded after the
+alignment however.  Also, the AlignedVirtualTrajectory() can be used
+with a single Trajectory() to align it.
+
+All of these classes have rich support for accessing the underlying
+components and getting information about what frame is being used,
+among others.  For more information, see the documentation for pyloos
+under the Namespace tab.
+
+In addition to the new trajectories, pyloos now sports several utility
+functions related to ensembles: loos.pyloos.averageStructure(),
+loos.pyloos.extractCoords(),
+and loos.pyloos.svd(), all of which use the new Trajectory classes.  We have also
+added subspaceOverlap() and covarianceOverlap() functions.
+
+The iterative alignment functions have also changed.  There is now a
+loos.pyloos.iterativeAlignment() function that will take a pyloos
+trajectory and align it (or a list or vector of AtomicGroups).  The
+loos-style interface is now available through
+loos.pyloos.iterativeAlignTrajectory().  You can optionally pass a
+list of frame indices to use.  Both functions now return a Python
+tuple containing the results.
+
+Finally, AtomicGroup now has support for NumPy with the
+AtomicGroup::getCoords() and AtomicGroup::setCoords() functions, which
+will return (or set) the coordinates of all atoms in the group.  For
+example, calculating an average structure is just:
+\code
+avg = numpy.zeros(len(traj.frame), 3)
+for frame in traj:
+    coords = frame.getCoords()
+    avg += coords
+avg /= len(traj)
+\endcode
+
+*/
+};
+
 
 namespace loos {
 
