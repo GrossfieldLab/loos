@@ -1425,8 +1425,8 @@ objects but provide more python-like interfaces.  The first class is
 loos.pyloos.Trajectory.  You can specify a stride and the number of
 frames to skip from the start of the trajectory.  The trajectory
 object can then be used like a python iterator,
-\code
-model = loos.createSystem('foo.pdb')
+\code{.py}
+model = loos::createSystem('foo.pdb')
 traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
 
 for frame in traj:
@@ -1434,7 +1434,7 @@ for frame in traj:
 \endcode
 
 You can also use the trajectory like an array,
-\code
+\code{.py}
 first_frame = traj[0]
 last_frame = traj[-1]
 \endcode
@@ -1443,14 +1443,14 @@ There is often a need to know what frame number a frame corresponds
 to.  There are two ways to do this.  If you are using the trajectory
 as in iterator, then the realIndex() function will return the frame
 number,
-\code
+\code{.py}
 for frame in traj:
     print traj.realIndex(), frame.centroid()
 \endcode
 
 Since you can specify a skip and a stride, an array index does not
 give you the real frame number.  For example,
-\code
+\code{.py}
 frame = traj[0]    # This is actually frame index 50 in the
                    # trajectory because of the skip
 
@@ -1462,7 +1462,7 @@ the shared atoms.  By default, the frame returned will share atoms
 with whatever group you used to instantiate the trajectory.  If you
 need to decouple the trajectory from the model, pass a copy to the
 constructor,
-\code
+\code{.py}
 traj = loos.pyloos.Trajectory('foo.dcd', model.copy())
 \endcode
 
@@ -1499,7 +1499,7 @@ Finally, AtomicGroup now has support for NumPy with the
 AtomicGroup::getCoords() and AtomicGroup::setCoords() functions, which
 will return (or set) the coordinates of all atoms in the group.  For
 example, calculating an average structure is just:
-\code
+\code{.py}
 avg = numpy.zeros(len(traj.frame), 3)
 for frame in traj:
     coords = frame.getCoords()
@@ -1575,7 +1575,7 @@ error string.  Alternatively, the __str__() method is defined for all
 LOOS exceptions that are translated into Python.
 
 The following illustrates catching PyLOOS exceptions...
-\code
+\code{.py}
 try:
      model = createSystem(filename)
 except loos.LOOSError as e:
@@ -3346,7 +3346,7 @@ or better implementations.
 	Now B will have an extra atom that A will be lacking, but
 	existing atoms will still be shared between A and B.  In
 	contrast, in the PyLOOS equivalent,
-\code
+\code{.py}
 		  A = AtomicGroup()
 		  B = A
 		  B.append(another_atom)
@@ -3354,7 +3354,7 @@ or better implementations.
 	A and B are the same and now both have the extra atom.  To
 	make a copy of A that behaves like the C++ copy, use Python's
 	copy package to make a shallow copy,
-\code
+\code{.py}
 	          import copy
 		  A = AtomicGroup()
 		  B = copy.copy(A)
@@ -3371,7 +3371,7 @@ or better implementations.
 	Since atoms are shared in a shallow copy of an AtomicGroup,
 	modifying the atom in one group will modify the atom in all
 	groups that contain that atom.
-\code
+\code{.py}
 	          import copy
 		  an_atom = Atom(1, "CA", GCoord(1,2,3))
 	          A = AtomicGroup()
@@ -3388,7 +3388,7 @@ or better implementations.
 	both groups see the change.  Sometimes, it is necessary to
 	have a separate copy of a group so that changes to the atom in
 	group B will not affect group A.  This requires a deep copy,
-\code
+\code{.py}
 	          import copy
 		  an_atom = Atom(1, "CA", GCoord(1,2,3))
 		  A = AtomicGroup()
@@ -3414,20 +3414,6 @@ or better implementations.
 	Atom and GCoord, copy() and deepcopy() are functionally
 	equivalent.
 
-<DT>	How do I use the iterativeAlignment functions?
-<DD>	We do not currently have a direct interface to the C++
-	iterativeAlignment functions since they return a boost::tuple
-	object.  Instead, there are python-specific routines that
-	return an object containing the same information, i.e.
-\code
-	           result = iterativeAlignmentPy(model, traj)
-		   xforms = result.transforms
-		   final_rmsd = result.rmsd
-		   n = result.iterations
-\endcode
-	The python versions have the same interface as the C++ ones,
-	but the function names are suffixed with "Py".
-
 <DT>	Where did pAtoms go in PyLOOS?
 <DD>	Swig maps the boost shared pointer (pAtom) into the name
 	"Atom".  So, wherever you would use a pAtom in the C++ version
@@ -3437,81 +3423,17 @@ or better implementations.
 <DD>	Yes.  Look in the Packages/PyLOOS directory.  We will be
 	adding more examples in future releases.
 
-<DT>    Using trajectories in PyLOOS
-<DD>    While the standard C++ mechanisms and idioms for working with
-        trajectories are in PyLOOS, there are more python-like ways of
- 	interacting with trajectories.  The first is the PyTraj class,
-	which wraps a Trajectory and makes it appear like a python
-	sequence.  Which frames are actually used can
-	be set at instantiation, either by specifying a skip and
-	stride, or by providing an iterator to pick the frames.
-	Note that frames are only read from the trajectory as needed.
-
-	A simple example of using PyTraj is,
-\code
-	model = createSystem('foo.pdb')
-	traj = createTrajectory('foo.dcd', model)
-	ptraj = PyTraj(traj, model, skip = 50)
-	
-	for frame in ptraj:
-	   doSomething(frame)
-\endcode
-	Here, a PyTraj is created where the first 50 frames of
-	the trajectory are skipped.  The frame returned at each
-	iteration is the entire model.
-
-	The second way is to use the PyAlignedTraj, which behaves
-	very similarly to PyTraj, but where the entire trajectory
-	has been optimally aligned using an iterative procedure.
-	In this case, the alignment subset for the entire trajectory
-	will be stored in memory while the alignment is determined
-	(during initialization).  Afterwards, that memory is freed and
-	frames are read as needed.
-
-
-	For more details, see the class documentation and the
-	FAQ entries below...
-
-<DT>    How do shared atoms and PyTraj work?
-<DD>	When you instantiate a PyTraj object, you associate it
-	with an AtomicGroup.  At each iteration, the coordinates
-	of atoms in this group will be updated from the trajectory.
-	Any other group that shares atoms with the group used
-	at instantiation will also be updated as well.  For example,
-	imagine you want to work with both the whole model and C-alpha
-	atoms...
-\code
-	model = createSystem('foo.pdb')
-	calphas = selectAtoms(model, 'name == "CA"')
-	traj = createTrajectory('foo.dcd', model)
-	ptraj = PyTraj(traj, model, skip = 50)
-	
-	for frame in ptraj:
-	   doSomething(frame)
-	   doSomethingElse(calphas)
-\endcode
-	In general, pass a superset of all atoms of interest to
-	the PyTraj constructor.
-
-
-<DT>	Can you slice a PyTraj?
-<DD>    Yes, but there is a catch...  When slicing a PyTraj,
-	a list of AtomicGroup objects are returned.  Each element is
-	a "deep" copy of the AtomicGroup given in the constructor.  That
-	is, atoms are no longer shared.  The rest of the core PyLOOS does
-	not take a list of AtomicGroups as a parameter (at least not
-	at this time).
-
-
 <DT>	Where are the matrix operations?
 <DD>	We currently assume that matrix operations are better handled
-	by the appropriate Python package (e.g. numpy).
+	by the appropriate Python package (e.g. numpy).  Some
+	matrix-based routines are available, such covariance and
+	subspace overlaps.
 
 <DT>	Why is PyLOOS so slow?
 <DD>	A frequent problem with PyLOOS performance is a result of
 	looping using Python.  For example, to find an Atom in an
 	AtomicGroup, the following will be slow,
-\code
+\code{.py}
 	found = 0
 	for x in range(system.size()):
 	    if (system[x] == an_atom):
@@ -3524,14 +3446,14 @@ or better implementations.
 
 	Instead of using loops, try first to get Python to do the
 	looping internally, i.e.
-\code
+\code{.py}
 	if (an_atom in system):
 	   do_something()
 \endcode
 
 	Alternatively, look for LOOS functions that will perform the
 	same operation, such as:
-\code
+\code{.py}
 	if (system.contains(an_atom)):
 	   do_something()
 \endcode
