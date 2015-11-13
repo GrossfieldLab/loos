@@ -127,6 +127,25 @@ def xformVectorToList(v):
 
 
 def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
+    """ 
+    Iteratively align a loos.pyloos.Trajectory object (or a list of AtomicGroups)
+    
+    Keyword arguments:
+    threshold -- change in average less than this ends alignment
+    maxiter -- maximum number of iterations allowed
+
+    Returns:
+    (list-of-xforms, final-rmsd, number-of-iterations)
+
+
+    Examples:
+    model = loos.createSystem('foo.pdb')
+    traj = loos.pyloos.Trajectory('foo.dcd', model)
+    (xforms, rmsd, iters) = loos.iterativeAlignment(traj)
+
+    ensemble = [frame.copy() for frame in traj]
+    (xforms, rmsd, iters) = loos.iterativeAlignment(ensemble)
+    """
     enlist = loos.DoubleVectorMatrix()
     for e in ensemble:
        enlist.push_back(e.coordsAsVector())
@@ -137,6 +156,7 @@ def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
 
 # Optional 'framelist' argument specifies indices of frames to use
 def iterativeAlignTrajectory(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
+    """ """
     # If traj is not a loos.Trajectory, assume it supports the trajectory()
     # method to access the underlying loos one
     if not isinstance(traj, loos.Trajectory):
