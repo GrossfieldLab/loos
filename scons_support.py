@@ -356,6 +356,13 @@ def CheckNumpy(conf, pythonpath):
             return(1)
         
 
+    # Special handling for MacOS
+    if loos_build_config.host_type == 'Darwin':
+        ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', ['/System/Library/Frameworks/Python.framework/Versions/Current/Extras/lib/python/numpy/core/include'])
+        if ok:
+            conf.Result('yes')
+            return(1)
+            
     conf.Result('no')
     return(0)
 
