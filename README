@@ -12,9 +12,15 @@ to contact us regarding LOOS.
    * RELEASE 2.3.0 *
 
 This release of LOOS comes with two major changes, all related to
-PyLOOS.  First, NUMPY IS NOW REQUIRED FOR BUILDING PYLOOS.  For Linux
-users, this will just be a package install.  For Mac users, a little
-more work will be required.  See the INSTALL file for more details.
+PyLOOS.  A detailed description of these changes is available in the
+new "what's new in PyLOOS" section of the documentation, and is listed
+in the "Quick Links" off the main page.
+
+The first change is that NUMPY IS NOW REQUIRED FOR BUILDING PYLOOS.
+For Linux users, this will just be a package install.  For Mac users,
+a little more work will be required.  See the INSTALL file for more
+details.
+
 The second change is a reorganization of PyLOOS and new trajectory
 classes.  All Python-based components of PyLOOS are now in the
 loos.pyloos module.  The new trajectory classes are easier to use than
@@ -22,7 +28,7 @@ the old PyTraj classes.  In addition, you can combine multiple
 trajectories into a large "virtual" trajectory.  The frames of the
 composite trajectory can be iteratively aligned (a la aligner) or
 aligned to a reference structure.  See the documentation for
-pyloos under the Namespace tab.
+pyloos under the Namespace tab or search for Trajectory.
 
 Additional PyLOOS changes include bug fixes for the iterativeAlignment
 function.  The splitting functions in AtomicGroup now return a Python
