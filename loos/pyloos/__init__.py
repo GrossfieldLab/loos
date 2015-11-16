@@ -2,3 +2,4 @@
 
 from trajectories import *
 from ensembles import *
+from alignment import *
