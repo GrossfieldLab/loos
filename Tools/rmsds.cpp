@@ -88,7 +88,8 @@ string fullHelpMessage(void) {
     "\tThis tool can be run in parallel with multiple threads for performance.  The --threads option\n"
     "controls how many threads are used.  The default is 1 (non-parallel).  Setting it to 0 will use\n"
     "as many threads as possible.  Note that if LOOS was built using a multi-threaded math library,\n"
-    "then some care should be taken in how many threads are used for this tool.\n"
+    "then some care should be taken in how many threads are used for this tool, though it is unlikely\n"
+    "that there will be a conflict.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
@@ -133,7 +134,7 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("noout,N", po::value<bool>(&noop)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)")
-      ("threads", po::value<uint>(&nthreads)->default_value(1), "Number of threads to use")
+      ("threads", po::value<uint>(&nthreads)->default_value(1), "Number of threads to use (0=all available)")
       ("sel1", po::value<string>(&sel1)->default_value("name == 'CA'"), "Atom selection for first system")
       ("skip1", po::value<uint>(&skip1)->default_value(0), "Skip n-frames of first trajectory")
       ("range1", po::value<string>(&range1), "Matlab-style range of frames to use from first trajectory")
