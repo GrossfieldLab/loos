@@ -251,8 +251,28 @@ The package-manager installed scons is too old.  Download and install SCons
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
 for more information about SIP).  We are aware of this and working on
-a solution.  Until then, you MAY be able to continue to use PyLOOS if
-you disable SIP.  Two articles about managing SIP status are:
+a decent solution.  Until then, there are two options for building and
+using PyLOOS under El Capitan.
+
+
+* Build your own Python (Recommended)
+
+The first way is to download and install your own local Python and use
+this to run SCons and PyLOOS.  Here again, you have two options: build
+and install SCons using that Python, or use the local Python to invoke
+the existing SCons.  The latter can be done with the following command
+line:
+       /path/to/my/own/python `which scons`
+Simply putting the new Python in your PATH will not work because SCons
+"sanitizes" the PATH before running.  You will also need to be sure to
+invoke your PyLOOS scripts with your new local Python.
+
+
+* Disable SIP
+
+Although we have not tested this method, it is a common solution
+recommended to dealing with unsafe library errors.
+Two articles about managing SIP status are:
 
 https://developer.apple.com/library/mac/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html
 
