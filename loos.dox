@@ -1501,19 +1501,24 @@ all of which use the new Trajectory classes.  We have also
 added
 \ref loos::pyloos::subspace::subspaceOverlap "loos.pyloos.subspaceOverlap()",
 and
-\ref loos::pyloos::subspace::covarianceOverlap "loos.pyloos.covarianceOverlap()",
+\ref loos::pyloos::subspace::covarianceOverlap "loos.pyloos.covarianceOverlap()".
+
+
 The iterative alignment functions have also changed.  There is now a
-loos.pyloos.iterativeAlignment() function that will take a pyloos
-trajectory and align it (or a list or vector of AtomicGroups).  The
+\ref loos::pyloos::alignment::iterativeAlignment "loos.pyloos.iterativeAlignment()"
+function that will take a
+\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
+and align it (or a list/vector of loos::AtomicGroup).  The
 loos-style interface is now available through
-loos.pyloos.iterativeAlignTrajectory().  You can optionally pass a
+\ref loos::pyloos::alignment::itertiveAlignTrajectory "loos.pyloos.iterativeAlignTrajectory()".
+You can optionally pass a
 list of frame indices to use.  Both functions now return a Python
 tuple containing the results.
 
 Finally, AtomicGroup now has support for NumPy with the
 AtomicGroup::getCoords() and AtomicGroup::setCoords() functions, which
 will return (or set) the coordinates of all atoms in the group.  For
-example, calculating an average structure is just:
+example, calculating an average structure can be implemented this way:
 \code{.py}
 avg = numpy.zeros(len(traj.frame), 3)
 for frame in traj:
@@ -1616,7 +1621,7 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
-\section release230 Version 2.3.0 (11-16-2015)
+\section release230 Version 2.3.0 (11-20-2015)
 \subsection r230_bugs Bug Fixes
 <ul>
   <li> Fixed bug in periodicity handling where it could appear to be
