@@ -25,40 +25,45 @@ details.
 
    * RELEASE 2.3.0 *
 
-This release of LOOS comes with two major changes, all related to
-PyLOOS.  A detailed description of these changes is available in the
-new "what's new in PyLOOS" section of the documentation, and is listed
-in the "Quick Links" off the main page.
+This release of LOOS comes with a number of major changes, most
+related to PyLOOS.  A detailed description of these changes is
+available in the new "what's new in PyLOOS" section of the
+documentation, and is listed in the "Quick Links" off the main page.
 
-The first change is that NUMPY IS NOW REQUIRED FOR BUILDING PYLOOS.
-For Linux users, this will just be a package install.  For Mac users,
-a little more work will be required.  See the INSTALL file for more
-details.
+NUMPY IS NOW REQUIRED FOR BUILDING PYLOOS.  For Linux users, this will
+just be a package install.  For Mac users, the system numpy will be
+used.  See the INSTALL file for more information.
 
-The second change is a reorganization of PyLOOS and new trajectory
-classes.  All Python-based components of PyLOOS are now in the
+PyLOOS has been reorganized and new trajectory handling classes have
+been added.  All Python-based components of PyLOOS are now in the
 loos.pyloos module.  The new trajectory classes are easier to use than
-the old PyTraj classes.  In addition, you can combine multiple
+the old PyTraj classes (they no longer require you to explicitly wrap
+a loos.Trajectory object).  In addition, you can combine multiple
 trajectories into a large "virtual" trajectory.  The frames of the
 composite trajectory can be iteratively aligned (a la aligner) or
-aligned to a reference structure.  See the documentation for
-pyloos under the Namespace tab or search for Trajectory.
+aligned to a reference structure.  See the documentation for pyloos
+under the Namespace tab or search for Trajectory.
 
 Additional PyLOOS changes include bug fixes for the iterativeAlignment
 function.  The splitting functions in AtomicGroup now return a Python
 list rather than an AtomicGroupVector.  Coordinates can be extracted
 from an AtomicGroup or a Trajectory as a NumPy matrix.  An SVD/PCA
-function has also been added to PyLOOS.
+function has also been added to PyLOOS.  All old PyLOOS functions that
+begin or end with Py are now deprecated and will be removed in the
+next release.  These include PyTraj, PyAlignedTraj, and
+iterativeAlignmentPy.  Finally, A k-means clustering program (using
+PyLOOS) has been added.  A PyLOOS package that uses scipy for Voronoi
+decompositions has been added.
 
-All old PyLOOS functions that begin or end with Py are now deprecated
-and will be removed in the next release.  These include PyTraj,
-PyAlignedTraj, and iterativeAlignmentPy.
-
-In LOOS, an "index" keyword has been added to pick atoms based on
-their position in a model (rather than atom id).  A k-means clustering
-program (using PyLOOS) has been added.  A PyLOOS package that uses
-scipy for Voronoi decompositions has been added.  Finally, a number of
-minor bug fixes are included.
+There are a number of significant non-PyLOOS changes as well.  An
+"index" keyword has been added to pick atoms based on their position
+in a model (rather than atom id).  The rmsds tool (all-to-all RMSD)
+has been significantly optimized and can now be run multithreaded.
+The default is to use only a single thread.  If you built LOOS with a
+multithreaded math library, be aware of possible conflicts.  Last, but
+not least, a number of minor bug fixes are included.  See the
+ChangeLog file or the change log in the documentation for more
+details.
 
 
    * RELEASE 2.2.5 *
