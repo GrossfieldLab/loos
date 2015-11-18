@@ -76,5 +76,6 @@
 ## Uncomment the following to explicitly link with the parallel/threaded ATLAS libraries
 # ATLAS_LIBS='lapack ptf77blas ptcblas atlas'
 # ATLAS_LIBS='ptlapack ptf77blas ptcblas atlas'
-
+## Uncomment the following to use the threaded version of OpenBLAS
+# ATLAS_LIBS='openblasp'
 
