@@ -60,10 +60,10 @@ There are a number of significant non-PyLOOS changes as well.  An
 in a model (rather than atom id).  The rmsds tool (all-to-all RMSD)
 has been significantly optimized and can now be run multithreaded.
 The default is to use only a single thread.  If you built LOOS with a
-multithreaded math library, be aware of possible conflicts.  Last, but
-not least, a number of minor bug fixes are included.  See the
-ChangeLog file or the change log in the documentation for more
-details.
+multithreaded math library, be aware of possible conflicts (though
+that shouldn't happen with rmsds).  Last, but not least, a number of
+minor bug fixes are included.  See the ChangeLog file or the change
+log in the documentation for more details.
 
 
    * RELEASE 2.2.5 *
