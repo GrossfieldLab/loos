@@ -3,10 +3,24 @@
 =     https://lists.sourceforge.net/lists/listinfo/loos-announce              =
 ===============================================================================
 
-+++NOTICE+++
+***** Please use <loos.maintainer@gmail.com> to contact us regarding LOOS *****
 
-Our email address has changed.  Please use <loos.maintainer@gmail.com>
-to contact us regarding LOOS.
+
+
+
+---------------------------------------------------------------------
+
+!!!!!!!! IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS !!!!!!!!!
+
+There is a problem with using PyLOOS with the new System Integrity
+Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
+for more information about SIP).  We are aware of this and working on
+a decent solution.  See the Mac section of the INSTALL file for more
+details. 
+
+
+---------------------------------------------------------------------
+
 
 
    * RELEASE 2.3.0 *
