@@ -54,7 +54,7 @@ U = This is an unsupported configuration.  We have successfully built
 | Windows 7 64-bit  |     +     |   -    | D     |                             
 |  +Cygwin 1.7.15-1 |           |        |       |                             
 |-------------------|-----------|--------|-------|                             
-| MacOS 10.9        |     +     |   !    | *     |                             
+| MacOS 10.11       |     +     |   !    | *     |                             
 |-------------------|-----------|--------|-------|                             
 
 
@@ -245,7 +245,21 @@ The package-manager installed scons is too old.  Download and install SCons
 
 			-----= MACOS X =-----
 
-***IMPORTANT NOTES REGARDING MACOS 10.9***
+-------------------------------------------------------
+!! IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS !!
+
+There is a problem with using PyLOOS with the new System Integrity
+Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
+for more information about SIP).  We are aware of this and working on
+a solution.  Until then, you MAY be able to continue to use PyLOOS if
+you disable SIP.  Two articles about managing SIP status are:
+
+https://developer.apple.com/library/mac/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html
+
+http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-protection-in-el-capitan.html
+
+-------------------------------------------------------
+!! IMPORTANT NOTE FOR MACOS 10.9 "MAVERICKS" USERS !!
 
 MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
 an incompatibility with Boost installed via Fink in MacOS 10.9.  You
@@ -258,8 +272,7 @@ iterator methods for MacOS 10.9 only in order to build PyLOOS.  This means
 functions such as begin() and erase() will be unavailable in PyLOOS for
 the vectors used in LOOS.
 
-----------------------------------------
-
+-------------------------------------------------------
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  XCode is available for free through the Mac App store.
@@ -281,13 +294,9 @@ If you have installed Boost in a non-standard location, you will need
 to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
 environment variable.
 
+The default build will use the system Python and Numpy.
 Any non-standard locations for python modules can be specified using
-the PYTHON_PATH option to scons.  This is required for Numpy if it
-is installed separately from your Python.  For example, you could
-install Numpy into ~/local.  To do this, download numpy
-and install it like this,
-    python setup.py install --prefix=$HOME/local
-and then in LOOS:
+the PYTHON_PATH option to scons:
     scons PYTHON_PATH=$HOME/local/lib/python2.7
 
 
