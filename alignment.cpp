@@ -197,7 +197,7 @@ namespace loos {
 
 #else
 
-      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, 3, 3, 3, 1.0, R.data(), 3, VV.data(), 3, 0.0, M, 3);
+      cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, 3, 3, 3, 1.0, R.data(), 3, VV.data(), 3, 0.0, M, 3);
 
 #endif
 
