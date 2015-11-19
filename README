@@ -51,9 +51,9 @@ from an AtomicGroup or a Trajectory as a NumPy matrix.  An SVD/PCA
 function has also been added to PyLOOS.  All old PyLOOS functions that
 begin or end with Py are now deprecated and will be removed in the
 next release.  These include PyTraj, PyAlignedTraj, and
-iterativeAlignmentPy.  Finally, A k-means clustering program (using
-PyLOOS) has been added.  A PyLOOS package that uses scipy for Voronoi
-decompositions has been added.
+iterativeAlignmentPy.  Finally, a k-means clustering program (using
+PyLOOS) has been added.  Also, we've added a new package (Voronoi), which
+will help users analyze membrane/membrane protein simulations.
 
 There are a number of significant non-PyLOOS changes as well.  An
 "index" keyword has been added to pick atoms based on their position
