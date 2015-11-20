@@ -1441,7 +1441,7 @@ last_frame = traj[-1]
 \endcode
 
 There is often a need to know what frame number a frame corresponds
-to.  There are two ways to do this.  If you are using the trajectory
+to.  If you are using the trajectory
 as in iterator, then the
 \ref loos::pyloos::trajectories::Trajectory::realIndex "realIndex()"
 function will return the frame
@@ -1452,7 +1452,8 @@ for frame in traj:
 \endcode
 
 Since you can specify a skip and a stride, an array index does not
-give you the real frame number.  For example,
+necessarily give you the real frame number.  Instead, use the
+frameNumber() member function.  For example,
 \code{.py}
 frame = traj[0]    # This is actually frame index 50 in the
                    # trajectory because of the skip
@@ -1462,7 +1463,7 @@ print traj.frameNumber(0)  # This prints out 50
 
 Another thing to be careful of is the linkage between groups through
 the shared atoms.  By default, the frame returned will share atoms
-with whatever group you used to instantiate the trajectory.  If you
+with whatever group was used to instantiate the trajectory.  If you
 need to decouple the trajectory from the model, pass a copy to the
 constructor,
 \code{.py}
@@ -1483,18 +1484,19 @@ alignment however.  Also, the
 \ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
 can be used
 with a single
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory".
+\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
 to align it.
 
 All of these classes have rich support for accessing the underlying
 components and getting information about what frame is being used,
-among others.  For more information, see the documentation for pyloos
-under the Namespace tab.
+among others.  For more information, see the above links, use the
+search bar, or see the documentation for pyloos under the Namespace
+tab.
 
 In addition to the new trajectories, pyloos now sports several utility
 functions related to ensembles:
 \ref loos::pyloos::ensembles::averageStructure "loos.pyloos.averageStructure()",
-\ref loos::pyloos::ensembles::exctractCoords "loos.pyloos.extractCoords()", 
+\ref loos::pyloos::ensembles::extractCoords "loos.pyloos.extractCoords()", 
 and
 \ref loos::pyloos::ensembles::svd "loos.pyloos.svd()",
 all of which use the new Trajectory classes.  We have also
@@ -1518,7 +1520,7 @@ tuple containing the results.
 Finally, AtomicGroup now has support for NumPy with the
 AtomicGroup::getCoords() and AtomicGroup::setCoords() functions, which
 will return (or set) the coordinates of all atoms in the group.  For
-example, calculating an average structure can be implemented this way:
+example, calculating an average set of coordinates can be implemented this way:
 \code{.py}
 avg = numpy.zeros(len(traj.frame), 3)
 for frame in traj:
