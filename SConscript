@@ -64,8 +64,7 @@ scripts_inst = [ script_sh_inst, script_csh_inst ]
 
 
 # Header files...
-hdr = 'loos.hpp'
-hdr = 'amber.hpp amber_rst.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
+hdr = 'alignment.hpp amber.hpp amber_rst.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
 hdr = hdr + ' cryst.hpp dcd.hpp dcd_utils.hpp dcdwriter.hpp ensembles.hpp Fmt.hpp'
 hdr = hdr + ' HBondDetector.hpp'
 hdr = hdr + ' Geometry.hpp KernelActions.hpp Kernel.hpp KernelStack.hpp'
