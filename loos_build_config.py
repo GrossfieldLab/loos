@@ -38,6 +38,7 @@ package_list = { 'ENM': 'ElasticNetworks',
                  'Conv' : 'Convergence',
                  'Density' : 'DensityTools',
                  'OMG' : 'OptimalMembraneGenerator',
+                 'Voronoi' : 'Voronoi',
                  'User': 'User',
                  'Python': 'PyLOOS' }
 
