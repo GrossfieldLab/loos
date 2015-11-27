@@ -30,6 +30,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
           - \ref building_pyloos "Building PyLOOS, the Python Interface to LOOS"
       - \subpage tools "Tools included with LOOS"
       - \subpage selections "Selection Language"
+      - \subpage formats "Supported File Formats"
       - \subpage citing "Citing LOOS in published work"
       - \subpage new_pyloos "What's new in PyLOOS"
       - \subpage exceptions "Exceptions in LOOS and PyLOOS"
@@ -153,6 +154,30 @@ publication:
 Romo, T.D., Grossfield, A. "LOOS: An extensible platform for the
 structural analysis of simulations."  31st Annual International
 Conference of the IEEE EMBS (2009): 2332-2335
+
+*/
+
+/*! \page formats Supported File Formats
+
+LOOS reads the native file formats for most major biomolecular simulation packages:
+
+<table align="center" border="1" style="width:80%">
+<tr align="center"><th>Type</th><th>Package</th> <th>Name</th></tr>
+<tr align="center"> <td>Structure</td> <td> All </td> <td> PDB </td> </tr>
+<tr align="center"> <td>         </td> <td> CHARMM </td>  <td> CRD </td> </tr>
+<tr align="center"> <td>         </td> <td> CHARMM/NAMD </td>  <td> PSF </td> </tr>
+<tr align="center"> <td>         </td> <td> Gromacs </td>  <td> GRO </td> </tr>
+<tr align="center"> <td>         </td> <td> Amber </td>  <td> parmtop </td> </tr>
+<tr align="center"> <td>         </td> <td> Tinker </td>  <td> XYZ </td> </tr>
+<tr align="center"> <td>Trajectory</td> <td> CHARMM/NAMD </td>  <td> DCD </td> </tr>
+<tr align="center"> <td>         </td> <td> Gromacs </td>  <td> XTC </td> </tr>
+<tr align="center"> <td>         </td> <td> Amber </td>  <td> netcdf, crd </td> </tr>
+<tr align="center"> <td>         </td> <td> Tinker </td>  <td> XYZ </td> </tr>
+<tr align="center"> <td>         </td> <td> All </td>  <td> PDB </td> </tr>
+</table>
+
+LOOS can write structures out in PDB format or a native pseudo-xml format, and can write 
+trajectories in either DCD or XTC format.
 
 */
 
