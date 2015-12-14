@@ -5,6 +5,7 @@ import sys
 import os.path
 import loos
 
+# @cond TOOLS_INTERNAL
 class NAMD:
     
     def __init__(self, psf_file, start_pdb, end_pdb, param_file, box,
@@ -147,6 +148,7 @@ langevinDamping 2
 langevinHydrogen off
 
 """
+# @endcond
 
 if __name__ == '__main__':
     import loos

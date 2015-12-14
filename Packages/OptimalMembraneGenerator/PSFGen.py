@@ -5,6 +5,9 @@ import loos
 import subprocess
 import os
 
+# @cond TOOLS_INTERNAL
+
+
 class Segment:
     """
     Class describing a segment of a PSF file.  Contains the information
@@ -269,6 +272,8 @@ class PSFGen:
         #sys.stderr.write(self.psf_string)
         psfgen = subprocess.Popen("", 0, self.command, stdin=subprocess.PIPE)
         psfgen.communicate(self.psf_string)
+
+# @endcond
 
 
 

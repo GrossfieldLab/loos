@@ -6,6 +6,8 @@ import loos
 import random
 import sys
 
+# @cond TOOLS_INTERNAL
+
 class LipidLibrary:
     """
     Class to access a lipid library directory containing either PDB or
@@ -54,3 +56,4 @@ class LipidLibrary:
 
         return msg
 
+# @endcond

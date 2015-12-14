@@ -2,6 +2,8 @@
 
 import loos
 
+# @cond TOOLS_INTERNAL 
+
 class WaterBox:
     def __init__(self, filename, template_box, target_box, segname):
         self.filename = filename
@@ -95,6 +97,8 @@ class WaterBox:
         
         p = loos.PDB.fromAtomicGroup(self.full_system)
         return str(p)
+
+# @endcond
 
 
 if __name__ == '__main__':
