@@ -659,15 +659,19 @@ suffixes), then rebuild.
 
 Below is a summary of the tools currently distributed with LOOS.  To get a
 detailed summary of the command line arguments, run the program without
-arguments or using "-h".  A growing number of tools also support the
+arguments or using "-h".  Nearly all tools also support the
 "--fullhelp" options, which will display more detailed help
-information, including examples of how to use the tool.  All of the
-tools are now package agnostic, in the sense that they will take any
-of the file formats supported by LOOS as input.  The only caveat is that not
-all files provide all of the needed information; for example, the 
-order_params tool requires connectivity information to function properly, so
-the user must run it with a system file type that has that information, such
-as a CHARMM/NAMD PSF file or a PDB with CONECT records.
+information, including examples of how to use the tool.  
+
+In the documentation, the term "system" or "model" refers to a file that
+describes the contents of a system, such as a PDB file or one of the inputs
+from the various simulation packages (PSF, parmtop, gro, etc).  All of the
+tools are now package agnostic, in the sense that they will take any of the
+supported file formats as input.  However, not all files provide all of the
+needed information; for example, the order_params tool requires connectivity
+information to function properly, so the user must run it with a system file
+type that has that information, such as a CHARMM/NAMD PSF file or a PDB with
+CONECT records.  
 
 At present, LOOS assumes that all periodic boxes are rectangular, and
 will produce incorrect answers if trajectories using different box shapes
@@ -1285,6 +1289,10 @@ Matlab and Octave.
        <DT><B>bounding</B>
        <DD>Write out the bounding box for a selection of atoms from a 
        structure file.
+
+       <DT><B>cluster-structures.py</B>
+       <DD>Perform clustering analysis on a trajectory using the k-means 
+       algorithm on the basis of RMSD.  In Packages/PyLOOS.
        
        <DT><B>contact-time</B>
        <DD>This tool computes the number of contacts between a probe
@@ -1298,6 +1306,15 @@ Matlab and Octave.
        <DT><B>contacts</B>
        <DD>Loop over a trajectory and count the number of contacts between two
        sets of atoms.  
+
+       <DT><B>cylindrical-density.py</B>
+       <DD> Compute a 2D radial distribution function in cylindrical 
+       coordinates. In Packages/PyLOOS.
+
+       <DT><B>domain.py</B>
+       <DD> Describe the motion of two selections within a single macromolecule,
+       including distance and the angle and torsion formed the their first
+       principal moments.  In Packages/PyLOOS.
 
        <DT><B>drifter</B>
        <DD>Calculates movement centroids over a trajectory
@@ -1339,6 +1356,11 @@ Matlab and Octave.
        selections, over the course of a trajectory.  Originally defined in 
        Grossfield et al, PNAS, 2006, 103, 4888-4893 
 
+       <DT><B>protein_tilt.py</B>
+       <DD>Compute the overall tilt of a membrane protein relative to the 
+       membrane normal by averaging the tilts of the individual transmembrane
+       helices.  In Packages/PyLOOS.
+
        <DT><B>ramachandran</B>
        <DD>Computes a ramachandran map for a given selection of a specified
        range of frames in a trajectory (or all frames).  Note that some
@@ -1347,7 +1369,6 @@ Matlab and Octave.
        both directions, then use the "--skip" flag.
 
        <DT><B>rdf</B>
-
        <DD>Computes the radial distribution function for two selections
        averagd over a trajectory.  The selections are split up by molecule
        and the center of mass is used.  For example, selecting all water
