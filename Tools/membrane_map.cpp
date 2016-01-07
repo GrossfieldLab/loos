@@ -328,6 +328,7 @@ int main(int argc, char *argv[])
 
         // get the alignment matrix
         GMatrix M = align_to.superposition(reference);
+        M(2,2) = 1.0;    // Fix a problem caused by zapping the z-coords...
         XForm W(M);
 
         // align the stuff we're goign to do the calculation on
