@@ -1,3 +1,7 @@
+2016-01-07    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in membrane_map causing alignments to be incorrect (affected height calculation)
+
 2015-11-20    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Released loos-2.3.0
