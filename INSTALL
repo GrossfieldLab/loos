@@ -69,7 +69,9 @@ U = This is an unsupported configuration.  We have successfully built
 		     = Building and Installing =
 
 LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
-refer to the OS-specific instructions below for more details.
+refer to the OS-specific instructions below for more details.  For general
+advice about configuring LOOS and building in unusual environments, soo
+the "General Notes" section at the end of this file.xo
 
 LOOS can then be built using the following command:
 
@@ -406,6 +408,18 @@ compiler is used to build LOOS by setting the CXX variable in your
 
 Note: Settings in the custom.py file can be overridden using the
 command-line and the shell environment.  
+
+
+Sometimes compilers will require multiple environment variables to
+work correctly.  In order to handle these cases, the LOOS build will
+import all environment variables into SCons before building.  This is
+*not* the SCons way to do things, however it makes handling these edge
+cases much easier.  In the event that these extra environment
+variables cause problems, you can revert to a mostly "clean" build
+environment by editing the SConstruct file.  Starting at line 72 with
+"env = Environment(...)", uncomment the first invocation and comment
+out the second one.
+
 
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
