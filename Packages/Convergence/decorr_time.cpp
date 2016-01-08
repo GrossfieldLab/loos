@@ -169,6 +169,8 @@ vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, c
   vector<vecDouble> fik;
   
   uint curframe = 0;
+  if (debugging)
+    cerr << boost::format("Debug> S=%d, n=%d, t=%d\n") % S % n % t;
   while (curframe < assignments.size()) {
     vecUint ensemble;
     for (uint i=0; i<n && curframe < assignments.size(); ++i, curframe += t)
@@ -182,6 +184,17 @@ vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, c
     fik.push_back(hist);
   }
 
+
+  if (debugging) {
+    cerr << "Debug> populations=\n";
+    for (uint i=0;i<fik.size(); ++i) {
+      cerr << "\t" << i << " : ";
+      copy(fik[i].begin(), fik[i].end(), ostream_iterator<double>(cerr, ","));
+      cerr << "\n";
+    }
+    cerr << endl;
+  }
+  
   vecDouble means(S, 0.0);
   for (vector<vecDouble>::iterator j = fik.begin(); j != fik.end(); ++j)
     for (uint i=0; i<S; ++i)
@@ -190,7 +203,7 @@ vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, c
     means[i] /= fik.size();
 
   if (debugging) {
-    cerr << "Probe> means=";
+    cerr << "Debug> means=";
     copy(means.begin(), means.end(), ostream_iterator<double>(cerr, ","));
     cerr << endl;
   }
@@ -207,8 +220,8 @@ vecDouble binVariances(const vecUint& assignments, const uint S, const uint n, c
     *i /= fik.size();
 
   if (debugging) {
-    cerr << boost::format("Probe> chunks = %d\n") % fik.size();
-    cerr << "Probe> vars=";
+    cerr << boost::format("Debug> chunks = %d\n") % fik.size();
+    cerr << "Debug> vars=";
     copy(vars.begin(), vars.end(), ostream_iterator<double>(cerr, ","));
     cerr << endl;
   }
@@ -237,9 +250,11 @@ double sigma(const vecUint& assignments, const uint S, const uint n, const uint 
   double N = static_cast<double>(assignments.size()) / t;
   double expected = (f*(1.0-f) / n) * (N-n)/(N-1.0);
 
+  double val = mean_vars / expected;
+  
   if (debugging)
-    cerr << boost::format("Probe> f=%f, N=%f, expected=%f\n") % f % N % expected;
-  return(mean_vars/expected);
+    cerr << boost::format("Debug> f=%f, N=%f, expected=%f, val=%f\n\n") % f % N % expected % val;
+  return(val);
 }
 
 
