@@ -188,10 +188,11 @@ int main(int argc, char *argv[]) {
 
   AtomicGroup center_mol = selectAtoms(model, topts->center_sel);
   GCoord center = center_mol.centroid();
-  if (topts->center_xy) center.z() = 0.0;
 
   AtomicGroup apply_mol = selectAtoms(model, topts->apply_sel);
   GCoord offset = topts->translate - center;
+  if (topts->center_xy)
+    offset.z() = 0.0;
   
   for (AtomicGroup::iterator atom = apply_mol.begin(); atom != apply_mol.end(); ++atom)
     (*atom)->coords() += offset;
