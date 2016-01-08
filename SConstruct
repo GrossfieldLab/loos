@@ -69,7 +69,15 @@ opts.Add('PYTHON_PATH', 'Path to Python Modules', '')
 
 addDeprecatedOptions(opts)
 
-env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+### Uncomment this version to have a semi-clean build environment 
+#env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+
+### Uncomment this line to bring the full user environment into the build environment
+env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+
+
+
+
 Help(opts.GenerateHelpText(env))
 
 checkForDeprecatedOptions(env)
