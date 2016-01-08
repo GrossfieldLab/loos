@@ -22,6 +22,14 @@ details.
 ---------------------------------------------------------------------
 
 
+   * RELEASE 2.3.1 *
+
+This release of LOOS is a bug-fix release.  A bug was discovered in
+membrane_map that caused the z-axis of all coordinates to be set to
+0.  This affects height and vector calculations, but not density.
+
+In addition, improvements were made to the documentation.
+
 
    * RELEASE 2.3.0 *
 
