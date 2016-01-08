@@ -1,3 +1,7 @@
+2016-01-08    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Fixed bug in center-molecule affecting --center_xy
+
 2016-01-07    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in membrane_map causing alignments to be incorrect (affected height calculation)

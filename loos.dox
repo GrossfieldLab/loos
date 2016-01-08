@@ -1674,6 +1674,7 @@ namespace loos {
 <ul>
   <li> Fixed bug in membrane_map causing aligned coordinates to be squashed
        into the x-y plane.
+  <li> Fixed bug affecting center-molecule with --center_xy
 </ul>
 
 \subsection r231_added_changed Added, Changed, or Otherwise Notable
