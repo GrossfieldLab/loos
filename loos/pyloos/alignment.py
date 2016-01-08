@@ -11,7 +11,9 @@ import loos
 
 def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
     """ 
-    Iteratively align a loos.pyloos.Trajectory object (or a list of AtomicGroups)
+    Iteratively align a loos.pyloos.Trajectory object (or a list of AtomicGroups).
+    Returns the transformations needed to perform the alignment.  Note that it does
+    not currently transform what's passed into it.
     
     Args
 
@@ -46,6 +48,8 @@ def iterativeAlignment(ensemble, threshold=1e-8, maxiter=1000):
 def iterativeAlignTrajectory(model, traj, threshold=1e-8, maxiter=1000, **kwargs):
     """ 
     Interface to the standard LOOS iterative alignment routines.
+    Returns the transformations needed to perform the alignment.  Note that it does
+    not currently transform what's passed into it.
 
     Args
 
