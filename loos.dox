@@ -1669,6 +1669,18 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
+\section release231 Version 2.3.1 (1-11-2016)
+\subsection r231_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in membrane_map causing aligned coordinates to be squashed
+       into the x-y plane.
+</ul>
+
+\subsection r231_added_changed Added, Changed, or Otherwise Notable
+<ul>
+  <li> Documentation improvements
+</ul>
+
 \section release230 Version 2.3.0 (11-20-2015)
 \subsection r230_bugs Bug Fixes
 <ul>
