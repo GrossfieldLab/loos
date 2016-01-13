@@ -1,0 +1,28 @@
+### Some files to ignore in LOOS
+
+# Object files
+*.o
+*.os
+
+# Built (from flex, bison, and swig)
+*.cc
+revision.cpp
+loos.py
+loos/__init__.py
+setup.sh
+setup.csh
+
+# Library files
+*.so
+*.lib
+
+# Python compiled files
+*.pyc
+
+# Configuration/build
+*.log
+.sconf_temp
+.sconsign.dblite
+
+# Emacs cruft
+*~
