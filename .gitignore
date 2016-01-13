@@ -32,6 +32,8 @@ docs.built
 # Emacs cruft
 *~
 
+# Vi cruft
+*.swp
 
 ###EXES
 Tools/renum-pdb
