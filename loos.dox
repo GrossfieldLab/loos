@@ -13,7 +13,7 @@ School of Medicine & Dentistry, University of Rochester\n
 
 <hr>
 <h2>Important News</h2>
-Our email address has changed.  Please use loos.maintainer@gmail.com to contact us regarding LOOS.  We now have three mailing lists available:
+Our email address has changed.  Please use loos.maintainer@gmail.com to contact us regarding LOOS.  Even better, we now have three mailing lists available:
    - <a href="https://lists.sourceforge.net/lists/listinfo/loos-users">LOOS Users</a>: for discussion of issues related to installing or using LOOS
    - <a href="https://lists.sourceforge.net/lists/listinfo/loos-devel">LOOS Developers</a>: for discussion of developing new tools using LOOS
    - <a href="https://lists.sourceforge.net/lists/listinfo/loos-announce">LOOS Announcements</a>: a low-volume list primarily used to announce new releases and explain changes
@@ -23,6 +23,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
 
 <h2>Quick Links</h2>
       -  <a href="http://sourceforge.net/projects/loos">Download LOOS at http://sourceforge.net/projects/loos</a>
+      -  <a href="https://github.com/GrossfieldLab/loos">Clone LOOS from GitHub</a>
       -  <a href="https://lists.sourceforge.net/lists/listinfo/loos-announce">Subscribe to the announcements mailing list</a>
       -  <a href="http://sourceforge.net/projects/loos/files/loos%20material/loos_talk_2013_2.pdf/download">Download a tutorial (pdf) on using LOOS</a>
       -  Ask the developers a question at loos.maintainer@gmail.com or by posting to one of the mailing lists.
