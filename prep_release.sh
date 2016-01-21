@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# (c) Tod D. Romo
+# (c) 2008 Tod D. Romo
 #     Grossfield Lab
 #     URMC
 #
-#  NOTE:  This file is NOT part of any release!
-#
-#
+#  NOTE:  This script is used internally to create a release from the
+#         SVN repository
+
 
 
 export PREF=/var/tmp/loos-inst   # Where to put test install of LOOS
