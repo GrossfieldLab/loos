@@ -15,6 +15,7 @@ setup.csh
 # Library files
 *.so
 *.lib
+*.dylib
 *.a
 
 # Python compiled files
