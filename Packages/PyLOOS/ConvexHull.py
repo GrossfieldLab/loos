@@ -2,7 +2,17 @@
 
 import loos
 import numpy
-from scipy.spatial import ConvexHull as CH
+
+try:
+    from scipy.spatial import ConvexHull as CH
+except ImportError:
+    import sys
+    print """
+    Failure importing scipy, needed for ConvexHull calculations
+    You either need to install scipy or adjust your PYTHONPATH
+    to point to it.
+    """
+    sys.exit(1)
 
 class ZSliceSelector:
     def __init__(self, min_z, max_z):
