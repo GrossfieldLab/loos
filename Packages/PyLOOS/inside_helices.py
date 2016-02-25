@@ -59,6 +59,7 @@ and then histogram vals.dat.
     
 
     """ % (sys.argv[0])
+    sys.exit(0)
 
 
 system_file = sys.argv[1]
