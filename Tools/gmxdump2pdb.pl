@@ -816,7 +816,7 @@ Usage- gmxdump -s foo.tpr | gmxdump2.pl [options] output-file-prefix
 Options:
    --[no]local       Resids are local to each molecule (default is off)
                      (i.e. reset based on GROMACS' notion of a molecule)
-   --[no]constraints Add constraints as bonds (default)
+   --[no]constraints Add constraints as bonds (default is off)
    --hydrogens       Only add constaints where the 2nd atom begins with an H
    --water           Infer water connectivity (requires OW, HW1, and HW2 atoms in order)
    --mass=x          Set all atom masses to x
