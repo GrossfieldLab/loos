@@ -8,6 +8,59 @@ import sys
 import loos
 import ConvexHull
 
+if len(sys.argv)==1 or sys.argv[1] == "-h" or sys.argv[1] == "--fullhelp":
+    print """
+Usage: %s system trajectory protein_selection zmin zmax zblocks target_selection output_directory helix_ranges
+
+    system: system description file, e.g. PDB, PSF, parmtop, etc
+    trajectory: trajectory file, e.g. DCD, XTC
+    protein_selection: string to select the protein, e.g. 'segid == "PROT" && backbone'
+    zmin, zmax: z-range to be considered for lipid penetration events
+    zblocks: how many slices along the z-axis the system should be divided into
+    target_selection: selection string to pick out the lipids you want to look at
+    output_directory: where to write the output files (assumed to already exist)
+    helix_ranges: list of colon-separated integers specifying residue ranges for the helices
+
+Example command line:
+inside_helices.py rhodopsin.psf sim.dcd 'segid == "RHOD" && backbone' -17 17 10 'segid =~ "[TB]PE" && name =~ "C2\d+"' dha_helices 35:64 71:100 107:139 151:173 200:233 246:277 286:308
+
+What's actually going on:
+The purpose of this program is to detect cases where lipid chains or 
+headgroups move "inside" a helical protein.  The user specifies what the 
+protein is and the residue ranges of the helices, and tells us how to 
+identify the lipids (in the given example, we're looking at the C2 lipid
+chain from PE lipids).
+
+At each time point, the code breaks the system into slices along z, and
+within each slice computes the centroid for each helix; this lets the
+program correctly capture helix tilts and kinks, which can alter where the
+"surface" of the protein is.  Note: if you set zblocks too big, you won't
+have enough atoms for each helix in that block to compute a sane centroid.
+It's up to you whether you want to include side chains.
+
+The centroids of the helices are used to compute a convex hull for each
+z-slice.  Then, for each lipid chain (or headgroup, etc) we check to
+see if there are any atoms that are inside the hull that's in its z range.
+If the number of atoms is greater than the threshold (currently hardwired
+to 7, TODO: fix this), then that chain is considered to be "inside" the
+protein at that time.  
+
+The output of the program is a set of time series: each lipid that is ever
+identified as being inside the protein gets its own file (named as
+SEGID:resid.dat).  The first column is the frame number, and the second is
+1 if the lipid was inside on that frame and 0 otherwise.  
+
+If you just want the distribution of occupancies (e.g. what fraction of
+time the lipid was present), you can say something like
+
+grep Occ *.dat | awk '{print $4}' > vals.dat
+
+and then histogram vals.dat.
+    
+
+    """ % (sys.argv[0])
+
+
 system_file = sys.argv[1]
 traj_file = sys.argv[2]
 protein_string = sys.argv[3]
