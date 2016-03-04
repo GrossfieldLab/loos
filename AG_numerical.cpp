@@ -196,6 +196,28 @@ namespace loos {
     return(radius);
   }
 
+  /**
+   *  spherical variance as a measure of how much atom "target" is
+   *  inside this atomic group
+   *  Mezei, J Mol Graph Modeling, 2003, 21, 463-472
+   */
+  greal AtomicGroup::sphericalVariance(const pAtom target) const {
+    return sphericalVariance(target->coords());
+  }
+
+
+  greal AtomicGroup::sphericalVariance(const GCoord target) const {
+      GCoord var;
+      for (const_iterator i = atoms.begin(); i != atoms.end(); i++) {
+        GCoord vec = (*i)->coords() - target;
+        greal length = vec.length();
+        var += vec / length;
+      }
+
+      greal variance = var.length() / atoms.size();
+      return variance;
+
+  }
 
   greal AtomicGroup::rmsd(const AtomicGroup& v) {
   

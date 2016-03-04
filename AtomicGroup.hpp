@@ -592,6 +592,11 @@ namespace loos {
     greal totalMass(void) const;
     greal radiusOfGyration(void) const;
 
+    //! Spherical variance of group with respect to target atom
+    greal sphericalVariance(const pAtom) const;
+    greal sphericalVariance(const GCoord) const;
+
+
     //! Compute the RMSD between two groups
     /**Sorts both groups (if necessary), then assumes a 1:1
      *correspondence between ith atoms.
