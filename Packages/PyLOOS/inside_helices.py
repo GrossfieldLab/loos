@@ -8,7 +8,7 @@ import sys
 import loos
 import ConvexHull
 import argparse
-
+import os
 
 fullhelp= """
 
@@ -88,6 +88,17 @@ traj = loos.createTrajectory(args.traj_file, system)
 protein = loos.selectAtoms(system, args.protein_string)
 
 output_directory = args.directory
+if not os.path.exists(output_directory):
+    try:
+        os.mkdir(output_directory)
+    except OSError as inst:
+        print 'Error creating output directory %s : ' % output_directory
+        print inst
+        sys.exit(1)
+if not os.access(output_directory, os.W_OK):
+    print "Error: no permission to write to output directory ", output_directory
+    sys.exit(1)
+        
 
 helices = []
 helix_centroids = loos.AtomicGroup()
