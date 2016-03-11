@@ -7,22 +7,13 @@ protein
 import sys
 import loos
 import ConvexHull
+import argparse
 
-if len(sys.argv)==1 or sys.argv[1] == "-h" or sys.argv[1] == "--fullhelp":
-    print """
-Usage: %s system trajectory protein_selection zmin zmax zblocks target_selection output_directory helix_ranges
 
-    system: system description file, e.g. PDB, PSF, parmtop, etc
-    trajectory: trajectory file, e.g. DCD, XTC
-    protein_selection: string to select the protein, e.g. 'segid == "PROT" && backbone'
-    zmin, zmax: z-range to be considered for lipid penetration events
-    zblocks: how many slices along the z-axis the system should be divided into
-    target_selection: selection string to pick out the lipids you want to look at
-    output_directory: where to write the output files (assumed to already exist)
-    helix_ranges: list of colon-separated integers specifying residue ranges for the helices
+fullhelp= """
 
 Example command line:
-inside_helices.py rhodopsin.psf sim.dcd 'segid == "RHOD" && backbone' -17 17 10 'segid =~ "[TB]PE" && name =~ "C2\d+"' dha_helices 35:64 71:100 107:139 151:173 200:233 246:277 286:308
+inside_helices.py rhodopsin.psf sim.dcd 'segid == "RHOD" && backbone' -17 17 10 'segid =~ "[TB]PE" && name =~ "C2\d+"' 35:64 71:100 107:139 151:173 200:233 246:277 286:308 -d dha_helices 
 
 What's actually going on:
 The purpose of this program is to detect cases where lipid chains or 
@@ -43,7 +34,8 @@ z-slice.  Then, for each lipid chain (or headgroup, etc) we check to
 see if there are any atoms that are inside the hull that's in its z range.
 If the number of atoms is greater than the threshold (currently hardwired
 to 7, TODO: fix this), then that chain is considered to be "inside" the
-protein at that time.  
+protein at that time.   Note: you must specify at least 3 helices for this 
+program to make any sense, since you can't have a convex hull with 2 points.
 
 The output of the program is a set of time series: each lipid that is ever
 identified as being inside the protein gets its own file (named as
@@ -56,30 +48,46 @@ time the lipid was present), you can say something like
 grep Occ *.dat | awk '{print $4}' > vals.dat
 
 and then histogram vals.dat.
+    """ 
+
+
+parser = argparse.ArgumentParser(prog=sys.argv[0], epilog=fullhelp, formatter_class=argparse.RawDescriptionHelpFormatter)
+parser.add_argument("system_file", 
+                    help="File describing system contents, e.g. PDB or PSF")
+parser.add_argument("traj_file", help="Trajectory file")
+parser.add_argument("protein_string", help="Selection for the protein")
+parser.add_argument("zmin", 
+                    type=float,
+                    help="Minimum z value to consider for target atoms")
+parser.add_argument("zmax", 
+                    type=float,
+                    help="Maxmimum z value to consider for target atoms") 
+parser.add_argument("zblocks", 
+                    type=int,
+                    help="Number of blocks to slice the system into along the z-axis")
+parser.add_argument("target_string", 
+                    help="Selection string for the stuff that may penetrate")
+parser.add_argument("helix_ranges", 
+                    nargs="+",
+                    help="list of colon-delimited residue number ranges specifying where the helices are")
+parser.add_argument("-d", "--directory", 
+                    help="Directory to create output files", 
+                    default=".")
+
+args = parser.parse_args()
+
     
 
-    """ % (sys.argv[0])
-    sys.exit(0)
+system = loos.createSystem(args.system_file)
+traj = loos.createTrajectory(args.traj_file, system)
 
+protein = loos.selectAtoms(system, args.protein_string)
 
-system_file = sys.argv[1]
-traj_file = sys.argv[2]
-protein_string = sys.argv[3]
-zmin = float(sys.argv[4])
-zmax = float(sys.argv[5])
-zblocks = int(sys.argv[6])
-target_string = sys.argv[7]
-output_directory = sys.argv[8]
-helix_ranges = sys.argv[9:]
-
-system = loos.createSystem(system_file)
-traj = loos.createTrajectory(traj_file, system)
-
-protein = loos.selectAtoms(system, protein_string)
+output_directory = args.directory
 
 helices = []
 helix_centroids = loos.AtomicGroup()
-for h in helix_ranges:
+for h in args.helix_ranges:
     first, last = h.split(":")
     helix_string ='(resid >= ' + first + ') ' + '&& (resid <= ' + last  + ')'
     helix = loos.selectAtoms(protein, helix_string)
@@ -87,23 +95,23 @@ for h in helix_ranges:
     helix_centroids.append(loos.Atom())
 
 
-target = loos.selectAtoms(system, target_string)
+target = loos.selectAtoms(system, args.target_string)
 target = loos.selectAtoms(target, "!hydrogen")
 
 chains = target.splitByResidue()
 
 threshold = 7
 
-if (zmin > zmax):
-    tmp = zmax
-    zmax = zmin
-    zmin = tmp
+if (args.zmin > args.zmax):
+    tmp = args.zmax
+    args.zmax = args.zmin
+    args.zmin = tmp
 
 slicers = []
-block_size = (zmax - zmin) / zblocks
-for i in range(zblocks):
-    z1 = zmin + i*block_size
-    z2 = zmin + (i+1)*block_size
+block_size = (args.zmax - args.zmin) / args.zblocks
+for i in range(args.zblocks):
+    z1 = args.zmin + i*block_size
+    z2 = args.zmin + (i+1)*block_size
 
     ch = ConvexHull.ZSliceSelector(z1, z2)
     slicers.append(ch)
@@ -118,7 +126,7 @@ while (traj.readFrame()):
 
     # set up the convex hulls for this slice
     hulls = []
-    for i in range(zblocks):
+    for i in range(args.zblocks):
         current_list = []
         for h in range(len(helices)):
             helix = slicers[i](helices[h])
@@ -142,10 +150,10 @@ while (traj.readFrame()):
             z = atom.coords().z()
 
             # skip atoms outside the z range
-            if not (zmin < z < zmax):
+            if not (args.zmin < z < args.zmax):
                 continue
             
-            index = int((z-zmin)/block_size)
+            index = int((z-args.zmin)/block_size)
 
             if hulls[index] and hulls[index].is_inside(atom.coords()):
                 atoms_inside += 1
