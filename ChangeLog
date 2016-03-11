@@ -1,3 +1,7 @@
+2016-03-11    <alan_grossfield@.urmc.rochester.edu>
+
+	* Added new tool inside_helices.py to Packages/PyLOOS
+
 2016-01-08    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in center-molecule affecting --center_xy
