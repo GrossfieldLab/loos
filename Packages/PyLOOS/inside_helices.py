@@ -30,12 +30,12 @@ have enough atoms for each helix in that block to compute a sane centroid.
 It's up to you whether you want to include side chains.
 
 The centroids of the helices are used to compute a convex hull for each
-z-slice.  Then, for each lipid chain (or headgroup, etc) we check to
-see if there are any atoms that are inside the hull that's in its z range.
-If the number of atoms is greater than the threshold (currently hardwired
-to 7, TODO: fix this), then that chain is considered to be "inside" the
-protein at that time.   Note: you must specify at least 3 helices for this 
-program to make any sense, since you can't have a convex hull with 2 points.
+z-slice.  Then, for each lipid chain (or headgroup, etc) we check to see if
+there are any atoms that are inside the hull that's in its z range.  If the
+number of atoms is greater than the threshold (default value is 7), then that
+chain is considered to be "inside" the protein at that time.   Note: you must
+specify at least 3 helices for this program to make any sense, since you can't
+have a convex hull with 2 points.
 
 The output of the program is a set of time series: each lipid that is ever
 identified as being inside the protein gets its own file (named as
@@ -73,6 +73,10 @@ parser.add_argument("helix_ranges",
 parser.add_argument("-d", "--directory", 
                     help="Directory to create output files", 
                     default=".")
+parser.add_argument("-t", "--threshold",
+                    default=7,
+                    type=int,
+                    help="Number of atoms inside for the chain to be considered inside")
 
 args = parser.parse_args()
 
@@ -99,8 +103,6 @@ target = loos.selectAtoms(system, args.target_string)
 target = loos.selectAtoms(target, "!hydrogen")
 
 chains = target.splitByResidue()
-
-threshold = 7
 
 if (args.zmin > args.zmax):
     tmp = args.zmax
@@ -157,7 +159,7 @@ while (traj.readFrame()):
 
             if hulls[index] and hulls[index].is_inside(atom.coords()):
                 atoms_inside += 1
-                if atoms_inside >= threshold:
+                if atoms_inside >= args.threshold:
                     key = atom.segid() + ":" + str(atom.resid())
                     if not bound_lipids.has_key(key):
                         bound_lipids[key] = []
