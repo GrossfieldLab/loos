@@ -37,9 +37,13 @@ if __name__ == '__main__':
                           # to be rejected
 
     # set how big the "water" region of the box will be
-    water_width = config.box.z() - 29.0  # TODO: need a smarter algorithm
-                                         #       for this, probably using
-                                         #       the phos values
+    water_width = config.box.z() 
+
+    # Don't need a blank spot in the middle if there are no lipids
+    if len(config.segments) > 0:
+        water_width -= 29.0  # TODO: need a smarter algorithm
+                             #       for this, probably using
+                             #       the phos values
 
     # set the number of minimization and dynamics NAMD will do on each cycle
     number_of_steps = 100 
@@ -195,66 +199,68 @@ if __name__ == '__main__':
     num_iter = 100
     delta = (scaled_box - config.box.x())/num_iter
 
+    # only need to do the scaling and minimization if we've got lipids
+    if len(config.segments) > 0:
 
-    next_pdb = "lipid_only.pdb"
-    dim = scaled_box
-    for i in range(num_iter+1):
-        old_dim = dim
-        dim = scaled_box - (i*delta)
+        next_pdb = "lipid_only.pdb"
+        dim = scaled_box
+        for i in range(num_iter+1):
+            old_dim = dim
+            dim = scaled_box - (i*delta)
 
-        # scale the centers of mass of individual molecules
-        # TODO: this will have to change to handle "fixed" molecules
-        scale_factor = dim/old_dim
-        for j in range(len(molecules)):
-            centroid = molecules[j].centroid()
-            centroid.z(0.0) # only scale in plane of membrane
-            new_centroid = centroid * scale_factor
-            diff = new_centroid - centroid
-            molecules[j].translate(diff)
+            # scale the centers of mass of individual molecules
+            # TODO: this will have to change to handle "fixed" molecules
+            scale_factor = dim/old_dim
+            for j in range(len(molecules)):
+                centroid = molecules[j].centroid()
+                centroid.z(0.0) # only scale in plane of membrane
+                new_centroid = centroid * scale_factor
+                diff = new_centroid - centroid
+                molecules[j].translate(diff)
 
-        # output the new coordinates so we can minimize with NAMD
-        pdb_out = open(os.path.join(config.directory,next_pdb), "w")
-        pdb_out.write(str(pdb))
-        pdb_out.close()
-
-
+            # output the new coordinates so we can minimize with NAMD
+            pdb_out = open(os.path.join(config.directory,next_pdb), "w")
+            pdb_out.write(str(pdb))
+            pdb_out.close()
 
 
-        # TODO: long term, I'd like to change this so that instead of
-        #       running a new instance of NAMD, we're reusing the same 
-        #       process, and adding new commands
-        current_box = loos.GCoord(dim, dim, huge_z)
-        core_name = "lipid_shrink_" + str(i)
-        full_core = os.path.join(config.directory, core_name)
 
-        # copy the psf file to the working directory
-        local_psfname = os.path.basename(config.psfname)
-        #shutil.copyfile(config.psfname, 
-        #                os.path.join(config.directory, local_psfname))
 
-        namd = NAMD.NAMD(local_psfname, next_pdb,
-                         core_name, config.parameters,
-                         current_box, config.namd_binary)
-        namd_inputfilename = full_core + ".inp"
-        namd_outputfilename = full_core + ".out" 
-        namd.write_inputfile(namd_inputfilename, number_of_steps)
+            # TODO: long term, I'd like to change this so that instead of
+            #       running a new instance of NAMD, we're reusing the same 
+            #       process, and adding new commands
+            current_box = loos.GCoord(dim, dim, huge_z)
+            core_name = "lipid_shrink_" + str(i)
+            full_core = os.path.join(config.directory, core_name)
 
-        namd.write_restraintfile(config.directory, system) 
-        namd.run_namd(namd_inputfilename, namd_outputfilename)
+            # copy the psf file to the working directory
+            local_psfname = os.path.basename(config.psfname)
+            #shutil.copyfile(config.psfname, 
+            #                os.path.join(config.directory, local_psfname))
 
-        # copy the final coordinates to a pdb file
-        shutil.copyfile(full_core + ".coor",  
-                        os.path.join(config.directory,next_pdb))
+            namd = NAMD.NAMD(local_psfname, next_pdb,
+                             core_name, config.parameters,
+                             current_box, config.namd_binary)
+            namd_inputfilename = full_core + ".inp"
+            namd_outputfilename = full_core + ".out" 
+            namd.write_inputfile(namd_inputfilename, number_of_steps)
 
-        # read in the new structure
-        new_system = loos.createSystem(os.path.join(config.directory,next_pdb))
+            namd.write_restraintfile(config.directory, system) 
+            namd.run_namd(namd_inputfilename, namd_outputfilename)
 
-        # copy coordinates back into old AtomicGroup
-        system.copyCoordinatesFrom(new_system, 0, system.size())
+            # copy the final coordinates to a pdb file
+            shutil.copyfile(full_core + ".coor",  
+                            os.path.join(config.directory,next_pdb))
 
-        # TODO: this will have to change to handle "fixed" molecules
-        system.centerAtOrigin()
-        sys.stderr.write("lipid only minimization cycle: %d\n" % i)
+            # read in the new structure
+            new_system = loos.createSystem(os.path.join(config.directory,next_pdb))
+
+            # copy coordinates back into old AtomicGroup
+            system.copyCoordinatesFrom(new_system, 0, system.size())
+
+            # TODO: this will have to change to handle "fixed" molecules
+            system.centerAtOrigin()
+            sys.stderr.write("lipid only minimization cycle: %d\n" % i)
 
     pdb_out = open(os.path.join(config.directory,"lipid_min.pdb"), "w")
     pdb_out.write(str(pdb))
