@@ -51,16 +51,22 @@ class WaterBox:
 
         # trim the waters outside the target box size
         residues = self.full_system.splitByResidue()
+        print len(residues), len(self.full_system)
         half_box = 0.5 * self.box
         to_remove = loos.AtomicGroup()
         for res in residues:
             centroid = res.centroid()
+            print centroid, half_box
             if ( (abs(centroid.x()) > half_box.x()) or
                  (abs(centroid.y()) > half_box.y()) or
                  (abs(centroid.z()) > half_box.z()) ):
                     to_remove.append(res)
 
+        print "Need to remove: ", len(to_remove)
+        print "before: ", self.full_system.boundingBox(), len(self.full_system)
         self.full_system.remove(to_remove)
+        print "after: ", self.full_system.boundingBox(), len(self.full_system)
+
         self.full_system.periodicBox(self.box)
 
         # renumber atom ids and resids
@@ -106,7 +112,7 @@ if __name__ == '__main__':
 
     coordfile = 'water_small.crd'
     box_size = loos.GCoord(15.5516, 15.5516, 15.5516)
-    big_box = loos.GCoord(30.0, 50.0, 77.0)
+    big_box = loos.GCoord(74.1, 74.1, 95.0)
 
     w = WaterBox(coordfile, box_size, big_box, "BULK")
 
