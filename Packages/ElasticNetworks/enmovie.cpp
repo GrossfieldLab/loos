@@ -76,6 +76,8 @@ int offset = 0;
 int nsteps = 100;
 string supersel;
 bool tag = false;
+bool positive = false;
+bool negative = false;
 
 
 
@@ -100,7 +102,10 @@ public:
       ("global", po::value<double>(&global_scale)->default_value(1.0), "Global scaling")
       ("uniform", po::value<bool>(&uniform)->default_value(false), "Scale all elements uniformly")
       ("map", po::value<string>(&map_name), "Use a map file to map LSV/eigenvectors to atomids")
-      ("offset", po::value<int>(&offset), "Added to mode indices to select columns in eigenvector matrix");
+      ("offset", po::value<int>(&offset), "Added to mode indices to select columns in eigenvector matrix")
+      ("positive", po::value<bool>(&positive)->default_value(false), "Only move along positive eigenvector direction")
+      ("negative", po::value<bool>(&negative)->default_value(false), "Only move along negative eigenvector direction");
+      
   }
 
   bool postConditions(po::variables_map& vm) {
@@ -133,13 +138,17 @@ public:
         scales.push_back(1.0);
     }
 
+    // Turn off since that's the default behavior
+    if (negative && positive)
+      negative = positive = false;
+
 
     return(true);
   }
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', autoscale=%d, autolength=%f, svals='%s', square=%d, invert=%d, offset=%d, tag=%d, superset='%s', avg='%s'")
+    oss << boost::format("columns='%s', global=%f, uniform=%d, map='%s', autoscale=%d, autolength=%f, svals='%s', square=%d, invert=%d, offset=%d, tag=%d, superset='%s', avg='%s', positive=%d, negative=%d")
       % vectorAsStringWithCommas<string>(strings)
       % global_scale
       % uniform
@@ -152,7 +161,9 @@ public:
       % offset
       % tag
       % supersel
-      % avgname;
+      % avgname
+      % positive
+      % negative;
     
     oss << "scale='";
     copy(scales.begin(), scales.end(), ostream_iterator<double>(oss, ","));
@@ -513,11 +524,13 @@ int main(int argc, char *argv[]) {
   pTrajectoryWriter traj = otopts->createTrajectory(popts->prefix);
 
   // We'll step along the Eigenvectors using a sin wave as a final scaling...
-  double delta = 2*PI/nsteps;
+  bool doublesided = !(negative || positive);
+  double delta = (doublesided ? 2.0 : 1.0)*PI/nsteps;
+  double phase = negative ? PI : 0.0;
 
   // Loop over requested number of frames...
   for (int frameno=0; frameno<nsteps; frameno++) {
-    double k = sin(delta * frameno);
+    double k = sin(delta * frameno + phase);
 
     // Have to make a copy of the atoms since we're computing a
     // displacement from the model structure...

@@ -1,3 +1,8 @@
+2016-03-24    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added --positive and --negative flags to enmovie controlling which direction
+	motion is depicted
+
 2016-03-11    <alan_grossfield@.urmc.rochester.edu>
 
 	* Added new tool inside_helices.py to Packages/PyLOOS
