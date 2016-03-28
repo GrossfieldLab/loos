@@ -558,7 +558,7 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    if (k == 0) {
+    if (frameno == 0) {
       // Write out the selection, converting it to a PDB
       string outpdb(popts->prefix + ".pdb");
       ofstream ofs(outpdb.c_str());
