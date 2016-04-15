@@ -48,9 +48,9 @@ string fullHelpMessage(void) {
         "the entire trajectory.\n"
         "\n"
         "\tserialize-selection can also be used to make a library of conformations from a\n"
-        "trajectory.  The --pdbout option sets the prefix (using a printf-style format), and\n"
-        "will cause the tool to write out a library of different PDB files rather than a\n"
-        "DCD.  For membrane systems, it is convenient to canonicalize the orientation of the\n"
+        "trajectory.  The --pdbout option turns this on.  The prefix uses a printf format\n"
+        "for setting the output filenames.  The default will be 'output-%06d.pdb'.\n"
+        "For membrane systems, it is convenient to canonicalize the orientation of the\n"
         "resulting library.  The --canon option will flip the selection depending on which\n"
         "leaflet it came frame (assuming the membrane normal points along the Z-axis).\n"
         "\n"
@@ -93,8 +93,6 @@ public:
                 
                 center_selection = string("all");
             }
-            
-
             return(true);
         }
     
@@ -256,6 +254,12 @@ int main(int argc, char *argv[])
     options.add(bopts).add(popts).add(sopts).add(tropts).add(otopts).add(topts);
     if (!options.parse(argc, argv))
         exit(-1);
+
+    // Handle case where pdbout is on, but no prefix was given (i.e. using the default)
+    // Relies on knowledge of what the default value in OutputPrefix is, which we will
+    // want to use a better solution
+    if (topts->pdb_output && popts->prefix == "output")
+        popts->prefix = "output-%06d.pdb";
     
     AtomicGroup subset = selectAtoms(tropts->model, sopts->selection);
             

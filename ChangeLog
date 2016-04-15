@@ -1,3 +1,8 @@
+2016-04-15  Tod Romo  <tromo@Gorgoneion.local>
+
+	* Fixed bug in fullhelp for serialize-selection and default output
+	when using pdbout
+
 2016-03-24    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added --positive and --negative flags to enmovie controlling which direction
