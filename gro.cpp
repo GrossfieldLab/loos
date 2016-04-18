@@ -22,6 +22,8 @@
 
 
 #include <gro.hpp>
+#include <utils.hpp>
+#include <Fmt.hpp>
 
 
 
@@ -73,4 +75,89 @@ namespace loos {
       renumber();
   }
 
+  std::string Gromacs::atomAsString(const pAtom p) const {
+    std::ostringstream s;
+
+    // Float formatter for coords
+    Fmt crdfmt(3);
+    crdfmt.width(8);
+    crdfmt.right();
+    crdfmt.trailingZeros(true);
+    crdfmt.fixed();
+
+    // Float formatter for velocities
+    Fmt velfmt(4);
+    velfmt.width(8);
+    velfmt.right();
+    velfmt.trailingZeros(true);
+    velfmt.fixed();
+
+    /*
+    // Float formatter for B's and Q's...
+    Fmt bqfmt(2);
+    bqfmt.width(6);
+    bqfmt.right();
+    bqfmt.trailingZeros(true);
+    bqfmt.fixed();
+
+    // We don't worry about strings exceeding field-widths (yet),
+    // but do check for numeric overflows...
+    s << std::setw(6) << std::left << p->recordName();
+    s << hybrid36AsString(p->id(), 5) << " ";
+    s << std::setw(4) << std::left << p->name();
+
+    s << std::setw(1) << p->altLoc();
+    s << std::setw(4) << std::left << p->resname();
+    
+    s << std::setw(1) << std::right << p->chainId();
+    s << hybrid36AsString(p->resid(), 4);
+    s << std::setw(2) << p->iCode();
+    s << "  ";
+        
+    s << crdfmt(p->coords().x());
+    s << crdfmt(p->coords().y());
+    s << crdfmt(p->coords().z());
+    s << bqfmt(p->occupancy());
+    s << bqfmt(p->bfactor());
+    s << "      ";
+    s << std::setw(4) << std::left << p->segid();
+    s << std::setw(2) << std::right << p->PDBelement();
+    if (_show_charge)
+      s << std::setw(2) << p->charge();
+    else
+      s << "  ";
+    */
+
+    s << std::setw(5) << p->resid();
+    s << std::left << p->resname();
+    s << std::right << p->name();
+    s << p->index();
+    s << crdfmt(p->coords().x()/10.);
+    s << crdfmt(p->coords().y()/10.);
+    s << crdfmt(p->coords().z()/10.);
+    s << velfmt(0.0);
+    s << velfmt(0.0);
+    s << velfmt(0.0);
+
+    return(s.str());
+    
+  }
+
+  //! Output the group as a GRO...
+
+  std::ostream& operator<<(std::ostream& os, const Gromacs& g) {
+      AtomicGroup::const_iterator i;
+      
+      os << g.title();
+      for (i=g.atoms.begin(); i != g.atoms.end(); ++i) {
+          os << g.atomAsString(*i) << std::endl;
+      }
+
+      GCoord box = g.periodicBox();
+      box /= 10.0;
+      os << box.x() << "  " << box.y() << "  " << box.z() << std::endl;
+      
+          
+      return(os);
+  }
 }

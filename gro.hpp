@@ -55,6 +55,11 @@ namespace loos {
     }
 
 
+#if !defined(SWIG)
+        //! Output as a PDB
+        friend std::ostream& operator<<(std::ostream&, const Gromacs&);
+#endif
+
     std::string title(void) const { return(title_); }
 
   private:
@@ -65,6 +70,9 @@ namespace loos {
   private:
     
     void read(std::istream& ifs);
+    
+    // Convert an Atom to a string representation in PDB format...
+    std::string atomAsString(const pAtom p) const;
 
   };
 
