@@ -65,7 +65,7 @@ namespace loos {
     
 
     //! Class method for creating a GRO from an AtomicGroup
-    //static Gromacs fromAtomicGroup(const AtomicGroup&);
+    static Gromacs fromAtomicGroup(const AtomicGroup&);
 
   private:
     std::string _filename;

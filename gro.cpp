@@ -143,13 +143,25 @@ namespace loos {
     
   }
 
-  /*
+  //! Build a GRO from an AtomicGroup
+  //*
+  //  As it stands, this is a horrible hack and must be fixed.
+  //  I did it this way because I couldn't figure out how to 
+  //  make the following work: 
+  //  Gromacs p(g);
+  //
   Gromacs Gromacs::fromAtomicGroup(const AtomicGroup& g) {
-    Gromacs p(g);
+    Gromacs p;
+    for (uint i = 0; i < g.size(); ++i) {
+        p.append(g[i]);
+    }
+    
+    if (g.isPeriodic()) {
+        p.periodicBox(g.periodicBox());
+    }
 
     return(p);
   }
-  */
 
   
 
