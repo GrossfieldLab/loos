@@ -129,9 +129,9 @@ namespace loos {
     */
 
     s << std::setw(5) << p->resid();
-    s << std::left << p->resname();
-    s << std::right << p->name();
-    s << p->index();
+    s << std::left << std::setw(5) << p->resname();
+    s << std::right << std::setw(5) << p->name();
+    s << std::setw(5) << p->id();
     s << crdfmt(p->coords().x()/10.);
     s << crdfmt(p->coords().y()/10.);
     s << crdfmt(p->coords().z()/10.);
@@ -143,12 +143,23 @@ namespace loos {
     
   }
 
+  /*
+  Gromacs Gromacs::fromAtomicGroup(const AtomicGroup& g) {
+    Gromacs p(g);
+
+    return(p);
+  }
+  */
+
+  
+
   //! Output the group as a GRO...
 
   std::ostream& operator<<(std::ostream& os, const Gromacs& g) {
       AtomicGroup::const_iterator i;
       
-      os << g.title();
+      os << g.title() << std::endl;
+      os << g.size() << std::endl;
       for (i=g.atoms.begin(); i != g.atoms.end(); ++i) {
           os << g.atomAsString(*i) << std::endl;
       }

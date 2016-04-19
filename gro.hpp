@@ -62,6 +62,11 @@ namespace loos {
 
     std::string title(void) const { return(title_); }
 
+    
+
+    //! Class method for creating a GRO from an AtomicGroup
+    //static Gromacs fromAtomicGroup(const AtomicGroup&);
+
   private:
     std::string _filename;
     std::string title_;
