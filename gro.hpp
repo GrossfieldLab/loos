@@ -79,6 +79,9 @@ namespace loos {
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
+    //! Create of GRO from an AtomicGroup (upcast)
+    Gromacs(const AtomicGroup& grp) : AtomicGroup(grp) { }
+
   };
 
 

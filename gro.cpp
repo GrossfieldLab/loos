@@ -145,20 +145,20 @@ namespace loos {
 
   //! Build a GRO from an AtomicGroup
   //*
-  //  As it stands, this is a horrible hack and must be fixed.
-  //  I did it this way because I couldn't figure out how to 
-  //  make the following work: 
-  //  Gromacs p(g);
+  //  Note: if the AtomicGroup doesn't have periodicity information,
+  //        the GRO file gets a large generic periodic box.  This is 
+  //        to facilitate writing GRO files, where the box line seems 
+  //        to be mandatory.
   //
   Gromacs Gromacs::fromAtomicGroup(const AtomicGroup& g) {
-    Gromacs p;
-    for (uint i = 0; i < g.size(); ++i) {
-        p.append(g[i]);
-    }
+    Gromacs p(g);
     
-    if (g.isPeriodic()) {
-        p.periodicBox(g.periodicBox());
+    // GRO files need a periodicity line
+    if (!g.isPeriodic()) {
+        p.periodicBox(9999., 9999., 9999.);
     }
+
+    p.title_ = std::string("Generic title inserted here");
 
     return(p);
   }
