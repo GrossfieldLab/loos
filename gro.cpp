@@ -92,42 +92,6 @@ namespace loos {
     velfmt.trailingZeros(true);
     velfmt.fixed();
 
-    /*
-    // Float formatter for B's and Q's...
-    Fmt bqfmt(2);
-    bqfmt.width(6);
-    bqfmt.right();
-    bqfmt.trailingZeros(true);
-    bqfmt.fixed();
-
-    // We don't worry about strings exceeding field-widths (yet),
-    // but do check for numeric overflows...
-    s << std::setw(6) << std::left << p->recordName();
-    s << hybrid36AsString(p->id(), 5) << " ";
-    s << std::setw(4) << std::left << p->name();
-
-    s << std::setw(1) << p->altLoc();
-    s << std::setw(4) << std::left << p->resname();
-    
-    s << std::setw(1) << std::right << p->chainId();
-    s << hybrid36AsString(p->resid(), 4);
-    s << std::setw(2) << p->iCode();
-    s << "  ";
-        
-    s << crdfmt(p->coords().x());
-    s << crdfmt(p->coords().y());
-    s << crdfmt(p->coords().z());
-    s << bqfmt(p->occupancy());
-    s << bqfmt(p->bfactor());
-    s << "      ";
-    s << std::setw(4) << std::left << p->segid();
-    s << std::setw(2) << std::right << p->PDBelement();
-    if (_show_charge)
-      s << std::setw(2) << p->charge();
-    else
-      s << "  ";
-    */
-
     s << std::setw(5) << p->resid();
     s << std::left << std::setw(5) << p->resname();
     s << std::right << std::setw(5) << p->name();
