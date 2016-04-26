@@ -78,7 +78,7 @@ namespace loos {
 %include "xtcwriter.i"
 %include "sfactories.i"
 %include "alignment.i"
-%include "gromacs.i"
+%include "gro.i"
 
  /* The following is deprecated */
   %pythoncode %{
