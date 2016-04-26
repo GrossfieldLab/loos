@@ -56,7 +56,7 @@ namespace loos {
 
 
 #if !defined(SWIG)
-        //! Output as a PDB
+        //! Output as a GRO
         friend std::ostream& operator<<(std::ostream&, const Gromacs&);
 #endif
 
@@ -79,7 +79,7 @@ namespace loos {
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
-    //! Create of GRO from an AtomicGroup (upcast)
+    //! Create GRO from an AtomicGroup (upcast)
     Gromacs(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
   };
