@@ -1,3 +1,7 @@
+2016-04-19  Alan Grossfield <alan@membrane.urmc.rochester.edu>
+
+    * Added ability to write GRO files.  Added Gromacs class to pyloos
+
 2016-04-15  Tod Romo  <tromo@Gorgoneion.local>
 
 	* Fixed bug in fullhelp for serialize-selection and default output

@@ -55,7 +55,17 @@ namespace loos {
     }
 
 
+#if !defined(SWIG)
+        //! Output as a GRO
+        friend std::ostream& operator<<(std::ostream&, const Gromacs&);
+#endif
+
     std::string title(void) const { return(title_); }
+
+    
+
+    //! Class method for creating a GRO from an AtomicGroup
+    static Gromacs fromAtomicGroup(const AtomicGroup&);
 
   private:
     std::string _filename;
@@ -65,6 +75,12 @@ namespace loos {
   private:
     
     void read(std::istream& ifs);
+    
+    // Convert an Atom to a string representation in PDB format...
+    std::string atomAsString(const pAtom p) const;
+
+    //! Create GRO from an AtomicGroup (upcast)
+    Gromacs(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
   };
 
