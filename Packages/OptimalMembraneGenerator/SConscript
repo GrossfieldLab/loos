@@ -26,7 +26,7 @@ Import('env')
 PREFIX = env['PREFIX'] + '/OptimalMembraneGenerator/'
 
 executables = 'LipidLibrary.py NAMD.py OptimalMembraneGenerator.py ParseOptions.py PSFGen.py WaterBox.py solvate.py'
-files = 'water_small.crd'
+files = 'water_small.pdb'
 dirs = 'doc example'
 
 omg_package = []
