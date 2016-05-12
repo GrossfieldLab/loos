@@ -52,15 +52,6 @@ PREFIX = env['PREFIX']
 # Library(ies)
 loos_lib_inst = env.Install(os.path.join(PREFIX, 'lib'), loos)
 
-# Setup environment script(s)
-
-script_sh = env.Scripts('setup.sh', 'setup.sh-pre')
-script_csh = env.Scripts('setup.csh', 'setup.csh-pre')
-scripts = [ script_sh, script_csh ]
-
-script_sh_inst = env.Scripts(os.path.join(PREFIX, 'setup.sh'), 'setup.sh-pre')
-script_csh_inst = env.Scripts(os.path.join(PREFIX, 'setup.csh'), 'setup.csh-pre')
-scripts_inst = [ script_sh_inst, script_csh_inst ]
 
 
 # Header files...
@@ -111,4 +102,4 @@ if int(env['pyloos']):
 
 
 
-Return('loos', 'loos_python', 'scripts')
+Return('loos', 'loos_python')

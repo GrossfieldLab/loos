@@ -91,7 +91,7 @@ def setupRevision(env):
     # to recompile everything when building on a new date.  We also rely on SCons
     # using the MD5 checksum to detect changes in the file (even though it's always
     # rewritten)
-    revfile = open('revision.cpp', 'w')
+    revfile = open('src/revision.cpp', 'w')
     revfile.write('#include <string>\n')
     revfile.write('std::string revision_label = "')
     revfile.write(revision)
