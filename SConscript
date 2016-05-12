@@ -27,6 +27,8 @@ Import('env')
 # Handle installation...
 PREFIX = env['PREFIX']
 
+env.Install(os.path.join(PREFIX, 'lib'), 'loos')
+
 
 # Setup environment script(s)
 
