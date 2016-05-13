@@ -31,7 +31,7 @@ from time import strftime
 import shutil
 import distutils.sysconfig
 import distutils.spawn
-from string import Template
+import string
 from distutils.version import LooseVersion
 
 import SCons
@@ -118,6 +118,13 @@ def environOverride(conf):
 
 ### Builder for setup scripts
 
+def expand_scons_paths(path, topdir):
+    newpath = []
+    for item in path:
+        item = string.replace(item, '#', topdir + '/')
+        newpath.append(item)
+    return(newpath)
+
 # This copies the environment setup script while changing the directory
 # that's used for setting up PATH and [DY]LD_LIBRARY_PATH.  If LOOS
 # is being built in a directory, the env script will be setup to use
@@ -140,7 +147,12 @@ def script_builder_python(target, source, env):
        libpaths.insert(0, loos_dir)
        cpppaths.insert(0, loos_dir)
        ldlibrary.insert(0, loos_dir)
-       loos_pythonpath = loos_dir
+
+       libpaths = expand_scons_paths(libpaths, loos_dir)
+       cpppaths = expand_scons_paths(cpppaths, loos_dir)
+       ldlibrary = expand_scons_paths(ldlibrary, loos_dir)
+
+       loos_pythonpath = loos_dir + '/src'
 
    else:
        loos_dir = env['PREFIX']
@@ -153,7 +165,7 @@ def script_builder_python(target, source, env):
 
    file = open(str(source[0]), 'r')
    script = file.read()
-   script_template = Template(script)
+   script_template = string.Template(script)
    script = script_template.substitute(loos_path = loos_dir,
                                        tool_path = toolpath,
                                        libpath = ':'.join(libpaths),
