@@ -73,17 +73,25 @@ string fullHelpMessage(void)
     return(s);
     }
 
+string helpMessage()
+    {
+    string s = string("Usage: recenter-trj model-file trajectory-file selection-string [Z|XY|A] dcd-name");
+    return s;
+    }
+
 int main(int argc, char *argv[])
 {
 
 if ((argc > 1) && (string(argv[1]) == string("--fullhelp")))
     {
     cerr << fullHelpMessage() << endl;
+    cerr << endl;
+    cerr << helpMessage() << endl;
     exit(-1);
     }
 else if (argc != 6)
     {
-    cerr << "Usage: recenter-trj model-file trajectory-file selection-string [Z|XY|A] dcd-name" << endl;
+    cerr << helpMessage() << endl;
     exit(-1);
     }
 
