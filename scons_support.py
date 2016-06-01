@@ -347,7 +347,12 @@ def CheckNumpy(conf, pythonpath):
         if len(envpath) > 1:    # Catches cases where PYTHON_PATH is present but null...
             newpaths.extend(envpath.split(':'))
 
-    newpaths.append(default_lib_path + '/python2.7')
+
+    # Assume the python running scons is what we will be using for LOOS...
+    vinfo = sys.version_info
+    python_tag = '/python%d.%d' % (vinfo[0], vinfo[1])
+
+    newpaths.append(default_lib_path + python_tag)
     pythonpaths = [s + '/site-packages/numpy/core/include' for s in newpaths]
     if pythonpaths:
         ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', pythonpaths)
