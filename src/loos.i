@@ -80,7 +80,3 @@ namespace loos {
 %include "alignment.i"
 %include "gro.i"
 
- /* The following is deprecated */
-  %pythoncode %{
-from PyTraj import *
-	      %}
