@@ -44,7 +44,7 @@ if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
 
 
-loos = env.SharedLibrary('libloos', Split(apps))
+loos = env.SharedLibrary('#libloos', Split(apps))
 
 # Handle installation...
 PREFIX = env['PREFIX']
