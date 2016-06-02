@@ -152,7 +152,7 @@ def script_builder_python(target, source, env):
        cpppaths = expand_scons_paths(cpppaths, loos_dir)
        ldlibrary = expand_scons_paths(ldlibrary, loos_dir)
 
-       loos_pythonpath = loos_dir + '/src'
+       loos_pythonpath = loos_dir
 
    else:
        loos_dir = env['PREFIX']
