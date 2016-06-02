@@ -84,12 +84,12 @@ loos_python = ''
 if int(env['pyloos']):
 
    if env['host_type'] == 'Darwin':
-      loos_python = env.LoadableModule('_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
+      loos_python = env.LoadableModule('#_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
    else:
 
       # This is a hack to get pyloos shared libraries to build when installing in linux
       pynv = env.Clone()
-      loos_python = pynv.SharedLibrary('_loos', ['loos.i', loos])
+      loos_python = pynv.SharedLibrary('#_loos', ['loos.i', loos])
 
 # Handle installing PyLOOS
    env.Install(os.path.join(PREFIX, 'lib'), loos_python)
