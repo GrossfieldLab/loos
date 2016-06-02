@@ -74,14 +74,8 @@ centering = loos.selectAtoms(system, centering_selection_string)
 target = loos.selectAtoms(system, target_selection_string)
 
 
-zmin = -25.
-zmax = 25.
-znum_bins = 50
 zbin_width = (zmax - zmin) / znum_bins
 
-rnum_bins = 50
-rmin = 10.0
-rmax = 50.0
 rbin_width = (rmax - rmin) / rnum_bins
 rmin2 = rmin*rmin
 rmax2 = rmax*rmax
