@@ -51,7 +51,7 @@ namespace loos {
 
   //! Predicate for selecting backbone
   class BackboneSelector : public AtomSelector {
-    static const uint nresnames = 35;
+    static const uint nresnames = 38;
     static std::string residue_names[nresnames];
 
     static const uint natomnames = 33;

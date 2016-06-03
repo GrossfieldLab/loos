@@ -1,3 +1,7 @@
+2016-06-03  Tod Romo  <tromo@hill>
+
+	* Added HSD, HSE, and HSP to recognized residues for backbone selector
+
 2016-06-02  Alan Grossfield <alan@membrane.urmc.rochester.edu>
 
 	* Fixed bug in cylindrical-density -- accidentally left options
