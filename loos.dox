@@ -1149,6 +1149,14 @@ Matlab and Octave.
        <DD>Loop over a trajectory and compute the number waters crossing a 
        membrane.
 
+       <DT><B>cylindrical-density</B>
+       <DD>Construct the density of some membrane component around a protein,
+       as a function of lateral and vertical distance
+
+       <DT><B>cylindrical-thickness</B>
+       <DD>Calculate the membrane thickness as a function of lateral distance from
+       a protein
+
        <DT><B>density-dist</B>
        <DD>Compute the charge/electron/mass density distribution for the system
        along the z-axis. Produces the distribution for the whole system and an
