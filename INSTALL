@@ -24,17 +24,19 @@ U = This is an unsupported configuration.  We have successfully built
 --------------------------------------------------                             
 |    OS             |   LOOS    | PyLOOS | Notes |
 |-------------------|-----------|--------|--------                             
-| Fedora 17         |     +     |   +    |       |    
-| Fedora 18         |     +     |   +    |       |
+| Fedora 17         |     +     |   +    | D     |    
+| Fedora 18         |     +     |   +    | D     |
 | Fedora 19         |     +     |   +    |       |                             
 | Fedora 20         |     +     |   +    |       |
 | Fedora 21         |     +     |   +    |       |
 | Fedora 22         |     +     |   +    |       |
+| Fedora 23         |     +     |   +    |       |
 |-------------------|-----------|--------|-------|
 | Ubuntu 12.04 LTS  |     +     |   +    |       | 
 | Ubuntu 14.04 LTS  |     +     |   +    |       |
 | Ubuntu 15.04      |     +     |   +    |       |
 | Ubuntu 15.10      |     +     |   +    |       |
+| Ubuntu 16.04 LTS  |     +     |   +    |       |
 |-------------------|-----------|--------|-------|
 | Debian 7.8        |     +     |   +    |       |
 | Debian 8.1        |     +     |   +    |       |
