@@ -111,8 +111,8 @@ release_opts='-O3 -DNDEBUG -Wall'
 profile_opts='-O3 -DNDEBUG -Wall -g'
 
 # Setup the general environment...
-env.Prepend(CPPPATH = ['#'])
-env.Prepend(LIBPATH = ['#'])
+env.Prepend(CPPPATH = ['#', '#src'])
+env.Prepend(LIBPATH = ['#', '#src'])
 env.Append(LEXFLAGS=['-s'])
 
 # Platform specific build options...
@@ -161,7 +161,8 @@ Export('env')
 
 ### Handle SConscripts and build targets
 
-[loos, loos_python, loos_scripts] = SConscript('SConscript')
+[loos, loos_python] = SConscript('src/SConscript')
+loos_scripts = SConscript('SConscript')
 Export('loos')
 
 docs = env.Doxygen('Doxyfile')

@@ -2,7 +2,7 @@
 #  This file is part of LOOS.
 #
 #  LOOS (Lightweight Object-Oriented Structure library)
-#  Copyright (c) 2008-2009, Tod D. Romo
+#  Copyright (c) 2016, Tod D. Romo
 #  Department of Biochemistry and Biophysics
 #  School of Medicine & Dentistry, University of Rochester
 #
@@ -24,33 +24,11 @@ import os
 
 Import('env')
 
-reparse = env['reparse']
-if int(reparse):
-   apps = 'grammar.yy scanner.ll '
-else:
-   apps = 'scanner.cc grammar.cc '
-
-
-apps = apps + 'dcd.cpp utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
-apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp'
-apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
-apps = apps + ' HBondDetector.cpp'
-apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XForm.cpp amber_rst.cpp'
-apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
-apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
-apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.cpp alignment.cpp' 
-
-if (env['HAS_NETCDF']):
-   apps = apps + ' amber_netcdf.cpp'
-
-
-loos = env.SharedLibrary('libloos', Split(apps))
-
 # Handle installation...
 PREFIX = env['PREFIX']
 
-# Library(ies)
-loos_lib_inst = env.Install(os.path.join(PREFIX, 'lib'), loos)
+env.Install(os.path.join(PREFIX, 'lib'), 'loos')
+
 
 # Setup environment script(s)
 
@@ -63,52 +41,4 @@ script_csh_inst = env.Scripts(os.path.join(PREFIX, 'setup.csh'), 'setup.csh-pre'
 scripts_inst = [ script_sh_inst, script_csh_inst ]
 
 
-# Header files...
-hdr = 'alignment.hpp amber.hpp amber_rst.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
-hdr = hdr + ' cryst.hpp dcd.hpp dcd_utils.hpp dcdwriter.hpp ensembles.hpp Fmt.hpp'
-hdr = hdr + ' HBondDetector.hpp'
-hdr = hdr + ' Geometry.hpp KernelActions.hpp Kernel.hpp KernelStack.hpp'
-hdr = hdr + ' KernelValue.hpp loos_defs.hpp loos.hpp LoosLexer.hpp Matrix44.hpp'
-hdr = hdr + ' Matrix.hpp MatrixImpl.hpp MatrixIO.hpp MatrixOrder.hpp MatrixRead.hpp'
-hdr = hdr + ' MatrixStorage.hpp MatrixUtils.hpp MatrixWrite.hpp ParserDriver.hpp'
-hdr = hdr + ' Parser.hpp pdb.hpp pdb_remarks.hpp pdbtraj.hpp PeriodicBox.hpp psf.hpp'
-hdr = hdr + ' Selectors.hpp sfactories.hpp StreamWrapper.hpp timer.hpp'
-hdr = hdr + ' TimeSeries.hpp tinker_arc.hpp tinkerxyz.hpp Trajectory.hpp'
-hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp ProgressTriggers.hpp'
-hdr = hdr + ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
-hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
-hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
-hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
-hdr = hdr + ' trajwriter.hpp'
-
-if (env['HAS_NETCDF']):
-   hdr = hdr + ' amber_netcdf.hpp'
-
-
-
-loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
-
-# Python bindings
-loos_python = ''
-if int(env['pyloos']):
-
-   if env['host_type'] == 'Darwin':
-      loos_python = env.LoadableModule('_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
-   else:
-
-      # This is a hack to get pyloos shared libraries to build when installing in linux
-      pynv = env.Clone()
-      loos_python = pynv.SharedLibrary('_loos', ['loos.i', loos])
-
-# Handle installing PyLOOS
-   env.Install(os.path.join(PREFIX, 'lib'), File('loos.py'))      # Deprecated
-   env.Install(os.path.join(PREFIX, 'lib'), File('PyTraj.py'))    # Deprecated
-   env.Install(os.path.join(PREFIX, 'lib'), loos_python)
-
-   env.Install(os.path.join(PREFIX, 'lib'), 'loos')
-
-   loos_python += Command("loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
-
-
-
-Return('loos', 'loos_python', 'scripts')
+Return('scripts')
