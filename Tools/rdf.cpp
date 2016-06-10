@@ -191,7 +191,7 @@ split_mode parseSplit(const string &split_by)
     }
 
 uint doSplit(const AtomicGroup &system, const string selection, 
-             const split_mode split,                                                                                vector<AtomicGroup> &grouping)
+             const split_mode split, vector<AtomicGroup> &grouping)
     {
 
     // make sure the "result" vector<AG> is empty to start
