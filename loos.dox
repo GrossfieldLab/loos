@@ -1231,6 +1231,10 @@ Matlab and Octave.
 
        Note: this tool requires the python numpy extension in order to run.
 
+       <DT><B>verap</B>
+       <DD> Computes an area profile along the Z-axis by binning the structure and
+       calcuating the radius of gyration (or max radius) for each bin.
+
        <DT><B>xy_rdf</B>
        <DD>Compute a two dimension radial distribution function in the xy plane,
        splitting the system into upper and lower leaflets.  Primarily intended 
