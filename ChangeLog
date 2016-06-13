@@ -1,3 +1,7 @@
+2016-06-13  Tod Romo  <tromo@hill>
+
+	* Added verap tool for quick vertical area profiles
+
 2016-06-07  Tod Romo  <tromo@hill>
 
 	* Changed how LOOS is organized (slightly).  The core library code 
