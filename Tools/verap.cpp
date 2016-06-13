@@ -43,14 +43,36 @@ string fullHelpMessage(void) {
     "\n"
     "DESCRIPTION\n"
     "\n"
+    "\tThis tool computes a vertical area profile by binning a structure along\n"
+    "the Z-axis, then for each bin, it computes either a radius of gyration or\n"
+    "a maximum radius.  The profile is the average radius for each bin over the\n"
+    "trajectory.  A time-series of the vertical area profile may be written out\n"
+    "if the --tseries option is used.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
+    "\tverap -- model.pdb traj.dcd -20 20 20 >profile.asc\n"
+    "This computes a profile for model using the default selection (backbone)\n"
+    "with the structure binned from -20 to 20 angstroms using 20 bins.\n"
     "\n"
+    "\tverap --selection 'name == \"CA\"' -- model.pdb traj.dcd -20 20 20 >profile.asc\n"
+    "This is the same as above, but only alpha-carbons are used rather than\n"
+    "backbone atoms.\n"
+    "\n"
+    "\tverap --tseries time-evolution.asc -- model.pdb traj.dcd -20 20 20 >profile.asc\n"
+    "Compute an area profile from -20 to 20 with 20 bins using backbone atoms.\n"
+    "Writes the time-series as a matrix (time is along X, bin-position along Y, and\n"
+    "the radius is the cell value (color).\n"
+    "\n"
+    "NOTES\n"
+    "\n"
+    "\tTo use negative numbers for zmin or zmax, place '--' ahead of them to turn off option\n"
+    "processing.\n"
     "\n"
     "SEE ALSO\n"
-    "\tarea_profile.py\n";
-  
+    "\tarea_profile.py\n"
+    "\n";
+
   return(msg);
 }
 
