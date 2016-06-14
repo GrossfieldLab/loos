@@ -733,6 +733,8 @@ sub sanitizeSegid {
     $seg =~ s/_//g;
   }
 
+  # Remove non-alphanum
+  $seg =~ s/[^a-zA-Z0-9]//;
 
   # Preserve first and last letters, try to find suitable middle 2 chars...
 
@@ -749,7 +751,7 @@ sub sanitizeSegid {
 
     while ($#arg > 1) {
       my $l = shift(@letfreqs);
-      defined($l) || die;
+      last if !defined($l);    # Out of letters
       
       my $flag;
       do {
@@ -767,6 +769,11 @@ sub sanitizeSegid {
     $seg = $first . join('', @arg) . $lastl;
   }
 
+  # If it's still too long, just take the first 4 chars
+  if (length($seg) > 4) {
+    $seg = substr($seg, 0, 4);
+  }
+  
   if ($seg ne $oseg && exists($seen_segids{$seg})) {
     my $i;
     $seg = substr($seg, 0, 3);
