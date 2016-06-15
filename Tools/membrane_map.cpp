@@ -224,6 +224,8 @@ string fullHelpMessage(void)
     }
 
 
+
+
 int main(int argc, char *argv[])
     {
 
@@ -251,18 +253,18 @@ int main(int argc, char *argv[])
     traj->readFrame(frames[0]);
     traj->updateGroupCoords(system);
 
-    AtomicGroup align_to; 
+    AtomicGroup align_to = selectAtoms(system, ropts->value("align-selection"));
+
+    AtomicGroup reference;
     if ((topts->reference_filename).length() > 0)
         {
         AtomicGroup reference_system = createSystem(topts->reference_filename);
-        align_to = selectAtoms(reference_system, ropts->value("align-selection"));
+        reference = selectAtoms(reference_system, ropts->value("align-selection"));
         }
     else
         {
-        align_to = selectAtoms(system, ropts->value("align-selection"));
+        reference = align_to.copy();
         }
-    // deep copy, this is the reference structure
-    AtomicGroup reference = align_to.copy();  
 
     AtomicGroup apply_to = selectAtoms(system, ropts->value("target-selection"));
 
@@ -315,22 +317,22 @@ int main(int argc, char *argv[])
         traj->readFrame(frames[i]);
         traj->updateGroupCoords(system);
 
+        
         // zero out the alignment selections z-coordinate
-        // NOTE: we're assuming that align_to doesn't overlap with
-        //       apply_to.  Otherwise, it'll mess up the calculation of 
-        //       proprties that depend on z (e.g. principal axes)
-        for (AtomicGroup::iterator j = align_to.begin();
-                                   j!= align_to.end();
+        AtomicGroup align_to_flattened = align_to.copy();
+        for (AtomicGroup::iterator j = align_to_flattened.begin();
+                                   j!= align_to_flattened.end();
                                    ++j)
             {
             (*j)->coords().z() = 0.0;
             }
 
+
         // get the alignment matrix
-        GMatrix M = align_to.superposition(reference);
+        GMatrix M = align_to_flattened.superposition(reference);
         M(2,2) = 1.0;    // Fix a problem caused by zapping the z-coords...
         XForm W(M);
-
+  
         // align the stuff we're goign to do the calculation on
         apply_to.applyTransform(W);
 
