@@ -1,6 +1,7 @@
 2016-06-15  Tod Romo  <tromo@hill>
 
 	* Fixed bug in aligner where xyonly was ignored if using a reference structure to align to
+	* Fixed bug in membrane_map where specifying a reference structure would not actually align with it
 
 2016-06-13  Tod Romo  <tromo@hill>
 
