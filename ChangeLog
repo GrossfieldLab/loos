@@ -1,3 +1,7 @@
+2016-06-15  Tod Romo  <tromo@hill>
+
+	* Fixed bug in aligner where xyonly was ignored if using a reference structure to align to
+
 2016-06-13  Tod Romo  <tromo@hill>
 
 	* Added verap tool for quick vertical area profiles

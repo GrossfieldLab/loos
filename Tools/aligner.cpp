@@ -176,6 +176,12 @@ void zapZ(vMatrix& M) {
 }
 
 
+void zapZ(AtomicGroup& model) {
+  for (AtomicGroup::iterator i = model.begin(); i != model.end(); ++i)
+    (*i)->coords().z(0.0);
+}
+
+
 
 
 void savePDB(const string& fname, const string& meta, const AtomicGroup& grp) {
@@ -282,7 +288,7 @@ int main(int argc, char *argv[]) {
         savePDB(prefopts->prefix + ".pdb", header, applyto_sub);
     }
     
-  } else {
+  } else {    // else, aligning to reference structure (i.e. non-iterative)
     
     AtomicGroup reference = createSystem(topts->reference_name);
     
@@ -294,6 +300,8 @@ int main(int argc, char *argv[]) {
       exit(-10);
     }
 
+    zapZ(refsub);
+    
     pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
     outtraj->setComments(header);
 
@@ -304,11 +312,20 @@ int main(int argc, char *argv[]) {
 
       GCoord original_center;
       if (topts->no_ztrans)
-          original_center = applyto_sub.centroid();
+        original_center = applyto_sub.centroid();
 
-      GMatrix M = align_sub.superposition(refsub);
-      XForm W(M);
-      applyto_sub.applyTransform(W);
+      if (topts->xy_only) {
+        AtomicGroup flat_align = align_sub.copy();
+        zapZ(flat_align);
+        GMatrix M = flat_align.superposition(refsub);
+        M(2,2) = 1.0;    // Fix zapped z-part (see above)
+        XForm W(M);
+        applyto_sub.applyTransform(W);
+      } else {
+        GMatrix M = align_sub.superposition(refsub);
+        XForm W(M);
+        applyto_sub.applyTransform(W);
+      }
 
       if (topts->no_ztrans) {
           GCoord new_center = applyto_sub.centroid();
