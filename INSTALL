@@ -177,6 +177,27 @@ The MacOS version by default uses the vecLib framework which is
 already multithreaded.
 
 
+
+        = Building the documentation =
+
+If you downloaded a LOOS distribution from Sourceforge, you already have a
+pre-built copy of the documentation (found in the Docs/ directory), and will
+not need to re-make the docs unless you change the code.  
+
+However, if you got LOOS from GitHub, you will need to either 
+    a) consult the online documentation at http://loos.sourceforge.net/, 
+        or 
+    b) build a new copy of the documentation.  To do so, you will need to 
+       install Doxygen, graphviz, and dot (available in most package managers)
+       and issue the following command:
+
+       scons docs
+
+       This will create a Docs/ directory.  You can then access the 
+       documentation by point a browser at Docs/index.html
+      
+
+
 ========================================================================
 
 
