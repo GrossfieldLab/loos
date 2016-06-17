@@ -193,9 +193,15 @@ However, if you got LOOS from GitHub, you will need to either
 
        scons docs
 
-       This will create a Docs/ directory.  You can then access the 
+       This will create a Docs/ directory.  You can then access the
        documentation by point a browser at Docs/index.html
       
+       Note: doing an install using "scons install" will assume that you have
+       already built the documentation, and will fail unless you run "scons
+       docs" first.  Thus, if you start from GitHub, you can't do an install
+       unless you have Doxygen and its dependencies installed.  However, you 
+       can still use LOOS by working from the build directory -- just source the
+       setup.sh or setup.csh file generated in the main directory.
 
 
 ========================================================================
