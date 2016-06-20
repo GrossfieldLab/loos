@@ -1,74 +1,42 @@
-             LOOS COMPATIBILITY TABLE
-             ------------------------
-
-*** Symbols ***
-
-+ = Fully supported (dependencies easily available via package manager)
-! = Supported with reservation (may require manual installation)
-- = Not supported
-
-C = Requires manual install of SCons
-S = Requires manual install of Swig
-
-D = Deprecated (we are no longer testing these configurations, however,
-    they may still work)
-
-U = This is an unsupported configuration.  We have successfully built
-    LOOS/PyLOOS, but do not regularly test against this configuration.
-    A minimal build guide may be present.
-
-* = See OS-specific installation section
+# Operating System Compatibility
 
 
+Operating System | LOOS Support | PyLOOS Support | Notes
+---------------- | ------------ | -------------- | -----
+Fedora 17        | yes          | yes            | Deprecated
+Fedora 18        | yes          | yes            | Deprecated
+Fedora 19        | yes          | yes            |
+Fedora 20        | yes          | yes            |
+Fedora 21        | yes          | yes            |
+Fedora 22        | yes          | yes            |
+Fedora 23        | yes          | yes            |
+Ubuntu 12.04 LTS | yes          | yes            |
+Ubuntu 14.04 LTS | yes          | yes            |
+Ubuntu 15.04     | yes          | yes            |
+Ubuntu 15.10     | yes          | yes            |
+Ubuntu 16.04 LTS | yes          | yes            |
+Debian 7.8       | yes          | yes            |
+Debian 8.1       | yes          | yes            |
+Centos 6.7       | yes          | yes            | See notes
+Centos 7         | yes          | yes            | See notes
+OpenSUSE 12	 | yes		| yes		 | See notes
+OpenSUSE 13	 | yes		| yes		 |
+Manjaro 0.8	 | yes		| yes		 | Unsupported
+Mint 17		 | yes		| yes		 | Unsupported
+Slackware 14.1	 | yes		| yes		 | Unsupported
+Windows 7 (Cygwin) | yes	| no		 | Deprecated
+MacOS 10.11	 | yes		| yes		 | See notes
 
---------------------------------------------------                             
-|    OS             |   LOOS    | PyLOOS | Notes |
-|-------------------|-----------|--------|--------                             
-| Fedora 17         |     +     |   +    | D     |    
-| Fedora 18         |     +     |   +    | D     |
-| Fedora 19         |     +     |   +    |       |                             
-| Fedora 20         |     +     |   +    |       |
-| Fedora 21         |     +     |   +    |       |
-| Fedora 22         |     +     |   +    |       |
-| Fedora 23         |     +     |   +    |       |
-|-------------------|-----------|--------|-------|
-| Ubuntu 12.04 LTS  |     +     |   +    |       | 
-| Ubuntu 14.04 LTS  |     +     |   +    |       |
-| Ubuntu 15.04      |     +     |   +    |       |
-| Ubuntu 15.10      |     +     |   +    |       |
-| Ubuntu 16.04 LTS  |     +     |   +    |       |
-|-------------------|-----------|--------|-------|
-| Debian 7.8        |     +     |   +    |       |
-| Debian 8.1        |     +     |   +    |       |
-|-------------------|-----------|--------|-------|                             
-| CentOS 6.7        |     +     |   !    | CS    | 
-| CentOS 7          |     +     |   !    | C     | 
-|-------------------|-----------|--------|-------|
-| OpenSUSE 12       |     !     |   +    | C     |                             
-| OpenSUSE 13       |     +     |   +    |       |
-|-------------------|-----------|--------|-------|                             
-| Manjaro 0.8       |     +     |   +    | U     |                             
-|-------------------|-----------|--------|-------|                             
-| Mint 17           |     +     |   +    | U     |                             
-|-------------------|-----------|--------|-------|                             
-| Slackware 14.1    |     +     |   +    | U     |                             
-|-------------------|-----------|--------|-------|                             
-| Windows 7 64-bit  |     +     |   -    | D     |                             
-|  +Cygwin 1.7.15-1 |           |        |       |                             
-|-------------------|-----------|--------|-------|                             
-| MacOS 10.11       |     +     |   !    | *     |                             
-|-------------------|-----------|--------|-------|                             
 
+
+
+
+# Building and Installing LOOS
+
+## For the Impatient
 
 
 				   
-		     Building and Installing Loos
-		     ----------------------------
-		      *** FOR THE IMPATIENT ***
-
-
-
-		     = Building and Installing =
 
 LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
 refer to the OS-specific instructions below for more details.  For general
@@ -77,39 +45,44 @@ the "General Notes" section at the end of this file.xo
 
 LOOS can then be built using the following command:
 
-   scons
+    scons
 
 Or installed (to /opt as a default):
-   sudo scons install
+    sudo scons install
 
 To install in a user-specified location:
 
-   scons PREFIX=/path/to/install install
+    scons PREFIX=/path/to/install install
 
 To use LOOS, your environment must be first setup:
-  (bash)   source /path/to/loos/setup.sh
-  (tcsh)   source /path/to/loos/setup.csh
+    (bash)   source /path/to/loos/setup.sh
+    (tcsh)   source /path/to/loos/setup.csh
 
 
 
-* Build Targets *
+### Build targets
 
-      core	LOOS Library and PyLOOS
-      docs	Rebuild documentation
-      tools	LOOS Library, Tools, and PyLOOS
-      all	LOOS Library, Tools, PyLOOS, and all Packages (default)
-      install	Install library, tools, PyLOOS, and all Packages
+Target | Description
+------ | -----------
+core   | LOOS Library and PyLOOS
+docs   | Rebuild documentation
+tools  | LOOS Library, Tools, and PyLOOS
+all    | LOOS Library, Tools, PyLOOS, and all Packages (default)
+install| Install library, tools, PyLOOS, and all Packages
 
-* Available Packages (also build targets) *
- 
-      ENM	Elastic Network Models
-      HBonds	Hydrogen Bonds Analysis
-      Conv	Convergence Analysis
-      Density	Density/3D Histogram Tools
-      User	User-created tools
-      Python	PyLOOS scripts
+### Available Packages (also build targets)
 
-			     = PyLOOS =
+Name | Description
+---- | -----------
+ENM	| Elastic Network Models
+HBonds	| Hydrogen Bonds Analysis
+Conv	| Convergence Analysis
+Density	| Density/3D Histogram Tools
+User	| User-created tools
+Python	| PyLOOS scripts
+
+
+### PyLOOS 
 
 The Python interface to LOOS will be included in the build if you have
 a recent SWIG (version 2.0 or better) in your standard path as well as
@@ -117,20 +90,19 @@ NumPy installed.  Not all operating systems and versions are
 supported.  If you need to disable the automatic building of PyLOOS,
 use the pyloos flag to scons:
 
-	scons pyloos=0
+    scons pyloos=0
 
 To build only the core LOOS libraries and PyLOOS, use the following
 command:
 
-	scons core
+    scons core
 
 
 Note that the Optimal Membrane Generator requires PyLOOS.  If you
 do not have SWIG installed or disable PyLOOS support, then the OMG
 will not be installed.
 
-
-		    = NetCDF Amber Trajectories =
+### Amber NetCDF
 
 LOOS now supports a subset of the Amber NetCDF convention 1.0-B.  Only
 coordinates are retrieved and are converted into the default LOOS data
@@ -150,13 +122,13 @@ respectively, and the libraries linked against can be specified using
 the NETCDF_LIBS variable.
 
 
-			      = Boost =
+### Boost
 
 LOOS requires Boost version 1.36 or more recent.  To explicitly
 specify an install location, set the BOOST variable in your custom.py
 file or on the command line:
 
-	 scons BOOST=/usr/local/boost_1_54_0
+    scons BOOST=/usr/local/boost_1_54_0
 
 In some cases, you may need to override either the include directory
 or the library directory.  The BOOST_INCLUDE and BOOST_LIBPATH variables
@@ -166,7 +138,7 @@ BOOST_LIBS variable.  See custom.py-proto for examples.
 
 
 
-		  = Parallel (Multithreaded) ATLAS =
+### Parallel (multithreaded) ATLAS
 
 If you have a full install of ATLAS including threaded versions of the
 BLAS and LAPACK, you can link against these to take advantage of
@@ -177,49 +149,44 @@ The MacOS version by default uses the vecLib framework which is
 already multithreaded.
 
 
-
-        = Building the documentation =
+### Documentation
 
 If you downloaded a LOOS distribution from Sourceforge, you already have a
 pre-built copy of the documentation (found in the Docs/ directory), and will
 not need to re-make the docs unless you change the code.  
 
 However, if you got LOOS from GitHub, you will need to either 
-    a) consult the online documentation at http://loos.sourceforge.net/, 
-        or 
-    b) build a new copy of the documentation.  To do so, you will need to 
-       install Doxygen, graphviz, and dot (available in most package managers)
-       and issue the following command:
+1. consult the online documentation at http://loos.sourceforge.net/, 
+2. build a new copy of the documentation.  To do so, you will need to 
+ install Doxygen, graphviz, and dot (available in most package managers)
+ and issue the following command:
 
-       scons docs
+    scons docs
 
-       This will create a Docs/ directory.  You can then access the
-       documentation by point a browser at Docs/index.html
+ This will create a Docs/ directory.  You can then access the
+ documentation by point a browser at Docs/index.html
       
-       Note: doing an install using "scons install" will assume that you have
-       already built the documentation, and will fail unless you run "scons
-       docs" first.  Thus, if you start from GitHub, you can't do an install
-       unless you have Doxygen and its dependencies installed.  However, you 
-       can still use LOOS by working from the build directory -- just source the
-       setup.sh or setup.csh file generated in the main directory.
+Note: doing an install using "scons install" will assume that you have
+already built the documentation, and will fail unless you run "scons
+docs" first.  Thus, if you start from GitHub, you can't do an install
+unless you have Doxygen and its dependencies installed.  However, you 
+can still use LOOS by working from the build directory -- just source the
+setup.sh or setup.csh file generated in the main directory.
 
 
-========================================================================
+# OS Specific Notes
 
-
-			------= Fedora =------
+## Fedora
 
 LOOS has been tested on Fedora (64-bit).  We assume you already have
 the basic compiler tools installed (i.e. g++).  You will need to
 install scons, boost, and atlas:
 
-sudo dnf install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy
+    sudo dnf install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy
 
 
 
-
-
-			------= CentOS =------
+## CentOS
 
 LOOS has been tested with CentOS (64 bit).  Follow the instructions
 for Fedora (using yum instead of dnf).  However there is no scons
@@ -227,7 +194,7 @@ package available via yum.  Instead, download and install any version
 of scons more recent than 1.0.
 
 
-* PyLOOS *
+### PyLOOS
 
 CentOS 6: Yum install python-devel and pcre-devel, then download
   and install the latest swig.  The version of swig available through
@@ -235,23 +202,19 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 
 
 
+## Ubuntu
 
-			------= Ubuntu =------
-
-sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev \
+    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev \
      libnetcdf-dev swig python-dev python-numpy
 
 
+## Debian
+
+    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev \
+    libnetcdf-dev swig python-dev python-numpy
 
 
-			------= Debian =------
-
-sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev \
-     libnetcdf-dev swig python-dev python-numpy
-
-
-
-		       ------= openSUSE =------
+## OpenSUSE
 
 As of OpenSUSE 13, there is a pre-build ATLAS package available.  However,
 it does not include all of the LAPACK functions LOOS requires.  At this time,
@@ -260,24 +223,22 @@ be ignored by the LOOS build.
 
 Using zypper (or your favorite package manager), install the following:
 
-sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig \
-     netcdf-devel python-numpy python-numpy-devel
+    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig \
+    netcdf-devel python-numpy python-numpy-devel
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
-* OpenSUSE 12 *
+### OpenSUSE 12
 
 The package-manager installed scons is too old.  Download and install SCons
 2.0 or better.
 
 
+## MacOS
 
-			-----= MACOS X =-----
-
--------------------------------------------------------
-!! IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS !!
+### IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS !!
 
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
@@ -286,7 +247,7 @@ a decent solution.  Until then, there are two options for building and
 using PyLOOS under El Capitan.
 
 
-* Build your own Python (Recommended)
+#### Build your own Python (Recommended)
 
 The first way is to download and install your own local Python and use
 this to run SCons and PyLOOS.  Here again, you have two options: build
@@ -299,7 +260,7 @@ Simply putting the new Python in your PATH will not work because SCons
 invoke your PyLOOS scripts with your new local Python.
 
 
-* Disable SIP
+#### Disable SIP
 
 Although we have not tested this method, it is a common solution
 recommended to dealing with unsafe library errors.
@@ -309,8 +270,7 @@ https://developer.apple.com/library/mac/documentation/Security/Conceptual/System
 
 http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-protection-in-el-capitan.html
 
--------------------------------------------------------
-!! IMPORTANT NOTE FOR MACOS 10.9 "MAVERICKS" USERS !!
+### IMPORTANT NOTE FOR MACOS 10.9 "MAVERICKS" USERS
 
 MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
 an incompatibility with Boost installed via Fink in MacOS 10.9.  You
@@ -323,7 +283,7 @@ iterator methods for MacOS 10.9 only in order to build PyLOOS.  This means
 functions such as begin() and erase() will be unavailable in PyLOOS for
 the vectors used in LOOS.
 
--------------------------------------------------------
+### General Instructions
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  XCode is available for free through the Mac App store.
@@ -332,13 +292,13 @@ Next, you will need to install SCons (http://scons.org) and Boost
 software, and following their installation instructions.
 Alternatively, use fink to install these packages.
 
-* NetCDF *
+#### NetCDF
 
 Download and install the latest hdf5 and netcdf libraries.  If
 necessary, set the NETCDF_INCLUDE and NETCDF_LIBPATH variables in your
 custom.py file to point to where netcdf is installed.
 
-* PyLOOS *
+#### PyLOOS
 
 You will need to download and install a recent version of SWIG first.
 If you have installed Boost in a non-standard location, you will need
@@ -351,7 +311,8 @@ the PYTHON_PATH option to scons:
     scons PYTHON_PATH=$HOME/local/lib/python2.7
 
 
-***MACOS BUILD PROBLEMS***
+### Typical Problems
+
 
 We have seen several instances where LOOS would not build due to
 multiple versions of BOOST being installed.  The configuration part of
@@ -361,9 +322,7 @@ fact using only the BOOST install and libraries you intend (or removed
 the excess versions)
 
 
-
-			 -----= CYGWIN =-----
-			    (UNSUPPORTED)
+## Windows/Cygwin (deprecated)
 
 You will need to install libboost-devel and liblapack-devel along with
 the g++ compiler using the cygwin setup.exe program.  (Note: if loos
@@ -377,42 +336,35 @@ http://www.scons.org/download.php (the gzip tar file) and install it.
 
 There is an issue with SCons under cygwin where you must first build
 LOOS and -then- install it, i.e.
-     scons
-     scons PREFIX=/path/to/install/loos install
+    scons
+    scons PREFIX=/path/to/install/loos install
 
 [Optional]
 To include support for Amber/NetCDF trajectory files, install the
 libnetcdf-devel library using the cygwin setup.exe installer.
 
 
-* PyLOOS *
+### PyLOOS
 
 Cygwin is NOT SUPPORTED
 
-
-			-----= Manjaro =-----
-			    (UNSUPPORTED)
+## Manjaro (Unsupported)
 
 LOOS has been tested with Manjaro 0.8.10.  
 Make sure scons, boost, lapack, python, and swig are installed.  Also
 install NetCDF, if you want NetCDF support.  LOOS and PyLOOS should build.
 
-
-			-----= Slackware =-----
-			    (UNSUPPORTED)
+## Slackware (Unsupported)
 
 LOOS has been tested with Slackware 14.1.  You will need to install,
 by whatever means you prefer, lapack, blas, and scons.  LOOS and PyLOOS
 should then build.
 
 
+# General Notes
 
-========================================================================
 
-
-			*** GENERAL NOTES ***
-
-* Customizing the Build *
+## Customizing the Build
 
 You can override the paths SCons will use for both libraries and
 include files by setting the appropriate variables in a "custom.py"
