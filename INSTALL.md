@@ -155,8 +155,10 @@ If you downloaded a LOOS distribution from Sourceforge, you already have a
 pre-built copy of the documentation (found in the Docs/ directory), and will
 not need to re-make the docs unless you change the code.  
 
-However, if you got LOOS from GitHub, you will need to either 
+However, if you got LOOS from GitHub, you will need to either:
+
 1. consult the online documentation at http://loos.sourceforge.net/, 
+
 2. build a new copy of the documentation.  To do so, you will need to 
  install Doxygen, graphviz, and dot (available in most package managers)
  and issue the following command:
@@ -204,14 +206,12 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 
 ## Ubuntu
 
-    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev \
-     libnetcdf-dev swig python-dev python-numpy
+    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
 
 
 ## Debian
 
-    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev \
-    libnetcdf-dev swig python-dev python-numpy
+    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
 
 
 ## OpenSUSE
@@ -223,8 +223,7 @@ be ignored by the LOOS build.
 
 Using zypper (or your favorite package manager), install the following:
 
-    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig \
-    netcdf-devel python-numpy python-numpy-devel
+    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python-numpy-devel
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
