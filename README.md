@@ -19,7 +19,7 @@ See the [INSTALL](INSTALL.md) file for more details.
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
 for more information about SIP).  We are aware of this and working on
-a decent solution.  See the Mac section of the INSTALL file for more
+a decent solution.  See the Mac section of the [INSTALL](INSTALL.md) file for more
 details. 
 
 ## Using LOOS from GitHub
@@ -31,7 +31,7 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
-For help with installing LOOS, please see the INSTALL file.  For
+For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the ChangeLog file.
 
 
@@ -65,7 +65,7 @@ documentation, and is listed in the "Quick Links" off the main page.
 
 NUMPY IS NOW REQUIRED FOR BUILDING PYLOOS.  For Linux users, this will
 just be a package install.  For Mac users, the system numpy will be
-used.  See the INSTALL file for more information.
+used.  See the [INSTALL](INSTALL.md) file for more information.
 
 PyLOOS has been reorganized and new trajectory handling classes have
 been added.  All Python-based components of PyLOOS are now in the
