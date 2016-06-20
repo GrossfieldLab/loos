@@ -12,7 +12,7 @@ You can also contact us directly at loos.maintainer@gmail.com
 Documentation is currently available online at http://loos.sourceforge.net
 and bundled with the official release downloads.  If you are cloning from
 GitHub, then local documentation will need to be built using Doxygen.
-See the INSTALL file for more details.
+See the [INSTALL](INSTALL.md) file for more details.
 
 ## IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS
 
