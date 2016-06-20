@@ -43,8 +43,8 @@ MacOS 10.11	 | yes		| yes		 | See notes
 
 LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
 refer to the OS-specific instructions below for more details.  For general
-advice about configuring LOOS and building in unusual environments, soo
-the "General Notes" section at the end of this file.xo
+advice about configuring LOOS and building in unusual environments, see
+the "General Notes" section at the end of this file.
 
 LOOS can then be built using the following command:
 
