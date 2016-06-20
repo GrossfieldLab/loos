@@ -1,19 +1,20 @@
-===============================================================================
-= Please consider joining the LOOS mailing lists:                             =
-=                                                                             =
-= New Releases: https://lists.sourceforge.net/lists/listinfo/loos-announce    =
-= User Support: https://lists.sourceforge.net/lists/listinfo/loos-users       =
-= Development:  https://lists.sourceforge.net/lists/listinfo/loos-devel       =
-=                                                                             =
-= You can also contact us directly at <loos.maintainer@gmail.com>             =
-=                                                                             =
-===============================================================================
+# The Lightweight Object Oriented Structure analysis library
 
+## Getting Help
+* New Releases: https://lists.sourceforge.net/lists/listinfo/loos-announce
+* User Support: https://lists.sourceforge.net/lists/listinfo/loos-users
+* Development:  https://lists.sourceforge.net/lists/listinfo/loos-devel
 
+You can also contact us directly at loos.maintainer@gmail.com
 
----------------------------------------------------------------------
+## Documentation
 
-!!!!!!!! IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS !!!!!!!!!
+Documentation is currently available online at http://loos.sourceforge.net
+and bundled with the official release downloads.  If you are cloning from
+GitHub, then local documentation will need to be built using Doxygen.
+See the INSTALL file for more details.
+
+## IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS
 
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
@@ -21,8 +22,7 @@ for more information about SIP).  We are aware of this and working on
 a decent solution.  See the Mac section of the INSTALL file for more
 details. 
 
-
----------------------------------------------------------------------
+## Using LOOS from GitHub
 
 Welcome to the GitHub version of LOOS.  This repository was
 created by converting our old SVN repository.  The SVN feature
@@ -31,9 +31,10 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
+For help with installing LOOS, please see the INSTALL file.
 
 
-   * RELEASE 2.3.1 *
+### RELEASE 2.3.1
 
 This release of LOOS is a bug-fix release.  A bug was discovered in
 membrane_map that caused the z-axis of all coordinates to be set to
@@ -54,7 +55,7 @@ In addition, improvements were made to the documentation.
 
 
 
-   * RELEASE 2.3.0 *
+### RELEASE 2.3.0
 
 This release of LOOS comes with a number of major changes, most
 related to PyLOOS.  A detailed description of these changes is
@@ -95,257 +96,3 @@ multithreaded math library, be aware of possible conflicts (though
 that shouldn't happen with rmsds).  Last, but not least, a number of
 minor bug fixes are included.  See the ChangeLog file or the change
 log in the documentation for more details.
-
-
-   * RELEASE 2.2.5 *
-
-This release of LOOS includes several important bug fixes and new
-functionality.  Several issues involving Amber files have been
-addressed, including not correctly handling non-netCDF files when
-building with netCDF support.  In addition, ".netcdf" is now a
-recognized file suffix for Amber trajectories.  In PyLOOS only, a bug
-affecting operator overloads for GCoords has been fixed.
-
-Added functionality includes the ability to sort the input trajectory
-list numerically in merge-traj (the number used to sort is extracted
-from the filename using a regular expression).  The default selection
-for SVD and ENM tools has changed to alpha-carbons.  The tools
-"porcupine" and "enmovie" have been changed to make scaling the
-vectors and motion easier, along with selecting what modes to use.
-Note that the command line options and usage have changed and are not
-compatible with previous versions.
-
-For more details about these and other changes, see the ChangeLog or
-the documentation.
-
-   * RELEASE 2.2.4 *
-
-Just in time for the Biophysical Society meeting, we are releasing
-another maintenance release of LOOS.  This release addresses two
-issues with reading Amber files.  The first involves reading prmtop
-files where the format specification was not in caps.  The second
-issue fixed involves the detection of NetCDF vs plain ASCII trajectory
-files (mdcrd) when LOOS is built with NetCDF support.  For versions
-2.2.0 through 2.2.3, only NetCDF trajectories could be read if LOOS
-had been built with NetCDF support.  As of version 2.2.4, LOOS will
-correctly read either type of Amber trajectory.
-
-   * RELEASE 2.2.3 *
-
-This is another maintenance release of LOOS.  It addresses a PyLOOS
-bug that caused some values to be wrapped by SWIG that should not
-have been (e.g. coord.x() would return a wrapped float rather than the
-float value).  This bug likely affects most PyLOOS programs and tools
-(including the OptimalMembraneGenerator Package).  In addition, the
-error handling in the build system has been improved.  We strongly
-encourage all users to update to this release.
-
-   * RELEASE 2.2.2 *
-
-This is a maintenance release of LOOS.  There was a bug affecting
-version 2.2.0 and 2.2.1 that prevented LOOS from reading Amber parmtop
-files.  There was also a bug preventing building in MacOS with the
-latest version of XCode and LOOS 2.2.1.  We strongly encourage
-everyone to update to this release.
-
-
-   * RELEASE 2.2.1 *
-
-This is a maintenance release of LOOS.  It primarily involves a
-revamped build system that addresses some changes in how Atlas is
-installed in recent Linux releases (such as Fedora 21 and OpenSUSE
-13).  It also corrects some linkage inconsistencies that were found
-such as using a system lapack rather than the ATLAS provided version
-(mixing the two libraries).  While the build system should be more
-intelligent about finding and correctly linking in the numeric
-libraries, there are many permutations what we've seen in our testing
-and it may choose incorrectly.  You can override which libraries are
-used and what the search path will be by creating a custom.py file and
-setting ATLAS_LIBS and/or ATLAS_LIBPATH.  See the INSTALL file or the
-"Building LOOS" section of the documentation.
-
-Other changes to LOOS include the addition of -upper-only and
---lower-only flags to membrane_map and how dibmops and mops split the
-selection has been changed.  Additionally, mops can now write out the
-average molecular order parameter as a time-series.  A new tool in
-version 2.2.0 was also not noted: model-meta-stats.  This tool gives
-you an overview of the metadata in your model.
-
-   * RELEASE 2.2.0 *
-
-This release of LOOS includes a number of significant improvements and
-changes.  We are introducing the TrajectoryWriter class for writing
-trajectories.  Two formats are currently supported: CHARMM/NAMD DCD
-format (DCDWriter) and Gromacs XTC (XTCWriter).  To support this
-change, we have added the createOutputTrajectory() factory function,
-analogous to createTrajectory() and createSystem(), along with an
-OutputTrajectoryOption class for use with our OptionsFramework.
-
-Another major change is a complete overhaul of exceptions in LOOS and
-PyLOOS.  For the tool-user, there should be no change other than some
-error messages may have a different format or wording.  For Python
-users/developers, the exceptions thrown by the C++ side of PyLOOS
-should now be correctly caught and translated into a Python equivalent
-or a wrapped LOOS exception object.  This means that the Python
-interpreter will no longer crash when an exception occurs, and that you
-can use try/except in your Python code.  For all developers, the
-majority of these changes are internal.  The one exception is
-selectAtoms(), which previously would throw an exception if no atoms
-were selected.  Now, it returns an empty AtomicGroup.
-
-Other changes to LOOS include a new "Optimal Membrane Generator"
-PyLOOS package, support for periodic boxes in Tinker XYZ and ARC
-files, and the ability to handle PDB files that are missing some
-fields (to the right of the coordinates).  A backbone keyword has been
-added to the selection language.  Finally, a bug affecting aligner
-when NOT using the entire trajectory has been fixed, along with a
-couple of other bugs.
-
-For more information about these changes, see the included Doxygen
-documentation or the code.
-
-
-+++SPECIAL NOTE FOR PYLOOS USERS+++
-
-While we believe we have accounted for all possible C++ exceptions
-that may occur while using PyLOOS, a few may have been missed.  If you
-find an untranslated exception, please let us know by emailing
-loos.maintainer@gmail.com.
-
-
-
-   * RELEASE 2.1.3 *
-
-This release includes a number of minor improvements and bug fixes.
-These include a new windowed and cumulative histogram tool along with
-two tools for calculating "molecular order parameters".  New options
-were added to merge-traj, density-dist, and interdist.  A bug in
-phasepdb and a bug affecting double precision XTC files have also been
-fixed.  For more detail, see the included ChangeLog.
-
-
-   * RELEASE 2.1.2 *
-
-This release is primarily a bug fix release.  There was a critical bug
-affecting reading Amber mdcrd files, resulting in a segfault.  This
-has been fixed.  In addition, the new PyTraj module was left off the
-install list.  This only affects you if you use "scons install" and
-want to use the PyTraj or PyAlignedTraj classes.
-
-A new feature has been added to xy_rdf (--reselect) to handle cases
-where molecules move back and forth between leaflets.
-
-
-   * RELEASE 2.1.1 *
-
-This release includes a few bug fixes, addresses an inconsistency in
-the build script for the examples, and a few improvements to PyLOOS.
-In PyLOOS, some sequence-like objects (e.g. GCoord, AtomicGroup,
-TimeSeries, and Matrix44) were not iterable Python objects and trying
-to use them as such would fill memory.  These objects will now raise a
-Python exception and can be used as an iterable object.  In addition,
-we have added two new Python-only trajectory classes: PyTraj and
-PyAlignedTraj.  These wrap a LOOS Trajectory (and AtomicGroup) and
-make it into an iterable Python object.  You can also specify a skip
-and a stride through the trajectory (or provide your own iterator for
-selecting frames).  See the class documentation for more details, or
-look in Packages/PyLOOS.
-
-We have also addressed an issue with building PyLOOS in MacOS 10.9
-"Mavericks".  There is an apparent problem with how STL containers are
-wrapped.  For now, we have disabled the wrapping of iterator methods
-for STL containers, so member functions such as erase() and begin()
-will not be available in PyLOOS on this platform.
-
-
-   * RELEASE 2.1.0 *
-
-This release contains several major changes to LOOS.  We have
-rewritten the build system so that it will configure LOOS based on
-your system (i.e. using the Autoconf functionality of SCons) rather
-than use pre-set build configurations for common distributions.  We are
-now deprecating a few older Linux distributions, however we have added
-support for MacOS 10.9 (Mavericks).  Along with this, LOOS now also
-requires that you have at least Boost version 1.36 installed.
-This will require manually installing a more recent Boost for some
-older Linux distributions.  We are also introducing a major change in
-how Trajectory classes work, including changes to the Atom and
-AtomicGroup classes.  Briefly, LOOS now uses an atom index, assigned
-when a model is read, for updating from a trajectory rather than the
-atomid's.
-
-+ The Build System
-
-The new SCons build system for LOOS will try to figure out what are
-the correct Boost libraries to use and also how to correctly build
-with Atlas/Lapack.  As before, NetCDF support for Amber will be
-automatically included if the NetCDF library is found on your system.
-PyLOOS is now built by default if a suitable version of Swig is found.
-To disable building PyLOOS, use "pyloos=0" on the command line with
-SCons.  The generated setup scripts now include environment variables
-that capture the build configuration.  These can be used by external
-SCons builds, making building your own tools outside of LOOS far
-easier.  See the Examples directory for a sample
-SConstruct/SConscript.
-
-SCons typically uses a sanitized PATH to find compilers and tools,
-but this can cause difficulties if tools are installed in non-standard
-locations.  Previously, we used an ALTPATH build variable to point to
-these locations.  Now, SCons will use your shell's PATH as its own.
-We believe this will make building LOOS with non-standard
-configurations much easier.  The catch, however, is that if you have
-overridden a system tool (e.g. g++) by altering your shell PATH, then
-SCons will do the same and, although this is often the intended
-consequence, it isn't always...  As before, the C++ compiler can be
-explicitly set with the CXX variable, regardless of what your PATH
-is.
-
-Finally, many of the variables that appeared in custom.py files have
-changed or have been removed, such as BOOSTREGEX and BOOSTPO.  If you
-were using a custom.py file, you will need to use the new
-custom.py-proto and make the appropriate changes.
-
-We have extensively tested this new build system on many different
-distributions and versions without problem, however it may choose
-incorrectly.  Many of these decisions can be overridden either on the
-command line or with a "custom.py" file.  See the INSTALL file and the
-LOOS documentation/FAQ for more information.  If you run into trouble
-building LOOS that is not already addressed there, do not hesitate to
-contact us for help.
-
-+ Trajectory Changes
-
-When an AtomicGroup is read in from a model file, the atoms are
-assigned an "index" that corresponds to their order in the model file.
-This index is used to retrieve coordinates from each frame of a
-trajectory.  Previously, LOOS used the atomid's as the indices,
-requiring them to be contiguous and to begin with 1.
-
-One consequence of this change is that PDB's written by LOOS tools,
-such as aligner and subsetter, are no longer automatically renumbered
-when using a selection.  That is, the atomid's will be the same as in
-the original model file.  The renum-pdb tool can be used to renumber
-the PDB if desired.
-
-Another consequence is that the behavior of some trajectory classes
-have changed when calling updateGroupCoords() with an AtomicGroup
-having the same number of atoms as the trajectory frame.  Prior to
-2.1.0, LOOS would simply copy the coordinates in order while ignoring
-the atomid's.  Now, *all* trajectory classes will honor the atom index
-information regardless of the size of the passed AtomicGroup.
-
-The Trajectory::updateGroupCoords() function now uses the non-virtual
-interface idiom, meaning that derived classes should override the
-private updateGroupCoordsImpl() member function.
-
-Also note that updateGroupCoords() does not typically check that the
-passed AtomicGroup has valid atom index information.  This is checked
-by createTrajectory().  If LOOS is compiled with debugging, however,
-then updateGroupCoords() will validate the passed AtomicGroup at each
-call, at the expense of performance.
-
-For more details on these changes, see the ChangeLog, the FAQ in
-the documentation, or refer to the documentation for the Trajectory
-class.
-
-
