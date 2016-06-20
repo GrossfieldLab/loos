@@ -28,6 +28,9 @@ Windows 7 (Cygwin) | yes	| no		 | Deprecated
 MacOS 10.11	 | yes		| yes		 | See notes
 
 
+* Deprecated: We no longer test this configuration, but it may still work
+* Unsupported: We have built LOOS in the past using this configuration, but do not
+  regularly test it.
 
 
 
