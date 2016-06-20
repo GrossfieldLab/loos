@@ -31,7 +31,8 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
-For help with installing LOOS, please see the INSTALL file.
+For help with installing LOOS, please see the INSTALL file.  For
+more details about what has changed in LOOS, see the ChangeLog file.
 
 
 ### RELEASE 2.3.1
