@@ -26,8 +26,8 @@ Import('env')
 PREFIX = env['PREFIX'] + '/bin/'
 
 apps = 'axis_with_membrane center_molecule flip_chirality protein_tilt rmsd_to_average domain'
-apps += ' cluster-structures cylindrical-density inside_helices.py cylindrical-thickness.py'
-apps += ' ConvexHull.py'
+apps += ' cluster-structures cylindrical-density inside_helices cylindrical-thickness'
+apps += ' ConvexHull'
 
 python_package = []
 
