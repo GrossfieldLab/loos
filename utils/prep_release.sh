@@ -31,6 +31,19 @@ function AbortOrContinue {
 
 ######################################
 
+GITDIR=`pwd`
+
+echo "*** Checking GIT status"
+if ! $GIT diff-index --quiet HEAD -- ; then
+    echo "ERROR - you appear to have unchecked modifications to this release."
+    echo "        Please fix this and run this script again..."
+    echo
+    $GIT diff --name-status
+    exit -1
+fi
+
+
+
 
 echo "Checking version ID..."
 DOXVERS=`grep '^PROJECT_NUMBER' Doxyfile | gawk '{print $3}' | sed 's/^v//'`
@@ -44,6 +57,11 @@ AbortOrContinue "You are building release for version $SCONSVERS ?"
 
 
 
+VERS=$SCONSVERS
+
+pushd $RELDIR
+$GIT clone $GITDIR loos-$VERS
+rm -rf .git
 
 echo "*** Building documentation"
 echo "+ Cleaning..."
@@ -52,12 +70,10 @@ scons -cs caboodle        # Clean everything (to be safe)
 echo "+ Building..."
 scons -sj$PROCS docs      # Rebuild docs explicitly
 
-
-
 echo "*** Checking install target"
 scons -sj$PROCS install PREFIX=$PREF
 CWD=`pwd`
-if check_loos_install.pl --nofull --exclude 'prep_release.sh' --exclude 'membrane_map.hpp' --exclude 'make_macos_tarball.sh' --prep `pwd` $PREF ; then
+if ./utils/check_loos_install.pl --nofull --exclude '.git' --exclude 'utils' --prep `pwd` $PREF ; then
     echo "Install appears ok.  Generating full report..."
     ( echo "***INSTALL APPEARS OK***" ;\
       echo "Please check the diff list below for any errors..." ;\
@@ -76,28 +92,8 @@ echo "*** Removing test install"
 rm -r $PREF
 
 
-echo "*** Checking GIT status"
-OK=""
-if [ -n "$OK" ] ; then
-    echo "ERROR - you appear to have unchecked modifications to this release."
-    echo "        Please fix this and run this script again..."
-    echo
-    echo "$OK"
-    exit -1
-fi
 
 
 
-VERS=$SCONSVERS
-
-echo "*** Making Release Tarball"
-pushd $RELDIR
-
-$GIT clone https://github.com/GrossfieldLab/loos.git loos-$VERS
-rm -rf .git
 tar cvf - loos-$VERS | gzip -cv9 >~/loos-$VERS.tar.gz
 rm -r loos-$VERS
-popd
-
-
-
