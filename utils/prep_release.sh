@@ -74,7 +74,7 @@ scons -sj$PROCS docs      # Rebuild docs explicitly
 echo "*** Checking install target"
 scons -sj$PROCS install PREFIX=$PREF
 CWD=`pwd`
-if ./utils/check_loos_install.pl --nofull --exclude '.git' --exclude 'utils' --prep `pwd` $PREF ; then
+if ./utils/check_loos_install.pl --nofull --exclude '.git' --exclude 'utils' --exclude 'membrane_map.hpp' --prep `pwd` $PREF ; then
     echo "Install appears ok.  Generating full report..."
     ( echo "***INSTALL APPEARS OK***" ;\
       echo "Please check the diff list below for any errors..." ;\
