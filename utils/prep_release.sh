@@ -60,6 +60,7 @@ AbortOrContinue "You are building release for version $SCONSVERS ?"
 VERS=$SCONSVERS
 
 pushd $RELDIR
+rm -rf loos-$VERS
 $GIT clone $GITDIR loos-$VERS
 cd loos-$VERS
 
