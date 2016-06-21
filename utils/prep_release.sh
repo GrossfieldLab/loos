@@ -61,6 +61,7 @@ VERS=$SCONSVERS
 
 pushd $RELDIR
 $GIT clone $GITDIR loos-$VERS
+cd loos-$VERS
 rm -rf .git
 
 echo "*** Building documentation"
@@ -94,6 +95,6 @@ rm -r $PREF
 
 
 
-
+cd ..
 tar cvf - loos-$VERS | gzip -cv9 >~/loos-$VERS.tar.gz
 rm -r loos-$VERS
