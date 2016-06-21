@@ -92,6 +92,8 @@ fi
 echo "*** Removing test install"
 rm -r $PREF
 
+echo "*** Cleaning Release ***"
+scons -c
 
 
 
