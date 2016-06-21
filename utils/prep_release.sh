@@ -62,7 +62,6 @@ VERS=$SCONSVERS
 pushd $RELDIR
 $GIT clone $GITDIR loos-$VERS
 cd loos-$VERS
-rm -rf .git
 
 echo "*** Building documentation"
 echo "+ Cleaning..."
@@ -94,8 +93,7 @@ rm -r $PREF
 
 echo "*** Cleaning Release ***"
 scons -c
-
-
+rm -rf .git
 
 cd ..
 tar cvf - loos-$VERS | gzip -cv9 >~/loos-$VERS.tar.gz
