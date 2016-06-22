@@ -26,4 +26,4 @@
 #include <xtcwriter.hpp>
 %}
 
-#include "xtcwriter.hpp"
+%include "xtcwriter.hpp"

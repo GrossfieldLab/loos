@@ -1,3 +1,7 @@
+2016-06-22  Tod Romo  <tromo@hill>
+
+	* Fixed bug in PyLOOS that made XTCWriter unavailable
+
 2016-06-15  Tod Romo  <tromo@hill>
 
 	* Fixed bug in aligner where xyonly was ignored if using a reference structure to align to
