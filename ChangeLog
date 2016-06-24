@@ -1,3 +1,7 @@
+2016-06-24  Tod Romo  <tromo@hill>
+
+	* Fixed bug in density-dist that prevented the number calculation from working
+
 2016-06-22  Tod Romo  <tromo@hill>
 
 	* Fixed bug in PyLOOS that made XTCWriter unavailable
