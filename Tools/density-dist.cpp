@@ -55,7 +55,7 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("zsymmetry", po::value<bool>(&symmetrize)->default_value(symmetrize), "Symmetric with respect to Z")
-      ("type", po::value<string>(&calc_type_desc)->default_value(calc_type_desc), "Calculation type (mass, charge, electron)")
+      ("type", po::value<string>(&calc_type_desc)->default_value(calc_type_desc), "Calculation type (mass, charge, electron, number)")
       ("window", po::value<uint>(&window)->default_value(window), "Window size (in frames) for time series (0 = disabled)")
       ;
   }
@@ -250,20 +250,22 @@ int main(int argc, char *argv[]) {
     subsets.push_back(selectAtoms(system, *i));
 
   // Verify properties...
-  for (vector<AtomicGroup>::iterator i = subsets.begin(); i != subsets.end(); ++i) {
-    bool ok;
-    switch(topts->calc_type) {
-    case CHARGE: ok = i->allHaveProperty(Atom::chargebit); break;
-    case ELECTRON: ok = (i->allHaveProperty(Atom::anumbit) && i->allHaveProperty(Atom::chargebit)); break;
-    case MASS: ok = i->allHaveProperty(Atom::massbit); break;
-    default: cerr << "Internal Error- unknown calculation type\n"; exit(-1);
-    }
-    if (!ok) {
-      cerr << "***WARNING***\n";
-      cerr << "The system is missing properties required for calculation type.\n";
-      cerr << "Default values will be used where possible.\n";
-      cerr << "This may result in incorrect or absurd values.\n";
-      break;
+  if (topts->calc_type != NUMBER) {
+    for (vector<AtomicGroup>::iterator i = subsets.begin(); i != subsets.end(); ++i) {
+      bool ok;
+      switch(topts->calc_type) {
+      case CHARGE: ok = i->allHaveProperty(Atom::chargebit); break;
+      case ELECTRON: ok = (i->allHaveProperty(Atom::anumbit) && i->allHaveProperty(Atom::chargebit)); break;
+      case MASS: ok = i->allHaveProperty(Atom::massbit); break;
+      default: cerr << "Internal Error- unknown calculation type\n"; exit(-1);
+      }
+      if (!ok) {
+	cerr << "***WARNING***\n";
+	cerr << "The system is missing properties required for calculation type.\n";
+	cerr << "Default values will be used where possible.\n";
+	cerr << "This may result in incorrect or absurd values.\n";
+	break;
+      }
     }
   }
   
