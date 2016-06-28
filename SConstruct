@@ -178,7 +178,7 @@ Export('loos')
 # generate the documentation
 if os.path.exists('docs.prebuilt'):
     existing_docs = True
-    docs = ['docs/html/index.html']
+    docs = ['Docs/html/index.html']
     print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
     print '         Remove docs.prebuilt file to force rebuilding documentation.'
 else:
@@ -203,9 +203,9 @@ for name in loos_build_config.package_list:
 
 
 # Always install documentation.  Note: html version is hard-coded
-env.Command(PREFIX + '/docs/index.html', 'docs/html/index.html', [
+env.Command(PREFIX + '/docs/index.html', 'Docs/html/index.html', [
       Delete(PREFIX + '/docs'),
-      Copy(PREFIX + '/docs', 'docs/html'),
+      Copy(PREFIX + '/docs', 'Docs/html'),
       ])
 env.AlwaysBuild(PREFIX + '/docs/index.html')
 
