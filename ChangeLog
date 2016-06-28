@@ -1,5 +1,6 @@
 2016-06-28    <tromo@hill>
 
+	* Changed documentation so it will be automatically built in github clones
 	* Fixed bug in amber parmtop reader that affected Ubuntu 16
 	* Added functions in utils_structural.cpp to PyLOOS
 
