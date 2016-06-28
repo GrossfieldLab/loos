@@ -70,8 +70,8 @@ Target | Description
 core   | LOOS Library and PyLOOS
 docs   | Rebuild only documentation
 tools  | LOOS Library, Tools, and PyLOOS
-all    | LOOS Library, Tools, PyLOOS, and all Packages (default)
-install| Install library, tools, PyLOOS, and all Packages
+all    | LOOS Library, Tools, PyLOOS, and documentation (if necessary), and all Packages (default)
+install| Install library, tools, PyLOOS, documentation, and all Packages
 
 ### Available Packages (also build targets)
 
@@ -164,7 +164,8 @@ However, if you got LOOS from GitHub, you will need to either:
 
 2. build a new copy of the documentation.  To do so, you will need to 
    install doxygen and graphviz (available in most package managers).
-   SCons will now generate new documentation in the docs/ directory.
+   SCons will now generate new documentation in the docs/ directory
+   for the docs, all, and install targets.
       
 # OS Specific Notes
 

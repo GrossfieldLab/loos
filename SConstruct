@@ -187,7 +187,7 @@ else:
     
 loos_tools = SConscript('Tools/SConscript')
 
-loos_core = loos + loos_scripts + docs
+loos_core = loos + loos_scripts
 
 
 # Automatically setup build targets based on package_list
@@ -197,7 +197,7 @@ loos_packages = []
 for name in loos_build_config.package_list:
     if name == 'Python' and not pyloos:
         continue
-    pkg_sc = SConscript('Packages/' + loos_build_config.package_list[name] + '/SConscript') + loos_core
+    pkg_sc = SConscript('Packages/' + loos_build_config.package_list[name] + '/SConscript')
     env.Alias(name, pkg_sc)
     loos_packages = loos_packages + pkg_sc
 
@@ -210,7 +210,7 @@ env.Command(PREFIX + '/docs/index.html', 'docs/html/index.html', [
 env.AlwaysBuild(PREFIX + '/docs/index.html')
 
 
-all = loos_tools + loos_scripts + loos_packages
+all = loos_tools + loos_scripts + loos_packages + docs
 
 if int(env['pyloos']):
     loos_core = loos_core + loos_python
