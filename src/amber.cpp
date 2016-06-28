@@ -50,7 +50,8 @@ namespace loos {
 
     // Extract format spec between parens...
     boost::char_separator<char> sep("()");
-    tokenizer tokens(reader.line(), sep);
+    std::string input_line(reader.line());     // Ubuntu 16.04 apparently requires that the string in tokenizer
+    tokenizer tokens(input_line, sep);         // be non-const
     tokenizer::iterator toks = tokens.begin();
 
     ++toks;
@@ -281,7 +282,8 @@ namespace loos {
     while (reader.getNext()) {
 
       boost::char_separator<char> sep(" \t");
-      tokenizer tokens(reader.line(), sep);
+      std::string input_line(reader.line());      // See parseFormat() for explanation...required by Ubuntu 16
+      tokenizer tokens(input_line, sep);
       tokenizer::iterator toks = tokens.begin();
       
       if (*toks != "%FLAG")

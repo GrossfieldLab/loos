@@ -1,3 +1,7 @@
+2016-06-28    <tromo@hill>
+
+	* Fixed bug in amber parmtop reader that affected Ubuntu 16
+
 2016-06-24  Tod Romo  <tromo@hill>
 
 	* Fixed bug in density-dist that prevented the number calculation from working
