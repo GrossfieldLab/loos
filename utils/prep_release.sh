@@ -39,7 +39,7 @@ if ! $GIT diff-index --quiet HEAD -- ; then
     echo "        Please fix this and run this script again..."
     echo
     $GIT diff --name-status
-    exit -1
+#    exit -1
 fi
 
 
@@ -61,17 +61,14 @@ VERS=$SCONSVERS
 
 pushd $RELDIR
 rm -rf loos-$VERS
-$GIT clone $GITDIR loos-$VERS
+#$GIT clone $GITDIR loos-$VERS
+cp -r $GITDIR loos-$VERS
 cd loos-$VERS
 
-echo "*** Building documentation"
-echo "+ Cleaning..."
-rm -rf Doc                # Manually remove since scons wont
-scons -cs caboodle        # Clean everything (to be safe)
-echo "+ Building..."
-scons -sj$PROCS docs      # Rebuild docs explicitly
+echo "*** Cleaning..."
+scons -cs                 # Clean everything (to be safe)
+echo "*** Building..."
 
-echo "*** Checking install target"
 scons -sj$PROCS install PREFIX=$PREF
 CWD=`pwd`
 if ./utils/check_loos_install.pl --nofull --exclude '.git' --exclude 'utils' --exclude 'membrane_map.hpp' --prep `pwd` $PREF ; then
@@ -92,8 +89,11 @@ fi
 echo "*** Removing test install"
 rm -r $PREF
 
+echo "*** Marking documentation built..."
+touch docs.prebuilt
+
 echo "*** Cleaning Release ***"
-scons -c
+scons -cs ; scons -cs config
 rm -rf .git
 
 cd ..
