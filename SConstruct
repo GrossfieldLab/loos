@@ -169,18 +169,18 @@ Export('loos')
 
 ### Handle existing documentation
 # This is to permit source distributions that include pre-built documentation.
-# If a docs.built file is found in the top-level directory, then scons will not include
+# If a docs.prebuilt file is found in the top-level directory, then scons will not include
 # doxygen sources in the dependency tree (i.e. the docs will not be rebuilt).  They
 # will also not be included in any cleaning targets.
 #
-# If docs.built does NOT exist, then scons will automatically generate the documentation
+# If docs.prebuilt does NOT exist, then scons will automatically generate the documentation
 # for most builds, and it will be included in cleaning.  In addition, install will
 # generate the documentation
-if os.path.exists('docs.built'):
+if os.path.exists('docs.prebuilt'):
     existing_docs = True
     docs = ['docs/html/index.html']
     print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
-    print '         Remove docs.built file to force rebuilding documentation.'
+    print '         Remove docs.prebuilt file to force rebuilding documentation.'
 else:
     existing_docs = False
     docs = env.Doxygen('Doxyfile')
