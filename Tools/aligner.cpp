@@ -300,7 +300,8 @@ int main(int argc, char *argv[]) {
       exit(-10);
     }
 
-    zapZ(refsub);
+    if (topts->xy_only)
+      zapZ(refsub);
     
     pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
     outtraj->setComments(header);
