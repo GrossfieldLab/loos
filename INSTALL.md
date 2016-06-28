@@ -68,10 +68,10 @@ To use LOOS, your environment must be first setup:
 Target | Description
 ------ | -----------
 core   | LOOS Library and PyLOOS
-docs   | Rebuild documentation
+docs   | Rebuild only documentation
 tools  | LOOS Library, Tools, and PyLOOS
-all    | LOOS Library, Tools, PyLOOS, and all Packages (default)
-install| Install library, tools, PyLOOS, and all Packages
+all    | LOOS Library, Tools, PyLOOS, and documentation (if necessary), and all Packages (default)
+install| Install library, tools, PyLOOS, documentation, and all Packages
 
 ### Available Packages (also build targets)
 
@@ -155,7 +155,7 @@ already multithreaded.
 ### Documentation
 
 If you downloaded a LOOS distribution from Sourceforge, you already have a
-pre-built copy of the documentation (found in the Docs/ directory), and will
+pre-built copy of the documentation (found in the docs/ directory), and will
 not need to re-make the docs unless you change the code.  
 
 However, if you got LOOS from GitHub, you will need to either:
@@ -163,22 +163,10 @@ However, if you got LOOS from GitHub, you will need to either:
 1. consult the online documentation at http://loos.sourceforge.net/, 
 
 2. build a new copy of the documentation.  To do so, you will need to 
- install Doxygen, graphviz, and dot (available in most package managers)
- and issue the following command:
-
-    scons docs
-
- This will create a Docs/ directory.  You can then access the
- documentation by point a browser at Docs/index.html
+   install doxygen and graphviz (available in most package managers).
+   SCons will now generate new documentation in the docs/ directory
+   for the docs, all, and install targets.
       
-Note: doing an install using "scons install" will assume that you have
-already built the documentation, and will fail unless you run "scons
-docs" first.  Thus, if you start from GitHub, you can't do an install
-unless you have Doxygen and its dependencies installed.  However, you 
-can still use LOOS by working from the build directory -- just source the
-setup.sh or setup.csh file generated in the main directory.
-
-
 # OS Specific Notes
 
 ## Fedora
