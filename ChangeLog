@@ -1,6 +1,7 @@
 2016-06-28    <tromo@hill>
 
 	* Fixed bug in amber parmtop reader that affected Ubuntu 16
+	* Added functions in utils_structural.cpp to PyLOOS
 
 2016-06-24  Tod Romo  <tromo@hill>
 

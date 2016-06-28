@@ -79,4 +79,4 @@ namespace loos {
 %include "sfactories.i"
 %include "alignment.i"
 %include "gro.i"
-
+%include "utils_structural.i"
