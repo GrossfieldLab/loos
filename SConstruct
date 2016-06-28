@@ -20,6 +20,7 @@
 
 import sys
 import os
+import os.path
 import glob
 import platform
 import re
@@ -165,7 +166,25 @@ Export('env')
 loos_scripts = SConscript('SConscript')
 Export('loos')
 
-docs = env.Doxygen('Doxyfile')
+
+### Handle existing documentation
+# This is to permit source distributions that include pre-built documentation.
+# If a docs.built file is found in the top-level directory, then scons will not include
+# doxygen sources in the dependency tree (i.e. the docs will not be rebuilt).  They
+# will also not be included in any cleaning targets.
+#
+# If docs.built does NOT exist, then scons will automatically generate the documentation
+# for most builds, and it will be included in cleaning.  In addition, install will
+# generate the documentation
+if os.path.exists('docs.built'):
+    existing_docs = True
+    docs = ['docs/html/index.html']
+    print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
+    print '         Remove docs.built file to force rebuilding documentation.'
+else:
+    existing_docs = False
+    docs = env.Doxygen('Doxyfile')
+    
 loos_tools = SConscript('Tools/SConscript')
 
 
@@ -181,16 +200,15 @@ for name in loos_build_config.package_list:
     loos_packages = loos_packages + pkg_sc
 
 
-### Special handling for pre-packaged documentation...
-
-env.Command(PREFIX + '/docs/main.html', [], [
+# Always install documentation.  Note: html version is hard-coded
+env.Command(PREFIX + '/docs/index.html', 'docs/html/index.html', [
       Delete(PREFIX + '/docs'),
-      Copy(PREFIX + '/docs', 'Docs'),
+      Copy(PREFIX + '/docs', 'docs/html'),
       ])
-env.AlwaysBuild(PREFIX + '/docs/main.html')
+env.AlwaysBuild(PREFIX + '/docs/index.html')
 
 
-loos_core = loos + loos_scripts
+loos_core = loos + loos_scripts + docs
 all = loos_tools + loos_scripts + loos_packages
 
 if int(env['pyloos']):
@@ -212,5 +230,11 @@ env.Clean('config',
               ".sconf_temp",
               "config.log"
               ])
+
+# Hack to force cleaning of docs (but only if no pre-existing docs are found)
+# Note: html version hard-coded
+if not existing_docs:
+    env.Clean(docs, 'docs/html')
+    env.Clean(all, 'docs/html')
 
 env.Default('all')
