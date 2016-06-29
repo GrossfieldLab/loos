@@ -39,7 +39,7 @@ if ! $GIT diff-index --quiet HEAD -- ; then
     echo "        Please fix this and run this script again..."
     echo
     $GIT diff --name-status
-#    exit -1
+    exit -1
 fi
 
 
@@ -61,8 +61,8 @@ VERS=$SCONSVERS
 
 pushd $RELDIR
 rm -rf loos-$VERS
-#$GIT clone $GITDIR loos-$VERS
-cp -r $GITDIR loos-$VERS
+$GIT clone $GITDIR loos-$VERS
+#cp -r $GITDIR loos-$VERS
 cd loos-$VERS
 
 echo "*** Cleaning..."
