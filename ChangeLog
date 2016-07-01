@@ -1,3 +1,7 @@
+2016-07-01    <tromo@hill>
+
+	* Added support for manually setting molecule name to segid mapping in gmxdump2pdb tool
+
 2016-06-28    <tromo@hill>
 
 	* Changed documentation so it will be automatically built in github clones

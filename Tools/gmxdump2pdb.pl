@@ -79,6 +79,11 @@ my $tabbonds = 1;
 my $conbonds = 1;
 my $namd = 1;
 
+my %seen_segids;     # Mapping of gromacs molecule segment names to SEGIDs
+my %used_segids;     # Also keep track of user-specified segid mappings to make sure
+                     # all were used
+
+
 my $ok = GetOptions('local!' => \$resids_local,
 		    'constraints!' => \$use_constraints,
 		    'hydrogens' => sub { $use_constraints = $hydrogens_only = 1; },
@@ -86,10 +91,21 @@ my $ok = GetOptions('local!' => \$resids_local,
 		    'mass=f' => \$force_mass,
 		    'tabbonds!' => \$tabbonds,
 		    'conbonds!' => \$conbonds,
+		    'segmap=s' => \%seen_segids,
 		    'namd!' => \$namd,
 		    'help' => sub { &showHelp; });
 
 $ok || &showHelp;
+
+
+# Mark user-supplied segid mappings
+foreach (keys(%seen_segids)) {
+  $used_segids{$_} = 0;
+  my $val = $seen_segids{$_};
+  if (length($val) > 4) {
+    die "Error- you cannot use a segid that is longer than 4 characters.";
+  }
+}
 
 my $bondprefix_regex = &build_bond_prefix_regex($tabbonds, $conbonds);
 
@@ -233,6 +249,7 @@ foreach my $atom (@bond_list) {
 print $psf "\n";
 
 
+&warnIfUnusedSegmentMaps;
 
 # Returns a reference to an array containing references to hashes that
 # represent each molecule contained in the TPR.  It is assumed that
@@ -715,7 +732,6 @@ sub inferWater {
 }
 
 
-my %seen_segids;
 
 sub sanitizeSegid {
   my $seg = shift;
@@ -723,6 +739,7 @@ sub sanitizeSegid {
   $seg =~ y/a-z/A-Z/;
 
   if (exists($seen_segids{$seg})) {
+    $used_segids{$seg} = 1;
     return($seen_segids{$seg});
   }
 
@@ -791,13 +808,23 @@ sub sanitizeSegid {
   }
 
   $seen_segids{$oseg} = $seg;
+  $used_segids{$oseg} = 1;
 
   if ($oseg ne $seg) {
-    print STDERR "Warning- segid '$oseg' is now '$seg'\n";
+    print STDERR "Warning- Automatically mapping segment '$oseg' to '$seg'\n";
   }
   return($seg);
 }
 
+
+
+sub warnIfUnusedSegmentMaps {
+  foreach (sort(keys(%used_segids))) {
+    if (!($used_segids{$_})) {
+      print STDERR "Warning- segid mapping for segment $_ was not used.\n";
+    }
+  }
+}
 
 sub build_bond_prefix_regex {
   my($tabbond, $conbond) = @_;
@@ -818,7 +845,7 @@ sub build_bond_prefix_regex {
 
 sub showHelp {
   print <<'EOF';
-Usage- gmxdump -s foo.tpr | gmxdump2.pl [options] output-file-prefix
+Usage- gmxdump -s foo.tpr | gmxdump2pdb.pl [options] output-file-prefix
 
 Options:
    --[no]local       Resids are local to each molecule (default is off)
@@ -830,6 +857,11 @@ Options:
    --[no]tabbonds    Include TABBONDS in bonds list (default is on)
    --[no]conbonds    Include CONNBONDS in bonds list (Gromacs 5+, default is on)
    --[no]namd        Add NAMD tag to PSF (may help with VMD)
+   --segmap key=val  Manually specify a mapping of Gromacs molecule names to PDB segids.
+                     The key is the gromacs name and "val" is the resulting segid.
+                     The key is also case insensitive.  This option may be used multiple
+                     times on the command line to map several different names,
+                       gmxdump2pdb.pl --segmap FENGYCIN=FENG --segmap NA+=SOD 
 EOF
 
   exit 0;
