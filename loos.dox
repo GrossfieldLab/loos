@@ -1706,6 +1706,8 @@ namespace loos {
   <li> Added new cylindrical-thickness tool
   <li> Added verap tool for quick vertical area profiles (non-voronoi)
   <li> Added (officially) the functions in utils_structural.cpp to PyLOOS
+  <li> Added support for manually specifying the mapping of molecule names to segid
+             in gmxdump2pdb tool
 </ul>
 
 
