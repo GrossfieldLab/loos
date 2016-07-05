@@ -24,7 +24,7 @@ import os.path
 import glob
 import platform
 import re
-from subprocess import *
+import subprocess
 from time import strftime
 import shutil
 import distutils.sysconfig
@@ -173,18 +173,49 @@ Export('loos')
 # doxygen sources in the dependency tree (i.e. the docs will not be rebuilt).  They
 # will also not be included in any cleaning targets.
 #
-# If docs.prebuilt does NOT exist, then scons will automatically generate the documentation
-# for most builds, and it will be included in cleaning.  In addition, install will
+# If a tarball of the documentation is found, then this will be untar'd in place.  It should
+# include a top-level docs.prebuilt file to avoid untar'ing every time.  Tarballs compressed
+# with gzip and bzip2 are recognized, as well as uncompressed tarballs.
+#
+# If docs.prebuilt does NOT exist and no tarball is found, then scons will automatically generate
+# the documentation for most builds, and it will be included in cleaning.  In addition, install will
 # generate the documentation
-if os.path.exists('docs.prebuilt'):
+
+cleaning = env.GetOption('clean')
+if os.path.exists('docs.prebuilt') and not cleaning:
     existing_docs = True
     docs = ['Docs/html/index.html']
     print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
     print '         Remove docs.prebuilt file to force rebuilding documentation.'
+
 else:
-    existing_docs = False
-    docs = env.Doxygen('Doxyfile')
-    
+    doc_tarballs = glob.glob('docs.tar*')
+    if doc_tarballs:
+        filename = doc_tarballs[0]
+        name, extension = os.path.splitext(doc_tarballs[0])
+        if extension == '.gz':
+            modifier = 'z'
+        elif extension == '.bz2':
+            modified = 'j'
+        elif extension != '.tar':
+            print 'Error- unknown compression extension for ', doc_tarballs[0]
+            sys.exit(-1)
+
+        print 'Warning- existing documentation tarball found.  To force rebuilding of'
+        print '         of documentation, remove the tarball and the docs.prebuilt file.'
+
+        if not cleaning:
+            print 'Unpacking documentation...'
+            fnull = open(os.devnull, 'w')
+            subprocess.call(['tar', modified + 'xvf', filename], stdout=fnull)
+            
+        existing_docs = True
+        docs = ['Docs/html/index.html']
+
+    else:
+        existing_docs = False
+        docs = env.Doxygen('Doxyfile')
+
 loos_tools = SConscript('Tools/SConscript')
 
 loos_core = loos + loos_scripts
@@ -235,7 +266,7 @@ env.Clean('config',
 # Hack to force cleaning of docs (but only if no pre-existing docs are found)
 # Note: html version hard-coded
 if not existing_docs:
-    env.Clean(docs, 'docs/html')
-    env.Clean(all, 'docs/html')
+    env.Clean(docs, 'Docs/html')
+    env.Clean(all, 'Docs/html')
 
 env.Default('all')

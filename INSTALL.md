@@ -154,11 +154,12 @@ already multithreaded.
 
 ### Documentation
 
-If you downloaded a LOOS distribution from Sourceforge, you already have a
-pre-built copy of the documentation (found in the docs/ directory), and will
-not need to re-make the docs unless you change the code.  
+If you downloaded a LOOS distribution, then you should already have a
+pre-built copy of the documentation (in a tar file), and will
+not need to re-make the docs unless you change the code.  SCons will
+automatically untar the file for you.
 
-However, if you got LOOS from GitHub, you will need to either:
+However, if you clone LOOS from GitHub, you will need to either:
 
 1. consult the online documentation at http://loos.sourceforge.net/, 
 
