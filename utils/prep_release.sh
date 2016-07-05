@@ -91,6 +91,7 @@ rm -r $PREF
 
 echo "*** Marking documentation built..."
 touch docs.prebuilt
+tar cvf - Docs docs.prebuilt | gzip -cv9 >~/loos-$VERS-docs.tar.gz
 
 echo "*** Cleaning Release ***"
 scons -cs ; scons -cs config
