@@ -189,7 +189,7 @@ if os.path.exists('docs.prebuilt') and not cleaning:
     print '         Remove docs.prebuilt file to force rebuilding documentation.'
 
 else:
-    doc_tarballs = glob.glob('docs.tar*')
+    doc_tarballs = glob.glob('loos-*-docs.tar*')
     if doc_tarballs:
         filename = doc_tarballs[0]
         name, extension = os.path.splitext(doc_tarballs[0])
