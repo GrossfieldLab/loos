@@ -182,11 +182,12 @@ Export('loos')
 # generate the documentation
 
 cleaning = env.GetOption('clean')
-if os.path.exists('docs.prebuilt') and not cleaning:
+if os.path.exists('docs.prebuilt'):
     existing_docs = True
-    docs = ['Docs/html/index.html']
     print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
     print '         Remove docs.prebuilt file to force rebuilding documentation.'
+    docs = ['Docs/html/index.html']
+
 
 else:
     doc_tarballs = glob.glob('loos-*-docs.tar*')
