@@ -197,7 +197,7 @@ else:
         if extension == '.gz':
             modifier = 'z'
         elif extension == '.bz2':
-            modified = 'j'
+            modifier = 'j'
         elif extension != '.tar':
             print 'Error- unknown compression extension for ', doc_tarballs[0]
             sys.exit(-1)
@@ -208,7 +208,7 @@ else:
         if not cleaning:
             print 'Unpacking documentation...'
             fnull = open(os.devnull, 'w')
-            subprocess.call(['tar', modified + 'xvf', filename], stdout=fnull)
+            subprocess.call(['tar', modifier + 'xvf', filename], stdout=fnull)
             
         existing_docs = True
         docs = ['Docs/html/index.html']
