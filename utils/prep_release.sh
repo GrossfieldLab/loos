@@ -61,13 +61,13 @@ VERS=$SCONSVERS
 
 pushd $RELDIR
 rm -rf loos-$VERS
-#$GIT clone $GITDIR loos-$VERS
-cp -r $GITDIR loos-$VERS
+$GIT clone $GITDIR loos-$VERS
+#cp -r $GITDIR loos-$VERS
 cd loos-$VERS
 
 echo "*** Cleaning..."
-scons -cs                    # Clean everything (to be safe)
-rm -rf Docs/html loos-*-docs.tar* # Manually remove existing documentation
+rm -rf Docs/html loos-*-docs.tar* docs.prebuilt # Manually remove existing documentation
+scons -cs                                       # Clean everything (to be safe)
 echo "*** Building..."
 
 scons -sj$PROCS install PREFIX=$PREF
@@ -97,7 +97,6 @@ tar cvf - Docs docs.prebuilt | gzip -cv9 >~/loos-$VERS-docs.tar.gz
 echo "*** Cleaning Release ***"
 scons -cs ; scons -cs config
 rm -rf .git
-
 cd ..
 tar cvf - loos-$VERS | gzip -cv9 >~/loos-$VERS.tar.gz
 rm -r loos-$VERS
