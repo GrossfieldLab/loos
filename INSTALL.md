@@ -154,13 +154,15 @@ already multithreaded.
 
 ### Documentation
 
-If you downloaded a LOOS distribution from Sourceforge, you already have a
-pre-built copy of the documentation (found in the docs/ directory), and will
-not need to re-make the docs unless you change the code.  
+If you download a LOOS release from SourceForge, then you will already
+have pre-built documentation.  If you download a release from
+GitHub, then you can also download the prebuilt documentation as a
+compressed tar-file.  Simply place the compressed tar-file in your LOOS source
+directory and scons will unpack it for you and move it into place.
 
-However, if you got LOOS from GitHub, you will need to either:
+However, if you clone LOOS from GitHub, you will need to either:
 
-1. consult the online documentation at http://loos.sourceforge.net/, 
+1. consult the online documentation at http://grossfieldlab.github.io/loos/
 
 2. build a new copy of the documentation.  To do so, you will need to 
    install doxygen and graphviz (available in most package managers).
