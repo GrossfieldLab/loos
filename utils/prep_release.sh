@@ -61,8 +61,8 @@ VERS=$SCONSVERS
 
 pushd $RELDIR
 rm -rf loos-$VERS
-$GIT clone $GITDIR loos-$VERS
-#cp -r $GITDIR loos-$VERS
+#$GIT clone $GITDIR loos-$VERS
+cp -r $GITDIR loos-$VERS
 cd loos-$VERS
 
 echo "*** Cleaning..."
