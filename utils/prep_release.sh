@@ -66,7 +66,8 @@ cp -r $GITDIR loos-$VERS
 cd loos-$VERS
 
 echo "*** Cleaning..."
-scons -cs                 # Clean everything (to be safe)
+scons -cs                    # Clean everything (to be safe)
+rm -rf Docs/html loos-*-docs.tar* # Manually remove existing documentation
 echo "*** Building..."
 
 scons -sj$PROCS install PREFIX=$PREF
