@@ -4,6 +4,8 @@ branches:
 
 os:
   - linux
+  - osx:
+    - osx_image: xcode8
 
 language: cpp
 
@@ -20,6 +22,15 @@ addons:
      - doxygen
      - graphviz
 
+before install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install boost; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install netcdf; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install swig; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install graphviz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install scons; fi
+  
 script: scons
 
   
