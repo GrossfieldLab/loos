@@ -5,9 +5,14 @@ branches:
 os:
   - linux
   - osx:
-    - osx_image: xcode8
 
 language: cpp
+
+matrix:
+  include:
+    - os: linux
+    - os: osx
+      osx_image: xcode8
 
 addons:
   apt:
