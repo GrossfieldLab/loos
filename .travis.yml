@@ -1,0 +1,23 @@
+branches:
+  only:
+    - master
+
+os:
+  - linux
+
+language: cpp
+
+addons:
+  apt:
+     packages:
+     - libboost-all-dev
+     - libatlas-base-dev
+     - libatlas-dev
+     - libnetcdf-dev
+     - swig
+     - python-dev
+     - python-numpy
+
+script: scons
+
+  
