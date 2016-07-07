@@ -17,6 +17,8 @@ addons:
      - swig
      - python-dev
      - python-numpy
+     - doxygen
+     - graphviz
 
 script: scons
 
