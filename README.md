@@ -1,5 +1,8 @@
 # The Lightweight Object Oriented Structure analysis library
 
+[![Build Status](https://travis-ci.org/GrossfieldLab/loos.svg?branch=master)](https://travis-ci.org/GrossfieldLab/loos)
+
+
 ## Getting Help
 * New Releases: https://lists.sourceforge.net/lists/listinfo/loos-announce
 * User Support: https://lists.sourceforge.net/lists/listinfo/loos-users
