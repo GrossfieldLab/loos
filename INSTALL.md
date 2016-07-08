@@ -25,7 +25,7 @@ Manjaro 0.8	 | yes		| yes		 | Unsupported
 Mint 17		 | yes		| yes		 | Unsupported
 Slackware 14.1	 | yes		| yes		 | Unsupported
 Windows 7 (Cygwin) | yes	| no		 | Unsupported
-MacOS 10.11	 | yes		| yes		 | See notes
+MacOS 10.11	 | yes		| yes		 | See OS notes
 
 
 * Deprecated: We no longer test this configuration, but it may still work
