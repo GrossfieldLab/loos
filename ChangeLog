@@ -66,6 +66,9 @@
 
 	* Added new tool inside_helices.py to Packages/PyLOOS
 
+2016-01-11    <tromo@hill>
+	* Released loos-2.3.1
+
 2016-01-08    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in center-molecule affecting --center_xy
