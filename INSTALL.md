@@ -187,7 +187,7 @@ install scons, boost, and atlas:
 
 ## CentOS
 
-LOOS has been tested with CentOS (64 bit).  You will need to use the EPEL repo
+LOOS has been tested with CentOS 6 and 7 (64 bit).  You will need to use the EPEL repo
 first,
 
      sudo yum install epel-release
