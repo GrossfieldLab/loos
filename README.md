@@ -62,7 +62,7 @@ for the current release online at http://grossfieldlab.github.io/loos/
 or http://loos.sourceforge.net
 
 Bugs fixed in this release include some important fixes to the OMG,
-a bug affecting aligner and memrane_map when aligning to a reference
+a bug affecting aligner and membrane_map when aligning to a reference
 structure, making XTCWriter available to PyLOOS, and a few more minor
 fixes.  See the [INSTALL](INSTALL.md) file for more details.
 
