@@ -1,3 +1,7 @@
+2016-07-08    <tromo@hill>
+
+	* Added support for unpacking prebuilt docs tarball
+
 2016-07-01    <tromo@hill>
 
 	* Added support for manually setting molecule name to segid mapping in gmxdump2pdb tool
