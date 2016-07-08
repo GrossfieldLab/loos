@@ -155,10 +155,11 @@ already multithreaded.
 ### Documentation
 
 If you download a LOOS release from SourceForge, then you will already
-have pre-built documentation.  If you download a release from
-GitHub, then you can also download the prebuilt documentation as a
-compressed tar-file.  Simply place the compressed tar-file in your LOOS source
-directory and scons will unpack it for you and move it into place.
+have pre-built documentation.  If you download a release from GitHub,
+then you can also download the prebuilt documentation that corresponds
+to the release (e.g. loos-2.3.2-docs.tar.gz).  Simply place the
+compressed tar-file in your LOOS source directory and scons will
+unpack it for you and move it into place.
 
 However, if you clone LOOS from GitHub, you will need to either:
 
