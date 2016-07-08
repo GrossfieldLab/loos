@@ -34,6 +34,10 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
+We recommend that, unless you want to develop with LOOS, that you
+stick to downloading releases either by using tags, the releases tab
+in GitHub, or downloading a release tarball from sourceforge.
+
 For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
 
