@@ -1,6 +1,6 @@
 var _changes =
 [
-    [ "Version 2.3.2 (7-XX-2016)", "_changes.html#release232", [
+    [ "Version 2.3.2 (7-8-2016)", "_changes.html#release232", [
       [ "Bug Fixes", "_changes.html#r232_bugs", null ],
       [ "Added, Changed, and Otherwise Notable", "_changes.html#r232_add_changed", null ]
     ] ],
