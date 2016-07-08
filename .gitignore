@@ -37,6 +37,7 @@ docs.built
 *.swp
 
 ###EXES
+Tools/verap
 Tools/renum-pdb
 Tools/merge-traj
 Tools/transition_contacts
