@@ -17,14 +17,14 @@ Ubuntu 15.10     | yes          | yes            |
 Ubuntu 16.04 LTS | yes          | yes            |
 Debian 7.8       | yes          | yes            |
 Debian 8.1       | yes          | yes            |
-Centos 6.7       | yes          | yes            | See notes
-Centos 7         | yes          | yes            | See notes
-OpenSUSE 12	 | yes		| yes		 | See notes
+Centos 6.7       | yes          | yes            | See OS notes
+Centos 7         | yes          | yes            | See OS notes
+OpenSUSE 12	 | yes		| yes		 | See OS notes
 OpenSUSE 13	 | yes		| yes		 |
 Manjaro 0.8	 | yes		| yes		 | Unsupported
 Mint 17		 | yes		| yes		 | Unsupported
 Slackware 14.1	 | yes		| yes		 | Unsupported
-Windows 7 (Cygwin) | yes	| no		 | Deprecated
+Windows 7 (Cygwin) | yes	| no		 | Unsupported
 MacOS 10.11	 | yes		| yes		 | See notes
 
 
@@ -168,6 +168,8 @@ However, if you clone LOOS from GitHub, you will need to either:
    install doxygen and graphviz (available in most package managers).
    SCons will now generate new documentation in the docs/ directory
    for the docs, all, and install targets.
+
+======
       
 # OS Specific Notes
 
@@ -180,6 +182,8 @@ install scons, boost, and atlas:
     sudo dnf install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy
 
 
+
+---
 
 ## CentOS
 
@@ -196,16 +200,19 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
   the package manager is too old.
 
 
+---
 
 ## Ubuntu
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
 
+---
 
 ## Debian
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
 
+---
 
 ## OpenSUSE
 
@@ -227,6 +234,7 @@ in order to build LOOS.
 The package-manager installed scons is too old.  Download and install SCons
 2.0 or better.
 
+---
 
 ## MacOS
 
@@ -314,7 +322,9 @@ fact using only the BOOST install and libraries you intend (or removed
 the excess versions)
 
 
-## Windows/Cygwin (deprecated)
+---
+
+## Windows/Cygwin (Unsupported)
 
 You will need to install libboost-devel and liblapack-devel along with
 the g++ compiler using the cygwin setup.exe program.  (Note: if loos
@@ -346,12 +356,16 @@ LOOS has been tested with Manjaro 0.8.10.
 Make sure scons, boost, lapack, python, and swig are installed.  Also
 install NetCDF, if you want NetCDF support.  LOOS and PyLOOS should build.
 
+---
+
 ## Slackware (Unsupported)
 
 LOOS has been tested with Slackware 14.1.  You will need to install,
 by whatever means you prefer, lapack, blas, and scons.  LOOS and PyLOOS
 should then build.
 
+
+---
 
 # General Notes
 
