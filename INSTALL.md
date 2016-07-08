@@ -187,10 +187,15 @@ install scons, boost, and atlas:
 
 ## CentOS
 
-LOOS has been tested with CentOS (64 bit).  Follow the instructions
-for Fedora (using yum instead of dnf).  However there is no scons
-package available via yum.  Instead, download and install any version
-of scons more recent than 1.0.
+LOOS has been tested with CentOS 6 and 7 (64 bit).  You will need to use the EPEL repo
+first,
+
+     sudo yum install epel-release
+
+Then install the packages,
+
+    sudo yum install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy
+
 
 
 ### PyLOOS

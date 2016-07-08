@@ -34,8 +34,42 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
+We recommend that, unless you want to develop with LOOS, that you
+stick to downloading releases either by using tags, the releases tab
+in GitHub, or downloading a release tarball from sourceforge.
+
 For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
+
+### RELEASE 2.3.2
+
+This release includes a number of changes to support our migration to
+GitHub as well as some important bug fixes and additions.
+
+We have reorganized the LOOS source code so that the core library now
+resides in the "src" directory.  The shared library that's built (along
+with the python code) is still copied to the top-level LOOS directory.
+
+The Doxygen-based documentation is now handled a little bit differently.
+When cloning from GitHub, the documentation will be automatically built
+by SCons.  This means doxygen and graphviz are now required to build LOOS.
+If you download a release from GitHub, then you can also download the pre-built
+tar file containing the documentation.  If this is in the top LOOS
+source directory, then SCons will see it and unpack it for you.  Finally,
+if you download a release from SourceForge, the the pre-built documentation
+is bundled with the release.  In all cases, you can always find the docs
+for the current release online at http://grossfieldlab.github.io/loos/
+or http://loos.sourceforge.net
+
+Bugs fixed in this release include some important fixes to the OMG,
+a bug affecting aligner and memrane_map when aligning to a reference
+structure, making XTCWriter available to PyLOOS, and a few more minor
+fixes.  See the [INSTALL](INSTALL.md) file for more details.
+
+New tools in this release include verap, a quick vertical area profile
+tool, cylindrical-thickness, and inside_helices.  New features include
+providing support for manually mapping molecule names to segids in the
+gmxdump2pdb tool and support for writing GRO files.
 
 
 ### RELEASE 2.3.1

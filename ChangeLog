@@ -1,3 +1,7 @@
+2016-07-08    <tromo@hill>
+
+	* Added support for unpacking prebuilt docs tarball
+
 2016-07-01    <tromo@hill>
 
 	* Added support for manually setting molecule name to segid mapping in gmxdump2pdb tool
@@ -45,8 +49,8 @@
 	  hardwired.
 
 2016-04-19  Alan Grossfield <alan@membrane.urmc.rochester.edu>
-
-    * Added ability to write GRO files.  Added Gromacs class to pyloos
+	
+	* Added ability to write GRO files.  Added Gromacs class to pyloos
 
 2016-04-15  Tod Romo  <tromo@Gorgoneion.local>
 
@@ -61,6 +65,9 @@
 2016-03-11    <alan_grossfield@.urmc.rochester.edu>
 
 	* Added new tool inside_helices.py to Packages/PyLOOS
+
+2016-01-11    <tromo@hill>
+	* Released loos-2.3.1
 
 2016-01-08    <tromo@hill.urmc-sh.rochester.edu>
 

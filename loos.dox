@@ -1682,7 +1682,7 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
-\section release232 Version 2.3.2 (7-XX-2016)
+\section release232 Version 2.3.2 (7-8-2016)
 \subsection r232_bugs Bug Fixes
 <ul>
   <li> Added HSD, HSE, and HSP as recognized residues for backbone selector
@@ -1700,6 +1700,7 @@ namespace loos {
   <li> Changed the organization of LOOS source tree so that the core library
        resides in the src/ directory.
   <li> Changed how documentation is built (now automatic for GitHub users)
+  <li> Added support for unpacking pre-built docs from tarball in top-level LOOS dir
   <li> Added inside_helices.py tool to PyLOOS
   <li> Added --positive and --negative flags to enmovie to control which direction motion is depicted
   <li> Added ability to write Gromacs .gro files
