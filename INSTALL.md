@@ -23,6 +23,7 @@ OpenSUSE 12	 | yes		| yes		 | See OS notes
 OpenSUSE 13	 | yes		| yes		 |
 Manjaro 0.8	 | yes		| yes		 | Unsupported
 Mint 17		 | yes		| yes		 | Unsupported
+Mint 18		 | yes		| yes		 | 
 Slackware 14.1	 | yes		| yes		 | Unsupported
 Windows 7 (Cygwin) | yes	| no		 | Unsupported
 MacOS 10.11	 | yes		| yes		 | See OS notes
@@ -208,13 +209,7 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 
 ---
 
-## Ubuntu
-
-    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
-
----
-
-## Debian
+## Ubuntu, Debian, Mint
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
 
