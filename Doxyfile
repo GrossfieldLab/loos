@@ -868,7 +868,7 @@ EXCLUDE_PATTERNS       = *.cc \
                          Tests* \
                          Examples* \
                          .sconf* \
-                         Tools* \
+                         ./Tools* \
                          */loos.py \
                          */loos/__init__.py
 
