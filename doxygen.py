@@ -182,8 +182,7 @@ def DoxySourceFiles(node, env):
                             filename = os.path.join(root, f)
 
                             pattern_check = reduce(lambda x, y: x or bool(fnmatch(filename, y)), file_patterns, False)
-                            exclude_check = reduce(lambda x, y: x and fnmatch(filename, y), exclude_patterns, True)
-
+                            exclude_check = reduce(lambda x, y: x or fnmatch(filename, y), exclude_patterns, False)
                             if pattern_check and not exclude_check:
                                 sources.append(filename)
                 else:
@@ -197,7 +196,7 @@ def DoxySourceFiles(node, env):
                     filename = os.path.join(root, f)
 
                     pattern_check = reduce(lambda x, y: x or bool(fnmatch(filename, y)), file_patterns, False)
-                    exclude_check = reduce(lambda x, y: x and fnmatch(filename, y), exclude_patterns, True)
+                    exclude_check = reduce(lambda x, y: x or fnmatch(filename, y), exclude_patterns, False)
 
                     if pattern_check and not exclude_check:
                         sources.append(filename)
