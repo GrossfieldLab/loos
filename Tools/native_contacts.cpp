@@ -42,12 +42,14 @@ class ToolOptions : public opts::OptionsPackage
         string outfile;
         bool do_output;
         bool exclude_backbone;
+        bool use_periodicity;
 
         void addGeneric(po::options_description& o) 
             {
             o.add_options()
      ("outfile", po::value<string>(&outfile), "File for timeseries of individual contacts")
      ("exclude-backbone",po::value<bool>(&exclude_backbone)->default_value(false), "Exclude the backbone from contact calculations")
+     ("periodic", "Use periodicity when computing contacts")
             ;
             }
 
@@ -60,6 +62,15 @@ class ToolOptions : public opts::OptionsPackage
             else
                 {
                 do_output=false;
+                }
+
+            if (vm.count("periodic"))
+                {
+                use_periodicity = true;
+                }
+            else
+                {
+                use_periodicity = false;
                 }
             return(true);
             }
@@ -92,12 +103,15 @@ string fullHelpMessage(void)
 "    line, then those two residues are a native contact.  The same criterion\n"
 "    is applied at each successive frame.\n"
 "\n"
-"    Note: This code does not take periodicity into account.  Rather, it is\n"
-"    assumed that the selection (generally a biomolecule such as a protein)\n"
-"    is not split across a periodic boundary.  If your simulation code \n"
-"    doesn't do this for you, you can use merge-traj with the --fix-imaging\n"
-"    flag to set up your trajectory appropriately (although that only works\n"
-"    if the selection is a single molecule).\n"
+"    Note: This code does not take periodicity into account by default,\n"
+"    because in most cases (e.g. a protein or RNA) the molecule will be \n"
+"    in a single unit cell.  If you want periodicity, add the flag \n"
+"    '--periodic' on the command line.  If you give this flag and supply an \n"
+"    initial structure that does not have box information, you will get a \n"
+"    warning, and the initial identification of contacts will be done without\n"
+"    using the periodic image.  If this is not the desired behavior, you'll \n"
+"    need to add the box information to the initial structure by hand first,\n"
+"    or use the first frame of the trajectory as the reference.\n"
 "\n"
 "    EXAMPLE\n"
 "\n"
@@ -187,6 +201,15 @@ if ( !(sel[0]->checkProperty(Atom::coordsbit)) )
     traj->updateGroupCoords(system);
     }
 
+bool use_periodicity_for_reference = topts->use_periodicity;
+if (topts->use_periodicity && !system.isPeriodic())
+    {
+    use_periodicity_for_reference = false;
+    cerr << "Warning: you requested periodicty, but the reference structure is not periodic" << endl;
+    cerr << "Periodicity will _not_ be used when computing the reference contacts, " << endl;
+    cerr << "but _will_ be used for the trajectory frames." << endl;
+    }
+
 // Compute the centers of mass of the selections
 uint num_residues = residues.size();
 vector<GCoord> centers_of_mass(num_residues);
@@ -196,12 +219,19 @@ for (uint i=0; i<num_residues; i++)
     }
 
 vector<vector<uint> > contacts;
+
+GCoord box = system.periodicBox();
+
 // Find contacts within the threshold distance
 for (uint i=0; i<num_residues-1; i++)
     {
     for (uint j=i+1; j< num_residues; j++)
         {
         GCoord diff = centers_of_mass[j] - centers_of_mass[i]; 
+        if (use_periodicity_for_reference)
+            {
+            diff.reimage(box);
+            }
         if (diff.length2() <= cut2)
             {
             vector<uint> v(2);
@@ -225,12 +255,25 @@ for (uint i=0; i<num_residues-1; i++)
 float num_native_contacts = (float) contacts.size();
 cout << "# Total native contacts: " << num_native_contacts << endl;
 
+bool is_periodic;
+if (topts->use_periodicity && traj->hasPeriodicBox())
+    {
+    is_periodic = true;
+    }
+else if (topts->use_periodicity && !(traj->hasPeriodicBox()))
+    {
+    cerr << "Warn: you requested periodicity, but your trajectory isn't periodic." << endl;
+    cerr << "The calculation will proceed _ignoring_ periodicity." << endl;
+    is_periodic = false;
+    }
+
 // Loop over structures in the trajectory
 vector<vector<uint> >::iterator p;
 int frame = 0;
 while (traj->readFrame())
     {
     traj->updateGroupCoords(system);
+    box = system.periodicBox();
 
     // Loop over contacts from the native structure
     int num_contacts = 0;
@@ -241,6 +284,10 @@ while (traj->readFrame())
         GCoord c1 = residues[r1].centerOfMass();
         GCoord c2 = residues[r2].centerOfMass();
         GCoord diff = c2 - c1;
+        if (is_periodic)
+            {
+            diff.reimage(box);
+            }
         if (diff.length2() <= cut2)
             {
             num_contacts++;
