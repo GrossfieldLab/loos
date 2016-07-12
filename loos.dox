@@ -1571,7 +1571,7 @@ function that will take a
 \ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
 and align it (or a list/vector of loos::AtomicGroup).  The
 loos-style interface is now available through
-\ref loos::pyloos::alignment::itertiveAlignTrajectory "loos.pyloos.iterativeAlignTrajectory()".
+\ref loos::pyloos::alignment::iterativeAlignTrajectory "loos.pyloos.iterativeAlignTrajectory()".
 You can optionally pass a
 list of frame indices to use.  Both functions now return a Python
 tuple containing the results.
@@ -1710,6 +1710,7 @@ namespace loos {
   <li> Added support for manually specifying the mapping of molecule names to segid
              in gmxdump2pdb tool
 </ul>
+
 
 
 \section release231 Version 2.3.1 (1-11-2016)
