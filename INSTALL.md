@@ -10,6 +10,7 @@ Fedora 20        | yes          | yes            |
 Fedora 21        | yes          | yes            |
 Fedora 22        | yes          | yes            |
 Fedora 23        | yes          | yes            |
+Fedora 24        | yes          | yes            |
 Ubuntu 12.04 LTS | yes          | yes            |
 Ubuntu 14.04 LTS | yes          | yes            |
 Ubuntu 15.04     | yes          | yes            |
