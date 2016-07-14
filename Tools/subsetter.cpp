@@ -500,14 +500,28 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = createSystem(model_name);
   selection = sopts->selection;
   AtomicGroup subset = selectAtoms(model, selection);
+  if (subset.empty()) {
+    cerr << "Error- no atoms selected in subset\n";
+    exit(-10);
+  }
 
   AtomicGroup centered;
-  if (!center_selection.empty())
+  if (!center_selection.empty()) {
     centered = selectAtoms(subset, center_selection);
+    if (centered.empty()) {
+      cerr << "Error- no atoms selected for centering\n";
+      exit(-10);
+    }
+  }
 
   AtomicGroup postcentered;
-  if (!post_center_selection.empty())
+  if (!post_center_selection.empty()) {
     postcentered = selectAtoms(subset, post_center_selection);
+    if (postcentered.empty()) {
+      cerr << "Error- no atoms selected for post-centering\n";
+      exit(-10);
+    }
+  }
 
   uint total_frames = bindFilesToIndices(model);
 
