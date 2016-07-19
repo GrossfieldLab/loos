@@ -236,17 +236,17 @@ namespace loos {
      * \endcode
      */
 
-    template<class EqualsOp> bool contains(const pAtom& p, const EqualsOp& op) {
+    template<class EqualsOp> bool contains(const pAtom& p, const EqualsOp& op) const {
       const_iterator ci = std::find_if(begin(), end(), bind2nd(op, p));
       return(ci != end());
     }
     
     //! Determines if a pAtom is contained in this group using the AtomEquals policy (ie the default comparison policy)
-    bool contains(const pAtom& p) { return(contains(p, AtomEquals())); }
+    bool contains(const pAtom& p) const { return(contains(p, AtomEquals())); }
 
 
     //! Determines if the passed group is a subset of the current group using the EqualsOp atom-equality policy
-    template<class EqualsOp> bool contains(const AtomicGroup& g, const EqualsOp& op) {
+    template<class EqualsOp> bool contains(const AtomicGroup& g, const EqualsOp& op) const {
       for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
         if (std::find_if(begin(), end(), bind2nd(op, *cj)) == end())
           return(false);
@@ -254,11 +254,11 @@ namespace loos {
     }
     
     //! Determines if a group is a subset of the current group using the default AtomEquals policy
-    bool contains(const AtomicGroup& g) { return(contains(g, AtomEquals())); }
+    bool contains(const AtomicGroup& g) const { return(contains(g, AtomEquals())); }
 
 
       //! Determines if a group contains any atom
-      template<class EqualsOp> bool containsAny(const AtomicGroup& g, const EqualsOp& op) 
+      template<class EqualsOp> bool containsAny(const AtomicGroup& g, const EqualsOp& op) const
           {
               for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
                   if (std::find_if(begin(), end(), bind2nd(op, *cj)) != end())
@@ -268,7 +268,7 @@ namespace loos {
 
 
       //! Determines if a group contains any atom using the default AtomEquals policy
-      bool containsAny(const AtomicGroup& g) { return(containsAny(g, AtomEquals())); }
+      bool containsAny(const AtomicGroup& g) const { return(containsAny(g, AtomEquals())); }
       
     //! Computes the intersection of two groups using the EqualsOp atom-equality policy
     /**
