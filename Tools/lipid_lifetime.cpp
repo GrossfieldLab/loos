@@ -220,41 +220,5 @@ for (unsigned int t = 1; t < maxdt; t++)
 
     cout << t << "\t" << prob_tmp << endl;
     }
-
-  /* TIME AUTOCORRELATION CODE...
-
-// loop over lipids and calculate correlation info and store in correl matrix
-vector <TimeSeries <double> > correl;
-
-for (unsigned int i = 0; i < contacts.size(); i++)
-    {
-    
-    TimeSeries<double> t_set;
-    t_set = TimeSeries<double>(contacts[i]);
-    if (t_set.average() > 0.01)
-        {
-        correl.push_back(t_set.correl(1000));
-        }
-    }
-
-for (unsigned int k = 0; k < correl[0].size(); k++)
-    {
-
-    vector<double> tmp_time;
-
-    for (unsigned int j = 0; j < correl.size(); j++)
-        {
-        
-        tmp_time.push_back(correl[j][k]);
-
-        }
-
-    TimeSeries<double> t = TimeSeries<double>(tmp_time);
-    cout << k << "\t" << t.average() << "\t" << t.stdev() << "\t" << t.sterr() << endl;
-    }
-
-    */
-
-// end main
 } 
 
