@@ -1,3 +1,8 @@
+2016-07-21    <alan@membrane>
+	
+	* Added new tool lipid_survial to compute lifetime of lipids at surface 
+	  of protein
+
 2016-07-11    <alan@membrane>
 
 	* Added periodicity support to native_contacts
