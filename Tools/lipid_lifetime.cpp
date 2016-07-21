@@ -52,8 +52,44 @@ typedef vector<vector <AtomicGroup> > list_vGroup;
 
 
 string fullHelp(void) {
-    return string("Sorry... can't help you");
-
+    string s =
+"\n"
+"SYNOPSIS\n"
+"\n"
+"    Compute the survival probability for a target molecule type around a probe\n"
+"\n"
+"DESCRIPTION\n"
+"\n"
+"This tool is used to calculate the survival probability for some kind of\n"
+"probe molecule (e.g. a lipid) around a target molecule (e.g. a protein).\n"
+"\n"
+"The survival probability is the probability that, if the probe molecule \n"
+"is \"bound\" at time t, it will also be bound at time t+delta t.  When\n"
+"plotted as a function of delta t, this probability will decay from 1 to \n"
+"0, and can generally be fit by a sum of exponentials.\n"
+"\n"
+"In general, one would more commonly use a correlation function here.\n"
+"However, if the decay time is on the same timescale as your simulation,\n"
+"the correlation function can go negative at long times (essentially saying\n"
+"that lipids found at the protein surface early in the simulation are\n"
+"unlikely to be present at the end, as opposed to being random).\n"
+"Correlation functions with negative values are a pain to work with, so\n"
+"we use survival probabilty as a convenient proxy.\n"
+"\n"
+"NOTE: The name \"survival probability\" could be slightly misleading; "
+"      The quantity plotted is \n"
+"      P_bound(t+dt|t)\n"
+"      and does _not_ imply that the molecule was bound continuously \n"
+"      during that interval.\n"
+"\n"
+"EXAMPLE\n"
+"   lipid_lifetime --maxdt 2500 --probe 'segid == \"PROT\" && !hydrogen' --target 'resname == \"SDPE\" && name =~ \"C2\\d+\"' struct.pdb struct.dcd\n"
+"\n"
+"This will compute the correlation out to 2500 frames, looking for contacts\n"
+"between heavy atoms in PROT and the saturated carbons in SDPE lipids.\n"
+"Each lipid is considered separately, and the results are averaged over all\n"
+"selected lipids.\n";
+    return(s);
 }
 
 class ToolOptions : public opts::OptionsPackage {
