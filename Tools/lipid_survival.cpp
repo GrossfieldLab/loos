@@ -105,6 +105,7 @@ public:
       ("target,t", po::value<string>(&lipid_selection), "Target selection (e.g. lipids)")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(6.0), "Cutoff distance for contact")
       ("maxdt,m", po::value<uint>(&maxdt)->default_value(1000), "Maximum dt to compute")
+      ("reimage,r", po::value<bool>(&reimage)->default_value(false), "Perform contact calculations considering periodicity")
       ;
         }
 
@@ -112,6 +113,7 @@ public:
     string lipid_selection;
     double cutoff;
     uint maxdt;
+    bool reimage;
 };
 
 int main(int argc, char *argv[]) {
@@ -171,10 +173,16 @@ double cutoff2 = topts->cutoff * topts->cutoff;
                 for (unsigned int l = 0; l < protein.size(); l++)
                     {
 
-                    // Compare to cutoff... If matches, set contact to 1 and set k and l
-                    // so that the loops end...
-                    double d2=(lipids[j][k]->coords()).distance2(protein[l]->coords(),
-                                                                box);
+                    // Compare to cutoff... If matches, set contact to 1 
+                    double d2;
+                    if (topts->reimage)
+                        {
+            d2=(lipids[j][k]->coords()).distance2(protein[l]->coords(), box);
+                        }
+                    else
+                        {
+            d2=(lipids[j][k]->coords()).distance2(protein[l]->coords());
+                        }
                     if (d2 < cutoff2)
                         {
                         contacts[j][frame_count] = 1.0;
