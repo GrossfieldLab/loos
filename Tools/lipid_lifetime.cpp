@@ -54,6 +54,7 @@ string model_name, traj_name;
 string lipid_selection;
 int skip;
 double cutoff;
+uint maxdt;
 
 void fullHelp(void) {
     cout << "Sorry... can't help you";
@@ -70,6 +71,7 @@ void parseOptions(int argc, char *argv[]) {
       ("probe,p", po::value<string>(&protein_selection)->default_value("segname =~ 'Rhod'"), "Main selection")
       ("skip,s", po::value<int>(&skip)->default_value(0), "Frames to skip")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(6.0), "Cutoff distance for contact")
+      ("maxdt", po::value<uint>(&maxdt)->default_value(1000), "Maximum dt to compute")
       ;
 
     po::options_description hidden("Hidden options");
@@ -184,7 +186,7 @@ double cutoff2 = cutoff * cutoff;
 // loop over dt
 //
 cout << "0\t1.00" << endl;
-for (unsigned int t = 1; t < 1000; t++)
+for (unsigned int t = 1; t < maxdt; t++)
     {
 
     double bound_tmp = 0.0;
