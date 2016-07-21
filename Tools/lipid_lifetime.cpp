@@ -65,8 +65,8 @@ public:
     void addGeneric(po::options_description& o) 
         {
         o.add_options()
-      ("probe,p", po::value<string>(&protein_selection), "Main selection")
-      ("target,t", po::value<string>(&lipid_selection), "Target selection")
+      ("probe,p", po::value<string>(&protein_selection), "Main selection (e.g. protein)")
+      ("target,t", po::value<string>(&lipid_selection), "Target selection (e.g. lipids)")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(6.0), "Cutoff distance for contact")
       ("maxdt,m", po::value<uint>(&maxdt)->default_value(1000), "Maximum dt to compute")
       ;
