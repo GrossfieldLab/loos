@@ -44,85 +44,62 @@
 
 using namespace std;
 using namespace loos;
+namespace opts = loos::OptionsFramework;
 namespace po = boost::program_options;
 
 typedef vector<AtomicGroup> vGroup;
 typedef vector<vector <AtomicGroup> > list_vGroup; 
 
-string protein_selection;
-string model_name, traj_name;
-string lipid_selection;
-int skip;
-double cutoff;
-uint maxdt;
 
-void fullHelp(void) {
-    cout << "Sorry... can't help you";
+string fullHelp(void) {
+    return string("Sorry... can't help you");
 
 }
 
-void parseOptions(int argc, char *argv[]) {
-  try {
+class ToolOptions : public opts::OptionsPackage {
+public:
 
-    po::options_description generic("Allowed options");
-    generic.add_options()
-      ("help", "Produce this help message")
-      ("fullhelp", "Even more help")
-      ("probe,p", po::value<string>(&protein_selection)->default_value("segname =~ 'Rhod'"), "Main selection")
-      ("skip,s", po::value<int>(&skip)->default_value(0), "Frames to skip")
+    ToolOptions() 
+        {
+        }
+    void addGeneric(po::options_description& o) 
+        {
+        o.add_options()
+      ("probe,p", po::value<string>(&protein_selection), "Main selection")
+      ("target,t", po::value<string>(&lipid_selection), "Target selection")
       ("cutoff,c", po::value<double>(&cutoff)->default_value(6.0), "Cutoff distance for contact")
-      ("maxdt", po::value<uint>(&maxdt)->default_value(1000), "Maximum dt to compute")
+      ("maxdt,m", po::value<uint>(&maxdt)->default_value(1000), "Maximum dt to compute")
       ;
+        }
 
-    po::options_description hidden("Hidden options");
-    hidden.add_options()
-      ("model", po::value<string>(&model_name), "Model filename")
-      ("traj", po::value<string>(&traj_name), "Trajectory filename")
-      ("target", po::value<string>(&lipid_selection), "Target selection");
-    
-    po::options_description command_line;
-    command_line.add(generic).add(hidden);
-    
-    po::positional_options_description p;
-    p.add("model", 1);
-    p.add("traj", 1);
-    p.add("target", -1);
-
-    
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).
-              options(command_line).positional(p).run(), vm);
-    po::notify(vm);
-
-    if (vm.count("help") || vm.count("fullhelp") || !(vm.count("model") && vm.count("traj") && !lipid_selection.empty())) {
-      cerr << "Usage- " << argv[0] << " [options] model-name trajectory-name lipid-selection\n";
-      cerr << generic;
-      if (vm.count("fullhelp"))
-        fullHelp();
-      exit(-1);
-    }
-
-  }
-  catch(exception& e) {
-    cerr << "Error - " << e.what() << endl;
-    exit(-1);
-  }
-}
-
+    string protein_selection;
+    string lipid_selection;
+    double cutoff;
+    uint maxdt;
+};
 
 int main(int argc, char *argv[]) {
   string hdr = invocationHeader(argc, argv);
-  parseOptions(argc, argv);
 
-  AtomicGroup model = createSystem(model_name);
-  pTraj traj = createTrajectory(traj_name, model);
+  opts::BasicOptions* basic = new opts::BasicOptions(fullHelp());
+  opts::BasicTrajectory* tropts = new opts::BasicTrajectory; 
+  ToolOptions* topts = new ToolOptions;
+  opts::AggregateOptions options;
+  
+  options.add(basic).add(tropts).add(topts);
 
-  AtomicGroup protein = selectAtoms(model, protein_selection);
-  //vGroup probe_residues = probe.splitByResidue();
+  
+  if (!options.parse(argc, argv))
+    exit(-1);
+
+  AtomicGroup model = tropts->model;
+  pTraj traj = tropts->trajectory;
+
+  AtomicGroup protein = selectAtoms(model, topts->protein_selection);
 
   cout << "# " << hdr << endl;
   // selections for targets
-  AtomicGroup lipid = selectAtoms(model, lipid_selection);
+  AtomicGroup lipid = selectAtoms(model, topts->lipid_selection);
   vGroup lipids = lipid.splitByMolecule();
 
 
@@ -137,7 +114,7 @@ int main(int argc, char *argv[]) {
       }
 
 int frame_count = 0;
-double cutoff2 = cutoff * cutoff;
+double cutoff2 = topts->cutoff * topts->cutoff;
   while (traj->readFrame()) 
       {
         traj->updateGroupCoords(model);
@@ -186,7 +163,7 @@ double cutoff2 = cutoff * cutoff;
 // loop over dt
 //
 cout << "0\t1.00" << endl;
-for (unsigned int t = 1; t < maxdt; t++)
+for (unsigned int t = 1; t < topts->maxdt; t++)
     {
 
     double bound_tmp = 0.0;
