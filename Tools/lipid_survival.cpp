@@ -82,6 +82,21 @@ string fullHelp(void) {
 "      and does _not_ imply that the molecule was bound continuously \n"
 "      during that interval.\n"
 "\n"
+"OPTIONS\n"
+"\n"
+"    probe  = the single central molecule you're looking for contact with,\n"
+"             generally the protein\n"
+"    target = the ensemble of molecules whos contact with the probe you're\n"
+"             tracking, generally the lipids\n"
+"    cutoff = distance to decide if a pair of atoms is in contact         \n"
+"             default = 6 ang\n"
+"    maxdt  = maximum value of delta t for which we compute the survival\n"
+"             probability, default is 1000 frames\n"
+"    reimage= if present (--reimage 1), calculate the distances taking\n"
+"             periodicity into account\n"
+"    threshold = how many pairs of atoms must be touching to consider \n"
+"             a lipid to be in contact with the protein, default = 1\n"
+"\n"
 "EXAMPLE\n"
 "   lipid_lifetime --maxdt 2500 --probe 'segid == \"PROT\" && !hydrogen' --target 'resname == \"SDPE\" && name =~ \"C2\\d+\"' struct.pdb struct.dcd\n"
 "\n"
@@ -106,6 +121,7 @@ public:
       ("cutoff,c", po::value<double>(&cutoff)->default_value(6.0), "Cutoff distance for contact")
       ("maxdt,m", po::value<uint>(&maxdt)->default_value(1000), "Maximum dt to compute")
       ("reimage,r", po::value<bool>(&reimage)->default_value(false), "Perform contact calculations considering periodicity")
+      ("threshold", po::value<uint>(&threshold)->default_value(1), "Number of pairs required to establish contact")
       ;
         }
 
@@ -113,6 +129,7 @@ public:
     string lipid_selection;
     double cutoff;
     uint maxdt;
+    uint threshold;
     bool reimage;
 };
 
@@ -162,11 +179,11 @@ while (traj->readFrame())
         bool contact = false;
         if (topts->reimage) 
             {
-            contact = lipids[j].contactWith(topts->cutoff, protein, box);
+            contact = lipids[j].contactWith(topts->cutoff, protein, box,topts->threshold);
             }
         else
             {
-            contact = lipids[j].contactWith(topts->cutoff, protein);
+            contact = lipids[j].contactWith(topts->cutoff, protein, topts->threshold);
             }
     
         if (contact)
