@@ -152,53 +152,29 @@ int main(int argc, char *argv[]) {
       }
 
 int frame_count = 0;
-double cutoff2 = topts->cutoff * topts->cutoff;
-  while (traj->readFrame()) 
-      {
-        traj->updateGroupCoords(model);
-        GCoord box = model.periodicBox();
-        
-
-        // Loop over lipids
-        for (unsigned int j = 0; j < contacts.size(); j++)
+while (traj->readFrame()) 
+    {
+    traj->updateGroupCoords(model);
+    GCoord box = model.periodicBox();
+    
+    for (uint j=0; j < contacts.size(); j++)
+        {
+        bool contact = false;
+        if (topts->reimage) 
             {
-
-            bool found_contact = false;
-            // Loop over atoms in lipid
-            for (unsigned int k = 0; k < lipids[j].size(); k++)
-                {
-                if (found_contact) break;
-
-                // Loop over atoms in protein
-                for (unsigned int l = 0; l < protein.size(); l++)
-                    {
-
-                    // Compare to cutoff... If matches, set contact to 1 
-                    double d2;
-                    if (topts->reimage)
-                        {
-            d2=(lipids[j][k]->coords()).distance2(protein[l]->coords(), box);
-                        }
-                    else
-                        {
-            d2=(lipids[j][k]->coords()).distance2(protein[l]->coords());
-                        }
-                    if (d2 < cutoff2)
-                        {
-                        contacts[j][frame_count] = 1.0;
-                        found_contact = true;
-                        break;
-                        }
-
-                    }
-            
-                }
-
-
+            contact = lipids[j].contactWith(topts->cutoff, protein, box);
             }
-
-        frame_count++;
-
+        else
+            {
+            contact = lipids[j].contactWith(topts->cutoff, protein);
+            }
+    
+        if (contact)
+            {
+            contacts[j][frame_count] = 1.0;
+            }
+        }
+      frame_count++;
       }
 
 /* Probability Calculations
