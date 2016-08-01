@@ -8,6 +8,7 @@ Copyright 2014
 
 import sys
 import loos
+import loos.pyloos
 import numpy
 from Voronoi import *
 
@@ -17,14 +18,22 @@ if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
         print """
 
+
+The purpose of this program is to calculate histograms of areas for different
+components of a membrane.  You might use this if you were looking at a 
+multicomponent bilayer, and wanted to know how much area is taken up 
+by PC lipids vs. PE lipids.
+
 Usage:
-program system trajectory skip zmin zmax padding selection-string1 selection-string2 [selection-string3 ...]
+
+program system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]
 
 system: system file (e.g. psf) -- MUST CONTAIN CONNECTIVITY INFORMATION
 trajectory: trajectory file (must have periodic boundary information)
 zmin, zmax: floating point numbers used to select a particular slice of the system
 padding: floating point number specifying how many extra layers of atoms are generated
          (see below)
+min_area, max_area, num_area_bins: specifications for histograms of area
 selection-string1: the set of atoms used to compute the voronoi decomposition
 selection-string2, etc: sets of atoms for which areas are reported
 
@@ -38,8 +47,8 @@ Notes
 
 Padding:
 
-    This program uses scipy Voronoi implementation, which is itself a wrapper
-    around Qhull.  Qhull doesn't know anything about periodic boundary
+    This program uses the scipy Voronoi implementation, which is itself a
+    wrapper around Qhull.  Qhull doesn't know anything about periodic boundary
     conditions as far as I can tell, so we fake it by generating extra atoms so
     provide an environment around the real ones; otherwise, you get insane
     areas for the atoms at the "edge" of the box.  You need to pick this value
@@ -70,7 +79,7 @@ you'll also pick up some junk at very lower area due to the other leaflet
         """
         sys.exit(0)
     elif len(sys.argv) < 11 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
-        print sys.argv[0], " system trajectory skip zmin zmax padding selection-string1 selection-string2 [selection-string3 ...]"
+        print sys.argv[0], " system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]"
         sys.exit(0)
 
 
@@ -93,10 +102,8 @@ you'll also pick up some junk at very lower area due to the other leaflet
     print "# ", " ".join(sys.argv)
 
     system = loos.createSystem(system_filename)
-    traj = loos.createTrajectory(traj_filename, system)
-
-    traj.readFrame(skip)
-    traj.updateGroupCoords(system)
+    #traj = loos.createTrajectory(traj_filename, system)
+    pytraj = loos.pyloos.Trajectory(traj_filename, system, skip=skip)
 
     slicer = ZSliceSelector(zmin, zmax)
 
@@ -108,14 +115,11 @@ you'll also pick up some junk at very lower area due to the other leaflet
         selections[i] = selections[i].splitByMolecule()
         
 
-    frame = skip
     string = ""
     for i in range(len(selections)):
         string += "\tArea" + str(i)
 
-    print "# Frame", string
-    while (traj.readFrame()):
-        traj.updateGroupCoords(system)
+    for snap in pytraj:
         system.reimageByAtom()
 
         slice_atoms = slicer(selections[0])
@@ -138,7 +142,7 @@ you'll also pick up some junk at very lower area due to the other leaflet
                 try:
                     histograms[i][index] += 1
                 except IndexError:
-                    print "# ", i, j, a, index
+                    print "#Area outside range:  ", pytraj.frame(), i, j, a, index
                 
     # normalize the histograms
     for i in range(len(histograms)):
