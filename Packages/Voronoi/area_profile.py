@@ -8,6 +8,7 @@ Copyright 2014
 
 import sys
 import loos
+import loos.pyloos
 import numpy
 from Voronoi import *
 
@@ -82,11 +83,8 @@ Example selection choice:
     print "# ", " ".join(sys.argv)
 
     system = loos.createSystem(system_filename)
-    traj = loos.createTrajectory(traj_filename, system)
-    pytraj = loos.PyTraj(traj, system, skip=skip, stride=stride)
+    pytraj = loos.pyloos.Trajectory(traj_filename, system, skip=skip, stride=stride)
 
-    #traj.readFrame(skip)
-    #traj.updateGroupCoords(system)
 
     all_atoms = loos.selectAtoms(system, all_selection)
     target_atoms = loos.selectAtoms(all_atoms, target_selection)
