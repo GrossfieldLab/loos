@@ -76,6 +76,12 @@ If you use a z-range of [0, 20], you'll get the upper leaflet accurately, but
 you'll also pick up some junk at very lower area due to the other leaflet 
 "leaking" across
 
+If you see lines that look like "#Area outside range" followed by some numbers,
+it means there was a molecule that had an area outside the range you set for
+the histogram.  Either you need to adjust your histogram bounds, or (if the 
+area is absurdly large) it could suggest your padding value is too small.
+
+
         """
         sys.exit(0)
     elif len(sys.argv) < 11 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
