@@ -148,7 +148,7 @@ area is absurdly large) it could suggest your padding value is too small.
                 try:
                     histograms[i][index] += 1
                 except IndexError:
-                    print "#Area outside range:  ", pytraj.frame(), i, j, a, index
+                    print "#Area outside range:  ", pytraj.realIndex(), i, j, a, index
                 
     # normalize the histograms
     for i in range(len(histograms)):
