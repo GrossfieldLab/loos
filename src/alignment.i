@@ -122,7 +122,7 @@ namespace loos {
   def xformVectorToList(v):
     l = []
     for x in v:
-        l.append(loos.XForm(x))
+        l.append(XForm(x))
     return(l)
 
 %}
