@@ -58,7 +58,7 @@ for structure in patraj:
    avg_rmsd = avg_rmsd + rmsd
    print "%d\t%f" % (patraj.index(), rmsd)
 
-print "# Average rmsd = %f" % (avg_rmsd/t)
+print "# Average rmsd = %f" % (avg_rmsd/len(patraj))
 
 
 
