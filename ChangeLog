@@ -1,3 +1,10 @@
+2016-08-03    <tromo@hill>
+
+	* Fixed bug in effsize.pl affecting some Unix distros
+	* Fixed bug affecting python alignment results (when converting the vector of xforms to
+	a Python list).
+	* Fixed bug in rmsd_to_average.py causing it to break at the end when showing overall average
+
 2016-07-21    <alan@membrane>
 	
 	* Added new tool lipid_survial to compute lifetime of lipids at surface 
