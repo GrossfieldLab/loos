@@ -722,6 +722,7 @@ Matlab and Octave.
       Part of the workflow for computing the effective sample size.  (See
       effsize.pl)
 
+
       <DT> <B> avgconv </B>
       <DD> Computes the RMSD between the average structure for time i
       and i+1 for a trajectory.  The "locally optimal" flag determines
@@ -837,7 +838,8 @@ Matlab and Octave.
       <DD> Picks a set of fiducial structures from a trajectory using
       a uniform distribution.
       Reference: Lyman & Zuckerman, J Phys Chem B (2007) 111:12876-82
-    </DL>
+
+</DL>
 
   \page density
   <h2>Density Tools</h2>
@@ -859,7 +861,7 @@ Matlab and Octave.
   can be used for building the histogram (e.g. ligand density in a
   binding simulation).
 
-   <DL>
+<DL>
        <DT> <B> blobid </B>
        <DD> Identifies "blobs" in a grid using a flood-fill algorithm
 
@@ -941,7 +943,7 @@ Matlab and Octave.
        <DD> Similar to water-inside, but classifies water based on
        which side of a membrane it lies (or whether it's internal).
 
-       </DL>
+</DL>
 
   \page enm 
   <h2>Elastic Network Models</h2>
