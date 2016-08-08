@@ -1682,6 +1682,22 @@ at loos.maintainer [at] gmail.com
 namespace loos {
 
 /*! \page Changes Change Log
+\section release233 Version 2.3.3 (unreleased)
+\subsection r233_bugs Bug Fixes
+<ul>
+  <li> Fixed bug in effsize.pl affecting some Linux distros
+  <li> Fixed bug affecting PyLOOS aligning routines
+  <li> Fixed bug in rmsd_to_average.py
+  <li> Fixed bug in doxygen handling causing excessive docs rebuilding
+  <li> Fixed bug in area_profile.py
+</ul>
+
+\subsection r233_add_changed Added, Changed, and Otherwise Notable
+<ul>
+  <li> Added periodicity support to native contacts
+  <li> Added new lipid_survival tool
+</ul>
+
 \section release232 Version 2.3.2 (7-8-2016)
 \subsection r232_bugs Bug Fixes
 <ul>
