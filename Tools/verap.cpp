@@ -99,9 +99,13 @@ public:
   void addPositional(po::positional_options_description& o) {
     o.add("zmin", 1);
     o.add("zmax", 1);
-    o.add("nbins", -1);
+    o.add("nbins", 1);
   }
 
+
+  bool check(po::variables_map& vm) {
+    return(! (vm.count("zmin") && vm.count("zmax") && vm.count("nbins")) );
+  }
   
   bool postConditions(po::variables_map& vm) 
   {
