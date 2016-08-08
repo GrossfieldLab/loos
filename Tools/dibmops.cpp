@@ -335,8 +335,8 @@ vecGroup extractSelections(const AtomicGroup& model, const string& selection, co
   }
 
   if (!force_residues && residues[0].size() == subset.size()) {
-    cerr << progname << ": GROMACS model suspected... Splitting by residue.\n";
-    residues = subset.splitByResidue();
+    cerr << progname << ": Either you are using a GROMACS model or you have one molecule in your selection\n";
+    cerr << progname << ": If you are using GROMACS, you will want to run again with the --residue=1 option\n";
   }
 
   cerr << boost::format("%s: Extracted %d molecules from selection.\n") % progname % residues.size();
