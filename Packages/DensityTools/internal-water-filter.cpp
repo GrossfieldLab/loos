@@ -118,6 +118,51 @@ namespace loos {
 
 
     // --------------------------------------------------------------------------------
+    string WaterFilterContacts::name(void) const {
+      stringstream s;
+      s << boost::format("WaterFilterContacts(radius=%f,contacts=%u)") % radius_ % threshold_;
+      return(s.str());
+    }
+    
+
+    vector<int> WaterFilterContacts::filter(const AtomicGroup& solv, const AtomicGroup& prot) {
+      bdd_ = boundingBox(prot);
+      vector<int> result(solv.size());
+
+      double r2 = radius_ * radius_;
+      for (uint j=0; j<solv.size(); ++j) {
+	uint count = 0;
+	for (uint i=0; i<prot.size(); ++i) {
+	  if (solv[j]->coords().distance2(prot[i]->coords()) <= r2) {
+	    ++count;
+	    if (count >= threshold_) {
+	      result[j] = 1;
+	      break;
+	    }
+	  }
+	}
+      }
+
+      return(result);
+    }
+
+
+    double WaterFilterContacts::volume(void) {
+      GCoord v = bdd_[1] - bdd_[0];
+      return(v[0] * v[1] * v[2]);
+    }
+
+  
+    vector<GCoord> WaterFilterContacts::boundingBox(const AtomicGroup& grp) {
+      vector<GCoord> bdd = grp.boundingBox();
+      bdd[0] = bdd[0] - radius_;
+      bdd[1] = bdd[1] + radius_;
+
+      return(bdd);
+    }
+
+
+    // --------------------------------------------------------------------------------
 
 
     string WaterFilterAxis::name(void) const {

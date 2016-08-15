@@ -112,6 +112,29 @@ namespace loos {
       double radius_;
     };
 
+    // --------------------------------------------------------------------------------
+
+    //! Pick waters with a minimum number of contacts to protein atoms
+    /**
+     * Important note: the volume returned is NOT the real molecular volume, but just
+     * the volume of the bounding box for the passed atoms
+     */
+    class WaterFilterContacts : public WaterFilterBase {
+    public:
+      WaterFilterContacts(const double radius, const uint mincontacts) : radius_(radius), threshold_(mincontacts) { }
+      virtual ~WaterFilterContacts() { }
+
+      virtual std::vector<int> filter(const loos::AtomicGroup&, const loos::AtomicGroup&);
+      virtual std::vector<loos::GCoord> boundingBox(const loos::AtomicGroup&);
+
+      virtual double volume(void);
+      virtual std::string name(void) const;
+
+    private:
+      double radius_;
+      uint threshold_;
+    };
+
 
     // --------------------------------------------------------------------------------
 
