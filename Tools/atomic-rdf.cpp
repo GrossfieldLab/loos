@@ -88,7 +88,7 @@ int main (int argc, char *argv[])
 
 // Build options
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
 opts::RequiredArguments* ropts = new opts::RequiredArguments;
 
 // These are required command-line arguments (non-optional options)
@@ -143,11 +143,13 @@ double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
 // loop over the frames of the trajectory
-int frame = 0;
+vector<uint> framelist = tropts->frameList();
+uint framecnt = framelist.size();
 double volume = 0.0;
 unsigned long unique_pairs=0;
-while (traj->readFrame())
+for (uint index = 0; index<framecnt; ++index)
     {
+    traj->readFrame(framelist[index]);
 
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
@@ -180,14 +182,13 @@ while (traj->readFrame())
                 }
             }
         }
-    frame++;
     }
 
-volume /= frame;
+volume /= framecnt;
 
 
 
-double expected = frame * unique_pairs / volume;
+double expected = framecnt * unique_pairs / volume;
 double cum1 = 0.0;
 double cum2 = 0.0;
 
@@ -203,8 +204,8 @@ for (int i = 0; i < num_bins; i++)
                                 - d_inner*d_inner*d_inner);
 
     double total = hist[i]/ (norm*expected);
-    cum1 += hist[i] / (frame*group1.size());
-    cum2 += hist[i] / (frame*group2.size());
+    cum1 += hist[i] / (framecnt*group1.size());
+    cum2 += hist[i] / (framecnt*group2.size());
 
     cout << d << "\t" << total << "\t" 
          << cum1 << "\t" << cum2 << endl;
