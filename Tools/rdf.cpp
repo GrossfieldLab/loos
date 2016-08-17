@@ -237,7 +237,7 @@ int main (int argc, char *argv[])
 // parse the command line options
 string hdr = invocationHeader(argc, argv);
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
 ToolOptions* topts = new ToolOptions;
 
 opts::AggregateOptions options;
@@ -335,6 +335,8 @@ if (numgroups == 0)
 
 
 // read the initial coordinates into the system
+vector<uint> framelist = tropts->frameList();
+traj->readFrame(framelist[0]);
 traj->updateGroupCoords(system);
 
 // Create the histogram and zero it out
@@ -367,10 +369,11 @@ for (uint j=0; j<g1_mols.size(); ++j)
 
 
 // loop over the frames of the trajectory
-int frame = 0;
+uint framecount = framelist.size();
 double volume = 0.0;
-while (traj->readFrame())
+for (uint index = 0; index<framecount; ++index)
     {
+    traj->readFrame(framelist[index]);
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
 
@@ -400,14 +403,13 @@ while (traj->readFrame())
                 }
             }
         }
-    frame++;
     }
 
-volume /= frame;
+volume /= framecount;
 
 
 
-double expected = frame * unique_pairs / volume;
+double expected = framecount * unique_pairs / volume;
 double cum1 = 0.0;
 double cum2 = 0.0;
 
@@ -423,8 +425,8 @@ for (int i = 0; i < num_bins; i++)
                                 - d_inner*d_inner*d_inner);
 
     double total = hist[i]/ (norm*expected);
-    cum1 += hist[i] / (frame*g1_mols.size());
-    cum2 += hist[i] / (frame*g2_mols.size());
+    cum1 += hist[i] / (framecount*g1_mols.size());
+    cum2 += hist[i] / (framecount*g2_mols.size());
 
     cout << d << "\t" << total << "\t" 
          << cum1 << "\t" << cum2 << endl;

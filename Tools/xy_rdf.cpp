@@ -287,7 +287,7 @@ int main (int argc, char *argv[])
 // parse the command line options
 string hdr = invocationHeader(argc, argv);
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
+opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
 ToolOptions* topts = new ToolOptions;
 
 opts::AggregateOptions options;
@@ -313,9 +313,19 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 double bin_width = (hist_max - hist_min)/num_bins;
 
 AtomicGroup group1 = selectAtoms(system, selection1);
+if (group1.empty())
+    {
+    cerr << "Error- no atoms selected by '" << selection1 << "'\n";
+    exit(-1);
+    }
 group1.pruneBonds();
 
 AtomicGroup group2 = selectAtoms(system, selection2);
+if (group2.empty())
+    {
+    cerr << "Error- no atoms selected by '" << selection2 << "'\n";
+    exit(-1);
+    }
 group2.pruneBonds();
 
 // Split the groups into chunks, depending on how the user asked
@@ -368,7 +378,6 @@ double min2 = hist_min*hist_min;
 double max2 = hist_max*hist_max;
 
 // loop over the frames of the traj file
-int frame = 0;
 double area = 0.0;
 double interval_area = 0.0;
 uint cum_upper_pairs = 0;
@@ -376,10 +385,14 @@ uint cum_lower_pairs = 0;
 uint interval_upper_pairs = 0;
 uint interval_lower_pairs = 0;
 
+vector<uint> framelist = tropts->frameList();
+uint framecnt = framelist.size();
 
-while (traj->readFrame())
+
+for (uint index = 0; index<framecnt; ++index) 
     {
     // update coordinates and periodic box
+    traj->readFrame(framelist[index]);
     traj->updateGroupCoords(system);
     GCoord box = system.periodicBox(); 
     area += box.x() * box.y();
@@ -447,10 +460,9 @@ while (traj->readFrame())
             }
         }
 
-    frame++;
 
     // if requested, write out timeseries as well
-    if (timeseries_interval && (frame % timeseries_interval == 0))
+    if (timeseries_interval && (index % timeseries_interval == 0))
         {
         interval_area /= timeseries_interval;
         double upper_expected = interval_upper_pairs / interval_area;
@@ -459,7 +471,7 @@ while (traj->readFrame())
 
         // create the output file
         ostringstream outfilename;
-        outfilename << output_directory << "/" << "rdf_" << frame << ".dat";
+        outfilename << output_directory << "/" << "rdf_" << index << ".dat";
         ofstream out(outfilename.str().c_str());
         if (out.fail())
             {
@@ -523,7 +535,7 @@ while (traj->readFrame())
     }
 
 // normalize the area
-area /=frame;
+area /= framecnt;
 
 // If we didn't write timeseries, then we need to copy the interval histograms
 // to the total ones.  If we did, we need to add in the additional data points
@@ -533,7 +545,7 @@ if (!timeseries_interval)
     hist_lower_total = hist_lower;
     hist_upper_total = hist_upper;
     }
-else if (frame % timeseries_interval != 0)
+else if (framecnt % timeseries_interval != 0)
     {
     for (int i=0; i< num_bins; i++)
         {
