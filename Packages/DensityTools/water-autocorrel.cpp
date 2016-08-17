@@ -69,11 +69,13 @@ int main(int argc, char *argv[]) {
       waters.push_back(wtmp.correl(max_t));
     }
   }
-  cerr << boost::format(" done\nFound %d unique waters inside\n") % waters.size();
+
+  uint nwaters = waters.size();
+  cerr << boost::format(" done\nFound %d unique waters inside\n") % nwaters;
   cout << "# " << hdr << endl;
   for (uint j=0; j<max_t; ++j) {
-    vector<double> tmp(m, 0);
-    for (uint i=0; i<m; ++i)
+    vector<double> tmp(nwaters, 0);
+    for (uint i=0; i<nwaters; ++i)
       tmp[i] = waters[i][j];
     dTimeSeries dtmp(tmp);
     cout << j << '\t' << dtmp.average() << '\t' << dtmp.stdev() << '\t' << dtmp.sterr() << endl;
