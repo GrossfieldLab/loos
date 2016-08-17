@@ -130,9 +130,19 @@ double bin_width = (hist_max - hist_min)/num_bins;
 
 // Set up the selector to define group1 atoms
 AtomicGroup group1 = selectAtoms(system, selection1);
+if (group1.empty())
+    {
+    cerr << "Error- no atoms selected by '" << selection1 << "'\n";
+    exit(-1);
+    }
 
 // Set up the selector to define group2 atoms
 AtomicGroup group2 = selectAtoms(system, selection2);
+if (group2.empty())
+    {
+    cerr << "Error- no atoms selected by '" << selection2 << "'\n";
+    exit(-1);
+    }
 
 // Create the histogram and zero it out
 vector<double> hist;
