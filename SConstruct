@@ -50,6 +50,7 @@ opts.Add('release', 'Set to 1 to configure for release.', 1)
 opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 opts.Add('threads', 'Set to 0 to disable using multithreaded libraries and code', 1)
+opts.Add('docs', 'Set to 0 to disable auto-generation of doxygen documentation', 1)
 
 opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
 
@@ -130,6 +131,7 @@ if loos_build_config.host_type == 'Darwin':
 release = int(env['release'])
 debug = int(env['debug'])
 profile = int(env['profile'])
+docsflag = int(env['docs'])
 
 # If debug is requested, make sure there is no optimization...
 if (debug > 0):
@@ -242,7 +244,9 @@ env.Command(PREFIX + '/docs/index.html', 'Docs/html/index.html', [
 env.AlwaysBuild(PREFIX + '/docs/index.html')
 
 
-all = loos_tools + loos_scripts + loos_packages + docs
+all = loos_tools + loos_scripts + loos_packages
+if docsflag:
+    all = all + docs
 
 if int(env['pyloos']):
     loos_core = loos_core + loos_python
