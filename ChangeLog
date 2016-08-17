@@ -1,6 +1,6 @@
 2016-08-17    <tromo@hill>
 
-	* Added support for using ranges of frames and skip in rdf and atomic-rdf
+	* Added support for using ranges of frames and skip in rdf, atomic-rdf, and xy_rdf
 
 2016-08-03    <tromo@hill>
 
