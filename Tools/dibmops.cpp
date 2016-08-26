@@ -188,7 +188,7 @@ public:
   BinStatsType statisticsForBin(const uint bin) const {
     uint n = _bins[bin].size();
     if (n < 3)
-      return(BinStatsType(-1.0, 0.0));
+      return(BinStatsType(0.0, 0.0));
 
     double mean = 0.0;
     for (uint i=0; i<n; ++i)

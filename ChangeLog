@@ -1,6 +1,7 @@
 2016-08-26    <tromo@hill>
 
 	* Added option to remove bonds with model-select
+	* Changed dibmops to use 0 for avg in bins with no data rather than -1
 
 2016-08-17    <tromo@hill>
 
