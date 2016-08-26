@@ -42,6 +42,7 @@ namespace po = loos::OptionsFramework::po;
 enum SplitMode { NONE, RESIDUE, MOLECULE, SEGID, NAME };
 
 SplitMode mode;
+bool nobonds;
 bool deduce;
 bool pdb_output;
 string model_name;
@@ -85,7 +86,8 @@ public:
     o.add_options()
       ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name") 
       ("deduce", po::value<bool>(&deduce)->default_value(true), "Deduce atomic number from mass")
-      ("pdb", po::value<bool>(&pdb_output)->default_value(false), "Write out PDBs");
+      ("pdb", po::value<bool>(&pdb_output)->default_value(false), "Write out PDBs")
+      ("nobonds", po::value<bool>(&nobonds)->default_value(false), "Do not include connectivity");
   }
 
   void addHidden(po::options_description& o) {
@@ -127,7 +129,8 @@ public:
   string print() const {
     ostringstream oss;
 
-    oss << boost::format("mode='%s', deduce=%d, model='%s', pdb=%d") % mode_string % deduce % model_name % pdb_output;
+    oss << boost::format("mode='%s', deduce=%d, model='%s', pdb=%d, nobonds=%d")
+      % mode_string % deduce % model_name % pdb_output % nobonds;
     return(oss.str());
   }
 
@@ -166,6 +169,9 @@ int main(int argc, char *argv[]) {
     exit(-1);
 
   AtomicGroup model = createSystem(model_name);
+  if (nobonds)
+    model.clearBonds();
+  
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
   if (deduce)

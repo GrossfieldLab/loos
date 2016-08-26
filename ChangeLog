@@ -1,3 +1,7 @@
+2016-08-26    <tromo@hill>
+
+	* Added option to remove bonds with model-select
+
 2016-08-17    <tromo@hill>
 
 	* Added support for using ranges of frames and skip in rdf, atomic-rdf, and xy_rdf
