@@ -190,8 +190,8 @@ namespace loos {
     std::vector<double> qcrys;     // Crystal params
     float _delta;             // Timestep (extracted from _icntrl)
 
-    long frame_size;          // *Internal* size (in bytes) of each frame
-    long first_frame_pos;     // *Internal* location in file of start of data frames
+    long frame_size;                    // *Internal* size (in bytes) of each frame
+    std::streampos first_frame_pos;     // *Internal* location in file of start of data frames
 
     bool swabbing;            // DCD being read is not in native format...
   
