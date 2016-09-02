@@ -57,7 +57,7 @@ namespace loos {
   bool DCD::hasCrystalParams(void) const { return(_icntrl[10] == 1); }
 
   float DCD::timestep(void) const { return(_delta); }
-  uint DCD::nframes(void) const { return(_icntrl[0]); }
+  uint DCD::nframes(void) const { return(_nframes); }
 
   std::vector<dcd_real> DCD::xcoords(void) const { return(xcrds); }
   std::vector<dcd_real> DCD::ycoords(void) const { return(ycrds); }
@@ -154,6 +154,20 @@ namespace loos {
   }
 
 
+  // Determine number of frames in trajectory assuming that all frames have the
+  // save size.  If the size is not an integral multiple of the frame size, then
+  // punt and return 0.
+  //
+  // NOTE: Does not preserve current file position
+  uint DCD::calculateNumberOfFrames() {
+    ifs()->seekg(0, std::ios::end);
+    std::streampos endpos = ifs()->tellg();
+    long datasize = endpos - first_frame_pos;
+    uint n = datasize / frame_size;
+    if (datasize % frame_size)
+      return(0);
+    return(n);
+  }
 
   // Read in the DCD header...
 
@@ -180,7 +194,9 @@ namespace loos {
       else
         _icntrl[i] = ptr[i+1].i;
     }
-      
+
+    _nframes = _icntrl[0];
+    
     // Extract the delta value...
     if (swabbing)
       _delta = swab(ptr[10].f);
@@ -232,9 +248,15 @@ namespace loos {
 
     allocateSpace(_natoms);
 
-    // Issue warnings
-    if (nframes() == 0 && !suppress_warnings)
-        std::cerr << "Warning- DCD '" << _filename << "' appears empty; verify with dcdinfo and fix with fixdcd" << std::endl;
+    // See if the header is missing frame # information...
+    if (_nframes == 0) {
+      _nframes = calculateNumberOfFrames();
+      if (_nframes == 0 && !suppress_warnings)
+        std::cerr << "Warning- DCD '" << _filename << "' appears empty and could not determine size; verify with dcdinfo and/or fix with fixdcd" << std::endl;
+      
+      ifs()->seekg(first_frame_pos);
+    }
+    
   }
 
 
