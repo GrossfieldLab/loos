@@ -75,18 +75,18 @@ namespace loos {
     };
 
     //! Begin reading from the file named s
-    explicit DCD(const std::string s) :  Trajectory(s), _natoms(0),
+    explicit DCD(const std::string s) :  Trajectory(s), _natoms(0), _nframes(0),
                                          qcrys(std::vector<double>(6)),
                                          frame_size(0), first_frame_pos(0),
                                          swabbing(false) { initTrajectory(); }
 
     //! Begin reading from the file named s
-    explicit DCD(const char* s) :  Trajectory(s), _natoms(0),
+    explicit DCD(const char* s) :  Trajectory(s), _natoms(0), _nframes(0), 
                                    qcrys(std::vector<double>(6)), frame_size(0),
                                    first_frame_pos(0), swabbing(false) { initTrajectory(); }
 
     //! Begin reading from the stream ifs
-    explicit DCD(std::istream& fs) : Trajectory(fs), _natoms(0),
+    explicit DCD(std::istream& fs) : Trajectory(fs), _natoms(0), _nframes(0),
                                      qcrys(std::vector<double>(6)), frame_size(0), first_frame_pos(0),
                                      swabbing(false) { initTrajectory(); };
 
@@ -153,18 +153,20 @@ namespace loos {
     //! Read in the header from the stored stream
     void readHeader(void);
 
-      void initTrajectory();
-      
+    void initTrajectory();
+
+    uint calculateNumberOfFrames();
+    
     // Trajectory member functions we must provide...
     virtual void seekNextFrameImpl(void) { }    // DCD frames are always contiguous, so do nothing...
     //! Calculate offset into DCD file for frame and seek to it.
-      virtual void seekFrameImpl(const uint);
-
+    virtual void seekFrameImpl(const uint);
+    
     //! Rewind the file to the first DCD frame.
-      virtual void rewindImpl(void);
-
+    virtual void rewindImpl(void);
+    
     //! Update an AtomicGroup coordinates with the currently-read frame.
-      virtual void updateGroupCoordsImpl(AtomicGroup& g);
+    virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
 
 
@@ -183,12 +185,13 @@ namespace loos {
   private:
     int _icntrl[20];          // DCD header data
     uint _natoms;              // # of atoms
+    uint _nframes;
     std::vector<std::string> _titles;   // Vector of title lines from DCD
     std::vector<double> qcrys;     // Crystal params
     float _delta;             // Timestep (extracted from _icntrl)
 
-    unsigned long frame_size;          // *Internal* size (in bytes) of each frame
-    unsigned long first_frame_pos;     // *Internal* location in file of start of data frames
+    long frame_size;          // *Internal* size (in bytes) of each frame
+    long first_frame_pos;     // *Internal* location in file of start of data frames
 
     bool swabbing;            // DCD being read is not in native format...
   
