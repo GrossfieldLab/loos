@@ -189,14 +189,14 @@ namespace loos {
     std::vector<std::string> _titles;   // Vector of title lines from DCD
     std::vector<double> qcrys;     // Crystal params
     float _delta;             // Timestep (extracted from _icntrl)
-
-    long frame_size;                    // *Internal* size (in bytes) of each frame
+      
+    std::streamoff frame_size;                    // *Internal* size (in bytes) of each frame
     std::streampos first_frame_pos;     // *Internal* location in file of start of data frames
-
+      
     bool swabbing;            // DCD being read is not in native format...
-  
+      
     std::vector<dcd_real> xcrds, ycrds, zcrds;
-  
+      
   };
 
 }
