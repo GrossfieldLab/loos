@@ -1,3 +1,8 @@
+2016-09-02    <tromo@hill>
+
+	* Changed DCD to handle trajectories with 0 frame count in the header (no longer
+	  requires running fixdcd first)
+
 2016-08-26    <tromo@hill>
 
 	* Added option to remove bonds with model-select
