@@ -1,3 +1,8 @@
+2016-09-08    <tromo@hill>
+
+	* Fixed bug affecting water density tools and the radius filter.  Too few waters
+	were actually being selected.
+
 2016-09-02    <tromo@hill>
 
 	* Changed DCD to handle trajectories with 0 frame count in the header (no longer

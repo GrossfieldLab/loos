@@ -91,13 +91,15 @@ namespace loos {
       vector<int> result(solv.size());
 
       double r2 = radius_ * radius_;
-      for (uint j=0; j<prot.size(); ++j)
-        for (uint i=0; i<solv.size(); ++i)
-          if (prot[j]->coords().distance2(solv[i]->coords()) <= r2) {
-            result[i] = 1;
+      for (uint j=0; j<solv.size(); ++j) {
+        GCoord sc = solv[j]->coords();
+        for (uint i=0; i<prot.size(); ++i)
+          if (sc.distance2(prot[i]->coords()) <= r2) {
+            result[j] = 1;
             break;
           }
-
+      }
+      
       return(result);
     }
 
