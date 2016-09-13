@@ -1,3 +1,8 @@
+2016-09-13    <tromo@hill>
+
+	* Added --verify option to trajinfo to suppress frame count verification when using
+	the brief output.
+
 2016-09-08    <tromo@hill>
 
 	* Fixed bug affecting water density tools and the radius filter.  Too few waters

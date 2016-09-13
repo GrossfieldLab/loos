@@ -89,15 +89,24 @@ string s =
 
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : brief(false), box_info(false), centroid_selection("") { }
+  ToolOptions() : brief(false), box_info(false), centroid_selection(""), verify(true) { }
   
   void addGeneric(opts::po::options_description& o) {
     o.add_options()
       ("brief,B", opts::po::value<bool>(&brief)->default_value(brief), "Minimal output")
       ("centroid", opts::po::value<string>(&centroid_selection), "Report average centroid of selection")
-      ("box", opts::po::value<bool>(&box_info)->default_value(box_info), "Report periodic box info");
+      ("box", opts::po::value<bool>(&box_info)->default_value(box_info), "Report periodic box info")
+      ("verify", opts::po::value<bool>(&verify)->default_value(verify), "Verify frame count");
   }
 
+
+  bool postConditions(opts::po::variables_map& map) {
+    if (!(verify || brief))
+      cerr << "Warning- verification is mandatory for verbose output and will be performed anyway.\n";
+
+    return(true);
+  }
+  
   string print() const {
     ostringstream oss;
 
@@ -107,6 +116,7 @@ public:
 
   bool brief, box_info;
   string centroid_selection;
+  bool verify;
 };
 
 // @endcond
@@ -258,9 +268,10 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
 }
 
 
-void briefInfo(pTraj& traj) {
+void briefInfo(pTraj& traj, const bool verify = true) {
   cout << traj->natoms() << " " << traj->nframes() << " " << traj->timestep() << " " << traj->hasPeriodicBox() << endl;
-  verifyFrames(traj);
+  if (verify)
+    verifyFrames(traj);
 }
 
 
@@ -302,6 +313,6 @@ int main(int argc, char *argv[]) {
   if (!topts->brief)
     verbInfo(model, traj, center, !(topts->centroid_selection.empty()));
   else
-    briefInfo(traj);
+    briefInfo(traj, topts->verify);
 }
 
