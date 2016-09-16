@@ -58,7 +58,7 @@ int debug = 0;
 
 string model_name, selection;
 GCoord spot;
-int picked_id;
+vector<int> picked_ids;
 bool use_spot = false;
 bool largest = false;
 double range = 0.0;
@@ -117,7 +117,7 @@ public:
       ("query", po::value<bool>(&query)->default_value(false), "Query nearby blobs, do NOT write out a grid")
       ("model", po::value<string>(&model_name)->default_value(""), "Select using this model (must have coords)")
       ("selection", po::value<string>(&selection)->default_value(""), "Select atoms within the PDB to find nearest blob")
-      ("id", po::value<int>(&picked_id)->default_value(-1), "Select blob with this ID")
+      ("id", po::value<string>(&id_string), "Select blob with this ID")
       ("point", po::value<string>(&point_spec), "Select blob closest to this point")
       ("range", po::value<double>(&range), "Select blobs that are closer than this distance")
       ("largest", po::value<bool>(&largest)->default_value(false), "Select only the largest blob that fits the distance criterion");
@@ -136,7 +136,9 @@ public:
         cerr << "Error: cannot parse coordinate " << point_spec << endl;
         return(false);
       }
-    } else if (picked_id < 0) {
+    } else if (!id_string.empty()) {
+      picked_ids = parseRangeList(id_string);
+    } else {
       cerr << "Error: must specify either a PDB with selection, a point, or a blob-ID to pick\n";
       return(false);
     }
@@ -146,6 +148,7 @@ public:
 
   string spot_spec;
   string point_spec;
+  string id_string;
 };
 
 
@@ -260,7 +263,7 @@ int main(int argc, char *argv[]) {
     exit(-1);
 
   vector<GCoord> points;
-  if (picked_id < 0) {
+  if (picked_ids.empty()) {
     if (use_spot)
       points.push_back(spot);
     else {
@@ -282,7 +285,7 @@ int main(int argc, char *argv[]) {
   for (int i=1; i<3; i++)
     voxel_volume *= (1.0 / delta[i]);
   
-  if (picked_id < 0) {
+  if (picked_ids.empty()) {
 
     vector<Blob> picks = pickBlob(grid, points);
 
@@ -305,9 +308,7 @@ int main(int argc, char *argv[]) {
     }
 
   } else if (!query) {
-    vector<int> picks;
-    picks.push_back(picked_id);
-    zapGrid(grid, picks);
+    zapGrid(grid, picked_ids);
     cout << grid;
   }
 
