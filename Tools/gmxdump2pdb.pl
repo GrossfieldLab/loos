@@ -389,16 +389,16 @@ sub processMolecules {
 	$molidx = $1;
 	$state = 1;
 
-      } elsif (/atom\[(\d+)\]={name="(.+)"}/) {
+      } elsif (/atom\[(\d+)\]=\{name="(.+)"\}/) {
 	$$rmols[$molidx]->{ATOMS}->[$1] = $2;
 
-      } elsif (/residue\[(\d+)\]={name="(.+)"/) {
+      } elsif (/residue\[(\d+)\]=\{name="(.+)"/) {
 	# NOTE: This ignores the "nr=\d+" field in lieu of the
 	# bracketed index.  I'm not sure if this is the correct thing
 	# to do...
 	$$rmols[$molidx]->{RESIDUES}->{$1} = $2;
 
-      } elsif (/type\[(\d+)\]={name="([^"]+)",/) {
+      } elsif (/type\[(\d+)\]=\{name="([^"]+)",/) {
 	push(@{$$rmols[$molidx]->{TYPES}}, $2);
 
       } elsif (/Bonds?:/) {
@@ -476,7 +476,7 @@ sub processBox {
 	for (my $i = 0; $i < 3; ++$i) {
 	  $_ = <>;
 	  chomp;
-	  if (/box\[\s*(\d+)]={(.+)}/) {
+	  if (/box\[\s*(\d+)]=\{(.+)\}/) {
 	    my $idx = $1;
 	    ($idx >= 0 && $idx <= 2) || die "Error- bad index ($idx) for periodic box vector";
 	    my @ary = split(/,/, $2);
@@ -498,7 +498,7 @@ sub readCoords {
 
   while (<>) {
     chomp;
-    if (/^\s+x\[\s*\d+\]={(.+)}$/) {
+    if (/^\s+x\[\s*\d+\]=\{(.+)}$/) {
       my $c = $1;
       $c =~ s/\s//g;
       my @coord = split(/,/, $c);
