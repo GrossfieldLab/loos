@@ -1,3 +1,8 @@
+2016-10-05    <tromo@hill>
+
+	* Added --reimage=zealous to subsetter
+	* Added proper support for atom inequality in PyLOOS (uses metadata only)
+
 2016-09-13    <tromo@hill>
 
 	* Added --verify option to trajinfo to suppress frame count verification when using
