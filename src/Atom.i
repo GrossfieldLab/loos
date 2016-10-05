@@ -63,6 +63,14 @@ namespace loos {
 	     $self->segid() == p->segid());
     }
 
+    bool __ne__(const pAtom& p) {
+      return(! ($self->id() == p->id() &&
+                $self->resid() == p->resid() &&
+                $self->resname() == p->resname() &&
+                $self->name() == p->name() &&
+                $self->segid() == p->segid()) );
+    }
+
 
   };
 
