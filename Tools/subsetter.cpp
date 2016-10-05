@@ -76,7 +76,7 @@ bool box_override = false;
 GCoord box;
 
 
-enum ReimageMode { NONE, NORMAL, AGGRESSIVE, EXTREME } reimage_mode;
+enum ReimageMode { NONE, NORMAL, AGGRESSIVE, ZEALOUS, EXTREME } reimage_mode;
 
 ulong extreme_iters = 0;
 double extreme_delta = 0.0;
@@ -199,12 +199,14 @@ string fullHelpMessage(void) {
     "with --reimage=normal.  This reimages by molecule.  In some cases, this is insufficient to\n"
     "reimage the system so that all molecules are 'together'.  The second method is invoked with\n"
     "--reimage=aggressive.  This employs a more aggressive reimaging that attempts to keep all parts of\n"
-    "a molecule together (the method used is similar to the --fix-imaging option).  The third,\n"
-    "even more aggressive method, is to use --reimage=extreme.  Here, an iterative reimaging\n"
-    "procedure is used.  This may slow down subsetter.  In both aggressive and extreme, a centering\n"
-    "selection is used.  For aggressive, you should center on whatever you want the system to be centered\n"
-    "on (e.g. a protein or a membrane).  Extreme can work with 'all' as a selection.  If that fails,\n"
-    "try selecting either a central protein or a membrane.  Since these reimaging methods can\n"
+    "a molecule together (the method used is similar to the --fix-imaging option).  A similar\n"
+    "reimaging strategy is to use --reimage=zealous, a two-pass strategy where first normal\n"
+    "reimaging is applied, followed by aggressive.  This can be helpful with some split GROMACS systems.\n"
+    "An even more aggressive method, is to use --reimage=extreme.  Here, an iterative reimaging\n"
+    "procedure is used.  This may slow down subsetter.  In aggressive, zealous, and extreme, a centering\n"
+    "selection is used.  For aggressive and zealous, you should center on whatever you want the system to\n"
+    "be centered on (e.g. a protein or a membrane).  Extreme can work with 'all' as a selection.  If\n"
+    "that fails, try selecting either a central protein or a membrane.  Since these reimaging methods can\n"
     "affect the centering, a post-reimaging centering is available using the --postcenter option.\n"
     "Finally, these imaging methods require connectivity and, in the case of extreme, masses are\n"
     "helpful.\n"
@@ -318,7 +320,7 @@ public:
       ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at start of each trajectory")
       ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
-      ("reimage", po::value<string>(&reimage)->default_value("none"), "Reimage mode (none, normal, aggressive, extreme)")
+      ("reimage", po::value<string>(&reimage)->default_value("none"), "Reimage mode (none, normal, aggressive, zealous, extreme)")
       ("center,C", po::value<string>(&center_selection)->default_value(""), "Recenter the trajectory using this selection (of the subset)")
       ("postcenter,P", po::value<string>(&post_center_selection)->default_value(""), "Recenter using this selection after reimaging")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
@@ -377,6 +379,8 @@ public:
       reimage_mode = NORMAL;
     else if (boost::iequals(reimage, "aggressive"))
       reimage_mode = AGGRESSIVE;
+    else if (boost::iequals(reimage, "zealous"))
+      reimage_mode = ZEALOUS;
     else if (boost::iequals(reimage, "extreme"))
       reimage_mode = EXTREME;
     else {
@@ -600,7 +604,11 @@ int main(int argc, char *argv[]) {
 
 
     if (reimage_mode != NONE) {
-      if (reimage_mode == AGGRESSIVE) {
+      if (reimage_mode == AGGRESSIVE || reimage_mode == ZEALOUS) {
+        if (reimage_mode == ZEALOUS) {
+          for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+            mol->mergeImage();
+        }
 	GCoord centroid = centered[0]->coords();
 	model.translate(-centroid);
 	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
