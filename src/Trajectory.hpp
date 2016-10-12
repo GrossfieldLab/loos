@@ -61,7 +61,7 @@ namespace loos {
    *  this.
    */
 
-  class Trajectory : public boost::noncopyable {
+  class Trajectory  {
   public:
     Trajectory() : cached_first(false) { }
 
