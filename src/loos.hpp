@@ -75,6 +75,7 @@
 #include <Trajectory.hpp>
 #include <dcd.hpp>
 #include <dcd_utils.hpp>
+#include <MultiTraj.hpp>
 
 #include <trajwriter.hpp>
 #include <dcdwriter.hpp>
