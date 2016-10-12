@@ -25,7 +25,10 @@
 
 namespace loos {
 
+
+  //! Rewinds MultiTrajectory and all contained trajectories
   void MultiTrajectory::rewindImpl() {
+
     for (uint i=0; i<_trajectories.size(); ++i)
       _trajectories[i]->rewind();
     _curtraj = 0;
@@ -33,6 +36,7 @@ namespace loos {
     _trajectories[0]->readFrame(_curframe);
   }
 
+  
    void MultiTrajectory::seekNextFrameImpl() {
     _curframe += _stride;
     if (_curframe >= _trajectories[_curtraj]->nframes()) {
