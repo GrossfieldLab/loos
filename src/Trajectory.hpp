@@ -77,6 +77,9 @@ namespace loos {
     //! Return a string describing trajectory format
     virtual std::string description() const { return("No Description Available"); }
 
+    //! Return the stored filename
+    virtual std::string filename() const { return(_filename); }
+    
     //! # of atoms per frame
     virtual uint natoms(void) const =0;
     //! Timestep per frame
