@@ -1,3 +1,7 @@
+2016-10-13    <alan@membrane>
+
+	* Added option to native_contacts to supply a reference structure
+
 2016-10-05    <tromo@hill>
 
 	* Added --reimage=zealous to subsetter

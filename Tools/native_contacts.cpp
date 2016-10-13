@@ -40,9 +40,11 @@ class ToolOptions : public opts::OptionsPackage
     {
     public:
         string outfile;
+        string reference;
         bool do_output;
         bool exclude_backbone;
         bool use_periodicity;
+        bool use_reference;
 
         void addGeneric(po::options_description& o) 
             {
@@ -50,6 +52,7 @@ class ToolOptions : public opts::OptionsPackage
      ("outfile", po::value<string>(&outfile), "File for timeseries of individual contacts")
      ("exclude-backbone",po::value<bool>(&exclude_backbone)->default_value(false), "Exclude the backbone from contact calculations")
      ("periodic", "Use periodicity when computing contacts")
+     ("reference", po::value<string>(&reference), "Coordinate file to use as reference structure")
             ;
             }
 
@@ -71,6 +74,15 @@ class ToolOptions : public opts::OptionsPackage
             else
                 {
                 use_periodicity = false;
+                }
+
+            if (vm.count("reference"))
+                {
+                use_reference = true;
+                }
+            else
+                {
+                use_reference = false;
                 }
             return(true);
             }
@@ -95,9 +107,18 @@ string fullHelpMessage(void)
 "    use in protein or RNA systems, as a way of tracking the degree to which\n"
 "    the molecule is folded.  \n"
 "\n"
-"    If the model file provided on the command line has coordinates, then \n"
+"    By default, the model file provided on the command line has coordinates, then \n"
 "    those coordinates are used to define \"native\" contacts.  \n"
-"    Specifically, the set of atoms to be analyzed is specified on the\n"
+"    If the model file doesn't have coordinates, then the first frame of the\n"
+"    trajectory is used.\n"
+"\n"
+"    Alternatively, you can supply a separate structure containing reference\n"
+"    coordinates (e.g. a pdb file with the original crystal coordinates).\n"  
+"    The only restriction is that the same selection string that picks out\n"
+"    the residues of interest from the system file must also apply to the \n"
+"    reference file.\n"
+"\n"
+"    The set of atoms to be analyzed is specified on the\n"
 "    command line, which is then split by residue.  If the centers of mass\n"
 "    of two residues are within the cutoff distance specified on the command\n"
 "    line, then those two residues are a native contact.  The same criterion\n"
@@ -123,18 +144,14 @@ string fullHelpMessage(void)
 "    first frame of the trajectory will be used to define which contacts \n"
 "    are native.\n"
 "\n"
-"    If no selection string is provided, then the default is to use "
+"    If no selection string is provided, then the default is to use\n "
 "    'name == \"CA\"'."
 "\n"
-"    In addition, one can select just the sidechains using the "
-"    --exclude-backbone flag; this can be combined with other selections."
+"    In addition, one can select just the sidechains using the\n "
+"    --exclude-backbone flag; this can be combined with other selections.\n"
 "\n"
-"    The output is a time series of the fraction of native contacts present \n"
-"    in the trajectory.  At present, there is no option to track the \n"
-"    presence of specific contacts (other than using the selection string on\n"
-"    the command line to pick out just those contacts).  If you would find\n"
-"    this interesting, send email to loos-maintainer@urmc.rochester.edu\n"
-"    requesting the feature.\n"
+"    If you supply the \"--outfile\" option, you will also get a time series for \n"
+"    all of the individual pairs of residues.\n"
 "\n"
         ;
     return(s);
@@ -192,10 +209,35 @@ if (topts->do_output)
         }  
     }
 
-// Check to see if the system has coordinates -- we'll use them if it does,
-// otherwise we'll use the first frame of the trajectory as the reference 
-// structure.
-if ( !(sel[0]->checkProperty(Atom::coordsbit)) )
+// Figure out what to use as a reference structure 
+// --If one was supplied on the command line use that, and 
+//   use the same selections applied to the main system to 
+//   select out the equivalent group.  
+// --If there was no reference structure, check to see if the 
+//   model file has coordinates, and use those.
+// --If neither is true, use frame 0 of the trajectory.
+if (topts->use_reference)
+    {
+    AtomicGroup reference = createSystem(topts->reference);
+    AtomicGroup ref_sel = selectAtoms(reference, sopts->selection);
+    if (topts->exclude_backbone)
+        {
+        BackboneSelector backbone;
+        NotSelector sidechains(backbone);
+        ref_sel = ref_sel.select(sidechains);
+        }
+    // copy the coordinates from ref_sel to sel, after sanity checking
+    if (ref_sel.size() != sel.size())
+        {
+        cerr << "Selection from the reference file wasn't the same size as\n"
+             << "the selection from the main system.  You must be able to use\n"
+             << "the same selection string on both systems."
+             << endl;
+        exit(1);
+        }
+    sel.copyCoordinatesFrom(ref_sel);
+    }
+else if ( !(sel[0]->checkProperty(Atom::coordsbit)) )
     {
     traj->readFrame(0);
     traj->updateGroupCoords(system);
