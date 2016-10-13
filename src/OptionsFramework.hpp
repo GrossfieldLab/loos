@@ -590,8 +590,10 @@ namespace loos {
       uint skip;
       uint stride;
       std::vector< std::string > traj_names;
-      std::string model_name, model_type;
+      std::string model_name, model_type, frame_index_spec;
 
+      std::vector<uint> frameList() const;
+      
       //! Model that describes the trajectory
       AtomicGroup model;
 

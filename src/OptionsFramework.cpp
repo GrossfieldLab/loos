@@ -419,9 +419,10 @@ namespace loos {
       std::string trajtypes = "Trajectory types:\n" + availableTrajectoryFileTypes();
 
       opts.add_options()
-        ("skip,k", po::value<uint>(&skip)->default_value(skip), "Number of frames to skip")
-        ("stride,S", po::value<uint>(&stride)->default_value(stride), "Step through trajectories by this amount")
-        ("modeltype", po::value<std::string>(), modeltypes.c_str());
+        ("modeltype", po::value<std::string>(), modeltypes.c_str())
+        ("skip,k", po::value<uint>(&skip)->default_value(skip), "Number of frames to skip in sub-trajectories")
+        ("stride,i", po::value<uint>(&stride)->default_value(stride), "Step through sub-trajectories by this amount")
+        ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use in composite trajectory");
     }
 
     void MultiTrajOptions::addHidden(po::options_description& opts) {
@@ -452,6 +453,9 @@ namespace loos {
       return true;
     }
 
+    std::vector<uint> MultiTrajOptions::frameList() const {
+      return(assignTrajectoryFrames(trajectory, frame_index_spec, 0, 1));
+    }
 
     std::string MultiTrajOptions::help() const { return("model trajectory [trajectory ...]"); }
     std::string MultiTrajOptions::print() const {
