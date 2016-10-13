@@ -570,13 +570,17 @@ namespace loos {
 
 
 
-    //! Multi trajectory with a --skip option
+    //! Multiple trajectories as one trajectory via MultiTrajectory
     /**
-     * Adds a model and trajectory argument to the command line, and
-     * provides --skip (-k) option for skipping the first n-frames.
-     * 
-     * The contained trajectory object will already be skipped to the
-     * correct frame by postConditions().
+     *
+     * Handles multiple trajectories as one large virtual trajectory via
+     * a MultiTrajectory object.  Skip and stride are applied to each
+     * contained sub-trajectory, not the overall trajectory.
+     *
+     * Internally, it instantiates a MultiTrajectory object in mtraj, and
+     * then wraps it in a pTraj that is set to not deallocate the source
+     * object.
+     *
      **/
     class MultiTrajOptions : public OptionsPackage {
     public:
@@ -591,6 +595,7 @@ namespace loos {
       //! Model that describes the trajectory
       AtomicGroup model;
 
+      //! The original collection of trajectories
       MultiTrajectory mtraj;
       
       //! The trajectory
