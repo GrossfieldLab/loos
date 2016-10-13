@@ -299,7 +299,7 @@ int main(int argc, char *argv[]) {
   header = invocationHeader(argc, argv);
   opts::BasicOptions* bhopts = new opts::BasicOptions(fullHelpMessage());
   opts::OutputPrefix* popts = new opts::OutputPrefix;
-  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+  opts::MultiTrajOptions* tropts = new opts::MultiTrajOptions;
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
@@ -307,6 +307,9 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
+  if (bhopts->verbosity)
+    cout << tropts->trajectoryTable() << endl;
+  
   prefix = popts->prefix;
   AtomicGroup model = tropts->model;
   pTraj ptraj = tropts->trajectory;
