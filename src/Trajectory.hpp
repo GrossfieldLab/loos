@@ -71,13 +71,13 @@ namespace loos {
 
     //! Automatically open the file named \a s
     Trajectory(const std::string& s) throw(FileOpenError)
-      : cached_first(false), _filename(s)
+      : cached_first(false), _filename(s), _current_frame(0)
     {
       setInputStream(s);
     }
 
     //! Open using the given stream...
-    Trajectory(std::istream& fs) : cached_first(false), _filename("istream")
+    Trajectory(std::istream& fs) : cached_first(false), _filename("istream"), _current_frame(0)
     {
       setInputStream(fs);
     }
@@ -102,6 +102,7 @@ namespace loos {
     bool rewind(void) {
       cached_first = true;
       rewindImpl();
+      _current_frame = 0;
       return(parseFrame());
     }
 
@@ -161,13 +162,15 @@ namespace loos {
     //! operating as an iterator).
     void seekNextFrame(void) {
       cached_first = false;
-      seekNextFrameImpl();
+      ++_current_frame;
+      seekFrameImpl(_current_frame);
     }
 
     //! Seek to a specific frame, be it in the same contiguous file or
     //! in separate files.
     void seekFrame(const uint i) {
       cached_first = false;
+      _current_frame = i;
       seekFrameImpl(i);
     }
 
@@ -183,6 +186,9 @@ namespace loos {
     bool readFrame(void) {
       bool b = true;
 
+      if (atEnd())
+        return false;
+      
       if (!cached_first) {
         seekNextFrame();
         b = parseFrame();
@@ -205,6 +211,14 @@ namespace loos {
       }
       cached_first = false;
       return(b);
+    }
+
+    bool atEnd() const {
+      return(_current_frame >= nframes());
+    }
+
+    uint currentFrame() const {
+      return(_current_frame);
     }
 
   protected:
@@ -231,6 +245,7 @@ namespace loos {
                           // the subclass...
 
     std::string _filename;   // Remember filename (if passed)
+    uint _current_frame;
     
   private:
     
