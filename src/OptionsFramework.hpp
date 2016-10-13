@@ -28,6 +28,7 @@
 #include <boost/program_options.hpp>
 #include <AtomicGroup.hpp>
 #include <Trajectory.hpp>
+#include <MultiTraj.hpp>
 #include <sfactories.hpp>
 #include <boost/algorithm/string.hpp>
 #include <exceptions.hpp>
@@ -548,6 +549,57 @@ namespace loos {
       //! The trajectory
       pTraj trajectory;
 
+    private:
+      void addGeneric(po::options_description& opts);
+      void addHidden(po::options_description& opts);
+
+      void addPositional(po::positional_options_description& pos);
+
+      bool check(po::variables_map& map);
+
+      bool postConditions(po::variables_map& map);
+
+      std::string help() const;
+      std::string print() const;
+    };
+
+
+
+    // -------------------------------------------------
+    
+
+
+
+    //! Multi trajectory with a --skip option
+    /**
+     * Adds a model and trajectory argument to the command line, and
+     * provides --skip (-k) option for skipping the first n-frames.
+     * 
+     * The contained trajectory object will already be skipped to the
+     * correct frame by postConditions().
+     **/
+    class MultiTrajOptions : public OptionsPackage {
+    public:
+      MultiTrajOptions() : skip(0), stride(1) { }
+
+
+      uint skip;
+      uint stride;
+      std::vector< std::string > traj_names;
+      std::string model_name, model_type;
+
+      //! Model that describes the trajectory
+      AtomicGroup model;
+
+      MultiTrajectory mtraj;
+      
+      //! The trajectory
+      pTraj trajectory;
+
+      //! A table of information about the contained trajectories
+      std::string trajectoryTable() const;
+
+      
     private:
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);
