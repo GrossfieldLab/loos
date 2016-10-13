@@ -176,8 +176,8 @@ namespace loos {
 
 
 
-  std::vector<int> parseRangeList(const std::string& text) {
-    return(parseRangeList<int>(text));
+  std::vector<int> parseRangeList(const std::string& text, const int endpoint) {
+    return(parseRangeList<int>(text, endpoint));
   }
 
   /** This routine parses the passed string, turning it into a selector
