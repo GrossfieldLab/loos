@@ -234,7 +234,7 @@ namespace loos {
     void setInputStream(std::istream& fs)
     {
       _filename = "istream";
-      ifs = pStream(&fs, boost::lambda::_1);
+      ifs = pStream(&fs, boost::lambda::_1);    // lambda function makes a NOOP deallocator
     }
 
     
