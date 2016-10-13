@@ -43,6 +43,10 @@ namespace loos {
   public:
 
 
+    MultiTrajectory()
+      : _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0)
+    { }
+    
     //! instantiate a new empty MultiTrajectory
     MultiTrajectory(const AtomicGroup& model)
       : _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
