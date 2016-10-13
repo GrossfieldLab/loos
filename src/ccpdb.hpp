@@ -91,7 +91,7 @@ namespace loos {
 
   private:
     void init(void);
-    virtual void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
+    virtual void rewindImpl(void) { ifs->clear(); ifs->seekg(0); }
     virtual void seekNextFrameImpl(void) { }
     virtual void seekFrameImpl(const uint);
     virtual void updateGroupCoordsImpl(AtomicGroup& g);

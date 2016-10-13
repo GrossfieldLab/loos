@@ -28,12 +28,13 @@
 #include <vector>
 
 #include <boost/utility.hpp>
+#include <boost/lambda/lambda.hpp>
 
 #include <loos_defs.hpp>
-#include <StreamWrapper.hpp>
 #include <AtomicGroup.hpp>
 
 #include <AtomicGroup.hpp>
+
 
 namespace loos {
 
@@ -63,13 +64,23 @@ namespace loos {
 
   class Trajectory  {
   public:
+    typedef boost::shared_ptr<std::istream>      pStream;
+    
+    
     Trajectory() : cached_first(false) { }
 
     //! Automatically open the file named \a s
-    Trajectory(const std::string& s) : ifs(s), cached_first(false), _filename(s) { }
+    Trajectory(const std::string& s) throw(FileOpenError)
+      : cached_first(false), _filename(s)
+    {
+      setInputStream(s);
+    }
 
     //! Open using the given stream...
-    Trajectory(std::istream& fs) : ifs(fs), cached_first(false), _filename("istream") { }
+    Trajectory(std::istream& fs) : cached_first(false), _filename("istream")
+    {
+      setInputStream(fs);
+    }
 
     virtual ~Trajectory() { }
 
@@ -197,7 +208,25 @@ namespace loos {
     }
 
   protected:
-    StreamWrapper ifs;
+    void setInputStream(const std::string& fname) throw(FileOpenError)
+    {
+      _filename = fname;
+      ifs = pStream(new std::fstream(fname.c_str(), std::ios_base::in | std::ios_base::binary));
+      if (!ifs->good())
+        throw(FileOpenError(fname));
+    }
+
+
+    void setInputStream(std::istream& fs)
+    {
+      _filename = "istream";
+      ifs = pStream(&fs, boost::lambda::_1);
+    }
+
+    
+
+
+    pStream ifs;
     bool cached_first;    // Indicates that the first frame is cached by
                           // the subclass...
 

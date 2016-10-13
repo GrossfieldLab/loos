@@ -61,7 +61,7 @@ namespace loos {
     std::stringstream s;
     s << boost::format(pattern) % idx;
     current_name = s.str();
-    ifs.setStream(current_name);
+    setInputStream(current_name);
     current_index = i;
     at_end = false;
   }
@@ -86,7 +86,7 @@ namespace loos {
       return(false);
   
     PDB newframe;
-    newframe.read(*(ifs()));
+    newframe.read(*(ifs));
     frame = newframe;
     if (frame.size() == 0) {
       at_end = true;

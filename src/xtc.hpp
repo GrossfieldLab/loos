@@ -82,11 +82,11 @@ namespace loos {
     typedef float    xtc_t;
 
   public:
-    explicit XTC(const std::string& s) : Trajectory(s), xdr_file(ifs()),natoms_(0) {
+    explicit XTC(const std::string& s) : Trajectory(s), xdr_file(ifs.get()),natoms_(0) {
       init();
     }
 
-    explicit XTC(std::istream& is) : Trajectory(is), xdr_file(ifs()), natoms_(0) {
+    explicit XTC(std::istream& is) : Trajectory(is), xdr_file(ifs.get()), natoms_(0) {
       init();
     }
 
@@ -142,7 +142,7 @@ namespace loos {
     
     void seekNextFrameImpl(void) { }
     void seekFrameImpl(uint);
-    void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0); }
+    void rewindImpl(void) { ifs->clear(); ifs->seekg(0); }
     void updateGroupCoordsImpl(AtomicGroup& g);
     bool readCompressedCoords(void);
     bool readUncompressedCoords(void);

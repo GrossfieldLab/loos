@@ -90,11 +90,11 @@ namespace loos {
   unsigned int DCD::readRecordLen(void) {
     DataOverlay o;
   
-    ifs()->read(o.c, 4);
+    ifs->read(o.c, 4);
 
-    if (ifs()->eof())
+    if (ifs->eof())
       return(0);
-    if (ifs()->fail())
+    if (ifs->fail())
       throw(FileReadError(_filename, "Unable to read DCD record length"));
 
     uint data = o.ui;
@@ -106,14 +106,15 @@ namespace loos {
 
 
   // Check for endian-ness
-  void DCD::endianMatch(StreamWrapper& fsw) {
-    unsigned long curpos = fsw()->tellg();
+  void DCD::endianMatch(pStream& fsw) {
+    unsigned long curpos = fsw->tellg();
     unsigned int datum;
-    ifs()->read((char *)(&datum), sizeof(datum));
-    fsw()->seekg(curpos);
-
-    if (ifs()->eof() || ifs()->fail())
+    fsw->read((char *)(&datum), sizeof(datum));
+    if (fsw->eof() || fsw->fail())
       throw(FileReadError(_filename, "Unable to read first datum from DCD file"));
+
+    fsw->seekg(curpos);
+
 
     if (datum != 0x54) {
       datum = swab(datum);
@@ -141,8 +142,8 @@ namespace loos {
     
     ptr = new DataOverlay[n];
 
-    ifs()->read((char *)ptr, n);
-    if (ifs()->fail())
+    ifs->read((char *)ptr, n);
+    if (ifs->fail())
       throw(FileReadError(_filename, "Error reading data record from DCD"));
 
     n2 = readRecordLen();
@@ -160,8 +161,8 @@ namespace loos {
   //
   // NOTE: Does not preserve current file position
   uint DCD::calculateNumberOfFrames() {
-    ifs()->seekg(0, std::ios::end);
-    std::streampos endpos = ifs()->tellg();
+    ifs->seekg(0, std::ios::end);
+    std::streampos endpos = ifs->tellg();
     long datasize = endpos - first_frame_pos;
     uint n = datasize / frame_size;
     if (datasize % frame_size)
@@ -240,7 +241,7 @@ namespace loos {
 
 
     // Finally, set internal variables and allocate space for a frame...
-    first_frame_pos = ifs()->tellg();
+    first_frame_pos = ifs->tellg();
 
     frame_size = 12 * (2 + _natoms);
     if (hasCrystalParams())
@@ -254,7 +255,7 @@ namespace loos {
       if (_nframes == 0 && !suppress_warnings)
         std::cerr << "Warning- DCD '" << _filename << "' appears empty and could not determine size; verify with dcdinfo and/or fix with fixdcd" << std::endl;
       
-      ifs()->seekg(first_frame_pos);
+      ifs->seekg(first_frame_pos);
     }
     
   }
@@ -333,9 +334,9 @@ namespace loos {
     if (i >= nframes())
       throw(FileError(_filename, "Requested DCD frame is out of range"));
 
-    ifs()->clear();
-    ifs()->seekg(first_frame_pos + i * frame_size);
-    if (ifs()->fail() || ifs()->bad())
+    ifs->clear();
+    ifs->seekg(first_frame_pos + i * frame_size);
+    if (ifs->fail() || ifs->bad())
       throw(FileError(_filename, "Cannot seek to requested frame"));
   }
 
@@ -351,7 +352,7 @@ namespace loos {
       throw(FileReadError(_filename, "Trying to read a DCD frame without first having read the header."));
 
     // This will not catch most cases of reading to the end of the file...
-    if (ifs()->eof())
+    if (ifs->eof())
       return(false);
 
     if (hasCrystalParams())
@@ -371,9 +372,9 @@ namespace loos {
 
 
   void DCD::rewindImpl(void) {
-    ifs()->clear();
-    ifs()->seekg(first_frame_pos);
-    if (ifs()->fail() || ifs()->bad())
+    ifs->clear();
+    ifs->seekg(first_frame_pos);
+    if (ifs->fail() || ifs->bad())
       throw(FileError(_filename, "Cannot rewind DCD trajectory"));
   }
 

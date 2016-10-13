@@ -175,8 +175,8 @@ namespace loos {
     if (i >= frame_indices.size())
       throw(FileError(_filename, "Requested TRR frame is out of range"));
     
-    ifs()->clear();
-    ifs()->seekg(frame_indices[i], std::ios_base::beg);
+    ifs->clear();
+    ifs->seekg(frame_indices[i], std::ios_base::beg);
   }
 
 

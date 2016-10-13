@@ -28,23 +28,23 @@ namespace loos {
     char buf[512];
 
     // Read the first frame to get the # of atoms...
-    frame.read(*(ifs()));
+    frame.read(*(ifs));
     _natoms = frame.size();
     indices.push_back(0l);
     cached_first = true;
 
     // Now determine the # of frames...
-    while (!ifs()->eof()) {
-      indices.push_back(ifs()->tellg());
-      ifs()->getline(buf, sizeof(buf));
+    while (!ifs->eof()) {
+      indices.push_back(ifs->tellg());
+      ifs->getline(buf, sizeof(buf));
       for (uint i=0; i<_natoms; ++i)
-        ifs()->getline(buf, sizeof(buf));
+        ifs->getline(buf, sizeof(buf));
     }
 
     _nframes = indices.size() - 1;
 
-    ifs()->clear();
-    ifs()->seekg(indices[1]);
+    ifs->clear();
+    ifs->seekg(indices[1]);
   }
 
 
@@ -58,9 +58,9 @@ namespace loos {
     if (i >= _nframes)
       throw(FileError(_filename, "Requested trajectory frame is out of range"));
 
-    ifs()->clear();
-    ifs()->seekg(indices[i]);
-    if (ifs()->fail())
+    ifs->clear();
+    ifs->seekg(indices[i]);
+    if (ifs->fail())
       throw(FileError(_filename, "Cannot seek to the requested frame"));
 
     current_index = i;
@@ -69,11 +69,11 @@ namespace loos {
 
 
   bool TinkerArc::parseFrame(void) {
-    if (ifs()->eof() || at_end)
+    if (ifs->eof() || at_end)
       return(false);
 
     TinkerXYZ newframe;
-    newframe.read(*(ifs()));
+    newframe.read(*(ifs));
     frame = newframe;
     if (frame.size() == 0) {
       at_end = true;
