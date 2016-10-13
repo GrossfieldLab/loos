@@ -471,6 +471,8 @@ namespace loos {
 
     std::string MultiTrajOptions::trajectoryTable() const {
       std::ostringstream oss;
+      if (!frame_index_spec.empty())
+        oss << "# Note- composite frame range used was '" << frame_index_spec << "'\n";
       oss << "# traj\tstart\tend\tfilename\n";
       uint start_cnt = 0;
       for (uint i=0; i<mtraj.size(); ++i) {
