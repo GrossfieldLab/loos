@@ -116,7 +116,7 @@ namespace loos {
       for (uint i=skip; i<traj->nframes(); i += stride)
         frames.push_back(i);
     else
-      frames = parseRangeList<uint>(frame_index_spec);
+      frames = parseRangeList<uint>(frame_index_spec, traj->nframes()-1);
     
     return(frames);
   }
