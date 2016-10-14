@@ -39,6 +39,7 @@ apps = apps + ' Kernel.cpp KernelStack.cpp ProgressTriggers.cpp Selectors.cpp XF
 apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.cpp alignment.cpp MultiTraj.cpp' 
+apps = apps + ' index_range_parser.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
@@ -70,7 +71,7 @@ hdr = hdr + ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
 hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
-hdr = hdr + ' trajwriter.hpp MultiTraj.hpp'
+hdr = hdr + ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
 
 if (env['HAS_NETCDF']):
    hdr = hdr + ' amber_netcdf.hpp'
