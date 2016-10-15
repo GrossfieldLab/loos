@@ -74,6 +74,8 @@ namespace loos {
       vector<uint> generate() const {
         vector<uint> results;
 
+	if (!validate())
+	  throw(ParseError("Invalid range"));
         if (step == 0)
           results.push_back(start);
         else if (step > 0) {
