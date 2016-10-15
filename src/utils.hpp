@@ -411,6 +411,21 @@ namespace loos {
   template<> std::string vectorAsStringWithCommas(const std::vector<std::string>& v);
 
 
+  //! Return a vector containing only the unique elements of the input vector
+  template <typename T>
+  std::vector<T> uniquifyVector(const std::vector<T>& list) {
+    std::set<T> indices;
+    std::insert_iterator< std::set<T> > ii(indices, indices.begin());
+    std::copy(list.begin(), list.end(), ii);
+
+    std::vector<T> uniques(indices.size());
+    std::copy(indices.begin(), indices.end(), uniques.begin());
+    return uniques;
+  }
+
+
+  
+
   long availableMemory();
   
 };

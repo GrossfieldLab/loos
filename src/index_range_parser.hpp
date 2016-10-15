@@ -32,18 +32,6 @@ namespace loos {
 
   std::vector<uint> parseIndexRange(const std::string& input, const uint maxsize);
 
-
-  template <typename T>
-  std::vector<T> uniquifyVector(const std::vector<T>& list) {
-    std::set<T> indices;
-    std::insert_iterator< std::set<T> > ii(indices, indices.begin());
-    std::copy(list.begin(), list.end(), ii);
-
-    std::vector<T> uniques(indices.size());
-    std::copy(indices.begin(), indices.end(), uniques.begin());
-    return uniques;
-  }
-
 }
 
 
