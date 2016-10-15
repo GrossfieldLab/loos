@@ -409,7 +409,8 @@ namespace loos {
 
     
     std::vector<uint> TrajectoryWithFrameIndices::frameList() const {
-      return(assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride));
+      std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride);
+      return uniquifyVector(indices);
     }
 
     // -------------------------------------------------------
@@ -453,8 +454,10 @@ namespace loos {
       return true;
     }
 
+
     std::vector<uint> MultiTrajOptions::frameList() const {
-      return(assignTrajectoryFrames(trajectory, frame_index_spec, 0, 1));
+      std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride);
+      return uniquifyVector(indices);
     }
 
     std::string MultiTrajOptions::help() const { return("model trajectory [trajectory ...]"); }
