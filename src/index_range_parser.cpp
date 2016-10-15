@@ -146,22 +146,21 @@ namespace loos {
     vector<internal::RangeItemPointer> rangelist;
     string::const_iterator iter = input.begin();
     string::const_iterator end = input.end();
-    
+
+    vector<uint> result;
     bool ok = phrase_parse(iter, end, parser, space, rangelist);
     if (ok && iter == end) {
-      vector<uint> result;
       for (uint i=0; i<rangelist.size(); ++i) {
         vector<uint> r = rangelist[i]->generate();
         copy(r.begin(), r.end(), back_inserter(result));
         delete rangelist[i];
       }
 
-      return result;
     } else {
       throw(ParseError("Could not parse range: " + input));
     }
     
-    // Should never get here...
+    return result;
   }
 
 
