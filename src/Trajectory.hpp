@@ -163,7 +163,8 @@ namespace loos {
     void seekNextFrame(void) {
       cached_first = false;
       ++_current_frame;
-      seekFrameImpl(_current_frame);
+      if (!atEnd())
+        seekFrameImpl(_current_frame);
     }
 
     //! Seek to a specific frame, be it in the same contiguous file or
