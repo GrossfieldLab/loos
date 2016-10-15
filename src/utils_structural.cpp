@@ -32,6 +32,7 @@
 #include <dcd.hpp>
 #include <pdb_remarks.hpp>
 #include <sfactories.hpp>
+#include <index_range_parser.hpp>
 
 namespace loos {
 
@@ -116,7 +117,7 @@ namespace loos {
       for (uint i=skip; i<traj->nframes(); i += stride)
         frames.push_back(i);
     else
-      frames = parseRangeList<uint>(frame_index_spec, traj->nframes()-1);
+      frames = parseIndexRange(frame_index_spec, traj->nframes()-1);
     
     return(frames);
   }
