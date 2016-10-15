@@ -66,6 +66,8 @@ namespace loos {
           return false;
         if (start < stop && step < 0)
           return false;
+
+	return true;
       }
 
 
