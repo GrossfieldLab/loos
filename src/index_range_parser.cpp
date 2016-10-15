@@ -62,28 +62,28 @@ namespace loos {
 
 
       bool validate() const {
-	if (start < stop && step > 0)
-	  return false;
-	if (start < stop && step < 0)
-	  return false;
+        if (start < stop && step > 0)
+          return false;
+        if (start < stop && step < 0)
+          return false;
       }
 
 
       vector<uint> generate() const {
-	vector<uint> results;
+        vector<uint> results;
 
-	if (step == 0)
-	  results.push_back(start);
-	else if (step > 0) {
-	  for (uint i=start; i<=stop; i += step)
-	    results.push_back(i);
-	} else {
-	  uint i;
-	  for (i=start; i>= stop && i<=start; i += step)
-	    results.push_back(i);
-	}
+        if (step == 0)
+          results.push_back(start);
+        else if (step > 0) {
+          for (uint i=start; i<=stop; i += step)
+            results.push_back(i);
+        } else {
+          uint i;
+          for (i=start; i>= stop && i<=start; i += step)
+            results.push_back(i);
+        }
 
-	return results;
+        return results;
       }
     
       RangeItem() : start(0), stop(0), step(0) { }
@@ -101,26 +101,26 @@ namespace loos {
     struct RangeParser : qi::grammar<Iterator, RangeList(), ascii::space_type>
     {
       RangeParser() : RangeParser::base_type(start), maxsize(0) {
-	using qi::int_;
-	using qi::uint_;
-	using qi::_1;
-	using qi::_2;
-	using qi::_3;
-	using qi::_val;
-	using phoenix::ref;
-	using qi::eps;
+        using qi::int_;
+        using qi::uint_;
+        using qi::_1;
+        using qi::_2;
+        using qi::_3;
+        using qi::_val;
+        using phoenix::ref;
+        using qi::eps;
 
 
-	endpoint = uint_ [ _val = _1 ]
-	  | eps [ _val = ref(maxsize) ];
+        endpoint = uint_ [ _val = _1 ]
+          | eps [ _val = ref(maxsize) ];
       
-	ranger = (uint_ >> ':' >> int_ >> ':' >> endpoint ) [ _val = phoenix::new_<RangeItem>(_1,_3, _2) ]
-	  | ( endpoint >> ':' >> int_ >> ':' >> uint_ ) [ _val = phoenix::new_<RangeItem>(_1,_3, _2) ]
-	  | ( uint_ >> ':' >> endpoint ) [ _val = phoenix::new_<RangeItem>(_1, _2) ]
-	  | ( endpoint >> ':' >> uint_ ) [ _val = phoenix::new_<RangeItem>(_1, _2, -1) ]
-	  | ( uint_ ) [ _val = phoenix::new_<RangeItem>(_1) ];
+        ranger = (uint_ >> ':' >> int_ >> ':' >> endpoint ) [ _val = phoenix::new_<RangeItem>(_1,_3, _2) ]
+          | ( endpoint >> ':' >> int_ >> ':' >> uint_ ) [ _val = phoenix::new_<RangeItem>(_1,_3, _2) ]
+          | ( uint_ >> ':' >> endpoint ) [ _val = phoenix::new_<RangeItem>(_1, _2) ]
+          | ( endpoint >> ':' >> uint_ ) [ _val = phoenix::new_<RangeItem>(_1, _2, -1) ]
+          | ( uint_ ) [ _val = phoenix::new_<RangeItem>(_1) ];
 
-	start = ranger % ',';
+        start = ranger % ',';
       }
 
       uint maxsize;
@@ -151,13 +151,13 @@ namespace loos {
     if (ok && iter == end) {
       vector<uint> result;
       for (uint i=0; i<rangelist.size(); ++i) {
-	vector<uint> r = rangelist[i]->generate();
-	copy(r.begin(), r.end(), back_inserter(result));
-	delete rangelist[i];
+        vector<uint> r = rangelist[i]->generate();
+        copy(r.begin(), r.end(), back_inserter(result));
+        delete rangelist[i];
       }
 
       return result;
-      } else {
+    } else {
       throw(ParseError("Could not parse range: " + input));
     }
     
