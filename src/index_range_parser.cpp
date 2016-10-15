@@ -62,9 +62,9 @@ namespace loos {
 
 
       bool validate() const {
-        if (start < stop && step > 0)
-          return false;
         if (start < stop && step < 0)
+          return false;
+        if (start > stop && step > 0)
           return false;
 
 	return true;
