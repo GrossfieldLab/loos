@@ -68,6 +68,7 @@ public:
     noalign(false),
     include_source(false),
     alignment_tol(1e-6),
+    splitv(true),
     terms(0)
   { }
 
@@ -79,18 +80,20 @@ public:
       ("tolerance", po::value<double>(&alignment_tol)->default_value(alignment_tol), "Tolerance for iterative alignment")
       ("noalign,N", po::value<bool>(&noalign)->default_value(noalign), "Do NOT align the frames of the trajectory")
       ("source", po::value<bool>(&include_source)->default_value(include_source), "Write out source conformation matrix")
+      ("splitv", po::value<bool>(&splitv)->default_value(splitv), "Automatically split V matrix (when using multiple trajectories)")
       ("terms", po::value<uint>(&terms), "# of terms of the SVD to output");
   }
 
   string print() const {
     ostringstream oss;
 
-    oss << boost::format("align='%s', svd='%s', tolerance=%f, noalign=%d, source=%d, terms=%d")
+    oss << boost::format("align='%s', svd='%s', tolerance=%f, noalign=%d, source=%d, splitv=%d, terms=%d")
       % alignment_string
       % svd_string
       % noalign
       % include_source
       % alignment_tol
+      % splitv
       % terms;
     return(oss.str());
   }
@@ -99,6 +102,7 @@ public:
   string alignment_string, svd_string;
   bool noalign, include_source;
   double alignment_tol;
+  bool splitv;
   uint terms;
 };
 
@@ -403,7 +407,35 @@ int main(int argc, char *argv[]) {
   cerr << argv[0] << ": Writing results...\n";
   writeAsciiMatrix(prefix + "_U.asc", U, header, orig, Usize);
   writeAsciiMatrix(prefix + "_s.asc", S, header, orig, Ssize);
-  writeAsciiMatrix(prefix + "_V.asc", Vt, header, orig, Vsize, true);
+
+  if (topts->splitv && tropts->mtraj.size() > 1) {
+    // Need to reconstruct what row-ranges correspond to the input trajectories...
+    uint a = 0;
+    uint curtraj = 0;
+    int terms = topts->terms ? static_cast<int>(topts->terms) : sn;
+
+    for (uint i=0; i<n; ++i) {
+      MultiTrajectory::Location loc = tropts->mtraj.frameIndexToLocation(i);
+      if (loc.first != curtraj) {
+        ostringstream oss;
+        oss << boost::format("%s_V_%03d.asc") % popts->prefix % curtraj;
+        Math::Range start(0, a);
+        Math::Range end(terms, i);
+        writeAsciiMatrix(oss.str(), Vt, header, start, end, true);
+        a = i;
+        curtraj = loc.first;
+      }
+    }
+    
+    ostringstream oss;
+    oss << boost::format("%s_V_%03d.asc") % popts->prefix % curtraj;
+    Math::Range start(0, a);
+    Math::Range end(terms, n);
+    writeAsciiMatrix(oss.str(), Vt, header, start, end, true);
+    
+  } else
+    writeAsciiMatrix(prefix + "_V.asc", Vt, header, orig, Vsize, true);
+  
   cerr << argv[0] << ": done!\n";
 
   delete[] work;
