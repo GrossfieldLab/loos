@@ -324,13 +324,14 @@ int main(int argc, char *argv[]) { std::cout << BOOST_LIB_VERSION; return(0); }
     if not result[0]:
         conf.Result('boost missing or incomplete?')
         return(0)
-    version = result[1]
-
-    if LooseVersion(version) < LooseVersion(min_boost_version):
-        conf.Result('%s [too old, LOOS requires at least %s]' % (version, min_boost_version))
+    boost_version = result[1]
+    loos_build_config.versions['boost'] = boost_version
+    
+    if LooseVersion(boost_version) < LooseVersion(min_boost_version):
+        conf.Result('%s [too old, LOOS requires at least %s]' % (boost_version, min_boost_version))
         return(0)
 
-    conf.Result('%s [ok]' % version)
+    conf.Result('%s [ok]' % boost_version)
     return(1)
 
 # Check for presence of a directory

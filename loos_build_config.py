@@ -29,7 +29,7 @@ host_type = 'unknown'
 linux_type = 'unknown'
 suffix = 'so'
 
-
+versions = {}
 
 # List of packages to build and install
 # The keywords become build targets for SCons

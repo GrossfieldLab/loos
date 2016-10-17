@@ -29,6 +29,7 @@ from time import strftime
 import shutil
 import distutils.sysconfig
 import distutils.spawn
+from distutils.version import LooseVersion
 from string import Template
 
 import SCons
@@ -126,6 +127,12 @@ if loos_build_config.host_type == 'Darwin':
         env.Append(SWIGFLAGS = '-DSWIG_NO_EXPORT_ITERATOR_METHODS')
     env.Append(LINKFLAGS = ' -framework Accelerate')
 
+
+# Older version of BOOST will require this definition
+# Note: the version of BOOST requiring this flag is just a guess...
+if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_58'):
+    env.append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
+    
 # Determine what kind of build...
 
 release = int(env['release'])
