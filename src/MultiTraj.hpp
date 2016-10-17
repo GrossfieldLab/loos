@@ -41,7 +41,7 @@ namespace loos {
    */
   class MultiTrajectory : public Trajectory {
   public:
-
+    typedef std::pair<uint, uint>   Location;
 
     MultiTrajectory()
       : _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0)
@@ -125,7 +125,8 @@ namespace loos {
 
     //! Raw index into the current trajectory for the current frame (i.e. with skip & stride applied)
     uint currentFrameIndex() const { return(_curframe); }
-    
+
+    Location frameIndexToLocation(const uint i);
     
   private:
 

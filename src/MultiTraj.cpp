@@ -36,6 +36,18 @@ namespace loos {
     _trajectories[0]->readFrame(_curframe);
   }
 
+
+  MultiTrajectory::Location MultiTrajectory::frameIndexToLocation(const uint i) {
+    uint k, j;
+    for (j=k=0; k<_trajectories.size(); ++k) {
+      uint n = nframes(k);
+      if (j + n > i)
+	break;
+      j += n;
+    }
+    return Location(k, (_skip + (i-j) * _stride));
+  }
+  
   
    void MultiTrajectory::seekNextFrameImpl() {
     _curframe += _stride;
@@ -46,15 +58,9 @@ namespace loos {
   }
 
    void MultiTrajectory::seekFrameImpl(const uint i) {
-    uint k, j;
-    for (j=k=0; k<_trajectories.size(); ++k) {
-      uint n = nframes(k);
-      if (j + n > i)
-	break;
-      j += n;
-    }
-    _curtraj = k;
-    _curframe = _skip + (i-j) * _stride;
+     Location idx = frameIndexToLocation(i);
+     _curtraj = idx.first;
+     _curframe = idx.second;
   }
 
    bool MultiTrajectory::parseFrame() {
