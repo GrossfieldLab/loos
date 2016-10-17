@@ -131,7 +131,7 @@ if loos_build_config.host_type == 'Darwin':
 # Older version of BOOST will require this definition
 # Note: the version of BOOST requiring this flag is just a guess...
 if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_58'):
-    env.append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
+    env.Append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
     
 # Determine what kind of build...
 
