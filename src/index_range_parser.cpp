@@ -129,8 +129,8 @@ namespace loos {
 
       uint maxsize;
     
-      qi::rule<Iterator, uint, ascii::space_type> endpoint;
-      qi::rule<Iterator, RangeItemPointer, ascii::space_type> ranger;
+      qi::rule<Iterator, uint(), ascii::space_type> endpoint;
+      qi::rule<Iterator, RangeItemPointer(), ascii::space_type> ranger;
       qi::rule<Iterator, RangeList(), ascii::space_type> start;
 
     };
