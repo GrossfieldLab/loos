@@ -98,6 +98,9 @@ PREFIX = env['PREFIX']
 
 # ----------------------------------------------------------------------------------------------
 
+cleaning = env.GetOption('clean')
+
+
 ### Autoconf
 AutoConfiguration(env)
 pyloos = int(env['pyloos'])
@@ -128,14 +131,15 @@ if loos_build_config.host_type == 'Darwin':
     env.Append(LINKFLAGS = ' -framework Accelerate')
 
 
-# Older version of BOOST will require this definition
-# Note: the version of BOOST requiring this flag is just a guess...
-if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_58'):
-    env.Append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
+if not cleaning:
+    # Older version of BOOST will require this definition
+    # Note: the version of BOOST requiring this flag is just a guess...
+    if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_58'):
+        env.Append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
 
-# This is for BOOST 1.44 and boost 1.45..force using Boost Filesystem v3
-if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_46') and LooseVersion(loos_build_config.versions['boost']) >= LooseVersion('1_44'):
-    env.Append(CCFLAGS = '-DBOOST_FILESYSTEM_VERSION=3')
+    # This is for BOOST 1.44 and boost 1.45..force using Boost Filesystem v3
+    if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_46') and LooseVersion(loos_build_config.versions['boost']) >= LooseVersion('1_44'):
+        env.Append(CCFLAGS = '-DBOOST_FILESYSTEM_VERSION=3')
 
     
 # Determine what kind of build...
@@ -195,7 +199,6 @@ Export('loos')
 # the documentation for most builds, and it will be included in cleaning.  In addition, install will
 # generate the documentation
 
-cleaning = env.GetOption('clean')
 if os.path.exists('docs.prebuilt'):
     existing_docs = True
     print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
