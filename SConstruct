@@ -134,7 +134,7 @@ if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_58'):
     env.Append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
 
 # This is for BOOST 1.44 and boost 1.45..force using Boost Filesystem v3
-if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_46') and LooseVersion(loos_build_config.version['boost']) >= LooseVersion('1_44'):
+if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_46') and LooseVersion(loos_build_config.versions['boost']) >= LooseVersion('1_44'):
     env.Append(CCFLAGS = '-DBOOST_FILESYSTEM_VERSION=3')
 
     
