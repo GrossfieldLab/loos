@@ -317,7 +317,11 @@ void writeMatrixChunk(opts::OutputPrefix* popts, opts::MultiTrajOptions* tropts,
 
   if (topts->autoname) {
     boost::filesystem::path p(tropts->mtraj[index]->filename());
+#if BOOST_FILESYSTEM_VERSION >= 3
     filename = p.stem().string() + "_V.asc";
+#else
+    filename = p.stem() + "_V.asc";
+#endif
   } else {
     ostringstream oss;
     oss << boost::format("%s_V_%04d.asc") % popts->prefix % index;
