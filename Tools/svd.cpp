@@ -30,6 +30,7 @@
 
 
 #include <loos.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 using namespace loos;
@@ -69,6 +70,7 @@ public:
     include_source(false),
     alignment_tol(1e-6),
     splitv(true),
+    autoname(true),
     terms(0)
   { }
 
@@ -81,19 +83,31 @@ public:
       ("noalign,N", po::value<bool>(&noalign)->default_value(noalign), "Do NOT align the frames of the trajectory")
       ("source", po::value<bool>(&include_source)->default_value(include_source), "Write out source conformation matrix")
       ("splitv", po::value<bool>(&splitv)->default_value(splitv), "Automatically split V matrix (when using multiple trajectories)")
+      ("autoname", po::value<bool>(&autoname)->default_value(autoname), "Automatically name V files based on traj filename")
       ("terms", po::value<uint>(&terms), "# of terms of the SVD to output");
   }
 
+
+  bool postConditions(po::variables_map& vm) {
+    if (autoname)
+      splitv = true;
+
+    return(true);
+  }
+
+
+  
   string print() const {
     ostringstream oss;
 
-    oss << boost::format("align='%s', svd='%s', tolerance=%f, noalign=%d, source=%d, splitv=%d, terms=%d")
+    oss << boost::format("align='%s', svd='%s', tolerance=%f, noalign=%d, source=%d, splitv=%d, autoname=%d, terms=%d")
       % alignment_string
       % svd_string
       % noalign
       % include_source
       % alignment_tol
       % splitv
+      % autoname
       % terms;
     return(oss.str());
   }
@@ -102,7 +116,7 @@ public:
   string alignment_string, svd_string;
   bool noalign, include_source;
   double alignment_tol;
-  bool splitv;
+  bool splitv, autoname;
   uint terms;
 };
 
@@ -298,6 +312,23 @@ void write_map(const string& fname, const AtomicGroup& grp) {
 }
 
 
+void writeMatrixChunk(opts::OutputPrefix* popts, opts::MultiTrajOptions* tropts, ToolOptions* topts, const Matrix& Vt, const Math::Range& start, const Math::Range& end, const string& header, const uint index) {
+  string filename;
+
+  if (topts->autoname) {
+    boost::filesystem::path p(tropts->mtraj[index]->filename());
+    filename = p.stem().string() + "_V.asc";
+  } else {
+    ostringstream oss;
+    oss << boost::format("%s_V_%04d.asc") % popts->prefix % index;
+    filename = oss.str();
+  }
+
+  writeAsciiMatrix(filename, Vt, header, start, end, true);
+}
+
+
+
 
 int main(int argc, char *argv[]) {
   header = invocationHeader(argc, argv);
@@ -417,21 +448,13 @@ int main(int argc, char *argv[]) {
     for (uint i=0; i<n; ++i) {
       MultiTrajectory::Location loc = tropts->mtraj.frameIndexToLocation(i);
       if (loc.first != curtraj) {
-        ostringstream oss;
-        oss << boost::format("%s_V_%03d.asc") % popts->prefix % curtraj;
-        Math::Range start(0, a);
-        Math::Range end(terms, i);
-        writeAsciiMatrix(oss.str(), Vt, header, start, end, true);
+        writeMatrixChunk(popts, tropts, topts, Vt, Math::Range(0, a), Math::Range(terms, i), header, curtraj);
         a = i;
         curtraj = loc.first;
       }
     }
-    
-    ostringstream oss;
-    oss << boost::format("%s_V_%03d.asc") % popts->prefix % curtraj;
-    Math::Range start(0, a);
-    Math::Range end(terms, n);
-    writeAsciiMatrix(oss.str(), Vt, header, start, end, true);
+
+    writeMatrixChunk(popts, tropts, topts, Vt, Math::Range(0, a), Math::Range(terms, n), header, curtraj);
     
   } else
     writeAsciiMatrix(prefix + "_V.asc", Vt, header, orig, Vsize, true);
