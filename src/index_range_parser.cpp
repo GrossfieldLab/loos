@@ -33,7 +33,12 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
 
+#if ((BOOST_VERSION / 100 % 1000) <= 46)
+#include <boost/spirit/home/phoenix/object/new.hpp>
+#else
 #include <boost/phoenix/object/new.hpp>
+#endif
+
 
 #include <boost/format.hpp>
 
