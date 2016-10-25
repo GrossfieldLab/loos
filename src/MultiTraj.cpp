@@ -26,14 +26,22 @@
 namespace loos {
 
 
+  void MultiTrajectory::findNextUsableTraj() {
+    for (; _curtraj < _trajectories.size(); ++_curtraj)
+        if (_trajectories[_curtraj]->nframes() > _skip)
+            break;
+  }
+
   //! Rewinds MultiTrajectory and all contained trajectories
   void MultiTrajectory::rewindImpl() {
 
     for (uint i=0; i<_trajectories.size(); ++i)
       _trajectories[i]->rewind();
     _curtraj = 0;
-    _curframe = _skip;
-    _trajectories[0]->readFrame(_curframe);
+    _curframe = skip;
+    findNextUsableTraj();
+    if (!eof())
+        _trajectories[_curtraj]->readFrame(_curframe);
   }
 
 
@@ -42,7 +50,7 @@ namespace loos {
     for (j=k=0; k<_trajectories.size(); ++k) {
       uint n = nframes(k);
       if (j + n > i)
-	break;
+        break;
       j += n;
     }
     return Location(k, (_skip + (i-j) * _stride));
@@ -50,25 +58,33 @@ namespace loos {
   
   
    void MultiTrajectory::seekNextFrameImpl() {
+    if (eof())
+        return;
     _curframe += _stride;
     if (_curframe >= _trajectories[_curtraj]->nframes()) {
       _curframe = _skip;
       ++_curtraj;
+      findNextUsableTraj();
     }
   }
 
    void MultiTrajectory::seekFrameImpl(const uint i) {
+    if (i >= _nframes)
+        throw(FileReadError("Cannot seek past end of MultiTraj"));
      Location idx = frameIndexToLocation(i);
      _curtraj = idx.first;
      _curframe = idx.second;
   }
 
    bool MultiTrajectory::parseFrame() {
+    if (eof())
+        return 0;
     return(_trajectories[_curtraj]->readFrame(_curframe));
   }
     
    void MultiTrajectory::updateGroupCoordsImpl(AtomicGroup& g) {
-    _trajectories[_curtraj]->updateGroupCoords(g);
+     if (!eof())
+        _trajectories[_curtraj]->updateGroupCoords(g);
   }
 
 

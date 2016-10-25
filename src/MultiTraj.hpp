@@ -80,7 +80,8 @@ namespace loos {
     void addTrajectory(const std::string& filename) {
       pTraj traj = createTrajectory(filename, _model);
       _trajectories.push_back(traj);
-      _nframes += (traj->nframes() - _skip) / _stride;
+      if (traj->nframes() > _skip)
+        _nframes += (traj->nframes() - _skip) / _stride;
     }
 
     
@@ -92,30 +93,44 @@ namespace loos {
     virtual uint nframes() const { return(_nframes); }
 
     //! Number of frames in the ith trajectory
-    uint nframes(const uint i) const { return( (_trajectories[i]->nframes() - _skip + _stride - 1) / _stride ); }
+    uint nframes(const uint i) const {
+        if (i >= _trajectories.size())
+            throw(LOOSError("Requesting trajectory size for non-existent trajectory in MultiTraj"));
+            
+        if (_trajectories[i]->nframes() <= _skip)
+            return 0;
+        return( (_trajectories[i]->nframes() - _skip + _stride - 1) / _stride );
+    }
 
     //! Number of trajectories contained
     uint size() const { return(_trajectories.size()); }
 
     //! Access the individual trajectories
-    pTraj operator[](const uint i) const { return(_trajectories[i]); }
+    pTraj operator[](const uint i) const {
+        if (i >= _trajectories.size())
+            throw(LOOSError("MultiTraj trajectory index out of bounds"));
+        return(_trajectories[i]);
+    }
     
     //! Ignore timesteps (for now)
     virtual float timestep() const { return(0.0); }
 
     //! Whether or not the current sub-trajectory has a periodic box
     virtual bool hasPeriodicBox() const {
-      return(_trajectories[_curtraj]->hasPeriodicBox());
+      uint i = eof() ? _trajectories.size()-1 : _curtraj;
+      return(_trajectories[i]->hasPeriodicBox());
     }
 
     //! The periodic box of the current sub-trajectory
     virtual GCoord periodicBox() const {
-      return(_trajectories[_curtraj]->periodicBox());
+      uint i = eof() ? _trajectories.size()-1 : _curtraj;
+      return(_trajectories[i]->periodicBox());
     }
 
     //! Coordinates from the most recently read frame
     virtual std::vector<GCoord> coords() {
-      return(_trajectories[_curtraj]->coords());
+      uint i = eof() ? _trajectories.size()-1 : _curtraj;
+      return(_trajectories[i]->coords());
     }
 
     
@@ -128,6 +143,10 @@ namespace loos {
 
     Location frameIndexToLocation(const uint i);
     
+    bool eof() const {
+        return _curtraj >= _trajectories.size();
+    }
+    
   private:
 
     virtual void rewindImpl();
@@ -136,7 +155,7 @@ namespace loos {
     virtual bool parseFrame();
     virtual void updateGroupCoordsImpl(AtomicGroup& g);
 
-
+    void findNextUsableTraj();
 
     
     // Make these private so you can't accidently try to use them...
