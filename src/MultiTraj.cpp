@@ -38,7 +38,7 @@ namespace loos {
     for (uint i=0; i<_trajectories.size(); ++i)
       _trajectories[i]->rewind();
     _curtraj = 0;
-    _curframe = skip;
+    _curframe = _skip;
     findNextUsableTraj();
     if (!eof())
         _trajectories[_curtraj]->readFrame(_curframe);
