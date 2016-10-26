@@ -67,7 +67,7 @@ namespace loos {
     typedef boost::shared_ptr<std::istream>      pStream;
     
     
-    Trajectory() : cached_first(false) { }
+    Trajectory() : cached_first(false), _filename("unset"), _current_frame(0) { }
 
     //! Automatically open the file named \a s
     Trajectory(const std::string& s) throw(FileOpenError)
@@ -80,6 +80,11 @@ namespace loos {
     Trajectory(std::istream& fs) : cached_first(false), _filename("istream"), _current_frame(0)
     {
       setInputStream(fs);
+    }
+
+
+    Trajectory(const Trajectory& t) : ifs(t.ifs), cached_first(t.cached_first), _filename(t._filename), _current_frame(t._current_frame)
+    {
     }
 
     virtual ~Trajectory() { }
