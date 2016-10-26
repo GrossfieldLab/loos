@@ -456,7 +456,7 @@ namespace loos {
 
 
     std::vector<uint> MultiTrajOptions::frameList() const {
-      std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride);
+      std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, 0, 1);
       return uniquifyVector(indices);
     }
 
@@ -478,13 +478,19 @@ namespace loos {
         oss << "# Note- composite frame range used was '" << frame_index_spec << "'\n";
       oss << "# traj\tstart\tend\tfilename\n";
       uint start_cnt = 0;
+      uint j = 0;
       for (uint i=0; i<mtraj.size(); ++i) {
         uint n = mtraj.nframes(i);
-        oss << boost::format("%d\t%d\t%d\t%s\n")
-          % i
-          % start_cnt
-          % (start_cnt + n - 1)
-          % mtraj[i]->filename();
+        if (n == 0)
+          oss << boost::format("# '%s' was skipped due to insufficient frames\n") % mtraj[i]->filename();
+        else {
+          oss << boost::format("%d\t%d\t%d\t%s\n")
+            % j
+            % start_cnt
+            % (start_cnt + n - 1)
+            % mtraj[i]->filename();
+          ++j;
+        }
         start_cnt += n;
       }
 
