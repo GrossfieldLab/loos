@@ -53,28 +53,22 @@ namespace loos {
         break;
       j += n;
     }
-    return Location(k, (_skip + (i-j) * _stride));
+    Location loc(k, (_skip + (i-j)*_stride));
+    return loc;
   }
   
   
    void MultiTrajectory::seekNextFrameImpl() {
-    if (eof())
-        return;
-    _curframe += _stride;
-    if (_curframe >= _trajectories[_curtraj]->nframes()) {
-      _curframe = _skip;
-      ++_curtraj;
-      findNextUsableTraj();
-    }
-  }
+     throw(LOOSError("Error- MultiTrajectory::seekNextFrameImpl() is deprecated.\n"));
+   }
 
    void MultiTrajectory::seekFrameImpl(const uint i) {
-    if (i >= _nframes)
-        throw(FileReadError("Cannot seek past end of MultiTraj"));
-     Location idx = frameIndexToLocation(i);
-     _curtraj = idx.first;
-     _curframe = idx.second;
-  }
+     if (i >= _nframes)
+       throw(FileReadError("Cannot seek past end of MultiTraj"));
+     Location loc = frameIndexToLocation(i);
+     _curtraj = loc.first;
+     _curframe = loc.second;
+   }
 
    bool MultiTrajectory::parseFrame() {
     if (eof())
