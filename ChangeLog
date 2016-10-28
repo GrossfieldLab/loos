@@ -1,3 +1,21 @@
+2016-10-28    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added MultiTrajectory class: a Trajectory that can contain other
+	Trajectory objects.  Each sub-trajectory can have its own skip and
+	stride.
+	* Added MultiTrajOptions for handling multi-trajectories on the command
+	line.  This must be the last option included.
+	* Changed Trajectory to be copyable.  Now saves iterator state internally.
+	* Added Trajectory::filename()
+	* Removed StreamWrapper from Trajectory.  StreamWrapper will likely go away
+	in a future release.
+	* Changed the frame range parser to use BOOST::Spirit.  This includes support
+	for using an empty range end to specify the end of a file, e.g. 10:2: means
+	take every other frame, starting at frame 10, until the end of the file.
+	* Changed subsetter and svd to use the new MultiTrajectory
+	* Added multi-rmsds tool to compute a pair-wise RMSD matrix for an arbitrary
+	number of trajectories.
+
 2016-10-05    <tromo@hill>
 
 	* Added --reimage=zealous to subsetter
