@@ -409,8 +409,7 @@ int main(int argc, char *argv[]) {
 
   if (!topts->noop) {
     cout << "# " << header << endl;
-    if (verbosity > 1)
-      cout << mtopts->trajectoryTable();
+    cout << mtopts->trajectoryTable();
     cout << setprecision(matrix_precision) << M;
   }
 
