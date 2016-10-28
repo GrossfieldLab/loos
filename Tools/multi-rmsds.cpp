@@ -384,10 +384,8 @@ int main(int argc, char *argv[]) {
   long mem = availableMemory();
   uint nthreads = topts->nthreads ? topts->nthreads : boost::thread::hardware_concurrency();
 
-  if (verbosity > 1) {
-    cerr << "# Using " << nthreads << " threads\n";
-    cerr << mtopts->trajectoryTable();
-  }
+  if (verbosity > 1)
+    cerr << "Using " << nthreads << " threads\n";
 
   vMatrix T = readCoords(subset, traj, indices, verbosity > 1);
   used_memory += T.size() * T[0].size() * sizeof(double);
@@ -411,6 +409,8 @@ int main(int argc, char *argv[]) {
 
   if (!topts->noop) {
     cout << "# " << header << endl;
+    if (verbosity > 1)
+      cout << mtopts->trajectoryTable();
     cout << setprecision(matrix_precision) << M;
   }
 
