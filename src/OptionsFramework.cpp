@@ -482,9 +482,9 @@ namespace loos {
       for (uint i=0; i<mtraj.size(); ++i) {
         uint n = mtraj.nframes(i);
         if (n == 0)
-          oss << boost::format("# '%s' was skipped due to insufficient frames\n") % mtraj[i]->filename();
+          oss << boost::format("# Warning- '%s' was skipped due to insufficient frames\n") % mtraj[i]->filename();
         else {
-          oss << boost::format("%d\t%d\t%d\t%s\n")
+          oss << boost::format("# %d\t%d\t%d\t%s\n")
             % j
             % start_cnt
             % (start_cnt + n - 1)
