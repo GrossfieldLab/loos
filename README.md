@@ -41,6 +41,13 @@ in GitHub, or downloading a release tarball from sourceforge.
 For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
 
+
+### Multi-Traj branch
+
+This is a developmental branch.  Code may or may not compile or work
+correctly.  Use at your own risk!
+
+
 ### RELEASE 2.3.2
 
 This release includes a number of changes to support our migration to
