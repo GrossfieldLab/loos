@@ -441,43 +441,6 @@ public:
 
 
 
-
-uint getNumberOfFrames(const string& fname, AtomicGroup& model) {
-  pTraj traj = createTrajectory(fname, model);
-  return(traj->nframes());
-}
-
-
-
-// Build the mapping of global frame indices into individual files,
-// and into the frame number within each file...  Also returns the
-// total number of frames in the composite trajectory.
-
-uint bindFilesToIndices(AtomicGroup& model) {
-  uint total_frames = 0;
-
-  for (uint j=0; j<traj_names.size(); ++j)  {
-    uint n = getNumberOfFrames(traj_names[j], model);
-    if (verbose > 1)
-      cout << boost::format("Trajectory \"%s\" has %d frames\n") % traj_names[j] % n;
-
-    if (n <= skip) {
-      cerr << boost::format("Warning- skipping trajectory \"%s\" which has only %d frames\n") % traj_names[j] % n;
-      continue;
-    }
-
-
-    total_frames += (n-skip);
-    for (uint i=skip; i<n; ++i) {
-      file_binding.push_back(j);
-      local_indices.push_back(i);
-    }
-  }
-
-  return(total_frames);
-}
-
-
 void showTrajectoryTable(MultiTrajectory& traj) {
 
   cout << "Input Trajectory Table:\n";
