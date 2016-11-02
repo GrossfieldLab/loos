@@ -371,9 +371,6 @@ public:
     center_flag = !center_selection.empty();
 
 
-    if (!range_spec.empty())
-      indices = parseRangeList<uint>(range_spec);
-
     if (boost::iequals(reimage, "none"))
       reimage_mode = NONE;
     else if (boost::iequals(reimage, "normal"))
