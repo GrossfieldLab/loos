@@ -42,10 +42,45 @@ For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
 
 
-### Multi-Traj branch
+### Release 2.3.3 (beta)
 
-This is a developmental branch.  Code may or may not compile or work
-correctly.  Use at your own risk!
+Note: Checking out a beta release means you are checking out a version
+of LOOS that is under active development.  This may include build issues,
+tools not working, and undocumented "features."
+
+Major changes in LOOS include better DCD handling, support for multiple
+trajectories in some tools (and at the API level), as well as a new parser
+for specifying frame ranges for tools.
+
+LOOS now has the ability to handle DCD trajectories with
+a 0 frame count in the header (fixdcd is no longer required for this
+case).  The count will be estimated based on the model-size and trajectory
+file size.
+
+A new subclass of Trajectory has been added called MultiTrajectory.  A
+MultiTrajectory object may contain multiple pTraj's and treats them as
+one giant trajectory.  Each sub-trajectory can have its own skip and stride.
+In addition, there is a MultiTrajOptions class for handling multiple
+trajectories in a tool.
+
+The parse for specifying ranges has been upgraded to use Boost Spirit.  This
+should make it more robust.  In addition, you now no longer need to know
+the length of a trajectory to use a range.  An empty "field" will be
+filled in with the appropriate value.  For example, to skip the first 10 frames,
+then take every other frame until the end of the trajectory, use:
+     toolname -r 10:2: model.psf trajectory.dcd
+
+NOTE: The short options to subsetter have been changed to be consistent with the
+new MultiTrajOptions set of options: "-i" is used for stride and "-k" for skip.
+The long options have not changed.
+
+Additional changes to LOOS include the addition of a new
+lipid_survival tool and a multi-rmsds tool.  Proper (full) support for
+atom inequalities in Python has been addressed.  A new reimaging mode
+has been added to subsetter (--reimage=zealous) that fixes some
+issues coming from Gromacs.  The output of dibmops has been changed to
+have a "0" in bins with no data rather than "-1".  Finally, a number of
+bugs have been fixed.  See the ChangeLog for more details.
 
 
 ### RELEASE 2.3.2
