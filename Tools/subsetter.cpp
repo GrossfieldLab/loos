@@ -498,8 +498,10 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  
+
   verbose = bopts->verbosity;
+  if (verbose)
+    cout << "# " << hdr << endl;
 
   AtomicGroup model = createSystem(model_name);
   selection = sopts->selection;
