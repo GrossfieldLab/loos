@@ -104,14 +104,14 @@ namespace loos {
     };
 
   public:
-    explicit TRR(const std::string& s) : Trajectory(s), xdr_file(ifs()) {
+    explicit TRR(const std::string& s) : Trajectory(s), xdr_file(ifs.get()) {
       init();
     }
 
-    explicit TRR(const char* p) : Trajectory(p), xdr_file(ifs()) {
+    explicit TRR(const char* p) : Trajectory(p), xdr_file(ifs.get()) {
       init();
     }
-    explicit TRR(std::istream& is) : Trajectory(is), xdr_file(ifs()) {
+    explicit TRR(std::istream& is) : Trajectory(is), xdr_file(ifs.get()) {
       init();
     }
 
@@ -240,7 +240,7 @@ namespace loos {
       return(! ((xdr_file.get())->fail() || (xdr_file.get())->eof()) );
     }
 
-    void rewindImpl(void) { ifs()->clear(); ifs()->seekg(0, std::ios_base::beg); }
+    void rewindImpl(void) { ifs->clear(); ifs->seekg(0, std::ios_base::beg); }
     void seekNextFrameImpl(void) { }
     void seekFrameImpl(uint);
     void updateGroupCoordsImpl(AtomicGroup& g);

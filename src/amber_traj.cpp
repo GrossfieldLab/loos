@@ -32,29 +32,29 @@ namespace loos {
   void AmberTraj::init(void) {
     char buf[1024];
 
-    ifs()->getline(buf, 1024);
-    frame_offset = ifs()->tellg();
+    ifs->getline(buf, 1024);
+    frame_offset = ifs->tellg();
     greal x, y, z;
 
     for (uint i=0; i<_natoms; i++) {
-      *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
+      *(ifs) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
       frame.push_back(GCoord(x,y,z));
     }
 
 
     // This is probably not a good way of doing this???
-    ifs()->getline(buf, 1024);
-    unsigned long fpos = ifs()->tellg();
+    ifs->getline(buf, 1024);
+    unsigned long fpos = ifs->tellg();
 
-    ifs()->getline(buf, 1024);
-    if (ifs()->fail())
+    ifs->getline(buf, 1024);
+    if (ifs->fail())
       throw(FileOpenError(_filename, "Problem scanning Amber Trajectory"));
 
     std::stringstream ss(buf);
     double a= -1, b= -1, c= -1;
     ss >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
     if (ss.eof()) {
-      fpos = ifs()->tellg();
+      fpos = ifs->tellg();
       periodic = true;
       box = GCoord(a, b, c);
     }
@@ -64,19 +64,19 @@ namespace loos {
     // Now try to count the number of frames...
     _nframes = 1;
     double dummy;
-    while (!ifs()->fail()) {
+    while (!ifs->fail()) {
       ++_nframes;
       fpos = _nframes * frame_size + frame_offset;
-      ifs()->seekg(fpos);
-      *(ifs()) >> dummy;
+      ifs->seekg(fpos);
+      *(ifs) >> dummy;
     }
 
 
-    ifs()->clear();
-    ifs()->seekg(frame_offset + frame_size);
+    ifs->clear();
+    ifs->seekg(frame_offset + frame_size);
 
     // Punt our failure check to the end...for now...
-    if (ifs()->fail())
+    if (ifs->fail())
       throw(FileOpenError(_filename, "Cannot determine frame information for Amber trajectory"));
 
     cached_first = true;
@@ -86,7 +86,7 @@ namespace loos {
   bool AmberTraj::parseFrame(void) {
     greal x, y, z;
 
-    if (ifs()->eof())
+    if (ifs->eof())
       return(false);
 
     // It seems that it's possible that, at the end of the trajectory,
@@ -96,21 +96,21 @@ namespace loos {
     // error condition, just return a false indicating we've read past
     // the end...
 
-    for (uint i=0; i<_natoms && !(ifs()->eof()); i++) {
-      *(ifs()) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
+    for (uint i=0; i<_natoms && !(ifs->eof()); i++) {
+      *(ifs) >> std::setw(8) >> x >> std::setw(8) >> y >> std::setw(8) >> z;
       frame[i] = GCoord(x, y, z);
     }
 
-    if (ifs()->eof())
+    if (ifs->eof())
       return(false);
 
     if (periodic) {
       greal a, b, c;
-      *(ifs()) >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
+      *(ifs) >> std::setw(8) >> a >> std::setw(8) >> b >> std::setw(8) >> c;
       box = GCoord(a, b, c);
     }
 
-    if (ifs()->fail())
+    if (ifs->fail())
       throw(FileReadError(_filename, "Problem reading from Amber trajectory"));
 
     return(true);
@@ -125,8 +125,8 @@ namespace loos {
       throw(FileError(_filename, "Attempting seek frame beyond end of trajectory"));
 
 
-    ifs()->seekg(fpos);
-    if (ifs()->fail())
+    ifs->seekg(fpos);
+    if (ifs->fail())
       throw(FileError(_filename, "Cannot seek to frame"));
   }
 

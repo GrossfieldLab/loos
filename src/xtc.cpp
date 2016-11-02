@@ -372,7 +372,7 @@ namespace loos {
 
 
   bool XTC::parseFrame(void) {
-    if (ifs()->eof())
+    if (ifs->eof())
       return(false);
 
     // First, clear out existing coords...  A read error after this
@@ -426,8 +426,8 @@ namespace loos {
 
     Header h;
     
-    while (! ifs()->eof()) {
-      size_t pos = ifs()->tellg();
+    while (! ifs->eof()) {
+      size_t pos = ifs->tellg();
 
       bool ok = readFrameHeader(h);
       if (!ok) {
@@ -458,7 +458,7 @@ namespace loos {
 	    throw(FileOpenError(_filename, "XTC small system vector size is not what was expected"));
       } else {
 	  offset = 9 * block_size;
-	  ifs()->seekg(offset, std::ios_base::cur);
+	  ifs->seekg(offset, std::ios_base::cur);
 	  xdr_file.read(nbytes);
       }
       
@@ -467,11 +467,11 @@ namespace loos {
       if (nbytes % block_size != 0)
         ++nblocks;   // round up
       offset = nblocks * block_size;
-      ifs()->seekg(offset, std::ios_base::cur);
+      ifs->seekg(offset, std::ios_base::cur);
     }
 
     // Catch-all for I/O errors
-    if (ifs()->fail())
+    if (ifs->fail())
       throw(FileOpenError(_filename, "Problem scanning XTC trajectory to build frame indices"));
     
   }
@@ -481,8 +481,8 @@ namespace loos {
     if (i >= frame_indices.size())
       throw(FileError(_filename, "Requested XTC frame is out of range"));
     
-    ifs()->clear();
-    ifs()->seekg(frame_indices[i], std::ios_base::beg);
+    ifs->clear();
+    ifs->seekg(frame_indices[i], std::ios_base::beg);
   }
 
 }

@@ -30,20 +30,20 @@ namespace loos {
     char buf[512];
 
     // Read the first frame to get the # of atoms...
-    frame.read(*(ifs()));
+    frame.read(*(ifs));
     _natoms = frame.size();
     cached_first = true;
     indices.push_back(0l);
-    indices.push_back(ifs()->tellg());
+    indices.push_back(ifs->tellg());
 
     // Now count the # of END statements...
-    while (ifs()->getline(buf, sizeof(buf)))
+    while (ifs->getline(buf, sizeof(buf)))
       if (strncmp("END", buf, 3) == 0)
-        indices.push_back(ifs()->tellg());
+        indices.push_back(ifs->tellg());
 
     _nframes = indices.size() - 1;
-    ifs()->clear();
-    ifs()->seekg(indices[1]);
+    ifs->clear();
+    ifs->seekg(indices[1]);
   }
 
 
@@ -51,22 +51,22 @@ namespace loos {
     if (i >= _nframes)
       throw(FileError(_filename, "Attempting to seek to frame beyond the end of the trajectory"));
 
-    ifs()->clear();
-    ifs()->seekg(indices[i]);
-    if (ifs()->fail())
+    ifs->clear();
+    ifs->seekg(indices[i]);
+    if (ifs->fail())
       throw(FileError(_filename, "Cannot seek to requested trajectory"));
   }
 
 
   bool CCPDB::parseFrame(void) {
-    if (ifs()->eof())
+    if (ifs->eof())
       return(false);
 
     // We cheat here...  Maybe it would be better to have a PDB::clear()
     // or AtomicGroup::clear() member function???
-    // Note:  For some reason, PDB newframe(*(ifs())) doesn't parse correctly...
+    // Note:  For some reason, PDB newframe(*(ifs)) doesn't parse correctly...
     PDB newframe;
-    newframe.read(*(ifs()));
+    newframe.read(*(ifs));
     frame = newframe;
     if (frame.size() == 0)
       return(false);

@@ -28,12 +28,13 @@
 #include <vector>
 
 #include <boost/utility.hpp>
+#include <boost/lambda/lambda.hpp>
 
 #include <loos_defs.hpp>
-#include <StreamWrapper.hpp>
 #include <AtomicGroup.hpp>
 
 #include <AtomicGroup.hpp>
+
 
 namespace loos {
 
@@ -61,15 +62,30 @@ namespace loos {
    *  this.
    */
 
-  class Trajectory : public boost::noncopyable {
+  class Trajectory  {
   public:
-    Trajectory() : cached_first(false) { }
+    typedef boost::shared_ptr<std::istream>      pStream;
+    
+    
+    Trajectory() : cached_first(false), _filename("unset"), _current_frame(0) { }
 
     //! Automatically open the file named \a s
-    Trajectory(const std::string& s) : ifs(s), cached_first(false), _filename(s) { }
+    Trajectory(const std::string& s) throw(FileOpenError)
+      : cached_first(false), _filename(s), _current_frame(0)
+    {
+      setInputStream(s);
+    }
 
     //! Open using the given stream...
-    Trajectory(std::istream& fs) : ifs(fs), cached_first(false), _filename("istream") { }
+    Trajectory(std::istream& fs) : cached_first(false), _filename("istream"), _current_frame(0)
+    {
+      setInputStream(fs);
+    }
+
+
+    Trajectory(const Trajectory& t) : ifs(t.ifs), cached_first(t.cached_first), _filename(t._filename), _current_frame(t._current_frame)
+    {
+    }
 
     virtual ~Trajectory() { }
 
@@ -77,6 +93,9 @@ namespace loos {
     //! Return a string describing trajectory format
     virtual std::string description() const { return("No Description Available"); }
 
+    //! Return the stored filename
+    virtual std::string filename() const { return(_filename); }
+    
     //! # of atoms per frame
     virtual uint natoms(void) const =0;
     //! Timestep per frame
@@ -88,6 +107,7 @@ namespace loos {
     bool rewind(void) {
       cached_first = true;
       rewindImpl();
+      _current_frame = 0;
       return(parseFrame());
     }
 
@@ -147,13 +167,16 @@ namespace loos {
     //! operating as an iterator).
     void seekNextFrame(void) {
       cached_first = false;
-      seekNextFrameImpl();
+      ++_current_frame;
+      if (!atEnd())
+        seekFrameImpl(_current_frame);
     }
 
     //! Seek to a specific frame, be it in the same contiguous file or
     //! in separate files.
     void seekFrame(const uint i) {
       cached_first = false;
+      _current_frame = i;
       seekFrameImpl(i);
     }
 
@@ -169,6 +192,9 @@ namespace loos {
     bool readFrame(void) {
       bool b = true;
 
+      if (atEnd())
+        return false;
+      
       if (!cached_first) {
         seekNextFrame();
         b = parseFrame();
@@ -193,12 +219,39 @@ namespace loos {
       return(b);
     }
 
+    bool atEnd() const {
+      return(_current_frame >= nframes());
+    }
+
+    uint currentFrame() const {
+      return(_current_frame);
+    }
+
   protected:
-    StreamWrapper ifs;
+    void setInputStream(const std::string& fname) throw(FileOpenError)
+    {
+      _filename = fname;
+      ifs = pStream(new std::fstream(fname.c_str(), std::ios_base::in | std::ios_base::binary));
+      if (!ifs->good())
+        throw(FileOpenError(fname));
+    }
+
+
+    void setInputStream(std::istream& fs)
+    {
+      _filename = "istream";
+      ifs = pStream(&fs, boost::lambda::_1);    // lambda function makes a NOOP deallocator
+    }
+
+    
+
+
+    pStream ifs;
     bool cached_first;    // Indicates that the first frame is cached by
                           // the subclass...
 
     std::string _filename;   // Remember filename (if passed)
+    uint _current_frame;
     
   private:
     

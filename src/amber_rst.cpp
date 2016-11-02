@@ -35,15 +35,15 @@ namespace loos {
     greal x, y, z;
 
     // Skip the title...
-    std::getline(*(ifs()), buf);
-    if (ifs()->eof())
+    std::getline(*(ifs), buf);
+    if (ifs->eof())
       return(false);   //  Catch the initial EOF...
 
     // Check the # of atoms...
     // Note: the Amber spec says that this line should contain both
     // the number of atoms and the current time, but some restart
     // files "in the wild" only have the number of atoms...
-    std::getline(*(ifs()), buf);
+    std::getline(*(ifs), buf);
     std::istringstream iss(buf);
     uint na;
     iss >> na;
@@ -57,8 +57,8 @@ namespace loos {
     frame.reserve(na);
 
     uint i;
-    for (i=0; i<_natoms && !(ifs()->eof()); ++i) {
-      *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
+    for (i=0; i<_natoms && !(ifs->eof()); ++i) {
+      *(ifs) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
       frame[i] = GCoord(x, y, z);
     }
 
@@ -67,18 +67,18 @@ namespace loos {
 
     // Probe for velocities or periodic box...
     greal a, b, c;
-    *(ifs()) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
-    if (ifs()->eof())
+    *(ifs) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
+    if (ifs->eof())
       return(true);
 
     // Finish reading the putative box...
-    *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
+    *(ifs) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
     // Check to see if there are more numbers...  If so, implies we're
     // in velocities...
-    *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
+    *(ifs) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
-    if (ifs()->eof()) {
+    if (ifs->eof()) {
       periodic = true;
       box = GCoord(a, b, c);
       return(true);
@@ -87,14 +87,14 @@ namespace loos {
     // This means we probably have velocities, so now we have to skip
     // the appropriate # of atoms and try again for the box...
 
-    for (uint i=3; i<_natoms && !(ifs()->eof()); ++i)
-      *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
+    for (uint i=3; i<_natoms && !(ifs->eof()); ++i)
+      *(ifs) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
     // Now read the box in...
-    *(ifs()) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
-    *(ifs()) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
+    *(ifs) >> std::setw(12) >> a >> std::setw(12) >> b >> std::setw(12) >> c;
+    *(ifs) >> std::setw(12) >> x >> std::setw(12) >> y >> std::setw(12) >> z;
 
-    if (ifs()->eof() || ifs()->fail())
+    if (ifs->eof() || ifs->fail())
       return(true);
 
     periodic = true;

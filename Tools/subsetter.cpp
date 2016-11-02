@@ -40,6 +40,7 @@
 
 #include <loos.hpp>
 #include <boost/regex.hpp>
+#include <boost/lambda/lambda.hpp>
 #include <sstream>
 
 #include <cstdlib>
@@ -316,8 +317,8 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("updates", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
-      ("stride,S", po::value<uint>(&stride)->default_value(1), "Step through this number of frames in each trajectory")
-      ("skip", po::value<uint>(&skip)->default_value(0), "Skip these frames at start of each trajectory")
+      ("stride,i", po::value<uint>(&stride)->default_value(1), "Step through this number of frames in each trajectory")
+      ("skip,k", po::value<uint>(&skip)->default_value(0), "Skip these frames at start of each trajectory")
       ("range,r", po::value<string>(&range_spec)->default_value(""), "Frames of the DCD to use (list of Octave-style ranges)")
       ("box,B", po::value<string>(&box_spec), "Override any periodic box present with this one (a,b,c)")
       ("reimage", po::value<string>(&reimage)->default_value("none"), "Reimage mode (none, normal, aggressive, zealous, extreme)")
@@ -369,9 +370,6 @@ public:
 
     center_flag = !center_selection.empty();
 
-
-    if (!range_spec.empty())
-      indices = parseRangeList<uint>(range_spec);
 
     if (boost::iequals(reimage, "none"))
       reimage_mode = NONE;
@@ -440,41 +438,43 @@ public:
 
 
 
+void showTrajectoryTable(MultiTrajectory& traj) {
 
-uint getNumberOfFrames(const string& fname, AtomicGroup& model) {
-  pTraj traj = createTrajectory(fname, model);
-  return(traj->nframes());
-}
+  cout << "Input Trajectory Table:\n";
 
+  cout << boost::format("%5s %8s %8s %8s %8s %s\n")
+    % "Traj" % "Start" % "End" % "N" % "Orig" % "Name";
 
+  cout << boost::format("%5s %8s %8s %8s %8s %s\n")
+    % "----" % "-----" % "---" % "-" % "----" % "----";
 
-// Build the mapping of global frame indices into individual files,
-// and into the frame number within each file...  Also returns the
-// total number of frames in the composite trajectory.
-
-uint bindFilesToIndices(AtomicGroup& model) {
-  uint total_frames = 0;
-
-  for (uint j=0; j<traj_names.size(); ++j)  {
-    uint n = getNumberOfFrames(traj_names[j], model);
-    if (verbose > 1)
-      cout << boost::format("Trajectory \"%s\" has %d frames\n") % traj_names[j] % n;
-
-    if (n <= skip) {
-      cerr << boost::format("Warning- skipping trajectory \"%s\" which has only %d frames\n") % traj_names[j] % n;
-      continue;
+  uint start_cnt = 0;
+  uint j = 0;
+  for (uint i=0; i<traj.size(); ++i) {
+    uint n = traj.nframes(i);
+    if (n == 0)
+      cout << boost::format("%5s %8s %8s %8d %8d %s (SKIPPED)\n")
+        % "N/A"
+        % "N/A"
+        % "N/A"
+        % n
+        % traj[i]->nframes()
+        % traj[i]->filename();
+    else
+    {
+      cout << boost::format("%5d %8d %8d %8d %8d %s\n")
+        % j
+        % start_cnt
+        % (start_cnt + n - 1)
+        % n
+        % traj[i]->nframes()
+        % traj[i]->filename();
+      ++j;
     }
-
-
-    total_frames += (n-skip);
-    for (uint i=skip; i<n; ++i) {
-      file_binding.push_back(j);
-      local_indices.push_back(i);
-    }
+    start_cnt += n;
   }
-
-  return(total_frames);
 }
+
 
 // @endcond
 
@@ -498,8 +498,10 @@ int main(int argc, char *argv[]) {
     exit(-1);
   }
 
-  
+
   verbose = bopts->verbosity;
+  if (verbose)
+    cout << "# " << hdr << endl;
 
   AtomicGroup model = createSystem(model_name);
   selection = sopts->selection;
@@ -527,15 +529,14 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  uint total_frames = bindFilesToIndices(model);
+  MultiTrajectory mtraj(traj_names, model, skip, stride);
+  if (verbose)
+    showTrajectoryTable(mtraj);
 
-  // If no frame ranges were specified, fill in all possible frames,
-  // using the stride (if given)...
-  if (indices.empty()) {
-    stride = (!stride) ? 1 : stride;
-    for (uint i=0; i<total_frames; i += stride)
-      indices.push_back(i);
-  }
+  // Wrap since some LOOS tools will expect a pTraj rather than a traj...
+  pTraj ptraj(&mtraj, boost::lambda::_1);
+
+  indices = assignTrajectoryFrames(ptraj, topts->range_spec, 0, 1);
 
   pTrajectoryWriter trajout = otopts->createTrajectory(out_name);
   if (trajout->hasComments())
@@ -543,9 +544,6 @@ int main(int argc, char *argv[]) {
 
   bool first = true;  // Flag to pick off the first frame for a
                       // reference structure
-  pTraj traj;
-  uint current = 0;   // Track the index of the current trajectory
-                      // we're reading from...
 
   // If reimaging, break out the subsets to iterate over...
   vector<AtomicGroup> molecules;
@@ -572,22 +570,10 @@ int main(int argc, char *argv[]) {
     slayer.start();
 
   // Iterate over all requested global-frames...
-  vector<uint>::iterator vi;
-  for (vi = indices.begin(); vi != indices.end(); ++vi) {
+  for (vector<uint>::const_iterator vi = indices.begin(); vi != indices.end(); ++vi) {
 
-    // Have we switched to a new file??
-    // Note: Because of the way file bindings are setup, it is
-    // possible to get an out-of-range index prior to trying to read
-    // the trajectory frame...  This is solved by using the at()
-    // method here.
-    if (file_binding.at(*vi) != current || first) {
-      current = file_binding[*vi];
-      traj = createTrajectory(traj_names[current], model);
-    }
-
-    // Read the apropriate local frame...
-    traj->readFrame(local_indices[*vi]);
-    traj->updateGroupCoords(model);
+    mtraj.readFrame(*vi);
+    mtraj.updateGroupCoords(model);
 
     // Handle Periodic boundary conditions...
     if (box_override) {
@@ -609,59 +595,59 @@ int main(int argc, char *argv[]) {
           for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
             mol->mergeImage();
         }
-	GCoord centroid = centered[0]->coords();
-	model.translate(-centroid);
-	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-	  mol->reimage();
-	
-	for (uint i=0; i<2; ++i) {
-	  centroid = centered.centroid();
-	  model.translate(-centroid);
-	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-	    mol->reimage();
-	}
+        GCoord centroid = centered[0]->coords();
+        model.translate(-centroid);
+        for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+          mol->reimage();
+
+        for (uint i=0; i<2; ++i) {
+          centroid = centered.centroid();
+          model.translate(-centroid);
+          for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+            mol->reimage();
+        }
 
       } else if (reimage_mode == EXTREME) {
-	
-	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
-	  GCoord c = (*mol)[0]->coords();
-	  mol->translate(-c);
-	  mol->reimageByAtom();
-	  mol->translate(c);
-	}
 
-	GCoord last_c = centered.centerOfMass();
-	bool first = true;
-	uint si;
-	for (si = 0; si<extreme_max_iters; ++si) {
-	  GCoord c = centered.centerOfMass();
-	  if (!first) {
-	    if (c.distance(last_c) < extreme_threshold)
-	      break;
-	  } else
-	    first = false;
-	  last_c = c;
-	  model.translate(-c);
-	  for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-	    mol->reimage();
-	}
+        for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
+          GCoord c = (*mol)[0]->coords();
+          mol->translate(-c);
+          mol->reimageByAtom();
+          mol->translate(c);
+        }
 
-	extreme_delta += (last_c.distance(centered.centerOfMass()));
-	GCoord c = centered.centroid();
-	model.translate(-c);
-	extreme_iters += si;
+        GCoord last_c = centered.centerOfMass();
+        bool first = true;
+        uint si;
+        for (si = 0; si<extreme_max_iters; ++si) {
+          GCoord c = centered.centerOfMass();
+          if (!first) {
+            if (c.distance(last_c) < extreme_threshold)
+              break;
+          } else
+            first = false;
+          last_c = c;
+          model.translate(-c);
+          for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+            mol->reimage();
+        }
+
+        extreme_delta += (last_c.distance(centered.centerOfMass()));
+        GCoord c = centered.centroid();
+        model.translate(-c);
+        extreme_iters += si;
 
       } else if (reimage_mode == NORMAL){
-	for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
-	  mol->mergeImage();
+        for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol)
+          mol->mergeImage();
       } else {
-	cerr << "Error- unknown reimage mode (" << reimage_mode << ") encountered.\n";
-	exit(-10);
+        cerr << "Error- unknown reimage mode (" << reimage_mode << ") encountered.\n";
+        exit(-10);
       }
 
       if (!post_center_selection.empty()) {
-	GCoord postcenter = postcentered.centroid();
-	model.translate(-postcenter);
+        GCoord postcenter = postcentered.centroid();
+        model.translate(-postcenter);
       }
 
     }
@@ -675,7 +661,7 @@ int main(int argc, char *argv[]) {
 
       if (selection != "all")
         pdb.pruneBonds();
-      
+
       string out_pdb_name = out_name + ".pdb";
       ofstream ofs(out_pdb_name.c_str());
       ofs << pdb;
@@ -694,6 +680,5 @@ int main(int argc, char *argv[]) {
     double avg = static_cast<double>(extreme_iters) / indices.size();
     cerr << boost::format("Average extreme reimage iters = %f\n") % avg;
     cerr << boost::format("Average extreme reimage delta = %f\n") % (extreme_delta / indices.size());
-    
   }
 }

@@ -170,7 +170,7 @@ namespace loos {
    *
    */
   template<typename T>
-  std::vector<T> parseRange(const std::string& text) {
+  std::vector<T> parseRange(const std::string& text, const T endpoint = 0) {
     T a;
     T b;
     T c;
@@ -184,16 +184,23 @@ namespace loos {
       return(indices);
     }
 
-    is >> sep;
+    sep = is.get();
     bool is_negative = false;
-    if (is.peek() == '-') {
-      is_negative = true;
+
+    if (is.peek() == '*') {
+      b = endpoint;
       is.get();
+    } else {
+      if (is.peek() == '-') {
+        is_negative = true;
+        is.get();
+      }
+      is >> b;
+      if (is.fail() || sep != ':')
+        throw(ParseError("Could not parse range (1) " + text));
     }
-    is >> b;
-    if (is.fail() || sep != ':')
-      throw(ParseError("Could not parse range " + text));
-    
+
+    sep = is.get();
     if (is.eof()) {
       c = 1;
       if (is_negative)
@@ -202,10 +209,17 @@ namespace loos {
       is_negative = a > b;
         
     } else {
+      if (sep != ':')
+        throw(ParseError("Could not parse range (2) " + text));
       c = b;
-        is >> sep >> b;
-        if (is.fail() || sep != ':')
-          throw(ParseError("Could not parse range " + text));
+      if (is.peek() == '*') {
+        b = endpoint;
+        is.get();
+      } else {
+        is >> b;
+        if (is.fail())
+          throw(ParseError("Could not parse range (3) " + text));
+      }
     }
 
     // Some input validation...
@@ -245,7 +259,7 @@ namespace loos {
    * the caller.
    */
   template<typename T>
-  std::vector<T> parseRangeList(const std::string& text) {
+  std::vector<T> parseRangeList(const std::string& text, const T endpoint = 0) {
     std::vector<std::string> terms;
     std::set<T> indices;
     std::insert_iterator< std::set<T> > ii(indices, indices.begin());
@@ -255,7 +269,7 @@ namespace loos {
     for (ci = terms.begin(); ci != terms.end(); ci++) {
       if (ci->empty())
         continue;
-      std::vector<T> result = parseRange<T>(*ci);
+      std::vector<T> result = parseRange<T>(*ci, endpoint);
       std::copy(result.begin(), result.end(), ii);
     }
     std::vector<T> results(indices.size());
@@ -265,14 +279,14 @@ namespace loos {
 
 
   //! Parses a list of Octave-style range specifiers (for compatability)
-  std::vector<int> parseRangeList(const std::string&);
+  std::vector<int> parseRangeList(const std::string&, const int endpoint = 0);
 
   //! Parses a list of Octave-style ranges taken from a vector of strings
   template<typename T>
-  std::vector<T> parseRangeList(const std::vector<std::string>& ranges) {
+  std::vector<T> parseRangeList(const std::vector<std::string>& ranges, const T endpoint = 0) {
     std::ostringstream os;
     std::copy(ranges.begin(), ranges.end(), std::ostream_iterator<std::string>(os, ","));
-      return(parseRangeList<T>(os.str()));
+    return(parseRangeList<T>(os.str(), endpoint));
   }
 
   //! Applies a string-based selection to an atomic group...
@@ -396,6 +410,21 @@ namespace loos {
 
   template<> std::string vectorAsStringWithCommas(const std::vector<std::string>& v);
 
+
+  //! Return a vector containing only the unique elements of the input vector
+  template <typename T>
+  std::vector<T> uniquifyVector(const std::vector<T>& list) {
+    std::set<T> indices;
+    std::insert_iterator< std::set<T> > ii(indices, indices.begin());
+    std::copy(list.begin(), list.end(), ii);
+
+    std::vector<T> uniques(indices.size());
+    std::copy(indices.begin(), indices.end(), uniques.begin());
+    return uniques;
+  }
+
+
+  
 
   long availableMemory();
   

@@ -23,6 +23,7 @@
 #include <utils_structural.hpp>
 #include <OptionsFramework.hpp>
 
+#include <boost/lambda/lambda.hpp>
 
 namespace loos {
   namespace OptionsFramework {
@@ -408,10 +409,93 @@ namespace loos {
 
     
     std::vector<uint> TrajectoryWithFrameIndices::frameList() const {
-      return(assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride));
+      std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride);
+      return uniquifyVector(indices);
+    }
+
+    // -------------------------------------------------------
+
+    void MultiTrajOptions::addGeneric(po::options_description& opts) {
+      std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
+      std::string trajtypes = "Trajectory types:\n" + availableTrajectoryFileTypes();
+
+      opts.add_options()
+        ("modeltype", po::value<std::string>(), modeltypes.c_str())
+        ("skip,k", po::value<uint>(&skip)->default_value(skip), "Number of frames to skip in sub-trajectories")
+        ("stride,i", po::value<uint>(&stride)->default_value(stride), "Step through sub-trajectories by this amount")
+        ("range,r", po::value<std::string>(&frame_index_spec), "Which frames to use in composite trajectory");
+    }
+
+    void MultiTrajOptions::addHidden(po::options_description& opts) {
+      opts.add_options()
+        ("model", po::value<std::string>(&model_name), "Model filename")
+        ("traj", po::value< std::vector< std::string > >(&traj_names), "Trajectory filenames");
+    }
+    
+    void MultiTrajOptions::addPositional(po::positional_options_description& pos) {
+      pos.add("model", 1);
+      pos.add("traj", -1);
+    }
+
+    bool MultiTrajOptions::check(po::variables_map& map) {
+      return( model_name.empty() || traj_names.empty() );
+    }
+
+    bool MultiTrajOptions::postConditions(po::variables_map& map) {
+      if (map.count("modeltype")) {
+        model_type = map["modeltype"].as<std::string>();
+        model = createSystem(model_name, model_type);
+      } else
+        model = createSystem(model_name);
+
+      mtraj = MultiTrajectory(traj_names, model, skip, stride);
+      trajectory = pTraj(&mtraj, boost::lambda::_1);
+
+      return true;
     }
 
 
+    std::vector<uint> MultiTrajOptions::frameList() const {
+      std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, 0, 1);
+      return uniquifyVector(indices);
+    }
+
+    std::string MultiTrajOptions::help() const { return("model trajectory [trajectory ...]"); }
+    std::string MultiTrajOptions::print() const {
+      std::ostringstream oss;
+      oss << boost::format("model='%s', modeltype='%s', skip=%d, stride=%d, trajs=(")
+        % model_name % model_type % skip % stride;
+      for (uint i=0; i<traj_names.size(); ++i)
+        oss << "'" << traj_names[i] << "'" << (i < traj_names.size()-1 ? "," : "");
+      oss << ")";
+      return oss.str();
+    }
+
+
+    std::string MultiTrajOptions::trajectoryTable() const {
+      std::ostringstream oss;
+      if (!frame_index_spec.empty())
+        oss << "# Note- composite frame range used was '" << frame_index_spec << "'\n";
+      oss << "# traj\tstart\tend\tfilename\n";
+      uint start_cnt = 0;
+      uint j = 0;
+      for (uint i=0; i<mtraj.size(); ++i) {
+        uint n = mtraj.nframes(i);
+        if (n == 0)
+          oss << boost::format("# Warning- '%s' was skipped due to insufficient frames\n") % mtraj[i]->filename();
+        else {
+          oss << boost::format("# %d\t%d\t%d\t%s\n")
+            % j
+            % start_cnt
+            % (start_cnt + n - 1)
+            % mtraj[i]->filename();
+          ++j;
+        }
+        start_cnt += n;
+      }
+
+      return oss.str();
+    }
 
     // -------------------------------------------------------
     

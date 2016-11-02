@@ -32,7 +32,6 @@
 
 #include <loos_defs.hpp>
 
-#include <StreamWrapper.hpp>
 #include <Trajectory.hpp>
 
 
@@ -174,7 +173,7 @@ namespace loos {
     bool readCrystalParams(void);
     bool readCoordLine(std::vector<float>& v);
 
-    void endianMatch(StreamWrapper& fsw);
+    void endianMatch(pStream& fsw);
 
     // For reading F77 I/O
     unsigned int readRecordLen(void);

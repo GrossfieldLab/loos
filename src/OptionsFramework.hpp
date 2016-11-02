@@ -28,6 +28,7 @@
 #include <boost/program_options.hpp>
 #include <AtomicGroup.hpp>
 #include <Trajectory.hpp>
+#include <MultiTraj.hpp>
 #include <sfactories.hpp>
 #include <boost/algorithm/string.hpp>
 #include <exceptions.hpp>
@@ -548,6 +549,64 @@ namespace loos {
       //! The trajectory
       pTraj trajectory;
 
+    private:
+      void addGeneric(po::options_description& opts);
+      void addHidden(po::options_description& opts);
+
+      void addPositional(po::positional_options_description& pos);
+
+      bool check(po::variables_map& map);
+
+      bool postConditions(po::variables_map& map);
+
+      std::string help() const;
+      std::string print() const;
+    };
+
+
+
+    // -------------------------------------------------
+    
+
+
+
+    //! Multiple trajectories as one trajectory via MultiTrajectory
+    /**
+     *
+     * Handles multiple trajectories as one large virtual trajectory via
+     * a MultiTrajectory object.  Skip and stride are applied to each
+     * contained sub-trajectory, not the overall trajectory.
+     *
+     * Internally, it instantiates a MultiTrajectory object in mtraj, and
+     * then wraps it in a pTraj that is set to not deallocate the source
+     * object.
+     *
+     **/
+    class MultiTrajOptions : public OptionsPackage {
+    public:
+      MultiTrajOptions() : skip(0), stride(1) { }
+
+
+      uint skip;
+      uint stride;
+      std::vector< std::string > traj_names;
+      std::string model_name, model_type, frame_index_spec;
+
+      std::vector<uint> frameList() const;
+      
+      //! Model that describes the trajectory
+      AtomicGroup model;
+
+      //! The original collection of trajectories
+      MultiTrajectory mtraj;
+      
+      //! The trajectory
+      pTraj trajectory;
+
+      //! A table of information about the contained trajectories
+      std::string trajectoryTable() const;
+
+      
     private:
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);

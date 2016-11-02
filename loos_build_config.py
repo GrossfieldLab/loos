@@ -21,7 +21,7 @@
 
 loos_version = '2.3.3-beta'
 min_boost_version = '1_36'
-required_boost_libraries = ('regex', 'system', 'program_options', 'thread')
+required_boost_libraries = ('regex', 'system', 'program_options', 'thread', 'filesystem')
 
 min_swig_version = '2.0'
 
@@ -29,7 +29,7 @@ host_type = 'unknown'
 linux_type = 'unknown'
 suffix = 'so'
 
-
+versions = {}
 
 # List of packages to build and install
 # The keywords become build targets for SCons

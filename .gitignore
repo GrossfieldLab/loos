@@ -32,6 +32,11 @@ docs.built
 
 # Emacs cruft
 *~
+compile_commands.json
+.dir-locals.el
+GPATH
+GRTAGS
+GTAGS
 
 # Vi cruft
 *.swp
@@ -99,6 +104,7 @@ Tools/frame2pdb
 Tools/center-molecule
 Tools/perturb-structure
 Tools/rmsds
+Tools/multi-rmsds
 Tools/residue-contact-map
 Tools/paxes
 Tools/model-meta-stats
