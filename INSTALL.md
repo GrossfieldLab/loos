@@ -312,6 +312,13 @@ Any non-standard locations for python modules can be specified using
 the PYTHON_PATH option to scons:
     scons PYTHON_PATH=$HOME/local/lib/python2.7
 
+#### SciPy
+
+In addition, several packages (notably Voronoi) and a few tools (e.g.
+cluster-structures.py) depend on scipy.  This can be installed from most
+package managers on linux, or you can download it from www.scipy.org.  It's not
+listed as a dependency, so if you don't want to install it, almost everything 
+will still work as usual; only the few tools that actually use it will fail.  
 
 ### Typical Problems
 
