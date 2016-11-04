@@ -199,7 +199,7 @@ first,
 
 Then install the packages,
 
-    sudo yum install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy
+    sudo yum install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
 
 
 
@@ -214,7 +214,7 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 
 ## Ubuntu, Debian, Mint
 
-    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy
+    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy python-scipy
 
 ---
 
@@ -227,7 +227,7 @@ be ignored by the LOOS build.
 
 Using zypper (or your favorite package manager), install the following:
 
-    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python-numpy-devel
+    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python-numpy-devel python-scipy
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
