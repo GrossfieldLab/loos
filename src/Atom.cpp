@@ -185,6 +185,7 @@ namespace loos {
 
   void Atom::init() {
     _id = 1;
+    _index = 0;
     _resid = 1;
     _atomic_number = -1;
     _b = 0.0;
