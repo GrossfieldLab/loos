@@ -142,9 +142,9 @@ namespace loos {
      * updateGroupCoords() normally assumes that the passed
      * AtomicGroup has valid indices.  As a safety check, the
      * createTrajectory() function will check that the AtomicGroup
-     * passed to it has indices.  Turning on debugging
-     * (i.e. the DEBUG compile-flag) will force updateGroupCoords() to
-     * validate the passed AtomicGroup every time, with
+     * passed to it has indices.  Only the first atom is tested,
+     * unless the DEBUG compile-flig is turned on, which will force updateGroupCoords() to
+     * validate the entire AtomicGroup every time, with
      * correspondingly poorer performance.
      *
      * Also note that the declaration of this function has changed in
@@ -156,7 +156,11 @@ namespace loos {
     {
 #if defined(DEBUG)
       if (! g.allHaveProperty(Atom::indexbit))
-	throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
+    throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
+#else
+      if (! g.empty())
+        if (! g[0]->checkProperty(Atom::indexbit))
+          throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
 #endif
 
       updateGroupCoordsImpl(g);
