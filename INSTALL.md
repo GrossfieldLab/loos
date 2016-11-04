@@ -182,9 +182,11 @@ LOOS has been tested on Fedora (64-bit).  We assume you already have
 the basic compiler tools installed (i.e. g++).  You will need to
 install scons, boost, and atlas:
 
-    sudo dnf install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy
+    sudo dnf install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
 
-
+In Fedora 24, python2 and python3 are both supported, and the package names
+have been changed to reflect that.  As a result, "numpy" should instead be
+"python2-numpy" and "scipy" should be "python2-scipy".  
 
 ---
 
@@ -314,11 +316,12 @@ the PYTHON_PATH option to scons:
 
 #### SciPy
 
-In addition, several packages (notably Voronoi) and a few tools (e.g.
+Several packages (notably Voronoi) and a few tools (e.g.
 cluster-structures.py) depend on scipy.  This can be installed from most
-package managers on linux, or you can download it from www.scipy.org.  It's not
-listed as a dependency, so if you don't want to install it, almost everything 
-will still work as usual; only the few tools that actually use it will fail.  
+package managers on linux (see distro-specific comments above), or you can
+download it from www.scipy.org.  If you don't want to install it, almost
+everything will still work as usual, and the few tools that do use it
+will fail at startup.  
 
 ### Typical Problems
 
