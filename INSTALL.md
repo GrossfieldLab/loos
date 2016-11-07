@@ -3,7 +3,7 @@
                    | LOOS    | PyLOOS  |
 Operating System   | Support | Support | Notes
 ----------------   | ------- | ------- | -----
-Fedora 17          | uns     | yes     | Unsupported
+Fedora 17          | yes     | yes     | Unsupported
 Fedora 18          | yes     | yes     | Deprecated
 Fedora 19          | yes     | yes     |
 Fedora 20          | yes     | yes     |
@@ -22,15 +22,15 @@ Centos 6.7         | yes     | yes     | See OS notes
 Centos 7           | yes     | yes     | See OS notes
 OpenSUSE 12        | yes     | yes     | See OS notes
 OpenSUSE 13        | yes     | yes     |
-Manjaro 0.8        | nus     | yes     | Unsupported
-Mint 17            | uns     | yes     | Unsupported
+Manjaro 0.8        | yes     | yes     | Unsupported
+Mint 17            | yes     | yes     | Unsupported
 Mint 18            | yes     | yes     | 
-Slackware 14.1     | uns     | yes     | Unsupported
-Windows 7 (Cygwin) | uns     | no      | Unsupported
+Slackware 14.1     | yes     | yes     | Unsupported
+Windows 7 (Cygwin) | yes     | no      | Unsupported
 MacOS 10.11        | yes     | yes     | See OS notes
 
 
-* Deprecated: We no longer test this configuration, but it may still work
+* Deprecated: We used to support thsi configuration, but no longer test it.  It may still work.
 * Unsupported: We have built LOOS in the past using this configuration, but do not
   regularly test it and provide no direct support for using it.
 
