@@ -1,38 +1,38 @@
 # Operating System Compatibility
 
-
-Operating System | LOOS Support | PyLOOS Support | Notes
----------------- | ------------ | -------------- | -----
-Fedora 17        | yes          | yes            | Deprecated
-Fedora 18        | yes          | yes            | Deprecated
-Fedora 19        | yes          | yes            |
-Fedora 20        | yes          | yes            |
-Fedora 21        | yes          | yes            |
-Fedora 22        | yes          | yes            |
-Fedora 23        | yes          | yes            |
-Fedora 24        | yes          | yes            |
-Ubuntu 12.04 LTS | yes          | yes            |
-Ubuntu 14.04 LTS | yes          | yes            |
-Ubuntu 15.04     | yes          | yes            |
-Ubuntu 15.10     | yes          | yes            |
-Ubuntu 16.04 LTS | yes          | yes            |
-Debian 7.8       | yes          | yes            |
-Debian 8.1       | yes          | yes            |
-Centos 6.7       | yes          | yes            | See OS notes
-Centos 7         | yes          | yes            | See OS notes
-OpenSUSE 12	 | yes		| yes		 | See OS notes
-OpenSUSE 13	 | yes		| yes		 |
-Manjaro 0.8	 | yes		| yes		 | Unsupported
-Mint 17		 | yes		| yes		 | Unsupported
-Mint 18		 | yes		| yes		 | 
-Slackware 14.1	 | yes		| yes		 | Unsupported
-Windows 7 (Cygwin) | yes	| no		 | Unsupported
-MacOS 10.11	 | yes		| yes		 | See OS notes
+                   | LOOS    | PyLOOS  |
+Operating System   | Support | Support | Notes
+----------------   | ------- | ------- | -----
+Fedora 17          | uns     | yes     | Unsupported
+Fedora 18          | yes     | yes     | Deprecated
+Fedora 19          | yes     | yes     |
+Fedora 20          | yes     | yes     |
+Fedora 21          | yes     | yes     |
+Fedora 22          | yes     | yes     |
+Fedora 23          | yes     | yes     |
+Fedora 24          | yes     | yes     |
+Ubuntu 12.04 LTS   | yes     | yes     |
+Ubuntu 14.04 LTS   | yes     | yes     |
+Ubuntu 15.04       | yes     | yes     |
+Ubuntu 15.10       | yes     | yes     |
+Ubuntu 16.04 LTS   | yes     | yes     |
+Debian 7.8         | yes     | yes     |
+Debian 8.1         | yes     | yes     |
+Centos 6.7         | yes     | yes     | See OS notes
+Centos 7           | yes     | yes     | See OS notes
+OpenSUSE 12        | yes     | yes     | See OS notes
+OpenSUSE 13        | yes     | yes     |
+Manjaro 0.8        | nus     | yes     | Unsupported
+Mint 17            | uns     | yes     | Unsupported
+Mint 18            | yes     | yes     | 
+Slackware 14.1     | uns     | yes     | Unsupported
+Windows 7 (Cygwin) | uns     | no      | Unsupported
+MacOS 10.11        | yes     | yes     | See OS notes
 
 
 * Deprecated: We no longer test this configuration, but it may still work
 * Unsupported: We have built LOOS in the past using this configuration, but do not
-  regularly test it.
+  regularly test it and provide no direct support for using it.
 
 
 
@@ -41,7 +41,7 @@ MacOS 10.11	 | yes		| yes		 | See OS notes
 ## For the Impatient
 
 
-				   
+                   
 
 LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
 refer to the OS-specific instructions below for more details.  For general
@@ -77,14 +77,14 @@ install| Install library, tools, PyLOOS, documentation, and all Packages
 
 ### Available Packages (also build targets)
 
-Name | Description
----- | -----------
-ENM	| Elastic Network Models
-HBonds	| Hydrogen Bonds Analysis
-Conv	| Convergence Analysis
-Density	| Density/3D Histogram Tools
-User	| User-created tools
-Python	| PyLOOS scripts
+Name    | Description
+------  | -----------
+ENM     | Elastic Network Models
+HBonds  | Hydrogen Bonds Analysis
+Conv    | Convergence Analysis
+Density | Density/3D Histogram Tools
+User    | User-created tools
+Python  | PyLOOS scripts
 
 
 ### PyLOOS 
@@ -182,11 +182,18 @@ LOOS has been tested on Fedora (64-bit).  We assume you already have
 the basic compiler tools installed (i.e. g++).  You will need to
 install scons, boost, and atlas:
 
-    sudo dnf install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
+    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig python2-numpy python2-scipy
 
-In Fedora 24, python2 and python3 are both supported, and the package names
-have been changed to reflect that.  As a result, "numpy" should instead be
-"python2-numpy" and "scipy" should be "python2-scipy".  
+LOOS/PyLOOS only supports Python 2, so you must specify which version of numpy and scipy to use for
+Fedora 24.  For Fedora 23 and older, use the following:
+
+    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
+
+### Documentation
+
+To build the documentation, you will also require doxygen and graphviz,
+
+   sudo dnf install doxygen graphviz
 
 ---
 
@@ -195,12 +202,16 @@ have been changed to reflect that.  As a result, "numpy" should instead be
 LOOS has been tested with CentOS 6 and 7 (64 bit).  You will need to use the EPEL repo
 first,
 
-     sudo yum install epel-release
+    sudo yum install epel-release
 
 Then install the packages,
 
-    sudo yum install scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
+    sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
 
+### Documentation
+
+To build the documentation, also install:
+   sudo yum install doxygen graphviz
 
 
 ### PyLOOS
@@ -215,6 +226,11 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 ## Ubuntu, Debian, Mint
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy python-scipy
+
+### Documentation
+
+To build the documentation:
+   sudo apt-get install doxygen graphviz
 
 ---
 
@@ -233,6 +249,11 @@ You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
+### Documentation
+
+To build the documentation:
+    sudo zypper install doxygen graphviz
+
 ### OpenSUSE 12
 
 The package-manager installed scons is too old.  Download and install SCons
@@ -242,7 +263,7 @@ The package-manager installed scons is too old.  Download and install SCons
 
 ## MacOS
 
-### IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS !!
+### IMPORTANT NOTE FOR MACOS 10.11+ USERS !!
 
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
@@ -317,11 +338,9 @@ the PYTHON_PATH option to scons:
 #### SciPy
 
 Several packages (notably Voronoi) and a few tools (e.g.
-cluster-structures.py) depend on scipy.  This can be installed from most
-package managers on linux (see distro-specific comments above), or you can
-download it from www.scipy.org.  If you don't want to install it, almost
-everything will still work as usual, and the few tools that do use it
-will fail at startup.  
+cluster-structures.py) depend on scipy.  For recent version of MacOS,
+both Scipy should already be installed.  If not, you can always
+download it from www.scipy.org.
 
 ### Typical Problems
 
