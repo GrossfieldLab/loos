@@ -28,6 +28,8 @@
 #include <vector>
 #include <string>
 
+#include <loos_defs.hpp>
+
 namespace loos {
 
   std::vector<uint> parseIndexRange(const std::string& input, const uint maxsize);
