@@ -131,12 +131,13 @@ namespace loos {
     std::string PDBelement(void) const;
     void PDBelement(const std::string);
 
+
+#if !defined(SWIG)
     //! Returns a const ref to internally stored coordinates.
     //! This returns a const ref mainly for efficiency, rather than
     //! copying the coords...
     const GCoord& coords(void) const;
 
-#if !defined(SWIG)
     //! Returns a writable ref to the internally stored coords.
     /** This can cause problems since we track whether the coords are
      * set or not via the bitmask.  We assume that if you're accessing
@@ -144,6 +145,13 @@ namespace loos {
      * bit flagging coords is set automatically.
      */
     GCoord& coords(void);
+
+#else // !defined(SWIG)
+
+    // For python, make sure to return a copy (not a ref), otherwise we
+    // get memory errors...
+    GCoord coords(void) { return(_coords); }
+
 #endif // !defined(SWIG)
 
     //! Sets the coords to \a c
