@@ -44,39 +44,26 @@
     return(buf);
   }
 
-  loos::Coord<double> __div__(const double d) {
+  loos::Coord<double> __div__(const double d) const {
     return( *$self / d);
   }
 
-  loos::Coord<double> __mul__(const double d) {
-    return( *$self * d);
-  }
-
-  loos::Coord<double> __add__(const double d) {
-    return( $self->operator+(d));
-  }
-
-  loos::Coord<double> __sub__(const double d) {
-    return( *$self - d);
-  }
-
-
-  loos::Coord<double> __rdiv__(const double d) {
+  loos::Coord<double> __rdiv__(const double d) const {
     return( d / *$self );
   }
 
-  loos::Coord<double> __rmul__(const double d) {
+  loos::Coord<double> __rmul__(const double d) const {
     return( *$self * d);
   }
 
-  loos::Coord<double> __radd__(const double d) {
+  loos::Coord<double> __radd__(const double d) const {
     return( $self->operator+(d));
   }
 
-  loos::Coord<double> __rsub__(const double d) {
+  loos::Coord<double> __rsub__(const double d) const {
     return( d - *$self);
   }
-    
+
   loos::Coord<double> __copy__() {
     return(loos::Coord<double>(*$self));
   }
