@@ -72,10 +72,13 @@ namespace loos {
   void Atom::PDBelement(const std::string s) { _pdbelement = s; }
 
   const GCoord& Atom::coords(void) const { return(_coords); }
-
-  GCoord& Atom::coords(void) { return(_coords); }
-
+  GCoord& Atom::coords(void) { setPropertyBit(coordsbit); return(_coords); }
   void Atom::coords(const GCoord& c) { _coords = c; setPropertyBit(coordsbit); }
+
+
+  const GCoord& Atom::velocities() const { return(_velocities); }
+  GCoord& Atom::velocities() { setPropertyBit(velbit); return(_coords); }
+  void Atom::velocities(const GCoord& v) { _velocities = v; setPropertyBit(velbit); }
 
   double Atom::bfactor(void) const { return(_b); }
   void Atom::bfactor(const double d) { _b = d; }
@@ -212,6 +215,7 @@ namespace loos {
     os << "<ATOM INDEX='" << a._index << "' ID='" << a._id << "' NAME='" << a._name << "' ";
     os << "RESID='" << a._resid << "' RESNAME='" << a._resname << "' ";
     os << "COORDS='" << a._coords << "' ";
+    os << "VELOCITIES='" << a._velocities << "' ";
     os << "ALTLOC='" << a._altloc << "' CHAINID='" << a._chainid << "' ICODE='" << a._icode << "' SEGID='" << a._segid << "' ";
     os << "B='" << a._b << "' Q='" << a._q << "' CHARGE='" << a._charge << "' MASS='" << a._mass << "'";
     os << " ATOMICNUMBER='" << a._atomic_number <<"'";

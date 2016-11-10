@@ -73,7 +73,8 @@ namespace loos {
       usr1bit = flagbit << 1,
       usr2bit = usr1bit << 1,
       usr3bit = usr2bit << 1,
-      indexbit = usr3bit << 1
+      indexbit = usr3bit << 1,
+      velbit = indexbit << 1
     };
 
     Atom() { init(); }
@@ -146,16 +147,24 @@ namespace loos {
      */
     GCoord& coords(void);
 
+    //! Returns ref to the internally stored velocities (a GCoord)
+    const GCoord& velocities(void) const;
+    GCoord& velocities();
+
 #else // !defined(SWIG)
 
     // For python, make sure to return a copy (not a ref), otherwise we
     // get memory errors...
     GCoord coords(void) { return(_coords); }
+    GCoord velocities() { return(_velocities); }
 
 #endif // !defined(SWIG)
 
     //! Sets the coords to \a c
     void coords(const GCoord&);
+
+    //! Sets the velocities
+    void velocities(const GCoord&);
 
     double bfactor(void) const;
     void bfactor(const double);
@@ -264,6 +273,7 @@ namespace loos {
     std::string _segid, _pdbelement;
     int _atom_type;
     GCoord _coords;
+    GCoord _velocities;
     unsigned long mask;
 
     std::vector<int> bonds;
