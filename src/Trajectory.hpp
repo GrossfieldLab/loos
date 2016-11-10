@@ -103,6 +103,12 @@ namespace loos {
     //! Number of frames in the trajectory
     virtual uint nframes(void) const =0;
 
+    //! Whether or not the trajectory format supports velocities
+    virtual bool hasVelocities() const { return(false); }
+
+    //! Conversion applied to velocities to get to \AA/ps
+    virtual double velocityConversionFactor() const { return(1.0); }
+
     //! Rewinds the readFrame() iterator
     bool rewind(void) {
       cached_first = true;
@@ -165,7 +171,28 @@ namespace loos {
 
       updateGroupCoordsImpl(g);
     }
-    
+
+    void updateGroupVelocities(AtomicGroup& g) {
+#if defined(DEBUG)
+      if (! g.allHaveProperty(Atom::indexbit))
+        throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
+#else
+      if (! g.empty())
+        if (! g[0]->checkProperty(Atom::indexbit))
+          throw(LOOSError("Atoms in AtomicGroup have unset index properties and cannot be used to read a trajectory."));
+#endif
+
+      if (hasVelocities())
+        updateGroupVelocitiesImpl(g);
+      else
+      {
+        std::vector<GCoord> crds = coords();
+        for (uint i=0; i<crds.size(); ++i)
+          crds[i] *= velocityConversionFactor();
+        g.copyVelocitiesWithIndex(crds);
+      }
+    }
+
 
     //! Seek to the next frame in the sequence (used by readFrame() when
     //! operating as an iterator).
@@ -270,6 +297,10 @@ namespace loos {
 
     //! NVI implementation of updateGroupCoords() for derived classes to override
     virtual void updateGroupCoordsImpl(AtomicGroup& g) =0;
+
+    virtual void updateGroupVelocitiesImpl(AtomicGroup& g) {
+      throw(LOOSError("No velocity update implementation defined but trajectory supports it"));
+    }
 
   };
 
