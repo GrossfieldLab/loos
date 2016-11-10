@@ -620,6 +620,26 @@ namespace loos {
     //! Apply the given transform to the group's coordinates...
     void applyTransform(const XForm&);
 
+    //! Copy coordinates from a vector of GCoords using the atom index as an index into the vector.
+    void copyCoordinatesWithIndex(const std::vector<GCoord>& coords);
+
+    //! Copy velocities from a vector of GCoords using the atom index as an index into the vector.
+    /**
+     * This can be used to update a group's velocities if they come from a separate trajectory...
+     * \code
+     * pTraj trajcrds = createTrajectory('foo.dcd', model);
+     * pTraj trajvels = createTrajectory('foo-velocities.dcd', model);
+     *
+     * while (trajcrds->readFrame()) {
+     *    trajcrds->updateGroupCoords(model);
+     *
+     *    trajvels->readFrame();
+     *    model.copyVelocitiesWithIndex(trajvels->coords());
+     * }
+     * \endcode
+     */
+    void copyVelocitiesWithIndex(const std::vector<GCoord>& velocities);
+
 
     //! Copy coordinates from g into current group
     /**
