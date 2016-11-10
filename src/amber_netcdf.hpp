@@ -74,11 +74,12 @@ namespace loos {
 
     explicit AmberNetcdf(const std::string& s, const uint na)
       : Trajectory(s), 
-	_coord_data(new GCoord::element_type[na*3]),
-	_box_data(new GCoord::element_type[3]),
-	_periodic(false),
-	_timestep(1e-12),
-	_current_frame(0)
+        _coord_data(new GCoord::element_type[na*3]),
+        _box_data(new GCoord::element_type[3]),
+        _periodic(false),
+        _velocities(false),
+        _timestep(1e-12),
+        _current_frame(0)
     {
       cached_first = false;
       init(s.c_str(), na);
@@ -108,12 +109,22 @@ namespace loos {
     bool hasPeriodicBox() const { return(_periodic); }
     GCoord periodicBox() const { return(GCoord(_box_data[0], _box_data[1], _box_data[2])); }
 
+    bool hasVelocities() const { return(_velocities); }
+
     std::vector<GCoord> coords() {
       std::vector<GCoord> res;
       for (uint i=0; i<_natoms; i += 3)
         res.push_back(GCoord(_coord_data[i], _coord_data[i+1], _coord_data[i+2]));
       return(res);
     }
+
+    std::vector<GCoord> velocities() {
+      std::vector<GCoord> res;
+      for (uint i=0; i<_natoms; i += 3)
+        res.push_back(GCoord(_velocity_data[i], _velocity_data[i+1], _velocity_data[i+2]));
+      return(res);
+    }
+
 
   private:
     void init(const char* name, const uint natoms);
@@ -130,8 +141,10 @@ namespace loos {
 
   private:
     GCoord::element_type* _coord_data;
+    GCoord::element_type* _velocity_data;
     GCoord::element_type* _box_data;
     bool _periodic;
+    bool _velocities;
     float _timestep;
     uint _current_frame;
     int _ncid;
@@ -140,6 +153,7 @@ namespace loos {
     int _coord_id;
     size_t _coord_size;
     int _cell_lengths_id;
+    int _velocities_id;
     std::string _title, _application, _program, _programVersion, _conventions, _conventionVersion;
   };
 

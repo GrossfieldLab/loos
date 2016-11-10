@@ -66,6 +66,11 @@ namespace loos {
     if (retval)
       throw(FileOpenError(name, "Cannot get id for coordinates", retval));
 
+    // Get velocity-id for later use...
+    retval = nc_inq_varid(_ncid, "velocities", &_velocities_id);
+    _velocities = !retval;
+
+
     // Attempt to determine timestep by looking at dT between frames 1 & 2
     if (_nframes >= 2) {
       int time_id;
@@ -111,7 +116,12 @@ namespace loos {
 
     int retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _coord_id, start, count, _coord_data);
     if (retval)
-      throw(FileReadError(_filename, "Cannot read Amber netcdf frame", retval));
+      throw(FileReadError(_filename, "Cannot read Amber netcdf frame (coords)", retval));
+
+    retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _velocities_id, start, count, _velocity_data);
+    if (retval)
+      throw(FileReadError(_filename, "Cannot read Amber netcdf frame (velocities)", retval));
+
 
     // Now get box if present...
     if (_periodic) {
