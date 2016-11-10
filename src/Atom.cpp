@@ -77,7 +77,7 @@ namespace loos {
 
 
   const GCoord& Atom::velocities() const { return(_velocities); }
-  GCoord& Atom::velocities() { setPropertyBit(velbit); return(_coords); }
+  GCoord& Atom::velocities() { setPropertyBit(velbit); return(_velocities); }
   void Atom::velocities(const GCoord& v) { _velocities = v; setPropertyBit(velbit); }
 
   double Atom::bfactor(void) const { return(_b); }
