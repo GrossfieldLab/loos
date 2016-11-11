@@ -68,6 +68,8 @@ namespace loos {
     virtual bool hasPeriodicBox(void) const { return(periodic); }
     virtual GCoord periodicBox(void) const { return(box); }
 
+	virtual double velocityConversionFactor() const { return(20.455); }
+
     /*!
      * As stated above, Amber does not store the timestep in the
      * trajectory, but in the parmtop instead.  So we return a
