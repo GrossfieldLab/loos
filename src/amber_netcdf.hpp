@@ -114,7 +114,7 @@ namespace loos {
 
 
 
-		std::vector<GCoord> coords() {
+		std::vector<GCoord> coords() const {
 			std::vector<GCoord> res;
 			for (uint i=0; i<_natoms; i += 3)
 				res.push_back(GCoord(_coord_data[i], _coord_data[i+1], _coord_data[i+2]));

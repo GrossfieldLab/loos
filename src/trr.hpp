@@ -133,7 +133,7 @@ namespace loos {
 		GCoord periodicBox(void) const { return(box); }
 
 
-		std::vector<GCoord> coords(void) { return(coords_); }
+		std::vector<GCoord> coords(void) const { return(coords_); }
 
 		// TRR specific attributes...
 		std::vector<double> virial(void) const { return(vir_); }

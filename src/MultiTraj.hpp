@@ -135,7 +135,7 @@ namespace loos {
 
 
 		//! Coordinates from the most recently read frame
-		virtual std::vector<GCoord> coords() {
+		virtual std::vector<GCoord> coords() const {
 			uint i = eof() ? _trajectories.size()-1 : _curtraj;
 			return(_trajectories[i]->coords());
 		}

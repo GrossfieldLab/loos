@@ -382,7 +382,7 @@ namespace loos {
   // ----------------------------------------------------------
 
 
-  std::vector<GCoord> DCD::coords(void) {
+  std::vector<GCoord> DCD::coords(void) const {
     std::vector<GCoord> crds(_natoms);
 
     for (uint i=0; i<_natoms; i++) {

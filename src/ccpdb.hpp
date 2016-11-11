@@ -62,7 +62,7 @@ namespace loos {
 
     virtual uint nframes(void) const { return(_nframes); }
     virtual uint natoms(void) const { return(_natoms); }
-    virtual std::vector<GCoord> coords(void);
+	virtual std::vector<GCoord> coords(void) const;
 
 
     virtual bool hasPeriodicBox(void) const { return(frame.isPeriodic()); }

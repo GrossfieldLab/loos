@@ -137,7 +137,7 @@ namespace loos {
 
         //! Auto-interleave the coords into a vector of GCoord()'s.
         /*!  This can be a pretty slow operation, so be careful. */
-        virtual std::vector<GCoord> coords(void);
+		virtual std::vector<GCoord> coords(void) const;
 
         //! Interleave coords, selecting entries indexed by map
         // This is slated to go away...
