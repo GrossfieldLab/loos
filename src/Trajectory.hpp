@@ -134,7 +134,7 @@ namespace loos {
 		 * coordinates.  This means that this could be a potentially
 		 * expensive operation.
 		 */
-		virtual std::vector<GCoord> coords(void) =0;
+		virtual std::vector<GCoord> coords(void) const =0;
 
 		//! Update the coordinates in an AtomicGroup with the current frame.
 		/** The Atom::index() property is used as an index into the
@@ -181,7 +181,7 @@ namespace loos {
 		 * coordinates.  Those will be scaled by the velcotiyConversionFactor() and
 		 * then returned.
 		 */
-		virtual std::vector<GCoord> velocities(void) {
+		virtual std::vector<GCoord> velocities(void) const {
 			if (hasVelocities())
 				return(velocitiesImpl());
 			else
