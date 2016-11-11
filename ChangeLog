@@ -1,3 +1,10 @@
+2016-11-11    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added support for velocities in Atom.
+	* Added support for velocities in Trajectory.  Formats that natively store velocities will use those,
+	otherwise LOOS will assume that the coords are actually velocities.
+	* Changed Trajectory::coords() to be const
+
 2016-10-28    <tromo@hill>
 
 	* Added MultiTrajectory class: a Trajectory that can contain other
