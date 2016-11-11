@@ -138,7 +138,6 @@ namespace loos {
 		// TRR specific attributes...
 		std::vector<double> virial(void) const { return(vir_); }
 		std::vector<double> pressure(void) const { return(pres_); }
-		std::vector<GCoord> velocities(void) const { return(velo_); }
 		std::vector<GCoord> forces(void) const { return(forc_); }
 
 		bool isDouble(void) const { return(hdr_.bDouble); }
