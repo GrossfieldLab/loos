@@ -174,7 +174,13 @@ namespace loos {
 
 
 
-		//! Returns the current frames velocities as a vector of GCoords
+		//! Returns the current frame's velocities as a vector of GCoords
+		/**
+		 * If the trajectory format supports velocities "natively", then those will
+		 * be returned.  If not, the velocities will be assumed to be stored in the
+		 * coordinates.  Those will be scaled by the velcotiyConversionFactor() and
+		 * then returned.
+		 */
 		virtual std::vector<GCoord> velocities(void) {
 			if (hasVelocities())
 				return(velocitiesImpl());
@@ -202,12 +208,7 @@ namespace loos {
 			if (hasVelocities())
 				updateGroupVelocitiesImpl(g);
 			else
-			{
-				std::vector<GCoord> crds = coords();
-				for (uint i=0; i<crds.size(); ++i)
-					crds[i] *= velocityConversionFactor();
-				g.copyVelocitiesWithIndex(crds);
-			}
+				g.copyVelocitiesWithIndex( velocities() );
 		}
 
 
