@@ -162,21 +162,30 @@ Romo, T. D., Leioatts, N. and Grossfield, A., "Lightweight Object Oriented Struc
 
 /*! \page formats Supported File Formats
 
-LOOS reads the native file formats for most major biomolecular simulation packages:
+LOOS reads the native file formats for most major biomolecular simulation packages.
 
+<H3> Structure Files </H3>
 <table align="center" border="1" style="width:80%">
-<tr align="center"><th>Type</th><th>Package</th> <th>Name</th></tr>
-<tr align="center"> <td>Structure</td> <td> All </td> <td> PDB </td> </tr>
-<tr align="center"> <td>         </td> <td> CHARMM </td>  <td> CRD </td> </tr>
-<tr align="center"> <td>         </td> <td> CHARMM/NAMD </td>  <td> PSF </td> </tr>
-<tr align="center"> <td>         </td> <td> Gromacs </td>  <td> GRO </td> </tr>
-<tr align="center"> <td>         </td> <td> Amber </td>  <td> parmtop </td> </tr>
-<tr align="center"> <td>         </td> <td> Tinker </td>  <td> XYZ </td> </tr>
-<tr align="center"> <td>Trajectory</td> <td> CHARMM/NAMD </td>  <td> DCD </td> </tr>
-<tr align="center"> <td>         </td> <td> Gromacs </td>  <td> XTC </td> </tr>
-<tr align="center"> <td>         </td> <td> Amber </td>  <td> netcdf, crd </td> </tr>
-<tr align="center"> <td>         </td> <td> Tinker </td>  <td> XYZ </td> </tr>
-<tr align="center"> <td>         </td> <td> All </td>  <td> PDB </td> </tr>
+<tr align="center"><th>Package</th> <th>File Suffix</th>   <th>Notes</th></tr>
+<tr align="center">  <td> Amber </td>  <td> prmtop </td> <td> </td> </tr>
+<tr align="center"> <td>  CHARMM/NAMD </td> <td> pdb </td>    <td> </td> </tr>
+<tr align="center">  <td> CHARMM/NAMD </td>  <td> psf </td>  <td> </td>  </tr>
+<tr align="center">  <td> CHARMM </td>  <td> crd </td> <td> </td> </tr>
+<tr align="center">  <td> Gromacs </td>  <td> gro </td> <td> </td> </tr>
+<tr align="center">  <td> Tinker </td>  <td> xyz </td> <td> </td> </tr>
+</table>
+
+<H3> Trajectory Files </H3>
+<table align="center" border="1" style="width:80%">
+<tr align="center"><th>Package</th> <th>File Suffix</th>   <th>Notes</th></tr>
+<tr align="center">  <td> Amber </td>  <td> nc, netcdf </td> <td> velocities </td> </tr>
+<tr align="center">  <td> Amber</td>  <td> crd, mdcrd </td> <td> velocities (if NetCDF)</td> </tr>
+<tr align="center">  <td> Amber</td>  <td> inpcrd, rst, rst7 </td> <td> </td> </tr>
+<tr align="center">  <td> CHARMM/NAMD </td>  <td> dcd </td> <td> </td> </tr>
+<tr align="center">  <td> CHARMM/NAMD </td>  <td> pdb </td> <td> concatenated PDBs or sets of PDBs</td> </tr>
+<tr align="center">  <td> Gromacs </td>  <td> xtc </td> <td> </td> </tr>
+<tr align="center">  <td> Gromacs </td>  <td> trr </td> <td> velocities, pressure, virial, forces <br> (Only velocities available with Trajectory Class)</td> </tr>
+<tr align="center">  <td> Tinker </td>  <td> arc </td> <td> </td> </tr>
 </table>
 
 LOOS can write structures out in PDB format or a native pseudo-xml format, and can write 
