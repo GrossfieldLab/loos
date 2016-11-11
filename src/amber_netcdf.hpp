@@ -75,6 +75,7 @@ namespace loos {
 		explicit AmberNetcdf(const std::string& s, const uint na)
 			: Trajectory(s),
 			  _coord_data(new GCoord::element_type[na*3]),
+			  _velocity_data(new GCoord::element_type[na*3]),
 			  _box_data(new GCoord::element_type[3]),
 			  _periodic(false),
 			  _velocities(false),
