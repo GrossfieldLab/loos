@@ -79,8 +79,7 @@ namespace loos {
 			  _box_data(new GCoord::element_type[3]),
 			  _periodic(false),
 			  _velocities(false),
-			  _timestep(1e-12),
-			  _current_frame(0)
+			  _timestep(1e-12)
 		{
 			cached_first = false;
 			init(s.c_str(), na);
@@ -114,7 +113,6 @@ namespace loos {
 		virtual double velocityConversionFactor() const { return(1.0); }
 
 
-
 		std::vector<GCoord> coords() const {
 			std::vector<GCoord> res;
 			for (uint i=0; i<_natoms; i += 3)
@@ -136,9 +134,9 @@ namespace loos {
 		void updateGroupCoordsImpl(AtomicGroup& g);
 		void updateGroupVelocitiesImpl(AtomicGroup& g);
 		bool parseFrame();
-		void seekNextFrameImpl();
-		void seekFrameImpl(const uint frame);
-		void rewindImpl();
+		void seekNextFrameImpl() { }
+		void seekFrameImpl(const uint frame) { }
+		void rewindImpl() { }
 
 		std::vector<GCoord> velocitiesImpl() const;
 
@@ -150,7 +148,6 @@ namespace loos {
 		bool _periodic;
 		bool _velocities;
 		float _timestep;
-		uint _current_frame;
 		int _ncid;
 		size_t _nframes;
 		size_t _natoms;

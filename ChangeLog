@@ -1,3 +1,8 @@
+2016-11-12    <tromo@hill>
+
+	* Fixed bug in AmberNetcdf where the Trajectory iterator would show one more
+	frame than actual.
+
 2016-11-11    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added support for velocities in Atom.
