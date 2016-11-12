@@ -1,3 +1,8 @@
+2016-11-12    <tromo@hill>
+
+	* Fixed bug in AmberNetcdf where the Trajectory iterator would show one more
+	frame than actual.
+
 2016-10-28    <tromo@hill>
 
 	* Added MultiTrajectory class: a Trajectory that can contain other
