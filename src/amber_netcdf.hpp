@@ -77,9 +77,8 @@ namespace loos {
 	_coord_data(new GCoord::element_type[na*3]),
 	_box_data(new GCoord::element_type[3]),
 	_periodic(false),
-	_timestep(1e-12),
-	_current_frame(0)
-    {
+	_timestep(1e-12)
+	{
       cached_first = false;
       init(s.c_str(), na);
     }
@@ -123,9 +122,9 @@ namespace loos {
 
     void updateGroupCoordsImpl(AtomicGroup& g);
     bool parseFrame();
-    void seekNextFrameImpl();
-    void seekFrameImpl(const uint frame);
-    void rewindImpl();
+	void seekNextFrameImpl() { }
+	void seekFrameImpl(const uint frame) { }
+	void rewindImpl() { }
 
 
   private:
@@ -133,8 +132,7 @@ namespace loos {
     GCoord::element_type* _box_data;
     bool _periodic;
     float _timestep;
-    uint _current_frame;
-    int _ncid;
+	int _ncid;
     size_t _nframes;
     size_t _natoms;
     int _coord_id;

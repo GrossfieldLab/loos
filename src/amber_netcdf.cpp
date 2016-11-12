@@ -126,21 +126,7 @@ namespace loos {
   }
 
 
-  void AmberNetcdf::seekNextFrameImpl() {
-    ++_current_frame;
-  }
-
-  void AmberNetcdf::seekFrameImpl(const uint i) {
-    if (i >= _nframes)
-      throw(FileError(_filename, "Attempting seek frame beyond end of trajectory"));
-    _current_frame = i;
-  }
-
-  void AmberNetcdf::rewindImpl() {
-    _current_frame = 0;
-  }
-
-  bool AmberNetcdf::parseFrame() {
+bool AmberNetcdf::parseFrame() {
     if (_current_frame >= _nframes)
       return(false);
 
