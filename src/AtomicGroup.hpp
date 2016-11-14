@@ -485,7 +485,9 @@ namespace loos {
      *  bonds.  The default distance cutoff is 1.25
      */
     // Larger distances cause problems with hydrogens...
-    void findBonds(const double dist = 1.65);
+#define LARGEBOX 1.0e20
+    void findBonds(const double dist = 1.65, 
+                   const GCoord& box = GCoord(LARGEBOX, LARGEBOX, LARGEBOX));
 
 
 

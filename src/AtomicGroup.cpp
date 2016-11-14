@@ -849,9 +849,7 @@ namespace loos {
 
 
 
-
-
-  void AtomicGroup::findBonds(const double dist) {
+  void AtomicGroup::findBonds(const double dist, const GCoord& box) {
     AtomicGroup::iterator ij;
     double dist2 = dist * dist;
     double current_dist2;
@@ -861,12 +859,7 @@ namespace loos {
       GCoord u = (*ij)->coords();
 
       for (ii = ij + 1; ii != end(); ++ii) {
-        if (isPeriodic()) {
-            current_dist2 = u.distance2((*ii)->coords(), periodicBox());
-        }
-        else {
-            current_dist2 = u.distance2((*ii)->coords());
-        }
+        current_dist2 = u.distance2((*ii)->coords(), box);
         if (current_dist2 < dist2) {
           (*ij)->addBond(*ii);
           (*ii)->addBond(*ij);
