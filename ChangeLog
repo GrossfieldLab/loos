@@ -1,3 +1,9 @@
+2016-11-14    <tromo>
+
+	* Fixed bug in bug in AmberNetcdf where the reader would always try to read velocities
+	and fail if not present.
+	* Changed AtomicGroup::findBonds() to be optionally PBC aware (with Alan's help)
+
 2016-11-12    <tromo@hill>
 
 	* Fixed bug in AmberNetcdf where the Trajectory iterator would show one more
