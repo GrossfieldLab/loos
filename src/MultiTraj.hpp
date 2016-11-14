@@ -32,146 +32,154 @@
 
 namespace loos {
 
-  //! Combine multiple trajectories (pTraj's) into one large virtual trajectory
-  /**
-   * This class can be used just about anywhere a regular Trajectory/pTraj can be used.
-   * Note that the skip and stride settings are applied to each sub-trajectory (as opposed
-   * to the composite trajectory).  They are also set ONLY at instantiation.
-   *
-   */
-  class MultiTrajectory : public Trajectory {
-  public:
-    typedef std::pair<uint, uint>   Location;
+	//! Combine multiple trajectories (pTraj's) into one large virtual trajectory
+	/**
+	 * This class can be used just about anywhere a regular Trajectory/pTraj can be used.
+	 * Note that the skip and stride settings are applied to each sub-trajectory (as opposed
+	 * to the composite trajectory).  They are also set ONLY at instantiation.
+	 *
+	 */
+	class MultiTrajectory : public Trajectory {
+	public:
+		typedef std::pair<uint, uint>   Location;
 
-    MultiTrajectory()
-      : _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0)
-    { }
-    
-    //! instantiate a new empty MultiTrajectory
-    MultiTrajectory(const AtomicGroup& model)
-      : _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
-    { }
+		MultiTrajectory()
+			: _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0)
+		{ }
 
-    MultiTrajectory(const AtomicGroup& model, const uint skip, const uint stride)
-      : _nframes(0), _skip(skip), _stride(stride), _curtraj(0), _curframe(0), _model(model)
-    { }
+		//! instantiate a new empty MultiTrajectory
+		MultiTrajectory(const AtomicGroup& model)
+			: _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
+		{ }
 
-
-    //! Instantiate a new MultiTrajectory using the passed filenames
-    MultiTrajectory(const std::vector<std::string>& filenames,
-		     const AtomicGroup& model)
-      : _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
-    {
-      initWithList(filenames, model);
-    }
+		MultiTrajectory(const AtomicGroup& model, const uint skip, const uint stride)
+			: _nframes(0), _skip(skip), _stride(stride), _curtraj(0), _curframe(0), _model(model)
+		{ }
 
 
-    MultiTrajectory(const std::vector<std::string>& filenames,
-		      const AtomicGroup& model,
-		      const uint skip,
-		      const uint stride)
-      : _nframes(0), _skip(skip), _stride(stride), _curtraj(0), _curframe(skip), _model(model)
-    {
-      initWithList(filenames, model);
-    }
+		//! Instantiate a new MultiTrajectory using the passed filenames
+		MultiTrajectory(const std::vector<std::string>& filenames,
+						const AtomicGroup& model)
+			: _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
+		{
+			initWithList(filenames, model);
+		}
 
 
-    //! Add a trajectory (by filename)
-    void addTrajectory(const std::string& filename) {
-      pTraj traj = createTrajectory(filename, _model);
-      _trajectories.push_back(traj);
-      if (traj->nframes() > _skip)
-        _nframes += (traj->nframes() - _skip) / _stride;
-    }
+		MultiTrajectory(const std::vector<std::string>& filenames,
+						const AtomicGroup& model,
+						const uint skip,
+						const uint stride)
+			: _nframes(0), _skip(skip), _stride(stride), _curtraj(0), _curframe(skip), _model(model)
+		{
+			initWithList(filenames, model);
+		}
 
-    
-    virtual std::string description() const { return("virtual-trajectory"); }
 
-    virtual uint natoms() const { return(_model.size()); }
+		//! Add a trajectory (by filename)
+		void addTrajectory(const std::string& filename) {
+			pTraj traj = createTrajectory(filename, _model);
+			_trajectories.push_back(traj);
+			if (traj->nframes() > _skip)
+				_nframes += (traj->nframes() - _skip) / _stride;
+		}
 
-    //! Total number of frames in composite trajectory
-    virtual uint nframes() const { return(_nframes); }
 
-    //! Number of frames in the ith trajectory
-    uint nframes(const uint i) const {
-        if (i >= _trajectories.size())
-            throw(LOOSError("Requesting trajectory size for non-existent trajectory in MultiTraj"));
-            
-        if (_trajectories[i]->nframes() <= _skip)
-            return 0;
-        return( (_trajectories[i]->nframes() - _skip + _stride - 1) / _stride );
-    }
+		virtual std::string description() const { return("virtual-trajectory"); }
 
-    //! Number of trajectories contained
-    uint size() const { return(_trajectories.size()); }
+		virtual uint natoms() const { return(_model.size()); }
 
-    //! Access the individual trajectories
-    pTraj operator[](const uint i) const {
-        if (i >= _trajectories.size())
-            throw(LOOSError("MultiTraj trajectory index out of bounds"));
-        return(_trajectories[i]);
-    }
-    
-    //! Ignore timesteps (for now)
-    virtual float timestep() const { return(0.0); }
+		//! Total number of frames in composite trajectory
+		virtual uint nframes() const { return(_nframes); }
 
-    //! Whether or not the current sub-trajectory has a periodic box
-    virtual bool hasPeriodicBox() const {
-      uint i = eof() ? _trajectories.size()-1 : _curtraj;
-      return(_trajectories[i]->hasPeriodicBox());
-    }
+		//! Number of frames in the ith trajectory
+		uint nframes(const uint i) const {
+			if (i >= _trajectories.size())
+				throw(LOOSError("Requesting trajectory size for non-existent trajectory in MultiTraj"));
 
-    //! The periodic box of the current sub-trajectory
-    virtual GCoord periodicBox() const {
-      uint i = eof() ? _trajectories.size()-1 : _curtraj;
-      return(_trajectories[i]->periodicBox());
-    }
+			if (_trajectories[i]->nframes() <= _skip)
+				return 0;
+			return( (_trajectories[i]->nframes() - _skip + _stride - 1) / _stride );
+		}
 
-    //! Coordinates from the most recently read frame
-    virtual std::vector<GCoord> coords() {
-      uint i = eof() ? _trajectories.size()-1 : _curtraj;
-      return(_trajectories[i]->coords());
-    }
+		//! Number of trajectories contained
+		uint size() const { return(_trajectories.size()); }
 
-    
+		//! Access the individual trajectories
+		pTraj operator[](const uint i) const {
+			if (i >= _trajectories.size())
+				throw(LOOSError("MultiTraj trajectory index out of bounds"));
+			return(_trajectories[i]);
+		}
 
-    //! Index into the trajectory list for the trajectory currently used
-    uint currentTrajectoryIndex() const { return(_curtraj); }
+		//! Ignore timesteps (for now)
+		virtual float timestep() const { return(0.0); }
 
-    //! Raw index into the current trajectory for the current frame (i.e. with skip & stride applied)
-    uint currentFrameIndex() const { return(_curframe); }
+		//! Whether or not the current sub-trajectory has a periodic box
+		virtual bool hasPeriodicBox() const {
+			uint i = eof() ? _trajectories.size()-1 : _curtraj;
+			return(_trajectories[i]->hasPeriodicBox());
+		}
 
-    Location frameIndexToLocation(const uint i);
-    
-    bool eof() const {
-        return _curtraj >= _trajectories.size();
-    }
-    
-  private:
+		//! The periodic box of the current sub-trajectory
+		virtual GCoord periodicBox() const {
+			uint i = eof() ? _trajectories.size()-1 : _curtraj;
+			return(_trajectories[i]->periodicBox());
+		}
 
-    virtual void rewindImpl();
-    virtual void seekNextFrameImpl();
-    virtual void seekFrameImpl(const uint i);
-    virtual bool parseFrame();
-    virtual void updateGroupCoordsImpl(AtomicGroup& g);
+		//! Whether or not the current sub-trajectory has a periodic box
+		virtual bool hasVelocities() const {
+			uint i = eof() ? _trajectories.size()-1 : _curtraj;
+			return(_trajectories[i]->hasVelocities());
+		}
 
-    void findNextUsableTraj();
 
-    
-    // Make these private so you can't accidently try to use them...
-    MultiTrajectory(const std::string& s) { }
-    MultiTrajectory(const std::istream& fs) { }
-    
-    void initWithList(const std::vector<std::string>& filenames, const AtomicGroup& model);
-    
-  private:
-    uint _nframes;
-    uint _skip, _stride;
-    uint _curtraj, _curframe;
-    AtomicGroup _model;
-    std::vector<pTraj> _trajectories;
+		//! Coordinates from the most recently read frame
+		virtual std::vector<GCoord> coords() const {
+			uint i = eof() ? _trajectories.size()-1 : _curtraj;
+			return(_trajectories[i]->coords());
+		}
 
-  };
+
+
+		//! Index into the trajectory list for the trajectory currently used
+		uint currentTrajectoryIndex() const { return(_curtraj); }
+
+		//! Raw index into the current trajectory for the current frame (i.e. with skip & stride applied)
+		uint currentFrameIndex() const { return(_curframe); }
+
+		Location frameIndexToLocation(const uint i);
+
+		bool eof() const {
+			return _curtraj >= _trajectories.size();
+		}
+
+	private:
+
+		virtual void rewindImpl();
+		virtual void seekNextFrameImpl();
+		virtual void seekFrameImpl(const uint i);
+		virtual bool parseFrame();
+		virtual void updateGroupCoordsImpl(AtomicGroup& g);
+		virtual void updateGroupVelocitiesImpl(AtomicGroup& g);
+
+		void findNextUsableTraj();
+
+
+		// Make these private so you can't accidently try to use them...
+		MultiTrajectory(const std::string& s) { }
+		MultiTrajectory(const std::istream& fs) { }
+
+		void initWithList(const std::vector<std::string>& filenames, const AtomicGroup& model);
+
+	private:
+		uint _nframes;
+		uint _skip, _stride;
+		uint _curtraj, _curframe;
+		AtomicGroup _model;
+		std::vector<pTraj> _trajectories;
+
+	};
 
 
 }

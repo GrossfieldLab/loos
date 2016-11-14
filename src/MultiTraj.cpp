@@ -26,69 +26,74 @@
 namespace loos {
 
 
-  void MultiTrajectory::findNextUsableTraj() {
-    for (; _curtraj < _trajectories.size(); ++_curtraj)
-        if (_trajectories[_curtraj]->nframes() > _skip)
-            break;
-  }
+	void MultiTrajectory::findNextUsableTraj() {
+		for (; _curtraj < _trajectories.size(); ++_curtraj)
+			if (_trajectories[_curtraj]->nframes() > _skip)
+				break;
+	}
 
-  //! Rewinds MultiTrajectory and all contained trajectories
-  void MultiTrajectory::rewindImpl() {
+	//! Rewinds MultiTrajectory and all contained trajectories
+	void MultiTrajectory::rewindImpl() {
 
-    for (uint i=0; i<_trajectories.size(); ++i)
-      _trajectories[i]->rewind();
-    _curtraj = 0;
-    _curframe = _skip;
-    findNextUsableTraj();
-    if (!eof())
-        _trajectories[_curtraj]->readFrame(_curframe);
-  }
-
-
-  MultiTrajectory::Location MultiTrajectory::frameIndexToLocation(const uint i) {
-    uint k, j;
-    for (j=k=0; k<_trajectories.size(); ++k) {
-      uint n = nframes(k);
-      if (j + n > i)
-        break;
-      j += n;
-    }
-    Location loc(k, (_skip + (i-j)*_stride));
-    return loc;
-  }
-  
-  
-   void MultiTrajectory::seekNextFrameImpl() {
-     throw(LOOSError("Error- MultiTrajectory::seekNextFrameImpl() is deprecated.\n"));
-   }
-
-   void MultiTrajectory::seekFrameImpl(const uint i) {
-     if (i >= _nframes)
-       throw(FileReadError("Cannot seek past end of MultiTraj"));
-     Location loc = frameIndexToLocation(i);
-     _curtraj = loc.first;
-     _curframe = loc.second;
-   }
-
-   bool MultiTrajectory::parseFrame() {
-    if (eof())
-        return 0;
-    return(_trajectories[_curtraj]->readFrame(_curframe));
-  }
-    
-   void MultiTrajectory::updateGroupCoordsImpl(AtomicGroup& g) {
-     if (!eof())
-        _trajectories[_curtraj]->updateGroupCoords(g);
-  }
+		for (uint i=0; i<_trajectories.size(); ++i)
+			_trajectories[i]->rewind();
+		_curtraj = 0;
+		_curframe = _skip;
+		findNextUsableTraj();
+		if (!eof())
+			_trajectories[_curtraj]->readFrame(_curframe);
+	}
 
 
-  void MultiTrajectory::initWithList(const std::vector<std::string>& filenames, const AtomicGroup& model) {
-    for (uint i=0; i<filenames.size(); ++i) {
-      pTraj traj = createTrajectory(filenames[i], model);
-      _trajectories.push_back(traj);
-      _nframes += nframes(i);
-    }
-  }
+	MultiTrajectory::Location MultiTrajectory::frameIndexToLocation(const uint i) {
+		uint k, j;
+		for (j=k=0; k<_trajectories.size(); ++k) {
+			uint n = nframes(k);
+			if (j + n > i)
+				break;
+			j += n;
+		}
+		Location loc(k, (_skip + (i-j)*_stride));
+		return loc;
+	}
+
+
+	void MultiTrajectory::seekNextFrameImpl() {
+		throw(LOOSError("Error- MultiTrajectory::seekNextFrameImpl() is deprecated.\n"));
+	}
+
+	void MultiTrajectory::seekFrameImpl(const uint i) {
+		if (i >= _nframes)
+			throw(FileReadError("Cannot seek past end of MultiTraj"));
+		Location loc = frameIndexToLocation(i);
+		_curtraj = loc.first;
+		_curframe = loc.second;
+	}
+
+	bool MultiTrajectory::parseFrame() {
+		if (eof())
+			return 0;
+		return(_trajectories[_curtraj]->readFrame(_curframe));
+	}
+
+	void MultiTrajectory::updateGroupCoordsImpl(AtomicGroup& g) {
+		if (!eof())
+			_trajectories[_curtraj]->updateGroupCoords(g);
+	}
+
+	void MultiTrajectory::updateGroupVelocitiesImpl(AtomicGroup& g) {
+		if (!eof())
+			_trajectories[_curtraj]->updateGroupVelocities(g);
+	}
+
+
+	void MultiTrajectory::initWithList(const std::vector<std::string>& filenames, const AtomicGroup& model) {
+		for (uint i=0; i<filenames.size(); ++i) {
+			pTraj traj = createTrajectory(filenames[i], model);
+			_trajectories.push_back(traj);
+			_nframes += nframes(i);
+		}
+	}
 
 }
 

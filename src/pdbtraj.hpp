@@ -80,7 +80,7 @@ namespace loos {
 
     virtual uint nframes(void) const;
     virtual uint natoms(void) const;
-    virtual std::vector<GCoord> coords(void);
+	virtual std::vector<GCoord> coords(void) const;
 
     /**
      * If the passed group to update is the same size as the

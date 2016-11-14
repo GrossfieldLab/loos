@@ -1,7 +1,20 @@
+2016-11-14    <tromo>
+
+	* Fixed bug in bug in AmberNetcdf where the reader would always try to read velocities
+	and fail if not present.
+	* Changed AtomicGroup::findBonds() to be optionally PBC aware (with Alan's help)
+
 2016-11-12    <tromo@hill>
 
 	* Fixed bug in AmberNetcdf where the Trajectory iterator would show one more
 	frame than actual.
+
+2016-11-11    <tromo@hill.urmc-sh.rochester.edu>
+
+	* Added support for velocities in Atom.
+	* Added support for velocities in Trajectory.  Formats that natively store velocities will use those,
+	otherwise LOOS will assume that the coords are actually velocities.
+	* Changed Trajectory::coords() to be const
 
 2016-10-28    <tromo@hill>
 

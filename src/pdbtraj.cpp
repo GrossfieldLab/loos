@@ -98,7 +98,7 @@ namespace loos {
 
 
 
-  std::vector<GCoord> PDBTraj::coords(void) {
+  std::vector<GCoord> PDBTraj::coords(void) const {
     std::vector<GCoord> result(_natoms);
 
     for (uint i=0; i<_natoms; i++)

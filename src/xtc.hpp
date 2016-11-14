@@ -105,7 +105,7 @@ namespace loos {
     double currentTime(void) const { return(current_header_.time); }
 
 
-    std::vector<GCoord> coords(void) { return(coords_); }
+	std::vector<GCoord> coords(void) const { return(coords_); }
 
     //! Return the stored file's precision
     double precision(void) const { return(precision_); }

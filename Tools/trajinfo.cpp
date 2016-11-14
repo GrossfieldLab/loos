@@ -250,6 +250,7 @@ void verbInfo(AtomicGroup& model, pTraj& traj, AtomicGroup& center, const bool c
     boost::tuple<GCoord, GCoord> res = scanCentroid(center, traj, n);
     cout << boost::format(fldpre + "%s +- %s\n") % "Average Centroid" % boost::get<0>(res) % boost::get<1>(res);
   }
+  cout << boost::format(fldpre + "%s\n") % "Velocities" % (traj->hasVelocities() ? "yes" : "no");
 
   if (n != traj->nframes()) {
     cout << endl;

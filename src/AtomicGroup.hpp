@@ -482,10 +482,14 @@ namespace loos {
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
      *  does NOT clear the existing bond list prior to building new
-     *  bonds.  The default distance cutoff is 1.25
+	 *  bonds.  The default distance cutoff is 1.65.  If a box (GCoord)
+	 *  is passed, then periodicity is taken into consideration.
      */
-    // Larger distances cause problems with hydrogens...
-    void findBonds(const double dist = 1.65);
+	// Larger distances cause problems with hydrogens...
+	void findBonds(const double dist, const GCoord& box) { findBondsImpl(dist, Distance2WithPeriodicity(box)); }
+	void findBonds(const double dist) { findBondsImpl(dist, Distance2WithoutPeriodicity()); }
+	void findBonds(const GCoord& box) { findBondsImpl(1.65, Distance2WithPeriodicity(box)); }
+	void findBonds() { findBondsImpl(1.65, Distance2WithoutPeriodicity()); }
 
 
 
@@ -620,6 +624,26 @@ namespace loos {
     //! Apply the given transform to the group's coordinates...
     void applyTransform(const XForm&);
 
+    //! Copy coordinates from a vector of GCoords using the atom index as an index into the vector.
+    void copyCoordinatesWithIndex(const std::vector<GCoord>& coords);
+
+    //! Copy velocities from a vector of GCoords using the atom index as an index into the vector.
+    /**
+     * This can be used to update a group's velocities if they come from a separate trajectory...
+     * \code
+     * pTraj trajcrds = createTrajectory('foo.dcd', model);
+     * pTraj trajvels = createTrajectory('foo-velocities.dcd', model);
+     *
+     * while (trajcrds->readFrame()) {
+     *    trajcrds->updateGroupCoords(model);
+     *
+     *    trajvels->readFrame();
+     *    model.copyVelocitiesWithIndex(trajvels->coords());
+     * }
+     * \endcode
+     */
+    void copyVelocitiesWithIndex(const std::vector<GCoord>& velocities);
+
 
     //! Copy coordinates from g into current group
     /**
@@ -749,8 +773,7 @@ namespace loos {
     
   private:
 
-
-    // These are functors for calculating distance between two coords
+	// These are functors for calculating distance between two coords
     // without and with periodicity.  These can be passed to functions
     // that need to support both ways of calculating distances, such
     // was within_private() below...
@@ -821,6 +844,33 @@ namespace loos {
       }
       return(false);
     }
+
+
+	  //! Internal implementation of find bonds.
+	  /**
+	   * Takes a functor for calculating distances.  This can be PBC aware or not
+	   */
+	  template<typename DistanceCalc>
+	  void findBondsImpl(const double dist, const DistanceCalc& distance_function) {
+		  iterator ij;
+		  double dist2 = dist * dist;
+		  double current_dist2;
+
+		  for (ij = begin(); ij != end() - 1; ++ij) {
+			  iterator ii;
+			  GCoord u = (*ij)->coords();
+
+			  for (ii = ij + 1; ii != end(); ++ii) {
+				  current_dist2 = distance_function(u, (*ii)->coords());
+				  if (current_dist2 < dist2) {
+					  (*ij)->addBond(*ii);
+					  (*ii)->addBond(*ij);
+				  }
+			  }
+		  }
+	  }
+
+
 
 
     std::vector<AtomicGroup> sortingSplitByMolecule();

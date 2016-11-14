@@ -84,7 +84,7 @@ namespace loos {
   }
 
 
-  std::vector<GCoord> TinkerArc::coords(void) {
+  std::vector<GCoord> TinkerArc::coords(void) const {
     std::vector<GCoord> result(_natoms);
 
     for (uint i=0; i<_natoms; i++)

@@ -851,24 +851,6 @@ namespace loos {
 
 
 
-  void AtomicGroup::findBonds(const double dist) {
-    AtomicGroup::iterator ij;
-    double dist2 = dist * dist;
-    
-    for (ij = begin(); ij != end() - 1; ++ij) {
-      AtomicGroup::iterator ii;
-      GCoord u = (*ij)->coords();
-
-      for (ii = ij + 1; ii != end(); ++ii) {
-        if (u.distance2((*ii)->coords()) < dist2) {
-          (*ij)->addBond(*ii);
-          (*ii)->addBond(*ij);
-        }
-      }
-    }
-  }
-
-
 
   /**
    * The connectivity list is searched for each atom and if a bond is
@@ -933,6 +915,31 @@ namespace loos {
       }
 
     return(n);
+  }
+
+
+  void AtomicGroup::copyCoordinatesWithIndex(const std::vector<GCoord> &coords) {
+    if (! atoms.empty())
+      if (! atoms[0]->checkProperty(Atom::indexbit))
+        throw(LOOSError(*(atoms[0]), "Cannot use copyCoordinatesWithIndex() on an atom that does not have an index set"));
+
+    for (uint i=0; i<atoms.size(); ++i)
+    {
+      uint index = atoms[i]->index();
+      atoms[i]->coords( coords.at(index) );
+    }
+  }
+
+  void AtomicGroup::copyVelocitiesWithIndex(const std::vector<GCoord> &velocities) {
+    if (! atoms.empty())
+      if (! atoms[0]->checkProperty(Atom::indexbit))
+        throw(LOOSError(*(atoms[0]), "Cannot use copyVelocitiesWithIndex() on an atom that does not have an index set"));
+
+    for (uint i=0; i<atoms.size(); ++i)
+    {
+      uint index = atoms[i]->index();
+      atoms[i]->velocities( velocities.at(index) );
+    }
   }
 
 
