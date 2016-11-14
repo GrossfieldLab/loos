@@ -118,9 +118,12 @@ namespace loos {
 		if (retval)
 			throw(FileReadError(_filename, "Cannot read Amber netcdf frame (coords)", retval));
 
-		retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _velocities_id, start, count, _velocity_data);
-		if (retval)
-			throw(FileReadError(_filename, "Cannot read Amber netcdf frame (velocities)", retval));
+		if (_velocities)
+		{
+			retval = VarTypeDecider<GCoord::element_type>::read(_ncid, _velocities_id, start, count, _velocity_data);
+			if (retval)
+				throw(FileReadError(_filename, "Cannot read Amber netcdf frame (velocities)", retval));
+		}
 
 
 		// Now get box if present...
