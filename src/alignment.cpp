@@ -30,7 +30,7 @@ namespace loos {
       f77int three = 3;
       double one = 1.0;
       double zero = 0.0;
-    
+
       dgemm_(&ta, &tb, &three, &three, &n, &one, u.data(), &three, v.data(), &three, &zero, R.data(), &three);
 
 #else
@@ -48,37 +48,39 @@ namespace loos {
       f77int nn = 3;
       vecDouble S(3);
       vecDouble V(9);
-  
+
       dgesvj_(&joba, &jobu, &jobv, &m, &nn, R.data(), &lda, S.data(), &mv, V.data(), &ldv, work, &lwork, &info);
-    
+
       if (info > 0) {
-	char op = 'E';
-	double eps = dlamch_(&op);
-	std::cerr << boost::format("Warning- SVD in kabschCore() failed to converge with info=%d and TOL=%e\n") %
-	  info % (eps * sqrt(3.0));
-	std::cerr << "\tThis may happen periodically, causing the output to be 'mostly' orthogonal.\n";
-	std::cerr << "\tThe residual is typically small and should not appreciably affect the resulting\n";
-	std::cerr << "\tsuperposition.  If this warning appears frequently, then please notify the LOOS\n";
-	std::cerr << "\tdevelopers at loos.maintainer@gmail.com\n";
-	//	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
-      } else if (info < 0) 
-	throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
+        char op = 'E';
+        double eps = dlamch_(&op);
+        std::cerr << boost::format("Warning- SVD in kabschCore() failed to converge with info=%d and TOL=%e\n") %
+          info % (eps * sqrt(3.0));
+        for (uint i=0; i<6; ++i)
+          std::cerr << boost::format("         work[%d] = %f\n") % (i+1) % work[i];
+        std::cerr << "\tThis may happen periodically, causing the output to be 'mostly' orthogonal.\n";
+        std::cerr << "\tThe residual is typically small and should not appreciably affect the resulting\n";
+        std::cerr << "\tsuperposition.  If this warning appears frequently, then please notify the LOOS\n";
+        std::cerr << "\tdevelopers at loos.maintainer@gmail.com\n";
+        //  throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
+      } else if (info < 0)
+        throw(NumericalError("SVD in alignment::kabschCore returned an error", info));
 
-  
+
       double dR = R[0]*R[4]*R[8] + R[3]*R[7]*R[2] + R[6]*R[1]*R[5] -
-	R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
+        R[0]*R[7]*R[5] - R[3]*R[1]*R[8] - R[6]*R[4]*R[2];
 
-  
+
       double dV = V[0]*V[4]*V[8] + V[3]*V[7]*V[2] + V[6]*V[1]*V[5] -
-	V[0]*V[7]*V[5] - V[3]*V[1]*V[8] - V[6]*V[4]*V[2];
+        V[0]*V[7]*V[5] - V[3]*V[1]*V[8] - V[6]*V[4]*V[2];
 
-  
+
       if (dR * dV < 0.0) {
-	S[2] = -S[2];
+        S[2] = -S[2];
 
-	R[6] = -R[6];
-	R[7] = -R[7];
-	R[8] = -R[8];
+        R[6] = -R[6];
+        R[7] = -R[7];
+        R[8] = -R[8];
       }
 
       return SVDTupleVec(R, S, V);
@@ -89,18 +91,18 @@ namespace loos {
       GCoord c;
 
       for (uint i=0; i<v.size(); i += 3) {
-	c.x() += v[i];
-	c.y() += v[i+1];
-	c.z() += v[i+2];
+        c.x() += v[i];
+        c.y() += v[i+1];
+        c.z() += v[i+2];
       }
 
       for (uint i=0; i<3; ++i)
-	c[i] = 3*c[i]/v.size();
+        c[i] = 3*c[i]/v.size();
 
       for (uint i=0; i<v.size(); i += 3) {
-	v[i] -= c.x();
-	v[i+1] -= c.y();
-	v[i+2] -= c.z();
+        v[i] -= c.x();
+        v[i+1] -= c.y();
+        v[i+2] -= c.z();
       }
 
       return c;
@@ -118,18 +120,18 @@ namespace loos {
       double ssv[3] = {0.0, 0.0, 0.0};
 
       for (int j=0; j<n; j += 3) {
-	for (uint i=0; i<3; ++i) {
-	  ssu[i] += U[j+i] * U[j+i];
-	  ssv[i] += V[j+i] * V[j+i];
-	}
+        for (uint i=0; i<3; ++i) {
+          ssu[i] += U[j+i] * U[j+i];
+          ssv[i] += V[j+i] * V[j+i];
+        }
       }
 
       n /= 3;
-      
+
       double E0 = ssu[0] + ssu[1] + ssu[2] + ssv[0] + ssv[1] + ssv[2];
 
       SVDTupleVec svd = kabschCore(U, V);
-    
+
       vecDouble S(boost::get<1>(svd));
       double ss = S[0] + S[1] + S[2];
       double rmsd = std::sqrt(std::abs(E0-2.0*ss)/n);
@@ -137,7 +139,7 @@ namespace loos {
       return(rmsd);
     }
 
-    
+
 
     // Return the RMSD only for a kabsch alignment between U and V
     // Both will be centered first.
@@ -150,17 +152,17 @@ namespace loos {
 
       centerAtOrigin(cU);
       centerAtOrigin(cV);
-      
+
       SVDTupleVec svd = kabschCore(cU, cV);
-    
+
       double ssu[3] = {0.0, 0.0, 0.0};
       double ssv[3] = {0.0, 0.0, 0.0};
 
       for (int j=0; j<n; j += 3) {
-	for (uint i=0; i<3; ++i) {
-	  ssu[i] += cU[j+i] * cU[j+i];
-	  ssv[i] += cV[j+i] * cV[j+i];
-	}
+        for (uint i=0; i<3; ++i) {
+          ssu[i] += cU[j+i] * cU[j+i];
+          ssv[i] += cV[j+i] * cV[j+i];
+        }
       }
 
       n /= 3;
@@ -183,7 +185,7 @@ namespace loos {
 
       vecDouble R(boost::get<0>(svd));
       vecDouble VV(boost::get<2>(svd));
-      
+
       double M[9];
 
 #if defined(__linux__) || defined(__CYGWIN__) || defined(__FreeBSD__)
@@ -204,16 +206,16 @@ namespace loos {
       // Construct the new transformation matrix...  (W = M')
       GMatrix Z;
       for (uint i=0; i<3; i++)
-	for (uint j=0; j<3; j++)
-	  Z(i,j) = M[i*3+j];
+        for (uint j=0; j<3; j++)
+          Z(i,j) = M[i*3+j];
 
       return Z;
 
     }
-  
+
 
     GMatrix kabsch(const vecDouble& U, const vecDouble& V) {
-    
+
       vecDouble cU(U);
       vecDouble cV(V);
 
@@ -233,27 +235,27 @@ namespace loos {
 
     void applyTransform(const GMatrix& M, vecDouble& v) {
       for (uint i=0; i<v.size(); i += 3) {
-	GCoord c(v[i],v[i+1],v[i+2]);
+        GCoord c(v[i],v[i+1],v[i+2]);
 
-	c = M * c;
-	v[i] = c.x();
-	v[i+1] = c.y();
-	v[i+2] = c.z();
+        c = M * c;
+        v[i] = c.x();
+        v[i+1] = c.y();
+        v[i+2] = c.z();
       }
     }
 
-  
+
     vecDouble averageCoords(const vecMatrix& ensemble) {
       uint m = ensemble.size();
       uint n = ensemble[0].size();
 
       vecDouble avg(n, 0.0);
       for (uint j=0; j<m; ++j)
-	for (uint i=0; i<n; ++i)
-	  avg[i] += ensemble[j][i];
+        for (uint i=0; i<n; ++i)
+          avg[i] += ensemble[j][i];
 
       for (uint i=0; i<n; ++i)
-	avg[i] /= m;
+        avg[i] /= m;
 
       return avg;
     }
@@ -262,12 +264,12 @@ namespace loos {
     double rmsd(const vecDouble& u, const vecDouble& v) {
       double rms = 0.0;
       for (uint i=0; i<u.size(); i += 3) {
-	double l = 0.0;
-	for (uint j=0; j<3; ++j) {
-	  double d = u[i+j] - v[i+j];
-	  l += d*d;
-	}
-	rms += l;
+        double l = 0.0;
+        for (uint j=0; j<3; ++j) {
+          double d = u[i+j] - v[i+j];
+          l += d*d;
+        }
+        rms += l;
       }
       rms = std::sqrt(3.0 * rms / u.size());
 
@@ -284,9 +286,9 @@ namespace loos {
 
 
   boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(alignment::vecMatrix& ensemble,
-								greal threshold, int maxiter) {
+                                                                greal threshold, int maxiter) {
     using namespace alignment;
-    
+
     int n = ensemble.size();
     std::vector<XForm> xforms(n);
 
@@ -294,15 +296,15 @@ namespace loos {
 
     vecDouble target(ensemble[0]);
     centerAtOrigin(target);
-    
+
     double rms;
     int iter = 0;
-    
+
     do {
       for (int i = 0; i<n; i++) {
-	XForm M(kabsch(ensemble[i], target));
-	applyTransform(M.current(), ensemble[i]);
-	xforms[i].premult(M.current());
+        XForm M(kabsch(ensemble[i], target));
+        applyTransform(M.current(), ensemble[i]);
+        xforms[i].premult(M.current());
       }
 
       vecDouble avg = averageCoords(ensemble);
@@ -310,14 +312,14 @@ namespace loos {
       target = avg;
       ++iter;
     } while (rms > threshold && iter <= maxiter );
-    
+
     boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
     return(res);
   }
 
 
   boost::tuple<std::vector<XForm>,greal,int> iterativeAlignment(std::vector<AtomicGroup>& ensemble,
-								greal threshold, int maxiter) {
+                                                                greal threshold, int maxiter) {
     using namespace alignment;
 
     int n = ensemble.size();
@@ -331,9 +333,9 @@ namespace loos {
     int iter = 0;
     do {
       for (int i = 0; i<n; i++) {
-	XForm M(kabsch(ensemble[i].coordsAsVector(), target));
-	ensemble[i].applyTransform(M);
-	xforms[i].premult(M.current());
+        XForm M(kabsch(ensemble[i].coordsAsVector(), target));
+        ensemble[i].applyTransform(M);
+        xforms[i].premult(M.current());
       }
 
       AtomicGroup avg_structure = averageStructure(ensemble);
@@ -342,26 +344,26 @@ namespace loos {
       target = avg;
       ++iter;
     } while (rms > threshold && iter <= maxiter );
-    
+
     boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
     return(res);
   }
 
-    
+
 
 
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
-								  pTraj& traj,
-								  const std::vector<uint>& frame_indices,
-								  greal threshold, int maxiter) {
+                                                                  pTraj& traj,
+                                                                  const std::vector<uint>& frame_indices,
+                                                                  greal threshold, int maxiter) {
 
     using namespace alignment;
-    
+
     // Must first prime the loop...
     AtomicGroup frame = g.copy();
     traj->readFrame(frame_indices[0]);
     traj->updateGroupCoords(frame);
-      
+
     int nf = frame_indices.size();
 
     int iter = 0;
@@ -375,36 +377,36 @@ namespace loos {
     do {
       // Compute avg internally so we don't have to read traj twice...
       for (uint j=0; j<avg.size(); ++j)
-	avg[j]->coords() = GCoord(0,0,0);
-        
+        avg[j]->coords() = GCoord(0,0,0);
+
       for (int i=0; i<nf; ++i) {
-            
-	traj->readFrame(frame_indices[i]);
-	traj->updateGroupCoords(frame);
 
-	GMatrix M = frame.alignOnto(target);
-	xforms[i].load(M);
+        traj->readFrame(frame_indices[i]);
+        traj->updateGroupCoords(frame);
 
-	for (uint j=0; j<avg.size(); ++j)
-	  avg[j]->coords() += frame[j]->coords();
+        GMatrix M = frame.alignOnto(target);
+        xforms[i].load(M);
+
+        for (uint j=0; j<avg.size(); ++j)
+          avg[j]->coords() += frame[j]->coords();
       }
 
       for (uint j=0; j<avg.size(); ++j)
-	avg[j]->coords() /= nf;
+        avg[j]->coords() /= nf;
 
       rms = avg.rmsd(target);
       target = avg.copy();
       ++iter;
     } while (rms > threshold && iter <= maxiter);
-    
+
     boost::tuple<std::vector<XForm>, greal, int> res(xforms, rms, iter);
     return(res);
   }
 
 
   boost::tuple<std::vector<XForm>, greal, int> iterativeAlignment(const AtomicGroup& g,
-								  pTraj& traj,
-								  greal threshold, int maxiter) {
+                                                                  pTraj& traj,
+                                                                  greal threshold, int maxiter) {
 
     std::vector<uint> framelist(traj->nframes());
     for (uint i=0; i<traj->nframes(); ++i)
@@ -412,8 +414,7 @@ namespace loos {
 
     return(iterativeAlignment(g, traj, framelist, threshold, maxiter));
 
-  
+
   }
 
 }
-
