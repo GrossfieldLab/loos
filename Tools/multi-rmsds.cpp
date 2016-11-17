@@ -388,7 +388,8 @@ int main(int argc, char *argv[]) {
     cerr << "Using " << nthreads << " threads\n";
 
   vMatrix T = readCoords(subset, traj, indices, verbosity > 1);
-  used_memory += T.size() * T[0].size() * sizeof(double);
+  used_memory += T.size() * T[0].size() * sizeof(RealMatrix::element_type);   // Coords matrix
+  used_memory += T.size() * T.size() * sizeof(RealMatrix::element_type);      // RMSDS matrix
   checkMemoryUsage(mem);
   centerTrajectory(T);
 

@@ -510,7 +510,8 @@ int main(int argc, char *argv[]) {
     cerr << "Reading trajectory - " << topts->traj1 << endl;
   }
   vMatrix T = readCoords(subset, traj, indices, verbosity > 1);
-  used_memory += T.size() * T[0].size() * sizeof(double);
+  used_memory += T.size() * T[0].size() * sizeof(RealMatrix::element_type);   // Coords matrix
+  used_memory += T.size() * T.size() * sizeof(RealMatrix::element_type);      // RMSDS matrix
   checkMemoryUsage(mem);
   centerTrajectory(T);
 
