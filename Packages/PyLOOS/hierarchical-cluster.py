@@ -87,16 +87,19 @@ def fullhelp():
 
 cmd_args = " ".join(sys.argv)
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Perform hierarchical clustering given a distance matrix",
+                                epilog=fullhelp())
 parser.add_argument('rmsd_file', help="File containing a distance matrix in matlab format, e.g. output from the LOOS program rmsds")
 parser.add_argument('num_clusters', help='Number of clusters', type = int) 
 
 parser.add_argument('--index_file', help="File identifying which rows come from which trajectory", default=None, type = str)
 parser.add_argument('--prefix', help="Core of the output filenames", default = 'all', type =str)
-parser.add_argument('--fullhelp', action='store_true')
-parser.add_argument('--link', action = 'store_true')
+#parser.add_argument('--fullhelp', action='store_true')
+parser.add_argument('--link', help="Write out the linkage matrix", action = 'store_true')
 
 args = parser.parse_args()
+#print args.fullhelp
+
 if args.fullhelp:
     print fullhelp()
     sys.exit(1)
