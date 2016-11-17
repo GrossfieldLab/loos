@@ -1,3 +1,7 @@
+2016-11-17    <tromo@hill>
+
+	* Fixed bug in rmsds and multi-rmsds that caused the memory usage warning to not happen.
+
 2016-11-14    <tromo>
 
 	* Fixed bug in bug in AmberNetcdf where the reader would always try to read velocities
