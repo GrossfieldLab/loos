@@ -98,7 +98,6 @@ parser.add_argument('--prefix', help="Core of the output filenames", default = '
 parser.add_argument('--link', help="Write out the linkage matrix", action = 'store_true')
 
 args = parser.parse_args()
-#print args.fullhelp
 
 if args.fullhelp:
     print fullhelp()
