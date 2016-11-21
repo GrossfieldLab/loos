@@ -31,6 +31,7 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
           - \ref building_pyloos "Building PyLOOS, the Python Interface to LOOS"
       - \subpage tools "Tools included with LOOS"
       - \subpage selections "Selection Language"
+      - \subpage common_options "Common Options for Tools"
       - \subpage formats "Supported File Formats"
       - \subpage citing "Citing LOOS in published work"
       - \subpage new_pyloos "What's new in PyLOOS"
@@ -429,6 +430,172 @@ segid == "BULK")    # or named BULK
 */
 
 
+namespace loos {
+/*! \page common_options Common Command-Line Options for Tools
+
+Many LOOS tools use a common set of command-line options (through
+the \c OptionsFramework ).  These options are organized into
+groups that tend to be used together.  Not all tools will support
+all options.  Options may also appear in two forms: a "long" form
+where the option is written out following two hyphens, or a "short"
+form that is a single character following a single hyphen.  An option may
+also have a value associated with it, and it can be assigned either
+using an equals sign, e.g. \c --verbosity=3, or by just following
+the option with a space (optional with the short forms), e.g. \c --verbosity 3.  Additionally, some
+options are "boolean" in that they turn on or off specific behavior.
+These options are turned on by assigning a 1 (true) to it, or a 0 (false),
+for example, \c --brief=1 turns on brief output.
+
+\subsection common_options_table Common Options
+
+<table align="center" border="1" style="width:100%">
+<tr align="left"><th>Long Name</th> <th>Short Name</th> <th>Description</th> <th>Example</th></tr>
+
+<tr align="left" valign="top">
+    <td>\-\-fullhelp</td>
+    <td></td>
+    <td>Give a lot more information about how the tool works and how to use it.</td>
+    <td>\-\-fullhelp</td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-prefix</td>
+    <td>\-p</td>
+    <td>Sets the prefix for files written out by the tool.</td>
+    <td> \-p sim1 </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-verbosity</td>
+    <td>\-v</td>
+    <td>Sets the output/logging level of a tool.  Higher numbers means more verbose output.</td>
+    <td> \-v 3 </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-selection</td>
+    <td>\-s</td>
+    <td>Select atoms for the tool to operate on</td>
+    <td> \-s backbone </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-modeltype</td>
+    <td></td>
+    <td> Specify the type of model file being used.  LOOS will automatically
+         assign a file-type based on the suffix for a filename (e.g. pdb, psf, ...).
+         If you use a different convention, you may need to manually tell
+         the tool what kind of file you are using.  The tool's \c --fullhelp
+         output will available types.</td>
+    <td> \-\-modeltype pdb </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-trajtype</td>
+    <td></td>
+    <td> Specify the type of trajectory file being used.  LOOS will automatically
+         assign a file-type based on the suffix for a filename (e.g. dcd, xtc, ...).
+         If you use a different convention, you may need to manually tell
+         the tool what kind of file you are using.  The tool's \c --fullhelp
+         output will available types.</td>
+    <td> \-\-trajtype dcd </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-outtrajtype</td>
+    <td></td>
+    <td> Specify the type of trajectory file being written.  LOOS will automatically
+         assign a file-type based on the suffix for a filename (e.g. dcd, xtc, ...).
+         If you use a different convention, you may need to manually tell
+         the tool what kind of file you are using.  The tool's \c --fullhelp
+         output will available types.</td>
+    <td> \-\-trajtype xtc </td>
+</tr>
+
+
+<tr align="left" valign="top">
+    <td>\-\-skip</td>
+    <td>\-k</td>
+    <td> Skip the first N frames of the trajectory (or trajectories)</td>
+    <td> \-k 50 </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-stride</td>
+    <td>\-i</td>
+    <td> Read every ith frame from the trajectory (or trajectories)</td>
+    <td> \-i 10 </td>
+</tr>
+
+<tr align="left" valign="top">
+    <td>\-\-range</td>
+    <td>\-r</td>
+    <td> Specifies a range-list of frames to operate on from a trajectory.  See below
+    for more details.</td>
+    <td> -r 50:10: </td>
+</tr>
+</table>
+
+
+\subsection ranges Specifying Ranges
+
+The range option (through \c parseIndexRange() ) in LOOS tools is a versatile method of picking exactly what
+frames from a trajectory (or \c MultiTrajectory) you want the tool to use.  A range-spec
+can be a frame number, a range of frames, or a range of frames with a stride.
+A range-spec can also be list of range-specs separated by commas.  So, you can pick a single
+frame by giving the frame number.  For example,
+\code{.sh}
+foo -r 9 model.pdb sim.dcd
+\endcode
+
+\c foo will only use the 10th frame from \c sim.dcd.  <B>Remember, frame numbers are 0-based!</B>  Similarly,
+
+\code{.sh}
+foo -r 0,1,2,3,4 model.pdb sim.dcd
+\endcode
+\c foo will only use the first 5 frames.
+Literal ranges of frames can be
+specified using an octave/matlab-like syntax of start:stop (<B>inclusive</B>),
+
+\code{.sh}
+foo -r 0:99 model.pdb sim.dcd
+\endcode
+\c foo will use the first 100 frames, while
+
+\code{.sh}
+foo -r 100:199 model.pdb sim.dcd
+\endcode
+will skip the first 100 frames, and use the next 100 frames.
+
+A stride can also be given with the syntax of start:stride:stop,
+\code{.sh}
+foo -r 10:2:99 model.pdb sim.dcd
+\endcode
+\c foo will now skip the first 10 frames, then take every other frame through the 100th frame.
+
+You do not need to know how long a trajectory is in order to use the range notation to
+specify a skip and a stride (this was not true in older versions of LOOS).  Simply
+leave off the end,
+
+\code{.sh}
+foo -r 10: model.pdb sim.dcd
+\endcode
+
+Will use all but the first 10 frames of the trajectory.  Note that you must have a colon
+after the number, otherwise you will be telling use to use <em>only</em> frame index 10 (i.e.
+the 11th frame).
+
+You can also set a stride without knowing how long a trajectory is,
+
+\code{.sh}
+foo -r 10:2: model.pdb sim.dcd
+\endcode
+
+Here, the first 10 frames a skipped and then every other frame is used for
+the rest of the trajectory.
+
+*/
+}
 
 /*! \page building Building LOOS
 \section basicbuild Building Basics
