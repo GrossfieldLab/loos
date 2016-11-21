@@ -91,6 +91,7 @@ class FullHelp(argparse.Action):
         super(FullHelp, self).__init__(option_strings, dest, **kwargs)
     def __call__(self, parser, namespace, values, option_string = None):
         fullhelp()
+        parser.print_help()
         setattr(namespace, self.dest, True)
         parser.exit()
 
