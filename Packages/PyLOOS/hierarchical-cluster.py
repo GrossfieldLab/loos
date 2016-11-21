@@ -99,9 +99,6 @@ parser.add_argument('--link', help="Write out the linkage matrix", action = 'sto
 
 args = parser.parse_args()
 
-if args.fullhelp:
-    print fullhelp()
-    sys.exit(1)
 print "#", cmd_args
 
 num_clusters = args.num_clusters
