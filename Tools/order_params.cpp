@@ -608,7 +608,7 @@ for (uint i=0; i<framelist.size(); ++i)
                 double length = v.length();
                 double cos_val =  v[axis_index]/length;
                 double order = 0.5 - 1.5*cos_val*cos_val;
-                values[i][frame_index] += order;
+                values[i][frame_index] += fabs(order);
                 counts[i]++;
                 }
             }

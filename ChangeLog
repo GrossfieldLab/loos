@@ -1,3 +1,8 @@
+2016-11-30    <alan@membrane>
+
+	* order_params averages the absolute value of the 2nd Legendre polynomial,
+	  instead of the actual value.  
+
 2016-11-17    <tromo@hill>
 
 	* Fixed bug in rmsds and multi-rmsds that caused the memory usage warning to not happen.
