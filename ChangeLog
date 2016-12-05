@@ -1,3 +1,7 @@
+2016-12-05    <alan@membrane>
+
+	* Add 4 skeleton programs to PyLOOS
+
 2016-11-30    <alan@membrane>
 
 	* order_params averages the absolute value of the 2nd Legendre polynomial,
