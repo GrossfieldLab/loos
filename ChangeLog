@@ -1,3 +1,6 @@
+2016-12-16    <alan@membrane>
+	* Added new program helix_axes.py to PyLOOS package
+
 2016-11-12    <tromo@hill>
 
 	* Fixed bug in AmberNetcdf where the Trajectory iterator would show one more
