@@ -11,6 +11,7 @@ Fedora 21          | yes     | yes     |
 Fedora 22          | yes     | yes     |
 Fedora 23          | yes     | yes     |
 Fedora 24          | yes     | yes     |
+Fedora 25          | yes     | yes     |
 Ubuntu 12.04 LTS   | yes     | yes     |
 Ubuntu 14.04 LTS   | yes     | yes     |
 Ubuntu 15.04       | yes     | yes     |
@@ -24,7 +25,7 @@ OpenSUSE 12        | yes     | yes     | See OS notes
 OpenSUSE 13        | yes     | yes     |
 Manjaro 0.8        | yes     | yes     | Unsupported
 Mint 17            | yes     | yes     | Unsupported
-Mint 18            | yes     | yes     | 
+Mint 18            | yes     | yes     |
 Slackware 14.1     | yes     | yes     | Unsupported
 Windows 7 (Cygwin) | yes     | no      | Unsupported
 MacOS 10.11        | yes     | yes     | See OS notes
@@ -41,7 +42,7 @@ MacOS 10.11        | yes     | yes     | See OS notes
 ## For the Impatient
 
 
-                   
+
 
 LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
 refer to the OS-specific instructions below for more details.  For general
@@ -87,7 +88,7 @@ User    | User-created tools
 Python  | PyLOOS scripts
 
 
-### PyLOOS 
+### PyLOOS
 
 The Python interface to LOOS will be included in the build if you have
 a recent SWIG (version 2.0 or better) in your standard path as well as
@@ -167,13 +168,13 @@ However, if you clone LOOS from GitHub, you will need to either:
 
 1. consult the online documentation at http://grossfieldlab.github.io/loos/
 
-2. build a new copy of the documentation.  To do so, you will need to 
+2. build a new copy of the documentation.  To do so, you will need to
    install doxygen and graphviz (available in most package managers).
    SCons will now generate new documentation in the docs/ directory
    for the docs, all, and install targets.
 
 ======
-      
+
 # OS Specific Notes
 
 ## Fedora
