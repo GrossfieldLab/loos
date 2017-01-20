@@ -39,7 +39,7 @@ GRTAGS
 GTAGS
 
 # JSON files used for atom
-*.json
+.*.json
 
 # Vi cruft
 *.swp
