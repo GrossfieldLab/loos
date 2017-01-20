@@ -38,6 +38,9 @@ GPATH
 GRTAGS
 GTAGS
 
+# JSON files used for atom
+*.json
+
 # Vi cruft
 *.swp
 
