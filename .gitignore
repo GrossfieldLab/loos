@@ -42,7 +42,7 @@ GTAGS
 *.swp
 
 # JSON files
-*.json
+.*.json
 
 ###EXES
 Tools/verap
