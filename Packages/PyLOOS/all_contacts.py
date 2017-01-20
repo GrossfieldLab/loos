@@ -9,14 +9,14 @@ from os.path import basename, splitext
 if len(sys.argv) < 5 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
     print "Usage: ", sys.argv[0], "system selection out_file trajectory_file [trajectory2 ...]"
     print """
-        Description: all_contacts.py: tracks contacts between pairs of side 
+        Description: all_contacts.py: tracks contacts between pairs of side
                      chains in a protein or nucleic acid.  Returns a matlab-format
                      matrix containing the fraction of frames containing each
-                     residue-residue contact, as well as a matrix for each 
+                     residue-residue contact, as well as a matrix for each
                      trajectory individually.
 
                      The threshold for deciding if 2 residues are in contact is
-                     whether any atoms from one residue are within 4.0 ang of 
+                     whether any atoms from one residue are within 4.0 ang of
                      any atom from the other.  NOTE: PERIODICITY IS NOT RESPECTED,
                      since we're assuming they're both in the same molecule.
           """
@@ -52,7 +52,7 @@ residues = target.splitByResidue()
 # Woohoo, look at me, I used a lambda!
 residues = list(map(lambda r:loos.selectAtoms(r, "!backbone"), residues))
 
-frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs], 
+frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
                             numpy.float)
 
 
@@ -65,7 +65,7 @@ for traj_id in range(num_trajs):
                     frac_contacts[i,j,traj_id] += 1.0
                     frac_contacts[j,i,traj_id] += 1.0
     frac_contacts[:,:,traj_id] /= len(traj)
-    numpy.savetxt(out_names[traj_id], frac_contacts[:,:,traj_id], 
+    numpy.savetxt(out_names[traj_id], frac_contacts[:,:,traj_id],
                   header=header)
 
 
@@ -75,5 +75,3 @@ average /= len(traj_files)
 
 
 numpy.savetxt(out_file, average, header = header)
-
-
