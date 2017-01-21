@@ -85,8 +85,9 @@ for t in args.traj_files:
 if args.skip_hydrogen:
     no_hydrogens = loos.selectAtoms(system, "!hydrogen")
     target = loos.selectAtoms(no_hydrogens, args.selection_string)
-
-target = loos.selectAtoms(system, args.selection_string)
+    target = loos.selectAtoms(target, args.selection_string)
+else:
+    target = loos.selectAtoms(system, args.selection_string)
 
 
 residues = target.splitByResidue()
