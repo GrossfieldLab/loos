@@ -7,7 +7,6 @@ import numpy
 from os.path import basename, splitext
 import argparse
 
-#if len(sys.argv) < 5 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
 def fullhelp():
     print """
         Description: all_contacts.py: tracks contacts between pairs of side
@@ -16,12 +15,19 @@ def fullhelp():
                      containing each residue-residue contact, as well as a
                      matrix for each trajectory individually.
 
-                     The threshold for deciding if 2 residues are in contact is
-                     whether any atoms from one residue are within 4.0 ang of
-                     any atom from the other.  NOTE: PERIODICITY IS NOT
-                     RESPECTED, since we're assuming they're both in the same
-                     molecule.
+        Optional flags
+        --skip_hydrogen:  don't use hydrogens when computing residue-residue
+                          contacts
+        --skip_backbone:  exclude backbone atoms from contact calculation.
+                          If you don't use this flag, consecutive residues
+                          will always be in contact.
+        --cutoff:         set the distance at which two atoms are considered
+                          to be in contact.  Default = 4 ang
+        --threshold       set the number of atom-atom pairs that must be in
+                          contact for the two residues to be considered to
+                          be in contact.  Default = 1 pair
           """
+
 class FullHelp(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
         kwargs['nargs']=0
