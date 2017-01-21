@@ -65,12 +65,11 @@ args = parser.parse_args()
 header = " ".join(sys.argv) + "\n"
 print "#", header
 
-
 system = loos.createSystem(args.system_file)
 all_trajs = []
 out_names = []
 num_trajs = len(args.traj_files)
-for t in traj_files:
+for t in args.traj_files:
     traj = loos.pyloos.Trajectory(t, system)
     all_trajs.append(traj)
     t_base = basename(t)
@@ -79,9 +78,9 @@ for t in traj_files:
 
 if args.skip_hydrogen:
     no_hydrogens = loos.selectAtoms(system, "!hydrogen")
-    target = loos.selectAtoms(no_hydrogens, selection)
+    target = loos.selectAtoms(no_hydrogens, args.selection_string)
 
-target = loos.selectAtoms(system, selection)
+target = loos.selectAtoms(system, args.selection_string)
 
 
 residues = target.splitByResidue()
@@ -106,7 +105,7 @@ for traj_id in range(num_trajs):
                   header=header)
 
 average = numpy.add.reduce(frac_contacts, axis=2)
-average /= len(traj_files)
+average /= len(args.traj_files)
 
 
-numpy.savetxt(out_file, average, header=header)
+numpy.savetxt(args.out_file, average, header=header)
