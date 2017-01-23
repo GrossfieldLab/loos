@@ -44,6 +44,9 @@ GTAGS
 # Vi cruft
 *.swp
 
+# JSON files
+.*.json
+
 ###EXES
 Tools/verap
 Tools/renum-pdb
