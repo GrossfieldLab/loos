@@ -26,6 +26,17 @@ def fullhelp():
         --threshold       set the number of atom-atom pairs that must be in
                           contact for the two residues to be considered to
                           be in contact.  Default = 1 pair
+
+        File-naming
+            In addition to the average over all frames in all trajectories,
+            the program will write a separate file for each trajectory.  The
+            name of the output file is based on the name of the trajectory,
+            built by removing the directory portion and replacing the
+            extension (if any) will ".dat".  Note that it doesn't check for
+            duplicate filenames, so if you git it a bunch of trajectories with
+            the same name but in different directories, it'll overwrite the
+            output files.  This seemed like a rare enough case to not worry
+            about it -- if it's a problem, please contact loos-maintainer@gmail.
           """
 
 class FullHelp(argparse.Action):
