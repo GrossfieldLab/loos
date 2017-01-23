@@ -82,14 +82,19 @@ for t in args.traj_files:
     core, ext = splitext(t_base)
     out_names.append(core + ".dat")
 
+# Apply the selection
+target = loos.selectAtoms(system, args.selection_string)
+
+# Additionally remove all hydrogens if requested
 if args.skip_hydrogen:
-    no_hydrogens = loos.selectAtoms(system, "!hydrogen")
-    target = loos.selectAtoms(no_hydrogens, args.selection_string)
-    target = loos.selectAtoms(target, args.selection_string)
-else:
-    target = loos.selectAtoms(system, args.selection_string)
+    target = loos.selectAtoms(target, "!hydrogen")
 
-
+# Split by residue, then optionally remove backbone
+#   Performing this in the reverse order will exclude
+#   glycine from the search if skip_backbone and
+#   skip_hydrogen were both chosen.  Doing it this way
+#   will include a space for the glycine, although there
+#   will be no atoms.
 residues = target.splitByResidue()
 
 if args.skip_backbone:
