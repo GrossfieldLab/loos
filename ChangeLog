@@ -1,3 +1,6 @@
+2017-01-23    <alan@membrane>
+    * Added new tool all_contacts.py to PyLOOS package
+    
 2016-12-16    <alan@membrane>
 	* Added new program helix_axes.py to PyLOOS package
 
@@ -8,7 +11,7 @@
 2016-11-30    <alan@membrane>
 
 	* order_params averages the absolute value of the 2nd Legendre polynomial,
-	  instead of the actual value.  
+	  instead of the actual value.
 
 2016-11-17    <tromo@hill>
 
@@ -93,8 +96,8 @@
 	* Fixed bug in rmsd_to_average.py causing it to break at the end when showing overall average
 
 2016-07-21    <alan@membrane>
-	
-	* Added new tool lipid_survival to compute lifetime of lipids at surface 
+
+	* Added new tool lipid_survival to compute lifetime of lipids at surface
 	  of protein
 
 2016-07-11    <alan@membrane>
@@ -136,14 +139,14 @@
 
 2016-06-07  Tod Romo  <tromo@hill>
 
-	* Changed how LOOS is organized (slightly).  The core library code 
+	* Changed how LOOS is organized (slightly).  The core library code
 	now resides in the "src" directory.  The built shared library is
 	still stored at the top-level LOOS directory.
 
 2016-06-03  Tod Romo  <tromo@hill>
 
 	* Added HSD, HSE, and HSP to recognized residues for backbone selector
-	
+
 2016-06-03  Alan Grossfield <alan@membrane.urmc.rochester.edu>
 
 	* Added new tool cylindrical-thickness
@@ -154,7 +157,7 @@
 	  hardwired.
 
 2016-04-19  Alan Grossfield <alan@membrane.urmc.rochester.edu>
-	
+
 	* Added ability to write GRO files.  Added Gromacs class to pyloos
 
 2016-04-15  Tod Romo  <tromo@Gorgoneion.local>
@@ -232,7 +235,7 @@
 	* Added k-means clustering PyLOOS program (cluster-structures.py)
 	* Added AtomicGroup::getCoords() and AtomicGroup::setCoords() for numpy
 
-	
+
 2015-07-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed trajinfo to handle read errors and only use first set of valid frames
@@ -255,7 +258,7 @@
 2015-06-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in xy_rdf where --sel1-spans, --sel2-spans, and --reselect were ignored
-	
+
 
 2015-06-22    <tromo@hill.urmc-sh.rochester.edu>
 
@@ -273,7 +276,7 @@
 
 	* Released 2.2.5
 
-	
+
 2015-04-10    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in operator overloadings for GCoords in PyLOOS
@@ -282,7 +285,7 @@
 	* Changed default selection for ENM tools to alpha-carbons rather than all.
 	* Changed default selection for SVD to alpha-carbons
 	* Added -S as a spring function option shortcut for ENM tools
-	
+
 2015-03-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added ".netcdf" as a recognized file suffix for Amber NetCDF
@@ -292,14 +295,14 @@
 2015-03-02    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added --sort option to merge-traj
-	* Changed the default sort regex for subsetter and merge-traj to 
+	* Changed the default sort regex for subsetter and merge-traj to
 	sort on the *LAST* number in the filename
 
 2015-02-25    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in fcontacts resulting in NaN's in output if there
 	are no target atoms near the probe.
-	* Added NAMD tag (optional) to PSF files created by gmxdump2pdb 
+	* Added NAMD tag (optional) to PSF files created by gmxdump2pdb
 
 2015-02-19    <tromo@hill.urmc-sh.rochester.edu>
 
@@ -313,7 +316,7 @@
 
 2015-02-06    <tromo@hill.urmc-sh.rochester.edu
 	* released 2.2.4
-	
+
 2015-01-27    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed reading of Amber prmtop files that use mixed case for
@@ -330,7 +333,7 @@
 		a ref in PyLOOS.  These are now const refs and should no longer be wrapped
 		by swig (instead, the value will be returned)
 	* Added improved error handling in the build system
-	
+
 2015-01-17    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Released 2.2.2
@@ -373,12 +376,12 @@
 	at the end of the trajectory would be excluded.
 	* Added --clip flag to smooth-traj to control whether output
 	trajectory has clipped ends, or is the same size as the input
-	trajectory. 
-	
+	trajectory.
+
 
 2014-12-18    <tromo@hill.urmc-sh.rochester.edu>
 
-	* Added AtomicGroup::contactWith() which returns true or false if 
+	* Added AtomicGroup::contactWith() which returns true or false if
 	two groups have a pair of atoms within a threshold distance
 
 2014-12-16    <tromo@hill.urmc-sh.rochester.edu>
@@ -389,7 +392,7 @@
 
 2014-12-10    <alan@membrane.urmc.rochester.edu>
 
-	* Added solvate.py to OptimalMembraneGenerator, to build 
+	* Added solvate.py to OptimalMembraneGenerator, to build
 	protein in water systems without lipids
 	* Added model-meta-stats to give on overview of metadata in a model
 
@@ -439,7 +442,7 @@
 	and nucleic acids.  Will only work for known residue names and
 	atom names (see Selector.cpp for the list)
 	* Changed backbone keyword action to be a wrapper around the
-	BackboneSelector 
+	BackboneSelector
 
 2014-08-17    <tromo@hill.urmc-sh.rochester.edu>
 
@@ -473,7 +476,7 @@
 2014-07-31    <alan@membrane.urmc.rochster.edu>
     * Added support for periodic boxes in Tinker XYZ and arc files
 
-	
+
 2014-07-30    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added support for getting the step and time for the currently
@@ -492,13 +495,13 @@
 2014-07-16    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed chist tool to operate in either cumulative or windowed
-	mode... 
+	mode...
 
 2014-06-18    <alan@membrane.urmc.rochester.edu>
 	* in merge-traj, added support for separate selections to recenter
 	in xy and z
 
-	
+
 2014-06-16    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Removed center-model (this had been deprecated back in 2011)
@@ -539,12 +542,12 @@
 
 2014-03-13    <tromo@hill.urmc-sh.rochester.edu>
 
-	* Fixed help info for dcdinfo 
+	* Fixed help info for dcdinfo
 	* Added cumulative histogram tool (chist) in Convergence package
 	* Changed XForm::rotate(const GCoord&, const greal)
 	to throw an invalid_argument exception if the
-	rotation axis does not have some minimal length. 
-	
+	rotation axis does not have some minimal length.
+
 2014-03-06    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bad HTML tag in dox
@@ -565,12 +568,12 @@
 2014-02-13    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug where PyTraj was not installed
-	* Fixed bug affecting AmberTraj::updateGroupCoords() [mdcrd files] 
+	* Fixed bug affecting AmberTraj::updateGroupCoords() [mdcrd files]
 	resulting in a segfault.
 
 2014-02-07    <alan@membrane.urmc.rochester.edu>
 
-	* Added new feature to xy_rdf (--reselect) to handle the case where 
+	* Added new feature to xy_rdf (--reselect) to handle the case where
 	  molecules move back and forth between leaflets
 
 2014-01-31    <tromo@hill.urmc-sh.rochester.edu>
@@ -580,7 +583,7 @@
 2014-01-29    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Added support for OpenSUSE 13 and Fedora 20
-	
+
 2014-01-23    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Fixed bug in drifter that prevented it from running
@@ -589,7 +592,7 @@
 
 2014-01-21    <alan@membrane.urmc.rochester.edu>
 
-	* Fixed a bug in protein_tilt.py, where the average vector wasn't reset 
+	* Fixed a bug in protein_tilt.py, where the average vector wasn't reset
 	upon successive frames in the trajectory.
 	* Fixed bug in rmsds tool where the average RMSD reported
 	was incorrect (sligthly under when using one trajectory,
@@ -604,7 +607,7 @@
 
 2014-01-08  Alan Grossfield <alan@membrane.urmc.rochester.edu>
 
-    * Added new tool packing_score, to quantify the packing between 
+    * Added new tool packing_score, to quantify the packing between
 	  to selections over the course of a trajectory
 
 2013-11-04  Tod Romo  <tromo@ubuntu-mac-12>
@@ -707,7 +710,7 @@
 2013-08-01    <alan_grossfield@membrane.urmc.rochester.edu>
 
     * Added a new tool to Packages/PyLOOS: protein_tilt.py computes the time
-	  series of the tilt angle for a transmembrane protein by averaging the 
+	  series of the tilt angle for a transmembrane protein by averaging the
 	  tilt vectors of individual selects (e.g. individual helices)
 
 2013-07-26    <tromo@hill.urmc-sh.rochester.edu>
@@ -737,7 +740,7 @@
 2013-07-03    <alan@membrane.urmc.rochester.edu>
 
 	* Added change to cross-dist.  Disambiguate sign of PCA vectors
-	  by checking against end-to-end vector.  Code (and idea) courtesy of 
+	  by checking against end-to-end vector.  Code (and idea) courtesy of
 	  Jerome Henin.
 
 	* Fixed bug in setup.csh (user package directory was mispelled).
@@ -789,9 +792,9 @@
 2013-05-07    <alan@membrane.urmc.rochester.edu>
 	* Updated native_contacts tool.  Fixed an off-by-one bug that
 	caused the last residue in the selection to be handled wrong. Switched
-	to using the standard program options, so now the selection defaults to 
-	name == "CA", and is prefixed by --sel.  Added new option to output the 
-	timeseries of individual contacts to a separate file.  Added new option to 
+	to using the standard program options, so now the selection defaults to
+	name == "CA", and is prefixed by --sel.  Added new option to output the
+	timeseries of individual contacts to a separate file.  Added new option to
 	exclude the backbone atoms.
 
 2013-05-01    <tromo@hill.urmc-sh.rochester.edu>
@@ -802,7 +805,7 @@
 	only one molecule but is N*T frames long.  Each chunk of T-frames
 	consists of one of the molecules.
 
-	
+
 2013-04-25    <tromo@hill.urmc-sh.rochester.edu>
 
 	* Changed how some versions of averageStructure() and
@@ -828,7 +831,7 @@
 	will no longer crash python)
 
 2013-04-12 <tromo@hill.urmc-sh.rochester.edu>
-	
+
 	* Added HBondDetector class: given a triple of atoms, will
 	efficiently apply angle and distance criteria (Alan)
 	* Changed StreamWrapper to use an istream internally rather than
@@ -886,7 +889,7 @@
 	* Added "chainid" keyword to selection language
 	* Fixed issues associated with regenerating the parser (bison/flex version problems)
 	* Added support for python in MacOS
-	
+
 2013-02-07  Tod Romo  <tromo@gorgoneion>
 
 	* Fixed build issue with MacOS 10.8 and BOOST 1.53.0 involving
@@ -1259,7 +1262,7 @@
 
 	* Changed AtomicGroup::splitByMolecule() so that missing bonds do
 	not throw an error.  Instead, they are ignored.
-	* Changed trajinfo to warn if there is a mismatch between the 
+	* Changed trajinfo to warn if there is a mismatch between the
 	system size and the trajectory size
 	* Changed xy_rdf to emit 0's rather than NaN's if there are
 	missing atoms in a leaflet.
@@ -1289,15 +1292,15 @@
 	time-correlation for whether this is any hydrogen bound, rather
 	than a specific hydrogen.
 
-2011-09-08 <alan> 
-    * Added new option to merge-trj (selection-is-split) to handle the case 
-	where the centering selection is split across an image boundary more 
+2011-09-08 <alan>
+    * Added new option to merge-trj (selection-is-split) to handle the case
+	where the centering selection is split across an image boundary more
 	robustly.  This is basically the same algorithm that's in recenter-trj
 
 2011-08-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in effsize.pl where the seed value was not correctly
-	used. 
+	used.
 
 2011-08-25    <tromo@spade.biophysics.rochester.edu>
 
@@ -1307,7 +1310,7 @@
 2011-08-22    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed const-ness of AtomicGroup::findById() and
-	AtomicGroup::groupFromID() 
+	AtomicGroup::groupFromID()
 
 2011-08-04    <tromo@spade.biophysics.rochester.edu>
 
@@ -1365,7 +1368,7 @@
 	correctly handled.
 	* Fixed bug in rdf and atomic-rdf tool for very large trajectories
 	that resulted in negative values.
-	
+
 2011-07-08    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in Trajectory class where the following caused a
@@ -1542,23 +1545,23 @@
 	details.
 	* Changed averager so that bonds are pruned (rather than cleared)
 	when subsetting.
-	* Added N-M Simplex optimizer 
+	* Added N-M Simplex optimizer
 	* Changed MDuple to Math::Range for matrix I/O
 	* Added submatrix extraction and column-vector normalization
 	routines.
 	* Changed the default number of modes to use for the subspace
 	overlap in the coverlap tool.
-	
+
 2010-09-16 Tod Romo <tromo@gorgoneion>
 	* Changed randomRNG() to use uint rather than long for seed and
 	also to return the used seed value (for autogenerated seeds)
-	
+
 2010-09-14 Alan <alan@membrane.urmc.rochester.edu>
 	* Added ability to compute order parameters with respect to x and
 	y axes.
 
-	
-	
+
+
 2010-09-10  Tod Romo  <tromo@gorgoneion>
 
 	* Fixed bug affecting calling Trajectory::rewind() on Tinker ARC files
@@ -1575,9 +1578,9 @@
 	search will be used.  Otherwise, a linear search will be used.
 	* Added AtomicGroup::pruneBonds() to remove bonds to non-existant
 	atoms (for subsetted AtomicGroups).
-	
 
-	
+
+
 2010-07-27    <tromo@spade.biophysics.rochester.edu>
 
 	* Added a tool for perturbing structures randomly
@@ -1606,7 +1609,7 @@
 	(i.e. where m * n >= 2^32)
 	* Fixed bug in traj2matlab where the wrong subset of atoms was
 	used to create the matrix.
-	
+
 
 2010-07-06    <tromo@spade.biophysics.rochester.edu>
 
@@ -1624,12 +1627,12 @@
 2010-06-21    <alan@membrane.biophysics.rochester.edu>
 	* Changed order_params to handle both 1- and 3-residue per lipid
 	  formats. Verified works for new and old CHARMM parameters.
-	
+
 2010-06-11    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed library link order for linux.  Will now correctly link
 	against ATLAS first, then LAPACK...
-	
+
 2010-06-02    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed bug in AtomicGroup::perturbCoords() where the directions
@@ -1788,7 +1791,7 @@
 
 	* Added alignto tool that aligns a trajectory to a given reference
 	structure.
-	
+
 
 2009-10-20    <tromo@spade.biophysics.rochester.edu>
 
@@ -1797,7 +1800,7 @@
 
 	* Fixed bug in subsetter that caused bonds to not be cleared when
 	subsetting...
-	
+
 
 	* Changed exposure to default to reimaging distances.  Also
 	changed how the flag is set.  "-R 1" turns reimaging on (the
@@ -1936,7 +1939,7 @@
 	* Changed AtomicGroup::intersect() to now use an atom comparison
 	policy rather than comparing the pAtom addresses.
 	* Readded ubuntu-specific check.
-	
+
 
 2009-07-01    <tromo@spade.biophysics.rochester.edu>
 
@@ -1951,7 +1954,7 @@
 2009-06-29    <tromo@spade.biophysics.rochester.edu>
 
 	* Added AtomicGroup::findBonds() to perform a distance-based
-	search... 
+	search...
 
 2009-06-22    <tromo@spade.biophysics.rochester.edu>
 
@@ -1986,7 +1989,7 @@
 	CAlphaSelector(), which is now deprecated.
 	* Removed ubuntu-specific build check, given the new build
 	protocol for ubuntu (see the Doxygen docs for more information)
-	
+
 
 2009-05-15    <tromo@spade.biophysics.rochester.edu>
 
@@ -2008,7 +2011,7 @@
 	problem with atlas not linking with gfortran
 	* Added AtomicGroup::splitByResidue()
 	* Added tool to calculate ramachandran plots for proteins and RNA
-	
+
 
 2009-04-03    <tromo@spade.biophysics.rochester.edu>
 	* Fixed bug in averager that caused it NOT to respect the range of
@@ -2048,12 +2051,12 @@
 	constructs
 	* Added install target for SCons...
 	* Added support for building a shared-library version of LOOS
-	
+
 
 2009-02-17    <tromo@spade.biophysics.rochester.edu>
 
 	* Fixed potential issue with histogram size/bounds for rdf
-	tools... 
+	tools...
 
 2009-02-16    <tromo@gorgoneion>
 
@@ -2085,7 +2088,7 @@
 	header and the physical trajectory have differing number of
 	frames.
 	* Added generic byte-swapping templated function to utils.hpp
-	
+
 
 2009-02-05    <tromo@spade.biophysics.rochester.edu>
 
@@ -2176,9 +2179,9 @@
 	each returned AtomicGroup...this solves a problem when use
 	splitByMolecule() and then try to match the molecules with a DCD
 	that's being written.
-	
 
-	
+
+
 
 2008-12-12    <tromo@spade.biophysics.rochester.edu>
 
@@ -2220,7 +2223,7 @@
 	default naming scheme has been changed slightly (it will default
 	to the base-name of the input trajectory unless you explicitly
 	specify a prefix).
-	
+
 
 2008-12-04    <tromo@spade.biophysics.rochester.edu>
 
@@ -2358,7 +2361,7 @@
 2008-08-04    <tromo@spade.biophysics.rochester.edu>
 
 	= BUGS =
-	
+
 	* Fixed problem with LOOS-wide typedefs affecting MacOS 10.5
 
 	* Fixed minor bugin Atom class where setting coordinates using a
@@ -2381,7 +2384,7 @@
 	the XForms would be affected to varying degrees.
 
 	= NEW & IMPROVED =
-	
+
 	* Added improved self-tests for alignment routines.
 
 	* Added support for log-scaling magnitudes in Tools/svdcolmap.
