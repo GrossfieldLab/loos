@@ -54,7 +54,7 @@ def CheckSystemType(conf):
     elif (loos_build_config.host_type == 'Linux'):
         # Determine linux variant...
         linux_type = platform.platform()
-        
+
         if (re.search("(?i)ubuntu", linux_type)):
             linux_type = 'ubuntu'
         elif (re.search("(?i)suse", linux_type)):
@@ -75,7 +75,7 @@ def CheckSystemType(conf):
     typemsg = loos_build_config.host_type
     if (typemsg == 'Linux'):
         typemsg = typemsg + ' [' + loos_build_config.linux_type + ']'
-        
+
     conf.Result(typemsg)
 
 
@@ -105,11 +105,11 @@ def environOverride(conf):
     if 'CXX' in os.environ:
         conf.env.Replace(CXX = os.environ['CXX'])
         print '*** Using compiler ' + os.environ['CXX']
-    
+
     if 'CCFLAGS' in os.environ:
         conf.env.Append(CCFLAGS = os.environ['CCFLAGS'])
         print '*** Appending custom build flags: ' + os.environ['CCFLAGS']
-        
+
     if 'LDFLAGS' in os.environ:
         conf.env.Append(LINKFLAGS = os.environ['LDFLAGS'])
         print '*** Appending custom link flag: ' + os.environ['LDFLAGS']
@@ -161,7 +161,7 @@ def script_builder_python(target, source, env):
        cpppaths.insert(0, loos_dir + '/include')
        ldlibrary.insert(0, loos_dir + '/lib')
        loos_pythonpath = loos_dir + '/lib'
-       
+
 
    file = open(str(source[0]), 'r')
    script = file.read()
@@ -260,7 +260,7 @@ int main(int argc, char *argv[]) {
 
     return(1)
 
-    
+
 
 # Check for existince of boost library with various naming variants
 # Will return a tuple containing the correct name and a flag indicating
@@ -310,7 +310,7 @@ int main(int argc, char *argv[]) { return(0); }
     conf.Result('yes')
     return(1)
 
-            
+
 # Check for version of Boost includes
 def CheckBoostHeaderVersion(conf, min_boost_version):
     source_code = """
@@ -326,7 +326,7 @@ int main(int argc, char *argv[]) { std::cout << BOOST_LIB_VERSION; return(0); }
         return(0)
     boost_version = result[1]
     loos_build_config.versions['boost'] = boost_version
-    
+
     if LooseVersion(boost_version) < LooseVersion(min_boost_version):
         conf.Result('%s [too old, LOOS requires at least %s]' % (boost_version, min_boost_version))
         return(0)
@@ -366,13 +366,23 @@ def CheckNumpy(conf, pythonpath):
     python_tag = '/python%d.%d' % (vinfo[0], vinfo[1])
 
     newpaths.append(default_lib_path + python_tag)
-    pythonpaths = [s + '/site-packages/numpy/core/include' for s in newpaths]
-    if pythonpaths:
-        ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', pythonpaths)
+
+    # Sometimes paths have site-packages already in them (as in using an
+    # external PYTHON_PATH), yet sometimes the implicit path doesn't,
+    # so check for it and handle accordingly...
+    #
+    # TODO: use proper path handling so we're not using a substring search
+    for pythonpath in newpaths:
+        if 'site-packages' in pythonpath:
+            pythonpath += '/numpy/core/include'
+        else:
+            pythonpath += '/site-packages/numpy/core/include'
+
+        ok = checkForPythonHeaderInPath(conf, 'numpy/arrayobject.h', [pythonpath])
         if ok:
             conf.Result('yes')
             return(1)
-        
+
 
     # Special handling for MacOS
     if loos_build_config.host_type == 'Darwin':
@@ -380,11 +390,11 @@ def CheckNumpy(conf, pythonpath):
         if ok:
             conf.Result('yes')
             return(1)
-            
+
     conf.Result('no')
     return(0)
 
-    
+
 def SetupBoostPaths(env):
 
     BOOST=env['BOOST']
@@ -401,14 +411,14 @@ def SetupBoostPaths(env):
         boost_libpath = boost + '/lib'
         loos_build_config.user_libdirs['BOOST'] = boost_libpath
         loos_build_config.user_boost_flag = 1
-        
+
     if BOOST_INCLUDE:
         boost_include = BOOST_INCLUDE
     if BOOST_LIBPATH:
         boost_libpath= BOOST_LIBPATH
         loos_build_config.user_libdirs['BOOST'] = boost_libpath
         loos_build_config.user_boost_flag = 1
-       
+
     if boost_libpath:
         env.Prepend(LIBPATH=[boost_libpath])
         env['BOOST_LIBPATH'] = boost_libpath
@@ -423,7 +433,7 @@ def SetupNetCDFPaths(env):
     NETCDF_INCLUDE=env['NETCDF_INCLUDE']
     NETCDF_LIBPATH=env['NETCDF_LIBPATH']
     NETCDF_LIBS = env['NETCDF_LIBS']
-    
+
     netcdf_libpath = ''
     netcdf_include = ''
 
@@ -564,7 +574,7 @@ def checkForPythonHeader(context, header):
         context.env['CPPFLAGS'] = oldcpp
 
     return(ok)
-        
+
 
 def checkForPythonHeaderInPath(context, header, pathlist):
 
@@ -583,7 +593,7 @@ def checkForPythonHeaderInPath(context, header, pathlist):
 
 
 def AutoConfiguration(env):
-    global default_lib_path 
+    global default_lib_path
 
     conf = env.Configure(custom_tests = { 'CheckForSwig' : CheckForSwig,
                                           'CheckBoostHeaders' : CheckBoostHeaders,
@@ -604,13 +614,13 @@ def AutoConfiguration(env):
     conf.env['host_type'] = loos_build_config.host_type
     conf.env['linux_type'] = loos_build_config.linux_type
 
-    
+
     if env.GetOption('clean') or env.GetOption('help'):
         env['HAS_NETCDF'] = 1
     else:
         has_netcdf = 0
-        
-    
+
+
         # Some distros use /usr/lib, others have /usr/lib64.
         # Check to see what's here and prefer lib64 to lib
         default_lib_path = '/usr/lib'
@@ -805,8 +815,8 @@ def AutoConfiguration(env):
                                     print 'Try manually specifying ATLAS_LIBS and ATLAS_LIBPATH'
                                     conf.env.Exit(1)
 
-                
-                    
+
+
 
             # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
@@ -880,7 +890,7 @@ def checkForDeprecatedOptions(env):
         'LIBS_OVERRIDE' : 'use ATLAS_LIBS, BOOST_LIBS, or NETCDF_LIBS',
         'LIBS_PATHS_OVERRIDE' : 'use ATLAS_LIBPATH, BOOST_LIBPATH, or NETCDF_LIBPATH'
         }
-    
+
     warner = makeDeprecatedVariableWarning()
     for name in mapping:
         if env.has_key(name):
