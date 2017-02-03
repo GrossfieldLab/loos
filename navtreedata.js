@@ -8,6 +8,7 @@ var NAVTREE =
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ],
         [ "Typedefs", "namespacemembers_type.html", null ]
       ] ]
     ] ],
@@ -33,15 +34,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"building.html#building_pyloos",
-"classloos_1_1_amber_traj.html#a3de111e00ea701036d0063048eb86f56",
-"classloos_1_1_coord.html#a1756be5b3115d32efb0538dad4d0de27",
-"classloos_1_1_density_tools_1_1_water_filter_core.html#ac9b610a7028cebd3fdf49c8012cc2c7d",
-"classloos_1_1_math_1_1_sparse_array.html#af78e32cf7d719d54e648d564613aa3ea",
-"classloos_1_1_periodic_box.html#afbb3f6f17bbb9341a1efde795e3a2281",
-"classloos_1_1_x_form.html#a54ae08d9f421511a8af6ef888eafc5a4",
-"ensembles_8py_source.html",
-"structloos_1_1_not_selector.html"
+"changes.html#release221",
+"class_tool_options.html#ae3abac140b154beb88fbdede86a086bf",
+"classloos_1_1_atomic_group.html#a7bae9400609d329e7d445e57fbb989e9",
+"classloos_1_1_density_tools_1_1_density_grid.html#a57d70f8238231c3b4804177b5475c520",
+"classloos_1_1_h_bonds_1_1_simple_atom.html",
+"classloos_1_1_options_framework_1_1_basic_water.html#abf1ad5e9c24f74eb1b65fbb81e4c054f",
+"classloos_1_1_time_series.html#a3021670d656f88c6a5be27073b587cfd",
+"classloos_1_1internal_1_1_x_d_r_reader.html#a8786be258c9fe776087e6866761c5193",
+"functions_func_y.html",
+"structloos_1_1_atom_selector.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

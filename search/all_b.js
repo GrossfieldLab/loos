@@ -14,6 +14,7 @@ var searchData=
   ['line',['line',['../classloos_1_1_line_reader.html#aa886fd3e95a77a9223e0941a83fc669f',1,'loos::LineReader']]],
   ['linenumber',['lineNumber',['../classloos_1_1_file_read_error_with_line.html#af0564d4812c28b8a1cfa36bdf6386064',1,'loos::FileReadErrorWithLine::lineNumber()'],['../classloos_1_1_line_reader.html#a76e723cda9f4f472d970139cbdbaee2c',1,'loos::LineReader::lineNumber()']]],
   ['linereader',['LineReader',['../classloos_1_1_line_reader.html',1,'loos']]],
+  ['lipid_5flifetime',['lipid_lifetime',['../namespacelipid__lifetime.html',1,'']]],
   ['load',['load',['../classloos_1_1_x_form.html#a35f711407cd24086e7a6da625d302c70',1,'loos::XForm']]],
   ['loadstructurewithcoords',['loadStructureWithCoords',['../namespaceloos.html#a8b873907a2cd5784dbfd14b20c0f2edb',1,'loos']]],
   ['logicaland',['logicalAnd',['../classloos_1_1internal_1_1logical_and.html',1,'loos::internal']]],

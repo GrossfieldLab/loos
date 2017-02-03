@@ -2,7 +2,7 @@ var classloos_1_1_tinker_arc =
 [
     [ "TinkerArc", "classloos_1_1_tinker_arc.html#a1e80f1a3053cf9e8d58bef71e1c00c96", null ],
     [ "TinkerArc", "classloos_1_1_tinker_arc.html#a8f3b4fbf9bd56c342008a0b96c777666", null ],
-    [ "coords", "classloos_1_1_tinker_arc.html#ac1b1d4d3206943fa70902f4da19c8e64", null ],
+    [ "coords", "classloos_1_1_tinker_arc.html#aa0b44ef2196d9a6baa2325d1d050858f", null ],
     [ "currentFrame", "classloos_1_1_tinker_arc.html#afee44a3bb39661abdb9210d8b6ebcb87", null ],
     [ "description", "classloos_1_1_tinker_arc.html#a4df61428796f71bc4b99a98a701953b3", null ],
     [ "hasPeriodicBox", "classloos_1_1_tinker_arc.html#abb894526151fb62f8ecc7c6440e8b876", null ],

@@ -30,20 +30,21 @@ var index =
         [ "Usage", "selections.html#Usage", null ]
       ] ]
     ] ],
+    [ "Common Command-Line Options for Tools", "common_options.html", null ],
     [ "Supported File Formats", "formats.html", null ],
     [ "Citing LOOS in published work", "citing.html", null ],
     [ "What's new in PyLOOS", "new_pyloos.html", null ],
     [ "Exceptions in LOOS and PyLOOS", "exceptions.html", null ],
-    [ "Change Log", "_changes.html", "_changes" ],
-    [ "Frequently Asked Questions", "_f_a_q.html", [
-      [ "LOOS", "_f_a_q.html#faq_loos", [
-        [ "Building LOOS (and building with LOOS)", "_f_a_q.html#faq_loos_building", null ],
-        [ "Using LOOS Tools", "_f_a_q.html#faq_loos_using_tools", null ],
-        [ "Using the LOOS Library", "_f_a_q.html#faq_loos_library", null ]
+    [ "Change Log", "changes.html", "changes" ],
+    [ "Frequently Asked Questions", "faq.html", [
+      [ "LOOS", "faq.html#faq_loos", [
+        [ "Building LOOS (and building with LOOS)", "faq.html#faq_loos_building", null ],
+        [ "Using LOOS Tools", "faq.html#faq_loos_using_tools", null ],
+        [ "Using the LOOS Library", "faq.html#faq_loos_library", null ]
       ] ],
-      [ "PyLOOS", "_f_a_q.html#faq_pyloos", [
-        [ "Building PyLOOS", "_f_a_q.html#faq_pyloos_building", null ],
-        [ "Using PyLOOS", "_f_a_q.html#faq_pyloos_using", null ]
+      [ "PyLOOS", "faq.html#faq_pyloos", [
+        [ "Building PyLOOS", "faq.html#faq_pyloos_building", null ],
+        [ "Using PyLOOS", "faq.html#faq_pyloos_using", null ]
       ] ]
     ] ],
     [ "Selection Language", "selections.html", [

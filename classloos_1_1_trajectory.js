@@ -1,12 +1,18 @@
 var classloos_1_1_trajectory =
 [
+    [ "pStream", "classloos_1_1_trajectory.html#a611b92b931a09a91228b5c7292f0f5c8", null ],
     [ "Trajectory", "classloos_1_1_trajectory.html#a0bd711cfc0900e2b2bc6e1ffadd64e80", null ],
     [ "Trajectory", "classloos_1_1_trajectory.html#a5abb3f30026abefa895dbe8a42d39f60", null ],
     [ "Trajectory", "classloos_1_1_trajectory.html#a10381f0c12d897846a63468530fb1357", null ],
+    [ "Trajectory", "classloos_1_1_trajectory.html#a98136adf6594215cfa18197808c1b3af", null ],
     [ "~Trajectory", "classloos_1_1_trajectory.html#af687ca46abddf628f2e19dd891c4039b", null ],
-    [ "coords", "classloos_1_1_trajectory.html#ab600f0488189a7cdabcc200fdd4f77d5", null ],
+    [ "atEnd", "classloos_1_1_trajectory.html#af1a69e9f0c04ec43894753308472e94b", null ],
+    [ "coords", "classloos_1_1_trajectory.html#a1de7470e8852a546a4fc001b4609eda2", null ],
+    [ "currentFrame", "classloos_1_1_trajectory.html#abf32174823a45d0fe0c792011a934ad4", null ],
     [ "description", "classloos_1_1_trajectory.html#a7fce434a8f372d257ce8e11e4c258497", null ],
+    [ "filename", "classloos_1_1_trajectory.html#a2363a8a8f8b8310e98e9e3dff4d2cd93", null ],
     [ "hasPeriodicBox", "classloos_1_1_trajectory.html#a6101938231bae94ac195e55a564c9e1b", null ],
+    [ "hasVelocities", "classloos_1_1_trajectory.html#ac56e29a6f2ee56cfe2bb95c2085b9468", null ],
     [ "natoms", "classloos_1_1_trajectory.html#a1ab434e1e225e31442888328da0d8804", null ],
     [ "nframes", "classloos_1_1_trajectory.html#a5c2537451ab08a45a4151866da200f63", null ],
     [ "parseFrame", "classloos_1_1_trajectory.html#a8d040ed60c453e1895d1b220a64ab384", null ],
@@ -16,9 +22,15 @@ var classloos_1_1_trajectory =
     [ "rewind", "classloos_1_1_trajectory.html#a02f2c8dffd8eabbc579cbb0787df8f47", null ],
     [ "seekFrame", "classloos_1_1_trajectory.html#ac5b4b662ddd3b267d14b5689d9b9cff8", null ],
     [ "seekNextFrame", "classloos_1_1_trajectory.html#a910255eb6b71be29e23d4fa6c172e80b", null ],
+    [ "setInputStream", "classloos_1_1_trajectory.html#a08451065aacabd036096efe7ba392828", null ],
+    [ "setInputStream", "classloos_1_1_trajectory.html#a74c4e54c8413329d829bd67dca1ac5f8", null ],
     [ "timestep", "classloos_1_1_trajectory.html#ad2f937e215d073b325647bee9518ede8", null ],
     [ "updateGroupCoords", "classloos_1_1_trajectory.html#a2d1304fd897a2b96dc17478a4c6c6e19", null ],
+    [ "updateGroupVelocities", "classloos_1_1_trajectory.html#a71631539f67356165722e70918228ed3", null ],
+    [ "velocities", "classloos_1_1_trajectory.html#ab208012c2077992eea43d2ae38ba61f1", null ],
+    [ "velocityConversionFactor", "classloos_1_1_trajectory.html#ab3112f53485cc4d232a41a80dfbefa30", null ],
+    [ "_current_frame", "classloos_1_1_trajectory.html#a3ec31fc5ff95c9deb8931085716f3fa8", null ],
     [ "_filename", "classloos_1_1_trajectory.html#ad42ff110589cb6d620d6521683666e3b", null ],
     [ "cached_first", "classloos_1_1_trajectory.html#ab5957b45421bee71053dde172e930106", null ],
-    [ "ifs", "classloos_1_1_trajectory.html#aee90667413b54ab5eab3c09b073bcba7", null ]
+    [ "ifs", "classloos_1_1_trajectory.html#a1153eb9414e08e1d5e0e6b5f51a8539d", null ]
 ];

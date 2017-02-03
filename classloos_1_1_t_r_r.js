@@ -3,7 +3,7 @@ var classloos_1_1_t_r_r =
     [ "TRR", "classloos_1_1_t_r_r.html#abe75880be87786b8dbb90f0e7f1ac9df", null ],
     [ "TRR", "classloos_1_1_t_r_r.html#af379a6abaf744ee3dc4ae992cc8b8d48", null ],
     [ "TRR", "classloos_1_1_t_r_r.html#a54968d45be7ebe304e2ebade59e1b4b8", null ],
-    [ "coords", "classloos_1_1_t_r_r.html#a3df5183ab84112b99669492cc8fc2858", null ],
+    [ "coords", "classloos_1_1_t_r_r.html#ae8726281a008719ea982fb9d54e56ced", null ],
     [ "description", "classloos_1_1_t_r_r.html#af378867ccf165dd0268214edd14e6ccd", null ],
     [ "forces", "classloos_1_1_t_r_r.html#ab0af804fb7e30e9beaef34b73adbc37f", null ],
     [ "hasCoords", "classloos_1_1_t_r_r.html#acaec981697eadf428025c8a440fedfa5", null ],
@@ -22,6 +22,5 @@ var classloos_1_1_t_r_r =
     [ "step", "classloos_1_1_t_r_r.html#a16a251142f729f3fce5c3f1256261b5e", null ],
     [ "time", "classloos_1_1_t_r_r.html#aaa1113c9aa9bcdb6428248f897576187", null ],
     [ "timestep", "classloos_1_1_t_r_r.html#abb33ddd908ea79c00bf906d8df553edd", null ],
-    [ "velocities", "classloos_1_1_t_r_r.html#a698fdcea2d831f7f56e87fdf6bd239b4", null ],
     [ "virial", "classloos_1_1_t_r_r.html#a51f3efc56abf8fb739923ded016f95f8", null ]
 ];

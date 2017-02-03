@@ -12,5 +12,6 @@ var searchData=
   ['distancecutoff',['DistanceCutoff',['../class_e_n_m_1_1_distance_cutoff.html',1,'ENM']]],
   ['distanceweight',['DistanceWeight',['../class_e_n_m_1_1_distance_weight.html',1,'ENM']]],
   ['drop',['drop',['../classloos_1_1internal_1_1drop.html',1,'loos::internal']]],
+  ['dualworker',['DualWorker',['../class_dual_worker.html',1,'']]],
   ['dup',['dup',['../classloos_1_1internal_1_1dup.html',1,'loos::internal']]]
 ];

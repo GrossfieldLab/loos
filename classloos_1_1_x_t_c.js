@@ -2,7 +2,7 @@ var classloos_1_1_x_t_c =
 [
     [ "XTC", "classloos_1_1_x_t_c.html#a0094f89966bca368f47da9f08a9371a7", null ],
     [ "XTC", "classloos_1_1_x_t_c.html#a5998bd913e63d5681520990e36786ca8", null ],
-    [ "coords", "classloos_1_1_x_t_c.html#a8e6aa92416925888a71642d429a7b891", null ],
+    [ "coords", "classloos_1_1_x_t_c.html#a98fc177e32d8cd0d0c9d20bfb869b229", null ],
     [ "currentStep", "classloos_1_1_x_t_c.html#ac0ad1d28108c597194cf48fbdf0e126e", null ],
     [ "currentTime", "classloos_1_1_x_t_c.html#a71c69e2846c10e2adf907e62c1eee993", null ],
     [ "description", "classloos_1_1_x_t_c.html#a509ebe17f357dcc4d8e2ca075520e1fc", null ],

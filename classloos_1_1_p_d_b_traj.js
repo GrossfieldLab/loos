@@ -2,7 +2,7 @@ var classloos_1_1_p_d_b_traj =
 [
     [ "PDBTraj", "classloos_1_1_p_d_b_traj.html#a03ee467632a8dd82448d478b89f0ba97", null ],
     [ "PDBTraj", "classloos_1_1_p_d_b_traj.html#a02129052b8636ebf8c9752537d162a1b", null ],
-    [ "coords", "classloos_1_1_p_d_b_traj.html#aae4c3cc308f40ef88e43433df489805c", null ],
+    [ "coords", "classloos_1_1_p_d_b_traj.html#a179cabb190c4f248f27a3110f75c61d0", null ],
     [ "currentFrame", "classloos_1_1_p_d_b_traj.html#a130cbfc0943163e555839677125907ee", null ],
     [ "currentName", "classloos_1_1_p_d_b_traj.html#af69c42008273685501e4d83d68f5798c", null ],
     [ "description", "classloos_1_1_p_d_b_traj.html#a62aef1cfb39d060f3e13b9b2eddb9647", null ],

@@ -59,6 +59,7 @@ var namespaceloos =
     [ "MatrixWriteImpl", "structloos_1_1_matrix_write_impl.html", null ],
     [ "MatrixWriteImpl< T, Math::Triangular, S, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4.html", null ],
     [ "MatrixWriteImpl< T, P, Math::SparseArray, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4.html", null ],
+    [ "MultiTrajectory", "classloos_1_1_multi_trajectory.html", "classloos_1_1_multi_trajectory" ],
     [ "NotSelector", "structloos_1_1_not_selector.html", "structloos_1_1_not_selector" ],
     [ "NumericalError", "classloos_1_1_numerical_error.html", "classloos_1_1_numerical_error" ],
     [ "OptionsError", "classloos_1_1_options_error.html", "classloos_1_1_options_error" ],

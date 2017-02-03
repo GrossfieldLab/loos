@@ -8,6 +8,7 @@ var namespaceloos_1_1_options_framework =
     [ "BasicTrajectory", "classloos_1_1_options_framework_1_1_basic_trajectory.html", "classloos_1_1_options_framework_1_1_basic_trajectory" ],
     [ "BasicWater", "classloos_1_1_options_framework_1_1_basic_water.html", "classloos_1_1_options_framework_1_1_basic_water" ],
     [ "ModelWithCoords", "classloos_1_1_options_framework_1_1_model_with_coords.html", "classloos_1_1_options_framework_1_1_model_with_coords" ],
+    [ "MultiTrajOptions", "classloos_1_1_options_framework_1_1_multi_traj_options.html", "classloos_1_1_options_framework_1_1_multi_traj_options" ],
     [ "OptionsPackage", "classloos_1_1_options_framework_1_1_options_package.html", "classloos_1_1_options_framework_1_1_options_package" ],
     [ "OutputPrefix", "classloos_1_1_options_framework_1_1_output_prefix.html", "classloos_1_1_options_framework_1_1_output_prefix" ],
     [ "OutputTrajectoryOptions", "classloos_1_1_options_framework_1_1_output_trajectory_options.html", "classloos_1_1_options_framework_1_1_output_trajectory_options" ],

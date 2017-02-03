@@ -5,6 +5,7 @@ var searchData=
   ['indexselector',['IndexSelector',['../structloos_1_1_index_selector.html',1,'loos']]],
   ['indextogrid',['indexToGrid',['../classloos_1_1_density_tools_1_1_density_grid.html#ad2574f6d41e0a2e46a64640f841250b1',1,'loos::DensityTools::DensityGrid']]],
   ['inrange',['inRange',['../classloos_1_1_density_tools_1_1_density_grid.html#a293babd1ab4152309768dc05918f6b66',1,'loos::DensityTools::DensityGrid']]],
+  ['inside_5fhelices',['inside_helices',['../namespaceinside__helices.html',1,'']]],
   ['internal',['internal',['../classloos_1_1_fmt.html#ab717da534c8f092a11aec0e1ae8ce5b3',1,'loos::Fmt']]],
   ['intersect',['intersect',['../classloos_1_1_atomic_group.html#a872a5b02eca7320f51181b5a8385e6e5',1,'loos::AtomicGroup::intersect(const AtomicGroup &amp;g, const EqualsOp &amp;op)'],['../classloos_1_1_atomic_group.html#a3314820bb1af318a9fbbc492a8c41d92',1,'loos::AtomicGroup::intersect(const AtomicGroup &amp;g)']]],
   ['inversehessian',['inverseHessian',['../class_e_n_m_1_1_a_n_m.html#a1eb66359d1ddb1f086789c8707d7b97b',1,'ENM::ANM']]],

@@ -29,7 +29,7 @@ var searchData=
   ['showhelp',['showHelp',['../classloos_1_1_options_framework_1_1_aggregate_options.html#a9a4db2c9be1d056b851b6f0fe640aeff',1,'loos::OptionsFramework::AggregateOptions']]],
   ['shufflecolumns',['shuffleColumns',['../namespaceloos_1_1_math.html#a9a6aa7c7dc971c33f48138f4a147ee0b',1,'loos::Math']]],
   ['shufflecolumnvector',['shuffleColumnVector',['../namespaceloos_1_1_math.html#ade064b159445bed1eed073e5c98f63d9',1,'loos::Math']]],
-  ['size',['size',['../classloos_1_1_unique_strings.html#a01290998a3dac9cbd490192769d0e2da',1,'loos::UniqueStrings']]],
+  ['size',['size',['../classloos_1_1_multi_trajectory.html#a1d0bf9e7ca0ef02c7cc3b86d9a8d42be',1,'loos::MultiTrajectory::size()'],['../classloos_1_1_unique_strings.html#a01290998a3dac9cbd490192769d0e2da',1,'loos::UniqueStrings::size()']]],
   ['skip',['skip',['../classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html#aa2a2f24539c4963d99157c9f055b47ad',1,'loos.pyloos.trajectories.Trajectory.skip()'],['../classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#adc0b0e8100c20effee738a7dde06809d',1,'loos.pyloos.trajectories.VirtualTrajectory.skip()']]],
   ['solve',['solve',['../class_e_n_m_1_1_a_n_m.html#a93b88292c3656a28181ba70920ec9455',1,'ENM::ANM::solve()'],['../class_e_n_m_1_1_elastic_network_model.html#adb3dfb51139db62440e908fab607789e',1,'ENM::ElasticNetworkModel::solve()'],['../class_e_n_m_1_1_v_s_a.html#a481cfb2efda44c9d89e71d55280b890d',1,'ENM::VSA::solve()']]],
   ['sort',['sort',['../classloos_1_1_atomic_group.html#ae4df4c4e55665b8c6f8d09fc467fc35c',1,'loos::AtomicGroup']]],

@@ -3,7 +3,7 @@ var classloos_1_1_c_c_p_d_b =
     [ "CCPDB", "classloos_1_1_c_c_p_d_b.html#a0c4c164c0c61398d0e3739abb79623e6", null ],
     [ "CCPDB", "classloos_1_1_c_c_p_d_b.html#af3dbeb7240d67d2bc9d7776543ffd4f6", null ],
     [ "CCPDB", "classloos_1_1_c_c_p_d_b.html#a6049c4b6e28a774bff30b57fa3ea889e", null ],
-    [ "coords", "classloos_1_1_c_c_p_d_b.html#af80f98d9c2e3a64bbe750300113372bc", null ],
+    [ "coords", "classloos_1_1_c_c_p_d_b.html#a8567a793aa1a93350781d2b5d472f948", null ],
     [ "currentFrame", "classloos_1_1_c_c_p_d_b.html#a069933c7dc10bb9d5893744f40efd742", null ],
     [ "description", "classloos_1_1_c_c_p_d_b.html#a4dc5bc9fc6233aae277eb4593b8b8188", null ],
     [ "hasPeriodicBox", "classloos_1_1_c_c_p_d_b.html#a4f8010c4bef8ba88fb729eb1cab0f047", null ],

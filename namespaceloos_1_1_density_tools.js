@@ -15,6 +15,7 @@ var namespaceloos_1_1_density_tools =
     [ "WaterFilterBase", "classloos_1_1_density_tools_1_1_water_filter_base.html", "classloos_1_1_density_tools_1_1_water_filter_base" ],
     [ "WaterFilterBlob", "classloos_1_1_density_tools_1_1_water_filter_blob.html", "classloos_1_1_density_tools_1_1_water_filter_blob" ],
     [ "WaterFilterBox", "classloos_1_1_density_tools_1_1_water_filter_box.html", "classloos_1_1_density_tools_1_1_water_filter_box" ],
+    [ "WaterFilterContacts", "classloos_1_1_density_tools_1_1_water_filter_contacts.html", "classloos_1_1_density_tools_1_1_water_filter_contacts" ],
     [ "WaterFilterCore", "classloos_1_1_density_tools_1_1_water_filter_core.html", "classloos_1_1_density_tools_1_1_water_filter_core" ],
     [ "WaterFilterDecorator", "classloos_1_1_density_tools_1_1_water_filter_decorator.html", "classloos_1_1_density_tools_1_1_water_filter_decorator" ],
     [ "WaterFilterRadius", "classloos_1_1_density_tools_1_1_water_filter_radius.html", "classloos_1_1_density_tools_1_1_water_filter_radius" ],

@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html" title="Python&#45;based wrapper for LOOS Trajectories This class turns a loos Trajectory into something more pyt..." alt="" coords="111,5,271,47"/>
-<area shape="rect" id="node3" href="$classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html" title="Virtual trajectory composed of multiple Trajectory objects This class can combine multiple loos..." alt="" coords="111,71,271,112"/>
-<area shape="rect" id="node4" href="$classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html" title="A virtual trajectory that supports iterative alignment. " alt="" coords="319,71,479,112"/>
+<area shape="rect" id="node1" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs. " alt="" coords="5,31,189,57"/>
+<area shape="rect" id="node2" href="$class_e_n_m_1_1_a_n_m.html" title="Anisotropic network model. " alt="" coords="237,5,328,32"/>
+<area shape="rect" id="node3" href="$class_e_n_m_1_1_v_s_a.html" title="Vibrational subsystem analysis ENM. " alt="" coords="239,56,326,83"/>
 </map>

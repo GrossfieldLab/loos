@@ -12,7 +12,8 @@ var classloos_1_1_atom =
       [ "usr1bit", "classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53a5a23c6633b96f16ce4b2a8a920059d74", null ],
       [ "usr2bit", "classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53aecc1bc1ece43492f1e97bcda86ea7eb2", null ],
       [ "usr3bit", "classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53ae42d983e621b5979cb5bcd4199013392", null ],
-      [ "indexbit", "classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53a483bf40122e898b178a70d0ada8dbb29", null ]
+      [ "indexbit", "classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53a483bf40122e898b178a70d0ada8dbb29", null ],
+      [ "velbit", "classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53acbe8fc88a79f01a751ddf4a0d7f2c1b2", null ]
     ] ],
     [ "Atom", "classloos_1_1_atom.html#a4c2f2fce4ac366edbe6f156c748c4f13", null ],
     [ "Atom", "classloos_1_1_atom.html#ac4d9dc7b33f7be0be66c105c5c623eab", null ],
@@ -67,5 +68,8 @@ var classloos_1_1_atom =
     [ "segid", "classloos_1_1_atom.html#a844a5973cc0c2c90a77e4517a443b36c", null ],
     [ "setBonds", "classloos_1_1_atom.html#a5918f127cff08b66c4d7c8568b1e547b", null ],
     [ "setProperty", "classloos_1_1_atom.html#a43f9821991e847aa9264b064f8304d22", null ],
+    [ "velocities", "classloos_1_1_atom.html#a29d937cd6617b45e5f7cbc6db616f0e7", null ],
+    [ "velocities", "classloos_1_1_atom.html#a8127610a27149ecc591cd4f79176e49e", null ],
+    [ "velocities", "classloos_1_1_atom.html#a9466b0ac6e42c1dfd6a42d4a20fa2eb7", null ],
     [ "operator<<", "classloos_1_1_atom.html#a0b4533cd3ad55d6afaba9d291ded714b", null ]
 ];

@@ -34,6 +34,10 @@ var hierarchy =
       [ "loos::internal::pushInt", "classloos_1_1internal_1_1push_int.html", null ],
       [ "loos::internal::pushString", "classloos_1_1internal_1_1push_string.html", null ]
     ] ],
+    [ "Action", null, [
+      [ "all_contacts.FullHelp", "classall__contacts_1_1_full_help.html", null ],
+      [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ]
+    ] ],
     [ "loos::OptionsFramework::AggregateOptions", "classloos_1_1_options_framework_1_1_aggregate_options.html", null ],
     [ "loos::AscendingSort< T >", "classloos_1_1_ascending_sort.html", null ],
     [ "loos::Atom", "classloos_1_1_atom.html", null ],
@@ -74,6 +78,17 @@ var hierarchy =
       [ "loos::DensityTools::ZClipEstimator", "classloos_1_1_density_tools_1_1_z_clip_estimator.html", null ],
       [ "loos::DensityTools::ZSliceEstimator", "classloos_1_1_density_tools_1_1_z_slice_estimator.html", null ]
     ] ],
+    [ "CalcPropertyBase", "class_calc_property_base.html", [
+      [ "CalcProperty< T >", "class_calc_property.html", null ],
+      [ "CalcProperty< double >", "class_calc_property.html", [
+        [ "CalcDensity", "class_calc_density.html", null ],
+        [ "CalcHeight", "class_calc_height.html", null ],
+        [ "CalcMolOrder", "class_calc_mol_order.html", null ]
+      ] ],
+      [ "CalcProperty< loos::GCoord >", "class_calc_property.html", [
+        [ "CalcOrientVector", "class_calc_orient_vector.html", null ]
+      ] ]
+    ] ],
     [ "loos::Math::ColMajor", "classloos_1_1_math_1_1_col_major.html", [
       [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ]
     ] ],
@@ -90,6 +105,7 @@ var hierarchy =
     [ "loos::DensityTools::DensityGridPlane< T >", "classloos_1_1_density_tools_1_1_density_grid_plane.html", null ],
     [ "loos::DensityTools::DensityGridRow< T >", "classloos_1_1_density_tools_1_1_density_grid_row.html", null ],
     [ "loos::DescendingSort< T >", "classloos_1_1_descending_sort.html", null ],
+    [ "DualWorker", "class_dual_worker.html", null ],
     [ "Voronoi.Edge", "class_voronoi_1_1_edge.html", null ],
     [ "ENM::ElasticNetworkModel", "class_e_n_m_1_1_elastic_network_model.html", [
       [ "ENM::ANM", "class_e_n_m_1_1_a_n_m.html", null ],
@@ -123,13 +139,18 @@ var hierarchy =
       ] ]
     ] ],
     [ "loos::Fmt", "classloos_1_1_fmt.html", null ],
+    [ "grammar", null, [
+      [ "loos::internal::RangeParser< Iterator >", "structloos_1_1internal_1_1_range_parser.html", null ]
+    ] ],
     [ "loos::HBondDetector", "classloos_1_1_h_bond_detector.html", null ],
+    [ "Header", "struct_header.html", null ],
     [ "loos::AtomicGroup::Iterator", "classloos_1_1_atomic_group_1_1_iterator.html", null ],
     [ "iterator_facade", null, [
       [ "loos::DensityTools::DensityGridIterator< T, R >", "classloos_1_1_density_tools_1_1_density_grid_iterator.html", null ]
     ] ],
     [ "loos::Kernel", "classloos_1_1_kernel.html", null ],
     [ "loos::LineReader", "classloos_1_1_line_reader.html", null ],
+    [ "Master", "class_master.html", null ],
     [ "loos::Matrix44< T >", "classloos_1_1_matrix44.html", null ],
     [ "loos::MatrixReadImpl< T, P, S >", "structloos_1_1_matrix_read_impl.html", null ],
     [ "loos::MatrixReadImpl< T, Math::Triangular, S >", "structloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4.html", null ],
@@ -138,18 +159,7 @@ var hierarchy =
     [ "loos::MatrixWriteImpl< T, Math::Triangular, S, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4.html", null ],
     [ "loos::MatrixWriteImpl< T, P, Math::SparseArray, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4.html", null ],
     [ "noncopyable", null, [
-      [ "loos::StreamWrapper", "classloos_1_1_stream_wrapper.html", null ],
-      [ "loos::Trajectory", "classloos_1_1_trajectory.html", [
-        [ "loos::AmberNetcdf", "classloos_1_1_amber_netcdf.html", null ],
-        [ "loos::AmberRst", "classloos_1_1_amber_rst.html", null ],
-        [ "loos::AmberTraj", "classloos_1_1_amber_traj.html", null ],
-        [ "loos::CCPDB", "classloos_1_1_c_c_p_d_b.html", null ],
-        [ "loos::DCD", "classloos_1_1_d_c_d.html", null ],
-        [ "loos::PDBTraj", "classloos_1_1_p_d_b_traj.html", null ],
-        [ "loos::TinkerArc", "classloos_1_1_tinker_arc.html", null ],
-        [ "loos::TRR", "classloos_1_1_t_r_r.html", null ],
-        [ "loos::XTC", "classloos_1_1_x_t_c.html", null ]
-      ] ]
+      [ "loos::StreamWrapper", "classloos_1_1_stream_wrapper.html", null ]
     ] ],
     [ "loos::DensityTools::NonzeroDensity< T >", "classloos_1_1_density_tools_1_1_nonzero_density.html", null ],
     [ "object", null, [
@@ -166,12 +176,16 @@ var hierarchy =
       [ "loos::OptionsFramework::BasicTrajectory", "classloos_1_1_options_framework_1_1_basic_trajectory.html", null ],
       [ "loos::OptionsFramework::BasicWater", "classloos_1_1_options_framework_1_1_basic_water.html", null ],
       [ "loos::OptionsFramework::ModelWithCoords", "classloos_1_1_options_framework_1_1_model_with_coords.html", null ],
+      [ "loos::OptionsFramework::MultiTrajOptions", "classloos_1_1_options_framework_1_1_multi_traj_options.html", null ],
       [ "loos::OptionsFramework::OutputPrefix", "classloos_1_1_options_framework_1_1_output_prefix.html", null ],
       [ "loos::OptionsFramework::OutputTrajectoryOptions", "classloos_1_1_options_framework_1_1_output_trajectory_options.html", null ],
       [ "loos::OptionsFramework::OutputTrajectoryTypeOptions", "classloos_1_1_options_framework_1_1_output_trajectory_type_options.html", null ],
       [ "loos::OptionsFramework::RequiredArguments", "classloos_1_1_options_framework_1_1_required_arguments.html", null ],
       [ "loos::OptionsFramework::TrajectoryWithFrameIndices", "classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html", null ],
-      [ "loos::OptionsFramework::TwoModelsWithCoords", "classloos_1_1_options_framework_1_1_two_models_with_coords.html", null ]
+      [ "loos::OptionsFramework::TwoModelsWithCoords", "classloos_1_1_options_framework_1_1_two_models_with_coords.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ]
     ] ],
     [ "loos::internal::OutputTrajectoryNameBindingType", "structloos_1_1internal_1_1_output_trajectory_name_binding_type.html", null ],
     [ "loos::Parser", "classloos_1_1_parser.html", null ],
@@ -179,9 +193,12 @@ var hierarchy =
     [ "loos::PercentTrigger", "classloos_1_1_percent_trigger.html", null ],
     [ "loos::PeriodicBox", "classloos_1_1_periodic_box.html", null ],
     [ "loos::PreciseMatrixFormatter< T >", "classloos_1_1_precise_matrix_formatter.html", null ],
+    [ "loos::internal::RangeItem", "structloos_1_1internal_1_1_range_item.html", null ],
+    [ "RegexFmt", "struct_regex_fmt.html", null ],
     [ "Voronoi.Region", "class_voronoi_1_1_region.html", null ],
     [ "loos::Remarks", "classloos_1_1_remarks.html", null ],
     [ "loos::Math::RowMajor", "classloos_1_1_math_1_1_row_major.html", null ],
+    [ "ScanfFmt", "struct_scanf_fmt.html", null ],
     [ "loos::ScientificMatrixFormatter< T >", "classloos_1_1_scientific_matrix_formatter.html", null ],
     [ "loos::Math::SharedArray< T >", "classloos_1_1_math_1_1_shared_array.html", null ],
     [ "loos::Math::SharedArray< int >", "classloos_1_1_math_1_1_shared_array.html", [
@@ -194,6 +211,8 @@ var hierarchy =
     ] ],
     [ "loos::DensityTools::SimpleMeta", "classloos_1_1_density_tools_1_1_simple_meta.html", null ],
     [ "Simplex< T >", "class_simplex.html", null ],
+    [ "SingleWorker", "class_single_worker.html", null ],
+    [ "SortDatum", "struct_sort_datum.html", null ],
     [ "loos::Math::SparseArray< T >", "classloos_1_1_math_1_1_sparse_array.html", null ],
     [ "ENM::SpringFunction", "class_e_n_m_1_1_spring_function.html", [
       [ "ENM::UniformSpringFunction", "class_e_n_m_1_1_uniform_spring_function.html", [
@@ -214,9 +233,22 @@ var hierarchy =
     ] ],
     [ "Voronoi.SuperRegion", "class_voronoi_1_1_super_region.html", null ],
     [ "loos::internal::SystemNameBindingType", "structloos_1_1internal_1_1_system_name_binding_type.html", null ],
+    [ "Threader< W >", "class_threader.html", null ],
     [ "loos::DensityTools::Threshold< T >", "classloos_1_1_density_tools_1_1_threshold.html", null ],
     [ "loos::DensityTools::ThresholdRange< T >", "classloos_1_1_density_tools_1_1_threshold_range.html", null ],
     [ "loos::TimeSeries< T >", "classloos_1_1_time_series.html", null ],
+    [ "loos::Trajectory", "classloos_1_1_trajectory.html", [
+      [ "loos::AmberNetcdf", "classloos_1_1_amber_netcdf.html", null ],
+      [ "loos::AmberRst", "classloos_1_1_amber_rst.html", null ],
+      [ "loos::AmberTraj", "classloos_1_1_amber_traj.html", null ],
+      [ "loos::CCPDB", "classloos_1_1_c_c_p_d_b.html", null ],
+      [ "loos::DCD", "classloos_1_1_d_c_d.html", null ],
+      [ "loos::MultiTrajectory", "classloos_1_1_multi_trajectory.html", null ],
+      [ "loos::PDBTraj", "classloos_1_1_p_d_b_traj.html", null ],
+      [ "loos::TinkerArc", "classloos_1_1_tinker_arc.html", null ],
+      [ "loos::TRR", "classloos_1_1_t_r_r.html", null ],
+      [ "loos::XTC", "classloos_1_1_x_t_c.html", null ]
+    ] ],
     [ "loos::internal::TrajectoryNameBindingType", "structloos_1_1internal_1_1_trajectory_name_binding_type.html", null ],
     [ "loos::TrajectoryWriter", "classloos_1_1_trajectory_writer.html", [
       [ "loos::DCDWriter", "classloos_1_1_d_c_d_writer.html", null ],
@@ -238,6 +270,7 @@ var hierarchy =
       [ "loos::DensityTools::WaterFilterAxis", "classloos_1_1_density_tools_1_1_water_filter_axis.html", null ],
       [ "loos::DensityTools::WaterFilterBlob", "classloos_1_1_density_tools_1_1_water_filter_blob.html", null ],
       [ "loos::DensityTools::WaterFilterBox", "classloos_1_1_density_tools_1_1_water_filter_box.html", null ],
+      [ "loos::DensityTools::WaterFilterContacts", "classloos_1_1_density_tools_1_1_water_filter_contacts.html", null ],
       [ "loos::DensityTools::WaterFilterCore", "classloos_1_1_density_tools_1_1_water_filter_core.html", null ],
       [ "loos::DensityTools::WaterFilterDecorator", "classloos_1_1_density_tools_1_1_water_filter_decorator.html", [
         [ "loos::DensityTools::BulkedWaterFilter", "classloos_1_1_density_tools_1_1_bulked_water_filter.html", null ],
@@ -250,8 +283,8 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
     [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
+    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
     [ "OrderPolicy", null, [
       [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
     ] ],
