@@ -50,16 +50,16 @@ Our goal in developing LOOS is to make it easier to analyze molecular
 dynamics simulations.  LOOS is a code library for developing new analysis
 applications, designed to simplify the common tasks (reading structure and
 trajectory files, selecting atoms, computing geometric quantities) found in
-almost every application.  Moreover, it is distributed with a 
+almost every application.  Moreover, it is distributed with a
 number of useful standalone tools, ranging from simple things like radial
-distribution functions and radii of gyration to principal component 
-analysis to sophisticated methods for analyzing statistical errors.  
+distribution functions and radii of gyration to principal component
+analysis to sophisticated methods for analyzing statistical errors.
 
 LOOS has several major features:
     - It transparently reads the native file formats for most major
       biomolecular simulation pacakges, including CHARMM, NAMD, gromacs,
       AMBER, and Tinker.
-    - It uses an expressive syntax to allow selection of atoms using 
+    - It uses an expressive syntax to allow selection of atoms using
       all available metadata (e.g. atom number, residue name, etc).
       For more information see \subpage selections "Selection Language".
     - It allows novel analysis applications to be developed rapidly, with
@@ -92,7 +92,7 @@ their inclusion.  Some of the code for these programs is found in the Tools/
 directories, while other related programs are grouped together as Packages
 (e.g. Packages/Convergence/).
 
-For more information, see the 
+For more information, see the
     \subpage tools "Tools page"
 
 In addition to providing valuable functionality (principal component
@@ -189,7 +189,7 @@ LOOS reads the native file formats for most major biomolecular simulation packag
 <tr align="center">  <td> Tinker </td>  <td> arc </td> <td> </td> </tr>
 </table>
 
-LOOS can write structures out in PDB format or a native pseudo-xml format, and can write 
+LOOS can write structures out in PDB format or a native pseudo-xml format, and can write
 trajectories in either DCD or XTC format.
 
 */
@@ -204,7 +204,7 @@ after C/PERL expressions and includes support for PERL-style regular
 expressions via Boost.  There are two kinds of literals supported:
 strings and numbers.  Numbers are any valid integer.  Strings are
 delimited by either single quotes or double quotes, so both of the
-following are valid strings: 
+following are valid strings:
 \verbatim
 "a string"
 'another string'
@@ -213,7 +213,7 @@ following are valid strings:
 An important caveat to integer numbers is that LOOS assumes that none
 will be negative.  In other words, no atomid nor resid nor number
 extracted from a segid (see \ref magops_explained magical ops
-below) will evaluate to a 
+below) will evaluate to a
 negative number.  The relational operators &lt; and &lt;= will behave
 differently if either operand is a negative number.  In this case,
 they will evaluate to false, for reasons that will become obvious when
@@ -618,7 +618,7 @@ If your libraries are installed in non-standard locations, you may
 need to tell LOOS where its required components are.  There are two
 ways you can tell SCons where to look for those libraries.  The first
 is to specify it on the command-line.  The second, described later, is
-to use a <TT>custom.py</TT> file.  
+to use a <TT>custom.py</TT> file.
 
 Using the command line, if you have Boost
 installed in <TT>/usr/local/boost_1_54_0</TT>, build LOOS using:
@@ -730,7 +730,7 @@ compiler is used to build LOOS by setting the CXX variable in your
 "custom.py" file.
 
 Note: Settings in the custom.py file can be overridden using the
-command-line and the shell environment.  
+command-line and the shell environment.
 
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
@@ -840,7 +840,7 @@ Below is a summary of the tools currently distributed with LOOS.  To get a
 detailed summary of the command line arguments, run the program without
 arguments or using "-h".  Nearly all tools also support the
 "--fullhelp" options, which will display more detailed help
-information, including examples of how to use the tool.  
+information, including examples of how to use the tool.
 
 In the documentation, the term "system" or "model" refers to a file that
 describes the contents of a system, such as a PDB file or one of the inputs
@@ -850,14 +850,14 @@ supported file formats as input.  However, not all files provide all of the
 needed information; for example, the order_params tool requires connectivity
 information to function properly, so the user must run it with a system file
 type that has that information, such as a CHARMM/NAMD PSF file or a PDB with
-CONECT records.  
+CONECT records.
 
 At present, LOOS assumes that all periodic boxes are rectangular, and
 will produce incorrect answers if trajectories using different box shapes
 (eg truncated octahedron) are used in programs which make use of
 periodicity (eg rdf).  We have no immediate plans to generalize the
 code to handle other periodicities, but are willing to reconsider if
-there is significant demand from users. 
+there is significant demand from users.
 
 LOOS uses angstroms as the output unit of distance, even when the input
 coordinates are in other units (e.g. nanometers for GROMACS files).  All output
@@ -866,14 +866,14 @@ program's output starts with a series of comment lines, marked by beginning
 with a "#", echoing the command line used to invoke the program, the user, the
 date teh program was run, the working directory, and the version of LOOS used.
 Any additional information, such as the meanings of various columns of output,
-is also provide on lines marked with "#".  
+is also provide on lines marked with "#".
 
 LOOS tools are designed to make it easy to plot the results generated.  As a
 rule, files are formatted such that they can be cleanly plotted using the
 gnuplot plotting program, standard with most modern linux distributions.   In
 addition, if matrices or vectors are written out (e.g. from the svd tool or one
 of the tools from the ENM package), the format is consistent with that used by
-Matlab and Octave.  
+Matlab and Octave.
 
 <HR>
 <B><I> Categories of Tools </I> </B>
@@ -900,7 +900,6 @@ Matlab and Octave.
       Part of the workflow for computing the effective sample size.  (See
       effsize.pl)
 
-
       <DT> <B> avgconv </B>
       <DD> Computes the RMSD between the average structure for time i
       and i+1 for a trajectory.  The "locally optimal" flag determines
@@ -921,7 +920,7 @@ Matlab and Octave.
       <DD> Reads a simple columnated text file, and computes the block-averaged
            standard error as a function of block size.  The plateau value
            is the best estimate for the true standard error.
-           Reference: Flyvbjerg, H. & Petersen, H. G. 
+           Reference: Flyvbjerg, H. & Petersen, H. G.
            J. Chem. Phys., 1989, 91, 461-466
 
       <DT> <B> block_avgconv </B>
@@ -955,12 +954,10 @@ Matlab and Octave.
       <DD> Calculates either a cumulative histogram (where each output
       row is the histogram up to that point), or a windowed histogram.
 
-
       <DT> <B> coscon </B>
       <DD> Computes the cosine content for varying windows of a
       trajectory, based on Hess, B.  "Convergence of sampling in
       protein simulations." Phys Rev E (2002) 65(3):031910
-
 
       <DT> <B> decorr_time </B>
       <DD> Decorrelaton time as computed by structural histogram
@@ -979,7 +976,7 @@ Matlab and Octave.
       structures (the frames that will be the centers of your histogram
       bins), assigning the frames from the trajectories to those bins,
       working out the mean first passage time between bins, and computing
-      the effective sample size.  Reference: Lyman & Zuckerman, Biophys J 
+      the effective sample size.  Reference: Lyman & Zuckerman, Biophys J
       (2006) 91:164-72
 
       <DT> <B> fidpick </B>
@@ -994,7 +991,6 @@ Matlab and Octave.
         Based on Zhang, Bhatt, and Zuckerman; JCTC, DOI: 10.1021/ct1002384
 	and code provided by the Zuckerman Lab
 	(http://www.ccbb.pitt.edu/Faculty/zuckerman/software.html)
-
 
       <DT> <B> neff </B>
       <DD> Computes effective sample size given an assignment and
@@ -1093,7 +1089,6 @@ Matlab and Octave.
        <DD> Counts the number of waters inside a protein at each
        time-point.  Requires an "internal water matrix" (see water-inside).
 
-
        <DT> <B>  water-extract </B>
        <DD> Extracts "internal" waters from a trajectory and
        concatenates them into a single PDB for visualizing water
@@ -1123,7 +1118,7 @@ Matlab and Octave.
 
 </DL>
 
-  \page enm 
+  \page enm
   <h2>Elastic Network Models</h2>
   A collection of tools for working with ENMs, found in the
   Packages/ElasticNetworks/ directory:
@@ -1166,7 +1161,7 @@ Matlab and Octave.
    porcupine or eigenflucc), you <i>must</i> account for this
    (i.e. add 6 to the mode requested).
 
-    \page hbond 
+    \page hbond
    <h2>Hydrogen Bonding Tools</h2>
    A set of tools for analyzing hydrogen bonding, found in
    Packages/HydrogenBonds/ directory:
@@ -1181,7 +1176,7 @@ Matlab and Octave.
 	    <DT><B>hcorrelation</B>
 	    <DD> Computes the time-correlation function for h-bonds.
       </DL>
-	    
+
     \page manipulation Trajectory manipulation
    <h2> Trajectory manipulation tools </h2>
    A set of tools for manipulating structure and trajectory
@@ -1199,19 +1194,19 @@ Matlab and Octave.
        molecule and center only within the x,y plane.
 
        <DT><B>center-pdb</B>
-       <DD>Read in a structure file, shift its centroid to the origin, and 
-       write a new pdb file to stdout.  
+       <DD>Read in a structure file, shift its centroid to the origin, and
+       write a new pdb file to stdout.
 
        <DT><B>clipper</B>
-       <DD>Manually clip a model using arbitrary sets of clipping planes.  
+       <DD>Manually clip a model using arbitrary sets of clipping planes.
        Outputs a PDB.
 
        <DT><B>concat-selection</B>
        <DD>Concatenates atoms from a trajectory into a single PDB.  Useful
        for seeing where something has been...
-       
+
        <DT><B>convert2pdb</B>
-       <DD>Read in a structure file in a LOOS-supported format, and write it 
+       <DD>Read in a structure file in a LOOS-supported format, and write it
        out as a pdb file.
 
        <DT><B>dcdinfo</B>
@@ -1234,12 +1229,12 @@ Matlab and Octave.
        merge large data sets.  It also has options to produce a second
        down-sampled trajectory, to translate and reimage each frame such that a
        particular set of atoms is centered at the origin, and to fix imaging
-       such that molecules aren't broken across the periodic image.  
+       such that molecules aren't broken across the periodic image.
 
        <DT><B>model-select</B>
-       <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the 
-       selection, then applies it to the PDB and writes the output to stdout.  
-       This tool is used mainly for checking your selection strings to make 
+       <DD>Takes a model (PDB, PSF, etc) and a selection string.  Parses the
+       selection, then applies it to the PDB and writes the output to stdout.
+       This tool is used mainly for checking your selection strings to make
        sure you're actually selecting what you intend to select.
 
        <DT><B>model2matlab</B>
@@ -1247,8 +1242,8 @@ Matlab and Octave.
        the coordinates to stdout in matlab format.
 
        <DT><B>porcupine</B>
-       <DD>Creates a faux-PDB containing atoms/bonds that represent a 
-       "porcupine" figure for a column vector from a matrix.  This can be used 
+       <DD>Creates a faux-PDB containing atoms/bonds that represent a
+       "porcupine" figure for a column vector from a matrix.  This can be used
        to visualize the direction of motion from SVD and ENM results.
 
        <DT><B>rebond</B>
@@ -1311,7 +1306,7 @@ Matlab and Octave.
        trajectory header information and extracting the number of frames and
 	 atoms in a trajectory.
    </DL>
-        
+
 
    \page Membranes Membrane systems
    <h2> Tools for membrane systems</h2>
@@ -1326,7 +1321,7 @@ Matlab and Octave.
        torsions for a set of chains.
 
        <DT><B>crossing-waters</B>
-       <DD>Loop over a trajectory and compute the number waters crossing a 
+       <DD>Loop over a trajectory and compute the number waters crossing a
        membrane.
 
        <DT><B>cylindrical-density</B>
@@ -1346,7 +1341,7 @@ Matlab and Octave.
        trajectory has already been set up with the membrane center at z=0.  You
        can accomplish this using merge-traj, which can optionally recenter a
        selection at every frame.  The functionality from density-dist-windowed
-       has also been folded in, using the --window option.  Note: this tool can 
+       has also been folded in, using the --window option.  Note: this tool can
        be used in combination with potential_profile.py to compute electrostatic
        potentials along the membrane normal.
 
@@ -1359,16 +1354,16 @@ Matlab and Octave.
        <DT><B>dibmops</B>
        <DD>Calculates molecular order parameters, binned by lateral distance
        from a target.
-       
+
        <DT><B>mops</B>
        <DD>Calculates a molecular order parameter (using the principal axes
        of a selection).  Used for comparing order between coarse grained and all
        atom MD.
 
        <DT><B>membrane_map</B>
-       <DD>Compute the distribution of a variety of membrane properties 
+       <DD>Compute the distribution of a variety of membrane properties
        about a membrane properties.  Properties currently implemented include
-       height, density, molecular order parameter, and average vector 
+       height, density, molecular order parameter, and average vector
        orientation.
 
        <DT><B>order_params</B>
@@ -1378,7 +1373,7 @@ Matlab and Octave.
        residue/lipid topology files, and can optionally compute order
        parameters relative to the x and y axes.  In addition, a more
        careful estimate of statistical uncertainties is available using
-       block averaging.  
+       block averaging.
 
        If you wish to use block averaging to estimate the errors, we suggest
        running the tool twice: the first time will give you the block standard
@@ -1394,20 +1389,20 @@ Matlab and Octave.
        simulations", Annual Reports in Computational Chemistry, 2009, 5, 23-48.
 
        <DT><B>potential_profile.py</B>
-       
+
        <DD> Compute the electrostatic potential profile along the membrane
        normal.  This program takes the output of the density-dist tool run in
        "charge" mode and returns the electrostatic potential in Volts.  The
        algorithm used here is described by Sachs, et al, J Chem Phys, 2004,
        121, 10847, and includes a correction to ensure that the electrostatic
        potential is continuous at the periodic boundary.  A typical command
-       line would look like: 
-       
+       line would look like:
+
        density-dist --type=charge -- path/to/model-file path/to/trajectory -38 38 76 > charge-density.dat
        potential_profile.py charge-density.dat > potential.dat
 
        See the --fullhelp message for more details about the meaning of
-       specific columns in the output.  
+       specific columns in the output.
 
        Note: this tool requires the python numpy extension in order to run.
 
@@ -1417,7 +1412,7 @@ Matlab and Octave.
 
        <DT><B>xy_rdf</B>
        <DD>Compute a two dimension radial distribution function in the xy plane,
-       splitting the system into upper and lower leaflets.  Primarily intended 
+       splitting the system into upper and lower leaflets.  Primarily intended
        for analyzing lateral organization of lipid-water interfaces.  Note
        that as of version 1.6.0, the command line arguments have changed
        significantly. The new version allows you control how your selection
@@ -1425,7 +1420,7 @@ Matlab and Octave.
        file has connectivity).
 
        <DT><B>xy_rdf_timeseries</B>
-       <DD>Same as xy_rdf, except producing a series of block averages rather 
+       <DD>Same as xy_rdf, except producing a series of block averages rather
        than averaging over the whole trajectory.  This program is
        deprecated, because its functionality has been merged into xy_rdf.
 
@@ -1457,18 +1452,18 @@ Matlab and Octave.
 
        <DT><B>svdcolmap</B>
        <DD>Map the magnitude of a left singular vector onto a PDB file's B-value
-       column.  Useful for visualizing which portions of a molecule are mobile 
+       column.  Useful for visualizing which portions of a molecule are mobile
        for a given SVD mode.
     </DL>
 
 
     \page other
-    
+
    <h2> General purpose tools</h2>
 
    <DL>
      <DT><B>averager</B>
-       <DD>Compute the average structure for a set of molecules from a 
+       <DD>Compute the average structure for a set of molecules from a
        trajectory, using an iterative scheme.
 
        <DT> <B>atomic-rdf</B>
@@ -1480,13 +1475,13 @@ Matlab and Octave.
        <DD>A PERL tool for creating "blurrogram" style figures with Pymol.
 
        <DT><B>bounding</B>
-       <DD>Write out the bounding box for a selection of atoms from a 
+       <DD>Write out the bounding box for a selection of atoms from a
        structure file.
 
        <DT><B>cluster-structures.py</B>
-       <DD>Perform clustering analysis on a trajectory using the k-means 
+       <DD>Perform clustering analysis on a trajectory using the k-means
        algorithm on the basis of RMSD.  In Packages/PyLOOS.
-       
+
        <DT><B>contact-time</B>
        <DD>This tool computes the number of contacts between a probe
        selection and a set of target selections.  The output is in the
@@ -1498,10 +1493,10 @@ Matlab and Octave.
 
        <DT><B>contacts</B>
        <DD>Loop over a trajectory and count the number of contacts between two
-       sets of atoms.  
+       sets of atoms.
 
        <DT><B>cylindrical-density.py</B>
-       <DD> Compute a 2D radial distribution function in cylindrical 
+       <DD> Compute a 2D radial distribution function in cylindrical
        coordinates. In Packages/PyLOOS.
 
        <DT><B>domain.py</B>
@@ -1530,7 +1525,7 @@ Matlab and Octave.
        measuring domain hinge motions.
 
        <DT><B>interdist</B>
-       <DD>Calculates distances between a selection and an aribtrary set of 
+       <DD>Calculates distances between a selection and an aribtrary set of
        other selections over a trajectory.  The distance computed can be the
        distance between the centroids, the minimum distance between any atom
        in any group, or the max distance between any atom in any group.
@@ -1545,12 +1540,12 @@ Matlab and Octave.
        time.
 
        <DT><B>packing_score</B>
-       <DD>Computes the packing score, a measure of the contact between two 
-       selections, over the course of a trajectory.  Originally defined in 
-       Grossfield et al, PNAS, 2006, 103, 4888-4893 
+       <DD>Computes the packing score, a measure of the contact between two
+       selections, over the course of a trajectory.  Originally defined in
+       Grossfield et al, PNAS, 2006, 103, 4888-4893
 
        <DT><B>protein_tilt.py</B>
-       <DD>Compute the overall tilt of a membrane protein relative to the 
+       <DD>Compute the overall tilt of a membrane protein relative to the
        membrane normal by averaging the tilts of the individual transmembrane
        helices.  In Packages/PyLOOS.
 
@@ -1580,7 +1575,7 @@ Matlab and Octave.
        selection.
 
        <DT><B>rmsds</B>
-       <DD>Loops over a trajectory and computes the pairwise RMSDs for a 
+       <DD>Loops over a trajectory and computes the pairwise RMSDs for a
        selection of atoms.
 
        <DT><B>rotamer</B>
@@ -1588,8 +1583,8 @@ Matlab and Octave.
        entire trajectory.
 
        <DT><B>torsion</B>
-       <DD>Given 4 selections, compute the torsion angle for their centroids.  
-       This program loops over a trajectory and writes the torsion angle time 
+       <DD>Given 4 selections, compute the torsion angle for their centroids.
+       This program loops over a trajectory and writes the torsion angle time
        series.
 
        <DT><B>transition_contacts</B>
@@ -1599,50 +1594,50 @@ Matlab and Octave.
 
     \page voronoi
     <h2> Voronoi decomposition </h2>
-    A collection of tools for 2D Voronoi decomposition of slabs, presumably from a 
-    membrane simulation.  This package is a wrapper around the scipy (www.scipy.org) 
-    Voronoi class, which is itself a wrapper around QHull (www.qhull.org).  As a result, 
-    this package is dependent having a working install of numpy and scipy (instructions 
+    A collection of tools for 2D Voronoi decomposition of slabs, presumably from a
+    membrane simulation.  This package is a wrapper around the scipy (www.scipy.org)
+    Voronoi class, which is itself a wrapper around QHull (www.qhull.org).  As a result,
+    this package is dependent having a working install of numpy and scipy (instructions
     for installing them can be found at www.scipy.org).
 
-    All tools assume work with a slab-like geometry oriented along the z-axis.  Within a 
-    slab, the system is treated as 2-dimensional.  
+    All tools assume work with a slab-like geometry oriented along the z-axis.  Within a
+    slab, the system is treated as 2-dimensional.
 
     All tools take at least 2 selections of atoms.  The first is the set of atoms used
     to compute the Voronoi decomposition, while any other selections are subsets of those
-    atoms for which areas are desired.  In all cases, these selections are application 
+    atoms for which areas are desired.  In all cases, these selections are application
     <B> after </B> the original selection.
 
-    Padding: all of the tools listed have a required option called "padding".  The 
-    purpose of this option is to ensure that periodic boundaries are handled correctly.  
+    Padding: all of the tools listed have a required option called "padding".  The
+    purpose of this option is to ensure that periodic boundaries are handled correctly.
     Since the underlying engine (qhull) has no knowledge of periodicity, we do this by
     replicating dummy atoms in the 8 surrounding periodic images, such that no "true"
     atoms are at the "edge".  The padding option controls how far out these padding atoms
-    are generated.  If your selection for the Voronoi decomposition is all-atom or all 
-    heavy-atom, 15 angstroms is a good choice for the padding value.  However, if you're 
-    using a sparser selection (e.g. just lipid phosphates), you will probably need to 
-    make the padding value significantly larger, e.g. 30 ang or more.  If your padding 
-    value is too small, you will occasionally see absurdly large areas for individual 
-    atom, or the program can fail outright.  
+    are generated.  If your selection for the Voronoi decomposition is all-atom or all
+    heavy-atom, 15 angstroms is a good choice for the padding value.  However, if you're
+    using a sparser selection (e.g. just lipid phosphates), you will probably need to
+    make the padding value significantly larger, e.g. 30 ang or more.  If your padding
+    value is too small, you will occasionally see absurdly large areas for individual
+    atom, or the program can fail outright.
 
     <DL>
         <DT> <B> run_areas.py </B>
-        <DD> Compute areas for different sets of atoms within a particular slice along 
-        the membrane normal.  Typical slice widths are 2-4 ang.  
-        
+        <DD> Compute areas for different sets of atoms within a particular slice along
+        the membrane normal.  Typical slice widths are 2-4 ang.
+
         <DT> <B> area_profile.py </B>
-        <DD> Compute the voronoi cross-sectional area for something (e.g. a protein) 
+        <DD> Compute the voronoi cross-sectional area for something (e.g. a protein)
         through the membrane.
-        
+
         <DT> <B> area_per_molecule.py </B>
         <DD> Compute distribution of areas/molecule for a z-slice.  Note: this program
         requires a system file that contains connectivity information (e.g. a PSF file).
-   </DL>        
+   </DL>
 
 
     \page user
      <h2> User-created tools</h2>
-   Create your own tools in Packages/User/.  Currently contains 
+   Create your own tools in Packages/User/.  Currently contains
    a number of templates for different kinds of apps.
 
 */
@@ -1735,7 +1730,7 @@ tab.
 In addition to the new trajectories, pyloos now sports several utility
 functions related to ensembles:
 \ref loos::pyloos::ensembles::averageStructure "loos.pyloos.averageStructure()",
-\ref loos::pyloos::ensembles::extractCoords "loos.pyloos.extractCoords()", 
+\ref loos::pyloos::ensembles::extractCoords "loos.pyloos.extractCoords()",
 and
 \ref loos::pyloos::ensembles::svd "loos.pyloos.svd()",
 all of which use the new Trajectory classes.  We have also
@@ -1936,7 +1931,7 @@ namespace loos {
 <ul>
   <li> Changed: BOOST threads is now required for build
   <li> Changed: NumPy now required for PyLOOS build
-  
+
   <li> Added 'index' keyword to selection language to use an atom's
        position in a model (different from atom id)
 
@@ -1946,7 +1941,7 @@ namespace loos {
        and works with new loos.pyloos trajectories
   <li> (PyLOOS) Added iterativeAlignTrajectory() to align with plain LOOS trajectory
        objects (as well as loos.pyloos), and accepts an optional list of frames to use.
-  <li> (PyLOOS) Added 
+  <li> (PyLOOS) Added
   <li> (PyLOOS) Deprecated iterativeAlignmentPy()
   <li> (PyLOOS) Added k-means clustering tool (cluster-structures.py)
   <li> (PyLOOS) Added ensemble and SVD support
@@ -2065,7 +2060,7 @@ namespace loos {
   this will only work for known residue and atom names (see Selector.cpp).
   Will also select hydrogens attached to backbone atoms.
   <li> Added "backbone" keyword to selection language
-  <li> Changed PDB reader so that missing fields (to the right of coordinates) 
+  <li> Changed PDB reader so that missing fields (to the right of coordinates)
   will issue a warning and then be ignored.
   <li> Added functions to PDB to report whether fields are missing or not
   <li> Added OMG (the Optimal Membrane Generator)
@@ -2075,7 +2070,7 @@ namespace loos {
   selected, rather than throw an exception.
   <li> Changed AtomicGroup::groupFromID() so that missing atoms are ignored,
   rather than throw an exception.
-  <li> Removed all char* based constructors in favor of string& 
+  <li> Removed all char* based constructors in favor of string&
   <li> Changed how the Swig interface is generated (from the CPP header files directly)
   <li> Deprecated gridify() in dcd_utils.cpp
   <li> Added --clip flag to smooth-traj to control whether the ends of the trajectory
@@ -2105,7 +2100,7 @@ some ranges of frames.
   <li> Added --threshold option to interdist that will segment the output based
        on the given cutoff
   <li> XForm::rotate() will throw an exception now if the rotation
-  axis has zero length 
+  axis has zero length
 </ul>
 
 \subsection r213_bugs Bugs Fixed
@@ -2114,7 +2109,7 @@ some ranges of frames.
   <li> Fixed crashing of phasepdb with default settings
   <li> Fixed bad execution time estimate when using rmsds to compare two different trajecties
   <li> Fixed bug in TRR/XDR support affecting double precision data (found by Pin-Kuang Lai)
-  <li> Fixed build issue when ATLAS_LIBS is specified  
+  <li> Fixed build issue when ATLAS_LIBS is specified
   <li> Fixed help in dcdinfo
   <li> Fixed crash in phasepdb caused by using default chunk-size
   setting
@@ -2337,7 +2332,7 @@ some ranges of frames.
 
   <li> Changed water-hist to now include the water-filter bounds when
   calculating grid size.
-  
+
   <li> Changed gridgauss options to permit more control over the
   smoothing kernel (note: old invocation will no longer work)
 
@@ -2348,7 +2343,7 @@ some ranges of frames.
   <li> Ramachandran tool only uses spaces in output, not tabs and
   spaces
 
-  <li> Added some support functions to Simplex  
+  <li> Added some support functions to Simplex
 </ul>
 
 
@@ -2671,7 +2666,7 @@ traj->readFrame();   // Reads second frame and bumps iterator
   <LI> Fixed compiler issue in AtomicGroup for older versions of g++
   <LI> Fixed bug in AtomicGroup::renumberWithBonds()
   <LI> Fixed bug in big-svd where RSVs were not normalized
-  
+
 </UL>
 \subsection r160_add_changed Added, Changed, or Otherwise Notable
 <UL>
@@ -3343,11 +3338,11 @@ your version of Boost to 1.51
 
 <DT> SCons is not finding the right compiler/swig/doxygen
 <DD> For LOOS, SCons will use your shell's $PATH veriable to look
-for tools.  You will need to make sure the missing tool is in your 
+for tools.  You will need to make sure the missing tool is in your
 path.  Some care may be necessary in the order directories appear
 in your path to make sure you are finding the intended version of
 the tool.  You can explicitly specify a C++ compiler to use
-with the CXX variable (either in your environment or from a 
+with the CXX variable (either in your environment or from a
 custom.py file).  This will take precedence over your path.
 
 <DT> SCons is not finding my installation of Boost.
@@ -3413,7 +3408,7 @@ appear in the BOOST_LIBS variable.
 <DL>
 
 <DT> What units does LOOS use for coordinates?
-<DD> LOOS uses Angstroms as the output unit of distance, even when the input 
+<DD> LOOS uses Angstroms as the output unit of distance, even when the input
 coordinates are in other units (e.g. nanometers for GROMACS files are
 converted into Angstroms).
 
