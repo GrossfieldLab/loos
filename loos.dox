@@ -36,8 +36,8 @@ Our email address has changed.  Please use loos.maintainer@gmail.com to contact 
       - \subpage citing "Citing LOOS in published work"
       - \subpage new_pyloos "What's new in PyLOOS"
       - \subpage exceptions "Exceptions in LOOS and PyLOOS"
-      - \subpage Changes
-      - \subpage FAQ
+      - \subpage changes "Changes"
+      - \subpage faq "FAQ"
           - \ref faq_pyloos "FAQ for PyLOOS"
       - Posters and presentations on LOOS
       	  - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2016/bps2016_tromo.pdf">2016 Biophysical Society Poster</a>
@@ -878,17 +878,17 @@ Matlab and Octave.
 <HR>
 <B><I> Categories of Tools </I> </B>
       - \subpage manipulation "Manipulating trajectory files"
-      - \subpage Convergence "Assessing statistical errors and convergence"
+      - \subpage convergence "Assessing statistical errors and convergence"
       - \subpage density "3D density distributions"
       - \subpage hbond "Hydrogen Bonding"
-      - \subpage PCA "Principal component analysis"
-      - \subpage Membranes "Membrane systems"
+      - \subpage pca "Principal component analysis"
+      - \subpage membranes "Membrane systems"
       - \subpage enm "Elastic network models"
       - \subpage other "General purpose tools"
       - \subpage voronoi "Voronoi decomposition"
       - \subpage user "User-created tools"
 
-  \page Convergence
+  \page convergence "Convergence"
   <h2>Convergence Analysis Tools</h2>
   A collection of tools for assessing statistical error and
   convergence, found in the Packages/Convergence/ directory:
@@ -1308,7 +1308,7 @@ Matlab and Octave.
    </DL>
 
 
-   \page Membranes Membrane systems
+   \page membranes Membrane systems
    <h2> Tools for membrane systems</h2>
    Tools specifically intended for analyzing lipid bilayers and
    related systems, found in the Tools/
@@ -1426,7 +1426,7 @@ Matlab and Octave.
 
    </DL>
 
-    \page PCA
+    \page pca
    <h2> Principal component analysis </h2>
    Tools for performing PCA, found in Tools/.  Note: some related
    tools are also found in the network models section (\subpage enm).
@@ -1856,7 +1856,7 @@ at loos.maintainer [at] gmail.com
 
 namespace loos {
 
-/*! \page Changes Change Log
+/*! \page changes Change Log
 \section release233 Version 2.3.3 (unreleased)
 \subsection r233_bugs Bug Fixes
 <ul>
@@ -3325,7 +3325,7 @@ torsion() are now in the \c loos::Math namespace.
 namespace loos {
 
 
-/*! \page FAQ Frequently Asked Questions
+/*! \page faq Frequently Asked Questions
 \section faq_loos LOOS
 
 \subsection faq_loos_building Building LOOS (and building with LOOS)
