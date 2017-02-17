@@ -72,6 +72,7 @@ my $debug = 0;    # Enable copious output for debugging...
 my $resids_local = 0;
 my $coord_scale = 10.0;   # Convert NM into Angstroms for PDBs
 my $use_constraints = 0;
+my $use_vsites = 0;
 my $hydrogens_only = 0;
 my $infer_water = 0;
 my $force_mass = 0;
@@ -79,21 +80,23 @@ my $tabbonds = 1;
 my $conbonds = 1;
 my $namd = 1;
 
+
 my %seen_segids;     # Mapping of gromacs molecule segment names to SEGIDs
 my %used_segids;     # Also keep track of user-specified segid mappings to make sure
                      # all were used
 
 
 my $ok = GetOptions('local!' => \$resids_local,
-		    'constraints!' => \$use_constraints,
-		    'hydrogens' => sub { $use_constraints = $hydrogens_only = 1; },
-		    'water!' => \$infer_water,
-		    'mass=f' => \$force_mass,
-		    'tabbonds!' => \$tabbonds,
-		    'conbonds!' => \$conbonds,
-		    'segmap=s' => \%seen_segids,
-		    'namd!' => \$namd,
-		    'help' => sub { &showHelp; });
+                    'constraints!' => \$use_constraints,
+                    'vsites!' => \$use_vsites,
+                    'hydrogens' => sub { $use_constraints = $hydrogens_only = 1; },
+                    'water!' => \$infer_water,
+                    'mass=f' => \$force_mass,
+                    'tabbonds!' => \$tabbonds,
+                    'conbonds!' => \$conbonds,
+                    'segmap=s' => \%seen_segids,
+                    'namd!' => \$namd,
+                    'help' => sub { &showHelp; });
 
 $ok || &showHelp;
 
@@ -119,10 +122,10 @@ my $psf = new FileHandle "$output_prefix.psf", 'w'; defined($psf) || die "Error-
 # each molecule is filled in.  Finally, the coordintes are read in.
 
 my $rtopo = &processTopology;
-print STDERR "Found ", $#$rtopo+1, " molecules in topology\n";
+print STDERR "Found ", $#$rtopo+1, " segments in topology\n";
 
 my $rmolecules = &processMolecules;
-print STDERR "Found ", $#$rmolecules+1, " molecules defined\n";
+print STDERR "Found ", $#$rmolecules+1, " segments defined\n";
 
 my $rbox = &processBox;
 
@@ -319,18 +322,22 @@ sub processTopology {
 #   RESIDUES -> anon-hash of residue index to name
 #   ATOM_TO_RESIDUE -> anon-hash of indices in residues for corresponding atom
 #   BONDS -> anon-array of pairs of indices to atoms that are bound
+#   CONSTRAINTS -> anon-array to constraints (to be used as bonds)
+#   VSITES -> anon-array of virtual site constraints to be used as bonds
+#             (note: only vsite type 2 is supported)
 
 
 sub processMolecules {
   my $rmols = [];       # Molecules we'll be filling in info for...
-                        # the details for...
+  # the details for...
   my $state = 0;        # Initial state for our state machine
   
   my $molidx = -1;   # Index into rmols for what we're processing
   my $ratoms = undef;   # Anon-array of atom names for each molecule
-                        # as we're processing it
+  # as we're processing it
   my $rbonds = undef;   # Same, but for connectivity
   my $rcons = undef;    # Constraints
+  my $rvsites = undef;
 
 
 
@@ -340,10 +347,10 @@ sub processMolecules {
     if ($state == 0) {
       
       if (/moltype \((\d+)\)/) {
-	$molidx = $1;
-	$state = 1;
+        $molidx = $1;
+        $state = 1;
       } elsif (/grp/) {
-	last;
+        last;
       }
 
     } elsif ($state == 1) {
@@ -357,14 +364,14 @@ sub processMolecules {
       # interested in, delay actually processing it until the second
       # (via state 3)
       if (/atom \(\d+\)/) {
-	$state = 2;
-	$$rmols[$molidx]->{ATOMS} = [];
-	$$rmols[$molidx]->{CHARGES} = [];
-	$$rmols[$molidx]->{TYPES} = [];
-	$$rmols[$molidx]->{MASSES} = [];
+        $state = 2;
+        $$rmols[$molidx]->{ATOMS} = [];
+        $$rmols[$molidx]->{CHARGES} = [];
+        $$rmols[$molidx]->{TYPES} = [];
+        $$rmols[$molidx]->{MASSES} = [];
 
-	$$rmols[$molidx]->{ATOM_TO_RESIDUE} = {};
-	$$rmols[$molidx]->{RESIDUES} = {};
+        $$rmols[$molidx]->{ATOM_TO_RESIDUE} = {};
+        $$rmols[$molidx]->{RESIDUES} = {};
       }
 
     } elsif ($state == 2) {
@@ -372,88 +379,129 @@ sub processMolecules {
       # We've started the 2nd block of atoms, so process subsequent
       # atom lines
       if (/atom \(\d+\)/) {
-	$state = 3;
+        $state = 3;
       } elsif (/atom\[\s*(\d+)\].*res(ind|nr)=\s*(\d+)/) {
-	$$rmols[$molidx]->{ATOM_TO_RESIDUE}->{$1} = $3;
-	if (/ q=([ 0-9.eE+-]+),/) {
-	  push(@{$$rmols[$molidx]->{CHARGES}}, $1 * 1.0);   # force to be float
-	}
-	if (/ m=([ 0-9.eE+-]+),/) {
-	  push(@{$$rmols[$molidx]->{MASSES}}, $1 * 1.0);    # force to be float
-	}
+        $$rmols[$molidx]->{ATOM_TO_RESIDUE}->{$1} = $3;
+        if (/ q=([ 0-9.eE+-]+),/) {
+          push(@{$$rmols[$molidx]->{CHARGES}}, $1 * 1.0);   # force to be float
+        }
+        if (/ m=([ 0-9.eE+-]+),/) {
+          push(@{$$rmols[$molidx]->{MASSES}}, $1 * 1.0);    # force to be float
+        }
       }
 
     } elsif ($state == 3) {
 
       if (/moltype \((\d+)\)/) {
-	$molidx = $1;
-	$state = 1;
+        $molidx = $1;
+        $state = 1;
 
       } elsif (/atom\[(\d+)\]=\{name="(.+)"\}/) {
-	$$rmols[$molidx]->{ATOMS}->[$1] = $2;
+        $$rmols[$molidx]->{ATOMS}->[$1] = $2;
 
       } elsif (/residue\[(\d+)\]=\{name="(.+)"/) {
-	# NOTE: This ignores the "nr=\d+" field in lieu of the
-	# bracketed index.  I'm not sure if this is the correct thing
-	# to do...
-	$$rmols[$molidx]->{RESIDUES}->{$1} = $2;
+        # NOTE: This ignores the "nr=\d+" field in lieu of the
+        # bracketed index.  I'm not sure if this is the correct thing
+        # to do...
+        $$rmols[$molidx]->{RESIDUES}->{$1} = $2;
 
       } elsif (/type\[(\d+)\]=\{name="([^"]+)",/) {
-	push(@{$$rmols[$molidx]->{TYPES}}, $2);
+        push(@{$$rmols[$molidx]->{TYPES}}, $2);
 
       } elsif (/Bonds?:/) {
-	$state = 4;
-	$rbonds = [];
-	$$rmols[$molidx]->{BONDS} = $rbonds;
+        $state = 4;
+        $rbonds = [];
+        $$rmols[$molidx]->{BONDS} = $rbonds;
       } elsif (/moltype \((\d+)\)/)  {
-	$molidx = $1;
-	$state = 1;
+        $molidx = $1;
+        $state = 1;
       } elsif ($use_constraints && /Constraint/) {
-	$rcons = [];
-	$$rmols[$molidx]->{CONSTRAINTS} = $rcons;
-	$state = 5;
+        $rcons = [];
+        $$rmols[$molidx]->{CONSTRAINTS} = $rcons;
+        $state = 5;
       } elsif (/groupnr\[/) {
-	last;
+        last;
       }
 
     } elsif ($state == 4) {
       if (/\(($bondprefix_regex)?BONDS\) (\d+) (\d+)/) {
-	my $rpair = [$2, $3];
-	push(@$rbonds, $rpair);
+        my $rpair = [$2, $3];
+        push(@$rbonds, $rpair);
       } elsif ($use_constraints && /Constraint/) {
-	$rcons = [];
-	$$rmols[$molidx]->{CONSTRAINTS} = $rcons;
-	$state = 5;
+        $rcons = [];
+        $$rmols[$molidx]->{CONSTRAINTS} = $rcons;
+        $state = 5;
+      } elsif ($use_vsites && /Virtual site (\d):/) {
+        if ( $1 != 2 ) {
+          warn "Warning- found unsupported virtual site type $1 in topology.  Will skip...";
+        } else {
+          $rvsites = [];
+          $$rmols[$molidx]->{VSITES} = $rvsites;
+
+          $state = 7;
+        }
       } elsif (/moltype \((\d+)\)/)  {
-	$molidx = $1;
-	$state = 1;
+        $molidx = $1;
+        $state = 1;
       } elsif (/groupnr\[/) {
-	last;
+        last;
       }
 
     } elsif ($state == 5) {
       if (/\(CONSTR\) (\d+) (\d+)/) {
-	my $rpair = [$1, $2];
-	push(@$rcons, $rpair);
+        my $rpair = [$1, $2];
+        push(@$rcons, $rpair);
+      } elsif ($use_vsites && /Virtual site (\d):/) {
+        if ( $1 != 2 ) {
+          warn "Warning- found unsupported virtual site type $1 in topology.  Will skip...";
+        } else {
+          $rvsites = [];
+          $$rmols[$molidx]->{VSITES} = $rvsites;
+
+          $state = 7;
+        }
       } elsif (/moltype \((\d+)\)/) {
-	$molidx = $1;
-	$state = 1;
+        $molidx = $1;
+        $state = 1;
       } elsif (/groupnr\[/) {
-	last;
+        last;
       } elsif (/Constr. No Conn./) {
-#	$state = 6;
+        #	$state = 6;
       }
 
-    ### Disabled for now...
+      ### Disabled for now...
     } elsif ($state == 6) {
       if (/\(CONSTRNC\) (\d+) (\d+)/) {
-	my $rpair = [$1, $2];
-	push(@$rcons, $rpair);
+        my $rpair = [$1, $2];
+        push(@$rcons, $rpair);
+      } elsif ($use_vsites && /Virtual site (\d):/) {
+        if ($1 != 2) {
+          warn "Warning- found unsupported virtual site type $1 in topology.  Will skip...";
+        } else {
+          $rvsites = [];
+          $$rmols[$molidx]->{VSITES} = $rvsites;
+
+          $state = 7;
+        }
       } elsif (/moltype \((\d+)\)/) {
-	$molidx = $1;
-	$state = 1;
+        $molidx = $1;
+        $state = 1;
       } elsif (/groupnr\[/) {
-	last;
+        last;
+      }
+
+    } elsif ($state == 7) {
+      if (/\(VSITE(\d)\) ([0-9 ]+)$/) {
+        $1 == 2 || die "Error- cannot process vsite type $1";
+        my @indices = split(/\s+/, $2);
+        $#indices == 2 || die "Error- found unexpected vsite index count in '$2'";
+        push(@$rvsites, [$indices[0], $indices[1]]);
+        push(@$rvsites, [$indices[1], $indices[2]]);
+      } elsif (/moltype \((\d+)\)/) {
+        $molidx = $1;
+        $state = 1;
+      } elsif (/groupnr\[/) {
+        last;
       }
 
     } else {
@@ -465,7 +513,7 @@ sub processMolecules {
 }
 
 
-sub processBox {  
+sub processBox {
   my @box;
 
   while (<>) {
@@ -523,10 +571,10 @@ sub buildStructure {
 
   my @atoms;    # Array of anon-hashes containing ATOM record info
   my %bonds;    # Hash of bonds, keyed by atomid, containing
-                # anon-arrays of atomids bound to the key.
+  # anon-arrays of atomids bound to the key.
   my $atomid = 1;  # Global (within the PDB, that is) atomid
   my $resid = 1;   # Global (within the PDB)  This means that the output resids do not
-                   # match what GROMACS was using
+  # match what GROMACS was using
 
   foreach my $segment (@$rtopo) {
     my $name = $$segment{NAME};
@@ -548,82 +596,88 @@ sub buildStructure {
     my $segid = $$segment{NAME};
 
     for (my $j=0; $j<$segment->{NMOLS}; ++$j) {
+      print "Processing segment $segid [$j]\n" if ($debug);
       my @localids;     # Track atomids within a molecule for creating
-                        # the connectivity info...
+      # the connectivity info...
       for (my $i=0; $i<$segment->{NATOMS}; ++$i) {
-      
-	my %atom;
+        my %atom;
 
-	$atom{ATOMID} = $atomid;
-	
-	$atom{ATOMNAME} = $mol->{ATOMS}->[$i];
-	$atom{SEGID} = $segid;
-	$atom{CHARGE} = $charges->[$i];
-	defined($atom{CHARGE}) || die "Missing charge for atom $i in molecule $j of block $$mol{NAME}";
-	
-	$atom{MASS} = $masses->[$i];
-	defined($atom{MASS}) || die "Missing mass for atom $i in molecule $j of block $$mol{NAME}";
+        $atom{ATOMID} = $atomid;
 
-	$atom{ATOMTYPE} = $atomtypes->[$i];
-	push(@localids, $atomid);
+        $atom{ATOMNAME} = $mol->{ATOMS}->[$i];
+        $atom{SEGID} = $segid;
+        $atom{CHARGE} = $charges->[$i];
+        defined($atom{CHARGE}) || die "Missing charge for atom $i in molecule $j of block $$mol{NAME}";
 
-	# Figure out the local resid using the molecule's mapping of atoms to residue
-	my $residx = $atom_to_residue->{$i};
-	defined($residx) || croak "Error- cannot find residue index for atom $i in mol $segid ($j)";
-	$atom{RESNAME} = $residues->{$residx};
+        $atom{MASS} = $masses->[$i];
+        defined($atom{MASS}) || die "Missing mass for atom $i in molecule $j of block $$mol{NAME}";
 
+        $atom{ATOMTYPE} = $atomtypes->[$i];
+        push(@localids, $atomid);
 
-	
-	# Apply a global resid
+        # Figure out the local resid using the molecule's mapping of atoms to residue
+        my $residx = $atom_to_residue->{$i};
+        defined($residx) || croak "Error- cannot find residue index for atom $i in mol $segid ($j)";
+        $atom{RESNAME} = $residues->{$residx};
 
-	my $local_resid = $resids_local ? $residx+1 : $resid + $residx;
-	$atom{RESID} = $local_resid;
+        # Apply a global resid
 
-	my $c = $rcoords->[$atomid-1];
-	$atom{X} = $$c[0] * $coord_scale;
-	$atom{Y} = $$c[1] * $coord_scale;
-	$atom{Z} = $$c[2] * $coord_scale;
+        my $local_resid = $resids_local ? $residx+1 : $resid + $residx;
+        $atom{RESID} = $local_resid;
 
-	push(@atoms, \%atom);
+        print "\tProcessing $atomid - $atom{ATOMNAME} - $atom{RESNAME} : local_resid=$local_resid, resid=$resid, residx=$residx\n" if ($debug);
 
-	++$atomid;
+        my $c = $rcoords->[$atomid-1];
+        $atom{X} = $$c[0] * $coord_scale;
+        $atom{Y} = $$c[1] * $coord_scale;
+        $atom{Z} = $$c[2] * $coord_scale;
+
+        push(@atoms, \%atom);
+
+        ++$atomid;
       }
 
       # Need to increment the global resid counter by the number of residues
       # in this molecule.  Cache the size so we don't have to keep computing it...
       if (! exists $mol->{NRESIDUES}) {
-	my @ary = keys %$residues;
-	$mol->{NRESIDUES} = $#ary+1;
+        my @ary = keys %$residues;
+        $mol->{NRESIDUES} = $#ary+1;
       }
       $resid += $mol->{NRESIDUES};
 
       # Now add bonds...
       my $rbonds = $mol->{BONDS};
       if ($use_constraints && defined($mol->{CONSTRAINTS})) {
-	# Only create bonds to hydrogens...
-	if ($hydrogens_only) {
-	  foreach my $rpair (@{$mol->{CONSTRAINTS}}) {
-	    my($a, $b) = @$rpair;
-	    my $id = $localids[$b];
-	    if ($atoms[$b]->{ATOMNAME} =~ /^H/) {
-	      push(@$rbonds, $rpair);
-	    }
-	  }
-	} else {
-	  push(@$rbonds, @{$mol->{CONSTRAINTS}});
-	}
+        # Only create bonds to hydrogens...
+        if ($hydrogens_only) {
+          foreach my $rpair (@{$mol->{CONSTRAINTS}}) {
+            my($a, $b) = @$rpair;
+            my $id = $localids[$b];
+            if ($atoms[$b]->{ATOMNAME} =~ /^H/) {
+              push(@$rbonds, $rpair);
+            }
+          }
+        } else {
+          push(@$rbonds, @{$mol->{CONSTRAINTS}});
+        }
+      }
+
+      if ($use_vsites && defined($mol->{VSITES})) {
+        push(@$rbonds, @{$mol->{VSITES}});
       }
 
       for (my $i=0; $i<=$#$rbonds; ++$i) {
-	my($a, $b) = @{$$rbonds[$i]};
-	$a = $localids[$a];
-	$b = $localids[$b];
+        my($a, $b) = @{$$rbonds[$i]};
+        $a = $localids[$a];
+        $b = $localids[$b];
 
-	if (!exists($bonds{$a})) {
-	  $bonds{$a} = [ $b ];
-	} else {
-	  push(@{$bonds{$a}}, $b);
-	}
+        print "Adding bond from $a to $b\n" if ($debug);
+
+        if (!exists($bonds{$a})) {
+          $bonds{$a} = [ $b ];
+        } else {
+          push(@{$bonds{$a}}, $b);
+        }
       }
     }
   }
@@ -851,6 +905,7 @@ Options:
    --[no]local       Resids are local to each molecule (default is off)
                      (i.e. reset based on GROMACS' notion of a molecule)
    --[no]constraints Add constraints as bonds (default is off)
+   --[no]vsites      Add virtual sites as bonds (default is off) {Only type 2 supported}
    --hydrogens       Only add constaints where the 2nd atom begins with an H
    --water           Infer water connectivity (requires OW, HW1, and HW2 atoms in order)
    --mass=x          Set all atom masses to x
