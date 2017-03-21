@@ -1,6 +1,9 @@
+2017-03-21	<tromo>
+	* Added support for gro files that are missing velocities.
+
 2017-01-23    <alan@membrane>
     * Added new tool all_contacts.py to PyLOOS package
-    
+
 2016-12-16    <alan@membrane>
 	* Added new program helix_axes.py to PyLOOS package
 
