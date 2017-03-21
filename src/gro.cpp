@@ -50,9 +50,7 @@ namespace loos {
 	  float y = parseStringAs<float>(buf, 28, 8) * 10.0;
 	  float z = parseStringAs<float>(buf, 36, 8) * 10.0;
 
-	  float vx = parseStringAs<float>(buf, 44, 8) * 10.0;
-	  float vy = parseStringAs<float>(buf, 52, 8) * 10.0;
-	  float vz = parseStringAs<float>(buf, 60, 8) * 10.0;
+
 
 	  pAtom pa(new Atom);
 	  pa->index(_max_index++);
@@ -61,7 +59,15 @@ namespace loos {
 	  pa->resname(resname);
 	  pa->name(name);
 	  pa->coords(GCoord(x,y,z));
-	  pa->velocities(GCoord(vx, vy, vz));
+
+    if (buf.length() > 44) {
+			_has_velocities = true;
+      float vx = parseStringAs<float>(buf, 44, 8) * 10.0;
+      float vy = parseStringAs<float>(buf, 52, 8) * 10.0;
+      float vz = parseStringAs<float>(buf, 60, 8) * 10.0;
+      pa->velocities(GCoord(vx, vy, vz));
+    }
+
 
 	  append(pa);
 	}
