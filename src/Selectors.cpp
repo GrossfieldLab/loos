@@ -36,11 +36,15 @@ namespace loos {
 
     std::string BackboneSelector::residue_names[BackboneSelector::nresnames] = {
       "A",
+      "A3",
+      "A5",
       "ALA",
       "ARG",
       "ASN",
       "ASP",
       "C",
+      "C3",
+      "C5",
       "CYS",
       "CYX",
       "DA",
@@ -48,6 +52,8 @@ namespace loos {
       "DG",
       "DT",
       "G",
+      "G3",
+      "G5",
       "GLN",
       "GLU",
       "GLY",
@@ -68,10 +74,14 @@ namespace loos {
       "PTR",
       "SER",
       "T",
+      "T3",
+      "T5",
       "THR",
       "TRP",
       "TYR",
       "U",
+      "U3",
+      "U5",
       "VAL"
     };
 
