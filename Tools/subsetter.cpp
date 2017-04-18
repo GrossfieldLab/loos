@@ -81,7 +81,7 @@ enum ReimageMode { NONE, NORMAL, AGGRESSIVE, ZEALOUS, EXTREME } reimage_mode;
 
 ulong extreme_iters = 0;
 double extreme_delta = 0.0;
-const uint extreme_max_iters = 50;
+const uint extreme_max_iters = 250;
 const double extreme_threshold = 1e-1;
 
 string center_selection;
@@ -114,7 +114,7 @@ struct RegexFmt {
   RegexFmt(const string& s) : fmt(s) {
     regexp = boost::regex(s, boost::regex::perl);
   }
-  
+
   uint operator()(const string& s) const {
     boost::smatch what;
     if (boost::regex_search(s, what, regexp)) {
@@ -129,7 +129,7 @@ struct RegexFmt {
           return(val);
       }
     }
-    
+
     cerr << boost::format("Bad conversion of '%s' using regexp '%s'\n") % s % fmt;
     exit(-20);
   }
@@ -168,7 +168,7 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op) {
   for (uint i=0; i<n; ++i) {
     bound[i] = SortDatum(names[i], op(names[i]));
   }
-  
+
   sort(bound.begin(), bound.end());
 
   vector<string> sorted(n);
@@ -313,7 +313,7 @@ string fullHelpMessage(void) {
 // trajectories with ranges and skips...
 class ToolOptions : public opts::OptionsPackage {
 public:
-  
+
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("updates", po::value<uint>(&verbose_updates)->default_value(100), "Frequency of verbose updates")
@@ -395,7 +395,7 @@ public:
     return(true);
   }
 
-  string help() const { 
+  string help() const {
     return("output-prefix model trajectory [trajectory ...]");
   }
 
@@ -610,17 +610,18 @@ int main(int argc, char *argv[]) {
       } else if (reimage_mode == EXTREME) {
 
         for (vGroup::iterator mol = molecules.begin(); mol != molecules.end(); ++mol) {
-          GCoord c = (*mol)[0]->coords();
+          uint midpoint = mol->size() / 2;
+          GCoord c = (*mol)[midpoint]->coords();
           mol->translate(-c);
           mol->reimageByAtom();
           mol->translate(c);
         }
 
-        GCoord last_c = centered.centerOfMass();
+        GCoord last_c = centered.centroid();
         bool first = true;
         uint si;
         for (si = 0; si<extreme_max_iters; ++si) {
-          GCoord c = centered.centerOfMass();
+          GCoord c = centered.centroid();
           if (!first) {
             if (c.distance(last_c) < extreme_threshold)
               break;
@@ -632,7 +633,7 @@ int main(int argc, char *argv[]) {
             mol->reimage();
         }
 
-        extreme_delta += (last_c.distance(centered.centerOfMass()));
+        extreme_delta += (last_c.distance(centered.centroid()));
         GCoord c = centered.centroid();
         model.translate(-c);
         extreme_iters += si;
