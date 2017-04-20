@@ -40,20 +40,22 @@ namespace loos {
   public:
 
     Gromacs() { }
-    
-    explicit Gromacs(const std::string& fname) : _filename(fname), _max_index(0) {
+
+    explicit Gromacs(const std::string& fname) : _filename(fname), _max_index(0), _has_velocities(false) {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(FileOpenError(fname));
       read(ifs);
     }
 
-    explicit Gromacs(std::istream& ifs) : _filename("stream"), _max_index(0) { read(ifs); }
+    explicit Gromacs(std::istream& ifs) : _filename("stream"), _max_index(0), _has_velocities(false) { read(ifs); }
 
     static pAtomicGroup create(const std::string& fname) {
       return(pAtomicGroup(new Gromacs(fname)));
     }
 
+
+    bool hasVelocities() const { return(_has_velocities); }
 
 #if !defined(SWIG)
         //! Output as a GRO
@@ -62,7 +64,7 @@ namespace loos {
 
     std::string title(void) const { return(title_); }
 
-    
+
 
     //! Class method for creating a GRO from an AtomicGroup
     static Gromacs fromAtomicGroup(const AtomicGroup&);
@@ -71,11 +73,12 @@ namespace loos {
     std::string _filename;
     std::string title_;
     uint _max_index;
+    bool _has_velocities;
 
   private:
-    
+
     void read(std::istream& ifs);
-    
+
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
