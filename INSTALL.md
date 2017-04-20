@@ -269,7 +269,7 @@ The package-manager installed scons is too old.  Download and install SCons
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
 for more information about SIP).  We are aware of this and working on
-a decent solution.  Until then, there are two options for building and
+a decent solution.  Until then, there are three options for building and
 using PyLOOS under El Capitan.
 
 
@@ -295,6 +295,17 @@ Two articles about managing SIP status are:
 https://developer.apple.com/library/mac/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html
 
 http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-protection-in-el-capitan.html
+
+
+#### Use virtualenv
+
+This is in essence a variant of "install your own python".  If you say
+    virtualenv loos-python
+it will create a local copy of your python-of-choice in your directory space,
+so you can install packages as needed.  Activate that virtual environment using
+the activate.csh or activate.sh script in the distribution directory, then use that
+to install SCons and LOOS.   You'll then need to make sure you're in that virtualenv
+whenever you want to run PyLOOS scripts.
 
 ### IMPORTANT NOTE FOR MACOS 10.9 "MAVERICKS" USERS
 
