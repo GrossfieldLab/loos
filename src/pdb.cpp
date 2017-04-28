@@ -45,7 +45,7 @@ namespace loos {
 
 
   // Special handling for REMARKs to ignore the line code, if
-  // present... 
+  // present...
 
   void PDB::parseRemark(const std::string& s) {
     std::string t;
@@ -68,9 +68,9 @@ namespace loos {
     std::string t;
     GCoord c;
     pAtom pa(new Atom);
-  
+
     pa->index(_max_index++);
-    
+
     t = parseStringAs<std::string>(s, 0, 6);
     pa->recordName(t);
 
@@ -91,14 +91,14 @@ namespace loos {
 
     i = parseStringAsHybrid36(s, 22, 4);
     pa->resid(i);
-  
+
     t = parseStringAs<std::string>(s, 26, 1);
 
     // Special handling of resid field since it may be frame-shifted by
     // 1 col in some cases...
     if (strictness_policy) {
       char c = t[0];
-    
+
       if (c != ' ' && !isalpha(c))
         throw(ParseError("Non-alpha character in iCode column of PDB"));
     } else {
@@ -183,12 +183,12 @@ namespace loos {
 
     s << std::setw(1) << p->altLoc();
     s << std::setw(4) << std::left << p->resname();
-    
+
     s << std::setw(1) << std::right << p->chainId();
     s << hybrid36AsString(p->resid(), 4);
     s << std::setw(2) << p->iCode();
     s << "  ";
-        
+
     s << crdfmt(p->coords().x());
     s << crdfmt(p->coords().y());
     s << crdfmt(p->coords().z());
@@ -228,11 +228,11 @@ namespace loos {
 
     for (iterator atom = begin(); atom != end(); ++atom) {
       std::vector<int> bonds = (*atom)->getBonds();
-      
+
       if (!bonds.empty()) {
         std::sort(bonds.begin(), bonds.end());
         std::vector<int> unique_bonds;
-        
+
         unique_bonds.push_back(bonds[0]);
         for (std::vector<int>::const_iterator i = bonds.begin()+1; i != bonds.end(); ++i)
           if (*i != *(i-1))
@@ -249,7 +249,7 @@ namespace loos {
   //
   //    Will accept up to 8 bound atoms and considers them all equal,
   // but the PDB standard says some are h-bonded and some are
-  // salt-bridged... 
+  // salt-bridged...
   //
   //    No check is made for overflow of fields...
   //
@@ -260,7 +260,7 @@ namespace loos {
   // findById()).
 
   void PDB::parseConectRecord(const std::string& s) {
-    int bound_id = parseStringAs<int>(s, 6, 5);
+    int bound_id = parseStringAsHybrid36(s, 6, 5);
 
 
     // Rely on findAtom to throw if bound_id not found...
@@ -298,20 +298,20 @@ namespace loos {
     newcell.b(r);
     r = parseStringAs<float>(s, 24, 9);
     newcell.c(r);
-    
+
     r = parseStringAs<float>(s, 33, 7);
     newcell.alpha(r);
     r = parseStringAs<float>(s, 40, 7);
     newcell.beta(r);
     r = parseStringAs<float>(s, 47, 7);
     newcell.gamma(r);
-    
+
     // Special handling in case of mangled CRYST1 record...
     if (s.length() < 66) {
       t = s.substr(55);
-        
+
       newcell.spaceGroup(t);
-      newcell.z(-1);   // ??? 
+      newcell.z(-1);   // ???
     } else {
       t = parseStringAs<std::string>(s, 55, 11);
       newcell.spaceGroup(t);
@@ -486,9 +486,9 @@ namespace loos {
     AtomicGroup::const_iterator i;
 
     os << p._remarks;
-    if (p.isPeriodic()) 
+    if (p.isPeriodic())
       XTALLine(os, p.periodicBox()) << std::endl;
-    if (p._has_cryst) 
+    if (p._has_cryst)
       FormattedUnitCell(os, p.cell) << std::endl;
     for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
       os << p.atomAsString(*i) << std::endl;
@@ -501,7 +501,7 @@ namespace loos {
 
       FormatConectRecords(os, p);
     }
-  
+
     if (p._auto_ter)
       os << "TER     \n";
 
@@ -511,13 +511,13 @@ namespace loos {
   PDB PDB::copy(void) const {
     AtomicGroup grp = this->AtomicGroup::copy();
     PDB p(grp);
-    
+
     p._show_charge = _show_charge;
     p._auto_ter = _auto_ter;
     p._has_cryst = _has_cryst;
     p._remarks = _remarks;
     p.cell = cell;
-    
+
     return(p);
   }
 
@@ -528,9 +528,9 @@ namespace loos {
   PDB PDB::fromAtomicGroup(const AtomicGroup& g) {
     PDB p(g);
 
-    if (p.isPeriodic()) 
+    if (p.isPeriodic())
       p.unitCell(UnitCell(p.periodicBox()));
-    
+
     return(p);
   }
 
