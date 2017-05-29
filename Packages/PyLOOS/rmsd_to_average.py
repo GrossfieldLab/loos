@@ -49,7 +49,7 @@ traj = loos.pyloos.Trajectory(args.traj, model, skip = args.skip, stride = args.
 
 patraj = loos.pyloos.AlignedVirtualTrajectory(traj, alignwith = args.align)
 patraj.setSubset(args.rmsd)
-average = loos.pyloos.averageStructure(traj)
+average = loos.pyloos.averageStructure(patraj)
 
 
 avg_rmsd = 0

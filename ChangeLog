@@ -1,3 +1,7 @@
+2017-05-29  <tromo>
+
+	* Fixed bug in rmsd_to_average.py
+
 2017-04-28	<tromo>
 	* Fixed bug in PDB reader affecting parsing of CONECT records and hybrid36 atomids
 	* Changed extreme reimaging mode in subsetter to use middle-residue for repositioning
