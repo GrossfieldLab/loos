@@ -5,43 +5,51 @@ import loos.pyloos
 import numpy as np
 import argparse
 
-"""
-    native-hbs.py : find the hydrogen bonds present in some reference
-                    selection, then output their average occupancy
-                    over a trajectory (and optionally a timeseries of 
-                    those occupancies and a PDB of the atoms in the HBs)
+"""     
+    native-hbs.py : Find the hydrogen bonds present in some reference
+    selection, then output their average occupancy over a trajectory 
+    (and optionally a timeseries of those occupancies and a PDB of 
+    the atoms in the HBs).
 
     The expected use-case is the commonly asked question, 'does this Hydrogen
-    bonded structure persist in the simulation?' The expectation is that
-    the user would have some molecular model (such as a PDB) where the 
-    H-bonded structure is present (say, a Watson-Crick duplex) and a 
-    trajectory of that molecule which may no longer retain the structure.
+    bonded structure persist in the simulation?' The expectation is that the
+    user would have some molecular model (such as a PDB) where the  H-bonded
+    structure is present (say, a Watson-Crick duplex) and a  trajectory of that
+    molecule which may no longer retain the structure.
 
-    You may optionally specify files to get not just the average HB occupancy
-    in your selection, but also the per-frame occupancy of each hydrogen bond
-    in the selection in an output file. You can also optionally provide an 
-    outfile name for a PDB of the hydrogen bonded atoms the script finds.
-    This makes for easy visualisation: load that file and your ref up in a 
-    visualizer, then view the model in sticks (or something smaller) and the
-    H-bonded atoms as spheres (or something bigger). Alternatively, you could
-    have your structure viewer draw HB for one 'molecule' then the other
-    and see whether the script found the ones you were hoping it would
+    You may optionally specify files to get not just the average HB occupancy in
+    your selection, but also the per-frame occupancy of each hydrogen bond in
+    the selection in an output file. You can also optionally provide an  outfile
+    name for a PDB of the hydrogen bonded atoms the script finds. This makes for
+    easy visualisation: load that file and your ref up in a  visualizer, then
+    view the model in sticks (or something smaller) and the H-bonded atoms as
+    spheres (or something bigger). Alternatively, you could have your structure
+    viewer draw HB for one 'molecule' then the other and see whether the script
+    found the ones you were hoping it would
 
-    Example commandline with no optional arguments:
-    native-hbs.py -m xtal_molA.pdb -x traj_molA.dcd
+    Example commandline with no optional arguments: native-hbs.py -m
+    xtal_molA.pdb -x traj_molA.dcd
 
     This will print the following values separated by spaces to stdout:
     Number_frames Number_HBs Average_HBs
 
-    Example commandline with all the optional arguments:
-    native-hbs.py -m xtal_mol_A.pdb -x traj_mol_A.dcd \
-    -n native_hbs_found_A.pdb -o native_hbs_timeseries_A.dat \
-    -b 4 -a 20 -s (resid < 4 || resid > 8) && !backbone'
+    Example commandline with all the optional arguments: native-hbs.py -m
+    xtal_mol_A.pdb -x traj_mol_A.dcd \ -n native_hbs_found_A.pdb -o
+    native_hbs_timeseries_A.dat \ -b 4 -a 20 -s (resid < 4 || resid > 8) &&
+    !backbone'
 
-    Note that with all the options present the three values above are
-    still written to standard out, but the outfile specified by -o will
-    contain the occupancy of each found HB by frame so they can be readily
-    recalculated from those files if you chose not to redirect the output.
+    Note that with all the options present the three values above are still
+    written to standard out, but the outfile specified by -o will contain the
+    occupancy of each found HB by frame so they can be readily recalculated from
+    those files if you chose not to redirect the output.
+
+    Note also that the default selection string is 'all', which may cause the
+    program to crash and will produce confusing and unuseful output if your
+    model system has many waters present. For a PDB or NMR structure with no
+    ordered waters this is no issue but a model system containing a full solvent
+    box (such as a restart from a trajectory) or ordered waters will run into
+    this issue.  The right way to handle this is to use the -s flag and select
+    the part  of the model that is of interest.
 
     Louis G. Smith
 
@@ -51,7 +59,7 @@ import argparse
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2013 Tod Romo, Grossfield Lab
+  Copyright (c) 2017 Louis Smith & Grossfield Lab
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -90,15 +98,6 @@ parser.add_argument('-o', '--outfile', help='file to write timeseries to.', type
 parser.add_argument('-a', '--angle', help='maximum valid D-H-A angle.', type=float, default = 30.0)
 args = parser.parse_args()
 
-# takes list of DHA triples, obtains their atomnames, 
-def format_header(dhas):
-    retlist = ['# frame']
-    for x in dhas:
-        names = ['_'.join([i.resname(), str(i.resid()), i.name()]) for i in x]
-        retlist.append('-'.join(names))
-    retlist.append('total_inframe')
-    return '\t'.join(retlist) + '\n'
-
 
 # define the model, subset to selection at this point
 if args.coords:
@@ -114,10 +113,6 @@ else: # if model doesn't have any coordinates, this analysis is nonsensical; exi
     print 'Error: You must supply a model structure with coordinates.'
     exit(-1)
 
-# read in the traj
-traj = loos.pyloos.VirtualTrajectory(skip=args.skip, stride=args.stride)
-for trajname in args.traj:
-    traj.append(loos.pyloos.Trajectory(trajname, model, skip = args.skip, stride = args.stride))
 
 
 
@@ -159,20 +154,19 @@ for i in acceptors:
 # can't append to np arrays so array this after constructiion.
 ref_dhas = np.array(ref_dhas)
 
-# build an atomic group of just these D-H---A triples
-dha_group = loos.AtomicGroup()
-for dha in ref_dhas:
-    for atom in dha:
-        dha_group.append(atom)
+# read in the traj
+traj = loos.pyloos.VirtualTrajectory(skip=args.skip, stride=args.stride)
+for trajname in args.traj:
+    traj.append(loos.pyloos.Trajectory(trajname, model, skip = args.skip, stride = args.stride))
 
-# make counters to track number of frames and hb tallies
+# define counters to track number of frames and HB tallies
 frame_count = 0
 total_hbs = 0
 # iterate over all the frames in the traj, checking each frame for each HB.
 if args.outfile:
     with open(args.outfile, 'w') as outfile:
         outfile.write(format_header(ref_dhas))
-        for frame in traj:
+        for frame in traj: # frame will be a new model that needs a new HBondDetector
             frame_count += 1
             total_inframe = 0
             outform = [frame_count] # list that will aggregate a row of data in outfile
@@ -186,7 +180,7 @@ if args.outfile:
                     outform.append(0) # didn't find an HB so add a zero to row in outfile
             outform.append(total_inframe) # add last column to outfile
             outfile.write('\t'.join(map(str,outform)) + '\n') # write tab delim row to outfile
-else:
+else: # same as above, but don't write outfiles since they weren't asked for if  youre here
     for frame in traj:
         frame_count += 1
         frame_hbs = loos.HBondDetector(args.bondlength, args.angle, frame)
@@ -194,12 +188,8 @@ else:
             if frame_hbs.hBonded(dha[0], dha[1], dha[2]):
                 total_hbs += 1 # if DHA observed in frame, add one to counter.
 
+# Calculate average, print frames, total, and average.
 average_hbs = total_hbs/float(frame_count)
 print frame_count, total_hbs, average_hbs
 
 
-# write built atomic group of native D-H---A triples to PDB for Vis.
-# if arg to give this flag is called for
-if args.nativeHBs:
-    with open(args.nativeHBs, 'w') as outfile:
-        outfile.write(str(loos.PDB_fromAtomicGroup(dha_group)))
