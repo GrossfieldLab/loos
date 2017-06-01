@@ -150,6 +150,7 @@ for i in acceptors:
             ref_dhas.append(np.array([i, j[0], j[1]])) 
             donors.remove(j) # assumes D-H pairs can only be used once
             break # don't check any extra D-Pairs
+            # Note: remove must be applied last at this depth to avoid inconsistent list counters
 
 # can't append to np arrays so array this after constructiion.
 ref_dhas = np.array(ref_dhas)
