@@ -27,16 +27,16 @@ import argparse
     viewer draw HB for one 'molecule' then the other and see whether the script
     found the ones you were hoping it would
 
-    Example commandline with no optional arguments: native-hbs.py -m
-    xtal_molA.pdb -x traj_molA.dcd
+    Example commandline with no optional arguments: 
+    native-hbs.py -m xtal_molA.pdb -x traj_molA.dcd
 
     This will print the following values separated by spaces to stdout:
     Number_frames Number_HBs Average_HBs
 
-    Example commandline with all the optional arguments: native-hbs.py -m
-    xtal_mol_A.pdb -x traj_mol_A.dcd \ -n native_hbs_found_A.pdb -o
-    native_hbs_timeseries_A.dat \ -b 4 -a 20 -s (resid < 4 || resid > 8) &&
-    !backbone'
+    Example commandline with all the optional arguments: native-hbs.py \
+    -m xtal_mol_A.pdb -x traj_mol_A.dcd -n native_hbs_found_A.pdb \
+    -o native_hbs_timeseries_A.dat -b 4 -a 20 \
+    -s '(resid < 4 || resid > 8) &&!backbone'
 
     Note that with all the options present the three values above are still
     written to standard out, but the outfile specified by -o will contain the
