@@ -161,7 +161,7 @@ foreach my $atom (@$rstruct) {
 		     $$atom{ATOMNAME},
 		     $$atom{RESNAME},
 		     ' ',
-		     $$atom{RESID} >= 10000 ? &toHybrid36($$atom{RESID}, 4) : $$atom{RESID}, 
+		     $$atom{RESID} >= 10000 ? &toHybrid36($$atom{RESID}, 4) : $$atom{RESID},
 		     $$atom{X},
 		     $$atom{Y},
 		     $$atom{Z},
@@ -180,7 +180,7 @@ my @bond_list = sort { $a <=> $b } keys %$rconn;
 my $total_bonds = 0;
 
 foreach my $atom (@bond_list) {
-  
+
   # Bound atoms may appear multiple times, especially if adding in
   # constraints.  Filter out the duplicates...
   my $rbound = &uniqueElements($$rconn{$atom});
@@ -188,7 +188,7 @@ foreach my $atom (@bond_list) {
 
   foreach my $bound (@$rbound) {
     ++$total_bonds;
-    
+
     printf $pdb "CONECT%5s", ($atom >= 100000 ? &toHybrid36($atom, 5) : $atom) if ($n == 0);
     printf $pdb '%5s', $bound >= 100000 ? &toHybrid36($bound, 5) : $bound;
     if (++$n > 5) {
@@ -233,7 +233,7 @@ foreach my $atom (@$rstruct) {
 		$$atom{CHARGE},
 		  $mass,
 		    0;
-	    
+
 }
 
 # Now right out the bond pair list...
@@ -274,7 +274,7 @@ sub processTopology {
 
   while (<>) {
     if ($state == 0) {
-      
+
       if (/^topology:/) {
 	$state = 1
       }
@@ -331,7 +331,7 @@ sub processMolecules {
   my $rmols = [];       # Molecules we'll be filling in info for...
   # the details for...
   my $state = 0;        # Initial state for our state machine
-  
+
   my $molidx = -1;   # Index into rmols for what we're processing
   my $ratoms = undef;   # Anon-array of atom names for each molecule
   # as we're processing it
@@ -345,7 +345,7 @@ sub processMolecules {
     print "[$state : $molidx] $_" if ($debug);
 
     if ($state == 0) {
-      
+
       if (/moltype \((\d+)\)/) {
         $molidx = $1;
         $state = 1;
@@ -354,7 +354,7 @@ sub processMolecules {
       }
 
     } elsif ($state == 1) {
-      
+
       if (/name="(.+)"/) {
       }
 
@@ -451,8 +451,8 @@ sub processMolecules {
       if (/\(CONSTR\) (\d+) (\d+)/) {
         my $rpair = [$1, $2];
         push(@$rcons, $rpair);
-      } elsif ($use_vsites && /Virtual site (\d):/) {
-        if ( $1 != 2 ) {
+      } elsif ($use_vsites && /Virtual site (\d)(out)?:/) {
+        if ( $1 != 2 && $1 != 3 ) {
           warn "Warning- found unsupported virtual site type $1 in topology.  Will skip...";
         } else {
           $rvsites = [];
@@ -491,12 +491,15 @@ sub processMolecules {
       }
 
     } elsif ($state == 7) {
-      if (/\(VSITE(\d)\) ([0-9 ]+)$/) {
-        $1 == 2 || die "Error- cannot process vsite type $1";
-        my @indices = split(/\s+/, $2);
-        $#indices == 2 || die "Error- found unexpected vsite index count in '$2'";
-        push(@$rvsites, [$indices[0], $indices[1]]);
-        push(@$rvsites, [$indices[1], $indices[2]]);
+      if (/\(VSITE(\d)(OUT)?\) ([0-9 ]+)$/) {
+        ($1 == 2 || $1 == 3) || die "Error- cannot process vsite type $1";
+        my @indices = split(/\s+/, $3);
+        if ($#indices == 2) {
+          push(@$rvsites, [$indices[0], $indices[1]]);
+          push(@$rvsites, [$indices[1], $indices[2]]);
+        } elsif ($#indices == 3) {
+          push(@$rvsites, [$indices[0], $indices[1]]);
+        }
       } elsif (/moltype \((\d+)\)/) {
         $molidx = $1;
         $state = 1;
@@ -697,7 +700,7 @@ sub toHybrid36 {
 
   my $n10 = 10**$n;
   my $n36 = 36**($n-1);
-  
+
   my $cuta = $n10+$n36*26;
   my $negative = 0;
 
@@ -770,7 +773,7 @@ sub inferWater {
     if ($$rstruct[$i]->{ATOMNAME} eq 'OW' &&
 	$$rstruct[$i+1]->{ATOMNAME} eq 'HW1' &&
 	$$rstruct[$i+2]->{ATOMNAME} eq 'HW2') {
-      
+
       my $ow = $$rstruct[$i]->{ATOMID};
       my $hw1 = $$rstruct[$i+1]->{ATOMID};
       my $hw2 = $$rstruct[$i+2]->{ATOMID};
@@ -780,7 +783,7 @@ sub inferWater {
       } else {
 	push(@{$$rconn{$ow}}, ($hw1, $hw2));
       }
-      
+
     }
   }
 }
@@ -823,7 +826,7 @@ sub sanitizeSegid {
     while ($#arg > 1) {
       my $l = shift(@letfreqs);
       last if !defined($l);    # Out of letters
-      
+
       my $flag;
       do {
 	$flag = 0;
@@ -836,7 +839,7 @@ sub sanitizeSegid {
 	}
       } while ($flag && $#arg > 1);
     }
-    
+
     $seg = $first . join('', @arg) . $lastl;
   }
 
@@ -844,7 +847,7 @@ sub sanitizeSegid {
   if (length($seg) > 4) {
     $seg = substr($seg, 0, 4);
   }
-  
+
   if ($seg ne $oseg && exists($seen_segids{$seg})) {
     my $i;
     $seg = substr($seg, 0, 3);
@@ -883,7 +886,7 @@ sub warnIfUnusedSegmentMaps {
 sub build_bond_prefix_regex {
   my($tabbond, $conbond) = @_;
   my @tags;
-  
+
   if ($tabbond) {
     push(@tags, 'TAB');
   }
@@ -916,7 +919,7 @@ Options:
                      The key is the gromacs name and "val" is the resulting segid.
                      The key is also case insensitive.  This option may be used multiple
                      times on the command line to map several different names,
-                       gmxdump2pdb.pl --segmap FENGYCIN=FENG --segmap NA+=SOD 
+                       gmxdump2pdb.pl --segmap FENGYCIN=FENG --segmap NA+=SOD
 EOF
 
   exit 0;
