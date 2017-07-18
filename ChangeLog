@@ -1,3 +1,7 @@
+2017-07-18 <tromo>
+	* Added support for indexing relative to the end of the trajectory in
+	  frame2pdb (using negative frame numbers)
+
 2017-05-29  <tromo>
 
 	* Fixed bug in rmsd_to_average.py
@@ -6,7 +10,7 @@
 	* Fixed bug in PDB reader affecting parsing of CONECT records and hybrid36 atomids
 	* Changed extreme reimaging mode in subsetter to use middle-residue for repositioning
 	  rather than the first atom.
-		
+
 2017-04-02    <tromo>
 
 	* Fixed bug in backbone selection causing terminal nucleic acids to be skipped
