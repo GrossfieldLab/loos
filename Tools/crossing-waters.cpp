@@ -1,4 +1,4 @@
-/* 
+/*
   Locate waters which cross the membrane
 
   Alan Grossfield
@@ -24,7 +24,7 @@
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */ 
+ */
 
 
 #include <iostream>
@@ -38,7 +38,7 @@ using namespace loos;
 
 void Usage()
     {
-    cerr << "Usage: crossing_waters system traj inner_threshold outer_threshold"
+    cerr << "Usage: crossing_waters system traj inner_threshold outer_threshold [water-selection]"
          << endl;
     }
 
@@ -47,7 +47,7 @@ void Usage()
 class InternalWater
     {
     public:
-        InternalWater(pAtom at, int first, double z) 
+        InternalWater(pAtom at, int first, double z)
             : atom(at),
               entry_frame(first),
               exit_frame(-1),
@@ -55,8 +55,8 @@ class InternalWater
               {
               set_entered_side(z);
               }
-    
-  
+
+
         int entered() const {return(entry_frame);}
 
         void set_entered_side(double z)
@@ -135,7 +135,7 @@ class InternalWater
         pAtom atom;
         int entry_frame;
         int exit_frame;
-        bool entered_from_positive; 
+        bool entered_from_positive;
         bool exited_to_positive;
     };
 
@@ -165,6 +165,11 @@ string fullHelpMessage(void)
 "it's safely outside the membrane, so we use a larger threshold there.  The \n"
 "optimum choice for these values depends on the thickness of the membrane, but \n"
 "10 and 20 are a reasonable start.\n"
+"\n"
+"There's an additional optional flag to control how water is selected, in\n"
+"case your naming conventions are different from ours.  Just add a selection\n"
+"string after the outer_threshold.  The code will internally remove any\n"
+"hydrogens, so you don't have to put that in your selection unless you want.\n"
 "\n"
 "The output is a list of waters that crossed the membrane, how many frames \n"
 "each water spent inside the membrane, and the frames it entered and left.  The \n"
@@ -220,10 +225,28 @@ pTraj traj = createTrajectory(argv[2], system);
 greal inner_threshold = atof(argv[3]);
 greal outer_threshold = atof(argv[4]);
 
+bool manual_water = false;
+char *water_selection;
+if (argc > 5)
+    {
+    manual_water = true;
+    water_selection = argv[5];
+    }
+
 // Select the water oxygens
-HeavySolventSelector water_heavy; // select atoms which are both water 
+HeavySolventSelector water_heavy; // select atoms which are both water
                                   // and not hydrogens
-AtomicGroup water = system.select(water_heavy); // apply the selection
+
+AtomicGroup water;
+if (manual_water)  // apply the supplied selection, but ensure no hydrogens
+    {
+    water = selectAtoms(system, water_selection);
+    water = selectAtoms(water, "!hydrogen");
+    }
+else
+    {
+    water = system.select(water_heavy); // apply the selection
+    }
 
 
 // Set up a map to store the waters
@@ -257,7 +280,7 @@ while (traj->readFrame())
             inside_inner = false;
             inside_outer = false;
             }
-        
+
         // is this a water which is currently inside?
         map<pAtom,InternalWater>::iterator wat = internal_waters.find(w);
         if (wat != internal_waters.end())
@@ -302,6 +325,7 @@ while (traj->readFrame())
 
 vector<InternalWater>::iterator wat;
 cout << "# Total frames = " << frame << endl;
+cout << "# Number of waters = " << water.size() << endl;
 cout << "#AtomID\tLifetime\tEntered\tExited\tExitedPositive" << endl;
 for (wat = exited_waters.begin(); wat != exited_waters.end(); wat++)
     {
