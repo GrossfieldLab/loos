@@ -69,6 +69,10 @@ opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
 opts.Add('NETCDF_LIBS', 'NetCDF Libraries to link with', '')
 
 opts.Add('PYTHON_PATH', 'Path to Python Modules', '')
+opts.Add('PYTHON_INC', 'Include path for Python needed by PyLOOS (if not set, uses the same python as scons)', '')
+
+opts.Add('INCLUDE_PATH', 'Add to include paths before any auto-config', '')
+opts.Add('LIBRARY_PATH', 'Add to library paths before any auto-config', '')
 
 addDeprecatedOptions(opts)
 
@@ -95,6 +99,13 @@ env.Append(BUILDERS = {'Scripts' : script_builder})
 
 ### Get more info from environment
 PREFIX = env['PREFIX']
+
+### Inject paths (if present)
+if 'INCLUDE_PATH' in env:
+    env.Append(CPPPATH = env['INCLUDE_PATH'].split(':'))
+
+if 'LIBRARY_PATH' in env:
+    env.Append(LIBPATH = env['LIBRARY_PATH'].split(':'))
 
 # ----------------------------------------------------------------------------------------------
 

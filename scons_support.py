@@ -694,6 +694,10 @@ def AutoConfiguration(env):
             if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env['pyloos'] = 1
                 pythonpath = distutils.sysconfig.get_python_inc()
+                if 'PYTHON_INC' in conf.env:
+                    if conf.env['PYTHON_INC'] != '':
+                        pythonpath = conf.env['PYTHON_INC']
+
                 conf.env.Append(CPPPATH=[pythonpath])
                 if not conf.CheckNumpy(pythonpath):
                     print 'ERROR- PyLOOS build requires NumPy'
