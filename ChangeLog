@@ -1,4 +1,7 @@
 2017-08-09 <alan>
+	* Added kineticEnergy() method to AtomicGroup
+
+2017-08-09 <alan>
 	* Added NAMDBin.py, to read NAMD binary format.
 
 2017-08-02 <alan>
