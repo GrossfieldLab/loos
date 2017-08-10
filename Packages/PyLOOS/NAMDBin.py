@@ -21,6 +21,12 @@ class NAMDBin:
         # to Ang/ps
         self.PDBVELFACTOR=20.45482706
 
+    def set_little_endian(self):
+        self.endian_signal = "<"  # supply a default value
+
+    def set_big_endian(self):
+        self.endian_signal = ">"  # supply a default value
+
     def readVals(self, velocities = False):
         """
         Read the binary format.  Determine endian-ness by
