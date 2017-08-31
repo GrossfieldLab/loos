@@ -1,3 +1,6 @@
+2017-08-31 <alan>
+	* Added --per-residue option to native_contacts
+
 2017-08-09 <alan>
 	* Added kineticEnergy() method to AtomicGroup
 
