@@ -163,9 +163,14 @@ string fullHelpMessage(void)
 "\n"
 "    In addition, one can select just the sidechains using the\n "
 "    --exclude-backbone flag; this can be combined with other selections.\n"
+"    Turn it one with --exclude-backbone 1 \n"
 "\n"
 "    If you supply the \"--outfile\" option, you will also get a time series for \n"
 "    all of the individual pairs of residues.\n"
+"\n"
+"    If you supply the \"--per-residue FILENAME\", the program will output \n"
+"    the average fractional native contacts for each residue to FILENAME.\n"
+"    Residues with no native contacts will have a value of -1.\n"
 "\n"
         ;
     return(s);
