@@ -1,3 +1,6 @@
+2071-09-07 <alan>
+	* added option to ignore neighboring residues to native_contacts
+
 2017-08-31 <alan>
 	* Added --per-residue option to native_contacts
 
