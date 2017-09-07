@@ -47,6 +47,7 @@ class ToolOptions : public opts::OptionsPackage
         bool use_periodicity;
         bool use_reference;
         bool do_per_residue;
+        bool exclude_consecutive=false;
 
         void addGeneric(po::options_description& o)
             {
@@ -56,6 +57,7 @@ class ToolOptions : public opts::OptionsPackage
      ("periodic", "Use periodicity when computing contacts")
      ("reference", po::value<string>(&reference), "Coordinate file to use as reference structure")
      ("per-residue", po::value<string>(&per_residue_filename), "Output per-residue native contact frequency to this file")
+     ("exclude-consecutive", "Exclude consecutive residues")
             ;
             }
 
@@ -77,6 +79,15 @@ class ToolOptions : public opts::OptionsPackage
             else
                 {
                 use_periodicity = false;
+                }
+
+            if (vm.count("exclude-consecutive"))
+                {
+                exclude_consecutive = true;
+                }
+            else
+                {
+                exclude_consecutive = false;
                 }
 
             if (vm.count("reference"))
@@ -147,6 +158,11 @@ string fullHelpMessage(void)
 "    using the periodic image.  If this is not the desired behavior, you'll \n"
 "    need to add the box information to the initial structure by hand first,\n"
 "    or use the first frame of the trajectory as the reference.\n"
+"\n"
+"    The --exclude-consecutive option causes the code to ignore residues\n"
+"    consecutive in sequence when computing the list of native contacts.\n"
+"    Note: this is done in a naive way, without checking that the consecutive\n"
+"    residues are part of the same chain.  "
 "\n"
 "    EXAMPLE\n"
 "\n"
@@ -285,10 +301,15 @@ vector<uint>contacts_per_residue(num_residues);
 
 GCoord box = system.periodicBox();
 
-// Find contacts within the threshold distance
-for (uint i=0; i<num_residues-1; i++)
+int step = 1;
+if (topts->exclude_consecutive)
     {
-    for (uint j=i+1; j< num_residues; j++)
+    step = 2;
+    }
+// Find contacts within the threshold distance
+for (uint i=0; i<num_residues-step; i++)
+    {
+    for (uint j=i+step; j< num_residues; j++)
         {
         GCoord diff = centers_of_mass[j] - centers_of_mass[i];
         if (use_periodicity_for_reference)
