@@ -40,7 +40,7 @@ GTAGS
 
 # JSON files used for atom
 .*.json
-.*.clang_complete
+.clang_complete
 
 # Vi cruft
 *.swp
