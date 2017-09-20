@@ -59,14 +59,15 @@ parser.add_argument('selection',
                     help="Selection string describing which residues to use")
 parser.add_argument('out_file',
                     help="File with the average contact occupancies")
-parser.add_argument('traj_files', type=argparse.FileType('r'), nargs='+')
+parser.add_argument('traj_files', nargs='+')
 
 
 parser.add_argument('--cutoff',
                     help="Cutoff distance for contact", default=4.0)
 # TODO: add a number of contacts option
-parser.add_argument('--no_hydrogens', nargs=0, help="Don't include hydrogens")
-parser.add_argument('--no_backbone', nargs=0,
+parser.add_argument('--no_hydrogens', action='store_true',
+                    help="Don't include hydrogens")
+parser.add_argument('--no_backbone', action='store_true',
                     help="Don't include the backbone")
 parser.add_argument('--fullhelp',
                     help="Print detailed description of all options",
