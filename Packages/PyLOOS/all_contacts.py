@@ -55,21 +55,26 @@ class FullHelp(argparse.Action):
 cmd_args = " ".join(sys.argv)
 parser = argparse.ArgumentParser(description="Track residue-residue contacts")
 parser.add_argument('system_file', help="File describing the system")
-parser.add_argument('selection', help="Selection string describing which residues to use")
-parser.add_argument('out_file', help="File with the average contact occupancies")
+parser.add_argument('selection',
+                    help="Selection string describing which residues to use")
+parser.add_argument('out_file',
+                    help="File with the average contact occupancies")
 parser.add_argument('traj_files', type=argparse.FileType('r'), nargs='+')
 
 
-parser.add_argument('--cutoff', help="Cutoff distance for contact", default=4.0)
+parser.add_argument('--cutoff',
+                    help="Cutoff distance for contact", default=4.0)
 # TODO: add a number of contacts option
 parser.add_argument('--no_hydrogens', nargs=0, help="Don't include hydrogens")
-parser.add_argument('--no_backbone', nargs=0, help="Don't include the backbone")
-parser.add_argument('--fullhelp', help="Print detailed description of all options",
+parser.add_argument('--no_backbone', nargs=0,
+                    help="Don't include the backbone")
+parser.add_argument('--fullhelp',
+                    help="Print detailed description of all options",
                     action=FullHelp)
 args = parser.parse_args()
 
 
-header =  " ".join(sys.argv) + "\n"
+header = " ".join(sys.argv) + "\n"
 
 
 system = loos.createSystem(args.system_file)
@@ -81,23 +86,20 @@ for t in args.traj_files:
     all_trajs.append(traj)
     if num_trajs > 1:
         t_base = basename(t)
-        core,ext = splitext(t_base)
+        core, ext = splitext(t_base)
         out_names.append(core + ".dat")
 
 if args.no_hydrogens:
     no_hydrogens = loos.selectAtoms(system, "!hydrogen")
     target = loos.selectAtoms(no_hydrogens, args.selection)
 else:
-    target = loos.selectAtoms(system, selection)
-
-
-
+    target = loos.selectAtoms(system, args.selection)
 
 residues = target.splitByResidue()
 # now remove the backbone -- doing before the split loses the glycines
 # Woohoo, look at me, I used a lambda!
 if args.no_backbone:
-    residues = list(map(lambda r:loos.selectAtoms(r, "!backbone"), residues))
+    residues = list(map(lambda r: loos.selectAtoms(r, "!backbone"), residues))
 
 frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
                             numpy.float)
@@ -109,17 +111,14 @@ for traj_id in range(num_trajs):
         for i in range(len(residues)):
             for j in range(i+1, len(residues)):
                 if residues[i].contactWith(args.cutoff, residues[j]):
-                    frac_contacts[i,j,traj_id] += 1.0
-                    frac_contacts[j,i,traj_id] += 1.0
-    frac_contacts[:,:,traj_id] /= len(traj)
+                    frac_contacts[i, j, traj_id] += 1.0
+                    frac_contacts[j, i, traj_id] += 1.0
+    frac_contacts[:, :, traj_id] /= len(traj)
     if num_trajs > 1:
-        numpy.savetxt(out_names[traj_id], frac_contacts[:,:,traj_id],
+        numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],
                       header=header)
-
-
 
 average = numpy.add.reduce(frac_contacts, axis=2)
 average /= len(args.traj_files)
 
-
-numpy.savetxt(args.out_file, average, header = header)
+numpy.savetxt(args.out_file, average, header=header)
