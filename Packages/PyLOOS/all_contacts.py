@@ -62,7 +62,7 @@ parser.add_argument('out_file',
 parser.add_argument('traj_files', nargs='+')
 
 
-parser.add_argument('--cutoff',
+parser.add_argument('--cutoff', type=float,
                     help="Cutoff distance for contact", default=4.0)
 # TODO: add a number of contacts option
 parser.add_argument('--no_hydrogens', action='store_true',
