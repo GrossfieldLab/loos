@@ -1,3 +1,7 @@
+2071-09-21 <alan>
+	* added new tool all_contacts.py to PyLOOS, to compute probabilities
+	  for residue-residue contacts
+
 2071-09-07 <alan>
 	* added option to ignore neighboring residues to native_contacts
 
