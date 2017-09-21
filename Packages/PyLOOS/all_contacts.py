@@ -27,7 +27,6 @@ or RNA, to track all residue-residue contacts within the trajectory.
 
 """
 
-
 import loos
 import loos.pyloos
 import sys
@@ -37,7 +36,33 @@ import argparse
 
 def fullhelp():
   print """
-  Insert fullhelp here
+  all_contacts.py: compute the probability of residue-residue contact
+  over the course of a trajectory
+
+  Mandatory arguments:
+  system_file: file describing system contents, e.g. a psf or pdb
+  selection: selection string for which residues to look at
+  out_file: name for the average contact map, written in matlab format
+  traj_files: 1 or more trajectory files
+
+  Options
+  --cutoff: distance for atom-atom contacts, defaults to 4.0 Ang
+  --no-hydrogens: ignore hydrogens when looking for contacts.
+  --no-backbone: ignore the protein or RNA backbone.  If this flag isn't
+                 given, you'll have a contact probability of 1 between
+                 consecutive residues in a chain
+  --individual: if more than 1 trajectory was given, write probability
+                files for each one as well as the total.  The files will
+                be written in the working directory, with the file name
+                the same as the trajectory file, replacing the extension with
+                ".dat", so "foo/bar/baz.dcd" would produce "./baz.dat".
+                This flag has no effect if only one trajectory was given
+                on the command line.
+  --fullhelp: produce this message
+
+  This program does not explicitly handle periodicity; it assumes you've
+  already fixed any periodicity issues before you ran it.
+
   """
 
 class FullHelp(argparse.Action):
@@ -69,6 +94,8 @@ parser.add_argument('--no_hydrogens', action='store_true',
                     help="Don't include hydrogens")
 parser.add_argument('--no_backbone', action='store_true',
                     help="Don't include the backbone")
+parser.add_argument('--individual', action='store_true',
+                    help="Write contact maps for each trajectory")
 parser.add_argument('--fullhelp',
                     help="Print detailed description of all options",
                     action=FullHelp)
@@ -85,7 +112,7 @@ num_trajs = len(args.traj_files)
 for t in args.traj_files:
     traj = loos.pyloos.Trajectory(t, system)
     all_trajs.append(traj)
-    if num_trajs > 1:
+    if (num_trajs > 1) and args.individual:
         t_base = basename(t)
         core, ext = splitext(t_base)
         out_names.append(core + ".dat")
@@ -115,7 +142,7 @@ for traj_id in range(num_trajs):
                     frac_contacts[i, j, traj_id] += 1.0
                     frac_contacts[j, i, traj_id] += 1.0
     frac_contacts[:, :, traj_id] /= len(traj)
-    if num_trajs > 1:
+    if (num_trajs > 1) and args.individual:
         numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],
                       header=header)
 
