@@ -44,7 +44,7 @@ class NAMDBin:
             num_atoms_model = len(self.atomicGroup)
             if num_atoms_big == num_atoms_model:
                 self.endian_signal = ">"
-            elif num_atoms_lttle == num_atoms_model:
+            elif num_atoms_little == num_atoms_model:
                 self.endian_signal = "<"
             else:
                 raise ValueError, "Number of atoms doesn't match supplied model"
