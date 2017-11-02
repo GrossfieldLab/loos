@@ -1,8 +1,11 @@
-2071-09-21 <alan>
+2017-11-02 <tromo>
+	* Changed SConsctruct and support scripts to make print a function (required by scons-3.0.0)
+
+2017-09-21 <alan>
 	* added new tool all_contacts.py to PyLOOS, to compute probabilities
 	  for residue-residue contacts
 
-2071-09-07 <alan>
+2017-09-07 <alan>
 	* added option to ignore neighboring residues to native_contacts
 
 2017-08-31 <alan>
@@ -17,7 +20,7 @@
 2017-08-02 <alan>
 	* Added the ability to manually select the water to crossing-waters tool.
 	  Based on a bug report from Violeta Casamayor.
-	  
+
 2017-07-18 <tromo>
 	* Added support for indexing relative to the end of the trajectory in
 	  frame2pdb (using negative frame numbers)
