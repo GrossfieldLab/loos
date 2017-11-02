@@ -76,7 +76,7 @@ opts.Add('LIBRARY_PATH', 'Add to library paths before any auto-config', '')
 
 addDeprecatedOptions(opts)
 
-### Uncomment this version to have a semi-clean build environment 
+### Uncomment this version to have a semi-clean build environment
 #env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 
 ### Uncomment this line to bring the full user environment into the build environment
@@ -117,8 +117,8 @@ AutoConfiguration(env)
 pyloos = int(env['pyloos'])
 
 if not pyloos:
-    print '***Warning***'
-    print 'PyLOOS will not be built.  The OMG will not be installed.'
+    print('***Warning***')
+    print('PyLOOS will not be built.  The OMG will not be installed.')
 
 
 ### Compile-flags
@@ -152,7 +152,7 @@ if not cleaning:
     if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_46') and LooseVersion(loos_build_config.versions['boost']) >= LooseVersion('1_44'):
         env.Append(CCFLAGS = '-DBOOST_FILESYSTEM_VERSION=3')
 
-    
+
 # Determine what kind of build...
 
 release = int(env['release'])
@@ -212,8 +212,8 @@ Export('loos')
 
 if os.path.exists('docs.prebuilt'):
     existing_docs = True
-    print 'Warning- existing documentation found and will NOT be rebuilt (or cleaned)!'
-    print '         Remove docs.prebuilt file to force rebuilding documentation.'
+    print('Warning- existing documentation found and will NOT be rebuilt (or cleaned)!')
+    print('         Remove docs.prebuilt file to force rebuilding documentation.')
     docs = ['Docs/html/index.html']
 
 
@@ -227,17 +227,17 @@ else:
         elif extension == '.bz2':
             modifier = 'j'
         elif extension != '.tar':
-            print 'Error- unknown compression extension for ', doc_tarballs[0]
+            print('Error- unknown compression extension for ', doc_tarballs[0])
             sys.exit(-1)
 
-        print 'Warning- existing documentation tarball found.  To force rebuilding of'
-        print '         of documentation, remove the tarball and the docs.prebuilt file.'
+        print('Warning- existing documentation tarball found.  To force rebuilding of')
+        print('         of documentation, remove the tarball and the docs.prebuilt file.')
 
         if not cleaning:
-            print 'Unpacking documentation...'
+            print('Unpacking documentation...')
             fnull = open(os.devnull, 'w')
             subprocess.call(['tar', modifier + 'xvf', filename], stdout=fnull)
-            
+
         existing_docs = True
         docs = ['Docs/html/index.html']
 
@@ -279,7 +279,7 @@ if int(env['pyloos']):
     all = all + loos_python
 
 loos_tools += loos_core
-    
+
 env.Alias('tools', loos_tools)
 env.Alias('core', loos_core)
 env.Alias('docs', docs)
