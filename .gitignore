@@ -49,6 +49,7 @@ GTAGS
 .*.json
 
 ###EXES
+Tools/distance_prob
 Tools/verap
 Tools/renum-pdb
 Tools/merge-traj
