@@ -57,13 +57,16 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   double hist_min, hist_max;
   int num_bins;
+  string prefix;
 
   // Change these options to reflect what your tool needs
   void addGeneric(po::options_description& o) {
     o.add_options()
     ("hist_min", po::value<double>(&hist_min)->default_value(0.0), "Histogram minimum")
     ("hist_max", po::value<double>(&hist_min)->default_value(50.0), "Histogram maximum")
-    ("num_bins", po::value<int>(&num_bins)->default_value(100), "Number of bins");
+    ("num_bins", po::value<int>(&num_bins)->default_value(100), "Number of bins")
+    ("prefix", po::value<string>(&prefix)->default_value(string("./foo_")), "Output file prefix")
+    ;
   }
 
   /*
@@ -123,42 +126,57 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  // Pull the model from the options object (it will include coordinates)
   AtomicGroup model = tropts->model;
-
-  // Pull out the trajectory...
   pTraj traj = tropts->trajectory;
 
   // Select the desired atoms to operate over...
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
+  // For convenience, figure out histogram bin width
   double bin_width = (topts->hist_max - topts->hist_min)/topts->num_bins;
+
+  // Compute electrons for each atom
+  subset.deduceAtomicNumberFromMass();
+  vector<double> electrons(subset.size());
+  for (uint i=0; i<subset.size(); i++) {
+    electrons[i] = subset[i]->atomic_number() - subset[i]->charge();
+  }
+
 
   // Now iterate over all frames in the trajectory (excluding the skip
   // region)
   while (traj->readFrame()) {
     // Set up the histogram
     vector<double> histogram(topts->num_bins);
+    double normalization = 0.0;
 
     // Update the coordinates ONLY for the subset of atoms we're
     // interested in...
     traj->updateGroupCoords(subset);
     GCoord box = model.periodicBox();
 
-    for (int i=0; i<subset.size()-1; i++) {
-       for (int j=i+1; j<subset.size(); j++) {
+    for (uint i=0; i<subset.size()-1; i++) {
+       for (uint j=i+1; j<subset.size(); j++) {
          double distance = subset[i]->coords().distance(subset[j]->coords(),
                                                         box);
          int bin = static_cast<int>((distance - topts->hist_min)/bin_width);
-         histogram[bin]++;
+         double e2 = electrons[i] * electrons[j];
+         histogram[bin] += e2;
+         normalization += e2;
        }
     }
 
-  // Output the histogram for the frame
+    // Output the histogram for the frame
+
+    string filename = topts->prefix + to_string(traj->currentFrame());
+    ofstream outfile(filename.c_str());
+    outfile << "# Distance Probability" << endl;
+    for (uint i=0; i<histogram.size(); i++) {
+      histogram[i] /= normalization;
+      double d = topts->hist_min + (i+0.5)*bin_width;
+      outfile << d << "\t" << histogram[i] << endl;
+    }
 
   }
-
-  // ***EDIT***
-  // Output results...
 
 }
