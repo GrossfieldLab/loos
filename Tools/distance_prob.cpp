@@ -47,8 +47,6 @@ namespace po = loos::OptionsFramework::po;
 // ----------------------------------------------------------------
 // Tool-specific options
 
-double hist_min, hist_max;
-int num_bins;
 
 
 // The following conditional prevents this class from appearing in the
@@ -57,13 +55,15 @@ int num_bins;
 // @cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
+  double hist_min, hist_max;
+  int num_bins;
 
   // Change these options to reflect what your tool needs
   void addGeneric(po::options_description& o) {
     o.add_options()
-    ("hist-min", po::value<double>(&hist_min)->default_value(0.0), "Histogram minimum")
-    ("hist-max", po::value<double>(&hist_min)->default_value(50.0), "Histogram maximum")
-    ("num-bins", po::value<int>(&num_bins)->default_value(100), "Number of bins");
+    ("hist_min", po::value<double>(&hist_min)->default_value(0.0), "Histogram minimum")
+    ("hist_max", po::value<double>(&hist_min)->default_value(50.0), "Histogram maximum")
+    ("num_bins", po::value<int>(&num_bins)->default_value(100), "Number of bins");
   }
 
   /*
@@ -132,13 +132,13 @@ int main(int argc, char *argv[]) {
   // Select the desired atoms to operate over...
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
-  double bin_width = (hist_max - hist_min)/num_bins;
+  double bin_width = (topts->hist_max - topts->hist_min)/topts->num_bins;
 
   // Now iterate over all frames in the trajectory (excluding the skip
   // region)
   while (traj->readFrame()) {
     // Set up the histogram
-    vector<double> histogram(num_bins);
+    vector<double> histogram(topts->num_bins);
 
     // Update the coordinates ONLY for the subset of atoms we're
     // interested in...
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
        for (int j=i+1; j<subset.size(); j++) {
          double distance = subset[i]->coords().distance(subset[j]->coords(),
                                                         box);
-         int bin = static_cast<int>((distance - hist_min)/bin_width);
+         int bin = static_cast<int>((distance - topts->hist_min)/bin_width);
          histogram[bin]++;
        }
     }
