@@ -173,6 +173,7 @@ int main(int argc, char *argv[]) {
 
   vector<double> total_histogram;
   total_histogram.assign(topts->num_bins, 0.0);
+  uint frames_accumulated = 0;
 
   // Now iterate over all frames in the trajectory (excluding the skip
   // region)
@@ -204,13 +205,13 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    // Output the histogram for the frame
     if (excluded) {
       cerr << "Frame: " << traj->currentFrame()
            << " excluded " << excluded
            << " distances." << endl;
     }
 
+    // Output the histogram for the frame
     if (topts->write_per_frame) {
       string filename = topts->prefix + to_string(traj->currentFrame())
                                       + string(".dat");
@@ -227,6 +228,19 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    // Accumulate the total histogram
+    for (uint i=0; i<histogram.size(); i++) {
+      total_histogram[i] += histogram[i];
+      frames_accumulated++;
+    }
+
+
   }
 
+  cout << "# Distance Probability" << endl;
+  for (uint i=0; i<total_histogram.size(); i++) {
+    total_histogram[i] /= frames_accumulated;
+    double d = topts->hist_min + (i+0.5)*bin_width;
+    cout << d << "\t" << total_histogram[i] << endl;
+  }
 }
