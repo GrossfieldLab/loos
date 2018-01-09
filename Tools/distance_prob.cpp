@@ -53,6 +53,7 @@ public:
   double hist_min, hist_max;
   int num_bins;
   string prefix;
+  bool use_electrons;
 
   // Change these options to reflect what your tool needs
   void addGeneric(po::options_description& o) {
@@ -61,8 +62,20 @@ public:
     ("hist_max", po::value<double>(&hist_max)->default_value(50.0), "Histogram maximum")
     ("num_bins", po::value<int>(&num_bins)->default_value(100), "Number of bins")
     ("prefix", po::value<string>(&prefix)->default_value(string("./foo_")), "Output file prefix")
+    ("electrons", "Weight atoms by electrons")
     ;
   }
+
+    bool postConditions(po::variables_map& vm)
+    {
+      if (vm.count("electrons")) {
+        use_electrons = true;
+      }
+      else {
+        use_electrons = false;
+      }
+      return true;
+    }
 
 
   // The print() function returns a string that describes what all the
@@ -93,8 +106,8 @@ string fullHelp(void) {
   "This tool is designed to produce a pair-distribution function \n"
   "comparable to what you'd get from an X-ray scattering experiment.\n"
   "Given a selection, for each frame it computes the pair distance \n"
-  "distribution function, where the weight of each pair is the product\n"
-  "of their number of electrons.\n"
+  "distribution function, either weighting each pair equally \n"
+  "or by the product of their number of electrons.\n"
   "\n"
   "WARNING: this means you need charge and mass information (to deduce \n"
   "the atomic number).  If you use something other than a PSF to define \n"
@@ -138,12 +151,16 @@ int main(int argc, char *argv[]) {
   double bin_width = (topts->hist_max - topts->hist_min)/topts->num_bins;
 
   // Compute electrons for each atom
-  subset.deduceAtomicNumberFromMass();
-  //vector<double> electrons(subset.size());
-  vector<double> electrons;
-  electrons.assign(subset.size(), 0.0);
-  for (uint i=0; i<subset.size(); i++) {
-    electrons[i] = subset[i]->atomic_number() - subset[i]->charge();
+  vector<double> weighting;
+  weighting.assign(subset.size(), 0.0);
+  if (topts->use_electrons) {
+    subset.deduceAtomicNumberFromMass();
+    for (uint i=0; i<subset.size(); i++) {
+      weighting[i] = subset[i]->atomic_number() - subset[i]->charge();
+    }
+  }
+  else {
+    weighting.assign(subset.size(), 1.0);
   }
 
 
@@ -170,7 +187,7 @@ int main(int argc, char *argv[]) {
         }
         else {
          int bin = static_cast<int>((distance - topts->hist_min)/bin_width);
-         double e2 = electrons[i] * electrons[j];
+         double e2 = weighting[i] * weighting[j];
          histogram.at(bin) += e2;
          normalization += e2;
         }
