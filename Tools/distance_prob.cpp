@@ -100,6 +100,9 @@ string fullHelp(void) {
   "the atomic number).  If you use something other than a PSF to define \n"
   "the system, this information won't be available, and you'll \n"
   "probably get the unweighted distance distribution function instead.\n"
+  "\n"
+  "For the moment, it is hardwired to write out a distribution for each \n"
+  "frame.\n"
   "\n";
   return(s);
 }
