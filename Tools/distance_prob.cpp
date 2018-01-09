@@ -69,15 +69,18 @@ public:
     ;
   }
 
-  /*
+
   // The print() function returns a string that describes what all the
   // options are set to (for logging purposes)
   string print() const {
     ostringstream oss;
-    oss << boost::format("option1=%f, option2=%d") % option1 % option2;
+    oss << boost::format("hist_min=%f, hist_max=%f, num_bins=%d, prefix=%s")
+            % hist_min
+            % hist_max
+            % num_bins
+            % prefix.c_str();
     return(oss.str());
   }
-  */
 
 };
 // @endcond
@@ -91,33 +94,12 @@ int main(int argc, char *argv[]) {
   // Store the invocation information for logging later
   string header = invocationHeader(argc, argv);
 
-  // Build up the command-line options for this tool by instantiating
-  // the appropriate OptionsPackage objects...
-
-  // Basic options should be used by all tools.  It provides help,
-  // verbosity, and the ability to read options from a config file
+  // Build up the command-line options for this tool
   opts::BasicOptions* bopts = new opts::BasicOptions;
-
-  // This tool can operate on a subset of atoms.  The BasicSelection
-  // object provides the "--selection" option.
   opts::BasicSelection* sopts = new opts::BasicSelection;
-
-  // The BasicTrajectory object handles specifying a trajectory as
-  // well as a "--skip" option that lets the tool skip the first
-  // number of frames (i.e. equilibration).  It creates a pTraj object
-  // that is already primed for reading...
-  opts::BasicTrajectory* tropts = new opts::BasicTrajectory;
-
-  // ***EDIT***
-  // Tool-specific options can be included here...
+  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
 
-  // ***EDIT***
-  // All of the OptionsPackages are combined via the AggregateOptions
-  // object.  First instantiate it, then add the desired
-  // OptionsPackage objects.  The order is important.  We recommend
-  // you progress from general (Basic and Selection) to more specific
-  // (model) and finally the tool options.
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(tropts).add(topts);
 
