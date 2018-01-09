@@ -46,12 +46,6 @@ namespace po = loos::OptionsFramework::po;
 
 // ----------------------------------------------------------------
 // Tool-specific options
-
-
-
-// The following conditional prevents this class from appearing in the
-// Doxygen documentation for LOOS:
-//
 // @cond TOOLS_INTERNAL
 class ToolOptions : public opts::OptionsPackage {
 public:
@@ -119,7 +113,9 @@ int main(int argc, char *argv[]) {
 
   // Compute electrons for each atom
   subset.deduceAtomicNumberFromMass();
-  vector<double> electrons(subset.size());
+  //vector<double> electrons(subset.size());
+  vector<double> electrons;
+  electrons.assign(subset.size(), 0.0);
   for (uint i=0; i<subset.size(); i++) {
     electrons[i] = subset[i]->atomic_number() - subset[i]->charge();
   }
@@ -129,8 +125,10 @@ int main(int argc, char *argv[]) {
   // region)
   while (traj->readFrame()) {
     // Set up the histogram
-    vector<double> histogram(topts->num_bins);
+    vector<double> histogram;
+    histogram.assign(topts->num_bins, 0.0);
     double normalization = 0.0;
+    int excluded = 0;
 
     // Update the coordinates ONLY for the subset of atoms we're
     // interested in...
@@ -138,20 +136,35 @@ int main(int argc, char *argv[]) {
     GCoord box = model.periodicBox();
 
     for (uint i=0; i<subset.size()-1; i++) {
-       for (uint j=i+1; j<subset.size(); j++) {
-         double distance = subset[i]->coords().distance(subset[j]->coords(),
-                                                        box);
+      for (uint j=i+1; j<subset.size(); j++) {
+        double distance = subset[i]->coords().distance(subset[j]->coords(),
+                                                         box);
+        if (distance >= topts->hist_max) {
+          excluded++;
+        }
+        else {
          int bin = static_cast<int>((distance - topts->hist_min)/bin_width);
          double e2 = electrons[i] * electrons[j];
-         histogram[bin] += e2;
+         histogram.at(bin) += e2;
          normalization += e2;
-       }
+        }
+      }
     }
 
     // Output the histogram for the frame
+    if (excluded) {
+      cerr << "Frame: " << traj->currentFrame()
+           << " excluded " << excluded
+           << " distances." << endl;
+    }
 
-    string filename = topts->prefix + to_string(traj->currentFrame());
+    string filename = topts->prefix + to_string(traj->currentFrame())
+                                    + string(".dat");
     ofstream outfile(filename.c_str());
+    if (outfile.fail()) {
+      cerr << "Error opening file " << filename << endl;
+      exit(-1);
+    }
     outfile << "# Distance Probability" << endl;
     for (uint i=0; i<histogram.size(); i++) {
       histogram[i] /= normalization;
