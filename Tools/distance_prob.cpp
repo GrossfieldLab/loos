@@ -63,7 +63,7 @@ public:
   void addGeneric(po::options_description& o) {
     o.add_options()
     ("hist_min", po::value<double>(&hist_min)->default_value(0.0), "Histogram minimum")
-    ("hist_max", po::value<double>(&hist_min)->default_value(50.0), "Histogram maximum")
+    ("hist_max", po::value<double>(&hist_max)->default_value(50.0), "Histogram maximum")
     ("num_bins", po::value<int>(&num_bins)->default_value(100), "Number of bins")
     ("prefix", po::value<string>(&prefix)->default_value(string("./foo_")), "Output file prefix")
     ;
