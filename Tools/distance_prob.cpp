@@ -54,6 +54,7 @@ public:
   int num_bins;
   string prefix;
   bool use_electrons;
+  bool write_per_frame;
 
   // Change these options to reflect what your tool needs
   void addGeneric(po::options_description& o) {
@@ -63,6 +64,7 @@ public:
     ("num_bins", po::value<int>(&num_bins)->default_value(100), "Number of bins")
     ("prefix", po::value<string>(&prefix)->default_value(string("./foo_")), "Output file prefix")
     ("electrons", "Weight atoms by electrons")
+    ("per-frame", "Write a distribution for each frame")
     ;
   }
 
@@ -73,6 +75,12 @@ public:
       }
       else {
         use_electrons = false;
+      }
+      if (vm.count("per-frame")) {
+        write_per_frame = true;
+      }
+      else {
+        write_per_frame = false;
       }
       return true;
     }
@@ -201,18 +209,20 @@ int main(int argc, char *argv[]) {
            << " distances." << endl;
     }
 
-    string filename = topts->prefix + to_string(traj->currentFrame())
-                                    + string(".dat");
-    ofstream outfile(filename.c_str());
-    if (outfile.fail()) {
-      cerr << "Error opening file " << filename << endl;
-      exit(-1);
-    }
-    outfile << "# Distance Probability" << endl;
-    for (uint i=0; i<histogram.size(); i++) {
-      histogram[i] /= normalization;
-      double d = topts->hist_min + (i+0.5)*bin_width;
-      outfile << d << "\t" << histogram[i] << endl;
+    if (topts->write_per_frame) {
+      string filename = topts->prefix + to_string(traj->currentFrame())
+                                      + string(".dat");
+      ofstream outfile(filename.c_str());
+      if (outfile.fail()) {
+        cerr << "Error opening file " << filename << endl;
+        exit(-1);
+      }
+      outfile << "# Distance Probability" << endl;
+      for (uint i=0; i<histogram.size(); i++) {
+        histogram[i] /= normalization;
+        double d = topts->hist_min + (i+0.5)*bin_width;
+        outfile << d << "\t" << histogram[i] << endl;
+      }
     }
 
   }
