@@ -1,12 +1,13 @@
 /*
-  traj_calc.cpp
+  distance_prob.cpp
 
-  (c) 2011 Tod D. Romo, Grossfield Lab
+  (c) 2018 Alan Grossfield
            Department of Biochemistry
            University of Rochster School of Medicine and Dentistry
 
+  Compute atom-atom distance probability function
 
-  C++ template for writing a tool that performs a calculation on a trajectory
+
 */
 
 
@@ -80,6 +81,28 @@ public:
 // @endcond
 // ----------------------------------------------------------------
 
+string fullHelp(void) {
+  string s =
+  "\n"
+  "SYNOPSIS\n"
+  "\n"
+  "Compute electron-weighted atom-atom distance distribution function\n"
+  "\n"
+  "DESCRIPTION\n"
+  "\n"
+  "This tool is designed to produce a pair-distribution function \n"
+  "comparable to what you'd get from an X-ray scattering experiment.\n"
+  "Given a selection, for each frame it computes the pair distance \n"
+  "distribution function, where the weight of each pair is the product\n"
+  "of their number of electrons.\n"
+  "\n"
+  "WARNING: this means you need charge and mass information (to deduce \n"
+  "the atomic number).  If you use something other than a PSF to define \n"
+  "the system, this information won't be available, and you'll \n"
+  "probably get the unweighted distance distribution function instead.\n"
+  "\n";
+  return(s);
+}
 
 
 
@@ -89,7 +112,7 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
   // Build up the command-line options for this tool
-  opts::BasicOptions* bopts = new opts::BasicOptions;
+  opts::BasicOptions* bopts = new opts::BasicOptions(fullHelp());
   opts::BasicSelection* sopts = new opts::BasicSelection;
   opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
   ToolOptions* topts = new ToolOptions;
