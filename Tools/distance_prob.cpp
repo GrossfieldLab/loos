@@ -171,6 +171,8 @@ int main(int argc, char *argv[]) {
     weighting.assign(subset.size(), 1.0);
   }
 
+  vector<double> total_histogram;
+  total_histogram.assign(topts->num_bins, 0.0);
 
   // Now iterate over all frames in the trajectory (excluding the skip
   // region)
