@@ -225,11 +225,14 @@ int main(int argc, char *argv[]) {
 
     // Output the histogram for the frame
     if (topts->write_per_frame) {
-      string filename = topts->prefix + to_string(traj->currentFrame())
-                                      + string(".dat");
-      ofstream outfile(filename.c_str());
+      ostringstream oss;
+      oss << topts->prefix << traj->currentFrame() << ".dat";
+      //string filename = topts->prefix + to_string(traj->currentFrame())
+      //                               + string(".dat");
+      //ofstream outfile(filename.c_str());
+      ofstream outfile(oss.str());
       if (outfile.fail()) {
-        cerr << "Error opening file " << filename << endl;
+        cerr << "Error opening file " << oss.str() << endl;
         exit(-1);
       }
       outfile << "# " << header << endl;
