@@ -134,6 +134,7 @@ int main(int argc, char *argv[]) {
 
   // Store the invocation information for logging later
   string header = invocationHeader(argc, argv);
+  cout << "#" << header << endl;
 
   // Build up the command-line options for this tool
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelp());
@@ -225,6 +226,7 @@ int main(int argc, char *argv[]) {
         cerr << "Error opening file " << filename << endl;
         exit(-1);
       }
+      outfile << "# " << header << endl;
       outfile << "# Distance Probability" << endl;
       for (uint i=0; i<histogram.size(); i++) {
         double d = topts->hist_min + (i+0.5)*bin_width;
