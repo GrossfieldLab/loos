@@ -1,3 +1,6 @@
+2018-01-10 <alan>
+	* Added new tool (distance_prob)
+	
 2017-11-02 <tromo>
 	* Changed SConsctruct and support scripts to make print a function (required by scons-3.0.0)
 
