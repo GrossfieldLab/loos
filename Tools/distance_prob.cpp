@@ -211,6 +211,11 @@ int main(int argc, char *argv[]) {
            << " distances." << endl;
     }
 
+    // Normalize the histogram
+    for (uint i=0; i<histogram.size(); i++) {
+      histogram[i] /= normalization;
+    }
+
     // Output the histogram for the frame
     if (topts->write_per_frame) {
       string filename = topts->prefix + to_string(traj->currentFrame())
@@ -222,7 +227,6 @@ int main(int argc, char *argv[]) {
       }
       outfile << "# Distance Probability" << endl;
       for (uint i=0; i<histogram.size(); i++) {
-        histogram[i] /= normalization;
         double d = topts->hist_min + (i+0.5)*bin_width;
         outfile << d << "\t" << histogram[i] << endl;
       }
