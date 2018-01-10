@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
       //string filename = topts->prefix + to_string(traj->currentFrame())
       //                               + string(".dat");
       //ofstream outfile(filename.c_str());
-      ofstream outfile(oss.str());
+      ofstream outfile(oss.str().c_str());
       if (outfile.fail()) {
         cerr << "Error opening file " << oss.str() << endl;
         exit(-1);
