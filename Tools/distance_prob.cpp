@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
       for (uint j=i+1; j<subset.size(); j++) {
         double distance = subset[i]->coords().distance(subset[j]->coords(),
                                                          box);
-        if (distance >= topts->hist_max) {
+        if ( (distance >= topts->hist_max) || (distance <= topts->hist_min) ) {
           excluded++;
         }
         else {
