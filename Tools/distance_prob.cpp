@@ -55,6 +55,7 @@ public:
   string prefix;
   bool use_electrons;
   bool write_per_frame;
+  bool reimage;
 
   // Change these options to reflect what your tool needs
   void addGeneric(po::options_description& o) {
@@ -65,6 +66,7 @@ public:
     ("prefix", po::value<string>(&prefix)->default_value(string("./foo_")), "Output file prefix")
     ("electrons", "Weight atoms by electrons")
     ("per-frame", "Write a distribution for each frame")
+    ("reimage", "Account for box size when computing distances")
     ;
   }
 
@@ -81,6 +83,12 @@ public:
       }
       else {
         write_per_frame = false;
+      }
+      if (vm.count("reimage")) {
+        reimage = true;
+      }
+      else {
+        reimage = false;
       }
       return true;
     }
@@ -125,11 +133,19 @@ string fullHelp(void) {
   "                    Note: your system file must provide charge and mass \n"
   "                    information for this option to work correctly.\n"
   "per-frame:          Write out a histogram for each frame processed\n"
+  "reimage:            Account for periodicity when computing distances\n"
   "\n"
+  "Note: reimage is a little tricky.  If you know your molecule isn't\n"
+  "      broken across the periodic image, you don't need it.  \n"
+  "      Moreover, if your molecule extends more than half the length\n"
+  "      of box, then reimage will cause you to GET THE WRONG ANSWER.\n"
+  "      However, if for example you're using gromacs, not using it\n"
+  "      will almost certainly give you the wrong answer.\n"
+  "      If you're using gromacs, but your molecule is more than half \n"
+  "      the size of the box, your only solution is to pre-treat it\n"
+  "      using subsetter or merge-traj, so the molecule isn't broken \n"
+  "      the periodic image.\n"
   "\n"
-  "\n"
-  "\n"
-  ""
   "\n";
   return(s);
 }
@@ -198,8 +214,14 @@ int main(int argc, char *argv[]) {
 
     for (uint i=0; i<subset.size()-1; i++) {
       for (uint j=i+1; j<subset.size(); j++) {
-        double distance = subset[i]->coords().distance(subset[j]->coords(),
+        double distance;
+        if (topts->reimage) {
+          distance = subset[i]->coords().distance(subset[j]->coords(),
                                                          box);
+        }
+        else {
+          distance = subset[i]->coords().distance(subset[j]->coords());
+        }
         if ( (distance >= topts->hist_max) || (distance <= topts->hist_min) ) {
           excluded++;
         }
