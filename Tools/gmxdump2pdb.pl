@@ -549,7 +549,7 @@ sub readCoords {
 
   while (<>) {
     chomp;
-    if (/^\s+x\[\s*\d+\]=\{(.+)}$/) {
+    if (/^\s+x\[\s*\d+\]=\{(.+)\}$/) {
       my $c = $1;
       $c =~ s/\s//g;
       my @coord = split(/,/, $c);
