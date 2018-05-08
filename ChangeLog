@@ -1,6 +1,11 @@
+2018-05-08 <tromo>
+	* Fixed potential bug in gmxdump2pdb.pl when using newer PERLs (missing an escaped
+	  closing brace that did not appear to affect the program...)
+	* Fixed bug in subsetter that allowed zealous reimaging mode without a centering selection.
+
 2018-02-02 <alan>
 	* Bugfix in order_params to allow selecting chain 1
-	
+
 2018-01-10 <alan>
 	* Added new tool (distance_prob)
 
