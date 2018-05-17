@@ -60,7 +60,7 @@ uint skip;
 
 
 void fullHelpMessage() {
-  //string msg = 
+  //string msg =
   cout <<  "\n"
   "SYNOPSIS\n"
   "\n"
@@ -101,6 +101,14 @@ void fullHelpMessage() {
   "This is done using a boot-strap approach to scramble eigenpairs and compute\n"
   "a new overlap.  this is done -z=### times, which is used to calculate the\n"
   "average and standard deviation for the Z-score.  For more details see:\n"
+  "\n"
+  "  Romo, T. D., and Grossfield, A. Block covariance overlap method and \n"
+  "  convergence in molecular dynamics simulation, J. Chem. Theor. Comput.,\n"
+  "  2011, 7, 2464-2472\n"
+  "\n"
+  "  Leioatts, N., Romo, T. D., and Grossfield, A., Elastic network models \n"
+  "  are robust to variations in formalism, J. Chem. Theor. Comput., 2012, \n"
+  "  8,  2424-2434\n"
   "\n"
   "\n"
   "EXAMPLES\n"
@@ -156,7 +164,7 @@ void parseArgs(int argc, char *argv[]) {
       ("lu", po::value<string>(&leftU_name), "Left eigenvector")
       ("rs", po::value<string>(&rights_name), "Right eigenvector")
       ("ru", po::value<string>(&rightU_name), "Right eigenvector");
-    
+
 
     po::options_description command_line;
     command_line.add(generic).add(hidden);
@@ -223,7 +231,7 @@ DMDuple firstColumns(const DoubleMatrix& S, const DoubleMatrix& U, const uint nm
 DoubleMatrix scalePower(const DoubleMatrix& A, const DoubleMatrix& B) {
 
   double sumB = 0.0;
-  double sumA = 0.0; 
+  double sumA = 0.0;
   for (uint j=0; j<B.rows(); ++j) {
     sumB += B[j];
     sumA += A[j];
@@ -303,7 +311,7 @@ int main(int argc, char *argv[]) {
   if (square_left)
     for (uint j=0; j<lSS.rows(); ++j)
       lSS[j] *= lSS[j];
-  
+
   if (square_right)
     for (uint j=0; j<rSS.rows(); ++j)
       rSS[j] *= rSS[j];
