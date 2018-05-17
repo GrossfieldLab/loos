@@ -1,3 +1,6 @@
+2018-05-17 <tromo>
+  * Changed PSF code to accept hybrid-36 encoding for atomid's and resid's
+
 2018-05-08 <tromo>
 	* Fixed potential bug in gmxdump2pdb.pl when using newer PERLs (missing an escaped
 	  closing brace that did not appear to affect the program...)

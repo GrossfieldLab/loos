@@ -33,7 +33,7 @@ namespace loos {
   PSF PSF::copy(void) const {
     AtomicGroup grp = this->AtomicGroup::copy();
     PSF p(grp);
-    
+
     // Add PSF specific member data copies here...
     return(p);
   }
@@ -56,25 +56,25 @@ namespace loos {
     // third line is title header
     getline(is, input);
     int num_title_lines;
-    if (!(std::stringstream(input) >> num_title_lines)) 
-      throw(FileReadError(_filename, "PSF has malformed title header"));        
+    if (!(std::stringstream(input) >> num_title_lines))
+      throw(FileReadError(_filename, "PSF has malformed title header"));
 
     // skip the rest of the title
-    for (int i=0; i<num_title_lines; i++) 
+    for (int i=0; i<num_title_lines; i++)
       getline(is, input);
-        
+
     // verify nothing went wrong
     if (!(is.good()))
       // Yes, I know, I should figure out what went wrong instead
       // of running home crying.  Sorry, Tod...
       throw(FileReadError(_filename, "PSF choked reading the header"));
 
-    // next line is blank 
+    // next line is blank
     if (!getline(is, input))
       throw(FileReadError(_filename, "PSF failed reading second header blank"));
 
     // next line is the number of atoms
-    
+
     if (!getline(is, input))
       throw(FileReadError(_filename, "PSF failed reading natom line"));
     int num_atoms;
@@ -90,7 +90,7 @@ namespace loos {
       parseAtomRecord(input);
     }
 
-    // next line is blank 
+    // next line is blank
     if (!getline(is, input))
       throw(FileReadError(_filename, "PSF failed reading blank after atom lines"));
 
@@ -107,19 +107,23 @@ namespace loos {
     while (input.size() > 1) { // end of the block is marked by a blank line
                                // Note: >1 to handle \r in files that came from windows...
       int ind1, ind2;
+      std::string buf1, buf2;
       std::stringstream s(input);
 
       while (s.good()) {
-        if (!(s >> ind1 >> ind2))
+        if (!(s >> buf1 >> buf2))
           throw(FileReadError(_filename, "PSF error parsing bonds.\n> " + input));
+
+        ind1 = parseStringAsHybrid36(buf1);
+        ind2 = parseStringAsHybrid36(buf2);
 
         if (ind1 > num_atoms || ind2 > num_atoms)
           throw(FileReadError(_filename, "PSF bond error: bound atomid exceeds number of atoms.\n> " + input));
 
         ind1--;  // our indices are 1 off from the numbering in the pdb/psf file
         ind2--;
-        pAtom pa1 = getAtom(ind1);                
-        pAtom pa2 = getAtom(ind2);                
+        pAtom pa1 = getAtom(ind1);
+        pAtom pa2 = getAtom(ind2);
         pa1->addBond(pa2);
         pa2->addBond(pa1);
         bonds_found++;
@@ -131,7 +135,7 @@ namespace loos {
       getline(is, input);
     }
     // sanity check
-    if (bonds_found != num_bonds) 
+    if (bonds_found != num_bonds)
       throw(FileReadError(_filename, "PSF number of bonds disagrees with number found"));
 
     deduceAtomicNumberFromMass();
@@ -150,23 +154,26 @@ namespace loos {
     greal charge;
     greal mass;
     gint fixed;
+    std::string buf;
 
     pAtom pa(new Atom);
     pa->index(_max_index++);
-         
+
     std::stringstream ss(s);
 
-    if (!(ss >> index))
+    if (!(ss >> buf))
       throw(FileReadError(_filename, "PSF parse error.\n> " + s));
+    index = parseStringAsHybrid36(buf);
     pa->id(index);
-     
+
     if (!(ss >> segname))
       throw(FileReadError(_filename, "PSF parse error.\n> " + s));
     pa->segid(segname);
 
 
-    if (!(ss >> resid))
+    if (!(ss >> buf))
       throw(FileReadError(_filename, "PSF parse error.\n> " + s));
+    resid = parseStringAsHybrid36(buf);
     pa->resid(resid);
 
     if (!(ss >> resname))
@@ -196,7 +203,7 @@ namespace loos {
 
     // Is the atom fixed or mobile?
     // for now, we're going to silently drop this
-    ss >> fixed;  
+    ss >> fixed;
 
     append(pa);
   }
