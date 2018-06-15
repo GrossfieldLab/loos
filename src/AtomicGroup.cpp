@@ -79,7 +79,7 @@ namespace loos {
   }
 
 
-  // Returns the ith atom...  
+  // Returns the ith atom...
   pAtom AtomicGroup::getAtom(const int i) const {
     int j = rangeCheck(i);
 
@@ -91,7 +91,7 @@ namespace loos {
     int j = rangeCheck(i);
     return(atoms[j]);
   }
-  
+
   // For const objects...
   const pAtom& AtomicGroup::operator[](const int i) const {
     int j = rangeCheck(i);
@@ -158,7 +158,7 @@ namespace loos {
 
       for (i=grp.atoms.begin(); i != grp.atoms.end(); i++)
         deleteAtom(*i);
-      
+
       _sorted = false;
       return(*this);
     }
@@ -345,7 +345,7 @@ namespace loos {
     const_iterator i;
     std::map<std::string, AtomicGroup> groups;
 
-    // Loop over atoms, adding them to groups based on their name, creating the 
+    // Loop over atoms, adding them to groups based on their name, creating the
     // map entry for each new name as we find it
     std::map<std::string, AtomicGroup>::iterator g;
     for (i = atoms.begin(); i != atoms.end(); ++i) {
@@ -355,7 +355,7 @@ namespace loos {
             ag.append(*i);
             ag.box = box; // copy the current groups periodic box
             groups[(*i)->name()] = ag;
-        }  else {              // found group for that atom name, 
+        }  else {              // found group for that atom name,
                                // so add the atom to it
             g->second.append(*i);
         }
@@ -403,14 +403,14 @@ namespace loos {
         HashInt::iterator it = seen.find(working.atoms[i]->id());
         if (it != seen.end())
           continue;
-      
+
         walkBonds(current, seen, working, working.atoms[i]);
         if (current.size() != 0) {       // Just in case...
           current.sort();
           molecules.push_back(current);
           current = AtomicGroup();
         }
-      
+
       }
     }
 
@@ -463,7 +463,7 @@ namespace loos {
 
     int curr_resid = atoms[0]->resid();
     std::string curr_segid = atoms[0]->segid();
-    
+
     AtomicGroup residue;
     AtomicGroup::const_iterator ci;
     for (ci = atoms.begin(); ci != atoms.end(); ++ci) {
@@ -472,7 +472,7 @@ namespace loos {
         residue = AtomicGroup();
         curr_resid = (*ci)->resid();
         curr_segid = (*ci)->segid();
-      } 
+      }
       residue.append(*ci);
     }
 
@@ -483,7 +483,7 @@ namespace loos {
     // Copy the box information
     for (std::vector<AtomicGroup>::iterator i = residues.begin(); i != residues.end(); ++i)
       i->box = box;
-    
+
     return(residues);
   }
 
@@ -515,7 +515,7 @@ namespace loos {
 
     return(pAtom());
   }
-  
+
 
   pAtom AtomicGroup::findById(const int id) const {
     if (sorted())
@@ -526,7 +526,7 @@ namespace loos {
 
 
   /**
-   * Note: when calling this, you'll want to make sure you use the 
+   * Note: when calling this, you'll want to make sure you use the
    * outermost group (eg the psf or pdb you used to create things, rather than
    * using a subselection, unless you're sure the subsection contains these
    * atoms as well.  The main use of this routine is to create a group of atoms
@@ -580,7 +580,7 @@ namespace loos {
 
       ++j;
     }
-  
+
     return(result);
   }
 
@@ -590,21 +590,21 @@ namespace loos {
     void renumberWithoutBonds(AtomicGroup& grp, const int start, const int stride) {
       AtomicGroup::iterator i;
       int id = start;
-      
+
       for (i=grp.begin(); i != grp.end(); i++, id += stride)
         (*i)->id(id);
     }
-    
-    
+
+
     void renumberWithBonds(AtomicGroup& grp, const int start, const int stride) {
       IMap bond_map;
-      
+
       int id = start;
       for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i, id += stride) {
         bond_map[(*i)->id()] = id;
         (*i)->id(id);
       }
-      
+
       // Now transform bond list
       for (AtomicGroup::iterator i = grp.begin(); i != grp.end(); ++i, id += stride) {
         if ((*i)->hasBonds()) {
@@ -621,7 +621,7 @@ namespace loos {
   };
 
   void AtomicGroup::renumber(const int start, const int stride) {
-    
+
     if (hasBonds())
       renumberWithBonds(*this, start, stride);
     else
@@ -646,7 +646,7 @@ namespace loos {
 
   int AtomicGroup::maxId(void) const {
     const_iterator i;
-  
+
     if (atoms.size() == 0)
       return(-1);
     int max = atoms[0]->id();
@@ -699,7 +699,7 @@ namespace loos {
     std::string curr_segid = atoms[0]->segid();
 
     for (i=atoms.begin()+1; i !=atoms.end(); i++)
-      if (((*i)->resid() != curr_resid) || 
+      if (((*i)->resid() != curr_resid) ||
           ((*i)->segid() != curr_segid)) {
         ++n;
         curr_resid = (*i)->resid();
@@ -822,13 +822,13 @@ namespace loos {
       (*a)->coords().reimage(box);
     }
   }
-    
+
   /** Works by translating the system so one atom is in the center of the
    *  box, reimaging by atom (so now the group is all in the middle of the box),
    *  and then translating back.
    *
-   *  If you don't want to give it a reference atom, call the version 
-   *  that takes no argument; it uses the first atom in the 
+   *  If you don't want to give it a reference atom, call the version
+   *  that takes no argument; it uses the first atom in the
    *  AtomicGroup.
    *
    */
@@ -840,11 +840,15 @@ namespace loos {
       translate(ref);
   }
 
-  /** Does the same as the other mergeImage, only using the first atom in the 
+  /** Does the same as the other mergeImage, only using the first atom in the
    *  AtomicGroup as the reference atom.
    */
   void AtomicGroup::mergeImage() {
-    mergeImage(atoms[0]);
+
+    // Ignore reimaging if the group is empty...
+    if (!empty()) {
+      mergeImage(atoms[0]);
+    }
   }
 
 
@@ -866,7 +870,7 @@ namespace loos {
    */
 
   void AtomicGroup::pruneBonds() {
-    
+
     for (AtomicGroup::iterator j = begin(); j != end(); ++j)
       if ((*j)->hasBonds()) {
         std::vector<int> bonds = (*j)->getBonds();
@@ -888,12 +892,12 @@ namespace loos {
    * a subsetted trajectory as well.  This function will reset the
    * atom indices to be sequential, beginning with 0.
    */
-  void AtomicGroup::resetAtomIndices() 
+  void AtomicGroup::resetAtomIndices()
   {
     for (uint i=0; i<size(); ++i)
       atoms[i]->index(i);
   }
-  
+
 
   /**
    * If an atom has a mass, then this is used to look up it's atomic
@@ -946,7 +950,7 @@ namespace loos {
   void AtomicGroup::copyCoordinatesFrom(const AtomicGroup& g, const uint offset, const uint length) {
     uint n = (length == 0 || length > g.size()) ? g.size() : length;
 
-    
+
     for (uint i=0; i<n && i+offset<atoms.size(); ++i)
       atoms[i+offset]->coords(g[i]->coords());
   }
@@ -985,7 +989,7 @@ namespace loos {
       throw(LOOSError("Atom order map is of incorrect size to copy coordinates"));
     if (g.size() != size())
       throw(LOOSError("Cannot copy coordinates (with atom ordering) from an AtomicGroup of a different size"));
-    
+
     for (uint i=0; i<map.size(); ++i)
       atoms[i]->coords(g[map[i]]->coords());
   }
@@ -1026,7 +1030,7 @@ namespace loos {
       for (int i=0; i<n; ++i)
 	atoms[j]->coords()[i] = seq[j*n+i];
   }
-  
+
 
   void AtomicGroup::getCoords(double** outseq, int* m, int* n) {
     double* dp = static_cast<double*>(malloc(size() * 3 * sizeof(double)));
@@ -1069,5 +1073,5 @@ namespace loos {
   }
 
 
-  
+
 }

@@ -95,7 +95,7 @@ namespace loos {
       if (p->suffix == filetype)
         return(*(p->creator))(filename);
 
-    throw(std::runtime_error("Error- unknown output system file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
+    throw(std::runtime_error("Error- unknown system file type '" + filetype + "' for file '" + filename + "'.  Try --help to see available types."));
   }
 
 
@@ -148,8 +148,8 @@ namespace loos {
       { "arc", "Tinker ARC", &TinkerArc::create},
       { "", "", 0}
     };
-      
-    
+
+
 
   }
 
@@ -166,7 +166,7 @@ namespace loos {
 
 
   pTraj createTrajectory(const std::string& filename, const std::string& filetype, const AtomicGroup& g) {
-    
+
     // First, check to make sure AtomicGroup has index information...
     if (!g.allHaveProperty(Atom::indexbit))
       throw(LOOSError("Model passed to createTrajectory() does not have atom index information."));
@@ -205,7 +205,7 @@ namespace loos {
       { "xtc", "Gromacs XTC (compressed trajectory)", &XTCWriter::create},
       { "", "", 0}
     };
-      
+
   }
 
 
@@ -240,8 +240,5 @@ namespace loos {
     return(createOutputTrajectory(filename, suffix, append));
   }
 
-    
+
 }
-
-
-

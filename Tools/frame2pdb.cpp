@@ -45,19 +45,25 @@ string fullHelpMessage(void) {
     "\n"
     "SYNOPSIS\n"
     "\n"
-    "Extract a frame from a trajectory, writing it out as a PDB\n"   
+    "Extract a frame from a trajectory, writing it out as a PDB\n"
     "\n"
     "DESCRIPTION\n"
     "\n"
     "Given a model, a trajectory, and a frame number, this tool will extract that\n"
     " frame and write it out as a PDB.  Optionally, a subset of the model can be \n"
     "extracted.  Any LOOS supported model and trajectory type may be used.  Note that\n"
-    "frame numbers are zero-based.\n"
+    "frame numbers are zero-based.  Negative frame numbers are relative to the end\n"
+    "of the trajectory.  Note that you will need to put '--' on the command line\n"
+    "*after* any options to tell the options parse that the negative frame number\n"
+    "is not another command line option.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
     "\tframe2pdb model.psf simulation.dcd 42 >frame.pdb\n"
     "Extracts the 43rd frame from the simulation.\n"
+    "\n"
+    "\tframe2pdb -- model.psf simulation.dcd -1 >frame.pdb\n"
+    "Extracts the last frame from the simulation.\n"
     "\n"
     "\tframe2pdb --selection 'resid <= 100' model.psf simulation.dcd 13 >frame.pdb\n"
     "Extracts the 14th frame, only writing out the first 100 residues.\n";
@@ -68,7 +74,7 @@ string fullHelpMessage(void) {
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() : use_bonds(true) { }
-  
+
   void addGeneric(po::options_description& o) {
     o.add_options()
       ("bonds", po::value<bool>(&use_bonds)->default_value(use_bonds), "Include bonds in output (if available)");
@@ -80,7 +86,7 @@ public:
     oss << "use_bonds=" << use_bonds;
     return(oss.str());
   }
-  
+
 
   bool use_bonds;
 };
@@ -99,7 +105,7 @@ int main(int argc, char *argv[]) {
   opts::RequiredArguments* ropts = new opts::RequiredArguments;
   ToolOptions* topts = new ToolOptions;
   ropts->addArgument("frameno", "frame-number");
-  
+
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(tropts).add(topts).add(ropts);
   if (!options.parse(argc, argv))
@@ -108,10 +114,16 @@ int main(int argc, char *argv[]) {
   if (tropts->skip)
     cerr << "WARNING- --skip is ignored by this tool\n";
 
-  uint frameno = parseStringAs<uint>(ropts->value("frameno"));
-  bool b = tropts->trajectory->readFrame(frameno);
+  long frameno = parseStringAs<long>(ropts->value("frameno"));
+  uint frame_index;
+  if (frameno < 0)
+    frame_index = tropts->trajectory->nframes() + frameno;
+  else
+    frame_index = static_cast<uint>(frameno);
+
+  bool b = tropts->trajectory->readFrame(frame_index);
   if (!b) {
-    cerr << "Could not read frame " << frameno << " from trajectory " << tropts->traj_name << endl;
+    cerr << "Could not read frame " << frame_index << " from trajectory " << tropts->traj_name << endl;
     exit(-2);
   }
   AtomicGroup subset = selectAtoms(tropts->model, sopts->selection);
@@ -125,5 +137,3 @@ int main(int argc, char *argv[]) {
   pdb.remarks().add(hdr);
   cout << pdb;
 }
-
-

@@ -83,11 +83,13 @@ class ToolOptions : public opts::OptionsPackage {
 public:
 
   void addGeneric(po::options_description& o) {
+    std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
     o.add_options()
-      ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name") 
+      ("splitby", po::value<string>(&mode_string), "Split by molecule, residue, segid, name")
       ("deduce", po::value<bool>(&deduce)->default_value(true), "Deduce atomic number from mass")
       ("pdb", po::value<bool>(&pdb_output)->default_value(false), "Write out PDBs")
-      ("nobonds", po::value<bool>(&nobonds)->default_value(false), "Do not include connectivity");
+      ("nobonds", po::value<bool>(&nobonds)->default_value(false), "Do not include connectivity")
+      ("modeltype", po::value<std::string>(&modeltype), modeltypes.c_str());
   }
 
   void addHidden(po::options_description& o) {
@@ -135,6 +137,8 @@ public:
   }
 
 
+  string modeltype;
+
 private:
   string mode_string;
 };
@@ -149,7 +153,7 @@ void dumpChunks(const vector<AtomicGroup>& chunks) {
       cout << pdb;
     } else {
       cout << "<!-- *** Group #" << i << " -->\n";
-      cout << chunks[i] << endl << endl; 
+      cout << chunks[i] << endl << endl;
     }
   }
 }
@@ -168,10 +172,15 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  AtomicGroup model = createSystem(model_name);
+  AtomicGroup model;
+  if (topts->modeltype.empty())
+    model = createSystem(model_name);
+  else
+    model = createSystem(model_name, topts->modeltype);
+
   if (nobonds)
     model.clearBonds();
-  
+
   AtomicGroup subset = selectAtoms(model, sopts->selection);
 
   if (deduce)
@@ -213,7 +222,7 @@ int main(int argc, char *argv[]) {
 	cout << i->second << endl << endl;;
       }
     }
-    
+
     break;
 
   case NONE:

@@ -122,7 +122,7 @@ namespace loos {
     int electrons = 0;
 
     for (i=atoms.begin(); i != atoms.end(); i++) {
-      int an = (*i)->atomic_number();  
+      int an = (*i)->atomic_number();
       c += an * (*i)->coords();
       electrons += an;
     }
@@ -220,7 +220,7 @@ namespace loos {
   }
 
   greal AtomicGroup::rmsd(const AtomicGroup& v) {
-  
+
     if (size() != v.size())
       throw(LOOSError("Cannot compute RMSD between groups with different sizes"));
 
@@ -232,12 +232,23 @@ namespace loos {
       GCoord y = v.atoms[i]->coords();
       d += x.distance2(y);
     }
-  
+
     d = sqrt(d/n);
 
     return(d);
   }
 
+  greal AtomicGroup::kineticEnergy() {
+      double units_factor = 0.00239; // convert amu*ang^2/ps^2 to kcal/mol
+      double ke = 0.0;
+      for (uint i = 0; i < size(); i++) {
+          double v2 = atoms[i]->velocities() * atoms[i]->velocities();
+          ke += atoms[i]->mass() * v2;
+      }
+      ke *= 0.5;
+      ke *= units_factor;
+      return(ke);
+  }
 
 
   std::vector<GCoord> AtomicGroup::getTransformedCoords(const XForm& M) const {
@@ -295,7 +306,7 @@ namespace loos {
     return(v);
   }
 
-  
+
   // Returns a newly allocated array of double coords in row-major
   // order...
   double* AtomicGroup::coordsAsArray(void) const {

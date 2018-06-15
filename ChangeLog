@@ -1,3 +1,44 @@
+2018-05-17 <tromo>
+  * Changed PSF code to accept hybrid-36 encoding for atomid's and resid's
+
+2018-05-08 <tromo>
+	* Fixed potential bug in gmxdump2pdb.pl when using newer PERLs (missing an escaped
+	  closing brace that did not appear to affect the program...)
+	* Fixed bug in subsetter that allowed zealous reimaging mode without a centering selection.
+
+2018-02-02 <alan>
+	* Bugfix in order_params to allow selecting chain 1
+
+2018-01-10 <alan>
+	* Added new tool (distance_prob)
+
+2017-11-02 <tromo>
+	* Changed SConsctruct and support scripts to make print a function (required by scons-3.0.0)
+
+2017-09-21 <alan>
+	* added new tool all_contacts.py to PyLOOS, to compute probabilities
+	  for residue-residue contacts
+
+2017-09-07 <alan>
+	* added option to ignore neighboring residues to native_contacts
+
+2017-08-31 <alan>
+	* Added --per-residue option to native_contacts
+
+2017-08-09 <alan>
+	* Added kineticEnergy() method to AtomicGroup
+
+2017-08-09 <alan>
+	* Added NAMDBin.py, to read NAMD binary format.
+
+2017-08-02 <alan>
+	* Added the ability to manually select the water to crossing-waters tool.
+	  Based on a bug report from Violeta Casamayor.
+
+2017-07-18 <tromo>
+	* Added support for indexing relative to the end of the trajectory in
+	  frame2pdb (using negative frame numbers)
+
 2017-05-29  <tromo>
 
 	* Fixed bug in rmsd_to_average.py
@@ -6,7 +47,7 @@
 	* Fixed bug in PDB reader affecting parsing of CONECT records and hybrid36 atomids
 	* Changed extreme reimaging mode in subsetter to use middle-residue for repositioning
 	  rather than the first atom.
-		
+
 2017-04-02    <tromo>
 
 	* Fixed bug in backbone selection causing terminal nucleic acids to be skipped

@@ -116,7 +116,7 @@ namespace loos {
       atoms(g.atoms),
       box(g.box)
       { }
-    
+
 
     virtual ~AtomicGroup() { }
 
@@ -240,7 +240,7 @@ namespace loos {
       const_iterator ci = std::find_if(begin(), end(), bind2nd(op, p));
       return(ci != end());
     }
-    
+
     //! Determines if a pAtom is contained in this group using the AtomEquals policy (ie the default comparison policy)
     bool contains(const pAtom& p) const { return(contains(p, AtomEquals())); }
 
@@ -252,7 +252,7 @@ namespace loos {
           return(false);
       return(true);
     }
-    
+
     //! Determines if a group is a subset of the current group using the default AtomEquals policy
     bool contains(const AtomicGroup& g) const { return(contains(g, AtomEquals())); }
 
@@ -269,7 +269,7 @@ namespace loos {
 
       //! Determines if a group contains any atom using the default AtomEquals policy
       bool containsAny(const AtomicGroup& g) const { return(containsAny(g, AtomEquals())); }
-      
+
     //! Computes the intersection of two groups using the EqualsOp atom-equality policy
     /**
      * See AtomicGroup::contains(const pAtom&, const EqualsOp&) for more details
@@ -342,7 +342,7 @@ namespace loos {
     //! Replace a group with the cente of masses of contained residues (see centrifyByMolecule())
     AtomicGroup centrifyByResidue() const;
 
-    
+
     //! Find a contained atom by its atomid
     /**
      * The default behavior is to assume that the atoms in the
@@ -357,14 +357,14 @@ namespace loos {
     AtomicGroup groupFromID(const std::vector<int> &id_list) const;
 
     //! Given an Atom, return a group of all the atoms contained by its
-    //! containing residue 
+    //! containing residue
     AtomicGroup getResidue(pAtom res);
 
 #if !defined(SWIG)
     //! Output the group in pseudo-XML format...
     friend std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp);
 #endif
-  
+
     // Some misc support routines...
 
     //! Renumber the atomid's of the contained atoms...
@@ -378,7 +378,7 @@ namespace loos {
 
     //! True if all atoms in the group have the passed property(ies)
     bool allHaveProperty(const Atom::bits& property) const;
-    
+
     //! True if any atom in the group have the passed property(ies)
     bool anyHaveProperty(const Atom::bits& property) const;
 
@@ -415,15 +415,15 @@ namespace loos {
 
     //! Test whether or not periodic boundary conditions are set
     bool isPeriodic(void) const { return(box.isPeriodic()); }
-  
+
     //! Fetch the periodic boundary conditions.
     GCoord periodicBox(void) const { return(box.box()); }
 
-    //! Set the periodic boundary conditions.  
+    //! Set the periodic boundary conditions.
     void periodicBox(const GCoord& c) { box.box(c); }
 
     //! Set the periodic boundary conditions
-    void periodicBox(const greal x, const greal y, const greal z) { 
+    void periodicBox(const greal x, const greal y, const greal z) {
       box.box(GCoord(x,y,z));
     }
 
@@ -433,18 +433,18 @@ namespace loos {
     //! Remove periodicity
     void removePeriodicBox() { box = SharedPeriodicBox(); }
 
-    //! Translate the entire group so that the centroid is in the 
+    //! Translate the entire group so that the centroid is in the
     //! primary cell
     void reimage();
-  
+
     //! Reimage atoms individually into the primary cell
     void reimageByAtom();
 
-    //! Takes a group that's split across a periodic boundary and reimages it so it's all together.  
+    //! Takes a group that's split across a periodic boundary and reimages it so it's all together.
     void mergeImage(pAtom &p);
     //! Takes a group that's split across a periodic boundary and reimages it so it's all together, using the first atom in the AtomicGroup as the reference
     void mergeImage();
-  
+
     //! Find atoms in the current group that are within \a dist angstroms of any atom in \a grp
     AtomicGroup within(const double dist, AtomicGroup& grp) const {
       Distance2WithoutPeriodicity op;
@@ -607,14 +607,21 @@ namespace loos {
      */
     greal rmsd(const AtomicGroup&);
 
+    //! Compute kinetic energy of group
+    /**
+      * Assumes mass and velocity have been set.
+      * Output units are kcal/mol
+      */
+    greal kineticEnergy();
+
     // Geometric transformations...
-  
+
     //! Returns a vector of coordinates transformed by the passed XForm
     /**
      * Does not alter the group's coordinates...
      */
     std::vector<GCoord> getTransformedCoords(const XForm&) const;
-  
+
     //! Translate an atomic group by vector v
     void translate(const GCoord & v);
 
@@ -676,7 +683,7 @@ namespace loos {
     /**
      * See AtomicGroup::atomOrderMapFrom(const AtomicGroup& g) for
      * more information
-     * 
+     *
      * If you know that the atoms are in the same order in both
      * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
@@ -685,7 +692,7 @@ namespace loos {
     //! Copy the coordinates from the group mapping the atom order
     /**
      * See AtomicGroup::atomOrderFrom(const AtomicGroup& g) for more information
-     * 
+     *
      * If you know that the atoms are in the same order in both
      * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
@@ -714,11 +721,11 @@ namespace loos {
      * Notes
      *  - Any errors encountered in the BLAS/LAPACK routines cause
      *    a runtime exception to be thrown...
-     * 
+     *
      *  - Coord type of contained atoms will always be upcast to double.
      *
      *  - Potential issue with f77int under linux when not on a 64-bit
-     *    architecture. 
+     *    architecture.
      */
     std::vector<GCoord> principalAxes(void) const;
 
@@ -770,7 +777,7 @@ namespace loos {
 
     std::vector<double> coordsAsVector() const;
 
-    
+
   private:
 
 	// These are functors for calculating distance between two coords
@@ -782,14 +789,14 @@ namespace loos {
         return(a.distance2(b));
       }
     };
-      
+
     struct Distance2WithPeriodicity {
       Distance2WithPeriodicity(const GCoord& box) : _box(box) { }
-      
+
       double operator()(const GCoord& a, const GCoord& b) const {
         return(a.distance2(b, _box));
       }
-      
+
       GCoord _box;
     };
 
@@ -902,7 +909,7 @@ namespace loos {
       bool operator()(const pAtom& a) { return(a->id() == id); }
       int id;
     };
-    
+
     typedef boost::unordered_set<int> HashInt;
 
     void walkBonds(AtomicGroup& mygroup, HashInt& seen, AtomicGroup& working, pAtom& moi);
@@ -910,7 +917,7 @@ namespace loos {
 
     double *coordsAsArray(void) const;
     double *transformedCoordsAsArray(const XForm&) const;
-    
+
     bool _sorted;
 
 
