@@ -1,9 +1,10 @@
 SYNOPSIS
 
-Calculate the RMSD betwee frame pairs from two differet sets of trajectories.
+Calculate the RMSD between all pairs of frames from two different sets of trajectories.
 
 DESCRIPTION
-This tool calculates the pair-wise RMSD between each frame pair from two sets of multi-trajectories. The jth structure from set B and the ith structure from set A are aligned, then the RMSD is calculated. This is stored in a matrix, i.e. R(j, i) = d(S_i, S_j).  The block-structure is indicative of sets of similar conformations. The matrix is not diagonal unless one or more of the trajectories in set A matches one or more of the trajectories in set B (in which case that section of the outputted matrix will match what other all-to-all rmsd tools would return for that trajectory or trajectories alone). The presence (or lack thereof) of multiple cross-peaks is diagnostic of the sampling quality of a simulation.  Cross-peaks between sub-blocks indicates similar conformations in multiple trajectories. 
+
+This tool calculates the pair-wise RMSD between each frame pair from two sets of multi-trajectories. The jth structure from set B and the ith structure from set A are aligned, then the RMSD is calculated. This is stored in a matrix, i.e. R(j, i) = d(S_i, S_j).  The block-structure is indicative of sets of similar conformations. The matrix is not diagonal unless one or more of the trajectories in set A matches one or more of the trajectories in set B (in which case that section of the outputted matrix will match what other all-to-all rmsd tools would return for that trajectory or trajectories alone). The presence (or lack thereof) of multiple cross-peaks is diagnostic of the sampling quality of a simulation.  Cross-peaks between sub-blocks indicates similar conformations in multiple trajectories. This tool is particularly useful for comparing trajectories representing the same system at different positions along a reaction coordinate.
 
 The requested subset for each frame is cached in memory for better performance. If the memory used by the cache gets too large, your machine may swap and dramatically slowdown.  The tool will try to warn you if this is a possibility. To use less memory, subsample the trajectory by using --skip or --stride, or use subsetter to pre-process the trajectory. Be wary of writing selection strings that could conceivably include many atoms (such as solvent atoms) for a trajectory, as in addition to being expensive it will also produce confusing and incoherent results. 
 
@@ -15,14 +16,25 @@ This tool can compute some basic statistics about the matrix produced, and can a
 
 EXAMPLES    
 
-trans-rmsds model.pdb --set-A sim1.dcd sim2.dcd --set-B sim3.dcd sim4.dcd > rmsd.asc
+rms-overlap --set-A sysA.sim1.dcd sysA.sim2.dcd --set-B sysB.sim3.dcd sysB.sim4.dcd model.pdb > rmsd.asc
 
-This example uses all alpha-carbons and every frame from each trajectory. 
+This example uses all backbone heavy atoms and every frame from each trajectory in set A to compare to every frame in set B. 
 
-multi-rmsds --threads=8 model.pdb sim1.dcd sim2.dcd sim3.dcd > rmsd.asc 
+rms-overlap --threads=8 --set-A sysA.sim1.dcd sysA.sim2.dcd --set-B sysB.sim3.dcd sysB.sim4.dcd model.pdb > rmsd.asc
 
-This example uses all alpha-carbons and every frame in the trajectories, run in parallel with 8 threads of execution.  
+This example uses all backbone heavy atoms and every frame in the trajectories, run in parallel with 8 threads of execution.  
 
-multi-rmsds --selection backbone --skip=50 --stride=10 model.pdb sim1.dcd sim2.dcd sim3.dcd >rmsds.asc
+rms-overlap --selection backbone --skip=50 --stride=10 --set-A sysA.sim1.dcd sysA.sim2.dcd --set-B sysB.sim3.dcd sysB.sim4.dcd model.pdb > rmsd.asc
+This example uses the backbone atoms, and skips the first 50 frames from each trajectory,and only takes every 10th subsequent frame from each trajectory.
 
-This example uses the backbone atoms, and skips the first 50 frames from each trajectory,and only takes every 10th subsequent frame from each trajectory.SEE ALSO rmsds, rmsd2refUsage- multi-rmsds
+rms-overlap -c 2.5 -N 1 -A sysA.sim1.dcd sysA.sim2.dcd sysA.sim3.dcd -B sysB.sim1.dcd sysB.sim2.dcd model.pdb > stats.out
+
+This example will compute the RMSDs between all frames in set A and all frames in set B, but will not write the matrix out to stdout. It will calculate the statistics described in the cutoff section above, then write them to stdout where they are redirected to stats.out.
+
+
+
+SEE ALSO 
+
+rmsds, rmsd2ref
+
+Usage- rms-overlap [options] model
