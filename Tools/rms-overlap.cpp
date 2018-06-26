@@ -95,7 +95,6 @@ public:
   void addHidden(po::options_description& opts) {
     opts.add_options()
       ("model", po::value<std::string>(&model_name), "Model filename");
-      //("traj", po::value< std::vector< std::string > >(&traj_names), "Trajectory filenames");
   }
 
   void addPositional(po::positional_options_description& pos) {
