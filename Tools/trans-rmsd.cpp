@@ -68,43 +68,7 @@ bool report_stats = false;
 
 string fullHelpMessage(void) {
   string msg =
-    "\n"
-    "SYNOPSIS\n"
-    "\n"
-    "\tCalculate the RMSD between frame pairs from two different sets of trajectories.\n"
-    "DESCRIPTION\n"
-    "\n"
-    "\tThis tool calculates the pair-wise RMSD between\n"
-    "each frame pair from two sets of multi-trajectories.  jth structure from set B and the RMSD calculated.\n"
-    "This is stored in a matrix, i.e. R(i, j) = d(A_i, B_j).  While there is only a .\n"
-    "\n"
-    "\tThe requested subset for each frame is cached in memory for better performance.\n"
-    "If the memory used by the cache gets too large, your machine may swap and dramatically slow\n"
-    "down.  The tool will try to warn you if this is a possibility.  To use less memory, subsample\n"
-    "the trajectory by using --skip or --stride, or use subsetter to pre-process the trajectory.\n"
-    "\n"
-    "\tThis tool can be run in parallel with multiple threads for performance.  The --threads option\n"
-    "controls how many threads are used.  The default is 1 (non-parallel).  Setting it to 0 will use\n"
-    "as many threads as possible.  Note that if LOOS was built using a multi-threaded math library,\n"
-    "then some care should be taken in how many threads are used for this tool, though it is unlikely\n"
-    "that there will be a conflict.\n"
-    "\n"
-    "EXAMPLES\n"
-    "\n"
-    "\tmulti-rmsds model.pdb sim1.dcd sim2.dcd sim3.dcd >rmsd.asc\n"
-    "This example uses all alpha-carbons and every frame from each trajectory.\n"
-    "\n"
-    "\tmulti-rmsds --threads=8 model.pdb sim1.dcd sim2.dcd sim3.dcd >rmsd.asc\n"
-    "This example uses all alpha-carbons and every frame in the trajectories, run\n"
-    "in parallel with 8 threads of execution.\n"
-    "\n"
-    "\tmulti-rmsds --selection backbone --skip=50 --stride=10 model.pdb sim1.dcd sim2.dcd sim3.dcd >rmsds.asc\n"
-    "This example uses the backbone atoms, and skips the first 50 frames from each trajectory,\n"
-    "and only takes every 10th subsequent frame from each trajectory.\n"
-    "\n"
-    "SEE ALSO\n"
-    "\trmsds, rmsd2ref, multi-rmsds\n"
-    "\n";
+    "XXX";
 
   return(msg);
 }
@@ -488,7 +452,7 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
   
   opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'CA'");
+  opts::BasicSelection* sopts = new opts::BasicSelection("name == 'backbone' && ! hydrogen");
   ToolOptions* topts = new ToolOptions;
 
   opts::AggregateOptions options;
