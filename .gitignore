@@ -51,6 +51,7 @@ GTAGS
 .*.json
 
 ###EXES
+Tools/rms-overlap
 Tools/verap
 Tools/renum-pdb
 Tools/merge-traj

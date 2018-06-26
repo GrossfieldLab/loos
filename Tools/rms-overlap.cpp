@@ -100,8 +100,8 @@ public:
 
   void addPositional(po::positional_options_description& pos) {
     pos.add("model", 1);
-    //pos.add("traj_names", -1)
   }
+
   bool check(po::variables_map& map) {
     return( model_name.empty() || set_A.empty() || set_B.empty());
   }
