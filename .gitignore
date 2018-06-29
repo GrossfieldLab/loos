@@ -42,8 +42,16 @@ GTAGS
 .*.json
 .clang_complete
 
+# cruft from vscode
+.vscode
+.vscode/*
+**.vscode
+
 # Vi cruft
 *.swp
+
+# vscode cruft
+.vscode 
 
 # JSON files
 .*.json
