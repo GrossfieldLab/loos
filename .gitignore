@@ -45,6 +45,9 @@ GTAGS
 # Vi cruft
 *.swp
 
+# VSCode cruft
+**.vscode
+
 # JSON files
 .*.json
 
