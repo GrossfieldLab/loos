@@ -40,17 +40,20 @@ GTAGS
 
 # JSON files used for atom
 .*.json
+.clang_complete
 
 # Vi cruft
 *.swp
 
-# vscode cruft
-.vscode 
+
+# VSCode cruft
+**.vscode
 
 # JSON files
 .*.json
 
 ###EXES
+
 Tools/rms-overlap
 Tools/verap
 Tools/renum-pdb

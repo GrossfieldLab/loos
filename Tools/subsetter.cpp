@@ -387,8 +387,8 @@ public:
       return(false);
     }
 
-    if ((reimage_mode == AGGRESSIVE || reimage_mode == EXTREME) && !center_flag) {
-      cerr << "Error- aggressive and extreme reimaging modes require a centering selection.\n";
+    if ((reimage_mode == AGGRESSIVE || reimage_mode == ZEALOUS || reimage_mode == EXTREME) && !center_flag) {
+      cerr << "Error- aggressive, zealous, and extreme reimaging modes require a centering selection.\n";
       return(false);
     }
 

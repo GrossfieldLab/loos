@@ -6,7 +6,7 @@ r
   Grossfield Lab
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
- 
+
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
@@ -27,7 +27,7 @@ r
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <loos.hpp>
+#include "loos.hpp"
 
 using namespace std;
 using namespace loos;
@@ -41,18 +41,23 @@ class ToolOptions : public opts::OptionsPackage
     public:
         string outfile;
         string reference;
+        string per_residue_filename;
         bool do_output;
         bool exclude_backbone;
         bool use_periodicity;
         bool use_reference;
+        bool do_per_residue;
+        bool exclude_consecutive=false;
 
-        void addGeneric(po::options_description& o) 
+        void addGeneric(po::options_description& o)
             {
             o.add_options()
      ("outfile", po::value<string>(&outfile), "File for timeseries of individual contacts")
      ("exclude-backbone",po::value<bool>(&exclude_backbone)->default_value(false), "Exclude the backbone from contact calculations")
      ("periodic", "Use periodicity when computing contacts")
      ("reference", po::value<string>(&reference), "Coordinate file to use as reference structure")
+     ("per-residue", po::value<string>(&per_residue_filename), "Output per-residue native contact frequency to this file")
+     ("exclude-consecutive", "Exclude consecutive residues")
             ;
             }
 
@@ -76,6 +81,15 @@ class ToolOptions : public opts::OptionsPackage
                 use_periodicity = false;
                 }
 
+            if (vm.count("exclude-consecutive"))
+                {
+                exclude_consecutive = true;
+                }
+            else
+                {
+                exclude_consecutive = false;
+                }
+
             if (vm.count("reference"))
                 {
                 use_reference = true;
@@ -84,6 +98,17 @@ class ToolOptions : public opts::OptionsPackage
                 {
                 use_reference = false;
                 }
+
+            if (vm.count("per-residue"))
+                {
+                do_per_residue = true;
+                }
+            else
+                {
+                do_per_residue = false;
+                }
+
+
             return(true);
             }
 
@@ -113,7 +138,7 @@ string fullHelpMessage(void)
 "    trajectory is used.\n"
 "\n"
 "    Alternatively, you can supply a separate structure containing reference\n"
-"    coordinates (e.g. a pdb file with the original crystal coordinates).\n"  
+"    coordinates (e.g. a pdb file with the original crystal coordinates).\n"
 "    The only restriction is that the same selection string that picks out\n"
 "    the residues of interest from the system file must also apply to the \n"
 "    reference file.\n"
@@ -134,6 +159,11 @@ string fullHelpMessage(void)
 "    need to add the box information to the initial structure by hand first,\n"
 "    or use the first frame of the trajectory as the reference.\n"
 "\n"
+"    The --exclude-consecutive option causes the code to ignore residues\n"
+"    consecutive in sequence when computing the list of native contacts.\n"
+"    Note: this is done in a naive way, without checking that the consecutive\n"
+"    residues are part of the same chain.  "
+"\n"
 "    EXAMPLE\n"
 "\n"
 "    native_contacts model.psf traj.dcd 5 --selection 'segname == \"PROT\"'\n"
@@ -149,9 +179,14 @@ string fullHelpMessage(void)
 "\n"
 "    In addition, one can select just the sidechains using the\n "
 "    --exclude-backbone flag; this can be combined with other selections.\n"
+"    Turn it one with --exclude-backbone 1 \n"
 "\n"
 "    If you supply the \"--outfile\" option, you will also get a time series for \n"
 "    all of the individual pairs of residues.\n"
+"\n"
+"    If you supply the \"--per-residue FILENAME\", the program will output \n"
+"    the average fractional native contacts for each residue to FILENAME.\n"
+"    Residues with no native contacts will have a value of -1.\n"
 "\n"
         ;
     return(s);
@@ -173,7 +208,7 @@ ToolOptions* topts = new ToolOptions;
 opts::AggregateOptions options;
 options.add(bopts).add(tropts).add(ropts).add(sopts).add(topts);
 
-if (!options.parse(argc, argv)) 
+if (!options.parse(argc, argv))
     {
     exit(-1);
     }
@@ -203,17 +238,17 @@ ofstream output;
 if (topts->do_output)
     {
     output.open(topts->outfile.c_str());
-    if (!output.is_open() ) 
+    if (!output.is_open() )
         {
         throw(runtime_error("couldn't open output file"));
-        }  
+        }
     }
 
-// Figure out what to use as a reference structure 
-// --If one was supplied on the command line use that, and 
-//   use the same selections applied to the main system to 
-//   select out the equivalent group.  
-// --If there was no reference structure, check to see if the 
+// Figure out what to use as a reference structure
+// --If one was supplied on the command line use that, and
+//   use the same selections applied to the main system to
+//   select out the equivalent group.
+// --If there was no reference structure, check to see if the
 //   model file has coordinates, and use those.
 // --If neither is true, use frame 0 of the trajectory.
 if (topts->use_reference)
@@ -261,15 +296,22 @@ for (uint i=0; i<num_residues; i++)
     }
 
 vector<vector<uint> > contacts;
+vector<uint>total_contacts_per_residue(num_residues);
+vector<uint>contacts_per_residue(num_residues);
 
 GCoord box = system.periodicBox();
 
-// Find contacts within the threshold distance
-for (uint i=0; i<num_residues-1; i++)
+int step = 1;
+if (topts->exclude_consecutive)
     {
-    for (uint j=i+1; j< num_residues; j++)
+    step = 2;
+    }
+// Find contacts within the threshold distance
+for (uint i=0; i<num_residues-step; i++)
+    {
+    for (uint j=i+step; j< num_residues; j++)
         {
-        GCoord diff = centers_of_mass[j] - centers_of_mass[i]; 
+        GCoord diff = centers_of_mass[j] - centers_of_mass[i];
         if (use_periodicity_for_reference)
             {
             diff.reimage(box);
@@ -280,13 +322,20 @@ for (uint i=0; i<num_residues-1; i++)
             v[0] = i;
             v[1] = j;
             contacts.push_back(v);
-            cout << "# " << (residues[i][0])->resid() << "\t" 
+            cout << "# " << (residues[i][0])->resid() << "\t"
                          << (residues[j][0])->resid() << endl;
             if (topts->do_output)
                 {
                 output << "# " << (residues[i][0])->resid() << "\t"
                                << (residues[j][0])->resid() << endl;
 
+                }
+
+            // Store the total number of contacts for each residue
+            if (topts->do_per_residue)
+                {
+                total_contacts_per_residue[i] += 1;
+                total_contacts_per_residue[j] += 1;
                 }
             }
         }
@@ -334,6 +383,11 @@ while (traj->readFrame())
             {
             num_contacts++;
             if (topts->do_output) output << "1\t";
+            if (topts->do_per_residue)
+                {
+                contacts_per_residue[r1]++;
+                contacts_per_residue[r2]++;
+                }
             }
         else
             {
@@ -346,5 +400,33 @@ while (traj->readFrame())
     frame++;
     }
 
-}
+// Output total contacts per residue
+if (topts->do_per_residue)
+    {
+    ofstream per_residue_stream;
+    per_residue_stream.open(topts->per_residue_filename.c_str());
+    if (!per_residue_stream.is_open())
+        {
+        throw(runtime_error("couldn't open per-residue output file"));
+        }
+    per_residue_stream << "# Residue\tAveContacts\tTotalContacts" << endl;
+    for (uint i=0; i < num_residues; ++i)
+        {
+        int real_residue = (residues[i][0])->resid();
+        per_residue_stream << real_residue << "\t";
+        if (total_contacts_per_residue[i])
+            {
+            double ave = static_cast<double>(contacts_per_residue[i])/
+                (total_contacts_per_residue[i] * frame);
+            per_residue_stream << ave;
+            }
+        else
+            {
+            per_residue_stream << "-1";
+            }
+        per_residue_stream << "\t" << total_contacts_per_residue[i] << endl;
+        }
+    per_residue_stream.close();
+    }
 
+}

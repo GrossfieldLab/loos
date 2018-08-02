@@ -104,15 +104,15 @@ def environOverride(conf):
     # Allow overrides from environment...
     if 'CXX' in os.environ:
         conf.env.Replace(CXX = os.environ['CXX'])
-        print '*** Using compiler ' + os.environ['CXX']
+        print('*** Using compiler ' + os.environ['CXX'])
 
     if 'CCFLAGS' in os.environ:
         conf.env.Append(CCFLAGS = os.environ['CCFLAGS'])
-        print '*** Appending custom build flags: ' + os.environ['CCFLAGS']
+        print('*** Appending custom build flags: ' + os.environ['CCFLAGS'])
 
     if 'LDFLAGS' in os.environ:
         conf.env.Append(LINKFLAGS = os.environ['LDFLAGS'])
-        print '*** Appending custom link flag: ' + os.environ['LDFLAGS']
+        print('*** Appending custom link flag: ' + os.environ['LDFLAGS'])
 
 
 
@@ -482,7 +482,7 @@ def AutoConfigSystemBoost(conf):
             if result:
                 boost_libs.append(full_libname)
             else:
-                print 'Error- missing Boost library %s' % libname
+                print('Error- missing Boost library %s' % libname)
                 conf.env.Exit(1)
 
 
@@ -498,16 +498,16 @@ def AutoConfigUserBoost(conf):
     for libname in loos_build_config.required_boost_libraries:
         result = conf.CheckForBoostLibrary(libname, conf.env['BOOST_LIBPATH'], loos_build_config.suffix)
         if not result[0]:
-            print 'Error- missing Boost library %s' % libname
+            print('Error- missing Boost library %s' % libname)
             conf.env.Exit(1)
         if first:
             thread_suffix = result[1]
         else:
             if thread_suffix and not result[1]:
-                print 'Error- expected %s-mt but found %s' % (libname, libname)
+                print('Error- expected %s-mt but found %s' % (libname, libname))
                 conf.env.Exit(1)
             elif not thread_suffix and result[1]:
-                print 'Error- expected %s but found %s-mt' % (libname, libname)
+                print('Error- expected %s but found %s-mt' % (libname, libname))
                 conf.env.Exit(1)
         boost_libs.append(result[0])
 
@@ -526,7 +526,7 @@ def checkForFunction(context, funcname, libs, has_gfortran):
 
     ok = context.CheckFunc(funcname)
     if not ok and has_gfortran:
-        print 'Trying again with gfortran...'
+        print('Trying again with gfortran...')
         context.env.Append(LIBS=['gfortran'])
         ok = context.CheckFunc(funcname)
         if ok:
@@ -548,7 +548,7 @@ def checkLibsForFunction(context, funcname, liblist, excludelist):
             continue
         old_libs = list(context.env['LIBS'])
         context.env.Append(LIBS=lib)
-        print "> Checking in %s ..." % lib
+        print("> Checking in %s ..." % lib)
         ok = context.CheckFunc(funcname)
         context.env['LIBS'] = old_libs
         if ok:
@@ -626,7 +626,7 @@ def AutoConfiguration(env):
         default_lib_path = '/usr/lib'
         if not conf.CheckDirectory('/usr/lib64'):
             if not conf.CheckDirectory('/usr/lib'):
-                print 'Fatal error- cannot find your system library directory'
+                print('Fatal error- cannot find your system library directory')
                 conf.env.Exit(1)
         else:
             # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
@@ -644,7 +644,7 @@ def AutoConfiguration(env):
                 elif conf.CheckDirectory(default_lib_path + '/atlas'):
                     atlas_libpath = default_lib_path + '/atlas'
                 else:
-                    print 'Warning: Could not find an atlas directory!  Winging it...'
+                    print('Warning: Could not find an atlas directory!  Winging it...')
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs['ATLAS'] = atlas_libpath
@@ -668,10 +668,10 @@ def AutoConfiguration(env):
 
         # Check for floating point format...
         if not conf.CheckForIEC559():
-            print 'Error- your system must use the IEC559/IEEE754 floating point'
-            print '       format for Gromacs support in LOOS.  Check your compiler'
-            print '       options or contact the LOOS developers at'
-            print '       loos.maintainer@gmail.com'
+            print('Error- your system must use the IEC559/IEEE754 floating point')
+            print('       format for Gromacs support in LOOS.  Check your compiler')
+            print('       options or contact the LOOS developers at')
+            print('       loos.maintainer@gmail.com')
             conf.env.Exit(1)
 
         # --- NetCDF Autoconf
@@ -694,9 +694,13 @@ def AutoConfiguration(env):
             if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env['pyloos'] = 1
                 pythonpath = distutils.sysconfig.get_python_inc()
+                if 'PYTHON_INC' in conf.env:
+                    if conf.env['PYTHON_INC'] != '':
+                        pythonpath = conf.env['PYTHON_INC']
+
                 conf.env.Append(CPPPATH=[pythonpath])
                 if not conf.CheckNumpy(pythonpath):
-                    print 'ERROR- PyLOOS build requires NumPy'
+                    print('ERROR- PyLOOS build requires NumPy')
                     conf.env.Exit(1)
             else:
                 conf.env['pyloos'] = 0
@@ -772,7 +776,7 @@ def AutoConfiguration(env):
                     elif (numerics['blas']):
                         atlas_libs.append('blas')
                     else:
-                        print 'Error- you must have some kind of blas installed'
+                        print('Error- you must have some kind of blas installed')
                         conf.env.Exit(1)
 
                     if (numerics['atlas']):
@@ -785,7 +789,7 @@ def AutoConfiguration(env):
                 for funcname in ('dgesvd_', 'dgemm_', 'dtrmm_', 'dsyev_'):
                     (ok, requires_gfortran) = checkForFunction(conf, funcname, atlas_libs, has_gfortran)
                     if requires_gfortran:
-                        print 'Build Requires gfortran'
+                        print('Build Requires gfortran')
                         atlas_libs.append('gfortran')
 
                     if not ok:
@@ -795,7 +799,7 @@ def AutoConfiguration(env):
                         else:
                             # Try putting scanning default_lib_path first...SUSE requires
                             # the lapack in /usr/lib first...
-                            print 'Searching %s first for libraries...' % default_lib_path
+                            print('Searching %s first for libraries...' % default_lib_path)
                             # Remove the default_lib_path from the list and prepend...
                             libpaths = list(conf.env['LIBPATH'])
                             libpaths.remove(default_lib_path)
@@ -803,7 +807,7 @@ def AutoConfiguration(env):
                             conf.env['LIBPATH'] = libpaths
                             (ok, requires_gfortran) = checkForFunction(conf, funcname, atlas_libs, has_gfortran)
                             if requires_gfortran:
-                                print 'Build requires gfortran'
+                                print('Build requires gfortran')
                                 atlas_libs.append('gfortran')
 
                             if not ok:
