@@ -45,6 +45,7 @@ GTAGS
 # Vi cruft
 *.swp
 
+
 # VSCode cruft
 **.vscode
 
@@ -52,7 +53,8 @@ GTAGS
 .*.json
 
 ###EXES
-Tools/distance_prob
+
+Tools/rms-overlap
 Tools/verap
 Tools/renum-pdb
 Tools/merge-traj
