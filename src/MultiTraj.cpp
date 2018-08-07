@@ -71,7 +71,7 @@ namespace loos {
 	}
 
 	bool MultiTrajectory::parseFrame() {
-		if (eof())
+		if (eof() || atEnd())
 			return 0;
 		return(_trajectories[_curtraj]->readFrame(_curframe));
 	}
@@ -96,4 +96,3 @@ namespace loos {
 	}
 
 }
-

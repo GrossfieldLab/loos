@@ -45,16 +45,16 @@ namespace loos {
 
 		MultiTrajectory()
 			: _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0)
-		{ }
+		{ cached_first = true; }
 
 		//! instantiate a new empty MultiTrajectory
 		MultiTrajectory(const AtomicGroup& model)
 			: _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
-		{ }
+		{ cached_first = true; }
 
 		MultiTrajectory(const AtomicGroup& model, const uint skip, const uint stride)
 			: _nframes(0), _skip(skip), _stride(stride), _curtraj(0), _curframe(0), _model(model)
-		{ }
+		{ cached_first = true; }
 
 
 		//! Instantiate a new MultiTrajectory using the passed filenames
@@ -62,6 +62,7 @@ namespace loos {
 						const AtomicGroup& model)
 			: _nframes(0), _skip(0), _stride(1), _curtraj(0), _curframe(0), _model(model)
 		{
+			cached_first = true;
 			initWithList(filenames, model);
 		}
 
@@ -72,6 +73,7 @@ namespace loos {
 						const uint stride)
 			: _nframes(0), _skip(skip), _stride(stride), _curtraj(0), _curframe(skip), _model(model)
 		{
+			cached_first = true;
 			initWithList(filenames, model);
 		}
 
