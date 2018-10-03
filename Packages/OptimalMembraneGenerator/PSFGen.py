@@ -17,7 +17,7 @@ class Segment:
 SEGMENT TPC       POPC     90    19      P   1      ./popc_c36
     where:
         TPC =  segment name (all of 1 lipid type, 1 res/lipid)
-        POPC=  residue name 
+        POPC=  residue name
         90  =  number of lipids (and residues) in the segment
         19  =  distance of phosphate from center of bilayer
         P   =  atom to be placed at the distance (usually P for lipid phosphate)
@@ -81,6 +81,7 @@ class SaltSeg(Segment):
         (tag, segname, resname, number) = line.split()
         self.segname = segname
         self.resname = resname
+        self.atomname = resname  # we assume the atom name is the same as the residue
         self.numres = int(number)
 
 class Protein:
@@ -154,7 +155,7 @@ class ReadConfig:
 
         for line in file.readlines():
             # skip blanks and comments
-            if line.startswith("#") or line.isspace() or len(line) == 0: 
+            if line.startswith("#") or line.isspace() or len(line) == 0:
                 continue
             if line.upper().startswith("TOPOLOGY"):
                 (top, filename) = line.split()
@@ -287,4 +288,3 @@ if __name__ == '__main__':
     print conf.generate_psf(True, True)
     #print conf.generate_psf(True, False)
     #print conf.generate_psf(False, True)
-
