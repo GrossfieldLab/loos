@@ -1,3 +1,7 @@
+2018-10-15  Tod Romo  <tromo>
+
+	* Changed src/timers.hpp to be src/loos_timers.hpp in order to avoid filename conflicts
+
 2018-05-17 <tromo>
   * Changed PSF code to accept hybrid-36 encoding for atomid's and resid's
 

@@ -33,7 +33,7 @@
 #include <vector>
 
 #include <loos_defs.hpp>
-#include <timer.hpp>
+#include <loos_timer.hpp>
 
 namespace loos {
 
