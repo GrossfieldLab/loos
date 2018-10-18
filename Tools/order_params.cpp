@@ -608,7 +608,7 @@ for (uint i=0; i<framelist.size(); ++i)
                 double length = v.length();
                 double cos_val =  v[axis_index]/length;
                 double order = 0.5 - 1.5*cos_val*cos_val;
-                values[i][frame_index] += fabs(order);
+                values[i][frame_index] += order;
                 counts[i]++;
                 }
             }
@@ -620,7 +620,11 @@ for (uint i=0; i<framelist.size(); ++i)
         }
     for (unsigned int i=0; i<selections.size(); i++)
         {
-        values[i][frame_index] /= counts[i];
+        // We used to take the absolute value immediately, but that produced
+        // results inconsistent with everyone else. Now, we're taking the
+        // absolute value of the ensemble average at each time point.  We'll
+        // see if that produces reasonable results.
+        values[i][frame_index] = fabs(values[i][frame_index])/counts[i];
         if (dump_timeseries)
             {
             timeseries_outfile << boost::format("%8.3f") % values[i][frame_index];
