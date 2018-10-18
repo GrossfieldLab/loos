@@ -1,3 +1,11 @@
+2018-10-18  Alan Grossfield <alan>
+
+	* Major change in order_params. A previous change to take the absolute value
+	  of the Legendre polynomial resulted in incorrect values.  I still think
+	  the absolute value is physically correct, but we've moved it to after
+	  averaging within a given snapshot.  The results are now more consistent
+	  with what other packages generate.
+
 2018-10-15  Tod Romo  <tromo>
 
 	* Changed src/timers.hpp to be src/loos_timers.hpp in order to avoid filename conflicts
