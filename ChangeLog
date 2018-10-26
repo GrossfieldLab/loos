@@ -1,7 +1,13 @@
+
+2018-10-26  Alan Grossfield <alan>
+
+	* Added new option --postcenter to merge_traj, to improve reimaging in
+	  challenging cases.
+
 2018-10-23  Alan Grossfield <alan>
-	* Further change to order_params -- I decided the previous version could
-	  produce odd answers if there are a small number of chains selected.
-	  
+    * Further change to order_params -- I decided the previous version could
+      produce odd answers if there are a small number of chains selected.
+
 2018-10-18  Alan Grossfield <alan>
 
 	* Major change in order_params. A previous change to take the absolute value
