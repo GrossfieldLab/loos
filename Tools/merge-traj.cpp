@@ -182,6 +182,14 @@ string fullHelpMessage(void)
 " --fix-imaging             Ensure that molecules are not broken across \n"
 "                           image boundaries.  This is generally necessary\n"
 "                           for simulations in GROMACS.\n"
+" --postcenter              works like --centering-selection, except it\n"
+"                           performs a final centering and reimaging operation\n"
+"                           using this selection.  The idea is that for \n"
+"                           really messy groups, you might need to center and\n"
+"                           reimage multiple ways to get everything to work.\n"
+"                           Handles many of the same cases as \n"
+"                           --selection-is-split, so you can try either to see\n"
+"                           which works for you.\n"
 "\n"
 "\n"
 "In addition, for merging GROMACS XTC files there is an additional flag:\n"
@@ -216,7 +224,8 @@ string fullHelpMessage(void)
 "individual molecules; when absent, it falls back to using the segment name.\n"
 "This can lead to unintended results for segments that are made of many\n"
 "individual atoms (e.g. ions in solution), causing them to end up outside the \n"
-"box.\n"
+"box. If you're using gromacs, we suggest running gmxdump2pdb.pl first to get a \n"
+"PSF file for your system, and using that to drive all further LOOS analysis.\n"
 "\n";
 
     return (s);
