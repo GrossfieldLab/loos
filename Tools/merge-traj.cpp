@@ -42,6 +42,8 @@ string center_selection;
 string xy_center_selection;
 string z_center_selection;
 string postcenter_selection;
+string postcenter_xy_selection;
+string postcenter_z_selection;
 vector<string> input_dcd_list;
 int downsample_rate;
 bool skip_first_frame=false;
@@ -71,6 +73,8 @@ public:
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
       ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)\\D*$"), "Sort using a regular expression")
       ("postcenter", po::value<string>(&postcenter_selection)->default_value(""), "Perform a final recentering using this selection")
+      ("postcenter-xy", po::value<string>(&postcenter_xy_selection)->default_value(""), "Perform a final xy recentering")
+      ("postcenter-z", po::value<string>(&postcenter_z_selection)->default_value(""), "Perform a final z recentering")
 
       ;
   }
@@ -81,13 +85,20 @@ public:
            << " xy: " << xy_center_selection
            << " z: " << z_center_selection
            << endl;
-      if ( (center_selection.length() != 0) &&
-           ( (xy_center_selection.length() !=0) || (z_center_selection.length() !=0)) )
-          {
-          cerr << "Can't specify both centering-selection and either xy-centering-selection or z-centering-selection"
-              << endl;
-          return(false);
-          }
+           if ( (center_selection.length() != 0) &&
+                ( (xy_center_selection.length() !=0) || (z_center_selection.length() !=0)) )
+               {
+               cerr << "Can't specify both centering-selection and either xy-centering-selection or z-centering-selection"
+                   << endl;
+               return(false);
+               }
+           if ( (postcenter_selection.length() != 0) &&
+                ( (postcenter_xy_selection.length() !=0) || (postcenter_z_selection.length() !=0)) )
+               {
+               cerr << "Can't specify both postcenter and either postcentering-xy or postcenter-z"
+                   << endl;
+               return(false);
+               }
       return(true);
       }
 
@@ -378,6 +389,8 @@ int main(int argc, char *argv[])
     bool xy_recenter = false;
     bool z_recenter = false;
     bool post_recenter = false;
+    bool xy_post_recenter = false;
+    bool z_post_recenter = false;
     if ( center_selection.length() != 0 )
         {
         full_recenter = true;
@@ -394,6 +407,14 @@ int main(int argc, char *argv[])
       {
       post_recenter = true;
       }
+    if (postcenter_xy_selection.length() != 0)
+      {
+      xy_post_recenter = true;
+      }
+    if (postcenter_z_selection.length() != 0)
+      {
+      z_post_recenter = true;
+      }
 
     pTrajectoryWriter output = createOutputTrajectory(output_traj, true);
 
@@ -407,7 +428,7 @@ int main(int argc, char *argv[])
     // Set up to do the recentering
     vector<AtomicGroup> molecules;
     AtomicGroup center, xy_center, z_center;
-    AtomicGroup post_center;
+    AtomicGroup post_center, xy_post_center, z_post_center;
     vector<AtomicGroup>::iterator m;
     if ( full_recenter )
         {
@@ -440,6 +461,17 @@ int main(int argc, char *argv[])
     if (post_recenter)
       {
       post_center = selectAtoms(system, postcenter_selection);
+      }
+    else
+      {
+      if ( xy_post_recenter )
+        {
+        xy_post_center = selectAtoms(system, postcenter_xy_selection);
+        }
+      else if ( z_post_recenter )
+        {
+        z_post_center = selectAtoms(system, postcenter_z_selection);
+        }
       }
 
     uint original_num_frames = output->framesWritten();
@@ -644,9 +676,26 @@ int main(int argc, char *argv[])
                     cerr << "centroid after second reimaging: " << centroid << endl;
 #endif
                     }
-                if (post_recenter)
+
+                // Do a final postrecenter, if requested
+                if (post_recenter || xy_post_recenter || z_post_recenter)
                     {
-                    GCoord centroid = post_center.centroid();
+                    GCoord centroid;
+                    if (post_recenter)
+                        {
+                        centroid = post_center.centroid();
+                        }
+                    else if (xy_post_recenter)
+                        {
+                        centroid = xy_post_center.centroid();
+                        centroid.z() = 0.0;
+                        }
+                    else if (z_post_recenter)
+                        {
+                        centroid = z_post_center.centroid();
+                        centroid.x() = 0.0;
+                        centroid.y() = 0.0;
+                        }
                     system.translate(-centroid);
                     for (m=molecules.begin(); m != molecules.end(); ++m )
                         {
