@@ -201,6 +201,8 @@ string fullHelpMessage(void)
 "                           Handles many of the same cases as \n"
 "                           --selection-is-split, so you can try either to see\n"
 "                           which works for you.\n"
+" --postcenter-xy           like --postcenter, but only the xy plane\n"
+" --postcenter-z            like --postcenter, but only the z-axis\n"
 "\n"
 "\n"
 "In addition, for merging GROMACS XTC files there is an additional flag:\n"
