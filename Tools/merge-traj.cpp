@@ -99,6 +99,22 @@ public:
                    << endl;
                return(false);
                }
+
+          // Don't let them specify postcentering but not centering
+          if ( ( (postcenter_selection.length() != 0) ||
+               (postcenter_xy_selection.length() !=0) ||
+               (postcenter_z_selection.length() !=0) )
+               && !( (center_selection.length() != 0) ||
+                     (xy_center_selection.length() !=0) ||
+                     (z_center_selection.length() !=0) )
+             )
+             {
+             cerr << "Can't specify postcentering without regular centering"
+                  <<  endl;
+             return false;
+             }
+
+
       return(true);
       }
 
