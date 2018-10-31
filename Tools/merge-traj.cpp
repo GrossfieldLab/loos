@@ -255,6 +255,24 @@ string fullHelpMessage(void)
 "individual atoms (e.g. ions in solution), causing them to end up outside the \n"
 "box. If you're using gromacs, we suggest running gmxdump2pdb.pl first to get a \n"
 "PSF file for your system, and using that to drive all further LOOS analysis.\n"
+"\n"
+"The rationale for having --xy-centering-selection and z-centering selection\n"
+"is something like a membrane protein system.  In that case, it might be \n"
+"convenient for analysis to have the protein centered in the xy plane\n"
+"but the membrane centered at z=0; centering the protein in z could be\n"
+"suboptimal if for example the extracellular domain is much bigger than\n"
+"the intracellular one.\n"
+"\n"
+"The 3 postcenter options are intended for cases where the selection you're \n"
+"centering is in many pieces (e.g. a lipid membrane). Most of the time, it \n";
+"shouldn't be needed, but if the system drifts a lot in z you can end up \n";
+"with the bilayer centered about one of the z-image boundaries, and in that\n";
+"case you may need some combination of --postcenter or --postcenter-z and \n";
+"--selection-is-split.  The trick in that case is to use different selections\n"
+"for centering and postcentering, e.g. a single lipid molecule for the initial\n"
+"centering (which will ensure the bilayer is now largely intact), followed \n"
+"by the whole bilayer for the postcenter (since that's what you want for \n"
+"analysis purposes).\n"
 "\n";
 
     return (s);
