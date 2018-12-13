@@ -889,7 +889,7 @@ Matlab and Octave.
       - \subpage voronoi "Voronoi decomposition"
       - \subpage user "User-created tools"
 
-  \page convergence "Convergence"
+  \page convergence Convergence
   <h2>Convergence Analysis Tools</h2>
   A collection of tools for assessing statistical error and
   convergence, found in the Packages/Convergence/ directory:
