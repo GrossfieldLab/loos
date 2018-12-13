@@ -12,6 +12,8 @@ var dir_25b71a3164425d524512c79461fe0b2c =
     [ "helix_axes.py", "helix__axes_8py_source.html", null ],
     [ "hierarchical-cluster.py", "hierarchical-cluster_8py_source.html", null ],
     [ "inside_helices.py", "inside__helices_8py_source.html", null ],
+    [ "NAMDBin.py", "_n_a_m_d_bin_8py_source.html", null ],
+    [ "native-hbs.py", "native-hbs_8py_source.html", null ],
     [ "protein_tilt.py", "protein__tilt_8py_source.html", null ],
     [ "renum-by-mol.py", "renum-by-mol_8py_source.html", null ],
     [ "rmsd_to_average.py", "rmsd__to__average_8py_source.html", null ],

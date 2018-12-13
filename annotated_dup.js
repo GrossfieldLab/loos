@@ -10,6 +10,7 @@ var annotated_dup =
       [ "FullHelp", "classhierarchical-cluster_1_1_full_help.html", "classhierarchical-cluster_1_1_full_help" ]
     ] ],
     [ "loos", "namespaceloos.html", "namespaceloos" ],
+    [ "NAMDBin", "namespace_n_a_m_d_bin.html", "namespace_n_a_m_d_bin" ],
     [ "Voronoi", null, [
       [ "Edge", "class_voronoi_1_1_edge.html", "class_voronoi_1_1_edge" ],
       [ "Region", "class_voronoi_1_1_region.html", "class_voronoi_1_1_region" ],

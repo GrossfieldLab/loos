@@ -1,10 +1,33 @@
+/*
+@ @licstart  The following is the entire license notice for the
+JavaScript code in this file.
+
+Copyright (C) 1997-2017 by Dimitri van Heesch
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+@licend  The above is the entire license notice
+for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "LOOS", "index.html", [
     [ "Lightweight Object-Oriented Structure library (LOOS)", "index.html", "index" ],
     [ "Modules", "modules.html", "modules" ],
-    [ "Namespaces", null, [
-      [ "Namespace List", "namespaces.html", "namespaces" ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
@@ -25,8 +48,8 @@ var NAVTREE =
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ]
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ]
     ] ]
   ] ]
 ];
@@ -34,16 +57,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"changes.html#release221",
-"class_tool_options.html#ae3abac140b154beb88fbdede86a086bf",
-"classloos_1_1_atomic_group.html#a7bae9400609d329e7d445e57fbb989e9",
-"classloos_1_1_density_tools_1_1_density_grid.html#a57d70f8238231c3b4804177b5475c520",
-"classloos_1_1_h_bonds_1_1_simple_atom.html",
-"classloos_1_1_options_framework_1_1_basic_water.html#abf1ad5e9c24f74eb1b65fbb81e4c054f",
-"classloos_1_1_time_series.html#a3021670d656f88c6a5be27073b587cfd",
-"classloos_1_1internal_1_1_x_d_r_reader.html#a8786be258c9fe776087e6866761c5193",
-"functions_func_y.html",
-"structloos_1_1_atom_selector.html"
+"changes.html#release220",
+"class_threader.html#a491f29055b502b3400a2a8336938189b",
+"classloos_1_1_atomic_group.html#a27053134ce55273e477144d7b654e60b",
+"classloos_1_1_density_tools_1_1_bulk_estimator.html#a155d7f1c4826f631bf151a988bcaeb23",
+"classloos_1_1_file_read_error_with_line.html#ad9737d4a44fe7f6a0b66cbed30984073",
+"classloos_1_1_options_framework_1_1_basic_selection.html#adafdab8c39ec2f6d1efc0f662e67571a",
+"classloos_1_1_stream_wrapper.html#aa56941a6ef5f2b34a7e54ea7367c11b7",
+"classloos_1_1internal_1_1_action.html#a5f7ea7f8f9d4ea48f195861cef5cad0f",
+"formats.html",
+"smooth-traj_8cpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -158,6 +158,7 @@ var hierarchy =
     [ "loos::MatrixWriteImpl< T, P, S, F >", "structloos_1_1_matrix_write_impl.html", null ],
     [ "loos::MatrixWriteImpl< T, Math::Triangular, S, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4.html", null ],
     [ "loos::MatrixWriteImpl< T, P, Math::SparseArray, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4.html", null ],
+    [ "NAMDBin.NAMDBin", "class_n_a_m_d_bin_1_1_n_a_m_d_bin.html", null ],
     [ "noncopyable", null, [
       [ "loos::StreamWrapper", "classloos_1_1_stream_wrapper.html", null ]
     ] ],
@@ -283,8 +284,8 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
     [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
+    [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
     [ "OrderPolicy", null, [
       [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
     ] ],

@@ -1,7 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
 <area shape="rect" id="node1" title="STL class. " alt="" coords="5,208,109,235"/>
 <area shape="rect" id="node2" href="$structloos_1_1_h_bonds_1_1_error_with_atom.html" title="loos::HBonds::ErrorWithAtom" alt="" coords="157,157,352,184"/>
-<area shape="rect" id="node3" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception. " alt="" coords="195,208,314,235"/>
+<area shape="rect" id="node3" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception. " alt="" coords="196,208,313,235"/>
 <area shape="rect" id="node16" title="STL class. " alt="" coords="193,436,317,463"/>
 <area shape="rect" id="node4" href="$classloos_1_1_atom_1_1_unset_property.html" title="DEPRECATED exception class...use loos::UnsetProperty instead. " alt="" coords="401,5,579,32"/>
 <area shape="rect" id="node5" href="$classloos_1_1_d_c_d_1_1_end_of_file.html" title="loos::DCD::EndOfFile" alt="" coords="415,56,565,83"/>
