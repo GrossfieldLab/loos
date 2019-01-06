@@ -34,9 +34,9 @@ namespace loos {
     class Weights {
     public:
         Weights(const std::string &filename, const Trajectory *traj):
-                                        _traj(traj),
                                         current_frame(0)
                                        {
+            _traj = traj;
             uint num_weights = read_weights(filename);
             // # of weights must match number of frames in the associated traj
             if (num_weights != _traj->nframes()) {
@@ -54,6 +54,8 @@ namespace loos {
         uint current_frame;
 
         void normalize();
+        double operator()();
+        double operator()(uint index);
 
 
 

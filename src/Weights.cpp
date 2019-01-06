@@ -36,6 +36,7 @@ namespace loos {
             if ( (input.length() == 0) || (input[0] == '#' ) ) {
                 // do nothing
             }
+            // TODO: we should really let it be any column
             else {
                 double value = parseStringAs<double>(input);
                 _weights.push_back(value);
@@ -53,5 +54,22 @@ namespace loos {
         for (uint i=0; i<_weights.size(); ++i) {
             _weights[i] /= sum;
         }
+    }
+
+    double Weights::get() {
+        current_frame = _traj->currentFrame();
+        return _weights.at(current_frame);
+    }
+
+    double Weights::get(uint index) {
+        return _weights.at(index);
+    }
+
+    double Weights::operator()() {
+        return get();
+    }
+
+    double Weights::operator()(uint index) {
+        return get(index);
     }
 }
