@@ -32,6 +32,7 @@
 #include <sfactories.hpp>
 #include <boost/algorithm/string.hpp>
 #include <exceptions.hpp>
+#include <Weights.hpp>
 
 
 
@@ -168,7 +169,7 @@ namespace loos {
    * \code
    * namespace opts = loos::OptionsFramework;
    * namespace po = loos::OptionsFramewokr::po;
-   * 
+   *
    * class ToolOptions : public opts::OptionsPackage {
    * public:
    *
@@ -214,7 +215,7 @@ namespace loos {
    * message will be printed out.
    *
    * <hr>
-   * 
+   *
    * Notes:
    *   - Model and Trajectory options classes will create the
    *     appropriate model and trajectory objects which can be copied out
@@ -314,7 +315,7 @@ namespace loos {
        * OptionsPackage, printing out something like the above on the
        * command line as part of the help output.
        */
-      
+
       virtual std::string help() const { return(""); }
     };
 
@@ -358,7 +359,7 @@ namespace loos {
       void addGeneric(po::options_description& opts);
       std::string print() const;
     };
-      
+
     // -------------------------------------------------
 
     //! Provides a single LOOS selection (--selection)
@@ -386,7 +387,7 @@ namespace loos {
     class BasicSplitBy : public OptionsPackage {
     public:
       enum SplitType { NONE, MOLECULE, SEGID, RESIDUE };
-	
+
 
       BasicSplitBy() : split_method("mol"), label("Split selection by (none, mol, segid, res)"), split_type(MOLECULE) { }
       BasicSplitBy(const std::string& method) : split_method(method), label("Split selection by (none, mol, segid, res)"), split_type(methodToType(method)) { }
@@ -487,7 +488,7 @@ namespace loos {
     /**
      * Adds a model and trajectory argument to the command line, and
      * provides --skip (-k) option for skipping the first n-frames.
-     * 
+     *
      * The contained trajectory object will already be skipped to the
      * correct frame by postConditions().
      **/
@@ -498,12 +499,17 @@ namespace loos {
 
       unsigned int skip;
       std::string model_name, model_type, traj_name, traj_type;
+      std::string weights_name;
 
       //! Model that describes the trajectory
       AtomicGroup model;
 
       //! The trajectory, primed by the --skip value (if specified)
       pTraj trajectory;
+
+      //! The weights file, if specified
+      Weights weights;
+      bool has_weights;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -542,12 +548,18 @@ namespace loos {
       unsigned int skip, stride;
       std::string frame_index_spec;
       std::string model_name, model_type, traj_name, traj_type;
+      std::string weights_name;
+
 
       //! Model that describes the trajectory
       AtomicGroup model;
 
       //! The trajectory
       pTraj trajectory;
+
+      //! The weights file, if specified
+      Weights weights;
+      bool has_weights;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -566,7 +578,7 @@ namespace loos {
 
 
     // -------------------------------------------------
-    
+
 
 
 
@@ -593,20 +605,20 @@ namespace loos {
       std::string model_name, model_type, frame_index_spec;
 
       std::vector<uint> frameList() const;
-      
+
       //! Model that describes the trajectory
       AtomicGroup model;
 
       //! The original collection of trajectories
       MultiTrajectory mtraj;
-      
+
       //! The trajectory
       pTraj trajectory;
 
       //! A table of information about the contained trajectories
       std::string trajectoryTable() const;
 
-      
+
     private:
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);
@@ -715,7 +727,7 @@ namespace loos {
     public:
       OutputTrajectoryOptions() : name("output.dcd"), label("Output Trajectory"), append(false) {}
       OutputTrajectoryOptions(const std::string& s) : name(s), label("Output Trajectory"), append(false) {}
-      OutputTrajectoryOptions(const std::string& s, const bool appending) : name(s), label("Output Trajectory"), append(appending) {}  
+      OutputTrajectoryOptions(const std::string& s, const bool appending) : name(s), label("Output Trajectory"), append(appending) {}
 
 
       std::string name;
@@ -729,13 +741,13 @@ namespace loos {
     private:
       void addGeneric(po::options_description& opts);
       void addHidden(po::options_description& opts);
-      
+
       void addPositional(po::positional_options_description& map);
 
       bool check(po::variables_map& map);
-      
+
       bool postConditions(po::variables_map& map);
-      
+
       std::string help() const;
       std::string print() const;
 
@@ -745,19 +757,19 @@ namespace loos {
 
     class OutputTrajectoryTypeOptions : public OptionsPackage {
     public:
-      OutputTrajectoryTypeOptions() : 
-	label("Output Trajectory Type"), 
-	append(false), 
+      OutputTrajectoryTypeOptions() :
+	label("Output Trajectory Type"),
+	append(false),
 	type("dcd") {}
 
-      OutputTrajectoryTypeOptions(const std::string& s) : 
+      OutputTrajectoryTypeOptions(const std::string& s) :
 	label("Output Trajectory Type"),
 	append(false),
 	type(s) {}
 
-      OutputTrajectoryTypeOptions(const std::string& s, const bool appending) : 
-	label("Output Trajectory Type"), 
-	append(appending), type(s) {}  
+      OutputTrajectoryTypeOptions(const std::string& s, const bool appending) :
+	label("Output Trajectory Type"),
+	append(appending), type(s) {}
 
       pTrajectoryWriter createTrajectory(const std::string& prefix);
 

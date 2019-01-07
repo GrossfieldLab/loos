@@ -33,7 +33,7 @@ namespace loos {
 
     class Weights {
     public:
-        Weights(const std::string &filename, const Trajectory *traj):
+        Weights(const std::string &filename, pTraj traj):
                                         current_frame(0)
                                        {
             _traj = traj;
@@ -47,6 +47,9 @@ namespace loos {
 
         };
 
+        Weights() {
+
+        };
         ~Weights() { };
 
         double get();
@@ -62,7 +65,7 @@ namespace loos {
 
     private:
         uint read_weights(const std::string &filename);
-        const Trajectory *_traj;
+        pTraj _traj;
         std::vector<double> _weights;
     };
 

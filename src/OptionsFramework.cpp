@@ -76,7 +76,7 @@ namespace loos {
       oss << "prefix='" << prefix << "'";
       return(oss.str());
     }
-      
+
     // -------------------------------------------------------
 
     void BasicSelection::addGeneric(po::options_description& opts) {
@@ -102,11 +102,11 @@ namespace loos {
       return(oss.str());
     }
 
-    BasicSplitBy::SplitType BasicSplitBy::methodToType(const std::string& name) 
+    BasicSplitBy::SplitType BasicSplitBy::methodToType(const std::string& name)
     {
       std::string canonical_name(name);
       boost::to_upper(canonical_name);
-      
+
       if (canonical_name == "NONE")
 	return(NONE);
       else if (canonical_name == "MOL")
@@ -120,7 +120,7 @@ namespace loos {
       throw(OptionsError("Invalid split-by method in options"));
     }
 
-    bool BasicSplitBy::postConditions(po::variables_map& map) 
+    bool BasicSplitBy::postConditions(po::variables_map& map)
     {
       try {
 	split_type = methodToType(split_method);
@@ -132,39 +132,39 @@ namespace loos {
       catch (...) {
 	throw;
       }
-      
-      
+
+
       return(true);
     }
-    
-    std::vector<AtomicGroup> BasicSplitBy::split(const AtomicGroup& grp) 
+
+    std::vector<AtomicGroup> BasicSplitBy::split(const AtomicGroup& grp)
     {
       std::vector<AtomicGroup> result;
-      
+
       switch(split_type) {
       case NONE:
 	result.push_back(grp);
 	break;
-	
+
       case MOLECULE:
 	result = grp.splitByMolecule();
 	break;
-	
+
       case SEGID:
 	result = grp.splitByUniqueSegid();
 	break;
-	
+
       case RESIDUE:
 	result = grp.splitByResidue();
 	break;
-	
+
       default:
 	throw(LOOSError("Unknown split method"));
       }
-      
+
       return(result);
     }
-    
+
 
 
     // -------------------------------------------------------
@@ -257,13 +257,13 @@ namespace loos {
         model1 = loadStructureWithCoords(model1_name, model1_type, coords1_name);
       } else
         model1 = loadStructureWithCoords(model1_name, coords1_name);
-      
+
       if (map.count("model2type")) {
         model2_type = map["model2type"].as<std::string>();
         model2 = loadStructureWithCoords(model2_name, model2_type, coords2_name);
       } else
         model2 = loadStructureWithCoords(model2_name, coords2_name);
-      
+
       return(true);
     }
 
@@ -300,6 +300,7 @@ namespace loos {
 
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("weights,w", po::value<std::string>(&weights_name))
         ("modeltype", po::value<std::string>(), modeltypes.c_str())
         ("trajtype", po::value<std::string>(), trajtypes.c_str());
     };
@@ -332,12 +333,20 @@ namespace loos {
       } else
         trajectory = createTrajectory(traj_name, model);
 
+      if (map.count("weights")) {
+        has_weights = true;
+        weights = Weights(weights_name, trajectory);
+      } else {
+        has_weights = false;
+      }
+
+
       if (skip > 0)
         trajectory->readFrame(skip-1);
 
       return(true);
     }
-    
+
     std::string BasicTrajectory::help() const { return("model trajectory"); }
     std::string BasicTrajectory::print() const {
       std::ostringstream oss;
@@ -345,7 +354,7 @@ namespace loos {
       return(oss.str());
     }
 
-    
+
     // -------------------------------------------------------
 
 
@@ -355,6 +364,7 @@ namespace loos {
 
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
+        ("weights,w", po::value<std::string>(&weights_name))
         ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), modeltypes.c_str())
         ("trajtype", po::value<std::string>(&traj_type)->default_value(traj_type), trajtypes.c_str())
         ("stride,i", po::value<unsigned int>(&stride)->default_value(stride), "Take every ith frame")
@@ -391,10 +401,16 @@ namespace loos {
         trajectory = createTrajectory(traj_name, model);
       else
         trajectory = createTrajectory(traj_name, traj_type, model);
-      
+
+      if (weights_name.empty()) {
+        has_weights = false;
+      } else {
+        has_weights = true;
+        weights = Weights(weights_name, trajectory);
+      }
       return(true);
     }
-    
+
     std::string TrajectoryWithFrameIndices::help() const { return("model trajectory"); }
     std::string TrajectoryWithFrameIndices::print() const {
       std::ostringstream oss;
@@ -403,11 +419,11 @@ namespace loos {
         oss << ", skip=" << skip;
       else if (!frame_index_spec.empty())
         oss << ", range='" << frame_index_spec << "'";
-      
+
       return(oss.str());
     }
 
-    
+
     std::vector<uint> TrajectoryWithFrameIndices::frameList() const {
       std::vector<uint> indices = assignTrajectoryFrames(trajectory, frame_index_spec, skip, stride);
       return uniquifyVector(indices);
@@ -431,7 +447,7 @@ namespace loos {
         ("model", po::value<std::string>(&model_name), "Model filename")
         ("traj", po::value< std::vector< std::string > >(&traj_names), "Trajectory filenames");
     }
-    
+
     void MultiTrajOptions::addPositional(po::positional_options_description& pos) {
       pos.add("model", 1);
       pos.add("traj", -1);
@@ -498,7 +514,7 @@ namespace loos {
     }
 
     // -------------------------------------------------------
-    
+
     void OutputTrajectoryOptions::addGeneric(po::options_description& opts) {
       std::string types = availableOutputTrajectoryFileTypes();
 
@@ -544,9 +560,9 @@ namespace loos {
 	% append;
       return(oss.str());
     }
-    
+
     // -------------------------------------------------------
-    
+
     void OutputTrajectoryTypeOptions::addGeneric(po::options_description& opts) {
       std::string types = availableOutputTrajectoryFileTypes();
 
@@ -570,7 +586,7 @@ namespace loos {
       std::string fname = prefix + "." + type;
       return(createOutputTrajectory(fname, type, append));
     }
-    
+
     // -------------------------------------------------------
 
     void RequiredArguments::addArgument(const std::string& name, const std::string& description) {
@@ -580,44 +596,44 @@ namespace loos {
         oss << "Error- duplicate command line argument requested for '" << name << "'";
         throw(LOOSError(oss.str()));
       }
-      
+
       arguments.push_back(arg);
     }
-    
+
     void RequiredArguments::addVariableArguments(const std::string& name, const std::string& description) {
       if (vargs_set)
         throw(LOOSError("Multiple variable arguments requested"));
-      
+
       variable_arguments = StringPair(name, description);
       vargs_set = true;
     }
-    
+
     void RequiredArguments::addHidden(po::options_description& o) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         o.add_options()(i->first.c_str(), po::value<std::string>(), i->second.c_str());
       if (vargs_set)
         o.add_options()(variable_arguments.first.c_str(), po::value< std::vector<std::string> >(), variable_arguments.second.c_str());
     }
-    
+
     void RequiredArguments::addPositional(po::positional_options_description& pos) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         pos.add(i->first.c_str(), 1);
       if (vargs_set)
         pos.add(variable_arguments.first.c_str(), -1);
     }
-    
-    
+
+
     bool RequiredArguments::check(po::variables_map& map) {
       for (std::vector<StringPair>::const_iterator i = arguments.begin(); i != arguments.end(); ++i)
         if (! map.count(i->first.c_str()) )
           return(true);
-      
+
       if (vargs_set && !map.count(variable_arguments.first))
         return(true);
-      
+
       return(false);
     }
-    
+
     bool RequiredArguments::postConditions(po::variables_map& map) {
       held_map = map;
       return(true);
@@ -630,7 +646,7 @@ namespace loos {
       return(result);
     }
 
-  
+
     std::vector<std::string> RequiredArguments::variableValues(const std::string& s) const {
       return(held_map[s].as< std::vector<std::string> >());
     }
@@ -652,7 +668,7 @@ namespace loos {
            if (i != arguments.end() - 1)
                 oss << ',';
       }
-      
+
       if (vargs_set) {
         std::vector<std::string> v = variableValues(variable_arguments.first);
         oss << variable_arguments.first << "=(";
@@ -745,14 +761,14 @@ namespace loos {
         }
 
       return(true);
-      
+
     }
 
     std::vector<std::string> AggregateOptions::print() const {
       std::vector<std::string> results;
 
       results.push_back(program_name);
-    
+
       for (vOpts::const_iterator i = options.begin(); i != options.end(); ++i)
         results.push_back((*i)->print());
 
@@ -761,4 +777,3 @@ namespace loos {
 
   };
 };
-
