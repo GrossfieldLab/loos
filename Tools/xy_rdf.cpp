@@ -408,6 +408,7 @@ for (uint index = 0; index<framecnt; ++index)
     if (tropts->has_weights)
         {
         weight = tropts->weights();
+        tropts->weights.accumulate();
         }
 
     GCoord box = system.periodicBox();
@@ -600,8 +601,21 @@ for (int i = 0; i < num_bins; i++)
 
     double total = (hist_upper_total[i] + hist_lower_total[i])/
                         (norm*(upper_expected + lower_expected));
-    cum += (hist_upper_total[i] + hist_lower_total[i])
-                   /group1.size();
+    if (tropts->has_weights)
+        {
+        upper /= tropts->weights.totalWeight();
+        lower /= tropts->weights.totalWeight();
+        total /= tropts->weights.totalWeight();
+        }
+
+    double cum_increment = (hist_upper_total[i] + hist_lower_total[i]) /
+                                    group1.size();
+    if (tropts->has_weights)
+        {
+        cum_increment *= framecnt / tropts->weights.totalWeight();
+        }
+
+    cum += cum_increment;
 
     cout << d     << "\t"
          << total << "\t"
