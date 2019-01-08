@@ -34,16 +34,16 @@ namespace loos {
     class Weights {
     public:
         Weights(const std::string &filename, pTraj const traj ):
-                                        current_frame(0)
+                                        current_frame(0),
+                                        _filename(filename)
                                        {
-            _traj = traj;
-            uint num_weights = read_weights(filename);
-            // # of weights must match number of frames in the associated traj
-            if (num_weights != _traj->nframes()) {
-                throw(LOOSError(std::string("Number of weights must match the length of the trajectory")));
-            }
-
+            add_traj(traj);
         };
+
+        Weights(const std::string &filename): current_frame(0),
+                                             _filename(filename) {
+
+        }
 
         Weights() {
 
@@ -58,6 +58,7 @@ namespace loos {
         void accumulate();
         void accumulate(const uint index);
         const double totalWeight();
+        void add_traj(pTraj const traj);
         double operator()();
         double operator()(const uint index);
 
@@ -66,9 +67,11 @@ namespace loos {
 
     private:
         uint read_weights(const std::string &filename);
+        uint _num_weights;
         pTraj _traj;
         std::vector<double> _weights;
         double _total;
+        std::string _filename;
     };
 
 }

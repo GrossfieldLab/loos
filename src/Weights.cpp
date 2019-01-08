@@ -72,6 +72,17 @@ namespace loos {
         return _total;
     }
 
+    //! Add trajectory to class and verify size match
+    void Weights::add_traj(pTraj const traj) {
+        _traj = traj;
+        _num_weights = read_weights(_filename);
+        // # of weights must match number of frames in the associated traj
+        if (_num_weights != _traj->nframes()) {
+            throw(LOOSError(std::string("Number of weights must match the length of the trajectory")));
+        }
+
+    }
+
     //! Return the weight for the current frame of the trajectory
     double Weights::get() {
         current_frame = _traj->currentFrame();
