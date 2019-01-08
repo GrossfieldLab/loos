@@ -108,7 +108,7 @@ public:
         {
         reselect_leaflet = true;
         }
-    if (vm.count("timeseries") && vm.count("weights"))
+    if ( (timeseries_interval > 0) && vm.count("weights"))
         {
         cerr << "Cannot specify reweighting and time series at the same time"
              << endl;
