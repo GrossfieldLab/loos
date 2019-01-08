@@ -41,8 +41,6 @@ namespace loos {
             // # of weights must match number of frames in the associated traj
             if (num_weights != _traj->nframes()) {
                 throw(LOOSError(std::string("Number of weights must match the length of the trajectory")));
-
-            normalize();
             }
 
         };
@@ -53,12 +51,15 @@ namespace loos {
         ~Weights() { };
 
         double get();
-        double get(uint index);
+        double get(const uint index);
         uint current_frame;
 
         void normalize();
+        void accumulate();
+        void accumulate(const uint index);
+        const double totalWeight();
         double operator()();
-        double operator()(uint index);
+        double operator()(const uint index);
 
 
 
@@ -67,6 +68,7 @@ namespace loos {
         uint read_weights(const std::string &filename);
         pTraj _traj;
         std::vector<double> _weights;
+        double _total;
     };
 
 }

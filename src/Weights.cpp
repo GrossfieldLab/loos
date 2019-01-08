@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <Weights.hpp>
+#include "Weights.hpp"
 
 namespace loos {
     //! Weights class to handle reweighting values computed from a trajectory
@@ -52,10 +52,24 @@ namespace loos {
         for (uint i=0; i<_weights.size(); ++i) {
             sum += _weights[i];
         }
+        std::cerr << "Total weight = " << sum << std::endl;
         // TODO : Really should check for underflow to prevent div by 0
         for (uint i=0; i<_weights.size(); ++i) {
             _weights[i] /= sum;
         }
+    }
+
+    //! Keep track of total weight used
+    void Weights::accumulate() {
+        _total += _weights.at(_traj->currentFrame());
+    }
+
+    void Weights::accumulate(const uint index) {
+        _total += _weights.at(index);
+    }
+
+    const double Weights::totalWeight() {
+        return _total;
     }
 
     //! Return the weight for the current frame of the trajectory
@@ -65,7 +79,7 @@ namespace loos {
     }
 
     //! Return the weight for frame index of the trajectory
-    double Weights::get(uint index) {
+    double Weights::get(const uint index) {
         return _weights.at(index);
     }
 
@@ -73,7 +87,7 @@ namespace loos {
         return get();
     }
 
-    double Weights::operator()(uint index) {
+    double Weights::operator()(const uint index) {
         return get(index);
     }
 }
