@@ -45,6 +45,8 @@ namespace loos {
         return _weights.size();
     }
 
+
+    //! Normalize the weights so they sum to 1
     void Weights::normalize() {
         double sum = 0.0;
         for (uint i=0; i<_weights.size(); ++i) {
@@ -56,11 +58,13 @@ namespace loos {
         }
     }
 
+    //! Return the weight for the current frame of the trajectory
     double Weights::get() {
         current_frame = _traj->currentFrame();
         return _weights.at(current_frame);
     }
 
+    //! Return the weight for frame index of the trajectory
     double Weights::get(uint index) {
         return _weights.at(index);
     }
