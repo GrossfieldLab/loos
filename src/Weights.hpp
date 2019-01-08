@@ -33,7 +33,7 @@ namespace loos {
 
     class Weights {
     public:
-        Weights(const std::string &filename, pTraj traj):
+        Weights(const std::string &filename, pTraj const traj ):
                                         current_frame(0)
                                        {
             _traj = traj;
