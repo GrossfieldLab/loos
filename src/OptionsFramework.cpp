@@ -300,7 +300,6 @@ namespace loos {
 
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
-        ("weights,w", po::value<std::string>(&weights_name), "List of weights to change averaging")
         ("modeltype", po::value<std::string>(), modeltypes.c_str())
         ("trajtype", po::value<std::string>(), trajtypes.c_str());
     };
@@ -333,14 +332,6 @@ namespace loos {
       } else
         trajectory = createTrajectory(traj_name, model);
 
-      if (map.count("weights")) {
-        has_weights = true;
-        weights = Weights(weights_name, trajectory);
-      } else {
-        has_weights = false;
-      }
-
-
       if (skip > 0)
         trajectory->readFrame(skip-1);
 
@@ -364,7 +355,6 @@ namespace loos {
 
       opts.add_options()
         ("skip,k", po::value<unsigned int>(&skip)->default_value(skip), "Number of frames to skip")
-        ("weights,w", po::value<std::string>(&weights_name), "List of weights to change averaging")
         ("modeltype", po::value<std::string>(&model_type)->default_value(model_type), modeltypes.c_str())
         ("trajtype", po::value<std::string>(&traj_type)->default_value(traj_type), trajtypes.c_str())
         ("stride,i", po::value<unsigned int>(&stride)->default_value(stride), "Take every ith frame")
@@ -402,12 +392,6 @@ namespace loos {
       else
         trajectory = createTrajectory(traj_name, traj_type, model);
 
-      if (weights_name.empty()) {
-        has_weights = false;
-      } else {
-        has_weights = true;
-        weights = Weights(weights_name, trajectory);
-      }
       return(true);
     }
 
@@ -585,6 +569,19 @@ namespace loos {
 
       std::string fname = prefix + "." + type;
       return(createOutputTrajectory(fname, type, append));
+    }
+
+    // -------------------------------------------------------
+
+    void WeightsOptions::addGeneric(po::options_description& opts) {
+      opts.add_options()
+      ("weights,w", po::value<std::string>(&weights_name), "List of weights to change averaging");
+    }
+
+    bool WeightsOptions::postConditions(po::variables_map& map) {
+        has_weights = true;
+        weights = Weights(weights_name);
+        return true;
     }
 
     // -------------------------------------------------------
@@ -774,6 +771,8 @@ namespace loos {
 
       return(results);
     }
+
+
 
   };
 };

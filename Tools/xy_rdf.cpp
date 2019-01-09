@@ -294,10 +294,11 @@ int main (int argc, char *argv[])
 string hdr = invocationHeader(argc, argv);
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
 opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+opts::WeightsOptions* wopts = new opts::WeightsOptions;
 ToolOptions* topts = new ToolOptions;
 
 opts::AggregateOptions options;
-options.add(bopts).add(tropts).add(topts);
+options.add(bopts).add(tropts).add(topts).add(wopts);
 if (!options.parse(argc, argv))
   exit(-1);
 
@@ -310,12 +311,18 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 AtomicGroup system = tropts->model;
-pTraj traj = tropts->trajectory;
+pTraj traj = tropts->trajectory;;
 if (!(system.isPeriodic() || traj->hasPeriodicBox()))
   {
   cerr << "Error- Either the model or the trajectory must have periodic box information.\n";
   exit(-1);
   }
+
+// Attach trajectory to weights
+if (wopts->has_weights)
+    {
+    wopts->weights.add_traj(traj);
+    }
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -405,10 +412,10 @@ for (uint index = 0; index<framecnt; ++index)
     // If this is a reweighting calculation, get the weight.
     // Otherwise, use 1.0
     double weight = 1.0;
-    if (tropts->has_weights)
+    if (wopts->has_weights)
         {
-        weight = tropts->weights();
-        tropts->weights.accumulate();
+        weight = wopts->weights();
+        wopts->weights.accumulate();
         }
 
     GCoord box = system.periodicBox();
@@ -554,7 +561,7 @@ for (uint index = 0; index<framecnt; ++index)
 // normalize the area
 // Not necessary if we're doing reweighting, since they're already
 // normalized
-if (!tropts->has_weights) area /= framecnt;
+if (!wopts->has_weights) area /= framecnt;
 
 // If we didn't write timeseries, then we need to copy the interval histograms
 // to the total ones.  If we did, we need to add in the additional data points
@@ -601,18 +608,18 @@ for (int i = 0; i < num_bins; i++)
 
     double total = (hist_upper_total[i] + hist_lower_total[i])/
                         (norm*(upper_expected + lower_expected));
-    if (tropts->has_weights)
+    if (wopts->has_weights)
         {
-        upper /= tropts->weights.totalWeight();
-        lower /= tropts->weights.totalWeight();
-        total /= tropts->weights.totalWeight();
+        upper /= wopts->weights.totalWeight();
+        lower /= wopts->weights.totalWeight();
+        total /= wopts->weights.totalWeight();
         }
 
     double cum_increment = (hist_upper_total[i] + hist_lower_total[i]) /
                                     group1.size();
-    if (tropts->has_weights)
+    if (wopts->has_weights)
         {
-        cum_increment *= framecnt / tropts->weights.totalWeight();
+        cum_increment *= framecnt / wopts->weights.totalWeight();
         }
 
     cum += cum_increment;

@@ -839,6 +839,20 @@ namespace loos {
       void setupOptions();
     };
 
+    class WeightsOptions : public OptionsPackage {
+    public:
+      WeightsOptions() { }
+
+      std::string weights_name;
+      Weights weights;
+      bool has_weights;
+
+    private:
+      void addGeneric(po::options_description& opts);
+      bool postConditions(po::variables_map& map);
+    };
+
+
   };
 };
 
