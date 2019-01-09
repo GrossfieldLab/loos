@@ -238,10 +238,11 @@ int main (int argc, char *argv[])
 string hdr = invocationHeader(argc, argv);
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
 opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+opts::WeightsOptions* wopts = new opts::WeightsOptions;
 ToolOptions* topts = new ToolOptions;
 
 opts::AggregateOptions options;
-options.add(bopts).add(tropts).add(topts);
+options.add(bopts).add(tropts).add(wopts).add(topts);
 if (!options.parse(argc, argv))
   exit(-1);
 
@@ -262,6 +263,12 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
   cerr << "Error- Either the model or the trajectory must have periodic box information.\n";
   exit(-1);
   }
+
+// Attach trajectory to weights
+if (wopts->has_weights)
+    {
+    wopts->weights.add_traj(traj);
+    }
 
 
 double bin_width = (hist_max - hist_min)/num_bins;
@@ -326,8 +333,17 @@ for (uint index = 0; index<framecount; ++index)
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
 
+    double weight = 1.0;
+    if (wopts->has_weights)
+        {
+        cerr << "Using weights" << endl;
+        weight = wopts->weights();
+        wopts->weights.accumulate();
+        }
+
+
     GCoord box = system.periodicBox();
-    volume += box.x() * box.y() * box.z();
+    volume += weight*(box.x() * box.y() * box.z());
 
     // compute the distribution of g2 around g1
     for (unsigned int j = 0; j < g1_mols.size(); j++)
@@ -348,17 +364,32 @@ for (uint index = 0; index<framecount; ++index)
                 {
                 double d = sqrt(d2);
                 int bin = int((d-hist_min)/bin_width);
-                hist[bin]++;
+                hist[bin]+=weight;
                 }
             }
         }
     }
 
-volume /= framecount;
+    if (wopts->has_weights)
+        {
+        volume /= wopts->weights.totalWeight();
+        }
+    else
+        {
+        volume /= framecount;
+        }
 
 
+double expected = unique_pairs / volume;
+if (wopts->has_weights)
+    {
+    expected *= wopts->weights.totalWeight();
+    }
+else
+    {
+    expected *= framecount;
+    }
 
-double expected = framecount * unique_pairs / volume;
 double cum1 = 0.0;
 double cum2 = 0.0;
 
