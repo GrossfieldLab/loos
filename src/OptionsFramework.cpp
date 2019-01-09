@@ -579,9 +579,11 @@ namespace loos {
     }
 
     bool WeightsOptions::postConditions(po::variables_map& map) {
+      if (map.count("weights")) {
         has_weights = true;
         weights = Weights(weights_name);
-        return true;
+      }
+      return true;
     }
 
     // -------------------------------------------------------
