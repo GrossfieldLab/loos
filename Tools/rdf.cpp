@@ -336,7 +336,6 @@ for (uint index = 0; index<framecount; ++index)
     double weight = 1.0;
     if (wopts->has_weights)
         {
-        cerr << "Using weights" << endl;
         weight = wopts->weights();
         wopts->weights.accumulate();
         }
@@ -405,8 +404,16 @@ for (int i = 0; i < num_bins; i++)
                                 - d_inner*d_inner*d_inner);
 
     double total = hist[i]/ (norm*expected);
-    cum1 += hist[i] / (framecount*g1_mols.size());
-    cum2 += hist[i] / (framecount*g2_mols.size());
+    if (wopts->has_weights)
+        {
+        cum1 += hist[i] / (wopts->weights.totalWeight()*g1_mols.size());
+        cum2 += hist[i] / (wopts->weights.totalWeight()*g2_mols.size());
+        }
+    else
+        {
+        cum1 += hist[i] / (framecount*g1_mols.size());
+        cum2 += hist[i] / (framecount*g2_mols.size());
+        }
 
     cout << d << "\t" << total << "\t"
          << cum1 << "\t" << cum2 << endl;
