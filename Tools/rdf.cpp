@@ -1,15 +1,15 @@
 /*
   Compute 3d radial distribution function for two selections
   This version works on groups of atoms, not individual atoms, meaning that
-  the selections on the command line are divided up by molecule, and the 
-  per-molecule center of mass is used.  If that's not what you want, you may 
+  the selections on the command line are divided up by molecule, and the
+  per-molecule center of mass is used.  If that's not what you want, you may
   want to take a look at atomic-rdf.
 
   Alan Grossfield
   Grossfield Lab
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
- 
+
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
@@ -50,8 +50,8 @@ int skip;
 class ToolOptions : public opts::OptionsPackage
 {
 public:
-  
-  void addGeneric(po::options_description& o) 
+
+  void addGeneric(po::options_description& o)
   {
     o.add_options()
       ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment, none)")
@@ -66,7 +66,7 @@ public:
       ("sel2", po::value<string>(&selection2), "second selection")
       ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
       ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
-      ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+      ("num-bins", po::value<int>(&num_bins), "Histogram bins");
   }
 
   void addPositional(po::positional_options_description& p) {
@@ -75,20 +75,20 @@ public:
     p.add("hist-min", 1);
     p.add("hist-max", 1);
     p.add("num-bins", 1) ;
-  }                      
-                         
+  }
+
   bool check(po::variables_map& vm)
-  {                      
-    return(!(vm.count("sel1") 
+  {
+    return(!(vm.count("sel1")
              && vm.count ("hist-min")
              && vm.count ("hist-max")
              && vm.count ("num-bins")));
-  }                      
-                         
-  string help() const    
-  {                      
+  }
+
+  string help() const
+  {
     return("first-selection second-selection histogram-min histogram-max histogram-bins");
-  }                      
+  }
 
   string print() const
   {
@@ -109,7 +109,7 @@ public:
 
 string fullHelpMessage(void)
 {
-string s = 
+string s =
     "\n"
     "SYNOPSIS\n"
     "\n"
@@ -190,7 +190,7 @@ split_mode parseSplit(const string &split_by)
     return (split);
     }
 
-uint doSplit(const AtomicGroup &system, const string selection, 
+uint doSplit(const AtomicGroup &system, const string selection,
              const split_mode split, vector<AtomicGroup> &grouping)
     {
 
@@ -217,7 +217,7 @@ uint doSplit(const AtomicGroup &system, const string selection,
 
     Parser parser(selection);
     KernelSelector parsed_sel(parser.kernel());
-    
+
     vector<AtomicGroup>::iterator t;
     for (t=tmp.begin(); t!=tmp.end(); ++t)
         {
@@ -265,57 +265,6 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 
 
 double bin_width = (hist_max - hist_min)/num_bins;
-
-#if 0 
-// The groups may describe a set of individual atoms (eg water oxygens) 
-// or chunks (eg lipid headgroups).  What we're doing here is dividing up
-// each group by molecule, so that (for example) if selection1 was all of the 
-// water, we'd break group1 up into pieces with each water being it's own piece.
-// The RDF would then use the center of mass of each water molecule.
-// The problem is that you can only do split by molecule when all of the atoms
-// are present (so you can walk the connectivity tree correctly), what we'll
-// do is first split the atoms by molecules, then rejoin the ones which match
-// each of the patterns.
-vector<AtomicGroup> grouping;
-if (split == BY_MOLECULE)
-    {
-    grouping = system.splitByMolecule();
-    }
-else if (split == BY_RESIDUE)
-    {
-    grouping = system.splitByResidue();
-    }
-else if (split == BY_SEGMENT)
-    {
-    grouping = system.splitByUniqueSegid();
-    }
-
-// Set up the selector to define group1 atoms
-Parser parser1(selection1);
-KernelSelector parsed_sel1(parser1.kernel());
-
-// Set up the selector to define group2 atoms
-Parser parser2(selection2);
-KernelSelector parsed_sel2(parser2.kernel());
-
-// Loop over the molecules and add them to group1 or group2
-vector<AtomicGroup> g1_mols, g2_mols;
-vector<AtomicGroup>::iterator g;
-for (g=grouping.begin(); g!=grouping.end(); g++)
-    {
-    AtomicGroup tmp = g->select(parsed_sel1);
-    if (tmp.size() > 0)
-        {
-        g1_mols.push_back(tmp);
-        }
-
-    AtomicGroup tmp2 = g->select(parsed_sel2);
-    if (tmp2.size() > 0)
-        {
-        g2_mols.push_back(tmp2);
-        }
-    }
-#endif
 
 // Select the 2 groups, then split them appropriately
 vector<AtomicGroup> g1_mols, g2_mols;
@@ -377,10 +326,10 @@ for (uint index = 0; index<framecount; ++index)
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
 
-    GCoord box = system.periodicBox(); 
+    GCoord box = system.periodicBox();
     volume += box.x() * box.y() * box.z();
 
-    // compute the distribution of g2 around g1 
+    // compute the distribution of g2 around g1
     for (unsigned int j = 0; j < g1_mols.size(); j++)
         {
         GCoord p1 = g1_mols[j].centerOfMass();
@@ -392,7 +341,7 @@ for (uint index = 0; index<framecount; ++index)
                 continue;
                 }
             GCoord p2 = g2_mols[k].centerOfMass();
-            
+
             // Compute the distance squared, taking periodicity into account
             double d2 = p1.distance2(p2, box);
             if ( (d2 < max2) && (d2 > min2) )
@@ -421,16 +370,15 @@ for (int i = 0; i < num_bins; i++)
 
     double d_inner = bin_width*i;
     double d_outer = d_inner + bin_width;
-    double norm = 4.0/3.0 * M_PI*(d_outer*d_outer*d_outer 
+    double norm = 4.0/3.0 * M_PI*(d_outer*d_outer*d_outer
                                 - d_inner*d_inner*d_inner);
 
     double total = hist[i]/ (norm*expected);
     cum1 += hist[i] / (framecount*g1_mols.size());
     cum2 += hist[i] / (framecount*g2_mols.size());
 
-    cout << d << "\t" << total << "\t" 
+    cout << d << "\t" << total << "\t"
          << cum1 << "\t" << cum2 << endl;
 
     }
 }
-
