@@ -68,6 +68,7 @@ namespace loos {
         _total += _weights.at(index);
     }
 
+    //! Return the totalWeight, as tracked using accumulate
     const double Weights::totalWeight() {
         return _total;
     }
@@ -94,6 +95,7 @@ namespace loos {
         return _weights.at(index);
     }
 
+    //* calling nomenclature wraps get
     double Weights::operator()() {
         return get();
     }
@@ -102,6 +104,7 @@ namespace loos {
         return get(index);
     }
 
+    //* Return the number of weights
     uint Weights::size() {
         return _num_weights;
     }
