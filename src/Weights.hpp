@@ -53,6 +53,7 @@ namespace loos {
         double get();
         double get(const uint index);
         uint current_frame;
+        uint size();
 
         void normalize();
         void accumulate();

@@ -101,4 +101,8 @@ namespace loos {
     double Weights::operator()(const uint index) {
         return get(index);
     }
+
+    uint Weights::size() {
+        return _num_weights;
+    }
 }

@@ -32,3 +32,14 @@
 %}
 
 %include "Weights.hpp"
+
+%extend loos::Weights {
+    double __getitem__(const int i) {
+      if (i < 0 || static_cast<uint>(i) >= $self->size()) {
+	     throw(std::out_of_range("Index into Weights is out of bounds"));
+      }
+      return($self->get(i));
+    }
+
+
+}
