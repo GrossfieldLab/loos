@@ -43,3 +43,5 @@
 
 
 }
+
+%rename(__call__) loos::Weights::operator();
