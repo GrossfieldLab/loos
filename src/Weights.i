@@ -31,9 +31,4 @@
 
 %}
 
-#include "Weights.hpp"
-extend loos::Weights {
-    double __getitem__(const int i) {
-      return self.get(i)
-    }
-}
+%include "Weights.hpp"
