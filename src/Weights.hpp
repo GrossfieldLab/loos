@@ -50,8 +50,8 @@ namespace loos {
         };
         ~Weights() { };
 
-        double get();
-        double get(const uint index);
+        const double get();
+        const double get(const uint index);
         uint current_frame;
         uint size();
 
@@ -60,8 +60,10 @@ namespace loos {
         void accumulate(const uint index);
         const double totalWeight();
         void add_traj(pTraj const traj);
-        double operator()();
-        double operator()(const uint index);
+        const double operator()();
+        const double operator()(const uint index);
+
+        std::vector<double> weights();
 
 
 

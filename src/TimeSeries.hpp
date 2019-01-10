@@ -62,7 +62,7 @@ public:
     }
 
     TimeSeries(const std::vector<T> &inp) {
-      _data = inp; 
+      _data = inp;
     }
 
     TimeSeries(const uint size, const T *array) {
@@ -91,12 +91,12 @@ public:
 
 
     //! Read a simple text file and create a timeseries
-    //! The file is assumed to be simple columnated data.  Blank lines and 
+    //! The file is assumed to be simple columnated data.  Blank lines and
     //! lines starting with "#" are ignored.
     TimeSeries (const std::string &filename, const int col=2) {
         std::ifstream ifs(filename.c_str());
         if (!ifs) {
-            throw(std::runtime_error("Cannot open timeseries file " 
+            throw(std::runtime_error("Cannot open timeseries file "
                                      + filename));
         }
 
@@ -118,7 +118,7 @@ public:
                     s >> val;
                     i++;
                 }
-                _data.push_back(val);    
+                _data.push_back(val);
             }
         }
     }
@@ -266,7 +266,7 @@ public:
     }
 
     TimeSeries<T> operator*=(const TimeSeries<T> &rhs) {
-      if ( _data.size() != rhs.size() ) 
+      if ( _data.size() != rhs.size() )
         throw(std::runtime_error("mismatched timeseries sizes in *="));
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] *= rhs[i];
@@ -275,7 +275,7 @@ public:
     }
 
     TimeSeries<T> operator*(const TimeSeries<T> &rhs) const {
-      if ( _data.size() != rhs.size() ) 
+      if ( _data.size() != rhs.size() )
         throw(std::runtime_error("mismatched timeseries sizes in *="));
 
       TimeSeries<T> res(*this);
@@ -311,7 +311,7 @@ public:
     }
 
     TimeSeries<T> operator/=(const TimeSeries<T> &rhs) {
-      if ( _data.size() != rhs.size() ) 
+      if ( _data.size() != rhs.size() )
         throw(std::runtime_error("mismatched timeseries sizes in *="));
       for (unsigned int i=0; i<_data.size(); i++) {
         _data[i] /= rhs[i];
@@ -320,7 +320,7 @@ public:
     }
 
     TimeSeries<T> operator/(const TimeSeries<T> &rhs) const {
-      if ( _data.size() != rhs.size() ) 
+      if ( _data.size() != rhs.size() )
         throw(std::runtime_error("mismatched timeseries sizes in *="));
 
       TimeSeries<T> res(*this);
@@ -353,7 +353,7 @@ public:
     void set_skip(unsigned int num_points) {
         if (num_points < _data.size()) {
             _data.erase(_data.begin(), _data.begin()+num_points);
-        } 
+        }
         else {
             throw(std::out_of_range("num_points has invalid value in set_skip"));
         }
@@ -366,6 +366,18 @@ public:
         ave += _data[i];
       }
       ave /= _data.size();
+      return (ave);
+    }
+
+    //! Return weighted average
+    T weighted_average(const std::vector<double> &w) const {
+      double ave = 0.0;
+      double norm = 0.0;
+      for (unsigned int i=0; i < _data.size(); i++) {
+        ave += w[i] * _data[i];
+        norm += w[i];
+      }
+      ave /= norm;
       return (ave);
     }
 
@@ -383,17 +395,38 @@ public:
       return (ave2 - ave*ave);
     }
 
+    //! Return weighted variance
+    T weighted_variance(const std::vector<double> &w) const {
+      double ave = 0.0;
+      double ave2 = 0.0;
+      double norm = 0.0;
+      for (unsigned int i=0; i < _data.size(); i++) {
+        ave += w[i] * _data[i];
+        ave2 += w[i] * _data[i] * _data[i];
+        norm += w[i];
+      }
+
+      ave /= norm;
+      ave2 /= norm;
+      return (ave2 - ave*ave);
+    }
+
     //! Return standard deviation of time series.
     T stdev(void) const {
       return (sqrt(variance() ));
     }
 
+    //! Return weighted standard deviation of time series.
+    T stdev(const std::vector<double> &w) const {
+      return (sqrt(weighted_variance(w) ));
+    }
+
     //! Return standard error of time series.
     //! This assumes all points are statistically independent
-    //! Otherwise, needs to be multiplied by the square root of the 
+    //! Otherwise, needs to be multiplied by the square root of the
     //! correlation time, in units of the step interval for the time series
     T sterr(void) const {
-      return (stdev() / sqrt(_data.size()));  
+      return (stdev() / sqrt(_data.size()));
     }
 
     //! Return a new timeseries of the same size as the current one,
@@ -440,7 +473,7 @@ public:
     //! for each block, and returns the variance of the averages.
     //! This is useful for doing Flyvjberg and Petersen-style block averaging.
     //! Flyvbjerg, H. & Petersen, H. G. J. Chem. Phys., 1989, 91, 461-466
-    // 
+    //
     T block_var(const int num_blocks) const {
       int points_per_block = size() / num_blocks;
       T block_ave = 0.0;
@@ -465,8 +498,8 @@ public:
       return (block_ave2 - block_ave*block_ave)*ratio;
     }
 
-    TimeSeries<T> correl(const int max_time, 
-                         const int interval=1, 
+    TimeSeries<T> correl(const int max_time,
+                         const int interval=1,
                          const bool normalize=true,
                          T tol=1.0e-8) const {
 
@@ -483,13 +516,13 @@ public:
       if (normalize) {
           data -= data.average();
           T dev = data.stdev();
-            
+
           // drop through if this is a constant array
           if (dev < tol) {
             c._data.assign(n, 1.0);
             return(c);
           }
-            
+
           data /= dev;
       }
 
