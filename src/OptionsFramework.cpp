@@ -575,13 +575,23 @@ namespace loos {
 
     void WeightsOptions::addGeneric(po::options_description& opts) {
       opts.add_options()
-      ("weights,w", po::value<std::string>(&weights_name), "List of weights to change averaging");
+      ("weights,w", po::value<std::string>(&weights_name), "List of weights to change averaging")
+      ("weights-list", po::value<std::string>(&list_name), "File containing a list of trajectories and their weights files")
+      ;
     }
 
     bool WeightsOptions::postConditions(po::variables_map& map) {
+      if (map.count("weights") && map.count("weights-list")) {
+            std::cerr << "Error: cannot specify --weights and --weights-list"
+                    << std::endl;
+            return(false);
+      }
       if (map.count("weights")) {
         has_weights = true;
         weights = Weights(weights_name);
+      } else if (map.count("weights-list")) {
+        has_weights = true;
+        weights.read_weights_list(list_name);
       }
       return true;
     }

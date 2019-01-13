@@ -499,7 +499,6 @@ namespace loos {
 
       unsigned int skip;
       std::string model_name, model_type, traj_name, traj_type;
-      std::string weights_name;
 
       //! Model that describes the trajectory
       AtomicGroup model;
@@ -507,9 +506,6 @@ namespace loos {
       //! The trajectory, primed by the --skip value (if specified)
       pTraj trajectory;
 
-      //! The weights file, if specified
-      Weights weights;
-      bool has_weights;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -548,7 +544,6 @@ namespace loos {
       unsigned int skip, stride;
       std::string frame_index_spec;
       std::string model_name, model_type, traj_name, traj_type;
-      std::string weights_name;
 
 
       //! Model that describes the trajectory
@@ -557,9 +552,6 @@ namespace loos {
       //! The trajectory
       pTraj trajectory;
 
-      //! The weights file, if specified
-      Weights weights;
-      bool has_weights;
 
     private:
       void addGeneric(po::options_description& opts);
@@ -844,6 +836,7 @@ namespace loos {
       WeightsOptions() { }
 
       std::string weights_name;
+      std::string list_name;
       Weights weights;
       bool has_weights;
 
