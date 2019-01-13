@@ -34,26 +34,15 @@ namespace loos {
 
     class Weights {
     public:
-        Weights(const std::string &filename, pTraj const traj ):
-                                        current_frame(0),
-                                        _filename(filename)
-                                       {
-            add_traj(traj);
-        };
+        uint current_frame;
+    private:
+        double _total;
+        std::string _filename;
+        bool _has_list;
 
-        Weights(const std::string &filename): current_frame(0),
-                                             _filename(filename) {
-
-        }
-
-        Weights() {
-
-        };
-        ~Weights() { };
-
+    public:
         const double get();
         const double get(const uint index);
-        uint current_frame;
         uint size();
 
         void normalize();
@@ -68,20 +57,42 @@ namespace loos {
 
         std::vector<double> weights();
 
-
-
-
     private:
         uint read_weights(const std::string &filename);
-        uint read_weights_list(const std::string &filename);
         uint _num_weights;
         pTraj _traj;
         std::vector<double> _weights;
         std::map<std::string, std::string> _weights_files;
-        double _total;
         double _totalTraj;
-        std::string _filename;
-        bool _has_list;
+
+    public:
+        Weights(const std::string &filename, pTraj const traj ):
+                                        current_frame(0),
+                                        _total(0.0),
+                                        _filename(filename),
+                                        _has_list(false)
+                                       {
+            add_traj(traj);
+        };
+
+        Weights(const std::string &filename): current_frame(0),
+                                              _total(0.0),
+                                             _filename(filename),
+                                             _has_list(false) {
+
+        };
+
+        Weights() : current_frame(0),
+                    _total(0.0),
+                    _has_list(false)
+                    {
+
+        };
+        ~Weights() { };
+
+        uint read_weights_list(const std::string &filename);
+
+
     };
 
 }
