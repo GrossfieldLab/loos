@@ -28,6 +28,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <map>
 
 namespace loos {
 
@@ -59,7 +60,9 @@ namespace loos {
         void accumulate();
         void accumulate(const uint index);
         const double totalWeight();
+        const double trajWeight();
         void add_traj(pTraj const traj);
+        void new_traj(pTraj const traj);
         const double operator()();
         const double operator()(const uint index);
 
@@ -70,11 +73,15 @@ namespace loos {
 
     private:
         uint read_weights(const std::string &filename);
+        uint read_weights_list(const std::string &filename);
         uint _num_weights;
         pTraj _traj;
         std::vector<double> _weights;
+        std::map<std::string, std::string> _weights_files;
         double _total;
+        double _totalTraj;
         std::string _filename;
+        bool _has_list;
     };
 
 }

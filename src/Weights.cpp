@@ -20,6 +20,7 @@
 */
 
 #include "Weights.hpp"
+#include <sstream>
 
 namespace loos {
     //! Weights class to handle reweighting values computed from a trajectory
@@ -30,19 +31,46 @@ namespace loos {
             throw(FileOpenError(filename));
         }
 
-        std::string input;
-        while (getline(ifs, input)) {
+            std::string input;
+            while (getline(ifs, input)) {
+                // skip blank lines and comments beginning with "#"
+                if ( (input.length() == 0) || (input[0] == '#' ) ) {
+                    // do nothing
+                }
+                // TODO: we should really let it be any column
+                else {
+                    double value = parseStringAs<double>(input);
+                    _weights.push_back(value);
+                }
+            }
+            return _weights.size();
+        }
+
+    //! Read in a list of files matching weights files to trajectory files
+    uint Weights::read_weights_list(const std::string &filename) {
+        uint num_weights_files = 0;
+        _has_list = true;
+
+        std::ifstream ifs(filename.c_str());
+        if (!ifs) {
+            throw(FileOpenError(filename));
+        }
+
+        std::string line, traj_file, weights_file;
+        std::istringstream iss;
+        while (getline(ifs, line)) {
             // skip blank lines and comments beginning with "#"
-            if ( (input.length() == 0) || (input[0] == '#' ) ) {
+            if ( (line.length() == 0) || (line[0] == '#' ) ) {
                 // do nothing
             }
-            // TODO: we should really let it be any column
             else {
-                double value = parseStringAs<double>(input);
-                _weights.push_back(value);
+                num_weights_files++;
+                iss.str(line);
+                iss >> traj_file >> weights_file;
+                _weights_files[traj_file] = weights_file;
             }
         }
-        return _weights.size();
+        return num_weights_files;
     }
 
 
@@ -52,7 +80,6 @@ namespace loos {
         for (uint i=0; i<_weights.size(); ++i) {
             sum += _weights[i];
         }
-        std::cerr << "Total weight = " << sum << std::endl;
         // TODO : Really should check for underflow to prevent div by 0
         for (uint i=0; i<_weights.size(); ++i) {
             _weights[i] /= sum;
@@ -62,10 +89,12 @@ namespace loos {
     //! Keep track of total weight used
     void Weights::accumulate() {
         _total += _weights.at(_traj->currentFrame());
+        _totalTraj += _weights.at(_traj->currentFrame());
     }
 
     void Weights::accumulate(const uint index) {
         _total += _weights.at(index);
+        _totalTraj += _weights.at(index);
     }
 
     //! Return the totalWeight, as tracked using accumulate
@@ -73,16 +102,29 @@ namespace loos {
         return _total;
     }
 
-    //! Add trajectory to class and verify size match
+    //! Return the weight of the current trajectory
+    const double Weights::trajWeight(){
+        return _totalTraj;
+    }
+
+    //! Add trajectory to class and verify size match with existing Weights
     void Weights::add_traj(pTraj const traj) {
         _traj = traj;
+        // If we have a list of weights files, read the correct one
+        // TODO: need to check to make sure the filename is in the map
+        if (_has_list) {
+            _filename = _weights_files[_traj->filename()];
+        }
         _num_weights = read_weights(_filename);
         // # of weights must match number of frames in the associated traj
         if (_num_weights != _traj->nframes()) {
             throw(LOOSError(std::string("Number of weights must match the length of the trajectory")));
-        }
 
+        // Zero out the weight of the trajectory
+        _totalTraj = 0.0;
+        }
     }
+
 
     //! Return the weight for the current frame of the trajectory
     const double Weights::get() {
