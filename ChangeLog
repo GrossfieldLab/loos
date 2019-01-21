@@ -1,3 +1,7 @@
+2019-01-21  Alan Grossfield <alan>
+	* Merged in a new reweighting framework.  Added a new options class to
+	  support it, and implemented it in rdf and xy_rdf as examples.
+	  
 2018-11-01  Alan Grossfield <alan>
 	* Added --postcenter-xy and postcenter-z to merge-traj.  Updated fullhelp
 	  to include a better explanation of when you might need these methods.
