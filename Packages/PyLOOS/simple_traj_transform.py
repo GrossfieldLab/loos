@@ -13,7 +13,7 @@ import loos.pyloos
 import sys
 
 header = " ".join(sys.argv)
-print "#", header
+print("#", header)
 
 # parse the command line arguments -- in a more complex example,
 # you'd use the argparse module
@@ -63,6 +63,6 @@ for frame in traj:
         # make a PDB object
         pdb = loos.PDB.fromAtomicGroup(frame_copy)
         pdb.remarks().add(header)
-        print pdb
+        print(pdb)
 
 

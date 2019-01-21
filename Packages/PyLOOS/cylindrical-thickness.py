@@ -53,7 +53,7 @@ import numpy
 import math
 
 header = " ".join(sys.argv)
-print "# ", header
+print("# ", header)
 
 system_file = sys.argv[1]
 traj_file = sys.argv[2]
@@ -104,7 +104,7 @@ for frame in traj:
                 lower_count[rbin] += 1
 
 
-print "#r   Thick   UpperHeight LowerHeight"
+print("#r   Thick   UpperHeight LowerHeight")
 for i in range(rnum_bins):
     r = rmin + (i+0.5)*rbin_width
     upper = lower = 0.0
@@ -112,4 +112,4 @@ for i in range(rnum_bins):
         upper = upper_sum[i] / upper_count[i]
     if lower_count[rbin] > 0:
         lower = lower_sum[i] / lower_count[i]
-    print r, upper-lower, upper, lower
+    print(r, upper-lower, upper, lower)

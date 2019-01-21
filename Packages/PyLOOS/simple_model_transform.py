@@ -12,7 +12,7 @@ import loos
 import sys
 
 header = " ".join(sys.argv)
-print "#", header
+print("#", header)
 
 # parse the command line arguments -- in a more complex example,
 # you'd use the argparse module
@@ -37,6 +37,6 @@ pdb = loos.PDB.fromAtomicGroup(subset)
 # add the command line to the pdb file's header
 pdb.remarks().add(header)
 
-print pdb
+print(pdb)
 
 

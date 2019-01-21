@@ -38,7 +38,7 @@ from os.path import basename, splitext
 import argparse
 
 def fullhelp():
-    print """
+    print("""
     Perform hierarchical clustering given a matrix of distances
 
     Summary of Arguments
@@ -83,7 +83,7 @@ def fullhelp():
     program much more complicated), we can't use some of the other algorithms, 
     like Ward's algorithm or the median or centroid algorithms.  
 
-    """
+    """)
 
 class FullHelp(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
@@ -108,7 +108,7 @@ parser.add_argument('--link', help="Write out the linkage matrix", action = 'sto
 
 args = parser.parse_args()
 
-print "#", cmd_args
+print("#", cmd_args)
 
 num_clusters = args.num_clusters
 if args.index_file is not None:
@@ -144,7 +144,7 @@ if index_filename:
 # always produce a histogram of all of the data
 indices[args.prefix] = (0, len(rmsd)-1)
 
-for sim in indices.keys():
+for sim in list(indices.keys()):
     filename = sim + "_" + str(num_clusters) + ".dat"
     histname = sim + "_" + str(num_clusters) + ".hist"
     first, last = indices[sim]

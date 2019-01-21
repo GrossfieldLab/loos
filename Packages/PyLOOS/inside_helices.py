@@ -92,11 +92,11 @@ if not os.path.exists(output_directory):
     try:
         os.mkdir(output_directory)
     except OSError as inst:
-        print 'Error creating output directory %s : ' % output_directory
-        print inst
+        print('Error creating output directory %s : ' % output_directory)
+        print(inst)
         sys.exit(1)
 if not os.access(output_directory, os.W_OK):
-    print "Error: no permission to write to output directory ", output_directory
+    print("Error: no permission to write to output directory ", output_directory)
     sys.exit(1)
         
 
@@ -149,7 +149,7 @@ while (traj.readFrame()):
                 current_list.append(helix_centroids[h])
 
         if len(current_list) < 3:
-           print "Warning: only %d helices represented in frame %d and slice %d" % (len(current_list), frame, i)
+           print("Warning: only %d helices represented in frame %d and slice %d" % (len(current_list), frame, i))
            hulls.append(None)
         else:
             hull = ConvexHull.ConvexHull(helix_centroids)
@@ -172,14 +172,14 @@ while (traj.readFrame()):
                 atoms_inside += 1
                 if atoms_inside >= args.threshold:
                     key = atom.segid() + ":" + str(atom.resid())
-                    if not bound_lipids.has_key(key):
+                    if key not in bound_lipids:
                         bound_lipids[key] = []
                     bound_lipids[key].append(frame)
                     break
     frame += 1
-    if frame % 20 == 0: print frame
+    if frame % 20 == 0: print(frame)
 
-for lipid in bound_lipids.keys():
+for lipid in list(bound_lipids.keys()):
     frames = bound_lipids[lipid]
     occ = float(len(frames)) / frame
 

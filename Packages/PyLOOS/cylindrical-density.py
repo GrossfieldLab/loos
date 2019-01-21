@@ -54,7 +54,7 @@ import numpy
 import math
 
 header = " ".join(sys.argv)
-print "# ", header
+print("# ", header)
 
 system_file = sys.argv[1]
 traj_file = sys.argv[2]
@@ -115,5 +115,5 @@ for i in range(rnum_bins):
     norm = math.pi * (router*router - rinner*rinner)
     for j in range(znum_bins):
         zval = zmin + (j+0.5)*zbin_width
-        print rval, zval, hist[i,j] / norm
-    print
+        print(rval, zval, hist[i,j] / norm)
+    print()

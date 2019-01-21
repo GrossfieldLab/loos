@@ -6,14 +6,14 @@ import sys
 import math
 
 if len(sys.argv) < 4 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-    print "Usage: ", sys.argv[0], " system trajectory selection1 [selection2...]"
-    print "       Prints the average of the orientation vectors of the "
-    print "       individual selections, assuming each individual vector "
-    print "       points in the +z direction"
+    print("Usage: ", sys.argv[0], " system trajectory selection1 [selection2...]")
+    print("       Prints the average of the orientation vectors of the ")
+    print("       individual selections, assuming each individual vector ")
+    print("       points in the +z direction")
     sys.exit()
 
 #print len(sys.argv)
-print "#", " ".join(sys.argv)
+print("#", " ".join(sys.argv))
 system_filename = sys.argv[1]
 traj_filename = sys.argv[2]
 selections = sys.argv[3:]
@@ -28,7 +28,7 @@ for s in selections:
 
 
 
-print "#Frame\tAngle\tCosine"
+print("#Frame\tAngle\tCosine")
 
 for frame in traj:
 
@@ -46,6 +46,6 @@ for frame in traj:
     cosine = min(1.0, cosine)
     ang = math.acos(cosine) * 180./math.pi
     
-    print traj.index(), ang, cosine
+    print(traj.index(), ang, cosine)
 
     

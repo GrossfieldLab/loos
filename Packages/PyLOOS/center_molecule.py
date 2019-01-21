@@ -56,4 +56,4 @@ pdb = PDB.fromAtomicGroup(model)
 pdb.remarks().add("Structure centered using '" + selection + "'")
 
 # Print it to stdout...
-print pdb
+print(pdb)

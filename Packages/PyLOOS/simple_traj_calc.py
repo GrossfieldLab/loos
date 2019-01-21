@@ -12,7 +12,7 @@ import loos.pyloos
 import sys
 
 header = " ".join(sys.argv)
-print "#", header
+print("#", header)
 
 # parse the command line arguments -- in a more complex example,
 # you'd use the argparse module

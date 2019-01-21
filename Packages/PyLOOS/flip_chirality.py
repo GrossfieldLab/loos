@@ -52,7 +52,7 @@ z_axis = loos.GCoord(0,0,1)
 pdb.rotate(z_axis, 180)
 
 # print the pdb out
-print pdb
+print(pdb)
 
 
 

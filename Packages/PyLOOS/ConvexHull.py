@@ -7,11 +7,11 @@ try:
     from scipy.spatial import ConvexHull as CH
 except ImportError:
     import sys
-    print """
+    print("""
     Failure importing scipy, needed for ConvexHull calculations
     You either need to install scipy or adjust your PYTHONPATH
     to point to it.
-    """
+    """)
     sys.exit(1)
 
 class ZSliceSelector:
@@ -129,10 +129,10 @@ if __name__ == '__main__':
     i = 0
     for v in hull.vertices:
         c = hull.coords(v)
-        print i, v, c.x(), c.y(), c.z()
+        print(i, v, c.x(), c.y(), c.z())
         i += 1
     
 
-    print hull.is_inside(loos.GCoord(0.0,0.0,0.0))
-    print hull.is_inside(loos.GCoord(20.0,0.0,0.0))
-    print hull.is_inside(loos.GCoord(0.0,20.0,0.0))
+    print(hull.is_inside(loos.GCoord(0.0,0.0,0.0)))
+    print(hull.is_inside(loos.GCoord(20.0,0.0,0.0)))
+    print(hull.is_inside(loos.GCoord(0.0,20.0,0.0)))
