@@ -37,7 +37,7 @@ namespace loos {
  Generic exception wrapper for anything in loos that can look like a list...
 */
 
-%exception __getitem__ 
+%exception __getitem__
 {
   try {
     $action
@@ -80,3 +80,4 @@ namespace loos {
 %include "alignment.i"
 %include "gro.i"
 %include "utils_structural.i"
+%include "Weights.i"
