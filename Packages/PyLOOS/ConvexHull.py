@@ -16,6 +16,7 @@ except ImportError:
 
 
 class ZSliceSelector:
+
     def __init__(self, min_z, max_z):
         self.min_z = float(min_z)
         self.max_z = float(max_z)
@@ -35,11 +36,13 @@ def test_side(p, p0, p1):
            val > 0 if p is to the right
            val = 0 if p is on the line
     """
-    val = (p.y()-p0.y())*(p1.x()-p0.x()) - (p.x()-p0.x())*(p1.y()-p0.y())
+    val = (p.y() - p0.y()) * (p1.x() - p0.x()) - \
+        (p.x() - p0.x()) * (p1.y() - p0.y())
     return val
 
 
 class ConvexHull:
+
     def __init__(self, atomicgroup):
         self.atoms = atomicgroup
         self.hull = None
@@ -94,28 +97,29 @@ class ConvexHull:
         """
         match = True
         side = test_side(p, self.coords(self.vertices[0]),
-                            self.coords(self.vertices[1]))
+                         self.coords(self.vertices[1]))
         prev_side = side
-        for i in range(1, len(self.vertices)-1):
+        for i in range(1, len(self.vertices) - 1):
             side = test_side(p, self.coords(self.vertices[i]),
-                                self.coords(self.vertices[i+1]))
-            match = ( ((side >= 0) and (prev_side >=0) ) or
-                      ((side <= 0) and (prev_side <=0) ) )
-            if not match: return False
+                             self.coords(self.vertices[i + 1]))
+            match = (((side >= 0) and (prev_side >= 0)) or
+                     ((side <= 0) and (prev_side <= 0)))
+            if not match:
+                return False
             prev_side = side
 
         # test the closing line segment
         side = test_side(p, self.coords(self.vertices[-1]),
-                            self.coords(self.vertices[0]))
-        match = ( ((side >= 0) and (prev_side >=0) ) or
-                  ((side <= 0) and (prev_side <=0) ) )
+                         self.coords(self.vertices[0]))
+        match = (((side >= 0) and (prev_side >= 0)) or
+                 ((side <= 0) and (prev_side <= 0)))
         return match
 
 
 if __name__ == '__main__':
 
     ag = loos.createSystem("rhod_only.pdb")
-    slicer = ZSliceSelector(-3.0,3.0)
+    slicer = ZSliceSelector(-3.0, 3.0)
 
     ag = loos.selectAtoms(ag, 'name == "CA"')
     ag_slice = slicer(ag)
@@ -130,7 +134,6 @@ if __name__ == '__main__':
         print(i, v, c.x(), c.y(), c.z())
         i += 1
 
-
-    print(hull.is_inside(loos.GCoord(0.0,0.0,0.0)))
-    print(hull.is_inside(loos.GCoord(20.0,0.0,0.0)))
-    print(hull.is_inside(loos.GCoord(0.0,20.0,0.0)))
+    print(hull.is_inside(loos.GCoord(0.0, 0.0, 0.0)))
+    print(hull.is_inside(loos.GCoord(20.0, 0.0, 0.0)))
+    print(hull.is_inside(loos.GCoord(0.0, 20.0, 0.0)))
