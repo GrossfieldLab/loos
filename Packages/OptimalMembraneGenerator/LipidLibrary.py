@@ -16,7 +16,7 @@ class LipidLibrary:
     def __init__(self, path):
        self.path = path
        if not os.path.exists(path):
-           print self.error_message()
+           print(self.error_message())
            sys.exit()
 
        all_files = os.listdir(self.path)
@@ -28,7 +28,7 @@ class LipidLibrary:
                 self.structures.append(file)
 
        if self.size() == 0:
-           print self.error_message()
+           print(self.error_message())
            sys.exit()
 
     def size(self):

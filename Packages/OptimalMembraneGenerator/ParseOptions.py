@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import ConfigParser
+import configparser
 
 def get_config(filename):
-    conf = ConfigParser.SafeConfigParser()
+    conf = configparser.SafeConfigParser()
     conf.read(filename)
 
     # add validation routines here -- for now, we run fast and loose

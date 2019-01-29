@@ -285,6 +285,6 @@ if __name__ == '__main__':
     conf = ReadConfig(config_file)
 
     #print conf.generate_psf()
-    print conf.generate_psf(True, True)
+    print(conf.generate_psf(True, True))
     #print conf.generate_psf(True, False)
     #print conf.generate_psf(False, True)

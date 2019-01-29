@@ -155,20 +155,20 @@ if __name__ == '__main__':
 
     box = loos.GCoord(377, 377, 1000)
     n = NAMD("generated.psf", "t.pdb", "end", "toppar/par_build.inp", box)
-    print n.construct_header()
+    print(n.construct_header())
 
-    print n.construct_box()
+    print(n.construct_box())
 
     box[0] = 60
     n.update_box(box)
-    print n.construct_box()
+    print(n.construct_box())
     box[0] = 377
     n.update_box(box)
 
-    print n.construct_mini()
+    print(n.construct_mini())
     #print n.construct_mini(1000)
 
     n.write_inputfile("n.inp", 50)
-    print "launching NAMD"
+    print("launching NAMD")
     n.run_namd("n.inp", "n.out")
-    print "finished NAMD"
+    print("finished NAMD")
