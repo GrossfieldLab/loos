@@ -196,19 +196,23 @@ loos_scripts = SConscript('SConscript')
 Export('loos')
 
 
-### Handle existing documentation
-# This is to permit source distributions that include pre-built documentation.
-# If a docs.prebuilt file is found in the top-level directory, then scons will not include
-# doxygen sources in the dependency tree (i.e. the docs will not be rebuilt).  They
-# will also not be included in any cleaning targets.
-#
-# If a tarball of the documentation is found, then this will be untar'd in place.  It should
-# include a top-level docs.prebuilt file to avoid untar'ing every time.  Tarballs compressed
-# with gzip and bzip2 are recognized, as well as uncompressed tarballs.
-#
-# If docs.prebuilt does NOT exist and no tarball is found, then scons will automatically generate
-# the documentation for most builds, and it will be included in cleaning.  In addition, install will
-# generate the documentation
+"""
+Handle existing documentation
+
+This is to permit source distributions that include pre-built documentation. If
+a docs.prebuilt file is found in the top-level directory, then scons will not
+include doxygen sources in the dependency tree (i.e. the docs will not be
+rebuilt).  They will also not be included in any cleaning targets.
+
+If a tarball of the documentation is found, then this will be untar'd in place.
+It should include a top-level docs.prebuilt file to avoid untar'ing every time.
+Tarballs compressed with gzip and bzip2 are recognized, as well as uncompressed
+tarballs.
+
+If docs.prebuilt does NOT exist and no tarball is found, then scons will
+automatically generate the documentation for most builds, and it will be
+included in cleaning.  In addition, install will generate the documentation
+"""
 
 if os.path.exists('docs.prebuilt'):
     existing_docs = True
