@@ -28,6 +28,7 @@ import os
 import os.path
 import glob
 from fnmatch import fnmatch
+from functools import reduce
 
 # Currently supported output formats and their default
 # values and output locations.
@@ -120,7 +121,7 @@ def DoxyfileParse(file_contents, conf_dir, data=None):
             append_data(data, key, new_data, '\\')
 
     # compress lists of len 1 into single strings
-    for (k, v) in data.items():
+    for (k, v) in list(data.items()):
         if len(v) == 0:
             data.pop(k)
 
@@ -240,7 +241,7 @@ def DoxySourceScan(node, env, path):
     any files used to generate docs to the list of source files.
     """
     filepaths = DoxySourceFiles(node, env)
-    sources = map(lambda path: env.File(path), filepaths)
+    sources = [env.File(path) for path in filepaths]
     return sources
 
 
@@ -261,7 +262,7 @@ def DoxyEmitter(target, source, env):
         out_dir = os.path.join(conf_dir, out_dir)
 
     # add our output locations
-    for (k, v) in output_formats.items():
+    for (k, v) in list(output_formats.items()):
         if data.get("GENERATE_" + k, v[0]) == "YES":
             # Initialize output file extension for MAN pages
             if k == 'MAN':

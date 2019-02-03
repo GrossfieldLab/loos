@@ -104,15 +104,15 @@ def environOverride(conf):
     # Allow overrides from environment...
     if 'CXX' in os.environ:
         conf.env.Replace(CXX = os.environ['CXX'])
-        print('*** Using compiler ' + os.environ['CXX'])
+        print(('*** Using compiler ' + os.environ['CXX']))
 
     if 'CCFLAGS' in os.environ:
         conf.env.Append(CCFLAGS = os.environ['CCFLAGS'])
-        print('*** Appending custom build flags: ' + os.environ['CCFLAGS'])
+        print(('*** Appending custom build flags: ' + os.environ['CCFLAGS']))
 
     if 'LDFLAGS' in os.environ:
         conf.env.Append(LINKFLAGS = os.environ['LDFLAGS'])
-        print('*** Appending custom link flag: ' + os.environ['LDFLAGS'])
+        print(('*** Appending custom link flag: ' + os.environ['LDFLAGS']))
 
 
 
@@ -139,7 +139,7 @@ def script_builder_python(target, source, env):
    cpppaths = env['CPPPATH']
    cpppaths.pop(0)
 
-   ldlibrary = loos_build_config.user_libdirs.values()
+   ldlibrary = list(loos_build_config.user_libdirs.values())
 
    if not 'install' in SCons.Script.COMMAND_LINE_TARGETS:
        toolpath = '$LOOS/Tools:' + ':'.join(['$LOOS/Packages/' + s for s in [loos_build_config.package_list[i] for i in loos_build_config.package_list]])
@@ -189,7 +189,7 @@ def script_builder_python(target, source, env):
 def CheckForSwig(conf, min_version):
     conf.Message('Checking for Swig...')
     # Need to use has_key() for older distros...
-    if conf.env.has_key('SWIGVERSION'):
+    if 'SWIGVERSION' in conf.env:
         if LooseVersion(conf.env['SWIGVERSION']) >= LooseVersion(min_version):
             conf.Result('yes [%s]' % (conf.env['SWIGVERSION']))
             return(1)
@@ -482,7 +482,7 @@ def AutoConfigSystemBoost(conf):
             if result:
                 boost_libs.append(full_libname)
             else:
-                print('Error- missing Boost library %s' % libname)
+                print(('Error- missing Boost library %s' % libname))
                 conf.env.Exit(1)
 
 
@@ -498,16 +498,16 @@ def AutoConfigUserBoost(conf):
     for libname in loos_build_config.required_boost_libraries:
         result = conf.CheckForBoostLibrary(libname, conf.env['BOOST_LIBPATH'], loos_build_config.suffix)
         if not result[0]:
-            print('Error- missing Boost library %s' % libname)
+            print(('Error- missing Boost library %s' % libname))
             conf.env.Exit(1)
         if first:
             thread_suffix = result[1]
         else:
             if thread_suffix and not result[1]:
-                print('Error- expected %s-mt but found %s' % (libname, libname))
+                print(('Error- expected %s-mt but found %s' % (libname, libname)))
                 conf.env.Exit(1)
             elif not thread_suffix and result[1]:
-                print('Error- expected %s but found %s-mt' % (libname, libname))
+                print(('Error- expected %s but found %s-mt' % (libname, libname)))
                 conf.env.Exit(1)
         boost_libs.append(result[0])
 
@@ -548,7 +548,7 @@ def checkLibsForFunction(context, funcname, liblist, excludelist):
             continue
         old_libs = list(context.env['LIBS'])
         context.env.Append(LIBS=lib)
-        print("> Checking in %s ..." % lib)
+        print(("> Checking in %s ..." % lib))
         ok = context.CheckFunc(funcname)
         context.env['LIBS'] = old_libs
         if ok:
@@ -793,13 +793,13 @@ def AutoConfiguration(env):
                         atlas_libs.append('gfortran')
 
                     if not ok:
-                        lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
+                        lib = checkLibsForFunction(conf, funcname, list(numerics.keys()), atlas_libs)
                         if lib:
                             atlas_libs.insert(0, lib)
                         else:
                             # Try putting scanning default_lib_path first...SUSE requires
                             # the lapack in /usr/lib first...
-                            print('Searching %s first for libraries...' % default_lib_path)
+                            print(('Searching %s first for libraries...' % default_lib_path))
                             # Remove the default_lib_path from the list and prepend...
                             libpaths = list(conf.env['LIBPATH'])
                             libpaths.remove(default_lib_path)
@@ -811,12 +811,12 @@ def AutoConfiguration(env):
                                 atlas_libs.append('gfortran')
 
                             if not ok:
-                                lib = checkLibsForFunction(conf, funcname, numerics.keys(), atlas_libs)
+                                lib = checkLibsForFunction(conf, funcname, list(numerics.keys()), atlas_libs)
                                 if lib:
                                     atlas_libs.insert(0, lib)
                                 else:
-                                    print 'Error- could not figure out where ', funcname, ' is located.'
-                                    print 'Try manually specifying ATLAS_LIBS and ATLAS_LIBPATH'
+                                    print('Error- could not figure out where ', funcname, ' is located.')
+                                    print('Try manually specifying ATLAS_LIBS and ATLAS_LIBPATH')
                                     conf.env.Exit(1)
 
 
@@ -837,9 +837,9 @@ def AutoConfiguration(env):
 
         environOverride(conf)
         if 'LIBS' in conf.env:
-            print 'Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS']
+            print('Autoconfigure will use these libraries to build LOOS:\n\t', conf.env['LIBS'])
         if 'LIBPATH' in conf.env:
-            print 'Autoconfigure will add the following directories to find libs:\n\t', conf.env['LIBPATH']
+            print('Autoconfigure will add the following directories to find libs:\n\t', conf.env['LIBPATH'])
         env = conf.Finish()
 
 #########################################################################################3
@@ -867,14 +867,14 @@ def makeDeprecatedVariableWarning():
     def warning(what, mapto):
         if not state['warned']:
             state['warned'] = 1
-            print """
+            print("""
 ***WARNING***
 You are using old-style (deprecated) variables either
 on the command line or in your custom.py file.  These
 will be ignored.  The following deprecated variables
 are set,
-"""
-        print '\t%s: %s' % (what, mapto)
+""")
+        print('\t%s: %s' % (what, mapto))
     return warning
 
 
@@ -897,6 +897,6 @@ def checkForDeprecatedOptions(env):
 
     warner = makeDeprecatedVariableWarning()
     for name in mapping:
-        if env.has_key(name):
+        if name in env:
             if env[name]:
                 warner(name, mapping[name])
