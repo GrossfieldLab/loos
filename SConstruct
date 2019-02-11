@@ -32,7 +32,9 @@ import distutils.spawn
 from distutils.version import LooseVersion
 from string import Template
 
+import sconstool.loader
 import SCons
+
 import loos_build_config
 
 from scons_support import *
@@ -41,6 +43,9 @@ from scons_support import *
 EnsureSConsVersion(2,0)
 
 # ----------------------------------------------------------------------------------------------
+
+
+sconstool.loader.extend_toolpath()
 
 
 # Principal options...
@@ -80,8 +85,12 @@ addDeprecatedOptions(opts)
 #env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 
 ### Uncomment this line to bring the full user environment into the build environment
-env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+#env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 
+env = Environment(ENV=os.environ, options=opts,
+                  tools=["sconstool.doxyfile"],
+                  toolpath='.',
+                  SWIGFLAGS=['-c++', '-python', '-Wall'], SHLIBPREFIX="")
 
 
 

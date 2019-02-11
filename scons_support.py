@@ -657,7 +657,8 @@ def AutoConfiguration(env):
         SetupBoostPaths(conf.env)
         SetupNetCDFPaths(conf.env)
 
-
+        print("conf: ", type(conf))
+        print("conf.env: ", type(conf.env))
 
         # Check for standard typedefs...
         if not conf.CheckType('ulong','#include <sys/types.h>\n'):
