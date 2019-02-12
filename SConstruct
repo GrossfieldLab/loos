@@ -89,7 +89,7 @@ addDeprecatedOptions(opts)
 
 env = Environment(ENV=os.environ, options=opts,
                   toolpath='.',
-                  SWIGFLAGS=['-c++', '-python', '-Wall'], SHLIBPREFIX="")
+                  SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'], SHLIBPREFIX="")
 
 
 
