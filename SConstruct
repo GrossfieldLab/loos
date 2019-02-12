@@ -56,7 +56,7 @@ opts.Add('release', 'Set to 1 to configure for release.', 1)
 opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 opts.Add('threads', 'Set to 0 to disable using multithreaded libraries and code', 1)
-opts.Add('docs', 'Set to 0 to disable auto-generation of doxygen documentation', 1)
+#opts.Add('docs', 'Set to 0 to disable auto-generation of doxygen documentation', 1)
 
 opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
 
@@ -88,7 +88,6 @@ addDeprecatedOptions(opts)
 #env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 
 env = Environment(ENV=os.environ, options=opts,
-                  tools=["sconstool.doxyfile"],
                   toolpath='.',
                   SWIGFLAGS=['-c++', '-python', '-Wall'], SHLIBPREFIX="")
 
@@ -167,7 +166,7 @@ if not cleaning:
 release = int(env['release'])
 debug = int(env['debug'])
 profile = int(env['profile'])
-docsflag = int(env['docs'])
+#docsflag = int(env['docs'])
 
 # If debug is requested, make sure there is no optimization...
 if (debug > 0):
@@ -223,6 +222,7 @@ automatically generate the documentation for most builds, and it will be
 included in cleaning.  In addition, install will generate the documentation
 """
 
+"""
 if os.path.exists('docs.prebuilt'):
     existing_docs = True
     print('Warning- existing documentation found and will NOT be rebuilt (or cleaned)!')
@@ -257,6 +257,7 @@ else:
     else:
         existing_docs = False
         docs = env.Doxygen('Doxyfile')
+"""
 
 loos_tools = SConscript('Tools/SConscript')
 
@@ -276,16 +277,18 @@ for name in loos_build_config.package_list:
 
 
 # Always install documentation.  Note: html version is hard-coded
+"""
 env.Command(PREFIX + '/docs/index.html', 'Docs/html/index.html', [
       Delete(PREFIX + '/docs'),
       Copy(PREFIX + '/docs', 'Docs/html'),
       ])
 env.AlwaysBuild(PREFIX + '/docs/index.html')
+"""
 
 
 all = loos_tools + loos_scripts + loos_packages
-if docsflag:
-    all = all + docs
+#if docsflag:
+#    all = all + docs
 
 if int(env['pyloos']):
     loos_core = loos_core + loos_python
@@ -295,7 +298,7 @@ loos_tools += loos_core
 
 env.Alias('tools', loos_tools)
 env.Alias('core', loos_core)
-env.Alias('docs', docs)
+#env.Alias('docs', docs)
 env.Alias('all', all)
 env.Alias('install', PREFIX)
 
@@ -309,8 +312,8 @@ env.Clean('config',
 
 # Hack to force cleaning of docs (but only if no pre-existing docs are found)
 # Note: html version hard-coded
-if not existing_docs:
-    env.Clean(docs, 'Docs/html')
-    env.Clean(all, 'Docs/html')
+#if not existing_docs:
+#    env.Clean(docs, 'Docs/html')
+#    env.Clean(all, 'Docs/html')
 
 env.Default('all')
