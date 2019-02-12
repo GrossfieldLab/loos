@@ -121,7 +121,7 @@ def environOverride(conf):
 def expand_scons_paths(path, topdir):
     newpath = []
     for item in path:
-        item = string.replace(item, '#', topdir + '/')
+        item = item.replace('#', topdir + '/')
         newpath.append(item)
     return(newpath)
 
