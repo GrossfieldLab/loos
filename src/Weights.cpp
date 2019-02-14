@@ -108,7 +108,7 @@ namespace loos {
     }
 
     //! Add trajectory to class and verify size match with existing Weights
-    void Weights::add_traj(pTraj const traj) {
+    void Weights::add_traj(pTraj& traj) {
         _traj = traj;
         // If we have a list of weights files, read the correct one
         // TODO: need to check to make sure the filename is in the map

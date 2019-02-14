@@ -50,7 +50,7 @@ namespace loos {
         void accumulate(const uint index);
         const double totalWeight();
         const double trajWeight();
-        void add_traj(pTraj const traj);
+        void add_traj(pTraj&  traj);
         const double operator()();
         const double operator()(const uint index);
 
@@ -65,7 +65,7 @@ namespace loos {
         double _totalTraj;
 
     public:
-        Weights(const std::string &filename, pTraj const traj ):
+        Weights(const std::string &filename, pTraj& traj ):
                                         current_frame(0),
                                         _total(0.0),
                                         _filename(filename),
