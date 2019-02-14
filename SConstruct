@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  This file is part of LOOS.
 #
 #  LOOS (Lightweight Object-Oriented Structure library)
@@ -32,7 +32,6 @@ import distutils.spawn
 from distutils.version import LooseVersion
 from string import Template
 
-import sconstool.loader
 import SCons
 
 import loos_build_config
@@ -43,11 +42,6 @@ from scons_support import *
 EnsureSConsVersion(2,0)
 
 # ----------------------------------------------------------------------------------------------
-
-
-sconstool.loader.extend_toolpath()
-
-
 # Principal options...
 opts = Variables('custom.py')
 opts.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
