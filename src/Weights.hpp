@@ -51,7 +51,6 @@ namespace loos {
         const double totalWeight();
         const double trajWeight();
         void add_traj(pTraj const traj);
-        void new_traj(pTraj const traj);
         const double operator()();
         const double operator()(const uint index);
 
