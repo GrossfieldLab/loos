@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
-#  domain.py: track the motions of 2 portions of a protein, printing out the 
-#             distance between the centroids, as well as the angle and torsion 
+#  domain.py: track the motions of 2 portions of a protein, printing out the
+#             distance between the centroids, as well as the angle and torsion
 #             between the two domains first principal axis
-#             NOTE: This was written assuming the two chunks are part of the 
+#             NOTE: This was written assuming the two chunks are part of the
 #             same molecule, and so doesn't respect periodicity.
 #  Alan Grossfield
 
@@ -51,6 +51,3 @@ for frame in traj:
 
     # write output
     print(traj.index(), distance, angle, tors)
-
-
-
