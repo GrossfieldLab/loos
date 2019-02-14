@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 Track a set of contacts through a trajectory.  Intended for use with a protein
 or RNA, to track all residue-residue contacts within the trajectory.
@@ -34,6 +34,7 @@ import numpy
 from os.path import basename, splitext
 import argparse
 
+
 def fullhelp():
   print("""
   all_contacts.py: compute the probability of residue-residue contact
@@ -67,15 +68,17 @@ def fullhelp():
 
 class FullHelp(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
-        kwargs['nargs']=0
+        kwargs['nargs'] = 0
         super(FullHelp, self).__init__(option_strings, dest, **kwargs)
-    def __call__(self, parser, namespace, values, option_string = None):
+
+    def __call__(self, parser, namespace, values, option_string=None):
         fullhelp()
         parser.print_help()
         setattr(namespace, self.dest, True)
         parser.exit()
 
 ##############################################################################
+
 
 cmd_args = " ".join(sys.argv)
 parser = argparse.ArgumentParser(description="Track residue-residue contacts")
