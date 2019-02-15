@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import glob
@@ -35,7 +35,7 @@ class LipidLibrary:
         return len(self.structures)
 
     def pick_structure(self):
-        # pick a structure file at random, and build up the filename 
+        # pick a structure file at random, and build up the filename
         filename = os.path.join(self.path, random.choice(self.structures))
 
         # read the file

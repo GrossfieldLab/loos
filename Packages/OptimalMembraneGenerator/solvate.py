@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -80,16 +80,16 @@ for salt in config.salt:
 total_water_and_salt = total_salt + config.water.numres
 
 sys.stderr.write("Water box has %d waters before superposition\n" %
-                 (len(water.full_system)/3))
+                 (len(water.full_system)//3))
 sys.stderr.write("Final target: %d waters\n" % (config.water.numres))
 
 
 # Verify we have enough water.  We need enough to end up with
 # the planned number of waters, even after we remove one water molecule
 # for each ion we add.
-if len(water.full_system)/3 < total_water_and_salt:
+if len(water.full_system)//3 < total_water_and_salt:
     raise ValueError("Too few waters before superposition: %d %d" % (
-                      len(water.full_system)/3, total_water_and_salt))
+                      len(water.full_system)//3, total_water_and_salt))
 
 # translate so that the water box is centered at the origin
 water.full_system.centerAtOrigin()
@@ -123,13 +123,13 @@ for ox in clashing_oxygens:
     i+=1
 
 # verify we have enough water
-if len(water.full_system)/3 < total_water_and_salt:
+if len(water.full_system)//3 < total_water_and_salt:
     raise ValueError("Too few waters after superposition: %d %d" % (
-                      len(water.full_system)/3, total_water_and_salt))
+                      len(water.full_system)//3, total_water_and_salt))
 
 sys.stderr.write("Finished bump-checking water against protein\n")
 sys.stderr.write("Current # water molecules: %d\n" %
-                                (len(water.full_system)/3))
+                                (len(water.full_system)//3))
 sys.stderr.write("Adding salt\n")
 
 # regenerate the list of oxygens
@@ -161,7 +161,7 @@ for salt in config.salt:
     salts.append(ions)
 
 # verify we have enough water
-num_waters = len(water.full_system)/3
+num_waters = len(water.full_system)//3
 if num_waters < config.water.numres:
     raise ValueError("Too few waters after exchanging salt: %d %d" % (
                       num_waters, config.water.numres))
@@ -182,14 +182,14 @@ if num_waters > config.water.numres:
 
 # renumber the residues
 for i in range(len(water.full_system)):
-    res = i/3 + 1
+    res = i//3 + 1
     water.full_system[i].resid(res)
 
 # Replace some of the waters with the internal waters from the protein.
 if config.protein is not None and config.protein.has_water:
-    if config.water.numres < len(config.protein.water_seg())/3:
+    if config.water.numres < len(config.protein.water_seg())//3:
         raise ValueError("Protein has more internal waters than the total target: %d %d" % (
-                 config.water.numres,  len(config.protein.water_seg())/3))
+                 config.water.numres,  len(config.protein.water_seg())//3))
     water.full_system.copyCoordinatesFrom(config.protein.water_seg(), 0,
                                           len(config.protein.water_seg()))
 

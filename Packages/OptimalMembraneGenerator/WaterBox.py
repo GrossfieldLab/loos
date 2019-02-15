@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import loos
 
-# @cond TOOLS_INTERNAL 
+# @cond TOOLS_INTERNAL
 
 class WaterBox:
     def __init__(self, filename, template_box, target_box, segname):
@@ -72,7 +72,7 @@ class WaterBox:
         # renumber atom ids and resids
         self.full_system.renumber()
         for i in range(len(self.full_system)):
-            self.full_system[i].resid(i/3 + 1)
+            self.full_system[i].resid(i//3 + 1)
         #residues = self.full_system.splitByResidue()
         #for i in range(len(residues)):
         #    for j in range(len(residues[i])):
@@ -81,11 +81,11 @@ class WaterBox:
 
     def append_waters(self, other):
         """
-        "other" is an AtomicGroup of waters.  Merge them 
-        into the current WaterBox, renumbering the atoms 
+        "other" is an AtomicGroup of waters.  Merge them
+        into the current WaterBox, renumbering the atoms
         and residues, and updating their segment name
         """
-        
+
         self.full_system += other
         self.full_system.renumber()
         residues = self.full_system.splitByResidue()
@@ -97,10 +97,10 @@ class WaterBox:
 
     def pdb(self):
         """
-        Return a string containing a PDB version of the full_system, 
+        Return a string containing a PDB version of the full_system,
         convenient for writing out the coordinates in PDB format.
         """
-        
+
         p = loos.PDB.fromAtomicGroup(self.full_system)
         return str(p)
 
@@ -119,10 +119,6 @@ if __name__ == '__main__':
     f = open("big_water.pdb", "w")
     f.write(w.pdb())
     f.close()
-        
+
     print(w.full_system.periodicBox())
     print(w.full_system.boundingBox())
-
-
-        
-        
