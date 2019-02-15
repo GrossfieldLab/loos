@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Compute the voronoi cross-sectional area for something (e.g. a protein) through the membrane.
 
@@ -21,7 +21,7 @@ area_profile.py system trajectory skip stride zmin zmax num_slices padding all-s
 
 system: system file (e.g. pdb, psf, parmtop, gro)
 trajectory: trajectory file (periodic boundary information required)
-skip, stride: how to move through the trajectory, skipping the first "skip" values and stepping by 
+skip, stride: how to move through the trajectory, skipping the first "skip" values and stepping by
         "stride"
 zmin, zmax: range of z-values to consider for area calculation
 num_slices: number of slices to break the vertical span into
@@ -30,11 +30,11 @@ padding: floating point number specifying how many extra layers of atoms are gen
 all-selection-string: the set of atoms used to compute the voronoi decomposition
 target-selection-string: set of atoms whose areas we report
 
-Notes 
+Notes
     1) all selections are forced to be subsets of the initial selection.  This is
        necessary for the mapping of areas to work correctly.
     2) this program assumes that the system has already been centered such that
-       the z location of the membrane isn't drifting (z-slices are absolute, not 
+       the z location of the membrane isn't drifting (z-slices are absolute, not
        relative to the membrane center) and such that the periodic box
        is centered at x=y=0.
 
@@ -56,12 +56,12 @@ Padding:
 
 Example selection choice:
     '\!hydrogen' 'segid == "RHOD"'
-        use all heavy atoms for the voronoi decomposition, then pick out the rhodopsin 
+        use all heavy atoms for the voronoi decomposition, then pick out the rhodopsin
         molecule to get its area
-        (as a rule, you should get virtually identical answers with all atoms and all 
+        (as a rule, you should get virtually identical answers with all atoms and all
         heavy atoms, but the latter will be dramatically faster)
 
-        
+
         """
         sys.exit(0)
     elif len(sys.argv) != 11 or sys.argv[1] == "-h" or sys.argv[1] == "--h":

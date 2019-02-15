@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Compute areas for different sets of atoms within a particular slice along the membrane
 normal.
@@ -28,11 +28,11 @@ padding: floating point number specifying how many extra layers of atoms are gen
 selection-string1: the set of atoms used to compute the voronoi decomposition
 selection-string2, etc: sets of atoms for which areas are reported
 
-Notes 
+Notes
     1) all selections are forced to be subsets of the initial selection.  This is
        necessary for the mapping of areas to work correctly.
     2) this program assumes that the system has already been centered such that
-       the z location of the membrane isn't drifting (z-slices are absolute, not 
+       the z location of the membrane isn't drifting (z-slices are absolute, not
        relative to the membrane center) and such that the periodic box
        is centered at x=y=0.
 

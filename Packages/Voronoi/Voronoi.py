@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  Do voronoi analysis on slices of a membrane
 #  2D only
 #  This code is a wrapper around the scipy Voronoi class, which is itself
 #  a wrapper around QHull (http://www.qhull.org/)
-# 
-#  Alan Grossfield, University of Rochester Medical Center, Dept 
+#
+#  Alan Grossfield, University of Rochester Medical Center, Dept
 #                   of Biochemistry and Biophysics
 #  Copyright 2014
 #
@@ -48,14 +48,14 @@ class VoronoiWrapper:
     """
     Wrap the scipy Voronoi class, which in turn is a wrapper around QHull.
     So, it's a wrapper wrapper, and if this program is called from a script,
-    then we'd have a wrapper wrapper wrapper.  Now I just need m4 and Tod will 
+    then we'd have a wrapper wrapper wrapper.  Now I just need m4 and Tod will
     approve.
 
     atomicgroup is a LOOS AtomicGroup
-    pad is a float specifying how far out we will generate padding atoms 
-        (fake "image" atoms used to emulate periodicity).  15 ang is a good 
-        default if you're using all atoms or all heavy atoms, but you may 
-        need to go farther if you're using a sparser selection (e.g. just 
+    pad is a float specifying how far out we will generate padding atoms
+        (fake "image" atoms used to emulate periodicity).  15 ang is a good
+        default if you're using all atoms or all heavy atoms, but you may
+        need to go farther if you're using a sparser selection (e.g. just
         lipid phosphates)
     """
 
@@ -77,16 +77,16 @@ class VoronoiWrapper:
 
     def update_atoms(self, atomicGroup):
         self.atoms = atomicGroup
-    
+
     def generate_padding_atoms(self):
-        """ 
+        """
         Build the list of atoms in the periodic images surrounding the central
         image.
 
         This is necessary because QHull doesn't know anything about periodicity,
         so we need to do fake it; otherwise, you'd have bizarre or infinite
         areas for atoms near the edge of the box
-        """ 
+        """
         if not self.isPeriodic():
             raise VoronoiError("Periodic boundaries are required")
 
@@ -115,7 +115,7 @@ class VoronoiWrapper:
             if ( (c.x() > half_box.x() - self.pad) and
                  (c.y() > half_box.y() - self.pad) ):
                  self.padding_atoms.append(c-xbox-ybox)
-            
+
             if ( (c.x() < -half_box.x() + self.pad) and
                  (c.y() >  half_box.y() - self.pad) ):
                  self.padding_atoms.append(c+xbox-ybox)
@@ -123,7 +123,7 @@ class VoronoiWrapper:
             if ( (c.x() >  half_box.x() - self.pad) and
                  (c.y() < -half_box.y() + self.pad) ):
                  self.padding_atoms.append(c-xbox+ybox)
-        
+
         return len(self.padding_atoms)
 
     def num_padding_atoms(self):
@@ -137,12 +137,12 @@ class VoronoiWrapper:
         points = []
         for a in self.atoms:
             points.append([a.coords().x(), a.coords().y()])
-        
+
         numpad = self.generate_padding_atoms()
         for p in self.padding_atoms:
             points.append([p.x(), p.y()])
 
-        points = numpy.array(points)    
+        points = numpy.array(points)
         self.voronoi = Voronoi(points)
 
         # read in all of the ridges
@@ -163,8 +163,8 @@ class VoronoiWrapper:
             r = self.voronoi.regions[index]
             self.regions.append(Region(v, r, self.atoms[i]))
             self.atoms_to_regions[self.atoms[i].id()] = self.regions[i]
-            
-        
+
+
 
 class Edge:
     def __init__(self, index1, index2):
@@ -175,9 +175,9 @@ class Edge:
         if ( (self.ind1 == other.ind1) and (self.ind2 == other.ind2) or
              (self.ind2 == other.ind1) and (self.ind1 == other.ind2) ):
             return True
-        else: 
+        else:
             return False
-        
+
 class Region:
     def __init__(self, vert_array, indices, atom):
         if len(indices) == 0:
@@ -210,7 +210,7 @@ class Region:
             p2 = self.vertices[self.indices[j]]
             area += p1.x()*p2.y() - p2.x()*p1.y();
 
-            
+
         area = 0.5*abs(area)
         return(area)
 
@@ -220,14 +220,14 @@ class Region:
         """
         for e1 in self.edges:
             for e2 in other.edges:
-                if (e1 == e2): 
+                if (e1 == e2):
                     return(True)
         return(False)
-        
+
     def print_indices(self):
         for i in range(self.num_indices()):
             print self.indices[i], " ", self.vertices[self.indices[i]]
-            
+
     def atomId(self):
         return self.atom.id()
 
@@ -309,7 +309,7 @@ if __name__ == '__main__':
     slice.periodicBox(box)
     """
 
-    
+
     v = VoronoiWrapper(upper)
     #v = VoronoiWrapper(slice)
     #print v.isPeriodic()
@@ -340,5 +340,3 @@ if __name__ == '__main__':
         print r.coords()
         print r
     print total
-        
-
