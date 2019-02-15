@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Cluster structures based from a simulation
 """
@@ -112,7 +112,7 @@ for j in range(len(cen_list)):
     troid = cen_list[j]
     centroid_structure = subset.copy()
     for i in range(0, len(troid), 3):
-        centroid_structure[i/3].coords(loos.GCoord(troid[i], troid[i+1], troid[i+2]))
+        centroid_structure[i//3].coords(loos.GCoord(troid[i], troid[i+1], troid[i+2]))
     pdb = loos.PDB.fromAtomicGroup(centroid_structure)
     pdb.remarks().add(cmd_string)
     pdb.remarks().add(">>> Means = %s, Distortion = %f" % (args.num_means, distortion))
