@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-simple_model_transform.py : simple skeleton of a program that reads in a 
+simple_model_transform.py : simple skeleton of a program that reads in a
     structure, makes a selection, performs some kind of transformation,
     then prints out pdb file
 
@@ -19,7 +19,7 @@ print("#", header)
 model_filename = sys.argv[1]
 selection_string = sys.argv[2]
 
-# Create the system 
+# Create the system
 model = loos.createSystem(model_filename)
 
 # Select a subset of the system
@@ -38,5 +38,3 @@ pdb = loos.PDB.fromAtomicGroup(subset)
 pdb.remarks().add(header)
 
 print(pdb)
-
-
