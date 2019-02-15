@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   axis_with_membrane computes the cosine between the first
   principal axis of a selection and the Z-axis (i.e. the putative membrane

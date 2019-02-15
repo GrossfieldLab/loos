@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
    cylindrical-density.py : compute the density of atoms ("targets") around
                             a centering selection, output a 2D histogram in 

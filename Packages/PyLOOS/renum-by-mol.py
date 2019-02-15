@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python3
 """
   Renumber a model so that the resids for each molecule start at 1
 """

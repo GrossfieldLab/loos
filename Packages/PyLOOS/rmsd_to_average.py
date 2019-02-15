@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   Compute an optimal average structure using an iterative alignment method, then
   output the RMSD from each frame and the average structure

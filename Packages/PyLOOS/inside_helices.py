@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Program to detect lipid chains that have made their way inside a membrane
 protein

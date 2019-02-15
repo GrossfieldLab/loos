@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 NAMDBin reads and writes the binary format used by NAMDBin
 for restart files.  I've written it to support coordinates

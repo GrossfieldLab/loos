@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   flip_chirality is a largely pointless tool -- it reads in a structure,
   reverses the sign of the x coordinate, and prints it as a PDB to stdout.

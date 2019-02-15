@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
    cylindrical-thickness.py : compute the thickness of the membrane around
                             a centering selection, output the average as 
