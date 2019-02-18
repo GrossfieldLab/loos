@@ -124,19 +124,18 @@ density-dist was run.
     # upper edge
     pot[0] -= pot[0][len(pot[0])//2]
 
-
-    pot= pot.swapaxes(0,1)
+    pot = pot.swapaxes(0,1)
 
     # convert to units of volts
     pot *= units
     corr *= units
 
     # output the result
-    print "# ", " ".join(sys.argv)
-    print "#Generated from: "
-    print "#".join(comments),
-    print "#z\tCorrection\tPotentials"
+    print("# ", " ".join(sys.argv))
+    print("#Generated from: ")
+    print("#".join(comments),)
+    print("#z\tCorrection\tPotentials")
 
     for i in range(len(z_vals)):
-        s = " ".join(map(str,pot[i].tolist()))
+        s = " ".join(map(str, pot[i].tolist()))
         print(z_vals[i], corr[i], s)
