@@ -46,6 +46,7 @@ SEGMENT TPC       POPC     90    19      P   1      ./popc_c36
 
         return string
 
+
 class WaterSeg(Segment):
     """
     Subclass of Segment (done to inherit the write() method) intended to handle
@@ -81,8 +82,9 @@ class SaltSeg(Segment):
         (tag, segname, resname, number) = line.split()
         self.segname = segname
         self.resname = resname
-        self.atomname = resname  # we assume the atom name is the same as the residue
+        self.atomname = resname  # assume atom name is the same as the residue
         self.numres = int(number)
+
 
 class Protein:
     """
@@ -180,14 +182,11 @@ class ReadConfig:
             elif line.upper().startswith("PROTEIN"):
                 self.protein = Protein(line)
             elif line.upper().startswith("BOX"):
-                (b,x,y,z) = line.split()
+                (b, x, y, z) = line.split()
                 x = float(x)
                 y = float(y)
                 z = float(z)
-                self.box = loos.GCoord(x,y,z)
-            #elif line.upper().startswith("DIRECTORY"):
-            #    (d, directory) = line.split()
-            #    self.directory = directory
+                self.box = loos.GCoord(x, y, z)
             elif line.upper().startswith("NAMD"):
                 (n, namd) = line.split()
                 self.namd_binary = namd
@@ -213,11 +212,12 @@ class ReadConfig:
 
         # TODO: may want to add similar checks for the other keys
 
-    def generate_psf(self, include_lipid=True,
-                           include_water=False,
-                           include_other=False,
-                           include_other_water=True,
-                           output_psf = None):
+    def generate_psf(self,
+                     include_lipid=True,
+                     include_water=False,
+                     include_other=False,
+                     include_other_water=True,
+                     output_psf=None):
 
         if output_psf is None:
             output_psf = self.psfname
@@ -252,7 +252,6 @@ class ReadConfig:
                         lines.append(line)
                 lines.append("\n")
 
-
         lines.append("writepsf x-plor cmap " + output_psf)
         a = "\n".join(lines)
         return a
@@ -260,8 +259,9 @@ class ReadConfig:
     def __getitem__(self, index):
         return self.segments[index]
 
+
 class PSFGen:
-    def __init__(self, psf_string, command = None):
+    def __init__(self, psf_string, command=None):
         if command is None:
             self.command = "/opt/bin/psfgen"
         else:
@@ -270,12 +270,13 @@ class PSFGen:
         self.psf_string = psf_string
 
     def run(self):
-        #sys.stderr.write(self.psf_string)
-        psfgen = subprocess.Popen("", 0, self.command, stdin=subprocess.PIPE)
+        psfgen = subprocess.Popen("", 0,
+                                  self.command,
+                                  stdin=subprocess.PIPE,
+                                  universal_newlines=True)
         psfgen.communicate(self.psf_string)
 
 # @endcond
-
 
 
 if __name__ == '__main__':
