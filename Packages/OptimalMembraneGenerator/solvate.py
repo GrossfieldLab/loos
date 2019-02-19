@@ -18,13 +18,13 @@ if len(sys.argv) > 2:
 if not os.path.exists(config.directory):
     sys.stderr.write("Creating directory %s\n" % config.directory)
     os.makedirs(config.directory)
-elif not os.access(config.directory, os.R_OK|os.W_OK|os.X_OK):
+elif not os.access(config.directory, os.R_OK | os.W_OK | os.X_OK):
     sys.stderr.write("Don't have access to directory %s\n"
-                    % config.directory)
+                     % config.directory)
     sys.stderr.write("Will attempt to change permissions\n")
     try:
         os.chmod(config.directory,
-                 stat.S_IREAD|stat.S_IWRITE|stat.S_IEXEC)
+                 stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
     except OSError:
         sys.stderr.write(" Unable to change permissions on directory\n")
         os.exit(-1)
@@ -42,9 +42,7 @@ segments = []
 for segment in config.segments:
     s = loos.selectAtoms(system, 'segname == "' + segment.segname + '"')
     if (len(s) == 0):
-        sys.stderr.write("Selection failed assembling system: segment %s doesn't exist\n" %
-                          (segment.segname)
-                        )
+        sys.stderr.write("Selection failed assembling system: segment %s doesn't exist\n" % (segment.segname))
         sys.stderr.write("Exiting...\n")
         sys.exit(0)
 
@@ -59,7 +57,6 @@ if config.protein is not None:
         # already know this segment exists
         seg = loos.selectAtoms(system, 'segname == "' + current_seg + '"')
         seg.copyMappedCoordinatesFrom(s)
-
 
 
 sys.stderr.write("Beginning water box construction\n")
@@ -114,13 +111,12 @@ sys.stderr.write("Found %d clashing waters\n" % (len(clashing_oxygens)))
 # loop over the clashing oxygens, and find which residue each is in,
 # and remove the corresponding residues from the full water box
 for ox in clashing_oxygens:
-    i=0
-    #found = False
+    i = 0
     for w in water_residues:
         if ox in w:
             water.full_system.remove(w)
             break
-    i+=1
+    i += 1
 
 # verify we have enough water
 if len(water.full_system)//3 < total_water_and_salt:
@@ -128,8 +124,7 @@ if len(water.full_system)//3 < total_water_and_salt:
                       len(water.full_system)//3, total_water_and_salt))
 
 sys.stderr.write("Finished bump-checking water against protein\n")
-sys.stderr.write("Current # water molecules: %d\n" %
-                                (len(water.full_system)//3))
+sys.stderr.write("Current # water molecules: %d\n" % (len(water.full_system)//3))
 sys.stderr.write("Adding salt\n")
 
 # regenerate the list of oxygens
@@ -242,4 +237,4 @@ total_charge = full_system.totalCharge()
 if (abs(total_charge) > 1e-3):
     sys.stderr.write("\nWARNING WARNING WARNING WARNING\n")
     sys.stderr.write("System has a net charge of %f\n" % total_charge)
-    sys.stderr.write("This will likely cause pressure and area artifacts when you try to run with Ewald.\n")
+    sys.stderr.write("This will likely cause pressure artifacts when you try to run with Ewald.\n")
