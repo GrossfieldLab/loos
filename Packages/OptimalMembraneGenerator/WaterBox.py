@@ -51,15 +51,13 @@ class WaterBox:
 
         # trim the waters outside the target box size
         residues = self.full_system.splitByResidue()
-        print(len(residues), len(self.full_system))
         half_box = 0.5 * self.box
         to_remove = loos.AtomicGroup()
         for res in residues:
             centroid = res.centroid()
-            print(centroid, half_box)
-            if ( (abs(centroid.x()) > half_box.x()) or
-                 (abs(centroid.y()) > half_box.y()) or
-                 (abs(centroid.z()) > half_box.z()) ):
+            if ((abs(centroid.x()) > half_box.x()) or
+                (abs(centroid.y()) > half_box.y()) or
+                (abs(centroid.z()) > half_box.z())):
                     to_remove.append(res)
 
         print("Need to remove: ", len(to_remove))
