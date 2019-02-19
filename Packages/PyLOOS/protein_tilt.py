@@ -26,13 +26,11 @@ helices = []
 for s in selections:
     helices.append(loos.selectAtoms(system, s))
 
-
-
 print("#Frame\tAngle\tCosine")
 
 for frame in traj:
 
-    vec = loos.GCoord(0.,0.,0.)
+    vec = loos.GCoord(0., 0., 0.)
     for h in helices:
         pca = h.principalAxes()
         v = pca[0]
@@ -41,11 +39,9 @@ for frame in traj:
         vec += v
 
     cosine = vec.z() / vec.length()
-    
+
     cosine = max(-1.0, cosine)
     cosine = min(1.0, cosine)
     ang = math.acos(cosine) * 180./math.pi
-    
-    print(traj.index(), ang, cosine)
 
-    
+    print(traj.index(), ang, cosine)
