@@ -15,7 +15,7 @@ from Voronoi import *
 if __name__ == '__main__':
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
-        print """
+        print("""
 Usage:
 area_profile.py system trajectory skip stride zmin zmax num_slices padding all-selection-string target-selection-string
 
@@ -62,10 +62,10 @@ Example selection choice:
         heavy atoms, but the latter will be dramatically faster)
 
 
-        """
+        """)
         sys.exit(0)
     elif len(sys.argv) != 11 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
-        print "Usage: area_profile.py system trajectory skip stride zmin zmax num_slices padding all-selection-string target-selection-string"
+        print("Usage: area_profile.py system trajectory skip stride zmin zmax num_slices padding all-selection-string target-selection-string")
         sys.exit(0)
 
     system_filename = sys.argv[1]
@@ -80,7 +80,7 @@ Example selection choice:
     all_selection = sys.argv[9]
     target_selection = sys.argv[10]
 
-    print "# ", " ".join(sys.argv)
+    print("# ", " ".join(sys.argv))
 
     system = loos.createSystem(system_filename)
     pytraj = loos.pyloos.Trajectory(traj_filename, system, skip=skip, stride=stride)
@@ -120,7 +120,7 @@ Example selection choice:
     areas /= len(pytraj)
     areas2 /= len(pytraj)
     areas2 = numpy.sqrt(areas2 - areas*areas)
-    print "# ZSlice\tArea\tDev"
+    print("# ZSlice\tArea\tDev")
     for i in range(num_slices):
         z = zmin + (i+0.5)*slice_width
-        print z, areas[i], areas2[i]
+        print(z, areas[i], areas2[i])

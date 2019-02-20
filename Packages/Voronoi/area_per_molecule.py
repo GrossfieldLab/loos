@@ -16,8 +16,7 @@ if __name__ == '__main__':
 
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
-        print """
-
+        print("""
 
 The purpose of this program is to calculate histograms of areas for different
 components of a membrane.  You might use this if you were looking at a
@@ -80,12 +79,10 @@ If you see lines that look like "#Area outside range" followed by some numbers,
 it means there was a molecule that had an area outside the range you set for
 the histogram.  Either you need to adjust your histogram bounds, or (if the
 area is absurdly large) it could suggest your padding value is too small.
-
-
-        """
+        """)
         sys.exit(0)
     elif len(sys.argv) < 11 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
-        print sys.argv[0], " system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]"
+        print(sys.argv[0], " system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]")
         sys.exit(0)
 
 
@@ -105,7 +102,7 @@ area is absurdly large) it could suggest your padding value is too small.
 
     histograms = numpy.zeros([len(selection_strings[1:]), num_bins], numpy.float)
 
-    print "# ", " ".join(sys.argv)
+    print("# ", " ".join(sys.argv))
 
     system = loos.createSystem(system_filename)
     #traj = loos.createTrajectory(traj_filename, system)
@@ -148,7 +145,7 @@ area is absurdly large) it could suggest your padding value is too small.
                 try:
                     histograms[i][index] += 1
                 except IndexError:
-                    print "#Area outside range:  ", pytraj.realIndex(), i, j, a, index
+                    print("#Area outside range:  ", pytraj.realIndex(), i, j, a, index)
 
     # normalize the histograms
     for i in range(len(histograms)):
@@ -159,8 +156,8 @@ area is absurdly large) it could suggest your padding value is too small.
     string = ""
     for i in range(len(selections[1:])):
         string += "\tSel" + str(i)
-    print "# Area", string
+    print("# Area", string)
     for i in range(num_bins):
         a = min_area + (i+0.5)*bin_width
-        string = map(str, histograms[:,i])
-        print a, "\t".join(string)
+        string = list(map(str, histograms[:,i]))
+        print(a, "\t".join(string))
