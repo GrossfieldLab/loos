@@ -81,6 +81,12 @@
 
 ############# PYTHON module Configuration
 ## Set PYTHON_PATH to help scons find modules
-## This is likely needed if you're building using a non-standard 
+## This is likely needed if you're building using a non-standard
 ## python install, e.g. via conda
 # PYTHON_PATH='/home/USERNAME/.conda/envs/CONDA_ENV/lib/python2.7'
+
+############ Use the correct python while compiling
+## Help scons find the correct python include files
+## This will generally be necessary if your system's default
+## python is 2.7.
+#PYTHON_INC='/usr/include/python3.6m'
