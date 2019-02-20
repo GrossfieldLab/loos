@@ -20,8 +20,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import numpy
 
 
@@ -43,12 +41,13 @@ def read_file(filename):
     z_vals = numpy.array(z_vals)
     return z_vals, v, comments
 
+
 if __name__ == '__main__':
 
     import sys
 
-    if (len(sys.argv)>1 and sys.argv[1] == "--fullhelp"):
-        print ("""
+    if (len(sys.argv) > 1 and sys.argv[1] == "--fullhelp"):
+        print("""
 SYNOPSIS
 
 Compute electrostatic potential along membrane normal
@@ -98,8 +97,8 @@ density-dist was run.
 
     # assume input units are angstroms and electron charge,
     # convert to V
-    eps0 = 8.85e-12 # C/V m
-    e_to_C = 1.60e-19 # C/e
+    eps0 = 8.85e-12    # C/V m
+    e_to_C = 1.60e-19  # C/e
     ang_to_m = 1e-10
 
     #      dielectric   charge density        integrated distance
@@ -118,13 +117,13 @@ density-dist was run.
     delta_p = pot[-1][0] - pot[0][0]
     corr *= -delta_p/zrange
 
-    pot = pot.swapaxes(0,1)
+    pot = pot.swapaxes(0, 1)
     pot[0] += corr
     # try recentering in the middle: can help if there are artifacts at the
     # upper edge
     pot[0] -= pot[0][len(pot[0])//2]
 
-    pot = pot.swapaxes(0,1)
+    pot = pot.swapaxes(0, 1)
 
     # convert to units of volts
     pot *= units
