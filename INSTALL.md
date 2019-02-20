@@ -31,23 +31,23 @@ Windows 7 (Cygwin) | yes     | no      | Unsupported
 MacOS 10.11        | yes     | yes     | See OS notes
 
 
-* Deprecated: We used to support thsi configuration, but no longer test it.  It may still work.
+* Deprecated: We used to support this configuration, but no longer test it.  It may still work.
 * Unsupported: We have built LOOS in the past using this configuration, but do not
   regularly test it and provide no direct support for using it.
 
-
+As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS.
 
 # Building and Installing LOOS
 
 ## For the Impatient
 
 
-
-
-LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK.  Please
-refer to the OS-specific instructions below for more details.  For general
-advice about configuring LOOS and building in unusual environments, see
+LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK or other BLAS.
+Please refer to the OS-specific instructions below for more details.  For
+general advice about configuring LOOS and building in unusual environments, see
 the "General Notes" section at the end of this file.
+
+If you are building on a system where the default python is 2.7, you will need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
 LOOS can then be built using the following command:
 
@@ -71,7 +71,6 @@ To use LOOS, your environment must be first setup:
 Target | Description
 ------ | -----------
 core   | LOOS Library and PyLOOS
-docs   | Rebuild only documentation
 tools  | LOOS Library, Tools, and PyLOOS
 all    | LOOS Library, Tools, PyLOOS, and documentation (if necessary), and all Packages (default)
 install| Install library, tools, PyLOOS, documentation, and all Packages
@@ -157,25 +156,40 @@ already multithreaded.
 
 ### Documentation
 
-If you download a LOOS release from SourceForge, then you will already
-have pre-built documentation.  If you download a release from GitHub,
-then you can also download the prebuilt documentation that corresponds
-to the release (e.g. loos-2.3.2-docs.tar.gz).  Simply place the
-compressed tar-file in your LOOS source directory and scons will
-unpack it for you and move it into place.
-
 However, if you clone LOOS from GitHub, you will need to either:
 
 1. consult the online documentation at http://grossfieldlab.github.io/loos/
 
 2. build a new copy of the documentation.  To do so, you will need to
    install doxygen and graphviz (available in most package managers).
-   SCons will now generate new documentation in the docs/ directory
-   for the docs, all, and install targets.
+
+   doxygen
+
 
 ======
 
 # OS Specific Notes
+
+## Conda
+
+Assuming you already have a working install of Anaconda or miniconda, you'll
+need to say
+
+    conda create loos
+    conda activate loos
+    conda install swig scons numpy scipy boost blas libnetcdf
+
+Then, run the newly installed scons to build LOOS
+
+    $CONDA_PREFIX/bin/scons
+
+### Documentation
+
+To build the documentation, you will also require doxygen and graphviz,
+
+    conda install doxygen graphviz
+    doxygen
+
 
 ## Fedora
 
@@ -183,18 +197,19 @@ LOOS has been tested on Fedora (64-bit).  We assume you already have
 the basic compiler tools installed (i.e. g++).  You will need to
 install scons, boost, and atlas:
 
-    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig python2-numpy python2-scipy
+    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
 
-LOOS/PyLOOS only supports Python 2, so you must specify which version of numpy and scipy to use for
-Fedora 24.  For Fedora 23 and older, use the following:
-
-    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
+LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
+and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
+python3 packages for numpy and scipy, you can either install them manually or
+use conda.
 
 ### Documentation
 
 To build the documentation, you will also require doxygen and graphviz,
 
-   sudo dnf install doxygen graphviz
+    sudo dnf install doxygen graphviz
+    doxygen
 
 ---
 
@@ -213,6 +228,7 @@ Then install the packages,
 
 To build the documentation, also install:
    sudo yum install doxygen graphviz
+   doxygen
 
 
 ### PyLOOS
@@ -232,6 +248,7 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 
 To build the documentation:
    sudo apt-get install doxygen graphviz
+   doxygen
 
 ---
 
@@ -254,6 +271,7 @@ in order to build LOOS.
 
 To build the documentation:
     sudo zypper install doxygen graphviz
+    doxygen
 
 ### OpenSUSE 12
 
@@ -269,11 +287,14 @@ The package-manager installed scons is too old.  Download and install SCons
 There is a problem with using PyLOOS with the new System Integrity
 Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
 for more information about SIP).  We are aware of this and working on
-a decent solution.  Until then, there are three options for building and
+a decent solution.  Until then, there are four options for building and
 using PyLOOS under El Capitan.
 
+#### Use conda (recommended)
 
-#### Build your own Python (Recommended)
+See the conda install instructions above.
+
+#### Build your own Python
 
 The first way is to download and install your own local Python and use
 this to run SCons and PyLOOS.  Here again, you have two options: build
