@@ -14,11 +14,11 @@ import loos
 try:
     import numpy
 except ImportError as e:
-    print "Error importing numpy: ({0}): {1}".format(e.errno, e.strerror)
+    print("Error importing numpy: ({0}): {1}".format(e.errno, e.strerror))
 try:
     from scipy.spatial import Voronoi
 except ImportError as e:
-    print "Error importing Voronoi from scipy: ({0}): {1}".format(e.errno, e.strerror)
+    print("Error importing Voronoi from scipy: ({0}): {1}".format(e.errno, e.strerror))
 
 class ZSliceSelector:
     def __init__(self, min_z, max_z):
@@ -159,7 +159,7 @@ class VoronoiWrapper:
         for i in range(self.num_atoms()):
             index = self.voronoi.point_region[i]
             if index == -1:
-                raise ValueError, "point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i, self.atoms[i].id()
+                raise ValueError("point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i).with_traceback(self.atoms[i].id())
             r = self.voronoi.regions[index]
             self.regions.append(Region(v, r, self.atoms[i]))
             self.atoms_to_regions[self.atoms[i].id()] = self.regions[i]
@@ -181,7 +181,7 @@ class Edge:
 class Region:
     def __init__(self, vert_array, indices, atom):
         if len(indices) == 0:
-            raise ValueError, "can't have 0-length list of indices"
+            raise ValueError("can't have 0-length list of indices")
         self.vertices = vert_array
         self.indices = indices
         self.atom = atom
@@ -226,7 +226,7 @@ class Region:
 
     def print_indices(self):
         for i in range(self.num_indices()):
-            print self.indices[i], " ", self.vertices[self.indices[i]]
+            print(self.indices[i], " ", self.vertices[self.indices[i]])
 
     def atomId(self):
         return self.atom.id()
@@ -281,7 +281,7 @@ class SuperRegion:
     def print_indices(self):
         for r in self.regions:
             r.print_indices()
-            print
+            print()
 
 if __name__ == '__main__':
 
@@ -300,7 +300,7 @@ if __name__ == '__main__':
         if p.coords().z() > 0:
             upper.append(p)
     upper.periodicBox(structure.periodicBox())
-    print upper.isPeriodic()
+    print(upper.isPeriodic())
     """
     slice = loos.AtomicGroup()
     for a in structure:
@@ -315,28 +315,28 @@ if __name__ == '__main__':
     #print v.isPeriodic()
     #print v.num_atoms()
     v.generate_voronoi()
-    print v.num_atoms(), v.num_padding_atoms()
+    print(v.num_atoms(), v.num_padding_atoms())
     for i in range(v.num_atoms()):
-        print i, v.atoms[i].coords()
-        print v.regions[i].area()
+        print(i, v.atoms[i].coords())
+        print(v.regions[i].area())
 
     for i in range(v.num_padding_atoms()):
-        print i, v.padding_atoms[i]
+        print(i, v.padding_atoms[i])
 
     s = SuperRegion(v.regions[:1])
     s2 = SuperRegion(v.regions[:2])
-    print s.area(), v.regions[0].area()
-    print s2.area(), v.regions[0].area()+v.regions[1].area()
+    print(s.area(), v.regions[0].area())
+    print(s2.area(), v.regions[0].area()+v.regions[1].area())
     s.add_region(v.regions[1])
-    print s.area()
+    print(s.area())
     s.print_indices()
 
     s3 = SuperRegion()
     s3.buildFromAtoms(upper, v)
-    print s3.area()
+    print(s3.area())
     total = 0.0
     for r in v.regions:
         total += r.area()
-        print r.coords()
-        print r
-    print total
+        print(r.coords())
+        print(r)
+    print(total)

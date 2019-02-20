@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
-        print """
+        print("""
 
 Usage:
 program system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]
@@ -66,10 +66,10 @@ Example selection choices:
 
 
 
-        """
+        """)
         sys.exit(0)
     elif len(sys.argv) < 8 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
-        print sys.argv[0], " system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]"
+        print(sys.argv[0], " system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]")
         sys.exit(0)
 
 
@@ -83,7 +83,7 @@ Example selection choices:
                                      # in area calculations, all others tell you
                                      # how to group the areas
 
-    print "# ", " ".join(sys.argv)
+    print("# ", " ".join(sys.argv))
 
     system = loos.createSystem(system_filename)
     traj = loos.createTrajectory(traj_filename, system)
@@ -103,7 +103,7 @@ Example selection choices:
     for i in range(len(selections)):
         string += "\tArea" + str(i)
 
-    print "# Frame", string
+    print("# Frame", string)
     while (traj.readFrame()):
         traj.updateGroupCoords(system)
         system.reimageByAtom()
@@ -120,5 +120,5 @@ Example selection choices:
             sr = SuperRegion()
             sr.buildFromAtoms(slicer(s), v)
             areas.append(sr.area())
-        print frame, "\t".join(map(str,areas))
+        print(frame, "\t".join(map(str,areas)))
         frame += 1

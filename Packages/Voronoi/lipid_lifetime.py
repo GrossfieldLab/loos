@@ -15,6 +15,7 @@ import numpy
 
 from Voronoi import *
 
+
 def autocorrel(timeseries, expected=None):
     """
     Computes the autocorrelation function for a set of timeseries.
@@ -34,14 +35,13 @@ def autocorrel(timeseries, expected=None):
     corr = numpy.zeros([expected, len(timeseries)], float)
     for i in range(expected):
         num_vals = length - i
-        num = timeseries[:,i:] * timeseries[:,:num_vals]
-        corr[i] = numpy.average(num, axis = 1)
+        num = timeseries[:, i:] * timeseries[:, :num_vals]
+        corr[i] = numpy.average(num, axis=1)
 
     ave_corr = numpy.average(corr, axis=1)
     dev_corr = numpy.std(corr, axis=1)
 
     return ave_corr, dev_corr
-
 
 
 def Usage():
@@ -94,13 +94,14 @@ correlation function, which is related to the statistical uncertainty.  I
 didn't do this because it's not clear to me that that is a good assumption.
     """
 
+
 if __name__ == '__main__':
 
     if len(sys.argv) <= 1 or sys.argv[1] == '--fullhelp':
-        print Usage()
+        print(Usage())
         sys.exit()
 
-    print "#", " ".join(sys.argv)
+    print("#", " ".join(sys.argv))
 
     system_file = sys.argv[1]
     traj_file = sys.argv[2]
@@ -141,8 +142,6 @@ if __name__ == '__main__':
         centroid = protein_slice.centroid()
         protein_centroid[0].coords(centroid)
 
-
-
         # We assume you're using 1 atom/lipid.
         # Applying slice operation here allows you to be sloppy
         # with your selections.
@@ -170,12 +169,12 @@ if __name__ == '__main__':
 
     # remove entries that are all-zero.
     ave = numpy.mean(neighbor_timeseries, axis=1)
-    is_nonzero = numpy.select([abs(ave)>1e-6], [ave])
+    is_nonzero = numpy.select([abs(ave) > 1e-6], [ave])
     neighbor_timeseries = numpy.compress(is_nonzero,
                                          neighbor_timeseries, axis=0)
 
     ave_corr, dev_corr = autocorrel(neighbor_timeseries, neighbor_timeseries.shape[1]//2)
 
-    print "#Frame\tCorrel\tDev"
+    print("#Frame\tCorrel\tDev")
     for i in range(len(ave_corr)):
-        print i, ave_corr[i], dev_corr[i]
+        print(i, ave_corr[i], dev_corr[i])
