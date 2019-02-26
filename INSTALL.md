@@ -199,11 +199,12 @@ install scons, boost, and atlas:
 
     sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
 
+Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+
 LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
 and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
 python3 packages for numpy and scipy, you can either install them manually or
 use conda.
-
 ### Documentation
 
 To build the documentation, you will also require doxygen and graphviz,
@@ -243,6 +244,8 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 ## Ubuntu, Debian, Mint
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
+
+Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
 ### Documentation
 
