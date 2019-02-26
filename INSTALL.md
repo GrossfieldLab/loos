@@ -242,7 +242,7 @@ CentOS 6: Yum install python-devel and pcre-devel, then download
 
 ## Ubuntu, Debian, Mint
 
-    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libatlas-dev libnetcdf-dev swig python-dev python-numpy python-scipy
+    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
 
 ### Documentation
 
