@@ -13,7 +13,7 @@ Fedora 24          | yes     | yes     | Deprecated
 Fedora 25          | yes     | yes     | Deprecated
 Fedora 26          | yes     | yes     | Deprecated
 Fedora 27          | yes     | yes     | Deprecated
-Fedora 28          | yes     | yes     | 
+Fedora 28          | yes     | yes     |
 Fedora 29          | yes     | yes     |
 Ubuntu 12.04 LTS   | yes     | yes     | Deprecated
 Ubuntu 14.04 LTS   | yes     | yes     | Deprecated
@@ -23,7 +23,7 @@ Ubuntu 16.04 LTS   | yes     | yes     | Deprecated
 Ubuntu 18.04       | yes     | yes     |
 Debian 7.8         | yes     | yes     | Deprecated
 Debian 8.1         | yes     | yes     | Deprecated
-Debian 9.8         | yes     | yes     | 
+Debian 9.8         | yes     | yes     |
 Centos 7           | yes     | no      | No python 3
 OpenSUSE 12        | yes     | yes     | Deprecated
 OpenSUSE 13        | yes     | yes     | Deprecated
@@ -175,9 +175,8 @@ However, if you clone LOOS from GitHub, you will need to either:
 Assuming you already have a working install of Anaconda or miniconda, you'll
 need to say
 
-    conda create loos
-    conda activate loos
-    conda install swig scons numpy scipy boost blas libnetcdf
+    conda create -n loos python=3 swig scons numpy scipy boost openblas libnetcdf
+￼
 
 Then, run the newly installed scons to build LOOS
 
