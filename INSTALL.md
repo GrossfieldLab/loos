@@ -172,7 +172,7 @@ However, if you clone LOOS from GitHub, you will need to either:
 
 ## Conda
 
-Assuming you already have a working install of Anaconda or miniconda, you'll
+Assuming you already have a working install of Anaconda or miniconda (if not, you'll need to get one from https://www.anaconda.com/distribution/), you'll
 need to say
 
     conda create -n loos python=3 swig scons numpy scipy boost openblas libnetcdf
