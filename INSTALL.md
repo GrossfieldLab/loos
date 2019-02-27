@@ -3,39 +3,39 @@
                    | LOOS    | PyLOOS  |
 Operating System   | Support | Support | Notes
 ----------------   | ------- | ------- | -----
-Fedora 17          | yes     | yes     | Unsupported
 Fedora 18          | yes     | yes     | Deprecated
-Fedora 19          | yes     | yes     |
-Fedora 20          | yes     | yes     |
-Fedora 21          | yes     | yes     |
-Fedora 22          | yes     | yes     |
-Fedora 23          | yes     | yes     |
-Fedora 24          | yes     | yes     |
-Fedora 25          | yes     | yes     |
-Ubuntu 12.04 LTS   | yes     | yes     |
-Ubuntu 14.04 LTS   | yes     | yes     |
-Ubuntu 15.04       | yes     | yes     |
-Ubuntu 15.10       | yes     | yes     |
-Ubuntu 16.04 LTS   | yes     | yes     |
-Debian 7.8         | yes     | yes     |
-Debian 8.1         | yes     | yes     |
-Centos 6.7         | yes     | yes     | See OS notes
-Centos 7           | yes     | yes     | See OS notes
-OpenSUSE 12        | yes     | yes     | See OS notes
-OpenSUSE 13        | yes     | yes     |
-Manjaro 0.8        | yes     | yes     | Unsupported
-Mint 17            | yes     | yes     | Unsupported
-Mint 18            | yes     | yes     |
-Slackware 14.1     | yes     | yes     | Unsupported
-Windows 7 (Cygwin) | yes     | no      | Unsupported
-MacOS 10.11        | yes     | yes     | See OS notes
+Fedora 19          | yes     | yes     | Deprecated
+Fedora 20          | yes     | yes     | Deprecated
+Fedora 21          | yes     | yes     | Deprecated
+Fedora 22          | yes     | yes     | Deprecated
+Fedora 23          | yes     | yes     | Deprecated
+Fedora 24          | yes     | yes     | Deprecated
+Fedora 25          | yes     | yes     | Deprecated
+Fedora 26          | yes     | yes     | Deprecated
+Fedora 27          | yes     | yes     | Deprecated
+Fedora 28          | yes     | yes     | 
+Fedora 29          | yes     | yes     |
+Ubuntu 12.04 LTS   | yes     | yes     | Deprecated
+Ubuntu 14.04 LTS   | yes     | yes     | Deprecated
+Ubuntu 15.04       | yes     | yes     | Deprecated
+Ubuntu 15.10       | yes     | yes     | Deprecated
+Ubuntu 16.04 LTS   | yes     | yes     | Deprecated
+Ubuntu 18.04       | yes     | yes     |
+Debian 7.8         | yes     | yes     | Deprecated
+Debian 8.1         | yes     | yes     | Deprecated
+Debian 9.8         | yes     | yes     | 
+Centos 7           | yes     | no      | No python 3
+OpenSUSE 12        | yes     | yes     | Deprecated
+OpenSUSE 13        | yes     | yes     | Deprecated
+OpenSUSE 15        | yes     | yes     |
+MacOS X            | yes     | yes     | See OS notes
 
 
 * Deprecated: We used to support this configuration, but no longer test it.  It may still work.
 * Unsupported: We have built LOOS in the past using this configuration, but do not
   regularly test it and provide no direct support for using it.
 
-As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS.
+As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS, and on any Linux environment that is not supported.
 
 # Building and Installing LOOS
 
@@ -264,7 +264,8 @@ be ignored by the LOOS build.
 
 Using zypper (or your favorite package manager), install the following:
 
-    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python-numpy-devel python-scipy
+    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python3-numpy-devel python3-scipy libboost_filesystem1_66_0-devel libboost_program_options1_66_0 libboost_program_options1_66_0-devel libboost_regex1_66_0 libboost_regex1_66_0-dev libboost_system1_66_0-devel libboost_thread1_66_0-devel
+
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed

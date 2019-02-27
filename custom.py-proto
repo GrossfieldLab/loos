@@ -89,4 +89,7 @@
 ## Help scons find the correct python include files
 ## This will generally be necessary if your system's default
 ## python is 2.7.
+# This value is good for Fedora, OpenSuse, and Ubuntu
 #PYTHON_INC='/usr/include/python3.6m'
+# This value is good for Debian 9
+#PYTHON_INC='/usr/include/python3.5m'
