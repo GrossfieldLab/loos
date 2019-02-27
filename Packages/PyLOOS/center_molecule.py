@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   Center an entire model based on a selection.
 """
@@ -23,14 +23,11 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-
-
-# Import LOOS 
+# Import LOOS
 from loos import *
 import sys
 
-## Command line arguments
+# Command line arguments
 model_name = sys.argv[1]
 selection = sys.argv[2]
 
@@ -41,6 +38,8 @@ model = createSystem(model_name)
 subset = selectAtoms(model, selection)
 
 # Compute centroid the old-fashioned way...
+# Obviously, it is faster to call subset.centroid(),
+# but we're demonstrating how else one could do it.
 center = GCoord(0,0,0)
 for atom in subset:
     center = center + atom.coords()
@@ -56,4 +55,4 @@ pdb = PDB.fromAtomicGroup(model)
 pdb.remarks().add("Structure centered using '" + selection + "'")
 
 # Print it to stdout...
-print pdb
+print(pdb)

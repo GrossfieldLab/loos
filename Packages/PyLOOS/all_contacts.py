@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 """
 Track a set of contacts through a trajectory.  Intended for use with a protein
 or RNA, to track all residue-residue contacts within the trajectory.
@@ -34,8 +34,9 @@ import numpy
 from os.path import basename, splitext
 import argparse
 
+
 def fullhelp():
-  print """
+  print("""
   all_contacts.py: compute the probability of residue-residue contact
   over the course of a trajectory
 
@@ -63,19 +64,21 @@ def fullhelp():
   This program does not explicitly handle periodicity; it assumes you've
   already fixed any periodicity issues before you ran it.
 
-  """
+  """)
 
 class FullHelp(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
-        kwargs['nargs']=0
+        kwargs['nargs'] = 0
         super(FullHelp, self).__init__(option_strings, dest, **kwargs)
-    def __call__(self, parser, namespace, values, option_string = None):
+
+    def __call__(self, parser, namespace, values, option_string=None):
         fullhelp()
         parser.print_help()
         setattr(namespace, self.dest, True)
         parser.exit()
 
 ##############################################################################
+
 
 cmd_args = " ".join(sys.argv)
 parser = argparse.ArgumentParser(description="Track residue-residue contacts")
@@ -125,9 +128,8 @@ else:
 
 residues = target.splitByResidue()
 # now remove the backbone -- doing before the split loses the glycines
-# Woohoo, look at me, I used a lambda!
 if args.no_backbone:
-    residues = list(map(lambda r: loos.selectAtoms(r, "!backbone"), residues))
+    residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
 
 frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
                             numpy.float)

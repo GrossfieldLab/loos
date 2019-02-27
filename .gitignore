@@ -11,6 +11,7 @@ loos.py
 loos/__init__.py
 setup.sh
 setup.csh
+custom.py
 
 # Library files
 *.so

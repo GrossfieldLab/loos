@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  Do voronoi analysis on slices of a membrane
 #  2D only
 #  This code is a wrapper around the scipy Voronoi class, which is itself
 #  a wrapper around QHull (http://www.qhull.org/)
-# 
-#  Alan Grossfield, University of Rochester Medical Center, Dept 
+#
+#  Alan Grossfield, University of Rochester Medical Center, Dept
 #                   of Biochemistry and Biophysics
 #  Copyright 2014
 #
@@ -14,11 +14,11 @@ import loos
 try:
     import numpy
 except ImportError as e:
-    print "Error importing numpy: ({0}): {1}".format(e.errno, e.strerror)
+    print("Error importing numpy: ({0}): {1}".format(e.errno, e.strerror))
 try:
     from scipy.spatial import Voronoi
 except ImportError as e:
-    print "Error importing Voronoi from scipy: ({0}): {1}".format(e.errno, e.strerror)
+    print("Error importing Voronoi from scipy: ({0}): {1}".format(e.errno, e.strerror))
 
 class ZSliceSelector:
     def __init__(self, min_z, max_z):
@@ -48,14 +48,14 @@ class VoronoiWrapper:
     """
     Wrap the scipy Voronoi class, which in turn is a wrapper around QHull.
     So, it's a wrapper wrapper, and if this program is called from a script,
-    then we'd have a wrapper wrapper wrapper.  Now I just need m4 and Tod will 
+    then we'd have a wrapper wrapper wrapper.  Now I just need m4 and Tod will
     approve.
 
     atomicgroup is a LOOS AtomicGroup
-    pad is a float specifying how far out we will generate padding atoms 
-        (fake "image" atoms used to emulate periodicity).  15 ang is a good 
-        default if you're using all atoms or all heavy atoms, but you may 
-        need to go farther if you're using a sparser selection (e.g. just 
+    pad is a float specifying how far out we will generate padding atoms
+        (fake "image" atoms used to emulate periodicity).  15 ang is a good
+        default if you're using all atoms or all heavy atoms, but you may
+        need to go farther if you're using a sparser selection (e.g. just
         lipid phosphates)
     """
 
@@ -77,16 +77,16 @@ class VoronoiWrapper:
 
     def update_atoms(self, atomicGroup):
         self.atoms = atomicGroup
-    
+
     def generate_padding_atoms(self):
-        """ 
+        """
         Build the list of atoms in the periodic images surrounding the central
         image.
 
         This is necessary because QHull doesn't know anything about periodicity,
         so we need to do fake it; otherwise, you'd have bizarre or infinite
         areas for atoms near the edge of the box
-        """ 
+        """
         if not self.isPeriodic():
             raise VoronoiError("Periodic boundaries are required")
 
@@ -115,7 +115,7 @@ class VoronoiWrapper:
             if ( (c.x() > half_box.x() - self.pad) and
                  (c.y() > half_box.y() - self.pad) ):
                  self.padding_atoms.append(c-xbox-ybox)
-            
+
             if ( (c.x() < -half_box.x() + self.pad) and
                  (c.y() >  half_box.y() - self.pad) ):
                  self.padding_atoms.append(c+xbox-ybox)
@@ -123,7 +123,7 @@ class VoronoiWrapper:
             if ( (c.x() >  half_box.x() - self.pad) and
                  (c.y() < -half_box.y() + self.pad) ):
                  self.padding_atoms.append(c-xbox+ybox)
-        
+
         return len(self.padding_atoms)
 
     def num_padding_atoms(self):
@@ -137,12 +137,12 @@ class VoronoiWrapper:
         points = []
         for a in self.atoms:
             points.append([a.coords().x(), a.coords().y()])
-        
+
         numpad = self.generate_padding_atoms()
         for p in self.padding_atoms:
             points.append([p.x(), p.y()])
 
-        points = numpy.array(points)    
+        points = numpy.array(points)
         self.voronoi = Voronoi(points)
 
         # read in all of the ridges
@@ -159,12 +159,12 @@ class VoronoiWrapper:
         for i in range(self.num_atoms()):
             index = self.voronoi.point_region[i]
             if index == -1:
-                raise ValueError, "point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i, self.atoms[i].id()
+                raise ValueError("point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i).with_traceback(self.atoms[i].id())
             r = self.voronoi.regions[index]
             self.regions.append(Region(v, r, self.atoms[i]))
             self.atoms_to_regions[self.atoms[i].id()] = self.regions[i]
-            
-        
+
+
 
 class Edge:
     def __init__(self, index1, index2):
@@ -175,13 +175,13 @@ class Edge:
         if ( (self.ind1 == other.ind1) and (self.ind2 == other.ind2) or
              (self.ind2 == other.ind1) and (self.ind1 == other.ind2) ):
             return True
-        else: 
+        else:
             return False
-        
+
 class Region:
     def __init__(self, vert_array, indices, atom):
         if len(indices) == 0:
-            raise ValueError, "can't have 0-length list of indices"
+            raise ValueError("can't have 0-length list of indices")
         self.vertices = vert_array
         self.indices = indices
         self.atom = atom
@@ -210,7 +210,7 @@ class Region:
             p2 = self.vertices[self.indices[j]]
             area += p1.x()*p2.y() - p2.x()*p1.y();
 
-            
+
         area = 0.5*abs(area)
         return(area)
 
@@ -220,14 +220,14 @@ class Region:
         """
         for e1 in self.edges:
             for e2 in other.edges:
-                if (e1 == e2): 
+                if (e1 == e2):
                     return(True)
         return(False)
-        
+
     def print_indices(self):
         for i in range(self.num_indices()):
-            print self.indices[i], " ", self.vertices[self.indices[i]]
-            
+            print(self.indices[i], " ", self.vertices[self.indices[i]])
+
     def atomId(self):
         return self.atom.id()
 
@@ -281,7 +281,7 @@ class SuperRegion:
     def print_indices(self):
         for r in self.regions:
             r.print_indices()
-            print
+            print()
 
 if __name__ == '__main__':
 
@@ -300,7 +300,7 @@ if __name__ == '__main__':
         if p.coords().z() > 0:
             upper.append(p)
     upper.periodicBox(structure.periodicBox())
-    print upper.isPeriodic()
+    print(upper.isPeriodic())
     """
     slice = loos.AtomicGroup()
     for a in structure:
@@ -309,36 +309,34 @@ if __name__ == '__main__':
     slice.periodicBox(box)
     """
 
-    
+
     v = VoronoiWrapper(upper)
     #v = VoronoiWrapper(slice)
     #print v.isPeriodic()
     #print v.num_atoms()
     v.generate_voronoi()
-    print v.num_atoms(), v.num_padding_atoms()
+    print(v.num_atoms(), v.num_padding_atoms())
     for i in range(v.num_atoms()):
-        print i, v.atoms[i].coords()
-        print v.regions[i].area()
+        print(i, v.atoms[i].coords())
+        print(v.regions[i].area())
 
     for i in range(v.num_padding_atoms()):
-        print i, v.padding_atoms[i]
+        print(i, v.padding_atoms[i])
 
     s = SuperRegion(v.regions[:1])
     s2 = SuperRegion(v.regions[:2])
-    print s.area(), v.regions[0].area()
-    print s2.area(), v.regions[0].area()+v.regions[1].area()
+    print(s.area(), v.regions[0].area())
+    print(s2.area(), v.regions[0].area()+v.regions[1].area())
     s.add_region(v.regions[1])
-    print s.area()
+    print(s.area())
     s.print_indices()
 
     s3 = SuperRegion()
     s3.buildFromAtoms(upper, v)
-    print s3.area()
+    print(s3.area())
     total = 0.0
     for r in v.regions:
         total += r.area()
-        print r.coords()
-        print r
-    print total
-        
-
+        print(r.coords())
+        print(r)
+    print(total)

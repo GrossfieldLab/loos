@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import loos
 
-# @cond TOOLS_INTERNAL 
+# @cond TOOLS_INTERNAL
 
 class WaterBox:
     def __init__(self, filename, template_box, target_box, segname):
@@ -51,28 +51,26 @@ class WaterBox:
 
         # trim the waters outside the target box size
         residues = self.full_system.splitByResidue()
-        print len(residues), len(self.full_system)
         half_box = 0.5 * self.box
         to_remove = loos.AtomicGroup()
         for res in residues:
             centroid = res.centroid()
-            print centroid, half_box
-            if ( (abs(centroid.x()) > half_box.x()) or
-                 (abs(centroid.y()) > half_box.y()) or
-                 (abs(centroid.z()) > half_box.z()) ):
+            if ((abs(centroid.x()) > half_box.x()) or
+                (abs(centroid.y()) > half_box.y()) or
+                (abs(centroid.z()) > half_box.z())):
                     to_remove.append(res)
 
-        print "Need to remove: ", len(to_remove)
-        print "before: ", self.full_system.boundingBox(), len(self.full_system)
+        print("Need to remove: ", len(to_remove))
+        print("before: ", self.full_system.boundingBox(), len(self.full_system))
         self.full_system.remove(to_remove)
-        print "after: ", self.full_system.boundingBox(), len(self.full_system)
+        print("after: ", self.full_system.boundingBox(), len(self.full_system))
 
         self.full_system.periodicBox(self.box)
 
         # renumber atom ids and resids
         self.full_system.renumber()
         for i in range(len(self.full_system)):
-            self.full_system[i].resid(i/3 + 1)
+            self.full_system[i].resid(i//3 + 1)
         #residues = self.full_system.splitByResidue()
         #for i in range(len(residues)):
         #    for j in range(len(residues[i])):
@@ -81,11 +79,11 @@ class WaterBox:
 
     def append_waters(self, other):
         """
-        "other" is an AtomicGroup of waters.  Merge them 
-        into the current WaterBox, renumbering the atoms 
+        "other" is an AtomicGroup of waters.  Merge them
+        into the current WaterBox, renumbering the atoms
         and residues, and updating their segment name
         """
-        
+
         self.full_system += other
         self.full_system.renumber()
         residues = self.full_system.splitByResidue()
@@ -97,10 +95,10 @@ class WaterBox:
 
     def pdb(self):
         """
-        Return a string containing a PDB version of the full_system, 
+        Return a string containing a PDB version of the full_system,
         convenient for writing out the coordinates in PDB format.
         """
-        
+
         p = loos.PDB.fromAtomicGroup(self.full_system)
         return str(p)
 
@@ -119,10 +117,6 @@ if __name__ == '__main__':
     f = open("big_water.pdb", "w")
     f.write(w.pdb())
     f.close()
-        
-    print w.full_system.periodicBox()
-    print w.full_system.boundingBox()
 
-
-        
-        
+    print(w.full_system.periodicBox())
+    print(w.full_system.boundingBox())

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Cluster structures based from a simulation
 """
@@ -48,7 +48,7 @@ cmd_string = sys.argv[0]
 for i in range(1, len(sys.argv)):
     arg = sys.argv[i].replace('\n', '\\n')
     cmd_string += " '" + arg + "'"
-print '# ', cmd_string
+print('# ', cmd_string)
 
 
 # Create the model & read in the trajectories
@@ -71,7 +71,7 @@ for frame in allTrajs:
 
 
 if args.align:
-    print '# Iteratively aligned with %d iterations and final RMSD %g.' % (allTrajs._iters, allTrajs._rmsd)
+    print('# Iteratively aligned with %d iterations and final RMSD %g.' % (allTrajs._iters, allTrajs._rmsd))
 
 
 # Do the clustering...
@@ -90,19 +90,19 @@ idx,dists = vq(data, centroids)
 
 
 # Write out the meta-data file
-print "# Means\tDistortion: "
-print '# ', args.num_means," \t",distortion
-print "# -------------------------------"
-print "# Trajectory list:"
+print("# Means\tDistortion: ")
+print('# ', args.num_means," \t",distortion)
+print("# -------------------------------")
+print("# Trajectory list:")
 for i in range(len(args.traj)):
-    print '# %5d = "%s"' % (i, args.traj[i])
+    print('# %5d = "%s"' % (i, args.traj[i]))
 
-print '#\n# %8s %16s %8s %8s' % ('Index', 'Trajectory', 'Frame', 'Cluster')
-print '# %8s %16s %8s %8s' % ('--------', '----------------', '--------', '--------')
+print('#\n# %8s %16s %8s %8s' % ('Index', 'Trajectory', 'Frame', 'Cluster'))
+print('# %8s %16s %8s %8s' % ('--------', '----------------', '--------', '--------'))
 
 for i in range(len(idx)):
     loc = allTrajs.frameLocation(i)
-    print '%10d %16d %8d %8d' % (i, loc[1], loc[3], idx[i])
+    print('%10d %16d %8d %8d' % (i, loc[1], loc[3], idx[i]))
 
     
 # Output centroids
@@ -112,7 +112,7 @@ for j in range(len(cen_list)):
     troid = cen_list[j]
     centroid_structure = subset.copy()
     for i in range(0, len(troid), 3):
-        centroid_structure[i/3].coords(loos.GCoord(troid[i], troid[i+1], troid[i+2]))
+        centroid_structure[i//3].coords(loos.GCoord(troid[i], troid[i+1], troid[i+2]))
     pdb = loos.PDB.fromAtomicGroup(centroid_structure)
     pdb.remarks().add(cmd_string)
     pdb.remarks().add(">>> Means = %s, Distortion = %f" % (args.num_means, distortion))

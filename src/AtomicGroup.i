@@ -49,25 +49,25 @@
 
 
 
- 
+
  namespace loos {
-   
-   
+
+
    // This gets translated into Python's StopIteration exception
    struct StopIteration { };
-   
+
 
    // Iterator class for AtomicGroup
    class AtomicGroupPythonIterator {
    public:
    AtomicGroupPythonIterator(AtomicGroup* p) : _ag(p), _idx(0) { }
-     
-     pAtom next() throw (loos::StopIteration) {
+
+     pAtom __next__() throw (loos::StopIteration) {
        if (_idx >= _ag->size())
 	 throw(loos::StopIteration());
        return((*_ag)[_idx++]);
      }
-   
+
 
    private:
      AtomicGroup* _ag;
@@ -103,7 +103,7 @@ namespace loos {
   class AtomicGroupPythonIterator {
   public:
     AtomicGroupPythonIterator(loos::AtomicGroup*);
-    loos::pAtom next() throw (loos::StopIteration);
+    loos::pAtom __next__() throw (loos::StopIteration);
   };
 }
 
@@ -126,10 +126,10 @@ namespace loos {
     pAtom __getitem__(const int i) {
       if (i < 0 || static_cast<uint>(i) >= $self->size())
 	throw(std::out_of_range("Bad index into AtomicGroup"));
-      
+
       return((*$self)[i]);
     }
-    
+
     void __setitem__(const int i, const pAtom& d) {
       (*$self)[i] = d;
     }

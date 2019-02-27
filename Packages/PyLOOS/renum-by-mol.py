@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python3
 """
   Renumber a model so that the resids for each molecule start at 1
 """
@@ -29,7 +29,7 @@ import sys
 
 
 if len(sys.argv) == 1 or sys.argv[1] == '-h':
-    print 'Usage- renum-by-mol.py model [selection]'
+    print('Usage- renum-by-mol.py model [selection]')
     sys.exit(0)
     
 
@@ -53,4 +53,4 @@ for molecule in molecules:
         resid += 1
 
 pdb = loos.PDB.fromAtomicGroup(model)
-print str(pdb),
+print(str(pdb), end=' ')

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Compute distribution of areas/molecule for a z-slice
 
@@ -16,12 +16,11 @@ if __name__ == '__main__':
 
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
-        print """
-
+        print("""
 
 The purpose of this program is to calculate histograms of areas for different
-components of a membrane.  You might use this if you were looking at a 
-multicomponent bilayer, and wanted to know how much area is taken up 
+components of a membrane.  You might use this if you were looking at a
+multicomponent bilayer, and wanted to know how much area is taken up
 by PC lipids vs. PE lipids.
 
 Usage:
@@ -37,11 +36,11 @@ min_area, max_area, num_area_bins: specifications for histograms of area
 selection-string1: the set of atoms used to compute the voronoi decomposition
 selection-string2, etc: sets of atoms for which areas are reported
 
-Notes 
+Notes
     1) all selections are forced to be subsets of the initial selection.  This is
        necessary for the mapping of areas to work correctly.
     2) this program assumes that the system has already been centered such that
-       the z location of the membrane isn't drifting (z-slices are absolute, not 
+       the z location of the membrane isn't drifting (z-slices are absolute, not
        relative to the membrane center) and such that the periodic box
        is centered at x=y=0.
 
@@ -73,19 +72,17 @@ Example selection choices:
 
 Note that for a bilayer you have to think carefully about the z-range you use.
 If you use a z-range of [0, 20], you'll get the upper leaflet accurately, but
-you'll also pick up some junk at very lower area due to the other leaflet 
+you'll also pick up some junk at very lower area due to the other leaflet
 "leaking" across
 
 If you see lines that look like "#Area outside range" followed by some numbers,
 it means there was a molecule that had an area outside the range you set for
-the histogram.  Either you need to adjust your histogram bounds, or (if the 
+the histogram.  Either you need to adjust your histogram bounds, or (if the
 area is absurdly large) it could suggest your padding value is too small.
-
-
-        """
+        """)
         sys.exit(0)
     elif len(sys.argv) < 11 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
-        print sys.argv[0], " system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]"
+        print(sys.argv[0], " system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]")
         sys.exit(0)
 
 
@@ -105,7 +102,7 @@ area is absurdly large) it could suggest your padding value is too small.
 
     histograms = numpy.zeros([len(selection_strings[1:]), num_bins], numpy.float)
 
-    print "# ", " ".join(sys.argv)
+    print("# ", " ".join(sys.argv))
 
     system = loos.createSystem(system_filename)
     #traj = loos.createTrajectory(traj_filename, system)
@@ -119,7 +116,7 @@ area is absurdly large) it could suggest your padding value is too small.
         selections.append(loos.selectAtoms(selections[0], s))
     for i in range(1,len(selections)):
         selections[i] = selections[i].splitByMolecule()
-        
+
 
     string = ""
     for i in range(len(selections)):
@@ -133,9 +130,9 @@ area is absurdly large) it could suggest your padding value is too small.
         # run voronoi
         v = VoronoiWrapper(slice_atoms, padding)
         v.generate_voronoi()
-        
+
         # generate the areas for the selections
-        for i in range(len(selections[1:])):  
+        for i in range(len(selections[1:])):
             s = selections[i+1]
             for j in range(len(s)):
                 sr = SuperRegion()
@@ -148,8 +145,8 @@ area is absurdly large) it could suggest your padding value is too small.
                 try:
                     histograms[i][index] += 1
                 except IndexError:
-                    print "#Area outside range:  ", pytraj.realIndex(), i, j, a, index
-                
+                    print("#Area outside range:  ", pytraj.realIndex(), i, j, a, index)
+
     # normalize the histograms
     for i in range(len(histograms)):
         histograms[i] /= numpy.add.reduce(histograms[i])
@@ -159,10 +156,8 @@ area is absurdly large) it could suggest your padding value is too small.
     string = ""
     for i in range(len(selections[1:])):
         string += "\tSel" + str(i)
-    print "# Area", string
+    print("# Area", string)
     for i in range(num_bins):
         a = min_area + (i+0.5)*bin_width
-        string = map(str, histograms[:,i])
-        print a, "\t".join(string)
-
-
+        string = list(map(str, histograms[:,i]))
+        print(a, "\t".join(string))

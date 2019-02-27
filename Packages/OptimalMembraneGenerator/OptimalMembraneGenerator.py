@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import random
 import math
@@ -15,11 +15,9 @@ if __name__ == '__main__':
     import os
     import stat
 
-
     config = PSFGen.ReadConfig(sys.argv[1])
     if len(sys.argv) > 2:
         config.directory = sys.argv[2]
-
 
     box_scaling = 3.0
     box = box_scaling*config.box
@@ -31,10 +29,9 @@ if __name__ == '__main__':
     scaled_box = box.x()
     half_box = 0.5*scaled_box
 
-
-    overlap_dist = 3.0    # the distance that is considered a "contact"
-    overlap_threshold = 3 # the number of contacts required for a molecule
-                          # to be rejected
+    overlap_dist = 3.0     # the distance that is considered a "contact"
+    overlap_threshold = 3  # the number of contacts required for a molecule
+                           # to be rejected
 
     # set how big the "water" region of the box will be
     water_width = config.box.z()
@@ -48,18 +45,17 @@ if __name__ == '__main__':
     # set the number of minimization and dynamics NAMD will do on each cycle
     number_of_steps = 100
 
-
     # make sure the working directory exists and is writeable
     if not os.path.exists(config.directory):
         sys.stderr.write("Creating directory %s\n" % config.directory)
         os.makedirs(config.directory)
-    elif not os.access(config.directory, os.R_OK|os.W_OK|os.X_OK):
+    elif not os.access(config.directory, os.R_OK | os.W_OK | os.X_OK):
         sys.stderr.write("Don't have access to directory %s\n"
-                        % config.directory)
+                         % config.directory)
         sys.stderr.write("Will attempt to change permissions\n")
         try:
             os.chmod(config.directory,
-                     stat.S_IREAD|stat.S_IWRITE|stat.S_IEXEC)
+                     stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
         except OSError:
             sys.stderr.write(" Unable to change permissions on directory\n")
             os.exit(-1)
@@ -67,13 +63,15 @@ if __name__ == '__main__':
     # We need a model containing just the protein and lipid, so we'll
     # make a psfgen script, run it, use the psf to make the AtomicGroup,
     temporary_psfname = os.path.join(config.directory, config.psfname)
-    psfgen_script = config.generate_psf(True, False, True, True, temporary_psfname)
+    psfgen_script = config.generate_psf(True, False, True, True,
+                                        temporary_psfname)
     psfgen = PSFGen.PSFGen(psfgen_script, config.psfgen_binary)
     psfgen.run()
     system = loos.createSystem(temporary_psfname)
 
-    # If the "protein" is actually a bunch of independent molecules (e.g. a bunch of peptides),
-    # we'll want to scale them in x & y to match the expanded box.
+    # If the "protein" is actually a bunch of independent molecules
+    # (e.g. a bunch of peptides), we'll want to scale them in x & y
+    # to match the expanded box.
     if config.protein is not None and config.protein.scale:
         protein_molecules = config.protein.model.splitByMolecule()
         for m in protein_molecules:
@@ -97,8 +95,8 @@ if __name__ == '__main__':
 
         segments.append(s)
 
-    x_axis = loos.GCoord(1,0,0)
-    z_axis = loos.GCoord(0,0,1)
+    x_axis = loos.GCoord(1, 0, 0)
+    z_axis = loos.GCoord(0, 0, 1)
 
     for j in range(len(segments)):
         seg_ag = segments[j]
@@ -116,12 +114,11 @@ if __name__ == '__main__':
                 sys.stderr.write("Exiting...\n")
                 sys.exit(0)
 
-
             # put the molecule at the origin
             lipid.centerAtOrigin()
 
             # perform random rotation about z axis
-            lipid.rotate(z_axis, random.uniform(0.,360.))
+            lipid.rotate(z_axis, random.uniform(0., 360.))
 
             if seg_conf.placement < 0:
                 lipid.rotate(x_axis, 180)
@@ -139,9 +136,8 @@ if __name__ == '__main__':
             if seg_conf.placement < 0:
                 z = -z
 
-            vec = loos.GCoord(x,y,z)
+            vec = loos.GCoord(x, y, z)
             lipid.translate(vec)
-
 
             # do a bump-check against previously placed lipids
             # If at any time we realize we've got too many clashes,
@@ -155,25 +151,30 @@ if __name__ == '__main__':
                 for seg in config.protein.segments:
                     overlap = lipid.within(overlap_dist, seg, box)
                     num_overlap += overlap.size()
-                    if num_overlap > overlap_threshold: break
-                if num_overlap > overlap_threshold: continue
+                    if num_overlap > overlap_threshold:
+                        break
+                if num_overlap > overlap_threshold:
+                    continue
 
             # second, check this lipid against all previous segments
             for k in range(j):
                 overlap = lipid.within(overlap_dist, segments[k], box)
                 num_overlap += overlap.size()
-                if num_overlap > overlap_threshold: break
-            if num_overlap > overlap_threshold: continue
+                if num_overlap > overlap_threshold:
+                    break
+            if num_overlap > overlap_threshold:
+                continue
 
             # now, check earlier lipids in this segment
             for k in range(i):
                 overlap = lipid.within(overlap_dist, seg_ag_arr[k], box)
                 num_overlap += overlap.size()
-                if num_overlap > overlap_threshold:  break
-            if num_overlap > overlap_threshold: continue
+                if num_overlap > overlap_threshold:
+                    break
+            if num_overlap > overlap_threshold:
+                continue
 
             # copy the coordinates back into the real object
-            #seg_ag_arr[i].copyCoordinatesFrom(lipid, 0, lipid.size())
             seg_ag_arr[i].copyMappedCoordinatesFrom(lipid)
 
             i += 1
@@ -191,7 +192,7 @@ if __name__ == '__main__':
     #       the "protein" is already centered"
     #system.centerAtOrigin()
     pdb = loos.PDB.fromAtomicGroup(system)
-    pdb_out = open(os.path.join(config.directory,"lipid_only.pdb"), "w")
+    pdb_out = open(os.path.join(config.directory, "lipid_only.pdb"), "w")
     pdb_out.write(str(pdb))
     pdb_out.close()
 
@@ -213,18 +214,15 @@ if __name__ == '__main__':
             scale_factor = dim/old_dim
             for j in range(len(molecules)):
                 centroid = molecules[j].centroid()
-                centroid.z(0.0) # only scale in plane of membrane
+                centroid.z(0.0)  # only scale in plane of membrane
                 new_centroid = centroid * scale_factor
                 diff = new_centroid - centroid
                 molecules[j].translate(diff)
 
             # output the new coordinates so we can minimize with NAMD
-            pdb_out = open(os.path.join(config.directory,next_pdb), "w")
+            pdb_out = open(os.path.join(config.directory, next_pdb), "w")
             pdb_out.write(str(pdb))
             pdb_out.close()
-
-
-
 
             # TODO: long term, I'd like to change this so that instead of
             #       running a new instance of NAMD, we're reusing the same
@@ -235,8 +233,6 @@ if __name__ == '__main__':
 
             # copy the psf file to the working directory
             local_psfname = os.path.basename(config.psfname)
-            #shutil.copyfile(config.psfname,
-            #                os.path.join(config.directory, local_psfname))
 
             namd = NAMD.NAMD(local_psfname, next_pdb,
                              core_name, config.parameters,
@@ -250,10 +246,10 @@ if __name__ == '__main__':
 
             # copy the final coordinates to a pdb file
             shutil.copyfile(full_core + ".coor",
-                            os.path.join(config.directory,next_pdb))
+                            os.path.join(config.directory, next_pdb))
 
             # read in the new structure
-            new_system = loos.createSystem(os.path.join(config.directory,next_pdb))
+            new_system = loos.createSystem(os.path.join(config.directory, next_pdb))
 
             # copy coordinates back into old AtomicGroup
             system.copyCoordinatesFrom(new_system, 0, system.size())
@@ -262,7 +258,7 @@ if __name__ == '__main__':
             system.centerAtOrigin()
             sys.stderr.write("lipid only minimization cycle: %d\n" % i)
 
-    pdb_out = open(os.path.join(config.directory,"lipid_min.pdb"), "w")
+    pdb_out = open(os.path.join(config.directory, "lipid_min.pdb"), "w")
     pdb_out.write(str(pdb))
     pdb_out.close()
 
@@ -276,7 +272,6 @@ if __name__ == '__main__':
                               water_template, water_target,
                               config.water.segname)
 
-
     # Figure out how many ions we're going to add
     total_salt = 0
     for salt in config.salt:
@@ -284,16 +279,15 @@ if __name__ == '__main__':
     total_water_and_salt = total_salt + config.water.numres
 
     sys.stderr.write("Water box has %d waters before superposition\n" %
-                     (len(water.full_system)/3))
+                     (len(water.full_system)//3))
     sys.stderr.write("Final target: %d waters\n" % (config.water.numres))
-
 
     # Verify we have enough water.  We need enough to end up with
     # the planned number of waters, even after we remove one water molecule
     # for each ion we add.
-    if len(water.full_system)/3 < total_water_and_salt:
-        raise ValueError, "Too few waters before superposition: %d %d" % (
-                          len(water.full_system)/3, total_water_and_salt)
+    if len(water.full_system)//3 < total_water_and_salt:
+        raise ValueError("Too few waters before superposition: %d %d" % (
+                          len(water.full_system)//3, total_water_and_salt))
 
     # translate so that the water box is centered on the periodic boundary,
     # then set its periodic box to the full system box size and reimage
@@ -301,7 +295,6 @@ if __name__ == '__main__':
     trans = loos.GCoord(0.0, 0.0, 0.5*config.box.z())
     water.full_system.translate(trans)
     water_residues = water.full_system.splitByResidue()
-
 
     for w in water_residues:
         w.reimage()
@@ -321,22 +314,21 @@ if __name__ == '__main__':
     # loop over the clashing oxygens, and find which residue each is in,
     # and remove the corresponding residues from the full water box
     for ox in clashing_oxygens:
-        i=0
-        #found = False
+        i = 0
         for w in water_residues:
             if ox in w:
                 water.full_system.remove(w)
                 break
-        i+=1
+        i += 1
 
     # verify we have enough water
-    if len(water.full_system)/3 < total_water_and_salt:
-        raise ValueError, "Too few waters after superposition: %d %d" % (
-                          len(water.full_system)/3, total_water_and_salt)
+    if len(water.full_system)//3 < total_water_and_salt:
+        raise ValueError("Too few waters after superposition: %d %d" % (
+                          len(water.full_system)//3, total_water_and_salt))
 
     sys.stderr.write("Finished bump-checking water against lipid\n")
     sys.stderr.write("Current # water molecules: %d\n" %
-                                    (len(water.full_system)/3))
+                                    (len(water.full_system)//3))
     sys.stderr.write("Adding salt\n")
 
     # regenerate the list of oxygens
@@ -369,10 +361,10 @@ if __name__ == '__main__':
         salts.append(ions)
 
     # verify we have enough water
-    num_waters = len(water.full_system)/3
+    num_waters = len(water.full_system)//3
     if num_waters < config.water.numres:
-        raise ValueError, "Too few waters after exchanging salt: %d %d" % (
-                          num_waters, config.water.numres)
+        raise ValueError("Too few waters after exchanging salt: %d %d" % (
+                          num_waters, config.water.numres))
 
     # if we have too many waters, need to delete the difference
     if num_waters > config.water.numres:
@@ -390,17 +382,17 @@ if __name__ == '__main__':
 
     # renumber the residues
     for i in range(len(water.full_system)):
-        res = i/3 + 1
+        res = i//3 + 1
         water.full_system[i].resid(res)
 
     # Replace some of the waters with the internal waters from the protein.
     if config.protein is not None and config.protein.has_water:
-        if config.water.numres < len(config.protein.water_seg())/3:
-            raise ValueError, "Protein has more internal waters than the total target: %d %d" % (
-                     config.water.numres,  len(config.protein.water_seg())/3 )
-        water.full_system.copyCoordinatesFrom(config.protein.water_seg(), 0,
+        if config.water.numres < len(config.protein.water_seg())//3:
+            raise ValueError("Protein has more internal waters than the total target: %d %d" % (
+             config.water.numres,  len(config.protein.water_seg())//3))
+        water.full_system.copyCoordinatesFrom(config.protein.water_seg(),
+                                              0,
                                               len(config.protein.water_seg()))
-
 
     sys.stderr.write("Assembling final system and writing out coordinates\n")
     # append water and salt to the full system
@@ -417,7 +409,7 @@ if __name__ == '__main__':
     system.clearBonds()
 
     # write out a final pdb file
-    final_pdbfile = open(os.path.join(config.directory,"final.pdb"), "w")
+    final_pdbfile = open(os.path.join(config.directory, "final.pdb"), "w")
     final_pdb = loos.PDB.fromAtomicGroup(system)
     final_pdbfile.write(str(final_pdb))
     final_pdbfile.close()
@@ -431,7 +423,6 @@ if __name__ == '__main__':
     psf_script.write(psfgen_script)
     psf_script.close()
 
-
     # If there's a protein, the above psfgen script will depend on the protein's
     # psf file, so we should copy that into the directory as well
     if config.protein is not None:
@@ -442,7 +433,6 @@ if __name__ == '__main__':
     os.chdir(config.directory)
     psfgen = PSFGen.PSFGen(psfgen_script, config.psfgen_binary)
     psfgen.run()
-
 
     # now, read the psf back in and check the total charge
     full_system = loos.createSystem(config.psfname)

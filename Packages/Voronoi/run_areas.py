@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Compute areas for different sets of atoms within a particular slice along the membrane
 normal.
@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
-        print """
+        print("""
 
 Usage:
 program system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]
@@ -28,11 +28,11 @@ padding: floating point number specifying how many extra layers of atoms are gen
 selection-string1: the set of atoms used to compute the voronoi decomposition
 selection-string2, etc: sets of atoms for which areas are reported
 
-Notes 
+Notes
     1) all selections are forced to be subsets of the initial selection.  This is
        necessary for the mapping of areas to work correctly.
     2) this program assumes that the system has already been centered such that
-       the z location of the membrane isn't drifting (z-slices are absolute, not 
+       the z location of the membrane isn't drifting (z-slices are absolute, not
        relative to the membrane center) and such that the periodic box
        is centered at x=y=0.
 
@@ -66,10 +66,10 @@ Example selection choices:
 
 
 
-        """
+        """)
         sys.exit(0)
     elif len(sys.argv) < 8 or sys.argv[1] == "-h" or sys.argv[1] == "--h":
-        print sys.argv[0], " system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]"
+        print(sys.argv[0], " system trajectory skip zmin zmax padding selection-string1 [selection-string2 ...]")
         sys.exit(0)
 
 
@@ -83,7 +83,7 @@ Example selection choices:
                                      # in area calculations, all others tell you
                                      # how to group the areas
 
-    print "# ", " ".join(sys.argv)
+    print("# ", " ".join(sys.argv))
 
     system = loos.createSystem(system_filename)
     traj = loos.createTrajectory(traj_filename, system)
@@ -103,7 +103,7 @@ Example selection choices:
     for i in range(len(selections)):
         string += "\tArea" + str(i)
 
-    print "# Frame", string
+    print("# Frame", string)
     while (traj.readFrame()):
         traj.updateGroupCoords(system)
         system.reimageByAtom()
@@ -120,5 +120,5 @@ Example selection choices:
             sr = SuperRegion()
             sr.buildFromAtoms(slicer(s), v)
             areas.append(sr.area())
-        print frame, "\t".join(map(str,areas))
+        print(frame, "\t".join(map(str,areas)))
         frame += 1

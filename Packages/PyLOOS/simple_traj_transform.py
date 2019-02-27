@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-simple_traj_transform.py : simple skeleton of a program that reads in a 
+simple_traj_transform.py : simple skeleton of a program that reads in a
     a structure and trajectory, selects a subset, does something, and
     writes out a new trajectory
 
@@ -13,7 +13,7 @@ import loos.pyloos
 import sys
 
 header = " ".join(sys.argv)
-print "#", header
+print("#", header)
 
 # parse the command line arguments -- in a more complex example,
 # you'd use the argparse module
@@ -22,7 +22,7 @@ trajectory_filename = sys.argv[2]
 selection_string = sys.argv[3]
 output_trajectory_name = sys.argv[4]
 
-# Create the system 
+# Create the system
 model = loos.createSystem(model_filename)
 
 # Select a subset of the system
@@ -54,8 +54,8 @@ for frame in traj:
         first_frame = False
 
         # Renumber the so that the atoms in the selection are
-        # are sequential (using a copy so we don't screw up the 
-        # original. 
+        # are sequential (using a copy so we don't screw up the
+        # original.
         frame_copy = subset.copy()
         frame_copy.pruneBonds()
         frame_copy.renumber()
@@ -63,6 +63,4 @@ for frame in traj:
         # make a PDB object
         pdb = loos.PDB.fromAtomicGroup(frame_copy)
         pdb.remarks().add(header)
-        print pdb
-
-
+        print(pdb)
