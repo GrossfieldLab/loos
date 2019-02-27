@@ -86,7 +86,6 @@ env = Environment(ENV=os.environ, options=opts,
                   SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'], SHLIBPREFIX="")
 
 
-
 Help(opts.GenerateHelpText(env))
 
 checkForDeprecatedOptions(env)
@@ -133,6 +132,8 @@ profile_opts='-O3 -DNDEBUG -Wall -g'
 env.Prepend(CPPPATH = ['#', '#src'])
 env.Prepend(LIBPATH = ['#', '#src'])
 env.Append(LEXFLAGS=['-s'])
+env.Append(CPPFLAGS=['-pthread'])
+env.Append(LIBS=['pthread'])
 
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':
