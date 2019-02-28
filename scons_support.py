@@ -164,8 +164,9 @@ def script_builder_python(target, source, env):
         loos_pythonpath = loos_dir + '/lib'
 
     if loos_build_config.host_type == 'Darwin':
-        conda_lib = conda_path + '/lib'
-        ldlibrary.remove(conda_lib)
+        if conda_path is not None:
+            conda_lib = conda_path + '/lib'
+            ldlibrary.remove(conda_lib)
     
        
     file = open(str(source[0]), 'r')
