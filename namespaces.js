@@ -13,6 +13,7 @@ var namespaces =
     [ "inside_helices", "namespaceinside__helices.html", null ],
     [ "lipid_lifetime", "namespacelipid__lifetime.html", null ],
     [ "loos", "namespaceloos.html", "namespaceloos" ],
+    [ "NAMDBin", "namespace_n_a_m_d_bin.html", null ],
     [ "renum", "namespacerenum.html", null ],
     [ "rmsd_to_average", "namespacermsd__to__average.html", null ],
     [ "run_areas", "namespacerun__areas.html", null ],

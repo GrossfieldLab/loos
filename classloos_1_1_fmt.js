@@ -11,7 +11,7 @@ var classloos_1_1_fmt =
     [ "general", "classloos_1_1_fmt.html#ace1c8a394b76a2f42227f2bee2ec54fb", null ],
     [ "internal", "classloos_1_1_fmt.html#ab717da534c8f092a11aec0e1ae8ce5b3", null ],
     [ "left", "classloos_1_1_fmt.html#a0d07bf6596431c52272a5dcf8f896415", null ],
-    [ "operator()", "classloos_1_1_fmt.html#a45e9893923d440301d36f1a9dbed36c8", null ],
+    [ "operator()", "classloos_1_1_fmt.html#acccd014ba81e09829483a3f7b1c0e8e8", null ],
     [ "plus", "classloos_1_1_fmt.html#a23fa4c23cf08caf46114c6df133792db", null ],
     [ "precision", "classloos_1_1_fmt.html#afebe798c91749943199be7c97e0049c4", null ],
     [ "right", "classloos_1_1_fmt.html#a48831eb8cadac88ffc74203a3ffcd7f9", null ],

@@ -9,5 +9,7 @@ var searchData=
   ['waterfiltercore',['WaterFilterCore',['../classloos_1_1_density_tools_1_1_water_filter_core.html',1,'loos::DensityTools']]],
   ['waterfilterdecorator',['WaterFilterDecorator',['../classloos_1_1_density_tools_1_1_water_filter_decorator.html',1,'loos::DensityTools']]],
   ['waterfilterradius',['WaterFilterRadius',['../classloos_1_1_density_tools_1_1_water_filter_radius.html',1,'loos::DensityTools']]],
-  ['waterhistogrammer',['WaterHistogrammer',['../classloos_1_1_density_tools_1_1_water_histogrammer.html',1,'loos::DensityTools']]]
+  ['waterhistogrammer',['WaterHistogrammer',['../classloos_1_1_density_tools_1_1_water_histogrammer.html',1,'loos::DensityTools']]],
+  ['weights',['Weights',['../classloos_1_1_weights.html',1,'loos']]],
+  ['weightsoptions',['WeightsOptions',['../classloos_1_1_options_framework_1_1_weights_options.html',1,'loos::OptionsFramework']]]
 ];

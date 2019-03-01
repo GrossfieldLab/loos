@@ -184,6 +184,7 @@ var hierarchy =
       [ "loos::OptionsFramework::RequiredArguments", "classloos_1_1_options_framework_1_1_required_arguments.html", null ],
       [ "loos::OptionsFramework::TrajectoryWithFrameIndices", "classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html", null ],
       [ "loos::OptionsFramework::TwoModelsWithCoords", "classloos_1_1_options_framework_1_1_two_models_with_coords.html", null ],
+      [ "loos::OptionsFramework::WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ]
@@ -280,6 +281,7 @@ var hierarchy =
       [ "loos::DensityTools::WaterFilterRadius", "classloos_1_1_density_tools_1_1_water_filter_radius.html", null ]
     ] ],
     [ "loos::DensityTools::WaterHistogrammer", "classloos_1_1_density_tools_1_1_water_histogrammer.html", null ],
+    [ "loos::Weights", "classloos_1_1_weights.html", null ],
     [ "loos::internal::XDRReader", "classloos_1_1internal_1_1_x_d_r_reader.html", null ],
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],

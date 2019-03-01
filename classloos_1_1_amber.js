@@ -4,8 +4,8 @@ var classloos_1_1_amber =
     [ "~Amber", "classloos_1_1_amber.html#a140526907ca341f3cbbae9fc32be3c15", null ],
     [ "Amber", "classloos_1_1_amber.html#a9d448b682cd825c495e8ad048e755098", null ],
     [ "Amber", "classloos_1_1_amber.html#a3ef2dc562b9671dd29081ba744b4c3a4", null ],
-    [ "clone", "classloos_1_1_amber.html#a604860e739ed2aea60859fa00617ee6b", null ],
-    [ "copy", "classloos_1_1_amber.html#ac48653d3a098498dc9a44462458f925a", null ],
+    [ "clone", "classloos_1_1_amber.html#abbed41ab7a29e2de2cdb95357a10affb", null ],
+    [ "copy", "classloos_1_1_amber.html#a9e40574cf0386b975b4b8102b28a52c2", null ],
     [ "read", "classloos_1_1_amber.html#a781405aed1c925048b847f2e745e3062", null ],
-    [ "title", "classloos_1_1_amber.html#a6941af2f085fb63f4c8d1c48ae4d99cd", null ]
+    [ "title", "classloos_1_1_amber.html#ac708c5ae1867cb22a6e4110d6eaa1253", null ]
 ];

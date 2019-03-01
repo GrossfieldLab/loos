@@ -98,6 +98,7 @@ var namespaceloos =
     [ "UnsetProperty", "classloos_1_1_unset_property.html", "classloos_1_1_unset_property" ],
     [ "UserTimer", "classloos_1_1_user_timer.html", "classloos_1_1_user_timer" ],
     [ "WallTimer", "classloos_1_1_wall_timer.html", "classloos_1_1_wall_timer" ],
+    [ "Weights", "classloos_1_1_weights.html", "classloos_1_1_weights" ],
     [ "XDRDataSizeError", "structloos_1_1_x_d_r_data_size_error.html", "structloos_1_1_x_d_r_data_size_error" ],
     [ "XForm", "classloos_1_1_x_form.html", "classloos_1_1_x_form" ],
     [ "XTC", "classloos_1_1_x_t_c.html", "classloos_1_1_x_t_c" ],

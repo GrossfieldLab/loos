@@ -1,7 +1,7 @@
 <map id="ENM::SuperBlockDecorator" name="ENM::SuperBlockDecorator">
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian. " alt="" coords="75,363,202,389"/>
-<area shape="rect" id="node3" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions. " alt="" coords="5,273,152,300"/>
-<area shape="rect" id="node4" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually) " alt="" coords="176,273,307,300"/>
-<area shape="rect" id="node5" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox. " alt="" coords="100,184,265,211"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="305,95,421,121"/>
+<area shape="rect" id="node2" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian. " alt="" coords="76,352,203,377"/>
+<area shape="rect" id="node3" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions. " alt="" coords="5,265,153,291"/>
+<area shape="rect" id="node4" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually) " alt="" coords="178,265,309,291"/>
+<area shape="rect" id="node5" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox. " alt="" coords="101,179,268,204"/>
+<area shape="rect" id="node7" title="STL class. " alt="" coords="308,92,421,117"/>
 </map>

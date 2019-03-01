@@ -1,9 +1,9 @@
 <map id="CalcProperty&lt; T &gt;" name="CalcProperty&lt; T &gt;">
-<area shape="rect" id="node3" href="$class_calc_property.html" title="CalcProperty\&lt; double \&gt;" alt="" coords="109,178,269,205"/>
-<area shape="rect" id="node7" href="$class_calc_property.html" title="CalcProperty\&lt; loos\l::GCoord \&gt;" alt="" coords="335,171,469,212"/>
-<area shape="rect" id="node2" href="$class_calc_property_base.html" title="CalcPropertyBase" alt="" coords="210,5,338,32"/>
-<area shape="rect" id="node4" href="$class_calc_density.html" title="CalcDensity" alt="" coords="5,261,100,288"/>
-<area shape="rect" id="node5" href="$class_calc_height.html" title="CalcHeight" alt="" coords="124,261,211,288"/>
-<area shape="rect" id="node6" href="$class_calc_mol_order.html" title="CalcMolOrder" alt="" coords="235,261,337,288"/>
-<area shape="rect" id="node8" href="$class_calc_orient_vector.html" title="CalcOrientVector" alt="" coords="361,261,483,288"/>
+<area shape="rect" id="node3" href="$class_calc_property.html" title="CalcProperty\&lt; double \&gt;" alt="" coords="94,173,255,199"/>
+<area shape="rect" id="node7" href="$class_calc_property.html" title="CalcProperty\&lt; loos\l::GCoord \&gt;" alt="" coords="334,167,468,205"/>
+<area shape="rect" id="node2" href="$class_calc_property_base.html" title="CalcPropertyBase" alt="" coords="198,5,327,31"/>
+<area shape="rect" id="node4" href="$class_calc_density.html" title="CalcDensity" alt="" coords="5,255,98,280"/>
+<area shape="rect" id="node5" href="$class_calc_height.html" title="CalcHeight" alt="" coords="122,255,208,280"/>
+<area shape="rect" id="node6" href="$class_calc_mol_order.html" title="CalcMolOrder" alt="" coords="232,255,335,280"/>
+<area shape="rect" id="node8" href="$class_calc_orient_vector.html" title="CalcOrientVector" alt="" coords="360,255,482,280"/>
 </map>

@@ -6,6 +6,6 @@ var classloos_1_1internal_1_1_value_stack =
     [ "peek", "classloos_1_1internal_1_1_value_stack.html#aad597344cc8316700704e37984d81b03", null ],
     [ "pop", "classloos_1_1internal_1_1_value_stack.html#a0529b9e4b304e292a5e572510bd470df", null ],
     [ "push", "classloos_1_1internal_1_1_value_stack.html#ae25ba48c77ab5e6d8a52dddaf0701261", null ],
-    [ "size", "classloos_1_1internal_1_1_value_stack.html#a144f264e3fad04b55223e7ae36d35bf3", null ],
+    [ "size", "classloos_1_1internal_1_1_value_stack.html#a346ff606faa84de1c3325968516fc41d", null ],
     [ "operator<<", "classloos_1_1internal_1_1_value_stack.html#ab48a4eafe9d921f258e841dd72165066", null ]
 ];

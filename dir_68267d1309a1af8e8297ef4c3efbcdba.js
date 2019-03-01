@@ -111,6 +111,8 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "utils_random.hpp", "utils__random_8hpp_source.html", null ],
     [ "utils_structural.cpp", "utils__structural_8cpp_source.html", null ],
     [ "utils_structural.hpp", "utils__structural_8hpp_source.html", null ],
+    [ "Weights.cpp", "_weights_8cpp_source.html", null ],
+    [ "Weights.hpp", "_weights_8hpp_source.html", null ],
     [ "xdr.hpp", "xdr_8hpp_source.html", null ],
     [ "XForm.cpp", "_x_form_8cpp_source.html", null ],
     [ "XForm.hpp", "_x_form_8hpp_source.html", null ],

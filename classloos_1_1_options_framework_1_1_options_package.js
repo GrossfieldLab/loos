@@ -5,7 +5,7 @@ var classloos_1_1_options_framework_1_1_options_package =
     [ "addHidden", "classloos_1_1_options_framework_1_1_options_package.html#adb61118b00242405572c40151e6ce882", null ],
     [ "addPositional", "classloos_1_1_options_framework_1_1_options_package.html#a801afa56a4f13e5fb0df512cb1dff607", null ],
     [ "check", "classloos_1_1_options_framework_1_1_options_package.html#a81ead5c30af974456190233e04552a41", null ],
-    [ "help", "classloos_1_1_options_framework_1_1_options_package.html#ae99a6da2e282d4525aaa1963d70bc7bb", null ],
+    [ "help", "classloos_1_1_options_framework_1_1_options_package.html#aeac98e2ca1114b1f818d2efe95b184a3", null ],
     [ "postConditions", "classloos_1_1_options_framework_1_1_options_package.html#abccff0d277b2e3a9b61bf01bd0c0855f", null ],
-    [ "print", "classloos_1_1_options_framework_1_1_options_package.html#ace8f6497a903ed731abece74863104c0", null ]
+    [ "print", "classloos_1_1_options_framework_1_1_options_package.html#acce3a4b59ee188daea2ce484c82be0bf", null ]
 ];

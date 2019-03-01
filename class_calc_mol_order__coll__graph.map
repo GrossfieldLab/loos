@@ -1,5 +1,5 @@
 <map id="CalcMolOrder" name="CalcMolOrder">
-<area shape="rect" id="node2" href="$class_calc_property.html" title="CalcProperty\&lt; double \&gt;" alt="" coords="5,171,165,197"/>
-<area shape="rect" id="node3" href="$class_calc_property_base.html" title="CalcPropertyBase" alt="" coords="16,5,144,32"/>
-<area shape="rect" id="node4" href="$class_calc_property.html" title="CalcProperty\&lt; T \&gt;" alt="" coords="101,81,232,108"/>
+<area shape="rect" id="node2" href="$class_calc_property.html" title="CalcProperty\&lt; double \&gt;" alt="" coords="5,167,167,192"/>
+<area shape="rect" id="node3" href="$class_calc_property_base.html" title="CalcPropertyBase" alt="" coords="34,5,162,31"/>
+<area shape="rect" id="node4" href="$class_calc_property.html" title="CalcProperty\&lt; T \&gt;" alt="" coords="102,80,231,105"/>
 </map>
