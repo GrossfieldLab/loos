@@ -4,27 +4,16 @@
 
 
 ## Getting Help
-* New Releases: https://lists.sourceforge.net/lists/listinfo/loos-announce
-* User Support: https://lists.sourceforge.net/lists/listinfo/loos-users
-* Development:  https://lists.sourceforge.net/lists/listinfo/loos-devel
-
-You can also contact us directly at loos.maintainer@gmail.com
+* Raise an issue here on GitHub.
+* You can also contact us directly at loos.maintainer@gmail.com
 
 ## Documentation
 
-Documentation is currently available online at http://loos.sourceforge.net or
-http://grossfieldlab.github.io/loos/, and is bundled with the official release
-downloads.  If you are cloning from GitHub, then local documentation will need
-to be built using Doxygen.  See the [INSTALL](INSTALL.md) file for more
+Documentation is currently available online at
+http://grossfieldlab.github.io/loos/.
+If you want a local copy of the documentation, you can build it by
+running Doxygen in the main LOOS directory.  See the [INSTALL](INSTALL.md) file for more
 details.
-
-## IMPORTANT NOTE FOR MACOS 10.11 "EL CAPITAN" USERS
-
-There is a problem with using PyLOOS with the new System Integrity
-Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
-for more information about SIP).  We are aware of this and working on
-a decent solution.  See the Mac section of the [INSTALL](INSTALL.md) file for more
-details. 
 
 ## Using LOOS from GitHub
 
@@ -35,12 +24,15 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
-We recommend that, unless you want to develop with LOOS, you
-stick to downloading releases either by using tags, the releases tab
-in GitHub, or downloading a release tarball from sourceforge.
+We don't release all that often, but we maintain the master branch in a correct and usable state.  All development is done in other branches, and merged once we believe it's correct.
+
 
 For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
+
+### Release 3.0.0
+
+This is a major release.  Most notably, from the development side we've converted from python 2.7 to python 3.x for better long-term interoperability. We've also finally dropped SourceForge as a distribution platform (the old site forwards here), and are deprecating the old mailing lists.  Instead, to keep abreast of LOOS development, we suggest following the project on GitHub.  Similarly, we recommend raising issues on GitHub as the best way to ask for support, although emailing us directly at loos.maintainer@gmail.com will also work.
 
 
 ### Release 2.3.3 (beta)

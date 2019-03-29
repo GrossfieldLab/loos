@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import glob
@@ -16,7 +16,7 @@ class LipidLibrary:
     def __init__(self, path):
        self.path = path
        if not os.path.exists(path):
-           print self.error_message()
+           print(self.error_message())
            sys.exit()
 
        all_files = os.listdir(self.path)
@@ -28,14 +28,14 @@ class LipidLibrary:
                 self.structures.append(file)
 
        if self.size() == 0:
-           print self.error_message()
+           print(self.error_message())
            sys.exit()
 
     def size(self):
         return len(self.structures)
 
     def pick_structure(self):
-        # pick a structure file at random, and build up the filename 
+        # pick a structure file at random, and build up the filename
         filename = os.path.join(self.path, random.choice(self.structures))
 
         # read the file

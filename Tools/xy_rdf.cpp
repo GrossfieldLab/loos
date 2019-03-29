@@ -5,7 +5,7 @@
   Grossfield Lab
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
- 
+
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
@@ -49,8 +49,8 @@ bool reselect_leaflet = false;
 class ToolOptions : public opts::OptionsPackage
 {
 public:
-  
-  void addGeneric(po::options_description& o) 
+
+  void addGeneric(po::options_description& o)
   {
     o.add_options()
       ("split-mode",po::value<string>(&split_by)->default_value("by-molecule"), "how to split the selections (by-residue, molecule, segment)")
@@ -70,7 +70,7 @@ public:
       ("sel2", po::value<string>(&selection2), "second selection")
       ("hist-min", po::value<double>(&hist_min), "Histogram minimum")
       ("hist-max", po::value<double>(&hist_max), "Histogram maximum")
-      ("num-bins", po::value<int>(&num_bins), "Histogram bins"); 
+      ("num-bins", po::value<int>(&num_bins), "Histogram bins");
   }
 
   void addPositional(po::positional_options_description& p) {
@@ -83,7 +83,7 @@ public:
 
   bool check(po::variables_map& vm)
   {
-    return(!(vm.count("sel1") 
+    return(!(vm.count("sel1")
              && vm.count("hist-min")
              && vm.count("hist-max")
              && vm.count("num-bins")));
@@ -95,11 +95,11 @@ public:
       selection2 = selection1;
     sel1_spans = false;
     sel2_spans = false;
-    if (vm.count("sel1-spans")) 
+    if (vm.count("sel1-spans"))
         {
         sel1_spans = true;
         }
-    if (vm.count("sel2-spans")) 
+    if (vm.count("sel2-spans"))
         {
         sel2_spans = true;
         }
@@ -107,6 +107,12 @@ public:
     if (vm.count("reselect"))
         {
         reselect_leaflet = true;
+        }
+    if ( (timeseries_interval > 0) && vm.count("weights"))
+        {
+        cerr << "Cannot specify reweighting and time series at the same time"
+             << endl;
+        return(false);
         }
     return(true);
   }
@@ -242,7 +248,7 @@ string s =
     "new average every 100 frames considering only the frames in that interval.\n"
     "The files will appear in the directory \"foo\", with names rdf_0.dat, \n"
     "rdf_1.dat, etc.  The program does not attempt to create \"foo\" if it \n"
-    "doesn't exist, and instead will simply exit.\n" 
+    "doesn't exist, and instead will simply exit.\n"
     "\n"
     "Note: the 5th column (\"Cum\") is not a density like the other values, \n"
     "but rather the absolute number of molecules of the second selection \n"
@@ -288,12 +294,14 @@ int main (int argc, char *argv[])
 string hdr = invocationHeader(argc, argv);
 opts::BasicOptions* bopts = new opts::BasicOptions(fullHelpMessage());
 opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
+opts::WeightsOptions* wopts = new opts::WeightsOptions;
 ToolOptions* topts = new ToolOptions;
 
 opts::AggregateOptions options;
-options.add(bopts).add(tropts).add(topts);
+options.add(bopts).add(tropts).add(topts).add(wopts);
 if (!options.parse(argc, argv))
   exit(-1);
+
 
 
 // parse the split mode, barf if you can't do it
@@ -303,12 +311,18 @@ cout << "# " << invocationHeader(argc, argv) << endl;
 
 // copy the command line variables to real variable names
 AtomicGroup system = tropts->model;
-pTraj traj = tropts->trajectory;
+pTraj traj = tropts->trajectory;;
 if (!(system.isPeriodic() || traj->hasPeriodicBox()))
   {
   cerr << "Error- Either the model or the trajectory must have periodic box information.\n";
   exit(-1);
   }
+
+// Attach trajectory to weights
+if (wopts->has_weights)
+    {
+    wopts->weights.add_traj(traj);
+    }
 
 double bin_width = (hist_max - hist_min)/num_bins;
 
@@ -329,7 +343,7 @@ if (group2.empty())
 group2.pruneBonds();
 
 // Split the groups into chunks, depending on how the user asked
-// us to.  
+// us to.
 vector<AtomicGroup> g1_mols, g2_mols;
 if (split == BY_MOLECULE)
     {
@@ -351,7 +365,7 @@ else if (split == BY_SEGMENT)
 traj->updateGroupCoords(system);
 
 // Now that we have some real coordinates, we need to subdivide the groups
-// one more time, into upper and lower leaflets. This assumes that the 
+// one more time, into upper and lower leaflets. This assumes that the
 // coordinates are properly centered and imaged.
 vector<AtomicGroup> g1_upper, g1_lower;
 vector<AtomicGroup> g2_upper, g2_lower;
@@ -380,23 +394,33 @@ double max2 = hist_max*hist_max;
 // loop over the frames of the traj file
 double area = 0.0;
 double interval_area = 0.0;
-uint cum_upper_pairs = 0;
-uint cum_lower_pairs = 0;
-uint interval_upper_pairs = 0;
-uint interval_lower_pairs = 0;
+double cum_upper_pairs = 0.0;
+double cum_lower_pairs = 0.0;
+double interval_upper_pairs = 0.0;
+double interval_lower_pairs = 0.0;
 
 vector<uint> framelist = tropts->frameList();
 uint framecnt = framelist.size();
 
 
-for (uint index = 0; index<framecnt; ++index) 
+for (uint index = 0; index<framecnt; ++index)
     {
     // update coordinates and periodic box
     traj->readFrame(framelist[index]);
     traj->updateGroupCoords(system);
-    GCoord box = system.periodicBox(); 
-    area += box.x() * box.y();
-    interval_area += box.x() * box.y();
+
+    // If this is a reweighting calculation, get the weight.
+    // Otherwise, use 1.0
+    double weight = 1.0;
+    if (wopts->has_weights)
+        {
+        weight = wopts->weights();
+        wopts->weights.accumulate();
+        }
+
+    GCoord box = system.periodicBox();
+    area += weight*(box.x() * box.y());
+    interval_area += weight*(box.x() * box.y());
 
     if (reselect_leaflet)
         {
@@ -416,8 +440,8 @@ for (uint index = 0; index<framecnt; ++index)
                 continue;
                 }
 
-            cum_lower_pairs++;
-            interval_lower_pairs++;
+            cum_lower_pairs+=weight;
+            interval_lower_pairs+=weight;
 
             GCoord p2 = g2_lower[k].centerOfMass();
             GCoord displ = (p2 - p1);
@@ -427,7 +451,7 @@ for (uint index = 0; index<framecnt; ++index)
                 {
                 double d = sqrt(d2);
                 int bin = int((d-hist_min)/bin_width);
-                hist_lower[bin]++;
+                hist_lower[bin]+=weight;
                 }
             }
         }
@@ -444,8 +468,8 @@ for (uint index = 0; index<framecnt; ++index)
                 continue;
                 }
 
-            cum_upper_pairs++;
-            interval_lower_pairs++;
+            cum_upper_pairs+=weight;
+            interval_lower_pairs+=weight;
 
             GCoord p2 = g2_upper[k].centerOfMass();
             GCoord displ = (p2 - p1);
@@ -455,7 +479,7 @@ for (uint index = 0; index<framecnt; ++index)
                 {
                 double d = sqrt(d2);
                 int bin = int((d-hist_min)/bin_width);
-                hist_upper[bin]++;
+                hist_upper[bin]+=weight;
                 }
             }
         }
@@ -514,7 +538,7 @@ for (uint index = 0; index<framecnt; ++index)
 
         out << endl; // blank line for gnuplot
         out.close();
-        
+
         // sum up the total histograms
         for (int i=0; i<num_bins; ++i)
             {
@@ -535,7 +559,9 @@ for (uint index = 0; index<framecnt; ++index)
     }
 
 // normalize the area
-area /= framecnt;
+// Not necessary if we're doing reweighting, since they're already
+// normalized
+if (!wopts->has_weights) area /= framecnt;
 
 // If we didn't write timeseries, then we need to copy the interval histograms
 // to the total ones.  If we did, we need to add in the additional data points
@@ -582,8 +608,21 @@ for (int i = 0; i < num_bins; i++)
 
     double total = (hist_upper_total[i] + hist_lower_total[i])/
                         (norm*(upper_expected + lower_expected));
-    cum += (hist_upper_total[i] + hist_lower_total[i])
-                   /group1.size();
+    if (wopts->has_weights)
+        {
+        upper /= wopts->weights.totalWeight();
+        lower /= wopts->weights.totalWeight();
+        total /= wopts->weights.totalWeight();
+        }
+
+    double cum_increment = (hist_upper_total[i] + hist_lower_total[i]) /
+                                    group1.size();
+    if (wopts->has_weights)
+        {
+        cum_increment *= framecnt / wopts->weights.totalWeight();
+        }
+
+    cum += cum_increment;
 
     cout << d     << "\t"
          << total << "\t"
@@ -593,4 +632,3 @@ for (int i = 0; i < num_bins; i++)
 
     }
 }
-

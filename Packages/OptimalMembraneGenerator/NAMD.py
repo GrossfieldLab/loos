@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import subprocess
 import sys
@@ -7,7 +7,7 @@ import loos
 
 # @cond TOOLS_INTERNAL
 class NAMD:
-    
+
     def __init__(self, psf_file, start_pdb, end_pdb, param_file, box,
                  command):
         self.psf_file = psf_file
@@ -21,7 +21,7 @@ class NAMD:
             self.command = command
 
         # in case we're going to do constraints, construct this filename
-        self.cons_k_filename = self.start_pdb[:-4] + ".cons.pdb" 
+        self.cons_k_filename = self.start_pdb[:-4] + ".cons.pdb"
 
         self.x_box = box.x()
         self.y_box = box.y()
@@ -87,7 +87,7 @@ class NAMD:
         pdb_file = open(os.path.join(directory,self.cons_k_filename), "w")
         pdb_file.write(str(pdb))
         pdb_file.close()
-        
+
 
     def construct_constraints(self):
         lines = [ "constraints on",
@@ -111,10 +111,10 @@ class NAMD:
         """
         outfile = open(outfilename, "w")
         try:
-            subprocess.check_call([self.command, "+p4", inputfilename], 
+            subprocess.check_call([self.command, "+p4", inputfilename],
                                   stdout=outfile)
         except subprocess.CalledProcessError:
-            sys.stderr.write("NAMD call failed, inp = %s, out = %s\n" % 
+            sys.stderr.write("NAMD call failed, inp = %s, out = %s\n" %
                              (inputfilename, outfilename))
             sys.exit(-1)
 
@@ -155,20 +155,20 @@ if __name__ == '__main__':
 
     box = loos.GCoord(377, 377, 1000)
     n = NAMD("generated.psf", "t.pdb", "end", "toppar/par_build.inp", box)
-    print n.construct_header()
+    print(n.construct_header())
 
-    print n.construct_box()
+    print(n.construct_box())
 
     box[0] = 60
     n.update_box(box)
-    print n.construct_box()
+    print(n.construct_box())
     box[0] = 377
     n.update_box(box)
 
-    print n.construct_mini()
+    print(n.construct_mini())
     #print n.construct_mini(1000)
 
     n.write_inputfile("n.inp", 50)
-    print "launching NAMD"
+    print("launching NAMD")
     n.run_namd("n.inp", "n.out")
-    print "finished NAMD"
+    print("finished NAMD")

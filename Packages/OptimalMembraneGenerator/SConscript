@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  This file is part of LOOS.
 #
 #  LOOS (Lightweight Object-Oriented Structure library)
@@ -38,13 +38,13 @@ if int(env['pyloos']):
     for f in Split(executables + ' ' + dirs):
         Command(PREFIX + f, f, [
                 Copy("$TARGET", "$SOURCE"),
-                Chmod("$TARGET", 0755)
+                Chmod("$TARGET", 0o755)
                 ])
 
     for d in Split(files):
         Command(PREFIX + d, d, [
                 Copy("$TARGET", "$SOURCE"),
-                Chmod("$TARGET", 0644)
+                Chmod("$TARGET", 0o644)
                 ])
 
 # dummy return...

@@ -38,7 +38,7 @@ if env['pyloos']:
         Command(PREFIX + pyapp, pyapp,
                 [
                   Copy("$TARGET", "$SOURCE"),
-                  Chmod("$TARGET", 0755)
+                  Chmod("$TARGET", 0o755)
                 ]
                )
 

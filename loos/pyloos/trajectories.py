@@ -151,7 +151,7 @@ class Trajectory(object):
         """Reset the iterator"""
         self._index = 0
 
-    def next(self):
+    def __next__(self):
         if (self._index >= len(self._framelist)):
             raise StopIteration
         frame = self.__getitem__(self._index)
@@ -510,7 +510,7 @@ class VirtualTrajectory(object):
     def reset(self):
         self._index = 0
 
-    def next(self):
+    def __next__(self):
         if self._stale:
             self._initFrameList()
         if (self._index >= len(self._framelist)):

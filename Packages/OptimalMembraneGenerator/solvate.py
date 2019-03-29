@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -18,22 +18,21 @@ if len(sys.argv) > 2:
 if not os.path.exists(config.directory):
     sys.stderr.write("Creating directory %s\n" % config.directory)
     os.makedirs(config.directory)
-elif not os.access(config.directory, os.R_OK|os.W_OK|os.X_OK):
-    sys.stderr.write("Don't have access to directory %s\n" 
-                    % config.directory)
+elif not os.access(config.directory, os.R_OK | os.W_OK | os.X_OK):
+    sys.stderr.write("Don't have access to directory %s\n"
+                     % config.directory)
     sys.stderr.write("Will attempt to change permissions\n")
     try:
-        os.chmod(config.directory, 
-                 stat.S_IREAD|stat.S_IWRITE|stat.S_IEXEC)
+        os.chmod(config.directory,
+                 stat.S_IREAD | stat.S_IWRITE | stat.S_IEXEC)
     except OSError:
         sys.stderr.write(" Unable to change permissions on directory\n")
         os.exit(-1)
 
 
-
 # We need a model containing just the protein and lipid, so we'll
 # make a psfgen script, run it, use the psf to make the AtomicGroup,
-temporary_psfname = os.path.join(config.directory, config.psfname) 
+temporary_psfname = os.path.join(config.directory, config.psfname)
 psfgen_script = config.generate_psf(True, False, True, True, temporary_psfname)
 psfgen = PSFGen.PSFGen(psfgen_script, config.psfgen_binary)
 psfgen.run()
@@ -42,10 +41,8 @@ system = loos.createSystem(temporary_psfname)
 segments = []
 for segment in config.segments:
     s = loos.selectAtoms(system, 'segname == "' + segment.segname + '"')
-    if (len(s) == 0): 
-        sys.stderr.write("Selection failed assembling system: segment %s doesn't exist\n" %
-                          (segment.segname)
-                        )
+    if (len(s) == 0):
+        sys.stderr.write("Selection failed assembling system: segment %s doesn't exist\n" % (segment.segname))
         sys.stderr.write("Exiting...\n")
         sys.exit(0)
 
@@ -56,21 +53,20 @@ for segment in config.segments:
 if config.protein is not None:
     for s in config.protein.segments:
         current_seg = s[0].segid()
-        # Don't need to trap failed selection here, because we 
+        # Don't need to trap failed selection here, because we
         # already know this segment exists
         seg = loos.selectAtoms(system, 'segname == "' + current_seg + '"')
         seg.copyMappedCoordinatesFrom(s)
-
 
 
 sys.stderr.write("Beginning water box construction\n")
 # now add water and salt
 water_template = loos.GCoord(1.0, 1.0, 1.0)
 water_template *= config.water.box_size
-water_target = loos.GCoord(config.box.x(), config.box.y(), 
+water_target = loos.GCoord(config.box.x(), config.box.y(),
                            config.box.z())
-water = WaterBox.WaterBox(config.water.coords_filename, 
-                          water_template, water_target, 
+water = WaterBox.WaterBox(config.water.coords_filename,
+                          water_template, water_target,
                           config.water.segname)
 
 
@@ -80,17 +76,17 @@ for salt in config.salt:
     total_salt += salt.numres
 total_water_and_salt = total_salt + config.water.numres
 
-sys.stderr.write("Water box has %d waters before superposition\n" % 
-                 (len(water.full_system)/3))
+sys.stderr.write("Water box has %d waters before superposition\n" %
+                 (len(water.full_system)//3))
 sys.stderr.write("Final target: %d waters\n" % (config.water.numres))
 
 
-# Verify we have enough water.  We need enough to end up with 
+# Verify we have enough water.  We need enough to end up with
 # the planned number of waters, even after we remove one water molecule
 # for each ion we add.
-if len(water.full_system)/3 < total_water_and_salt:
-    raise ValueError, "Too few waters before superposition: %d %d" % (
-                      len(water.full_system)/3, total_water_and_salt)
+if len(water.full_system)//3 < total_water_and_salt:
+    raise ValueError("Too few waters before superposition: %d %d" % (
+                      len(water.full_system)//3, total_water_and_salt))
 
 # translate so that the water box is centered at the origin
 water.full_system.centerAtOrigin()
@@ -115,22 +111,20 @@ sys.stderr.write("Found %d clashing waters\n" % (len(clashing_oxygens)))
 # loop over the clashing oxygens, and find which residue each is in,
 # and remove the corresponding residues from the full water box
 for ox in clashing_oxygens:
-    i=0
-    #found = False
+    i = 0
     for w in water_residues:
         if ox in w:
             water.full_system.remove(w)
             break
-    i+=1
+    i += 1
 
 # verify we have enough water
-if len(water.full_system)/3 < total_water_and_salt:
-    raise ValueError, "Too few waters after superposition: %d %d" % (
-                      len(water.full_system)/3, total_water_and_salt)
+if len(water.full_system)//3 < total_water_and_salt:
+    raise ValueError("Too few waters after superposition: %d %d" % (
+                      len(water.full_system)//3, total_water_and_salt))
 
 sys.stderr.write("Finished bump-checking water against protein\n")
-sys.stderr.write("Current # water molecules: %d\n" % 
-                                (len(water.full_system)/3))
+sys.stderr.write("Current # water molecules: %d\n" % (len(water.full_system)//3))
 sys.stderr.write("Adding salt\n")
 
 # regenerate the list of oxygens
@@ -159,13 +153,13 @@ for salt in config.salt:
                 water_oxygens.remove(ox)
                 break
 
-    salts.append(ions) 
+    salts.append(ions)
 
 # verify we have enough water
-num_waters = len(water.full_system)/3
+num_waters = len(water.full_system)//3
 if num_waters < config.water.numres:
-    raise ValueError, "Too few waters after exchanging salt: %d %d" % (
-                      num_waters, config.water.numres)
+    raise ValueError("Too few waters after exchanging salt: %d %d" % (
+                      num_waters, config.water.numres))
 
 # if we have too many waters, need to delete the difference
 if num_waters > config.water.numres:
@@ -183,14 +177,14 @@ if num_waters > config.water.numres:
 
 # renumber the residues
 for i in range(len(water.full_system)):
-    res = i/3 + 1
+    res = i//3 + 1
     water.full_system[i].resid(res)
 
 # Replace some of the waters with the internal waters from the protein.
 if config.protein is not None and config.protein.has_water:
-    if config.water.numres < len(config.protein.water_seg())/3:
-        raise ValueError, "Protein has more internal waters than the total target: %d %d" % (
-                 config.water.numres,  len(config.protein.water_seg())/3 )
+    if config.water.numres < len(config.protein.water_seg())//3:
+        raise ValueError("Protein has more internal waters than the total target: %d %d" % (
+                 config.water.numres,  len(config.protein.water_seg())//3))
     water.full_system.copyCoordinatesFrom(config.protein.water_seg(), 0,
                                           len(config.protein.water_seg()))
 
@@ -205,17 +199,17 @@ system.renumber()
 system.periodicBox(config.box)
 
 # Note: all of the manipulation we do mangles the bond list.  Since
-#       we've got a psf anyway, we can safely remove the bond 
+#       we've got a psf anyway, we can safely remove the bond
 #       information here.
 system.clearBonds()
 
 # write out a final pdb file
-final_pdbfile = open(os.path.join(config.directory,"final.pdb"), "w")
+final_pdbfile = open(os.path.join(config.directory, "final.pdb"), "w")
 final_pdb = loos.PDB.fromAtomicGroup(system)
 final_pdbfile.write(str(final_pdb))
 final_pdbfile.close()
 
-# while we're at it, write out a script to generate a full psf as 
+# while we're at it, write out a script to generate a full psf as
 # well, then run psfgen  for them
 psf_script = open(os.path.join(config.directory,
                                "generate_full_psf.inp"), "w")
@@ -243,5 +237,4 @@ total_charge = full_system.totalCharge()
 if (abs(total_charge) > 1e-3):
     sys.stderr.write("\nWARNING WARNING WARNING WARNING\n")
     sys.stderr.write("System has a net charge of %f\n" % total_charge)
-    sys.stderr.write("This will likely cause pressure and area artifacts when you try to run with Ewald.\n")
-
+    sys.stderr.write("This will likely cause pressure artifacts when you try to run with Ewald.\n")

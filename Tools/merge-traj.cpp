@@ -1,12 +1,12 @@
 /*
-  merge-traj: combine multiple trajectories into a single long trajectory.  
+  merge-traj: combine multiple trajectories into a single long trajectory.
   If the target trajectory exists, append to it.
 
   Alan Grossfield
   Grossfield Lab
   Department of Biochemistry and Biophysics
   University of Rochester Medical School
- 
+
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
@@ -41,6 +41,9 @@ string model_name, output_traj, output_traj_downsample;
 string center_selection;
 string xy_center_selection;
 string z_center_selection;
+string postcenter_selection;
+string postcenter_xy_selection;
+string postcenter_z_selection;
 vector<string> input_dcd_list;
 int downsample_rate;
 bool skip_first_frame=false;
@@ -69,6 +72,9 @@ public:
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
       ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)\\D*$"), "Sort using a regular expression")
+      ("postcenter", po::value<string>(&postcenter_selection)->default_value(""), "Perform a final recentering using this selection")
+      ("postcenter-xy", po::value<string>(&postcenter_xy_selection)->default_value(""), "Perform a final xy recentering")
+      ("postcenter-z", po::value<string>(&postcenter_z_selection)->default_value(""), "Perform a final z recentering")
 
       ;
   }
@@ -79,13 +85,36 @@ public:
            << " xy: " << xy_center_selection
            << " z: " << z_center_selection
            << endl;
-      if ( (center_selection.length() != 0) &&
-           ( (xy_center_selection.length() !=0) || (z_center_selection.length() !=0)) )
-          {
-          cerr << "Can't specify both centering-selection and either xy-centering-selection or z-centering-selection" 
-              << endl;
-          return(false);
-          }
+           if ( (center_selection.length() != 0) &&
+                ( (xy_center_selection.length() !=0) || (z_center_selection.length() !=0)) )
+               {
+               cerr << "Can't specify both centering-selection and either xy-centering-selection or z-centering-selection"
+                   << endl;
+               return(false);
+               }
+           if ( (postcenter_selection.length() != 0) &&
+                ( (postcenter_xy_selection.length() !=0) || (postcenter_z_selection.length() !=0)) )
+               {
+               cerr << "Can't specify both postcenter and either postcentering-xy or postcenter-z"
+                   << endl;
+               return(false);
+               }
+
+          // Don't let them specify postcentering but not centering
+          if ( ( (postcenter_selection.length() != 0) ||
+               (postcenter_xy_selection.length() !=0) ||
+               (postcenter_z_selection.length() !=0) )
+               && !( (center_selection.length() != 0) ||
+                     (xy_center_selection.length() !=0) ||
+                     (z_center_selection.length() !=0) )
+             )
+             {
+             cerr << "Can't specify postcentering without regular centering"
+                  <<  endl;
+             return false;
+             }
+
+
       return(true);
       }
 
@@ -112,7 +141,7 @@ public:
 // TODO: need to fix the docs to reflect xy-centering and z-centering
 string fullHelpMessage(void)
     {
-    string s = 
+    string s =
    "\n"
    "SYNOPSIS\n"
    "\n"
@@ -180,6 +209,16 @@ string fullHelpMessage(void)
 " --fix-imaging             Ensure that molecules are not broken across \n"
 "                           image boundaries.  This is generally necessary\n"
 "                           for simulations in GROMACS.\n"
+" --postcenter              works like --centering-selection, except it\n"
+"                           performs a final centering and reimaging operation\n"
+"                           using this selection.  The idea is that for \n"
+"                           really messy groups, you might need to center and\n"
+"                           reimage multiple ways to get everything to work.\n"
+"                           Handles many of the same cases as \n"
+"                           --selection-is-split, so you can try either to see\n"
+"                           which works for you.\n"
+" --postcenter-xy           like --postcenter, but only the xy plane\n"
+" --postcenter-z            like --postcenter, but only the z-axis\n"
 "\n"
 "\n"
 "In addition, for merging GROMACS XTC files there is an additional flag:\n"
@@ -214,7 +253,26 @@ string fullHelpMessage(void)
 "individual molecules; when absent, it falls back to using the segment name.\n"
 "This can lead to unintended results for segments that are made of many\n"
 "individual atoms (e.g. ions in solution), causing them to end up outside the \n"
-"box.\n"
+"box. If you're using gromacs, we suggest running gmxdump2pdb.pl first to get a \n"
+"PSF file for your system, and using that to drive all further LOOS analysis.\n"
+"\n"
+"The rationale for having --xy-centering-selection and z-centering selection\n"
+"is something like a membrane protein system.  In that case, it might be \n"
+"convenient for analysis to have the protein centered in the xy plane\n"
+"but the membrane centered at z=0; centering the protein in z could be\n"
+"suboptimal if for example the extracellular domain is much bigger than\n"
+"the intracellular one.\n"
+"\n"
+"The 3 postcenter options are intended for cases where the selection you're \n"
+"centering is in many pieces (e.g. a lipid membrane). Most of the time, it \n";
+"shouldn't be needed, but if the system drifts a lot in z you can end up \n";
+"with the bilayer centered about one of the z-image boundaries, and in that\n";
+"case you may need some combination of --postcenter or --postcenter-z and \n";
+"--selection-is-split.  The trick in that case is to use different selections\n"
+"for centering and postcentering, e.g. a single lipid molecule for the initial\n"
+"centering (which will ensure the bilayer is now largely intact), followed \n"
+"by the whole bilayer for the postcenter (since that's what you want for \n"
+"analysis purposes).\n"
 "\n";
 
     return (s);
@@ -253,7 +311,7 @@ struct RegexFmt
     {
     regexp = boost::regex(s, boost::regex::perl);
     }
-  
+
     uint operator()(const string& s) const
     {
         boost::smatch what;
@@ -271,7 +329,7 @@ struct RegexFmt
                         return(val);
                     }
             }
-    
+
         cerr << boost::format("Bad conversion of '%s' using regexp '%s'\n") % s % fmt;
         exit(-20);
     }
@@ -283,7 +341,7 @@ struct RegexFmt
 
 
 // Binding of trajectory name to the file # for sorting...
-struct SortDatum 
+struct SortDatum
 {
     SortDatum(const string& s_, const uint n_) : s(s_), n(n_) { }
     SortDatum() : s(""), n(0) { }
@@ -314,7 +372,7 @@ vector<string> sortNamesByFormat(vector<string>& names, const FmtOp& op)
         {
         bound[i] = SortDatum(names[i], op(names[i]));
         }
-  
+
     sort(bound.begin(), bound.end());
 
     vector<string> sorted(n);
@@ -350,13 +408,13 @@ int main(int argc, char *argv[])
         if (!topts->scanf_spec.empty())
             {
             input_dcd_list = sortNamesByFormat(input_dcd_list, ScanfFmt(topts->scanf_spec));
-            } 
+            }
         else
             {
             input_dcd_list = sortNamesByFormat(input_dcd_list, RegexFmt(topts->regex_spec));
             }
         }
-    
+
     cout << hdr << endl;
     AtomicGroup system = createSystem(model_name);
 
@@ -366,6 +424,9 @@ int main(int argc, char *argv[])
     bool full_recenter = false;
     bool xy_recenter = false;
     bool z_recenter = false;
+    bool post_recenter = false;
+    bool xy_post_recenter = false;
+    bool z_post_recenter = false;
     if ( center_selection.length() != 0 )
         {
         full_recenter = true;
@@ -378,6 +439,18 @@ int main(int argc, char *argv[])
         {
         z_recenter = true;
         }
+    if (postcenter_selection.length() != 0)
+      {
+      post_recenter = true;
+      }
+    if (postcenter_xy_selection.length() != 0)
+      {
+      xy_post_recenter = true;
+      }
+    if (postcenter_z_selection.length() != 0)
+      {
+      z_post_recenter = true;
+      }
 
     pTrajectoryWriter output = createOutputTrajectory(output_traj, true);
 
@@ -391,6 +464,7 @@ int main(int argc, char *argv[])
     // Set up to do the recentering
     vector<AtomicGroup> molecules;
     AtomicGroup center, xy_center, z_center;
+    AtomicGroup post_center, xy_post_center, z_post_center;
     vector<AtomicGroup>::iterator m;
     if ( full_recenter )
         {
@@ -420,10 +494,26 @@ int main(int argc, char *argv[])
             }
         }
 
+    if (post_recenter)
+      {
+      post_center = selectAtoms(system, postcenter_selection);
+      }
+    else
+      {
+      if ( xy_post_recenter )
+        {
+        xy_post_center = selectAtoms(system, postcenter_xy_selection);
+        }
+      else if ( z_post_recenter )
+        {
+        z_post_center = selectAtoms(system, postcenter_z_selection);
+        }
+      }
+
     uint original_num_frames = output->framesWritten();
-    cout << "Target trajectory " 
+    cout << "Target trajectory "
          << output_traj
-         << " has " 
+         << " has "
          << original_num_frames
          << " frames."
          << endl;
@@ -440,13 +530,13 @@ int main(int argc, char *argv[])
             }
         cout << "File: " << *f << ": " << nframes;
 
-        if ( previous_frames + nframes <= original_num_frames) 
+        if ( previous_frames + nframes <= original_num_frames)
             // all of this file is contained in the existing file, skip it
             {
             // increment the frame pointer
             previous_frames += nframes;
             cout << " ( " << previous_frames << " )"
-                 << "\tSkipping trajectory " 
+                 << "\tSkipping trajectory "
                  << endl;
 
             }
@@ -473,7 +563,7 @@ int main(int argc, char *argv[])
 
             cout << " ( " << previous_frames + nframes - frames_to_skip
                  << " ) "
-                 << "\t Writing " << nframes - frames_to_skip 
+                 << "\t Writing " << nframes - frames_to_skip
                  << " frames."
                  << endl;
 
@@ -496,17 +586,17 @@ int main(int argc, char *argv[])
 
 
                 // If molecules can be broken across image bondaries
-                // (eg GROMACS), then we may need 2 translations to 
-                // fix them -- first, translate the whole molecule such 
+                // (eg GROMACS), then we may need 2 translations to
+                // fix them -- first, translate the whole molecule such
                 // that a single atom is at the origin, reimage the
                 // molecule, and put it back
                 if (reimage_by_molecule)
                     {
                     for (m=molecules.begin(); m != molecules.end(); ++m )
                         {
-                        // This is relatively slow, so we'll skip the 
+                        // This is relatively slow, so we'll skip the
                         // cases we know we won't need this -- 1 particle
-                        // molecules and molecules with small radii 
+                        // molecules and molecules with small radii
                         // Note: radius(true) computes the max distance between atom 0
                         //       and all other atoms in the group.  In certain perverse
                         //       cases the centroid can be closer than 1/2 box to all atoms
@@ -522,11 +612,11 @@ int main(int argc, char *argv[])
 
                 if ( full_recenter || xy_recenter || z_recenter)
                     {
-                    // If the selection is split, then we effectively need to 
+                    // If the selection is split, then we effectively need to
                     // do the centering twice.  First, we pick one atom from the
                     // centering selection, translate the entire system so it's
                     // at the origin, and reimage.  This will get the selection
-                    // region to not be split on the image boundary.  At that 
+                    // region to not be split on the image boundary.  At that
                     // point, we can just do regular imaging.
                     if (selection_split)
                         {
@@ -555,7 +645,7 @@ int main(int argc, char *argv[])
                             m->reimage();
                             }
                         }
-                    // Now, do the regular imaging.  Put the system centroid 
+                    // Now, do the regular imaging.  Put the system centroid
                     // at the origin, and reimage by molecule
                     GCoord centroid;
                     if (full_recenter)
@@ -584,8 +674,8 @@ int main(int argc, char *argv[])
                     // Sometimes if the box has drifted enough, reimaging by molecule
                     // will significantly alter the centroid of the selected system, so
                     // we need to center a second time, which perversely means we'll need
-                    // to reimage again. In my tests, this second go around is 
-                    // necessary and sufficient to fix everything, but I'm willing 
+                    // to reimage again. In my tests, this second go around is
+                    // necessary and sufficient to fix everything, but I'm willing
                     // to be proved wrong.
 
                     centroid.zero();
@@ -620,7 +710,33 @@ int main(int argc, char *argv[])
 #if DEBUG
                     centroid = center.centroid();
                     cerr << "centroid after second reimaging: " << centroid << endl;
-#endif 
+#endif
+                    }
+
+                // Do a final postrecenter, if requested
+                if (post_recenter || xy_post_recenter || z_post_recenter)
+                    {
+                    GCoord centroid;
+                    if (post_recenter)
+                        {
+                        centroid = post_center.centroid();
+                        }
+                    else if (xy_post_recenter)
+                        {
+                        centroid = xy_post_center.centroid();
+                        centroid.z() = 0.0;
+                        }
+                    else if (z_post_recenter)
+                        {
+                        centroid = z_post_center.centroid();
+                        centroid.x() = 0.0;
+                        centroid.y() = 0.0;
+                        }
+                    system.translate(-centroid);
+                    for (m=molecules.begin(); m != molecules.end(); ++m )
+                        {
+                        m->reimage();
+                        }
                     }
 
                 output->writeFrame(system);
@@ -637,4 +753,3 @@ int main(int argc, char *argv[])
 
 
     }
-         

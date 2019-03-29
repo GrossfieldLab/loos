@@ -11,6 +11,7 @@ loos.py
 loos/__init__.py
 setup.sh
 setup.csh
+custom.py
 
 # Library files
 *.so
@@ -50,11 +51,16 @@ GTAGS
 # Vi cruft
 *.swp
 
+
+# VSCode cruft
+**.vscode
+
 # JSON files
 .*.json
 
 ###EXES
-Tools/distance_prob
+
+Tools/rms-overlap
 Tools/verap
 Tools/renum-pdb
 Tools/merge-traj
