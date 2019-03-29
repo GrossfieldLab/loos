@@ -57,12 +57,13 @@ if '--fullhelp' in argv:
     print(usage)
     exit(0)
 arglen = len(argv)
-if arglen < 3 or arglen > 4:
+if arglen < 4 or arglen > 5:
     print(usage)
+    exit(0)
 # will be true if arglen == 3
 cols = 80 # set default value of cols
 # otherwise take user input on value of cols
-if arglen == 4:
+if arglen == 5:
     cols = int(argv[4])
 # signal text within sourcecode to locate where fullhelp should be put
 signal = argv[3]
