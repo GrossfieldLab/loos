@@ -11,6 +11,6 @@ var searchData=
   ['meta',['meta',['../class_e_n_m_1_1_elastic_network_model.html#a31082048f88f5b77a269656089abf66b',1,'ENM::ElasticNetworkModel']]],
   ['mmmultiply',['MMMultiply',['../namespaceloos_1_1_math.html#a2be8b6d0f8defda576058d59e421c755',1,'loos::Math']]],
   ['model',['model',['../classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html#a185e90c1c7d9f05fdcf4a2afaa535b2e',1,'loos::pyloos::trajectories::Trajectory']]],
-  ['momentsofinertia',['momentsOfInertia',['../classloos_1_1_atomic_group.html#a0a0204deda6ace2293fe0675812f4f8d',1,'loos::AtomicGroup']]],
+  ['momentsofinertia',['momentsOfInertia',['../classloos_1_1_atomic_group.html#a8b6aa6394b1759104d8cadb2518061bf',1,'loos::AtomicGroup']]],
   ['multitrajectory',['MultiTrajectory',['../classloos_1_1_multi_trajectory.html#a7af16fa7408561b035daed2b05711332',1,'loos::MultiTrajectory::MultiTrajectory(const AtomicGroup &amp;model)'],['../classloos_1_1_multi_trajectory.html#a26642a2a7a579bdc8dfe777002c0d540',1,'loos::MultiTrajectory::MultiTrajectory(const std::vector&lt; std::string &gt; &amp;filenames, const AtomicGroup &amp;model)']]]
 ];

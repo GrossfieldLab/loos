@@ -1,5 +1,5 @@
 <map id="loos::CHARMM" name="loos::CHARMM">
-<area shape="rect" id="node2" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually) " alt="" coords="82,265,213,291"/>
-<area shape="rect" id="node3" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox. " alt="" coords="5,179,173,204"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="212,92,326,117"/>
+<area shape="rect" id="node2" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually) " alt="" coords="81,273,212,300"/>
+<area shape="rect" id="node3" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox. " alt="" coords="5,184,171,211"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="210,95,326,121"/>
 </map>

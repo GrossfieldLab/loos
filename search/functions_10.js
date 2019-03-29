@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['radius',['radius',['../classloos_1_1_atomic_group.html#a03f304c334d971041e5258bd2cab96da',1,'loos::AtomicGroup']]],
+  ['radius',['radius',['../classloos_1_1_atomic_group.html#a4189af9a4ace2bfc2921bb1d57c044d9',1,'loos::AtomicGroup']]],
   ['random',['random',['../classloos_1_1_coord.html#a111c439ec5e5f1b518719a8bad76338b',1,'loos::Coord']]],
   ['randomseedrng',['randomSeedRNG',['../namespaceloos.html#a6ade6e7564c4aa077a6f3134c6252663',1,'loos']]],
   ['read',['read',['../classloos_1_1_amber.html#a781405aed1c925048b847f2e745e3062',1,'loos::Amber::read()'],['../classloos_1_1_c_h_a_r_m_m.html#a81f8da7aa7ea9d5684e202e021e9c076',1,'loos::CHARMM::read()'],['../classloos_1_1_p_d_b.html#a1db01318421d44dd5c378df785fc989d',1,'loos::PDB::read()'],['../classloos_1_1internal_1_1_x_d_r_reader.html#a2ed3daf69c674a88981245b4af099649',1,'loos::internal::XDRReader::read(T *p)'],['../classloos_1_1internal_1_1_x_d_r_reader.html#a96e7c6e335555b55d822cb632ac5ca6a',1,'loos::internal::XDRReader::read(T *ary, const uint n)'],['../classloos_1_1internal_1_1_x_d_r_reader.html#a8786be258c9fe776087e6866761c5193',1,'loos::internal::XDRReader::read(char *p, uint n)'],['../classloos_1_1internal_1_1_x_d_r_reader.html#af9afc190e7a1d30ea1a4a832d1a0e97d',1,'loos::internal::XDRReader::read(boost::shared_ptr&lt; char &gt; &amp;p)']]],
@@ -11,7 +11,7 @@ var searchData=
   ['readvals',['readVals',['../class_n_a_m_d_bin_1_1_n_a_m_d_bin.html#a6dfa7d3ed59dfc951693fb64175b90b8',1,'NAMDBin::NAMDBin']]],
   ['readvector',['readVector',['../namespaceloos.html#ad402d8c3aa16082e4187b60d61f2687c',1,'loos::readVector(LineReader &amp;reader)'],['../namespaceloos.html#af7c4fcef4f427eeca90408b24b0d775a',1,'loos::readVector(std::istream &amp;is)'],['../namespaceloos.html#a924b19197b15f3d4ddb0bbe7269927a6',1,'loos::readVector(const std::string &amp;fname)']]],
   ['realindex',['realIndex',['../classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html#a8ca85025f71d57ec4188baaa2f18f185',1,'loos::pyloos::trajectories::Trajectory']]],
-  ['recordname',['recordName',['../classloos_1_1_atom.html#a662dc6488402512c82e800594c1be965',1,'loos::Atom']]],
+  ['recordname',['recordName',['../classloos_1_1_atom.html#aa47fc43af9bfe05c616fc88049c8a2f7',1,'loos::Atom']]],
   ['reimage',['reimage',['../classloos_1_1_atomic_group.html#a7d8d3c09032f4d4779681353f3b60446',1,'loos::AtomicGroup::reimage()'],['../classloos_1_1_coord.html#a60310378d214ed2a313f35f1b78f484e',1,'loos::Coord::reimage()']]],
   ['reimagebyatom',['reimageByAtom',['../classloos_1_1_atomic_group.html#abf2a62540a7bceaecc4231cd8948ba6c',1,'loos::AtomicGroup']]],
   ['remaining',['remaining',['../classloos_1_1_simple_counter.html#a4d6cb769b70a1192d9f367247b97bdf8',1,'loos::SimpleCounter::remaining()'],['../classloos_1_1_estimating_counter.html#a4c6ed55234efeac2e348c38115c35082',1,'loos::EstimatingCounter::remaining()']]],
@@ -29,5 +29,5 @@ var searchData=
   ['rmsd',['rmsd',['../classloos_1_1_atomic_group.html#a727648708aee3f4a3af63aa76cc9b73f',1,'loos::AtomicGroup']]],
   ['rng_5fsingleton',['rng_singleton',['../namespaceloos.html#ab82436be3d1bfa01542d6a8f3820a38b',1,'loos']]],
   ['rotate',['rotate',['../classloos_1_1_atomic_group.html#ac5d3e12ceabe2ce225fa263db16884a4',1,'loos::AtomicGroup::rotate()'],['../classloos_1_1_x_form.html#a16150c87f9588f343a559eab142d99b4',1,'loos::XForm::rotate(const GCoord &amp;, const greal)'],['../classloos_1_1_x_form.html#ab53fc497370870301a3b595bcd54400d',1,'loos::XForm::rotate(const char, const greal)']]],
-  ['running_5faverage',['running_average',['../classloos_1_1_time_series.html#a48b9c311693f03c92e6b8f783285c3d1',1,'loos::TimeSeries']]]
+  ['running_5faverage',['running_average',['../classloos_1_1_time_series.html#a260ab6bc401f65ca877af438c6255242',1,'loos::TimeSeries']]]
 ];

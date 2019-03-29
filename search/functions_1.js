@@ -1,7 +1,7 @@
 var searchData=
 [
   ['accumulate',['accumulate',['../classloos_1_1_weights.html#ab92499d159d6049921e4460705df9427',1,'loos::Weights']]],
-  ['actualsize',['actualSize',['../classloos_1_1_math_1_1_sparse_array.html#ad68eeb470bf8b76291aa1b209f292080',1,'loos::Math::SparseArray']]],
+  ['actualsize',['actualSize',['../classloos_1_1_math_1_1_sparse_array.html#abd9538fe1af49509419c76ba1e336859',1,'loos::Math::SparseArray']]],
   ['add',['add',['../classloos_1_1_density_tools_1_1_simple_meta.html#aa3cd16b361ae12998fb2a643d3038019',1,'loos::DensityTools::SimpleMeta::add()'],['../classloos_1_1_options_framework_1_1_aggregate_options.html#a66be876f10c6395c7c56c7728b19b07b',1,'loos::OptionsFramework::AggregateOptions::add()'],['../classloos_1_1_remarks.html#af21f5b38b7baf4b3100cb7e6d9ec95a5',1,'loos::Remarks::add(const std::string s)'],['../classloos_1_1_remarks.html#a2e56fe847edd97beec0febc1d3d4c799',1,'loos::Remarks::add(const std::vector&lt; std::string &gt; &amp;s)'],['../classloos_1_1_unique_strings.html#a33cecdc65114c162f3a0fc88a3921b3c',1,'loos::UniqueStrings::add()']]],
   ['add_5ftraj',['add_traj',['../classloos_1_1_weights.html#af1f962b6b55f873ae4c27d89c5cb2fc2',1,'loos::Weights']]],
   ['addargument',['addArgument',['../classloos_1_1_options_framework_1_1_required_arguments.html#aa4382e73c1e8614059d1a8a1d1707183',1,'loos::OptionsFramework::RequiredArguments']]],
@@ -14,13 +14,13 @@ var searchData=
   ['aggregateoptions',['AggregateOptions',['../classloos_1_1_options_framework_1_1_aggregate_options.html#a70df848ed873c908d44378ef24931c18',1,'loos::OptionsFramework::AggregateOptions::AggregateOptions()'],['../classloos_1_1_options_framework_1_1_aggregate_options.html#a1b36f3e7203ae278a7efc7db7ad2f67f',1,'loos::OptionsFramework::AggregateOptions::AggregateOptions(const std::string &amp;name)']]],
   ['alignonto',['alignOnto',['../classloos_1_1_atomic_group.html#a9d1966c971d7730391d417bcdfd1486e',1,'loos::AtomicGroup']]],
   ['alignwith',['alignWith',['../classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html#af62cef7d6f7bddf20668737e518af559',1,'loos::pyloos::trajectories::AlignedVirtualTrajectory']]],
-  ['allhaveproperty',['allHaveProperty',['../classloos_1_1_atomic_group.html#a3ce7750b4ed8ec8a85f75364df457121',1,'loos::AtomicGroup']]],
-  ['allremarks',['allRemarks',['../classloos_1_1_remarks.html#a40d80a3bcddca276fccff6a7b86460e5',1,'loos::Remarks']]],
+  ['allhaveproperty',['allHaveProperty',['../classloos_1_1_atomic_group.html#a27053134ce55273e477144d7b654e60b',1,'loos::AtomicGroup']]],
+  ['allremarks',['allRemarks',['../classloos_1_1_remarks.html#a04bbb0de50f0a312b3cff96bfa261ad8',1,'loos::Remarks']]],
   ['allskip',['allSkip',['../classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#a4eae745b42cc69c2b743a024a4363dbb',1,'loos::pyloos::trajectories::VirtualTrajectory']]],
   ['allstride',['allStride',['../classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#ada866032b9237e981395a5dbc26c0776',1,'loos::pyloos::trajectories::VirtualTrajectory']]],
   ['amber',['Amber',['../classloos_1_1_amber.html#a9d448b682cd825c495e8ad048e755098',1,'loos::Amber']]],
   ['angle',['angle',['../namespaceloos_1_1_math.html#a509db465b9e228edf04bd52c64d53643',1,'loos::Math::angle(const GCoord &amp;, const GCoord &amp;, const GCoord &amp;, const GCoord *=NULL)'],['../namespaceloos_1_1_math.html#a577ac002c354bf3a537ac91f0dba0ad5',1,'loos::Math::angle(const pAtom &amp;a, const pAtom &amp;b, const pAtom &amp;c, const GCoord *=NULL)']]],
-  ['anyhaveproperty',['anyHaveProperty',['../classloos_1_1_atomic_group.html#adad234910f41d8d2c77e6340f31e7a9f',1,'loos::AtomicGroup']]],
+  ['anyhaveproperty',['anyHaveProperty',['../classloos_1_1_atomic_group.html#a886ebce01151b9ea19f4c2d718a077e0',1,'loos::AtomicGroup']]],
   ['append',['append',['../classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#a9f98b53a1818172cf470acb69a868602',1,'loos.pyloos.trajectories.VirtualTrajectory.append()'],['../classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html#ab3ba01a7ce308018d33b17204049e033',1,'loos.pyloos.trajectories.AlignedVirtualTrajectory.append()'],['../classloos_1_1_atomic_group.html#aa2aaffd7cfb10698499e9301041ff3d1',1,'loos::AtomicGroup::append(pAtom pa)'],['../classloos_1_1_atomic_group.html#a292faf9da4066b9425d0b3334bcf9e43',1,'loos::AtomicGroup::append(std::vector&lt; pAtom &gt; pas)'],['../classloos_1_1_atomic_group.html#ac22f0f96ac05fbf0bc1d886bc48a73cf',1,'loos::AtomicGroup::append(const AtomicGroup &amp;grp)']]],
   ['apply',['apply',['../classloos_1_1_atomic_group.html#a300ee7d7bb26e246c1cd78829191a4fd',1,'loos::AtomicGroup']]],
   ['applytransform',['applyTransform',['../classloos_1_1_atomic_group.html#a52542da1e67eeb3a14fd8ecf2c7a8c87',1,'loos::AtomicGroup']]],
@@ -31,7 +31,7 @@ var searchData=
   ['atomordermapfrom',['atomOrderMapFrom',['../classloos_1_1_atomic_group.html#a6c50256c66c58e818df2090b1cdce05c',1,'loos::AtomicGroup']]],
   ['autocorrel',['autocorrel',['../namespacelipid__lifetime.html#abca73228e37572a5ff448220a126de68',1,'lipid_lifetime']]],
   ['autoterminate',['autoTerminate',['../classloos_1_1_p_d_b.html#a0561d2b682347779f3fc5dd1bc53a5e1',1,'loos::PDB']]],
-  ['average',['average',['../classloos_1_1_time_series.html#aefb5fbf46c782a3cf78818fea57c7131',1,'loos::TimeSeries']]],
+  ['average',['average',['../classloos_1_1_time_series.html#a4fb63cfa53f64841b2c72107c04b433d',1,'loos::TimeSeries']]],
   ['averagelaptime',['averageLapTime',['../classloos_1_1_timer.html#aac6d50e2b4754d77fb0da01c80a325f1',1,'loos::Timer']]],
   ['averagestructure',['averageStructure',['../namespaceloos_1_1pyloos_1_1ensembles.html#aa3f704bbece6c2a9b14f64c28711ffcd',1,'loos.pyloos.ensembles.averageStructure()'],['../namespaceloos.html#abe25ba2b9027123aca28176782570862',1,'loos::averageStructure(const std::vector&lt; AtomicGroup &gt; &amp;ensemble)'],['../namespaceloos.html#aa10ec538bd0a45ef4543c60489fb6a74',1,'loos::averageStructure(const std::vector&lt; AtomicGroup &gt; &amp;ensemble, const std::vector&lt; XForm &gt; &amp;xforms)'],['../namespaceloos.html#a145b1950c29d680031aaba768f133ce0',1,'loos::averageStructure(const AtomicGroup &amp;, const std::vector&lt; XForm &gt; &amp;, pTraj &amp;traj, const std::vector&lt; uint &gt; &amp;indices)'],['../namespaceloos.html#a50aefac013fa449999f74fa4e0df8b55',1,'loos::averageStructure(const AtomicGroup &amp;, const std::vector&lt; XForm &gt; &amp;, pTraj &amp;traj)']]]
 ];

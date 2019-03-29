@@ -3,7 +3,7 @@ var classloos_1_1_simple_counter =
     [ "SimpleCounter", "classloos_1_1_simple_counter.html#a29cb39ff2f0613d808c79771ff714daf", null ],
     [ "~SimpleCounter", "classloos_1_1_simple_counter.html#a2946770e5bbf3568a5300d2c40c07c41", null ],
     [ "attach", "classloos_1_1_simple_counter.html#a64499462d289dfe190f96efd07923784", null ],
-    [ "count", "classloos_1_1_simple_counter.html#ab7562707fa433c67a50e51da52f6a6d3", null ],
+    [ "count", "classloos_1_1_simple_counter.html#a0393715b8c9aedaf5e92e100f3242c57", null ],
     [ "detach", "classloos_1_1_simple_counter.html#a43e5c3204db8d469de48b59ac67cb050", null ],
     [ "elapsed", "classloos_1_1_simple_counter.html#a5fa213bbc5638145fdace2d097510a17", null ],
     [ "finish", "classloos_1_1_simple_counter.html#a5c63e4c0d14e1f9f804836dd11cc7f91", null ],

@@ -286,8 +286,8 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
     [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
+    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
     [ "OrderPolicy", null, [
       [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
     ] ],

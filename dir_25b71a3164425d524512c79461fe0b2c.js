@@ -20,5 +20,6 @@ var dir_25b71a3164425d524512c79461fe0b2c =
     [ "simple_model_calc.py", "simple__model__calc_8py_source.html", null ],
     [ "simple_model_transform.py", "simple__model__transform_8py_source.html", null ],
     [ "simple_traj_calc.py", "simple__traj__calc_8py_source.html", null ],
-    [ "simple_traj_transform.py", "simple__traj__transform_8py_source.html", null ]
+    [ "simple_traj_transform.py", "simple__traj__transform_8py_source.html", null ],
+    [ "total_charge.py", "total__charge_8py_source.html", null ]
 ];

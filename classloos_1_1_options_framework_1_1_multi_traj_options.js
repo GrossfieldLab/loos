@@ -1,8 +1,8 @@
 var classloos_1_1_options_framework_1_1_multi_traj_options =
 [
     [ "MultiTrajOptions", "classloos_1_1_options_framework_1_1_multi_traj_options.html#afed36323a5dd58255bb155b20575f5bd", null ],
-    [ "frameList", "classloos_1_1_options_framework_1_1_multi_traj_options.html#af8b707864a867c5abb6a3f27566f2b73", null ],
-    [ "trajectoryTable", "classloos_1_1_options_framework_1_1_multi_traj_options.html#a7d148ee6edeeed547f7bb39dbc52da39", null ],
+    [ "frameList", "classloos_1_1_options_framework_1_1_multi_traj_options.html#a9c96d06ca8b2f9e5a547e643a54d14db", null ],
+    [ "trajectoryTable", "classloos_1_1_options_framework_1_1_multi_traj_options.html#a5860ca584123811147541cd7d098beae", null ],
     [ "frame_index_spec", "classloos_1_1_options_framework_1_1_multi_traj_options.html#a2aeab30d4b2284e30debdb11bd9ee1d0", null ],
     [ "model", "classloos_1_1_options_framework_1_1_multi_traj_options.html#a6d689398875786bd925dea9b6f7b268d", null ],
     [ "model_name", "classloos_1_1_options_framework_1_1_multi_traj_options.html#ada96e1d3f4f5fdef8919ca4c8e1cf982", null ],

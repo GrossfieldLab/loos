@@ -1,5 +1,5 @@
 <map id="loos::DensityTools::BulkEstimator" name="loos::DensityTools::BulkEstimator">
-<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_null_estimator.html" title="loos::DensityTools\l::NullEstimator" alt="" coords="182,5,311,44"/>
-<area shape="rect" id="node3" href="$classloos_1_1_density_tools_1_1_z_clip_estimator.html" title="loos::DensityTools\l::ZClipEstimator" alt="" coords="182,68,311,107"/>
-<area shape="rect" id="node4" href="$classloos_1_1_density_tools_1_1_z_slice_estimator.html" title="loos::DensityTools\l::ZSliceEstimator" alt="" coords="182,131,311,169"/>
+<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_null_estimator.html" title="loos::DensityTools\l::NullEstimator" alt="" coords="184,5,315,47"/>
+<area shape="rect" id="node3" href="$classloos_1_1_density_tools_1_1_z_clip_estimator.html" title="loos::DensityTools\l::ZClipEstimator" alt="" coords="184,71,315,112"/>
+<area shape="rect" id="node4" href="$classloos_1_1_density_tools_1_1_z_slice_estimator.html" title="loos::DensityTools\l::ZSliceEstimator" alt="" coords="184,136,315,177"/>
 </map>

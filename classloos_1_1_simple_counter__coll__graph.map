@@ -1,7 +1,7 @@
 <map id="loos::SimpleCounter" name="loos::SimpleCounter">
-<area shape="rect" id="node3" href="$classloos_1_1_abstract_observer.html" title="loos::AbstractObserver" alt="" coords="5,92,162,117"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="186,92,299,117"/>
-<area shape="rect" id="node6" href="$classloos_1_1_timer.html" title="loos::Timer\&lt; loos::\lWallTimer \&gt;" alt="" coords="329,179,460,217"/>
-<area shape="rect" id="node7" href="$classloos_1_1_wall_timer.html" title="Policy class for tracking wall&#45;time. " alt="" coords="336,92,448,117"/>
-<area shape="rect" id="node8" href="$classloos_1_1_timer.html" title="Class for tracking time. " alt="" coords="472,92,644,117"/>
+<area shape="rect" id="node3" href="$classloos_1_1_abstract_observer.html" title="loos::AbstractObserver" alt="" coords="5,95,161,121"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="185,95,301,121"/>
+<area shape="rect" id="node6" href="$classloos_1_1_timer.html" title="loos::Timer\&lt; loos::\lWallTimer \&gt;" alt="" coords="331,184,462,225"/>
+<area shape="rect" id="node7" href="$classloos_1_1_wall_timer.html" title="Policy class for tracking wall&#45;time. " alt="" coords="338,95,450,121"/>
+<area shape="rect" id="node8" href="$classloos_1_1_timer.html" title="Class for tracking time. " alt="" coords="474,95,647,121"/>
 </map>
