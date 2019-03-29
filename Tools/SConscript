@@ -56,7 +56,7 @@ for file in Split(scripts):
     Command(PREFIX_BIN + file, file,
             [
             Copy("$TARGET", "$SOURCE"),
-            Chmod("$TARGET", 0755)
+            Chmod("$TARGET", 0o755)
             ])
 
 env.Alias('tools_install', loos_tools)

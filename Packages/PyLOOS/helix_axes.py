@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import loos
 import loos.pyloos
@@ -6,8 +6,8 @@ import sys
 import math
 
 if len(sys.argv) < 5 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
-    print "Usage: ", sys.argv[0], " system trajectory out_prefix selection1 [selection2...]"
-    print """
+    print("Usage: ", sys.argv[0], " system trajectory out_prefix selection1 [selection2...]")
+    print("""
     Description: helix_axes.py: Writes a new trajectory replacing each 
                  selection with 3 particles, one at the centroid of the
                  selection and two stepped 10 angstroms up and down the 
@@ -27,7 +27,7 @@ if len(sys.argv) < 5 or sys.argv[1] == "-h" or sys.argv[1] == "--help":
     Despite the name of the program, the selections do not have to be 
     helical.  However, I don't know that the approach makes much sense 
     for anything else.
-          """
+          """)
     sys.exit()
 
 header = " ".join(sys.argv)

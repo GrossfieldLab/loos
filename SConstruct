@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  This file is part of LOOS.
 #
 #  LOOS (Lightweight Object-Oriented Structure library)
@@ -33,6 +33,7 @@ from distutils.version import LooseVersion
 from string import Template
 
 import SCons
+
 import loos_build_config
 
 from scons_support import *
@@ -41,8 +42,6 @@ from scons_support import *
 EnsureSConsVersion(2,0)
 
 # ----------------------------------------------------------------------------------------------
-
-
 # Principal options...
 opts = Variables('custom.py')
 opts.Add('debug', 'Set to 1 to add -DDEBUG to build', 0)
@@ -51,7 +50,7 @@ opts.Add('release', 'Set to 1 to configure for release.', 1)
 opts.Add('reparse', 'Set to 1 to regenerate parser-related files.', 0)
 opts.Add('pyloos', 'Set to 0 to disable building PyLOOS.', 1)
 opts.Add('threads', 'Set to 0 to disable using multithreaded libraries and code', 1)
-opts.Add('docs', 'Set to 0 to disable auto-generation of doxygen documentation', 1)
+#opts.Add('docs', 'Set to 0 to disable auto-generation of doxygen documentation', 1)
 
 opts.Add(PathVariable('PREFIX', 'Where to install LOOS', '/opt/LOOS', PathVariable.PathAccept))
 
@@ -80,9 +79,11 @@ addDeprecatedOptions(opts)
 #env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 
 ### Uncomment this line to bring the full user environment into the build environment
-env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
+#env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
 
-
+env = Environment(ENV=os.environ, options=opts,
+                  toolpath='.',
+                  SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'], SHLIBPREFIX="")
 
 
 Help(opts.GenerateHelpText(env))
@@ -124,13 +125,15 @@ if not pyloos:
 ### Compile-flags
 
 debug_opts='-g -Wall -Wextra -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall'
+release_opts='-O3 -DNDEBUG -Wall -Wno-deprecated'
 profile_opts='-O3 -DNDEBUG -Wall -g'
 
 # Setup the general environment...
 env.Prepend(CPPPATH = ['#', '#src'])
 env.Prepend(LIBPATH = ['#', '#src'])
 env.Append(LEXFLAGS=['-s'])
+env.Append(CPPFLAGS=['-pthread'])
+env.Append(LIBS=['pthread'])
 
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':
@@ -158,7 +161,7 @@ if not cleaning:
 release = int(env['release'])
 debug = int(env['debug'])
 profile = int(env['profile'])
-docsflag = int(env['docs'])
+#docsflag = int(env['docs'])
 
 # If debug is requested, make sure there is no optimization...
 if (debug > 0):
@@ -196,20 +199,25 @@ loos_scripts = SConscript('SConscript')
 Export('loos')
 
 
-### Handle existing documentation
-# This is to permit source distributions that include pre-built documentation.
-# If a docs.prebuilt file is found in the top-level directory, then scons will not include
-# doxygen sources in the dependency tree (i.e. the docs will not be rebuilt).  They
-# will also not be included in any cleaning targets.
-#
-# If a tarball of the documentation is found, then this will be untar'd in place.  It should
-# include a top-level docs.prebuilt file to avoid untar'ing every time.  Tarballs compressed
-# with gzip and bzip2 are recognized, as well as uncompressed tarballs.
-#
-# If docs.prebuilt does NOT exist and no tarball is found, then scons will automatically generate
-# the documentation for most builds, and it will be included in cleaning.  In addition, install will
-# generate the documentation
+"""
+Handle existing documentation
 
+This is to permit source distributions that include pre-built documentation. If
+a docs.prebuilt file is found in the top-level directory, then scons will not
+include doxygen sources in the dependency tree (i.e. the docs will not be
+rebuilt).  They will also not be included in any cleaning targets.
+
+If a tarball of the documentation is found, then this will be untar'd in place.
+It should include a top-level docs.prebuilt file to avoid untar'ing every time.
+Tarballs compressed with gzip and bzip2 are recognized, as well as uncompressed
+tarballs.
+
+If docs.prebuilt does NOT exist and no tarball is found, then scons will
+automatically generate the documentation for most builds, and it will be
+included in cleaning.  In addition, install will generate the documentation
+"""
+
+"""
 if os.path.exists('docs.prebuilt'):
     existing_docs = True
     print('Warning- existing documentation found and will NOT be rebuilt (or cleaned)!')
@@ -244,6 +252,7 @@ else:
     else:
         existing_docs = False
         docs = env.Doxygen('Doxyfile')
+"""
 
 loos_tools = SConscript('Tools/SConscript')
 
@@ -263,16 +272,18 @@ for name in loos_build_config.package_list:
 
 
 # Always install documentation.  Note: html version is hard-coded
+"""
 env.Command(PREFIX + '/docs/index.html', 'Docs/html/index.html', [
       Delete(PREFIX + '/docs'),
       Copy(PREFIX + '/docs', 'Docs/html'),
       ])
 env.AlwaysBuild(PREFIX + '/docs/index.html')
+"""
 
 
 all = loos_tools + loos_scripts + loos_packages
-if docsflag:
-    all = all + docs
+#if docsflag:
+#    all = all + docs
 
 if int(env['pyloos']):
     loos_core = loos_core + loos_python
@@ -282,7 +293,7 @@ loos_tools += loos_core
 
 env.Alias('tools', loos_tools)
 env.Alias('core', loos_core)
-env.Alias('docs', docs)
+#env.Alias('docs', docs)
 env.Alias('all', all)
 env.Alias('install', PREFIX)
 
@@ -296,8 +307,8 @@ env.Clean('config',
 
 # Hack to force cleaning of docs (but only if no pre-existing docs are found)
 # Note: html version hard-coded
-if not existing_docs:
-    env.Clean(docs, 'Docs/html')
-    env.Clean(all, 'Docs/html')
+#if not existing_docs:
+#    env.Clean(docs, 'Docs/html')
+#    env.Clean(all, 'Docs/html')
 
 env.Default('all')

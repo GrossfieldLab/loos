@@ -1,3 +1,36 @@
+2019-02-27  Alan Grossfield <alan>
+	* Release of LOOS 3.0.  This is a major change, in that LOOS now
+	  requires Python 3.x.
+	  
+2019-01-21  Alan Grossfield <alan>
+	* Merged in a new reweighting framework.  Added a new options class to
+	  support it, and implemented it in rdf and xy_rdf as examples.
+
+2018-11-01  Alan Grossfield <alan>
+	* Added --postcenter-xy and postcenter-z to merge-traj.  Updated fullhelp
+	  to include a better explanation of when you might need these methods.
+
+2018-10-26  Alan Grossfield <alan>
+
+	* Added new option --postcenter to merge_traj, to improve reimaging in
+	  challenging cases.
+
+2018-10-23  Alan Grossfield <alan>
+    * Further change to order_params -- I decided the previous version could
+      produce odd answers if there are a small number of chains selected.
+
+2018-10-18  Alan Grossfield <alan>
+
+	* Major change in order_params. A previous change to take the absolute value
+	  of the Legendre polynomial resulted in incorrect values.  I still think
+	  the absolute value is physically correct, but we've moved it to after
+	  averaging within a given snapshot.  The results are now more consistent
+	  with what other packages generate.
+
+2018-10-15  Tod Romo  <tromo>
+
+	* Changed src/timers.hpp to be src/loos_timers.hpp in order to avoid filename conflicts
+
 2018-05-17 <tromo>
   * Changed PSF code to accept hybrid-36 encoding for atomid's and resid's
 

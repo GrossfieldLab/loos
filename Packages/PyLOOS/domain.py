@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
-#  domain.py: track the motions of 2 portions of a protein, printing out the 
-#             distance between the centroids, as well as the angle and torsion 
+#  domain.py: track the motions of 2 portions of a protein, printing out the
+#             distance between the centroids, as well as the angle and torsion
 #             between the two domains first principal axis
-#             NOTE: This was written assuming the two chunks are part of the 
+#             NOTE: This was written assuming the two chunks are part of the
 #             same molecule, and so doesn't respect periodicity.
 #  Alan Grossfield
 
@@ -13,7 +13,7 @@ import loos.pyloos
 import math
 
 header = " ".join(sys.argv)
-print "# ", header
+print("# ", header)
 
 system_file = sys.argv[1]
 traj_file = sys.argv[2]
@@ -50,7 +50,4 @@ for frame in traj:
     tors = loos.torsion(p1, centroid1, centroid2, p2)
 
     # write output
-    print traj.index(), distance, angle, tors
-
-
-
+    print(traj.index(), distance, angle, tors)

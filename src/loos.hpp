@@ -105,7 +105,7 @@
 
 #include <sfactories.hpp>
 
-#include <timer.hpp>
+#include <loos_timer.hpp>
 #include <ProgressCounters.hpp>
 #include <ProgressTriggers.hpp>
 

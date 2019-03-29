@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-simple_model_calc.py : simple skeleton of a program that reads in a 
+simple_model_calc.py : simple skeleton of a program that reads in a
     structure, makes a selection, then loops over the atoms.
 
 Alan Grossfield
@@ -11,14 +11,14 @@ import loos
 import sys
 
 header = " ".join(sys.argv)
-print "#", header
+print("#", header)
 
 # parse the command line arguments -- in a more complex example,
 # you'd use the argparse module
 model_filename = sys.argv[1]
 selection_string = sys.argv[2]
 
-# Create the system 
+# Create the system
 model = loos.createSystem(model_filename)
 
 # Select a subset of the system
@@ -29,5 +29,3 @@ subset = loos.selectAtoms(model, selection_string)
 for atom in subset:
     # do something
     continue
-
-

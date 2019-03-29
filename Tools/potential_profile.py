@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #
 #  This file is part of LOOS.
@@ -20,8 +20,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import numpy
 
 
@@ -31,7 +29,7 @@ def read_file(filename):
     z_vals = []
     comments = []
     for line in file.xreadlines():
-        if line.startswith("#"): 
+        if line.startswith("#"):
             comments.append(line)
             continue
         fields = line.split()
@@ -41,16 +39,15 @@ def read_file(filename):
         z_vals.append(z)
     v = numpy.array(v)
     z_vals = numpy.array(z_vals)
-    return z_vals, v,comments
-
+    return z_vals, v, comments
 
 
 if __name__ == '__main__':
 
     import sys
 
-    if (len(sys.argv)>1 and sys.argv[1] == "--fullhelp"):
-        print """
+    if (len(sys.argv) > 1 and sys.argv[1] == "--fullhelp"):
+        print("""
 SYNOPSIS
 
 Compute electrostatic potential along membrane normal
@@ -59,7 +56,7 @@ DESCRIPTION
 
 This program generates the electrostatic potential profile for a membrane
 system given a data file containing the charge density as a function of position
-along the membrane normal.  Intended to post-process the output of the 
+along the membrane normal.  Intended to post-process the output of the
 density-dist tool, it takes input in electrons/Ang^3 and outputs the potential
 in volts.
 
@@ -73,7 +70,7 @@ be continuous at the potential, not that due to any given component.
 
 EXAMPLE
 
-potential_profile.py is intended to be used in combination with the LOOS 
+potential_profile.py is intended to be used in combination with the LOOS
 tool density-dist.  For example:
 
 density-dist --type=charge -- path/to/model-file path/to/trajectory -38 38 76 > charge-density.dat
@@ -88,11 +85,11 @@ correction (see above), and the subsequent columns are the electrostatic
 potentials for the full system and any individual components selected when
 density-dist was run.
 
-              """
+              """)
         sys.exit(1)
     elif (len(sys.argv) != 2):
-        print "Usage: ", sys.argv[0], " filename"
-        print "      where filename is presumed to be output from density-dist"
+        print("Usage: ", sys.argv[0], " filename")
+        print("  where filename is presumed to be output from density-dist")
         sys.exit(1)
 
     datafilename = sys.argv[1]
@@ -100,8 +97,8 @@ density-dist was run.
 
     # assume input units are angstroms and electron charge,
     # convert to V
-    eps0 = 8.85e-12 # C/V m
-    e_to_C = 1.60e-19 # C/e
+    eps0 = 8.85e-12    # C/V m
+    e_to_C = 1.60e-19  # C/e
     ang_to_m = 1e-10
 
     #      dielectric   charge density        integrated distance
@@ -120,28 +117,24 @@ density-dist was run.
     delta_p = pot[-1][0] - pot[0][0]
     corr *= -delta_p/zrange
 
-    pot= pot.swapaxes(0,1)
+    pot = pot.swapaxes(0, 1)
     pot[0] += corr
     # try recentering in the middle: can help if there are artifacts at the
     # upper edge
-    #pot[0] -= pot[0][0]
-    pot[0] -= pot[0][len(pot[0])/2]
+    pot[0] -= pot[0][len(pot[0])//2]
 
-
-    pot= pot.swapaxes(0,1)
+    pot = pot.swapaxes(0, 1)
 
     # convert to units of volts
     pot *= units
     corr *= units
 
     # output the result
-    print "# ", " ".join(sys.argv)
-    print "#Generated from: "
-    print "#".join(comments),
-    print "#z\tCorrection\tPotentials"
+    print("# ", " ".join(sys.argv))
+    print("#Generated from: ")
+    print("#".join(comments),)
+    print("#z\tCorrection\tPotentials")
 
     for i in range(len(z_vals)):
-        s = " ".join(map(str,pot[i].tolist()))
-        print z_vals[i], corr[i], s
-
-
+        s = " ".join(map(str, pot[i].tolist()))
+        print(z_vals[i], corr[i], s)

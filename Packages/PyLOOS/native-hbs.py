@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import loos
 import loos.pyloos
@@ -110,7 +110,7 @@ if model.hasCoords():
     if not model.hasBonds():
         model.findBonds()
 else: # if model doesn't have any coordinates, this analysis is nonsensical; exit with error.
-    print 'Error: You must supply a model structure with coordinates.'
+    print('Error: You must supply a model structure with coordinates.')
     exit(-1)
 
 
@@ -191,6 +191,6 @@ else: # same as above, but don't write outfiles since they weren't asked for if 
 
 # Calculate average, print frames, total, and average.
 average_hbs = total_hbs/float(frame_count)
-print frame_count, total_hbs, average_hbs
+print(frame_count, total_hbs, average_hbs)
 
 

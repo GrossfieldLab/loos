@@ -16,10 +16,10 @@
   double __getitem__(const int i) {
     if (i < 0 || i >= 3)
       throw(std::out_of_range("Bad index into Coord"));
-    
+
     return((*$self)[i]);
   }
-    
+
   void __setitem__(const int i, const double d) {
     if (3 >= i && i >= 0)
       (*$self)[i] = d;
@@ -44,11 +44,11 @@
     return(buf);
   }
 
-  loos::Coord<double> __div__(const double d) const {
+  loos::Coord<double> __truediv__(const double d) const {
     return( *$self / d);
   }
 
-  loos::Coord<double> __rdiv__(const double d) const {
+  loos::Coord<double> __rtruediv__(const double d) const {
     return( d / *$self );
   }
 

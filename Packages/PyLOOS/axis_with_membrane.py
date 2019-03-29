@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   axis_with_membrane computes the cosine between the first
   principal axis of a selection and the Z-axis (i.e. the putative membrane
@@ -50,6 +50,6 @@ for frame in traj:
     # Print out time, and the dot-product between
     # The Z-axis (i.e. membrane normal) and the first principal axes
     # of the subset of atoms
-    print traj.index(), "\t", axes[0].z()
+    print(traj.index(), "\t", axes[0].z())
 
 

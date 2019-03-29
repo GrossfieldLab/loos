@@ -608,7 +608,7 @@ for (uint i=0; i<framelist.size(); ++i)
                 double length = v.length();
                 double cos_val =  v[axis_index]/length;
                 double order = 0.5 - 1.5*cos_val*cos_val;
-                values[i][frame_index] += fabs(order);
+                values[i][frame_index] += order;
                 counts[i]++;
                 }
             }
@@ -623,7 +623,7 @@ for (uint i=0; i<framelist.size(); ++i)
         values[i][frame_index] /= counts[i];
         if (dump_timeseries)
             {
-            timeseries_outfile << boost::format("%8.3f") % values[i][frame_index];
+            timeseries_outfile << boost::format("%8.3f") % fabs(values[i][frame_index]);
             }
         counts[i] = 0;
         }
@@ -672,7 +672,7 @@ if (block_average)
 for (unsigned int i = 0; i < selections.size(); i++)
     {
     TimeSeries<float> t(values[i]);
-    double ave = t.average();
+    double ave = fabs(t.average());
     double dev = t.stdev();
 
     // get carbon number

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
   Compute an optimal average structure using an iterative alignment method, then
   output the RMSD from each frame and the average structure
@@ -56,9 +56,9 @@ avg_rmsd = 0
 for structure in patraj:
    rmsd = average.rmsd(structure)
    avg_rmsd = avg_rmsd + rmsd
-   print "%d\t%f" % (patraj.index(), rmsd)
+   print("%d\t%f" % (patraj.index(), rmsd))
 
-print "# Average rmsd = %f" % (avg_rmsd/len(patraj))
+print("# Average rmsd = %f" % (avg_rmsd/len(patraj)))
 
 
 

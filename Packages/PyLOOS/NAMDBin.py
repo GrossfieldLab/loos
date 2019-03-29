@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 NAMDBin reads and writes the binary format used by NAMDBin
 for restart files.  I've written it to support coordinates
@@ -34,7 +34,7 @@ class NAMDBin:
         matches the supplied AtomicGroup.
         """
         if self.atomicGroup is None:
-            raise ValueError, "Must supply an atomic group first"
+            raise ValueError("Must supply an atomic group first")
 
         with open(self.filename, 'rb') as f:
             atoms_bytes = f.read(4)
@@ -47,9 +47,9 @@ class NAMDBin:
             elif num_atoms_little == num_atoms_model:
                 self.endian_signal = "<"
             else:
-                raise ValueError, "Number of atoms doesn't match supplied model"
+                raise ValueError("Number of atoms doesn't match supplied model")
 
-            for i in xrange(num_atoms_model):
+            for i in range(num_atoms_model):
                 x,y,z = struct.unpack(self.endian_signal + 'ddd', f.read(24) )
                 c = loos.GCoord(x,y,z)
                 if velocities:
@@ -66,7 +66,7 @@ class NAMDBin:
         with open(filename, 'wb') as f:
             bs = struct.pack(self.endian_signal + 'i', len(self.atomicGroup))
             f.write(bs)
-            for i in xrange(len(self.atomicGroup)):
+            for i in range(len(self.atomicGroup)):
                 if velocities:
                     c = self.atomicGroup[i].velocities() / self.PDBVELFACTOR
                 else:
@@ -88,9 +88,9 @@ if __name__ == '__main__':
 
     nb2 = NAMDBin("foo.vel", model2)
     nb2.readVals(velocities=True)
-    for i in xrange(len(model)):
+    for i in range(len(model)):
         m1 = model[i].velocities()
         m2 = model2[i].velocities()
         d = (m2 - m1).length()
 
-        print model[i].velocities(), model2[i].velocities(), d
+        print(model[i].velocities(), model2[i].velocities(), d)
