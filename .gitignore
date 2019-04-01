@@ -145,6 +145,7 @@ Packages/User/simple_model_transform
 Packages/User/simple_model_calc
 Packages/User/traj_transform
 Packages/User/traj_calc
+Packages/User/nmrclust
 Packages/DensityTools/blob_stats
 Packages/DensityTools/water-sides
 Packages/DensityTools/water-extract
