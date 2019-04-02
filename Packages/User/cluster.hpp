@@ -1,4 +1,4 @@
-#if !defined(LOOS_CLUSTER_HPP) 
+#if !defined(LOOS_CLUSTER_HPP)
 #define LOOS_CLUSTER_HPP
 
 #include <boost/program_options.hpp>
@@ -16,13 +16,15 @@ using namespace std;
 
 // takes an istream containing an ascii matrix,
 // returns arb. dimension matrix containing its contents
-// Note: assumes matrix is triangular (since similarity scores 
+// Note: assumes matrix is triangular (since similarity scores
 // for clustering must be reflexive...)
-MatrixXd readMatrixFromStream(istream& input){
+MatrixXd readMatrixFromStream(istream &input)
+{
   vector<vector<double>> matbuff;
   string line;
   double elt;
-  while(getline(input, line)){
+  while (getline(input, line))
+  {
     stringstream streamline(line);
     vector<double> row;
     // process a row here. Should work for whitespace delimited...
@@ -38,8 +40,8 @@ MatrixXd readMatrixFromStream(istream& input){
   TriangularBase<MatrixXd> result;
   for (uint i = 0; i < matbuff.size(); i++)
     for (uint j = i; j < matbuff[0].size(); j++)
-      result(i,j) = matbuff[i][j];
-  
+      result(i, j) = matbuff[i][j];
+
   return result;
 };
 
@@ -49,7 +51,8 @@ MatrixXd pairwise_dists(const Ref<const MatrixXd> &data)
 {
   const VectorXd data_sq = data.rowwise().squaredNorm();
   MatrixXd distances;
-  distances = data_sq.rowwise().replicate(data.rows()) + data_sq.transpose().colwise().replicate(data.rows()) - 2. * data * data.transpose();
+  distances = data_sq.rowwise().replicate(data.rows()) + data_sq.transpose().colwise().replicate(data.rows()) 
+              - 2. * data * data.transpose();
   distances.diagonal().setZero(); // prevents nans from occurring along diag.
   distances = distances.cwiseSqrt();
   return distances;
@@ -57,7 +60,8 @@ MatrixXd pairwise_dists(const Ref<const MatrixXd> &data)
 
 // from <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-     track-of-indexes>
 // provides a sort index in ASCENDING order. Apply using matrix product
-PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &v){
+PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &v)
+{
   // initialize original index locations
   PermutationMatrix<Dynamic, Dynamic> p(v.size());
   p.setIdentity();
@@ -66,5 +70,24 @@ PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &
        [&v](size_t i1, size_t i2) { return v.data()[i1] < v.data()[i2]; });
   return p;
 }
+
+
+// class for hierarchical agglomerative clustering. 
+// Specific comparison methods inherit from here.
+class HAC
+{
+  TriangularBase<MatrixXd> eltDists;
+  TriangularBase<MatrixXd> clusterDists;
+  vector<vector<uint>> clusterInds;
+  uint stage = 0;
+public:
+  HAC(TriangularBase<MatrixXd> elementDistances):
+    eltDists(elementDistances),
+    clusterDists(elementDistances){}
+  double dist(uint A, uint B){
+    // define a particular dist function when subclassing
+  }
+  
+};
 
 #endif
