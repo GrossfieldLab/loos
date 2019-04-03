@@ -37,7 +37,7 @@ MatrixXd readMatrixFromStream(istream &input)
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though nb mapped eigen matricies are not the same as eigen dense mats.
-  TriangularBase<MatrixXd> result;
+  MatrixXd result;
   for (uint i = 0; i < matbuff.size(); i++)
     for (uint j = i; j < matbuff[0].size(); j++)
       result(i, j) = matbuff[i][j];
@@ -51,8 +51,7 @@ MatrixXd pairwise_dists(const Ref<const MatrixXd> &data)
 {
   const VectorXd data_sq = data.rowwise().squaredNorm();
   MatrixXd distances;
-  distances = data_sq.rowwise().replicate(data.rows()) + data_sq.transpose().colwise().replicate(data.rows()) 
-              - 2. * data * data.transpose();
+  distances = data_sq.rowwise().replicate(data.rows()) + data_sq.transpose().colwise().replicate(data.rows()) - 2. * data * data.transpose();
   distances.diagonal().setZero(); // prevents nans from occurring along diag.
   distances = distances.cwiseSqrt();
   return distances;
@@ -71,23 +70,74 @@ PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &
   return p;
 }
 
+// helper functions for adding and subtracting rows. Can GO AWAY with eigen3.4.
+// as of 4/2/19 that's months away, though the feature is finished and in devel.
+void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
+{
+    unsigned int numRows = matrix.rows()-1;
+    unsigned int numCols = matrix.cols();
 
-// class for hierarchical agglomerative clustering. 
+    if( rowToRemove < numRows )
+        matrix.block(rowToRemove,0,numRows-rowToRemove,numCols) = matrix.bottomRows(numRows-rowToRemove);
+
+    matrix.conservativeResize(numRows,numCols);
+}
+
+void removeColumn(Eigen::MatrixXd& matrix, unsigned int colToRemove)
+{
+    unsigned int numRows = matrix.rows();
+    unsigned int numCols = matrix.cols()-1;
+
+    if( colToRemove < numCols )
+        matrix.block(0,colToRemove,numRows,numCols-colToRemove) = matrix.rightCols(numCols-colToRemove);
+
+    matrix.conservativeResize(numRows,numCols);
+}
+// class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
 class HAC
 {
-  TriangularBase<MatrixXd> eltDists;
-  TriangularBase<MatrixXd> clusterDists;
-  vector<vector<uint>> clusterInds;
-  uint stage = 0;
-public:
-  HAC(TriangularBase<MatrixXd> elementDistances):
-    eltDists(elementDistances),
-    clusterDists(elementDistances){}
-  double dist(uint A, uint B){
+private:
+  const Ref<MatrixXd> &eltDists;
+  MatrixXd clusterDists;
+  // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
+  vector<unique_ptr<vector<uint>>> clusterInds;
+  // These will all be of length matching clustering steps (Nelts-1)
+  VectorXd distOfMerge;
+  double dist(uint A, uint B)
+  {
     // define a particular dist function when subclassing
   }
-  
+
+public:
+  HAC(const Ref<MatrixXd> &e) : eltDists{e},
+                                clusterDists(eltDists) {}
+  vector<unique_ptr<vector<uint>>> getClusterInds()
+  {
+    return clusterInds;
+  }
+  // Run through the clustering cycle, populating the 'trajectory' vectors.
+  void doCluster()
+  {
+    // initialize the list of cluster indices with one index per cluster
+    for (uint i = 0; i < clusterDists.cols(); i++)
+    {
+      unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
+      clusterInds.push_back(cluster_ptr);
+    }
+    // these will store the indexes of the coefficients sought.
+    uint minr, minc;
+    for (uint stage = 0; stage < eltDists.cols() - 1; stage++)
+    {
+      // bind the minimum distance found for dendrogram construction
+      distOfMerge[stage] = clusterDists.minCoeff(&minr, &minc);
+      // add row index from pair to cluster containing column index
+      *(clusterInds[minc]).push_back(minr);
+      // delete cluster unique_ptr containing row index; should delete cluster vector too.
+      clusterInds.erase(minc);
+      
+    }
+  }
 };
 
 #endif
