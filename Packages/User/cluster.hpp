@@ -72,26 +72,26 @@ PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &
 
 // helper functions for adding and subtracting rows. Can GO AWAY with eigen3.4.
 // as of 4/2/19 that's months away, though the feature is finished and in devel.
-void removeRow(Eigen::MatrixXd& matrix, unsigned int rowToRemove)
+void removeRow(Eigen::MatrixXd &matrix, unsigned int rowToRemove)
 {
-    unsigned int numRows = matrix.rows()-1;
-    unsigned int numCols = matrix.cols();
+  unsigned int numRows = matrix.rows() - 1;
+  unsigned int numCols = matrix.cols();
 
-    if( rowToRemove < numRows )
-        matrix.block(rowToRemove,0,numRows-rowToRemove,numCols) = matrix.bottomRows(numRows-rowToRemove);
+  if (rowToRemove < numRows)
+    matrix.block(rowToRemove, 0, numRows - rowToRemove, numCols) = matrix.bottomRows(numRows - rowToRemove);
 
-    matrix.conservativeResize(numRows,numCols);
+  matrix.conservativeResize(numRows, numCols);
 }
 
-void removeColumn(Eigen::MatrixXd& matrix, unsigned int colToRemove)
+void removeColumn(Eigen::MatrixXd &matrix, unsigned int colToRemove)
 {
-    unsigned int numRows = matrix.rows();
-    unsigned int numCols = matrix.cols()-1;
+  unsigned int numRows = matrix.rows();
+  unsigned int numCols = matrix.cols() - 1;
 
-    if( colToRemove < numCols )
-        matrix.block(0,colToRemove,numRows,numCols-colToRemove) = matrix.rightCols(numCols-colToRemove);
+  if (colToRemove < numCols)
+    matrix.block(0, colToRemove, numRows, numCols - colToRemove) = matrix.rightCols(numCols - colToRemove);
 
-    matrix.conservativeResize(numRows,numCols);
+  matrix.conservativeResize(numRows, numCols);
 }
 // class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
@@ -101,20 +101,46 @@ private:
   const Ref<MatrixXd> &eltDists;
   MatrixXd clusterDists;
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
-  vector<unique_ptr<vector<uint>>> clusterInds;
+  // each merge event is a pair of cluster indices for the clusters at the stage recorded by the primary index.
+  Matrix<uint, Dynamic, 2, RowMajor> mergeTraj;
   // These will all be of length matching clustering steps (Nelts-1)
   VectorXd distOfMerge;
+  // the vector of pointers to each cluster at the current stage.
+  vector<unique_ptr<vector<uint>>> clusterList;
   double dist(uint A, uint B)
   {
     // define a particular dist function when subclassing
   }
 
+  // Merge two clusters, return true if merged cluster was first provided index, false otherwise.
+  // In the case where clusters are of equal size, takes the first index provided.
+  bool merge(vector<unique_ptr<vector<uint>>> &clusterList, uint idxA, uint idxB)
+  {
+    // hopefully these will be inlined/elided?!
+    vector<uint> clusterA = *clusterList[idxA];
+    vector<uint> clusterB = *clusterList[idxB];
+    if (clusterA.size() < clusterB.size())
+    {
+      clusterB.insert(clusterB.end(), clusterA.begin(), clusterA.end());
+      clusterList.erase(clusterList.begin() + idxA);
+      return false;
+    }
+    else
+    {
+      clusterA.insert(clusterA.end(), clusterB.begin(), clusterB.end());
+      clusterList.erase(clusterList.begin() + idxB);
+      return true;
+    }
+  }
+
 public:
   HAC(const Ref<MatrixXd> &e) : eltDists{e},
-                                clusterDists(eltDists) {}
-  vector<unique_ptr<vector<uint>>> getClusterInds()
+                                clusterDists(eltDists),
+                                distOfMerge(eltDists.cols()-1),
+                                mergeTraj(eltDists.cols()-1, 2) {}
+  vector<unique_ptr<vector<uint>>> getclusterList()
   {
-    return clusterInds;
+    return clusterList;
   }
   // Run through the clustering cycle, populating the 'trajectory' vectors.
   void doCluster()
@@ -123,19 +149,29 @@ public:
     for (uint i = 0; i < clusterDists.cols(); i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
-      clusterInds.push_back(cluster_ptr);
+      clusterList.push_back(cluster_ptr);
     }
     // these will store the indexes of the coefficients sought.
-    uint minr, minc;
+    uint minRow, minCol;
+    bool merged;
     for (uint stage = 0; stage < eltDists.cols() - 1; stage++)
     {
       // bind the minimum distance found for dendrogram construction
-      distOfMerge[stage] = clusterDists.minCoeff(&minr, &minc);
-      // add row index from pair to cluster containing column index
-      *(clusterInds[minc]).push_back(minr);
-      // delete cluster unique_ptr containing row index; should delete cluster vector too.
-      clusterInds.erase(minc);
+      distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
+      mergeTraj.row(stage) = Vector2i(minRow, minCol);
       
+      // merge the clusters into whichever of the two is larger. Erase the other.
+      merged = merge(clusterList, minRow, minCol);
+      if (merged)
+      {
+        // update clusterDists to zero out minCol column & row
+        // recalculate minRow column and row
+      }
+      else
+      {
+        // update clusterdists to delete minRow column & row
+        // recalculate minCol column and row
+      }
     }
   }
 };
