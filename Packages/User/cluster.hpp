@@ -165,11 +165,15 @@ public:
       if (merged)
       {
         // update clusterDists to zero out minCol column & row
+        removeRow(clusterDists.selfAdjointView(), minCol);
+        removeColumn(clusterDists.selfAdjointView(), minCol);
         // recalculate minRow column and row
       }
       else
       {
         // update clusterdists to delete minRow column & row
+        removeRow(clusterDists.selfAdjointView(), minRow);
+        removeColumn(clusterDists.selfAdjointView(), minRow);
         // recalculate minCol column and row
       }
     }
