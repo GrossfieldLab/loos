@@ -37,7 +37,7 @@ MatrixXd readMatrixFromStream(istream &input)
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though nb mapped eigen matricies are not the same as eigen dense mats.
-  MatrixXd result(matbuff[0].size(), matbuff.size());
+  Matrix<double, Dynamic, Dynamic, RowMajor> result(matbuff[0].size(), matbuff.size());
   for (uint i = 0; i < matbuff.size(); i++)
     for (uint j = i; j < matbuff[0].size(); j++)
       result(i, j) = matbuff[i][j];
@@ -94,11 +94,16 @@ void removeCol(Eigen::MatrixXd &matrix, unsigned int colToRemove)
   matrix.conservativeResize(numRows, numCols);
 }
 
-// class for hierarchical agglomerative clustering.
+// Abstract class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
-class HAC
-{
-private:
+class HAC {
+public:
+  HAC(const Ref<MatrixXd> &e) : eltDists{e},
+                                clusterDists(eltDists),
+                                distOfMerge(eltDists.cols() - 1),
+                                mergeTraj(eltDists.cols() - 1, 2) {}
+
+
   const Ref<MatrixXd> &eltDists;
   MatrixXd clusterDists;
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
@@ -117,11 +122,11 @@ private:
     // define a particular dist function when subclassing
   }
   // define a penalty function to score each level of the hierarchy.
-  void penalty(){}
+  virtual void penalty(){}
 
   // Merge two clusters, return true if merged cluster was first provided index, false otherwise.
   // In the case where clusters are of equal size, takes the first index provided.
-  bool merge(vector<unique_ptr<vector<uint>>> &clusterList, uint idxA, uint idxB)
+  virtual bool merge(vector<unique_ptr<vector<uint>>> &clusterList, uint idxA, uint idxB)
   {
     bool ret;
     // hopefully these will be inlined/elided?!
@@ -142,18 +147,13 @@ private:
     return ret;
   }
 
-public:
-  HAC(const Ref<MatrixXd> &e) : eltDists{e},
-                                clusterDists(eltDists),
-                                distOfMerge(eltDists.cols() - 1),
-                                mergeTraj(eltDists.cols() - 1, 2) {}
 
-  vector<unique_ptr<vector<uint>>> getclusterList()
+  virtual vector<unique_ptr<vector<uint>>> getclusterList()
   {
     return clusterList;
   }
   // Run through the clustering cycle, populating the 'trajectory' vectors.
-  void doCluster()
+  virtual void cluster()
   {
     // initialize the list of cluster indices with one index per cluster
     for (uint i = 0; i < clusterDists.cols(); i++)
@@ -191,6 +191,15 @@ public:
         // recalculate minCol column and row
       }
     }
+  }
+};
+
+// average linkage class for hierarchical clustering.
+class AverageLinkage: HAC {
+public:
+  VectorXd dist(uint A, uint B)
+  {
+    
   }
 };
 
