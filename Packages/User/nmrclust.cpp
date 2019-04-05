@@ -16,13 +16,9 @@ int main()
   MatrixXd similarity_scores;
   // read similarity scores into matrix, this is step 1 in CGS fig. 1
   similarity_scores = readMatrixFromStream(cin);
-
-  // perform average linkage clustering, step 2 CGS f1.
-  // use vector of vectors of structure indices as cluster list.
-  vector<vector<uint>> cluster_list;
-  for(uint i = 0; i < similarity_scores.rows(); i++){
-    vector <uint> cluster{i};
-    cluster_list.push_back(cluster);
-  }
+  cout << similarity_scores << '\n';
+  removeRow(similarity_scores, 2);
+  removeCol(similarity_scores, 1);
+  cout << similarity_scores << '\n';
   
 }

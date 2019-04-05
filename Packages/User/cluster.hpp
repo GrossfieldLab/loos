@@ -37,7 +37,7 @@ MatrixXd readMatrixFromStream(istream &input)
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though nb mapped eigen matricies are not the same as eigen dense mats.
-  MatrixXd result;
+  MatrixXd result(matbuff[0].size(), matbuff.size());
   for (uint i = 0; i < matbuff.size(); i++)
     for (uint j = i; j < matbuff[0].size(); j++)
       result(i, j) = matbuff[i][j];
@@ -83,7 +83,7 @@ void removeRow(Eigen::MatrixXd &matrix, unsigned int rowToRemove)
   matrix.conservativeResize(numRows, numCols);
 }
 
-void removeColumn(Eigen::MatrixXd &matrix, unsigned int colToRemove)
+void removeCol(Eigen::MatrixXd &matrix, unsigned int colToRemove)
 {
   unsigned int numRows = matrix.rows();
   unsigned int numCols = matrix.cols() - 1;
@@ -93,6 +93,7 @@ void removeColumn(Eigen::MatrixXd &matrix, unsigned int colToRemove)
 
   matrix.conservativeResize(numRows, numCols);
 }
+
 // class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
 class HAC
@@ -116,6 +117,7 @@ private:
   // In the case where clusters are of equal size, takes the first index provided.
   bool merge(vector<unique_ptr<vector<uint>>> &clusterList, uint idxA, uint idxB)
   {
+    bool ret;
     // hopefully these will be inlined/elided?!
     vector<uint> clusterA = *clusterList[idxA];
     vector<uint> clusterB = *clusterList[idxB];
@@ -123,21 +125,22 @@ private:
     {
       clusterB.insert(clusterB.end(), clusterA.begin(), clusterA.end());
       clusterList.erase(clusterList.begin() + idxA);
-      return false;
+      ret = false;
     }
     else
     {
       clusterA.insert(clusterA.end(), clusterB.begin(), clusterB.end());
       clusterList.erase(clusterList.begin() + idxB);
-      return true;
+      ret = true;
     }
+    return ret;
   }
 
 public:
   HAC(const Ref<MatrixXd> &e) : eltDists{e},
                                 clusterDists(eltDists),
-                                distOfMerge(eltDists.cols()-1),
-                                mergeTraj(eltDists.cols()-1, 2) {}
+                                distOfMerge(eltDists.cols() - 1),
+                                mergeTraj(eltDists.cols() - 1, 2) {}
   vector<unique_ptr<vector<uint>>> getclusterList()
   {
     return clusterList;
@@ -159,21 +162,25 @@ public:
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
       mergeTraj.row(stage) = Vector2i(minRow, minCol);
-      
+
       // merge the clusters into whichever of the two is larger. Erase the other.
       merged = merge(clusterList, minRow, minCol);
       if (merged)
-      {
+      { // minRow was the cluster merged into
+        VectorXd mergedRow = dist(minRow, minCol);
         // update clusterDists to zero out minCol column & row
-        removeRow(clusterDists.selfAdjointView(), minCol);
-        removeColumn(clusterDists.selfAdjointView(), minCol);
+        removeRow(clusterDists, minCol);
+        removeCol(clusterDists, minCol);
         // recalculate minRow column and row
+        if(minCol < minRow)
+          minRow--;
+        dist()
       }
       else
-      {
+      { // minCol was the cluster merged into
         // update clusterdists to delete minRow column & row
-        removeRow(clusterDists.selfAdjointView(), minRow);
-        removeColumn(clusterDists.selfAdjointView(), minRow);
+        removeRow(clusterDists, minRow);
+        removeCol(clusterDists, minRow);
         // recalculate minCol column and row
       }
     }
