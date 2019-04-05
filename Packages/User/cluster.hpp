@@ -106,12 +106,18 @@ private:
   Matrix<uint, Dynamic, 2, RowMajor> mergeTraj;
   // These will all be of length matching clustering steps (Nelts-1)
   VectorXd distOfMerge;
+  VectorXd penalties;
+
   // the vector of pointers to each cluster at the current stage.
   vector<unique_ptr<vector<uint>>> clusterList;
-  double dist(uint A, uint B)
+  
+  // need to fill this in for each type of 
+  VectorXd dist(uint A, uint B)
   {
     // define a particular dist function when subclassing
   }
+  // define a penalty function to score each level of the hierarchy.
+  void penalty(){}
 
   // Merge two clusters, return true if merged cluster was first provided index, false otherwise.
   // In the case where clusters are of equal size, takes the first index provided.
@@ -141,6 +147,7 @@ public:
                                 clusterDists(eltDists),
                                 distOfMerge(eltDists.cols() - 1),
                                 mergeTraj(eltDists.cols() - 1, 2) {}
+
   vector<unique_ptr<vector<uint>>> getclusterList()
   {
     return clusterList;
@@ -174,7 +181,7 @@ public:
         // recalculate minRow column and row
         if(minCol < minRow)
           minRow--;
-        dist()
+        VectorXd mergedRow = dist(minRow, minCol);
       }
       else
       { // minCol was the cluster merged into
