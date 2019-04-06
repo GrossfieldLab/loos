@@ -45,9 +45,10 @@ MatrixXd readMatrixFromStream(istream &input)
   return result;
 };
 
-// takes a nxd data matrix, returns an nxn matrix containing pairwise distances
+// takes a nxd data matrix (where d is the dimensionality of the data), 
+// returns an nxn matrix containing pairwise distances
 // use formula (a - b)^2 = a^2 + b^2 -2a*b.
-MatrixXd pairwise_dists(const Ref<const MatrixXd> &data)
+MatrixXd pairwiseDists(const Ref<const MatrixXd> &data)
 {
   const VectorXd data_sq = data.rowwise().squaredNorm();
   MatrixXd distances;
@@ -147,11 +148,13 @@ public:
     return ret;
   }
 
-
+  // gets the cluster list. Will match cluster list at current step. 
   virtual vector<unique_ptr<vector<uint>>> getclusterList()
   {
     return clusterList;
   }
+
+
   // Run through the clustering cycle, populating the 'trajectory' vectors.
   virtual void cluster()
   {
@@ -168,7 +171,7 @@ public:
     {
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
-      mergeTraj.row(stage) = Vector2i(minRow, minCol);
+      mergeTraj.row(stage) << minRow, minCol;
 
       // merge the clusters into whichever of the two is larger. Erase the other.
       merged = merge(clusterList, minRow, minCol);
@@ -181,25 +184,38 @@ public:
         // recalculate minRow column and row
         if(minCol < minRow)
           minRow--;
-        VectorXd mergedRow = dist(minRow, minCol);
+        clusterDists.row(minRow) = mergedRow; 
+        clusterDists.col(minRow) = mergedRow.transpose();
       }
       else
       { // minCol was the cluster merged into
-        // update clusterdists to delete minRow column & row
+        VectorXd mergedRow = dist(minRow, minCol);
+
+        // update clusterDists to delete minRow column & row
         removeRow(clusterDists, minRow);
         removeCol(clusterDists, minRow);
         // recalculate minCol column and row
+        if (minRow < minCol)
+          minCol--;
+        clusterDists.row(minCol) = mergedRow;
+        clusterDists.col(minCol) = mergedRow.transpose();
       }
+      // compute the penalty, if such is needed
+      penalty();
     }
   }
 };
 
 // average linkage class for hierarchical clustering.
+// derive specific examples of average linkage HAC from here.
+// By definition they should all need this distance function.
 class AverageLinkage: HAC {
 public:
+  VectorXd clusterCounts;
+  // this should be a terminal definition
   VectorXd dist(uint A, uint B)
   {
-    
+    VectorXd distFromMerged = clusterDists;
   }
 };
 
