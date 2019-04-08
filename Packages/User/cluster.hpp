@@ -73,7 +73,8 @@ PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &
 
 // helper functions for adding and subtracting rows. Can GO AWAY with eigen3.4.
 // as of 4/2/19 that's months away, though the feature is finished and in devel.
-void removeRow(Eigen::MatrixXd &matrix, unsigned int rowToRemove)
+template <typename Derived>
+void removeRow(EigenBase<Derived> &matrix, unsigned int rowToRemove)
 {
   unsigned int numRows = matrix.rows() - 1;
   unsigned int numCols = matrix.cols();
@@ -84,7 +85,8 @@ void removeRow(Eigen::MatrixXd &matrix, unsigned int rowToRemove)
   matrix.conservativeResize(numRows, numCols);
 }
 
-void removeCol(Eigen::MatrixXd &matrix, unsigned int colToRemove)
+template <typename Derived>
+void removeCol(EigenBase<Derived> &matrix, unsigned int colToRemove)
 {
   unsigned int numRows = matrix.rows();
   unsigned int numCols = matrix.cols() - 1;
@@ -98,33 +100,36 @@ void removeCol(Eigen::MatrixXd &matrix, unsigned int colToRemove)
 // Abstract class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
 class HAC {
+  // no private data, since this class exists to provide inheritance.
 public:
-  HAC(const Ref<MatrixXd> &e) : eltDists{e},
-                                clusterDists(eltDists),
-                                distOfMerge(eltDists.cols() - 1),
-                                mergeTraj(eltDists.cols() - 1, 2) {}
+  HAC(const Ref<MatrixXd> &e) : clusterDists(e.selfadjointView<Upper>()),
+                                eltCount{e.cols()},
+                                distOfMerge(e.cols() - 1),
+                                mergeTraj(e.cols() - 1, 2) {}
 
 
-  const Ref<MatrixXd> &eltDists;
-  MatrixXd clusterDists;
+  Matrix<double, Dynamic, Dynamic, RowMajor> clusterDists;
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
   // each merge event is a pair of cluster indices for the clusters at the stage recorded by the primary index.
   Matrix<uint, Dynamic, 2, RowMajor> mergeTraj;
   // These will all be of length matching clustering steps (Nelts-1)
   VectorXd distOfMerge;
-  VectorXd penalties;
-
+  // holds total number of elements to be clustered (and thus number of steps)
+  uint eltCount;
+    
+  // These members change each step.
+  // these will store the indexes of the coefficients sought.
+  uint minRow, minCol, stage;
+  // this bool stores outcome of 'merge'
+  bool merged;
   // the vector of pointers to each cluster at the current stage.
   vector<unique_ptr<vector<uint>>> clusterList;
   
   // need to fill this in for each type of 
-  VectorXd dist(uint A, uint B)
-  {
-    // define a particular dist function when subclassing
-  }
+  virtual VectorXd dist(uint A, uint B){}
   // define a penalty function to score each level of the hierarchy.
   virtual void penalty(){}
-
+  
   // Merge two clusters, return true if merged cluster was first provided index, false otherwise.
   // In the case where clusters are of equal size, takes the first index provided.
   virtual bool merge(vector<unique_ptr<vector<uint>>> &clusterList, uint idxA, uint idxB)
@@ -159,25 +164,25 @@ public:
   virtual void cluster()
   {
     // initialize the list of cluster indices with one index per cluster
-    for (uint i = 0; i < clusterDists.cols(); i++)
+    for (uint i = 0; i < eltCount; i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
       clusterList.push_back(cluster_ptr);
     }
-    // these will store the indexes of the coefficients sought.
-    uint minRow, minCol;
-    bool merged;
-    for (uint stage = 0; stage < eltDists.cols() - 1; stage++)
+   for (stage = 0; stage < eltCount - 1; stage++)
     {
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
       mergeTraj.row(stage) << minRow, minCol;
-
+      // build merged row. Must happen before clusterList merge is performed.
+      VectorXd mergedRow = dist(minRow, minCol);
       // merge the clusters into whichever of the two is larger. Erase the other.
       merged = merge(clusterList, minRow, minCol);
+      // compute the penalty, if such is needed. Needs cluster merged into.
+      penalty();
+      // update the matrix of clusterDists
       if (merged)
       { // minRow was the cluster merged into
-        VectorXd mergedRow = dist(minRow, minCol);
         // update clusterDists to zero out minCol column & row
         removeRow(clusterDists, minCol);
         removeCol(clusterDists, minCol);
@@ -189,8 +194,6 @@ public:
       }
       else
       { // minCol was the cluster merged into
-        VectorXd mergedRow = dist(minRow, minCol);
-
         // update clusterDists to delete minRow column & row
         removeRow(clusterDists, minRow);
         removeCol(clusterDists, minRow);
@@ -200,8 +203,7 @@ public:
         clusterDists.row(minCol) = mergedRow;
         clusterDists.col(minCol) = mergedRow.transpose();
       }
-      // compute the penalty, if such is needed
-      penalty();
+
     }
   }
 };
@@ -211,11 +213,12 @@ public:
 // By definition they should all need this distance function.
 class AverageLinkage: HAC {
 public:
-  VectorXd clusterCounts;
   // this should be a terminal definition
-  VectorXd dist(uint A, uint B)
-  {
-    VectorXd distFromMerged = clusterDists;
+  virtual VectorXd dist(uint idxA, uint idxB)
+  { 
+    uint sizeA = clusterList[idxA]->size();
+    uint sizeB = clusterList[idxB]->size();
+    return (sizeA*clusterDists.row(idxA) + sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
   }
 };
 

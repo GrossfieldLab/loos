@@ -10,6 +10,24 @@
 using namespace Eigen;
 using namespace std;
 
+class NMRClust: HAC {
+  VectorXd penalties;
+  VectorXd spreads;
+  uint nClusters;
+  // this is the AverageLinkage distance.
+  VectorXd dist(uint idxA, uint idxB)
+  { 
+    uint sizeA = clusterList[idxA]->size();
+    uint sizeB = clusterList[idxB]->size();
+    return (sizeA*clusterDists.row(idxA) + sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
+  }
+  
+  virtual void penalty()
+  {
+    stage = 12;
+  }
+
+};
 
 int main()
 {
@@ -20,5 +38,7 @@ int main()
   removeRow(similarity_scores, 2);
   removeCol(similarity_scores, 1);
   cout << similarity_scores << '\n';
+  MatrixXd test(similarity_scores.selfadjointView<Upper>());
+  cout << test << endl; 
   
 }
