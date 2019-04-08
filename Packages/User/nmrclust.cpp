@@ -23,8 +23,21 @@ class NMRClust: HAC {
   }
   
   virtual void penalty()
-  {
-    stage = 12;
+  { 
+    uint sizeA = clusterList[minRow]->size();
+    uint sizeB = clusterList[minCol]->size();
+    double sumCrossDists = sizeA*sizeB*distOfMerge[stage];
+    double newClusterSpread = 2*(spreads[minRow]/(sizeA*(sizeA-1)) + spreads[minCol]/(sizeB*(sizeB-1))) + sumCrossDists;
+    if (merged)
+    {
+      spreads[minRow] = newClusterSpread;
+      // remove spreads[minCol]
+    }
+    else
+    {
+      spreads[minCol] = newClusterSpread;
+      // remove spreads[minRow]
+    }
   }
 
 };
