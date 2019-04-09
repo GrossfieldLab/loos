@@ -161,7 +161,7 @@ public:
 
 
   // Run through the clustering cycle, populating the 'trajectory' vectors.
-  virtual void cluster()
+  void cluster()
   {
     // initialize the list of cluster indices with one index per cluster
     for (uint i = 0; i < eltCount; i++)
@@ -211,8 +211,9 @@ public:
 // average linkage class for hierarchical clustering.
 // derive specific examples of average linkage HAC from here.
 // By definition they should all need this distance function.
-class AverageLinkage: HAC {
+class AverageLinkage: public HAC {
 public:
+  AverageLinkage(const Ref<MatrixXd> &e) : HAC(e) {}
   // this should be a terminal definition
   virtual VectorXd dist(uint idxA, uint idxB)
   { 

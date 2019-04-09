@@ -10,36 +10,62 @@
 using namespace Eigen;
 using namespace std;
 
-class NMRClust: HAC {
+class NMRClust: public AverageLinkage {
+public:
+  NMRClust(const Ref<MatrixXd> &e) : AverageLinkage(e),
+                                     avgSpread(e.rows()-1),
+                                     spreads(e.rows()),
+                                     nClusters(e.rows()-1),
+                                     penalties(e.rows()-1) {}
+  // need to track the average spread at each stage of the clustering.  
+  VectorXd avgSpread;
+  // need to track the number of nontrivial clusters at each stage
+  VectorXi nClusters;
+  // compute penalties for each step
   VectorXd penalties;
-  VectorXd spreads;
-  uint nClusters;
-  // this is the AverageLinkage distance.
-  VectorXd dist(uint idxA, uint idxB)
+
+  // call this to search for a cutoff stage in clustering.
+  uint cutoff()
   { 
-    uint sizeA = clusterList[idxA]->size();
-    uint sizeB = clusterList[idxB]->size();
-    return (sizeA*clusterDists.row(idxA) + sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
+    double min = avgSpread.minCoeff();
+    double norm = (avgSpread.size()-1)/(avgSpread.maxCoeff()-min);
+    penalties = norm*(avgSpread.array() - min) + 1;
+    uint minIndex;
+    penalties.minCoeff(&minIndex);
+    return minIndex;
   }
-  
-  virtual void penalty()
+
+private:
+  // this will change per round of clustering
+  VectorXd spreads; 
+  void penalty()
   { 
+    double currentClusterCount = nClusters[stage-1];
     uint sizeA = clusterList[minRow]->size();
     uint sizeB = clusterList[minCol]->size();
     double sumCrossDists = sizeA*sizeB*distOfMerge[stage];
     double newClusterSpread = 2*(spreads[minRow]/(sizeA*(sizeA-1)) + spreads[minCol]/(sizeB*(sizeB-1))) + sumCrossDists;
+    // nClusters goes up to record addition of one merged (nontrivial cluster)
+    currentClusterCount ++;
     if (merged)
-    {
+    { // accout for the case where the merged cluster was also nontrivial
+      if (sizeB > 1)
+        currentClusterCount --;
       spreads[minRow] = newClusterSpread;
       // remove spreads[minCol]
+      spreads[minCol] = 0;
     }
     else
-    {
+    { // account for the case where the merged cluster was also nontrivial
+      if (sizeA > 1)
+        currentClusterCount --; 
       spreads[minCol] = newClusterSpread;
       // remove spreads[minRow]
+      spreads[minRow] = 0;
     }
+    nClusters[stage] = currentClusterCount;
+    avgSpread[stage] = spreads.sum()/currentClusterCount;
   }
-
 };
 
 int main()
