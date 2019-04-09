@@ -72,12 +72,5 @@ int main()
 {
   MatrixXd similarity_scores;
   // read similarity scores into matrix, this is step 1 in CGS fig. 1
-  similarity_scores = readMatrixFromStream(cin);
-  cout << similarity_scores << '\n';
-  removeRow(similarity_scores, 2);
-  removeCol(similarity_scores, 1);
-  cout << similarity_scores << '\n';
-  MatrixXd test(similarity_scores.selfadjointView<Upper>());
-  cout << test << endl; 
   
 }

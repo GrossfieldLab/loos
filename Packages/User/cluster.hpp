@@ -169,7 +169,9 @@ public:
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
       clusterList.push_back(cluster_ptr);
     }
-   for (stage = 0; stage < eltCount - 1; stage++)
+    // Make the diagonal (which should be zeros) greater than the max value instead
+    clusterDists.diagonal() = (clusterDists.maxCoeff()+1)*VectorXd::Ones(clusterDists.rows());
+    for (stage = 0; stage < eltCount - 1; stage++)
     {
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
