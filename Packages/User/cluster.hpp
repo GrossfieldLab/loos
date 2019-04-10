@@ -104,17 +104,14 @@ class HAC {
 public:
   HAC(const Ref<MatrixXd> &e) : clusterDists(e.selfadjointView<Upper>()),
                                 eltCount{e.cols()},
-                                distOfMerge(e.cols() - 1),
-                                mergeTraj(e.cols() - 1, 2) {}
+                                distOfMerge(e.cols() - 1) {}
 
 
   Matrix<double, Dynamic, Dynamic, RowMajor> clusterDists;
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
-  // each merge event is a pair of cluster indices for the clusters at the stage recorded by the primary index.
-  Matrix<uint, Dynamic, 2, RowMajor> mergeTraj;
   // These will all be of length matching clustering steps (Nelts-1)
   VectorXd distOfMerge;
-  // holds total number of elements to be clustered (and thus number of steps)
+ // holds total number of elements to be clustered (and thus number of steps)
   uint eltCount;
     
   // These members change each step.
@@ -122,64 +119,71 @@ public:
   uint minRow, minCol, stage;
   // this bool stores outcome of 'merge'
   bool merged;
+  // track the 'trajectory' of the clustering process
+  vector<vector<unique_ptr<vector<uint>>>> clusterTrajectory;
   // the vector of pointers to each cluster at the current stage.
-  vector<unique_ptr<vector<uint>>> clusterList;
+  // each element of cluster list will be currentClusters at stage == index.
+  vector<unique_ptr<vector<uint>>> currentClusters;
   
   // need to fill this in for each type of 
   virtual VectorXd dist(uint A, uint B){}
   // define a penalty function to score each level of the hierarchy.
   virtual void penalty(){}
   
-  // Merge two clusters, return true if merged cluster was first provided index, false otherwise.
-  // In the case where clusters are of equal size, takes the first index provided.
-  virtual bool merge(vector<unique_ptr<vector<uint>>> &clusterList, uint idxA, uint idxB)
+  // Merge two clusters into whichever is larger.
+  // Return true if new composite cluster is minRow, else return false
+  // In the case where clusters are of equal size, merge into minRow.
+  virtual bool merge()
   {
     bool ret;
     // hopefully these will be inlined/elided?!
-    vector<uint> clusterA = *clusterList[idxA];
-    vector<uint> clusterB = *clusterList[idxB];
+    vector<uint> clusterA = *currentClusters[minRow];
+    vector<uint> clusterB = *currentClusters[minCol];
     if (clusterA.size() < clusterB.size())
     {
       clusterB.insert(clusterB.end(), clusterA.begin(), clusterA.end());
-      clusterList.erase(clusterList.begin() + idxA);
+      currentClusters.erase(currentClusters.begin() + minRow);
       ret = false;
     }
     else
     {
       clusterA.insert(clusterA.end(), clusterB.begin(), clusterB.end());
-      clusterList.erase(clusterList.begin() + idxB);
+      currentClusters.erase(currentClusters.begin() + minCol);
       ret = true;
     }
+    // append new assortment of clusters to Cluster Trajectory
+    clusterTrajectory.push_back(currentClusters);
     return ret;
   }
 
   // gets the cluster list. Will match cluster list at current step. 
-  virtual vector<unique_ptr<vector<uint>>> getclusterList()
+  virtual vector<vector<unique_ptr<vector<uint>>>> getClusterTrajectory()
   {
-    return clusterList;
+    return clusterTrajectory;
   }
-
 
   // Run through the clustering cycle, populating the 'trajectory' vectors.
   void cluster()
-  {
+  { 
+    
     // initialize the list of cluster indices with one index per cluster
     for (uint i = 0; i < eltCount; i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
-      clusterList.push_back(cluster_ptr);
+      currentClusters.push_back(cluster_ptr);
     }
+
     // Make the diagonal (which should be zeros) greater than the max value instead
-    clusterDists.diagonal() = (clusterDists.maxCoeff()+1)*VectorXd::Ones(clusterDists.rows());
+    clusterDists.diagonal() = (clusterDists.maxCoeff()+1)
+                              * VectorXd::Ones(clusterDists.rows());
     for (stage = 0; stage < eltCount - 1; stage++)
     {
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
-      mergeTraj.row(stage) << minRow, minCol;
-      // build merged row. Must happen before clusterList merge is performed.
+      // build merged row. Must happen before clusterTrajectory merge is performed.
       VectorXd mergedRow = dist(minRow, minCol);
       // merge the clusters into whichever of the two is larger. Erase the other.
-      merged = merge(clusterList, minRow, minCol);
+      merged = merge();
       // compute the penalty, if such is needed. Needs cluster merged into.
       penalty();
       // update the matrix of clusterDists
@@ -219,9 +223,9 @@ public:
   // this should be a terminal definition
   virtual VectorXd dist(uint idxA, uint idxB)
   { 
-    uint sizeA = clusterList[idxA]->size();
-    uint sizeB = clusterList[idxB]->size();
-    return (sizeA*clusterDists.row(idxA) + sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
+    uint sizeA = currentClusters[idxA]->size();
+    uint sizeB = currentClusters[idxB]->size();
+    return (sizeA*clusterDists.row(idxA)+sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
   }
 };
 

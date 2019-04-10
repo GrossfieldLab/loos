@@ -41,8 +41,8 @@ private:
   void penalty()
   { 
     double currentClusterCount = nClusters[stage-1];
-    uint sizeA = clusterList[minRow]->size();
-    uint sizeB = clusterList[minCol]->size();
+    uint sizeA = currentClusters[minRow]->size();
+    uint sizeB = currentClusters[minCol]->size();
     double sumCrossDists = sizeA*sizeB*distOfMerge[stage];
     double newClusterSpread = 2*(spreads[minRow]/(sizeA*(sizeA-1)) + spreads[minCol]/(sizeB*(sizeB-1))) + sumCrossDists;
     // nClusters goes up to record addition of one merged (nontrivial cluster)
