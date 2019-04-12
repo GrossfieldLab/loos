@@ -1,4 +1,5 @@
-// nmrclust.cpp follows Kelly, Gardner, and Sutcliffe, Prot. Eng. 9 11 1063-1065 (1996) 
+// nmrclust.cpp 
+// Kelly, Gardner, and Sutcliffe, Prot. Eng. 9 11 1063-1065 (1996) 
 // hereafter KGS
 // To perform exactly the analysis specified there, one must first apply
 // one of the all-to-all rmsd tolls (such as rmsds or multi-rmsds) before
@@ -19,7 +20,9 @@ public:
                                      penalties(e.rows()-1) {}
   // need to track the average spread at each stage of the clustering.  
   VectorXd avgSpread;
-  // need to track the number of nontrivial clusters at each stage
+  // need to track the number of NONTRIVIAL clusters at each stage
+  // => nClusters != currStg.size() except in cases where all 
+  // clusters are composite, which is not guaranteed until the very last stage.
   VectorXi nClusters;
   // compute penalties for each step
   VectorXd penalties;
@@ -40,9 +43,9 @@ private:
   VectorXd spreads; 
   void penalty()
   { 
-    double currentClusterCount = nClusters[stage-1];
-    uint sizeA = currentClusters[minRow]->size();
-    uint sizeB = currentClusters[minCol]->size();
+    uint currentClusterCount = nClusters[stage-1];
+    uint sizeA = currStg[minRow]->size();
+    uint sizeB = currStg[minCol]->size();
     double sumCrossDists = sizeA*sizeB*distOfMerge[stage];
     double newClusterSpread = 2*(spreads[minRow]/(sizeA*(sizeA-1)) + spreads[minCol]/(sizeB*(sizeB-1))) + sumCrossDists;
     // nClusters goes up to record addition of one merged (nontrivial cluster)
@@ -70,7 +73,10 @@ private:
 
 int main()
 {
-  MatrixXd similarity_scores;
-  // read similarity scores into matrix, this is step 1 in CGS fig. 1
-  
+  MatrixXd similarityScores(readMatrixFromStream(cin));
+  NMRClust clusterer(similarityScores);
+  clusterer.cluster();
+  uint optStg;
+  clusterer.penalties.minCoeff(&optStg);
+  clusterer.writeClusters(optStg, cout);
 }

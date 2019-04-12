@@ -74,7 +74,7 @@ PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &
 // helper functions for adding and subtracting rows. Can GO AWAY with eigen3.4.
 // as of 4/2/19 that's months away, though the feature is finished and in devel.
 template <typename Derived>
-void removeRow(EigenBase<Derived> &matrix, unsigned int rowToRemove)
+void removeRow(PlainObjectBase<Derived> &matrix, unsigned int rowToRemove)
 {
   unsigned int numRows = matrix.rows() - 1;
   unsigned int numCols = matrix.cols();
@@ -86,7 +86,7 @@ void removeRow(EigenBase<Derived> &matrix, unsigned int rowToRemove)
 }
 
 template <typename Derived>
-void removeCol(EigenBase<Derived> &matrix, unsigned int colToRemove)
+void removeCol(PlainObjectBase<Derived> &matrix, unsigned int colToRemove)
 {
   unsigned int numRows = matrix.rows();
   unsigned int numCols = matrix.cols() - 1;
@@ -120,10 +120,10 @@ public:
   // this bool stores outcome of 'merge'
   bool merged;
   // track the 'trajectory' of the clustering process
-  vector<vector<unique_ptr<vector<uint>>>> clusterTrajectory;
+  vector<vector<vector<uint>>> clusterTraj;
   // the vector of pointers to each cluster at the current stage.
-  // each element of cluster list will be currentClusters at stage == index.
-  vector<unique_ptr<vector<uint>>> currentClusters;
+  // each element of cluster list will be currStg at stage == index.
+  vector<unique_ptr<vector<uint>>> currStg;
   
   // need to fill this in for each type of 
   virtual VectorXd dist(uint A, uint B){}
@@ -136,30 +136,26 @@ public:
   virtual bool merge()
   {
     bool ret;
-    // hopefully these will be inlined/elided?!
-    vector<uint> clusterA = *currentClusters[minRow];
-    vector<uint> clusterB = *currentClusters[minCol];
-    if (clusterA.size() < clusterB.size())
+    if (currStg[minRow]->size() < currStg[minCol]->size())
     {
-      clusterB.insert(clusterB.end(), clusterA.begin(), clusterA.end());
-      currentClusters.erase(currentClusters.begin() + minRow);
+      currStg[minCol]->insert(currStg[minCol]->end(), currStg[minRow]->begin(), currStg[minRow]->end());
+      currStg.erase(currStg.begin() + minRow);
       ret = false;
     }
     else
     {
-      clusterA.insert(clusterA.end(), clusterB.begin(), clusterB.end());
-      currentClusters.erase(currentClusters.begin() + minCol);
+      currStg[minRow]->insert(currStg[minRow]->end(), currStg[minCol]->begin(), currStg[minCol]->end());
+      currStg.erase(currStg.begin() + minCol);
       ret = true;
     }
     // append new assortment of clusters to Cluster Trajectory
-    clusterTrajectory.push_back(currentClusters);
+    vector<vector<uint>> recordAtStg(currStg.size());
+    for (uint i = 0; i<currStg.size(); i++)
+    {
+      recordAtStg[i] = *(currStg[i]);
+    }
+    clusterTraj.push_back(recordAtStg);
     return ret;
-  }
-
-  // gets the cluster list. Will match cluster list at current step. 
-  virtual vector<vector<unique_ptr<vector<uint>>>> getClusterTrajectory()
-  {
-    return clusterTrajectory;
   }
 
   // Run through the clustering cycle, populating the 'trajectory' vectors.
@@ -170,7 +166,7 @@ public:
     for (uint i = 0; i < eltCount; i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
-      currentClusters.push_back(cluster_ptr);
+      currStg.push_back(cluster_ptr);
     }
 
     // Make the diagonal (which should be zeros) greater than the max value instead
@@ -180,7 +176,7 @@ public:
     {
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
-      // build merged row. Must happen before clusterTrajectory merge is performed.
+      // build merged row. Must happen before clusterTraj merge is performed.
       VectorXd mergedRow = dist(minRow, minCol);
       // merge the clusters into whichever of the two is larger. Erase the other.
       merged = merge();
@@ -209,7 +205,19 @@ public:
         clusterDists.row(minCol) = mergedRow;
         clusterDists.col(minCol) = mergedRow.transpose();
       }
+    }
+  }
 
+  void writeClusters(uint stage, ostream &out)
+  {
+    for (uint i = 0; i<clusterTraj[stage].size(); i++)
+    { 
+      out << i << ' ';
+      for (uint j = 0; j<clusterTraj[stage][i].size(); j++)
+      {
+        out << clusterTraj[stage][i][j] << ' ';
+      }
+      out << endl;
     }
   }
 };
@@ -223,8 +231,8 @@ public:
   // this should be a terminal definition
   virtual VectorXd dist(uint idxA, uint idxB)
   { 
-    uint sizeA = currentClusters[idxA]->size();
-    uint sizeB = currentClusters[idxB]->size();
+    uint sizeA = currStg[idxA]->size();
+    uint sizeB = currStg[idxB]->size();
     return (sizeA*clusterDists.row(idxA)+sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
   }
 };
