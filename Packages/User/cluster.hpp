@@ -166,7 +166,7 @@ public:
     for (uint i = 0; i < eltCount; i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
-      currStg.push_back(cluster_ptr);
+      currStg.push_back(move(cluster_ptr));
     }
 
     // Make the diagonal (which should be zeros) greater than the max value instead
