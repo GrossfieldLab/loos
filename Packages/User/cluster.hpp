@@ -3,13 +3,13 @@
 
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
-#include <loos.hpp>
+// #include <loos.hpp>
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <fstream>
 
-namespace opts = loos::OptionsFramework;
-namespace po = boost::program_options;
+// namespace opts = loos::OptionsFramework;
+// namespace po = boost::program_options;
 
 using namespace Eigen;
 using namespace std;
