@@ -14,16 +14,16 @@ using namespace std;
 class NMRClust: public AverageLinkage {
 public:
   NMRClust(const Ref<MatrixXd> &e) : AverageLinkage(e),
-                                     avgSpread(e.rows()-1),
-                                     spreads(e.rows()),
                                      nClusters(e.rows()-1),
-                                     penalties(e.rows()-1) {}
+                                     penalties(e.rows()-1),
+                                     currentClusterCount{0} {}
   // need to track the average spread at each stage of the clustering.  
-  VectorXd avgSpread;
+  VectorXd avgSpread = VectorXd::Zero(clusterDists.rows());
   // need to track the number of NONTRIVIAL clusters at each stage
   // => nClusters != currStg.size() except in cases where all 
   // clusters are composite, which is not guaranteed until the very last stage.
   VectorXi nClusters;
+  uint currentClusterCount;
   // compute penalties for each step
   VectorXd penalties;
 
@@ -40,42 +40,63 @@ public:
 
 private:
   // this will change per round of clustering
-  VectorXd spreads; 
+  VectorXd spreads = VectorXd::Zero(clusterDists.rows()); 
   void penalty()
   { 
-    uint currentClusterCount = nClusters[stage-1];
-    uint sizeA = currStg[minRow]->size();
-    uint sizeB = currStg[minCol]->size();
+    // look up merged clustersize so we can assess change in spread.
+    uint sizeA = (clusterTraj[stage-1][minRow]).size();
+    uint sizeB = (clusterTraj[stage-1][minCol]).size();
+    uint sizeAB = sizeA+sizeB;
+    double normSpA;
+    double normSpB;
     double sumCrossDists = sizeA*sizeB*distOfMerge[stage];
-    double newClusterSpread = 2*(spreads[minRow]/(sizeA*(sizeA-1)) + spreads[minCol]/(sizeB*(sizeB-1))) + sumCrossDists;
+    // spread of A will be sum of distances of elts in a divided by (N*(N-1)/2)
+    // This is for both A and B, hence two goes to the numerator of their sum.
     // nClusters goes up to record addition of one merged (nontrivial cluster)
     currentClusterCount ++;
     if (merged)
     { // accout for the case where the merged cluster was also nontrivial
       if (sizeB > 1)
-        currentClusterCount --;
-      spreads[minRow] = newClusterSpread;
+      { 
+        currentClusterCount--;
+        normSpB = spreads[minCol]/(sizeB*(sizeB-1));
+      }
+      else
+      {
+        normSpB = 0;
+      }
+      normSpA = spreads[minRow]/(sizeA*(sizeA-1));
+      spreads[minRow] = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
       // remove spreads[minCol]
       spreads[minCol] = 0;
     }
     else
     { // account for the case where the merged cluster was also nontrivial
       if (sizeA > 1)
+      {
         currentClusterCount --; 
-      spreads[minCol] = newClusterSpread;
+        normSpA = spreads[minCol]/(sizeA*(sizeA-1));
+      }
+      else
+      {
+        normSpA = 0;
+      }
+      spreads[minCol] = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
       // remove spreads[minRow]
       spreads[minRow] = 0;
     }
-    nClusters[stage] = currentClusterCount;
-    avgSpread[stage] = spreads.sum()/currentClusterCount;
+    nClusters[stage-1] = currentClusterCount;
+    avgSpread[stage-1] = spreads.sum()/currentClusterCount;
+    cout << avgSpread << endl;
   }
 };
 
 int main()
 {
-  MatrixXd similarityScores(readMatrixFromStream(cin));
+  MatrixXd similarityScores = readMatrixFromStream(cin);
   NMRClust clusterer(similarityScores);
   clusterer.cluster();
+  cout << clusterer.clusterDists<<endl;
   uint optStg;
   clusterer.penalties.minCoeff(&optStg);
   clusterer.writeClusters(optStg, cout);

@@ -140,14 +140,19 @@ public:
     {
       currStg[minCol]->insert(currStg[minCol]->end(), currStg[minRow]->begin(), currStg[minRow]->end());
       currStg.erase(currStg.begin() + minRow);
+      if (minRow < minCol)
+        minCol--;
       ret = false;
     }
     else
     {
       currStg[minRow]->insert(currStg[minRow]->end(), currStg[minCol]->begin(), currStg[minCol]->end());
       currStg.erase(currStg.begin() + minCol);
+      if (minCol < minRow)
+        minRow--;
       ret = true;
     }
+  
     // append new assortment of clusters to Cluster Trajectory
     vector<vector<uint>> recordAtStg(currStg.size());
     for (uint i = 0; i<currStg.size(); i++)
@@ -163,16 +168,19 @@ public:
   { 
     
     // initialize the list of cluster indices with one index per cluster
+    vector<vector<uint>> recordCurrStg(eltCount);
     for (uint i = 0; i < eltCount; i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
       currStg.push_back(move(cluster_ptr));
+      vector<uint> clusterRecord {i};
+      recordCurrStg[i] = clusterRecord;
     }
 
     // Make the diagonal (which should be zeros) greater than the max value instead
     clusterDists.diagonal() = (clusterDists.maxCoeff()+1)
                               * VectorXd::Ones(clusterDists.rows());
-    for (stage = 0; stage < eltCount - 1; stage++)
+    for (stage = 1; stage < eltCount; stage++)
     {
       // bind the minimum distance found for dendrogram construction
       distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
