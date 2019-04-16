@@ -18,17 +18,21 @@ using namespace std;
 // returns arb. dimension matrix containing its contents
 // Note: assumes matrix is triangular (since similarity scores
 // for clustering must be reflexive...)
-MatrixXd readMatrixFromStream(istream &input)
+MatrixXd readMatrixFromStream(istream &input, char commentChar = '#')
 {
   vector<vector<double>> matbuff;
   string line;
   double elt;
   while (getline(input, line))
   {
+    // skip commets. Only permits comments at the beginning of lines.
+    if (line[0] == commentChar)
+      continue;
     stringstream streamline(line);
     vector<double> row;
     // process a row here. Should work for whitespace delimited...
     while (streamline >> elt)
+      // if a single line comment char is found, break out to line loop
       row.push_back(elt);
     // push the vector into the matrix buffer.
     matbuff.push_back(row);
@@ -159,7 +163,7 @@ public:
     {
       recordAtStg[i] = *(currStg[i]);
     }
-    clusterTraj.push_back(recordAtStg);
+    clusterTraj.push_back(move(recordAtStg));
     return ret;
   }
 

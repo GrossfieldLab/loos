@@ -18,7 +18,7 @@ public:
                                      penalties(e.rows()-1),
                                      currentClusterCount{0} {}
   // need to track the average spread at each stage of the clustering.  
-  VectorXd avgSpread = VectorXd::Zero(clusterDists.rows());
+  VectorXd avgSpread = VectorXd::Zero(clusterDists.rows()-1);
   // need to track the number of NONTRIVIAL clusters at each stage
   // => nClusters != currStg.size() except in cases where all 
   // clusters are composite, which is not guaranteed until the very last stage.
@@ -33,6 +33,7 @@ public:
     double min = avgSpread.minCoeff();
     double norm = (avgSpread.size()-1)/(avgSpread.maxCoeff()-min);
     penalties = norm*(avgSpread.array() - min) + 1;
+    penalties += nClusters.cast<double>();
     uint minIndex;
     penalties.minCoeff(&minIndex);
     return minIndex;
@@ -95,8 +96,9 @@ int main()
   MatrixXd similarityScores = readMatrixFromStream(cin);
   NMRClust clusterer(similarityScores);
   clusterer.cluster();
-  cout << clusterer.clusterDists<<endl;
   uint optStg;
   clusterer.penalties.minCoeff(&optStg);
+  cout << "penalties:" << endl<< clusterer.penalties << endl;
+  cout << "avgSpread:" << endl << clusterer.avgSpread << endl;
   clusterer.writeClusters(optStg, cout);
 }
