@@ -45,7 +45,7 @@ MatrixXd readMatrixFromStream(istream &input)
   return result;
 };
 
-// takes a nxd data matrix (where d is the dimensionality of the data), 
+// takes a nxd data matrix (where d is the dimensionality of the data),
 // returns an nxn matrix containing pairwise distances
 // use formula (a - b)^2 = a^2 + b^2 -2a*b.
 MatrixXd pairwiseDists(const Ref<const MatrixXd> &data)
@@ -99,21 +99,21 @@ void removeCol(PlainObjectBase<Derived> &matrix, unsigned int colToRemove)
 
 // Abstract class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
-class HAC {
+class HAC
+{
   // no private data, since this class exists to provide inheritance.
 public:
   HAC(const Ref<MatrixXd> &e) : clusterDists(e.selfadjointView<Upper>()),
                                 eltCount{e.cols()},
                                 distOfMerge(e.cols() - 1) {}
 
-
   Matrix<double, Dynamic, Dynamic, RowMajor> clusterDists;
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
   // These will all be of length matching clustering steps (Nelts-1)
   VectorXd distOfMerge;
- // holds total number of elements to be clustered (and thus number of steps)
+  // holds total number of elements to be clustered (and thus number of steps)
   uint eltCount;
-    
+
   // These members change each step.
   // these will store the indexes of the coefficients sought.
   uint minRow, minCol, stage;
@@ -124,12 +124,12 @@ public:
   // the vector of pointers to each cluster at the current stage.
   // each element of cluster list will be currStg at stage == index.
   vector<unique_ptr<vector<uint>>> currStg;
-  
-  // need to fill this in for each type of 
-  virtual VectorXd dist(uint A, uint B){}
+
+  // need to fill this in for each type of
+  virtual RowVectorXd dist(uint A, uint B) {}
   // define a penalty function to score each level of the hierarchy.
-  virtual void penalty(){}
-  
+  virtual void penalty() {}
+
   // Merge two clusters into whichever is larger.
   // Return true if new composite cluster is minRow, else return false
   // In the case where clusters are of equal size, merge into minRow.
@@ -152,10 +152,10 @@ public:
         minRow--;
       ret = true;
     }
-  
+
     // append new assortment of clusters to Cluster Trajectory
     vector<vector<uint>> recordAtStg(currStg.size());
-    for (uint i = 0; i<currStg.size(); i++)
+    for (uint i = 0; i < currStg.size(); i++)
     {
       recordAtStg[i] = *(currStg[i]);
     }
@@ -165,25 +165,27 @@ public:
 
   // Run through the clustering cycle, populating the 'trajectory' vectors.
   void cluster()
-  { 
-    
+  {
+
     // initialize the list of cluster indices with one index per cluster
     vector<vector<uint>> recordCurrStg(eltCount);
     for (uint i = 0; i < eltCount; i++)
     {
       unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
       currStg.push_back(move(cluster_ptr));
-      vector<uint> clusterRecord {i};
+      vector<uint> clusterRecord{i};
       recordCurrStg[i] = clusterRecord;
     }
 
-    // Make the diagonal (which should be zeros) greater than the max value instead
-    clusterDists.diagonal() = (clusterDists.maxCoeff()+1)
-                              * VectorXd::Ones(clusterDists.rows());
-    for (stage = 1; stage < eltCount; stage++)
+    // Get the max value to make the diagonal never the minCoeff (see distOfMerge[stage] below)
+    double maxDist = clusterDists.maxCoeff() + 1;
+
+    for (stage = 1; stage < eltCount-1; stage++)
     {
       // bind the minimum distance found for dendrogram construction
-      distOfMerge[stage] = clusterDists.minCoeff(&minRow, &minCol);
+      distOfMerge[stage] = (
+                              clusterDists + maxDist * MatrixXd::Identity(clusterDists.rows(),clusterDists.rows())
+                           ).minCoeff(&minRow, &minCol);
       // build merged row. Must happen before clusterTraj merge is performed.
       VectorXd mergedRow = dist(minRow, minCol);
       // merge the clusters into whichever of the two is larger. Erase the other.
@@ -196,10 +198,15 @@ public:
         // update clusterDists to zero out minCol column & row
         removeRow(clusterDists, minCol);
         removeCol(clusterDists, minCol);
+        // remove the column we eliminated from our merged row of distances.
+        removeRow(mergedRow, minCol);
         // recalculate minRow column and row
-        if(minCol < minRow)
+        if (minCol < minRow)
           minRow--;
-        clusterDists.row(minRow) = mergedRow; 
+        // Note that the dist matrix will not have a zero at this row/col after doing this.
+        // because of how we have increased the values of the diagonal anyway for the mincoeff
+        // this should not interfere with anything. But if you're relying on the diagonal to be zero...
+        clusterDists.row(minRow) = mergedRow;
         clusterDists.col(minRow) = mergedRow.transpose();
       }
       else
@@ -207,21 +214,26 @@ public:
         // update clusterDists to delete minRow column & row
         removeRow(clusterDists, minRow);
         removeCol(clusterDists, minRow);
+        // remove the column we eliminated from our merged row of distances.
+        removeRow(mergedRow, minRow);
         // recalculate minCol column and row
         if (minRow < minCol)
           minCol--;
+        
         clusterDists.row(minCol) = mergedRow;
         clusterDists.col(minCol) = mergedRow.transpose();
       }
+      cout << "stage:  " << stage << endl;
+      cout << mergedRow << endl;
     }
   }
 
   void writeClusters(uint stage, ostream &out)
   {
-    for (uint i = 0; i<clusterTraj[stage].size(); i++)
-    { 
+    for (uint i = 0; i < clusterTraj[stage].size(); i++)
+    {
       out << i << ' ';
-      for (uint j = 0; j<clusterTraj[stage][i].size(); j++)
+      for (uint j = 0; j < clusterTraj[stage][i].size(); j++)
       {
         out << clusterTraj[stage][i][j] << ' ';
       }
@@ -233,15 +245,16 @@ public:
 // average linkage class for hierarchical clustering.
 // derive specific examples of average linkage HAC from here.
 // By definition they should all need this distance function.
-class AverageLinkage: public HAC {
+class AverageLinkage : public HAC
+{
 public:
   AverageLinkage(const Ref<MatrixXd> &e) : HAC(e) {}
   // this should be a terminal definition
-  virtual VectorXd dist(uint idxA, uint idxB)
-  { 
+  virtual RowVectorXd dist(uint idxA, uint idxB)
+  {
     uint sizeA = currStg[idxA]->size();
     uint sizeB = currStg[idxB]->size();
-    return (sizeA*clusterDists.row(idxA)+sizeB*clusterDists.row(idxB))/(sizeA+sizeB);
+    return (sizeA * clusterDists.row(idxA) + sizeB * clusterDists.row(idxB)) / (sizeA + sizeB);
   }
 };
 

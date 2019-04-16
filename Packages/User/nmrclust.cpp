@@ -87,7 +87,6 @@ private:
     }
     nClusters[stage-1] = currentClusterCount;
     avgSpread[stage-1] = spreads.sum()/currentClusterCount;
-    cout << avgSpread << endl;
   }
 };
 
