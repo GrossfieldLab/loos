@@ -34,6 +34,8 @@ public:
     double norm = (avgSpread.size()-1)/(avgSpread.maxCoeff()-min);
     penalties = norm*(avgSpread.array() - min) + 1;
     penalties += nClusters.cast<double>();
+    cout << "penalties:"<< endl<< penalties << endl;
+    cout << "nClusters:"<<endl<<nClusters<<endl;
     uint minIndex;
     penalties.minCoeff(&minIndex);
     return minIndex;
@@ -54,9 +56,12 @@ private:
     // spread of A will be sum of distances of elts in a divided by (N*(N-1)/2)
     // This is for both A and B, hence two goes to the numerator of their sum.
     // nClusters goes up to record addition of one merged (nontrivial cluster)
-    currentClusterCount ++;
     if (merged)
-    { // accout for the case where the merged cluster was also nontrivial
+    { 
+      // determine if the merge created a nontrivial cluster
+      if (sizeA == 1)
+        currentClusterCount++;
+      // accout for the case where the merged cluster was also nontrivial
       if (sizeB > 1)
       { 
         currentClusterCount--;
@@ -72,7 +77,11 @@ private:
       spreads[minCol] = 0;
     }
     else
-    { // account for the case where the merged cluster was also nontrivial
+    { 
+      // determine if the merge created a nontrivial cluster
+      if (sizeB == 1)
+        currentClusterCount++;
+      // account for the case where the merged cluster was also nontrivial
       if (sizeA > 1)
       {
         currentClusterCount --; 
@@ -96,9 +105,6 @@ int main()
   MatrixXd similarityScores = readMatrixFromStream(cin);
   NMRClust clusterer(similarityScores);
   clusterer.cluster();
-  uint optStg;
-  clusterer.penalties.minCoeff(&optStg);
-  cout << "penalties:" << endl<< clusterer.penalties << endl;
-  cout << "avgSpread:" << endl << clusterer.avgSpread << endl;
-  clusterer.writeClusters(optStg, cout);
+  uint optStg = clusterer.cutoff();
+  clusterer.writeClusters(optStg++, cout);
 }
