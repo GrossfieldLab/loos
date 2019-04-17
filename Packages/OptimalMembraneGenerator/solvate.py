@@ -57,7 +57,16 @@ if config.protein is not None:
         # already know this segment exists
         seg = loos.selectAtoms(system, 'segname == "' + current_seg + '"')
         seg.copyMappedCoordinatesFrom(s)
-
+        if config.protrot:
+            # Rotation axes
+            x_axis = loos.GCoord(1.,0.,0.)
+            y_axis = loos.GCoord(0.,1.,0.)
+            z_axis = loos.GCoord(0.,0.,1.)
+            # Random rotation around x,y,z-axes
+            seg.rotate(x_axis, random.uniform(0.,360.))
+            seg.rotate(y_axis, random.uniform(0.,360.))
+            seg.rotate(z_axis, random.uniform(0.,360.))
+            
 
 sys.stderr.write("Beginning water box construction\n")
 # now add water and salt
