@@ -14,16 +14,17 @@ using namespace std;
 class NMRClust: public AverageLinkage {
 public:
   NMRClust(const Ref<MatrixXd> &e) : AverageLinkage(e),
-                                     penalties(e.rows()),
+                                     penalties(e.rows()-1),
+                                     avgSpread(e.rows()-1),
                                      currentClusterCount{0} {}
   // need to track the average spread at each stage of the clustering.  
-  VectorXd avgSpread = VectorXd::Zero(eltCount);
+  VectorXd avgSpread; //= VectorXd::Zero(eltCount-1);
   // need to track the number of NONTRIVIAL clusters at each stage
   // => nClusters != currStg.size() except in cases where all 
   // clusters are composite, which is not guaranteed until the very last stage.
   uint currentClusterCount;
   // compute penalties for each step
-  VectorXd penalties = VectorXd::Zero(eltCount);
+  VectorXd penalties;// = VectorXd::Zero(eltCount-1);
 
   // call this to search for a cutoff stage in clustering.
   uint cutoff()
@@ -31,12 +32,17 @@ public:
     double min = avgSpread.minCoeff();
     double max = avgSpread.maxCoeff();
     double norm = (eltCount-2)/(max-min);
-    cout << "avgSpreads:  "<< endl<<avgSpread << endl;
-    penalties += (norm*(avgSpread.array() - min) + 1).matrix();
     cout << "penalties:"<< endl<< penalties << endl;
+    cout << "avgSpreads:  "<< endl<<avgSpread << endl;
+    VectorXd normAvSp = (norm*(avgSpread.array() - min) + 1).matrix();
+    cout << "normalized avgSpreads:"<<endl<<normAvSp<<endl;
+    penalties += normAvSp;
+    cout << "penalties after adding normAvSpreads:" << endl<< penalties << endl;
     uint minIndex;
     penalties.minCoeff(&minIndex);
-    return minIndex;
+    // need to increment minindex to correspond to stage
+    // since avgSpread (and therefore penalty) undefined at stage 0.
+    return minIndex+1;
   }
 
 private:
@@ -49,6 +55,7 @@ private:
     uint sizeB = (clusterTraj[stage-1][minCol]).size();
     uint sizeAB = sizeA+sizeB;
     cout << "sizeA:  " << sizeA << endl;
+    cout << "sizeB:  " << sizeB << endl;
     double normSpA{0};
     double normSpB{0};
     double sumCrossDists = sizeA*sizeB*distOfMerge(stage);
@@ -61,16 +68,20 @@ private:
       if (sizeA == 1)
         currentClusterCount++;
       else
-        normSpA = spreads(minRow)/(sizeA*(sizeA-1));
+        normSpA = 0.5*(sizeA*(sizeA-1))*spreads(minRow);
       // accout for the case where the merged cluster was nontrivial
       if (sizeB > 1)
       { 
         currentClusterCount--;
-        normSpB = spreads(minCol)/(sizeB*(sizeB-1));
+        normSpB = 0.5*(sizeB*(sizeB-1))*spreads(minCol);
       }
       // spreads(minRow) = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
       // remove spreads[minCol]
       removeRow(spreads, minCol);
+      if (minCol < minRow)
+        spreads(minRow-1) = 2 * (2 * (normSpA + normSpB) + sumCrossDists) / (sizeAB * (sizeAB - 1));
+      else
+        spreads(minRow) = 2 * (2 * (normSpA + normSpB) + sumCrossDists) / (sizeAB * (sizeAB - 1));
     }
     else
     { 
@@ -78,19 +89,21 @@ private:
       if (sizeB == 1)
         currentClusterCount++;
       else
-        normSpB = spreads(minCol)/(sizeB*(sizeB-1));
+        normSpB = 0.5*(sizeB*(sizeB-1))*spreads(minCol);
       // account for the case where the merged cluster was nontrivial
       if (sizeA > 1)
       {
         currentClusterCount--; 
-        normSpA = spreads(minCol)/(sizeA*(sizeA-1));
+        normSpA = 0.5*(sizeA*(sizeA-1))*spreads(minCol);
       }
       // spreads(minCol) = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
       // remove spreads[minRow]
       removeRow(spreads, minRow);
+      if (minRow < minCol)
+        spreads(minCol-1) = 2 * (2 * (normSpA + normSpB) + sumCrossDists) / (sizeAB * (sizeAB - 1));
+      else
+        spreads(minCol) = 2 * (2 * (normSpA + normSpB) + sumCrossDists) / (sizeAB * (sizeAB - 1));
     }
-    double ns = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
-    spreads(minCol) = ns; 
     // from paper, divide only by number of nontrivial clusters.
     avgSpread(stage-1) = spreads.sum()/currentClusterCount;
     // set penalties at the number of clusters, which is the same as eltCount - stage 
@@ -104,5 +117,5 @@ int main()
   NMRClust clusterer(similarityScores);
   clusterer.cluster();
   uint optStg = clusterer.cutoff();
-  clusterer.writeClusters(optStg++, cout);
+  clusterer.writeClusters(optStg, cout);
 }

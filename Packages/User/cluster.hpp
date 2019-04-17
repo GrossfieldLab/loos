@@ -167,7 +167,7 @@ public:
     {
       recordAtStg[i] = *(currStg[i]);
     }
-    clusterTraj.push_back(move(recordAtStg));
+    clusterTraj.push_back(recordAtStg);
     return ret;
   }
 
@@ -184,11 +184,13 @@ public:
       vector<uint> clusterRecord{i};
       recordCurrStg[i] = clusterRecord;
     }
+    clusterTraj.push_back(recordCurrStg);
 
     // Get the max value to make the diagonal never the minCoeff (see distOfMerge[stage] below)
     double maxDist = clusterDists.maxCoeff() + 1;
-    for (stage = 1; stage < eltCount - 1; stage++)
+    for (stage = 1; stage < eltCount; stage++)
     {
+      cout << "stage:  " << stage << endl;
       // bind the minimum distance found for dendrogram construction
       distOfMerge(stage) = (clusterDists + maxDist * MatrixXd::Identity(
                               clusterDists.rows(), clusterDists.rows())
@@ -197,6 +199,7 @@ public:
       VectorXd mergedRow = dist(minRow, minCol);
       // merge the clusters into whichever of the two is larger. Erase the other.
       merged = merge();
+      cout << "clusters:" << endl;
       writeClusters(stage, cout);
       // compute the penalty, if such is needed. Needs cluster merged into.
       penalty();
@@ -233,10 +236,7 @@ public:
       }
       
     }
-    // this is the last merge. there should only be one non-diagonal distance remaining.
-    distOfMerge(stage) = clusterDists(1,1);
-    merge();
-    penalty();
+    stage--;
   }
 
   void writeClusters(uint optStg, ostream &out)
