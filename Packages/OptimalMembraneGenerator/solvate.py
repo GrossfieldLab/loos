@@ -62,7 +62,7 @@ if config.protein is not None:
             x_axis = loos.GCoord(1.,0.,0.)
             y_axis = loos.GCoord(0.,1.,0.)
             z_axis = loos.GCoord(0.,0.,1.)
-            # Random rotation around axes
+            # Random rotation around x,y,z-axes
             seg.rotate(x_axis, random.uniform(0.,360.))
             seg.rotate(y_axis, random.uniform(0.,360.))
             seg.rotate(z_axis, random.uniform(0.,360.))
