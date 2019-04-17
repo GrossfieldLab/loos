@@ -109,7 +109,7 @@ class HAC
 public:
   HAC(const Ref<MatrixXd> &e) : clusterDists(e.selfadjointView<Upper>()),
                                 eltCount{e.cols()},
-                                distOfMerge(e.cols() - 1) {}
+                                distOfMerge(e.cols()) {}
 
   Matrix<double, Dynamic, Dynamic, RowMajor> clusterDists;
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
@@ -140,20 +140,24 @@ public:
   virtual bool merge()
   {
     bool ret;
-    if (currStg[minRow]->size() < currStg[minCol]->size())
+    uint sizeA = currStg[minRow]->size();
+    uint sizeB = currStg[minCol]->size();
+    if (sizeA < sizeB)
     {
-      currStg[minCol]->insert(currStg[minCol]->end(), currStg[minRow]->begin(), currStg[minRow]->end());
+      currStg[minCol]->insert(currStg[minCol]->end(), 
+                              currStg[minRow]->begin(), 
+                              currStg[minRow]->end());
       currStg.erase(currStg.begin() + minRow);
-      if (minRow < minCol)
-        minCol--;
+      
       ret = false;
     }
     else
     {
-      currStg[minRow]->insert(currStg[minRow]->end(), currStg[minCol]->begin(), currStg[minCol]->end());
+      currStg[minRow]->insert(currStg[minRow]->end(),  
+                              currStg[minCol]->begin(), 
+                              currStg[minCol]->end());
       currStg.erase(currStg.begin() + minCol);
-      if (minCol < minRow)
-        minRow--;
+      
       ret = true;
     }
 
@@ -183,17 +187,17 @@ public:
 
     // Get the max value to make the diagonal never the minCoeff (see distOfMerge[stage] below)
     double maxDist = clusterDists.maxCoeff() + 1;
-
-    for (stage = 1; stage < eltCount-1; stage++)
+    for (stage = 1; stage < eltCount - 1; stage++)
     {
       // bind the minimum distance found for dendrogram construction
-      distOfMerge[stage] = (
-                              clusterDists + maxDist * MatrixXd::Identity(clusterDists.rows(),clusterDists.rows())
-                           ).minCoeff(&minRow, &minCol);
+      distOfMerge(stage) = (clusterDists + maxDist * MatrixXd::Identity(
+                              clusterDists.rows(), clusterDists.rows())
+                            ).minCoeff(&minRow, &minCol);
       // build merged row. Must happen before clusterTraj merge is performed.
       VectorXd mergedRow = dist(minRow, minCol);
       // merge the clusters into whichever of the two is larger. Erase the other.
       merged = merge();
+      writeClusters(stage, cout);
       // compute the penalty, if such is needed. Needs cluster merged into.
       penalty();
       // update the matrix of clusterDists
@@ -223,23 +227,27 @@ public:
         // recalculate minCol column and row
         if (minRow < minCol)
           minCol--;
-        
+
         clusterDists.row(minCol) = mergedRow;
         clusterDists.col(minCol) = mergedRow.transpose();
       }
-      cout << "stage:  " << stage << endl;
-      cout << mergedRow << endl;
+      
     }
+    // this is the last merge. there should only be one non-diagonal distance remaining.
+    distOfMerge(stage) = clusterDists(1,1);
+    merge();
+    penalty();
   }
 
-  void writeClusters(uint stage, ostream &out)
+  void writeClusters(uint optStg, ostream &out)
   {
-    for (uint i = 0; i < clusterTraj[stage].size(); i++)
+    for (uint i = 0; i < clusterTraj[optStg].size(); i++)
     {
       out << i << ' ';
-      for (uint j = 0; j < clusterTraj[stage][i].size(); j++)
+      uint sizeOfCluster = (clusterTraj[optStg][i]).size();
+      for (uint j = 0; j < sizeOfCluster; j++)
       {
-        out << clusterTraj[stage][i][j] << ' ';
+        out << clusterTraj[optStg][i][j] << ' ';
       }
       out << endl;
     }
