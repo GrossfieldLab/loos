@@ -139,6 +139,7 @@ for salt in config.salt:
         a = loos.Atom()
         a.resname(salt.resname)
         a.segid(salt.segname)
+        a.name(salt.atomname)
         a.resid(i+1)
 
         # pick a water oxygen at random, replace it with salt
