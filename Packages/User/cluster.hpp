@@ -241,6 +241,7 @@ public:
 
   void writeClusters(uint optStg, ostream &out)
   {
+    cout << "# cluster_index elt_index1 elt_index2 ..."<< endl;
     for (uint i = 0; i < clusterTraj[optStg].size(); i++)
     {
       out << i << ' ';

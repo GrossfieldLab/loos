@@ -40,8 +40,9 @@ public:
     cout << "penalties after adding normAvSpreads:" << endl<< penalties << endl;
     uint minIndex;
     penalties.minCoeff(&minIndex);
-    // need to increment minindex to correspond to stage
+    // need to increment minindex to correspond to stage,
     // since avgSpread (and therefore penalty) undefined at stage 0.
+    // This has caused us to use a penalties vector that is eltCount-1 long.
     return minIndex+1;
   }
 
@@ -117,5 +118,6 @@ int main()
   NMRClust clusterer(similarityScores);
   clusterer.cluster();
   uint optStg = clusterer.cutoff();
+  cout << "optimal stage:  " << optStg << endl;
   clusterer.writeClusters(optStg, cout);
 }
