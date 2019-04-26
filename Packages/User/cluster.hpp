@@ -62,6 +62,22 @@ MatrixXd pairwiseDists(const Ref<const MatrixXd> &data)
   return distances;
 }
 
+vector<vector<uint>> getExemplars(vector<vector<uint>> &clusters, const Ref<const MatrixXd> &similarities)
+{
+  vector<vector<uint>> exemplars(clusters.size());
+  for (uint cdx = 0; cdx < clusters.size(); cdx++)
+  {
+    MatrixXf clusterDists();
+    for (uint i = 0; i < clusters[cdx].size(); i++)
+    {
+      for (uint j = 0; j < i, j++)
+      {// naive minimization
+        if ()
+      }
+    }
+  }
+}
+
 // from <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-     track-of-indexes>
 // provides a sort index in ASCENDING order. Apply using matrix product
 PermutationMatrix<Dynamic, Dynamic> sort_permutation(const Ref<const VectorXd> &v)
