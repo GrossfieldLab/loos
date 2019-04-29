@@ -1,31 +1,95 @@
 #!/usr/bin/env python3
+"""
+Insert a number of small molecules into a simulation of a protein or RNA.
+This can be viewed as preparatory to running solvate.py or omg.py
+
+Alan Grossfield,  University of Rochester Medical Center, 2019
+"""
+
+"""
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2019 Tod Romo, Grossfield Lab
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
 
 import sys
 import loos
 import LipidLibrary
 import random
+import argparse
+
+parser = argparse.ArgumentParser(description="Add small molecules to a system")
+
+parser.add_argument('num_ligands',
+                    help="Number of small molecules",
+                    type=int)
+parser.add_argument('box_size',
+                    help="Dimension of cubic box, in Angstroms",
+                    type=float)
+parser.add_argument('library_location',
+                    help="Directory with library of small molecules")
+parser.add_argument('output_pdb',
+                    help="Name of output PDB file")
 
 
-protein_pdb = sys.argv[1]
-num_ligands = int(sys.argv[2])
-box_size = float(sys.argv[3])
-library_location = sys.argv[4]
-output_pdb = sys.argv[5]
+parser.add_argument('--protein',
+                    help="File containing coordinates of the protein to be surrounded by small molecules")
+parser.add_argument('--no_center',
+                    help="If set, do not center the protein at the origin",
+                    action="store_true")
+parser.add_argument('--zbox',
+                    help="Z dimension of system, if not cubic",
+                    type=float)
+parser.add_argument('--z_exclude',
+                    help="Don't let molecules be placed in +/- z_exclude",
+                    type=float)
+args = parser.parse_args()
 
-box = loos.GCoord(box_size, box_size, box_size)
-half_box = 0.5 * box_size
 
-protein = loos.createSystem(protein_pdb)
+box = loos.GCoord(args.box_size, args.box_size, args.box_size)
+half_box = 0.5 * args.box_size
+half_z = half_box
+
+if args.zbox:
+    box.z(args.zbox)
+    half_z = 0.5 * args.zbox
+
+if args.z_exclude:
+    args.z_exclude = abs(args.z_exclude)
+
+
+if args.protein:
+    protein = loos.createSystem(args.protein)
+else:
+    protein = loos.AtomicGroup()
+
 protein.periodicBox(box)
 
-library = LipidLibrary.LipidLibrary(library_location)
+library = LipidLibrary.LipidLibrary(args.library_location)
 
-# Might want to make this optional
-protein.centerAtOrigin()
+if not args.no_center:
+    protein.centerAtOrigin()
 
 accepts = 0
 trials = 0
-while accepts < num_ligands:
+while accepts < args.num_ligands:
     trials += 1
 
     new_molecule = library.pick_structure()
@@ -34,7 +98,11 @@ while accepts < num_ligands:
     # translate by random within box_size
     x_trans = random.uniform(-half_box, half_box)
     y_trans = random.uniform(-half_box, half_box)
-    z_trans = random.uniform(-half_box, half_box)
+    z_trans = random.uniform(-half_z, half_z)
+
+    if abs(z_trans) < args.z_exclude:
+        continue
+
     trans = loos.GCoord(x_trans, y_trans, z_trans)
 
     new_molecule.translate(trans)
@@ -53,5 +121,5 @@ print("Placed ", accepts, " molecules in ", trials, " trials: ",
 # protein.renumber()
 pdb = loos.PDB.fromAtomicGroup(protein)
 
-with open(output_pdb, "w") as outfile:
+with open(args.output_pdb, "w") as outfile:
     outfile.write(str(pdb))
