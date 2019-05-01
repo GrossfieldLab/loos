@@ -16,7 +16,7 @@ School of Medicine & Dentistry, University of Rochester\n
 
 LOOS 3.0 and higher require python 3.x.  The install instructions in INSTALL.md have been updated accordingly.  If your OS does not support python 3.x, you can try installing LOOS inside a Conda environment.
 
-For questions or problems using LOOS, the best approach is to open an issue on our <a href="https://github.com/GrossfieldLab/loos:>GitHub page</a>.  Alternatively, you can email us at loos.maintainer@gmail.com.
+For questions or problems using LOOS, the best approach is to open an issue on our <a href="https://github.com/GrossfieldLab/loos">GitHub page</a>.  Alternatively, you can email us at loos.maintainer@gmail.com.
 
 We are phasing out the mailing lists as support mechanisms; if you were previously a member, we suggest following LOOS on GitHub as a better strategy to keep up to date with us.
 
