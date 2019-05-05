@@ -47,7 +47,7 @@ namespace po = loos::OptionsFramework::po;
 
 
 
-const int matrix_precision = 2;    // Controls precision in output matrix
+// const int matrix_precision = 2;    // Controls precision in output matrix
 
 int verbosity;
 
@@ -179,7 +179,8 @@ public:
       ("noout,N", po::value<bool>(&noop)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)")
       ("threads", po::value<uint>(&nthreads)->default_value(1), "Number of threads to use (0=all available)")
       ("cutoff,c", po::value<float>(&cutoff)->default_value(-1.0), "Outputs fraction of frame-pairs below cutoff.")
-      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix");
+      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix")
+      ("precision,p", po::value<uint>(&matrix_precision)->default_value(2), "Write out matrix coefficients with this many digits.");
   }
   void addHidden(po::options_description& opts) {
     opts.add_options()
@@ -256,10 +257,11 @@ public:
     for (uint i=0; i<trajlist_B.size(); ++i)
       oss << "'" << trajlist_B[i] << "'" << (i < trajlist_B.size() -1 ? "," : "");
     oss << ")";
-    oss << boost::format("stats=%d,noout=%d,nthreads=%d")
+    oss << boost::format("stats=%d,noout=%d,nthreads=%d,matrix_precision=%d")
       % stats
       % noop
-      % nthreads; 
+      % nthreads
+      % matrix_precision; 
     return(oss.str());
   }
 
@@ -272,6 +274,7 @@ public:
   std::vector<string> trajlist_A, trajlist_B;
   uint skip;
   uint stride;
+  uint matrix_precision;
   string frame_index_spec;
   string model_name, model_type;
   AtomicGroup model;
@@ -609,7 +612,7 @@ int main(int argc, char *argv[]) {
     cout << "# " << header << endl;
     cout << topts->trajectoryTable(topts->mtrajA);
     cout << topts->trajectoryTable(topts->mtrajB);
-    cout << setprecision(matrix_precision) << M;
+    cout << setprecision(topts->matrix_precision) << M;
   }
 
 }
