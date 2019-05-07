@@ -193,7 +193,7 @@ namespace loos {
                               a2 != other.atoms.end();
                               a2++) {
               double d2 = ((*a1)->coords()).distance2((*a2)->coords(), box);
-              score += d2 * d2 * d2;
+              score += 1./(d2 * d2 * d2);
           }
       }
 
