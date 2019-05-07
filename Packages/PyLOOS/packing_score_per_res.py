@@ -13,7 +13,7 @@ def packing_score(residue, probe, norm=False):
     for a1 in residue:
         for a2 in probe:
             dist2 = a2.coords().distance2(a1.coords(), box)
-            score += dist2 * dist2 * dist2
+            score += 1./(dist2 * dist2 * dist2)
 
     if norm:
         score /= residue.size() * probe.size()
@@ -48,7 +48,8 @@ frame_index = 0
 for frame in traj:
     for r in range(len(residues)):
         for p in range(len(probes)):
-            s = packing_score(residues[r], probes[p])
+            #s = packing_score(residues[r], probes[p])
+            s = residues[r].packing_score(probes[p])
             scores[r, p, frame_index] += s
     frame_index += 1
 
