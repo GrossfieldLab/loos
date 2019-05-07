@@ -182,7 +182,26 @@ namespace loos {
     return(radius);
   }
 
+  double AtomicGroup::packing_score(const AtomicGroup& other,
+                                    const GCoord &box,
+                                    bool norm = false) const {
+      double score = 0.0;
+      for (const_iterator a1 = atoms.begin();
+                          a1 != atoms.end();
+                          a1++) {
+          for (const_iterator a2 = other.atoms.begin();
+                              a2 != other.atoms.end();
+                              a2++) {
+              double d2 = ((*a1)->coords()).distance2((*a2)->coords(), box);
+              score += d2 * d2 * d2;
+          }
+      }
 
+      if (norm) {
+          score /= size() * other.size();
+      }
+      return(score);
+  }
 
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();

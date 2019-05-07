@@ -777,6 +777,14 @@ namespace loos {
 
     std::vector<double> coordsAsVector() const;
 
+    // Compute the packing score between 2 AtomicGroups
+    /**
+     * The packing score is the sum of 1/r^6 over all pairs of atoms,
+     * respecting periodicity.
+     * Quantity first defined in  Grossfield, A., et al,
+     * Proc. Nat. Acad. Sci. USA, 2006, 103, 4888-4893
+     */
+    double packing_score(const AtomicGroup& other, const GCoord &box, bool norm) const;
 
   private:
 
