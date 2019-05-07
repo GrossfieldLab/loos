@@ -28,7 +28,7 @@ system_file = sys.argv[1]
 traj_file = sys.argv[2]
 protein_selection = sys.argv[3]
 probe_selection = sys.argv[4]
-output_filename = sys.argv[5]
+output_filename_core = sys.argv[5]
 
 
 system = loos.createSystem(system_file)
@@ -54,4 +54,4 @@ for frame in traj:
 
 scores.reshape(len(residues), len(probes)*len(traj))
 
-scores.savetxt(output_filename, header=header)
+numpy.savetxt(output_filename_core + ".dat", scores, header=header)
