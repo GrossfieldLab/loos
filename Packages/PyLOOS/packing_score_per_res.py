@@ -6,22 +6,6 @@ import loos.pyloos
 import numpy
 
 
-# TODO: this should probably be a method on AtomicGroup for performance
-def packing_score(residue, probe, norm=False):
-    box = residue.periodicBox()
-    score = 0.0
-    for a1 in residue:
-        for a2 in probe:
-            dist2 = a2.coords().distance2(a1.coords(), box)
-            score += 1./(dist2 * dist2 * dist2)
-
-    if norm:
-        score /= residue.size() * probe.size()
-
-    return score
-
-
-# Begin the actual program
 header = "#" + " ".join(sys.argv)
 
 system_file = sys.argv[1]
@@ -46,13 +30,12 @@ scores = numpy.zeros([len(residues), len(probes), len(traj)], numpy.float)
 
 frame_index = 0
 for frame in traj:
+    box = frame.periodicBox()
     for r in range(len(residues)):
         for p in range(len(probes)):
-            #s = packing_score(residues[r], probes[p])
-            s = residues[r].packing_score(probes[p])
+            s = residues[r].packing_score(probes[p], box, False)
             scores[r, p, frame_index] += s
     frame_index += 1
+print("finished calc")
 
-scores.reshape(len(residues), len(probes)*len(traj))
-
-numpy.savetxt(output_filename_core + ".dat", scores, header=header)
+numpy.savetxt(output_filename_core + ".dat", scores.reshape(len(residues), len(probes)*len(traj)), header=header)
