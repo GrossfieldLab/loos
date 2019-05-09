@@ -86,6 +86,15 @@ def fullhelp():
                     interact with an individual probe molecule, and thus are
                     candidate binding sites.
 
+    Example command
+    packing_score_per_res.py system.psf 'segid == "PROT"' 'resname == "LIG"' score --no_h --pca --traj traj_1.dcd traj_2.dcd
+
+    -- the protein is segid "PROT", while the ligand has residue name "LIG"
+    -- analyzes 2 trajectories (traj_1.dcd, traj_2.dcd)
+    -- automatically removes hydrogens from the selection
+    -- performs pca
+    -- output files are score_raw_score.dat, score_ave.dat, etc
+
     """)
 
 class FullHelp(argparse.Action):
