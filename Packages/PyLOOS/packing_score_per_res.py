@@ -183,18 +183,25 @@ ave /= len(vtraj)
 resids = numpy.arange(1, len(residues)+1)
 
 numpy.savetxt(args.output_core + "_ave.dat",
-              ave,
-              fmt='%.6e')
+              numpy.column_stack((resids, ave)),
+              fmt='%.6e',
+              header="Residue\tAverage signal")
 
 if args.pca:
     pca = decomposition.PCA()
     pca.fit(scores)
     numpy.savetxt(args.output_core + "_var.dat",
-                  pca.explained_variance_ratio_,
-                  fmt='%.6e')
+                  numpy.column_stack((resids, pca.explained_variance_ratio_)),
+                  fmt='%.6e',
+                  header="Mode\tFraction variance")
     numpy.savetxt(args.output_core + "_var_cum.dat",
-                  numpy.add.accumulate(pca.explained_variance_ratio_),
-                  fmt='%.6e')
+                  numpy.column_stack((resids,
+                                      numpy.add.accumulate(
+                                          pca.explained_variance_ratio_))),
+                  fmt='%.6e',
+                  header="Mode\tCum fraction variance")
     numpy.savetxt(args.output_core + "_comp.dat",
-                  numpy.transpose(pca.components_),
-                  fmt='%.6e')
+                  numpy.column_stack((resids,
+                                      numpy.transpose(pca.components_))),
+                  fmt='%.6e',
+                  header="Residue\tMode1\tMode2\t...")
