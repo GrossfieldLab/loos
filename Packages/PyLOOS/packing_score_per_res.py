@@ -75,7 +75,7 @@ def fullhelp():
 
     If --pca is specified, principal component analysis is performed on the
     matrix from foo_raw_score, producing 3 additional files:
-    
+
       foo_var.dat: the fraction of the signal for each eigenmode
                    (essentially the eigenvalues)
       foo_var_cum.dat: the cumulative variance, so you can assess how many
@@ -179,6 +179,9 @@ numpy.savetxt(args.output_core + "_raw_score.dat",
               fmt='%.6e')
 
 ave = numpy.add.reduce(scores, axis=0)
+ave /= len(vtraj)
+resids = numpy.arange(1, len(residues)+1)
+
 numpy.savetxt(args.output_core + "_ave.dat",
               ave,
               fmt='%.6e')
