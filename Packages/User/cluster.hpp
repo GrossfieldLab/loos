@@ -62,20 +62,28 @@ MatrixXd pairwiseDists(const Ref<const MatrixXd> &data)
   return distances;
 }
 
-vector<vector<uint>> getExemplars(vector<vector<uint>> &clusters, const Ref<const MatrixXd> &similarities)
+
+// for exemplars defined as having the minimum average distance within cluster
+// Takes a vector of vectors of uints which are the cluster indexes, and a corresponding (full) distance matrix
+// Returns a vector of indexes to the minimum average distance element from each cluster. 
+vector<uint> getExemplars(vector<vector<uint>> &clusters, const Ref<const MatrixXd> &distances)
 {
-  vector<vector<uint>> exemplars(clusters.size());
+  vector<uint> exemplars(clusters.size());
   for (uint cdx = 0; cdx < clusters.size(); cdx++)
   {
-    MatrixXf clusterDists();
+    MatrixXd clusterDists(clusters[cdx].size(), clusters[cdx].size());
     for (uint i = 0; i < clusters[cdx].size(); i++)
     {
-      for (uint j = 0; j < i, j++)
-      {// naive minimization
-        if ()
+      for (uint j = 0; j < i; j++)
+      {
+        clusterDists(i, j) = distances(clusters[cdx][i], clusters[cdx][j]);    
       }
     }
+    uint centeridx;
+    clusterDists.selfadjointView<Upper>().colwise().mean().minCoeff(&centeridx);
+    exemplars[cdx] = clusters[cdx][centeridx];
   }
+  return exemplars;
 }
 
 // from <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-     track-of-indexes>

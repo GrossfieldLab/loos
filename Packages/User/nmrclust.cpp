@@ -14,6 +14,7 @@ using namespace std;
 class NMRClust: public AverageLinkage {
 public:
   NMRClust(const Ref<MatrixXd> &e) : AverageLinkage(e),
+                                     refDists(e.selfAdjointView<Upper>()),
                                      penalties(e.rows()-1),
                                      avgSpread(e.rows()-1),
                                      currentClusterCount{0} {}
@@ -25,6 +26,9 @@ public:
   uint currentClusterCount;
   // compute penalties for each step
   VectorXd penalties;// = VectorXd::Zero(eltCount-1);
+
+  // Reference dists needed to back out cluster exemplars
+  MatrixXd refDists;
 
   // call this to search for a cutoff stage in clustering.
   uint cutoff()
@@ -70,7 +74,7 @@ private:
         currentClusterCount++;
       else
         normSpA = 0.5*(sizeA*(sizeA-1))*spreads(minRow);
-      // accout for the case where the merged cluster was nontrivial
+      // account for the case where the merged cluster was nontrivial
       if (sizeB > 1)
       { 
         currentClusterCount--;
