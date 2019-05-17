@@ -124,4 +124,5 @@ int main()
   uint optStg = clusterer.cutoff();
   cout << "optimal stage:  " << optStg << endl;
   clusterer.writeClusters(optStg, cout);
+  cout << "exemplars:  " << getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists) << endl;
 }
