@@ -126,7 +126,7 @@ int main()
   clusterer.writeClusters(optStg, cout);
   vector<uint> exemplars = getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
   // print exemplars out below here
-  cout << "Exemplars:  ";
+  cout << "Exemplars:  " << endl;
   for (uint i = 0; i < exemplars.size(); i++)
     cout << i << ' ' << exemplars[i] << endl;
 }
