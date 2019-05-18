@@ -80,11 +80,13 @@ vector<uint> getExemplars(vector<vector<uint>> &clusters, const Ref<const Matrix
       }
     }
     uint centeridx;
-    clusterDists.selfadjointView<Upper>().colwise().mean().minCoeff(&centeridx);
+    clusterDists = clusterDists.selfadjointView<Upper>();
+    clusterDists.colwise().mean().minCoeff(&centeridx);
     exemplars[cdx] = clusters[cdx][centeridx];
   }
   return exemplars;
 }
+
 
 // from <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-     track-of-indexes>
 // provides a sort index in ASCENDING order. Apply using matrix product

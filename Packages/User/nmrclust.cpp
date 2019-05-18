@@ -14,7 +14,7 @@ using namespace std;
 class NMRClust: public AverageLinkage {
 public:
   NMRClust(const Ref<MatrixXd> &e) : AverageLinkage(e),
-                                     refDists(e.selfAdjointView<Upper>()),
+                                     refDists(e.selfadjointView<Upper>()),
                                      penalties(e.rows()-1),
                                      avgSpread(e.rows()-1),
                                      currentClusterCount{0} {}
@@ -124,5 +124,9 @@ int main()
   uint optStg = clusterer.cutoff();
   cout << "optimal stage:  " << optStg << endl;
   clusterer.writeClusters(optStg, cout);
-  cout << "exemplars:  " << getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists) << endl;
+  vector<uint> exemplars = getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
+  // print exemplars out below here
+  cout << "Exemplars:  ";
+  for (uint i = 0; i < exemplars.size(); i++)
+    cout << i << ' ' << exemplars[i] << endl;
 }
