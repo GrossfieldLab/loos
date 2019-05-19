@@ -36,12 +36,18 @@ public:
     double min = avgSpread.minCoeff();
     double max = avgSpread.maxCoeff();
     double norm = (eltCount-2)/(max-min);
+    #ifdef DEBUG
     cout << "penalties:"<< endl<< penalties << endl;
     cout << "avgSpreads:  "<< endl<<avgSpread << endl;
+    #endif
     VectorXd normAvSp = (norm*(avgSpread.array() - min) + 1).matrix();
+    #ifdef DEBUG
     cout << "normalized avgSpreads:"<<endl<<normAvSp<<endl;
+    #endif
     penalties += normAvSp;
+    #ifdef DEBUG
     cout << "penalties after adding normAvSpreads:" << endl<< penalties << endl;
+    #endif
     uint minIndex;
     penalties.minCoeff(&minIndex);
     // need to increment minindex to correspond to stage,
@@ -59,8 +65,10 @@ private:
     uint sizeA = (clusterTraj[stage-1][minRow]).size();
     uint sizeB = (clusterTraj[stage-1][minCol]).size();
     uint sizeAB = sizeA+sizeB;
+    #ifdef DEBUG
     cout << "sizeA:  " << sizeA << endl;
     cout << "sizeB:  " << sizeB << endl;
+    #endif
     double normSpA{0};
     double normSpB{0};
     double sumCrossDists = sizeA*sizeB*distOfMerge(stage);
@@ -123,6 +131,7 @@ int main()
   clusterer.cluster();
   uint optStg = clusterer.cutoff();
   cout << "optimal stage:  " << optStg << endl;
+  cout << "penalties:  " << clusterer.penalties << endl;
   clusterer.writeClusters(optStg, cout);
   vector<uint> exemplars = getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
   // print exemplars out below here
