@@ -45,7 +45,7 @@ namespace po = loos::OptionsFramework::po;
 
 
 
-// const int matrix_precision;    // Controls precision in output matrix
+// const int matrix_precision = 2;    // Controls precision in output matrix
 
 int verbosity;
 
@@ -141,9 +141,8 @@ public:
       ("sel2", po::value<string>(&sel2)->default_value("name == 'CA'"), "Atom selection for second system")
       ("skip2", po::value<uint>(&skip2)->default_value(0), "Skip n-frames of second trajectory")
       ("range2", po::value<string>(&range2), "Matlab-style range of frames to use from second trajectory")
-      ("outPrec,p", po::value<uint>(&matrix_precision)->default_value(2), "Number digits to report output matrix coefficients with")
-      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix");
-
+      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix")
+      ("precision,p", po::value<uint>(&matrix_precision)->default_value(2), "Write out matrix coefficients with this many digits.");
   }
 
   void addHidden(po::options_description& o) {
@@ -179,6 +178,7 @@ public:
       % matrix_precision
       % noop
       % nthreads
+      % matrix_precision
       % sel1
       % skip1
       % range1

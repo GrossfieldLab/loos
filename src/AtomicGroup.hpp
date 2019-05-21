@@ -843,11 +843,11 @@ namespace loos {
       uint ncontacts = 0;
 
       for (uint j = 0; j<size(); ++j) {
-	GCoord c = atoms[j]->coords();
-	for (uint i = 0; i<grp.size(); ++i)
-	  if (distance_function(c, grp.atoms[i]->coords()) <= dist2)
-	    if (++ncontacts >= min_contacts)
-	      return(true);
+        GCoord c = atoms[j]->coords();
+	    for (uint i = 0; i<grp.size(); ++i)
+            if (distance_function(c, grp.atoms[i]->coords()) <= dist2)
+	          if (++ncontacts >= min_contacts)
+	             return(true);
       }
       return(false);
     }

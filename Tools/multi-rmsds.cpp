@@ -45,7 +45,7 @@ namespace po = loos::OptionsFramework::po;
 
 
 
-const int matrix_precision = 2;    // Controls precision in output matrix
+// const int matrix_precision = 2;    // Controls precision in output matrix
 
 int verbosity;
 
@@ -104,7 +104,7 @@ string fullHelpMessage(void) {
     "and only takes every 10th subsequent frame from each trajectory.\n"
     "\n"
     "SEE ALSO\n"
-    "\trmsds, rmsd2ref\n"
+    "\trmsds, rmsd2ref, rms-overlap\n"
     "\n";
 
   return(msg);
@@ -120,17 +120,19 @@ public:
     o.add_options()
       ("noout,N", po::value<bool>(&noop)->default_value(false), "Do not output the matrix (i.e. only calc pair-wise RMSD stats)")
       ("threads", po::value<uint>(&nthreads)->default_value(1), "Number of threads to use (0=all available)")
-      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix");
+      ("stats", po::value<bool>(&stats)->default_value(false), "Show some statistics for matrix")
+      ("precision,p", po::value<uint>(&matrix_precision)->default_value(2), "Write out matrix coefficients with this many digits.");
   }
 
 
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("stats=%d,noout=%d,nthreads=%d")
+    oss << boost::format("stats=%d,noout=%d,nthreads=%d,matrix_precision=%d")
       % stats
       % noop
-      % nthreads;
+      % nthreads
+      % matrix_precision;
 
     return(oss.str());
   }
@@ -139,6 +141,7 @@ public:
   bool stats;
   bool noop;
   uint nthreads;
+  uint matrix_precision;
 };
 
 typedef vector<double>    vecDouble;
@@ -411,7 +414,7 @@ int main(int argc, char *argv[]) {
   if (!topts->noop) {
     cout << "# " << header << endl;
     cout << mtopts->trajectoryTable();
-    cout << setprecision(matrix_precision) << M;
+    cout << setprecision(topts->matrix_precision) << M;
   }
 
 }
