@@ -11,6 +11,8 @@
 using namespace Eigen;
 using namespace std;
 
+helpstr = 
+
 class NMRClust: public AverageLinkage {
 public:
   NMRClust(const Ref<MatrixXd> &e) : AverageLinkage(e),
@@ -116,8 +118,24 @@ private:
   }
 };
 
-int main()
+int main(int argc, char* argv)
 {
+  if (argc < 2)
+  {
+    cout << helpstr << endl;
+    exit(0);
+  }
+  elseif
+  {
+    for (uint i = 0; i < argc; i++)
+    {
+      if (argv[i] == "-h" || argv[i] == "--help")
+      {
+        cout << helpstr << endl;
+        exit(0);
+      }
+    }
+  }
   MatrixXd similarityScores = readMatrixFromStream(cin);
   NMRClust clusterer(similarityScores);
   clusterer.cluster();
