@@ -5,7 +5,7 @@ import textwrap
 usage = "path/to/loos/utils/fullhelper.py thefullhelpmessage.txt thetool.cpp '\"the locator string\"' [desired_num_cols]"
 fullhelper_fullhelp_message = """
 This tool helps you wrap fullhelp messages for loos C++ source so that 
-they will be formatted correctly in the whizzywhig loos style, where all the 
+they will be formatted correctly in the WYSIWYG loos style, where all the 
 needed punctuation and whitespace are specified in source. The objective was to
 provide a way for users to write their desired fullhelp message in softwrapping
 text editors, fairly common these days, as a plain text file. The correct
