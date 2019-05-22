@@ -7,6 +7,7 @@
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <fstream>
+#include "kgs.hpp"
 
 // namespace opts = loos::OptionsFramework;
 // namespace po = boost::program_options;
