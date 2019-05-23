@@ -24,7 +24,7 @@ Ubuntu 18.04       | yes     | yes     |
 Debian 7.8         | yes     | yes     | Deprecated
 Debian 8.1         | yes     | yes     | Deprecated
 Debian 9.8         | yes     | yes     |
-Centos 7           | yes     | no      | No python 3
+Centos 7           | yes     | yes     |
 OpenSUSE 12        | yes     | yes     | Deprecated
 OpenSUSE 13        | yes     | yes     | Deprecated
 OpenSUSE 15        | yes     | yes     |
@@ -180,7 +180,20 @@ need to say
 
 Then, run the newly installed scons to build LOOS
 
-    $CONDA_PREFIX/bin/scons
+$CONDA_PREFIX/bin/scons
+
+It is possible that the build can fail with errors saying there are missing
+references to some of the boost libraries (e.g. program_options); this generally
+occurs when scons gets confused by the presence of more than one BOOST install
+on the system.  If this occurs, clean out the build and rebuild specifying the
+location of BOOST
+
+$CONDA_PREFIX/bin/scons -c
+$CONDA_PREFIX/bin/scons -c config
+$CONDA_PREFIX/bin/scons  BOOST=/path/to/boost/installed/by/conda
+
+Alternatively, you can also copy custom.py-proto to custom.py, and uncomment
+then edit the  lines describing BOOST's location (particularly BOOST_LIB).
 
 ### Documentation
 
@@ -204,6 +217,7 @@ LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
 and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
 python3 packages for numpy and scipy, you can either install them manually or
 use conda.
+
 ### Documentation
 
 To build the documentation, you will also require doxygen and graphviz,
@@ -213,16 +227,18 @@ To build the documentation, you will also require doxygen and graphviz,
 
 ---
 
-## CentOS
+## CentOS 7
 
-LOOS has been tested with CentOS 6 and 7 (64 bit).  You will need to use the EPEL repo
-first,
+    You'll need the epel repository in order to get python3 versions of numpy and scipy:
 
-    sudo yum install epel-release
+    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-Then install the packages,
+    Then install the packages,
 
-    sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
+    sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
+
+
+    Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (the comments will say which value is correct for CentOS).
 
 ### Documentation
 
@@ -230,21 +246,13 @@ To build the documentation, also install:
    sudo yum install doxygen graphviz
    doxygen
 
-
-### PyLOOS
-
-CentOS 6: Yum install python-devel and pcre-devel, then download
-  and install the latest swig.  The version of swig available through
-  the package manager is too old.
-
-
 ---
 
 ## Ubuntu, Debian, Mint
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
 
-Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+    Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
 ### Documentation
 
