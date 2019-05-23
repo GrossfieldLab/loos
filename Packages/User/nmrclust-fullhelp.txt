@@ -1,9 +1,0 @@
-usage:
-nmrclust < similarity_scores.out > clustering_results.out
-
-nmrclust mimics the clustering aspect of the NMRCLUST utility that is incorporated as part of the OLDERADO webserver for structural biology informatics. It was originally published as:
-Kelly, Gardner, and Sutcliffe, Prot. Eng. 9 11 1063-1065 (1996)
-This type of clustering exists in other places, most notably in R, and has been put to many uses beside clustering protein structures with their RMSD as the distance between each structure.
-
-The tool works by reading in a similarity score matrix from stdin and writing the clustering results to stdout. The results report the index of each cluster, with all the elements in each cluster following its index on the same line. It will also provide an exemplar (the element nearest the centroid) for each cluster in a separate block. The input matrix should be an NxN symmetric matrix of similarity scores where the ijth element is the similarity between i and j
-
