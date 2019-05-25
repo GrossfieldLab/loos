@@ -1,9 +1,8 @@
-#include "kgs.hpp"
-#include "clustering.hpp"
+#include "kGS.hpp"
 
 using namespace Eigen;
 using namespace std;
-using namespace clustering;
+using namespace Clustering;
 
 class KGS : public AverageLinkage
 {

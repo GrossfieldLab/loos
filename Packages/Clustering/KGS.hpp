@@ -1,15 +1,15 @@
-#include "cluster.hpp"
-#ifndef KGS_HPP
-#define TIME_HPP
+#ifndef KGS
+#define KGS
+#include "Clustering.hpp"
 
-class KGS : public clustering::AverageLinkage
+class KGS : public Clustering::AverageLinkage
 {
 public:
   KGS(const Eigen::Ref<MatrixXd> &e) : AverageLinkage(e),
-                                refDists(e.selfadjointView<Eigen::Upper>()),
-                                penalties(e.rows() - 1),
-                                avgSpread(e.rows() - 1),
-                                currentClusterCount{0} {}
+                                       refDists(e.selfadjointView<Eigen::Upper>()),
+                                       penalties(e.rows() - 1),
+                                       avgSpread(e.rows() - 1),
+                                       currentClusterCount{0} {}
   // need to track the average spread at each stage of the clustering.
   Eigen::VectorXd avgSpread; 
   // need to track the number of NONTRIVIAL clusters at each stage

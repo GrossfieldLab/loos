@@ -1,16 +1,17 @@
-// nmrclust.cpp 
+// cluster-kgs.cpp 
 // Kelly, Gardner, and Sutcliffe, Prot. Eng. 9 11 1063-1065 (1996) 
 // hereafter KGS
 // To perform exactly the analysis specified there, one must first apply
 // one of the all-to-all rmsd tolls (such as rmsds or multi-rmsds) before
-// running this script. Those tools write their RMSD matricies to cout, and
-// this script reads from cin, so the effect can be achieved through a pipe.
+// running this tool. Those tools write their RMSD matricies to cout, and
+// this tool reads from cin, so the effect can be achieved through a pipe.
 #include <iostream>
 #include <eigen3/Eigen/Dense>
-#include "cluster.hpp"
+#include "Clustering.hpp"
 
 using namespace Eigen;
 using namespace std;
+using namespace Clustering;
 
 std::string helpstr = "XXX";
 
@@ -36,12 +37,20 @@ int main(int argc, char* argv)
   KGS clusterer(similarityScores);
   clusterer.cluster();
   uint optStg = clusterer.cutoff();
-  cout << "optimal stage:  " << optStg << endl;
-  cout << "penalties:  " << clusterer.penalties << endl;
-  clusterer.writeClusters(optStg, cout);
   vector<uint> exemplars = getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
-  // print exemplars out below here
-  cout << "Exemplars:  " << endl;
-  for (uint i = 0; i < exemplars.size(); i++)
-    cout << i << ' ' << exemplars[i] << endl;
+  // below here is output stuff. All quantities of interest have been obtained.
+  string indent = "  ";
+  string offset = "    ";
+  cout << "{";
+  cout << indent + "\"optimal stage\": "<< optStg << "," << endl;
+  cout << indent + "\"penalties\": ";
+  containerAsInlineJSONArr(clusterer.penalties, cout);
+  cout << "," << endl;
+  cout << indent + "\"clusters\": ";
+  vectorVectorAsJSONArr(clusterer.clusterTraj[optStg], cout, offset=offset);
+  cout << "," << endl;
+  cout << indent + "\"exemplars\": ";
+  containerAsJSONArr(exemplars, cout, offset=offset);
+  cout << endl;
+  cout << "}";
 }
