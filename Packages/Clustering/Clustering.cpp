@@ -34,6 +34,7 @@ MatrixXd readMatrixFromStream(istream &input, char commentChar = '#')
 
   return result;
 };
+
 // use formula (a - b)^2 = a^2 + b^2 -2a*b.
 MatrixXd pairwiseDists(const Ref<const MatrixXd> &data)
 {

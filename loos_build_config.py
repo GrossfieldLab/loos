@@ -36,7 +36,7 @@ versions = {}
 package_list = { 'ENM': 'ElasticNetworks',
                  'HBonds' : 'HydrogenBonds',
                  'Conv' : 'Convergence',
-                 'Clustering' : 'ClusteringTools',
+                 'Clustering' : 'Clustering',
                  'Density' : 'DensityTools',
                  'OMG' : 'OptimalMembraneGenerator',
                  'Voronoi' : 'Voronoi',
