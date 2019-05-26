@@ -31,14 +31,14 @@ public:
   std::vector<std::unique_ptr<std::vector<uint>>> currStg;
 
   // need to fill this in for each type of
-  virtual Eigen::RowVectorXd dist(uint A, uint B) {}
+  virtual Eigen::RowVectorXd dist(uint A, uint B) {return Eigen::RowVectorXd}
   // define a penalty function to score each level of the hierarchy.
   virtual void penalty() {}
 
   // Merge two clusters into whichever is larger.
   // Return true if new composite cluster is minRow, else return false
   // In the case where clusters are of equal size, merge into minRow.
-  virtual bool merge();
+  virtual bool merge() {return bool ret;};
 
 
   // Run through the clustering cycle, populating the 'trajectory' vectors.
