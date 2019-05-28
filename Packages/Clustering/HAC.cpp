@@ -1,4 +1,4 @@
-#include "HAC.hpp"
+#include "Clustering.hpp"
 
 using namespace Clustering;
 
@@ -45,20 +45,20 @@ public:
     uint sizeB = currStg[minCol]->size();
     if (sizeA < sizeB)
     {
-      currStg[minCol]->insert(currStg[minCol]->end(), 
-                              currStg[minRow]->begin(), 
+      currStg[minCol]->insert(currStg[minCol]->end(),
+                              currStg[minRow]->begin(),
                               currStg[minRow]->end());
       currStg.erase(currStg.begin() + minRow);
-      
+
       ret = false;
     }
     else
     {
-      currStg[minRow]->insert(currStg[minRow]->end(),  
-                              currStg[minCol]->begin(), 
+      currStg[minRow]->insert(currStg[minRow]->end(),
+                              currStg[minCol]->begin(),
                               currStg[minCol]->end());
       currStg.erase(currStg.begin() + minCol);
-      
+
       ret = true;
     }
 
@@ -135,10 +135,10 @@ public:
         clusterDists.row(minCol) = mergedRow;
         clusterDists.col(minCol) = mergedRow.transpose();
       }
-      
+
     }
     stage--;
   }
 
-  
+
 };

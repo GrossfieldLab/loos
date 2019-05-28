@@ -3,9 +3,6 @@
 
 namespace Clustering
 {
-  #include <eigen3/Eigen/Dense>
-  #include <iostream>
-  #include <fstream>
   #include "ClusteringUtils.hpp"
   #include "HAC.hpp"
   #include "AverageLinkage.hpp"
