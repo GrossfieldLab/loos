@@ -1,6 +1,6 @@
 #include "Clustering.hpp"
 
-using namespace Clustering
+using namespace Clustering;
 
 class AverageLinkage : public HAC
 {
