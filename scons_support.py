@@ -416,8 +416,8 @@ def SetupBoostPaths(env):
 
     # If boost is not set but we're inside a conda environment,
     # automatically redirect boost into here...
-    if not BOOST and "CONDA_PREFIX" in env["ENV"]:
-        BOOST = env["ENV"]["CONDA_PREFIX"]
+    if not BOOST and "CONDA_PREFIX" in env:
+        BOOST = env["CONDA_PREFIX"]
 
     boost_libpath = ""
     boost_include = ""
