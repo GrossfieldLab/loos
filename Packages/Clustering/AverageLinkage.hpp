@@ -1,5 +1,5 @@
-#ifndef AVG_LINK
-#define AVG_LINK
+#ifndef LOOS_AVG_LINK_HPP
+#define LOOS_AVG_LINK_HPP
 
 #include "Clustering.hpp"
 
@@ -11,6 +11,6 @@ class AverageLinkage : public Clustering::HAC
 public:
   AverageLinkage(const Eigen::Ref<Eigen::MatrixXd> &e) : Clustering::HAC(e) {}
   // this should be a terminal definition
-  Eigen::RowVectorXd dist(uint idxA, uint idxB);
+  Eigen::RowVectorXd dist(uint idxA, uint idxB) {};
 };
 #endif

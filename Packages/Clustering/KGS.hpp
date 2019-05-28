@@ -1,5 +1,5 @@
-#ifndef KGS
-#define KGS
+#ifndef LOOS_KGS_HPP
+#define LOOS_KGS_HPP
 #include "Clustering.hpp"
 
 class KGS : public Clustering::AverageLinkage
