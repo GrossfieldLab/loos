@@ -233,7 +233,7 @@ To build the documentation, you will also require doxygen and graphviz,
 
     yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-    Then install the packages,
+    Then install the packages
 
     sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
 
