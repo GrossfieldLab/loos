@@ -35,7 +35,7 @@ scripts = ''
 # Stand-alone apps...
 
 list = []
-# apps = 'cluster-kgs'
+apps = 'cluster-kgs'
 
 # for name in Split(apps):
 #     fname = name + '.cpp'
@@ -51,6 +51,7 @@ library_headers = 'Clustering.hpp ClusteringUtils.hpp HAC.hpp AverageLinkage.hpp
 loos_clustering = clone.Library('loos_clustering', Split(library_sources))
 clone.Prepend(LIBS=['loos_clustering'])
 clone.Prepend(LIBPATH=['#/Packages/Clustering'])
+clone.Prepend(CPPPATH='#/Packages/Clustering')
 
 
 # Tools requiring the above library

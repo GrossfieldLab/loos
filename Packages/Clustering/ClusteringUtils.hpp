@@ -8,7 +8,7 @@
 // Note: assumes matrix is triangular (since similarity scores
 // for clustering must be reflexive...)
 Eigen::MatrixXd readMatrixFromStream(std::istream &input,
-                                     char commentChar = '#');
+                                     const char commentChar = '#');
 
 // takes a nxd data matrix (where d is the dimensionality of the data),
 // returns an nxn matrix containing pairwise distances
