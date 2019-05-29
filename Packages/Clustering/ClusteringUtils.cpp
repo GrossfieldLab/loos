@@ -1,10 +1,17 @@
 #include "Clustering.hpp"
 #include <iostream>
+#include <string>
+#include <algorithm>
+#include <fstream>
 
 using std::cout;
 using std::ostream;
+using std::istream;
 using std::string;
 using std::vector;
+using std::endl;
+using std::sort;
+using std::stringstream;
 
 using namespace Clustering;
 using namespace Eigen;
@@ -32,7 +39,7 @@ readMatrixFromStream(istream& input, char commentChar = '#')
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though nb mapped eigen matricies are not the same as eigen dense mats.
-  Eigen::Matrix<double, Eigen::Dynamic, Eigen : Dynamic, Eigen::RowMajor>
+  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
     result(matbuff[0].size(), matbuff.size());
   for (uint i = 0; i < matbuff.size(); i++)
     for (uint j = i; j < matbuff[0].size(); j++)
@@ -77,7 +84,7 @@ getExemplars(vector<vector<uint>>& clusters,
 }
 // write clusters as a JSON array of arrays.
 void
-vectorVectorAsJSONArr(vector<vector<uint>>& cluster,
+vectorVectorsAsJSONArr(vector<vector<uint>>& cluster,
                       ostream& out,
                       const string indent = "  ",
                       const string offset = "  ")
@@ -89,7 +96,7 @@ vectorVectorAsJSONArr(vector<vector<uint>>& cluster,
     for (uint j = 0; j < lastIndex; j++) {
       out << cluster[i][j] << ",";
     }
-    out << cluster[i][lastIndex] << "]," endl;
+    out << cluster[i][lastIndex] << "]," << endl;
   }
   out << offset + "]";
 }
@@ -106,9 +113,9 @@ containerAsJSONArr(ForLoopable& container,
   out << "[" << endl;
   uint lastIndex = container.size() - 1;
   for (uint i = 0; i < lastIndex; i++) {
-    out << offset + indent << exemplars[i] << "," << endl;
+    out << offset + indent << container[i] << "," << endl;
   }
-  out << offset << exemplars[lastIndex] << "]";
+  out << offset << container[lastIndex] << "]";
 }
 
 // write iterable container to JSON arr on one line.
@@ -119,9 +126,9 @@ containerAsOneLineJSONArr(ForLoopable& container, ostream& out)
   out << "[";
   uint lastIndex = container.size() - 1;
   for (uint i = 0; i < lastIndex; i++) {
-    out << exemplars[i] << ",";
+    out << container[i] << ",";
   }
-  out << exemplars[lastIndex] << "]";
+  out << container[lastIndex] << "]";
 }
 
 // from
@@ -167,20 +174,6 @@ removeCol(PlainObjectBase<Derived>& matrix, unsigned int colToRemove)
   if (colToRemove < numCols)
     matrix.block(0, colToRemove, numRows, numCols - colToRemove) =
       matrix.rightCols(numCols - colToRemove);
-
-  matrix.conservativeResize(numRows, numCols);
-}
-
-template<typename Derived>
-void
-removeRow(Eigen::PlainObjectBase<Derived>& matrix, unsigned int rowToRemove)
-{
-  unsigned int numRows = matrix.rows() - 1;
-  unsigned int numCols = matrix.cols();
-
-  if (rowToRemove < numRows)
-    matrix.block(rowToRemove, 0, numRows - rowToRemove, numCols) =
-      matrix.bottomRows(numRows - rowToRemove);
 
   matrix.conservativeResize(numRows, numCols);
 }

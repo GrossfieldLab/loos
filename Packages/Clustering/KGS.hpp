@@ -5,7 +5,7 @@
 class KGS : public Clustering::AverageLinkage
 {
 public:
-  KGS(const Eigen::Ref<MatrixXd> &e) : AverageLinkage(e),
+  KGS(const Eigen::Ref<Eigen::MatrixXd> &e) : AverageLinkage(e),
                                        refDists(e.selfadjointView<Eigen::Upper>()),
                                        penalties(e.rows() - 1),
                                        avgSpread(e.rows() - 1),

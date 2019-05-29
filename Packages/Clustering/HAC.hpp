@@ -1,7 +1,6 @@
 #ifndef LOOS_HAC_HPP
 #define LOOS_HAC_HPP
-#include <Eigen/Dense>
-
+#include "Clustering.hpp"
 // Abstract class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
 class HAC

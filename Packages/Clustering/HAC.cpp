@@ -1,4 +1,5 @@
 #include "Clustering.hpp"
+#include <iostream>
 
 using namespace std;
 using namespace Clustering;
@@ -60,7 +61,9 @@ void HAC::cluster()
   double maxDist = clusterDists.maxCoeff() + 1;
   for (stage = 1; stage < eltCount; stage++)
   {
+    #ifdef DEBUG
     cout << "stage:  " << stage << endl;
+    #endif
     // bind the minimum distance found for dendrogram construction
     distOfMerge(stage) = (clusterDists + maxDist * MatrixXd::Identity(
                             clusterDists.rows(), clusterDists.rows())
@@ -69,8 +72,10 @@ void HAC::cluster()
     VectorXd mergedRow = dist(minRow, minCol);
     // merge the clusters into whichever of the two is larger. Erase the other.
     merged = merge();
+    #ifdef DEBUG
     cout << "clusters:" << endl;
-    writeClusters(stage, cout);
+    vectorVectorsAsJSONArr(clusterTraj[stage], cout);
+    #endif
     // compute the penalty, if such is needed. Needs cluster merged into.
     penalty();
     // update the matrix of clusterDists

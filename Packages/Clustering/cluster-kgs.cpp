@@ -6,23 +6,26 @@
 // running this tool. Those tools write their RMSD matricies to cout, and
 // this tool reads from cin, so the effect can be achieved through a pipe.
 #include "Clustering.hpp"
-#include <Eigen/Dense>
 #include <iostream>
+#include <string>
+
+using std::cout;
+using std::cin;
+using std::endl;
+using std::vector;
 
 using namespace Eigen;
-using namespace std;
 using namespace Clustering;
 
-std::string helpstr = "XXX";
-
-int
-main(int argc, char* argv)
+const std::string helpstr = "XXX";
+const std::string indent = "  ";
+int main(int argc, char* argv[])
 {
   if (argc < 2) {
     cout << helpstr << endl;
     exit(0);
   } else {
-    for (uint i = 0; i < argc; i++) {
+    for (int i = 0; i < argc; i++) {
       if (argv[i] == "-h" || argv[i] == "--help") {
         cout << helpstr << endl;
         exit(0);
@@ -36,18 +39,16 @@ main(int argc, char* argv)
   vector<uint> exemplars =
     getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
   // below here is output stuff. All quantities of interest have been obtained.
-  string indent = "  ";
-  string offset = "    ";
   cout << "{";
   cout << indent + "\"optimal stage\": " << optStg << "," << endl;
   cout << indent + "\"penalties\": ";
-  containerAsInlineJSONArr(clusterer.penalties, cout);
+  containerAsOneLineJSONArr(clusterer.penalties, cout);
   cout << "," << endl;
   cout << indent + "\"clusters\": ";
-  vectorVectorAsJSONArr(clusterer.clusterTraj[optStg], cout, offset=offset);
+  vectorVectorsAsJSONArr((clusterer.clusterTraj)[optStg], cout, "  ");
   cout << "," << endl;
   cout << indent + "\"exemplars\": ";
-  containerAsJSONArr(exemplars, cout, offset=offset);
+  containerAsJSONArr(exemplars, cout, "  ");
   cout << endl;
   cout << "}";
 }
