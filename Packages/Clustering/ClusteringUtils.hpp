@@ -1,7 +1,7 @@
 // ClusteringUtils.hpp
 #ifndef LOOS_CLUSTERING_UTILS
 #define LOOS_CLUSTERING_UTILS
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <iosfwd>
 
 // takes an istream containing an ascii matrix,
@@ -37,7 +37,7 @@ void containerAsJSONArr(ForLoopable &container, std::ostream &out,
 
 // write iterable containter to JSON arr on one line.
 template <typename ForLoopable>
-void containerAsInlineJSONArr(ForLoopable &container, ostream &out);
+void containerAsOneLineJSONArr(ForLoopable &container, ostream &out);
 
 // provides a sort index in ASCENDING order. Apply using matrix product
 Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>

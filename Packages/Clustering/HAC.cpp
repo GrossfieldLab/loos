@@ -1,12 +1,8 @@
 #include "Clustering.hpp"
+
 using namespace std;
 using namespace Clustering;
 using namespace Eigen;
-
-HAC::HAC(const Ref<MatrixXd> &e) : clusterDists(e.selfadjointView<Upper>()),
-                                   eltCount{e.cols()},
-                                   distOfMerge(e.cols()) {}
-
 
 // Merge two clusters into whichever is larger.
 // Return true if new composite cluster is minRow, else return false

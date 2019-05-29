@@ -1,6 +1,6 @@
 #ifndef LOOS_HAC_HPP
 #define LOOS_HAC_HPP
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 
 // Abstract class for hierarchical agglomerative clustering.
 // Specific comparison methods inherit from here.
@@ -33,7 +33,7 @@ public:
   // need to fill this in for each type of
   virtual Eigen::RowVectorXd dist(uint A, uint B);
   // define a penalty function to score each level of the hierarchy.
-  virtual void penalty();
+  virtual void penalty(){};
 
   // Merge two clusters into whichever is larger.
   // Return true if new composite cluster is minRow, else return false
