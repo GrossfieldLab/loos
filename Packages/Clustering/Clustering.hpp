@@ -4,6 +4,7 @@
 #include <vector>
 #include <iosfwd>
 #include <memory>
+
 namespace Clustering
 {
   #include "ClusteringUtils.hpp"
