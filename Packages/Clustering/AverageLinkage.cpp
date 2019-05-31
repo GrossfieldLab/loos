@@ -1,4 +1,4 @@
-#include "Clustering.hpp"
+#include "AverageLinkage.hpp"
 
 namespace Clustering 
 {

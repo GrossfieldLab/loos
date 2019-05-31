@@ -1,8 +1,13 @@
 // ClusteringUtils.hpp
 #ifndef LOOS_CLUSTERING_UTILS
 #define LOOS_CLUSTERING_UTILS
-#include "Clustering.hpp"
+#include <eigen3/Eigen/Dense>
+#include <iosfwd>
+#include <string>
+#include <vector>
 
+namespace Clustering
+{
 // takes an istream containing an ascii matrix,
 // returns arb. dimension matrix containing its contents
 // Note: assumes matrix is triangular (since similarity scores
@@ -52,4 +57,6 @@ void removeRow(Eigen::PlainObjectBase<Derived> &matrix,
 template <typename Derived>
 void removeCol(Eigen::PlainObjectBase<Derived> &matrix,
                unsigned int colToRemove);
+
+} // namespace Clustering
 #endif

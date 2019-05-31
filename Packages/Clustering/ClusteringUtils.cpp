@@ -1,4 +1,4 @@
-#include "Clustering.hpp"
+#include "ClusteringUtils.hpp"
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -14,8 +14,7 @@ using std::sort;
 using std::stringstream;
 
 using namespace Eigen;
-
-namespace Clustering 
+namespace Clustering
 {
   MatrixXd
   readMatrixFromStream(istream& input, const char commentChar)

@@ -1,7 +1,10 @@
-#include "Clustering.hpp"
+#include "HAC.hpp"
 #include <iostream>
 
-using namespace std;
+using std::vector;
+using std::cout;
+using std::unique_ptr;
+using std::endl;
 using namespace Eigen;
 
 // Merge two clusters into whichever is larger.
@@ -46,7 +49,6 @@ namespace Clustering
   // Run through the clustering cycle, populating the 'trajectory' vectors.
   void HAC::cluster()
   {
-
     // initialize the list of cluster indices with one index per cluster
     vector<vector<uint>> recordCurrStg(eltCount);
     for (uint i = 0; i < eltCount; i++)
@@ -75,7 +77,7 @@ namespace Clustering
       merged = merge();
       #ifdef DEBUG
       cout << "clusters:" << endl;
-      vectorVectorsAsJSONArr(clusterTraj[stage], cout);
+      Clustering::vectorVectorsAsJSONArr(clusterTraj[stage], cout);
       #endif
       // compute the penalty, if such is needed. Needs cluster merged into.
       penalty();
@@ -83,10 +85,10 @@ namespace Clustering
       if (merged)
       { // minRow was the cluster merged into
         // update clusterDists to zero out minCol column & row
-        removeRow(clusterDists, minCol);
-        removeCol(clusterDists, minCol);
+        Clustering::removeRow(clusterDists, minCol);
+        Clustering::removeCol(clusterDists, minCol);
         // remove the column we eliminated from our merged row of distances.
-        removeRow(mergedRow, minCol);
+        Clustering::removeRow(mergedRow, minCol);
         // recalculate minRow column and row
         if (minCol < minRow)
           minRow--;
@@ -99,10 +101,10 @@ namespace Clustering
       else
       { // minCol was the cluster merged into
         // update clusterDists to delete minRow column & row
-        removeRow(clusterDists, minRow);
-        removeCol(clusterDists, minRow);
+        Clustering::removeRow(clusterDists, minRow);
+        Clustering::removeCol(clusterDists, minRow);
         // remove the column we eliminated from our merged row of distances.
-        removeRow(mergedRow, minRow);
+        Clustering::removeRow(mergedRow, minRow);
         // recalculate minCol column and row
         if (minRow < minCol)
           minCol--;

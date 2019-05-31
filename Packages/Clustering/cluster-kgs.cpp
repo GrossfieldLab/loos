@@ -14,7 +14,7 @@ using std::cin;
 using std::endl;
 using std::vector;
 
-using namespace Clustering;
+// using namespace Clustering;
 
 const std::string helpstr = "XXX";
 const std::string indent = "  ";
@@ -31,23 +31,24 @@ int main(int argc, char* argv[])
       }
     }
   }
-  Eigen::MatrixXd similarityScores = readMatrixFromStream(cin);
-  KGS clusterer(similarityScores);
-  clusterer.cluster();
-  uint optStg = clusterer.cutoff();
-  vector<uint> exemplars =
-    getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
-  // below here is output stuff. All quantities of interest have been obtained.
-  cout << "{";
-  cout << indent + "\"optimal stage\": " << optStg << "," << endl;
-  cout << indent + "\"penalties\": ";
-  containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
-  cout << "," << endl;
-  cout << indent + "\"clusters\": ";
-  vectorVectorsAsJSONArr<uint>((clusterer.clusterTraj)[optStg], cout, "  ");
-  cout << "," << endl;
-  cout << indent + "\"exemplars\": ";
-  containerAsJSONArr<vector<uint>>(exemplars, cout, "  ");
-  cout << endl;
-  cout << "}";
+  Eigen::MatrixXd similarityScores = Clustering::readMatrixFromStream(cin);
+  cout << similarityScores;
+  // Clustering::KGS clusterer(similarityScores);
+  // clusterer.cluster();
+  // uint optStg = clusterer.cutoff();
+  // vector<uint> exemplars =
+  //   getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
+  // // below here is output stuff. All quantities of interest have been obtained.
+  // cout << "{";
+  // cout << indent + "\"optimal stage\": " << optStg << "," << endl;
+  // cout << indent + "\"penalties\": ";
+  // containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
+  // cout << "," << endl;
+  // cout << indent + "\"clusters\": ";
+  // vectorVectorsAsJSONArr<uint>((clusterer.clusterTraj)[optStg], cout, "  ");
+  // cout << "," << endl;
+  // cout << indent + "\"exemplars\": ";
+  // containerAsJSONArr<vector<uint>>(exemplars, cout, "  ");
+  // cout << endl;
+  // cout << "}";
 }
