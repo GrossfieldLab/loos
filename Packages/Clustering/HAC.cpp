@@ -1,4 +1,5 @@
 #include "HAC.hpp"
+#include "ClusteringUtils.hpp"
 #include <iostream>
 
 using std::vector;
@@ -77,7 +78,7 @@ namespace Clustering
       merged = merge();
       #ifdef DEBUG
       cout << "clusters:" << endl;
-      Clustering::vectorVectorsAsJSONArr(clusterTraj[stage], cout);
+      vectorVectorsAsJSONArr<uint>(clusterTraj[stage], cout);
       #endif
       // compute the penalty, if such is needed. Needs cluster merged into.
       penalty();
@@ -85,10 +86,10 @@ namespace Clustering
       if (merged)
       { // minRow was the cluster merged into
         // update clusterDists to zero out minCol column & row
-        Clustering::removeRow(clusterDists, minCol);
-        Clustering::removeCol(clusterDists, minCol);
+        removeRow<Matrix<double, -1, -1, 1>>(clusterDists, minCol);
+        removeCol<Matrix<double, -1, -1, 1>>(clusterDists, minCol);
         // remove the column we eliminated from our merged row of distances.
-        Clustering::removeRow(mergedRow, minCol);
+        removeRow<VectorXd>(mergedRow, minCol);
         // recalculate minRow column and row
         if (minCol < minRow)
           minRow--;
@@ -101,10 +102,10 @@ namespace Clustering
       else
       { // minCol was the cluster merged into
         // update clusterDists to delete minRow column & row
-        Clustering::removeRow(clusterDists, minRow);
-        Clustering::removeCol(clusterDists, minRow);
+        removeRow<Matrix<double, -1, -1, 1>>(clusterDists, minRow);
+        removeCol<Matrix<double, -1, -1, 1>>(clusterDists, minRow);
         // remove the column we eliminated from our merged row of distances.
-        Clustering::removeRow(mergedRow, minRow);
+        removeRow<VectorXd>(mergedRow, minRow);
         // recalculate minCol column and row
         if (minRow < minCol)
           minCol--;

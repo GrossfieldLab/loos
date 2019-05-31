@@ -33,8 +33,8 @@ int main(int argc, char* argv[])
   }
   Eigen::MatrixXd similarityScores = Clustering::readMatrixFromStream(cin);
   cout << similarityScores;
-  // Clustering::KGS clusterer(similarityScores);
-  // clusterer.cluster();
+  Clustering::KGS clusterer(similarityScores);
+  clusterer.cluster();
   // uint optStg = clusterer.cutoff();
   // vector<uint> exemplars =
   //   getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
