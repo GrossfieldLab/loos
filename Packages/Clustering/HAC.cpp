@@ -1,5 +1,6 @@
 #include "HAC.hpp"
 #include "ClusteringUtils.hpp"
+#include "ClusteringUtils.cpp"
 #include <iostream>
 
 using std::vector;
