@@ -180,7 +180,7 @@ need to say
 
 Then, run the newly installed scons to build LOOS
 
-$CONDA_PREFIX/bin/scons
+    $CONDA_PREFIX/bin/scons
 
 It is possible that the build can fail with errors saying there are missing
 references to some of the boost libraries (e.g. program_options); this generally
@@ -188,9 +188,9 @@ occurs when scons gets confused by the presence of more than one BOOST install
 on the system.  If this occurs, clean out the build and rebuild specifying the
 location of BOOST
 
-$CONDA_PREFIX/bin/scons -c
-$CONDA_PREFIX/bin/scons -c config
-$CONDA_PREFIX/bin/scons  BOOST=/path/to/boost/installed/by/conda
+    $CONDA_PREFIX/bin/scons -c
+    $CONDA_PREFIX/bin/scons -c config
+    $CONDA_PREFIX/bin/scons  BOOST=/path/to/boost/installed/by/conda
 
 Alternatively, you can also copy custom.py-proto to custom.py, and uncomment
 then edit the  lines describing BOOST's location (particularly BOOST_LIB).
@@ -229,16 +229,16 @@ To build the documentation, you will also require doxygen and graphviz,
 
 ## CentOS 7
 
-    You'll need the epel repository in order to get python3 versions of numpy and scipy:
+You'll need the epel repository in order to get python3 versions of numpy and scipy:
 
     yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-    Then install the packages
+Then install the packages
 
     sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
 
 
-    Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (the comments will say which value is correct for CentOS).
+Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (the comments will say which value is correct for CentOS).
 
 ### Documentation
 
@@ -252,13 +252,14 @@ To build the documentation, also install:
 
     sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
 
-    Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
 ### Documentation
 
 To build the documentation:
-   sudo apt-get install doxygen graphviz
-   doxygen
+
+     sudo apt-get install doxygen graphviz
+     doxygen
 
 ---
 
@@ -281,6 +282,7 @@ in order to build LOOS.
 ### Documentation
 
 To build the documentation:
+
     sudo zypper install doxygen graphviz
     doxygen
 
@@ -312,7 +314,9 @@ this to run SCons and PyLOOS.  Here again, you have two options: build
 and install SCons using that Python, or use the local Python to invoke
 the existing SCons.  The latter can be done with the following command
 line:
+
        /path/to/my/own/python `which scons`
+
 Simply putting the new Python in your PATH will not work because SCons
 "sanitizes" the PATH before running.  You will also need to be sure to
 invoke your PyLOOS scripts with your new local Python.
@@ -327,6 +331,7 @@ Two articles about managing SIP status are:
 https://developer.apple.com/library/mac/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html
 
 http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-protection-in-el-capitan.html
+
 
 
 #### Use virtualenv
@@ -393,37 +398,14 @@ We have seen several instances where LOOS would not build due to
 multiple versions of BOOST being installed.  The configuration part of
 the build seems to mix components from the different versions
 installed.  If your build exits due to errors, verify that you are in
-fact using only the BOOST install and libraries you intend (or removed
-the excess versions)
+fact using only the BOOST install and libraries you intend by examining config.log (or consider removing the excess versions)
 
 
 ---
 
-## Windows/Cygwin (Unsupported)
+## Windows (Unsupported)
 
-You will need to install libboost-devel and liblapack-devel along with
-the g++ compiler using the cygwin setup.exe program.  (Note: if loos
-still does not build, try installing the additional lapack and boost
-packages).  There is no atlas package that we could find for cygwin,
-so the native lapack/blas will be used instead.
-
-There is no scons install option from setup.exe, so you need to
-manually download the latest scons distribution from
-http://www.scons.org/download.php (the gzip tar file) and install it.
-
-There is an issue with SCons under cygwin where you must first build
-LOOS and -then- install it, i.e.
-    scons
-    scons PREFIX=/path/to/install/loos install
-
-[Optional]
-To include support for Amber/NetCDF trajectory files, install the
-libnetcdf-devel library using the cygwin setup.exe installer.
-
-
-### PyLOOS
-
-Cygwin is NOT SUPPORTED
+For Windows 10, your best bet is to use one of the linux subsystems that are installable from Microsoft (e.g. Ubuntu or Debian), then follow the instructions for that linux distribution.  We have anecodotal evidence that this works, but it isn't a supported environment.
 
 ## Manjaro (Unsupported)
 
