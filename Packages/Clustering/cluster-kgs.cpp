@@ -14,7 +14,6 @@ using std::cin;
 using std::endl;
 using std::vector;
 
-using namespace Eigen;
 using namespace Clustering;
 
 const std::string helpstr = "XXX";
@@ -32,7 +31,7 @@ int main(int argc, char* argv[])
       }
     }
   }
-  MatrixXd similarityScores = readMatrixFromStream(cin);
+  Eigen::MatrixXd similarityScores = readMatrixFromStream(cin);
   KGS clusterer(similarityScores);
   clusterer.cluster();
   uint optStg = clusterer.cutoff();
@@ -42,13 +41,13 @@ int main(int argc, char* argv[])
   cout << "{";
   cout << indent + "\"optimal stage\": " << optStg << "," << endl;
   cout << indent + "\"penalties\": ";
-  containerAsOneLineJSONArr(clusterer.penalties, cout);
+  containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
   cout << "," << endl;
   cout << indent + "\"clusters\": ";
-  vectorVectorsAsJSONArr((clusterer.clusterTraj)[optStg], cout, "  ");
+  vectorVectorsAsJSONArr<uint>((clusterer.clusterTraj)[optStg], cout, "  ");
   cout << "," << endl;
   cout << indent + "\"exemplars\": ";
-  containerAsJSONArr(exemplars, cout, "  ");
+  containerAsJSONArr<vector<uint>>(exemplars, cout, "  ");
   cout << endl;
   cout << "}";
 }

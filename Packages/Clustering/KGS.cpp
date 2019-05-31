@@ -1,10 +1,11 @@
 #include "Clustering.hpp"
 #include <iostream>
 
-using namespace Eigen;
 using std::vector;
 using std::cout;
 using std::endl;
+
+using namespace Eigen;
 
 namespace Clustering
 {

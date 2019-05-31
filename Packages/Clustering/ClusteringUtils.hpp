@@ -23,7 +23,8 @@ getExemplars(std::vector<std::vector<uint>> &clusters,
              const Eigen::Ref<const Eigen::MatrixXd> &distances);
 
 // write clusters as JSON for easy transport to analysis context.
-void vectorVectorsAsJSONArr(std::vector<std::vector<uint>> &clusters,
+template <typename Numeric>
+void vectorVectorsAsJSONArr(std::vector<std::vector<Numeric>> &clusters,
                             std::ostream &out, const std::string &indent = "  ",
                             const std::string &offset = "  ");
 
