@@ -47,7 +47,7 @@ class ToolOptions : public opts::OptionsPackage
         bool use_periodicity;
         bool use_reference;
         bool do_per_residue;
-        bool exclude_consecutive=false;
+        bool exclude_consecutive;
 
         void addGeneric(po::options_description& o)
             {
