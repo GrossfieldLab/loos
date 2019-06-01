@@ -1,6 +1,7 @@
 #ifndef LOOS_HAC_HPP
 #define LOOS_HAC_HPP
-#include "ClusteringUtils.hpp"
+// #include "ClusteringUtils.hpp"
+#include <eigen3/Eigen/Dense>
 #include <memory>
 #include <vector>
 // Abstract class for hierarchical agglomerative clustering.

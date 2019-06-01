@@ -1,4 +1,5 @@
 #include "KGS.hpp"
+#include "ClusteringUtils.hpp"
 #include <iostream>
 
 using std::cout;
