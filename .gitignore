@@ -133,6 +133,10 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Packages/Clustering/**
+!Packages/Clustering/*.cpp
+!Packages/Clustering/*.hpp
+!packages/Clustering/SConscript
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
@@ -145,7 +149,6 @@ Packages/User/simple_model_transform
 Packages/User/simple_model_calc
 Packages/User/traj_transform
 Packages/User/traj_calc
-Packages/User/nmrclust
 Packages/DensityTools/blob_stats
 Packages/DensityTools/water-sides
 Packages/DensityTools/water-extract

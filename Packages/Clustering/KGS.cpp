@@ -10,7 +10,7 @@ using namespace Eigen;
 namespace Clustering
 {
 // call this to search for a cutoff stage in clustering.
-uint KGS::cutoff()
+idxT KGS::cutoff()
 {
   double min = avgSpread.minCoeff();
   double max = avgSpread.maxCoeff();
@@ -31,7 +31,7 @@ uint KGS::cutoff()
   cout << "penalties after adding normAvSpreads:" << endl
        << penalties << endl;
 #endif
-  uint minIndex;
+  idxT minIndex;
   penalties.minCoeff(&minIndex);
   // need to increment minindex to correspond to stage,
   // since avgSpread (and therefore penalty) undefined at stage 0.
@@ -42,9 +42,9 @@ uint KGS::cutoff()
 void KGS::penalty()
 {
   // look up merged clustersize so we can assess change in spread.
-  uint sizeA = (clusterTraj[stage - 1][minRow]).size();
-  uint sizeB = (clusterTraj[stage - 1][minCol]).size();
-  uint sizeAB = sizeA + sizeB;
+  idxT sizeA = (clusterTraj[stage - 1][minRow]).size();
+  idxT sizeB = (clusterTraj[stage - 1][minCol]).size();
+  idxT sizeAB = sizeA + sizeB;
 #ifdef DEBUG
   cout << "sizeA:  " << sizeA << endl;
   cout << "sizeB:  " << sizeB << endl;

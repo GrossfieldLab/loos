@@ -24,10 +24,10 @@ public:
   // need to track the number of NONTRIVIAL clusters at each stage
   // => nClusters != currStg.size() except in cases where all
   // clusters are composite, which is not guaranteed until the very last stage.
-  uint currentClusterCount;
+  idxT currentClusterCount;
 
   // call this to search for a cutoff stage in clustering.
-  uint cutoff();
+  idxT cutoff();
 
 private:
   // this will change per round of clustering

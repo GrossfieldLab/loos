@@ -1,8 +1,8 @@
 #include "ClusteringUtils.hpp"
+#include "ClusteringTypedefs.hpp"
 #include <iostream>
 #include <algorithm>
 #include <fstream>
-// #include <eigen3/Eigen/Dense>
 
 using std::cout;
 using std::endl;
@@ -42,8 +42,8 @@ readMatrixFromStream(istream &input, const char commentChar)
   // though nb mapped eigen matricies are not the same as eigen dense mats.
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
       result(matbuff[0].size(), matbuff.size());
-  for (uint i = 0; i < matbuff.size(); i++)
-    for (uint j = i; j < matbuff[0].size(); j++)
+  for (idxT i = 0; i < matbuff.size(); i++)
+    for (idxT j = i; j < matbuff[0].size(); j++)
       result(i, j) = matbuff[i][j];
 
   return result;
@@ -64,22 +64,22 @@ pairwiseDists(const Ref<const MatrixXd> &data)
 }
 
 // possibly naive implementation, relies on keeping full similarity matrix.
-vector<uint>
-getExemplars(vector<vector<uint>> &clusters,
+vector<idxT>
+getExemplars(vector<vector<idxT>> &clusters,
              const Ref<const MatrixXd> &distances)
 {
-  vector<uint> exemplars(clusters.size());
-  for (uint cdx = 0; cdx < clusters.size(); cdx++)
+  vector<idxT> exemplars(clusters.size());
+  for (idxT cdx = 0; cdx < clusters.size(); cdx++)
   {
     MatrixXd clusterDists(clusters[cdx].size(), clusters[cdx].size());
-    for (uint i = 0; i < clusters[cdx].size(); i++)
+    for (idxT i = 0; i < clusters[cdx].size(); i++)
     {
-      for (uint j = 0; j < i; j++)
+      for (idxT j = 0; j < i; j++)
       {
         clusterDists(i, j) = distances(clusters[cdx][i], clusters[cdx][j]);
       }
     }
-    uint centeridx;
+    idxT centeridx;
     clusterDists = clusterDists.selfadjointView<Upper>();
     clusterDists.colwise().mean().minCoeff(&centeridx);
     exemplars[cdx] = clusters[cdx][centeridx];

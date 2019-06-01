@@ -19,21 +19,21 @@ public:
   Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> clusterDists;
 
   /// holds total number of elements to be clustered (and thus number of steps)
-  uint eltCount;
+  idxT eltCount;
 
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
   // These will all be of length matching clustering steps (Nelts-1)
   Eigen::VectorXd distOfMerge;
   // These members change each step.
   // these will store the indexes of the coefficients sought.
-  uint minRow, minCol, stage;
+  idxT minRow, minCol, stage;
   // this bool stores outcome of 'merge'
   bool merged;
   // track the 'trajectory' of the clustering process
-  std::vector<std::vector<std::vector<uint>>> clusterTraj;
+  std::vector<std::vector<std::vector<idxT>>> clusterTraj;
   // the vector of pointers to each cluster at the current stage.
   // each element of cluster list will be currStg at stage == index.
-  std::vector<std::unique_ptr<std::vector<uint>>> currStg;
+  std::vector<std::unique_ptr<std::vector<idxT>>> currStg;
 
   // Merge two clusters into whichever is larger.
   // Return true if new composite cluster is minRow, else return false
@@ -44,9 +44,9 @@ public:
   void cluster();
 
   // need to fill this in for each type of clustering.
-  Eigen::RowVectorXd dist(uint A, uint B){};
+  virtual Eigen::RowVectorXd dist(idxT A, idxT B)=0;
   // define a penalty function to score each level of the hierarchy.
-  void penalty(){};
+  virtual void penalty()=0;
 };
 } // namespace Clustering
 #endif

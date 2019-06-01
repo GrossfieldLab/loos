@@ -12,7 +12,7 @@ class AverageLinkage : public HAC
 public:
   AverageLinkage(const Eigen::Ref<Eigen::MatrixXd> &e) : HAC(e) {}
   // this should be a terminal definition
-  Eigen::RowVectorXd dist(uint idxA, uint idxB);
+  Eigen::RowVectorXd dist(idxT idxA, idxT idxB);
 };
 } // namespace Clustering
 #endif

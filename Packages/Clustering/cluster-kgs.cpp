@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
   cout << similarityScores;
   KGS clusterer(similarityScores);
   clusterer.cluster();
-  uint optStg = clusterer.cutoff();
-  vector<uint> exemplars =
+  idxT optStg = clusterer.cutoff();
+  vector<idxT> exemplars =
     getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
   // // below here is output stuff. All quantities of interest have been obtained.
   cout << "{";
@@ -45,10 +45,10 @@ int main(int argc, char* argv[])
   containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
   cout << "," << endl;
   cout << indent + "\"clusters\": ";
-  vectorVectorsAsJSONArr<uint>((clusterer.clusterTraj)[optStg], cout, "  ");
+  vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");
   cout << "," << endl;
   cout << indent + "\"exemplars\": ";
-  containerAsJSONArr<vector<uint>>(exemplars, cout, "  ");
+  containerAsJSONArr<vector<idxT>>(exemplars, cout, "  ");
   cout << endl;
   cout << "}";
 }

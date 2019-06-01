@@ -2,6 +2,7 @@
 #ifndef LOOS_CLUSTERING_UTILS
 #define LOOS_CLUSTERING_UTILS
 #include <eigen3/Eigen/Dense>
+#include "ClusteringTypedefs.hpp"
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -32,11 +33,11 @@ Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>
 sort_permutation(const Eigen::Ref<const Eigen::VectorXd> &v);
 
 // for exemplars defined as having the minimum average distance within cluster
-// Takes a vector of vectors of uints which are the cluster indexes, and a
+// Takes a vector of vectors of idxTs which are the cluster indexes, and a
 // corresponding (full) distance matrix Returns a vector of indexes to the
 // minimum average distance element from each cluster.
-std::vector<uint>
-getExemplars(std::vector<std::vector<uint>> &clusters,
+std::vector<idxT>
+getExemplars(std::vector<std::vector<idxT>> &clusters,
              const Eigen::Ref<const Eigen::MatrixXd> &distances);
 
 
@@ -44,10 +45,10 @@ getExemplars(std::vector<std::vector<uint>> &clusters,
 // as of 4/2/19 that's months away, though the feature is finished and in devel.
 template <typename Derived>
 void removeRow(Eigen::PlainObjectBase<Derived> &matrix,
-               unsigned int rowToRemove)
+               idxT rowToRemove)
 {
-  unsigned int numRows = matrix.rows() - 1;
-  unsigned int numCols = matrix.cols();
+  idxT numRows = matrix.rows() - 1;
+  idxT numCols = matrix.cols();
 
   if (rowToRemove < numRows)
     matrix.block(rowToRemove, 0, numRows - rowToRemove, numCols) =
@@ -58,10 +59,10 @@ void removeRow(Eigen::PlainObjectBase<Derived> &matrix,
 
 template <typename Derived>
 void removeCol(Eigen::PlainObjectBase<Derived> &matrix,
-               unsigned int colToRemove)
+               idxT colToRemove)
 {
-  unsigned int numRows = matrix.rows();
-  unsigned int numCols = matrix.cols() - 1;
+  idxT numRows = matrix.rows();
+  idxT numCols = matrix.cols() - 1;
 
   if (colToRemove < numCols)
     matrix.block(0, colToRemove, numRows, numCols - colToRemove) =
@@ -77,11 +78,11 @@ void vectorVectorsAsJSONArr(std::vector<std::vector<Numeric>> &clusters,
                             const std::string &offset = "  ")
 {
   out << offset + "[" << endl;
-  for (uint i = 0; i < clusters.size(); i++)
+  for (idxT i = 0; i < clusters.size(); i++)
   {
     out << offset + indent + "[";
-    uint lastIndex = (clusters[i]).size() - 1;
-    for (uint j = 0; j < lastIndex; j++)
+    idxT lastIndex = (clusters[i]).size() - 1;
+    for (idxT j = 0; j < lastIndex; j++)
     {
       out << clusters[i][j] << ",";
     }
@@ -98,8 +99,8 @@ void containerAsJSONArr(ForLoopable &container, std::ostream &out,
                         const std::string &offset = "  ")
 {
   out << "[" << endl;
-  uint lastIndex = container.size() - 1;
-  for (uint i = 0; i < lastIndex; i++)
+  idxT lastIndex = container.size() - 1;
+  for (idxT i = 0; i < lastIndex; i++)
   {
     out << offset + indent << container[i] << "," << endl;
   }
@@ -111,8 +112,8 @@ template <typename ForLoopable>
 void containerAsOneLineJSONArr(ForLoopable &container, std::ostream &out)
 {
   out << "[";
-  uint lastIndex = container.size() - 1;
-  for (uint i = 0; i < lastIndex; i++)
+  idxT lastIndex = container.size() - 1;
+  for (idxT i = 0; i < lastIndex; i++)
   {
     out << container[i] << ",";
   }

@@ -1,6 +1,7 @@
 #include "HAC.hpp"
 #include "ClusteringUtils.hpp"
 #include <iostream>
+#include "ClusteringTypedefs.hpp"
 
 using std::cout;
 using std::endl;
@@ -16,8 +17,8 @@ namespace Clustering
 bool HAC::merge()
 {
   bool ret;
-  uint sizeA = currStg[minRow]->size();
-  uint sizeB = currStg[minCol]->size();
+  idxT sizeA = currStg[minRow]->size();
+  idxT sizeB = currStg[minCol]->size();
   if (sizeA < sizeB)
   {
     currStg[minCol]->insert(currStg[minCol]->end(),
@@ -38,8 +39,8 @@ bool HAC::merge()
   }
 
   // append new assortment of clusters to Cluster Trajectory
-  vector<vector<uint>> recordAtStg(currStg.size());
-  for (uint i = 0; i < currStg.size(); i++)
+  vector<vector<idxT>> recordAtStg(currStg.size());
+  for (idxT i = 0; i < currStg.size(); i++)
   {
     recordAtStg[i] = *(currStg[i]);
   }
@@ -51,12 +52,12 @@ bool HAC::merge()
 void HAC::cluster()
 {
   // initialize the list of cluster indices with one index per cluster
-  vector<vector<uint>> recordCurrStg(eltCount);
-  for (uint i = 0; i < eltCount; i++)
+  vector<vector<idxT>> recordCurrStg(eltCount);
+  for (idxT i = 0; i < eltCount; i++)
   {
-    unique_ptr<vector<uint>> cluster_ptr(new vector<uint>{i});
+    unique_ptr<vector<idxT>> cluster_ptr(new vector<idxT>{i});
     currStg.push_back(move(cluster_ptr));
-    vector<uint> clusterRecord{i};
+    vector<idxT> clusterRecord{i};
     recordCurrStg[i] = clusterRecord;
   }
   clusterTraj.push_back(recordCurrStg);
@@ -78,7 +79,7 @@ void HAC::cluster()
     merged = merge();
 #ifdef DEBUG
     cout << "clusters:" << endl;
-    vectorVectorsAsJSONArr<uint>(clusterTraj[stage], cout);
+    vectorVectorsAsJSONArr(clusterTraj[stage], cout);
 #endif
     // compute the penalty, if such is needed. Needs cluster merged into.
     penalty();
@@ -86,10 +87,12 @@ void HAC::cluster()
     if (merged)
     { // minRow was the cluster merged into
       // update clusterDists to zero out minCol column & row
-      removeRow<Matrix<double, -1, -1, 1>>(clusterDists, minCol);
-      removeCol<Matrix<double, -1, -1, 1>>(clusterDists, minCol);
+      // removeRow<Matrix<double, -1, -1, 1>>(clusterDists, minCol);
+      // removeCol<Matrix<double, -1, -1, 1>>(clusterDists, minCol);
+      removeRow(clusterDists, minCol);
+      removeCol(clusterDists, minCol);
       // remove the column we eliminated from our merged row of distances.
-      removeRow<VectorXd>(mergedRow, minCol);
+      removeRow(mergedRow, minCol);
       // recalculate minRow column and row
       if (minCol < minRow)
         minRow--;
@@ -102,10 +105,10 @@ void HAC::cluster()
     else
     { // minCol was the cluster merged into
       // update clusterDists to delete minRow column & row
-      removeRow<Matrix<double, -1, -1, 1>>(clusterDists, minRow);
-      removeCol<Matrix<double, -1, -1, 1>>(clusterDists, minRow);
+      removeRow(clusterDists, minRow);
+      removeCol(clusterDists, minRow);
       // remove the column we eliminated from our merged row of distances.
-      removeRow<VectorXd>(mergedRow, minRow);
+      removeRow(mergedRow, minRow);
       // recalculate minCol column and row
       if (minRow < minCol)
         minCol--;
