@@ -14,7 +14,7 @@ using std::cin;
 using std::endl;
 using std::vector;
 
-// using namespace Clustering;
+using namespace Clustering;
 
 const std::string helpstr = "XXX";
 const std::string indent = "  ";
@@ -31,9 +31,9 @@ int main(int argc, char* argv[])
       }
     }
   }
-  Eigen::MatrixXd similarityScores = Clustering::readMatrixFromStream(cin);
+  Eigen::MatrixXd similarityScores = readMatrixFromStream(cin);
   cout << similarityScores;
-  Clustering::KGS clusterer(similarityScores);
+  KGS clusterer(similarityScores);
   clusterer.cluster();
   // uint optStg = clusterer.cutoff();
   // vector<uint> exemplars =
