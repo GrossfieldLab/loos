@@ -1,5 +1,6 @@
 #ifndef LOOS_AVG_LINK_HPP
 #define LOOS_AVG_LINK_HPP
+#include "ClusteringTypedefs.hpp"
 #include "HAC.hpp"
 
 // average linkage class for hierarchical clustering.

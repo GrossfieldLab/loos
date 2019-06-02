@@ -1,6 +1,6 @@
 #ifndef LOOS_HAC_HPP
 #define LOOS_HAC_HPP
-// #include "ClusteringUtils.hpp"
+#include "ClusteringTypedefs.hpp"
 #include <eigen3/Eigen/Dense>
 #include <memory>
 #include <vector>

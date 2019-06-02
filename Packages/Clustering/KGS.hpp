@@ -1,5 +1,6 @@
 #ifndef LOOS_KGS_HPP
 #define LOOS_KGS_HPP
+#include "ClusteringTypedefs.hpp"
 #include "AverageLinkage.hpp"
 
 namespace Clustering

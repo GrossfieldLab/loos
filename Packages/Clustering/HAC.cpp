@@ -1,7 +1,6 @@
 #include "HAC.hpp"
 #include "ClusteringUtils.hpp"
 #include <iostream>
-#include "ClusteringTypedefs.hpp"
 
 using std::cout;
 using std::endl;

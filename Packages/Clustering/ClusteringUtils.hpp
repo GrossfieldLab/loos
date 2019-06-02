@@ -20,26 +20,100 @@ namespace Clustering
 // returns arb. dimension matrix containing its contents
 // Note: assumes matrix is triangular (since similarity scores
 // for clustering must be reflexive...)
-Eigen::MatrixXd readMatrixFromStream(std::istream &input,
-                                     const char commentChar = '#');
+template <typename Derived, typename Numeric>
+Eigen::MatrixBase<Derived>
+readMatrixFromStream(std::istream &input,
+                     const char commentChar = '#')
+{
+  vector<vector<Numeric>> matbuff;
+  string line;
+  Numeric elt;
+  while (getline(input, line))
+  {
+    // skip commets. Only permits comments at the beginning of lines.
+    if (line[0] == commentChar)
+      continue;
+    stringstream streamline(line);
+    vector<Numeric> row;
+    // process a row here. Should work for whitespace delimited...
+    while (streamline >> elt)
+      // if a single line comment char is found, break out to line loop
+      row.push_back(elt);
+    // push the vector into the matrix buffer.
+    matbuff.push_back(row);
+  }
 
+  // Populate matrix with numbers.
+  // should be a better way to do this with Eigen::Map...
+  // though mapped eigen matricies are not the same as eigen dense mats.
+  Eigen::MatrixBase<Derived>
+      result(matbuff[0].size(), matbuff.size());
+  for (idxT i = 0; i < matbuff.size(); i++)
+    for (idxT j = i; j < matbuff[0].size(); j++)
+      result(i, j) = matbuff[i][j];
+
+  return result;
+}
 // takes a nxd data matrix (where d is the dimensionality of the data),
 // returns an nxn matrix containing pairwise distances
-Eigen::MatrixXd pairwiseDists(const Eigen::Ref<const Eigen::MatrixXd> &data);
-
+template <typename Derived, typename DataDerived>
+Eigen::MatrixBase<Derived> pairwiseDists(const Eigen::Ref < const Eigen::PlainObjectBase<DataDerived> &data)
+{
+  using namespace Eigen;
+  const MatrixBase<DataDerived> data_sq = data.rowwise().squaredNorm();
+  MatrixBase<Derived> distances;
+  distances = data_sq.rowwise().replicate(data.rows()) +
+              data_sq.transpose().colwise().replicate(data.rows()) -
+              2. * data * data.transpose();
+  distances.diagonal().setZero(); // prevents nans from occurring along diag.
+  distances = distances.cwiseSqrt();
+  return distances;
+}
 
 // provides a sort index in ASCENDING order. Apply using matrix product
+// <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes>>
+// template <typename Numeric>
 Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>
-sort_permutation(const Eigen::Ref<const Eigen::VectorXd> &v);
-
+sort_permutation(const Eigen::Ref < const Eigen::VectorXd &v)
+{
+  using namespace Eigen;
+  // initialize original index locations
+  PermutationMatrix<Dynamic, Dynamic> p(v.size());
+  p.setIdentity();
+  // sort indexes based on comparing values in v
+  sort(p.indices().data(),
+       p.indices().data() + p.indices().size(),
+       [&v](size_t i1, size_t i2) { return v.data()[i1] < v.data()[i2]; });
+  return p;
+}
 // for exemplars defined as having the minimum average distance within cluster
 // Takes a vector of vectors of idxTs which are the cluster indexes, and a
 // corresponding (full) distance matrix Returns a vector of indexes to the
 // minimum average distance element from each cluster.
+template <typename Derived>
 std::vector<idxT>
 getExemplars(std::vector<std::vector<idxT>> &clusters,
-             const Eigen::Ref<const Eigen::MatrixXd> &distances);
-
+             const Eigen::Ref<const Eigen::MatrixBase<Derived>> &distances)
+{
+  using namespace Eigen;
+  vector<idxT> exemplars(clusters.size());
+  for (idxT cdx = 0; cdx < clusters.size(); cdx++)
+  {
+    MatrixBase<Derived> clusterDists(clusters[cdx].size(), clusters[cdx].size());
+    for (idxT i = 0; i < clusters[cdx].size(); i++)
+    {
+      for (idxT j = 0; j < i; j++)
+      {
+        clusterDists(i, j) = distances(clusters[cdx][i], clusters[cdx][j]);
+      }
+    }
+    idxT centeridx;
+    clusterDists = clusterDists.selfadjointView<Upper>();
+    clusterDists.colwise().mean().minCoeff(&centeridx);
+    exemplars[cdx] = clusters[cdx][centeridx];
+  }
+  return exemplars;
+}
 
 // helper functions for adding and subtracting rows. Can GO AWAY with eigen3.4.
 // as of 4/2/19 that's months away, though the feature is finished and in devel.
