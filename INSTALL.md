@@ -1,34 +1,34 @@
 # Operating System Compatibility
 
-                   | LOOS    | PyLOOS  |
-Operating System   | Support | Support | Notes
-----------------   | ------- | ------- | -----
-Fedora 18          | yes     | yes     | Deprecated
-Fedora 19          | yes     | yes     | Deprecated
-Fedora 20          | yes     | yes     | Deprecated
-Fedora 21          | yes     | yes     | Deprecated
-Fedora 22          | yes     | yes     | Deprecated
-Fedora 23          | yes     | yes     | Deprecated
-Fedora 24          | yes     | yes     | Deprecated
-Fedora 25          | yes     | yes     | Deprecated
-Fedora 26          | yes     | yes     | Deprecated
-Fedora 27          | yes     | yes     | Deprecated
-Fedora 28          | yes     | yes     |
-Fedora 29          | yes     | yes     |
-Ubuntu 12.04 LTS   | yes     | yes     | Deprecated
-Ubuntu 14.04 LTS   | yes     | yes     | Deprecated
-Ubuntu 15.04       | yes     | yes     | Deprecated
-Ubuntu 15.10       | yes     | yes     | Deprecated
-Ubuntu 16.04 LTS   | yes     | yes     | Deprecated
-Ubuntu 18.04       | yes     | yes     |
-Debian 7.8         | yes     | yes     | Deprecated
-Debian 8.1         | yes     | yes     | Deprecated
-Debian 9.8         | yes     | yes     |
-Centos 7           | yes     | yes     |
-OpenSUSE 12        | yes     | yes     | Deprecated
-OpenSUSE 13        | yes     | yes     | Deprecated
-OpenSUSE 15        | yes     | yes     |
-MacOS X            | yes     | yes     | See OS notes
+                   |     
+Operating System   | LOOS Support | PyLOOS Support | Notes
+----------------   | ------------ | -------------- | -----
+Fedora 18          | yes          | yes            | Deprecated
+Fedora 19          | yes          | yes            | Deprecated
+Fedora 20          | yes          | yes            | Deprecated
+Fedora 21          | yes          | yes            | Deprecated
+Fedora 22          | yes          | yes            | Deprecated
+Fedora 23          | yes          | yes            | Deprecated
+Fedora 24          | yes          | yes            | Deprecated
+Fedora 25          | yes          | yes            | Deprecated
+Fedora 26          | yes          | yes            | Deprecated
+Fedora 27          | yes          | yes            | Deprecated
+Fedora 28          | yes          | yes            |
+Fedora 29          | yes          | yes            |
+Ubuntu 12.04 LTS   | yes          | yes            | Deprecated
+Ubuntu 14.04 LTS   | yes          | yes            | Deprecated
+Ubuntu 15.04       | yes          | yes            | Deprecated
+Ubuntu 15.10       | yes          | yes            | Deprecated
+Ubuntu 16.04 LTS   | yes          | yes            | Deprecated
+Ubuntu 18.04       | yes          | yes            |
+Debian 7.8         | yes          | yes            | Deprecated
+Debian 8.1         | yes          | yes            | Deprecated
+Debian 9.8         | yes          | yes            |
+Centos 7           | yes          | yes            |
+OpenSUSE 12        | yes          | yes            | Deprecated
+OpenSUSE 13        | yes          | yes            | Deprecated
+OpenSUSE 15        | yes          | yes            |
+MacOS X            | yes          | yes            | See OS notes
 
 
 * Deprecated: We used to support this configuration, but no longer test it.  It may still work.
@@ -156,14 +156,18 @@ already multithreaded.
 
 ### Documentation
 
-However, if you clone LOOS from GitHub, you will need to either:
+You have 2 options for accessing LOOS documention.  
 
-1. consult the online documentation at http://grossfieldlab.github.io/loos/
+1. consult the online documentation at http://grossfieldlab.github.io/loos/  
+   This is fine if you're not developing new methods for the core library, and if you don't mind needing network access.
 
 2. build a new copy of the documentation.  To do so, you will need to
-   install doxygen and graphviz (available in most package managers).
+   install doxygen and graphviz (available in most package managers).  Then, run
 
-   doxygen
+   `doxygen`
+
+   from the top-level LOOS directory, and look for the results by accessing
+   `Docs/html/index.html`
 
 
 ======
@@ -435,7 +439,7 @@ file.  For example, to control where the Boost include files are
 located, set the BOOST_INCLUDE variable.
 
 You can also control what libraries are linked against by setting the
-appropriate _LIBS variable in your custom.py file.  For example, if
+appropriate `_LIBS` variable in your custom.py file.  For example, if
 your Boost libraries have a naming convention that the LOOS SConstruct
 cannot figure out, you can explicitly set the libraries using the
 BOOST_LIBS variable.  These variables take a space-separated list of
@@ -468,12 +472,8 @@ out the second one.
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
 
-Prebuilt documentation for LOOS is provided as part of the
-distribution.  This is simply copied into the install directory as
-part of installation.  Should you want to build a new version of the
-documentation, Doxygen is required.  Moreover, due to an issue we ran
-into with SCons, documentation building and installation are
-decoupled.  What this means is that you must explicitly build the docs
-(i.e. "scons docs") and -then- install, "scons install".  Running
-"scons install" will -not- rebuild the documentation, even if it out
-of date (or nonexistent).
+We no longer supply pre-built documentation.  You can either use the docs on the [GitHub page](http://grossfieldlab.github.io/loos/), or you can build them yourself.  You'll need to have `doxygen` and `graphviz` installed.  From the main LOOS directory, run
+
+`doxygen`
+
+which will create a new directory `Docs`.  If you open `Docs/html/index.html`, you'll see an updated version of the docs from the GitHub page (including any new functions or methods you might have written).
