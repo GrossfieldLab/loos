@@ -20,8 +20,8 @@ namespace Clustering
 // returns arb. dimension matrix containing its contents
 // Note: assumes matrix is triangular (since similarity scores
 // for clustering must be reflexive...)
-template <typename Derived, typename Numeric>
-Eigen::MatrixBase<Derived>
+template <typename Numeric>
+Eigen::Matrix<Numeric, Eigen::Dynamic, Eigen::Dynamic>
 readMatrixFromStream(std::istream &input,
                      const char commentChar = '#')
 {
@@ -37,7 +37,6 @@ readMatrixFromStream(std::istream &input,
     vector<Numeric> row;
     // process a row here. Should work for whitespace delimited...
     while (streamline >> elt)
-      // if a single line comment char is found, break out to line loop
       row.push_back(elt);
     // push the vector into the matrix buffer.
     matbuff.push_back(row);
@@ -46,7 +45,7 @@ readMatrixFromStream(std::istream &input,
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though mapped eigen matricies are not the same as eigen dense mats.
-  Eigen::MatrixBase<Derived>
+  Eigen::Matrix<Numeric, Eigen::Dynamic, Eigen::Dynamic>
       result(matbuff[0].size(), matbuff.size());
   for (idxT i = 0; i < matbuff.size(); i++)
     for (idxT j = i; j < matbuff[0].size(); j++)
@@ -57,7 +56,7 @@ readMatrixFromStream(std::istream &input,
 // takes a nxd data matrix (where d is the dimensionality of the data),
 // returns an nxn matrix containing pairwise distances
 template <typename Derived, typename DataDerived>
-Eigen::MatrixBase<Derived> pairwiseDists(const Eigen::Ref < const Eigen::PlainObjectBase<DataDerived> &data)
+Eigen::MatrixBase<Derived> pairwiseDists(const Eigen::PlainObjectBase<DataDerived> &data)
 {
   using namespace Eigen;
   const MatrixBase<DataDerived> data_sq = data.rowwise().squaredNorm();
@@ -70,22 +69,22 @@ Eigen::MatrixBase<Derived> pairwiseDists(const Eigen::Ref < const Eigen::PlainOb
   return distances;
 }
 
-// provides a sort index in ASCENDING order. Apply using matrix product
-// <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes>>
-// template <typename Numeric>
-Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>
-sort_permutation(const Eigen::Ref < const Eigen::VectorXd &v)
-{
-  using namespace Eigen;
-  // initialize original index locations
-  PermutationMatrix<Dynamic, Dynamic> p(v.size());
-  p.setIdentity();
-  // sort indexes based on comparing values in v
-  sort(p.indices().data(),
-       p.indices().data() + p.indices().size(),
-       [&v](size_t i1, size_t i2) { return v.data()[i1] < v.data()[i2]; });
-  return p;
-}
+// // provides a sort index in ASCENDING order. Apply using matrix product
+// // <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes>>
+// // template <typename Numeric>
+// Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>
+// sort_permutation(const Eigen::Ref < const Eigen::VectorXd &v)
+// {
+//   using namespace Eigen;
+//   // initialize original index locations
+//   PermutationMatrix<Dynamic, Dynamic> p(v.size());
+//   p.setIdentity();
+//   // sort indexes based on comparing values in v
+//   sort(p.indices().data(),
+//        p.indices().data() + p.indices().size(),
+//        [&v](size_t i1, size_t i2) { return v.data()[i1] < v.data()[i2]; });
+//   return p;
+// }
 // for exemplars defined as having the minimum average distance within cluster
 // Takes a vector of vectors of idxTs which are the cluster indexes, and a
 // corresponding (full) distance matrix Returns a vector of indexes to the
@@ -93,7 +92,7 @@ sort_permutation(const Eigen::Ref < const Eigen::VectorXd &v)
 template <typename Derived>
 std::vector<idxT>
 getExemplars(std::vector<std::vector<idxT>> &clusters,
-             const Eigen::Ref<const Eigen::MatrixBase<Derived>> &distances)
+             const Eigen::MatrixBase<Derived> &distances)
 {
   using namespace Eigen;
   vector<idxT> exemplars(clusters.size());
@@ -108,8 +107,8 @@ getExemplars(std::vector<std::vector<idxT>> &clusters,
       }
     }
     idxT centeridx;
-    clusterDists = clusterDists.selfadjointView<Upper>();
-    clusterDists.colwise().mean().minCoeff(&centeridx);
+    // clusterDists = clusterDists.selfadjointView<Upper>();
+    (clusterDists.template selfadjointView<Upper>()).colwise().mean().minCoeff(&centeridx);
     exemplars[cdx] = clusters[cdx][centeridx];
   }
   return exemplars;

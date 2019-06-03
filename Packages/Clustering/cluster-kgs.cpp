@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
       }
     }
   }
-  Eigen::MatrixXd similarityScores = readMatrixFromStream(cin);
+  Eigen::MatrixXd similarityScores = readMatrixFromStream<double>(cin);
   cout << similarityScores;
   KGS clusterer(similarityScores);
   clusterer.cluster();
