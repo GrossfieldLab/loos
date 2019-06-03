@@ -36,7 +36,8 @@ var hierarchy =
     ] ],
     [ "Action", null, [
       [ "all_contacts.FullHelp", "classall__contacts_1_1_full_help.html", null ],
-      [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ]
+      [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ],
+      [ "packing_score_per_res.FullHelp", "classpacking__score__per__res_1_1_full_help.html", null ]
     ] ],
     [ "loos::OptionsFramework::AggregateOptions", "classloos_1_1_options_framework_1_1_aggregate_options.html", null ],
     [ "loos::AscendingSort< T >", "classloos_1_1_ascending_sort.html", null ],
@@ -286,8 +287,8 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
     [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
+    [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
     [ "OrderPolicy", null, [
       [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
     ] ],

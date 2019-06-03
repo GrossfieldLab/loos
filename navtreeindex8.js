@@ -1,5 +1,7 @@
 var NAVTREEINDEX8 =
 {
+"classloos_1_1_x_form.html#aee7773c248d2379b11e4bd5050741239":[3,0,4,95,12],
+"classloos_1_1_x_t_c.html":[3,0,4,96],
 "classloos_1_1_x_t_c.html#a0094f89966bca368f47da9f08a9371a7":[3,0,4,96,0],
 "classloos_1_1_x_t_c.html#a199db6804c89e6cc61ee0dfb292ce9aa":[3,0,4,96,6],
 "classloos_1_1_x_t_c.html#a34e3ce1cbbc5e09d8a6bc28af2c91e06":[3,0,4,96,7],
@@ -201,6 +203,9 @@ var NAVTREEINDEX8 =
 "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#ae91890fd6a0c4b706723dadb1858ea78":[3,0,4,5,0,2,8],
 "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#aeee4ace445a5585d0c6aa1d9ed6bb04b":[3,0,4,5,0,2,9],
 "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#aeef4c82431c2d5438a0b531363e089a3":[3,0,4,5,0,2,14],
+"classpacking__score__per__res_1_1_full_help.html":[3,0,6,0],
+"classpacking__score__per__res_1_1_full_help.html#a881d3a4a57df501e903386fab08a4ba1":[3,0,6,0,0],
+"classpacking__score__per__res_1_1_full_help.html#ac06152fd25f0ab14a1f486bd06dcdb1f":[3,0,6,0,1],
 "clipper_8cpp_source.html":[4,0,3,8],
 "cluster-structures_8py_source.html":[4,0,1,5,3],
 "common_options.html":[0,8],
@@ -210,8 +215,8 @@ var NAVTREEINDEX8 =
 "contact-time_8cpp_source.html":[4,0,3,10],
 "contacts_8cpp_source.html":[4,0,3,11],
 "contained_8cpp_source.html":[4,0,1,1,3],
-"convergence.html":[0,6,1],
 "convergence.html":[0,16,1],
+"convergence.html":[0,6,1],
 "convert2pdb_8cpp_source.html":[4,0,3,12],
 "coscon_8cpp_source.html":[4,0,1,0,9],
 "coverlap_8cpp_source.html":[4,0,3,13],
@@ -244,10 +249,5 @@ var NAVTREEINDEX8 =
 "dir_7e461070e7b716e896e0d97cd6a82321.html":[4,0,3],
 "dir_b507bc97439bad0de2ae8fa34b1a4a9c.html":[4,0,1,3],
 "dir_c820e93db0c82ea6e4cd9c939036f966.html":[4,0,0],
-"dir_e81010af83d515b5f341f697708659be.html":[4,0,1,0],
-"dir_edc87919f00e4d8d37ae6f690e62b901.html":[4,0,1,4],
-"distance__prob_8cpp_source.html":[4,0,3,20],
-"domain_8py_source.html":[4,0,1,5,7],
-"drifter_8cpp_source.html":[4,0,3,21],
-"dumpmol_8cpp_source.html":[4,0,3,22]
+"dir_e81010af83d515b5f341f697708659be.html":[4,0,1,0]
 };

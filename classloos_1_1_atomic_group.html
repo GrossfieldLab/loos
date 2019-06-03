@@ -423,6 +423,8 @@ pAtom &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memitem:aacc519a01bd492ce9ea169a380e8f113"><td class="memItemLeft" align="right" valign="top"><a id="aacc519a01bd492ce9ea169a380e8f113"></a>
 const pAtom &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (const int i) const</td></tr>
 <tr class="separator:aacc519a01bd492ce9ea169a380e8f113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13d9d6de809de22169bdbfe3facd9395"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a13d9d6de809de22169bdbfe3facd9395">packing_score</a> (const <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &amp;other, const <a class="el" href="classloos_1_1_coord.html">GCoord</a> &amp;box, bool norm) const</td></tr>
+<tr class="separator:a13d9d6de809de22169bdbfe3facd9395"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b6b8769575bff01cf96bd283a32d029"><td class="memItemLeft" align="right" valign="top"><a id="a5b6b8769575bff01cf96bd283a32d029"></a>
 <a class="el" href="classloos_1_1_coord.html">GCoord</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a5b6b8769575bff01cf96bd283a32d029">periodicBox</a> (void) const</td></tr>
 <tr class="memdesc:a5b6b8769575bff01cf96bd283a32d029"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetch the periodic boundary conditions. <br /></td></tr>
@@ -740,7 +742,7 @@ template&lt;class T &gt; </div>
 <p>Translates the group so that the centroid is at the origin. </p>
 <p>Returns the old centroid of the group </p>
 
-<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00351">351</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00370">370</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
 
 </div>
 </div>
@@ -1249,7 +1251,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Returns a vector of coordinates transformed by the passed <a class="el" href="classloos_1_1_x_form.html" title="Matrix class for handling coordinate transforms... ">XForm</a>. </p>
 <p>Does not alter the group's coordinates... </p>
 
-<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00254">254</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00273">273</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
 
 </div>
 </div>
@@ -1338,7 +1340,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Compute kinetic energy of group. </p>
 <p>Assumes mass and velocity have been set. Output units are kcal/mol </p>
 
-<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00241">241</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00260">260</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
 
 </div>
 </div>
@@ -1500,6 +1502,43 @@ template&lt;class EqualsOp &gt; </div>
 
 </div>
 </div>
+<a id="a13d9d6de809de22169bdbfe3facd9395"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13d9d6de809de22169bdbfe3facd9395">&#9670;&nbsp;</a></span>packing_score()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double loos::AtomicGroup::packing_score </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classloos_1_1_coord.html">GCoord</a> &amp;&#160;</td>
+          <td class="paramname"><em>box</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>norm</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The packing score is the sum of 1/r^6 over all pairs of atoms, respecting periodicity. Quantity first defined in Grossfield, A., et al, Proc. Nat. Acad. Sci. USA, 2006, 103, 4888-4893 </p>
+
+<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00185">185</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a6f2e80a4b176ffa3451998b3df917530"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6f2e80a4b176ffa3451998b3df917530">&#9670;&nbsp;</a></span>principalAxes()</h2>
 
@@ -1634,7 +1673,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Compute the RMSD between two groups. </p>
 <p>Sorts both groups (if necessary), then assumes a 1:1 correspondence between ith atoms. </p>
 
-<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00222">222</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00241">241</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
 
 </div>
 </div>
@@ -1725,7 +1764,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Spherical variance of group with respect to target atom. </p>
 <p>spherical variance as a measure of how much atom "target" is inside this atomic group Mezei, J Mol Graph Modeling, 2003, 21, 463-472 </p>
 
-<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00204">204</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_a_g__numerical_8cpp_source.html#l00223">223</a> of file <a class="el" href="_a_g__numerical_8cpp_source.html">AG_numerical.cpp</a>.</p>
 
 </div>
 </div>

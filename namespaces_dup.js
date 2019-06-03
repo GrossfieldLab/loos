@@ -1,5 +1,6 @@
 var namespaces_dup =
 [
+    [ "add_molecules", "namespaceadd__molecules.html", null ],
     [ "all_contacts", "namespaceall__contacts.html", null ],
     [ "area_per_molecule", "namespacearea__per__molecule.html", null ],
     [ "area_profile", "namespacearea__profile.html", null ],
@@ -13,7 +14,9 @@ var namespaces_dup =
     [ "inside_helices", "namespaceinside__helices.html", null ],
     [ "lipid_lifetime", "namespacelipid__lifetime.html", null ],
     [ "loos", "namespaceloos.html", "namespaceloos" ],
+    [ "make_library", "namespacemake__library.html", null ],
     [ "NAMDBin", "namespace_n_a_m_d_bin.html", null ],
+    [ "packing_score_per_res", "namespacepacking__score__per__res.html", null ],
     [ "renum", "namespacerenum.html", null ],
     [ "rmsd_to_average", "namespacermsd__to__average.html", null ],
     [ "run_areas", "namespacerun__areas.html", null ],

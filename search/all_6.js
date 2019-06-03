@@ -31,5 +31,5 @@ var searchData=
   ['frameswritten',['framesWritten',['../classloos_1_1_d_c_d_writer.html#ad96497ef4a41818fc2afa98f1fda2e88',1,'loos::DCDWriter::framesWritten()'],['../classloos_1_1_trajectory_writer.html#a2a3994e065677e4d6eac1e545f2cf480',1,'loos::TrajectoryWriter::framesWritten()'],['../classloos_1_1_x_t_c_writer.html#a427c73faa3fc25858f135c42b8aba8ad',1,'loos::XTCWriter::framesWritten()']]],
   ['free',['free',['../class_e_n_m_1_1_v_s_a.html#a10d1d6362d3f1117f2c62d2ac9d5fa34',1,'ENM::VSA']]],
   ['fromatomicgroup',['fromAtomicGroup',['../classloos_1_1_gromacs.html#abf01a1543ce8149c81c1872c23ae6501',1,'loos::Gromacs::fromAtomicGroup()'],['../classloos_1_1_p_d_b.html#a8d696aa1df07d77d5e1f16a40beff7f6',1,'loos::PDB::fromAtomicGroup()']]],
-  ['fullhelp',['FullHelp',['../classhierarchical-cluster_1_1_full_help.html',1,'hierarchical-cluster.FullHelp'],['../classall__contacts_1_1_full_help.html',1,'all_contacts.FullHelp']]]
+  ['fullhelp',['FullHelp',['../classall__contacts_1_1_full_help.html',1,'all_contacts.FullHelp'],['../classhierarchical-cluster_1_1_full_help.html',1,'hierarchical-cluster.FullHelp'],['../classpacking__score__per__res_1_1_full_help.html',1,'packing_score_per_res.FullHelp']]]
 ];

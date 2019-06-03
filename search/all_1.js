@@ -5,6 +5,7 @@ var searchData=
   ['action',['Action',['../classloos_1_1internal_1_1_action.html',1,'loos::internal']]],
   ['actualsize',['actualSize',['../classloos_1_1_math_1_1_sparse_array.html#abd9538fe1af49509419c76ba1e336859',1,'loos::Math::SparseArray']]],
   ['add',['add',['../classloos_1_1_density_tools_1_1_simple_meta.html#aa3cd16b361ae12998fb2a643d3038019',1,'loos::DensityTools::SimpleMeta::add()'],['../classloos_1_1_options_framework_1_1_aggregate_options.html#a66be876f10c6395c7c56c7728b19b07b',1,'loos::OptionsFramework::AggregateOptions::add()'],['../classloos_1_1_remarks.html#af21f5b38b7baf4b3100cb7e6d9ec95a5',1,'loos::Remarks::add(const std::string s)'],['../classloos_1_1_remarks.html#a2e56fe847edd97beec0febc1d3d4c799',1,'loos::Remarks::add(const std::vector&lt; std::string &gt; &amp;s)'],['../classloos_1_1_unique_strings.html#a33cecdc65114c162f3a0fc88a3921b3c',1,'loos::UniqueStrings::add()']]],
+  ['add_5fmolecules',['add_molecules',['../namespaceadd__molecules.html',1,'']]],
   ['add_5ftraj',['add_traj',['../classloos_1_1_weights.html#af1f962b6b55f873ae4c27d89c5cb2fc2',1,'loos::Weights']]],
   ['addargument',['addArgument',['../classloos_1_1_options_framework_1_1_required_arguments.html#aa4382e73c1e8614059d1a8a1d1707183',1,'loos::OptionsFramework::RequiredArguments']]],
   ['addbond',['addBond',['../classloos_1_1_atom.html#ab2237924f426f57f15ddd75025378014',1,'loos::Atom::addBond(const pAtom &amp;)'],['../classloos_1_1_atom.html#acd0bd483b806d46b78045f1da465b904',1,'loos::Atom::addBond(const int)']]],

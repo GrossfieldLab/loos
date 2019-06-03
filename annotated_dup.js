@@ -11,6 +11,7 @@ var annotated_dup =
     ] ],
     [ "loos", "namespaceloos.html", "namespaceloos" ],
     [ "NAMDBin", "namespace_n_a_m_d_bin.html", "namespace_n_a_m_d_bin" ],
+    [ "packing_score_per_res", "namespacepacking__score__per__res.html", "namespacepacking__score__per__res" ],
     [ "Voronoi", null, [
       [ "Edge", "class_voronoi_1_1_edge.html", "class_voronoi_1_1_edge" ],
       [ "Region", "class_voronoi_1_1_region.html", "class_voronoi_1_1_region" ],

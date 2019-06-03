@@ -87,6 +87,7 @@ var classloos_1_1_atomic_group =
     [ "operator==", "classloos_1_1_atomic_group.html#ac96574981311e2631eeeafdce28dfce3", null ],
     [ "operator[]", "classloos_1_1_atomic_group.html#af5fdbd8588fe478c2b6c69ab6a421400", null ],
     [ "operator[]", "classloos_1_1_atomic_group.html#aacc519a01bd492ce9ea169a380e8f113", null ],
+    [ "packing_score", "classloos_1_1_atomic_group.html#a13d9d6de809de22169bdbfe3facd9395", null ],
     [ "periodicBox", "classloos_1_1_atomic_group.html#a5b6b8769575bff01cf96bd283a32d029", null ],
     [ "periodicBox", "classloos_1_1_atomic_group.html#aeb9eab6e6bae0c319d8534b0f0cc3215", null ],
     [ "periodicBox", "classloos_1_1_atomic_group.html#a94e9fc4b412353e46cd78a390494c221", null ],

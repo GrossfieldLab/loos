@@ -5,6 +5,7 @@ var files_dup =
     [ "src", "dir_68267d1309a1af8e8297ef4c3efbcdba.html", "dir_68267d1309a1af8e8297ef4c3efbcdba" ],
     [ "Tools", "dir_7e461070e7b716e896e0d97cd6a82321.html", "dir_7e461070e7b716e896e0d97cd6a82321" ],
     [ "custom.py", "custom_8py_source.html", null ],
+    [ "fullhelper.py", "fullhelper_8py_source.html", null ],
     [ "loos_build_config.py", "loos__build__config_8py_source.html", null ],
     [ "scons_support.py", "scons__support_8py_source.html", null ]
 ];
