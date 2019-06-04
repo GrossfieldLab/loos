@@ -28,7 +28,6 @@ We are phasing out the mailing lists as support mechanisms; if you were previous
       -  <a href="http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf">Download a tutorial (pdf) on using LOOS</a>
       -  Ask the developers a question at loos.maintainer@gmail.com or by opening an issue on GitHub.
       - \subpage building "Building LOOS"
-          - \ref building_pyloos "Building PyLOOS, the Python Interface to LOOS"
       - \subpage tools "Tools included with LOOS"
       - \subpage selections "Selection Language"
       - \subpage common_options "Common Options for Tools"
@@ -593,6 +592,9 @@ the rest of the trajectory.
 }
 
 /*! \page building Building LOOS
+
+The best source of information on building LOOS is <A href="https://github.com/GrossfieldLab/loos/blob/master/INSTALL.md">INSTALL.md</A>, found in the top level directory of the LOOS distribution.  It includes detailed instructions for building LOOS on various Linux distributions and OSX, as well as using Conda.
+
 \section basicbuild Building Basics
 LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A>
 and the <A href="http://boost.org" target="_blank">Boost (1.36+)</A>
@@ -664,9 +666,6 @@ to <TT>custom.py</TT> and then uncomment and edit the appropriate
 lines.  Note that variables set on the command-line or environment
 will have priority over what's in your <TT>custom.py</TT> file.
 
-
-More complete build information, along with platform specific notes,
-can be found in the INSTALL file included with LOOS.
 
 \subsection install Installing
 
