@@ -21,7 +21,7 @@ namespace Clustering
 // Note: assumes matrix is triangular (since similarity scores
 // for clustering must be reflexive...)
 template <typename Numeric>
-Eigen::Matrix<Numeric, Eigen::Dynamic, Eigen::Dynamic>
+Eigen::Matrix<Numeric, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
 readMatrixFromStream(std::istream &input,
                      const char commentChar = '#')
 {
@@ -45,7 +45,7 @@ readMatrixFromStream(std::istream &input,
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though mapped eigen matricies are not the same as eigen dense mats.
-  Eigen::Matrix<Numeric, Eigen::Dynamic, Eigen::Dynamic>
+  Eigen::Matrix<Numeric, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
       result(matbuff[0].size(), matbuff.size());
   for (idxT i = 0; i < matbuff.size(); i++)
     for (idxT j = i; j < matbuff[0].size(); j++)
@@ -98,7 +98,8 @@ getExemplars(std::vector<std::vector<idxT>> &clusters,
   vector<idxT> exemplars(clusters.size());
   for (idxT cdx = 0; cdx < clusters.size(); cdx++)
   {
-    MatrixBase<Derived> clusterDists(clusters[cdx].size(), clusters[cdx].size());
+    Derived clusterDists;
+    clusterDists = MatrixBase<Derived>::Zero(clusters[cdx].size(), clusters[cdx].size());
     for (idxT i = 0; i < clusters[cdx].size(); i++)
     {
       for (idxT j = 0; j < i; j++)
@@ -107,8 +108,8 @@ getExemplars(std::vector<std::vector<idxT>> &clusters,
       }
     }
     idxT centeridx;
-    // clusterDists = clusterDists.selfadjointView<Upper>();
-    (clusterDists.template selfadjointView<Upper>()).colwise().mean().minCoeff(&centeridx);
+    clusterDists = clusterDists.template selfadjointView<Upper>();
+    clusterDists.colwise().mean().minCoeff(&centeridx);
     exemplars[cdx] = clusters[cdx][centeridx];
   }
   return exemplars;

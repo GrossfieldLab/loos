@@ -20,35 +20,31 @@ const std::string helpstr = "XXX";
 const std::string indent = "  ";
 int main(int argc, char* argv[])
 {
-  if (argc < 2) {
-    cout << helpstr << endl;
-    exit(0);
-  } else {
-    for (int i = 0; i < argc; i++) {
-      if (argv[i] == "-h" || argv[i] == "--help") {
-        cout << helpstr << endl;
-        exit(0);
-      }
+  for (int i = 0; i < argc; i++) {
+    if (argv[i] == "-h" || argv[i] == "--help") {
+      cout << helpstr << endl;
+      exit(0);
     }
   }
+  
   Eigen::MatrixXd similarityScores = readMatrixFromStream<double>(cin);
-  cout << similarityScores;
   KGS clusterer(similarityScores);
+  cout << similarityScores;
   clusterer.cluster();
-  idxT optStg = clusterer.cutoff();
-  vector<idxT> exemplars =
-    getExemplars(clusterer.clusterTraj[optStg], clusterer.refDists);
+  // idxT optStg = clusterer.cutoff();
+  // // vector<idxT> exemplars =
+  // //   getExemplars(clusterer.clusterTraj[optStg], similarityScores);
   // // below here is output stuff. All quantities of interest have been obtained.
   cout << "{";
-  cout << indent + "\"optimal stage\": " << optStg << "," << endl;
+  // cout << indent + "\"optimal stage\": " << optStg << "," << endl;
   cout << indent + "\"penalties\": ";
   containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
   cout << "," << endl;
   cout << indent + "\"clusters\": ";
-  vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");
-  cout << "," << endl;
-  cout << indent + "\"exemplars\": ";
-  containerAsJSONArr<vector<idxT>>(exemplars, cout, "  ");
-  cout << endl;
+  // vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");
+  // cout << "," << endl;
+  // cout << indent + "\"exemplars\": ";
+  // // containerAsJSONArr<vector<idxT>>(exemplars, cout, "  ");
+  // // cout << endl;
   cout << "}";
 }

@@ -70,7 +70,7 @@ void KGS::penalty()
     }
     // spreads(minRow) = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
     // remove spreads[minCol]
-    removeRow<VectorXd>(spreads, minCol);
+    removeRow(spreads, minCol);
     if (minCol < minRow)
       spreads(minRow - 1) = 2 * (2 * (normSpA + normSpB) + sumCrossDists) / (sizeAB * (sizeAB - 1));
     else
@@ -91,7 +91,7 @@ void KGS::penalty()
     }
     // spreads(minCol) = 2*(2*(normSpA + normSpB) + sumCrossDists)/(sizeAB*(sizeAB-1));
     // remove spreads[minRow]
-    removeRow<VectorXd>(spreads, minRow);
+    removeRow(spreads, minRow);
     if (minRow < minCol)
       spreads(minCol - 1) = 2 * (2 * (normSpA + normSpB) + sumCrossDists) / (sizeAB * (sizeAB - 1));
     else
