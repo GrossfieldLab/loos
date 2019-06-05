@@ -264,10 +264,10 @@ string fullHelpMessage(void)
 "the intracellular one.\n"
 "\n"
 "The 3 postcenter options are intended for cases where the selection you're \n"
-"centering is in many pieces (e.g. a lipid membrane). Most of the time, it \n";
-"shouldn't be needed, but if the system drifts a lot in z you can end up \n";
-"with the bilayer centered about one of the z-image boundaries, and in that\n";
-"case you may need some combination of --postcenter or --postcenter-z and \n";
+"centering is in many pieces (e.g. a lipid membrane). Most of the time, it \n"
+"shouldn't be needed, but if the system drifts a lot in z you can end up \n"
+"with the bilayer centered about one of the z-image boundaries, and in that\n"
+"case you may need some combination of --postcenter or --postcenter-z and \n"
 "--selection-is-split.  The trick in that case is to use different selections\n"
 "for centering and postcentering, e.g. a single lipid molecule for the initial\n"
 "centering (which will ensure the bilayer is now largely intact), followed \n"
