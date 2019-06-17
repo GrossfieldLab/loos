@@ -50,16 +50,10 @@ for segment in config.segments:
 
 
 # copy the protein coordinates into the system
-if config.protein is not None:
-    # set up the rotations -- all protein segments need the same rotation
-    x_axis = loos.GCoord(1., 0., 0.)
-    y_axis = loos.GCoord(0., 1., 0.)
-    z_axis = loos.GCoord(0., 0., 1.)
-
-    # Random rotation around x,y,z-axes
-    x_rot = random.uniform(0., 360.)
-    y_rot = random.uniform(0., 360.)
-    z_rot = random.uniform(0., 360.)
+if (config.protein is not None):
+    # create AtomicGroup containing all protein segments in case
+    # we want to rotate it
+    to_rot = loos.AtomicGroup()
 
     for s in config.protein.segments:
         current_seg = s[0].segid()
@@ -67,10 +61,15 @@ if config.protein is not None:
         # already know this segment exists
         seg = loos.selectAtoms(system, 'segname == "' + current_seg + '"')
         seg.copyMappedCoordinatesFrom(s)
-        if config.protrot:
-            seg.rotate(x_axis, x_rot)
-            seg.rotate(y_axis, y_rot)
-            seg.rotate(z_axis, z_rot)
+        to_rot.append(seg)
+
+    # if we asked for rotation, rotate all segments together
+    # about a random axis
+    if config.protrot:
+        axis = loos.GCoord()
+        axis.random()
+        rot = random.uniform(0., 360.)
+        to_rot.rotate(axis, rot)
 
 
 sys.stderr.write("Beginning water box construction\n")
