@@ -199,6 +199,8 @@ location of BOOST
 Alternatively, you can also copy custom.py-proto to custom.py, and uncomment
 then edit the  lines describing BOOST's location (particularly BOOST_LIB).
 
+We have also seen some macs where it may be necessary to separately install boost to get the build to work.  After installing it (eg in /opt/boost_1_62_0), you can then set BOOST='/opt/boost_1_62_0' either on the command line or in custom.py.  
+
 ### Documentation
 
 To build the documentation, you will also require doxygen and graphviz,
