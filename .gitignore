@@ -58,6 +58,11 @@ GTAGS
 # JSON files
 .*.json
 
+# latex cruft
+*.aux
+*.out
+*.toc
+
 ###EXES
 
 Tools/rms-overlap
