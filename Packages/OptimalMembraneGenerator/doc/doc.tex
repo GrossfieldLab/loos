@@ -40,41 +40,40 @@ Dr. Alan Grossfield: alan\_grossfield@urmc.rochester.edu \\
 \label{s:intro}
 
 Welcome to the {\bf O}ptimal {\bf M}embrane {\bf G}enerator {\bf w}ith {\bf
-t}emplate {\bf f}iles (\omgwtf, for short), the \loos\ membrane building
-tool.  The goal of this suite is to facilitate the construction of complex
-systems containing lipid bilayers and integral membrane proteins.  The
-approach used here merges two previously found in the literature: the
-``library of conformations'' approach pushed by Grossfield et al. (PNAS,
+t}emplate {\bf f}iles (\omgwtf, for short), the \loos\ membrane building tool.
+The goal of this suite is to facilitate the construction of complex systems
+containing lipid bilayers and integral membrane proteins, as well as soluble
+systems (using solvate.py).  The approach used here merges two previously found in the literature:
+the ``library of conformations'' approach pushed by Grossfield et al. (PNAS,
 2006, 103, 4888-4893) and the INFLATEGRO strategy developed by Tieleman and
-others.  The basic algorithm is to start with libraries of previously
-generated conformations for the lipids used (generally, one uses neat
-simulations to make the libraries, but one can use model building as well
-to create an initial library), and pack them around the ``protein'', in
-any.  The system's periodic box is initially scaled to 3x its original size in
-the plane of the membrane (the normal is always set parallel to the
-$z$-axis), allowing the lipids to be randomly placed with relatively few
-collisions.  We start by placing the protein (if any) at the origin.
-Treating the two leaflets independently, we sequentially add lipids by
-picking a conformation from the library, randomly placing it in the
-appropriate leaflet and checking for collisions with previously placed
-lipids.  This continues until all of the lipids are placed.  Next, the
-system is subjected to a series of energy minimizations, each followed by a
-small scaling of the positions of the molecules in the plane of the
-membrane, gradually shrinking the membrane down to its target size.
+others.  The basic algorithm is to start with libraries of previously generated
+conformations for the lipids used (generally, one uses neat simulations to make
+the libraries, but one can use model building as well to create an initial
+library), and pack them around the ``protein'', in any.  The system's periodic
+box is initially scaled to 3x its original size in the plane of the membrane
+(the normal is always set parallel to the $z$-axis), allowing the lipids to be
+randomly placed with relatively few collisions.  We start by placing the protein
+(if any) at the origin. Treating the two leaflets independently, we sequentially
+add lipids by picking a conformation from the library, randomly placing it in
+the appropriate leaflet and checking for collisions with previously placed
+lipids.  This continues until all of the lipids are placed.  Next, the system is
+subjected to a series of energy minimizations, each followed by a small scaling
+of the positions of the molecules in the plane of the membrane, gradually
+shrinking the membrane down to its target size.
 
 \omgwtf\ supports the creation of arbitrarily complex membrane compositions,
 including mixtures of lipids and asymmetric bilayers.  The user simply
 creates a configuration file that specifies the segments to be included and
 which leaflet they should be found in, as well as the number of ions and
-water molecules.  
+water molecules.
 
 \section{Requirements and Installation}
 \label{s:install}
 
-To use the membrane builder, one must first have a working \loos\
-installation, with \pyloos\ working.  If you have not downloaded \loos\
-yet, you can download it from \url{http://loos.sourceforge.net}, and follow
-the instructions included there for building.  
+To use the membrane builder, one must first have a working \loos\ installation,
+with \pyloos\ working.  If you have not downloaded \loos\ yet, you can download
+it from \url{https://github.com/GrossfieldLab/loos}, and follow the instructions
+included there for building.
 
 You'll also need to make sure your paths are set up correctly, so that python
 can find the correct files.  The \loos\ and \pyloos\ parts of this are best
@@ -87,7 +86,8 @@ You will need a set of lipid template files.  These are sets of
 lipid conformations, each in the its own coordinate file, which are used in
 the construction of new lipid membranes.  We provide a preliminary set for
 some of the more common lipids as a separate download, available from
-\url{http://sourceforge.net/projects/loos/files/loos\%20material/lipid_library.tgz/download}.   Section \ref{s:library} describes 
+\url{http://membrane.urmc.rochester.edu/sites/default/files/lipid_library.tgz}.
+  Section \ref{s:library} describes
 how you could go about making your own library of lipid conformations.
 
 Finally, you will need a working \namd\ install, including \namd\ itself and
@@ -105,7 +105,7 @@ nothing is specified).  Everything that is needed, including the location of
 the topology and parameter files, the box size, the number of each lipid
 type, and the location of the structure libraries are all declared here.
 
-We assume that lipids are laid out in the 1 residue/lipid format 
+We assume that lipids are laid out in the 1 residue/lipid format
 used in the CHARMM36 parameter files, as opposed to the earlier 3
 residue/lipid (chain-headgroup-chain) format often used with CHARMM27.
 Furthermore, we adopt the convention that each lipid type in each leaflet
@@ -139,7 +139,9 @@ begin production calculations, presumably in the NPT ensemble.  However, we
 suggest running a short ($<10$ ns) run in the NPAT (constant area) ensemble
 first; depending on how many waters need to be deleted to get to the target
 value, the density in the bulk region can be a bit low, and NPAT can be a
-bit more stable when adjusting the overall volume.  
+bit more stable when adjusting the overall volume.
+
+Building a non-membrane system works much the same way, except instead of running {\omgwtf} you run {\bf solvate.py}
 
 \subsection{Format of the configuration file}
 \label{ss:config}
@@ -152,23 +154,23 @@ Unrecognized keys will generate a warning but will not cause an error.
 The following keys are used:
 
 \begin{itemize}
-    \item {\bf topology filename}: {\bf filename} is the path to the 
+    \item {\bf topology filename}: {\bf filename} is the path to the
                                     \namd-style topology file.
                                     \highlight{REQUIRED}
-    \item {\bf parameters filename}: {\bf filename} is the path to the 
-                                    \namd-style parameter file. 
+    \item {\bf parameters filename}: {\bf filename} is the path to the
+                                    \namd-style parameter file.
                                     \highlight{REQUIRED}
-    \item {\bf psf filename}:  {\bf filename} is the path to the \namd-style 
-                               psf file that will be generated by \omgwtf.  
+    \item {\bf psf filename}:  {\bf filename} is the path to the \namd-style
+                               psf file that will be generated by \omgwtf.
                                Typically given as a raw filename without a
                                path. \highlight{REQUIRED}
-    \item {\bf segment segname resname num-lip phos-pos phos-name placement library}: 
+    \item {\bf segment segname resname num-lip phos-pos phos-name placement library}:
           \begin{itemize}
              \item {\bf segname} is the name of the segment
              \item {\bf resname} is the residue name of the lipid, e.g. POPC
              \item {\bf num-lip} is the number of lipids in this segment
              \item {\bf phos-pos} is the average distance of the phosphorus
-             atom (or whatever atom is used for centering) from the membrane center 
+             atom (or whatever atom is used for centering) from the membrane center
              \item {\bf phos-name} is the atom used to place the lipid; the
                  obvious choice is ``P'', for the phosphorus, but you
                  could use a different interfacial atom to place molecules
@@ -196,7 +198,7 @@ The following keys are used:
              the {\bf coords} keyword (presumed to be a cube)
              \item {\bf coords} is a file of coordinates for a
              pre-equilibrated box of water, which will be tesselated to
-             create a box of the appropriate size.  This could be a PDB file or 
+             create a box of the appropriate size.  This could be a PDB file or
              a CHARMM-style CRD file ({\tt water\_small.crd} is included in the
              distribution).  Probably any file format supported by
              \loos\ would work here, but only those have been tested.
@@ -222,7 +224,7 @@ The following keys are used:
             want, and can contain as many molecules as you want (e.g. a
             protein plus ligand and palmitoylation sites).  If you don't
             have a water segment, use ``NONE'' or some non-existent
-            segmentname for the water segment.  
+            segmentname for the water segment.
 
             \item {\bf psf-file} is a \namd-style psf file to create the
             protein.  This will be used to make the other psf files needed
@@ -232,7 +234,7 @@ The following keys are used:
             but near the end of construction they will become part of the
             segid specified in the {\bf water} line above.  If you have no
             water segment, put ``NONE''.
-            
+
             \item{\bf scale-by-molecule} determines whether the molecules
                 specified by protein get scaled outward in x and y the way
                 lipids do.  If you're working with a protein, you probably
@@ -252,6 +254,10 @@ The following keys are used:
 
 \end{itemize}
 
+For a soluble system, you'd use {\bf solvate.py}, but the basic options are the same.  You wouldn't have any {\bf segment} lines, since those specify lipids.  In addition, there's one more option avaiable:
+
+{\bf protrot VALUE}: setting this option applies a random rotation to the protein, to ensure that each time the calculation is run, you get a different solvation set up.  {\bf VALUE} should be any non-zero value.
+
 \subsection{Examples}
 \label{ss:examples}
 
@@ -265,15 +271,18 @@ otherwise they should work for you out of the box.
 
 To run one of these examples, cd into the appropriate directory (e.g. {\tt
 example/popc}), and run the {\omgwtf} giving the config file on the command
-line.  For example, the POPC example below would be run as ``{\tt
-../../OptimalMembraneGenerator.py popc.cfg test}''; this would run the
+line.  For example, the POPC example below would be run as
+
+{\tt
+../../OptimalMembraneGenerator.py popc.cfg test}''
+
+This would run the
 {\omgwtf} and put the output in the directory {\tt test}.  On my computer,
 the examples take about 10 minutes to run (your mileage may vary).
 
 Note: if you haven't downloaded a lipid library yet, now would be a really
 good time to do so.  You can get one from
-\url{http://sourceforge.net/projects/loos/files/loos\%20material/lipid_library.tgz/download}.
- 
+\url{http://membrane.urmc.rochester.edu/sites/default/files/lipid_library.tgz}.
 
 
 \subsubsection{Pure POPC bilayer}
@@ -377,14 +386,14 @@ $x$ and $y$ coordinates are generated randomly within a box 3 times larger
 than the final system target size, while the $z$ position of the phosphorus
 is set to be the phosphorus height set in the config file, $\pm 0.5 \AA$
 generated randomly; if the lipid is targeted to the lower leaflet, then this
-value is negated.  
+value is negated.
 
 Before the new lipid placement is accepted, we perform a series of bump
 checks, first against the protein (if one was specified in the config file),
 then against previously placed lipids; the configuration is rejected its
 placement creates at least 3 collisions (defined as a pair of atoms within 3
 {\AA} of each other).  Once all lipids have been placed, we write out a PDB
-file of the ``scaled'' coordinates, called ``lipid\_only.pdb''.  
+file of the ``scaled'' coordinates, called ``lipid\_only.pdb''.
 
 Next, we perform a series of scalings and minimizations.  First, the center
 of mass of each individual molecule is scaled downward in the $xy$ plane.
@@ -428,6 +437,30 @@ psfgen script that will generate the full PSF file for the system, called
 ``generate\_full\_psf.inp'', and run it for you, creating a PSF with the
 output name you specified in the config file.
 
+\section{Adding small molecules to a protein simulation}
+
+If you need to add a bunch of small molecules to a simulation (e.g. ligand molecules that you want to allow to bind to a protein), you can use the {\bf add\_molecules.py} tool to do it.  It uses the same kind of library-based approach as the rest of the {\omgwtf}, although there is no config file. Instead, it takes command line options only.
+
+The mandatory command line options are:
+
+{\tt add\_molecules.py num\_ligands box\_size library\_location output\_pdb}
+
+where:
+\begin{itemize}
+    \item {\bf num\_ligands}: number of ligand molecules to add
+    \item {\bf box\_size}: size of cubic box, in {\AA}
+    \item {\bf library\_location}: directory where the molecule library is found
+    \item {\bf output\_pdb}: resulting pdb file
+\end{itemize}
+
+Additionally, there are a number of options one can specify:
+\begin{itemize}
+    \item {\bf protein}: coordinate file for your protein (can be anything)
+    \item {\bf no\_center}: do not center the protein coordinates at the origin
+    \item {\bf zbox}: set the z-dimension of the box, if different from xy
+    \item {\bf z\_exclude}: don't place molecules within this distance of $z=0$
+\end{itemize}
+
 \section{Lipid Template Files}
 \label{s:library}
 
@@ -438,7 +471,7 @@ real liquid crystalline membrane --- the less equilibration will be required
 before the resulting simulation data is useful.  For this reason, the
 templates distributed here are the result of extensive simulations, some
 performed with applied tension such that the area/lipid and $^2$H NMR order
-parameters match up with experiment.  
+parameters match up with experiment.
 
 \subsection{Templates included in the distribution}
 \label{ss:included}
@@ -475,6 +508,10 @@ the origin and the headgroups pointing in the $+z$ direction.  Other than
 these translations, the coordinates should be exactly as extracted from the
 simulations, so that the correct overall tilt is retained, and there is no
 imposed orientation (e.g. the glycerol backbone isn't aligned along the
-$x$-axis).  
+$x$-axis).
+
+To make the process of building a lipid simpler, we provide {\bf
+make\_library.py}.  This takes a lipid simulation, extracts the lipids, and
+writes each lipid from each trajectory snapshot into its own numbered pdb file.
 
 \end{document}

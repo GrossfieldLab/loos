@@ -1,34 +1,34 @@
 # Operating System Compatibility
 
-                   | LOOS    | PyLOOS  |
-Operating System   | Support | Support | Notes
-----------------   | ------- | ------- | -----
-Fedora 18          | yes     | yes     | Deprecated
-Fedora 19          | yes     | yes     | Deprecated
-Fedora 20          | yes     | yes     | Deprecated
-Fedora 21          | yes     | yes     | Deprecated
-Fedora 22          | yes     | yes     | Deprecated
-Fedora 23          | yes     | yes     | Deprecated
-Fedora 24          | yes     | yes     | Deprecated
-Fedora 25          | yes     | yes     | Deprecated
-Fedora 26          | yes     | yes     | Deprecated
-Fedora 27          | yes     | yes     | Deprecated
-Fedora 28          | yes     | yes     |
-Fedora 29          | yes     | yes     |
-Ubuntu 12.04 LTS   | yes     | yes     | Deprecated
-Ubuntu 14.04 LTS   | yes     | yes     | Deprecated
-Ubuntu 15.04       | yes     | yes     | Deprecated
-Ubuntu 15.10       | yes     | yes     | Deprecated
-Ubuntu 16.04 LTS   | yes     | yes     | Deprecated
-Ubuntu 18.04       | yes     | yes     |
-Debian 7.8         | yes     | yes     | Deprecated
-Debian 8.1         | yes     | yes     | Deprecated
-Debian 9.8         | yes     | yes     |
-Centos 7           | yes     | no      | No python 3
-OpenSUSE 12        | yes     | yes     | Deprecated
-OpenSUSE 13        | yes     | yes     | Deprecated
-OpenSUSE 15        | yes     | yes     |
-MacOS X            | yes     | yes     | See OS notes
+                   |     
+Operating System   | LOOS Support | PyLOOS Support | Notes
+----------------   | ------------ | -------------- | -----
+Fedora 18          | yes          | yes            | Deprecated
+Fedora 19          | yes          | yes            | Deprecated
+Fedora 20          | yes          | yes            | Deprecated
+Fedora 21          | yes          | yes            | Deprecated
+Fedora 22          | yes          | yes            | Deprecated
+Fedora 23          | yes          | yes            | Deprecated
+Fedora 24          | yes          | yes            | Deprecated
+Fedora 25          | yes          | yes            | Deprecated
+Fedora 26          | yes          | yes            | Deprecated
+Fedora 27          | yes          | yes            | Deprecated
+Fedora 28          | yes          | yes            |
+Fedora 29          | yes          | yes            |
+Ubuntu 12.04 LTS   | yes          | yes            | Deprecated
+Ubuntu 14.04 LTS   | yes          | yes            | Deprecated
+Ubuntu 15.04       | yes          | yes            | Deprecated
+Ubuntu 15.10       | yes          | yes            | Deprecated
+Ubuntu 16.04 LTS   | yes          | yes            | Deprecated
+Ubuntu 18.04       | yes          | yes            |
+Debian 7.8         | yes          | yes            | Deprecated
+Debian 8.1         | yes          | yes            | Deprecated
+Debian 9.8         | yes          | yes            |
+Centos 7           | yes          | yes            |
+OpenSUSE 12        | yes          | yes            | Deprecated
+OpenSUSE 13        | yes          | yes            | Deprecated
+OpenSUSE 15        | yes          | yes            |
+MacOS X            | yes          | yes            | See OS notes
 
 
 * Deprecated: We used to support this configuration, but no longer test it.  It may still work.
@@ -156,14 +156,18 @@ already multithreaded.
 
 ### Documentation
 
-However, if you clone LOOS from GitHub, you will need to either:
+You have 2 options for accessing LOOS documention.  
 
-1. consult the online documentation at http://grossfieldlab.github.io/loos/
+1. consult the online documentation at http://grossfieldlab.github.io/loos/  
+   This is fine if you're not developing new methods for the core library, and if you don't mind needing network access.
 
 2. build a new copy of the documentation.  To do so, you will need to
-   install doxygen and graphviz (available in most package managers).
+   install doxygen and graphviz (available in most package managers).  Then, run
 
-   doxygen
+   `doxygen`
+
+   from the top-level LOOS directory, and look for the results by accessing
+   `Docs/html/index.html`
 
 
 ======
@@ -181,6 +185,21 @@ need to say
 Then, run the newly installed scons to build LOOS
 
     $CONDA_PREFIX/bin/scons
+
+It is possible that the build can fail with errors saying there are missing
+references to some of the boost libraries (e.g. program_options); this generally
+occurs when scons gets confused by the presence of more than one BOOST install
+on the system.  If this occurs, clean out the build and rebuild specifying the
+location of BOOST
+
+    $CONDA_PREFIX/bin/scons -c
+    $CONDA_PREFIX/bin/scons -c config
+    $CONDA_PREFIX/bin/scons  BOOST=/path/to/boost/installed/by/conda
+
+Alternatively, you can also copy custom.py-proto to custom.py, and uncomment
+then edit the  lines describing BOOST's location (particularly BOOST_LIB).
+
+We have also seen some macs where it may be necessary to separately install boost to get the build to work.  After installing it (eg in /opt/boost_1_62_0), you can then set BOOST='/opt/boost_1_62_0' either on the command line or in custom.py.  
 
 ### Documentation
 
@@ -204,6 +223,7 @@ LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
 and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
 python3 packages for numpy and scipy, you can either install them manually or
 use conda.
+
 ### Documentation
 
 To build the documentation, you will also require doxygen and graphviz,
@@ -213,30 +233,24 @@ To build the documentation, you will also require doxygen and graphviz,
 
 ---
 
-## CentOS
+## CentOS 7
 
-LOOS has been tested with CentOS 6 and 7 (64 bit).  You will need to use the EPEL repo
-first,
+You'll need the epel repository in order to get python3 versions of numpy and scipy:
 
-    sudo yum install epel-release
+    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-Then install the packages,
+Then install the packages
 
-    sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python-devel swig numpy scipy
+    sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
+
+
+Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (the comments will say which value is correct for CentOS).
 
 ### Documentation
 
 To build the documentation, also install:
    sudo yum install doxygen graphviz
    doxygen
-
-
-### PyLOOS
-
-CentOS 6: Yum install python-devel and pcre-devel, then download
-  and install the latest swig.  The version of swig available through
-  the package manager is too old.
-
 
 ---
 
@@ -249,8 +263,9 @@ Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (ve
 ### Documentation
 
 To build the documentation:
-   sudo apt-get install doxygen graphviz
-   doxygen
+
+     sudo apt-get install doxygen graphviz
+     doxygen
 
 ---
 
@@ -273,6 +288,7 @@ in order to build LOOS.
 ### Documentation
 
 To build the documentation:
+
     sudo zypper install doxygen graphviz
     doxygen
 
@@ -304,7 +320,9 @@ this to run SCons and PyLOOS.  Here again, you have two options: build
 and install SCons using that Python, or use the local Python to invoke
 the existing SCons.  The latter can be done with the following command
 line:
+
        /path/to/my/own/python `which scons`
+
 Simply putting the new Python in your PATH will not work because SCons
 "sanitizes" the PATH before running.  You will also need to be sure to
 invoke your PyLOOS scripts with your new local Python.
@@ -319,6 +337,7 @@ Two articles about managing SIP status are:
 https://developer.apple.com/library/mac/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html
 
 http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-protection-in-el-capitan.html
+
 
 
 #### Use virtualenv
@@ -385,37 +404,14 @@ We have seen several instances where LOOS would not build due to
 multiple versions of BOOST being installed.  The configuration part of
 the build seems to mix components from the different versions
 installed.  If your build exits due to errors, verify that you are in
-fact using only the BOOST install and libraries you intend (or removed
-the excess versions)
+fact using only the BOOST install and libraries you intend by examining config.log (or consider removing the excess versions)
 
 
 ---
 
-## Windows/Cygwin (Unsupported)
+## Windows (Unsupported)
 
-You will need to install libboost-devel and liblapack-devel along with
-the g++ compiler using the cygwin setup.exe program.  (Note: if loos
-still does not build, try installing the additional lapack and boost
-packages).  There is no atlas package that we could find for cygwin,
-so the native lapack/blas will be used instead.
-
-There is no scons install option from setup.exe, so you need to
-manually download the latest scons distribution from
-http://www.scons.org/download.php (the gzip tar file) and install it.
-
-There is an issue with SCons under cygwin where you must first build
-LOOS and -then- install it, i.e.
-    scons
-    scons PREFIX=/path/to/install/loos install
-
-[Optional]
-To include support for Amber/NetCDF trajectory files, install the
-libnetcdf-devel library using the cygwin setup.exe installer.
-
-
-### PyLOOS
-
-Cygwin is NOT SUPPORTED
+For Windows 10, your best bet is to use one of the linux subsystems that are installable from Microsoft (e.g. Ubuntu or Debian), then follow the instructions for that linux distribution.  We have anecodotal evidence that this works, but it isn't a supported environment.
 
 ## Manjaro (Unsupported)
 
@@ -445,7 +441,7 @@ file.  For example, to control where the Boost include files are
 located, set the BOOST_INCLUDE variable.
 
 You can also control what libraries are linked against by setting the
-appropriate _LIBS variable in your custom.py file.  For example, if
+appropriate `_LIBS` variable in your custom.py file.  For example, if
 your Boost libraries have a naming convention that the LOOS SConstruct
 cannot figure out, you can explicitly set the libraries using the
 BOOST_LIBS variable.  These variables take a space-separated list of
@@ -478,12 +474,8 @@ out the second one.
 SCons supports building LOOS in parallel.  If you have 4 cores, for
 example, use "scons -j4" to use all 4 cores.
 
-Prebuilt documentation for LOOS is provided as part of the
-distribution.  This is simply copied into the install directory as
-part of installation.  Should you want to build a new version of the
-documentation, Doxygen is required.  Moreover, due to an issue we ran
-into with SCons, documentation building and installation are
-decoupled.  What this means is that you must explicitly build the docs
-(i.e. "scons docs") and -then- install, "scons install".  Running
-"scons install" will -not- rebuild the documentation, even if it out
-of date (or nonexistent).
+We no longer supply pre-built documentation.  You can either use the docs on the [GitHub page](http://grossfieldlab.github.io/loos/), or you can build them yourself.  You'll need to have `doxygen` and `graphviz` installed.  From the main LOOS directory, run
+
+`doxygen`
+
+which will create a new directory `Docs`.  If you open `Docs/html/index.html`, you'll see an updated version of the docs from the GitHub page (including any new functions or methods you might have written).

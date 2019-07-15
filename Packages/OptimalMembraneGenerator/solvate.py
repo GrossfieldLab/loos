@@ -50,13 +50,26 @@ for segment in config.segments:
 
 
 # copy the protein coordinates into the system
-if config.protein is not None:
+if (config.protein is not None):
+    # create AtomicGroup containing all protein segments in case
+    # we want to rotate it
+    to_rot = loos.AtomicGroup()
+
     for s in config.protein.segments:
         current_seg = s[0].segid()
         # Don't need to trap failed selection here, because we
         # already know this segment exists
         seg = loos.selectAtoms(system, 'segname == "' + current_seg + '"')
         seg.copyMappedCoordinatesFrom(s)
+        to_rot.append(seg)
+
+    # if we asked for rotation, rotate all segments together
+    # about a random axis
+    if config.protrot:
+        axis = loos.GCoord()
+        axis.random()
+        rot = random.uniform(0., 360.)
+        to_rot.rotate(axis, rot)
 
 
 sys.stderr.write("Beginning water box construction\n")
@@ -139,6 +152,7 @@ for salt in config.salt:
         a = loos.Atom()
         a.resname(salt.resname)
         a.segid(salt.segname)
+        a.name(salt.atomname)
         a.resid(i+1)
 
         # pick a water oxygen at random, replace it with salt

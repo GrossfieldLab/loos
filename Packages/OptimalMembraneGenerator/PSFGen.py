@@ -142,6 +142,7 @@ class ReadConfig:
         self.water = None
         self.salt = []
         self.protein = None
+        self.protrot = None
 
         self.topology = []
         self.parameters = []
@@ -181,6 +182,9 @@ class ReadConfig:
                 self.salt.append(s)
             elif line.upper().startswith("PROTEIN"):
                 self.protein = Protein(line)
+            elif line.upper().startswith("PROTROT"):
+                (r, protrot) = line.split()
+                self.protrot = int(protrot)
             elif line.upper().startswith("BOX"):
                 (b, x, y, z) = line.split()
                 x = float(x)
