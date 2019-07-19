@@ -393,6 +393,8 @@ if __name__ == '__main__':
         water.full_system.copyCoordinatesFrom(config.protein.water_seg(),
                                               0,
                                               len(config.protein.water_seg()))
+        internal_water = loos.selectAtoms(system, 'segid == "' + config.protein.water_segname + '"')
+        system.remove(internal_water)
 
     sys.stderr.write("Assembling final system and writing out coordinates\n")
     # append water and salt to the full system
