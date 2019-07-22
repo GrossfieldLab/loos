@@ -590,6 +590,11 @@ sub buildStructure {
       croak "$name [$type] has no atoms";
     }
 
+    if (!exists($segment->{NATOMS})) {
+	warn "Warning: Missing atom count in topology so inferring number of atoms in segment $name";
+	$segment->{NATOMS} = $#{$mol->{ATOMS}} + 1;
+    }
+    
     my $residues = $mol->{RESIDUES};
     my $charges = $mol->{CHARGES};
 
@@ -898,6 +903,7 @@ sub build_bond_prefix_regex {
 
   return($reg);
 }
+
 
 
 sub showHelp {
