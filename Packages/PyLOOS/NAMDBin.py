@@ -19,7 +19,7 @@ class NAMDBin:
         self.endian_signal = ">"  # supply a default value
         # NAMD stores velocities in weird unit, this converts
         # to Ang/ps
-        self.PDBVELFACTOR=20.45482706
+        self.PDBVELFACTOR = 20.45482706
 
     def set_little_endian(self):
         self.endian_signal = "<"  # supply a default value
@@ -27,7 +27,7 @@ class NAMDBin:
     def set_big_endian(self):
         self.endian_signal = ">"  # supply a default value
 
-    def readVals(self, velocities = False):
+    def readVals(self, velocities=False):
         """
         Read the binary format.  Determine endian-ness by
         verifying the number of atoms (the first thing read)
@@ -50,15 +50,15 @@ class NAMDBin:
                 raise ValueError("Number of atoms doesn't match supplied model")
 
             for i in range(num_atoms_model):
-                x,y,z = struct.unpack(self.endian_signal + 'ddd', f.read(24) )
-                c = loos.GCoord(x,y,z)
+                x, y, z = struct.unpack(self.endian_signal + 'ddd', f.read(24))
+                c = loos.GCoord(x, y, z)
                 if velocities:
                     c *= self.PDBVELFACTOR
                     self.atomicGroup[i].velocities(c)
                 else:
                     self.atomicGroup[i].coords(c)
 
-    def writeVals(self, filename, velocities = False):
+    def writeVals(self, filename, velocities=False):
         """
         Write a binary coordinate/velocity file, using the
         same endian-ness as our input.
@@ -71,7 +71,8 @@ class NAMDBin:
                     c = self.atomicGroup[i].velocities() / self.PDBVELFACTOR
                 else:
                     c = self.atomicGroup[i].coords()
-                bs = struct.pack(self.endian_signal + 'ddd', c.x(), c.y(), c.z())
+                bs = struct.pack(self.endian_signal + 'ddd',
+                                 c.x(), c.y(), c.z())
                 f.write(bs)
 
 
