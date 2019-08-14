@@ -592,7 +592,11 @@ namespace loos {
       } else if (map.count("weights-list")) {
         has_weights = true;
         weights.read_weights_list(list_name);
+      } else
+      {
+        has_weights = false;
       }
+
       return true;
     }
 

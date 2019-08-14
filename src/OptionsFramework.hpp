@@ -833,7 +833,7 @@ namespace loos {
 
     class WeightsOptions : public OptionsPackage {
     public:
-      WeightsOptions() { }
+      WeightsOptions(): has_weights(false) { }
 
       std::string weights_name;
       std::string list_name;
