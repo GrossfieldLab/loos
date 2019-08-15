@@ -11,9 +11,9 @@ namespace Clustering
 class AverageLinkage : public HAC
 {
 public:
-  AverageLinkage(const Eigen::Ref<Eigen::MatrixXd> &e) : HAC(e) {}
+  AverageLinkage(const Eigen::Ref<Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic>> &e) : HAC(e) {}
   // this should be a terminal definition
-  Eigen::RowVectorXd dist(idxT idxA, idxT idxB);
+  Eigen::Matrix<dtype, 1, Eigen::Dynamic> dist(idxT idxA, idxT idxB);
 };
 } // namespace Clustering
 #endif

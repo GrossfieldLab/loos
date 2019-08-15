@@ -12,18 +12,18 @@ class HAC
 {
   // no private data, since this class exists to provide inheritance.
 public:
-  HAC(const Eigen::Ref<Eigen::MatrixXd> &e) : clusterDists(e.selfadjointView<Eigen::Upper>()),
+  HAC(const Eigen::Ref<Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic>> &e) : clusterDists(e.selfadjointView<Eigen::Upper>()),
                                               eltCount{e.cols()},
                                               distOfMerge(e.cols()) {}
 
-  Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> clusterDists;
+  Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> clusterDists;
 
   /// holds total number of elements to be clustered (and thus number of steps)
   idxT eltCount;
 
   // record a trajectory of the clustering so that you can write dendrograms or similar if desired.
   // These will all be of length matching clustering steps (Nelts-1)
-  Eigen::VectorXd distOfMerge;
+  Eigen::Matrix<dtype, Eigen::Dynamic, 1> distOfMerge;
   // These members change each step.
   // these will store the indexes of the coefficients sought.
   idxT minRow, minCol, stage;
@@ -43,8 +43,9 @@ public:
   // Run through the clustering cycle, populating the 'trajectory' vectors.
   void cluster();
 
-  // need to fill this in for each type of clustering.
-  virtual Eigen::RowVectorXd dist(idxT A, idxT B)=0;
+  // need to fill this in for each type of clustering. 
+  // Equivalent to Eigen::RowVectorXx where x is typedtype 
+  virtual Eigen::Matrix<dtype, 1, Eigen::Dynamic> dist(idxT A, idxT B)=0;
   // define a penalty function to score each level of the hierarchy.
   virtual void penalty()=0;
 };

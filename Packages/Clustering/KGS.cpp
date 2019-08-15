@@ -12,16 +12,16 @@ namespace Clustering
 // call this to search for a cutoff stage in clustering.
 idxT KGS::cutoff()
 {
-  double min = avgSpread.minCoeff();
-  double max = avgSpread.maxCoeff();
-  double norm = (eltCount - 2) / (max - min);
+  dtype min = avgSpread.minCoeff();
+  dtype max = avgSpread.maxCoeff();
+  dtype norm = (eltCount - 2) / (max - min);
 #ifdef DEBUG
   cout << "penalties:" << endl
        << penalties << endl;
   cout << "avgSpreads:  " << endl
        << avgSpread << endl;
 #endif
-  VectorXd normAvSp = (norm * (avgSpread.array() - min) + 1).matrix();
+  Matrix<dtype, Eigen::Dynamic, 1> normAvSp = (norm * (avgSpread.array() - min) + 1).matrix();
 #ifdef DEBUG
   cout << "normalized avgSpreads:" << endl
        << normAvSp << endl;
@@ -49,9 +49,9 @@ void KGS::penalty()
   cout << "sizeA:  " << sizeA << endl;
   cout << "sizeB:  " << sizeB << endl;
 #endif
-  double normSpA{0};
-  double normSpB{0};
-  double sumCrossDists = sizeA * sizeB * distOfMerge(stage);
+  dtype normSpA{0};
+  dtype normSpB{0};
+  dtype sumCrossDists = sizeA * sizeB * distOfMerge(stage);
   // spread of A will be sum of distances of elts in a divided by (N*(N-1)/2)
   // This is for both A and B, hence two goes to the numerator of their sum.
   // nClusters goes up to record addition of one merged (nontrivial cluster)

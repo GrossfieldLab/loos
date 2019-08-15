@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     }
   }
   
-  Eigen::MatrixXd similarityScores = readMatrixFromStream<float>(cin);
+  Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic> similarityScores = readMatrixFromStream<dtype>(cin);
   KGS clusterer(similarityScores);
   cout << similarityScores;
   clusterer.cluster();
@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
   cout << "{";
   cout << indent + "\"optimal stage\": " << optStg << "," << endl;
   cout << indent + "\"penalties\": ";
-  containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
+  containerAsOneLineJSONArr<Eigen::Matrix<dtype, Eigen::Dynamic, 1>>(clusterer.penalties, cout);
   cout << "," << endl;
   cout << indent + "\"clusters\": ";
   vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");

@@ -8,16 +8,16 @@ namespace Clustering
 class KGS : public AverageLinkage
 {
 public:
-  KGS(const Eigen::Ref<Eigen::MatrixXd> &e) : AverageLinkage(e),
+  KGS(const Eigen::Ref<Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic>> &e) : AverageLinkage(e),
                                               penalties(e.rows() - 1),
                                               avgSpread(e.rows() - 1),
                                               currentClusterCount{0} {}
 
   // compute penalties for each step
-  Eigen::VectorXd penalties; // = VectorXd::Zero(eltCount-1);
+  Eigen::Matrix<dtype, Eigen::Dynamic, 1> penalties; // = VectorXd::Zero(eltCount-1);
 
   // need to track the average spread at each stage of the clustering.
-  Eigen::VectorXd avgSpread;
+  Eigen::Matrix<dtype, Eigen::Dynamic, 1> avgSpread;
 
   // need to track the number of NONTRIVIAL clusters at each stage
   // => nClusters != currStg.size() except in cases where all
@@ -29,7 +29,7 @@ public:
 
 private:
   // this will change per round of clustering
-  Eigen::VectorXd spreads;
+  Eigen::Matrix<dtype, Eigen::Dynamic, 1> spreads;
   void penalty();
 };
 } // namespace Clustering

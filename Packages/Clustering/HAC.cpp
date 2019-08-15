@@ -62,18 +62,18 @@ void HAC::cluster()
   clusterTraj.push_back(recordCurrStg);
 
   // Get the max value to make the diagonal never the minCoeff (see distOfMerge[stage] below)
-  num maxDist = clusterDists.maxCoeff() + 1;
+  dtype maxDist = clusterDists.maxCoeff() + 1;
   for (stage = 1; stage < eltCount; stage++)
   {
 #ifdef DEBUG
     cout << "stage:  " << stage << endl;
 #endif
     // bind the minimum distance found for dendrogram construction
-    distOfMerge(stage) = (clusterDists + maxDist * MatrixXd::Identity(
+    distOfMerge(stage) = (clusterDists + maxDist * Matrix<dtype, Dynamic, Dynamic>::Identity(
                                                        clusterDists.rows(), clusterDists.rows()))
                              .minCoeff(&minRow, &minCol);
     // build merged row. Must happen before clusterTraj merge is performed.
-    VectorXd mergedRow = dist(minRow, minCol);
+    Matrix<dtype, Dynamic, 1> mergedRow = dist(minRow, minCol);
     // merge the clusters into whichever of the two is larger. Erase the other.
     merged = merge();
 #ifdef DEBUG
