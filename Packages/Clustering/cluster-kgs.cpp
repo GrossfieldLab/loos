@@ -27,24 +27,24 @@ int main(int argc, char* argv[])
     }
   }
   
-  Eigen::MatrixXd similarityScores = readMatrixFromStream<double>(cin);
+  Eigen::MatrixXd similarityScores = readMatrixFromStream<float>(cin);
   KGS clusterer(similarityScores);
   cout << similarityScores;
   clusterer.cluster();
-  // idxT optStg = clusterer.cutoff();
-  // // vector<idxT> exemplars =
-  // //   getExemplars(clusterer.clusterTraj[optStg], similarityScores);
-  // // below here is output stuff. All quantities of interest have been obtained.
+  idxT optStg = clusterer.cutoff();
+  vector<idxT> exemplars =
+    getExemplars(clusterer.clusterTraj[optStg], similarityScores);
+  // below here is output stuff. All quantities of interest have been obtained.
   cout << "{";
-  // cout << indent + "\"optimal stage\": " << optStg << "," << endl;
+  cout << indent + "\"optimal stage\": " << optStg << "," << endl;
   cout << indent + "\"penalties\": ";
   containerAsOneLineJSONArr<Eigen::VectorXd>(clusterer.penalties, cout);
   cout << "," << endl;
   cout << indent + "\"clusters\": ";
-  // vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");
-  // cout << "," << endl;
-  // cout << indent + "\"exemplars\": ";
-  // // containerAsJSONArr<vector<idxT>>(exemplars, cout, "  ");
-  // // cout << endl;
+  vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");
+  cout << "," << endl;
+  cout << indent + "\"exemplars\": ";
+  containerAsJSONArr<vector<idxT>>(exemplars, cout, "  ");
+  cout << endl;
   cout << "}";
 }

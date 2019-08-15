@@ -2,4 +2,5 @@
 
 namespace Clustering {
   typedef Eigen::Index idxT;
+  typedef float num;
 }

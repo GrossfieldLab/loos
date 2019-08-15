@@ -62,7 +62,7 @@ void HAC::cluster()
   clusterTraj.push_back(recordCurrStg);
 
   // Get the max value to make the diagonal never the minCoeff (see distOfMerge[stage] below)
-  double maxDist = clusterDists.maxCoeff() + 1;
+  num maxDist = clusterDists.maxCoeff() + 1;
   for (stage = 1; stage < eltCount; stage++)
   {
 #ifdef DEBUG
