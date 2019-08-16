@@ -69,22 +69,22 @@ Eigen::MatrixBase<Derived> pairwiseDists(const Eigen::PlainObjectBase<DataDerive
   return distances;
 }
 
-// // provides a sort index in ASCENDING order. Apply using matrix product
-// // <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes>>
-// // template <typename Numeric>
-// Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>
-// sort_permutation(const Eigen::Ref < const Eigen::VectorXd &v)
-// {
-//   using namespace Eigen;
-//   // initialize original index locations
-//   PermutationMatrix<Dynamic, Dynamic> p(v.size());
-//   p.setIdentity();
-//   // sort indexes based on comparing values in v
-//   sort(p.indices().data(),
-//        p.indices().data() + p.indices().size(),
-//        [&v](size_t i1, size_t i2) { return v.data()[i1] < v.data()[i2]; });
-//   return p;
-// }
+// provides a sort index in ASCENDING order. Apply using matrix product
+// <https://stackoverflow.com/questions/1577475/c-sorting-and-keeping-track-of-indexes>>
+template <typename Derived>
+Eigen::PermutationMatrix<Eigen::Dynamic, Eigen::Dynamic>
+sort_permutation(const Eigen::PlainObjectBase<Derived> &v)
+{
+  using namespace Eigen;
+  // initialize original index locations
+  PermutationMatrix<Dynamic, Dynamic> p(v.size());
+  p.setIdentity();
+  // sort indexes based on comparing values in v
+  sort(p.indices().data(),
+       p.indices().data() + p.indices().size(),
+       [&v](size_t i1, size_t i2) { return v.data()[i1] < v.data()[i2]; });
+  return p;
+}
 // for exemplars defined as having the minimum average distance within cluster
 // Takes a vector of vectors of idxTs which are the cluster indexes, and a
 // corresponding (full) distance matrix Returns a vector of indexes to the

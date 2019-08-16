@@ -9,8 +9,8 @@
 #include <iostream>
 #include <string>
 
-using std::cout;
 using std::cin;
+using std::cout;
 using std::endl;
 using std::vector;
 
@@ -18,22 +18,24 @@ using namespace Clustering;
 
 const std::string helpstr = "XXX";
 const std::string indent = "  ";
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-  for (int i = 0; i < argc; i++) {
-    if (argv[i] == "-h" || argv[i] == "--help") {
+  for (int i = 0; i < argc; i++)
+  {
+    if (argv[i] == "-h" || argv[i] == "--help")
+    {
       cout << helpstr << endl;
       exit(0);
     }
   }
-  
+
   Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic> similarityScores = readMatrixFromStream<dtype>(cin);
   KGS clusterer(similarityScores);
   cout << similarityScores;
   clusterer.cluster();
   idxT optStg = clusterer.cutoff();
   vector<idxT> exemplars =
-    getExemplars(clusterer.clusterTraj[optStg], similarityScores);
+      getExemplars(clusterer.clusterTraj[optStg], similarityScores);
   // below here is output stuff. All quantities of interest have been obtained.
   cout << "{";
   cout << indent + "\"optimal stage\": " << optStg << "," << endl;
