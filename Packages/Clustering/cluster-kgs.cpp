@@ -37,16 +37,16 @@ int main(int argc, char *argv[])
   vector<idxT> exemplars =
       getExemplars(clusterer.clusterTraj[optStg], similarityScores);
   // below here is output stuff. All quantities of interest have been obtained.
-  cout << "{";
-  cout << indent + "\"optimal stage\": " << optStg << "," << endl;
+  cout << "{\n";
+  cout << indent + "\"optimal stage\": " << optStg << ",\n";
   cout << indent + "\"penalties\": ";
-  containerAsOneLineJSONArr<Eigen::Matrix<dtype, Eigen::Dynamic, 1>>(clusterer.penalties, cout);
-  cout << "," << endl;
+  containerAsJSONArr<Eigen::Matrix<dtype, Eigen::Dynamic, 1>>(clusterer.penalties, cout);
+  cout << ",\n";
   cout << indent + "\"clusters\": ";
   vectorVectorsAsJSONArr<idxT>((clusterer.clusterTraj)[optStg], cout, "  ");
-  cout << "," << endl;
+  cout << ",\n";
   cout << indent + "\"exemplars\": ";
   containerAsJSONArr<vector<idxT>>(exemplars, cout, "  ");
-  cout << endl;
-  cout << "}";
+  cout << "\n";
+  cout << "}" << endl;
 }

@@ -6,7 +6,6 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
-using std::endl;
 using std::istream;
 using std::ostream;
 using std::sort;
@@ -151,17 +150,26 @@ void vectorVectorsAsJSONArr(std::vector<std::vector<Numeric>> &clusters,
                             std::ostream &out, const std::string &indent = "  ",
                             const std::string &offset = "  ")
 {
-  out << offset + "[" << endl;
-  for (idxT i = 0; i < clusters.size(); i++)
+  out << offset + "[\n";
+  idxT lastCluster = clusters.size() - 1;
+  idxT lastIndex;
+  for (idxT i = 0; i < lastCluster; i++)
   {
     out << offset + indent + "[";
-    idxT lastIndex = (clusters[i]).size() - 1;
+    lastIndex = (clusters[i]).size() - 1;
     for (idxT j = 0; j < lastIndex; j++)
     {
       out << clusters[i][j] << ",";
     }
-    out << clusters[i][lastIndex] << "]," << endl;
+    out << clusters[i][lastIndex] << "],\n";
   }
+  out << offset + indent + "[";
+  lastIndex = (clusters[lastCluster]).size() - 1;
+  for (idxT j = 0; j < lastIndex; j++)
+  {
+    out << clusters[lastCluster][j] << ",";
+  }
+  out << clusters[lastCluster][lastIndex] << "]\n";
   out << offset + "]";
 }
 
@@ -172,13 +180,14 @@ void containerAsJSONArr(ForLoopable &container, std::ostream &out,
                         const std::string &indent = "  ",
                         const std::string &offset = "  ")
 {
-  out << "[" << endl;
+  out << "[\n";
   idxT lastIndex = container.size() - 1;
   for (idxT i = 0; i < lastIndex; i++)
   {
-    out << offset + indent << container[i] << "," << endl;
+    out << offset + indent << container[i] << ",\n";
   }
-  out << offset << container[lastIndex] << "]";
+  out << offset + indent << container[lastIndex] << "\n";
+  out << offset << "]";
 }
 
 // write iterable containter to JSON arr on one line.
