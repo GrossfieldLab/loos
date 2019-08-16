@@ -9,9 +9,9 @@ class KGS : public AverageLinkage
 {
 public:
   KGS(const Eigen::Ref<Eigen::Matrix<dtype, Eigen::Dynamic, Eigen::Dynamic>> &e) : AverageLinkage(e),
-                                              penalties(e.rows() - 1),
-                                              avgSpread(e.rows() - 1),
-                                              currentClusterCount{0} {}
+                                                                                   penalties(e.rows() - 1),
+                                                                                   avgSpread(e.rows() - 1),
+                                                                                   currentClusterCount{0} {}
 
   // compute penalties for each step
   Eigen::Matrix<dtype, Eigen::Dynamic, 1> penalties; // = VectorXd::Zero(eltCount-1);
@@ -29,7 +29,7 @@ public:
 
 private:
   // this will change per round of clustering
-  Eigen::Matrix<dtype, Eigen::Dynamic, 1> spreads;
+  Eigen::Matrix<dtype, Eigen::Dynamic, 1> spreads = Eigen::Matrix<dtype, Eigen::Dynamic, 1>::Zero(eltCount);
   void penalty();
 };
 } // namespace Clustering
