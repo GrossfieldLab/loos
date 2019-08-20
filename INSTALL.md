@@ -15,6 +15,7 @@ Fedora 26          | yes          | yes            | Deprecated
 Fedora 27          | yes          | yes            | Deprecated
 Fedora 28          | yes          | yes            |
 Fedora 29          | yes          | yes            |
+Fedora 30          | yes          | yes            |
 Ubuntu 12.04 LTS   | yes          | yes            | Deprecated
 Ubuntu 14.04 LTS   | yes          | yes            | Deprecated
 Ubuntu 15.04       | yes          | yes            | Deprecated
