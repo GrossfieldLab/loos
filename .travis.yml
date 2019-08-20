@@ -24,6 +24,7 @@ addons:
      - python-numpy
      - doxygen
      - graphviz
+     - scons
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
@@ -33,7 +34,5 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install graphviz; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install scons; fi
-  
-script: scons
 
-  
+script: scons
