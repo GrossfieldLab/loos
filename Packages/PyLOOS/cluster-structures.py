@@ -107,6 +107,9 @@ idx, dists = vq(data, centroids)
 #         May want to output for determining
 #         number of clusters in system
 
+subset = allTrajs.frame()
+dists *= 1.0
+dists /= len(subset)
 
 # Write out the meta-data file
 print("# Means\tDistortion: ")
@@ -116,13 +119,28 @@ print("# Trajectory list:")
 for i in range(len(args.traj)):
     print('# %5d = "%s"' % (i, args.traj[i]))
 
-print('#\n# %8s %16s %8s %8s' % ('Index', 'Trajectory', 'Frame', 'Cluster'))
-print('# %8s %16s %8s %8s' %
-      ('--------', '----------------', '--------', '--------'))
+print('#\n# %8s %16s %8s %8s %8s' %
+      ('Index', 'Trajectory', 'Frame', 'Cluster', 'Distance'))
+print('# %8s %16s %8s %8s %8s' %
+      ('--------', '----------------', '--------', '--------', '--------'))
+
+minima = numpy.full_like(numpy.arange(args.num_means),
+                         1.e10,
+                         dtype=numpy.float)
+minima_indices = numpy.zeros([args.num_means], dtype=numpy.int)
 
 for i in range(len(idx)):
     loc = allTrajs.frameLocation(i)
-    print('%10d %16d %8d %8d' % (i, loc[1], loc[3], idx[i]))
+    if (dists[i] < minima[idx[i]]):
+        minima[idx[i]] = dists[i]
+        minima_indices[idx[i]] = i
+    print('%10d %16d %8d %8d %8f' % (i, loc[1], loc[3], idx[i], dists[i]))
+
+print("\n#  Mediods")
+print('# %8s %10s     %8s' % ("Cluster", "Index", "Distance"))
+print('# %8s %10s     %8s' % ("-------", "-----", "--------"))
+for i in range(args.num_means):
+    print("# %8d %10d     %8f" % (i, minima_indices[i], minima[i]))
 
 
 # Output centroids
