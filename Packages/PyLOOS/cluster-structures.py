@@ -136,7 +136,7 @@ for i in range(len(idx)):
         minima_indices[idx[i]] = i
     print('%10d %16d %8d %8d %8f' % (i, loc[1], loc[3], idx[i], dists[i]))
 
-print("\n#  Mediods")
+print("\n#  Closest structure to each centroid")
 print('# %8s %10s     %8s' % ("Cluster", "Index", "Distance"))
 print('# %8s %10s     %8s' % ("-------", "-----", "--------"))
 for i in range(args.num_means):
