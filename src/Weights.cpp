@@ -113,21 +113,28 @@ namespace loos {
     //! Add trajectory to class and verify size match with existing Weights
     void Weights::add_traj(pTraj& traj) {
         _traj = traj;
-        // If we have a list of weights files, read the correct one
-        // TODO: need to check to make sure the filename is in the map
-        if (_has_list) {
-            _filename = _weights_files[_traj->filename()];
+        // If filename has not been set, set _weights to noWeight functionality
+        if (_filename.size() < 1){
+            _num_weights = 0; // can use Weights::size() to determine if in noWeights mode.
+            _weights = Weights::noWeights();
         }
-        _num_weights = read_weights(_filename);
-        // # of weights must match number of frames in the associated traj
-        if (_num_weights != _traj->nframes()) {
-            throw(LOOSError(std::string("Number of weights must match the length of the trajectory")));
-
-        // Zero out the weight of the trajectory
-        _totalTraj = 0.0;
+        else {
+            // If we have a list of weights files, read the correct one
+            // TODO: need to check to make sure the filename is in the map
+            if (_has_list) {
+                _filename = _weights_files[_traj->filename()];
+            }
+            _num_weights = read_weights(_filename);
+            // # of weights must match number of frames in the associated traj
+            if (_num_weights != _traj->nframes()) {
+                throw(LOOSError(std::string("Number of weights must match the length of the trajectory")));
+            }
+            // Zero out the weight of the trajectory
+            _totalTraj = 0.0;
         }
     }
 
+    
 
     //! Return the weight for the current frame of the trajectory
     const double Weights::get() {
@@ -154,8 +161,32 @@ namespace loos {
         return _num_weights;
     }
 
+    //! implement size method for noWeights subclass 
+    //! so that we can 'test' for it in call to  Weights::weights()
+    const int Weights::noWeights::size(){
+        return -1;
+    }
+
+
     //! Return the vector of weights
+    //! if class has been running as noWeights, 
+    //! generate appropriate length vector of 1.0s.
     std::vector<double> Weights::weights() {
+        if (_weights.size() < 0){
+            _weights = std::vector<double> temp(_num_weights, 1.0);
+        }
         return _weights;
     }
+
+    //! if index referenced, return 1.0
+    const double Weights::noWeights::operator[const uint index]{
+        return 1.0;
+    }
+
+    //! if .at is used, return 1.0
+    const double Weights:noWeights::at(const uint index){
+        return 1.0;
+    }
+
+
 }

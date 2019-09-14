@@ -37,7 +37,7 @@ namespace loos {
         uint current_frame;
     private:
         double _total;
-        std::string _filename;
+        std::string _filename ="";
         bool _has_list;
 
     public:
@@ -63,6 +63,12 @@ namespace loos {
         std::vector<double> _weights;
         std::map<std::string, std::string> _weights_files;
         double _totalTraj;
+        class noWeights {
+            public:
+                const double operator[const uint index];
+                const double at(const uint index);
+                const int size();
+        };
 
     public:
         Weights(const std::string &filename, pTraj& traj ):
