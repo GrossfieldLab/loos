@@ -173,7 +173,8 @@ namespace loos {
     //! generate appropriate length vector of 1.0s.
     std::vector<double> Weights::weights() {
         if (_weights.size() < 0){
-            _weights = std::vector<double> temp(_num_weights, 1.0);
+            std::vector<double> uniform_weights(_num_weights, 1.0);
+            _weights = uniform_weights;
         }
         return _weights;
     }
@@ -184,7 +185,7 @@ namespace loos {
     }
 
     //! if .at is used, return 1.0
-    const double Weights:noWeights::at(const uint index){
+    const double Weights::noWeights::at(const uint index){
         return 1.0;
     }
 
