@@ -65,7 +65,7 @@ namespace loos {
         double _totalTraj;
         class noWeights {
             public:
-                const double operator[const uint index];
+                const double operator[](const uint index);
                 const double at(const uint index);
                 const int size();
         };

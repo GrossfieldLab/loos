@@ -179,7 +179,7 @@ namespace loos {
     }
 
     //! if index referenced, return 1.0
-    const double Weights::noWeights::operator[const uint index]{
+    const double Weights::noWeights::operator[](const uint index){
         return 1.0;
     }
 
