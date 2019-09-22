@@ -81,3 +81,4 @@ namespace loos {
 %include "gro.i"
 %include "utils_structural.i"
 %include "Weights.i"
+%include "ChainState.i"

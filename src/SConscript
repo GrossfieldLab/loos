@@ -41,6 +41,7 @@ apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision
 apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.cpp alignment.cpp MultiTraj.cpp'
 apps = apps + ' index_range_parser.cpp'
 apps = apps + ' Weights.cpp'
+apps = apps + ' ChainState.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
