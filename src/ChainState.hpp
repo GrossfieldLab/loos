@@ -27,6 +27,8 @@
 
 namespace loos {
 
+typedef std::vector<uint> StateVector;
+
 class ChainState {
 public:
 
@@ -38,17 +40,21 @@ ChainState(const uint segs, const uint bins) : _num_segs(segs),
     _bin_width = 2.0 / _num_bins;
 }
 
+//! Compute the state of the chain and store it
 void computeChainState(const AtomicGroup &group,
                        const GCoord &normal,
-                       std::vector<uint> &segs);
-double getStateProb(const std::vector<uint> &segs);
+                       StateVector &segs);
+
+
+//! Return the probability of the state specified by segs
+double getStateProb(const StateVector &segs);
 
 private:
     uint _num_segs;
     uint _num_bins;
     double _bin_width;
-    std::map<std::vector<uint>, uint> _state_counts;
-    uint _counts;
+    boost::unordered_map<StateVector, uint> state_counts;
+    uint counts;
 
 };
 

@@ -28,7 +28,7 @@ namespace loos {
 
     void ChainState::computeChainState(const AtomicGroup &group,
                                        const GCoord &normal,
-                                       std::vector<uint> &segs) {
+                                       StateVector &segs) {
         for (uint i=0; i< _num_segs-1; ++i) {
             loos::GCoord vec = group[i]->coords() - group[i+1]->coords();
             double cosine = vec*normal/vec.length();
@@ -36,13 +36,13 @@ namespace loos {
         }
 
         // Store the state of this chain
-        _state_counts[segs]++;
-        _counts++;
+        state_counts[segs] += 1.0;
+        counts++;
     }
 
-    double ChainState::getStateProb(const std::vector<uint> &segs) {
-        if (_state_counts.count(segs)) {
-            return static_cast<double>(_state_counts[segs])/_counts;
+    double ChainState::getStateProb(const StateVector &segs) {
+        if (state_counts.count(segs)) {
+            return static_cast<double>(state_counts[segs])/counts;
         }
         else {
             return 0.0;
