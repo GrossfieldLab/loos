@@ -41,7 +41,7 @@ namespace loos {
         }
 
         // Store the state of this chain
-        state_counts[segs] += 1.0;
+        state_counts[segs] += 1;
         counts++;
     }
 
@@ -69,4 +69,15 @@ namespace loos {
         return(state_set);
     }
 
+    double ChainState::entropy() {
+        double ent = 0.0;
+        for (std::map<StateVector, uint>::iterator s = state_counts.begin();
+                                                  s!= state_counts.end();
+                                                  ++s)
+                {
+                double prob = static_cast<double>(s->second) / num_counts();
+                ent -= prob * log(prob);
+                }
+        return ent;
+    }
 }

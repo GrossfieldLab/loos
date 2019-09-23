@@ -80,6 +80,8 @@ int main(int argc, char *argv[]) {
     std::set<std::pair<StateVector, uint>, Comparator > all_freqs =
             states.getAllProbs();
 
+    cout << "# num_counts = " << states.num_counts() << endl;
+    cout << "# Entropy = " << states.entropy() << endl;
     cout << "# Prob\tState" << endl;
     for (std::set<std::pair<StateVector, uint>, Comparator >::iterator
             p = all_freqs.begin();

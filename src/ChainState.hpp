@@ -36,7 +36,8 @@ public:
 ChainState() { }
 
 ChainState(const uint segs, const uint bins) : _num_segs(segs),
-                                               _num_bins(bins)
+                                               _num_bins(bins),
+                                               counts(0)
                                                {
     _bin_width = 2.0 / _num_bins;
     compareStateProbs =
@@ -60,6 +61,9 @@ double getStateProb(const StateVector &segs);
 
 //! Return all state probabilities
 std::set<std::pair<StateVector, uint>, Comparator > getAllProbs();
+
+//! compute Shannon entropy from the state distribution
+double entropy();
 
 //! Number of entries in the histogram
 uint num_counts() {
