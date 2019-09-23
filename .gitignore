@@ -42,6 +42,7 @@ GTAGS
 # JSON files used for atom
 .*.json
 .clang_complete
+.stdafx.c++.pch
 
 # cruft from vscode
 .vscode
