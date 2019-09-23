@@ -40,6 +40,12 @@ namespace loos {
         counts++;
     }
 
+    void ChainState::computeChainState(const AtomicGroup &group,
+                                      const GCoord &normal) {
+    StateVector segs = StateVector(_num_segs);
+    computeChainState(group, normal, segs);
+    }
+
     double ChainState::getStateProb(const StateVector &segs) {
         if (state_counts.count(segs)) {
             return static_cast<double>(state_counts[segs])/counts;
@@ -49,5 +55,13 @@ namespace loos {
         }
     }
 
+    std::set<std::pair<StateVector, uint>, Comparator > ChainState::getAllProbs() {
+        // Copy the elements of the map into a set
+        std::set<std::pair<StateVector, uint>, Comparator >
+            state_set(state_counts.begin(),
+                      state_counts.end(),
+                      compareStateProbs);
+        return(state_set);
+    }
 
 }

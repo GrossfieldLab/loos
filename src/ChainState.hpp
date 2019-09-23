@@ -28,33 +28,47 @@
 namespace loos {
 
 typedef std::vector<uint> StateVector;
+typedef std::function<bool(std::pair<StateVector, uint>, std::pair<StateVector, uint>)> Comparator;
 
 class ChainState {
 public:
 
-ChainState() {}
+ChainState() { }
 
 ChainState(const uint segs, const uint bins) : _num_segs(segs),
                                                _num_bins(bins)
                                                {
     _bin_width = 2.0 / _num_bins;
+    compareStateProbs =
+                [](std::pair<StateVector, uint> elem1,
+                   std::pair<StateVector, uint> elem2)
+                {
+                return elem1.second > elem2.second;
+                };
 }
 
 //! Compute the state of the chain and store it
 void computeChainState(const AtomicGroup &group,
                        const GCoord &normal,
                        StateVector &segs);
+void computeChainState(const AtomicGroup &group,
+                       const GCoord &normal);
 
 
 //! Return the probability of the state specified by segs
 double getStateProb(const StateVector &segs);
 
+//! Return all state probabilities
+std::set<std::pair<StateVector, uint>, Comparator > getAllProbs();
+
 private:
     uint _num_segs;
     uint _num_bins;
     double _bin_width;
-    boost::unordered_map<StateVector, uint> state_counts;
+    //boost::unordered_map<StateVector, uint> state_counts;
+    std::map<StateVector, uint> state_counts;
     uint counts;
+    Comparator compareStateProbs;
 
 };
 

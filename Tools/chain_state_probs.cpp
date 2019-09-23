@@ -57,6 +57,34 @@ int main(int argc, char *argv[]) {
             }
         }
 
-    cout << chains.size() << endl;
+    GCoord normal = GCoord(0.0, 0.0, 1.0);
 
+    uint num_segs = chains[0].size() - 1;
+
+    ChainState states = ChainState(num_segs, 5);
+
+    while (traj->readFrame())
+        {
+        for (vector<AtomicGroup>::const_iterator c = chains.begin();
+                                                 c != chains.end();
+                                                 ++c)
+            if (c->centroid().z() > 0.0)
+                {
+                states.computeChainState(*c, normal);
+                }
+            else {
+                states.computeChainState(*c, -normal);
+                }
+        }
+    std::set<std::pair<StateVector, uint>, Comparator > all_freqs =
+            states.getAllProbs();
+
+    cout << "# State\tProb" << endl;
+    for (std::set<std::pair<StateVector, uint>, Comparator >::iterator
+            p = all_freqs.begin();
+            p != all_freqs.end();
+            ++p)
+            {
+            cout << p->first[0] << "\t" << p->second << endl;
+            }
 }

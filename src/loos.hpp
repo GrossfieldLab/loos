@@ -114,6 +114,6 @@
 #include <OptionsFramework.hpp>
 
 #include <alignment.hpp>
+
+#include <ChainState.hpp>
 #endif
-
-
