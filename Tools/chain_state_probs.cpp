@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
 
     while (traj->readFrame())
         {
+        traj->updateGroupCoords(system);
         for (vector<AtomicGroup>::const_iterator c = chains.begin();
                                                  c != chains.end();
                                                  ++c)
@@ -79,12 +80,19 @@ int main(int argc, char *argv[]) {
     std::set<std::pair<StateVector, uint>, Comparator > all_freqs =
             states.getAllProbs();
 
-    cout << "# State\tProb" << endl;
+    cout << "# Prob\tState" << endl;
     for (std::set<std::pair<StateVector, uint>, Comparator >::iterator
             p = all_freqs.begin();
             p != all_freqs.end();
             ++p)
             {
-            cout << p->first[0] << "\t" << p->second << endl;
+            double prob = static_cast<double>(p->second) / states.num_counts();
+            cout << prob << "\t";
+            StateVector s = p->first;
+            for (uint i=0; i<s.size(); ++i)
+                {
+                cout << s[i] << "\t";
+                }
+            cout << endl;
             }
 }

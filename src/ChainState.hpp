@@ -27,7 +27,7 @@
 
 namespace loos {
 
-typedef std::vector<uint> StateVector;
+typedef std::vector<int> StateVector;
 typedef std::function<bool(std::pair<StateVector, uint>, std::pair<StateVector, uint>)> Comparator;
 
 class ChainState {
@@ -60,6 +60,11 @@ double getStateProb(const StateVector &segs);
 
 //! Return all state probabilities
 std::set<std::pair<StateVector, uint>, Comparator > getAllProbs();
+
+//! Number of entries in the histogram
+uint num_counts() {
+    return counts;
+};
 
 private:
     uint _num_segs;

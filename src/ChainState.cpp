@@ -29,10 +29,15 @@ namespace loos {
     void ChainState::computeChainState(const AtomicGroup &group,
                                        const GCoord &normal,
                                        StateVector &segs) {
-        for (uint i=0; i< _num_segs-1; ++i) {
+        for (uint i=0; i< _num_segs; ++i) {
             loos::GCoord vec = group[i]->coords() - group[i+1]->coords();
             double cosine = vec*normal/vec.length();
+            cosine = fmin(cosine, 1.0);
+            cosine = fmax(cosine, -1.0);
+            //std::cerr << i << "  " << cosine << "  " << _bin_width << "  ";
+            //std::cerr << vec << "  " << normal << "  ";
             segs[i] = static_cast<int>((cosine) / _bin_width);
+            //std::cerr << segs[i] << std::endl;
         }
 
         // Store the state of this chain
