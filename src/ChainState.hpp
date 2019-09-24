@@ -70,6 +70,9 @@ uint num_counts() {
     return counts;
 };
 
+//! Relative entropy of the state probability distribution relative to reference
+double relative_entropy(const std::map<StateVector, double> &ref);
+
 private:
     uint _num_segs;
     uint _num_bins;

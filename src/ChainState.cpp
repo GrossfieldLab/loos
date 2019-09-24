@@ -73,11 +73,29 @@ namespace loos {
         double ent = 0.0;
         for (std::map<StateVector, uint>::iterator s = state_counts.begin();
                                                   s!= state_counts.end();
-                                                  ++s)
-                {
-                double prob = static_cast<double>(s->second) / num_counts();
-                ent -= prob * log(prob);
-                }
+                                                  ++s) {
+            double prob = static_cast<double>(s->second) / num_counts();
+            ent -= prob * log(prob);
+            }
         return ent;
     }
+
+    double ChainState::relative_entropy(const std::map<StateVector, double> &ref) {
+        /**
+        The map value is double, not uint, because it presumably will have been
+        read in from a file that was already normalized.
+        */
+        double ent = 0.0;
+        for (std::map<StateVector, uint>::iterator s = state_counts.begin();
+                                                   s!= state_counts.end();
+                                                   ++s) {
+            if (ref.count(s->first)) {
+                double p = static_cast<double>(s->second) / num_counts();
+                double ratio = p / ref.at(s->first);
+                ent += p * log(ratio);
+                }
+            }
+        return(ent);
+    }
+
 }
