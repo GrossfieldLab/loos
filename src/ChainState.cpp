@@ -98,4 +98,45 @@ namespace loos {
         return(ent);
     }
 
+    RefChainDist::RefChainDist(const std::string &filename) {
+        readInput(filename);
+    }
+
+    void RefChainDist::readInput(const std::string &filename) {
+        std::ifstream ifs(filename.c_str());
+        if (!ifs) {
+            throw(FileOpenError(filename, "Couldn't open reference distribution file"));
+        }
+        std::string input;
+        bool first = true;
+        while (std::getline(ifs, input)) {
+            // Skip blank lines and lines starting with "#"
+            if ( (input.length() == 0) || (input[0] == '#' ) ) {
+                // do nothing
+            }
+            std::istringstream ist(input);
+
+            StateVector state_vector;
+            double prob;
+            int state;
+            int prev_size = 0;
+            ist >> prob;
+            while (ist.good()) {
+                ist >> state;
+                state_vector.push_back(state);
+            }
+            if (first) {
+                first = false;
+                prev_size = state_vector.size();
+            }
+            else {
+                if (state_vector.size() != prev_size) {
+                    throw(LOOSError("all reference states must be same length"));
+                }
+            }
+            state_dist[state_vector] = prob;
+        }
+
+    }
+
 }

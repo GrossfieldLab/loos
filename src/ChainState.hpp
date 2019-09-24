@@ -84,6 +84,19 @@ private:
 
 };
 
+class RefChainDist {
+public:
+    std::map<StateVector, double> state_dist;
+    
+    RefChainDist() { }
+
+    RefChainDist(const std::string &filename);
+
+    void readInput(const std::string &filename);
+
+private:
+};
+
 }
 
 #endif
