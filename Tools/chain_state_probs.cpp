@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
     uint num_segs = chains[0].size() - 1;
 
-    ChainState states = ChainState(num_segs, 5);
+    ChainState states = ChainState(num_segs, 4);
 
     while (traj->readFrame())
         {
@@ -80,7 +80,11 @@ int main(int argc, char *argv[]) {
     std::set<std::pair<StateVector, uint>, Comparator > all_freqs =
             states.getAllProbs();
 
-    cout << "# num_counts = " << states.num_counts() << endl;
+    cout << "# num observed states = " << states.num_states() << endl;
+    cout << "# total states = " << states.total_states() << endl;
+    cout << "# fraction observed = " << static_cast<float>(states.num_states())/
+                                        states.total_states()
+                                     << endl;
     cout << "# Entropy = " << states.entropy() << endl;
     cout << "# Prob\tState" << endl;
     for (std::set<std::pair<StateVector, uint>, Comparator >::iterator

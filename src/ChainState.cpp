@@ -34,10 +34,7 @@ namespace loos {
             double cosine = vec*normal/vec.length();
             cosine = fmin(cosine, 1.0);
             cosine = fmax(cosine, -1.0);
-            //std::cerr << i << "  " << cosine << "  " << _bin_width << "  ";
-            //std::cerr << vec << "  " << normal << "  ";
             segs[i] = static_cast<int>((cosine) / _bin_width);
-            //std::cerr << segs[i] << std::endl;
         }
 
         // Store the state of this chain
@@ -109,7 +106,7 @@ namespace loos {
         }
         std::string input;
         bool first = true;
-        int prev_size = 0;
+        uint prev_size = 0;
         while (std::getline(ifs, input)) {
             // Skip blank lines and lines starting with "#"
             if ( (input.length() == 0) || (input[0] == '#' ) ) {
@@ -143,6 +140,7 @@ namespace loos {
     double RefChainDist::relative_entropy(RefChainDist &ref) {
 
         double ent = 0.0;
+        double missing_prob = 0.0;
         for (std::map<StateVector, double>::iterator s = state_dist.begin();
                                                      s!= state_dist.end();
                                                      ++s) {
@@ -151,7 +149,11 @@ namespace loos {
                 double ratio = p / ref.state_dist.at(s->first);
                 ent += p * log(ratio);
                 }
+            else {
+                missing_prob += s->second;
             }
+        }
+        std::cerr << "# Total missing prob = " << missing_prob << std::endl;
         return(ent);
     }
 

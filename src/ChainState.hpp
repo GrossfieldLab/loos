@@ -70,6 +70,17 @@ uint num_counts() {
     return counts;
 };
 
+//! Number of states observed
+uint num_states() {
+    return state_counts.size();
+};
+
+//! Number of possible states
+uint total_states() {
+    float t = pow(static_cast<float>(_num_bins), _num_segs);
+    return static_cast<uint>(t);
+}
+
 //! Relative entropy of the state probability distribution relative to reference
 double relative_entropy(const std::map<StateVector, double> &ref);
 
@@ -92,11 +103,11 @@ public:
 
     RefChainDist(const std::string &filename);
 
-    //! Read in reference distribution from a file
+    //! Read in reference distribution
     void readInput(const std::string &filename);
 
-    //! Compute relative entropy of this dist with respect to ref
-    double relative_entropy(RefChainDist &ref);
+    //! Compute relative entropy of other wrt to this distribution
+    double relative_entropy(RefChainDist &other);
 
 private:
 };
