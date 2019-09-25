@@ -139,4 +139,20 @@ namespace loos {
 
     }
 
+    double RefChainDist::relative_entropy(RefChainDist &ref) {
+
+        double ent = 0.0;
+        for (std::map<StateVector, double>::iterator s = state_dist.begin();
+                                                     s!= state_dist.end();
+                                                     ++s) {
+            if (ref.state_dist.count(s->first)) {
+                double p = s->second;
+                double ratio = p / ref.state_dist.at(s->first);
+                ent += p * log(ratio);
+                }
+            }
+        return(ent);
+    }
+
+
 }

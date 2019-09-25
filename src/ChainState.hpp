@@ -87,12 +87,16 @@ private:
 class RefChainDist {
 public:
     std::map<StateVector, double> state_dist;
-    
+
     RefChainDist() { }
 
     RefChainDist(const std::string &filename);
 
+    //! Read in reference distribution from a file
     void readInput(const std::string &filename);
+
+    //! Compute relative entropy of this dist with respect to ref
+    double relative_entropy(RefChainDist &ref);
 
 private:
 };
