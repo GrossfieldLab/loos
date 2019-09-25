@@ -32,9 +32,12 @@ namespace loos {
         for (uint i=0; i< _num_segs; ++i) {
             loos::GCoord vec = group[i]->coords() - group[i+1]->coords();
             double cosine = vec*normal/vec.length();
-            cosine = fmin(cosine, 1.0);
-            cosine = fmax(cosine, -1.0);
-            segs[i] = static_cast<int>((cosine) / _bin_width);
+            double shifted = cosine + 1.0;
+            shifted = fmin(shifted, 2.0);
+            shifted = fmax(shifted, 0.0);
+
+            uint bin = static_cast<uint>((shifted)/ _bin_width);
+            segs[i] = bin;
         }
 
         // Store the state of this chain

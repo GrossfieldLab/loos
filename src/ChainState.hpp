@@ -27,7 +27,7 @@
 
 namespace loos {
 
-typedef std::vector<int> StateVector;
+typedef std::vector<uint> StateVector;
 typedef std::function<bool(std::pair<StateVector, uint>, std::pair<StateVector, uint>)> Comparator;
 
 class ChainState {
