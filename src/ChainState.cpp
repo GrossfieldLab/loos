@@ -109,17 +109,18 @@ namespace loos {
         }
         std::string input;
         bool first = true;
+        int prev_size = 0;
         while (std::getline(ifs, input)) {
             // Skip blank lines and lines starting with "#"
             if ( (input.length() == 0) || (input[0] == '#' ) ) {
                 // do nothing
+                continue;
             }
             std::istringstream ist(input);
 
             StateVector state_vector;
             double prob;
             int state;
-            int prev_size = 0;
             ist >> prob;
             while (ist.good()) {
                 ist >> state;
