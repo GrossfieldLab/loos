@@ -29,6 +29,7 @@ namespace loos {
     void ChainState::computeChainState(const AtomicGroup &group,
                                        const GCoord &normal,
                                        StateVector &segs) {
+        bool all_zero = true;
         for (uint i=0; i< _num_segs; ++i) {
             loos::GCoord vec = group[i]->coords() - group[i+1]->coords();
             double cosine = vec*normal/vec.length();
@@ -38,11 +39,31 @@ namespace loos {
 
             uint bin = static_cast<uint>((shifted)/ _bin_width);
             segs[i] = bin;
+            /*
+            // TODO: remove this when debugging is done
+            if (bin != 0) {
+                all_zero = false;
+            }
+            */
         }
 
         // Store the state of this chain
         state_counts[segs] += 1;
         counts++;
+
+        /*
+        // TODO: remove this ugly-ass hack once debugging is done
+        if (all_zero) {
+
+            std::cerr << "# all zero  "
+                      << normal << "\t"
+                      << group.centroid() << "\t"
+                      << group  << "\t"
+                      << std::endl << std::endl;
+        }
+        */
+
+
     }
 
     void ChainState::computeChainState(const AtomicGroup &group,
@@ -60,7 +81,7 @@ namespace loos {
         }
     }
 
-    std::set<std::pair<StateVector, uint>, Comparator > ChainState::getAllProbs() {
+    std::set<std::pair<StateVector, uint>, Comparator > ChainState::getAllProbs() const {
         // Copy the elements of the map into a set
         std::set<std::pair<StateVector, uint>, Comparator >
             state_set(state_counts.begin(),
@@ -100,6 +121,20 @@ namespace loos {
 
     RefChainDist::RefChainDist(const std::string &filename) {
         readInput(filename);
+    }
+
+    RefChainDist::RefChainDist(const ChainState &chainState) {
+        std::set<std::pair<StateVector, uint>, Comparator > stateSet =
+                    chainState.getAllProbs();
+        for (std::set<std::pair<StateVector, uint>, Comparator >::iterator
+                                p = stateSet.begin();
+                                p!= stateSet.end();
+                                ++p) {
+            state_dist[p->first] = static_cast<double>(p->second) /
+                              chainState.num_counts();
+
+            }
+
     }
 
     void RefChainDist::readInput(const std::string &filename) {

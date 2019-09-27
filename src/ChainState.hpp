@@ -60,23 +60,23 @@ void computeChainState(const AtomicGroup &group,
 double getStateProb(const StateVector &segs);
 
 //! Return all state probabilities
-std::set<std::pair<StateVector, uint>, Comparator > getAllProbs();
+std::set<std::pair<StateVector, uint>, Comparator > getAllProbs() const;
 
 //! compute Shannon entropy from the state distribution
 double entropy();
 
 //! Number of entries in the histogram
-uint num_counts() {
+uint num_counts() const {
     return counts;
 };
 
 //! Number of states observed
-uint num_states() {
+uint num_states() const {
     return state_counts.size();
 };
 
 //! Number of possible states
-uint total_states() {
+uint total_states() const {
     float t = pow(static_cast<float>(_num_bins), _num_segs);
     return static_cast<uint>(t);
 }
@@ -102,6 +102,8 @@ public:
     RefChainDist() { }
 
     RefChainDist(const std::string &filename);
+
+    RefChainDist(const ChainState &chainState);
 
     //! Read in reference distribution
     void readInput(const std::string &filename);
