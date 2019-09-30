@@ -1,11 +1,12 @@
 /*
- *  Compute membrane property distribution about a protein 
+ *  Compute membrane property distribution about a protein
  *  Can compute chain molecular order parameter, tilt vector, or density
  *
  *  Alan Grossfield
  *  (adapted from some code by Josh Horn, adapted from some stuff I wrote)
  */
 
+#include "loos.hpp"
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 
@@ -14,12 +15,12 @@
 //  of it.
 class CalcPropertyBase
 {
-public: 
+public:
     virtual void normalize(uint frames)
         {
         }
 
-    virtual void calc(const loos::AtomicGroup &group, 
+    virtual void calc(const loos::AtomicGroup &group,
                       const uint xbin, const uint ybin)
         {
         }
@@ -32,11 +33,19 @@ public:
         {
         }
 
+    virtual void set(const uint xbin, const uint ybin, const loos::ChainState val)
+        {
+        }
+
     virtual void incr(const uint xbin, const uint ybin, const double val)
         {
         }
 
     virtual void incr(const uint xbin, const uint ybin, const loos::GCoord val)
+        {
+        }
+
+    virtual void incr(const uint xbin, const uint ybin, const loos::ChainState &val)
         {
         }
 
@@ -52,6 +61,11 @@ public:
     virtual void get(const uint xbin, const uint ybin, loos::GCoord *val)
         {
         }
+
+    virtual void get(const uint xbin, const uint ybin, loos::ChainState *val)
+        {
+        }
+
 
     virtual const uint get_norm(const uint xbin, const uint ybin)
         {
@@ -72,7 +86,7 @@ template <class T> class CalcProperty : public CalcPropertyBase
 protected:
     uint _xbins, _ybins;
 public:
-    CalcProperty( uint xbins, uint ybins ): 
+    CalcProperty( uint xbins, uint ybins ):
                 _xbins(xbins),
                 _ybins(ybins),
                 _storage(xbins*ybins),
@@ -155,7 +169,7 @@ public:
         {
         _bin_area = xwidth * ywidth;
         }
-            
+
     void normalize (uint frames)
         {
         double norm =  _bin_area * frames;
@@ -214,7 +228,7 @@ public:
 class CalcOrientVector : public CalcProperty<loos::GCoord>
 {
 public:
-   CalcOrientVector(uint xbins, uint ybins) : 
+   CalcOrientVector(uint xbins, uint ybins) :
         CalcProperty<loos::GCoord>(xbins, ybins)
         {
         }
@@ -224,7 +238,7 @@ public:
         std::vector<loos::GCoord> axes = group.principalAxes();
         // Force a consistent sign convention on the principal axis
         // by insisting it point toward the center of the membrane.
-        // So, if the molecule is in the +z leaflet, the axis must point 
+        // So, if the molecule is in the +z leaflet, the axis must point
         // "downward"
         loos::GCoord centroid = group.centroid();
         if (axes[0].z()*centroid.z() > 0)
@@ -267,3 +281,57 @@ public:
         }
 };
 
+
+class CalcChainEntropy: public CalcProperty<loos::ChainState>
+{
+public:
+    CalcChainEntropy(uint xbins, uint ybins): CalcProperty<loos::ChainState>(xbins, ybins)
+        {
+        }
+
+    void calc(const loos::AtomicGroup &group, const uint xbin, const uint ybin)
+        {
+        loos::GCoord centroid = group.centroid();
+        loos::GCoord normal(0.0, 0.0, 1.0);
+        loos::ChainState *state;
+
+        get(xbin, ybin, state);
+
+        if (centroid.z() > 0)
+            {
+            state->computeChainState(group, normal);
+            }
+        else
+            {
+            state->computeChainState(group, -normal);
+            }
+        }
+
+    const uint get_norm(const uint xbin, const uint ybin)
+        {
+        loos::ChainState *state;
+        get(xbin, ybin, state);
+        return(state->num_counts());
+        }
+
+    void normalize(uint frames)
+        {
+        // No op -- ChainState does its own normalization
+        uint norm = 1;
+        }
+
+    const std::string print(uint xbin, uint ybin)
+        {
+        loos::ChainState *state;
+        get(xbin, ybin, state);
+        if (state->num_counts())
+            {
+            double entropy = state->entropy();
+            return(boost::lexical_cast<std::string>(entropy));
+            }
+        else
+            {
+            return std::string("0.0");
+            }
+        }
+};
