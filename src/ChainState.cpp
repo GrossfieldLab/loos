@@ -29,7 +29,7 @@ namespace loos {
     void ChainState::computeChainState(const AtomicGroup &group,
                                        const GCoord &normal,
                                        StateVector &segs) {
-        bool all_zero = true;
+        //bool all_zero = true;
         for (uint i=0; i< _num_segs; ++i) {
             loos::GCoord vec = group[i]->coords() - group[i+1]->coords();
             double cosine = vec*normal/vec.length();
@@ -119,6 +119,21 @@ namespace loos {
         return(ent);
     }
 
+    ChainState ChainState::operator+=(const ChainState &other) {
+        for (std::map<StateVector, uint>::const_iterator s = other.state_counts.begin();
+                                                         s!= other.state_counts.end();
+                                                         ++s) {
+            if (state_counts.count(s->first)) {
+                state_counts[s->first] += s->second;
+            }
+            else {
+                state_counts[s->first] = s->second;
+            }
+        }
+        counts += other.num_counts();
+        return *this;
+    }
+
     RefChainDist::RefChainDist(const std::string &filename) {
         readInput(filename);
     }
@@ -194,6 +209,16 @@ namespace loos {
         std::cerr << "# Total missing prob = " << missing_prob << std::endl;
         return(ent);
     }
+
+
+    std::ostream& operator<<(std::ostream& os, const loos::ChainState &chain_state) {
+        os << "ChainState: "
+           << chain_state.num_counts() << "\t"
+           << chain_state.num_states() << std::endl;
+
+        return(os);
+    }
+
 
 
 }

@@ -289,6 +289,15 @@ public:
         {
         }
 
+    void normalize(uint frames)
+        {
+        }
+
+    void incr(const uint xbin, const uint ybin, const loos::ChainState &val)
+        {
+        }
+
+
     void calc(const loos::AtomicGroup &group, const uint xbin, const uint ybin)
         {
         loos::GCoord centroid = group.centroid();
@@ -312,12 +321,6 @@ public:
         loos::ChainState *state;
         get(xbin, ybin, state);
         return(state->num_counts());
-        }
-
-    void normalize(uint frames)
-        {
-        // No op -- ChainState does its own normalization
-        uint norm = 1;
         }
 
     const std::string print(uint xbin, uint ybin)

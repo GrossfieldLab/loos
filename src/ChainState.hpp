@@ -34,6 +34,7 @@ class ChainState {
 public:
 
 ChainState() { }
+ChainState(double x) { }  // dummy, to make some templating work
 
 ChainState(const uint segs, const uint bins) : _num_segs(segs),
                                                _num_bins(bins),
@@ -75,11 +76,20 @@ uint num_states() const {
     return state_counts.size();
 };
 
+//! Dummy operator so that membrane_map works
+double operator/(double x) {
+    std::cerr << "Should never call divide operator on ChainState"
+              << std::endl;
+    return 0.0;
+};
+
+ChainState operator+=(const ChainState &other);
+
 //! Number of possible states
 uint total_states() const {
     float t = pow(static_cast<float>(_num_bins), _num_segs);
     return static_cast<uint>(t);
-}
+};
 
 //! Relative entropy of the state probability distribution relative to reference
 double relative_entropy(const std::map<StateVector, double> &ref);
@@ -93,6 +103,7 @@ private:
     uint counts;
     Comparator compareStateProbs;
 
+friend std::ostream& operator<<(std::ostream& os, const ChainState &chain_state);
 };
 
 class RefChainDist {
