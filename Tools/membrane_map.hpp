@@ -7,6 +7,7 @@
  */
 
 #include "loos.hpp"
+#include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 
@@ -85,6 +86,7 @@ template <class T> class CalcProperty : public CalcPropertyBase
 {
 protected:
     uint _xbins, _ybins;
+    std::vector<T> _storage;
 public:
     CalcProperty( uint xbins, uint ybins ):
                 _xbins(xbins),
@@ -155,7 +157,6 @@ public:
         }
 
 private:
-    std::vector<T> _storage;
     std::vector<uint> _norm;
 
 };
@@ -285,8 +286,19 @@ public:
 class CalcChainEntropy: public CalcProperty<loos::ChainState>
 {
 public:
-    CalcChainEntropy(uint xbins, uint ybins): CalcProperty<loos::ChainState>(xbins, ybins)
+    CalcChainEntropy(uint xbins, uint ybins, uint target_length):
+                        CalcProperty<loos::ChainState>(xbins, ybins),
+                        num_segs(target_length)
         {
+        // The default constructor for ChainState doesn't set num_segs, but we
+        // need it set before we can use it
+        for (std::vector<loos::ChainState>::iterator c = _storage.begin();
+                                                     c!= _storage.end();
+                                                     ++c)
+            {
+            c->num_segs(num_segs);
+            }
+
         }
 
     void normalize(uint frames)
@@ -337,4 +349,6 @@ public:
             return std::string("0.0");
             }
         }
+private:
+    uint num_segs;
 };

@@ -33,13 +33,32 @@ typedef std::function<bool(std::pair<StateVector, uint>, std::pair<StateVector, 
 class ChainState {
 public:
 
-ChainState() { }
+
+ChainState(const int segs): _num_segs(segs),
+                            _num_bins(4),
+                            counts(0)
+                            {
+    init();
+}
+
+ChainState(): _num_segs(0),
+              _num_bins(4),
+              counts(0)
+              {
+    init();
+}
+
+
 ChainState(double x) { }  // dummy, to make some templating work
 
 ChainState(const uint segs, const uint bins) : _num_segs(segs),
                                                _num_bins(bins),
                                                counts(0)
                                                {
+    init();
+}
+
+void init() {
     _bin_width = 2.0 / _num_bins;
     compareStateProbs =
                 [](std::pair<StateVector, uint> elem1,
@@ -75,6 +94,14 @@ uint num_counts() const {
 uint num_states() const {
     return state_counts.size();
 };
+
+const uint num_segs() const {
+    return _num_segs;
+};
+
+void num_segs(uint n) {
+    _num_segs = n;
+}
 
 //! Dummy operator so that membrane_map works
 double operator/(double x) {
