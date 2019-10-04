@@ -298,7 +298,6 @@ public:
             {
             c->num_segs(num_segs);
             }
-
         }
 
     void normalize(uint frames)
@@ -314,7 +313,7 @@ public:
         {
         loos::GCoord centroid = group.centroid();
         loos::GCoord normal(0.0, 0.0, 1.0);
-        loos::ChainState *state;
+        loos::ChainState *state = new(loos::ChainState);
 
         get(xbin, ybin, state);
 
@@ -326,6 +325,7 @@ public:
             {
             state->computeChainState(group, -normal);
             }
+        delete(state);
         }
 
     const uint get_norm(const uint xbin, const uint ybin)

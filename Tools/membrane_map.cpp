@@ -278,6 +278,7 @@ int main(int argc, char *argv[])
     cout << "# Found " << targets.size() << " matching molecules" << endl;
 
     uint target_length = targets[0].size();
+    cout << "# Each molecules has " << target_length << " atoms" << endl;
 
     // Set up storage for our property.
     double xmin = topts->xmin;
@@ -305,7 +306,7 @@ int main(int argc, char *argv[])
             calculator = new CalcOrientVector(xbins, ybins);
             break;
         case ENTROPY:
-            calculator = new CalcChainEntropy(xbins, ybins, target_length);
+            calculator = new CalcChainEntropy(xbins, ybins, target_length-1);
             break;
         default: // this can't happen, set in option handling
             cerr << "ERROR: unknown calculation type" << endl;
