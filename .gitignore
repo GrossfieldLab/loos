@@ -63,6 +63,9 @@ GTAGS
 *.out
 *.toc
 
+# some c++ headers used by atom
+.stdafx.c++.pch
+
 ###EXES
 
 Tools/rms-overlap
