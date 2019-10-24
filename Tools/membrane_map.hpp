@@ -34,7 +34,7 @@ public:
         {
         }
 
-    virtual void set(const uint xbin, const uint ybin, const loos::ChainState val)
+    virtual void set(const uint xbin, const uint ybin, const loos::ChainState *val)
         {
         }
 
@@ -308,6 +308,11 @@ public:
         {
         }
 
+    void set(const uint xbin, const uint ybin, const loos::ChainState *val)
+        {
+        uint index= xbin * _ybins + ybin;
+        _storage[index] = *val;
+        }
 
     void calc(const loos::AtomicGroup &group, const uint xbin, const uint ybin)
         {
@@ -316,7 +321,6 @@ public:
         loos::ChainState *state = new(loos::ChainState);
 
         get(xbin, ybin, state);
-
         if (centroid.z() > 0)
             {
             state->computeChainState(group, normal);
@@ -325,27 +329,37 @@ public:
             {
             state->computeChainState(group, -normal);
             }
+        set(xbin, ybin, state);
         delete(state);
         }
 
     const uint get_norm(const uint xbin, const uint ybin)
         {
-        loos::ChainState *state;
+        loos::ChainState *state = new(loos::ChainState);
         get(xbin, ybin, state);
-        return(state->num_counts());
+        uint n = state->num_counts();
+        delete(state);
+        return n;
         }
 
     const std::string print(uint xbin, uint ybin)
         {
-        loos::ChainState *state;
+        loos::ChainState *state = new(loos::ChainState);
+        uint n = state->num_counts();
+        std::cerr << "before get: " << n << std::endl;
         get(xbin, ybin, state);
-        if (state->num_counts())
+        n = state->num_counts();
+        std::cerr << "after get: " << n << std::endl;
+        std::cerr << *state << std::endl;
+        if (n)
             {
             double entropy = state->entropy();
+            delete(state);
             return(boost::lexical_cast<std::string>(entropy));
             }
         else
             {
+            delete(state);
             return std::string("0.0");
             }
         }
