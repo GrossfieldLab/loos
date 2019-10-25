@@ -214,7 +214,7 @@ namespace loos {
     std::ostream& operator<<(std::ostream& os, const loos::ChainState &chain_state) {
         os << "ChainState: "
            << chain_state.num_counts() << "\t"
-           << chain_state.num_states(); 
+           << chain_state.num_states();
 
         return(os);
     }
