@@ -330,6 +330,7 @@ public:
             state->computeChainState(group, -normal);
             }
         set(xbin, ybin, state);
+
         delete(state);
         }
 
@@ -346,11 +347,8 @@ public:
         {
         loos::ChainState *state = new(loos::ChainState);
         uint n = state->num_counts();
-        std::cerr << "before get: " << n << std::endl;
         get(xbin, ybin, state);
         n = state->num_counts();
-        std::cerr << "after get: " << n << std::endl;
-        std::cerr << *state << std::endl;
         if (n)
             {
             double entropy = state->entropy();
