@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 """
    cylindrical-density.py : compute the density of atoms ("targets") around
-                            a centering selection, output a 2D histogram in 
-                            r,z 
+                            a centering selection, output a 2D histogram in
+                            r,z
    The expected use-case for this is looking at lipid packing around a membrane
-   protein, when for whatever region you want to average out the "polar" 
-   degrees of freedom.  
+   protein, when for whatever region you want to average out the "polar"
+   degrees of freedom.
 
    For example, a command line could look like:
 
-   cylindrical-density.py sim.psf sim.dcd 'segid == "PROT"' 'segid =~ "PE" && \!hydrogen' -25 25 50 10 30 20 
+   cylindrical-density.py sim.psf sim.dcd 'segid == "PROT"' 'segid =~ "PE" && \!hydrogen' -25 25 50 10 30 20
 
    This would read the system info from sim.psf, and use the trajectory sim.dcd.
    The system would be translated such that "PROT" is at the origin, and then
-   the density of all heavy atoms with segment names containing "PE" would be 
+   the density of all heavy atoms with segment names containing "PE" would be
    computed.  The z-range of the histogram would go from -25:25 with 50 bins,
    and r-range would be 10:30 with 20 bins.
 
    I highly suggest including the "&& \!hydrogen" part of the target selection,
-   since that will make the program run significantly faster without 
+   since that will make the program run significantly faster without
    substantially changing the information content (the slash in front of the "!"
    may or may not be necessary, depending on which shell you use).
-   
+
    Alan Grossfield
 """
 """
@@ -80,7 +80,7 @@ rbin_width = (rmax - rmin) / rnum_bins
 rmin2 = rmin*rmin
 rmax2 = rmax*rmax
 
-hist = numpy.zeros( [rnum_bins, znum_bins])
+hist = numpy.zeros([rnum_bins, znum_bins])
 
 for frame in traj:
 
@@ -95,15 +95,14 @@ for frame in traj:
 
         r2 = x*x + y*y
 
-        #print r2, rmin2, rmax2, z, zmin, zmax
         if (zmin < z < zmax) and (rmin2 < r2 < rmax2):
-            #print "got here"
             r = math.sqrt(r2)
 
-            rbin = int((r - rmin)/ rbin_width)
-            zbin = int((z - zmin)/ zbin_width)
+            rbin = int((r - rmin) / rbin_width)
+            zbin = int((z - zmin) / zbin_width)
 
-            hist[rbin, zbin] += 1.0
+            if (0 <= rbin < rnum_bins) and (0 <= zbin < znum_bins):
+                hist[rbin, zbin] += 1.0
 
 hist /= len(traj)
 
@@ -115,5 +114,5 @@ for i in range(rnum_bins):
     norm = math.pi * (router*router - rinner*rinner)
     for j in range(znum_bins):
         zval = zmin + (j+0.5)*zbin_width
-        print(rval, zval, hist[i,j] / norm)
+        print(rval, zval, hist[i, j] / norm)
     print()
