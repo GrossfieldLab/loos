@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Cluster structures based from a simulation
+Cluster structures based from a simulation, using the K-means
+algorithm applied to RMSD
 """
 """
 
@@ -28,7 +29,7 @@ import loos
 import loos.pyloos
 import numpy
 import argparse
-from scipy.cluster.vq import kmeans,vq
+from scipy.cluster.vq import kmeans, vq
 
 
 parser = argparse.ArgumentParser()

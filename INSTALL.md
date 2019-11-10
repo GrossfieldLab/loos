@@ -197,6 +197,11 @@ location of BOOST
     $CONDA_PREFIX/bin/scons -c config
     $CONDA_PREFIX/bin/scons  BOOST=/path/to/boost/installed/by/conda
 
+We have seen some examples (primarily OS X) where the search for conda's BOOST
+doesn't work.  We hope to fix this, but for now the best solution might be to
+install BOOST manually from www.boost.org and use the BOOST variable to point
+scons at it.
+
 Alternatively, you can also copy custom.py-proto to custom.py, and uncomment
 then edit the  lines describing BOOST's location (particularly BOOST_LIB).
 
