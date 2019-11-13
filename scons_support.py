@@ -33,6 +33,7 @@ import distutils.sysconfig
 import distutils.spawn
 import string
 from distutils.version import LooseVersion
+from sysconfig import get_paths
 
 import SCons
 
@@ -362,6 +363,10 @@ def CheckDirectory(conf, dirname):
 def CheckNumpy(conf, pythonpath):
     global default_lib_path
     conf.Message("Checking for numpy... ")
+    if conf.env.USING_CONDA:
+        conf.Message("Using conda, skipping numpy check...")
+        return 1
+    print("got here")
 
     env = conf.env["ENV"]
 
@@ -416,8 +421,10 @@ def SetupBoostPaths(env):
 
     # If boost is not set but we're inside a conda environment,
     # automatically redirect boost into here...
-    if not BOOST and "CONDA_PREFIX" in env:
+    if not BOOST and env.USING_CONDA:
         BOOST = env["CONDA_PREFIX"]
+    elif not BOOST and "CONDA_PREFIX" in env:
+           BOOST = env["CONDA_PREFIX"]
 
     boost_libpath = ""
     boost_include = ""
@@ -451,8 +458,8 @@ def SetupNetCDFPaths(env):
 
     # If netcdf is not set but we're inside a conda environment,
     # automatically redirect netcdf into here...
-    # if not NETCDF and 'CONDA_PREFIX' in env['ENV']:
-    #    NETCDF=env['ENV']['CONDA_PREFIX']
+    if not NETCDF and env.USING_CONDA:
+        NETCDF=env['CONDA_PREFIX']
 
     netcdf_libpath = ""
     netcdf_include = ""
@@ -586,9 +593,15 @@ def checkForPythonHeader(context, header):
     oldcpp = None
     if "CPPFLAGS" in context.env:
         oldcpp = context.env["CPPFLAGS"]
-    if "CPPPATH" in context.env:
+    print("about to test CPPPATH")
+    print("CPPPATH", context.env["CPPPATH"])
+    print(context.env["CONDA_PREFIX"])
+    if "CPPPATH" in context.env and not ("CONDA_PREFIX" in context.env):
         for dir in context.env["CPPPATH"]:
             context.env.Append(CPPFLAGS="-I%s " % dir)
+            print("CPPFLAGS", context.env["CPPFLAGS"])
+
+    print("CPPPATH=", context.env['CPPFLAGS'])
     ok = context.TryCompile(test_code, ".cpp")
 
     if oldcpp:
@@ -643,25 +656,26 @@ def AutoConfiguration(env):
     else:
         has_netcdf = 0
 
-        if "CONDA_PREFIX" in conf.env["ENV"]:
-            conda_path = conf.env["ENV"]["CONDA_PREFIX"]
+        if env.USING_CONDA:
+            conda_path = env["CONDA_PREFIX"]
             default_lib_path = conda_path + "/lib"
             if loos_build_config.host_type != "Darwin":
-                print("***DEBUG: adding rpath...")
                 conf.env.Append(RPATH=default_lib_path)
         else:
             default_lib_path = "/usr/lib"
 
-        if not conf.CheckDirectory("/usr/lib64"):
-            if not conf.CheckDirectory("/usr/lib"):
-                print("Fatal error- cannot find your system library directory")
-                conf.env.Exit(1)
-        else:
-            # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
-            default_lib_path = "/usr/lib64"
+            # if we're not in conda, add system library directory
+            if not conf.CheckDirectory("/usr/lib64"):
+                if not conf.CheckDirectory("/usr/lib"):
+                    print("Fatal error- cannot find your system library directory")
+                    conf.env.Exit(1)
+            else:
+                # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
+                default_lib_path = "/usr/lib64"
         conf.env.Append(LIBPATH=default_lib_path)
-        # Only setup ATLAS if we're not on a Mac...
-        if loos_build_config.host_type != "Darwin":
+
+        # Only setup ATLAS if we're not on a Mac and we're not using conda
+        if loos_build_config.host_type != "Darwin" and not env.USING_CONDA:
             atlas_libpath = ""
             ATLAS_LIBPATH = env["ATLAS_LIBPATH"]
             ATLAS_LIBS = env["ATLAS_LIBS"]
@@ -722,7 +736,7 @@ def AutoConfiguration(env):
         if int(env["pyloos"]):
             if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env["pyloos"] = 1
-                pythonpath = distutils.sysconfig.get_python_inc()
+                pythonpath = get_paths()['include']
                 if "PYTHON_INC" in conf.env:
                     if conf.env["PYTHON_INC"] != "":
                         pythonpath = conf.env["PYTHON_INC"]

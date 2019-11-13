@@ -36,10 +36,10 @@ import SCons
 
 import loos_build_config
 
-from scons_support import *
+import scons_support
 
 
-EnsureSConsVersion(2,0)
+EnsureSConsVersion(2, 0)
 
 # ----------------------------------------------------------------------------------------------
 # Principal options...
@@ -73,48 +73,48 @@ opts.Add('PYTHON_INC', 'Include path for Python needed by PyLOOS (if not set, us
 opts.Add('INCLUDE_PATH', 'Add to include paths before any auto-config', '')
 opts.Add('LIBRARY_PATH', 'Add to library paths before any auto-config', '')
 
-addDeprecatedOptions(opts)
+scons_support.addDeprecatedOptions(opts)
 
-### Uncomment this version to have a semi-clean build environment
-#env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
-
-### Uncomment this line to bring the full user environment into the build environment
-#env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
-
-env = Environment(ENV=os.environ, options=opts,
+# Uncomment this version to have a semi-clean build environment
+env = Environment(ENV={'PATH': os.environ['PATH']},
+                  options=opts,
                   toolpath='.',
-                  SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'], SHLIBPREFIX="")
-
+                  SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                  SHLIBPREFIX="")
 
 Help(opts.GenerateHelpText(env))
 
-checkForDeprecatedOptions(env)
+scons_support.checkForDeprecatedOptions(env)
 
 env.Decider('MD5-timestamp')
 
 # Setup script-builder
-script_builder = Builder(action = script_builder_python)
-env.Append(BUILDERS = {'Scripts' : script_builder})
+script_builder = Builder(action=scons_support.script_builder_python)
+env.Append(BUILDERS={'Scripts': script_builder})
 
-
-
-### Get more info from environment
+# Get more info from environment
 PREFIX = env['PREFIX']
 
-### Inject paths (if present)
+# Inject paths (if present)
 if 'INCLUDE_PATH' in env:
-    env.Append(CPPPATH = env['INCLUDE_PATH'].split(':'))
+    env.Append(CPPPATH=env['INCLUDE_PATH'].split(':'))
 
 if 'LIBRARY_PATH' in env:
-    env.Append(LIBPATH = env['LIBRARY_PATH'].split(':'))
+    env.Append(LIBPATH=env['LIBRARY_PATH'].split(':'))
 
 # ----------------------------------------------------------------------------------------------
 
 cleaning = env.GetOption('clean')
 
 
-### Autoconf
-AutoConfiguration(env)
+# Autoconf
+if "CONDA_PREFIX" in os.environ:
+    env.USING_CONDA = True
+    env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
+else:
+    env.USING_CONDA = False
+
+scons_support.AutoConfiguration(env)
 pyloos = int(env['pyloos'])
 
 if not pyloos:
@@ -122,11 +122,10 @@ if not pyloos:
     print('PyLOOS will not be built.  The OMG will not be installed.')
 
 
-### Compile-flags
-
-debug_opts='-g -Wall -Wextra -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall -Wno-deprecated'
-profile_opts='-O3 -DNDEBUG -Wall -g'
+# Compile-flags
+debug_opts = '-g -Wall -Wextra -fno-inline'
+release_opts = '-O3 -DNDEBUG -Wall -Wno-deprecated'
+profile_opts = '-O3 -DNDEBUG -Wall -g'
 
 # Setup the general environment...
 env.Prepend(CPPPATH = ['#', '#src'])
@@ -184,7 +183,7 @@ if int(profile):
 # Build a revision file to include with LOOS so all tools know what version
 # of LOOS they were built with...
 
-setupRevision(env)
+scons_support.setupRevision(env)
 
 # Export for subsidiary SConscripts
 
