@@ -363,10 +363,6 @@ def CheckDirectory(conf, dirname):
 def CheckNumpy(conf, pythonpath):
     global default_lib_path
     conf.Message("Checking for numpy... ")
-    if conf.env.USING_CONDA:
-        conf.Message("Using conda, skipping numpy check...")
-        return 1
-    print("got here")
 
     env = conf.env["ENV"]
 
@@ -375,14 +371,15 @@ def CheckNumpy(conf, pythonpath):
         conf.Result("yes")
         return 1
     newpaths = []
-    if "PYTHON_PATH" in conf.env:
-        envpath = conf.env["PYTHON_PATH"]
-        if len(envpath) > 1:  # Catches cases where PYTHON_PATH is present but null...
-            newpaths.extend(envpath.split(":"))
+    if conf.env.USING_CONDA:
+        newpaths.append(env["CONDA_PREFIX"])
+    else:
+        if "PYTHON_PATH" in conf.env:
+            envpath = conf.env["PYTHON_PATH"]
+            if len(envpath) > 1:  # Catches cases where PYTHON_PATH is present but null...
+                newpaths.extend(envpath.split(":"))
 
     newpaths.append(default_lib_path)
-    if "CONDA_PREFIX" in env:
-        newpaths.append(env["CONDA_PREFIX"])
     for dir in newpaths:
         for p, d, f in os.walk(dir):
             for file in f:
@@ -591,15 +588,11 @@ def checkForPythonHeader(context, header):
     oldcpp = None
     if "CPPFLAGS" in context.env:
         oldcpp = context.env["CPPFLAGS"]
-    print("about to test CPPPATH")
-    print("CPPPATH", context.env["CPPPATH"])
-    print(context.env["CONDA_PREFIX"])
     if "CPPPATH" in context.env and not ("CONDA_PREFIX" in context.env):
         for dir in context.env["CPPPATH"]:
             context.env.Append(CPPFLAGS="-I%s " % dir)
             print("CPPFLAGS", context.env["CPPFLAGS"])
 
-    print("CPPPATH=", context.env['CPPFLAGS'])
     ok = context.TryCompile(test_code, ".cpp")
 
     if oldcpp:
