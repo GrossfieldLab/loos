@@ -423,8 +423,6 @@ def SetupBoostPaths(env):
     # automatically redirect boost into here...
     if not BOOST and env.USING_CONDA:
         BOOST = env["CONDA_PREFIX"]
-    elif not BOOST and "CONDA_PREFIX" in env:
-           BOOST = env["CONDA_PREFIX"]
 
     boost_libpath = ""
     boost_include = ""
