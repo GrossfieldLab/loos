@@ -372,11 +372,12 @@ def CheckNumpy(conf, pythonpath):
         return 1
     newpaths = []
     if conf.env.USING_CONDA:
-        newpaths.append(env["CONDA_PREFIX"])
+        newpaths.append(conf.env["CONDA_PREFIX"])
     else:
         if "PYTHON_PATH" in conf.env:
             envpath = conf.env["PYTHON_PATH"]
-            if len(envpath) > 1:  # Catches cases where PYTHON_PATH is present but null...
+            # Catch cases where PYTHON_PATH is present but null...
+            if len(envpath) > 1:
                 newpaths.extend(envpath.split(":"))
 
     newpaths.append(default_lib_path)
