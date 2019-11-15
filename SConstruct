@@ -37,6 +37,7 @@ import SCons
 import loos_build_config
 
 import scons_support
+import platform
 
 
 EnsureSConsVersion(2, 0)
@@ -115,7 +116,7 @@ if "CONDA_PREFIX" in os.environ:
 else:
     env.USING_CONDA = False
 
-if env.USING_CONDA and loos_build_config.host_type == "Darwin":
+if env.USING_CONDA and platform.system() == "Darwin":
     flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
     env.Append(LINKFLAGS=flag)
 
