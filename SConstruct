@@ -115,7 +115,7 @@ if "CONDA_PREFIX" in os.environ:
 else:
     env.USING_CONDA = False
 
-if env.USING_CONDA:
+if env.USING_CONDA and loos_build_config.host_type == "Darwin":
     flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
     env.Append(LINKFLAGS=flag)
 
