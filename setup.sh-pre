@@ -40,6 +40,7 @@ SYSTEM=`uname`
 if [ "$$SYSTEM" = "Darwin" ] ; then
     # Not necessary under conda, and it breaks a lot of stuff
     #export DYLD_LIBRARY_PATH="$ldlibrary:$$DYLD_LIBRARY_PATH"
+    touch .
 elif `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
     export LD_LIBRARY_PATH="$ldlibrary:$$LD_LIBRARY_PATH"
     export PATH="$$LOOSPATH:$$PATH"
