@@ -51,15 +51,20 @@ the "General Notes" section at the end of this file.
 If you are building on a system where the default python is 2.7, you will need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
 LOOS can then be built using the following command:
-
+```
     scons
+```
 
 Or installed (to /opt as a default):
+```
     sudo scons install
+```
 
 To install in a user-specified location:
 
+```
     scons PREFIX=/path/to/install install
+```
 
 To use LOOS, your environment must be first setup:
     (bash)   source /path/to/loos/setup.sh
@@ -151,8 +156,6 @@ BLAS and LAPACK, you can link against these to take advantage of
 multiple cores in LOOS.  Copy the custom.py-proto to custom.py and
 uncomment/change the appropriate lines.
 
-The MacOS version by default uses the vecLib framework which is
-already multithreaded.
 
 
 ### Documentation
@@ -180,32 +183,31 @@ You have 2 options for accessing LOOS documention.
 Assuming you already have a working install of Anaconda or miniconda (if not, you'll need to get one from https://www.anaconda.com/distribution/), you'll
 need to say
 
-    conda create -n loos python=3 swig scons numpy scipy boost openblas libnetcdf
+```
+    conda create -n loos -c conda-forge python=3 swig=3.0.12 scons numpy scipy boost openblas libnetcdf lapack
+    conda activate loos
+```
+
+Note: we have switched to using conda-forge rather than the default channel.  I highly recommend editing ~/.condarc to add the following line
+
+`channel_priority: strict`
+
+This will ensure that if at all possible conda will pull packages from conda-forge, rather than the default channel, which should reduce the likelihood of conflicts.
+
 ￼
 
 Then, run the newly installed scons to build LOOS
 
-    $CONDA_PREFIX/bin/scons
+    `$CONDA_PREFIX/bin/scons -j4`
 
-It is possible that the build can fail with errors saying there are missing
-references to some of the boost libraries (e.g. program_options); this generally
-occurs when scons gets confused by the presence of more than one BOOST install
-on the system.  If this occurs, clean out the build and rebuild specifying the
-location of BOOST
+As of version 3.1, we've significantly redone the build scripts so this should work robustly.  However, if the build fails to find something (or you want to use a version of a library from outside of conda), you can copy custom.py-proto to custom.py, and set the variables (e.g. BOOST, NETCDF) to point to the locations of the libraries you want to use.
 
-    $CONDA_PREFIX/bin/scons -c
-    $CONDA_PREFIX/bin/scons -c config
-    $CONDA_PREFIX/bin/scons  BOOST=/path/to/boost/installed/by/conda
+To create an installation of LOOS, you can say
 
-We have seen some examples (primarily OS X) where the search for conda's BOOST
-doesn't work.  We hope to fix this, but for now the best solution might be to
-install BOOST manually from www.boost.org and use the BOOST variable to point
-scons at it.
+`scons install`
 
-Alternatively, you can also copy custom.py-proto to custom.py, and uncomment
-then edit the  lines describing BOOST's location (particularly BOOST_LIB).
+This defaults to putting LOOS in /opt, but you can choose a different location either by setting the PREFIX variable, either on the command line or in custom.py.
 
-We have also seen some macs where it may be necessary to separately install boost to get the build to work.  After installing it (eg in /opt/boost_1_62_0), you can then set BOOST='/opt/boost_1_62_0' either on the command line or in custom.py.  
 
 ### Documentation
 
@@ -223,7 +225,7 @@ install scons, boost, and atlas:
 
     sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
 
-Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
 LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
 and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
@@ -249,8 +251,8 @@ Then install the packages
 
     sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
 
+You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
 
-Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (the comments will say which value is correct for CentOS).
 
 ### Documentation
 
@@ -291,6 +293,8 @@ You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
+You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+
 ### Documentation
 
 To build the documentation:
@@ -307,17 +311,7 @@ The package-manager installed scons is too old.  Download and install SCons
 
 ## MacOS
 
-### IMPORTANT NOTE FOR MACOS 10.11+ USERS !!
-
-There is a problem with using PyLOOS with the new System Integrity
-Protection (SIP) enabled (see https://support.apple.com/en-us/HT204899
-for more information about SIP).  We are aware of this and working on
-a decent solution.  Until then, there are four options for building and
-using PyLOOS under El Capitan.
-
-#### Use conda (recommended)
-
-See the conda install instructions above.
+We only support OS X via conda -- see the conda install instructions above.  We have worked to remove external dependencies (e.g. the Accelerate framework), but you do need to have Xcode installed.
 
 #### Build your own Python
 
@@ -347,6 +341,8 @@ http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-
 
 
 #### Use virtualenv
+
+Using virtualenv is deprecated in favor of using conda.
 
 This is in essence a variant of "install your own python".  If you say
     virtualenv loos-python
