@@ -81,16 +81,16 @@ def CheckSystemType(conf):
     conf.Result(typemsg)
 
 
-### Create a revision file for linking against.
+# Create a revision file for linking against.
 def setupRevision(env):
 
     # Divine the current revision...
     revision = loos_build_config.loos_version + " " + strftime("%y%m%d")
 
-    # Now, write this out to a cpp file that can be linked in...this avoids having
-    # to recompile everything when building on a new date.  We also rely on SCons
-    # using the MD5 checksum to detect changes in the file (even though it's always
-    # rewritten)
+    # Now, write this out to a cpp file that can be linked in. This avoids
+    # having to recompile everything when building on a new date.  We also
+    # rely on SCons using the MD5 checksum to detect changes in the file
+    # (even though it's always rewritten)
     revfile = open("src/revision.cpp", "w")
     revfile.write("#include <string>\n")
     revfile.write('std::string revision_label = "')
@@ -99,7 +99,7 @@ def setupRevision(env):
     revfile.close()
 
 
-### Let environment variables override or modify some build paramaters...
+# Let environment variables override or modify some build paramaters...
 def environOverride(conf):
     # Allow overrides from environment...
     if "CXX" in os.environ:
@@ -115,7 +115,7 @@ def environOverride(conf):
         print(("*** Appending custom link flag: " + os.environ["LDFLAGS"]))
 
 
-### Builder for setup scripts
+# Builder for setup scripts
 
 
 def expand_scons_paths(path, topdir):
@@ -143,7 +143,7 @@ def script_builder_python(target, source, env):
 
     ldlibrary = list(loos_build_config.user_libdirs.values())
 
-    if not "install" in SCons.Script.COMMAND_LINE_TARGETS:
+    if "install" not in SCons.Script.COMMAND_LINE_TARGETS:
         toolpath = "$LOOS/Tools:" + ":".join(
             [
                 "$LOOS/Packages/" + s
@@ -662,7 +662,8 @@ def AutoConfiguration(env):
                     print("Fatal error- cannot find your system library directory")
                     conf.env.Exit(1)
             else:
-                # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
+                # /usr/lib64 is found, so make sure we link against this
+                # (and not against any 32-bit libs)
                 default_lib_path = "/usr/lib64"
         conf.env.Append(LIBPATH=default_lib_path)
 
@@ -672,13 +673,13 @@ def AutoConfiguration(env):
             ATLAS_LIBPATH = env["ATLAS_LIBPATH"]
             ATLAS_LIBS = env["ATLAS_LIBS"]
             if not ATLAS_LIBPATH:
-                # Some distros may have atlas in /atlas-base, so must check for that...
+                # Some distros have atlas in /atlas-base, so must check that...
                 if conf.CheckDirectory(default_lib_path + "/atlas-base"):
                     atlas_libpath = default_lib_path + "/atlas-base"
                 elif conf.CheckDirectory(default_lib_path + "/atlas"):
                     atlas_libpath = default_lib_path + "/atlas"
                 else:
-                    print("Warning: Could not find an atlas directory!  Winging it...")
+                    print("Warning: Could not find an atlas directory! ")
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs["ATLAS"] = atlas_libpath
@@ -689,8 +690,8 @@ def AutoConfiguration(env):
         if not conf.CheckLib("pthread"):
             print("Error- LOOS requires a pthread library installed")
 
-        # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
-        # based on the environment or custom.py file
+        # Now that we know the default library path, setup Boost, NetCDF, and
+        # ATLAS based on the environment or custom.py file
         SetupBoostPaths(conf.env)
         SetupNetCDFPaths(conf.env)
 
