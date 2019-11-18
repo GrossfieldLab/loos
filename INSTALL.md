@@ -184,7 +184,7 @@ Assuming you already have a working install of Anaconda or miniconda (if not, yo
 need to say
 
 ```
-    conda create -n loos -c conda-forge python=3 swig=3.0.12 scons numpy scipy boost openblas libnetcdf lapack
+    conda create -n loos -c conda-forge python=3 swig scons numpy scipy boost openblas libnetcdf lapack
     conda activate loos
 ```
 
