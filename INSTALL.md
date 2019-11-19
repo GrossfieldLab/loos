@@ -16,6 +16,7 @@ Fedora 27          | yes          | yes            | Deprecated
 Fedora 28          | yes          | yes            |
 Fedora 29          | yes          | yes            |
 Fedora 30          | yes          | yes            |
+Fedora 31          | yes          | yes            |
 Ubuntu 12.04 LTS   | yes          | yes            | Deprecated
 Ubuntu 14.04 LTS   | yes          | yes            | Deprecated
 Ubuntu 15.04       | yes          | yes            | Deprecated
@@ -225,7 +226,10 @@ install scons, boost, and atlas:
 
     sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
 
-You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+You may need to copy custom.py-proto to custom.py, and uncomment the line
+setting PYTHON_INC (verifying that it's the correct location for your system).
+As of Fedora 31, this is no longer necessary (the default system python is
+3.x).
 
 LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
 and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
