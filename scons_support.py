@@ -33,6 +33,7 @@ import distutils.sysconfig
 import distutils.spawn
 import string
 from distutils.version import LooseVersion
+from sysconfig import get_paths
 
 import SCons
 
@@ -80,16 +81,16 @@ def CheckSystemType(conf):
     conf.Result(typemsg)
 
 
-### Create a revision file for linking against.
+# Create a revision file for linking against.
 def setupRevision(env):
 
     # Divine the current revision...
     revision = loos_build_config.loos_version + " " + strftime("%y%m%d")
 
-    # Now, write this out to a cpp file that can be linked in...this avoids having
-    # to recompile everything when building on a new date.  We also rely on SCons
-    # using the MD5 checksum to detect changes in the file (even though it's always
-    # rewritten)
+    # Now, write this out to a cpp file that can be linked in. This avoids
+    # having to recompile everything when building on a new date.  We also
+    # rely on SCons using the MD5 checksum to detect changes in the file
+    # (even though it's always rewritten)
     revfile = open("src/revision.cpp", "w")
     revfile.write("#include <string>\n")
     revfile.write('std::string revision_label = "')
@@ -98,7 +99,7 @@ def setupRevision(env):
     revfile.close()
 
 
-### Let environment variables override or modify some build paramaters...
+# Let environment variables override or modify some build paramaters...
 def environOverride(conf):
     # Allow overrides from environment...
     if "CXX" in os.environ:
@@ -114,7 +115,7 @@ def environOverride(conf):
         print(("*** Appending custom link flag: " + os.environ["LDFLAGS"]))
 
 
-### Builder for setup scripts
+# Builder for setup scripts
 
 
 def expand_scons_paths(path, topdir):
@@ -142,7 +143,7 @@ def script_builder_python(target, source, env):
 
     ldlibrary = list(loos_build_config.user_libdirs.values())
 
-    if not "install" in SCons.Script.COMMAND_LINE_TARGETS:
+    if "install" not in SCons.Script.COMMAND_LINE_TARGETS:
         toolpath = "$LOOS/Tools:" + ":".join(
             [
                 "$LOOS/Packages/" + s
@@ -370,14 +371,16 @@ def CheckNumpy(conf, pythonpath):
         conf.Result("yes")
         return 1
     newpaths = []
-    if "PYTHON_PATH" in conf.env:
-        envpath = conf.env["PYTHON_PATH"]
-        if len(envpath) > 1:  # Catches cases where PYTHON_PATH is present but null...
-            newpaths.extend(envpath.split(":"))
+    if conf.env.USING_CONDA:
+        newpaths.append(conf.env["CONDA_PREFIX"])
+    else:
+        if "PYTHON_PATH" in conf.env:
+            envpath = conf.env["PYTHON_PATH"]
+            # Catch cases where PYTHON_PATH is present but null...
+            if len(envpath) > 1:
+                newpaths.extend(envpath.split(":"))
 
     newpaths.append(default_lib_path)
-    if "CONDA_PREFIX" in env:
-        newpaths.append(env["CONDA_PREFIX"])
     for dir in newpaths:
         for p, d, f in os.walk(dir):
             for file in f:
@@ -416,6 +419,7 @@ def SetupBoostPaths(env):
 
     # If boost is not set but we're inside a conda environment,
     # automatically redirect boost into here...
+<<<<<<< HEAD
     # there appears to be a structural divergence for ubuntu condas
     if env['linux_type'] == 'debian':
         # this line is from e312458 and earlier. 
@@ -425,6 +429,10 @@ def SetupBoostPaths(env):
     else:
         if not BOOST and "CONDA_PREFIX" in env:
             BOOST = env["CONDA_PREFIX"]
+=======
+    if not BOOST and env.USING_CONDA:
+        BOOST = env["CONDA_PREFIX"]
+>>>>>>> 648f562570a78c16d0a9fa2b4306a053b3f462c9
 
     boost_libpath = ""
     boost_include = ""
@@ -458,8 +466,8 @@ def SetupNetCDFPaths(env):
 
     # If netcdf is not set but we're inside a conda environment,
     # automatically redirect netcdf into here...
-    # if not NETCDF and 'CONDA_PREFIX' in env['ENV']:
-    #    NETCDF=env['ENV']['CONDA_PREFIX']
+    if not NETCDF and env.USING_CONDA:
+        NETCDF=env['CONDA_PREFIX']
 
     netcdf_libpath = ""
     netcdf_include = ""
@@ -593,9 +601,11 @@ def checkForPythonHeader(context, header):
     oldcpp = None
     if "CPPFLAGS" in context.env:
         oldcpp = context.env["CPPFLAGS"]
-    if "CPPPATH" in context.env:
+    if "CPPPATH" in context.env and not ("CONDA_PREFIX" in context.env):
         for dir in context.env["CPPPATH"]:
             context.env.Append(CPPFLAGS="-I%s " % dir)
+            print("CPPFLAGS", context.env["CPPFLAGS"])
+
     ok = context.TryCompile(test_code, ".cpp")
 
     if oldcpp:
@@ -650,36 +660,38 @@ def AutoConfiguration(env):
     else:
         has_netcdf = 0
 
-        if "CONDA_PREFIX" in conf.env["ENV"]:
-            conda_path = conf.env["ENV"]["CONDA_PREFIX"]
+        if env.USING_CONDA:
+            conda_path = env["CONDA_PREFIX"]
             default_lib_path = conda_path + "/lib"
             if loos_build_config.host_type != "Darwin":
-                print("***DEBUG: adding rpath...")
                 conf.env.Append(RPATH=default_lib_path)
         else:
             default_lib_path = "/usr/lib"
 
-        if not conf.CheckDirectory("/usr/lib64"):
-            if not conf.CheckDirectory("/usr/lib"):
-                print("Fatal error- cannot find your system library directory")
-                conf.env.Exit(1)
-        else:
-            # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
-            default_lib_path = "/usr/lib64"
+            # if we're not in conda, add system library directory
+            if not conf.CheckDirectory("/usr/lib64"):
+                if not conf.CheckDirectory("/usr/lib"):
+                    print("Fatal error- cannot find your system library directory")
+                    conf.env.Exit(1)
+            else:
+                # /usr/lib64 is found, so make sure we link against this
+                # (and not against any 32-bit libs)
+                default_lib_path = "/usr/lib64"
         conf.env.Append(LIBPATH=default_lib_path)
-        # Only setup ATLAS if we're not on a Mac...
-        if loos_build_config.host_type != "Darwin":
+
+        # Only setup ATLAS if we're not on a Mac and we're not using conda
+        if loos_build_config.host_type != "Darwin" and not env.USING_CONDA:
             atlas_libpath = ""
             ATLAS_LIBPATH = env["ATLAS_LIBPATH"]
             ATLAS_LIBS = env["ATLAS_LIBS"]
             if not ATLAS_LIBPATH:
-                # Some distros may have atlas in /atlas-base, so must check for that...
+                # Some distros have atlas in /atlas-base, so must check that...
                 if conf.CheckDirectory(default_lib_path + "/atlas-base"):
                     atlas_libpath = default_lib_path + "/atlas-base"
                 elif conf.CheckDirectory(default_lib_path + "/atlas"):
                     atlas_libpath = default_lib_path + "/atlas"
                 else:
-                    print("Warning: Could not find an atlas directory!  Winging it...")
+                    print("Warning: Could not find an atlas directory! ")
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs["ATLAS"] = atlas_libpath
@@ -690,8 +702,8 @@ def AutoConfiguration(env):
         if not conf.CheckLib("pthread"):
             print("Error- LOOS requires a pthread library installed")
 
-        # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
-        # based on the environment or custom.py file
+        # Now that we know the default library path, setup Boost, NetCDF, and
+        # ATLAS based on the environment or custom.py file
         SetupBoostPaths(conf.env)
         SetupNetCDFPaths(conf.env)
 
@@ -729,7 +741,7 @@ def AutoConfiguration(env):
         if int(env["pyloos"]):
             if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env["pyloos"] = 1
-                pythonpath = distutils.sysconfig.get_python_inc()
+                pythonpath = get_paths()['include']
                 if "PYTHON_INC" in conf.env:
                     if conf.env["PYTHON_INC"] != "":
                         pythonpath = conf.env["PYTHON_INC"]
