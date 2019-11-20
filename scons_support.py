@@ -419,20 +419,8 @@ def SetupBoostPaths(env):
 
     # If boost is not set but we're inside a conda environment,
     # automatically redirect boost into here...
-<<<<<<< HEAD
-    # there appears to be a structural divergence for ubuntu condas
-    if env['linux_type'] == 'debian':
-        # this line is from e312458 and earlier. 
-        # Ubuntu 18.04 + conda stops building after that commit.
-        if not BOOST and "CONDA_PREFIX" in env["ENV"]:
-            BOOST = env["ENV"]["CONDA_PREFIX"]
-    else:
-        if not BOOST and "CONDA_PREFIX" in env:
-            BOOST = env["CONDA_PREFIX"]
-=======
     if not BOOST and env.USING_CONDA:
         BOOST = env["CONDA_PREFIX"]
->>>>>>> 648f562570a78c16d0a9fa2b4306a053b3f462c9
 
     boost_libpath = ""
     boost_include = ""
