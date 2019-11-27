@@ -773,6 +773,7 @@ def AutoConfiguration(env):
             else:
 
                 numerics = {
+                    "openblas": 0,
                     "satlas": 0,
                     "atlas": 0,
                     "lapack": 0,
@@ -808,8 +809,7 @@ def AutoConfiguration(env):
                     if numerics["lapack"]:
                         atlas_libs.append("lapack")
 
-                    if use_threads and (numerics["ptf77blas"] and
-numerics["ptcblas"]):
+                    if use_threads and (numerics["ptf77blas"] and numerics["ptcblas"]):
                         atlas_libs.extend(["ptf77blas", "ptcblas"])
                     elif numerics["f77blas"] and numerics["cblas"]:
                         atlas_libs.extend(["f77blas", "cblas"])
@@ -865,15 +865,13 @@ numerics["ptcblas"]):
 
                             if not ok:
                                 lib = checkLibsForFunction(
-                                    conf, funcname, list(numerics.keys()),
-atlas_libs
+                                    conf, funcname, list(numerics.keys()), atlas_libs
                                 )
                                 if lib:
                                     atlas_libs.insert(0, lib)
                                 else:
                                     print(
-                                        "Error- could not figure out where ", funcname,
-                                        " is located.",
+                                        "Error- could not figure out where ", funcname, " is located.",
                                     )
                                     print(
                                         "Try manually specifying ATLAS_LIBS and ATLAS_LIBPATH"
@@ -883,6 +881,8 @@ atlas_libs
             # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
                 conf.env.Append(LIBS=lib)
+        elif env.USING_CONDA:
+            conf.env.Append(LIBS="openblas")
 
         # Suppress those annoying maybe used unitialized warnings that -Wall
         # gives us...
