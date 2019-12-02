@@ -5,6 +5,8 @@
 namespace loos {
     class UniformWeight : public Weights {
     public:
+        uint current_frame;
+
         const double get();
         const double get(const uint index);
         uint size();
@@ -29,5 +31,14 @@ namespace loos {
                       _total(0.0),
                       _has_list(false),
                       _filename("") {};
+
+    UniformWeight(&pTraj traj) : current_frame(0),
+                                 _total(0.0),
+                                 _filename(filename),
+                                 _has_list(false)
+                                 {
+                                    add_traj(traj);
+    };
+
     ~UniformWeight() { };
 }

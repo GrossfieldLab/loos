@@ -10,6 +10,7 @@ namespace loos {
 
     // return the weighting of the current frame
     const double UniformWeight::get() {
+        current_frame = _traj->currentFrame();
         return 1.0;
     }
 
