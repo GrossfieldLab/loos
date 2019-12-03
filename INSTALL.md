@@ -44,7 +44,7 @@ As of LOOS 3.0, we also support building inside a Conda environment.  This is th
 ## For the Impatient
 
 
-LOOST requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK or other BLAS.
+LOOS requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK or other BLAS.
 Please refer to the OS-specific instructions below for more details.  For
 general advice about configuring LOOS and building in unusual environments, see
 the "General Notes" section at the end of this file.
@@ -189,9 +189,20 @@ need to say
     conda activate loos
 ```
 
-Note: we have switched to using conda-forge rather than the default channel.  I highly recommend editing ~/.condarc to add the following line
+We have switched to using conda-forge rather than the default channel.  I highly recommend editing ~/.condarc to add the following line
 
 `channel_priority: strict`
+
+If you're using an older OS (e.g. Ubuntu 16.04 LTS, Centos 7), the version of
+g++ that comes with the system is not compatible with the compiled BOOST libraries, with the result that you'll get a huge number of linking errors.  You can solve this by installing the compilers that come with conda as well, using
+
+```
+conda install -c conda-forge gxx_linux-64
+export CXX=$CONDA_PREFIX/bin/x86_64-conda_cos6-linux-gnu-g++
+scons -j4
+```
+
+The export line is necessary so that scons can find the conda version of the compilers.
 
 This will ensure that if at all possible conda will pull packages from conda-forge, rather than the default channel, which should reduce the likelihood of conflicts.
 
