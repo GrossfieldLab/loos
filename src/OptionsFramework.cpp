@@ -595,6 +595,8 @@ namespace loos {
       } else
       {
         has_weights = false;
+        // Default to the uniform weight class if no weights-file specified.
+        weights = UniformWeight();
       }
 
       return true;

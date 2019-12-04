@@ -33,7 +33,7 @@
 #include <boost/algorithm/string.hpp>
 #include <exceptions.hpp>
 #include <Weights.hpp>
-
+#include <UniformWeight.hpp>
 
 
 namespace loos {
