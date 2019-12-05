@@ -33,7 +33,7 @@ import distutils.sysconfig
 import distutils.spawn
 import string
 from distutils.version import LooseVersion
-from sysconfig import get_paths
+from sysconfig import get_paths, get_config_var
 
 import SCons
 
@@ -367,6 +367,18 @@ def CheckNumpy(conf, pythonpath):
     global default_lib_path
     conf.Message("Checking for numpy... ")
 
+    if conf.env.USING_CONDA:
+        python_lib_dir = get_config_var("MACHDESTLIB")
+        numpy_include_path = python_lib_dir + "/site-packages/numpy/core/include"
+        conf.env.Append(CPPPATH=numpy_include_path)
+        #ok = checkForPythonHeaderInPath(conf, "numpy/arrayobject.h",
+        #                                numpy_include_path)
+        #if ok:
+        #    conf.Result("yes")
+        #    return 1
+        #else:
+        #    print("Numpy not found inside conda, looking elsewhere...")
+
     env = conf.env["ENV"]
 
     ok = checkForPythonHeader(conf, "numpy/arrayobject.h")
@@ -374,14 +386,12 @@ def CheckNumpy(conf, pythonpath):
         conf.Result("yes")
         return 1
     newpaths = []
-    if conf.env.USING_CONDA:
-        newpaths.append(conf.env["CONDA_PREFIX"])
-    else:
-        if "PYTHON_PATH" in conf.env:
-            envpath = conf.env["PYTHON_PATH"]
-            # Catch cases where PYTHON_PATH is present but null...
-            if len(envpath) > 1:
-                newpaths.extend(envpath.split(":"))
+
+    if "PYTHON_PATH" in conf.env:
+        envpath = conf.env["PYTHON_PATH"]
+        # Catch cases where PYTHON_PATH is present but null...
+        if len(envpath) > 1:
+            newpaths.extend(envpath.split(":"))
 
     newpaths.append(default_lib_path)
     for dir in newpaths:
