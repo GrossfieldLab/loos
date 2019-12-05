@@ -369,15 +369,15 @@ def CheckNumpy(conf, pythonpath):
 
     if conf.env.USING_CONDA:
         python_lib_dir = get_config_var("MACHDESTLIB")
-        numpy_include_path = python_lib_dir + "/site-packages/numpy/core/include"
-        conf.env.Append(CPPPATH=numpy_include_path)
-        #ok = checkForPythonHeaderInPath(conf, "numpy/arrayobject.h",
-        #                                numpy_include_path)
-        #if ok:
-        #    conf.Result("yes")
-        #    return 1
-        #else:
-        #    print("Numpy not found inside conda, looking elsewhere...")
+        # some older compilers require this directory explicitly in the
+        # include path
+        numpy_inc_path = python_lib_dir + "/site-packages/numpy/core/include"
+        if CheckDirectory(conf, numpy_inc_path):
+            conf.env.Append(CPPPATH=numpy_inc_path)
+            conf.Result("yes")
+            return 1
+        else:
+            print("Numpy not found inside conda, looking elsewhere...")
 
     env = conf.env["ENV"]
 
