@@ -43,6 +43,8 @@ namespace loos {
     public:
         virtual const double get();
         virtual const double get(const uint index);
+        virtual void set(double newWeight);
+        virtual void set(double newWeight, const uint index);
         virtual uint size();
 
         virtual void normalize();
@@ -53,7 +55,10 @@ namespace loos {
         virtual void add_traj(pTraj&  traj);
         virtual const double operator()();
         virtual const double operator()(const uint index);
-
+        virtual void operator()(double newWeight);
+        virtual void operator()(double newWeight, const uint index);
+        virtual void operator()(std::vector<double>& newWeights);
+        
         std::vector<double> weights();
 
     private:

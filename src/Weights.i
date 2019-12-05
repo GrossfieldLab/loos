@@ -36,7 +36,7 @@
 %extend loos::Weights {
     double __getitem__(const int i) {
       if (i < 0 || static_cast<uint>(i) >= $self->size()) {
-	     throw(std::out_of_range("Index into Weights is out of bounds"));
+       throw(std::out_of_range("Index into Weights is out of bounds"));
       }
       return($self->get(i));
     }
@@ -45,3 +45,12 @@
 }
 
 %rename(__call__) loos::Weights::operator();
+
+%extend loos::Weights {
+  void __setitem__(double newWeight, const int index){
+    if (index < 0 || static_cast<uint>(index) >= $self->size()) {
+      throw(std::out_of_range("Index into Weights is out of bounds"));
+    }
+    $self->set(newWeight, index);
+  }
+}
