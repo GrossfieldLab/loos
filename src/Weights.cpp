@@ -101,12 +101,12 @@ namespace loos {
     }
 
     //! Return the totalWeight, as tracked using accumulate
-    const double Weights::totalWeight() {
+    double Weights::totalWeight() {
         return _total;
     }
 
     //! Return the weight of the current trajectory
-    const double Weights::trajWeight(){
+    double Weights::trajWeight(){
         return _totalTraj;
     }
 
@@ -130,22 +130,22 @@ namespace loos {
 
 
     //! Return the weight for the current frame of the trajectory
-    const double Weights::get() {
+    double Weights::get() {
         current_frame = _traj->currentFrame();
         return _weights.at(current_frame);
     }
 
     //! Return the weight for frame index of the trajectory
-    const double Weights::get(const uint index) {
+    double Weights::get(const uint index) {
         return _weights.at(index);
     }
 
     //! calling nomenclature wraps get
-    const double Weights::operator()() {
+    double Weights::operator()() {
         return get();
     }
 
-    const double Weights::operator()(const uint index) {
+    double Weights::operator()(const uint index) {
         return get(index);
     }
 

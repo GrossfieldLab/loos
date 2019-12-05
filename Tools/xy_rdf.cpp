@@ -321,7 +321,7 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 // Attach trajectory to weights
 if (wopts->has_weights)
     {
-    wopts->weights.add_traj(traj);
+    wopts->weights->add_traj(traj);
     }
 
 double bin_width = (hist_max - hist_min)/num_bins;
@@ -414,8 +414,8 @@ for (uint index = 0; index<framecnt; ++index)
     double weight = 1.0;
     if (wopts->has_weights)
         {
-        weight = wopts->weights();
-        wopts->weights.accumulate();
+        weight = wopts->weights->get();
+        wopts->weights->accumulate();
         }
 
     GCoord box = system.periodicBox();
@@ -610,16 +610,16 @@ for (int i = 0; i < num_bins; i++)
                         (norm*(upper_expected + lower_expected));
     if (wopts->has_weights)
         {
-        upper /= wopts->weights.totalWeight();
-        lower /= wopts->weights.totalWeight();
-        total /= wopts->weights.totalWeight();
+        upper /= wopts->weights->totalWeight();
+        lower /= wopts->weights->totalWeight();
+        total /= wopts->weights->totalWeight();
         }
 
     double cum_increment = (hist_upper_total[i] + hist_lower_total[i]) /
                                     group1.size();
     if (wopts->has_weights)
         {
-        cum_increment *= framecnt / wopts->weights.totalWeight();
+        cum_increment *= framecnt / wopts->weights->totalWeight();
         }
 
     cum += cum_increment;

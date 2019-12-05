@@ -267,7 +267,7 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 // Attach trajectory to weights
 if (wopts->has_weights)
     {
-    wopts->weights.add_traj(traj);
+    wopts->weights->add_traj(traj);
     }
 
 
@@ -336,8 +336,8 @@ for (uint index = 0; index<framecount; ++index)
     double weight = 1.0;
     if (wopts->has_weights)
         {
-        weight = wopts->weights();
-        wopts->weights.accumulate();
+        weight = wopts->weights->get();
+        wopts->weights->accumulate();
         }
 
 
@@ -371,7 +371,7 @@ for (uint index = 0; index<framecount; ++index)
 
     if (wopts->has_weights)
         {
-        volume /= wopts->weights.totalWeight();
+        volume /= wopts->weights->totalWeight();
         }
     else
         {
@@ -382,7 +382,7 @@ for (uint index = 0; index<framecount; ++index)
 double expected = unique_pairs / volume;
 if (wopts->has_weights)
     {
-    expected *= wopts->weights.totalWeight();
+    expected *= wopts->weights->totalWeight();
     }
 else
     {
@@ -406,8 +406,8 @@ for (int i = 0; i < num_bins; i++)
     double total = hist[i]/ (norm*expected);
     if (wopts->has_weights)
         {
-        cum1 += hist[i] / (wopts->weights.totalWeight()*g1_mols.size());
-        cum2 += hist[i] / (wopts->weights.totalWeight()*g2_mols.size());
+        cum1 += hist[i] / (wopts->weights->totalWeight()*g1_mols.size());
+        cum2 += hist[i] / (wopts->weights->totalWeight()*g2_mols.size());
         }
     else
         {

@@ -41,18 +41,23 @@ namespace loos {
         bool _has_list;
 
     public:
-        const double get();
-        const double get(const uint index);
-        uint size();
+        // were const
+        virtual double get();
+        virtual double get(const uint index);
+        // wasn't const 
+        virtual uint size();
 
-        void normalize();
-        void accumulate();
-        void accumulate(const uint index);
-        const double totalWeight();
-        const double trajWeight();
-        void add_traj(pTraj&  traj);
-        const double operator()();
-        const double operator()(const uint index);
+        virtual void normalize();
+        virtual void accumulate();
+        virtual void accumulate(const uint index);
+        // were const
+        virtual double totalWeight();
+        virtual double trajWeight();
+        // wasn't const 
+        virtual void add_traj(pTraj&  traj);
+        // were const
+        virtual double operator()();
+        virtual double operator()(const uint index);
 
         std::vector<double> weights();
 
@@ -87,7 +92,7 @@ namespace loos {
                     {
 
         };
-        ~Weights() { };
+        virtual ~Weights() { }
 
         uint read_weights_list(const std::string &filename);
 

@@ -588,15 +588,17 @@ namespace loos {
       }
       if (map.count("weights")) {
         has_weights = true;
-        weights = Weights(weights_name);
+        Weights weightsFromFile = Weights(weights_name);
+        weights = & weightsFromFile;
       } else if (map.count("weights-list")) {
         has_weights = true;
-        weights.read_weights_list(list_name);
+        weights->read_weights_list(list_name);
       } else
       {
         has_weights = false;
         // Default to the uniform weight class if no weights-file specified.
-        weights = UniformWeight();
+        UniformWeight uniform = UniformWeight();
+        weights = & uniform;
       }
 
       return true;
