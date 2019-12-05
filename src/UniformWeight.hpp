@@ -8,22 +8,18 @@ namespace loos {
 class UniformWeight : public Weights {
 public:
   uint current_frame;
-  // were const
-  double get();
-  double get(const uint index);
-  // were not const
+  const double get();
+  const double get(const uint index);
   uint size();
 
   void normalize();
   void accumulate();
   void accumulate(const uint index);
-  // were const
-  double totalWeight();
-  double trajWeight();
+  const double totalWeight();
+  const double trajWeight();
   void add_traj(pTraj &traj);
-  // were const
-  double operator()();
-  double operator()(const uint index);
+  const double operator()();
+  const double operator()(const uint index);
   // this will be built upon request.
   // will be a trajlength vector of 1.0s,
   // so don't ask if you don't need.

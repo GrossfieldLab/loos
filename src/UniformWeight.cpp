@@ -29,10 +29,10 @@ void UniformWeight::normalize() {
 }
 
 // return totalWeight used
-double UniformWeight::totalWeight() { return _total; }
+const double UniformWeight::totalWeight() { return _total; }
 
 // return the weight of current trajectory
-double UniformWeight::trajWeight() { return _totalTraj; }
+const double UniformWeight::trajWeight() { return _totalTraj; }
 
 // return a vector with the number of weights in it
 std::vector<double> UniformWeight::weights() {
@@ -42,18 +42,18 @@ std::vector<double> UniformWeight::weights() {
 }
 
 // return the weighting of the current frame
-double UniformWeight::get() {
+const double UniformWeight::get() {
   current_frame = _traj->currentFrame();
   return _frameWeight;
 }
 
 // return the weight of the index
-double UniformWeight::get(const uint index) { return _frameWeight; }
+const double UniformWeight::get(const uint index) { return _frameWeight; }
 
 // calling nomenclature wraps get
-double UniformWeight::operator()() { return get(); }
+const double UniformWeight::operator()() { return get(); }
 
-double UniformWeight::operator()(const uint index) { return get(index); }
+const double UniformWeight::operator()(const uint index) { return get(index); }
 
 // give number of frames, which is equivalent to _num_weights, as size
 uint UniformWeight::size() { return _traj->nframes(); }
