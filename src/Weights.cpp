@@ -150,6 +150,12 @@ void Weights::operator()(double newWeight, const uint index) {
 
 //! set all weights from passed vector
 void Weights::operator()(std::vector<double> &newWeights) {
+  if (_weights.size() != newWeights.size())
+    throw(LOOSError(std::string(
+      "Number of weights in class is " + std::to_string(_weights.size())
+      + " number inserted is " + std::to_string(newWeights.size())
+      + " these must match."
+    )));
   // note that operator= for stl::vectors does in fact copy their contents.
   _weights = newWeights;
 }
