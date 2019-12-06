@@ -197,7 +197,13 @@ Then, you can run the supplied script to set up a conda environment and build LO
    ./conda_build.sh loos 8
 ```
 
-This will install packages into an environment loos, creating it if it doesn't already exist.  We use conda-forge rather than the default channel, so it's probably not a great idea to install into an existing environment that uses other channels. The script will set channel_priority to strict in your ~/.condarc, but you can undo this by removing the following line:
+This will install packages into an environment loos, creating it if it doesn't
+already exist, and will run `scons -j8` (you can supply a different number of
+processes if you prefer, eg 2 if you've got a slow machine).  We use conda-forge
+rather than the default channel, so it's probably not a great idea to install
+into an existing environment that uses other channels. The script will set
+channel_priority to strict in your ~/.condarc, but you can undo this by removing
+the following line:
 
 ```
 channel_priority: strict
