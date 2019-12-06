@@ -330,63 +330,12 @@ The package-manager installed scons is too old.  Download and install SCons
 
 ## MacOS
 
-We only support OS X via conda -- see the conda install instructions above.  We have worked to remove external dependencies (e.g. the Accelerate framework), but you do need to have Xcode installed.
+We only support OS X via conda -- see the conda install instructions above.  We have worked to remove external dependencies, so it shouldn't be necessary to have XCode installed.
 
-The instructions below are only maintained for historical purposes.
-
-#### Build your own Python
-
-The first way is to download and install your own local Python and use
-this to run SCons and PyLOOS.  Here again, you have two options: build
-and install SCons using that Python, or use the local Python to invoke
-the existing SCons.  The latter can be done with the following command
-line:
-
-       /path/to/my/own/python `which scons`
-
-Simply putting the new Python in your PATH will not work because SCons
-"sanitizes" the PATH before running.  You will also need to be sure to
-invoke your PyLOOS scripts with your new local Python.
-
-
-#### Disable SIP
-
-Although we have not tested this method, it is a common solution
-recommended to dealing with unsafe library errors.
-Two articles about managing SIP status are:
-
-https://developer.apple.com/library/mac/documentation/Security/Conceptual/System_Integrity_Protection_Guide/ConfiguringSystemIntegrityProtection/ConfiguringSystemIntegrityProtection.html
-
-http://www.macworld.com/article/2986118/security/how-to-modify-system-integrity-protection-in-el-capitan.html
-
-
-
-#### Use virtualenv
-
-Using virtualenv is deprecated in favor of using conda.
-
-This is in essence a variant of "install your own python".  If you say
-    virtualenv loos-python
-it will create a local copy of your python-of-choice in your directory space,
-so you can install packages as needed.  Activate that virtual environment using
-the activate.csh or activate.sh script in the distribution directory, then use that
-to install SCons and LOOS.   You'll then need to make sure you're in that virtualenv
-whenever you want to run PyLOOS scripts.
-
-### IMPORTANT NOTE FOR MACOS 10.9 "MAVERICKS" USERS
-
-MacOS 10.9 requires LOOS 2.1 or more recent.  We have also discovered
-an incompatibility with Boost installed via Fink in MacOS 10.9.  You
-will need to manually download and build a recent version of Boost and
-*NOT* use the Fink version.
-
-There is an issue with using Swig and a recent version of MacOS 10.9 that
-affects how STL containers are wrapped.  We have disabled the wrapping of
-iterator methods for MacOS 10.9 only in order to build PyLOOS.  This means
-functions such as begin() and erase() will be unavailable in PyLOOS for
-the vectors used in LOOS.
 
 ### General Instructions
+
+This is in case you don't want to use you OS' package manager, and don't want to use conda.  I'm not sure why anyone would do this, and so these instructions are really for historical purposes only.
 
 First, make sure you have the Developer's Tools (i.e. XCode)
 installed.  XCode is available for free through the Mac App store.
@@ -439,6 +388,8 @@ environment, and we'd appreciate hearing about any problems you have.
 
 For Windows 10, your best bet is to use one of the linux subsystems that are installable from Microsoft (e.g. Ubuntu or Debian), then follow the instructions for that linux distribution.  We have anecodotal evidence that this works, but it isn't a supported environment.
 
+It also may be possible to install on windows via conda, but we have not tested this.
+
 ---
 
 ## Slackware (Unsupported)
@@ -446,6 +397,8 @@ For Windows 10, your best bet is to use one of the linux subsystems that are ins
 Older versions of LOOS have been tested with Slackware 14.1.  You will need to
 install, by whatever means you prefer, lapack, blas, and scons.  LOOS and PyLOOS
 should then build.
+
+Or, just use conda.
 
 
 ---
