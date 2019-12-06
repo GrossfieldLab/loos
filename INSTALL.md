@@ -211,7 +211,7 @@ To create an installation of LOOS, you can say
 scons install
 ```
 
-This defaults to putting LOOS in /opt, but you can choose a different location either by setting the PREFIX variable, either on the command line or in custom.py.
+This defaults to putting LOOS in /opt, but you can choose a different location either by setting the PREFIX variable, either on the command line or in custom.py.  However, this is not necessary -- you can just as easily work out of the LOOS source tree, by sourcing `setup.sh` or `setup.csh`, found in the top level directory.
 
 
 ### Documentation
