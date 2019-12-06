@@ -76,13 +76,25 @@ opts.Add('LIBRARY_PATH', 'Add to library paths before any auto-config', '')
 
 scons_support.addDeprecatedOptions(opts)
 
-# Uncomment this version to have a semi-clean build environment
-env = Environment(ENV={'PATH': os.environ['PATH']},
-                  options=opts,
-                  toolpath='.',
-                  SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
-                  SHLIBPREFIX=""
+# If we're using conda, we want to pull in the environment.
+# Otherwise, we want the environment mostly cleaned out
+if "CONDA_PREFIX" in os.environ:
+    env = Environment(ENV=os.environ,
+                      options=opts,
+                      toolpath='.',
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SHLIBPREFIX=""
                   )
+    env["CONDA_PREFIX"]=os.environ["CONDA_PREFIX"]
+    env.USING_CONDA = True
+else:
+    env = Environment(ENV={'PATH': os.environ['PATH']},
+                      options=opts,
+                      toolpath='.',
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SHLIBPREFIX=""
+                      )
+    env.USING_CONDA = False
 
 Help(opts.GenerateHelpText(env))
 
@@ -110,11 +122,6 @@ cleaning = env.GetOption('clean')
 
 
 # Autoconf
-if "CONDA_PREFIX" in os.environ:
-    env.USING_CONDA = True
-    env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
-else:
-    env.USING_CONDA = False
 
 if env.USING_CONDA and platform.system() == "Darwin":
     flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
@@ -144,7 +151,6 @@ env.Append(LIBS=['pthread'])
 if loos_build_config.host_type == 'Darwin':
     release = platform.release().split('.')
     if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
-        env.Append(CCFLAGS='--std=c++0x -Wno-deprecated-register -D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0')
         # Hack to get swig to work with latest 10.9
         env.Append(SWIGFLAGS='-DSWIG_NO_EXPORT_ITERATOR_METHODS')
     env.Append(LINKFLAGS=' -llapack')
