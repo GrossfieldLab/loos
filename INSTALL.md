@@ -188,45 +188,19 @@ You have 2 options for accessing LOOS documentation.
 
 ## Conda
 
-Assuming you already have a working install of Anaconda or miniconda (if not, you'll need to get one from https://www.anaconda.com/distribution/), you'll
-need to say
+You will need to have a working install of Anaconda or miniconda, available from
+https://www.anaconda.com/distribution/
+
+Then, you can run the supplied script to set up a conda environment and build LOOS
 
 ```
-    conda create -n loos -c conda-forge python=3 swig scons numpy scipy boost openblas libnetcdf lapack
-    conda activate loos
+   ./conda_build.sh loos 8
 ```
 
-We have switched to using conda-forge rather than the default channel.  I highly recommend editing ~/.condarc to add the following line
+This will install packages into an environment loos, creating it if it doesn't already exist.  We use conda-forge rather than the default channel, so it's probably not a great idea to install into an existing environment that uses other channels. The script will set channel_priority to strict in your ~/.condarc, but you can undo this by removing the following line:
 
 ```
 channel_priority: strict
-```
-This will ensure that if at all possible conda will pull packages from conda-forge, rather than the default channel, which should reduce the likelihood of conflicts.
-
-If you're using an older OS (e.g. Ubuntu 16.04 LTS, Centos 7), the version of
-g++ that comes with the system is not compatible with the compiled BOOST
-libraries that come from conda-forge, with the result that you'll get a huge
-number of linking errors.  You can solve this by installing the compilers that
-come with conda as well, using
-sconesscones
-```
-conda install -c conda-forge gxx_linux-64
-export CXX=$CONDA_PREFIX/bin/x86_64-conda_cos6-linux-gnu-g++
-```
-
-The export line is necessary so that scons can find the conda version of the compilers.
-The name of the compiler may change in the future -- you should check by running
-
-```
-ls $CONDA_PREFIX/bin/*g++*
-```
-
-to see what the current name is.
-
-Then, run the newly installed scons to build LOOS
-
-```
-    $CONDA_PREFIX/bin/scons -j4
 ```
 
 As of version 3.1, we've significantly redone the build scripts so this should work robustly.  However, if the build fails to find something (or you want to use a version of a library from outside of conda), you can copy custom.py-proto to custom.py, and set the variables (e.g. BOOST, NETCDF) to point to the locations of the libraries you want to use.
