@@ -33,16 +33,15 @@ OpenSUSE 15        | yes          | yes            |
 MacOS X            | yes          | yes            | See OS notes
 
 
-* Deprecated: We used to support this configuration, but no longer test it.  It may still work.
-* Unsupported: We have built LOOS in the past using this configuration, but do not
-  regularly test it and provide no direct support for using it.
+* Deprecated: We used to support this configuration, but no longer test it.  It may still work. Your best bet is to use conda.
 
-As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS, and on any Linux environment that is not supported.
+As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS, and on any Linux environment that is not supported.  LOOS 3.1 features an extensively reworked build system, which uses conda much more natively and should be far more robust.
 
 # Building and Installing LOOS
 
 ## For the Impatient
 
+For the really impatient, you can just run `conda_build.sh`, found in the main LOOS directory, which will create an appropriate conda environment and build LOOS in it for you.
 
 LOOS requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK or other BLAS.
 Please refer to the OS-specific instructions below for more details.  For
@@ -98,8 +97,7 @@ Python  | PyLOOS scripts
 
 The Python interface to LOOS will be included in the build if you have
 a recent SWIG (version 2.0 or better) in your standard path as well as
-NumPy installed.  Not all operating systems and versions are
-supported.  If you need to disable the automatic building of PyLOOS,
+NumPy installed.  If you need to disable the automatic building of PyLOOS,
 use the pyloos flag to scons:
 
 ```
@@ -152,6 +150,8 @@ or the library directory.  The BOOST_INCLUDE and BOOST_LIBPATH variables
 will specify the corresponding directories for the LOOS build.  You
 may also explicitly specify which libraries to link against with the
 BOOST_LIBS variable.  See custom.py-proto for examples.
+
+None of this should be necessary if you use Conda.
 
 
 
