@@ -74,7 +74,7 @@ hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorti
 hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
 hdr = hdr + ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
-hdr = hdr + ' Weights.hpp UniformWeight.hpp'
+hdr = hdr + ' Weights.hpp UniformWeight.hpp ObsVector.hpp'
 
 if (env['HAS_NETCDF']):
    hdr = hdr + ' amber_netcdf.hpp'
