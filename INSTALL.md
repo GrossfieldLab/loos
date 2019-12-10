@@ -37,6 +37,9 @@ MacOS X            | yes          | yes            | See OS notes
 
 As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS, and on any Linux environment that is not supported.  LOOS 3.1 features an extensively reworked build system, which uses conda much more natively and should be far more robust.
 
+Going forward, we plan to focus on conda as the preferred build environment, as opposed to using native libraries from the distribution's package manager, and over time those build instructions may be subject to bit-rot.
+
+
 # Building and Installing LOOS
 
 ## For the Impatient
