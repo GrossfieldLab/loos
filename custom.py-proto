@@ -79,11 +79,6 @@
 ## Uncomment the following to use the threaded version of OpenBLAS
 # ATLAS_LIBS='openblasp'
 
-############# PYTHON module Configuration
-## Set PYTHON_PATH to help scons find modules
-## This is likely needed if you're building using a non-standard
-## python install, e.g. via conda
-# PYTHON_PATH='/home/USERNAME/.conda/envs/CONDA_ENV/lib/python2.7'
 
 ############ Use the correct python while compiling
 ## Help scons find the correct python include files
@@ -95,3 +90,5 @@
 #PYTHON_INC='/usr/include/python3.7m'
 # This value is good for Debian 9
 #PYTHON_INC='/usr/include/python3.5m'
+# Ubuntu 18
+#PYTHON_INC='/usr/include/python3.6m'
