@@ -1,195 +1,22 @@
-# Operating System Compatibility
+# Overview
 
-                   |     
-Operating System   | LOOS Support | PyLOOS Support | Notes
-----------------   | ------------ | -------------- | -----
-Fedora 18          | yes          | yes            | Deprecated
-Fedora 19          | yes          | yes            | Deprecated
-Fedora 20          | yes          | yes            | Deprecated
-Fedora 21          | yes          | yes            | Deprecated
-Fedora 22          | yes          | yes            | Deprecated
-Fedora 23          | yes          | yes            | Deprecated
-Fedora 24          | yes          | yes            | Deprecated
-Fedora 25          | yes          | yes            | Deprecated
-Fedora 26          | yes          | yes            | Deprecated
-Fedora 27          | yes          | yes            | Deprecated
-Fedora 28          | yes          | yes            |
-Fedora 29          | yes          | yes            |
-Fedora 30          | yes          | yes            |
-Fedora 31          | yes          | yes            |
-Ubuntu 12.04 LTS   | yes          | yes            | Deprecated
-Ubuntu 14.04 LTS   | yes          | yes            | Deprecated
-Ubuntu 15.04       | yes          | yes            | Deprecated
-Ubuntu 15.10       | yes          | yes            | Deprecated
-Ubuntu 16.04 LTS   | yes          | yes            | Deprecated
-Ubuntu 18.04       | yes          | yes            |
-Debian 7.8         | yes          | yes            | Deprecated
-Debian 8.1         | yes          | yes            | Deprecated
-Debian 9.8         | yes          | yes            |
-Centos 7           | yes          | yes            |
-OpenSUSE 12        | yes          | yes            | Deprecated
-OpenSUSE 13        | yes          | yes            | Deprecated
-OpenSUSE 15        | yes          | yes            |
-MacOS X            | yes          | yes            | See OS notes
+LOOS is distributed as C++ and python source code, and will need to be compiled
+for your particular system.  Both the C++ and python portions have some external dependencies.
 
+With this in mind, there are 3 routes to installing LOOS:
+* conda
+* native system Libraries
+* roll your own
 
-* Deprecated: We used to support this configuration, but no longer test it.  It may still work. Your best bet is to use conda.
+In each case, you'll still need to compile LOOS on your machine. Conda is the most portable approach – as far as I can tell, our Conda install works on all linux and Mac systems; at the moment, *Conda is the only supported approach for installing LOOS on Mac.*
 
-As of LOOS 3.0, we also support building inside a Conda environment.  This is the preferred way to build on MacOS, and on any Linux environment that is not supported.  LOOS 3.1 features an extensively reworked build system, which uses conda much more natively and should be far more robust.
+If you prefer, on Linux you can also use system libraries from your package manager to satisfy the dependencies.  This file contains the command lines necessary to install the required libraries for recent versions of Fedora, Centos, Ubuntu, and OpenSuse.
 
-Going forward, we plan to focus on conda as the preferred build environment, as opposed to using native libraries from the distribution's package manager, and over time those build instructions may be subject to bit-rot.
+Finally, if you prefer you can download build the key dependencies for yourself, although we can't really help much in that case.
 
+In addition, you have 2 choices for how to install LOOS. You can either work with a source tree (use binaries compiled in the directory structure you downloaded) or an install. If only one user is working with the LOOS install, it's purely a matter of taste. If multiple users will be working with it, it arguably makes sense to do an install, which will copy the binaries, libraries, and python libraries into a new directory tree (/opt/LOOS, by default).
 
-# Building and Installing LOOS
-
-## For the Impatient
-
-For the really impatient, you can just run `conda_build.sh`, found in the main LOOS directory, which will create an appropriate conda environment and build LOOS in it for you.
-
-LOOS requires BOOST 1.36 or higher, SCons, and Atlas/LAPACK or other BLAS.
-Please refer to the OS-specific instructions below for more details.  For
-general advice about configuring LOOS and building in unusual environments, see
-the "General Notes" section at the end of this file.
-
-If you are building on a system where the default python is 2.7, you will need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
-
-LOOS can then be built using the following command:
-```
-    scons
-```
-
-Or installed (to /opt as a default):
-```
-    sudo scons install
-```
-
-To install in a user-specified location:
-
-```
-    scons PREFIX=/path/to/install install
-```
-
-To use LOOS, your environment must be first setup:
-    (bash)   source /path/to/loos/setup.sh
-    (tcsh)   source /path/to/loos/setup.csh
-
-
-
-### Build targets
-
-Target | Description
------- | -----------
-core   | LOOS Library and PyLOOS
-tools  | LOOS Library, Tools, and PyLOOS
-all    | LOOS Library, Tools, PyLOOS, and documentation (if necessary), and all Packages (default)
-install| Install library, tools, PyLOOS, documentation, and all Packages
-
-### Available Packages (also build targets)
-
-Name    | Description
-------  | -----------
-ENM     | Elastic Network Models
-HBonds  | Hydrogen Bonds Analysis
-Conv    | Convergence Analysis
-Density | Density/3D Histogram Tools
-User    | User-created tools
-Python  | PyLOOS scripts
-
-
-### PyLOOS
-
-The Python interface to LOOS will be included in the build if you have
-a recent SWIG (version 2.0 or better) in your standard path as well as
-NumPy installed.  If you need to disable the automatic building of PyLOOS,
-use the pyloos flag to scons:
-
-```
-    scons pyloos=0
-```
-
-To build only the core LOOS libraries and PyLOOS, use the following
-command:
-
-```
-    scons core
-```
-
-Note that the Optimal Membrane Generator requires PyLOOS.  If you
-do not have SWIG installed or disable PyLOOS support, then the OMG
-will not be installed.
-
-### Amber NetCDF
-
-LOOS now supports a subset of the Amber NetCDF convention 1.0-B.  Only
-coordinates are retrieved and are converted into the default LOOS data
-type (i.e. doubles).  Periodic boxes are assumed to be orthogonal and
-the angles are currently ignored.
-
-If the netcdf libraries are installed, these will be automatically
-detected by SCons and included in the build.  When opening an amber
-trajectory file, LOOS will determine if it is a NetCDF file or an
-ASCII MDCRD file and act appropriately.
-
-If the netcdf libraries and headers are installed in a non-standard
-location, set the NETCDF variable in your custom.py file to point to
-the installation.  The specific include and library directories can be
-set using the NETCDF_INCLUDE and NETCDF_LIBPATH variables
-respectively, and the libraries linked against can be specified using
-the NETCDF_LIBS variable.
-
-
-### Boost
-
-LOOS requires Boost version 1.36 or more recent.  To explicitly
-specify an install location, set the BOOST variable in your custom.py
-file or on the command line:
-
-```
-    scons BOOST=/usr/local/boost_1_54_0
-```
-
-In some cases, you may need to override either the include directory
-or the library directory.  The BOOST_INCLUDE and BOOST_LIBPATH variables
-will specify the corresponding directories for the LOOS build.  You
-may also explicitly specify which libraries to link against with the
-BOOST_LIBS variable.  See custom.py-proto for examples.
-
-None of this should be necessary if you use Conda.
-
-
-
-### Parallel (multithreaded) ATLAS
-
-If you have a full install of ATLAS including threaded versions of the
-BLAS and LAPACK, you can link against these to take advantage of
-multiple cores in LOOS.  Copy the custom.py-proto to custom.py and
-uncomment/change the appropriate lines.
-
-
-
-### Documentation
-
-You have 2 options for accessing LOOS documentation.  
-
-1. consult the online documentation at http://grossfieldlab.github.io/loos/  
-   This is fine if you're not developing new methods for the core library, and if you don't mind needing network access.
-
-2. build a new copy of the documentation.  To do so, you will need to
-   install doxygen and graphviz (available in most package managers).  Then, run
-
-```
-   doxygen
-```
-
-   from the top-level LOOS directory, and look for the results by accessing
-   `Docs/html/index.html`
-
-
-======
-
-# OS Specific Notes
-
-## Conda
+# Compiling using conda for mac or linux
 
 You will need to have a working install of Anaconda or miniconda, available from
 https://www.anaconda.com/distribution/
@@ -212,7 +39,54 @@ the following line:
 channel_priority: strict
 ```
 
-As of version 3.1, we've significantly redone the build scripts so this should work robustly.  However, if the build fails to find something (or you want to use a version of a library from outside of conda), you can copy custom.py-proto to custom.py, and set the variables (e.g. BOOST, NETCDF) to point to the locations of the libraries you want to use.
+To create an installation of LOOS, you can say
+
+```
+scons install
+```
+
+This defaults to putting LOOS in /opt, but you can choose a different location either by setting the PREFIX variable, either on the command line or in custom.py (copy from custom.py-proto to get the idea of what other options are available).  However, this is not necessary -- you can just as easily work out of the LOOS source tree, by sourcing `setup.sh` or `setup.csh`, found in the top level directory.
+
+We suggest sourcing the appropriate setup script in your `.bashrc` or `.tcshrc`, so that LOOS will always work for you.
+
+To build the documentation, you will also require doxygen and graphviz,
+
+```
+    conda install -c conda-forge doxygen graphviz
+    doxygen
+```
+
+
+Going forward, we plan to focus on conda as our preferred environment, and eventually plan to support direct installation via conda.
+
+
+# Installing using system libraries on supported Linux distributions
+
+The following is a non-exhaustive list of distributions that support LOOS. It may be possible to adapt the instructions below to build on older distributions (or you could use conda).
+
+Operating System   | LOOS Support | Notes
+----------------   | ------------ | -----
+Fedora 29          | yes          |
+Fedora 30          | yes          |
+Fedora 31          | yes          |
+Ubuntu 16.04 LTS   | yes          | conda-only
+Ubuntu 18.04       | yes          |
+Debian 9.8         | yes          |
+Centos 7           | yes          |
+OpenSUSE 15        | yes          |
+MacOS X            | yes          | conda-only
+
+You'll need sudo access, or someone who has root access, it order to install native system libraries. If this isn't possible, your best bet is to install via conda (see above).
+
+Going forward, we plan to focus on conda as the preferred build environment, as opposed to using native libraries from the distribution's package manager, and over time those build instructions may be subject to bit-rot.
+
+After following the instructions specific to your OS, you will need to actually build LOOS by saying
+
+```
+scons -j8
+```
+
+"-j8" will run 8 g++ jobs at once, greatly speeding up the build if you've got a reasonably fast machine.  You can leave this option out, or change the number, if you prefer.
 
 To create an installation of LOOS, you can say
 
@@ -220,37 +94,27 @@ To create an installation of LOOS, you can say
 scons install
 ```
 
-This defaults to putting LOOS in /opt, but you can choose a different location either by setting the PREFIX variable, either on the command line or in custom.py.  However, this is not necessary -- you can just as easily work out of the LOOS source tree, by sourcing `setup.sh` or `setup.csh`, found in the top level directory.
-
-
-### Documentation
-
-To build the documentation, you will also require doxygen and graphviz,
-
-```
-    conda install doxygen graphviz
-    doxygen
-```
+This will install LOOS in /opt. You can also say `scons PREFIX=/path/to/loos install` to install LOOS in the location of your choosing.
 
 ## Fedora
 
-LOOS has been tested on Fedora (64-bit).  We assume you already have
-the basic compiler tools installed (i.e. g++).  You will need to
-install scons, boost, and atlas:
+LOOS has been tested on Fedora.  You will need to
+install a number of packages, for instance by using the following command
 
 ```
     sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
 ```
 
-You may need to copy custom.py-proto to custom.py, and uncomment the line
-setting PYTHON_INC (verifying that it's the correct location for your system).
-As of Fedora 31, this is no longer necessary (the default system python is
-3.x).
+For versions of Fedora where the default python is python2.7,
+you will need to copy custom.py-proto to custom.py, and uncomment the line
+setting PYTHON_INC (verifying that it's the correct location for your system), *before* you build LOOS. As of Fedora 31, this is no longer necessary (the default system python is 3.x).
 
 LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
 and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't have
 python3 packages for numpy and scipy, you can either install them manually or
 use conda.
+
+After installing the packaegs, you can build LOOS using `scons` as described above.
 
 ### Documentation
 
@@ -276,7 +140,7 @@ Then install the packages
     sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
 ```
 
-You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system), then run `scons ` as described above.
 
 
 ### Documentation
@@ -306,11 +170,7 @@ To build the documentation:
 
 ## OpenSUSE
 
-As of OpenSUSE 13, there is a pre-build ATLAS package available.  However,
-it does not include all of the LAPACK functions LOOS requires.  At this time,
-we recommend only installing lapack and blas.  If you install ATLAS, it will
-be ignored by the LOOS build.
-
+We have tested the build on OpenSuse 15.x
 Using zypper (or your favorite package manager), install the following:
 
 ```
@@ -321,7 +181,9 @@ You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed
 in order to build LOOS.
 
-You may need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system).
+For older distributions, the command line should be very similar, but the version numbers for boost may differ.
+
+You will need to copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system) *before* running scons.
 
 ### Documentation
 
@@ -330,18 +192,6 @@ To build the documentation:
     sudo zypper install doxygen graphviz
     doxygen
 ```
-### OpenSUSE 12
-
-The package-manager installed scons is too old.  Download and install SCons
-2.0 or better.
-
----
-
-## MacOS
-
-We only support OS X via conda -- see the conda install instructions above.  We have worked to remove external dependencies, so it shouldn't be necessary to have XCode installed.
-
-
 ### General Instructions
 
 This is in case you don't want to use you OS' package manager, and don't want to use conda.  I'm not sure why anyone would do this, and so these instructions are really for historical purposes only.
@@ -369,7 +219,7 @@ environment variable.
 The default build will use the system Python and Numpy.
 Any non-standard locations for python modules can be specified using
 the PYTHON_PATH option to scons:
-    scons PYTHON_PATH=$HOME/local/lib/python2.7
+    scons PYTHON_PATH=$HOME/local/lib/python3.6
 
 #### SciPy
 
@@ -454,3 +304,133 @@ doxygen
 which will create a new directory `Docs`.  If you open `Docs/html/index.html`,
 you'll see an updated version of the docs from the GitHub page (including any
 new functions or methods you might have written).
+
+# Other build notes
+
+Or installed (to /opt as a default):
+```
+    sudo scons install
+```
+
+To install in a user-specified location:
+
+```
+    scons PREFIX=/path/to/install install
+```
+
+To use LOOS, your environment first be set up.  For bash or other Bourne-like shells, run  
+```
+  source /path/to/loos/setup.sh
+```
+For csh and tcsh, run
+```
+source /path/to/loos/setup.csh
+```
+
+You don't have to build the entirety of LOOS if you don't want to; the individual components you can choose to build are "build targets", listed below.
+
+
+### Build targets
+
+Target | Description
+------ | -----------
+core   | LOOS Library and PyLOOS
+tools  | LOOS Library, Tools, and PyLOOS
+all    | LOOS Library, Tools, PyLOOS, and documentation (if necessary), and all Packages (default)
+install| Install library, tools, PyLOOS, documentation, and all Packages
+
+### Available Packages (also build targets)
+
+Name    | Description
+------  | -----------
+ENM     | Elastic Network Models
+HBonds  | Hydrogen Bonds Analysis
+Conv    | Convergence Analysis
+Density | Density/3D Histogram Tools
+User    | User-created tools
+Python  | PyLOOS scripts
+
+### PyLOOS
+
+The Python interface to LOOS will be included in the build if you have
+a recent SWIG (version 2.0 or better) in your standard path as well as
+NumPy installed.  If you need to disable the automatic building of PyLOOS,
+use the pyloos flag to scons:
+
+```
+    scons pyloos=0
+```
+
+To build only the core LOOS libraries and PyLOOS, use the following
+command:
+
+```
+    scons core
+```
+
+Note that the Optimal Membrane Generator requires PyLOOS.  If you
+do not have SWIG installed or disable PyLOOS support, then the OMG
+will not be installed.
+
+### Amber NetCDF
+
+LOOS now supports a subset of the Amber NetCDF convention 1.0-B.  Only
+coordinates are retrieved and are converted into the default LOOS data
+type (i.e. doubles).  Periodic boxes are assumed to be orthogonal and
+the angles are currently ignored.
+
+If the netcdf libraries are installed, these will be automatically
+detected by SCons and included in the build.  When opening an amber
+trajectory file, LOOS will determine if it is a NetCDF file or an
+ASCII MDCRD file and act appropriately.
+
+If the netcdf libraries and headers are installed in a non-standard
+location, set the NETCDF variable in your custom.py file to point to
+the installation.  The specific include and library directories can be
+set using the NETCDF_INCLUDE and NETCDF_LIBPATH variables
+respectively, and the libraries linked against can be specified using
+the NETCDF_LIBS variable.
+
+
+### Boost
+
+LOOS requires Boost version 1.36 or more recent.  To explicitly
+specify an install location if you built it yourself, set the BOOST variable in your custom.py
+file or on the command line:
+
+```
+    scons BOOST=/usr/local/boost_1_54_0
+```
+
+In some cases, you may need to override either the include directory
+or the library directory.  The BOOST_INCLUDE and BOOST_LIBPATH variables
+will specify the corresponding directories for the LOOS build.  You
+may also explicitly specify which libraries to link against with the
+BOOST_LIBS variable.  See custom.py-proto for examples.
+
+None of this should be necessary if you use Conda.
+
+### Multithreaded linear algebra
+
+If you have a full install of a linear algebra library (e.g. ATLAS, openblas, etc), you can link against these to take advantage of
+multiple cores in LOOS.  Copy the custom.py-proto to custom.py and
+uncomment/change the appropriate lines.  Under conda, we use openblas.
+
+
+
+### Documentation
+
+You have 2 options for accessing LOOS documentation.  
+
+1. consult the online documentation at http://grossfieldlab.github.io/loos/  
+   This is fine if you're not developing new methods for the core library, and if you don't mind needing network access.
+
+2. build a new copy of the documentation.  To do so, you will need to
+   install doxygen and graphviz (available in most package managers, including conda).  Then, run
+
+```
+   doxygen
+```
+
+   from the top-level LOOS directory, and look for the results by accessing
+   `Docs/html/index.html`
