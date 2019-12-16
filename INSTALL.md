@@ -191,7 +191,7 @@ To build the documentation, also install:
 
 ## Ubuntu, Debian, Mint
 ```
-    sudo apt-get install g++ scons libboost-all-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
+    sudo apt-get install g++ scons libboost-all-dev libboost-regex-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
 ```
 
 Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC
