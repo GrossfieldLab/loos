@@ -92,3 +92,5 @@
 #PYTHON_INC='/usr/include/python3.5m'
 # Ubuntu 18
 #PYTHON_INC='/usr/include/python3.6m'
+# Debian
+#PYTHON_INC='/usr/include/python3.5m'
