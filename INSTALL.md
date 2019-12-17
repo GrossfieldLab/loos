@@ -249,16 +249,14 @@ To build the documentation:
 ```
 ## General Instructions
 
-This is in case you don't want to use you OS' package manager, and don't want
+This is in case you don't want to use your OS' package manager, and don't want
 to use conda.  I'm not sure why anyone would do this, and so these instructions
 are really for historical purposes only.
 
-First, make sure you have the Developer's Tools (i.e. XCode) installed.  XCode
-is available for free through the Mac App store.  Next, you will need to
-install SCons (http://scons.org) and Boost
-(http://boost.org) by visiting their websites, downloading the
-software, and following their installation instructions.
-Alternatively, use fink to install these packages.
+First, make sure you have the Developer's Tools (i.e. XCode, g++, clang, etc)
+installed.  Next, you will need to install SCons (http://scons.org) and Boost
+(http://boost.org) by visiting their websites, downloading the software, and
+following their installation instructions.  
 
 #### NetCDF
 
@@ -268,10 +266,10 @@ custom.py file to point to where netcdf is installed.
 
 #### PyLOOS
 
-You will need to download and install a recent version of SWIG first.
-If you have installed Boost in a non-standard location, you will need
-to make sure that the boost libraries are in your DYLD_LIBRARY_PATH
-environment variable.
+You will need to download and install a recent version of SWIG and python3.x
+first.  If you have installed Boost in a non-standard location, you will need to
+make sure that the boost libraries are in your LD_LIBRARY_PATH (on linux) or
+DYLD_LIBRARY_PATH (on OSX) environment variable.
 
 The default build will use the system Python and Numpy.
 Any non-standard locations for python modules can be specified using
@@ -308,7 +306,6 @@ For Windows 10, your best bet is to use one of the linux subsystems that are ins
 
 It also may be possible to install on windows via conda, but we have not tested this.
 
----
 
 ## Slackware (Unsupported)
 
@@ -362,7 +359,7 @@ doxygen
 
 which will create a new directory `Docs`.  If you open `Docs/html/index.html`,
 you'll see an updated version of the docs from the GitHub page (including any
-new functions or methods you might have written).
+new functions or methods you might have written). The main reason you might want to do this is if you're adding new classes or methods to the core LOOS library and want to verify their docs render correctly.
 
 
 ### Build targets
