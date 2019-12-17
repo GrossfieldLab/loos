@@ -116,6 +116,7 @@ Centos 7           | yes          |
 Centos 8           | yes          |
 OpenSUSE 15        | yes          |
 MacOS X Mojave     | yes          | conda-only
+MacOS X Catalina   | yes          | conda-only
 
 You'll need sudo access, or someone who has root access, it order to install
 native system libraries. If this isn't possible, your best bet is to install
