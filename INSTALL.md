@@ -57,8 +57,12 @@ To build the documentation, you will also require doxygen and graphviz,
 ```
 
 
-Going forward, we plan to focus on conda as our preferred environment, and eventually plan to support direct installation via conda.
+Going forward, we plan to focus on conda as our preferred environment, and
+eventually plan to support direct installation via conda.
 
+Note: if you're updating the source tree of a previous LOOS install, be sure to
+remove or rename your `custom.py` file; you shouldn't need it anymore with
+conda, and it could mess up the build's search for the correct python, etc.
 
 # Installing using system libraries on supported Linux distributions
 
