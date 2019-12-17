@@ -22,12 +22,25 @@ Centos, Ubuntu, and OpenSuse.
 Finally, if you prefer you can download and build the key dependencies for
 yourself, although we can't really help much in that case.
 
+To use LOOS, your environment first be set up.  For bash or other Bourne-like shells, run  
+```
+  source /path/to/loos/setup.sh
+```
+For csh and tcsh, run
+```
+source /path/to/loos/setup.csh
+```
+
+
 In addition, you have 2 choices for how to install LOOS. You can either work
 with a source tree (use binaries compiled in the directory structure you
 downloaded) or an install. If only one user is working with the LOOS install,
 it's purely a matter of taste. If multiple users will be working with it, it
 arguably makes sense to do an install, which will copy the binaries, libraries,
 and python libraries into a new directory tree (/opt/LOOS, by default).
+
+Successful compilation will generate setup.sh and setup.csh in the source directory, and installation will generate another pair of setup files in the install directory.
+You can have both side by side, and switch from one to the other by sourcing the appropriate setup file (the scripts prepend the new directories to the relevant path variables).
 
 # Compiling using conda for mac or linux
 
@@ -52,6 +65,7 @@ by removing the following line:
 ```
 channel_priority: strict
 ```
+
 
 To create an installation of LOOS, you can say
 
@@ -83,9 +97,9 @@ eventually plan to support direct installation via conda.
 
 # Installing using system libraries on supported Linux distributions
 
-The following is a non-exhaustive list of distributions that support LOOS. It
-may be possible to adapt the instructions below to build on older distributions
-(or you could use conda).
+The following is a non-exhaustive list of distributions that support LOOS (we've
+explicitly tested these systems). It may be possible to adapt the instructions
+below to build on older distributions (or you could use conda).
 
 Operating System   | LOOS Support | Notes
 ----------------   | ------------ | -----
@@ -93,11 +107,12 @@ Fedora 29          | yes          |
 Fedora 30          | yes          |
 Fedora 31          | yes          |
 Ubuntu 16.04 LTS   | yes          | conda-only
-Ubuntu 18.04       | yes          |
-Debian 9.8         | yes          |
+Ubuntu 18.04 LTS   | yes          |
+Debian 9.9         | yes          |
 Centos 7           | yes          |
+Centos 8           | yes          |
 OpenSUSE 15        | yes          |
-MacOS X            | yes          | conda-only
+MacOS X Mojave     | yes          | conda-only
 
 You'll need sudo access, or someone who has root access, it order to install
 native system libraries. If this isn't possible, your best bet is to install
@@ -129,25 +144,22 @@ install` to install LOOS in the location of your choosing.
 
 ## Fedora
 
-LOOS has been tested on Fedora.  You will need to install a number of packages,
-for instance by using the following command
+LOOS has been extensively tested on Fedora.  You will need to install a number
+of packages, for instance by using the following command
 
 ```
     sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
 ```
 
-For versions of Fedora where the default python is python2.7, you will need to
-copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC
-(verifying that it's the correct location for your system), *before* you build
-LOOS. As of Fedora 31, this is no longer necessary (the default system python
-is 3.x).
+For versions of Fedora where the default python is python2.7 (anything before
+Fedora 31), you will need to copy custom.py-proto to custom.py, and uncomment
+the line setting PYTHON_INC (verifying that it's the correct location for your
+system), *before* you build LOOS. As of Fedora 31, this is no longer necessary
+(the default system python is 3.x).
 
-LOOS/PyLOOS only supports Python 3, so you must specify which version of numpy
-and scipy to use for Fedora 24 and later.  For earlier Fedoras, which don't
-have python3 packages for numpy and scipy, you can either install them manually
-or use conda.
+Fedora versions before 24 don't have python3 packages for numpy and scipy;  to install on these systems, you'll need to either build them manually, or (more efficient) just use conda.
 
-After installing the packaegs, you can build LOOS using `scons` as described
+After installing the packages, you can build LOOS using `scons` as described
 above.
 
 ### Documentation
@@ -160,10 +172,10 @@ To build the documentation, you will also require doxygen and graphviz,
 ```
 ---
 
-## CentOS 7
+## CentOS 7 and 8
 
-You'll need the epel repository in order to get python3 versions of numpy and
-scipy:
+For Centos 7, you'll need the epel repository in order to get python3 versions
+of numpy and scipy:
 
 ```
     yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -178,7 +190,6 @@ Then install the packages
 You may need to copy custom.py-proto to custom.py, and uncomment the line
 setting PYTHON_INC (verifying that it's the correct location for your system),
 then run `scons ` as described above.
-
 
 ### Documentation
 
@@ -233,7 +244,7 @@ To build the documentation:
     sudo zypper install doxygen graphviz
     doxygen
 ```
-### General Instructions
+## General Instructions
 
 This is in case you don't want to use you OS' package manager, and don't want
 to use conda.  I'm not sure why anyone would do this, and so these instructions
@@ -266,7 +277,7 @@ the PYTHON_INC option to scons:
     scons PYTHON_INC=$HOME/local/lib/python3.6
 ```
 
-You can set this variable by copying  `custom.py-proto` to `custom.py`, and 
+You can set this variable by copying  `custom.py-proto` to `custom.py`, and
 uncommenting modifying the variables set near the bottom of the file.
 
 #### SciPy
@@ -287,8 +298,6 @@ excess versions)
 As of LOOS 3.1, this problem should be much rarer, particularly in a Conda
 environment, and we'd appreciate hearing about any problems you have.
 
-
----
 
 ## Windows (Unsupported)
 
@@ -352,36 +361,14 @@ which will create a new directory `Docs`.  If you open `Docs/html/index.html`,
 you'll see an updated version of the docs from the GitHub page (including any
 new functions or methods you might have written).
 
-# Other build notes
 
-Or installed (to /opt as a default):
-```
-    sudo scons install
-```
-
-To install in a user-specified location:
-
-```
-    scons PREFIX=/path/to/install install
-```
-
-To use LOOS, your environment first be set up.  For bash or other Bourne-like shells, run  
-```
-  source /path/to/loos/setup.sh
-```
-For csh and tcsh, run
-```
-source /path/to/loos/setup.csh
-```
+### Build targets
 
 You don't have to build the entirety of LOOS if you don't want to; the
 individual components you can choose to build are "build targets", listed
 below.  The main reason to do speed up the compile cycle, e.g. if you're
 working on a piece of the library, you don't need to rebuild all of the tools
 and packages on each compile.
-
-
-### Build targets
 
 Target | Description
 ------ | -----------
@@ -445,21 +432,22 @@ the NETCDF_LIBS variable.
 
 ### Boost
 
-LOOS requires Boost version 1.36 or more recent.  To explicitly specify an
-install location if you built it yourself, set the BOOST variable in your
-custom.py file or on the command line:
+LOOS definitely requires a Boost distribution more recent than 1.36; we don't
+test by manually installing every release, so we can't be sure.  To explicitly
+specify an install location if you built it yourself, set the BOOST variable in
+your custom.py file or on the command line:
 
 ```
     scons BOOST=/usr/local/boost_1_54_0
 ```
 
 This version of the variable assumes you built Boost yourself, and have it
-installed in a single tree.  If the tool you used to build Boost broke it up,
-you may need to override either the include directory or the library directory.
-The BOOST_INCLUDE and BOOST_LIBPATH variables will specify the corresponding
-directories for the LOOS build.  You may also explicitly specify which
-libraries to link against with the BOOST_LIBS variable.  See custom.py-proto
-for examples.
+installed in a single tree (with lib/ and include/ as subdirectories).  If the
+tool you used to build Boost broke it up, you may need to override either the
+include directory or the library directory.  The BOOST_INCLUDE and BOOST_LIBPATH
+variables will specify the corresponding directories for the LOOS build.  You
+may also explicitly specify which libraries to link against with the BOOST_LIBS
+variable.  See custom.py-proto for examples.
 
 None of this should be necessary if you use Conda.
 
@@ -469,8 +457,6 @@ If you have a full install of a linear algebra library (e.g. ATLAS, openblas,
 etc), you can link against these to take advantage of multiple cores in LOOS.
 Copy the `custom.py-proto` to `custom.py` and uncomment/change the appropriate
 lines.  Under conda, we use openblas.
-
-
 
 ### Documentation
 
