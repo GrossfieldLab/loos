@@ -45,8 +45,8 @@ apps = 'cluster-kgs'
 
 ### Library generation
 # Be sure to add new modules/headers here!!!
-library_sources = 'ClusteringUtils.cpp HAC.cpp AverageLinkage.cpp KGS.cpp'
-library_headers = 'Clustering.hpp ClusteringUtils.hpp HAC.hpp AverageLinkage.hpp KGS.hpp'
+library_sources = 'ClusteringUtils.cpp HAC.cpp AverageLinkage.cpp KGS.cpp ClusteringOptions.cpp'
+library_headers = 'Clustering.hpp ClusteringUtils.hpp HAC.hpp AverageLinkage.hpp KGS.hpp ClusteringOptions.hpp'
 
 loos_clustering = clone.Library('loos_clustering', Split(library_sources))
 clone.Prepend(LIBS=['loos_clustering'])
