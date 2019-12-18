@@ -112,8 +112,8 @@ Fedora 31          | yes          |
 Ubuntu 16.04 LTS   | yes          | conda-only
 Ubuntu 18.04 LTS   | yes          |
 Debian 9.9         | yes          |
-Centos 7           | yes          |
-Centos 8           | yes          |
+Centos 7           | yes          | conda-only
+Centos 8           | yes          | conda-only
 OpenSUSE 15        | yes          |
 MacOS X Mojave     | yes          | conda-only
 
@@ -175,24 +175,16 @@ To build the documentation, you will also require doxygen and graphviz,
 ```
 ---
 
-## CentOS 7 and 8
+## CentOS 7
 
-For Centos 7, you'll need the epel repository in order to get python3 versions
-of numpy and scipy:
+Some combination of the eigen3-devel package and g++ is too old, and leads to
+compile errors. To run on CentOS 7, you'll need to build using conda.
 
-```
-    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-```
+## Centos 8
 
-Then install the packages
+Not all of LOOS's dependencies are available via the package manager on centos
+8. Specifically, there doesn't appear to be packages for scons or eigen3. If you're running on Centos 8, we recommend installing via conda.
 
-```
-    sudo yum install gcc-c++ scons boost-devel atlas-devel netcdf-devel python36 python36-devel swig python36-numpy python36-scipy
-```
-
-You may need to copy custom.py-proto to custom.py, and uncomment the line
-setting PYTHON_INC (verifying that it's the correct location for your system),
-then run `scons ` as described above.
 
 ### Documentation
 
@@ -205,7 +197,7 @@ To build the documentation, also install:
 
 ## Ubuntu, Debian, Mint
 ```
-    sudo apt-get install g++ scons libboost-all-dev libboost-regex-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy
+    sudo apt-get install g++ scons libboost-all-dev libboost-regex-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy libeigen3-dev
 ```
 
 Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC
@@ -226,7 +218,7 @@ We have tested the build on OpenSuse 15.x
 Using zypper (or your favorite package manager), install the following:
 
 ```
-    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python3-numpy-devel python3-scipy libboost_filesystem1_66_0-devel libboost_program_options1_66_0 libboost_program_options1_66_0-devel libboost_regex1_66_0 libboost_regex1_66_0-devel libboost_system1_66_0-devel libboost_thread1_66_0-devel
+    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python3-numpy-devel python3-scipy libboost_filesystem1_66_0-devel libboost_program_options1_66_0 libboost_program_options1_66_0-devel libboost_regex1_66_0 libboost_regex1_66_0-devel libboost_system1_66_0-devel libboost_thread1_66_0-devel eigen3-devel
 ```
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
