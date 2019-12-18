@@ -116,7 +116,6 @@ Centos 7           | yes          |
 Centos 8           | yes          |
 OpenSUSE 15        | yes          |
 MacOS X Mojave     | yes          | conda-only
-MacOS X Catalina   | yes          | conda-only
 
 You'll need sudo access, or someone who has root access, it order to install
 native system libraries. If this isn't possible, your best bet is to install
@@ -152,7 +151,7 @@ LOOS has been extensively tested on Fedora.  You will need to install a number
 of packages, for instance by using the following command
 
 ```
-    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy
+    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy eigen3-devel
 ```
 
 For versions of Fedora where the default python is python2.7 (anything before
@@ -360,7 +359,9 @@ doxygen
 
 which will create a new directory `Docs`.  If you open `Docs/html/index.html`,
 you'll see an updated version of the docs from the GitHub page (including any
-new functions or methods you might have written). The main reason you might want to do this is if you're adding new classes or methods to the core LOOS library and want to verify their docs render correctly.
+new functions or methods you might have written). The main reason you might want
+to do this is if you're adding new classes or methods to the core LOOS library
+and want to verify their docs render correctly.
 
 
 ### Build targets
