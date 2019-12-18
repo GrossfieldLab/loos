@@ -173,8 +173,9 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("stats=%d,noout=%d,nthreads=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
+    oss << boost::format("stats=%d,matrix_precision=%d,noout=%d,nthreads=%d,sel1='%s',skip1=%d,range1='%s',sel2='%s',skip2=%d,range2='%s',model1='%s',traj1='%s',model2='%s',traj2='%s'")
       % stats
+      % matrix_precision
       % noop
       % nthreads
       % matrix_precision
