@@ -90,7 +90,7 @@
 #PYTHON_INC='/usr/include/python3.7m'
 # This value is good for Debian 9
 #PYTHON_INC='/usr/include/python3.5m'
-# Ubuntu 18
+# Ubuntu 18 and OpenSuse 15
 #PYTHON_INC='/usr/include/python3.6m'
 # Debian
 #PYTHON_INC='/usr/include/python3.5m'
