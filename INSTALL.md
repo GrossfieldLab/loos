@@ -113,7 +113,7 @@ Ubuntu 16.04 LTS   | yes          | conda-only
 Ubuntu 18.04 LTS   | yes          |
 Debian 9.9         | yes          |
 Centos 7           | yes          | conda-only
-Centos 8           | yes          | conda-only
+Centos 8           | yes          | extra repo
 OpenSUSE 15        | yes          |
 MacOS X Mojave     | yes          | conda-only
 
@@ -182,8 +182,21 @@ compile errors. To run on CentOS 7, you'll need to build using conda.
 
 ## Centos 8
 
-Not all of LOOS's dependencies are available via the package manager on centos
-8. Specifically, there doesn't appear to be packages for scons or eigen3. If you're running on Centos 8, we recommend installing via conda.
+Centos 8 itself doesn't have all of the packages you need to build LOOS -- you need to enable PowerTools and EPEL:
+
+```
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum config-manager --set-enabled PowerTools
+sudo yum install gcc-c++ python3-scons boost-devel atlas-devel netcdf-devel python36 python3-devel swig python3-numpy python3-scipy eigen3-devel
+
+```
+
+For reasons known only to the CentOS team, `scons` is packaged as `scons-3`, so the build and install commands become
+
+```
+scons-3
+scons-3 install
+```
 
 
 ### Documentation
