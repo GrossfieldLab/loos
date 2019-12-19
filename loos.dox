@@ -12,15 +12,6 @@ School of Medicine & Dentistry, University of Rochester\n
 \image html gplv3.png
 
 <hr>
-<h2>Important News for LOOS 3.0</h2>
-
-LOOS 3.0 and higher require python 3.x.  The install instructions in INSTALL.md have been updated accordingly.  If your OS does not support python 3.x, you can try installing LOOS inside a Conda environment.
-
-For questions or problems using LOOS, the best approach is to open an issue on our <a href="https://github.com/GrossfieldLab/loos">GitHub page</a>.  Alternatively, you can email us at loos.maintainer@gmail.com.
-
-We are phasing out the mailing lists as support mechanisms; if you were previously a member, we suggest following LOOS on GitHub as a better strategy to keep up to date with us.
-
-<hr>
 
 <h2>Quick Links</h2>
       - <a href="https://github.com/GrossfieldLab/loos">Clone LOOS from GitHub</a>
@@ -68,7 +59,7 @@ LOOS has several major features:
       of using pointers (e.g. rapid, lightweight copying) without requiring
       the developer to do manual memory management.
     - It should run on any unix-like environment, and is tested under
-      multiple linux versions, Mac OSX, and cygwin.
+      multiple linux versions and Mac OSX.
 
 For assistance using LOOS, to suggest a patch, to request a feature, or simply
 to offer positive feedback, email loos.maintainer [AT] gmail.com.  The
