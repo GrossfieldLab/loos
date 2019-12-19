@@ -1,3 +1,4 @@
 <map id="loos::XTCWriter" name="loos::XTCWriter">
-<area shape="rect" id="node2" href="$classloos_1_1_trajectory_writer.html" title="Base class for writing trajectories. " alt="" coords="5,5,152,32"/>
+<area shape="rect" id="node1" title="Class for writing Gromacs XTC trajectories." alt="" coords="21,80,136,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1_trajectory_writer.html" title="Base class for writing trajectories." alt="" coords="5,5,152,32"/>
 </map>

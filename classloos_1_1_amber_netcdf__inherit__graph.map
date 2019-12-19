@@ -1,3 +1,4 @@
 <map id="loos::AmberNetcdf" name="loos::AmberNetcdf">
-<area shape="rect" id="node2" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories. " alt="" coords="15,5,127,32"/>
+<area shape="rect" id="node1" title="Class for reading Amber Trajectories in NetCDF format." alt="" coords="5,80,136,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="15,5,127,32"/>
 </map>

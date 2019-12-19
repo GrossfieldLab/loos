@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1_density_tools_1_1_density_grid_plane.html" title="Encapsulates an i,j&#45;plane from an DensityGrid. " alt="" coords="5,5,168,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,20,113,47"/>
+<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_density_grid_iterator.html" title="Random access iterator using the BOOST facade." alt="" coords="161,5,300,61"/>
 </map>

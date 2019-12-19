@@ -1,8 +1,11 @@
 <map id="loos::OptionsFramework::TrajectoryWithFrameIndices" name="loos::OptionsFramework::TrajectoryWithFrameIndices">
-<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options. " alt="" coords="5,288,168,329"/>
-<area shape="rect" id="node3" title="STL class. " alt="" coords="192,295,272,322"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="161,184,287,225"/>
-<area shape="rect" id="node5" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually) " alt="" coords="329,295,460,322"/>
-<area shape="rect" id="node6" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox. " alt="" coords="312,191,477,218"/>
-<area shape="rect" id="node8" title="STL class. " alt="" coords="517,95,633,121"/>
+<area shape="rect" id="node1" title="Trajectory with either a –range or –skip." alt="" coords="135,451,329,492"/>
+<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,288,168,329"/>
+<area shape="rect" id="node3" title="STL class." alt="" coords="192,295,272,322"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="161,184,287,225"/>
+<area shape="rect" id="node5" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="329,295,460,322"/>
+<area shape="rect" id="node6" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="312,191,477,218"/>
+<area shape="rect" id="node7" title=" " alt="" coords="501,191,648,218"/>
+<area shape="rect" id="node8" title="STL class." alt="" coords="517,95,633,121"/>
+<area shape="rect" id="node9" title=" " alt="" coords="555,5,594,32"/>
 </map>

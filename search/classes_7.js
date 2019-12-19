@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['hac',['HAC',['../class_clustering_1_1_h_a_c.html',1,'Clustering']]],
   ['hbonddetector',['HBondDetector',['../classloos_1_1_h_bond_detector.html',1,'loos']]],
   ['hca',['HCA',['../class_e_n_m_1_1_h_c_a.html',1,'ENM']]],
   ['header',['Header',['../struct_header.html',1,'']]],

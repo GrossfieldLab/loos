@@ -143,6 +143,11 @@ var hierarchy =
     [ "grammar", null, [
       [ "loos::internal::RangeParser< Iterator >", "structloos_1_1internal_1_1_range_parser.html", null ]
     ] ],
+    [ "Clustering::HAC", "class_clustering_1_1_h_a_c.html", [
+      [ "Clustering::AverageLinkage", "class_clustering_1_1_average_linkage.html", [
+        [ "Clustering::KGS", "class_clustering_1_1_k_g_s.html", null ]
+      ] ]
+    ] ],
     [ "loos::HBondDetector", "classloos_1_1_h_bond_detector.html", null ],
     [ "Header", "struct_header.html", null ],
     [ "loos::AtomicGroup::Iterator", "classloos_1_1_atomic_group_1_1_iterator.html", null ],
@@ -171,6 +176,7 @@ var hierarchy =
       ] ]
     ] ],
     [ "loos::OptionsFramework::OptionsPackage", "classloos_1_1_options_framework_1_1_options_package.html", [
+      [ "Clustering::ClusteringOptions", "class_clustering_1_1_clustering_options.html", null ],
       [ "loos::OptionsFramework::BasicConvergence", "classloos_1_1_options_framework_1_1_basic_convergence.html", null ],
       [ "loos::OptionsFramework::BasicOptions", "classloos_1_1_options_framework_1_1_basic_options.html", null ],
       [ "loos::OptionsFramework::BasicSelection", "classloos_1_1_options_framework_1_1_basic_selection.html", null ],
@@ -287,8 +293,8 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
     [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
+    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
     [ "OrderPolicy", null, [
       [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
     ] ],

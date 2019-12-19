@@ -1,6 +1,12 @@
 var annotated_dup =
 [
     [ "all_contacts", "namespaceall__contacts.html", "namespaceall__contacts" ],
+    [ "Clustering", null, [
+      [ "AverageLinkage", "class_clustering_1_1_average_linkage.html", "class_clustering_1_1_average_linkage" ],
+      [ "ClusteringOptions", "class_clustering_1_1_clustering_options.html", "class_clustering_1_1_clustering_options" ],
+      [ "HAC", "class_clustering_1_1_h_a_c.html", "class_clustering_1_1_h_a_c" ],
+      [ "KGS", "class_clustering_1_1_k_g_s.html", "class_clustering_1_1_k_g_s" ]
+    ] ],
     [ "ConvexHull", null, [
       [ "ConvexHull", "class_convex_hull_1_1_convex_hull.html", "class_convex_hull_1_1_convex_hull" ],
       [ "ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", "class_convex_hull_1_1_z_slice_selector" ]

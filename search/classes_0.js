@@ -17,5 +17,6 @@ var searchData=
   ['atomicgroup',['AtomicGroup',['../classloos_1_1_atomic_group.html',1,'loos']]],
   ['atomicnumberdeducer',['AtomicNumberDeducer',['../classloos_1_1internal_1_1_atomic_number_deducer.html',1,'loos::internal']]],
   ['atomnameselector',['AtomNameSelector',['../structloos_1_1_atom_name_selector.html',1,'loos']]],
-  ['atomselector',['AtomSelector',['../structloos_1_1_atom_selector.html',1,'loos']]]
+  ['atomselector',['AtomSelector',['../structloos_1_1_atom_selector.html',1,'loos']]],
+  ['averagelinkage',['AverageLinkage',['../class_clustering_1_1_average_linkage.html',1,'Clustering']]]
 ];

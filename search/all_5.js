@@ -6,6 +6,7 @@ var searchData=
   ['eigenvectors',['eigenvectors',['../class_e_n_m_1_1_elastic_network_model.html#a034241aca47839e05a84532c426cf94a',1,'ENM::ElasticNetworkModel']]],
   ['elapsed',['elapsed',['../classloos_1_1_timer.html#a9ce0500f779cf4adb77320c05798499e',1,'loos::Timer::elapsed()'],['../classloos_1_1_simple_counter.html#a5fa213bbc5638145fdace2d097510a17',1,'loos::SimpleCounter::elapsed()']]],
   ['elasticnetworkmodel',['ElasticNetworkModel',['../class_e_n_m_1_1_elastic_network_model.html',1,'ENM::ElasticNetworkModel'],['../class_e_n_m_1_1_elastic_network_model.html#a62d80fca2f7654ffc186a8d76279cef5',1,'ENM::ElasticNetworkModel::ElasticNetworkModel()']]],
+  ['eltcount',['eltCount',['../class_clustering_1_1_h_a_c.html#a7fff2b3623656d321e841740730e21dc',1,'Clustering::HAC']]],
   ['endoffile',['EndOfFile',['../classloos_1_1_d_c_d_1_1_end_of_file.html',1,'loos::DCD']]],
   ['enm',['ENM',['../namespace_e_n_m.html',1,'ENM'],['../group___e_n_m.html',1,'(Global Namespace)']]],
   ['equals',['equals',['../classloos_1_1internal_1_1equals.html',1,'loos::internal']]],

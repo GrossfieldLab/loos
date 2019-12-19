@@ -7,13 +7,7 @@ var index =
     [ "License", "index.html#license", null ],
     [ "Building LOOS", "building.html", [
       [ "Building Basics", "building.html#basicbuild", [
-        [ "Installing", "building.html#install", null ],
-        [ "Building PyLOOS, the Python Interface to LOOS", "building.html#building_pyloos", null ],
-        [ "General Notes", "building.html#general", null ],
-        [ "Building Your Own Tools", "building.html#BYO", null ]
-      ] ],
-      [ "Targets", "building.html#Build", [
-        [ "Reparsing", "building.html#Reparsing", null ]
+        [ "Installing", "building.html#install", null ]
       ] ]
     ] ],
     [ "Summary of Tools", "tools.html", "tools" ],

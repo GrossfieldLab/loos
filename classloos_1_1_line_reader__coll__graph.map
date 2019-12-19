@@ -1,9 +1,12 @@
 <map id="loos::LineReader" name="loos::LineReader">
-<area shape="rect" id="node2" title="STL class. " alt="" coords="85,298,176,325"/>
-<area shape="rect" id="node3" title="STL class. " alt="" coords="18,185,147,227"/>
-<area shape="rect" id="node4" title="STL class. " alt="" coords="5,89,160,115"/>
-<area shape="rect" id="node5" title="STL class. " alt="" coords="33,5,133,32"/>
-<area shape="rect" id="node6" title="STL class. " alt="" coords="324,193,404,219"/>
-<area shape="rect" id="node7" title="STL class. " alt="" coords="301,81,427,123"/>
-<area shape="rect" id="node9" title="STL class. " alt="" coords="171,193,269,219"/>
+<area shape="rect" id="node1" title="Class for reading line&#45;by&#45;line from a file while tracking line numbers and stripping comments." alt="" coords="223,396,342,423"/>
+<area shape="rect" id="node2" title="STL class." alt="" coords="85,298,176,325"/>
+<area shape="rect" id="node3" title="STL class." alt="" coords="18,185,147,227"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="5,89,160,115"/>
+<area shape="rect" id="node5" title="STL class." alt="" coords="33,5,133,32"/>
+<area shape="rect" id="node6" title="STL class." alt="" coords="324,193,404,219"/>
+<area shape="rect" id="node8" title=" " alt="" coords="209,298,356,325"/>
+<area shape="rect" id="node7" title="STL class." alt="" coords="301,81,427,123"/>
+<area shape="rect" id="node9" title="STL class." alt="" coords="171,193,269,219"/>
+<area shape="rect" id="node10" title=" " alt="" coords="201,89,239,115"/>
 </map>

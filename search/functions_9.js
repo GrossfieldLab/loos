@@ -17,5 +17,5 @@ var searchData=
   ['isperiodic',['isPeriodic',['../classloos_1_1_atomic_group.html#a1aed84043a9af6ec6217b7c0b6b041df',1,'loos::AtomicGroup']]],
   ['isunset',['isUnset',['../classloos_1_1_stream_wrapper.html#aa2b54d5772ed0dc8c8172f1f6da3fde8',1,'loos::StreamWrapper']]],
   ['iterativealignment',['iterativeAlignment',['../namespaceloos_1_1pyloos_1_1alignment.html#aae7f8f6e4e2cd3b2c6937deaee42cde4',1,'loos.pyloos.alignment.iterativeAlignment()'],['../namespaceloos.html#ab42aeab4c92169da3571c75d3f035ad5',1,'loos::iterativeAlignment()']]],
-  ['iterativealigntrajectory',['iterativeAlignTrajectory',['../namespaceloos_1_1pyloos_1_1alignment.html#a92123e87acd4a8e847b9dc8e37817675',1,'loos::pyloos::alignment']]]
+  ['iterativealigntrajectory',['iterativeAlignTrajectory',['../namespaceloos_1_1pyloos_1_1alignment.html#a9b0d9706a148866b770adbb82d622252',1,'loos::pyloos::alignment']]]
 ];

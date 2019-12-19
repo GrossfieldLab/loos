@@ -1,12 +1,13 @@
 <map id="loos::Trajectory" name="loos::Trajectory">
-<area shape="rect" id="node2" href="$classloos_1_1_amber_netcdf.html" title="Class for reading Amber Trajectories in NetCDF format. " alt="" coords="170,5,301,32"/>
-<area shape="rect" id="node3" href="$classloos_1_1_amber_rst.html" title="Class for reading amber restart files as a single&#45;frame trajectory. " alt="" coords="179,56,291,83"/>
-<area shape="rect" id="node4" href="$classloos_1_1_amber_traj.html" title="Class for reading amber coordinate trajectories. " alt="" coords="178,107,293,133"/>
-<area shape="rect" id="node5" href="$classloos_1_1_c_c_p_d_b.html" title="Class for interpreting concatenated PDB files as a Trajectory. " alt="" coords="186,157,285,184"/>
-<area shape="rect" id="node6" href="$classloos_1_1_d_c_d.html" title="Class for reading DCD files. " alt="" coords="195,208,276,235"/>
-<area shape="rect" id="node7" href="$classloos_1_1_multi_trajectory.html" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory. " alt="" coords="165,259,305,285"/>
-<area shape="rect" id="node8" href="$classloos_1_1_p_d_b_traj.html" title="Class for intepreting separate PDB files as a single trajectory. " alt="" coords="184,309,287,336"/>
-<area shape="rect" id="node9" href="$classloos_1_1_tinker_arc.html" title="Class for handling Tinker ARC files (concatenation of .xyz files) " alt="" coords="180,360,291,387"/>
-<area shape="rect" id="node10" href="$classloos_1_1_t_r_r.html" title="Class representing the GROMACS TRR trajectory files. " alt="" coords="195,411,275,437"/>
-<area shape="rect" id="node11" href="$classloos_1_1_x_t_c.html" title="Class representing GROMACS reduced precision, compressed trajectories. " alt="" coords="195,461,275,488"/>
+<area shape="rect" id="node1" title="Base&#45;class for polymorphic trajectories." alt="" coords="5,233,117,260"/>
+<area shape="rect" id="node2" href="$classloos_1_1_amber_netcdf.html" title="Class for reading Amber Trajectories in NetCDF format." alt="" coords="170,5,301,32"/>
+<area shape="rect" id="node3" href="$classloos_1_1_amber_rst.html" title="Class for reading amber restart files as a single&#45;frame trajectory." alt="" coords="179,56,291,83"/>
+<area shape="rect" id="node4" href="$classloos_1_1_amber_traj.html" title="Class for reading amber coordinate trajectories." alt="" coords="178,107,293,133"/>
+<area shape="rect" id="node5" href="$classloos_1_1_c_c_p_d_b.html" title="Class for interpreting concatenated PDB files as a Trajectory." alt="" coords="186,157,285,184"/>
+<area shape="rect" id="node6" href="$classloos_1_1_d_c_d.html" title="Class for reading DCD files." alt="" coords="195,208,276,235"/>
+<area shape="rect" id="node7" href="$classloos_1_1_multi_trajectory.html" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="165,259,305,285"/>
+<area shape="rect" id="node8" href="$classloos_1_1_p_d_b_traj.html" title="Class for intepreting separate PDB files as a single trajectory." alt="" coords="184,309,287,336"/>
+<area shape="rect" id="node9" href="$classloos_1_1_tinker_arc.html" title="Class for handling Tinker ARC files (concatenation of .xyz files)" alt="" coords="180,360,291,387"/>
+<area shape="rect" id="node10" href="$classloos_1_1_t_r_r.html" title="Class representing the GROMACS TRR trajectory files." alt="" coords="195,411,275,437"/>
+<area shape="rect" id="node11" href="$classloos_1_1_x_t_c.html" title="Class representing GROMACS reduced precision, compressed trajectories." alt="" coords="195,461,275,488"/>
 </map>

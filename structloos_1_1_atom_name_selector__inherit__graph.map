@@ -1,3 +1,4 @@
 <map id="loos::AtomNameSelector" name="loos::AtomNameSelector">
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group. " alt="" coords="22,5,155,32"/>
+<area shape="rect" id="node1" title="Predicate for selecting atoms based on explicit name matching." alt="" coords="5,80,172,107"/>
+<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="22,5,155,32"/>
 </map>

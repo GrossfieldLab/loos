@@ -1,3 +1,4 @@
 <map id="loos::ResidRangeSelector" name="loos::ResidRangeSelector">
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group. " alt="" coords="25,5,158,32"/>
+<area shape="rect" id="node1" title="Predicate for selecting atoms from a range of resid&#39;s." alt="" coords="5,80,177,107"/>
+<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="25,5,158,32"/>
 </map>

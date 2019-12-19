@@ -1,5 +1,6 @@
 <map id="loos::AbstractObserver" name="loos::AbstractObserver">
-<area shape="rect" id="node2" href="$classloos_1_1_basic_progress.html" title="loos::BasicProgress" alt="" coords="113,80,251,107"/>
-<area shape="rect" id="node3" href="$classloos_1_1_percent_progress.html" title="Provide feedback by percent&#45;complete. " alt="" coords="5,155,156,181"/>
-<area shape="rect" id="node4" href="$classloos_1_1_percent_progress_with_time.html" title="loos::PercentProgressWithTime" alt="" coords="180,155,387,181"/>
+<area shape="rect" id="node1" title=" " alt="" coords="104,5,260,32"/>
+<area shape="rect" id="node2" href="$classloos_1_1_basic_progress.html" title=" " alt="" coords="113,80,251,107"/>
+<area shape="rect" id="node3" href="$classloos_1_1_percent_progress.html" title="Provide feedback by percent&#45;complete." alt="" coords="5,155,156,181"/>
+<area shape="rect" id="node4" href="$classloos_1_1_percent_progress_with_time.html" title=" " alt="" coords="180,155,387,181"/>
 </map>

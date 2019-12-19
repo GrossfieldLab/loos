@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['hac',['HAC',['../class_clustering_1_1_h_a_c.html',1,'Clustering']]],
   ['hasbonds',['hasBonds',['../classloos_1_1_atomic_group.html#a80c7abe43f0f634d9708f26abd02d2f2',1,'loos::AtomicGroup']]],
   ['hascomments',['hasComments',['../classloos_1_1_d_c_d_writer.html#a53a77df6d177e9b3da79c056a1750905',1,'loos::DCDWriter::hasComments()'],['../classloos_1_1_trajectory_writer.html#a95274e85b060de658f2ac9c3c791696b',1,'loos::TrajectoryWriter::hasComments()']]],
   ['hascoords',['hasCoords',['../classloos_1_1_atomic_group.html#ad8e9881716ea6c1afa28503f4f444642',1,'loos::AtomicGroup']]],

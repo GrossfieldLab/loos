@@ -7,7 +7,5 @@ var tools =
     [ "pca", "pca.html", "pca" ],
     [ "Membrane systems", "membranes.html", null ],
     [ "enm", "enm.html", null ],
-    [ "other", "other.html", null ],
-    [ "voronoi", "voronoi.html", null ],
-    [ "user", "user.html", null ]
+    [ "voronoi", "voronoi.html", null ]
 ];

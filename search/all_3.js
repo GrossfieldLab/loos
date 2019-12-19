@@ -29,6 +29,7 @@ var searchData=
   ['clearproperty',['clearProperty',['../classloos_1_1_atom.html#a5d5a8b4f6ec3b997bb2ba670bd239d36',1,'loos::Atom']]],
   ['clone',['clone',['../classloos_1_1_amber.html#a604860e739ed2aea60859fa00617ee6b',1,'loos::Amber::clone()'],['../classloos_1_1_atomic_group.html#a10a35c891ecf43b59745991592755ba0',1,'loos::AtomicGroup::clone()'],['../classloos_1_1_c_h_a_r_m_m.html#a7b379f07b43cd58148b2ce7c4baf5832',1,'loos::CHARMM::clone()'],['../classloos_1_1_p_d_b.html#a8264abebb018eb49f64f165b65896449',1,'loos::PDB::clone()'],['../classloos_1_1_p_s_f.html#a830bc776e1a58c3893610a4f806429cb',1,'loos::PSF::clone()'],['../classloos_1_1_tinker_x_y_z.html#a900b3f40954185abdd1ed56f59384ed3',1,'loos::TinkerXYZ::clone()']]],
   ['cluster',['cluster',['../namespacecluster.html',1,'']]],
+  ['clusteringoptions',['ClusteringOptions',['../class_clustering_1_1_clustering_options.html',1,'Clustering']]],
   ['colmajor',['ColMajor',['../classloos_1_1_math_1_1_col_major.html',1,'loos::Math']]],
   ['common_20command_2dline_20options_20for_20tools',['Common Command-Line Options for Tools',['../common_options.html',1,'index']]],
   ['compare',['compare',['../namespaceloos_1_1internal.html#ab5a0ffdb72e0aaf27c83ddd8ff1398bb',1,'loos::internal']]],

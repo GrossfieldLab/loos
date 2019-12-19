@@ -1,3 +1,4 @@
 <map id="loos::internal::logicalTrue" name="loos::internal::logicalTrue">
-<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands... " alt="" coords="18,5,159,32"/>
+<area shape="rect" id="node1" title="Always returns true..." alt="" coords="5,80,172,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="18,5,159,32"/>
 </map>
