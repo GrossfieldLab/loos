@@ -33,6 +33,7 @@ import distutils.sysconfig
 import distutils.spawn
 import string
 from distutils.version import LooseVersion
+from sysconfig import get_paths, get_config_var
 
 import SCons
 
@@ -43,7 +44,8 @@ default_lib_path = None
 conda_path = None
 
 # Attempt to canonicalize system name, type and other related info...
-# Note: this exports to globals rather than being contained within the check framework.
+# Note: this exports to globals rather than being contained within the check
+# framework.
 def CheckSystemType(conf):
     conf.Message("Determining platform ...")
     loos_build_config.host_type = platform.system()
@@ -80,16 +82,16 @@ def CheckSystemType(conf):
     conf.Result(typemsg)
 
 
-### Create a revision file for linking against.
+# Create a revision file for linking against.
 def setupRevision(env):
 
     # Divine the current revision...
     revision = loos_build_config.loos_version + " " + strftime("%y%m%d")
 
-    # Now, write this out to a cpp file that can be linked in...this avoids having
-    # to recompile everything when building on a new date.  We also rely on SCons
-    # using the MD5 checksum to detect changes in the file (even though it's always
-    # rewritten)
+    # Now, write this out to a cpp file that can be linked in. This avoids
+    # having to recompile everything when building on a new date.  We also
+    # rely on SCons using the MD5 checksum to detect changes in the file
+    # (even though it's always rewritten)
     revfile = open("src/revision.cpp", "w")
     revfile.write("#include <string>\n")
     revfile.write('std::string revision_label = "')
@@ -98,7 +100,7 @@ def setupRevision(env):
     revfile.close()
 
 
-### Let environment variables override or modify some build paramaters...
+# Let environment variables override or modify some build paramaters...
 def environOverride(conf):
     # Allow overrides from environment...
     if "CXX" in os.environ:
@@ -114,7 +116,7 @@ def environOverride(conf):
         print(("*** Appending custom link flag: " + os.environ["LDFLAGS"]))
 
 
-### Builder for setup scripts
+# Builder for setup scripts
 
 
 def expand_scons_paths(path, topdir):
@@ -142,7 +144,7 @@ def script_builder_python(target, source, env):
 
     ldlibrary = list(loos_build_config.user_libdirs.values())
 
-    if not "install" in SCons.Script.COMMAND_LINE_TARGETS:
+    if "install" not in SCons.Script.COMMAND_LINE_TARGETS:
         toolpath = "$LOOS/Tools:" + ":".join(
             [
                 "$LOOS/Packages/" + s
@@ -220,9 +222,11 @@ def CheckAtlasRequires(conf, name, lib, required):
     lastLIBS = list(conf.env["LIBS"])
     conf.env.Append(LIBS=lib)
 
-    #    test_code = """
-    # extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*#, double*, int*, int*);}
-    # int main(int argc, char *argv[]) { char C[1]; double D[1];int I[1];dgesvd_(C, C, I, I, D, I, D, D, I, #D, I, D, I, I); }
+    #test_code = """
+    # extern "C"{void dgesvd_(char*, char*, int*, int*, double*, int*, double*,
+    # double*, int*, double*, int*#, double*, int*, int*);}
+    # int main(int argc, char *argv[]) { char C[1]; double D[1];int
+    # I[1];dgesvd_(C, C, I, I, D, I, D, D, I, #D, I, D, I, I); }
     # """
     test_code = "int main(){return(0);}"
 
@@ -363,6 +367,18 @@ def CheckNumpy(conf, pythonpath):
     global default_lib_path
     conf.Message("Checking for numpy... ")
 
+    if conf.env.USING_CONDA:
+        python_lib_dir = get_config_var("MACHDESTLIB")
+        # some older compilers require this directory explicitly in the
+        # include path
+        numpy_inc_path = python_lib_dir + "/site-packages/numpy/core/include"
+        if CheckDirectory(conf, numpy_inc_path):
+            conf.env.Append(CPPPATH=numpy_inc_path)
+            conf.Result("yes")
+            return 1
+        else:
+            print("Numpy not found inside conda, looking elsewhere...")
+
     env = conf.env["ENV"]
 
     ok = checkForPythonHeader(conf, "numpy/arrayobject.h")
@@ -370,14 +386,14 @@ def CheckNumpy(conf, pythonpath):
         conf.Result("yes")
         return 1
     newpaths = []
+
     if "PYTHON_PATH" in conf.env:
         envpath = conf.env["PYTHON_PATH"]
-        if len(envpath) > 1:  # Catches cases where PYTHON_PATH is present but null...
+        # Catch cases where PYTHON_PATH is present but null...
+        if len(envpath) > 1:
             newpaths.extend(envpath.split(":"))
 
     newpaths.append(default_lib_path)
-    if "CONDA_PREFIX" in env:
-        newpaths.append(env["CONDA_PREFIX"])
     for dir in newpaths:
         for p, d, f in os.walk(dir):
             for file in f:
@@ -396,7 +412,7 @@ def CheckNumpy(conf, pythonpath):
             conf,
             "numpy/arrayobject.h",
             [
-                "/System/Library/Frameworks/Python.framework/Versions/Current/Extras/lib/python/numpy/core/include"
+"/System/Library/Frameworks/Python.framework/Versions/Current/Extras/lib/python/numpy/core/include"
             ],
         )
         if ok:
@@ -416,7 +432,7 @@ def SetupBoostPaths(env):
 
     # If boost is not set but we're inside a conda environment,
     # automatically redirect boost into here...
-    if not BOOST and "CONDA_PREFIX" in env:
+    if not BOOST and env.USING_CONDA:
         BOOST = env["CONDA_PREFIX"]
 
     boost_libpath = ""
@@ -441,6 +457,7 @@ def SetupBoostPaths(env):
         env["BOOST_LIBPATH"] = boost_libpath
     if boost_include:
         env.Prepend(CPPPATH=[boost_include])
+        env["BOOST_INCLUDE"] = boost_include
 
 
 def SetupNetCDFPaths(env):
@@ -451,8 +468,8 @@ def SetupNetCDFPaths(env):
 
     # If netcdf is not set but we're inside a conda environment,
     # automatically redirect netcdf into here...
-    # if not NETCDF and 'CONDA_PREFIX' in env['ENV']:
-    #    NETCDF=env['ENV']['CONDA_PREFIX']
+    if not NETCDF and env.USING_CONDA:
+        NETCDF=env['CONDA_PREFIX']
 
     netcdf_libpath = ""
     netcdf_include = ""
@@ -586,9 +603,11 @@ def checkForPythonHeader(context, header):
     oldcpp = None
     if "CPPFLAGS" in context.env:
         oldcpp = context.env["CPPFLAGS"]
-    if "CPPPATH" in context.env:
+    if "CPPPATH" in context.env and not ("CONDA_PREFIX" in context.env):
         for dir in context.env["CPPPATH"]:
             context.env.Append(CPPFLAGS="-I%s " % dir)
+            print("CPPFLAGS", context.env["CPPFLAGS"])
+
     ok = context.TryCompile(test_code, ".cpp")
 
     if oldcpp:
@@ -643,36 +662,38 @@ def AutoConfiguration(env):
     else:
         has_netcdf = 0
 
-        if "CONDA_PREFIX" in conf.env["ENV"]:
-            conda_path = conf.env["ENV"]["CONDA_PREFIX"]
+        if env.USING_CONDA:
+            conda_path = env["CONDA_PREFIX"]
             default_lib_path = conda_path + "/lib"
             if loos_build_config.host_type != "Darwin":
-                print("***DEBUG: adding rpath...")
                 conf.env.Append(RPATH=default_lib_path)
         else:
             default_lib_path = "/usr/lib"
 
-        if not conf.CheckDirectory("/usr/lib64"):
-            if not conf.CheckDirectory("/usr/lib"):
-                print("Fatal error- cannot find your system library directory")
-                conf.env.Exit(1)
-        else:
-            # /usr/lib64 is found, so make sure we link against this (and not against any 32-bit libs)
-            default_lib_path = "/usr/lib64"
+            # if we're not in conda, add system library directory
+            if not conf.CheckDirectory("/usr/lib64"):
+                if not conf.CheckDirectory("/usr/lib"):
+                    print("Fatal error- cannot find your system library directory")
+                    conf.env.Exit(1)
+            else:
+                # /usr/lib64 is found, so make sure we link against this
+                # (and not against any 32-bit libs)
+                default_lib_path = "/usr/lib64"
         conf.env.Append(LIBPATH=default_lib_path)
-        # Only setup ATLAS if we're not on a Mac...
-        if loos_build_config.host_type != "Darwin":
+
+        # Only setup ATLAS if we're not on a Mac and we're not using conda
+        if loos_build_config.host_type != "Darwin" and not env.USING_CONDA:
             atlas_libpath = ""
             ATLAS_LIBPATH = env["ATLAS_LIBPATH"]
             ATLAS_LIBS = env["ATLAS_LIBS"]
             if not ATLAS_LIBPATH:
-                # Some distros may have atlas in /atlas-base, so must check for that...
+                # Some distros have atlas in /atlas-base, so must check that...
                 if conf.CheckDirectory(default_lib_path + "/atlas-base"):
                     atlas_libpath = default_lib_path + "/atlas-base"
                 elif conf.CheckDirectory(default_lib_path + "/atlas"):
                     atlas_libpath = default_lib_path + "/atlas"
                 else:
-                    print("Warning: Could not find an atlas directory!  Winging it...")
+                    print("Warning: Could not find an atlas directory! ")
             else:
                 atlas_libpath = ATLAS_LIBPATH
                 loos_build_config.user_libdirs["ATLAS"] = atlas_libpath
@@ -683,8 +704,8 @@ def AutoConfiguration(env):
         if not conf.CheckLib("pthread"):
             print("Error- LOOS requires a pthread library installed")
 
-        # Now that we know the default library path, setup Boost, NetCDF, and ATLAS
-        # based on the environment or custom.py file
+        # Now that we know the default library path, setup Boost, NetCDF, and
+        # ATLAS based on the environment or custom.py file
         SetupBoostPaths(conf.env)
         SetupNetCDFPaths(conf.env)
 
@@ -722,7 +743,7 @@ def AutoConfiguration(env):
         if int(env["pyloos"]):
             if conf.CheckForSwig(loos_build_config.min_swig_version):
                 conf.env["pyloos"] = 1
-                pythonpath = distutils.sysconfig.get_python_inc()
+                pythonpath = get_paths()['include']
                 if "PYTHON_INC" in conf.env:
                     if conf.env["PYTHON_INC"] != "":
                         pythonpath = conf.env["PYTHON_INC"]
@@ -743,18 +764,18 @@ def AutoConfiguration(env):
 
         if conf.env["BOOST_LIBS"]:
             boost_libs = env.Split(env["BOOST_LIBS"])
+        if env.USING_CONDA:
+            boost_libs = AutoConfigUserBoost(conf)
+        elif not loos_build_config.user_boost_flag:
+            boost_libs = AutoConfigSystemBoost(conf)
         else:
-            if not loos_build_config.user_boost_flag:
-                boost_libs = AutoConfigSystemBoost(conf)
-            else:
-                boost_libs = AutoConfigUserBoost(conf)
+            boost_libs = AutoConfigUserBoost(conf)
 
-            env.Append(LIBS=boost_libs)
+        env.Append(LIBS=boost_libs)
 
         # --- Check for ATLAS/LAPACK and how to build
 
-        # MacOS will use accelerate framework, so skip all of this...
-        if loos_build_config.host_type != "Darwin":
+        if loos_build_config.host_type != "Darwin" and not env.USING_CONDA:
             atlas_libs = ""  # List of numerics libs required for LOOS
 
             if env["ATLAS_LIBS"]:
@@ -762,6 +783,7 @@ def AutoConfiguration(env):
             else:
 
                 numerics = {
+                    "openblas": 0,
                     "satlas": 0,
                     "atlas": 0,
                     "lapack": 0,
@@ -829,7 +851,8 @@ def AutoConfiguration(env):
                         if lib:
                             atlas_libs.insert(0, lib)
                         else:
-                            # Try putting scanning default_lib_path first...SUSE requires
+                            # Try putting scanning default_lib_path
+                            # first...SUSE requires
                             # the lapack in /usr/lib first...
                             print(
                                 (
@@ -837,7 +860,8 @@ def AutoConfiguration(env):
                                     % default_lib_path
                                 )
                             )
-                            # Remove the default_lib_path from the list and prepend...
+                            # Remove the default_lib_path from the list and
+                            # prepend...
                             libpaths = list(conf.env["LIBPATH"])
                             libpaths.remove(default_lib_path)
                             libpaths.insert(0, default_lib_path)
@@ -857,9 +881,7 @@ def AutoConfiguration(env):
                                     atlas_libs.insert(0, lib)
                                 else:
                                     print(
-                                        "Error- could not figure out where ",
-                                        funcname,
-                                        " is located.",
+                                        "Error- could not figure out where ", funcname, " is located.",
                                     )
                                     print(
                                         "Try manually specifying ATLAS_LIBS and ATLAS_LIBPATH"
@@ -869,8 +891,11 @@ def AutoConfiguration(env):
             # Hack to extend list rather than append a list into a list
             for lib in atlas_libs:
                 conf.env.Append(LIBS=lib)
+        elif env.USING_CONDA:
+            conf.env.Append(LIBS="openblas")
 
-        # Suppress those annoying maybe used unitialized warnings that -Wall gives us...
+        # Suppress those annoying maybe used unitialized warnings that -Wall
+        # gives us...
         ccflags = conf.env["CCFLAGS"]
         conf.env.Append(
             CCFLAGS=["-Wno-maybe-uninitialized", "-Werror"]
@@ -900,37 +925,45 @@ def AutoConfiguration(env):
 def addDeprecatedOptions(opt):
     from SCons.Variables import PathVariable
 
-    opt.Add(PathVariable("LAPACK", "Path to LAPACK", "", PathVariable.PathAccept))
+    opt.Add(PathVariable("LAPACK", "Path to LAPACK", "",
+PathVariable.PathAccept))
     opt.Add(PathVariable("ATLAS", "Path to ATLAS", "", PathVariable.PathAccept))
     opt.Add(
-        PathVariable("ATLASINC", "Path to ATLAS includes", "", PathVariable.PathAccept)
+        PathVariable("ATLASINC", "Path to ATLAS includes", "",
+PathVariable.PathAccept)
     )
     opt.Add(
-        PathVariable("BOOSTLIB", "Path to BOOST libraries", "", PathVariable.PathAccept)
+        PathVariable("BOOSTLIB", "Path to BOOST libraries", "",
+PathVariable.PathAccept)
     )
     opt.Add(
-        PathVariable("BOOSTINC", "Path to BOOST includes", "", PathVariable.PathAccept)
+        PathVariable("BOOSTINC", "Path to BOOST includes", "",
+PathVariable.PathAccept)
     )
     opt.Add("BOOSTREGEX", "Boost regex library name", "")
     opt.Add("BOOSTPO", "Boost program options library name", "")
     opt.Add(
         PathVariable(
-            "LIBXTRA", "Path to additional libraries", "", PathVariable.PathAccept
+            "LIBXTRA", "Path to additional libraries", "",
+PathVariable.PathAccept
         )
     )
     opt.Add(
         PathVariable(
-            "NETCDFINC", "Path to netcdf include files", "", PathVariable.PathAccept
+            "NETCDFINC", "Path to netcdf include files", "",
+PathVariable.PathAccept
         )
     )
     opt.Add(
         PathVariable(
-            "NETCDFLIB", "Path to netcdf library files", "", PathVariable.PathAccept
+            "NETCDFLIB", "Path to netcdf library files", "",
+PathVariable.PathAccept
         )
     )
     opt.Add(
         PathVariable(
-            "ALTPATH", "Additional path to commands", "", PathVariable.PathAccept
+            "ALTPATH", "Additional path to commands", "",
+PathVariable.PathAccept
         )
     )
     opt.Add(
@@ -940,7 +973,8 @@ def addDeprecatedOptions(opt):
     )
     opt.Add(
         PathVariable(
-            "LIBS_PATHS_OVERRIDE", "Override paths to libs", "", PathVariable.PathAccept
+            "LIBS_PATHS_OVERRIDE", "Override paths to libs", "",
+PathVariable.PathAccept
         )
     )
 
