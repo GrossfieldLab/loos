@@ -9,13 +9,21 @@
 
 ## Documentation
 
+
 Documentation is currently available online at
 http://grossfieldlab.github.io/loos/.
-If you want a local copy of the documentation, you can build it by
-running Doxygen in the main LOOS directory.  See the [INSTALL](INSTALL.md) file for more
+
+These pages include brief summaries of most of the tools available with LOOS, as
+well as auto-generated class and method level documentation for developers. If
+you want a local copy of the documentation, you can build it by running doxygen
+in the main LOOS directory.  See the [INSTALL](INSTALL.md) file for more
 details.
 
-## Using LOOS from GitHub
+Additional documentation is available on the [GitHub wiki](https://github.com/GrossfieldLab/loos/wiki), including [slides from a talk introducing LOOS](http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf) and brief articles focused on [how to use LOOS](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Users) and how to [develop with LOOS](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Developers).
+
+
+
+## Using LOOS
 
 Welcome to the GitHub version of LOOS.  This repository was
 created by converting our old SVN repository.  The SVN feature
@@ -24,11 +32,22 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
-We don't release all that often, but we maintain the master branch in a correct and usable state.  All development is done in other branches, and merged once we believe it's correct.
+We don't release all that often, but we maintain the master branch in a correct
+and usable state.  All development is done in other branches, and merged once we
+believe it's correct.
 
 
-For help with installing LOOS, please see the [INSTALL](INSTALL.md) file.  For
+For help with installing LOOS, please see the [INSTALL.md](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
+
+### Release 3.1.0
+
+This is another major release. The biggest change is a totally reworked build
+system, which should make the process of installing LOOS much easier.  In
+particular, we've greatly improved our support for installing under Conda.  See
+[INSTALL.md](INSTALL.md) for detailed instructions.
+
+We've added a new package, Clustering. At the moment, it only has one tool (a fast k-medioids tool), but several others are planned.  There are also a number of improvements to other tools.
 
 ### Release 3.0.0
 

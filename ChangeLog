@@ -1,7 +1,20 @@
+2019-12-19  Alan Grossfield <alan>
+	* Release 3.1 New build system
+	* New Clustering package
+	* Bug fix to omg.py and it's handling of internal waters
+	* Added rotation options to solvate.py
+	* Fixed bug in omg and solvate where salt missed atom names
+	* fullhelper.py tool to simplify writing fullhelp messages
+	* New tool: packing_score_per_res.py
+	* Precision option to RMSD computing tools
+	* make_library.py: new tool to make a lipid library
+	* add_molecules.py: packmol-like tool to scatter small molecules in a box
+	* updates to cluster-structures.py: more output information
+
 2019-02-27  Alan Grossfield <alan>
 	* Release of LOOS 3.0.  This is a major change, in that LOOS now
 	  requires Python 3.x.
-	  
+
 2019-01-21  Alan Grossfield <alan>
 	* Merged in a new reweighting framework.  Added a new options class to
 	  support it, and implemented it in rdf and xy_rdf as examples.

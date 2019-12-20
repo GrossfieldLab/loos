@@ -24,6 +24,8 @@ addons:
      - python-numpy
      - doxygen
      - graphviz
+     - scons
+     - libeigen3-dev
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
@@ -33,7 +35,8 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install doxygen; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install graphviz; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install scons; fi
-  
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install eigen; fi
+
 script: scons
 
   
