@@ -30,6 +30,9 @@ import loos.pyloos
 import numpy
 import argparse
 from scipy.cluster.vq import kmeans, vq
+from sklearn.manifold import TSNE
+
+
 
 
 parser = argparse.ArgumentParser()
@@ -55,7 +58,15 @@ parser.add_argument('--skip',
 parser.add_argument('--stride', help='Do every nth frame',
                     type=int,
                     default=1)
-
+parser.add_argument('--tsne',
+                    help="Perform tSNE with perplexity",
+                    type=bool,
+                    default=False)
+parser.add_argument('--perplexity',
+                    help="Set perplexity for tSNE",
+                    type=float,
+                    default=30.
+                    )
 args = parser.parse_args()
 cmd_string = sys.argv[0]
 for i in range(1, len(sys.argv)):
@@ -93,24 +104,35 @@ if args.align:
     print('# Iteratively aligned with %d iterations and final RMSD %g.' %
           (allTrajs._iters, allTrajs._rmsd))
 
+if args.tsne:
+    print("# Performing tSNE on aligned trajectories")
+    t = TSNE(perplexity=args.perplexity,
+             n_components=2,
+             init="pca")
+    embedded = t.fit_transform(data)
+
 
 # Do the clustering...
 # Computing K-Means with K = num_means clusters
-centroids, distortion = kmeans(data, args.num_means)
+# and assign each value to a cluster
 # centroids  - the codebook of centroids
 # distortion - total distortion
-
 # Assign each sample to a cluster
-idx, dists = vq(data, centroids)
 # idx   - code (which cluster a point belongs to)
 # dists - distance of each point from cluster
 #         used for the distortion calculation
 #         May want to output for determining
 #         number of clusters in system
+if not args.tsne:
+    centroids, distortion = kmeans(data, args.num_means)
+    idx, dists = vq(data, centroids)
+    subset = allTrajs.frame()
+    dists *= 1.0
+    dists /= len(subset)
+else:
+    centroids, distortion = kmeans(embedded, args.num_means)
+    idx, dists = vq(embedded, centroids)
 
-subset = allTrajs.frame()
-dists *= 1.0
-dists /= len(subset)
 
 # Write out the meta-data file
 print("# Means\tDistortion: ")
