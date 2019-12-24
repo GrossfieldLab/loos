@@ -1,3 +1,6 @@
+2019-12-24  Alan Grossfield <alan>
+	* Added experimental tSNE feature to cluster-structures.py
+	
 2019-12-19  Alan Grossfield <alan>
 	* Release 3.1 New build system
 	* New Clustering package
