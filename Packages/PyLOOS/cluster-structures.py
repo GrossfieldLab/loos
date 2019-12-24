@@ -59,13 +59,11 @@ parser.add_argument('--stride', help='Do every nth frame',
                     type=int,
                     default=1)
 parser.add_argument('--tsne',
-                    help="Perform tSNE with perplexity",
-                    type=bool,
-                    default=False)
+                    help="Perform tSNE",
+                    action="store_true")
 parser.add_argument('--perplexity',
                     help="Set perplexity for tSNE",
                     type=float,
-                    default=30.
                     )
 args = parser.parse_args()
 cmd_string = sys.argv[0]
@@ -73,6 +71,12 @@ for i in range(1, len(sys.argv)):
     arg = sys.argv[i].replace('\n', '\\n')
     cmd_string += " '" + arg + "'"
 print('# ', cmd_string)
+if args.tsne:
+    print("# Warning: tSNE is experimental, and the resulting distances")
+    print("#          aren't meaningful.")
+
+if args.perplexity and not args.tsne:
+    print("# Warning: perplexity option is ignored without --tsne")
 
 
 # Create the model & read in the trajectories
@@ -166,22 +170,24 @@ for i in range(args.num_means):
     print("# %8d %10d     %8f" % (i, minima_indices[i], minima[i]))
 
 
-# Output centroids
-cen_list = centroids.tolist()
-subset = allTrajs.frame()
-for j in range(len(cen_list)):
-    troid = cen_list[j]
-    centroid_structure = subset.copy()
-    for i in range(0, len(troid), 3):
-        centroid_structure[i//3].coords(loos.GCoord(troid[i],
-                                                    troid[i+1],
-                                                    troid[i+2]))
-    pdb = loos.PDB.fromAtomicGroup(centroid_structure)
-    pdb.remarks().add(cmd_string)
-    pdb.remarks().add(">>> Means = %s, Distortion = %f" %
-                      (args.num_means, distortion))
+# Output centroids, unless we're doing tsne, in which case the
+# structures of the centroids aren't meaninful
+if not args.tsne:
+    cen_list = centroids.tolist()
+    subset = allTrajs.frame()
+    for j in range(len(cen_list)):
+        troid = cen_list[j]
+        centroid_structure = subset.copy()
+        for i in range(0, len(troid), 3):
+            centroid_structure[i//3].coords(loos.GCoord(troid[i],
+                                                        troid[i+1],
+                                                        troid[i+2]))
+        pdb = loos.PDB.fromAtomicGroup(centroid_structure)
+        pdb.remarks().add(cmd_string)
+        pdb.remarks().add(">>> Means = %s, Distortion = %f" %
+                          (args.num_means, distortion))
 
-    filename = "%s-centroid-%d.pdb" % (args.prefix, j)
-    file = open(filename, 'w')
-    file.write(str(pdb))
-    file.close()
+        filename = "%s-centroid-%d.pdb" % (args.prefix, j)
+        file = open(filename, 'w')
+        file.write(str(pdb))
+        file.close()
