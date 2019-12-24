@@ -1,6 +1,5 @@
 language: cpp
 
-
 branches:
   only:
     - master
@@ -15,17 +14,16 @@ matrix:
 addons:
   apt:
      packages:
-     - libboost-all-dev
-     - libatlas-base-dev
-     - libatlas-dev
-     - libnetcdf-dev
-     - swig
-     - python-dev
-     - python-numpy
-     - doxygen
-     - graphviz
-     - scons
-     - libeigen3-dev
+      - scons
+      - libboost-all-dev
+      - libboost-regex-dev
+      - libatlas-base-dev
+      - libnetcdf-dev
+      - swig
+      - python3-dev
+      - python3-numpy
+      - python3-scipy
+      - libeigen3-dev
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
