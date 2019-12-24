@@ -1,12 +1,4 @@
-language: python
-
-
-
-env:
-  - PYTHON_INC=/usr/include/python3.6m
-
-python:
-  - "3.6"
+language: cpp
 
 branches:
   only:
