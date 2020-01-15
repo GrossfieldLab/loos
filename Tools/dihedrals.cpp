@@ -48,8 +48,8 @@ string fullHelpMessage() {
 }
 
 // these determine where the string containing the dihedral selections is split
-string quartet_delim = "|";
-string atom_delim = ",";
+const string quartet_delim = "|";
+const string atom_delim = ",";
 
 // C++ 11 regex split
 // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
@@ -74,24 +74,26 @@ vector<vector<string>> deep_split(const string &input,
 }
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : dihedral_sel_strings(""), pdb(""), dihedral_sels{} {};
-
+  ToolOptions()
+      : dihedral_sel_strings(""), pdb(""), tags(""), dihedral_sels{} {};
+  // clang-format off
   void addGeneric(po::options_description &o) {
-    o.add_options()("dihedral-sel-strings,D",
-                    po::value<string>(&dihedral_sel_strings)->default_value(""),
-                    "Ordered quartets of selection strings; each quartet is "
-                    "delimited by '" +
-                        quartet_delim + ", and each string within by '" +
-                        atom_delim +
-                        "'.")("pdb", po::value<string>(&pdb)->default_value(""),
-                              "Prefix to write PDBs for each dihedral selected "
-                              "from frame 1 of provided multi-traj.");
+    o.add_options()
+    ("dihedral-sel-strings,D", po::value<string>(&dihedral_sel_strings)->default_value(""),
+     "Ordered quartets of selection strings; each quartet is delimited by '" 
+     + quartet_delim + "', and each string within by '" 
+     + atom_delim + "'.")
+    ("pdb", po::value<string>(&pdb)->default_value(""),
+     "Prefix to write PDBs for each dihedral selected from frame 1 of provided multi-traj.")
+    ("tags,T", po::value<string>(&tags)->default_value(""), 
+     "String of tags for each class of dihedral, separated by a '" + atom_delim + "'.");
   }
+  // clang-format on
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("dihedral-sel-strings=%s,pdb=%s") %
-               dihedral_sel_strings % pdb;
+    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s") %
+               dihedral_sel_strings % pdb % tags;
   }
 
   bool postConditions(po::variables_map &map) {
@@ -112,6 +114,7 @@ public:
   vector<vector<string>> dihedral_sels;
   string dihedral_sel_strings;
   string pdb;
+  string tags;
 };
 
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
@@ -168,6 +171,11 @@ int main(int argc, char *argv[]) {
   // figure out what dihedrals to track
   vector<vGroup> dihedrals = sels_to_dihedralAGs(topts->dihedral_sels, scope);
 
+  // if tags provided, split those into vector.
+  if (topts->tags) 
+    vector<string> vtags = split(topts->tags, atom_delim)
+  
+
   // if verbosity, and no pdbs were requested, then print each atomic group
   // found for each atom in each dihedral to stderr.
   if (bopts->verbosity > 0) {
@@ -208,17 +216,17 @@ int main(int argc, char *argv[]) {
     scope.remarks().add(header);
     scopeFile << scopePDB;
   }
-  
+
   cout << header;
   cout << "#\t";
-  for (auto selset : dihedral_sels){
-    for (auto sel : selset){
+  for (auto selset : dihedral_sels) {
+    for (auto sel : selset) {
       cout << sel << ",";
     }
   }
   // Trajectory Loop here.
   while (traj->readFrame()) {
     traj->updateGroupCoords(model);
-    for (auto )
+    for (auto)
   }
 }
