@@ -38,8 +38,6 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-typedef vector<AtomicGroup> vGroup;
-
 // @cond TOOL_INTERNAL
 
 string fullHelpMessage() {
@@ -53,9 +51,9 @@ const string atom_delim = ",";
 
 // C++ 11 regex split
 // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
-vector<string> split(const string &input, const string &regex) {
+vector<string> split(const string &input, const string &regular_expression) {
   // passing -1 as the submatch index parameter performs splitting
-  regex re(regex);
+  regex re(regular_expression);
   sregex_token_iterator first{input.begin(), input.end(), re, -1}, last;
   return {first, last};
 }
@@ -77,16 +75,17 @@ public:
   ToolOptions()
       : dihedral_sel_strings(""), pdb(""), tags(""), dihedral_sels{} {};
   // clang-format off
-  void addGeneric(po::options_description &o) {
+  void addGeneric(po::options_description& o) {
     o.add_options()
     ("dihedral-sel-strings,D", po::value<string>(&dihedral_sel_strings)->default_value(""),
-     "Ordered quartets of selection strings; each quartet is delimited by '" 
+     ("Ordered quartets of selection strings; each quartet is delimited by '"
      + quartet_delim + "', and each string within by '" 
-     + atom_delim + "'.")
+     + atom_delim + "'.").c_str())
     ("pdb", po::value<string>(&pdb)->default_value(""),
      "Prefix to write PDBs for each dihedral selected from frame 1 of provided multi-traj.")
     ("tags,T", po::value<string>(&tags)->default_value(""), 
-     "String of tags for each class of dihedral, separated by a '" + atom_delim + "'.");
+     ("String of tags for each class of dihedral, separated by a '" + atom_delim + "'.").c_str())
+    ;
   }
   // clang-format on
 
@@ -103,7 +102,7 @@ public:
         throw(LOOSError("The following selection did not split to a quartet of "
                         "selections:\n"));
         for (auto s : d)
-          cout cout << s << "\t";
+          cout << s << "\t";
         cout << "\n";
         return false;
       }
@@ -120,10 +119,11 @@ public:
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
 // Corrects order of discovery  of each dihedral, and returns atomic group of
 // dihedrals.
-vector<vGroup> sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
-                                   const AtomicGroup &scope) {
+vector<vector<AtomicGroup>>
+sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
+                    const AtomicGroup &scope) {
   // append to this for return later.
-  vGroup dihedralAGs;
+  vector<vector<AtomicGroup>> dihedralAGs;
   for (auto dSels : dihedral_sels) {
     // first get a set of AGs that have all the atoms of the dihedral in them
     // They are likely to be in the order of the selection matched first
@@ -133,15 +133,25 @@ vector<vGroup> sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       outoforder_dihedralType += selectAtoms(scope, sel);
     }
     // This separates all non-connected atoms into separate atomic groups.
-    vGroup dihedralTypeVector = outoforder_dihedralType.splitByMolecule();
+    vector<AtomicGroup> dihedralTypeVector =
+        outoforder_dihedralType.splitByMolecule();
     // reorder them here to match that provided by user
     // it may turn out this is unnecessary,
     // but the return order of selectAtoms calls is not specified.
     for (auto oo_D : dihedralTypeVector) {
-      AtomicGroup reordered;
-      for (auto sel : dSels) {
-        reordered += SelectAtoms(oo_D, sel);
+      if (oo_D.size() != 4) {
+        ostringstream oss;
+        oss << "WARNING: dihedral specification found " << oo_D.size();
+        oss << " atoms, not 4 in selection string set: \n\t";
+        for (auto sel : dSels)
+          oss << sel << ", ";
+        oss << "\b\n";
+        throw(LOOSError(oss.str()));
       }
+      AtomicGroup reordered;
+      for (auto sel : dSels)
+        reordered += selectAtoms(oo_D, sel);
+
       oo_D = move(reordered);
     }
     dihedralAGs.push_back(move(dihedralTypeVector));
@@ -169,12 +179,19 @@ int main(int argc, char *argv[]) {
   traj->updateGroupCoords(model);
 
   // figure out what dihedrals to track
-  vector<vGroup> dihedrals = sels_to_dihedralAGs(topts->dihedral_sels, scope);
+  vector<vector<AtomicGroup>> dihedrals =
+      sels_to_dihedralAGs(topts->dihedral_sels, scope);
 
   // if tags provided, split those into vector.
-  if (topts->tags) 
-    vector<string> vtags = split(topts->tags, atom_delim)
-  
+  if (topts->tags.empty()) {
+    vector<string> vtags = split(topts->tags, atom_delim);
+    for (uint i = 0; i < vtags.size(); i++) {
+      vtags[i] += to_string(dihedrals[i][0][0]->resid());
+    }
+  } else {
+    for (auto vAG : dihedrals) {
+    }
+  }
 
   // if verbosity, and no pdbs were requested, then print each atomic group
   // found for each atom in each dihedral to stderr.
@@ -202,7 +219,7 @@ int main(int argc, char *argv[]) {
     for (uint i = 0; i < dihedrals.size(); i++) {
       for (uint j = 0; j < dihedrals.at(i).size(); i++) {
         PDB pdb = PDB::fromAtomicGroup(dihedrals[i, j]);
-        pdb.remarks().add(to_string(j) + " from: " + dihedral_sels.at(i));
+        pdb.remarks().add(to_string(j) + " from: " + topts->dihedral_sels.at(i));
         ofstream pdbFile;
         pdbFile.open(topts->pdb + "_" + to_string(i) + "_" + to_string(j) +
                      ".pdb");
@@ -213,13 +230,13 @@ int main(int argc, char *argv[]) {
     PDB scopePDB = PDB::fromAtomicGroup(scope);
     ofstream scopeFile;
     scopeFile.open(topts->pdb + "_scope.pdb");
-    scope.remarks().add(header);
+    scopePDB.remarks().add(header);
     scopeFile << scopePDB;
   }
 
   cout << header;
   cout << "#\t";
-  for (auto selset : dihedral_sels) {
+  for (auto selset : topts->dihedral_sels) {
     for (auto sel : selset) {
       cout << sel << ",";
     }
