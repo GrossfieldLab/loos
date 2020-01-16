@@ -46,7 +46,7 @@ string fullHelpMessage() {
 }
 
 // these determine where the string containing the dihedral selections is split
-const string quartet_delim = "|";
+const string quartet_delim = ":";
 const string atom_delim = ",";
 const string tag_delim = "_";
 const string fsuffix = ".out"
