@@ -289,4 +289,8 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  // close all these output files now that we're done looping over traj
+  for (auto v_fileOutputs : vv_fileOutputs)
+    for (auto ofs : v_fileOutputs)
+      ofs.close();
 }
