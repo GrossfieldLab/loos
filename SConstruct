@@ -36,10 +36,11 @@ import SCons
 
 import loos_build_config
 
-from scons_support import *
+import scons_support
+import platform
 
 
-EnsureSConsVersion(2,0)
+EnsureSConsVersion(2, 0)
 
 # ----------------------------------------------------------------------------------------------
 # Principal options...
@@ -73,48 +74,60 @@ opts.Add('PYTHON_INC', 'Include path for Python needed by PyLOOS (if not set, us
 opts.Add('INCLUDE_PATH', 'Add to include paths before any auto-config', '')
 opts.Add('LIBRARY_PATH', 'Add to library paths before any auto-config', '')
 
-addDeprecatedOptions(opts)
+scons_support.addDeprecatedOptions(opts)
 
-### Uncomment this version to have a semi-clean build environment
-#env = Environment(ENV = {'PATH' : os.environ['PATH']}, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
-
-### Uncomment this line to bring the full user environment into the build environment
-#env = Environment(ENV = os.environ, options = opts, tools = ["default", "doxygen"], toolpath = '.', SWIGFLAGS=['-c++', '-python', '-Wall'],SHLIBPREFIX="")
-
-env = Environment(ENV=os.environ, options=opts,
-                  toolpath='.',
-                  SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'], SHLIBPREFIX="")
-
+# If we're using conda, we want to pull in the environment.
+# Otherwise, we want the environment mostly cleaned out
+if "CONDA_PREFIX" in os.environ:
+    env = Environment(ENV=os.environ,
+                      options=opts,
+                      toolpath='.',
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SHLIBPREFIX=""
+                  )
+    env["CONDA_PREFIX"]=os.environ["CONDA_PREFIX"]
+    env.USING_CONDA = True
+else:
+    env = Environment(ENV={'PATH': os.environ['PATH']},
+                      options=opts,
+                      toolpath='.',
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SHLIBPREFIX=""
+                      )
+    env.USING_CONDA = False
 
 Help(opts.GenerateHelpText(env))
 
-checkForDeprecatedOptions(env)
+scons_support.checkForDeprecatedOptions(env)
 
 env.Decider('MD5-timestamp')
 
 # Setup script-builder
-script_builder = Builder(action = script_builder_python)
-env.Append(BUILDERS = {'Scripts' : script_builder})
+script_builder = Builder(action=scons_support.script_builder_python)
+env.Append(BUILDERS={'Scripts': script_builder})
 
-
-
-### Get more info from environment
+# Get more info from environment
 PREFIX = env['PREFIX']
 
-### Inject paths (if present)
+# Inject paths (if present)
 if 'INCLUDE_PATH' in env:
-    env.Append(CPPPATH = env['INCLUDE_PATH'].split(':'))
+    env.Append(CPPPATH=env['INCLUDE_PATH'].split(':'))
 
 if 'LIBRARY_PATH' in env:
-    env.Append(LIBPATH = env['LIBRARY_PATH'].split(':'))
+    env.Append(LIBPATH=env['LIBRARY_PATH'].split(':'))
 
 # ----------------------------------------------------------------------------------------------
 
 cleaning = env.GetOption('clean')
 
 
-### Autoconf
-AutoConfiguration(env)
+# Autoconf
+
+if env.USING_CONDA and platform.system() == "Darwin":
+    flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
+    env.Append(LINKFLAGS=flag)
+
+scons_support.AutoConfiguration(env)
 pyloos = int(env['pyloos'])
 
 if not pyloos:
@@ -122,15 +135,14 @@ if not pyloos:
     print('PyLOOS will not be built.  The OMG will not be installed.')
 
 
-### Compile-flags
-
-debug_opts='-g -Wall -Wextra -fno-inline'
-release_opts='-O3 -DNDEBUG -Wall -Wno-deprecated'
-profile_opts='-O3 -DNDEBUG -Wall -g'
+# Compile-flags
+debug_opts = '-g -Wall -Wextra -fno-inline'
+release_opts = '-O3 -DNDEBUG -Wall -Wno-deprecated'
+profile_opts = '-O3 -DNDEBUG -Wall -g'
 
 # Setup the general environment...
-env.Prepend(CPPPATH = ['#', '#src'])
-env.Prepend(LIBPATH = ['#', '#src'])
+env.Prepend(CPPPATH=['#', '#src'])
+env.Prepend(LIBPATH=['#', '#src'])
 env.Append(LEXFLAGS=['-s'])
 env.Append(CPPFLAGS=['-pthread'])
 env.Append(LIBS=['pthread'])
@@ -139,21 +151,20 @@ env.Append(LIBS=['pthread'])
 if loos_build_config.host_type == 'Darwin':
     release = platform.release().split('.')
     if int(release[0]) >= 13:    # MacOS 10.9 requires this flag for native compiler
-        env.Append(CCFLAGS = '--std=c++0x -Wno-deprecated-register -D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=0')
         # Hack to get swig to work with latest 10.9
-        env.Append(SWIGFLAGS = '-DSWIG_NO_EXPORT_ITERATOR_METHODS')
-    env.Append(LINKFLAGS = ' -framework Accelerate')
+        env.Append(SWIGFLAGS='-DSWIG_NO_EXPORT_ITERATOR_METHODS')
+    env.Append(LINKFLAGS=' -llapack')
 
 
 if not cleaning:
     # Older version of BOOST will require this definition
     # Note: the version of BOOST requiring this flag is just a guess...
     if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_58'):
-        env.Append(CCFLAGS = '-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
+        env.Append(CCFLAGS='-DBOOST_SPIRIT_USE_PHOENIX_V3=1')
 
     # This is for BOOST 1.44 and boost 1.45..force using Boost Filesystem v3
     if LooseVersion(loos_build_config.versions['boost']) < LooseVersion('1_46') and LooseVersion(loos_build_config.versions['boost']) >= LooseVersion('1_44'):
-        env.Append(CCFLAGS = '-DBOOST_FILESYSTEM_VERSION=3')
+        env.Append(CCFLAGS='-DBOOST_FILESYSTEM_VERSION=3')
 
 
 # Determine what kind of build...
@@ -170,21 +181,21 @@ if (debug > 0):
 if int(release):
     env.Append(CCFLAGS=release_opts)
 else:
-   env.Append(CCFLAGS=debug_opts)
+    env.Append(CCFLAGS=debug_opts)
 
 if (debug > 0):
-   env.Append(CCFLAGS=(" -DDEBUG=%d" % (debug)))
+    env.Append(CCFLAGS=(" -DDEBUG=%d" % (debug)))
 
 # Profiling is independent of release/debug status...
 if int(profile):
-   env.Append(CCFLAGS=profile_opts)
-   env.Append(LINKFLAGS=profile_opts)
+    env.Append(CCFLAGS=profile_opts)
+    env.Append(LINKFLAGS=profile_opts)
 
 
 # Build a revision file to include with LOOS so all tools know what version
 # of LOOS they were built with...
 
-setupRevision(env)
+scons_support.setupRevision(env)
 
 # Export for subsidiary SConscripts
 
@@ -192,7 +203,7 @@ Export('env')
 
 # ---------------------------------------------------------------------------------------------
 
-### Handle SConscripts and build targets
+# Handle SConscripts and build targets
 
 [loos, loos_python] = SConscript('src/SConscript')
 loos_scripts = SConscript('SConscript')
@@ -266,7 +277,8 @@ loos_packages = []
 for name in loos_build_config.package_list:
     if name == 'Python' and not pyloos:
         continue
-    pkg_sc = SConscript('Packages/' + loos_build_config.package_list[name] + '/SConscript')
+    pkg_sc = SConscript('Packages/' + loos_build_config.package_list[name] +
+                        '/SConscript')
     env.Alias(name, pkg_sc)
     loos_packages = loos_packages + pkg_sc
 
@@ -282,8 +294,6 @@ env.AlwaysBuild(PREFIX + '/docs/index.html')
 
 
 all = loos_tools + loos_scripts + loos_packages
-#if docsflag:
-#    all = all + docs
 
 if int(env['pyloos']):
     loos_core = loos_core + loos_python
@@ -293,7 +303,6 @@ loos_tools += loos_core
 
 env.Alias('tools', loos_tools)
 env.Alias('core', loos_core)
-#env.Alias('docs', docs)
 env.Alias('all', all)
 env.Alias('install', PREFIX)
 
@@ -304,11 +313,5 @@ env.Clean('config',
               ".sconf_temp",
               "config.log"
               ])
-
-# Hack to force cleaning of docs (but only if no pre-existing docs are found)
-# Note: html version hard-coded
-#if not existing_docs:
-#    env.Clean(docs, 'Docs/html')
-#    env.Clean(all, 'Docs/html')
 
 env.Default('all')

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  This file is part of LOOS.
 #
 #  LOOS (Lightweight Object-Oriented Structure library)
@@ -96,7 +96,7 @@ if int(env['pyloos']):
 # Handle installing PyLOOS
    env.Install(os.path.join(PREFIX, 'lib'), loos_python)
    loos_python += Command("#loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
-
-
+   # hack to make swig-4 work
+   loos_python += Command("#loos/_loos.so", "../_loos.so", Copy("$TARGET", "$SOURCE"))
 
 Return('loos', 'loos_python')

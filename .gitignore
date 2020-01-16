@@ -141,6 +141,10 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Packages/Clustering/**
+!Packages/Clustering/*.cpp
+!Packages/Clustering/*.hpp
+!packages/Clustering/SConscript
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
