@@ -259,6 +259,7 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Tools/dihedrals
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
