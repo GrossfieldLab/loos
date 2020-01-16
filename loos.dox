@@ -12,15 +12,6 @@ School of Medicine & Dentistry, University of Rochester\n
 \image html gplv3.png
 
 <hr>
-<h2>Important News for LOOS 3.0</h2>
-
-LOOS 3.0 and higher require python 3.x.  The install instructions in INSTALL.md have been updated accordingly.  If your OS does not support python 3.x, you can try installing LOOS inside a Conda environment.
-
-For questions or problems using LOOS, the best approach is to open an issue on our <a href="https://github.com/GrossfieldLab/loos">GitHub page</a>.  Alternatively, you can email us at loos.maintainer@gmail.com.
-
-We are phasing out the mailing lists as support mechanisms; if you were previously a member, we suggest following LOOS on GitHub as a better strategy to keep up to date with us.
-
-<hr>
 
 <h2>Quick Links</h2>
       - <a href="https://github.com/GrossfieldLab/loos">Clone LOOS from GitHub</a>
@@ -68,7 +59,7 @@ LOOS has several major features:
       of using pointers (e.g. rapid, lightweight copying) without requiring
       the developer to do manual memory management.
     - It should run on any unix-like environment, and is tested under
-      multiple linux versions, Mac OSX, and cygwin.
+      multiple linux versions and Mac OSX.
 
 For assistance using LOOS, to suggest a patch, to request a feature, or simply
 to offer positive feedback, email loos.maintainer [AT] gmail.com.  The
@@ -669,164 +660,7 @@ will have priority over what's in your <TT>custom.py</TT> file.
 
 \subsection install Installing
 
-
-To install LOOS, use the "install" target:
-
-\verbatim
-scons install
-\endverbatim
-
-This will cause SCons to copy the headers, tools, and library into
- /opt/loos.  You can change where LOOS is installed by setting the
- PREFIX variable in either your custom.py file or on the command
- line.  LOOS will create a /bin, /include, /lib, and /docs directory
- and copy the appropriate files.  The recommended installation
- methodology is to install LOOS into a version-specific directory, and
- then set up a symlink from \c loos-latest to the most recent
- installed version:
-\verbatim
-scons PREFIX=/opt/loos-2.1 install
-ln -s /opt/loos-2.1 /opt/loos-latest
-\endverbatim
-Remember that any options you have previously provided to scons should
- be specified again when installing.
-
-<H2>Important Note...</H2>
-
-
-To use LOOS, your environment must be first setup:
-\verbatim
-  (bash)   source /path/to/loos/setup.sh
-  (tcsh)   source /path/to/loos/setup.csh
-\endverbatim
-
-<hr>
-\subsection building_pyloos Building PyLOOS, the Python Interface to LOOS
-PyLOOS will be automatically built if you have a recent swig (2.0+)
-installed.  PyLOOS now (as of LOOS 2.3.0) also requires NumPy.  See
-the top of the INSTALL and \ref faq_pyloos "the FAQ for PyLOOS" for
-more information about building and using PyLOOS.
-
-In some cases, scons may try to build PyLOOS when it isn't appropriate
-(i.e. supported).  To disable PyLOOS, use the pyloos flag,
-\verbatim
-scons pyloos=0
-\endverbatim
-
-<hr>
-
-\subsection general General Notes
-
-If you're using a compiler in a non-standard location (e.g. you have
-your own build of the latest and greatest gcc), SCons may not be using
-it even though your $PATH is set correctly.  You can force which
-compiler is used to build LOOS by setting the CXX variable in your
-"custom.py" file.
-
-Note: Settings in the custom.py file can be overridden using the
-command-line and the shell environment.
-
-SCons supports building LOOS in parallel.  If you have 4 cores, for
-example, use "scons -j4" to use all 4 cores.
-
-Prebuilt documentation for LOOS is provided as part of the
-distribution.  This is simply copied into the install directory as
-part of installation.  Should you want to build a new version of the
-documentation, Doxygen is required.  Moreover, due to an issue we ran
-into with SCons, documentation building and installation are
-decoupled.  What this means is that you must explicitly build the docs
-(i.e. "scons docs") and -then- install, "scons install".  Running
-"scons install" will -not- rebuild the documentation, even if it is out
-of date (or nonexistent).
-
-
-\subsection BYO Building Your Own Tools
-
-You have two choices for building your own tools depending on LOOS.  The
-simplest way is to work in the Packages/User directory.  In that case, all you
-need to do to build against LOOS (other than write your application, of
-course) is edit the SConscript file in that directory, adding your program
-to the build list.  Specifically, you edit the line that creates a variable
-"apps", appending your program's name to the end of the string.  Then, run
-scons from the main LOOS directory, and your program will be built.
-We have included a number of trivial programs in the User directory; they
-don't actually do anything useful, but they provide basic templates for how
-to use the command line options, and get the basic setup you'll need.
-Note that tools in the User package will be installed if you choose to
-install LOOS.
-
-If you wish to work outside the LOOS directory structure, copy the
-SConstruct and SConscript files from the Examples directory and edit
-them as needed.  You can probably get by with just editing the
-SConscript file.  To build, you will need to have sourced one of the
-LOOS setup scripts (e.g. <TT>setup.sh</TT>).  This will set several
-environment variables that will tell your SConstruct where LOOS is and
-how it was built.  If all goes well, running <TT>scons</TT> in your
-directory will build your tools.  If not, you can change your
-environment variables or alternatively, <I>not</I> source the LOOS
-setup script and use a <TT>custom.py</TT> file.
-
-<h3>Important Note</h3>
-The environment <i>always</i> overrides what's in the SConstruct and
-in the <tt>custom.py</tt> file.  If you create a <tt>custom.py</tt>
-file and change the <tt>LOOS_CCFLAGS</tt> variable, it will be ignored
-in favor of what <tt>LOOS_CCFLAGS</tt> was set to when you sourced the
-<tt>setup.sh</tt> script.
-
-<hr>
-
-
-\section Build Targets
-
-There are several build targets available:
-
-<table align="center">
-<tr align="left"><th>Target</th><th>Description</th></tr>
-<tr align="left"><td>all (default)</td><td>Build the library, tools, packages, and PyLOOS</td></tr>
-<tr align="left"><td>core</td><td>Builds the library and PyLOOS only</td></tr>
-<tr align="left"><td>docs</td><td>Rebuilds the documentation</td></tr>
-<tr align="left"><td>install</td><td>Installs library, toosl, PyLOOS, and all packages (except user)</td></tr>
-</table>
-
-Each package in LOOS is also a build target.  The LOOS library and
-only that package will be built.  The current set of packages are:
-
-<table align="center">
-<tr align="left"><td>ENM</td><td>Elastic Network Models</td></tr>
-<tr align="left"><td>HBonds</td><td>Hydrogen bonds analysis</td></tr>
-<tr align="left"><td>Conv</td><td>Simulation convergence analysis</td></tr>
-<tr align="left"><td>Density</td><td>Density/3D histogram tools</td></tr>
-<tr align="left"><td>User</td><td>User created tools</td></tr>
-<tr align="left"><td>Python</td><td>PyLOOS-based scripts</td></tr>
-</table>
-
-There are several different build options that are available for
-LOOS.  These are handled on the command-line by SCons as "foo=1" to
-turn the option on or "foo=0" to turn it off.  Most options default to
-off.  Finally, you can query the available options by passing the "-h"
-flag to SCons.  The following table lists the principal build options:
-
-<table align="center">
-<tr align="left"><th>Option</th><th>Default</th><th>Description</th></tr>
-<tr align="left"><td>debug</td><td>0</td><td>Adds "-DDEBUG" to build</td></tr>
-<tr align="left"><td>release</td><td>1</td><td>Turns on aggressive optimization (-O3)</td></tr>
-<tr align="left"><td>regenerate</td><td>0</td><td>Regenerates the test verification data</td></tr>
-<tr align="left"><td>reparse</td><td>0</td><td>Runs bison/flex to create the C++ files for parsing selections</td></tr>
-</table>
-
-
-\subsection Reparsing
-To remove the dependency on Bison/Flex, the output from these tools
-for the grammar and scanner are included.  If you want to rebuild
-them, you will need to use the 'reparse=1' option.  The catch is that
-if you have a different version of flex installed, there is a good
-chance there will be a conflict with the bundled FlexLexer.h include
-file.  If you see odd compiler errors, try removing that file and
-rebuilding.  Alternatively, forcibly remove all generated files by
-doing "rm *.cc *.hh" (assuming you've added no files with those
-suffixes), then rebuild.
-
-*/
+See INSTALL.md in the main LOOS directory for up to date documentation.
 
 /*! \page tools Summary of Tools
 
