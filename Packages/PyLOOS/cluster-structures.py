@@ -30,6 +30,9 @@ import loos.pyloos
 import numpy
 import argparse
 from scipy.cluster.vq import kmeans, vq
+from sklearn.manifold import TSNE
+
+
 
 
 parser = argparse.ArgumentParser()
@@ -55,13 +58,25 @@ parser.add_argument('--skip',
 parser.add_argument('--stride', help='Do every nth frame',
                     type=int,
                     default=1)
-
+parser.add_argument('--tsne',
+                    help="Perform tSNE",
+                    action="store_true")
+parser.add_argument('--perplexity',
+                    help="Set perplexity for tSNE",
+                    type=float,
+                    )
 args = parser.parse_args()
 cmd_string = sys.argv[0]
 for i in range(1, len(sys.argv)):
     arg = sys.argv[i].replace('\n', '\\n')
     cmd_string += " '" + arg + "'"
 print('# ', cmd_string)
+if args.tsne:
+    print("# Warning: tSNE is experimental, and the resulting distances")
+    print("#          aren't meaningful.")
+
+if args.perplexity and not args.tsne:
+    print("# Warning: perplexity option is ignored without --tsne")
 
 
 # Create the model & read in the trajectories
@@ -93,24 +108,35 @@ if args.align:
     print('# Iteratively aligned with %d iterations and final RMSD %g.' %
           (allTrajs._iters, allTrajs._rmsd))
 
+if args.tsne:
+    print("# Performing tSNE on aligned trajectories")
+    t = TSNE(perplexity=args.perplexity,
+             n_components=2,
+             init="pca")
+    embedded = t.fit_transform(data)
+
 
 # Do the clustering...
 # Computing K-Means with K = num_means clusters
-centroids, distortion = kmeans(data, args.num_means)
+# and assign each value to a cluster
 # centroids  - the codebook of centroids
 # distortion - total distortion
-
 # Assign each sample to a cluster
-idx, dists = vq(data, centroids)
 # idx   - code (which cluster a point belongs to)
 # dists - distance of each point from cluster
 #         used for the distortion calculation
 #         May want to output for determining
 #         number of clusters in system
+if not args.tsne:
+    centroids, distortion = kmeans(data, args.num_means)
+    idx, dists = vq(data, centroids)
+    subset = allTrajs.frame()
+    dists *= 1.0
+    dists /= len(subset)
+else:
+    centroids, distortion = kmeans(embedded, args.num_means)
+    idx, dists = vq(embedded, centroids)
 
-subset = allTrajs.frame()
-dists *= 1.0
-dists /= len(subset)
 
 # Write out the meta-data file
 print("# Means\tDistortion: ")
@@ -144,22 +170,24 @@ for i in range(args.num_means):
     print("# %8d %10d     %8f" % (i, minima_indices[i], minima[i]))
 
 
-# Output centroids
-cen_list = centroids.tolist()
-subset = allTrajs.frame()
-for j in range(len(cen_list)):
-    troid = cen_list[j]
-    centroid_structure = subset.copy()
-    for i in range(0, len(troid), 3):
-        centroid_structure[i//3].coords(loos.GCoord(troid[i],
-                                                    troid[i+1],
-                                                    troid[i+2]))
-    pdb = loos.PDB.fromAtomicGroup(centroid_structure)
-    pdb.remarks().add(cmd_string)
-    pdb.remarks().add(">>> Means = %s, Distortion = %f" %
-                      (args.num_means, distortion))
+# Output centroids, unless we're doing tsne, in which case the
+# structures of the centroids aren't meaninful
+if not args.tsne:
+    cen_list = centroids.tolist()
+    subset = allTrajs.frame()
+    for j in range(len(cen_list)):
+        troid = cen_list[j]
+        centroid_structure = subset.copy()
+        for i in range(0, len(troid), 3):
+            centroid_structure[i//3].coords(loos.GCoord(troid[i],
+                                                        troid[i+1],
+                                                        troid[i+2]))
+        pdb = loos.PDB.fromAtomicGroup(centroid_structure)
+        pdb.remarks().add(cmd_string)
+        pdb.remarks().add(">>> Means = %s, Distortion = %f" %
+                          (args.num_means, distortion))
 
-    filename = "%s-centroid-%d.pdb" % (args.prefix, j)
-    file = open(filename, 'w')
-    file.write(str(pdb))
-    file.close()
+        filename = "%s-centroid-%d.pdb" % (args.prefix, j)
+        file = open(filename, 'w')
+        file.write(str(pdb))
+        file.close()
