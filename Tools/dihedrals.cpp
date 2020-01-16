@@ -48,10 +48,13 @@ string fullHelpMessage() {
 // these determine where the string containing the dihedral selections is split
 const string quartet_delim = "|";
 const string atom_delim = ",";
+const string tag_delim = "_";
+const string fsuffix = ".out"
 
-// C++ 11 regex split
-// https://stackoverflow.com/questions/9435385/split-a-string-using-c11
-vector<string> split(const string &input, const string &regular_expression) {
+    // C++ 11 regex split
+    // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
+    vector<string>
+    split(const string &input, const string &regular_expression) {
   // passing -1 as the submatch index parameter performs splitting
   regex re(regular_expression);
   sregex_token_iterator first{input.begin(), input.end(), re, -1}, last;
@@ -73,7 +76,8 @@ vector<vector<string>> deep_split(const string &input,
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions()
-      : dihedral_sel_strings(""), pdb(""), tags(""), dihedral_sels{} {};
+      : dihedral_sel_strings(""), pdb(""), tags(""), dihedral_sels{},
+        prefix("dihedral"){};
   // clang-format off
   void addGeneric(po::options_description& o) {
     o.add_options()
@@ -85,14 +89,17 @@ public:
      "Prefix to write PDBs for each dihedral selected from frame 1 of provided multi-traj.")
     ("tags,T", po::value<string>(&tags)->default_value(""), 
      ("String of tags for each class of dihedral, separated by a '" + atom_delim + "'.").c_str())
+    ("prefix,p", po::value<string>(&prefix)->default_value("dihedral"),
+     "Prefix for file names for each monitored dihedral.")
     ;
   }
   // clang-format on
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s") %
-               dihedral_sel_strings % pdb % tags;
+    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s") %
+               dihedral_sel_strings % pdb % tags % prefix;
+    return (oss.str());
   }
 
   bool postConditions(po::variables_map &map) {
@@ -114,6 +121,7 @@ public:
   string dihedral_sel_strings;
   string pdb;
   string tags;
+  string prefix;
 };
 
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
@@ -163,7 +171,8 @@ int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
   opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelection *sopts = new opts::BasicSelection("all");
+  opts::BasicSelection *sopts =
+      new opts::BasicSelection("backbone && !hydrogen");
   opts::MultiTrajOptions *mtopts = new opts::MultiTrajOptions;
   ToolOptions *topts = new ToolOptions;
 
@@ -182,14 +191,44 @@ int main(int argc, char *argv[]) {
   vector<vector<AtomicGroup>> dihedrals =
       sels_to_dihedralAGs(topts->dihedral_sels, scope);
 
-  // if tags provided, split those into vector.
+  // make tags, either from scratch or by adding to user appended tags.
+  vector<vector<ofstream>> vv_fileOutputs;
   if (topts->tags.empty()) {
-    vector<string> vtags = split(topts->tags, atom_delim);
-    for (uint i = 0; i < vtags.size(); i++) {
-      vtags[i] += to_string(dihedrals[i][0][0]->resid());
+    int resid;
+    for (auto dihedralType : dihedrals) {
+      vector<ofstream> v_fileOutputs;
+      for (auto dihedral : dihedralType) {
+        resid = dihedral[0]->resid();
+        string tag;
+        for (auto patom : dihedral) {
+          // put a residue number with the name for each atom not from residue
+          // of atom zero.
+          if (resid != patom->resid())
+            tag = tag_delim + to_string(patom->resid()) + patom->name();
+          else
+            tag = tag_delim + patom->name();
+        }
+        ofstream dihedral_outFile(topts->prefix + tag_delim + tag + fsuffix);
+        dihedral_outFile << "# " << header << "\n";
+        v_fileOutputs.push_back(move(dihedral_outFile));
+      }
+      vv_fileOutputs.push_back(move(v_fileOutputs));
     }
   } else {
-    for (auto vAG : dihedrals) {
+    vector<string> user_tags = split(topts->tags, atom_delim);
+    for (uint i = 0; i < user_tags.size(); i++) {
+      vector<ofstream> v_fileOutputs;
+      for (auto dihedral : dihedrals.at(i)) {
+        string tag = user_tags.at(i);
+        tag += tag_delim + dihedral[0]->resid();
+        for (auto patom : dihedral)
+          tag += tag_delim + patom->name(); // append atom names to tag with
+                                            // tag delimiter
+        ofstream dihedral_outFile(topts->prefix + tag_delim + tag + fsuffix);
+        dihedral_outFile << "# " << header << "\n";
+        v_fileOutputs.push_back(move(dihedral_outFile));
+      }
+      vv_fileOutputs.push_back(move(v_fileOutputs));
     }
   }
 
@@ -197,7 +236,7 @@ int main(int argc, char *argv[]) {
   // found for each atom in each dihedral to stderr.
   if (bopts->verbosity > 0) {
     if (topts->pdb.empty()) {
-      cerr << header;
+      cerr << "# " << header << "\n";
       cerr << "# Following are the tab-delimited dihedral class selection "
               "strings and the atomic groups each produced:\n";
       for (uint i = 0; i < topts->dihedral_sels.size(); i++) {
@@ -219,7 +258,8 @@ int main(int argc, char *argv[]) {
     for (uint i = 0; i < dihedrals.size(); i++) {
       for (uint j = 0; j < dihedrals.at(i).size(); i++) {
         PDB pdb = PDB::fromAtomicGroup(dihedrals[i, j]);
-        pdb.remarks().add(to_string(j) + " from: " + topts->dihedral_sels.at(i));
+        pdb.remarks().add(to_string(j) +
+                          " from: " + topts->dihedral_sels.at(i));
         ofstream pdbFile;
         pdbFile.open(topts->pdb + "_" + to_string(i) + "_" + to_string(j) +
                      ".pdb");
@@ -234,16 +274,19 @@ int main(int argc, char *argv[]) {
     scopeFile << scopePDB;
   }
 
-  cout << header;
-  cout << "#\t";
-  for (auto selset : topts->dihedral_sels) {
-    for (auto sel : selset) {
-      cout << sel << ",";
-    }
-  }
   // Trajectory Loop here.
+  double dihedral_angle;
   while (traj->readFrame()) {
     traj->updateGroupCoords(model);
-    for (auto)
+    for (uint dtIndex = 0; dtIndex < dihedrals.size(); dtIndex++) {
+      for (uint dIndex = 0; dIndex < dihedrals[dtIndex].size(); dIndex++) {
+        dihedral_angle = Math::torsion(dihedrals[dtIndex, dIndex][0]->coords(),
+                                       dihedrals[dtIndex, dIndex][1]->coords(),
+                                       dihedrals[dtIndex, dIndex][2]->coords(),
+                                       dihedrals[dtIndex, dIndex][3]->coords());
+        vv_fileOutputs[dtIndex, dIndex] << traj->currentFrame << "\t"
+                                        << dihedral_angle << "\n";:w
+      }
+    }
   }
 }
