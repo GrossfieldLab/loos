@@ -46,7 +46,7 @@ string fullHelpMessage() {
 }
 
 // these determine where the string containing the dihedral selections is split
-const string quartet_delim = "|";
+const string quartet_delim = ":";
 const string atom_delim = ",";
 const string tag_delim = "_";
 const string fsuffix = ".out"
@@ -289,4 +289,8 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  // close all these output files now that we're done looping over traj
+  for (auto v_fileOutputs : vv_fileOutputs)
+    for (auto ofs : v_fileOutputs)
+      ofs.close();
 }

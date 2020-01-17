@@ -142,6 +142,10 @@ Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
 Tools/dihedrals
+Packages/Clustering/**
+!Packages/Clustering/*.cpp
+!Packages/Clustering/*.hpp
+!packages/Clustering/SConscript
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
