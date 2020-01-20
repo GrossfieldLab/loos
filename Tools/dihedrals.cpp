@@ -49,7 +49,7 @@ string fullHelpMessage() {
 const string quartet_delim = ":";
 const string atom_delim = ",";
 const string tag_delim = "_";
-const string fsuffix = ".out"
+const string fsuffix = ".out";
 
     // C++ 11 regex split
     // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
@@ -192,11 +192,11 @@ int main(int argc, char *argv[]) {
       sels_to_dihedralAGs(topts->dihedral_sels, scope);
 
   // make tags, either from scratch or by adding to user appended tags.
-  vector<vector<ofstream>> vv_fileOutputs;
+  vector<vector<shared_ptr<ofstream>>> vv_filePtrs;
   if (topts->tags.empty()) {
     int resid;
     for (auto dihedralType : dihedrals) {
-      vector<ofstream> v_fileOutputs;
+      vector<shared_ptr<ofstream>> v_filePtrs;
       for (auto dihedral : dihedralType) {
         resid = dihedral[0]->resid();
         string tag;
@@ -208,27 +208,27 @@ int main(int argc, char *argv[]) {
           else
             tag = tag_delim + patom->name();
         }
-        ofstream dihedral_outFile(topts->prefix + tag_delim + tag + fsuffix);
-        dihedral_outFile << "# " << header << "\n";
-        v_fileOutputs.push_back(move(dihedral_outFile));
+        auto p_ofstream = make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
+        *(p_ofstream) << "# " << header << "\n";
+        v_filePtrs.push_back(p_ofstream);
       }
-      vv_fileOutputs.push_back(move(v_fileOutputs));
+      vv_filePtrs.push_back(move(v_filePtrs));
     }
   } else {
     vector<string> user_tags = split(topts->tags, atom_delim);
     for (uint i = 0; i < user_tags.size(); i++) {
-      vector<ofstream> v_fileOutputs;
+      vector<shared_ptr<ofstream>> v_filePtrs;
       for (auto dihedral : dihedrals.at(i)) {
         string tag = user_tags.at(i);
-        tag += tag_delim + dihedral[0]->resid();
+        tag += tag_delim + to_string(dihedral[0]->resid());
         for (auto patom : dihedral)
           tag += tag_delim + patom->name(); // append atom names to tag with
                                             // tag delimiter
-        ofstream dihedral_outFile(topts->prefix + tag_delim + tag + fsuffix);
-        dihedral_outFile << "# " << header << "\n";
-        v_fileOutputs.push_back(move(dihedral_outFile));
+        auto p_ofstream = make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
+        *p_ofstream << "# " << header << "\n";
+        v_filePtrs.push_back(p_ofstream);
       }
-      vv_fileOutputs.push_back(move(v_fileOutputs));
+      vv_filePtrs.push_back(move(v_filePtrs));
     }
   }
 
@@ -257,9 +257,9 @@ int main(int argc, char *argv[]) {
   if (!topts->pdb.empty()) {
     for (uint i = 0; i < dihedrals.size(); i++) {
       for (uint j = 0; j < dihedrals.at(i).size(); i++) {
-        PDB pdb = PDB::fromAtomicGroup(dihedrals[i, j]);
+        PDB pdb = PDB::fromAtomicGroup(dihedrals[i][j]);
         pdb.remarks().add(to_string(j) +
-                          " from: " + topts->dihedral_sels.at(i));
+                          " from: " + (topts->dihedral_sels.at(i).at(j)));
         ofstream pdbFile;
         pdbFile.open(topts->pdb + "_" + to_string(i) + "_" + to_string(j) +
                      ".pdb");
@@ -280,17 +280,18 @@ int main(int argc, char *argv[]) {
     traj->updateGroupCoords(model);
     for (uint dtIndex = 0; dtIndex < dihedrals.size(); dtIndex++) {
       for (uint dIndex = 0; dIndex < dihedrals[dtIndex].size(); dIndex++) {
-        dihedral_angle = Math::torsion(dihedrals[dtIndex, dIndex][0]->coords(),
-                                       dihedrals[dtIndex, dIndex][1]->coords(),
-                                       dihedrals[dtIndex, dIndex][2]->coords(),
-                                       dihedrals[dtIndex, dIndex][3]->coords());
-        vv_fileOutputs[dtIndex, dIndex] << traj->currentFrame << "\t"
-                                        << dihedral_angle << "\n";:w
+        dihedral_angle = Math::torsion(dihedrals[dtIndex][dIndex][0]->coords(),
+                                       dihedrals[dtIndex][dIndex][1]->coords(),
+                                       dihedrals[dtIndex][dIndex][2]->coords(),
+                                       dihedrals[dtIndex][dIndex][3]->coords());
+        vv_filePtrs[dtIndex, dIndex] << traj->currentFrame << "\t"
+                                        << dihedral_angle << "\n";
       }
     }
   }
   // close all these output files now that we're done looping over traj
-  for (auto v_fileOutputs : vv_fileOutputs)
-    for (auto ofs : v_fileOutputs)
-      ofs.close();
+  for (auto v_fps: vv_filePtrs)
+    for (auto p_ofs : v_fps)
+      p_ofs->close();
+
 }
