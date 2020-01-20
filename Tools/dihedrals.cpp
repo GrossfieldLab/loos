@@ -69,14 +69,14 @@ vector<vector<string>> deep_split(const string &input,
   vector<string> outer_frags = split(input, outer_regex);
   // split the outer fragments and push these vectors into return object
   for (string &frag : outer_frags) {
-    vector_of_frags.push_back(move(split(frag, inner_regex)));
+    vector_of_frags.push_back(split(frag, inner_regex));
   }
   return vector_of_frags;
 }
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions()
-      : dihedral_sel_strings(""), pdb(""), tags(""), dihedral_sels{},
+      : dihedral_sels{}, dihedral_sel_strings(""), pdb(""), tags(""), 
         prefix("dihedral"){};
   // clang-format off
   void addGeneric(po::options_description& o) {
@@ -284,7 +284,7 @@ int main(int argc, char *argv[]) {
                                        dihedrals[dtIndex][dIndex][1]->coords(),
                                        dihedrals[dtIndex][dIndex][2]->coords(),
                                        dihedrals[dtIndex][dIndex][3]->coords());
-        vv_filePtrs[dtIndex, dIndex] << traj->currentFrame << "\t"
+        *(vv_filePtrs[dtIndex][dIndex]) << traj->currentFrame() << "\t"
                                         << dihedral_angle << "\n";
       }
     }
