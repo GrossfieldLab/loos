@@ -51,10 +51,9 @@ const string atom_delim = ",";
 const string tag_delim = "_";
 const string fsuffix = ".out";
 
-    // C++ 11 regex split
-    // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
-    vector<string>
-    split(const string &input, const string &regular_expression) {
+// C++ 11 regex split
+// https://stackoverflow.com/questions/9435385/split-a-string-using-c11
+vector<string> split(const string &input, const string &regular_expression) {
   // passing -1 as the submatch index parameter performs splitting
   regex re(regular_expression);
   sregex_token_iterator first{input.begin(), input.end(), re, -1}, last;
@@ -76,7 +75,7 @@ vector<vector<string>> deep_split(const string &input,
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions()
-      : dihedral_sels{}, dihedral_sel_strings(""), pdb(""), tags(""), 
+      : dihedral_sels{}, dihedral_sel_strings(""), pdb(""), tags(""),
         prefix("dihedral"){};
   // clang-format off
   void addGeneric(po::options_description& o) {
@@ -146,22 +145,52 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // reorder them here to match that provided by user
     // it may turn out this is unnecessary,
     // but the return order of selectAtoms calls is not specified.
-    for (auto oo_D : dihedralTypeVector) {
-      if (oo_D.size() != 4) {
-        ostringstream oss;
-        oss << "WARNING: dihedral specification found " << oo_D.size();
-        oss << " atoms, not 4 in selection string set: \n\t";
-        for (auto sel : dSels)
-          oss << sel << ", ";
-        oss << "\b\n";
-        throw(LOOSError(oss.str()));
-      }
-      AtomicGroup reordered;
-      for (auto sel : dSels)
-        reordered += selectAtoms(oo_D, sel);
+    // Remove any AGs that didn't manage to contain four atoms after the split.
+    dihedralTypeVector.erase(remove_if(
+        dihedralTypeVector.begin(), dihedralTypeVector.end(),
+        // lambda that filters by incorrectly sized AGs, emitting warnings as it
+        // goes.
+        [&](AtomicGroup& oo_D) -> bool {
+          if (oo_D.size() != 4) {
+            cerr << "WARNING: dihedral specification found " << oo_D.size();
+            cerr << " atoms, not 4 in selection string set: \n\t";
+            for (auto sel : dSels)
+              cerr << sel << ", ";
+            cerr << "\b\n";
+            cerr << "Offending group: \n";
+            cerr << oo_D;
+            cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
+            return true;
+          } else {
+            AtomicGroup reordered;
+            for (auto sel : dSels)
+              reordered += selectAtoms(oo_D, sel);
 
-      oo_D = move(reordered);
-    }
+            oo_D = move(reordered);
+            return false;
+          }
+        }));
+
+    // for (auto oo_D : dihedralTypeVector) {
+    //   if (oo_D.size() != 4) {
+    //     ostringstream oss;
+    //     oss << "WARNING: dihedral specification found " << oo_D.size();
+    //     oss << " atoms, not 4 in selection string set: \n\t";
+    //     for (auto sel : dSels)
+    //       oss << sel << ", ";
+    //     oss << "\b\n";
+    //     oss << "Offending group: \n";
+    //     oss << oo_D;
+    //     oss << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
+
+    //     throw(LOOSError(oss.str()));
+    //   }
+    //   AtomicGroup reordered;
+    //   for (auto sel : dSels)
+    //     reordered += selectAtoms(oo_D, sel);
+
+    //   oo_D = move(reordered);
+    // }
     dihedralAGs.push_back(move(dihedralTypeVector));
   }
   return dihedralAGs;
@@ -208,7 +237,8 @@ int main(int argc, char *argv[]) {
           else
             tag = tag_delim + patom->name();
         }
-        auto p_ofstream = make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
+        auto p_ofstream =
+            make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
         *(p_ofstream) << "# " << header << "\n";
         v_filePtrs.push_back(p_ofstream);
       }
@@ -224,7 +254,8 @@ int main(int argc, char *argv[]) {
         for (auto patom : dihedral)
           tag += tag_delim + patom->name(); // append atom names to tag with
                                             // tag delimiter
-        auto p_ofstream = make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
+        auto p_ofstream =
+            make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
         *p_ofstream << "# " << header << "\n";
         v_filePtrs.push_back(p_ofstream);
       }
@@ -284,14 +315,13 @@ int main(int argc, char *argv[]) {
                                        dihedrals[dtIndex][dIndex][1]->coords(),
                                        dihedrals[dtIndex][dIndex][2]->coords(),
                                        dihedrals[dtIndex][dIndex][3]->coords());
-        *(vv_filePtrs[dtIndex][dIndex]) << traj->currentFrame() << "\t"
-                                        << dihedral_angle << "\n";
+        *(vv_filePtrs[dtIndex][dIndex])
+            << traj->currentFrame() << "\t" << dihedral_angle << "\n";
       }
     }
   }
   // close all these output files now that we're done looping over traj
-  for (auto v_fps: vv_filePtrs)
+  for (auto v_fps : vv_filePtrs)
     for (auto p_ofs : v_fps)
       p_ofs->close();
-
 }
