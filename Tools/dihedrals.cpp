@@ -150,7 +150,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
         dihedralTypeVector.begin(), dihedralTypeVector.end(),
         // lambda that filters by incorrectly sized AGs, emitting warnings as it
         // goes.
-        [&](AtomicGroup& oo_D) -> bool {
+        [&](AtomicGroup &oo_D) -> bool {
           if (oo_D.size() != 4) {
             cerr << "WARNING: dihedral specification found " << oo_D.size();
             cerr << " atoms, not 4 in selection string set: \n\t";
@@ -170,27 +170,6 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
             return false;
           }
         }));
-
-    // for (auto oo_D : dihedralTypeVector) {
-    //   if (oo_D.size() != 4) {
-    //     ostringstream oss;
-    //     oss << "WARNING: dihedral specification found " << oo_D.size();
-    //     oss << " atoms, not 4 in selection string set: \n\t";
-    //     for (auto sel : dSels)
-    //       oss << sel << ", ";
-    //     oss << "\b\n";
-    //     oss << "Offending group: \n";
-    //     oss << oo_D;
-    //     oss << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
-
-    //     throw(LOOSError(oss.str()));
-    //   }
-    //   AtomicGroup reordered;
-    //   for (auto sel : dSels)
-    //     reordered += selectAtoms(oo_D, sel);
-
-    //   oo_D = move(reordered);
-    // }
     dihedralAGs.push_back(move(dihedralTypeVector));
   }
   return dihedralAGs;
