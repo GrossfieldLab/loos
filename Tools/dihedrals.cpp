@@ -27,6 +27,7 @@
 */
 
 #include <boost/format.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <fstream>
 #include <iostream>
 #include <loos.hpp>
@@ -76,7 +77,7 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions()
       : dihedral_sels{}, dihedral_sel_strings(""), pdb(""), tags(""),
-        prefix("dihedral"){};
+        prefix("dihedral"), quotes("p") {};
   // clang-format off
   void addGeneric(po::options_description& o) {
     o.add_options()
@@ -89,15 +90,17 @@ public:
     ("tags,T", po::value<string>(&tags)->default_value(""), 
      ("String of tags for each class of dihedral, separated by a '" + atom_delim + "'.").c_str())
     ("prefix,p", po::value<string>(&prefix)->default_value("dihedral"),
-     "Prefix for file names for each monitored dihedral.")
+     "Prefix for file names for each monitored dihedral."),
+    ("swap-single-quotes,Q", po::value<string>(&quotes)->default_value("p"),
+     "Swap single quote character in tags for some alternative. Provide single quote if no change desired..")
     ;
   }
   // clang-format on
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s") %
-               dihedral_sel_strings % pdb % tags % prefix;
+    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s,quotes=%s") %
+               dihedral_sel_strings % pdb % tags % prefix % quotes;
     return (oss.str());
   }
 
@@ -121,6 +124,7 @@ public:
   string pdb;
   string tags;
   string prefix;
+  string quotes;
 };
 
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
@@ -188,38 +192,12 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // but the return order of selectAtoms calls is not specified.
     // Remove any AGs that didn't manage to contain four atoms after the
     // split.
-    dihedralInstances.erase(
-        remove_if(dihedralInstances.begin(), dihedralInstances.end(),
-                  [&](AtomicGroup &oo_D) -> bool {
-                    return (*chkDihedralSize)(oo_D, dSels);
-                  }),
-        // lambda filters incorrectly sized AGs, warning for each such AG.
-        // [&](AtomicGroup &oo_D) -> bool {
-        //   if (oo_D.size() != 4) {
-        //     if (verbosity > 0) {
-        //       cerr << "WARNING: dihedral specification found "
-        //            << oo_D.size();
-        //       cerr << " atoms, not 4 in selection string set: \n\t";
-        //       for (auto sel : dSels)
-        //         cerr << sel << ", ";
-        //       cerr << "\b\b\n";
-        //       cerr << "Offending group: \n";
-        //       cerr << oo_D;
-        //       cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
-        //     }
-        //     return true;
-        //   } else {
-        //     AtomicGroup reordered;
-        //     for (auto sel : dSels)
-        //       reordered += selectAtoms(oo_D, sel);
-
-        //     oo_D = move(reordered);
-        //     cerr << "included group of size: "
-        //          << to_string(reordered.size()) << "\n";
-        //     return false;
-        //   }
-        // }),
-        dihedralInstances.end());
+    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
+                                      dihedralInstances.end(),
+                                      [&](AtomicGroup &oo_D) -> bool {
+                                        return (*chkDihedralSize)(oo_D, dSels);
+                                      }),
+                            dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
   return dihedralAGs;
@@ -249,8 +227,9 @@ int main(int argc, char *argv[]) {
   vector<vector<AtomicGroup>> dihedrals =
       sels_to_dihedralAGs(topts->dihedral_sels, scope, bopts->verbosity);
 
-  // make tags, either from scratch or by adding to user appended tags.
+  // make file names, either from scratch or by adding to user appended tags.
   vector<vector<shared_ptr<ofstream>>> vv_filePtrs;
+ // if user supplied tags for file names, use those with reduced dihedral name info.
   if (topts->tags.empty()) {
     int resid;
     for (auto dihedralType : dihedrals) {
@@ -261,10 +240,12 @@ int main(int argc, char *argv[]) {
         for (auto patom : dihedral) {
           // put a residue number with the name for each atom not from residue
           // of atom zero.
+          string name = patom->name();
+          boost::replace_all(name, "\'", topts->quotes);
           if (resid != patom->resid())
-            tag = tag_delim + to_string(patom->resid()) + patom->name();
+            tag = tag_delim + to_string(patom->resid()) + name;
           else
-            tag = tag_delim + patom->name();
+            tag = tag_delim + name;
         }
         auto p_ofstream =
             make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
@@ -280,8 +261,11 @@ int main(int argc, char *argv[]) {
       for (auto dihedral : dihedrals.at(i)) {
         string tag = user_tags.at(i);
         tag += tag_delim + to_string(dihedral[0]->resid());
-        for (auto patom : dihedral)
-          tag += tag_delim + patom->name(); // append atom names to tag with
+        for (auto patom : dihedral){
+          string name = patom->name();
+          boost::replace_all(name, "\'", topts->quotes);
+          tag += tag_delim + name; // append atom names to tag with
+        }
                                             // tag delimiter
         auto p_ofstream =
             make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
