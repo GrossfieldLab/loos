@@ -128,7 +128,48 @@ public:
 // dihedrals.
 vector<vector<AtomicGroup>>
 sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
-                    const AtomicGroup &scope) {
+                    const AtomicGroup &scope, const int verbosity) {
+
+  // pick whether to puke up atomic group when group has wrong num elts.
+  bool (*chkDihedralSize)(AtomicGroup &, vector<string>);
+  if (verbosity > 0) {
+    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+      if (oo_D.size() != 4) {
+        cerr << "WARNING: dihedral specification found " << oo_D.size();
+        cerr << " atoms, not 4 in selection string set: \n\t";
+        for (auto sel : sels)
+          cerr << sel << ", ";
+        cerr << "\b\b\n";
+        cerr << "Offending group: \n";
+        cerr << oo_D;
+        cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
+        return true;
+      } else {
+        AtomicGroup reordered;
+        for (auto sel : sels)
+          reordered += selectAtoms(oo_D, sel);
+
+        oo_D = move(reordered);
+        cerr << "included group of size: " << to_string(reordered.size())
+             << "\n";
+        return false;
+      }
+    };
+  } else {
+    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+      if (oo_D.size() != 4)
+        return true;
+      else {
+        AtomicGroup reordered;
+        for (auto sel : sels)
+          reordered += selectAtoms(oo_D, sel);
+
+        oo_D = move(reordered);
+        return false;
+      }
+    };
+  }
+
   // append to this for return later.
   vector<vector<AtomicGroup>> dihedralAGs;
   for (auto dSels : dihedral_sels) {
@@ -140,37 +181,46 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       outoforder_dihedralType += selectAtoms(scope, sel);
     }
     // This separates all non-connected atoms into separate atomic groups.
-    vector<AtomicGroup> dihedralTypeVector =
+    vector<AtomicGroup> dihedralInstances =
         outoforder_dihedralType.splitByMolecule();
     // reorder them here to match that provided by user
     // it may turn out this is unnecessary,
     // but the return order of selectAtoms calls is not specified.
-    // Remove any AGs that didn't manage to contain four atoms after the split.
-    dihedralTypeVector.erase(remove_if(
-        dihedralTypeVector.begin(), dihedralTypeVector.end(),
-        // lambda that filters by incorrectly sized AGs, emitting warnings as it
-        // goes.
-        [&](AtomicGroup &oo_D) -> bool {
-          if (oo_D.size() != 4) {
-            cerr << "WARNING: dihedral specification found " << oo_D.size();
-            cerr << " atoms, not 4 in selection string set: \n\t";
-            for (auto sel : dSels)
-              cerr << sel << ", ";
-            cerr << "\b\n";
-            cerr << "Offending group: \n";
-            cerr << oo_D;
-            cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
-            return true;
-          } else {
-            AtomicGroup reordered;
-            for (auto sel : dSels)
-              reordered += selectAtoms(oo_D, sel);
+    // Remove any AGs that didn't manage to contain four atoms after the
+    // split.
+    dihedralInstances.erase(
+        remove_if(dihedralInstances.begin(), dihedralInstances.end(),
+                  [&](AtomicGroup &oo_D) -> bool {
+                    return (*chkDihedralSize)(oo_D, dSels);
+                  }),
+        // lambda filters incorrectly sized AGs, warning for each such AG.
+        // [&](AtomicGroup &oo_D) -> bool {
+        //   if (oo_D.size() != 4) {
+        //     if (verbosity > 0) {
+        //       cerr << "WARNING: dihedral specification found "
+        //            << oo_D.size();
+        //       cerr << " atoms, not 4 in selection string set: \n\t";
+        //       for (auto sel : dSels)
+        //         cerr << sel << ", ";
+        //       cerr << "\b\b\n";
+        //       cerr << "Offending group: \n";
+        //       cerr << oo_D;
+        //       cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
+        //     }
+        //     return true;
+        //   } else {
+        //     AtomicGroup reordered;
+        //     for (auto sel : dSels)
+        //       reordered += selectAtoms(oo_D, sel);
 
-            oo_D = move(reordered);
-            return false;
-          }
-        }));
-    dihedralAGs.push_back(move(dihedralTypeVector));
+        //     oo_D = move(reordered);
+        //     cerr << "included group of size: "
+        //          << to_string(reordered.size()) << "\n";
+        //     return false;
+        //   }
+        // }),
+        dihedralInstances.end());
+    dihedralAGs.push_back(move(dihedralInstances));
   }
   return dihedralAGs;
 }
@@ -197,7 +247,7 @@ int main(int argc, char *argv[]) {
 
   // figure out what dihedrals to track
   vector<vector<AtomicGroup>> dihedrals =
-      sels_to_dihedralAGs(topts->dihedral_sels, scope);
+      sels_to_dihedralAGs(topts->dihedral_sels, scope, bopts->verbosity);
 
   // make tags, either from scratch or by adding to user appended tags.
   vector<vector<shared_ptr<ofstream>>> vv_filePtrs;
@@ -266,10 +316,16 @@ int main(int argc, char *argv[]) {
   // if PDB name string was given, write PDBs to indexed files by that prefix
   if (!topts->pdb.empty()) {
     for (uint i = 0; i < dihedrals.size(); i++) {
-      for (uint j = 0; j < dihedrals.at(i).size(); i++) {
-        PDB pdb = PDB::fromAtomicGroup(dihedrals[i][j]);
-        pdb.remarks().add(to_string(j) +
-                          " from: " + (topts->dihedral_sels.at(i).at(j)));
+      for (uint j = 0; j < (dihedrals.at(i)).size(); j++) {
+        PDB pdb = PDB::fromAtomicGroup(dihedrals.at(i).at(j));
+        string rmks = to_string(j) + " from: ";
+        for (auto sel : topts->dihedral_sels.at(i))
+          rmks += sel + ", ";
+
+        rmks += "\b\b";
+
+        pdb.remarks().add(rmks);
+
         ofstream pdbFile;
         pdbFile.open(topts->pdb + "_" + to_string(i) + "_" + to_string(j) +
                      ".pdb");
@@ -288,13 +344,13 @@ int main(int argc, char *argv[]) {
   double dihedral_angle;
   while (traj->readFrame()) {
     traj->updateGroupCoords(model);
-    for (uint dtIndex = 0; dtIndex < dihedrals.size(); dtIndex++) {
-      for (uint dIndex = 0; dIndex < dihedrals[dtIndex].size(); dIndex++) {
-        dihedral_angle = Math::torsion(dihedrals[dtIndex][dIndex][0]->coords(),
-                                       dihedrals[dtIndex][dIndex][1]->coords(),
-                                       dihedrals[dtIndex][dIndex][2]->coords(),
-                                       dihedrals[dtIndex][dIndex][3]->coords());
-        *(vv_filePtrs[dtIndex][dIndex])
+    for (uint typeIdx = 0; typeIdx < dihedrals.size(); typeIdx++) {
+      for (uint dIdx = 0; dIdx < dihedrals.at(typeIdx).size(); dIdx++) {
+        dihedral_angle = Math::torsion(dihedrals[typeIdx][dIdx][0]->coords(),
+                                       dihedrals[typeIdx][dIdx][1]->coords(),
+                                       dihedrals[typeIdx][dIdx][2]->coords(),
+                                       dihedrals[typeIdx][dIdx][3]->coords());
+        *(vv_filePtrs[typeIdx][dIdx])
             << traj->currentFrame() << "\t" << dihedral_angle << "\n";
       }
     }
