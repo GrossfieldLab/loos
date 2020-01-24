@@ -148,29 +148,15 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
         cerr << oo_D;
         cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
         return true;
-      } else {
-        AtomicGroup reordered;
-        for (auto sel : sels)
-          reordered += selectAtoms(oo_D, sel);
-
-        oo_D = move(reordered);
-        cerr << "included group of size: " << to_string(reordered.size())
-             << "\n";
+      } else 
         return false;
-      }
     };
   } else {
     chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
       if (oo_D.size() != 4)
         return true;
-      else {
-        AtomicGroup reordered;
-        for (auto sel : sels)
-          reordered += selectAtoms(oo_D, sel);
-
-        oo_D = move(reordered);
+      else 
         return false;
-      }
     };
   }
 
