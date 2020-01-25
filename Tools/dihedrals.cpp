@@ -41,16 +41,109 @@ namespace po = loos::OptionsFramework::po;
 
 // @cond TOOL_INTERNAL
 
-string fullHelpMessage() {
-  string s = "XXX";
-  return s;
-}
-
 // these determine where the string containing the dihedral selections is split
 const string quartet_delim = ":";
 const string atom_delim = ",";
 const string tag_delim = "_";
 const string fsuffix = ".out";
+  
+// clang-format off
+const string msg = 
+"This tool is designed to allow the tracking of classes of dihedral angles \n"
+"specified by atom selection. Unlike the torsion tool, also in LOOS, this tool \n"
+"is designed to track the dihedral angle between chemically connected groups of \n"
+"four atoms. The original intention for the tool was to monitor classes of \n"
+"customarily defined dihedrals that might be defined for a large number of \n"
+"residues, without having to write a separate command line for each such \n"
+"dihedral. For example, you could use this tool to monitor all of the phi \n"
+"backbone dihedrals in a protein, making only one pass through the trajectory as\n"
+" you did so. The tool creates a file name for each dihedral angle chosen for \n"
+"monitoring, and writes the frame number and the angle out in two columns, \n"
+"separated by white space, for each frame provided to the tool. How these names \n"
+"are created, how many classes of dihedral to monitor, and what frames to \n"
+"consider from the input trajectory(ies) are all configurable. Because it \n"
+"handles output through a number of out files, i. \n"
+" \n"
+"The --selection flag controls the scope of the search for dihedrals to monitor.\n"
+" So in the aforementioned protein example, if you only wanted to monitor the \n"
+"phi of the first five residues of some protein, you would provide a selection \n"
+"string like 'resid < 6' (assuming of course that your protein's residues are \n"
+"the first such in the overall list of residues, which is commonly the case).  \n"
+" \n"
+"several of the flags are from LOOS classes devoted to providing basic tool \n"
+"functionality, and they work the same as in other tools. For example, \n"
+"trajectories are read using a MultiTrajectory, and so the skip, stride, and \n"
+"range flags all do what they do for multi-trajectory based tools. This is also \n"
+"why you can provide an arbitrary number of trajectories to this tool, and it \n"
+"will gracefully treat them as one long trajectory. \n"
+" \n"
+"The --dihedral-sel-strings flag is obligate. It should be a string that \n"
+"provides a list of atom selections in quartets separated by a '"+atom_delim+"'. Each \n"
+"selection string should grab only one atom so that each quartet selects four \n"
+"atoms, in the order that you would like them fed to the loos::Math::torsion() \n"
+"function. If you'd like to monitor multiple types of dihedral, even if it's the\n"
+" same dihedral across different residues (for example, chi, the glycosidic \n"
+"dihedral in nucleic acids) you can include multiple quartets by interspersing \n"
+"'"+quartet_delim+"' between each quartet. For example, to select the chi dihedral in nucleic \n"
+"acids you could write: \n"
+" \n"
+"    --dihedral-sel-strings $\'name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N9\""+atom_delim+"  \\\n"
+"name == \"C4\" "+quartet_delim+" name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N1\""+atom_delim+"  name == \"C2\"\' \n"
+" \n"
+"Noting that the four selection strings before the '"+quartet_delim+"' are for purine chis, and \n"
+"the four after are for pyrimidine chis. In the case of nucleic acids, which \n"
+"usually have the \"\'\" character in the atom name, it can be very helpful to \n"
+"put the arguments to this tool in a config file. See the LOOS online docs for \n"
+"how to go about that. \n"
+" \n"
+"The --pdb flag is for debugging. If you want to use it, provide a prefix by \n"
+"which to name the reported pdb files. It takes the first frame of the multi-\n"
+"trajectory and writes out the scope, and each four atom sequence it found as \n"
+"separate PDB files, prefixed with the provided argument. For each PDB created \n"
+"thus, it numbers the files first by dihedral class, then by which element in \n"
+"the class it is. So if you provide the 'test' as an argument, your PDBs might \n"
+"look like: \n"
+" \n"
+"    test_x_y.pdb \n"
+" \n"
+"Where the contents will be the yth dihedral of type x found. To get a nice \n"
+"visual representation of how the selection went, I like to say 'pymol *.pdb' in\n"
+" the subdirectory I made for this analysis, then show all as 'sticks/licorice',\n"
+" and overwrite that setting for just the scope with 'lines'. This makes it \n"
+"patently clear where the dihedrals being tracked will be in the molecule. \n"
+" \n"
+"The --tags option is for providing tags that correspond to each class of \n"
+"dihedrals monitored by each quartet. Each tag provides an infix name that \n"
+"corresponds to the selection string that is in that position in the '"+atom_delim+"' \n"
+"separated list of --dihedral-sel-strings. For the chi example: \n"
+" \n"
+"    --tags 'chi_R,chi_Y' \n"
+" \n"
+"Since the first of the two quartets corresponds to purines and the second to \n"
+"pyrimidines. If you do provide this argument, it needs to have the same number \n"
+"of ',' separated strings as you've provided quartets above. If you elect not to\n"
+" provide it, then a tag is fabricated from the residue name, resid, and each of\n"
+" the atoms selected, separated by '"+tag_delim+"'. If some of the atoms cross into another \n"
+"residue, those atom names will have the resid of that neighboring residue \n"
+"appearing after the name. If you do provide tags, then the tag, followed by the\n"
+" resid of the first atom, then the names of the atoms in that particular \n"
+"dihedral will be the filename instead, also separated by '"+tag_delim+"'. In the chi \n"
+"example, because of the tags provided, an output file might look like the \n"
+"following: \n"
+" \n"
+"    roc_chi_R_1_O4p_C1p_N9_C4" +fsuffix+" \n"
+" \n"
+"Note that the primes have been replaced by the letter p, which can be changed \n"
+"(even back to _shudder_ a \') if the user specifies the --swap-single-quotes \n"
+"flag. \n"
+" \n"
+"The --prefix flag is a string that precedes all the dihedral time series file \n"
+"names (aside from the output caused by --pdbs) This permits exclusive names for\n"
+" different runs of the program and helps keep things organized. I often use a \n"
+"system specifying prefix.\n"
+;
+// clang-format on
+
 
 // C++ 11 regex split
 // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
@@ -90,10 +183,9 @@ public:
     ("tags,T", po::value<string>(&tags)->default_value(""), 
      ("String of tags for each class of dihedral, separated by a '" + atom_delim + "'.").c_str())
     ("prefix,p", po::value<string>(&prefix)->default_value("dihedral"),
-     "Prefix for file names for each monitored dihedral."),
+     "Prefix for file names for each monitored dihedral.")
     ("swap-single-quotes,Q", po::value<string>(&quotes)->default_value("p"),
-     "Swap single quote character in tags for some alternative. Provide single quote if no change desired..")
-    ;
+     "Swap single quote character in outfile names for some alternative. Provide single quote if no change desired.");
   }
   // clang-format on
 
@@ -137,23 +229,23 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
   // pick whether to puke up atomic group when group has wrong num elts.
   bool (*chkDihedralSize)(AtomicGroup &, vector<string>);
   if (verbosity > 0) {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
-      if (oo_D.size() != 4) {
-        cerr << "WARNING: dihedral specification found " << oo_D.size();
+    chkDihedralSize = [](AtomicGroup &dihedralAG, vector<string> sels) -> bool {
+      if (dihedralAG.size() != 4) {
+        cerr << "WARNING: dihedral specification found " << dihedralAG.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
         for (auto sel : sels)
           cerr << sel << ", ";
         cerr << "\b\b\n";
         cerr << "Offending group: \n";
-        cerr << oo_D;
+        cerr << dihedralAG;
         cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
         return true;
       } else 
         return false;
     };
   } else {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
-      if (oo_D.size() != 4)
+    chkDihedralSize = [](AtomicGroup &dihedralAG, vector<string> sels) -> bool {
+      if (dihedralAG.size() != 4)
         return true;
       else 
         return false;
@@ -166,13 +258,13 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // first get a set of AGs that have all the atoms of the dihedral in them
     // They are likely to be in the order of the selection matched first
     // i.e. all the matches for selection 1, then all for 2, and so forth.
-    AtomicGroup outoforder_dihedralType;
+    AtomicGroup dihedralTypes;
     for (auto sel : dSels) {
-      outoforder_dihedralType += selectAtoms(scope, sel);
+      dihedralTypes += selectAtoms(scope, sel);
     }
     // This separates all non-connected atoms into separate atomic groups.
     vector<AtomicGroup> dihedralInstances =
-        outoforder_dihedralType.splitByMolecule();
+        dihedralTypes.splitByMolecule();
     // reorder them here to match that provided by user
     // it may turn out this is unnecessary,
     // but the return order of selectAtoms calls is not specified.
@@ -180,8 +272,8 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // split.
     dihedralInstances.erase(remove_if(dihedralInstances.begin(),
                                       dihedralInstances.end(),
-                                      [&](AtomicGroup &oo_D) -> bool {
-                                        return (*chkDihedralSize)(oo_D, dSels);
+                                      [&](AtomicGroup &dihedralAG) -> bool {
+                                        return (*chkDihedralSize)(dihedralAG, dSels);
                                       }),
                             dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
@@ -192,7 +284,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
 
-  opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage());
+  opts::BasicOptions *bopts = new opts::BasicOptions(msg);
   opts::BasicSelection *sopts =
       new opts::BasicSelection("backbone && !hydrogen");
   opts::MultiTrajOptions *mtopts = new opts::MultiTrajOptions;
@@ -222,7 +314,7 @@ int main(int argc, char *argv[]) {
       vector<shared_ptr<ofstream>> v_filePtrs;
       for (auto dihedral : dihedralType) {
         resid = dihedral[0]->resid();
-        string tag;
+        string tag(dihedral[0]->resname() + to_string(resid));
         for (auto patom : dihedral) {
           // put a residue number with the name for each atom not from residue
           // of atom zero.
