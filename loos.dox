@@ -24,7 +24,6 @@ School of Medicine & Dentistry, University of Rochester\n
       - \subpage common_options "Common Options for Tools"
       - \subpage formats "Supported File Formats"
       - \subpage citing "Citing LOOS in published work"
-      - \subpage new_pyloos "What's new in PyLOOS"
       - \subpage exceptions "Exceptions in LOOS and PyLOOS"
       - \subpage changes "Changes"
       - \subpage faq "FAQ"
@@ -584,83 +583,11 @@ the rest of the trajectory.
 
 /*! \page building Building LOOS
 
-The best source of information on building LOOS is <A href="https://github.com/GrossfieldLab/loos/blob/master/INSTALL.md">INSTALL.md</A>, found in the top level directory of the LOOS distribution.  It includes detailed instructions for building LOOS on various Linux distributions and OSX, as well as using Conda.
-
-\section basicbuild Building Basics
-LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A>
-and the <A href="http://boost.org" target="_blank">Boost (1.36+)</A>
-libraries.  For macs, it also requires <A
-href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12"
-target="_blank">XCode</A> be installed (free download from the Mac App
-Store).  On Linux, <A href="http://math-atlas.sourceforge.net"
-target="_blank">Atlas</A> is <em>strongly</em> recommended, although
-the standard LAPACK and BLAS should work.  If you plan to modify the
-parser (and you probably shouldn't), then you'll need the GNU
-utilities <A href="http://www.gnu.org/software/flex/">flex</A> and <A
-href="http://www.gnu.org/software/bison/">bison</A>.  Although LOOS
-comes bundled with pre-built documentation, you can regenerate it.
-Doing so requires doxygen and graphviz be installed.
-
-To build LOOS, go into the LOOS distribution directory and run scons.
-If your libraries are installed in non-standard locations, you may
-need to tell LOOS where its required components are.  There are two
-ways you can tell SCons where to look for those libraries.  The first
-is to specify it on the command-line.  The second, described later, is
-to use a <TT>custom.py</TT> file.
-
-Using the command line, if you have Boost
-installed in <TT>/usr/local/boost_1_54_0</TT>, build LOOS using:
-\verbatim
-scons BOOST=/usr/local/boost_1_54_0
-\endverbatim
-
-This will tell SCons to look
-in <TT>/usr/local/boost_1_54_0/include</TT> for header files
-and <TT>/usr/local/boost_1_54_0/lib</TT> for libraries.  In some
-cases, the directories may not follow this convention, so you will need
-to specify the individual directories explicitly:
-\verbatim
-scons BOOST_INCLUDE=/usr/local/include/boost BOOST_LIBPATH=/usr/local/lib
-\endverbatim
-
-SCons will, by default, try to figure out the appropriate threaded
-Boost libraries to use and, if it cannot find those, it will use the
-non-threaded versions.  While the build system can handle most
-variants of the Boost library names, it may not catch all.  To
-explicitly set the libraries LOOS is linked with, set the BOOST_LIBS
-variable to a space-separated list of libraries.  Note that
-you <B>must</B> include all libraries required by LOOS.  For example:
-\verbatim
-scons BOOST_LIBS="boost_regex-gcc43-mt boost_program_options-gcc43-mt
-boost_thread-gcc43-mt boost_system-gcc43-mt"
-\endverbatim
-
-Similar configuration options are available for NetCDF and
-ATLAS/LAPACK.  If threaded versions of ATLAS are found, these will be used by
-default.  If you intend to run multiple LOOS tools concurrently, then
-you may get better performance by using the serial ATLAS libraries.
-You can force LOOS to build with the serial ATLAS libraries by using
-the threads option with scons,
-\verbatim
-scons threads=0
-\endverbatim
-SCons will also prefer to use ATLAS if it's available, but
-will revert to LAPACK/BLAS if necessary.  For Macs, the Accelerate
-FrameWork is used rather than ATLAS.  NetCDF support is only included
-if the NetCDF library is found.
-
-It is not necessary to always set these build options on the
-command-line.  If a <TT>custom.py</TT> file exists, SCons will read it
-and set the variables appropriately.  We provide an examples of how it
-can be used in <TT>custom.py-proto</TT>.  Simply copy this file
-to <TT>custom.py</TT> and then uncomment and edit the appropriate
-lines.  Note that variables set on the command-line or environment
-will have priority over what's in your <TT>custom.py</TT> file.
-
-
-\subsection install Installing
-
-See INSTALL.md in the main LOOS directory for up to date documentation.
+The best source of information on building LOOS is <A
+href="https://github.com/GrossfieldLab/loos/blob/master/INSTALL.md">INSTALL.md</A>,
+found in the top level directory of the LOOS distribution.  It includes detailed
+instructions for building LOOS on various Linux distributions and OSX, as well
+as using Conda.
 
 /*! \page tools Summary of Tools
 
@@ -1470,129 +1397,6 @@ Matlab and Octave.
 
 */
 
-
-namespace loos {
-
-/*! \page new_pyloos What's new in PyLOOS
-
-PyLOOS has undergone some substantial changes in LOOS 2.3.0.  The
-top-level module/namespace remains "loos", and it includes everything
-imported from the core of LOOS.  We have added a new "pyloos" module
-under "loos" that now holds Python-specific code, such as the new
-trajectories classes.
-
-One of the biggest changes in PyLOOS is the introduction of three new
-trajectory classes.  These classes ultimately wrap loos Trajectory
-objects but provide more python-like interfaces.  The first class is
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory".
-You can specify a stride and the number of
-frames to skip from the start of the trajectory.  The trajectory
-object can then be used like a python iterator,
-\code{.py}
-model = loos.createSystem('foo.pdb')
-traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
-
-for frame in traj:
-    print frame.centroid()
-\endcode
-
-You can also use the trajectory like an array,
-\code{.py}
-first_frame = traj[0]
-last_frame = traj[-1]
-\endcode
-
-There is often a need to know what frame number a frame corresponds
-to.  If you are using the trajectory
-as in iterator, then the
-\ref loos::pyloos::trajectories::Trajectory::realIndex "realIndex()"
-function will return the frame
-number,
-\code{.py}
-for frame in traj:
-    print traj.realIndex(), frame.centroid()
-\endcode
-
-Since you can specify a skip and a stride, an array index does not
-necessarily give you the real frame number.  Instead, use the
-frameNumber() member function.  For example,
-\code{.py}
-frame = traj[0]    # This is actually frame index 50 in the
-                   # trajectory because of the skip
-
-print traj.frameNumber(0)  # This prints out 50
-\endcode
-
-Another thing to be careful of is the linkage between groups through
-the shared atoms.  By default, the frame returned will share atoms
-with whatever group was used to instantiate the trajectory.  If you
-need to decouple the trajectory from the model, pass a copy to the
-constructor,
-\code{.py}
-traj = loos.pyloos.Trajectory('foo.dcd', model.copy())
-\endcode
-
-The other two trajectory classes,
-\ref loos::pyloos::trajectories::VirtualTrajectory "VirtualTrajectory"
-and
-\ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
-let you combine multiple pyloos trajectory
-objects to make one big "virtual" trajectory.  The latter supports the
-LOOS iterative alignment method and will return the aligned frames.
-Note that this does require reading in the alignment subset and
-aligning it at the first access to a frame, so there may be memory and
-performance penalties.  The cached frames are discarded after the
-alignment however.  Also, the
-\ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
-can be used
-with a single
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
-to align it.
-
-All of these classes have rich support for accessing the underlying
-components and getting information about what frame is being used,
-among others.  For more information, see the above links, use the
-search bar, or see the documentation for pyloos under the Namespace
-tab.
-
-In addition to the new trajectories, pyloos now sports several utility
-functions related to ensembles:
-\ref loos::pyloos::ensembles::averageStructure "loos.pyloos.averageStructure()",
-\ref loos::pyloos::ensembles::extractCoords "loos.pyloos.extractCoords()",
-and
-\ref loos::pyloos::ensembles::svd "loos.pyloos.svd()",
-all of which use the new Trajectory classes.  We have also
-added
-\ref loos::pyloos::subspace::subspaceOverlap "loos.pyloos.subspaceOverlap()",
-and
-\ref loos::pyloos::subspace::covarianceOverlap "loos.pyloos.covarianceOverlap()".
-
-
-The iterative alignment functions have also changed.  There is now a
-\ref loos::pyloos::alignment::iterativeAlignment "loos.pyloos.iterativeAlignment()"
-function that will take a
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
-and align it (or a list/vector of loos::AtomicGroup).  The
-loos-style interface is now available through
-\ref loos::pyloos::alignment::iterativeAlignTrajectory "loos.pyloos.iterativeAlignTrajectory()".
-You can optionally pass a
-list of frame indices to use.  Both functions now return a Python
-tuple containing the results.
-
-Finally, AtomicGroup now has support for NumPy with the
-AtomicGroup::getCoords() and AtomicGroup::setCoords() functions, which
-will return (or set) the coordinates of all atoms in the group.  For
-example, calculating an average set of coordinates can be implemented this way:
-\code{.py}
-avg = numpy.zeros(len(traj.frame), 3)
-for frame in traj:
-    coords = frame.getCoords()
-    avg += coords
-avg /= len(traj)
-\endcode
-
-*/
-};
 
 
 namespace loos {
@@ -3159,10 +2963,6 @@ namespace loos {
 \subsection faq_loos_building Building LOOS (and building with LOOS)
 <DL>
 
-<DT> I am having trouble building LOOS with Boost 1.52 (or later)
-<DD> There was a change in Boost at version 1.52 that breaks the build
-of LOOS.  We recommend upgrading to either LOOS 2.0.4 or downgrading
-your version of Boost to 1.51
 
 <DT> SCons is not finding the right compiler/swig/doxygen
 <DD> For LOOS, SCons will use your shell's $PATH veriable to look
