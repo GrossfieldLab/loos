@@ -48,6 +48,9 @@ GTAGS
 .vscode/*
 **.vscode
 
+# cruft from sublime text
+*.sublime*
+
 # Vi cruft
 *.swp
 
@@ -62,6 +65,9 @@ GTAGS
 *.aux
 *.out
 *.toc
+
+# mac cruft
+**.DS_Store
 
 # some c++ headers used by atom
 .stdafx.c++.pch
