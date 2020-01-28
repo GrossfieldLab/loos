@@ -55,7 +55,12 @@ public:
   // clang-format on
   string print() const {
     ostringstream oss;
-    oss << boost::format("timeseries=%s") % timeseries;
+    oss << boost::format("timeseries=%s,min_bin=%s,max_bin=%s,by_molecule=%b,num_bins=%d") 
+      % timeseries
+      % min_bin
+      % max_bin
+      % by_molecule
+      % num_bins;
     return (oss.str());
   }
   string timeseries;
@@ -65,8 +70,8 @@ public:
   int num_bins;
 };
 
-inline void histogram_rgyr(vector<greal> &hist, greal rgyr, greal min_bin,
-                    greal max_bin, greal bin_width, int count, int frame,
+inline void histogram_rgyr(vector<greal> &hist, const greal rgyr, const greal min_bin,
+                    const greal max_bin, const greal bin_width, int& count, const int frame,
                     ofstream &outfile) {
   if ((rgyr >= min_bin) && (rgyr < max_bin)) {
     hist[int((rgyr - min_bin) / bin_width)]++;
@@ -74,8 +79,8 @@ inline void histogram_rgyr(vector<greal> &hist, greal rgyr, greal min_bin,
   }
 }
 
-inline void ts_hist_rgyr(vector<greal> &hist, greal rgyr, greal min_bin, greal max_bin,
-                  greal bin_width, int count, int frame, ofstream &outfile) {
+inline void ts_hist_rgyr(vector<greal> &hist, const greal rgyr, const greal min_bin, const greal max_bin,
+                  const greal bin_width, int& count, const int frame, ofstream &outfile) {
   if ((rgyr >= min_bin) && (rgyr < max_bin)) {
     hist[int((rgyr - min_bin) / bin_width)]++;
     count++;
@@ -100,8 +105,8 @@ int main(int argc, char *argv[]) {
   cout << "# " << header << "\n";
   ofstream tsf(topts->timeseries);
   // make a function pointer with a signature matching the
-  void (*frameOperator)(vector<greal> & hist, greal rgyr, greal min_bin,
-                        greal max_bin, greal bin_width, int count, int frame,
+  void (*frameOperator)(vector<greal> & hist, const greal rgyr, const greal min_bin,
+                        const greal max_bin, const greal bin_width, int& count, const int frame,
                         ofstream &outfile);
   // pick which operation to perform per frame using function pointer
   if (topts->timeseries.empty())
@@ -122,10 +127,10 @@ int main(int argc, char *argv[]) {
   // prepare for trajectory loop
   // counter for number of molecules in histogram bounds
   int count = 0;
-  int num_bins = topts->num_bins;
-  greal min_bin = topts->min_bin;
-  greal max_bin = topts->max_bin;
-  greal bin_width = (max_bin - min_bin) / num_bins;
+  const int num_bins = topts->num_bins;
+  const greal min_bin = topts->min_bin;
+  const greal max_bin = topts->max_bin;
+  const greal bin_width = (max_bin - min_bin) / num_bins;
 
   // define and zero histogram
   vector<greal> hist(num_bins, 0.0);
@@ -139,7 +144,7 @@ int main(int argc, char *argv[]) {
                        mtopts->trajectory->currentFrame(), tsf);
     }
   }
-  // Output the results
+  // Write the histogram to stdout 
   cout << "# Rgyr\tProb\tCum" << endl;
   greal cum = 0.0;
   for (int i = 0; i < num_bins; i++) {

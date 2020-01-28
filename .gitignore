@@ -243,6 +243,7 @@ Tools/serialize-selection
 Tools/molshape
 Tools/svd
 Tools/rgyr
+Tools/rgyr-ts
 Tools/atomic-rdf
 Tools/order_params
 Tools/frame2pdb
