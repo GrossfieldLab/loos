@@ -103,5 +103,14 @@ int main (int argc, char * argv[]) {
   else
     frameOperator = ts_hist_rgyr;    
   
-  int 
+  // establish system, and molecular subsystems
+  vector<AtomicGroup> molecules;
+  if (topts->by_molecule)
+    molecules = mtopts->model.splitByMolecule(sopts->selection);
+  else
+    molecules.push_back(selectAtoms(mtopts->model, sopts->selection));
+
+  // counter for number of bins histogrammed.
+  int count = 0;
+  
 }
