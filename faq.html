@@ -95,10 +95,6 @@ LOOS</h1>
 <h2><a class="anchor" id="faq_loos_building"></a>
 Building LOOS (and building with LOOS)</h2>
 <dl>
-<dt>I am having trouble building LOOS with Boost 1.52 (or later) </dt>
-<dd><p class="startdd">There was a change in Boost at version 1.52 that breaks the build of LOOS. We recommend upgrading to either LOOS 2.0.4 or downgrading your version of Boost to 1.51</p>
-<p class="enddd"></p>
-</dd>
 <dt>SCons is not finding the right compiler/swig/doxygen </dt>
 <dd><p class="startdd">For LOOS, SCons will use your shell's $PATH veriable to look for tools. You will need to make sure the missing tool is in your path. Some care may be necessary in the order directories appear in your path to make sure you are finding the intended version of the tool. You can explicitly specify a C++ compiler to use with the CXX variable (either in your environment or from a <a class="el" href="custom_8py_source.html">custom.py</a> file). This will take precedence over your path.</p>
 <p class="enddd"></p>

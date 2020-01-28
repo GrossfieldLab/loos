@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['what_27s_20new_20in_20pyloos',['What&apos;s new in PyLOOS',['../new_pyloos.html',1,'index']]],
   ['walltimer',['WallTimer',['../classloos_1_1_wall_timer.html',1,'loos']]],
   ['water_5fstring',['water_string',['../classloos_1_1_options_framework_1_1_basic_water.html#a31f592dfe78104ba6d3e4a2fce1d93bd',1,'loos::OptionsFramework::BasicWater']]],
   ['waterfilteraxis',['WaterFilterAxis',['../classloos_1_1_density_tools_1_1_water_filter_axis.html',1,'loos::DensityTools']]],

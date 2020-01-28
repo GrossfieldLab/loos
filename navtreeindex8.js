@@ -1,9 +1,5 @@
 var NAVTREEINDEX8 =
 {
-"classloos_1_1_weights.html#a1b27f133892c21f3837d53078b9007e6":[3,0,5,93,16],
-"classloos_1_1_weights.html#a24f38abf4342b67348b3006273015c75":[3,0,5,93,13],
-"classloos_1_1_weights.html#a78aa5c31ffc86e2d7cbc9a9eb0ef6feb":[3,0,5,93,11],
-"classloos_1_1_weights.html#a8a654d963a4fdf024ddae0a8101b49ce":[3,0,5,93,17],
 "classloos_1_1_weights.html#aa7dc0c287762c1111735fe5d8c8ed48b":[3,0,5,93,15],
 "classloos_1_1_weights.html#ab1bcb81a8f49fa6ccd20b9e0a4d32a17":[3,0,5,93,9],
 "classloos_1_1_weights.html#ab46866c5feb9c114be36ce16b8eac63d":[3,0,5,93,1],
@@ -249,5 +245,9 @@ var NAVTREEINDEX8 =
 "contact-time_8cpp_source.html":[4,0,3,10],
 "contacts_8cpp_source.html":[4,0,3,11],
 "contained_8cpp_source.html":[4,0,1,2,3],
-"convergence.html":[0,6,1]
+"convergence.html":[0,6,1],
+"convergence.html":[0,15,1],
+"convert2pdb_8cpp_source.html":[4,0,3,12],
+"coscon_8cpp_source.html":[4,0,1,1,9],
+"coverlap_8cpp_source.html":[4,0,3,13]
 };

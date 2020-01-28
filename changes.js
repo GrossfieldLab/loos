@@ -170,9 +170,5 @@ var changes =
       [ "Changes", "changes.html#r110_changes", null ],
       [ "Bug Fixes", "changes.html#r110_bugs", null ]
     ] ],
-    [ "Building LOOS", "building.html", [
-      [ "Building Basics", "building.html#basicbuild", [
-        [ "Installing", "building.html#install", null ]
-      ] ]
-    ] ]
+    [ "Building LOOS", "building.html", null ]
 ];

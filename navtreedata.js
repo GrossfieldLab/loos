@@ -57,17 +57,17 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"changes.html#release205",
-"class_n_a_m_d_bin_1_1_n_a_m_d_bin.html#ad064f0b575c9005466c711085fcec5e7",
-"classloos_1_1_atom.html#ad524e48b199fec9bf9a82587792fc1a7",
-"classloos_1_1_d_c_d.html#a66d483b931ff53825540b823c7adee1b",
-"classloos_1_1_estimating_counter.html",
-"classloos_1_1_multi_trajectory.html#aca988e6a7d13005295c2d8b166765c66",
-"classloos_1_1_progress_counter.html#ad2ef225798df5aac5e3696999011a5fa",
-"classloos_1_1_weights.html#a1b27f133892c21f3837d53078b9007e6",
-"convergence.html",
-"omg_8py_source.html",
-"structloos_1_1internal_1_1_value.html#a9830c8a57f9f68c52d00328d70bdb0cca9f60b466173bd41baa7389311b5a84d4"
+"changes.html#release212",
+"class_simplex.html#a1e05f74e0bf5b6c708afcf0c330c96b9",
+"classloos_1_1_atom.html#ae062998a065be5ccea3ff67f2c2efdc7",
+"classloos_1_1_d_c_d.html#a794736a8ae933fea1f03375be2b5e86f",
+"classloos_1_1_estimating_counter.html#af514e7b7026ac16bedb15a8f139f5743",
+"classloos_1_1_multi_trajectory.html#aea4fa4823fc7818fce273bb8e66e61dd",
+"classloos_1_1_remarks.html#a1f22babdbbdf90d82914f96336b06605",
+"classloos_1_1_weights.html#aa7dc0c287762c1111735fe5d8c8ed48b",
+"cross-dist_8cpp_source.html",
+"paxes_8cpp_source.html",
+"structloos_1_1internal_1_1_value.html#abdc570fdc934e2cb4b329c26b9643cc4"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

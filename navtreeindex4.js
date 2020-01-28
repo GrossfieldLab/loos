@@ -1,9 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"classloos_1_1_d_c_d.html#a66d483b931ff53825540b823c7adee1b":[3,0,5,26,22],
-"classloos_1_1_d_c_d.html#a6d5082ae868beff721092f515c48a152":[3,0,5,26,16],
-"classloos_1_1_d_c_d.html#a6d8874450bd8554a45e7cfe540afdb06":[3,0,5,26,11],
-"classloos_1_1_d_c_d.html#a6e2805d92138983d49a9747cb76aefda":[3,0,5,26,7],
 "classloos_1_1_d_c_d.html#a794736a8ae933fea1f03375be2b5e86f":[3,0,5,26,5],
 "classloos_1_1_d_c_d.html#a836b6762d14bb8047722ed6857f3c0dc":[3,0,5,26,19],
 "classloos_1_1_d_c_d.html#a8697e68180126083d30a6a8a785ec14d":[3,0,5,26,14],
@@ -249,5 +245,9 @@ var NAVTREEINDEX4 =
 "classloos_1_1_density_tools_1_1_z_slice_estimator.html#af01d09eca2e4ad6ddd7b508ec7e6b80a":[3,0,5,0,23,1],
 "classloos_1_1_descending_sort.html":[3,0,5,28],
 "classloos_1_1_descending_sort.html#a3668e477489973dbe22d725cc5a81c5a":[3,0,5,28,1],
-"classloos_1_1_descending_sort.html#abef027415c83bb7c8098d0322c669e4c":[3,0,5,28,0]
+"classloos_1_1_descending_sort.html#abef027415c83bb7c8098d0322c669e4c":[3,0,5,28,0],
+"classloos_1_1_estimating_counter.html":[3,0,5,29],
+"classloos_1_1_estimating_counter.html#a2b28cfdc62d2cb02e66001c5f53e33a1":[3,0,5,29,3],
+"classloos_1_1_estimating_counter.html#a4c6ed55234efeac2e348c38115c35082":[3,0,5,29,2],
+"classloos_1_1_estimating_counter.html#ad7e003893c2447b624f35a7653e20ddb":[3,0,5,29,5]
 };

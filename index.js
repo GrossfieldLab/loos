@@ -5,11 +5,7 @@ var index =
     [ "Bugs", "index.html#Bugs", null ],
     [ "Future Plans", "index.html#future", null ],
     [ "License", "index.html#license", null ],
-    [ "Building LOOS", "building.html", [
-      [ "Building Basics", "building.html#basicbuild", [
-        [ "Installing", "building.html#install", null ]
-      ] ]
-    ] ],
+    [ "Building LOOS", "building.html", null ],
     [ "Summary of Tools", "tools.html", "tools" ],
     [ "Selection Language", "selections.html", [
       [ "Description", "selections.html#Language", [
@@ -27,7 +23,6 @@ var index =
     [ "Common Command-Line Options for Tools", "common_options.html", null ],
     [ "Supported File Formats", "formats.html", null ],
     [ "Citing LOOS in published work", "citing.html", null ],
-    [ "What's new in PyLOOS", "new_pyloos.html", null ],
     [ "Exceptions in LOOS and PyLOOS", "exceptions.html", null ],
     [ "Change Log", "changes.html", "changes" ],
     [ "Frequently Asked Questions", "faq.html", [

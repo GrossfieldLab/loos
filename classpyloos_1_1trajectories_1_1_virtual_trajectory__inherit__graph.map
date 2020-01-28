@@ -1,3 +1,5 @@
 <map id="pyloos.trajectories.VirtualTrajectory" name="pyloos.trajectories.VirtualTrajectory">
-<area shape="rect" id="node3" href="$classpyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html" title="A virtual trajectory that supports iterative alignment. " alt="" coords="5,169,180,211"/>
+<area shape="rect" id="node1" title="Virtual trajectory composed of multiple Trajectory objects This class can combine multiple loos...." alt="" coords="8,80,177,121"/>
+<area shape="rect" id="node3" href="$classpyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html" title="A virtual trajectory that supports iterative alignment." alt="" coords="5,169,180,211"/>
+<area shape="rect" id="node2" title=" " alt="" coords="64,5,121,32"/>
 </map>

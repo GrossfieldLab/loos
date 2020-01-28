@@ -1,9 +1,5 @@
 var NAVTREEINDEX5 =
 {
-"classloos_1_1_estimating_counter.html":[3,0,5,29],
-"classloos_1_1_estimating_counter.html#a2b28cfdc62d2cb02e66001c5f53e33a1":[3,0,5,29,3],
-"classloos_1_1_estimating_counter.html#a4c6ed55234efeac2e348c38115c35082":[3,0,5,29,2],
-"classloos_1_1_estimating_counter.html#ad7e003893c2447b624f35a7653e20ddb":[3,0,5,29,5],
 "classloos_1_1_estimating_counter.html#af514e7b7026ac16bedb15a8f139f5743":[3,0,5,29,0],
 "classloos_1_1_estimating_counter.html#af8d78e663f891ff17c30e44155b6b008":[3,0,5,29,1],
 "classloos_1_1_estimating_counter.html#afc2041411f0cda5988155f1d7dfc9070":[3,0,5,29,4],
@@ -249,5 +245,9 @@ var NAVTREEINDEX5 =
 "classloos_1_1_multi_trajectory.html#a6f2d7f1f5056d37f6642c6b6d3c97df7":[3,0,5,54,6],
 "classloos_1_1_multi_trajectory.html#a7af16fa7408561b035daed2b05711332":[3,0,5,54,2],
 "classloos_1_1_multi_trajectory.html#a90ef92b324584e4dc2bcfaae5673adf1":[3,0,5,54,15],
-"classloos_1_1_multi_trajectory.html#ac06a492f995a39d023eb7a7f551c8aae":[3,0,5,54,19]
+"classloos_1_1_multi_trajectory.html#ac06a492f995a39d023eb7a7f551c8aae":[3,0,5,54,19],
+"classloos_1_1_multi_trajectory.html#aca988e6a7d13005295c2d8b166765c66":[3,0,5,54,14],
+"classloos_1_1_multi_trajectory.html#acca99f84ab28628b444c385ed85ae1a0":[3,0,5,54,17],
+"classloos_1_1_multi_trajectory.html#ae6a093106dc00c67cc670491f7efe3c3":[3,0,5,54,7],
+"classloos_1_1_multi_trajectory.html#ae828893a65852771d56760770e956c5d":[3,0,5,54,0]
 };
