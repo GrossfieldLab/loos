@@ -46,7 +46,7 @@ public:
   void addGeneric(po::options_description& o) { 
     o.add_options()
       ("timeseries,t", po::value<string>(&timeseries)->default_value(""), "Write frame-by-frame timeseries to file name provided. If none provided, not written.")
-      ("num_bins,n", po::value<int>(&num_bins)->default_value(50), "Number of bins to use for histogramming.")
+      ("num-bins,n", po::value<int>(&num_bins)->default_value(50), "Number of bins to use for histogramming.")
       ("min-bin,m", po::value<double>(&min_bin)->default_value(0), "Minimum value for the histogram bins.")
       ("max-bin,M", po::value<double>(&max_bin)->default_value(50), "Maximum value for the histogram bins")
       ("by-molecule", po::value<bool>(&by_molecule)->default_value(false), "Split provided selection by connectivity within that selection." )
@@ -55,12 +55,9 @@ public:
   // clang-format on
   string print() const {
     ostringstream oss;
-    oss << boost::format("timeseries=%s,min_bin=%s,max_bin=%s,by_molecule=%b,num_bins=%d") 
-      % timeseries
-      % min_bin
-      % max_bin
-      % by_molecule
-      % num_bins;
+    oss << boost::format("timeseries=%s,min_bin=%s,max_bin=%s,by_molecule=%b,"
+                         "num_bins=%d") %
+               timeseries % min_bin % max_bin % by_molecule % num_bins;
     return (oss.str());
   }
   string timeseries;
@@ -70,17 +67,20 @@ public:
   int num_bins;
 };
 
-inline void histogram_rgyr(vector<greal> &hist, const greal rgyr, const greal min_bin,
-                    const greal max_bin, const greal bin_width, int& count, const int frame,
-                    ofstream &outfile) {
+inline void histogram_rgyr(vector<greal> &hist, const greal rgyr,
+                           const greal min_bin, const greal max_bin,
+                           const greal bin_width, int &count, const int frame,
+                           ofstream &outfile) {
   if ((rgyr >= min_bin) && (rgyr < max_bin)) {
     hist[int((rgyr - min_bin) / bin_width)]++;
     count++;
   }
 }
 
-inline void ts_hist_rgyr(vector<greal> &hist, const greal rgyr, const greal min_bin, const greal max_bin,
-                  const greal bin_width, int& count, const int frame, ofstream &outfile) {
+inline void ts_hist_rgyr(vector<greal> &hist, const greal rgyr,
+                         const greal min_bin, const greal max_bin,
+                         const greal bin_width, int &count, const int frame,
+                         ofstream &outfile) {
   if ((rgyr >= min_bin) && (rgyr < max_bin)) {
     hist[int((rgyr - min_bin) / bin_width)]++;
     count++;
@@ -105,8 +105,9 @@ int main(int argc, char *argv[]) {
   cout << "# " << header << "\n";
   ofstream tsf(topts->timeseries);
   // make a function pointer with a signature matching the
-  void (*frameOperator)(vector<greal> & hist, const greal rgyr, const greal min_bin,
-                        const greal max_bin, const greal bin_width, int& count, const int frame,
+  void (*frameOperator)(vector<greal> & hist, const greal rgyr,
+                        const greal min_bin, const greal max_bin,
+                        const greal bin_width, int &count, const int frame,
                         ofstream &outfile);
   // pick which operation to perform per frame using function pointer
   if (topts->timeseries.empty())
@@ -140,11 +141,13 @@ int main(int argc, char *argv[]) {
     mtopts->trajectory->updateGroupCoords(mtopts->model);
     for (AtomicGroup mol : molecules) {
       rgyr = mol.radiusOfGyration();
+      // call function pointer, passing in all the state from the loop needed
+      // for either histogramming or timeseries writing
       (*frameOperator)(hist, rgyr, min_bin, max_bin, bin_width, count,
                        mtopts->trajectory->currentFrame(), tsf);
     }
   }
-  // Write the histogram to stdout 
+  // Write the histogram to stdout
   cout << "# Rgyr\tProb\tCum" << endl;
   greal cum = 0.0;
   for (int i = 0; i < num_bins; i++) {
