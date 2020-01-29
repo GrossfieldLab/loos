@@ -37,19 +37,57 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-const string fullHelpMessage = "XXX";
-
+const string fullHelpMessage =
+    // clang-format off
+    "SYNOPSIS \n"
+    " \n"
+    "Read a set of trajectories and return a histogram of the radius of \n"
+    "gyration of a selection. \n"
+    " \n"
+    "DESCRIPTION \n"
+    " \n"
+    "This tool computes the radius of gyration for a selection of atoms for each \n"
+    "frame of a provided multi-trajectory. By default this selection is treated as \n"
+    "one group, but if --by-molecule is thrown then the selection will be split by \n"
+    "connectivity. The skip, stride, and range options operate on the multi-\n"
+    "trajectory as they would for other LOOS tools. The time-series option specifies\n"
+    "a file to write a timeseries of the radius of gyrations to. If none is \n"
+    "specified then no time-series is written. The num-bins, min-bin, and max-bin \n"
+    "options determine the extent and bin-width of the histogram, which is written \n"
+    "to stdout. The histogram contains both the probability per bin, and the \n"
+    "cumulative probability, in three tab-delimited columns with the leftmost being\n"
+    "the bin-center. \n"
+    " \n"
+    "EXAMPLE \n"
+    " \n"
+    "rad-gyr -k 100 -n 20 -m 5 -M 25 --by-molecule model.pdb traj1.dcd traj2.dcd \\\n"
+    "traj3.dcd \n"
+    " \n"
+    "This will concatenate traj1, traj2, and traj3 into one virtual trajectory, skip\n"
+    "the first 100 frames of each, and then histogram the radius of gyration of all\n"
+    "the atoms in each of the molecules in the model provided with the \n"
+    "trajectories, computing their radii of gyration and summing over them. Note \n"
+    "that this would be nonsensical if the molecules in the model were not multiple \n"
+    "copies of the same molecule, since all such Rgyr will be collated into one \n"
+    "histogram at the end. Using selection to pick a subsystem of interest makes \n"
+    "more sense in the context of most analyses of a solute.\n";
+//clang-format on
 class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions() {}
   // clang-format off
   void addGeneric(po::options_description& o) { 
     o.add_options()
-      ("timeseries,t", po::value<string>(&timeseries)->default_value(""), "Write frame-by-frame timeseries to file name provided. If none provided, not written.")
-      ("num-bins,n", po::value<int>(&num_bins)->default_value(50), "Number of bins to use for histogramming.")
-      ("min-bin,m", po::value<double>(&min_bin)->default_value(0), "Minimum value for the histogram bins.")
-      ("max-bin,M", po::value<double>(&max_bin)->default_value(50), "Maximum value for the histogram bins")
-      ("by-molecule", po::value<bool>(&by_molecule)->default_value(false), "Split provided selection by connectivity within that selection." )
+      ("timeseries,t", po::value<string>(&timeseries)->default_value(""), 
+       "Write Rgyr per-frame to file name provided.")
+      ("num-bins,n", po::value<int>(&num_bins)->default_value(50), 
+       "Number of bins to use for histogramming.")
+      ("min-bin,m", po::value<double>(&min_bin)->default_value(0), 
+       "Minimum value for the histogram bins.")
+      ("max-bin,M", po::value<double>(&max_bin)->default_value(50), 
+       "Maximum value for the histogram bins.")
+      ("by-molecule", po::bool_switch(&by_molecule)->default_value(false), 
+       "Split 'selection' by connectivity of 'model'.")
     ;
   }
   // clang-format on
