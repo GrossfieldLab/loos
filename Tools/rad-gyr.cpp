@@ -82,9 +82,9 @@ public:
        "Write Rgyr per-frame to file name provided.")
       ("num-bins,n", po::value<int>(&num_bins)->default_value(50), 
        "Number of bins to use for histogramming.")
-      ("min-bin,m", po::value<double>(&min_bin)->default_value(0), 
+      ("min-dist,m", po::value<double>(&min_dist)->default_value(0), 
        "Minimum value for the histogram bins.")
-      ("max-bin,M", po::value<double>(&max_bin)->default_value(50), 
+      ("max-dist,M", po::value<double>(&max_dist)->default_value(50), 
        "Maximum value for the histogram bins.")
       ("by-molecule", po::bool_switch(&by_molecule)->default_value(false), 
        "Split 'selection' by connectivity of 'model'.")
@@ -93,34 +93,34 @@ public:
   // clang-format on
   string print() const {
     ostringstream oss;
-    oss << boost::format("timeseries=%s,min_bin=%s,max_bin=%s,by_molecule=%b,"
+    oss << boost::format("timeseries=%s,min_dist=%s,max_dist=%s,by_molecule=%b,"
                          "num_bins=%d") %
-               timeseries % min_bin % max_bin % by_molecule % num_bins;
+               timeseries % min_dist % max_dist % by_molecule % num_bins;
     return (oss.str());
   }
   string timeseries;
-  double min_bin;
-  double max_bin;
+  double min_dist;
+  double max_dist;
   bool by_molecule;
   int num_bins;
 };
 
 inline void histogram_rgyr(vector<greal> &hist, const greal rgyr,
-                           const greal min_bin, const greal max_bin,
+                           const greal min_dist, const greal max_dist,
                            const greal bin_width, int &count, const int frame,
                            ofstream &outfile) {
-  if ((rgyr >= min_bin) && (rgyr < max_bin)) {
-    hist[int((rgyr - min_bin) / bin_width)]++;
+  if ((rgyr >= min_dist) && (rgyr < max_dist)) {
+    hist[int((rgyr - min_dist) / bin_width)]++;
     count++;
   }
 }
 
 inline void ts_hist_rgyr(vector<greal> &hist, const greal rgyr,
-                         const greal min_bin, const greal max_bin,
+                         const greal min_dist, const greal max_dist,
                          const greal bin_width, int &count, const int frame,
                          ofstream &outfile) {
-  if ((rgyr >= min_bin) && (rgyr < max_bin)) {
-    hist[int((rgyr - min_bin) / bin_width)]++;
+  if ((rgyr >= min_dist) && (rgyr < max_dist)) {
+    hist[int((rgyr - min_dist) / bin_width)]++;
     count++;
   }
   outfile << frame << "\t" << rgyr << "\n";
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
   ofstream tsf(topts->timeseries);
   // make a function pointer with a signature matching the
   void (*frameOperator)(vector<greal> & hist, const greal rgyr,
-                        const greal min_bin, const greal max_bin,
+                        const greal min_dist, const greal max_dist,
                         const greal bin_width, int &count, const int frame,
                         ofstream &outfile);
   // pick which operation to perform per frame using function pointer
@@ -167,9 +167,9 @@ int main(int argc, char *argv[]) {
   // counter for number of molecules in histogram bounds
   int count = 0;
   const int num_bins = topts->num_bins;
-  const greal min_bin = topts->min_bin;
-  const greal max_bin = topts->max_bin;
-  const greal bin_width = (max_bin - min_bin) / num_bins;
+  const greal min_dist = topts->min_dist;
+  const greal max_dist = topts->max_dist;
+  const greal bin_width = (max_dist - min_dist) / num_bins;
 
   // define and zero histogram
   vector<greal> hist(num_bins, 0.0);
@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
       rgyr = mol.radiusOfGyration();
       // call function pointer, passing in all the state from the loop needed
       // for either histogramming or timeseries writing
-      (*frameOperator)(hist, rgyr, min_bin, max_bin, bin_width, count,
+      (*frameOperator)(hist, rgyr, min_dist, max_dist, bin_width, count,
                        mtopts->trajectory->currentFrame(), tsf);
     }
   }
@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
   cout << "# Rgyr\tProb\tCum" << endl;
   greal cum = 0.0;
   for (int i = 0; i < num_bins; i++) {
-    greal d = bin_width * (i + 0.5) + min_bin;
+    greal d = bin_width * (i + 0.5) + min_dist;
 
     greal prob = hist[i] / count;
     cum += prob;
