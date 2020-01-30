@@ -1,0 +1,4 @@
+<map id="loos::OptionsFramework::OutputPrefix" name="loos::OptionsFramework::OutputPrefix">
+<area shape="rect" id="node1" title="Gets a string as prefix for output files (–prefix)" alt="" coords="5,95,168,136"/>
+<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,5,168,47"/>
+</map>

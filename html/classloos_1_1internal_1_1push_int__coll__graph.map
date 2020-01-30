@@ -1,0 +1,7 @@
+<map id="loos::internal::pushInt" name="loos::internal::pushInt">
+<area shape="rect" id="node1" title="Push an integer onto the data stack." alt="" coords="71,261,217,288"/>
+<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="73,185,215,212"/>
+<area shape="rect" id="node3" href="$classloos_1_1internal_1_1_value_stack.html" title=" " alt="" coords="5,96,176,123"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="200,96,280,123"/>
+<area shape="rect" id="node5" title="STL class." alt="" coords="177,5,303,47"/>
+</map>

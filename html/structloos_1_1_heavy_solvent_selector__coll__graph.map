@@ -1,0 +1,13 @@
+<map id="loos::HeavySolventSelector" name="loos::HeavySolventSelector">
+<area shape="rect" id="node1" title="Select only heavy solvent atoms." alt="" coords="379,393,561,420"/>
+<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="394,96,527,123"/>
+<area shape="rect" id="node3" href="$structloos_1_1_and_selector.html" title="Combines two selectors with a logical &quot;and&quot;." alt="" coords="357,200,482,227"/>
+<area shape="rect" id="node4" href="$structloos_1_1_solvent_selector.html" title="Predicate for selecting solvent based on common solvent SEGIDs." alt="" coords="141,304,287,331"/>
+<area shape="rect" id="node5" href="$structloos_1_1_or_selector.html" title="Combines two selectors with a logical &quot;or&quot;." alt="" coords="216,200,332,227"/>
+<area shape="rect" id="node6" href="$structloos_1_1_segid_selector.html" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="5,200,140,227"/>
+<area shape="rect" id="node9" href="$structloos_1_1_heavy_atom_selector.html" title="Select non&#45;hydrogen atoms." alt="" coords="619,304,790,331"/>
+<area shape="rect" id="node10" href="$structloos_1_1_not_selector.html" title="Negates a selection predicate." alt="" coords="789,200,911,227"/>
+<area shape="rect" id="node11" href="$structloos_1_1_hydrogen_selector.html" title="Select hydrogen atoms." alt="" coords="557,200,714,227"/>
+<area shape="rect" id="node7" title="STL class." alt="" coords="33,96,113,123"/>
+<area shape="rect" id="node8" title="STL class." alt="" coords="9,5,136,47"/>
+</map>

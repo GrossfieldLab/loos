@@ -1,0 +1,4 @@
+<map id="loos::Gromacs" name="loos::Gromacs">
+<area shape="rect" id="node1" title="Implements a GROMACS model file (.gro)" alt="" coords="17,80,124,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="5,5,136,32"/>
+</map>

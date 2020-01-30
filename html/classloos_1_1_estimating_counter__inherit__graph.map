@@ -1,0 +1,4 @@
+<map id="loos::EstimatingCounter" name="loos::EstimatingCounter">
+<area shape="rect" id="node1" title="A progress counter that can estimate how much time is left." alt="" coords="5,80,167,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1_simple_counter.html" title="Basic progress counter object, defining the interface..." alt="" coords="17,5,155,32"/>
+</map>

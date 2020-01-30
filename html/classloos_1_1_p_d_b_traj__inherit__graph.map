@@ -1,0 +1,4 @@
+<map id="loos::PDBTraj" name="loos::PDBTraj">
+<area shape="rect" id="node1" title="Class for intepreting separate PDB files as a single trajectory." alt="" coords="10,80,113,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="5,5,117,32"/>
+</map>

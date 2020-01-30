@@ -1,0 +1,9 @@
+<map id="loos::DensityTools::ZClippedWaterFilter" name="loos::DensityTools::ZClippedWaterFilter">
+<area shape="rect" id="node1" title="Restrict waters to be within a given z&#45;range." alt="" coords="37,469,181,511"/>
+<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_water_filter_decorator.html" title="Decorator base class for &quot;decorating&quot; the core water filters..." alt="" coords="35,379,184,420"/>
+<area shape="rect" id="node3" href="$classloos_1_1_density_tools_1_1_water_filter_base.html" title="Base interface for water filter/picker." alt="" coords="45,288,173,329"/>
+<area shape="rect" id="node4" title=" " alt="" coords="45,184,173,225"/>
+<area shape="rect" id="node5" href="$classloos_1_1_coord.html" title="Basic 3&#45;D coordinates class." alt="" coords="5,95,125,121"/>
+<area shape="rect" id="node6" title="STL class." alt="" coords="150,95,266,121"/>
+<area shape="rect" id="node7" title=" " alt="" coords="189,5,227,32"/>
+</map>
