@@ -105,6 +105,7 @@ public:
   int num_bins;
 };
 
+// Do the work of recording, either in the case where a TS is requested, 
 inline void histogram_rgyr(vector<greal> &hist, const greal rgyr,
                            const greal min_dist, const greal max_dist,
                            const greal bin_width, int &count, const int frame,
@@ -114,15 +115,13 @@ inline void histogram_rgyr(vector<greal> &hist, const greal rgyr,
     count++;
   }
 }
-
+// or in the case when not.
 inline void ts_hist_rgyr(vector<greal> &hist, const greal rgyr,
                          const greal min_dist, const greal max_dist,
                          const greal bin_width, int &count, const int frame,
                          ofstream &outfile) {
-  if ((rgyr >= min_dist) && (rgyr < max_dist)) {
-    hist[int((rgyr - min_dist) / bin_width)]++;
-    count++;
-  }
+  histogram_rgyr(hist, rgyr, min_dist, max_dist, bin_width, count, frame,
+                 outfile);
   outfile << frame << "\t" << rgyr << "\n";
 }
 
