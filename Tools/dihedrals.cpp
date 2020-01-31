@@ -26,8 +26,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <boost/format.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/format.hpp>
 #include <fstream>
 #include <iostream>
 #include <loos.hpp>
@@ -46,7 +46,7 @@ const string quartet_delim = ":";
 const string atom_delim = ",";
 const string tag_delim = "_";
 const string fsuffix = ".out";
-  
+
 // clang-format off
 const string msg = 
 "This tool is designed to allow the tracking of classes of dihedral angles \n"
@@ -144,7 +144,6 @@ const string msg =
 ;
 // clang-format on
 
-
 // C++ 11 regex split
 // https://stackoverflow.com/questions/9435385/split-a-string-using-c11
 vector<string> split(const string &input, const string &regular_expression) {
@@ -170,7 +169,7 @@ class ToolOptions : public opts::OptionsPackage {
 public:
   ToolOptions()
       : dihedral_sels{}, dihedral_sel_strings(""), pdb(""), tags(""),
-        prefix("dihedral"), quotes("p") {};
+        prefix("dihedral"), quotes("p"){};
   // clang-format off
   void addGeneric(po::options_description& o) {
     o.add_options()
@@ -191,7 +190,8 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s,quotes=%s") %
+    oss << boost::format(
+               "dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s,quotes=%s") %
                dihedral_sel_strings % pdb % tags % prefix % quotes;
     return (oss.str());
   }
@@ -226,24 +226,45 @@ vector<vector<AtomicGroup>>
 sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
-  // pick whether to puke up atomic group when group has wrong num elts.
-  bool (*chkDihedralSize)(AtomicGroup &, vector<string>);
+  // Map all the sel strings to kernels in style of utils.cpp: selectAtoms
+  vector<vector<KernelSelector>> selectorClasses;
+  for (auto sel_class : dihedral_sels) {
+    vector<KernelSelector> selectorClass;
+    for (auto sel : sel_class) {
+      Parser parser;
+      parser.parse(sel);
+      try {
+        parser.parse(sel);
+      } catch (ParseError e) {
+        throw(ParseError("Error in parsing '" + sel + "' ... " + e.what()));
+      }
+
+      KernelSelector selector(parser.kernel());
+      selectorClass.push_back(move(selector));
+    }
+    selectorClasses.push_back(selectorClass);
+  }
+  // In this if-else, pick whether to puke up atomic group when group has wrong num elts.
+  // Use function pointer strategy to elide test in loop.
+  bool (*chkDihedralSize)(AtomicGroup &, vector<KernelSelector>&, const vector<string>& selstrs);
   if (verbosity > 0) {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+    chkDihedralSize = [](AtomicGroup &oo_D, vector<KernelSelector> &sels,
+                         const vector<string> &selstrs) -> bool {
+      // Puke
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
-        for (auto sel : sels)
-          cerr << sel << ", ";
+        for (auto i = 0; i < selstrs.size(); i++)
+          cerr << selstrs[i] << ", ";
         cerr << "\b\b\n";
         cerr << "Offending group: \n";
         cerr << oo_D;
         cerr << "\nDROPPING THIS GROUP AND PROCEEDING.\n";
         return true;
-      } else {
+      } else { // append AG, correctly reordered.
         AtomicGroup reordered;
         for (auto sel : sels)
-          reordered += selectAtoms(oo_D, sel);
+          reordered += oo_D.select(sel);
 
         oo_D = move(reordered);
         cerr << "included group of size: " << to_string(reordered.size())
@@ -252,13 +273,14 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+    chkDihedralSize = [](AtomicGroup &oo_D, vector<KernelSelector> &sels,
+                         const vector<string> &selstrs) -> bool {
       if (oo_D.size() != 4)
         return true;
       else {
         AtomicGroup reordered;
         for (auto sel : sels)
-          reordered += selectAtoms(oo_D, sel);
+          reordered += oo_D.select(sel);
 
         oo_D = move(reordered);
         return false;
@@ -268,13 +290,13 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
 
   // append to this for return later.
   vector<vector<AtomicGroup>> dihedralAGs;
-  for (auto dSels : dihedral_sels) {
+  for (auto i = 0; i < selectorClasses.size(); i++) {
     // first get a set of AGs that have all the atoms of the dihedral in them
     // They are likely to be in the order of the selection matched first
     // i.e. all the matches for selection 1, then all for 2, and so forth.
     AtomicGroup outoforder_dihedralType;
-    for (auto sel : dSels) {
-      outoforder_dihedralType += selectAtoms(scope, sel);
+    for (auto sel : selectorClasses[i]) {
+      outoforder_dihedralType += scope.select(sel);
     }
     // This separates all non-connected atoms into separate atomic groups.
     vector<AtomicGroup> dihedralInstances =
@@ -284,41 +306,13 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // but the return order of selectAtoms calls is not specified.
     // Remove any AGs that didn't manage to contain four atoms after the
     // split.
-    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
-                                      dihedralInstances.end(),
-                                      [&](AtomicGroup &oo_D) -> bool {
-                                        return (*chkDihedralSize)(oo_D, dSels);
-                                      }),
-                            dihedralInstances.end());
-    dihedralAGs.push_back(move(dihedralInstances));
-  }
-  return dihedralAGs;
-}
-
-  // append to this for return later.
-  vector<vector<AtomicGroup>> dihedralAGs;
-  for (auto dSels : dihedral_sels) {
-    // first get a set of AGs that have all the atoms of the dihedral in them
-    // They are likely to be in the order of the selection matched first
-    // i.e. all the matches for selection 1, then all for 2, and so forth.
-    AtomicGroup dihedralTypes;
-    for (auto sel : dSels) {
-      dihedralTypes += selectAtoms(scope, sel);
-    }
-    // This separates all non-connected atoms into separate atomic groups.
-    vector<AtomicGroup> dihedralInstances =
-        dihedralTypes.splitByMolecule();
-    // reorder them here to match that provided by user
-    // it may turn out this is unnecessary,
-    // but the return order of selectAtoms calls is not specified.
-    // Remove any AGs that didn't manage to contain four atoms after the
-    // split.
-    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
-                                      dihedralInstances.end(),
-                                      [&](AtomicGroup &dihedralAG) -> bool {
-                                        return (*chkDihedralSize)(dihedralAG, dSels);
-                                      }),
-                            dihedralInstances.end());
+    dihedralInstances.erase(
+        remove_if(dihedralInstances.begin(), dihedralInstances.end(),
+                  [&](AtomicGroup &oo_D) -> bool {
+                    return (*chkDihedralSize)(oo_D, selectorClasses[i],
+                                              dihedral_sels[i]);
+                  }),
+        dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
   return dihedralAGs;
@@ -350,7 +344,8 @@ int main(int argc, char *argv[]) {
 
   // make file names, either from scratch or by adding to user appended tags.
   vector<vector<shared_ptr<ofstream>>> vv_filePtrs;
- // if user supplied tags for file names, use those with reduced dihedral name info.
+  // if user supplied tags for file names, use those with reduced dihedral name
+  // info.
   if (topts->tags.empty()) {
     int resid;
     for (auto dihedralType : dihedrals) {
@@ -382,12 +377,12 @@ int main(int argc, char *argv[]) {
       for (auto dihedral : dihedrals.at(i)) {
         string tag = user_tags.at(i);
         tag += tag_delim + to_string(dihedral[0]->resid());
-        for (auto patom : dihedral){
+        for (auto patom : dihedral) {
           string name = patom->name();
           boost::replace_all(name, "\'", topts->quotes);
           tag += tag_delim + name; // append atom names to tag with
         }
-                                            // tag delimiter
+        // tag delimiter
         auto p_ofstream =
             make_shared<ofstream>(topts->prefix + tag_delim + tag + fsuffix);
         *p_ofstream << "# " << header << "\n";
