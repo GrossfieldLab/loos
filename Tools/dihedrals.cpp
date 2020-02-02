@@ -32,6 +32,7 @@
 #include <iostream>
 #include <loos.hpp>
 #include <regex>
+#include <functional>
 #include <string>
 
 using namespace std;
@@ -49,15 +50,19 @@ const string fsuffix = ".out";
 
 // clang-format off
 const string msg = 
+"SYNOPSIS\n"
+"\n"
 "This tool is designed to allow the tracking of classes of dihedral angles \n"
-"specified by atom selection. Unlike the torsion tool, also in LOOS, this tool \n"
-"is designed to track the dihedral angle between chemically connected groups of \n"
-"four atoms. The original intention for the tool was to monitor classes of \n"
-"customarily defined dihedrals that might be defined for a large number of \n"
-"residues, without having to write a separate command line for each such \n"
-"dihedral. For example, you could use this tool to monitor all of the phi \n"
+"specified by atom selection. \n"
+"\nDESCRIPTION\n"
+"\n"
+"Unlike the torsion tool, also in LOOS, this tool is designed to track the\n"
+"dihedral angle between chemically connected groups of four atoms. The \n"
+"original intention for the tool was to monitor classes of customarily\n"
+"defined dihedrals that might exist in a large number of residues in one pass.\n"
+"For example, one could use this tool to monitor all of the phi and psi\n"
 "backbone dihedrals in a protein, making only one pass through the trajectory as\n"
-" you did so. The tool creates a file name for each dihedral angle chosen for \n"
+"one did so. The tool creates a file name for each dihedral angle chosen for \n"
 "monitoring, and writes the frame number and the angle out in two columns, \n"
 "separated by white space, for each frame provided to the tool. How these names \n"
 "are created, how many classes of dihedral to monitor, and what frames to \n"
@@ -141,6 +146,26 @@ const string msg =
 "names (aside from the output caused by --pdbs) This permits exclusive names for\n"
 " different runs of the program and helps keep things organized. I often use a \n"
 "system specifying prefix.\n"
+"\n"
+"EXAMPLE\n"
+"\n"
+"dihedrals  --dihedral-sel-strings $\'name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N9\""+atom_delim+"  \\\n"
+"name == \"C4\" "+quartet_delim+" name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N1\""+atom_delim+"  name == \"C2\"\' \\\n"
+"--tags  'chi_Y,chi_R' --selection 'resid < 6' --prefix nucleicX nucleic.pdb nucleic.dcd\n"
+"\n"
+"This should do the calculation discussed in the description above. In particular\n"
+"it will look for dihedrals matching the conventional names for chi from \n"
+"purines and pyrimidines, writing each instance of these classes out to different\n"
+"output files with names based on --prefix.\n"
+"\n"
+"POTENTIAL COMPLICATIONS\n"
+"\n"
+"Using verbosity and the --pdb flag can help diagnose problems with dihedral definitions.\n"
+"This is a very good idea to check with all tools, but especially here, where you can get\n"
+"results that look right but are not with selection strings that may be subtly off.\n"
+"Another thing to bear in mind is that your model needs to have connectivity. You can\n"
+"remedy this with the --infer-connectivity flag, but do so with caution. That inference\n"
+"can be low quality if you get unlucky with the first structure in your file.\n"
 ;
 // clang-format on
 
@@ -219,6 +244,10 @@ public:
   string quotes;
 };
 
+
+template <typename ChkF> 
+bool pruner(ChkF&& f){return f;}
+
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
 // Corrects order of discovery  of each dihedral, and returns atomic group of
 // dihedrals.
@@ -226,32 +255,11 @@ vector<vector<AtomicGroup>>
 sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
-  // Map all the sel strings to kernels in style of utils.cpp: selectAtoms
-  vector<vector<shared_ptr<KernelSelector>>> selectorClasses;
-  for (auto sel_class : dihedral_sels) {
-    vector<shared_ptr<KernelSelector>> selectorClass;
-    
-    for (auto sel : sel_class) {
-      Parser parser(sel);
+  // pick whether to puke up atomic group when group has wrong num elts.
+  bool (*chkSizeReorder)(AtomicGroup &, vector<string>&);
 
-      try {
-        parser.parse(sel);
-      } catch (ParseError e) {
-        throw(ParseError("Error in parsing '" + sel + "' ... " + e.what()));
-      }
-      KernelSelector selector(parser.kernel());
-      shared_ptr<KernelSelector> sk = make_shared<KernelSelector>(selector);
-      selectorClass.push_back(move(sk));
-    }
-    selectorClasses.push_back(move(selectorClass));
-  }
-  // In this if-else, pick whether to puke up atomic group when group has wrong num elts.
-  // Use function pointer strategy to elide test in loop.
-  bool (*chkDihedralSize)(AtomicGroup &, vector<shared_ptr<KernelSelector>>&, const vector<string>& selstrs);
   if (verbosity > 0) {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<shared_ptr<KernelSelector>> &sels,
-                         const vector<string> &selstrs) -> bool {
-      // Puke
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string>& sels) -> bool {
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
@@ -274,9 +282,8 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<shared_ptr<KernelSelector>> &sels,
-                         const vector<string> &selstrs) -> bool {
 
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string>& sels) -> bool {
       if (oo_D.size() != 4)
         return true;
       else {
@@ -309,17 +316,17 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // but the return order of selectAtoms calls is not specified.
     // Remove any AGs that didn't manage to contain four atoms after the
     // split.
-    dihedralInstances.erase(
-        remove_if(dihedralInstances.begin(), dihedralInstances.end(),
-                  [&](AtomicGroup &oo_D) -> bool {
-                    return (*chkDihedralSize)(oo_D, selectorClasses.at(i),
-                                              dihedral_sels.at(i));
-                  }),
-        dihedralInstances.end());
+    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
+                                      dihedralInstances.end(),
+                                      pruner([&](AtomicGroup &oo_D) -> bool {
+                                        return (*chkSizeReorder)(oo_D, dSels);
+                                      })),
+                            dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
   return dihedralAGs;
 }
+
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
