@@ -227,28 +227,29 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
   // Map all the sel strings to kernels in style of utils.cpp: selectAtoms
-  vector<vector<KernelSelector>> selectorClasses;
+  vector<vector<shared_ptr<KernelSelector>>> selectorClasses;
   for (auto sel_class : dihedral_sels) {
-    vector<KernelSelector> selectorClass;
+    vector<shared_ptr<KernelSelector>> selectorClass;
+    
     for (auto sel : sel_class) {
-      Parser parser;
-      parser.parse(sel);
+      Parser parser(sel);
+
       try {
         parser.parse(sel);
       } catch (ParseError e) {
         throw(ParseError("Error in parsing '" + sel + "' ... " + e.what()));
       }
-
       KernelSelector selector(parser.kernel());
-      selectorClass.push_back(move(selector));
+      shared_ptr<KernelSelector> sk = make_shared<KernelSelector>(selector);
+      selectorClass.push_back(move(sk));
     }
-    selectorClasses.push_back(selectorClass);
+    selectorClasses.push_back(move(selectorClass));
   }
   // In this if-else, pick whether to puke up atomic group when group has wrong num elts.
   // Use function pointer strategy to elide test in loop.
-  bool (*chkDihedralSize)(AtomicGroup &, vector<KernelSelector>&, const vector<string>& selstrs);
+  bool (*chkDihedralSize)(AtomicGroup &, vector<shared_ptr<KernelSelector>>&, const vector<string>& selstrs);
   if (verbosity > 0) {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<KernelSelector> &sels,
+    chkDihedralSize = [](AtomicGroup &oo_D, vector<shared_ptr<KernelSelector>> &sels,
                          const vector<string> &selstrs) -> bool {
       // Puke
       if (oo_D.size() != 4) {
@@ -264,7 +265,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       } else { // append AG, correctly reordered.
         AtomicGroup reordered;
         for (auto sel : sels)
-          reordered += oo_D.select(sel);
+          reordered += oo_D.select(*sel);
 
         oo_D = move(reordered);
         cerr << "included group of size: " << to_string(reordered.size())
@@ -273,14 +274,15 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<KernelSelector> &sels,
+    chkDihedralSize = [](AtomicGroup &oo_D, vector<shared_ptr<KernelSelector>> &sels,
                          const vector<string> &selstrs) -> bool {
+
       if (oo_D.size() != 4)
         return true;
       else {
         AtomicGroup reordered;
         for (auto sel : sels)
-          reordered += oo_D.select(sel);
+          reordered += oo_D.select(*sel);
 
         oo_D = move(reordered);
         return false;
@@ -290,13 +292,14 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
 
   // append to this for return later.
   vector<vector<AtomicGroup>> dihedralAGs;
-  for (auto i = 0; i < selectorClasses.size(); i++) {
+  for (uint i = 0; i < selectorClasses.size(); i++) {
     // first get a set of AGs that have all the atoms of the dihedral in them
     // They are likely to be in the order of the selection matched first
     // i.e. all the matches for selection 1, then all for 2, and so forth.
     AtomicGroup outoforder_dihedralType;
-    for (auto sel : selectorClasses[i]) {
-      outoforder_dihedralType += scope.select(sel);
+    for (auto sel : selectorClasses.at(i)) {
+      cout << "HERE\n";
+      outoforder_dihedralType += scope.select(*sel);
     }
     // This separates all non-connected atoms into separate atomic groups.
     vector<AtomicGroup> dihedralInstances =
@@ -309,8 +312,8 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     dihedralInstances.erase(
         remove_if(dihedralInstances.begin(), dihedralInstances.end(),
                   [&](AtomicGroup &oo_D) -> bool {
-                    return (*chkDihedralSize)(oo_D, selectorClasses[i],
-                                              dihedral_sels[i]);
+                    return (*chkDihedralSize)(oo_D, selectorClasses.at(i),
+                                              dihedral_sels.at(i));
                   }),
         dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
@@ -324,7 +327,7 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions *bopts = new opts::BasicOptions(msg);
   opts::BasicSelection *sopts =
       new opts::BasicSelection("backbone && !hydrogen");
-  opts::MultiTrajOptions *mtopts = new opts::MultiTrajOptions;
+  opts::MultiTrajOptions* mtopts = new opts::MultiTrajOptions;
   ToolOptions *topts = new ToolOptions;
 
   opts::AggregateOptions options;
