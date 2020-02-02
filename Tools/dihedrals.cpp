@@ -32,6 +32,7 @@
 #include <iostream>
 #include <loos.hpp>
 #include <regex>
+#include <functional>
 #include <string>
 
 using namespace std;
@@ -219,6 +220,10 @@ public:
   string quotes;
 };
 
+
+template <typename ChkF> 
+bool pruner(ChkF&& f){return f;}
+
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
 // Corrects order of discovery  of each dihedral, and returns atomic group of
 // dihedrals.
@@ -227,9 +232,10 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
   // pick whether to puke up atomic group when group has wrong num elts.
-  bool (*chkSizeReorder)(AtomicGroup &, vector<string>);
+  bool (*chkSizeReorder)(AtomicGroup &, vector<string>&);
+
   if (verbosity > 0) {
-    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string>& sels) -> bool {
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
@@ -252,7 +258,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string>& sels) -> bool {
       if (oo_D.size() != 4)
         return true;
       else {
@@ -286,9 +292,9 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // split.
     dihedralInstances.erase(remove_if(dihedralInstances.begin(),
                                       dihedralInstances.end(),
-                                      [&](AtomicGroup &oo_D) -> bool {
+                                      pruner([&](AtomicGroup &oo_D) -> bool {
                                         return (*chkSizeReorder)(oo_D, dSels);
-                                      }),
+                                      })),
                             dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
