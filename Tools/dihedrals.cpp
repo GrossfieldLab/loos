@@ -227,9 +227,9 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
   // pick whether to puke up atomic group when group has wrong num elts.
-  bool (*chkDihedralSize)(AtomicGroup &, vector<string>);
+  bool (*chkSizeReorder)(AtomicGroup &, vector<string>);
   if (verbosity > 0) {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
@@ -252,7 +252,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
       if (oo_D.size() != 4)
         return true;
       else {
@@ -287,7 +287,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     dihedralInstances.erase(remove_if(dihedralInstances.begin(),
                                       dihedralInstances.end(),
                                       [&](AtomicGroup &oo_D) -> bool {
-                                        return (*chkDihedralSize)(oo_D, dSels);
+                                        return (*chkSizeReorder)(oo_D, dSels);
                                       }),
                             dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
@@ -295,34 +295,6 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
   return dihedralAGs;
 }
 
-  // append to this for return later.
-  vector<vector<AtomicGroup>> dihedralAGs;
-  for (auto dSels : dihedral_sels) {
-    // first get a set of AGs that have all the atoms of the dihedral in them
-    // They are likely to be in the order of the selection matched first
-    // i.e. all the matches for selection 1, then all for 2, and so forth.
-    AtomicGroup dihedralTypes;
-    for (auto sel : dSels) {
-      dihedralTypes += selectAtoms(scope, sel);
-    }
-    // This separates all non-connected atoms into separate atomic groups.
-    vector<AtomicGroup> dihedralInstances =
-        dihedralTypes.splitByMolecule();
-    // reorder them here to match that provided by user
-    // it may turn out this is unnecessary,
-    // but the return order of selectAtoms calls is not specified.
-    // Remove any AGs that didn't manage to contain four atoms after the
-    // split.
-    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
-                                      dihedralInstances.end(),
-                                      [&](AtomicGroup &dihedralAG) -> bool {
-                                        return (*chkDihedralSize)(dihedralAG, dSels);
-                                      }),
-                            dihedralInstances.end());
-    dihedralAGs.push_back(move(dihedralInstances));
-  }
-  return dihedralAGs;
-}
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
