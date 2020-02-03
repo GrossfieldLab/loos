@@ -148,9 +148,9 @@ const string msg =
 "\n"
 "EXAMPLE\n"
 "\n"
-"dihedrals  --dihedral-sel-strings $\'name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N9\""+atom_delim+"  \\\n"
+"dihedrals \\\n--dihedral-sel-strings $\'name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N9\""+atom_delim+" \\\n"
 "name == \"C4\" "+quartet_delim+" name == \"O4'\""+atom_delim+"  name == \"C1'\""+atom_delim+"  name == \"N1\""+atom_delim+"  name == \"C2\"\' \\\n"
-"--tags  'chi_Y,chi_R' --selection 'resid < 6' --prefix nucleicX nucleic.pdb nucleic.dcd\n"
+"--tags  'chi_Y,chi_R' --selection 'resid < 6' --prefix nucX nuc.pdb nuc.dcd\n"
 "\n"
 "This should do the calculation discussed in the description above. In particular\n"
 "it will look for dihedrals matching the conventional names for chi from \n"
@@ -159,12 +159,16 @@ const string msg =
 "\n"
 "POTENTIAL COMPLICATIONS\n"
 "\n"
-"Using verbosity and the --pdb flag can help diagnose problems with dihedral definitions.\n"
-"This is a very good idea to check with all tools, but especially here, where you can get\n"
-"results that look right but are not with selection strings that may be subtly off.\n"
-"Another thing to bear in mind is that your model needs to have connectivity. You can\n"
-"remedy this with the --infer-connectivity flag, but do so with caution. That inference\n"
-"can be low quality if you get unlucky with the first structure in your file.\n"
+"Verbosity and the --pdb flag help diagnose problems with dihedral selections.\n"
+"This is a very good thing to check with all tools, but especially here, where \n"
+"results could look right but be wrong with selection strings that are subtly off.\n"
+"\n"
+"Another thing to bear in mind is that the model needs connectivity. One can\n"
+"remedy this with the --infer-connectivity flag, but use caution. That inference\n"
+"can be low quality if one gets unlucky with the first frame in the file, since\n"
+"it is based on how far apart atoms are from one another. Regardless of what\n"
+"is provided for this flag, if connectivity information is found then none will\n"
+"be inferrd.\n"
 ;
 // clang-format on
 
@@ -201,12 +205,15 @@ public:
      ("Ordered quartets of selection strings; each quartet is delimited by '"
      + quartet_delim + "', and each string within by '" 
      + atom_delim + "'.").c_str())
+    ("infer-connectivity", po::value<float>(&bondlength)->default_value(-1), 
+    "Infer connectivity using provided distance for models lacking this. ALERT: uses hard distance cutoff on first frame of traj to infer connectivity. Only does this for values greater than zero.")
     ("pdb", po::value<string>(&pdb)->default_value(""),
      "Prefix to write PDBs for each dihedral selected from frame 1 of provided multi-traj.")
     ("tags,T", po::value<string>(&tags)->default_value(""), 
      ("String of tags for each class of dihedral, separated by a '" + atom_delim + "'.").c_str())
     ("prefix,p", po::value<string>(&prefix)->default_value("dihedral"),
      "Prefix for file names for each monitored dihedral.")
+    
     ("swap-single-quotes,Q", po::value<string>(&quotes)->default_value("p"),
      "Swap single quote character in outfile names for some alternative. Provide single quote if no change desired.");
   }
@@ -214,9 +221,9 @@ public:
 
   string print() const {
     ostringstream oss;
-    oss << boost::format(
-               "dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s,quotes=%s") %
-               dihedral_sel_strings % pdb % tags % prefix % quotes;
+    oss << boost::format("dihedral-sel-strings=%s,pdb=%s,tags=%s,prefix=%s,"
+                         "quotes=%s,bondlength=%d") %
+               dihedral_sel_strings % pdb % tags % prefix % quotes % bondlength;
     return (oss.str());
   }
 
@@ -241,9 +248,8 @@ public:
   string tags;
   string prefix;
   string quotes;
+  float bondlength;
 };
-
-
 
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
 // Corrects order of discovery  of each dihedral, and returns atomic group of
@@ -253,14 +259,14 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
   // pick whether to puke up atomic group when group has wrong num elts.
-  bool (*chkSizeReorder)(AtomicGroup &, vector<string>&);
+  bool (*chkSizeReorder)(AtomicGroup &, vector<string> &);
 
   if (verbosity > 0) {
-    chkSizeReorder = [](AtomicGroup &oo_D, vector<string>& sels) -> bool {
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> &sels) -> bool {
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
-        for (auto sel: sels)
+        for (auto sel : sels)
           cerr << sel << ", ";
         cerr << "\b\b\n";
         cerr << "Offending group: \n";
@@ -280,7 +286,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     };
   } else {
 
-    chkSizeReorder = [](AtomicGroup &oo_D, vector<string>& sels) -> bool {
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> &sels) -> bool {
       if (oo_D.size() != 4)
         return true;
       else {
@@ -312,17 +318,16 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // but the return order of selectAtoms calls is not specified.
     // Remove any AGs that didn't manage to contain four atoms after the
     // split.
-    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
-                                      dihedralInstances.end(),
-                                      [&dSels, chkSizeReorder](AtomicGroup &oo_D) -> bool {
-                                        return (*chkSizeReorder)(oo_D, dSels);
-                                      }),
-                            dihedralInstances.end());
+    dihedralInstances.erase(
+        remove_if(dihedralInstances.begin(), dihedralInstances.end(),
+                  [&dSels, chkSizeReorder](AtomicGroup &oo_D) -> bool {
+                    return (*chkSizeReorder)(oo_D, dSels);
+                  }),
+        dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
   return dihedralAGs;
 }
-
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
@@ -330,7 +335,7 @@ int main(int argc, char *argv[]) {
   opts::BasicOptions *bopts = new opts::BasicOptions(msg);
   opts::BasicSelection *sopts =
       new opts::BasicSelection("backbone && !hydrogen");
-  opts::MultiTrajOptions* mtopts = new opts::MultiTrajOptions;
+  opts::MultiTrajOptions *mtopts = new opts::MultiTrajOptions;
   ToolOptions *topts = new ToolOptions;
 
   opts::AggregateOptions options;
@@ -340,6 +345,13 @@ int main(int argc, char *argv[]) {
 
   // set up system for looping. Load coords from frame 0 into scope.
   AtomicGroup model = mtopts->model;
+  if (model.hasBonds()) {
+  } else if (topts->bondlength > 0)
+    model.findBonds(topts->bondlength);
+  else
+    throw(LOOSError(
+        "Model does not appear to have chemical connectivity, and "
+        "infer-connectivity has not been set to a positive value.\n"));
   AtomicGroup scope = selectAtoms(model, sopts->selection);
   pTraj traj = mtopts->trajectory;
   traj->updateGroupCoords(model);
