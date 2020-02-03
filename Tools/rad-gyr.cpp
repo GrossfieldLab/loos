@@ -105,24 +105,39 @@ public:
   int num_bins;
 };
 
-// Do the work of recording, either in the case where a TS is requested, 
+// Do the work of recording, either in the case where a TS is requested,
 inline void histogram_rgyr(vector<greal> &hist, const greal rgyr,
                            const greal min_dist, const greal max_dist,
-                           const greal bin_width, int &count, const int frame,
+                           const greal bin_width, int &count,
                            ofstream &outfile) {
   if ((rgyr >= min_dist) && (rgyr < max_dist)) {
     hist[int((rgyr - min_dist) / bin_width)]++;
     count++;
   }
 }
+inline void histogram_molecules_rgyr(vector<greal> &hist,
+                                     vector<AtomicGroup> &molecules,
+                                     const greal min_dist, const greal max_dist,
+                                     const greal bin_width, int &count,
+                                     const int frame, ofstream &outfile) {
+  for (auto molecule : molecules) {
+    histogram_rgyr(hist, molecule.radiusOfGyration(), min_dist, max_dist,
+                   bin_width, count, outfile);
+  }
+}
 // or in the case when not.
-inline void ts_hist_rgyr(vector<greal> &hist, const greal rgyr,
+inline void ts_hist_rgyr(vector<greal> &hist, vector<AtomicGroup> &molecules,
                          const greal min_dist, const greal max_dist,
                          const greal bin_width, int &count, const int frame,
                          ofstream &outfile) {
-  histogram_rgyr(hist, rgyr, min_dist, max_dist, bin_width, count, frame,
-                 outfile);
-  outfile << frame << "\t" << rgyr << "\n";
+  greal rgyr;
+  outfile << frame;
+  for (auto molecule : molecules) {
+    rgyr = molecule.radiusOfGyration();
+    outfile << "\t" << rgyr;
+    histogram_rgyr(hist, rgyr, min_dist, max_dist, bin_width, count, outfile);
+  }
+  outfile << "\n";
 }
 
 int main(int argc, char *argv[]) {
@@ -142,18 +157,11 @@ int main(int argc, char *argv[]) {
   cout << "# " << header << "\n";
   ofstream tsf(topts->timeseries);
   // make a function pointer with a signature matching the
-  void (*frameOperator)(vector<greal> & hist, const greal rgyr,
+  void (*frameOperator)(vector<greal> & hist, vector<AtomicGroup> & molecules,
                         const greal min_dist, const greal max_dist,
                         const greal bin_width, int &count, const int frame,
                         ofstream &outfile);
-  // pick which operation to perform per frame using function pointer
-  if (topts->timeseries.empty())
-    frameOperator = histogram_rgyr;
-  else {
-    tsf << "# " << header << "\n"
-        << "# Rgyr\tProb\tCum\n";
-    frameOperator = ts_hist_rgyr;
-  }
+
 
   // establish system, and molecular subsystems
   vector<AtomicGroup> molecules;
@@ -162,6 +170,22 @@ int main(int argc, char *argv[]) {
   else
     molecules.push_back(selectAtoms(mtopts->model, sopts->selection));
 
+  // pick which operation to perform per frame using function pointer
+  if (topts->timeseries.empty())
+    frameOperator = histogram_molecules_rgyr;
+  else {
+    tsf << "# " << header << "\n"
+        << "# frame";
+    // Label each column with the starting and ending index for the 'molecule'
+    // as a stand in for the case where molecule's chainids are inaccurate.
+    for (auto molecule : molecules){
+      int first = molecule[0]->index();
+      int last = (*(molecule.end()-1))->index();
+      tsf << "\tatoms" << first << "-" << last;
+    }
+    tsf << "\n";
+    frameOperator = ts_hist_rgyr;
+  }
   // prepare for trajectory loop
   // counter for number of molecules in histogram bounds
   int count = 0;
@@ -172,17 +196,11 @@ int main(int argc, char *argv[]) {
 
   // define and zero histogram
   vector<greal> hist(num_bins, 0.0);
-  // place to put the radius of gyration of each molecule
-  greal rgyr;
   while (mtopts->trajectory->readFrame()) {
     mtopts->trajectory->updateGroupCoords(mtopts->model);
-    for (AtomicGroup mol : molecules) {
-      rgyr = mol.radiusOfGyration();
-      // call function pointer, passing in all the state from the loop needed
-      // for either histogramming or timeseries writing
-      (*frameOperator)(hist, rgyr, min_dist, max_dist, bin_width, count,
-                       mtopts->trajectory->currentFrame(), tsf);
-    }
+    // call fxn pointer to accumulate histogram and optionally write timeseries
+    (*frameOperator)(hist, molecules, min_dist, max_dist, bin_width, count,
+                     mtopts->trajectory->currentFrame(), tsf);
   }
   // Write the histogram to stdout
   cout << "# Rgyr\tProb\tCum" << endl;

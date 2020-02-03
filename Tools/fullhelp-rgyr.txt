@@ -1,0 +1,17 @@
+SYNOPSIS
+
+Read a trajectory and return a histogram of the radius of gyration of a selection.
+
+DESCRIPTION
+
+This tool computes the radius of gyration for a selection of atoms for each frame of a provided multi-trajectory. By default this selection is treated as one group, but if --by-molecule is thrown then the selection will be split by connectivity. The skip, stride, and range options operate on the multi-trajectory as they would for other LOOS tools. The time-series option specifies a file to write a timeseries of the radius of gyrations to. If none is specified then no time-series is written. The num-bins, min-bin, and max-bin options determine the extent and bin-width of the histogram, which is written to stdout. The histogram contains both the probability per bin, and the cumulative probability.
+
+EXAMPLE
+
+rad-gyr -k 100 -n 20 -m 5 -M 25 --by-molecule model.pdb traj1.dcd traj2.dcd traj3.dcd
+
+This will concatenate traj1, traj2, and traj3 into one virtual trajectory, skip the first 100 frames of each, and then histogram the radius of gyration of all the atoms in each of the molecules in the model provided with the trajectories, computing their radii of gyration and summing over them. Note that this would be nonsensical if the molecules in the model were not multiple copies of the same molecule, since all such Rgyr will be collated into one histogram at the end. Using selection to pick a subsystem of interest makes more sense in the context of most analyses of a solute.
+
+POTENTIAL COMPLICATIONS
+
+This tool assumes
