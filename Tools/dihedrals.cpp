@@ -32,7 +32,6 @@
 #include <iostream>
 #include <loos.hpp>
 #include <regex>
-#include <functional>
 #include <string>
 
 using namespace std;
@@ -245,8 +244,6 @@ public:
 };
 
 
-template <typename ChkF> 
-bool pruner(ChkF&& f){return f;}
 
 // takes an atomic group for scope, and a vector of vectors of sel-strings.
 // Corrects order of discovery  of each dihedral, and returns atomic group of
@@ -263,8 +260,8 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
-        for (auto i = 0; i < selstrs.size(); i++)
-          cerr << selstrs[i] << ", ";
+        for (auto sel: sels)
+          cerr << sel << ", ";
         cerr << "\b\b\n";
         cerr << "Offending group: \n";
         cerr << oo_D;
@@ -273,7 +270,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       } else { // append AG, correctly reordered.
         AtomicGroup reordered;
         for (auto sel : sels)
-          reordered += oo_D.select(*sel);
+          reordered += selectAtoms(oo_D, sel);
 
         oo_D = move(reordered);
         cerr << "included group of size: " << to_string(reordered.size())
@@ -288,7 +285,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       else {
         AtomicGroup reordered;
         for (auto sel : sels)
-          reordered += oo_D.select(*sel);
+          reordered += selectAtoms(oo_D, sel);
 
         oo_D = move(reordered);
         return false;
@@ -298,14 +295,13 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
 
   // append to this for return later.
   vector<vector<AtomicGroup>> dihedralAGs;
-  for (uint i = 0; i < selectorClasses.size(); i++) {
+  for (auto dSels : dihedral_sels) {
     // first get a set of AGs that have all the atoms of the dihedral in them
     // They are likely to be in the order of the selection matched first
     // i.e. all the matches for selection 1, then all for 2, and so forth.
     AtomicGroup outoforder_dihedralType;
-    for (auto sel : selectorClasses.at(i)) {
-      cout << "HERE\n";
-      outoforder_dihedralType += scope.select(*sel);
+    for (auto sel : dSels) {
+      outoforder_dihedralType += selectAtoms(scope, sel);
     }
     // This separates all non-connected atoms into separate atomic groups.
     vector<AtomicGroup> dihedralInstances =
@@ -317,9 +313,9 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // split.
     dihedralInstances.erase(remove_if(dihedralInstances.begin(),
                                       dihedralInstances.end(),
-                                      pruner([&](AtomicGroup &oo_D) -> bool {
+                                      [&dSels, chkSizeReorder](AtomicGroup &oo_D) -> bool {
                                         return (*chkSizeReorder)(oo_D, dSels);
-                                      })),
+                                      }),
                             dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
