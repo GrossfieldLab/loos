@@ -88,20 +88,34 @@ public:
        "Maximum value for the histogram bins.")
       ("by-molecule", po::bool_switch(&by_molecule)->default_value(false), 
        "Split 'selection' by connectivity of 'model'.")
+      ("by-fragment", po::bool_switch(&by_molecule)->default_value(false), 
+       "Split 'selection' by its own connectivity.")
+       
     ;
   }
   // clang-format on
   string print() const {
     ostringstream oss;
     oss << boost::format("timeseries=%s,min_dist=%s,max_dist=%s,by_molecule=%b,"
-                         "num_bins=%d") %
-               timeseries % min_dist % max_dist % by_molecule % num_bins;
+                         "by_fragment=%b,num_bins=%d") %
+               timeseries % min_dist % max_dist % by_molecule % by_fragment %
+               num_bins;
     return (oss.str());
+  }
+
+  bool postConditions(po::variables_map &map) {
+    if(by_molecule && by_fragment){
+      cerr << "ERROR: --by-molecule and --by-fragment flags are mutually exclusive.\n";
+      return(false);
+    } else
+      return(true);
+    
   }
   string timeseries;
   double min_dist;
   double max_dist;
   bool by_molecule;
+  bool by_fragment;
   int num_bins;
 };
 
@@ -162,11 +176,12 @@ int main(int argc, char *argv[]) {
                         const greal bin_width, int &count, const int frame,
                         ofstream &outfile);
 
-
   // establish system, and molecular subsystems
   vector<AtomicGroup> molecules;
   if (topts->by_molecule)
     molecules = mtopts->model.splitByMolecule(sopts->selection);
+  else if(topts->by_fragment)
+    molecules = selectAtoms(mtopts->model, sopts->selection).splitByMolecule();
   else
     molecules.push_back(selectAtoms(mtopts->model, sopts->selection));
 
@@ -178,9 +193,9 @@ int main(int argc, char *argv[]) {
         << "# frame";
     // Label each column with the starting and ending index for the 'molecule'
     // as a stand in for the case where molecule's chainids are inaccurate.
-    for (auto molecule : molecules){
+    for (auto molecule : molecules) {
       int first = molecule[0]->index();
-      int last = (*(molecule.end()-1))->index();
+      int last = (*(molecule.end() - 1))->index();
       tsf << "\tatoms" << first << "-" << last;
     }
     tsf << "\n";
