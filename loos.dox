@@ -16,7 +16,8 @@ School of Medicine & Dentistry, University of Rochester\n
 <h2>Quick Links</h2>
       - <a href="https://github.com/GrossfieldLab/loos">Clone LOOS from GitHub</a>
       - <a href="https://github.com/GrossfieldLab/loos/wiki">Online tutorials and documentation</a>
-      -  <a href="http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf">Download a tutorial (pdf) on using LOOS</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf">Download a tutorial (pdf) on using LOOS</a>
+      - <a href="https://t.co/bznyDZBNd4?amp=1">YouTube video describing LOOS</a>
       -  Ask the developers a question at loos.maintainer@gmail.com or by opening an issue on GitHub.
       - \subpage building "Building LOOS"
       - \subpage tools "Tools included with LOOS"
