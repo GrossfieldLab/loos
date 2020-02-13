@@ -1305,6 +1305,13 @@ Matlab and Octave.
        membrane normal by averaging the tilts of the individual transmembrane
        helices.  In Packages/PyLOOS.
 
+       <DT><B>rad-gyr</B>
+       <DD>Histogram the radius of gyration for a selection of atoms across
+       a trajectory. Optionally, it can break your selection into individual
+       molecules, if for example you have multiple solutes in the system. 
+       It can also write a time-series of these radii of gyration to a file.
+
+
        <DT><B>ramachandran</B>
        <DD>Computes a ramachandran map for a given selection of a specified
        range of frames in a trajectory (or all frames).  Note that some
@@ -1320,7 +1327,7 @@ Matlab and Octave.
        centers of mass of individual water molecules.  For contrast, see
        atomic-rdf.
 
-       <DT><B>rgyr</B>
+       <DT><B>rgyr (deprecated)</B>
        <DD>Compute the radius of gyration for a selection of atoms.
        Optionally, it can break your selection into individual molecules,
        if for example you have multiple solutes in the system.

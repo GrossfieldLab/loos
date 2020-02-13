@@ -36,3 +36,5 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install eigen; fi
 
 script: scons
+
+  

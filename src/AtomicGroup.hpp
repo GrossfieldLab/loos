@@ -322,7 +322,14 @@ namespace loos {
       AtomicGroup sortable = *this;
       return(sortable.sortingSplitByMolecule());
     }
-
+   
+    //! Takes selection string as argument to be applied to each group after splitting.
+    //! Returns a vector of AtomicGroups split based on bond connectivity;
+    std::vector<AtomicGroup> splitByMolecule(const std::string& selection) const {
+      AtomicGroup sortable = *this;
+      return(sortable.sortingSplitByMolecule(selection));
+    }
+    
     //! Returns a vector of AtomicGroups, each comprising a single residue
     std::vector<AtomicGroup> splitByResidue(void) const;
 
@@ -889,6 +896,7 @@ namespace loos {
 
 
     std::vector<AtomicGroup> sortingSplitByMolecule();
+    std::vector<AtomicGroup> sortingSplitByMolecule(const std::string& selection);
 
     // *** Internal routines ***  See the .cpp file for details...
     void sorted(bool b) { _sorted = b; }

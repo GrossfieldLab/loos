@@ -48,6 +48,9 @@ GTAGS
 .vscode/*
 **.vscode
 
+# cruft from sublime text
+*.sublime*
+
 # Vi cruft
 *.swp
 
@@ -62,6 +65,9 @@ GTAGS
 *.aux
 *.out
 *.toc
+
+# mac cruft
+**.DS_Store
 
 # some c++ headers used by atom
 .stdafx.c++.pch
@@ -237,6 +243,7 @@ Tools/serialize-selection
 Tools/molshape
 Tools/svd
 Tools/rgyr
+Tools/rad-gyr
 Tools/atomic-rdf
 Tools/order_params
 Tools/frame2pdb
