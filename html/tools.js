@@ -6,6 +6,5 @@ var tools =
     [ "hbond", "hbond.html", null ],
     [ "pca", "pca.html", "pca" ],
     [ "Membrane systems", "membranes.html", null ],
-    [ "enm", "enm.html", null ],
-    [ "voronoi", "voronoi.html", null ]
+    [ "enm", "enm.html", null ]
 ];

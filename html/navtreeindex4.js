@@ -1,5 +1,16 @@
 var NAVTREEINDEX4 =
 {
+"classloos_1_1_d_c_d.html#a4568db8ca054d34c6e7b8b09090cd443":[3,0,5,26,17],
+"classloos_1_1_d_c_d.html#a4eed81267603c3ad73f19d0e732365e3":[3,0,5,26,28],
+"classloos_1_1_d_c_d.html#a564d0def4c2f7aeedaeae3f048a68b0a":[3,0,5,26,21],
+"classloos_1_1_d_c_d.html#a5a6f44c27112e4b703b28e6e8f9ce53b":[3,0,5,26,25],
+"classloos_1_1_d_c_d.html#a5cb76c638d18673754e50c00b2e88710":[3,0,5,26,26],
+"classloos_1_1_d_c_d.html#a5d1651b7d96eaa25bc5983a497a20fd9":[3,0,5,26,2],
+"classloos_1_1_d_c_d.html#a668af80e55fe41b7c8b917b1194b8527":[3,0,5,26,8],
+"classloos_1_1_d_c_d.html#a66d483b931ff53825540b823c7adee1b":[3,0,5,26,22],
+"classloos_1_1_d_c_d.html#a6d5082ae868beff721092f515c48a152":[3,0,5,26,16],
+"classloos_1_1_d_c_d.html#a6d8874450bd8554a45e7cfe540afdb06":[3,0,5,26,11],
+"classloos_1_1_d_c_d.html#a6e2805d92138983d49a9747cb76aefda":[3,0,5,26,7],
 "classloos_1_1_d_c_d.html#a794736a8ae933fea1f03375be2b5e86f":[3,0,5,26,5],
 "classloos_1_1_d_c_d.html#a836b6762d14bb8047722ed6857f3c0dc":[3,0,5,26,19],
 "classloos_1_1_d_c_d.html#a8697e68180126083d30a6a8a785ec14d":[3,0,5,26,14],
@@ -238,16 +249,5 @@ var NAVTREEINDEX4 =
 "classloos_1_1_density_tools_1_1_z_slice_estimator.html":[3,0,5,0,23],
 "classloos_1_1_density_tools_1_1_z_slice_estimator.html#a0b3a6a6e9a96d4e61e38a8af3cdb846a":[3,0,5,0,23,0],
 "classloos_1_1_density_tools_1_1_z_slice_estimator.html#a6ee9b3e1024ab24e2ed513c9a9e5c79b":[3,0,5,0,23,4],
-"classloos_1_1_density_tools_1_1_z_slice_estimator.html#a96862e5834cdd745efb6af663cef7dbb":[3,0,5,0,23,2],
-"classloos_1_1_density_tools_1_1_z_slice_estimator.html#a9bdeea14f3a43538ee88f498c05422c4":[3,0,5,0,23,6],
-"classloos_1_1_density_tools_1_1_z_slice_estimator.html#ad3ef6b694fb12b227621a6acfdf029fe":[3,0,5,0,23,5],
-"classloos_1_1_density_tools_1_1_z_slice_estimator.html#aed5cca518499af9d7e501f27cb06b823":[3,0,5,0,23,3],
-"classloos_1_1_density_tools_1_1_z_slice_estimator.html#af01d09eca2e4ad6ddd7b508ec7e6b80a":[3,0,5,0,23,1],
-"classloos_1_1_descending_sort.html":[3,0,5,28],
-"classloos_1_1_descending_sort.html#a3668e477489973dbe22d725cc5a81c5a":[3,0,5,28,1],
-"classloos_1_1_descending_sort.html#abef027415c83bb7c8098d0322c669e4c":[3,0,5,28,0],
-"classloos_1_1_estimating_counter.html":[3,0,5,29],
-"classloos_1_1_estimating_counter.html#a2b28cfdc62d2cb02e66001c5f53e33a1":[3,0,5,29,3],
-"classloos_1_1_estimating_counter.html#a4c6ed55234efeac2e348c38115c35082":[3,0,5,29,2],
-"classloos_1_1_estimating_counter.html#ad7e003893c2447b624f35a7653e20ddb":[3,0,5,29,5]
+"classloos_1_1_density_tools_1_1_z_slice_estimator.html#a96862e5834cdd745efb6af663cef7dbb":[3,0,5,0,23,2]
 };

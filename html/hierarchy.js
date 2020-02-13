@@ -194,6 +194,7 @@ var hierarchy =
       [ "loos::OptionsFramework::WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ]
     ] ],
     [ "loos::internal::OutputTrajectoryNameBindingType", "structloos_1_1internal_1_1_output_trajectory_name_binding_type.html", null ],

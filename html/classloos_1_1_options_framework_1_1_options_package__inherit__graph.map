@@ -1,5 +1,5 @@
 <map id="loos::OptionsFramework::OptionsPackage" name="loos::OptionsFramework::OptionsPackage">
-<area shape="rect" id="node1" title="Base class for options." alt="" coords="5,579,168,621"/>
+<area shape="rect" id="node1" title="Base class for options." alt="" coords="5,613,168,654"/>
 <area shape="rect" id="node2" href="$class_clustering_1_1_clustering_options.html" title=" " alt="" coords="221,5,412,32"/>
 <area shape="rect" id="node3" href="$classloos_1_1_options_framework_1_1_basic_convergence.html" title=" " alt="" coords="235,57,398,98"/>
 <area shape="rect" id="node4" href="$classloos_1_1_options_framework_1_1_basic_options.html" title="Options common to all tools (including –fullhelp)" alt="" coords="235,122,398,163"/>

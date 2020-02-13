@@ -179,37 +179,96 @@ $(document).ready(function(){initNavTree('pca.html','');});
 <dd><p class="startdd">Compute the overall tilt of a membrane protein relative to the membrane normal by averaging the tilts of the individual transmembrane helices. In Packages/PyLOOS.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b>ramachandran</b> </dt>
-<dd><p class="startdd">Computes a ramachandran map for a given selection of a specified range of frames in a trajectory (or all frames). Note that some torsions may be missing for the residues at the ends of the selection. To avoid this, expand your selection by a residue in both directions, then use the "--skip" flag.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>rdf</b> </dt>
-<dd><p class="startdd">Computes the radial distribution function for two selections averagd over a trajectory. The selections are split up by molecule and the center of mass is used. For example, selecting all water molecules will cause it to compute the radial distribution of the centers of mass of individual water molecules. For contrast, see atomic-rdf.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>rgyr</b> </dt>
-<dd><p class="startdd">Compute the radius of gyration for a selection of atoms. Optionally, it can break your selection into individual molecules, if for example you have multiple solutes in the system.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>rmsd2ref</b> </dt>
-<dd><p class="startdd">Computes rmsds between a selection and either its average conformation or a reference model, optionally aligning the selection.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>rmsds</b> </dt>
-<dd><p class="startdd">Loops over a trajectory and computes the pairwise RMSDs for a selection of atoms.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>rotamer</b> </dt>
-<dd><p class="startdd">Computes the chi-1 and chi-2 angles for a given selection over an entire trajectory.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>torsion</b> </dt>
-<dd><p class="startdd">Given 4 selections, compute the torsion angle for their centroids. This program loops over a trajectory and writes the torsion angle time series.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b>transition_contacts</b> </dt>
-<dd>Calculate the normalized transition between two structures over a trajectory. </dd>
+<dt><b>rad-gyr</b> </dt>
+<dd><p class="startdd">Histogram the radius of gyration for a selection of atoms across a trajectory. Optionally, it can break your selection into individual molecules, if for example you have multiple solutes in the system. It can also write a time-series of these radii of gyration to a file.</p>
+<pre class="fragment">   &lt;DT&gt;&lt;B&gt;ramachandran&lt;/B&gt;
+   &lt;DD&gt;Computes a ramachandran map for a given selection of a specified
+   range of frames in a trajectory (or all frames).  Note that some
+   torsions may be missing for the residues at the ends of the
+   selection.  To avoid this, expand your selection by a residue in
+   both directions, then use the "--skip" flag.
+
+   &lt;DT&gt;&lt;B&gt;rdf&lt;/B&gt;
+   &lt;DD&gt;Computes the radial distribution function for two selections
+   averagd over a trajectory.  The selections are split up by molecule
+   and the center of mass is used.  For example, selecting all water
+   molecules will cause it to compute the radial distribution of the
+   centers of mass of individual water molecules.  For contrast, see
+   atomic-rdf.
+
+   &lt;DT&gt;&lt;B&gt;rgyr (deprecated)&lt;/B&gt;
+   &lt;DD&gt;Compute the radius of gyration for a selection of atoms.
+   Optionally, it can break your selection into individual molecules,
+   if for example you have multiple solutes in the system.
+
+   &lt;DT&gt;&lt;B&gt;rmsd2ref&lt;/B&gt;
+   &lt;DD&gt;Computes rmsds between a selection and either its average
+   conformation or a reference model, optionally aligning the
+   selection.
+
+   &lt;DT&gt;&lt;B&gt;rmsds&lt;/B&gt;
+   &lt;DD&gt;Loops over a trajectory and computes the pairwise RMSDs for a
+   selection of atoms.
+
+   &lt;DT&gt;&lt;B&gt;rotamer&lt;/B&gt;
+   &lt;DD&gt;Computes the chi-1 and chi-2 angles for a given selection over an
+   entire trajectory.
+
+   &lt;DT&gt;&lt;B&gt;torsion&lt;/B&gt;
+   &lt;DD&gt;Given 4 selections, compute the torsion angle for their centroids.
+   This program loops over a trajectory and writes the torsion angle time
+   series.
+
+   &lt;DT&gt;&lt;B&gt;transition_contacts&lt;/B&gt;
+   &lt;DD&gt;Calculate the normalized transition between two structures over
+   a trajectory.
+&lt;/DL&gt;
+
+\page voronoi
+&lt;h2&gt; Voronoi decomposition &lt;/h2&gt;
+A collection of tools for 2D Voronoi decomposition of slabs, presumably from a
+membrane simulation.  This package is a wrapper around the scipy (www.scipy.org)
+Voronoi class, which is itself a wrapper around QHull (www.qhull.org).  As a result,
+this package is dependent having a working install of numpy and scipy (instructions
+for installing them can be found at www.scipy.org).
+
+All tools assume work with a slab-like geometry oriented along the z-axis.  Within a
+slab, the system is treated as 2-dimensional.
+
+All tools take at least 2 selections of atoms.  The first is the set of atoms used
+to compute the Voronoi decomposition, while any other selections are subsets of those
+atoms for which areas are desired.  In all cases, these selections are application
+&lt;B&gt; after &lt;/B&gt; the original selection.
+
+Padding: all of the tools listed have a required option called "padding".  The
+purpose of this option is to ensure that periodic boundaries are handled correctly.
+Since the underlying engine (qhull) has no knowledge of periodicity, we do this by
+replicating dummy atoms in the 8 surrounding periodic images, such that no "true"
+atoms are at the "edge".  The padding option controls how far out these padding atoms
+are generated.  If your selection for the Voronoi decomposition is all-atom or all
+heavy-atom, 15 angstroms is a good choice for the padding value.  However, if you're
+using a sparser selection (e.g. just lipid phosphates), you will probably need to
+make the padding value significantly larger, e.g. 30 ang or more.  If your padding
+value is too small, you will occasionally see absurdly large areas for individual
+atom, or the program can fail outright.
+
+&lt;DL&gt;
+    &lt;DT&gt; &lt;B&gt; run_areas.py &lt;/B&gt;
+    &lt;DD&gt; Compute areas for different sets of atoms within a particular slice along
+    the membrane normal.  Typical slice widths are 2-4 ang.
+
+    &lt;DT&gt; &lt;B&gt; area_profile.py &lt;/B&gt;
+    &lt;DD&gt; Compute the voronoi cross-sectional area for something (e.g. a protein)
+    through the membrane.
+
+    &lt;DT&gt; &lt;B&gt; area_per_molecule.py &lt;/B&gt;
+    &lt;DD&gt; Compute distribution of areas/molecule for a z-slice.  Note: this program
+    requires a system file that contains connectivity information (e.g. a PSF file).
+</pre> </dd>
 </dl>
+<pre class="fragment">\page user
+ &lt;h2&gt; User-created tools&lt;/h2&gt;
+</pre><p> Create your own tools in Packages/User/. Currently contains a number of templates for different kinds of apps. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

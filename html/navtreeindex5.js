@@ -1,5 +1,16 @@
 var NAVTREEINDEX5 =
 {
+"classloos_1_1_density_tools_1_1_z_slice_estimator.html#a9bdeea14f3a43538ee88f498c05422c4":[3,0,5,0,23,6],
+"classloos_1_1_density_tools_1_1_z_slice_estimator.html#ad3ef6b694fb12b227621a6acfdf029fe":[3,0,5,0,23,5],
+"classloos_1_1_density_tools_1_1_z_slice_estimator.html#aed5cca518499af9d7e501f27cb06b823":[3,0,5,0,23,3],
+"classloos_1_1_density_tools_1_1_z_slice_estimator.html#af01d09eca2e4ad6ddd7b508ec7e6b80a":[3,0,5,0,23,1],
+"classloos_1_1_descending_sort.html":[3,0,5,28],
+"classloos_1_1_descending_sort.html#a3668e477489973dbe22d725cc5a81c5a":[3,0,5,28,1],
+"classloos_1_1_descending_sort.html#abef027415c83bb7c8098d0322c669e4c":[3,0,5,28,0],
+"classloos_1_1_estimating_counter.html":[3,0,5,29],
+"classloos_1_1_estimating_counter.html#a2b28cfdc62d2cb02e66001c5f53e33a1":[3,0,5,29,3],
+"classloos_1_1_estimating_counter.html#a4c6ed55234efeac2e348c38115c35082":[3,0,5,29,2],
+"classloos_1_1_estimating_counter.html#ad7e003893c2447b624f35a7653e20ddb":[3,0,5,29,5],
 "classloos_1_1_estimating_counter.html#af514e7b7026ac16bedb15a8f139f5743":[3,0,5,29,0],
 "classloos_1_1_estimating_counter.html#af8d78e663f891ff17c30e44155b6b008":[3,0,5,29,1],
 "classloos_1_1_estimating_counter.html#afc2041411f0cda5988155f1d7dfc9070":[3,0,5,29,4],
@@ -238,16 +249,5 @@ var NAVTREEINDEX5 =
 "classloos_1_1_multi_trajectory.html#a334d942028a7c7fe83b90b70ee76a884":[3,0,5,54,16],
 "classloos_1_1_multi_trajectory.html#a3ee21402b91285db8e128975c8736f14":[3,0,5,54,18],
 "classloos_1_1_multi_trajectory.html#a4df2b188a8226360d459968a70af354e":[3,0,5,54,11],
-"classloos_1_1_multi_trajectory.html#a5ebdaac600fd2cbaee2a8c52522d2a2e":[3,0,5,54,1],
-"classloos_1_1_multi_trajectory.html#a64712e83304ef77cf0a47f7f0d67bcdc":[3,0,5,54,12],
-"classloos_1_1_multi_trajectory.html#a6590a347cc00a6aa32eacfad06208f4b":[3,0,5,54,9],
-"classloos_1_1_multi_trajectory.html#a6a67181b720505b317f0cb10c5c30216":[3,0,5,54,21],
-"classloos_1_1_multi_trajectory.html#a6f2d7f1f5056d37f6642c6b6d3c97df7":[3,0,5,54,6],
-"classloos_1_1_multi_trajectory.html#a7af16fa7408561b035daed2b05711332":[3,0,5,54,2],
-"classloos_1_1_multi_trajectory.html#a90ef92b324584e4dc2bcfaae5673adf1":[3,0,5,54,15],
-"classloos_1_1_multi_trajectory.html#ac06a492f995a39d023eb7a7f551c8aae":[3,0,5,54,19],
-"classloos_1_1_multi_trajectory.html#aca988e6a7d13005295c2d8b166765c66":[3,0,5,54,14],
-"classloos_1_1_multi_trajectory.html#acca99f84ab28628b444c385ed85ae1a0":[3,0,5,54,17],
-"classloos_1_1_multi_trajectory.html#ae6a093106dc00c67cc670491f7efe3c3":[3,0,5,54,7],
-"classloos_1_1_multi_trajectory.html#ae828893a65852771d56760770e956c5d":[3,0,5,54,0]
+"classloos_1_1_multi_trajectory.html#a5ebdaac600fd2cbaee2a8c52522d2a2e":[3,0,5,54,1]
 };

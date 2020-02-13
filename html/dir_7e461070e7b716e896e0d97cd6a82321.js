@@ -49,6 +49,7 @@ var dir_7e461070e7b716e896e0d97cd6a82321 =
     [ "phase-pdb.cpp", "phase-pdb_8cpp_source.html", null ],
     [ "porcupine.cpp", "porcupine_8cpp_source.html", null ],
     [ "potential_profile.py", "potential__profile_8py_source.html", null ],
+    [ "rad-gyr.cpp", "rad-gyr_8cpp_source.html", null ],
     [ "ramachandran.cpp", "ramachandran_8cpp_source.html", null ],
     [ "rdf.cpp", "rdf_8cpp_source.html", null ],
     [ "rebond.cpp", "rebond_8cpp_source.html", null ],

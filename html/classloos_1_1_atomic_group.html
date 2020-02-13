@@ -427,8 +427,8 @@ pAtom &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memitem:aacc519a01bd492ce9ea169a380e8f113"><td class="memItemLeft" align="right" valign="top"><a id="aacc519a01bd492ce9ea169a380e8f113"></a>
 const pAtom &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator[]</b> (const int i) const</td></tr>
 <tr class="separator:aacc519a01bd492ce9ea169a380e8f113"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13d9d6de809de22169bdbfe3facd9395"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a13d9d6de809de22169bdbfe3facd9395">packing_score</a> (const <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &amp;other, const <a class="el" href="classloos_1_1_coord.html">GCoord</a> &amp;box, bool norm) const</td></tr>
-<tr class="separator:a13d9d6de809de22169bdbfe3facd9395"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67856c19aa37badca3173a434bc4ee30"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a67856c19aa37badca3173a434bc4ee30">packingScore</a> (const <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &amp;other, const <a class="el" href="classloos_1_1_coord.html">GCoord</a> &amp;box, bool norm) const</td></tr>
+<tr class="separator:a67856c19aa37badca3173a434bc4ee30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b6b8769575bff01cf96bd283a32d029"><td class="memItemLeft" align="right" valign="top"><a id="a5b6b8769575bff01cf96bd283a32d029"></a>
 <a class="el" href="classloos_1_1_coord.html">GCoord</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a5b6b8769575bff01cf96bd283a32d029">periodicBox</a> (void) const</td></tr>
 <tr class="memdesc:a5b6b8769575bff01cf96bd283a32d029"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetch the periodic boundary conditions. <br /></td></tr>
@@ -523,6 +523,8 @@ greal&#160;</td><td class="memItemRight" valign="bottom"><b>sphericalVariance</b
 std::vector&lt; <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a2eb8f7f09fdfb9c759fc67cdd8751933">splitByMolecule</a> (void) const</td></tr>
 <tr class="memdesc:a2eb8f7f09fdfb9c759fc67cdd8751933"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a vector of AtomicGroups split based on bond connectivity. <br /></td></tr>
 <tr class="separator:a2eb8f7f09fdfb9c759fc67cdd8751933"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ca9fbf7f15ed9226d16017a4919efbb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a2ca9fbf7f15ed9226d16017a4919efbb">splitByMolecule</a> (const std::string &amp;selection) const</td></tr>
+<tr class="separator:a2ca9fbf7f15ed9226d16017a4919efbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18e4cf7c5acdf4bdac96d96f4d0984fd"><td class="memItemLeft" align="right" valign="top"><a id="a18e4cf7c5acdf4bdac96d96f4d0984fd"></a>
 std::map&lt; std::string, <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1_atomic_group.html#a18e4cf7c5acdf4bdac96d96f4d0984fd">splitByName</a> (void) const</td></tr>
 <tr class="memdesc:a18e4cf7c5acdf4bdac96d96f4d0984fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a vector of AtomicGroups, each containing atoms with the same name. <br /></td></tr>
@@ -677,7 +679,7 @@ template&lt;class T &gt; </div>
 
 <p>Apply a functor or a function to each atom in the group. </p>
 <p><a class="el" href="classloos_1_1_atomic_group.html#a300ee7d7bb26e246c1cd78829191a4fd" title="Apply a functor or a function to each atom in the group.">apply()</a> let's you apply a functor or a function pointer to each atom in the group. The functor is passed a pAtom. The functor object is also returned (in case it retained state). For example, the following code snippet shows how to calculate the centroid of a group using apply and a functor... </p><div class="fragment"><div class="line"><span class="keyword">struct </span>Functor {</div><div class="line">Functor() : C(GCoord(0,0,0)), n(0) { }</div><div class="line"><span class="keywordtype">void</span> operator()(pAtom&amp; p) { C += p-&gt;coords(); ++n; }</div><div class="line">GCoord center(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(C/n); }</div><div class="line"></div><div class="line">GCoord C;</div><div class="line"><span class="keywordtype">int</span> n;</div><div class="line">};</div><div class="line"></div><div class="line">Functor f = group.apply(Functor());</div><div class="line">GCoord <a class="code" href="classloos_1_1_atomic_group.html#a0a83f0a04b7b4bf45291c186b29859d1">centroid</a> = f.center();</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00516">516</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00523">523</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +702,7 @@ template&lt;class T &gt; </div>
 <p>Map the order of atoms in <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> g into the current group. </p>
 <p>Note that the order is only checked within a residue. The residues must appear in the same order between the two groups. This addresses edge issues such as when psfgen reorders the atoms within a residue. The map is an index into the <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> g that puts g into the same order as the current group. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00959">959</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01002">1002</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -768,7 +770,7 @@ template&lt;class T &gt; </div>
 <p>Replace a group with the center of masses of contained molecules. </p>
 <p>The <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> is split into molecules. A new group is constructed where each atom is the center of mass of one molecule. The atom metadata is taken from the first atom of the associated molecule, but with the atom name "CEN". </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01047">1047</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01090">1090</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -801,7 +803,7 @@ template&lt;class T &gt; </div>
 
 <p>Reimplemented in <a class="el" href="classloos_1_1_amber.html#a604860e739ed2aea60859fa00617ee6b">loos::Amber</a>, <a class="el" href="classloos_1_1_p_d_b.html#a8264abebb018eb49f64f165b65896449">loos::PDB</a>, <a class="el" href="classloos_1_1_p_s_f.html#a830bc776e1a58c3893610a4f806429cb">loos::PSF</a>, <a class="el" href="classloos_1_1_c_h_a_r_m_m.html#a7b379f07b43cd58148b2ce7c4baf5832">loos::CHARMM</a>, and <a class="el" href="classloos_1_1_tinker_x_y_z.html#a900b3f40954185abdd1ed56f59384ed3">loos::TinkerXYZ</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00051">51</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00052">52</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -848,7 +850,7 @@ template&lt;class T &gt; </div>
 <p>Returns true if any atom of current group is within <em>dist</em> angstroms of <em>grp</em>. </p>
 <p><em>min</em> is the minimum number of pair-wise contacts required to be considered in contact </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00466">466</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00473">473</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
 
 </div>
 </div>
@@ -901,7 +903,7 @@ template&lt;class T &gt; </div>
 <p>Returns true if any atom of current group is within <em>dist</em> angstroms of <em>grp</em>. </p>
 <p><em>min</em> is the minimum number of pair-wise contacts required to be considered in contact </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00476">476</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00483">483</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
 
 </div>
 </div>
@@ -966,7 +968,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Creates a deep copy of this group. </p>
 <p>This creates a non-polymorphic deep copy of an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>. The additional catch is that it may end up involving extra data-movement as the copy is constructed and then copied back out to wherever you're putting it. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00056">56</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00057">57</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1007,7 +1009,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>If length is 0, then all coordinates in g will be copied.</p>
 <p>It is assumed that the atoms in g are in the appropriate order relative to the current group for the copy to make sense. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00950">950</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00993">993</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1041,7 +1043,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>See <a class="el" href="classloos_1_1_atomic_group.html#a6c50256c66c58e818df2090b1cdce05c" title="Map the order of atoms in AtomicGroup g into the current group.">AtomicGroup::atomOrderMapFrom(const AtomicGroup&amp; g)</a> for more information</p>
 <p>If you know that the atoms are in the same order in both groups, then <a class="el" href="classloos_1_1_atomic_group.html#a922415f440fece32f23da2103cdc8d0d" title="Copy coordinates from g into current group.">AtomicGroup::copyCoordinatesFrom()</a> will be faster... </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00987">987</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01030">1030</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1065,7 +1067,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>See AtomicGroup::atomOrderFrom(const AtomicGroup&amp; g) for more information</p>
 <p>If you know that the atoms are in the same order in both groups, then <a class="el" href="classloos_1_1_atomic_group.html#a922415f440fece32f23da2103cdc8d0d" title="Copy coordinates from g into current group.">AtomicGroup::copyCoordinatesFrom()</a> will be faster... </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00997">997</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01040">1040</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1087,7 +1089,7 @@ template&lt;class EqualsOp &gt; </div>
 
 <p>Copy velocities from a vector of GCoords using the atom index as an index into the vector. </p>
 <p>This can be used to update a group's velocities if they come from a separate trajectory... </p><div class="fragment"><div class="line">pTraj trajcrds = createTrajectory(<span class="stringliteral">&#39;foo.dcd&#39;</span>, model);</div><div class="line">pTraj trajvels = createTrajectory(<span class="stringliteral">&#39;foo-velocities.dcd&#39;</span>, model);</div><div class="line"></div><div class="line"><span class="keywordflow">while</span> (trajcrds-&gt;readFrame()) {</div><div class="line">   trajcrds-&gt;updateGroupCoords(model);</div><div class="line"></div><div class="line">   trajvels-&gt;readFrame();</div><div class="line">   model.copyVelocitiesWithIndex(trajvels-&gt;coords());</div><div class="line">}</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00937">937</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00980">980</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1112,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Deduce atomic number from mass (if present), returning number of atoms assigned. </p>
 <p>If an atom has a mass, then this is used to look up it's atomic number. Note that LOOS only has the first 96 elements in its tables. If a mass is not found in the LOOS table, then the atomic number is not modified (or set), otherwise any existing atomic number is overwritten. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00909">909</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00952">952</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1151,7 +1153,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Distance-based search for bonds. </p>
 <p>Searches for bonds within an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> based on distance. does NOT clear the existing bond list prior to building new bonds. The default distance cutoff is 1.65. If a box (GCoord) is passed, then periodicity is taken into consideration. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00489">489</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00496">496</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
 
 </div>
 </div>
@@ -1174,7 +1176,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Find a contained atom by its atomid. </p>
 <p>The default behavior is to assume that the atoms in the <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> are not in order of increasing atomid and to therefore use a linear search. If the atoms are sorted (<a class="el" href="classloos_1_1_atomic_group.html#ae4df4c4e55665b8c6f8d09fc467fc35c" title="Sort based on atomid.">AtomicGroup::sort()</a>), then the more efficient binary search will be used. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00520">520</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00563">563</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1211,7 +1213,7 @@ template&lt;class EqualsOp &gt; </div>
 </div><div class="memdoc">
 <p>This function is meant for Numpy/swig use. It will store the current model's coordinates into a newly allocated array (using malloc). The caller is expected to manage the memory. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01035">1035</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01078">1078</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1232,7 +1234,7 @@ template&lt;class EqualsOp &gt; </div>
 </div><div class="memdoc">
 <p>Given an <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a>, return a group of all the atoms contained by its containing residue </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00555">555</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00598">598</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1279,7 +1281,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Note: when calling this, you'll want to make sure you use the outermost group (eg the psf or pdb you used to create things, rather than using a subselection, unless you're sure the subsection contains these atoms as well. The main use of this routine is to create a group of atoms bound to another atom.</p>
 <p>Any missing atoms are ignored... This is in contrast with the previous behavior where missing atoms would throw an exception </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00539">539</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00582">582</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1411,7 +1413,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Works by translating the system so one atom is in the center of the box, reimaging by atom (so now the group is all in the middle of the box), and then translating back.</p>
 <p>If you don't want to give it a reference atom, call the version that takes no argument; it uses the first atom in the <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00835">835</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00878">878</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1433,7 +1435,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Takes a group that's split across a periodic boundary and reimages it so it's all together, using the first atom in the <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> as the reference. </p>
 <p>Does the same as the other mergeImage, only using the first atom in the <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> as the reference atom. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00846">846</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00889">889</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1479,7 +1481,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Equality test for two groups. </p>
 <p>The test for equality is based on whether or not the contained atom pointers are the same. This operator will also force both sides of the equation to be sorted. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00749">749</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00792">792</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1502,18 +1504,18 @@ template&lt;class EqualsOp &gt; </div>
 <p>Equality test for const groups. </p>
 <p>Similar to the non-const version, but it will sort <em>copies</em> of the atom lists if they are not already sorted... </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00769">769</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00812">812</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a13d9d6de809de22169bdbfe3facd9395"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a13d9d6de809de22169bdbfe3facd9395">&#9670;&nbsp;</a></span>packing_score()</h2>
+<a id="a67856c19aa37badca3173a434bc4ee30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67856c19aa37badca3173a434bc4ee30">&#9670;&nbsp;</a></span>packingScore()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">double loos::AtomicGroup::packing_score </td>
+          <td class="memname">double loos::AtomicGroup::packingScore </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em>, </td>
@@ -1589,7 +1591,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Attempt to prune connectivity (only retain bonds to atoms within this <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>) </p>
 <p>The connectivity list is searched for each atom and if a bond is not found in the current group, then it is removed from the bond-list for that atom. Note that this means that any <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> sharing the atom in question will also now have the modified bond list. It's therefore recommended that this function be called on a copy (<a class="el" href="classloos_1_1_atomic_group.html#a0dcd01a7efbe31915470ff25dd337d3f" title="Creates a deep copy of this group.">AtomicGroup::copy()</a>). Also note that FindById() does not implicitly sort the atoms for more efficient searching. You may want to call <a class="el" href="classloos_1_1_atomic_group.html#ae4df4c4e55665b8c6f8d09fc467fc35c" title="Sort based on atomid.">AtomicGroup::sort()</a> prior to <a class="el" href="classloos_1_1_atomic_group.html#ab682d7a74a46a65d920f0e362bc72c5a" title="Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)">AtomicGroup::pruneBonds()</a> if the exact atom order does not matter. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00872">872</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00915">915</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1632,7 +1634,7 @@ template&lt;class EqualsOp &gt; </div>
 </div><div class="memdoc">
 <p>Translate the entire group so that the centroid is in the primary cell </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00803">803</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00846">846</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1654,7 +1656,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Reset the atom indices (used for interfacing with trajectories) </p>
 <p>The <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a> index is the original ordering of atoms from whatever file format the model came from. This is used as an index into each frame of the trajectory for corresponding atom properties (such as coordinates). If an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> is a subset, then it may be necessary to reset the indices when working with a subsetted trajectory as well. This function will reset the atom indices to be sequential, beginning with 0. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00895">895</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00938">938</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1714,7 +1716,7 @@ template&lt;class EqualsOp &gt; </div>
 </div><div class="memdoc">
 <p>This function is meant for Numpy/swig use in setting the model's coordinates. The passed array is row-major. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01025">1025</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l01068">1068</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1745,7 +1747,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Is the array of atoms already sorted??? </p>
 <p>While we make some effort to ensure that alterations to the <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> will invalidate the sorted status, it's a good idea to explicitly sort if you want to make sure that the group is in fact sorted. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00411">411</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00418">418</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
 
 </div>
 </div>
@@ -1772,6 +1774,35 @@ template&lt;class EqualsOp &gt; </div>
 
 </div>
 </div>
+<a id="a2ca9fbf7f15ed9226d16017a4919efbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ca9fbf7f15ed9226d16017a4919efbb">&#9670;&nbsp;</a></span>splitByMolecule()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classloos_1_1_atomic_group.html">AtomicGroup</a>&gt; loos::AtomicGroup::splitByMolecule </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>selection</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Takes selection string as argument to be applied to each group after splitting. Returns a vector of AtomicGroups split based on bond connectivity; </p>
+
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8hpp_source.html#l00328">328</a> of file <a class="el" href="_atomic_group_8hpp_source.html">AtomicGroup.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ade20766165e2c4f35e639f60c44c11c4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ade20766165e2c4f35e639f60c44c11c4">&#9670;&nbsp;</a></span>splitByResidue()</h2>
 
@@ -1791,7 +1822,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Returns a vector of AtomicGroups, each comprising a single residue. </p>
 <p>Splits an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> into individual residues. The residue boundary is marked by either a change in the resid or in the segid. </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00461">461</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00504">504</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1814,7 +1845,7 @@ template&lt;class EqualsOp &gt; </div>
 <p>Returns a vector of AtomicGroups split from the current group based on segid. </p>
 <p>The groups that are returned will be in the same order that the segids appear in the source <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00318">318</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00319">319</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -1847,7 +1878,7 @@ template&lt;class EqualsOp &gt; </div>
 <p><a class="el" href="classloos_1_1_atomic_group.html#aaabbe2dcc5ce2aa4f9a46873d0d5a7e8" title="subset() and excise() args are patterned after perl&#39;s substr...">subset()</a> and <a class="el" href="classloos_1_1_atomic_group.html#a8f001aeb52990a0b0c992bde74053376" title="excise returns the excised atoms as a group...">excise()</a> args are patterned after perl's substr... </p>
 <p>If offset is negative, then it's relative to the end of the group. If length is 0, then everything from offset to the appropriate end is used... </p>
 
-<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00276">276</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_atomic_group_8cpp_source.html#l00277">277</a> of file <a class="el" href="_atomic_group_8cpp_source.html">AtomicGroup.cpp</a>.</p>
 
 </div>
 </div>

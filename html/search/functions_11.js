@@ -36,7 +36,7 @@ var searchData=
   ['sorted',['sorted',['../classloos_1_1_atomic_group.html#ada45a9d3f6a1e27b4d1b5955be65dfc5',1,'loos::AtomicGroup']]],
   ['sortedindex',['sortedIndex',['../namespaceloos.html#a306faecd06fa13031ba30f542159010a',1,'loos::sortedIndex(const T &amp;A)'],['../namespaceloos.html#ac2148b0b508844d5fb84e7675bbd26a7',1,'loos::sortedIndex(const T &amp;A)']]],
   ['sphericalvariance',['sphericalVariance',['../classloos_1_1_atomic_group.html#a8df78cdd3e971e60d49e3b840680148a',1,'loos::AtomicGroup']]],
-  ['splitbymolecule',['splitByMolecule',['../classloos_1_1_atomic_group.html#a2eb8f7f09fdfb9c759fc67cdd8751933',1,'loos::AtomicGroup']]],
+  ['splitbymolecule',['splitByMolecule',['../classloos_1_1_atomic_group.html#a2eb8f7f09fdfb9c759fc67cdd8751933',1,'loos::AtomicGroup::splitByMolecule(void) const'],['../classloos_1_1_atomic_group.html#a2ca9fbf7f15ed9226d16017a4919efbb',1,'loos::AtomicGroup::splitByMolecule(const std::string &amp;selection) const']]],
   ['splitbyname',['splitByName',['../classloos_1_1_atomic_group.html#a18e4cf7c5acdf4bdac96d96f4d0984fd',1,'loos::AtomicGroup']]],
   ['splitbyresidue',['splitByResidue',['../classloos_1_1_atomic_group.html#ade20766165e2c4f35e639f60c44c11c4',1,'loos::AtomicGroup']]],
   ['splitbyuniquesegid',['splitByUniqueSegid',['../classloos_1_1_atomic_group.html#a92e465a871aaeb14915b8205ffccca62',1,'loos::AtomicGroup']]],

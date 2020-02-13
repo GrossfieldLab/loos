@@ -59,15 +59,15 @@ var NAVTREEINDEX =
 ".html",
 "changes.html#release212",
 "class_simplex.html#a1e05f74e0bf5b6c708afcf0c330c96b9",
-"classloos_1_1_atom.html#ae062998a065be5ccea3ff67f2c2efdc7",
-"classloos_1_1_d_c_d.html#a794736a8ae933fea1f03375be2b5e86f",
-"classloos_1_1_estimating_counter.html#af514e7b7026ac16bedb15a8f139f5743",
-"classloos_1_1_multi_trajectory.html#aea4fa4823fc7818fce273bb8e66e61dd",
-"classloos_1_1_remarks.html#a1f22babdbbdf90d82914f96336b06605",
-"classloos_1_1_weights.html#aa7dc0c287762c1111735fe5d8c8ed48b",
-"cross-dist_8cpp_source.html",
-"paxes_8cpp_source.html",
-"structloos_1_1internal_1_1_value.html#abdc570fdc934e2cb4b329c26b9643cc4"
+"classloos_1_1_atom.html#ac4d9dc7b33f7be0be66c105c5c623eab",
+"classloos_1_1_d_c_d.html#a4568db8ca054d34c6e7b8b09090cd443",
+"classloos_1_1_density_tools_1_1_z_slice_estimator.html#a9bdeea14f3a43538ee88f498c05422c4",
+"classloos_1_1_multi_trajectory.html#a64712e83304ef77cf0a47f7f0d67bcdc",
+"classloos_1_1_precise_matrix_formatter.html#a53f84b3a90236b5c9e72490fcbe52429",
+"classloos_1_1_user_timer.html#a418f85e330acfac9560a43cd0ecd5496",
+"common_options.html#common_options_table",
+"namespacesimple__traj__calc.html",
+"structloos_1_1internal_1_1_value.html#a67ccf95bdec787ecf773e893cb680e45"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
