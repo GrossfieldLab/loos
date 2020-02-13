@@ -182,7 +182,7 @@ namespace loos {
     return(radius);
   }
 
-  double AtomicGroup::packing_score(const AtomicGroup& other,
+  double AtomicGroup::packingScore(const AtomicGroup& other,
                                     const GCoord &box,
                                     bool norm = false) const {
       double score = 0.0;
