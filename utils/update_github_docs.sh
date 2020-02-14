@@ -1,4 +1,5 @@
 #!/bin/bash
+# Usage: update_github_docs.sh ~/projects/loos-docs ~/project/LOOS "message goes here"
 
 docs_dir=$1
 loos_dir=$2
