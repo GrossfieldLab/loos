@@ -174,7 +174,7 @@ segid =~ "PROT|HEME"
 </pre><p> While the following are not valid: </p><pre class="fragment">resid =~ "10[0-9][0-9]"
 segid =~ 0010
 name =~ resname
-</pre><p>The regular expression syntax supported is the PERL syntax as implemented by the Boost libraries. While you can write regular expressions that look a lot like globbing (a la VMD selections), keep in mind that it isn't globbing. It's a regular expression, which is more powerful anyway... You do need to be careful though that your shell does not munge any of the regex operators. It's a good idea to use single quotes when you're writing regex's in a shell.</p>
+</pre><p>The regular expression syntax supported is the PERL syntax as implemented by the Boost libraries. While you can write regular expressions that look a lot like globbing (a la VMD selections), keep in mind that it isn't globbing. It's a regular expression, which is more powerful anyway... You do need to be careful though that your shell does not munge any of the regex operators. It's a good idea to use single quotes when you're writing regex's in a shell, or to use configuration files to do the arguments instead (see the <a href="https://github.com/GrossfieldLab/loos/wiki/Using-config-files-instead-of-the-command-line">wiki</a> for a discussion of how to do that).</p>
 <p>The string equality operators ("==" and "!=") both consider the <em>entire</em> string. </p><pre class="fragment">"CA" == "C"  --&gt; false
  "C" == "C"  --&gt; true
 </pre><p> You can use the "=~" operator to perform a substring match. </p><pre class="fragment">"CA" == "C"  --&gt; false
