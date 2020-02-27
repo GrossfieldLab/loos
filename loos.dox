@@ -30,8 +30,9 @@ School of Medicine & Dentistry, University of Rochester\n
       - \subpage faq "FAQ"
           - \ref faq_pyloos "FAQ for PyLOOS"
       - Posters and presentations on LOOS
-          - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2019.pdf">2019 Biophysical Society Poster</a>
-          - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2016/bps2016_tromo.pdf">2016 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2020.pdf">2020 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2019.pdf">2019 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2016/bps2016_tromo.pdf">2016 Biophysical Society Poster</a>
 
 \section intro Introduction
 
@@ -112,7 +113,7 @@ Either mail us directly (loos.maintainer [AT] gmail.com) or raise an issue on Gi
 
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2019, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -293,7 +294,10 @@ expressions that look a lot like globbing (a la VMD selections), keep
 in mind that it isn't globbing.  It's a regular expression, which is
 more powerful anyway...  You do need to be careful though that your
 shell does not munge any of the regex operators.  It's a good idea to
-use single quotes when you're writing regex's in a shell.
+use single quotes when you're writing regex's in a shell, or to use configuration
+files to do the arguments instead (see the
+<a href="https://github.com/GrossfieldLab/loos/wiki/Using-config-files-instead-of-the-command-line">wiki</a>
+for a discussion of how to do that).
 
 The string equality operators ("==" and "!=") both consider the
 <I>entire</I> string.
@@ -415,7 +419,6 @@ segid == "BULK")    # or named BULK
 */
 
 
-namespace loos {
 /*! \page common_options Common Command-Line Options for Tools
 
 Many LOOS tools use a common set of command-line options (through
@@ -1308,7 +1311,7 @@ Matlab and Octave.
        <DT><B>rad-gyr</B>
        <DD>Histogram the radius of gyration for a selection of atoms across
        a trajectory. Optionally, it can break your selection into individual
-       molecules, if for example you have multiple solutes in the system. 
+       molecules, if for example you have multiple solutes in the system.
        It can also write a time-series of these radii of gyration to a file.
 
 
