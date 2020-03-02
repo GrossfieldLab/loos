@@ -1,7 +1,0 @@
-<map id="loos::NumericalError" name="loos::NumericalError">
-<area shape="rect" id="node1" title="Exception caused by a blas/atlas error." alt="" coords="27,261,167,288"/>
-<area shape="rect" id="node2" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="38,185,157,212"/>
-<area shape="rect" id="node3" title="STL class." alt="" coords="5,96,109,123"/>
-<area shape="rect" id="node4" title="STL class." alt="" coords="133,96,213,123"/>
-<area shape="rect" id="node5" title="STL class." alt="" coords="110,5,237,47"/>
-</map>

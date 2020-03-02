@@ -1,5 +1,0 @@
-<map id="loos::TrajectoryWriter" name="loos::TrajectoryWriter">
-<area shape="rect" id="node1" title="Base class for writing trajectories." alt="" coords="59,5,205,32"/>
-<area shape="rect" id="node2" href="$classloos_1_1_d_c_d_writer.html" title="A very lightweight class for writing simple DCDs." alt="" coords="5,80,120,107"/>
-<area shape="rect" id="node3" href="$classloos_1_1_x_t_c_writer.html" title="Class for writing Gromacs XTC trajectories." alt="" coords="144,80,259,107"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="loos::HeavySolventSelector" name="loos::HeavySolventSelector">
-<area shape="rect" id="node1" title="Select only heavy solvent atoms." alt="" coords="5,80,188,107"/>
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="30,5,163,32"/>
-</map>

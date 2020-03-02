@@ -1,4 +1,0 @@
-<map id="loos::internal::drop" name="loos::internal::drop">
-<area shape="rect" id="node1" title="Drop the top item from the stack." alt="" coords="11,80,141,107"/>
-<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="5,5,147,32"/>
-</map>

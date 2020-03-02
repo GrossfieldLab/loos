@@ -1,4 +1,0 @@
-<map id="loos::DensityTools::WaterFilterBox" name="loos::DensityTools::WaterFilterBox">
-<area shape="rect" id="node1" title="Pick waters inside a bounding box." alt="" coords="5,95,133,136"/>
-<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_water_filter_base.html" title="Base interface for water filter/picker." alt="" coords="5,5,133,47"/>
-</map>

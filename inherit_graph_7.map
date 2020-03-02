@@ -1,9 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="5,107,152,133"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_uniform_spring_function.html" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="200,107,391,133"/>
-<area shape="rect" id="node3" href="$class_e_n_m_1_1_const_bonded.html" title="Use a spring function that is a constant weight regardless of distance." alt="" coords="459,5,597,32"/>
-<area shape="rect" id="node4" href="$class_e_n_m_1_1_distance_cutoff.html" title="Basic distance cutoff for &quot;traditional&quot; ENM." alt="" coords="455,56,601,83"/>
-<area shape="rect" id="node5" href="$class_e_n_m_1_1_distance_weight.html" title="Distance weighting (i.e. )" alt="" coords="453,107,603,133"/>
-<area shape="rect" id="node6" href="$class_e_n_m_1_1_exponential_distance.html" title="Exponential distance weighting (i.e. )" alt="" coords="439,157,617,184"/>
-<area shape="rect" id="node7" href="$class_e_n_m_1_1_h_c_a.html" title="HCA method (bimodal distance&#45;based function)" alt="" coords="485,208,571,235"/>
-</map>
