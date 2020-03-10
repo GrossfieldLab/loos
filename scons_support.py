@@ -491,6 +491,12 @@ def SetupNetCDFPaths(env):
     if netcdf_include:
         env.Prepend(CPPPATH=[netcdf_include])
 
+def SetupEigen(env):
+    if env.USING_CONDA:
+        eigen_include_path = env['CONDA_PREFIX'] + "/include/eigen"
+    else:
+        eigen_include_path = "/usr/include/eigen"
+    env.Prepend(CPPPATH=[eigen_include_path])
 
 def AutoConfigSystemBoost(conf):
     boost_libs = []
@@ -772,6 +778,8 @@ def AutoConfiguration(env):
             boost_libs = AutoConfigUserBoost(conf)
 
         env.Append(LIBS=boost_libs)
+
+        SetupEigen(env)
 
         # --- Check for ATLAS/LAPACK and how to build
 
