@@ -492,7 +492,10 @@ def SetupNetCDFPaths(env):
         env.Prepend(CPPPATH=[netcdf_include])
 
 def SetupEigen(env):
-    if env.USING_CONDA:
+    EIGEN = env["EIGEN"]
+    if EIGEN:
+        eigen_include_path = EIGEN
+    elif env.USING_CONDA:
         eigen_include_path = env['CONDA_PREFIX'] + "/include/eigen3"
     else:
         eigen_include_path = "/usr/include/eigen3"
