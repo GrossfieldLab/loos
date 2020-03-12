@@ -491,15 +491,22 @@ def SetupNetCDFPaths(env):
     if netcdf_include:
         env.Prepend(CPPPATH=[netcdf_include])
 
-def SetupEigen(env):
-    EIGEN = env["EIGEN"]
+def SetupEigen(conf):
+    EIGEN = conf.env["EIGEN"]
     if EIGEN:
         eigen_include_path = EIGEN
-    elif env.USING_CONDA:
-        eigen_include_path = env['CONDA_PREFIX'] + "/include/eigen3"
+    elif conf.env.USING_CONDA:
+        eigen_include_path = conf.env['CONDA_PREFIX'] + "/include/eigen3"
     else:
         eigen_include_path = "/usr/include/eigen3"
-    env.Prepend(CPPPATH=[eigen_include_path])
+
+    # TODO: add check for existence of the chosen directory
+    if conf.CheckDirectory(eigen_include_path):
+        conf.env.Prepend(CPPPATH=[eigen_include_path])
+    else:
+        print("Warning: Eigen not found at include path " + eigen_include_path)
+        print("Some tools may not build correctly. You can override this path")
+        print("by setting the EIGEN environment variable.")
 
 def AutoConfigSystemBoost(conf):
     boost_libs = []
@@ -782,7 +789,7 @@ def AutoConfiguration(env):
 
         env.Append(LIBS=boost_libs)
 
-        SetupEigen(env)
+        SetupEigen(conf)
 
         # --- Check for ATLAS/LAPACK and how to build
 
