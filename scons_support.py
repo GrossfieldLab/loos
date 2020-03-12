@@ -493,9 +493,9 @@ def SetupNetCDFPaths(env):
 
 def SetupEigen(env):
     if env.USING_CONDA:
-        eigen_include_path = env['CONDA_PREFIX'] + "/include/eigen"
+        eigen_include_path = env['CONDA_PREFIX'] + "/include/eigen3"
     else:
-        eigen_include_path = "/usr/include/eigen"
+        eigen_include_path = "/usr/include/eigen3"
     env.Prepend(CPPPATH=[eigen_include_path])
 
 def AutoConfigSystemBoost(conf):
