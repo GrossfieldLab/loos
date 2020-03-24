@@ -150,6 +150,7 @@ Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
 Tools/dihedrals
+Tools/rna_suites
 Packages/Clustering/**
 !Packages/Clustering/*.cpp
 !Packages/Clustering/*.hpp
