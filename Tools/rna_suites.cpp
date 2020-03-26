@@ -118,15 +118,26 @@ int main(int argc, char *argv[]) {
     AtomicGroup model = tropts->model;
     pTraj traj = tropts->trajectory;
     vector<uint> indices = tropts->frameList();
-//    AtomicGroup rna_atoms = selectAtoms(model, topts->selection);
+    AtomicGroup rna_atoms = selectAtoms(model, sopts->selection);
 
     // Number of frames in trajectory
     const uint N_frame = indices.size();
 
     // Create RNASuite object from RNA atoms
-    RnaSuite rna_suite = RnaSuite(model, suiteness_cutoff);
+    RnaSuite rna_suite = RnaSuite(rna_atoms, suiteness_cutoff);
 
     // Print dihedrals
     rna_suite.printBackboneAtoms();
+
+    // Loop over trajectory
+    for (vector<uint>::iterator i = indices.begin(); i != indices.end(); i++) {
+
+        traj->readFrame(*i);
+        traj->updateGroupCoords(model);
+
+        rna_suite.calculateBackboneDihedrals();
+        rna_suite.printBackboneDihedrals();
+
+    }
 
 }
