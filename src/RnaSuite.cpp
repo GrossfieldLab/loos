@@ -25,7 +25,9 @@ using namespace std;
 
 namespace loos {
 
-    // Constructors
+    // |------------------------------------------------------------------------
+    // | Constructors
+    // |------------------------------------------------------------------------
 
     RnaSuite::RnaSuite(const AtomicGroup &group,
                        const double suiteness_cutoff_) {
@@ -46,7 +48,99 @@ namespace loos {
         suiteness_cutoff = 0.01;
     }
 
-    // Methods
+    // |------------------------------------------------------------------------
+    // | Methods
+    // |------------------------------------------------------------------------
+
+    void RnaSuite::calculateBackboneDihedrals() {
+
+        // Clear vector of vectors of doubles for each backbone dihedral
+        alpha.clear();
+        beta.clear();
+        gamma.clear();
+        delta.clear();
+        epsilon.clear();
+        zeta.clear();
+
+        for (size_t i = 0; i < N_continuous_group; i++) {
+
+            std::vector<double> continuous_alpha(N_residue[i]);
+            std::vector<double> continuous_beta(N_residue[i]);
+            std::vector<double> continuous_gamma(N_residue[i]);
+            std::vector<double> continuous_delta(N_residue[i] + 1);
+            std::vector<double> continuous_epsilon(N_residue[i]);
+            std::vector<double> continuous_zeta(N_residue[i]);
+
+            for (size_t j = 0; j < N_residue[i]; j++) {
+
+                continuous_alpha[j] = Math::torsion(
+                    alpha_atoms[i][j][0], alpha_atoms[i][j][1],
+                    alpha_atoms[i][j][2], alpha_atoms[i][j][3]);
+                continuous_beta[j] = Math::torsion(
+                    beta_atoms[i][j][0], beta_atoms[i][j][1],
+                    beta_atoms[i][j][2], beta_atoms[i][j][3]);
+                continuous_gamma[j] = Math::torsion(
+                    gamma_atoms[i][j][0], gamma_atoms[i][j][1],
+                    gamma_atoms[i][j][2], gamma_atoms[i][j][3]);
+                continuous_delta[j] = Math::torsion(
+                    delta_atoms[i][j][0], delta_atoms[i][j][1],
+                    delta_atoms[i][j][2], delta_atoms[i][j][3]);
+                continuous_epsilon[j] = Math::torsion(
+                    epsilon_atoms[i][j][0], epsilon_atoms[i][j][1],
+                    epsilon_atoms[i][j][2], epsilon_atoms[i][j][3]);
+                continuous_zeta[j] = Math::torsion(
+                    zeta_atoms[i][j][0], zeta_atoms[i][j][1],
+                    zeta_atoms[i][j][2], zeta_atoms[i][j][3]);
+
+            }
+
+            continuous_delta[N_residue[i]] = Math::torsion(
+                delta_atoms[i][N_residue[i]][0],
+                delta_atoms[i][N_residue[i]][1],
+                delta_atoms[i][N_residue[i]][2],
+                delta_atoms[i][N_residue[i]][3]);
+
+            alpha.push_back(continuous_alpha);
+            beta.push_back(continuous_beta);
+            gamma.push_back(continuous_gamma);
+            delta.push_back(continuous_delta);
+            epsilon.push_back(continuous_epsilon);
+            zeta.push_back(continuous_zeta);
+
+        }
+
+    } // calculateBackboneDihedrals()
+
+    void RnaSuite::checkContinuousGroupSize(
+        const std::vector<std::vector<AtomicGroup>> &group_vector,
+        const size_t target_size, const string dihedral_name) const {
+
+        if (group_vector.size() != target_size) {
+
+            cout << boost::format("Error: different number of continuous "
+                "groups for alpha (%d) and %s (%d)\n") % target_size
+                % dihedral_name % group_vector.size();
+            throw(LOOSError());
+
+        }
+
+    } // checkContinuousGroupSize()
+
+    void RnaSuite::checkResidueSize(
+        const std::vector<AtomicGroup> &residue_vector,
+        const size_t target_size, const string dihedral_name,
+        const size_t group_index) const {
+
+        if (residue_vector.size() != target_size) {
+
+            cout << boost::format("Error: different number of residues in "
+                "continuous group %d for alpha (%d) and %s (%d)\n")
+                % group_index % target_size % dihedral_name
+                % residue_vector.size();
+
+        }
+
+    } // checkResidueSize()
 
     void RnaSuite::extractRnaBackboneAtoms(const AtomicGroup &group) {
 
@@ -201,6 +295,32 @@ namespace loos {
 
         }
 
+        // Get number of continuous groups and check that all dihedral groups
+        // have same size
+        N_continuous_group = alpha_atoms.size();
+        checkContinuousGroupSize(beta_atoms, N_continuous_group, "beta");
+        checkContinuousGroupSize(gamma_atoms, N_continuous_group, "gamma");
+        checkContinuousGroupSize(delta_atoms, N_continuous_group, "delta");
+        checkContinuousGroupSize(epsilon_atoms, N_continuous_group, "epsilon");
+        checkContinuousGroupSize(zeta_atoms, N_continuous_group, "zeta");
+
+        // Get number of residues in each continuous group and check that these
+        // are consistent across backbone dihedrals. Delta should have one
+        // additional residue per continuous group.
+        size_t residue_size;
+
+        for (size_t i = 0; i < N_continuous_group; i++) {
+
+            residue_size = alpha_atoms[i].size();
+            checkResidueSize(beta_atoms[i], residue_size, "beta", i + 1);
+            checkResidueSize(gamma_atoms[i], residue_size, "gamma", i + 1);
+            checkResidueSize(delta_atoms[i], residue_size + 1, "delta", i + 1);
+            checkResidueSize(epsilon_atoms[i], residue_size, "epsilon", i + 1);
+            checkResidueSize(zeta_atoms[i], residue_size, "zeta", i + 1);
+            N_residue.push_back(residue_size);
+
+        }
+
     } // extractRnaBackboneAtoms()
 
     double RnaSuite::getSuitenessCutoff() const {
@@ -209,98 +329,68 @@ namespace loos {
 
     void RnaSuite::printBackboneAtoms() const {
 
-        uint continuous_counter;
-        uint residue_counter;
+        size_t i_plus;
+        size_t j_plus;
 
-        cout << boost::format("Sizes %d %d %d %d %d %d\n") % alpha_atoms.size()
-            % beta_atoms.size() % gamma_atoms.size() % delta_atoms.size()
-            % epsilon_atoms.size() % zeta_atoms.size();
+        cout << boost::format("Number of continuous groups: %d\n")
+            % N_continuous_group;
 
-        continuous_counter = 0;
-        for (std::vector<AtomicGroup> continuous_atoms : alpha_atoms) {
-            continuous_counter++;
-            cout << boost::format("Alpha %d Size %d\n") % continuous_counter
-                % continuous_atoms.size();
-            residue_counter = 0;
-            for (AtomicGroup residue_atoms : continuous_atoms) {
-                residue_counter++;
-                cout << boost::format("Alpha %d %d\n") % continuous_counter
-                    % residue_counter;
-                cout << residue_atoms << endl;
+        if (N_continuous_group == 0) return;
+
+        for (size_t i = 0; i < N_continuous_group; i++) {
+
+            i_plus = i + 1;
+            cout << boost::format("Continuous group %d has %d residues\n")
+                % i_plus % N_residue[i];
+
+            for (size_t j = 0; j < N_residue[i]; j++) {
+
+                j_plus = j + 1;
+                cout << boost::format("Delta %d %d\n") % i_plus % j_plus;
+                cout << delta_atoms[i][j] << endl;
+                cout << boost::format("Epsilon %d %d\n") % i_plus % j_plus;
+                cout << epsilon_atoms[i][j] << endl;
+                cout << boost::format("Zeta %d %d\n") % i_plus % j_plus;
+                cout << zeta_atoms[i][j] << endl;
+                cout << boost::format("Alpha %d %d\n") % i_plus % j_plus;
+                cout << alpha_atoms[i][j] << endl;
+                cout << boost::format("Beta %d %d\n") % i_plus % j_plus;
+                cout << beta_atoms[i][j] << endl;
+                cout << boost::format("Gamma %d %d\n") % i_plus % j_plus;
+                cout << gamma_atoms[i][j] << endl;
+
             }
-        }
 
-        continuous_counter = 0;
-        for (std::vector<AtomicGroup> continuous_atoms : beta_atoms) {
-            continuous_counter++;
-            cout << boost::format("Beta %d Size %d\n") % continuous_counter
-                % continuous_atoms.size();
-            residue_counter = 0;
-            for (AtomicGroup residue_atoms : continuous_atoms) {
-                residue_counter++;
-                cout << boost::format("Beta %d %d\n") % continuous_counter
-                    % residue_counter;
-                cout << residue_atoms << endl;
-            }
-        }
+            cout << boost::format("Delta %d %d\n") % i_plus
+                % (N_residue[i] + 1);
+            cout << delta_atoms[i][N_residue[i]] << endl;
 
-        continuous_counter = 0;
-        for (std::vector<AtomicGroup> continuous_atoms : gamma_atoms) {
-            continuous_counter++;
-            cout << boost::format("Gamma %d Size %d\n") % continuous_counter
-                % continuous_atoms.size();
-            residue_counter = 0;
-            for (AtomicGroup residue_atoms : continuous_atoms) {
-                residue_counter++;
-                cout << boost::format("Gamma %d %d\n") % continuous_counter
-                    % residue_counter;
-                cout << residue_atoms << endl;
-            }
-        }
-
-        continuous_counter = 0;
-        for (std::vector<AtomicGroup> continuous_atoms : delta_atoms) {
-            continuous_counter++;
-            cout << boost::format("Delta %d Size %d\n") % continuous_counter
-                % continuous_atoms.size();
-            residue_counter = 0;
-            for (AtomicGroup residue_atoms : continuous_atoms) {
-                residue_counter++;
-                cout << boost::format("Delta %d %d\n") % continuous_counter
-                    % residue_counter;
-                cout << residue_atoms << endl;
-            }
-        }
-
-        continuous_counter = 0;
-        for (std::vector<AtomicGroup> continuous_atoms : epsilon_atoms) {
-            continuous_counter++;
-            cout << boost::format("Epsilon %d Size %d\n") % continuous_counter
-                % continuous_atoms.size();
-            residue_counter = 0;
-            for (AtomicGroup residue_atoms : continuous_atoms) {
-                residue_counter++;
-                cout << boost::format("Epsilon %d %d\n") % continuous_counter
-                    % residue_counter;
-                cout << residue_atoms << endl;
-            }
-        }
-
-        continuous_counter = 0;
-        for (std::vector<AtomicGroup> continuous_atoms : zeta_atoms) {
-            continuous_counter++;
-            cout << boost::format("Zeta %d Size %d\n") % continuous_counter
-                % continuous_atoms.size();
-            residue_counter = 0;
-            for (AtomicGroup residue_atoms : continuous_atoms) {
-                residue_counter++;
-                cout << boost::format("Zeta %d %d\n") % continuous_counter
-                    % residue_counter;
-                cout << residue_atoms << endl;
-            }
         }
 
     } // printBackboneAtoms()
+
+    void RnaSuite::printBackboneDihedrals() const {
+
+        if (alpha.empty()) return;
+
+        for (size_t i = 0; i < N_continuous_group; i++) {
+
+            for (size_t j = 0; j < N_residue[i]; j++) {
+
+                cout << boost::format("%4d %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
+                    % gamma_atoms[i][j][0]->resid() % delta[i][j]
+                    % epsilon[i][j] % zeta[i][j] % alpha[i][j] % beta[i][j]
+                    % gamma[i][j];
+
+            }
+
+            cout << boost::format("%4d %8.3f\n")
+                % delta_atoms[i][N_residue[i]][0]->resid()
+                % delta[i][N_residue[i]];
+
+        }
+
+    } // printBackboneDihedrals()
 
     void RnaSuite::setSuitenessCutoff(const double suiteness_cutoff_) {
         suiteness_cutoff = suiteness_cutoff_;

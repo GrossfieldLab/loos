@@ -24,6 +24,7 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <Geometry.hpp>
 
 using namespace std;
 
@@ -62,6 +63,16 @@ namespace loos {
          */
         void calculateBackboneDihedrals();
 
+        //! Method to check the size of a vector of continuous groups
+        void checkContinuousGroupSize(
+            const std::vector<std::vector<AtomicGroup>> &group_vector,
+            const size_t target_size, const string dihedral_name) const;
+
+        //! Method to check the size of a vector of residues
+        void checkResidueSize(const std::vector<AtomicGroup> &residue_vector,
+            const size_t target_size, const string dihedral_name,
+            const size_t group_index) const;
+
         //! Method to extract RNA backbone atoms from an AtomicGroup
         /**
          *  This method selects RNA backbone atoms (i.e. P, O5', C5', C4', C3',
@@ -75,26 +86,41 @@ namespace loos {
         //! Method to print groups of backbone atoms for each dihedral
         void printBackboneAtoms() const;
 
+        //! Method to print backbone dihedrals for each residue
+        void printBackboneDihedrals() const;
+
         //! Method to set the cutoff for the suiteness score of non-outliers
         void setSuitenessCutoff(const double suiteness_cutoff_);
 
     private:
 
+        // Vector of continuous groups, composed of vectors of AtomicGroups
+        // for each residue within a continuous group
         std::vector<std::vector<AtomicGroup>> alpha_atoms;
         std::vector<std::vector<AtomicGroup>> beta_atoms;
         std::vector<std::vector<AtomicGroup>> gamma_atoms;
         std::vector<std::vector<AtomicGroup>> delta_atoms;
         std::vector<std::vector<AtomicGroup>> epsilon_atoms;
         std::vector<std::vector<AtomicGroup>> zeta_atoms;
+
+        // Vector of vectors of backbone dihedrals
         std::vector<std::vector<double>> alpha;
         std::vector<std::vector<double>> beta;
         std::vector<std::vector<double>> gamma;
         std::vector<std::vector<double>> delta;
         std::vector<std::vector<double>> epsilon;
         std::vector<std::vector<double>> zeta;
+
+        // Output: suite name (composed of a number-like character for the
+        // 5' hemi-nucleotide and a letter-like character for the
+        // 3' hemi-nucleotide) and suiteness score
         std::vector<char> suite_name_hemi5;
         std::vector<char> suite_name_hemi3;
         std::vector<double> suiteness;
+
+        // Other internal variables
+        size_t N_continuous_group = 0;
+        vector<size_t> N_residue;
         double suiteness_cutoff;
 
     };
