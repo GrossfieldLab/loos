@@ -63,15 +63,27 @@ namespace loos {
          */
         void calculateBackboneDihedrals();
 
+        //! Calculate a dihedral in deg from 4 atoms in the range [0, 360]
+        double calculateDihedral(const AtomicGroup &group);
+
         //! Method to check the size of a vector of continuous groups
         void checkContinuousGroupSize(
-            const std::vector<std::vector<AtomicGroup>> &group_vector,
+            const vector<vector<AtomicGroup>> &group_vector,
             const size_t target_size, const string dihedral_name) const;
 
         //! Method to check the size of a vector of residues
-        void checkResidueSize(const std::vector<AtomicGroup> &residue_vector,
+        void checkResidueSize(const vector<AtomicGroup> &residue_vector,
             const size_t target_size, const string dihedral_name,
             const size_t group_index) const;
+
+        //! Method to define suites used for assignment from an existing scheme
+        void defineSuites(const string suite_definition);
+
+        //! Method to define suites used for assignment from a file
+        void defineSuitesFromFile(const string suite_definition_filename);
+
+        //! Method to define suites used for assignment from suitename
+        void defineSuitesFromSuitename();
 
         //! Method to extract RNA backbone atoms from an AtomicGroup
         /**
@@ -79,6 +91,10 @@ namespace loos {
          *  and O3') and splits them into AtomicGroups by residue id.
          */
         void extractRnaBackboneAtoms(const AtomicGroup &group);
+
+        //! Method to assign residues to a delta(i-1), delta, gamma index
+        size_t RnaSuite::filterDDG(dihedral, vector<double> &min,
+            vector<double> &max, uint increment, uint ddg_index);
 
         //! Method to return the cutoff for the suiteness score of non-outliers
         double getSuitenessCutoff() const;
@@ -89,41 +105,66 @@ namespace loos {
         //! Method to print backbone dihedrals for each residue
         void printBackboneDihedrals() const;
 
+        //! Method to print reference suite names and mean dihedrals
+        void printReferenceSuites() const;
+
         //! Method to set the cutoff for the suiteness score of non-outliers
         void setSuitenessCutoff(const double suiteness_cutoff_);
 
     private:
 
+        // Reference suites used for assignment
+        vector<vector<vector<double>>> reference_suite_dihedrals;
+        vector<vector<string>> reference_suite_names;
+        vector<string> reference_suite_ddgs;
+
+        // Widths used to scale each dihedral dimension
+        vector<double> dihedral_width(7);
+
+        // Satellite widths used to scale overlapping clusters
+        vector<double> satellite_width(4);
+
+        // Boundaries for allowed regions of delta(i-1), delta, and gamma
+        vector<double> delta_min;
+        vector<double> delta_max;
+        vector<double> gamma_min;
+        vector<double> gamma_max;
+
+        // Boundaries used to filter suites based on epsilon, zeta, alpha, beta
+        vector<double> filter_min(4);
+        vector<double> filter_max(4);
+
         // Vector of continuous groups, composed of vectors of AtomicGroups
         // for each residue within a continuous group
-        std::vector<std::vector<AtomicGroup>> alpha_atoms;
-        std::vector<std::vector<AtomicGroup>> beta_atoms;
-        std::vector<std::vector<AtomicGroup>> gamma_atoms;
-        std::vector<std::vector<AtomicGroup>> delta_atoms;
-        std::vector<std::vector<AtomicGroup>> epsilon_atoms;
-        std::vector<std::vector<AtomicGroup>> zeta_atoms;
+        vector<vector<AtomicGroup>> alpha_atoms;
+        vector<vector<AtomicGroup>> beta_atoms;
+        vector<vector<AtomicGroup>> gamma_atoms;
+        vector<vector<AtomicGroup>> delta_atoms;
+        vector<vector<AtomicGroup>> epsilon_atoms;
+        vector<vector<AtomicGroup>> zeta_atoms;
 
         // Vector of vectors of backbone dihedrals
-        std::vector<std::vector<double>> alpha;
-        std::vector<std::vector<double>> beta;
-        std::vector<std::vector<double>> gamma;
-        std::vector<std::vector<double>> delta;
-        std::vector<std::vector<double>> epsilon;
-        std::vector<std::vector<double>> zeta;
+        vector<vector<double>> alpha;
+        vector<vector<double>> beta;
+        vector<vector<double>> gamma;
+        vector<vector<double>> delta;
+        vector<vector<double>> epsilon;
+        vector<vector<double>> zeta;
 
         // Output: suite name (composed of a number-like character for the
         // 5' hemi-nucleotide and a letter-like character for the
         // 3' hemi-nucleotide) and suiteness score
-        std::vector<char> suite_name_hemi5;
-        std::vector<char> suite_name_hemi3;
-        std::vector<double> suiteness;
+        vector<string> suite_names;
+        vector<double> suiteness;
 
         // Other internal variables
         size_t N_continuous_group = 0;
         vector<size_t> N_residue;
+        size_t N_suite;
         double suiteness_cutoff;
 
-    };
+    }; // RnaSuite class
+
 }
 
 #endif
