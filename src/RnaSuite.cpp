@@ -30,7 +30,7 @@ namespace loos {
     // |------------------------------------------------------------------------
 
     RnaSuite::RnaSuite(const AtomicGroup &group,
-                       const double suiteness_cutoff_) {
+        const double suiteness_cutoff_) {
 
         extractRnaBackboneAtoms(group);
         suiteness_cutoff = suiteness_cutoff_;
@@ -52,6 +52,86 @@ namespace loos {
     // | Methods
     // |------------------------------------------------------------------------
 
+    void RnaSuite::assignRichardsonSuites() {
+
+        bool outlier;
+        size_t N_delta = delta_min.size();
+        size_t N_gamma = gamma_min.size();
+        size_t N_dg = N_delta * N_gamma;
+        uint suite_counter = 0;
+        vector<double> suite(7);
+
+        // Index into delta, delta(j+1), gamma clusters
+        uint ddg_index;
+
+        if (alpha.empty()) {
+
+            cout << "Warning: backbone dihedrals are empty" << endl;
+            return;
+
+        }
+
+        // Initialize vectors of suite names and suiteness scores
+        suite_names.clear()
+        suiteness.clear()
+        suite_names.reserve(N_suite);
+        suiteness.reserve(N_suite);
+
+        for (size_t i = 0; i < N_continuous_group; ++i) {
+
+            for (size_t j = 0; j < N_residue[i]; ++j) {
+
+                suite = {delta[i][j], epsilon[i][j], zeta[i][j], alpha[i][j],
+                    beta[i][j], gamma[i][j], delta[i][j + 1]};
+
+                // Assign delta(j-1), delta, gamma index. These 3 dihedrals have
+                // 12 clusters that are independent of the other 4 dihedrals.
+                ddg_index = 0;
+
+                // Filter on 5' delta. Values outside of this range are
+                // indicative of incorrect stereochemistry in the ribose.
+                if (filterDDG(suite[0], delta_min, delta_max, N_dg, ddg_index)
+                    == N_delta) {
+
+                    suite_names[suite_counter] = "!d";
+                    suiteness[suite_counter] = 0.0;
+                    continue;
+
+                }
+
+                // Filter on 3' delta
+                if (filterDDG(suite[6], delta_min, delta_max, N_gamma, ddg_index)
+                    == N_delta) {
+
+                    suite_names[suite_counter] = "!d";
+                    suiteness[suite_counter] = 0.0;
+                    continue;
+
+                }
+
+                // Filter on gamma
+                if (filterDDG(suite[5], gamma_min, gamma_max, 1, ddg_index)
+                    == N_gamma) {
+
+                    suite_names[suite_counter] = "!g";
+                    suiteness[suite_counter] = 0.0;
+                    continue;
+
+                }
+
+                // Filter on epsilon. Values outside of this range are
+                // indicative of a misfit sugar pucker.
+
+                // Get 4D scaled hyperellipsoid distance
+
+                suite_counter++;
+
+            } // loop over residues
+
+        } // loop over continuous groups
+
+    } // assignRichardsonSuites()
+
     void RnaSuite::calculateBackboneDihedrals() {
 
         // Clear vector of vectors of doubles for each backbone dihedral
@@ -62,43 +142,28 @@ namespace loos {
         epsilon.clear();
         zeta.clear();
 
-        for (size_t i = 0; i < N_continuous_group; i++) {
+        for (size_t i = 0; i < N_continuous_group; ++i) {
 
-            std::vector<double> continuous_alpha(N_residue[i]);
-            std::vector<double> continuous_beta(N_residue[i]);
-            std::vector<double> continuous_gamma(N_residue[i]);
-            std::vector<double> continuous_delta(N_residue[i] + 1);
-            std::vector<double> continuous_epsilon(N_residue[i]);
-            std::vector<double> continuous_zeta(N_residue[i]);
+            vector<double> continuous_alpha(N_residue[i]);
+            vector<double> continuous_beta(N_residue[i]);
+            vector<double> continuous_gamma(N_residue[i]);
+            vector<double> continuous_delta(N_residue[i] + 1);
+            vector<double> continuous_epsilon(N_residue[i]);
+            vector<double> continuous_zeta(N_residue[i]);
 
-            for (size_t j = 0; j < N_residue[i]; j++) {
+            for (size_t j = 0; j < N_residue[i]; ++j) {
 
-                continuous_alpha[j] = Math::torsion(
-                    alpha_atoms[i][j][0], alpha_atoms[i][j][1],
-                    alpha_atoms[i][j][2], alpha_atoms[i][j][3]);
-                continuous_beta[j] = Math::torsion(
-                    beta_atoms[i][j][0], beta_atoms[i][j][1],
-                    beta_atoms[i][j][2], beta_atoms[i][j][3]);
-                continuous_gamma[j] = Math::torsion(
-                    gamma_atoms[i][j][0], gamma_atoms[i][j][1],
-                    gamma_atoms[i][j][2], gamma_atoms[i][j][3]);
-                continuous_delta[j] = Math::torsion(
-                    delta_atoms[i][j][0], delta_atoms[i][j][1],
-                    delta_atoms[i][j][2], delta_atoms[i][j][3]);
-                continuous_epsilon[j] = Math::torsion(
-                    epsilon_atoms[i][j][0], epsilon_atoms[i][j][1],
-                    epsilon_atoms[i][j][2], epsilon_atoms[i][j][3]);
-                continuous_zeta[j] = Math::torsion(
-                    zeta_atoms[i][j][0], zeta_atoms[i][j][1],
-                    zeta_atoms[i][j][2], zeta_atoms[i][j][3]);
+                continuous_alpha[j] = calculateDihedral(alpha_atoms[i][j]);
+                continuous_beta[j] = calculateDihedral(beta_atoms[i][j]);
+                continuous_gamma[j] = calculateDihedral(gamma_atoms[i][j]);
+                continuous_delta[j] = calculateDihedral(delta_atoms[i][j]);
+                continuous_epsilon[j] = calculateDihedral(epsilon_atoms[i][j]);
+                continuous_zeta[j] = calculateDihedral(zeta_atoms[i][j]);
 
             }
 
-            continuous_delta[N_residue[i]] = Math::torsion(
-                delta_atoms[i][N_residue[i]][0],
-                delta_atoms[i][N_residue[i]][1],
-                delta_atoms[i][N_residue[i]][2],
-                delta_atoms[i][N_residue[i]][3]);
+            continuous_delta[N_residue[i]] = 
+                calculateDihedral(delta_atoms[i][N_residue[i]]);
 
             alpha.push_back(continuous_alpha);
             beta.push_back(continuous_beta);
@@ -111,8 +176,16 @@ namespace loos {
 
     } // calculateBackboneDihedrals()
 
+    double RnaSuite::calculateDihedral(const AtomicGroup &group) {
+
+        double dihedral = Math::torsion(group[0], group[1], group[2], group[3])
+        if (dihedral < 0.0) dihedral += 360.0;
+        return dihedral;
+
+    } // calculateDihedral()
+
     void RnaSuite::checkContinuousGroupSize(
-        const std::vector<std::vector<AtomicGroup>> &group_vector,
+        const vector<vector<AtomicGroup>> &group_vector,
         const size_t target_size, const string dihedral_name) const {
 
         if (group_vector.size() != target_size) {
@@ -127,7 +200,7 @@ namespace loos {
     } // checkContinuousGroupSize()
 
     void RnaSuite::checkResidueSize(
-        const std::vector<AtomicGroup> &residue_vector,
+        const vector<AtomicGroup> &residue_vector,
         const size_t target_size, const string dihedral_name,
         const size_t group_index) const {
 
@@ -142,14 +215,152 @@ namespace loos {
 
     } // checkResidueSize()
 
+    void defineSuites(const string suite_definition) {
+
+        reference_suites.clear();
+
+        if (suite_definition == "suitename"
+            || suite_definition == "richardson") defineSuitesFromSuitename();
+
+        else {
+
+            cout << boost::format("%s is not a recognized suite definition\n")
+                % suite_definition;
+            cout << "Must be one of: suitename" << endl;
+            throw(LOOSError());
+
+        }
+
+    } // defineSuites()
+
+    void defineSuitesFromFile(const string suite_definition_filename) {
+
+        // TODO read suite definitions from file
+        cout << "Reading suite definitions from a file is not yet supported\n"
+            "Go yell at Chapin" << endl;
+
+    } // defineSuitesFromFile()
+
+    void defineSuitesFromSuitename() {
+
+        // Means of dihedral angles
+        reference_suite_dihedrals = {
+            { // ddg index 0: C3' C3' plus
+                { 81.495, 212.250, 288.831, 294.967, 173.990,  53.550,  81.035},
+                { 83.513, 218.120, 291.593, 292.247, 222.300,  58.067,  86.093},
+                { 85.664, 245.014, 268.257, 303.879, 138.164,  61.950,  79.457},
+                { 82.112, 190.682, 264.945, 295.967, 181.839,  51.455,  81.512},
+                { 83.414, 217.400, 222.006, 302.856, 160.719,  49.097,  82.444},
+                { 85.072, 216.324, 173.276, 289.320, 164.132,  45.876,  84.956},
+                { 83.179, 210.347, 121.474, 288.568, 157.268,  49.347,  81.047},
+                { 80.888, 218.636, 290.735, 167.447, 159.565,  51.326,  85.213},
+                { 83.856, 238.750, 256.875,  69.562, 170.200,  52.800,  85.287},
+                { 85.295, 244.085, 203.815,  65.880, 181.130,  54.680,  86.035},
+                { 79.671, 202.471,  63.064,  68.164, 143.450,  49.664,  82.757},
+                { 84.000, 195.000, 146.000, 170.000, 170.000,  52.000,  84.000}
+            }, { // ddg index 1: C3' C3' trans
+                { 80.514, 200.545, 280.510, 249.314,  82.662, 167.890,  85.507},
+                { 80.223, 196.591, 291.299, 153.060, 194.379, 179.061,  83.648},
+                { 81.395, 203.030, 294.445, 172.195, 138.540, 175.565,  84.470},
+                { 87.417, 223.558,  80.175,  66.667, 109.150, 176.475,  83.833},
+                { 86.055, 246.502, 100.392,  73.595, 213.752, 183.395,  85.483}
+            }, { // ddg index 2: C3' C3' minus
+            }, { // ddg index 3: C3' C2' plus
+                { 84.215, 215.014, 288.672, 300.420, 177.476,  58.307, 144.841},
+                { 82.731, 220.463, 288.665, 296.983, 221.654,  54.213, 143.771},
+                { 84.700, 226.400, 168.336, 292.771, 177.629,  48.629, 147.950},
+                { 83.358, 206.042, 277.567, 195.700, 161.600,  50.750, 145.258},
+                { 82.614, 206.440,  52.524, 163.669, 148.421,  50.176, 147.590},
+                { 84.285, 236.600, 220.400,  68.300, 200.122,  53.693, 145.730},
+                { 84.457, 213.286,  69.086,  75.500, 156.671,  57.486, 147.686}
+            }, { // ddg index 4: C3' C2' trans
+                { 81.200, 199.243, 288.986, 180.286, 194.743, 178.200, 147.386},
+                { 82.133, 204.933,  69.483,  63.417, 115.233, 176.283, 145.733}
+            }, { // ddg index 5: C3' C2' minus
+                { 83.977, 216.508, 287.192, 297.254, 225.154, 293.738, 150.677},
+                { 84.606, 232.856, 248.125,  63.269, 181.975, 295.744, 149.744},
+                { 83.000, 196.900,  65.350,  60.150, 138.425, 292.550, 154.275}
+            }, { // ddg index 6: C2' C3' plus
+                {145.399, 260.339, 288.756, 288.444, 192.733,  53.097,  84.067},
+                {146.275, 259.783, 169.958, 298.450, 169.583,  50.908,  83.967},
+                {149.286, 223.159, 139.421, 284.559, 158.107,  47.900,  84.424},
+                {148.006, 191.944, 146.231, 289.288, 150.781,  42.419,  84.956},
+                {148.028, 256.922, 165.194, 204.961, 165.194,  49.383,  82.983},
+                {145.337, 262.869,  79.588, 203.863, 189.688,  58.000,  84.900},
+                {148.992, 270.596, 240.892,  62.225, 176.271,  53.600,  87.262},
+                {149.822, 249.956, 187.678,  80.433, 198.133,  61.000,  89.378},
+                {146.922, 241.222,  88.894,  59.344, 160.683,  52.333,  83.417},
+                {141.900, 258.383, 286.517, 178.267, 165.217,  48.350,  84.783}
+            }, { // ddg index 7: C2' C3' trans
+                {147.782, 260.712, 290.424, 296.200, 177.282, 175.594,  86.565},
+                {143.722, 227.256, 203.789,  73.856, 216.733, 194.444,  80.911},
+                {148.717, 274.683, 100.283,  80.600, 248.133, 181.817,  82.600},
+                {150.311, 268.383,  84.972,  63.811, 191.483, 176.644,  85.600},
+                {141.633, 244.100,  66.056,  71.667, 122.167, 182.200,  83.622}
+            }, { // ddg index 8: C2' C3' minus
+                {149.070, 249.780, 111.520, 278.370, 207.780, 287.820,  86.650}
+            }, { // ddg index 9: C2' C2' plus
+                {146.383, 259.402, 291.275, 291.982, 210.048,  54.412, 147.760},
+                {145.256, 244.622, 162.822, 294.159, 171.630,  45.900, 145.804},
+                {147.593, 248.421, 112.086, 274.943, 164.764,  56.843, 146.264},
+                {150.077, 260.246, 213.785,  71.900, 207.638,  56.715, 148.131},
+                {146.415, 257.831,  89.597,  67.923, 173.051,  55.513, 147.623},
+                {142.900, 236.550, 268.800, 180.783, 185.133,  54.467, 143.350}
+            }, { // ddg index 10: C2' C2' trans
+                {149.863, 247.562, 170.488, 277.938,  84.425, 176.413, 148.087},
+                {143.940, 258.200, 298.240, 279.640, 183.680, 183.080, 145.120}
+            }, { // ddg index 11: C2' C2' minus
+                {147.342, 256.475, 295.508, 287.408, 194.525, 293.725, 150.458}
+        };
+
+        // Two-character suite name
+        reference_suite_names = {
+            {"1a", "1m", "1L", "&a", "7a", "3a", "9a", "1g", "7d", "3d", "5d",
+                "3g"},
+            {"1e", "1c", "1f", "5j", "5n"},
+            { },
+            {"1b", "1[", "3b", "1z", "5z", "7p", "5p"},
+            {"1t", "5q"},
+            {"1o", "7r", "5r"},
+            {"2a", "4a", "0a", "#a", "4g", "6g", "8d", "4d", "6d", "2g"},
+            {"2h", "4n", "0i", "6n", "6j"},
+            {"0k"},
+            {"2[", "4b", "0b", "4p", "6p", "2z"},
+            {"4s", "2u"},
+            {"2o"}
+        };
+
+        // Delta(i-1), delta, gamma index. Delta can be C3' endo ("3") or
+        // C2' endo ("2"). Gamma can be plus ("p"), trans ("t"), or minus ("m").
+        reference_suite_ddgs = {"33p", "33t", "33m", "32p", "32t", "32m", "23p",
+            "23t", "23m", "22p", "22t", "22m"};
+
+        // Widths used to scale each dihedral dimension
+        dihedral_width = {28.0, 60.0, 55.0, 50.0, 70.0, 35.0, 28.0};
+
+        // Satellite widths used to scale overlapping clusters
+        satellite_width = {50.0, 50.0, 45.0, 60.0};
+
+        // Boundaries for allowed regions of delta(i-1), delta, and gamma
+        delta_min = { 60.0, 125.0};
+        delta_max = {105.0, 165.0};
+        gamma_min = { 20.0, 140.0, 260.0};
+        gamma_max = { 95.0, 215.0, 335.0};
+
+        // Boundaries used to filter suites based on epsilon, zeta, alpha, beta
+        filter_min = {155.0,  25.0,  25.0,  50.0};
+        filter_max = {310.0, 335.0, 335.0, 290.0};
+
+    } // defineSuitesFromSuitename()
+
     void RnaSuite::extractRnaBackboneAtoms(const AtomicGroup &group) {
 
-        std::vector<AtomicGroup> continuous_alpha_atoms;
-        std::vector<AtomicGroup> continuous_beta_atoms;
-        std::vector<AtomicGroup> continuous_gamma_atoms;
-        std::vector<AtomicGroup> continuous_delta_atoms;
-        std::vector<AtomicGroup> continuous_epsilon_atoms;
-        std::vector<AtomicGroup> continuous_zeta_atoms;
+        vector<AtomicGroup> continuous_alpha_atoms;
+        vector<AtomicGroup> continuous_beta_atoms;
+        vector<AtomicGroup> continuous_gamma_atoms;
+        vector<AtomicGroup> continuous_delta_atoms;
+        vector<AtomicGroup> continuous_epsilon_atoms;
+        vector<AtomicGroup> continuous_zeta_atoms;
         AtomicGroup dihedral_atoms;
         AtomicGroup residue_p;
         AtomicGroup residue_o5p;
@@ -308,8 +519,9 @@ namespace loos {
         // are consistent across backbone dihedrals. Delta should have one
         // additional residue per continuous group.
         size_t residue_size;
+        N_suite = 0;
 
-        for (size_t i = 0; i < N_continuous_group; i++) {
+        for (size_t i = 0; i < N_continuous_group; ++i) {
 
             residue_size = alpha_atoms[i].size();
             checkResidueSize(beta_atoms[i], residue_size, "beta", i + 1);
@@ -318,10 +530,30 @@ namespace loos {
             checkResidueSize(epsilon_atoms[i], residue_size, "epsilon", i + 1);
             checkResidueSize(zeta_atoms[i], residue_size, "zeta", i + 1);
             N_residue.push_back(residue_size);
+            N_suite += residue_size;
 
         }
 
     } // extractRnaBackboneAtoms()
+
+    size_t RnaSuite::filterDDG(dihedral, vector<double> &min,
+        vector<double> &max, uint increment, uint ddg_index) {
+
+        size_t i = 0;
+        while (i < min.size()) {
+
+            if (dihedral >= min[i] && dihedral <= max[i]) {
+
+                ddg_index += i * increment;
+                return i;
+
+            }
+
+            ++i;
+
+        }
+
+    } // filterDDG()
 
     double RnaSuite::getSuitenessCutoff() const {
         return suiteness_cutoff;
@@ -332,38 +564,45 @@ namespace loos {
         size_t i_plus;
         size_t j_plus;
 
+        cout << "\n    ====  Printing backbone atoms  ====\n" << endl;
+
+        if (N_continuous_group == 0) {
+
+            cout << "Warning: backbone atoms are empty" << endl;
+            return;
+
+        }
+
         cout << boost::format("Number of continuous groups: %d\n")
             % N_continuous_group;
 
-        if (N_continuous_group == 0) return;
-
-        for (size_t i = 0; i < N_continuous_group; i++) {
+        for (size_t i = 0; i < N_continuous_group; ++i) {
 
             i_plus = i + 1;
             cout << boost::format("Continuous group %d has %d residues\n")
                 % i_plus % N_residue[i];
 
-            for (size_t j = 0; j < N_residue[i]; j++) {
+            for (size_t j = 0; j < N_residue[i]; ++j) {
 
                 j_plus = j + 1;
                 cout << boost::format("Delta %d %d\n") % i_plus % j_plus;
-                cout << delta_atoms[i][j] << endl;
+                cout << delta_atoms[i][j] << "\n";
                 cout << boost::format("Epsilon %d %d\n") % i_plus % j_plus;
-                cout << epsilon_atoms[i][j] << endl;
+                cout << epsilon_atoms[i][j] << "\n";
                 cout << boost::format("Zeta %d %d\n") % i_plus % j_plus;
-                cout << zeta_atoms[i][j] << endl;
+                cout << zeta_atoms[i][j] << "\n";
                 cout << boost::format("Alpha %d %d\n") % i_plus % j_plus;
-                cout << alpha_atoms[i][j] << endl;
+                cout << alpha_atoms[i][j] << "\n";
                 cout << boost::format("Beta %d %d\n") % i_plus % j_plus;
-                cout << beta_atoms[i][j] << endl;
+                cout << beta_atoms[i][j] << "\n";
                 cout << boost::format("Gamma %d %d\n") % i_plus % j_plus;
-                cout << gamma_atoms[i][j] << endl;
+                cout << gamma_atoms[i][j] << "\n";
 
             }
 
             cout << boost::format("Delta %d %d\n") % i_plus
                 % (N_residue[i] + 1);
-            cout << delta_atoms[i][N_residue[i]] << endl;
+            cout << delta_atoms[i][N_residue[i]] << "\n";
 
         }
 
@@ -371,13 +610,21 @@ namespace loos {
 
     void RnaSuite::printBackboneDihedrals() const {
 
-        if (alpha.empty()) return;
+        cout << "\n    ====  Printing backbone dihedrals  ====\n" << endl;
 
-        for (size_t i = 0; i < N_continuous_group; i++) {
+        if (alpha.empty()) {
 
-            for (size_t j = 0; j < N_residue[i]; j++) {
+            cout << "Warning: backbone dihedrals are empty" << endl;
+            return;
 
-                cout << boost::format("%4d %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
+        }
+
+        for (size_t i = 0; i < N_continuous_group; ++i) {
+
+            for (size_t j = 0; j < N_residue[i]; ++j) {
+
+                cout << boost::format(
+                    "%4d %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
                     % gamma_atoms[i][j][0]->resid() % delta[i][j]
                     % epsilon[i][j] % zeta[i][j] % alpha[i][j] % beta[i][j]
                     % gamma[i][j];
@@ -391,6 +638,38 @@ namespace loos {
         }
 
     } // printBackboneDihedrals()
+
+    void RnaSuite::printReferenceSuites() const {
+
+        cout << "\n    ====  Printing reference suites  ====\n" << endl;
+
+        if (reference_suite_dihedrals.empty()) {
+
+            cout << "Warning: reference suites are empty" << endl;
+            return;
+
+        }
+
+        for (size_t i = 0; i < reference_suite_dihedrals.size(); ++i) {
+
+            for (size_t j = 0; j < reference_suite_dihedrals[i].size(); ++j) {
+
+                cout << boost::format(
+                    "%2s %3s %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
+                    % reference_suite_names[i][j] % reference_suite_ddg[i][j]
+                    % reference_suite_dihedrals[i][j][0]
+                    % reference_suite_dihedrals[i][j][1]
+                    % reference_suite_dihedrals[i][j][2]
+                    % reference_suite_dihedrals[i][j][3]
+                    % reference_suite_dihedrals[i][j][4]
+                    % reference_suite_dihedrals[i][j][5]
+                    % reference_suite_dihedrals[i][j][6];
+
+            }
+
+        }
+
+    } // printReferenceSuites()
 
     void RnaSuite::setSuitenessCutoff(const double suiteness_cutoff_) {
         suiteness_cutoff = suiteness_cutoff_;
