@@ -52,17 +52,44 @@ namespace loos {
     // | Methods
     // |------------------------------------------------------------------------
 
+    size_t RnaSuite::assignDDGIndex(double dihedral, vector<double> &min,
+        vector<double> &max, uint increment, uint &ddg_index) {
+
+        size_t i = 0;
+        while (i < min.size()) {
+
+            if (dihedral >= min[i] && dihedral <= max[i]) {
+
+                ddg_index += i * increment;
+                return i;
+
+            }
+
+            ++i;
+
+        }
+
+        return i;
+
+    } // assignDDGIndex()
+
     void RnaSuite::assignRichardsonSuites() {
 
-        bool outlier;
         size_t N_delta = delta_min.size();
         size_t N_gamma = gamma_min.size();
         size_t N_dg = N_delta * N_gamma;
-        uint suite_counter = 0;
         vector<double> suite(7);
 
-        // Index into delta, delta(j+1), gamma clusters
+        // Index into delta(i-1), delta, gamma clusters
         uint ddg_index;
+
+        // Scaled 4D hyperellipsoid distance in epsilon, zeta, alpha, beta
+        double dist_ezab;
+
+        // Closest scaled 4D hyperellipsoid distance to a cluster and index of
+        // the associated cluster
+        double min_dist_ezab;
+        size_t min_dist_ezab_index;
 
         if (alpha.empty()) {
 
@@ -72,9 +99,11 @@ namespace loos {
         }
 
         // Initialize vectors of suite names and suiteness scores
-        suite_names.clear()
-        suiteness.clear()
+        suite_names.clear();
+        suite_ddg.clear();
+        suiteness.clear();
         suite_names.reserve(N_suite);
+        suite_ddg.reserve(N_suite);
         suiteness.reserve(N_suite);
 
         for (size_t i = 0; i < N_continuous_group; ++i) {
@@ -90,41 +119,113 @@ namespace loos {
 
                 // Filter on 5' delta. Values outside of this range are
                 // indicative of incorrect stereochemistry in the ribose.
-                if (filterDDG(suite[0], delta_min, delta_max, N_dg, ddg_index)
-                    == N_delta) {
+                if (assignDDGIndex(suite[0], delta_min, delta_max, N_dg,
+                        ddg_index) == N_delta) {
 
-                    suite_names[suite_counter] = "!d";
-                    suiteness[suite_counter] = 0.0;
+                    suite_names.push_back("!d");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
                     continue;
 
                 }
 
                 // Filter on 3' delta
-                if (filterDDG(suite[6], delta_min, delta_max, N_gamma, ddg_index)
-                    == N_delta) {
+                if (assignDDGIndex(suite[6], delta_min, delta_max, N_gamma,
+                        ddg_index) == N_delta) {
 
-                    suite_names[suite_counter] = "!d";
-                    suiteness[suite_counter] = 0.0;
+                    suite_names.push_back("!d");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
                     continue;
 
                 }
 
                 // Filter on gamma
-                if (filterDDG(suite[5], gamma_min, gamma_max, 1, ddg_index)
-                    == N_gamma) {
+                if (assignDDGIndex(suite[5], gamma_min, gamma_max, 1, ddg_index)
+                        == N_gamma) {
 
-                    suite_names[suite_counter] = "!g";
-                    suiteness[suite_counter] = 0.0;
+                    suite_names.push_back("!g");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
+                    continue;
+
+                }
+
+                // If there are no clusters associated with this ddg_index, then
+                // this is an outlier
+                if (N_reference_suite[ddg_index] == 0) {
+
+                    suite_names.push_back("!!");
+                    suite_ddg.push_back(reference_suite_ddgs[ddg_index]);
+                    suiteness.push_back(0.0);
                     continue;
 
                 }
 
                 // Filter on epsilon. Values outside of this range are
                 // indicative of a misfit sugar pucker.
+                if (suite[1] < filter_min[0] || suite[1] > filter_max[0]) {
 
-                // Get 4D scaled hyperellipsoid distance
+                    suite_names.push_back("!e");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
+                    continue;
 
-                suite_counter++;
+                }
+
+                // Filter on zeta
+                if (suite[2] < filter_min[1] || suite[2] > filter_max[1]) {
+
+                    suite_names.push_back("!z");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
+                    continue;
+
+                }
+
+                // Filter on alpha
+                if (suite[3] < filter_min[2] || suite[3] > filter_max[2]) {
+
+                    suite_names.push_back("!a");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
+                    continue;
+
+                }
+
+                // Filter on beta
+                if (suite[4] < filter_min[3] || suite[4] > filter_max[3]) {
+
+                    suite_names.push_back("!b");
+                    suite_ddg.push_back("!!!");
+                    suiteness.push_back(0.0);
+                    continue;
+
+                }
+
+                cout << boost::format("%d %d %d") % i % j % ddg_index << endl;
+                // Find closest cluster in epsilon, zeta, alpha, beta
+                // Largest distance in 7D is 688.66
+                min_dist_ezab = 999.0;
+                for (size_t k = 0; k < N_reference_suite[ddg_index]; ++k) {
+
+                    // Get 4D scaled hyperellipsoid distance
+                    dist_ezab = hyperellipsoidDist(suite,
+                        reference_suite_dihedrals[ddg_index][k], 1, 4);
+
+                    if (dist_ezab < min_dist_ezab) {
+
+                        min_dist_ezab = dist_ezab;
+                        min_dist_ezab_index = k;
+
+                    }
+
+                }
+
+                suite_names.push_back(
+                    reference_suite_names[ddg_index][min_dist_ezab_index]);
+                suite_ddg.push_back(reference_suite_ddgs[ddg_index]);
+                suiteness.push_back(1.0);
 
             } // loop over residues
 
@@ -178,7 +279,7 @@ namespace loos {
 
     double RnaSuite::calculateDihedral(const AtomicGroup &group) {
 
-        double dihedral = Math::torsion(group[0], group[1], group[2], group[3])
+        double dihedral = Math::torsion(group[0], group[1], group[2], group[3]);
         if (dihedral < 0.0) dihedral += 360.0;
         return dihedral;
 
@@ -215,9 +316,11 @@ namespace loos {
 
     } // checkResidueSize()
 
-    void defineSuites(const string suite_definition) {
+    void RnaSuite::defineSuites(const string suite_definition) {
 
-        reference_suites.clear();
+        reference_suite_dihedrals.clear();
+        reference_suite_names.clear();
+        reference_suite_ddgs.clear();
 
         if (suite_definition == "suitename"
             || suite_definition == "richardson") defineSuitesFromSuitename();
@@ -233,7 +336,7 @@ namespace loos {
 
     } // defineSuites()
 
-    void defineSuitesFromFile(const string suite_definition_filename) {
+    void RnaSuite::defineSuitesFromFile(const string filename) {
 
         // TODO read suite definitions from file
         cout << "Reading suite definitions from a file is not yet supported\n"
@@ -241,7 +344,7 @@ namespace loos {
 
     } // defineSuitesFromFile()
 
-    void defineSuitesFromSuitename() {
+    void RnaSuite::defineSuitesFromSuitename() {
 
         // Means of dihedral angles
         reference_suite_dihedrals = {
@@ -311,7 +414,7 @@ namespace loos {
                 {143.940, 258.200, 298.240, 279.640, 183.680, 183.080, 145.120}
             }, { // ddg index 11: C2' C2' minus
                 {147.342, 256.475, 295.508, 287.408, 194.525, 293.725, 150.458}
-        };
+        } };
 
         // Two-character suite name
         reference_suite_names = {
@@ -351,6 +454,12 @@ namespace loos {
         filter_min = {155.0,  25.0,  25.0,  50.0};
         filter_max = {310.0, 335.0, 335.0, 290.0};
 
+        // Get number of ddg clusters and number of suites in each ddg cluster
+        N_reference_ddg = reference_suite_dihedrals.size();
+        N_reference_suite.clear();
+        for (size_t i = 0; i < N_reference_ddg; ++i)
+            N_reference_suite.push_back(reference_suite_dihedrals[i].size());
+
     } // defineSuitesFromSuitename()
 
     void RnaSuite::extractRnaBackboneAtoms(const AtomicGroup &group) {
@@ -372,6 +481,7 @@ namespace loos {
         AtomicGroup prev_residue_c3p;
         AtomicGroup prev_residue_o3p;
         int current_resid = -2;
+        size_t residue_size;
 
         // True if this is the initial residue in a continuous group
         bool first_res = true;
@@ -518,7 +628,7 @@ namespace loos {
         // Get number of residues in each continuous group and check that these
         // are consistent across backbone dihedrals. Delta should have one
         // additional residue per continuous group.
-        size_t residue_size;
+        N_residue.clear();
         N_suite = 0;
 
         for (size_t i = 0; i < N_continuous_group; ++i) {
@@ -536,28 +646,28 @@ namespace loos {
 
     } // extractRnaBackboneAtoms()
 
-    size_t RnaSuite::filterDDG(dihedral, vector<double> &min,
-        vector<double> &max, uint increment, uint ddg_index) {
-
-        size_t i = 0;
-        while (i < min.size()) {
-
-            if (dihedral >= min[i] && dihedral <= max[i]) {
-
-                ddg_index += i * increment;
-                return i;
-
-            }
-
-            ++i;
-
-        }
-
-    } // filterDDG()
-
     double RnaSuite::getSuitenessCutoff() const {
         return suiteness_cutoff;
     } // getSuitenessCutoff()
+
+    double RnaSuite::hyperellipsoidDist(vector<double> &dihedrals,
+        vector<double> &reference, uint first_index, uint last_index) {
+
+        double unscaled_diff;
+        double sum_scaled_powers = 0.0;
+
+        for (uint i = first_index; i <= last_index; ++i) {
+
+            unscaled_diff = abs(dihedrals[i] - reference[i]);
+            // suitename program does not wrap unscaled coordinates
+            // if (unscaled_diff > 180.0) unscaled_diff = 360.0 - unscaled_diff;
+            sum_scaled_powers += pow(unscaled_diff / dihedral_width[i], 3.0);
+
+        }
+
+        return cbrt(sum_scaled_powers);
+
+    } // hyperellipsoidDist4()
 
     void RnaSuite::printBackboneAtoms() const {
 
@@ -566,7 +676,7 @@ namespace loos {
 
         cout << "\n    ====  Printing backbone atoms  ====\n" << endl;
 
-        if (N_continuous_group == 0) {
+        if (alpha_atoms.empty()) {
 
             cout << "Warning: backbone atoms are empty" << endl;
             return;
@@ -624,16 +734,13 @@ namespace loos {
             for (size_t j = 0; j < N_residue[i]; ++j) {
 
                 cout << boost::format(
-                    "%4d %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
-                    % gamma_atoms[i][j][0]->resid() % delta[i][j]
+                    "%5d %3s %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
+                    % gamma_atoms[i][j][0]->resid()
+                    % gamma_atoms[i][j][0]->resname() % delta[i][j]
                     % epsilon[i][j] % zeta[i][j] % alpha[i][j] % beta[i][j]
-                    % gamma[i][j];
+                    % gamma[i][j] % delta[i][j + 1];
 
             }
-
-            cout << boost::format("%4d %8.3f\n")
-                % delta_atoms[i][N_residue[i]][0]->resid()
-                % delta[i][N_residue[i]];
 
         }
 
@@ -650,13 +757,13 @@ namespace loos {
 
         }
 
-        for (size_t i = 0; i < reference_suite_dihedrals.size(); ++i) {
+        for (size_t i = 0; i < N_reference_ddg; ++i) {
 
-            for (size_t j = 0; j < reference_suite_dihedrals[i].size(); ++j) {
+            for (size_t j = 0; j < N_reference_suite[i]; ++j) {
 
                 cout << boost::format(
                     "%2s %3s %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n")
-                    % reference_suite_names[i][j] % reference_suite_ddg[i][j]
+                    % reference_suite_names[i][j] % reference_suite_ddgs[i]
                     % reference_suite_dihedrals[i][j][0]
                     % reference_suite_dihedrals[i][j][1]
                     % reference_suite_dihedrals[i][j][2]
@@ -664,6 +771,39 @@ namespace loos {
                     % reference_suite_dihedrals[i][j][4]
                     % reference_suite_dihedrals[i][j][5]
                     % reference_suite_dihedrals[i][j][6];
+
+            }
+
+        }
+
+    } // printReferenceSuites()
+
+    void RnaSuite::printSuites() const {
+
+        uint suite_counter = 0;
+
+        cout << "\n    ====  Printing suites  ====\n" << endl;
+
+        if (suite_names.empty()) {
+
+            cout << "Warning: suites are empty" << endl;
+            return;
+
+        }
+
+        for (size_t i = 0; i < N_continuous_group; ++i) {
+
+            for (size_t j = 0; j < N_residue[i]; ++j) {
+
+                cout << boost::format("%5d %3s %2s %3s %8.6f %7.3f %7.3f %7.3f "
+                    "%7.3f %7.3f %7.3f %7.3f\n") % gamma_atoms[i][j][0]->resid()
+                    % gamma_atoms[i][j][0]->resname()
+                    % suite_names[suite_counter] % suite_ddg[suite_counter]
+                    % suiteness[suite_counter] % delta[i][j] % epsilon[i][j]
+                    % zeta[i][j] % alpha[i][j] % beta[i][j] % gamma[i][j]
+                    % delta[i][j + 1];
+
+                ++suite_counter;
 
             }
 

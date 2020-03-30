@@ -126,6 +126,10 @@ int main(int argc, char *argv[]) {
     // Create RNASuite object from RNA atoms
     RnaSuite rna_suite = RnaSuite(rna_atoms, suiteness_cutoff);
 
+    // Define reference suites from suitename
+    rna_suite.defineSuites("suitename");
+    rna_suite.printReferenceSuites();
+
     // Print dihedrals
     rna_suite.printBackboneAtoms();
 
@@ -137,6 +141,8 @@ int main(int argc, char *argv[]) {
 
         rna_suite.calculateBackboneDihedrals();
         rna_suite.printBackboneDihedrals();
+        rna_suite.assignRichardsonSuites();
+        rna_suite.printSuites();
 
     }
 

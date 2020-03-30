@@ -47,6 +47,10 @@ namespace loos {
         
         RnaSuite();
         
+        //! Method to assign residues to a delta(i-1), delta, gamma index
+        size_t assignDDGIndex(double dihedral, vector<double> &min,
+            vector<double> &max, uint increment, uint &ddg_index);
+
         //! Method to assign residues to backbone suites from Richardson et al.
         /**
          *  This method assigns residues to one of the 46 backbone suites
@@ -80,7 +84,7 @@ namespace loos {
         void defineSuites(const string suite_definition);
 
         //! Method to define suites used for assignment from a file
-        void defineSuitesFromFile(const string suite_definition_filename);
+        void defineSuitesFromFile(const string filename);
 
         //! Method to define suites used for assignment from suitename
         void defineSuitesFromSuitename();
@@ -92,12 +96,12 @@ namespace loos {
          */
         void extractRnaBackboneAtoms(const AtomicGroup &group);
 
-        //! Method to assign residues to a delta(i-1), delta, gamma index
-        size_t RnaSuite::filterDDG(dihedral, vector<double> &min,
-            vector<double> &max, uint increment, uint ddg_index);
-
         //! Method to return the cutoff for the suiteness score of non-outliers
         double getSuitenessCutoff() const;
+
+        //! Calculate a scaled hyperellipsoid distance between two points
+        double hyperellipsoidDist(vector<double> &dihedrals,
+            vector<double> &reference, uint first_index, uint last_index);
 
         //! Method to print groups of backbone atoms for each dihedral
         void printBackboneAtoms() const;
@@ -107,6 +111,9 @@ namespace loos {
 
         //! Method to print reference suite names and mean dihedrals
         void printReferenceSuites() const;
+
+        //! Method to print suite names, suiteness scores, and dihedrals
+        void printSuites() const;
 
         //! Method to set the cutoff for the suiteness score of non-outliers
         void setSuitenessCutoff(const double suiteness_cutoff_);
@@ -119,10 +126,10 @@ namespace loos {
         vector<string> reference_suite_ddgs;
 
         // Widths used to scale each dihedral dimension
-        vector<double> dihedral_width(7);
+        vector<double> dihedral_width;
 
         // Satellite widths used to scale overlapping clusters
-        vector<double> satellite_width(4);
+        vector<double> satellite_width;
 
         // Boundaries for allowed regions of delta(i-1), delta, and gamma
         vector<double> delta_min;
@@ -131,8 +138,8 @@ namespace loos {
         vector<double> gamma_max;
 
         // Boundaries used to filter suites based on epsilon, zeta, alpha, beta
-        vector<double> filter_min(4);
-        vector<double> filter_max(4);
+        vector<double> filter_min;
+        vector<double> filter_max;
 
         // Vector of continuous groups, composed of vectors of AtomicGroups
         // for each residue within a continuous group
@@ -155,10 +162,13 @@ namespace loos {
         // 5' hemi-nucleotide and a letter-like character for the
         // 3' hemi-nucleotide) and suiteness score
         vector<string> suite_names;
+        vector<string> suite_ddg;
         vector<double> suiteness;
 
         // Other internal variables
-        size_t N_continuous_group = 0;
+        size_t N_reference_ddg;
+        vector<size_t> N_reference_suite;
+        size_t N_continuous_group;
         vector<size_t> N_residue;
         size_t N_suite;
         double suiteness_cutoff;
