@@ -43,4 +43,4 @@ install:
     - conda config --set always_yes yes --set changeps1 no
 
 script:
-    - ./conda_build loos 1
+    - ./conda_build.sh loos 1
