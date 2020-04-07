@@ -42,5 +42,4 @@ install
     - hash -r
     - conda config --set always_yes yes --set changeps1 no
 
-script:
-    ./conda_build loos 1
+script: ./conda_build loos 1
