@@ -66,6 +66,9 @@ GTAGS
 # JSON files
 .*.json
 
+# pycharm cruft
+**.idea
+
 # latex cruft
 *.aux
 *.out
