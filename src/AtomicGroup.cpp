@@ -35,6 +35,7 @@
 #include <AtomicGroup.hpp>
 #include <AtomicNumberDeducer.hpp>
 #include <Selectors.hpp>
+#include <Parser.hpp>
 
 #include <boost/unordered_map.hpp>
 
@@ -413,6 +414,7 @@ namespace loos {
 
       }
     }
+    
 
     // copy the box over
     std::vector<AtomicGroup>::iterator m;
@@ -421,6 +423,47 @@ namespace loos {
     }
     return(molecules);
   }
+
+  std::vector<AtomicGroup> AtomicGroup::sortingSplitByMolecule(const std::string& selection) {
+    std::vector<AtomicGroup> molecules;
+    Parser parser(selection);
+    KernelSelector parsed_sel(parser.kernel());
+
+
+    // If no connectivity, just return the entire group...
+    if (!hasBonds()) {
+      sort();
+      molecules.push_back(this->select(parsed_sel));
+    } else {
+      HashInt seen;                      // Track what atoms we've already processed
+      AtomicGroup current;               // The molecule we're currently building...
+      AtomicGroup working(*this);        // Copy, so we can sort without mucking up original order
+      working.sort();
+
+      int n = size();
+      for (int i=0; i<n; i++) {
+        HashInt::iterator it = seen.find(working.atoms[i]->id());
+        if (it != seen.end())
+          continue;
+
+        walkBonds(current, seen, working, working.atoms[i]);
+        if (current.size() != 0) {       // Just in case...
+          current.sort();
+          molecules.push_back(current.select(parsed_sel));
+          current = AtomicGroup();
+        }
+
+      }
+    }
+    
+
+    // copy the box over
+    std::vector<AtomicGroup>::iterator m;
+    for (m=molecules.begin(); m!=molecules.end(); m++) {
+      m->box = box;
+    }
+    return(molecules);
+  } 
 
 
   void AtomicGroup::walkBonds(AtomicGroup& current, HashInt& seen, AtomicGroup& working, pAtom& moi) {

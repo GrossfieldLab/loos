@@ -1,6 +1,12 @@
+2020-02-28  Alan Grossfield <alan>
+	* added new tool set_segids.py
+	
+2020-02-13  Alan Grossfield <alan>
+	* Merged in new radius of gyration tool rad-gyr from Louis Smith
+
 2019-12-24  Alan Grossfield <alan>
 	* Added experimental tSNE feature to cluster-structures.py
-	
+
 2019-12-19  Alan Grossfield <alan>
 	* Release 3.1 New build system
 	* New Clustering package

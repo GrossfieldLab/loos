@@ -19,7 +19,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-### This will be automatically set to where LOOS is built or installed.  If necessary,
+### This will be automatically set to where LOOS is built or installed.  If
+#necessary,
 ### change manually...
 setenv LOOS "$loos_path"
 
@@ -34,12 +35,11 @@ setenv PATH "$tool_path":"$$PATH"
 
 set SYSTEM=`uname`
 if ( "$$SYSTEM" == "Darwin" ) then
-   # no longer necessary with conda, and DYLD_LIBRARY_PATH breaks things
-   #if ($$?DYLD_LIBRARY_PATH) then
-   #   setenv DYLD_LIBRARY_PATH "$ldlibrary":"$${DYLD_LIBRARY_PATH}"
-   #else
-   #   setenv DYLD_LIBRARY_PATH "$ldlibrary"
-   #endif
+   if ($$?DYLD_BACKUP_LIBRARY_PATH) then
+     setenv DYLD_BACKUP_LIBRARY_PATH "$ldlibrary":"$${DYLD_BACKUP_LIBRARY_PATH}"
+   else
+     setenv DYLD_BACKUP_LIBRARY_PATH "$ldlibrary"
+   endif
 
 else
 
