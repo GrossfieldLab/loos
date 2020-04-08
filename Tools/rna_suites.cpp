@@ -120,30 +120,39 @@ int main(int argc, char *argv[]) {
     vector<uint> indices = tropts->frameList();
     AtomicGroup rna_atoms = selectAtoms(model, sopts->selection);
 
-    // Number of frames in trajectory
-    const uint N_frame = indices.size();
-
     // Create RNASuite object from RNA atoms
     RnaSuite rna_suite = RnaSuite(rna_atoms, suiteness_cutoff);
-
-    // Define reference suites from suitename
-    rna_suite.defineSuites("suitename");
-    rna_suite.printReferenceSuites();
+    vector<int> suite_resids = rna_suite.getSuiteResids();
+    vector<string> suite_resnames = rna_suite.getSuiteResnames();
+    //rna_suite.printReferenceSuites();
 
     // Print dihedrals
-    rna_suite.printBackboneAtoms();
+    //rna_suite.printBackboneAtoms();
 
     // Loop over trajectory
-    for (vector<uint>::iterator i = indices.begin(); i != indices.end(); i++) {
+    vector<string> suite_names;
+    vector<string> suite_ddgs;
+    vector<double> suiteness;
+    uint t = 0;
+    for (vector<uint>::iterator i = indices.begin(); i != indices.end(); ++i) {
 
         traj->readFrame(*i);
         traj->updateGroupCoords(model);
 
         rna_suite.calculateBackboneDihedrals();
-        rna_suite.printBackboneDihedrals();
-        rna_suite.assignRichardsonSuites();
-        rna_suite.printSuites();
+        rna_suite.assignSuitenameSuites();
+        suite_names = rna_suite.getSuiteNames();
+        suite_ddgs = rna_suite.getSuiteDDGs();
+        suiteness = rna_suite.getSuitenessScores();
+
+        for (uint j = 0; j < suite_resids.size(); ++j)
+            cout << boost::format("%5d %5d %3s %2s %2s %8.6f") % t
+                % suite_resids[j] % suite_resnames[j] % suite_names[j]
+                % suite_ddgs[j] % suiteness[j] << endl;
+
+        ++t;
 
     }
 
 }
+
