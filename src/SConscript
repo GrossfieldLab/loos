@@ -93,8 +93,15 @@ if int(env['pyloos']):
       pynv = env.Clone()
       loos_python = pynv.SharedLibrary('#_loos', ['loos.i', loos])
 
+
 # Handle installing PyLOOS
-   env.Install(os.path.join(PREFIX, 'lib'), loos_python)
+   if env.USING_CONDA:
+       import sys
+       python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
+                              sys.path))[0]
+       env.Install(python_lib_path, loos_python)
+   else:
+       env.Install(os.path.join(PREFIX, 'lib'), loos_python)
    loos_python += Command("#loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
    # hack to make swig-4 work
    loos_python += Command("#loos/_loos.so", "../_loos.so", Copy("$TARGET", "$SOURCE"))

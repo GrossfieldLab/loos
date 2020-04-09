@@ -23,7 +23,10 @@ import sys
 import os
 
 Import('env')
-PREFIX = env['PREFIX'] + '/Voronoi/'
+if env.USING_CONDA:
+    PREFIX = PREFIX + "/bin"
+else:
+    PREFIX = env['PREFIX'] + '/Voronoi/'
 
 executables = 'area_per_molecule.py area_profile.py lipid_lifetime.py run_areas.py Voronoi.py'
 files = ''
