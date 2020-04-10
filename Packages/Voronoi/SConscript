@@ -24,12 +24,15 @@ import os
 
 Import('env')
 if env.USING_CONDA:
-    PREFIX = env['PREFIX'] + "/bin"
+    import sys
+    python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
+                           sys.path))[0] + '/loos/Voronoi/'
+    PREFIX = env['PREFIX'] + '/bin/'
 else:
     PREFIX = env['PREFIX'] + '/Voronoi/'
 
-executables = 'area_per_molecule.py area_profile.py lipid_lifetime.py run_areas.py Voronoi.py'
-files = ''
+executables = 'area_per_molecule.py area_profile.py lipid_lifetime.py run_areas.py '
+files = 'Voronoi.py'
 dirs = ''
 
 voronoi_package = []
@@ -44,8 +47,14 @@ if int(env['pyloos']):
                 Chmod("$TARGET", 0o755)
                 ])
 
+    # conda installs put libraries in python subdir, regular put them
+    # in the main Voronoi directory
+    if env.USING_CONDA:
+        p = python_lib_path
+    else:
+        p = PREFIX
     for d in Split(files):
-        Command(PREFIX + d, d, [
+        Command(p + d, d, [
                 Copy("$TARGET", "$SOURCE"),
                 Chmod("$TARGET", 0o644)
                 ])
