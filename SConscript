@@ -34,12 +34,12 @@ env.Install(os.path.join(PREFIX, 'lib'), 'loos')
 
 script_sh = env.Scripts('setup.sh', 'setup.sh-pre')
 script_csh = env.Scripts('setup.csh', 'setup.csh-pre')
-scripts = [ script_sh, script_csh ]
+scripts = [script_sh, script_csh]
 
 if not env.USING_CONDA:
     script_sh_inst = env.Scripts(os.path.join(PREFIX, 'setup.sh'), 'setup.sh-pre')
     script_csh_inst = env.Scripts(os.path.join(PREFIX, 'setup.csh'), 'setup.csh-pre')
-    scripts_inst = [ script_sh_inst, script_csh_inst ]
+    scripts_inst = [script_sh_inst, script_csh_inst]
 
 
 Return('scripts')
