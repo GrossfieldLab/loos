@@ -27,7 +27,14 @@ Import('env')
 # Handle installation...
 PREFIX = env['PREFIX']
 
-env.Install(os.path.join(PREFIX, 'lib'), 'loos')
+# Install the pyloos-specific modules
+if env.USING_CONDA:
+    import sys
+    python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
+                           sys.path))[0] + '/loos/'
+    env.Install(python_lib_path, 'loos')
+else:
+    env.Install(os.path.join(PREFIX, 'lib'), 'loos')
 
 
 # Setup environment script(s)
