@@ -79,6 +79,9 @@
 ## Uncomment the following to use the threaded version of OpenBLAS
 # ATLAS_LIBS='openblasp'
 
+## Uncomment and change to manually choose the location of eigen3
+#EIGEN='/usr/include/eigen3'
+
 
 ############ Use the correct python while compiling
 ## Help scons find the correct python include files
