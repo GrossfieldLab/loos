@@ -194,8 +194,8 @@ namespace loos {
 
             // Filter on epsilon. Values outside of this range are
             // indicative of a misfit sugar pucker.
-            if (suite_dihedrals[i][1] < filter_min[0]
-                || suite_dihedrals[i][1] > filter_max[0]) {
+            if (suite_dihedrals[i][1] < ezab_min[0]
+                || suite_dihedrals[i][1] > ezab_max[0]) {
 
                 suite_names.push_back("!e");
                 suite_ddgs.push_back("!!!");
@@ -205,8 +205,8 @@ namespace loos {
             }
 
             // Filter on zeta
-            if (suite_dihedrals[i][2] < filter_min[1]
-                || suite_dihedrals[i][2] > filter_max[1]) {
+            if (suite_dihedrals[i][2] < ezab_min[1]
+                || suite_dihedrals[i][2] > ezab_max[1]) {
 
                 suite_names.push_back("!z");
                 suite_ddgs.push_back("!!!");
@@ -216,8 +216,8 @@ namespace loos {
             }
 
             // Filter on alpha
-            if (suite_dihedrals[i][3] < filter_min[2]
-                || suite_dihedrals[i][3] > filter_max[2]) {
+            if (suite_dihedrals[i][3] < ezab_min[2]
+                || suite_dihedrals[i][3] > ezab_max[2]) {
 
                 suite_names.push_back("!a");
                 suite_ddgs.push_back("!!!");
@@ -227,8 +227,8 @@ namespace loos {
             }
 
             // Filter on beta
-            if (suite_dihedrals[i][4] < filter_min[3]
-                || suite_dihedrals[i][4] > filter_max[3]) {
+            if (suite_dihedrals[i][4] < ezab_min[3]
+                || suite_dihedrals[i][4] > ezab_max[3]) {
 
                 suite_names.push_back("!b");
                 suite_ddgs.push_back("!!!");
@@ -411,14 +411,14 @@ namespace loos {
     } // calculateDihedral()
 
     void RnaSuite::checkContinuousGroupSize(
-        const vector<vector<AtomicGroup>> &group_vector,
+        const vector<vector<AtomicGroup> > &group_vector,
         const size_t target_size, const string dihedral_name) const {
 
         if (group_vector.size() != target_size) {
 
             cerr << boost::format("Error: different number of continuous "
-                "groups for alpha (%d) and %s (%d)\n") % target_size
-                % dihedral_name % group_vector.size();
+                "groups for alpha (%d) and %s (%d)") % target_size
+                % dihedral_name % group_vector.size() << endl;
             throw(LOOSError());
 
         }
@@ -433,234 +433,240 @@ namespace loos {
         if (residue_vector.size() != target_size) {
 
             cerr << boost::format("Error: different number of residues in "
-                "continuous group %d for alpha (%d) and %s (%d)\n")
-                % group_index % target_size % dihedral_name
-                % residue_vector.size();
+                "continuous group %d for alpha (%d) and %s (%d)") % group_index
+                % target_size % dihedral_name % residue_vector.size() << endl;
+            throw(LOOSError());
 
         }
 
     } // checkResidueSize()
 
-    void RnaSuite::defineSuites(const string suite_definition) {
+    void RnaSuite::defineSuites(const string& suite_definition) {
 
+        // Clear vectors for reference suites
         reference_dihedrals.clear();
         reference_names.clear();
         reference_ddgs.clear();
+        dihedral_width.clear();
+        dominant_suites.clear();
+        dom_sat_pair_index.clear();
+        dominant_width.clear();
+        satellite_width.clear();
+        delta_min.clear();
+        delta_max.clear();
+        gamma_min.clear();
+        gamma_max.clear();
+        ezab_min = vector<double>(4);
+        ezab_max = vector<double>(4);
+        N_reference_ddg = 0;
+        N_reference_suite.clear();
 
-        if (suite_definition == "suitename"
-            || suite_definition == "richardson") defineSuitesFromSuitename();
+        if (suite_definition == "suitename")
+            defineSuitesFromFile("suitename_definitions.dat");
 
-        else {
-
-            cerr << boost::format("%s is not a recognized suite definition\n")
-                % suite_definition;
-            cerr << "Must be one of: suitename" << endl;
-            throw(LOOSError());
-
-        }
+        else defineSuitesFromFile(suite_definition);
 
     } // defineSuites()
 
-    void RnaSuite::defineSuitesFromFile(const string filename) {
+    void RnaSuite::defineSuitesFromFile(const string& filename) {
 
-        // TODO read suite definitions from file
-        cerr << "Reading suite definitions from a file is not yet supported\n"
-            "Go yell at Chapin" << endl;
+        size_t ddg_index;
+        size_t dom_index;
+        size_t sat_index;
+        size_t position;
+        string field;
+        string line;
+        string record;
+        vector<double> dihedrals(7);
 
-    } // defineSuitesFromFile()
+        // Store dominant-satellite pairs
+        vector<size_t> domsat_ddg;
+        vector<size_t> domsat_dom;
+        vector<size_t> domsat_sat;
+        vector<vector<size_t> > domsat_dihedral;
+        vector<vector<double> > domsat_dom_width;
+        vector<vector<double> > domsat_sat_width;
 
-    void RnaSuite::defineSuitesFromSuitename() {
+        // Read file contents
+        ifstream ifs(filename.c_str());
+        if (!ifs) throw(FileOpenError(filename));
 
-        size_t suite_size;
+        while (getline(ifs, line)) {
 
-        // Means of dihedral angles
-        reference_dihedrals = {
-            { // ddg index 0: C3' C3' plus
-                { 81.495, 212.250, 288.831, 294.967, 173.990,  53.550,  81.035},
-                { 83.513, 218.120, 291.593, 292.247, 222.300,  58.067,  86.093},
-                { 85.664, 245.014, 268.257, 303.879, 138.164,  61.950,  79.457},
-                { 82.112, 190.682, 264.945, 295.967, 181.839,  51.455,  81.512},
-                { 83.414, 217.400, 222.006, 302.856, 160.719,  49.097,  82.444},
-                { 85.072, 216.324, 173.276, 289.320, 164.132,  45.876,  84.956},
-                { 83.179, 210.347, 121.474, 288.568, 157.268,  49.347,  81.047},
-                { 80.888, 218.636, 290.735, 167.447, 159.565,  51.326,  85.213},
-                { 83.856, 238.750, 256.875,  69.562, 170.200,  52.800,  85.287},
-                { 85.295, 244.085, 203.815,  65.880, 181.130,  54.680,  86.035},
-                { 79.671, 202.471,  63.064,  68.164, 143.450,  49.664,  82.757},
-                { 84.000, 195.000, 146.000, 170.000, 170.000,  52.000,  84.000}
-            }, { // ddg index 1: C3' C3' trans
-                { 80.514, 200.545, 280.510, 249.314,  82.662, 167.890,  85.507},
-                { 80.223, 196.591, 291.299, 153.060, 194.379, 179.061,  83.648},
-                { 81.395, 203.030, 294.445, 172.195, 138.540, 175.565,  84.470},
-                { 87.417, 223.558,  80.175,  66.667, 109.150, 176.475,  83.833},
-                { 86.055, 246.502, 100.392,  73.595, 213.752, 183.395,  85.483}
-            }, { // ddg index 2: C3' C3' minus
-            }, { // ddg index 3: C3' C2' plus
-                { 84.215, 215.014, 288.672, 300.420, 177.476,  58.307, 144.841},
-                { 82.731, 220.463, 288.665, 296.983, 221.654,  54.213, 143.771},
-                { 84.700, 226.400, 168.336, 292.771, 177.629,  48.629, 147.950},
-                { 83.358, 206.042, 277.567, 195.700, 161.600,  50.750, 145.258},
-                { 82.614, 206.440,  52.524, 163.669, 148.421,  50.176, 147.590},
-                { 84.285, 236.600, 220.400,  68.300, 200.122,  53.693, 145.730},
-                { 84.457, 213.286,  69.086,  75.500, 156.671,  57.486, 147.686}
-            }, { // ddg index 4: C3' C2' trans
-                { 81.200, 199.243, 288.986, 180.286, 194.743, 178.200, 147.386},
-                { 82.133, 204.933,  69.483,  63.417, 115.233, 176.283, 145.733}
-            }, { // ddg index 5: C3' C2' minus
-                { 83.977, 216.508, 287.192, 297.254, 225.154, 293.738, 150.677},
-                { 84.606, 232.856, 248.125,  63.269, 181.975, 295.744, 149.744},
-                { 83.000, 196.900,  65.350,  60.150, 138.425, 292.550, 154.275}
-            }, { // ddg index 6: C2' C3' plus
-                {145.399, 260.339, 288.756, 288.444, 192.733,  53.097,  84.067},
-                {146.275, 259.783, 169.958, 298.450, 169.583,  50.908,  83.967},
-                {149.286, 223.159, 139.421, 284.559, 158.107,  47.900,  84.424},
-                {148.006, 191.944, 146.231, 289.288, 150.781,  42.419,  84.956},
-                {148.028, 256.922, 165.194, 204.961, 165.194,  49.383,  82.983},
-                {145.337, 262.869,  79.588, 203.863, 189.688,  58.000,  84.900},
-                {148.992, 270.596, 240.892,  62.225, 176.271,  53.600,  87.262},
-                {149.822, 249.956, 187.678,  80.433, 198.133,  61.000,  89.378},
-                {146.922, 241.222,  88.894,  59.344, 160.683,  52.333,  83.417},
-                {141.900, 258.383, 286.517, 178.267, 165.217,  48.350,  84.783}
-            }, { // ddg index 7: C2' C3' trans
-                {147.782, 260.712, 290.424, 296.200, 177.282, 175.594,  86.565},
-                {143.722, 227.256, 203.789,  73.856, 216.733, 194.444,  80.911},
-                {148.717, 274.683, 100.283,  80.600, 248.133, 181.817,  82.600},
-                {150.311, 268.383,  84.972,  63.811, 191.483, 176.644,  85.600},
-                {141.633, 244.100,  66.056,  71.667, 122.167, 182.200,  83.622}
-            }, { // ddg index 8: C2' C3' minus
-                {149.070, 249.780, 111.520, 278.370, 207.780, 287.820,  86.650}
-            }, { // ddg index 9: C2' C2' plus
-                {146.383, 259.402, 291.275, 291.982, 210.048,  54.412, 147.760},
-                {145.256, 244.622, 162.822, 294.159, 171.630,  45.900, 145.804},
-                {147.593, 248.421, 112.086, 274.943, 164.764,  56.843, 146.264},
-                {150.077, 260.246, 213.785,  71.900, 207.638,  56.715, 148.131},
-                {146.415, 257.831,  89.597,  67.923, 173.051,  55.513, 147.623},
-                {142.900, 236.550, 268.800, 180.783, 185.133,  54.467, 143.350}
-            }, { // ddg index 10: C2' C2' trans
-                {149.863, 247.562, 170.488, 277.938,  84.425, 176.413, 148.087},
-                {143.940, 258.200, 298.240, 279.640, 183.680, 183.080, 145.120}
-            }, { // ddg index 11: C2' C2' minus
-                {147.342, 256.475, 295.508, 287.408, 194.525, 293.725, 150.458}
-        } };
+            record = parseStringAs<std::string>(line, 0, 8);
 
-        // Get number of ddg clusters and number of suites in each ddg cluster
-        // Dominant suites lists indices of the dominant suite associated with
-        // a satellite suite. A value of reference_suite_dihedrals.size()
-        // that this suite is neither dominant nor satellite. A dominant suite
-        // will point to its own index.
-        N_reference_ddg = reference_dihedrals.size();
-        N_reference_suite.clear();
-        dominant_suites.clear();
+            if (record.empty() || record[0] == '#') continue;
+
+            else if (record == "suite") {
+
+                // Define a reference suite
+
+                // Get delta delta gamma cluster
+                field = parseStringAs<std::string>(
+                    line, 16, min((size_t) 8, line.size() - 16));
+                ddg_index = N_reference_ddg;
+                for (size_t i = 0; i < N_reference_ddg; ++i)
+                    if (field == reference_ddgs[i]) {
+                        ddg_index = i;
+                        break;
+                    }
+
+                // This is a new DDG cluster
+                if (ddg_index == N_reference_ddg) {
+                    reference_ddgs.push_back(field);
+                    reference_dihedrals.push_back(vector<vector<double> >());
+                    reference_names.push_back(vector<string>());
+                    ++N_reference_ddg;
+                    N_reference_suite.push_back(0);
+                }
+
+                // Get suite name
+                field = parseStringAs<std::string>(line, 8, 8);
+                if (field.empty()) continue;
+                reference_names[ddg_index].push_back(field);
+
+                // Get reference suite dihedrals
+                dihedrals[0] = parseStringAs<double>(line, 24, 8);
+                dihedrals[1] = parseStringAs<double>(line, 32, 8);
+                dihedrals[2] = parseStringAs<double>(line, 40, 8);
+                dihedrals[3] = parseStringAs<double>(line, 48, 8);
+                dihedrals[4] = parseStringAs<double>(line, 56, 8);
+                dihedrals[5] = parseStringAs<double>(line, 64, 8);
+                dihedrals[6] = parseStringAs<double>(line, 72, 8);
+                reference_dihedrals[ddg_index].push_back(dihedrals);
+
+                ++N_reference_suite[ddg_index];
+
+            } else if (record == "width") {
+
+                // Get default widths for hyperellipsoid distance
+                dihedral_width.push_back(parseStringAs<double>(line, 8, 8));
+                dihedral_width.push_back(parseStringAs<double>(line, 16, 8));
+                dihedral_width.push_back(parseStringAs<double>(line, 24, 8));
+                dihedral_width.push_back(parseStringAs<double>(line, 32, 8));
+                dihedral_width.push_back(parseStringAs<double>(line, 40, 8));
+                dihedral_width.push_back(parseStringAs<double>(line, 48, 8));
+                dihedral_width.push_back(parseStringAs<double>(line, 56, 8));
+
+            } else if (record == "domsat") {
+
+                // Define a dominant-satellite pair
+
+                // Get index of dominant suite
+                field = parseStringAs<std::string>(line, 16, 8);
+                ddg_index = N_reference_ddg;
+                for (size_t i = 0; i < N_reference_ddg; ++i) {
+                    for (size_t j = 0; j < N_reference_suite[i]; ++j)
+                        if (field == reference_names[i][j]) {
+                            ddg_index = i;
+                            dom_index = j;
+                            break;
+                        }
+                    if (ddg_index != N_reference_ddg) break;
+                }
+
+                if (ddg_index == N_reference_ddg) {
+                    cerr << boost::format(
+                        "Warning: dominant suite %s was not defined in file %s")
+                        % field % filename << endl;
+                    continue;
+                }
+
+                // Get index of satellite suite
+                field = parseStringAs<std::string>(line, 8, 8);
+                sat_index = N_reference_suite[ddg_index];
+                for (size_t j = 0; j < N_reference_suite[ddg_index]; ++j)
+                    if (field == reference_names[ddg_index][j]) {
+                        sat_index = j;
+                        break;
+                    }
+
+                if (sat_index == N_reference_suite[ddg_index]) {
+                    cerr << boost::format(
+                        "Warning: satellite suite %s was not defined in file %s")
+                        % field % filename << endl;
+                    continue;
+                }
+
+                domsat_ddg.push_back(ddg_index);
+                domsat_dom.push_back(dom_index);
+                domsat_sat.push_back(sat_index);
+
+                // Loop over dihedrals with alternate widths
+                vector<size_t> dihedral_indices;
+                vector<double> dom_width;
+                vector<double> sat_width;
+                position = 24;
+                while (position < line.size()) {
+                    dihedral_indices.push_back(
+                        parseStringAs<size_t>(line, position, 8));
+                    sat_width.push_back(
+                        parseStringAs<double>(line, position + 8, 8));
+                    dom_width.push_back(
+                        parseStringAs<double>(line, position + 16, 8));
+                    position += 24;
+                }
+                domsat_dihedral.push_back(dihedral_indices);
+                domsat_dom_width.push_back(dom_width);
+                domsat_sat_width.push_back(sat_width);
+
+            } else if (record == "delta") {
+
+                delta_min.push_back(parseStringAs<double>(line, 8, 8));
+                delta_max.push_back(parseStringAs<double>(line, 16, 8));
+
+            } else if (record == "epsilon") {
+
+                ezab_min[0] = parseStringAs<double>(line, 8, 8);
+                ezab_max[0] = parseStringAs<double>(line, 16, 8);
+
+            } else if (record == "zeta") {
+
+                ezab_min[1] = parseStringAs<double>(line, 8, 8);
+                ezab_max[1] = parseStringAs<double>(line, 16, 8);
+
+            } else if (record == "alpha") {
+
+                ezab_min[2] = parseStringAs<double>(line, 8, 8);
+                ezab_max[2] = parseStringAs<double>(line, 16, 8);
+
+            } else if (record == "beta") {
+
+                ezab_min[3] = parseStringAs<double>(line, 8, 8);
+                ezab_max[3] = parseStringAs<double>(line, 16, 8);
+
+            } else if (record == "gamma") {
+
+                gamma_min.push_back(parseStringAs<double>(line, 8, 8));
+                gamma_max.push_back(parseStringAs<double>(line, 16, 8));
+
+            } else cerr << boost::format(
+                "Warning: Unrecognized record %s in suite definition from %s")
+                % record % filename << endl;
+
+        } // Loop over lines in file
+
+        // Construct vectors for dominant-satellite pairs
         for (size_t i = 0; i < N_reference_ddg; ++i) {
-
-            suite_size = reference_dihedrals[i].size();
-            N_reference_suite.push_back(suite_size);
-            vector<size_t> dom_suites(suite_size, suite_size);
-            dominant_suites.push_back(dom_suites);
-
+            dominant_suites.push_back(
+                vector<size_t>(N_reference_suite[i], N_reference_suite[i]));
+            dom_sat_pair_index.push_back(
+                vector<size_t>(N_reference_suite[i], domsat_dihedral.size()));
         }
 
-        // 1m, 1L, and &a are satellites of 1a
-        dominant_suites[0][0] = 0;
-        dominant_suites[0][1] = 0;
-        dominant_suites[0][2] = 0;
-        dominant_suites[0][3] = 0;
+        for (size_t i = 0; i < domsat_dihedral.size(); ++i) {
+            dominant_suites[domsat_ddg[i]][domsat_dom[i]] = domsat_dom[i];
+            dominant_suites[domsat_ddg[i]][domsat_sat[i]] = domsat_dom[i];
+            dom_sat_pair_index[domsat_ddg[i]][domsat_sat[i]] = i;
+            dominant_width.push_back(dihedral_width);
+            satellite_width.push_back(dihedral_width);
+            for (size_t j = 0; j < domsat_dihedral[i].size(); ++j) {
+                dominant_width[i][domsat_dihedral[i][j]] = domsat_dom_width[i][j];
+                satellite_width[i][domsat_dihedral[i][j]] = domsat_sat_width[i][j];
+            }
+        }
 
-        // 1f is a satellite of 1c
-        dominant_suites[1][1] = 1;
-        dominant_suites[1][2] = 1;
-
-        // 1[ is a satellite of 1b
-        dominant_suites[3][0] = 0;
-        dominant_suites[3][1] = 0;
-
-        // 4a and #a are satellites of 0a
-        dominant_suites[6][2] = 2;
-        dominant_suites[6][1] = 2;
-        dominant_suites[6][3] = 2;
-
-        // 0i nd 6j are satellites of 6n
-        dominant_suites[7][3] = 3;
-        dominant_suites[7][2] = 3;
-        dominant_suites[7][4] = 3;
-
-        // Two-character suite name
-        reference_names = {
-            {"1a", "1m", "1L", "&a", "7a", "3a", "9a", "1g", "7d", "3d", "5d",
-                "3g"},
-            {"1e", "1c", "1f", "5j", "5n"},
-            { },
-            {"1b", "1[", "3b", "1z", "5z", "7p", "5p"},
-            {"1t", "5q"},
-            {"1o", "7r", "5r"},
-            {"2a", "4a", "0a", "#a", "4g", "6g", "8d", "4d", "6d", "2g"},
-            {"2h", "4n", "0i", "6n", "6j"},
-            {"0k"},
-            {"2[", "4b", "0b", "4p", "6p", "2z"},
-            {"4s", "2u"},
-            {"2o"}
-        };
-
-        // Widths used to scale each dihedral dimension
-        dihedral_width = {28.0, 60.0, 55.0, 50.0, 70.0, 35.0, 28.0};
-
-        // Alternative widths used to scale dominant-satellite pairs
-        dominant_width = {
-            {28.0, 60.0, 55.0, 50.0, 64.0, 35.0, 28.0},
-            {28.0, 70.0, 55.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 60.0, 60.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 65.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 56.0, 35.0, 28.0},
-            {28.0, 50.0, 50.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 36.0, 36.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 60.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 60.0, 35.0, 28.0}
-        };
-
-        satellite_width = {
-            {28.0, 60.0, 55.0, 50.0, 32.0, 35.0, 28.0},
-            {28.0, 18.0, 55.0, 50.0, 18.0, 35.0, 28.0},
-            {28.0, 20.0, 20.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 47.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 34.0, 35.0, 28.0},
-            {28.0, 40.0, 40.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 26.0, 26.0, 50.0, 70.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 60.0, 35.0, 28.0},
-            {28.0, 60.0, 55.0, 50.0, 60.0, 35.0, 28.0},
-        };
-
-        // Index into dominant-satellite pair widths
-        dom_sat_pair_index = {
-            {9, 0, 1, 2, 9, 9, 9, 9, 9, 9, 9, 9},
-            {9, 9, 3, 9, 9},
-            { },
-            {9, 4, 9, 9, 9, 9, 9},
-            {9, 9},
-            {9, 9, 9},
-            {9, 5, 9, 6, 9, 9, 9, 9, 9, 9},
-            {9, 9, 7, 9, 8},
-            {9},
-            {9, 9, 9, 9, 9, 9},
-            {9, 9},
-            {9}
-        };
-
-        // Delta(i-1), delta, gamma index. Delta can be C3' endo ("3") or
-        // C2' endo ("2"). Gamma can be plus ("p"), trans ("t"), or minus ("m").
-        reference_ddgs = {"33p", "33t", "33m", "32p", "32t", "32m", "23p",
-            "23t", "23m", "22p", "22t", "22m"};
-
-        // Boundaries for allowed regions of delta(i-1), delta, and gamma
-        delta_min = { 60.0, 125.0};
-        delta_max = {105.0, 165.0};
-        gamma_min = { 20.0, 140.0, 260.0};
-        gamma_max = { 95.0, 215.0, 335.0};
-
-        // Boundaries used to filter suites based on epsilon, zeta, alpha, beta
-        filter_min = {155.0,  25.0,  25.0,  50.0};
-        filter_max = {310.0, 335.0, 335.0, 290.0};
-
-    } // defineSuitesFromSuitename()
+    } // defineSuitesFromFile()
 
     void RnaSuite::extractRnaBackboneAtoms(const AtomicGroup &group) {
 
@@ -697,18 +703,19 @@ namespace loos {
         // Extract all RNA backbone atoms (P, O5', C5', C4', C3', and O3') into
         // one AtomicGroup. Use raw string literal R"()" to avoid escaping "
         AtomicGroup backbone = selectAtoms(group,
-                                           R"(name =~ "^(P|C[345]'|O[35]')$")");
+            "(name =~ \"^(P|C[345]'|O[35]')$\")");
 
         // Split by resid and loop over residues
-        for (AtomicGroup residue : backbone.splitByResidue()) {
+        vector<AtomicGroup> backbone_residues = backbone.splitByResidue();
+        for (size_t i = 0; i < backbone_residues.size(); ++i) {
 
             // Select RNA backbone atoms from residue
-            residue_p = selectAtoms(residue, R"(name == "P")");
-            residue_o5p = selectAtoms(residue, R"(name == "O5'")");
-            residue_c5p = selectAtoms(residue, R"(name == "C5'")");
-            residue_c4p = selectAtoms(residue, R"(name == "C4'")");
-            residue_c3p = selectAtoms(residue, R"(name == "C3'")");
-            residue_o3p = selectAtoms(residue, R"(name == "O3'")");
+            residue_p = selectAtoms(backbone_residues[i], "(name == \"P\")");
+            residue_o5p = selectAtoms(backbone_residues[i], "(name == \"O5'\")");
+            residue_c5p = selectAtoms(backbone_residues[i], "(name == \"C5'\")");
+            residue_c4p = selectAtoms(backbone_residues[i], "(name == \"C4'\")");
+            residue_c3p = selectAtoms(backbone_residues[i], "(name == \"C3'\")");
+            residue_o3p = selectAtoms(backbone_residues[i], "(name == \"O3'\")");
 
             // If any atom besides P is missing, skip this residue and start a
             // new continuous group
@@ -859,7 +866,7 @@ namespace loos {
         return suite_ddgs;
     } // getSuiteDDGs()
 
-    vector<vector<double>> RnaSuite::getSuiteDihedrals() const {
+    vector<vector<double> > RnaSuite::getSuiteDihedrals() const {
         return suite_dihedrals;
     } // getSuiteDihedrals()
 

@@ -69,7 +69,7 @@ namespace loos {
         void calculateBackboneDihedrals();
 
         //! Method to define suites used for assignment from an existing scheme
-        void defineSuites(const string suite_definition);
+        void defineSuites(const string& suite_definition);
 
         //! Method to extract RNA backbone atoms from an AtomicGroup
         /**
@@ -82,7 +82,7 @@ namespace loos {
         vector<string> getSuiteDDGs() const;
 
         //! Method to return the current backbone dihedrals
-        vector<vector<double>> getSuiteDihedrals() const;
+        vector<vector<double> > getSuiteDihedrals() const;
 
         //! Method to return the current assigned suite names
         vector<string> getSuiteNames() const;
@@ -125,7 +125,7 @@ namespace loos {
 
         //! Method to check the size of a vector of continuous groups
         void checkContinuousGroupSize(
-            const vector<vector<AtomicGroup>> &group_vector,
+            const vector<vector<AtomicGroup> > &group_vector,
             const size_t target_size, const string dihedral_name) const;
 
         //! Method to check the size of a vector of residues
@@ -134,10 +134,7 @@ namespace loos {
             const size_t group_index) const;
 
         //! Method to define suites used for assignment from a file
-        void defineSuitesFromFile(const string filename);
-
-        //! Method to define suites used for assignment from suitename
-        void defineSuitesFromSuitename();
+        void defineSuitesFromFile(const string& filename);
 
         //! Method to test whether a point is in between two reference points
         bool isBetweenDomSatPair(const vector<double> &dihedrals,
@@ -149,20 +146,22 @@ namespace loos {
             uint first_index, uint last_index);
 
         // Reference suites used for assignment
-        vector<vector<vector<double>>> reference_dihedrals;
-        vector<vector<string>> reference_names;
+        vector<vector<vector<double> >> reference_dihedrals;
+        vector<vector<string> > reference_names;
         vector<string> reference_ddgs;
-        vector<vector<size_t>> dominant_suites;
 
         // Widths used to scale each dihedral dimension
         vector<double> dihedral_width;
 
-        // Alternative widths used to scale dominant-satellite pairs
-        vector<vector<double>> dominant_width;
-        vector<vector<double>> satellite_width;
+        // Indices of dominant-satellite pairs
+        vector<vector<size_t> > dominant_suites;
 
         // Index into dominant-satellite pair widths
-        vector<vector<size_t>> dom_sat_pair_index;
+        vector<vector<size_t> > dom_sat_pair_index;
+
+        // Alternative widths used to scale dominant-satellite pairs
+        vector<vector<double> > dominant_width;
+        vector<vector<double> > satellite_width;
 
         // Boundaries for allowed regions of delta(i-1), delta, and gamma
         vector<double> delta_min;
@@ -170,23 +169,23 @@ namespace loos {
         vector<double> gamma_min;
         vector<double> gamma_max;
 
-        // Boundaries used to filter suites based on epsilon, zeta, alpha, beta
-        vector<double> filter_min;
-        vector<double> filter_max;
+        // Boundaries for allowed regions of epsilon, zeta, alpha, beta
+        vector<double> ezab_min;
+        vector<double> ezab_max;
 
         // Vector of continuous groups, composed of vectors of AtomicGroups
         // for each residue within a continuous group
-        vector<vector<AtomicGroup>> alpha_atoms;
-        vector<vector<AtomicGroup>> beta_atoms;
-        vector<vector<AtomicGroup>> gamma_atoms;
-        vector<vector<AtomicGroup>> delta_atoms;
-        vector<vector<AtomicGroup>> epsilon_atoms;
-        vector<vector<AtomicGroup>> zeta_atoms;
+        vector<vector<AtomicGroup> > alpha_atoms;
+        vector<vector<AtomicGroup> > beta_atoms;
+        vector<vector<AtomicGroup> > gamma_atoms;
+        vector<vector<AtomicGroup> > delta_atoms;
+        vector<vector<AtomicGroup> > epsilon_atoms;
+        vector<vector<AtomicGroup> > zeta_atoms;
 
         // Suite residue ids, residue names, and dihedrals
         vector<int> suite_resids;
         vector<string> suite_resnames;
-        vector<vector<double>> suite_dihedrals;
+        vector<vector<double> > suite_dihedrals;
 
         // Assigned suite names, ddg indices, and suiteness scores
         vector<string> suite_names;
