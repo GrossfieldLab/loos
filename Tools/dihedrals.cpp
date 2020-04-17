@@ -226,32 +226,10 @@ vector<vector<AtomicGroup>>
 sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     const AtomicGroup &scope, const int verbosity) {
 
-  // Map all the sel strings to kernels in style of utils.cpp: selectAtoms
-  vector<vector<shared_ptr<KernelSelector>>> selectorClasses;
-  for (auto sel_class : dihedral_sels) {
-    vector<shared_ptr<KernelSelector>> selectorClass;
-    
-    for (auto sel : sel_class) {
-      Parser parser(sel);
-
-      try {
-        parser.parse(sel);
-      } catch (ParseError e) {
-        throw(ParseError("Error in parsing '" + sel + "' ... " + e.what()));
-      }
-      KernelSelector selector(parser.kernel());
-      shared_ptr<KernelSelector> sk = make_shared<KernelSelector>(selector);
-      selectorClass.push_back(move(sk));
-    }
-    selectorClasses.push_back(move(selectorClass));
-  }
-  // In this if-else, pick whether to puke up atomic group when group has wrong num elts.
-  // Use function pointer strategy to elide test in loop.
-  bool (*chkDihedralSize)(AtomicGroup &, vector<shared_ptr<KernelSelector>>&, const vector<string>& selstrs);
+  // pick whether to puke up atomic group when group has wrong num elts.
+  bool (*chkSizeReorder)(AtomicGroup &, vector<string>);
   if (verbosity > 0) {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<shared_ptr<KernelSelector>> &sels,
-                         const vector<string> &selstrs) -> bool {
-      // Puke
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
       if (oo_D.size() != 4) {
         cerr << "WARNING: dihedral specification found " << oo_D.size();
         cerr << " atoms, not 4 in selection string set: \n\t";
@@ -274,9 +252,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-    chkDihedralSize = [](AtomicGroup &oo_D, vector<shared_ptr<KernelSelector>> &sels,
-                         const vector<string> &selstrs) -> bool {
-
+    chkSizeReorder = [](AtomicGroup &oo_D, vector<string> sels) -> bool {
       if (oo_D.size() != 4)
         return true;
       else {
@@ -309,17 +285,17 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
     // but the return order of selectAtoms calls is not specified.
     // Remove any AGs that didn't manage to contain four atoms after the
     // split.
-    dihedralInstances.erase(
-        remove_if(dihedralInstances.begin(), dihedralInstances.end(),
-                  [&](AtomicGroup &oo_D) -> bool {
-                    return (*chkDihedralSize)(oo_D, selectorClasses.at(i),
-                                              dihedral_sels.at(i));
-                  }),
-        dihedralInstances.end());
+    dihedralInstances.erase(remove_if(dihedralInstances.begin(),
+                                      dihedralInstances.end(),
+                                      [&](AtomicGroup &oo_D) -> bool {
+                                        return (*chkSizeReorder)(oo_D, dSels);
+                                      }),
+                            dihedralInstances.end());
     dihedralAGs.push_back(move(dihedralInstances));
   }
   return dihedralAGs;
 }
+
 
 int main(int argc, char *argv[]) {
   string header = invocationHeader(argc, argv);
