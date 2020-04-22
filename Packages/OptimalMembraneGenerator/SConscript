@@ -24,7 +24,6 @@ import os
 
 Import('env')
 if env.USING_CONDA:
-    import sys
     python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
                            sys.path))[0]
     PREFIX = python_lib_path + '/loos/OptimalMembraneGenerator/'
