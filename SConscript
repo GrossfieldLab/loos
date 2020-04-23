@@ -29,9 +29,20 @@ PREFIX = env['PREFIX']
 
 # Install the pyloos-specific modules
 if env.USING_CONDA:
-    python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
-                           sys.path))[0] + '/loos/'
-    env.Install(python_lib_path, 'loos')
+    python_lib_path = os.path.join(
+            list(filter(lambda x: x.endswith("site-packages"), sys.path))[0],
+            'loos/')
+    # This gets installed by src/SConscript
+    #Command(python_lib_path + '_loos.so', 'loos/_loos.so', [
+    #        Copy("$TARGET", "$SOURCE"),
+    #        Chmod("$TARGET", 0o644)
+    #        ])
+    Command(python_lib_path + '__init__.py', 'loos/__init__.py', [
+            Copy("$TARGET", "$SOURCE"),
+            Chmod("$TARGET", 0o644)
+            ])
+    env.Install(python_lib_path, 'loos/pyloos')
+
 else:
     env.Install(os.path.join(PREFIX, 'lib'), 'loos')
 
