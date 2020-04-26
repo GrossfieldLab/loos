@@ -4,10 +4,10 @@ import random
 import math
 
 import loos
-import LipidLibrary
-import PSFGen
-import NAMD
-import WaterBox
+import loos.OptimalMembraneGenerator
+from loos.OptimalMembraneGenerator import PSFGen
+from loos.OptimalMembraneGenerator import NAMD
+from loos.OptimalMembraneGenerator import WaterBox
 
 if __name__ == '__main__':
     import sys

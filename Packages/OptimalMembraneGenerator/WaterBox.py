@@ -4,6 +4,7 @@ import loos
 
 # @cond TOOLS_INTERNAL
 
+
 class WaterBox:
     def __init__(self, filename, template_box, target_box, segname):
         self.filename = filename
@@ -40,9 +41,9 @@ class WaterBox:
                     new = self.template.copy()
 
                     trans = loos.GCoord()
-                    trans.x( self.template_box.x() * x)
-                    trans.y( self.template_box.y() * y)
-                    trans.z( self.template_box.z() * z)
+                    trans.x(self.template_box.x() * x)
+                    trans.y(self.template_box.y() * y)
+                    trans.z(self.template_box.z() * z)
 
                     new.translate(trans)
                     self.full_system.append(new)
@@ -76,7 +77,6 @@ class WaterBox:
         #    for j in range(len(residues[i])):
         #        residues[i][j].resid(i+1)
 
-
     def append_waters(self, other):
         """
         "other" is an AtomicGroup of waters.  Merge them
@@ -92,7 +92,6 @@ class WaterBox:
                 residues[i][j].resid(i+1)
                 residues[i][j].segid(self.segname)
 
-
     def pdb(self):
         """
         Return a string containing a PDB version of the full_system,
@@ -106,8 +105,6 @@ class WaterBox:
 
 
 if __name__ == '__main__':
-    import sys
-
     coordfile = 'water_small.crd'
     box_size = loos.GCoord(15.5516, 15.5516, 15.5516)
     big_box = loos.GCoord(74.1, 74.1, 95.0)
