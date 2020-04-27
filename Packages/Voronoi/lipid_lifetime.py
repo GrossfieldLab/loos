@@ -13,7 +13,7 @@ import loos
 import loos.pyloos
 import numpy
 
-from Voronoi import *
+from loos.Voronoi import *
 
 
 def autocorrel(timeseries, expected=None):

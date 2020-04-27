@@ -9,10 +9,9 @@ Copyright 2014
 
 import sys
 import loos
-from Voronoi import *
+from loos.Voronoi import *
 
 if __name__ == '__main__':
-
 
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
         print("""
@@ -120,5 +119,5 @@ Example selection choices:
             sr = SuperRegion()
             sr.buildFromAtoms(slicer(s), v)
             areas.append(sr.area())
-        print(frame, "\t".join(map(str,areas)))
+        print(frame, "\t".join(map(str, areas)))
         frame += 1
