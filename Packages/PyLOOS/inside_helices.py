@@ -6,19 +6,19 @@ protein
 
 import sys
 import loos
-import ConvexHull
+from loos.pyloos import ConvexHull
 import argparse
 import os
 
 fullhelp= """
 
 Example command line:
-inside_helices.py rhodopsin.psf sim.dcd 'segid == "RHOD" && backbone' -17 17 10 'segid =~ "[TB]PE" && name =~ "C2\d+"' 35:64 71:100 107:139 151:173 200:233 246:277 286:308 -d dha_helices 
+inside_helices.py rhodopsin.psf sim.dcd 'segid == "RHOD" && backbone' -17 17 10 'segid =~ "[TB]PE" && name =~ "C2\d+"' 35:64 71:100 107:139 151:173 200:233 246:277 286:308 -d dha_helices
 
 What's actually going on:
-The purpose of this program is to detect cases where lipid chains or 
-headgroups move "inside" a helical protein.  The user specifies what the 
-protein is and the residue ranges of the helices, and tells us how to 
+The purpose of this program is to detect cases where lipid chains or
+headgroups move "inside" a helical protein.  The user specifies what the
+protein is and the residue ranges of the helices, and tells us how to
 identify the lipids (in the given example, we're looking at the C2 lipid
 chain from PE lipids).
 
@@ -40,7 +40,7 @@ have a convex hull with 2 points.
 The output of the program is a set of time series: each lipid that is ever
 identified as being inside the protein gets its own file (named as
 SEGID:resid.dat).  The first column is the frame number, and the second is
-1 if the lipid was inside on that frame and 0 otherwise.  
+1 if the lipid was inside on that frame and 0 otherwise.
 
 If you just want the distribution of occupancies (e.g. what fraction of
 time the lipid was present), you can say something like
@@ -48,30 +48,30 @@ time the lipid was present), you can say something like
 grep Occ *.dat | awk '{print $4}' > vals.dat
 
 and then histogram vals.dat.
-    """ 
+    """
 
 
 parser = argparse.ArgumentParser(prog=sys.argv[0], epilog=fullhelp, formatter_class=argparse.RawDescriptionHelpFormatter)
-parser.add_argument("system_file", 
+parser.add_argument("system_file",
                     help="File describing system contents, e.g. PDB or PSF")
 parser.add_argument("traj_file", help="Trajectory file")
 parser.add_argument("protein_string", help="Selection for the protein")
-parser.add_argument("zmin", 
+parser.add_argument("zmin",
                     type=float,
                     help="Minimum z value to consider for target atoms")
-parser.add_argument("zmax", 
+parser.add_argument("zmax",
                     type=float,
-                    help="Maxmimum z value to consider for target atoms") 
-parser.add_argument("zblocks", 
+                    help="Maxmimum z value to consider for target atoms")
+parser.add_argument("zblocks",
                     type=int,
                     help="Number of blocks to slice the system into along the z-axis")
-parser.add_argument("target_string", 
+parser.add_argument("target_string",
                     help="Selection string for the stuff that may penetrate")
-parser.add_argument("helix_ranges", 
+parser.add_argument("helix_ranges",
                     nargs="+",
                     help="list of colon-delimited residue number ranges specifying where the helices are")
-parser.add_argument("-d", "--directory", 
-                    help="Directory to create output files", 
+parser.add_argument("-d", "--directory",
+                    help="Directory to create output files",
                     default=".")
 parser.add_argument("-t", "--threshold",
                     default=7,
@@ -79,8 +79,6 @@ parser.add_argument("-t", "--threshold",
                     help="Number of atoms inside for the chain to be considered inside")
 
 args = parser.parse_args()
-
-    
 
 system = loos.createSystem(args.system_file)
 traj = loos.createTrajectory(args.traj_file, system)
@@ -98,13 +96,13 @@ if not os.path.exists(output_directory):
 if not os.access(output_directory, os.W_OK):
     print("Error: no permission to write to output directory ", output_directory)
     sys.exit(1)
-        
+
 
 helices = []
 helix_centroids = loos.AtomicGroup()
 for h in args.helix_ranges:
     first, last = h.split(":")
-    helix_string ='(resid >= ' + first + ') ' + '&& (resid <= ' + last  + ')'
+    helix_string ='(resid >= ' + first + ') ' + '&& (resid <= ' + last + ')'
     helix = loos.selectAtoms(protein, helix_string)
     helices.append(helix)
     helix_centroids.append(loos.Atom())
@@ -149,8 +147,8 @@ while (traj.readFrame()):
                 current_list.append(helix_centroids[h])
 
         if len(current_list) < 3:
-           print("Warning: only %d helices represented in frame %d and slice %d" % (len(current_list), frame, i))
-           hulls.append(None)
+            print("Warning: only %d helices represented in frame %d and slice %d" % (len(current_list), frame, i))
+            hulls.append(None)
         else:
             hull = ConvexHull.ConvexHull(helix_centroids)
             hull.generate_hull()
@@ -165,7 +163,7 @@ while (traj.readFrame()):
             # skip atoms outside the z range
             if not (args.zmin < z < args.zmax):
                 continue
-            
+
             index = int((z-args.zmin)/block_size)
 
             if hulls[index] and hulls[index].is_inside(atom.coords()):
@@ -188,7 +186,7 @@ for lipid in list(bound_lipids.keys()):
     file.write("#Frame\tBound\n")
     for i in range(frame):
         if i in frames:
-            file.write("%d\t%d\n" %(i, 1))
+            file.write("%d\t%d\n" % (i, 1))
         else:
-            file.write("%d\t%d\n" %(i, 0))
+            file.write("%d\t%d\n" % (i, 0))
     file.close()

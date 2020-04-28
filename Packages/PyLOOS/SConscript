@@ -33,7 +33,9 @@ apps += 'simple_traj_transform center_molecule native-hbs total_charge '
 apps += 'cluster-structures  packing_score_per_res cylindrical-density '
 apps += 'protein_tilt'
 
-files = 'ConvexHull '
+# Moved libraries out of Packages/PyLOOS to loos/pyloos
+#files = 'ConvexHull NAMDBin'
+files = ''
 
 python_package = []
 
