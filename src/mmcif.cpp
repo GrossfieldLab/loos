@@ -27,11 +27,18 @@ void MMCIF::read(std::istream& is) {
     OBConversion obconversion(&is);
     obconversion.SetInFormat("cif");
     OBMol mol;
+    double *coords = new double[3];
 
     if (!obconversion.Read(&mol)) {
         throw(FileReadError(_fname), std::string("Error reading mmcif file"));
     }
 
+    uint natoms = mol.NumAtoms();
+
+    for (auto i=0; i < natoms; ++i) {
+        OBAtom *a = mol.GetAtom(i);
+        coords = a->GetCoordinate();
+    }
 }
 
 
