@@ -147,6 +147,13 @@ env.Append(LEXFLAGS=['-s'])
 env.Append(CPPFLAGS=['-pthread'])
 env.Append(LIBS=['pthread'])
 
+# TODO: THIS MUST BE REDONE
+# For now, hardwire in openbabel locations
+# TODO: THIS MUST BE REDONE FOR REAL
+env.APPEND(CPPPATH=[os.path.join(env["CONDA_PREFIX"],
+                                'include', 'openbabel3', 'openbabel')])
+env.Append(LIBS=['openbabel'])
+
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':
     release = platform.release().split('.')
