@@ -37,27 +37,27 @@ void MMCIF::read(std::istream& is) {
 
     // TODO: Should probably loop over residues, then atoms, so we don't
     //       have to create a new residue object for each atom
-    for (auto i=0; i < natoms; ++i) {
-        OpenBabel::OBAtom *a = mol.GetAtom(i);
+    OpenBabel::OBAtom *a;
+    uint index = 0;
+    FOR_ATOMS_OF_MOL(a, mol) {
         coords = a->GetCoordinate();
         pAtom pa(new Atom);
 
-        pa->index(i);
+        pa->index(index);
         pa->id(a->GetId());
         pa->coords(GCoord(coords[0], coords[1], coords[2]));
 
         pa->mass(a->GetAtomicMass());
-
-        // TODO: could use GetAtomicNum to look this up
-        //pa->PDBelement()
+        pa->atomic_number(a->GetAtomicNum());
 
         OpenBabel::OBResidue *residue = a->GetResidue();
-        pa->name(residue->GetAtomID(a));
+        pa->name(residue->GetAtomID( &(*a) ));
         pa->resname(residue->GetName());
         pa->resid(residue->GetNum());
         pa->chainId(std::string(1, residue->GetChain()));
 
         // TODO: get bond info, if it exists
+        // probably could do it more efficiently by separately looping over bonds
         /*
         for (auto iter = a->BeginBonds();
                   iter != a->EndBonds();
@@ -67,7 +67,12 @@ void MMCIF::read(std::istream& is) {
         */
 
         append(pa);
+
+        index++;
     }
+
+    // TODO: this causes a segfault, but it looks like a leak to me
+    //delete [] coords;
 }
 
 
