@@ -151,7 +151,8 @@ env.Append(LIBS=['pthread'])
 # For now, hardwire in openbabel locations
 # TODO: THIS MUST BE REDONE FOR REAL
 env.Append(CPPPATH=[os.path.join(env["CONDA_PREFIX"],
-                                'include', 'openbabel3', 'openbabel')])
+#'include', 'openbabel3', 'openbabel')])
+                    'include', 'openbabel3')])
 env.Append(LIBS=['openbabel'])
 
 # Platform specific build options...

@@ -40,7 +40,7 @@ apps = apps + ' xtc.cpp gro.cpp trr.cpp MatrixOps.cpp'
 apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision.cpp'
 apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.cpp alignment.cpp MultiTraj.cpp'
 apps = apps + ' index_range_parser.cpp'
-apps = apps + ' Weights.cpp'
+apps = apps + ' Weights.cpp mmcif.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'

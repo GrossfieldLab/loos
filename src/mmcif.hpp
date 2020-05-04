@@ -30,10 +30,10 @@
 #include <stdexcept>
 
 // openbabel includes
-#include <obconversion.h>
-#include <mol.h>
-#include <residue.h>
-#include <atom.h>
+#include <openbabel/obconversion.h>
+#include <openbabel/mol.h>
+#include <openbabel/residue.h>
+#include <openbabel/atom.h>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
