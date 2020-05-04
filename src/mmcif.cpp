@@ -38,6 +38,12 @@ void MMCIF::read(std::istream& is) {
     for (auto i=0; i < natoms; ++i) {
         OBAtom *a = mol.GetAtom(i);
         coords = a->GetCoordinate();
+
+        // looks like I need to query the residue to get the atom name?
+        // something like
+        residue.GetAtomID(a);
+
+
     }
 }
 
