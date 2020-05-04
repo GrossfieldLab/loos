@@ -37,6 +37,8 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <exceptions.hpp>
+
 
 namespace loos {
 
@@ -46,14 +48,14 @@ namespace loos {
  */
 class MMCIF : public AtomicGroup {
 public:
-    MMCIF() : _has_cryst(false), _fname("<not set>")   { }
+    MMCIF() : _fname("<not set>")   { }
     virtual ~MMCIF() {}
 
     //! Create an mmcif given a filename
     explicit MMCIF(const std::string& fname)
         : _fname(fname)
     {
-        std::ifstream ifs(fname_c.str());
+        std::ifstream ifs(fname.c_str());
         if (!ifs)
         {
             throw(FileOpenError(fname));
@@ -70,6 +72,9 @@ public:
 
     //! Read in a mmcif file from an istream
     void read(std::istream& ifs);
+
+private:
+    std::string _fname;
 
 };
 

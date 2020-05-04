@@ -24,9 +24,9 @@
 namespace loos {
 
 void MMCIF::read(std::istream& is) {
-    OBConversion obconversion(&is);
+    OpenBabel::OBConversion obconversion(&is);
     obconversion.SetInFormat("cif");
-    OBMol mol;
+    OpenBabel::OBMol mol;
     double *coords = new double[3];
 
     if (!obconversion.Read(&mol)) {
@@ -35,15 +35,38 @@ void MMCIF::read(std::istream& is) {
 
     uint natoms = mol.NumAtoms();
 
+    // TODO: Should probably loop over residues, then atoms, so we don't
+    //       have to create a new residue object for each atom
     for (auto i=0; i < natoms; ++i) {
-        OBAtom *a = mol.GetAtom(i);
+        OpenBabel::OBAtom *a = mol.GetAtom(i);
         coords = a->GetCoordinate();
+        pAtom pa(new Atom);
 
-        // looks like I need to query the residue to get the atom name?
-        // something like
-        residue.GetAtomID(a);
+        pa->index(i);
+        pa->id(a->GetId());
+        pa->coords(GCoord(coords[0], coords[1], coords[2]));
 
+        pa->mass(a->GetAtomicMass());
 
+        // TODO: could use GetAtomicNum to look this up
+        //pa->PDBelement()
+
+        OpenBabel::OBResidue *residue = a->GetResidue();
+        pa->name(residue->GetAtomID(a));
+        pa->resname(residue->GetName());
+        pa->resid(residue->GetNum());
+        pa->chainId(std::string(1, residue->GetChain()));
+
+        // TODO: get bond info, if it exists
+        /*
+        for (auto iter = a->BeginBonds();
+                  iter != a->EndBonds();
+                  iter = a->NextBond()) {
+
+                  }
+        */
+
+        append(pa);
     }
 }
 
