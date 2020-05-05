@@ -33,8 +33,6 @@ void MMCIF::read(std::istream& is) {
         throw(FileReadError(_fname), std::string("Error reading mmcif file"));
     }
 
-    uint natoms = mol.NumAtoms();
-
     // TODO: Should probably loop over residues, then atoms, so we don't
     //       have to create a new residue object for each atom
     uint index = 0;
@@ -64,7 +62,9 @@ void MMCIF::read(std::istream& is) {
     }
 
     uint begin_bonded, end_bonded;
+    bool has_bonds = false;
     FOR_BONDS_OF_MOL(b, mol) {
+        has_bonds = true;
         begin_bonded = b->GetBeginAtomIdx();
         end_bonded = b->GetEndAtomIdx();
 
@@ -74,8 +74,31 @@ void MMCIF::read(std::istream& is) {
         first->addBond(second);
         second->addBond(first);
     }
+    if (has_bonds) {
+        setGroupConnectivity();
+    }
 
+    // Don't need this info anymore
+    _atomid_to_patom.clear();
 
+    // Get unit cell information, if it's there
+    if (mol.HasData("UnitCell")) {
+        OpenBabel::OBUnitCell *unitcell = (OpenBabel::OBUnitCell *)mol.GetData(OpenBabel::OBGenericDataType::UnitCell);
+        cell.a(unitcell->GetA());
+        cell.b(unitcell->GetB());
+        cell.c(unitcell->GetC());
+        cell.alpha(unitcell->GetAlpha());
+        cell.beta(unitcell->GetBeta());
+        cell.gamma(unitcell->GetGamma());
+        cell.spaceGroup(unitcell->GetSpaceGroupName());
+        _has_cryst = true;
+
+        // Use the cell to set the periodic box
+        // Note: this is wrong if it's not a simple orthonormal space group.
+        //
+        GCoord c(cell.a(), cell.b(), cell.c());
+        periodicBox(c);
+    }
 
     // TODO: this causes a segfault, but it looks like a leak to me
     //delete[] coords;
@@ -94,5 +117,9 @@ pAtom MMCIF::findAtom(const uint id) {
   }
   return(i->second);
 }
+
+const UnitCell& MMCIF::unitCell(void) { return(cell); }
+void MMCIF::unitCell(const UnitCell& c) { _has_cryst = true; cell = c; }
+
 
 }

@@ -35,10 +35,12 @@
 #include <openbabel/residue.h>
 #include <openbabel/atom.h>
 #include <openbabel/bond.h>
+#include <openbabel/generic.h>
 #include <openbabel/obiter.h>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <cryst.hpp>
 #include <exceptions.hpp>
 
 
@@ -50,12 +52,12 @@ namespace loos {
  */
 class MMCIF : public AtomicGroup {
 public:
-    MMCIF() : _fname("<not set>")   { }
+    MMCIF() : _fname("<not set>"), _has_cryst(false)   { }
     virtual ~MMCIF() {}
 
     //! Create an mmcif given a filename
     explicit MMCIF(const std::string& fname)
-        : _fname(fname)
+        : _fname(fname), _has_cryst(false)
     {
         std::ifstream ifs(fname.c_str());
         if (!ifs)
@@ -67,7 +69,7 @@ public:
 
     //! Create an mmcif given an ifstream
     explicit MMCIF(std::istream& ifs)
-        : _fname("stream")
+        : _fname("stream"), _has_cryst(false)
     {
         read(ifs);
     }
@@ -75,9 +77,15 @@ public:
     //! Read in a mmcif file from an istream
     void read(std::istream& ifs);
 
+    const UnitCell& unitCell(void);
+    void unitCell(const UnitCell& c);
+
+
 private:
     std::string _fname;
+    bool _has_cryst;
     std::map<uint, pAtom> _atomid_to_patom;
+    UnitCell cell;
 
     pAtom findAtom(const uint id);
 };
