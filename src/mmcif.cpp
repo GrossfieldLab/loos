@@ -29,6 +29,9 @@ void MMCIF::read(std::istream& is) {
     OpenBabel::OBMol mol;
     double *coords = new double[3];
 
+    // Turn off warnings from OpenBabel, just do errors
+    OpenBabel::obErrorLog.SetOutputLevel(OpenBabel::obError);
+    // Read the file
     if (!obconversion.Read(&mol)) {
         throw(FileReadError(_fname), std::string("Error reading mmcif file"));
     }

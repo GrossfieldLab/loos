@@ -37,6 +37,7 @@
 #include <openbabel/bond.h>
 #include <openbabel/generic.h>
 #include <openbabel/obiter.h>
+#include <openbabel/oberror.h>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
