@@ -423,6 +423,50 @@ def CheckNumpy(conf, pythonpath):
     return 0
 
 
+def SetupOpenBabelPaths(env):
+    """
+    If you supplied OPENBABEL_INCLUDE or OPENBABEL_LIBPATH, use them.
+    If you didn't but did supply OPENBABEL, derive include and lib paths
+    from it.
+    If we're in conda and you didn't supply anything, build what we think
+    conda wants.
+    Otherwise, do nothing.
+
+    """
+
+    #OPENBABEL = env["OPENBABEL"]
+    #OPENBABEL_INCLUDE = env["OPENBABEL_INCLUDE"]
+    #OPENBABEL_LIBPATH = env["OPENBABEL_LIBPATH"]
+
+    openbabel_libpath = ""
+    openbabel_include = ""
+
+    if "OPENBABEL_INCLUDE" in env:
+        openbabel_include = env["OPENBABEL_INCLUDE"]
+    if "OPENBABEL_LIBPATH" in env:
+        openbabel_libpath = env["OPENBABEL_LIBPATH"]
+
+    if "OPENBABEL" in env:
+        if not openbabel_include:
+            openbabel_include = os.path.join(env["OPENBABEL"], "include", "openbabel3")
+        if not openbabel_libpath:
+            openbabel_libpath = os.path.join(OPENBABEL, "lib")
+
+    if "CONDA_PREFIX" in env:
+        if not openbabel_include:
+            openbabel_include = os.path.join(env["CONDA_PREFIX"],
+                                        "include", "openbabel3")
+        if not openbabel_libpath:
+            openbabel_libpath = os.path.join(env["CONDA_PREFIX"], "lib")
+
+    if openbabel_libpath:
+        env.Prepend(LIBPATH=[openbabel_libpath])
+        env["OPENBABEL_LIBPATH"] = openbabel_libpath
+
+    if openbabel_include:
+        env.Prepend(CPPPATH=[openbabel_include])
+        env["OPENBABEL_INCLUDE"] = openbabel_include
+
 def SetupBoostPaths(env):
 
     BOOST = env["BOOST"]
@@ -708,6 +752,7 @@ def AutoConfiguration(env):
         # ATLAS based on the environment or custom.py file
         SetupBoostPaths(conf.env)
         SetupNetCDFPaths(conf.env)
+        SetupOpenBabelPaths(conf.env)
 
         # Check for standard typedefs...
         if not conf.CheckType("ulong", "#include <sys/types.h>\n"):

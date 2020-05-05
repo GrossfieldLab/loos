@@ -68,6 +68,10 @@ opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
 opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
 opts.Add('NETCDF_LIBS', 'NetCDF Libraries to link with', '')
 
+opts.Add('OPENBABEL', 'Path to OpenBabel')
+opts.Add('OPENBABEL_INCLUDE', 'Path to OpenBabel include files')
+opts.Add('OPENBABEL_LIBPATH', 'Path to OpenBabel')
+
 opts.Add('PYTHON_PATH', 'Path to Python Modules', '')
 opts.Add('PYTHON_INC', 'Include path for Python needed by PyLOOS (if not set, uses the same python as scons)', '')
 
@@ -85,7 +89,7 @@ if "CONDA_PREFIX" in os.environ:
                       SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
                       SHLIBPREFIX=""
                   )
-    env["CONDA_PREFIX"]=os.environ["CONDA_PREFIX"]
+    env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
     env.USING_CONDA = True
 else:
     env = Environment(ENV={'PATH': os.environ['PATH']},
@@ -150,9 +154,8 @@ env.Append(LIBS=['pthread'])
 # TODO: THIS MUST BE REDONE
 # For now, hardwire in openbabel locations
 # TODO: THIS MUST BE REDONE FOR REAL
-env.Append(CPPPATH=[os.path.join(env["CONDA_PREFIX"],
-#'include', 'openbabel3', 'openbabel')])
-                    'include', 'openbabel3')])
+#env.Append(CPPPATH=[os.path.join(env["CONDA_PREFIX"],
+#                    'include', 'openbabel3')])
 env.Append(LIBS=['openbabel'])
 
 # Platform specific build options...
