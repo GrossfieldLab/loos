@@ -37,7 +37,6 @@ void MMCIF::read(std::istream& is) {
 
     // TODO: Should probably loop over residues, then atoms, so we don't
     //       have to create a new residue object for each atom
-    OpenBabel::OBAtom *a;
     uint index = 0;
     FOR_ATOMS_OF_MOL(a, mol) {
         coords = a->GetCoordinate();
@@ -56,25 +55,44 @@ void MMCIF::read(std::istream& is) {
         pa->resid(residue->GetNum());
         pa->chainId(std::string(1, residue->GetChain()));
 
-        // TODO: get bond info, if it exists
-        // probably could do it more efficiently by separately looping over bonds
-        /*
-        for (auto iter = a->BeginBonds();
-                  iter != a->EndBonds();
-                  iter = a->NextBond()) {
-
-                  }
-        */
-
         append(pa);
-
         index++;
+
+        // Record which pAtom belongs to this atomid.
+        // NOTE: duplicate atomid's are NOT checked for
+        _atomid_to_patom[pa->id()] = pa;
     }
 
+    uint begin_bonded, end_bonded;
+    FOR_BONDS_OF_MOL(b, mol) {
+        begin_bonded = b->GetBeginAtomIdx();
+        end_bonded = b->GetEndAtomIdx();
+
+        // These will throw if the atoms aren't found
+        pAtom first = findAtom(begin_bonded);
+        pAtom second = findAtom(end_bonded);
+        first->addBond(second);
+        second->addBond(first);
+    }
+
+
+
     // TODO: this causes a segfault, but it looks like a leak to me
-    //delete [] coords;
+    //delete[] coords;
 }
 
 
+
+// Private function to search the map of atomid's -> pAtoms
+// Throws an error if the atom is not found
+pAtom MMCIF::findAtom(const uint id) {
+  std::map<uint, pAtom>::iterator i = _atomid_to_patom.find(id);
+  if (i == _atomid_to_patom.end()) {
+    std::ostringstream oss;
+    oss << "Cannot find atom corresponding to atomid " << id << " for making a bond.";
+    throw(LOOSError(oss.str()));
+  }
+  return(i->second);
+}
 
 }
