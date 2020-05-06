@@ -632,6 +632,10 @@ namespace loos {
     //! Translate an atomic group by vector v
     void translate(const GCoord & v);
 
+    //! Rotate group's coordinates (right-handed, about supplied center)
+    void rotate(const GCoord& axis, const greal angle_in_degrees,
+                const GCoord& center);
+
     //! Rotate group's coordinates (right-handed, about centroid)
     void rotate(const GCoord& axis, const greal angle_in_degrees);
 

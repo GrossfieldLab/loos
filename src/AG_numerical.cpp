@@ -311,6 +311,16 @@ namespace loos {
     applyTransform(M);
   }
 
+  void AtomicGroup::rotate(const GCoord& axis, const greal angle_in_degrees,
+                           const GCoord& center) {
+    XForm M;
+
+    M.translate(center);
+    M.rotate(axis, -angle_in_degrees);
+    M.translate(-1.0 * center);
+    applyTransform(M);
+  }
+
 
   std::vector<double> AtomicGroup::coordsAsVector() const {
     std::vector<double> v(size() * 3);
