@@ -75,6 +75,11 @@ public:
         read(ifs);
     }
 
+
+   static pAtomicGroup create(const std::string& fname) {
+       return(pAtomicGroup(new MMCIF(fname)));
+   }
+
     //! Read in a mmcif file from an istream
     void read(std::istream& ifs);
 

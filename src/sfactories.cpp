@@ -44,6 +44,7 @@
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <charmm.hpp>
+#include <mmcif.hpp>
 #include <tinkerxyz.hpp>
 #include <tinker_arc.hpp>
 #include <gro.hpp>
@@ -72,6 +73,8 @@ namespace loos {
       { "psf", "CHARMM/NAMD PSF", &PSF::create },
       { "gro", "Gromacs", &Gromacs::create },
       { "xyz", "Tinker", &TinkerXYZ::create },
+      { "cif", "PDBx/MMCIF", &MMCIF::create },
+      { "pdbx", "PDBx/MMCIF", &MMCIF::create },
       { "", "", 0}
     };
   }
