@@ -103,5 +103,7 @@ if int(env['pyloos']):
    else:
        env.Install(os.path.join(PREFIX, 'lib'), loos_python)
    loos_python += Command("#loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
+   # hack to make swig-4 work
+   loos_python += Command("#loos/_loos.so", "../_loos.so", Copy("$TARGET", "$SOURCE"))
 
 Return('loos', 'loos_python')
