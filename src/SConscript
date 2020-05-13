@@ -85,25 +85,25 @@ loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
 loos_python = ''
 if int(env['pyloos']):
 
-   if env['host_type'] == 'Darwin':
-      loos_python = env.LoadableModule('#_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
-   else:
-
-      # This is a hack to get pyloos shared libraries to build when installing in linux
-      pynv = env.Clone()
-      loos_python = pynv.SharedLibrary('#_loos', ['loos.i', loos])
+    if env['host_type'] == 'Darwin':
+       loos_python = env.LoadableModule('#_loos.so', ['loos.i', loos],
+                                        FRAMEWORKSFLAGS='-flat_namespace -undefined suppress')
+    else:
+        # This is a hack to get pyloos shared libraries to build when installing in linux
+        pynv = env.Clone()
+        loos_python = pynv.SharedLibrary('#_loos', ['loos.i', loos])
 
 
 # Handle installing PyLOOS
-   if env.USING_CONDA:
-       import sys
-       python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
-                              sys.path))[0] + '/loos/'
-       env.Install(python_lib_path, loos_python)
-   else:
-       env.Install(os.path.join(PREFIX, 'lib'), loos_python)
-   loos_python += Command("#loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
-   # hack to make swig-4 work
-   # loos_python += Command("#loos/_loos.so", "../_loos.so", Copy("$TARGET", "$SOURCE"))
+    if env.USING_CONDA:
+        # python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
+        #                       sys.path))[0] + '/loos/'
+        python_lib_path = os.path.join(env["SP_DIR"], 'loos')
+        env.Install(python_lib_path, loos_python)
+    else:
+        env.Install(os.path.join(PREFIX, 'lib'), loos_python)
+    loos_python += Command("#loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
+    # hack to make swig-4 work
+    # loos_python += Command("#loos/_loos.so", "../_loos.so", Copy("$TARGET", "$SOURCE"))
 
 Return('loos', 'loos_python')
