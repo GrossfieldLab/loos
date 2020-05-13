@@ -85,7 +85,7 @@ if "CONDA_PREFIX" in os.environ:
                       SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
                       SHLIBPREFIX=""
                   )
-    env["CONDA_PREFIX"]=os.environ["CONDA_PREFIX"]
+    env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
     env.USING_CONDA = True
 else:
     env = Environment(ENV={'PATH': os.environ['PATH']},
@@ -122,7 +122,7 @@ cleaning = env.GetOption('clean')
 
 
 # Autoconf
-
+# TODO: need to update this to handle conda-forge staged recipes
 if env.USING_CONDA and platform.system() == "Darwin":
     flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
     env.Append(LINKFLAGS=flag)

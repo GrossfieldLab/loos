@@ -32,9 +32,11 @@ if env.USING_CONDA:
     # We can't use env.Install, because the loos/ directory will already
     # exist, causing Install to not do anything. It took me way too long to
     # figure that out.
-    python_lib_path = os.path.join(
-            list(filter(lambda x: x.endswith("site-packages"), sys.path))[0],
-            'loos/')
+    #python_lib_path = os.path.join(
+    #        list(filter(lambda x: x.endswith("site-packages"), sys.path))[0],
+    #        'loos/')
+    python_lib_path = os.path.join(env["SP_DIR"], 'loos')
+
     # _loos.so gets installed by src/SConscript, so we don't have to do it
     # here.
     #Command(python_lib_path + '_loos.so', 'loos/_loos.so', [

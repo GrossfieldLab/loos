@@ -107,6 +107,10 @@ def environOverride(conf):
         conf.env.Replace(CXX=os.environ["CXX"])
         print(("*** Using compiler " + os.environ["CXX"]))
 
+    if "CC" in os.environ:
+        conf.env.Replace(CC=os.environ["CC"])
+        print("*** Using compiler C compiler " + os.environ["CXX"] + " for testing")
+
     if "CCFLAGS" in os.environ:
         conf.env.Append(CCFLAGS=os.environ["CCFLAGS"])
         print(("*** Appending custom build flags: " + os.environ["CCFLAGS"]))
@@ -361,6 +365,18 @@ def CheckDirectory(conf, dirname):
         return 1
     conf.Result("no")
     return 0
+
+# Figure out the appropriate python site-packages directory, and store it
+# in the env
+def FindSitePackages(conf):
+    # If it's set, use it unchanged -- probably means we're in the
+    # staged-recipes environment
+    if "SP_DIR" not in conf.env:
+        # figure it out, assuming we're installing to the current python
+        site_packages = list(filter(lambda x: x.endswith("site-packages"), sys.path))[0]
+        conf.env["SP_DIR"] = site_packages
+    print(conf.env["SP_DIR"])
+
 
 
 def CheckNumpy(conf, pythonpath):
@@ -649,6 +665,10 @@ def AutoConfiguration(env):
         }
     )
 
+    environOverride(conf)
+    FindSitePackages(conf)
+
+
     use_threads = int(env["threads"])
 
     # Get system information
@@ -893,6 +913,7 @@ def AutoConfiguration(env):
                 conf.env.Append(LIBS=lib)
         elif env.USING_CONDA:
             conf.env.Append(LIBS="openblas")
+            conf.env.Append(LIBS="gfortran")
 
         # Suppress those annoying maybe used unitialized warnings that -Wall
         # gives us...
@@ -905,7 +926,7 @@ def AutoConfiguration(env):
         if ok:
             conf.env.Append(CCFLAGS=["-Wno-maybe-uninitialized"])
 
-        environOverride(conf)
+        #environOverride(conf)
         if "LIBS" in conf.env:
             print(
                 "Autoconfigure will use these libraries to build LOOS:\n\t",
