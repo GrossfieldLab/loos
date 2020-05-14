@@ -80,6 +80,22 @@ public:
        return(pAtomicGroup(new MMCIF(fname)));
    }
 
+   //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
+   virtual MMCIF* clone(void) const;
+
+   //! Creates a deep copy (see AtomicGroup::copy() for more info)
+   MMCIF copy(void) const;
+
+   //! Class method for creating an MMCIF from an AtomicGroup
+   /** There should probably be some internal checks to make sure we
+    *  have enough info to actually write out an MMCIF, but currently
+    *  there are no such checks...
+    */
+   static MMCIF fromAtomicGroup(const AtomicGroup&);
+
+   //! Create a PDB from an AtomicGroup (i.e. upcast)
+   MMCIF(const AtomicGroup& grp) : AtomicGroup(grp) { }
+
     //! Read in a mmcif file from an istream
     void read(std::istream& ifs);
 

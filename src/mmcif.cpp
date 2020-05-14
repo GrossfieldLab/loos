@@ -108,6 +108,31 @@ void MMCIF::read(std::istream& is) {
 }
 
 
+MMCIF MMCIF::copy(void) const {
+  AtomicGroup grp = this->AtomicGroup::copy();
+  MMCIF p(grp);
+
+  p.cell = cell;
+
+  return(p);
+}
+
+MMCIF* MMCIF::clone(void) const {
+  return(new MMCIF(*this));
+}
+
+
+MMCIF MMCIF::fromAtomicGroup(const AtomicGroup& g) {
+  MMCIF p(g);
+
+  if (p.isPeriodic())
+    p.unitCell(UnitCell(p.periodicBox()));
+
+  return(p);
+}
+
+
+
 
 // Private function to search the map of atomid's -> pAtoms
 // Throws an error if the atom is not found
