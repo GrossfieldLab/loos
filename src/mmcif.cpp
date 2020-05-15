@@ -86,7 +86,8 @@ void MMCIF::read(std::istream& is) {
 
     // Get unit cell information, if it's there
     if (mol.HasData("UnitCell")) {
-        OpenBabel::OBUnitCell *unitcell = (OpenBabel::OBUnitCell *)mol.GetData(OpenBabel::OBGenericDataType::UnitCell);
+        OpenBabel::OBUnitCell *unitcell = static_cast<OpenBabel::OBUnitCell *>
+                                          (mol.GetData(OpenBabel::OBGenericDataType::UnitCell));
         cell.a(unitcell->GetA());
         cell.b(unitcell->GetB());
         cell.c(unitcell->GetC());
@@ -131,9 +132,6 @@ MMCIF MMCIF::fromAtomicGroup(const AtomicGroup& g) {
   return(p);
 }
 
-
-
-
 // Private function to search the map of atomid's -> pAtoms
 // Throws an error if the atom is not found
 pAtom MMCIF::findAtom(const uint id) {
@@ -148,6 +146,60 @@ pAtom MMCIF::findAtom(const uint id) {
 
 const UnitCell& MMCIF::unitCell(void) { return(cell); }
 void MMCIF::unitCell(const UnitCell& c) { _has_cryst = true; cell = c; }
+
+OpenBabel::OBMol MMCIF::toOpenBabel(void) {
+    /*
+    Looking at https://github.com/openbabel/openbabel/blob/master/src/mol.cpp,
+    line 1227 (the operator= method) to understand what it expects
+    */
+
+    OpenBabel::OBMol obmol;
+    obmol.BeginModify();
+
+    // loop over atoms
+    for (auto a = begin(); a != end(); ++a) {
+    //for (uint i=0; i<size(); ++i) {
+        OpenBabel::OBAtom atom;
+
+        atom.SetIdx((*a)->index());
+        atom.SetId(static_cast<unsigned long>((*a)->id()));
+
+        double x = (*a)->coords()[0];
+        double y = (*a)->coords()[1];
+        double z = (*a)->coords()[2];
+        atom.SetVector(x, y, z);
+
+        atom.SetType((*a)->name());
+        atom.SetAtomicNum((*a)->atomic_number());
+
+        //atom.SetChain((*a)->chainId().c_str());
+
+
+        // set partial charges?
+        atom.SetPartialCharge((*a)->charge());
+        if (!obmol.AddAtom(atom)) {
+            // Adding atom failed
+            throw(LOOSError("Error adding atom to MMCIF"));
+        }
+
+    }
+
+    // loop over residues
+
+    // loop over bonds?
+
+    // unit cell
+    OpenBabel::OBUnitCell unitcell;
+    unitcell.SetData(cell.a(), cell.b(), cell.c(),
+                     cell.alpha(), cell.beta(), cell.gamma());
+    obmol.SetData(&unitcell);
+
+
+    // total Charge
+    obmol.SetTotalCharge(this->totalCharge());
+
+    return(obmol);
+}
 
 
 }

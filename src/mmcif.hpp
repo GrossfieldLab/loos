@@ -102,6 +102,13 @@ public:
     const UnitCell& unitCell(void);
     void unitCell(const UnitCell& c);
 
+    //! Create on OpenBabel object, primarily on the way to writing out
+    /**
+     * This should probably be private, but for testing purposes it's easier
+     * to have it here.
+     */
+    OpenBabel::OBMol toOpenBabel(void);
+
 
 private:
     std::string _fname;
