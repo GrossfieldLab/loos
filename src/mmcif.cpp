@@ -147,7 +147,7 @@ pAtom MMCIF::findAtom(const uint id) {
 const UnitCell& MMCIF::unitCell(void) { return(cell); }
 void MMCIF::unitCell(const UnitCell& c) { _has_cryst = true; cell = c; }
 
-OpenBabel::OBMol MMCIF::toOpenBabel(void) {
+OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
     /*
     Looking at https://github.com/openbabel/openbabel/blob/master/src/mol.cpp,
     line 1227 (the operator= method) to understand what it expects
@@ -201,5 +201,14 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) {
     return(obmol);
 }
 
+    //! Output the group as an MMCIF
+    std::ostream& operator<<(std::ostream os, const MMCIF& m) {
+        OpenBabel::OBMol om = m.toOpenBabel();
+        OpenBabel::OBConversion conv(NULL, &os);
+        conv.SetOutFormat("CIF");
+        conv.Write(&om);
+
+        return(os);
+    }
 
 }

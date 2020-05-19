@@ -28,6 +28,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <map>
 
 // openbabel includes
 #include <openbabel/obconversion.h>
@@ -93,7 +94,7 @@ public:
     */
    static MMCIF fromAtomicGroup(const AtomicGroup&);
 
-   //! Create a PDB from an AtomicGroup (i.e. upcast)
+   //! Create an MMCIF from an AtomicGroup (i.e. upcast)
    MMCIF(const AtomicGroup& grp) : AtomicGroup(grp) { }
 
     //! Read in a mmcif file from an istream
@@ -107,8 +108,13 @@ public:
      * This should probably be private, but for testing purposes it's easier
      * to have it here.
      */
-    OpenBabel::OBMol toOpenBabel(void);
+    OpenBabel::OBMol toOpenBabel(void) const;
 
+
+#if !defined(SWIG)
+    //! Output as an MMCIF
+        friend std::ostream& operator<<(std::ostream&, const MMCIF&);
+#endif
 
 private:
     std::string _fname;
