@@ -127,6 +127,11 @@ selectAtoms;
 %catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::Gromacs;
 %catches(loos::FileOpenError, loos::FileReadError, loos::ParseError, loos::LOOSError) Gromacs::create;
 
+// mmcif
+%catches(loos::LOOSError) MMCIF::findAtom;
+%catches(loos::FileReadError) PDB::read;
+%catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) MMCIF::MMCIF;
+%catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) MMCIF::create;
 
 // pdb_remarks
 
