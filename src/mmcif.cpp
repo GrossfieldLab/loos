@@ -202,7 +202,7 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
 }
 
     //! Output the group as an MMCIF
-    std::ostream& operator<<(std::ostream os, const MMCIF& m) {
+    std::ostream& operator<<(std::ostream& os, const MMCIF& m) {
         OpenBabel::OBMol om = m.toOpenBabel();
         OpenBabel::OBConversion conv(NULL, &os);
         conv.SetOutFormat("CIF");
