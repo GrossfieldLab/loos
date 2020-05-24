@@ -156,6 +156,8 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
     OpenBabel::OBMol obmol;
     obmol.BeginModify();
 
+    bool has_charges = false;
+
     // loop over atoms
     for (auto a = begin(); a != end(); ++a) {
     //for (uint i=0; i<size(); ++i) {
@@ -176,7 +178,11 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
 
 
         // set partial charges?
-        atom.SetPartialCharge((*a)->charge());
+        if ((*a)->checkProperty(Atom::chargebit)) {
+            atom.SetPartialCharge((*a)->charge());
+            has_charges = true;
+        }
+
         if (!obmol.AddAtom(atom)) {
             // Adding atom failed
             throw(LOOSError("Error adding atom to MMCIF"));
@@ -196,7 +202,9 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
 
 
     // total Charge
-    obmol.SetTotalCharge(this->totalCharge());
+    if (has_charges) {
+        obmol.SetTotalCharge(this->totalCharge());
+    }
 
     return(obmol);
 }
