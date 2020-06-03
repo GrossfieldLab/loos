@@ -53,7 +53,7 @@ namespace loos {
    * The basic pattern for using OptionsFramework is to create a new
    * object that represents the options required by the tool.  Once
    * all objects are created, they are added to an AggregateOptions
-   * object that is responbile for parsing and validating the
+   * object that is responsible for parsing and validating the
    * command-line as well as generating help messages and serializing
    * the options' state for inclusion in the tool's output.  For
    * example, a tool that requires a model (with coordinates) and an
@@ -161,14 +161,14 @@ namespace loos {
    * virtual memberfunctions (e.g. \c addGeneric(), \c addHidden(),
    * etc) mimic the steps you would normally take to use \c
    * boost::program_options.  It is only necessary to override the
-   * functions required speficially for the tool.
+   * functions required specifically for the tool.
    *
    * As a trivial example, here is a class that will add a bool option
    * to the command line,
    *
    * \code
    * namespace opts = loos::OptionsFramework;
-   * namespace po = loos::OptionsFramewokr::po;
+   * namespace po = loos::OptionsFramework::po;
    *
    * class ToolOptions : public opts::OptionsPackage {
    * public:

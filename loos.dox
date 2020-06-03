@@ -12,20 +12,12 @@ School of Medicine & Dentistry, University of Rochester\n
 \image html gplv3.png
 
 <hr>
-<h2>Important News for LOOS 3.0</h2>
-
-LOOS 3.0 and higher require python 3.x.  The install instructions in INSTALL.md have been updated accordingly.  If your OS does not support python 3.x, you can try installing LOOS inside a Conda environment.
-
-For questions or problems using LOOS, the best approach is to open an issue on our <a href="https://github.com/GrossfieldLab/loos">GitHub page</a>.  Alternatively, you can email us at loos.maintainer@gmail.com.
-
-We are phasing out the mailing lists as support mechanisms; if you were previously a member, we suggest following LOOS on GitHub as a better strategy to keep up to date with us.
-
-<hr>
 
 <h2>Quick Links</h2>
       - <a href="https://github.com/GrossfieldLab/loos">Clone LOOS from GitHub</a>
       - <a href="https://github.com/GrossfieldLab/loos/wiki">Online tutorials and documentation</a>
-      -  <a href="http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf">Download a tutorial (pdf) on using LOOS</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf">Download a tutorial (pdf) on using LOOS</a>
+      - <a href="https://t.co/bznyDZBNd4?amp=1">YouTube video describing LOOS</a>
       -  Ask the developers a question at loos.maintainer@gmail.com or by opening an issue on GitHub.
       - \subpage building "Building LOOS"
       - \subpage tools "Tools included with LOOS"
@@ -33,14 +25,14 @@ We are phasing out the mailing lists as support mechanisms; if you were previous
       - \subpage common_options "Common Options for Tools"
       - \subpage formats "Supported File Formats"
       - \subpage citing "Citing LOOS in published work"
-      - \subpage new_pyloos "What's new in PyLOOS"
       - \subpage exceptions "Exceptions in LOOS and PyLOOS"
       - \subpage changes "Changes"
       - \subpage faq "FAQ"
           - \ref faq_pyloos "FAQ for PyLOOS"
       - Posters and presentations on LOOS
-          - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2019.pdf">2019 Biophysical Society Poster</a>
-          - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2016/bps2016_tromo.pdf">2016 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2020.pdf">2020 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2019.pdf">2019 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2016/bps2016_tromo.pdf">2016 Biophysical Society Poster</a>
 
 \section intro Introduction
 
@@ -68,7 +60,7 @@ LOOS has several major features:
       of using pointers (e.g. rapid, lightweight copying) without requiring
       the developer to do manual memory management.
     - It should run on any unix-like environment, and is tested under
-      multiple linux versions, Mac OSX, and cygwin.
+      multiple linux versions and Mac OSX.
 
 For assistance using LOOS, to suggest a patch, to request a feature, or simply
 to offer positive feedback, email loos.maintainer [AT] gmail.com.  The
@@ -121,7 +113,7 @@ Either mail us directly (loos.maintainer [AT] gmail.com) or raise an issue on Gi
 
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2019, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -302,7 +294,10 @@ expressions that look a lot like globbing (a la VMD selections), keep
 in mind that it isn't globbing.  It's a regular expression, which is
 more powerful anyway...  You do need to be careful though that your
 shell does not munge any of the regex operators.  It's a good idea to
-use single quotes when you're writing regex's in a shell.
+use single quotes when you're writing regex's in a shell, or to use configuration
+files to do the arguments instead (see the
+<a href="https://github.com/GrossfieldLab/loos/wiki/Using-config-files-instead-of-the-command-line">wiki</a>
+for a discussion of how to do that).
 
 The string equality operators ("==" and "!=") both consider the
 <I>entire</I> string.
@@ -424,7 +419,6 @@ segid == "BULK")    # or named BULK
 */
 
 
-namespace loos {
 /*! \page common_options Common Command-Line Options for Tools
 
 Many LOOS tools use a common set of command-line options (through
@@ -593,240 +587,11 @@ the rest of the trajectory.
 
 /*! \page building Building LOOS
 
-The best source of information on building LOOS is <A href="https://github.com/GrossfieldLab/loos/blob/master/INSTALL.md">INSTALL.md</A>, found in the top level directory of the LOOS distribution.  It includes detailed instructions for building LOOS on various Linux distributions and OSX, as well as using Conda.
-
-\section basicbuild Building Basics
-LOOS requires <A href="http://www.scons.org" target="_blank">SCons</A>
-and the <A href="http://boost.org" target="_blank">Boost (1.36+)</A>
-libraries.  For macs, it also requires <A
-href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12"
-target="_blank">XCode</A> be installed (free download from the Mac App
-Store).  On Linux, <A href="http://math-atlas.sourceforge.net"
-target="_blank">Atlas</A> is <em>strongly</em> recommended, although
-the standard LAPACK and BLAS should work.  If you plan to modify the
-parser (and you probably shouldn't), then you'll need the GNU
-utilities <A href="http://www.gnu.org/software/flex/">flex</A> and <A
-href="http://www.gnu.org/software/bison/">bison</A>.  Although LOOS
-comes bundled with pre-built documentation, you can regenerate it.
-Doing so requires doxygen and graphviz be installed.
-
-To build LOOS, go into the LOOS distribution directory and run scons.
-If your libraries are installed in non-standard locations, you may
-need to tell LOOS where its required components are.  There are two
-ways you can tell SCons where to look for those libraries.  The first
-is to specify it on the command-line.  The second, described later, is
-to use a <TT>custom.py</TT> file.
-
-Using the command line, if you have Boost
-installed in <TT>/usr/local/boost_1_54_0</TT>, build LOOS using:
-\verbatim
-scons BOOST=/usr/local/boost_1_54_0
-\endverbatim
-
-This will tell SCons to look
-in <TT>/usr/local/boost_1_54_0/include</TT> for header files
-and <TT>/usr/local/boost_1_54_0/lib</TT> for libraries.  In some
-cases, the directories may not follow this convention, so you will need
-to specify the individual directories explicitly:
-\verbatim
-scons BOOST_INCLUDE=/usr/local/include/boost BOOST_LIBPATH=/usr/local/lib
-\endverbatim
-
-SCons will, by default, try to figure out the appropriate threaded
-Boost libraries to use and, if it cannot find those, it will use the
-non-threaded versions.  While the build system can handle most
-variants of the Boost library names, it may not catch all.  To
-explicitly set the libraries LOOS is linked with, set the BOOST_LIBS
-variable to a space-separated list of libraries.  Note that
-you <B>must</B> include all libraries required by LOOS.  For example:
-\verbatim
-scons BOOST_LIBS="boost_regex-gcc43-mt boost_program_options-gcc43-mt
-boost_thread-gcc43-mt boost_system-gcc43-mt"
-\endverbatim
-
-Similar configuration options are available for NetCDF and
-ATLAS/LAPACK.  If threaded versions of ATLAS are found, these will be used by
-default.  If you intend to run multiple LOOS tools concurrently, then
-you may get better performance by using the serial ATLAS libraries.
-You can force LOOS to build with the serial ATLAS libraries by using
-the threads option with scons,
-\verbatim
-scons threads=0
-\endverbatim
-SCons will also prefer to use ATLAS if it's available, but
-will revert to LAPACK/BLAS if necessary.  For Macs, the Accelerate
-FrameWork is used rather than ATLAS.  NetCDF support is only included
-if the NetCDF library is found.
-
-It is not necessary to always set these build options on the
-command-line.  If a <TT>custom.py</TT> file exists, SCons will read it
-and set the variables appropriately.  We provide an examples of how it
-can be used in <TT>custom.py-proto</TT>.  Simply copy this file
-to <TT>custom.py</TT> and then uncomment and edit the appropriate
-lines.  Note that variables set on the command-line or environment
-will have priority over what's in your <TT>custom.py</TT> file.
-
-
-\subsection install Installing
-
-
-To install LOOS, use the "install" target:
-
-\verbatim
-scons install
-\endverbatim
-
-This will cause SCons to copy the headers, tools, and library into
- /opt/loos.  You can change where LOOS is installed by setting the
- PREFIX variable in either your custom.py file or on the command
- line.  LOOS will create a /bin, /include, /lib, and /docs directory
- and copy the appropriate files.  The recommended installation
- methodology is to install LOOS into a version-specific directory, and
- then set up a symlink from \c loos-latest to the most recent
- installed version:
-\verbatim
-scons PREFIX=/opt/loos-2.1 install
-ln -s /opt/loos-2.1 /opt/loos-latest
-\endverbatim
-Remember that any options you have previously provided to scons should
- be specified again when installing.
-
-<H2>Important Note...</H2>
-
-
-To use LOOS, your environment must be first setup:
-\verbatim
-  (bash)   source /path/to/loos/setup.sh
-  (tcsh)   source /path/to/loos/setup.csh
-\endverbatim
-
-<hr>
-\subsection building_pyloos Building PyLOOS, the Python Interface to LOOS
-PyLOOS will be automatically built if you have a recent swig (2.0+)
-installed.  PyLOOS now (as of LOOS 2.3.0) also requires NumPy.  See
-the top of the INSTALL and \ref faq_pyloos "the FAQ for PyLOOS" for
-more information about building and using PyLOOS.
-
-In some cases, scons may try to build PyLOOS when it isn't appropriate
-(i.e. supported).  To disable PyLOOS, use the pyloos flag,
-\verbatim
-scons pyloos=0
-\endverbatim
-
-<hr>
-
-\subsection general General Notes
-
-If you're using a compiler in a non-standard location (e.g. you have
-your own build of the latest and greatest gcc), SCons may not be using
-it even though your $PATH is set correctly.  You can force which
-compiler is used to build LOOS by setting the CXX variable in your
-"custom.py" file.
-
-Note: Settings in the custom.py file can be overridden using the
-command-line and the shell environment.
-
-SCons supports building LOOS in parallel.  If you have 4 cores, for
-example, use "scons -j4" to use all 4 cores.
-
-Prebuilt documentation for LOOS is provided as part of the
-distribution.  This is simply copied into the install directory as
-part of installation.  Should you want to build a new version of the
-documentation, Doxygen is required.  Moreover, due to an issue we ran
-into with SCons, documentation building and installation are
-decoupled.  What this means is that you must explicitly build the docs
-(i.e. "scons docs") and -then- install, "scons install".  Running
-"scons install" will -not- rebuild the documentation, even if it is out
-of date (or nonexistent).
-
-
-\subsection BYO Building Your Own Tools
-
-You have two choices for building your own tools depending on LOOS.  The
-simplest way is to work in the Packages/User directory.  In that case, all you
-need to do to build against LOOS (other than write your application, of
-course) is edit the SConscript file in that directory, adding your program
-to the build list.  Specifically, you edit the line that creates a variable
-"apps", appending your program's name to the end of the string.  Then, run
-scons from the main LOOS directory, and your program will be built.
-We have included a number of trivial programs in the User directory; they
-don't actually do anything useful, but they provide basic templates for how
-to use the command line options, and get the basic setup you'll need.
-Note that tools in the User package will be installed if you choose to
-install LOOS.
-
-If you wish to work outside the LOOS directory structure, copy the
-SConstruct and SConscript files from the Examples directory and edit
-them as needed.  You can probably get by with just editing the
-SConscript file.  To build, you will need to have sourced one of the
-LOOS setup scripts (e.g. <TT>setup.sh</TT>).  This will set several
-environment variables that will tell your SConstruct where LOOS is and
-how it was built.  If all goes well, running <TT>scons</TT> in your
-directory will build your tools.  If not, you can change your
-environment variables or alternatively, <I>not</I> source the LOOS
-setup script and use a <TT>custom.py</TT> file.
-
-<h3>Important Note</h3>
-The environment <i>always</i> overrides what's in the SConstruct and
-in the <tt>custom.py</tt> file.  If you create a <tt>custom.py</tt>
-file and change the <tt>LOOS_CCFLAGS</tt> variable, it will be ignored
-in favor of what <tt>LOOS_CCFLAGS</tt> was set to when you sourced the
-<tt>setup.sh</tt> script.
-
-<hr>
-
-
-\section Build Targets
-
-There are several build targets available:
-
-<table align="center">
-<tr align="left"><th>Target</th><th>Description</th></tr>
-<tr align="left"><td>all (default)</td><td>Build the library, tools, packages, and PyLOOS</td></tr>
-<tr align="left"><td>core</td><td>Builds the library and PyLOOS only</td></tr>
-<tr align="left"><td>docs</td><td>Rebuilds the documentation</td></tr>
-<tr align="left"><td>install</td><td>Installs library, toosl, PyLOOS, and all packages (except user)</td></tr>
-</table>
-
-Each package in LOOS is also a build target.  The LOOS library and
-only that package will be built.  The current set of packages are:
-
-<table align="center">
-<tr align="left"><td>ENM</td><td>Elastic Network Models</td></tr>
-<tr align="left"><td>HBonds</td><td>Hydrogen bonds analysis</td></tr>
-<tr align="left"><td>Conv</td><td>Simulation convergence analysis</td></tr>
-<tr align="left"><td>Density</td><td>Density/3D histogram tools</td></tr>
-<tr align="left"><td>User</td><td>User created tools</td></tr>
-<tr align="left"><td>Python</td><td>PyLOOS-based scripts</td></tr>
-</table>
-
-There are several different build options that are available for
-LOOS.  These are handled on the command-line by SCons as "foo=1" to
-turn the option on or "foo=0" to turn it off.  Most options default to
-off.  Finally, you can query the available options by passing the "-h"
-flag to SCons.  The following table lists the principal build options:
-
-<table align="center">
-<tr align="left"><th>Option</th><th>Default</th><th>Description</th></tr>
-<tr align="left"><td>debug</td><td>0</td><td>Adds "-DDEBUG" to build</td></tr>
-<tr align="left"><td>release</td><td>1</td><td>Turns on aggressive optimization (-O3)</td></tr>
-<tr align="left"><td>regenerate</td><td>0</td><td>Regenerates the test verification data</td></tr>
-<tr align="left"><td>reparse</td><td>0</td><td>Runs bison/flex to create the C++ files for parsing selections</td></tr>
-</table>
-
-
-\subsection Reparsing
-To remove the dependency on Bison/Flex, the output from these tools
-for the grammar and scanner are included.  If you want to rebuild
-them, you will need to use the 'reparse=1' option.  The catch is that
-if you have a different version of flex installed, there is a good
-chance there will be a conflict with the bundled FlexLexer.h include
-file.  If you see odd compiler errors, try removing that file and
-rebuilding.  Alternatively, forcibly remove all generated files by
-doing "rm *.cc *.hh" (assuming you've added no files with those
-suffixes), then rebuild.
-
-*/
+The best source of information on building LOOS is <A
+href="https://github.com/GrossfieldLab/loos/blob/master/INSTALL.md">INSTALL.md</A>,
+found in the top level directory of the LOOS distribution.  It includes detailed
+instructions for building LOOS on various Linux distributions and OSX, as well
+as using Conda.
 
 /*! \page tools Summary of Tools
 
@@ -1543,6 +1308,13 @@ Matlab and Octave.
        membrane normal by averaging the tilts of the individual transmembrane
        helices.  In Packages/PyLOOS.
 
+       <DT><B>rad-gyr</B>
+       <DD>Histogram the radius of gyration for a selection of atoms across
+       a trajectory. Optionally, it can break your selection into individual
+       molecules, if for example you have multiple solutes in the system.
+       It can also write a time-series of these radii of gyration to a file.
+
+
        <DT><B>ramachandran</B>
        <DD>Computes a ramachandran map for a given selection of a specified
        range of frames in a trajectory (or all frames).  Note that some
@@ -1558,7 +1330,7 @@ Matlab and Octave.
        centers of mass of individual water molecules.  For contrast, see
        atomic-rdf.
 
-       <DT><B>rgyr</B>
+       <DT><B>rgyr (deprecated)</B>
        <DD>Compute the radius of gyration for a selection of atoms.
        Optionally, it can break your selection into individual molecules,
        if for example you have multiple solutes in the system.
@@ -1636,129 +1408,6 @@ Matlab and Octave.
 
 */
 
-
-namespace loos {
-
-/*! \page new_pyloos What's new in PyLOOS
-
-PyLOOS has undergone some substantial changes in LOOS 2.3.0.  The
-top-level module/namespace remains "loos", and it includes everything
-imported from the core of LOOS.  We have added a new "pyloos" module
-under "loos" that now holds Python-specific code, such as the new
-trajectories classes.
-
-One of the biggest changes in PyLOOS is the introduction of three new
-trajectory classes.  These classes ultimately wrap loos Trajectory
-objects but provide more python-like interfaces.  The first class is
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory".
-You can specify a stride and the number of
-frames to skip from the start of the trajectory.  The trajectory
-object can then be used like a python iterator,
-\code{.py}
-model = loos.createSystem('foo.pdb')
-traj = loos.pyloos.Trajectory('foo.dcd', model, skip=50)
-
-for frame in traj:
-    print frame.centroid()
-\endcode
-
-You can also use the trajectory like an array,
-\code{.py}
-first_frame = traj[0]
-last_frame = traj[-1]
-\endcode
-
-There is often a need to know what frame number a frame corresponds
-to.  If you are using the trajectory
-as in iterator, then the
-\ref loos::pyloos::trajectories::Trajectory::realIndex "realIndex()"
-function will return the frame
-number,
-\code{.py}
-for frame in traj:
-    print traj.realIndex(), frame.centroid()
-\endcode
-
-Since you can specify a skip and a stride, an array index does not
-necessarily give you the real frame number.  Instead, use the
-frameNumber() member function.  For example,
-\code{.py}
-frame = traj[0]    # This is actually frame index 50 in the
-                   # trajectory because of the skip
-
-print traj.frameNumber(0)  # This prints out 50
-\endcode
-
-Another thing to be careful of is the linkage between groups through
-the shared atoms.  By default, the frame returned will share atoms
-with whatever group was used to instantiate the trajectory.  If you
-need to decouple the trajectory from the model, pass a copy to the
-constructor,
-\code{.py}
-traj = loos.pyloos.Trajectory('foo.dcd', model.copy())
-\endcode
-
-The other two trajectory classes,
-\ref loos::pyloos::trajectories::VirtualTrajectory "VirtualTrajectory"
-and
-\ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
-let you combine multiple pyloos trajectory
-objects to make one big "virtual" trajectory.  The latter supports the
-LOOS iterative alignment method and will return the aligned frames.
-Note that this does require reading in the alignment subset and
-aligning it at the first access to a frame, so there may be memory and
-performance penalties.  The cached frames are discarded after the
-alignment however.  Also, the
-\ref loos::pyloos::trajectories::AlignedVirtualTrajectory "AlignedVirtualTrajectory"
-can be used
-with a single
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
-to align it.
-
-All of these classes have rich support for accessing the underlying
-components and getting information about what frame is being used,
-among others.  For more information, see the above links, use the
-search bar, or see the documentation for pyloos under the Namespace
-tab.
-
-In addition to the new trajectories, pyloos now sports several utility
-functions related to ensembles:
-\ref loos::pyloos::ensembles::averageStructure "loos.pyloos.averageStructure()",
-\ref loos::pyloos::ensembles::extractCoords "loos.pyloos.extractCoords()",
-and
-\ref loos::pyloos::ensembles::svd "loos.pyloos.svd()",
-all of which use the new Trajectory classes.  We have also
-added
-\ref loos::pyloos::subspace::subspaceOverlap "loos.pyloos.subspaceOverlap()",
-and
-\ref loos::pyloos::subspace::covarianceOverlap "loos.pyloos.covarianceOverlap()".
-
-
-The iterative alignment functions have also changed.  There is now a
-\ref loos::pyloos::alignment::iterativeAlignment "loos.pyloos.iterativeAlignment()"
-function that will take a
-\ref loos::pyloos::trajectories::Trajectory "loos.pyloos.Trajectory"
-and align it (or a list/vector of loos::AtomicGroup).  The
-loos-style interface is now available through
-\ref loos::pyloos::alignment::iterativeAlignTrajectory "loos.pyloos.iterativeAlignTrajectory()".
-You can optionally pass a
-list of frame indices to use.  Both functions now return a Python
-tuple containing the results.
-
-Finally, AtomicGroup now has support for NumPy with the
-AtomicGroup::getCoords() and AtomicGroup::setCoords() functions, which
-will return (or set) the coordinates of all atoms in the group.  For
-example, calculating an average set of coordinates can be implemented this way:
-\code{.py}
-avg = numpy.zeros(len(traj.frame), 3)
-for frame in traj:
-    coords = frame.getCoords()
-    avg += coords
-avg /= len(traj)
-\endcode
-
-*/
-};
 
 
 namespace loos {
@@ -3325,10 +2974,6 @@ namespace loos {
 \subsection faq_loos_building Building LOOS (and building with LOOS)
 <DL>
 
-<DT> I am having trouble building LOOS with Boost 1.52 (or later)
-<DD> There was a change in Boost at version 1.52 that breaks the build
-of LOOS.  We recommend upgrading to either LOOS 2.0.4 or downgrading
-your version of Boost to 1.51
 
 <DT> SCons is not finding the right compiler/swig/doxygen
 <DD> For LOOS, SCons will use your shell's $PATH veriable to look

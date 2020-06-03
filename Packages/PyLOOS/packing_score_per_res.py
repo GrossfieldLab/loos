@@ -174,7 +174,7 @@ for frame in vtraj:
     box = frame.periodicBox()
     for r in range(len(residues)):
         for p in range(len(probes)):
-            s = residues[r].packing_score(probes[p], box, False)
+            s = residues[r].packingScore(probes[p], box, False)
             scores[r, p, frame_index] += s
     frame_index += 1
 

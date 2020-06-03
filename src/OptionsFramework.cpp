@@ -460,7 +460,7 @@ namespace loos {
       return uniquifyVector(indices);
     }
 
-    std::string MultiTrajOptions::help() const { return("model trajectory [trajectory ...]"); }
+    std::string MultiTrajOptions::help() const { return("model traj [traj ...]"); }
     std::string MultiTrajOptions::print() const {
       std::ostringstream oss;
       oss << boost::format("model='%s', modeltype='%s', skip=%d, stride=%d, trajs=(")
