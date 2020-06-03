@@ -58,6 +58,9 @@ GTAGS
 # VSCode cruft
 **.vscode
 
+# PyCharm /intellij cruft
+**.idea
+
 # JSON files
 .*.json
 
