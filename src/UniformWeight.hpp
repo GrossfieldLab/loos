@@ -29,10 +29,10 @@ private:
   double _frameWeight;
   double _total;
   double _totalTraj;
+  bool _has_list;
   std::string _filename;
   std::vector<double> _weights;
   pTraj _traj;
-  bool _has_list;
 
 public:
   UniformWeight()
@@ -40,8 +40,8 @@ public:
         _filename(""){};
 
   UniformWeight(pTraj &traj)
-      : current_frame(0), _frameWeight(1.0), _total(0.0), _filename(""),
-        _has_list(false) {
+      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false),
+        _filename(""){
     add_traj(traj);
   };
 
