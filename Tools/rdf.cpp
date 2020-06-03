@@ -365,9 +365,8 @@ for (uint index = 0; index<framecount; ++index)
         }
     }
 // totalWeight() defaults to frameCount() if no weights file provided
-volume /= wopts->weights->totalWeight();
-double expected = unique_pairs / volume;
-expected *= wopts->weights->totalWeight();
+const double expected = wopts->weights->totalWeight() * wopts->weights->totalWeight() 
+                        * unique_pairs / volume;
 
 double cum1 = 0.0;
 double cum2 = 0.0;
