@@ -265,7 +265,7 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
   }
 
 // Attach trajectory to weights
-wopts->weights.add_traj(traj);
+wopts->weights->add_traj(traj);
 
 
 double bin_width = (hist_max - hist_min)/num_bins;
@@ -330,8 +330,8 @@ for (uint index = 0; index<framecount; ++index)
     // update coordinates and periodic box
     traj->updateGroupCoords(system);
     // if no frame weights file provided, defaults to 1.0 
-    const double weight = wopts->weights();
-    wopts->weights.accumulate();
+    const double weight = wopts->weights->get();
+    wopts->weights->accumulate();
 
 
     GCoord box = system.periodicBox();
@@ -362,7 +362,7 @@ for (uint index = 0; index<framecount; ++index)
         }
     }
 // totalWeight() defaults to frameCount() if no weights file provided
-const double expected = wopts->weights.totalWeight() * wopts->weights.totalWeight() 
+const double expected = wopts->weights->totalWeight() * wopts->weights->totalWeight() 
                         * unique_pairs / volume;
 
 double cum1 = 0.0;
@@ -380,8 +380,8 @@ for (int i = 0; i < num_bins; i++)
                                 - d_inner*d_inner*d_inner);
 
     double total = hist[i]/ (norm*expected);
-    cum1 += hist[i] / (wopts->weights.totalWeight()*g1_mols.size());
-    cum2 += hist[i] / (wopts->weights.totalWeight()*g2_mols.size());
+    cum1 += hist[i] / (wopts->weights->totalWeight()*g1_mols.size());
+    cum2 += hist[i] / (wopts->weights->totalWeight()*g2_mols.size());
 
     cout << d << "\t" << total << "\t"
          << cum1 << "\t" << cum2 << endl;
