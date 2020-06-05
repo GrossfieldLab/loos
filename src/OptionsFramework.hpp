@@ -837,7 +837,7 @@ namespace loos {
 
       std::string weights_name;
       std::string list_name;
-      Weights weights;
+      std::unique_ptr<Weights> weights;
       bool has_weights;
 
     private:

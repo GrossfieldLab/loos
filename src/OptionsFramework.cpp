@@ -588,15 +588,15 @@ namespace loos {
       }
       if (map.count("weights")) {
         has_weights = true;
-        weights = Weights(weights_name);
+        weights = std::make_unique<Weights>(Weights(weights_name));
       } else if (map.count("weights-list")) {
         has_weights = true;
-        weights.read_weights_list(list_name);
+        weights->read_weights_list(list_name);
       } else
       {
         has_weights = false;
         // Default to the uniform weight class if no weights-file specified.
-        weights = UniformWeight();
+        weights = std::make_unique<Weights>(UniformWeight());
       }
 
       return true;
