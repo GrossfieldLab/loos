@@ -596,7 +596,7 @@ namespace loos {
       {
         has_weights = false;
         // Default to the uniform weight class if no weights-file specified.
-        weights = std::make_unique<Weights>(UniformWeight());
+        weights = std::make_unique<UniformWeight>(UniformWeight());
       }
 
       return true;
