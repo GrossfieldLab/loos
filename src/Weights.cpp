@@ -26,8 +26,8 @@ namespace loos {
 //! Weights class to handle reweighting values computed from a trajectory
 uint Weights::read_weights(const std::string &filename) {
   std::ifstream ifs(filename.c_str());
-  std::cerr << "Cannot open weights file: " << filename << std::endl;
   if (!ifs) {
+    std::cerr << "Cannot open weights file: " << filename << std::endl;
     throw(FileOpenError(filename));
   }
 
