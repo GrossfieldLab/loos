@@ -190,6 +190,7 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
 
     }
 
+    std::cerr << "finished atoms" << std::endl;
     // loop over residues
 
     // loop over bonds?
@@ -199,22 +200,33 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
     unitcell.SetData(cell.a(), cell.b(), cell.c(),
                      cell.alpha(), cell.beta(), cell.gamma());
     obmol.SetData(&unitcell);
+    std::cerr << "finished unit cell" << std::endl;
 
 
     // total Charge
     if (has_charges) {
         obmol.SetTotalCharge(this->totalCharge());
     }
+    std::cerr << "finished charge" << std::endl;
 
     return(obmol);
 }
 
     //! Output the group as an MMCIF
     std::ostream& operator<<(std::ostream& os, const MMCIF& m) {
+        std::cerr << "in << operator, calling to OpenBabel" << std::endl;
         OpenBabel::OBMol om = m.toOpenBabel();
+        std::cerr << "in << operator, calling to conv" << std::endl;
+
+        //std::ifstream dummy("/dev/null");
+        //OpenBabel::OBConversion conv(&dummy, &os);
         OpenBabel::OBConversion conv(NULL, &os);
+
+        std::cerr << "in << operator, calling to SetOutFormat" << std::endl;
         conv.SetOutFormat("CIF");
-        conv.Write(&om);
+        std::cerr << "in << operator, calling to Write" << std::endl;
+        conv.Write(&om, &os);
+        std::cerr << "in << operator, finishe Write" << std::endl;
 
         return(os);
     }
