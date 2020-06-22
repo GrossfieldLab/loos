@@ -95,6 +95,7 @@
 #include <gro.hpp>
 #include <trr.hpp>
 
+#include <mmcif.hpp>
 
 
 #include <Geometry.hpp>
@@ -115,5 +116,3 @@
 
 #include <alignment.hpp>
 #endif
-
-

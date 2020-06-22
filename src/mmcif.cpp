@@ -147,50 +147,49 @@ pAtom MMCIF::findAtom(const uint id) {
 const UnitCell& MMCIF::unitCell(void) { return(cell); }
 void MMCIF::unitCell(const UnitCell& c) { _has_cryst = true; cell = c; }
 
-OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
+OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
     /*
     Looking at https://github.com/openbabel/openbabel/blob/master/src/mol.cpp,
     line 1227 (the operator= method) to understand what it expects
     */
 
-    OpenBabel::OBMol obmol;
-    obmol.BeginModify();
+    OpenBabel::OBMol *obmol = new OpenBabel::OBMol;
+    obmol->BeginModify();
 
     bool has_charges = false;
 
     // loop over atoms
     for (auto a = begin(); a != end(); ++a) {
     //for (uint i=0; i<size(); ++i) {
-        OpenBabel::OBAtom atom;
+        OpenBabel::OBAtom * atom = new OpenBabel::OBAtom;
 
-        atom.SetIdx((*a)->index());
-        atom.SetId(static_cast<unsigned long>((*a)->id()));
+        atom->SetIdx((*a)->index());
+        atom->SetId(static_cast<unsigned long>((*a)->id()));
 
         double x = (*a)->coords()[0];
         double y = (*a)->coords()[1];
         double z = (*a)->coords()[2];
-        atom.SetVector(x, y, z);
+        atom->SetVector(x, y, z);
 
-        atom.SetType((*a)->name());
-        atom.SetAtomicNum((*a)->atomic_number());
+        atom->SetType((*a)->name());
+        atom->SetAtomicNum((*a)->atomic_number());
 
         //atom.SetChain((*a)->chainId().c_str());
 
 
         // set partial charges?
         if ((*a)->checkProperty(Atom::chargebit)) {
-            atom.SetPartialCharge((*a)->charge());
+            atom->SetPartialCharge((*a)->charge());
             has_charges = true;
         }
 
-        if (!obmol.AddAtom(atom)) {
+        if (!obmol->AddAtom(*atom)) {
             // Adding atom failed
             throw(LOOSError("Error adding atom to MMCIF"));
         }
 
     }
 
-    std::cerr << "finished atoms" << std::endl;
     // loop over residues
 
     // loop over bonds?
@@ -199,36 +198,36 @@ OpenBabel::OBMol MMCIF::toOpenBabel(void) const {
     OpenBabel::OBUnitCell unitcell;
     unitcell.SetData(cell.a(), cell.b(), cell.c(),
                      cell.alpha(), cell.beta(), cell.gamma());
-    obmol.SetData(&unitcell);
-    std::cerr << "finished unit cell" << std::endl;
+    obmol->SetData(&unitcell);
 
 
     // total Charge
     if (has_charges) {
-        obmol.SetTotalCharge(this->totalCharge());
+        obmol->SetTotalCharge(this->totalCharge());
     }
-    std::cerr << "finished charge" << std::endl;
+
+    obmol->EndModify();
 
     return(obmol);
 }
 
     //! Output the group as an MMCIF
     std::ostream& operator<<(std::ostream& os, const MMCIF& m) {
-        std::cerr << "in << operator, calling to OpenBabel" << std::endl;
-        OpenBabel::OBMol om = m.toOpenBabel();
-        std::cerr << "in << operator, calling to conv" << std::endl;
+        OpenBabel::OBMol * om = m.toOpenBabel();
 
-        //std::ifstream dummy("/dev/null");
-        //OpenBabel::OBConversion conv(&dummy, &os);
-        OpenBabel::OBConversion conv(NULL, &os);
+        std::ifstream dummy("/dev/null");
+        OpenBabel::OBConversion conv(&dummy, &os);
 
-        std::cerr << "in << operator, calling to SetOutFormat" << std::endl;
-        conv.SetOutFormat("CIF");
-        std::cerr << "in << operator, calling to Write" << std::endl;
-        conv.Write(&om, &os);
-        std::cerr << "in << operator, finishe Write" << std::endl;
+        if (!conv.SetOutFormat("MMCIF")) {
+            std::cerr << "Alan is an idiot" << std::endl;
+        }
+        conv.Write(om, &os);
 
-        return(os);
+        // I'm clearly misunderstanding something, because I think
+        // this delete is necessary to keep it from leaking, but it segfaults
+        //delete(om);
+
+        return os;
     }
 
 }

@@ -108,7 +108,7 @@ public:
      * This should probably be private, but for testing purposes it's easier
      * to have it here.
      */
-    OpenBabel::OBMol toOpenBabel(void) const;
+    OpenBabel::OBMol * toOpenBabel(void) const;
 
 
 #if !defined(SWIG)
