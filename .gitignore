@@ -423,6 +423,7 @@ Packages/User/traj_calc
 Packages/User/simple_model_calc
 Packages/User/simple_model_transform
 Packages/User/traj_transform
+Packages/User/test_cif
 Packages/ElasticNetworks/enmovie
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/vsa
