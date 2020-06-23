@@ -171,9 +171,6 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
         double z = (*a)->coords()[2];
         atom->SetVector(x, y, z);
 
-        atom->SetType((*a)->name());
-        atom->SetAtomicNum((*a)->atomic_number());
-
         //atom.SetChain((*a)->chainId().c_str());
 
 
@@ -207,7 +204,13 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
             res->AddAtom(babel_atom);
 
             // weird, but I think I need to set the metadata here
+            std::cerr << "name: " << loos_atom->name() << std::endl;
             res->SetAtomID(babel_atom, loos_atom->name());
+
+            // Only set the atomic number if we know it
+            if (loos_atom->atomic_number() > 0) {
+                babel_atom->SetAtomicNum(loos_atom->atomic_number());
+            }
             atom_index++;
         }
     }

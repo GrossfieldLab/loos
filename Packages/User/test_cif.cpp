@@ -59,7 +59,6 @@ int main(int argc, char *argv[]) {
   // Read in the model
   AtomicGroup model = createSystem(argv[arg_index++]);
 
-  PDB pdb = PDB::fromAtomicGroup(model);
   MMCIF cif = MMCIF::fromAtomicGroup(model);
 
   cout << cif << endl;
