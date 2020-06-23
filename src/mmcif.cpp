@@ -192,6 +192,26 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
 
     // loop over residues
 
+    uint atom_index = 0;
+    std::vector<AtomicGroup> residues = splitByResidue();
+    for (uint i=0; i < residues.size(); ++i) {
+        pAtom a = residues[i][0];
+        OpenBabel::OBResidue *res = obmol->NewResidue();
+        res->SetIdx(i);
+        res->SetNum(a->resid());
+        res->SetName(a->resname());
+
+        for (uint j=0; j<residues[i].size(); ++j) {
+            OpenBabel::OBAtom * babel_atom = obmol->GetAtom(atom_index);
+            pAtom loos_atom = residues[i][j];
+            res->AddAtom(babel_atom);
+
+            // weird, but I think I need to set the metadata here
+            res->SetAtomID(babel_atom, loos_atom->name());
+            atom_index++;
+        }
+    }
+
     // loop over bonds?
 
     // unit cell
