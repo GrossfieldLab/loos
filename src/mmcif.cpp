@@ -202,10 +202,11 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
             OpenBabel::OBAtom * babel_atom = obmol->GetAtom(atom_index);
             pAtom loos_atom = residues[i][j];
             res->AddAtom(babel_atom);
+            res->SetHetAtom(babel_atom, true);
 
             // weird, but I think I need to set the metadata here
-            std::cerr << "name: " << loos_atom->name() << std::endl;
             res->SetAtomID(babel_atom, loos_atom->name());
+            std::cerr << res->GetAtomID(babel_atom) << std::endl;
 
             // Only set the atomic number if we know it
             if (loos_atom->atomic_number() > 0) {
