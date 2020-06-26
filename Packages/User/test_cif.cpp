@@ -49,10 +49,6 @@ int main(int argc, char *argv[]) {
 
   // ***EDIT***
   // Verify correct number of command-line arguments
-  if (argc != 3) {
-    cerr << "Usage- simple_model_calc model-name selection\n";
-  }
-
   // Handle command-line arguments
   int arg_index = 1;
 
