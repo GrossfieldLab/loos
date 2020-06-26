@@ -218,10 +218,10 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
     // loop over bonds?
 
     // unit cell
-    OpenBabel::OBUnitCell unitcell;
-    unitcell.SetData(cell.a(), cell.b(), cell.c(),
-                     cell.alpha(), cell.beta(), cell.gamma());
-    obmol->SetData(&unitcell);
+    OpenBabel::OBUnitCell *unitcell = new OpenBabel::OBUnitCell;
+    unitcell->SetData(cell.a(), cell.b(), cell.c(),
+                      cell.alpha(), cell.beta(), cell.gamma());
+    obmol->SetData(unitcell);
 
 
     // total Charge
