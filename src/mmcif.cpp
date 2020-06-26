@@ -25,7 +25,7 @@ namespace loos {
 
 void MMCIF::read(std::istream& is) {
     OpenBabel::OBConversion obconversion(&is);
-    obconversion.SetInFormat("cif");
+    obconversion.SetInFormat("MMCIF");
     OpenBabel::OBMol mol;
     double *coords = new double[3];
 
@@ -160,7 +160,6 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
 
     // loop over atoms
     for (auto a = begin(); a != end(); ++a) {
-    //for (uint i=0; i<size(); ++i) {
         OpenBabel::OBAtom * atom = new OpenBabel::OBAtom;
 
         atom->SetIdx((*a)->index());
@@ -202,33 +201,76 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
             OpenBabel::OBAtom * babel_atom = obmol->GetAtom(atom_index);
             pAtom loos_atom = residues[i][j];
             res->AddAtom(babel_atom);
-            res->SetHetAtom(babel_atom, true);
+            //res->SetHetAtom(babel_atom, true);
 
             // weird, but I think I need to set the metadata here
-            res->SetAtomID(babel_atom, loos_atom->name());
-            std::cerr << res->GetAtomID(babel_atom) << std::endl;
+            res->SetAtomID(babel_atom, std::string(loos_atom->name()));
 
             // Only set the atomic number if we know it
             if (loos_atom->atomic_number() > 0) {
                 babel_atom->SetAtomicNum(loos_atom->atomic_number());
             }
+
             atom_index++;
         }
     }
 
     // loop over bonds?
 
+
     // unit cell
     OpenBabel::OBUnitCell *unitcell = new OpenBabel::OBUnitCell;
-    unitcell->SetData(cell.a(), cell.b(), cell.c(),
-                      cell.alpha(), cell.beta(), cell.gamma());
-    obmol->SetData(unitcell);
-
+    if (_has_cryst) {
+        unitcell->SetData(cell.a(), cell.b(), cell.c(),
+                          cell.alpha(), cell.beta(), cell.gamma());
+        unitcell->SetSpaceGroup(cell.spaceGroup());
+        obmol->SetData(unitcell);
+    } else if (isPeriodic()) {
+        GCoord c = periodicBox();
+        unitcell->SetData(c.x(), c.y(), c.z(), 90., 90., 90.);
+        unitcell->SetSpaceGroup(std::string("P1"));
+        obmol->SetData(unitcell);
+    }
+    else {
+        delete(unitcell);
+    }
 
     // total Charge
     if (has_charges) {
         obmol->SetTotalCharge(this->totalCharge());
     }
+
+    // TODO:: state of debugging
+    /*
+        When I loop over residues, the metadata is there -- I get correct
+        atom and residue names.
+        However, in the immediately following loop, residue DOES NOT have
+        names, ID, etc, and I have no friggin' idea why.
+     */
+
+    FOR_RESIDUES_OF_MOL(r, obmol) {
+        std::cerr << r->GetName() << "\t"
+                  << r->GetNum() << std::endl;
+        OpenBabel::OBResidue *residue = &(*r);
+        FOR_ATOMS_OF_RESIDUE(a2, residue) {
+            std::cerr << r->GetAtomID(&(*a2)) << std::endl;
+        }
+    }
+
+    FOR_ATOMS_OF_MOL(a, obmol) {
+
+        std::cerr << a->GetId() << std::endl;
+        std::cerr << a->GetAtomicMass() << std::endl;
+        std::cerr << a->GetAtomicNum() << std::endl;
+
+        OpenBabel::OBResidue *residue = a->GetResidue();
+        std::cerr << residue->GetAtomID( &(*a) ) << std::endl;
+        std::cerr << residue->GetName() << std::endl;
+        std::cerr << residue->GetNum() << std::endl;
+
+        std::cerr << std::endl;
+    }
+
 
     obmol->EndModify();
 
@@ -238,6 +280,20 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
     //! Output the group as an MMCIF
     std::ostream& operator<<(std::ostream& os, const MMCIF& m) {
         OpenBabel::OBMol * om = m.toOpenBabel();
+        std::cerr << "In operator << " << std::endl;
+        FOR_ATOMS_OF_MOL(a, om) {
+
+            std::cerr << a->GetId() << std::endl;
+            std::cerr << a->GetAtomicMass() << std::endl;
+            std::cerr << a->GetAtomicNum() << std::endl;
+
+            OpenBabel::OBResidue *residue = a->GetResidue();
+            std::cerr << residue->GetAtomID( &(*a) ) << std::endl;
+            std::cerr << residue->GetName() << std::endl;
+            std::cerr << residue->GetNum() << std::endl;
+
+        }
+
 
         std::ifstream dummy("/dev/null");
         OpenBabel::OBConversion conv(&dummy, &os);
@@ -246,10 +302,6 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
             std::cerr << "Alan is an idiot" << std::endl;
         }
         conv.Write(om, &os);
-
-        // I'm clearly misunderstanding something, because I think
-        // this delete is necessary to keep it from leaking, but it segfaults
-        //delete(om);
 
         return os;
     }
