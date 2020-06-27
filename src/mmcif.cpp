@@ -36,8 +36,6 @@ void MMCIF::read(std::istream& is) {
         throw(FileReadError(_fname), std::string("Error reading mmcif file"));
     }
 
-    // TODO: Should probably loop over residues, then atoms, so we don't
-    //       have to create a new residue object for each atom
     uint index = 0;
     FOR_ATOMS_OF_MOL(a, mol) {
         coords = a->GetCoordinate();
