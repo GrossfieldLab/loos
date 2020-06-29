@@ -364,8 +364,7 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
                << "\t" << a->resname()
                << "\t" << a->segid()  // really, this is the chain number
                << "\t" << a->resid()
-               << std::endl;
-            os << "\t" << a->coords().x()
+               << "\t" << a->coords().x()
                << "\t" << a->coords().y()
                << "\t" << a->coords().z()
                << std::endl;
