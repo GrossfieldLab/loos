@@ -334,9 +334,9 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
         os << "###########" << std::endl;
         os << "## ENTRY ##" << std::endl;
         os << "###########" << std::endl;
-        os << std::endl;
+        //os << std::endl;
         os << "_entry.id\t" << id << std::endl; // TODO: foobar
-        os << std::endl;
+        //os << std::endl;
 
         // I'm skipping the CHEMICAL and CHEMICAL FORMULA entries, since they
         // appear to be optional.
@@ -344,38 +344,59 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
         os << "###############" << std::endl;
         os << "## ATOM_SITE ##" << std::endl;
         os << "###############" << std::endl;
-        os << std::endl;
+        //os << std::endl;
         os << "loop_" << std::endl;
+        os << "_atom_site.group_PDB" << std::endl;
         os << "_atom_site.id" << std::endl;
         os << "_atom_site.type_symbol" << std::endl;
         os << "_atom_site.label_atom_id" << std::endl;
+        os << "_atom_site.label_alt_id" << std::endl;
         os << "_atom_site.label_comp_id" << std::endl;
+        os << "_atom_site.label_asym_id" << std::endl;
         os << "_atom_site.label_entity_id" << std::endl;
         os << "_atom_site.label_seq_id" << std::endl;
+        os << "pdbx_PDB_ins_code" << std::endl;
         os << "_atom_site.Cartn_x" << std::endl;
         os << "_atom_site.Cartn_y" << std::endl;
         os << "_atom_site.Cartn_z" << std::endl;
+        os << "_atom_site.occupancy" << std::endl;
+        os << "_atom_site.auth_asym_id" << std::endl;
+
 
         for (auto atom = m.begin(); atom != m.end(); ++atom) {
             pAtom a = (*atom);
-            os << "\t" << a->id()
-               << "\t" << a->name()[0]  // really, this should be the element name
-               << "\t " << a->name()  // the space after the tab helps pymol
-               << "\t" << a->resname()
-               << "\t" << a->segid()  // really, this is the chain number
-               << "\t" << a->resid()
-               << "\t" << a->coords().x()
-               << "\t" << a->coords().y()
-               << "\t" << a->coords().z()
+            std::string chain;
+            if (a->segid().size() > 0) {
+                chain = a->segid();
+            } else if (a->chainId().size() > 0) {
+                chain = a->chainId();
+            } else {  // no chain supplied, use a placefiller
+                chain = std::string("A");
+            }
+
+            os << "ATOM\t"
+               << "   " << a->id()
+               << "   " << a->name()
+               << "    " << a->name()  // the space after the tab helps pymol
+               << "   " << "."
+               << "   " << a->resname()
+               << "   " << chain
+               << "   " << "."
+               << "   " << a->resid()
+               << "   " << a->coords().x()
+               << "   " << a->coords().y()
+               << "   " << a->coords().z()
+               << "   " << a->occupancy()
+               << "   " << chain
                << std::endl;
         }
 
     if (m.isPeriodic()) {
-        os << std::endl;
+        //os << std::endl;
         os << "##########" << std::endl;
         os << "## CELL ##" << std::endl;
         os << "##########" << std::endl;
-        os << std::endl;
+        //os << std::endl;
         os << "_cell.entry_id\t" << id << std::endl;  // TODO: foobar
         os << "_cell.length_a\t" << m.cell.a() << std::endl;
         os << "_cell.length_b\t" << m.cell.b() << std::endl;
@@ -383,7 +404,7 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
         os << "_cell.angle_alpha\t" << m.cell.alpha() << std::endl;
         os << "_cell.angle_beta\t"  << m.cell.beta() << std::endl;
         os << "_cell.angle_gamma\t" << m.cell.gamma() << std::endl;
-        os << std::endl;
+        //os << std::endl;
     }
 
     return(os);
