@@ -164,7 +164,6 @@ public:
     return(oss.str());
   }
 
-
     string alignment_string, transform_string;
     string reference_name, reference_sel;
     double alignment_tol;
@@ -216,6 +215,13 @@ int main(int argc, char *argv[]) {
   options.add(bopts).add(prefopts).add(tropts).add(otopts).add(topts);
   if (!options.parse(argc, argv))
     exit(-1);
+
+  if (otopts->append && topts->reference_name.empty()) {
+    cerr << "Warning: using --append and not specifying a reference structure" << endl
+         << "         will not iteratively align the structures in the existing" << endl
+         << "         trajectory. THIS IS PROBABLY NOT WHAT YOU WANT"
+         << endl;
+  }
 
   verbosity = bopts->verbosity;
 
