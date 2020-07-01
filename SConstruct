@@ -63,6 +63,8 @@ opts.Add('BOOST_LIBS', 'Boost libraries to link with', '')
 opts.Add('ATLAS_LIBPATH', 'Path to ATLAS Libraries', '')
 opts.Add('ATLAS_LIBS', 'Atlas libraries to link with', '')
 
+opts.Add('EIGEN', 'Path to eigen3', '')
+
 opts.Add('NETCDF', 'Path to NetCDF', '')
 opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
 opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
