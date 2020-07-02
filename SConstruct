@@ -84,7 +84,8 @@ if "CONDA_PREFIX" in os.environ:
     env = Environment(ENV=os.environ,
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3',
+                                 '-doxygen', '-threads'],
                       SHLIBPREFIX=""
                   )
     env["CONDA_PREFIX"]=os.environ["CONDA_PREFIX"]
@@ -93,7 +94,8 @@ else:
     env = Environment(ENV={'PATH': os.environ['PATH']},
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3',
+                                 '-doxygen', '-threads'],
                       SHLIBPREFIX=""
                       )
     env.USING_CONDA = False
