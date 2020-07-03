@@ -355,11 +355,12 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
         os << "_atom_site.label_asym_id" << std::endl;
         os << "_atom_site.label_entity_id" << std::endl;
         os << "_atom_site.label_seq_id" << std::endl;
-        os << "pdbx_PDB_ins_code" << std::endl;
+        os << "_atom_site.pdbx_PDB_ins_code" << std::endl;
         os << "_atom_site.Cartn_x" << std::endl;
         os << "_atom_site.Cartn_y" << std::endl;
         os << "_atom_site.Cartn_z" << std::endl;
         os << "_atom_site.occupancy" << std::endl;
+        os << "_atom_site.pdbx_formal_charge" << std::endl;
         os << "_atom_site.auth_asym_id" << std::endl;
 
 
@@ -374,6 +375,13 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
                 chain = std::string("A");
             }
 
+            double charge;
+            if (a->checkProperty(Atom::chargebit)) {
+                charge = a->charge();
+            } else {
+                charge = 0.;
+            }
+
             os << "ATOM\t"
                << "   " << a->id()
                << "   " << a->name()
@@ -383,10 +391,12 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
                << "   " << chain
                << "   " << "."
                << "   " << a->resid()
+               << "   " << "?"
                << "   " << a->coords().x()
                << "   " << a->coords().y()
                << "   " << a->coords().z()
                << "   " << a->occupancy()
+               << "   " << charge
                << "   " << chain
                << std::endl;
         }
@@ -406,6 +416,7 @@ OpenBabel::OBMol * MMCIF::toOpenBabel(void) const {
         os << "_cell.angle_gamma\t" << m.cell.gamma() << std::endl;
         //os << std::endl;
     }
+    os << "#" << std::endl;
 
     return(os);
     }
