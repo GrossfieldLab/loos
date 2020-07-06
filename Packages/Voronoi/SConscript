@@ -32,7 +32,7 @@ else:
     PREFIX = env['PREFIX'] + '/Voronoi/'
 
 executables = 'area_per_molecule.py area_profile.py lipid_lifetime.py run_areas.py '
-files = 'Voronoi.py'
+files = 'Voronoi.py __init__.py'
 dirs = ''
 
 voronoi_package = []
