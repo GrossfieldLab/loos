@@ -63,6 +63,8 @@ opts.Add('BOOST_LIBS', 'Boost libraries to link with', '')
 opts.Add('ATLAS_LIBPATH', 'Path to ATLAS Libraries', '')
 opts.Add('ATLAS_LIBS', 'Atlas libraries to link with', '')
 
+opts.Add('EIGEN', 'Path to eigen3', '')
+
 opts.Add('NETCDF', 'Path to NetCDF', '')
 opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
 opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
@@ -82,7 +84,8 @@ if "CONDA_PREFIX" in os.environ:
     env = Environment(ENV=os.environ,
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3',
+                                 '-doxygen', '-threads'],
                       SHLIBPREFIX=""
                   )
     env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
@@ -91,7 +94,8 @@ else:
     env = Environment(ENV={'PATH': os.environ['PATH']},
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3',
+                                 '-doxygen', '-threads'],
                       SHLIBPREFIX=""
                       )
     env.USING_CONDA = False
