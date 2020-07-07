@@ -67,20 +67,21 @@ if int(env['pyloos']):
         # Make the symlink to omg.py, if it doesn't already exist
         omg_name = os.path.join(PREFIX, "omg.py")
         omg_fullname = os.path.join(PREFIX, "OptimalMembraneGenerator.py")
-        omg_fullname = os.path.realpath(omg_fullname)
         if os.path.exists(omg_name):
-            if os.path.realpath(omg_name) != omg_fullname:
-                    print("omg.py shortcut exists, but points to ",
-                          os.path.realpath(omg_name))
-                    print("It should point to ", omg_fullname)
-                    print("I won't delete it, but you should check on it")
-            else:
+            if os.path.samefile(omg_name, omg_fullname):
                 # symlink exists, and points to the right thing, so we
                 # don't need to
                 print("correct omg.py symlink already exists")
+            else:
+                print("omg.py shortcut exists, but points to ", omg_name)
+                print("It should point to ", omg_fullname)
+                print("I won't delete it, but you should check on it")
         else:
             # symlink doesn't exist, create it
             os.symlink(omg_fullname, omg_name)
+    else:
+        # TODO: need to install the omg.py symlink here
+        pass
 
 
 # dummy return...
