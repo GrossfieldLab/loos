@@ -80,22 +80,24 @@ scons_support.addDeprecatedOptions(opts)
 
 # If we're using conda, we want to pull in the environment.
 # Otherwise, we want the environment mostly cleaned out
+swigflags = ['-c++', '-python', '-Wall', '-py3', '-threads']
 if "CONDA_PREFIX" in os.environ:
+    # Conda has a new enough swig to support the doxygen flag, but most
+    # distros don't.
+    swigflags.append('-doxygen')
     env = Environment(ENV=os.environ,
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3',
-                                 '-doxygen', '-threads'],
+                      SWIGFLAGS=swigflags,
                       SHLIBPREFIX=""
-                  )
+                      )
     env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
     env.USING_CONDA = True
 else:
     env = Environment(ENV={'PATH': os.environ['PATH']},
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3',
-                                 '-doxygen', '-threads'],
+                      SWIGFLAGS=swigflags,
                       SHLIBPREFIX=""
                       )
     env.USING_CONDA = False
