@@ -22,7 +22,10 @@ Centos, Ubuntu, and OpenSuse.
 Finally, if you prefer you can download and build the key dependencies for
 yourself, although we can't really help much in that case.
 
-To use LOOS, your environment first be set up.  For bash or other Bourne-like shells, run  
+To use LOOS, your environment first be set up.  If you're installing into a
+conda environment, you don't have to do anything. Otherwise, you'll need to set
+up your environment by sourcing the appropriate setup file. For bash or other
+Bourne-like shells, run
 ```
   source /path/to/loos/setup.sh
 ```
@@ -39,8 +42,19 @@ it's purely a matter of taste. If multiple users will be working with it, it
 arguably makes sense to do an install, which will copy the binaries, libraries,
 and python libraries into a new directory tree (/opt/LOOS, by default).
 
-Successful compilation will generate setup.sh and setup.csh in the source directory, and installation will generate another pair of setup files in the install directory.
-You can have both side by side, and switch from one to the other by sourcing the appropriate setup file (the scripts prepend the new directories to the relevant path variables).
+Successful compilation will generate setup.sh and setup.csh in the source
+directory, and installation will generate another pair of setup files in the
+install directory.  You can have both side by side, and switch from one to the
+other by sourcing the appropriate setup file (the scripts prepend the new
+directories to the relevant path variables).  _However, if you want to switch
+from using a local install to using a conda install, you'll need to say_
+```
+unset PYTHONPATH
+```
+
+_in order to make it work correctly._ If you need to retain other directories in
+your PYTHONPATH, you'll have to edit it to remove the directories added by the
+setup scripts.
 
 # Compiling using conda for mac or linux
 
@@ -51,16 +65,16 @@ Then, you can run the supplied script to set up a conda environment and build
 LOOS
 
 ```
-   ./conda_build.sh loos 8
+   ./conda_build.sh -e loos -j 8 -i
 ```
 
 This will install packages into an environment loos, creating it if it doesn't
 already exist, and will run `scons -j8` (you can supply a different number of
-processes if you prefer, eg 2 if you've got a slow machine).  We use
-conda-forge rather than the default channel, so it's probably not a great idea
-to install into an existing environment that uses other channels. The script
-will set channel_priority to strict in your ~/.condarc, but you can undo this
-by removing the following line:
+processes if you prefer, eg 2 if you've got a slow machine); the `-i` flag tells
+it to do an install. We use conda-forge rather than the default channel, so it's
+probably not a great idea to install into an existing environment that uses
+other channels. The script will set channel_priority to strict in your
+~/.condarc, but you can undo this by removing the following line:
 
 ```
 channel_priority: strict
@@ -70,18 +84,23 @@ channel_priority: strict
 To create an installation of LOOS, you can say
 
 ```
-scons install
+scons install PREFIX=/path/to/loos
 ```
 
 This defaults to putting LOOS in /opt, but you can choose a different location
 either by setting the PREFIX variable, either on the command line or in
 custom.py (copy from custom.py-proto to get the idea of what other options are
 available).  However, this is not necessary -- you can just as easily work out
-of the LOOS source tree, by sourcing `setup.sh` or `setup.csh`, found in the
-top level directory.
+of the LOOS source tree, by sourcing `setup.sh` or `setup.csh`, found in the top
+level directory.  Installing into the conda distribution is accomplished by
+saying
 
-We suggest sourcing the appropriate setup script in your `.bashrc` or
-`.tcshrc`, so that LOOS will always work for you.
+```
+scons install PREFIX=$CONDA_PREFIX
+```
+
+If you're not using a conda install, we suggest sourcing the appropriate setup
+script in your `.bashrc` or `.tcshrc`, so that LOOS will always work for you.
 
 To build the documentation, you will also require doxygen and graphviz,
 
@@ -97,6 +116,20 @@ eventually plan to support direct installation via conda.
 Note: if you're updating the source tree of a previous LOOS install, be sure to
 remove or rename your `custom.py` file; you shouldn't need it anymore with
 conda, and it could mess up the build's search for the correct python, etc.
+
+## Where's my stuff?
+
+Installing into the conda distribution behaves somewhat differently from a
+standard install. All executables, both python and c++, get installed into
+$CONDA_PREFIX/bin. Python modules, including loos itself, as well as the Voronoi
+and OptimalMembraneGenerator packages, are installed into the site-packages
+directory of the conda python, eg `$CONDA_PREFIX/lib/python3.8/site-packages/`.
+Voronoi and OptimalMembraneGenerator are submodules of loos. Documentation and
+examples for OptimalMembraneGenerator are installed in directories inside the
+OptimalMembraneGenerator directory, but are probably more easily accessed from
+the source distribution.
+
+Building inside a conda environment and installing outside the environment is not a supported configuration.
 
 # Installing using system libraries on supported Linux distributions
 
@@ -145,6 +178,14 @@ scons install
 
 This will install LOOS in /opt. You can also say `scons PREFIX=/path/to/loos
 install` to install LOOS in the location of your choosing.
+
+The install will create in $PREFIX the directories bin/, lib/, and include/. It
+will also create directories for Voronoi and OptimalMembraneGenerator, but these
+are an artifact of the old structuring -- you should use the ones found inside
+the lib/ directory instead.
+
+Inside $PREFIX, you will find setup.sh and setup.csh, which will configure your
+paths to find this loos distribution -- just source them in your shell.
 
 ## Fedora
 
