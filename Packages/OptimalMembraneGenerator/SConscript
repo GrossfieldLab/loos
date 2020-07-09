@@ -32,7 +32,7 @@ else:
 
 executables = 'LipidLibrary.py NAMD.py OptimalMembraneGenerator.py ' + \
               'ParseOptions.py PSFGen.py WaterBox.py solvate.py ' + \
-              'add_molecules.py make_library.py'
+              'add_molecules.py make_library.py '
 files = 'water_small.pdb'
 dirs = 'doc example'
 
@@ -63,25 +63,6 @@ if int(env['pyloos']):
                     Copy("$TARGET", "$SOURCE"),
                     Chmod("$TARGET", 0o755)
                     ])
-
-        # Make the symlink to omg.py, if it doesn't already exist
-        omg_name = os.path.join(PREFIX, "omg.py")
-        omg_fullname = os.path.join(PREFIX, "OptimalMembraneGenerator.py")
-        if os.path.exists(omg_name):
-            if os.path.samefile(omg_name, omg_fullname):
-                # symlink exists, and points to the right thing, so we
-                # don't need to
-                print("correct omg.py symlink already exists")
-            else:
-                print("omg.py shortcut exists, but points to ", omg_name)
-                print("It should point to ", omg_fullname)
-                print("I won't delete it, but you should check on it")
-        else:
-            # symlink doesn't exist, create it
-            os.symlink(omg_fullname, omg_name)
-    else:
-        # TODO: need to install the omg.py symlink here
-        pass
 
 
 # dummy return...
