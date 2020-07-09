@@ -31,7 +31,7 @@
 
 numprocs=4
 envname="loos"
-while getopts "hj:ie:" opt; do
+while getopts "yhj:ie:" opt; do
     case ${opt} in
         e )
             envname=$OPTARG
@@ -45,12 +45,17 @@ while getopts "hj:ie:" opt; do
             echo "Will install LOOS in the conda environment"
             do_install=1
             ;;
+        y )
+            echo "Will install non-interactively"
+            non_interactive=1
+            ;;
         h )
             echo "Usage:"
             echo "    -h         Display this message"
             echo "    -i         Install LOOS into the conda env"
             echo "    -e NAME    Use conda env NAME"
             echo "    -j N       Use N processors while compiling"
+            echo "    -y         Install non-interactively"
             exit 0
             ;;
         \? )
@@ -76,13 +81,26 @@ for i in $envs; do
     fi
 done
 
+# Build up the conda installation command line
 if [ -z $found ]; then
     echo "Creating conda environment $envname"
-    conda create -n $envname -c conda-forge $packages
+    command="conda create "
+    #conda create -n $envname -c conda-forge $packages
 else
     echo "Installing into existing environment $envname"
-    conda install -n $envname -c conda-forge $packages
+    command="conda install "
+    #conda install -n $envname -c conda-forge $packages
 fi
+
+if [ -z $non_interactive ]; then
+    command+="--yes "
+fi
+
+command+="-n $envname -c conda-forge $packages "
+
+# Run the conda command
+echo $command
+eval $command
 
 echo "Activating environment $envname"
 CONDA_BASE=$(conda info --base)
