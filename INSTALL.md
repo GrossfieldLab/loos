@@ -34,13 +34,13 @@ For csh and tcsh, run
 source /path/to/loos/setup.csh
 ```
 
-
 In addition, you have 2 choices for how to install LOOS. You can either work
 with a source tree (use binaries compiled in the directory structure you
-downloaded) or an install. If only one user is working with the LOOS install,
-it's purely a matter of taste. If multiple users will be working with it, it
-arguably makes sense to do an install, which will copy the binaries, libraries,
-and python libraries into a new directory tree (/opt/LOOS, by default).
+downloaded) or an install. Unless you're developing new C++ tools, we suggest an
+install is the best choice, particularly if you've built using conda. In that
+case, you don't have to do anything to your environment other than activate the
+relevant conda environment to use the pre-compiled binaries or write your own
+python scripts. If you are developing new tools using C++, or are modifying the LOOS library itself, you'll want to work out of a source tree.
 
 Successful compilation will generate setup.sh and setup.csh in the source
 directory, and installation will generate another pair of setup files in the
