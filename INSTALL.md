@@ -199,8 +199,9 @@ of packages, for instance by using the following command
 For versions of Fedora where the default python is python2.7 (anything before
 Fedora 31), you will need to copy custom.py-proto to custom.py, and uncomment
 the line setting PYTHON_INC (verifying that it's the correct location for your
-system), *before* you build LOOS. As of Fedora 31, this is no longer necessary
-(the default system python is 3.x).
+system), *before* you build LOOS.  Alternatively, you can force scons to run
+using python3 by calling it as `/usr/bin/env python3 $(which scons)`.  As of
+Fedora 31, this is no longer necessary (the default system python is 3.x).
 
 Fedora versions before 24 don't have python3 packages for numpy and scipy;  to install on these systems, you'll need to either build them manually, or (more efficient) just use conda.
 
@@ -256,7 +257,7 @@ To build the documentation, also install:
 ```
 
 Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC
-(verifying that it's the correct location for your system).
+(verifying that it's the correct location for your system). Alternatively, you can force scons to run using python3 by saying `/usr/bin/env python3 $(which scons)`.
 
 ### Documentation
 
@@ -285,7 +286,8 @@ version numbers for boost may differ.
 
 You will need to copy custom.py-proto to custom.py, and uncomment the line
 setting PYTHON_INC (verifying that it's the correct location for your system)
-*before* running scons.
+*before* running scons. Alternatively, you can force scons to use python3 by
+saying `/usr/bin/env python3 $(which scons)`.
 
 ### Documentation
 
