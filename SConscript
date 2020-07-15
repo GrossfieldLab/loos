@@ -43,11 +43,13 @@ if env.USING_CONDA:
     #        Copy("$TARGET", "$SOURCE"),
     #        Chmod("$TARGET", 0o644)
     #        ])
-    Command(python_lib_path + '__init__.py', 'loos/__init__.py', [
+    Command(os.path.join(python_lib_path, '__init__.py'),
+            os.path.join('loos', '__init__.py'),
+            [
             Copy("$TARGET", "$SOURCE"),
             Chmod("$TARGET", 0o644)
             ])
-    env.Install(python_lib_path, 'loos/pyloos')
+    env.Install(python_lib_path, os.path.join('loos','pyloos'))
 
 else:
     env.Install(os.path.join(PREFIX, 'lib'), 'loos')
