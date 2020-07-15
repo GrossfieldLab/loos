@@ -366,6 +366,7 @@ def CheckDirectory(conf, dirname):
     conf.Result("no")
     return 0
 
+
 # Figure out the appropriate python site-packages directory, and store it
 # in the env
 def FindSitePackages(conf):
@@ -373,10 +374,14 @@ def FindSitePackages(conf):
     # staged-recipes environment
     if "SP_DIR" not in conf.env:
         # figure it out, assuming we're installing to the current python
-        site_packages = list(filter(lambda x: x.endswith("site-packages"), sys.path))[0]
-        conf.env["SP_DIR"] = site_packages
-    print(conf.env["SP_DIR"])
-
+        try:
+            site_packages = list(filter(lambda x: x.endswith("site-packages"),
+                                        sys.path))[0]
+            conf.env["SP_DIR"] = site_packages
+        except IndexError:
+            # this python has no site-packages directory. We'll be ok,
+            # because conda always does
+            pass
 
 
 def CheckNumpy(conf, pythonpath):
