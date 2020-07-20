@@ -130,7 +130,7 @@ cleaning = env.GetOption('clean')
 # Autoconf
 # TODO: need to update this to handle conda-forge staged recipes
 if env.USING_CONDA and platform.system() == "Darwin":
-    flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
+    flag = "-Wl,-rpath," + os.path.join(env["CONDA_PREFIX"], "/lib")
     env.Append(LINKFLAGS=flag)
 
 scons_support.AutoConfiguration(env)
@@ -151,7 +151,7 @@ env.Prepend(CPPPATH=['#', '#src'])
 env.Prepend(LIBPATH=['#', '#src'])
 env.Append(LEXFLAGS=['-s'])
 env.Append(CPPFLAGS=['-pthread'])
-env.Append(LIBS=['pthread'])
+env.Append(LIBS=['pthread', 'loos'])
 
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':
@@ -160,6 +160,7 @@ if loos_build_config.host_type == 'Darwin':
         # Hack to get swig to work with latest 10.9
         env.Append(SWIGFLAGS='-DSWIG_NO_EXPORT_ITERATOR_METHODS')
     env.Append(LINKFLAGS=' -llapack')
+
 
 
 if not cleaning:
