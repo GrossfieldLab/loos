@@ -75,7 +75,7 @@ hdr += ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
 if (env['HAS_NETCDF']):
     hdr += ' amber_netcdf.hpp'
 
-loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
+loos_hdr_inst = env.Install(os.path.join(PREFIX, 'include'), Split(hdr))
 
 # Python bindings
 loos_python = ''
@@ -94,6 +94,12 @@ if int(env['pyloos']):
     if env.USING_CONDA:
         python_lib_path = os.path.join(env["SP_DIR"], 'loos')
         env.Install(python_lib_path, loos_python)
+
+        # if darwin, run install_name_tool
+        if env['host_type'] == 'Darwin':
+            loos_path = os.path.join(python_lib_path, "_loos.so")
+            env.AddPostAction(loos_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + loos_path)
+
     else:
         env.Install(os.path.join(PREFIX, 'lib'), loos_python)
     loos_python += Command(os.path.join("#loos", "__init__.py"), "loos.py",

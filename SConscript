@@ -32,17 +32,10 @@ if env.USING_CONDA:
     # We can't use env.Install, because the loos/ directory will already
     # exist, causing Install to not do anything. It took me way too long to
     # figure that out.
-    #python_lib_path = os.path.join(
-    #        list(filter(lambda x: x.endswith("site-packages"), sys.path))[0],
-    #        'loos/')
     python_lib_path = os.path.join(env["SP_DIR"], 'loos')
 
     # _loos.so gets installed by src/SConscript, so we don't have to do it
     # here.
-    #Command(python_lib_path + '_loos.so', 'loos/_loos.so', [
-    #        Copy("$TARGET", "$SOURCE"),
-    #        Chmod("$TARGET", 0o644)
-    #        ])
     Command(os.path.join(python_lib_path, '__init__.py'),
             os.path.join('loos', '__init__.py'),
             [
@@ -54,9 +47,7 @@ if env.USING_CONDA:
 else:
     env.Install(os.path.join(PREFIX, 'lib'), 'loos')
 
-
 # Setup environment script(s)
-
 script_sh = env.Scripts('setup.sh', 'setup.sh-pre')
 script_csh = env.Scripts('setup.csh', 'setup.csh-pre')
 scripts = [script_sh, script_csh]
