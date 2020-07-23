@@ -46,7 +46,7 @@ PREFIX = env['PREFIX']
 bin_path = os.path.join(PREFIX, "bin")
 loos_tools = env.Install(bin_path, Split(apps))
 
-# TODO: if darwin, run install_name_tool
+# if darwin, run install_name_tool so the binaries can find the library
 if env['host_type'] == 'Darwin':
     for app in Split(apps):
         app_path = os.path.join(bin_path, app)
