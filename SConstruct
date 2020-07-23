@@ -130,7 +130,7 @@ cleaning = env.GetOption('clean')
 # Autoconf
 # TODO: need to update this to handle conda-forge staged recipes
 if env.USING_CONDA and platform.system() == "Darwin":
-    flag = "-Wl,-rpath," + os.path.join(env["CONDA_PREFIX"], "/lib")
+    flag = "-Wl,-rpath," + os.path.join(env["CONDA_PREFIX"], "lib")
     env.Append(LINKFLAGS=flag)
 
 scons_support.AutoConfiguration(env)
@@ -151,7 +151,7 @@ env.Prepend(CPPPATH=['#', '#src'])
 env.Prepend(LIBPATH=['#', '#src'])
 env.Append(LEXFLAGS=['-s'])
 env.Append(CPPFLAGS=['-pthread'])
-env.Append(LIBS=['pthread', 'loos'])
+env.Append(LIBS=['pthread'])
 
 # Platform specific build options...
 if loos_build_config.host_type == 'Darwin':

@@ -25,6 +25,7 @@ Import('env')
 Import('loos')
 
 clone = env.Clone()
+clone.Prepend(LIBS=[loos])
 
 apps = 'density-dist density-dist-windowed model2matlab frame2pdb contacts order_params bounding aligner svd rmsds xy_rdf xy_rdf_timeseries model-select rdf atomic-rdf crossing-waters'
 apps = apps + ' svdcolmap averager convert2pdb traj2dcd reimage-by-molecule rmsd2ref rgyr rad-gyr dumpmol helix_kink subsetter torsion'
