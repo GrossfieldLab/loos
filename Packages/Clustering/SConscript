@@ -75,7 +75,6 @@ if env['host_type'] == 'Darwin':
         app_path = os.path.join(bin_path, app)
         env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
 
-
 # TODO: this doesn't do anything, since there are no scripts right now
 for file in Split(scripts):
     PREFIX_BIN = PREFIX + '/bin/'
