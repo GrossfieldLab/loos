@@ -347,16 +347,17 @@ class VirtualTrajectory(object):
         the iterator state
         """
 
+        # make sure we're appending only Trajectory objects
+        if isinstance(traj, tuple):
+            for t in traj:
+                if not isinstance(t, loos.pyloos.trajectories.Trajectory):
+                    raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
+        else:
+            if not isinstance(traj, loos.pyloos.trajectories.Trajectory):
+                    raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
+
         self._trajectories.extend(traj)
         self._stale = 1
-
-        # make sure the trajectories are trajectories
-        # I'm doing all of them, because I don't know how many
-        # I added. In principle, this is slow if you sequentially add
-        # many trajectories one at a time
-        for t in self._trajectories:
-            if not isinstance(t, loos.pyloos.trajectories.Trajectory):
-                raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
 
     def stride(self, n):
         """
@@ -631,14 +632,18 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         """
         Add another trajectory at the end.  Requires re-aligning
         """
+        # make sure we're appending only Trajectory objects
+        if isinstance(traj, tuple):
+            for t in traj:
+                if not isinstance(t, loos.pyloos.trajectories.Trajectory):
+                    raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
+        else:
+            if not isinstance(traj, loos.pyloos.trajectories.Trajectory):
+                    raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
+
         self._trajectories.extend(traj)
         self._stale = True
         self._aligned = False
-
-        # make sure the trajectories are trajectories
-        for t in self._trajectories:
-            if not isinstance(t, loos.pyloos.trajectories.Trajectory):
-                raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
 
     def alignWith(self, selection):
         """
