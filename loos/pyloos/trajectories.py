@@ -39,7 +39,7 @@ import copy
 # \code
 # traj = loos.pyloos.Trajectory('foo.dcd', model, iterator=range(19,40))
 # \endcode
-# 
+#
 # An alternative way of only iterating over a subset...
 # \code
 # model = loos.createSystem('foo.pdb')
@@ -84,7 +84,7 @@ class Trajectory(object):
             self._subset = loos.selectAtoms(model, kwargs['subset'])
         else:
             self._subset = model
-            
+
         self._model = model
         self._fname = fname
         self._traj = loos.createTrajectory(fname, model)
@@ -99,7 +99,7 @@ class Trajectory(object):
             it = range(self._skip, self._traj.nframes(), self._stride)
         else:
             it = iter(self._iterator)
-        
+
         for i in it:
             self._framelist.append(i)
 
@@ -117,13 +117,13 @@ class Trajectory(object):
         Skip this number of frames at the start of the trajectory
         """
         self._skip = n
-        
+
     def fileName(self):
         """
         Return the filename that this Trajectory represents
         """
         return(self._fname)
-        
+
     def setSubset(self, selection):
         """
         Set the subset used when iterating over a trajectory.
@@ -131,7 +131,7 @@ class Trajectory(object):
         """
         self._subset = loos.selectAtoms(self._model, selection)
 
-        
+
     def __iter__(self):
         if self._stale:
             self._initFrameList()
@@ -167,7 +167,7 @@ class Trajectory(object):
     def model(self):
         """Return the current model"""
         return(self._model)
-    
+
     def readFrame(self, i):
         """Read a frame and update the model"""
         if self._stale:
@@ -212,7 +212,7 @@ class Trajectory(object):
             if (i < 0):
                 i += len(self._framelist)
             return(self._framelist[i])
-        
+
         indices = [x if x >=0 else len(self._framelist)+x for x in i]
         framenos = [self._framelist[x] for x in indices]
         return(framenos)
@@ -270,12 +270,12 @@ class Trajectory(object):
 # combining three different GPCRs where the subsets are the common
 # trans-membrane C-alphas.  This makes processing all of the
 # ensembles together easier.
-# 
+#
 # <h2>WARNING</h2>
 # Since each contained trajectory can have a different set of shared
 # atoms it updates, care must be taken when pre-selecting atoms.
-# 
-# 
+#
+#
 # Examples:
 # \code
 # model = loos.createSystem('foo.pdb')
@@ -313,7 +313,7 @@ class VirtualTrajectory(object):
     See the Doxygen documentation for more details.
     """
 
-    
+
     def __init__(self, *trajs, **kwargs):
         self._skip = 0
         self._stride = 1
@@ -323,7 +323,7 @@ class VirtualTrajectory(object):
 
         self._index = 0
         self._framelist = []
-        self._trajlist = [] 
+        self._trajlist = []
         self._stale = 1
 
         if 'skip' in kwargs:
@@ -335,14 +335,28 @@ class VirtualTrajectory(object):
         if 'subset' in kwargs:
             self.setSubset(kwargs['subset'])
 
-        
+        # make sure the trajectories are trajectories
+        for t in self._trajectories:
+            if not isinstance(t, loos.pyloos.trajectories.Trajectory):
+                raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
+
+
     def append(self, *traj):
         """
         Add a trajectory to the end of the virtual trajectory.  Resets
         the iterator state
         """
+
         self._trajectories.extend(traj)
         self._stale = 1
+
+        # make sure the trajectories are trajectories
+        # I'm doing all of them, because I don't know how many
+        # I added. In principle, this is slow if you sequentially add
+        # many trajectories one at a time
+        for t in self._trajectories:
+            if not isinstance(t, loos.pyloos.trajectories.Trajectory):
+                raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
 
     def stride(self, n):
         """
@@ -393,7 +407,7 @@ class VirtualTrajectory(object):
             i = len(self._framelist) - 1
         else:
             i = self._index
-            
+
         return(self._trajectories[self._trajlist[i]].frame())
 
     def index(self):
@@ -401,7 +415,7 @@ class VirtualTrajectory(object):
         Return index into composite trajectory for current frame
         """
         return(self._index-1)
-    
+
 
 
     ## Returns information about the ith frame in the VirtualTrajectory
@@ -425,7 +439,7 @@ class VirtualTrajectory(object):
     # In the above example, the traj-index will be 1.
     # * \c trajectory is the actual loos.pyloos.Trajectory object that contains the frame.
     # * \c real-frame-within-trajectory is the same as calling trajectory.frameNumber(frame-index).
-    # 
+    #
     # Instead of the \c t1 above, imagine it was setup this way,
     # \code
     # t1 = loos.pyloos.Trajectory('foo.dcd', model, skip=25)
@@ -434,7 +448,7 @@ class VirtualTrajectory(object):
     # and <tt>vt.frameLocation(25)</tt> will return <tt>(25, 1, t2, 0)</tt>
     #
     # Python documentation:
-    
+
     def frameLocation(self, i):
         """
         Return info about where a frame comes from.
@@ -442,13 +456,13 @@ class VirtualTrajectory(object):
         """
         if (self._stale):
             self._initFrameList()
-            
+
         if (i < 0):
             i += len(self._framelist)
 
         t = self._trajectories[self._trajlist[i]]
         return( self._framelist[i], self._trajlist[i], t, t.frameNumber(self._framelist[i]))
-    
+
     def _initFrameList(self):
         frames = []
         trajs = []
@@ -471,7 +485,7 @@ class VirtualTrajectory(object):
 
         self._index = 0
         self._stale = 0
-            
+
     def __len__(self):
         """
         Total number of frames
@@ -480,7 +494,7 @@ class VirtualTrajectory(object):
             self._initFrameList()
         return(len(self._framelist))
 
-                
+
     def __getitem__(self, i):
         """
         Return the ith frame in the composite trajectory.  Supports
@@ -540,7 +554,7 @@ class VirtualTrajectory(object):
 # ------------|------------------------------------------------------------------------------
 # alignwith=s | Use 's' to select what part of the model is used for aligning.
 # reference=g | Use the AtomicGroup g as a reference structure.  All frames will be aligned to it.
-# 
+#
 # There are two ways that a trajectory can be aligned.  The first
 # uses in iterative alignment method (the same used in LOOS).  This
 # is the default method.  In order to do the alignment, the
@@ -548,7 +562,7 @@ class VirtualTrajectory(object):
 # This can potentially use a lot of memory and create delays in
 # execution.  Once the alignment is complete, however, those cached
 # frames are released and subsequent frame accesses will be quick.
-# 
+#
 # The second method is to align each frame to a reference
 # structure.  This method is selected when a reference structure is
 # passed to the constructor (with the 'reference' keyword), or when
@@ -557,7 +571,7 @@ class VirtualTrajectory(object):
 # the iterative method.  Also note that the reference structure is
 # copied into the AVT object as a deep copy (i.e. it does not share
 # any atoms).
-# 
+#
 # See VirtualTrajectory for some basic examples in addition to
 # below...
 #
@@ -565,17 +579,17 @@ class VirtualTrajectory(object):
 # \code
 # vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2)
 # \endcode
-# 
+#
 # Align using only backbone atoms
 # \code
 # vtraj = loos.pyloos.AlignedVirtualTrajectory(traj1, traj2, alignwith='name =~ "^(C|N|O|CA)$"')
 # \endcode
-# 
+#
 # Add another trajectory
 # \code
 # vtraj.append(traj3)
 # \endcode
-# 
+#
 # Align using only C-alphas and a reference structure
 # \code
 # refmodel = loos.createSystem('foo-ref.pdb')
@@ -621,6 +635,11 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         self._stale = True
         self._aligned = False
 
+        # make sure the trajectories are trajectories
+        for t in self._trajectories:
+            if not isinstance(t, loos.pyloos.trajectories.Trajectory):
+                raise TypeError("Inputs to VirtualTrajectory must be pyloos Trajectory objects")
+
     def alignWith(self, selection):
         """
         Change the selection used to align with.  Requires re-aligning
@@ -638,7 +657,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
     def setReference(self, reference):
         self._reference = copy.deepcopy(reference)
         self._aligned = False
-    
+
     def _align(self):
         """
         Align the frames (called implicitly on iterator or array access)
@@ -669,7 +688,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
         else:                      # Iterative alignment
 
             ensemble = loos.DoubleVectorMatrix()
-            
+
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
                 if t != current_traj:
@@ -689,8 +708,8 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
     def iters(self):
         return(self._iters)
-        
-        
+
+
     def _getSlice(self, s):
         indices = list(range(*s.indices(self.__len__())))
         ensemble = []
@@ -700,7 +719,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             ensemble.append(frame)
         return(ensemble)
 
-        
+
     def __getitem__(self, i):
         """
         Returns the ith frame aligned.  Supports Python slices.  Negative indices are relative
@@ -711,7 +730,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
 
         if isinstance(i, slice):
             return(self._getSlice(i))
-        
+
         if (i < 0):
             i += len(self._framelist)
         if (i >= len(self._framelist)):
