@@ -147,6 +147,7 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Tools/esp_mesh
 Packages/Clustering/**
 !Packages/Clustering/*.cpp
 !Packages/Clustering/*.hpp
