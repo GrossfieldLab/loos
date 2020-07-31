@@ -142,6 +142,7 @@ Operating System   | LOOS Support | Notes
 Fedora 29          | yes          |
 Fedora 30          | yes          |
 Fedora 31          | yes          |
+Fedora 32          | yes          |
 Ubuntu 16.04 LTS   | yes          | conda-only
 Ubuntu 18.04 LTS   | yes          |
 Debian 9.9         | yes          |
