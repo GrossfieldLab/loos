@@ -1,3 +1,6 @@
+2020-07-31  Alan Grossfield <alan>
+	* Merged in esp_mesh tool from Chapin Cavender
+	
 2020-07-07  Tod Romo <tromo>
 	* Fixed bug in svd where splitting the v-matrix per trajectory wasn't
 	  done correctly
