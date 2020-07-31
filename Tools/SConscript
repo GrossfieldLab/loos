@@ -59,7 +59,7 @@ scripts = 'blurrogram.pl potential_profile.py gmxdump2pdb.pl mat2loos.pl'
 
 for file in Split(scripts):
     PREFIX_BIN = os.path.join(PREFIX, "bin")
-    Command(PREFIX_BIN + file, file,
+    Command(os.path.join(PREFIX_BIN, file), file,
             [
             Copy("$TARGET", "$SOURCE"),
             Chmod("$TARGET", 0o755)
