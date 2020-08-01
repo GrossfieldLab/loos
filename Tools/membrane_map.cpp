@@ -1,5 +1,5 @@
 /*
- *  Compute membrane property distribution about a protein 
+ *  Compute membrane property distribution about a protein
  *  Can compute chain molecular order parameter, tilt vector, or density
  *
  *  Alan Grossfield
@@ -44,7 +44,7 @@ enum CalcType { DENSITY, ORDER, HEIGHT, VECTOR };
 class ToolOptions: public opts::OptionsPackage
 {
 public:
-    void addGeneric(po::options_description& o) 
+    void addGeneric(po::options_description& o)
         {
         o.add_options()
             ("xmin", po::value<double>(&xmin)->default_value(-50), "x histogram range")
@@ -60,7 +60,7 @@ public:
             ;
         }
 
-    bool postConditions(po::variables_map& vm) 
+    bool postConditions(po::variables_map& vm)
         {
         if (calc_type.compare(string("density"))==0)
             {
@@ -78,7 +78,7 @@ public:
             {
             type = VECTOR;
             }
-        else 
+        else
             {
             cerr << "Error: unknown calculation type '" << calc_type
                  << "' (must be density, height, order, or vector)"
@@ -117,7 +117,7 @@ public:
 
 string fullHelpMessage(void)
     {
-    string msg = 
+    string msg =
 "\n"
 "SYNOPSIS\n"
 "\n"
@@ -172,6 +172,16 @@ string fullHelpMessage(void)
 "          snapshots, and uses DHA chains as the targets.  Since no \n"
 "          calculation type is specified, a number density is calculated. \n"
 "          The DHA chains are split up on the basis of connectivity.\n"
+"\n"
+"USAGE NOTES\n"
+"As of LOOS 3.2, specifying an alignment selection is optional. We added this\n"
+"to make it easier to use membrane_map to compute properties of a membrane \n"
+"system without a protein, for instance to visualize phase-separated domains.\n"
+"However, using membrane_map on long trajectories without alignment is likely\n"
+"to be problematic, because lateral motion of the whole system will average \n"
+"away your signal. If you have a long trajectory, your best bet is to use \n"
+"membrane_map on discrete windows of time by using the --range option (which\n"
+"lets you specified a start, stop, and stride value.\n"
 "\n"
 "POTENTIAL COMPLICATIONS\n"
 "\n"
@@ -271,7 +281,7 @@ int main(int argc, char *argv[])
     vector<AtomicGroup> targets = sopts->split(apply_to);
     cout << "# Found " << targets.size() << " matching molecules" << endl;
 
-    // Set up storage for our property. 
+    // Set up storage for our property.
     double xmin = topts->xmin;
     double xmax = topts->xmax;
     double ymin = topts->ymin;
@@ -301,9 +311,9 @@ int main(int argc, char *argv[])
             exit(-1);
         }
 
-    // We don't want the transformation to tilt the membrane, so we'll 
-    // zero out the z coordinates before using the alignment. 
-    // We'll do the same 
+    // We don't want the transformation to tilt the membrane, so we'll
+    // zero out the z coordinates before using the alignment.
+    // We'll do the same
     for (AtomicGroup::iterator i = reference.begin();
                                i!= reference.end();
                                ++i)
@@ -317,7 +327,7 @@ int main(int argc, char *argv[])
         traj->readFrame(frames[i]);
         traj->updateGroupCoords(system);
 
-        
+
         // zero out the alignment selections z-coordinate
         AtomicGroup align_to_flattened = align_to.copy();
         for (AtomicGroup::iterator j = align_to_flattened.begin();
@@ -332,7 +342,7 @@ int main(int argc, char *argv[])
         GMatrix M = align_to_flattened.superposition(reference);
         M(2,2) = 1.0;    // Fix a problem caused by zapping the z-coords...
         XForm W(M);
-  
+
         // align the stuff we're goign to do the calculation on
         apply_to.applyTransform(W);
 
@@ -345,19 +355,19 @@ int main(int argc, char *argv[])
             GCoord centroid = j->centroid();
             // Skip molecules outside the xy range of interest
             if ( (centroid.x() < xmin) || (centroid.x() > xmax) ||
-                 (centroid.y() < ymin) || (centroid.y() > ymax) 
+                 (centroid.y() < ymin) || (centroid.y() > ymax)
                )
                 {
                 continue;
                 }
-            // If the user chose to look at only one leaflet, 
+            // If the user chose to look at only one leaflet,
             // skip molecules in the opposite leaflet.
             // Note: this assumes that the membrane is centered at z=0
             else if ((centroid.z() > 0) && topts->lower_only)
                 {
                 continue;
                 }
-            else if ((centroid.z() < 0) && topts->upper_only) 
+            else if ((centroid.z() < 0) && topts->upper_only)
                 {
                 continue;
                 }
