@@ -8,28 +8,29 @@ import sys
 
 # @cond TOOLS_INTERNAL
 
+
 class LipidLibrary:
     """
     Class to access a lipid library directory containing either PDB or
     CHARMM CRD files.
     """
     def __init__(self, path):
-       self.path = path
-       if not os.path.exists(path):
-           print(self.error_message())
-           sys.exit()
+        self.path = path
+        if not os.path.exists(path):
+            print(self.error_message())
+            sys.exit()
 
-       all_files = os.listdir(self.path)
+        all_files = os.listdir(self.path)
 
-       # select files, either pdb or crd
-       self.structures = []
-       for file in all_files:
-           if (file.endswith(".pdb") or file.endswith(".crd")):
+        # select files, either pdb or crd
+        self.structures = []
+        for file in all_files:
+            if (file.endswith(".pdb") or file.endswith(".crd")):
                 self.structures.append(file)
 
-       if self.size() == 0:
-           print(self.error_message())
-           sys.exit()
+        if self.size() == 0:
+            print(self.error_message())
+            sys.exit()
 
     def size(self):
         return len(self.structures)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys
-import LipidLibrary
+import loos
+import loos.OptimalMembraneGenerator
+from loos.OptimalMembraneGenerator import LipidLibrary
 import loos
 import subprocess
 import os
@@ -234,8 +236,8 @@ class ReadConfig:
         lines.append("\n")
 
         if include_other and self.protein is not None:
-                line = self.protein.write(include_other_water)
-                lines.append(line)
+            line = self.protein.write(include_other_water)
+            lines.append(line)
 
         lines.append("\n")
 

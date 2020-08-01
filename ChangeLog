@@ -1,6 +1,21 @@
+2020-07-31  Alan Grossfield <alan>
+	* Merged in esp_mesh tool from Chapin Cavender
+	
+2020-07-07  Tod Romo <tromo>
+	* Fixed bug in svd where splitting the v-matrix per trajectory wasn't
+	  done correctly
+
+2020-06-01 Alan Grossfield <alan>
+	* Added warning to aligner to discourage using --append with
+	  iterative alignment
+
+2020-04-28 Alan Grossfield <alan>
+	* Use symlinks to put python-using packages under loos/pyloos  -- changes
+	  imports of Voronoi and OptimalMembraneGenerator
+
 2020-02-28  Alan Grossfield <alan>
 	* added new tool set_segids.py
-	
+
 2020-02-13  Alan Grossfield <alan>
 	* Merged in new radius of gyration tool rad-gyr from Louis Smith
 

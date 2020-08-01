@@ -27,18 +27,35 @@ Import('env')
 # Handle installation...
 PREFIX = env['PREFIX']
 
-env.Install(os.path.join(PREFIX, 'lib'), 'loos')
+# Install the pyloos-specific modules
+if env.USING_CONDA:
+    # We can't use env.Install, because the loos/ directory will already
+    # exist, causing Install to not do anything. It took me way too long to
+    # figure that out.
+    python_lib_path = os.path.join(env["SP_DIR"], 'loos')
 
+    # _loos.so gets installed by src/SConscript, so we don't have to do it
+    # here.
+    Command(os.path.join(python_lib_path, '__init__.py'),
+            os.path.join('loos', '__init__.py'),
+            [
+            Copy("$TARGET", "$SOURCE"),
+            Chmod("$TARGET", 0o644)
+            ])
+    env.Install(python_lib_path, os.path.join('loos','pyloos'))
+
+else:
+    env.Install(os.path.join(PREFIX, 'lib'), 'loos')
 
 # Setup environment script(s)
-
 script_sh = env.Scripts('setup.sh', 'setup.sh-pre')
 script_csh = env.Scripts('setup.csh', 'setup.csh-pre')
-scripts = [ script_sh, script_csh ]
+scripts = [script_sh, script_csh]
 
-script_sh_inst = env.Scripts(os.path.join(PREFIX, 'setup.sh'), 'setup.sh-pre')
-script_csh_inst = env.Scripts(os.path.join(PREFIX, 'setup.csh'), 'setup.csh-pre')
-scripts_inst = [ script_sh_inst, script_csh_inst ]
+if not env.USING_CONDA:
+    script_sh_inst = env.Scripts(os.path.join(PREFIX, 'setup.sh'), 'setup.sh-pre')
+    script_csh_inst = env.Scripts(os.path.join(PREFIX, 'setup.csh'), 'setup.csh-pre')
+    scripts_inst = [script_sh_inst, script_csh_inst]
 
 
 Return('scripts')
