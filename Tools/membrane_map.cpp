@@ -57,6 +57,8 @@ public:
             ("upper-only", "Map only the upper leaflet")
             ("lower-only", "Map only the lower leaflet")
             ("ref-structure", po::value<string>(&reference_filename), "Align to an external structure instead of the first frame")
+            ("target-selection", po::value<string>(&target_selection), "Selection to use to calculate property")
+            ("align-selection", po::value<string>(&align_selection), "Selection used to align the system")
             ;
         }
 
@@ -102,6 +104,15 @@ public:
                  << endl;
             exit(-1);
             }
+
+        if (vm.count("align_selection"))
+            {
+            has_align = true;
+            }
+        else
+            {
+            has_align = false;
+            }
         return(true);
         }
 
@@ -109,9 +120,12 @@ public:
     uint xbins, ybins;
     string calc_type;
     string reference_filename;
+    string align_selection;
+    string target_selection;
     CalcType type;
     bool upper_only;
     bool lower_only;
+    bool has_align;
 };
 
 
@@ -165,7 +179,7 @@ string fullHelpMessage(void)
 "\n"
 "EXAMPLE\n"
 "\n"
-"membrane_map --xmin -30 --xmax 30 --ymin -30 --ymax 30 --xbins 30 --ybins 30 --splitby mol example.psf dark_ensemble_20.dcd 'segid == \"RHOD\"' 'resname == \"DHA\"'\n"
+"membrane_map --xmin -30 --xmax 30 --ymin -30 --ymax 30 --xbins 30 --ybins 30 --splitby mol example.psf dark_ensemble_20.dcd --align-selection 'segid == \"RHOD\"' --target-selection 'resname == \"DHA\"'\n"
 "\n"
 "          This sets the histograms to run from -30:30 in x and y, with \n"
 "          2 ang x 2 ang bins.  It uses the segment name RHOD to align the\n"
@@ -173,15 +187,17 @@ string fullHelpMessage(void)
 "          calculation type is specified, a number density is calculated. \n"
 "          The DHA chains are split up on the basis of connectivity.\n"
 "\n"
-"USAGE NOTES\n"
-"As of LOOS 3.2, specifying an alignment selection is optional. We added this\n"
-"to make it easier to use membrane_map to compute properties of a membrane \n"
-"system without a protein, for instance to visualize phase-separated domains.\n"
-"However, using membrane_map on long trajectories without alignment is likely\n"
-"to be problematic, because lateral motion of the whole system will average \n"
-"away your signal. If you have a long trajectory, your best bet is to use \n"
-"membrane_map on discrete windows of time by using the --range option (which\n"
-"lets you specified a start, stop, and stride value.\n"
+"If you wish to examine membrane properties in general (e.g. for a phase-\n"
+"separated membrane with no protein) you can choose to not use an alignment\n"
+"selection.  However, since domains may drift around during the simulation, \n"
+"you may want to run the code on discrete ranges of frames rather than just \n"
+"averaging over the whole trajectory. For example, you could modify the \n"
+"previous example to be:\n"
+"\n"
+"membrane_map --range 200:299 --xmin -30 --xmax 30 --ymin -30 --ymax 30 --xbins 30 --ybins 30 --splitby mol example.psf dark_ensemble_20.dcd --target-selection 'resname == \"DHA\"'\n"
+"\n"
+"This calculation would not perform any alignment, and would skip the first\n"
+"200 frames, use the next 100 frames, then skip the rest of the trajectory.\n"
 "\n"
 "POTENTIAL COMPLICATIONS\n"
 "\n"
@@ -247,8 +263,6 @@ int main(int argc, char *argv[])
     opts::BasicSplitBy *sopts = new opts::BasicSplitBy;
     opts::RequiredArguments* ropts = new opts::RequiredArguments;
     ToolOptions* topts = new ToolOptions;
-    ropts->addArgument("align-selection", "selection to align on");
-    ropts->addArgument("target-selection", "selection to calculate with");
 
     opts::AggregateOptions options;
     options.add(bopts).add(tropts).add(ropts).add(topts).add(sopts);
@@ -263,20 +277,25 @@ int main(int argc, char *argv[])
     traj->readFrame(frames[0]);
     traj->updateGroupCoords(system);
 
-    AtomicGroup align_to = selectAtoms(system, ropts->value("align-selection"));
 
+
+    AtomicGroup align_to;
     AtomicGroup reference;
-    if ((topts->reference_filename).length() > 0)
+    if (topts->has_align)
         {
-        AtomicGroup reference_system = createSystem(topts->reference_filename);
-        reference = selectAtoms(reference_system, ropts->value("align-selection"));
-        }
-    else
-        {
-        reference = align_to.copy();
+        align_to = selectAtoms(system, topts->align_selection);
+        if ((topts->reference_filename).length() > 0)
+            {
+            AtomicGroup reference_system = createSystem(topts->reference_filename);
+            reference = selectAtoms(reference_system, topts->align_selection);
+            }
+        else
+            {
+            reference = align_to.copy();
+            }
         }
 
-    AtomicGroup apply_to = selectAtoms(system, ropts->value("target-selection"));
+    AtomicGroup apply_to = selectAtoms(system, topts->target_selection);
 
     vector<AtomicGroup> targets = sopts->split(apply_to);
     cout << "# Found " << targets.size() << " matching molecules" << endl;
@@ -327,24 +346,26 @@ int main(int argc, char *argv[])
         traj->readFrame(frames[i]);
         traj->updateGroupCoords(system);
 
-
-        // zero out the alignment selections z-coordinate
-        AtomicGroup align_to_flattened = align_to.copy();
-        for (AtomicGroup::iterator j = align_to_flattened.begin();
-                                   j!= align_to_flattened.end();
-                                   ++j)
+        if (topts->has_align)
             {
-            (*j)->coords().z() = 0.0;
+            // zero out the alignment selections z-coordinate
+            AtomicGroup align_to_flattened = align_to.copy();
+            for (AtomicGroup::iterator j = align_to_flattened.begin();
+                                       j!= align_to_flattened.end();
+                                       ++j)
+                {
+                (*j)->coords().z() = 0.0;
+                }
+
+
+            // get the alignment matrix
+            GMatrix M = align_to_flattened.superposition(reference);
+            M(2,2) = 1.0;    // Fix a problem caused by zapping the z-coords...
+            XForm W(M);
+
+            // align the stuff we're goign to do the calculation on
+            apply_to.applyTransform(W);
             }
-
-
-        // get the alignment matrix
-        GMatrix M = align_to_flattened.superposition(reference);
-        M(2,2) = 1.0;    // Fix a problem caused by zapping the z-coords...
-        XForm W(M);
-
-        // align the stuff we're goign to do the calculation on
-        apply_to.applyTransform(W);
 
         // Calculate something
         uint xbin, ybin;
