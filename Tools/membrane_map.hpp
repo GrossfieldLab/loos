@@ -1,5 +1,5 @@
 /*
- *  Compute membrane property distribution about a protein 
+ *  Compute membrane property distribution about a protein
  *  Can compute chain molecular order parameter, tilt vector, or density
  *
  *  Alan Grossfield
@@ -8,18 +8,19 @@
 
 #include <boost/lexical_cast.hpp>
 #include <sstream>
+#include "loos.hpp"
 
 //* Virtual base class for CalcProperty.  Needed because CalcProperty is
 //  a template, and you can't instantiate a template, only a particular version
 //  of it.
 class CalcPropertyBase
 {
-public: 
+public:
     virtual void normalize(uint frames)
         {
         }
 
-    virtual void calc(const loos::AtomicGroup &group, 
+    virtual void calc(const loos::AtomicGroup &group,
                       const uint xbin, const uint ybin)
         {
         }
@@ -72,7 +73,7 @@ template <class T> class CalcProperty : public CalcPropertyBase
 protected:
     uint _xbins, _ybins;
 public:
-    CalcProperty( uint xbins, uint ybins ): 
+    CalcProperty( uint xbins, uint ybins ):
                 _xbins(xbins),
                 _ybins(ybins),
                 _storage(xbins*ybins),
@@ -155,7 +156,7 @@ public:
         {
         _bin_area = xwidth * ywidth;
         }
-            
+
     void normalize (uint frames)
         {
         double norm =  _bin_area * frames;
@@ -214,7 +215,7 @@ public:
 class CalcOrientVector : public CalcProperty<loos::GCoord>
 {
 public:
-   CalcOrientVector(uint xbins, uint ybins) : 
+    CalcOrientVector(uint xbins, uint ybins) :
         CalcProperty<loos::GCoord>(xbins, ybins)
         {
         }
@@ -224,7 +225,7 @@ public:
         std::vector<loos::GCoord> axes = group.principalAxes();
         // Force a consistent sign convention on the principal axis
         // by insisting it point toward the center of the membrane.
-        // So, if the molecule is in the +z leaflet, the axis must point 
+        // So, if the molecule is in the +z leaflet, the axis must point
         // "downward"
         loos::GCoord centroid = group.centroid();
         if (axes[0].z()*centroid.z() > 0)
@@ -267,3 +268,51 @@ public:
         }
 };
 
+//* Calculate dipole moment
+class CalcDipole : public CalcProperty<loos::GCoord>
+{
+public:
+    CalcDipole(uint xbins, uint ybins) :
+        CalcProperty<loos::GCoord>(xbins, ybins)
+        {
+        }
+
+    void calc(const loos::AtomicGroup &group, const uint xbin, const uint ybin)
+        {
+        incr(xbin, ybin, group.dipoleMoment());
+        }
+
+    const std::string print(const uint xbin, const uint ybin)
+        {
+        std::stringstream s;
+        loos::GCoord tmp;
+        get(xbin, ybin, &tmp);
+        s << tmp.x();
+        s << "\t";
+        s << tmp.y();
+        s << "\t";
+        s << tmp.z();
+        return(s.str());
+        }
+
+    void normalize (uint frames)
+        {
+        loos::GCoord val;
+        loos::GCoord zero(0., 0., 0.);
+        for (uint i=0; i< _xbins; ++i)
+            {
+            for (uint j=0; j< _ybins; ++j)
+                {
+                get(i, j, &val);
+                uint norm = get_norm(i,j);
+                if (norm)
+                    {
+                    set(i,j, val /get_norm(i,j));
+                    }
+                else
+                    set(i,j, zero);
+                }
+            }
+        }
+
+};

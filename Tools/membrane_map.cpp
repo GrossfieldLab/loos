@@ -39,7 +39,7 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-enum CalcType { DENSITY, ORDER, HEIGHT, VECTOR };
+enum CalcType { DENSITY, ORDER, HEIGHT, VECTOR, DIPOLE };
 
 class ToolOptions: public opts::OptionsPackage
 {
@@ -77,13 +77,17 @@ public:
             type = ORDER;
             }
         else if (calc_type.compare(string("vector"))==0)
-            {
-            type = VECTOR;
-            }
+                {
+                type = VECTOR;
+                }
+        else if (calc_type.compare(string("dipole"))==0)
+                {
+                type = DIPOLE;
+                }
         else
             {
             cerr << "Error: unknown calculation type '" << calc_type
-                 << "' (must be density, height, order, or vector)"
+                 << "' (must be density, height, order, vector, or dipole)"
                  << endl;
             return(false);
             }
@@ -323,8 +327,11 @@ int main(int argc, char *argv[])
             calculator = new CalcHeight(xbins, ybins);
             break;
         case VECTOR:
-            calculator = new CalcOrientVector(xbins, ybins);
-            break;
+                calculator = new CalcOrientVector(xbins, ybins);
+                break;
+        case DIPOLE:
+                calculator = new CalcDipole(xbins, ybins);
+                break;
         default: // this can't happen, set in option handling
             cerr << "ERROR: unknown calculation type" << endl;
             exit(-1);
