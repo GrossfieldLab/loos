@@ -1,6 +1,9 @@
+2020-08-05  Alan Grossfield <alan>
+	* Merged in dihedrals tool from Louis Smith
+	
 2020-08-04  Alan Grossfield <alan>
     * membrane_map can now run without aligning
-	
+
 2020-07-31  Alan Grossfield <alan>
 	* Merged in esp_mesh tool from Chapin Cavender
 
