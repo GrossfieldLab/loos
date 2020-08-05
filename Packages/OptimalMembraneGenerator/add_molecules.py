@@ -31,7 +31,8 @@ Alan Grossfield,  University of Rochester Medical Center, 2019
 
 import sys
 import loos
-import LipidLibrary
+import loos.OptimalMembraneGenerator
+from loos.OptimalMembraneGenerator import LipidLibrary
 import random
 import argparse
 

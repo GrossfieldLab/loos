@@ -450,7 +450,7 @@ int main(int argc, char *argv[]) {
     int terms = topts->terms ? static_cast<int>(topts->terms) : sn;
 
     for (uint i=0; i<n; ++i) {
-      MultiTrajectory::Location loc = tropts->mtraj.frameIndexToLocation(i);
+      MultiTrajectory::Location loc = tropts->mtraj.frameIndexToLocation(indices[i]);
       if (loc.first != curtraj) {
         writeMatrixChunk(popts, tropts, topts, Vt, Math::Range(0, a), Math::Range(terms, i), header, curtraj);
         a = i;

@@ -21,6 +21,7 @@
 
 
 import sys
+import os
 
 Import('env')
 Import('loos')
@@ -58,8 +59,14 @@ for file in Split(scripts):
             Chmod("$TARGET", 0o755)
             ])
 
+bin_path = os.path.join(PREFIX, "bin")
+loos_tools = env.Install(bin_path, Split(install_apps))
+# if darwin, run install_name_tool so the binaries can find the library
+if env['host_type'] == 'Darwin':
+    for app in Split(install_apps):
+        app_path = os.path.join(bin_path, app)
+        env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
 
-loos_tools = env.Install(PREFIX + '/bin', Split(install_apps))
 env.Alias('h_tools_install', loos_tools)
 
 Return('list')

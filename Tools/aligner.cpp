@@ -118,7 +118,13 @@ string fullHelpMessage(void) {
     "\n"
     "NOTES\n"
     "\n"
-    "\tSelecting too few atoms to align may result in a poor alignment.\n";
+    "\tSelecting too few atoms to align may result in a poor alignment.\n"
+    "\n"
+    "\tUsing the --append option without the --reference option may produce unexpected behavior.\n"
+    "\tThe default interative alignment algorithm alters all of the trajectory frames, while\n"
+    "\t--append will leave all of the existing frames unchanged. Unless you're absolutely sure\n"
+    "\tyou know what you're doing, we suggest only using --append if you're aligning to a \n"
+    "\treference structure (and then only if you're sure you used the same reference previously)\n";
 
   return(msg);
 }
@@ -157,7 +163,6 @@ public:
       % reference_name % reference_sel;
     return(oss.str());
   }
-
 
     string alignment_string, transform_string;
     string reference_name, reference_sel;
@@ -211,8 +216,15 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
+  if (otopts->append && topts->reference_name.empty()) {
+    cerr << "Warning: using --append and not specifying a reference structure" << endl
+         << "         will not iteratively align the structures in the existing" << endl
+         << "         trajectory. THIS IS PROBABLY NOT WHAT YOU WANT"
+         << endl;
+  }
+
   verbosity = bopts->verbosity;
-  
+
   // Read the inputs...
   AtomicGroup model = tropts->model;
   pTraj traj = tropts->trajectory;
@@ -222,7 +234,7 @@ int main(int argc, char *argv[]) {
   if (align_sub.size() < min_align_selection_warning)
       cerr << "Warning- selecting fewer than " << min_align_selection_warning << " atoms with --align may result in a poor quality alignment.\n";
 
-  
+
   AtomicGroup applyto_sub = selectAtoms(model, topts->transform_string);
 
 
@@ -245,12 +257,12 @@ int main(int argc, char *argv[]) {
     vMatrix coords = readCoords(align_sub, traj, indices, verbosity);
     if (topts->xy_only)
       zapZ(coords);
-    
+
     boost::tuple<vector<XForm>,greal, int> res = iterativeAlignment(coords, topts->alignment_tol, topts->maxiter);
     greal final_rmsd = boost::get<1>(res);
     cerr << "Final RMSD between average structures is " << final_rmsd << endl;
     cerr << "Total iters = " << boost::get<2>(res) << endl;
-    
+
     vector<XForm> xforms = boost::get<0>(res);
 
     // Zapping z-coords will leave Z part of xform 0, so must fix...
@@ -261,11 +273,11 @@ int main(int argc, char *argv[]) {
 	i->load(M);
       }
     }
-    
+
     // Setup for writing Trajectory
     pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
     outtraj->setComments(header);
-    
+
     // Now apply the alignment transformations to the requested subsets
     for (unsigned int i = 0; i<nframes; i++) {
       traj->readFrame(indices[i]);
@@ -273,7 +285,7 @@ int main(int argc, char *argv[]) {
       GCoord original_center;
       if (topts->no_ztrans)
           original_center = applyto_sub.centroid();
-      
+
       model.applyTransform(xforms[i]);
       if (topts->no_ztrans) {
           GCoord new_center = applyto_sub.centroid();
@@ -281,17 +293,17 @@ int main(int argc, char *argv[]) {
           GCoord shift(0.0, 0.0, dz);
           applyto_sub.translate(shift);
       }
-      
+
       outtraj->writeFrame(applyto_sub);
-      
-      if (i == 0) 
+
+      if (i == 0)
         savePDB(prefopts->prefix + ".pdb", header, applyto_sub);
     }
-    
+
   } else {    // else, aligning to reference structure (i.e. non-iterative)
-    
+
     AtomicGroup reference = createSystem(topts->reference_name);
-    
+
     string refsel = topts->reference_sel.empty() ? topts->alignment_string : topts->reference_sel;
     AtomicGroup refsub = selectAtoms(reference, refsel);
 
@@ -302,7 +314,7 @@ int main(int argc, char *argv[]) {
 
     if (topts->xy_only)
       zapZ(refsub);
-    
+
     pTrajectoryWriter outtraj = otopts->createTrajectory(prefopts->prefix);
     outtraj->setComments(header);
 
@@ -345,7 +357,3 @@ int main(int argc, char *argv[]) {
 
   }
 }
-
-
-
-    

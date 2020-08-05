@@ -5,6 +5,7 @@ import sys
 import os.path
 import loos
 
+
 # @cond TOOLS_INTERNAL
 class NAMD:
 
@@ -31,7 +32,6 @@ class NAMD:
         self.x_box = box.x()
         self.y_box = box.y()
         self.z_box = box.z()
-
 
     def construct_header(self):
         lines = []
@@ -80,14 +80,13 @@ class NAMD:
         pdb = loos.PDB.fromAtomicGroup(atomicgroup.copy())
         for atom in pdb:
             atom.coords().zero()
-        heavy = loos.selectAtoms(pdb, '!(name =~ "^H")' )
+        heavy = loos.selectAtoms(pdb, '!(name =~ "^H")')
         for atom in heavy:
             atom.coords().x(spring)
 
-        pdb_file = open(os.path.join(directory,self.cons_k_filename), "w")
+        pdb_file = open(os.path.join(directory, self.cons_k_filename), "w")
         pdb_file.write(str(pdb))
         pdb_file.close()
-
 
     def construct_constraints(self):
         lines = [ "constraints on",
@@ -150,6 +149,7 @@ langevinHydrogen off
 """
 # @endcond
 
+
 if __name__ == '__main__':
     import loos
 
@@ -166,7 +166,6 @@ if __name__ == '__main__':
     n.update_box(box)
 
     print(n.construct_mini())
-    #print n.construct_mini(1000)
 
     n.write_inputfile("n.inp", 50)
     print("launching NAMD")

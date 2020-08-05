@@ -29,9 +29,42 @@
 #   second argument, e.g.
 #   ./conda_build.sh ENVNAME 8
 
+numprocs=4
+envname="loos"
+while getopts "yhj:ie:" opt; do
+    case ${opt} in
+        e )
+            envname=$OPTARG
+            echo "Will use conda env $envname"
+            ;;
+        j )
+            numprocs=$OPTARG
+            echo "Number of processors: $num"
+            ;;
+        i )
+            echo "Will install LOOS in the conda environment"
+            do_install=1
+            ;;
+        y )
+            echo "Will install non-interactively"
+            non_interactive=1
+            ;;
+        h )
+            echo "Usage:"
+            echo "    -h         Display this message"
+            echo "    -i         Install LOOS into the conda env"
+            echo "    -e NAME    Use conda env NAME"
+            echo "    -j N       Use N processors while compiling"
+            echo "    -y         Install non-interactively"
+            exit 0
+            ;;
+        \? )
+            echo "Invalid option: $OPTARG" 1>&2
+            exit 0
+            ;;
+    esac
+done
 
-envname=$1
-numprocs=$2
 platform=`uname`
 
 echo "Setting channel priority to strict"
@@ -48,13 +81,26 @@ for i in $envs; do
     fi
 done
 
+# Build up the conda installation command line
 if [ -z $found ]; then
     echo "Creating conda environment $envname"
-    conda create -n $envname -c conda-forge $packages
+    command="conda create "
+    #conda create -n $envname -c conda-forge $packages
 else
     echo "Installing into existing environment $envname"
-    conda install -c conda-forge $packages
+    command="conda install "
+    #conda install -n $envname -c conda-forge $packages
 fi
+
+if [ -z $non_interactive ]; then
+    command+="--yes "
+fi
+
+command+="-n $envname -c conda-forge $packages "
+
+# Run the conda command
+echo $command
+eval $command
 
 echo "Activating environment $envname"
 CONDA_BASE=$(conda info --base)
@@ -71,8 +117,9 @@ else
 fi
 echo "CXX set to $CXX"
 
-if [ $2 ]; then
-    scons -j$numprocs
+if [ ${do_install} ]; then
+    scons -j$numprocs PREFIX=$CONDA_PREFIX
+    scons PREFIX=$CONDA_PREFIX -j1 install
 else
-    scons -j4
+    scons -j$numprocs
 fi

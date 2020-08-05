@@ -6,8 +6,9 @@ import random
 import stat
 import shutil
 import loos
-import PSFGen
-import WaterBox
+import loos.OptimalMembraneGenerator
+from loos.OptimalMembraneGenerator import PSFGen
+from loos.OptimalMembraneGenerator import WaterBox
 
 config = PSFGen.ReadConfig(sys.argv[1])
 if len(sys.argv) > 2:

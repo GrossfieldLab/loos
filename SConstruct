@@ -63,6 +63,8 @@ opts.Add('BOOST_LIBS', 'Boost libraries to link with', '')
 opts.Add('ATLAS_LIBPATH', 'Path to ATLAS Libraries', '')
 opts.Add('ATLAS_LIBS', 'Atlas libraries to link with', '')
 
+opts.Add('EIGEN', 'Path to eigen3', '')
+
 opts.Add('NETCDF', 'Path to NetCDF', '')
 opts.Add('NETCDF_INCLUDE', 'Path to NetCDF include files', '')
 opts.Add('NETCDF_LIBPATH', 'Path to NetCDF libraries', '')
@@ -78,20 +80,24 @@ scons_support.addDeprecatedOptions(opts)
 
 # If we're using conda, we want to pull in the environment.
 # Otherwise, we want the environment mostly cleaned out
+swigflags = ['-c++', '-python', '-Wall', '-py3', '-threads']
 if "CONDA_PREFIX" in os.environ:
+    # Conda has a new enough swig to support the doxygen flag, but most
+    # distros don't.
+    swigflags.append('-doxygen')
     env = Environment(ENV=os.environ,
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SWIGFLAGS=swigflags,
                       SHLIBPREFIX=""
-                  )
-    env["CONDA_PREFIX"]=os.environ["CONDA_PREFIX"]
+                      )
+    env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
     env.USING_CONDA = True
 else:
     env = Environment(ENV={'PATH': os.environ['PATH']},
                       options=opts,
                       toolpath='.',
-                      SWIGFLAGS=['-c++', '-python', '-Wall', '-py3'],
+                      SWIGFLAGS=swigflags,
                       SHLIBPREFIX=""
                       )
     env.USING_CONDA = False
@@ -122,9 +128,9 @@ cleaning = env.GetOption('clean')
 
 
 # Autoconf
-
+# TODO: need to update this to handle conda-forge staged recipes
 if env.USING_CONDA and platform.system() == "Darwin":
-    flag = "-rpath " + env["CONDA_PREFIX"] + "/lib"
+    flag = "-Wl,-rpath," + os.path.join(env["CONDA_PREFIX"], "lib")
     env.Append(LINKFLAGS=flag)
 
 scons_support.AutoConfiguration(env)
@@ -154,6 +160,7 @@ if loos_build_config.host_type == 'Darwin':
         # Hack to get swig to work with latest 10.9
         env.Append(SWIGFLAGS='-DSWIG_NO_EXPORT_ITERATOR_METHODS')
     env.Append(LINKFLAGS=' -llapack')
+
 
 
 if not cleaning:

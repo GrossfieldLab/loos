@@ -21,6 +21,7 @@
 
 
 import sys
+import os
 
 Import('env')
 Import('loos')
@@ -46,11 +47,15 @@ for name in Split(apps):
 ### Installation specific
 
 PREFIX = env['PREFIX']
+bin_path = os.path.join(PREFIX, "bin")
 
 
-user_tools = env.Install(PREFIX + '/bin', Split(apps))
-#user_libs = env.Install(PREFIX + '/lib', [user_lib])
-#user_headers = env.Install(PREFIX + '/include', Split(user_headers))
+user_tools = env.Install(bin_path, Split(apps))
+# if darwin, run install_name_tool so the binaries can find the library
+if env['host_type'] == 'Darwin':
+    for app in Split(apps):
+        app_path = os.path.join(bin_path, app)
+        env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
 env.Alias('user_package', user_tools)
 
 Return('list')

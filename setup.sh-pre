@@ -20,7 +20,8 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-### This will be automatically set to where LOOS is built or installed.  If necessary,
+### This will be automatically set to where LOOS is built or installed.  If
+#necessary,
 ### change manually...
 export LOOS="$loos_path"
 export LOOS_LIBPATH="$libpath"
@@ -38,8 +39,7 @@ export PATH="$tool_path:$$PATH"
 # Use DYLD_LIBRARY_PATH or LD_LIBRARY_PATH depending on OS
 SYSTEM=`uname`
 if [ "$$SYSTEM" = "Darwin" ] ; then
-    # Not necessary under conda, and it breaks a lot of stuff
-    #export DYLD_LIBRARY_PATH="$ldlibrary:$$DYLD_LIBRARY_PATH"
+    export DYLD_FALLBACK_LIBRARY_PATH="$ldlibrary:$$DYLD_FALLBACK_LIBRARY_PATH"
     touch .
 elif `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
     export LD_LIBRARY_PATH="$ldlibrary:$$LD_LIBRARY_PATH"
@@ -54,5 +54,3 @@ if `echo $$SYSTEM | grep -q '^CYGWIN'` ; then
 fi
 
 export PYTHONPATH="$loos_pythonpath:$$PYTHONPATH"
-
-
