@@ -1,5 +1,8 @@
 ### Some files to ignore in LOOS
 
+# ignore mac crap
+**.DS_Store
+
 # Object files
 *.o
 *.os
@@ -58,8 +61,16 @@ GTAGS
 # VSCode cruft
 **.vscode
 
+# stuff from sublime text
+**.sublime-project
+**.sublime-workspace
+**.clang_complete
+
 # JSON files
 .*.json
+
+# pycharm cruft
+**.idea
 
 # latex cruft
 *.aux
@@ -147,6 +158,7 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Tools/dihedrals
 Tools/esp_mesh
 Packages/Clustering/**
 !Packages/Clustering/*.cpp
