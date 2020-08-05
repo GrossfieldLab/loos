@@ -286,7 +286,6 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
       }
     };
   } else {
-
     chkSizeReorder = [](AtomicGroup &oo_D, vector<string> &sels) -> bool {
       if (oo_D.size() != 4)
         return true;
