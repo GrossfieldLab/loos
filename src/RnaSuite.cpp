@@ -47,27 +47,9 @@ namespace loos {
 
     }
 
-    RnaSuite::RnaSuite(const AtomicGroup &group,
-        const double suiteness_cutoff_) {
-
-        suiteness_cutoff = suiteness_cutoff_;
-        defineSuites("suitename");
-        extractRnaBackboneAtoms(group);
-
-    }
-
-    RnaSuite::RnaSuite(const AtomicGroup &group) {
-
-        suiteness_cutoff = 0.01;
-        defineSuites("suitename");
-        extractRnaBackboneAtoms(group);
-
-    }
-
     RnaSuite::RnaSuite() {
 
         suiteness_cutoff = 0.01;
-        defineSuites("suitename");
 
     }
 
@@ -461,15 +443,7 @@ namespace loos {
         N_reference_ddg = 0;
         N_reference_suite.clear();
 
-        if (suite_definition == "suitename")
-            defineSuitesFromFile("suitename_definitions.dat");
-
-        else defineSuitesFromFile(suite_definition);
-
-    } // defineSuites()
-
-    void RnaSuite::defineSuitesFromFile(const string& filename) {
-
+        // Temporary variables for parsing lines from the definition file
         size_t ddg_index;
         size_t dom_index;
         size_t sat_index;
@@ -488,8 +462,8 @@ namespace loos {
         vector<vector<double> > domsat_sat_width;
 
         // Read file contents
-        ifstream ifs(filename.c_str());
-        if (!ifs) throw(FileOpenError(filename));
+        ifstream ifs(suite_definition.c_str());
+        if (!ifs) throw(FileOpenError(suite_definition));
 
         while (getline(ifs, line)) {
 
@@ -568,7 +542,7 @@ namespace loos {
                 if (ddg_index == N_reference_ddg) {
                     cerr << boost::format(
                         "Warning: dominant suite %s was not defined in file %s")
-                        % field % filename << endl;
+                        % field % suite_definition << endl;
                     continue;
                 }
 
@@ -584,7 +558,7 @@ namespace loos {
                 if (sat_index == N_reference_suite[ddg_index]) {
                     cerr << boost::format(
                         "Warning: satellite suite %s was not defined in file %s")
-                        % field % filename << endl;
+                        % field % suite_definition << endl;
                     continue;
                 }
 
@@ -642,7 +616,7 @@ namespace loos {
 
             } else cerr << boost::format(
                 "Warning: Unrecognized record %s in suite definition from %s")
-                % record % filename << endl;
+                % record % suite_definition << endl;
 
         } // Loop over lines in file
 
@@ -666,7 +640,7 @@ namespace loos {
             }
         }
 
-    } // defineSuitesFromFile()
+    } // defineSuites()
 
     void RnaSuite::extractRnaBackboneAtoms(const AtomicGroup &group) {
 
@@ -701,7 +675,7 @@ namespace loos {
         zeta_atoms.clear();
 
         // Extract all RNA backbone atoms (P, O5', C5', C4', C3', and O3') into
-        // one AtomicGroup. Use raw string literal R"()" to avoid escaping "
+        // one AtomicGroup
         AtomicGroup backbone = selectAtoms(group,
             "(name =~ \"^(P|C[345]'|O[35]')$\")");
 

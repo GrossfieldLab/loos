@@ -32,10 +32,12 @@ namespace loos {
 
     //! Class for assigning backbone suites to an RNA
     /**
-     *  This class acts on an AtomicGroup and assigns backbone suites (as 
-     *  defined in Richardson et al. (2008) RNA 14, 465-481) to any RNA residues
-     *  present. It also calculates the "suiteness" score that describes how 
-     *  well the residue fits into its assigned suite.
+     *  This class acts on an AtomicGroup and assigns backbone suites to any RNA
+     *  residues present. It also calculates the "suiteness" score that
+     *  describes how well the residue fits into its assigned suite. The
+     *  constructor requires that the user specifies a path to a file defining
+     *  reference suites. The suites from Richardson et al. (2008) RNA 14,
+     *  465-481 are included in $LOOS/share/suitename_definitions.dat
      */
     class RnaSuite {
 
@@ -46,18 +48,13 @@ namespace loos {
         
         RnaSuite(const AtomicGroup &group, const string suite_definition);
         
-        RnaSuite(const AtomicGroup &group, const double suiteness_cutoff_);
-        
-        RnaSuite(const AtomicGroup &group);
-        
         RnaSuite();
         
         //! Method to assign residues to backbone suites from Richardson et al.
         /**
-         *  This method assigns residues to one of the 46 backbone suites
-         *  defined in Richardson et al. (2008) RNA 14, 465-481. The suite of a
-         *  residue is defined from delta of the previous residue to delta of
-         *  the current residue.
+         *  This method assigns residues to one of the reference suites defined
+         *  in the constructor. The suite of a residue is defined from delta of
+         *  the previous residue to delta of the current residue.
          */
         void assignSuitenameSuites();
 
@@ -68,7 +65,35 @@ namespace loos {
          */
         void calculateBackboneDihedrals();
 
-        //! Method to define suites used for assignment from an existing scheme
+        //! Method to define suites used for assignment
+        /**
+         *  This method defines reference suites. The argument must be a path to
+         *  a file containing records consisting of fields with a width of eight
+         *  characters. An example file for the suites defined in
+         *  Richardson et al. (2008) RNA 14, 465-481 is included in
+         *  $LOOS/share/suitename_definitions.dat. Records can be:
+         *
+         *  suite name ddg delta(i-1) epsilon zeta alpha beta gamma delta(i)
+         *      Define a reference suite with name given in field 2, ddg_index
+         *      given in field 3, and dihedrals of the cluster center given in
+         *      fields 4 through 10.
+         *
+         *  width delta(i-1) epsilon zeta alpha beta gamma delta
+         *      Define default widths for scaled hyperellipsoid distances.
+         *
+         *  domsat sat_name dom_name dihedral_index sat_width dom_width
+         *      Define dominant-satellite pair with name of satellite suite in
+         *      field 2, name of dominant suite in field 3, index of dihedral
+         *      dimension with altered width in field 4, width of that dimension
+         *      for satellite suite in field 5, and width of that dimension for
+         *      dominant suite in field 6. Additional dimensions and width can
+         *      be specified in fields 7 through 9, fields 10 through 12, etc.
+         *
+         *  dihedral min max
+         *      Define allowed ranges for a dihedral. "dihedral" can be one of
+         *      "delta", "epsilon", "zeta", "alpha", "beta", or "gamma". The
+         *      minimum value is given in field 2 and maximum value in field 3.
+         */
         void defineSuites(const string& suite_definition);
 
         //! Method to extract RNA backbone atoms from an AtomicGroup
@@ -132,9 +157,6 @@ namespace loos {
         void checkResidueSize(const vector<AtomicGroup> &residue_vector,
             const size_t target_size, const string dihedral_name,
             const size_t group_index) const;
-
-        //! Method to define suites used for assignment from a file
-        void defineSuitesFromFile(const string& filename);
 
         //! Method to test whether a point is in between two reference points
         bool isBetweenDomSatPair(const vector<double> &dihedrals,
