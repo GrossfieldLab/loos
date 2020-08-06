@@ -114,6 +114,7 @@
 #include <OptionsFramework.hpp>
 
 #include <alignment.hpp>
+#include <RnaSuite.hpp>
 #endif
 
 

@@ -274,7 +274,9 @@ else:
 
 loos_tools = SConscript('Tools/SConscript')
 
-loos_core = loos + loos_scripts
+loos_share = SConscript('share/SConscript')
+
+loos_core = loos + loos_scripts + loos_share
 
 
 # Automatically setup build targets based on package_list

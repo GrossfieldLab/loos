@@ -160,6 +160,7 @@ Tools/xy_rdf
 Tools/model-select
 Tools/dihedrals
 Tools/esp_mesh
+Tools/rna_suites
 Packages/Clustering/**
 !Packages/Clustering/*.cpp
 !Packages/Clustering/*.hpp
@@ -272,6 +273,7 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Tools/dihedrals
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa

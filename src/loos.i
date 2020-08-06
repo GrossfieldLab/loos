@@ -52,7 +52,7 @@ namespace loos {
 %template(DoubleVectorMatrix)   std::vector< std::vector<double> >;
 %template(IntVector)            std::vector<int>;
 %template(UIntVector)           std::vector<uint>;
-
+%template(StringVector)         std::vector<std::string>;
 
 
 %include "exceptions.i"
@@ -81,3 +81,4 @@ namespace loos {
 %include "gro.i"
 %include "utils_structural.i"
 %include "Weights.i"
+%include "RnaSuite.i"

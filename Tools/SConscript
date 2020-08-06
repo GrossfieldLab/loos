@@ -34,7 +34,8 @@ apps = apps + ' drifter porcupine ramachandran renum-pdb exposure clipper rebond
 apps = apps + ' traj2pdb merge-traj center-molecule contact-time perturb-structure coverlap phase-pdb'
 apps = apps + ' big-svd kurskew periodic_box area_per_lipid residue-contact-map'
 apps = apps + ' cross-dist fcontacts serialize-selection transition_contacts fixdcd smooth-traj membrane_map packing_score'
-apps = apps + ' mops dibmops xtcinfo model-meta-stats verap lipid_survival multi-rmsds rms-overlap esp_mesh dihedrals'
+apps = apps + ' mops dibmops xtcinfo model-meta-stats verap lipid_survival multi-rmsds rms-overlap'
+apps = apps + ' esp_mesh dihedrals rna_suites'
 
 list = []
 
