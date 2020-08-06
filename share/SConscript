@@ -29,7 +29,12 @@ clone.Prepend(LIBS = [loos])
 
 files = 'suitename_definitions.dat'
 PREFIX = env['PREFIX']
-share_path = os.path.join(PREFIX, "share")
+
+if env.USING_CONDA:
+    share_path = os.path.join(PREFIX, "share", "loos")
+else:
+    share_path = os.path.join(PREFIX, "share")
+
 shared_files = env.Install(share_path, Split(files))
 
 shared_list = Split(files)
