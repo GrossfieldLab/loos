@@ -29,6 +29,7 @@ createTrajectory;
 	 std::logic_error)\
 selectAtoms;
 
+%catches(loos::ParseError) parseRangeList;
 
 // amber
 %catches(loos::FileOpenError, loos::FileReadErrorWithLine, loos::LOOSError) Amber::Amber;
