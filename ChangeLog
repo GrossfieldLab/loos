@@ -1,6 +1,10 @@
+2020-08-08  Alan Grossfield <alan>
+	* Merged conda-install branch into main: this will be LOOS 3.2
+	* fixed missing exception catching in python parseRangeList
+	
 2020-08-06  Alan Grossfield <alan>
 	* Merged in rna_suites tool and library from Chapin Cavender
-	
+
 2020-08-05  Alan Grossfield <alan>
 	* Merged in dihedrals tool from Louis Smith
 
