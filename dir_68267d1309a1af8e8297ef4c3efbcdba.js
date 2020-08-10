@@ -88,6 +88,8 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "psf.cpp", "psf_8cpp_source.html", null ],
     [ "psf.hpp", "psf_8hpp_source.html", null ],
     [ "revision.cpp", "revision_8cpp_source.html", null ],
+    [ "RnaSuite.cpp", "_rna_suite_8cpp_source.html", null ],
+    [ "RnaSuite.hpp", "_rna_suite_8hpp_source.html", null ],
     [ "Selectors.cpp", "_selectors_8cpp_source.html", null ],
     [ "Selectors.hpp", "_selectors_8hpp_source.html", null ],
     [ "sfactories.cpp", "sfactories_8cpp_source.html", null ],

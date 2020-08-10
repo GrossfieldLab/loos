@@ -1,3 +1,12 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1_density_tools_1_1_water_histogrammer.html" title=" " alt="" coords="5,5,151,47"/>
+<area shape="rect" id="node1" href="$classloos_1_1_density_tools_1_1_water_filter_base.html" title="Base interface for water filter/picker." alt="" coords="5,201,136,243"/>
+<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_water_filter_axis.html" title="Pick waters that are within a radius of the principal axis for a molecule." alt="" coords="194,5,325,47"/>
+<area shape="rect" id="node3" href="$classloos_1_1_density_tools_1_1_water_filter_blob.html" title="Pick waters based on a grid&#45;mask." alt="" coords="194,71,325,112"/>
+<area shape="rect" id="node4" href="$classloos_1_1_density_tools_1_1_water_filter_box.html" title="Pick waters inside a bounding box." alt="" coords="194,136,325,177"/>
+<area shape="rect" id="node5" href="$classloos_1_1_density_tools_1_1_water_filter_contacts.html" title="Pick waters with a minimum number of contacts to protein atoms." alt="" coords="186,201,333,243"/>
+<area shape="rect" id="node6" href="$classloos_1_1_density_tools_1_1_water_filter_core.html" title="Pick waters that are within a radius of the core axis for a molecule." alt="" coords="194,267,325,308"/>
+<area shape="rect" id="node7" href="$classloos_1_1_density_tools_1_1_water_filter_decorator.html" title="Decorator base class for &quot;decorating&quot; the core water filters..." alt="" coords="184,332,335,373"/>
+<area shape="rect" id="node10" href="$classloos_1_1_density_tools_1_1_water_filter_radius.html" title="Pick waters within a given radius of a group of atoms." alt="" coords="192,397,327,439"/>
+<area shape="rect" id="node8" href="$classloos_1_1_density_tools_1_1_bulked_water_filter.html" title="Add bulk water back into the mask/map." alt="" coords="389,300,522,341"/>
+<area shape="rect" id="node9" href="$classloos_1_1_density_tools_1_1_z_clipped_water_filter.html" title="Restrict waters to be within a given z&#45;range." alt="" coords="383,365,528,407"/>
 </map>

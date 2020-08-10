@@ -37,7 +37,8 @@ var hierarchy =
     [ "Action", null, [
       [ "all_contacts.FullHelp", "classall__contacts_1_1_full_help.html", null ],
       [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ],
-      [ "packing_score_per_res.FullHelp", "classpacking__score__per__res_1_1_full_help.html", null ]
+      [ "packing_score_per_res.FullHelp", "classpacking__score__per__res_1_1_full_help.html", null ],
+      [ "set_segids.FullHelp", "classset__segids_1_1_full_help.html", null ]
     ] ],
     [ "loos::OptionsFramework::AggregateOptions", "classloos_1_1_options_framework_1_1_aggregate_options.html", null ],
     [ "loos::AscendingSort< T >", "classloos_1_1_ascending_sort.html", null ],
@@ -90,16 +91,11 @@ var hierarchy =
         [ "CalcOrientVector", "class_calc_orient_vector.html", null ]
       ] ]
     ] ],
-    [ "loos::Math::ColMajor", "classloos_1_1_math_1_1_col_major.html", [
-      [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ]
-    ] ],
-    [ "ConvexHull.ConvexHull", "class_convex_hull_1_1_convex_hull.html", null ],
+    [ "loos::Math::ColMajor", "classloos_1_1_math_1_1_col_major.html", null ],
+    [ "loos.pyloos.ConvexHull.ConvexHull", "classloos_1_1pyloos_1_1_convex_hull_1_1_convex_hull.html", null ],
     [ "loos::Coord< T >", "classloos_1_1_coord.html", null ],
     [ "loos::Coord< double >", "classloos_1_1_coord.html", null ],
     [ "loos::Coord< int >", "classloos_1_1_coord.html", null ],
-    [ "Counter", null, [
-      [ "loos::ProgressCounter< Trigger, Counter >", "classloos_1_1_progress_counter.html", null ]
-    ] ],
     [ "loos::DensityTools::DensityGrid< T >", "classloos_1_1_density_tools_1_1_density_grid.html", null ],
     [ "loos::DensityTools::DensityGrid< double >", "classloos_1_1_density_tools_1_1_density_grid.html", null ],
     [ "loos::DensityTools::DensityGrid< int >", "classloos_1_1_density_tools_1_1_density_grid.html", null ],
@@ -107,13 +103,13 @@ var hierarchy =
     [ "loos::DensityTools::DensityGridRow< T >", "classloos_1_1_density_tools_1_1_density_grid_row.html", null ],
     [ "loos::DescendingSort< T >", "classloos_1_1_descending_sort.html", null ],
     [ "DualWorker", "class_dual_worker.html", null ],
-    [ "Voronoi.Edge", "class_voronoi_1_1_edge.html", null ],
+    [ "Voronoi.Voronoi.Edge", "class_voronoi_1_1_voronoi_1_1_edge.html", null ],
     [ "ENM::ElasticNetworkModel", "class_e_n_m_1_1_elastic_network_model.html", [
       [ "ENM::ANM", "class_e_n_m_1_1_a_n_m.html", null ],
       [ "ENM::VSA", "class_e_n_m_1_1_v_s_a.html", null ]
     ] ],
     [ "Exception", null, [
-      [ "Voronoi.VoronoiError", "class_voronoi_1_1_voronoi_error.html", null ]
+      [ "Voronoi.Voronoi.VoronoiError", "class_voronoi_1_1_voronoi_1_1_voronoi_error.html", null ]
     ] ],
     [ "std::exception", null, [
       [ "loos::HBonds::ErrorWithAtom", "structloos_1_1_h_bonds_1_1_error_with_atom.html", null ],
@@ -157,14 +153,16 @@ var hierarchy =
     [ "loos::Kernel", "classloos_1_1_kernel.html", null ],
     [ "loos::LineReader", "classloos_1_1_line_reader.html", null ],
     [ "Master", "class_master.html", null ],
+    [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ],
     [ "loos::Matrix44< T >", "classloos_1_1_matrix44.html", null ],
+    [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ],
     [ "loos::MatrixReadImpl< T, P, S >", "structloos_1_1_matrix_read_impl.html", null ],
     [ "loos::MatrixReadImpl< T, Math::Triangular, S >", "structloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4.html", null ],
     [ "loos::MatrixReadImpl< T, P, Math::SparseArray >", "structloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_01_4.html", null ],
     [ "loos::MatrixWriteImpl< T, P, S, F >", "structloos_1_1_matrix_write_impl.html", null ],
     [ "loos::MatrixWriteImpl< T, Math::Triangular, S, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4.html", null ],
     [ "loos::MatrixWriteImpl< T, P, Math::SparseArray, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4.html", null ],
-    [ "NAMDBin.NAMDBin", "class_n_a_m_d_bin_1_1_n_a_m_d_bin.html", null ],
+    [ "loos.pyloos.NAMDBin.NAMDBin", "classloos_1_1pyloos_1_1_n_a_m_d_bin_1_1_n_a_m_d_bin.html", null ],
     [ "noncopyable", null, [
       [ "loos::StreamWrapper", "classloos_1_1_stream_wrapper.html", null ]
     ] ],
@@ -192,9 +190,6 @@ var hierarchy =
       [ "loos::OptionsFramework::TrajectoryWithFrameIndices", "classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html", null ],
       [ "loos::OptionsFramework::TwoModelsWithCoords", "classloos_1_1_options_framework_1_1_two_models_with_coords.html", null ],
       [ "loos::OptionsFramework::WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", null ],
-      [ "ToolOptions", "class_tool_options.html", null ],
-      [ "ToolOptions", "class_tool_options.html", null ],
-      [ "ToolOptions", "class_tool_options.html", null ],
       [ "ToolOptions", "class_tool_options.html", null ]
     ] ],
     [ "loos::internal::OutputTrajectoryNameBindingType", "structloos_1_1internal_1_1_output_trajectory_name_binding_type.html", null ],
@@ -205,19 +200,18 @@ var hierarchy =
     [ "loos::PreciseMatrixFormatter< T >", "classloos_1_1_precise_matrix_formatter.html", null ],
     [ "loos::internal::RangeItem", "structloos_1_1internal_1_1_range_item.html", null ],
     [ "RegexFmt", "struct_regex_fmt.html", null ],
-    [ "Voronoi.Region", "class_voronoi_1_1_region.html", null ],
+    [ "Voronoi.Voronoi.Region", "class_voronoi_1_1_voronoi_1_1_region.html", null ],
     [ "loos::Remarks", "classloos_1_1_remarks.html", null ],
+    [ "loos::RnaSuite", "classloos_1_1_rna_suite.html", null ],
     [ "loos::Math::RowMajor", "classloos_1_1_math_1_1_row_major.html", null ],
     [ "ScanfFmt", "struct_scanf_fmt.html", null ],
     [ "loos::ScientificMatrixFormatter< T >", "classloos_1_1_scientific_matrix_formatter.html", null ],
     [ "loos::Math::SharedArray< T >", "classloos_1_1_math_1_1_shared_array.html", null ],
-    [ "loos::Math::SharedArray< int >", "classloos_1_1_math_1_1_shared_array.html", [
-      [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ]
-    ] ],
     [ "loos::SharedPeriodicBox", "classloos_1_1_shared_periodic_box.html", null ],
     [ "loos::HBonds::SimpleAtom", "classloos_1_1_h_bonds_1_1_simple_atom.html", null ],
     [ "loos::SimpleCounter", "classloos_1_1_simple_counter.html", [
-      [ "loos::EstimatingCounter", "classloos_1_1_estimating_counter.html", null ]
+      [ "loos::EstimatingCounter", "classloos_1_1_estimating_counter.html", null ],
+      [ "loos::ProgressCounter< Trigger, Counter >", "classloos_1_1_progress_counter.html", null ]
     ] ],
     [ "loos::DensityTools::SimpleMeta", "classloos_1_1_density_tools_1_1_simple_meta.html", null ],
     [ "Simplex< T >", "class_simplex.html", null ],
@@ -233,15 +227,12 @@ var hierarchy =
         [ "ENM::HCA", "class_e_n_m_1_1_h_c_a.html", null ]
       ] ]
     ] ],
-    [ "StoragePolicy", null, [
-      [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
-    ] ],
     [ "ENM::SuperBlock", "class_e_n_m_1_1_super_block.html", [
       [ "ENM::SuperBlockDecorator", "class_e_n_m_1_1_super_block_decorator.html", [
         [ "ENM::BoundSuperBlock", "class_e_n_m_1_1_bound_super_block.html", null ]
       ] ]
     ] ],
-    [ "Voronoi.SuperRegion", "class_voronoi_1_1_super_region.html", null ],
+    [ "Voronoi.Voronoi.SuperRegion", "class_voronoi_1_1_voronoi_1_1_super_region.html", null ],
     [ "loos::internal::SystemNameBindingType", "structloos_1_1internal_1_1_system_name_binding_type.html", null ],
     [ "Threader< W >", "class_threader.html", null ],
     [ "loos::DensityTools::Threshold< T >", "classloos_1_1_density_tools_1_1_threshold.html", null ],
@@ -272,8 +263,9 @@ var hierarchy =
     [ "loos::UserTimer", "classloos_1_1_user_timer.html", null ],
     [ "loos::internal::Value", "structloos_1_1internal_1_1_value.html", null ],
     [ "loos::internal::ValueStack", "classloos_1_1internal_1_1_value_stack.html", null ],
-    [ "Voronoi.VoronoiWrapper", "class_voronoi_1_1_voronoi_wrapper.html", null ],
+    [ "Voronoi.Voronoi.VoronoiWrapper", "class_voronoi_1_1_voronoi_1_1_voronoi_wrapper.html", null ],
     [ "loos::WallTimer", "classloos_1_1_wall_timer.html", [
+      [ "loos::Timer< TimerType >", "classloos_1_1_timer.html", null ],
       [ "loos::Timer< loos::WallTimer >", "classloos_1_1_timer.html", null ]
     ] ],
     [ "loos::DensityTools::WaterFilterBase", "classloos_1_1_density_tools_1_1_water_filter_base.html", [
@@ -294,12 +286,6 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "ConvexHull.ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", null ],
-    [ "Voronoi.ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", null ],
-    [ "OrderPolicy", null, [
-      [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
-    ] ],
-    [ "TimerType", null, [
-      [ "loos::Timer< TimerType >", "classloos_1_1_timer.html", null ]
-    ] ]
+    [ "Voronoi.Voronoi.ZSliceSelector", "class_voronoi_1_1_voronoi_1_1_z_slice_selector.html", null ],
+    [ "loos.pyloos.ConvexHull.ZSliceSelector", "classloos_1_1pyloos_1_1_convex_hull_1_1_z_slice_selector.html", null ]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['namdbin',['NAMDBin',['../namespace_n_a_m_d_bin.html',1,'']]]
+  ['packing_5fscore_5fper_5fres_952',['packing_score_per_res',['../namespacepacking__score__per__res.html',1,'']]]
 ];

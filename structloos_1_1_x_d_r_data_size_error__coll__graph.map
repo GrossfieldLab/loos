@@ -1,5 +1,5 @@
 <map id="loos::XDRDataSizeError" name="loos::XDRDataSizeError">
-<area shape="rect" id="node1" title="Exception indicating internal XDR error." alt="" coords="16,261,179,288"/>
+<area shape="rect" id="node1" title="Exception indicating internal XDR error." alt="" coords="15,261,180,288"/>
 <area shape="rect" id="node2" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="38,185,157,212"/>
 <area shape="rect" id="node3" title="STL class." alt="" coords="5,96,109,123"/>
 <area shape="rect" id="node4" title="STL class." alt="" coords="133,96,213,123"/>

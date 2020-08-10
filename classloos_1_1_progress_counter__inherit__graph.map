@@ -1,4 +1,4 @@
 <map id="loos::ProgressCounter&lt; Trigger, Counter &gt;" name="loos::ProgressCounter&lt; Trigger, Counter &gt;">
-<area shape="rect" id="node1" title="The progress counter front&#45;end." alt="" coords="5,80,156,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="47,5,114,32"/>
+<area shape="rect" id="node1" title="The progress counter front&#45;end." alt="" coords="5,80,157,121"/>
+<area shape="rect" id="node2" href="$classloos_1_1_simple_counter.html" title="Basic progress counter object, defining the interface..." alt="" coords="11,5,151,32"/>
 </map>

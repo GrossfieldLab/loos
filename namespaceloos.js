@@ -9,6 +9,11 @@ var namespaceloos =
     [ "Math", "namespaceloos_1_1_math.html", "namespaceloos_1_1_math" ],
     [ "OptionsFramework", "namespaceloos_1_1_options_framework.html", "namespaceloos_1_1_options_framework" ],
     [ "pyloos", null, [
+      [ "ConvexHull", null, [
+        [ "ConvexHull", "classloos_1_1pyloos_1_1_convex_hull_1_1_convex_hull.html", "classloos_1_1pyloos_1_1_convex_hull_1_1_convex_hull" ],
+        [ "ZSliceSelector", "classloos_1_1pyloos_1_1_convex_hull_1_1_z_slice_selector.html", "classloos_1_1pyloos_1_1_convex_hull_1_1_z_slice_selector" ]
+      ] ],
+      [ "NAMDBin", "namespaceloos_1_1pyloos_1_1_n_a_m_d_bin.html", "namespaceloos_1_1pyloos_1_1_n_a_m_d_bin" ],
       [ "trajectories", "namespaceloos_1_1pyloos_1_1trajectories.html", "namespaceloos_1_1pyloos_1_1trajectories" ]
     ] ],
     [ "AbstractObserver", "classloos_1_1_abstract_observer.html", "classloos_1_1_abstract_observer" ],
@@ -78,6 +83,7 @@ var namespaceloos =
     [ "PSF", "classloos_1_1_p_s_f.html", "classloos_1_1_p_s_f" ],
     [ "Remarks", "classloos_1_1_remarks.html", "classloos_1_1_remarks" ],
     [ "ResidRangeSelector", "structloos_1_1_resid_range_selector.html", "structloos_1_1_resid_range_selector" ],
+    [ "RnaSuite", "classloos_1_1_rna_suite.html", "classloos_1_1_rna_suite" ],
     [ "ScientificMatrixFormatter", "classloos_1_1_scientific_matrix_formatter.html", "classloos_1_1_scientific_matrix_formatter" ],
     [ "SegidSelector", "structloos_1_1_segid_selector.html", "structloos_1_1_segid_selector" ],
     [ "SharedPeriodicBox", "classloos_1_1_shared_periodic_box.html", "classloos_1_1_shared_periodic_box" ],

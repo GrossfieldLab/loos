@@ -1,5 +1,5 @@
 <map id="loos::internal::Hydrogen" name="loos::internal::Hydrogen">
-<area shape="rect" id="node1" title="Shortcut for checking for hydrogens..." alt="" coords="65,261,223,288"/>
+<area shape="rect" id="node1" title="Shortcut for checking for hydrogens..." alt="" coords="64,261,224,288"/>
 <area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="73,185,215,212"/>
 <area shape="rect" id="node3" href="$classloos_1_1internal_1_1_value_stack.html" title=" " alt="" coords="5,96,176,123"/>
 <area shape="rect" id="node4" title="STL class." alt="" coords="200,96,280,123"/>

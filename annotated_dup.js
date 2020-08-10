@@ -7,24 +7,22 @@ var annotated_dup =
       [ "HAC", "class_clustering_1_1_h_a_c.html", "class_clustering_1_1_h_a_c" ],
       [ "KGS", "class_clustering_1_1_k_g_s.html", "class_clustering_1_1_k_g_s" ]
     ] ],
-    [ "ConvexHull", null, [
-      [ "ConvexHull", "class_convex_hull_1_1_convex_hull.html", "class_convex_hull_1_1_convex_hull" ],
-      [ "ZSliceSelector", "class_convex_hull_1_1_z_slice_selector.html", "class_convex_hull_1_1_z_slice_selector" ]
-    ] ],
     [ "ENM", "namespace_e_n_m.html", "namespace_e_n_m" ],
     [ "hierarchical-cluster", null, [
       [ "FullHelp", "classhierarchical-cluster_1_1_full_help.html", "classhierarchical-cluster_1_1_full_help" ]
     ] ],
     [ "loos", "namespaceloos.html", "namespaceloos" ],
-    [ "NAMDBin", "namespace_n_a_m_d_bin.html", "namespace_n_a_m_d_bin" ],
     [ "packing_score_per_res", "namespacepacking__score__per__res.html", "namespacepacking__score__per__res" ],
+    [ "set_segids", "namespaceset__segids.html", "namespaceset__segids" ],
     [ "Voronoi", null, [
-      [ "Edge", "class_voronoi_1_1_edge.html", "class_voronoi_1_1_edge" ],
-      [ "Region", "class_voronoi_1_1_region.html", "class_voronoi_1_1_region" ],
-      [ "SuperRegion", "class_voronoi_1_1_super_region.html", "class_voronoi_1_1_super_region" ],
-      [ "VoronoiError", "class_voronoi_1_1_voronoi_error.html", "class_voronoi_1_1_voronoi_error" ],
-      [ "VoronoiWrapper", "class_voronoi_1_1_voronoi_wrapper.html", "class_voronoi_1_1_voronoi_wrapper" ],
-      [ "ZSliceSelector", "class_voronoi_1_1_z_slice_selector.html", "class_voronoi_1_1_z_slice_selector" ]
+      [ "Voronoi", null, [
+        [ "Edge", "class_voronoi_1_1_voronoi_1_1_edge.html", "class_voronoi_1_1_voronoi_1_1_edge" ],
+        [ "Region", "class_voronoi_1_1_voronoi_1_1_region.html", "class_voronoi_1_1_voronoi_1_1_region" ],
+        [ "SuperRegion", "class_voronoi_1_1_voronoi_1_1_super_region.html", "class_voronoi_1_1_voronoi_1_1_super_region" ],
+        [ "VoronoiError", "class_voronoi_1_1_voronoi_1_1_voronoi_error.html", "class_voronoi_1_1_voronoi_1_1_voronoi_error" ],
+        [ "VoronoiWrapper", "class_voronoi_1_1_voronoi_1_1_voronoi_wrapper.html", "class_voronoi_1_1_voronoi_1_1_voronoi_wrapper" ],
+        [ "ZSliceSelector", "class_voronoi_1_1_voronoi_1_1_z_slice_selector.html", "class_voronoi_1_1_voronoi_1_1_z_slice_selector" ]
+      ] ]
     ] ],
     [ "CalcDensity", "class_calc_density.html", "class_calc_density" ],
     [ "CalcHeight", "class_calc_height.html", "class_calc_height" ],

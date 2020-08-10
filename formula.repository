@@ -1,4 +1,4 @@
-\form#0:\begin{eqnarray*} r^{-2} & \mbox{for} & r \leq r_c \\ 0 & \mbox{for} & r > r_c\\ \end{eqnarray*}
-\form#1:$r^p$
-\form#2:$\exp(k r)$
-\form#3:\begin{eqnarray*} ar + b & \mbox{for} & r < r_c \\ c r^{-d} & \mbox{for} & r \geq r_c\\ \end{eqnarray*}
+\_form#0:\begin{eqnarray*} r^{-2} & \mbox{for} & r \leq r_c \\ 0 & \mbox{for} & r > r_c\\ \end{eqnarray*}
+\_form#1:$r^p$
+\_form#2:$\exp(k r)$
+\_form#3:\begin{eqnarray*} ar + b & \mbox{for} & r < r_c \\ c r^{-d} & \mbox{for} & r \geq r_c\\ \end{eqnarray*}

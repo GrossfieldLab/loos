@@ -3,6 +3,8 @@ var changes =
     [ "Version 2.3.3 (unreleased)", "changes.html#release233", [
       [ "Common Options", "common_options.html#common_options_table", null ],
       [ "Specifying Ranges", "common_options.html#ranges", null ],
+      [ "Changes Compared to pre-2.2.0 LOOS", "exceptions.html#autotoc_md0", null ],
+      [ "Translating Exceptions to PyLOOS", "exceptions.html#autotoc_md1", null ],
       [ "Bug Fixes", "changes.html#r233_bugs", null ],
       [ "Added, Changed, and Otherwise Notable", "changes.html#r233_add_changed", null ]
     ] ],
