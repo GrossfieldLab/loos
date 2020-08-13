@@ -274,7 +274,9 @@ if __name__ == "__main__":
     water = WaterBox.WaterBox(config.water.coords_filename,
                               water_template,
                               water_target,
-                              config.water.segname)
+                              config.water.segname,
+                              config.water.num_sites
+                              )
 
     # Figure out how many ions we're going to add
     total_salt = 0
@@ -283,17 +285,18 @@ if __name__ == "__main__":
     total_water_and_salt = total_salt + config.water.numres
 
     sys.stderr.write(
-        "Water box has %d waters before superposition\n" % (len(water.full_system) // 3)
+        "Water box has %d waters before superposition\n"
+        % (len(water.full_system) // water.num_sites)
     )
     sys.stderr.write("Final target: %d waters\n" % (config.water.numres))
 
     # Verify we have enough water.  We need enough to end up with
     # the planned number of waters, even after we remove one water molecule
     # for each ion we add.
-    if len(water.full_system) // 3 < total_water_and_salt:
+    if len(water.full_system) // water.num_sites < total_water_and_salt:
         raise ValueError(
             "Too few waters before superposition: %d %d"
-            % (len(water.full_system) // 3, total_water_and_salt)
+            % (len(water.full_system) // water.num_sites, total_water_and_salt)
         )
 
     # translate so that the water box is centered on the periodic boundary,
@@ -329,14 +332,16 @@ if __name__ == "__main__":
         i += 1
 
     # verify we have enough water
-    if len(water.full_system) // 3 < total_water_and_salt:
+    if len(water.full_system) // water.num_sites < total_water_and_salt:
         raise ValueError(
             "Too few waters after superposition: %d %d"
-            % (len(water.full_system) // 3, total_water_and_salt)
+            % (len(water.full_system) // water.num_sites, total_water_and_salt)
         )
 
     sys.stderr.write("Finished bump-checking water against lipid\n")
-    sys.stderr.write("Current # water molecules: %d\n" % (len(water.full_system) // 3))
+    sys.stderr.write(
+        "Current # water molecules: %d\n" % (len(water.full_system) // water.num_sites)
+    )
     sys.stderr.write("Adding salt\n")
 
     # regenerate the list of oxygens
@@ -369,7 +374,7 @@ if __name__ == "__main__":
         salts.append(ions)
 
     # verify we have enough water
-    num_waters = len(water.full_system) // 3
+    num_waters = len(water.full_system) // water.num_sites
     if num_waters < config.water.numres:
         raise ValueError(
             "Too few waters after exchanging salt: %d %d"
@@ -392,15 +397,18 @@ if __name__ == "__main__":
 
     # renumber the residues
     for i in range(len(water.full_system)):
-        res = i // 3 + 1
+        res = i // water.num_sites + 1
         water.full_system[i].resid(res)
 
     # Replace some of the waters with the internal waters from the protein.
     if config.protein is not None and config.protein.has_water:
-        if config.water.numres < len(config.protein.water_seg()) // 3:
+        if config.water.numres < len(config.protein.water_seg()) // water.num_sites:
             raise ValueError(
                 "Protein has more internal waters than the total target: %d %d"
-                % (config.water.numres, len(config.protein.water_seg()) // 3)
+                % (
+                    config.water.numres,
+                    len(config.protein.water_seg()) // water.num_sites,
+                )
             )
         water.full_system.copyCoordinatesFrom(
             config.protein.water_seg(), 0, len(config.protein.water_seg())
