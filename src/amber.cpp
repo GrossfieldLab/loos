@@ -239,13 +239,18 @@ namespace loos {
     FormatSpec fmt = parseFormat("E", "box dimensions");
 
     std::vector<double> dimensions = readBlock<double>(fmt.width);
+    const double epsilon = 1e-8;
 
-    // First value is the angle -- must be 90 degree, or it's a box type
-    // we can't parse
-    // TODO: range check
+    double angle = dimensions[0];
+    double diff = fabs(angle - 90.0);
+    if (diff > epsilon) {
+      std::cerr << "prmtop specifies non-rectangular box: ignoring"
+                << std::endl;
+      return;
+    }
+
     GCoord box = GCoord(dimensions[1], dimensions[2], dimensions[3]);
     periodicBox(box);
-
   }
 
   void Amber::parseAmoebaRegularBondNumList() {
