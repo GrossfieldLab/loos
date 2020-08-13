@@ -6,11 +6,12 @@ import loos
 
 
 class WaterBox:
-    def __init__(self, filename, template_box, target_box, segname):
+    def __init__(self, filename, template_box, target_box, segname, num_sites):
         self.filename = filename
         self.box = target_box
         self.template_box = template_box
         self.segname = segname
+        self.num_sites = num_sites
 
         self.template = loos.createSystem(filename)
         for i in range(len(self.template)):

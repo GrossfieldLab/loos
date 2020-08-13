@@ -3,7 +3,6 @@ import sys
 import loos
 import loos.OptimalMembraneGenerator
 from loos.OptimalMembraneGenerator import LipidLibrary
-import loos
 import subprocess
 import os
 
@@ -55,13 +54,18 @@ class WaterSeg(Segment):
     water.
     """
     def __init__(self, line):
-        (tag, segname, resname, number, thickness, box_size, coords) = line.split()
-        self.segname = segname
-        self.resname = resname
-        self.numres = int(number)
-        self.thickness = thickness
-        self.box_size = float(box_size)
-        self.coords_filename = coords
+        fields = line.split()
+        self.segname = fields[1]
+        self.resname = fields[2]
+        self.numres = int(fields[3])
+        self.thickness = float(fields[4])
+        self.box_size = float(fields[5])
+        self.coords_filename = fields[6]
+        if len(fields) > 7:
+            self.num_sites = int(fields[7])
+        else:
+            self.num_sites = 3
+
 
     def write(self):
         arr = ["segment " + self.segname + " {"]
