@@ -244,7 +244,7 @@ namespace loos {
     double angle = dimensions[0];
     double diff = fabs(angle - 90.0);
     if (diff > epsilon) {
-      std::cerr << "prmtop specifies non-rectangular box: ignoring"
+      std::cerr << "# Warning: prmtop specifies non-rectangular box: ignoring"
                 << std::endl;
       return;
     }
