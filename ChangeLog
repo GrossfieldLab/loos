@@ -1,3 +1,6 @@
+2020-08-26  Alan Grossfield <alan>
+	* Fixed units error in reading charges from Amber prmtop files
+	
 2020-08-13  Alan Grossfield <alan>
 	* We can read (rectangular) box dimensions from Amber prmtop files
 	* OMG and solvate can handle 4 and 5 site water models

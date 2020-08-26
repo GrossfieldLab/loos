@@ -88,6 +88,9 @@ namespace loos {
 
 
   void Amber::parseCharges() {
+    // Amber stores charges in units of electrons/18.2223
+    // See http://ambermd.org/FileFormats.php
+    const double conversion = 18.2223;
     FormatSpec fmt = parseFormat("EFG", "charges");
 
     std::vector<double> charges = readBlock<double>(fmt.width);
@@ -95,7 +98,7 @@ namespace loos {
       throw(FileReadErrorWithLine(reader.name(), "Error parsing charges from amber file", reader.lineNumber()));
 
     for (uint i=0; i<charges.size(); ++i)
-      atoms[i]->charge(charges[i]);
+      atoms[i]->charge(charges[i]/conversion);
   }
 
 
