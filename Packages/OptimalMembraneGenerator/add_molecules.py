@@ -29,7 +29,6 @@ Alan Grossfield,  University of Rochester Medical Center, 2019
 
 """
 
-import sys
 import loos
 import loos.OptimalMembraneGenerator
 from loos.OptimalMembraneGenerator import LipidLibrary
@@ -48,8 +47,6 @@ parser.add_argument('library_location',
                     help="Directory with library of small molecules")
 parser.add_argument('output_pdb',
                     help="Name of output PDB file")
-
-
 parser.add_argument('--protein',
                     help="File containing coordinates of the protein to be surrounded by small molecules")
 parser.add_argument('--no_center',
