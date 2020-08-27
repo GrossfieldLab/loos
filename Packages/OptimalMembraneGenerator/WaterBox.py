@@ -63,16 +63,14 @@ class WaterBox:
                     to_remove.append(res)
 
         print("Need to remove: ", len(to_remove))
-        print("before: ", self.full_system.boundingBox(), len(self.full_system))
         self.full_system.remove(to_remove)
-        print("after: ", self.full_system.boundingBox(), len(self.full_system))
 
         self.full_system.periodicBox(self.box)
 
         # renumber atom ids and resids
         self.full_system.renumber()
         for i in range(len(self.full_system)):
-            self.full_system[i].resid(i//3 + 1)
+            self.full_system[i].resid(i//self.num_sites + 1)
         #residues = self.full_system.splitByResidue()
         #for i in range(len(residues)):
         #    for j in range(len(residues[i])):
