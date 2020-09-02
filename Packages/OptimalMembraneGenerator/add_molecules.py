@@ -71,6 +71,8 @@ if args.zbox:
 
 if args.z_exclude:
     args.z_exclude = abs(args.z_exclude)
+else:
+    args.z_exclude = 0.0
 
 
 if args.protein:
@@ -114,7 +116,7 @@ while accepts < args.num_ligands:
         protein.append(new_molecule)
 
 print("Placed ", accepts, " molecules in ", trials, " trials: ",
-      accepts/trials, " %")
+      accepts/trials * 100, " %")
 
 # protein.renumber()
 pdb = loos.PDB.fromAtomicGroup(protein)
