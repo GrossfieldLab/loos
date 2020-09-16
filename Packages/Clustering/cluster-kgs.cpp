@@ -22,9 +22,9 @@ using namespace Clustering;
 const std::string indent = "  ";
 
 std::string fullHelpMessage(void) {
-  std::string helpstr = 
+  std::string helpstr =
   "usage: \n"
-"cluster-kgs < similarity_scores.asc > clustering_results.json \n"
+"cluster-kgs -s < similarity_scores.asc > clustering_results.json \n"
 " \n"
 "cluster-kgs mimics the clustering aspect of the NMRCLUST utility that is \n"
 "incorporated as part of the OLDERADO webserver for structural biology \n"
