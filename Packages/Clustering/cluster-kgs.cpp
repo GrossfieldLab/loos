@@ -95,8 +95,10 @@ std::string fullHelpMessage(void) {
 "                  by this value. If there are 1000 data points and \n"
 "                  'optimal stage' is 9991, you'll get 10 clusters.\n"
 "    - 'exemplar': list of indexes into the source trajectory. For each cluster\n"
-"                  this list contains the index of the most central structure.\n"
-"                  The clusters are in the same order as the 'clusters' array.\n"
+"                  this list contains the index of the most central structure,\n"
+"                  defined as the one with the minimum average distance to the \n"
+"                  other structures in the cluster. The clusters are in the \n"
+"                  same order as the 'clusters' array.\n"
 ;
   return helpstr;
 }
