@@ -161,10 +161,6 @@ Tools/model-select
 Tools/dihedrals
 Tools/esp_mesh
 Tools/rna_suites
-Packages/Clustering/**
-!Packages/Clustering/*.cpp
-!Packages/Clustering/*.hpp
-!packages/Clustering/SConscript
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
@@ -721,3 +717,4 @@ Packages/Convergence/ufidpick
 Packages/Convergence/decorr_time
 Packages/Convergence/bcom
 Packages/Convergence/chist
+Packages/Clustering/cluster-kgs
