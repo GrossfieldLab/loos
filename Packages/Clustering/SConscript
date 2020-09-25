@@ -37,6 +37,7 @@ scripts = ''
 
 list = []
 apps = 'cluster-kgs'
+scripts = 'frame-picker.py cluster_pops.py cluster-rmsds-hardcode.py'
 
 # for name in Split(apps):
 #     fname = name + '.cpp'
