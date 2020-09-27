@@ -4,7 +4,33 @@ frame_picker.py: make trajectories out of the clusters.
 
 The purpose of this tool is to read the output of cluster-kgs and create a
 set of trajectory files, each containing 1 cluster.
+
+Louis Smith, 2020
 """
+
+"""
+
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2013 Tod Romo, Grossfield Lab
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+
 
 import loos
 from loos import pyloos
@@ -21,10 +47,10 @@ usage = """
                          Note: at the moment, stop should not be specified
         prefix:          the core of the name of the output trajectories, eg.
                          ../output/foo would produce
-                         ../output/foo-frac-cluster.dcd where frac is the
+                         ../output/foo-cluster-frac.dcd where frac is the
                          fraction of population in this cluster
                          and cluster is the index of that cluster. It will also
-                         create ../output/foo-frac-cluster.pdb, where that
+                         create ../output/foo-cluster-frac.pdb, where that
                          structure is the center of the cluster
         model:           model file used in the distance calculation
         traj:            one or more trajectories. Should be the same
@@ -36,7 +62,7 @@ if len(argv) == 1 or "-h" in argv:
     exit(0)
 
 for i, arg in enumerate(argv):
-    print(i, arg)
+    print("# ", i, arg)
 
 cluster_results_fn = argv[1]
 # parse clustering output here
@@ -53,10 +79,10 @@ if len(prerange) != 3:
 
 if prerange[-1]:
     trajranges = tuple(map(int, prerange))
-    print('Warning: code does not currently handle "stop"')
+    print('# Warning: code does not currently handle "stop"')
 
 else:
-    print('Warning: code does not currently handle "stop"')
+    print('# Warning: code does not currently handle "stop"')
     trajranges = (int(prerange[0]), int(prerange[1]), -1)
 skip, stride, stop = trajranges
 prefix = argv[3]
@@ -71,12 +97,14 @@ if len(argv) > 6:
 
 
 total = len(vtraj)
-print("Frames to process: ", total)
+print("# Frames to process: ", total)
 
+print("# Cluster  Population")
 for cluster_ix, cluster in enumerate(cluster_results["clusters"]):
     # puts the fraction of the trajectory lumped into ith traj in the name
     frac = round(len(cluster) / float(total), 4)
-    outprefix = prefix + "-" + str(frac) + "-" + str(cluster_ix)
+    print(cluster_ix, frac)
+    outprefix = prefix + "-" + str(cluster_ix) + '-' + str(frac)
     cluster_traj = loos.DCDWriter(outprefix + ".dcd")
     exemplar_ix = cluster_results["exemplars"][cluster_ix]
     frame = vtraj[exemplar_ix]
