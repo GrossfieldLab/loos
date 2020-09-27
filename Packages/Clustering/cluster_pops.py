@@ -27,12 +27,13 @@ Alan Grossfield, 2020
 
 """
 
+
+
+
 import sys
 import json
 import numpy
 from math import sqrt
-
-
 def read_frame_ranges(filename):
     filenames = []
     ends = []
@@ -49,6 +50,7 @@ def read_frame_ranges(filename):
             else:
                 break
     return (filenames, numpy.array(ends))
+
 
 def usage():
     string = f"""
@@ -80,7 +82,7 @@ if __name__ == "__main__":
     out_filename = sys.argv[3]
     if len(sys.argv) > 4:
         split = int(sys.argv[4])
-    else
+    else:
         split = 0
 
     filenames, ends = read_frame_ranges(rmsds_filename)
@@ -116,4 +118,4 @@ if __name__ == "__main__":
         for i in range(len(first_mean)):
             print(i, first_mean[i], first_dev[i], first_err[i],
                   sec_mean[i], sec_dev[i], sec_err[i]
-                 )
+                  )
