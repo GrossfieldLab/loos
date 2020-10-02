@@ -108,13 +108,13 @@ if __name__ == "__main__":
     numpy.savetxt(out_filename, data, header=header)
 
     if split:
-        print("# Clust Ave Dev StdErr")
+        print("# Clust FirAve FirDev FirStdErr SecAve SecDev SecStdErr   ")
         first_mean = numpy.mean(data[:, :split], axis=1)
         first_dev = numpy.std(data[:, :split], axis=1)
         first_err = first_dev / sqrt(split)
         sec_mean = numpy.mean(data[:, split:], axis=1)
         sec_dev = numpy.std(data[:, split:], axis=1)
-        sec_err = sec_dev / sqrt(len(filenames - split))
+        sec_err = sec_dev / sqrt(len(filenames) - split)
         for i in range(len(first_mean)):
             print(i, first_mean[i], first_dev[i], first_err[i],
                   sec_mean[i], sec_dev[i], sec_err[i]
