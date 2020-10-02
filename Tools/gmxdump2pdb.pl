@@ -424,7 +424,7 @@ sub processMolecules {
       }
 
     } elsif ($state == 4) {
-      if (/\(($bondprefix_regex)?BONDS\) (\d+) (\d+)/) {
+      if (/\(($bondprefix_regex)?BONDS\)\s+(\d+)\s+(\d+)/) {
         my $rpair = [$2, $3];
         push(@$rbonds, $rpair);
       } elsif ($use_constraints && /Constraint/) {
