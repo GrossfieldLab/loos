@@ -1,6 +1,10 @@
+2020-10-02  Alan Grossfield <alan>
+	* Merged in clean-up version of Louis Smith's cluster
+	  analysis tool, frame-picker.py
+	* Merged in my tool cluster_pops.py
 2020-08-27  Alan Grossfield <alan>
 	* Fixed bug in system building with non-3-site water models
-	
+
 2020-08-26  Alan Grossfield <alan>
 	* Fixed units error in reading charges from Amber prmtop files
 
