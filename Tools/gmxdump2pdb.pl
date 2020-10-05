@@ -141,7 +141,7 @@ my($rstruct, $rconn) = &buildStructure($rtopo, $rmolecules, $rcoords);
 # Write out the PDB.  Uses hybrid-36 format if resid or atomid overflows...
 print $pdb "REMARK    MADE BY GMXDUMP2PDB.PL\n";
 printf $pdb "CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f%11s%4d\n",
-  $rbox->[0]->[0], $rbox->[1]->[1], $rbox->[2]->[2],
+  10.*$rbox->[0]->[0], 10.*$rbox->[1]->[1], 10.*$rbox->[2]->[2],
   90.0, 90.0, 90.0, 'P1', 1;
 
 my $natoms = 0;
@@ -594,7 +594,7 @@ sub buildStructure {
 	warn "Warning: Missing atom count in topology so inferring number of atoms in segment $name";
 	$segment->{NATOMS} = $#{$mol->{ATOMS}} + 1;
     }
-    
+
     my $residues = $mol->{RESIDUES};
     my $charges = $mol->{CHARGES};
 
