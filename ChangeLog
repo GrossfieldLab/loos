@@ -1,3 +1,6 @@
+2020-10-05  Alan Grossfield <alan>
+	* Fixed bug in gmxdump2pdb, where box units were nm instead of Ang
+	
 2020-10-02  Alan Grossfield <alan>
 	* Merged in clean-up version of Louis Smith's cluster
 	  analysis tool, frame-picker.py
