@@ -1478,8 +1478,8 @@ The following illustrates catching PyLOOS exceptions...
 try:
      model = createSystem(filename)
 except loos.LOOSError as e:
-     print 'HELP!  There was a problem reading the model...'
-     print e.what()
+     print('HELP!  There was a problem reading the model...')
+     print(e.what())
 \endcode
 
 
