@@ -118,7 +118,8 @@ while accepts < args.num_ligands:
 print("Placed ", accepts, " molecules in ", trials, " trials: ",
       accepts/trials * 100, " %")
 
-# protein.renumber()
+protein.renumber()
+protein.clearBonds()
 pdb = loos.PDB.fromAtomicGroup(protein)
 
 with open(args.output_pdb, "w") as outfile:
