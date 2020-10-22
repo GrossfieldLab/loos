@@ -21,13 +21,12 @@
 #  Alan Grossfield, University of Rochester, 12/6/2019
 
 
-# USAGE: ./conda_build.sh ENVNAME
-#   will create conda environment ENVNAME if it doesn't exist, or install
-#   packages into ENVNAME if it already exists, then run scons to build
-#   LOOS.  By default, it runs scons with 4 compile processes, but if you
-#   want to change that number (e.g. to 8 or 1), you can supply that as a
-#   second argument, e.g.
-#   ./conda_build.sh ENVNAME 8
+# USAGE:   ./conda_build.sh -e loos -j 8 -i
+#          This will create a conda env called loos (or install in it if it
+#          exists). It will run scons with 8 jobs, and will do an install into
+#          the conda env when it's done.
+#          ./conda_build -h
+#          will show all options.
 
 numprocs=4
 envname="loos"
