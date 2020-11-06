@@ -793,8 +793,12 @@ namespace loos {
     double packingScore(const AtomicGroup& other, const GCoord &box, bool norm) const;
 
 
-    /** Logistic contact function between this group and a vector of others
-        TODO: add more detail here
+    //* Logistic contact function between this group and a vector of others
+    /**
+        Compute the number of contacts between the centroid of this AG
+        and the centroids of a vector of other AGs, using a smooth logistic
+        function
+        S = 1/(1 + dist/radius)**sigma
      */
     double logisticContact(const std::vector<AtomicGroup>& groups, double radius,
                            int sigma, const GCoord& box) const;
