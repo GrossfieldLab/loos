@@ -203,28 +203,35 @@ namespace loos {
       return(score);
   }
 
-  double AtomicGroup::logisticContact(const std::vector<AtomicGroup>& groups,
+  double AtomicGroup::logisticContact(const AtomicGroup& group,
                                       double radius,
                                       int sigma,
-                                      const GCoord& box) const{
-        double sum = 0.0;
+                                      const GCoord& box
+                                      ) const{
         GCoord cent = centroid();
-        for (auto g = groups.begin(); g != groups.end(); ++g) {
-            // skip self pairs
-            if (*g == *this) {
-                continue;
+        GCoord other = group.centroid();
+
+        // Handle even and odd powers separately -- even can
+        // avoid the sqrt
+        // Sigh, this doesnt' seem to make it much faster...
+        double prod;
+        if (sigma % 2 == 0) {
+            double distance2 = cent.distance2(other, box);
+            double ratio = distance2/(radius*radius);
+            prod = ratio;
+            for (int j=0; j<(sigma/2)-1; ++j) {
+                prod *= ratio;
             }
-            GCoord other = g->centroid();
-            // TODO: can be faster if we special case even vs odd sigma
-            //       and work with distance2 for the even case
+        }
+        else {
             double distance = cent.distance(other, box);
             double ratio = distance/radius;
-            double prod = ratio;
+            prod = ratio;
             for (int j=0; j < sigma-1; ++j) {
                 prod *= ratio;
             }
-            sum += 1./(1. + prod);
         }
+        double sum = 1./(1. + prod);
         return(sum);
   }
 
