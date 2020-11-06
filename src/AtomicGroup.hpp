@@ -485,7 +485,6 @@ namespace loos {
       return(contactwith_private(dist, grp, min, op));
     }
 
-
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
      *  does NOT clear the existing bond list prior to building new
@@ -792,6 +791,13 @@ namespace loos {
      * Proc. Nat. Acad. Sci. USA, 2006, 103, 4888-4893
      */
     double packingScore(const AtomicGroup& other, const GCoord &box, bool norm) const;
+
+
+    /** Logistic contact function between this group and a vector of others
+        TODO: add more detail here
+     */
+    double logisticContact(const std::vector<AtomicGroup>& groups, double radius,
+                           int sigma, const GCoord& box) const;
 
   private:
 

@@ -203,6 +203,27 @@ namespace loos {
       return(score);
   }
 
+  double AtomicGroup::logisticContact(const std::vector<AtomicGroup>& groups,
+                                      double radius,
+                                      int sigma,
+                                      const GCoord& box) const{
+        double sum = 0.0;
+        GCoord cent = centroid();
+        for (auto g = groups.begin(); g != groups.end(); ++g) {
+            GCoord other = g->centroid();
+            // TODO: can be faster if we special case even vs odd sigma
+            //       and work with distance2 for the even case
+            double distance = cent.distance(other, box);
+            double ratio = distance/radius;
+            double prod = ratio;
+            for (int j=0; j < sigma-1; ++j) {
+                prod *= ratio;
+            }
+            sum += 1./(1. + prod);
+        }
+        return(sum);
+  }
+
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();
     greal radius = 0;
