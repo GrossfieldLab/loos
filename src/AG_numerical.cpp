@@ -210,6 +210,10 @@ namespace loos {
         double sum = 0.0;
         GCoord cent = centroid();
         for (auto g = groups.begin(); g != groups.end(); ++g) {
+            // skip self pairs
+            if (*g == *this) {
+                continue;
+            }
             GCoord other = g->centroid();
             // TODO: can be faster if we special case even vs odd sigma
             //       and work with distance2 for the even case
