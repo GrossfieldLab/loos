@@ -485,7 +485,6 @@ namespace loos {
       return(contactwith_private(dist, grp, min, op));
     }
 
-
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
      *  does NOT clear the existing bond list prior to building new
@@ -792,6 +791,17 @@ namespace loos {
      * Proc. Nat. Acad. Sci. USA, 2006, 103, 4888-4893
      */
     double packingScore(const AtomicGroup& other, const GCoord &box, bool norm) const;
+
+
+    //* Logistic contact function between this group and another
+    /**
+        Compute the number of contacts between the centroid of this AG
+        and the centroid of another AG, using a smooth logistic
+        function
+        S = 1/(1 + dist/radius)**sigma
+     */
+    double logisticContact(const AtomicGroup& group, double radius,
+                           int sigma, const GCoord& box) const;
 
   private:
 

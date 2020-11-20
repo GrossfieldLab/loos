@@ -203,6 +203,38 @@ namespace loos {
       return(score);
   }
 
+  double AtomicGroup::logisticContact(const AtomicGroup& group,
+                                      double radius,
+                                      int sigma,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        // Handle even and odd powers separately -- even can
+        // avoid the sqrt
+        // Sigh, this doesnt' seem to make it much faster...
+        double prod;
+        if (sigma % 2 == 0) {
+            double distance2 = cent.distance2(other, box);
+            double ratio = distance2/(radius*radius);
+            prod = ratio;
+            for (int j=0; j<(sigma/2)-1; ++j) {
+                prod *= ratio;
+            }
+        }
+        else {
+            double distance = cent.distance(other, box);
+            double ratio = distance/radius;
+            prod = ratio;
+            for (int j=0; j < sigma-1; ++j) {
+                prod *= ratio;
+            }
+        }
+        double sum = 1./(1. + prod);
+        return(sum);
+  }
+
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();
     greal radius = 0;
