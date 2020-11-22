@@ -803,6 +803,16 @@ namespace loos {
     double logisticContact(const AtomicGroup& group, double radius,
                            int sigma, const GCoord& box) const;
 
+    //* Hard contact function between this group and another
+    /**
+        Compute contact value of another AG with respect to
+        the centroid of a given AG, using a hard step
+        function
+        S = 1; iff dist <= radius; else 0
+     */
+    double hardContact(const AtomicGroup& group, double radius,
+                           const GCoord& box) const;
+
   private:
 
 	// These are functors for calculating distance between two coords

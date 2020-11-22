@@ -235,6 +235,21 @@ namespace loos {
         return(sum);
   }
 
+  double AtomicGroup::hardContact(const AtomicGroup& group,
+                                      double radius,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        double distance = cent.distance(other, box);
+        double sum = 0.;
+        if (distance <= radius) {
+            sum = 1.;
+        }
+        return(sum);
+  }
+
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();
     greal radius = 0;
