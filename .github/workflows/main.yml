@@ -22,7 +22,7 @@ jobs:
     # is the only place we need to specify the OS
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 5
+      max-parallel: 1
       matrix:
         os: [ubuntu-latest, macos-latest]
 
