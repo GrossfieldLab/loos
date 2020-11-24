@@ -813,7 +813,7 @@ namespace loos {
         function
         S = 1/(1 + dist/radius)**sigma
      */
-    double logisticContact_2D(const AtomicGroup& group, double radius,
+    double logisticContact2D(const AtomicGroup& group, double radius,
                            int sigma, const GCoord& box) const;
 
     //* Hard contact function between this group and another
@@ -836,7 +836,7 @@ namespace loos {
         function
         S = 1; iff dist <= radius; else 0
      */
-    double hardContact_2D(const AtomicGroup& group, double radius,
+    double hardContact2D(const AtomicGroup& group, double radius,
                            const GCoord& box) const;
 
   private:
@@ -861,6 +861,33 @@ namespace loos {
       GCoord _box;
     };
 
+
+    // This function is to to remove code duplication in 
+    // logisticContacts() and logisticContacts2D(). 
+    // Handle even and odd powers separately -- even can
+    // avoid the sqrt
+    // Sigh, this doesnt' seem to make it much faster...
+    double logisticFunc(const GCoord& cent, const GCoord& other, double radius, int sigma, const GCoord& box) const{
+        double prod;
+        if (sigma % 2 == 0) {
+            double distance2 = cent.distance2(other, box);
+            double ratio = distance2/(radius*radius);
+            prod = ratio;
+            for (int j=0; j<(sigma/2)-1; ++j) {
+                prod *= ratio;
+            }
+        }
+        else {
+            double distance = cent.distance(other, box);
+            double ratio = distance/radius;
+            prod = ratio;
+            for (int j=0; j < sigma-1; ++j) {
+                prod *= ratio;
+            }
+        }
+        double sum = 1./(1. + prod);
+        return(sum);
+    }
 
 
     // Find all atoms in the current group that are within dist

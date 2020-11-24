@@ -211,31 +211,11 @@ namespace loos {
         GCoord cent = centroid();
         GCoord other = group.centroid();
 
-        // Handle even and odd powers separately -- even can
-        // avoid the sqrt
-        // Sigh, this doesnt' seem to make it much faster...
-        double prod;
-        if (sigma % 2 == 0) {
-            double distance2 = cent.distance2(other, box);
-            double ratio = distance2/(radius*radius);
-            prod = ratio;
-            for (int j=0; j<(sigma/2)-1; ++j) {
-                prod *= ratio;
-            }
-        }
-        else {
-            double distance = cent.distance(other, box);
-            double ratio = distance/radius;
-            prod = ratio;
-            for (int j=0; j < sigma-1; ++j) {
-                prod *= ratio;
-            }
-        }
-        double sum = 1./(1. + prod);
+        double sum = logisticFunc(cent, other, radius, sigma, box);
         return(sum);
   }
 
-  double AtomicGroup::logisticContact_2D(const AtomicGroup& group,
+  double AtomicGroup::logisticContact2D(const AtomicGroup& group,
                                       double radius,
                                       int sigma,
                                       const GCoord& box
@@ -243,30 +223,10 @@ namespace loos {
         GCoord cent = centroid();
         GCoord other = group.centroid();
 
-        cent.set(cent[0], cent[1], 0);
-        other.set(other[0], other[1], 0);
+        cent.z() = 0.;
+        other.z() = 0.;
 
-        // Handle even and odd powers separately -- even can
-        // avoid the sqrt
-        // Sigh, this doesnt' seem to make it much faster...
-        double prod;
-        if (sigma % 2 == 0) {
-            double distance2 = cent.distance2(other, box);
-            double ratio = distance2/(radius*radius);
-            prod = ratio;
-            for (int j=0; j<(sigma/2)-1; ++j) {
-                prod *= ratio;
-            }
-        }
-        else {
-            double distance = cent.distance(other, box);
-            double ratio = distance/radius;
-            prod = ratio;
-            for (int j=0; j < sigma-1; ++j) {
-                prod *= ratio;
-            }
-        }
-        double sum = 1./(1. + prod);
+        double sum = logisticFunc(cent, other, radius, sigma, box);
         return(sum);
   }
 
@@ -285,15 +245,15 @@ namespace loos {
         return(sum);
   }
 
-  double AtomicGroup::hardContact_2D(const AtomicGroup& group,
+  double AtomicGroup::hardContact2D(const AtomicGroup& group,
                                       double radius,
                                       const GCoord& box
                                       ) const{
         GCoord cent = centroid();
         GCoord other = group.centroid();
 
-        cent.set(cent[0], cent[1], 0);
-        other.set(other[0], other[1], 0);
+        cent.z() = 0.;
+        other.z() = 0.;
 
         double distance2 = cent.distance2(other, box);
         double sum = 0.;
