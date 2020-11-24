@@ -235,6 +235,41 @@ namespace loos {
         return(sum);
   }
 
+  double AtomicGroup::logisticContact_2D(const AtomicGroup& group,
+                                      double radius,
+                                      int sigma,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        cent.set(cent[0], cent[1], 0);
+        other.set(other[0], other[1], 0);
+
+        // Handle even and odd powers separately -- even can
+        // avoid the sqrt
+        // Sigh, this doesnt' seem to make it much faster...
+        double prod;
+        if (sigma % 2 == 0) {
+            double distance2 = cent.distance2(other, box);
+            double ratio = distance2/(radius*radius);
+            prod = ratio;
+            for (int j=0; j<(sigma/2)-1; ++j) {
+                prod *= ratio;
+            }
+        }
+        else {
+            double distance = cent.distance(other, box);
+            double ratio = distance/radius;
+            prod = ratio;
+            for (int j=0; j < sigma-1; ++j) {
+                prod *= ratio;
+            }
+        }
+        double sum = 1./(1. + prod);
+        return(sum);
+  }
+
   double AtomicGroup::hardContact(const AtomicGroup& group,
                                       double radius,
                                       const GCoord& box
@@ -242,14 +277,32 @@ namespace loos {
         GCoord cent = centroid();
         GCoord other = group.centroid();
 
-        double distance = cent.distance(other, box);
+        double distance2 = cent.distance2(other, box);
         double sum = 0.;
-        if (distance <= radius) {
+        if (distance2 <= (radius*radius)) {
             sum = 1.;
         }
         return(sum);
   }
 
+  double AtomicGroup::hardContact_2D(const AtomicGroup& group,
+                                      double radius,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        cent.set(cent[0], cent[1], 0);
+        other.set(other[0], other[1], 0);
+
+        double distance2 = cent.distance2(other, box);
+        double sum = 0.;
+        if (distance2 <= (radius*radius)) {
+            sum = 1.;
+        }
+        return(sum);
+
+  }
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();
     greal radius = 0;

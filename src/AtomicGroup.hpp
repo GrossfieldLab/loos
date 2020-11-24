@@ -803,6 +803,19 @@ namespace loos {
     double logisticContact(const AtomicGroup& group, double radius,
                            int sigma, const GCoord& box) const;
 
+    //* Similar to logisticContact() but the distance between reference
+    //  group centroid and another group centroid is 2D Euclidean distance
+    //  instead of 3D. Useful when calculating number of contacts in a 
+    //  plane
+    /**
+        Compute the number of contacts between the centroid of this AG
+        and the centroid of another AG, using a smooth logistic
+        function
+        S = 1/(1 + dist/radius)**sigma
+     */
+    double logisticContact_2D(const AtomicGroup& group, double radius,
+                           int sigma, const GCoord& box) const;
+
     //* Hard contact function between this group and another
     /**
         Compute contact value of another AG with respect to
@@ -811,6 +824,19 @@ namespace loos {
         S = 1; iff dist <= radius; else 0
      */
     double hardContact(const AtomicGroup& group, double radius,
+                           const GCoord& box) const;
+
+    //* Similar to hardContact() but the distance between reference
+    //  group centroid and another group centroid is 2D Euclidean distance
+    //  instead of 3D. Useful when calculating number of contacts or local
+    //  neighbor density in a plane
+    /**
+        Compute contact value of another AG with respect to
+        the centroid of a given AG, using a hard step
+        function
+        S = 1; iff dist <= radius; else 0
+     */
+    double hardContact_2D(const AtomicGroup& group, double radius,
                            const GCoord& box) const;
 
   private:
