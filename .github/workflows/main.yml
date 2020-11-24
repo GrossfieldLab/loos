@@ -38,5 +38,5 @@ jobs:
       - name: Run conda_build.sh
         shell: bash -l {0}
         run: |
-          chmod -R +w $CONDA
+          sudo chmod -R +w $CONDA
           ./conda_build.sh -e loos -j 5 -i
