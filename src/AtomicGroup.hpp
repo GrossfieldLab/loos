@@ -434,6 +434,9 @@ namespace loos {
       box.box(GCoord(x,y,z));
     }
 
+    //! compute OCF for all atom-pairs in AG of distance offset from one another
+    const greal ocf(uint offset);
+
     //! Provide access to the underlying shared periodic box...
     loos::SharedPeriodicBox sharedPeriodicBox() const { return(box); }
 
