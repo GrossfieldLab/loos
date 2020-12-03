@@ -56,27 +56,97 @@ public:
   bool residue_centroids;
   float bondlength;
 };
+class ocf_atomic {
+private:
+  vector<GCoord> bond_vectors;
+  AtomicGroup chain;
+  uint max_offset;
 
-inline greal by_atom_ocf(vector<AtomicGroup> &ag_singleton, uint max_offset) {
-  greal accumulated_ocf = 0;
-  for (auto offset = 1; offset == max_offset; offset++) {
-    accumulated_ocf += ag_singleton[0].ocf(offset);
+public:
+  ocf_atomic(AtomicGroup &input_chain, uint max_offset)
+      : bond_vectors(input_chain.size() - 1), max_offset{max_offset} {
+    chain = input_chain;
+  };
+  ~ocf_atomic();
+  loos::greal compute(void) {
+    loos::greal accumulated_ocf = 0;
+    uint count = 0;
+    for (auto i = 0; i < chain.size() - 1; i++) {
+      bond_vectors[i] = chain[i]->coords() - chain[i + 1]->coords();
+    }
+    for (auto offset = 1; offset < max_offset + 1; offset++) {
+      for (auto i = 0; i < bond_vectors.size() - offset; i++){
+        accumulated_ocf +=
+            bond_vectors[i].dot(bond_vectors[i + offset]) /
+            (bond_vectors[i].length() * bond_vectors[i + offset].length());
+        count += 1;
+      }
+    }
+    return (accumulated_ocf / count);
+  };
+  vector<GCoord> get_bond_vectors(){return (bond_vectors);};
+};
+
+// ocf_atomic::ocf_atomic(AtomicGroup &chain, uint max_offset)
+// {
+//   bond_vectors(chain.size());
+
+// }
+
+ocf_atomic::~ocf_atomic() {}
+
+class ocf_group {
+private:
+  vector<GCoord> bond_vectors;
+  vector<AtomicGroup> chain_groups;
+  uint max_offset;
+public:
+  ocf_group(vector<AtomicGroup> &input_chains, uint max_offset)
+    : bond_vectors(input_chains.size()-1), max_offset{max_offset}{
+      chain_groups = input_chains;
+    }
+  loos::greal compute(void) {
+    loos::greal accumulated_ocf = 0;
+    uint count = 0;
+    for (auto i = 0; i < chain_groups.size() - 1; i++) {
+      bond_vectors[i] = chain_groups[i].centroid() - chain_groups[i + 1].centroid();
+    }
+    for (auto offset = 1; offset < max_offset + 1; offset++) {
+      for (auto i = 0; i < bond_vectors.size() - offset; i++){
+        accumulated_ocf +=
+            bond_vectors[i].dot(bond_vectors[i + offset]) /
+            (bond_vectors[i].length() * bond_vectors[i + offset].length());
+        count += 1;
+      }
+    }
+    return (accumulated_ocf / count);
   }
-  return (accumulated_ocf / (max_offset - 1));
-}
+  ~ocf_group(); 
+  vector<GCoord> get_bond_vectors(){return (bond_vectors);};
+};
 
-inline greal by_group_centroid_ocf(vector<AtomicGroup> &ag_list,
-                                   uint max_offset) {
-  greal accumulated_ocf = 0;
-  vector<GCoord> bvs;
-  for (auto i = 0; i < ag_list.size() - 1; i++)
-    bvs.push_back(ag_list[i].centroid() - ag_list[i + 1].centroid());
-  for (auto offset = 1; offset < max_offset + 1; offset++) {
-    for (auto i = 0; i < bvs.size() - offset; i++)
-      accumulated_ocf = bvs[i].dot(bvs[i + offset]) /
-                        (bvs[i].length() * bvs[i + offset].length());
-  }
-  return (accumulated_ocf / (bvs.size() * max_offset));
-}
+ocf_group::~ocf_group() {}
 
-inline greal mean_bond_length(vector<AtomicGroup>)
+// inline greal by_atom_ocf(vector<AtomicGroup> &ag_singleton, uint max_offset) {
+//   greal accumulated_ocf = 0;
+//   for (auto offset = 1; offset == max_offset; offset++) {
+//     accumulated_ocf += ag_singleton[0].ocf(offset);
+//   }
+//   return (accumulated_ocf / (max_offset - 1));
+// }
+
+// inline greal by_group_centroid_ocf(vector<AtomicGroup> &ag_list,
+//                                    uint max_offset) {
+//   greal accumulated_ocf = 0;
+//   vector<GCoord> bvs;
+//   for (auto i = 0; i < ag_list.size() - 1; i++)
+//     bvs.push_back(ag_list[i].centroid() - ag_list[i + 1].centroid());
+//   for (auto offset = 1; offset < max_offset + 1; offset++) {
+//     for (auto i = 0; i < bvs.size() - offset; i++)
+//       accumulated_ocf = bvs[i].dot(bvs[i + offset]) /
+//                         (bvs[i].length() * bvs[i + offset].length());
+//   }
+//   return (accumulated_ocf / (bvs.size() * max_offset));
+// }
+
+
