@@ -42,6 +42,7 @@ apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.c
 apps = apps + ' index_range_parser.cpp'
 apps = apps + ' Weights.cpp'
 apps = apps + ' UniformWeight.cpp'
+apps = apps + ' RnaSuite.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
@@ -55,50 +56,58 @@ PREFIX = env['PREFIX']
 # Library(ies)
 loos_lib_inst = env.Install(os.path.join(PREFIX, 'lib'), loos)
 
-
-
 # Header files...
 hdr = 'alignment.hpp amber.hpp amber_rst.hpp amber_traj.hpp Atom.hpp AtomicGroup.hpp ccpdb.hpp Coord.hpp'
-hdr = hdr + ' cryst.hpp dcd.hpp dcd_utils.hpp dcdwriter.hpp ensembles.hpp Fmt.hpp'
-hdr = hdr + ' HBondDetector.hpp'
-hdr = hdr + ' Geometry.hpp KernelActions.hpp Kernel.hpp KernelStack.hpp'
-hdr = hdr + ' KernelValue.hpp loos_defs.hpp loos.hpp LoosLexer.hpp Matrix44.hpp'
-hdr = hdr + ' Matrix.hpp MatrixImpl.hpp MatrixIO.hpp MatrixOrder.hpp MatrixRead.hpp'
-hdr = hdr + ' MatrixStorage.hpp MatrixUtils.hpp MatrixWrite.hpp ParserDriver.hpp'
-hdr = hdr + ' Parser.hpp pdb.hpp pdb_remarks.hpp pdbtraj.hpp PeriodicBox.hpp psf.hpp'
-hdr = hdr + ' Selectors.hpp sfactories.hpp StreamWrapper.hpp loos_timer.hpp'
-hdr = hdr + ' TimeSeries.hpp tinker_arc.hpp tinkerxyz.hpp Trajectory.hpp'
-hdr = hdr + ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp ProgressTriggers.hpp'
-hdr = hdr + ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
-hdr = hdr + ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
-hdr = hdr + ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
-hdr = hdr + ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
-hdr = hdr + ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
-hdr = hdr + ' Weights.hpp UniformWeight.hpp ObsVector.hpp'
+hdr += ' cryst.hpp dcd.hpp dcd_utils.hpp dcdwriter.hpp ensembles.hpp Fmt.hpp'
+hdr += ' HBondDetector.hpp'
+hdr += ' Geometry.hpp KernelActions.hpp Kernel.hpp KernelStack.hpp'
+hdr += ' KernelValue.hpp loos_defs.hpp loos.hpp LoosLexer.hpp Matrix44.hpp'
+hdr += ' Matrix.hpp MatrixImpl.hpp MatrixIO.hpp MatrixOrder.hpp MatrixRead.hpp'
+hdr += ' MatrixStorage.hpp MatrixUtils.hpp MatrixWrite.hpp ParserDriver.hpp'
+hdr += ' Parser.hpp pdb.hpp pdb_remarks.hpp pdbtraj.hpp PeriodicBox.hpp psf.hpp'
+hdr += ' Selectors.hpp sfactories.hpp StreamWrapper.hpp loos_timer.hpp'
+hdr += ' TimeSeries.hpp tinker_arc.hpp tinkerxyz.hpp Trajectory.hpp'
+hdr += ' UniqueStrings.hpp utils.hpp XForm.hpp ProgressCounters.hpp ProgressTriggers.hpp'
+hdr += ' grammar.hh location.hh position.hh stack.hh FlexLexer.h'
+hdr += ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hpp'
+hdr += ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
+hdr += ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
+hdr += ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
+hdr += ' RnaSuite.hpp Weights.hpp UniformWeight.hpp ObsVector.hpp'
 
 if (env['HAS_NETCDF']):
-   hdr = hdr + ' amber_netcdf.hpp'
+    hdr += ' amber_netcdf.hpp'
 
-
-
-loos_hdr_inst = env.Install(os.path.join(PREFIX,'include'), Split(hdr))
+loos_hdr_inst = env.Install(os.path.join(PREFIX, 'include'), Split(hdr))
 
 # Python bindings
 loos_python = ''
 if int(env['pyloos']):
 
-   if env['host_type'] == 'Darwin':
-      loos_python = env.LoadableModule('#_loos.so', ['loos.i', loos], FRAMEWORKSFLAGS = '-flat_namespace -undefined suppress')
-   else:
-
-      # This is a hack to get pyloos shared libraries to build when installing in linux
-      pynv = env.Clone()
-      loos_python = pynv.SharedLibrary('#_loos', ['loos.i', loos])
+    if env['host_type'] == 'Darwin':
+        so_location = os.path.join("#", "loos", "_loos.so")
+        loos_python = env.LoadableModule(so_location, ['loos.i', loos],
+                                         FRAMEWORKSFLAGS='-flat_namespace -undefined suppress')
+    else:
+        # This is a hack to get pyloos shared libraries to build when
+        # installing in linux
+        pynv = env.Clone()
+        so_location = os.path.join("#", "loos", "_loos.so")
+        loos_python = pynv.SharedLibrary(so_location, ['loos.i', loos])
 
 # Handle installing PyLOOS
-   env.Install(os.path.join(PREFIX, 'lib'), loos_python)
-   loos_python += Command("#loos/__init__.py", "loos.py", Copy("$TARGET", "$SOURCE"))
-   # hack to make swig-4 work
-   loos_python += Command("#loos/_loos.so", "../_loos.so", Copy("$TARGET", "$SOURCE"))
+    if env.USING_CONDA:
+        python_lib_path = os.path.join(env["SP_DIR"], 'loos')
+        env.Install(python_lib_path, loos_python)
+
+        # if darwin, run install_name_tool
+        if env['host_type'] == 'Darwin':
+            loos_path = os.path.join(python_lib_path, "_loos.so")
+            env.AddPostAction(loos_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + loos_path)
+
+    else:
+        env.Install(os.path.join(PREFIX, 'lib'), loos_python)
+    loos_python += Command(os.path.join("#loos", "__init__.py"), "loos.py",
+                           Copy("$TARGET", "$SOURCE"))
 
 Return('loos', 'loos_python')

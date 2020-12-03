@@ -1,6 +1,6 @@
 # The Lightweight Object Oriented Structure analysis library
 
-[![Build Status](https://travis-ci.org/GrossfieldLab/loos.svg?branch=master)](https://travis-ci.org/GrossfieldLab/loos)
+![Build Status](https://github.com/GrossfieldLab/loos/workflows/CI/badge.svg)
 
 ## Getting Help
 * Raise an issue here on GitHub.

@@ -21,6 +21,7 @@
 
 
 import sys
+import os
 
 Import('env')
 Import('loos')
@@ -63,11 +64,15 @@ apps = apps + ' vsa anm'
 ### Installation specific
 
 PREFIX = env['PREFIX']
+bin_path = os.path.join(PREFIX, "bin")
 
+enm_tools = env.Install(bin_path, Split(apps))
+# if darwin, run install_name_tool so the binaries can find the library
+if env['host_type'] == 'Darwin':
+    for app in Split(apps):
+        app_path = os.path.join(bin_path, app)
+        env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
 
-enm_tools = env.Install(PREFIX + '/bin', Split(apps))
-#enm_libs = env.Install(PREFIX + '/lib', [loos_enm])
-#enm_headers = env.Install(PREFIX + '/include', Split(library_headers))
 env.Alias('elastic_networks_package', enm_tools)
 
 Return('list')

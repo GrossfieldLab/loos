@@ -29,9 +29,9 @@ Alan Grossfield,  University of Rochester Medical Center, 2019
 
 """
 
-import sys
 import loos
-import LipidLibrary
+import loos.OptimalMembraneGenerator
+from loos.OptimalMembraneGenerator import LipidLibrary
 import random
 import argparse
 
@@ -47,8 +47,6 @@ parser.add_argument('library_location',
                     help="Directory with library of small molecules")
 parser.add_argument('output_pdb',
                     help="Name of output PDB file")
-
-
 parser.add_argument('--protein',
                     help="File containing coordinates of the protein to be surrounded by small molecules")
 parser.add_argument('--no_center',
@@ -73,6 +71,8 @@ if args.zbox:
 
 if args.z_exclude:
     args.z_exclude = abs(args.z_exclude)
+else:
+    args.z_exclude = 0.0
 
 
 if args.protein:
@@ -116,9 +116,10 @@ while accepts < args.num_ligands:
         protein.append(new_molecule)
 
 print("Placed ", accepts, " molecules in ", trials, " trials: ",
-      accepts/trials, " %")
+      accepts/trials * 100, " %")
 
-# protein.renumber()
+protein.renumber()
+protein.clearBonds()
 pdb = loos.PDB.fromAtomicGroup(protein)
 
 with open(args.output_pdb, "w") as outfile:

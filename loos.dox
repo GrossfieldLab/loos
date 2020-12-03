@@ -4,7 +4,7 @@
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
 
-Copyright &copy; 2008-2019, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -1478,8 +1478,8 @@ The following illustrates catching PyLOOS exceptions...
 try:
      model = createSystem(filename)
 except loos.LOOSError as e:
-     print 'HELP!  There was a problem reading the model...'
-     print e.what()
+     print('HELP!  There was a problem reading the model...')
+     print(e.what())
 \endcode
 
 

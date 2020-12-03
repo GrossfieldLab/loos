@@ -75,10 +75,10 @@ namespace loos {
         }
       }
     }
-    
+
     // Compare against expected types
     std::string expected_types_UC = boost::to_upper_copy(expected_types);
-    
+
     if (expected_types_UC.find_first_of(toupper(fmt.type)) == std::string::npos)
       throw(FileReadErrorWithLine(reader.name(), "Invalid format type for " + where, reader.lineNumber()));
 
@@ -88,14 +88,17 @@ namespace loos {
 
 
   void Amber::parseCharges() {
+    // Amber stores charges in units of electrons/18.2223
+    // See http://ambermd.org/FileFormats.php
+    const double conversion = 18.2223;
     FormatSpec fmt = parseFormat("EFG", "charges");
 
     std::vector<double> charges = readBlock<double>(fmt.width);
     if (charges.size() != atoms.size())
       throw(FileReadErrorWithLine(reader.name(), "Error parsing charges from amber file", reader.lineNumber()));
-    
+
     for (uint i=0; i<charges.size(); ++i)
-      atoms[i]->charge(charges[i]);
+      atoms[i]->charge(charges[i]/conversion);
   }
 
 
@@ -105,7 +108,7 @@ namespace loos {
     std::vector<double> masses = readBlock<double>(fmt.width);
     if (masses.size() != atoms.size())
       throw(FileReadErrorWithLine(reader.name(), "Error parsing masses from amber file", reader.lineNumber()));
-    
+
     for (uint i=0; i<masses.size(); ++i)
       atoms[i]->mass(masses[i]);
 
@@ -166,27 +169,27 @@ namespace loos {
   void Amber::parseBonds(const uint n) {
     FormatSpec fmt = parseFormat("I", "bonds");
 
-  
+
     std::vector<int> bond_list = readBlock<int>(fmt.width);
 
     if (bond_list.size() != 3*n)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing bonds in amber file", reader.lineNumber()));
-    
+
     for (uint i=0; i<bond_list.size(); i += 3) {
       if (bond_list[i] == bond_list[i+1])
         continue;
 
       pAtom aatom = atoms[bond_list[i]/3];
       pAtom batom = atoms[bond_list[i+1]/3];
-    
+
       // Amber bond lists are not symmetric, so make sure we add both pairs...
       if (!(aatom->isBoundTo(batom)))
         aatom->addBond(batom);
       if (!(batom->isBoundTo(aatom)))
         batom->addBond(aatom);
-      
+
     }
-    
+
   }
 
 
@@ -227,12 +230,30 @@ namespace loos {
 
   void Amber::parseAtomNames() {
     FormatSpec fmt = parseFormat("a", "atom names");
-    
+
     std::vector<std::string> names = readBlock<std::string>(fmt.width);
     if (names.size() != natoms)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing atom names", reader.lineNumber()));
     for (uint i=0; i<names.size(); ++i)
       atoms[i]->name(names[i]);
+  }
+
+  void Amber::parseBoxDimensions() {
+    FormatSpec fmt = parseFormat("E", "box dimensions");
+
+    std::vector<double> dimensions = readBlock<double>(fmt.width);
+    const double epsilon = 1e-8;
+
+    double angle = dimensions[0];
+    double diff = fabs(angle - 90.0);
+    if (diff > epsilon) {
+      std::cerr << "# Warning: prmtop specifies non-rectangular box: ignoring"
+                << std::endl;
+      return;
+    }
+
+    GCoord box = GCoord(dimensions[1], dimensions[2], dimensions[3]);
+    periodicBox(box);
   }
 
   void Amber::parseAmoebaRegularBondNumList() {
@@ -249,12 +270,12 @@ namespace loos {
   void Amber::parseAmoebaRegularBondList(const uint n) {
     FormatSpec fmt = parseFormat("I", "amoeba_regular_bond_list");
 
-  
+
     std::vector<int> bond_list = readBlock<int>(fmt.width);
 
     if (bond_list.size() != 3*n)
       throw(FileReadErrorWithLine(reader.name(), "Error parsing amoeba bonds in amber file", reader.lineNumber()));
-    
+
     for (uint i=0; i<bond_list.size(); i += 3) {
       if (bond_list[i] == bond_list[i+1])
         continue;
@@ -263,29 +284,29 @@ namespace loos {
       // Are we sure???
       pAtom aatom = atoms[bond_list[i]-1];
       pAtom batom = atoms[bond_list[i+1]-1];
-    
+
       // Amber bond lists are not symmetric, so make sure we add both pairs...
       if (!(aatom->isBoundTo(batom)))
         aatom->addBond(batom);
       if (!(batom->isBoundTo(aatom)))
         batom->addBond(aatom);
-      
+
     }
-    
+
   }
 
 
 
   void Amber::read(std::istream& ifs) {
     reader.stream(ifs);
-    
+
     while (reader.getNext()) {
 
       boost::char_separator<char> sep(" \t");
       std::string input_line(reader.line());      // See parseFormat() for explanation...required by Ubuntu 16
       tokenizer tokens(input_line, sep);
       tokenizer::iterator toks = tokens.begin();
-      
+
       if (*toks != "%FLAG")
         continue;
 
@@ -307,12 +328,14 @@ namespace loos {
       else if (*toks == "BONDS_INC_HYDROGEN")
         parseBonds(nbonh);
       else if (*toks == "BONDS_WITHOUT_HYDROGEN")
-        parseBonds( mbona);
+        parseBonds(mbona);
+      else if (*toks == "BOX_DIMENSIONS")
+        parseBoxDimensions();
       else if (*toks == "AMOEBA_REGULAR_BOND_NUM_LIST")
         parseAmoebaRegularBondNumList();
       else if (*toks == "AMOEBA_REGULAR_BOND_LIST")
         parseAmoebaRegularBondList(_amoeba_regular_bond_num_list);
-      
+
     }
 
     assignResidues();
@@ -322,4 +345,3 @@ namespace loos {
 
 
 }
-

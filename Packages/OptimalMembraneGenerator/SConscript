@@ -23,9 +23,16 @@ import sys
 import os
 
 Import('env')
-PREFIX = env['PREFIX'] + '/OptimalMembraneGenerator/'
+if env.USING_CONDA:
+    python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
+                           sys.path))[0]
+    PREFIX = python_lib_path + '/loos/OptimalMembraneGenerator/'
+else:
+    PREFIX = env['PREFIX'] + '/OptimalMembraneGenerator/'
 
-executables = 'LipidLibrary.py NAMD.py OptimalMembraneGenerator.py ParseOptions.py PSFGen.py WaterBox.py solvate.py'
+executables = 'LipidLibrary.py NAMD.py OptimalMembraneGenerator.py ' + \
+              'ParseOptions.py PSFGen.py WaterBox.py solvate.py ' + \
+              'add_molecules.py make_library.py '
 files = 'water_small.pdb'
 dirs = 'doc example'
 
@@ -46,6 +53,17 @@ if int(env['pyloos']):
                 Copy("$TARGET", "$SOURCE"),
                 Chmod("$TARGET", 0o644)
                 ])
+
+    # If we're using conda, also put the executables in bin
+    if env.USING_CONDA:
+        PREFIX = env['PREFIX'] + "/bin/"
+
+        for f in Split(executables):
+            Command(PREFIX + f, f, [
+                    Copy("$TARGET", "$SOURCE"),
+                    Chmod("$TARGET", 0o755)
+                    ])
+
 
 # dummy return...
 Return('omg_package')

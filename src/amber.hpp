@@ -142,6 +142,7 @@ namespace loos {
     void parsePointers();
     void parseTitle();
     void parseAtomNames();
+    void parseBoxDimensions();
     void parseAmoebaRegularBondNumList();
     void parseAmoebaRegularBondList(const uint);
 
@@ -187,5 +188,3 @@ namespace loos {
 
 
 #endif
-
-

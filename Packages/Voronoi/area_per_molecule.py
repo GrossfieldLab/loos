@@ -9,8 +9,9 @@ Copyright 2014
 import sys
 import loos
 import loos.pyloos
+import loos.Voronoi
 import numpy
-from Voronoi import *
+from loos.Voronoi import *
 
 if __name__ == '__main__':
 
@@ -105,7 +106,6 @@ area is absurdly large) it could suggest your padding value is too small.
     print("# ", " ".join(sys.argv))
 
     system = loos.createSystem(system_filename)
-    #traj = loos.createTrajectory(traj_filename, system)
     pytraj = loos.pyloos.Trajectory(traj_filename, system, skip=skip)
 
     slicer = ZSliceSelector(zmin, zmax)
@@ -114,9 +114,8 @@ area is absurdly large) it could suggest your padding value is too small.
     selections.append(loos.selectAtoms(system, selection_strings[0]))
     for s in selection_strings[1:]:
         selections.append(loos.selectAtoms(selections[0], s))
-    for i in range(1,len(selections)):
+    for i in range(1, len(selections)):
         selections[i] = selections[i].splitByMolecule()
-
 
     string = ""
     for i in range(len(selections)):

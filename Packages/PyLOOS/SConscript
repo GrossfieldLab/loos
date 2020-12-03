@@ -25,13 +25,17 @@ import os
 Import('env')
 PREFIX = env['PREFIX'] + '/bin/'
 
-apps = 'ConvexHull cylindrical-thickness  renum-by-mol domain '
-apps += 'rmsd_to_average NAMDBin flip_chirality simple_model_calc helix_axes '
+apps = 'cylindrical-thickness  renum-by-mol domain '
+apps += 'rmsd_to_average flip_chirality simple_model_calc helix_axes '
 apps += 'simple_model_transform all_contacts hierarchical-cluster '
 apps += 'simple_traj_calc axis_with_membrane inside_helices '
 apps += 'simple_traj_transform center_molecule native-hbs total_charge '
 apps += 'cluster-structures  packing_score_per_res cylindrical-density '
 apps += 'protein_tilt'
+
+# Moved libraries out of Packages/PyLOOS to loos/pyloos
+#files = 'ConvexHull NAMDBin'
+files = ''
 
 python_package = []
 
@@ -45,5 +49,19 @@ if env['pyloos']:
                   Chmod("$TARGET", 0o755)
                 ]
                )
+
+    # install non-exexcutables either into the python directory (for conda) or
+    # into the main install directory (non-conda)
+    if env.USING_CONDA:
+        p = list(filter(lambda x: x.endswith("site-packages"),
+                      sys.path))[0] + '/loos/'
+    else:
+        p = PREFIX
+    for file in Split(files):
+        pyfile = file + '.py'
+        Command(p + pyfile, pyfile, [
+               Copy("$TARGET", "$SOURCE"),
+               Chmod("$TARGET", 0o644)
+               ])
 
 Return('python_package')

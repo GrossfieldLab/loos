@@ -21,6 +21,7 @@
 
 
 import sys
+import os
 import re
 
 Import('env')
@@ -61,10 +62,14 @@ for name in Split(apps):
 
 PREFIX = env['PREFIX']
 
+bin_path = os.path.join(PREFIX, "bin")
+density_tools = env.Install(bin_path, Split(apps))
+# if darwin, run install_name_tool so the binaries can find the library
+if env['host_type'] == 'Darwin':
+    for app in Split(apps):
+        app_path = os.path.join(bin_path, app)
+        env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
 
-density_tools = env.Install(PREFIX + '/bin', Split(apps))
-#density_libs = env.Install(PREFIX + '/lib', [density_lib])
-#density_headers = env.Install(PREFIX + '/include', Split(library_headers))
 env.Alias('density_tools_package', density_tools)
 
 Return('list')

@@ -18,7 +18,9 @@ except ImportError as e:
 try:
     from scipy.spatial import Voronoi
 except ImportError as e:
-    print("Error importing Voronoi from scipy: ({0}): {1}".format(e.errno, e.strerror))
+    print("Error importing Voronoi from scipy: ({0}): {1}".format(
+        e.errno, e.strerror))
+
 
 class ZSliceSelector:
     def __init__(self, min_z, max_z):
@@ -99,30 +101,30 @@ class VoronoiWrapper:
             c = a.coords()
             # generate the square neighbors
             if (c.x() < -half_box.x() + self.pad):
-                self.padding_atoms.append(c+xbox)
+                self.padding_atoms.append(c + xbox)
             if (c.x() > half_box.x() - self.pad):
-                self.padding_atoms.append(c-xbox)
+                self.padding_atoms.append(c - xbox)
             if (c.y() < -half_box.y() + self.pad):
-                self.padding_atoms.append(c+ybox)
+                self.padding_atoms.append(c + ybox)
             if (c.y() > half_box.y() - self.pad):
-                self.padding_atoms.append(c-ybox)
+                self.padding_atoms.append(c - ybox)
 
             # generate the diagonal neighbors
-            if ( (c.x() <  -half_box.x() + self.pad) and
-                 (c.y() <  -half_box.y() + self.pad) ):
-                 self.padding_atoms.append(c+xbox+ybox)
+            if ((c.x() < -half_box.x() + self.pad) and
+                    (c.y() < -half_box.y() + self.pad)):
+                self.padding_atoms.append(c + xbox + ybox)
 
-            if ( (c.x() > half_box.x() - self.pad) and
-                 (c.y() > half_box.y() - self.pad) ):
-                 self.padding_atoms.append(c-xbox-ybox)
+            if ((c.x() > half_box.x() - self.pad) and
+                    (c.y() > half_box.y() - self.pad)):
+                self.padding_atoms.append(c - xbox - ybox)
 
-            if ( (c.x() < -half_box.x() + self.pad) and
-                 (c.y() >  half_box.y() - self.pad) ):
-                 self.padding_atoms.append(c+xbox-ybox)
+            if ((c.x() < -half_box.x() + self.pad) and
+                    (c.y() > half_box.y() - self.pad)):
+                self.padding_atoms.append(c + xbox - ybox)
 
-            if ( (c.x() >  half_box.x() - self.pad) and
-                 (c.y() < -half_box.y() + self.pad) ):
-                 self.padding_atoms.append(c-xbox+ybox)
+            if ((c.x() > half_box.x() - self.pad) and
+                    (c.y() < -half_box.y() + self.pad)):
+                self.padding_atoms.append(c - xbox + ybox)
 
         return len(self.padding_atoms)
 
@@ -159,11 +161,11 @@ class VoronoiWrapper:
         for i in range(self.num_atoms()):
             index = self.voronoi.point_region[i]
             if index == -1:
-                raise ValueError("point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i).with_traceback(self.atoms[i].id())
+                raise ValueError("point %d (atomId = %d) from voronoi decomposition isn't associated with a voronoi region; you may need to increase the padding value" % i).with_traceback(
+                    self.atoms[i].id())
             r = self.voronoi.regions[index]
             self.regions.append(Region(v, r, self.atoms[i]))
             self.atoms_to_regions[self.atoms[i].id()] = self.regions[i]
-
 
 
 class Edge:
@@ -172,11 +174,12 @@ class Edge:
         self.ind2 = index2
 
     def __eq__(self, other):
-        if ( (self.ind1 == other.ind1) and (self.ind2 == other.ind2) or
-             (self.ind2 == other.ind1) and (self.ind1 == other.ind2) ):
+        if ((self.ind1 == other.ind1) and (self.ind2 == other.ind2) or
+                (self.ind2 == other.ind1) and (self.ind1 == other.ind2)):
             return True
         else:
             return False
+
 
 class Region:
     def __init__(self, vert_array, indices, atom):
@@ -188,8 +191,8 @@ class Region:
         self.edges = []
 
         # build list of indices
-        for i in range(len(indices)-1):
-            self.edges.append(Edge(indices[i], indices[i+1]))
+        for i in range(len(indices) - 1):
+            self.edges.append(Edge(indices[i], indices[i + 1]))
         self.edges.append(Edge(indices[-1], indices[0]))
 
     def num_indices(self):
@@ -201,17 +204,16 @@ class Region:
     def area(self):
         area = 0.0
         for i in range(self.num_indices()):
-            if ( (i+1) == self.num_indices()):
+            if ((i + 1) == self.num_indices()):
                 j = 0
             else:
-                j = i+1
+                j = i + 1
 
             p1 = self.vertices[self.indices[i]]
             p2 = self.vertices[self.indices[j]]
-            area += p1.x()*p2.y() - p2.x()*p1.y();
+            area += p1.x() * p2.y() - p2.x() * p1.y()
 
-
-        area = 0.5*abs(area)
+        area = 0.5 * abs(area)
         return(area)
 
     def is_neighbor(self, other):
@@ -253,7 +255,7 @@ class SuperRegion:
             self.regions = []
 
     def add_region(self, region):
-       self.regions.append(region)
+        self.regions.append(region)
 
     def buildFromAtoms(self, atomicGroup, voronoi):
         for atom in atomicGroup:
@@ -283,6 +285,7 @@ class SuperRegion:
             r.print_indices()
             print()
 
+
 if __name__ == '__main__':
 
     import sys
@@ -290,7 +293,6 @@ if __name__ == '__main__':
     structure = loos.createSystem("trj_1.pdb")
     #structure = loos.createSystem("example.pdb")
     #structure = loos.createSystem("b2ar.pdb")
-
 
     #box = loos.GCoord(55., 77, 100)
     #box = loos.GCoord(55., 77, 100)
@@ -309,11 +311,10 @@ if __name__ == '__main__':
     slice.periodicBox(box)
     """
 
-
     v = VoronoiWrapper(upper)
     #v = VoronoiWrapper(slice)
-    #print v.isPeriodic()
-    #print v.num_atoms()
+    # print v.isPeriodic()
+    # print v.num_atoms()
     v.generate_voronoi()
     print(v.num_atoms(), v.num_padding_atoms())
     for i in range(v.num_atoms()):
@@ -326,7 +327,7 @@ if __name__ == '__main__':
     s = SuperRegion(v.regions[:1])
     s2 = SuperRegion(v.regions[:2])
     print(s.area(), v.regions[0].area())
-    print(s2.area(), v.regions[0].area()+v.regions[1].area())
+    print(s2.area(), v.regions[0].area() + v.regions[1].area())
     s.add_region(v.regions[1])
     print(s.area())
     s.print_indices()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #  This file is part of LOOS.
 #
 #  LOOS (Lightweight Object-Oriented Structure library)
@@ -106,6 +106,10 @@ def environOverride(conf):
     if "CXX" in os.environ:
         conf.env.Replace(CXX=os.environ["CXX"])
         print(("*** Using compiler " + os.environ["CXX"]))
+
+    if "CC" in os.environ:
+        conf.env.Replace(CC=os.environ["CC"])
+        print("*** Using compiler C compiler " + os.environ["CXX"] + " for testing")
 
     if "CCFLAGS" in os.environ:
         conf.env.Append(CCFLAGS=os.environ["CCFLAGS"])
@@ -363,6 +367,23 @@ def CheckDirectory(conf, dirname):
     return 0
 
 
+# Figure out the appropriate python site-packages directory, and store it
+# in the env
+def FindSitePackages(conf):
+    # If it's set, use it unchanged -- probably means we're in the
+    # staged-recipes environment
+    if "SP_DIR" not in conf.env:
+        # figure it out, assuming we're installing to the current python
+        try:
+            site_packages = list(filter(lambda x: x.endswith("site-packages"),
+                                        sys.path))[0]
+            conf.env["SP_DIR"] = site_packages
+        except IndexError:
+            # this python has no site-packages directory. We'll be ok,
+            # because conda always does
+            pass
+
+
 def CheckNumpy(conf, pythonpath):
     global default_lib_path
     conf.Message("Checking for numpy... ")
@@ -491,6 +512,22 @@ def SetupNetCDFPaths(env):
     if netcdf_include:
         env.Prepend(CPPPATH=[netcdf_include])
 
+def SetupEigen(conf):
+    EIGEN = conf.env["EIGEN"]
+    if EIGEN:
+        eigen_include_path = EIGEN
+    elif conf.env.USING_CONDA:
+        eigen_include_path = conf.env['CONDA_PREFIX'] + "/include/eigen3"
+    else:
+        eigen_include_path = "/usr/include/eigen3"
+
+    # TODO: add check for existence of the chosen directory
+    if conf.CheckDirectory(eigen_include_path):
+        conf.env.Prepend(CPPPATH=[eigen_include_path])
+    else:
+        print("Warning: Eigen not found at include path " + eigen_include_path)
+        print("Some tools may not build correctly. You can override this path")
+        print("by setting the EIGEN environment variable.")
 
 def AutoConfigSystemBoost(conf):
     boost_libs = []
@@ -649,6 +686,10 @@ def AutoConfiguration(env):
         }
     )
 
+    environOverride(conf)
+    FindSitePackages(conf)
+
+
     use_threads = int(env["threads"])
 
     # Get system information
@@ -773,6 +814,8 @@ def AutoConfiguration(env):
 
         env.Append(LIBS=boost_libs)
 
+        SetupEigen(conf)
+
         # --- Check for ATLAS/LAPACK and how to build
 
         if loos_build_config.host_type != "Darwin" and not env.USING_CONDA:
@@ -893,6 +936,7 @@ def AutoConfiguration(env):
                 conf.env.Append(LIBS=lib)
         elif env.USING_CONDA:
             conf.env.Append(LIBS="openblas")
+            conf.env.Append(LIBS="gfortran")
 
         # Suppress those annoying maybe used unitialized warnings that -Wall
         # gives us...
@@ -905,7 +949,7 @@ def AutoConfiguration(env):
         if ok:
             conf.env.Append(CCFLAGS=["-Wno-maybe-uninitialized"])
 
-        environOverride(conf)
+        #environOverride(conf)
         if "LIBS" in conf.env:
             print(
                 "Autoconfigure will use these libraries to build LOOS:\n\t",

@@ -484,14 +484,30 @@ namespace loos {
    */
   std::ostream& operator<<(std::ostream& os, const PDB& p) {
     AtomicGroup::const_iterator i;
+    //std::vector<AtomicGroup>::const_iterator m;
 
     os << p._remarks;
     if (p.isPeriodic())
       XTALLine(os, p.periodicBox()) << std::endl;
     if (p._has_cryst)
       FormattedUnitCell(os, p.cell) << std::endl;
-    for (i = p.atoms.begin(); i != p.atoms.end(); ++i)
-      os << p.atomAsString(*i) << std::endl;
+
+    if (!p.hasBonds()) {
+      for (i = p.atoms.begin(); i != p.atoms.end(); ++i) {
+        os << p.atomAsString(*i) << std::endl;
+      }
+    }
+    else if (p._auto_ter){
+      std::vector<AtomicGroup> molecules = p.splitByMolecule();
+      for (auto m = molecules.begin(); m != molecules.end(); ++m) {
+        PDB tmppdb = PDB::fromAtomicGroup(*m);
+        for (i = tmppdb.atoms.begin(); i != tmppdb.atoms.end(); ++i) {
+          os << p.atomAsString(*i) << std::endl;
+        }
+        os << "TER  " << std::endl;
+      }
+    }
+
 
     if (p.hasBonds()) {
       int maxid = 0;
@@ -501,9 +517,6 @@ namespace loos {
 
       FormatConectRecords(os, p);
     }
-
-    if (p._auto_ter)
-      os << "TER     \n";
 
     return(os);
   }

@@ -1,6 +1,52 @@
+2020-10-05  Alan Grossfield <alan>
+	* Fixed bug in gmxdump2pdb, where box units were nm instead of Ang
+
+2020-10-02  Alan Grossfield <alan>
+	* Merged in clean-up version of Louis Smith's cluster
+	  analysis tool, frame-picker.py
+	* Merged in my tool cluster_pops.py
+
+2020-08-27  Alan Grossfield <alan>
+	* Fixed bug in system building with non-3-site water models
+
+2020-08-26  Alan Grossfield <alan>
+	* Fixed units error in reading charges from Amber prmtop files
+
+2020-08-13  Alan Grossfield <alan>
+	* We can read (rectangular) box dimensions from Amber prmtop files
+	* OMG and solvate can handle 4 and 5 site water models
+
+2020-08-08  Alan Grossfield <alan>
+	* Merged conda-install branch into main: this will be LOOS 3.2
+	* fixed missing exception catching in python parseRangeList
+
+2020-08-06  Alan Grossfield <alan>
+	* Merged in rna_suites tool and library from Chapin Cavender
+
+2020-08-05  Alan Grossfield <alan>
+	* Merged in dihedrals tool from Louis Smith
+
+2020-08-04  Alan Grossfield <alan>
+    * membrane_map can now run without aligning
+
+2020-07-31  Alan Grossfield <alan>
+	* Merged in esp_mesh tool from Chapin Cavender
+
+2020-07-07  Tod Romo <tromo>
+	* Fixed bug in svd where splitting the v-matrix per trajectory wasn't
+	  done correctly
+
+2020-06-01 Alan Grossfield <alan>
+	* Added warning to aligner to discourage using --append with
+	  iterative alignment
+
+2020-04-28 Alan Grossfield <alan>
+	* Use symlinks to put python-using packages under loos/pyloos  -- changes
+	  imports of Voronoi and OptimalMembraneGenerator
+
 2020-02-28  Alan Grossfield <alan>
 	* added new tool set_segids.py
-	
+
 2020-02-13  Alan Grossfield <alan>
 	* Merged in new radius of gyration tool rad-gyr from Louis Smith
 

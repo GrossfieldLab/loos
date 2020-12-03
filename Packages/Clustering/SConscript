@@ -21,6 +21,7 @@
 
 
 import sys
+import os
 
 Import('env')
 Import('loos')
@@ -36,6 +37,7 @@ scripts = ''
 
 list = []
 apps = 'cluster-kgs'
+scripts = 'frame-picker.py cluster_pops.py '
 
 # for name in Split(apps):
 #     fname = name + '.cpp'
@@ -65,9 +67,16 @@ for name in Split(dependent):
 ### Installation specific
 
 PREFIX = env['PREFIX']
+bin_path = os.path.join(PREFIX, "bin")
 
+clustering_tools = env.Install(bin_path, list)
+# if darwin, run install_name_tool so the binaries can find the library
+if env['host_type'] == 'Darwin':
+    for app in Split(apps):
+        app_path = os.path.join(bin_path, app)
+        env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
 
-clustering_tools = env.Install(PREFIX + '/bin', list)
+# TODO: this doesn't do anything, since there are no scripts right now
 for file in Split(scripts):
     PREFIX_BIN = PREFIX + '/bin/'
     Command(PREFIX_BIN + file, file,

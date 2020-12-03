@@ -203,6 +203,66 @@ namespace loos {
       return(score);
   }
 
+  double AtomicGroup::logisticContact(const AtomicGroup& group,
+                                      double radius,
+                                      int sigma,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        double sum = logisticFunc(cent, other, radius, sigma, box);
+        return(sum);
+  }
+
+  double AtomicGroup::logisticContact2D(const AtomicGroup& group,
+                                      double radius,
+                                      int sigma,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        cent.z() = 0.;
+        other.z() = 0.;
+
+        double sum = logisticFunc(cent, other, radius, sigma, box);
+        return(sum);
+  }
+
+  double AtomicGroup::hardContact(const AtomicGroup& group,
+                                      double radius,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        double distance2 = cent.distance2(other, box);
+        double sum = 0.;
+        if (distance2 <= (radius*radius)) {
+            sum = 1.;
+        }
+        return(sum);
+  }
+
+  double AtomicGroup::hardContact2D(const AtomicGroup& group,
+                                      double radius,
+                                      const GCoord& box
+                                      ) const{
+        GCoord cent = centroid();
+        GCoord other = group.centroid();
+
+        cent.z() = 0.;
+        other.z() = 0.;
+
+        double distance2 = cent.distance2(other, box);
+        double sum = 0.;
+        if (distance2 <= (radius*radius)) {
+            sum = 1.;
+        }
+        return(sum);
+
+  }
   greal AtomicGroup::radiusOfGyration(void) const {
     GCoord c = centerOfMass();
     greal radius = 0;

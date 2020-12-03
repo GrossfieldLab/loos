@@ -4,12 +4,14 @@ import loos
 
 # @cond TOOLS_INTERNAL
 
+
 class WaterBox:
-    def __init__(self, filename, template_box, target_box, segname):
+    def __init__(self, filename, template_box, target_box, segname, num_sites):
         self.filename = filename
         self.box = target_box
         self.template_box = template_box
         self.segname = segname
+        self.num_sites = num_sites
 
         self.template = loos.createSystem(filename)
         for i in range(len(self.template)):
@@ -40,9 +42,9 @@ class WaterBox:
                     new = self.template.copy()
 
                     trans = loos.GCoord()
-                    trans.x( self.template_box.x() * x)
-                    trans.y( self.template_box.y() * y)
-                    trans.z( self.template_box.z() * z)
+                    trans.x(self.template_box.x() * x)
+                    trans.y(self.template_box.y() * y)
+                    trans.z(self.template_box.z() * z)
 
                     new.translate(trans)
                     self.full_system.append(new)
@@ -61,21 +63,18 @@ class WaterBox:
                     to_remove.append(res)
 
         print("Need to remove: ", len(to_remove))
-        print("before: ", self.full_system.boundingBox(), len(self.full_system))
         self.full_system.remove(to_remove)
-        print("after: ", self.full_system.boundingBox(), len(self.full_system))
 
         self.full_system.periodicBox(self.box)
 
         # renumber atom ids and resids
         self.full_system.renumber()
         for i in range(len(self.full_system)):
-            self.full_system[i].resid(i//3 + 1)
+            self.full_system[i].resid(i//self.num_sites + 1)
         #residues = self.full_system.splitByResidue()
         #for i in range(len(residues)):
         #    for j in range(len(residues[i])):
         #        residues[i][j].resid(i+1)
-
 
     def append_waters(self, other):
         """
@@ -92,7 +91,6 @@ class WaterBox:
                 residues[i][j].resid(i+1)
                 residues[i][j].segid(self.segname)
 
-
     def pdb(self):
         """
         Return a string containing a PDB version of the full_system,
@@ -106,8 +104,6 @@ class WaterBox:
 
 
 if __name__ == '__main__':
-    import sys
-
     coordfile = 'water_small.crd'
     box_size = loos.GCoord(15.5516, 15.5516, 15.5516)
     big_box = loos.GCoord(74.1, 74.1, 95.0)

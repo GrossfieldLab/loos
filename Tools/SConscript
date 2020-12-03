@@ -18,9 +18,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 import sys
+import os
 
 Import('env')
 Import('loos')
@@ -36,6 +35,7 @@ apps = apps + ' traj2pdb merge-traj center-molecule contact-time perturb-structu
 apps = apps + ' big-svd kurskew periodic_box area_per_lipid residue-contact-map'
 apps = apps + ' cross-dist fcontacts serialize-selection transition_contacts fixdcd smooth-traj membrane_map packing_score'
 apps = apps + ' mops dibmops xtcinfo model-meta-stats verap lipid_survival multi-rmsds rms-overlap'
+apps = apps + ' esp_mesh dihedrals rna_suites'
 
 list = []
 
@@ -45,15 +45,22 @@ for name in Split(apps):
     list.append(prog)
 
 PREFIX = env['PREFIX']
+bin_path = os.path.join(PREFIX, "bin")
+loos_tools = env.Install(bin_path, Split(apps))
 
-loos_tools = env.Install(PREFIX + '/bin', Split(apps))
+# if darwin, run install_name_tool so the binaries can find the library
+if env['host_type'] == 'Darwin':
+    for app in Split(apps):
+        app_path = os.path.join(bin_path, app)
+        env.AddPostAction(app_path, "install_name_tool -change libloos.dylib @rpath/libloos.dylib " + app_path)
+
 
 # Special handlign for scripts...
 scripts = 'blurrogram.pl potential_profile.py gmxdump2pdb.pl mat2loos.pl'
 
 for file in Split(scripts):
-    PREFIX_BIN = PREFIX + '/bin/'
-    Command(PREFIX_BIN + file, file,
+    PREFIX_BIN = os.path.join(PREFIX, "bin")
+    Command(os.path.join(PREFIX_BIN, file), file,
             [
             Copy("$TARGET", "$SOURCE"),
             Chmod("$TARGET", 0o755)

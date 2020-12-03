@@ -1,5 +1,8 @@
 ### Some files to ignore in LOOS
 
+# ignore mac crap
+**.DS_Store
+
 # Object files
 *.o
 *.os
@@ -58,11 +61,16 @@ GTAGS
 # VSCode cruft
 **.vscode
 
-# PyCharm /intellij cruft
-**.idea
+# stuff from sublime text
+**.sublime-project
+**.sublime-workspace
+**.clang_complete
 
 # JSON files
 .*.json
+
+# pycharm cruft
+**.idea
 
 # latex cruft
 *.aux
@@ -150,10 +158,9 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
-Packages/Clustering/**
-!Packages/Clustering/*.cpp
-!Packages/Clustering/*.hpp
-!packages/Clustering/SConscript
+Tools/dihedrals
+Tools/esp_mesh
+Tools/rna_suites
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
@@ -262,6 +269,7 @@ Tools/coverlap
 Tools/subsetter
 Tools/xy_rdf
 Tools/model-select
+Tools/dihedrals
 Packages/ElasticNetworks/heavy-ca
 Packages/ElasticNetworks/psf-masses
 Packages/ElasticNetworks/vsa
@@ -709,3 +717,4 @@ Packages/Convergence/ufidpick
 Packages/Convergence/decorr_time
 Packages/Convergence/bcom
 Packages/Convergence/chist
+Packages/Clustering/cluster-kgs

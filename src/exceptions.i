@@ -1,5 +1,5 @@
 %{
-    
+
 
 #include <sstream>
 #include <exception>
@@ -39,7 +39,11 @@
   const char* __str__() { std::string s = self->what(); return(s.c_str()); }
 }
 
+
 %extend loos::FileWriteError {
   const char* __str__() { std::string s = self->what(); return(s.c_str()); }
 }
 
+%extend loos::ParseError {
+  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+}

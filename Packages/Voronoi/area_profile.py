@@ -10,7 +10,7 @@ import sys
 import loos
 import loos.pyloos
 import numpy
-from Voronoi import *
+from loos.Voronoi import *
 
 if __name__ == '__main__':
 
