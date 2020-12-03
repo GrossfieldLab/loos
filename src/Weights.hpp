@@ -41,19 +41,24 @@ namespace loos {
         bool _has_list;
 
     public:
-        const double get();
-        const double get(const uint index);
-        uint size();
+        virtual const double get();
+        virtual const double get(const uint index);
+        virtual void set(double newWeight);
+        virtual void set(double newWeight, const uint index);
+        virtual uint size();
 
-        void normalize();
-        void accumulate();
-        void accumulate(const uint index);
-        const double totalWeight();
-        const double trajWeight();
-        void add_traj(pTraj&  traj);
-        const double operator()();
-        const double operator()(const uint index);
-
+        virtual void normalize();
+        virtual void accumulate();
+        virtual void accumulate(const uint index);
+        virtual const double totalWeight();
+        virtual const double trajWeight();
+        virtual void add_traj(pTraj&  traj);
+        virtual const double operator()();
+        virtual const double operator()(const uint index);
+        virtual void operator()(double newWeight);
+        virtual void operator()(double newWeight, const uint index);
+        virtual void operator()(std::vector<double>& newWeights);
+        
         std::vector<double> weights();
 
     private:
@@ -87,7 +92,9 @@ namespace loos {
                     {
 
         };
-        ~Weights() { };
+
+        // define virtual destructor inline to ensure vtable gets made correctly.
+        virtual ~Weights() { }
 
         uint read_weights_list(const std::string &filename);
 
