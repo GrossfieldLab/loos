@@ -156,8 +156,8 @@ int main(int argc, char *argv[]) {
 
   // parse the command line options
   string hdr = invocationHeader(argc, argv);
-  opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage());
-  opts::BasicSelection *sopts = new opts::BasicSelection("all") a;
+  opts::BasicOptions *bopts = new opts::BasicOptions(fullHelpMessage);
+  opts::BasicSelection *sopts = new opts::BasicSelection("all");
   opts::MultiTrajOptions *mtopts = new opts::MultiTrajOptions;
   opts::WeightsOptions *wopts = new opts::WeightsOptions;
   ToolOptions *topts = new ToolOptions;
@@ -167,7 +167,7 @@ int main(int argc, char *argv[]) {
   if (!options.parse(argc, argv))
     exit(-1);
 
-  cout << "# " << header << "\n";
+  cout << "# " << hdr << "\n";
   // establish system, and subsystems
   AtomicGroup model = mtopts->model;
   if (model.hasBonds()) {
