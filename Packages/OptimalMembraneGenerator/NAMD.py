@@ -85,7 +85,8 @@ class NAMD:
         for atom in heavy:
             atom.coords(spring_coord)
 
-        pdb_file = open(os.path.join(directory, self.cons_k_filename), "w")
+        filename = os.path.join(directory, self.cons_k_filename)
+        pdb_file = open(filename, "w")
         pdb_file.write(str(pdb))
         pdb_file.close()
 
