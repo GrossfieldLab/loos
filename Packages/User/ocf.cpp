@@ -45,7 +45,7 @@ public:
     return (oss.str());
   }
 
-  bool postcConditions(po::variables_map &map) {
+  bool postConditions(po::variables_map &map) {
     if (group_centroids && residue_centroids) {
       cerr << "ERROR: --group-centroids and --residue-centroids flags are "
               "mutually exclusive.\n";
@@ -122,10 +122,10 @@ int main(int argc, char *argv[]) {
   auto weights = *(wopts->weights);
   vector<greal> mean_ocfs(topts->max_offset, 0);
   greal bondlength = 0;
-  if (topts->coms) {
+  if (topts->com) {
     if (topts->group_centroids) {
       vector<AtomicGroup> chain = scope.splitByMolecule(topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chains.size()-1, 0);
+      vector<GCoord> bond_vectors(chain.size()-1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -137,12 +137,12 @@ int main(int argc, char *argv[]) {
           mean_ocfs[offset_idx] = ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
-          bondlength += bond.length() * weight / bond_vectors.size(); 
+          bondlength += bond.length()  / bond_vectors.size(); 
       }
     }
     else if (topts->residue_centroids) {
-      chain = scope.splitByResidue(topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chains.size()-1, 0);
+      vector<AtomicGroup> chain = selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
+      vector<GCoord> bond_vectors(chain.size()-1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
   } else{
     if (topts->group_centroids) {
       vector<AtomicGroup> chain = scope.splitByMolecule(topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chains.size()-1, 0);
+      vector<GCoord> bond_vectors(chain.size()-1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -178,8 +178,8 @@ int main(int argc, char *argv[]) {
       }
     }
     else if (topts->residue_centroids) {
-      chain = scope.splitByResidue(topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chains.size()-1, 0);
+      vector<AtomicGroup> chain = selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
+      vector<GCoord> bond_vectors(chain.size()-1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -195,8 +195,8 @@ int main(int argc, char *argv[]) {
 
       }
     } else {
-      chain = selectAtoms(scope, topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chains.size()-1, 0);
+      AtomicGroup chain = selectAtoms(scope, topts->bond_atom_selection);
+      vector<GCoord> bond_vectors(chain.size()-1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -214,10 +214,10 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  cout << "{\n"+indent+"\"mean ocfs\": [\n"
+  cout << "{\n"+indent+"\"mean ocfs\": [\n";
   for (auto i : mean_ocfs)
     cout << indent+indent << i / weights.totalWeight() << ",\n";
   cout << indent+"]\n";
   cout << indent+"\"mean bondlength\": " << bondlength / weights.totalWeight() << "\n";
-  cout << "}\n"
+  cout << "}\n";
 }

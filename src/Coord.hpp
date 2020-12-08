@@ -350,7 +350,7 @@ namespace loos {
     }
 
     //! Unit vector dot product (cosine of projective angle)
-    T uvdot(const Coord<t>& rhs) const {
+    T uvdot(const Coord<T>& rhs) const {
       // define quantities to accumulate with first step of loop.
       T s = v[0] * rhs.v[0];
       T d = v[0] * v[0];
@@ -364,7 +364,7 @@ namespace loos {
         // length2 of rhs
         drhs += rhs.v[i] * rhs.v[i];
       }
-      return(s / sqrt(d * drhs))
+      return(s / sqrt(d * drhs));
     }   
 
 
