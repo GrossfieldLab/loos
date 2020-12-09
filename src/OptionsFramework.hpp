@@ -34,6 +34,7 @@
 #include <exceptions.hpp>
 #include <Weights.hpp>
 #include <UniformWeight.hpp>
+#include <WeightsFromFile.hpp>
 
 
 namespace loos {
