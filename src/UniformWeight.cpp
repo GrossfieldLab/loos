@@ -48,9 +48,7 @@ const double UniformWeight::get(const uint index) { return _frameWeight; }
 //! calling nomenclature wraps get
 const double UniformWeight::operator()() { return get(); }
 
-const double UniformWeight::operator()(const uint index) { return get(index); }
-
-//! give number of frames, which is equivalent to _num_weights, as size
-uint UniformWeight::size() { return _traj->nframes(); }
+//! ignore the index, frame weights are constant.
+const double UniformWeight::operator()(const uint index) { return get(); }
 
 } // namespace loos

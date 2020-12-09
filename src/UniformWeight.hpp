@@ -5,12 +5,11 @@
 #include <loos_defs.hpp>
 
 namespace loos {
-class UniformWeight : public Weights {
+class UniformWeight : protected Weights {
 public:
   uint current_frame;
   const double get();
   const double get(const uint index);
-  uint size();
 
   void normalize();
   void accumulate();
@@ -26,18 +25,13 @@ public:
 
 private:
   double _frameWeight;
-  double _total;
-  double _totalTraj;
-  bool _has_list;
-  std::vector<double> _weights;
-  pTraj _traj;
 
 public:
   UniformWeight()
-      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false) {};
+      : current_frame(0), _frameWeight(1.0), _total(0.0) {};
 
   UniformWeight(pTraj &traj)
-      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false), _traj(traj) {};
+      : Weights(traj), current_frame(0), _frameWeight(1.0), _total(0.0) {};
 
 };
 } // namespace loos

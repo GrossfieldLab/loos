@@ -74,34 +74,6 @@ uint WeightsFromFile::read_weights_list(const std::string &filename) {
   return num_weights_files;
 }
 
-//! Normalize the weights so they sum to 1
-void WeightsFromFile::normalize() {
-  double sum = 0.0;
-  for (uint i = 0; i < _weights.size(); ++i) {
-    sum += _weights[i];
-  }
-  // TODO : Really should check for underflow to prevent div by 0
-  for (uint i = 0; i < _weights.size(); ++i) {
-    _weights[i] /= sum;
-  }
-}
-
-//! Keep track of total weight used
-void WeightsFromFile::accumulate() {
-  _total += _weights.at(_traj->currentFrame());
-  _totalTraj += _weights.at(_traj->currentFrame());
-}
-
-void WeightsFromFile::accumulate(const uint index) {
-  _total += _weights.at(index);
-  _totalTraj += _weights.at(index);
-}
-
-//! Return the totalWeight, as tracked using accumulate
-const double WeightsFromFile::totalWeight() { return _total; }
-
-//! Return the weight of the current trajectory
-const double WeightsFromFile::trajWeight() { return _totalTraj; }
 
 //! Add trajectory to class and verify size match with existing WeightsFromFile
 void WeightsFromFile::add_traj(pTraj &traj) {

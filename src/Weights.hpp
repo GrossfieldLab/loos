@@ -35,7 +35,7 @@ namespace loos {
     class Weights {
     public:
         uint current_frame;
-    private:
+    protected:
         double _total;
 
     public:
@@ -50,7 +50,6 @@ namespace loos {
         virtual void accumulate(const uint index);
         virtual const double totalWeight();
         virtual const double trajWeight();
-        virtual void add_traj(pTraj&  traj)=0;
         virtual const double operator()();
         virtual const double operator()(const uint index);
         virtual void operator()(double newWeight);
@@ -59,7 +58,7 @@ namespace loos {
         
         virtual std::vector<double> weights();
 
-    private:
+    protected:
         uint _num_weights;
         pTraj _traj;
         std::vector<double> _weights;
@@ -77,7 +76,13 @@ namespace loos {
                                         current_frame(0),                                            
                                         _weights(weightsvec),
                                         _num_weights(weightsvec.size()),
-                                        _total(0.0) { };
+                                        _total(0.0) { };            
+        //! mostly here for function-based weights instances, such as UniformWeight (constant function).
+        Weights(pTraj& traj):
+                current_frame(0),
+                _total(0.0),
+                _traj(traj),
+                _num_weights{traj->nframes()} {};
 
         Weights() : current_frame(0),
                     _total(0.0) { };
