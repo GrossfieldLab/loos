@@ -17,7 +17,6 @@ public:
   void accumulate(const uint index);
   const double totalWeight();
   const double trajWeight();
-  void add_traj(pTraj &traj);
   const double operator()();
   const double operator()(const uint index);
   // this will be built upon request.
@@ -30,20 +29,15 @@ private:
   double _total;
   double _totalTraj;
   bool _has_list;
-  std::string _filename;
   std::vector<double> _weights;
   pTraj _traj;
 
 public:
   UniformWeight()
-      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false),
-        _filename(""){};
+      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false) {};
 
   UniformWeight(pTraj &traj)
-      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false),
-        _filename(""){
-    add_traj(traj);
-  };
+      : current_frame(0), _frameWeight(1.0), _total(0.0), _has_list(false), _traj(traj) {};
 
 };
 } // namespace loos

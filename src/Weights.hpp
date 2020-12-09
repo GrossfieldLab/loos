@@ -37,8 +37,6 @@ namespace loos {
         uint current_frame;
     private:
         double _total;
-        std::string _filename;
-        bool _has_list;
 
     public:
         virtual const double get();
@@ -52,52 +50,40 @@ namespace loos {
         virtual void accumulate(const uint index);
         virtual const double totalWeight();
         virtual const double trajWeight();
-        virtual void add_traj(pTraj&  traj);
+        virtual void add_traj(pTraj&  traj)=0;
         virtual const double operator()();
         virtual const double operator()(const uint index);
         virtual void operator()(double newWeight);
         virtual void operator()(double newWeight, const uint index);
         virtual void operator()(std::vector<double>& newWeights);
         
-        std::vector<double> weights();
+        virtual std::vector<double> weights();
 
     private:
-        uint read_weights(const std::string &filename);
         uint _num_weights;
         pTraj _traj;
         std::vector<double> _weights;
-        std::map<std::string, std::string> _weights_files;
         double _totalTraj;
 
     public:
-        Weights(const std::string &filename, pTraj& traj ):
+        Weights(const std::vector<double> &weightsvec, pTraj& traj ):
+                                        _weights(weightsvec),
+                                        _num_weights(weightsvec.size()),
                                         current_frame(0),
                                         _total(0.0),
-                                        _filename(filename),
-                                        _has_list(false)
-                                       {
-            add_traj(traj);
-        };
+                                        _traj{traj} { };
 
-        Weights(const std::string &filename): current_frame(0),
-                                              _total(0.0),
-                                             _filename(filename),
-                                             _has_list(false) {
-
-        };
+        Weights(const std::vector<double> &weightsvec): 
+                                        current_frame(0),                                            
+                                        _weights(weightsvec),
+                                        _num_weights(weightsvec.size()),
+                                        _total(0.0) { };
 
         Weights() : current_frame(0),
-                    _total(0.0),
-                    _has_list(false)
-                    {
-
-        };
+                    _total(0.0) { };
 
         // define virtual destructor inline to ensure vtable gets made correctly.
         virtual ~Weights() { }
-
-        uint read_weights_list(const std::string &filename);
-
 
     };
 
