@@ -42,6 +42,7 @@ apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.c
 apps = apps + ' index_range_parser.cpp'
 apps = apps + ' Weights.cpp'
 apps = apps + ' UniformWeight.cpp'
+apps = apps + ' WeightsFromFile.cpp'
 apps = apps + ' RnaSuite.cpp'
 
 if (env['HAS_NETCDF']):

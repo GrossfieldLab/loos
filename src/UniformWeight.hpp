@@ -28,10 +28,10 @@ private:
 
 public:
   UniformWeight()
-      : current_frame(0), _frameWeight(1.0), _total(0.0) {};
+      : current_frame(0), _frameWeight(1.0) {};
 
   UniformWeight(pTraj &traj)
-      : Weights(traj), current_frame(0), _frameWeight(1.0), _total(0.0) {};
+      : Weights(traj), current_frame(0), _frameWeight(1.0) {};
 
 };
 } // namespace loos

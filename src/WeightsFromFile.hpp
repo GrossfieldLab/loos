@@ -1,5 +1,5 @@
-#if !defined(LOOS_UNIFORM_WEIGHTS_HPP)
-#define LOOS_UNIFORM_WEIGHTS_HPP
+#if !defined(LOOS_WEIGHTS_FROM_FILE_HPP)
+#define LOOS_WEIGHTS_FROM_FILE_HPP
 #include "Weights.hpp"
 #include <Trajectory.hpp>
 #include <loos_defs.hpp>
@@ -7,8 +7,6 @@
 namespace loos {
 
     class WeightsFromFile : protected Weights{
-    public:
-        uint current_frame;
     private:
         std::string _filename;
         bool _has_list;
@@ -23,27 +21,17 @@ namespace loos {
 
     public:
         WeightsFromFile(const std::string &filename, pTraj& traj ):
-                                        current_frame(0),
-                                        _total(0.0),
                                         _filename(filename),
                                         _has_list(false)
                                        {
             add_traj(traj);
         };
 
-        WeightsFromFile(const std::string &filename): current_frame(0),
-                                              _total(0.0),
+        WeightsFromFile(const std::string &filename): 
                                              _filename(filename),
-                                             _has_list(false) {
+                                             _has_list(false) { };
 
-        };
-
-        WeightsFromFile() : current_frame(0),
-                    _total(0.0),
-                    _has_list(false)
-                    {
-
-        };
+        WeightsFromFile() : _has_list(false) { };
 
         // define virtual destructor inline to ensure vtable gets made correctly.
         virtual ~WeightsFromFile() { }
@@ -51,6 +39,6 @@ namespace loos {
         uint read_weights_list(const std::string &filename);
 
     };
-}
+} // namespace loos
 
 #endif
