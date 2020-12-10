@@ -23,11 +23,6 @@ void UniformWeight::normalize() {
   }
 }
 
-//! return totalWeight used
-const double UniformWeight::totalWeight() { return _total; }
-
-//! return the weight of current trajectory
-const double UniformWeight::trajWeight() { return _totalTraj; }
 
 //! return a vector with the number of weights in it
 std::vector<double> UniformWeight::weights() {

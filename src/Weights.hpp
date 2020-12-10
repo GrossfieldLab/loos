@@ -37,7 +37,11 @@ public:
   uint current_frame;
 
 protected:
+  std::vector<double> _weights;
+  pTraj _traj;
+  uint _num_weights;
   double _total;
+  double _totalTraj;
 
 public:
   // all of these public methods have a definition
@@ -59,18 +63,12 @@ public:
   virtual void operator()(std::vector<double> &newWeights);
 
   virtual std::vector<double> weights();
-  virtual void add_traj(pTraj &traj)=0;
-
-protected:
-  uint _num_weights;
-  pTraj _traj;
-  std::vector<double> _weights;
-  double _totalTraj;
+  virtual void add_traj(pTraj &traj) = 0;
 
 public:
   Weights(const std::vector<double> &weightsvec, pTraj &traj)
-      : _weights(weightsvec), _num_weights(weightsvec.size()), current_frame(0),
-        _total(0.0), _traj{traj} {};
+      : current_frame(0), _weights(weightsvec), _traj{traj},
+        _num_weights(weightsvec.size()), _total(0.0) {};
 
   Weights(const std::vector<double> &weightsvec)
       : current_frame(0), _weights(weightsvec), _num_weights(weightsvec.size()),
@@ -78,8 +76,8 @@ public:
   //! mostly here for function-based weights instances, such as UniformWeight
   //! (constant function).
   Weights(pTraj &traj)
-      : current_frame(0), _total(0.0),
-        _traj(traj), _num_weights{traj->nframes()} {};
+      : current_frame(0), _traj(traj), _num_weights{traj->nframes()},
+        _total(0.0){};
 
   Weights() : current_frame(0), _total(0.0){};
 

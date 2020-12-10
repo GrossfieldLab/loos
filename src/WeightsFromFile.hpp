@@ -1,5 +1,6 @@
 #if !defined(LOOS_WEIGHTS_FROM_FILE_HPP)
 #define LOOS_WEIGHTS_FROM_FILE_HPP
+
 #include "Weights.hpp"
 #include <Trajectory.hpp>
 #include <loos_defs.hpp>

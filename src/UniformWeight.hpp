@@ -1,5 +1,6 @@
 #if !defined(LOOS_UNIFORM_WEIGHTS_HPP)
 #define LOOS_UNIFORM_WEIGHTS_HPP
+
 #include "Weights.hpp"
 #include <Trajectory.hpp>
 #include <loos_defs.hpp>
@@ -14,8 +15,6 @@ public:
   void normalize();
   void accumulate();
   void accumulate(const uint index);
-  const double totalWeight();
-  const double trajWeight();
   const double operator()();
   const double operator()(const uint index);
   // this will be built upon request.
