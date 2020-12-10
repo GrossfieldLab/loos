@@ -95,11 +95,12 @@ inline void Weights::operator()(std::vector<double> &newWeights) {
   _weights = std::move(newWeights);
 }
 
-// //! bind the provided pTraj to this instance of Weights 
-// void Weights::add_traj(pTraj &traj){
-//   _traj = traj;
-//   _totalTraj = 0.0;
-// }
+//! bind the provided pTraj to this instance of Weights 
+void Weights::add_traj(pTraj &traj){
+  _traj = traj;
+  _totalTraj = 0.0;
+}
+
 //! Return the number of weights
 inline uint Weights::size() { return _num_weights; }
 

@@ -21,7 +21,6 @@ public:
   // will be a trajlength vector of 1.0s,
   // so don't ask if you don't need.
   std::vector<double> weights();
-  void add_traj(pTraj &traj);
 private:
   double _frameWeight;
 

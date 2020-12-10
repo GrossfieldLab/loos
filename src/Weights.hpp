@@ -47,15 +47,15 @@ public:
   // all of these public methods have a definition
   virtual const double get();
   virtual const double get(const uint index);
-  virtual void set(double newWeight);
-  virtual void set(double newWeight, const uint index);
-  virtual uint size();
+  void set(double newWeight);
+  void set(double newWeight, const uint index);
+  uint size();
 
   virtual void normalize();
   virtual void accumulate();
   virtual void accumulate(const uint index);
-  virtual const double totalWeight();
-  virtual const double trajWeight();
+  const double totalWeight();
+  const double trajWeight();
   virtual const double operator()();
   virtual const double operator()(const uint index);
   virtual void operator()(double newWeight);
@@ -63,7 +63,7 @@ public:
   virtual void operator()(std::vector<double> &newWeights);
 
   virtual std::vector<double> weights();
-  virtual void add_traj(pTraj &traj) = 0;
+  virtual void add_traj(pTraj &traj);
 
 public:
   Weights(const std::vector<double> &weightsvec, pTraj &traj)
