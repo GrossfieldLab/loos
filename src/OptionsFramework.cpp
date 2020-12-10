@@ -589,17 +589,16 @@ bool WeightsOptions::postConditions(po::variables_map &map) {
   }
   if (map.count("weights")) {
     has_weights = true;
-    pWeights = std::unique_ptr<Weights>(
-        std::make_unique<WeightsFromFile>(weights_name));
+    pWeights = std::make_unique<WeightsFromFile>(weights_name);
   } else if (map.count("weights-list")) {
     has_weights = true;
     WeightsFromFile weights;
     weights.read_weights_list(list_name);
-    pWeights = std::unique_ptr<Weights>(std::make_unique<WeightsFromFile>(weights));
+    pWeights = std::make_unique<WeightsFromFile>(weights);
   } else {
     has_weights = false;
     // Default to the uniform weight class if no weights-file specified.
-    pWeights = std::unique_ptr<Weights>(std::make_unique<UniformWeight>(UniformWeight()));
+    pWeights = std::make_unique<UniformWeight>(UniformWeight());
   }
 
   return true;
