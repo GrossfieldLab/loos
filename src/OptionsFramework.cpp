@@ -589,6 +589,8 @@ bool WeightsOptions::postConditions(po::variables_map &map) {
   }
   if (map.count("weights")) {
     has_weights = true;
+    // Note that here pWeights is of type uniqe_ptr& Weights, so implicit
+    // conversion performed.
     pWeights = std::make_unique<WeightsFromFile>(weights_name);
   } else if (map.count("weights-list")) {
     has_weights = true;
