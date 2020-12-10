@@ -21,7 +21,6 @@
 */
 
 #include "WeightsFromFile.hpp"
-#include "Weights.hpp"
 #include <sstream>
 
 namespace loos {

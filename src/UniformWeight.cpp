@@ -51,4 +51,10 @@ const double UniformWeight::operator()() { return get(); }
 //! ignore the index, frame weights are constant.
 const double UniformWeight::operator()(const uint index) { return get(); }
 
+//! bind the provided pTraj to this instance of Weights 
+void UniformWeight::add_traj(pTraj &traj){
+  _traj = traj;
+  _totalTraj = 0.0;
+}
+
 } // namespace loos

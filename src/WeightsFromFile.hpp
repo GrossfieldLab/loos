@@ -12,7 +12,8 @@ namespace loos {
         bool _has_list;
 
     public:
-        virtual void add_traj(pTraj&  traj);
+        // rely on this to initialize base class.
+        void add_traj(pTraj &traj);
         
 
     private:

@@ -59,8 +59,7 @@ public:
   virtual void operator()(std::vector<double> &newWeights);
 
   virtual std::vector<double> weights();
-  // all of these public methods are pure virtual
-  virtual void add_traj(pTraj &traj);
+  virtual void add_traj(pTraj &traj)=0;
 
 protected:
   uint _num_weights;
