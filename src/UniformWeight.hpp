@@ -5,7 +5,7 @@
 #include <loos_defs.hpp>
 
 namespace loos {
-class UniformWeight : protected Weights {
+class UniformWeight : public Weights {
 public:
   uint current_frame;
   const double get();
@@ -22,7 +22,6 @@ public:
   // will be a trajlength vector of 1.0s,
   // so don't ask if you don't need.
   std::vector<double> weights();
-
 private:
   double _frameWeight;
 

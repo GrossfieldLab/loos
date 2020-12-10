@@ -7,7 +7,7 @@ void UniformWeight::accumulate() {
   _total += _frameWeight;
   _totalTraj += _frameWeight;
 }
-//! accumulate the 'weight' used so far. 
+//! accumulate the 'weight' used so far.
 //! Do nothing with index, because weights are constant.
 void UniformWeight::accumulate(const uint index) {
   _total += _frameWeight;

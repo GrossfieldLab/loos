@@ -6,13 +6,13 @@
 
 namespace loos {
 
-    class WeightsFromFile : protected Weights{
+    class WeightsFromFile : public Weights{
     private:
         std::string _filename;
         bool _has_list;
 
     public:
-        void add_traj(pTraj&  traj);
+        virtual void add_traj(pTraj&  traj);
         
 
     private:

@@ -3,7 +3,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2020, Tod D. Romo, Alan Grossfield, Louis Smit 
+  Copyright (c) 2020, Tod D. Romo, Alan Grossfield, Louis Smit
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -25,7 +25,8 @@
 #include <sstream>
 
 namespace loos {
-//! WeightsFromFile class to handle reweighting values computed from a trajectory
+//! WeightsFromFile class to handle reweighting values computed from a
+//! trajectory
 uint WeightsFromFile::read_weights(const std::string &filename) {
   std::ifstream ifs(filename.c_str());
   if (!ifs) {
@@ -74,7 +75,6 @@ uint WeightsFromFile::read_weights_list(const std::string &filename) {
   return num_weights_files;
 }
 
-
 //! Add trajectory to class and verify size match with existing WeightsFromFile
 void WeightsFromFile::add_traj(pTraj &traj) {
   _traj = traj;
@@ -94,49 +94,4 @@ void WeightsFromFile::add_traj(pTraj &traj) {
   }
 }
 
-//! Return the weight for the current frame of the trajectory
-const double WeightsFromFile::get() {
-  current_frame = _traj->currentFrame();
-  return _weights.at(current_frame);
-}
-
-//! Return the weight for frame index of the trajectory
-const double WeightsFromFile::get(const uint index) { return _weights.at(index); }
-
-//! calling nomenclature wraps get
-const double WeightsFromFile::operator()() { return get(); }
-
-const double WeightsFromFile::operator()(const uint index) { return get(index); }
-
-//! Bind a new weight to the current frame
-void WeightsFromFile::set(double newWeight) { _weights.at(current_frame) = newWeight; }
-
-//! Bind a new weight to a particular frame
-void WeightsFromFile::set(double newWeight, const uint index) {
-  _weights.at(index) = newWeight;
-}
-
-//! binding nomenclature wraps set
-void WeightsFromFile::operator()(double newWeight) { set(newWeight); }
-void WeightsFromFile::operator()(double newWeight, const uint index) {
-  set(newWeight, index);
-}
-
-//! set all weights from passed vector
-void WeightsFromFile::operator()(std::vector<double> &newWeights) {
-  if (_weights.size() != newWeights.size())
-    throw(LOOSError(std::string(
-      "Number of weights in class is " + std::to_string(_weights.size())
-      + " number inserted is " + std::to_string(newWeights.size())
-      + " these must match."
-    )));
-  // note that operator= for stl::vectors does in fact copy their contents.
-  _weights = newWeights;
-}
-
-//! Return the number of weights
-uint WeightsFromFile::size() { return _num_weights; }
-
-//! Return the vector of weights
-std::vector<double> WeightsFromFile::weights() { return _weights; }
 } // namespace loos

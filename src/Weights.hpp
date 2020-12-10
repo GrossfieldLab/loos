@@ -22,76 +22,72 @@
 #if !defined(LOOS_WEIGHTS_HPP)
 #define LOOS_WEIGHTS_HPP
 
-#include <loos_defs.hpp>
 #include <Trajectory.hpp>
 #include <exceptions.hpp>
 #include <iostream>
-#include <string>
-#include <stdexcept>
+#include <loos_defs.hpp>
 #include <map>
+#include <stdexcept>
+#include <string>
 
 namespace loos {
 
-    class Weights {
-    public:
-        uint current_frame;
-    protected:
-        double _total;
+class Weights {
+public:
+  uint current_frame;
 
-    public:
-        virtual const double get();
-        virtual const double get(const uint index);
-        virtual void set(double newWeight);
-        virtual void set(double newWeight, const uint index);
-        virtual uint size();
+protected:
+  double _total;
 
-        virtual void normalize();
-        virtual void accumulate();
-        virtual void accumulate(const uint index);
-        virtual const double totalWeight();
-        virtual const double trajWeight();
-        virtual const double operator()();
-        virtual const double operator()(const uint index);
-        virtual void operator()(double newWeight);
-        virtual void operator()(double newWeight, const uint index);
-        virtual void operator()(std::vector<double>& newWeights);
-        
-        virtual std::vector<double> weights();
+public:
+  // all of these public methods have a definition
+  virtual const double get();
+  virtual const double get(const uint index);
+  virtual void set(double newWeight);
+  virtual void set(double newWeight, const uint index);
+  virtual uint size();
 
-    protected:
-        uint _num_weights;
-        pTraj _traj;
-        std::vector<double> _weights;
-        double _totalTraj;
+  virtual void normalize();
+  virtual void accumulate();
+  virtual void accumulate(const uint index);
+  virtual const double totalWeight();
+  virtual const double trajWeight();
+  virtual const double operator()();
+  virtual const double operator()(const uint index);
+  virtual void operator()(double newWeight);
+  virtual void operator()(double newWeight, const uint index);
+  virtual void operator()(std::vector<double> &newWeights);
 
-    public:
-        Weights(const std::vector<double> &weightsvec, pTraj& traj ):
-                                        _weights(weightsvec),
-                                        _num_weights(weightsvec.size()),
-                                        current_frame(0),
-                                        _total(0.0),
-                                        _traj{traj} { };
+  virtual std::vector<double> weights();
+  // all of these public methods are pure virtual
+  virtual void add_traj(pTraj &traj);
 
-        Weights(const std::vector<double> &weightsvec): 
-                                        current_frame(0),                                            
-                                        _weights(weightsvec),
-                                        _num_weights(weightsvec.size()),
-                                        _total(0.0) { };            
-        //! mostly here for function-based weights instances, such as UniformWeight (constant function).
-        Weights(pTraj& traj):
-                current_frame(0),
-                _total(0.0),
-                _traj(traj),
-                _num_weights{traj->nframes()} {};
+protected:
+  uint _num_weights;
+  pTraj _traj;
+  std::vector<double> _weights;
+  double _totalTraj;
 
-        Weights() : current_frame(0),
-                    _total(0.0) { };
+public:
+  Weights(const std::vector<double> &weightsvec, pTraj &traj)
+      : _weights(weightsvec), _num_weights(weightsvec.size()), current_frame(0),
+        _total(0.0), _traj{traj} {};
 
-        // define virtual destructor inline to ensure vtable gets made correctly.
-        virtual ~Weights() { }
+  Weights(const std::vector<double> &weightsvec)
+      : current_frame(0), _weights(weightsvec), _num_weights(weightsvec.size()),
+        _total(0.0){};
+  //! mostly here for function-based weights instances, such as UniformWeight
+  //! (constant function).
+  Weights(pTraj &traj)
+      : current_frame(0), _total(0.0),
+        _traj(traj), _num_weights{traj->nframes()} {};
 
-    };
+  Weights() : current_frame(0), _total(0.0){};
 
-}
+  // define virtual destructor inline to ensure vtable gets made correctly.
+  virtual ~Weights() {}
+};
+
+} // namespace loos
 
 #endif
