@@ -3,7 +3,8 @@
 ![Build Status](https://github.com/GrossfieldLab/loos/workflows/CI/badge.svg)
 
 ## Getting Help
-* Raise an issue here on GitHub.
+* Raise an [issue](https://github.com/GrossfieldLab/loos/issues) here on GitHub.
+* Ask a question on the GitHub [discussion board](https://github.com/GrossfieldLab/loos/discussions)
 * You can also contact us directly at loos.maintainer@gmail.com
 
 ## Documentation
