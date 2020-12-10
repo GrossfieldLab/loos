@@ -168,6 +168,7 @@ Packages/ElasticNetworks/enmovie
 Packages/ElasticNetworks/anm
 Packages/ElasticNetworks/gnm
 Packages/ElasticNetworks/eigenflucc
+Packages/User/ocf
 Packages/User/model_calc
 Packages/User/simple_model_transform
 Packages/User/simple_model_calc
@@ -199,6 +200,7 @@ Packages/DensityTools/contained
 Packages/DensityTools/gridavg
 Packages/DensityTools/gridgauss
 Tools/renum-pdb
+Tools/ocf
 Tools/merge-traj
 Tools/transition_contacts
 Tools/bounding

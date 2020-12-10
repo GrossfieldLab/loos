@@ -75,7 +75,7 @@ inline greal ocf_at_offset(uint offset, vector<GCoord>& bond_vectors){
 
 inline void ag_bond_vectors(AtomicGroup & chain, vector<GCoord>& bond_vectors){
   for (auto i = 0; i < chain.size() - 1; i++)
-    bond_vectors[i] = chain[i]->coords() - chain[i]->coords(); 
+    bond_vectors[i] = chain[i]->coords() - chain[i+1]->coords(); 
 }
 
 inline void centroid_bond_vectors(vector<AtomicGroup>& chain, vector<GCoord>& bond_vectors){
@@ -118,8 +118,10 @@ int main(int argc, char *argv[]) {
         "infer-connectivity has not been set to a positive value.\n"));
   AtomicGroup scope = selectAtoms(model, sopts->selection);
   pTraj traj = mtopts->trajectory;
+  // move unique ptr to Weights into main function ownership for ease of use.
+  auto weights = move(wopts->pWeights);
   // Attach trajectory to weights
-  auto weights = *(wopts->weights);
+  weights->add_traj(traj);
   vector<greal> mean_ocfs(topts->max_offset, 0);
   greal bondlength = 0;
   if (topts->com) {
@@ -130,11 +132,11 @@ int main(int argc, char *argv[]) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
         // get frame weights; defaults to zero
-        const double weight = weights.get();
-        weights.accumulate();
+        const double weight = weights->get();
+        weights->accumulate();
         com_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] = ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
           bondlength += bond.length()  / bond_vectors.size(); 
@@ -147,11 +149,11 @@ int main(int argc, char *argv[]) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
         // get frame weights; defaults to zero
-        const double weight = weights.get();
-        weights.accumulate();
+        const double weight = weights->get();
+        weights->accumulate();
         com_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] = ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
           bondlength += bond.length() * weight / bond_vectors.size(); 
@@ -166,11 +168,11 @@ int main(int argc, char *argv[]) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
         // get frame weights; defaults to zero
-        const double weight = weights.get();
-        weights.accumulate();
+        const double weight = weights->get();
+        weights->accumulate();
         centroid_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] = ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
           bondlength += bond.length() * weight / bond_vectors.size(); 
@@ -184,11 +186,11 @@ int main(int argc, char *argv[]) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
         // get frame weights; defaults to zero
-        const double weight = weights.get();
-        weights.accumulate();
+        const double weight = weights->get();
+        weights->accumulate();
         centroid_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] = ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
           bondlength += bond.length() * weight / bond_vectors.size(); 
@@ -201,11 +203,11 @@ int main(int argc, char *argv[]) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
         // get frame weights; defaults to zero
-        const double weight = weights.get();
-        weights.accumulate();
+        const double weight = weights->get();
+        weights->accumulate();
         ag_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] = ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
           bondlength += bond.length() * weight / bond_vectors.size(); 
@@ -216,8 +218,8 @@ int main(int argc, char *argv[]) {
   }
   cout << "{\n"+indent+"\"mean ocfs\": [\n";
   for (auto i : mean_ocfs)
-    cout << indent+indent << i / weights.totalWeight() << ",\n";
+    cout << indent+indent << i / weights->totalWeight() << ",\n";
   cout << indent+"]\n";
-  cout << indent+"\"mean bondlength\": " << bondlength / weights.totalWeight() << "\n";
+  cout << indent+"\"mean bondlength\": " << bondlength / weights->totalWeight() << "\n";
   cout << "}\n";
 }
