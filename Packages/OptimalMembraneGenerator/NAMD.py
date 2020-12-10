@@ -78,13 +78,15 @@ class NAMD:
 
     def write_restraintfile(self, directory, atomicgroup, spring=10.0):
         pdb = loos.PDB.fromAtomicGroup(atomicgroup.copy())
+        spring_coord = loos.GCoord(spring, 0., 0.)
         for atom in pdb:
-            atom.coords().zero()
+            atom.coords(loos.GCoord(0., 0., 0.))
         heavy = loos.selectAtoms(pdb, '!(name =~ "^H")')
         for atom in heavy:
-            atom.coords().x(spring)
+            atom.coords(spring_coord)
 
-        pdb_file = open(os.path.join(directory, self.cons_k_filename), "w")
+        filename = os.path.join(directory, self.cons_k_filename)
+        pdb_file = open(filename, "w")
         pdb_file.write(str(pdb))
         pdb_file.close()
 

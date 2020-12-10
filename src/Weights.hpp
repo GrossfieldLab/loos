@@ -22,85 +22,69 @@
 #if !defined(LOOS_WEIGHTS_HPP)
 #define LOOS_WEIGHTS_HPP
 
-#include <loos_defs.hpp>
 #include <Trajectory.hpp>
 #include <exceptions.hpp>
 #include <iostream>
-#include <string>
-#include <stdexcept>
+#include <loos_defs.hpp>
 #include <map>
+#include <stdexcept>
+#include <string>
 
 namespace loos {
 
-    class Weights {
-    public:
-        uint current_frame;
-    private:
-        double _total;
-        std::string _filename;
-        bool _has_list;
+class Weights {
+public:
+  uint current_frame;
 
-    public:
-        virtual const double get();
-        virtual const double get(const uint index);
-        virtual void set(double newWeight);
-        virtual void set(double newWeight, const uint index);
-        virtual uint size();
+protected:
+  std::vector<double> _weights;
+  pTraj _traj;
+  uint _num_weights;
+  double _total;
+  double _totalTraj;
 
-        virtual void normalize();
-        virtual void accumulate();
-        virtual void accumulate(const uint index);
-        virtual const double totalWeight();
-        virtual const double trajWeight();
-        virtual void add_traj(pTraj&  traj);
-        virtual const double operator()();
-        virtual const double operator()(const uint index);
-        virtual void operator()(double newWeight);
-        virtual void operator()(double newWeight, const uint index);
-        virtual void operator()(std::vector<double>& newWeights);
-        
-        std::vector<double> weights();
+public:
+  // all of these public methods have a definition
+  virtual const double get();
+  virtual const double get(const uint index);
+  virtual void set(double newWeight);
+  virtual void set(double newWeight, const uint index);
+  virtual uint size();
 
-    private:
-        uint read_weights(const std::string &filename);
-        uint _num_weights;
-        pTraj _traj;
-        std::vector<double> _weights;
-        std::map<std::string, std::string> _weights_files;
-        double _totalTraj;
+  virtual void normalize();
+  virtual void accumulate();
+  virtual void accumulate(const uint index);
+  virtual const double totalWeight();
+  virtual const double trajWeight();
+  virtual const double operator()();
+  virtual const double operator()(const uint index);
+  virtual void operator()(double newWeight);
+  virtual void operator()(double newWeight, const uint index);
+  virtual void operator()(std::vector<double> &newWeights);
 
-    public:
-        Weights(const std::string &filename, pTraj& traj ):
-                                        current_frame(0),
-                                        _total(0.0),
-                                        _filename(filename),
-                                        _has_list(false)
-                                       {
-            add_traj(traj);
-        };
+  virtual std::vector<double> weights();
+  virtual void add_traj(pTraj &traj);
 
-        Weights(const std::string &filename): current_frame(0),
-                                              _total(0.0),
-                                             _filename(filename),
-                                             _has_list(false) {
+public:
+  Weights(const std::vector<double> &weightsvec, pTraj &traj)
+      : current_frame(0), _weights(weightsvec), _traj{traj},
+        _num_weights(weightsvec.size()), _total(0.0) {};
 
-        };
+  Weights(const std::vector<double> &weightsvec)
+      : current_frame(0), _weights(weightsvec), _num_weights(weightsvec.size()),
+        _total(0.0){};
+  //! mostly here for function-based weights instances, such as UniformWeight
+  //! (constant function).
+  Weights(pTraj &traj)
+      : current_frame(0), _traj(traj), _num_weights{traj->nframes()},
+        _total(0.0){};
 
-        Weights() : current_frame(0),
-                    _total(0.0),
-                    _has_list(false)
-                    {
+  Weights() : current_frame(0), _total(0.0){};
 
-        };
+  // define virtual destructor inline to ensure vtable gets made correctly.
+  virtual ~Weights() {}
+};
 
-        // define virtual destructor inline to ensure vtable gets made correctly.
-        virtual ~Weights() { }
-
-        uint read_weights_list(const std::string &filename);
-
-
-    };
-
-}
+} // namespace loos
 
 #endif

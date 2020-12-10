@@ -34,6 +34,7 @@
 #include <exceptions.hpp>
 #include <Weights.hpp>
 #include <UniformWeight.hpp>
+#include <WeightsFromFile.hpp>
 
 
 namespace loos {
@@ -837,7 +838,7 @@ namespace loos {
 
       std::string weights_name;
       std::string list_name;
-      std::unique_ptr<Weights> weights;
+      std::unique_ptr<Weights> pWeights;
       bool has_weights;
 
     private:

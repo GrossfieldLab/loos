@@ -108,7 +108,7 @@ public:
         {
         reselect_leaflet = true;
         }
-    if ( (timeseries_interval > 0) && vm.count("weights"))
+    if ( (timeseries_interval > 0) && vm.count("pWeights"))
         {
         cerr << "Cannot specify reweighting and time series at the same time"
              << endl;
@@ -321,7 +321,7 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 // Attach trajectory to weights
 if (wopts->has_weights)
     {
-    wopts->weights->add_traj(traj);
+    wopts->pWeights->add_traj(traj);
     }
 
 double bin_width = (hist_max - hist_min)/num_bins;
@@ -414,8 +414,8 @@ for (uint index = 0; index<framecnt; ++index)
     double weight = 1.0;
     if (wopts->has_weights)
         {
-        weight = wopts->weights->get();
-        wopts->weights->accumulate();
+        weight = wopts->pWeights->get();
+        wopts->pWeights->accumulate();
         }
 
     GCoord box = system.periodicBox();
@@ -610,16 +610,16 @@ for (int i = 0; i < num_bins; i++)
                         (norm*(upper_expected + lower_expected));
     if (wopts->has_weights)
         {
-        upper /= wopts->weights->totalWeight();
-        lower /= wopts->weights->totalWeight();
-        total /= wopts->weights->totalWeight();
+        upper /= wopts->pWeights->totalWeight();
+        lower /= wopts->pWeights->totalWeight();
+        total /= wopts->pWeights->totalWeight();
         }
 
     double cum_increment = (hist_upper_total[i] + hist_lower_total[i]) /
                                     group1.size();
     if (wopts->has_weights)
         {
-        cum_increment *= framecnt / wopts->weights->totalWeight();
+        cum_increment *= framecnt / wopts->pWeights->totalWeight();
         }
 
     cum += cum_increment;
