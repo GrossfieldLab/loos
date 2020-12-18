@@ -26,7 +26,7 @@ namespace loos {
 //! Weights class to handle reweighting values computed from a trajectory
 
 //! Normalize the weights so they sum to 1
-void Weights::normalize() {
+inline void Weights::normalize() {
   double sum = 0.0;
   for (uint i = 0; i < _weights.size(); ++i) {
     sum += _weights[i];
@@ -38,30 +38,30 @@ void Weights::normalize() {
 }
 
 //! Keep track of total weight used
-void Weights::accumulate() {
+inline void Weights::accumulate() {
   _total += _weights.at(_traj->currentFrame());
   _totalTraj += _weights.at(_traj->currentFrame());
 }
 
-void Weights::accumulate(const uint index) {
+inline void Weights::accumulate(const uint index) {
   _total += _weights.at(index);
   _totalTraj += _weights.at(index);
 }
 
 //! Return the totalWeight, as tracked using accumulate
-const double Weights::totalWeight() { return _total; }
+inline const double Weights::totalWeight() { return _total; }
 
 //! Return the weight of the current trajectory
-const double Weights::trajWeight() { return _totalTraj; }
+inline const double Weights::trajWeight() { return _totalTraj; }
 
 //! Return the weight for the current frame of the trajectory
-const double Weights::get() {
+inline const double Weights::get() {
   current_frame = _traj->currentFrame();
   return _weights.at(current_frame);
 }
 
 //! Return the weight for frame index of the trajectory
-const double Weights::get(const uint index) { return _weights.at(index); }
+inline const double Weights::get(const uint index) { return _weights.at(index); }
 
 //! calling nomenclature wraps get
 inline const double Weights::operator()() { return get(); }
