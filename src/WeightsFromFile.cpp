@@ -75,7 +75,7 @@ uint WeightsFromFile::read_weights_list(const std::string &filename) {
 }
 
 //! Add trajectory to class and verify size match with existing WeightsFromFile
-void WeightsFromFile::add_traj(pTraj &traj) {
+void WeightsFromFile::addTraj(pTraj &traj) {
   _traj = traj;
   // If we have a list of weights files, read the correct one
   // TODO: need to check to make sure the filename is in the map

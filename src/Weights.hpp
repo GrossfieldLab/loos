@@ -63,7 +63,7 @@ public:
   virtual void operator()(std::vector<double> &newWeights);
 
   virtual std::vector<double> weights();
-  virtual void add_traj(pTraj &traj);
+  virtual void addTraj(pTraj &traj);
 
 public:
   Weights(const std::vector<double> &weightsvec, pTraj &traj)

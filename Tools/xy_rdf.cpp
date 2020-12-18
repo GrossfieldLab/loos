@@ -321,7 +321,7 @@ if (!(system.isPeriodic() || traj->hasPeriodicBox()))
 // Attach trajectory to weights
 if (wopts->has_weights)
     {
-    wopts->pWeights->add_traj(traj);
+    wopts->pWeights->addTraj(traj);
     }
 
 double bin_width = (hist_max - hist_min)/num_bins;
