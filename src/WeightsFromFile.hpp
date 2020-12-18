@@ -14,7 +14,7 @@ namespace loos {
 
     public:
         // rely on this to initialize base class.
-        void add_traj(pTraj &traj);
+        void addTraj(pTraj &traj);
         
 
     private:
@@ -26,7 +26,7 @@ namespace loos {
                                         _filename(filename),
                                         _has_list(false)
                                        {
-            add_traj(traj);
+            addTraj(traj);
         };
 
         WeightsFromFile(const std::string &filename): 

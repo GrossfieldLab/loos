@@ -45,7 +45,7 @@ protected:
 
 public:
   // all of these public methods have a definition
-  virtual void add_traj(pTraj &traj);
+  virtual void addTraj(pTraj &traj);
   virtual const double get();
   virtual const double get(const uint index);
   virtual void set(double newWeight);
