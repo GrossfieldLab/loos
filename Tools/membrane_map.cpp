@@ -285,8 +285,6 @@ int main(int argc, char *argv[])
     traj->readFrame(frames[0]);
     traj->updateGroupCoords(system);
 
-
-
     AtomicGroup align_to;
     AtomicGroup reference;
     if (topts->has_align)
@@ -333,9 +331,26 @@ int main(int argc, char *argv[])
         case VECTOR:
             calculator = new CalcOrientVector(xbins, ybins);
             break;
+        case DIPOLE:
+            calculator = new CalcDipole(xbins, ybins);
+            break;
         default: // this can't happen, set in option handling
             cerr << "ERROR: unknown calculation type" << endl;
             exit(-1);
+        }
+
+    // If we're doing dipole, we need charges
+    if (topts->type == DIPOLE)
+        {
+        // check the first atom to see if charges were set
+        if (!system[0]->checkProperty(Atom::chargebit))
+            {
+            cerr << "Dipole calculation require a model with charges"
+                 << endl;
+            cerr << "Exiting..." << endl;
+            exit(-1);
+            }
+
         }
 
     // We don't want the transformation to tilt the membrane, so we'll
