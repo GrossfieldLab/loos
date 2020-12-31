@@ -360,6 +360,10 @@ public:
       box_override = 1;
     }
 
+    if ( !(scanf_spec.empty() || regex_spec.empty() )) {
+        sort_flag = true;
+    }
+
     if (sort_flag) {
       if (!scanf_spec.empty()) {
         traj_names = sortNamesByFormat(traj_names, ScanfFmt(scanf_spec));
