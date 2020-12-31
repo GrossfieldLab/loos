@@ -1,8 +1,8 @@
 ### Some files to ignore in LOOS
 
-# If you're trying to add something and it's not working, check out the 
-# directory level ignore globs below. Also, 
-# 'git check-ignore -v path/to/frustratingly/ignored/file' 
+# If you're trying to add something and it's not working, check out the
+# directory level ignore globs below. Also,
+# 'git check-ignore -v path/to/frustratingly/ignored/file'
 # is your friend.
 
 
@@ -89,6 +89,10 @@ Packages/*/*/*/
 !**.hpp
 !**.py
 !**.pl
+
+# don't ignore any markdown files, eg README.md
+!**.md
+
 # don't ignore swig headers anywhere
 !**.i
 
