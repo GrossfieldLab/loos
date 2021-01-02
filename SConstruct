@@ -89,6 +89,7 @@ if "CONDA_PREFIX" in os.environ:
                       options=opts,
                       toolpath='.',
                       SWIGFLAGS=swigflags,
+                      SWIGCXXFILESUFFIX='.cc',
                       SHLIBPREFIX=""
                       )
     env["CONDA_PREFIX"] = os.environ["CONDA_PREFIX"]
@@ -98,6 +99,7 @@ else:
                       options=opts,
                       toolpath='.',
                       SWIGFLAGS=swigflags,
+                      SWIGCXXFILESUFFIX='.cc',
                       SHLIBPREFIX=""
                       )
     env.USING_CONDA = False

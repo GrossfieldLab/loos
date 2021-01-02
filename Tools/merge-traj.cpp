@@ -114,6 +114,12 @@ public:
              return false;
              }
 
+         // regex or scanf options should turn on sort
+         if ( (scanf_spec.length() != 0) ||
+              (regex_spec.length() != 0) ) {
+             sort_flag = true;
+          }
+
 
       return(true);
       }
