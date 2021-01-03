@@ -41,6 +41,8 @@ apps = apps + ' charmm.cpp AtomicNumberDeducer.cpp OptionsFramework.cpp revision
 apps = apps + ' utils_random.cpp utils_structural.cpp LineReader.cpp xtcwriter.cpp alignment.cpp MultiTraj.cpp'
 apps = apps + ' index_range_parser.cpp'
 apps = apps + ' Weights.cpp'
+apps = apps + ' UniformWeight.cpp'
+apps = apps + ' WeightsFromFile.cpp'
 apps = apps + ' RnaSuite.cpp'
 
 if (env['HAS_NETCDF']):
@@ -72,7 +74,7 @@ hdr += ' xdr.hpp xtc.hpp gro.hpp trr.hpp exceptions.hpp MatrixOps.hpp sorting.hp
 hdr += ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 hdr += ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
 hdr += ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
-hdr += ' RnaSuite.hpp'
+hdr += ' RnaSuite.hpp Weights.hpp UniformWeight.hpp WeightsFromFile.hpp'
 
 if (env['HAS_NETCDF']):
     hdr += ' amber_netcdf.hpp'
