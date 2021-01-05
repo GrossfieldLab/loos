@@ -1,3 +1,12 @@
+2021-01-05  Alan Grossfield <alan>
+	*  Merged dipole computation into membrane_map
+	
+2020-11-24  Alan Grossfield/Ashlin James Poruthoor
+    * Merged in logistic and hard contact methods for AtomicGroups
+
+2020-10-19  Alan Grossfield <alan>
+	* Merge branch fixing incorrect bonds in add_molecule.py
+
 2020-10-05  Alan Grossfield <alan>
 	* Fixed bug in gmxdump2pdb, where box units were nm instead of Ang
 
