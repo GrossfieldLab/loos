@@ -1,6 +1,9 @@
 2021-01-05  Alan Grossfield <alan>
 	*  Merged dipole computation into membrane_map
-	
+
+2021-01-03  Alan Grossfield <alan>
+	* Merged in new Weights class from Louis Smith
+
 2020-11-24  Alan Grossfield/Ashlin James Poruthoor
     * Merged in logistic and hard contact methods for AtomicGroups
 
