@@ -595,7 +595,7 @@ bool WeightsOptions::postConditions(po::variables_map &map) {
   } else if (map.count("weights-list")) {
     has_weights = true;
     WeightsFromFile weights;
-    weights.read_weights_list(list_name);
+    weights.readWeightsList(list_name);
     pWeights = std::make_unique<WeightsFromFile>(weights);
   } else {
     has_weights = false;

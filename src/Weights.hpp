@@ -45,6 +45,7 @@ protected:
 
 public:
   // all of these public methods have a definition
+  virtual void addTraj(pTraj &traj);
   virtual const double get();
   virtual const double get(const uint index);
   virtual void set(double newWeight);
@@ -63,7 +64,6 @@ public:
   virtual void operator()(std::vector<double> &newWeights);
 
   virtual std::vector<double> weights();
-  virtual void add_traj(pTraj &traj);
 
 public:
   Weights(const std::vector<double> &weightsvec, pTraj &traj)

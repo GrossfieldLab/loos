@@ -96,7 +96,7 @@ inline void Weights::operator()(std::vector<double> &newWeights) {
 }
 
 //! bind the provided pTraj to this instance of Weights 
-void Weights::add_traj(pTraj &traj){
+void Weights::addTraj(pTraj &traj){
   _traj = traj;
   _totalTraj = 0.0;
 }

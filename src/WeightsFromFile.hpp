@@ -14,11 +14,11 @@ namespace loos {
 
     public:
         // rely on this to initialize base class.
-        void add_traj(pTraj &traj);
+        void addTraj(pTraj &traj);
         
 
     private:
-        uint read_weights(const std::string &filename);
+        uint readWeights(const std::string &filename);
         std::map<std::string, std::string> _weights_files;
 
     public:
@@ -26,7 +26,7 @@ namespace loos {
                                         _filename(filename),
                                         _has_list(false)
                                        {
-            add_traj(traj);
+            addTraj(traj);
         };
 
         WeightsFromFile(const std::string &filename): 
@@ -38,7 +38,7 @@ namespace loos {
         // define virtual destructor inline to ensure vtable gets made correctly.
         virtual ~WeightsFromFile() { }
 
-        uint read_weights_list(const std::string &filename);
+        uint readWeightsList(const std::string &filename);
 
     };
 } // namespace loos

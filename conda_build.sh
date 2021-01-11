@@ -69,7 +69,7 @@ platform=`uname`
 echo "Setting channel priority to strict"
 conda config --set channel_priority strict
 
-packages="python=3 swig scons numpy scipy boost openblas libnetcdf lapack compilers eigen"
+packages="python=3 swig scons numpy scipy scikit-learn boost openblas libnetcdf lapack compilers eigen"
 
 # does this env exist (there must be a smarter way to do this)
 envs=$(conda env list | awk '{print $1}' )
@@ -106,9 +106,9 @@ CONDA_BASE=$(conda info --base)
 source $CONDA_BASE/etc/profile.d/conda.sh
 conda activate $envname
 
-if [ "$platform" = "Linux" ]; then
+if [ "$platform" == "Linux" ]; then
     export CXX=`which g++`
-elif [ "$platform" = 'Darwin' ]; then
+elif [ "$platform" == 'Darwin' ]; then
     export CXX=`which clang++`
 else
     echo "Unknown platform $platform, assuming g++"

@@ -26,7 +26,7 @@
 namespace loos {
 //! WeightsFromFile class to handle reweighting values computed from a
 //! trajectory
-uint WeightsFromFile::read_weights(const std::string &filename) {
+uint WeightsFromFile::readWeights(const std::string &filename) {
   std::ifstream ifs(filename.c_str());
   if (!ifs) {
     std::cerr << "Cannot open weights file: " << filename << std::endl;
@@ -49,7 +49,7 @@ uint WeightsFromFile::read_weights(const std::string &filename) {
 }
 
 //! Read in a list of files matching weights files to trajectory files
-uint WeightsFromFile::read_weights_list(const std::string &filename) {
+uint WeightsFromFile::readWeightsList(const std::string &filename) {
   uint num_weights_files = 0;
   _has_list = true;
 
@@ -75,14 +75,14 @@ uint WeightsFromFile::read_weights_list(const std::string &filename) {
 }
 
 //! Add trajectory to class and verify size match with existing WeightsFromFile
-void WeightsFromFile::add_traj(pTraj &traj) {
+void WeightsFromFile::addTraj(pTraj &traj) {
   _traj = traj;
   // If we have a list of weights files, read the correct one
   // TODO: need to check to make sure the filename is in the map
   if (_has_list) {
     _filename = _weights_files[_traj->filename()];
   }
-  _num_weights = read_weights(_filename);
+  _num_weights = readWeights(_filename);
   // # of weights must match number of frames in the associated traj
   if (_num_weights != _traj->nframes()) {
     throw(LOOSError(std::string(
