@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
   // move unique ptr to Weights into main function ownership for ease of use.
   auto weights = move(wopts->pWeights);
   // Attach trajectory to weights
-  weights->add_traj(traj);
+  weights->addTraj(traj);
   vector<greal> mean_ocfs(topts->max_offset, 0);
   greal bondlength = 0;
   if (topts->com) {
