@@ -115,9 +115,17 @@ inline void com_bond_vectors(vector<AtomicGroup> &chain,
 }
 
 inline void compute_ocf(uint max_offset, vector<GCoord> &bond_vectors,
-                        vector<greal> accum_moments, greal weight, greal bl_accum) {
-
-                        }
+                        vector<greal> &ocf_moments_thisframe,
+                        vector<greal> &mean_ocfs, vector<greal> &var_ocfs,
+                        greal accum_ocfs, greal weight,
+                        greal bl_accum) {
+  for (auto offset_idx = 0; offset_idx < max_offset; offset_idx++) {
+    ocf_at_offset(offset_idx + 1, bond_vectors, ocf_moments_thisframe, weight);
+    accum_ocfs += ocf_moments_thisframe[0];
+    mean_ocfs[offset_idx] += ocf_moments_thisframe[1];
+    var_ocfs[offset_idx] += ocf_moments_thisframe[2];
+  }
+}
 
 int main(int argc, char *argv[]) {
 
