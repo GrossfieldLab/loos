@@ -15,14 +15,14 @@ from loos.Voronoi import *
 
 if __name__ == '__main__':
 
-
     if len(sys.argv) > 1 and sys.argv[1] == "--fullhelp":
         print("""
 
 The purpose of this program is to calculate histograms of areas for different
 components of a membrane.  You might use this if you were looking at a
 multicomponent bilayer, and wanted to know how much area is taken up
-by PC lipids vs. PE lipids.
+by PC lipids vs. PE lipids. Despite its name, this program does not split
+your selections into individual molecules!
 
 Usage:
 
@@ -86,7 +86,6 @@ area is absurdly large) it could suggest your padding value is too small.
         print(sys.argv[0], " system trajectory skip zmin zmax padding min_area max_area num_area_bins selection-string1 selection-string2 [selection-string3 ...]")
         sys.exit(0)
 
-
     system_filename = sys.argv[1]
     traj_filename = sys.argv[2]
     skip = int(sys.argv[3])
@@ -97,9 +96,19 @@ area is absurdly large) it could suggest your padding value is too small.
     max_area = float(sys.argv[8])
     num_bins = int(sys.argv[9])
     selection_strings = sys.argv[10:] # first selection gives the all atoms to use
-                                     # in area calculations, all others tell you
-                                     # how to group the areas
+                                      # in area calculations, all others tell you
+                                      # how to group the areas
     bin_width = (max_area - min_area) / num_bins
+
+    #  Validate that there are multiple selection strings -- realistically, you
+    #  need 2
+    if len(selection_strings) < 2:
+        print("""
+        You need at least 2 selection strings -- the first specifies
+        print("the atoms used in the Voronoi decomposition, and the others
+        are components whose area gets reported (eg different lipid types)
+        """)
+        sys.exit(0)
 
     histograms = numpy.zeros([len(selection_strings[1:]), num_bins], numpy.float)
 
@@ -136,7 +145,7 @@ area is absurdly large) it could suggest your padding value is too small.
             for j in range(len(s)):
                 sr = SuperRegion()
                 gr = slicer(s[j])
-                if (len(gr) == 0): # skip if there are no atoms selected from mol
+                if (len(gr) == 0):  # skip if there are no atoms selected from mol
                     continue
                 sr.buildFromAtoms(gr, v)
                 a = sr.area()
@@ -144,12 +153,12 @@ area is absurdly large) it could suggest your padding value is too small.
                 try:
                     histograms[i][index] += 1
                 except IndexError:
-                    print("#Area outside range:  ", pytraj.realIndex(), i, j, a, index)
+                    print("#Area outside range:  ", pytraj.realIndex(), i, j,
+                          a, index)
 
     # normalize the histograms
     for i in range(len(histograms)):
         histograms[i] /= numpy.add.reduce(histograms[i])
-
 
     # final output
     string = ""
@@ -158,5 +167,5 @@ area is absurdly large) it could suggest your padding value is too small.
     print("# Area", string)
     for i in range(num_bins):
         a = min_area + (i+0.5)*bin_width
-        string = list(map(str, histograms[:,i]))
+        string = list(map(str, histograms[:, i]))
         print(a, "\t".join(string))
