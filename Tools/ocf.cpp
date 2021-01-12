@@ -40,8 +40,8 @@ public:
     ostringstream oss;
     oss << boost::format("bond_atom_selection=%s,max_offset=%d,group_centroids="
                          "%b,bondlength=%d,residue_centroids%b,com=%b") %
-               bond_atom_selection % max_offset % group_centroids % bondlength
-               % residue_centroids % com;
+               bond_atom_selection % max_offset % group_centroids % bondlength %
+               residue_centroids % com;
     return (oss.str());
   }
 
@@ -50,7 +50,7 @@ public:
       cerr << "ERROR: --group-centroids and --residue-centroids flags are "
               "mutually exclusive.\n";
       return (false);
-    } else if (com && ! (group_centroids || residue_centroids)) {
+    } else if (com && !(group_centroids || residue_centroids)) {
       cerr << "ERROR: --center-of-mass must be used with --group-centroids or"
               "--residue-centroids.\n";
       return (false);
@@ -61,35 +61,63 @@ public:
   uint max_offset;
   bool group_centroids;
   bool residue_centroids;
-  bool com; 
+  bool com;
   float bondlength;
 };
 const string indent = "    ";
-inline greal ocf_at_offset(uint offset, vector<GCoord>& bond_vectors){
-  greal accumulated_ocf = 0;
+inline void ocf_at_offset(uint offset, vector<GCoord> &bond_vectors,
+                          vector<greal> &outvector) {
+  greal accumulated_bvproj = 0;
+  greal accumulated_square = 0;
+  greal bvproj = 0;
   for (auto i = 0; i < bond_vectors.size() - offset; i++) {
-    accumulated_ocf += bond_vectors[i].uvdot(bond_vectors[i + offset]);
+    bvproj = bond_vectors[i].uvdot(bond_vectors[i + offset]);
+    accumulated_bvproj += bvproj;
+    accumulated_square += bvproj * bvproj;
   }
-  return (accumulated_ocf / (bond_vectors.size() - offset));
+  outvector[0] = accumulated_bvproj;
+  outvector[1] = accumulated_bvproj / (bond_vectors.size() - offset);
+  outvector[2] = outvector[1] * outvector[1] -
+                 (accumulated_square / (bond_vectors.size() - offset));
 }
 
-inline void ag_bond_vectors(AtomicGroup & chain, vector<GCoord>& bond_vectors){
+inline void ocf_at_offset(uint offset, vector<GCoord> &bond_vectors,
+                          vector<greal> &outvector, greal weight) {
+  greal accumulated_bvproj = 0;
+  greal accumulated_square = 0;
+  greal bvproj = 0;
+  for (auto i = 0; i < bond_vectors.size() - offset; i++) {
+    bvproj = bond_vectors[i].uvdot(bond_vectors[i + offset]);
+    accumulated_bvproj += bvproj;
+    accumulated_square += bvproj * bvproj;
+  }
+  accumulated_bvproj *= weight;
+  outvector[0] = accumulated_bvproj;
+  outvector[1] = accumulated_bvproj / (bond_vectors.size() - offset);
+  outvector[2] = outvector[1] * outvector[1] -
+                 (accumulated_square * weight / (bond_vectors.size() - offset));
+}
+inline void ag_bond_vectors(AtomicGroup &chain, vector<GCoord> &bond_vectors) {
   for (auto i = 0; i < chain.size() - 1; i++)
-    bond_vectors[i] = chain[i]->coords() - chain[i+1]->coords(); 
+    bond_vectors[i] = chain[i]->coords() - chain[i + 1]->coords();
 }
 
-inline void centroid_bond_vectors(vector<AtomicGroup>& chain, vector<GCoord>& bond_vectors){
+inline void centroid_bond_vectors(vector<AtomicGroup> &chain,
+                                  vector<GCoord> &bond_vectors) {
   for (auto i = 0; i < chain.size() - 1; i++)
-    bond_vectors[i] = chain[i].centroid() - chain[i+1].centroid();
+    bond_vectors[i] = chain[i].centroid() - chain[i + 1].centroid();
 }
 
-inline void com_bond_vectors(vector<AtomicGroup>& chain, vector<GCoord>& bond_vectors){
+inline void com_bond_vectors(vector<AtomicGroup> &chain,
+                             vector<GCoord> &bond_vectors) {
   for (auto i = 0; i < chain.size() - 1; i++)
-    bond_vectors[i] = chain[i].centerOfMass() - chain[i+1].centerOfMass();
+    bond_vectors[i] = chain[i].centerOfMass() - chain[i + 1].centerOfMass();
 }
 
+inline void compute_ocf(uint max_offset, vector<GCoord> &bond_vectors,
+                        vector<greal> accum_moments, greal weight, greal bl_accum) {
 
-
+                        }
 
 int main(int argc, char *argv[]) {
 
@@ -124,10 +152,12 @@ int main(int argc, char *argv[]) {
   weights->addTraj(traj);
   vector<greal> mean_ocfs(topts->max_offset, 0);
   greal bondlength = 0;
+  vector<greal> measurement_at_offset(3, 0);
+  vector<AtomicGroup> chain;
   if (topts->com) {
     if (topts->group_centroids) {
-      vector<AtomicGroup> chain = scope.splitByMolecule(topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chain.size()-1, 0);
+      chain = scope.splitByMolecule(topts->bond_atom_selection);
+      vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -135,35 +165,43 @@ int main(int argc, char *argv[]) {
         const double weight = weights->get();
         weights->accumulate();
         com_bond_vectors(chain, bond_vectors);
-        for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+        for (auto offset_idx = 0; offset_idx < topts->max_offset;
+             offset_idx++) {
+          ocf_at_offset(offset_idx + 1, bond_vectors, measurement_at_offset,
+                        weight);
+          mean_ocfs[offset_idx] += measurement_at_offset[1];
+        }
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
-          bondlength += bond.length()  / bond_vectors.size(); 
+          bondlength += bond.length() / bond_vectors.size();
+      }
+    } else if (topts->residue_centroids) {
+      vector<AtomicGroup> chain =
+          selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
+      vector<GCoord> bond_vectors(chain.size() - 1, 0);
+      for (auto frame_index : mtopts->frameList()) {
+        traj->readFrame(frame_index);
+        traj->updateGroupCoords(scope);
+        // get frame weights; defaults to zero
+        const double weight = weights->get();
+        weights->accumulate();
+        com_bond_vectors(chain, bond_vectors);
+        for (auto offset_idx = 0; offset_idx < topts->max_offset;
+             offset_idx++) {
+          ocf_at_offset(offset_idx + 1, bond_vectors, measurement_at_offset,
+                        weight);
+          mean_ocfs[offset_idx] += measurement_at_offset[1];
+        }
+        // compute average bond-length for this frame
+        for (auto bond : bond_vectors)
+          bondlength += bond.length() * weight / bond_vectors.size();
       }
     }
-    else if (topts->residue_centroids) {
-      vector<AtomicGroup> chain = selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
-      vector<GCoord> bond_vectors(chain.size()-1, 0);
-      for (auto frame_index : mtopts->frameList()) {
-        traj->readFrame(frame_index);
-        traj->updateGroupCoords(scope);
-        // get frame weights; defaults to zero
-        const double weight = weights->get();
-        weights->accumulate();
-        com_bond_vectors(chain, bond_vectors);
-        for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
-        // compute average bond-length for this frame
-        for (auto bond : bond_vectors)
-          bondlength += bond.length() * weight / bond_vectors.size(); 
-
-      }
-    } 
-  } else{
+  } else {
     if (topts->group_centroids) {
-      vector<AtomicGroup> chain = scope.splitByMolecule(topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chain.size()-1, 0);
+      vector<AtomicGroup> chain =
+          scope.splitByMolecule(topts->bond_atom_selection);
+      vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -172,16 +210,16 @@ int main(int argc, char *argv[]) {
         weights->accumulate();
         centroid_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] +=
+              ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
-          bondlength += bond.length() * weight / bond_vectors.size(); 
-
+          bondlength += bond.length() * weight / bond_vectors.size();
       }
-    }
-    else if (topts->residue_centroids) {
-      vector<AtomicGroup> chain = selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
-      vector<GCoord> bond_vectors(chain.size()-1, 0);
+    } else if (topts->residue_centroids) {
+      vector<AtomicGroup> chain =
+          selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
+      vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -190,15 +228,15 @@ int main(int argc, char *argv[]) {
         weights->accumulate();
         centroid_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] +=
+              ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
-          bondlength += bond.length() * weight / bond_vectors.size(); 
-
+          bondlength += bond.length() * weight / bond_vectors.size();
       }
     } else {
       AtomicGroup chain = selectAtoms(scope, topts->bond_atom_selection);
-      vector<GCoord> bond_vectors(chain.size()-1, 0);
+      vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -207,19 +245,19 @@ int main(int argc, char *argv[]) {
         weights->accumulate();
         ag_bond_vectors(chain, bond_vectors);
         for (auto offset_idx = 0; offset_idx < topts->max_offset; offset_idx++)
-          mean_ocfs[offset_idx] += ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
+          mean_ocfs[offset_idx] +=
+              ocf_at_offset(offset_idx + 1, bond_vectors) * weight;
         // compute average bond-length for this frame
         for (auto bond : bond_vectors)
-          bondlength += bond.length() * weight / bond_vectors.size(); 
-
-
+          bondlength += bond.length() * weight / bond_vectors.size();
       }
     }
   }
-  cout << "{\n"+indent+"\"mean ocfs\": [\n";
+  cout << "{\n" + indent + "\"mean ocfs\": [\n";
   for (auto i : mean_ocfs)
-    cout << indent+indent << i / weights->totalWeight() << ",\n";
-  cout << indent+"]\n";
-  cout << indent+"\"mean bondlength\": " << bondlength / weights->totalWeight() << "\n";
+    cout << indent + indent << i / weights->totalWeight() << ",\n";
+  cout << indent + "]\n";
+  cout << indent + "\"mean bondlength\": "
+       << bondlength / weights->totalWeight() << "\n";
   cout << "}\n";
 }
