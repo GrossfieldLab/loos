@@ -65,52 +65,21 @@ public:
   float bondlength;
 };
 const string indent = "    ";
-inline void ocf_at_offset(uint offset, vector<GCoord> &bond_vectors,
-                          vector<greal> &outvector) {
-  greal accumulated_bvproj = 0;
-  greal accumulated_square = 0;
-  greal bvproj = 0;
-  for (auto i = 0; i < bond_vectors.size() - offset; i++) {
-    bvproj = bond_vectors[i].uvdot(bond_vectors[i + offset]);
-    accumulated_bvproj += bvproj;
-    accumulated_square += bvproj * bvproj;
-  }
-  outvector[0] = accumulated_bvproj;
-  outvector[1] = accumulated_bvproj / (bond_vectors.size() - offset);
-  outvector[2] = outvector[1] * outvector[1] -
-                 (accumulated_square / (bond_vectors.size() - offset));
-}
 
-inline void ocf_at_offset(uint offset, vector<GCoord> &bond_vectors,
-                          vector<greal> &outvector, greal weight) {
-  greal accumulated_bvproj = 0;
-  greal accumulated_square = 0;
-  greal bvproj = 0;
-  for (auto i = 0; i < bond_vectors.size() - offset; i++) {
-    bvproj = bond_vectors[i].uvdot(bond_vectors[i + offset]);
-    accumulated_bvproj += bvproj;
-    accumulated_square += bvproj * bvproj;
-  }
-  accumulated_bvproj *= weight;
-  outvector[0] = accumulated_bvproj;
-  outvector[1] = accumulated_bvproj / (bond_vectors.size() - offset);
-  outvector[2] = outvector[1] * outvector[1] -
-                 (accumulated_square * weight / (bond_vectors.size() - offset));
-}
 inline void ag_bond_vectors(AtomicGroup &chain, vector<GCoord> &bond_vectors) {
-  for (auto i = 0; i < chain.size() - 1; i++)
+  for (uint i = 0; i < chain.size() - 1; i++)
     bond_vectors[i] = chain[i]->coords() - chain[i + 1]->coords();
 }
 
 inline void centroid_bond_vectors(vector<AtomicGroup> &chain,
                                   vector<GCoord> &bond_vectors) {
-  for (auto i = 0; i < chain.size() - 1; i++)
+  for (uint i = 0; i < chain.size() - 1; i++)
     bond_vectors[i] = chain[i].centroid() - chain[i + 1].centroid();
 }
 
 inline void com_bond_vectors(vector<AtomicGroup> &chain,
                              vector<GCoord> &bond_vectors) {
-  for (auto i = 0; i < chain.size() - 1; i++)
+  for (uint i = 0; i < chain.size() - 1; i++)
     bond_vectors[i] = chain[i].centerOfMass() - chain[i + 1].centerOfMass();
 }
 // this is the work to be done inside the traj loop, that is, per-frame.
@@ -119,12 +88,12 @@ inline void compute_ocf_bondlength(uint max_offset,
                                    greal accum_ocfs, vector<greal> &mean_ocfs,
                                    vector<greal> &var_ocfs, greal weight,
                                    greal bl_accum) {
-  for (auto offset_idx = 0; offset_idx < max_offset; offset_idx++) {
+  for (uint offset_idx = 0; offset_idx < max_offset; offset_idx++) {
     uint offset = offset_idx + 1;
     greal accumulated_bvproj = 0;
     greal accumulated_square = 0;
     greal bvproj = 0;
-    for (auto i = 0; i < bond_vectors.size() - offset; i++) {
+    for (uint i = 0; i < bond_vectors.size() - offset; i++) {
       bvproj = bond_vectors[i].uvdot(bond_vectors[i + offset]);
       accumulated_bvproj += bvproj;
       accumulated_square += bvproj * bvproj;
