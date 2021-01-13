@@ -21,7 +21,7 @@ public:
       ("bond-atom-selection,B", po::value<string>(&bond_atom_selection)->
       default_value("name == 'CA' || name == 'P'"),
       "Selection of atoms to compute the OCF across")
-      ("max-offset,M", po::value<uint>(&max_offset)->default_value(12),
+      ("max-offset,M", po::value<int>(&max_offset)->default_value(12),
        "Consider all |i - j| up to this value.")
       ("group-centroids", po::bool_switch(&group_centroids)->default_value(false),
        "If thrown, split bond-atom-selection by molecule and compute BVs between centroids.")
@@ -58,7 +58,7 @@ public:
       return (true);
   }
   string bond_atom_selection;
-  uint max_offset;
+  int max_offset;
   bool group_centroids;
   bool residue_centroids;
   bool com;
@@ -251,6 +251,11 @@ int main(int argc, char *argv[]) {
   for (auto i : mean_ocfs)
     cout << indent + indent << i / weights->totalWeight() << ",\n";
   cout << indent + "]\n";
+  cout << indent + "\"mean variances\": [\n";
+  for (auto i : var_ocfs)
+    cout << indent + indent + << i / weights->totalWeight() << ",\n";
+  cout << indent + "\"mean summed projections\": "
+       << accum_ocf / weights->totalWeight() << ",\n";
   cout << indent + "\"mean bondlength\": "
        << bondlength / weights->totalWeight() << "\n";
   cout << "}\n";
