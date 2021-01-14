@@ -85,9 +85,10 @@ inline void com_bond_vectors(vector<AtomicGroup> &chain,
 // this is the work to be done inside the traj loop, that is, per-frame.
 inline void compute_ocf_bondlength(uint max_offset,
                                    vector<GCoord> &bond_vectors,
-                                   greal accum_ocfs, vector<greal> &mean_ocfs,
-                                   vector<greal> &var_ocfs, greal weight,
-                                   greal bl_accum) {
+                                   greal &accum_ocfs, vector<greal> &mean_ocfs,
+                                   vector<greal> &var_ocfs,
+                                   vector<greal> &accum_sq_mean, greal weight,
+                                   greal &bl_accum) {
   for (uint offset_idx = 0; offset_idx < max_offset; offset_idx++) {
     uint offset = offset_idx + 1;
     greal accumulated_bvproj = 0;
@@ -100,12 +101,12 @@ inline void compute_ocf_bondlength(uint max_offset,
     }
     accum_ocfs += accumulated_bvproj * weight;
     greal mean_ocf_atoffset =
-        accumulated_bvproj / (bond_vectors.size() - offset);
-    mean_ocfs[offset_idx] += mean_ocf_atoffset * weight;
+        accumulated_bvproj / (bond_vectors.size() - offset) * weight;
+    mean_ocfs[offset_idx] += mean_ocf_atoffset;
     var_ocfs[offset_idx] +=
-        (mean_ocf_atoffset * mean_ocf_atoffset -
-         (accumulated_square / (bond_vectors.size() - offset))) *
-        weight;
+        accumulated_square * weight / (bond_vectors.size() - offset) -
+        mean_ocf_atoffset * mean_ocf_atoffset;
+    accum_sq_mean[offset_idx] += mean_ocf_atoffset * mean_ocf_atoffset; 
   }
   for (auto bond : bond_vectors)
     bl_accum += bond.length() * weight;
@@ -148,8 +149,9 @@ int main(int argc, char *argv[]) {
   // initialize max offset at top level, define either with user input
   // or as a function of chain, below.
   uint max_offset;
-  vector<greal> mean_ocfs(topts->max_offset, 0);
-  vector<greal> var_ocfs(topts->max_offset, 0);
+  vector<greal> mean_ocfs;
+  vector<greal> var_ocfs;
+  vector<greal> accum_sq_mean;
   greal accum_ocf = 0;
   greal bondlength = 0;
   vector<AtomicGroup> chain;
@@ -161,6 +163,9 @@ int main(int argc, char *argv[]) {
         max_offset = topts->max_offset;
       else if (topts->max_offset < 0)
         max_offset = bond_vectors.size() - 1;
+      mean_ocfs.resize(max_offset, 0);
+      var_ocfs.resize(max_offset, 0);
+      accum_sq_mean.resize(max_offset, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -168,8 +173,8 @@ int main(int argc, char *argv[]) {
         const double weight = weights->get();
         weights->accumulate();
         com_bond_vectors(chain, bond_vectors);
-        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf,
-                               mean_ocfs, var_ocfs, weight, bondlength);
+        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf, mean_ocfs,
+                               var_ocfs, accum_sq_mean, weight, bondlength);
       }
       bondlength /= bond_vectors.size() * mtopts->frameList().size();
     } else if (topts->residue_centroids) {
@@ -179,6 +184,9 @@ int main(int argc, char *argv[]) {
         max_offset = topts->max_offset;
       else if (topts->max_offset < 0)
         max_offset = 0;
+      mean_ocfs.resize(max_offset, 0);
+      var_ocfs.resize(max_offset, 0);
+      accum_sq_mean.resize(max_offset, 0);
       vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
@@ -187,8 +195,8 @@ int main(int argc, char *argv[]) {
         const double weight = weights->get();
         weights->accumulate();
         com_bond_vectors(chain, bond_vectors);
-        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf,
-                               mean_ocfs, var_ocfs, weight, bondlength);
+        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf, mean_ocfs,
+                               var_ocfs, accum_sq_mean, weight, bondlength);
       }
       bondlength /= bond_vectors.size() * mtopts->frameList().size();
     }
@@ -199,7 +207,10 @@ int main(int argc, char *argv[]) {
       if (topts->max_offset > 0)
         max_offset = topts->max_offset;
       else if (topts->max_offset < 0)
-        max_offset = 0;
+        max_offset = chain.size() - 2;
+      mean_ocfs.resize(max_offset, 0);
+      var_ocfs.resize(max_offset, 0);
+      accum_sq_mean.resize(max_offset, 0);
       vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
@@ -208,8 +219,8 @@ int main(int argc, char *argv[]) {
         const double weight = weights->get();
         weights->accumulate();
         centroid_bond_vectors(chain, bond_vectors);
-        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf,
-                               mean_ocfs, var_ocfs, weight, bondlength);
+        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf, mean_ocfs,
+                               var_ocfs, accum_sq_mean, weight, bondlength);
       }
       bondlength /= bond_vectors.size() * mtopts->frameList().size();
     } else if (topts->residue_centroids) {
@@ -218,7 +229,10 @@ int main(int argc, char *argv[]) {
       if (topts->max_offset > 0)
         max_offset = topts->max_offset;
       else if (topts->max_offset < 0)
-        max_offset = 0;
+        max_offset = chain.size() - 2;
+      mean_ocfs.resize(max_offset, 0);
+      var_ocfs.resize(max_offset, 0);
+      accum_sq_mean.resize(max_offset, 0);
       vector<GCoord> bond_vectors(chain.size() - 1, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
@@ -227,8 +241,8 @@ int main(int argc, char *argv[]) {
         const double weight = weights->get();
         weights->accumulate();
         centroid_bond_vectors(chain, bond_vectors);
-        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf,
-                               mean_ocfs, var_ocfs, weight, bondlength);
+        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf, mean_ocfs,
+                               var_ocfs, accum_sq_mean, weight, bondlength);
       }
       bondlength /= bond_vectors.size() * mtopts->frameList().size();
     } else {
@@ -237,7 +251,10 @@ int main(int argc, char *argv[]) {
       if (topts->max_offset > 0)
         max_offset = topts->max_offset;
       else if (topts->max_offset < 0)
-        max_offset = 0;
+        max_offset = chain.size() - 2;
+      mean_ocfs.resize(max_offset, 0);
+      var_ocfs.resize(max_offset, 0);
+      accum_sq_mean.resize(max_offset, 0);
       for (auto frame_index : mtopts->frameList()) {
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
@@ -245,20 +262,30 @@ int main(int argc, char *argv[]) {
         const double weight = weights->get();
         weights->accumulate();
         ag_bond_vectors(chain, bond_vectors);
-        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf,
-                               mean_ocfs, var_ocfs, weight, bondlength);
+        compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf, mean_ocfs,
+                               var_ocfs, accum_sq_mean, weight, bondlength);
       }
-      bondlength /= bond_vectors.size() * mtopts->frameList().size();
+      bondlength /= bond_vectors.size();
     }
   }
   cout << "{\n" + indent + "\"mean ocfs\": [\n";
   for (auto i : mean_ocfs)
     cout << indent + indent << i / weights->totalWeight() << ",\n";
-  cout << indent + "]\n";
+  cout << indent + "],\n";
+  cout << indent + "\"variance of means\": [\n";
+  greal mean_ocf;
+  for (uint i = 0; i < mean_ocfs.size(); i++) {
+    mean_ocf = mean_ocfs[i] / weights->totalWeight();
+    cout << indent + indent
+         << accum_sq_mean[i] / weights->totalWeight() - mean_ocf * mean_ocf
+         << ",\n";
+  }
+  cout << indent + "],\n";
   cout << indent + "\"mean variances\": [\n";
   for (auto i : var_ocfs)
     cout << indent + indent << i / weights->totalWeight() << ",\n";
-  cout << indent + "\"mean summed projections\": "
+  cout << indent + "],\n";
+  cout << indent + "\"mean projections summed\": "
        << accum_ocf / weights->totalWeight() << ",\n";
   cout << indent + "\"mean bondlength\": "
        << bondlength / weights->totalWeight() << "\n";
