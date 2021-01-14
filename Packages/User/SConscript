@@ -29,7 +29,7 @@ Import('loos')
 clone = env.Clone()
 clone.Prepend(LIBS = [loos])
 
-apps = 'model_calc traj_calc simple_model_calc simple_model_transform traj_transform'
+apps = 'model_calc traj_calc simple_model_calc simple_model_transform traj_transform '
 
 # ***EDIT***
 # To use, add the base filename for your tools to the apps string
