@@ -209,7 +209,7 @@ inline void compute_ocf_bondlength(uint max_offset,
     var_ocfs[offset_idx] +=
         accumulated_square * weight / (bond_vectors.size() - offset) -
         mean_ocf_atoffset * mean_ocf_atoffset;
-    accum_sq_mean[offset_idx] += mean_ocf_atoffset * mean_ocf_atoffset; 
+    accum_sq_mean[offset_idx] += mean_ocf_atoffset * mean_ocf_atoffset;
   }
   for (auto bond : bond_vectors)
     bl_accum += bond.length() * weight;
@@ -252,6 +252,8 @@ int main(int argc, char *argv[]) {
   // initialize max offset at top level, define either with user input
   // or as a function of chain, below.
   vector<AtomicGroup> chain;
+  // Define pointer to the function that will update the bond sites -- will be
+  // either com_bond_vectors or centroid_bond_vectors, depending on user input
   void (*bv_getter)(vector<AtomicGroup> &, vector<GCoord> &);
   // determine what points to use for the centers of each link in the chain
   // based on user input
@@ -284,8 +286,8 @@ int main(int argc, char *argv[]) {
     max_offset = topts->max_offset;
   else if (topts->max_offset < 0)
     max_offset = bond_vectors.size() - 1;
-  // loop over trajectory 
-  for(auto frame_index : mtopts->frameList()){
+  // loop over trajectory
+  for (auto frame_index : mtopts->frameList()) {
     traj->readFrame(frame_index);
     traj->updateGroupCoords(scope);
     // get frame weights; defaults to zero
@@ -293,7 +295,7 @@ int main(int argc, char *argv[]) {
     weights->accumulate();
     bv_getter(chain, bond_vectors);
     compute_ocf_bondlength(max_offset, bond_vectors, accum_ocf, mean_ocfs,
-                            var_ocfs, accum_sq_mean, weight, bondlength);
+                           var_ocfs, accum_sq_mean, weight, bondlength);
   }
   bondlength /= bond_vectors.size();
   // create the JSON report, written to stdout.
