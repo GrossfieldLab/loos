@@ -843,6 +843,22 @@ namespace loos {
   }
 
 
+  // this function takes a bond pair offset for the whole AG.
+  // Returns the unit vector projection across all such bond pairs.
+  const greal AtomicGroup::ocf(uint offset){
+    greal part_ocf = 0;
+    GCoord bv1, bv2; 
+    for (auto i = 0; i < atoms.size() - offset - 1; i++){
+      // compute bond vector between atom and its next neighbor.
+      bv1 = atoms[i]->coords() - atoms[i+1]->coords();
+      // compute bond vector between offset atom and its next neighbor.
+      bv2 = atoms[i + offset]->coords() - atoms[i + offset + 1]->coords();
+      // accumulate dot product of unit vectors 
+      part_ocf += bv1.uvdot(bv2);
+    }
+    return(part_ocf / (atoms.size() - offset - 1));
+  }
+
   void AtomicGroup::reimage() {
     if (!(isPeriodic()))
       throw(LOOSError("trying to reimage a non-periodic group"));

@@ -349,6 +349,24 @@ namespace loos {
       return(s);
     }
 
+    //! Unit vector dot product (cosine of projective angle)
+    T uvdot(const Coord<T>& rhs) const {
+      // define quantities to accumulate with first step of loop.
+      T s = v[0] * rhs.v[0];
+      T d = v[0] * v[0];
+      T drhs = rhs.v[0] * rhs.v[0];
+      
+      for (uint i = 1; i < MAXCOORD; ++i){
+        // dot product
+        s += v[i] * rhs.v[i];
+        // length2 of this
+        d += v[i] * v[i];
+        // length2 of rhs
+        drhs += rhs.v[i] * rhs.v[i];
+      }
+      return(s / sqrt(d * drhs));
+    }   
+
 
 
     T operator*(const Coord<T>rhs) const {
