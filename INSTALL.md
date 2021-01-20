@@ -146,9 +146,10 @@ Fedora 32          | yes          |
 Ubuntu 16.04 LTS   | yes          | conda-only
 Ubuntu 18.04 LTS   | yes          |
 Debian 9.9         | yes          |
+Debian 10.x        | yes          |
 Centos 7           | yes          | conda-only
 Centos 8           | yes          | extra repo
-OpenSUSE 15        | yes          |
+OpenSUSE 15        | yes          | *
 MacOS X Mojave     | yes          | conda-only
 MacOS X Catalina   | yes          | conda-only
 
@@ -194,7 +195,7 @@ LOOS has been extensively tested on Fedora.  You will need to install a number
 of packages, for instance by using the following command
 
 ```
-    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy eigen3-devel
+    sudo dnf install gcc-c++ scons boost-devel atlas-devel netcdf-devel python3-devel swig python3-numpy python3-scipy eigen3-devel python3-scikit-learn
 ```
 
 For versions of Fedora where the default python is python2.7 (anything before
@@ -230,10 +231,18 @@ Centos 8 itself doesn't have all of the packages you need to build LOOS -- you n
 
 ```
 sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install dnf-plugins-core
 sudo yum config-manager --set-enabled PowerTools
 sudo yum install gcc-c++ python3-scons boost-devel atlas-devel netcdf-devel python36 python3-devel swig python3-numpy python3-scipy eigen3-devel
-
 ```
+
+Note: for reasons I don't understand, sometimes the `yum config-manager` line wants it
+written as "powertools" with no capitals. If you get a message saying the repo isn't there,
+try that.
+
+Note: Centos8 doesn't have a python3-scikit-learn package, so a couple of LOOS tools
+that depend on it won't work. If you need scikit learn, you'll have to build under conda instead.
+
 
 For reasons known only to the CentOS team, `scons` is packaged as `scons-3`, so the build and install commands become
 
@@ -254,7 +263,7 @@ To build the documentation, also install:
 
 ## Ubuntu, Debian, Mint
 ```
-    sudo apt-get install g++ scons libboost-all-dev libboost-regex-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy libeigen3-dev
+    sudo apt-get install g++ scons libboost-all-dev libboost-regex-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy libeigen3-dev python3-sklearn python3-sklearn-lib
 ```
 
 Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC
@@ -275,8 +284,12 @@ We have tested the build on OpenSuse 15.x
 Using zypper (or your favorite package manager), install the following:
 
 ```
-    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python-numpy python3-numpy-devel python3-scipy libboost_filesystem1_66_0-devel libboost_program_options1_66_0 libboost_program_options1_66_0-devel libboost_regex1_66_0 libboost_regex1_66_0-devel libboost_system1_66_0-devel libboost_thread1_66_0-devel eigen3-devel
+    sudo zypper install gcc-c++ scons boost-devel lapack-devel blas-devel swig netcdf-devel python3-numpy-devel python3-scipy python3-scikit-learn libboost_filesystem1_66_0-devel libboost_program_options1_66_0 libboost_program_options1_66_0-devel libboost_regex1_66_0 libboost_regex1_66_0-devel libboost_system1_66_0-devel libboost_thread1_66_0-devel eigen3-devel
 ```
+
+NOTE: at least some versions of OpenSuse15 have broken numpy packages for python 3.
+In this case, trying to import loos (or just numpy itself) will give a missing
+symbol error. In this case, you'll need to go with a conda build.
 
 You should get the blas as a dependency for lapack.  You may also have lapack3
 installed by default, however we've found that lapack must also be installed in
