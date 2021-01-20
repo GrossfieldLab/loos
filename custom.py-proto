@@ -89,7 +89,7 @@
 ## python is 2.7.
 # This value is good for Fedora, OpenSuse, and Ubuntu
 #PYTHON_INC='/usr/include/python3.6m'
-# Fedora 29 and 30
+# Fedora 29 and 30, Debian 10
 #PYTHON_INC='/usr/include/python3.7m'
 # This value is good for Debian 9
 #PYTHON_INC='/usr/include/python3.5m'
