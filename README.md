@@ -43,7 +43,7 @@ more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file
 
 ### Release 3.3.0
 
-This release has a new and improved facility for reweighting (from Louis Smith), methods for calculating logistic and hard-cutoff lateral densities in AtomicGroup, several new tools for working with clusters in the Clustering package, and dipole computation in membrane_map.
+This release has a new and improved facility for reweighting (from Louis Smith), methods for calculating logistic and hard-cutoff lateral densities in AtomicGroup, several new tools for working with clusters in the Clustering package, and dipole computation in membrane_map. Also, a new tool (ocf) for calculating a quantity related to persistence length (also from Louis Smith).
 
 There are also a number of bugfixes:
  - Incorrect bonds removed from add_molecule.py
