@@ -90,9 +90,11 @@ scons install PREFIX=/path/to/loos
 This defaults to putting LOOS in /opt, but you can choose a different location
 either by setting the PREFIX variable, either on the command line or in
 custom.py (copy from custom.py-proto to get the idea of what other options are
-available).  However, this is not necessary -- you can just as easily work out
-of the LOOS source tree, by sourcing `setup.sh` or `setup.csh`, found in the top
-level directory.  Installing into the conda distribution is accomplished by
+available).  In principle, you can also work out of the source tree itself, by
+setting up setup.sh or setup.csh from setup.sh-pre or setup.csh-pre directly. However,
+these days the primary tested method is to work with an install.
+
+Installing into the conda distribution is accomplished by
 saying
 
 ```
@@ -145,6 +147,7 @@ Fedora 31          | yes          |
 Fedora 32          | yes          |
 Ubuntu 16.04 LTS   | yes          | conda-only
 Ubuntu 18.04 LTS   | yes          |
+Ubuntu 20.04 LTS   | yes          | conda-only
 Debian 9.9         | yes          |
 Debian 10.x        | yes          |
 Centos 7           | yes          | conda-only
@@ -266,8 +269,9 @@ To build the documentation, also install:
     sudo apt-get install g++ scons libboost-all-dev libboost-regex-dev libatlas-base-dev libnetcdf-dev swig python3-dev python3-numpy python3-scipy libeigen3-dev python3-sklearn python3-sklearn-lib
 ```
 
-Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC
-(verifying that it's the correct location for your system). Alternatively, you can force scons to run using python3 by saying `/usr/bin/env python3 $(which scons)`.
+For Ubuntu before version 20: Copy custom.py-proto to custom.py, and uncomment the line setting PYTHON_INC (verifying that it's the correct location for your system). Alternatively, you can force scons to run using python3 by saying `/usr/bin/env python3 $(which scons)`.
+
+For Ubuntu 20.04 and later, the default python is python3, so you don't need custom.py.
 
 ### Documentation
 
