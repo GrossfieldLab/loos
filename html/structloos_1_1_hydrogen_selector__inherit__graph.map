@@ -1,0 +1,4 @@
+<map id="loos::HydrogenSelector" name="loos::HydrogenSelector">
+<area shape="rect" id="node1" title="Select hydrogen atoms." alt="" coords="5,80,164,107"/>
+<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="18,5,151,32"/>
+</map>

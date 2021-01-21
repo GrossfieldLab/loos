@@ -1,0 +1,6 @@
+<map id="loos::FileOpenError" name="loos::FileOpenError">
+<area shape="rect" id="node1" title="Error while opening a file." alt="" coords="5,229,140,256"/>
+<area shape="rect" id="node2" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="21,155,124,181"/>
+<area shape="rect" id="node3" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="13,80,132,107"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="21,5,125,32"/>
+</map>

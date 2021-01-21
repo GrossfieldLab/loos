@@ -1,0 +1,4 @@
+<map id="loos::Amber" name="loos::Amber">
+<area shape="rect" id="node1" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="25,80,117,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="5,5,136,32"/>
+</map>

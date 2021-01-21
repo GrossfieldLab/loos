@@ -1,0 +1,11 @@
+<map id="loos::OptionsFramework::TwoModelsWithCoords" name="loos::OptionsFramework::TwoModelsWithCoords">
+<area shape="rect" id="node1" title="Request Two models with coordinates." alt="" coords="151,495,317,536"/>
+<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,288,169,329"/>
+<area shape="rect" id="node3" title="STL class." alt="" coords="194,295,274,322"/>
+<area shape="rect" id="node4" title="STL class." alt="" coords="159,184,285,225"/>
+<area shape="rect" id="node5" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="327,295,458,322"/>
+<area shape="rect" id="node6" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="310,191,475,218"/>
+<area shape="rect" id="node7" title=" " alt="" coords="499,191,646,218"/>
+<area shape="rect" id="node8" title="STL class." alt="" coords="515,95,631,121"/>
+<area shape="rect" id="node9" title=" " alt="" coords="553,5,592,32"/>
+</map>

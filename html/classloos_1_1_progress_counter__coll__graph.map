@@ -1,0 +1,11 @@
+<map id="loos::ProgressCounter&lt; Trigger, Counter &gt;" name="loos::ProgressCounter&lt; Trigger, Counter &gt;">
+<area shape="rect" id="node1" title="The progress counter front&#45;end." alt="" coords="198,364,350,405"/>
+<area shape="rect" id="node2" href="$classloos_1_1_simple_counter.html" title="Basic progress counter object, defining the interface..." alt="" coords="204,288,344,315"/>
+<area shape="rect" id="node3" title=" " alt="" coords="118,191,267,218"/>
+<area shape="rect" id="node4" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,95,161,121"/>
+<area shape="rect" id="node5" title="STL class." alt="" coords="185,95,301,121"/>
+<area shape="rect" id="node6" title=" " alt="" coords="224,5,263,32"/>
+<area shape="rect" id="node7" href="$classloos_1_1_timer.html" title=" " alt="" coords="291,184,422,225"/>
+<area shape="rect" id="node8" href="$classloos_1_1_wall_timer.html" title="Policy class for tracking wall&#45;time." alt="" coords="302,5,414,32"/>
+<area shape="rect" id="node9" href="$classloos_1_1_timer.html" title="Class for tracking time." alt="" coords="379,95,551,121"/>
+</map>

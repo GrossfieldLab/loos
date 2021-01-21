@@ -1,0 +1,29 @@
+<map id="loos::internal::Action" name="loos::internal::Action">
+<area shape="rect" id="node1" title="Base class for all commands..." alt="" coords="5,671,147,697"/>
+<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_backbone.html" title="Shortcut for checking for backbone atoms..." alt="" coords="213,5,375,32"/>
+<area shape="rect" id="node3" href="$classloos_1_1internal_1_1drop.html" title="Drop the top item from the stack." alt="" coords="229,56,359,83"/>
+<area shape="rect" id="node4" href="$classloos_1_1internal_1_1dup.html" title="Duplicate the top item on the stack." alt="" coords="231,107,357,133"/>
+<area shape="rect" id="node5" href="$classloos_1_1internal_1_1equals.html" title="Test for equality: ARG1 ARG ==." alt="" coords="223,157,365,184"/>
+<area shape="rect" id="node6" href="$classloos_1_1internal_1_1extract_number.html" title="Extracts a number for a string on the stack using a regular expression: ARG1 regexp(S)" alt="" coords="199,208,389,235"/>
+<area shape="rect" id="node7" href="$classloos_1_1internal_1_1greater_than.html" title="ARG1 ARG2 &gt;" alt="" coords="207,259,381,285"/>
+<area shape="rect" id="node8" href="$classloos_1_1internal_1_1greater_than_equals.html" title="ARG1 ARG2 &gt;=." alt="" coords="207,310,381,351"/>
+<area shape="rect" id="node9" href="$classloos_1_1internal_1_1_hydrogen.html" title="Shortcut for checking for hydrogens..." alt="" coords="214,376,374,403"/>
+<area shape="rect" id="node10" href="$classloos_1_1internal_1_1less_than.html" title="Relation operators...: ARG1 ARG2 &lt;." alt="" coords="215,427,373,453"/>
+<area shape="rect" id="node11" href="$classloos_1_1internal_1_1less_than_equals.html" title="ARG1 ARG2 &lt;=." alt="" coords="215,478,373,519"/>
+<area shape="rect" id="node12" href="$classloos_1_1internal_1_1logical_and.html" title="ARG1 ARG2 &amp;&amp;." alt="" coords="212,544,376,571"/>
+<area shape="rect" id="node13" href="$classloos_1_1internal_1_1logical_not.html" title="ARG1 !" alt="" coords="213,595,375,621"/>
+<area shape="rect" id="node14" href="$classloos_1_1internal_1_1logical_or.html" title="ARG1 ARG2 ||." alt="" coords="217,645,371,672"/>
+<area shape="rect" id="node15" href="$classloos_1_1internal_1_1logical_true.html" title="Always returns true..." alt="" coords="211,696,377,723"/>
+<area shape="rect" id="node16" href="$classloos_1_1internal_1_1match_regex.html" title="Regular expression matching: ARG1 regexp(S)" alt="" coords="205,747,383,773"/>
+<area shape="rect" id="node17" href="$classloos_1_1internal_1_1match_string_as_regex.html" title="Regular expression matching: ARG1 regexp(ARG2)" alt="" coords="207,798,381,839"/>
+<area shape="rect" id="node18" href="$classloos_1_1internal_1_1push_atom_chain_id.html" title="Push atom&#39;s chain ID onto the stack." alt="" coords="213,863,375,905"/>
+<area shape="rect" id="node19" href="$classloos_1_1internal_1_1push_atom_id.html" title="Push atom id onto the stack." alt="" coords="207,929,381,956"/>
+<area shape="rect" id="node20" href="$classloos_1_1internal_1_1push_atom_index.html" title="Push atom index onto the stack." alt="" coords="213,981,375,1022"/>
+<area shape="rect" id="node21" href="$classloos_1_1internal_1_1push_atom_name.html" title="Push atom name onto the stack." alt="" coords="195,1047,393,1073"/>
+<area shape="rect" id="node22" href="$classloos_1_1internal_1_1push_atom_resid.html" title="Push atom&#39;s residue id onto the stack." alt="" coords="213,1098,375,1139"/>
+<area shape="rect" id="node23" href="$classloos_1_1internal_1_1push_atom_resname.html" title="Push atom&#39;ss residue name onto the stack." alt="" coords="213,1163,375,1205"/>
+<area shape="rect" id="node24" href="$classloos_1_1internal_1_1push_atom_segid.html" title="Push atom&#39;s segid onto the stack." alt="" coords="213,1229,375,1270"/>
+<area shape="rect" id="node25" href="$classloos_1_1internal_1_1push_float.html" title="Push a float onto the data stack." alt="" coords="213,1295,375,1321"/>
+<area shape="rect" id="node26" href="$classloos_1_1internal_1_1push_int.html" title="Push an integer onto the data stack." alt="" coords="221,1345,367,1372"/>
+<area shape="rect" id="node27" href="$classloos_1_1internal_1_1push_string.html" title="Push a std::string onto the data stack." alt="" coords="211,1396,377,1423"/>
+</map>
