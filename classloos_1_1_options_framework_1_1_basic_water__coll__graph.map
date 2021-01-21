@@ -1,5 +1,5 @@
 <map id="loos::OptionsFramework::BasicWater" name="loos::OptionsFramework::BasicWater">
-<area shape="rect" id="node1" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="927,115,1091,156"/>
+<area shape="rect" id="node1" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="925,115,1089,156"/>
 <area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="636,5,800,47"/>
 <area shape="rect" id="node3" href="$classloos_1_1_density_tools_1_1_density_grid.html" title=" " alt="" coords="649,71,787,112"/>
 <area shape="rect" id="node4" href="$classloos_1_1_density_tools_1_1_density_grid.html" title="A simple 3D grid class of arbitrary types." alt="" coords="415,71,545,112"/>

@@ -25,6 +25,7 @@ var annotated_dup =
       ] ]
     ] ],
     [ "CalcDensity", "class_calc_density.html", "class_calc_density" ],
+    [ "CalcDipole", "class_calc_dipole.html", "class_calc_dipole" ],
     [ "CalcHeight", "class_calc_height.html", "class_calc_height" ],
     [ "CalcMolOrder", "class_calc_mol_order.html", "class_calc_mol_order" ],
     [ "CalcOrientVector", "class_calc_orient_vector.html", "class_calc_orient_vector" ],

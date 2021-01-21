@@ -1,5 +1,5 @@
 <map id="loos::LineReader" name="loos::LineReader">
-<area shape="rect" id="node1" title="Class for reading line&#45;by&#45;line from a file while tracking line numbers and stripping comments." alt="" coords="223,396,342,423"/>
+<area shape="rect" id="node1" title="Class for reading line&#45;by&#45;line from a file while tracking line numbers and stripping comments." alt="" coords="223,396,343,423"/>
 <area shape="rect" id="node2" title="STL class." alt="" coords="85,298,176,325"/>
 <area shape="rect" id="node3" title="STL class." alt="" coords="18,185,147,227"/>
 <area shape="rect" id="node4" title="STL class." alt="" coords="5,89,160,115"/>

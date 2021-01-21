@@ -88,6 +88,7 @@ var hierarchy =
         [ "CalcMolOrder", "class_calc_mol_order.html", null ]
       ] ],
       [ "CalcProperty< loos::GCoord >", "class_calc_property.html", [
+        [ "CalcDipole", "class_calc_dipole.html", null ],
         [ "CalcOrientVector", "class_calc_orient_vector.html", null ]
       ] ]
     ] ],
@@ -281,7 +282,10 @@ var hierarchy =
       [ "loos::DensityTools::WaterFilterRadius", "classloos_1_1_density_tools_1_1_water_filter_radius.html", null ]
     ] ],
     [ "loos::DensityTools::WaterHistogrammer", "classloos_1_1_density_tools_1_1_water_histogrammer.html", null ],
-    [ "loos::Weights", "classloos_1_1_weights.html", null ],
+    [ "loos::Weights", "classloos_1_1_weights.html", [
+      [ "loos::UniformWeight", "classloos_1_1_uniform_weight.html", null ],
+      [ "loos::WeightsFromFile", "classloos_1_1_weights_from_file.html", null ]
+    ] ],
     [ "loos::internal::XDRReader", "classloos_1_1internal_1_1_x_d_r_reader.html", null ],
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],

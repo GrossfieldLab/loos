@@ -39,6 +39,7 @@ var classloos_1_1_coord =
     [ "random", "classloos_1_1_coord.html#a111c439ec5e5f1b518719a8bad76338b", null ],
     [ "reimage", "classloos_1_1_coord.html#a60310378d214ed2a313f35f1b78f484e", null ],
     [ "set", "classloos_1_1_coord.html#a693ed46772f90360b8d189d1b6b64837", null ],
+    [ "uvdot", "classloos_1_1_coord.html#a0b64405244deff69e6443d1ae6e30374", null ],
     [ "x", "classloos_1_1_coord.html#a079d1fbce89a5881ebd3943dfcec5632", null ],
     [ "x", "classloos_1_1_coord.html#ac473deb539580414eae2c9434f8a3464", null ],
     [ "x", "classloos_1_1_coord.html#ad868dc7333f228890c2b223197a8a600", null ],

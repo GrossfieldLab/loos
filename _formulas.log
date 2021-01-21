@@ -1,59 +1,56 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=latex 2020.2.3)  23 JUL 2020 13:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=latex 2020.11.30)  21 JAN 2021 13:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **_formulas.tex
 (./_formulas.tex
-LaTeX2e <2018-04-01> patch level 5
-(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+LaTeX2e <2020-02-02> patch level 5
+L3 programming layer <2020-04-06> (/usr/share/texlive/texmf-dist/tex/latex/base
+/article.cls
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
-File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
 )
-\c@part=\count80
-\c@section=\count81
-\c@subsection=\count82
-\c@subsubsection=\count83
-\c@paragraph=\count84
-\c@subparagraph=\count85
-\c@figure=\count86
-\c@table=\count87
-\abovecaptionskip=\skip41
-\belowcaptionskip=\skip42
-\bibindent=\dimen102
-)
-(/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
+\c@part=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+) (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
-)
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/epsfig.sty
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/epsfig.sty
 Package: epsfig 2017/06/25 v1.7b (e)psfig emulation (SPQR)
-
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
-
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks14
-)
-(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
-
+\KV@toks@=\toks15
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
 (/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
-)
-(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: dvips.def on input line 99.
-
+Package graphics Info: Driver file: dvips.def on input line 105.
 (/usr/share/texlive/texmf-dist/tex/latex/graphics-def/dvips.def
 File: dvips.def 2017/06/20 v3.1d Graphics/color driver for dvips
 ))
-\Gin@req@height=\dimen103
-\Gin@req@width=\dimen104
+\Gin@req@height=\dimen135
+\Gin@req@width=\dimen136
 )
-\epsfxsize=\dimen105
-\epsfysize=\dimen106
+\epsfxsize=\dimen137
+\epsfysize=\dimen138
+) (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks16
+\inpenc@posthook=\toks17
 )
 
 ! LaTeX Error: File `newunicodechar.sty' not found.
@@ -62,92 +59,20 @@ Type X to quit or <RETURN> to proceed,
 or enter new name. (Default extension: sty)
 
 Enter file name: 
-! Undefined control sequence.
-<recently read> \newunicodechar 
-                                
-l.5   \newunicodechar
-                     {⁻}{${}^{-}$}% Superscript minus
-? 
-
-! Package inputenc Error: Unicode character ⁻ (U+207B)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.5   \newunicodechar{⁻
-                         }{${}^{-}$}% Superscript minus
-? 
-
-! LaTeX Error: Missing \begin{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.5   \newunicodechar{⁻}{$
-                            {}^{-}$}% Superscript minus
-? 
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 5.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 5.
-! Undefined control sequence.
+! Emergency stop.
+<read *> 
+         
 l.6   \newunicodechar
-                     {²}{${}^{2}$}% Superscript two
-? 
+                     {⁻}{${}^{-}$}% Superscript minus^^M
+*** (cannot \read from terminal in nonstop modes)
 
-! Package inputenc Error: Unicode character ² (U+B2)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.6   \newunicodechar{²
-                        }{${}^{2}$}% Superscript two
-? 
-! Undefined control sequence.
-l.7   \newunicodechar
-                     {³}{${}^{3}$}% Superscript three
-? 
-
-! Package inputenc Error: Unicode character ³ (U+B3)
-(inputenc)                not set up for use with LaTeX.
-
-See the inputenc package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.7   \newunicodechar{³
-                        }{${}^{3}$}% Superscript three
-? 
-No file _formulas.aux.
-\openout1 = `_formulas.aux'.
-
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 10.
-LaTeX Font Info:    ... okay on input line 10.
-[1
-
-] [2] [3] [4] (./_formulas.aux) ) 
+ 
 Here is how much of TeX's memory you used:
- 635 strings out of 494066
- 7808 string characters out of 6169511
- 62987 words of memory out of 5000000
- 4345 multiletter control sequences out of 15000+600000
- 3640 words of font info for 14 fonts, out of 8000000 for 9000
+ 675 strings out of 482030
+ 8563 string characters out of 5943716
+ 238442 words of memory out of 5000000
+ 16392 multiletter control sequences out of 15000+600000
+ 532338 words of font info for 24 fonts, out of 8000000 for 9000
  430 hyphenation exceptions out of 8191
- 32i,6n,21p,228b,100s stack positions out of 5000i,500n,10000p,200000b,80000s
-
-Output written on _formulas.dvi (4 pages, 1020 bytes).
+ 38i,0n,29p,228b,36s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.
