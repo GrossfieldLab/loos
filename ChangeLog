@@ -1,6 +1,7 @@
+2021-01-21  Release version 3.3
 2021-01-18  Alan Grossfield <alan>
 	* Merged in ocf tool
-	
+
 2021-01-05  Alan Grossfield <alan>
 	*  Merged dipole computation into membrane_map
 
