@@ -631,6 +631,12 @@ namespace loos {
      */
     std::vector<GCoord> getTransformedCoords(const XForm&) const;
 
+    //! Compute difference vectors between two AtomicGroups
+    /**
+        Does not align the coordinates first
+     */
+    std::vector<GCoord> differenceVectors(const AtomicGroup other);
+
     //! Translate an atomic group by vector v
     void translate(const GCoord & v);
 
@@ -808,7 +814,7 @@ namespace loos {
 
     //* Similar to logisticContact() but the distance between reference
     //  group centroid and another group centroid is 2D Euclidean distance
-    //  instead of 3D. Useful when calculating number of contacts in a 
+    //  instead of 3D. Useful when calculating number of contacts in a
     //  plane
     /**
         Compute the number of contacts between the centroid of this AG
@@ -865,8 +871,8 @@ namespace loos {
     };
 
 
-    // This function is to to remove code duplication in 
-    // logisticContacts() and logisticContacts2D(). 
+    // This function is to to remove code duplication in
+    // logisticContacts() and logisticContacts2D().
     // Handle even and odd powers separately -- even can
     // avoid the sqrt
     // Sigh, this doesnt' seem to make it much faster...

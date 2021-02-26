@@ -351,6 +351,15 @@ namespace loos {
           (*i)->coords() += v;
   }
 
+  std::vector<GCoord> AtomicGroup::differenceVectors(const AtomicGroup other) {
+      uint numAtoms = size();
+      std::vector<GCoord> result;
+      for (uint i=0; i<numAtoms; ++i) {
+          result.push_back(atoms[i]->coords() - other[i]->coords());
+      }
+      return result;
+  }
+
   void AtomicGroup::applyTransform(const XForm& M) {
     iterator i;
     GMatrix W = M.current();
