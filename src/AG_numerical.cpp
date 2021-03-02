@@ -351,7 +351,7 @@ namespace loos {
           (*i)->coords() += v;
   }
 
-  std::vector<GCoord> AtomicGroup::differenceVectors(const AtomicGroup other) {
+  std::vector<GCoord> AtomicGroup::differenceVectors(const AtomicGroup &other) {
       uint numAtoms = size();
       std::vector<GCoord> result;
       for (uint i=0; i<numAtoms; ++i) {

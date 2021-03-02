@@ -635,7 +635,7 @@ namespace loos {
     /**
         Does not align the coordinates first
      */
-    std::vector<GCoord> differenceVectors(const AtomicGroup other);
+    std::vector<GCoord> differenceVectors(const AtomicGroup &other);
 
     //! Translate an atomic group by vector v
     void translate(const GCoord & v);
