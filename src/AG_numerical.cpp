@@ -459,5 +459,32 @@ namespace loos {
     }
   }
 
+  greal AtomicGroup::stacking(const AtomicGroup& other,
+                              const GCoord& box) const {
+    GCoord c1 = centroid();
+    GCoord c2 = other.centroid();
+
+    GCoord dx = c2 - c1;
+    dx.reimage(box);
+    greal dx2 = dx.length2();
+
+    std::vector<GCoord> axes1 = principalAxes();
+    GCoord n1 = axes1[2];
+    std::vector<GCoord> axes2 = principalAxes();
+    GCoord n2 = axes2[2];
+
+    greal dot = n1*n2;
+    GCoord ave = 0.0;
+    if (dot < 0) {
+      ave = 0.5*(n2 - n1);
+    }
+    else {
+      ave = 0.5*(n2 + n1);
+    }
+
+    greal val = dot * (ave*dx) / dx2;
+    return val;
+  }
+
 
 }
