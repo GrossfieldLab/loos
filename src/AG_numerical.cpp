@@ -470,7 +470,7 @@ namespace loos {
 
     std::vector<GCoord> axes1 = principalAxes();
     GCoord n1 = axes1[2];
-    std::vector<GCoord> axes2 = principalAxes();
+    std::vector<GCoord> axes2 = other.principalAxes();
     GCoord n2 = axes2[2];
 
     greal dot = n1*n2;
