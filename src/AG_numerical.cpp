@@ -467,6 +467,7 @@ namespace loos {
     GCoord dx = c2 - c1;
     dx.reimage(box);
     greal dx2 = dx.length2();
+    dx /= dx.length();
 
     std::vector<GCoord> axes1 = principalAxes();
     GCoord n1 = axes1[2];
@@ -482,8 +483,14 @@ namespace loos {
       ave = 0.5*(n2 + n1);
     }
 
-    greal val = dot * (ave*dx) / dx2;
-    return val;
+    // TODO: this should be user-settable
+    greal threshold = 5.0;
+    greal threshold2 = threshold * threshold;
+    greal mult = threshold2/dx2;
+    greal denom = 1 + mult*mult*mult;
+
+    greal val = dot * dot * (ave*dx) / denom;
+    return fabs(val);
   }
 
 
