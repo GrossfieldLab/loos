@@ -460,7 +460,8 @@ namespace loos {
   }
 
   greal AtomicGroup::stacking(const AtomicGroup& other,
-                              const GCoord& box) const {
+                              const GCoord& box,
+                              const double threshold=5.0) const {
     GCoord c1 = centroid();
     GCoord c2 = other.centroid();
 
@@ -484,7 +485,7 @@ namespace loos {
     }
 
     // TODO: this should be user-settable
-    greal threshold = 5.0;
+    // greal threshold = 5.0;
     greal threshold2 = threshold * threshold;
     greal mult = dx2/threshold2;
     greal denom = 1 + mult*mult*mult;
