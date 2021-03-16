@@ -612,9 +612,9 @@ namespace loos {
     //! Estimate stacking, as between two nucleobases
     /** Algorithm: n1=normal to self; n2=normal to other, dx = difference between
                centroids
-     *         stacking = (n1*n2)*[(n1 + n2)/2 * dx]/|dx|^2
+     *         stacking = (n1*n2)^2 *[(n1 + n2)/2 * dx]/|dx| * 1/1 + (dx/threshold)^6
      */
-     greal stacking(const AtomicGroup&, const GCoord& box) const;
+     greal stacking(const AtomicGroup&, const GCoord& box, const double threshold) const;
 
     //! Compute the RMSD between two groups
     /**Sorts both groups (if necessary), then assumes a 1:1
