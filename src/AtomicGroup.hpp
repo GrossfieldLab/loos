@@ -611,8 +611,8 @@ namespace loos {
 
 
     //! Compute the RMSD between two groups
-    /**Sorts both groups (if necessary), then assumes a 1:1
-     *correspondence between ith atoms.
+    /** Assumes a 1:1 correspondence between ith atoms.
+     *  Does NOT transform the coordinates in any way.
      */
     greal rmsd(const AtomicGroup&);
 
