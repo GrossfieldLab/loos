@@ -14,6 +14,6 @@ res2 = loos.selectAtoms(system, sys.argv[4])
 
 for frame in traj:
     box = system.periodicBox()
-    stacking = res1.stacking(res2, box)
+    stacking = res1.stacking(res2, box, 5)
     packing = res1.packingScore(res2, box, norm=True)
     print(traj.index(), stacking, packing)
