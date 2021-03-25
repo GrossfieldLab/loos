@@ -484,15 +484,9 @@ namespace loos {
       ave = 0.5*(n2 + n1);
     }
 
-    // TODO: this should be user-settable
-    // greal threshold = 5.0;
     greal threshold2 = threshold * threshold;
     greal mult = dx2/threshold2;
     greal denom = 1 + mult*mult*mult;
-
-    //std::cerr << dot << "\t"
-    //         <<
-    //        << std::endl
 
     greal val = dot * dot * (ave*dx) / denom;
     return fabs(val);
