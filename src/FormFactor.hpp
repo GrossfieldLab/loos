@@ -21,7 +21,7 @@
 #define PI 3.1415926535897931
 
 namespace loos {
-    class FormFactor 
+    class FormFactor
     {
     public:
         std::vector<double> coeff;
@@ -97,7 +97,7 @@ namespace loos {
                 }
             else
                 {
-                cerr << "Unsupported atom type: " << atomicNumber << endl;
+                std::cerr << "Unsupported atom type: " << atomicNumber << std::endl;
                 exit(-1);
                 }
             }

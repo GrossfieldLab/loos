@@ -459,5 +459,29 @@ namespace loos {
     }
   }
 
+  std::vector<double> AtomicGroup::scattering(const double qmin, const double qmax,
+                                   const uint numValues,
+                                   const std::vector<loos::FormFactor> &formFactors) {
+    const double qstep = (qmax - qmin) / numValues;
+    std::vector<double> values(numValues);
+
+    for (uint i = 0; i < size() - 1; i++) {
+        GCoord c1 = atoms[i]->coords();
+
+        for (uint j = i+1; j < size() ; j++) {
+            GCoord diff = c1 - atoms[j]->coords();
+            double length = diff.length();
+
+            for (uint qindex=0; qindex < numValues; qindex++) {
+                double q = qmin + qindex*qstep;
+                double qd = q * length;
+
+                // TODO: THIS DOESN'T USE THE FORM FACTORS YET
+                values[qindex] += sin(qd)/qd;
+            }
+        }
+    }
+  return values;
+  }
 
 }

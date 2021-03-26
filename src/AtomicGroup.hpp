@@ -44,6 +44,7 @@
 #include <PeriodicBox.hpp>
 #include <utils.hpp>
 #include <Matrix.hpp>
+#include <FormFactor.hpp>
 
 #include <exceptions.hpp>
 
@@ -847,6 +848,10 @@ namespace loos {
      */
     double hardContact2D(const AtomicGroup& group, double radius,
                            const GCoord& box) const;
+
+    std::vector<double> scattering(const double qmin, const double max,
+                                   const uint numValues,
+                                   const std::vector<FormFactor> &formFactors);
 
   private:
 
