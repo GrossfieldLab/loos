@@ -44,6 +44,7 @@ apps = apps + ' Weights.cpp'
 apps = apps + ' UniformWeight.cpp'
 apps = apps + ' WeightsFromFile.cpp'
 apps = apps + ' RnaSuite.cpp'
+apps = apps + ' FormFactor.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'
@@ -75,6 +76,7 @@ hdr += ' Simplex.hpp charmm.hpp AtomicNumberDeducer.hpp OptionsFramework.hpp'
 hdr += ' utils_random.hpp utils_structural.hpp LineReader.hpp xtcwriter.hpp'
 hdr += ' trajwriter.hpp MultiTraj.hpp index_range_parser.hpp'
 hdr += ' RnaSuite.hpp Weights.hpp UniformWeight.hpp WeightsFromFile.hpp'
+hdr += ' FormFactor.hpp'
 
 if (env['HAS_NETCDF']):
     hdr += ' amber_netcdf.hpp'
