@@ -43,6 +43,8 @@
 
 #include <pdb_remarks.hpp>
 
+#include <FormFactor.hpp>
+
 #include <sstream>
 
 
