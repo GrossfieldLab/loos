@@ -53,7 +53,6 @@ namespace loos {
 %template(IntVector)            std::vector<int>;
 %template(UIntVector)           std::vector<uint>;
 %template(StringVector)         std::vector<std::string>;
-%template(FormFactorVector)     std::vector<loos::FormFactor>;
 
 
 %include "exceptions.i"
@@ -84,3 +83,4 @@ namespace loos {
 %include "utils_random.i"
 %include "Weights.i"
 %include "RnaSuite.i"
+%include "FormFactorSet.i"

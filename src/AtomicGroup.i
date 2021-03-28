@@ -44,6 +44,7 @@
 #include <pdb_remarks.hpp>
 
 #include <FormFactor.hpp>
+#include <FormFactorSet.hpp>
 
 #include <sstream>
 

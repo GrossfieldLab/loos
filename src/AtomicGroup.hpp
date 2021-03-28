@@ -45,6 +45,7 @@
 #include <utils.hpp>
 #include <Matrix.hpp>
 #include <FormFactor.hpp>
+#include <FormFactorSet.hpp>
 
 #include <exceptions.hpp>
 
@@ -851,7 +852,7 @@ namespace loos {
 
     std::vector<double> scattering(const double qmin, const double max,
                                    const uint numValues,
-                                   const std::vector<FormFactor> &formFactors);
+                                   const FormFactorSet& formFactors);
 
   private:
 

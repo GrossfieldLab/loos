@@ -1,19 +1,34 @@
 #ifndef __FORMFACTOR_HPP__
 #define __FORMFACTOR_HPP__
+/*
+  This file is part of LOOS.
+
+  LOOS (Lightweight Object-Oriented Structure library)
+  Copyright (c) 2008, Tod D. Romo, Alan Grossfield
+  Department of Biochemistry and Biophysics
+  School of Medicine & Dentistry, University of Rochester
+
+  This package (LOOS) is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation under version 3 of the License.
+
+  This package is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 
 /*
  *  Compute the Fourier space atomic form factors for chemical elements
- *  Alan Grossfield
  *
  *  The new coefficients come from:
  *        Szaloki, X-ray Spectroscopy (1996), V25, 21-28
  *        Note: Szaloki screwed up the signs of some of his parameters
  *              (b2, b3, and b4) so my equations don't look exactly like his.
- *  The old coefficents come from:
- *        Cromer and Mann, Acta Cryst (1968), A24, pp 321-324
- *  Note: the paper works in (sin theta)/lambda.  I originally assumed this
- *        was q, but according to John Nagle's email on 8/21/07, I should
- *        be using q/4pi.
  */
 
 #include <vector>
@@ -117,6 +132,6 @@ namespace loos {
         double f23(double q, double a, double b1, double c, double b2, double q1, double b3, double q2);
 
     };
-}
 
+}
 #endif
