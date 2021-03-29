@@ -5,7 +5,9 @@
  *   Store a collection for FormFactor objects for the nuclei have them for
  */
 
-//#include <FormFactor.hpp>
+#include <map>
+#include <exceptions.hpp>
+#include <FormFactor.hpp>
 
 namespace loos {
 
@@ -19,6 +21,10 @@ namespace loos {
             }
 
         double get(uint i, double q) {
+            std::map<uint,FormFactor>::iterator it = _map.find(i);
+            if (it == _map.end()) {
+                throw(LOOSError(" unsupported atomic number in scattering calculation"));
+            }
             double val = _map[i].compute(q);
             return val;
         }
