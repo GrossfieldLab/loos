@@ -477,7 +477,6 @@ namespace loos {
                 double qd = q * length;
                 double f1 = formFactors.get(atoms[i]->atomic_number(), q);
                 double f2 = formFactors.get(atoms[j]->atomic_number(), q);
-
                 values[qindex] += f1*f2*sin(qd)/qd;
             }
         }

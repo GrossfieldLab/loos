@@ -12,7 +12,7 @@ system_file = sys.argv[1]
 selection_string = sys.argv[2]
 traj_file = sys.argv[3]
 
-q_min = 0
+q_min = 0.1
 q_max = 6
 num_qvals = 60
 
