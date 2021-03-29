@@ -864,7 +864,7 @@ namespace loos {
      */
     std::vector<double> scattering(const double qmin, const double max,
                                    const uint numValues,
-                                   const loos::FormFactorSet &formFactors);
+                                   loos::FormFactorSet &formFactors);
 
   private:
 

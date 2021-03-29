@@ -157,7 +157,7 @@ namespace loos {
         return val*val2;
         }
 
-    double FormFactor::f23(double q, double a, double b1, double c, double b2, double q1, double b3, double q2)
+    double FormFactor::f23(double q, double a, double b1, double c, double b2, double q1, double b3, double q2) 
         {
         double val = f22(q2, a, b1, c, b2, q1);
         double val2 = exp(b3*(q2-q)); // sign flipped, Szaloki wrong

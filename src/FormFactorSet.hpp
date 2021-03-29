@@ -18,8 +18,9 @@ namespace loos {
             setup();
             }
 
-        FormFactor get(uint i) {
-            return _map[i];
+        double get(uint i, double q) {
+            double val = _map[i].compute(q);
+            return val;
         }
 
     private:

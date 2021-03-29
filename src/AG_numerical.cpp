@@ -461,7 +461,7 @@ namespace loos {
 
   std::vector<double> AtomicGroup::scattering(const double qmin, const double qmax,
                                    const uint numValues,
-                                   const loos::FormFactorSet &formFactors) {
+                                   loos::FormFactorSet &formFactors) {
     const double qstep = (qmax - qmin) / numValues;
     std::vector<double> values(numValues);
 
@@ -475,9 +475,10 @@ namespace loos {
             for (uint qindex=0; qindex < numValues; qindex++) {
                 double q = qmin + qindex*qstep;
                 double qd = q * length;
+                double f1 = formFactors.get(atoms[i]->atomic_number(), q);
+                double f2 = formFactors.get(atoms[j]->atomic_number(), q);
 
-                // TODO: THIS DOESN'T USE THE FORM FACTORS YET
-                values[qindex] += sin(qd)/qd;
+                values[qindex] += f1*f2*sin(qd)/qd;
             }
         }
     }
