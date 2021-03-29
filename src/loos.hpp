@@ -115,6 +115,4 @@
 
 #include <alignment.hpp>
 #include <RnaSuite.hpp>
-#include <FormFactor.hpp>
-#include <FormFactorSet.hpp>
 #endif

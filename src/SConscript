@@ -31,7 +31,8 @@ else:
    apps = 'scanner.cc grammar.cc '
 
 
-apps = apps + 'dcd.cpp utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
+apps = apps + ' FormFactor.cpp FormFactorSet.cpp'
+apps = apps + ' dcd.cpp utils.cpp pdb_remarks.cpp pdb.cpp psf.cpp KernelValue.cpp ensembles.cpp dcdwriter.cpp Fmt.cpp'
 apps = apps + ' AtomicGroup.cpp AG_numerical.cpp AG_linalg.cpp Geometry.cpp amber.cpp amber_traj.cpp tinkerxyz.cpp sfactories.cpp'
 apps = apps + ' ccpdb.cpp pdbtraj.cpp tinker_arc.cpp ProgressCounters.cpp Atom.cpp KernelActions.cpp'
 apps = apps + ' HBondDetector.cpp'
@@ -44,7 +45,6 @@ apps = apps + ' Weights.cpp'
 apps = apps + ' UniformWeight.cpp'
 apps = apps + ' WeightsFromFile.cpp'
 apps = apps + ' RnaSuite.cpp'
-apps = apps + ' FormFactor.cpp FormFactorSet.cpp'
 
 if (env['HAS_NETCDF']):
    apps = apps + ' amber_netcdf.cpp'

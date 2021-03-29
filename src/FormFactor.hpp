@@ -26,7 +26,7 @@
  *  Compute the Fourier space atomic form factors for chemical elements
  *
  *  The new coefficients come from:
- *        Szaloki, X-ray Spectroscopy (1996), V25, 21-28
+ *        Szaloki, X-ray Spectrometry (1996), V25, 21-28
  *        Note: Szaloki screwed up the signs of some of his parameters
  *              (b2, b3, and b4) so my equations don't look exactly like his.
  */

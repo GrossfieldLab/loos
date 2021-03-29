@@ -11,9 +11,6 @@ namespace loos {
 
     class FormFactorSet
     {
-    private:
-        std::map<uint,FormFactor> _map;
-        void setup();
 
     public:
         FormFactorSet()
@@ -21,9 +18,13 @@ namespace loos {
             setup();
             }
 
-        FormFactor& operator[](uint i) {
+        FormFactor get(uint i) {
             return _map[i];
         }
+
+    private:
+        std::map<uint,FormFactor> _map;
+        void setup();
     };
 }
 

@@ -461,7 +461,7 @@ namespace loos {
 
   std::vector<double> AtomicGroup::scattering(const double qmin, const double qmax,
                                    const uint numValues,
-                                   const FormFactorSet &formFactors) {
+                                   const loos::FormFactorSet &formFactors) {
     const double qstep = (qmax - qmin) / numValues;
     std::vector<double> values(numValues);
 
