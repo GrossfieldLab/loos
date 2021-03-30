@@ -11,9 +11,9 @@ selection_string = sys.argv[2]
 outfile_name = sys.argv[3]
 traj_file = sys.argv[4]
 
-q_min = 0.5
+q_min = 0.25
 q_max = 6
-num_qvals = 12
+num_qvals = 24
 
 system = loos.createSystem(system_file)
 traj = loos.pyloos.Trajectory(traj_file, system)
