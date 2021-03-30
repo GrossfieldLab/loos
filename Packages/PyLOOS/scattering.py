@@ -24,11 +24,17 @@ formFactors = loos.FormFactorSet()
 
 total = np.zeros([num_qvals])
 q_vals = np.arange(q_min, q_max, (q_max - q_min)/num_qvals)
+rgyr = 0.0
 for frame in traj:
     total += np.asarray(subset.scattering(q_min, q_max, num_qvals, formFactors))
+    rgyr += subset.radiusOfGyration()
 
 total /= (len(traj) * total[0])  # output I/I(0)
+rgyr /= len(traj)
 
-total = np.column_stack((q_vals, total))
+qrg = q_vals * rgyr
+kratky = qrg * qrg * total
 
-np.savetxt(outfile_name, total)
+total = np.column_stack((q_vals, total, qrg, kratky))
+
+np.savetxt(outfile_name, total, header="# Q\tI/I0\tQ*Rg\t(Q*Rg)^2 I/I(0)")
