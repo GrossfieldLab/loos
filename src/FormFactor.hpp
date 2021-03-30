@@ -110,6 +110,17 @@ namespace loos {
                 coeff.push_back(0.413);
                 coeff.push_back(7.0);
                 }
+            else if (atomicNumber == 16) // Table 2 from Szaloki, z=15
+                {
+                coeff.push_back(-1.457);
+                coeff.push_back(33.964);
+                coeff.push_back(2.154);
+                coeff.push_back(0.30);
+                coeff.push_back(1.321);
+                coeff.push_back(1.581);
+                coeff.push_back(0.373);
+                coeff.push_back(10.0);
+                }
             else
                 {
                 std::cerr << "Unsupported atom type: " << atomicNumber << std::endl;
