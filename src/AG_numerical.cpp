@@ -465,19 +465,27 @@ namespace loos {
     const double qstep = (qmax - qmin) / numValues;
     std::vector<double> values(numValues);
 
-    for (uint i = 0; i < size() - 1; i++) {
+    for (uint i = 0; i < size(); i++) {
         GCoord c1 = atoms[i]->coords();
 
-        for (uint j = i+1; j < size() ; j++) {
+        for (uint j = i; j < size() ; j++) {
             GCoord diff = c1 - atoms[j]->coords();
             double length = diff.length();
 
-            for (uint qindex=0; qindex < numValues; qindex++) {
+            if (i == j) {
+              for (uint qindex=0; qindex < numValues; qindex++) {
                 double q = qmin + qindex*qstep;
-                double qd = q * length;
                 double f1 = formFactors.get(atoms[i]->atomic_number(), q);
-                double f2 = formFactors.get(atoms[j]->atomic_number(), q);
-                values[qindex] += f1*f2*sin(qd)/qd;
+                values[qindex] += f1*f1;
+              }
+            } else {
+              for (uint qindex=0; qindex < numValues; qindex++) {
+                  double q = qmin + qindex*qstep;
+                  double qd = q * length;
+                  double f1 = formFactors.get(atoms[i]->atomic_number(), q);
+                  double f2 = formFactors.get(atoms[j]->atomic_number(), q);
+                  values[qindex] += f1*f2*sin(qd)/qd;
+              }
             }
         }
     }
