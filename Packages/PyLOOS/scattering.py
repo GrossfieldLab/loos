@@ -13,7 +13,7 @@ traj_file = sys.argv[4]
 
 q_min = 0.0
 q_max = 6
-num_qvals = 24
+num_qvals = 25
 
 system = loos.createSystem(system_file)
 traj = loos.pyloos.Trajectory(traj_file, system)
@@ -37,4 +37,4 @@ kratky = qrg * qrg * total
 
 total = np.column_stack((q_vals, total, qrg, kratky))
 
-np.savetxt(outfile_name, total, header="# Q\tI/I0\tQ*Rg\t(Q*Rg)^2 I/I(0)")
+np.savetxt(outfile_name, total, header="Q\tI/I0\tQ*Rg\t(Q*Rg)^2 I/I(0)")
