@@ -36,6 +36,8 @@ namespace loos {
         _map.insert(std::pair<uint,FormFactor>(8, FormFactor(8)));
         // P
         _map.insert(std::pair<uint,FormFactor>(15, FormFactor(15)));
+        // S
+        _map.insert(std::pair<uint,FormFactor>(16, FormFactor(16)));
     }
 
 }

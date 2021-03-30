@@ -23,6 +23,7 @@ namespace loos {
         double get(uint i, double q) {
             std::map<uint,FormFactor>::iterator it = _map.find(i);
             if (it == _map.end()) {
+                std::cerr << "Unsupported atomic number: " << i << std::endl;
                 throw(LOOSError(" unsupported atomic number in scattering calculation"));
             }
             double val = _map[i].compute(q);
