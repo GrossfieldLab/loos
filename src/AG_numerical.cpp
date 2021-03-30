@@ -467,11 +467,7 @@ namespace loos {
 
     for (uint i = 0; i < size(); i++) {
         GCoord c1 = atoms[i]->coords();
-
-        for (uint j = i; j < size() ; j++) {
-            GCoord diff = c1 - atoms[j]->coords();
-            double length = diff.length();
-
+        for (uint j = i; j < size(); j++) {
             if (i == j) {
               for (uint qindex=0; qindex < numValues; qindex++) {
                 double q = qmin + qindex*qstep;
@@ -479,12 +475,18 @@ namespace loos {
                 values[qindex] += f1*f1;
               }
             } else {
+              GCoord diff = c1 - atoms[j]->coords();
+              double length = diff.length();
               for (uint qindex=0; qindex < numValues; qindex++) {
                   double q = qmin + qindex*qstep;
                   double qd = q * length;
                   double f1 = formFactors.get(atoms[i]->atomic_number(), q);
                   double f2 = formFactors.get(atoms[j]->atomic_number(), q);
-                  values[qindex] += f1*f2*sin(qd)/qd;
+                  if (qd < 1e-7) {  // trap q=0, sin(x)/x -> 1
+                    values[qindex] += f1*f1;
+                  } else {
+                    values[qindex] += f1*f2*sin(qd)/qd;
+                  }
               }
             }
         }
