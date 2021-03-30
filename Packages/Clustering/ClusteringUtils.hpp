@@ -3,6 +3,7 @@
 #define LOOS_CLUSTERING_UTILS
 #include <eigen3/Eigen/Dense>
 #include "ClusteringTypedefs.hpp"
+#include "loos.hpp"
 #include <iosfwd>
 #include <string>
 #include <vector>
@@ -27,11 +28,13 @@ readMatrixFromStream(std::istream &input,
   vector<vector<Numeric>> matbuff;
   string line;
   Numeric elt;
+  uint lineno = 0;
   while (getline(input, line))
   {
     // skip commets. Only permits comments at the beginning of lines.
     if (line[0] == commentChar)
       continue;
+    lineno++;
     stringstream streamline(line);
     vector<Numeric> row;
     // process a row here. Should work for whitespace delimited...
@@ -39,8 +42,19 @@ readMatrixFromStream(std::istream &input,
       row.push_back(elt);
     // push the vector into the matrix buffer.
     matbuff.push_back(row);
+    if (row.size() != matbuff.at(0).size()){
+      std::stringstream errstream;
+      errstream << "Line " << lineno << " has " << row.size() << " elements, while the first noncomment line has " 
+      << matbuff.at(0).size() << ".\nAll lines must have the same number of elements.\n";
+      throw(loos::LOOSError(errstream.str()));
+    }
   }
-
+  if (matbuff.size() != matbuff.at(0).size()){
+    std::stringstream errstream;
+    errstream << "Matrix has " << matbuff.size() << " rows, but " << matbuff.at(0).size() << " columns."
+    << "\nThese should be the same because the matrix needs to be square\n";
+    throw(loos::LOOSError(errstream.str()));
+  }
   // Populate matrix with numbers.
   // should be a better way to do this with Eigen::Map...
   // though mapped eigen matricies are not the same as eigen dense mats.
