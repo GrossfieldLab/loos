@@ -11,7 +11,7 @@ selection_string = sys.argv[2]
 outfile_name = sys.argv[3]
 traj_file = sys.argv[4]
 
-q_min = 0.25
+q_min = 0.0
 q_max = 6
 num_qvals = 24
 
@@ -27,7 +27,7 @@ q_vals = np.arange(q_min, q_max, (q_max - q_min)/num_qvals)
 for frame in traj:
     total += np.asarray(subset.scattering(q_min, q_max, num_qvals, formFactors))
 
-total /= len(traj)
+total /= (len(traj) * total[0])  # output I/I(0)
 
 total = np.column_stack((q_vals, total))
 
