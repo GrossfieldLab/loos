@@ -51,7 +51,7 @@ std::string fullHelpMessage(void) {
 "acceptable comment character, but only produces a comment-read at the beginning\n"
 "of a line (not at any point in a line, like a comment in a shell script). \n"
 "NOTE that the code checks that the matrix you gave it is square, but only uses\n"
-"The upper triangle of the matrix. It therefore CAN NOT TELL if the matrix you\n"
+"the upper triangle of the matrix. It therefore CAN NOT TELL if the matrix you\n"
 "supplied is symmetric. If you are doing something that would produce a non-\n"
 "symmetric matrix, that means your \'similarity score\' is either not a metric \n"
 "(it is not reflexive: D(i, j) != D(j, i)), or that you have not done a full \n"
