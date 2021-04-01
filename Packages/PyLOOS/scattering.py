@@ -186,7 +186,7 @@ if __name__ == '__main__':
                                               formFactors))
         rgyr += subset.radiusOfGyration()
 
-    total /= (len(traj) * total[0])  # output I/I(0)
+    total /= total[0]  # output I/I(0)
     rgyr /= len(traj)
 
     qrg = q_vals * rgyr
