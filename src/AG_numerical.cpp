@@ -483,7 +483,7 @@ namespace loos {
                   double f1 = formFactors.get(atoms[i]->atomic_number(), q);
                   double f2 = formFactors.get(atoms[j]->atomic_number(), q);
                   if (qd < 1e-7) {  // trap q=0, sin(x)/x -> 1
-                    values[qindex] += f1*f1;
+                    values[qindex] += f1*f2;
                   } else {
                     values[qindex] += f1*f2*sin(qd)/qd;
                   }
