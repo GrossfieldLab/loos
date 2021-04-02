@@ -44,6 +44,8 @@
 #include <PeriodicBox.hpp>
 #include <utils.hpp>
 #include <Matrix.hpp>
+#include <FormFactor.hpp>
+#include <FormFactorSet.hpp>
 
 #include <exceptions.hpp>
 
@@ -847,6 +849,22 @@ namespace loos {
      */
     double hardContact2D(const AtomicGroup& group, double radius,
                            const GCoord& box) const;
+
+    //* Compute x-ray scattering intensity from this group
+    /**
+        Computes X-ray scattering as a function of q, using
+        I(q) = \sum_(atom pair) F_i(q) F_j(q) sin (q d_ij)/ (q d_ij)
+
+        This approximates scattering off of individual atoms. If you use this
+        with explicit solvent, you will get truncation artifacts from the periodic
+        box (although the code computes all distances using periodicity).
+
+        Form factors are from Szaloki, X-ray Spectrometry (1996), V25, 21-28
+
+     */
+    std::vector<double> scattering(const double qmin, const double max,
+                                   const uint numValues,
+                                   loos::FormFactorSet &formFactors);
 
   private:
 

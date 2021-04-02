@@ -116,5 +116,3 @@
 #include <alignment.hpp>
 #include <RnaSuite.hpp>
 #endif
-
-
