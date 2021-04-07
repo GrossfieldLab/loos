@@ -46,73 +46,107 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-
 import sys
 import loos
 import loos.pyloos
+import loos.pyloos.options as lo
 import numpy
 import math
 
-header = " ".join(sys.argv)
-print("# ", header)
 
-system_file = sys.argv[1]
-traj_file = sys.argv[2]
-centering_selection_string = sys.argv[3]
-target_selection_string = sys.argv[4]
-zmin = float(sys.argv[5])
-zmax = float(sys.argv[6])
-znum_bins = int(sys.argv[7])
-rmin = float(sys.argv[8])
-rmax = float(sys.argv[9])
-rnum_bins = int(sys.argv[10])
-
-system = loos.createSystem(system_file)
-traj = loos.pyloos.Trajectory(traj_file, system)
-
-centering = loos.selectAtoms(system, centering_selection_string)
-target = loos.selectAtoms(system, target_selection_string)
+def fullhelp():
+    print("""
+        Test test test
+    """)
 
 
-zbin_width = (zmax - zmin) / znum_bins
+class FullHelp(lo.argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        kwargs['nargs'] = 0
+        super(FullHelp, self).__init__(option_strings, dest, **kwargs)
 
-rbin_width = (rmax - rmin) / rnum_bins
-rmin2 = rmin*rmin
-rmax2 = rmax*rmax
+    def __call__(self, parser, namespace, values, option_string=None):
+        fullhelp()
+        lo.parser.print_help()
+        setattr(namespace, self.dest, True)
+        lo.parser.exit()
 
-hist = numpy.zeros([rnum_bins, znum_bins])
 
-for frame in traj:
+def toolOptions(parser):
+    parser.add_argument('--target_selection',
+                        help="Atoms whose density we're tracking")
+    parser.add_argument('--zmax', type=float,
+                        help="Upper z limit of density")
+    parser.add_argument('--zmin', type=float,
+                        help="Lower z limit of density")
+    parser.add_argument('--rmin', type=float,
+                        help="Lower r limit of density")
+    parser.add_argument('--rmax', type=float,
+                        help="Upper r limit of density")
+    parser.add_argument('--zbins', type=int,
+                        help="Number of bins in z")
+    parser.add_argument('--rbins', type=int,
+                        help="Number of bins in r")
+    parser.add_argument('--fullhelp',
+                        help="Print detailed description of all options",
+                        action=FullHelp)
+    return parser
 
-    centroid = centering.centroid()
-    target.translate(-centroid)
-    target.reimageByAtom()
+if __name__ == '__main__':
 
-    for atom in target:
-        x = atom.coords().x()
-        y = atom.coords().y()
-        z = atom.coords().z()
+    lo.parser = lo.modelSelectionOptions(lo.parser)
+    lo.parser = lo.trajOptions(lo.parser)
+    lo.parser = toolOptions(lo.parser)
 
-        r2 = x*x + y*y
+    args = lo.parser.parse_args()
 
-        if (zmin < z < zmax) and (rmin2 < r2 < rmax2):
-            r = math.sqrt(r2)
+    system = loos.createSystem(args.model)
+    traj = loos.pyloos.Trajectory(args.traj, system)
 
-            rbin = int((r - rmin) / rbin_width)
-            zbin = int((z - zmin) / zbin_width)
+    centering = loos.selectAtoms(system, lo.selection)
 
-            if (0 <= rbin < rnum_bins) and (0 <= zbin < znum_bins):
-                hist[rbin, zbin] += 1.0
+    target = loos.selectAtoms(system, args.target_selection)
 
-hist /= len(traj)
 
-for i in range(rnum_bins):
-    rinner = rmin + i*rbin_width
-    router = rinner + rbin_width
-    rval = rmin + (i+0.5)*rbin_width
+    zbin_width = (args.zmax - args.zmin) / arg.zbins
 
-    norm = math.pi * (router*router - rinner*rinner)
-    for j in range(znum_bins):
-        zval = zmin + (j+0.5)*zbin_width
-        print(rval, zval, hist[i, j] / norm)
-    print()
+    rbin_width = (args.rmax - args.rmin) / args.rbins
+    rmin2 = args.rmin * args.rmin
+    rmax2 = args.rmax * args.rmax
+
+    hist = numpy.zeros([args.rbins, args.zbins])
+
+    for frame in traj:
+
+        centroid = centering.centroid()
+        target.translate(-centroid)
+        target.reimageByAtom()
+
+        for atom in target:
+            x = atom.coords().x()
+            y = atom.coords().y()
+            z = atom.coords().z()
+
+            r2 = x*x + y*y
+
+            if (args.zmin < z < args.zmax) and (rmin2 < r2 < rmax2):
+                r = math.sqrt(r2)
+
+                rbin = int((r - rmin) / rbin_width)
+                zbin = int((z - zmin) / zbin_width)
+
+                if (0 <= rbin < args.rbins) and (0 <= zbin < args.zbins):
+                    hist[rbin, zbin] += 1.0
+
+    hist /= len(traj)
+
+    for i in range(args.rbins):
+        rinner = args.rmin + i*rbin_width
+        router = rinner + rbin_width
+        rval = args.rmin + (i+0.5)*rbin_width
+
+        norm = math.pi * (router*router - rinner*rinner)
+        for j in range(args.zbins):
+            zval = args.zmin + (j+0.5)*zbin_width
+            print(rval, zval, hist[i, j] / norm)
+        print()
