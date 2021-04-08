@@ -1,30 +1,5 @@
 #!/usr/bin/env python3
 """
-   cylindrical-density.py : compute the density of atoms ("targets") around
-                            a centering selection, output a 2D histogram in
-                            r,z
-   The expected use-case for this is looking at lipid packing around a membrane
-   protein, when for whatever region you want to average out the "polar"
-   degrees of freedom.
-
-   For example, a command line could look like:
-
-   cylindrical-density.py sim.psf sim.dcd 'segid == "PROT"' 'segid =~ "PE" && \!hydrogen' -25 25 50 10 30 20
-
-   This would read the system info from sim.psf, and use the trajectory sim.dcd.
-   The system would be translated such that "PROT" is at the origin, and then
-   the density of all heavy atoms with segment names containing "PE" would be
-   computed.  The z-range of the histogram would go from -25:25 with 50 bins,
-   and r-range would be 10:30 with 20 bins.
-
-   I highly suggest including the "&& \!hydrogen" part of the target selection,
-   since that will make the program run significantly faster without
-   substantially changing the information content (the slash in front of the "!"
-   may or may not be necessary, depending on which shell you use).
-
-   Alan Grossfield
-"""
-"""
 
   This file is part of LOOS.
 
@@ -49,61 +24,63 @@
 import sys
 import loos
 import loos.pyloos
-import loos.pyloos.options as lo
+import loos.pyloos.options as options
 import numpy
 import math
 
 
-def fullhelp():
-    print("""
-        Test test test
-    """)
-
-
-class FullHelp(lo.argparse.Action):
-    def __init__(self, option_strings, dest, nargs=None, **kwargs):
-        kwargs['nargs'] = 0
-        super(FullHelp, self).__init__(option_strings, dest, **kwargs)
-
-    def __call__(self, parser, namespace, values, option_string=None):
-        fullhelp()
-        lo.parser.print_help()
-        setattr(namespace, self.dest, True)
-        lo.parser.exit()
-
-
-def toolOptions(parser):
-    parser.add_argument('--target_selection',
-                        help="Atoms whose density we're tracking")
-    parser.add_argument('--zmax', type=float,
-                        help="Upper z limit of density")
-    parser.add_argument('--zmin', type=float,
-                        help="Lower z limit of density")
-    parser.add_argument('--rmin', type=float,
-                        help="Lower r limit of density")
-    parser.add_argument('--rmax', type=float,
-                        help="Upper r limit of density")
-    parser.add_argument('--zbins', type=int,
-                        help="Number of bins in z")
-    parser.add_argument('--rbins', type=int,
-                        help="Number of bins in r")
-    parser.add_argument('--fullhelp',
-                        help="Print detailed description of all options",
-                        action=FullHelp)
-    return parser
-
 if __name__ == '__main__':
 
-    lo.parser = lo.modelSelectionOptions(lo.parser)
-    lo.parser = lo.trajOptions(lo.parser)
-    lo.parser = toolOptions(lo.parser)
+    fullhelp = """
+cylindrical-density.py : compute the density of atoms ("targets") around
+                        a centering selection, output a 2D histogram in
+                        r,z
+The expected use-case for this is looking at lipid packing around a membrane
+protein, when for whatever reason you want to average out the "polar"
+degrees of freedom.
 
-    args = lo.parser.parse_args()
+For example, a command line could look like:
+
+cylindrical-density.py sim.psf sim.dcd 'segid == "PROT"' 'segid =~ "PE" && \!hydrogen' -25 25 50 10 30 20
+
+This would read the system info from sim.psf, and use the trajectory sim.dcd.
+The system would be translated such that "PROT" is at the origin, and then
+the density of all heavy atoms with segment names containing "PE" would be
+computed.  The z-range of the histogram would go from -25:25 with 50 bins,
+and r-range would be 10:30 with 20 bins.
+
+I highly suggest including the "&& \!hydrogen" part of the target selection,
+since that will make the program run significantly faster without
+substantially changing the information content (the slash in front of the "!"
+may or may not be necessary, depending on which shell you use).
+"""
+
+    lo = options.LoosOptions(fullhelp)
+
+    lo.modelSelectionOptions()
+    lo.trajOptions()
+    lo.parser.add_argument('--target_selection',
+                           help="Atoms whose density we're tracking")
+    lo.parser.add_argument('--zmax', type=float,
+                           help="Upper z limit of density")
+    lo.parser.add_argument('--zmin', type=float,
+                           help="Lower z limit of density")
+    lo.parser.add_argument('--rmin', type=float,
+                           help="Lower r limit of density")
+    lo.parser.add_argument('--rmax', type=float,
+                           help="Upper r limit of density")
+    lo.parser.add_argument('--zbins', type=int,
+                           help="Number of bins in z")
+    lo.parser.add_argument('--rbins', type=int,
+                           help="Number of bins in r")
+
+    args = lo.parse_args()
 
     system = loos.createSystem(args.model)
-    traj = loos.pyloos.Trajectory(args.traj, system)
+    traj = loos.pyloos.Trajectory(args.traj, system,
+                                  skip=args.skip, stride=args.stride)
 
-    centering = loos.selectAtoms(system, lo.selection)
+    centering = loos.selectAtoms(system, args.selection)
 
     target = loos.selectAtoms(system, args.target_selection)
 
