@@ -464,6 +464,23 @@ class VirtualTrajectory(object):
         t = self._trajectories[self._trajlist[i]]
         return( self._framelist[i], self._trajlist[i], t, t.frameNumber(self._framelist[i]))
 
+    def frameBoundaries(self):
+        """
+        Return a list containing the index of the first frame associated with
+        each traj
+        >>> b = vt.frameBoundaries()
+        len(b) will be the number of trajectories in vt.
+        -> can slice the data from the nth traj from an array with b[n]:b[n+1]
+        """
+        from numpy import searchsorted
+        if (self._stale):
+            self._initFrameList()
+        boundaries = [0]
+        for i in range(1, len(self._trajectories)):
+            loc = searchsorted(_trajlist, i)
+            boundaries.append(loc)
+        return boundaries
+
     def _initFrameList(self):
         frames = []
         trajs = []
