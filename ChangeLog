@@ -1,6 +1,9 @@
+2021-04-08 Alan Grossfield <alan>
+    * add frameBoundaries to VirtualTrajectory
+	
 2021-04-02 Alan Grossfield <alan>
 	* Merged scattering tool
-	
+
 2021-01-21  Release version 3.3
 2021-01-18  Alan Grossfield <alan>
 	* Merged in ocf tool
