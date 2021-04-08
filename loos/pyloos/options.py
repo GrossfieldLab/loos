@@ -13,7 +13,7 @@ class LoosOptions:
         if fullhelp:
             self.setFullhelp(fullhelp)
         if len(sys.argv)==1:
-            parser.print_help(sys.stderr)
+            self.parser.print_help(sys.stderr)
             sys.exit(1)
 
 
