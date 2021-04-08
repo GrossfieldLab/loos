@@ -469,7 +469,7 @@ class VirtualTrajectory(object):
         Return a list containing the index of the first frame associated with
         each traj
         >>> b = vt.frameBoundaries()
-        len(b) will be the number of trajectories in vt.
+        len(b) will be the number of trajectories in vt + 1.
         -> can slice the data from the nth traj from an array with b[n]:b[n+1]
         """
         from numpy import searchsorted
@@ -477,8 +477,9 @@ class VirtualTrajectory(object):
             self._initFrameList()
         boundaries = [0]
         for i in range(1, len(self._trajectories)):
-            loc = searchsorted(_trajlist, i)
+            loc = searchsorted(self._trajlist, i)
             boundaries.append(loc)
+        boundaries.append(len(self))
         return boundaries
 
     def _initFrameList(self):
