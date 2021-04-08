@@ -40,6 +40,6 @@ if int(env['pyloos']):
     else:
         p = PREFIX
     for d in Split(files):
-        env.Install(p + d, d)
+        env.Install(p, d)
 
 Return('pyloos_directory')
