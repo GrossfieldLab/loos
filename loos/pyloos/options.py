@@ -25,21 +25,21 @@ class LoosOptions:
 
     # Set up some default arguments
     def modelSelectionOptions(self):
-        self.parser.add_argument('--model',
+        self.parser.add_argument('-m', '--model',
                                  help="Model file describing system contents")
         self.parser.add_argument('--sel',
                                  help='Use this selection for computation',
                                  default='all')
 
     def trajOptions(self):
-        self.parser.add_argument('--traj',
+        self.parser.add_argument('-t', '--traj',
                                  help='Filename of trajectory or trajectories',
                                  nargs='+')
-        self.parser.add_argument('--skip',
+        self.parser.add_argument('-k', '--skip',
                                  help='Skip frames from the trajectory start',
                                  type=int,
                                  default=0)
-        self.parser.add_argument('--stride',
+        self.parser.add_argument('-s', '--stride',
                                  help='Step through the trajectory by this',
                                  type=int,
                                  default=1)
