@@ -32,6 +32,7 @@ import loos
 import loos.pyloos
 import numpy as np
 import argparse
+import json
 
 
 def fullhelp():
@@ -97,11 +98,13 @@ parser.add_argument('--base_carbons', action='store_true',
 parser.add_argument('--fullhelp',
                     help="Print detailed description of all options",
                     action=FullHelp)
+parser.add_argument('--normfile',
+                    help="JSON file containing base normalizers",
+                    default=None)
 
 args = parser.parse_args()
 
-header = "#" + " ".join(sys.argv)
-
+header = " ".join([f"'{i}'" for i in sys.argv])
 
 system = loos.createSystem(args.system_file)
 all_trajs = []
@@ -134,5 +137,21 @@ for traj in all_trajs:
                 scores[j, i] += p
         total_frames += 1
 scores /= total_frames
+
+# Normalize, if they asked for it
+if args.normfile:
+    with open(args.normfile) as jsfile:
+        stack_values = json.load(jsfile)
+
+        resnames = []
+        for r in residues:
+            resnames.append(r[0].resname())
+
+        for i in range(len(scores)-1):
+            for j in range(i+1, len(scores)):
+                key = resnames[i] + "-" + resnames[j]
+                newval = scores[i, j] / stack_values[key]
+                scores[i, j] = newval
+                scores[j, i] = newval
 
 np.savetxt(args.outfile_name, scores, header=header)
