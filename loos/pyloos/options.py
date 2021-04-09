@@ -12,10 +12,9 @@ class LoosOptions:
         self.parser = argparse.ArgumentParser()
         if fullhelp:
             self.setFullhelp(fullhelp)
-        if len(sys.argv)==1:
+        if len(sys.argv) == 1:
             self.parser.print_help(sys.stderr)
             sys.exit(1)
-
 
     def setFullhelp(self, fullhelp=None):
         self.fullhelp = fullhelp
