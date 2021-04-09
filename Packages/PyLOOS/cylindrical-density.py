@@ -41,7 +41,11 @@ degrees of freedom.
 
 For example, a command line could look like:
 
-cylindrical-density.py sim.psf sim.dcd 'segid == "PROT"' 'segid =~ "PE" && \!hydrogen' -25 25 50 10 30 20
+cylindrical-density.py --model sim.psf --traj sim.dcd --sel 'segid == "PROT"' \
+    --target_selection 'segid =~ "PE" && \!hydrogen' --zmin -25 --zmanx 25  \
+    --zbins 50 --rmin 10 --rmax 30 --rebins 20
+
+(the line breaks marked by "\" are for readability purposes only)
 
 This would read the system info from sim.psf, and use the trajectory sim.dcd.
 The system would be translated such that "PROT" is at the origin, and then
