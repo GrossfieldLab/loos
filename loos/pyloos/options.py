@@ -3,13 +3,15 @@
 import argparse
 import sys
 
-"""
-    Parse command line options and implement common sets of options
-    Implemented as a wrapper around argparse
-"""
+
 class LoosOptions:
+    """
+        Parse command line options and implement common sets of options
+        Implemented as a wrapper around argparse
+    """
     def __init__(self, fullhelp=None):
         self.parser = argparse.ArgumentParser()
+
         if fullhelp:
             self.setFullhelp(fullhelp)
         if len(sys.argv) == 1:
