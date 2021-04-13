@@ -123,10 +123,12 @@ residues = selection.splitByResidue()
 scores = np.zeros((len(residues), len(residues)))
 
 # default box in case the system isn't actually periodic
-box = loos.GCoord(1000., 1000., 1000.)
 
 total_frames = 0
 for traj in all_trajs:
+    # Reset box in case some trajectories are periodic and others aren't.
+    # That would be very strange, but why not be safe.
+    box = loos.GCoord(1000., 1000., 1000.)
     for frame in traj:
         if frame.isPeriodic():
             box = frame.periodicBox()
