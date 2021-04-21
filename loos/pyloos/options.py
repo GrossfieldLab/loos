@@ -25,16 +25,25 @@ class LoosOptions:
                                  default=False)
 
     # Set up some default arguments
+    def modelSelectionPositionalOptions(self):
+        self.parser.add_argument(help="Model file describing system contents")
+        self.parser.add_argument(help='Use this selection for computation',
+                                 default='all')
+
+    # Set up some default arguments
     def modelSelectionOptions(self):
         self.parser.add_argument('-m', '--model',
-                                 help="Model file describing system contents")
+                                 help="Model file describing system contents",
+                                 required=True)
         self.parser.add_argument('--sel',
                                  help='Use this selection for computation',
+                                 required=True,
                                  default='all')
 
     def trajOptions(self):
         self.parser.add_argument('-t', '--traj',
                                  help='Filename of trajectory or trajectories',
+                                 required=True,
                                  nargs='+')
         self.parser.add_argument('-k', '--skip',
                                  help='Skip frames from the trajectory start',
@@ -52,3 +61,7 @@ class LoosOptions:
             sys.stderr.write(self.fullhelp)
             sys.exit(0)
         return args
+
+    def header(self):
+        string = ["'"+str(x) + "'" for x in sys.argv]
+        return string
