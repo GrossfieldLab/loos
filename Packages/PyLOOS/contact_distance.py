@@ -53,7 +53,7 @@ lo.parser.add_argument('--radius',
                        help="midpoint distance for the logistic contact")
 # fix this so you don't need to give a value
 lo.parser.add_argument('--skip_backbone',
-                       default=False,
+                       action='store_true',
                        help="Consider only sidechains")
 lo.parser.add_argument('--include_h',
                        default=False,
