@@ -14,9 +14,6 @@ class LoosOptions:
 
         if fullhelp:
             self.setFullhelp(fullhelp)
-        if len(sys.argv) == 1:
-            self.parser.print_help(sys.stderr)
-            sys.exit(1)
 
     def setFullhelp(self, fullhelp=None):
         self.fullhelp = fullhelp
@@ -57,6 +54,9 @@ class LoosOptions:
     def parse_args(self):
         args = self.parser.parse_args()
         # postprocess args here; error checks, checks for needed behavior
+        if len(sys.argv) == 1:
+            self.parser.print_help(sys.stderr)
+            sys.exit(1)
         if args.fullhelp:
             sys.stderr.write(self.fullhelp)
             sys.exit(0)
