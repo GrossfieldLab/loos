@@ -32,7 +32,7 @@ class LoosOptions:
         self.parser.add_argument('-m', '--model',
                                  help="Model file describing system contents",
                                  required=True)
-        self.parser.add_argument('--sel',
+        self.parser.add_argument('--selection',
                                  help='Use this selection for computation',
                                  required=True,
                                  default='all')
@@ -57,11 +57,13 @@ class LoosOptions:
         if len(sys.argv) == 1:
             self.parser.print_help(sys.stderr)
             sys.exit(1)
+
         if args.fullhelp:
             sys.stderr.write(self.fullhelp)
             sys.exit(0)
         return args
 
     def header(self):
-        string = ["'"+str(x) + "'" for x in sys.argv]
+        vals = ["'"+str(x) + "'" for x in sys.argv]
+        string = " ".join(vals)
         return string
