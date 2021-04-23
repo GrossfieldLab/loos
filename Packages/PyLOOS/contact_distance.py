@@ -34,13 +34,49 @@ import numpy
 from scipy.spatial.distance import pdist, squareform
 
 fullhelp = """
-  Insert something useful here
 
-  If more than 1 trajectory is specified, any --skip or --stride values will be
-  applied to each.
+Compute the frame-frame distance matrix for a trajetory in contact space.
+
+This program is analogous to rmsds, except the distance is computed using a
+logistic contact function for each pair of residues. For each pair of residues,
+the degree of contact is computed using a logistic switching function
+C(r) = 1/(1 + (r/radius)^sigma
+
+So, each structure with N residues is represented by a vector with N*(N-1)/2
+entries, each storing CC = 1-C(r). The distance between 2 structures is
+computed as sqrt(sum CC). We then write out the full square matrix, suitable
+for consumption by a clustering program such as our cluster-kgs.
+
+Note: the final matrix is MxM, where M is the number of frames in the trajectory
+or trajetories, so it will get very big very fast (eg ~2.5 GB for 1000 frames).
+So, if you've written a lot of frames, you'll probably want to downsample the
+calculation using the --stride option.
+
+You can control the nature of the contact calculation using these flags:
+    --sigma: the exponent in the contact equation. Must be an integer,
+             defaults to 6. Larger values make the 1->0 transition sharper.
+    --radius: mid-point of the switching distance. The default is 6 ang,
+            which seems reasonable for sidechain-sidechain distances.
+
+The program uses the selection string supplied on the command line to decide
+which residues to look at. For your convenience, we've added 2 additional
+flags:
+    --skip_backbone: adds "!backbone" to the selection to remove the backbone of
+                    protein, RNA, or DNA
+    --include_h: by default, the calculation uses only the heavy atoms, since
+                hydrogens don't generally shift the location of the centroid
+                appreciably. If you want the hydrogens, use this flag.
+
+By default, the matrix of distances is written to stdout, so you could in
+principle stream it into something like cluster-kgs without saving it.
+If you want to save it to a file, use the --outfile flag.
+
+TODO: add an option to write out the contact structures themselves, so someone
+could input them into PCA, tICA, or something like that.
+
 """
 
-lo = options.LoosOptions(fullhelp)
+lo = options.LoosOptions("Compute distance matrix using contacts", fullhelp)
 lo.modelSelectionOptions()
 lo.trajOptions()
 lo.parser.add_argument('--sigma',
@@ -57,6 +93,7 @@ lo.parser.add_argument('--skip_backbone',
                        help="Consider only sidechains")
 lo.parser.add_argument('--include_h',
                        default=False,
+                       action='store_true'
                        help="Include hydrogens")
 lo.parser.add_argument('--outfile',
                        help="Name of outputted file ")
@@ -91,8 +128,6 @@ else:
 
 # set up storage
 num_pairs = len(residues) * (len(residues)-1) // 2
-print("# num residues = ", len(residues))
-print("# num_pairs = ", num_pairs)
 contacts = numpy.zeros((len(traj), num_pairs), numpy.float)
 
 default_box = loos.GCoord(10000., 10000., 10000.)
@@ -110,8 +145,14 @@ for frame in traj:
     for i in range(num_residues - 1):
         r1 = residues[i]
         for j in range(i+1, num_residues):
-            contact = r1.logisticContact(residues[j], args.radius, args.sigma, box)
-            contacts[frame_number, index] = contact
+            contact = r1.logisticContact(residues[j],
+                                         args.radius,
+                                         args.sigma,
+                                         box)
+            # High contact -> low distance
+            # However, since we're taking distances between structures, you
+            # get pretty much the same answer either way.
+            contacts[frame_number, index] = 1. - contact
             index += 1
     frame_number += 1
 
