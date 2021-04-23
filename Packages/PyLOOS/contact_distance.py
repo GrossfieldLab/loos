@@ -31,7 +31,7 @@ import loos
 import loos.pyloos
 import loos.pyloos.options as options
 import numpy
-from scipy.spatial.distance import pdist
+from scipy.spatial.distance import pdist, squareform
 
 fullhelp = """
   Insert something useful here
@@ -44,8 +44,8 @@ lo = options.LoosOptions(fullhelp)
 lo.modelSelectionOptions()
 lo.trajOptions()
 lo.parser.add_argument('--sigma',
-                       default=6.0,
-                       type=float,
+                       default=6,
+                       type=int,
                        help="exponent for the logistic contact")
 lo.parser.add_argument('--radius',
                        default=5.0,
@@ -90,8 +90,10 @@ else:
         traj.append(t)
 
 # set up storage
-contacts = numpy.zeros((len(residues) * (len(residues)-1) / 2, len(traj)),
-                       type=float)
+num_pairs = len(residues) * (len(residues)-1) // 2
+print("# num residues = ", len(residues))
+print("# num_pairs = ", num_pairs)
+contacts = numpy.zeros((len(traj), num_pairs), numpy.float)
 
 default_box = loos.GCoord(10000., 10000., 10000.)
 frame_number = 0
@@ -104,26 +106,23 @@ for frame in traj:
         box = default_box
 
     # compute residue-residue contacts and store
+    index = 0
     for i in range(num_residues - 1):
         r1 = residues[i]
         for j in range(i+1, num_residues):
-            contact = r1.logisticContact(r2, args.radius, args.sigma, box)
-            index = (i*num_residues) + j
+            contact = r1.logisticContact(residues[j], args.radius, args.sigma, box)
             contacts[frame_number, index] = contact
+            index += 1
+    frame_number += 1
 
-print("Finished computing contacts, starting distance calculation")
 
 dists = pdist(contacts, 'euclidean')
-square_dists = np.zeros([num_residues, num_residues], np.float)
-for i in range(num_residues - 1):
-    for j in range(i+1, num_residues):
-        index = i*num_residues + j
-        square_dists[i, j] = dists[index]
-        square_dists[j, i] = dists[index]
+print("dists shape: ", dists.shape)
+square_dists = squareform(dists)
 
 if args.outfile:
     outfile = open(args.outfile, "w")
 else:
     outfile = sys.stdout
 
-square_dists.savetxt(outfile, header=lo.header())
+numpy.savetxt(outfile, square_dists, header=lo.header())
