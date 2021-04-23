@@ -9,8 +9,8 @@ class LoosOptions:
         Parse command line options and implement common sets of options
         Implemented as a wrapper around argparse
     """
-    def __init__(self, fullhelp=None):
-        self.parser = argparse.ArgumentParser()
+    def __init__(self, description, fullhelp=None):
+        self.parser = argparse.ArgumentParser(description=description)
 
         if fullhelp:
             self.setFullhelp(fullhelp)
@@ -56,7 +56,7 @@ class LoosOptions:
         # postprocess args here; error checks, checks for needed behavior
         if len(sys.argv) == 1:
             self.parser.print_help(sys.stderr)
-            sys.exit(1)
+            sys.exit(0)
 
         if args.fullhelp:
             sys.stderr.write(self.fullhelp)
