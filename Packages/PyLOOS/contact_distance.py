@@ -164,8 +164,25 @@ if args.outfile:
 else:
     outfile = sys.stdout
 
-trajectories = "Trajectories: " + " ".join(args.traj)
-frame_boundaries = "First frames: " + " ".join(str(x) for x in traj.frameBoundaries())
-header = "\n".join(str(x) for x in [lo.header(), trajectories, frame_boundaries])
+#trajectories = "Trajectories: " + " ".join(args.traj)
+#frame_boundaries = "First frames: " + " ".join(str(x) for x in traj.frameBoundaries())
+frame_boundaries = traj.frameBoundaries()
+
+traj_header = [" traj  start   end     filename"]
+if (type(args.traj) == str):
+    s = ["0", "0", str(len(traj)-1), args.traj]
+    traj_header.append("\t".join(s))
+else:
+    for i in range(len(args.traj)-1):
+        s = [str(i), str(frame_boundaries[i]), str(frame_boundaries[i+1]-1),
+             args.traj[i]]
+        traj_header.append("\t".join(s))
+    i = len(args.traj) - 1
+    s = [str(i), str(frame_boundaries[i]), str(len(traj)-1),
+         args.traj[i]]
+    traj_header.append("\t".join(s))
+traj_header = "\n".join(traj_header)
+
+header = "\n".join(str(x) for x in [lo.header(), traj_header])
 
 numpy.savetxt(outfile, square_dists, header=header)
