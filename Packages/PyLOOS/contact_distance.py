@@ -87,13 +87,13 @@ lo.parser.add_argument('--radius',
                        default=5.0,
                        type=float,
                        help="midpoint distance for the logistic contact")
-# fix this so you don't need to give a value
 lo.parser.add_argument('--skip_backbone',
+                       default=False,
                        action='store_true',
                        help="Consider only sidechains")
 lo.parser.add_argument('--include_h',
                        default=False,
-                       action='store_true'
+                       action='store_true',
                        help="Include hydrogens")
 lo.parser.add_argument('--outfile',
                        help="Name of outputted file ")
@@ -122,11 +122,10 @@ else:
                                skip=args.skip, stride=args.stride)
     traj = loos.pyloos.VirtualTrajectory(t)
     for t in args.traj[1:]:
-        t = loos.pyloos.Trajectory(args.traj[0], system,
+        t = loos.pyloos.Trajectory(t, system,
                                    skip=args.skip, stride=args.stride)
         traj.append(t)
 
-# set up storage
 num_pairs = len(residues) * (len(residues)-1) // 2
 contacts = numpy.zeros((len(traj), num_pairs), numpy.float)
 
@@ -158,7 +157,6 @@ for frame in traj:
 
 
 dists = pdist(contacts, 'euclidean')
-print("dists shape: ", dists.shape)
 square_dists = squareform(dists)
 
 if args.outfile:
@@ -166,4 +164,8 @@ if args.outfile:
 else:
     outfile = sys.stdout
 
-numpy.savetxt(outfile, square_dists, header=lo.header())
+trajectories = "Trajectories: " + " ".join(args.traj)
+frame_boundaries = "First frames: " + " ".join(str(x) for x in traj.frameBoundaries())
+header = "\n".join(str(x) for x in [lo.header(), trajectories, frame_boundaries])
+
+numpy.savetxt(outfile, square_dists, header=header)
