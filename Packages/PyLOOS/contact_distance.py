@@ -164,8 +164,6 @@ if args.outfile:
 else:
     outfile = sys.stdout
 
-#trajectories = "Trajectories: " + " ".join(args.traj)
-#frame_boundaries = "First frames: " + " ".join(str(x) for x in traj.frameBoundaries())
 frame_boundaries = traj.frameBoundaries()
 
 traj_header = [" traj  start   end     filename"]
