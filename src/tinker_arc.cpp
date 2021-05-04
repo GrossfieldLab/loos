@@ -34,17 +34,20 @@ namespace loos {
     cached_first = true;
 
     // Now determine the # of frames...
-    while (!(ifs->eof() || ifs->bad() || ifs->fail()) {
+    while (1) {
       indices.push_back(ifs->tellg());
       ifs->getline(buf, sizeof(buf));
-      i
       if (frame.isPeriodic())
         ifs->getline(buf, sizeof(buf));
       for (uint i=0; i<_natoms; ++i)
         ifs->getline(buf, sizeof(buf));
+      if (ifs->eof() || ifs->bad() || ifs->fail()) {
+        indices.pop_back();
+        break;
+      }
     }
 
-    _nframes = indices.size() - 1;
+    _nframes = indices.size()-1;
 
     ifs->clear();
     ifs->seekg(indices[1]);
