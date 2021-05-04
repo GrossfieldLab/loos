@@ -34,9 +34,12 @@ namespace loos {
     cached_first = true;
 
     // Now determine the # of frames...
-    while (!ifs->eof()) {
+    while (!(ifs->eof() || ifs->bad() || ifs->fail()) {
       indices.push_back(ifs->tellg());
       ifs->getline(buf, sizeof(buf));
+      i
+      if (frame.isPeriodic())
+        ifs->getline(buf, sizeof(buf));
       for (uint i=0; i<_natoms; ++i)
         ifs->getline(buf, sizeof(buf));
     }
@@ -94,7 +97,7 @@ namespace loos {
   }
 
 
-  void TinkerArc::updateGroupCoordsImpl(AtomicGroup& g) 
+  void TinkerArc::updateGroupCoordsImpl(AtomicGroup& g)
   {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
@@ -102,11 +105,11 @@ namespace loos {
 	throw(LOOSError(**i, "Atom index into the trajectory frame is out of bounds"));
       (*i)->coords(frame[idx]->coords());
     }
-    
+
     // Handle periodic boundary conditions (if present)
     if (hasPeriodicBox()) {
       g.periodicBox(periodicBox());
     }
   }
-  
+
 }
