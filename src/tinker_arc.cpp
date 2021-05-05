@@ -41,8 +41,7 @@ namespace loos {
         ifs->getline(buf, sizeof(buf));
       for (uint i=0; i<_natoms; ++i)
         ifs->getline(buf, sizeof(buf));
-      if (ifs->eof() || ifs->bad() || ifs->fail()) {
-        indices.pop_back();
+      if (ifs->eof()) {
         break;
       }
     }
@@ -78,14 +77,22 @@ namespace loos {
     if (ifs->eof() || at_end)
       return(false);
 
-    TinkerXYZ newframe;
-    newframe.read(*(ifs));
-    frame = newframe;
-    if (frame.size() == 0) {
-      at_end = true;
+    // We embed the attempted read in a try catch
+    // because the TinkerXYZ read() throws an error
+    // if it can't read, so that the frame.size() test won't
+    // keep us from walking off the end
+    try {
+      TinkerXYZ newframe;
+      newframe.read(*(ifs));
+      frame = newframe;
+      if (frame.size() == 0) {
+        at_end = true;
+        return(false);
+      }
+    }
+    catch(LOOSError& e) {
       return(false);
     }
-
     return(true);
   }
 
