@@ -1,6 +1,9 @@
+2021-05-05 Alan Grossfield <alan>
+	* fixed bug in reading TinkerArc files with periodic boxes
+
 2021-04-08 Alan Grossfield <alan>
     * add frameBoundaries to VirtualTrajectory
-	
+
 2021-04-02 Alan Grossfield <alan>
 	* Merged scattering tool
 
