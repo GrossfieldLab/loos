@@ -1,3 +1,6 @@
+2021-05-06 Alan Grossfield <alan>
+	* added new method to AtomicGroup to orient the group along a supplied axis
+
 2021-05-05 Alan Grossfield <alan>
 	* fixed bug in reading TinkerArc files with periodic boxes
 

@@ -65,7 +65,7 @@ namespace loos {
     I(2,0) = I(0,2) = -I(2,0);
     I(2,1) = I(1,2) = -I(2,1);
 
-    
+
     // Now compute the eigen-decomp...
     char jobz = 'V', uplo = 'U';
     f77int nn;
@@ -136,7 +136,7 @@ namespace loos {
     double one = 1.0;
 
     dgemm_(&ta, &tb, &three, &three, &n, &one, A, &three, A, &three, &zero, C, &three);
-    
+
 #else
     cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans,
                 3, 3, n, 1.0, A, 3, A, 3, 0.0, C, 3);
@@ -150,7 +150,7 @@ namespace loos {
     f77int lda = 3;
     double W[3], work[128];
     f77int lwork = 128;   // ???  Just a guess for sufficient storage to be
-    // efficient... 
+    // efficient...
     f77int info;
     nn = 3;
 
@@ -201,6 +201,18 @@ namespace loos {
     applyTransform(W);
 
     return(M);
+  }
+
+  void AtomicGroup::orientAlong(const GCoord &vec) {
+    std::vector<GCoord> paxes = principalAxes();
+    GCoord center = centroid();
+    double angle = acos(paxes[0]*vec / vec.length());
+    GCoord axis = paxes[0].cross(vec);
+    axis /= axis.length();
+
+    translate(-center);
+    rotate(axis, -angle * 180.0 / M_PI);
+    translate(center);
   }
 
 }
