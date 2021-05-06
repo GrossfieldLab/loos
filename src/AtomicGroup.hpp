@@ -777,6 +777,12 @@ namespace loos {
      */
     GMatrix alignOnto(const AtomicGroup&);
 
+    //! Orient the principal axis of this group along the supplied vector
+    /**
+     * The supplied vector does not need to be normalized.
+     */
+    void orientAlong(const GCoord &);
+
     // Set coordinates to an array
     /**
      * This function is meant for Numpy/swig use in setting the model's
