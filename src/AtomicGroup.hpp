@@ -44,6 +44,8 @@
 #include <PeriodicBox.hpp>
 #include <utils.hpp>
 #include <Matrix.hpp>
+#include <FormFactor.hpp>
+#include <FormFactorSet.hpp>
 
 #include <exceptions.hpp>
 
@@ -617,8 +619,8 @@ namespace loos {
      greal stacking(const AtomicGroup&, const GCoord& box, const double threshold) const;
 
     //! Compute the RMSD between two groups
-    /**Sorts both groups (if necessary), then assumes a 1:1
-     *correspondence between ith atoms.
+    /** Assumes a 1:1 correspondence between ith atoms.
+     *  Does NOT transform the coordinates in any way.
      */
     greal rmsd(const AtomicGroup&);
 
@@ -781,6 +783,12 @@ namespace loos {
      */
     GMatrix alignOnto(const AtomicGroup&);
 
+    //! Orient the principal axis of this group along the supplied vector
+    /**
+     * The supplied vector does not need to be normalized.
+     */
+    void orientAlong(const GCoord &);
+
     // Set coordinates to an array
     /**
      * This function is meant for Numpy/swig use in setting the model's
@@ -853,6 +861,22 @@ namespace loos {
      */
     double hardContact2D(const AtomicGroup& group, double radius,
                            const GCoord& box) const;
+
+    //* Compute x-ray scattering intensity from this group
+    /**
+        Computes X-ray scattering as a function of q, using
+        I(q) = \sum_(atom pair) F_i(q) F_j(q) sin (q d_ij)/ (q d_ij)
+
+        This approximates scattering off of individual atoms. If you use this
+        with explicit solvent, you will get truncation artifacts from the periodic
+        box (although the code computes all distances using periodicity).
+
+        Form factors are from Szaloki, X-ray Spectrometry (1996), V25, 21-28
+
+     */
+    std::vector<double> scattering(const double qmin, const double max,
+                                   const uint numValues,
+                                   loos::FormFactorSet &formFactors);
 
   private:
 

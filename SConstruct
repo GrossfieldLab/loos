@@ -280,6 +280,11 @@ loos_share = SConscript('share/SConscript')
 
 loos_core = loos + loos_scripts + loos_share
 
+if pyloos:
+    loos_pyloos = SConscript('loos/pyloos/SConscript')
+    loos_core += loos_pyloos
+
+
 
 # Automatically setup build targets based on package_list
 # Note: excludes Python PyLOOS was not built...

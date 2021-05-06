@@ -31,7 +31,7 @@ apps += 'simple_model_transform all_contacts hierarchical-cluster '
 apps += 'simple_traj_calc axis_with_membrane inside_helices '
 apps += 'simple_traj_transform center_molecule native-hbs total_charge '
 apps += 'cluster-structures  packing_score_per_res cylindrical-density '
-apps += 'protein_tilt all_stacking '
+apps += 'protein_tilt scattering all_stacking'
 
 # Moved libraries out of Packages/PyLOOS to loos/pyloos
 #files = 'ConvexHull NAMDBin'

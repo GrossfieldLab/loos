@@ -80,5 +80,8 @@ namespace loos {
 %include "alignment.i"
 %include "gro.i"
 %include "utils_structural.i"
+%include "utils_random.i"
 %include "Weights.i"
 %include "RnaSuite.i"
+%include "FormFactor.i"
+%include "FormFactorSet.i"

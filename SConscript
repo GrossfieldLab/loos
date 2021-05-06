@@ -42,7 +42,7 @@ if env.USING_CONDA:
             Copy("$TARGET", "$SOURCE"),
             Chmod("$TARGET", 0o644)
             ])
-    env.Install(python_lib_path, os.path.join('loos', 'pyloos'))
+    #env.Install(python_lib_path, os.path.join('loos', 'pyloos'))
 
 else:
     env.Install(os.path.join(PREFIX, 'lib'), 'loos')
