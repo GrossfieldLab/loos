@@ -448,8 +448,8 @@ sub processMolecules {
       }
 
     } elsif ($state == 5) {
-      if (/\(CONSTR\) (\d+) (\d+)/) {
-        my $rpair = [$1, $2];
+      if (/\(CONSTR\)\s+(\d+)\s+(\d+)/) {
+	  my $rpair = [$1, $2];
         push(@$rcons, $rpair);
       } elsif ($use_vsites && /Virtual site (\d)(out)?:/) {
         if ( $1 != 2 && $1 != 3 ) {
@@ -591,8 +591,8 @@ sub buildStructure {
     }
 
     if (!exists($segment->{NATOMS})) {
-	warn "Warning: Missing atom count in topology so inferring number of atoms in segment $name";
 	$segment->{NATOMS} = $#{$mol->{ATOMS}} + 1;
+	warn "Warning: Missing atom count in topology so inferring number of atoms ($segment->{NATOMS}) in segment $name";
     }
 
     my $residues = $mol->{RESIDUES};
@@ -900,6 +900,8 @@ sub build_bond_prefix_regex {
   }
 
   my $reg = join('|', @tags);
+
+  print "Bond prefix regex='$reg'\n" if ($debug);
 
   return($reg);
 }
