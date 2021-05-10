@@ -34,14 +34,19 @@ namespace loos {
     cached_first = true;
 
     // Now determine the # of frames...
-    while (!ifs->eof()) {
+    while (1) {
       indices.push_back(ifs->tellg());
       ifs->getline(buf, sizeof(buf));
+      if (frame.isPeriodic())
+        ifs->getline(buf, sizeof(buf));
       for (uint i=0; i<_natoms; ++i)
         ifs->getline(buf, sizeof(buf));
+      if (ifs->eof()) {
+        break;
+      }
     }
 
-    _nframes = indices.size() - 1;
+    _nframes = indices.size()-1;
 
     ifs->clear();
     ifs->seekg(indices[1]);
@@ -72,14 +77,22 @@ namespace loos {
     if (ifs->eof() || at_end)
       return(false);
 
-    TinkerXYZ newframe;
-    newframe.read(*(ifs));
-    frame = newframe;
-    if (frame.size() == 0) {
-      at_end = true;
+    // We embed the attempted read in a try catch
+    // because the TinkerXYZ read() throws an error
+    // if it can't read, so that the frame.size() test won't
+    // keep us from walking off the end
+    try {
+      TinkerXYZ newframe;
+      newframe.read(*(ifs));
+      frame = newframe;
+      if (frame.size() == 0) {
+        at_end = true;
+        return(false);
+      }
+    }
+    catch(LOOSError& e) {
       return(false);
     }
-
     return(true);
   }
 
@@ -94,7 +107,7 @@ namespace loos {
   }
 
 
-  void TinkerArc::updateGroupCoordsImpl(AtomicGroup& g) 
+  void TinkerArc::updateGroupCoordsImpl(AtomicGroup& g)
   {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
@@ -102,11 +115,11 @@ namespace loos {
 	throw(LOOSError(**i, "Atom index into the trajectory frame is out of bounds"));
       (*i)->coords(frame[idx]->coords());
     }
-    
+
     // Handle periodic boundary conditions (if present)
     if (hasPeriodicBox()) {
       g.periodicBox(periodicBox());
     }
   }
-  
+
 }
