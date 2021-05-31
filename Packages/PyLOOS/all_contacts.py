@@ -29,14 +29,13 @@ or RNA, to track all residue-residue contacts within the trajectory.
 
 import loos
 import loos.pyloos
+import loos.pyloos.options as options
 import sys
 import numpy
 from os.path import basename, splitext
-import argparse
 
 
-def fullhelp():
-  print("""
+fullhelp = """
   all_contacts.py: compute the probability of residue-residue contact
   over the course of a trajectory
 
@@ -64,48 +63,29 @@ def fullhelp():
   This program does not explicitly handle periodicity; it assumes you've
   already fixed any periodicity issues before you ran it.
 
-  """)
+  """
 
-class FullHelp(argparse.Action):
-    def __init__(self, option_strings, dest, nargs=None, **kwargs):
-        kwargs['nargs'] = 0
-        super(FullHelp, self).__init__(option_strings, dest, **kwargs)
-
-    def __call__(self, parser, namespace, values, option_string=None):
-        fullhelp()
-        parser.print_help()
-        setattr(namespace, self.dest, True)
-        parser.exit()
-
-##############################################################################
+lo = options.LoosOptions(fullhelp)
+lo.modelSelectionOptions()
+lo.trajOptions()
 
 
-cmd_args = " ".join(sys.argv)
-parser = argparse.ArgumentParser(description="Track residue-residue contacts")
-parser.add_argument('system_file', help="File describing the system")
-parser.add_argument('selection',
-                    help="Selection string describing which residues to use")
-parser.add_argument('out_file',
-                    help="File with the average contact occupancies")
-parser.add_argument('traj_files', nargs='+')
-
-
-parser.add_argument('--cutoff', type=float,
-                    help="Cutoff distance for contact", default=4.0)
+lo.parser.add_argument('--out_file',
+                       required=True,
+                       help="File with the average contact occupancies")
+lo.parser.add_argument('--cutoff', type=float,
+                       help="Cutoff distance for contact", default=4.0)
 # TODO: add a number of contacts option
-parser.add_argument('--no_hydrogens', action='store_true',
-                    help="Don't include hydrogens")
-parser.add_argument('--no_backbone', action='store_true',
-                    help="Don't include the backbone")
-parser.add_argument('--individual', action='store_true',
-                    help="Write contact maps for each trajectory")
-parser.add_argument('--fullhelp',
-                    help="Print detailed description of all options",
-                    action=FullHelp)
-args = parser.parse_args()
+lo.parser.add_argument('--no_hydrogens', action='store_true',
+                       help="Don't include hydrogens")
+lo.parser.add_argument('--no_backbone', action='store_true',
+                       help="Don't include the backbone")
+lo.parser.add_argument('--individual', action='store_true',
+                       help="Write contact maps for each trajectory")
+args = lo.parser.parse_args()
 
 
-header = " ".join(sys.argv) + "\n"
+header = lo.header()
 
 
 system = loos.createSystem(args.system_file)
