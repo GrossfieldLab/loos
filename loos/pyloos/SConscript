@@ -26,7 +26,7 @@ Import('env')
 pyloos_directory = []
 
 files = 'ConvexHull.py NAMDBin.py __init__.py alignment.py ensembles.py '
-files += 'subspace.py trajectories.py '
+files += 'subspace.py trajectories.py options.py'
 
 if env.USING_CONDA:
     python_lib_path = list(filter(lambda x: x.endswith("site-packages"),
