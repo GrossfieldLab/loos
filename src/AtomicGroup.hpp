@@ -812,7 +812,7 @@ namespace loos {
 
     //* Logistic contact function between this group and another
     /**
-        Compute the number of contacts between the centroid of this AG
+        Compute the degree of contact between the centroid of this AG
         and the centroid of another AG, using a smooth logistic
         function
         S = 1/(1 + dist/radius)**sigma
@@ -822,8 +822,8 @@ namespace loos {
 
     //* Similar to logisticContact() but the distance between reference
     //  group centroid and another group centroid is 2D Euclidean distance
-    //  instead of 3D. Useful when calculating number of contacts in a
-    //  plane
+    //  instead of 3D, ignoring the z-component. Useful when calculating
+    //  number of contacts in a plane
     /**
         Compute the number of contacts between the centroid of this AG
         and the centroid of another AG, using a smooth logistic
