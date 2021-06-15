@@ -1,3 +1,15 @@
+2021-06-15 Alan Grossfield <alan>
+	* Merged in stacking branch, new tools for nucleic acid base stacking
+
+2021-05-31 Alan Grossfield <alan>
+	* Merged in python-options branch, preliminary tools for uniform command
+	  line arguments in python
+	* New tool: all_contacts.py, like rmsds but in contact space
+
+2021-05-10 Tod Romo <tromo>
+	* More fixes to gmxdump2pdb.pl to deal with updates to gmx dump,
+	  fixed error where some constraints were mixed
+
 2021-05-06 Alan Grossfield <alan>
 	* added new method to AtomicGroup to orient the group along a supplied axis
 
