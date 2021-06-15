@@ -27,7 +27,7 @@ Import('loos')
 clone = env.Clone()
 clone.Prepend(LIBS = [loos])
 
-files = 'suitename_definitions.dat'
+files = 'suitename_definitions.dat stack_vals.json'
 PREFIX = env['PREFIX']
 
 if env.USING_CONDA:

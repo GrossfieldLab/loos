@@ -67,6 +67,14 @@ def fullhelp():
             hydrogens because for RNA the base hydrogens are generally coplanar
             with the carbons, and we exclude the nitrogens because in some
             bases they're out of the plane.
+        --normfile: attempt to normalize the stacking relative to that present
+            for A-form RNA helices.
+
+        An example input for the --normfile option is stack_vals.json, found
+        in the share/ directory of the LOOS distribution, and installed in
+        $CONDA_PREFIX/share/loos/stack_vals.json if you installed LOOS into
+        a conda environment. These values were determined from a structure  built as a perfect A-form RNA helix using NAB from AmberTools. The file
+        is basically a dictionary with 2 dash-separated residue names as the key and the stacking value as the value.
         """)
 
 
