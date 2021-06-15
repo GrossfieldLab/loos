@@ -92,14 +92,20 @@ if __name__ == "__main__":
 
     clusters = cluster_data['clusters']
 
-    data = numpy.zeros((len(clusters), len(filenames)))
+    if len(filenames):
+        data = numpy.zeros((len(clusters), len(filenames)))
+    else:
+        data = numpy.zeros((len(clusters)))
 
     for i in range(len(clusters)):
-        arr = numpy.array(clusters[i])
-        indices = numpy.searchsorted(ends, arr, side='right')
-        indices -= 1
-        for j in indices:
-            data[i, j] += 1
+        if len(ends):
+            arr = numpy.array(clusters[i])
+            indices = numpy.searchsorted(ends, arr, side='right')
+            indices -= 1
+            for j in indices:
+                data[i, j] += 1
+        else:
+            data[i] += len(clusters[i])
 
     # normalize for each trajectory
     data /= numpy.add.reduce(data)
