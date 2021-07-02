@@ -623,7 +623,7 @@ coordinates are in other units (e.g. nanometers for GROMACS files).  All output
 is in plain text format, and follows general unix/linux conventions.  Every
 program's output starts with a series of comment lines, marked by beginning
 with a "#", echoing the command line used to invoke the program, the user, the
-date teh program was run, the working directory, and the version of LOOS used.
+date the program was run, the working directory, and the version of LOOS used.
 Any additional information, such as the meanings of various columns of output,
 is also provide on lines marked with "#".
 
@@ -632,20 +632,39 @@ rule, files are formatted such that they can be cleanly plotted using the
 gnuplot plotting program, standard with most modern linux distributions.   In
 addition, if matrices or vectors are written out (e.g. from the svd tool or one
 of the tools from the ENM package), the format is consistent with that used by
-Matlab and Octave.
+Matlab, Octave and numpy.
 
 <HR>
 <B><I> Categories of Tools </I> </B>
+      - \subpage other "Macromolecule Tools"
       - \subpage manipulation "Manipulating trajectory files"
       - \subpage convergence "Assessing statistical errors and convergence"
       - \subpage density "3D density distributions"
       - \subpage hbond "Hydrogen Bonding"
       - \subpage pca "Principal component analysis"
       - \subpage membranes "Membrane systems"
-      - \subpage enm "Elastic network models"
-      - \subpage other "General purpose tools"
       - \subpage voronoi "Voronoi decomposition"
+      - \subpage enm "Elastic network models"
+      - \subpage cluster "Clustering"
       - \subpage user "User-created tools"
+
+  \page cluster Clustering
+   <h2> Clustering Tools </h2>
+   There are a few different sets of clustering tools. Some are in Packages/Clustering while others are python-based.
+   <DL>
+     <DT> <B> cluster-kgs </B>
+     <DD> Performs hierarchical clustering, using an NMRClust-like method to determine the optimal number of clusters to retain. Takes a frame-to-frame distance matrix as input, eg the output of rmsds, multi-rmsds, or all_contacts.py. See also cluster_pops.py
+
+     <DT> <B> cluster-structures.py </B>
+     <DD> Performs k-means clustering on one or more trajectories, using RMSD as the metric. Has the option to do a t-SNE transformation first.
+
+     <DT> <B> hierarchical-cluster.py </B>
+     <DD> Performs hierarchical clustering given a distance matrix, using scipy's hierarchical clustering library. If you gave it multiple trajectories, the tool can report the cluster populations for each trajectory.
+
+     <DT> <B> cluster_pops.py </B>
+     <DD> Extracts the cluster populations from the output of cluster-kgs
+     </DL>
+   </DL>
 
   \page convergence Convergence
   <h2>Convergence Analysis Tools</h2>
@@ -1066,7 +1085,6 @@ Matlab and Octave.
 	 atoms in a trajectory.
    </DL>
 
-
    \page membranes Membrane systems
    <h2> Tools for membrane systems</h2>
    Tools specifically intended for analyzing lipid bilayers and
@@ -1099,7 +1117,7 @@ Matlab and Octave.
        symmetrize the density distribution in z.  This assumes that the input
        trajectory has already been set up with the membrane center at z=0.  You
        can accomplish this using merge-traj, which can optionally recenter a
-       selection at every frame.  The functionality from density-dist-windowed
+       selection at every/ frame.  The functionality from density-dist-windowed
        has also been folded in, using the --window option.  Note: this tool can
        be used in combination with potential_profile.py to compute electrostatic
        potentials along the membrane normal.
@@ -1213,14 +1231,58 @@ Matlab and Octave.
        <DD>Map the magnitude of a left singular vector onto a PDB file's B-value
        column.  Useful for visualizing which portions of a molecule are mobile
        for a given SVD mode.
+
     </DL>
 
+     \page voronoi
+     <h2> Voronoi decomposition </h2>
+     A collection of tools for 2D Voronoi decomposition of slabs, presumably from a
+     membrane simulation.  This package is a wrapper around the scipy (www.scipy.org)
+     Voronoi class, which is itself a wrapper around QHull (www.qhull.org).  As a result,
+     this package is dependent having a working install of numpy and scipy (instructions
+     for installing them can be found at www.scipy.org).
+
+     All tools assume work with a slab-like geometry oriented along the z-axis.  Within a
+     slab, the system is treated as 2-dimensional.
+
+     All tools take at least 2 selections of atoms.  The first is the set of atoms used
+     to compute the Voronoi decomposition, while any other selections are subsets of those
+     atoms for which areas are desired.  In all cases, these selections are application
+     <B> after </B> the original selection.
+
+     Padding: all of the tools listed have a required option called "padding".  The
+     purpose of this option is to ensure that periodic boundaries are handled correctly.
+     Since the underlying engine (qhull) has no knowledge of periodicity, we do this by
+     replicating dummy atoms in the 8 surrounding periodic images, such that no "true"
+     atoms are at the "edge".  The padding option controls how far out these padding atoms
+     are generated.  If your selection for the Voronoi decomposition is all-atom or all
+     heavy-atom, 15 angstroms is a good choice for the padding value.  However, if you're
+     using a sparser selection (e.g. just lipid phosphates), you will probably need to
+     make the padding value significantly larger, e.g. 30 ang or more.  If your padding
+     value is too small, you will occasionally see absurdly large areas for individual
+     atom, or the program can fail outright.
+
+     <DL>
+         <DT> <B> run_areas.py </B>
+         <DD> Compute areas for different sets of atoms within a particular slice along
+         the membrane normal.  Typical slice widths are 2-4 ang.
+
+         <DT> <B> area_profile.py </B>
+         <DD> Compute the voronoi cross-sectional area for something (e.g. a protein)
+         through the membrane.
+
+         <DT> <B> area_per_molecule.py </B>
+         <DD> Compute distribution of areas/molecule for a z-slice.  Note: this program
+         requires a system file that contains connectivity information (e.g. a PSF file).
+    </DL>
 
     \page other
-
-   <h2> General purpose tools</h2>
+   <h2> General Macromolecule Tools</h2>
 
    <DL>
+     <DT><B>all_stacking.py</B>
+     <DD> Compute stacking interactions, eg. for an RNA molecule, over a trajectory
+
      <DT><B>averager</B>
        <DD>Compute the average structure for a set of molecules from a
        trajectory, using an iterative scheme.
@@ -1236,10 +1298,6 @@ Matlab and Octave.
        <DT><B>bounding</B>
        <DD>Write out the bounding box for a selection of atoms from a
        structure file.
-
-       <DT><B>cluster-structures.py</B>
-       <DD>Perform clustering analysis on a trajectory using the k-means
-       algorithm on the basis of RMSD.  In Packages/PyLOOS.
 
        <DT><B>contact-time</B>
        <DD>This tool computes the number of contacts between a probe
@@ -1289,6 +1347,9 @@ Matlab and Octave.
        distance between the centroids, the minimum distance between any atom
        in any group, or the max distance between any atom in any group.
 
+       <DT><B>ocf</B>
+       <DD> Computes the orientational correlation function for a polymer chain (eg protein or RNA)
+
        <DT><B>octavex</B>
        <DD>Extract embedded OCTAVE data from a LOOS output/log.  This is
        used with aligner.
@@ -1303,6 +1364,9 @@ Matlab and Octave.
        selections, over the course of a trajectory.  Originally defined in
        Grossfield et al, PNAS, 2006, 103, 4888-4893
 
+       <DT><B>packing_score_per_res.py</B>
+       <DD> Computes the packing score between a set of ligand molecules and each residue of a macromolecule. Useful for identifying binding sites.
+
        <DT><B>protein_tilt.py</B>
        <DD>Compute the overall tilt of a membrane protein relative to the
        membrane normal by averaging the tilts of the individual transmembrane
@@ -1313,7 +1377,6 @@ Matlab and Octave.
        a trajectory. Optionally, it can break your selection into individual
        molecules, if for example you have multiple solutes in the system.
        It can also write a time-series of these radii of gyration to a file.
-
 
        <DT><B>ramachandran</B>
        <DD>Computes a ramachandran map for a given selection of a specified
@@ -1333,7 +1396,8 @@ Matlab and Octave.
        <DT><B>rgyr (deprecated)</B>
        <DD>Compute the radius of gyration for a selection of atoms.
        Optionally, it can break your selection into individual molecules,
-       if for example you have multiple solutes in the system.
+       if for example you have multiple solutes in the system. See rad-gyr
+       for a more modern implementation.
 
        <DT><B>rmsd2ref</B>
        <DD>Computes rmsds between a selection and either its average
@@ -1344,9 +1408,15 @@ Matlab and Octave.
        <DD>Loops over a trajectory and computes the pairwise RMSDs for a
        selection of atoms.
 
+       <DT><B>rna_suites</B>
+       <DD> Identify RNA conformers using the RNA Suites approach of Richardson et al., RNA, 2008, 465–481
+
        <DT><B>rotamer</B>
        <DD>Computes the chi-1 and chi-2 angles for a given selection over an
        entire trajectory.
+
+       <DT><B>scattering.py</B>
+       <DD> Compute X-ray scattering using the spherical scattering approximation
 
        <DT><B>torsion</B>
        <DD>Given 4 selections, compute the torsion angle for their centroids.
@@ -1357,49 +1427,6 @@ Matlab and Octave.
        <DD>Calculate the normalized transition between two structures over
        a trajectory.
     </DL>
-
-    \page voronoi
-    <h2> Voronoi decomposition </h2>
-    A collection of tools for 2D Voronoi decomposition of slabs, presumably from a
-    membrane simulation.  This package is a wrapper around the scipy (www.scipy.org)
-    Voronoi class, which is itself a wrapper around QHull (www.qhull.org).  As a result,
-    this package is dependent having a working install of numpy and scipy (instructions
-    for installing them can be found at www.scipy.org).
-
-    All tools assume work with a slab-like geometry oriented along the z-axis.  Within a
-    slab, the system is treated as 2-dimensional.
-
-    All tools take at least 2 selections of atoms.  The first is the set of atoms used
-    to compute the Voronoi decomposition, while any other selections are subsets of those
-    atoms for which areas are desired.  In all cases, these selections are application
-    <B> after </B> the original selection.
-
-    Padding: all of the tools listed have a required option called "padding".  The
-    purpose of this option is to ensure that periodic boundaries are handled correctly.
-    Since the underlying engine (qhull) has no knowledge of periodicity, we do this by
-    replicating dummy atoms in the 8 surrounding periodic images, such that no "true"
-    atoms are at the "edge".  The padding option controls how far out these padding atoms
-    are generated.  If your selection for the Voronoi decomposition is all-atom or all
-    heavy-atom, 15 angstroms is a good choice for the padding value.  However, if you're
-    using a sparser selection (e.g. just lipid phosphates), you will probably need to
-    make the padding value significantly larger, e.g. 30 ang or more.  If your padding
-    value is too small, you will occasionally see absurdly large areas for individual
-    atom, or the program can fail outright.
-
-    <DL>
-        <DT> <B> run_areas.py </B>
-        <DD> Compute areas for different sets of atoms within a particular slice along
-        the membrane normal.  Typical slice widths are 2-4 ang.
-
-        <DT> <B> area_profile.py </B>
-        <DD> Compute the voronoi cross-sectional area for something (e.g. a protein)
-        through the membrane.
-
-        <DT> <B> area_per_molecule.py </B>
-        <DD> Compute distribution of areas/molecule for a z-slice.  Note: this program
-        requires a system file that contains connectivity information (e.g. a PSF file).
-   </DL>
-
 
     \page user
      <h2> User-created tools</h2>
