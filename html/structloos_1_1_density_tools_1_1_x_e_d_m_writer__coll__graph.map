@@ -1,8 +1,0 @@
-<map id="loos::DensityTools::XEDMWriter&lt; T &gt;" name="loos::DensityTools::XEDMWriter&lt; T &gt;">
-<area shape="rect" id="node1" title="Functor for writing out ASCII formatted X&#45;Plor electron density maps." alt="" coords="5,337,140,379"/>
-<area shape="rect" id="node2" href="$classloos_1_1_fmt.html" title="Output formatter class, adapted from Stroustrup&#39;s book." alt="" coords="7,248,85,275"/>
-<area shape="rect" id="node3" title="STL class." alt="" coords="109,248,204,275"/>
-<area shape="rect" id="node4" title="STL class." alt="" coords="90,157,223,199"/>
-<area shape="rect" id="node5" title="STL class." alt="" coords="79,81,234,108"/>
-<area shape="rect" id="node6" title="STL class." alt="" coords="107,5,207,32"/>
-</map>

@@ -16,5 +16,6 @@ var namespaceloos_1_1_options_framework =
     [ "RequiredArguments", "classloos_1_1_options_framework_1_1_required_arguments.html", "classloos_1_1_options_framework_1_1_required_arguments" ],
     [ "TrajectoryWithFrameIndices", "classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html", "classloos_1_1_options_framework_1_1_trajectory_with_frame_indices" ],
     [ "TwoModelsWithCoords", "classloos_1_1_options_framework_1_1_two_models_with_coords.html", "classloos_1_1_options_framework_1_1_two_models_with_coords" ],
-    [ "WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", "classloos_1_1_options_framework_1_1_weights_options" ]
+    [ "WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", "classloos_1_1_options_framework_1_1_weights_options" ],
+    [ "vOpts", "namespaceloos_1_1_options_framework.html#a7c8cebcfcfed8759510d586cfb7ac22d", null ]
 ];

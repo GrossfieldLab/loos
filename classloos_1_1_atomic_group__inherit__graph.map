@@ -1,9 +1,9 @@
 <map id="loos::AtomicGroup" name="loos::AtomicGroup">
-<area shape="rect" id="node1" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="307,5,438,32"/>
+<area shape="rect" id="node1" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="306,5,437,32"/>
 <area shape="rect" id="node2" href="$classloos_1_1_amber.html" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="5,80,97,107"/>
-<area shape="rect" id="node3" href="$classloos_1_1_c_h_a_r_m_m.html" title="Class for reading a CHARMM coordinate file." alt="" coords="122,80,237,107"/>
-<area shape="rect" id="node4" href="$classloos_1_1_gromacs.html" title="Implements a GROMACS model file (.gro)" alt="" coords="261,80,367,107"/>
-<area shape="rect" id="node5" href="$classloos_1_1_p_d_b.html" title="PDB reading/writing class." alt="" coords="391,80,474,107"/>
-<area shape="rect" id="node6" href="$classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format." alt="" coords="498,80,578,107"/>
-<area shape="rect" id="node7" href="$classloos_1_1_tinker_x_y_z.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="603,80,719,107"/>
+<area shape="rect" id="node3" href="$classloos_1_1_c_h_a_r_m_m.html" title="Class for reading a CHARMM coordinate file." alt="" coords="121,80,235,107"/>
+<area shape="rect" id="node4" href="$classloos_1_1_gromacs.html" title="Implements a GROMACS model file (.gro)" alt="" coords="259,80,366,107"/>
+<area shape="rect" id="node5" href="$classloos_1_1_p_d_b.html" title="PDB reading/writing class." alt="" coords="391,80,472,107"/>
+<area shape="rect" id="node6" href="$classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format." alt="" coords="497,80,577,107"/>
+<area shape="rect" id="node7" href="$classloos_1_1_tinker_x_y_z.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="601,80,715,107"/>
 </map>

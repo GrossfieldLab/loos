@@ -23,5 +23,16 @@ var namespaceloos_1_1_density_tools =
     [ "XEDMWriter", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", "structloos_1_1_density_tools_1_1_x_e_d_m_writer" ],
     [ "ZClipEstimator", "classloos_1_1_density_tools_1_1_z_clip_estimator.html", "classloos_1_1_density_tools_1_1_z_clip_estimator" ],
     [ "ZClippedWaterFilter", "classloos_1_1_density_tools_1_1_z_clipped_water_filter.html", "classloos_1_1_density_tools_1_1_z_clipped_water_filter" ],
-    [ "ZSliceEstimator", "classloos_1_1_density_tools_1_1_z_slice_estimator.html", "classloos_1_1_density_tools_1_1_z_slice_estimator" ]
+    [ "ZSliceEstimator", "classloos_1_1_density_tools_1_1_z_slice_estimator.html", "classloos_1_1_density_tools_1_1_z_slice_estimator" ],
+    [ "DensityGridpoint", "namespaceloos_1_1_density_tools.html#a7722442f50d482d460b22e5913b6d7ab", null ],
+    [ "findPeaks", "namespaceloos_1_1_density_tools.html#acca69b4b9638666eadb7ce7753ce0e9e", null ],
+    [ "findPeaks", "namespaceloos_1_1_density_tools.html#ab1d8104ccc749b2ad2d14eb64a5153ed", null ],
+    [ "floodFill", "namespaceloos_1_1_density_tools.html#ad28ca48a2df1c3d270ff2ba2392b90d9", null ],
+    [ "floodFill", "namespaceloos_1_1_density_tools.html#ab7a7a3a7cc41cfd52d4cc3e52bce4437", null ],
+    [ "gaussian1d", "namespaceloos_1_1_density_tools.html#a5e855bccafc7771e9fd52bac832ab784", null ],
+    [ "getBounds", "namespaceloos_1_1_density_tools.html#afc22fdaa593aa2be68815ff9d7a99c89", null ],
+    [ "gridConvolve", "namespaceloos_1_1_density_tools.html#a78f1d22c58cd6f852ed36d0d57530f6e", null ],
+    [ "gridConvolve", "namespaceloos_1_1_density_tools.html#a55f308725e7280dc7b1ddcba368a7fa9", null ],
+    [ "gridToAtomicGroup", "namespaceloos_1_1_density_tools.html#a388f789fd102d0e00c8410a62afb052f", null ],
+    [ "writeXplorEDM", "namespaceloos_1_1_density_tools.html#a982f42c70225c3855a6bd4fc06e4b810", null ]
 ];

@@ -1,6 +1,0 @@
-<map id="loos::HeavyAtomSelector" name="loos::HeavyAtomSelector">
-<area shape="rect" id="node1" title="Select non&#45;hydrogen atoms." alt="" coords="5,184,176,211"/>
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="23,5,156,32"/>
-<area shape="rect" id="node3" href="$structloos_1_1_not_selector.html" title="Negates a selection predicate." alt="" coords="29,95,152,121"/>
-<area shape="rect" id="node4" href="$structloos_1_1_hydrogen_selector.html" title="Select hydrogen atoms." alt="" coords="177,95,335,121"/>
-</map>

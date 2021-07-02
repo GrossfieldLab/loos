@@ -9,6 +9,7 @@ var classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory =
     [ "allStride", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#ada866032b9237e981395a5dbc26c0776", null ],
     [ "append", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#a9593e1898bf5009f691801d446adbab9", null ],
     [ "frame", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#ae91890fd6a0c4b706723dadb1858ea78", null ],
+    [ "frameBoundaries", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#a1193e960f5d43baa138d1837d5aa8deb", null ],
     [ "frameLocation", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#aeee4ace445a5585d0c6aa1d9ed6bb04b", null ],
     [ "index", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#aa4a25022f02d76318fbd78ec479ce069", null ],
     [ "reset", "classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#ad6c7f7e34ac271ba3c3e693d824e5dbb", null ],

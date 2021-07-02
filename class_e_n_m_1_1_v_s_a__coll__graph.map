@@ -1,13 +1,13 @@
 <map id="ENM::VSA" name="ENM::VSA">
 <area shape="rect" id="node1" title="Vibrational subsystem analysis ENM." alt="" coords="107,572,193,599"/>
 <area shape="rect" id="node2" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="58,496,242,523"/>
-<area shape="rect" id="node3" title="STL class." alt="" coords="46,377,126,404"/>
-<area shape="rect" id="node4" title="STL class." alt="" coords="5,273,132,315"/>
+<area shape="rect" id="node3" title=" " alt="" coords="46,377,126,404"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,273,132,315"/>
 <area shape="rect" id="node5" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian." alt="" coords="167,377,293,404"/>
 <area shape="rect" id="node6" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="157,281,303,307"/>
 <area shape="rect" id="node7" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="327,281,458,307"/>
-<area shape="rect" id="node8" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="251,184,417,211"/>
-<area shape="rect" id="node9" title=" " alt="" coords="441,184,587,211"/>
-<area shape="rect" id="node10" title="STL class." alt="" coords="456,95,572,121"/>
-<area shape="rect" id="node11" title=" " alt="" coords="495,5,533,32"/>
+<area shape="rect" id="node8" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="252,184,416,211"/>
+<area shape="rect" id="node9" title=" " alt="" coords="440,184,585,211"/>
+<area shape="rect" id="node10" title=" " alt="" coords="455,95,570,121"/>
+<area shape="rect" id="node11" title=" " alt="" coords="493,5,532,32"/>
 </map>

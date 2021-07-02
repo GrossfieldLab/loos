@@ -1,4 +1,28 @@
 var namespacepacking__score__per__res =
 [
-    [ "FullHelp", "classpacking__score__per__res_1_1_full_help.html", "classpacking__score__per__res_1_1_full_help" ]
+    [ "FullHelp", "classpacking__score__per__res_1_1_full_help.html", "classpacking__score__per__res_1_1_full_help" ],
+    [ "fullhelp", "namespacepacking__score__per__res.html#a91bf2a7ecd1671a84d18b7b93268e43e", null ],
+    [ "action", "namespacepacking__score__per__res.html#a727b98998f331fd9304062a672fb6983", null ],
+    [ "args", "namespacepacking__score__per__res.html#a095e8f3b2e098ee2e9c64aafefe1283a", null ],
+    [ "ave", "namespacepacking__score__per__res.html#ad3a65a98433a0dbf138c1d2b0377ba83", null ],
+    [ "box", "namespacepacking__score__per__res.html#ab16c5ffd25cb8c5449d3cb129c029b99", null ],
+    [ "default", "namespacepacking__score__per__res.html#a721b47ccaafd83e964da84651a300b36", null ],
+    [ "fmt", "namespacepacking__score__per__res.html#a8b8c55a02dc06f896973f6b8a4df37d3", null ],
+    [ "frame_index", "namespacepacking__score__per__res.html#a2f9f13e0d7fb11f5bba9c5d9823f22a4", null ],
+    [ "header", "namespacepacking__score__per__res.html#a55b48460471528359b5c31992e0bb5a0", null ],
+    [ "help", "namespacepacking__score__per__res.html#a78ac269689d90e3d306b9226066dae47", null ],
+    [ "nargs", "namespacepacking__score__per__res.html#a0402daf99aeeabdbe825fd505f023155", null ],
+    [ "parser", "namespacepacking__score__per__res.html#a985fdab68dbfbc921c2f5b26b715999e", null ],
+    [ "pca", "namespacepacking__score__per__res.html#aa8223c869c33a0d5bef98d6a39a80152", null ],
+    [ "probe", "namespacepacking__score__per__res.html#a0ce91009e36af2190c5279683f5f8305", null ],
+    [ "probes", "namespacepacking__score__per__res.html#ad4fdc265edbd5d4d49c81aeaa492af9f", null ],
+    [ "protein", "namespacepacking__score__per__res.html#abc3afb6a65eff0c20b362aff3f38bf57", null ],
+    [ "resids", "namespacepacking__score__per__res.html#af1a49d4ac0f2b24a4eefc69358558517", null ],
+    [ "residues", "namespacepacking__score__per__res.html#a2554cde978fb73ae0499a4da2eedd6c1", null ],
+    [ "s", "namespacepacking__score__per__res.html#a1282fff2b36ed8b7db0d64a4e9e5caf3", null ],
+    [ "scores", "namespacepacking__score__per__res.html#a2fed58df5fce746eb69a4fa21cbd1450", null ],
+    [ "system", "namespacepacking__score__per__res.html#a213489ee81b82dc7d91229003bf0c169", null ],
+    [ "traj", "namespacepacking__score__per__res.html#a712ff84d6d7460fc541294c8ac276599", null ],
+    [ "type", "namespacepacking__score__per__res.html#a9f985077e93c28a34613429534291dac", null ],
+    [ "vtraj", "namespacepacking__score__per__res.html#a55babdd5cbaf2bb01a2617a1603aeaf1", null ]
 ];

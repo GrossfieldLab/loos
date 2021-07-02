@@ -1,0 +1,28 @@
+var namespaceall__stacking =
+[
+    [ "FullHelp", "classall__stacking_1_1_full_help.html", "classall__stacking_1_1_full_help" ],
+    [ "fullhelp", "namespaceall__stacking.html#a0de8ca86e3d66ecb9a8960a59fceffdb", null ],
+    [ "action", "namespaceall__stacking.html#af63d7af766a2c9d9d16204b8d4562c74", null ],
+    [ "all_trajs", "namespaceall__stacking.html#ab550f5cce8338c65d687759bfa7f98bf", null ],
+    [ "args", "namespaceall__stacking.html#a6e9f74e35dec180e30b9b5a7d7a783b5", null ],
+    [ "box", "namespaceall__stacking.html#a2e45fc9401ab3d7b0d371d31cffa4724", null ],
+    [ "default", "namespaceall__stacking.html#a0e1b704bc552c3b44795e55c3f9cd965", null ],
+    [ "header", "namespaceall__stacking.html#abff43ab61c38b9056a3c90b544a1c45f", null ],
+    [ "help", "namespaceall__stacking.html#a43a205ff40871e833bb41f54312e4a16", null ],
+    [ "int", "namespaceall__stacking.html#a7ff059f801c6c6e46c5f11dfde3879ee", null ],
+    [ "key", "namespaceall__stacking.html#a930662a7ffd834369b80d868866d870c", null ],
+    [ "nargs", "namespaceall__stacking.html#a7226ee2c39c8ba2423b4237d96a97e11", null ],
+    [ "newval", "namespaceall__stacking.html#a083f6c0b2ac62459d8488f5144a20f37", null ],
+    [ "outfile_name", "namespaceall__stacking.html#aa844e4b8a6522ab18be773c884b48226", null ],
+    [ "p", "namespaceall__stacking.html#ad8c48ce0b182eee4a274df7454bb0a3f", null ],
+    [ "parser", "namespaceall__stacking.html#a0a7dfeb52bcf9505e3421510e186b4db", null ],
+    [ "residues", "namespaceall__stacking.html#aecd2a6eeb6377758fac02cefb06b78b4", null ],
+    [ "resnames", "namespaceall__stacking.html#a474db59385e19a56482c596c4e460376", null ],
+    [ "scores", "namespaceall__stacking.html#a1a9d986d2d21e74e79f02914b0b9482a", null ],
+    [ "selection", "namespaceall__stacking.html#a15f06f20b07963bda357a9ec5152ac32", null ],
+    [ "stack_values", "namespaceall__stacking.html#ae753172dbefb7efe1b8396aa6d464012", null ],
+    [ "system", "namespaceall__stacking.html#a80b0c51585c7412b31a80ff28f05c657", null ],
+    [ "total_frames", "namespaceall__stacking.html#aef92e954c95ddc364f345c5c4664b40f", null ],
+    [ "traj", "namespaceall__stacking.html#a438c0db80d04ce65e8d2cd2bcd047925", null ],
+    [ "type", "namespaceall__stacking.html#a8b02d461e4d0f4c38e7e64ebf539e3fa", null ]
+];

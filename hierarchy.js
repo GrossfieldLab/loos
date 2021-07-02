@@ -6,15 +6,22 @@ var hierarchy =
         [ "loos::PercentProgressWithTime", "classloos_1_1_percent_progress_with_time.html", null ]
       ] ]
     ] ],
+    [ "argparse.Action", null, [
+      [ "all_stacking.FullHelp", "classall__stacking_1_1_full_help.html", null ],
+      [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ],
+      [ "packing_score_per_res.FullHelp", "classpacking__score__per__res_1_1_full_help.html", null ],
+      [ "scattering.FullHelp", "classscattering_1_1_full_help.html", null ],
+      [ "set_segids.FullHelp", "classset__segids_1_1_full_help.html", null ]
+    ] ],
     [ "loos::internal::Action", "classloos_1_1internal_1_1_action.html", [
       [ "loos::internal::Backbone", "classloos_1_1internal_1_1_backbone.html", null ],
+      [ "loos::internal::Hydrogen", "classloos_1_1internal_1_1_hydrogen.html", null ],
       [ "loos::internal::drop", "classloos_1_1internal_1_1drop.html", null ],
       [ "loos::internal::dup", "classloos_1_1internal_1_1dup.html", null ],
       [ "loos::internal::equals", "classloos_1_1internal_1_1equals.html", null ],
       [ "loos::internal::extractNumber", "classloos_1_1internal_1_1extract_number.html", null ],
       [ "loos::internal::greaterThan", "classloos_1_1internal_1_1greater_than.html", null ],
       [ "loos::internal::greaterThanEquals", "classloos_1_1internal_1_1greater_than_equals.html", null ],
-      [ "loos::internal::Hydrogen", "classloos_1_1internal_1_1_hydrogen.html", null ],
       [ "loos::internal::lessThan", "classloos_1_1internal_1_1less_than.html", null ],
       [ "loos::internal::lessThanEquals", "classloos_1_1internal_1_1less_than_equals.html", null ],
       [ "loos::internal::logicalAnd", "classloos_1_1internal_1_1logical_and.html", null ],
@@ -33,12 +40,6 @@ var hierarchy =
       [ "loos::internal::pushFloat", "classloos_1_1internal_1_1push_float.html", null ],
       [ "loos::internal::pushInt", "classloos_1_1internal_1_1push_int.html", null ],
       [ "loos::internal::pushString", "classloos_1_1internal_1_1push_string.html", null ]
-    ] ],
-    [ "Action", null, [
-      [ "all_contacts.FullHelp", "classall__contacts_1_1_full_help.html", null ],
-      [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ],
-      [ "packing_score_per_res.FullHelp", "classpacking__score__per__res_1_1_full_help.html", null ],
-      [ "set_segids.FullHelp", "classset__segids_1_1_full_help.html", null ]
     ] ],
     [ "loos::OptionsFramework::AggregateOptions", "classloos_1_1_options_framework_1_1_aggregate_options.html", null ],
     [ "loos::AscendingSort< T >", "classloos_1_1_ascending_sort.html", null ],
@@ -70,7 +71,7 @@ var hierarchy =
       [ "loos::ZSliceSelector", "structloos_1_1_z_slice_selector.html", null ]
     ] ],
     [ "loos::internal::BasicMatrixFormatter< T >", "structloos_1_1internal_1_1_basic_matrix_formatter.html", null ],
-    [ "binary_function", null, [
+    [ "std::binary_function", null, [
       [ "loos::AtomCoordsEquals", "structloos_1_1_atom_coords_equals.html", null ],
       [ "loos::AtomEquals", "structloos_1_1_atom_equals.html", null ]
     ] ],
@@ -81,7 +82,6 @@ var hierarchy =
       [ "loos::DensityTools::ZSliceEstimator", "classloos_1_1_density_tools_1_1_z_slice_estimator.html", null ]
     ] ],
     [ "CalcPropertyBase", "class_calc_property_base.html", [
-      [ "CalcProperty< T >", "class_calc_property.html", null ],
       [ "CalcProperty< double >", "class_calc_property.html", [
         [ "CalcDensity", "class_calc_density.html", null ],
         [ "CalcHeight", "class_calc_height.html", null ],
@@ -90,9 +90,13 @@ var hierarchy =
       [ "CalcProperty< loos::GCoord >", "class_calc_property.html", [
         [ "CalcDipole", "class_calc_dipole.html", null ],
         [ "CalcOrientVector", "class_calc_orient_vector.html", null ]
-      ] ]
+      ] ],
+      [ "CalcProperty< T >", "class_calc_property.html", null ]
     ] ],
-    [ "loos::Math::ColMajor", "classloos_1_1_math_1_1_col_major.html", null ],
+    [ "loos::Math::ColMajor", "classloos_1_1_math_1_1_col_major.html", [
+      [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ],
+      [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
+    ] ],
     [ "loos.pyloos.ConvexHull.ConvexHull", "classloos_1_1pyloos_1_1_convex_hull_1_1_convex_hull.html", null ],
     [ "loos::Coord< T >", "classloos_1_1_coord.html", null ],
     [ "loos::Coord< double >", "classloos_1_1_coord.html", null ],
@@ -137,7 +141,9 @@ var hierarchy =
       ] ]
     ] ],
     [ "loos::Fmt", "classloos_1_1_fmt.html", null ],
-    [ "grammar", null, [
+    [ "loos::FormFactor", "classloos_1_1_form_factor.html", null ],
+    [ "loos::FormFactorSet", "classloos_1_1_form_factor_set.html", null ],
+    [ "boost::spirit::qi::grammar", null, [
       [ "loos::internal::RangeParser< Iterator >", "structloos_1_1internal_1_1_range_parser.html", null ]
     ] ],
     [ "Clustering::HAC", "class_clustering_1_1_h_a_c.html", [
@@ -148,15 +154,14 @@ var hierarchy =
     [ "loos::HBondDetector", "classloos_1_1_h_bond_detector.html", null ],
     [ "Header", "struct_header.html", null ],
     [ "loos::AtomicGroup::Iterator", "classloos_1_1_atomic_group_1_1_iterator.html", null ],
-    [ "iterator_facade", null, [
+    [ "boost::iterator_facade", null, [
       [ "loos::DensityTools::DensityGridIterator< T, R >", "classloos_1_1_density_tools_1_1_density_grid_iterator.html", null ]
     ] ],
     [ "loos::Kernel", "classloos_1_1_kernel.html", null ],
     [ "loos::LineReader", "classloos_1_1_line_reader.html", null ],
+    [ "loos.pyloos.options.LoosOptions", "classloos_1_1pyloos_1_1options_1_1_loos_options.html", null ],
     [ "Master", "class_master.html", null ],
-    [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ],
     [ "loos::Matrix44< T >", "classloos_1_1_matrix44.html", null ],
-    [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ],
     [ "loos::MatrixReadImpl< T, P, S >", "structloos_1_1_matrix_read_impl.html", null ],
     [ "loos::MatrixReadImpl< T, Math::Triangular, S >", "structloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4.html", null ],
     [ "loos::MatrixReadImpl< T, P, Math::SparseArray >", "structloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_01_4.html", null ],
@@ -164,7 +169,7 @@ var hierarchy =
     [ "loos::MatrixWriteImpl< T, Math::Triangular, S, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4.html", null ],
     [ "loos::MatrixWriteImpl< T, P, Math::SparseArray, F >", "structloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4.html", null ],
     [ "loos.pyloos.NAMDBin.NAMDBin", "classloos_1_1pyloos_1_1_n_a_m_d_bin_1_1_n_a_m_d_bin.html", null ],
-    [ "noncopyable", null, [
+    [ "boost::noncopyable", null, [
       [ "loos::StreamWrapper", "classloos_1_1_stream_wrapper.html", null ]
     ] ],
     [ "loos::DensityTools::NonzeroDensity< T >", "classloos_1_1_density_tools_1_1_nonzero_density.html", null ],
@@ -176,6 +181,13 @@ var hierarchy =
     ] ],
     [ "loos::OptionsFramework::OptionsPackage", "classloos_1_1_options_framework_1_1_options_package.html", [
       [ "Clustering::ClusteringOptions", "class_clustering_1_1_clustering_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
+      [ "ToolOptions", "class_tool_options.html", null ],
       [ "loos::OptionsFramework::BasicConvergence", "classloos_1_1_options_framework_1_1_basic_convergence.html", null ],
       [ "loos::OptionsFramework::BasicOptions", "classloos_1_1_options_framework_1_1_basic_options.html", null ],
       [ "loos::OptionsFramework::BasicSelection", "classloos_1_1_options_framework_1_1_basic_selection.html", null ],
@@ -190,8 +202,7 @@ var hierarchy =
       [ "loos::OptionsFramework::RequiredArguments", "classloos_1_1_options_framework_1_1_required_arguments.html", null ],
       [ "loos::OptionsFramework::TrajectoryWithFrameIndices", "classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html", null ],
       [ "loos::OptionsFramework::TwoModelsWithCoords", "classloos_1_1_options_framework_1_1_two_models_with_coords.html", null ],
-      [ "loos::OptionsFramework::WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", null ],
-      [ "ToolOptions", "class_tool_options.html", null ]
+      [ "loos::OptionsFramework::WeightsOptions", "classloos_1_1_options_framework_1_1_weights_options.html", null ]
     ] ],
     [ "loos::internal::OutputTrajectoryNameBindingType", "structloos_1_1internal_1_1_output_trajectory_name_binding_type.html", null ],
     [ "loos::Parser", "classloos_1_1_parser.html", null ],
@@ -207,7 +218,10 @@ var hierarchy =
     [ "loos::Math::RowMajor", "classloos_1_1_math_1_1_row_major.html", null ],
     [ "ScanfFmt", "struct_scanf_fmt.html", null ],
     [ "loos::ScientificMatrixFormatter< T >", "classloos_1_1_scientific_matrix_formatter.html", null ],
-    [ "loos::Math::SharedArray< T >", "classloos_1_1_math_1_1_shared_array.html", null ],
+    [ "loos::Math::SharedArray< T >", "classloos_1_1_math_1_1_shared_array.html", [
+      [ "loos::Math::Matrix< int >", "classloos_1_1_math_1_1_matrix.html", null ],
+      [ "loos::Math::Matrix< T, OrderPolicy, StoragePolicy >", "classloos_1_1_math_1_1_matrix.html", null ]
+    ] ],
     [ "loos::SharedPeriodicBox", "classloos_1_1_shared_periodic_box.html", null ],
     [ "loos::HBonds::SimpleAtom", "classloos_1_1_h_bonds_1_1_simple_atom.html", null ],
     [ "loos::SimpleCounter", "classloos_1_1_simple_counter.html", [
@@ -247,8 +261,8 @@ var hierarchy =
       [ "loos::DCD", "classloos_1_1_d_c_d.html", null ],
       [ "loos::MultiTrajectory", "classloos_1_1_multi_trajectory.html", null ],
       [ "loos::PDBTraj", "classloos_1_1_p_d_b_traj.html", null ],
-      [ "loos::TinkerArc", "classloos_1_1_tinker_arc.html", null ],
       [ "loos::TRR", "classloos_1_1_t_r_r.html", null ],
+      [ "loos::TinkerArc", "classloos_1_1_tinker_arc.html", null ],
       [ "loos::XTC", "classloos_1_1_x_t_c.html", null ]
     ] ],
     [ "loos::internal::TrajectoryNameBindingType", "structloos_1_1internal_1_1_trajectory_name_binding_type.html", null ],
@@ -266,8 +280,8 @@ var hierarchy =
     [ "loos::internal::ValueStack", "classloos_1_1internal_1_1_value_stack.html", null ],
     [ "Voronoi.Voronoi.VoronoiWrapper", "class_voronoi_1_1_voronoi_1_1_voronoi_wrapper.html", null ],
     [ "loos::WallTimer", "classloos_1_1_wall_timer.html", [
-      [ "loos::Timer< TimerType >", "classloos_1_1_timer.html", null ],
-      [ "loos::Timer< loos::WallTimer >", "classloos_1_1_timer.html", null ]
+      [ "loos::Timer< loos::WallTimer >", "classloos_1_1_timer.html", null ],
+      [ "loos::Timer< TimerType >", "classloos_1_1_timer.html", null ]
     ] ],
     [ "loos::DensityTools::WaterFilterBase", "classloos_1_1_density_tools_1_1_water_filter_base.html", [
       [ "loos::DensityTools::WaterFilterAxis", "classloos_1_1_density_tools_1_1_water_filter_axis.html", null ],
@@ -290,6 +304,6 @@ var hierarchy =
     [ "loos::internal::XDRWriter", "classloos_1_1internal_1_1_x_d_r_writer.html", null ],
     [ "loos::DensityTools::XEDMWriter< T >", "structloos_1_1_density_tools_1_1_x_e_d_m_writer.html", null ],
     [ "loos::XForm", "classloos_1_1_x_form.html", null ],
-    [ "Voronoi.Voronoi.ZSliceSelector", "class_voronoi_1_1_voronoi_1_1_z_slice_selector.html", null ],
-    [ "loos.pyloos.ConvexHull.ZSliceSelector", "classloos_1_1pyloos_1_1_convex_hull_1_1_z_slice_selector.html", null ]
+    [ "loos.pyloos.ConvexHull.ZSliceSelector", "classloos_1_1pyloos_1_1_convex_hull_1_1_z_slice_selector.html", null ],
+    [ "Voronoi.Voronoi.ZSliceSelector", "class_voronoi_1_1_voronoi_1_1_z_slice_selector.html", null ]
 ];

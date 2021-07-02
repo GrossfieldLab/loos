@@ -1,7 +1,7 @@
 <map id="loos::FileReadErrorWithLine" name="loos::FileReadErrorWithLine">
-<area shape="rect" id="node1" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="5,304,191,331"/>
-<area shape="rect" id="node2" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="31,229,165,256"/>
-<area shape="rect" id="node3" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="47,155,149,181"/>
-<area shape="rect" id="node4" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="39,80,157,107"/>
-<area shape="rect" id="node5" title="STL class." alt="" coords="46,5,150,32"/>
+<area shape="rect" id="node1" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="5,304,189,331"/>
+<area shape="rect" id="node2" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="31,229,164,256"/>
+<area shape="rect" id="node3" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="46,155,149,181"/>
+<area shape="rect" id="node4" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="38,80,157,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="46,5,149,32"/>
 </map>

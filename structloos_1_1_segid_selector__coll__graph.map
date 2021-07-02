@@ -1,6 +1,6 @@
 <map id="loos::SegidSelector" name="loos::SegidSelector">
 <area shape="rect" id="node1" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="47,185,182,212"/>
 <area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="5,96,139,123"/>
-<area shape="rect" id="node3" title="STL class." alt="" coords="163,96,243,123"/>
-<area shape="rect" id="node4" title="STL class." alt="" coords="139,5,266,47"/>
+<area shape="rect" id="node3" title=" " alt="" coords="163,96,243,123"/>
+<area shape="rect" id="node4" title=" " alt="" coords="139,5,266,47"/>
 </map>

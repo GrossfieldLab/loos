@@ -1,5 +1,5 @@
 <map id="loos::WallTimer" name="loos::WallTimer">
-<area shape="rect" id="node1" title="Policy class for tracking wall&#45;time." alt="" coords="103,5,215,32"/>
-<area shape="rect" id="node2" href="$classloos_1_1_timer.html" title="Class for tracking time." alt="" coords="5,81,177,108"/>
-<area shape="rect" id="node3" href="$classloos_1_1_timer.html" title=" " alt="" coords="87,171,218,212"/>
+<area shape="rect" id="node1" title="Policy class for tracking wall&#45;time." alt="" coords="9,5,121,32"/>
+<area shape="rect" id="node2" href="$classloos_1_1_timer.html" title=" " alt="" coords="5,171,136,212"/>
+<area shape="rect" id="node3" href="$classloos_1_1_timer.html" title="Class for tracking time." alt="" coords="87,81,259,108"/>
 </map>

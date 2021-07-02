@@ -14,5 +14,12 @@ var namespace_e_n_m =
     [ "SuperBlock", "class_e_n_m_1_1_super_block.html", "class_e_n_m_1_1_super_block" ],
     [ "SuperBlockDecorator", "class_e_n_m_1_1_super_block_decorator.html", "class_e_n_m_1_1_super_block_decorator" ],
     [ "UniformSpringFunction", "class_e_n_m_1_1_uniform_spring_function.html", "class_e_n_m_1_1_uniform_spring_function" ],
-    [ "VSA", "class_e_n_m_1_1_v_s_a.html", "class_e_n_m_1_1_v_s_a" ]
+    [ "VSA", "class_e_n_m_1_1_v_s_a.html", "class_e_n_m_1_1_v_s_a" ],
+    [ "copyMasses", "namespace_e_n_m.html#a4a3fa53a44512aa8e477097ed347e3af", null ],
+    [ "getMasses", "namespace_e_n_m.html#a4f58acfef6eb3d7131ad2f9867944840", null ],
+    [ "massFromOccupancy", "namespace_e_n_m.html#a1ed454ec82c188198f5dfc23478b1769", null ],
+    [ "massFromPSF", "namespace_e_n_m.html#a8f8fea90d15d4d363f26bcf66267cf92", null ],
+    [ "splitCommaSeparatedList", "namespace_e_n_m.html#a8bdc0822ebda5325c99a8de046816846", null ],
+    [ "springFactory", "namespace_e_n_m.html#af7af50606e682275dd0e4c5f13679f74", null ],
+    [ "springNames", "namespace_e_n_m.html#a46237f9c4a64e06efe02d5fdc5dc8363", null ]
 ];

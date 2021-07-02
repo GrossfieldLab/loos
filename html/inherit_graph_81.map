@@ -1,5 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1_simple_counter.html" title="Basic progress counter object, defining the interface..." alt="" coords="5,35,145,61"/>
-<area shape="rect" id="node2" href="$classloos_1_1_estimating_counter.html" title="A progress counter that can estimate how much time is left." alt="" coords="193,5,356,32"/>
-<area shape="rect" id="node3" href="$classloos_1_1_progress_counter.html" title="The progress counter front&#45;end." alt="" coords="199,57,351,98"/>
-</map>

@@ -1,8 +1,0 @@
-<map id="loos::FileWriteError" name="loos::FileWriteError">
-<area shape="rect" id="node1" title="Errors while writing to files." alt="" coords="52,340,185,367"/>
-<area shape="rect" id="node2" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="67,264,170,291"/>
-<area shape="rect" id="node3" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="6,187,125,213"/>
-<area shape="rect" id="node4" title="STL class." alt="" coords="5,96,109,123"/>
-<area shape="rect" id="node5" title="STL class." alt="" coords="133,96,213,123"/>
-<area shape="rect" id="node6" title="STL class." alt="" coords="110,5,237,47"/>
-</map>

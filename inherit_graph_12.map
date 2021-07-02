@@ -1,6 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,31,161,57"/>
-<area shape="rect" id="node2" href="$classloos_1_1_basic_progress.html" title=" " alt="" coords="209,31,348,57"/>
-<area shape="rect" id="node3" href="$classloos_1_1_percent_progress.html" title="Provide feedback by percent&#45;complete." alt="" coords="424,5,575,32"/>
-<area shape="rect" id="node4" href="$classloos_1_1_percent_progress_with_time.html" title=" " alt="" coords="396,56,603,83"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,46,63,73"/>
+<area shape="rect" id="node2" href="$classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html" title="Python&#45;based wrapper for LOOS Trajectories This class turns a loos Trajectory into something more pyt..." alt="" coords="111,5,271,47"/>
+<area shape="rect" id="node3" href="$classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html" title="Virtual trajectory composed of multiple Trajectory objects This class can combine multiple loos...." alt="" coords="111,71,271,112"/>
+<area shape="rect" id="node4" href="$classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html" title="A virtual trajectory that supports iterative alignment." alt="" coords="319,71,480,112"/>
 </map>

@@ -1,0 +1,26 @@
+var namespacescattering =
+[
+    [ "FullHelp", "classscattering_1_1_full_help.html", "classscattering_1_1_full_help" ],
+    [ "deduceAtomicNumber", "namespacescattering.html#af3d71c1a8b32fe8b91de5caaaac2a6a0", null ],
+    [ "fullhelp", "namespacescattering.html#ac249ee134fbf1d08e08e25c9cf146a0a", null ],
+    [ "action", "namespacescattering.html#a315954afdeb8b49c562b20fae69fee41", null ],
+    [ "args", "namespacescattering.html#a417565340543489df019d5b55a240226", null ],
+    [ "default", "namespacescattering.html#a0aed2808271efeddec1c00282485c6b0", null ],
+    [ "formFactors", "namespacescattering.html#ac93d0978d73a63857bc0edc2e19cb271", null ],
+    [ "header", "namespacescattering.html#ad1445b20745fd158cf64b9d9331210d9", null ],
+    [ "help", "namespacescattering.html#a9b6bda016f73129926b37d7b877d9db8", null ],
+    [ "kratky", "namespacescattering.html#a9988cb8ff3d485396162bcaf60f82a8b", null ],
+    [ "num_qvals", "namespacescattering.html#a2de434576ef6184c06e6037678a2c4e6", null ],
+    [ "out_file", "namespacescattering.html#ab5493ffa50bf8763210d7a5b90fa01d7", null ],
+    [ "parser", "namespacescattering.html#a311b5f2b877450193e37cf2998b63aaa", null ],
+    [ "q_max", "namespacescattering.html#adbefa78ff76d01ae812b3272eca37999", null ],
+    [ "q_min", "namespacescattering.html#a13f9c33ed464cd71bd8254189fccfefb", null ],
+    [ "q_vals", "namespacescattering.html#a7e17ac06ad277b63ca0a3189aa5592d0", null ],
+    [ "qrg", "namespacescattering.html#a06685d060b5ee18bb4653095258225ca", null ],
+    [ "rgyr", "namespacescattering.html#a2952460ae5b262d486ccdd302655b971", null ],
+    [ "subset", "namespacescattering.html#ae6dd5481056b759731e2553be4f604f9", null ],
+    [ "system", "namespacescattering.html#a08c9bf64abb4558a7f82945567ad8f29", null ],
+    [ "total", "namespacescattering.html#a6fc00b99554fea0fadb0b881092214cb", null ],
+    [ "traj", "namespacescattering.html#a8b40dc969892f5de96105346455d6d76", null ],
+    [ "type", "namespacescattering.html#a437b44b0d736bbdaa6a1c60aaa2a954c", null ]
+];

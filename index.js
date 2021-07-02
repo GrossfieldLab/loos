@@ -35,19 +35,5 @@ var index =
         [ "Building PyLOOS", "faq.html#faq_pyloos_building", null ],
         [ "Using PyLOOS", "faq.html#faq_pyloos_using", null ]
       ] ]
-    ] ],
-    [ "Selection Language", "selections.html", [
-      [ "Description", "selections.html#Language", [
-        [ "Relational Operators", "selections.html#relops", null ],
-        [ "Logical Operators", "selections.html#logops", null ],
-        [ "Magical Operators", "selections.html#magops", null ],
-        [ "Keywords", "selections.html#keywords", null ],
-        [ "Regular Expression Matching", "selections.html#regexps", null ],
-        [ "Magical Operations", "selections.html#magops_explained", null ]
-      ] ],
-      [ "Putting It All Together...", "selections.html#kahuna", [
-        [ "Usage", "selections.html#Usage", null ]
-      ] ]
-    ] ],
-    [ "Summary of Tools", "tools.html", "tools" ]
+    ] ]
 ];
