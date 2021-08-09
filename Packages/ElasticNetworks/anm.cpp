@@ -17,11 +17,12 @@
     anm 'resid >= 10 && resid <= 50 && name == "CA"' foo.pdb foo
 
     This creates the following files:
-      foo_H.asc      == The hessian
-      foo_U.asc      == Left singular vectors
-      foo_s.asc      == Singular values
-      foo_V.asc      == Right singular vectors
-      foo_Hi.asc     == Pseudo-inverse of H
+          foo_H.asc      == The hessian
+          foo_U.asc      == Left singular vectors
+          foo_s.asc      == Singular values
+          foo_V.asc      == Right singular vectors
+         foo_Hi.asc      == Pseudo-inverse of H
+      foo_model.pdb      == PDB model used for the ANM calculation
 
   Notes:
     o The default selection (if none is specified) is to pick CA's
@@ -101,11 +102,12 @@ string fullHelpMessage() {
     "lowest modes).\n"
     "\n"
     "This creates the following files:\n"
-    "\tfoo_H.asc   - The hessian\n"
-    "\tfoo_U.asc   - Left singular vectors\n"
-    "\tfoo_s.asc   - Singular values\n"
-    "\tfoo_V.asc   - Right singular vectors\n"
-    "\tfoo_Hi.asc  - Pseudo-inverse of H\n"
+    "\tfoo_H.asc     - The hessian\n"
+    "\tfoo_U.asc     - Left singular vectors\n"
+    "\tfoo_s.asc     - Singular values\n"
+    "\tfoo_V.asc     - Right singular vectors\n"
+    "\tfoo_Hi.asc    - Pseudo-inverse of H\n"
+    "\tfoo_model.pdb - Model used for calculation\n"
     "\n"
     "\n"
     "* Spring Constant Control *\n"
@@ -221,6 +223,18 @@ int main(int argc, char *argv[]) {
   if (verbosity > 0)
     cerr << boost::format("Selected %d atoms from %s\n") % subset.size() % mopts->model_name;
 
+  PDB pdb = PDB::fromAtomicGroup(subset);
+  pdb.remarks().add(header);
+  string pdb_name = prefix + "_model.pdb";
+  ofstream pdb_out(pdb_name.c_str());
+  if (!pdb_out) {
+    cerr << "Error- unable to open " << pdb_name << " for output.\n";
+    exit(-1);
+  }
+  pdb_out << pdb;
+  pdb_out << "END   \n";
+  pdb_out.close();
+  
   // Determine which kind of scaling to apply to the Hessian...
   vector<SpringFunction*> springs;
   SpringFunction* spring = 0;
