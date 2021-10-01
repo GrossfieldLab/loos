@@ -40,10 +40,10 @@ fullhelp = """
   over the course of a trajectory
 
   Mandatory arguments:
-  system_file: file describing system contents, e.g. a psf or pdb
+  model: file describing system contents, e.g. a psf or pdb
   selection: selection string for which residues to look at
   out_file: name for the average contact map, written in matlab format
-  traj_files: 1 or more trajectory files
+  traj: 1 or more trajectory files
 
   Options
   --cutoff: distance for atom-atom contacts, defaults to 4.0 Ang
@@ -88,11 +88,11 @@ args = lo.parser.parse_args()
 header = lo.header()
 
 
-system = loos.createSystem(args.system_file)
+system = loos.createSystem(args.model)
 all_trajs = []
 out_names = []
-num_trajs = len(args.traj_files)
-for t in args.traj_files:
+num_trajs = len(args.traj)
+for t in args.traj:
     traj = loos.pyloos.Trajectory(t, system)
     all_trajs.append(traj)
     if (num_trajs > 1) and args.individual:
@@ -112,7 +112,7 @@ if args.no_backbone:
     residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
 
 frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
-                            numpy.float)
+                            numpy.float64)
 
 
 for traj_id in range(num_trajs):
@@ -129,6 +129,6 @@ for traj_id in range(num_trajs):
                       header=header)
 
 average = numpy.add.reduce(frac_contacts, axis=2)
-average /= len(args.traj_files)
+average /= len(args.traj)
 
 numpy.savetxt(args.out_file, average, header=header)
