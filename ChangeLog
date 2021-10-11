@@ -1,3 +1,6 @@
+2021-10-11 Alan Grossfield <alan>
+	* Add new tool sysinfo.py, print summary info to stdout
+	
 2021-06-15 Alan Grossfield <alan>
 	* Merged in stacking branch, new tools for nucleic acid base stacking
 
