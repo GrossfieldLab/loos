@@ -22,10 +22,6 @@ means sqaured diffusion.
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-# making the fullhelp for the program
-
-
-
 
 import sys
 import loos
@@ -33,24 +29,23 @@ import loos.pyloos
 import numpy as np
 import argparse
 def fullhelp():
-    print(
-        """lipid_unwrap.py takes the coordinates from a trajectory file to unwrap
+    print("""lipid_unwrap.py takes the coordinates from a trajectory file to unwrap
     the periodic box for a selection. At the moment the only rectangular
     box based periodic box conditions are able to be used. The subset of atoms
     that you use could be any valid loos selection, but the program is intended
     to work on lipids,tracking the geometric center of a molecule at the
     current frame and comparing that position to the previous one.
     If the difference between the two positions vary by more than half of the
-   periodic box length (in x,y, or z) a correction factor is added to the current position
-    to correct the positions it moves outside the boundaries.
+    periodic box length (in x,y, or z) a correction factor is added to the
+    current position to correct the positions it moves outside the boundaries.
 
-     If desired, a pdb and DCD of the unwrapped trajectory can be. This is done by
-     taking every molecule if the selection to (0,0,0) then translating it to the
-     unwrapped. For making the trajectory,the assumption is made that the
-     Lx,Ly or Lz of the periodic box will not be greater than 1000000 Angstroms.
+    If desired, a pdb and DCD of the unwrapped trajectory can be. This is done by
+    taking every molecule if the selection to (0,0,0) then translating it to the
+    unwrapped. For making the trajectory, the assumption is made that the
+    Lx, Ly or Lz of the periodic box will not be greater than 1000000 Angstroms.
 
-     The output text file containing the radial position of the atom comparing it to the
-     center of mass to the bilayer.
+    The output text file containing the radial position of the atom comparing
+    it to the center of mass to the bilayer.
 
     Usage: lipid_unwrap.py [OPTIONS] selection_string system_file trajectory_file
         --  selection_string identifies the atoms to be analyzed. They will be
@@ -69,22 +64,24 @@ def fullhelp():
         --output_prefix: prefix to use for the output default is output
 
     Example:
-    python /media/bak12/Analysis/unwrap/lipid_unwrap.py --ouput_traj 1 --output_prefix='unwrapped_foo'
-    foo.psf 'resname == "POPC"' foo.dcd
+    python3 lipid_unwrap.py --ouput_traj 1 --output_prefix='unwrapped_foo' foo.psf 'resname == "POPC"' foo.dcd
 
-    We will obtain a dcd of the unwrapped trajectory with the name of unwrapped_foo.dcd
-    a pdb of unwrapped_foo.pdb to be used to view the dcd, and unwrapped_foo.txt that
-    has the radial distantness of the center of the lipid to the COM of bilayer
-    at that frame for the POPC lipids in the membrane""")
+    We will obtain a dcd of the unwrapped trajectory with the name of
+    unwrapped_foo.dcd a pdb of unwrapped_foo.pdb to be used to view the dcd, and
+    unwrapped_foo.txt that has the radial distantness of the center of the lipid
+    to the COM of bilayer at that frame for the POPC lipids in the membrane
+    """)
 
 
 def findFix():
-    """ find Fix is the takes the center before it is unwrapped then checks the lipids
+    """
+    find Fix is the takes the center before it is unwrapped then checks the lipids
     until to see if the new position has moved more than half the box then the box
     length is added to the position of that atom to negate the wrapping. If the
-     corrdinate of fixed atom still is lager than half the box a factor is multiple to
-      the box length added to the system until the distance is within reason"""
-    fix = loos.GCoord()  # blank GCorrd() == (0,0,0)
+    corrdinate of fixed atom still is lager than half the box a factor is multiple to
+    the box length added to the system until the distance is within reason
+    """
+    fix = loos.GCoord()
     bad = {0:1,1:1,2:1,3:1,4:1,5:1}  # scaling factors of each
     check = True  # checks if the condtion is true
     while check:  # while the ditstance propational to a jump
@@ -94,27 +91,28 @@ def findFix():
         bad_coord = {}
         if diff.x() > half_box.x():
             fix[0] -= box.x() * bad[tracker]
-            bad_coord[tracker] =  bad[tracker]
+            bad_coord[tracker] = bad[tracker]
         elif diff.x() < -half_box.x():
-            fix[0] += box.x() *  bad[tracker]
+            fix[0] += box.x() * bad[tracker]
             tracker = 1
             bad_coord[tracker] = bad[tracker]
         if diff.y() > half_box.y():
             fix[1] -= box.y() * bad[tracker]
             tracker = 2
-            bad_coord[tracker] =  bad[tracker]
+            bad_coord[tracker] = bad[tracker]
         elif diff.y() < -half_box.y():
-            fix[1] += box.y() *  bad[tracker]
+            fix[1] += box.y() * bad[tracker]
             tracker = 3
             bad_coord[tracker] = bad[tracker]
         if diff.z() > half_box.z():
             fix[2] -= box.z() * bad[tracker]
             tracker = 4
-            bad_coord[tracker] =  bad[tracker]
+            bad_coord[tracker] = bad[tracker]
         elif diff.z() < -half_box.z():
-            fix[2] += box.z() *  bad[tracker]
+            fix[2] += box.z() * bad[tracker]
             tracker = 5
-            bad_coord[tracker] =  bad[tracker]
+            bad_coord[tracker] = bad[tracker]
+
         # the new position is the wrapped position plus the fix
         ans = centers[index] + fix
         if prev_centers[index].distance(ans) > half_box.x():
@@ -125,6 +123,8 @@ def findFix():
         else:
             check = False
     return fix
+
+
 class FullHelp(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
         kwargs['nargs'] = 0
@@ -137,114 +137,129 @@ class FullHelp(argparse.Action):
         parser.exit()
 
 
-parser = argparse.ArgumentParser(description="Unwrap PBC lipids")
-parser.add_argument('system_file', help="File describing the system")
-parser.add_argument(
-    'selection_string',
-    help="Selection string describing which residues to use")
-parser.add_argument('traj_file', help="File contraing the trajecotry")
-parser.add_argument(
-    '--fullhelp',
-    help="Print detailed description of all options",
-    action=FullHelp)
-parser.add_argument('--skip', type=int, default=0, help='# of frame to skip')
-parser.add_argument(
-    '--stride',
-    type=int,
-    default=1,
-    help="Read every nth frame")
-parser.add_argument('--output_traj', type=int, default=0,
-                    help='produce an unwrapped trajectory')
-parser.add_argument(
-    '--output_prefix',
-    default='unwrapped_output',
-    type=str,
-    help='name of the tractory file to write (DCD format)')
-args = parser.parse_args()
-pre = args.output_prefix
-header = " ".join([f"{i}" for i in sys.argv])
-system = loos.createSystem(args.system_file)
-# load the trajectory
-traj = loos.pyloos.Trajectory(
-    args.traj_file,
-    system,
-    stride=args.stride,
-    skip=args.skip)
-# select the atoms for the lipids
-# spilt into the invidaul molecules of lipid
-lipids = loos.selectAtoms(system, args.selection_string).splitByMolecule()
-# boolean to check if this is frame is frame 0
-first = True
-# loop into the frame
-# this is the order of the lipid resname-resid-segname
-# this will be useful later
-if args.output_traj:  # fixes the issues where an emptry traj is made when
-    # not wanting one out
-    outtraj = loos.DCDWriter(pre + ".dcd")
-header += '\nresname-resid-segid'
-big_list = " ".join(
-    [f"{lipids[i][0].resname()}-{lipids[i][0].resid()}-{lipids[i][0].segid()} " for i in range(len(lipids))])
-header += f"\n{big_list}"
-header += "\nframe Lipid_1_center_R Lipid_2_center_R Lipid_3_center_R ..."
-for frame in traj:
-    # loop into the lipids
-    COM_R = loos.selectAtoms(system, args.selection_string).centerOfMass()
-    centers = []
-    for index in range(len(lipids)):
-        # geometric center of the lipid
-        centers.append(lipids[index].centroid())
-        # position 0 for frame 0 is always the starting position
-    # in frame one nothing should have moved
-    R_coord = [traj.index()]
-    if not first:
-        box = frame.periodicBox()  # get a G cord of the PBC
-        half_box = 0.5 * box  # a square box's center is at the half box way between all the positions
-        for index in range(len(lipids)):
-            fix = findFix()
-            centers[index] += fix
-            R_coord.append(np.sqrt((centers[index].x() - COM_R.x())**2 + (
-                centers[index].y() - COM_R.y())**2 + (centers[index].z() - COM_R.z())**2))
-            # fix the weird jump issues if the atoms move more than wanted
-            # if the user has the flag on for the trajectory then this is True
+
+if __name__ in '__main__':
+    parser = argparse.ArgumentParser(description="Unwrap PBC lipids")
+    parser.add_argument('system_file',
+                        help="File describing the system")
+    parser.add_argument('selection_string',
+                        help="Selection string describing which residues to use")
+    parser.add_argument('traj_file',
+                        help="File contraing the trajecotry")
+    parser.add_argument('--fullhelp',
+                        help="Print detailed description of all options",
+                        action=FullHelp)
+    parser.add_argument('--skip',
+                        type=int,
+                        default=0,
+                        help='# of frame to skip')
+    parser.add_argument('--stride',
+                        type=int,
+                        default=1,
+                        help="Read every nth frame")
+    parser.add_argument('--output_traj',
+                        type=int,
+                        default=0,
+                        help='produce an unwrapped trajectory')
+    parser.add_argument('--output_prefix',
+                        default='unwrapped_output',
+                        type=str,
+                        help='name of the tractory file to write (DCD format)')
+    parser.add_argument('--no_center',
+                        default=1,
+                        type=int,
+                        help='Do not wrap the trajecotry default is to center the lipid selection')
+    args = parser.parse_args()
+    pre = args.output_prefix
+    header = " ".join([f"{i}" for i in sys.argv])
+
+    system = loos.createSystem(args.system_file)
+    traj = loos.pyloos.Trajectory(args.traj_file,
+                                  system,
+                                  stride=args.stride,
+                                  skip=args.skip)
+
+    # select the atoms for the lipids
+    # split into the individual molecules of lipid
+    lipid_sel =  loos.selectAtoms(system, args.selection_string)
+    lipids =lipid_sel.splitByMolecule()
+    # boolean to check if this is frame is frame 0
+    first = True
+    # making a numpy array to save the coorinates
+    num_lipids = len(lipids)
+    num_frames= len(traj)
+    all_centers = np.zeros((num_lipids,num_frames))
+    # loop into the frame
     if args.output_traj:
-        # loop through the list of center locations and
-        moved_lipids = loos.AtomicGroup() # blank Atoms group
-        for lipid, center in zip(lipids, centers):
-            lipid.centerAtOrigin()  # move that lipid to the center
-            # translate to the center
-            lipid.translate(center) # then move the lipids to the center of
-            # the unwrapped point
-            moved_lipids.append(lipid) # add the lipid to the blank Atom loos
-        # setting the pbc to be large
-        moved_lipids.periodicBox(loos.GCoord(1000000, 1000000, 1000000)) # set the
-        # PBC to 100000 100000 100000
-        if len(lipids) >= 5: # if we have a smaller selection moving the
-        # everything to the center of mass of the bilayer will not show
-        # the movement that we are looking for the 5 is kinda arbitrary
-            moved_lipids.centerAtOrigin() # center the whole selection a the
-            # origin
-        outtraj.writeFrame(moved_lipids) # write the frame
-        if first: # if frame 0
-            lipids.periodicBox(loos.GCoord(1000000, 1000000, 1000000))
-            # change the box size
-            frame_copy.renumber()
-            pdb = loos.PDB.fromAtomicGroup(frame_copy)
-            pdb.remarks().add(header)
-            with open(f"{pre}.pdb", "w") as out:
-                out.write(str(pdb)) # write a pdb
-    all = [traj.index()]
-    if first:
+        outtraj = loos.DCDWriter(pre + ".dcd")
+
+    # this is the order of the lipid resname-resid-segname
+    header += '\nresname-resid-segid'
+    big_list = " ".join(
+        [f"{lipids[i][0].resname()}-{lipids[i][0].resid()}-{lipids[i][0].segid()} " for i in range(len(lipids))])
+    header += f"\n{big_list}"
+    header += "\nLipid_1_center_R Lipid_2_center_R Lipid_3_center_R ..."
+    for frame in traj:
+        # shift the lipids such that their total centroid is at the origin
+        COM_R = loos.selectAtoms(system, args.selection_string).centroid()
+        system.translate(-COM_R)
+        centers = []
         for index in range(len(lipids)):
-            R_coord.append(np.sqrt((centers[index].x() - COM_R.x())**2 + (
-                centers[index].y() - COM_R.y())**2 + (centers[index].z() - COM_R.z())**2))
-        all_centers = np.array(R_coord)
-    else:
-        R_coord = np.array((R_coord))
-        all_centers = np.row_stack((all_centers, R_coord))
-    prev_centers = centers
-    first = False
-np.savetxt(f'{pre}.txt', all_centers, header=header)
+            # geometric center of the lipid
+            centers.append(lipids[index].centroid())
+            # position 0 for frame 0 is always the starting position
+        # in frame one nothing should have moved
+        R_coord = [traj.index()]
+        if not first:
+            box = frame.periodicBox()  # get a G cord of the PBC
+            half_box = 0.5 * box  # a square box's center is at the half box way between all the positions
+            for index in range(len(lipids)):
+                fix = findFix()
+                centers[index] += fix
+                R_coord.append(centers[index].length())
 
-if __name__ in 'main':
-    pass 
+        if args.output_traj:
+            # loop through the list of center locations and
+            moved_lipids = loos.AtomicGroup() # blank Atoms group
+            for lipid, center in zip(lipids, centers):
+                lipid.centerAtOrigin()  # move that lipid to the center
+                # translate to the center
+                lipid.translate(center) # then move the lipids to the center of
+                # the unwrapped point
+                moved_lipids.append(lipid) # add the lipid to the blank Atom loos
 
+            # setting the pbc to be large
+            moved_lipids.periodicBox(loos.GCoord(1000000, 1000000, 1000000)) # set the
+            if args.no_center:
+                moved_lipids.centerAtOrigin()
+
+            outtraj.writeFrame(moved_lipids)
+
+            # write a pdb
+            if first:
+                moved_lipids.periodicBox(loos.GCoord(1000000, 1000000, 1000000))
+                # change the box size
+                frame_copy = lipid_sel.copy()
+                frame_copy.renumber()
+                pdb = loos.PDB.fromAtomicGroup(frame_copy)
+                pdb.remarks().add(header)
+                with open(f"{pre}.pdb", "w") as out:
+                    out.write(str(pdb))
+            # now loop into the array of R_coord input the values
+            for index in range(len(lipids)):
+                # find the lenght of the centers indexs
+                all_centers[index,traj.index()] = centers[index].length()
+        """ if first:
+            for index in range(len(lipids)):
+                R_coord.append(centers[index].length())
+            all_centers = np.array(R_coord)
+
+        # TODO: you're doing this every frame? That's going to be
+        # insanely slow and wasteful. You're much better off just
+        # allocating a num_frames x num_lipids 2D array right at the beginning
+        else:
+            R_coord = np.array((R_coord))
+            all_centers = np.row_stack((all_centers, R_coord))"""
+        prev_centers = centers
+        first = False
+    np.savetxt(f'{pre}.txt', all_centers, header=header)
