@@ -62,6 +62,7 @@ def fullhelp():
         --fullhelp: prints this message
         --output_traj: output a dcd of the unwrapped trajectory default(--output_traj 0)
         --output_prefix: prefix to use for the output default is output
+        --no_center: Variable to turn off the recentering of the trajectory default(--no_center 1)
 
     Example:
     python3 lipid_unwrap.py --ouput_traj 1 --output_prefix='unwrapped_foo' foo.psf 'resname == "POPC"' foo.dcd
