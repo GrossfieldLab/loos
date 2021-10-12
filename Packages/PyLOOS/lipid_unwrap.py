@@ -250,17 +250,6 @@ if __name__ in '__main__':
             for index in range(len(lipids)):
                 # find the lenght of the centers indexs
                 all_centers[index,traj.index()] = centers[index].length()
-        """ if first:
-            for index in range(len(lipids)):
-                R_coord.append(centers[index].length())
-            all_centers = np.array(R_coord)
-
-        # TODO: you're doing this every frame? That's going to be
-        # insanely slow and wasteful. You're much better off just
-        # allocating a num_frames x num_lipids 2D array right at the beginning
-        else:
-            R_coord = np.array((R_coord))
-            all_centers = np.row_stack((all_centers, R_coord))"""
         prev_centers = centers
         first = False
     np.savetxt(f'{pre}.txt', all_centers, header=header)
