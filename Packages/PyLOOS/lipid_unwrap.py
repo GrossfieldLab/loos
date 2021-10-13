@@ -247,9 +247,9 @@ if __name__ in '__main__':
                 with open(f"{pre}.pdb", "w") as out:
                     out.write(str(pdb))
             # now loop into the array of R_coord input the values
-            for index in range(len(lipids)):
-                # find the lenght of the centers indexs
-                all_centers[index,traj.index()] = centers[index].length()
+        for index in range(len(lipids)):
+        # find the lenght of the centers indexs
+          all_centers[index,traj.index()] = centers[index].length()
         prev_centers = centers
         first = False
     np.savetxt(f'{pre}.txt', all_centers, header=header)
