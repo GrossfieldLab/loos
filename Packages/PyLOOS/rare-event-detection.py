@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
 Use Non-Negative Matrix Factorization to identify conformational transitions. 
-Intended for use with GPCRs. Based on PW, Ligand-Dependent Conformational Transitions 
+Intended for use with GPCRs. Based on Plante and Weinstein's Ligand-Dependent Conformational Transitions 
 in Molecular Dynamics Trajectories of GPCRs Revealed by a New Machine Learning 
-Rare Event Detection Protocol, journal, year, doi.
+Rare Event Detection Protocol, Molecules, 2021, https://doi.org/10.3390/molecules26103059
 
 Grace Julien 2021
-https://doi.org/10.3390/molecules26103059
 """
 
 """
@@ -38,7 +37,6 @@ import loos.pyloos.options as options
 import sklearn.decomposition
 import sys
 import numpy
-#import matplotlib.pyplot as plt
 from os.path import basename, splitext
 
 
@@ -50,11 +48,11 @@ fullhelp = """
   https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html
   Based on methodology outlined by Plante and Weinstein in 
   https://doi.org/10.3390/molecules26103059
-  Window_length should be approximately the number of frames per nanosecond
-  It is recommended to play with n_components, starting with "the expected number 
-  of rare events in the trajectory based on mechanistic hypotheses of the
-  conformational changes required for the molecular process," (reword or cite to Plante ^)
-  and experimenting with +/- components until convergence is attained.
+  Window_length should be approximately the number of frames per nanosecond.
+  It is recommended to play with n_components, using the expected number of
+  rare events in the trajectory based on the conformational changes required
+  for the molecular process as a starting point and experimenting with +/-
+  components until convergence is attained.
 
   Mandatory arguments:
   system_file: file describing system contents, e.g. a psf or pdb
@@ -79,17 +77,13 @@ fullhelp = """
 
   """
 
-def moving_average3d(a, n = 30):
-    ret = numpy.cumsum(a, dtype=float, axis = 2)
-    ret[0:,0:,n:] = ret[0:,0:,n:] - ret[0:,0:,:-n]
-    return ret[0:,0:,n-1:] / n
-
-def moving_ave1d(a, n = 30):
-    ret = numpy.cumsum(a, dtype=float, axis = 1) #1 for across, 0 for down
-    ret[0:,n:] = ret[0:,n:] - ret[0:,:-n] #going across is going across the frames (1), going down is going through the contacts for one frame (0)
+def moving_ave(a, n = 30):
+    ret = numpy.cumsum(a, dtype=float, axis = 1) 
+    ret[0:,n:] = ret[0:,n:] - ret[0:,:-n]
     return ret[0:,n-1:] / n
     
-
+#convert a row and column index of an nxn lower triangular matrix to a
+#one dimensional array index
 def LowerTriIndex(row, col, n):
     index = (row*(row-1)/2 + col)
     return int(index)
@@ -101,10 +95,10 @@ if __name__ == '__main__':
 
 
     lo.parser.add_argument('--spatial_out_file',
-                            #required=True,
+                            required=True,
                             help="File with the component composition from NMF (W)")
     lo.parser.add_argument('--temporal_out_file',
-                            #required=True,
+                            required=True,
                             help="File with the weights of each component from NMF (H)")
     lo.parser.add_argument('--cutoff', type=float,
                             help="Cutoff distance for contact", default=4.0)
@@ -142,37 +136,24 @@ if __name__ == '__main__':
     if args.no_backbone:
         residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
 
-    frac_contacts = numpy.zeros([len(residues), len(residues), len(traj)],
-                                numpy.float64)
     fc = numpy.zeros([int((len(residues)-1)*len(residues)/2), len(traj)], numpy.float64)
 
 
-    for (frame, frame_id) in zip(traj, range(len(traj))): #frac_contact (len res len res len traj)
-        #frac = numpy.zeros([subsum(len(residues))], numpy.float64)
+    for (frame, frame_id) in zip(traj, range(len(traj))):
         for i in range(len(residues)):
             for j in range(i+1, len(residues)):
                 if residues[i].contactWith(args.cutoff, residues[j]):
                     if j>i:
                         fc[LowerTriIndex(j, i, len(residues)), frame_id] += 1.0
 
-    #print(frac_contacts)
-    #print(frac_contacts.shape) #upper triangular matrix
-    ave = moving_ave1d(fc, args.window_length)
-    #ave = moving_average3d(frac_contacts, args.window_length)
-    #flat = ave.reshape((ave.shape[0]*ave.shape[1]), ave.shape[2])
-    #print(flat.shape)
+    ave = moving_ave(fc, args.window_length)
 
     model = sklearn.decomposition.NMF(n_components = args.n_components, 
                                       init = 'nndsvd', 
                                       max_iter = args.max_iterations)
+    
     W = model.fit_transform(ave)
     H = model.components_
 
-    print(W.shape)
-    #print(H[1].shape)
-
-    #numpy.savetxt(args.spatial_out_file, W, header=header)
-    #numpy.savetxt(args.temporal_out_file, H, header=header)
-
-
-    #numpy.savetxt(args.out_file, average, header=header)
+    numpy.savetxt(args.spatial_out_file, W, header=header)
+    numpy.savetxt(args.temporal_out_file, H, header=header)
