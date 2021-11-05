@@ -45,7 +45,10 @@ system = loos.createSystem(args.system_file)
 num_atoms = len(system)
 has_coords = system.hasCoords()
 has_charge = system[0].checkProperty(loos.Atom.chargebit)
-total_charge = system.totalCharge()
+if has_charge:
+    total_charge = system.totalCharge()
+else:
+    total_charge = 0.0
 has_mass = system[0].checkProperty(loos.Atom.massbit)
 has_bonds = system.hasBonds()
 is_periodic = system.isPeriodic()
