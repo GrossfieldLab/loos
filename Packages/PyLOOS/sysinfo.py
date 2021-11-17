@@ -29,25 +29,60 @@ Alan Grossfield, 2021
 
 import sys
 import loos
+import argparse
 
-filename = sys.argv[1]
+parser = argparse.ArgumentParser(description="Print system information")
+parser.add_argument('system_file', help="File describing the system")
 
-system = loos.createSystem(filename)
+# option to output json
+parser.add_argument('--json', '-j',
+                    default=None,
+                    help="Specify a file for json output")
+args = parser.parse_args()
 
-print(f"Num atoms = {len(system)}")
-print(f"Has Coords = {system.hasCoords()}")
+system = loos.createSystem(args.system_file)
 
-hasCharge = system[0].checkProperty(loos.Atom.chargebit)
-print(f"Has Charges = {hasCharge}")
-if hasCharge:
-    print(f"Total charge = {system.totalCharge():.4f}")
+num_atoms = len(system)
+has_coords = system.hasCoords()
+has_charge = system[0].checkProperty(loos.Atom.chargebit)
+if has_charge:
+    total_charge = system.totalCharge()
+else:
+    total_charge = 0.0
+has_mass = system[0].checkProperty(loos.Atom.massbit)
+has_bonds = system.hasBonds()
+is_periodic = system.isPeriodic()
+box = system.periodicBox()
+centroid = system.centroid()
 
-print(f"Has Masses = {system[0].checkProperty(loos.Atom.massbit)}")
+if args.json:
+    import json
+    d = {}
+    d["system_file"] = args.system_file
+    d["num_atoms"] = num_atoms
+    d["has_coords"] = has_coords
+    d["has_charge"] = has_charge
+    d["total_charge"] = total_charge
+    d["has_mass"] = has_mass
+    d["has_bonds"] = has_bonds
+    d["is_periodic"] = is_periodic
+    d["box"] = str(box)
+    d["centroid"] = str(centroid)
 
-print(f"Has Bonds = {system.hasBonds()}")
-print(f"Is Periodic = {system.isPeriodic()}")
-if system.isPeriodic():
-    print(f"Box = {system.periodicBox()}")
+    with open(args.json, "w") as json_file:
+        json.dump(d, json_file, sort_keys=True)
+else:
+    print(f"System file = {args.system_file}")
+    print(f"Num atoms = {num_atoms}")
+    print(f"Has Coords = {has_coords}")
+    print(f"Has Charges = {has_charge}")
+    if has_charge:
+        print(f"Total charge = {total_charge:.4f}")
+    print(f"Has Masses = {has_mass}")
+    print(f"Has Bonds = {has_bonds}")
+    print(f"Is Periodic = {is_periodic}")
+    if system.isPeriodic():
+        print(f"Box = {box}")
 
-if system.hasCoords():
-    print(f"Centroid = {system.centroid()}")
+    if system.hasCoords():
+        print(f"Centroid = {centroid}")
