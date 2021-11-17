@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Use Non-Negative Matrix Factorization to identify conformational transitions. 
-Intended for use with GPCRs. Based on Plante and Weinstein's Ligand-Dependent Conformational Transitions 
-in Molecular Dynamics Trajectories of GPCRs Revealed by a New Machine Learning 
+Intended for use with proteins. Based on Plante and Weinstein's Ligand-Dependent Conformational Transitions 
+in Molecular Dynamics Trajectories of proteins. Revealed by a New Machine Learning 
 Rare Event Detection Protocol, Molecules, 2021, https://doi.org/10.3390/molecules26103059
 
 Grace Julien 2021
@@ -47,18 +47,24 @@ fullhelp = """
   as implemented by sk-learn.
   https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html
   Based on methodology outlined by Plante and Weinstein in 
-  https://doi.org/10.3390/molecules26103059
-  Window_length should be approximately the number of frames per nanosecond.
+  https://doi.org/10.3390/molecules26103059 
+  Window_length is the number of frames that will be averaged over before performing the NMF,
+  recommended to be approximately the number of frames per nanosecond.
   It is recommended to play with n_components, using the expected number of
   rare events in the trajectory based on the conformational changes required
   for the molecular process as a starting point and experimenting with +/-
   components until convergence is attained.
 
+
   Mandatory arguments:
   system_file: file describing system contents, e.g. a psf or pdb
   selection: selection string for which residues to look at
-  spatial_out_file: name for the component composition file
-  temporal_out_file: name for the component weight file
+  spatial_out_file: will contain the contact maps for the 
+  individual components (the W matrix, in sklearn's nomenclature) 
+  in numpy text format
+  temporal_out_file: will contain the time series values for the 
+  individual components (the H matrix, in sklearn's nomenclature) 
+  in numpy text format
   traj_file: 1 trajectory file
   window_length: window length for smoothing function
 
