@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Use Non-Negative Matrix Factorization to identify conformational transitions. 
-Intended for use with proteins. Based on Plante and Weinstein's Ligand-Dependent Conformational Transitions 
-in Molecular Dynamics Trajectories of proteins. Revealed by a New Machine Learning 
-Rare Event Detection Protocol, Molecules, 2021, https://doi.org/10.3390/molecules26103059
-
+Use Non-Negative Matrix Factorization to identify conformational transitions.
+Intended for use with proteins. Based on Plante and Weinstein's Ligand-Dependent
+Conformational Transitions in Molecular Dynamics Trajectories of GPCRs Revealed
+by a New Machine Learning Rare Event Detection Protocol, Molecules, 2021,
+https://doi.org/10.3390/molecules26103059
 Grace Julien 2021
 """
 
@@ -41,13 +41,13 @@ from os.path import basename, splitext
 
 
 fullhelp = """
-  red.py: compute the makeup of components of residue-residue
-  contacts and the weights of said components over the course 
+  rare-event-detection.py: compute the makeup of components of residue-residue
+  contacts and the weights of said components over the course
   of a trajectory using Non-Negative Matrix Factorization
   as implemented by sk-learn.
   https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html
-  Based on methodology outlined by Plante and Weinstein in 
-  https://doi.org/10.3390/molecules26103059 
+  Based on methodology outlined by Plante and Weinstein in
+  https://doi.org/10.3390/molecules26103059
   Window_length is the number of frames that will be averaged over before performing the NMF,
   recommended to be approximately the number of frames per nanosecond.
   It is recommended to play with n_components, using the expected number of
@@ -59,11 +59,11 @@ fullhelp = """
   Mandatory arguments:
   system_file: file describing system contents, e.g. a psf or pdb
   selection: selection string for which residues to look at
-  spatial_out_file: will contain the contact maps for the 
-  individual components (the W matrix, in sklearn's nomenclature) 
+  spatial_out_file: will contain the contact maps for the
+  individual components (the W matrix, in sklearn's nomenclature)
   in numpy text format
-  temporal_out_file: will contain the time series values for the 
-  individual components (the H matrix, in sklearn's nomenclature) 
+  temporal_out_file: will contain the time series values for the
+  individual components (the H matrix, in sklearn's nomenclature)
   in numpy text format
   traj_file: 1 trajectory file
   window_length: window length for smoothing function
@@ -84,10 +84,10 @@ fullhelp = """
   """
 
 def moving_ave(a, n = 30):
-    ret = numpy.cumsum(a, dtype=float, axis = 1) 
+    ret = numpy.cumsum(a, dtype=float, axis = 1)
     ret[0:,n:] = ret[0:,n:] - ret[0:,:-n]
     return ret[0:,n-1:] / n
-    
+
 #convert a row and column index of an nxn lower triangular matrix to a
 #one dimensional array index
 def LowerTriIndex(row, col, n):
@@ -154,10 +154,10 @@ if __name__ == '__main__':
 
     ave = moving_ave(fc, args.window_length)
 
-    model = sklearn.decomposition.NMF(n_components = args.n_components, 
-                                      init = 'nndsvd', 
+    model = sklearn.decomposition.NMF(n_components = args.n_components,
+                                      init = 'nndsvd',
                                       max_iter = args.max_iterations)
-    
+
     W = model.fit_transform(ave)
     H = model.components_
 
