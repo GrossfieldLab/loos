@@ -325,7 +325,11 @@ string fullHelpMessage(void) {
     "\tramachandran can make print out a rough secondary structure assignment\n"
     "based on phi/psi angles.  Use the --assign=1 option to turn this on.  \n"
     "Rectangular regions in the plot that roughly correspond to the clasically \n"
-    "allowed regions are used to make the assignment.\n"
+    "allowed regions are used to make the assignment, following discussion in:\n"
+    "Hollingsworth, S. A.; Karplus, P. A. A Fresh Look at the Ramachandran Plot \n"
+    "\tand the Occurrence of Standard Structures in Proteins. \n"
+    "\tBioMolecular Concepts 2010, 1 (3–4), 271–283.\n"
+    "\thttps://doi.org/10.1515/bmc.2010.022.\n"
     "\n"
     "EXAMPLES\n"
     "\n"
@@ -507,7 +511,8 @@ int main(int argc, char *argv[]) {
   if (topts->ss_flag)
     cout << "# Secondary Structure Codes: H = Helix, S = Sheet, O = Other, ? = Undefined\n";
 
-  cout << "# frame\t" << setw(10);
+  cout << "# frame\tresid" << setw(10);
+  
 
   // Construct the header of what torsions were computed...
   copy(torsion_names.begin(), torsion_names.end(), ostream_iterator<string>(cout, "\t"));
@@ -516,6 +521,7 @@ int main(int argc, char *argv[]) {
   cout << endl;
 
   uint t = 0;
+  uint resid;
   // Iterate over the requested frames from the trajectory...
   for (vector<uint>::iterator frameno = indices.begin(); frameno != indices.end(); ++frameno) {
     traj->readFrame(*frameno);
@@ -535,6 +541,9 @@ int main(int argc, char *argv[]) {
       vGroup::iterator vi;
       vector<double> torsions;
 
+      // Grab the resid for all the torsions. Assume that the third at in first torsion is within residue.
+      resid = (*(*vvi).begin())[2]->resid();
+      cout << "  " << resid;
       for (vi = (*vvi).begin(); vi != (*vvi).end(); ++vi) {
         double angle = missing_flag;
         if ((*vi).size() == 4)
