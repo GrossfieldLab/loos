@@ -1,3 +1,11 @@
+2021-11-19 Alan Grossfield <alan>
+	* Merged new tool rare-event-detection.py, contributed
+	  by Grace Julien
+	  
+2021-11-12 Alan Grossfield <alan>
+	* Merge branch pdbelement, use atomic mass info to fill the
+	  element field when writing PDB files
+
 2021-11-01 Alan Grossfield <alan>
 	* Add json output to sysinfo.py
 

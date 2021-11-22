@@ -1,5 +1,6 @@
 #include <AtomicNumberDeducer.hpp>
 #include <cmath>
+#include <string>
 
 
 
@@ -8,7 +9,7 @@ namespace loos {
   namespace internal {
 
     unsigned int AtomicNumberDeducer::deduceFromMass(const double mass, const double tolerance) {
-      
+
       std::vector<MassNumber>::iterator i;
       for (i = element_table.begin(); i != element_table.end(); ++i)
         if (std::abs(i->first - mass) < tolerance)
@@ -19,6 +20,14 @@ namespace loos {
 
       return(0);
     }
+
+    std::string AtomicNumberDeducer::deduceName(const double mass,
+                                                const double tolerance) {
+
+        unsigned int number = deduceFromMass(mass, tolerance);
+        return(name_table[number]);
+    }
+
 
 
     void AtomicNumberDeducer::initialize() {
@@ -32,7 +41,7 @@ namespace loos {
       element_table.push_back(MassNumber(35.45, 17));		// Cl
       element_table.push_back(MassNumber(22.98976928, 11));	// Na
       element_table.push_back(MassNumber(32.06, 16));		// S
-      
+
       // Guesses about what is next most likely
       element_table.push_back(MassNumber(39.0983, 19));		// K
       element_table.push_back(MassNumber(40.078, 20));		// Ca
@@ -125,16 +134,119 @@ namespace loos {
       element_table.push_back(MassNumber(244, 94));		// Pu
       element_table.push_back(MassNumber(247, 96));		// Cm
 
+      name_table.push_back(std::string("NO"));
+      name_table.push_back(std::string("H"));
+      name_table.push_back(std::string("HE"));
+      name_table.push_back(std::string("LI"));
+      name_table.push_back(std::string("BE"));
+      name_table.push_back(std::string("B"));
+      name_table.push_back(std::string("C"));
+      name_table.push_back(std::string("N"));
+      name_table.push_back(std::string("O"));
+      name_table.push_back(std::string("F"));
+      name_table.push_back(std::string("NE"));
+      name_table.push_back(std::string("NA"));
+      name_table.push_back(std::string("MG"));
+      name_table.push_back(std::string("AL"));
+      name_table.push_back(std::string("SI"));
+      name_table.push_back(std::string("P"));
+      name_table.push_back(std::string("S"));
+      name_table.push_back(std::string("CL"));
+      name_table.push_back(std::string("AR"));
+      name_table.push_back(std::string("K"));
+      name_table.push_back(std::string("CA"));
+      name_table.push_back(std::string("SC"));
+      name_table.push_back(std::string("TI"));
+      name_table.push_back(std::string("V"));
+      name_table.push_back(std::string("CR"));
+      name_table.push_back(std::string("MN"));
+      name_table.push_back(std::string("FE"));
+      name_table.push_back(std::string("CO"));
+      name_table.push_back(std::string("NI"));
+      name_table.push_back(std::string("CU"));
+      name_table.push_back(std::string("ZN"));
+      name_table.push_back(std::string("GA"));
+      name_table.push_back(std::string("GE"));
+      name_table.push_back(std::string("AS"));
+      name_table.push_back(std::string("SE"));
+      name_table.push_back(std::string("BR"));
+      name_table.push_back(std::string("KR"));
+      name_table.push_back(std::string("RB"));
+      name_table.push_back(std::string("SR"));
+      name_table.push_back(std::string("Y"));
+      name_table.push_back(std::string("ZR"));
+      name_table.push_back(std::string("NB"));
+      name_table.push_back(std::string("MO"));
+      name_table.push_back(std::string("TC"));
+      name_table.push_back(std::string("RU"));
+      name_table.push_back(std::string("RH"));
+      name_table.push_back(std::string("PD"));
+      name_table.push_back(std::string("AG"));
+      name_table.push_back(std::string("CD"));
+      name_table.push_back(std::string("IN"));
+      name_table.push_back(std::string("SN"));
+      name_table.push_back(std::string("SB"));
+      name_table.push_back(std::string("TE"));
+      name_table.push_back(std::string("I"));
+      name_table.push_back(std::string("XE"));
+      name_table.push_back(std::string("CS"));
+      name_table.push_back(std::string("BA"));
+      name_table.push_back(std::string("LA"));
+      name_table.push_back(std::string("CE"));
+      name_table.push_back(std::string("PR"));
+      name_table.push_back(std::string("ND"));
+      name_table.push_back(std::string("PM"));
+      name_table.push_back(std::string("SM"));
+      name_table.push_back(std::string("EU"));
+      name_table.push_back(std::string("GD"));
+      name_table.push_back(std::string("TB"));
+      name_table.push_back(std::string("DY"));
+      name_table.push_back(std::string("HO"));
+      name_table.push_back(std::string("ER"));
+      name_table.push_back(std::string("TM"));
+      name_table.push_back(std::string("YB"));
+      name_table.push_back(std::string("LU"));
+      name_table.push_back(std::string("HF"));
+      name_table.push_back(std::string("TA"));
+      name_table.push_back(std::string("W"));
+      name_table.push_back(std::string("RE"));
+      name_table.push_back(std::string("OS"));
+      name_table.push_back(std::string("IR"));
+      name_table.push_back(std::string("PT"));
+      name_table.push_back(std::string("AU"));
+      name_table.push_back(std::string("HG"));
+      name_table.push_back(std::string("TL"));
+      name_table.push_back(std::string("PB"));
+      name_table.push_back(std::string("BI"));
+      name_table.push_back(std::string("PO"));
+      name_table.push_back(std::string("AT"));
+      name_table.push_back(std::string("RN"));
+      name_table.push_back(std::string("FR"));
+      name_table.push_back(std::string("RA"));
+      name_table.push_back(std::string("AC"));
+      name_table.push_back(std::string("TH"));
+      name_table.push_back(std::string("PA"));
+      name_table.push_back(std::string("U"));
+      name_table.push_back(std::string("NP"));
+      name_table.push_back(std::string("PU"));
+      name_table.push_back(std::string("AM"));
+      name_table.push_back(std::string("CM"));
+
     }
 
   };
 
 
-
-  unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance) {
+  unsigned int deduceAtomicNumberFromMass(const double mass,
+                                          const double tolerance) {
     static internal::AtomicNumberDeducer deducer;
-
     return(deducer.deduceFromMass(mass, tolerance));
+  }
+
+  std::string deduceElementNameFromMass(const double mass,
+                                        const double tolerance) {
+      static internal::AtomicNumberDeducer deducer;
+      return deducer.deduceName(mass, tolerance);
   }
 
 };
