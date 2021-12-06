@@ -489,6 +489,10 @@ namespace loos {
       Distance2WithPeriodicity op(box);
       return(contactwith_private(dist, grp, min, op));
     }
+    
+    //! return a list of atom index pairs that correspond to all unique bonds.          
+    std::vector<std::pair<int, int>> getBonds() const;
+
 
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.

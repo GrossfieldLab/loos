@@ -29,6 +29,8 @@
 #include <vector>
 #include <list>
 #include <algorithm>
+#include <unordered_set>
+#include <utility>
 
 #include <boost/random.hpp>
 
@@ -217,6 +219,32 @@ namespace loos {
         return(true);
 
     return(false);
+  }
+
+  std::vector<std::pair<int, int>> AtomicGroup::getBonds() const {
+    // should hash pairs in an unordered way, that is hash(pair(a,b)) == hash(pair(b,a))
+    struct unordered_pair_hash
+    {
+      std::size_t operator () (std::pair<int, int> const &pair) const {
+        std::size_t h1 = std::hash<int>()(pair.first);
+        std::size_t h2 = std::hash<int>()(pair.second);
+ 
+        return h1 ^ h2;
+      }
+    };
+
+    std::unordered_set<std::pair<int, int>, unordered_pair_hash> bond_set;
+    const_iterator ci;
+
+    for (ci = atoms.begin(); ci != atoms.end(); ++ci){
+      std::vector<int> bonds = (*ci)->getBonds();
+      int id = (*ci)->id();
+      for(auto b : bonds){
+        bond_set.emplace(std::make_pair(id, b));
+      }
+    }
+    std::vector<std::pair<int, int>> bond_list(bond_set.begin(), bond_set.end());
+    return bond_list;
   }
 
 
