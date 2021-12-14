@@ -32,6 +32,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <functional>
 
 #include <boost/unordered_set.hpp>
 
@@ -61,6 +62,24 @@ namespace loos {
     //! If false, then the passed Atom is skipped.
     virtual bool operator()(const pAtom& atom) const =0;
     virtual ~AtomSelector() { }
+  };
+
+  //! hash pairs in an unordered way, that is 
+  //! hash(pair(a,b)) == hash(pair(b,a))
+  struct unordered_pair_hash {
+    std::size_t operator () (std::pair<int, int> const &pair) const {
+      std::size_t h1 = std::hash<int>()(pair.first);
+      std::size_t h2 = std::hash<int>()(pair.second);
+
+      return h1 ^ h2;
+    }
+  };
+
+  struct unordered_pair_eq {
+    bool operator() (std::pair<int, int> const &p1, 
+                     std::pair<int, int> const&p2) const {
+      return p1 == p2 || (p1.first == p2.second && p1.second == p2.first);
+    }
   };
 
 
@@ -365,6 +384,9 @@ namespace loos {
     //! Create a new group from a vector of atomids
     AtomicGroup groupFromID(const std::vector<int> &id_list) const;
 
+    //! Create a new group from a pair of atomids
+    AtomicGroup groupFromID(const std::pair<int, int> &id_pair) const;
+
     //! Given an Atom, return a group of all the atoms contained by its
     //! containing residue
     AtomicGroup getResidue(pAtom res);
@@ -490,9 +512,11 @@ namespace loos {
       return(contactwith_private(dist, grp, min, op));
     }
     
-    //! return a list of atom index pairs that correspond to all unique bonds.          
-    std::vector<std::pair<int, int>> getBonds() const;
+    //! return a list of atom ID pairs that correspond to all unique bonds.          
+    std::vector<std::pair<int, int>> getBondsIDs() const;
 
+    //! return a list of atom index pairs corresponding to all unique bonds.
+    std::vector<AtomicGroup> getBondsAGs() const;
 
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.

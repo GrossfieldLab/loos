@@ -1,12 +1,13 @@
 /*
-  traj_calc.cpp
+  long-bond-finder.cpp
 
-  (c) 2011 Tod D. Romo, Grossfield Lab
-           Department of Biochemistry
-           University of Rochster School of Medicine and Dentistry
+  (c) 2021 Louis Smith, Bowman Lab
+           Department of Biochemistry & Biophysics
+           Washington University in St. Louis, School of Medicine
 
 
-  C++ template for writing a tool that performs a calculation on a trajectory
+  A tool that identifies trajectories, and optionally frames/atoms, 
+  that are overlong--a way to find imaging issues and distorted structures.
 */
 
 
@@ -118,17 +119,20 @@ int main(int argc, char *argv[]) {
   AtomicGroup scope = selectAtoms(model, sopts->selection);
   pTraj traj = tropts->trajectory;
   traj->updateGroupCoords(model);
-  vector<pair<int, int>> bond_list = scope.getBonds();
-  double max_bond2 = topts->max_bond * topts->max_bond;
+  // should be a vector of two-atom AGs, each a pair of atoms in a bond
+  vector<AtomicGroup> bond_list = scope.getBondsAGs();
+  // set threshold for length of an unacceptable bond.
+  const double max_bond2 = topts->max_bond * topts->max_bond;
 
-  // Operating in scanning mode; don't report anything except the presence of an unacceptable bond
+  // Operating in scanning mode; 
+  // don't report anything except the presence of an unacceptable bond
   if (topts->timeseries.empty()){
     cout << "# " << header << "\n";
     for (auto frame_index : tropts->frameList()){
         traj->readFrame(frame_index);
         traj->updateGroupCoords(scope);
         for(auto b : bond_list){
-          if (scope[b.first]->coords().distance2(scope[b.second]->coords()) > max_bond2){
+          if (b[0]->coords().distance2(b[1]->coords()) > max_bond2){
             return EXIT_FAILURE;
           }
         }
@@ -141,9 +145,9 @@ int main(int argc, char *argv[]) {
       traj->readFrame(frame_index);
       traj->updateGroupCoords(scope);
       for(auto b : bond_list){
-        if (scope.getAtom(b.first)->coords().distance2(scope.getAtom(b.second)->coords()) > max_bond2){
+        if (b[0]->coords().distance2(b[1]->coords()) > max_bond2){
           found_viol = true;
-          tsf << frame_index << " " << b.first << " " << b.second << "\n";
+          tsf << frame_index << " " << b[0]->id() << " " << b[1]->id() << "\n";
         }
       }
     }
