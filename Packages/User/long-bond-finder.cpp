@@ -6,10 +6,9 @@
            Washington University in St. Louis, School of Medicine
 
 
-  A tool that identifies trajectories, and optionally frames/atoms, 
+  A tool that identifies trajectories, and optionally frames/atoms,
   that are overlong--a way to find imaging issues and distorted structures.
 */
-
 
 /*
   This file is part of LOOS.
@@ -33,20 +32,14 @@
 
 */
 
-
-
-#include <loos.hpp>
 #include <iostream>
+#include <loos.hpp>
 
 using namespace std;
 using namespace loos;
 
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
-
-
-
-
 
 // The following conditional prevents this class from appearing in the
 // Doxygen documentation for LOOS:
@@ -65,6 +58,8 @@ public:
        "Only does this for values greater than zero.")
       ("max-bond,M", po::value<float>(&max_bond)->default_value(2.5),
        "Maximum permissible distance for plausible bond.")
+      ("quiet,q", po::bool_switch(&quiet)->default_value(false),
+       "Silence standard output.")
       ("timeseries,t", po::value<string>(&timeseries)->default_value(""), 
        "Write bond-pairs in violation of cutoff per-frame to file name provided.");
   }
@@ -73,11 +68,12 @@ public:
   // options are set to (for logging purposes)
   string print() const {
     ostringstream oss;
-    oss << boost::format("bondlength=%f,max_bond=%f,timeseries=%s") % bondlength % max_bond % timeseries;
+    oss << boost::format("bondlength=%f,max_bond=%f,quiet=$%b,timeseries=%s") % bondlength % max_bond % quiet % timeseries;
     return(oss.str());
   }
 
   float bondlength, max_bond;
+  bool quiet;
   string timeseries;
 
 };
@@ -85,21 +81,19 @@ public:
 // @endcond
 // ----------------------------------------------------------------
 
-
 // clang-format off
 const string msg = 
 "XXX";
 // clang-format on
 
-
-
 int main(int argc, char *argv[]) {
-  
+
   string header = invocationHeader(argc, argv);
-  opts::BasicOptions* bopts = new opts::BasicOptions(msg);
-  opts::BasicSelection* sopts = new opts::BasicSelection("all");
-  opts::TrajectoryWithFrameIndices* tropts = new opts::TrajectoryWithFrameIndices;
-  ToolOptions* topts = new ToolOptions;
+  opts::BasicOptions *bopts = new opts::BasicOptions(msg);
+  opts::BasicSelection *sopts = new opts::BasicSelection("all");
+  opts::TrajectoryWithFrameIndices *tropts =
+      new opts::TrajectoryWithFrameIndices;
+  ToolOptions *topts = new ToolOptions;
 
   opts::AggregateOptions options;
   options.add(bopts).add(sopts).add(tropts).add(topts);
@@ -124,36 +118,44 @@ int main(int argc, char *argv[]) {
   // set threshold for length of an unacceptable bond.
   const double max_bond2 = topts->max_bond * topts->max_bond;
 
-  // Operating in scanning mode; 
+  // Operating in scanning mode;
   // don't report anything except the presence of an unacceptable bond
-  if (topts->timeseries.empty()){
-    cout << "# " << header << "\n";
-    for (auto frame_index : tropts->frameList()){
-        traj->readFrame(frame_index);
-        traj->updateGroupCoords(scope);
-        for(auto b : bond_list){
-          if (b[0]->coords().distance2(b[1]->coords()) > max_bond2){
-            return EXIT_FAILURE;
-          }
-        }
-      }
-  } else {
-    ofstream tsf(topts->timeseries);
-    bool found_viol = false;
-    tsf << "# " << header << "\n";
-    for (auto frame_index : tropts->frameList()){
+  if (topts->timeseries.empty()) {
+    // if thrown, don't even write invocation to stdout
+    if (!topts->quiet)
+      cout << "# " << header << "\n";
+    for (auto frame_index : tropts->frameList()) {
       traj->readFrame(frame_index);
       traj->updateGroupCoords(scope);
-      for(auto b : bond_list){
-        if (b[0]->coords().distance2(b[1]->coords()) > max_bond2){
+      for (auto b : bond_list) {
+        if (b[0]->coords().distance2(b[1]->coords()) > max_bond2) {
+          return EXIT_FAILURE;
+        }
+      }
+    }
+  } else { 
+    // Operating in timeseries mode;
+    // write a timeseries to file name provided by user
+    ofstream tsf(topts->timeseries);
+    bool found_viol = false;
+    tsf << "# " << header << "\n"
+        << "# frame atomID1 atomID2 bondlength\n";
+    for (auto frame_index : tropts->frameList()) {
+      traj->readFrame(frame_index);
+      traj->updateGroupCoords(scope);
+      float dist2 = 0;
+      for (auto b : bond_list) {
+        dist2 = b[0]->coords().distance2(b[1]->coords());
+        if (dist2 > max_bond2) {
           found_viol = true;
-          tsf << frame_index << " " << b[0]->id() << " " << b[1]->id() << "\n";
+          tsf << frame_index << " " << b[0]->id() << " " << b[1]->id() 
+              << " " << sqrtf(dist2) << "\n";
         }
       }
     }
     if (found_viol)
       return EXIT_FAILURE;
   }
-  
+
   return EXIT_SUCCESS;
 }

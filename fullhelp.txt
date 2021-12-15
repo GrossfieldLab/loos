@@ -1,0 +1,61 @@
+SYNOPSIS
+
+This tool is designed to find trajectories that have distorted structures or bad rewrapping by checking for overlong bonds in some frame within the trajectory. There are two modes of operation. In the first, the tool scans all frames until it finds a problem, whereupon it either returns 1 (EXIT_FAILURE) if it has, or 0 (EXIT_SUCCESS) if not. The second additionally writes a time series to a provided file name listing each violating bond for each frame. 
+
+DESCRIPTION
+
+The tool uses predefined connectivity to look through all frames for bonds that are longer than some cutoff within the user-specified selection. If it is operating in default mode, that is if no time-series is requested, it will exit upon finding the first such flawed bond. It can either return an 'EXIT_FAILURE' if it has found at least one, or 'EXIT_SUCCESS' if not. It can also write a time-series of these bonds to a filename provided by the user, in which case it will check all frames and report any flawed bonds to the file name provided. For processing large datasets the first mode is likely more helpful and will almost certainly be faster.
+
+The intention is for the return value to be used in bash control flow to allow a user to conditionally add a trajectory file to a list of files with problems (probably PBC issues, but I don't know your life), or perhaps operate on them directly if the tool flags them (see 'EXAMPLES' below). This is analogous to using 'grep -q' (quiet mode) to ascertain whether a regex is somewhere inside a file,  then operating conditionally in response to whether it is present or absent. The tool provides a quiet mode to support this scripting style. The time-series mode of operation can be nice as a way to spot check where the issue is, since any frames noted there can then be looked up in a visualizer and inspected manually to see what is really going wrong. The the return-value of the program works the same whether a time-series is requested or not.
+
+If a time-series filename is provided as an argument to the option, a comment-line containing the invocation is written to the first line.  Subsequent lines have four values separated by a space, each representing a bond that is overlong: the frame index, the first atomID within the pair of atoms constituting some bond, the second atomID in that bond, and that bond's calculated length. Only non-redundant ID pairs in an order-independent fashion are checked or reported (since atomID 2 bonded to atomID 7 is the same as 7 bonded to 2). 
+
+EXAMPLES
+
+The most basic mode of operation for this tool is:
+
+long-bond-finder model.psf traj.dcd
+if [[ $? > 0 ]]; then
+  echo this traj is goofed
+fi
+
+More useful is the situation where this is used in some loop, silencing the per-traj operations using output redirection:
+
+for traj in xtcs/*.xtc; do
+  if ! long-bond-finder model.psf $traj 1 >> logfile.log 2>&1; then
+    echo $traj is goofed. 'DO SOMETHING!!!'
+    echo $traj >> list_of_goofy_trajs.txt
+    mv $traj goofy_trajs/
+  fi
+done
+
+If no log-file is desired, throw the '--quiet' flag to suppress emission of the ivocation header.
+
+for traj in xtcs/*.xtc; do
+  if ! long-bond-finder --quiet model.psf $traj; then
+    echo $traj is goofed. 'DO SOMETHING!!!'
+    echo $traj >> list_of_goofy_trajs.txt
+    mv $traj goofy_trajs/
+  fi
+done
+
+
+Running either of these two commands with the addition of the '--timeseries filename.dat' flag will write the four-column timeseries of bond violations (possibly none) to 'filename.dat'.
+
+To infer connectivity for some model, provide the cutoff distance for a 'bond' as an argument to the option:
+
+long-bond-finder --infer-connectivity 1.9 my_minimal_model.pdb traj.dcd
+
+To change what the cutoff for distorted bonds is, use the '--max-bond value' flag. For example, if a 3.2 Angstrom cutoff were desired:
+
+long-bond-finder --max-bond 3.2 model.psf traj.dcd
+
+POTENTIAL COMPLICATIONS 
+
+Note that as with all loos tools, trajectory file indexes are zeros based, but some visualizers can be ones-based. In addition, GROMACS-generated trajectories sometimes have initial coords saved to the 'first' frame, leaving the possibility that the literal value in the first column could be off by either one or two from what is displayed in a visualizer, depending on the circumstances. For issue diagnosis purposes this seems OK, and the zeros-based index is correct if one wanted to write a secondary script that used those values as indexes into the trajectory to do something to goofed up frames.
+
+This tool doesn't currently use periodicity for bond length calculations, in part because it was written to spot bad wrapping issues from harder to wrap systems with periodicity that is not presently supported in loos (rhombic dodecahedra, for example). Because many loos tools do use periodicity for distance calculations, this could surprise some users. It seems hard to catch bad wrapping with a distance calculation if that calculation respected PBCs.
+
+Also note that although a mechanism is provided to use models that don't have connectivity, this option should be deployed cautiously. It uses a simple distance cutoff to deduce where chemical bonds likely are for the model as a whole based on the coordinates in the first frame. This will be incorrect if the first frame has bonds that are overlong (or extreme collisions) relative to the user's expectation, and while the tool is likely to find something objectionable in the successive screwed up mess that its output will become, manual inspection would be needed to be sure that the objection was not a false positive. Using models with chemical connectivity based on a more reliable source, such as a system-specifying file from an MD engine, is highly advised.
+
+Finally, note that the time-series mode could produce unwieldy output in the case where a system specifying file is fundamentally damaged (say the thing that is wrong with it is that its bond indices are off by one for all atoms). The potential for absurdly voluminous output can be guarded against by checking whether a trajectory has major issues by not writing the time-series as a first past, then if a trajectory is flagged visualizing its contents to ensure that the time-series won't have a ridiculous number (possibly nearly all) of bonds to record for each frame. Similarly, using the customary loos trajectory flags (range) alongside the time-series flag could allow one to only consider the report on the first few frames, then inspecting these for pathology which would make seeing the rest of the time-series irrelevant and overwhelming.
