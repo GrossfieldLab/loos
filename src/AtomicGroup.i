@@ -188,8 +188,13 @@ namespace loos {
               l.append(AtomicGroup(i))
           return(l)
 
-
-
+      def getBondsAGs(self):
+          l = []
+          v = self.cpp_getBondsAGs()
+          for i in v:
+              l.append(AtomicGroup(i))
+          return(l)
+      
 %}
   };
 
