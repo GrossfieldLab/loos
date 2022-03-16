@@ -170,32 +170,16 @@ namespace loos {
 
 %pythoncode %{
       def splitByMolecule(self):
-          l = []
-          v = self.cpp_splitByMolecule()
-          for i in v:
-              l.append(AtomicGroup(i))
-          return(l)
+          return list(self.cpp_splitByMolecule())
 
       def splitByResidue(self):
-          l = []
-          v = self.cpp_splitByResidue()
-          for i in v:
-              l.append(AtomicGroup(i))
-          return(l)
+          return list(self.cpp_splitByResidue())
 
       def splitByUniqueSegid(self):
-          l = []
-          v = self.cpp_splitByUniqueSegid()
-          for i in v:
-              l.append(AtomicGroup(i))
-          return(l)
+          return list(self.cpp_splitByUniqueSegid())
 
       def getBondsAGs(self):
-          l = []
-          v = self.cpp_getBondsAGs()
-          for i in v:
-              l.append(AtomicGroup(i))
-          return(l)
+          return list(self.cpp_getBondsAGs())
       
 %}
   };
