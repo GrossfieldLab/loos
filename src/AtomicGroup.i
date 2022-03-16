@@ -23,6 +23,8 @@
 %rename(cpp_splitByMolecule)       loos::AtomicGroup::splitByMolecule;
 %rename(cpp_splitByResidue)        loos::AtomicGroup::splitByResidue;
 %rename(cpp_splitByUniqueSegid)    loos::AtomicGroup::splitByUniqueSegid;
+%rename(cpp_getBondsAGs)
+loos::AtomicGroup::getBondsAGs;
 
 
 %header %{
