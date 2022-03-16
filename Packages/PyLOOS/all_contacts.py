@@ -65,13 +65,14 @@ fullhelp = """
 
   """
 
-lo = options.LoosOptions(fullhelp)
+lo = options.LoosOptions("Compute probability of residue-residue contacts",
+                         fullhelp)
 lo.modelSelectionOptions()
 lo.trajOptions()
 
 
 lo.parser.add_argument('--out_file',
-                       required=True,
+                       default='outfile',
                        help="File with the average contact occupancies")
 lo.parser.add_argument('--cutoff', type=float,
                        help="Cutoff distance for contact", default=4.0)

@@ -59,7 +59,8 @@ substantially changing the information content (the slash in front of the "!"
 may or may not be necessary, depending on which shell you use).
 """
 
-    lo = options.LoosOptions(fullhelp)
+    lo = options.LoosOptions("Compute 2D histogram in r,z about a selection",
+                             fullhelp)
 
     lo.modelSelectionOptions()
     lo.trajOptions()

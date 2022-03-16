@@ -48,12 +48,13 @@ fullhelp = """
   https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html
   Based on methodology outlined by Plante and Weinstein in
   https://doi.org/10.3390/molecules26103059
-  Window_length is the number of frames that will be averaged over before performing the NMF,
-  recommended to be approximately the number of frames per nanosecond.
-  It is recommended to play with n_components, using the expected number of
-  rare events in the trajectory based on the conformational changes required
-  for the molecular process as a starting point and experimenting with +/-
-  components until convergence is attained.
+  
+  Window_length is the number of frames that will be averaged over before
+  performing the NMF, recommended to be approximately the number of frames per
+  nanosecond.  It is recommended to play with n_components, using the expected
+  number of rare events in the trajectory based on the conformational changes
+  required for the molecular process as a starting point and experimenting with
+  +/- components until convergence is attained.
 
 
   Mandatory arguments:
@@ -95,7 +96,8 @@ def LowerTriIndex(row, col, n):
     return int(index)
 
 if __name__ == '__main__':
-    lo = options.LoosOptions(fullhelp)
+    lo = options.LoosOptions("Detect rare events in macromolecular trajectories",
+                             fullhelp)
     lo.modelSelectionOptions()
     lo.trajOptions()
 

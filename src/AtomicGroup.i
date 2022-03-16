@@ -23,11 +23,17 @@
 %rename(cpp_splitByMolecule)       loos::AtomicGroup::splitByMolecule;
 %rename(cpp_splitByResidue)        loos::AtomicGroup::splitByResidue;
 %rename(cpp_splitByUniqueSegid)    loos::AtomicGroup::splitByUniqueSegid;
+<<<<<<< HEAD
 %rename(cpp_getBondsAGs)
 loos::AtomicGroup::getBondsAGs;
+=======
+%rename(cpp_splitByName)           loos::AtomicGroup::splitByName;
+>>>>>>> main
 
 
 %header %{
+
+#include <map>
 
 #include <AtomicGroup.hpp>
 #include <sfactories.hpp>
@@ -177,6 +183,14 @@ namespace loos {
 
       def splitByUniqueSegid(self):
           return list(self.cpp_splitByUniqueSegid())
+      
+      def splitByName(self):
+          d = {}
+          v = self.cpp_splitByName()
+          for i in v.keys():
+              d[i] = AtomicGroup(v[i])
+          return d
+
 
       def getBondsAGs(self):
           return list(self.cpp_getBondsAGs())
@@ -194,3 +208,4 @@ namespace loos {
 
 
 %template(AtomicGroupVector) std::vector<loos::AtomicGroup>;
+%template(AtomicGroupMap)    std::map<std::string, loos::AtomicGroup>;
