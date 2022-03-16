@@ -32,7 +32,7 @@ apps += 'simple_traj_calc axis_with_membrane inside_helices '
 apps += 'simple_traj_transform center_molecule native-hbs total_charge '
 apps += 'cluster-structures  packing_score_per_res cylindrical-density '
 apps += 'protein_tilt scattering all_stacking contact_distance '
-apps += 'sysinfo '
+apps += 'sysinfo rare-event-detection'
 
 # Moved libraries out of Packages/PyLOOS to loos/pyloos
 #files = 'ConvexHull NAMDBin'
