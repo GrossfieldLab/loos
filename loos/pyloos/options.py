@@ -26,6 +26,8 @@ class LoosOptions:
     def __init__(self, description, fullhelp=None):
         self.parser = argparse.ArgumentParser(description=description)
 
+        self.optionSets = {}
+
         if fullhelp:
             self.setFullhelp(fullhelp)
 
@@ -33,12 +35,14 @@ class LoosOptions:
         self.parser.add_argument('--fullhelp',
                                  action=FullHelper,
                                  fullhelp=fullhelp)
+        self.optionSets['fullhelp'] = True
 
     # Set up some default arguments
     def modelSelectionPositionalOptions(self):
         self.parser.add_argument(help="Model file describing system contents")
         self.parser.add_argument(help='Use this selection for computation',
                                  default='all')
+        self.optionSets['modelSelectionPositionalOptions'] = True
 
     # Set up some default arguments
     def modelSelectionOptions(self):
@@ -48,6 +52,7 @@ class LoosOptions:
         self.parser.add_argument('--selection',
                                  help='Use this selection for computation',
                                  default='all')
+        self.optionSets['modelSelectionOptions'] = True
 
     def trajOptions(self):
         self.parser.add_argument('-t', '--traj',
@@ -61,6 +66,7 @@ class LoosOptions:
                                  help='Step through the trajectory by this',
                                  type=int,
                                  default=1)
+        self.optionSets['trajOptions'] = True
 
     def parse_args(self):
         # check this first; otherwise, required arguments will
@@ -72,9 +78,24 @@ class LoosOptions:
         args = self.parser.parse_args()
 
         # postprocess args here; error checks, checks for needed behavior
-        if args.fullhelp:
-            sys.stderr.write(self.fullhelp)
-            sys.exit(0)
+        error = False
+        if self.optionSets['modelSelectionOptions']:
+            # must supply a model, but since there's a default for selection
+            # supplying that is optional
+            if not args.model:
+                sys.stderr.write('\nRequired option -m/--model missing\n')
+                error = True
+
+        if self.optionSets['trajOptions']:
+            # must supply a traj, but skip and stride are optional
+            if not args.traj:
+                sys.stderr.write('\nRequired option -t/--traj missing\n')
+                error = True
+
+        if error:
+            sys.stderr.write("\n")
+            self.parser.print_help(sys.stderr)
+            sys.exit(1)
 
         return args
 
