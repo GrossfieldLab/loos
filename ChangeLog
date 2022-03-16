@@ -1,3 +1,8 @@
+2022-03-16 Alan Grossfield <alan>
+	* Fix LoosOptions issues so fullhelps work correctly in several PyLOOS
+	  tools (#71)
+	* Partially fixes #72, required arguments make a mess of things
+
 2021-11-22 Tod Romo <tromo>
 	* Merged branch RamaResidues, contributed by Louis Smith.  This adds
 	  a resid column to the output of ramachandran.
@@ -5,7 +10,7 @@
 2021-11-19 Alan Grossfield <alan>
 	* Merged new tool rare-event-detection.py, contributed
 	  by Grace Julien
-	  
+
 2021-11-12 Alan Grossfield <alan>
 	* Merge branch pdbelement, use atomic mass info to fill the
 	  element field when writing PDB files
