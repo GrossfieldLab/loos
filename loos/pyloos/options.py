@@ -52,14 +52,17 @@ class LoosOptions:
                                  default=1)
 
     def parse_args(self):
+        # check this first; otherwise, required arguments will
+        # prevent the parser from printing help
+        if len(sys.argv) == 1:
+            self.parser.print_help(sys.stderr)
+            sys.exit(0)
+
         args = self.parser.parse_args()
+
         # postprocess args here; error checks, checks for needed behavior
         if args.fullhelp:
             sys.stderr.write(self.fullhelp)
-            sys.exit(0)
-
-        if len(sys.argv) == 1:
-            self.parser.print_help(sys.stderr)
             sys.exit(0)
 
         return args
