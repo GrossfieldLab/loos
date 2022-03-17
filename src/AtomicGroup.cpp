@@ -223,7 +223,7 @@ namespace loos {
 
   // returns a vector of pairs of atom IDs corresponding to bonded atoms
   std::vector<std::pair<int, int>> AtomicGroup::getBondsIDs() const {
-    std::unordered_set<std::pair<int, int>, unordered_pair_hash, unordered_pair_eq> bond_set;
+    std::unordered_set<std::pair<int, int>, unordered_pair_hash<int>, unordered_pair_eq<int>> bond_set;
     const_iterator ci;
 
     for (ci = atoms.begin(); ci != atoms.end(); ++ci){
@@ -239,7 +239,7 @@ namespace loos {
   
   // returns a vector of pairs of atom IDs corresponding to bonded atoms
   std::vector<AtomicGroup> AtomicGroup::getBondsAGs() const {
-    std::unordered_set<std::pair<int, int>, unordered_pair_hash, unordered_pair_eq> bond_set;
+    std::unordered_set<std::pair<int, int>, unordered_pair_hash<int>, unordered_pair_eq<int>> bond_set;
     const_iterator ci;
 
     for (ci = atoms.begin(); ci != atoms.end(); ++ci){
@@ -628,7 +628,7 @@ namespace loos {
     return(result);
   }
   
-
+  // Note this specialization can also produce an empty AG, or an AG with one element.
   AtomicGroup AtomicGroup::groupFromID(const std::pair<int, int> &id_pair) const {
     AtomicGroup result;
 

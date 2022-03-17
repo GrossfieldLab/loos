@@ -33,6 +33,7 @@
 #include <map>
 #include <algorithm>
 #include <functional>
+#include <limits>
 
 #include <boost/unordered_set.hpp>
 
@@ -66,18 +67,21 @@ namespace loos {
 
   //! hash pairs in an unordered way, that is 
   //! hash(pair(a,b)) == hash(pair(b,a))
+  template<typename T>
   struct unordered_pair_hash {
-    std::size_t operator () (std::pair<int, int> const &pair) const {
-      std::size_t h1 = std::hash<int>()(pair.first);
-      std::size_t h2 = std::hash<int>()(pair.second);
-
-      return h1 ^ h2;
+    std::size_t operator () (std::pair<T, T> const &pair) const {
+      // order the elements in the pair
+      auto min_max = std::minmax(pair.first, pair.second);
+      // return either
+      return static_cast<size_t>(min_max.second) << sizeof(T)*CHAR_BIT | min_max.first;
     }
   };
 
+//! test equality of unordered pair. typename T must have == operator.
+  template<typename T>
   struct unordered_pair_eq {
-    bool operator() (std::pair<int, int> const &p1, 
-                     std::pair<int, int> const&p2) const {
+    bool operator() (std::pair<T, T> const &p1, 
+                     std::pair<T, T> const&p2) const {
       return p1 == p2 || (p1.first == p2.second && p1.second == p2.first);
     }
   };
