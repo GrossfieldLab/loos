@@ -79,24 +79,24 @@ could input them into PCA, tICA, or something like that.
 lo = options.LoosOptions("Compute distance matrix using contacts", fullhelp)
 lo.modelSelectionOptions()
 lo.trajOptions()
-lo.parser.add_argument('--sigma',
-                       default=6,
-                       type=int,
-                       help="exponent for the logistic contact")
-lo.parser.add_argument('--radius',
-                       default=5.0,
-                       type=float,
-                       help="midpoint distance for the logistic contact")
-lo.parser.add_argument('--skip_backbone',
-                       default=False,
-                       action='store_true',
-                       help="Consider only sidechains")
-lo.parser.add_argument('--include_h',
-                       default=False,
-                       action='store_true',
-                       help="Include hydrogens")
-lo.parser.add_argument('--outfile',
-                       help="Name of outputted file ")
+lo.add_argument('--sigma',
+                default=6,
+                type=int,
+                help="exponent for the logistic contact")
+lo.add_argument('--radius',
+                default=5.0,
+                type=float,
+                help="midpoint distance for the logistic contact")
+lo.add_argument('--skip_backbone',
+                default=False,
+                action='store_true',
+                help="Consider only sidechains")
+lo.add_argument('--include_h',
+                default=False,
+                action='store_true',
+                help="Include hydrogens")
+lo.add_argument('--outfile',
+                help="Name of outputted file ")
 
 args = lo.parse_args()
 

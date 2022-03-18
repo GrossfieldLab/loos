@@ -71,17 +71,17 @@ lo.modelSelectionOptions()
 lo.trajOptions()
 
 
-lo.parser.add_argument('--out_file',
+lo.add_argument('--out_file',
                        default='outfile',
                        help="File with the average contact occupancies")
-lo.parser.add_argument('--cutoff', type=float,
+lo.add_argument('--cutoff', type=float,
                        help="Cutoff distance for contact", default=4.0)
 # TODO: add a number of contacts option
-lo.parser.add_argument('--no_hydrogens', action='store_true',
+lo.add_argument('--no_hydrogens', action='store_true',
                        help="Don't include hydrogens")
-lo.parser.add_argument('--no_backbone', action='store_true',
+lo.add_argument('--no_backbone', action='store_true',
                        help="Don't include the backbone")
-lo.parser.add_argument('--individual', action='store_true',
+lo.add_argument('--individual', action='store_true',
                        help="Write contact maps for each trajectory")
 args = lo.parse_args()
 
