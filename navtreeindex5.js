@@ -1,14 +1,5 @@
 var NAVTREEINDEX5 =
 {
-"classloos_1_1_d_c_d_writer.html#af4a2493a73f4ab007ec7efd127bf84d6":[3,0,4,27,13],
-"classloos_1_1_d_c_d_writer.html#af854a4b679002e59ef3ec8f30c257a27":[3,0,4,27,6],
-"classloos_1_1_d_c_d_writer.html#afe9e67c778f6aba6f7bf759b56322ede":[3,0,4,27,12],
-"classloos_1_1_density_tools_1_1_bulk_estimator.html":[3,0,4,0,1],
-"classloos_1_1_density_tools_1_1_bulk_estimator.html#a089ec439c85442a7ea5338163f753112":[3,0,4,0,1,5],
-"classloos_1_1_density_tools_1_1_bulk_estimator.html#a155d7f1c4826f631bf151a988bcaeb23":[3,0,4,0,1,0],
-"classloos_1_1_density_tools_1_1_bulk_estimator.html#a30a4ad157aa6b791a79b502f7e520ecf":[3,0,4,0,1,3],
-"classloos_1_1_density_tools_1_1_bulk_estimator.html#a6f12abafec89656e86a1fd36d912f96f":[3,0,4,0,1,6],
-"classloos_1_1_density_tools_1_1_bulk_estimator.html#aa324e9823cd512aee7e2f99aa4e3c994":[3,0,4,0,1,2],
 "classloos_1_1_density_tools_1_1_bulk_estimator.html#abc7bbadfc551f067bf8b531823cccbce":[3,0,4,0,1,1],
 "classloos_1_1_density_tools_1_1_bulk_estimator.html#ad3d00fe513936cfe337378dab1b3dd24":[3,0,4,0,1,4],
 "classloos_1_1_density_tools_1_1_bulked_water_filter.html":[3,0,4,0,0],
@@ -249,5 +240,14 @@ var NAVTREEINDEX5 =
 "classloos_1_1_file_read_error.html#ae15f002417532df967238387612aa195":[3,0,4,32,2],
 "classloos_1_1_file_read_error.html#aede36b610fc99e6b00b378750c26d8dd":[3,0,4,32,0],
 "classloos_1_1_file_read_error_with_line.html":[3,0,4,33],
-"classloos_1_1_file_read_error_with_line.html#a231d3b47028e12e7ba61e1b38494604a":[3,0,4,33,3]
+"classloos_1_1_file_read_error_with_line.html#a231d3b47028e12e7ba61e1b38494604a":[3,0,4,33,3],
+"classloos_1_1_file_read_error_with_line.html#a2565677ffe2698bec4b83bb8594363ba":[3,0,4,33,5],
+"classloos_1_1_file_read_error_with_line.html#a48b8b54e1f5fb060b095311b2cc54862":[3,0,4,33,6],
+"classloos_1_1_file_read_error_with_line.html#a504344e6636dbae24d7bcd50262bddd8":[3,0,4,33,0],
+"classloos_1_1_file_read_error_with_line.html#a7aae1526f31e1e52ffc9067e3b0773c4":[3,0,4,33,2],
+"classloos_1_1_file_read_error_with_line.html#a9f8973f421dffcbd893c3bd5e1dac275":[3,0,4,33,1],
+"classloos_1_1_file_read_error_with_line.html#ad9737d4a44fe7f6a0b66cbed30984073":[3,0,4,33,4],
+"classloos_1_1_file_write_error.html":[3,0,4,34],
+"classloos_1_1_file_write_error.html#a15364e284bdf8c5c0afba81734ab5eba":[3,0,4,34,0],
+"classloos_1_1_file_write_error.html#a3da633e8b746edc355e5e51cdf093715":[3,0,4,34,2]
 };

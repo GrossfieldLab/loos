@@ -1,14 +1,5 @@
 var NAVTREEINDEX7 =
 {
-"classloos_1_1_options_framework_1_1_basic_convergence.html#a70ef8e9efe4f592ed15ba45ed3db1f5f":[3,0,4,4,1,2],
-"classloos_1_1_options_framework_1_1_basic_options.html":[3,0,4,4,2],
-"classloos_1_1_options_framework_1_1_basic_options.html#a61015a6cdd06eb240c926100f6ff1596":[3,0,4,4,2,6],
-"classloos_1_1_options_framework_1_1_basic_options.html#a8a77f80444aef0467ba20bf363702ce9":[3,0,4,4,2,1],
-"classloos_1_1_options_framework_1_1_basic_options.html#a9075c5c8cdd436013fdb473a939e2d2b":[3,0,4,4,2,5],
-"classloos_1_1_options_framework_1_1_basic_options.html#ac5177b9f23d57cf1fc042a3284ed3cee":[3,0,4,4,2,0],
-"classloos_1_1_options_framework_1_1_basic_options.html#ace70ec8a443e2bcd1eae26021d94303a":[3,0,4,4,2,4],
-"classloos_1_1_options_framework_1_1_basic_options.html#ad59c1c2a25e143c9a4c07cf76bed2b78":[3,0,4,4,2,3],
-"classloos_1_1_options_framework_1_1_basic_options.html#af051e6c0ca670d07e4bbe5bd05c1791b":[3,0,4,4,2,2],
 "classloos_1_1_options_framework_1_1_basic_selection.html":[3,0,4,4,3],
 "classloos_1_1_options_framework_1_1_basic_selection.html#a055eda25554ffb08a88bbc1014d50c3a":[3,0,4,4,3,1],
 "classloos_1_1_options_framework_1_1_basic_selection.html#aa785d3b8dbbaa1853651ad15adefed44":[3,0,4,4,3,3],
@@ -249,5 +240,14 @@ var NAVTREEINDEX7 =
 "classloos_1_1_rna_suite.html#a8c1721246eefa3bf8b2ef745d875b33c":[3,0,4,75,1],
 "classloos_1_1_rna_suite.html#a8cfa861d7c810ee92b82929733ac998b":[3,0,4,75,18],
 "classloos_1_1_rna_suite.html#a9ad76f03d33cbbe8de34555537d76e26":[3,0,4,75,2],
-"classloos_1_1_rna_suite.html#a9af85b03f814807613a428b498708474":[3,0,4,75,6]
+"classloos_1_1_rna_suite.html#a9af85b03f814807613a428b498708474":[3,0,4,75,6],
+"classloos_1_1_rna_suite.html#aa6ca0b44c919e606854d690a17de0a80":[3,0,4,75,12],
+"classloos_1_1_rna_suite.html#aa8e2feefce6f47fda13fc1861b14c7d7":[3,0,4,75,8],
+"classloos_1_1_rna_suite.html#abd3606b82bd4f70747b9c051ad425be8":[3,0,4,75,4],
+"classloos_1_1_rna_suite.html#acacd3af69e60d6ac0d82a5ebd1c8aa11":[3,0,4,75,5],
+"classloos_1_1_rna_suite.html#adf64e6fe9effae174ec46fd1e9cab08e":[3,0,4,75,10],
+"classloos_1_1_rna_suite.html#ae0e8fb47a85b533b499058693e10a17b":[3,0,4,75,3],
+"classloos_1_1_rna_suite.html#af79f195cf300701d47042c07251c9aac":[3,0,4,75,13],
+"classloos_1_1_rna_suite.html#af88358dd9c8087cdf30206b8b17a9ee0":[3,0,4,75,17],
+"classloos_1_1_rna_suite.html#afd5dbde26589642792b3576cf756565b":[3,0,4,75,15]
 };

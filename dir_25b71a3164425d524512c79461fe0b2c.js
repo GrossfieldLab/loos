@@ -16,6 +16,7 @@ var dir_25b71a3164425d524512c79461fe0b2c =
     [ "native-hbs.py", "native-hbs_8py_source.html", null ],
     [ "packing_score_per_res.py", "packing__score__per__res_8py_source.html", null ],
     [ "protein_tilt.py", "protein__tilt_8py_source.html", null ],
+    [ "rare-event-detection.py", "rare-event-detection_8py_source.html", null ],
     [ "renum-by-mol.py", "renum-by-mol_8py_source.html", null ],
     [ "rmsd_to_average.py", "rmsd__to__average_8py_source.html", null ],
     [ "scattering.py", "scattering_8py_source.html", null ],
@@ -24,6 +25,7 @@ var dir_25b71a3164425d524512c79461fe0b2c =
     [ "simple_model_transform.py", "simple__model__transform_8py_source.html", null ],
     [ "simple_traj_calc.py", "simple__traj__calc_8py_source.html", null ],
     [ "simple_traj_transform.py", "simple__traj__transform_8py_source.html", null ],
+    [ "sysinfo.py", "sysinfo_8py_source.html", null ],
     [ "test_formfactor.py", "test__formfactor_8py_source.html", null ],
     [ "total_charge.py", "total__charge_8py_source.html", null ],
     [ "try_stacking.py", "try__stacking_8py_source.html", null ]

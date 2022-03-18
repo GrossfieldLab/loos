@@ -167,24 +167,24 @@ $(document).ready(function(){initNavTree('contact__distance_8py_source.html','')
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;lo = options.LoosOptions(<span class="stringliteral">&quot;Compute distance matrix using contacts&quot;</span>, fullhelp)</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;lo.modelSelectionOptions()</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;lo.trajOptions()</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--sigma&#39;</span>,</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                       default=6,</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                       type=int,</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                       help=<span class="stringliteral">&quot;exponent for the logistic contact&quot;</span>)</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--radius&#39;</span>,</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                       default=5.0,</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                       type=float,</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                       help=<span class="stringliteral">&quot;midpoint distance for the logistic contact&quot;</span>)</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--skip_backbone&#39;</span>,</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                       default=<span class="keyword">False</span>,</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                       action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                       help=<span class="stringliteral">&quot;Consider only sidechains&quot;</span>)</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--include_h&#39;</span>,</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                       default=<span class="keyword">False</span>,</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                       action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                       help=<span class="stringliteral">&quot;Include hydrogens&quot;</span>)</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--outfile&#39;</span>,</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                       help=<span class="stringliteral">&quot;Name of outputted file &quot;</span>)</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--sigma&#39;</span>,</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                default=6,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                type=int,</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                help=<span class="stringliteral">&quot;exponent for the logistic contact&quot;</span>)</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--radius&#39;</span>,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                default=5.0,</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                type=float,</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                help=<span class="stringliteral">&quot;midpoint distance for the logistic contact&quot;</span>)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--skip_backbone&#39;</span>,</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                default=<span class="keyword">False</span>,</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                help=<span class="stringliteral">&quot;Consider only sidechains&quot;</span>)</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--include_h&#39;</span>,</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                default=<span class="keyword">False</span>,</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                help=<span class="stringliteral">&quot;Include hydrogens&quot;</span>)</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--outfile&#39;</span>,</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                help=<span class="stringliteral">&quot;Name of outputted file &quot;</span>)</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;args = lo.parse_args()</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>

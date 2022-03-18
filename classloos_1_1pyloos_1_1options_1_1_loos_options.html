@@ -96,6 +96,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adaf11f00be4a4983199a910d4acce54c"><td class="memItemLeft" align="right" valign="top"><a id="adaf11f00be4a4983199a910d4acce54c"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>__init__</b> (self, description, fullhelp=None)</td></tr>
 <tr class="separator:adaf11f00be4a4983199a910d4acce54c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe9c324f8e499c6e34eae747d920a6e4"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classloos_1_1pyloos_1_1options_1_1_loos_options.html#abe9c324f8e499c6e34eae747d920a6e4">add_argument</a> (self, *args, **kwargs)</td></tr>
+<tr class="separator:abe9c324f8e499c6e34eae747d920a6e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a407103e452237f97ca622ad730f93553"><td class="memItemLeft" align="right" valign="top"><a id="a407103e452237f97ca622ad730f93553"></a>
 def&#160;</td><td class="memItemRight" valign="bottom"><b>header</b> (self)</td></tr>
 <tr class="separator:a407103e452237f97ca622ad730f93553"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,9 +119,9 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>trajOptions</b> (self)
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a0a3f881f29c84ba0648c929a472bae9c"><td class="memItemLeft" align="right" valign="top"><a id="a0a3f881f29c84ba0648c929a472bae9c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>fullhelp</b></td></tr>
-<tr class="separator:a0a3f881f29c84ba0648c929a472bae9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a079da627d38377981c9783b7354805c1"><td class="memItemLeft" align="right" valign="top"><a id="a079da627d38377981c9783b7354805c1"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>optionSets</b></td></tr>
+<tr class="separator:a079da627d38377981c9783b7354805c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a704a4709ce3a2191966238aa3433cf8a"><td class="memItemLeft" align="right" valign="top"><a id="a704a4709ce3a2191966238aa3433cf8a"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>parser</b></td></tr>
 <tr class="separator:a704a4709ce3a2191966238aa3433cf8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -128,8 +130,45 @@ Public Attributes</h2></td></tr>
 <div class="textblock"><pre class="fragment">    Parse command line options and implement common sets of options
     Implemented as a wrapper around argparse
 </pre> 
-<p class="definition">Definition at line <a class="el" href="options_8py_source.html#l00007">7</a> of file <a class="el" href="options_8py_source.html">options.py</a>.</p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<p class="definition">Definition at line <a class="el" href="options_8py_source.html#l00020">20</a> of file <a class="el" href="options_8py_source.html">options.py</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="abe9c324f8e499c6e34eae747d920a6e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe9c324f8e499c6e34eae747d920a6e4">&#9670;&nbsp;</a></span>add_argument()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def loos.pyloos.options.LoosOptions.add_argument </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>self</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">*&#160;</td>
+          <td class="paramname"><em>args</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">**&#160;</td>
+          <td class="paramname"><em>kwargs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<pre class="fragment"> Wrap add_argument so clients don't reach into the parser </pre> 
+<p class="definition">Definition at line <a class="el" href="options_8py_source.html#l00034">34</a> of file <a class="el" href="options_8py_source.html">options.py</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>loos/pyloos/<a class="el" href="options_8py_source.html">options.py</a></li>
 </ul>
 </div><!-- contents -->

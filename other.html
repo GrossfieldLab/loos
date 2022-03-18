@@ -84,6 +84,10 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <div class="PageDoc"><div class="contents">
 <div class="textblock"><h2>General Macromolecule Tools</h2>
 <dl>
+<dt><b><a class="el" href="all__contacts_8py_source.html">all_contacts.py</a></b> </dt>
+<dd><p class="startdd">Track residue-residue contacts across a trajectory</p>
+<p class="enddd"></p>
+</dd>
 <dt><b><a class="el" href="all__stacking_8py_source.html">all_stacking.py</a></b> </dt>
 <dd><p class="startdd">Compute stacking interactions, eg. for an RNA molecule, over a trajectory</p>
 <p class="enddd"></p>
@@ -104,6 +108,10 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Write out the bounding box for a selection of atoms from a structure file.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b><a class="el" href="contact__distance_8py_source.html">contact_distance.py</a></b> </dt>
+<dd><p class="startdd">Compute the frame-frame distance matrix for a trajetory in contact space</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>contact-time</b> </dt>
 <dd><p class="startdd">This tool computes the number of contacts between a probe selection and a set of target selections. The output is in the form of a matrix and can be normalized by either total number of contacts (across the row) or by the maximum # of contacts per target (down the column). In addition, it can automatically split the probe into separate molecules, based on their segids, and compute the inter-probe contacts as well.</p>
 <p class="enddd"></p>
@@ -116,6 +124,18 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Compute a 2D radial distribution function in cylindrical coordinates. In Packages/PyLOOS.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b><a class="el" href="cylindrical-thickness_8py_source.html">cylindrical-thickness.py</a></b> </dt>
+<dd><p class="startdd">Compute the thickness of the membrane around a centering selection</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>distance_prob</b> </dt>
+<dd><p class="startdd">Compute a pair-distribution function for a macromolecule, like you might estimate from a scattering experiment</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>dihedral</b> </dt>
+<dd><p class="startdd">Track dihedrals of sets of chemically connected angles</p>
+<p class="enddd"></p>
+</dd>
 <dt><b><a class="el" href="domain_8py_source.html">domain.py</a></b> </dt>
 <dd><p class="startdd">Describe the motion of two selections within a single macromolecule, including distance and the angle and torsion formed the their first principal moments. In Packages/PyLOOS.</p>
 <p class="enddd"></p>
@@ -124,8 +144,16 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Calculates movement centroids over a trajectory</p>
 <p class="enddd"></p>
 </dd>
+<dt><b>esp_mesh</b> </dt>
+<dd><p class="startdd">Fit charges on a mesh composed of spherical shells to reproduce the electrostatic potential due to solvent around a solute</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>exposure</b> </dt>
 <dd><p class="startdd">Computes the degree of exposure of a set of selections over time. The exposure is defined as the average density of a probe selection within a spherical shell about each target atom. This tool can be used to determine how exposed to solvent a selection is, or alternatively how buried a selection is.</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>fcontacts</b> </dt>
+<dd><p class="startdd">Determine what fraction of contacts with a probe belong to the specified targets</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>gmxdump2pdb.pl</b> </dt>
@@ -136,8 +164,28 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Given two selections and a trajectory, compute the time series of the angle between their principal components. Also useful for measuring domain hinge motions.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b><a class="el" href="helix__axes_8py_source.html">helix_axes.py</a></b> </dt>
+<dd><p class="startdd">Writes a new trajectory replacing each selection with 3 particles</p>
+<p class="enddd"></p>
+</dd>
+<dt><b><a class="el" href="inside__helices_8py_source.html">inside_helices.py</a></b> </dt>
+<dd><p class="startdd">Detect lipid chains that have made their way inside a membrane protein</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>interdist</b> </dt>
 <dd><p class="startdd">Calculates distances between a selection and an aribtrary set of other selections over a trajectory. The distance computed can be the distance between the centroids, the minimum distance between any atom in any group, or the max distance between any atom in any group.</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>model-meta-stats</b> </dt>
+<dd><p class="startdd">Display information about the metadata for a model</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>multi-rmsds</b> </dt>
+<dd><p class="startdd">Calculate a pair-wise RMSD for multiple trajectories</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>native_contacts</b> </dt>
+<dd><p class="startdd">Report the fraction of native contacts found over the course of a trajectory</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>ocf</b> </dt>
@@ -165,11 +213,15 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <p class="enddd"></p>
 </dd>
 <dt><b>rad-gyr</b> </dt>
-<dd><p class="startdd">Histogram the radius of gyration for a selection of atoms across a trajectory. Optionally, it can break your selection into individual molecules, if for example you have multiple solutes in the system. It can also write a time-series of these radii of gyration to a file.</p>
+<dd><p class="startdd">Histogram the radius of gyration for a selection of atoms a trajectory. Optionally, it can break your selection into individual molecules, if for example you have multiple solutes in the system. It can also write a time-series of these radii of gyration to a file.</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>ramachandran</b> </dt>
 <dd><p class="startdd">Computes a ramachandran map for a given selection of a specified range of frames in a trajectory (or all frames). Note that some torsions may be missing for the residues at the ends of the selection. To avoid this, expand your selection by a residue in both directions, then use the "--skip" flag.</p>
+<p class="enddd"></p>
+</dd>
+<dt><b><a class="el" href="rare-event-detection_8py_source.html">rare-event-detection.py</a></b> </dt>
+<dd><p class="startdd">Applies the non-negative matrix factorization algorithm developed by Plante and Weinstein</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>rdf</b> </dt>
@@ -188,6 +240,10 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Loops over a trajectory and computes the pairwise RMSDs for a selection of atoms.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b>rms-overlap</b> </dt>
+<dd><p class="startdd">Calculate the RMSD between all pairs of frames from two different sets of trajectories</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>rna_suites</b> </dt>
 <dd><p class="startdd">Identify RNA conformers using the RNA Suites approach of Richardson et al., RNA, 2008, 465–481</p>
 <p class="enddd"></p>
@@ -196,16 +252,30 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Computes the chi-1 and chi-2 angles for a given selection over an entire trajectory.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b><a class="el" href="set__segids_8py_source.html">set_segids.py</a></b> </dt>
+<dd><p class="startdd">Add segids to a model that lacks them</p>
+<p class="enddd"></p>
+</dd>
 <dt><b><a class="el" href="scattering_8py_source.html">scattering.py</a></b> </dt>
 <dd><p class="startdd">Compute X-ray scattering using the spherical scattering approximation</p>
+<p class="enddd"></p>
+</dd>
+<dt><b><a class="el" href="sysinfo_8py_source.html">sysinfo.py</a></b> </dt>
+<dd><p class="startdd">Print a bunch of useful information about the system to stdout</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>torsion</b> </dt>
 <dd><p class="startdd">Given 4 selections, compute the torsion angle for their centroids. This program loops over a trajectory and writes the torsion angle time series.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b><a class="el" href="total__charge_8py_source.html">total_charge.py</a></b> </dt>
+<dd><p class="startdd">Print out the total charge of a system</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>transition_contacts</b> </dt>
-<dd>Calculate the normalized transition between two structures over a trajectory. </dd>
+<dd><p class="startdd">Calculate the normalized transition between two structures over a trajectory.</p>
+<p class="enddd"></p>
+</dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

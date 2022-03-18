@@ -1,14 +1,5 @@
 var NAVTREEINDEX6 =
 {
-"classloos_1_1_file_read_error_with_line.html#a2565677ffe2698bec4b83bb8594363ba":[3,0,4,33,5],
-"classloos_1_1_file_read_error_with_line.html#a48b8b54e1f5fb060b095311b2cc54862":[3,0,4,33,6],
-"classloos_1_1_file_read_error_with_line.html#a504344e6636dbae24d7bcd50262bddd8":[3,0,4,33,0],
-"classloos_1_1_file_read_error_with_line.html#a7aae1526f31e1e52ffc9067e3b0773c4":[3,0,4,33,2],
-"classloos_1_1_file_read_error_with_line.html#a9f8973f421dffcbd893c3bd5e1dac275":[3,0,4,33,1],
-"classloos_1_1_file_read_error_with_line.html#ad9737d4a44fe7f6a0b66cbed30984073":[3,0,4,33,4],
-"classloos_1_1_file_write_error.html":[3,0,4,34],
-"classloos_1_1_file_write_error.html#a15364e284bdf8c5c0afba81734ab5eba":[3,0,4,34,0],
-"classloos_1_1_file_write_error.html#a3da633e8b746edc355e5e51cdf093715":[3,0,4,34,2],
 "classloos_1_1_file_write_error.html#afc33dcfd1ed14a3dad57480b8d9e6568":[3,0,4,34,1],
 "classloos_1_1_fmt.html":[3,0,4,35],
 "classloos_1_1_fmt.html#a0d07bf6596431c52272a5dcf8f896415":[3,0,4,35,6],
@@ -249,5 +240,14 @@ var NAVTREEINDEX6 =
 "classloos_1_1_options_framework_1_1_basic_convergence.html#a08c230a279fbb0c6968fdaed01c69b2a":[3,0,4,4,1,1],
 "classloos_1_1_options_framework_1_1_basic_convergence.html#a0a3ffe7719df5e6d35e1e309c0f37445":[3,0,4,4,1,0],
 "classloos_1_1_options_framework_1_1_basic_convergence.html#a1e407b817ccc960f93484e24d2808387":[3,0,4,4,1,4],
-"classloos_1_1_options_framework_1_1_basic_convergence.html#a3beb57021dd21a9bb9a6c34bc94f1273":[3,0,4,4,1,3]
+"classloos_1_1_options_framework_1_1_basic_convergence.html#a3beb57021dd21a9bb9a6c34bc94f1273":[3,0,4,4,1,3],
+"classloos_1_1_options_framework_1_1_basic_convergence.html#a70ef8e9efe4f592ed15ba45ed3db1f5f":[3,0,4,4,1,2],
+"classloos_1_1_options_framework_1_1_basic_options.html":[3,0,4,4,2],
+"classloos_1_1_options_framework_1_1_basic_options.html#a61015a6cdd06eb240c926100f6ff1596":[3,0,4,4,2,6],
+"classloos_1_1_options_framework_1_1_basic_options.html#a8a77f80444aef0467ba20bf363702ce9":[3,0,4,4,2,1],
+"classloos_1_1_options_framework_1_1_basic_options.html#a9075c5c8cdd436013fdb473a939e2d2b":[3,0,4,4,2,5],
+"classloos_1_1_options_framework_1_1_basic_options.html#ac5177b9f23d57cf1fc042a3284ed3cee":[3,0,4,4,2,0],
+"classloos_1_1_options_framework_1_1_basic_options.html#ace70ec8a443e2bcd1eae26021d94303a":[3,0,4,4,2,4],
+"classloos_1_1_options_framework_1_1_basic_options.html#ad59c1c2a25e143c9a4c07cf76bed2b78":[3,0,4,4,2,3],
+"classloos_1_1_options_framework_1_1_basic_options.html#af051e6c0ca670d07e4bbe5bd05c1791b":[3,0,4,4,2,2]
 };

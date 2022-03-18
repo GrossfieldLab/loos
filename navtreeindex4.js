@@ -1,14 +1,5 @@
 var NAVTREEINDEX4 =
 {
-"classloos_1_1_atomic_group.html#a2ca9fbf7f15ed9226d16017a4919efbb":[3,0,4,16,123],
-"classloos_1_1_atomic_group.html#a2cda2893a1c5272e7f7d391a355557ea":[3,0,4,16,132],
-"classloos_1_1_atomic_group.html#a2eb8f7f09fdfb9c759fc67cdd8751933":[3,0,4,16,124],
-"classloos_1_1_atomic_group.html#a300ee7d7bb26e246c1cd78829191a4fd":[3,0,4,16,14],
-"classloos_1_1_atomic_group.html#a3213e4858ec14a9293f107215082fa99":[3,0,4,16,86],
-"classloos_1_1_atomic_group.html#a3314820bb1af318a9fbbc492a8c41d92":[3,0,4,16,64],
-"classloos_1_1_atomic_group.html#a358e1edc74a57218e6261ab7692c5ef6":[3,0,4,16,39],
-"classloos_1_1_atomic_group.html#a3885f492e4f67f184ce4f48fe1e5ecdc":[3,0,4,16,54],
-"classloos_1_1_atomic_group.html#a3f782f69c1788b4d7f83efcd5dafb6cd":[3,0,4,16,36],
 "classloos_1_1_atomic_group.html#a3fd03b1c9bfad1e983b3c616350304cf":[3,0,4,16,41],
 "classloos_1_1_atomic_group.html#a40c03d43a9ad6c0b088c44393246b5c3":[3,0,4,16,61],
 "classloos_1_1_atomic_group.html#a4189af9a4ace2bfc2921bb1d57c044d9":[3,0,4,16,101],
@@ -249,5 +240,14 @@ var NAVTREEINDEX4 =
 "classloos_1_1_d_c_d_writer.html#aa958cf37e9470f8d248b4c50ba50905c":[3,0,4,27,2],
 "classloos_1_1_d_c_d_writer.html#ab6fde9aff3b1e256df24425b89fdb17a":[3,0,4,27,1],
 "classloos_1_1_d_c_d_writer.html#abb4edcf02930ade4864fd30436621bba":[3,0,4,27,5],
-"classloos_1_1_d_c_d_writer.html#ad96497ef4a41818fc2afa98f1fda2e88":[3,0,4,27,7]
+"classloos_1_1_d_c_d_writer.html#ad96497ef4a41818fc2afa98f1fda2e88":[3,0,4,27,7],
+"classloos_1_1_d_c_d_writer.html#af4a2493a73f4ab007ec7efd127bf84d6":[3,0,4,27,13],
+"classloos_1_1_d_c_d_writer.html#af854a4b679002e59ef3ec8f30c257a27":[3,0,4,27,6],
+"classloos_1_1_d_c_d_writer.html#afe9e67c778f6aba6f7bf759b56322ede":[3,0,4,27,12],
+"classloos_1_1_density_tools_1_1_bulk_estimator.html":[3,0,4,0,1],
+"classloos_1_1_density_tools_1_1_bulk_estimator.html#a089ec439c85442a7ea5338163f753112":[3,0,4,0,1,5],
+"classloos_1_1_density_tools_1_1_bulk_estimator.html#a155d7f1c4826f631bf151a988bcaeb23":[3,0,4,0,1,0],
+"classloos_1_1_density_tools_1_1_bulk_estimator.html#a30a4ad157aa6b791a79b502f7e520ecf":[3,0,4,0,1,3],
+"classloos_1_1_density_tools_1_1_bulk_estimator.html#a6f12abafec89656e86a1fd36d912f96f":[3,0,4,0,1,6],
+"classloos_1_1_density_tools_1_1_bulk_estimator.html#aa324e9823cd512aee7e2f99aa4e3c994":[3,0,4,0,1,2]
 };

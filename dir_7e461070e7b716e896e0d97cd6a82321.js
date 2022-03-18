@@ -78,7 +78,6 @@ var dir_7e461070e7b716e896e0d97cd6a82321 =
     [ "traj2matlab.cpp", "traj2matlab_8cpp_source.html", null ],
     [ "traj2pdb.cpp", "traj2pdb_8cpp_source.html", null ],
     [ "trajinfo.cpp", "trajinfo_8cpp_source.html", null ],
-    [ "trans-rmsd.cpp", "trans-rmsd_8cpp_source.html", null ],
     [ "transition_contacts.cpp", "transition__contacts_8cpp_source.html", null ],
     [ "verap.cpp", "verap_8cpp_source.html", null ],
     [ "xtcinfo.cpp", "xtcinfo_8cpp_source.html", null ],

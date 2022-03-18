@@ -136,6 +136,7 @@ var annotated_dup =
           [ "NAMDBin", "classloos_1_1pyloos_1_1_n_a_m_d_bin_1_1_n_a_m_d_bin.html", "classloos_1_1pyloos_1_1_n_a_m_d_bin_1_1_n_a_m_d_bin" ]
         ] ],
         [ "options", null, [
+          [ "FullHelper", "classloos_1_1pyloos_1_1options_1_1_full_helper.html", "classloos_1_1pyloos_1_1options_1_1_full_helper" ],
           [ "LoosOptions", "classloos_1_1pyloos_1_1options_1_1_loos_options.html", "classloos_1_1pyloos_1_1options_1_1_loos_options" ]
         ] ],
         [ "trajectories", "namespaceloos_1_1pyloos_1_1trajectories.html", [

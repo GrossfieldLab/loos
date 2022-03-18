@@ -98,7 +98,7 @@ Variables</h2></td></tr>
 list&#160;</td><td class="memItemRight" valign="bottom"><b>all_trajs</b> = []</td></tr>
 <tr class="separator:adab037af6fd1b7ab823b0bdb81a0f4cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78395bbf6df6fc00d59a8fa2e2a67195"><td class="memItemLeft" align="right" valign="top"><a id="a78395bbf6df6fc00d59a8fa2e2a67195"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>args</b> = lo.parser.parse_args()</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>args</b> = lo.parse_args()</td></tr>
 <tr class="separator:a78395bbf6df6fc00d59a8fa2e2a67195"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10e9eeba22e2fe7a2dca43d72755f66c"><td class="memItemLeft" align="right" valign="top"><a id="a10e9eeba22e2fe7a2dca43d72755f66c"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>average</b> = numpy.add.reduce(frac_contacts, axis=2)</td></tr>
@@ -122,14 +122,13 @@ list&#160;</td><td class="memItemRight" valign="bottom"><b>all_trajs</b> = []</t
 <tr class="memitem:a200fcfb3dcb425af9f05ac8c378bd61f"><td class="memItemLeft" align="right" valign="top"><a id="a200fcfb3dcb425af9f05ac8c378bd61f"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>help</b></td></tr>
 <tr class="separator:a200fcfb3dcb425af9f05ac8c378bd61f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a281b020b5af08ae79eac8cc9dc5399fe"><td class="memItemLeft" align="right" valign="top"><a id="a281b020b5af08ae79eac8cc9dc5399fe"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>lo</b> = options.LoosOptions(fullhelp)</td></tr>
+<tr class="memitem:a281b020b5af08ae79eac8cc9dc5399fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><b>lo</b></td></tr>
 <tr class="separator:a281b020b5af08ae79eac8cc9dc5399fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad829dac67a5a4317952d026f63034a54"><td class="memItemLeft" align="right" valign="top"><a id="ad829dac67a5a4317952d026f63034a54"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>no_hydrogens</b> = loos.selectAtoms(system, &quot;!hydrogen&quot;)</td></tr>
 <tr class="separator:ad829dac67a5a4317952d026f63034a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3aa28143d9a8420e7ff264e5e67f7fd2"><td class="memItemLeft" align="right" valign="top"><a id="a3aa28143d9a8420e7ff264e5e67f7fd2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>num_trajs</b> = len(args.traj_files)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>num_trajs</b> = len(args.traj)</td></tr>
 <tr class="separator:a3aa28143d9a8420e7ff264e5e67f7fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb05049e563e47acbc14fa103ae70b34"><td class="memItemLeft" align="right" valign="top"><a id="aeb05049e563e47acbc14fa103ae70b34"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>out_file</b></td></tr>
@@ -137,14 +136,11 @@ list&#160;</td><td class="memItemRight" valign="bottom"><b>all_trajs</b> = []</t
 <tr class="memitem:a3f28d9aab189f8457f46d9e7190f6497"><td class="memItemLeft" align="right" valign="top"><a id="a3f28d9aab189f8457f46d9e7190f6497"></a>
 list&#160;</td><td class="memItemRight" valign="bottom"><b>out_names</b> = []</td></tr>
 <tr class="separator:a3f28d9aab189f8457f46d9e7190f6497"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9a0c64c79a60f6342341b6efc75a03a"><td class="memItemLeft" align="right" valign="top"><a id="ac9a0c64c79a60f6342341b6efc75a03a"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>required</b></td></tr>
-<tr class="separator:ac9a0c64c79a60f6342341b6efc75a03a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab31a89ab8e80933a8bf360078cdefa3a"><td class="memItemLeft" align="right" valign="top"><a id="ab31a89ab8e80933a8bf360078cdefa3a"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>residues</b> = target.splitByResidue()</td></tr>
 <tr class="separator:ab31a89ab8e80933a8bf360078cdefa3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae04a3753b58dc3b11f01625708fca9a6"><td class="memItemLeft" align="right" valign="top"><a id="ae04a3753b58dc3b11f01625708fca9a6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>system</b> = loos.createSystem(args.system_file)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>system</b> = loos.createSystem(args.model)</td></tr>
 <tr class="separator:ae04a3753b58dc3b11f01625708fca9a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a460d9519a89ea058789c119825796746"><td class="memItemLeft" align="right" valign="top"><a id="a460d9519a89ea058789c119825796746"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>t_base</b> = basename(t)</td></tr>
@@ -175,9 +171,9 @@ or RNA, to track all residue-residue contacts within the trajectory.
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;=  numpy.zeros([len(residues), len(residues), num_trajs],</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                            numpy.float)</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                            numpy.float64)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="all__contacts_8py_source.html#l00114">114</a> of file <a class="el" href="all__contacts_8py_source.html">all_contacts.py</a>.</p>
+<p class="definition">Definition at line <a class="el" href="all__contacts_8py_source.html#l00115">115</a> of file <a class="el" href="all__contacts_8py_source.html">all_contacts.py</a>.</p>
 
 </div>
 </div>
@@ -197,10 +193,10 @@ or RNA, to track all residue-residue contacts within the trajectory.
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="stringliteral">  over the course of a trajectory</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="stringliteral">  Mandatory arguments:</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="stringliteral">  system_file: file describing system contents, e.g. a psf or pdb</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="stringliteral">  model: file describing system contents, e.g. a psf or pdb</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="stringliteral">  selection: selection string for which residues to look at</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="stringliteral">  out_file: name for the average contact map, written in matlab format</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="stringliteral">  traj_files: 1 or more trajectory files</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="stringliteral">  traj: 1 or more trajectory files</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="stringliteral">  Options</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="stringliteral">  --cutoff: distance for atom-atom contacts, defaults to 4.0 Ang</span></div>
@@ -223,6 +219,24 @@ or RNA, to track all residue-residue contacts within the trajectory.
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="stringliteral">  &quot;&quot;&quot;</span></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="all__contacts_8py_source.html#l00038">38</a> of file <a class="el" href="all__contacts_8py_source.html">all_contacts.py</a>.</p>
+
+</div>
+</div>
+<a id="a281b020b5af08ae79eac8cc9dc5399fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a281b020b5af08ae79eac8cc9dc5399fe">&#9670;&nbsp;</a></span>lo</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">all_contacts.lo</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;=  options.LoosOptions(<span class="stringliteral">&quot;Compute probability of residue-residue contacts&quot;</span>,</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                         fullhelp)</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="all__contacts_8py_source.html#l00068">68</a> of file <a class="el" href="all__contacts_8py_source.html">all_contacts.py</a>.</p>
 
 </div>
 </div>

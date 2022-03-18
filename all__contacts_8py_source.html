@@ -128,10 +128,10 @@ $(document).ready(function(){initNavTree('all__contacts_8py_source.html',''); in
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="stringliteral">  over the course of a trajectory</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="stringliteral">  Mandatory arguments:</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="stringliteral">  system_file: file describing system contents, e.g. a psf or pdb</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="stringliteral">  model: file describing system contents, e.g. a psf or pdb</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="stringliteral">  selection: selection string for which residues to look at</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="stringliteral">  out_file: name for the average contact map, written in matlab format</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="stringliteral">  traj_files: 1 or more trajectory files</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="stringliteral">  traj: 1 or more trajectory files</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="stringliteral">  Options</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="stringliteral">  --cutoff: distance for atom-atom contacts, defaults to 4.0 Ang</span></div>
@@ -153,73 +153,74 @@ $(document).ready(function(){initNavTree('all__contacts_8py_source.html',''); in
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="stringliteral"></span> </div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="stringliteral">  &quot;&quot;&quot;</span></div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;lo = options.LoosOptions(fullhelp)</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;lo.modelSelectionOptions()</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;lo.trajOptions()</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;lo = options.LoosOptions(<span class="stringliteral">&quot;Compute probability of residue-residue contacts&quot;</span>,</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                         fullhelp)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;lo.modelSelectionOptions()</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;lo.trajOptions()</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--out_file&#39;</span>,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                       required=<span class="keyword">True</span>,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                       help=<span class="stringliteral">&quot;File with the average contact occupancies&quot;</span>)</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--cutoff&#39;</span>, type=float,</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                       help=<span class="stringliteral">&quot;Cutoff distance for contact&quot;</span>, default=4.0)</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment"># TODO: add a number of contacts option</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--no_hydrogens&#39;</span>, action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                       help=<span class="stringliteral">&quot;Don&#39;t include hydrogens&quot;</span>)</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--no_backbone&#39;</span>, action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                       help=<span class="stringliteral">&quot;Don&#39;t include the backbone&quot;</span>)</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;lo.parser.add_argument(<span class="stringliteral">&#39;--individual&#39;</span>, action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                       help=<span class="stringliteral">&quot;Write contact maps for each trajectory&quot;</span>)</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;args = lo.parser.parse_args()</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--out_file&#39;</span>,</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                       default=<span class="stringliteral">&#39;outfile&#39;</span>,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                       help=<span class="stringliteral">&quot;File with the average contact occupancies&quot;</span>)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--cutoff&#39;</span>, type=float,</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                       help=<span class="stringliteral">&quot;Cutoff distance for contact&quot;</span>, default=4.0)</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"># TODO: add a number of contacts option</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--no_hydrogens&#39;</span>, action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                       help=<span class="stringliteral">&quot;Don&#39;t include hydrogens&quot;</span>)</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--no_backbone&#39;</span>, action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                       help=<span class="stringliteral">&quot;Don&#39;t include the backbone&quot;</span>)</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;lo.add_argument(<span class="stringliteral">&#39;--individual&#39;</span>, action=<span class="stringliteral">&#39;store_true&#39;</span>,</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                       help=<span class="stringliteral">&quot;Write contact maps for each trajectory&quot;</span>)</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;args = lo.parse_args()</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;header = lo.header()</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;header = lo.header()</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;system = <a class="code" href="sfactories_8cpp.html#acb266964bdaa10942329c7747adce633">loos.createSystem</a>(args.system_file)</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;all_trajs = []</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;out_names = []</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;num_trajs = len(args.traj_files)</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keywordflow">for</span> t <span class="keywordflow">in</span> args.traj_files:</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    traj = <a class="code" href="classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html">loos.pyloos.Trajectory</a>(t, system)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    all_trajs.append(traj)</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">if</span> (num_trajs &gt; 1) <span class="keywordflow">and</span> args.individual:</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        t_base = basename(t)</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        core, ext = splitext(t_base)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        out_names.append(core + <span class="stringliteral">&quot;.dat&quot;</span>)</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keywordflow">if</span> args.no_hydrogens:</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    no_hydrogens = <a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(system, <span class="stringliteral">&quot;!hydrogen&quot;</span>)</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    target = <a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(no_hydrogens, args.selection)</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    target = <a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(system, args.selection)</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;residues = target.splitByResidue()</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment"># now remove the backbone -- doing before the split loses the glycines</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keywordflow">if</span> args.no_backbone:</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    residues = list([<a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(r, <span class="stringliteral">&quot;!backbone&quot;</span>) <span class="keywordflow">for</span> r <span class="keywordflow">in</span> residues])</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                            numpy.float)</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;system = <a class="code" href="sfactories_8cpp.html#acb266964bdaa10942329c7747adce633">loos.createSystem</a>(args.model)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;all_trajs = []</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;out_names = []</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;num_trajs = len(args.traj)</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="keywordflow">for</span> t <span class="keywordflow">in</span> args.traj:</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    traj = <a class="code" href="classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html">loos.pyloos.Trajectory</a>(t, system)</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    all_trajs.append(traj)</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">if</span> (num_trajs &gt; 1) <span class="keywordflow">and</span> args.individual:</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        t_base = basename(t)</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        core, ext = splitext(t_base)</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        out_names.append(core + <span class="stringliteral">&quot;.dat&quot;</span>)</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keywordflow">if</span> args.no_hydrogens:</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    no_hydrogens = <a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(system, <span class="stringliteral">&quot;!hydrogen&quot;</span>)</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    target = <a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(no_hydrogens, args.selection)</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keywordflow">else</span>:</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    target = <a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(system, args.selection)</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;residues = target.splitByResidue()</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment"># now remove the backbone -- doing before the split loses the glycines</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keywordflow">if</span> args.no_backbone:</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    residues = list([<a class="code" href="utils_8cpp.html#a01ad12706a6b9884cc8f3a5677a899e3">loos.selectAtoms</a>(r, <span class="stringliteral">&quot;!backbone&quot;</span>) <span class="keywordflow">for</span> r <span class="keywordflow">in</span> residues])</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                            numpy.float64)</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keywordflow">for</span> traj_id <span class="keywordflow">in</span> range(num_trajs):</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    traj = all_trajs[traj_id]</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordflow">for</span> frame <span class="keywordflow">in</span> traj:</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keywordflow">for</span> i <span class="keywordflow">in</span> range(len(residues)):</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <span class="keywordflow">for</span> j <span class="keywordflow">in</span> range(i+1, len(residues)):</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                <span class="keywordflow">if</span> residues[i].contactWith(args.cutoff, residues[j]):</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    frac_contacts[i, j, traj_id] += 1.0</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    frac_contacts[j, i, traj_id] += 1.0</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    frac_contacts[:, :, traj_id] /= len(traj)</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordflow">if</span> (num_trajs &gt; 1) <span class="keywordflow">and</span> args.individual:</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;                      header=header)</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;average = numpy.add.reduce(frac_contacts, axis=2)</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;average /= len(args.traj_files)</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;numpy.savetxt(args.out_file, average, header=header)</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="keywordflow">for</span> traj_id <span class="keywordflow">in</span> range(num_trajs):</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    traj = all_trajs[traj_id]</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">for</span> frame <span class="keywordflow">in</span> traj:</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">for</span> i <span class="keywordflow">in</span> range(len(residues)):</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            <span class="keywordflow">for</span> j <span class="keywordflow">in</span> range(i+1, len(residues)):</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                <span class="keywordflow">if</span> residues[i].contactWith(args.cutoff, residues[j]):</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    frac_contacts[i, j, traj_id] += 1.0</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                    frac_contacts[j, i, traj_id] += 1.0</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    frac_contacts[:, :, traj_id] /= len(traj)</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">if</span> (num_trajs &gt; 1) <span class="keywordflow">and</span> args.individual:</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                      header=header)</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;average = numpy.add.reduce(frac_contacts, axis=2)</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;average /= len(args.traj)</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;numpy.savetxt(args.out_file, average, header=header)</div>
 <div class="ttc" id="aclassloos_1_1pyloos_1_1trajectories_1_1_trajectory_html"><div class="ttname"><a href="classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html">loos.pyloos.trajectories.Trajectory</a></div><div class="ttdoc">Python-based wrapper for LOOS Trajectories This class turns a loos Trajectory into something more pyt...</div><div class="ttdef"><b>Definition:</b> <a href="trajectories_8py_source.html#l00055">trajectories.py:55</a></div></div>
 <div class="ttc" id="anamespaceloos_1_1pyloos_1_1options_html"><div class="ttname"><a href="namespaceloos_1_1pyloos_1_1options.html">loos.pyloos.options</a></div><div class="ttdef"><b>Definition:</b> <a href="options_8py_source.html#l00001">options.py:1</a></div></div>
 <div class="ttc" id="anamespaceloos_1_1pyloos_html"><div class="ttname"><a href="namespaceloos_1_1pyloos.html">loos.pyloos</a></div><div class="ttdef"><b>Definition:</b> <a href="loos_2pyloos_2____init_____8py_source.html#l00001">__init__.py:1</a></div></div>

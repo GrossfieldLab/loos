@@ -38,7 +38,6 @@ var namespaces_dup =
       [ "num_trajs", "namespaceall__contacts.html#a3aa28143d9a8420e7ff264e5e67f7fd2", null ],
       [ "out_file", "namespaceall__contacts.html#aeb05049e563e47acbc14fa103ae70b34", null ],
       [ "out_names", "namespaceall__contacts.html#a3f28d9aab189f8457f46d9e7190f6497", null ],
-      [ "required", "namespaceall__contacts.html#ac9a0c64c79a60f6342341b6efc75a03a", null ],
       [ "residues", "namespaceall__contacts.html#ab31a89ab8e80933a8bf360078cdefa3a", null ],
       [ "system", "namespaceall__contacts.html#ae04a3753b58dc3b11f01625708fca9a6", null ],
       [ "t_base", "namespaceall__contacts.html#a460d9519a89ea058789c119825796746", null ],
@@ -441,6 +440,7 @@ var namespaces_dup =
         ] ],
         [ "NAMDBin", "namespaceloos_1_1pyloos_1_1_n_a_m_d_bin.html", "namespaceloos_1_1pyloos_1_1_n_a_m_d_bin" ],
         [ "options", null, [
+          [ "FullHelper", "classloos_1_1pyloos_1_1options_1_1_full_helper.html", "classloos_1_1pyloos_1_1options_1_1_full_helper" ],
           [ "LoosOptions", "classloos_1_1pyloos_1_1options_1_1_loos_options.html", "classloos_1_1pyloos_1_1options_1_1_loos_options" ]
         ] ],
         [ "subspace", "namespaceloos_1_1pyloos_1_1subspace.html", [
@@ -599,6 +599,7 @@ var namespaces_dup =
       [ "createTrajectory", "sfactories_8cpp.html#a5c3b7c1613a234d4b4d23f23b5d4af6f", null ],
       [ "createTrajectory", "sfactories_8cpp.html#a679943e849946c7782c1b0716941d390", null ],
       [ "deduceAtomicNumberFromMass", "_atomic_number_deducer_8cpp.html#a8ce914a61c5001a5a966864f758630ca", null ],
+      [ "deduceElementNameFromMass", "_atomic_number_deducer_8cpp.html#a038aca48d2d1e2c727b95551ea3433c0", null ],
       [ "extractCoords", "ensembles_8cpp.html#ab105c97e5ba3247de8ade1fad86e5708", null ],
       [ "extractCoords", "ensembles_8cpp.html#a52bea8219aacef9d44fdafa407be8c50", null ],
       [ "findBaseName", "utils_8cpp.html#a363b240e30a710c8f48ad1bc7c08d5a8", null ],
@@ -862,6 +863,32 @@ var namespaces_dup =
       [ "conf", "_p_s_f_gen_8py.html#afa25ccc72edc8cf683a8c3054e2a4f8d", null ],
       [ "config_file", "_p_s_f_gen_8py.html#a79832c9274faf1211d55502b419375da", null ]
     ] ],
+    [ "rare", "namespacerare.html", null ],
+    [ "rare-event-detection", null, [
+      [ "LowerTriIndex", "rare-event-detection_8py.html#ae569797f0d315e3bbdf13f55514742d5", null ],
+      [ "moving_ave", "rare-event-detection_8py.html#a87ee341860b744bf87b548a5abd28459", null ],
+      [ "action", "rare-event-detection_8py.html#acd9e7c634ff9460b0c6ea40a12b616f9", null ],
+      [ "args", "rare-event-detection_8py.html#a9bb9d91f9418a26efe880453f3b98dc2", null ],
+      [ "ave", "rare-event-detection_8py.html#a8f74c55c630afe9893707f42ad38a7fc", null ],
+      [ "default", "rare-event-detection_8py.html#a2dd3fbe35903cd455612e52c8a3cdfd0", null ],
+      [ "fc", "rare-event-detection_8py.html#abe904721f4a1cc2cef1499349da670e6", null ],
+      [ "fullhelp", "rare-event-detection_8py.html#a35b9604c557e81fcf4f9497848b5f687", null ],
+      [ "H", "rare-event-detection_8py.html#aa193f96447d146a37a1f590f10a9dedb", null ],
+      [ "header", "rare-event-detection_8py.html#ac6f1b81320ffa69e429308128ba412fd", null ],
+      [ "help", "rare-event-detection_8py.html#a5653090fabaca5440c9ddf7b45bdc31a", null ],
+      [ "lo", "rare-event-detection_8py.html#aae67009d7af2e78e1019e6c31b8f173a", null ],
+      [ "model", "rare-event-detection_8py.html#aed14ba68737f5f287f275aaf50ea419f", null ],
+      [ "no_hydrogens", "rare-event-detection_8py.html#a5093fd74b59c854c71b4809c1140474f", null ],
+      [ "required", "rare-event-detection_8py.html#a5fd8b67d6c7cfae762aa4535de80b370", null ],
+      [ "residues", "rare-event-detection_8py.html#a9a120a25da30bf19093f84f700db5784", null ],
+      [ "spatial_out_file", "rare-event-detection_8py.html#a3fd734f2c894c365bcb4f3bc723e98ac", null ],
+      [ "system", "rare-event-detection_8py.html#abceaa0bac0da6379bea05f243dd52927", null ],
+      [ "target", "rare-event-detection_8py.html#a4ec08cbc195deae67052bdafbdde1752", null ],
+      [ "temporal_out_file", "rare-event-detection_8py.html#a47ae74fbdd427bdc9f759b63db3bc785", null ],
+      [ "traj", "rare-event-detection_8py.html#a613750abeafa1f322d1fcf359a07c560", null ],
+      [ "type", "rare-event-detection_8py.html#a5fe3e0ecd7613f9f9e317dfaf9b1c85f", null ],
+      [ "W", "rare-event-detection_8py.html#a465501c7e7f45afee672496dfa6fee40", null ]
+    ] ],
     [ "renum", "namespacerenum.html", null ],
     [ "renum-by-mol", null, [
       [ "end", "renum-by-mol_8py.html#add240c508186e6c4a223010c876aa6b5", null ],
@@ -993,6 +1020,25 @@ var namespaces_dup =
       [ "water_residues", "solvate_8py.html#a5360906f1afff0815095c630478d5d39", null ],
       [ "water_target", "solvate_8py.html#a179a5d7fd27eb2822089f098f5fe5355", null ],
       [ "water_template", "solvate_8py.html#a1b9cd107ce5740df722f326be7713ebe", null ]
+    ] ],
+    [ "sysinfo", "namespacesysinfo.html", [
+      [ "args", "namespacesysinfo.html#a8f3fae2ca1363357add02316d4bf95ba", null ],
+      [ "box", "namespacesysinfo.html#aa1630a1b18a8081f23bc544a89868066", null ],
+      [ "centroid", "namespacesysinfo.html#acf9277595172e27e7ca656f9b08af18d", null ],
+      [ "d", "namespacesysinfo.html#afca3984fbd7304dc774d4aa2c2279540", null ],
+      [ "default", "namespacesysinfo.html#a11431ceeb1e68286e45f0d07ed774a7e", null ],
+      [ "has_bonds", "namespacesysinfo.html#a05052952e2f4e2bb295d846ea463727b", null ],
+      [ "has_charge", "namespacesysinfo.html#aa6ae7556de8cee79ad04ddc037678103", null ],
+      [ "has_coords", "namespacesysinfo.html#a59f9f5bcaa8a34f6d41ba5bd7adafa3e", null ],
+      [ "has_mass", "namespacesysinfo.html#a5d022a733cc7937dfeea8c3562d53880", null ],
+      [ "help", "namespacesysinfo.html#af2aaf6b9e3b77cc386669e1b155e6160", null ],
+      [ "is_periodic", "namespacesysinfo.html#ab241709dfda4f597f5ed314c89fe86bc", null ],
+      [ "json_file", "namespacesysinfo.html#a774bcd2a412c51bd3663abde129dc6de", null ],
+      [ "num_atoms", "namespacesysinfo.html#a54bf7ed98e3592e835c0c6503789981c", null ],
+      [ "parser", "namespacesysinfo.html#a68f6ee3626d26911162e2e16e6870689", null ],
+      [ "sort_keys", "namespacesysinfo.html#a0e2fc9ee2549d7870f93642cbd81899e", null ],
+      [ "system", "namespacesysinfo.html#abd3dedf173b45c5895e204a73edfcba9", null ],
+      [ "total_charge", "namespacesysinfo.html#afb9017449f1f96fa3d54af7aeb147fa3", null ]
     ] ],
     [ "test_formfactor", null, [
       [ "atomic_number", "test__formfactor_8py.html#a1b31c7665c4edda4d7e0f1831505d6d6", null ],

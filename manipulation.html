@@ -120,6 +120,10 @@ $(document).ready(function(){initNavTree('manipulation.html',''); initResizable(
 <dd><p class="startdd">Outputs the low-level AtomicGroup representation for a model. Useful for double-checking LOOS' parsing of a file.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b>fixdcd</b> </dt>
+<dd><p class="startdd">Old tool to clean up some malformations of DCD files</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>frame2pdb</b> </dt>
 <dd><p class="startdd">Extract a frame from a trajectory and write it as a pdb file.</p>
 <p class="enddd"></p>
@@ -134,6 +138,10 @@ $(document).ready(function(){initNavTree('manipulation.html',''); initResizable(
 </dd>
 <dt><b>model2matlab</b> </dt>
 <dd><p class="startdd">Takes a PDB and a selection and an optional selection and writes out the coordinates to stdout in matlab format.</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>molshape</b> </dt>
+<dd><p class="startdd">Report shape information about a selection over time</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>porcupine</b> </dt>
@@ -152,8 +160,16 @@ $(document).ready(function(){initNavTree('manipulation.html',''); initResizable(
 <dd><p class="startdd">Reads a trajectory, and writes a new DCD which has been reimaged on a molecule by molecule basis. The model file must have connectivity information, and the trajectory must have periodic box information.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b><a class="el" href="renum-by-mol_8py_source.html">renum-by-mol.py</a></b> </dt>
+<dd><p class="startdd">Renumber a model so that the resids for each molecule start at 1</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>renum-pdb</b> </dt>
 <dd><p class="startdd">Used primarily to renumber atoms/residues in a PDB...but it can work with any LOOS-supported format.</p>
+<p class="enddd"></p>
+</dd>
+<dt><b>residue-contact-map</b> </dt>
+<dd><p class="startdd">Calculate a contact "heat-map" between residues in a simulation</p>
 <p class="enddd"></p>
 </dd>
 <dt><b>rmsfit</b> </dt>

@@ -93,6 +93,10 @@ $(document).ready(function(){initNavTree('pca.html',''); initResizable(); });
 <dd><p class="startdd">Computes the SVD/PCA for a trajectory. This differs from the svd below in that it uses single precision math and it computes fewer right singular vectors (e.g. if your structure has N atoms and you have T timestemps in the trajectory, then the RSV matrix will be T x 3N as opposed to T x T in the svd tool). See also svd.</p>
 <p class="enddd"></p>
 </dd>
+<dt><b>kurskew</b> </dt>
+<dd><p class="startdd">Kurtosis and skewness for SVD/PCA results</p>
+<p class="enddd"></p>
+</dd>
 <dt><b>svd</b> </dt>
 <dd><p class="startdd">Performs principal component analysis for a trajectory using singular value decomposition, writing out the eigenvalues, left singular vectors (eigenvectors) and the right singular vectors (projection timeseries) as OCTAVE-formatted text files.</p>
 <p class="enddd"></p>

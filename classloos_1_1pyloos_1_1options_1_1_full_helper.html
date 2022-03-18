@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LOOS: Clustering</title>
+<title>LOOS: loos.pyloos.options.FullHelper Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('cluter.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('classloos_1_1pyloos_1_1options_1_1_full_helper.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -81,36 +81,54 @@ $(document).ready(function(){initNavTree('cluter.html',''); initResizable(); });
 </iframe>
 </div>
 
-<div class="PageDoc"><div class="header">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="classloos_1_1pyloos_1_1options_1_1_full_helper-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Clustering </div>  </div>
+<div class="title">loos.pyloos.options.FullHelper Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2>Clustering Tools </h2>
-<p>There are a few different sets of clustering tools. Some are in Packages/Clustering while others are python-based. </p><dl>
-<dt><b> cluster-kgs </b> </dt>
-<dd><p class="startdd">Performs hierarchical clustering, using an NMRClust-like method to determine the optimal number of clusters to retain. Takes a frame-to-frame distance matrix as input, eg the output of rmsds, multi-rmsds, or <a class="el" href="all__contacts_8py_source.html">all_contacts.py</a>. See also <a class="el" href="cluster__pops_8py_source.html">cluster_pops.py</a></p>
-<p class="enddd"></p>
-</dd>
-<dt><b> <a class="el" href="cluster-structures_8py_source.html">cluster-structures.py</a> </b> </dt>
-<dd><p class="startdd">Performs k-means clustering on one or more trajectories, using RMSD as the metric. Has the option to do a t-SNE transformation first.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b> <a class="el" href="hierarchical-cluster_8py_source.html">hierarchical-cluster.py</a> </b> </dt>
-<dd><p class="startdd">Performs hierarchical clustering given a distance matrix, using scipy's hierarchical clustering library. If you gave it multiple trajectories, the tool can report the cluster populations for each trajectory.</p>
-<p class="enddd"></p>
-</dd>
-<dt><b> <a class="el" href="cluster__pops_8py_source.html">cluster_pops.py</a> </b> </dt>
-<dd>Extracts the cluster populations from the output of cluster-kgs </dd>
-</dl>
-<dl>
-</dl>
-</div></div><!-- contents -->
-</div><!-- PageDoc -->
+<div class="dynheader">
+Inheritance diagram for loos.pyloos.options.FullHelper:</div>
+<div class="dyncontent">
+<div class="center"><img src="classloos_1_1pyloos_1_1options_1_1_full_helper__inherit__graph.png" border="0" usemap="#aloos_8pyloos_8options_8_full_helper_inherit__map" alt="Inheritance graph"/></div>
+<map name="aloos_8pyloos_8options_8_full_helper_inherit__map" id="aloos_8pyloos_8options_8_full_helper_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,80,164,121"/>
+<area shape="rect" title=" " alt="" coords="27,5,142,32"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<div class="dynheader">
+Collaboration diagram for loos.pyloos.options.FullHelper:</div>
+<div class="dyncontent">
+<div class="center"><img src="classloos_1_1pyloos_1_1options_1_1_full_helper__coll__graph.png" border="0" usemap="#aloos_8pyloos_8options_8_full_helper_coll__map" alt="Collaboration graph"/></div>
+<map name="aloos_8pyloos_8options_8_full_helper_coll__map" id="aloos_8pyloos_8options_8_full_helper_coll__map">
+<area shape="rect" title=" " alt="" coords="5,80,164,121"/>
+<area shape="rect" title=" " alt="" coords="27,5,142,32"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a90177cd6526fe5efa21049a634d8222d"><td class="memItemLeft" align="right" valign="top"><a id="a90177cd6526fe5efa21049a634d8222d"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>__init__</b> (self, option_strings, fullhelp, *args, **kwargs)</td></tr>
+<tr class="separator:a90177cd6526fe5efa21049a634d8222d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89dfee4381b6024931f5ff5956e9ba73"><td class="memItemLeft" align="right" valign="top"><a id="a89dfee4381b6024931f5ff5956e9ba73"></a>
+def&#160;</td><td class="memItemRight" valign="bottom"><b>__call__</b> (self, parser, namespace, values, option_string=None)</td></tr>
+<tr class="separator:a89dfee4381b6024931f5ff5956e9ba73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock">
+<p class="definition">Definition at line <a class="el" href="options_8py_source.html#l00007">7</a> of file <a class="el" href="options_8py_source.html">options.py</a>.</p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
+<li>loos/pyloos/<a class="el" href="options_8py_source.html">options.py</a></li>
+</ul>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
+    <li class="navelem"><b>loos</b></li><li class="navelem"><b>pyloos</b></li><li class="navelem"><b>options</b></li><li class="navelem"><a class="el" href="classloos_1_1pyloos_1_1options_1_1_full_helper.html">FullHelper</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
   </ul>
 </div>

@@ -872,7 +872,7 @@ Added, Changed, or Otherwise Notable</h2>
 <li>
 Added a new tool to compute a residue-contact "heat map". </li>
 <li>
-Added new option to merge-trj (selection-is-split) to more robustly handle the case where the centering selection is split across an image boundary. </li>
+Added new option to merge-trj (selection-is-split) to more robustly handle the case where the centering selection is split an image boundary. </li>
 <li>
 Added an "--any" mode to hcorrelations to compute the time-correlation for whether there is <em>any</em> hydrogen bound, rather than a specific hydrogen. </li>
 <li>
@@ -954,7 +954,7 @@ Added a "User" package with several tool templates that cover common tool cases 
 <li>
 Added a "Density" package primarily for analyzing water density from MD simulations. </li>
 <li>
-Added a new options handling framework (<a class="el" href="namespaceloos_1_1_options_framework.html" title="Namespace for encapsulating options processing.">OptionsFramework</a>). Many tools (and some packages) now use this framework. This will ensure more consistent options across tools. The catch is that this means many tools now have slightly different command-line usage. This will break existing scripts that use the old LOOS tool command-line options. See the documentation for <a class="el" href="namespaceloos_1_1_options_framework.html" title="Namespace for encapsulating options processing.">OptionsFramework</a> for more information. <em>NOTE: User-written code does NOT have to use the <a class="el" href="namespaceloos_1_1_options_framework.html" title="Namespace for encapsulating options processing.">OptionsFramework</a> system. You can still use whatever method you want to handle the command line.</em> </li>
+Added a new options handling framework (<a class="el" href="namespaceloos_1_1_options_framework.html" title="Namespace for encapsulating options processing.">OptionsFramework</a>). Many tools (and some packages) now use this framework. This will ensure more consistent options tools. The catch is that this means many tools now have slightly different command-line usage. This will break existing scripts that use the old LOOS tool command-line options. See the documentation for <a class="el" href="namespaceloos_1_1_options_framework.html" title="Namespace for encapsulating options processing.">OptionsFramework</a> for more information. <em>NOTE: User-written code does NOT have to use the <a class="el" href="namespaceloos_1_1_options_framework.html" title="Namespace for encapsulating options processing.">OptionsFramework</a> system. You can still use whatever method you want to handle the command line.</em> </li>
 <li>
 Added general utility functions including loadStructureWithCoords(), assignTrajectoryFrames(), and vectorAsStringWithCommas&lt;T&gt;(const vector&lt;T&gt;&amp; v) </li>
 <li>

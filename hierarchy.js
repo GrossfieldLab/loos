@@ -9,6 +9,7 @@ var hierarchy =
     [ "argparse.Action", null, [
       [ "all_stacking.FullHelp", "classall__stacking_1_1_full_help.html", null ],
       [ "hierarchical-cluster.FullHelp", "classhierarchical-cluster_1_1_full_help.html", null ],
+      [ "loos.pyloos.options.FullHelper", "classloos_1_1pyloos_1_1options_1_1_full_helper.html", null ],
       [ "packing_score_per_res.FullHelp", "classpacking__score__per__res_1_1_full_help.html", null ],
       [ "scattering.FullHelp", "classscattering_1_1_full_help.html", null ],
       [ "set_segids.FullHelp", "classset__segids_1_1_full_help.html", null ]
