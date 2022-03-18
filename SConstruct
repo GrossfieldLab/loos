@@ -144,9 +144,9 @@ if not pyloos:
 
 
 # Compile-flags
-debug_opts = '-g -Wall -Wextra -fno-inline'
-release_opts = '-O3 -DNDEBUG -Wall -Wno-deprecated'
-profile_opts = '-O3 -DNDEBUG -Wall -g'
+debug_opts = '-g -Wall -Wextra -fno-inline -std=c++14'
+release_opts = '-O3 -DNDEBUG -Wall -Wno-deprecated -std=c++14'
+profile_opts = '-O3 -DNDEBUG -Wall -g -std=c++14'
 
 # Setup the general environment...
 env.Prepend(CPPPATH=['#', '#src'])
