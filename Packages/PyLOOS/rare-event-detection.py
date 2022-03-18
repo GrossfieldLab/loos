@@ -48,7 +48,7 @@ fullhelp = """
   https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html
   Based on methodology outlined by Plante and Weinstein in
   https://doi.org/10.3390/molecules26103059
-  
+
   Window_length is the number of frames that will be averaged over before
   performing the NMF, recommended to be approximately the number of frames per
   nanosecond.  It is recommended to play with n_components, using the expected
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                             help="Number of components for NMF function", default = 5)
     lo.parser.add_argument('--max_iterations', type=int,
                             help="Maximum iterations for NMF function", default = 200)
-    args = lo.parser.parse_args()
+    args = lo.parse_args()
 
 
     header = lo.header()

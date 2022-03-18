@@ -83,7 +83,7 @@ lo.parser.add_argument('--no_backbone', action='store_true',
                        help="Don't include the backbone")
 lo.parser.add_argument('--individual', action='store_true',
                        help="Write contact maps for each trajectory")
-args = lo.parser.parse_args()
+args = lo.parse_args()
 
 
 header = lo.header()
