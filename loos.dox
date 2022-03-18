@@ -1512,9 +1512,6 @@ Matlab, Octave and numpy.
        <DT><B>total_charge.py</B>
        <DD> Print out the total charge of a system
 
-       <DT><B>trans-rmsds</B>
-       <DD> TODO
-
        <DT><B>transition_contacts</B>
        <DD>Calculate the normalized transition between two structures over
        a trajectory.
