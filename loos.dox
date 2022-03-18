@@ -664,6 +664,9 @@ Matlab, Octave and numpy.
      <DT> <B> cluster_pops.py </B>
      <DD> Extracts the cluster populations from the output of cluster-kgs
      </DL>
+
+     <DT> <B> frame-picker.py </B>
+     <DD> Create a trajectory for each cluster from cluster-kgs
    </DL>
 
   \page convergence Convergence
@@ -953,6 +956,9 @@ Matlab, Octave and numpy.
 
 	    <DT><B>hcorrelation</B>
 	    <DD> Computes the time-correlation function for h-bonds.
+
+        <DT><B>native-hbs.py</B>
+        <DD> Track hydrogen bonds from a reference across a trajectory
       </DL>
 
     \page manipulation Trajectory manipulation
@@ -996,6 +1002,9 @@ Matlab, Octave and numpy.
        <DD>Outputs the low-level AtomicGroup representation for a model.
        Useful for double-checking LOOS' parsing of a file.
 
+       <DT><B>fixdcd</B>
+       <DD> Old tool to clean up some malformations of DCD files
+
        <DT><B>frame2pdb</B>
        <DD>Extract a frame from a trajectory and write it as a pdb file.
 
@@ -1018,6 +1027,9 @@ Matlab, Octave and numpy.
        <DT><B>model2matlab</B>
        <DD>Takes a PDB and a selection and an optional selection and writes out
        the coordinates to stdout in matlab format.
+
+       <DT><B>molshape</B>
+       <DD> Report shape information about a selection over time
 
        <DT><B>porcupine</B>
        <DD>Creates a faux-PDB containing atoms/bonds that represent a
@@ -1044,9 +1056,15 @@ Matlab, Octave and numpy.
        connectivity information, and the trajectory must have periodic box
        information.
 
+       <DT><B>renum-by-mol.py</B>
+       <DD> Renumber a model so that the resids for each molecule start at 1
+
        <DT><B>renum-pdb</B>
        <DD>Used primarily to renumber atoms/residues in a PDB...but it can
        work with any LOOS-supported format.
+
+       <DT><B>residue-contact-map</B>
+       <DD> Calculate a contact "heat-map" between residues in a simulation
 
        <DT><B>rmsfit</B>
        <DD>Superimpose two structures using Kabsch RMS alignment.
@@ -1093,9 +1111,13 @@ Matlab, Octave and numpy.
 
 
    <DL>
-       <DT><B>cross-dist</B>
-       <DD> Compute the probability distribution of crossing angles and
-       torsions for a set of chains.
+
+      <DT><B>area_per_lipid</B>
+      <DD> Compute the area per lipid of a membrane system
+
+      <DT><B>cross-dist</B>
+      <DD> Compute the probability distribution of crossing angles and
+      torsions for a set of chains.
 
        <DT><B>crossing-waters</B>
        <DD>Loop over a trajectory and compute the number waters crossing a
@@ -1131,6 +1153,10 @@ Matlab, Octave and numpy.
        <DT><B>dibmops</B>
        <DD>Calculates molecular order parameters, binned by lateral distance
        from a target.
+
+       <DT><B>lipid_survival</B>
+       <DD> Compute the survival probability for a target molecule type around
+       a probe
 
        <DT><B>mops</B>
        <DD>Calculates a molecular order parameter (using the principal axes
@@ -1221,6 +1247,9 @@ Matlab, Octave and numpy.
        and you have T timestemps in the trajectory, then the RSV matrix
        will be T x 3N as opposed to T x T in the svd tool).  See also svd.
 
+       <DT><B>kurskew</B>
+       <DD> Kurtosis and skewness for SVD/PCA results
+
        <DT><B>svd</B>
        <DD>Performs principal component analysis for a trajectory using
        singular value decomposition, writing out the eigenvalues, left
@@ -1280,6 +1309,10 @@ Matlab, Octave and numpy.
    <h2> General Macromolecule Tools</h2>
 
    <DL>
+
+     <DT><B>all_contacts.py</B>
+     <DD> Track residue-residue contacts across a trajectory
+
      <DT><B>all_stacking.py</B>
      <DD> Compute stacking interactions, eg. for an RNA molecule, over a trajectory
 
@@ -1299,6 +1332,10 @@ Matlab, Octave and numpy.
        <DD>Write out the bounding box for a selection of atoms from a
        structure file.
 
+       <DT><B>contact_distance.py</B>
+       <DD> Compute the frame-frame distance matrix for a trajetory in
+       contact space
+
        <DT><B>contact-time</B>
        <DD>This tool computes the number of contacts between a probe
        selection and a set of target selections.  The output is in the
@@ -1316,6 +1353,16 @@ Matlab, Octave and numpy.
        <DD> Compute a 2D radial distribution function in cylindrical
        coordinates. In Packages/PyLOOS.
 
+       <DT><B>cylindrical-thickness.py</B>
+       <DD> Compute the thickness of the membrane around a centering selection
+
+       <DT><B>distance_prob</B>
+       <DD> Compute a pair-distribution function for a macromolecule, like you
+       might estimate from a scattering experiment
+
+       <DT><B>dihedral</B>
+       <DD> Track dihedrals of sets of chemically connected angles
+
        <DT><B>domain.py</B>
        <DD> Describe the motion of two selections within a single macromolecule,
        including distance and the angle and torsion formed the their first
@@ -1324,12 +1371,20 @@ Matlab, Octave and numpy.
        <DT><B>drifter</B>
        <DD>Calculates movement centroids over a trajectory
 
+       <DT><B>esp_mesh</B>
+       <DD> Fit charges on a mesh composed of spherical shells to reproduce the
+        electrostatic potential due to solvent around a solute
+
        <DT><B>exposure</B>
        <DD>Computes the degree of exposure of a set of selections over
        time.  The exposure is defined as the average density of a probe
        selection within a spherical shell about each target atom.  This
        tool can be used to determine how exposed to solvent a selection
        is, or alternatively how buried a selection is.
+
+       <DT><B>fcontacts</B>
+       <DD> Determine what fraction of contacts with a probe belong
+       to the specified targets
 
        <DT><B>gmxdump2pdb.pl</B>
        <DD>Converts a Gromacs/MARTINI system into a PDB and minimal
@@ -1341,11 +1396,28 @@ Matlab, Octave and numpy.
        of the angle between their principal components.  Also useful for
        measuring domain hinge motions.
 
+       <DT><B>helix_axes.py</B>
+       <DD> Writes a new trajectory replacing each selection with 3 particles
+
+       <DT><B>inside_helices.py</B>
+       <DD> Detect lipid chains that have made their way inside a membrane
+       protein
+
        <DT><B>interdist</B>
        <DD>Calculates distances between a selection and an aribtrary set of
        other selections over a trajectory.  The distance computed can be the
        distance between the centroids, the minimum distance between any atom
        in any group, or the max distance between any atom in any group.
+
+       <DT><B>model-meta-stats</B>
+       <DD> Display information about the metadata for a model
+
+       <DT><B>multi-rmsds</B>
+       <DD> Calculate a pair-wise RMSD for multiple trajectories
+
+       <DT><B>native_contacts</B>
+       <DD> Report the fraction of native contacts found over the course of
+       a trajectory
 
        <DT><B>ocf</B>
        <DD> Computes the orientational correlation function for a polymer chain (eg protein or RNA)
@@ -1373,7 +1445,7 @@ Matlab, Octave and numpy.
        helices.  In Packages/PyLOOS.
 
        <DT><B>rad-gyr</B>
-       <DD>Histogram the radius of gyration for a selection of atoms across
+       <DD>Histogram the radius of gyration for a selection of atoms
        a trajectory. Optionally, it can break your selection into individual
        molecules, if for example you have multiple solutes in the system.
        It can also write a time-series of these radii of gyration to a file.
@@ -1384,6 +1456,10 @@ Matlab, Octave and numpy.
        torsions may be missing for the residues at the ends of the
        selection.  To avoid this, expand your selection by a residue in
        both directions, then use the "--skip" flag.
+
+       <DT><B>rare-event-detection.py</B>
+       <DD> Applies the non-negative matrix factorization algorithm developed
+       by Plante and Weinstein
 
        <DT><B>rdf</B>
        <DD>Computes the radial distribution function for two selections
@@ -1408,6 +1484,10 @@ Matlab, Octave and numpy.
        <DD>Loops over a trajectory and computes the pairwise RMSDs for a
        selection of atoms.
 
+       <DT><B>rms-overlap</B>
+       <DD> Calculate the RMSD between all pairs of frames from two different
+       sets of trajectories
+
        <DT><B>rna_suites</B>
        <DD> Identify RNA conformers using the RNA Suites approach of Richardson et al., RNA, 2008, 465–481
 
@@ -1415,17 +1495,30 @@ Matlab, Octave and numpy.
        <DD>Computes the chi-1 and chi-2 angles for a given selection over an
        entire trajectory.
 
+       <DT><B>set_segids.py</B>
+       <DD> Add segids to a model that lacks them
+
        <DT><B>scattering.py</B>
        <DD> Compute X-ray scattering using the spherical scattering approximation
+
+       <DT><B>sysinfo.py</B>
+       <DD> Print a bunch of useful information about the system to stdout
 
        <DT><B>torsion</B>
        <DD>Given 4 selections, compute the torsion angle for their centroids.
        This program loops over a trajectory and writes the torsion angle time
        series.
 
+       <DT><B>total_charge.py</B>
+       <DD> Print out the total charge of a system
+
+       <DT><B>trans-rmsds</B>
+       <DD> TODO
+
        <DT><B>transition_contacts</B>
        <DD>Calculate the normalized transition between two structures over
        a trajectory.
+
     </DL>
 
     \page user
@@ -2199,7 +2292,7 @@ some ranges of frames.
   <LI> Added a new tool to compute a residue-contact "heat map".
   <LI> Added new option to merge-trj (selection-is-split) to more
   robustly handle the case where the centering selection is split
-  across an image boundary.
+   an image boundary.
   <LI> Added an "--any" mode to hcorrelations to compute the
   time-correlation for whether there is *any* hydrogen bound, rather
   than a specific hydrogen.
@@ -2290,7 +2383,7 @@ traj->readFrame();   // Reads second frame and bumps iterator
   from MD simulations.
   <LI> Added a new options handling framework (OptionsFramework).
   Many tools (and some packages) now use this framework.  This will
-  ensure more consistent options across tools.  The catch is that this
+  ensure more consistent options  tools.  The catch is that this
   means many tools now have slightly different command-line usage.
   This will break existing scripts that use the old LOOS tool
   command-line options.  See the documentation for OptionsFramework
