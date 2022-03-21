@@ -108,7 +108,7 @@ const string msg =
 "done \n"
 " \n"
 "If no log-file is desired, throw the '--quiet' flag to suppress emission of the\n"
-" ivocation header. \n"
+" invocation header. \n"
 " \n"
 "for traj in xtcs/*.xtc; do \n"
 "  if ! long-bond-finder --quiet model.psf $traj; then \n"
