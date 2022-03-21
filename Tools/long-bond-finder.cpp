@@ -51,6 +51,8 @@ const string msg =
 "frames until it finds a problem, whereupon it either returns 1 (EXIT_FAILURE) \n"
 "if it has, or 0 (EXIT_SUCCESS) if not. The second additionally writes a time \n"
 "series to a provided file name listing each violating bond for each frame.  \n"
+"Note that merge-traj with --fix-imaging may be able to resolve issues flagged\n"
+"by this program. gmx-trjconv with cluster imaging may also work.\n"
 " \n"
 "DESCRIPTION \n"
 " \n"
