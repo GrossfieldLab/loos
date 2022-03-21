@@ -33,6 +33,7 @@ import loos.pyloos.options as options
 import sys
 import numpy
 from os.path import basename, splitext
+from sklearn import decomposition
 
 
 fullhelp = """
@@ -65,6 +66,18 @@ fullhelp = """
 
   """
 
+def make_index(i, j, num_res):
+    if i < j:
+        i, j = j, i
+    index = i*(i-1)/2 + j
+    return int(index)
+
+def get_residues(index, num_res):
+    """ TODO: THIS IS WRONG AT THE MOMENT """
+    return (index % num_res) + 1, (index // num_res) + 1
+
+
+
 lo = options.LoosOptions("Compute probability of residue-residue contacts",
                          fullhelp)
 lo.modelSelectionOptions()
@@ -78,11 +91,13 @@ lo.add_argument('--cutoff', type=float,
                        help="Cutoff distance for contact", default=4.0)
 # TODO: add a number of contacts option
 lo.add_argument('--no_hydrogens', action='store_true',
-                       help="Don't include hydrogens")
+                help="Don't include hydrogens")
 lo.add_argument('--no_backbone', action='store_true',
-                       help="Don't include the backbone")
+                help="Don't include the backbone")
 lo.add_argument('--individual', action='store_true',
-                       help="Write contact maps for each trajectory")
+                help="Write contact maps for each trajectory")
+lo.add_argument('--pca', action='store_true'
+                help="Perform PCA on the residue-residue maps")
 args = lo.parse_args()
 
 
@@ -112,24 +127,54 @@ residues = target.splitByResidue()
 if args.no_backbone:
     residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
 
-frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
+if args.pca:
+    total_frames = 0
+    for traj in all_trajs:
+        total_frames += len(traj)
+    num_pairs = int((len(residues) * (len(residues)-1))/2)
+    frac_contacts_frame = numpy.zeros([num_pairs, total_frames],
+                                      numpy.float64)
+else:
+    frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
                             numpy.float64)
 
 
 for traj_id in range(num_trajs):
     traj = all_trajs[traj_id]
+    current_frame = 0
     for frame in traj:
         for i in range(len(residues)):
             for j in range(i+1, len(residues)):
                 if residues[i].contactWith(args.cutoff, residues[j]):
-                    frac_contacts[i, j, traj_id] += 1.0
-                    frac_contacts[j, i, traj_id] += 1.0
-    frac_contacts[:, :, traj_id] /= len(traj)
-    if (num_trajs > 1) and args.individual:
-        numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],
-                      header=header)
+                    if args.pca:
+                        index = make_index(i, j, len(residues))
+                        frac_contacts_frame[index, current_frame] = 1
+                    else:
+                        frac_contacts[i, j, traj_id] += 1.0
+                        frac_contacts[j, i, traj_id] += 1.0
+    if not args.pca:
+        frac_contacts[:, :, traj_id] /= len(traj)
+        if (num_trajs > 1) and args.individual:
+            numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],
+                          header=header)
 
-average = numpy.add.reduce(frac_contacts, axis=2)
-average /= len(args.traj)
+# either output the averages or output the pca but not both
+# TODO: write new code to get the average from the larger data set
+# so we can do both
+if not args.pca:
+    average = numpy.add.reduce(frac_contacts, axis=2)
+    average /= len(args.traj)
 
-numpy.savetxt(args.out_file, average, header=header)
+    numpy.savetxt(args.out_file, average, header=header)
+
+
+# do pca if requested
+pca = decomposition.PCA()
+pca.fit()
+
+# write out a mapping of indices in the pca to residue pairs
+with open("index_file", "w") as index_file:
+    index_file.write("Index\tRes1\tRes2")
+    for index in range(num_pairs):
+        i, j = get_residues(index, num_pairs)
+        index_file.write(index, i, j)
