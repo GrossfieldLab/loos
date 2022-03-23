@@ -31,6 +31,10 @@ class LoosOptions:
         if fullhelp:
             self.setFullhelp(fullhelp)
 
+    def add_argument(self, *args, **kwargs):
+        """ Wrap add_argument so clients don't reach into the parser """
+        self.parser.add_argument(*args, **kwargs)
+
     def setFullhelp(self, fullhelp=None):
         self.parser.add_argument('--fullhelp',
                                  action=FullHelper,

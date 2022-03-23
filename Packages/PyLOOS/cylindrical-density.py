@@ -64,20 +64,20 @@ may or may not be necessary, depending on which shell you use).
 
     lo.modelSelectionOptions()
     lo.trajOptions()
-    lo.parser.add_argument('--target_selection',
-                           help="Atoms whose density we're tracking")
-    lo.parser.add_argument('--zmax', type=float,
-                           help="Upper z limit of density")
-    lo.parser.add_argument('--zmin', type=float,
-                           help="Lower z limit of density")
-    lo.parser.add_argument('--rmin', type=float,
-                           help="Lower r limit of density")
-    lo.parser.add_argument('--rmax', type=float,
-                           help="Upper r limit of density")
-    lo.parser.add_argument('--zbins', type=int,
-                           help="Number of bins in z")
-    lo.parser.add_argument('--rbins', type=int,
-                           help="Number of bins in r")
+    lo.add_argument('--target_selection',
+                    help="Atoms whose density we're tracking")
+    lo.add_argument('--zmax', type=float,
+                    help="Upper z limit of density")
+    lo.add_argument('--zmin', type=float,
+                    help="Lower z limit of density")
+    lo.add_argument('--rmin', type=float,
+                    help="Lower r limit of density")
+    lo.add_argument('--rmax', type=float,
+                    help="Upper r limit of density")
+    lo.add_argument('--zbins', type=int,
+                    help="Number of bins in z")
+    lo.add_argument('--rbins', type=int,
+                    help="Number of bins in r")
 
     args = lo.parse_args()
 

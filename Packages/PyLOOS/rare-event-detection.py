@@ -48,7 +48,7 @@ fullhelp = """
   https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html
   Based on methodology outlined by Plante and Weinstein in
   https://doi.org/10.3390/molecules26103059
-  
+
   Window_length is the number of frames that will be averaged over before
   performing the NMF, recommended to be approximately the number of frames per
   nanosecond.  It is recommended to play with n_components, using the expected
@@ -102,27 +102,27 @@ if __name__ == '__main__':
     lo.trajOptions()
 
 
-    lo.parser.add_argument('--spatial_out_file',
+    lo.add_argument('--spatial_out_file',
                             required=True,
                             help="File with the component composition from NMF (W)")
-    lo.parser.add_argument('--temporal_out_file',
+    lo.add_argument('--temporal_out_file',
                             required=True,
                             help="File with the weights of each component from NMF (H)")
-    lo.parser.add_argument('--cutoff', type=float,
+    lo.add_argument('--cutoff', type=float,
                             help="Cutoff distance for contact", default=4.0)
     # TODO: add a number of contacts option
-    lo.parser.add_argument('--no_hydrogens', action='store_true',
-                            help="Don't include hydrogens")
-    lo.parser.add_argument('--no_backbone', action='store_true',
-                            help="Don't include the backbone")
-    lo.parser.add_argument('--window_length', type=int,
-                            required=True,
-                            help="Window length for smoothing function, number of frames per 30 nanoseconds")
-    lo.parser.add_argument('--n_components', type=int,
-                            help="Number of components for NMF function", default = 5)
-    lo.parser.add_argument('--max_iterations', type=int,
-                            help="Maximum iterations for NMF function", default = 200)
-    args = lo.parser.parse_args()
+    lo.add_argument('--no_hydrogens', action='store_true',
+                    help="Don't include hydrogens")
+    lo.add_argument('--no_backbone', action='store_true',
+                    help="Don't include the backbone")
+    lo.add_argument('--window_length', type=int,
+                    required=True,
+                    help="Window length for smoothing function, number of frames per 30 nanoseconds")
+    lo.add_argument('--n_components', type=int,
+                    help="Number of components for NMF function", default = 5)
+    lo.add_argument('--max_iterations', type=int,
+                    help="Maximum iterations for NMF function", default = 200)
+    args = lo.parse_args()
 
 
     header = lo.header()
