@@ -66,15 +66,36 @@ fullhelp = """
 
   """
 
+
 def make_index(i, j, num_res):
-    if i < j:
+    """ Utility function to flatten symmetric matrix
+    Assumes the matrix is 0-based
+    """
+    # canonicalize order
+    if i > j:
         i, j = j, i
-    index = i*(i-1)/2 + j
-    return int(index)
+
+    index = 0
+    for k in range(1, i+1):
+        index += num_res - k
+    index += j - i - 1
+    return index
+
 
 def get_residues(index, num_res):
-    """ TODO: THIS IS WRONG AT THE MOMENT """
-    return (index % num_res) + 1, (index // num_res) + 1
+    """ Utility function to get symmetric indices from flattened index
+    Assumes the matrix is 0-based
+    """
+    i = 0
+    j = 1
+    val = 0
+    next = 0
+    while (val + next <= index):
+        val += next
+        i += 1
+        next = num_res - i
+    j = index - val + i
+    return i-1, j
 
 
 
@@ -171,6 +192,20 @@ if not args.pca:
 # do pca if requested
 pca = decomposition.PCA()
 pca.fit()
+
+# hardwired file names for now
+numpy.savetxt('pca' + "_var.dat",
+              numpy.column_stack((resids, pca.explained_variance_ratio_)),
+              fmt='%.6e',
+              header="Mode\tFraction variance")
+
+pairs = numpy.arange(num_pairs)
+numpy.savetxt('pca' + "_comp.dat",
+              numpy.column_stack((pairs,
+                                  numpy.transpose(pca.components_))),
+              fmt='%.6e',
+              header="Pair\tMode1\tMode2\t...")
+
 
 # write out a mapping of indices in the pca to residue pairs
 with open("index_file", "w") as index_file:
