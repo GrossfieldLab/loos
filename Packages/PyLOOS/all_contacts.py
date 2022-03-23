@@ -31,7 +31,7 @@ import loos
 import loos.pyloos
 import loos.pyloos.options as options
 import sys
-import numpy
+import numpy as np
 from os.path import basename, splitext
 from sklearn import decomposition
 
@@ -97,119 +97,113 @@ def get_residues(index, num_res):
     j = index - val + i
     return i-1, j
 
+if __name__ == '__main__':
 
+    lo = options.LoosOptions("Compute probability of residue-residue contacts",
+                             fullhelp)
+    lo.modelSelectionOptions()
+    lo.trajOptions()
 
-lo = options.LoosOptions("Compute probability of residue-residue contacts",
-                         fullhelp)
-lo.modelSelectionOptions()
-lo.trajOptions()
+    lo.add_argument('--out_file',
+                    default='outfile',
+                    help="File with the average contact occupancies")
+    lo.add_argument('--cutoff', type=float,
+                    help="Cutoff distance for contact", default=4.0)
+    # TODO: add a number of contacts option
+    lo.add_argument('--no_hydrogens', action='store_true',
+                    help="Don't include hydrogens")
+    lo.add_argument('--no_backbone', action='store_true',
+                    help="Don't include the backbone")
+    lo.add_argument('--individual', action='store_true',
+                    help="Write contact maps for each trajectory")
+    lo.add_argument('--pca', action='store_true',
+                    help="Perform PCA on the residue-residue maps")
+    args = lo.parse_args()
+    header = lo.header()
 
-
-lo.add_argument('--out_file',
-                       default='outfile',
-                       help="File with the average contact occupancies")
-lo.add_argument('--cutoff', type=float,
-                       help="Cutoff distance for contact", default=4.0)
-# TODO: add a number of contacts option
-lo.add_argument('--no_hydrogens', action='store_true',
-                help="Don't include hydrogens")
-lo.add_argument('--no_backbone', action='store_true',
-                help="Don't include the backbone")
-lo.add_argument('--individual', action='store_true',
-                help="Write contact maps for each trajectory")
-lo.add_argument('--pca', action='store_true'
-                help="Perform PCA on the residue-residue maps")
-args = lo.parse_args()
-
-
-header = lo.header()
-
-
-system = loos.createSystem(args.model)
-all_trajs = []
-out_names = []
-num_trajs = len(args.traj)
-for t in args.traj:
-    traj = loos.pyloos.Trajectory(t, system)
-    all_trajs.append(traj)
-    if (num_trajs > 1) and args.individual:
-        t_base = basename(t)
-        core, ext = splitext(t_base)
-        out_names.append(core + ".dat")
-
-if args.no_hydrogens:
-    no_hydrogens = loos.selectAtoms(system, "!hydrogen")
-    target = loos.selectAtoms(no_hydrogens, args.selection)
-else:
-    target = loos.selectAtoms(system, args.selection)
-
-residues = target.splitByResidue()
-# now remove the backbone -- doing before the split loses the glycines
-if args.no_backbone:
-    residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
-
-if args.pca:
-    total_frames = 0
-    for traj in all_trajs:
-        total_frames += len(traj)
-    num_pairs = int((len(residues) * (len(residues)-1))/2)
-    frac_contacts_frame = numpy.zeros([num_pairs, total_frames],
-                                      numpy.float64)
-else:
-    frac_contacts = numpy.zeros([len(residues), len(residues), num_trajs],
-                            numpy.float64)
-
-
-for traj_id in range(num_trajs):
-    traj = all_trajs[traj_id]
-    current_frame = 0
-    for frame in traj:
-        for i in range(len(residues)):
-            for j in range(i+1, len(residues)):
-                if residues[i].contactWith(args.cutoff, residues[j]):
-                    if args.pca:
-                        index = make_index(i, j, len(residues))
-                        frac_contacts_frame[index, current_frame] = 1
-                    else:
-                        frac_contacts[i, j, traj_id] += 1.0
-                        frac_contacts[j, i, traj_id] += 1.0
-    if not args.pca:
-        frac_contacts[:, :, traj_id] /= len(traj)
+    system = loos.createSystem(args.model)
+    all_trajs = []
+    out_names = []
+    num_trajs = len(args.traj)
+    for t in args.traj:
+        traj = loos.pyloos.Trajectory(t, system)
+        all_trajs.append(traj)
         if (num_trajs > 1) and args.individual:
-            numpy.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],
-                          header=header)
+            t_base = basename(t)
+            core, ext = splitext(t_base)
+            out_names.append(core + ".dat")
 
-# either output the averages or output the pca but not both
-# TODO: write new code to get the average from the larger data set
-# so we can do both
-if not args.pca:
-    average = numpy.add.reduce(frac_contacts, axis=2)
-    average /= len(args.traj)
+    if args.no_hydrogens:
+        no_hydrogens = loos.selectAtoms(system, "!hydrogen")
+        target = loos.selectAtoms(no_hydrogens, args.selection)
+    else:
+        target = loos.selectAtoms(system, args.selection)
 
-    numpy.savetxt(args.out_file, average, header=header)
+    residues = target.splitByResidue()
+    # now remove the backbone -- doing before the split loses the glycines
+    if args.no_backbone:
+        residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
 
+    if args.pca:
+        total_frames = 0
+        for traj in all_trajs:
+            total_frames += len(traj)
+        num_pairs = int((len(residues) * (len(residues)-1))/2)
+        frac_contacts_frame = np.zeros([num_pairs, total_frames],
+                                       np.float64)
+    else:
+        frac_contacts = np.zeros([len(residues), len(residues), num_trajs],
+                                 np.float64)
 
-# do pca if requested
-pca = decomposition.PCA()
-pca.fit()
+    for traj_id in range(num_trajs):
+        traj = all_trajs[traj_id]
+        current_frame = 0
+        for frame in traj:
+            for i in range(len(residues)):
+                for j in range(i+1, len(residues)):
+                    if residues[i].contactWith(args.cutoff, residues[j]):
+                        if args.pca:
+                            index = make_index(i, j, len(residues))
+                            frac_contacts_frame[index, current_frame] = 1
+                        else:
+                            frac_contacts[i, j, traj_id] += 1.0
+                            frac_contacts[j, i, traj_id] += 1.0
+        if not args.pca:
+            frac_contacts[:, :, traj_id] /= len(traj)
+            if (num_trajs > 1) and args.individual:
+                np.savetxt(out_names[traj_id], frac_contacts[:, :, traj_id],
+                           header=header)
 
-# hardwired file names for now
-numpy.savetxt('pca' + "_var.dat",
-              numpy.column_stack((resids, pca.explained_variance_ratio_)),
-              fmt='%.6e',
-              header="Mode\tFraction variance")
+    # either output the averages or output the pca but not both
+    # TODO: write new code to get the average from the larger data set
+    # so we can do both
+    if not args.pca:
+        average = np.add.reduce(frac_contacts, axis=2)
+        average /= len(args.traj)
 
-pairs = numpy.arange(num_pairs)
-numpy.savetxt('pca' + "_comp.dat",
-              numpy.column_stack((pairs,
-                                  numpy.transpose(pca.components_))),
-              fmt='%.6e',
-              header="Pair\tMode1\tMode2\t...")
+        np.savetxt(args.out_file, average, header=header)
 
+    # do pca if requested
+    else:
+        pca = decomposition.PCA()
+        pca.fit()
 
-# write out a mapping of indices in the pca to residue pairs
-with open("index_file", "w") as index_file:
-    index_file.write("Index\tRes1\tRes2")
-    for index in range(num_pairs):
-        i, j = get_residues(index, num_pairs)
-        index_file.write(index, i, j)
+        # hardwired file names for now
+        pairs = np.arange(num_pairs)
+        np.savetxt('pca' + "_var.dat",
+                   np.column_stack((pairs, pca.explained_variance_ratio_)),
+                   fmt='%.6e',
+                   header="Mode\tFraction variance")
+
+        np.savetxt('pca' + "_comp.dat",
+                   np.column_stack((pairs,
+                                   np.transpose(pca.components_))),
+                   fmt='%.6e',
+                   header="Pair\tMode1\tMode2\t...")
+
+        # write out a mapping of indices in the pca to residue pairs
+        with open("index_file", "w") as index_file:
+            index_file.write("Index\tRes1\tRes2")
+            for index in pairs:
+                i, j = get_residues(index, num_pairs)
+                index_file.write(index, i, j)
