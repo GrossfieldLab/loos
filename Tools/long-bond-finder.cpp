@@ -235,7 +235,13 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = tropts->model;
   if (model.hasBonds()) {
   } else if (topts->bondlength > 0)
-    model.findBonds(topts->bondlength);
+    if (model.hasCoords())
+      model.findBonds(topts->bondlength);
+    else {
+      throw(LOOSError(
+        "Model does not have coordinates with which to infer connectivity.\n"
+      ));
+    }
   else
     throw(LOOSError(
         "Model does not appear to have chemical connectivity, and "
