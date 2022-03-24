@@ -32,6 +32,8 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <functional>
+#include <limits>
 
 #include <boost/unordered_set.hpp>
 
@@ -61,6 +63,27 @@ namespace loos {
     //! If false, then the passed Atom is skipped.
     virtual bool operator()(const pAtom& atom) const =0;
     virtual ~AtomSelector() { }
+  };
+
+  //! hash pairs in an unordered way, that is 
+  //! hash(pair(a,b)) == hash(pair(b,a))
+  template<typename T>
+  struct unordered_pair_hash {
+    std::size_t operator () (std::pair<T, T> const &pair) const {
+      // order the elements in the pair
+      auto min_max = std::minmax(pair.first, pair.second);
+      // return either
+      return static_cast<size_t>(min_max.second) << sizeof(T)*CHAR_BIT | min_max.first;
+    }
+  };
+
+//! test equality of unordered pair. typename T must have == operator.
+  template<typename T>
+  struct unordered_pair_eq {
+    bool operator() (std::pair<T, T> const &p1, 
+                     std::pair<T, T> const&p2) const {
+      return p1 == p2 || (p1.first == p2.second && p1.second == p2.first);
+    }
   };
 
 
@@ -365,6 +388,9 @@ namespace loos {
     //! Create a new group from a vector of atomids
     AtomicGroup groupFromID(const std::vector<int> &id_list) const;
 
+    //! Create a new group from a pair of atomids
+    AtomicGroup groupFromID(const std::pair<int, int> &id_pair) const;
+
     //! Given an Atom, return a group of all the atoms contained by its
     //! containing residue
     AtomicGroup getResidue(pAtom res);
@@ -489,6 +515,12 @@ namespace loos {
       Distance2WithPeriodicity op(box);
       return(contactwith_private(dist, grp, min, op));
     }
+    
+    //! return a list of atom ID pairs that correspond to all unique bonds.          
+    std::vector<std::pair<int, int>> getBondsIDs() const;
+
+    //! return a list of atom index pairs corresponding to all unique bonds.
+    std::vector<AtomicGroup> getBondsAGs() const;
 
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
