@@ -161,49 +161,48 @@ $(document).ready(function(){initNavTree('frame-picker_8py_source.html',''); ini
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;prerange = argv[2].split(<span class="stringliteral">&quot;:&quot;</span>)</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keywordflow">if</span> len(prerange) != 3:</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    print(<span class="stringliteral">&quot;Stop feeding me weird things!&quot;</span>)</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    print(trajranges)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    print(usage)</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    exit(0)</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keywordflow">if</span> prerange[-1]:</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    trajranges = tuple(map(int, prerange))</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    print(<span class="stringliteral">&#39;# Warning: code does not currently handle &quot;stop&quot;&#39;</span>)</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keywordflow">else</span>:</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    print(<span class="stringliteral">&#39;# Warning: code does not currently handle &quot;stop&quot;&#39;</span>)</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    trajranges = (int(prerange[0]), int(prerange[1]), -1)</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;skip, stride, stop = trajranges</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;prefix = argv[3]</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;model = <a class="code" href="sfactories_8cpp.html#acb266964bdaa10942329c7747adce633">loos.createSystem</a>(argv[4])</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;traj = pyloos.Trajectory(argv[5], model, skip=skip, stride=stride)</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;vtraj = pyloos.VirtualTrajectory(traj)</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"># if there are more trajectories, add them to the vtraj</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keywordflow">if</span> len(argv) &gt; 6:</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">for</span> tfile <span class="keywordflow">in</span> argv[6:]:</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        vtraj.append(pyloos.Trajectory(tfile, model, skip=skip, stride=stride))</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    print(usage)</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    exit(0)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keywordflow">if</span> prerange[-1]:</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    trajranges = tuple(map(int, prerange))</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    print(<span class="stringliteral">&#39;# Warning: code does not currently handle &quot;stop&quot;&#39;</span>)</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordflow">else</span>:</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    print(<span class="stringliteral">&#39;# Warning: code does not currently handle &quot;stop&quot;&#39;</span>)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    trajranges = (int(prerange[0]), int(prerange[1]), -1)</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;skip, stride, stop = trajranges</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;prefix = argv[3]</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;model = <a class="code" href="sfactories_8cpp.html#acb266964bdaa10942329c7747adce633">loos.createSystem</a>(argv[4])</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;traj = pyloos.Trajectory(argv[5], model, skip=skip, stride=stride)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;vtraj = pyloos.VirtualTrajectory(traj)</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"># if there are more trajectories, add them to the vtraj</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keywordflow">if</span> len(argv) &gt; 6:</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordflow">for</span> tfile <span class="keywordflow">in</span> argv[6:]:</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        vtraj.append(pyloos.Trajectory(tfile, model, skip=skip, stride=stride))</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;total = len(vtraj)</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;print(<span class="stringliteral">&quot;# Frames to process: &quot;</span>, total)</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;print(<span class="stringliteral">&quot;# Cluster  Population&quot;</span>)</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keywordflow">for</span> cluster_ix, cluster <span class="keywordflow">in</span> enumerate(cluster_results[<span class="stringliteral">&quot;clusters&quot;</span>]):</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="comment"># puts the fraction of the trajectory lumped into ith traj in the name</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    frac = round(len(cluster) / float(total), 4)</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    print(cluster_ix, frac)</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    outprefix = prefix + <span class="stringliteral">&quot;-&quot;</span> + str(cluster_ix) + <span class="stringliteral">&#39;-&#39;</span> + str(frac)</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    cluster_traj = <a class="code" href="classloos_1_1_d_c_d_writer.html">loos.DCDWriter</a>(outprefix + <span class="stringliteral">&quot;.dcd&quot;</span>)</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    exemplar_ix = cluster_results[<span class="stringliteral">&quot;exemplars&quot;</span>][cluster_ix]</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    frame = vtraj[exemplar_ix]</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    exemplar = <a class="code" href="classloos_1_1_p_d_b.html#a8d696aa1df07d77d5e1f16a40beff7f6">loos.PDB.fromAtomicGroup</a>(frame)</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">with</span> open(outprefix + <span class="stringliteral">&quot;.pdb&quot;</span>, <span class="stringliteral">&quot;w&quot;</span>) <span class="keyword">as</span> fp:</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        fp.write(str(exemplar))</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="comment"># OK now write out the trajectory.</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">for</span> member_idx <span class="keywordflow">in</span> cluster:</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        member = vtraj[member_idx]</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        cluster_traj.writeFrame(member)</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;total = len(vtraj)</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;print(<span class="stringliteral">&quot;# Frames to process: &quot;</span>, total)</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;print(<span class="stringliteral">&quot;# Cluster  Population&quot;</span>)</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keywordflow">for</span> cluster_ix, cluster <span class="keywordflow">in</span> enumerate(cluster_results[<span class="stringliteral">&quot;clusters&quot;</span>]):</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="comment"># puts the fraction of the trajectory lumped into ith traj in the name</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    frac = round(len(cluster) / float(total), 4)</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    print(cluster_ix, frac)</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    outprefix = prefix + <span class="stringliteral">&quot;-&quot;</span> + str(cluster_ix) + <span class="stringliteral">&#39;-&#39;</span> + str(frac)</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    cluster_traj = <a class="code" href="classloos_1_1_d_c_d_writer.html">loos.DCDWriter</a>(outprefix + <span class="stringliteral">&quot;.dcd&quot;</span>)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    exemplar_ix = cluster_results[<span class="stringliteral">&quot;exemplars&quot;</span>][cluster_ix]</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    frame = vtraj[exemplar_ix]</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    exemplar = <a class="code" href="classloos_1_1_p_d_b.html#a8d696aa1df07d77d5e1f16a40beff7f6">loos.PDB.fromAtomicGroup</a>(frame)</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">with</span> open(outprefix + <span class="stringliteral">&quot;.pdb&quot;</span>, <span class="stringliteral">&quot;w&quot;</span>) <span class="keyword">as</span> fp:</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        fp.write(str(exemplar))</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="comment"># OK now write out the trajectory.</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordflow">for</span> member_idx <span class="keywordflow">in</span> cluster:</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        member = vtraj[member_idx]</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        cluster_traj.writeFrame(member)</div>
 <div class="ttc" id="aclassloos_1_1_d_c_d_writer_html"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html">loos::DCDWriter</a></div><div class="ttdoc">A very lightweight class for writing simple DCDs.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00048">dcdwriter.hpp:48</a></div></div>
 <div class="ttc" id="aclassloos_1_1_p_d_b_html_a8d696aa1df07d77d5e1f16a40beff7f6"><div class="ttname"><a href="classloos_1_1_p_d_b.html#a8d696aa1df07d77d5e1f16a40beff7f6">loos::PDB::fromAtomicGroup</a></div><div class="ttdeci">static PDB fromAtomicGroup(const AtomicGroup &amp;)</div><div class="ttdoc">Class method for creating a PDB from an AtomicGroup.</div><div class="ttdef"><b>Definition:</b> <a href="pdb_8cpp_source.html#l00542">pdb.cpp:542</a></div></div>
 <div class="ttc" id="asfactories_8cpp_html_acb266964bdaa10942329c7747adce633"><div class="ttname"><a href="sfactories_8cpp.html#acb266964bdaa10942329c7747adce633">loos::createSystem</a></div><div class="ttdeci">AtomicGroup createSystem(const std::string &amp;filename)</div><div class="ttdef"><b>Definition:</b> <a href="sfactories_8cpp_source.html#l00115">sfactories.cpp:115</a></div></div>

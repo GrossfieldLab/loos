@@ -276,6 +276,8 @@ var hierarchy =
     [ "loos::TriggerEvery", "classloos_1_1_trigger_every.html", null ],
     [ "loos::UniqueStrings", "classloos_1_1_unique_strings.html", null ],
     [ "loos::UnitCell", "classloos_1_1_unit_cell.html", null ],
+    [ "loos::unordered_pair_eq< T >", "structloos_1_1unordered__pair__eq.html", null ],
+    [ "loos::unordered_pair_hash< T >", "structloos_1_1unordered__pair__hash.html", null ],
     [ "loos::UserTimer", "classloos_1_1_user_timer.html", null ],
     [ "loos::internal::Value", "structloos_1_1internal_1_1_value.html", null ],
     [ "loos::internal::ValueStack", "classloos_1_1internal_1_1_value_stack.html", null ],

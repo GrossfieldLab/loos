@@ -537,6 +537,8 @@ var namespaces_dup =
       [ "UniformWeight", "classloos_1_1_uniform_weight.html", "classloos_1_1_uniform_weight" ],
       [ "UniqueStrings", "classloos_1_1_unique_strings.html", "classloos_1_1_unique_strings" ],
       [ "UnitCell", "classloos_1_1_unit_cell.html", "classloos_1_1_unit_cell" ],
+      [ "unordered_pair_eq", "structloos_1_1unordered__pair__eq.html", "structloos_1_1unordered__pair__eq" ],
+      [ "unordered_pair_hash", "structloos_1_1unordered__pair__hash.html", "structloos_1_1unordered__pair__hash" ],
       [ "UnsetProperty", "classloos_1_1_unset_property.html", "classloos_1_1_unset_property" ],
       [ "UserTimer", "classloos_1_1_user_timer.html", "classloos_1_1_user_timer" ],
       [ "WallTimer", "classloos_1_1_wall_timer.html", "classloos_1_1_wall_timer" ],

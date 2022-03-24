@@ -57,23 +57,23 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"",
-"_unique_strings_8hpp_source.html",
-"class_calc_property_base.html#ace17b2212402d849b36b0b14a8c40193",
-"class_tool_options.html#ab27b0d8856e61cfc356d7e1dc41a3f22",
-"classloos_1_1_atomic_group.html#a3fd03b1c9bfad1e983b3c616350304cf",
-"classloos_1_1_density_tools_1_1_bulk_estimator.html#abc7bbadfc551f067bf8b531823cccbce",
-"classloos_1_1_file_write_error.html#afc33dcfd1ed14a3dad57480b8d9e6568",
-"classloos_1_1_options_framework_1_1_basic_selection.html",
-"classloos_1_1_scientific_matrix_formatter.html",
-"classloos_1_1_weights.html#a1b27f133892c21f3837d53078b9007e6",
-"classloos_1_1pyloos_1_1options_1_1_loos_options.html#abe9c324f8e499c6e34eae747d920a6e4",
-"faq.html#faq_pyloos",
-"membrane__map_8cpp_source.html",
-"namespacecontact__distance.html#ac61fc3dc0c4b6448f3c75265499cdb50",
-"namespacesimple__model__transform.html",
-"solvate_8py.html#a1644a38e866b557fc4ec4cdcffa15ded",
-"try__stacking_8py.html#a27ba06b9fb0318c54a7bd21315edaad0"
+"_a_g__linalg_8cpp_source.html",
+"alignment_8cpp.html#ab0fdc2b6a0ae715171fe16ce9563df5a",
+"class_dual_worker.html#a1b46aa6e0bded0afaff594dd2589fe62",
+"class_voronoi_1_1_voronoi_1_1_region.html#a28295a6a26ef8fb638aa7f717c8d5828",
+"classloos_1_1_atomic_group.html#a872a5b02eca7320f51181b5a8385e6e5",
+"classloos_1_1_density_tools_1_1_density_grid.html#a579b49f4db77faaaaa9e23ad02ddac35",
+"classloos_1_1_gromacs.html#a1488532ba4bedf30decec7dec916de45",
+"classloos_1_1_options_framework_1_1_basic_water.html#a0b8af2e719711d45146ebc62417f5a7c",
+"classloos_1_1_stream_wrapper.html#aa520ce97ab93cff90e3d6e4ab29179e2",
+"classloos_1_1_weights_from_file.html#add479c97703585e399cd0aea27ac48bd",
+"classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html",
+"frame-picker_8py.html#ae7aaca2468cf514a93b7b4aa63cc828a",
+"namespace_voronoi_1_1area__per__molecule.html#a597d6ca431fd46a997f63c3418ad223a",
+"namespaceinside__helices.html#a66f7493aa29c3f3876b43782c1a568ab",
+"namespacesysinfo.html",
+"solvate_8py.html#ac38d078b2620f89e761523e9a73b75ab",
+"utils_8cpp_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
