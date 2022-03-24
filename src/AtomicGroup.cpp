@@ -29,6 +29,8 @@
 #include <vector>
 #include <list>
 #include <algorithm>
+#include <unordered_set>
+#include <functional>
 
 #include <boost/random.hpp>
 
@@ -219,6 +221,40 @@ namespace loos {
     return(false);
   }
 
+  // returns a vector of pairs of atom IDs corresponding to bonded atoms
+  std::vector<std::pair<int, int>> AtomicGroup::getBondsIDs() const {
+    std::unordered_set<std::pair<int, int>, unordered_pair_hash<int>, unordered_pair_eq<int>> bond_set;
+    const_iterator ci;
+
+    for (ci = atoms.begin(); ci != atoms.end(); ++ci){
+      std::vector<int> bonds = (*ci)->getBonds();
+      int id = (*ci)->id();
+      for(auto b : bonds){
+        bond_set.emplace(std::make_pair(id, b));
+      }
+    }
+    std::vector<std::pair<int, int>> bond_list(bond_set.begin(), bond_set.end());
+    return bond_list;
+  }
+  
+  // returns a vector of pairs of atom IDs corresponding to bonded atoms
+  std::vector<AtomicGroup> AtomicGroup::getBondsAGs() const {
+    std::unordered_set<std::pair<int, int>, unordered_pair_hash<int>, unordered_pair_eq<int>> bond_set;
+    const_iterator ci;
+
+    for (ci = atoms.begin(); ci != atoms.end(); ++ci){
+      std::vector<int> bonds = (*ci)->getBonds();
+      int id = (*ci)->id();
+      for(auto b : bonds){
+        bond_set.emplace(std::make_pair(id, b));
+      }
+    }
+    std::vector<AtomicGroup> bond_list;
+    for (const auto& bond : bond_set) {
+      bond_list.emplace_back(groupFromID(bond));
+    }
+    return bond_list;
+  }
 
   void AtomicGroup::clearBonds(void) {
     const_iterator ci;
@@ -587,8 +623,23 @@ namespace loos {
     for (unsigned int i=0; i<id_list.size(); i++) {
       pAtom pa = findById(id_list[i]);
       if (pa)
-	result.addAtom(pa);
+        result.addAtom(pa);
     }
+    return(result);
+  }
+  
+  // Note this specialization can also produce an empty AG, or an AG with one element.
+  AtomicGroup AtomicGroup::groupFromID(const std::pair<int, int> &id_pair) const {
+    AtomicGroup result;
+
+    result.box = box;
+
+    pAtom pa1 = findById(id_pair.first);
+    if (pa1)
+      result.addAtom(pa1);
+    pAtom pa2 = findById(id_pair.second);
+    if (pa2)
+      result.addAtom(pa2);
     return(result);
   }
 
