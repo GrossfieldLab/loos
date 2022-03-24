@@ -188,7 +188,7 @@ if __name__ == '__main__':
         pca = decomposition.PCA()
         pca.fit()
 
-        # hardwired file names for now
+        # TODO: hardwired file names for now
         pairs = np.arange(num_pairs)
         np.savetxt('pca' + "_var.dat",
                    np.column_stack((pairs, pca.explained_variance_ratio_)),
