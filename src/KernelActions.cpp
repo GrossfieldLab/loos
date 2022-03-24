@@ -39,29 +39,29 @@ namespace loos {
     bool Action::negativeOperand(void) {
       Value v1 = stack->peek(-1);
       Value v2 = stack->peek(-2);
-      
+
       if ( (v1.type == Value::INT && v1.itg < 0) ||
            (v2.type == Value::INT && v2.itg < 0) )
         return(true);
-      
+
       return(false);
     }
 
 
     void Action::binaryFalseResult(void) {
       Value v(0);
-      
+
       stack->drop();
       stack->drop();
       stack->push(v);
     }
-    
+
 
     void Action::requireAtom(void) {
       if (atom == 0)
         throw(LOOSError("No atom set"));
     }
-    
+
 
     void Action::setStack(ValueStack* ptr) { stack=ptr; }
     void Action::setAtom(pAtom& pa) { atom = pa; }
@@ -131,19 +131,19 @@ namespace loos {
       stack->push(v);
     }
 
-    void matchRegex::execute(void) { 
+    void matchRegex::execute(void) {
       Value v = stack->pop();
       Value r(0);
       if (boost::regex_search(v.getString(), regexp))
         r.setInt(1);
-      
+
       stack->push(r);
     }
 
     std::string matchRegex::name(void) const {
       return(my_name + "(" + pattern + ")");
     }
-  
+
 
 
     void matchStringAsRegex::execute(void) {
@@ -151,18 +151,18 @@ namespace loos {
       boost::regex re(v.getString(), boost::regex::perl|boost::regex::icase);
       Value u = stack->pop();
       Value r(0);
-      
+
       if (boost::regex_search(u.getString(), re))
         r.setInt(1);
-      
+
       stack->push(r);
     }
-  
+
     void extractNumber::execute(void) {
       Value v = stack->pop();
       Value r(-1);
       boost::smatch what;
-      
+
       if (boost::regex_search(v.getString(), what, regexp)) {
         unsigned i;
         int val;
@@ -173,7 +173,7 @@ namespace loos {
           }
         }
       }
-      
+
       stack->push(r);
     }
 
@@ -233,7 +233,7 @@ namespace loos {
 
       if (!(v1.type == Value::INT && v2.type == Value::INT))
         throw(LOOSError("Invalid operands to logicalAnd"));
-      
+
       Value u(v1.itg && v2.itg);
       stack->push(u);
     }
@@ -242,10 +242,10 @@ namespace loos {
     void logicalOr::execute(void) {
       Value v1 = stack->pop();
       Value v2 = stack->pop();
-      
+
       if (!(v1.type == Value::INT && v2.type == Value::INT))
         throw(LOOSError("Invalid operands to logicalOr"));
-      
+
       Value u(v1.itg || v2.itg);
       stack->push(u);
     }
@@ -256,7 +256,7 @@ namespace loos {
 
       if (v1.type != Value::INT)
         throw(LOOSError("Invalid operand to logicalNot"));
-      
+
       Value u(!v1.itg);
       stack->push(u);
     }
@@ -269,11 +269,14 @@ namespace loos {
 
     void Hydrogen::execute(void) {
       requireAtom();
-      
+
       bool masscheck = true;
       if (atom->checkProperty(Atom::massbit))
-        masscheck = (atom->mass() < 1.1);
-      
+        // Note: Checking for mass < 4.1 allows use of hydrogen selector
+        //       even when the system has hydrogen mass repartitioning.
+        //       False positive if someone has He in the system.
+        masscheck = (atom->mass() < 4.1);
+
       std::string n = atom->name();
       Value v;
       v.setInt( (n[0] == 'H' && masscheck) );
@@ -281,7 +284,7 @@ namespace loos {
     }
 
 
-    
+
     // Provide storage for class-level selector
     BackboneSelector Backbone::bbsel;
 
@@ -289,7 +292,7 @@ namespace loos {
     void Backbone::execute(void) {
       requireAtom();
       Value v(bbsel(atom));
-      
+
       stack->push(v);
     }
 

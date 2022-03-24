@@ -258,6 +258,12 @@ and expect it to be substituted with the appropriate value, for example.
 </table>
 
 Notes:\n
+
+The \c hydrogen selector looks for low-mass atoms with names starting with H. In
+order to work correctly when hydrogen mass repartitioning is used, the threshold
+mass has been set to 4.1 amu. This means the selector will produce false positive
+matches if the system contains helium.
+
 The \c all keyword is used to force a selection string to match all
 atoms in instances where a selection is required.  For example, a
 program to align frames of a trajectory DCD to a reference structure
