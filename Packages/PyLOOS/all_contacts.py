@@ -97,6 +97,7 @@ def get_residues(index, num_res):
     j = index - val + i
     return i-1, j
 
+
 if __name__ == '__main__':
 
     lo = options.LoosOptions("Compute probability of residue-residue contacts",
