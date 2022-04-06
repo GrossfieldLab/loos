@@ -42,8 +42,9 @@ fullhelp = """
   Mandatory arguments:
   model: file describing system contents, e.g. a psf or pdb
   selection: selection string for which residues to look at
-  out_file: name for the average contact map, written in matlab format
-  traj: 1 or more trajectory files
+  out_file: name for the average contact map, written in matlab format.
+           The residue order from the model file will be retained.
+  traj: 1 or more trajectory files.
 
   Options
   --cutoff: distance for atom-atom contacts, defaults to 4.0 Ang
