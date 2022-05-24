@@ -41,9 +41,8 @@ fullhelp = """
   over the course of a trajectory
 
   Mandatory arguments:
-  model: file describing system contents, e.g. a psf or pdb
-  selection: selection string for which residues to look at
-  out_file: name for the average contact map, written in matlab format
+  -m  model: file describing system contents, e.g. a psf or pdb
+  --selection  'selection': selection string for which residues to look at
   traj: 1 or more trajectory files
 
   Options
@@ -60,14 +59,55 @@ fullhelp = """
                 This flag has no effect if only one trajectory was given
                 on the command line.
   --fullhelp: produce this message
+  --pca:        perform PCA in contact space
+  --ncomp:      specify how many PCA modes are computed (default=10)
+  --outfile:    if --pca is not specified, the name of the contact map file.
+                if --pca is specified, the prefix for the 3 files written.
 
   This program does not explicitly handle periodicity; it assumes you've
   already fixed any periodicity issues before you ran it.
 
+  If the --pca flag is not specified, then the average contact map is output.
+  The file will contain a symmetric matrix indexed by the residues used in the
+  calculation (e.g. the entry [6, 10] will be the fraction of frames in which
+  the 7th and 11th residues in the selection are in contact).
+
+  PCA calculation
+
+  The idea behind the --pca flag is to look for sets of pairs of residues that
+  co-vary (tend to be formed at the same time). This should reveal residual
+  structures in highly variable proteins that might not show up in
+  clustering due to issues superposing flexible chains. We implement this
+  by taking the contact map from each indivual frame, flattening it to 1
+  dimension, and using singular value decomposition to perform PCA. Since this
+  can be an expensive operation and contact maps change slowly, we recommend
+  using the '-s' option to stride through the trajectory.
+
+  If the --pca flag is specified, the contact map is not written. Instead, 3
+  files are produced: (assume you specified "--outfile foo"):
+        foo_var.dat: 2 column text file. First column is the mode number,
+                     second is the fraction of the variance in the data
+                     explained by that mode
+        foo_comp.dat: each column of the file is a single eigenmode, each row
+                      designates a specific pair of residues. The high values
+                      in a column indicate pairs of residues that tend to be
+                      in contact at the same time
+        foo.index: maps rows of foo_comp.dat to pairs of residues. It is
+                   0-based and reflects the residues selected.  For example,
+                   if you specified 'resid >=5 && resid <=9' the entry
+                   2       0       3
+                   would say that the 3rd entry of foo_comp.dat would reflect
+                   contact between the 1st and 4th residues specified (in this
+                   case, residues 5 and 8)
+
+  The "--ncomp X" says that only the first X modes of the eigendecomposition
+  should be computed. The default value is 10 -- computing the full svd would
+  be costly in time and memory, and only the first few modes are likely to be
+  meaningful. This flag is meaningless if the --pca option isn't also supplied.
   """
 
 
-def make_index(i, j, num_res):
+def symm_to_flat(i, j, num_res):
     """ Utility function to flatten symmetric matrix
     Assumes the matrix is 0-based
     """
@@ -82,7 +122,7 @@ def make_index(i, j, num_res):
     return index
 
 
-def get_residues(index, num_res):
+def flat_to_symm(index, num_res):
     """ Utility function to get symmetric indices from flattened index
     Assumes the matrix is 0-based
     """
@@ -119,6 +159,10 @@ if __name__ == '__main__':
                     help="Write contact maps for each trajectory")
     lo.add_argument('--pca', action='store_true',
                     help="Perform PCA on the residue-residue maps")
+    lo.add_argument('--ncomp',
+                    default=10,
+                    type=int,
+                    help="Number of PCA components to compute")
     args = lo.parse_args()
     header = lo.header()
 
@@ -141,6 +185,7 @@ if __name__ == '__main__':
         target = loos.selectAtoms(system, args.selection)
 
     residues = target.splitByResidue()
+    num_res = len(residues)
     # now remove the backbone -- doing before the split loses the glycines
     if args.no_backbone:
         residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
@@ -149,7 +194,7 @@ if __name__ == '__main__':
         total_frames = 0
         for traj in all_trajs:
             total_frames += len(traj)
-        num_pairs = int((len(residues) * (len(residues)-1))/2)
+        num_pairs = int((num_res * (num_res-1))/2)
         frac_contacts_frame = np.zeros([num_pairs, total_frames],
                                        np.float64)
     else:
@@ -164,7 +209,7 @@ if __name__ == '__main__':
                 for j in range(i+1, len(residues)):
                     if residues[i].contactWith(args.cutoff, residues[j]):
                         if args.pca:
-                            index = make_index(i, j, len(residues))
+                            index = symm_to_flat(i, j, len(residues))
                             frac_contacts_frame[index, current_frame] = 1
                         else:
                             frac_contacts[i, j, traj_id] += 1.0
@@ -186,25 +231,27 @@ if __name__ == '__main__':
 
     # do pca if requested
     else:
-        pca = decomposition.PCA()
-        pca.fit()
+        # TODO : make n_components user-settable
+        pca = decomposition.PCA(n_components=args.ncomp)
 
-        # TODO: hardwired file names for now
-        pairs = np.arange(num_pairs)
-        np.savetxt('pca' + "_var.dat",
-                   np.column_stack((pairs, pca.explained_variance_ratio_)),
-                   fmt='%.6e',
-                   header="Mode\tFraction variance")
+        pca.fit(frac_contacts_frame.transpose())
 
-        np.savetxt('pca' + "_comp.dat",
-                   np.column_stack((pairs,
-                                   np.transpose(pca.components_))),
+        labels = np.arange(pca.n_components)
+        np.savetxt(args.out_file + "_var.dat",
+                   np.column_stack((labels,
+                                    pca.explained_variance_ratio_)),
                    fmt='%.6e',
-                   header="Pair\tMode1\tMode2\t...")
+                   header=header + "\n" + "Mode\tFraction variance")
+
+        np.savetxt(args.out_file + "_comp.dat",
+                   pca.components_.transpose(),
+                   fmt='%.6e',
+                   header=header + "\n" + "Mode1\tMode2\t...")
 
         # write out a mapping of indices in the pca to residue pairs
-        with open("index_file", "w") as index_file:
-            index_file.write("Index\tRes1\tRes2")
-            for index in pairs:
-                i, j = get_residues(index, num_pairs)
-                index_file.write(index, i, j)
+        with open(args.out_file + ".index", "w") as index_file:
+
+            index_file.write("#Index\tRes1\tRes2\n")
+            for index in range(pca.components_.shape[1]):
+                i, j = flat_to_symm(index, num_res)
+                index_file.write(f"{index}\t{i}\t{j}\n")
