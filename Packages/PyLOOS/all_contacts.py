@@ -30,6 +30,7 @@ or RNA, to track all residue-residue contacts within the trajectory.
 import loos
 import loos.pyloos
 import loos.pyloos.options as options
+from loos.pyloos.SymmMatrix import SymmMatrix
 import sys
 import numpy as np
 from os.path import basename, splitext
@@ -107,37 +108,6 @@ fullhelp = """
   """
 
 
-def symm_to_flat(i, j, num_res):
-    """ Utility function to flatten symmetric matrix
-    Assumes the matrix is 0-based
-    """
-    # canonicalize order
-    if i > j:
-        i, j = j, i
-
-    index = 0
-    for k in range(1, i+1):
-        index += num_res - k
-    index += j - i - 1
-    return index
-
-
-def flat_to_symm(index, num_res):
-    """ Utility function to get symmetric indices from flattened index
-    Assumes the matrix is 0-based
-    """
-    i = 0
-    j = 1
-    val = 0
-    next = 0
-    while (val + next <= index):
-        val += next
-        i += 1
-        next = num_res - i
-    j = index - val + i
-    return i-1, j
-
-
 if __name__ == '__main__':
 
     lo = options.LoosOptions("Compute probability of residue-residue contacts",
@@ -197,6 +167,7 @@ if __name__ == '__main__':
         num_pairs = int((num_res * (num_res-1))/2)
         frac_contacts_frame = np.zeros([num_pairs, total_frames],
                                        np.float64)
+        symm_indexer = SymmMatrix(num_res)
     else:
         frac_contacts = np.zeros([len(residues), len(residues), num_trajs],
                                  np.float64)
@@ -209,7 +180,7 @@ if __name__ == '__main__':
                 for j in range(i+1, len(residues)):
                     if residues[i].contactWith(args.cutoff, residues[j]):
                         if args.pca:
-                            index = symm_to_flat(i, j, len(residues))
+                            index = symm_indexer.toFlat(i, j)
                             frac_contacts_frame[index, current_frame] = 1
                         else:
                             frac_contacts[i, j, traj_id] += 1.0
@@ -231,7 +202,6 @@ if __name__ == '__main__':
 
     # do pca if requested
     else:
-        # TODO : make n_components user-settable
         pca = decomposition.PCA(n_components=args.ncomp)
 
         pca.fit(frac_contacts_frame.transpose())
@@ -253,5 +223,5 @@ if __name__ == '__main__':
 
             index_file.write("#Index\tRes1\tRes2\n")
             for index in range(pca.components_.shape[1]):
-                i, j = flat_to_symm(index, num_res)
+                i, j = symm_indexer.toSymm(index)
                 index_file.write(f"{index}\t{i}\t{j}\n")
