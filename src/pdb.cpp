@@ -23,6 +23,7 @@
 #include <pdb.hpp>
 #include <utils.hpp>
 #include <Fmt.hpp>
+#include <AtomicNumberDeducer.hpp>
 
 #include <iomanip>
 #include <boost/unordered_set.hpp>
@@ -544,6 +545,16 @@ namespace loos {
     if (p.isPeriodic())
       p.unitCell(UnitCell(p.periodicBox()));
 
+    // if PDBelement isn't set, try to set it using mass, if we have that.
+    // Assume that the first atom is a good indicator
+    if (p[0]->PDBelement().empty()) {
+      if (p[0]->checkProperty(Atom::massbit)) {
+        for (uint i = 0; i < p.size(); ++i) {
+            std::string name = loos::deduceElementNameFromMass(p[i]->mass());
+            p[i]->PDBelement(name);
+            }
+        }
+      }
     return(p);
   }
 

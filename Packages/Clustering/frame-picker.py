@@ -73,7 +73,6 @@ with open(cluster_results_fn, "r") as fp:
 prerange = argv[2].split(":")
 if len(prerange) != 3:
     print("Stop feeding me weird things!")
-    print(trajranges)
     print(usage)
     exit(0)
 

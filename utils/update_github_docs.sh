@@ -6,16 +6,17 @@ loos_dir=$2
 message=$3
 
 cd $docs_dir
+git pull
 git checkout gh-pages
 
 cd $loos_dir
 doxygen
 
-rsync -av Docs/html $docs_dir
+rsync -av Docs/html/ $docs_dir
 
 cd $docs_dir
 
 git add -A
-git commit -m "$message"
+git commit -m "$message [ci skip]"
 
 git push

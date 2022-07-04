@@ -6,10 +6,13 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
+#define SWIG_PYTHON_CAST_MODE
 %}
 
 %include <std_string.i>
 %include <std_vector.i>
+%include <std_pair.i>
+%include <std_map.i>
 %include <boost_shared_ptr.i>
 
 
@@ -53,7 +56,13 @@ namespace loos {
 %template(IntVector)            std::vector<int>;
 %template(UIntVector)           std::vector<uint>;
 %template(StringVector)         std::vector<std::string>;
+%template(IntPair)              std::pair<int,int>;
+%template(IntPairVector)        std::vector<std::pair<int,int> >;
 
+
+%{
+#include "AtomicGroup.hpp"
+%}
 
 %include "exceptions.i"
 

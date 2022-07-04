@@ -50,16 +50,16 @@ double threshold = 0.0;
 struct DistanceCalculation {
   virtual double operator()(const AtomicGroup&, const AtomicGroup&) = 0;
   virtual ~DistanceCalculation() { }
-  
+
   void usePeriodicity(const bool flag) { _use_periodicity = flag; }
   double distance(const GCoord& u, const GCoord& v) {
   	if (_use_periodicity)
   		return(u.distance(v, _box));
   	return(u.distance(v));
   }
-  
+
   void setBox(const GCoord& v) { _box = v; }
-  
+
   bool _use_periodicity;
   GCoord _box;
 };
@@ -72,7 +72,7 @@ struct CenterDistance : public DistanceCalculation {
     GCoord cv = v.centroid();
 
     return(distance(cu, cv));
-  
+
   }
 };
 
@@ -82,7 +82,7 @@ struct CenterOfMassDistance : public DistanceCalculation {
     GCoord cv = v.centerOfMass();
 
     return(distance(cu, cv));
-  
+
   }
 };
 
@@ -92,7 +92,7 @@ struct CenterDistanceZ : public DistanceCalculation {
   double operator()(const AtomicGroup& u, const AtomicGroup& v) {
     GCoord cu = u.centroid();
     GCoord cv = v.centroid();
-    
+
     cu.x() = cu.y() = 0.0;
     cv.x() = cv.y() = 0.0;
     return(distance(cu, cv));
@@ -109,14 +109,14 @@ struct MinDistance : public DistanceCalculation {
 
     for (AtomicGroup::const_iterator aj = v.begin(); aj != v.end(); ++aj) {
       GCoord y = (*aj)->coords();
-      
+
       for (AtomicGroup::const_iterator ai = u.begin(); ai != u.end(); ++ai) {
         double d = distance(y, (*ai)->coords());
         if (d < mind)
           mind = d;
       }
     }
-    
+
     return(mind);
   }
 };
@@ -131,14 +131,14 @@ struct MaxDistance : public DistanceCalculation {
 
     for (AtomicGroup::const_iterator aj = v.begin(); aj != v.end(); ++aj) {
       GCoord y = (*aj)->coords();
-      
+
       for (AtomicGroup::const_iterator ai = u.begin(); ai != u.end(); ++ai) {
         double d = distance(y, (*ai)->coords());
         if (d > maxd)
           maxd = d;
       }
     }
-    
+
     return(maxd);
   }
 };
@@ -194,19 +194,19 @@ public:
       threshold = map["threshold"].as<double>();
       segment_output = true;
     }
-    
+
     return(true);
   }
 
   string help() const { return("target selection [selection ...]"); }
   string print() const {
     ostringstream oss;
-    oss << boost::format("mode='%s', target='%s', selections=(%s), periodic=%d") 
+    oss << boost::format("mode='%s', target='%s', selections=(%s), periodic=%d")
       % mode_name
       % target_name
       % vectorAsStringWithCommas<string>(selection_names)
       % periodic;
-    
+
     if (segment_output)
       oss << boost::format("threshold=%f") % threshold;
 
@@ -226,7 +226,7 @@ string fullHelpMessage(void) {
     "\n"
     "SYNOPSIS\n"
     "\n"
-    "Calculate the distance between two selections over a trajectory\n"   
+    "Calculate the distance between two selections over a trajectory\n"
     "\n"
     "DESCRIPTION\n"
     "\n"
@@ -238,7 +238,7 @@ string fullHelpMessage(void) {
     "specifies a different way of determining the location within the\n"
     "selection string to use in the distance calculation:\n"
     "\t center - the geometric center\n"
-    "\t mass   - the center of mass\n"  
+    "\t mass   - the center of mass\n"
     "\t min    - the minimum distance\n"
     "\t max    - the maximum distance\n"
     "\t zonly  - only the z-component\n"
@@ -246,21 +246,33 @@ string fullHelpMessage(void) {
     "\n"
     "EXAMPLE\n"
     "\n"
-    "\tinterdist model.pdb traj.dcd 'name==\"CA\" && resid==133'  'name==\"CA\" && resid==234'\n"
+    "\tinterdist model.pdb traj.dcd 'name==\"CA\" && resid==133' \\\n"
+    "\t    'name==\"CA\" && resid==234'\n"
+    "\n"
     "Calculate the CA to CA distance between residues 133 and 234 over the\n"
     "course of trajectory traj.dcd This will print a frame number and a \n"
     "distance for each frame to stdout.\n"
     "\n"
     "\tinterdist --mode min model.pdb traj.dcd 'name==\"NE\" && resid==135'\\\n"
     "\t  'name=~\"OE.\" && resid==247'\n"
-    "This example is similar to the first, but --mode min returns the\n" 
+    "\n"
+    "This example is similar to the first, but --mode min returns the\n"
     "minimum distance specifically.  Note the change in the second\n"
-    "selection string.  Here a regular expression was supplied which\n"
+    "selection string.  Here a regular expression was supplied that\n"
     "will select either the OE1 or OE2 atom (charmm27).  The --mode min \n"
     "option will only return the distance to the closer atom.\n"
     "\n"
+    "\tinterdist --mode center model.pdb traj.dcd 'segid ==\"LIG\" 'resid=15'\\\n"
+    "\t    'resid=72' 'resid=13'\n"
+    "\n"
+    "In this example, we provide multiple selections. The resulting output\n"
+    "will have 4 columns: the frame number followed by the\n"
+    "centroid-to-centroid distances to residues 15, 72, and 13, in that \n"
+    "order.\n"
+    "\n"
     "\tinterdist --mode zonly -r 50:250  model.pdb traj.dcd 'segid==\"PROT\"' \\\n"
     "\t  'name==\"P\" && segid==\"TPE\"'\n"
+    "\n"
     "Here --mode z-only indicates thatwe are only taking the z-component\n"
     "of the distance in this measurement.  the supplied range -r 50:250 \n"
     "is used to specify frames 50 to 250 for output.\n"
@@ -298,7 +310,7 @@ int main(int argc, char *argv[]) {
 
   cout << "# " << header << endl;
   cout << "# frame ";
-  
+
   vector<AtomicGroup> targets;
   for (uint i=0; i<topts->selection_names.size(); ++i) {
     AtomicGroup trg = selectAtoms(model, topts->selection_names[i]);
@@ -312,7 +324,7 @@ int main(int argc, char *argv[]) {
     traj->updateGroupCoords(model);
 
     cout << j << " ";
-    
+
     topts->calc_type->setBox(model.periodicBox());
 
     for (vector<AtomicGroup>::iterator i = targets.begin(); i != targets.end(); ++i) {
@@ -325,7 +337,7 @@ int main(int argc, char *argv[]) {
       if (i < targets.end()-1)
 	cout << '\t';
     }
-    
+
     cout << endl;
   }
 

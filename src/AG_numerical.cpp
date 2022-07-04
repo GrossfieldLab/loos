@@ -459,6 +459,39 @@ namespace loos {
     }
   }
 
+  greal AtomicGroup::stacking(const AtomicGroup& other,
+                              const GCoord& box,
+                              const double threshold=5.0) const {
+    GCoord c1 = centroid();
+    GCoord c2 = other.centroid();
+
+    GCoord dx = c2 - c1;
+    dx.reimage(box);
+    greal dx2 = dx.length2();
+    dx /= dx.length();
+
+    std::vector<GCoord> axes1 = principalAxes();
+    GCoord n1 = axes1[2];
+    std::vector<GCoord> axes2 = other.principalAxes();
+    GCoord n2 = axes2[2];
+
+    greal dot = n1*n2;
+    GCoord ave = 0.0;
+    if (dot < 0) {
+      ave = 0.5*(n2 - n1);
+    }
+    else {
+      ave = 0.5*(n2 + n1);
+    }
+
+    greal threshold2 = threshold * threshold;
+    greal mult = dx2/threshold2;
+    greal denom = 1 + mult*mult*mult;
+
+    greal val = dot * dot * (ave*dx) / denom;
+    return fabs(val);
+  }
+
   std::vector<double> AtomicGroup::scattering(const double qmin, const double qmax,
                                    const uint numValues,
                                    loos::FormFactorSet &formFactors) {
@@ -512,5 +545,6 @@ namespace loos {
     }
   return values;
   }
+
 
 }
