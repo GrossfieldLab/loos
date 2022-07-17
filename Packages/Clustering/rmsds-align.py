@@ -55,6 +55,11 @@ This tool can be used for two different trajectories also. This tool is similar
 to rmsds, except rmsds uses same selection for alignment and pairwise
 RMSD calculation.
 
+The transformation matrix that aligns align_selection_2 is used to transform
+align_selection_1, followed by RMSD calcuation using rmsd_selection_1 to
+rmsd_selection_2. This is looped over the all the frames in the
+trajectory (or for selected --range1 and --range2)
+
 EXAMPLES
 
 python3 rmsds-align.py model.pdb simulation.dcd > rmsd.asc
