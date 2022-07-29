@@ -9,7 +9,7 @@ or RNA, to track all residue-residue contacts within the trajectory.
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2013 Tod Romo, Grossfield Lab
+  Copyright (c) 2022 Alan Grossfield, Grossfield Lab
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
