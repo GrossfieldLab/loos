@@ -6,6 +6,7 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
+#define SWIG_PYTHON_CAST_MODE
 %}
 
 %include <std_string.i>
