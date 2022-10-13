@@ -1109,6 +1109,12 @@ namespace loos {
     copyMappedCoordinatesFrom(g, map);
   }
 
+  std::string AtomicGroup::asString() const {
+    std::ostringstream oss;
+    oss << *this;
+    return oss.str();
+  }
+  
 
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {

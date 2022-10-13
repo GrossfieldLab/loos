@@ -2,6 +2,7 @@
 %include <std_string.i>
 %include <std_vector.i>
 %include <boost_shared_ptr.i>
+%include <std_string.i>
 
 %shared_ptr(loos::Atom)
 
@@ -29,27 +30,18 @@ namespace loos {
 namespace loos {
 
   %extend Atom {
-    char* __str__() {
-      static char buf[1024];
-      std::ostringstream oss;
-      oss << *$self;
-      strncpy(buf, oss.str().c_str(), sizeof(buf));
-      return(buf);
+      
+    std::string __repr__() const {
+      return $self->asString();
     }
-    char* __repr__() {
-      static char buf[1024];
-      std::ostringstream oss;
-      oss << *$self;
-      strncpy(buf, oss.str().c_str(), sizeof(buf));
-      return(buf);
-    }
+      
 
     loos::pAtom __copy__() {
       return(loos::pAtom(new loos::Atom(*$self)));
     }
 
     // Passed object is ignored...
-    loos::pAtom __deepcopy(PyObject* p) {
+    loos::pAtom __deepcopy__(PyObject* p) {
       return(loos::pAtom(new loos::Atom(*$self)));
     }
 

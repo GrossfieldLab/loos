@@ -30,23 +30,29 @@
 
 numprocs=4
 envname="loos"
-while getopts "yhj:ie:" opt; do
+conda_install_command="conda"
+
+while getopts "yhj:ie:c:" opt; do
     case ${opt} in
         e )
             envname=$OPTARG
-            echo "Will use conda env $envname"
+            echo "Will use conda env: $envname"
             ;;
         j )
             numprocs=$OPTARG
             echo "Number of processors: $num"
             ;;
         i )
-            echo "Will install LOOS in the conda environment"
+            echo "Will install LOOS in the current conda environment"
             do_install=1
             ;;
         y )
             echo "Will install non-interactively"
             non_interactive=1
+            ;;
+        c)
+            conda_install_command=$OPTARG
+            echo "Conda install/create command: ${conda_install_command}"
             ;;
         h )
             echo "Usage:"
@@ -55,6 +61,7 @@ while getopts "yhj:ie:" opt; do
             echo "    -e NAME    Use conda env NAME"
             echo "    -j N       Use N processors while compiling"
             echo "    -y         Install non-interactively"
+            echo "    -c NAME   Use name (e.g. mamba) for creating/installing"
             exit 0
             ;;
         \? )
@@ -69,26 +76,16 @@ platform=`uname`
 echo "Setting channel priority to strict"
 conda config --set channel_priority strict
 
-packages="python=3 swig scons numpy scipy scikit-learn boost openblas libnetcdf lapack compilers eigen"
+packages="python=3 swig=4 cmake numpy scipy scikit-learn boost openblas libnetcdf lapack compilers eigen"
 
-# does this env exist (there must be a smarter way to do this)
-envs=$(conda env list | awk '{print $1}' )
-for i in $envs; do
-    if [ "$i" = "$envname" ]; then
-        found=1
-        break
-    fi
-done
-
+env_found=$(conda env list | egrep -v '^#' | egrep "^${envname}[ ]" )
 # Build up the conda installation command line
-if [ -z $found ]; then
-    echo "Creating conda environment $envname"
-    command="conda create "
-    #conda create -n $envname -c conda-forge $packages
-else
+if [[ ${env_found} ]] ; then
     echo "Installing into existing environment $envname"
-    command="conda install "
-    #conda install -n $envname -c conda-forge $packages
+    command="${conda_install_command} install "
+else
+    echo "Creating conda environment $envname"
+    command="${conda_install_command} create "
 fi
 
 if [ -z $non_interactive ]; then
@@ -106,19 +103,20 @@ CONDA_BASE=$(conda info --base)
 source $CONDA_BASE/etc/profile.d/conda.sh
 conda activate $envname
 
-if [ "$platform" == "Linux" ]; then
-    export CXX=`which g++`
-elif [ "$platform" == 'Darwin' ]; then
-    export CXX=`which clang++`
+if [[ -d build ]] ; then
+    echo "Warning- using existing build directory"
 else
-    echo "Unknown platform $platform, assuming g++"
-    export CXX=`which g++`
+    mkdir build
 fi
-echo "CXX set to $CXX"
 
-if [ ${do_install} ]; then
-    scons -j$numprocs PREFIX=$CONDA_PREFIX
-    scons PREFIX=$CONDA_PREFIX -j1 install
-else
-    scons -j$numprocs
+cd build
+echo "*** Configuring LOOS ***"
+cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} ..
+
+echo "*** Building LOOS ***"
+cmake --build . -j${numprocs}
+
+if [[ ${do_install} ]]; then
+    echo  "*** Installing LOOS ***"
+    cmake --install .
 fi

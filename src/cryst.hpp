@@ -66,14 +66,12 @@ namespace loos {
     int z(void) const { return(zval); }
     void z(const int i) { zval = i; }
 
-#if !defined(SWIG)
     friend std::ostream& operator<<(std::ostream& os, const UnitCell& u) {
       os << "<UNITCELL A='" << u._a << "' B='" << u._b << "' C='" << u._c << "' ALPHA='";
       os << u._alpha << "' BETA='" << u._beta << "' GAMMA='" << u._gamma << "' SPACEGROUP='";
       os << u.sgroup << "' Z='" << u.zval << "'/>";
       return(os);
     }
-#endif
 
 
   private:

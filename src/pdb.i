@@ -20,6 +20,8 @@
 */
 
 
+%include <std_string.i>
+
 %header %{
 #include <pdb.hpp>
 %}
@@ -29,16 +31,11 @@
 
 namespace loos {
 
-    %extend PDB {
-        char* __str__() {
-            std::ostringstream oss;
-            oss << *$self;
-            size_t n = oss.str().size();
-            char* buf = new char[n+1];
-            strncpy(buf, oss.str().c_str(), n+1);
-            return(buf);
-        }
-    }
+  %extend PDB {
+     std::string __repr__() const {
+       return($self->asString());
+     }
+   }
     
     
 }

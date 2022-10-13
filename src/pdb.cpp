@@ -474,6 +474,13 @@ namespace loos {
   }
 
 
+  std::string PDB::asString() const {
+    std::ostringstream oss;
+
+    oss << *this;
+    return oss.str();
+  }
+  
   //! Output the group as a PDB...
   /**
    * There are some formatting changes that occur when the group has a

@@ -4,12 +4,12 @@
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
 
-Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2022, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
 
-\image html gplv3.png
+\image html https://www.gnu.org/graphics/gplv3-with-text-84x42.png
 
 <hr>
 
@@ -113,7 +113,7 @@ Either mail us directly (loos.maintainer [AT] gmail.com) or raise an issue on Gi
 
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2022, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -129,7 +129,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-\image html grossfield_logo.jpg
+\image html https://raw.github.com/GrossfieldLab/loos/main/images/grossfield_logo.jpg
 
 
 */

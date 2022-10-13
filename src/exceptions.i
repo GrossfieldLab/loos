@@ -1,3 +1,5 @@
+%include <std_string.i>
+
 %{
 
 
@@ -12,38 +14,38 @@
 %include "exceptions.hpp"
 
 %extend loos::LOOSError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::UnsetProperty {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::NumericalError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::FileError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::FileOpenError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::FileReadError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::FileReadErrorWithLine {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 
 %extend loos::FileWriteError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }
 
 %extend loos::ParseError {
-  const char* __str__() { std::string s = self->what(); return(s.c_str()); }
+   std::string __str__() { return(self->what()); }
 }

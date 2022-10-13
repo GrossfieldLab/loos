@@ -12,20 +12,20 @@ const string fullHelpMessage =
 "SYNOPSIS \n"
 " \n"
 "This tool is designed to compute the Orientational Correlation Function, in the\n"
-" style of its use in polymer chemistry contexts such as in Ullner, M. & \n"
+"style of its use in polymer chemistry contexts such as in Ullner, M. & \n"
 "Woodward, C. E. Orientational Correlation Function and Persistence Lengths of \n"
 "Flexible Polyelectrolytes. Macromolecules 35, 1437–1445 (2002) and more \n"
 "specifically as it was used in Plumridge, A., Andresen, K. & Pollack, L. \n"
 "Visualizing Disordered Single-Stranded RNA: Connecting Sequence, Structure, and\n"
-" Electrostatics. J. Am. Chem. Soc. 142, 109–119 (2020). The user may specify \n"
+"Electrostatics. J. Am. Chem. Soc. 142, 109–119 (2020). The user may specify \n"
 "abstracted 'bond vectors' between links in the polymer chain using single atom \n"
 "selectors or group selectors.  \n"
-" \n"
+"\n"
 "DESCRIPTION \n"
-" \n"
+"\n"
 "This tool uses the definition of the orientational correlation function from \n"
 "Ullner & Woodward to estimate how correlated links in a polymer chain are. This\n"
-" is done by looking at the normalized projection of the i bond-vector in the \n"
+"is done by looking at the normalized projection of the i bond-vector in the \n"
 "chain onto the i+o bond-vector in the chain, for all offsets o between 1 and a \n"
 "max offset specified by the user (default is -1, or all possible). Each bond \n"
 "vector is defined as being a link between a point on a certain residue and a \n"
@@ -35,29 +35,29 @@ const string fullHelpMessage =
 "proteins, each residue is being treated as a link, with the link position at \n"
 "the alpha carbon; in such a coarsening of the polypeptide chain the vector \n"
 "between CAs becomes the chain bond vector.  \n"
-" \n"
+"\n"
 "Thus, in the CA example, it would be the projection of the vector between CA_i \n"
 "and CA_i+1, v_i, onto the vector between CA_{i+o} and CA_{i+o+1}. These \n"
 "projections are averaged across all possible i for each o requested, then \n"
 "reported as a list of correlations as a function of offset. It is also possible\n"
-" for anticorrelations to be exhibited by this function--for example, a pretty \n"
+"for anticorrelations to be exhibited by this function--for example, a pretty \n"
 "solid antiparallel beta sheet would likely produce vectors that are pointed in \n"
 "opposite directions but are nearly coplanar. \n"
-" \n"
+"\n"
 "The notion here is that stiffer chains have a persistence of orientation, which\n"
-" is quantified by the projection of these vectors. Thus, a 'length' is also \n"
+"is quantified by the projection of these vectors. Thus, a 'length' is also \n"
 "defined; it is the average length of the bond-vectors, multiplied by the \n"
 "average correlation between bond vectors summed over all pairs.  \n"
-" \n"
+"\n"
 "The tool writes the results of the requested analysis to stdout as JSON. The \n"
 "JSON has the following tags: \"mean ocfs\", \"variance of means\", \"mean \n"
 "variances\", \"mean projections summed\", and \"mean bondlength\". The first three \n"
 "are all arrays with lengths equal to the number of offsets analyzed. The \"mean \n"
 "ocfs\" are the normalized projection vectors averaged over all pairs of bond \n"
 "vectors with a given offset, and then across each frame analyzed. The \"variance\n"
-" of means\" is the variance in each such mean across the whole trajectory. The \n"
+"of means\" is the variance in each such mean across the whole trajectory. The \n"
 "\"mean variances\" are the variances at each offset, averaged across all analyzed\n"
-" frames. Finally, the \"mean projections summed\" and \"mean bondlength\" when \n"
+"frames. Finally, the \"mean projections summed\" and \"mean bondlength\" when \n"
 "multiplied together should correspond to l_OCF as given in Plumridge et al. \n"
 " \n"
 "The idea behind reporting the mean variances and the variances of the mean is \n"
@@ -69,53 +69,54 @@ const string fullHelpMessage =
 "preference, or static disorder/glassy behavior. This may mean the chain is not \n"
 "really sampling different conformations, even if it is exhibiting correlation \n"
 "die-off as a function of offset. \n"
-" \n"
+"\n"
 "EXAMPLES \n"
-" \n"
+"\n"
 "ocf model traj > ocf_traj.json \n"
-" \n"
+"\n"
 "This will look for either alpha carbons or phosphorus atoms within the entire \n"
 "model, then use their ordering in the model to draw vectors between each such \n"
 "atom and the next one in the chain. It will compute the ocf on each frame in \n"
 "the trajectory. It will do this for all possible offsets. \n"
-" \n"
+"\n"
 "ocf --bond-atom-selection 'name ~= \"C*\'\"' --center-of-mass --residue-centroids\n"
-" \ \n"
+"\n"
 "model traj > ocf_sugar_carbons_com.json \n"
-" \n"
+"\n"
 "This will use the centers of mass of atoms matching the regex 'C*\'' (any \n"
 "carbon with a single quote at the end, which hopefully amounts to sugar \n"
 "carbons) as the points between which to draw bond-vectors for each link in the \n"
 "chain. It will then proceed to compute the OCF as normal for these. To use the \n"
 "centroids instead of the COM, elide the --center-of-mass flag.  \n"
-" \n"
+"\n"
 "ocf --selection 'resid < 31' --bond-atom-selection 'name ~= \"C*\'\"' --center-\n"
-"of-mass --residue-centroids \ \n"
+"of-mass --residue-centroids  \n"
 "model traj > ocf_sugar_carbons_com.json \n"
-" \n"
+"\n"
 "Like the above, but only look for the bond atom selection within the first 30 \n"
 "residues in the model. \n"
-" \n"
+"\n"
 "POTENTIAL COMPLICATIONS \n"
-" \n"
+"\n"
 "Be careful with selection strings; results that are only subtly wrong could \n"
 "emerge from a string that grabs atoms or groups you're not expecting. While \n"
 "this is always a good thing to be careful about when analyzing trajectories, \n"
 "the peril here (because the selections are being split internally across either\n"
-" residues or contiguous sections within the bond atom selection) seems great \n"
+"residues or contiguous sections within the bond atom selection) seems great \n"
 "indeed. \n"
-" \n"
+"\n"
 "The '--group-centroids' flag shouldn't be used unless you're after treating a \n"
 "collection of atoms that is trans-residue according to how your model defines \n"
 "residues. If you do need this functionality, make sure your model has \n"
 "connectivity, or find a way to add it. Using the '--infer-connectivity' flag to\n"
-" do this is applying a simple distance cutoff to decide where the chemical \n"
+"do this is applying a simple distance cutoff to decide where the chemical \n"
 "bonds are in your system from the first frame, which should be treated with \n"
 "caution.\n"
 ;
 // clang-format on
 
-class ToolOptions : public opts::OptionsPackage {
+class ToolOptions : public opts::OptionsPackage
+{
 public:
   ToolOptions() {}
   // clang-format off
@@ -139,7 +140,8 @@ public:
     ;
   }
   // clang-format on
-  string print() const {
+  string print() const
+  {
     ostringstream oss;
     oss << boost::format("bond_atom_selection=%s,max_offset=%d,group_centroids="
                          "%b,bondlength=%d,residue_centroids%b,com=%b") %
@@ -148,16 +150,21 @@ public:
     return (oss.str());
   }
 
-  bool postConditions(po::variables_map &map) {
-    if (group_centroids && residue_centroids) {
+  bool postConditions(po::variables_map &map)
+  {
+    if (group_centroids && residue_centroids)
+    {
       cerr << "ERROR: --group-centroids and --residue-centroids flags are "
               "mutually exclusive.\n";
       return (false);
-    } else if (com && !(group_centroids || residue_centroids)) {
+    }
+    else if (com && !(group_centroids || residue_centroids))
+    {
       cerr << "ERROR: --center-of-mass must be used with --group-centroids or"
               "--residue-centroids.\n";
       return (false);
-    } else
+    }
+    else
       return (true);
   }
   string bond_atom_selection;
@@ -169,19 +176,22 @@ public:
 };
 const string indent = "    ";
 
-inline void ag_bond_vectors(AtomicGroup &chain, vector<GCoord> &bond_vectors) {
+inline void ag_bond_vectors(AtomicGroup &chain, vector<GCoord> &bond_vectors)
+{
   for (uint i = 0; i < chain.size() - 1; i++)
     bond_vectors[i] = chain[i]->coords() - chain[i + 1]->coords();
 }
 
 inline void centroid_bond_vectors(vector<AtomicGroup> &chain,
-                                  vector<GCoord> &bond_vectors) {
+                                  vector<GCoord> &bond_vectors)
+{
   for (uint i = 0; i < chain.size() - 1; i++)
     bond_vectors[i] = chain[i].centroid() - chain[i + 1].centroid();
 }
 
 inline void com_bond_vectors(vector<AtomicGroup> &chain,
-                             vector<GCoord> &bond_vectors) {
+                             vector<GCoord> &bond_vectors)
+{
   for (uint i = 0; i < chain.size() - 1; i++)
     bond_vectors[i] = chain[i].centerOfMass() - chain[i + 1].centerOfMass();
 }
@@ -191,13 +201,16 @@ inline void compute_ocf_bondlength(uint max_offset,
                                    greal &accum_ocfs, vector<greal> &mean_ocfs,
                                    vector<greal> &var_ocfs,
                                    vector<greal> &accum_sq_mean, greal weight,
-                                   greal &bl_accum) {
-  for (uint offset_idx = 0; offset_idx < max_offset; offset_idx++) {
+                                   greal &bl_accum)
+{
+  for (uint offset_idx = 0; offset_idx < max_offset; offset_idx++)
+  {
     uint offset = offset_idx + 1;
     greal accumulated_bvproj = 0;
     greal accumulated_square = 0;
     greal bvproj = 0;
-    for (uint i = 0; i < bond_vectors.size() - offset; i++) {
+    for (uint i = 0; i < bond_vectors.size() - offset; i++)
+    {
       bvproj = bond_vectors[i].uvdot(bond_vectors[i + offset]);
       accumulated_bvproj += bvproj;
       accumulated_square += bvproj * bvproj;
@@ -215,7 +228,8 @@ inline void compute_ocf_bondlength(uint max_offset,
     bl_accum += bond.length() * weight;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
   // parse the command line options
   string hdr = invocationHeader(argc, argv);
@@ -233,8 +247,10 @@ int main(int argc, char *argv[]) {
   cout << "# " << hdr << "\n";
   // establish system, and subsystems
   AtomicGroup model = mtopts->model;
-  if (model.hasBonds()) {
-  } else if (topts->bondlength > 0)
+  if (model.hasBonds())
+  {
+  }
+  else if (topts->bondlength > 0)
     model.findBonds(topts->bondlength);
   else
     throw(LOOSError(
@@ -257,20 +273,31 @@ int main(int argc, char *argv[]) {
   void (*bv_getter)(vector<AtomicGroup> &, vector<GCoord> &);
   // determine what points to use for the centers of each link in the chain
   // based on user input
-  if (topts->com) {
+  if (topts->com)
+  {
     bv_getter = &com_bond_vectors;
-    if (topts->group_centroids) {
+    if (topts->group_centroids)
+    {
       chain = scope.splitByMolecule(topts->bond_atom_selection);
-    } else if (topts->residue_centroids) {
+    }
+    else if (topts->residue_centroids)
+    {
       chain = selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
     }
-  } else {
+  }
+  else
+  {
     bv_getter = &centroid_bond_vectors;
-    if (topts->group_centroids) {
+    if (topts->group_centroids)
+    {
       chain = scope.splitByMolecule(topts->bond_atom_selection);
-    } else if (topts->residue_centroids) {
+    }
+    else if (topts->residue_centroids)
+    {
       chain = selectAtoms(scope, topts->bond_atom_selection).splitByResidue();
-    } else {
+    }
+    else
+    {
       chain = selectAtoms(scope, topts->bond_atom_selection).splitByMolecule();
     }
   }
@@ -287,7 +314,8 @@ int main(int argc, char *argv[]) {
   else if (topts->max_offset < 0)
     max_offset = bond_vectors.size() - 1;
   // loop over trajectory
-  for (auto frame_index : mtopts->frameList()) {
+  for (auto frame_index : mtopts->frameList())
+  {
     traj->readFrame(frame_index);
     traj->updateGroupCoords(scope);
     // get frame weights; defaults to zero
@@ -305,7 +333,8 @@ int main(int argc, char *argv[]) {
   cout << indent + "],\n";
   cout << indent + "\"variance of means\": [\n";
   greal mean_ocf;
-  for (uint i = 0; i < mean_ocfs.size(); i++) {
+  for (uint i = 0; i < mean_ocfs.size(); i++)
+  {
     mean_ocf = mean_ocfs[i] / weights->totalWeight();
     cout << indent + indent
          << accum_sq_mean[i] / weights->totalWeight() - mean_ocf * mean_ocf

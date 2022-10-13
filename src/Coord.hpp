@@ -126,14 +126,14 @@ namespace loos {
 
 
     //! Retrieve an element from the Coord with range-checking
-    T& operator[](const unsigned int i) throw(std::out_of_range) {
+    T& operator[](const unsigned int i) {
       if (i>=MAXCOORD)
         throw std::out_of_range("Index into Coord<T> is out of range.");
       return(v[i]);
     }
 
     //! Retrieve an element from a const Coord with range-checking 
-    const T& operator[](const unsigned int i) const throw(std::out_of_range) {
+    const T& operator[](const unsigned int i) const {
       if (i>=MAXCOORD)
         throw std::out_of_range("Index into Coord<T> is out of range.");
       return(v[i]);
@@ -162,7 +162,7 @@ namespace loos {
       return(os);
     }
 
-    friend std::istream& operator>>(std::istream& is, Coord<T>& i) throw(std::runtime_error){
+    friend std::istream& operator>>(std::istream& is, Coord<T>& i) {
       char c;
       is >> c;
       if (c != '(')

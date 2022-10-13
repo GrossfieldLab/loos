@@ -26,7 +26,7 @@ traj = loos.pyloos.Trajectory(traj_file, system)
 sel1 = loos.selectAtoms(system, sel_string1)
 sel2 = loos.selectAtoms(system, sel_string2)
 
-for frame in traj:
+while traj.nextFrame():
 
     # compute distance
     centroid1 = sel1.centroid()

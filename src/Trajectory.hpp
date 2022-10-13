@@ -70,7 +70,7 @@ namespace loos {
 		Trajectory() : cached_first(false), _filename("unset"), _current_frame(0) { }
 
 		//! Automatically open the file named \a s
-		Trajectory(const std::string& s) throw(FileOpenError)
+		Trajectory(const std::string& s)
 			: cached_first(false), _filename(s), _current_frame(0)
 		{
 			setInputStream(s);
@@ -277,7 +277,7 @@ namespace loos {
 		}
 
 	protected:
-		void setInputStream(const std::string& fname) throw(FileOpenError)
+		void setInputStream(const std::string& fname)
 		{
 			_filename = fname;
 			ifs = pStream(new std::fstream(fname.c_str(), std::ios_base::in | std::ios_base::binary));

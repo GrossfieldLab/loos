@@ -1,0 +1,41 @@
+### Adapted from https://github.com/danielunderwood/swig-example/tree/master/swig/python
+
+import setuptools.command.install
+import shutil
+import os
+import os.path
+from distutils.sysconfig import get_python_lib
+
+
+class CompiledLibInstall(setuptools.command.install.install):
+    """
+    Specialized install to install to python libs
+    """
+
+    def run(self):
+        """
+        Run method called by setup
+        :return:
+        """
+        # Directory to install to
+        install_dir = os.path.join(get_python_lib(), 'loos')
+
+        if not os.path.isdir(install_dir):
+            os.mkdir(install_dir)
+        shutil.copy(os.path.join('${CMAKE_CURRENT_BINARY_DIR}', 'loos.py'),
+                    os.path.join(install_dir, '__init__.py'))
+        
+        shutil.copy(os.path.join('${CMAKE_CURRENT_BINARY_DIR}','_pyloos.so'),
+                    install_dir)
+
+
+if __name__ == '__main__':
+    setuptools.setup(
+        name='loos',
+        version='${CMAKE_PROJECT_VERSION}',
+        packages=['loos'],
+        license='GPLv3',
+        author='The Loos Developers',
+        author_email='loos.maintainer@gmail.com',
+        cmdclass={'install': CompiledLibInstall}
+    )

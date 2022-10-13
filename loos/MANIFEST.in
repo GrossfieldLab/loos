@@ -1,0 +1,19 @@
+include src/loos/_pyloos.so
+include src/loos/OptimalMembraneGenerator/water_small.pdb
+include src/loos/OptimalMembraneGenerator/example/popc/popc.cfg
+include src/loos/OptimalMembraneGenerator/example/pope-popg/pope-popg.cfg
+include src/loos/OptimalMembraneGenerator/example/rhod-water/rhodopsin.cfg
+include src/loos/OptimalMembraneGenerator/example/rhodopsin/all-rhod.pdb
+include src/loos/OptimalMembraneGenerator/example/rhodopsin/all-rhod.psf
+include src/loos/OptimalMembraneGenerator/example/rhodopsin/rhodopsin.cfg
+include src/loos/OptimalMembraneGenerator/example/rhodopsin/toppar_retp.inp
+include src/loos/OptimalMembraneGenerator/example/par_build.inp
+include src/loos/OptimalMembraneGenerator/example/README
+include src/loos/OptimalMembraneGenerator/example/run_examples
+include src/loos/OptimalMembraneGenerator/example/top_build.inp
+include src/loos/OptimalMembraneGenerator/doc/doc.pdf
+include src/loos/OptimalMembraneGenerator/doc/doc.tex
+
+
+
+

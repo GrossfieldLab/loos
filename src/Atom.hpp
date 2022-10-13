@@ -248,10 +248,10 @@ namespace loos {
     //! Clears user-defined bits...
     void clearProperty(const bits bitmask);
 
-#if !defined(SWIG)
     //! Outputs an atom in pseudo-XML
     friend std::ostream& operator<<(std::ostream&, const Atom&);
-#endif
+
+    std::string asString() const;
 
   private:
     void init(void);

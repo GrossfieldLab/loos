@@ -1,0 +1,6 @@
+#include <version.hpp>
+
+namespace loos {
+
+    const std::string version_string = "@CMAKE_PROJECT_NAME@ @CMAKE_PROJECT_VERSION@ BUILT ON @LOOS_BUILD_TIMESTAMP@";
+}
